@@ -1,27 +1,24 @@
-Date: Tue, 29 Sep 2015 13:55:48 -0700
+Date: Tue, 29 Sep 2015 13:57:27 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Alexey Klimov <klimov.linux@gmail.com>
-Cc: Stefan Agner <stefan@agner.ch>, David Woodhouse <dwmw2@infradead.org>,
- sebastian@breakpoint.cc, robh+dt@kernel.org, pawel.moll@arm.com,
- Mark Rutland <mark.rutland@arm.com>, ijc+devicetree@hellion.org.uk,
- Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
- kernel@pengutronix.de, boris.brezillon@free-electrons.com,
- marb@ixxat.de, aaron@tastycactus.com,
- Bill Pringlemeir <bpringlemeir@gmail.com>,
+To: Stefan Agner <stefan@agner.ch>
+Cc: dwmw2@infradead.org, sebastian@breakpoint.cc, robh+dt@kernel.org,
+ pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawn.guo@linaro.org, kernel@pengutronix.de,
+ boris.brezillon@free-electrons.com, marb@ixxat.de,
+ aaron@tastycactus.com, bpringlemeir@gmail.com,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- albert.aribaud@3adev.fr, Bill Pringlemeir <bpringlemeir@nbsps.com>
-Subject: Re: [PATCH v12 1/5] mtd: nand: vf610_nfc: Freescale NFC for VF610,
- MPC5125 and others
-Message-ID: <20150929205548.GO31505@google.com>
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ albert.aribaud@3adev.fr, klimov.linux@gmail.com,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: [PATCH v12 2/5] mtd: nand: vf610_nfc: add hardware BCH-ECC support
+Message-ID: <20150929205727.GP31505@google.com>
 References: <1441242397-870-1-git-send-email-stefan@agner.ch>
- <1441242397-870-2-git-send-email-stefan@agner.ch>
- <CALW4P+LDwFnCjOorh7iCr8TrUnync7a_zkdZ4Hp_91=60AtUQw@mail.gmail.com>
+ <1441242397-870-3-git-send-email-stefan@agner.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALW4P+LDwFnCjOorh7iCr8TrUnync7a_zkdZ4Hp_91=60AtUQw@mail.gmail.com>
+In-Reply-To: <1441242397-870-3-git-send-email-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,65 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 04, 2015 at 07:10:10AM +0300, Alexey Klimov wrote:
-> On Thu, Sep 3, 2015 at 4:06 AM, Stefan Agner <stefan@agner.ch> wrote:
-> > --- /dev/null
-> > +++ b/drivers/mtd/nand/vf610_nfc.c
+Pushed this patch to l2-mtd.git, as it looks pretty much good. Although,
+I'd like raw read support...
 
-> > +static int vf610_nfc_probe(struct platform_device *pdev)
-> > +{
-> > +       struct vf610_nfc *nfc;
-> > +       struct resource *res;
-> > +       struct mtd_info *mtd;
-> > +       struct nand_chip *chip;
-> > +       struct device_node *child;
-> > +       const struct of_device_id *of_id;
-> > +       int err = 0;
+On Wed, Sep 02, 2015 at 06:06:34PM -0700, Stefan Agner wrote:
+> This adds hardware ECC support using the BCH encoder in the NFC IP.
+> The ECC encoder supports up to 32-bit correction by using 60 error
+> correction bytes. There is no sub-page ECC step, ECC is calculated
+> always accross the whole page (up to 2k pages).
 > 
-> According to usage you don't need to initialize err to zero here.
-
-Fixed this one.
-
-> > +       int irq;
-> > +
-> > +       nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-> > +       if (!nfc)
-> > +               return -ENOMEM;
-> > +
-> > +       nfc->dev = &pdev->dev;
-> > +       mtd = &nfc->mtd;
-> > +       chip = &nfc->chip;
-> > +
-> > +       mtd->priv = chip;
-> > +       mtd->owner = THIS_MODULE;
-> > +       mtd->dev.parent = nfc->dev;
-> > +       mtd->name = DRV_NAME;
-> > +
-> > +       irq = platform_get_irq(pdev, 0);
-> > +       if (irq <= 0)
-> > +               return -EINVAL;
-> > +
-> > +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +       nfc->regs = devm_ioremap_resource(nfc->dev, res);
-> > +       if (IS_ERR(nfc->regs))
-> > +               return PTR_ERR(nfc->regs);
-> > +
-> > +       nfc->clk = devm_clk_get(&pdev->dev, NULL);
-> > +       if (IS_ERR(nfc->clk))
-> > +               return PTR_ERR(nfc->clk);
-> > +
-> > +       err = clk_prepare_enable(nfc->clk);
-> > +       if (err) {
-> > +               dev_err(nfc->dev, "Unable to enable clock!\n");
-> > +               return err;
-> > +       }
+> Limitations:
+> - HW ECC: Only 2K page with 64+ OOB.
+> - HW ECC: Only 24 and 32-bit error correction implemented.
 > 
-> After fixing that feel free to use:
-> 
-> Reviewed-by: Alexey Klimov <klimov.linux@gmail.com>
+> Raw writes have been tested using the generic nand_write_page_raw
+> implementation. However, raw reads are currently not possible
+> because the controller need to know whether we are going to use
+> the ECC mode already at NAND_CMD_READ0 command time. At this point
+> we do not have the information whether it is a raw read or a
+> regular read at driver level...
 
-Also, fixed up the nand_chip field name change (from 'dn' to
-'flash_node'), and pushed to l2-mtd.git
-
-Thanks,
-Brian
+Hmm, can you get this in ecc.read_page_raw()?
