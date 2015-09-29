@@ -1,21 +1,21 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zgil6-0006wS-O0
- for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 00:27:05 +0000
-Received: by pacfv12 with SMTP id fv12so192251169pac.2
- for <linux-mtd@lists.infradead.org>; Mon, 28 Sep 2015 17:26:44 -0700 (PDT)
-Date: Mon, 28 Sep 2015 17:26:41 -0700
+ id 1ZginF-0007La-Qr
+ for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 00:29:18 +0000
+Received: by pacfv12 with SMTP id fv12so192299785pac.2
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Sep 2015 17:28:57 -0700 (PDT)
+Date: Mon, 28 Sep 2015 17:28:55 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Luis de Bethencourt <luis@debethencourt.com>
-Cc: linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Wolfram Sang <wsa@the-dreams.de>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/5] mtd: Fix module autoload for OF platform drivers
-Message-ID: <20150929002641.GQ31505@google.com>
-References: <20150917221102.GA9119@goodgumbo.baconseed.org>
+To: Peng Fan <van.freenix@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2] mtd: blktrans: fix multiplication overflow
+Message-ID: <20150929002855.GR31505@google.com>
+References: <1441978907-19520-1-git-send-email-van.freenix@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20150917221102.GA9119@goodgumbo.baconseed.org>
+In-Reply-To: <1441978907-19520-1-git-send-email-van.freenix@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 18, 2015 at 12:11:02AM +0200, Luis de Bethencourt wrote:
-> Hi,
+On Fri, Sep 11, 2015 at 09:41:47PM +0800, Peng Fan wrote:
+> In drivers/mtd/mtd_blkdevs.c:
+> 406	set_capacity(gd, (new->size * tr->blksize) >> 9);
+> The type of new->size is unsigned long and the type of tr->blksize is int,
+> the result of 'new->size * tr->blksize' may exceed ULONG_MAX on 32bit
+> machines.
 > 
-> These patches add the missing MODULE_DEVICE_TABLE() for OF to export
-> the information so modules have the correct aliases built-in and
-> autoloading works correctly.
+> I use nand chip MT29F32G08CBADBWP which is 4GB and the parameters passed
+> to kernel is 'mtdparts=gpmi-nand:-(user)', the whole nand chip will be
+> treated as a 4GB mtd partition. new->size is 0x800000 and tr->blksize is
+> 0x200, 'new->size * tr->blksize' however is 0. This is what we do not want
+> to see.
 > 
-> A longer explanation by Javier Canillas can be found here:
-> https://lkml.org/lkml/2015/7/30/519
+> Using type cast u64 to fix the multiplication overflow issue.
 > 
-> Thanks,
-> Luis
+> Signed-off-by: Peng Fan <van.freenix@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> ---
+> 
+> Changes V2:
+>  use type cast to avoid build break for platforms which does not support 64 bit multilplication.
 
-FYI, your threading (References and In-Reply-To headers) is wrong (or
-rather, missing). Please consider testing locally and fixing this in the
-future. git-send-email generally does a good job, if you are able to use
-it.
-
-Anyway, pushed all 5 to l2-mtd.git.
-
-Brian
+Thanks, pushed to l2-mtd.git
