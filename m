@@ -1,21 +1,23 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZginF-0007La-Qr
- for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 00:29:18 +0000
-Received: by pacfv12 with SMTP id fv12so192299785pac.2
- for <linux-mtd@lists.infradead.org>; Mon, 28 Sep 2015 17:28:57 -0700 (PDT)
-Date: Mon, 28 Sep 2015 17:28:55 -0700
+ id 1Zgist-0002aD-Ib
+ for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 00:35:08 +0000
+Received: by pacex6 with SMTP id ex6so188412446pac.0
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Sep 2015 17:34:47 -0700 (PDT)
+Date: Mon, 28 Sep 2015 17:34:44 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Peng Fan <van.freenix@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v2] mtd: blktrans: fix multiplication overflow
-Message-ID: <20150929002855.GR31505@google.com>
-References: <1441978907-19520-1-git-send-email-van.freenix@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 REBASED] mtd: nand: pxa3xx-nand: prevent DFI bus
+ lockup on removal
+Message-ID: <20150929003444.GS31505@google.com>
+References: <1443473811-14285-1-git-send-email-robert.jarzmik@free.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1441978907-19520-1-git-send-email-van.freenix@gmail.com>
+In-Reply-To: <1443473811-14285-1-git-send-email-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 11, 2015 at 09:41:47PM +0800, Peng Fan wrote:
-> In drivers/mtd/mtd_blkdevs.c:
-> 406	set_capacity(gd, (new->size * tr->blksize) >> 9);
-> The type of new->size is unsigned long and the type of tr->blksize is int,
-> the result of 'new->size * tr->blksize' may exceed ULONG_MAX on 32bit
-> machines.
+On Mon, Sep 28, 2015 at 10:56:51PM +0200, Robert Jarzmik wrote:
+> After the conversion of pxa architecture to common clock framework, the
+> NAND clock can be disabled on driver exit.
 > 
-> I use nand chip MT29F32G08CBADBWP which is 4GB and the parameters passed
-> to kernel is 'mtdparts=gpmi-nand:-(user)', the whole nand chip will be
-> treated as a 4GB mtd partition. new->size is 0x800000 and tr->blksize is
-> 0x200, 'new->size * tr->blksize' however is 0. This is what we do not want
-> to see.
+> In this case, it happens that if the driver used the NAND and set the
+> DFI arbitration bit, the next access to a static memory controller area,
+> such as an ethernet card, will stall the system bus, and the core will
+> be stalled forever.
 > 
-> Using type cast u64 to fix the multiplication overflow issue.
+> This is especially true on pxa31x SoCs, where the NDCR was augmented
+> with a new bit to prevent this lockups by giving full ownership of the
+> DFI arbiter to the SMC, in change SCr#6.
 > 
-> Signed-off-by: Peng Fan <van.freenix@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
+> Fix this by clearing the DFI arbritration bit in driver exit. This
+> effectively prevents a lockup on zylonite when removing pxa3xx-nand
+> module, and using ethernet afterwards.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> 
 > ---
-> 
-> Changes V2:
->  use type cast to avoid build break for platforms which does not support 64 bit multilplication.
+> Since v1: add comment, switch to NFCV1/NCFV2 registers naming
+> Since v2: rebase on top of Brian's tree
 
-Thanks, pushed to l2-mtd.git
+Applied to l2-mtd.git. Thanks.
