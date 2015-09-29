@@ -1,24 +1,22 @@
-Date: Tue, 29 Sep 2015 13:59:23 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: dwmw2@infradead.org, sebastian@breakpoint.cc, robh+dt@kernel.org,
- pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- shawn.guo@linaro.org, kernel@pengutronix.de,
- boris.brezillon@free-electrons.com, marb@ixxat.de,
- aaron@tastycactus.com, bpringlemeir@gmail.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- albert.aribaud@3adev.fr, klimov.linux@gmail.com,
- Bill Pringlemeir <bpringlemeir@nbsps.com>
-Subject: Re: [PATCH v12 3/5] mtd: nand: vf610_nfc: add device tree bindings
-Message-ID: <20150929205923.GQ31505@google.com>
-References: <1441242397-870-1-git-send-email-stefan@agner.ch>
- <1441242397-870-4-git-send-email-stefan@agner.ch>
+Received: from r00tworld.com ([212.85.137.150])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zh20V-0001iY-15
+ for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 21:00:15 +0000
+From: "PaX Team" <pageexec@freemail.hu>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 29 Sep 2015 22:56:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1441242397-870-4-git-send-email-stefan@agner.ch>
+Subject: Re: question about potential integer truncation in default_erasesize
+Reply-to: pageexec@freemail.hu
+CC: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ re.emese@gmail.com, spender@grsecurity.net
+Message-ID: <560AFAF9.12740.62C6764A@pageexec.freemail.hu>
+In-reply-to: <20150929020220.GB31505@google.com>
+References: <56069B10.450.51AFEC35@pageexec.freemail.hu>,
+ <20150929020220.GB31505@google.com>
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,88 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 02, 2015 at 06:06:35PM -0700, Stefan Agner wrote:
-> Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
-> Acked-by: Shawn Guo <shawnguo@kernel.org>
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
->  .../devicetree/bindings/mtd/vf610-nfc.txt          | 59 ++++++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/vf610-nfc.txt
+On 28 Sep 2015 at 19:02, Brian Norris wrote:
+
+> On Sat, Sep 26, 2015 at 03:18:08PM +0200, PaX Team wrote:
+> > hi all,
+> > 
+> > drivers/mtd/chips/map_rom.c:default_erasesize can truncate map_info.size
+> > from unsigned long to unsigned int on 64 bit archs and i'm wondering if
+> > this is intentional or should/could map_info.size be turned into an unsigned
+> > int field? FTR, this issue was detected with the upcoming version of the
+> > size overflow plugin we have in PaX/grsecurity and there're a handful of
+> > similar cases in the tree where potentially unwanted or unnecessary integer
+> > truncations occur, this being one of these. any opinion/help is welcome!
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/vf610-nfc.txt b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
-> new file mode 100644
-> index 0000000..6be4871
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/vf610-nfc.txt
-> @@ -0,0 +1,59 @@
-> +Freescale's NAND flash controller (NFC)
-> +
-> +This variant of the Freescale NAND flash controller (NFC) can be found on
-> +Vybrid (vf610), MPC5125, MCF54418 and Kinetis K70.
-> +
-> +Required properties:
-> +- compatible: Should be set to "fsl,vf610-nfc".
-> +- reg: address range of the NFC.
-> +- interrupts: interrupt of the NFC.
-> +- #address-cells: shall be set to 1. Encode the nand CS.
-> +- #size-cells : shall be set to 0.
-> +- assigned-clocks: main clock from the SoC, for Vybrid <&clks VF610_CLK_NFC>;
-> +- assigned-clock-rates: The NAND bus timing is derived from this clock
-> +    rate and should not exceed maximum timing for any NAND memory chip
-> +    in a board stuffing. Typical NAND memory timings derived from this
-> +    clock are found in the SoC hardware reference manual. Furthermore,
-> +    there might be restrictions on maximum rates when using hardware ECC.
-> +
-> +- #address-cells, #size-cells : Must be present if the device has sub-nodes
-> +  representing partitions.
-> +
-> +Required children nodes:
-> +Children nodes represent the available nand chips. Currently the driver can
-> +only handle one NAND chip.
-> +
-> +Required properties:
-> +- compatible: Should be set to "fsl,vf610-nfc-cs".
-> +- nand-bus-width: see nand.txt
-> +- nand-ecc-mode: see nand.txt
-> +
-> +Required properties for hardware ECC:
-> +- nand-ecc-strength: supported strengths are 24 and 32 bit (see nand.txt)
-> +- nand-ecc-step-size: step size equals page size, currently only 2k pages are
-> +    supported
-> +- nand-on-flash-bbt: see nand.txt
-> +
-> +Example:
-> +
-> +	nfc: nand@400e0000 {
-> +		compatible = "fsl,vf610-nfc";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
+> This is being assigned to the erasesize, which is 32-bit already, and
+> all of MTD expects a 32-bit erasesize, so it'd be a pretty big job to
+> "fix" the truncation.
 
-Fixed this to <0> ^^^
+to make sure i got this right, map_info.size in other uses can hold a
+value larger than 4GB (so it has to stay 64 bit, at least on 64 bit
+archs) but for erasesize it should never have such a big value? that'd
+actually be fine for us since it means when the overflow plugin instruments
+this code any runtime trigger means a real problem, not a false positive.
 
-and pushed to l2-mtd.git. I'll assume the DTS updates can be rebased and
-taken through arm-soc
-
-> +		reg = <0x400e0000 0x4000>;
-> +		interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks = <&clks VF610_CLK_NFC>;
-> +		clock-names = "nfc";
-> +		assigned-clocks = <&clks VF610_CLK_NFC>;
-> +		assigned-clock-rates = <33000000>;
-> +
-> +		nand@0 {
-> +			compatible = "fsl,vf610-nfc-nandcs";
-> +			reg = <0>;
-> +			nand-bus-width = <8>;
-> +			nand-ecc-mode = "hw";
-> +			nand-ecc-strength = <32>;
-> +			nand-ecc-step-size = <2048>;
-> +			nand-on-flash-bbt;
-> +		};
-> +	};
-> -- 
-> 2.5.1
-> 
-
-Brian
+cheers,
+ PaX Team
