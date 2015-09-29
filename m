@@ -1,21 +1,24 @@
 Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zgzhs-0005Bz-KZ
- for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 18:32:53 +0000
-Received: by pacex6 with SMTP id ex6so13406161pac.0
- for <linux-mtd@lists.infradead.org>; Tue, 29 Sep 2015 11:32:32 -0700 (PDT)
-Date: Tue, 29 Sep 2015 11:32:29 -0700
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1Zh0UB-0002gq-NI
+ for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 19:22:48 +0000
+Received: by pacex6 with SMTP id ex6so14411483pac.0
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Sep 2015 12:20:56 -0700 (PDT)
+Date: Tue, 29 Sep 2015 12:20:54 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Enrico Jorns <ejo@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- Graham Moore <grmoore@opensource.altera.com>
-Subject: Re: [PATCH] mtd: nand: denali: pass col argument to READID operation
-Message-ID: <20150929183229.GD31505@google.com>
-References: <1442563361-32230-1-git-send-email-ejo@pengutronix.de>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Enrico Joerns <ejo@pengutronix.de>,
+ MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd-utils: ubinize: Always return error code (at least
+ -1) in case of an error
+Message-ID: <20150929192054.GE31505@google.com>
+References: <1441978093-20917-1-git-send-email-ejo@pengutronix.de>
+ <560A9036.6090902@pengutronix.de>
+ <CAFLxGvwacK9TWc58N07i8KBvPTY4nD9eMfmo+q6oMvyxoYSC+Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1442563361-32230-1-git-send-email-ejo@pengutronix.de>
+In-Reply-To: <CAFLxGvwacK9TWc58N07i8KBvPTY4nD9eMfmo+q6oMvyxoYSC+Q@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +28,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 18, 2015 at 10:02:41AM +0200, Enrico Jorns wrote:
-> A read id operation followed by 0x00 reads the device ID while
-> a read id operation followed by 0x20 reads the possible ONFI identifier.
+On Tue, Sep 29, 2015 at 03:40:38PM +0200, Richard Weinberger wrote:
+> On Tue, Sep 29, 2015 at 3:20 PM, Enrico Joerns <ejo@pengutronix.de> wrote:
+> > Any comments on this?
 > 
-> As the READID function did not propagate the second id parameter but had
-> a hard-coded call for 0x90 0x00, reading the ONFI identifier was not
-> possible and thus chips werde not detected (tested with
-> MT29F8G08ABABAWP)
-> 
-> Signed-off-by: Enrico Jorns <ejo@pengutronix.de>
+> Looks good to me!
 
-Looks OK to me. Pushed to l2-mtd.git.
-
-> ---
->  drivers/mtd/nand/denali.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 870c7fc..7b6186f 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -1304,7 +1304,7 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
->  		 */
->  		addr = MODE_11 | BANK(denali->flash_bank);
->  		index_addr(denali, addr | 0, 0x90);
-> -		index_addr(denali, addr | 1, 0);
-> +		index_addr(denali, addr | 1, col);
->  		for (i = 0; i < 8; i++) {
->  			index_addr_read_data(denali, addr | 2, &id);
->  			write_byte_to_buf(denali, id);
-> -- 
-> 2.5.1
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Pushed to mtd-utils.git.
