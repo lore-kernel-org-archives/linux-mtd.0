@@ -1,35 +1,19 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZgrDR-0007Tn-EJ
- for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 09:28:55 +0000
-Subject: Re: [PATCH 0/9] drivers:mtd:UBI: add bakvol module for MLC NAND
- paired page issue
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "baruch@tkos.co.il" <baruch@tkos.co.il>,
- "asierra@xes-inc.com" <asierra@xes-inc.com>,
- "guz.fnst@cn.fujitsu.com" <guz.fnst@cn.fujitsu.com>,
- "gsi@denx.de" <gsi@denx.de>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF4CEC3@NTXXIAMBX02.xacn.micron.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- Andrea Scian <rnd4@dave-tech.it>,
- =?UTF-8?B?UGV0ZXIgUGFuIOa9mOafj+WujyAocGV0ZXJwYW4p?= <peterpan@micron.com>,
- =?UTF-8?B?S2FybCBaaGFuZyDlvKDlj4zplKMgKGthcmx6aGFuZyk=?=
- <karlzhang@micron.com>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
- "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <560A59B8.4000701@nod.at>
-Date: Tue, 29 Sep 2015 11:28:24 +0200
-MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4CEC3@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZgsJk-0005gs-W7
+ for linux-mtd@lists.infradead.org; Tue, 29 Sep 2015 10:39:30 +0000
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Subject: Re: [PATCH] UBI: return ENOSPC if no enough space available
+From: David Gstir <david@sigma-star.at>
+In-Reply-To: <1443463039-8346-1-git-send-email-shengyong1@huawei.com>
+Date: Tue, 29 Sep 2015 12:39:04 +0200
+Cc: richard@nod.at,
+ linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F7BE60EE-1993-4F26-9555-427DBE983E60@sigma-star.at>
+References: <1443463039-8346-1-git-send-email-shengyong1@huawei.com>
+To: Sheng Yong <shengyong1@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,33 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
 
-Am 28.09.2015 um 09:02 schrieb Bean Huo »ô±ó±ó (beanhuo):
-> Hello,
-> 
-> This series aims at adding a bakvol module for MLC NAND paired page
-> Power loss protection.
-> MLC NAND paired page power loss is a known issue so far, MLC NAND pages are
-> coupled in a sense that if you cut power while writing to a page, you corrupt not only
-> this page, but also one of the previous pages which is paired with the current one.
-> Currently, there is no a perfect solution for this. 
-> This paired page solution is based on NAND multiple plane program feature. For this
-> Patch, only used dual plane page program, means two different plane pages can
-> Be programmed together at the same time.
-> Dual plane page program only implements in backup operation. Only lower page data
-> Be duplicated and back up into a internal log volume by dual plane program method.
-> 
-> This patch has been testing on Micron 70s/80s/90s MLC NAND.
-> Of course there are some places needed to be improved and simplified.
-> 
-> Any suggestion and comments welcomed.
+> On 28.09.2015, at 19:57, Sheng Yong <shengyong1@huawei.com> wrote:
+>=20
+> UBI: attaching mtd1 to ubi0
+> UBI: scanning is finished
+> UBI error: init_volumes: not enough PEBs, required 706, available 686
+> UBI error: ubi_wl_init: no enough physical eraseblocks (-20, need 1)
+> UBI error: ubi_attach_mtd_dev: failed to attach mtd1, error -12 <=3D =
+NOT ENOMEM
+> UBI error: ubi_init: cannot attach mtd1
+>=20
+> If available PEBs are not enough when initializing volumes, return =
+-ENOSPC
+> directly. If available PEBs are not enough when initializing WL, =
+return
+> -ENOSPC instead of -ENOMEM.
+>=20
+> Signed-off-by: Sheng Yong <shengyong1@huawei.com>
+> ---
+> drivers/mtd/ubi/vtbl.c | 1 +
+> drivers/mtd/ubi/wl.c   | 1 +
+> 2 files changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+> index 80bdd5b..d85c197 100644
+> --- a/drivers/mtd/ubi/vtbl.c
+> +++ b/drivers/mtd/ubi/vtbl.c
+> @@ -649,6 +649,7 @@ static int init_volumes(struct ubi_device *ubi,
+> 		if (ubi->corr_peb_count)
+> 			ubi_err(ubi, "%d PEBs are corrupted and not =
+used",
+> 				ubi->corr_peb_count);
+> +		return -ENOSPC;
+> 	}
+> 	ubi->rsvd_pebs +=3D reserved_pebs;
+> 	ubi->avail_pebs -=3D reserved_pebs;
+> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+> index 275d9fb..eb4489f9 100644
+> --- a/drivers/mtd/ubi/wl.c
+> +++ b/drivers/mtd/ubi/wl.c
+> @@ -1601,6 +1601,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct =
+ubi_attach_info *ai)
+> 		if (ubi->corr_peb_count)
+> 			ubi_err(ubi, "%d PEBs are corrupted and not =
+used",
+> 				ubi->corr_peb_count);
+> +		err =3D -ENOSPC;
+> 		goto out_free;
+> 	}
+> 	ubi->avail_pebs -=3D reserved_pebs;
+> --=20
+> 1.9.1
 
-As stated before, using OOB in UBI is not going to happen unless
-proven that there is absolutely no other way to solve the paired pages
-problem.
+Looks fine to me.
 
-Nacked-by: Richard Weinberger <richard@nod.at>
-
-Sorry,
-//richard
+Reviewed-by: David Gstir <david@sigma-star.at>
