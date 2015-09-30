@@ -1,32 +1,21 @@
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from mail-la0-x22c.google.com ([2a00:1450:4010:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhR1F-0000Bp-1f
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 23:42:41 +0000
-Date: Wed, 30 Sep 2015 19:42:15 -0400
-From: Mike Snitzer <snitzer@redhat.com>
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Kent Overstreet <kent.overstreet@gmail.com>,
- Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
- Neil Brown <neilb@suse.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 1/5] fs: Verify access of user towards block device file
- when mounting
-Message-ID: <20150930234215.GA24127@redhat.com>
-References: <1443644116-41366-1-git-send-email-seth.forshee@canonical.com>
- <1443644116-41366-2-git-send-email-seth.forshee@canonical.com>
+ id 1ZhR8V-00034l-4m
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 23:50:11 +0000
+Received: by laer8 with SMTP id r8so64628082lae.2
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 16:49:48 -0700 (PDT)
+Received: from [192.168.0.100] ([217.71.235.210])
+ by smtp.googlemail.com with ESMTPSA id f14sm340572lfb.25.2015.09.30.16.49.47
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 30 Sep 2015 16:49:47 -0700 (PDT)
+To: linux-mtd@lists.infradead.org
+From: Kirill Smirnov <kirill.k.smirnov@gmail.com>
+Subject: [PATCH] mtd-utils: serve_image: use proper POSIX_C_SOURCE value
+Message-ID: <560C7518.4050004@gmail.com>
+Date: Thu, 1 Oct 2015 02:49:44 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1443644116-41366-2-git-send-email-seth.forshee@canonical.com>
+Content-Type: multipart/mixed; boundary="------------080601040400080607060902"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,72 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 30 2015 at  4:15pm -0400,
-Seth Forshee <seth.forshee@canonical.com> wrote:
+This is a multi-part message in MIME format.
+--------------080601040400080607060902
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> When mounting a filesystem on a block device there is currently
-> no verification that the user has appropriate access to the
-> device file passed to mount. This has not been an issue so far
-> since the user in question has always been root, but this must
-> be changed before allowing unprivileged users to mount in user
-> namespaces.
-> 
-> To fix this, add an argument to lookup_bdev() to specify the
-> required permissions. If the mask of permissions is zero, or
-> if the user has CAP_SYS_ADMIN, the permission check is skipped,
-> otherwise the lookup fails if the user does not have the
-> specified access rights for the inode at the supplied path.
-> 
-> Callers associated with mounting are updated to pass permission
-> masks to lookup_bdev() so that these mounts will fail for an
-> unprivileged user who lacks permissions for the block device
-> inode. All other callers pass 0 to maintain their current
-> behaviors.
-> 
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> ---
->  drivers/md/bcache/super.c |  2 +-
->  drivers/md/dm-table.c     |  2 +-
->  drivers/mtd/mtdsuper.c    |  6 +++++-
->  fs/block_dev.c            | 18 +++++++++++++++---
->  fs/quota/quota.c          |  2 +-
->  include/linux/fs.h        |  2 +-
->  6 files changed, 24 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-> index e76ed003769e..35bb3ea4cbe2 100644
-> --- a/drivers/md/dm-table.c
-> +++ b/drivers/md/dm-table.c
-> @@ -380,7 +380,7 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
->  	BUG_ON(!t);
->  
->  	/* convert the path to a device */
-> -	bdev = lookup_bdev(path);
-> +	bdev = lookup_bdev(path, 0);
->  	if (IS_ERR(bdev)) {
->  		dev = name_to_dev_t(path);
->  		if (!dev)
+struct addrinfo and friends conform to POSIX.1-2001, not earlier.
+This patch fixes linking against latest glibc 2.22
 
-Given dm_get_device() is passed @mode why not have it do something like
-you did in blkdev_get_by_path()? e.g.:
+--------------080601040400080607060902
+Content-Type: text/x-patch;
+ name="posix-2001.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="posix-2001.patch"
 
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 26cee058dc02..54d94cd64577 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1394,9 +1394,14 @@ struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
->  					void *holder)
->  {
->  	struct block_device *bdev;
-> +	int perm = 0;
->  	int err;
->  
-> -	bdev = lookup_bdev(path);
-> +	if (mode & FMODE_READ)
-> +		perm |= MAY_READ;
-> +	if (mode & FMODE_WRITE)
-> +		perm |= MAY_WRITE;
-> +	bdev = lookup_bdev(path, perm);
->  	if (IS_ERR(bdev))
->  		return bdev;
->  
+diff --git a/serve_image.c b/serve_image.c
+index d3794ec..cbcf3b7 100644
+--- a/serve_image.c
++++ b/serve_image.c
+@@ -1,5 +1,5 @@
+ #define PROGRAM_NAME "serve_image"
+-#define _POSIX_C_SOURCE 199309
++#define _POSIX_C_SOURCE 200112L
+ 
+ #include <time.h>
+ #include <errno.h>
+
+--------------080601040400080607060902--
