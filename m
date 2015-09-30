@@ -1,20 +1,19 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhCjU-00025t-IB
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 08:27:25 +0000
-Date: Wed, 30 Sep 2015 10:27:02 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: mtdpart: fix add_mtd_partitions error path
-Message-ID: <20150930102702.2bb99265@bbrezillon>
-In-Reply-To: <1438251483-20888-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1438251483-20888-1-git-send-email-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhCsG-0000Q3-1S
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 08:36:28 +0000
+Received: by pablk4 with SMTP id lk4so33541230pab.3
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 01:36:07 -0700 (PDT)
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Stephen Rothwell <sfr@canb.auug.org.au>,
+ Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] mtd: mtdram: fix build error
+Date: Wed, 30 Sep 2015 14:05:58 +0530
+Message-Id: <1443602158-631-1-git-send-email-sudipm.mukherjee@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Jul 2015 12:18:03 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+i386 allmodconfig fails with:
+ERROR: "__umoddi3" [drivers/mtd/devices/mtdram.ko] undefined!
+ERROR: "__moddi3" [drivers/mtd/devices/mtdram.ko] undefined!
 
-> If we fail to allocate a partition structure in the middle of the partition
-> creation process, the already allocated partitions are never removed, which
-> means they are still present in the partition list and their resources are
-> never freed.
+arm allmodconfig fails with:
+ERROR: "__aeabi_uldivmod" [drivers/mtd/devices/mtdram.ko] undefined!
+ERROR: "__aeabi_ldivmod" [drivers/mtd/devices/mtdram.ko] undefined!
 
-Ping.
+The modulus operation is not being supported by these compilers. Use
+do_div() instead which returns the remainder.
 
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: stable@vger.kernel.org
-> ---
->  drivers/mtd/mtdpart.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index cafdb88..919a936 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -664,8 +664,10 @@ int add_mtd_partitions(struct mtd_info *master,
->  
->  	for (i = 0; i < nbparts; i++) {
->  		slave = allocate_partition(master, parts + i, i, cur_offset);
-> -		if (IS_ERR(slave))
-> +		if (IS_ERR(slave)) {
-> +			del_mtd_partitions(master);
->  			return PTR_ERR(slave);
-> +		}
->  
->  		mutex_lock(&mtd_partitions_mutex);
->  		list_add(&slave->list, &mtd_partitions);
+Fixes: 7827e3acad2d ("mtd: mtdram: check offs and len in mtdram->erase")
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
+ drivers/mtd/devices/mtdram.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-
-
+diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
+index 73fa297..d085167 100644
+--- a/drivers/mtd/devices/mtdram.c
++++ b/drivers/mtd/devices/mtdram.c
+@@ -35,15 +35,21 @@ static struct mtd_info *mtd_info;
+ static int check_offs_len(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	int ret = 0;
++	unsigned long temp_len, rem;
+ 
+ 	/* Start address must align on block boundary */
+-	if (ofs % mtd->erasesize) {
++	temp_len = ofs;
++	rem = do_div(temp_len, mtd->erasesize);
++	if (rem) {
+ 		pr_debug("%s: unaligned address\n", __func__);
+ 		ret = -EINVAL;
+ 	}
+ 
+ 	/* Length must align on block boundary */
+-	if (len % mtd->erasesize) {
++	temp_len = len;
++	rem = do_div(temp_len, mtd->erasesize);
++
++	if (rem) {
+ 		pr_debug("%s: length not block aligned\n", __func__);
+ 		ret = -EINVAL;
+ 	}
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+1.9.1
