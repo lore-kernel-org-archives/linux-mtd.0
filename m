@@ -1,19 +1,18 @@
-Date: Wed, 30 Sep 2015 11:11:35 -0700
+Date: Wed, 30 Sep 2015 11:28:40 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
  linux-sunxi@googlegroups.com, Hans de Goede <hdegoede@redhat.com>,
  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/2] mtd: nand: sunxi: cleanup
-Message-ID: <20150930181135.GF143959@google.com>
+Subject: Re: [PATCH 1/2] mtd: nand: sunxi: rework macros
+Message-ID: <20150930182840.GG143959@google.com>
 References: <1442389597-30698-1-git-send-email-boris.brezillon@free-electrons.com>
- <20150929222144.GA143959@google.com>
- <20150930083634.68351ade@bbrezillon>
+ <1442389597-30698-2-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20150930083634.68351ade@bbrezillon>
+In-Reply-To: <1442389597-30698-2-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +22,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 30, 2015 at 08:36:34AM +0200, Boris Brezillon wrote:
-> On Tue, 29 Sep 2015 15:21:44 -0700
-> Brian Norris <computersforpeace@gmail.com> wrote:
+On Wed, Sep 16, 2015 at 09:46:36AM +0200, Boris Brezillon wrote:
+> Suffix mask macros with _MSK and add new helper macros to avoid manually
+> shifting values.
 > 
-> > On Wed, Sep 16, 2015 at 09:46:35AM +0200, Boris Brezillon wrote:
-> > > Hello,
-> > > 
-> > > Those two patches aim at cleaning up the sunxi_nand driver by first adding
-> > > some consistency in the macro definitions, and then factorizing the code
-> > > duplicated code found in hw_ecc and hw_syndrome_ecc implementations.
-> > > 
-> > > Best Regards,
-> > > 
-> > > Boris
-> > 
-> > I believe this series no longer applies cleanly
-> 
-> Hm, actually it depends on fixes you have in your linux-mtd tree and
-> features in your l2-mtd tree.
-> 
-> I don't know how you usually deal with those problems (merging the
-> linux-mtd/master branch into the l2-mtd/master one, or merging
-> last linus' -rc into l2-mtd/master should work), but I'd really
-> like to have this in 4.4 :-).
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-linux-mtd.git is prepped for a pull request. I'll do that before the
-week ends. And I'll either merge that back into l2-mtd.git at that time,
-or just pull in v4.3-rc4.
-
-> I still have the patch using the nand_check_erased_ecc_chunk() function
-> which depends on those 2 patches, and I'd like to have it in 4.4 too.
-> 
-> I know I'm asking a lot, but as explained earlier, I still have a
-> bunch of patches on top of those already posted (mainly to support
-> the hardware randomizer), and I'd like the trivial ones to be merged
-> quickly.
-
-I'll see what I can apply after pulling together all the latest, but if
-I'm still missing things then, feel free to resend.
-
-BTW, I thought there were some things to address on the erased ECC stuff
-still. I'll re-check that series too.
-
-Brian
+Pushed patch 1 to l2-mtd.git
