@@ -1,18 +1,22 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhHSG-0003Sp-VS
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 13:29:57 +0000
-Received: by padhy16 with SMTP id hy16so41096029pad.1
- for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 06:29:36 -0700 (PDT)
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, lkp@intel.com,
- Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH v2] mtd: mtdram: fix build error
-Date: Wed, 30 Sep 2015 18:59:26 +0530
-Message-Id: <1443619766-8134-1-git-send-email-sudipm.mukherjee@gmail.com>
+ id 1ZhJfL-00048O-EB
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 15:51:36 +0000
+Received: by pablk4 with SMTP id lk4so43765234pab.3
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 08:51:14 -0700 (PDT)
+Date: Wed, 30 Sep 2015 08:51:07 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, lkp@intel.com
+Subject: Re: [PATCH v2] mtd: mtdram: fix build error
+Message-ID: <20150930155107.GA5192@localhost>
+References: <1443619766-8134-1-git-send-email-sudipm.mukherjee@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1443619766-8134-1-git-send-email-sudipm.mukherjee@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-i386 allmodconfig fails with:
-ERROR: "__umoddi3" [drivers/mtd/devices/mtdram.ko] undefined!
-ERROR: "__moddi3" [drivers/mtd/devices/mtdram.ko] undefined!
+On Wed, Sep 30, 2015 at 06:59:26PM +0530, Sudip Mukherjee wrote:
+> i386 allmodconfig fails with:
+> ERROR: "__umoddi3" [drivers/mtd/devices/mtdram.ko] undefined!
+> ERROR: "__moddi3" [drivers/mtd/devices/mtdram.ko] undefined!
+> 
+> arm allmodconfig fails with:
+> ERROR: "__aeabi_uldivmod" [drivers/mtd/devices/mtdram.ko] undefined!
+> ERROR: "__aeabi_ldivmod" [drivers/mtd/devices/mtdram.ko] undefined!
+> 
+> mips allmodconfig fails with:
+> ERROR: "__umoddi3" [drivers/mtd/devices/mtdram.ko] undefined!
+> ERROR: "__moddi3" [drivers/mtd/devices/mtdram.ko] undefined!
+> 
+> The modulus operation is not being supported by these compilers. Use
+> do_div() instead which returns the remainder.
+> 
+> Fixes: 7827e3acad2d ("mtd: mtdram: check offs and len in mtdram->erase")
+> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+> ---
+> 
+> v1 showed build warning with cris and xtensa. I have checked v2 with
+> arm, cris and xtensa.
 
-arm allmodconfig fails with:
-ERROR: "__aeabi_uldivmod" [drivers/mtd/devices/mtdram.ko] undefined!
-ERROR: "__aeabi_ldivmod" [drivers/mtd/devices/mtdram.ko] undefined!
+I already reverted the bad patch, so this doesn't apply any more...
 
-mips allmodconfig fails with:
-ERROR: "__umoddi3" [drivers/mtd/devices/mtdram.ko] undefined!
-ERROR: "__moddi3" [drivers/mtd/devices/mtdram.ko] undefined!
+If you want to send a squashed patch that redoes this properly, I can
+take it.
 
-The modulus operation is not being supported by these compilers. Use
-do_div() instead which returns the remainder.
-
-Fixes: 7827e3acad2d ("mtd: mtdram: check offs and len in mtdram->erase")
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
-
-v1 showed build warning with cris and xtensa. I have checked v2 with
-arm, cris and xtensa.
-
- drivers/mtd/devices/mtdram.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
-index 73fa297..21b6a05 100644
---- a/drivers/mtd/devices/mtdram.c
-+++ b/drivers/mtd/devices/mtdram.c
-@@ -35,15 +35,21 @@ static struct mtd_info *mtd_info;
- static int check_offs_len(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	int ret = 0;
-+	uint64_t temp_len, rem;
- 
- 	/* Start address must align on block boundary */
--	if (ofs % mtd->erasesize) {
-+	temp_len = ofs;
-+	rem = do_div(temp_len, mtd->erasesize);
-+	if (rem) {
- 		pr_debug("%s: unaligned address\n", __func__);
- 		ret = -EINVAL;
- 	}
- 
- 	/* Length must align on block boundary */
--	if (len % mtd->erasesize) {
-+	temp_len = len;
-+	rem = do_div(temp_len, mtd->erasesize);
-+
-+	if (rem) {
- 		pr_debug("%s: length not block aligned\n", __func__);
- 		ret = -EINVAL;
- 	}
--- 
-1.9.1
+Brian
