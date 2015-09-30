@@ -1,20 +1,34 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zh5sv-0000HY-AM
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 01:08:41 +0000
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-To: <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 2/3] mtd: test: refactor mtdtest_erase_eraseblock to
- introduce a new mtdtest_erase function
-Date: Wed, 30 Sep 2015 09:01:20 +0800
-Message-ID: <1443574881-12319-3-git-send-email-yangds.fnst@cn.fujitsu.com>
-In-Reply-To: <1443574881-12319-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-References: <20150930002958.GC143959@google.com>
- <1443574881-12319-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhA18-0000M3-HJ
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 05:33:27 +0000
+From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Richard Weinberger <richard@nod.at>, "dedekind1@gmail.com"
+ <dedekind1@gmail.com>, "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "baruch@tkos.co.il" <baruch@tkos.co.il>, "asierra@xes-inc.com"
+ <asierra@xes-inc.com>, "guz.fnst@cn.fujitsu.com" <guz.fnst@cn.fujitsu.com>,
+ "gsi@denx.de" <gsi@denx.de>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+CC: David Woodhouse <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>,
+ =?gb2312?B?RnJhbmsgTGl1IMH1yLogKGZyYW5rbGl1KQ==?= <frankliu@micron.com>,
+ Andrea Scian <rnd4@dave-tech.it>,
+ =?gb2312?B?S2FybCBaaGFuZyDVxcurwuAgKGthcmx6aGFuZyk=?= <karlzhang@micron.com>,
+ Iwo Mergler <Iwo.Mergler@netcommwireless.com>, "Jeff Lauruhn (jlauruhn)"
+ <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 0/9] drivers:mtd:UBI: add bakvol module for MLC NAND
+ paired page issue
+Date: Wed, 30 Sep 2015 05:31:43 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4D4C6@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF4CEC3@NTXXIAMBX02.xacn.micron.com>
+ <560A59B8.4000701@nod.at>
+In-Reply-To: <560A59B8.4000701@nod.at>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,90 +38,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In original mtd_test, there is only one function to erase a block, but
-we need a function to accept [addr, size] to erase mtd device for
-mtd_erasetest. So refactor the original mtdtest_erase_eraseblock
-to introduce a new mtdtest_erase.
-
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
----
- drivers/mtd/tests/mtd_test.c | 44 ++++++++++++++++++++++++++++++++------------
- drivers/mtd/tests/mtd_test.h |  1 +
- 2 files changed, 33 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/tests/mtd_test.c b/drivers/mtd/tests/mtd_test.c
-index 34736bb..4c4320c 100644
---- a/drivers/mtd/tests/mtd_test.c
-+++ b/drivers/mtd/tests/mtd_test.c
-@@ -9,24 +9,14 @@
- int mtdtest_erase_eraseblock(struct mtd_info *mtd, unsigned int ebnum)
- {
- 	int err;
--	struct erase_info ei;
- 	loff_t addr = (loff_t)ebnum * mtd->erasesize;
- 
--	memset(&ei, 0, sizeof(struct erase_info));
--	ei.mtd  = mtd;
--	ei.addr = addr;
--	ei.len  = mtd->erasesize;
--
--	err = mtd_erase(mtd, &ei);
-+	err = mtdtest_erase(mtd, addr, mtd->erasesize, 0);
- 	if (err) {
--		pr_info("error %d while erasing EB %d\n", err, ebnum);
-+		pr_info("failed to erase EB %d\n", ebnum);
- 		return err;
- 	}
- 
--	if (ei.state == MTD_ERASE_FAILED) {
--		pr_info("some erase error occurred at EB %d\n", ebnum);
--		return -EIO;
--	}
- 	return 0;
- }
- 
-@@ -111,3 +101,33 @@ int mtdtest_write(struct mtd_info *mtd, loff_t addr, size_t size,
- 
- 	return err;
- }
-+
-+/*
-+ * There is a parameter named as quiet, it's useful to clean the output
-+ * when we are testing some negative cases.
-+ */
-+int mtdtest_erase(struct mtd_info *mtd, loff_t addr, size_t size, int quiet)
-+{
-+	int err;
-+	struct erase_info ei;
-+
-+	memset(&ei, 0, sizeof(struct erase_info));
-+	ei.mtd  = mtd;
-+	ei.addr = addr;
-+	ei.len  = size;
-+
-+	err = mtd_erase(mtd, &ei);
-+	if (err) {
-+		if (!quiet)
-+			pr_err("error %d while erasing (addr: %#llx, size: %lu)\n", err, addr, size);
-+		return err;
-+	}
-+
-+	if (ei.state == MTD_ERASE_FAILED) {
-+		if (!quiet)
-+			pr_err("some erase error occurred in erasing (addr: %#llx, size: %lu)\n", addr, size);
-+		return -EIO;
-+	}
-+
-+	return err;
-+}
-diff --git a/drivers/mtd/tests/mtd_test.h b/drivers/mtd/tests/mtd_test.h
-index 4b7bee1..c53558c 100644
---- a/drivers/mtd/tests/mtd_test.h
-+++ b/drivers/mtd/tests/mtd_test.h
-@@ -21,3 +21,4 @@ int mtdtest_erase_good_eraseblocks(struct mtd_info *mtd, unsigned char *bbt,
- int mtdtest_read(struct mtd_info *mtd, loff_t addr, size_t size, void *buf);
- int mtdtest_write(struct mtd_info *mtd, loff_t addr, size_t size,
- 		const void *buf);
-+int mtdtest_erase(struct mtd_info *mtd, loff_t addr, size_t size, int quiet);
--- 
-1.8.4.2
+PiBBbSAyOC4wOS4yMDE1IHVtIDA5OjAyIHNjaHJpZWIgQmVhbiBIdW8gu/Sx87HzIChiZWFuaHVv
+KToNCj4gPiBIZWxsbywNCj4gPg0KPiA+IFRoaXMgc2VyaWVzIGFpbXMgYXQgYWRkaW5nIGEgYmFr
+dm9sIG1vZHVsZSBmb3IgTUxDIE5BTkQgcGFpcmVkIHBhZ2UNCj4gPiBQb3dlciBsb3NzIHByb3Rl
+Y3Rpb24uDQo+ID4gTUxDIE5BTkQgcGFpcmVkIHBhZ2UgcG93ZXIgbG9zcyBpcyBhIGtub3duIGlz
+c3VlIHNvIGZhciwgTUxDIE5BTkQNCj4gPiBwYWdlcyBhcmUgY291cGxlZCBpbiBhIHNlbnNlIHRo
+YXQgaWYgeW91IGN1dCBwb3dlciB3aGlsZSB3cml0aW5nIHRvIGENCj4gPiBwYWdlLCB5b3UgY29y
+cnVwdCBub3Qgb25seSB0aGlzIHBhZ2UsIGJ1dCBhbHNvIG9uZSBvZiB0aGUgcHJldmlvdXMgcGFn
+ZXMNCj4gd2hpY2ggaXMgcGFpcmVkIHdpdGggdGhlIGN1cnJlbnQgb25lLg0KPiA+IEN1cnJlbnRs
+eSwgdGhlcmUgaXMgbm8gYSBwZXJmZWN0IHNvbHV0aW9uIGZvciB0aGlzLg0KPiA+IFRoaXMgcGFp
+cmVkIHBhZ2Ugc29sdXRpb24gaXMgYmFzZWQgb24gTkFORCBtdWx0aXBsZSBwbGFuZSBwcm9ncmFt
+DQo+ID4gZmVhdHVyZS4gRm9yIHRoaXMgUGF0Y2gsIG9ubHkgdXNlZCBkdWFsIHBsYW5lIHBhZ2Ug
+cHJvZ3JhbSwgbWVhbnMgdHdvDQo+ID4gZGlmZmVyZW50IHBsYW5lIHBhZ2VzIGNhbiBCZSBwcm9n
+cmFtbWVkIHRvZ2V0aGVyIGF0IHRoZSBzYW1lIHRpbWUuDQo+ID4gRHVhbCBwbGFuZSBwYWdlIHBy
+b2dyYW0gb25seSBpbXBsZW1lbnRzIGluIGJhY2t1cCBvcGVyYXRpb24uIE9ubHkNCj4gPiBsb3dl
+ciBwYWdlIGRhdGEgQmUgZHVwbGljYXRlZCBhbmQgYmFjayB1cCBpbnRvIGEgaW50ZXJuYWwgbG9n
+IHZvbHVtZSBieQ0KPiBkdWFsIHBsYW5lIHByb2dyYW0gbWV0aG9kLg0KPiA+DQo+ID4gVGhpcyBw
+YXRjaCBoYXMgYmVlbiB0ZXN0aW5nIG9uIE1pY3JvbiA3MHMvODBzLzkwcyBNTEMgTkFORC4NCj4g
+PiBPZiBjb3Vyc2UgdGhlcmUgYXJlIHNvbWUgcGxhY2VzIG5lZWRlZCB0byBiZSBpbXByb3ZlZCBh
+bmQgc2ltcGxpZmllZC4NCj4gPg0KPiA+IEFueSBzdWdnZXN0aW9uIGFuZCBjb21tZW50cyB3ZWxj
+b21lZC4NCj4gDQo+IEFzIHN0YXRlZCBiZWZvcmUsIHVzaW5nIE9PQiBpbiBVQkkgaXMgbm90IGdv
+aW5nIHRvIGhhcHBlbiB1bmxlc3MgcHJvdmVuIHRoYXQNCj4gdGhlcmUgaXMgYWJzb2x1dGVseSBu
+byBvdGhlciB3YXkgdG8gc29sdmUgdGhlIHBhaXJlZCBwYWdlcyBwcm9ibGVtLg0KPiANCj4gTmFj
+a2VkLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pg0KPiANCj4gU29ycnks
+DQo+IC8vUmljaGFyZA0KDQpIaSwgUmljaGFyZA0KVGhhbmtzIGZvciB5b3VyIGNvbmNlcm4uIEkg
+YW0gYSBuZXcgcGF0Y2ggc3VibWl0dGVyLg0KQ2FuIHlvdSB0ZWxsIG1lIE5hY2tlZC1ieSBtZWFu
+cz8NCg0KQnkgdGhlIHdheSwgRG8geW91IHJldmlldyBteSBwYXRjaGVzIHNlcmllcyA/IEkgZG9u
+J3QgYmFja3VwIGR1cGxpY2F0ZWQgZGF0YSBpbiBPT0IgLg0KQ2FuIHlvdSBzcGVjaWZ5IHdoaWNo
+IHNlY3RvciBjb2RlcyA/IHNvIHRoYXQgSSBjYW4gZXhwbGFpbiBpdCBpbiBkZXRhaWwuDQpUaGFu
+a3MuDQo=
