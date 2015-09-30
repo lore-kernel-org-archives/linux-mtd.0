@@ -1,18 +1,36 @@
-Date: Wed, 30 Sep 2015 08:36:34 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-sunxi@googlegroups.com, Hans de Goede <hdegoede@redhat.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/2] mtd: nand: sunxi: cleanup
-Message-ID: <20150930083634.68351ade@bbrezillon>
-In-Reply-To: <20150929222144.GA143959@google.com>
-References: <1442389597-30698-1-git-send-email-boris.brezillon@free-electrons.com>
- <20150929222144.GA143959@google.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhBIv-0006xL-9l
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 06:55:54 +0000
+Subject: Re: [PATCH 0/9] drivers:mtd:UBI: add bakvol module for MLC NAND
+ paired page issue
+To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "baruch@tkos.co.il" <baruch@tkos.co.il>,
+ "asierra@xes-inc.com" <asierra@xes-inc.com>,
+ "guz.fnst@cn.fujitsu.com" <guz.fnst@cn.fujitsu.com>,
+ "gsi@denx.de" <gsi@denx.de>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF4CEC3@NTXXIAMBX02.xacn.micron.com>
+ <560A59B8.4000701@nod.at>
+ <A765B125120D1346A63912DDE6D8B6310BF4D4C6@NTXXIAMBX02.xacn.micron.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?UTF-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
+ Andrea Scian <rnd4@dave-tech.it>,
+ =?UTF-8?B?S2FybCBaaGFuZyDlvKDlj4zplKMgKGthcmx6aGFuZyk=?=
+ <karlzhang@micron.com>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
+ "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <560B8758.7010002@nod.at>
+Date: Wed, 30 Sep 2015 08:55:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4D4C6@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +40,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Bean,
 
-On Tue, 29 Sep 2015 15:21:44 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> On Wed, Sep 16, 2015 at 09:46:35AM +0200, Boris Brezillon wrote:
-> > Hello,
-> > 
-> > Those two patches aim at cleaning up the sunxi_nand driver by first adding
-> > some consistency in the macro definitions, and then factorizing the code
-> > duplicated code found in hw_ecc and hw_syndrome_ecc implementations.
-> > 
-> > Best Regards,
-> > 
-> > Boris
+Am 30.09.2015 um 07:31 schrieb Bean Huo »ô±ó±ó (beanhuo):
+>> As stated before, using OOB in UBI is not going to happen unless proven that
+>> there is absolutely no other way to solve the paired pages problem.
+>>
+>> Nacked-by: Richard Weinberger <richard@nod.at>
+>>
+>> Sorry,
+>> //Richard
 > 
-> I believe this series no longer applies cleanly
+> Hi, Richard
+> Thanks for your concern. I am a new patch submitter.
+> Can you tell me Nacked-by means?
 
-Hm, actually it depends on fixes you have in your linux-mtd tree and
-features in your l2-mtd tree.
+I basically means that I'm (as maintainer) really unhappy with this patches
+and don't see a way to get them merged as the whole concept is not acceptable.
 
-I don't know how you usually deal with those problems (merging the
-linux-mtd/master branch into the l2-mtd/master one, or merging
-last linus' -rc into l2-mtd/master should work), but I'd really
-like to have this in 4.4 :-).
-I still have the patch using the nand_check_erased_ecc_chunk() function
-which depends on those 2 patches, and I'd like to have it in 4.4 too.
+> By the way, Do you review my patches series ? I don't backup duplicated data in OOB .
+> Can you specify which sector codes ? so that I can explain it in detail.
 
-I know I'm asking a lot, but as explained earlier, I still have a
-bunch of patches on top of those already posted (mainly to support
-the hardware randomizer), and I'd like the trivial ones to be merged
-quickly.
+Okay. Maybe both Boris and I misread your code, can you please explain in detail
+what functions like check_original_data() or mtd_write_dual_plane_oob() do?
 
-Best Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+//richard
