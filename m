@@ -1,17 +1,17 @@
-Date: Wed, 30 Sep 2015 20:55:41 +0200
+Date: Wed, 30 Sep 2015 21:09:00 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
  linux-sunxi@googlegroups.com, Hans de Goede <hdegoede@redhat.com>,
  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/2] mtd: nand: sunxi: cleanup
-Message-ID: <20150930205541.59d6e981@bbrezillon>
-In-Reply-To: <20150930181135.GF143959@google.com>
+Subject: Re: [PATCH 2/2] mtd: sunxi: nand: refactor
+ ->read_page()/->write_page() code
+Message-ID: <20150930210900.554c4be3@bbrezillon>
+In-Reply-To: <20150930183627.GH143959@google.com>
 References: <1442389597-30698-1-git-send-email-boris.brezillon@free-electrons.com>
- <20150929222144.GA143959@google.com>
- <20150930083634.68351ade@bbrezillon>
- <20150930181135.GF143959@google.com>
+ <1442389597-30698-3-git-send-email-boris.brezillon@free-electrons.com>
+ <20150930183627.GH143959@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,62 +26,72 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Brian,
 
-On Wed, 30 Sep 2015 11:11:35 -0700
+On Wed, 30 Sep 2015 11:36:27 -0700
 Brian Norris <computersforpeace@gmail.com> wrote:
 
-> On Wed, Sep 30, 2015 at 08:36:34AM +0200, Boris Brezillon wrote:
-> > On Tue, 29 Sep 2015 15:21:44 -0700
-> > Brian Norris <computersforpeace@gmail.com> wrote:
-> > 
-> > > On Wed, Sep 16, 2015 at 09:46:35AM +0200, Boris Brezillon wrote:
-> > > > Hello,
-> > > > 
-> > > > Those two patches aim at cleaning up the sunxi_nand driver by first adding
-> > > > some consistency in the macro definitions, and then factorizing the code
-> > > > duplicated code found in hw_ecc and hw_syndrome_ecc implementations.
-> > > > 
-> > > > Best Regards,
-> > > > 
-> > > > Boris
-> > > 
-> > > I believe this series no longer applies cleanly
-> > 
-> > Hm, actually it depends on fixes you have in your linux-mtd tree and
-> > features in your l2-mtd tree.
-> > 
-> > I don't know how you usually deal with those problems (merging the
-> > linux-mtd/master branch into the l2-mtd/master one, or merging
-> > last linus' -rc into l2-mtd/master should work), but I'd really
-> > like to have this in 4.4 :-).
+> On Wed, Sep 16, 2015 at 09:46:37AM +0200, Boris Brezillon wrote:
+> > Most of the logic to read/write pages with the HW ECC engine enabled
+> > is common to the HW_ECC and NAND_ECC_HW_SYNDROME scheme.
+> > Refactor the code to avoid code duplication.
 > 
-> linux-mtd.git is prepped for a pull request. I'll do that before the
-> week ends. And I'll either merge that back into l2-mtd.git at that time,
-> or just pull in v4.3-rc4.
+> Hmm, a benign commit description to describe a somewhat complicated
+> patch. This seems to do several different types of refactoring all at
+> once, and it makes it a bit hard to review. Can you perhaps refactor
+> this into 2 or more patches?
 
-Perfect.
+Fair enough, I'll try to split it in several pieces.
+
+> e.g., I think the NFC_USER_DATA_TO_BUF()
+> stuff can be orthogonal from the introduction of
+> sunxi_nfc_hw_ecc_read_chunk() and sunxi_nfc_hw_ecc_read_extra_oob().
+
+Yes, it is, even if I doubt removing this small piece of code can make
+the patch more readable ;-).
 
 > 
-> > I still have the patch using the nand_check_erased_ecc_chunk() function
-> > which depends on those 2 patches, and I'd like to have it in 4.4 too.
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/sunxi_nand.c | 404 ++++++++++++++++++++++--------------------
+> >  1 file changed, 212 insertions(+), 192 deletions(-)
 > > 
-> > I know I'm asking a lot, but as explained earlier, I still have a
-> > bunch of patches on top of those already posted (mainly to support
-> > the hardware randomizer), and I'd like the trivial ones to be merged
-> > quickly.
+> > diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> > index dc44435..640b96c 100644
+> > --- a/drivers/mtd/nand/sunxi_nand.c
+> > +++ b/drivers/mtd/nand/sunxi_nand.c
+> > @@ -159,6 +159,13 @@
+> >  /* NFC_USER_DATA helper macros */
+> >  #define NFC_BUF_TO_USER_DATA(buf)	((buf)[0] | ((buf)[1] << 8) | \
+> >  					((buf)[2] << 16) | ((buf)[3] << 24))
+> > +#define NFC_USER_DATA_TO_BUF(buf, val)	\
+> > +	{				\
+> > +		(buf)[0] = val;		\
+> > +		(buf)[1] = val >> 8;	\
+> > +		(buf)[2] = val >> 16;	\
+> > +		(buf)[3] = val >> 24;	\
+> > +	}
 > 
-> I'll see what I can apply after pulling together all the latest, but if
-> I'm still missing things then, feel free to resend.
+> Two things about this macro:
+> 
+>   1) you should probably wrap 'val' in parentheses
 
-Apparently I have a few things to rework in patch 2, so I'll resend
-it ;-).
+Yep ...
 
 > 
-> BTW, I thought there were some things to address on the erased ECC stuff
-> still. I'll re-check that series too.
+>   2) the use of 'val' 4 times in this macro means it will be evaluated 4
+>   times; this *can* be OK, except the 'val' parameter as used in context
+>   is actually a register read (readl()). Is this intentional? Anyway,
+>   such a construct kinda hides the actual behavior, whether or not it's
+>   intentional.
 
-AFAIR, I had a few things to fix, and we were waiting for some feedback.
-I also told you I would test the series on an atmel platform (which I
-haven't done yet :-/).
+... and no, it's not intentional.
+
+> 
+> To kill off all concerns, perhaps this should be a static inline
+> function instead. And we might do the same with NFC_BUF_TO_USER_DATA()
+> then, to match.
+
+I like this idea (I'll use lower cases if I convert them to inline
+functions).
 
 Best Regards,
 
