@@ -1,20 +1,22 @@
-Date: Wed, 30 Sep 2015 21:09:00 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-sunxi@googlegroups.com, Hans de Goede <hdegoede@redhat.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] mtd: sunxi: nand: refactor
- ->read_page()/->write_page() code
-Message-ID: <20150930210900.554c4be3@bbrezillon>
-In-Reply-To: <20150930183627.GH143959@google.com>
-References: <1442389597-30698-1-git-send-email-boris.brezillon@free-electrons.com>
- <1442389597-30698-3-git-send-email-boris.brezillon@free-electrons.com>
- <20150930183627.GH143959@google.com>
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhNgU-0004pi-TO
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 20:09:03 +0000
+Received: by pacex6 with SMTP id ex6so50083666pac.0
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 13:08:42 -0700 (PDT)
+Date: Wed, 30 Sep 2015 13:08:39 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com,
+ Hauke Mehrtens <hauke@hauke-m.de>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>
+Subject: Re: [PATCH 1/3] mtd: brcmnand: refactor bcm63138 SoC layering
+Message-ID: <20150930200839.GI143959@google.com>
+References: <1432166706-4320-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1432166706-4320-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,80 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-On Wed, 30 Sep 2015 11:36:27 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> On Wed, Sep 16, 2015 at 09:46:37AM +0200, Boris Brezillon wrote:
-> > Most of the logic to read/write pages with the HW ECC engine enabled
-> > is common to the HW_ECC and NAND_ECC_HW_SYNDROME scheme.
-> > Refactor the code to avoid code duplication.
+On Wed, May 20, 2015 at 05:05:04PM -0700, Brian Norris wrote:
+> Removes an unnecessary allocation and saves a little bit of pointer
+> chasing.
 > 
-> Hmm, a benign commit description to describe a somewhat complicated
-> patch. This seems to do several different types of refactoring all at
-> once, and it makes it a bit hard to review. Can you perhaps refactor
-> this into 2 or more patches?
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Fair enough, I'll try to split it in several pieces.
-
-> e.g., I think the NFC_USER_DATA_TO_BUF()
-> stuff can be orthogonal from the introduction of
-> sunxi_nfc_hw_ecc_read_chunk() and sunxi_nfc_hw_ecc_read_extra_oob().
-
-Yes, it is, even if I doubt removing this small piece of code can make
-the patch more readable ;-).
-
-> 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/sunxi_nand.c | 404 ++++++++++++++++++++++--------------------
-> >  1 file changed, 212 insertions(+), 192 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> > index dc44435..640b96c 100644
-> > --- a/drivers/mtd/nand/sunxi_nand.c
-> > +++ b/drivers/mtd/nand/sunxi_nand.c
-> > @@ -159,6 +159,13 @@
-> >  /* NFC_USER_DATA helper macros */
-> >  #define NFC_BUF_TO_USER_DATA(buf)	((buf)[0] | ((buf)[1] << 8) | \
-> >  					((buf)[2] << 16) | ((buf)[3] << 24))
-> > +#define NFC_USER_DATA_TO_BUF(buf, val)	\
-> > +	{				\
-> > +		(buf)[0] = val;		\
-> > +		(buf)[1] = val >> 8;	\
-> > +		(buf)[2] = val >> 16;	\
-> > +		(buf)[3] = val >> 24;	\
-> > +	}
-> 
-> Two things about this macro:
-> 
->   1) you should probably wrap 'val' in parentheses
-
-Yep ...
-
-> 
->   2) the use of 'val' 4 times in this macro means it will be evaluated 4
->   times; this *can* be OK, except the 'val' parameter as used in context
->   is actually a register read (readl()). Is this intentional? Anyway,
->   such a construct kinda hides the actual behavior, whether or not it's
->   intentional.
-
-... and no, it's not intentional.
-
-> 
-> To kill off all concerns, perhaps this should be a static inline
-> function instead. And we might do the same with NFC_BUF_TO_USER_DATA()
-> then, to match.
-
-I like this idea (I'll use lower cases if I convert them to inline
-functions).
-
-Best Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Pushed these 3 to l2-mtd.git
