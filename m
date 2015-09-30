@@ -1,26 +1,23 @@
-Received: from mail-ig0-f169.google.com ([209.85.213.169])
+Received: from mail-ig0-f182.google.com ([209.85.213.182])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhNnP-0000fp-8E
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 20:16:12 +0000
-Received: by igxx6 with SMTP id x6so39679267igx.1
- for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 13:15:50 -0700 (PDT)
+ id 1ZhNnR-0000gJ-D5
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 20:16:15 +0000
+Received: by igbkq10 with SMTP id kq10so2245734igb.0
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 13:15:52 -0700 (PDT)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Paul Moore <paul@paul-moore.com>, Stephen Smalley <sds@tycho.nsa.gov>,
- Eric Paris <eparis@parisplace.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
  Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
+ James Morris <james.l.morris@oracle.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, Seth Forshee <seth.forshee@canonical.com>,
- James Morris <james.l.morris@oracle.com>,
- "Serge E. Hallyn" <serge@hallyn.com>
-Subject: [PATCH 3/5] selinux: Add support for unprivileged mounts from user
- namespaces
-Date: Wed, 30 Sep 2015 15:15:12 -0500
-Message-Id: <1443644116-41366-4-git-send-email-seth.forshee@canonical.com>
+ linux-raid@vger.kernel.org, Seth Forshee <seth.forshee@canonical.com>
+Subject: [PATCH 4/5] userns: Replace in_userns with current_in_userns
+Date: Wed, 30 Sep 2015 15:15:13 -0500
+Message-Id: <1443644116-41366-5-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1443644116-41366-1-git-send-email-seth.forshee@canonical.com>
 References: <1443644116-41366-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,61 +29,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Security labels from unprivileged mounts in user namespaces must
-be ignored. Force superblocks from user namespaces whose labeling
-behavior is to use xattrs to use mountpoint labeling instead.
-For the mountpoint label, default to converting the current task
-context into a form suitable for file objects, but also allow the
-policy writer to specify a different label through policy
-transition rules.
-
-Pieced together from code snippets provided by Stephen Smalley.
+All current callers of in_userns pass current_user_ns as the
+first argument. Simplify by replacing in_userns with
+current_in_userns which checks whether current_user_ns is in the
+namespace supplied as an argument.
 
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 ---
- security/selinux/hooks.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ fs/namespace.c                 | 2 +-
+ include/linux/user_namespace.h | 6 ++----
+ kernel/user_namespace.c        | 6 +++---
+ security/commoncap.c           | 2 +-
+ 4 files changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index de05207eb665..09be1dc21e58 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -756,6 +756,28 @@ static int selinux_set_mnt_opts(struct super_block *sb,
- 			goto out;
- 		}
- 	}
-+
-+	/*
-+	 * If this is a user namespace mount, no contexts are allowed
-+	 * on the command line and security labels must be ignored.
-+	 */
-+	if (sb->s_user_ns != &init_user_ns) {
-+		if (context_sid || fscontext_sid || rootcontext_sid ||
-+		    defcontext_sid) {
-+			rc = -EACCES;
-+			goto out;
-+		}
-+		if (sbsec->behavior == SECURITY_FS_USE_XATTR) {
-+			sbsec->behavior = SECURITY_FS_USE_MNTPOINT;
-+			rc = security_transition_sid(current_sid(), current_sid(),
-+						     SECCLASS_FILE, NULL,
-+						     &sbsec->mntpoint_sid);
-+			if (rc)
-+				goto out;
-+		}
-+		goto out_set_opts;
-+	}
-+
- 	/* sets the context of the superblock for the fs being mounted. */
- 	if (fscontext_sid) {
- 		rc = may_context_mount_sb_relabel(fscontext_sid, sbsec, cred);
-@@ -824,6 +846,7 @@ static int selinux_set_mnt_opts(struct super_block *sb,
- 		sbsec->def_sid = defcontext_sid;
- 	}
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 2101ce7b96ab..18fc58760aec 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -3286,7 +3286,7 @@ bool mnt_may_suid(struct vfsmount *mnt)
+ 	 * in other namespaces.
+ 	 */
+ 	return !(mnt->mnt_flags & MNT_NOSUID) && check_mnt(real_mount(mnt)) &&
+-	       in_userns(current_user_ns(), mnt->mnt_sb->s_user_ns);
++	       current_in_userns(mnt->mnt_sb->s_user_ns);
+ }
  
-+out_set_opts:
- 	rc = sb_finish_set_opts(sb);
- out:
- 	mutex_unlock(&sbsec->lock);
+ static struct ns_common *mntns_get(struct task_struct *task)
+diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
+index a43faa727124..9217169c64cb 100644
+--- a/include/linux/user_namespace.h
++++ b/include/linux/user_namespace.h
+@@ -72,8 +72,7 @@ extern ssize_t proc_projid_map_write(struct file *, const char __user *, size_t,
+ extern ssize_t proc_setgroups_write(struct file *, const char __user *, size_t, loff_t *);
+ extern int proc_setgroups_show(struct seq_file *m, void *v);
+ extern bool userns_may_setgroups(const struct user_namespace *ns);
+-extern bool in_userns(const struct user_namespace *ns,
+-		      const struct user_namespace *target_ns);
++extern bool current_in_userns(const struct user_namespace *target_ns);
+ #else
+ 
+ static inline struct user_namespace *get_user_ns(struct user_namespace *ns)
+@@ -103,8 +102,7 @@ static inline bool userns_may_setgroups(const struct user_namespace *ns)
+ 	return true;
+ }
+ 
+-static inline bool in_userns(const struct user_namespace *ns,
+-			     const struct user_namespace *target_ns)
++static inline bool current_in_userns(const struct user_namespace *target_ns)
+ {
+ 	return true;
+ }
+diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+index 69fbc377357b..5960edc7e644 100644
+--- a/kernel/user_namespace.c
++++ b/kernel/user_namespace.c
+@@ -949,10 +949,10 @@ bool userns_may_setgroups(const struct user_namespace *ns)
+  * Returns true if @ns is the same namespace as or a descendant of
+  * @target_ns.
+  */
+-bool in_userns(const struct user_namespace *ns,
+-	       const struct user_namespace *target_ns)
++bool current_in_userns(const struct user_namespace *target_ns)
+ {
+-	for (; ns; ns = ns->parent) {
++	struct user_namespace *ns;
++	for (ns = current_user_ns(); ns; ns = ns->parent) {
+ 		if (ns == target_ns)
+ 			return true;
+ 	}
+diff --git a/security/commoncap.c b/security/commoncap.c
+index 6243aef5860e..2119421613f6 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -450,7 +450,7 @@ static int get_file_caps(struct linux_binprm *bprm, bool *effective, bool *has_c
+ 
+ 	if (!mnt_may_suid(bprm->file->f_path.mnt))
+ 		return 0;
+-	if (!in_userns(current_user_ns(), bprm->file->f_path.mnt->mnt_sb->s_user_ns))
++	if (!current_in_userns(bprm->file->f_path.mnt->mnt_sb->s_user_ns))
+ 		return 0;
+ 
+ 	rc = get_vfs_caps_from_disk(bprm->file->f_path.dentry, &vcaps);
 -- 
 1.9.1
