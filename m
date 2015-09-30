@@ -1,19 +1,22 @@
-Received: from mail.kmu-office.ch ([178.209.48.109])
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhKmd-0003ZU-FW
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 17:03:12 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Wed, 30 Sep 2015 10:02:03 -0700
-From: Stefan Agner <stefan@agner.ch>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Bill Pringlemeir
- <bpringlemeir@nbsps.com>, Alexey Klimov <klimov.linux@gmail.com>
+ id 1ZhL5b-00076w-Dq
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 17:22:47 +0000
+Received: by pacex6 with SMTP id ex6so46513964pac.0
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 10:22:27 -0700 (PDT)
+Date: Wed, 30 Sep 2015 10:22:24 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: linux-mtd@lists.infradead.org, Bill Pringlemeir <bpringlemeir@nbsps.com>,
+ Alexey Klimov <klimov.linux@gmail.com>
 Subject: Re: [PATCH] mtd: nand: vf610_nfc: include missing pincrl/consumer.h
-In-Reply-To: <1443632066-69967-1-git-send-email-computersforpeace@gmail.com>
+Message-ID: <20150930172224.GE143959@google.com>
 References: <1443632066-69967-1-git-send-email-computersforpeace@gmail.com>
-Message-ID: <900ceb41b4f9e4319d42e035cd1dd7ff@agner.ch>
+ <900ceb41b4f9e4319d42e035cd1dd7ff@agner.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <900ceb41b4f9e4319d42e035cd1dd7ff@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015-09-30 09:54, Brian Norris wrote:
-> This must have been implicitly included on the builds I tested. Reported
-> by numerous test bots:
-
-Same for me. Thanks for the fix.
-
-Acked-by: Stefan Agner <stefan@agner.ch>
-
---
-Stefan
-
+On Wed, Sep 30, 2015 at 10:02:03AM -0700, Stefan Agner wrote:
+> On 2015-09-30 09:54, Brian Norris wrote:
+> > This must have been implicitly included on the builds I tested. Reported
+> > by numerous test bots:
 > 
->    drivers/mtd/nand/vf610_nfc.c: In function 'vf610_nfc_resume':
->    drivers/mtd/nand/vf610_nfc.c:660:2: error: implicit declaration of
-> function 'pinctrl_pm_select_default_state'
-> [-Werror=implicit-function-declaration]
->      pinctrl_pm_select_default_state(dev);
->      ^
+> Same for me. Thanks for the fix.
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Bill Pringlemeir <bpringlemeir@nbsps.com>
-> Cc: Alexey Klimov <klimov.linux@gmail.com>
-> Cc: Stefan Agner <stefan@agner.ch>
-> ---
->  drivers/mtd/nand/vf610_nfc.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-> index 42dad8e4b26f..ae1f84e3d635 100644
-> --- a/drivers/mtd/nand/vf610_nfc.c
-> +++ b/drivers/mtd/nand/vf610_nfc.c
-> @@ -35,6 +35,7 @@
->  #include <linux/mtd/partitions.h>
->  #include <linux/of_mtd.h>
->  #include <linux/of_device.h>
-> +#include <linux/pinctrl/consumer.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
+> Acked-by: Stefan Agner <stefan@agner.ch>
+
+Applied to l2-mtd.git
