@@ -1,21 +1,17 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhKa0-0004R1-KI
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 16:50:09 +0000
-Received: by padhy16 with SMTP id hy16so45631030pad.1
- for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 09:49:48 -0700 (PDT)
-Date: Wed, 30 Sep 2015 09:49:45 -0700
+ id 1ZhKef-0006VK-2F
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 16:54:58 +0000
+Received: by pacex6 with SMTP id ex6so45860141pac.0
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 09:54:35 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: mtdpart: fix add_mtd_partitions error path
-Message-ID: <20150930164945.GD143959@google.com>
-References: <1438251483-20888-1-git-send-email-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1438251483-20888-1-git-send-email-boris.brezillon@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>,
+ Alexey Klimov <klimov.linux@gmail.com>, Stefan Agner <stefan@agner.ch>
+Subject: [PATCH] mtd: nand: vf610_nfc: include missing pincrl/consumer.h
+Date: Wed, 30 Sep 2015 09:54:26 -0700
+Message-Id: <1443632066-69967-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 30, 2015 at 12:18:03PM +0200, Boris Brezillon wrote:
-> If we fail to allocate a partition structure in the middle of the partition
-> creation process, the already allocated partitions are never removed, which
-> means they are still present in the partition list and their resources are
-> never freed.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: stable@vger.kernel.org
+This must have been implicitly included on the builds I tested. Reported
+by numerous test bots:
 
-Pushed to l2-mtd.git, thanks
+   drivers/mtd/nand/vf610_nfc.c: In function 'vf610_nfc_resume':
+   drivers/mtd/nand/vf610_nfc.c:660:2: error: implicit declaration of function 'pinctrl_pm_select_default_state' [-Werror=implicit-function-declaration]
+     pinctrl_pm_select_default_state(dev);
+     ^
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Bill Pringlemeir <bpringlemeir@nbsps.com>
+Cc: Alexey Klimov <klimov.linux@gmail.com>
+Cc: Stefan Agner <stefan@agner.ch>
+---
+ drivers/mtd/nand/vf610_nfc.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+index 42dad8e4b26f..ae1f84e3d635 100644
+--- a/drivers/mtd/nand/vf610_nfc.c
++++ b/drivers/mtd/nand/vf610_nfc.c
+@@ -35,6 +35,7 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/of_mtd.h>
+ #include <linux/of_device.h>
++#include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ 
+-- 
+2.6.0.rc2.230.g3dd15c0
