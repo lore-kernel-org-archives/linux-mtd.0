@@ -1,24 +1,20 @@
-Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhCUE-0001WE-KF
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 08:11:39 +0000
-Received: by obbda8 with SMTP id da8so25580754obb.1
- for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 01:11:17 -0700 (PDT)
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhCjU-00025t-IB
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 08:27:25 +0000
+Date: Wed, 30 Sep 2015 10:27:02 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: mtdpart: fix add_mtd_partitions error path
+Message-ID: <20150930102702.2bb99265@bbrezillon>
+In-Reply-To: <1438251483-20888-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1438251483-20888-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <1443535053-4673-1-git-send-email-bywxiaobai@163.com>
-References: <1443446807-4838-1-git-send-email-bywxiaobai@163.com>
- <1443535053-4673-1-git-send-email-bywxiaobai@163.com>
-Date: Wed, 30 Sep 2015 10:11:17 +0200
-Message-ID: <CAFLxGvwdvW8k07ENLQP7PyXrznVf0UKsnZMUCGahULqsDrgfGQ@mail.gmail.com>
-Subject: Re: [PATCH] fs/ubifs: remove unnecessary new_valid_dev check
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Yaowei Bai <bywxiaobai@163.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 29, 2015 at 3:57 PM, Yaowei Bai <bywxiaobai@163.com> wrote:
-> As currently new_valid_dev always returns 1, so new_valid_dev check is not
-> needed, remove it.
->
-> Signed-off-by: Yaowei Bai <bywxiaobai@163.com>
-> ---
->  fs/ubifs/dir.c  | 3 ---
->  fs/ubifs/misc.h | 9 ++-------
->  2 files changed, 2 insertions(+), 10 deletions(-)
->
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 5c27c66..1dd9267 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -787,9 +787,6 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
->
->         dbg_gen("dent '%pd' in dir ino %lu", dentry, dir->i_ino);
->
-> -       if (!new_valid_dev(rdev))
-> -               return -EINVAL;
-> -
->         if (S_ISBLK(mode) || S_ISCHR(mode)) {
->                 dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
->                 if (!dev)
-> diff --git a/fs/ubifs/misc.h b/fs/ubifs/misc.h
-> index ee7cb5e..8ece6ca 100644
-> --- a/fs/ubifs/misc.h
-> +++ b/fs/ubifs/misc.h
-> @@ -155,13 +155,8 @@ static inline int ubifs_wbuf_sync(struct ubifs_wbuf *wbuf)
->   */
->  static inline int ubifs_encode_dev(union ubifs_dev_desc *dev, dev_t rdev)
->  {
-> -       if (new_valid_dev(rdev)) {
-> -               dev->new = cpu_to_le32(new_encode_dev(rdev));
-> -               return sizeof(dev->new);
-> -       } else {
-> -               dev->huge = cpu_to_le64(huge_encode_dev(rdev));
-> -               return sizeof(dev->huge);
-> -       }
-> +       dev->new = cpu_to_le32(new_encode_dev(rdev));
-> +       return sizeof(dev->new);
->  }
+On Thu, 30 Jul 2015 12:18:03 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-Reviewed-by: Richard Weinberger <richard@nod.at>
+> If we fail to allocate a partition structure in the middle of the partition
+> creation process, the already allocated partitions are never removed, which
+> means they are still present in the partition list and their resources are
+> never freed.
+
+Ping.
+
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/mtd/mtdpart.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index cafdb88..919a936 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -664,8 +664,10 @@ int add_mtd_partitions(struct mtd_info *master,
+>  
+>  	for (i = 0; i < nbparts; i++) {
+>  		slave = allocate_partition(master, parts + i, i, cur_offset);
+> -		if (IS_ERR(slave))
+> +		if (IS_ERR(slave)) {
+> +			del_mtd_partitions(master);
+>  			return PTR_ERR(slave);
+> +		}
+>  
+>  		mutex_lock(&mtd_partitions_mutex);
+>  		list_add(&slave->list, &mtd_partitions);
+
+
 
 -- 
-Thanks,
-//richard
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
