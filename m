@@ -1,35 +1,18 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhAXg-0006Yf-Gk
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 06:07:05 +0000
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: "dedekind1@gmail.com" <dedekind1@gmail.com>, "adrian.hunter@intel.com"
- <adrian.hunter@intel.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "baruch@tkos.co.il" <baruch@tkos.co.il>,
- "asierra@xes-inc.com" <asierra@xes-inc.com>, "guz.fnst@cn.fujitsu.com"
- <guz.fnst@cn.fujitsu.com>, "gsi@denx.de" <gsi@denx.de>, "richard@nod.at"
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- Andrea Scian <rnd4@dave-tech.it>,
- =?utf-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>,
- =?utf-8?B?S2FybCBaaGFuZyDlvKDlj4zplKMgKGthcmx6aGFuZyk=?=
- <karlzhang@micron.com>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
- "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/9] drivers:nand:mtd: add support for UBI bakvol in mtd
- layer
-Date: Wed, 30 Sep 2015 06:05:44 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4D4F4@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF4CECC@NTXXIAMBX02.xacn.micron.com>
- <20150928114008.06dcd1cd@bbrezillon>
-In-Reply-To: <20150928114008.06dcd1cd@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Date: Wed, 30 Sep 2015 08:36:34 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com, Hans de Goede <hdegoede@redhat.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/2] mtd: nand: sunxi: cleanup
+Message-ID: <20150930083634.68351ade@bbrezillon>
+In-Reply-To: <20150929222144.GA143959@google.com>
+References: <1442389597-30698-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20150929222144.GA143959@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,92 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBIaSBCZWFuLA0KPiANCj4gT24gTW9uLCAyOCBTZXAgMjAxNSAwNzowMjozNyArMDAwMA0KPiBC
-ZWFuIEh1byDpnI3mlozmlowgKGJlYW5odW8pIDxiZWFuaHVvQG1pY3Jvbi5jb20+IHdyb3RlOg0K
-PiANCj4gPiBBZGQgc3VwcG9ydCBmb3IgVUJJIGJha3ZvbCBpbiBtdGQgbGF5ZXIuDQo+ID4NCj4g
-PiBUaGlzIHNvbHV0aW9uIGJhc2VkIG9uIE1MQyBOQU5EIGR1YWwgcGxhbmUgcHJvZ3JhbS4NCj4g
-PiBzbyBhZGQgaG9vayBpbiBtdGQgbGF5ZXIuDQo+IA0KPiBJIGtub3cgeW91IGRvbid0IGhhdmUg
-YW55IG90aGVyIGNob2ljZXMgdG8gZXhwb3NlICJ0d28tcGxhbmUgcGFnZSBwcm9ncmFtIg0KPiB0
-byB0aGUgVUJJIGxheWVyLCBidXQgSSBrZWVwIHRoaW5raW5nIHRoYXQgZXhwb3NpbmcgdGhhdCB0
-byB0aGUgTVREIHVzZXJzIGlzIG5vdA0KPiBhIGdvb2QgaWRlYSAoSSBtaWdodCBiZSB3cm9uZyA7
-LSkpLg0KDQpUd28tcGxhbmUgb3BlcmF0aW9uIGlzIHJlbGF0ZWQgdG8gTkFORCBmZWF0dXJlLCBj
-YW4gbm90IGludm9sdmUgaW4gVUJJIGxheWVyLg0KTWF5YmUgSSBjYW4gZmlyc3RseSBlbmFibGUg
-bXVsdGlwbGUgcGxhbmUgcHJvZ3JhbSBpbiBNVEQgbGF5ZXIsIGJ1dCBjdXJyZW50bHksIG5vIHBl
-b3BsZSANClVzZXMgbXVsdGlwbGUgcGxhbmUgcHJvZ3JhbSBpbiBMaW51eCwgb25seSBpbiB0aGlz
-IHBhdGNoLg0KSSBkb24ndCBrbm93IGlmIHRoaXMgaXMgbmVjZXNzYXJ5Lg0KPiA+DQo+ID4gU2ln
-bmVkLW9mZi1ieTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gPiAtLS0NCj4gPiAg
-aW5jbHVkZS9saW51eC9tdGQvbXRkLmggIHwgMTkgKysrKysrKysrKysrKysrKysrKw0KPiA+IGlu
-Y2x1ZGUvbGludXgvbXRkL25hbmQuaCB8ICA0ICsrKysgIGluY2x1ZGUvbGludXgvbXRkL3ViaS5o
-ICB8ICA5DQo+ID4gKysrKysrKysrDQo+ID4gIDMgZmlsZXMgY2hhbmdlZCwgMzIgaW5zZXJ0aW9u
-cygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbXRkL210ZC5oIGIvaW5j
-bHVkZS9saW51eC9tdGQvbXRkLmggaW5kZXgNCj4gPiBmMTdmYTc1Li5jZmNiM2E2OCAxMDA2NDQN
-Cj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L210ZC9tdGQuaA0KPiA+ICsrKyBiL2luY2x1ZGUvbGlu
-dXgvbXRkL210ZC5oDQo+ID4gQEAgLTIwNCw2ICsyMDQsOSBAQCBzdHJ1Y3QgbXRkX2luZm8gew0K
-PiA+ICAJCQkgIHN0cnVjdCBtdGRfb29iX29wcyAqb3BzKTsNCj4gPiAgCWludCAoKl93cml0ZV9v
-b2IpIChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IHRvLA0KPiA+ICAJCQkgICBzdHJ1Y3Qg
-bXRkX29vYl9vcHMgKm9wcyk7DQo+ID4gKwlpbnQgKCpfZHVhbF9wbGFuZV93cml0ZV9vb2IpIChz
-dHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IHRvX3BsYW5lMCwNCj4gPiArCQkJc3RydWN0IG10
-ZF9vb2Jfb3BzICpvcHNfcGxhbmUwLCBsb2ZmX3QgdG9fcGxhbmUxLA0KPiA+ICsJCQkJCXN0cnVj
-dCBtdGRfb29iX29wcyAqb3BzX3BsYW5lMSk7DQo+IA0KPiANCj4gSU1ITywgaWYgd2Ugd2VyZSBh
-Ym91dCB0byBhbGxvdyBwYXJhbGxlbCB3cml0ZSBvcGVyYXRpb25zIHRoaXMgc2hvdWxkIGJlDQo+
-IGV4cG9zZWQgYXMgYSBtb3JlIGdlbmVyaWMgQVBJLCBzb21ldGhpbmcgbGlrZToNCj4gDQo+IHN0
-cnVjdCBtdGRfd3JpdGVfb3Agew0KPiAJbG9mZl90IHRvOw0KPiAJc3RydWN0IG10ZF9vb2Jfb3Bz
-IG9wczsNCj4gfTsNCj4gDQo+IHN0cnVjdCBtdGRfbXVsdGlfd3JpdGVfb3BzIHsNCj4gCXN0cnVj
-dCBsaXN0X2hlYWQgd3JpdGVzOw0KPiB9Ow0KPiANCj4gaW50ICgqX211bHRpX3dyaXRlKShzdHJ1
-Y3QgbXRkX2luZm8gKm10ZCwNCj4gCQkgICAgc3RydWN0IG10ZF9tdWx0aV93cml0ZV9vcHMgKm9w
-cyk7DQo+IA0KPiBUaGVuIHRoZSBOQU5EIGxheWVyIGNvdWxkIG9wdGltaXplIHRoYXQgaWYgdGhl
-IE5BTkQgY2hpcCBzdXBwb3J0cyAidHdvLXBsYW5lDQo+IHBhZ2UgcHJvZ3JhbSIsIGFuZCBpZiAy
-IHBhZ2VzIGluIHRoZSB3cml0ZSBsaXN0IGFyZSBmdWxmaWxsaW5nIHRoZSByZXF1aXJlbWVudHMu
-DQo+IA0KR29vZCBzdWdnZXN0aW9uLCBJIGNhbiBpbXByb3ZlIGl0IGZvciBuZXh0IHZlcnNpb24g
-cGF0Y2guIFRoYW5rcy4NCg0KPiA+ICAJaW50ICgqX2dldF9mYWN0X3Byb3RfaW5mbykgKHN0cnVj
-dCBtdGRfaW5mbyAqbXRkLCBzaXplX3QgbGVuLA0KPiA+ICAJCQkJICAgIHNpemVfdCAqcmV0bGVu
-LCBzdHJ1Y3Qgb3RwX2luZm8gKmJ1Zik7DQo+ID4gIAlpbnQgKCpfcmVhZF9mYWN0X3Byb3RfcmVn
-KSAoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBmcm9tLCBAQA0KPiA+IC0yODAsNiArMjgz
-LDIyIEBAIHN0YXRpYyBpbmxpbmUgaW50IG10ZF93cml0ZV9vb2Ioc3RydWN0IG10ZF9pbmZvICpt
-dGQsDQo+IGxvZmZfdCB0bywNCj4gPiAgCXJldHVybiBtdGQtPl93cml0ZV9vb2IobXRkLCB0bywg
-b3BzKTsgIH0NCj4gPg0KPiA+ICtzdGF0aWMgaW5saW5lIGludCBtdGRfd3JpdGVfZHVhbF9wbGFu
-ZV9vb2Ioc3RydWN0IG10ZF9pbmZvICptdGQsDQo+ID4gKwkJbG9mZl90IHRvX3BsYW5lMCwgc3Ry
-dWN0IG10ZF9vb2Jfb3BzICpvcHMwLCBsb2ZmX3QgdG9fcGxhbmUxLA0KPiA+ICsJCQkJCQlzdHJ1
-Y3QgbXRkX29vYl9vcHMgKm9wczEpDQo+ID4gK3sNCj4gPiArCW9wczAtPnJldGxlbiA9IG9wczAt
-Pm9vYnJldGxlbiA9IDA7DQo+ID4gKwlvcHMxLT5yZXRsZW4gPSBvcHMxLT5vb2JyZXRsZW4gPSAw
-Ow0KPiA+ICsNCj4gPiArCWlmICghbXRkLT5fZHVhbF9wbGFuZV93cml0ZV9vb2IpDQo+ID4gKwkJ
-cmV0dXJuIC1FT1BOT1RTVVBQOw0KPiA+ICsJaWYgKCEobXRkLT5mbGFncyAmIE1URF9XUklURUFC
-TEUpKQ0KPiA+ICsJCXJldHVybiAtRVJPRlM7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIG10ZC0+X2R1
-YWxfcGxhbmVfd3JpdGVfb29iKG10ZCwgdG9fcGxhbmUwLCBvcHMwLA0KPiA+ICsJCQkJCQl0b19w
-bGFuZTEsIG9wczEpOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICBpbnQgbXRkX2dldF9mYWN0X3Byb3Rf
-aW5mbyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc2l6ZV90IGxlbiwgc2l6ZV90ICpyZXRsZW4sDQo+
-ID4gIAkJCSAgIHN0cnVjdCBvdHBfaW5mbyAqYnVmKTsNCj4gPiAgaW50IG10ZF9yZWFkX2ZhY3Rf
-cHJvdF9yZWcoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBmcm9tLCBzaXplX3QNCj4gPiBs
-ZW4sIGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLmggYi9pbmNsdWRlL2xpbnV4
-L210ZC9uYW5kLmgNCj4gPiBpbmRleCAyNzJmNDI5Li40YzViZTAxIDEwMDY0NA0KPiA+IC0tLSBh
-L2luY2x1ZGUvbGludXgvbXRkL25hbmQuaA0KPiA+ICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL25h
-bmQuaA0KPiA+IEBAIC03Nyw2ICs3Nyw3IEBAIGV4dGVybiBpbnQgbmFuZF91bmxvY2soc3RydWN0
-IG10ZF9pbmZvICptdGQsIGxvZmZfdCBvZnMsDQo+IHVpbnQ2NF90IGxlbik7DQo+ID4gICNkZWZp
-bmUgTkFORF9DTURfUkVBRDEJCTENCj4gPiAgI2RlZmluZSBOQU5EX0NNRF9STkRPVVQJCTUNCj4g
-PiAgI2RlZmluZSBOQU5EX0NNRF9QQUdFUFJPRwkweDEwDQo+ID4gKyNkZWZpbmUgTkFORF9DTURf
-TVVMVElfUEFHRVBST0cJMHgxMQ0KPiA+ICAjZGVmaW5lIE5BTkRfQ01EX1JFQURPT0IJMHg1MA0K
-PiA+ICAjZGVmaW5lIE5BTkRfQ01EX0VSQVNFMQkJMHg2MA0KPiA+ICAjZGVmaW5lIE5BTkRfQ01E
-X1NUQVRVUwkJMHg3MA0KPiA+IEBAIC02NzEsNiArNjcyLDkgQEAgc3RydWN0IG5hbmRfY2hpcCB7
-DQo+ID4gIAlpbnQgKCp3cml0ZV9wYWdlKShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5h
-bmRfY2hpcCAqY2hpcCwNCj4gPiAgCQkJdWludDMyX3Qgb2Zmc2V0LCBpbnQgZGF0YV9sZW4sIGNv
-bnN0IHVpbnQ4X3QgKmJ1ZiwNCj4gPiAgCQkJaW50IG9vYl9yZXF1aXJlZCwgaW50IHBhZ2UsIGlu
-dCBjYWNoZWQsIGludCByYXcpOw0KPiA+ICsJaW50ICgqd3JpdGVfcGxhbmVfcGFnZSkoc3RydWN0
-IG10ZF9pbmZvICptdGQsIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsDQo+ID4gKwkJCXVpbnQzMl90
-IG9mZnNldCwgaW50IGRhdGFfbGVuLCBjb25zdCB1aW50OF90ICpidWYsDQo+ID4gKwkJCWludCBv
-b2JfcmVxdWlyZWQsIGludCBwYWdlLCBpbnQgcGxhbmUsIGludCByYXcpOw0KPiA+ICAJaW50ICgq
-b25maV9zZXRfZmVhdHVyZXMpKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlw
-ICpjaGlwLA0KPiA+ICAJCQlpbnQgZmVhdHVyZV9hZGRyLCB1aW50OF90ICpzdWJmZWF0dXJlX3Bh
-cmEpOw0KPiA+ICAJaW50ICgqb25maV9nZXRfZmVhdHVyZXMpKHN0cnVjdCBtdGRfaW5mbyAqbXRk
-LCBzdHJ1Y3QgbmFuZF9jaGlwDQo+ID4gKmNoaXAsIGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4
-L210ZC91YmkuaCBiL2luY2x1ZGUvbGludXgvbXRkL3ViaS5oDQo+ID4gaW5kZXggMWUyNzFjYi4u
-MWRhMzQxOCAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L210ZC91YmkuaA0KPiA+ICsr
-KyBiL2luY2x1ZGUvbGludXgvbXRkL3ViaS5oDQo+ID4gQEAgLTM1LDYgKzM1LDE1IEBADQo+ID4g
-ICAqLw0KPiA+ICAjZGVmaW5lIFVCSV9NQVhfU0dfQ09VTlQgNjQNCj4gPg0KPiA+ICtlbnVtIHsN
-Cj4gPiArCVVCSV9CQUtWT0xfVU5PTkUsDQo+ID4gKwlVQklfQkFLVk9MX0lOSVRfSU5GTywNCj4g
-PiArCVVCSV9CQUtWT0xfSU5JVF9JTkZPX0RPTkUsDQo+ID4gKwlVQklfQkFLVk9MX0lOSVRfVk9M
-VU1FLA0KPiA+ICsJVUJJX0JBS1ZPTF9JTklUX1ZPTFVNRV9ET05FLA0KPiA+ICsJVUJJX0JBS1ZP
-TF9SVU4NCj4gPiArfTsNCj4gPiArDQo+IA0KPiBBcmUgdGhvc2UgY2hhbmdlcyByZWxhdGVkIHRv
-IHRoaXMgcGF0Y2g/DQo+IA0KDQpZZXMsIG1heWJlIGNhbiBzaW1wbGlmeSBtb3JlLg0KDQo+IEJl
-c3QgUmVnYXJkcywNCj4gDQo+IEJvcmlzDQo+IA0KPiAtLQ0KPiBCb3JpcyBCcmV6aWxsb24sIEZy
-ZWUgRWxlY3Ryb25zDQo+IEVtYmVkZGVkIExpbnV4IGFuZCBLZXJuZWwgZW5naW5lZXJpbmcNCj4g
-aHR0cDovL2ZyZWUtZWxlY3Ryb25zLmNvbQ0K
+Hi Brian,
+
+On Tue, 29 Sep 2015 15:21:44 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> On Wed, Sep 16, 2015 at 09:46:35AM +0200, Boris Brezillon wrote:
+> > Hello,
+> > 
+> > Those two patches aim at cleaning up the sunxi_nand driver by first adding
+> > some consistency in the macro definitions, and then factorizing the code
+> > duplicated code found in hw_ecc and hw_syndrome_ecc implementations.
+> > 
+> > Best Regards,
+> > 
+> > Boris
+> 
+> I believe this series no longer applies cleanly
+
+Hm, actually it depends on fixes you have in your linux-mtd tree and
+features in your l2-mtd tree.
+
+I don't know how you usually deal with those problems (merging the
+linux-mtd/master branch into the l2-mtd/master one, or merging
+last linus' -rc into l2-mtd/master should work), but I'd really
+like to have this in 4.4 :-).
+I still have the patch using the nand_check_erased_ecc_chunk() function
+which depends on those 2 patches, and I'd like to have it in 4.4 too.
+
+I know I'm asking a lot, but as explained earlier, I still have a
+bunch of patches on top of those already posted (mainly to support
+the hardware randomizer), and I'd like the trivial ones to be merged
+quickly.
+
+Best Regards,
+
+Boris
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
