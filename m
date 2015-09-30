@@ -1,21 +1,19 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhKi7-0000Dc-Hg
- for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 16:58:32 +0000
-Date: Wed, 30 Sep 2015 18:52:46 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: <linux-mtd@lists.infradead.org>, Bill Pringlemeir
- <bpringlemeir@nbsps.com>, Stefan Agner <stefan@agner.ch>
-Subject: Re: [RFC PATCH] mtd: nand: vf610_nfc: use
- nand_check_erased_ecc_chunk() helper
-Message-ID: <20150930185246.6bfdda29@bbrezillon>
-In-Reply-To: <1443561116-139851-1-git-send-email-computersforpeace@gmail.com>
-References: <1443561116-139851-1-git-send-email-computersforpeace@gmail.com>
+Received: from mail.kmu-office.ch ([178.209.48.109])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhKmd-0003ZU-FW
+ for linux-mtd@lists.infradead.org; Wed, 30 Sep 2015 17:03:12 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Date: Wed, 30 Sep 2015 10:02:03 -0700
+From: Stefan Agner <stefan@agner.ch>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Bill Pringlemeir
+ <bpringlemeir@nbsps.com>, Alexey Klimov <klimov.linux@gmail.com>
+Subject: Re: [PATCH] mtd: nand: vf610_nfc: include missing pincrl/consumer.h
+In-Reply-To: <1443632066-69967-1-git-send-email-computersforpeace@gmail.com>
+References: <1443632066-69967-1-git-send-email-computersforpeace@gmail.com>
+Message-ID: <900ceb41b4f9e4319d42e035cd1dd7ff@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,57 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 29 Sep 2015 14:11:56 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+On 2015-09-30 09:54, Brian Norris wrote:
+> This must have been implicitly included on the builds I tested. Reported
+> by numerous test bots:
 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
-> I forgot about this feedback. How does this patch look? Just compile tested.
+Same for me. Thanks for the fix.
 
-Looks good to me, but I can't test it either :-).
+Acked-by: Stefan Agner <stefan@agner.ch>
 
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+--
+Stefan
 
 > 
->  drivers/mtd/nand/vf610_nfc.c | 14 +++-----------
->  1 file changed, 3 insertions(+), 11 deletions(-)
+>    drivers/mtd/nand/vf610_nfc.c: In function 'vf610_nfc_resume':
+>    drivers/mtd/nand/vf610_nfc.c:660:2: error: implicit declaration of
+> function 'pinctrl_pm_select_default_state'
+> [-Werror=implicit-function-declaration]
+>      pinctrl_pm_select_default_state(dev);
+>      ^
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Bill Pringlemeir <bpringlemeir@nbsps.com>
+> Cc: Alexey Klimov <klimov.linux@gmail.com>
+> Cc: Stefan Agner <stefan@agner.ch>
+> ---
+>  drivers/mtd/nand/vf610_nfc.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 > diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-> index 42dad8e4b26f..598faf655f5b 100644
+> index 42dad8e4b26f..ae1f84e3d635 100644
 > --- a/drivers/mtd/nand/vf610_nfc.c
 > +++ b/drivers/mtd/nand/vf610_nfc.c
-> @@ -560,7 +560,6 @@ static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
->  	u32 ecc_status_off = NFC_MAIN_AREA(0) + ECC_SRAM_ADDR + ECC_STATUS;
->  	u8 ecc_status;
->  	u8 ecc_count;
-> -	int flips;
->  	int flips_threshold = nfc->chip.ecc.strength / 2;
->  
->  	ecc_status = vf610_nfc_read(nfc, ecc_status_off) & 0xff;
-> @@ -577,16 +576,9 @@ static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
->  	 * On an erased page, bit count (including OOB) should be zero or
->  	 * at least less then half of the ECC strength.
->  	 */
-> -	flips = count_written_bits(dat, nfc->chip.ecc.size, flips_threshold);
-> -	flips += count_written_bits(oob, mtd->oobsize, flips_threshold);
-> -
-> -	if (unlikely(flips > flips_threshold))
-> -		return -EINVAL;
-> -
-> -	/* Erased page. */
-> -	memset(dat, 0xff, nfc->chip.ecc.size);
-> -	memset(oob, 0xff, mtd->oobsize);
-> -	return flips;
-> +	return nand_check_erased_ecc_chunk(dat, nfc->chip.ecc.size, oob,
-> +					   mtd->oobsize, NULL, 0,
-> +					   flips_threshold);
->  }
->  
->  static int vf610_nfc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> @@ -35,6 +35,7 @@
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/of_mtd.h>
+>  #include <linux/of_device.h>
+> +#include <linux/pinctrl/consumer.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/slab.h>
