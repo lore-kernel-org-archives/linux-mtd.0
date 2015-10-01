@@ -1,35 +1,22 @@
-Received: from out02.mta.xmission.com ([166.70.13.232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhgKZ-0005sn-Ch
- for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 16:03:40 +0000
-From: ebiederm@xmission.com (Eric W. Biederman)
-To: Mike Snitzer <snitzer@redhat.com>
-Cc: Seth Forshee <seth.forshee@canonical.com>,
- Kent Overstreet <kent.overstreet@gmail.com>, Alasdair Kergon <agk@redhat.com>,
- dm-devel@redhat.com, Neil Brown <neilb@suse.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org
-References: <1443644116-41366-1-git-send-email-seth.forshee@canonical.com>
- <1443644116-41366-2-git-send-email-seth.forshee@canonical.com>
- <20150930234215.GA24127@redhat.com>
- <20151001125508.GA101875@ubuntu-hedt>
- <20151001134052.GB27818@redhat.com>
-Date: Thu, 01 Oct 2015 10:55:50 -0500
-In-Reply-To: <20151001134052.GB27818@redhat.com> (Mike Snitzer's message of
- "Thu, 1 Oct 2015 09:40:52 -0400")
-Message-ID: <87wpv6a8hl.fsf@x220.int.ebiederm.org>
+Date: Thu, 1 Oct 2015 09:58:41 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Josh Wu <josh.wu@atmel.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Huang Shijie <shijie.huang@intel.com>,
+ Bryan Wu <bryan.wu@analog.com>, devel@driverdev.osuosl.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: pass page number to ecc->write_xxx() methods
+Message-ID: <20151001165841.GQ143959@google.com>
+References: <1440436219-31625-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20151001170743.3aa0d6fa@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [PATCH 1/5] fs: Verify access of user towards block device file
- when mounting
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151001170743.3aa0d6fa@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,44 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Snitzer <snitzer@redhat.com> writes:
+On Thu, Oct 01, 2015 at 05:07:43PM +0200, Boris Brezillon wrote:
+> On Mon, 24 Aug 2015 19:10:19 +0200
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> 
+> > The ->read_xxx() methods are all passed the page number the NAND controller
+> > is supposed to read, but ->write_xxx() do not have such a parameter.
+> > 
+> > This is a problem if we want to properly implement data
+> > scrambling/randomization in order to mitigate MLC sensibility to repeated
+> > pattern: to prevent bitflips in adjacent pages in the same block we need
+> > to avoid repeating the same pattern at the same offset in those pages,
+> > hence the randomizer/scrambler engine need to be passed the page value
+> > in order to adapt its seed accordingly.
+> > 
+> > Moreover, adding the page parameter the ->write_xxx() methods add some
+> > consistency to the current model.
+> 
+> Apparently nobody complained (or nobody cares :-)) about that patch,
+> and I'll really need the page information if I want to support
+> randomization/scrambling in the sunxi driver.
+> 
+> Do you have any objections to this patch
 
-> What layer establishes access rights to historically root-only
-> priviledged block devices?  Is it user namespaces?
+No, I guess not.
 
-Block devices are weird.
+> (I can rebase it on mainline
+> and check if new drivers have been added since the submission)?
 
-Mounts historically have not checked the permissions on the block
-devices because a mounter has CAP_SYS_ADMIN.
+I recently compile tested it against the tip of tree (don't know why I
+didn't merge it then), but I think we added one driver since then. I
+suppose a rebase is in order.
 
-Unprivileged users are allowes to read/write block devices if
-someone has given them permissions on the device node in the
-filesystem.
+> I remember you pointed a trick you've used in the brcmnand driver to
+> get this page information (storing it during the ->cmdfunc() or
+> ->ctrl_cmd() call), but it would be way easier to have it directly in
+> the ecc->write_xxx() parameters...
 
-The thinking with this patchset is to start performing the normal
-block device access permission checks when mounting filesystems
-when the mounter does not have the global CAP_SYS_ADMIN permission.
+Right, that's not a pattern I'd really like people to copy...
 
-The truth is we are not much past the point of realizing that there were
-no permission checks to use the actual block device passed in to mount,
-so we could still be missing something. There is a lot going on with dm,
-md, and lvm.  I don't know if the model of just look at the block device
-inode and perform the permission checks is good enough.
-
-> I haven't kept up with user namespaces as it relates to stacking block
-> drivers like DM.  But I'm happy to come up to speed and at the same time
-> help you verify all works as expected with DM blocks devices...
-
-We are just getting there.  But if you can help that would be great.
-The primary concern with dm is what happens when unprivileged users get
-ahold of the code, and what happens when evil users corrupt the on-disk
-format.
-
-In principle dm like loop should be safe to use if there are not bugs
-that make it unsafe for unprivileged users to access the code.
-
-The goal if possible is to run things like docker without needed to be
-root or even more fun to run docker in a container, and in general
-enable nested containers.
-
-Eric
+Regards,
+Brian
