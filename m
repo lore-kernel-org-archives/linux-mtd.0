@@ -1,20 +1,37 @@
-Received: from server.heritagemalta.org ([198.154.229.110]
- helo=websrv.mynt.com.mt)
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zhmrl-0003Su-Uh
- for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 23:02:22 +0000
-Received: from airportadm by websrv.mynt.com.mt with local (Exim 4.85)
- (envelope-from <airportadm@websrv.mynt.com.mt>) id 1ZhmrL-0000ez-7Y
- for linux-mtd@lists.infradead.org; Fri, 02 Oct 2015 01:01:55 +0200
-To: linux-mtd@lists.infradead.org
-Subject: Peter Al Abbas,
-From: Peter Al Abbas <peteralabbas@gmail.com>
-Reply-To: peteralabbas@gmail.com
+ id 1Zhmwg-0005OX-7I
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 23:07:26 +0000
+Date: Fri, 2 Oct 2015 01:07:00 +0200
+From: Jan Kara <jack@suse.cz>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Mike Snitzer <snitzer@redhat.com>,
+ Seth Forshee <seth.forshee@canonical.com>,
+ Kent Overstreet <kent.overstreet@gmail.com>,
+ Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
+ Neil Brown <neilb@suse.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
+ Jeff Layton <jlayton@poochiereds.net>,
+ "J. Bruce Fields" <bfields@fieldses.org>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: [PATCH 1/5] fs: Verify access of user towards block device file
+ when mounting
+Message-ID: <20151001230700.GA10087@quack.suse.cz>
+References: <1443644116-41366-1-git-send-email-seth.forshee@canonical.com>
+ <1443644116-41366-2-git-send-email-seth.forshee@canonical.com>
+ <20150930234215.GA24127@redhat.com>
+ <20151001125508.GA101875@ubuntu-hedt>
+ <20151001134052.GB27818@redhat.com>
+ <87wpv6a8hl.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1ZhmrL-0000ez-7Y@websrv.mynt.com.mt>
-Date: Fri, 02 Oct 2015 01:01:55 +0200
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wpv6a8hl.fsf@x220.int.ebiederm.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,11 +41,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Greetings,
+On Thu 01-10-15 10:55:50, Eric W. Biederman wrote:
+> The goal if possible is to run things like docker without needed to be
+> root or even more fun to run docker in a container, and in general
+> enable nested containers.
 
-I am Peter Al Abbas from Syria. I am looking for a possible tie up with a business or individual in your country so that I can do some investments there due to civil war in my country, Syria, i wish to relocate my investment capital to your country, any viable investment idea you suggest to me will be considered.
+Frankly at the filesystem side we are rather far from being able to safely
+mount untrusted device and I don't think we'll ever be robust enough to
+tolerate e.g. user changing the disk while fs is using it. So would this be
+FUSE-only thing or is someone still hoping that general purpose filesystems
+will be robust enough in future?
 
-Kindly, reply me so that we can discuss further.
-
-Best Regards
-Peter Al Abbas
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
