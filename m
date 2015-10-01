@@ -1,22 +1,21 @@
-Date: Thu, 1 Oct 2015 10:17:50 -0700
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhhYQ-0008Tk-87
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 17:22:02 +0000
+Received: by pacfv12 with SMTP id fv12so81857371pac.2
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Oct 2015 10:21:40 -0700 (PDT)
+Date: Thu, 1 Oct 2015 10:21:38 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Josh Wu <josh.wu@atmel.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Huang Shijie <shijie.huang@intel.com>,
- Bryan Wu <bryan.wu@analog.com>, devel@driverdev.osuosl.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: pass page number to ecc->write_xxx() methods
-Message-ID: <20151001171750.GR143959@google.com>
-References: <1440436219-31625-1-git-send-email-boris.brezillon@free-electrons.com>
+ linux-kernel@vger.kernel.org, Huang Shijie <shijie.huang@arm.com>
+Subject: Re: [PATCH] mtd: nand: remove unused ->init_size() hook
+Message-ID: <20151001172138.GS143959@google.com>
+References: <1443711507-1875-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1440436219-31625-1-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1443711507-1875-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,57 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 24, 2015 at 07:10:19PM +0200, Boris Brezillon wrote:
-> The ->read_xxx() methods are all passed the page number the NAND controller
-> is supposed to read, but ->write_xxx() do not have such a parameter.
-> 
-> This is a problem if we want to properly implement data
-> scrambling/randomization in order to mitigate MLC sensibility to repeated
-> pattern: to prevent bitflips in adjacent pages in the same block we need
-> to avoid repeating the same pattern at the same offset in those pages,
-> hence the randomizer/scrambler engine need to be passed the page value
-> in order to adapt its seed accordingly.
-> 
-> Moreover, adding the page parameter the ->write_xxx() methods add some
-> consistency to the current model.
+On Thu, Oct 01, 2015 at 04:58:27PM +0200, Boris Brezillon wrote:
+> The ->init_size() hook was introduced to let NAND controller drivers
+> support NAND devices that could not be described in the nand_ids table.
+> Since then, the core has added support for extended-id parsing and
+> full-id description, thus allowing to describe pretty much all existing
+> NANDs.
+> Moreover, this hook is not used by any mainline driver, and should not be
+> used by new drivers, because detecting the NAND chip is not something
+> controller specific.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> CC: Josh Wu <josh.wu@atmel.com>
-> CC: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> CC: Maxime Ripard <maxime.ripard@free-electrons.com>
-> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> CC: Huang Shijie <shijie.huang@intel.com>
-> CC: Bryan Wu <bryan.wu@analog.com>
-> CC: devel@driverdev.osuosl.org
-> CC: linux-arm-kernel@lists.infradead.org
-> CC: linux-kernel@vger.kernel.org
-> 
-> ---
->  drivers/mtd/nand/atmel_nand.c                 |  6 ++++--
->  drivers/mtd/nand/bf5xx_nand.c                 |  3 ++-
->  drivers/mtd/nand/brcmnand/brcmnand.c          |  4 ++--
->  drivers/mtd/nand/cafe_nand.c                  |  3 ++-
->  drivers/mtd/nand/denali.c                     |  5 +++--
->  drivers/mtd/nand/docg4.c                      |  4 ++--
->  drivers/mtd/nand/fsl_elbc_nand.c              |  4 ++--
->  drivers/mtd/nand/fsl_ifc_nand.c               |  2 +-
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c        |  6 +++---
->  drivers/mtd/nand/hisi504_nand.c               |  3 ++-
->  drivers/mtd/nand/lpc32xx_mlc.c                |  3 ++-
->  drivers/mtd/nand/lpc32xx_slc.c                |  5 +++--
->  drivers/mtd/nand/nand_base.c                  | 31 ++++++++++++++++++---------
->  drivers/mtd/nand/omap2.c                      |  3 ++-
->  drivers/mtd/nand/pxa3xx_nand.c                |  3 ++-
->  drivers/mtd/nand/sh_flctl.c                   |  3 ++-
->  drivers/mtd/nand/sunxi_nand.c                 |  5 +++--
->  drivers/staging/mt29f_spinand/mt29f_spinand.c |  3 ++-
->  include/linux/mtd/nand.h                      |  6 +++---
->  19 files changed, 63 insertions(+), 39 deletions(-)
 
-Tip for rebasing -- I noticed one build failure for docg4:
-
-  drivers/mtd/nand/docg4.c: In function ‘docg4_block_markbad’:
-  drivers/mtd/nand/docg4.c:1116:2: error: too few arguments to function ‘docg4_write_page’
-  drivers/mtd/nand/docg4.c:985:12: note: declared here
-
-Brian
+Looks obvious and passes all my builds. Pushed to l2-mtd.git.
