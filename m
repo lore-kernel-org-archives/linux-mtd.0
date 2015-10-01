@@ -1,26 +1,25 @@
-Date: Thu, 1 Oct 2015 16:17:30 +0800
-From: kbuild test robot <lkp@intel.com>
-To: Bayi Cheng <bayi.cheng@mediatek.com>
-Cc: kbuild-all@01.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com,
- jteki@openedev.com, ezequiel@vanguardiasur.com.ar,
- Bayi Cheng <bayi.cheng@mediatek.com>
-Subject: Re: [PATCH v3 2/3] mtd: mtk-nor: mtk serial flash controller driver
-Message-ID: <201510011630.yO6mbrG3%fengguang.wu@intel.com>
+Received: from s159.web-hosting.com ([68.65.121.203])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhZjc-0000Ht-W7
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 09:01:06 +0000
+Received: from mail-la0-f45.google.com ([209.85.215.45]:34438)
+ by server159.web-hosting.com with esmtpsa (TLSv1.2:AES128-GCM-SHA256:128)
+ (Exim 4.85) (envelope-from <jteki@openedev.com>) id 1ZhZjG-0039eE-3V
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 05:00:43 -0400
+Received: by labzv5 with SMTP id zv5so70795198lab.1
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Oct 2015 02:00:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1443685492-9996-3-git-send-email-bayi.cheng@mediatek.com>
+In-Reply-To: <1441137435-52862-8-git-send-email-computersforpeace@gmail.com>
+References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
+ <1441137435-52862-8-git-send-email-computersforpeace@gmail.com>
+Date: Thu, 1 Oct 2015 14:30:40 +0530
+Message-ID: <CAD6G_RSNEgg4s8pmUk0tEywOpNB1eD5kLXfyOv9=WPjsUa-+bw@mail.gmail.com>
+Subject: Re: [PATCH 07/10] mtd: spi-nor: add mtd_is_locked() support
+From: Jagan Teki <jteki@openedev.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,145 +29,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bayi,
+On 2 September 2015 at 01:27, Brian Norris <computersforpeace@gmail.com> wrote:
+> This enables ioctl(MEMISLOCKED). Status can now be reported in the
+> mtdinfo or flash_lock utilities found in mtd-utils.
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 37 ++++++++++++++++++++++++++++++++++++-
+>  include/linux/mtd/spi-nor.h   |  3 +++
+>  2 files changed, 39 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 62fa1b4ff3c0..c4fb1205f1d3 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -519,6 +519,24 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>         return write_sr(nor, status_new);
+>  }
+>
+> +/*
+> + * Check if a region of the flash is (completely) locked. See stm_lock() for
+> + * more info.
+> + *
+> + * Returns 1 if entire region is locked, 0 if any portion is unlocked, and
+> + * negative on errors.
+> + */
+> +static int stm_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
+> +{
+> +       int status;
+> +
+> +       status = read_sr(nor);
+> +       if (status < 0)
+> +               return status;
+> +
+> +       return stm_is_locked_sr(nor, ofs, len, status);
+> +}
+> +
+>  static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  {
+>         struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> @@ -549,6 +567,21 @@ static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>         return ret;
+>  }
+>
+> +static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+> +{
+> +       struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> +       int ret;
+> +
+> +       ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_UNLOCK);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = nor->flash_is_locked(nor, ofs, len);
+> +
+> +       spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_LOCK);
+> +       return ret;
+> +}
+> +
+>  /* Used when the "_ext_id" is two bytes at most */
+>  #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)     \
+>                 .id = {                                                 \
+> @@ -1151,11 +1184,13 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>         if (JEDEC_MFR(info) == SNOR_MFR_MICRON) {
+>                 nor->flash_lock = stm_lock;
+>                 nor->flash_unlock = stm_unlock;
+> +               nor->flash_is_locked = stm_is_locked;
+>         }
+>
+> -       if (nor->flash_lock && nor->flash_unlock) {
+> +       if (nor->flash_lock && nor->flash_unlock && nor->flash_is_locked) {
+>                 mtd->_lock = spi_nor_lock;
+>                 mtd->_unlock = spi_nor_unlock;
+> +               mtd->_is_locked = spi_nor_is_locked;
 
-[auto build test results on v4.3-rc3 -- if it's inappropriate base, please ignore]
+Need some understanding here, is this lock status call will be re-used
+at the time of _erase and _write calls for skipping locked area or
+sectors, if so how it re-used? Idea here is if user erase an area
+out-of which some part is locked and other unlocked the erase call
+should print the locked area and erase only unlocked area.
 
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+>         }
+>
+>         /* sst nor chips use AAI word program */
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index bd8068f6796a..8620bfaed261 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -176,6 +176,8 @@ struct mtd_info;
+>   *                     at the offset @offs
+>   * @flash_lock:                [FLASH-SPECIFIC] lock a region of the SPI NOR
+>   * @flash_unlock:      [FLASH-SPECIFIC] unlock a region of the SPI NOR
+> + * @flash_is_locked:   [FLASH-SPECIFIC] check if a region of the SPI NOR is
+> + *                     completely locked
+>   * @priv:              the private data
+>   */
+>  struct spi_nor {
+> @@ -212,6 +214,7 @@ struct spi_nor {
+>
+>         int (*flash_lock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+>         int (*flash_unlock)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+> +       int (*flash_is_locked)(struct spi_nor *nor, loff_t ofs, uint64_t len);
+>
+>         void *priv;
+>  };
+> --
+> 2.5.0.457.gab17608
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 
-sparse warnings: (new ones prefixed by >>)
-
->> drivers/mtd/spi-nor/mtk-quadspi.c:310:52: sparse: incorrect type in argument 4 (different modifiers)
-   drivers/mtd/spi-nor/mtk-quadspi.c:310:52:    expected unsigned char [usertype] *[assigned] data
-   drivers/mtd/spi-nor/mtk-quadspi.c:310:52:    got unsigned char const [usertype] *[assigned] buf
->> drivers/mtd/spi-nor/mtk-quadspi.c:391:18: sparse: incorrect type in assignment (different base types)
-   drivers/mtd/spi-nor/mtk-quadspi.c:391:18:    expected struct mtd_info *mtd
-   drivers/mtd/spi-nor/mtk-quadspi.c:391:18:    got struct mtd_info <noident>
-   drivers/mtd/spi-nor/mtk-quadspi.c:402:17: sparse: expected structure or union
-   drivers/mtd/spi-nor/mtk-quadspi.c:403:17: sparse: expected structure or union
-   drivers/mtd/spi-nor/mtk-quadspi.c: In function 'mt8173_nor_write':
-   drivers/mtd/spi-nor/mtk-quadspi.c:310:10: warning: passing argument 4 of 'mt8173_nor_write_single_byte' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-             buf);
-             ^
-   drivers/mtd/spi-nor/mtk-quadspi.c:246:12: note: expected 'u8 * {aka unsigned char *}' but argument is of type 'const u_char * {aka const unsigned char *}'
-    static int mt8173_nor_write_single_byte(struct mt8173_nor *mt8173_nor,
-               ^
-   drivers/mtd/spi-nor/mtk-quadspi.c: In function 'mtk_nor_init':
-   drivers/mtd/spi-nor/mtk-quadspi.c:391:11: error: incompatible types when assigning to type 'struct mtd_info *' from type 'struct mtd_info'
-     nor->mtd = *mtd;
-              ^
-   drivers/mtd/spi-nor/mtk-quadspi.c:402:10: error: request for member 'owner' in something not a structure or union
-     nor->mtd.owner = THIS_MODULE;
-             ^
-   drivers/mtd/spi-nor/mtk-quadspi.c:403:10: error: request for member 'name' in something not a structure or union
-     nor->mtd.name = "mtk_nor";
-             ^
-   drivers/mtd/spi-nor/mtk-quadspi.c:410:36: warning: passing argument 1 of 'mtd_device_parse_register' from incompatible pointer type [-Wincompatible-pointer-types]
-     return  mtd_device_parse_register(&nor->mtd, NULL, ppdata, NULL, 0);
-                                       ^
-   In file included from drivers/mtd/spi-nor/mtk-quadspi.c:24:0:
-   include/linux/mtd/mtd.h:372:12: note: expected 'struct mtd_info *' but argument is of type 'struct mtd_info **'
-    extern int mtd_device_parse_register(struct mtd_info *mtd,
-               ^
-
-vim +310 drivers/mtd/spi-nor/mtk-quadspi.c
-
-   304		ret = mt8173_nor_write_buffer_disable(mt8173_nor);
-   305		if (ret < 0)
-   306			dev_warn(mt8173_nor->dev, "write buffer disable failed!\n");
-   307	
-   308		if (len) {
-   309			ret = mt8173_nor_write_single_byte(mt8173_nor, to, (int)len,
- > 310							   buf);
-   311			if (ret < 0)
-   312				dev_warn(mt8173_nor->dev, "write single byte failed!\n");
-   313			(*retlen) += len;
-   314		}
-   315	}
-   316	
-   317	static int mt8173_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-   318	{
-   319		int ret;
-   320		struct mt8173_nor *mt8173_nor = nor->priv;
-   321	
-   322		/* mtk nor controller doesn't supoort SPINOR_OP_RDCR */
-   323		switch (opcode) {
-   324		case SPINOR_OP_RDID:
-   325			/* read JEDEC ID need 4 bytes commands */
-   326			ret = mt8173_nor_set_cmd(mt8173_nor, 0, 32, SPINOR_OP_RDID);
-   327			if (ret < 0)
-   328				return ret;
-   329	
-   330			/* mtk nor flash controller only support 3 bytes IDs */
-   331			buf[2] = readb(mt8173_nor->base + MTK_NOR_SHREG0_REG);
-   332			buf[1] = readb(mt8173_nor->base + MTK_NOR_SHREG1_REG);
-   333			buf[0] = readb(mt8173_nor->base + MTK_NOR_SHREG2_REG);
-   334			break;
-   335		case SPINOR_OP_RDSR:
-   336			ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_RDSR_CMD);
-   337			if (ret < 0)
-   338				return ret;
-   339			*buf = readb(mt8173_nor->base + MTK_NOR_RDSR_REG);
-   340			break;
-   341		default:
-   342			ret = -EINVAL;
-   343			break;
-   344		}
-   345		return ret;
-   346	}
-   347	
-   348	static int mt8173_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-   349					int len, int write_enable)
-   350	{
-   351		int ret;
-   352		struct mt8173_nor *mt8173_nor = nor->priv;
-   353	
-   354		switch (opcode) {
-   355		case SPINOR_OP_WRSR:
-   356			ret = mt8173_nor_set_para(mt8173_nor, *buf,
-   357						  MTK_NOR_WRSR_CMD);
-   358			break;
-   359		case SPINOR_OP_CHIP_ERASE:
-   360			ret = mt8173_nor_set_para(mt8173_nor, opcode,
-   361						  MTK_NOR_PRG_CMD);
-   362			break;
-   363		case SPINOR_OP_WREN:
-   364			ret = mt8173_nor_set_cmd(mt8173_nor, 0, 8, opcode);
-   365			if (ret)
-   366				dev_warn(mt8173_nor->dev, "set write enable fail!\n");
-   367			break;
-   368		case SPINOR_OP_WRDI:
-   369			ret = mt8173_nor_set_cmd(mt8173_nor, 0, 8, opcode);
-   370			if (ret)
-   371				dev_warn(mt8173_nor->dev, "set write disable fail!\n");
-   372			break;
-   373		default:
-   374			dev_warn(mt8173_nor->dev, "doesn't support cmd %d\n", opcode);
-   375			ret = -EINVAL;
-   376			break;
-   377		}
-   378		return ret;
-   379	}
-   380	
-   381	static int __init mtk_nor_init(struct mt8173_nor *mt8173_nor,
-   382				       struct mtd_part_parser_data *ppdata)
-   383	{
-   384		int ret;
-   385		struct spi_nor *nor;
-   386		struct mtd_info *mtd;
-   387	
-   388		writel(MTK_NOR_ENABLE_SF_CMD, mt8173_nor->base + MTK_NOR_WRPROT_REG);
-   389		nor = &mt8173_nor->nor;
-   390		mtd = &mt8173_nor->mtd;
- > 391		nor->mtd = *mtd;
-   392		nor->dev = mt8173_nor->dev;
-   393		nor->priv = mt8173_nor;
-   394		mtd->priv = nor;
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+-- Jagan.
