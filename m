@@ -1,22 +1,20 @@
-Date: Thu, 1 Oct 2015 09:58:41 -0700
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhhM0-0007Kp-UU
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 17:09:13 +0000
+Received: by pablk4 with SMTP id lk4so79341207pab.3
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Oct 2015 10:08:52 -0700 (PDT)
+Date: Thu, 1 Oct 2015 10:08:49 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Josh Wu <josh.wu@atmel.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Huang Shijie <shijie.huang@intel.com>,
- Bryan Wu <bryan.wu@analog.com>, devel@driverdev.osuosl.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: pass page number to ecc->write_xxx() methods
-Message-ID: <20151001165841.GQ143959@google.com>
-References: <1440436219-31625-1-git-send-email-boris.brezillon@free-electrons.com>
- <20151001170743.3aa0d6fa@bbrezillon>
+To: Kirill Smirnov <kirill.k.smirnov@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd-utils: serve_image: use proper POSIX_C_SOURCE value
+Message-ID: <20151001170849.GA12631@google.com>
+References: <560C8A27.6060202@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151001170743.3aa0d6fa@bbrezillon>
+In-Reply-To: <560C8A27.6060202@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 01, 2015 at 05:07:43PM +0200, Boris Brezillon wrote:
-> On Mon, 24 Aug 2015 19:10:19 +0200
-> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Thu, Oct 01, 2015 at 04:19:35AM +0300, Kirill Smirnov wrote:
+> struct addrinfo and friends conform to POSIX.1-2001, not earlier.
+> This patch fixes linking against latest glibc 2.22
 > 
-> > The ->read_xxx() methods are all passed the page number the NAND controller
-> > is supposed to read, but ->write_xxx() do not have such a parameter.
-> > 
-> > This is a problem if we want to properly implement data
-> > scrambling/randomization in order to mitigate MLC sensibility to repeated
-> > pattern: to prevent bitflips in adjacent pages in the same block we need
-> > to avoid repeating the same pattern at the same offset in those pages,
-> > hence the randomizer/scrambler engine need to be passed the page value
-> > in order to adapt its seed accordingly.
-> > 
-> > Moreover, adding the page parameter the ->write_xxx() methods add some
-> > consistency to the current model.
-> 
-> Apparently nobody complained (or nobody cares :-)) about that patch,
-> and I'll really need the page information if I want to support
-> randomization/scrambling in the sunxi driver.
-> 
-> Do you have any objections to this patch
+> Now email formatting and the generated patch should be OK.
 
-No, I guess not.
+Normally we don't include lines like this ^^ in the commit message.
 
-> (I can rebase it on mainline
-> and check if new drivers have been added since the submission)?
+> Signed-off-by: Kirill Smirnov <kirill.k.smirnov@gmail.com>
+> ---
 
-I recently compile tested it against the tip of tree (don't know why I
-didn't merge it then), but I think we added one driver since then. I
-suppose a rebase is in order.
+But you can include comments like that (that don't belong in the commit
+message) here, below the '---'.
 
-> I remember you pointed a trick you've used in the brcmnand driver to
-> get this page information (storing it during the ->cmdfunc() or
-> ->ctrl_cmd() call), but it would be way easier to have it directly in
-> the ecc->write_xxx() parameters...
+Also, the extra attachment is not too much of a problem, but try to
+avoid it in the future.
 
-Right, that's not a pattern I'd really like people to copy...
+Anyway, patch looks reasonable to me. Applied to mtd-utils.git. Thanks!
 
-Regards,
 Brian
+
+> serve_image.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/serve_image.c b/serve_image.c
+> index d3794ec..cbcf3b7 100644
+> --- a/serve_image.c
+> +++ b/serve_image.c
+> @@ -1,5 +1,5 @@
+> #define PROGRAM_NAME "serve_image"
+> -#define _POSIX_C_SOURCE 199309
+> +#define _POSIX_C_SOURCE 200112L
+> 
+> #include <time.h>
+> #include <errno.h>
+> -- 
+> 2.5.1
