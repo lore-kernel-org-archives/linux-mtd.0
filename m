@@ -1,37 +1,16 @@
-Received: from mail-ig0-f181.google.com ([209.85.213.181])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zhf40-0006ZD-TM
- for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 14:42:29 +0000
-Received: by igcpb10 with SMTP id pb10so19865738igc.1
- for <linux-mtd@lists.infradead.org>; Thu, 01 Oct 2015 07:42:07 -0700 (PDT)
-Date: Thu, 1 Oct 2015 09:41:37 -0500
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Mike Snitzer <snitzer@redhat.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Kent Overstreet <kent.overstreet@gmail.com>,
- Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
- Neil Brown <neilb@suse.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 1/5] fs: Verify access of user towards block device file
- when mounting
-Message-ID: <20151001144137.GC101875@ubuntu-hedt>
-References: <1443644116-41366-1-git-send-email-seth.forshee@canonical.com>
- <1443644116-41366-2-git-send-email-seth.forshee@canonical.com>
- <20150930234215.GA24127@redhat.com>
- <20151001125508.GA101875@ubuntu-hedt>
- <20151001134052.GB27818@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151001134052.GB27818@redhat.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZhfK6-0001I3-Ep
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 14:59:07 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Huang Shijie <shijie.huang@arm.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH] mtd: nand: remove unused ->init_size() hook
+Date: Thu,  1 Oct 2015 16:58:27 +0200
+Message-Id: <1443711507-1875-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,122 +20,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 01, 2015 at 09:40:52AM -0400, Mike Snitzer wrote:
-> On Thu, Oct 01 2015 at  8:55am -0400,
-> Seth Forshee <seth.forshee@canonical.com> wrote:
-> 
-> > On Wed, Sep 30, 2015 at 07:42:15PM -0400, Mike Snitzer wrote:
-> > > On Wed, Sep 30 2015 at  4:15pm -0400,
-> > > Seth Forshee <seth.forshee@canonical.com> wrote:
-> > > 
-> > > > When mounting a filesystem on a block device there is currently
-> > > > no verification that the user has appropriate access to the
-> > > > device file passed to mount. This has not been an issue so far
-> > > > since the user in question has always been root, but this must
-> > > > be changed before allowing unprivileged users to mount in user
-> > > > namespaces.
-> > > > 
-> > > > To fix this, add an argument to lookup_bdev() to specify the
-> > > > required permissions. If the mask of permissions is zero, or
-> > > > if the user has CAP_SYS_ADMIN, the permission check is skipped,
-> > > > otherwise the lookup fails if the user does not have the
-> > > > specified access rights for the inode at the supplied path.
-> > > > 
-> > > > Callers associated with mounting are updated to pass permission
-> > > > masks to lookup_bdev() so that these mounts will fail for an
-> > > > unprivileged user who lacks permissions for the block device
-> > > > inode. All other callers pass 0 to maintain their current
-> > > > behaviors.
-> > > > 
-> > > > Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> > > > ---
-> > > >  drivers/md/bcache/super.c |  2 +-
-> > > >  drivers/md/dm-table.c     |  2 +-
-> > > >  drivers/mtd/mtdsuper.c    |  6 +++++-
-> > > >  fs/block_dev.c            | 18 +++++++++++++++---
-> > > >  fs/quota/quota.c          |  2 +-
-> > > >  include/linux/fs.h        |  2 +-
-> > > >  6 files changed, 24 insertions(+), 8 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-> > > > index e76ed003769e..35bb3ea4cbe2 100644
-> > > > --- a/drivers/md/dm-table.c
-> > > > +++ b/drivers/md/dm-table.c
-> > > > @@ -380,7 +380,7 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
-> > > >  	BUG_ON(!t);
-> > > >  
-> > > >  	/* convert the path to a device */
-> > > > -	bdev = lookup_bdev(path);
-> > > > +	bdev = lookup_bdev(path, 0);
-> > > >  	if (IS_ERR(bdev)) {
-> > > >  		dev = name_to_dev_t(path);
-> > > >  		if (!dev)
-> > > 
-> > > Given dm_get_device() is passed @mode why not have it do something like
-> > > you did in blkdev_get_by_path()? e.g.:
-> > 
-> > I only dealt with code related to mounting in this patch since that's
-> > what I'm working on. I have it on my TODO list to consider converting
-> > other callers of lookup_bdev. But if you're sure doing so makes sense
-> > for dm_get_device and that it won't cause regressions then I could add a
-> > patch for it.
-> 
-> OK, dm_get_device() is called in DM device activation path (by tools
-> like lvm2).
-> 
-> After lookup_bdev() it goes on to call blkdev_get_by_dev() with this
-> call chain: 
->   dm_get_device -> dm_get_table_device -> open_table_device -> blkdev_get_by_dev
-> 
-> Not immediately clear to me why we'd need to augment blkdev_get_by_dev()
-> to do this checking also.
-> 
-> However, thinking further: In a device stack (e.g. dm/lvm2, md, etc)
-> new virtual block devices are created that layer ontop of the
-> traditional block devices.  This level of indirection may cause your
-> lookup_bdev() check to go on to succeed (if access constraints were not
-> established on the upper level dm or md device?).  I'm just thinking
-> outloud here: but have you verified your changes work as intended on
-> devices created with either lvm2 or mdadm?
-> 
-> What layer establishes access rights to historically root-only
-> priviledged block devices?  Is it user namespaces?
+The ->init_size() hook was introduced to let NAND controller drivers
+support NAND devices that could not be described in the nand_ids table.
+Since then, the core has added support for extended-id parsing and
+full-id description, thus allowing to describe pretty much all existing
+NANDs.
+Moreover, this hook is not used by any mainline driver, and should not be
+used by new drivers, because detecting the NAND chip is not something
+controller specific.
 
-I'm going to start with this last question and work my way backwards.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 5 +----
+ include/linux/mtd/nand.h     | 6 ------
+ 2 files changed, 1 insertion(+), 10 deletions(-)
 
-Who determines access rights to the block devices varies to some degree.
-Any normal user could unshare the user/mount namespaces and still see
-all the block devices in /dev. If we're going to allow that user to then
-mount block devices in their private namespaces, the kernel must verify
-that the user has appropriate permissions for the block device inode.
-That's the point of this patch. In a container context the host process
-which sets up the container might share some block devices into the
-container via bind mounts, in which case it would be responsible for
-setting up access rights (both via inode permissions and potentially via
-devcgroups). I also have some patches I'm working on for a loop psuedo
-filesystem which would allow a container to allocate loop devices for
-its own use (via the loop-control device), in which case the kernel
-creates a device node in the loopfs filesystem from which the new loop
-device was allocated, owned by the root user in the user namespace
-associated with the loopfs superblock.
-
-Obviously a DM block device is more complicated than a traditional block
-device. This patch should ensure that if an unprivileged user tries to
-mount a DM blkdev that it fails if the user lacks permissions for the DM
-blkdev inode. There's also the blkdevs behind the DM blkdev, and I'm not
-sure whether we need to additionally verify that the user has access to
-those devices. Maybe it's enough that someone with access to them set up
-the DM device, and someone with sufficient privileges gave that user
-access to the DM device. Do you have any thoughts?
-
-As for activating a DM device, I assume only root is permitted to do
-this. In that case lookup_bdev will skip the inode permission check
-even if a non-zero permission mask is passed.
-
-> I haven't kept up with user namespaces as it relates to stacking block
-> drivers like DM.  But I'm happy to come up to speed and at the same time
-> help you verify all works as expected with DM blocks devices...
-
-That's great, I really appreciate it.
-
-Seth
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 37c0d9d..a8230b1 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3836,10 +3836,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 
+ 	chip->chipsize = (uint64_t)type->chipsize << 20;
+ 
+-	if (!type->pagesize && chip->init_size) {
+-		/* Set the pagesize, oobsize, erasesize by the driver */
+-		busw = chip->init_size(mtd, chip, id_data);
+-	} else if (!type->pagesize) {
++	if (!type->pagesize) {
+ 		/* Decode parameters from extended ID */
+ 		nand_decode_ext_id(mtd, chip, id_data, &busw);
+ 	} else {
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index c4d8e30..50e1f94 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -556,10 +556,6 @@ struct nand_buffers {
+  * @block_markbad:	[REPLACEABLE] mark a block bad
+  * @cmd_ctrl:		[BOARDSPECIFIC] hardwarespecific function for controlling
+  *			ALE/CLE/nCE. Also used to write command and address
+- * @init_size:		[BOARDSPECIFIC] hardwarespecific function for setting
+- *			mtd->oobsize, mtd->writesize and so on.
+- *			@id_data contains the 8 bytes values of NAND_CMD_READID.
+- *			Return with the bus width.
+  * @dev_ready:		[BOARDSPECIFIC] hardwarespecific function for accessing
+  *			device ready/busy line. If set to NULL no access to
+  *			ready/busy is available and the ready/busy information
+@@ -658,8 +654,6 @@ struct nand_chip {
+ 	int (*block_bad)(struct mtd_info *mtd, loff_t ofs, int getchip);
+ 	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
+ 	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
+-	int (*init_size)(struct mtd_info *mtd, struct nand_chip *this,
+-			u8 *id_data);
+ 	int (*dev_ready)(struct mtd_info *mtd);
+ 	void (*cmdfunc)(struct mtd_info *mtd, unsigned command, int column,
+ 			int page_addr);
+-- 
+2.1.4
