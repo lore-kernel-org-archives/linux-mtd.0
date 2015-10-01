@@ -1,19 +1,22 @@
-Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
+Received: from li271-223.members.linode.com ([178.79.152.223]
+ helo=mail.mleia.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhScx-0006c6-I7
- for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 01:25:44 +0000
-Received: by lahh2 with SMTP id h2so65857844lah.0
- for <linux-mtd@lists.infradead.org>; Wed, 30 Sep 2015 18:25:21 -0700 (PDT)
-Subject: Re: [PATCH] mtd-utils: serve_image: use proper POSIX_C_SOURCE value
-To: Brian Norris <computersforpeace@gmail.com>
-References: <560C7518.4050004@gmail.com> <20151001010428.GA12956@google.com>
-Cc: linux-mtd@lists.infradead.org
-From: Kirill Smirnov <kirill.k.smirnov@gmail.com>
-Message-ID: <560C8B80.5060505@gmail.com>
-Date: Thu, 1 Oct 2015 04:25:20 +0300
+ id 1ZhWIF-0005v2-IX
+ for linux-mtd@lists.infradead.org; Thu, 01 Oct 2015 05:20:36 +0000
+Message-ID: <560CC28C.2040805@mleia.com>
+Date: Thu, 01 Oct 2015 08:20:12 +0300
+From: Vladimir Zapolskiy <vz@mleia.com>
 MIME-Version: 1.0
-In-Reply-To: <20151001010428.GA12956@google.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Roland Stigge <stigge@antcom.de>
+CC: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 1/3] mtd: nand: lpc32xx_slc: improve SLCTAC_*() macro
+ definitions
+References: <1443655417-14689-1-git-send-email-vz@mleia.com>
+ <1443655417-14689-2-git-send-email-vz@mleia.com>
+In-Reply-To: <1443655417-14689-2-git-send-email-vz@mleia.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,16 +27,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01.10.2015 04:04, Brian Norris wrote:
-> On Thu, Oct 01, 2015 at 02:49:44AM +0300, Kirill Smirnov wrote:
->> struct addrinfo and friends conform to POSIX.1-2001, not earlier.
->> This patch fixes linking against latest glibc 2.22
->
-> Please include your 'Signed-off-by', and use inline patches, not
-> attachments. For reference, see the Linux patch submission guidelines:
->
-> https://www.kernel.org/doc/Documentation/SubmittingPatches
->
-I've resent the patch. I'm sorry, while re-formatting mail I forgot to 
-remove attachment, so it has been shipped along with the proper inline 
-patch. Is it OK?
+On 01.10.2015 02:23, Vladimir Zapolskiy wrote:
+> No functional change, move bitfield calculations to macro
+> definitions with added clock rate argument, which are in turn defined
+> by new common SLCTAC_CLOCKS(c, n, s) macro definition.
+> 
+> Signed-off-by: Vladimir Zapolskiy <vz@mleia.com>
+> ---
+> Changes from v1 to v2:
+> * none, new change
+> 
+>  drivers/mtd/nand/lpc32xx_slc.c | 27 +++++++++++++++------------
+>  1 file changed, 15 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+> index abfec13..9ac0f3b 100644
+> --- a/drivers/mtd/nand/lpc32xx_slc.c
+> +++ b/drivers/mtd/nand/lpc32xx_slc.c
+> @@ -94,22 +94,25 @@
+>  /**********************************************************************
+>  * slc_tac register definitions
+>  **********************************************************************/
+> +/* Computation of clock cycles on basis of controller and device clock rates */
+> +#define SLCTAC_CLOCKS(c, n, s)	(((1 + (c / n)) & 0xF) << s)
+> +
+>  /* Clock setting for RDY write sample wait time in 2*n clocks */
+>  #define SLCTAC_WDR(n)		(((n) & 0xF) << 28)
+>  /* Write pulse width in clock cycles, 1 to 16 clocks */
+> -#define SLCTAC_WWIDTH(n)	(((n) & 0xF) << 24)
+> +#define SLCTAC_WWIDTH(c, n)	(SLCTAC_CLOCKS(c, n, 24))
+>  /* Write hold time of control and data signals, 1 to 16 clocks */
+> -#define SLCTAC_WHOLD(n)		(((n) & 0xF) << 20)
+> +#define SLCTAC_WHOLD(c, n)	(SLCTAC_CLOCKS(c, n, 20))
+>  /* Write setup time of control and data signals, 1 to 16 clocks */
+> -#define SLCTAC_WSETUP(n)	(((n) & 0xF) << 16)
+> +#define SLCTAC_WSETUP(c, n)	(SLCTAC_CLOCKS(c, n, 16))
+>  /* Clock setting for RDY read sample wait time in 2*n clocks */
+>  #define SLCTAC_RDR(n)		(((n) & 0xF) << 12)
+>  /* Read pulse width in clock cycles, 1 to 16 clocks */
+> -#define SLCTAC_RWIDTH(n)	(((n) & 0xF) << 8)
+> +#define SLCTAC_RWIDTH(c, n)	(SLCTAC_CLOCKS(c, n, 8))
+>  /* Read hold time of control and data signals, 1 to 16 clocks */
+> -#define SLCTAC_RHOLD(n)		(((n) & 0xF) << 4)
+> +#define SLCTAC_RHOLD(c, n)	(SLCTAC_CLOCKS(c, n, 4))
+>  /* Read setup time of control and data signals, 1 to 16 clocks */
+> -#define SLCTAC_RSETUP(n)	(((n) & 0xF) << 0)
+> +#define SLCTAC_RSETUP(c, n)	(SLCTAC_CLOCKS(c, n, 0))
+>  
+
+Anticipating a question about not parenthesized arguments, I don't know,
+if more parentheses around arguments in these macro definitions are
+needed, because there is no other potential usage of them.
+Please let me know, if you think different, I'll fix it.
+
+--
+With best wishes,
+Vladimir
