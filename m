@@ -11,10 +11,10 @@ CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, "Mark
  Sandeep Tripathy <tripathy@broadcom.com>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
  <bcm-kernel-feedback-list@broadcom.com>, Anup Patel <anup.patel@broadcom.com>
-Subject: [PATCH 2/5] mtd: nand: Allow MTD_NAND_BRCMNAND to be selected for
- ARM64
-Date: Fri, 2 Oct 2015 23:26:43 +0530
-Message-ID: <1443808606-21203-3-git-send-email-anup.patel@broadcom.com>
+Subject: [PATCH 4/5] Documentation: dt-bindings: Add info about brcm,
+ nand-iproc-reset DT flag
+Date: Fri, 2 Oct 2015 23:26:45 +0530
+Message-ID: <1443808606-21203-5-git-send-email-anup.patel@broadcom.com>
 In-Reply-To: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
 References: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
 MIME-Version: 1.0
@@ -28,31 +28,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BRCM NAND driver can be re-used for Broadcom ARM64 SoCs hence
-this patch updates Kconfig to allow selection of MTD_NAND_BRCMNAND
-for ARM64.
+This patch updates the BRCM NAND controller DT bindings documentation
+to add info about newly added optional flag "brcm,nand-iproc-reset".
 
 Signed-off-by: Anup Patel <anup.patel@broadcom.com>
-Reviewed-by: Vikram Prakash <vikramp@broadcom.com>
-Reviewed-by: Ray Jui <rjui@broadcom.com>
 Reviewed-by: Pramod KUMAR <pramodku@broadcom.com>
+Reviewed-by: Ray Jui <rjui@broadcom.com>
 Reviewed-by: Scott Branden <sbranden@broadcom.com>
 ---
- drivers/mtd/nand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 3324281..a1b5819 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -393,7 +393,7 @@ config MTD_NAND_GPMI_NAND
+diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+index 4ff7128..19b7a3c 100644
+--- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
++++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+@@ -78,6 +78,10 @@ we define additional 'compatible' properties and associated register resources w
+        for interrupt status/ack.
+      - reg-names: (required) a list of the names corresponding to the previous
+        register ranges. Should contain "iproc-idm" and "iproc-ext".
++     - brcm,nand-iproc-reset: (optional) Some of the Broadcom IPROC SoCs
++       require NAND controller to be resetted for cleanup of previously
++       configured NAND controller state. This optional flag resets the
++       NAND controller once before any NAND commands are issued.
  
- config MTD_NAND_BRCMNAND
- 	tristate "Broadcom STB NAND controller"
--	depends on ARM || MIPS
-+	depends on ARM || ARM64 || MIPS
- 	help
- 	  Enables the Broadcom NAND controller driver. The controller was
- 	  originally designed for Set-Top Box but is used on various BCM7xxx,
+ 
+ * NAND chip-select
 -- 
 1.9.1
