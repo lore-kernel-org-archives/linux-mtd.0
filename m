@@ -1,24 +1,21 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zi4h0-00081M-Cj
- for linux-mtd@lists.infradead.org; Fri, 02 Oct 2015 18:04:28 +0000
-Received: by padhy16 with SMTP id hy16so112586426pad.1
- for <linux-mtd@lists.infradead.org>; Fri, 02 Oct 2015 11:04:05 -0700 (PDT)
-Date: Fri, 2 Oct 2015 11:04:02 -0700
+ id 1Zi4lu-0004mb-Gz
+ for linux-mtd@lists.infradead.org; Fri, 02 Oct 2015 18:09:31 +0000
+Received: by pacfv12 with SMTP id fv12so114937728pac.2
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Oct 2015 11:09:09 -0700 (PDT)
+Date: Fri, 2 Oct 2015 11:09:06 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Stefan Roese <sr@denx.de>
 Cc: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
  Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH 3/3 v2] mtd: nand: fsmc: Add BCH4 SW ECC support for
- SPEAr600
-Message-ID: <20151002180402.GI107187@google.com>
+Subject: Re: [PATCH 1/3] mtd: nand: fsmc: Small whitespace cleanup
+Message-ID: <20151002180906.GJ107187@google.com>
 References: <1443782422-4515-1-git-send-email-sr@denx.de>
- <1443782422-4515-3-git-send-email-sr@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1443782422-4515-3-git-send-email-sr@denx.de>
+In-Reply-To: <1443782422-4515-1-git-send-email-sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Please base your series on linux-next.git or l2-mtd.git. See:
+On Fri, Oct 02, 2015 at 12:40:20PM +0200, Stefan Roese wrote:
+> Remove tab in empty line.
+> 
+> Signed-off-by: Stefan Roese <sr@denx.de>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
 
-http://linux-mtd.infradead.org/source.html
+Pushed patch 1 and 2 to l2-mtd.git. If you resend, you can just resend
+patch 3 based on the appropriate repo.
 
-or the MAINTAINERS file.
-
-On Fri, Oct 02, 2015 at 12:40:22PM +0200, Stefan Roese wrote:
-> --- a/drivers/mtd/nand/fsmc_nand.c
-> +++ b/drivers/mtd/nand/fsmc_nand.c
-> @@ -1023,12 +1023,17 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
->  	nand->cmd_ctrl = fsmc_cmd_ctrl;
->  	nand->chip_delay = 30;
->  
-> +	/*
-> +	 * Setup default ECC mode. nand_dt_init() called from nand_scan_init()
-> +	 * can overwrite this value if the DT provides a different value.
-> +	 */
->  	nand->ecc.mode = NAND_ECC_HW;
->  	nand->ecc.hwctl = fsmc_enable_hwecc;
->  	nand->ecc.size = 512;
->  	nand->options = pdata->options;
->  	nand->select_chip = fsmc_select_chip;
->  	nand->badblockbits = 7;
-> +	nand->dn = np;
-
-drivers/mtd/nand/fsmc_nand.c: In function ‘fsmc_nand_probe’:
-drivers/mtd/nand/fsmc_nand.c:1036:6: error: ‘struct nand_chip’ has no member named ‘dn’
-
-This field was renamed for clarity, to flash_node.
-
->  
->  	if (pdata->width == FSMC_NAND_BW16)
->  		nand->options |= NAND_BUSWIDTH_16;
-
-[...]
-
+Thanks,
 Brian
