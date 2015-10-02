@@ -1,37 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wi0-f178.google.com ([209.85.212.178])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZhxaH-0000iD-Jn
- for linux-mtd@lists.infradead.org; Fri, 02 Oct 2015 10:29:03 +0000
-Subject: Re: [PATCH 0/9] drivers:mtd:UBI: add bakvol module for MLC NAND
- paired page issue
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "baruch@tkos.co.il" <baruch@tkos.co.il>,
- "asierra@xes-inc.com" <asierra@xes-inc.com>,
- "guz.fnst@cn.fujitsu.com" <guz.fnst@cn.fujitsu.com>,
- "gsi@denx.de" <gsi@denx.de>,
+ id 1ZhxfS-0003u2-9z
+ for linux-mtd@lists.infradead.org; Fri, 02 Oct 2015 10:34:23 +0000
+Received: by wicfx3 with SMTP id fx3so27464716wic.1
+ for <linux-mtd@lists.infradead.org>; Fri, 02 Oct 2015 03:33:59 -0700 (PDT)
+Subject: Re: [PATCH] mtd: nand: fsmc: Add BCH4 SW ECC support for SPEAr600
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1441187581-12928-1-git-send-email-sr@denx.de>
+ <20150929002127.GP31505@google.com>
+Cc: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF4CEC3@NTXXIAMBX02.xacn.micron.com>
- <560A59B8.4000701@nod.at>
- <A765B125120D1346A63912DDE6D8B6310BF4D4C6@NTXXIAMBX02.xacn.micron.com>
- <560B8758.7010002@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?RnJhbmsgTGl1IOWImOe+pCAoZnJhbmtsaXUp?= <frankliu@micron.com>,
- Andrea Scian <rnd4@dave-tech.it>,
- =?UTF-8?B?S2FybCBaaGFuZyDlvKDlj4zplKMgKGthcmx6aGFuZyk=?=
- <karlzhang@micron.com>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
- "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <560E5C51.5000900@nod.at>
-Date: Fri, 2 Oct 2015 12:28:33 +0200
+From: Stefan Roese <sr@denx.de>
+Message-ID: <560E5D96.5050208@denx.de>
+Date: Fri, 2 Oct 2015 12:33:58 +0200
 MIME-Version: 1.0
-In-Reply-To: <560B8758.7010002@nod.at>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20150929002127.GP31505@google.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,23 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bean,
+Hi Brian,
 
-Am 30.09.2015 um 08:55 schrieb Richard Weinberger:
->> By the way, Do you review my patches series ? I don't backup duplicated data in OOB .
->> Can you specify which sector codes ? so that I can explain it in detail.
-> 
-> Okay. Maybe both Boris and I misread your code, can you please explain in detail
-> what functions like check_original_data() or mtd_write_dual_plane_oob() do?
+On 29.09.2015 02:21, Brian Norris wrote:
+> On Wed, Sep 02, 2015 at 11:53:01AM +0200, Stefan Roese wrote:
+>> This patch adds support for 4-bit ECC BCH4 for the SPEAr600 SoC. This can
+>> be used by boards equipped with a NAND chip that requires 4-bit ECC
+>> strength. The SPEAr600 HW ECC only supports 1-bit ECC strength.
+>>
+>> To enable SW BCH4, you need to specify this in your nand controller
+>> DT node:
+>>
+>> 	nand-ecc-mode = "soft_bch";
+>
+> Please update the DT binding file, referring to nand.txt. Just specify
+> your additional restrictions (like, should be "soft_bch" or "hw").
+>
+> Also please use nand-ecc-strength and nand-ecc-size; see below.
 
-Care to explain?
-Maybe we can find a solution without OOB.
-Boris proposed already some very promising ideas:
-http://comments.gmane.org/gmane.linux.drivers.mtd/61658
-
-BTW: Will you be at Embedded Linuxcon Europe in Dublin?
-Many MTD guys, including me, will be there.
-Maybe we can discuss the problem in a nice pub, first round is on me. :-)
+Thanks for the review. I'll send a new patch (series) out shortly,
+addressing all your comments and suggestions.
 
 Thanks,
-//richard
+Stefan
