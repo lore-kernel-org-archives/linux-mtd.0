@@ -1,18 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zi82l-0002SI-Hb
- for linux-mtd@lists.infradead.org; Fri, 02 Oct 2015 21:39:08 +0000
-Subject: Re: [PATCH] ubifs: Add new mount option to force fdatasync before
- rename
-To: Nikhilesh Reddy <reddyn@codeaurora.org>, linux-mtd@lists.infradead.org
-References: <560984B4.7090105@codeaurora.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <560EF960.50808@nod.at>
-Date: Fri, 2 Oct 2015 23:38:40 +0200
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZiDeQ-0004ea-Ka
+ for linux-mtd@lists.infradead.org; Sat, 03 Oct 2015 03:38:23 +0000
+Message-ID: <560F4BF8.7070408@cn.fujitsu.com>
+Date: Sat, 3 Oct 2015 11:31:04 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <560984B4.7090105@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+To: Brian Norris <computersforpeace@gmail.com>, Sudip Mukherjee
+ <sudipm.mukherjee@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: mtdram: check offs and len in mtdram->erase
+References: <1443631303-22057-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <560E50B6.5060103@cn.fujitsu.com> <20151002100133.GC9346@sudip-pc>
+ <20151002173847.GG107187@google.com>
+In-Reply-To: <20151002173847.GG107187@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On 10/03/2015 01:38 AM, Brian Norris wrote:
+> On Fri, Oct 02, 2015 at 03:31:33PM +0530, Sudip Mukherjee wrote:
+>> On Fri, Oct 02, 2015 at 05:39:02PM +0800, Dongsheng Yang wrote:
+>>> On 10/01/2015 12:41 AM, Sudip Mukherjee wrote:
+>>>> We should prevent user to erasing mtd device with an unaligned offset
+>>>> or length.
+>>>>
+>>>> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+>>>> ---
+>>>>
+>>>> I am not sure if I should add the Signed-off-by of
+>>>> Dongsheng Yang <yangds.fnst@cn.fujitsu.com> . He is the original author
+>>>> and he should get the credit for that.
+>>>
+>>> But I had sent a a patch out to fix this problem before your v1.
+>>>
+>>> http://lists.infradead.org/pipermail/linux-mtd/2015-September/062234.html
+>> I didn't know that. I think your v1 was applied.
+>
+> Sorry if I left any confusion. Dongsheng's v1 was applied and reverted.
+> v2 is still under review (and was sent slightly before (?) your v1).
 
-Am 28.09.2015 um 20:19 schrieb Nikhilesh Reddy:
-> The rename operation in UBIFS is synchronous (or nearly synchronous)
-> while the write operation is not. This can result in zero length files when
-> renaming of files followed by an abrupt power down or a crash.
-> 
-> For example:
-> 1) Say a file a.txt exists with size 1KB.
-> 2) Create a file b.tmp (open)
-> 3) Update the data in b.tmp with new values (write and close)
-> 4) rename b.tmp to a.txt
-> 5) Abrupt power down or crash
-> 
-> This above scenario can result in a.txt becoming a file of zero length and
-> giving the impression of a.txt being truncated.
-> This scenario can ofcourse be prevented by calling fsync or fdatasync
-> before the rename operation.
+Yea, sorry I should have mentioned it earlier. But I was and am still
+in a vacation, then I did not point it out in time.
 
-I gave this a try and hacked up something to emulate a powercut *exactly* after
-rename() in UBIFS.
+Sudip, any comment or test for my patch there is always welcome.
 
-fd = open("b.tmp", ...)
-write(fd, "foo", ...)
-close(fd)
-rename("b.tmp", "a.txt")
-^---- powercut
-
-After remounting UBIFS both a.txt and b.tmp are present
-but b.tmp is truncated. Not a.txt as you said.
-
-Can you please double check?
-I want to make sure that we're talking about the same things.
-
-Thanks,
-//richard
+Thanx
+Yang
+> Feel free to comment there.
+>
+> Brian
+> .
+>
