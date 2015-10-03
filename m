@@ -1,18 +1,19 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZiUMH-0003kh-1G
- for linux-mtd@lists.infradead.org; Sat, 03 Oct 2015 21:28:46 +0000
-Subject: Re: [PATCH] ubi: fastmap: Implement produce_free_peb()
+ id 1ZiUlX-0004yL-Ik
+ for linux-mtd@lists.infradead.org; Sat, 03 Oct 2015 21:54:52 +0000
+Received: by wicgb1 with SMTP id gb1so73597394wic.1
+ for <linux-mtd@lists.infradead.org>; Sat, 03 Oct 2015 14:54:30 -0700 (PDT)
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: m25p80: Commit "allow arbitrary OF matching for "jedec,spi-nor""
+ breaks module autoloading
 To: linux-mtd@lists.infradead.org
-References: <1439328464-5521-1-git-send-email-richard@nod.at>
-Cc: linux-kernel@vger.kernel.org, joerg.krause@embedded.rocks
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5610486D.7090207@nod.at>
-Date: Sat, 3 Oct 2015 23:28:13 +0200
+Cc: Brian Norris <computersforpeace@gmail.com>
+Message-ID: <56104E88.3040807@gmail.com>
+Date: Sat, 3 Oct 2015 23:54:16 +0200
 MIME-Version: 1.0
-In-Reply-To: <1439328464-5521-1-git-send-email-richard@nod.at>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,16 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 11.08.2015 um 23:27 schrieb Richard Weinberger:
-> If fastmap requests a free PEB for a pool and UBI is busy
-> with erasing PEBs we need to offer a function to wait for one.
-> We can reuse produce_free_peb() from the non-fastmap WL code
-> but with different locking semantics.
-> 
-> Reported-and-tested-by: Jörg Krause <joerg.krause@embedded.rocks>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+Seems like commit 43163022927b6e7d202a7e6f939c3f392465494d
+(allow arbitrary OF matching for "jedec,spi-nor") broke autoloading
+of the m25p80 module.
+MODALIAS is "spi:spi-nor" and removing "spi-nor" as device alias
+prevents module autoloading.
 
-Applied.
+Of course we could revert the removal of the "spi-nor" device alias.
+However it might be better to switch to DT-based matching for
+DT-configured devices.
 
-Thanks,
-//richard
+Adding a call to of_device_uevent_modalias to spi_uevent in spi.c
+solved the issue for me, drawback however is that just the first
+"compatible" value is used as modalias. In case of m25p80 this means
+that "jedec,spi-nor" has to be the first "compatible" value.
+This constraint might be too strict ..
+
+Having said that I'm not sure what could be a better way to fix
+the issue than just re-introducing the "spi-nor" device alias.
