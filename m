@@ -1,20 +1,18 @@
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZiRMv-0000Ct-TZ
- for linux-mtd@lists.infradead.org; Sat, 03 Oct 2015 18:17:14 +0000
-Date: Sat, 3 Oct 2015 20:13:41 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Felipe Balbi <balbi@ti.com>,
- Markus Pargmann <mpa@pengutronix.de>, Tejun Heo <tj@kernel.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] signal: remove
- jffs2_garbage_collect_thread()->allow_signal(SIGCONT)
-Message-ID: <20151003181341.GA1064@redhat.com>
+ id 1ZiReI-0002NH-Lr
+ for linux-mtd@lists.infradead.org; Sat, 03 Oct 2015 18:35:11 +0000
+Subject: Re: [PATCH v6] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com
+References: <1440126626-18446-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Cc: linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56101FC5.6090900@nod.at>
+Date: Sat, 3 Oct 2015 20:34:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151003181319.GA1036@redhat.com>
+In-Reply-To: <1440126626-18446-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +22,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-jffs2_garbage_collect_thread() does allow_signal(SIGCONT) for no reason,
-SIGCONT will wake a stopped task up even if it is ignored.
+Am 21.08.2015 um 05:10 schrieb Dongsheng Yang:
+> To make ubifs support atime flexily, this commit introduces
+> a Kconfig option named as UBIFS_ATIME_SUPPORT.
+> 
+> With UBIFS_ATIME_SUPPORT=n:
+> 	ubifs keeps the full compatibility to no_atime from
+> the start of ubifs.
+> =================UBIFS_ATIME_SUPPORT=n=======================
+> -o - no atime
+> -o atime - no atime
+> -o noatime - no atime
+> -o relatime - no atime
+> -o strictatime - no atime
+> -o lazyatime - no atime
+> 
+> With UBIFS_ATIME_SUPPORT=y:
+> 	ubifs supports the atime same with other main stream
+> file systems.
+> =================UBIFS_ATIME_SUPPORT=y=======================
+> -o - default behavior (relatime currently)
+> -o atime - atime support
+> -o noatime - no atime support
+> -o relatime - relative atime support
+> -o strictatime - strict atime support
+> -o lazyatime - lazy atime support
+> 
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> ---
+> 	-v2:
+> 		implement update_time for ubifs
+> 	-v3:
+> 		Oops, forgot to assign update_time for
+> 		ubifs_dir_inode_operations.
+> 	-v4:
+> 		drop the patch to change 'Y' to 'N' in
+> 		Kconfig
+> 	-v5:
+> 		simplify the warning in atime supporting
+> 	-v6:
+> 		* replace ubifs_warn with ubifs_msg
+> 		* rewrite the messages in Kconfig as Artem suggested
+> 		* remove S_VERSION related code
+>  fs/ubifs/Kconfig | 15 +++++++++++++++
+>  fs/ubifs/dir.c   |  3 +++
+>  fs/ubifs/file.c  | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/ubifs/super.c | 12 ++++++++++--
+>  fs/ubifs/ubifs.h |  1 +
+>  5 files changed, 77 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+> index ba66d50..7ff7712 100644
+> --- a/fs/ubifs/Kconfig
+> +++ b/fs/ubifs/Kconfig
+> @@ -35,3 +35,18 @@ config UBIFS_FS_ZLIB
+>  	default y
+>  	help
+>  	  Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
+> +
+> +config UBIFS_ATIME_SUPPORT
+> +	bool "Access time support" if UBIFS_FS
+> +	depends on UBIFS_FS
+> +	default n
+> +	help
+> +	  Originally UBIFS did not support atime, because it looked like a bad idea due
+> +	  increased flash wear. This option adds atime support and it is disabled by default
+> +	  to preserve the old behavior. If you enable this option, UBIFS starts updating atime,
+> +	  which means that file-system read operations will cause writes (inode atime
+> +	  updates). This may affect file-system performance and increase flash device wear,
+> +	  so be careful. How often atime is updated depends on the selected strategy:
+> +	  strictatime is the "heavy", relatime is "lighter", etc.
+> +
+> +	  If unsure, say 'N'
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index 27060fc..8d93427 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -1187,6 +1187,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
+>  	.getxattr    = ubifs_getxattr,
+>  	.listxattr   = ubifs_listxattr,
+>  	.removexattr = ubifs_removexattr,
+> +#ifdef CONFIG_UBIFS_ATIME_SUPPORT
+> +	.update_time = ubifs_update_time,
+> +#endif
+>  };
+>  
+>  const struct file_operations ubifs_dir_operations = {
+> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> index 35efc10..423ce6b 100644
+> --- a/fs/ubifs/file.c
+> +++ b/fs/ubifs/file.c
+> @@ -1364,6 +1364,45 @@ static inline int mctime_update_needed(const struct inode *inode,
+>  }
+>  
+>  /**
+> + * ubifs_update_time - update time of inode.
+> + * @inode: inode to update
+> + *
+> + * This function updates time of the inode.
+> + */
+> +int ubifs_update_time(struct inode *inode, struct timespec *time,
+> +			     int flags)
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- fs/jffs2/background.c | 1 -
- 1 file changed, 1 deletion(-)
+This function should be under an "#ifdef CONFIG_UBIFS_ATIME_SUPPORT".
 
-diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
-index 53cc735..e5c1783 100644
---- a/fs/jffs2/background.c
-+++ b/fs/jffs2/background.c
-@@ -80,7 +80,6 @@ static int jffs2_garbage_collect_thread(void *_c)
- 	siginitset(&hupmask, sigmask(SIGHUP));
- 	allow_signal(SIGKILL);
- 	allow_signal(SIGSTOP);
--	allow_signal(SIGCONT);
- 	allow_signal(SIGHUP);
- 
- 	c->gc_task = current;
--- 
-2.4.3
+Beside of that,
+Reviewed-by: Richard Weinberger <richard@nod.at>
+
+I think we can queue it for v4.4. Artem, what do you think?
+
+Thanks,
+//richard
