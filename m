@@ -1,17 +1,20 @@
-Date: Sun, 4 Oct 2015 22:32:25 +0100
+Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zir8q-0005H0-Ks
+ for linux-mtd@lists.infradead.org; Sun, 04 Oct 2015 21:48:25 +0000
+Received: by wicge5 with SMTP id ge5so95882236wic.0
+ for <linux-mtd@lists.infradead.org>; Sun, 04 Oct 2015 14:48:02 -0700 (PDT)
+Date: Sun, 4 Oct 2015 22:47:58 +0100
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Hans de Goede <hdegoede@redhat.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/7] mtd: nand: sunxi: cleanup and improvements
-Message-ID: <20151004213225.GA14735@localhost>
-References: <1443649529-9852-1-git-send-email-boris.brezillon@free-electrons.com>
+To: fangwei1@huawei.com, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] jffs2: fix a memleak in read_direntry()
+Message-ID: <20151004214758.GA27301@localhost>
+References: <1443497035-25220-1-git-send-email-fangwei1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1443649529-9852-1-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1443497035-25220-1-git-send-email-fangwei1@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 30, 2015 at 11:45:22PM +0200, Boris Brezillon wrote:
-> Hello,
+On Tue, Sep 29, 2015 at 11:23:55AM +0800, fangwei1@huawei.com wrote:
+> From: Wei Fang <fangwei1@huawei.com>
 > 
-> This patch series aims at cleaning up the sunxi_nand driver by factorizing
-> the duplicated code found in hw_ecc and hw_syndrome_ecc implementations.
+> Need to free the memory allocated for 'fd' if failed to read all
+> of the remainder name.
 > 
-> It also adds support for OOB bytes protection (only on a limited amount of
-> OOB bytes), and add code to correctly handle the 'bitflips in erased pages'
-> case.
-> 
-> Best Regards,
-> 
-> Boris
-> 
-> Changes since v1:
-> - drop the first patch (already applied)
-> - split the second patch to ease the review
-> - add the 'fix bitflips in erased pages' patch
-> 
-> Boris Brezillon (7):
->   mtd: nand: sunxi: create sunxi_nfc_hw_ecc_enable()/disable() functions
->   mtd: nand: sunxi: introduce sunxi_nfc_hw_ecc_read/write_chunk()
->   mtd: nand: sunxi: make use of sunxi_nfc_hw_ecc_read/write_chunk()
->   mtd: nand: sunxi: factorize extra OOB bytes handling
->   mtd: nand: sunxi: retrieve corrected OOB bytes
->   mtd: nand: sunxi: replace the NFC_BUF_TO_USER_DATA() macro by an
->     inline function
->   mtd: nand: sunxi: fix bitflips in erased pages
+> Signed-off-by: Wei Fang <fangwei1@huawei.com>
 
-All look good to me. Pushed to l2-mtd.git. Thanks.
+Patch looks OK to me, and obvious. Applied, but I'm open to comments.
+
+Brian
+
+> ---
+>  fs/jffs2/readinode.c |    6 +++++-
+>  1 files changed, 5 insertions(+), 1 deletions(-)
+> 
+> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+> index 28e0aab..bfebbf1 100644
+> --- a/fs/jffs2/readinode.c
+> +++ b/fs/jffs2/readinode.c
+> @@ -660,8 +660,12 @@ static inline int read_direntry(struct jffs2_sb_info *c, struct jffs2_raw_node_r
+>  
+>  		err = jffs2_flash_read(c, (ref_offset(ref)) + read,
+>  				rd->nsize - already, &read, &fd->name[already]);
+> -		if (unlikely(read != rd->nsize - already) && likely(!err))
+> +		if (unlikely(read != rd->nsize - already) && likely(!err)) {
+> +			jffs2_free_full_dirent(fd);
+> +			JFFS2_ERROR("short read: wanted %d bytes, got %zd\n",
+> +				    rd->nsize - already, read);
+>  			return -EIO;
+> +		}
+>  
+>  		if (unlikely(err)) {
+>  			JFFS2_ERROR("read remainder of name: error %d\n", err);
+> -- 
+> 1.7.1
+> 
