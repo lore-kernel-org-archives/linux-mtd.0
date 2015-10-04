@@ -1,26 +1,17 @@
-Received: from mail-yk0-x236.google.com ([2607:f8b0:4002:c07::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zin5f-0006V3-BG
- for linux-mtd@lists.infradead.org; Sun, 04 Oct 2015 17:28:51 +0000
-Received: by ykdg206 with SMTP id g206so150650054ykd.1
- for <linux-mtd@lists.infradead.org>; Sun, 04 Oct 2015 10:28:30 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Sun, 4 Oct 2015 13:28:26 -0400
-From: Tejun Heo <tj@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- David Woodhouse <dwmw2@infradead.org>, Felipe Balbi <balbi@ti.com>,
- Markus Pargmann <mpa@pengutronix.de>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/3] signal: remove
- jffs2_garbage_collect_thread()->allow_signal(SIGCONT)
-Message-ID: <20151004172826.GC19652@htj.duckdns.org>
-References: <20151003181319.GA1036@redhat.com>
- <20151003181341.GA1064@redhat.com>
+Date: Sun, 4 Oct 2015 22:32:25 +0100
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Hans de Goede <hdegoede@redhat.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/7] mtd: nand: sunxi: cleanup and improvements
+Message-ID: <20151004213225.GA14735@localhost>
+References: <1443649529-9852-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151003181341.GA1064@redhat.com>
+In-Reply-To: <1443649529-9852-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Oct 03, 2015 at 08:13:41PM +0200, Oleg Nesterov wrote:
-> jffs2_garbage_collect_thread() does allow_signal(SIGCONT) for no reason,
-> SIGCONT will wake a stopped task up even if it is ignored.
+On Wed, Sep 30, 2015 at 11:45:22PM +0200, Boris Brezillon wrote:
+> Hello,
 > 
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> This patch series aims at cleaning up the sunxi_nand driver by factorizing
+> the duplicated code found in hw_ecc and hw_syndrome_ecc implementations.
+> 
+> It also adds support for OOB bytes protection (only on a limited amount of
+> OOB bytes), and add code to correctly handle the 'bitflips in erased pages'
+> case.
+> 
+> Best Regards,
+> 
+> Boris
+> 
+> Changes since v1:
+> - drop the first patch (already applied)
+> - split the second patch to ease the review
+> - add the 'fix bitflips in erased pages' patch
+> 
+> Boris Brezillon (7):
+>   mtd: nand: sunxi: create sunxi_nfc_hw_ecc_enable()/disable() functions
+>   mtd: nand: sunxi: introduce sunxi_nfc_hw_ecc_read/write_chunk()
+>   mtd: nand: sunxi: make use of sunxi_nfc_hw_ecc_read/write_chunk()
+>   mtd: nand: sunxi: factorize extra OOB bytes handling
+>   mtd: nand: sunxi: retrieve corrected OOB bytes
+>   mtd: nand: sunxi: replace the NFC_BUF_TO_USER_DATA() macro by an
+>     inline function
+>   mtd: nand: sunxi: fix bitflips in erased pages
 
-Reviewed-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
--- 
-tejun
+All look good to me. Pushed to l2-mtd.git. Thanks.
