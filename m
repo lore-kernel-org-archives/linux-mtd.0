@@ -1,40 +1,19 @@
-Received: from mail-io0-f177.google.com ([209.85.223.177])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zj6jZ-0006hk-QK
- for linux-mtd@lists.infradead.org; Mon, 05 Oct 2015 14:27:22 +0000
-Received: by iofh134 with SMTP id h134so187448215iof.0
- for <linux-mtd@lists.infradead.org>; Mon, 05 Oct 2015 07:27:00 -0700 (PDT)
-Date: Mon, 5 Oct 2015 09:26:21 -0500
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Jan Kara <jack@suse.cz>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Mike Snitzer <snitzer@redhat.com>,
- Kent Overstreet <kent.overstreet@gmail.com>,
- Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
- Neil Brown <neilb@suse.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 1/5] fs: Verify access of user towards block device file
- when mounting
-Message-ID: <20151005142621.GB21639@ubuntu-hedt>
-References: <1443644116-41366-1-git-send-email-seth.forshee@canonical.com>
- <1443644116-41366-2-git-send-email-seth.forshee@canonical.com>
- <20150930234215.GA24127@redhat.com>
- <20151001125508.GA101875@ubuntu-hedt>
- <20151001134052.GB27818@redhat.com>
- <87wpv6a8hl.fsf@x220.int.ebiederm.org>
- <20151001230700.GA10087@quack.suse.cz>
+ id 1ZjA8e-0007uY-NG
+ for linux-mtd@lists.infradead.org; Mon, 05 Oct 2015 18:05:29 +0000
+Message-ID: <5612BBD2.9010708@codeaurora.org>
+Date: Mon, 05 Oct 2015 11:05:06 -0700
+From: Nikhilesh Reddy <reddyn@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151001230700.GA10087@quack.suse.cz>
+To: Richard Weinberger <richard@nod.at>
+CC: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] ubifs: Add new mount option to force fdatasync before
+ rename
+References: <560984B4.7090105@codeaurora.org> <560EF960.50808@nod.at>
+In-Reply-To: <560EF960.50808@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,19 +23,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 02, 2015 at 01:07:00AM +0200, Jan Kara wrote:
-> On Thu 01-10-15 10:55:50, Eric W. Biederman wrote:
-> > The goal if possible is to run things like docker without needed to be
-> > root or even more fun to run docker in a container, and in general
-> > enable nested containers.
-> 
-> Frankly at the filesystem side we are rather far from being able to safely
-> mount untrusted device and I don't think we'll ever be robust enough to
-> tolerate e.g. user changing the disk while fs is using it. So would this be
-> FUSE-only thing or is someone still hoping that general purpose filesystems
-> will be robust enough in future?
+On 10/02/2015 02:38 PM, Richard Weinberger wrote:
+> Hi!
+>
+> Am 28.09.2015 um 20:19 schrieb Nikhilesh Reddy:
+>> The rename operation in UBIFS is synchronous (or nearly synchronous)
+>> while the write operation is not. This can result in zero length files when
+>> renaming of files followed by an abrupt power down or a crash.
+>>
+>> For example:
+>> 1) Say a file a.txt exists with size 1KB.
+>> 2) Create a file b.tmp (open)
+>> 3) Update the data in b.tmp with new values (write and close)
+>> 4) rename b.tmp to a.txt
+>> 5) Abrupt power down or crash
+>>
+>> This above scenario can result in a.txt becoming a file of zero length and
+>> giving the impression of a.txt being truncated.
+>> This scenario can ofcourse be prevented by calling fsync or fdatasync
+>> before the rename operation.
+>
+> I gave this a try and hacked up something to emulate a powercut *exactly* after
+> rename() in UBIFS.
+>
+> fd = open("b.tmp", ...)
+> write(fd, "foo", ...)
+> close(fd)
+> rename("b.tmp", "a.txt")
+> ^---- powercut
+>
+> After remounting UBIFS both a.txt and b.tmp are present
+> but b.tmp is truncated. Not a.txt as you said.
+>
+> Can you please double check?
+> I want to make sure that we're talking about the same things.
 
-FUSE will almost certainly be first. I've also been working with ext4,
-and I would like to see that eventually supported to some degree.
+Since you mentioned a.txt and b.tmp are both present... i assume the 
+file a.txt was present even before b.tmp was created?
 
-Seth
+I will try and explain as to what i understand the situation to be.
+
+If both the files are present then the rename didnt actually get written 
+to the device and was probably still in the internal ubifs write buffer.
+I believe there is a small delay between the rename call and the inodes
+being updated on the the device from the internal ubifs write buffer.
+
+The scenario i described above seems to occur when the inode update is 
+committed to the device... i.e here the b.tmp should not exist since the 
+rename was successfully written but the file data writeback (that is in 
+the page cache) has not yet been committed to the device.
+Since the writeback buffer is way smaller than the page cache the inode 
+update occurs first or is likely to have.
+
+
+Hopefully i did not mess up on my understanding or explanation.
+Please do correct me if i messed up.
+
+>
+> Thanks,
+> //richard
+>
+
+
+-- 
+Thanks
+Nikhilesh Reddy
+
+Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
