@@ -1,23 +1,40 @@
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from mail-io0-f177.google.com ([209.85.223.177])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zj1GK-0007wj-2U
- for linux-mtd@lists.infradead.org; Mon, 05 Oct 2015 08:36:48 +0000
-Date: Mon, 5 Oct 2015 10:36:24 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, viro@ZenIV.linux.org.uk,
- jack@suse.cz, dedekind1@gmail.com, richard.weinberger@gmail.com,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 01/39] fs: introduce a ->s_cdev field into struct
- super_block
-Message-ID: <20151005083624.GD15529@quack.suse.cz>
-References: <1442307754-13233-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1442307754-13233-2-git-send-email-yangds.fnst@cn.fujitsu.com>
- <20151004063119.GF28519@infradead.org>
+ id 1Zj6jZ-0006hk-QK
+ for linux-mtd@lists.infradead.org; Mon, 05 Oct 2015 14:27:22 +0000
+Received: by iofh134 with SMTP id h134so187448215iof.0
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Oct 2015 07:27:00 -0700 (PDT)
+Date: Mon, 5 Oct 2015 09:26:21 -0500
+From: Seth Forshee <seth.forshee@canonical.com>
+To: Jan Kara <jack@suse.cz>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+ Mike Snitzer <snitzer@redhat.com>,
+ Kent Overstreet <kent.overstreet@gmail.com>,
+ Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
+ Neil Brown <neilb@suse.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
+ Jeff Layton <jlayton@poochiereds.net>,
+ "J. Bruce Fields" <bfields@fieldses.org>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: [PATCH 1/5] fs: Verify access of user towards block device file
+ when mounting
+Message-ID: <20151005142621.GB21639@ubuntu-hedt>
+References: <1443644116-41366-1-git-send-email-seth.forshee@canonical.com>
+ <1443644116-41366-2-git-send-email-seth.forshee@canonical.com>
+ <20150930234215.GA24127@redhat.com>
+ <20151001125508.GA101875@ubuntu-hedt>
+ <20151001134052.GB27818@redhat.com>
+ <87wpv6a8hl.fsf@x220.int.ebiederm.org>
+ <20151001230700.GA10087@quack.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151004063119.GF28519@infradead.org>
+In-Reply-To: <20151001230700.GA10087@quack.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +44,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat 03-10-15 23:31:19, Christoph Hellwig wrote:
-> On Tue, Sep 15, 2015 at 05:01:56PM +0800, Dongsheng Yang wrote:
-> > There are some filesystems are running on char devs, such
-> > as ubifs. So we need a field in super_block to hold a
-> > reference to the char device.
+On Fri, Oct 02, 2015 at 01:07:00AM +0200, Jan Kara wrote:
+> On Thu 01-10-15 10:55:50, Eric W. Biederman wrote:
+> > The goal if possible is to run things like docker without needed to be
+> > root or even more fun to run docker in a container, and in general
+> > enable nested containers.
 > 
-> We only care about the block device to get a device number to return
-> in st.st_dev.  And while filesystem literally run on top of a block
-> device that is not the case of a character device - you might use a
-> chardev to identify a device to mount but it'll never use the actual
-> char device.
-> 
-> So please don't bloat the superblock with this.
+> Frankly at the filesystem side we are rather far from being able to safely
+> mount untrusted device and I don't think we'll ever be robust enough to
+> tolerate e.g. user changing the disk while fs is using it. So would this be
+> FUSE-only thing or is someone still hoping that general purpose filesystems
+> will be robust enough in future?
 
-Hum, interesting idea. You're right that using anon bdev ubifs got assigned
-in set_anon_super() would work as well. It may be slightly confusing for
-quota-tools usage where specifying char device on command line would not
-work (specifying block device to identify filesystem works there). But
-using mount point would work fine so the situation would be the same as
-with network filesystems.
+FUSE will almost certainly be first. I've also been working with ext4,
+and I would like to see that eventually supported to some degree.
 
-We could even add a translation in quota-tools to convert char device to
-corresponding anon block device if there's a reasonably simple way to do
-that in userspace or we could translate in quotactl code in kernel if
-that's any easier. But currently I don't see a way how we could easily do
-either of those.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Seth
