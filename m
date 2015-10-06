@@ -1,20 +1,36 @@
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZjSGv-0003Nq-8f
- for linux-mtd@lists.infradead.org; Tue, 06 Oct 2015 13:27:13 +0000
-Received: by wiclk2 with SMTP id lk2so159179274wic.1
- for <linux-mtd@lists.infradead.org>; Tue, 06 Oct 2015 06:26:51 -0700 (PDT)
-Date: Tue, 6 Oct 2015 14:26:47 +0100
+Date: Tue, 6 Oct 2015 14:41:19 +0100
 From: Brian Norris <computersforpeace@gmail.com>
-To: ispamyou <ispamyou@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Kernel segfault when using nandsim on Debian kernel 4.1
-Message-ID: <20151006132647.GA26818@localhost>
-References: <CAKA5=i-JCDkYAfwLde=QhCSg7E4y-7cXDLMKhy2A_Pd1oPDnOA@mail.gmail.com>
+To: Anup Patel <anup.patel@broadcom.com>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>,
+ David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Pramod Kumar <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Rafal Milecki <zajec5@gmail.com>
+Subject: Re: [PATCH 3/5] mtd: brcmnand: Optional DT flag to reset IPROC NAND
+ controller
+Message-ID: <20151006134119.GB26818@localhost>
+References: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
+ <1443808606-21203-4-git-send-email-anup.patel@broadcom.com>
+ <20151004214943.GA28904@localhost>
+ <39063E8F96E11742B35A201CC5D095B7AD54C1@SJEXCHMB10.corp.ad.broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKA5=i-JCDkYAfwLde=QhCSg7E4y-7cXDLMKhy2A_Pd1oPDnOA@mail.gmail.com>
+In-Reply-To: <39063E8F96E11742B35A201CC5D095B7AD54C1@SJEXCHMB10.corp.ad.broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +40,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 01, 2015 at 08:25:04AM +0800, ispamyou wrote:
-> Hi,
+Hi Anup,
+
+On Mon, Oct 05, 2015 at 06:27:16AM +0000, Anup Patel wrote:
+> > -----Original Message-----
+> > From: Brian Norris [mailto:computersforpeace@gmail.com]
+> > Sent: 05 October 2015 03:20
+> > To: Anup Patel
+> > Cc: linux-arm-kernel@lists.infradead.org; Rob Herring; Pawel Moll; Mark
+> > Rutland; Ian Campbell; Kumar Gala; Catalin Marinas; Will Deacon; David
+> > Woodhouse; Ray Jui; Scott Branden; Florian Fainelli; Pramod Kumar; Vikram
+> > Prakash; Sandeep Tripathy; devicetree@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; linux-mtd@lists.infradead.org; bcm-kernel-feedback-
+> > list; Rafal Milecki
+> > Subject: Re: [PATCH 3/5] mtd: brcmnand: Optional DT flag to reset IPROC NAND
+> > controller
+> > 
+> > + Rafal (to extend this mighty CC list)
+> > 
+> > On Fri, Oct 02, 2015 at 11:26:44PM +0530, Anup Patel wrote:
+> > > The BRCM NAND controller on NS2 SoC requires a reset to cleanup
+> > > previously configured NAND controller state.
+> > >
+> > > This patch adds optional boolean device tree flag named
+> > > "brcm,nand-iproc-reset". If this flag is present in NAND controller DT
+> > > node then BRCM IPROC NAND driver will reset the NAND controller before
+> > > any commands are issued.
+> > 
+> > Is there a reason not to do this reset unconditionally? I recall this came up in
+> > discussion previously, when the OpenWRT folks were trying to integrate with
+> > BCMA, where this reset was one of the few differences between the platform-
+> > device-based driver (i.e., this one) and the BCMA based driver. Might it help
+> > simplify things a bit if we just did the same thing everywhere?
 > 
-> when I try and use nandsim to emulate "SDTNRGAMA 64G 3.3V 8-bit" using
-> the following command I get a segmentation fault:
+> This driver is currently shared by Cygnus and NS2.
 > 
-> modprobe nandsim id_bytes=0x45,0xde,0x94,0x93,0x76,0x50 cache_file=./test.img
+> We had similar suggestion when this patch was reviewed
+> internally in Broadcom.
 > 
-> [  142.734637] [nandsim] warning: read_byte: unexpected data output
-> cycle, state is STATE_READY return 0x0
-> [  142.734637] [nandsim] warning: read_byte: unexpected data output
-> cycle, state is STATE_READY return 0x0
-> [  142.734640] nand: device found, Manufacturer ID: 0x45, Chip ID: 0xde
-> [  142.734641] nand: SanDisk SDTNRGAMA 64G 3.3V 8-bit
-> [  142.734644] nand: 8192 MiB, MLC, erase size: 4096 KiB, page size:
-> 16384, OOB size: 1280
-> [  142.734650] nand: No oob scheme defined for oobsize 1280
+> The rationale for adding optional DT flag is as follows:
+> 1. The NAND controller reset is currently required for NS2 only so
+> that it is in sane state before any NAND commands are issued. We
+> are not sure if Cygnus and all future iProc SoCs will require NAND
+> controller reset.
 
-^^ this is the key
+I'm not sure this is a very strong reason. It seems fairly reasonable in
+general to reset a HW block before using it.
 
-> [  142.734672] ------------[ cut here ]------------
-> [  142.734674] kernel BUG at
-> /build/linux-PoJsUp/linux-4.1.6/drivers/mtd/nand/nand_base.c:3952!
+> 2. The NAND controller reset in probe would certainly increase
+> Linux boot time so for certain iProc SoCs we might choose avoid
+> NAND controller reset to reduce boot time if possible.
 
-^^ and this too. You could look up your source code to find the exact
-code context that triggers this BUG().
+I recall this reason being mentioned before. I believe this only happens
+because the brcmnand driver doesn't yet handle configuring the timing
+registers, so iProc is implicitly relying on the bootloader to configure
+the NAND timings. Perhaps it's time that we fix that. I'd rather not add
+extra DT properties unless we actually need to [1]. And having proper
+timing configuration in the Linux driver will help improve speeds for
+all users (whose timings may not be configured in the bootloader).
 
-[...]
-
-> I have also witnessed this segmentation fault on Ubuntu 14.04 LTS with
-> an older kernel (3.19).
-> 
-> Is there any more information I can provide to try and help fix this issue?
-
-The problem is that nand_base doesn't provide a default ECC layout for
-odd/large OOB sizes on soft (Hamming) ECC (the default for nandsim). If
-you want to use odd OOB sizes, I think you'll have better luck with soft
-BCH, which generates ECC layouts dynamically. You can get this by using
-the 'bch' module parameter to nandsim. See 'modinfo nandsim'.
+I actually had some preliminary work to do some timing configuration
+according to the new timing information from nand_base.c/nand_timing.c.
+Unfortunately, I didn't complete this, and I'm no longer working at
+Broadcom, so I don't exactly have access to the HW docs for all the NAND
+controller revisions, nor do I have access to as much HW for testing...
 
 Brian
+
+[1] If we really do need a device tree differentiation, perhaps it would
+be better to just differentiate the compatible string than to have
+individual boolean properties. e.g.:
+
+	compatible = "brcm,iproc-nand-ns2", ...;
