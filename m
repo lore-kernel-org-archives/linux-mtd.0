@@ -1,18 +1,31 @@
-Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZjXT6-00022p-SV
- for linux-mtd@lists.infradead.org; Tue, 06 Oct 2015 19:00:10 +0000
-Received: by wicfx3 with SMTP id fx3so180666994wic.1
- for <linux-mtd@lists.infradead.org>; Tue, 06 Oct 2015 11:59:47 -0700 (PDT)
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH] mtd: spi-nor: handle controller driver limitations in
- spi_nor_read
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Message-ID: <5614182B.7060304@gmail.com>
-Date: Tue, 6 Oct 2015 20:51:23 +0200
+Subject: Re: [PATCH 3/5] mtd: brcmnand: Optional DT flag to reset IPROC NAND
+ controller
+To: Brian Norris <computersforpeace@gmail.com>, Anup Patel
+ <anup.patel@broadcom.com>
+References: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
+ <1443808606-21203-4-git-send-email-anup.patel@broadcom.com>
+ <20151004214943.GA28904@localhost>
+ <39063E8F96E11742B35A201CC5D095B7AD54C1@SJEXCHMB10.corp.ad.broadcom.com>
+ <20151006134119.GB26818@localhost>
+CC: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, "Ian
+ Campbell" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,
+ David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>, "Florian
+ Fainelli" <f.fainelli@gmail.com>, Pramod Kumar <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>, Sandeep Tripathy
+ <tripathy@broadcom.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, bcm-kernel-feedback-list
+ <bcm-kernel-feedback-list@broadcom.com>, Rafal Milecki <zajec5@gmail.com>
+From: Scott Branden <sbranden@broadcom.com>
+Message-ID: <56144A62.70300@broadcom.com>
+Date: Tue, 6 Oct 2015 15:25:38 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20151006134119.GB26818@localhost>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,62 +36,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Back in May there was a discussion on how to handle controller driver
-limitations like max message size (e.g. spi-fsl-espi supports
-message sizes up to 64Kb only).
-According to Brian extending the API might not be needed and a better
-handling of the returned actual_length of the message should be
-sufficient.
+Hi Brian,
 
-Following the suggestion this patch supports reading chunks.
-As long as something was read also errors (like -EMSGSIZE) are ignored.
+On 15-10-06 06:41 AM, Brian Norris wrote:
 
-Afterwards related hacks can be removed from affected controller drivers,
-making them work with any protocol driver.
-Currently e.g. spi-fsl-espi implicitely assumes that longer reads come
-from m25p80 protocol driver (if second transfer in message is a read and
-first transfer is a send then bytes 2-4 of the send are assumed to be a
-3 byte address of a flash read).
+>>>
+>>> Is there a reason not to do this reset unconditionally? I recall this came up in
+>>> discussion previously, when the OpenWRT folks were trying to integrate with
+>>> BCMA, where this reset was one of the few differences between the platform-
+>>> device-based driver (i.e., this one) and the BCMA based driver. Might it help
+>>> simplify things a bit if we just did the same thing everywhere?
+>>
+>> This driver is currently shared by Cygnus and NS2.
+>>
+>> We had similar suggestion when this patch was reviewed
+>> internally in Broadcom.
+>>
+>> The rationale for adding optional DT flag is as follows:
+>> 1. The NAND controller reset is currently required for NS2 only so
+>> that it is in sane state before any NAND commands are issued. We
+>> are not sure if Cygnus and all future iProc SoCs will require NAND
+>> controller reset.
+>
+> I'm not sure this is a very strong reason. It seems fairly reasonable in
+> general to reset a HW block before using it.
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+Efficient Boot time is a very strong reason for needing this actually. 
+We use the NAND controller in the bootROM, boot1/BL1, u-boot/UEFI, and 
+then Kernel stage.  By properly initializing the controller once we do 
+not need to reset it 4 different times.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 4be41fb..17b5239 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -761,6 +761,7 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			size_t *retlen, u_char *buf)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	size_t bytes_read, pos = 0;
- 	int ret;
- 
- 	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
-@@ -769,9 +770,21 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if (ret)
- 		return ret;
- 
--	ret = nor->read(nor, from, len, retlen, buf);
-+	/* Consider the case that a controller driver is not able
-+	 * to read all requested bytes at once. It might return
-+	 * an error and the number of bytes read.
-+	 * Therefore ignore errors as long as something was read.
-+	 */
-+	do {
-+		bytes_read = 0;
-+		ret = nor->read(nor, from + pos, len - pos,
-+				&bytes_read, buf + pos);
-+		pos += bytes_read;
-+	} while (pos < len && bytes_read);
- 
- 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
-+
-+	*retlen = pos;
- 	return ret;
- }
- 
--- 
-2.6.0
+>
+>> 2. The NAND controller reset in probe would certainly increase
+>> Linux boot time so for certain iProc SoCs we might choose avoid
+>> NAND controller reset to reduce boot time if possible.
+>
+> I recall this reason being mentioned before. I believe this only happens
+> because the brcmnand driver doesn't yet handle configuring the timing
+> registers, so iProc is implicitly relying on the bootloader to configure
+> the NAND timings. Perhaps it's time that we fix that. I'd rather not add
+> extra DT properties unless we actually need to [1]. And having proper
+> timing configuration in the Linux driver will help improve speeds for
+> all users (whose timings may not be configured in the bootloader).
+
+This is the very reason we need the optional reset property.  We need to 
+have timings configured by the linux driver or not.  Yes, in some cases 
+we will be relying on earlier boot stages to configure some of the hardware.
+
+>
+> I actually had some preliminary work to do some timing configuration
+> according to the new timing information from nand_base.c/nand_timing.c.
+> Unfortunately, I didn't complete this, and I'm no longer working at
+> Broadcom, so I don't exactly have access to the HW docs for all the NAND
+> controller revisions, nor do I have access to as much HW for testing...
+>
+> Brian
+>
+> [1] If we really do need a device tree differentiation, perhaps it would
+> be better to just differentiate the compatible string than to have
+> individual boolean properties. e.g.:
+>
+> 	compatible = "brcm,iproc-nand-ns2", ...;
+>
+As described above - the option is not SoC specific.  It is system 
+specific.  In some systems we may wish to reset the NAND controller in 
+linux.  In some we may wish to rely on initialization that has already 
+been done to speed up boot times.
+
+
+
+Regards,
+  Scott
