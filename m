@@ -1,31 +1,37 @@
+Message-ID: <5614574C.2060701@gmail.com>
+Date: Tue, 06 Oct 2015 16:20:44 -0700
+From: Florian Fainelli <f.fainelli@gmail.com>
+MIME-Version: 1.0
+To: Scott Branden <sbranden@broadcom.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Anup Patel <anup.patel@broadcom.com>
+CC: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>,
+ David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Pramod Kumar <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Rafal Milecki <zajec5@gmail.com>
 Subject: Re: [PATCH 3/5] mtd: brcmnand: Optional DT flag to reset IPROC NAND
  controller
-To: Brian Norris <computersforpeace@gmail.com>, Anup Patel
- <anup.patel@broadcom.com>
 References: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
  <1443808606-21203-4-git-send-email-anup.patel@broadcom.com>
  <20151004214943.GA28904@localhost>
  <39063E8F96E11742B35A201CC5D095B7AD54C1@SJEXCHMB10.corp.ad.broadcom.com>
- <20151006134119.GB26818@localhost>
-CC: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, "Ian
- Campbell" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,
- David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>, "Florian
- Fainelli" <f.fainelli@gmail.com>, Pramod Kumar <pramodku@broadcom.com>,
- Vikram Prakash <vikramp@broadcom.com>, Sandeep Tripathy
- <tripathy@broadcom.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, bcm-kernel-feedback-list
- <bcm-kernel-feedback-list@broadcom.com>, Rafal Milecki <zajec5@gmail.com>
-From: Scott Branden <sbranden@broadcom.com>
-Message-ID: <56144A62.70300@broadcom.com>
-Date: Tue, 6 Oct 2015 15:25:38 -0700
-MIME-Version: 1.0
-In-Reply-To: <20151006134119.GB26818@localhost>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+ <20151006134119.GB26818@localhost> <56144A62.70300@broadcom.com>
+In-Reply-To: <56144A62.70300@broadcom.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,74 +42,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-On 15-10-06 06:41 AM, Brian Norris wrote:
-
+On 06/10/15 15:25, Scott Branden wrote:
+> Hi Brian,
+> 
+> On 15-10-06 06:41 AM, Brian Norris wrote:
+> 
+>>>>
+>>>> Is there a reason not to do this reset unconditionally? I recall
+>>>> this came up in
+>>>> discussion previously, when the OpenWRT folks were trying to
+>>>> integrate with
+>>>> BCMA, where this reset was one of the few differences between the
+>>>> platform-
+>>>> device-based driver (i.e., this one) and the BCMA based driver.
+>>>> Might it help
+>>>> simplify things a bit if we just did the same thing everywhere?
 >>>
->>> Is there a reason not to do this reset unconditionally? I recall this came up in
->>> discussion previously, when the OpenWRT folks were trying to integrate with
->>> BCMA, where this reset was one of the few differences between the platform-
->>> device-based driver (i.e., this one) and the BCMA based driver. Might it help
->>> simplify things a bit if we just did the same thing everywhere?
+>>> This driver is currently shared by Cygnus and NS2.
+>>>
+>>> We had similar suggestion when this patch was reviewed
+>>> internally in Broadcom.
+>>>
+>>> The rationale for adding optional DT flag is as follows:
+>>> 1. The NAND controller reset is currently required for NS2 only so
+>>> that it is in sane state before any NAND commands are issued. We
+>>> are not sure if Cygnus and all future iProc SoCs will require NAND
+>>> controller reset.
 >>
->> This driver is currently shared by Cygnus and NS2.
+>> I'm not sure this is a very strong reason. It seems fairly reasonable in
+>> general to reset a HW block before using it.
+> 
+> Efficient Boot time is a very strong reason for needing this actually.
+> We use the NAND controller in the bootROM, boot1/BL1, u-boot/UEFI, and
+> then Kernel stage.  By properly initializing the controller once we do
+> not need to reset it 4 different times.
+
+This could be used as a reverse argument, issuing a reset will increase
+the boot time.
+
+> 
 >>
->> We had similar suggestion when this patch was reviewed
->> internally in Broadcom.
+>>> 2. The NAND controller reset in probe would certainly increase
+>>> Linux boot time so for certain iProc SoCs we might choose avoid
+>>> NAND controller reset to reduce boot time if possible.
 >>
->> The rationale for adding optional DT flag is as follows:
->> 1. The NAND controller reset is currently required for NS2 only so
->> that it is in sane state before any NAND commands are issued. We
->> are not sure if Cygnus and all future iProc SoCs will require NAND
->> controller reset.
->
-> I'm not sure this is a very strong reason. It seems fairly reasonable in
-> general to reset a HW block before using it.
+>> I recall this reason being mentioned before. I believe this only happens
+>> because the brcmnand driver doesn't yet handle configuring the timing
+>> registers, so iProc is implicitly relying on the bootloader to configure
+>> the NAND timings. Perhaps it's time that we fix that. I'd rather not add
+>> extra DT properties unless we actually need to [1]. And having proper
+>> timing configuration in the Linux driver will help improve speeds for
+>> all users (whose timings may not be configured in the bootloader).
+> 
+> This is the very reason we need the optional reset property.  We need to
+> have timings configured by the linux driver or not.  Yes, in some cases
+> we will be relying on earlier boot stages to configure some of the
+> hardware.
 
-Efficient Boot time is a very strong reason for needing this actually. 
-We use the NAND controller in the bootROM, boot1/BL1, u-boot/UEFI, and 
-then Kernel stage.  By properly initializing the controller once we do 
-not need to reset it 4 different times.
+Then instead of adding a "reset flag" to Device Tree, another approach
+could be to put the desired or currently configured exhaustive list of
+NAND timings in Device Tree, and based on that you could have this:
 
->
->> 2. The NAND controller reset in probe would certainly increase
->> Linux boot time so for certain iProc SoCs we might choose avoid
->> NAND controller reset to reduce boot time if possible.
->
-> I recall this reason being mentioned before. I believe this only happens
-> because the brcmnand driver doesn't yet handle configuring the timing
-> registers, so iProc is implicitly relying on the bootloader to configure
-> the NAND timings. Perhaps it's time that we fix that. I'd rather not add
-> extra DT properties unless we actually need to [1]. And having proper
-> timing configuration in the Linux driver will help improve speeds for
-> all users (whose timings may not be configured in the bootloader).
+- the NAND controller driver finds that these timings match the current
+configuration, you are good to go
 
-This is the very reason we need the optional reset property.  We need to 
-have timings configured by the linux driver or not.  Yes, in some cases 
-we will be relying on earlier boot stages to configure some of the hardware.
+- the NAND controller drivers finds a difference in how current timings
+are configured vs. desired timings, and issues a controller reset, prior
+to applying new timing configuration
 
->
-> I actually had some preliminary work to do some timing configuration
-> according to the new timing information from nand_base.c/nand_timing.c.
-> Unfortunately, I didn't complete this, and I'm no longer working at
-> Broadcom, so I don't exactly have access to the HW docs for all the NAND
-> controller revisions, nor do I have access to as much HW for testing...
->
-> Brian
->
-> [1] If we really do need a device tree differentiation, perhaps it would
-> be better to just differentiate the compatible string than to have
-> individual boolean properties. e.g.:
->
-> 	compatible = "brcm,iproc-nand-ns2", ...;
->
-As described above - the option is not SoC specific.  It is system 
-specific.  In some systems we may wish to reset the NAND controller in 
-linux.  In some we may wish to rely on initialization that has already 
-been done to speed up boot times.
+- no timings are configured, reset the controller and use existing
+auto-detection capabilities like ONFI modes
 
+Typically you would put the desired timings instead of the currently
+configured timings though..
 
+> 
+>>
+>> I actually had some preliminary work to do some timing configuration
+>> according to the new timing information from nand_base.c/nand_timing.c.
+>> Unfortunately, I didn't complete this, and I'm no longer working at
+>> Broadcom, so I don't exactly have access to the HW docs for all the NAND
+>> controller revisions, nor do I have access to as much HW for testing...
+>>
+>> Brian
+>>
+>> [1] If we really do need a device tree differentiation, perhaps it would
+>> be better to just differentiate the compatible string than to have
+>> individual boolean properties. e.g.:
+>>
+>>     compatible = "brcm,iproc-nand-ns2", ...;
+>>
+> As described above - the option is not SoC specific.  It is system
+> specific.  In some systems we may wish to reset the NAND controller in
+> linux.  In some we may wish to rely on initialization that has already
+> been done to speed up boot times.
 
-Regards,
-  Scott
+It seems to me like having this property is fine as long as you are
+describing that the controller *needs* a reset to operate properly, it
+does not strike me as a particularly well suited property if its side
+effect and main usage is to keep or wipe-out existing NAND timings.
+-- 
+Florian
