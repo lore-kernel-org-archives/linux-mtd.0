@@ -1,27 +1,15 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail01.prevas.se ([62.95.78.3])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZjQ8Y-0001kQ-PQ
- for linux-mtd@lists.infradead.org; Tue, 06 Oct 2015 11:10:28 +0000
-Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-To: Tony Lindgren <tony@atomide.com>
-References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
- <560BC0DB.5020205@ti.com> <20151006083346.GL23801@atomide.com>
- <56139A72.6040600@ti.com> <20151006100000.GN23801@atomide.com>
- <56139CE9.8020002@ti.com> <5613A256.8000105@ti.com>
- <20151006110134.GO23801@atomide.com>
-CC: <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <ezequiel@vanguardiasur.com.ar>,
- <javier@dowhile0.org>, <computersforpeace@gmail.com>,
- <dwmw2@infradead.org>, <fcooper@ti.com>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <5613ABEF.9000904@ti.com>
-Date: Tue, 6 Oct 2015 14:09:35 +0300
+ id 1ZjQWJ-0007uI-RB
+ for linux-mtd@lists.infradead.org; Tue, 06 Oct 2015 11:35:01 +0000
+From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+To: <linux-mtd@lists.infradead.org>
+CC: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+Subject: [PATCH] mtd: spi-nor: Add support for s25fl004k
+Date: Tue, 6 Oct 2015 13:34:23 +0200
+Message-ID: <1444131263-11295-1-git-send-email-sean.nyekjaer@prevas.dk>
 MIME-Version: 1.0
-In-Reply-To: <20151006110134.GO23801@atomide.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,52 +19,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/10/15 14:01, Tony Lindgren wrote:
-> * Roger Quadros <rogerq@ti.com> [151006 03:32]:
->> On 06/10/15 13:05, Roger Quadros wrote:
->>> On 06/10/15 13:00, Tony Lindgren wrote:
->>>> * Roger Quadros <rogerq@ti.com> [151006 02:59]:
->>>>> On 06/10/15 11:33, Tony Lindgren wrote:
->>>>>> Does build and boot and use NAND work throughtout the series?
->>>>>> Otherwise we'll have hard time bisecting anything..
->>>>>
->>>>> Yes it does with the following exceptions.
->>>>>
->>>>> - Patch 7 "memory: omap-gpmc: Remove NAND IRQ code" breaks prefetch-irq mode
->>>>> but none of the boards seem to be using it so it shouldn't break NAND on existing boards.
->>>>> At patch 9 "mtd: nand: omap2: manage NAND interrupts" prefetch-irq mode is working again.
->>>>> Do you want me to squash patches 7,8,9 so that pre-fetch irq is not broken at any point?
->>>>
->>>> OK, no that's fine, no need to squash them together then.
->>>>
->>>>> - Then at patch 11 "mtd: nand: omap: Clean up device tree support" we break NAND on all DT
->>>>> boards as we expect NAND to be a real child node with compatible id. Simply applying the
->>>>> DT patch at this point makes it work again.
->>>>
->>>> Hmm can we at least warn about incompatible DT entry when somebody boots
->>>> with an older dtb?
->>>
->>> Yes that could be done. It looks like we can use the missing compatible property to identify
->>> that it is and old DT entry.
->>>
->>> I'll send a v4 of patch 11.
->>
->> There is another issue. Some of the old DT nodes set the NAND IO address to 0.
->> As we prevent mapping into first 16MB we see the following message for those nodes. e.g. dra7-evm
->>
->> [    1.727598] omap-gpmc 50000000.gpmc: cannot remap GPMC CS 0 to 0x00000000
->> [    1.727605] omap-gpmc 50000000.gpmc: GPMC CS 0 start cannot be lesser than 0x1000000
->> [    1.727611] omap-gpmc 50000000.gpmc: failed to probe DT children
->>
->> Hope this is good enough information that DT needs to be updated?
-> 
-> Yes I think that should allow users update the out of tree dts file
-> easily.
+Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Fine. The updated series is now at
-
-git@github.com:rogerq/linux.git
- * [new branch]      for-v4.4/gpmc-v4
-
-cheers,
--roger
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index f59aedf..25dc38d 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -618,6 +618,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s25sl016a",  INFO(0x010214,      0,  64 * 1024,  32, 0) },
+ 	{ "s25sl032a",  INFO(0x010215,      0,  64 * 1024,  64, 0) },
+ 	{ "s25sl064a",  INFO(0x010216,      0,  64 * 1024, 128, 0) },
++	{ "s25fl004k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K) },
+ 	{ "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K) },
+ 	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K) },
+ 	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
+-- 
+2.6.0
