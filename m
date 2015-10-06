@@ -1,20 +1,24 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZjNJo-0005Su-26
- for linux-mtd@lists.infradead.org; Tue, 06 Oct 2015 08:09:53 +0000
-Subject: Re: [PATCH] ubifs: Add new mount option to force fdatasync before
- rename
-To: Nikhilesh Reddy <reddyn@codeaurora.org>
-References: <560984B4.7090105@codeaurora.org> <560EF960.50808@nod.at>
- <5612BBD2.9010708@codeaurora.org>
-Cc: linux-mtd@lists.infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <561381B2.2090705@nod.at>
-Date: Tue, 6 Oct 2015 10:09:22 +0200
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZjNhK-0002uf-Pi
+ for linux-mtd@lists.infradead.org; Tue, 06 Oct 2015 08:34:11 +0000
+Date: Tue, 6 Oct 2015 01:33:47 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ ezequiel@vanguardiasur.com.ar, javier@dowhile0.org, fcooper@ti.com,
+ nsekhar@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+Message-ID: <20151006083346.GL23801@atomide.com>
+References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
+ <560BC0DB.5020205@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <5612BBD2.9010708@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <560BC0DB.5020205@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 05.10.2015 um 20:05 schrieb Nikhilesh Reddy:
-> On 10/02/2015 02:38 PM, Richard Weinberger wrote:
->> Hi!
->>
->> Am 28.09.2015 um 20:19 schrieb Nikhilesh Reddy:
->>> The rename operation in UBIFS is synchronous (or nearly synchronous)
->>> while the write operation is not. This can result in zero length files when
->>> renaming of files followed by an abrupt power down or a crash.
->>>
->>> For example:
->>> 1) Say a file a.txt exists with size 1KB.
->>> 2) Create a file b.tmp (open)
->>> 3) Update the data in b.tmp with new values (write and close)
->>> 4) rename b.tmp to a.txt
->>> 5) Abrupt power down or crash
->>>
->>> This above scenario can result in a.txt becoming a file of zero length and
->>> giving the impression of a.txt being truncated.
->>> This scenario can ofcourse be prevented by calling fsync or fdatasync
->>> before the rename operation.
->>
->> I gave this a try and hacked up something to emulate a powercut *exactly* after
->> rename() in UBIFS.
->>
->> fd = open("b.tmp", ...)
->> write(fd, "foo", ...)
->> close(fd)
->> rename("b.tmp", "a.txt")
->> ^---- powercut
->>
->> After remounting UBIFS both a.txt and b.tmp are present
->> but b.tmp is truncated. Not a.txt as you said.
->>
->> Can you please double check?
->> I want to make sure that we're talking about the same things.
+* Roger Quadros <rogerq@ti.com> [150930 04:04]:
+> Tony,
 > 
-> Since you mentioned a.txt and b.tmp are both present... i assume the file a.txt was present even before b.tmp was created?
+> On 18/09/15 17:53, Roger Quadros wrote:
+> > Hi,
+> > 
+> > We do a couple of things in this series which result in
+> > cleaner device tree implementation, faster perfomance and
+> > multi-platform support. As an added bonus we get new GPI/Interrupt pins
+> > for use in the system.
+> > 
+> > - Establish a custom interface between NAND and GPMC driver. This is
+> > needed because all of the NAND registers sit in the GPMC register space.
+> > Some bits like NAND IRQ are even shared with GPMC.
+> > 
+> > - Remove NAND IRQ handling from omap-gpmc driver, share the GPMC IRQ
+> > with the omap2-nand driver and handle NAND IRQ events in the NAND driver.
+> > This causes performance increase when using prefetch-irq mode.
+> > 30% increase in read, 17% increase in write in prefetch-irq mode.
+> > 
+> > - Clean up device tree support so that omap-gpmc IP and the omap2 NAND
+> > driver can be used on non-OMAP platforms. e.g. Keystone.
+> > 
+> > - Implement GPIOCHIP + IRQCHIP for the GPMC WAITPINS. SoCs can contain
+> > 2 to 4 of these and most of them would be unused otherwise. It also
+> > allows a cleaner implementation of NAND Ready pin status for the NAND driver.
+> > 
+> > - Implement GPIOlib based NAND ready pin checking for OMAP NAND driver.
+> > 
+> > This series is available at
+> > git@github.com:rogerq/linux.git
+> > in branch
+> > for-v4.4/gpmc-v3
 
-Yes.
+In general, very nice work :)
 
-> I will try and explain as to what i understand the situation to be.
+> I've verified this series with the following boards
+> -dra7-evm
+> -am437x-gp-evm
+> -am335x-evm
+> -beagleboard-c4
 > 
-> If both the files are present then the rename didnt actually get written to the device and was probably still in the internal ubifs write buffer.
+> For legacy boot I've checked only on beagleboard-c4.
 
-A rename operation does not trigger a commit, therefore a powercut directly after rename() would make the rename() void.
-In this context "both files present" means a.txt and b.tmp exist and are both synched to disk?
+Great.
 
-> I believe there is a small delay between the rename call and the inodes
-> being updated on the the device from the internal ubifs write buffer.
+Does build and boot and use NAND work throughtout the series?
+Otherwise we'll have hard time bisecting anything..
+
+> Test procedure was to read an existing ubifs partition,
+> create a new one and read it back.
 > 
-> The scenario i described above seems to occur when the inode update is committed to the device... i.e here the b.tmp should not exist since the rename was successfully written but
-> the file data writeback (that is in the page cache) has not yet been committed to the device.
-> Since the writeback buffer is way smaller than the page cache the inode update occurs first or is likely to have.
-> 
-> 
-> Hopefully i did not mess up on my understanding or explanation.
+> Need you to Ack if it looks good.
+> Do you mind taking it via omap-soc once MTD maintainers ack their relevant parts?
 
-Can you please share a reproducer?
-A simple sequence of syscall would also do it.
+Sure. I'll try to do some testing on the series first too.
 
-Thanks,
-//richard
+Can the dts changes be merged separtely? Otherwise we'll have
+a dependency between dts branch and the GPMC/NAND changes.
+
+Regards,
+
+Tony
