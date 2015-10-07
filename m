@@ -1,33 +1,25 @@
-From: Anup Patel <anup.patel@broadcom.com>
-To: Florian Fainelli <f.fainelli@gmail.com>, Scott Branden
- <sbranden@broadcom.com>, Brian Norris <computersforpeace@gmail.com>
-CC: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, "Ian
- Campbell" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,
- David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>, "Pramod
- Kumar" <pramodku@broadcom.com>, Vikram Prakash <vikramp@broadcom.com>,
- Sandeep Tripathy <tripathy@broadcom.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, bcm-kernel-feedback-list
- <bcm-kernel-feedback-list@broadcom.com>, Rafal Milecki <zajec5@gmail.com>
-Subject: RE: [PATCH 3/5] mtd: brcmnand: Optional DT flag to reset IPROC NAND
- controller
-Date: Wed, 7 Oct 2015 03:33:50 +0000
-Message-ID: <39063E8F96E11742B35A201CC5D095B7AD8ADD@SJEXCHMB10.corp.ad.broadcom.com>
-References: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
- <1443808606-21203-4-git-send-email-anup.patel@broadcom.com>
- <20151004214943.GA28904@localhost>
- <39063E8F96E11742B35A201CC5D095B7AD54C1@SJEXCHMB10.corp.ad.broadcom.com>
- <20151006134119.GB26818@localhost> <56144A62.70300@broadcom.com>
- <5614574C.2060701@gmail.com>
-In-Reply-To: <5614574C.2060701@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zjg56-0004E3-Df
+ for linux-mtd@lists.infradead.org; Wed, 07 Oct 2015 04:11:58 +0000
+Subject: Re: [PATCH v4 2/5] mtd: nand: Qualcomm NAND controller driver
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1438578498-32254-1-git-send-email-architt@codeaurora.org>
+ <1439959746-25498-1-git-send-email-architt@codeaurora.org>
+ <1439959746-25498-3-git-send-email-architt@codeaurora.org>
+ <20151002030527.GD107187@google.com> <56121E0A.6040909@codeaurora.org>
+ <20151006091729.GA23758@localhost>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ dehrenberg@google.com, linux-arm-msm@vger.kernel.org, cernekee@gmail.com,
+ sboyd@codeaurora.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, agross@codeaurora.org
+From: Archit Taneja <architt@codeaurora.org>
+Message-ID: <56149B6F.2020408@codeaurora.org>
+Date: Wed, 7 Oct 2015 09:41:27 +0530
 MIME-Version: 1.0
+In-Reply-To: <20151006091729.GA23758@localhost>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,111 +29,327 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRmxvcmlhbiBGYWluZWxs
-aSBbbWFpbHRvOmYuZmFpbmVsbGlAZ21haWwuY29tXQ0KPiBTZW50OiAwNyBPY3RvYmVyIDIwMTUg
-MDQ6NTENCj4gVG86IFNjb3R0IEJyYW5kZW47IEJyaWFuIE5vcnJpczsgQW51cCBQYXRlbA0KPiBD
-YzogbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBSb2IgSGVycmluZzsgUGF3
-ZWwgTW9sbDsgTWFyaw0KPiBSdXRsYW5kOyBJYW4gQ2FtcGJlbGw7IEt1bWFyIEdhbGE7IENhdGFs
-aW4gTWFyaW5hczsgV2lsbCBEZWFjb247IERhdmlkDQo+IFdvb2Rob3VzZTsgUmF5IEp1aTsgRmxv
-cmlhbiBGYWluZWxsaTsgUHJhbW9kIEt1bWFyOyBWaWtyYW0gUHJha2FzaDsgU2FuZGVlcA0KPiBU
-cmlwYXRoeTsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmc7IGxpbnV4LQ0KPiBtdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgYmNtLWtlcm5lbC1m
-ZWVkYmFjay1saXN0OyBSYWZhbCBNaWxlY2tpDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMy81XSBt
-dGQ6IGJyY21uYW5kOiBPcHRpb25hbCBEVCBmbGFnIHRvIHJlc2V0IElQUk9DIE5BTkQNCj4gY29u
-dHJvbGxlcg0KPiANCj4gT24gMDYvMTAvMTUgMTU6MjUsIFNjb3R0IEJyYW5kZW4gd3JvdGU6DQo+
-ID4gSGkgQnJpYW4sDQo+ID4NCj4gPiBPbiAxNS0xMC0wNiAwNjo0MSBBTSwgQnJpYW4gTm9ycmlz
-IHdyb3RlOg0KPiA+DQo+ID4+Pj4NCj4gPj4+PiBJcyB0aGVyZSBhIHJlYXNvbiBub3QgdG8gZG8g
-dGhpcyByZXNldCB1bmNvbmRpdGlvbmFsbHk/IEkgcmVjYWxsDQo+ID4+Pj4gdGhpcyBjYW1lIHVw
-IGluIGRpc2N1c3Npb24gcHJldmlvdXNseSwgd2hlbiB0aGUgT3BlbldSVCBmb2xrcyB3ZXJlDQo+
-ID4+Pj4gdHJ5aW5nIHRvIGludGVncmF0ZSB3aXRoIEJDTUEsIHdoZXJlIHRoaXMgcmVzZXQgd2Fz
-IG9uZSBvZiB0aGUgZmV3DQo+ID4+Pj4gZGlmZmVyZW5jZXMgYmV0d2VlbiB0aGUNCj4gPj4+PiBw
-bGF0Zm9ybS0NCj4gPj4+PiBkZXZpY2UtYmFzZWQgZHJpdmVyIChpLmUuLCB0aGlzIG9uZSkgYW5k
-IHRoZSBCQ01BIGJhc2VkIGRyaXZlci4NCj4gPj4+PiBNaWdodCBpdCBoZWxwDQo+ID4+Pj4gc2lt
-cGxpZnkgdGhpbmdzIGEgYml0IGlmIHdlIGp1c3QgZGlkIHRoZSBzYW1lIHRoaW5nIGV2ZXJ5d2hl
-cmU/DQo+ID4+Pg0KPiA+Pj4gVGhpcyBkcml2ZXIgaXMgY3VycmVudGx5IHNoYXJlZCBieSBDeWdu
-dXMgYW5kIE5TMi4NCj4gPj4+DQo+ID4+PiBXZSBoYWQgc2ltaWxhciBzdWdnZXN0aW9uIHdoZW4g
-dGhpcyBwYXRjaCB3YXMgcmV2aWV3ZWQgaW50ZXJuYWxseSBpbg0KPiA+Pj4gQnJvYWRjb20uDQo+
-ID4+Pg0KPiA+Pj4gVGhlIHJhdGlvbmFsZSBmb3IgYWRkaW5nIG9wdGlvbmFsIERUIGZsYWcgaXMg
-YXMgZm9sbG93czoNCj4gPj4+IDEuIFRoZSBOQU5EIGNvbnRyb2xsZXIgcmVzZXQgaXMgY3VycmVu
-dGx5IHJlcXVpcmVkIGZvciBOUzIgb25seSBzbw0KPiA+Pj4gdGhhdCBpdCBpcyBpbiBzYW5lIHN0
-YXRlIGJlZm9yZSBhbnkgTkFORCBjb21tYW5kcyBhcmUgaXNzdWVkLiBXZSBhcmUNCj4gPj4+IG5v
-dCBzdXJlIGlmIEN5Z251cyBhbmQgYWxsIGZ1dHVyZSBpUHJvYyBTb0NzIHdpbGwgcmVxdWlyZSBO
-QU5EDQo+ID4+PiBjb250cm9sbGVyIHJlc2V0Lg0KPiA+Pg0KPiA+PiBJJ20gbm90IHN1cmUgdGhp
-cyBpcyBhIHZlcnkgc3Ryb25nIHJlYXNvbi4gSXQgc2VlbXMgZmFpcmx5IHJlYXNvbmFibGUNCj4g
-Pj4gaW4gZ2VuZXJhbCB0byByZXNldCBhIEhXIGJsb2NrIGJlZm9yZSB1c2luZyBpdC4NCj4gPg0K
-PiA+IEVmZmljaWVudCBCb290IHRpbWUgaXMgYSB2ZXJ5IHN0cm9uZyByZWFzb24gZm9yIG5lZWRp
-bmcgdGhpcyBhY3R1YWxseS4NCj4gPiBXZSB1c2UgdGhlIE5BTkQgY29udHJvbGxlciBpbiB0aGUg
-Ym9vdFJPTSwgYm9vdDEvQkwxLCB1LWJvb3QvVUVGSSwgYW5kDQo+ID4gdGhlbiBLZXJuZWwgc3Rh
-Z2UuICBCeSBwcm9wZXJseSBpbml0aWFsaXppbmcgdGhlIGNvbnRyb2xsZXIgb25jZSB3ZSBkbw0K
-PiA+IG5vdCBuZWVkIHRvIHJlc2V0IGl0IDQgZGlmZmVyZW50IHRpbWVzLg0KPiANCj4gVGhpcyBj
-b3VsZCBiZSB1c2VkIGFzIGEgcmV2ZXJzZSBhcmd1bWVudCwgaXNzdWluZyBhIHJlc2V0IHdpbGwg
-aW5jcmVhc2UgdGhlIGJvb3QNCj4gdGltZS4NCj4gDQo+ID4NCj4gPj4NCj4gPj4+IDIuIFRoZSBO
-QU5EIGNvbnRyb2xsZXIgcmVzZXQgaW4gcHJvYmUgd291bGQgY2VydGFpbmx5IGluY3JlYXNlIExp
-bnV4DQo+ID4+PiBib290IHRpbWUgc28gZm9yIGNlcnRhaW4gaVByb2MgU29DcyB3ZSBtaWdodCBj
-aG9vc2UgYXZvaWQgTkFORA0KPiA+Pj4gY29udHJvbGxlciByZXNldCB0byByZWR1Y2UgYm9vdCB0
-aW1lIGlmIHBvc3NpYmxlLg0KPiA+Pg0KPiA+PiBJIHJlY2FsbCB0aGlzIHJlYXNvbiBiZWluZyBt
-ZW50aW9uZWQgYmVmb3JlLiBJIGJlbGlldmUgdGhpcyBvbmx5DQo+ID4+IGhhcHBlbnMgYmVjYXVz
-ZSB0aGUgYnJjbW5hbmQgZHJpdmVyIGRvZXNuJ3QgeWV0IGhhbmRsZSBjb25maWd1cmluZw0KPiA+
-PiB0aGUgdGltaW5nIHJlZ2lzdGVycywgc28gaVByb2MgaXMgaW1wbGljaXRseSByZWx5aW5nIG9u
-IHRoZQ0KPiA+PiBib290bG9hZGVyIHRvIGNvbmZpZ3VyZSB0aGUgTkFORCB0aW1pbmdzLiBQZXJo
-YXBzIGl0J3MgdGltZSB0aGF0IHdlDQo+ID4+IGZpeCB0aGF0LiBJJ2QgcmF0aGVyIG5vdCBhZGQg
-ZXh0cmEgRFQgcHJvcGVydGllcyB1bmxlc3Mgd2UgYWN0dWFsbHkNCj4gPj4gbmVlZCB0byBbMV0u
-IEFuZCBoYXZpbmcgcHJvcGVyIHRpbWluZyBjb25maWd1cmF0aW9uIGluIHRoZSBMaW51eA0KPiA+
-PiBkcml2ZXIgd2lsbCBoZWxwIGltcHJvdmUgc3BlZWRzIGZvciBhbGwgdXNlcnMgKHdob3NlIHRp
-bWluZ3MgbWF5IG5vdCBiZQ0KPiBjb25maWd1cmVkIGluIHRoZSBib290bG9hZGVyKS4NCj4gPg0K
-PiA+IFRoaXMgaXMgdGhlIHZlcnkgcmVhc29uIHdlIG5lZWQgdGhlIG9wdGlvbmFsIHJlc2V0IHBy
-b3BlcnR5LiAgV2UgbmVlZA0KPiA+IHRvIGhhdmUgdGltaW5ncyBjb25maWd1cmVkIGJ5IHRoZSBs
-aW51eCBkcml2ZXIgb3Igbm90LiAgWWVzLCBpbiBzb21lDQo+ID4gY2FzZXMgd2Ugd2lsbCBiZSBy
-ZWx5aW5nIG9uIGVhcmxpZXIgYm9vdCBzdGFnZXMgdG8gY29uZmlndXJlIHNvbWUgb2YNCj4gPiB0
-aGUgaGFyZHdhcmUuDQo+IA0KPiBUaGVuIGluc3RlYWQgb2YgYWRkaW5nIGEgInJlc2V0IGZsYWci
-IHRvIERldmljZSBUcmVlLCBhbm90aGVyIGFwcHJvYWNoIGNvdWxkIGJlDQo+IHRvIHB1dCB0aGUg
-ZGVzaXJlZCBvciBjdXJyZW50bHkgY29uZmlndXJlZCBleGhhdXN0aXZlIGxpc3Qgb2YgTkFORCB0
-aW1pbmdzIGluDQo+IERldmljZSBUcmVlLCBhbmQgYmFzZWQgb24gdGhhdCB5b3UgY291bGQgaGF2
-ZSB0aGlzOg0KPiANCj4gLSB0aGUgTkFORCBjb250cm9sbGVyIGRyaXZlciBmaW5kcyB0aGF0IHRo
-ZXNlIHRpbWluZ3MgbWF0Y2ggdGhlIGN1cnJlbnQNCj4gY29uZmlndXJhdGlvbiwgeW91IGFyZSBn
-b29kIHRvIGdvDQo+IA0KPiAtIHRoZSBOQU5EIGNvbnRyb2xsZXIgZHJpdmVycyBmaW5kcyBhIGRp
-ZmZlcmVuY2UgaW4gaG93IGN1cnJlbnQgdGltaW5ncyBhcmUNCj4gY29uZmlndXJlZCB2cy4gZGVz
-aXJlZCB0aW1pbmdzLCBhbmQgaXNzdWVzIGEgY29udHJvbGxlciByZXNldCwgcHJpb3IgdG8gYXBw
-bHlpbmcNCj4gbmV3IHRpbWluZyBjb25maWd1cmF0aW9uDQoNClRvIGFkZCB0byB0aGlzIC4uLg0K
-DQpUaGUgbWVjaGFuaXNtIHRvIHJlc2V0IGlzIEJSQ00gTkFORCBjb250cm9sbGVyIGlzIFNPQyBz
-cGVjaWZpYyBzbyB0aGUNClNvQyBpbmRlcGVuZGVudCBCUkNNIE5BTkQgZHJpdmVyIChpLmUuIGJy
-Y21uYW5kLmMpIGRvZXMgbm90IGtub3cgaG93DQp0byByZXNldCB0aGUgTkFORCBjb250cm9sbGVy
-Lg0KDQpGb3IgaVByb2MgU29DIGZhbWlseSwgdGhlIE5BTkQgY29udHJvbGxlciByZXNldCBpcyB0
-aHJvdWdoIElETSByZWdpc3Rlcg0Kc3BhY2Ugd2hpY2ggaXMgb25seSBpb21hcCdlZCBieSBpcHJv
-Y19uYW5kLmMuDQoNCldlIG1pZ2h0IGVuZC11cCBoYXZpbmcgb25lIG1vcmUgU29DIHNwZWNpZmlj
-IGNhbGxiYWNrIHdoaWNoIHdpbGwgYmUNClByb3ZpZGVkIGJ5IGlwcm9jX25hbmQuYyB0byBicmNt
-bmFuZC5jLg0KDQo+IA0KPiAtIG5vIHRpbWluZ3MgYXJlIGNvbmZpZ3VyZWQsIHJlc2V0IHRoZSBj
-b250cm9sbGVyIGFuZCB1c2UgZXhpc3RpbmcgYXV0by1kZXRlY3Rpb24NCj4gY2FwYWJpbGl0aWVz
-IGxpa2UgT05GSSBtb2Rlcw0KPiANCj4gVHlwaWNhbGx5IHlvdSB3b3VsZCBwdXQgdGhlIGRlc2ly
-ZWQgdGltaW5ncyBpbnN0ZWFkIG9mIHRoZSBjdXJyZW50bHkgY29uZmlndXJlZA0KPiB0aW1pbmdz
-IHRob3VnaC4uDQoNCk92ZXJhbGwsIGl0IHdvdWxkIGdvb2QgdG8gc3VwcG9ydCB0aW1pbmcgcGFy
-YW1ldGVycyB0aHJvdWdoIERUIG9yIE9ORkkgYnV0DQpmb3Igbm93IGhhdmUgd2UgY2FuIHJlbHkg
-b24gcmVzZXQgYW5kIGF1dG8tZGV2aWQgY29uZmlndXJhdGlvbi4NCg0KPiANCj4gPg0KPiA+Pg0K
-PiA+PiBJIGFjdHVhbGx5IGhhZCBzb21lIHByZWxpbWluYXJ5IHdvcmsgdG8gZG8gc29tZSB0aW1p
-bmcgY29uZmlndXJhdGlvbg0KPiA+PiBhY2NvcmRpbmcgdG8gdGhlIG5ldyB0aW1pbmcgaW5mb3Jt
-YXRpb24gZnJvbSBuYW5kX2Jhc2UuYy9uYW5kX3RpbWluZy5jLg0KPiA+PiBVbmZvcnR1bmF0ZWx5
-LCBJIGRpZG4ndCBjb21wbGV0ZSB0aGlzLCBhbmQgSSdtIG5vIGxvbmdlciB3b3JraW5nIGF0DQo+
-ID4+IEJyb2FkY29tLCBzbyBJIGRvbid0IGV4YWN0bHkgaGF2ZSBhY2Nlc3MgdG8gdGhlIEhXIGRv
-Y3MgZm9yIGFsbCB0aGUNCj4gPj4gTkFORCBjb250cm9sbGVyIHJldmlzaW9ucywgbm9yIGRvIEkg
-aGF2ZSBhY2Nlc3MgdG8gYXMgbXVjaCBIVyBmb3IgdGVzdGluZy4uLg0KPiA+Pg0KPiA+PiBCcmlh
-bg0KPiA+Pg0KPiA+PiBbMV0gSWYgd2UgcmVhbGx5IGRvIG5lZWQgYSBkZXZpY2UgdHJlZSBkaWZm
-ZXJlbnRpYXRpb24sIHBlcmhhcHMgaXQNCj4gPj4gd291bGQgYmUgYmV0dGVyIHRvIGp1c3QgZGlm
-ZmVyZW50aWF0ZSB0aGUgY29tcGF0aWJsZSBzdHJpbmcgdGhhbiB0bw0KPiA+PiBoYXZlIGluZGl2
-aWR1YWwgYm9vbGVhbiBwcm9wZXJ0aWVzLiBlLmcuOg0KPiA+Pg0KPiA+PiAgICAgY29tcGF0aWJs
-ZSA9ICJicmNtLGlwcm9jLW5hbmQtbnMyIiwgLi4uOw0KPiA+Pg0KPiA+IEFzIGRlc2NyaWJlZCBh
-Ym92ZSAtIHRoZSBvcHRpb24gaXMgbm90IFNvQyBzcGVjaWZpYy4gIEl0IGlzIHN5c3RlbQ0KPiA+
-IHNwZWNpZmljLiAgSW4gc29tZSBzeXN0ZW1zIHdlIG1heSB3aXNoIHRvIHJlc2V0IHRoZSBOQU5E
-IGNvbnRyb2xsZXIgaW4NCj4gPiBsaW51eC4gIEluIHNvbWUgd2UgbWF5IHdpc2ggdG8gcmVseSBv
-biBpbml0aWFsaXphdGlvbiB0aGF0IGhhcyBhbHJlYWR5DQo+ID4gYmVlbiBkb25lIHRvIHNwZWVk
-IHVwIGJvb3QgdGltZXMuDQo+IA0KPiBJdCBzZWVtcyB0byBtZSBsaWtlIGhhdmluZyB0aGlzIHBy
-b3BlcnR5IGlzIGZpbmUgYXMgbG9uZyBhcyB5b3UgYXJlIGRlc2NyaWJpbmcgdGhhdA0KPiB0aGUg
-Y29udHJvbGxlciAqbmVlZHMqIGEgcmVzZXQgdG8gb3BlcmF0ZSBwcm9wZXJseSwgaXQgZG9lcyBu
-b3Qgc3RyaWtlIG1lIGFzIGENCj4gcGFydGljdWxhcmx5IHdlbGwgc3VpdGVkIHByb3BlcnR5IGlm
-IGl0cyBzaWRlIGVmZmVjdCBhbmQgbWFpbiB1c2FnZSBpcyB0byBrZWVwIG9yDQo+IHdpcGUtb3V0
-IGV4aXN0aW5nIE5BTkQgdGltaW5ncy4NCg0KSU1ITywgaGF2aW5nIFNvQyBzcGVjaWZpYyBjb21w
-YXRpYmxlIHN0cmluZyBmb3IgTlMyIGlzIGxpa2Ugc2F5aW5nDQpOQU5EIGNvbnRyb2xsZXIgb24g
-TlMyIGlzIGRpZmZlcmVudCBmcm9tIG90aGVyIGlQcm9jIFNvQ3Mgd2hlcmVhcw0KSGF2aW5nIG9w
-dGlvbmFsIERUIGZsYWdzIGZvciBxdWlya3Mvd29yay1hcm91bmRzIChlLmcuIE5BTkQgY29udHJv
-bGxlcg0KcmVzZXQpIGlzIGxpa2Ugc2F5aW5nIE5BTkQgY29udHJvbGxlciBvbiBOUzIgc2FtZSBh
-cyBvdGhlciBpUHJvYyBTb0NzDQpidXQgc29tZSBhZGRpdGlvbmFsIHByb2dyYW1taW5nIGlzIHJl
-cXVpcmVkLiANCg0KLS0NCkFudXANCg==
+Hi,
+
+On 10/06/2015 02:47 PM, Brian Norris wrote:
+> Hi Archit,
+>
+> On Mon, Oct 05, 2015 at 12:21:54PM +0530, Archit Taneja wrote:
+>> On 10/02/2015 08:35 AM, Brian Norris wrote:
+>>> On Wed, Aug 19, 2015 at 10:19:03AM +0530, Archit Taneja wrote:
+>>>> The Qualcomm NAND controller is found in SoCs like IPQ806x, MSM7xx,
+>>>> MDM9x15 series.
+>>>>
+>>>> It exists as a sub block inside the IPs EBI2 (External Bus Interface 2)
+>>>> and QPIC (Qualcomm Parallel Interface Controller). These IPs provide a
+>>>> broader interface for external slow peripheral devices such as LCD and
+>>>> NAND/NOR flash memory or SRAM like interfaces.
+>>>>
+>>>> We add support for the NAND controller found within EBI2. For the SoCs
+>>>> of our interest, we only use the NAND controller within EBI2. Therefore,
+>>>> it's safe for us to assume that the NAND controller is a standalone block
+>>>> within the SoC.
+>>>>
+>>>> The controller supports 512B, 2kB, 4kB and 8kB page 8-bit and 16-bit NAND
+>>>> flash devices. It contains a HW ECC block that supports BCH ECC (4, 8 and
+>>>> 16 bit correction/step) and RS ECC(4 bit correction/step) that covers main
+>>>> and spare data. The controller contains an internal 512 byte page buffer
+>>>> to which we read/write via DMA. The EBI2 type NAND controller uses ADM DMA
+>>>> for register read/write and data transfers. The controller performs page
+>>>> reads and writes at a codeword/step level of 512 bytes. It can support up
+>>>> to 2 external chips of different configurations.
+>>>>
+>>>> The driver prepares register read and write configuration descriptors for
+>>>> each codeword, followed by data descriptors to read or write data from the
+>>>> controller's internal buffer. It uses a single ADM DMA channel that we get
+>>>> via dmaengine API. The controller requires 2 ADM CRCIs for command and
+>>>> data flow control. These are passed via DT.
+>>>>
+>>>> The ecc layout used by the controller is syndrome like, but we can't use
+>>>> the standard syndrome ecc ops because of several reasons. First, the amount
+>>>> of data bytes covered by ecc isn't same in each step. Second, writing to
+>>>> free oob space requires us writing to the entire step in which the oob
+>>>> lies. This forces us to create our own ecc ops.
+>>>>
+>>>> One more difference is how the controller accesses the bad block marker.
+>>>> The controller ignores reading the marker when ECC is enabled. ECC needs
+>>>> to be explicity disabled to read or write to the bad block marker. For
+>>>> this reason, we use the newly created flag NAND_BBT_ACCESS_BBM_RAW to
+>>>> read the factory provided bad block markers.
+>>>>
+>>>> v4:
+>>>> - Shrink submit_descs
+>>>> - add desc list node at the end of dma_prep_desc
+>>>> - Endianness and warning fixes
+>>>>
+>>>> Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
+>>>
+>>> Where does this sign-off come into play? It's not grouped with yours.
+>>> Did Stephen have something to do with v4 only? Also, we typically trim
+>>> the change log from the commit message (and place it below the '---' to
+>>> do this automatically). Or did you intend for these changelogs to stay
+>>> in the git history? I suppose it's not really harmful to keep it in if
+>>> you'd like...
+>>
+>> He'd corrected a piece of the code by sharing a patch with with me. You
+>> can place his sign-off once you and Stephen accept the final patch
+>> revision.
+>
+> OK, thanks for the clarification.
+>
+>> I don't have a problem with discarding the changelogs for the git
+>> history. I can incorporate some of the major changes in the main
+>> commit message above.
+>
+> Whatever works for you. I'd like to incorporate any useful info in the
+> commit message, but changelog is sometimes noise.
+>
+>>>> v3:
+>>>> - Refactor dma functions for maximum reuse
+>>>> - Use dma_slave_confing on stack
+>>>> - optimize and clean upempty_page_fixup using memchr_inv
+>>>> - ensure portability with dma register reads using le32_* funcs
+>>>> - use NAND_USE_BOUNCE_BUFFER instead of doing it ourselves
+>>>> - fix handling of return values of dmaengine funcs
+>>>> - constify wherever possible
+>>>> - Remove dependency on ADM DMA in Kconfig
+>>>> - Misc fixes and clean ups
+>>>>
+>>>> v2:
+>>>> - Use new BBT flag that allows us to read BBM in raw mode
+>>>> - reduce memcpy-s in the driver
+>>>> - some refactor and clean ups because of above changes
+>>>>
+>>>> Reviewed-by: Andy Gross <agross@codeaurora.org>
+>>>> Signed-off-by: Archit Taneja <architt@codeaurora.org>
+>>>
+>>> Has this driver been tested with drivers/mtd/tests/? Which ones? I'm
+>>> particularly interested in oobtest, since you attempted to handle both
+>>> ECC and raw OOB.
+>>
+>> Yes. All the tests passed. Although, I couldn't figure out from the
+>> oobtest console output if it tested both the ECC and RAW oob.
+>
+> No, it doesn't actually use raw OOB (which is possibly a flaw; we should
+> improve the test sometime). It just uses the auto-place mode, which is
+> more useful for something like JFFS2. I just wanted to make sure the
+> test passed, since it looks like you did put a little effort on OOB
+> support.
+>
+>>>> ---
+> [...]
+>>>> +/*
+>>>> + * @cmd_crci:			ADM DMA CRCI for command flow control
+>>>> + * @data_crci:			ADM DMA CRCI for data flow control
+>>>> + * @list:			DMA descriptor list (list of desc_infos)
+>>>> + * @data_buffer:		our local DMA buffer for page read/writes,
+>>>> + *				used when we can't use the buffer provided
+>>>> + *				by upper layers directly
+>>>> + * @buf_size/count/start:	markers for chip->read_buf/write_buf functions
+>>>> + * @reg_read_buf:		buffer for reading register data via DMA
+>>>> + * @reg_read_pos:		marker for data read in reg_read_buf
+>>>> + * @cfg0, cfg1, cfg0_raw..:	NANDc register configurations needed for
+>>>> + *				ecc/non-ecc mode for the current nand flash
+>>>> + *				device
+>>>> + * @regs:			a contiguous chunk of memory for DMA register
+>>>> + *				writes
+>>>> + * @ecc_strength:		4 bit or 8 bit ecc, received via DT
+>>>> + * @bus_width:			8 bit or 16 bit NAND bus width, received via DT
+>>>> + * @ecc_modes:			supported ECC modes by the current controller,
+>>>> + *				initialized via DT match data
+>>>> + * @cw_size:			the number of bytes in a single step/codeword
+>>>> + *				of a page, consisting of all data, ecc, spare
+>>>> + *				and reserved bytes
+>>>> + * @cw_data:			the number of bytes within a codeword protected
+>>>> + *				by ECC
+>>>> + * @bch_enabled:		flag to tell whether BCH or RS ECC mode is used
+>>>> + * @status:			value to be returned if NAND_CMD_STATUS command
+>>>> + *				is executed
+>>>> + */
+>>>> +struct qcom_nandc_data {
+>>>> +	struct platform_device *pdev;
+>>>
+>>> This field is only set once, but unused?
+>>
+>> It is used in the driver remove (qcom_nandc_remove) to get a pointer to
+>> this data struct.
+>
+> Are you sure? Doesn't look true to me. Maybe your driver has changed
+> over time?
+
+I'm sorry, I overlooked. It isn't needed there. I'll get rid of it, and
+other members if I find any more.
+
+>
+>>>
+>>> And it (and several others) aren't documented above.
+>>
+>> The comments weren't meant to be a part of kernel docs. So, I left out
+>> some of the more obvious params.
+>
+> Hmm, well it's probably nicer if you're consistent. pdev isn't so
+> important, but some of the others might be worth listing.
+
+Sure, I'll do that.
+
+>
+>>>> +	struct device *dev;
+>>>> +
+>>>> +	void __iomem *base;
+>>>> +	struct resource *res;
+>>>> +
+>>>> +	struct clk *core_clk;
+>>>> +	struct clk *aon_clk;
+>>>> +
+>>>> +	/* DMA stuff */
+>>>> +	struct dma_chan *chan;
+>>>> +	struct dma_slave_config	slave_conf;
+>>>> +	unsigned int cmd_crci;
+>>>> +	unsigned int data_crci;
+>>>> +	struct list_head list;
+>>>> +
+>>>> +	/* MTD stuff */
+>>>> +	struct nand_chip chip;
+>>>> +	struct mtd_info mtd;
+>>>> +
+>>>> +	/* local data buffer and markers */
+>>>> +	u8		*data_buffer;
+>>>> +	int		buf_size;
+>>>> +	int		buf_count;
+>>>> +	int		buf_start;
+>>>> +
+>>>> +	/* local buffer to read back registers */
+>>>> +	__le32 *reg_read_buf;
+>>>> +	int reg_read_pos;
+>>>> +
+>>>> +	/* required configs */
+>>>> +	u32 cfg0, cfg1;
+>>>> +	u32 cfg0_raw, cfg1_raw;
+>>>> +	u32 ecc_buf_cfg;
+>>>> +	u32 ecc_bch_cfg;
+>>>> +	u32 clrflashstatus;
+>>>> +	u32 clrreadstatus;
+>>>> +	u32 sflashc_burst_cfg;
+>>>> +	u32 cmd1, vld;
+>>>> +
+>>>> +	/* register state */
+>>>> +	struct nandc_regs *regs;
+>>>> +
+>>>> +	/* things we get from DT */
+>>>> +	int ecc_strength;
+>>>> +	int bus_width;
+>>>> +
+>>>> +	u32 ecc_modes;
+>>>> +
+>>>> +	/* misc params */
+>>>> +	int cw_size;
+>>>> +	int cw_data;
+>>>> +	bool use_ecc;
+>>>> +	bool bch_enabled;
+>>>> +	u8 status;
+>>>> +	int last_command;
+>>>> +};
+>>>> +
+> [...]
+>>>> +/*
+>>>> + * when using RS ECC, the NAND controller flags an error when reading an
+>>>> + * erased page. however, there are special characters at certain offsets when
+>>>> + * we read the erased page. we check here if the page is really empty. if so,
+>>>> + * we replace the magic characters with 0xffs
+>>>> + */
+>>>
+>>> What's the nature of this erased page flagging? Does it only detect
+>>> all-0xff pages? What about if the erased page experiences any bitflips?
+>>> A lot of drivers have been attempting to handle that case too (which is
+>>> becoming more common on modern MLC, and even on SLC), and most of the
+>>> times they do it poorly.
+>>
+>> The hardware can raise an 'erased' flag per step, when all the bytes in
+>> the step are 0xff. The code below would consider the page as
+>> 'not erased' if any step doesn't report an erased flag.
+>
+> OK, so (if the HW is implemented as you say) that looks like a correct
+> test. But it's not sufficient for some modern cases. You might want to
+> consider whether you need to adopt some additional checks after your
+> driver gets merged.
+
+Sure. I can do that. Thanks.
+
+>
+>>> See nand_check_erased_ecc_chunk() (in linux-next.git) as an example of a
+>>> brute force helper to assist for cases where HW ECC is not sufficient.
+>>
+>> I'll have a look. Thanks.
+>>
+>>>
+> [...]
+>>>> +static int qcom_nandc_init(struct qcom_nandc_data *this)
+>>>> +{
+>>>> +	struct mtd_info *mtd = &this->mtd;
+>>>> +	struct nand_chip *chip = &this->chip;
+>>>> +	struct device_node *np = this->dev->of_node;
+>>>> +	struct mtd_part_parser_data ppdata = { .of_node = np };
+>>>> +	int r;
+>>>> +
+>>>> +	mtd->priv = chip;
+>>>> +	mtd->name = "qcom-nandc";
+>>>> +	mtd->owner = THIS_MODULE;
+>>>> +
+>>>> +	chip->priv = this;
+>>>> +
+>>>> +	chip->cmdfunc		= qcom_nandc_command;
+>>>> +	chip->select_chip	= qcom_nandc_select_chip;
+>>>> +	chip->read_byte		= qcom_nandc_read_byte;
+>>>> +	chip->read_buf		= qcom_nandc_read_buf;
+>>>> +	chip->write_buf		= qcom_nandc_write_buf;
+>>>> +
+>>>> +	chip->options |= NAND_NO_SUBPAGE_WRITE | NAND_USE_BOUNCE_BUFFER;
+>>>> +	if (this->bus_width == 16)
+>>>> +		chip->options |= NAND_BUSWIDTH_16;
+>>>> +
+>>>> +	chip->bbt_options = NAND_BBT_ACCESS_BBM_RAW;
+>>>> +	if (of_get_nand_on_flash_bbt(np))
+>>>
+>>> Can you use nand_dt_init()? i.e., fill out chip->flash_node and let
+>>> nand_scan_ident() take care of most of the common DT parsing. You can
+>>> then clean up afterward with something like:
+>>>
+>>> 	if (chip->bbt_options & NAND_BBT_USE_FLASH)
+>>> 		chip->bbt_options |= NAND_BBT_NO_OOB;
+>>>
+>>> Similar for the bus width, ECC strength, and ECC step size parameters.
+>>
+>> Okay. I was a bit unsure about this.
+>>
+>> The step size is fixed (512 bytes) for the controller hardware, but the
+>> hardware supports 4 bit and 8 bit ECC. I didn't use nand_dt_init()
+>> because it makes it necessary to mention both strength and step size
+>> parameters.
+>>
+>> Is it wrong to specify only what strength to use for the flash chip in
+>> DT and not specify step size?
+>
+> There are certainly cases where it can be sufficient to specify just a
+> strength (e.g., when your HW ECC only supports a single sector size),
+> but there have been some problems already with other drivers that
+> assumed at first they only need to support a single sector size, then
+> they later support new modes (either through new chip revisions, or
+> simply added driver support for features that were previously unused).
+> So we kinda decided to require both parameters. In fact, a strength by
+> itself is not really very descriptive; an ECC algorithm is (roughly)
+> defined by both the number or errors it can correct *and* the region
+> over which it acts. So a proper hardware description should probably
+> cover both.
+>
+> Long story short: yes, please include both properties (in your DT
+> binding; or point to nand.txt -- and in your DTS source).
+
+Okay, that makes sense. I'll do the nand_dt_init conversion, and make
+sure the change is reflected in the binding docs.
+
+Thanks,
+Archit
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, hosted by The Linux Foundation
