@@ -1,23 +1,18 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zju7G-0002Qo-QI
- for linux-mtd@lists.infradead.org; Wed, 07 Oct 2015 19:11:07 +0000
-Received: by padhy16 with SMTP id hy16so29339710pad.1
- for <linux-mtd@lists.infradead.org>; Wed, 07 Oct 2015 12:10:45 -0700 (PDT)
-Received: from achanot-lt
- (173-10-76-58-BusName-Washington.hfc.comcastbusiness.net. [173.10.76.58])
- by smtp.gmail.com with ESMTPSA id lo9sm11588693pab.19.2015.10.07.12.10.44
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 07 Oct 2015 12:10:44 -0700 (PDT)
-Date: Wed, 7 Oct 2015 12:10:08 -0700
-From: Aurelien Chanot <chanot.a@gmail.com>
+ id 1Zjubi-0005PJ-M1
+ for linux-mtd@lists.infradead.org; Wed, 07 Oct 2015 19:42:35 +0000
+Received: by wiclk2 with SMTP id lk2so43687441wic.1
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Oct 2015 12:42:12 -0700 (PDT)
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Error handling in spi-nor and dealing with short reads/writes
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: spi-nor: Add support for Micron n25q032a
-Message-ID: <20151007191008.GA31411@achanot-lt>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Message-ID: <56157571.4090007@gmail.com>
+Date: Wed, 7 Oct 2015 21:41:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The N25Q032A is identical to the N25Q032 except it has a different
-supply voltage range. Therefore, it has a new JEDEC ID.
+I stumbled across some missing error handling in spi-nor and when having a look at the
+list archive I found some proposed patches and related discussions.
+However it seems like there was no result, at least I didn't find accepted patches
+dealing with this issue.
 
-Signed-off-by: Aurelien Chanot <chanot.a@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+To summarize few issues:
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index f59aedf..9122a2e 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -585,6 +585,7 @@ static const struct flash_info spi_nor_ids[] = {
- 
- 	/* Micron */
- 	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
-+	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
- 	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
--- 
-2.1.4
+1. I didn't find any clear definition how the read / write callbacks in spi_nor and mtd_info
+   are supposed to handle the retlen argument (returning the actual length of the current
+   transfer or adding it to the current value of *retlen).
+   Maybe due to this missing specification there are different implementations of the read
+   callback in spi_nor:
+   m25p80_read: sets *retlen to the actual length of the current transfer
+   nxp_spifi_read: adds it to *retlen
+   fsl_qspi_read: adds it to *retlen
+   Luckily this has no impact so far as mtd_read initializes *retlen to 0 before calling
+   the _read callback (once).
+
+2. The write callback in spi_nor is defined with a void return type and doesn't allow to
+   handle the case of a failing transfer.
+
+3. It's unclear at which layer incomplete reads/writes are acceptable (and therefore which
+   layer can / should loop to assemble chunks).
+
+My 2ct:
+
+1. They should return the actual length of the current transfer in *retlen.
+   In case of a partial transfer they should return an error (e.g. -EIO or -EMSGSIZE).
+   This allows the caller to identify a partial transfer and the amount of
+   bytes successfully transferred. Then the caller can decide whether he wants
+   to retry for the failed part of the transfer and later assemble the chunks.
+
+2. Make it return int (like _write in mtd_info).
+
+3. I prefer to handle read chunks in spi_nor_read (submitted a related patch already).
+   Not sure whether it would make sense to add chunk handling also for writes.
+   I'm not aware of any controller which is not able to transfer at least a single page
+   at once.
+
+This is meant as a RfC. Also I may have missed important parts of the discussion.
+Appreciate any hint or comment.
