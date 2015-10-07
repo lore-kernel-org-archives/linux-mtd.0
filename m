@@ -1,17 +1,19 @@
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZjumI-0003Dp-7g
- for linux-mtd@lists.infradead.org; Wed, 07 Oct 2015 19:53:31 +0000
-Received: by wicge5 with SMTP id ge5so228546025wic.0
- for <linux-mtd@lists.infradead.org>; Wed, 07 Oct 2015 12:53:08 -0700 (PDT)
-To: Brian Norris <computersforpeace@gmail.com>
+ id 1ZjvXX-0006M7-Cu
+ for linux-mtd@lists.infradead.org; Wed, 07 Oct 2015 20:42:20 +0000
+Subject: Re: [PATCH 10/27] ubifs: introduce list.h
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com,
+ computersforpeace@gmail.com
+References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1439973572-12489-11-git-send-email-yangds.fnst@cn.fujitsu.com>
 Cc: linux-mtd@lists.infradead.org
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH] mtd: m25p80: handle failed spi_write in m25p80_erase
-Message-ID: <5615780D.7050407@gmail.com>
-Date: Wed, 7 Oct 2015 21:52:45 +0200
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5615838E.5090908@nod.at>
+Date: Wed, 7 Oct 2015 22:41:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1439973572-12489-11-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,27 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Return an error if spi_write fails.
+Am 19.08.2015 um 10:39 schrieb Dongsheng Yang:
+> Copy the list.h from kernel to ubifs-utils/
+> 
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> ---
+>  ubifs-utils/include/list.h | 484 +++++++++++++++++++++++++++++++++++++++++++++
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
----
- drivers/mtd/devices/m25p80.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+This belongs to common mtd-utils code as it is not UBIFS specific.
+And why didn't you copy the whole list.h file? I'm missing
+list_last_entry() for example.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 634b0c4..f10daa8 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -171,9 +171,7 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
- 	flash->command[0] = nor->erase_opcode;
- 	m25p_addr2cmd(nor, offset, flash->command);
- 
--	spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
--
--	return 0;
-+	return spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
- }
- 
- /*
--- 
-2.6.1
+Thanks,
+//richard
