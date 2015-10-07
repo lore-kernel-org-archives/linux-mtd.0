@@ -1,38 +1,33 @@
-Message-ID: <5614574C.2060701@gmail.com>
-Date: Tue, 06 Oct 2015 16:20:44 -0700
-From: Florian Fainelli <f.fainelli@gmail.com>
-MIME-Version: 1.0
-To: Scott Branden <sbranden@broadcom.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Anup Patel <anup.patel@broadcom.com>
+From: Anup Patel <anup.patel@broadcom.com>
+To: Florian Fainelli <f.fainelli@gmail.com>, Scott Branden
+ <sbranden@broadcom.com>, Brian Norris <computersforpeace@gmail.com>
 CC: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will.deacon@arm.com>,
- David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Pramod Kumar <pramodku@broadcom.com>,
- Vikram Prakash <vikramp@broadcom.com>,
- Sandeep Tripathy <tripathy@broadcom.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- Rafal Milecki <zajec5@gmail.com>
-Subject: Re: [PATCH 3/5] mtd: brcmnand: Optional DT flag to reset IPROC NAND
+ <linux-arm-kernel@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, "Ian
+ Campbell" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,
+ David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>, "Pramod
+ Kumar" <pramodku@broadcom.com>, Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, bcm-kernel-feedback-list
+ <bcm-kernel-feedback-list@broadcom.com>, Rafal Milecki <zajec5@gmail.com>
+Subject: RE: [PATCH 3/5] mtd: brcmnand: Optional DT flag to reset IPROC NAND
  controller
+Date: Wed, 7 Oct 2015 03:33:50 +0000
+Message-ID: <39063E8F96E11742B35A201CC5D095B7AD8ADD@SJEXCHMB10.corp.ad.broadcom.com>
 References: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
  <1443808606-21203-4-git-send-email-anup.patel@broadcom.com>
  <20151004214943.GA28904@localhost>
  <39063E8F96E11742B35A201CC5D095B7AD54C1@SJEXCHMB10.corp.ad.broadcom.com>
  <20151006134119.GB26818@localhost> <56144A62.70300@broadcom.com>
-In-Reply-To: <56144A62.70300@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+ <5614574C.2060701@gmail.com>
+In-Reply-To: <5614574C.2060701@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,104 +37,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/10/15 15:25, Scott Branden wrote:
-> Hi Brian,
-> 
-> On 15-10-06 06:41 AM, Brian Norris wrote:
-> 
->>>>
->>>> Is there a reason not to do this reset unconditionally? I recall
->>>> this came up in
->>>> discussion previously, when the OpenWRT folks were trying to
->>>> integrate with
->>>> BCMA, where this reset was one of the few differences between the
->>>> platform-
->>>> device-based driver (i.e., this one) and the BCMA based driver.
->>>> Might it help
->>>> simplify things a bit if we just did the same thing everywhere?
->>>
->>> This driver is currently shared by Cygnus and NS2.
->>>
->>> We had similar suggestion when this patch was reviewed
->>> internally in Broadcom.
->>>
->>> The rationale for adding optional DT flag is as follows:
->>> 1. The NAND controller reset is currently required for NS2 only so
->>> that it is in sane state before any NAND commands are issued. We
->>> are not sure if Cygnus and all future iProc SoCs will require NAND
->>> controller reset.
->>
->> I'm not sure this is a very strong reason. It seems fairly reasonable in
->> general to reset a HW block before using it.
-> 
-> Efficient Boot time is a very strong reason for needing this actually.
-> We use the NAND controller in the bootROM, boot1/BL1, u-boot/UEFI, and
-> then Kernel stage.  By properly initializing the controller once we do
-> not need to reset it 4 different times.
-
-This could be used as a reverse argument, issuing a reset will increase
-the boot time.
-
-> 
->>
->>> 2. The NAND controller reset in probe would certainly increase
->>> Linux boot time so for certain iProc SoCs we might choose avoid
->>> NAND controller reset to reduce boot time if possible.
->>
->> I recall this reason being mentioned before. I believe this only happens
->> because the brcmnand driver doesn't yet handle configuring the timing
->> registers, so iProc is implicitly relying on the bootloader to configure
->> the NAND timings. Perhaps it's time that we fix that. I'd rather not add
->> extra DT properties unless we actually need to [1]. And having proper
->> timing configuration in the Linux driver will help improve speeds for
->> all users (whose timings may not be configured in the bootloader).
-> 
-> This is the very reason we need the optional reset property.  We need to
-> have timings configured by the linux driver or not.  Yes, in some cases
-> we will be relying on earlier boot stages to configure some of the
-> hardware.
-
-Then instead of adding a "reset flag" to Device Tree, another approach
-could be to put the desired or currently configured exhaustive list of
-NAND timings in Device Tree, and based on that you could have this:
-
-- the NAND controller driver finds that these timings match the current
-configuration, you are good to go
-
-- the NAND controller drivers finds a difference in how current timings
-are configured vs. desired timings, and issues a controller reset, prior
-to applying new timing configuration
-
-- no timings are configured, reset the controller and use existing
-auto-detection capabilities like ONFI modes
-
-Typically you would put the desired timings instead of the currently
-configured timings though..
-
-> 
->>
->> I actually had some preliminary work to do some timing configuration
->> according to the new timing information from nand_base.c/nand_timing.c.
->> Unfortunately, I didn't complete this, and I'm no longer working at
->> Broadcom, so I don't exactly have access to the HW docs for all the NAND
->> controller revisions, nor do I have access to as much HW for testing...
->>
->> Brian
->>
->> [1] If we really do need a device tree differentiation, perhaps it would
->> be better to just differentiate the compatible string than to have
->> individual boolean properties. e.g.:
->>
->>     compatible = "brcm,iproc-nand-ns2", ...;
->>
-> As described above - the option is not SoC specific.  It is system
-> specific.  In some systems we may wish to reset the NAND controller in
-> linux.  In some we may wish to rely on initialization that has already
-> been done to speed up boot times.
-
-It seems to me like having this property is fine as long as you are
-describing that the controller *needs* a reset to operate properly, it
-does not strike me as a particularly well suited property if its side
-effect and main usage is to keep or wipe-out existing NAND timings.
--- 
-Florian
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRmxvcmlhbiBGYWluZWxs
+aSBbbWFpbHRvOmYuZmFpbmVsbGlAZ21haWwuY29tXQ0KPiBTZW50OiAwNyBPY3RvYmVyIDIwMTUg
+MDQ6NTENCj4gVG86IFNjb3R0IEJyYW5kZW47IEJyaWFuIE5vcnJpczsgQW51cCBQYXRlbA0KPiBD
+YzogbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBSb2IgSGVycmluZzsgUGF3
+ZWwgTW9sbDsgTWFyaw0KPiBSdXRsYW5kOyBJYW4gQ2FtcGJlbGw7IEt1bWFyIEdhbGE7IENhdGFs
+aW4gTWFyaW5hczsgV2lsbCBEZWFjb247IERhdmlkDQo+IFdvb2Rob3VzZTsgUmF5IEp1aTsgRmxv
+cmlhbiBGYWluZWxsaTsgUHJhbW9kIEt1bWFyOyBWaWtyYW0gUHJha2FzaDsgU2FuZGVlcA0KPiBU
+cmlwYXRoeTsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
+cm5lbC5vcmc7IGxpbnV4LQ0KPiBtdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgYmNtLWtlcm5lbC1m
+ZWVkYmFjay1saXN0OyBSYWZhbCBNaWxlY2tpDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMy81XSBt
+dGQ6IGJyY21uYW5kOiBPcHRpb25hbCBEVCBmbGFnIHRvIHJlc2V0IElQUk9DIE5BTkQNCj4gY29u
+dHJvbGxlcg0KPiANCj4gT24gMDYvMTAvMTUgMTU6MjUsIFNjb3R0IEJyYW5kZW4gd3JvdGU6DQo+
+ID4gSGkgQnJpYW4sDQo+ID4NCj4gPiBPbiAxNS0xMC0wNiAwNjo0MSBBTSwgQnJpYW4gTm9ycmlz
+IHdyb3RlOg0KPiA+DQo+ID4+Pj4NCj4gPj4+PiBJcyB0aGVyZSBhIHJlYXNvbiBub3QgdG8gZG8g
+dGhpcyByZXNldCB1bmNvbmRpdGlvbmFsbHk/IEkgcmVjYWxsDQo+ID4+Pj4gdGhpcyBjYW1lIHVw
+IGluIGRpc2N1c3Npb24gcHJldmlvdXNseSwgd2hlbiB0aGUgT3BlbldSVCBmb2xrcyB3ZXJlDQo+
+ID4+Pj4gdHJ5aW5nIHRvIGludGVncmF0ZSB3aXRoIEJDTUEsIHdoZXJlIHRoaXMgcmVzZXQgd2Fz
+IG9uZSBvZiB0aGUgZmV3DQo+ID4+Pj4gZGlmZmVyZW5jZXMgYmV0d2VlbiB0aGUNCj4gPj4+PiBw
+bGF0Zm9ybS0NCj4gPj4+PiBkZXZpY2UtYmFzZWQgZHJpdmVyIChpLmUuLCB0aGlzIG9uZSkgYW5k
+IHRoZSBCQ01BIGJhc2VkIGRyaXZlci4NCj4gPj4+PiBNaWdodCBpdCBoZWxwDQo+ID4+Pj4gc2lt
+cGxpZnkgdGhpbmdzIGEgYml0IGlmIHdlIGp1c3QgZGlkIHRoZSBzYW1lIHRoaW5nIGV2ZXJ5d2hl
+cmU/DQo+ID4+Pg0KPiA+Pj4gVGhpcyBkcml2ZXIgaXMgY3VycmVudGx5IHNoYXJlZCBieSBDeWdu
+dXMgYW5kIE5TMi4NCj4gPj4+DQo+ID4+PiBXZSBoYWQgc2ltaWxhciBzdWdnZXN0aW9uIHdoZW4g
+dGhpcyBwYXRjaCB3YXMgcmV2aWV3ZWQgaW50ZXJuYWxseSBpbg0KPiA+Pj4gQnJvYWRjb20uDQo+
+ID4+Pg0KPiA+Pj4gVGhlIHJhdGlvbmFsZSBmb3IgYWRkaW5nIG9wdGlvbmFsIERUIGZsYWcgaXMg
+YXMgZm9sbG93czoNCj4gPj4+IDEuIFRoZSBOQU5EIGNvbnRyb2xsZXIgcmVzZXQgaXMgY3VycmVu
+dGx5IHJlcXVpcmVkIGZvciBOUzIgb25seSBzbw0KPiA+Pj4gdGhhdCBpdCBpcyBpbiBzYW5lIHN0
+YXRlIGJlZm9yZSBhbnkgTkFORCBjb21tYW5kcyBhcmUgaXNzdWVkLiBXZSBhcmUNCj4gPj4+IG5v
+dCBzdXJlIGlmIEN5Z251cyBhbmQgYWxsIGZ1dHVyZSBpUHJvYyBTb0NzIHdpbGwgcmVxdWlyZSBO
+QU5EDQo+ID4+PiBjb250cm9sbGVyIHJlc2V0Lg0KPiA+Pg0KPiA+PiBJJ20gbm90IHN1cmUgdGhp
+cyBpcyBhIHZlcnkgc3Ryb25nIHJlYXNvbi4gSXQgc2VlbXMgZmFpcmx5IHJlYXNvbmFibGUNCj4g
+Pj4gaW4gZ2VuZXJhbCB0byByZXNldCBhIEhXIGJsb2NrIGJlZm9yZSB1c2luZyBpdC4NCj4gPg0K
+PiA+IEVmZmljaWVudCBCb290IHRpbWUgaXMgYSB2ZXJ5IHN0cm9uZyByZWFzb24gZm9yIG5lZWRp
+bmcgdGhpcyBhY3R1YWxseS4NCj4gPiBXZSB1c2UgdGhlIE5BTkQgY29udHJvbGxlciBpbiB0aGUg
+Ym9vdFJPTSwgYm9vdDEvQkwxLCB1LWJvb3QvVUVGSSwgYW5kDQo+ID4gdGhlbiBLZXJuZWwgc3Rh
+Z2UuICBCeSBwcm9wZXJseSBpbml0aWFsaXppbmcgdGhlIGNvbnRyb2xsZXIgb25jZSB3ZSBkbw0K
+PiA+IG5vdCBuZWVkIHRvIHJlc2V0IGl0IDQgZGlmZmVyZW50IHRpbWVzLg0KPiANCj4gVGhpcyBj
+b3VsZCBiZSB1c2VkIGFzIGEgcmV2ZXJzZSBhcmd1bWVudCwgaXNzdWluZyBhIHJlc2V0IHdpbGwg
+aW5jcmVhc2UgdGhlIGJvb3QNCj4gdGltZS4NCj4gDQo+ID4NCj4gPj4NCj4gPj4+IDIuIFRoZSBO
+QU5EIGNvbnRyb2xsZXIgcmVzZXQgaW4gcHJvYmUgd291bGQgY2VydGFpbmx5IGluY3JlYXNlIExp
+bnV4DQo+ID4+PiBib290IHRpbWUgc28gZm9yIGNlcnRhaW4gaVByb2MgU29DcyB3ZSBtaWdodCBj
+aG9vc2UgYXZvaWQgTkFORA0KPiA+Pj4gY29udHJvbGxlciByZXNldCB0byByZWR1Y2UgYm9vdCB0
+aW1lIGlmIHBvc3NpYmxlLg0KPiA+Pg0KPiA+PiBJIHJlY2FsbCB0aGlzIHJlYXNvbiBiZWluZyBt
+ZW50aW9uZWQgYmVmb3JlLiBJIGJlbGlldmUgdGhpcyBvbmx5DQo+ID4+IGhhcHBlbnMgYmVjYXVz
+ZSB0aGUgYnJjbW5hbmQgZHJpdmVyIGRvZXNuJ3QgeWV0IGhhbmRsZSBjb25maWd1cmluZw0KPiA+
+PiB0aGUgdGltaW5nIHJlZ2lzdGVycywgc28gaVByb2MgaXMgaW1wbGljaXRseSByZWx5aW5nIG9u
+IHRoZQ0KPiA+PiBib290bG9hZGVyIHRvIGNvbmZpZ3VyZSB0aGUgTkFORCB0aW1pbmdzLiBQZXJo
+YXBzIGl0J3MgdGltZSB0aGF0IHdlDQo+ID4+IGZpeCB0aGF0LiBJJ2QgcmF0aGVyIG5vdCBhZGQg
+ZXh0cmEgRFQgcHJvcGVydGllcyB1bmxlc3Mgd2UgYWN0dWFsbHkNCj4gPj4gbmVlZCB0byBbMV0u
+IEFuZCBoYXZpbmcgcHJvcGVyIHRpbWluZyBjb25maWd1cmF0aW9uIGluIHRoZSBMaW51eA0KPiA+
+PiBkcml2ZXIgd2lsbCBoZWxwIGltcHJvdmUgc3BlZWRzIGZvciBhbGwgdXNlcnMgKHdob3NlIHRp
+bWluZ3MgbWF5IG5vdCBiZQ0KPiBjb25maWd1cmVkIGluIHRoZSBib290bG9hZGVyKS4NCj4gPg0K
+PiA+IFRoaXMgaXMgdGhlIHZlcnkgcmVhc29uIHdlIG5lZWQgdGhlIG9wdGlvbmFsIHJlc2V0IHBy
+b3BlcnR5LiAgV2UgbmVlZA0KPiA+IHRvIGhhdmUgdGltaW5ncyBjb25maWd1cmVkIGJ5IHRoZSBs
+aW51eCBkcml2ZXIgb3Igbm90LiAgWWVzLCBpbiBzb21lDQo+ID4gY2FzZXMgd2Ugd2lsbCBiZSBy
+ZWx5aW5nIG9uIGVhcmxpZXIgYm9vdCBzdGFnZXMgdG8gY29uZmlndXJlIHNvbWUgb2YNCj4gPiB0
+aGUgaGFyZHdhcmUuDQo+IA0KPiBUaGVuIGluc3RlYWQgb2YgYWRkaW5nIGEgInJlc2V0IGZsYWci
+IHRvIERldmljZSBUcmVlLCBhbm90aGVyIGFwcHJvYWNoIGNvdWxkIGJlDQo+IHRvIHB1dCB0aGUg
+ZGVzaXJlZCBvciBjdXJyZW50bHkgY29uZmlndXJlZCBleGhhdXN0aXZlIGxpc3Qgb2YgTkFORCB0
+aW1pbmdzIGluDQo+IERldmljZSBUcmVlLCBhbmQgYmFzZWQgb24gdGhhdCB5b3UgY291bGQgaGF2
+ZSB0aGlzOg0KPiANCj4gLSB0aGUgTkFORCBjb250cm9sbGVyIGRyaXZlciBmaW5kcyB0aGF0IHRo
+ZXNlIHRpbWluZ3MgbWF0Y2ggdGhlIGN1cnJlbnQNCj4gY29uZmlndXJhdGlvbiwgeW91IGFyZSBn
+b29kIHRvIGdvDQo+IA0KPiAtIHRoZSBOQU5EIGNvbnRyb2xsZXIgZHJpdmVycyBmaW5kcyBhIGRp
+ZmZlcmVuY2UgaW4gaG93IGN1cnJlbnQgdGltaW5ncyBhcmUNCj4gY29uZmlndXJlZCB2cy4gZGVz
+aXJlZCB0aW1pbmdzLCBhbmQgaXNzdWVzIGEgY29udHJvbGxlciByZXNldCwgcHJpb3IgdG8gYXBw
+bHlpbmcNCj4gbmV3IHRpbWluZyBjb25maWd1cmF0aW9uDQoNClRvIGFkZCB0byB0aGlzIC4uLg0K
+DQpUaGUgbWVjaGFuaXNtIHRvIHJlc2V0IGlzIEJSQ00gTkFORCBjb250cm9sbGVyIGlzIFNPQyBz
+cGVjaWZpYyBzbyB0aGUNClNvQyBpbmRlcGVuZGVudCBCUkNNIE5BTkQgZHJpdmVyIChpLmUuIGJy
+Y21uYW5kLmMpIGRvZXMgbm90IGtub3cgaG93DQp0byByZXNldCB0aGUgTkFORCBjb250cm9sbGVy
+Lg0KDQpGb3IgaVByb2MgU29DIGZhbWlseSwgdGhlIE5BTkQgY29udHJvbGxlciByZXNldCBpcyB0
+aHJvdWdoIElETSByZWdpc3Rlcg0Kc3BhY2Ugd2hpY2ggaXMgb25seSBpb21hcCdlZCBieSBpcHJv
+Y19uYW5kLmMuDQoNCldlIG1pZ2h0IGVuZC11cCBoYXZpbmcgb25lIG1vcmUgU29DIHNwZWNpZmlj
+IGNhbGxiYWNrIHdoaWNoIHdpbGwgYmUNClByb3ZpZGVkIGJ5IGlwcm9jX25hbmQuYyB0byBicmNt
+bmFuZC5jLg0KDQo+IA0KPiAtIG5vIHRpbWluZ3MgYXJlIGNvbmZpZ3VyZWQsIHJlc2V0IHRoZSBj
+b250cm9sbGVyIGFuZCB1c2UgZXhpc3RpbmcgYXV0by1kZXRlY3Rpb24NCj4gY2FwYWJpbGl0aWVz
+IGxpa2UgT05GSSBtb2Rlcw0KPiANCj4gVHlwaWNhbGx5IHlvdSB3b3VsZCBwdXQgdGhlIGRlc2ly
+ZWQgdGltaW5ncyBpbnN0ZWFkIG9mIHRoZSBjdXJyZW50bHkgY29uZmlndXJlZA0KPiB0aW1pbmdz
+IHRob3VnaC4uDQoNCk92ZXJhbGwsIGl0IHdvdWxkIGdvb2QgdG8gc3VwcG9ydCB0aW1pbmcgcGFy
+YW1ldGVycyB0aHJvdWdoIERUIG9yIE9ORkkgYnV0DQpmb3Igbm93IGhhdmUgd2UgY2FuIHJlbHkg
+b24gcmVzZXQgYW5kIGF1dG8tZGV2aWQgY29uZmlndXJhdGlvbi4NCg0KPiANCj4gPg0KPiA+Pg0K
+PiA+PiBJIGFjdHVhbGx5IGhhZCBzb21lIHByZWxpbWluYXJ5IHdvcmsgdG8gZG8gc29tZSB0aW1p
+bmcgY29uZmlndXJhdGlvbg0KPiA+PiBhY2NvcmRpbmcgdG8gdGhlIG5ldyB0aW1pbmcgaW5mb3Jt
+YXRpb24gZnJvbSBuYW5kX2Jhc2UuYy9uYW5kX3RpbWluZy5jLg0KPiA+PiBVbmZvcnR1bmF0ZWx5
+LCBJIGRpZG4ndCBjb21wbGV0ZSB0aGlzLCBhbmQgSSdtIG5vIGxvbmdlciB3b3JraW5nIGF0DQo+
+ID4+IEJyb2FkY29tLCBzbyBJIGRvbid0IGV4YWN0bHkgaGF2ZSBhY2Nlc3MgdG8gdGhlIEhXIGRv
+Y3MgZm9yIGFsbCB0aGUNCj4gPj4gTkFORCBjb250cm9sbGVyIHJldmlzaW9ucywgbm9yIGRvIEkg
+aGF2ZSBhY2Nlc3MgdG8gYXMgbXVjaCBIVyBmb3IgdGVzdGluZy4uLg0KPiA+Pg0KPiA+PiBCcmlh
+bg0KPiA+Pg0KPiA+PiBbMV0gSWYgd2UgcmVhbGx5IGRvIG5lZWQgYSBkZXZpY2UgdHJlZSBkaWZm
+ZXJlbnRpYXRpb24sIHBlcmhhcHMgaXQNCj4gPj4gd291bGQgYmUgYmV0dGVyIHRvIGp1c3QgZGlm
+ZmVyZW50aWF0ZSB0aGUgY29tcGF0aWJsZSBzdHJpbmcgdGhhbiB0bw0KPiA+PiBoYXZlIGluZGl2
+aWR1YWwgYm9vbGVhbiBwcm9wZXJ0aWVzLiBlLmcuOg0KPiA+Pg0KPiA+PiAgICAgY29tcGF0aWJs
+ZSA9ICJicmNtLGlwcm9jLW5hbmQtbnMyIiwgLi4uOw0KPiA+Pg0KPiA+IEFzIGRlc2NyaWJlZCBh
+Ym92ZSAtIHRoZSBvcHRpb24gaXMgbm90IFNvQyBzcGVjaWZpYy4gIEl0IGlzIHN5c3RlbQ0KPiA+
+IHNwZWNpZmljLiAgSW4gc29tZSBzeXN0ZW1zIHdlIG1heSB3aXNoIHRvIHJlc2V0IHRoZSBOQU5E
+IGNvbnRyb2xsZXIgaW4NCj4gPiBsaW51eC4gIEluIHNvbWUgd2UgbWF5IHdpc2ggdG8gcmVseSBv
+biBpbml0aWFsaXphdGlvbiB0aGF0IGhhcyBhbHJlYWR5DQo+ID4gYmVlbiBkb25lIHRvIHNwZWVk
+IHVwIGJvb3QgdGltZXMuDQo+IA0KPiBJdCBzZWVtcyB0byBtZSBsaWtlIGhhdmluZyB0aGlzIHBy
+b3BlcnR5IGlzIGZpbmUgYXMgbG9uZyBhcyB5b3UgYXJlIGRlc2NyaWJpbmcgdGhhdA0KPiB0aGUg
+Y29udHJvbGxlciAqbmVlZHMqIGEgcmVzZXQgdG8gb3BlcmF0ZSBwcm9wZXJseSwgaXQgZG9lcyBu
+b3Qgc3RyaWtlIG1lIGFzIGENCj4gcGFydGljdWxhcmx5IHdlbGwgc3VpdGVkIHByb3BlcnR5IGlm
+IGl0cyBzaWRlIGVmZmVjdCBhbmQgbWFpbiB1c2FnZSBpcyB0byBrZWVwIG9yDQo+IHdpcGUtb3V0
+IGV4aXN0aW5nIE5BTkQgdGltaW5ncy4NCg0KSU1ITywgaGF2aW5nIFNvQyBzcGVjaWZpYyBjb21w
+YXRpYmxlIHN0cmluZyBmb3IgTlMyIGlzIGxpa2Ugc2F5aW5nDQpOQU5EIGNvbnRyb2xsZXIgb24g
+TlMyIGlzIGRpZmZlcmVudCBmcm9tIG90aGVyIGlQcm9jIFNvQ3Mgd2hlcmVhcw0KSGF2aW5nIG9w
+dGlvbmFsIERUIGZsYWdzIGZvciBxdWlya3Mvd29yay1hcm91bmRzIChlLmcuIE5BTkQgY29udHJv
+bGxlcg0KcmVzZXQpIGlzIGxpa2Ugc2F5aW5nIE5BTkQgY29udHJvbGxlciBvbiBOUzIgc2FtZSBh
+cyBvdGhlciBpUHJvYyBTb0NzDQpidXQgc29tZSBhZGRpdGlvbmFsIHByb2dyYW1taW5nIGlzIHJl
+cXVpcmVkLiANCg0KLS0NCkFudXANCg==
