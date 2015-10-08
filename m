@@ -1,34 +1,32 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zjz4Z-00040z-3G
- for linux-mtd@lists.infradead.org; Thu, 08 Oct 2015 00:28:39 +0000
-From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Richard Weinberger <richard@nod.at>, "dedekind1@gmail.com"
+ id 1ZjzPc-0006Mh-Bc
+ for linux-mtd@lists.infradead.org; Thu, 08 Oct 2015 00:50:24 +0000
+From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Richard Weinberger <richard@nod.at>, "dedekind1@gmail.com"
  <dedekind1@gmail.com>, "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "baruch@tkos.co.il" <baruch@tkos.co.il>, "asierra@xes-inc.com"
  <asierra@xes-inc.com>, "guz.fnst@cn.fujitsu.com" <guz.fnst@cn.fujitsu.com>,
- "gsi@denx.de" <gsi@denx.de>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-CC: David Woodhouse <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>,
- =?gb2312?B?RnJhbmsgTGl1IMH1yLogKGZyYW5rbGl1KQ==?= <frankliu@micron.com>,
+ "gsi@denx.de" <gsi@denx.de>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Andrea Scian <rnd4@dave-tech.it>,
- =?gb2312?B?S2FybCBaaGFuZyDVxcurwuAgKGthcmx6aGFuZyk=?= <karlzhang@micron.com>,
- Iwo Mergler <Iwo.Mergler@netcommwireless.com>, "Jeff Lauruhn (jlauruhn)"
- <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
+ =?utf-8?B?S2FybCBaaGFuZyDlvKDlj4zplKMgKGthcmx6aGFuZyk=?=
+ <karlzhang@micron.com>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
+ "Jeff Lauruhn (jlauruhn)" <jlauruhn@micron.com>, Stefan Roese <sr@denx.de>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: RE: [PATCH 0/9] drivers:mtd:UBI: add bakvol module for MLC NAND
  paired page issue
-Date: Thu, 8 Oct 2015 00:27:14 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4D8C9@NTXXIAMBX02.xacn.micron.com>
+Date: Thu, 8 Oct 2015 00:49:10 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4D8ED@NTXXIAMBX02.xacn.micron.com>
 References: <A765B125120D1346A63912DDE6D8B6310BF4CEC3@NTXXIAMBX02.xacn.micron.com>
  <560A59B8.4000701@nod.at>
  <A765B125120D1346A63912DDE6D8B6310BF4D4C6@NTXXIAMBX02.xacn.micron.com>
- <560B8758.7010002@nod.at>
-In-Reply-To: <560B8758.7010002@nod.at>
+ <20150930093355.3266a4b3@bbrezillon>
+In-Reply-To: <20150930093355.3266a4b3@bbrezillon>
 Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -40,16 +38,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiA+IEhpLCBSaWNoYXJkDQo+ID4gVGhhbmtzIGZvciB5b3VyIGNvbmNlcm4uIEkgYW0gYSBuZXcg
-cGF0Y2ggc3VibWl0dGVyLg0KPiA+IENhbiB5b3UgdGVsbCBtZSBOYWNrZWQtYnkgbWVhbnM/DQo+
-IA0KPiBJIGJhc2ljYWxseSBtZWFucyB0aGF0IEknbSAoYXMgbWFpbnRhaW5lcikgcmVhbGx5IHVu
-aGFwcHkgd2l0aCB0aGlzIHBhdGNoZXMgYW5kDQo+IGRvbid0IHNlZSBhIHdheSB0byBnZXQgdGhl
-bSBtZXJnZWQgYXMgdGhlIHdob2xlIGNvbmNlcHQgaXMgbm90IGFjY2VwdGFibGUuDQo+IA0KPiA+
-IEJ5IHRoZSB3YXksIERvIHlvdSByZXZpZXcgbXkgcGF0Y2hlcyBzZXJpZXMgPyBJIGRvbid0IGJh
-Y2t1cCBkdXBsaWNhdGVkDQo+IGRhdGEgaW4gT09CIC4NCj4gPiBDYW4geW91IHNwZWNpZnkgd2hp
-Y2ggc2VjdG9yIGNvZGVzID8gc28gdGhhdCBJIGNhbiBleHBsYWluIGl0IGluIGRldGFpbC4NCj4g
-DQo+IE9rYXkuIE1heWJlIGJvdGggQm9yaXMgYW5kIEkgbWlzcmVhZCB5b3VyIGNvZGUsIGNhbiB5
-b3UgcGxlYXNlIGV4cGxhaW4gaW4NCj4gZGV0YWlsIHdoYXQgZnVuY3Rpb25zIGxpa2UgY2hlY2tf
-b3JpZ2luYWxfZGF0YSgpIG9yDQo+IG10ZF93cml0ZV9kdWFsX3BsYW5lX29vYigpIGRvPw0KDQpP
-SywgTmV4dCB2ZXJzaW9uIHBhdGNoLCBJIHdpbGwgYWRkIG1vcmUgY29tbWVudHMgZm9yIHNvbWUg
-aW1wb3J0YW50IGZ1bmN0aW9uLg0KDQo+IFRoYW5rcywNCj4gLy9yaWNoYXJkDQo=
+PiA+ID4gQXMgc3RhdGVkIGJlZm9yZSwgdXNpbmcgT09CIGluIFVCSSBpcyBub3QgZ29pbmcgdG8g
+aGFwcGVuIHVubGVzcw0KPiA+ID4gcHJvdmVuIHRoYXQgdGhlcmUgaXMgYWJzb2x1dGVseSBubyBv
+dGhlciB3YXkgdG8gc29sdmUgdGhlIHBhaXJlZCBwYWdlcw0KPiBwcm9ibGVtLg0KPiA+ID4NCj4g
+PiA+IE5hY2tlZC1ieTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4NCj4gPiA+
+DQo+ID4gPiBTb3JyeSwNCj4gPiA+IC8vUmljaGFyZA0KPiA+DQo+ID4gSGksIFJpY2hhcmQNCj4g
+PiBUaGFua3MgZm9yIHlvdXIgY29uY2Vybi4gSSBhbSBhIG5ldyBwYXRjaCBzdWJtaXR0ZXIuDQo+
+ID4gQ2FuIHlvdSB0ZWxsIG1lIE5hY2tlZC1ieSBtZWFucz8NCj4gPg0KPiA+IEJ5IHRoZSB3YXks
+IERvIHlvdSByZXZpZXcgbXkgcGF0Y2hlcyBzZXJpZXMgPyBJIGRvbid0IGJhY2t1cCBkdXBsaWNh
+dGVkDQo+ID5kYXRhIGluIE9PQiAuDQo+IA0KPiBUaGF0J3Mgbm90IHdoYXQgUmljaGFyZCBzYWlk
+LCBoZSBqdXN0IHBvaW50ZWQgdGhhdCB5b3Ugd2VyZSB1c2luZyB0aGUgT09CDQo+IGFyZWEsIGFu
+ZCB5b3UncmUgYWN0dWFsbHkgdXNpbmcgaXQgdG8gc3RvcmUgdGhlIGluZm9ybWF0aW9uIGFib3V0
+IHdoaWNoIHBhZ2UNCj4geW91J3JlIGJhY2t1cGluZy4NCj4gDQo+ID4gQ2FuIHlvdSBzcGVjaWZ5
+IHdoaWNoIHNlY3RvciBjb2RlcyA/IHNvIHRoYXQgSSBjYW4gZXhwbGFpbiBpdCBpbiBkZXRhaWwu
+DQo+IA0KPiBBbmQgYXMgYW5zd2VyZWQgYnkgUmljaGFyZCwgY2hlY2tfb3JpZ2luYWxfZGF0YSgp
+IGFuZA0KPiBtdGRfd3JpdGVfZHVhbF9wbGFuZV9vb2IoKSBhcmUgZmlsbGluZyB0aGUgT09CIGJ1
+ZiB3aXRoIHRoZSBvcmlnaW5hbCBwYWdlDQo+IG9mZnNldCwgc28geW91J3JlIGRlZmluaXRlbHkg
+dXNpbmcgdGhlIE9PQiBhcmVhIHRvIHN0b3JlIG1ldGFkYXRhLg0KDQpZZXMgLGN1cnJlbnRseSBJ
+IG9ubHkgdXNlIDQgYnl0ZXMgT09CIGFyZWEgdG8gc3RvcmUgYmFja3VwIHBhZ2UgYWRkcmVzcy4N
+Cg0KPiAtLQ0KPiBCb3JpcyBCcmV6aWxsb24sIEZyZWUgRWxlY3Ryb25zDQo+IEVtYmVkZGVkIExp
+bnV4IGFuZCBLZXJuZWwgZW5naW5lZXJpbmcNCj4gaHR0cDovL2ZyZWUtZWxlY3Ryb25zLmNvbQ0K
