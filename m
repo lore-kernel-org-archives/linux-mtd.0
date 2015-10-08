@@ -1,19 +1,21 @@
-From: Stefan Agner <stefan@agner.ch>
-To: shawn.guo@linaro.org,
-	kernel@pengutronix.de
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, sebastian@breakpoint.cc,
- robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
- ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- boris.brezillon@free-electrons.com, marb@ixxat.de, aaron@tastycactus.com,
- bpringlemeir@gmail.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, albert.aribaud@3adev.fr,
- klimov.linux@gmail.com, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v13 2/2] ARM: dts: vf-colibri: enable NAND flash controller
-Date: Wed,  7 Oct 2015 16:58:36 -0700
-Message-Id: <1444262316-30588-2-git-send-email-stefan@agner.ch>
-In-Reply-To: <1444262316-30588-1-git-send-email-stefan@agner.ch>
-References: <1444262316-30588-1-git-send-email-stefan@agner.ch>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZjymB-0002hj-I9
+ for linux-mtd@lists.infradead.org; Thu, 08 Oct 2015 00:09:40 +0000
+Message-ID: <5615B2A0.1010803@cn.fujitsu.com>
+Date: Thu, 8 Oct 2015 08:02:40 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+To: Richard Weinberger <richard@nod.at>, <dedekind1@gmail.com>,
+ <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 10/27] ubifs: introduce list.h
+References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1439973572-12489-11-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <5615838E.5090908@nod.at>
+In-Reply-To: <5615838E.5090908@nod.at>
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable NAND access by adding pinmux and NAND flash controller node
-to device tree. The NAND chips currently used on the Colibri VF61
-requires 8-bit ECC per 512 byte page, hence specify 32-bit ECC
-strength per 2k page size.
+On 10/08/2015 04:41 AM, Richard Weinberger wrote:
+> Am 19.08.2015 um 10:39 schrieb Dongsheng Yang:
+>> Copy the list.h from kernel to ubifs-utils/
+>>
+>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+>> ---
+>>   ubifs-utils/include/list.h | 484 +++++++++++++++++++++++++++++++++++++++++++++
+>
+> This belongs to common mtd-utils code as it is not UBIFS specific.
 
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- arch/arm/boot/dts/vf-colibri.dtsi | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+Yes, It's in my TODO, but I did not put it at this time, because
+there is a list implementation in jffs2 part, IIRC. So I am planing
+to do it later to move all common code into higher level.
+> And why didn't you copy the whole list.h file?
 
-diff --git a/arch/arm/boot/dts/vf-colibri.dtsi b/arch/arm/boot/dts/vf-colibri.dtsi
-index 68ca125..e5949b9 100644
---- a/arch/arm/boot/dts/vf-colibri.dtsi
-+++ b/arch/arm/boot/dts/vf-colibri.dtsi
-@@ -52,6 +52,26 @@
- 	pinctrl-0 = <&pinctrl_i2c0>;
- };
- 
-+&nfc {
-+	assigned-clocks = <&clks VF610_CLK_NFC>;
-+	assigned-clock-rates = <33000000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_nfc>;
-+	status = "okay";
-+
-+	nand@0 {
-+		compatible = "fsl,vf610-nfc-nandcs";
-+		reg = <0>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		nand-bus-width = <8>;
-+		nand-ecc-mode = "hw";
-+		nand-ecc-strength = <32>;
-+		nand-ecc-step-size = <2048>;
-+		nand-on-flash-bbt;
-+	};
-+};
-+
- &pwm0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_pwm0>;
-@@ -156,6 +176,25 @@
- 			>;
- 		};
- 
-+		pinctrl_nfc: nfcgrp {
-+			fsl,pins = <
-+				VF610_PAD_PTD23__NF_IO7		0x28df
-+				VF610_PAD_PTD22__NF_IO6		0x28df
-+				VF610_PAD_PTD21__NF_IO5		0x28df
-+				VF610_PAD_PTD20__NF_IO4		0x28df
-+				VF610_PAD_PTD19__NF_IO3		0x28df
-+				VF610_PAD_PTD18__NF_IO2		0x28df
-+				VF610_PAD_PTD17__NF_IO1		0x28df
-+				VF610_PAD_PTD16__NF_IO0		0x28df
-+				VF610_PAD_PTB24__NF_WE_B	0x28c2
-+				VF610_PAD_PTB25__NF_CE0_B	0x28c2
-+				VF610_PAD_PTB27__NF_RE_B	0x28c2
-+				VF610_PAD_PTC26__NF_RB_B	0x283d
-+				VF610_PAD_PTC27__NF_ALE		0x28c2
-+				VF610_PAD_PTC28__NF_CLE		0x28c2
-+			>;
-+		};
-+
- 		pinctrl_pwm0: pwm0grp {
- 			fsl,pins = <
- 				VF610_PAD_PTB0__FTM0_CH0		0x1182
--- 
-2.6.1
+Hmmmm.....I only implemented what I required in this patchset. The 
+commit message is confusing, It's not a *copy* from kernel. Maybe
+it's better that "Implement list structure in ubifs-utils like kernel."
+
+> I'm missing
+> list_last_entry() for example.
+
+If you want something more, I think it's okey to add them into list.h
+
+Thanx
+Yang
+
+>
+> Thanks,
+> //richard
+>
