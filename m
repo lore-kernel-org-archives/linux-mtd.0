@@ -1,20 +1,22 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZkP3O-00052I-Vt
- for linux-mtd@lists.infradead.org; Fri, 09 Oct 2015 04:13:12 +0000
-Message-ID: <56173D33.9020402@cn.fujitsu.com>
-Date: Fri, 9 Oct 2015 12:06:11 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Received: from [2002:c35c:fd02::1] (helo=ZenIV.linux.org.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZkP4W-0005MF-VQ
+ for linux-mtd@lists.infradead.org; Fri, 09 Oct 2015 04:14:22 +0000
+Date: Fri, 9 Oct 2015 05:13:51 +0100
+From: Al Viro <viro@ZenIV.linux.org.uk>
+To: Heiko Schocher <hs@denx.de>
+Cc: linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBI: rename free variable
+Message-ID: <20151009041351.GZ22011@ZenIV.linux.org.uk>
+References: <1444361361-12219-1-git-send-email-hs@denx.de>
 MIME-Version: 1.0
-To: <david@sigma-star.at>, <linux-mtd@lists.infradead.org>
-CC: <richard@nod.at>, <computersforpeace@gmail.com>, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>
-Subject: Re: [PATCH v2] ubifs: ubifs_dump: dump master node
-References: <1439973572-12489-20-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1444363503-22069-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-In-Reply-To: <1444363503-22069-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1444361361-12219-1-git-send-email-hs@denx.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,218 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/09/2015 12:05 PM, Dongsheng Yang wrote:
-> Search the master lebs and found the latest master node.
-> Then dump it out.
->
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> ---
-> changelog:
-> 	- v1:
-> 		fix a bug in error path in scan_for_master();
->
->   Makefile                            |   1 +
->   ubifs-utils/ubifs_dump/ubifs_dump.c | 139 +++++++++++++++++++++++++++++-------
->   2 files changed, 113 insertions(+), 27 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index cad71dc..7abbef9 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -133,6 +133,7 @@ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-co
->   $(foreach v,crc16.o lpt.o compr.o devtable.o io.o hashtable.o hashtable_itr.o,$(eval UBIFS_LIBS += ../lib/$(v)))
->
->   obj-ubifs_dump = $(UBIFS_LIBS)
-> +obj-ubifs_dump += ../lib/scan.o
->   LDFLAGS_ubifs_dump = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
->   LDLIBS_ubifs_dump = -lz -llzo2 -lm -luuid
->   $(call mkdep,ubifs-utils/ubifs_dump/,ubifs_dump,,ubi-utils/libubi.a)
-> diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
-> index 9ddb0f7..f7fac0d 100644
-> --- a/ubifs-utils/ubifs_dump/ubifs_dump.c
-> +++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
-> @@ -2,9 +2,11 @@
->   #define PROGRAM_NAME "ubifs-dump"
->   #include "common.h"
->
-> +#include "ubifs.h"
->   #include "io.h"
->   #include "key.h"
->   #include "lpt.h"
-> +#include "scan.h"
->
->   #define DBG_KEY_BUF_LEN		48
->
-> @@ -17,9 +19,6 @@ static const struct option longopts[] = {
->   struct ubifs_info info_;
->   static struct ubifs_info *c = &info_;
->
-> -/* Global buffers */
-> -static void *leb_buf;
-> -
->   /* Global nodes*/
->   struct ubifs_mst_node mst;
->   struct ubifs_sb_node sup;
-> @@ -376,26 +375,6 @@ void dump_node(const struct ubifs_info *c, const void *node)
->   	printf("\n");
->   }
->
-> -/**
-> - * init - initialize things.
-> - */
-> -static int init(void)
-> -{
-> -	leb_buf = malloc(c->leb_size);
-> -	if (!leb_buf)
-> -		return err_msg("out of memory");
-> -
-> -	return 0;
-> -}
-> -
-> -/**
-> - * deinit - deinitialize things.
-> - */
-> -static void deinit(void)
-> -{
-> -	free(leb_buf);
-> -}
-> -
->   /*
->    * init_constants_sb - initialize UBIFS constants.
->    * @c: UBIFS file-system description object
-> @@ -498,20 +477,126 @@ static int dump_super(void)
->   	return init_constants_sb(c);
->   }
->
-> -static int dump()
-> +/**
-> + * scan_for_master - search the valid master node.
-> + * @c: UBIFS file-system description object
-> + *
-> + * This function scans the master node LEBs and search for the latest master
-> + * node. Returns zero in case of success, %-EUCLEAN if there master area is
-> + * corrupted and requires recovery, and a negative error code in case of
-> + * failure.
-> + */
-> +static int scan_for_master(struct ubifs_info *c, struct ubifs_mst_node *mst_node)
->   {
-> +	struct ubifs_scan_leb *sleb;
-> +	struct ubifs_scan_node *snod;
-> +	int lnum, offs = 0, nodes_cnt;
-> +	static void *leb_buf;
->   	int err = 0;
->
-> -	err = init();
-> -	if (err)
-> +	lnum = UBIFS_MST_LNUM;
-> +
-> +	leb_buf = malloc(c->leb_size);
-> +	if (!leb_buf)
-> +		return -ENOMEM;
-> +
-> +	sleb = ubifs_scan(c, lnum, 0, leb_buf, 1);
-> +	if (IS_ERR(sleb))
-> +		return PTR_ERR(sleb);
+On Fri, Oct 09, 2015 at 05:29:21AM +0200, Heiko Schocher wrote:
+> rename free variable into not "free", as "free" prevents
+> ubi sources compiling under U-Boot. So rename "free"
+> into "pfree" where it is a pointer, and into "freel",
+> where it is a free list.
 
-Damn, forgot to free leb_buf. will send v3 soon.
-
-Yang
-> +	nodes_cnt = sleb->nodes_cnt;
-> +	if (nodes_cnt > 0) {
-> +		snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node,
-> +				  list);
-> +		if (snod->type != UBIFS_MST_NODE) {
-> +			err = -EINVAL;
-> +			goto out;
-> +		}
-> +		memcpy(mst_node, snod->node, snod->len);
-> +		offs = snod->offs;
-> +	}
-> +	ubifs_scan_destroy(sleb);
-> +
-> +	lnum += 1;
-> +
-> +	sleb = ubifs_scan(c, lnum, 0, leb_buf, 1);
-> +	if (IS_ERR(sleb)) {
-> +		return PTR_ERR(sleb);
-> +	}
-> +	err = -EUCLEAN;
-> +	if (sleb->nodes_cnt != nodes_cnt)
-> +		goto out;
-> +	if (!sleb->nodes_cnt)
-> +		goto out;
-> +	snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node, list);
-> +	if (snod->type != UBIFS_MST_NODE) {
-> +		err = -EINVAL;
-> +		goto out;
-> +	}
-> +	if (snod->offs != offs)
->   		goto out;
-> +	if (memcmp((void *)mst_node + UBIFS_CH_SZ,
-> +		   (void *)snod->node + UBIFS_CH_SZ,
-> +		   UBIFS_MST_NODE_SZ - UBIFS_CH_SZ))
-> +		goto out;
-> +	err = 0;
-> +
-> +out:
-> +	free(leb_buf);
-> +	ubifs_scan_destroy(sleb);
-> +	return err;
-> +}
-> +
-> +static int dump_master(void)
-> +{
-> +	int err = 0;
-> +
-> +	printf("MASTER: \n");
-> +	err = scan_for_master(c, &mst);
-> +	if (err)
-> +		return err;
-> +	dump_node(c, &mst);
-> +	mst.flags &= cpu_to_le32(~UBIFS_MST_RCVRY);
-> +
-> +	c->max_sqnum       = le64_to_cpu(mst.ch.sqnum);
-> +	c->highest_inum    = le64_to_cpu(mst.highest_inum);
-> +	c->zroot.lnum      = le32_to_cpu(mst.root_lnum);
-> +	c->zroot.offs      = le32_to_cpu(mst.root_offs);
-> +	c->zroot.len       = le32_to_cpu(mst.root_len);
-> +	c->gc_lnum         = le32_to_cpu(mst.gc_lnum);
-> +	c->ihead_lnum      = le32_to_cpu(mst.ihead_lnum);
-> +	c->ihead_offs      = le32_to_cpu(mst.ihead_offs);
-> +	c->lpt_lnum        = le32_to_cpu(mst.lpt_lnum);
-> +	c->lpt_offs        = le32_to_cpu(mst.lpt_offs);
-> +	c->nhead_lnum      = le32_to_cpu(mst.nhead_lnum);
-> +	c->nhead_offs      = le32_to_cpu(mst.nhead_offs);
-> +	c->ltab_lnum       = le32_to_cpu(mst.ltab_lnum);
-> +	c->ltab_offs       = le32_to_cpu(mst.ltab_offs);
-> +	c->lsave_lnum      = le32_to_cpu(mst.lsave_lnum);
-> +	c->lsave_offs      = le32_to_cpu(mst.lsave_offs);
-> +	c->lscan_lnum      = le32_to_cpu(mst.lscan_lnum);
-> +	c->lst.empty_lebs  = le32_to_cpu(mst.empty_lebs);
-> +	c->lst.idx_lebs    = le32_to_cpu(mst.idx_lebs);
-> +	c->lst.total_free  = le64_to_cpu(mst.total_free);
-> +	c->lst.total_dirty = le64_to_cpu(mst.total_dirty);
-> +	c->lst.total_used  = le64_to_cpu(mst.total_used);
-> +	c->lst.total_dead  = le64_to_cpu(mst.total_dead);
-> +	c->lst.total_dark  = le64_to_cpu(mst.total_dark);
-> +
-> +	return 0;
-> +}
-> +
-> +static int dump()
-> +{
-> +	int err = 0;
->
->   	err = dump_super();
->   	if (err)
->   		goto out;
->
-> +	err = dump_master();
-> +	if (err)
-> +		goto out;
->   out:
-> -	deinit();
->   	return err;
->   }
->
->
+Huh?  If U-Boot has free defined as an object-like macro, it's an outright bug
+in U-Boot and it should be fixed there.  If it's something else, it looks like
+a toolchain bug.   Details, please...
