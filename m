@@ -1,30 +1,16 @@
-Received: from mail-wi0-f174.google.com ([209.85.212.174])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZkIeQ-0002jD-EA
- for linux-mtd@lists.infradead.org; Thu, 08 Oct 2015 21:22:59 +0000
-Received: by wicgb1 with SMTP id gb1so43197296wic.1
- for <linux-mtd@lists.infradead.org>; Thu, 08 Oct 2015 14:22:36 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1444148837-10770-4-git-send-email-harvey.hunt@imgtec.com>
-References: <1444148837-10770-1-git-send-email-harvey.hunt@imgtec.com>
- <1444148837-10770-4-git-send-email-harvey.hunt@imgtec.com>
-Date: Thu, 8 Oct 2015 18:22:36 -0300
-Message-ID: <CAAEAJfBtOtiEEJy500-Kg8ZHm+ZGF3vL7y7xJD3a0-3CJ0w33A@mail.gmail.com>
-Subject: Re: [PATCH v7,3/3] MIPS: dts: jz4780/ci20: Add NEMC, BCH and NAND
- device tree nodes
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Alex Smith <alex.smith@imgtec.com>,
- Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
+ id 1ZkONT-000356-Gt
+ for linux-mtd@lists.infradead.org; Fri, 09 Oct 2015 03:29:52 +0000
+From: Heiko Schocher <hs@denx.de>
+To: linux-kernel@vger.kernel.org
+Cc: Heiko Schocher <hs@denx.de>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Paul Burton <paul.burton@imgtec.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mips@linux-mips.org, Alex Smith <alex@alex-smith.me.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] UBI: rename free variable
+Date: Fri,  9 Oct 2015 05:29:21 +0200
+Message-Id: <1444361361-12219-1-git-send-email-hs@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,67 +20,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6 October 2015 at 13:27, Harvey Hunt <harvey.hunt@imgtec.com> wrote:
-> From: Alex Smith <alex.smith@imgtec.com>
->
-> Add device tree nodes for the NEMC and BCH to the JZ4780 device tree,
-> and make use of them in the Ci20 device tree to add a node for the
-> board's NAND.
->
-> Note that since the pinctrl driver is not yet upstream, this includes
-> neither pin configuration nor busy/write-protect GPIO pins for the
-> NAND. Use of the NAND relies on the boot loader to have left the pins
-> configured in a usable state, which should be the case when booted
-> from the NAND.
->
-> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-> Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Paul Burton <paul.burton@imgtec.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mips@linux-mips.org
-> Cc: Alex Smith <alex@alex-smith.me.uk>
-> Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-> ---
-> v6 -> v7:
->  - Add nand-ecc-mode to DT.
->  - Add nand-on-flash-bbt to DT.
->
-> v4 -> v5:
->  - New patch adding DT nodes for the NAND so that the driver can be
->    tested.
->
->  arch/mips/boot/dts/ingenic/ci20.dts    | 54 ++++++++++++++++++++++++++++=
-++++++
->  arch/mips/boot/dts/ingenic/jz4780.dtsi | 26 ++++++++++++++++
->  2 files changed, 80 insertions(+)
->
-> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ing=
-enic/ci20.dts
-> index 9fcb9e7..453f1d3 100644
-> --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> @@ -42,3 +42,57 @@
->  &uart4 {
->         status =3D "okay";
->  };
-> +
-> +&nemc {
-> +       status =3D "okay";
-> +
-> +       nand: nand@1 {
-> +               compatible =3D "ingenic,jz4780-nand";
-> +               reg =3D <1 0 0x1000000>;
-> +
+rename free variable into not "free", as "free" prevents
+ubi sources compiling under U-Boot. So rename "free"
+into "pfree" where it is a pointer, and into "freel",
+where it is a free list.
 
-Why is this in the ci20.dts instead of the SoC dtsi?
+Signed-off-by: Heiko Schocher <hs@denx.de>
+---
 
-Seems at least compatible and reg is not board-specific.
+ drivers/mtd/ubi/fastmap.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-Thanks,
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 4aa2fd8..80ac265 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -451,7 +451,7 @@ static void unmap_peb(struct ubi_attach_info *ai, int pnum)
+  */
+ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 		     int *pebs, int pool_size, unsigned long long *max_sqnum,
+-		     struct list_head *free)
++		     struct list_head *pfree)
+ {
+ 	struct ubi_vid_hdr *vh;
+ 	struct ubi_ec_hdr *ech;
+@@ -514,9 +514,9 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 			unmap_peb(ai, pnum);
+ 			dbg_bld("Adding PEB to free: %i", pnum);
+ 			if (err == UBI_IO_FF_BITFLIPS)
+-				add_aeb(ai, free, pnum, ec, 1);
++				add_aeb(ai, pfree, pnum, ec, 1);
+ 			else
+-				add_aeb(ai, free, pnum, ec, 0);
++				add_aeb(ai, pfree, pnum, ec, 0);
+ 			continue;
+ 		} else if (err == 0 || err == UBI_IO_BITFLIPS) {
+ 			dbg_bld("Found non empty PEB:%i in pool", pnum);
+@@ -598,7 +598,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 			      struct ubi_attach_info *ai,
+ 			      struct ubi_fastmap_layout *fm)
+ {
+-	struct list_head used, free;
++	struct list_head used, freel;
+ 	struct ubi_ainf_volume *av;
+ 	struct ubi_ainf_peb *aeb, *tmp_aeb, *_tmp_aeb;
+ 	struct ubi_fm_sb *fmsb;
+@@ -613,7 +613,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 	void *fm_raw = ubi->fm_buf;
+ 
+ 	INIT_LIST_HEAD(&used);
+-	INIT_LIST_HEAD(&free);
++	INIT_LIST_HEAD(&freel);
+ 	ai->min_ec = UBI_MAX_ERASECOUNTER;
+ 
+ 	fmsb = (struct ubi_fm_sb *)(fm_raw);
+@@ -803,24 +803,25 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 		}
+ 	}
+ 
+-	ret = scan_pool(ubi, ai, fmpl->pebs, pool_size, &max_sqnum, &free);
++	ret = scan_pool(ubi, ai, fmpl->pebs, pool_size, &max_sqnum, &freel);
+ 	if (ret)
+ 		goto fail;
+ 
+-	ret = scan_pool(ubi, ai, fmpl_wl->pebs, wl_pool_size, &max_sqnum, &free);
++	ret = scan_pool(ubi, ai, fmpl_wl->pebs, wl_pool_size, &max_sqnum,
++			&freel);
+ 	if (ret)
+ 		goto fail;
+ 
+ 	if (max_sqnum > ai->max_sqnum)
+ 		ai->max_sqnum = max_sqnum;
+ 
+-	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list)
++	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &freel, u.list)
+ 		list_move_tail(&tmp_aeb->u.list, &ai->free);
+ 
+ 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list)
+ 		list_move_tail(&tmp_aeb->u.list, &ai->erase);
+ 
+-	ubi_assert(list_empty(&free));
++	ubi_assert(list_empty(&freel));
+ 
+ 	/*
+ 	 * If fastmap is leaking PEBs (must not happen), raise a
+@@ -841,7 +842,7 @@ fail:
+ 		list_del(&tmp_aeb->u.list);
+ 		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 	}
+-	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
++	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &freel, u.list) {
+ 		list_del(&tmp_aeb->u.list);
+ 		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 	}
+-- 
+2.1.0
