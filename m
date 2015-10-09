@@ -1,15 +1,21 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZkOnD-0006by-AQ
- for linux-mtd@lists.infradead.org; Fri, 09 Oct 2015 03:56:28 +0000
-From: Heiko Schocher <hs@denx.de>
-To: linux-kernel@vger.kernel.org
-Cc: Heiko Schocher <hs@denx.de>, Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH v2] UBIFS: rename free variable
-Date: Fri,  9 Oct 2015 05:55:59 +0200
-Message-Id: <1444362960-13701-1-git-send-email-hs@denx.de>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZkOq9-0007Eq-TS
+ for linux-mtd@lists.infradead.org; Fri, 09 Oct 2015 03:59:30 +0000
+Message-ID: <561739F8.2030705@cn.fujitsu.com>
+Date: Fri, 9 Oct 2015 11:52:24 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+To: David Gstir <david@sigma-star.at>
+CC: <dedekind1@gmail.com>, <richard@nod.at>, <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 19/27] ubifs: ubifs_dump: dump master node
+References: <1439973572-12489-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1439973572-12489-20-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <2E6921D4-C626-42DD-8E4E-6CB6AEFCD517@sigma-star.at>
+In-Reply-To: <2E6921D4-C626-42DD-8E4E-6CB6AEFCD517@sigma-star.at>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,212 +25,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-rename free variable into not "free", as "free" prevents
-ubifs sources compiling under U-Boot. So rename "free"
-into "ifree", where it is an int.
+On 10/08/2015 06:07 PM, David Gstir wrote:
+> Hi Yang,
+>
+> I just spotted this issue while reading through your patches:
+>
+>> On 19.08.2015, at 10:39, Dongsheng Yang <yangds.fnst@cn.fujitsu.com> wrote:
+>
+> [...]
+>
+>> +static int scan_for_master(struct ubifs_info *c, struct ubifs_mst_node *mst_node)
+>> {
+>> +	struct ubifs_scan_leb *sleb;
+>> +	struct ubifs_scan_node *snod;
+>> +	int lnum, offs = 0, nodes_cnt;
+>> +	static void *leb_buf;
+>> 	int err = 0;
+>> +	
+>> +	lnum = UBIFS_MST_LNUM;
+>>
+>> -	err = init();
+>> -	if (err)
+>> +	leb_buf = malloc(c->leb_size);
+>> +	if (!leb_buf)
+>> +		return -ENOMEM;
+>> +
+>> +	sleb = ubifs_scan(c, lnum, 0, leb_buf, 1);
+>> +	if (IS_ERR(sleb)) {
+>> +		err = PTR_ERR(sleb);
+>> 		goto out;
+>
+> This goto will run ubifs_scan_destroy(sleb), which does not work since sleb ist just an ERR_PTR here.
 
-Signed-off-by: Heiko Schocher <hs@denx.de>
----
+Yes, my mistake, will update it soon.
 
-Changes in v2:
-- fix compiler error:
-  fs/ubifs/lprops.c:546:23: error: 'free' undeclared (first use in this function)
-            lprops->lnum, free, dirty, flags);
-
- fs/ubifs/lprops.c | 56 +++++++++++++++++++++++++++----------------------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
-
-diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
-index a0011aa..694050c 100644
---- a/fs/ubifs/lprops.c
-+++ b/fs/ubifs/lprops.c
-@@ -533,7 +533,7 @@ static int is_lprops_dirty(struct ubifs_info *c, struct ubifs_lprops *lprops)
-  */
- const struct ubifs_lprops *ubifs_change_lp(struct ubifs_info *c,
- 					   const struct ubifs_lprops *lp,
--					   int free, int dirty, int flags,
-+					   int ifree, int dirty, int flags,
- 					   int idx_gc_cnt)
- {
- 	/*
-@@ -543,7 +543,7 @@ const struct ubifs_lprops *ubifs_change_lp(struct ubifs_info *c,
- 	struct ubifs_lprops *lprops = (struct ubifs_lprops *)lp;
- 
- 	dbg_lp("LEB %d, free %d, dirty %d, flags %d",
--	       lprops->lnum, free, dirty, flags);
-+	       lprops->lnum, ifree, dirty, flags);
- 
- 	ubifs_assert(mutex_is_locked(&c->lp_mutex));
- 	ubifs_assert(c->lst.empty_lebs >= 0 &&
-@@ -555,7 +555,7 @@ const struct ubifs_lprops *ubifs_change_lp(struct ubifs_info *c,
- 	ubifs_assert(!(c->lst.total_free & 7) && !(c->lst.total_dirty & 7));
- 	ubifs_assert(!(c->lst.total_dead & 7) && !(c->lst.total_dark & 7));
- 	ubifs_assert(!(c->lst.total_used & 7));
--	ubifs_assert(free == LPROPS_NC || free >= 0);
-+	ubifs_assert(ifree == LPROPS_NC || ifree >= 0);
- 	ubifs_assert(dirty == LPROPS_NC || dirty >= 0);
- 
- 	if (!is_lprops_dirty(c, lprops)) {
-@@ -583,17 +583,17 @@ const struct ubifs_lprops *ubifs_change_lp(struct ubifs_info *c,
- 		c->lst.total_used -= c->leb_size - old_spc;
- 	}
- 
--	if (free != LPROPS_NC) {
--		free = ALIGN(free, 8);
--		c->lst.total_free += free - lprops->free;
-+	if (ifree != LPROPS_NC) {
-+		ifree = ALIGN(ifree, 8);
-+		c->lst.total_free += ifree - lprops->free;
- 
- 		/* Increase or decrease empty LEBs counter if needed */
--		if (free == c->leb_size) {
-+		if (ifree == c->leb_size) {
- 			if (lprops->free != c->leb_size)
- 				c->lst.empty_lebs += 1;
- 		} else if (lprops->free == c->leb_size)
- 			c->lst.empty_lebs -= 1;
--		lprops->free = free;
-+		lprops->free = ifree;
- 	}
- 
- 	if (dirty != LPROPS_NC) {
-@@ -660,7 +660,7 @@ void ubifs_get_lp_stats(struct ubifs_info *c, struct ubifs_lp_stats *lst)
-  * same as in case of 'ubifs_change_lp()'. Returns zero in case of success and
-  * a negative error code in case of failure.
-  */
--int ubifs_change_one_lp(struct ubifs_info *c, int lnum, int free, int dirty,
-+int ubifs_change_one_lp(struct ubifs_info *c, int lnum, int ifree, int dirty,
- 			int flags_set, int flags_clean, int idx_gc_cnt)
- {
- 	int err = 0, flags;
-@@ -675,7 +675,7 @@ int ubifs_change_one_lp(struct ubifs_info *c, int lnum, int free, int dirty,
- 	}
- 
- 	flags = (lp->flags | flags_set) & ~flags_clean;
--	lp = ubifs_change_lp(c, lp, free, dirty, flags, idx_gc_cnt);
-+	lp = ubifs_change_lp(c, lp, ifree, dirty, flags, idx_gc_cnt);
- 	if (IS_ERR(lp))
- 		err = PTR_ERR(lp);
- 
-@@ -699,7 +699,7 @@ out:
-  * This function is the same as 'ubifs_change_one_lp()' but @dirty is added to
-  * current dirty space, not substitutes it.
-  */
--int ubifs_update_one_lp(struct ubifs_info *c, int lnum, int free, int dirty,
-+int ubifs_update_one_lp(struct ubifs_info *c, int lnum, int ifree, int dirty,
- 			int flags_set, int flags_clean)
- {
- 	int err = 0, flags;
-@@ -714,7 +714,7 @@ int ubifs_update_one_lp(struct ubifs_info *c, int lnum, int free, int dirty,
- 	}
- 
- 	flags = (lp->flags | flags_set) & ~flags_clean;
--	lp = ubifs_change_lp(c, lp, free, lp->dirty + dirty, flags, 0);
-+	lp = ubifs_change_lp(c, lp, ifree, lp->dirty + dirty, flags, 0);
- 	if (IS_ERR(lp))
- 		err = PTR_ERR(lp);
- 
-@@ -1032,7 +1032,7 @@ static int scan_check_cb(struct ubifs_info *c,
- {
- 	struct ubifs_scan_leb *sleb;
- 	struct ubifs_scan_node *snod;
--	int cat, lnum = lp->lnum, is_idx = 0, used = 0, free, dirty, ret;
-+	int cat, lnum = lp->lnum, is_idx = 0, used = 0, ifree, dirty, ret;
- 	void *buf = NULL;
- 
- 	cat = lp->flags & LPROPS_CAT_MASK;
-@@ -1154,20 +1154,20 @@ static int scan_check_cb(struct ubifs_info *c,
- 		}
- 	}
- 
--	free = c->leb_size - sleb->endpt;
-+	ifree = c->leb_size - sleb->endpt;
- 	dirty = sleb->endpt - used;
- 
--	if (free > c->leb_size || free < 0 || dirty > c->leb_size ||
-+	if (ifree > c->leb_size || ifree < 0 || dirty > c->leb_size ||
- 	    dirty < 0) {
- 		ubifs_err(c, "bad calculated accounting for LEB %d: free %d, dirty %d",
--			  lnum, free, dirty);
-+			  lnum, ifree, dirty);
- 		goto out_destroy;
- 	}
- 
- 	if (lp->free + lp->dirty == c->leb_size &&
--	    free + dirty == c->leb_size)
-+	    ifree + dirty == c->leb_size)
- 		if ((is_idx && !(lp->flags & LPROPS_INDEX)) ||
--		    (!is_idx && free == c->leb_size) ||
-+		    (!is_idx && ifree == c->leb_size) ||
- 		    lp->free == c->leb_size) {
- 			/*
- 			 * Empty or freeable LEBs could contain index
-@@ -1176,12 +1176,12 @@ static int scan_check_cb(struct ubifs_info *c,
- 			 * the same reason. Or it may simply not have been
- 			 * unmapped.
- 			 */
--			free = lp->free;
-+			ifree = lp->free;
- 			dirty = lp->dirty;
- 			is_idx = 0;
- 		    }
- 
--	if (is_idx && lp->free + lp->dirty == free + dirty &&
-+	if (is_idx && lp->free + lp->dirty == ifree + dirty &&
- 	    lnum != c->ihead_lnum) {
- 		/*
- 		 * After an unclean unmount, an index LEB could have a different
-@@ -1194,15 +1194,15 @@ static int scan_check_cb(struct ubifs_info *c,
- 		 * write to the free space at the end of an index LEB - except
- 		 * by the in-the-gaps method for which it is not a problem.
- 		 */
--		free = lp->free;
-+		ifree = lp->free;
- 		dirty = lp->dirty;
- 	}
- 
--	if (lp->free != free || lp->dirty != dirty)
-+	if (lp->free != ifree || lp->dirty != dirty)
- 		goto out_print;
- 
- 	if (is_idx && !(lp->flags & LPROPS_INDEX)) {
--		if (free == c->leb_size)
-+		if (ifree == c->leb_size)
- 			/* Free but not unmapped LEB, it's fine */
- 			is_idx = 0;
- 		else {
-@@ -1216,19 +1216,19 @@ static int scan_check_cb(struct ubifs_info *c,
- 		goto out_print;
- 	}
- 
--	if (free == c->leb_size)
-+	if (ifree == c->leb_size)
- 		lst->empty_lebs += 1;
- 
- 	if (is_idx)
- 		lst->idx_lebs += 1;
- 
- 	if (!(lp->flags & LPROPS_INDEX))
--		lst->total_used += c->leb_size - free - dirty;
--	lst->total_free += free;
-+		lst->total_used += c->leb_size - ifree - dirty;
-+	lst->total_free += ifree;
- 	lst->total_dirty += dirty;
- 
- 	if (!(lp->flags & LPROPS_INDEX)) {
--		int spc = free + dirty;
-+		int spc = ifree + dirty;
- 
- 		if (spc < c->dead_wm)
- 			lst->total_dead += spc;
-@@ -1242,7 +1242,7 @@ static int scan_check_cb(struct ubifs_info *c,
- 
- out_print:
- 	ubifs_err(c, "bad accounting of LEB %d: free %d, dirty %d flags %#x, should be free %d, dirty %d",
--		  lnum, lp->free, lp->dirty, lp->flags, free, dirty);
-+		  lnum, lp->free, lp->dirty, lp->flags, ifree, dirty);
- 	ubifs_dump_leb(c, lnum);
- out_destroy:
- 	ubifs_scan_destroy(sleb);
--- 
-2.1.0
+Thanx
+Yang
+>
+>> +	}
+>> +	nodes_cnt = sleb->nodes_cnt;
+>> +	if (nodes_cnt > 0) {
+>> +		snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node,
+>> +				  list);
+>> +		if (snod->type != UBIFS_MST_NODE) {
+>> +			err = -EINVAL;
+>> +			goto out;
+>> +		}
+>> +		memcpy(mst_node, snod->node, snod->len);
+>> +		offs = snod->offs;
+>> +	}
+>> +	ubifs_scan_destroy(sleb);
+>> +
+>> +	lnum += 1;
+>> +
+>> +	sleb = ubifs_scan(c, lnum, 0, leb_buf, 1);
+>> +	if (IS_ERR(sleb)) {
+>> +		err = PTR_ERR(sleb);
+>> +		goto out;
+>
+> Same here.
+>
+>> +	}
+>> +	err = -EUCLEAN;
+>> +	if (sleb->nodes_cnt != nodes_cnt)
+>> +		goto out;
+>> +	if (!sleb->nodes_cnt)
+>> +		goto out;
+>> +	snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node, list);
+>> +	if (snod->type != UBIFS_MST_NODE) {
+>> +		err = -EINVAL;
+>> +		goto out;
+>> +	}
+>> +	if (snod->offs != offs)
+>> +		goto out;
+>> +	if (memcmp((void *)mst_node + UBIFS_CH_SZ,
+>> +		   (void *)snod->node + UBIFS_CH_SZ,
+>> +		   UBIFS_MST_NODE_SZ - UBIFS_CH_SZ))
+>> +		goto out;
+>> +	err = 0;
+>> +
+>> +out:
+>> +	free(leb_buf);
+>> +	ubifs_scan_destroy(sleb);
+>> +	return err;
+>> +}
+>
+> Cheers,
+> David
+>
+>
+> .
+>
