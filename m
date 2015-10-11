@@ -1,26 +1,12 @@
-Received: from mail-qg0-x231.google.com ([2607:f8b0:400d:c04::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZlMrA-0004Sn-GW
- for linux-mtd@lists.infradead.org; Sun, 11 Oct 2015 20:04:33 +0000
-Received: by qgeb31 with SMTP id b31so5998954qge.0
- for <linux-mtd@lists.infradead.org>; Sun, 11 Oct 2015 13:04:11 -0700 (PDT)
-Date: Sun, 11 Oct 2015 13:04:12 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Michal Suchanek <hramrach@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 4/5] mtd: ofpart: document the lock flag.
-Message-ID: <20151011200412.GF3696@localhost>
-References: <cover.1439911625.git.hramrach@gmail.com>
- <83fbf31ad895446837f8e01f77a1ff7c63d62251.1439911625.git.hramrach@gmail.com>
+To: linux-mtd@bombadil.infradead.org
+Subject: Delivery Notification, ID 0000442891
+Date: Sun, 11 Oct 2015 20:33:37 +0000
+From: "FedEx Ground" <harry.holloway@edmg.net>
+Reply-To: "FedEx Ground" <harry.holloway@edmg.net>
+Message-ID: <868a0edb9d470550f28461b10af4add4@edmg.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <83fbf31ad895446837f8e01f77a1ff7c63d62251.1439911625.git.hramrach@gmail.com>
+Content-Type: multipart/mixed; boundary="b1_1c70f2e31f53bb3b90ac79c0ddca7c73"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,46 +16,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 18, 2015 at 03:34:08PM -0000, Michal Suchanek wrote:
-> The lock flag of ofpart is undocumented. Add to binding doc.
+--b1_1c70f2e31f53bb3b90ac79c0ddca7c73
+Content-Type: text/plain; charset=us-ascii
 
-Good catch. There are a lot of small corners of very old code that never
-really got reviewed properly, I expect...
+Dear Customer,
 
-(And the flag looks very odd. Why exactly is it in the partitions?)
+Your parcel has arrived at October 08. Courier was unable to deliver the parcel to you.
+You can review complete details of your order in the find attached.
 
-And now that I'm looking further...does this flag even *do* anything?
-AFAICT, it doesn't set the master device flags -- only the partition
-flags. But MTD drivers currently never see the partition flags -- they
-only see the master struct mtd_info. I think the only way anyone could
-observe the effect of this flag is to read the MTD flags from sysfs. And
-that's pretty useless.
+Yours trully,
+Harry Holloway,
+FedEx Station Manager.
 
-If my understanding is correct, then I'd rather completely remove the
-code that "handles" this flag, rather than codify it in the docs.
 
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> ---
->  Documentation/devicetree/bindings/mtd/partition.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-> index 8c2aff7..7fa9c08 100644
-> --- a/Documentation/devicetree/bindings/mtd/partition.txt
-> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
-> @@ -29,6 +29,7 @@ Optional properties:
->    partition should only be mounted read-only. This is usually used for flash
->    partitions containing early-boot firmware images or data which should not be
->    clobbered.
-> +- lock : Clear always locked after reset flag
+--b1_1c70f2e31f53bb3b90ac79c0ddca7c73
+Content-Type: application/zip; name="FedEx_0000442891.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=FedEx_0000442891.zip
 
-This seems more like a SW description. I've reworded slightly locally.
+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
 
-Is my above analysis sensible? If so, I'll patch this to kill the DT
-parsing code for "lock" entirely. If I'm wrong, then I can push this
-patch. Let me know what you think.
 
-Brian
-
-P.S. IIUC, then most of the 'mask_flags' stuff for partitioned devices
-really does nothing. These flags don't seem to ever be checked. Ugh.
+--b1_1c70f2e31f53bb3b90ac79c0ddca7c73--
