@@ -1,30 +1,26 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
+Received: from mail-qg0-x22b.google.com ([2607:f8b0:400d:c04::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZkfIO-0001Nn-FT
- for linux-mtd@lists.infradead.org; Fri, 09 Oct 2015 21:33:45 +0000
-Received: by wiclk2 with SMTP id lk2so87049523wic.0
- for <linux-mtd@lists.infradead.org>; Fri, 09 Oct 2015 14:33:22 -0700 (PDT)
+ id 1ZlMo0-0003i9-2s
+ for linux-mtd@lists.infradead.org; Sun, 11 Oct 2015 20:01:16 +0000
+Received: by qgez77 with SMTP id z77so107743059qge.1
+ for <linux-mtd@lists.infradead.org>; Sun, 11 Oct 2015 13:00:54 -0700 (PDT)
+Date: Sun, 11 Oct 2015 13:00:39 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 1/5] mtd: mtdpart: add debug prints to partition parser.
+Message-ID: <20151011200010.GA3696@localhost>
+References: <cover.1439911625.git.hramrach@gmail.com>
+ <5b636f504e32c9fe83df22694656075f4f45c710.1439911625.git.hramrach@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20151002175127.GH107187@google.com>
-References: <20150725023649.8664.59145.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20150725023945.8664.34842.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20151002175127.GH107187@google.com>
-Date: Fri, 9 Oct 2015 14:33:22 -0700
-Message-ID: <CAPcyv4hVNykjWbmdpm4rN3Kf7GNPzNXxxH0jriMe2fpjNJYukg@mail.gmail.com>
-Subject: Re: [PATCH v2 19/25] pxa2xx-flash: switch from ioremap_cache to
- memremap
-From: Dan Williams <dan.j.williams@intel.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
- "H. Peter Anvin" <hpa@zytor.com>, linux-arch@vger.kernel.org,
- "Kani, Toshimitsu" <toshi.kani@hp.com>,
- "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Russell King <rmk+kernel@arm.linux.org.uk>,
- David Woodhouse <dwmw2@infradead.org>, Christoph Hellwig <hch@lst.de>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b636f504e32c9fe83df22694656075f4f45c710.1439911625.git.hramrach@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,37 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 2, 2015 at 10:51 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> + linux-mtd
->
-> On Fri, Jul 24, 2015 at 10:39:45PM -0400, Dan Williams wrote:
->> In preparation for deprecating ioremap_cache() convert its usage in
->> pxa2xx-flash to memremap.
->>
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: Brian Norris <computersforpeace@gmail.com>
->> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
->> ---
->>  drivers/mtd/maps/pxa2xx-flash.c |    4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
->> index 12fa75df5008..758a8a7f86d9 100644
->> --- a/drivers/mtd/maps/pxa2xx-flash.c
->> +++ b/drivers/mtd/maps/pxa2xx-flash.c
->> @@ -71,8 +71,8 @@ static int pxa2xx_flash_probe(struct platform_device *pdev)
->>                      info->map.name);
->>               return -ENOMEM;
->>       }
->> -     info->map.cached =
->> -             ioremap_cache(info->map.phys, info->map.size);
->> +     info->map.cached = memremap(info->map.phys, info->map.size,
->> +                     MEMREMAP_CACHE);
->
-> Should the corresponding iounmap() be changed too? Looks like a pretty
-> thin wrapper right now, but it seems like the API would suggest we do
-> this anyway.
->
+On Tue, Aug 18, 2015 at 03:34:07PM -0000, Michal Suchanek wrote:
+> The probe of a mtd device can fail when a partition parser returns
+> error. The failure due to partition parsing can be quite mysterious when
+> multiple partitioning schemes are comiled in and any of them can fail
+> the probe.
+> 
+> Add debug prints which show what parsers were tried and what they
+> returned.
+> 
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+> ---
+> v2:
+> 
+>  - reformat debug messages
 
-Yes, thanks for that catch, addressed in the next rev.
+Looks OK to me. Applied to l2-mtd.git.
