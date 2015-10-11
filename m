@@ -1,29 +1,27 @@
-Received: from mail-qk0-x22c.google.com ([2607:f8b0:400d:c09::22c])
+Received: from mail-qg0-x236.google.com ([2607:f8b0:400d:c04::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZlMqM-0004GR-BB
- for linux-mtd@lists.infradead.org; Sun, 11 Oct 2015 20:03:43 +0000
-Received: by qkdo1 with SMTP id o1so42800302qkd.1
- for <linux-mtd@lists.infradead.org>; Sun, 11 Oct 2015 13:03:21 -0700 (PDT)
-Date: Sun, 11 Oct 2015 13:03:21 -0700
+ id 1ZlMqo-0004MA-Sf
+ for linux-mtd@lists.infradead.org; Sun, 11 Oct 2015 20:04:11 +0000
+Received: by qgez77 with SMTP id z77so107775381qge.1
+ for <linux-mtd@lists.infradead.org>; Sun, 11 Oct 2015 13:03:49 -0700 (PDT)
+Date: Sun, 11 Oct 2015 13:03:47 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Archit Taneja <architt@codeaurora.org>, dehrenberg@google.com,
- linux-arm-msm@vger.kernel.org, cernekee@gmail.com,
- sboyd@codeaurora.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, agross@codeaurora.org,
- Andrea Scian <andrea.scian@dave.eu>
-Subject: Re: [PATCH v4 1/5] mtd: nand: Create a BBT flag to access bad block
- markers in raw mode
-Message-ID: <20151011200321.GC3696@localhost>
-References: <1438578498-32254-1-git-send-email-architt@codeaurora.org>
- <1439959746-25498-1-git-send-email-architt@codeaurora.org>
- <1439959746-25498-2-git-send-email-architt@codeaurora.org>
- <20151002024434.GC107187@google.com>
- <20151002082738.1b325860@bbrezillon>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 2/5] mtd: mtdpart: Do not fail mtd probe when parsing
+ partitions fails.
+Message-ID: <20151011200347.GD3696@localhost>
+References: <cover.1439911625.git.hramrach@gmail.com>
+ <97366073dfe93b478f24e2fc30ca818326906e0a.1439911625.git.hramrach@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151002082738.1b325860@bbrezillon>
+In-Reply-To: <97366073dfe93b478f24e2fc30ca818326906e0a.1439911625.git.hramrach@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,93 +31,173 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Michal,
 
-On Fri, Oct 02, 2015 at 08:27:38AM +0200, Boris Brezillon wrote:
-> Brian, Archit,
-> 
-> On Thu, 1 Oct 2015 19:44:34 -0700
-> Brian Norris <computersforpeace@gmail.com> wrote:
-> 
-> > On Wed, Aug 19, 2015 at 10:19:02AM +0530, Archit Taneja wrote:
-> > > Some controllers can access the factory bad block marker from OOB only
-> > > when they read it in raw mode. When ECC is enabled, these controllers
-> > > discard reading/writing bad block markers, preventing access to them
-> > > altogether.
-> > > 
-> > > The bbt driver assumes MTD_OPS_PLACE_OOB when scanning for bad blocks.
-> > > This results in the nand driver's ecc->read_oob() op to be called, which
-> > > works with ECC enabled.
-> > > 
-> > > Create a new BBT option flag that tells nand_bbt to force the mode to
-> > > MTD_OPS_RAW. This would result in the correct op being called for the
-> > > underlying nand controller driver.
-> 
-> Actually I have the same kind of patch in my local tree (for a
-> different reason though: the HW randomizer can mess up with the BBM
-> byte if it's not disabled, and the only way to disable it in my current
-> implementation is to switch to raw mode).
-> 
-> > 
-> > MTD_OPS_RAW is probably the best way to do this, and we should switch
-> > back to it for all users (rather than a new flag).
-> 
-> I'm fine with this solution, but will that be acceptable for everybody?
-> I mean, some NAND controllers are able to protect some OOB bytes, and
-> the BBM might fall in those OOB bytes. In this case, shouldn't we rely
-> on the ECC protection instead of reading the OOB in raw mode?
+Sorry for the very long waits here. Unfortunately, I've been saying that
+a lot lately, as I haven't had a lot of time and have generated a lot of
+backlog. I really like that you've been working on this though, since
+there are definitely problems here.
 
-I think ECC is kind of misused a bit here. It's not really meant for
-protecting BBMs, and it's also really not sufficient, esp. given
-bitflips in erased areas.
+On Tue, Aug 18, 2015 at 03:34:07PM -0000, Michal Suchanek wrote:
+> Due to wrong assumption in ofpart ofpart fails on Exynos on SPI chips
+> with no partitions because the subnode containing controller data
+> confuses the ofpart parser.
+> 
+> Thus compiling in ofpart support automatically fails probing any SPI NOR
+> flash without partitions on Exynos.
+> 
+> Compiling in a partitioning scheme should not cause probe of otherwise
+> valid device to fail.
+> 
+> Remove that failure possibility when MTD_PARTITIONED_MASTER is set.
+> 
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+> 
+> ---
+> v2:
+> 
+>  - only allow partition parsing failure when MTD_PARTITIONED_MASTER is
+>    set
 
-> > But to do this, we
-> > need to fix up some things. Particularly, we need to extend
-> > 'badblockbits' support so that it is applied consistently in all places
-> > (I recall there is one code path in which bad block scanning does take
-> > this into account, and one that doesn't.)
-> 
-> Yes, IIRC Andrea has posted a patch addressing that problem [1].
-> Another problem I see is that badblockbits is currently assigned a
-> fixed value by the NAND controller driver (or a default value of 8).
-> There's no specific logic to correlate it to the required ECC strength.
-> IMO, we should not let each NAND controller driver decide what is the
-> appropriate value for each chip but rather implement the logic in
-> nand_base.c based on ecc->strength and ecc->size, and IIRC this was
-> the question Andrea asked when he posted his proposal. 
-> 
-> > 
-> > About badblockbits: it allows us to do a relaxed heuristic on matching
-> > bad block markers, where we say the BBM is "bad" if more than fewer than
-> > N bits are '1'. Right now, we just say that if there are any 0 bits in
-> > the Bad Block Marker (BBM) region, then the block is bad. But this is
-> > problematic for pages that have been worn down and might have bitflips.
-> > So right now, part of a (bad) solution is to read with ECC, so worn
-> > blocks that have data won't be later interpreted as bad blocks if we
-> > rescan the BBMs (ECC will correct the bitflips, if the OOB is
-> > protected).
-> > 
-> > But that solution is not really good, since ECC is not really a panacea
-> > for misinterpreted BBMs. And HW like yours apparently won't work like
-> > this.
-> 
-> Okay, I see you gave pretty much the same explanation, which makes mine
-> useless :-).
-> 
-> > 
-> > So in summary: if we can consistently make BBM checks look for 6 or 7
-> > "one" bits (rather than a full 8 bits, i.e. BBM == 0xff), then we can
-> > just unconditionally switch to RAW rather than PLACE_OOB. And we don't
-> > need a flag like this pach introduces.
-> 
-> I guess it all depends whether we want to let NAND controllers that can
-> protect their BBM keep doing it (which IMO is not such a bad idea).
+Why the special case for MTD_PARTITIONED_MASTER? I don't think this case
+should be much different. In either case, we should actually be falling
+back to just exposing the unpartitioned master device. We already do
+that when no partitions are found (but no error codes) in either
+MTD_PARTITIONED_MASTER={y,n}. We just need to do that for error cases
+too, I think.
 
-I think I was the only one consciously trying to do this. (Though I
-guess it's possible some people discreetly hacked it in by not
-supporting raw mode properly.) And for my cases, I'm pretty sure a
-properly-improved raw mode BBM scan would be just as good, or actually
-better. So I'm not sure anyone would really notice if we switched back
-and properly accounted for flips.
+> ---
+>  drivers/mtd/mtdpart.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 31888c2..6eafbe9 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -774,10 +774,15 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+>  		if (ret > 0) {
+>  			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
+>  			       ret, parser->name, master->name);
+> -			break;
+> +			return ret;
+> +		}
+> +		if (!IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) && (ret < 0)) {
+> +			pr_err("Error parsing %s partitions on %s\n",
+> +			       parser->name, master->name);
+> +			return ret;
+
+I think this hunk should be more like the hunk from the previous
+versions; don't do a separate CONFIG_xxx special case.
+
+I also think this has one other flaw: it's best if we don't completely
+ignore all failures. If we have one or more partitioning failures, this
+should show up somehow in the log at least, and not only with the
+pr_debug() messages from patch 1. I like the logic for the block
+subsystem for failures (see check_partition() in
+block/partitions/check.c). Skip a parser quietly if a later one
+succeeds, but report an error with a warning printk if none succeed.
+
+>  		}
+>  	}
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  int mtd_is_partition(const struct mtd_info *mtd)
+
+All in all, I think my suggestions would look something like the
+following alternative patch. I haven't tested it yet.
 
 Brian
+
+(git-format-patch pasted below)
+
+>From 53b60f31a2a0f2a7e8220a4aff47457248bccbcf Mon Sep 17 00:00:00 2001
+From: Brian Norris <computersforpeace@gmail.com>
+Date: Sun, 11 Oct 2015 10:25:23 -0700
+Subject: [PATCH] mtd: mtdpart: Do not fail mtd probe when parsing partitions
+ fails.
+
+Due to wrong assumption in ofpart ofpart fails on Exynos on SPI chips
+with no partitions because the subnode containing controller data
+confuses the ofpart parser.
+
+Thus compiling in ofpart support automatically fails probing any SPI NOR
+flash without partitions on Exynos.
+
+Compiling in a partitioning scheme should not cause probe of otherwise
+valid device to fail.
+
+Instead, let's do the following:
+ * try parsers until one succeeds
+ * if no parser succeeds, report the first error we saw
+ * even in the failure case, allow MTD to probe, with fallback
+   partitions or no partitions at all -- the master device will still be
+   registered
+
+Issue report and comments initially by Michal Suchanek.
+
+Reported-by: Michal Suchanek <hramrach@gmail.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/mtdcore.c |  6 ++++--
+ drivers/mtd/mtdpart.c | 14 ++++++++++----
+ 2 files changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 8ec4f81e9190..bb50e486e064 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -589,8 +589,10 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 	}
+ 	/* Didn't come up with either parsed OR fallback partitions */
+ 	if (ret < 0) {
+-		pr_info("mtd: failed to find partitions\n");
+-		goto out;
++		pr_info("mtd: failed to find partitions; one or more parsers reports errors (%d)\n",
++			ret);
++		/* Don't abort on errors; we can still use unpartitioned MTD */
++		ret = 0;
+ 	}
+ 
+ 	ret = mtd_add_device_partitions(mtd, real_parts, ret);
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index f5279ea6dc87..f8ba153f63bf 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -755,12 +755,12 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 			 struct mtd_part_parser_data *data)
+ {
+ 	struct mtd_part_parser *parser;
+-	int ret = 0;
++	int ret, err = 0;
+ 
+ 	if (!types)
+ 		types = default_mtd_part_types;
+ 
+-	for ( ; ret <= 0 && *types; types++) {
++	for ( ; *types; types++) {
+ 		pr_debug("%s: parsing partitions %s\n", master->name, *types);
+ 		parser = get_partition_parser(*types);
+ 		if (!parser && !request_module("%s", *types))
+@@ -776,10 +776,16 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 		if (ret > 0) {
+ 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
+ 			       ret, parser->name, master->name);
+-			break;
++			return ret;
+ 		}
++		/*
++		 * Stash the first error we see; only report it if no parser
++		 * succeeds
++		 */
++		if (ret < 0 && !err)
++			err = ret;
+ 	}
+-	return ret;
++	return err;
+ }
+ 
+ int mtd_is_partition(const struct mtd_info *mtd)
+-- 
+2.6.0.rc2.230.g3dd15c0
