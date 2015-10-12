@@ -1,21 +1,29 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZlkKC-0005Av-LZ
- for linux-mtd@lists.infradead.org; Mon, 12 Oct 2015 21:08:05 +0000
-Received: by padhy16 with SMTP id hy16so163106413pad.1
- for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 14:07:43 -0700 (PDT)
-Date: Mon, 12 Oct 2015 14:07:41 -0700
+Date: Mon, 12 Oct 2015 14:20:15 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 2/2] mtd: pxa3xx_nand: switch to device PM
-Message-ID: <20151012210741.GN107187@google.com>
-References: <1444681992-4208-1-git-send-email-computersforpeace@gmail.com>
- <1444681992-4208-2-git-send-email-computersforpeace@gmail.com>
+To: Anup Patel <anup.patel@broadcom.com>
+Cc: linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>,
+ David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Pramod KUMAR <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH 1/5] mtd: brcmnand: Fix pointer type-cast in
+ brcmnand_write()
+Message-ID: <20151012212015.GO107187@google.com>
+References: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
+ <1443808606-21203-2-git-send-email-anup.patel@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1444681992-4208-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1443808606-21203-2-git-send-email-anup.patel@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,72 +33,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 12, 2015 at 01:33:12PM -0700, Brian Norris wrote:
-> The old PM model is deprecated. This is equivalent.
+On Fri, Oct 02, 2015 at 11:26:42PM +0530, Anup Patel wrote:
+> We should always type-cast pointer to "long" or "unsigned long"
+> because size of pointer is same as machine word size. This will
+> avoid pointer type-cast issues on both 32bit and 64bit systems.
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> This patch fixes pointer type-cast issue in brcmnand_write()
+> as-per above info.
+> 
+> Signed-off-by: Anup Patel <anup.patel@broadcom.com>
+> Reviewed-by: Vikram Prakash <vikramp@broadcom.com>
+> Reviewed-by: Ray Jui <rjui@broadcom.com>
+> Reviewed-by: Scott Branden <sbranden@broadcom.com>
+> ---
+>  drivers/mtd/nand/brcmnand/brcmnand.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index fddb795..4cba03d 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -1544,9 +1544,9 @@ static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
+>  
+>  	dev_dbg(ctrl->dev, "write %llx <- %p\n", (unsigned long long)addr, buf);
+>  
+> -	if (unlikely((u32)buf & 0x03)) {
+> +	if (unlikely((unsigned long)buf & 0x03)) {
+>  		dev_warn(ctrl->dev, "unaligned buffer: %p\n", buf);
+> -		buf = (u32 *)((u32)buf & ~0x03);
+> +		buf = (u32 *)((unsigned long)buf & ~0x03);
+>  	}
 
-Sorry, this patch was garbage. Below is the correct one:
+Hmm, this block isn't really good. We should probably work to remove
+this. Not sure why I left that in, actually. At a minimum, it'd probably
+good to make this noisier, so if we see this in practice, we can work to
+fix those cases.
 
----
+But anyway, the patch is good (though 'uintptr_t' might be slightly
+better), so pushed to l2-mtd.git.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/pxa3xx_nand.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+Brian
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index cce5a32eef60..51b67ae5ac1c 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1889,21 +1889,21 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- }
- 
- #ifdef CONFIG_PM
--static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_message_t state)
-+static int pxa3xx_nand_suspend(struct device *dev)
- {
--	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
-+	struct pxa3xx_nand_info *info = dev_get_drvdata(dev);
- 
- 	if (info->state) {
--		dev_err(&pdev->dev, "driver busy, state = %d\n", info->state);
-+		dev_err(dev, "driver busy, state = %d\n", info->state);
- 		return -EAGAIN;
- 	}
- 
- 	return 0;
- }
- 
--static int pxa3xx_nand_resume(struct platform_device *pdev)
-+static int pxa3xx_nand_resume(struct device *dev)
- {
--	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
-+	struct pxa3xx_nand_info *info = dev_get_drvdata(dev);
- 
- 	/* We don't want to handle interrupt without calling mtd routine */
- 	disable_int(info, NDCR_INT_MASK);
-@@ -1930,15 +1930,19 @@ static int pxa3xx_nand_resume(struct platform_device *pdev)
- #define pxa3xx_nand_resume	NULL
- #endif
- 
-+static const struct dev_pm_ops pxa3xx_nand_pm_ops = {
-+	.suspend	= pxa3xx_nand_suspend,
-+	.resume		= pxa3xx_nand_resume,
-+};
-+
- static struct platform_driver pxa3xx_nand_driver = {
- 	.driver = {
- 		.name	= "pxa3xx-nand",
- 		.of_match_table = pxa3xx_nand_dt_ids,
-+		.pm	= &pxa3xx_nand_pm_ops,
- 	},
- 	.probe		= pxa3xx_nand_probe,
- 	.remove		= pxa3xx_nand_remove,
--	.suspend	= pxa3xx_nand_suspend,
--	.resume		= pxa3xx_nand_resume,
- };
- 
- module_platform_driver(pxa3xx_nand_driver);
--- 
-2.6.0.rc2.230.g3dd15c0
+>  
+>  	brcmnand_wp(mtd, 0);
+> -- 
+> 1.9.1
+> 
