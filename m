@@ -1,18 +1,25 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from mail-wi0-f178.google.com ([209.85.212.178])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zljp0-0007Ap-Bn
- for linux-mtd@lists.infradead.org; Mon, 12 Oct 2015 20:35:50 +0000
-Received: by pabrc13 with SMTP id rc13so27694146pab.0
- for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 13:35:30 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Han Xu <han.xu@freescale.com>, Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 2/2] mtd: fsl-quadspi: allow building for other ARCHes with
- COMPILE_TEST
-Date: Mon, 12 Oct 2015 13:35:16 -0700
-Message-Id: <1444682116-4708-2-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
-References: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
+ id 1Zljpj-0007NK-Mo
+ for linux-mtd@lists.infradead.org; Mon, 12 Oct 2015 20:36:36 +0000
+Received: by wicge5 with SMTP id ge5so31707837wic.0
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 13:36:14 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20151012203101.GM107187@google.com>
+References: <20151009221537.32203.5867.stgit@dwillia2-desk3.jf.intel.com>
+ <20151009221651.32203.63446.stgit@dwillia2-desk3.jf.intel.com>
+ <20151012175803.GL107187@google.com>
+ <20151012203101.GM107187@google.com>
+Date: Mon, 12 Oct 2015 13:36:13 -0700
+Message-ID: <CAPcyv4jBaM4jASAgY6O1if+LbYW7TdFBkMt8ZDATL7wrE7LUEQ@mail.gmail.com>
+Subject: Re: [PATCH 14/20] pxa2xx-flash: switch from ioremap_cache to memremap
+From: Dan Williams <dan.j.williams@intel.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-arch@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This driver doesn't actually need ARCH_MXC to compile. Relax the
-constraints.
+On Mon, Oct 12, 2015 at 1:31 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Mon, Oct 12, 2015 at 10:58:03AM -0700, Brian Norris wrote:
+>> You missed linux-mtd again. Please use scripts/get_maintainer.pl next
+>> time to at least get the relevant mailing list(s). (The individual CC's
+>> are not always necessary, but the subsystem lists definitely are.)
+>
+> Anyway, pushed to l2-mtd.git.
+>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Han Xu <han.xu@freescale.com>
----
- drivers/mtd/spi-nor/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 89bf4c1faa2b..2fe2a7e90fa9 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -23,7 +23,8 @@ config MTD_SPI_NOR_USE_4K_SECTORS
- 
- config SPI_FSL_QUADSPI
- 	tristate "Freescale Quad SPI controller"
--	depends on ARCH_MXC
-+	depends on ARCH_MXC || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	help
- 	  This enables support for the Quad SPI controller in master mode.
- 	  This controller does not support generic SPI. It only supports
--- 
-2.6.0.rc2.230.g3dd15c0
+Thanks Brian, I'll watch out for that next time.
