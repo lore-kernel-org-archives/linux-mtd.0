@@ -1,14 +1,40 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZlklQ-0007Ce-G5
- for linux-mtd@lists.infradead.org; Mon, 12 Oct 2015 21:36:13 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, dedekind1@gmail.com,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH] UBIFS: Fix possible memory leak in ubifs_readdir()
-Date: Mon, 12 Oct 2015 23:35:36 +0200
-Message-Id: <1444685736-29878-1-git-send-email-richard@nod.at>
+Date: Mon, 12 Oct 2015 16:54:59 -0500
+From: Josh Cartwright <joshc@eso.teric.us>
+To: Anup Patel <anup.patel@broadcom.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>,
+ David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>,
+ Pramod Kumar <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Rafal Milecki <zajec5@gmail.com>
+Subject: Re: [PATCH 3/5] mtd: brcmnand: Optional DT flag to reset IPROC NAND
+ controller
+Message-ID: <20151012215459.GA8843@kryptos>
+References: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
+ <1443808606-21203-4-git-send-email-anup.patel@broadcom.com>
+ <20151004214943.GA28904@localhost>
+ <39063E8F96E11742B35A201CC5D095B7AD54C1@SJEXCHMB10.corp.ad.broadcom.com>
+ <20151006134119.GB26818@localhost> <56144A62.70300@broadcom.com>
+ <5614574C.2060701@gmail.com>
+ <39063E8F96E11742B35A201CC5D095B7AD8ADD@SJEXCHMB10.corp.ad.broadcom.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
+Content-Disposition: inline
+In-Reply-To: <39063E8F96E11742B35A201CC5D095B7AD8ADD@SJEXCHMB10.corp.ad.broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,34 +44,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If ubifs_tnc_next_ent() returns something else than -ENOENT
-we leak file->private_data.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/dir.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+--Q68bSM7Ycu6FN28Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 5c27c66..cb88ea3 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -449,13 +449,14 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
- 	}
- 
- out:
-+	kfree(file->private_data);
-+	file->private_data = NULL;
-+
- 	if (err != -ENOENT) {
- 		ubifs_err(c, "cannot find next direntry, error %d", err);
- 		return err;
- 	}
- 
--	kfree(file->private_data);
--	file->private_data = NULL;
- 	/* 2 is a special value indicating that there are no more direntries */
- 	ctx->pos = 2;
- 	return 0;
--- 
-2.5.0
+On Wed, Oct 07, 2015 at 03:33:50AM +0000, Anup Patel wrote:
+> From: Florian Fainelli [mailto:f.fainelli@gmail.com]
+> > On 06/10/15 15:25, Scott Branden wrote:
+[..]
+> > Then instead of adding a "reset flag" to Device Tree, another approach =
+could be
+> > to put the desired or currently configured exhaustive list of NAND timi=
+ngs in
+> > Device Tree, and based on that you could have this:
+> >=20
+> > - the NAND controller driver finds that these timings match the current
+> > configuration, you are good to go
+> >=20
+> > - the NAND controller drivers finds a difference in how current timings=
+ are
+> > configured vs. desired timings, and issues a controller reset, prior to=
+ applying
+> > new timing configuration
+>
+> To add to this ...
+>
+> The mechanism to reset is BRCM NAND controller is SOC specific so the
+> SoC independent BRCM NAND driver (i.e. brcmnand.c) does not know how
+> to reset the NAND controller.
+>
+> For iProc SoC family, the NAND controller reset is through IDM register
+> space which is only iomap'ed by iproc_nand.c.
+>
+> We might end-up having one more SoC specific callback which will be
+> Provided by iproc_nand.c to brcmnand.c.
+
+Not that I'm familiar with these SoCs, but I did want to chime in and
+make sure you are aware of the existing reset_controller_dev
+abstraction, which is intended to solve exactly this problem.  Including
+a reset_control_get_optional() that might fit your use case.  See
+include/linux/reset{,-controller}.h.
+
+  Josh
+
+--Q68bSM7Ycu6FN28Q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAABCAAGBQJWHCwvAAoJEFQ/W/ipfAAc9NAH/2XHlcu00g8MIiknJJtCA4i+
+7L7nfIzqwdVLYO/3Uwe5YKepGh9OOD0mqRvbsBv7WKFebTyR0Jsk6UKzBxsie2xb
+vzoOe1pIBLwSVbYyn74tBOtQ2l9BC8DcpD9wv05hWE1qfqJAyJcUL0sXseqEl5Bc
+d7ObzRQJKmgV4PxQUaYXSNrvzmwKku1/XJvxvjxEVH043DWf4vA59Wz81eGzTikm
+barwW0LnwMSQK09ovVANVc9b3m0TuE9/nduKD6KDXECGOoWrkaqMAji5Pt7A+HgI
+fM6tObngr3NqryzG7tN5R4ER1ivr1EQq5CllUE8DA41GSoPPdwIvDLxncZQPttg=
+=4nbR
+-----END PGP SIGNATURE-----
+
+--Q68bSM7Ycu6FN28Q--
