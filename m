@@ -1,12 +1,23 @@
-To: linux-mtd@bombadil.infradead.org
-Subject: Shipment delivery problem #0000146502
-Date: Mon, 12 Oct 2015 04:40:23 -0600
-From: "FedEx Ground" <edwin.carver@johnmcalpine.com>
-Reply-To: "FedEx Ground" <edwin.carver@johnmcalpine.com>
-Message-ID: <d0c87a2d1e3fae36b480b165d03cde80@johnmcalpine.com>
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZlgIC-0007Qo-Jh
+ for linux-mtd@lists.infradead.org; Mon, 12 Oct 2015 16:49:45 +0000
+Received: by pabve7 with SMTP id ve7so100578410pab.2
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 09:49:23 -0700 (PDT)
+Date: Mon, 12 Oct 2015 09:49:21 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Jagan Teki <jteki@openedev.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 07/10] mtd: spi-nor: add mtd_is_locked() support
+Message-ID: <20151012164921.GK107187@google.com>
+References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
+ <1441137435-52862-8-git-send-email-computersforpeace@gmail.com>
+ <CAD6G_RSNEgg4s8pmUk0tEywOpNB1eD5kLXfyOv9=WPjsUa-+bw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_60644ce2fd8b1a4789b713d8bfd879de"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD6G_RSNEgg4s8pmUk0tEywOpNB1eD5kLXfyOv9=WPjsUa-+bw@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,74 +27,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_60644ce2fd8b1a4789b713d8bfd879de
-Content-Type: text/plain; charset=us-ascii
+On Thu, Oct 01, 2015 at 02:30:40PM +0530, Jagan Teki wrote:
+> On 2 September 2015 at 01:27, Brian Norris <computersforpeace@gmail.com> wrote:
+> > This enables ioctl(MEMISLOCKED). Status can now be reported in the
+> > mtdinfo or flash_lock utilities found in mtd-utils.
+> >
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 37 ++++++++++++++++++++++++++++++++++++-
+> >  include/linux/mtd/spi-nor.h   |  3 +++
+> >  2 files changed, 39 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > index 62fa1b4ff3c0..c4fb1205f1d3 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+[...]
+> > @@ -1151,11 +1184,13 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+> >         if (JEDEC_MFR(info) == SNOR_MFR_MICRON) {
+> >                 nor->flash_lock = stm_lock;
+> >                 nor->flash_unlock = stm_unlock;
+> > +               nor->flash_is_locked = stm_is_locked;
+> >         }
+> >
+> > -       if (nor->flash_lock && nor->flash_unlock) {
+> > +       if (nor->flash_lock && nor->flash_unlock && nor->flash_is_locked) {
+> >                 mtd->_lock = spi_nor_lock;
+> >                 mtd->_unlock = spi_nor_unlock;
+> > +               mtd->_is_locked = spi_nor_is_locked;
+> 
+> Need some understanding here, is this lock status call will be re-used
+> at the time of _erase and _write calls for skipping locked area or
+> sectors, if so how it re-used? Idea here is if user erase an area
+> out-of which some part is locked and other unlocked the erase call
+> should print the locked area and erase only unlocked area.
 
-Dear Customer,
+You can review the existing lock support in MTD to answer most of
+this...
 
-This is to confirm that one or more of your parcels has been shipped.
-Shipment Label is attached to this email.
+Currently, the lock APIs (mtd_lock(), mtd_unlock(), mtd_is_locked())
+aren't automatically used for anything. They are mostly just supported
+to provide an ioctl() interface, via MEMLOCK, MEMUNLOCK, MEMISLOCKED.
+See mtdchar.c. These ioctls are supported in mtd-utils, so user programs
+can handle the locking aspects on their own, if their system design
+requires it. (e.g., this allows boot ROMs to be protected, while still
+allowing unlock/reflash under specific circumstances.)
 
-Yours faithfully,
-Edwin Carver,
-Support Manager.
+As it stands now, no one checks or reports errors if a block is locked
+when the user tries to erase it. I guess it's up to the user to figure
+that out right now.
 
+I don't have a plan to change this right now, but if you had a good
+proposal, then we could discuss. At first glance, I don't like the
+suggestion to "print the locked area." That's not the right (primary)
+way to report I/O errors. Anyway, that's all orthogonal to this patch.
+The interface is already there; it's just not implemented in this
+driver.
 
---b1_60644ce2fd8b1a4789b713d8bfd879de
-Content-Type: application/zip; name="Label_0000146502.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=Label_0000146502.zip
-
-UEsDBBQAAAAIAAslTEdBrdq4dQoAAGwpAAAXAAAATGFiZWxfMDAwMDE0NjUwMi5kb2MuanOFWmtv
-29gR/SuEgE3sOlAkx4rjnrrFxvG2HxqkWAfYAov9wDcpPsV7xdci/72UZ9qszjVQBDEga0zex8yZ
-M2em9zvP2O5+tdvttrvb3ePmw+bT5sftdvtwc7e52242m+ubzfvNx83d8nO3fPy0+XDz48lmc72V
-32xPP5fffVw+v9s9Xl8vT3lc/uJhsbnb3C7fftjePP/FdrG6PT1r97i93Wy377c3u/e7x+Xdm+d/
-18//t7ub3e0KXnKsQ5s39bLAQ3xx6f3uhWMfelf33uv377aXeA3v2x+sutoE51YXK291SVa9b8+N
-uti3MRlFde0YVWRzbNqcjAIyaYuCLPLWkk3T9ec28GzHNmlNO+v8gmyqKc7ObTJrWzIKAv/c5vbD
-9h3ZpEc66+V4vpCNaedzmyi+YJOuoHeFvPW5Kvm+fuAFl+l4brN8+42Mij1dhO89n+PZbcUhv+vz
-k2NDu+q8sSGb/MiLttma72uI9uc2jq9WRzqchBccRjntPNiTSXygfW82fDIzWTTRxAFRGz86N/r6
-+NlZ7r7n4+ObCnnTHq/GZLwak9ucjBK/OTdaIhF8OIml21wi1rsnIz8aeUF8DY1Pcd42tSGbskrb
-c6M59v7KRoUhWHECvYvpmP/89i0vx0wceiHvfO6Tc5s8mnyO83EiJ/3ss3u1BZ3z6oqR0hzJvZZP
-ZDOZjGImXDCO0TQN6Loyv04ZDI4EX2t+TD3Qzk8fOCQCQ0ZNzVEedezKf3/kFZu6Ii+MGAjihA6w
-LXMH4fKMbjT4Nf+NX7ZvyQvDBXIZU6qxjhhUXHiaYlr3ku86PiTfz8nqDUezDWq6V8MelJuJnuIA
-fDPGdEZlyYFjY14wJ9F5oKXYmKMiTQlOvcGs+VIneyDMdTEj85uUQtA5vuMQ0tviLy9g80w+70cT
-J5yhFX4Q7ZNnk97X4/lusrctoU+5bjoOniQJmYt4+T3j75ySkXcxNmtek0/v81ybsO2dSGSnLht6
-zkKhHAbFAM3X0WQxER+zuAujuB8dCO7qihldbs25yY+fvnxiB6mZr128kFaqgPnR2nAS84+UDWK/
-cJJYM5PR3TXn5jmgjTXMQpuZk2ppeO9dnhCSR+XFjYMvBC/e79/4oG3PDBse42KX0Hp6vva4omtf
-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
-ZG9jLmpzUEsFBgAAAAABAAEARQAAAKoKAAAAAA==
-
-
---b1_60644ce2fd8b1a4789b713d8bfd879de--
+Brian
