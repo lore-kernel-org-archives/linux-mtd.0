@@ -1,40 +1,21 @@
-Date: Mon, 12 Oct 2015 16:54:59 -0500
-From: Josh Cartwright <joshc@eso.teric.us>
-To: Anup Patel <anup.patel@broadcom.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
- Scott Branden <sbranden@broadcom.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will.deacon@arm.com>,
- David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>,
- Pramod Kumar <pramodku@broadcom.com>,
- Vikram Prakash <vikramp@broadcom.com>,
- Sandeep Tripathy <tripathy@broadcom.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- Rafal Milecki <zajec5@gmail.com>
-Subject: Re: [PATCH 3/5] mtd: brcmnand: Optional DT flag to reset IPROC NAND
- controller
-Message-ID: <20151012215459.GA8843@kryptos>
-References: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
- <1443808606-21203-4-git-send-email-anup.patel@broadcom.com>
- <20151004214943.GA28904@localhost>
- <39063E8F96E11742B35A201CC5D095B7AD54C1@SJEXCHMB10.corp.ad.broadcom.com>
- <20151006134119.GB26818@localhost> <56144A62.70300@broadcom.com>
- <5614574C.2060701@gmail.com>
- <39063E8F96E11742B35A201CC5D095B7AD8ADD@SJEXCHMB10.corp.ad.broadcom.com>
+Date: Mon, 12 Oct 2015 16:35:37 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Josh Wu <josh.wu@atmel.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Huang Shijie <shijie.huang@arm.com>, Stefan Agner <stefan@agner.ch>,
+ devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: nand: pass page number to ecc->write_xxx() methods
+Message-ID: <20151012233537.GR107187@google.com>
+References: <1443765205-8730-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <39063E8F96E11742B35A201CC5D095B7AD8ADD@SJEXCHMB10.corp.ad.broadcom.com>
+In-Reply-To: <1443765205-8730-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,64 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Oct 02, 2015 at 07:53:25AM +0200, Boris Brezillon wrote:
+> The ->read_xxx() methods are all passed the page number the NAND controller
+> is supposed to read, but ->write_xxx() do not have such a parameter.
+> 
+> This is a problem if we want to properly implement data
+> scrambling/randomization in order to mitigate MLC sensibility to repeated
+> pattern: to prevent bitflips in adjacent pages in the same block we need
+> to avoid repeating the same pattern at the same offset in those pages,
+> hence the randomizer/scrambler engine need to be passed the page value
+> in order to adapt its seed accordingly.
+> 
+> Moreover, adding the page parameter to the ->write_xxx() methods add some
+> consistency to the current API.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> CC: Josh Wu <josh.wu@atmel.com>
+> CC: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> CC: Maxime Ripard <maxime.ripard@free-electrons.com>
+> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> CC: Huang Shijie <shijie.huang@arm.com>
+> CC: Stefan Agner <stefan@agner.ch>
+> CC: devel@driverdev.osuosl.org
+> CC: linux-arm-kernel@lists.infradead.org
+> CC: linux-kernel@vger.kernel.org
+> ---
+> Changes since v2:
+> - fixed compilation error in the gpmi driver
+> - compile tested all impacted drivers except the bf5xx_nand,
+>   fsl_elbc_nand and fsl_ifc_nand ones
+> 
+> Changes since v1:
+> - rebased on l2-mtd/master
+> - fixed compilation error in the docg4 driver
+> ---
+>  drivers/mtd/nand/atmel_nand.c                 |  6 ++++--
+>  drivers/mtd/nand/bf5xx_nand.c                 |  3 ++-
+>  drivers/mtd/nand/brcmnand/brcmnand.c          |  4 ++--
+>  drivers/mtd/nand/cafe_nand.c                  |  3 ++-
+>  drivers/mtd/nand/denali.c                     |  5 +++--
+>  drivers/mtd/nand/docg4.c                      |  6 +++---
+>  drivers/mtd/nand/fsl_elbc_nand.c              |  4 ++--
+>  drivers/mtd/nand/fsl_ifc_nand.c               |  2 +-
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c        |  8 +++----
+>  drivers/mtd/nand/hisi504_nand.c               |  3 ++-
+>  drivers/mtd/nand/lpc32xx_mlc.c                |  3 ++-
+>  drivers/mtd/nand/lpc32xx_slc.c                |  5 +++--
+>  drivers/mtd/nand/nand_base.c                  | 31 ++++++++++++++++++---------
+>  drivers/mtd/nand/omap2.c                      |  3 ++-
+>  drivers/mtd/nand/pxa3xx_nand.c                |  3 ++-
+>  drivers/mtd/nand/sh_flctl.c                   |  3 ++-
+>  drivers/mtd/nand/sunxi_nand.c                 |  5 +++--
+>  drivers/mtd/nand/vf610_nfc.c                  |  2 +-
+>  drivers/staging/mt29f_spinand/mt29f_spinand.c |  3 ++-
+>  include/linux/mtd/nand.h                      |  6 +++---
+>  20 files changed, 66 insertions(+), 42 deletions(-)
 
---Q68bSM7Ycu6FN28Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Oct 07, 2015 at 03:33:50AM +0000, Anup Patel wrote:
-> From: Florian Fainelli [mailto:f.fainelli@gmail.com]
-> > On 06/10/15 15:25, Scott Branden wrote:
-[..]
-> > Then instead of adding a "reset flag" to Device Tree, another approach =
-could be
-> > to put the desired or currently configured exhaustive list of NAND timi=
-ngs in
-> > Device Tree, and based on that you could have this:
-> >=20
-> > - the NAND controller driver finds that these timings match the current
-> > configuration, you are good to go
-> >=20
-> > - the NAND controller drivers finds a difference in how current timings=
- are
-> > configured vs. desired timings, and issues a controller reset, prior to=
- applying
-> > new timing configuration
->
-> To add to this ...
->
-> The mechanism to reset is BRCM NAND controller is SOC specific so the
-> SoC independent BRCM NAND driver (i.e. brcmnand.c) does not know how
-> to reset the NAND controller.
->
-> For iProc SoC family, the NAND controller reset is through IDM register
-> space which is only iomap'ed by iproc_nand.c.
->
-> We might end-up having one more SoC specific callback which will be
-> Provided by iproc_nand.c to brcmnand.c.
-
-Not that I'm familiar with these SoCs, but I did want to chime in and
-make sure you are aware of the existing reset_controller_dev
-abstraction, which is intended to solve exactly this problem.  Including
-a reset_control_get_optional() that might fit your use case.  See
-include/linux/reset{,-controller}.h.
-
-  Josh
-
---Q68bSM7Ycu6FN28Q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAABCAAGBQJWHCwvAAoJEFQ/W/ipfAAc9NAH/2XHlcu00g8MIiknJJtCA4i+
-7L7nfIzqwdVLYO/3Uwe5YKepGh9OOD0mqRvbsBv7WKFebTyR0Jsk6UKzBxsie2xb
-vzoOe1pIBLwSVbYyn74tBOtQ2l9BC8DcpD9wv05hWE1qfqJAyJcUL0sXseqEl5Bc
-d7ObzRQJKmgV4PxQUaYXSNrvzmwKku1/XJvxvjxEVH043DWf4vA59Wz81eGzTikm
-barwW0LnwMSQK09ovVANVc9b3m0TuE9/nduKD6KDXECGOoWrkaqMAji5Pt7A+HgI
-fM6tObngr3NqryzG7tN5R4ER1ivr1EQq5CllUE8DA41GSoPPdwIvDLxncZQPttg=
-=4nbR
------END PGP SIGNATURE-----
-
---Q68bSM7Ycu6FN28Q--
+Hmm, am I missing something, or does this not apply to l2-mtd.git or
+linux-next.git?
