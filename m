@@ -1,20 +1,23 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zlnc6-0003vV-5p
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 00:38:46 +0000
-Received: by padhy16 with SMTP id hy16so2753734pad.1
- for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 17:38:25 -0700 (PDT)
-Date: Mon, 12 Oct 2015 17:38:22 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: Add support for s25fl004k
-Message-ID: <20151013003822.GT107187@google.com>
-References: <1444131263-11295-1-git-send-email-sean.nyekjaer@prevas.dk>
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZlnhB-0007b6-BW
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 00:44:02 +0000
+Date: Mon, 12 Oct 2015 17:43:35 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ ezequiel@vanguardiasur.com.ar, javier@dowhile0.org, fcooper@ti.com,
+ nsekhar@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 27/27] ARM: dts: omap3: Fix gpmc and NAND nodes
+Message-ID: <20151013004335.GU23801@atomide.com>
+References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
+ <1442588029-13769-28-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1444131263-11295-1-git-send-email-sean.nyekjaer@prevas.dk>
+In-Reply-To: <1442588029-13769-28-git-send-email-rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 06, 2015 at 01:34:23PM +0200, Sean Nyekjaer wrote:
-> Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
+* Roger Quadros <rogerq@ti.com> [150918 08:00]:
+> Add compatible id, GPMC register resource and interrupt
+> resource to NAND controller nodes.
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index f59aedf..25dc38d 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -618,6 +618,7 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "s25sl016a",  INFO(0x010214,      0,  64 * 1024,  32, 0) },
->  	{ "s25sl032a",  INFO(0x010215,      0,  64 * 1024,  64, 0) },
->  	{ "s25sl064a",  INFO(0x010216,      0,  64 * 1024, 128, 0) },
-> +	{ "s25fl004k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K) },
-
-This doesn't apply to the latest l2-mtd.git / linux-next.git. See:
-
-http://linux-mtd.infradead.org/source.html
-
-Also, does this flash (like its family members) support dual and quad
-mode? We have flags for that now.
-
-Brian
-
->  	{ "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K) },
->  	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K) },
->  	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
-> -- 
-> 2.6.0
+> The GPMC driver now implements gpiochip and irqchip so
+> enable gpio-controller and interrupt-controller properties.
 > 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> With this the interrupt parent of NAND node changes so fix it
+> accordingly.
+...
+> --- a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+> +++ b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+> @@ -35,11 +35,14 @@
+>  };
+>  
+>  &gpmc {
+> -	ranges = <0 0 0x00000000 0x1000000>;	/* CS0: 16MB for NAND */
+> +	ranges = <0 0 0x08000000 0x1000000>;	/* CS0: 16MB for NAND */
+>  
+>  	nand@0,0 {
+> -		linux,mtd-name = "micron,mt29f4g16abbda3w";
+> +		compatible = "ti,omap2-nand";
+>  		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
+> +		interrupt-parent = <&intc>;
+> +		interrupts = <20>;
+> +		linux,mtd-name = "micron,mt29f4g16abbda3w";
+>  		nand-bus-width = <16>;
+>  		ti,nand-ecc-opt = "bch8";
+>  		gpmc,sync-clk-ps = <0>;
+
+At least torpedo breaks for NFSroot as NAND now overlaps with
+Ethernet.. What's the policy you have for moving the addresses
+around?
+
+There may be other similar cases to check too.
+
+Regards,
+
+Tony
