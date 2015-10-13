@@ -1,23 +1,20 @@
-Received: from muru.com ([72.249.23.125])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZlnhB-0007b6-BW
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 00:44:02 +0000
-Date: Mon, 12 Oct 2015 17:43:35 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- ezequiel@vanguardiasur.com.ar, javier@dowhile0.org, fcooper@ti.com,
- nsekhar@ti.com, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 27/27] ARM: dts: omap3: Fix gpmc and NAND nodes
-Message-ID: <20151013004335.GU23801@atomide.com>
-References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
- <1442588029-13769-28-git-send-email-rogerq@ti.com>
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZloYG-0005OB-Dd
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 01:38:53 +0000
+Received: by padhy16 with SMTP id hy16so4177280pad.1
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 18:38:31 -0700 (PDT)
+Date: Mon, 12 Oct 2015 18:38:28 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Aurelien Chanot <chanot.a@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: Add support for Micron n25q032a
+Message-ID: <20151013013828.GU107187@google.com>
+References: <20151007191008.GA31411@achanot-lt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1442588029-13769-28-git-send-email-rogerq@ti.com>
+In-Reply-To: <20151007191008.GA31411@achanot-lt>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [150918 08:00]:
-> Add compatible id, GPMC register resource and interrupt
-> resource to NAND controller nodes.
+On Wed, Oct 07, 2015 at 12:10:08PM -0700, Aurelien Chanot wrote:
+> The N25Q032A is identical to the N25Q032 except it has a different
+> supply voltage range. Therefore, it has a new JEDEC ID.
 > 
-> The GPMC driver now implements gpiochip and irqchip so
-> enable gpio-controller and interrupt-controller properties.
+> Signed-off-by: Aurelien Chanot <chanot.a@gmail.com>
+
+Applied to l2-mtd.git
+
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> With this the interrupt parent of NAND node changes so fix it
-> accordingly.
-...
-> --- a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
-> +++ b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
-> @@ -35,11 +35,14 @@
->  };
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index f59aedf..9122a2e 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -585,6 +585,7 @@ static const struct flash_info spi_nor_ids[] = {
 >  
->  &gpmc {
-> -	ranges = <0 0 0x00000000 0x1000000>;	/* CS0: 16MB for NAND */
-> +	ranges = <0 0 0x08000000 0x1000000>;	/* CS0: 16MB for NAND */
->  
->  	nand@0,0 {
-> -		linux,mtd-name = "micron,mt29f4g16abbda3w";
-> +		compatible = "ti,omap2-nand";
->  		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <20>;
-> +		linux,mtd-name = "micron,mt29f4g16abbda3w";
->  		nand-bus-width = <16>;
->  		ti,nand-ecc-opt = "bch8";
->  		gpmc,sync-clk-ps = <0>;
+>  	/* Micron */
+>  	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+> +	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
 
-At least torpedo breaks for NFSroot as NAND now overlaps with
-Ethernet.. What's the policy you have for moving the addresses
-around?
+I know the original entry doesn't specify this, but does this flash
+support 4K sectors and dual read? We should add the flags.
 
-There may be other similar cases to check too.
+Brian
 
-Regards,
-
-Tony
+>  	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
