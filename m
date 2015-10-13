@@ -1,20 +1,17 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from mail-ob0-f193.google.com ([209.85.214.193])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZloYG-0005OB-Dd
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 01:38:53 +0000
-Received: by padhy16 with SMTP id hy16so4177280pad.1
- for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 18:38:31 -0700 (PDT)
-Date: Mon, 12 Oct 2015 18:38:28 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Aurelien Chanot <chanot.a@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: Add support for Micron n25q032a
-Message-ID: <20151013013828.GU107187@google.com>
-References: <20151007191008.GA31411@achanot-lt>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151007191008.GA31411@achanot-lt>
+ id 1ZloZ5-00065h-RY
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 01:39:44 +0000
+Received: by obbbh8 with SMTP id bh8so231529obb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 18:39:22 -0700 (PDT)
+From: Franklin S Cooper Jr <fcooper@ti.com>
+To: linux-kernel@vger.kernel.org, rogerq@ti.com, devicetree@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org, nsekhar@ti.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, tony@atomide.com
+Cc: Franklin S Cooper Jr <fcooper@ti.com>
+Subject: [PATCH 0/5] mtd: nand: Fix support for NAND DMA Prefetch 
+Date: Mon, 12 Oct 2015 20:38:53 -0500
+Message-Id: <1444700338-27582-1-git-send-email-fcooper@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 07, 2015 at 12:10:08PM -0700, Aurelien Chanot wrote:
-> The N25Q032A is identical to the N25Q032 except it has a different
-> supply voltage range. Therefore, it has a new JEDEC ID.
-> 
-> Signed-off-by: Aurelien Chanot <chanot.a@gmail.com>
+NAND dma prefetch has been broken for awhile and seems to have only
+worked for sdma based devices.
 
-Applied to l2-mtd.git
+This patchset fixes DMA prefetch to work on both edma and sdma devices
 
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index f59aedf..9122a2e 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -585,6 +585,7 @@ static const struct flash_info spi_nor_ids[] = {
->  
->  	/* Micron */
->  	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
-> +	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+Tested on:
+am335x general purpose evm
+am437x general purpose evm
+am37x general purpose evm
 
-I know the original entry doesn't specify this, but does this flash
-support 4K sectors and dual read? We should add the flags.
+This patchset depends on Roger Quadros recent v4 GPMC/NAND patchset
 
-Brian
+https://github.com/rogerq/linux.git
+branch: for-v4.4/gpmc-v4
 
->  	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
+Franklin S Cooper Jr (5):
+  mtd: nand: omap2: Support parsing dma channel information from DT
+  mtd: nand: omap2: Start dma request before enabling prefetch
+  mtd: nand: omap2: Fix high memory dma prefetch transfer
+  ARM: dts: am437x/am33xx/omap3/dm816x: Add gpmc dma channel
+  ARM: OMAP2+: Update gpmc and nand DT binding documentation
+
+ .../bindings/memory-controllers/omap-gpmc.txt      |  7 ++++++-
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |  2 ++
+ arch/arm/boot/dts/am33xx.dtsi                      |  2 ++
+ arch/arm/boot/dts/am4372.dtsi                      |  2 ++
+ arch/arm/boot/dts/dm816x.dtsi                      |  2 ++
+ arch/arm/boot/dts/omap3.dtsi                       |  2 ++
+ drivers/mtd/nand/omap2.c                           | 24 ++++++++--------------
+ 7 files changed, 25 insertions(+), 16 deletions(-)
+
+-- 
+2.6.1
