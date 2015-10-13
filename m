@@ -1,17 +1,17 @@
-Received: from mail-ob0-f171.google.com ([209.85.214.171])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZloZ8-0006Ek-7Z
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 01:39:47 +0000
-Received: by obbzf10 with SMTP id zf10so2566850obb.2
- for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 18:39:25 -0700 (PDT)
+Received: from mail-ob0-f194.google.com ([209.85.214.194])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZloZA-0002s8-K1
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 01:39:50 +0000
+Received: by obbbh8 with SMTP id bh8so231659obb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 18:39:27 -0700 (PDT)
 From: Franklin S Cooper Jr <fcooper@ti.com>
 To: linux-kernel@vger.kernel.org, rogerq@ti.com, devicetree@vger.kernel.org,
  linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org, nsekhar@ti.com,
  computersforpeace@gmail.com, dwmw2@infradead.org, tony@atomide.com
 Cc: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: [PATCH 3/5] mtd: nand: omap2: Fix high memory dma prefetch transfer
-Date: Mon, 12 Oct 2015 20:38:56 -0500
-Message-Id: <1444700338-27582-4-git-send-email-fcooper@ti.com>
+Subject: [PATCH 5/5] ARM: OMAP2+: Update gpmc and nand DT binding documentation
+Date: Mon, 12 Oct 2015 20:38:58 -0500
+Message-Id: <1444700338-27582-6-git-send-email-fcooper@ti.com>
 In-Reply-To: <1444700338-27582-1-git-send-email-fcooper@ti.com>
 References: <1444700338-27582-1-git-send-email-fcooper@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,50 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Based on DMA documentation and testing using high memory buffer when
-doing dma transfers can lead to various issues including kernel
-panics.
-
-To workaround this simply use cpu copy. The amount of high memory
-buffers used are very uncommon so no noticeable performance hit should
-be seen.
+Add additional details to the gpmc and nand documentation to clarify
+what is needed to enable nand dma prefetch.
 
 Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
 ---
- drivers/mtd/nand/omap2.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt | 7 ++++++-
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt                | 2 ++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 94d11de..537be2f 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -479,17 +479,8 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
- 	int ret;
- 	u32 val;
+diff --git a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+index 704be93..b1e2802 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
++++ b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+@@ -33,6 +33,10 @@ Required properties:
+ 			As this will change in the future, filling correct
+ 			values here is a requirement.
  
--	if (addr >= high_memory) {
--		struct page *p1;
--
--		if (((size_t)addr & PAGE_MASK) !=
--			((size_t)(addr + len - 1) & PAGE_MASK))
--			goto out_copy;
--		p1 = vmalloc_to_page(addr);
--		if (!p1)
--			goto out_copy;
--		addr = page_address(p1) + ((size_t)addr & ~PAGE_MASK);
--	}
-+	if (addr >= high_memory)
-+		goto out_copy;
- 
- 	sg_init_one(&sg, addr, len);
- 	n = dma_map_sg(info->dma->device->dev, &sg, 1, dir);
-@@ -545,6 +536,7 @@ out_copy:
- 	else
- 		is_write == 0 ? omap_read_buf8(mtd, (u_char *) addr, len)
- 			: omap_write_buf8(mtd, (u_char *) addr, len);
++GPMC DMA information. Required only when GPMC nand prefetch is enabled.
++ - dmas			GPMC nand prefetch dma channel
++ - dma-names		DMA channel name use as a reference within the Nand driver
 +
- 	return 0;
- }
+ Timing properties for child nodes. All are optional and default to 0.
  
+  - gpmc,sync-clk-ps:	Minimum clock period for synchronous mode, in picoseconds
+@@ -119,7 +123,8 @@ Example for an AM33xx board:
+ 		ti,hwmods = "gpmc";
+ 		reg = <0x50000000 0x2000>;
+ 		interrupts = <100>;
+-
++		dmas = <&edma 52>;
++		dma-names = "rxtx";
+ 		gpmc,num-cs = <8>;
+ 		gpmc,num-waitpins = <2>;
+ 		#address-cells = <2>;
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+index 253e6de..4b0c240 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+@@ -61,6 +61,8 @@ Example for an AM33xx board:
+ 		ti,hwmods = "gpmc";
+ 		reg = <0x50000000 0x36c>;
+ 		interrupts = <100>;
++		dmas = <&edma 52>;
++		dma-names = "rxtx";
+ 		gpmc,num-cs = <8>;
+ 		gpmc,num-waitpins = <2>;
+ 		#address-cells = <2>;
 -- 
 2.6.1
