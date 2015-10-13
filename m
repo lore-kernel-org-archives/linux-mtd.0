@@ -1,21 +1,40 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zm39t-0000vy-Uz
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 17:14:42 +0000
-Received: by pacex6 with SMTP id ex6so26717112pac.3
- for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 10:14:21 -0700 (PDT)
-Date: Tue, 13 Oct 2015 10:14:18 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Frans Klaver <fransklaver@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 00/60] Fix mtd parent device not showing up in sysfs
-Message-ID: <20151013171418.GV107187@google.com>
-References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
+Message-ID: <561D40C4.4030703@gmail.com>
+Date: Tue, 13 Oct 2015 10:35:00 -0700
+From: Florian Fainelli <f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
+To: Josh Cartwright <joshc@eso.teric.us>, Anup Patel <anup.patel@broadcom.com>
+CC: Florian Fainelli <f.fainelli@gmail.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>,
+ David Woodhouse <dwmw2@infradead.org>, Ray Jui <rjui@broadcom.com>,
+ Pramod Kumar <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Rafal Milecki <zajec5@gmail.com>
+Subject: Re: [PATCH 3/5] mtd: brcmnand: Optional DT flag to reset IPROC NAND
+ controller
+References: <1443808606-21203-1-git-send-email-anup.patel@broadcom.com>
+ <1443808606-21203-4-git-send-email-anup.patel@broadcom.com>
+ <20151004214943.GA28904@localhost>
+ <39063E8F96E11742B35A201CC5D095B7AD54C1@SJEXCHMB10.corp.ad.broadcom.com>
+ <20151006134119.GB26818@localhost> <56144A62.70300@broadcom.com>
+ <5614574C.2060701@gmail.com>
+ <39063E8F96E11742B35A201CC5D095B7AD8ADD@SJEXCHMB10.corp.ad.broadcom.com>
+ <20151012215459.GA8843@kryptos>
+In-Reply-To: <20151012215459.GA8843@kryptos>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +44,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Frans,
+On 12/10/15 14:54, Josh Cartwright wrote:
+> On Wed, Oct 07, 2015 at 03:33:50AM +0000, Anup Patel wrote:
+>> From: Florian Fainelli [mailto:f.fainelli@gmail.com]
+>>> On 06/10/15 15:25, Scott Branden wrote:
+> [..]
+>>> Then instead of adding a "reset flag" to Device Tree, another approach could be
+>>> to put the desired or currently configured exhaustive list of NAND timings in
+>>> Device Tree, and based on that you could have this:
+>>>
+>>> - the NAND controller driver finds that these timings match the current
+>>> configuration, you are good to go
+>>>
+>>> - the NAND controller drivers finds a difference in how current timings are
+>>> configured vs. desired timings, and issues a controller reset, prior to applying
+>>> new timing configuration
+>>
+>> To add to this ...
+>>
+>> The mechanism to reset is BRCM NAND controller is SOC specific so the
+>> SoC independent BRCM NAND driver (i.e. brcmnand.c) does not know how
+>> to reset the NAND controller.
+>>
+>> For iProc SoC family, the NAND controller reset is through IDM register
+>> space which is only iomap'ed by iproc_nand.c.
+>>
+>> We might end-up having one more SoC specific callback which will be
+>> Provided by iproc_nand.c to brcmnand.c.
+> 
+> Not that I'm familiar with these SoCs, but I did want to chime in and
+> make sure you are aware of the existing reset_controller_dev
+> abstraction, which is intended to solve exactly this problem.  Including
+> a reset_control_get_optional() that might fit your use case.  See
+> include/linux/reset{,-controller}.h.
 
-On Wed, Jun 10, 2015 at 10:38:14PM +0200, Frans Klaver wrote:
-> Here's the second iteration of a series stemming from a previous discussion
-> about mtd devices not showing up in sysfs properly[1]. While the original
-> series 27 patches, this one should cover all drivers that suffer from this
-> issue, and shamelessly hits 60. Again, if it's preferred that the patches are
-> grouped differently, like by mtd subdir, I'd be happy to resend. Until then,
-> we'll make do with this.
-> 
-> This series teaches add_mtd_device() to set name and owner based on the set
-> parent device, if dev.parent is filled in, and name resp. owner isn't already
-> filled in. All drivers that I could find that don't set the parent are touched
-> to set the parent device, and remove the name and owner assignment in cases
-> where I'm sure the resulting name will not change. Only the latter is done in
-> cases where I would find the driver explicitly filling in the owner.
-> 
-> Thanks for having a go at your favorite MTD,
-> Frans
-> 
-> v1..v2
->   - Overall: make it more clear that it's about a parent device symlink gone
->     missing (thanks, Brian)
->   - Fix compile error in 30: "fsmc_nand: show parent device in sysfs"
->   - Fix possible null-pointer dereference in 02: "mtd: core: set some
->     defaults..."
-> 
-> [1] https://lkml.org/lkml/2014/5/26/586
+I almost suggested that, and then looked more closely at where this
+reset register is located, and it happens to be in the NAND controller
+itself (IPROC IDM which is the iProc SHIM to the NAND controller), so
+coming up with a reset controller driver and a reset controller consumer
+for that simple use case sounds both unnecessary and complex.
 
-Thanks for the patches. I've tested a few drivers and compile tested as
-much as I can, and everything looks good. Patches 5 and 59 (m25p80.c and
-fsl-quadspi.c) didn't apply cleanly yet, as those drivers have had some
-concurrent changes, so I didn't take them yet. If it's trivial to fix
-up, I'll apply themself. Stay tuned.
-
-Regards,
-Brian
+The core of the discussion is about disguising this NAND controller
+reset as a way to preserve previously configured NAND timings, which is
+at best a hack and an unstated dependency with the firmware.
+-- 
+Florian
