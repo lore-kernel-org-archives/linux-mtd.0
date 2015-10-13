@@ -1,16 +1,17 @@
 Received: from mail-vk0-x230.google.com ([2607:f8b0:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zm71f-0000dZ-Uv
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 21:22:29 +0000
-Received: by vkat63 with SMTP id t63so18788145vka.1
- for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 14:22:06 -0700 (PDT)
+ id 1Zm72A-0000rc-5J
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 21:23:00 +0000
+Received: by vkaw128 with SMTP id w128so18766497vka.0
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 14:22:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1444682116-4708-2-git-send-email-computersforpeace@gmail.com>
 References: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
-Date: Tue, 13 Oct 2015 16:22:06 -0500
-Message-ID: <CA+EcR20cwi4HgApeRuFE99aMKaTDu4CaUhPOiJONjoKFaTHiKA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: fsl-quadspi: fix printk() format warning for
- size_t
+ <1444682116-4708-2-git-send-email-computersforpeace@gmail.com>
+Date: Tue, 13 Oct 2015 16:22:37 -0500
+Message-ID: <CA+EcR2069_6P9z8p=s0HcB8HssGJN==4GRQL_4nv7qhKR34t9g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: fsl-quadspi: allow building for other ARCHes
+ with COMPILE_TEST
 From: Han Xu <xhnjupt@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -27,36 +28,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Mon, Oct 12, 2015 at 3:35 PM, Brian Norris
 <computersforpeace@gmail.com> wrote:
-> Seen when compile-testing on non-32-bit arch:
->
->     CC      drivers/mtd/spi-nor/fsl-quadspi.o
->   drivers/mtd/spi-nor/fsl-quadspi.c: In function 'fsl_qspi_read':
->   drivers/mtd/spi-nor/fsl-quadspi.c:873:2: warning: format '%d' expects argument of type 'int', but argument 6 has type 'size_t' [-Wformat=]
->     dev_dbg(q->dev, "cmd [%x],read from 0x%p, len:%d\n",
->     ^
->
-> Also drop the '0x' prefixing to the '%p' formatter, since %p already
-> knows how to format pointers appropriately.
+> This driver doesn't actually need ARCH_MXC to compile. Relax the
+> constraints.
 >
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > Cc: Han Xu <han.xu@freescale.com>
 > ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/spi-nor/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 2954f89fc8be..ca259faf4591 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -868,7 +868,7 @@ static int fsl_qspi_read(struct spi_nor *nor, loff_t from,
->                 }
->         }
+> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> index 89bf4c1faa2b..2fe2a7e90fa9 100644
+> --- a/drivers/mtd/spi-nor/Kconfig
+> +++ b/drivers/mtd/spi-nor/Kconfig
+> @@ -23,7 +23,8 @@ config MTD_SPI_NOR_USE_4K_SECTORS
 >
-> -       dev_dbg(q->dev, "cmd [%x],read from 0x%p, len:%d\n",
-> +       dev_dbg(q->dev, "cmd [%x],read from %p, len:%zd\n",
->                 cmd, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
->                 len);
->
+>  config SPI_FSL_QUADSPI
+>         tristate "Freescale Quad SPI controller"
+> -       depends on ARCH_MXC
+> +       depends on ARCH_MXC || COMPILE_TEST
+> +       depends on HAS_IOMEM
+>         help
+>           This enables support for the Quad SPI controller in master mode.
+>           This controller does not support generic SPI. It only supports
 Acked-by: Han xu <han.xu@freescale.com>
 > --
 > 2.6.0.rc2.230.g3dd15c0
