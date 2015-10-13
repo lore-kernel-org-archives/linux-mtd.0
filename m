@@ -1,26 +1,21 @@
-Received: from mail-io0-f171.google.com ([209.85.223.171])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zm31Q-0001ZS-N3
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 17:05:57 +0000
-Received: by iofl186 with SMTP id l186so28117713iof.2
- for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 10:05:35 -0700 (PDT)
-From: Seth Forshee <seth.forshee@canonical.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Casey Schaufler <casey@schaufler-ca.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, Seth Forshee <seth.forshee@canonical.com>,
- James Morris <james.l.morris@oracle.com>,
- "Serge E. Hallyn" <serge@hallyn.com>
-Subject: [PATCH v2 7/7] Smack: Handle labels consistently in untrusted mounts
-Date: Tue, 13 Oct 2015 12:04:20 -0500
-Message-Id: <1444755861-54997-8-git-send-email-seth.forshee@canonical.com>
-In-Reply-To: <1444755861-54997-1-git-send-email-seth.forshee@canonical.com>
-References: <1444755861-54997-1-git-send-email-seth.forshee@canonical.com>
+ id 1Zm39t-0000vy-Uz
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 17:14:42 +0000
+Received: by pacex6 with SMTP id ex6so26717112pac.3
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 10:14:21 -0700 (PDT)
+Date: Tue, 13 Oct 2015 10:14:18 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Frans Klaver <fransklaver@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 00/60] Fix mtd parent device not showing up in sysfs
+Message-ID: <20151013171418.GV107187@google.com>
+References: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1433968754-10651-1-git-send-email-fransklaver@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,87 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The SMACK64, SMACK64EXEC, and SMACK64MMAP labels are all handled
-differently in untrusted mounts. This is confusing and
-potentically problematic. Change this to handle them all the same
-way that SMACK64 is currently handled; that is, read the label
-from disk and check it at use time. For SMACK64 and SMACK64MMAP
-access is denied if the label does not match smk_root. To be
-consistent with suid, a SMACK64EXEC label which does not match
-smk_root will still allow execution of the file but will not run
-with the label supplied in the xattr.
+Hi Frans,
 
-Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
----
- security/smack/smack_lsm.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+On Wed, Jun 10, 2015 at 10:38:14PM +0200, Frans Klaver wrote:
+> Here's the second iteration of a series stemming from a previous discussion
+> about mtd devices not showing up in sysfs properly[1]. While the original
+> series 27 patches, this one should cover all drivers that suffer from this
+> issue, and shamelessly hits 60. Again, if it's preferred that the patches are
+> grouped differently, like by mtd subdir, I'd be happy to resend. Until then,
+> we'll make do with this.
+> 
+> This series teaches add_mtd_device() to set name and owner based on the set
+> parent device, if dev.parent is filled in, and name resp. owner isn't already
+> filled in. All drivers that I could find that don't set the parent are touched
+> to set the parent device, and remove the name and owner assignment in cases
+> where I'm sure the resulting name will not change. Only the latter is done in
+> cases where I would find the driver explicitly filling in the owner.
+> 
+> Thanks for having a go at your favorite MTD,
+> Frans
+> 
+> v1..v2
+>   - Overall: make it more clear that it's about a parent device symlink gone
+>     missing (thanks, Brian)
+>   - Fix compile error in 30: "fsmc_nand: show parent device in sysfs"
+>   - Fix possible null-pointer dereference in 02: "mtd: core: set some
+>     defaults..."
+> 
+> [1] https://lkml.org/lkml/2014/5/26/586
 
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 621200f86b56..bee0b2652bf4 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -891,6 +891,7 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
- 	struct inode *inode = file_inode(bprm->file);
- 	struct task_smack *bsp = bprm->cred->security;
- 	struct inode_smack *isp;
-+	struct superblock_smack *sbsp;
- 	int rc;
- 
- 	if (bprm->cred_prepared)
-@@ -900,6 +901,10 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
- 	if (isp->smk_task == NULL || isp->smk_task == bsp->smk_task)
- 		return 0;
- 
-+	sbsp = inode->i_sb->s_security;
-+	if (sbsp->smk_flags & SMK_SB_UNTRUSTED && isp->smk_task != sbsp->smk_root)
-+		return 0;
-+
- 	if (bprm->unsafe & (LSM_UNSAFE_PTRACE | LSM_UNSAFE_PTRACE_CAP)) {
- 		struct task_struct *tracer;
- 		rc = 0;
-@@ -1703,6 +1708,7 @@ static int smack_mmap_file(struct file *file,
- 	struct task_smack *tsp;
- 	struct smack_known *okp;
- 	struct inode_smack *isp;
-+	struct superblock_smack *sbsp;
- 	int may;
- 	int mmay;
- 	int tmay;
-@@ -1714,6 +1720,10 @@ static int smack_mmap_file(struct file *file,
- 	isp = file_inode(file)->i_security;
- 	if (isp->smk_mmap == NULL)
- 		return 0;
-+	sbsp = file_inode(file)->i_sb->s_security;
-+	if (sbsp->smk_flags & SMK_SB_UNTRUSTED &&
-+	    isp->smk_mmap != sbsp->smk_root)
-+		return -EACCES;
- 	mkp = isp->smk_mmap;
- 
- 	tsp = current_security();
-@@ -3492,16 +3502,14 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
- 			if (rc >= 0)
- 				transflag = SMK_INODE_TRANSMUTE;
- 		}
--		if (!(sbsp->smk_flags & SMK_SB_UNTRUSTED)) {
--			/*
--			 * Don't let the exec or mmap label be "*" or "@".
--			 */
--			skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
--			if (IS_ERR(skp) || skp == &smack_known_star ||
--			    skp == &smack_known_web)
--				skp = NULL;
--			isp->smk_task = skp;
--		}
-+		/*
-+		 * Don't let the exec or mmap label be "*" or "@".
-+		 */
-+		skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
-+		if (IS_ERR(skp) || skp == &smack_known_star ||
-+		    skp == &smack_known_web)
-+			skp = NULL;
-+		isp->smk_task = skp;
- 
- 		skp = smk_fetch(XATTR_NAME_SMACKMMAP, inode, dp);
- 		if (IS_ERR(skp) || skp == &smack_known_star ||
--- 
-1.9.1
+Thanks for the patches. I've tested a few drivers and compile tested as
+much as I can, and everything looks good. Patches 5 and 59 (m25p80.c and
+fsl-quadspi.c) didn't apply cleanly yet, as those drivers have had some
+concurrent changes, so I didn't take them yet. If it's trivial to fix
+up, I'll apply themself. Stay tuned.
+
+Regards,
+Brian
