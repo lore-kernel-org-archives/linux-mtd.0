@@ -1,19 +1,21 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zlx99-0005Aj-V1
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 10:49:32 +0000
-Date: Tue, 13 Oct 2015 12:46:20 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: rnd4@dave-tech.it, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/2] Use badblockbits-like approach in nand_bbt.c
-Message-ID: <20151013124620.79a8f055@bbrezillon>
-In-Reply-To: <1425643938-24749-1-git-send-email-rnd4@dave-tech.it>
-References: <1425643938-24749-1-git-send-email-rnd4@dave-tech.it>
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zlxr2-0008K2-Ha
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 11:34:54 +0000
+From: Yanjiantao <yanjiantao@hisilicon.com>
+To: "computersforpeace@gmail.com" <computersforpeace@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Caizhiyong
+ <caizhiyong@hisilicon.com>, "Wanli (welly)" <welly.wan@hisilicon.com>,
+ Quyaxin <quyaxin@hisilicon.com>
+Subject: questions about  [PATCH]mtd: nand: fix SCAN2NDPAGE check for BBM
+Date: Tue, 13 Oct 2015 11:33:54 +0000
+Message-ID: <A5C805F07496A54EAFF48B92DEC9C1057AECB1A7@SZXEMA501-MBX.china.huawei.com>
+References: <C3050A4DBA34F345975765E43127F10F62D61353@SZXEMA512-MBX.china.huawei.com> 
+Content-Language: zh-CN
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +25,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Dear Brian,
 
-On Fri,  6 Mar 2015 13:12:16 +0100
-rnd4@dave-tech.it wrote:
+i read the patch:  " mtd: nand: fix SCAN2NDPAGE check for BBM "
+And i am confused about the markbad flows.
 
-> 
-> Hi all,
-> 
-> I'm currenlty working with an MLC NAND (MT29F32G08CBACAWP) on a iMX6 based
-> platform (kernel 3.10.17).
-> The first problem I have is about badblock detection. I experienced a lot of bit
-> flips on badblock marker (some of them probalbly due misuse, e.g. powercut).
-> 
-> By looking into the MDT code, I've found that inside nand_base.c there's support
-> for badblockbits feature, which, for short, allow to tolerate 1 or more bitflip
-> when looking for BB.
-> 
-> In my experience usually the marker is 0x00 for bad blocks and 0xFF for good one
-> (at least this is true for my current component).
-> 
-> Unfortunately this approach is not used into BBT code (nand_bbt.c) and thus I have
-> a lot of false positive BB.
-> 
-> With the following patches I try to add badblockbits-like approach to nand_bbt.c
-> code.
-> 
-> The first patch is optional and configure badblockbits depending on SLC vs MLC NAND.
-> 
-> The second patch implements the badblockbits approach into BBT scan.
-> Please note that this is not usually enough, because many NAND controller override
-> nand_bbt_descr and thus requires changes also the the specific controller driver.
-> 
-> The patch has been made in collaboration with Boris Brezillon (thank you for you
-> suggestions Boris).
-> 
-> I tested it on a 3.10.17 kernel, but the second patch applies fine to
-> v3.10 stable and latest 4.0-rc1 (the first patch needs some changes to apply to this
-> one).
-> 
-> Feel free to comment it and tell me if something can be done in a better way
+		xxxxx;
+        if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
+                ofs +=3D mtd->erasesize - mtd->writesize;
 
-We recently discussed the option of retrieving BBM using raw access
-mode, which will likely require something similar to what this series is
-doing.
-I'm still not happy with the selection of ->badblockbits (4 for MLC
-NANDs and 8 otherwise), but maybe that's something we can adjust later.
+		xxxxx;
 
-What do you think?
+        do {=20
+                if (chip->options & NAND_BUSWIDTH_16) {
+                        chip->cmdfunc(mtd, NAND_CMD_READOOB,
+                                        chip->badblockpos & 0xFE, page);
+                        bad =3D cpu_to_le16(chip->read_word(mtd));
+                        if (chip->badblockpos & 0x1)=20
+                                bad >>=3D 8;
+                        else=20
+                                bad &=3D 0xFF;
+                } else {
+                        chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblock=
+pos,
+                                        page);
+                        bad =3D chip->read_byte(mtd);
+                }   =20
 
-Best Regards,
+                if (likely(chip->badblockbits =3D=3D 8))
+                        res =3D bad !=3D 0xFF;
+                else=20
+                        res =3D hweight8(bad) < chip->badblockbits;
+                ofs +=3D mtd->writesize;
+                page =3D (int)(ofs >> chip->page_shift) & chip->pagemask;
+                i++;=20
+        } while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE=
+));=20
+mark bad flows is the same.
 
-Boris
+If I understand the patch right, then I think that:
+1. when NAND_BBT_SCANLASTPAGE is set, markbad and checkbad on the last page=
+ only.
+2. when NAND_BBT_SCAN2NDPAGE is set, markbad and checkbad on the 1st and 2n=
+d page.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+I checked some datasheets of different manufacturers(such as SAMSUNG/HYNIX/=
+MICRON/TOSHIBA), they claim that bad block marker is on 1st/2nd, or 1st/las=
+t, or 1st/2nd/last(for spansion).
+the checkbad method may check fail in some cases:
+for example,:
+1. for spansion nand(bad block marker is on 1st or 2nd or last page), set N=
+AND_BBT_SCAN2NDPAGE while badblock marker is on last page or set NAND_BBT_S=
+CANLASTPAGE while badblock marker is on 1st/2nd page may cause badblock che=
+ch failed.
+2. for HYNIX (H27UBG8T2CTR) nand (bad block marker is on 1st or last page),=
+ check may failed whether NAND_BBT_SCANLASTPAGE is set or not.
