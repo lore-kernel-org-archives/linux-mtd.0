@@ -1,21 +1,23 @@
-Date: Mon, 12 Oct 2015 16:35:37 -0700
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZlnCS-0008HA-CJ
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 00:12:17 +0000
+Received: by pabrc13 with SMTP id rc13so2222514pab.0
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Oct 2015 17:11:55 -0700 (PDT)
+Date: Mon, 12 Oct 2015 17:11:53 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Josh Wu <josh.wu@atmel.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Huang Shijie <shijie.huang@arm.com>, Stefan Agner <stefan@agner.ch>,
- devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mtd: nand: pass page number to ecc->write_xxx() methods
-Message-ID: <20151012233537.GR107187@google.com>
-References: <1443765205-8730-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: Add simple read disturb test
+Message-ID: <20151013001153.GS107187@google.com>
+References: <1427984026-31100-1-git-send-email-richard@nod.at>
+ <20150402160451.GF32500@ld-irv-0074> <551D6BDA.6000606@nod.at>
+ <20150412213120.0414fee5@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1443765205-8730-1-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <20150412213120.0414fee5@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,61 +27,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 02, 2015 at 07:53:25AM +0200, Boris Brezillon wrote:
-> The ->read_xxx() methods are all passed the page number the NAND controller
-> is supposed to read, but ->write_xxx() do not have such a parameter.
-> 
-> This is a problem if we want to properly implement data
-> scrambling/randomization in order to mitigate MLC sensibility to repeated
-> pattern: to prevent bitflips in adjacent pages in the same block we need
-> to avoid repeating the same pattern at the same offset in those pages,
-> hence the randomizer/scrambler engine need to be passed the page value
-> in order to adapt its seed accordingly.
-> 
-> Moreover, adding the page parameter to the ->write_xxx() methods add some
-> consistency to the current API.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> CC: Josh Wu <josh.wu@atmel.com>
-> CC: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> CC: Maxime Ripard <maxime.ripard@free-electrons.com>
-> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> CC: Huang Shijie <shijie.huang@arm.com>
-> CC: Stefan Agner <stefan@agner.ch>
-> CC: devel@driverdev.osuosl.org
-> CC: linux-arm-kernel@lists.infradead.org
-> CC: linux-kernel@vger.kernel.org
-> ---
-> Changes since v2:
-> - fixed compilation error in the gpmi driver
-> - compile tested all impacted drivers except the bf5xx_nand,
->   fsl_elbc_nand and fsl_ifc_nand ones
-> 
-> Changes since v1:
-> - rebased on l2-mtd/master
-> - fixed compilation error in the docg4 driver
-> ---
->  drivers/mtd/nand/atmel_nand.c                 |  6 ++++--
->  drivers/mtd/nand/bf5xx_nand.c                 |  3 ++-
->  drivers/mtd/nand/brcmnand/brcmnand.c          |  4 ++--
->  drivers/mtd/nand/cafe_nand.c                  |  3 ++-
->  drivers/mtd/nand/denali.c                     |  5 +++--
->  drivers/mtd/nand/docg4.c                      |  6 +++---
->  drivers/mtd/nand/fsl_elbc_nand.c              |  4 ++--
->  drivers/mtd/nand/fsl_ifc_nand.c               |  2 +-
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c        |  8 +++----
->  drivers/mtd/nand/hisi504_nand.c               |  3 ++-
->  drivers/mtd/nand/lpc32xx_mlc.c                |  3 ++-
->  drivers/mtd/nand/lpc32xx_slc.c                |  5 +++--
->  drivers/mtd/nand/nand_base.c                  | 31 ++++++++++++++++++---------
->  drivers/mtd/nand/omap2.c                      |  3 ++-
->  drivers/mtd/nand/pxa3xx_nand.c                |  3 ++-
->  drivers/mtd/nand/sh_flctl.c                   |  3 ++-
->  drivers/mtd/nand/sunxi_nand.c                 |  5 +++--
->  drivers/mtd/nand/vf610_nfc.c                  |  2 +-
->  drivers/staging/mt29f_spinand/mt29f_spinand.c |  3 ++-
->  include/linux/mtd/nand.h                      |  6 +++---
->  20 files changed, 66 insertions(+), 42 deletions(-)
+Resurrecting this old thread, since it was mentioned at ELCE.
 
-Hmm, am I missing something, or does this not apply to l2-mtd.git or
-linux-next.git?
+On Sun, Apr 12, 2015 at 09:31:20PM +0200, Boris Brezillon wrote:
+> On Thu, 02 Apr 2015 18:18:34 +0200
+> Richard Weinberger <richard@nod.at> wrote:
+> > Am 02.04.2015 um 18:04 schrieb Brian Norris:
+> > > On Thu, Apr 02, 2015 at 04:13:46PM +0200, Richard Weinberger wrote:
+> > >> This simple MTD tests allows the user to see when read disturb happens.
+> > >> By reading blocks over and over it reports flipped bits.
+> > >> Currently it reports only flipped bits of the worst page of a block.
+> > >> If within block X page P1 has 3 bit flips and P6 4, it will report 4.
+> > >> By default every 50th block is read.
+> > > 
+> > > Didn't read through this much yet, but why do we need another in-kernel
+> > > test that coul (AFAICT) be easily replicated in userspace? The same goes
+> > > for several of the other tests, I think, actually. But at least with
+> > > those, we have a history of keeping them around, so it's not too much
+> > > burden [1].
+> > 
+> > I've added the test to drivers/mtd/tests/ because it fits into.
+> > As simple as that.
+> > 
+> > > Brian
+> > > 
+> > > [1] Although there are some latent issues in these tests that are still
+> > > getting get worked out (e.g., bad handling of 64-bit casting; too large
+> > > of stacks; uninterruptibility). The latter two would not even exist if
+> > > we were in user space.
+> > 
+> > uninterruptibility got solved by my "[PATCH] mtd: Make MTD tests cancelable" patch.
+> > 
+> > But if we want to kill drivers/mtd/tests/ I'll happily help out.
+> 
+> I'd vote for that solution too.
+> I've looked at in-kernel mtd tests, and I'm pretty sure they can all be
+> done in userland.
+> This would prevent any kernel crash caused by buggy test modules.  
+> 
+> > Where shall we move these tests into? mtd-utils?
+> 
+> I guess so, but I'll let Brian answer that one.
+> How about dispatching them in mtd-utils' tests/ directory (some of them
+> are NAND related tests, so creating a tests/nand would make sense,
+> and others are more generic).
+
+mtd-utils makes sense to me. If we're going to do this, let's make it a
+policy to not add more to drivers/mtd/tests/ then. For instance, this
+one [1]. Also, would we drop the in-kernel tests completely?
+
+If we make the move, we'd need to make sure to update the documentation
+(mtd-www.git).
+
+Brian
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2015-September/062237.html
+    http://lists.infradead.org/pipermail/linux-mtd/2015-September/062236.html
