@@ -1,22 +1,21 @@
-Received: from mail-vk0-x230.google.com ([2607:f8b0:400c:c05::230])
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zm72A-0000rc-5J
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 21:23:00 +0000
-Received: by vkaw128 with SMTP id w128so18766497vka.0
- for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 14:22:37 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1444682116-4708-2-git-send-email-computersforpeace@gmail.com>
-References: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
- <1444682116-4708-2-git-send-email-computersforpeace@gmail.com>
-Date: Tue, 13 Oct 2015 16:22:37 -0500
-Message-ID: <CA+EcR2069_6P9z8p=s0HcB8HssGJN==4GRQL_4nv7qhKR34t9g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: fsl-quadspi: allow building for other ARCHes
- with COMPILE_TEST
-From: Han Xu <xhnjupt@gmail.com>
+ id 1Zm7LS-0003A4-Bo
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 21:42:54 +0000
+Received: by padcn9 with SMTP id cn9so1453415pad.2
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 14:42:33 -0700 (PDT)
+Date: Tue, 13 Oct 2015 14:41:53 -0700
+From: Aurelien Chanot <chanot.a@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Han Xu <han.xu@freescale.com>
-Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: Add support for Micron n25q032a
+Message-ID: <20151013214153.GA1079@achanot-lt>
+References: <20151007191008.GA31411@achanot-lt>
+ <20151013013828.GU107187@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151013013828.GU107187@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 12, 2015 at 3:35 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> This driver doesn't actually need ARCH_MXC to compile. Relax the
-> constraints.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Han Xu <han.xu@freescale.com>
-> ---
->  drivers/mtd/spi-nor/Kconfig | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index 89bf4c1faa2b..2fe2a7e90fa9 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -23,7 +23,8 @@ config MTD_SPI_NOR_USE_4K_SECTORS
->
->  config SPI_FSL_QUADSPI
->         tristate "Freescale Quad SPI controller"
-> -       depends on ARCH_MXC
-> +       depends on ARCH_MXC || COMPILE_TEST
-> +       depends on HAS_IOMEM
->         help
->           This enables support for the Quad SPI controller in master mode.
->           This controller does not support generic SPI. It only supports
-Acked-by: Han xu <han.xu@freescale.com>
-> --
-> 2.6.0.rc2.230.g3dd15c0
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+On Mon, Oct 12, 2015 at 06:38:28PM -0700, Brian Norris wrote:
+> On Wed, Oct 07, 2015 at 12:10:08PM -0700, Aurelien Chanot wrote:
+> > The N25Q032A is identical to the N25Q032 except it has a different
+> > supply voltage range. Therefore, it has a new JEDEC ID.
+> > 
+> > Signed-off-by: Aurelien Chanot <chanot.a@gmail.com>
+> 
+> Applied to l2-mtd.git
+> 
+> > ---
+> >  drivers/mtd/spi-nor/spi-nor.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > index f59aedf..9122a2e 100644
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -585,6 +585,7 @@ static const struct flash_info spi_nor_ids[] = {
+> >  
+> >  	/* Micron */
+> >  	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+> > +	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+> 
+> I know the original entry doesn't specify this, but does this flash
+> support 4K sectors and dual read? We should add the flags.
+
+Yes it does support 4k erase subsectors and, quad and dual fast read.
+
+We can create a new patch to update the flags.
+
+> 
+> Brian
+> 
+> >  	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+> >  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+> >  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
+> 
