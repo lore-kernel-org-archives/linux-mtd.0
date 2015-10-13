@@ -1,15 +1,21 @@
-Received: from mail02.prevas.se ([62.95.78.10])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZltR3-000190-AN
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 06:51:46 +0000
-From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-To: <linux-mtd@lists.infradead.org>
-CC: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-Subject: [PATCH] mtd: spi-nor: s25fl204k supports dual I/0
-Date: Tue, 13 Oct 2015 08:51:14 +0200
-Message-ID: <1444719074-27123-1-git-send-email-sean.nyekjaer@prevas.dk>
+Date: Tue, 13 Oct 2015 09:28:08 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Josh Wu <josh.wu@atmel.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Huang Shijie <shijie.huang@arm.com>, Stefan
+ Agner <stefan@agner.ch>, devel@driverdev.osuosl.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: nand: pass page number to ecc->write_xxx() methods
+Message-ID: <20151013092808.06f4dcc7@bbrezillon>
+In-Reply-To: <20151012233537.GR107187@google.com>
+References: <1443765205-8730-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20151012233537.GR107187@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,23 +25,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
----
- drivers/mtd/spi-nor/spi-nor.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Brian,
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 9940296..0ddf63c 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -655,7 +655,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
- 	{ "s25fl132k",  INFO(0x014016,      0,  64 * 1024,  64, SECT_4K) },
- 	{ "s25fl164k",  INFO(0x014017,      0,  64 * 1024, 128, SECT_4K) },
--	{ "s25fl204k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K) },
-+	{ "s25fl204k",  INFO(0x014013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ) },
- 
- 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
- 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+On Mon, 12 Oct 2015 16:35:37 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> On Fri, Oct 02, 2015 at 07:53:25AM +0200, Boris Brezillon wrote:
+> > The ->read_xxx() methods are all passed the page number the NAND controller
+> > is supposed to read, but ->write_xxx() do not have such a parameter.
+> > 
+> > This is a problem if we want to properly implement data
+> > scrambling/randomization in order to mitigate MLC sensibility to repeated
+> > pattern: to prevent bitflips in adjacent pages in the same block we need
+> > to avoid repeating the same pattern at the same offset in those pages,
+> > hence the randomizer/scrambler engine need to be passed the page value
+> > in order to adapt its seed accordingly.
+> > 
+> > Moreover, adding the page parameter to the ->write_xxx() methods add some
+> > consistency to the current API.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > CC: Josh Wu <josh.wu@atmel.com>
+> > CC: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > CC: Maxime Ripard <maxime.ripard@free-electrons.com>
+> > CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > CC: Huang Shijie <shijie.huang@arm.com>
+> > CC: Stefan Agner <stefan@agner.ch>
+> > CC: devel@driverdev.osuosl.org
+> > CC: linux-arm-kernel@lists.infradead.org
+> > CC: linux-kernel@vger.kernel.org
+> > ---
+> > Changes since v2:
+> > - fixed compilation error in the gpmi driver
+> > - compile tested all impacted drivers except the bf5xx_nand,
+> >   fsl_elbc_nand and fsl_ifc_nand ones
+> > 
+> > Changes since v1:
+> > - rebased on l2-mtd/master
+> > - fixed compilation error in the docg4 driver
+> > ---
+> >  drivers/mtd/nand/atmel_nand.c                 |  6 ++++--
+> >  drivers/mtd/nand/bf5xx_nand.c                 |  3 ++-
+> >  drivers/mtd/nand/brcmnand/brcmnand.c          |  4 ++--
+> >  drivers/mtd/nand/cafe_nand.c                  |  3 ++-
+> >  drivers/mtd/nand/denali.c                     |  5 +++--
+> >  drivers/mtd/nand/docg4.c                      |  6 +++---
+> >  drivers/mtd/nand/fsl_elbc_nand.c              |  4 ++--
+> >  drivers/mtd/nand/fsl_ifc_nand.c               |  2 +-
+> >  drivers/mtd/nand/gpmi-nand/gpmi-nand.c        |  8 +++----
+> >  drivers/mtd/nand/hisi504_nand.c               |  3 ++-
+> >  drivers/mtd/nand/lpc32xx_mlc.c                |  3 ++-
+> >  drivers/mtd/nand/lpc32xx_slc.c                |  5 +++--
+> >  drivers/mtd/nand/nand_base.c                  | 31 ++++++++++++++++++---------
+> >  drivers/mtd/nand/omap2.c                      |  3 ++-
+> >  drivers/mtd/nand/pxa3xx_nand.c                |  3 ++-
+> >  drivers/mtd/nand/sh_flctl.c                   |  3 ++-
+> >  drivers/mtd/nand/sunxi_nand.c                 |  5 +++--
+> >  drivers/mtd/nand/vf610_nfc.c                  |  2 +-
+> >  drivers/staging/mt29f_spinand/mt29f_spinand.c |  3 ++-
+> >  include/linux/mtd/nand.h                      |  6 +++---
+> >  20 files changed, 66 insertions(+), 42 deletions(-)
+> 
+> Hmm, am I missing something, or does this not apply to l2-mtd.git or
+> linux-next.git?
+
+Hm, actually I based it on l2-mtd but before you applied my cleanup
+series, which explains why it does not apply anymore. I'll send a v3
+after rebasing on l2-mtd.
+
+Best Regards,
+
+Boris
+
 -- 
-2.6.1
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
