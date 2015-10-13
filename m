@@ -1,20 +1,21 @@
-Received: from mail-bl2on0143.outbound.protection.outlook.com ([65.55.169.143]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from mail-vk0-x230.google.com ([2607:f8b0:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zm70N-0000HC-Ts
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 21:21:08 +0000
-Date: Tue, 13 Oct 2015 16:10:07 -0500
-From: Han Xu <han.xu@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>
+ id 1Zm71f-0000dZ-Uv
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 21:22:29 +0000
+Received: by vkat63 with SMTP id t63so18788145vka.1
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 14:22:06 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
+References: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
+Date: Tue, 13 Oct 2015 16:22:06 -0500
+Message-ID: <CA+EcR20cwi4HgApeRuFE99aMKaTDu4CaUhPOiJONjoKFaTHiKA@mail.gmail.com>
 Subject: Re: [PATCH 1/2] mtd: fsl-quadspi: fix printk() format warning for
  size_t
-Message-ID: <20151013211005.GA654@chopperman.am.freescale.net>
-References: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
+From: Han Xu <xhnjupt@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Han Xu <han.xu@freescale.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 12, 2015 at 01:35:15PM -0700, Brian Norris wrote:
+On Mon, Oct 12, 2015 at 3:35 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
 > Seen when compile-testing on non-32-bit arch:
-> 
+>
 >     CC      drivers/mtd/spi-nor/fsl-quadspi.o
 >   drivers/mtd/spi-nor/fsl-quadspi.c: In function 'fsl_qspi_read':
 >   drivers/mtd/spi-nor/fsl-quadspi.c:873:2: warning: format '%d' expects argument of type 'int', but argument 6 has type 'size_t' [-Wformat=]
 >     dev_dbg(q->dev, "cmd [%x],read from 0x%p, len:%d\n",
 >     ^
-> 
+>
 > Also drop the '0x' prefixing to the '%p' formatter, since %p already
 > knows how to format pointers appropriately.
-> 
+>
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > Cc: Han Xu <han.xu@freescale.com>
 > ---
 >  drivers/mtd/spi-nor/fsl-quadspi.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+>
 > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
 > index 2954f89fc8be..ca259faf4591 100644
 > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
 > @@ -868,7 +868,7 @@ static int fsl_qspi_read(struct spi_nor *nor, loff_t from,
->  		}
->  	}
->  
-> -	dev_dbg(q->dev, "cmd [%x],read from 0x%p, len:%d\n",
-> +	dev_dbg(q->dev, "cmd [%x],read from %p, len:%zd\n",
->  		cmd, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
->  		len);
->  
+>                 }
+>         }
+>
+> -       dev_dbg(q->dev, "cmd [%x],read from 0x%p, len:%d\n",
+> +       dev_dbg(q->dev, "cmd [%x],read from %p, len:%zd\n",
+>                 cmd, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
+>                 len);
+>
 Acked-by: Han xu <han.xu@freescale.com>
-> -- 
+> --
 > 2.6.0.rc2.230.g3dd15c0
-> 
-
--- 
-Best Regards,
-
-Han "Allen" Xu
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
