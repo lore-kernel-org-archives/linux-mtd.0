@@ -1,30 +1,24 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zm0eQ-0002sl-Dg
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 14:34:04 +0000
-Received: by lbbck17 with SMTP id ck17so22704110lbb.1
- for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 07:33:40 -0700 (PDT)
-Subject: Re: [PATCH v4 3/3] arm64: dts: mt8173: Add nor flash node
-To: Bayi Cheng <bayi.cheng@mediatek.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
- <1444729160-26433-4-git-send-email-bayi.cheng@mediatek.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- srv_heupstream@mediatek.com, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org,
- Daniel Kurtz <djkurtz@chromium.org>, Rob Herring <robh+dt@kernel.org>,
- linux-mediatek@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <561D1642.3070105@cogentembedded.com>
-Date: Tue, 13 Oct 2015 17:33:38 +0300
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zm1Lw-0006gn-4h
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 15:19:00 +0000
+Date: Tue, 13 Oct 2015 08:18:33 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ ezequiel@vanguardiasur.com.ar, javier@dowhile0.org, fcooper@ti.com,
+ nsekhar@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 27/27] ARM: dts: omap3: Fix gpmc and NAND nodes
+Message-ID: <20151013151832.GW23801@atomide.com>
+References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
+ <1442588029-13769-28-git-send-email-rogerq@ti.com>
+ <20151013004335.GU23801@atomide.com> <561CA4C3.4@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1444729160-26433-4-git-send-email-bayi.cheng@mediatek.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <561CA4C3.4@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,47 +28,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+* Roger Quadros <rogerq@ti.com> [151012 23:33]:
+> On 13/10/15 03:43, Tony Lindgren wrote:
+> > * Roger Quadros <rogerq@ti.com> [150918 08:00]:
+> >> Add compatible id, GPMC register resource and interrupt
+> >> resource to NAND controller nodes.
+> >>
+> >> The GPMC driver now implements gpiochip and irqchip so
+> >> enable gpio-controller and interrupt-controller properties.
+> >>
+> >> With this the interrupt parent of NAND node changes so fix it
+> >> accordingly.
+> > ...
+> >> --- a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+> >> +++ b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+> >> @@ -35,11 +35,14 @@
+> >>  };
+> >>  
+> >>  &gpmc {
+> >> -	ranges = <0 0 0x00000000 0x1000000>;	/* CS0: 16MB for NAND */
+> >> +	ranges = <0 0 0x08000000 0x1000000>;	/* CS0: 16MB for NAND */
+> >>  
+> >>  	nand@0,0 {
+> >> -		linux,mtd-name = "micron,mt29f4g16abbda3w";
+> >> +		compatible = "ti,omap2-nand";
+> >>  		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
+> >> +		interrupt-parent = <&intc>;
+> >> +		interrupts = <20>;
+> >> +		linux,mtd-name = "micron,mt29f4g16abbda3w";
+> >>  		nand-bus-width = <16>;
+> >>  		ti,nand-ecc-opt = "bch8";
+> >>  		gpmc,sync-clk-ps = <0>;
+> > 
+> > At least torpedo breaks for NFSroot as NAND now overlaps with
+> > Ethernet.. What's the policy you have for moving the addresses
+> > around?
+> 
+> For OMAP3 I intended to use 0x30000000 for NAND but incorrectly
+> used 0x08000000 for the torpedo.
 
-On 10/13/2015 12:39 PM, Bayi Cheng wrote:
+Might be worth adding some documentation of suggested standardized
+mappings.. For most of theme we could just add them as 16MB chunks,
+then reserve some larger area for NOR?
 
-> Add Mediatek nor flash node
->
-> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
-> ---
->   arch/arm64/boot/dts/mediatek/mt8173.dtsi | 15 +++++++++++++++
->   1 file changed, 15 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> index d18ee42..385c2e4 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> @@ -365,6 +365,21 @@
->   			status = "disabled";
->   		};
->
-> +		nor_flash: spi@1100d000 {
+> Does setting it to 0x30000000 work? If not what is the original
+> NAND address for this board?
 
-    I don't think this is a good label name for a SPI controller.
+The u-boot addresses are probably what were used in the .dts* files.
+Setting NAND to 0x30000000 is not enough though, looks like there's
+a bug where the logicpd-torpedo-37xx-devkit.dts ranges is missing
+the NAND range in logicpd-torpedo-som.dtsi. Something like the
+patch below seems to make things work again, might be worth
+checking what ranges make sense to standardize on though. Please
+feel free to fold it into your patches.
 
-> +			compatible = "mediatek,mt8173-nor";
-> +			reg = <0 0x1100d000 0 0xe0>;
-> +			clocks = <&pericfg CLK_PERI_SPI>,
-> +				 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
-> +			clock-names = "spi", "sf";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			flash@0 {
-> +				compatible = "jedec,spi-nor";
-> +				reg = <0>;
-> +			};
-> +		};
-> +
->   		i2c3: i2c3@11010000 {
+> > There may be other similar cases to check too.
+> 
+> Just checked that all other OMAP3 boards I've set to 0x30000000
+> if they were 0x0.
 
-    Grr, the name should be "i2c@11010000".
+Do you want to reserve a large chunk for NOR at cs0 or what's
+the reason for picking 0x30000000 for NAND?
 
-[...]
+I guess NOR can be also on other chipselects.. Not sure we can
+standardize on any specific partition scheme?
 
-MBR, Sergei
+Regards,
+
+Tony
+
+8< --------------------
+--- a/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
++++ b/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
+@@ -73,7 +73,8 @@
+ };
+ 
+ &gpmc {
+-	ranges = <1 0 0x08000000 0x1000000>;	/* CS1: 16MB for LAN9221 */
++	ranges = <0 0 0x30000000 0x1000000	/* CS0: 16MB for NAND */
++		  1 0 0x2c000000 0x1000000>;	/* CS1: 16MB for LAN9221 */
+ 
+ 	ethernet@gpmc {
+ 		pinctrl-names = "default";
+--- a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
++++ b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+@@ -35,7 +35,7 @@
+ };
+ 
+ &gpmc {
+-	ranges = <0 0 0x08000000 0x1000000>;	/* CS0: 16MB for NAND */
++	ranges = <0 0 0x30000000 0x1000000>;	/* CS0: 16MB for NAND */
+ 
+ 	nand@0,0 {
+ 		compatible = "ti,omap2-nand";
