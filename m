@@ -1,19 +1,21 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Josh Wu <josh.wu@atmel.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Huang Shijie <shijie.huang@arm.com>, Stefan Agner <stefan@agner.ch>,
- devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v4] mtd: nand: pass page number to ecc->write_xxx() methods
-Date: Tue, 13 Oct 2015 11:22:18 +0200
-Message-Id: <1444728138-3744-1-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1443765205-8730-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1443765205-8730-1-git-send-email-boris.brezillon@free-electrons.com>
+From: Bayi Cheng <bayi.cheng@mediatek.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>
+CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Daniel Kurtz <djkurtz@chromium.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>, Bayi Cheng
+ <bayi.cheng@mediatek.com>
+Subject: [PATCH v4 2/3] mtd: mtk-nor: mtk serial flash controller driver
+Date: Tue, 13 Oct 2015 17:39:19 +0800
+Message-ID: <1444729160-26433-3-git-send-email-bayi.cheng@mediatek.com>
+In-Reply-To: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
+References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,552 +25,534 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ->read_xxx() methods are all passed the page number the NAND controller
-is supposed to read, but ->write_xxx() do not have such a parameter.
+add spi nor flash driver for mediatek controller
 
-This is a problem if we want to properly implement data
-scrambling/randomization in order to mitigate MLC sensibility to repeated
-pattern: to prevent bitflips in adjacent pages in the same block we need
-to avoid repeating the same pattern at the same offset in those pages,
-hence the randomizer/scrambler engine need to be passed the page value
-in order to adapt its seed accordingly.
-
-Moreover, adding the page parameter to the ->write_xxx() methods add some
-consistency to the current API.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Josh Wu <josh.wu@atmel.com>
-CC: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-CC: Maxime Ripard <maxime.ripard@free-electrons.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Huang Shijie <shijie.huang@arm.com>
-CC: Stefan Agner <stefan@agner.ch>
-CC: devel@driverdev.osuosl.org
-CC: linux-arm-kernel@lists.infradead.org
-CC: linux-kernel@vger.kernel.org
+Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
 ---
-Changes since v3:
-- rebased on l2-mtd/master
+ drivers/mtd/spi-nor/Kconfig       |   7 +
+ drivers/mtd/spi-nor/Makefile      |   1 +
+ drivers/mtd/spi-nor/mtk-quadspi.c | 486 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 494 insertions(+)
+ create mode 100644 drivers/mtd/spi-nor/mtk-quadspi.c
 
-Changes since v2:
-- fixed compilation error in the gpmi driver
-- compile tested all impacted drivers except the bf5xx_nand,
-  fsl_elbc_nand and fsl_ifc_nand ones
-
-Changes since v1:
-- rebased on l2-mtd/master
-- fixed compilation error in the docg4 driver
----
- drivers/mtd/nand/atmel_nand.c                 |  6 ++++--
- drivers/mtd/nand/bf5xx_nand.c                 |  3 ++-
- drivers/mtd/nand/brcmnand/brcmnand.c          |  4 ++--
- drivers/mtd/nand/cafe_nand.c                  |  3 ++-
- drivers/mtd/nand/denali.c                     |  5 +++--
- drivers/mtd/nand/docg4.c                      |  6 +++---
- drivers/mtd/nand/fsl_elbc_nand.c              |  4 ++--
- drivers/mtd/nand/fsl_ifc_nand.c               |  2 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c        |  8 +++----
- drivers/mtd/nand/hisi504_nand.c               |  3 ++-
- drivers/mtd/nand/lpc32xx_mlc.c                |  3 ++-
- drivers/mtd/nand/lpc32xx_slc.c                |  5 +++--
- drivers/mtd/nand/nand_base.c                  | 31 ++++++++++++++++++---------
- drivers/mtd/nand/omap2.c                      |  3 ++-
- drivers/mtd/nand/pxa3xx_nand.c                |  3 ++-
- drivers/mtd/nand/sh_flctl.c                   |  3 ++-
- drivers/mtd/nand/sunxi_nand.c                 |  5 +++--
- drivers/mtd/nand/vf610_nfc.c                  |  2 +-
- drivers/staging/mt29f_spinand/mt29f_spinand.c |  3 ++-
- include/linux/mtd/nand.h                      |  6 +++---
- 20 files changed, 66 insertions(+), 42 deletions(-)
-
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 46010bd..d0f50c9 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -954,7 +954,8 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
- }
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 89bf4c1..f433890 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -7,6 +7,13 @@ menuconfig MTD_SPI_NOR
  
- static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
--		struct nand_chip *chip, const uint8_t *buf, int oob_required)
-+		struct nand_chip *chip, const uint8_t *buf, int oob_required,
-+		int page)
- {
- 	struct atmel_nand_host *host = chip->priv;
- 	uint32_t *eccpos = chip->ecc.layout->eccpos;
-@@ -2005,7 +2006,8 @@ static int nfc_sram_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ if MTD_SPI_NOR
  
- 	if (likely(!raw))
- 		/* Need to write ecc into oob */
--		status = chip->ecc.write_page(mtd, chip, buf, oob_required);
-+		status = chip->ecc.write_page(mtd, chip, buf, oob_required,
-+					      page);
- 
- 	if (status < 0)
- 		return status;
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 4d8d4ba..17b3727 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -566,7 +566,8 @@ static int bf5xx_nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip
- }
- 
- static int bf5xx_nand_write_page_raw(struct mtd_info *mtd,
--		struct nand_chip *chip,	const uint8_t *buf, int oob_required)
-+		struct nand_chip *chip,	const uint8_t *buf, int oob_required,
-+		int page)
- {
- 	bf5xx_nand_write_buf(mtd, buf, mtd->writesize);
- 	bf5xx_nand_write_buf(mtd, chip->oob_poi, mtd->oobsize);
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index ea319a4..7c1c306 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -1606,7 +1606,7 @@ out:
- }
- 
- static int brcmnand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
--			       const uint8_t *buf, int oob_required)
-+			       const uint8_t *buf, int oob_required, int page)
- {
- 	struct brcmnand_host *host = chip->priv;
- 	void *oob = oob_required ? chip->oob_poi : NULL;
-@@ -1617,7 +1617,7 @@ static int brcmnand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- static int brcmnand_write_page_raw(struct mtd_info *mtd,
- 				   struct nand_chip *chip, const uint8_t *buf,
--				   int oob_required)
-+				   int oob_required, int page)
- {
- 	struct brcmnand_host *host = chip->priv;
- 	void *oob = oob_required ? chip->oob_poi : NULL;
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index 9a0f45f..d6854be 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -516,7 +516,8 @@ static struct nand_bbt_descr cafe_bbt_mirror_descr_512 = {
- 
- static int cafe_nand_write_page_lowlevel(struct mtd_info *mtd,
- 					  struct nand_chip *chip,
--					  const uint8_t *buf, int oob_required)
-+					  const uint8_t *buf, int oob_required,
-+					  int page)
- {
- 	struct cafe_priv *cafe = mtd->priv;
- 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 43c0771..461b253 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1114,7 +1114,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
-  * by write_page above.
-  */
- static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
--				const uint8_t *buf, int oob_required)
-+				const uint8_t *buf, int oob_required, int page)
- {
- 	/*
- 	 * for regular page writes, we let HW handle all the ECC
-@@ -1129,7 +1129,8 @@ static int denali_write_page(struct mtd_info *mtd, struct nand_chip *chip,
-  * write_page() function above.
-  */
- static int denali_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
--					const uint8_t *buf, int oob_required)
-+				 const uint8_t *buf, int oob_required,
-+				 int page)
- {
- 	/*
- 	 * for raw page writes, we want to disable ECC and simply write
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index e5d7bca..a956ff7 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -977,13 +977,13 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *nand,
- }
- 
- static int docg4_write_page_raw(struct mtd_info *mtd, struct nand_chip *nand,
--				 const uint8_t *buf, int oob_required)
-+				const uint8_t *buf, int oob_required, int page)
- {
- 	return write_page(mtd, nand, buf, false);
- }
- 
- static int docg4_write_page(struct mtd_info *mtd, struct nand_chip *nand,
--			     const uint8_t *buf, int oob_required)
-+			     const uint8_t *buf, int oob_required, int page)
- {
- 	return write_page(mtd, nand, buf, true);
- }
-@@ -1113,7 +1113,7 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 
- 	/* write first page of block */
- 	write_page_prologue(mtd, g4_addr);
--	docg4_write_page(mtd, nand, buf, 1);
-+	docg4_write_page(mtd, nand, buf, 1, page);
- 	ret = pageprog(mtd);
- 
- 	kfree(buf);
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index b812074..401664a 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -715,7 +715,7 @@ static int fsl_elbc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
-  * waitfunc.
-  */
- static int fsl_elbc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
--				const uint8_t *buf, int oob_required)
-+				const uint8_t *buf, int oob_required, int page)
- {
- 	fsl_elbc_write_buf(mtd, buf, mtd->writesize);
- 	fsl_elbc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
-@@ -728,7 +728,7 @@ static int fsl_elbc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
-  */
- static int fsl_elbc_write_subpage(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint32_t offset, uint32_t data_len,
--				const uint8_t *buf, int oob_required)
-+				const uint8_t *buf, int oob_required, int page)
- {
- 	fsl_elbc_write_buf(mtd, buf, mtd->writesize);
- 	fsl_elbc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 429142e..b2d9a03 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -772,7 +772,7 @@ static int fsl_ifc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
-  * waitfunc.
-  */
- static int fsl_ifc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
--			       const uint8_t *buf, int oob_required)
-+			       const uint8_t *buf, int oob_required, int page)
- {
- 	fsl_ifc_write_buf(mtd, buf, mtd->writesize);
- 	fsl_ifc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 1b8f350..62e68b0 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1160,7 +1160,7 @@ static int gpmi_ecc_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
- }
- 
- static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
--				const uint8_t *buf, int oob_required)
-+				const uint8_t *buf, int oob_required, int page)
- {
- 	struct gpmi_nand_data *this = chip->priv;
- 	struct bch_geometry *nfc_geo = &this->bch_geometry;
-@@ -1446,7 +1446,7 @@ static int gpmi_ecc_read_page_raw(struct mtd_info *mtd,
- static int gpmi_ecc_write_page_raw(struct mtd_info *mtd,
- 				   struct nand_chip *chip,
- 				   const uint8_t *buf,
--				   int oob_required)
-+				   int oob_required, int page)
- {
- 	struct gpmi_nand_data *this = chip->priv;
- 	struct bch_geometry *nfc_geo = &this->bch_geometry;
-@@ -1533,7 +1533,7 @@ static int gpmi_ecc_write_oob_raw(struct mtd_info *mtd, struct nand_chip *chip,
- {
- 	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0, page);
- 
--	return gpmi_ecc_write_page_raw(mtd, chip, NULL, 1);
-+	return gpmi_ecc_write_page_raw(mtd, chip, NULL, 1, page);
- }
- 
- static int gpmi_block_markbad(struct mtd_info *mtd, loff_t ofs)
-@@ -1717,7 +1717,7 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
- 		/* Write the first page of the current stride. */
- 		dev_dbg(dev, "Writing an NCB fingerprint in page 0x%x\n", page);
- 		chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
--		chip->ecc.write_page_raw(mtd, chip, buffer, 0);
-+		chip->ecc.write_page_raw(mtd, chip, buffer, 0, page);
- 		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
- 
- 		/* Wait for the write to finish. */
-diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
-index 8dcc7b8..04b9c3d 100644
---- a/drivers/mtd/nand/hisi504_nand.c
-+++ b/drivers/mtd/nand/hisi504_nand.c
-@@ -590,7 +590,8 @@ static int hisi_nand_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
- }
- 
- static int hisi_nand_write_page_hwecc(struct mtd_info *mtd,
--		struct nand_chip *chip, const uint8_t *buf, int oob_required)
-+		struct nand_chip *chip, const uint8_t *buf, int oob_required,
-+		int page)
- {
- 	chip->write_buf(mtd, buf, mtd->writesize);
- 	if (oob_required)
-diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
-index 79c3b78..510cb49 100644
---- a/drivers/mtd/nand/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/lpc32xx_mlc.c
-@@ -495,7 +495,8 @@ static int lpc32xx_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- static int lpc32xx_write_page_lowlevel(struct mtd_info *mtd,
- 				       struct nand_chip *chip,
--				       const uint8_t *buf, int oob_required)
-+				       const uint8_t *buf, int oob_required,
-+				       int page)
- {
- 	struct lpc32xx_nand_host *host = chip->priv;
- 	const uint8_t *oobbuf = chip->oob_poi;
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index cbf4501..40c06b2 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -663,7 +663,8 @@ static int lpc32xx_nand_read_page_raw_syndrome(struct mtd_info *mtd,
-  */
- static int lpc32xx_nand_write_page_syndrome(struct mtd_info *mtd,
- 					    struct nand_chip *chip,
--					    const uint8_t *buf, int oob_required)
-+					    const uint8_t *buf,
-+					    int oob_required, int page)
- {
- 	struct lpc32xx_nand_host *host = chip->priv;
- 	uint8_t *pb = chip->oob_poi + chip->ecc.layout->eccpos[0];
-@@ -692,7 +693,7 @@ static int lpc32xx_nand_write_page_syndrome(struct mtd_info *mtd,
- static int lpc32xx_nand_write_page_raw_syndrome(struct mtd_info *mtd,
- 						struct nand_chip *chip,
- 						const uint8_t *buf,
--						int oob_required)
-+						int oob_required, int page)
- {
- 	/* Raw writes can just use the FIFO interface */
- 	chip->write_buf(mtd, buf, chip->ecc.size * chip->ecc.steps);
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a8230b1..d87c7d0 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2155,11 +2155,12 @@ out:
-  * @chip: nand chip info structure
-  * @buf: data buffer
-  * @oob_required: must write chip->oob_poi to OOB
-+ * @page: page number to write
-  *
-  * Not for syndrome calculating ECC controllers, which use a special oob layout.
-  */
- static int nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
--				const uint8_t *buf, int oob_required)
-+			       const uint8_t *buf, int oob_required, int page)
- {
- 	chip->write_buf(mtd, buf, mtd->writesize);
- 	if (oob_required)
-@@ -2174,12 +2175,14 @@ static int nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-  * @chip: nand chip info structure
-  * @buf: data buffer
-  * @oob_required: must write chip->oob_poi to OOB
-+ * @page: page number to write
-  *
-  * We need a special oob layout and handling even when ECC isn't checked.
-  */
- static int nand_write_page_raw_syndrome(struct mtd_info *mtd,
- 					struct nand_chip *chip,
--					const uint8_t *buf, int oob_required)
-+					const uint8_t *buf, int oob_required,
-+					int page)
- {
- 	int eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -2216,9 +2219,11 @@ static int nand_write_page_raw_syndrome(struct mtd_info *mtd,
-  * @chip: nand chip info structure
-  * @buf: data buffer
-  * @oob_required: must write chip->oob_poi to OOB
-+ * @page: page number to write
-  */
- static int nand_write_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
--				  const uint8_t *buf, int oob_required)
-+				 const uint8_t *buf, int oob_required,
-+				 int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -2234,7 +2239,7 @@ static int nand_write_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
- 	for (i = 0; i < chip->ecc.total; i++)
- 		chip->oob_poi[eccpos[i]] = ecc_calc[i];
- 
--	return chip->ecc.write_page_raw(mtd, chip, buf, 1);
-+	return chip->ecc.write_page_raw(mtd, chip, buf, 1, page);
- }
- 
- /**
-@@ -2243,9 +2248,11 @@ static int nand_write_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
-  * @chip: nand chip info structure
-  * @buf: data buffer
-  * @oob_required: must write chip->oob_poi to OOB
-+ * @page: page number to write
-  */
- static int nand_write_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
--				  const uint8_t *buf, int oob_required)
-+				  const uint8_t *buf, int oob_required,
-+				  int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -2277,11 +2284,12 @@ static int nand_write_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
-  * @data_len:	data length
-  * @buf:	data buffer
-  * @oob_required: must write chip->oob_poi to OOB
-+ * @page: page number to write
-  */
- static int nand_write_subpage_hwecc(struct mtd_info *mtd,
- 				struct nand_chip *chip, uint32_t offset,
- 				uint32_t data_len, const uint8_t *buf,
--				int oob_required)
-+				int oob_required, int page)
- {
- 	uint8_t *oob_buf  = chip->oob_poi;
- 	uint8_t *ecc_calc = chip->buffers->ecccalc;
-@@ -2336,13 +2344,15 @@ static int nand_write_subpage_hwecc(struct mtd_info *mtd,
-  * @chip: nand chip info structure
-  * @buf: data buffer
-  * @oob_required: must write chip->oob_poi to OOB
-+ * @page: page number to write
-  *
-  * The hw generator calculates the error syndrome automatically. Therefore we
-  * need a special oob layout and handling.
-  */
- static int nand_write_page_syndrome(struct mtd_info *mtd,
- 				    struct nand_chip *chip,
--				    const uint8_t *buf, int oob_required)
-+				    const uint8_t *buf, int oob_required,
-+				    int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -2406,12 +2416,13 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	if (unlikely(raw))
- 		status = chip->ecc.write_page_raw(mtd, chip, buf,
--							oob_required);
-+						  oob_required, page);
- 	else if (subpage)
- 		status = chip->ecc.write_subpage(mtd, chip, offset, data_len,
--							 buf, oob_required);
-+						 buf, oob_required, page);
- 	else
--		status = chip->ecc.write_page(mtd, chip, buf, oob_required);
-+		status = chip->ecc.write_page(mtd, chip, buf, oob_required,
-+					      page);
- 
- 	if (status < 0)
- 		return status;
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 60fa899..b85696f 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1500,11 +1500,12 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
-  * @chip:		nand chip info structure
-  * @buf:		data buffer
-  * @oob_required:	must write chip->oob_poi to OOB
-+ * @page:		page
-  *
-  * Custom write page method evolved to support multi sector writing in one shot
-  */
- static int omap_write_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
--				  const uint8_t *buf, int oob_required)
-+			       const uint8_t *buf, int oob_required, int page)
- {
- 	int i;
- 	uint8_t *ecc_calc = chip->buffers->ecccalc;
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 232c707..5ff5d39 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1160,7 +1160,8 @@ static void nand_cmdfunc_extended(struct mtd_info *mtd,
- }
- 
- static int pxa3xx_nand_write_page_hwecc(struct mtd_info *mtd,
--		struct nand_chip *chip, const uint8_t *buf, int oob_required)
-+		struct nand_chip *chip, const uint8_t *buf, int oob_required,
-+		int page)
- {
- 	chip->write_buf(mtd, buf, mtd->writesize);
- 	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index c3ce81c..f6c059d 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -569,7 +569,8 @@ static int flctl_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- }
- 
- static int flctl_write_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
--				   const uint8_t *buf, int oob_required)
-+				  const uint8_t *buf, int oob_required,
-+				  int page)
- {
- 	chip->write_buf(mtd, buf, mtd->writesize);
- 	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 92245a3..2680065 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -752,7 +752,8 @@ static int sunxi_nfc_hw_ecc_read_page(struct mtd_info *mtd,
- 
- static int sunxi_nfc_hw_ecc_write_page(struct mtd_info *mtd,
- 				       struct nand_chip *chip,
--				       const uint8_t *buf, int oob_required)
-+				       const uint8_t *buf, int oob_required,
-+				       int page)
- {
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	int ret, i, cur_off = 0;
-@@ -815,7 +816,7 @@ static int sunxi_nfc_hw_syndrome_ecc_read_page(struct mtd_info *mtd,
- static int sunxi_nfc_hw_syndrome_ecc_write_page(struct mtd_info *mtd,
- 						struct nand_chip *chip,
- 						const uint8_t *buf,
--						int oob_required)
-+						int oob_required, int page)
- {
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	int ret, i, cur_off = 0;
-diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-index ae1f84e..d275691 100644
---- a/drivers/mtd/nand/vf610_nfc.c
-+++ b/drivers/mtd/nand/vf610_nfc.c
-@@ -612,7 +612,7 @@ static int vf610_nfc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- }
- 
- static int vf610_nfc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
--			       const uint8_t *buf, int oob_required)
-+				const uint8_t *buf, int oob_required, int page)
- {
- 	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
- 
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index ad30ce4..536c723 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -612,7 +612,8 @@ static int spinand_erase_block(struct spi_device *spi_nand, u16 block_id)
- 
- #ifdef CONFIG_MTD_SPINAND_ONDIEECC
- static int spinand_write_page_hwecc(struct mtd_info *mtd,
--		struct nand_chip *chip, const uint8_t *buf, int oob_required)
-+		struct nand_chip *chip, const uint8_t *buf, int oob_required,
-+		int page)
- {
- 	const uint8_t *p = buf;
- 	int eccsize = chip->ecc.size;
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 50e1f94..5a9d1d4 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -504,16 +504,16 @@ struct nand_ecc_ctrl {
- 	int (*read_page_raw)(struct mtd_info *mtd, struct nand_chip *chip,
- 			uint8_t *buf, int oob_required, int page);
- 	int (*write_page_raw)(struct mtd_info *mtd, struct nand_chip *chip,
--			const uint8_t *buf, int oob_required);
-+			const uint8_t *buf, int oob_required, int page);
- 	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
- 			uint8_t *buf, int oob_required, int page);
- 	int (*read_subpage)(struct mtd_info *mtd, struct nand_chip *chip,
- 			uint32_t offs, uint32_t len, uint8_t *buf, int page);
- 	int (*write_subpage)(struct mtd_info *mtd, struct nand_chip *chip,
- 			uint32_t offset, uint32_t data_len,
--			const uint8_t *data_buf, int oob_required);
-+			const uint8_t *data_buf, int oob_required, int page);
- 	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
--			const uint8_t *buf, int oob_required);
-+			const uint8_t *buf, int oob_required, int page);
- 	int (*write_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
- 			int page);
- 	int (*read_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
++config MTD_MT81xx_NOR
++	tristate "Support SPI flash Controller MTD_MT81xx_NOR"
++	help
++	  This enables access to SPI Nor flash, using MTD_MT81XX_NOR controller.
++	  This controller does nor support generic SPI BUS, It only supports
++	  SPI NOR Flash.
++
+ config MTD_SPI_NOR_USE_4K_SECTORS
+ 	bool "Use small 4096 B erase sectors"
+ 	default y
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index e53333e..37c020a 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -1,3 +1,4 @@
++obj-$(CONFIG_MTD_MT81xx_NOR)	+= mtk-quadspi.o
+ obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+ obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
+ obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
+diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+new file mode 100644
+index 0000000..c6ac366
+--- /dev/null
++++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+@@ -0,0 +1,486 @@
++/*
++ * Copyright (c) 2015 MediaTek Inc.
++ * Author: Bayi Cheng <bayi.cheng@mediatek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/iopoll.h>
++#include <linux/ioport.h>
++#include <linux/math64.h>
++#include <linux/module.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mutex.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_gpio.h>
++#include <linux/pinctrl/consumer.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/spi-nor.h>
++
++#define MTK_NOR_CMD_REG			0x00
++#define MTK_NOR_CNT_REG			0x04
++#define MTK_NOR_RDSR_REG		0x08
++#define MTK_NOR_RDATA_REG		0x0c
++#define MTK_NOR_RADR0_REG		0x10
++#define MTK_NOR_RADR1_REG		0x14
++#define MTK_NOR_RADR2_REG		0x18
++#define MTK_NOR_WDATA_REG		0x1c
++#define MTK_NOR_PRGDATA0_REG		0x20
++#define MTK_NOR_PRGDATA1_REG		0x24
++#define MTK_NOR_PRGDATA2_REG		0x28
++#define MTK_NOR_PRGDATA3_REG		0x2c
++#define MTK_NOR_PRGDATA4_REG		0x30
++#define MTK_NOR_PRGDATA5_REG		0x34
++#define MTK_NOR_SHREG0_REG		0x38
++#define MTK_NOR_SHREG1_REG		0x3c
++#define MTK_NOR_SHREG2_REG		0x40
++#define MTK_NOR_SHREG3_REG		0x44
++#define MTK_NOR_SHREG4_REG		0x48
++#define MTK_NOR_SHREG5_REG		0x4c
++#define MTK_NOR_SHREG6_REG		0x50
++#define MTK_NOR_SHREG7_REG		0x54
++#define MTK_NOR_SHREG8_REG		0x58
++#define MTK_NOR_SHREG9_REG		0x5c
++#define MTK_NOR_CFG1_REG		0x60
++#define MTK_NOR_CFG2_REG		0x64
++#define MTK_NOR_CFG3_REG		0x68
++#define MTK_NOR_STATUS0_REG		0x70
++#define MTK_NOR_STATUS1_REG		0x74
++#define MTK_NOR_STATUS2_REG		0x78
++#define MTK_NOR_STATUS3_REG		0x7c
++#define MTK_NOR_FLHCFG_REG		0x84
++#define MTK_NOR_TIME_REG		0x94
++#define MTK_NOR_PP_DATA_REG		0x98
++#define MTK_NOR_PREBUF_STUS_REG		0x9c
++#define MTK_NOR_DELSEL0_REG		0xa0
++#define MTK_NOR_DELSEL1_REG		0xa4
++#define MTK_NOR_INTRSTUS_REG		0xa8
++#define MTK_NOR_INTREN_REG		0xac
++#define MTK_NOR_CHKSUM_CTL_REG		0xb8
++#define MTK_NOR_CHKSUM_REG		0xbc
++#define MTK_NOR_CMD2_REG		0xc0
++#define MTK_NOR_WRPROT_REG		0xc4
++#define MTK_NOR_RADR3_REG		0xc8
++#define MTK_NOR_DUAL_REG		0xcc
++#define MTK_NOR_DELSEL2_REG		0xd0
++#define MTK_NOR_DELSEL3_REG		0xd4
++#define MTK_NOR_DELSEL4_REG		0xd8
++
++/* commands for mtk nor controller */
++#define MTK_NOR_READ_CMD		0x0
++#define MTK_NOR_RDSR_CMD		0x2
++#define MTK_NOR_PRG_CMD			0x4
++#define MTK_NOR_WR_CMD			0x10
++#define MTK_NOR_PIO_WR_CMD		0x90
++#define MTK_NOR_WRSR_CMD		0x20
++#define MTK_NOR_PIO_READ_CMD		0x81
++#define MTK_NOR_WR_BUF_ENABLE		0x1
++#define MTK_NOR_WR_BUF_DISABLE		0x0
++#define MTK_NOR_ENABLE_SF_CMD		0x30
++#define MTK_NOR_DUAD_ADDR_EN		0x8
++#define MTK_NOR_QUAD_READ_EN		0x4
++#define MTK_NOR_DUAL_ADDR_EN		0x2
++#define MTK_NOR_DUAL_READ_EN		0x1
++#define MTK_NOR_DUAL_DISABLE		0x0
++#define MTK_NOR_FAST_READ		0x1
++
++#define SFLASH_WRBUF_SIZE		128
++
++struct mt8173_nor {
++	struct mtd_info mtd;
++	struct spi_nor nor;
++	struct device *dev;
++	void __iomem *base;	/* nor flash base address */
++	struct clk *spi_clk;
++	struct clk *nor_clk;
++};
++
++static void mt8173_nor_set_read_mode(struct mt8173_nor *mt8173_nor)
++{
++	struct spi_nor *nor = &mt8173_nor->nor;
++
++	switch (nor->flash_read) {
++	case SPI_NOR_FAST:
++		writeb(SPINOR_OP_READ_FAST, mt8173_nor->base +
++		       MTK_NOR_PRGDATA3_REG);
++		writeb(MTK_NOR_FAST_READ, mt8173_nor->base +
++		       MTK_NOR_CFG1_REG);
++		break;
++	case SPI_NOR_DUAL:
++		writeb(SPINOR_OP_READ_1_1_2, mt8173_nor->base +
++		       MTK_NOR_PRGDATA3_REG);
++		writeb(MTK_NOR_DUAL_READ_EN, mt8173_nor->base +
++		       MTK_NOR_DUAL_REG);
++		break;
++	case SPI_NOR_QUAD:
++		writeb(SPINOR_OP_READ_1_1_4, mt8173_nor->base +
++		       MTK_NOR_PRGDATA3_REG);
++		writeb(MTK_NOR_QUAD_READ_EN, mt8173_nor->base +
++		       MTK_NOR_DUAL_REG);
++		break;
++	default:
++		writeb(SPINOR_OP_READ, mt8173_nor->base +
++		       MTK_NOR_PRGDATA3_REG);
++		writeb(MTK_NOR_DUAL_DISABLE, mt8173_nor->base +
++		       MTK_NOR_DUAL_REG);
++		break;
++	}
++}
++
++static int mt8173_nor_execute_cmd(struct mt8173_nor *mt8173_nor, u8 cmdval)
++{
++	int reg;
++	u8 val = cmdval & 0x1f;
++
++	writeb(cmdval, mt8173_nor->base + MTK_NOR_CMD_REG);
++	return readl_poll_timeout(mt8173_nor->base + MTK_NOR_CMD_REG, reg,
++				  !(reg & val), 100, 10000);
++}
++
++static int mt8173_nor_set_cmd(struct mt8173_nor *mt8173_nor, int addr, u8 len,
++			      u8 op)
++{
++	writeb(op, mt8173_nor->base + MTK_NOR_PRGDATA5_REG);
++	/*  send the address to nor flash
++	 *  MTK_NOR_PRGDATA5_REG is shifted first
++	 */
++	if (len > 8) {
++		writeb((addr >> 16), mt8173_nor->base + MTK_NOR_PRGDATA4_REG);
++		writeb((addr >> 8), mt8173_nor->base + MTK_NOR_PRGDATA3_REG);
++		writeb((addr), mt8173_nor->base + MTK_NOR_PRGDATA2_REG);
++	}
++	writeb(len, mt8173_nor->base + MTK_NOR_CNT_REG);
++	return mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PRG_CMD);
++}
++
++/* cmd1 sent to nor flash, cmd2 write to nor controller */
++static int mt8173_nor_set_para(struct mt8173_nor *mt8173_nor, int cmd1,
++			       int cmd2)
++{
++	int ret;
++
++	ret = mt8173_nor_set_cmd(mt8173_nor, 0, 8, SPINOR_OP_WREN);
++	if (ret < 0)
++		return ret;
++
++	writeb(cmd1, mt8173_nor->base + MTK_NOR_PRGDATA5_REG);
++	writeb(8, mt8173_nor->base + MTK_NOR_CNT_REG);
++	return mt8173_nor_execute_cmd(mt8173_nor, cmd2);
++}
++
++static int mt8173_nor_write_buffer_enable(struct mt8173_nor *mt8173_nor)
++{
++	u8 reg;
++
++	/* the bit0 of MTK_NOR_CFG2_REG is pre-fetch buffer
++	 * 0: pre-fetch buffer use for read
++	 * 1: pre-fetch buffer use for page program
++	 */
++	writel(MTK_NOR_WR_BUF_ENABLE, mt8173_nor->base + MTK_NOR_CFG2_REG);
++	return readb_poll_timeout(mt8173_nor->base + MTK_NOR_CFG2_REG, reg,
++				  0x01 == (reg & 0x01), 100, 10000);
++}
++
++static int mt8173_nor_write_buffer_disable(struct mt8173_nor *mt8173_nor)
++{
++	u8 reg;
++
++	writel(MTK_NOR_WR_BUF_DISABLE, mt8173_nor->base + MTK_NOR_CFG2_REG);
++	return readb_poll_timeout(mt8173_nor->base + MTK_NOR_CFG2_REG, reg,
++				  MTK_NOR_WR_BUF_DISABLE == (reg & 0x1), 100,
++				  10000);
++}
++
++static int mt8173_nor_erase_sector(struct spi_nor *nor, loff_t offset)
++{
++	int ret;
++	struct mt8173_nor *mt8173_nor = nor->priv;
++
++	ret = mt8173_nor_set_cmd(mt8173_nor, 0, 8, SPINOR_OP_WREN);
++	if (ret < 0)
++		return ret;
++
++	return mt8173_nor_set_cmd(mt8173_nor, (int)offset, 32, SPINOR_OP_BE_4K);
++}
++
++static int mt8173_nor_read(struct spi_nor *nor, loff_t from, size_t length,
++			   size_t *retlen, u_char *buffer)
++{
++	int i, ret;
++	int addr = (int)from;
++	u8 *buf = (u8 *)buffer;
++	struct mt8173_nor *mt8173_nor = nor->priv;
++
++	/* set mode for fast read mode ,dual mode or quad mode */
++	mt8173_nor_set_read_mode(mt8173_nor);
++	writeb((addr >> 24), mt8173_nor->base + MTK_NOR_RADR3_REG);
++	writeb((addr >> 16), mt8173_nor->base + MTK_NOR_RADR2_REG);
++	writeb((addr >> 8), mt8173_nor->base + MTK_NOR_RADR1_REG);
++	writeb(addr, mt8173_nor->base + MTK_NOR_RADR0_REG);
++
++	for (i = 0; i < length; i++, (*retlen)++) {
++		ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PIO_READ_CMD);
++		if (ret < 0)
++			return ret;
++		buf[i] = readb(mt8173_nor->base + MTK_NOR_RDATA_REG);
++	}
++	return 0;
++}
++
++static int mt8173_nor_write_single_byte(struct mt8173_nor *mt8173_nor,
++					int addr, int length, u8 *data)
++{
++	int i, ret;
++
++	writeb((addr >> 24), mt8173_nor->base + MTK_NOR_RADR3_REG);
++	writeb((addr >> 16), mt8173_nor->base + MTK_NOR_RADR2_REG);
++	writeb((addr >> 8), mt8173_nor->base + MTK_NOR_RADR1_REG);
++	writeb(addr, mt8173_nor->base + MTK_NOR_RADR0_REG);
++
++	for (i = 0; i < length; i++) {
++		ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PIO_WR_CMD);
++		if (ret < 0)
++			return ret;
++		writeb(*data++, mt8173_nor->base + MTK_NOR_WDATA_REG);
++	}
++	return 0;
++}
++
++static int mt8173_nor_write_buffer(struct mt8173_nor *mt8173_nor, int addr,
++				   const u8 *buf)
++{
++	int i, bufidx, data;
++
++	writeb((addr >> 24), mt8173_nor->base + MTK_NOR_RADR3_REG);
++	writeb((addr >> 16), mt8173_nor->base + MTK_NOR_RADR2_REG);
++	writeb((addr >> 8), mt8173_nor->base + MTK_NOR_RADR1_REG);
++	writeb(addr, mt8173_nor->base + MTK_NOR_RADR0_REG);
++
++	bufidx = 0;
++	for (i = 0; i < SFLASH_WRBUF_SIZE; i += 4) {
++		data = buf[bufidx + 3]<<24 | buf[bufidx + 2]<<16 |
++		       buf[bufidx + 1]<<8 | buf[bufidx];
++		bufidx += 4;
++		writel(data, mt8173_nor->base + MTK_NOR_PP_DATA_REG);
++	}
++	return mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_WR_CMD);
++}
++
++static void mt8173_nor_write(struct spi_nor *nor, loff_t to, size_t len,
++			     size_t *retlen, const u_char *buf)
++{
++	int ret;
++	struct mt8173_nor *mt8173_nor = nor->priv;
++
++	ret = mt8173_nor_write_buffer_enable(mt8173_nor);
++	if (ret < 0)
++		dev_warn(mt8173_nor->dev, "write buffer enable failed!\n");
++
++	while (len >= SFLASH_WRBUF_SIZE) {
++		ret = mt8173_nor_write_buffer(mt8173_nor, to, buf);
++		if (ret < 0)
++			dev_warn(mt8173_nor->dev, "write buffer failed!\n");
++		len -= SFLASH_WRBUF_SIZE;
++		to += SFLASH_WRBUF_SIZE;
++		buf += SFLASH_WRBUF_SIZE;
++		(*retlen) += SFLASH_WRBUF_SIZE;
++	}
++	ret = mt8173_nor_write_buffer_disable(mt8173_nor);
++	if (ret < 0)
++		dev_warn(mt8173_nor->dev, "write buffer disable failed!\n");
++
++	if (len) {
++		ret = mt8173_nor_write_single_byte(mt8173_nor, to, (int)len,
++						   (u8 *)buf);
++		if (ret < 0)
++			dev_warn(mt8173_nor->dev, "write single byte failed!\n");
++		(*retlen) += len;
++	}
++}
++
++static int mt8173_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
++{
++	int ret;
++	struct mt8173_nor *mt8173_nor = nor->priv;
++
++	/* mtk nor controller doesn't supoort SPINOR_OP_RDCR */
++	switch (opcode) {
++	case SPINOR_OP_RDID:
++		/* read JEDEC ID need 4 bytes commands */
++		ret = mt8173_nor_set_cmd(mt8173_nor, 0, 32, SPINOR_OP_RDID);
++		if (ret < 0)
++			return ret;
++
++		/* mtk nor flash controller only support 3 bytes IDs */
++		buf[2] = readb(mt8173_nor->base + MTK_NOR_SHREG0_REG);
++		buf[1] = readb(mt8173_nor->base + MTK_NOR_SHREG1_REG);
++		buf[0] = readb(mt8173_nor->base + MTK_NOR_SHREG2_REG);
++		break;
++	case SPINOR_OP_RDSR:
++		ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_RDSR_CMD);
++		if (ret < 0)
++			return ret;
++		*buf = readb(mt8173_nor->base + MTK_NOR_RDSR_REG);
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++	return ret;
++}
++
++static int mt8173_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
++				int len)
++{
++	int ret;
++	struct mt8173_nor *mt8173_nor = nor->priv;
++
++	switch (opcode) {
++	case SPINOR_OP_WRSR:
++		ret = mt8173_nor_set_para(mt8173_nor, *buf,
++					  MTK_NOR_WRSR_CMD);
++		break;
++	case SPINOR_OP_CHIP_ERASE:
++		ret = mt8173_nor_set_para(mt8173_nor, opcode,
++					  MTK_NOR_PRG_CMD);
++		break;
++	case SPINOR_OP_WREN:
++		ret = mt8173_nor_set_cmd(mt8173_nor, 0, 8, opcode);
++		if (ret)
++			dev_warn(mt8173_nor->dev, "set write enable fail!\n");
++		break;
++	case SPINOR_OP_WRDI:
++		ret = mt8173_nor_set_cmd(mt8173_nor, 0, 8, opcode);
++		if (ret)
++			dev_warn(mt8173_nor->dev, "set write disable fail!\n");
++		break;
++	default:
++		dev_warn(mt8173_nor->dev, "doesn't support cmd %d\n", opcode);
++		ret = -EINVAL;
++		break;
++	}
++	return ret;
++}
++
++static int __init mtk_nor_init(struct mt8173_nor *mt8173_nor,
++			       struct mtd_part_parser_data *ppdata)
++{
++	int ret;
++	struct spi_nor *nor;
++	struct mtd_info *mtd;
++
++	writel(MTK_NOR_ENABLE_SF_CMD, mt8173_nor->base + MTK_NOR_WRPROT_REG);
++	nor = &mt8173_nor->nor;
++	mtd = &mt8173_nor->mtd;
++	nor->mtd = *mtd;
++	nor->dev = mt8173_nor->dev;
++	nor->priv = mt8173_nor;
++	mtd->priv = nor;
++
++	/* fill the hooks to spi nor */
++	nor->read = mt8173_nor_read;
++	nor->read_reg = mt8173_nor_read_reg;
++	nor->write = mt8173_nor_write;
++	nor->write_reg = mt8173_nor_write_reg;
++	nor->erase = mt8173_nor_erase_sector;
++	nor->mtd.owner = THIS_MODULE;
++	nor->mtd.name = "mtk_nor";
++	/* initialized with NULL */
++	ret = spi_nor_scan(nor, NULL, SPI_NOR_DUAL);
++	if (ret)
++		return ret;
++
++	dev_dbg(mt8173_nor->dev, "mtd->size :0x%llx!\n", mtd->size);
++	return  mtd_device_parse_register(&nor->mtd, NULL, ppdata, NULL, 0);
++}
++
++static int mtk_nor_drv_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct mtd_part_parser_data ppdata;
++	struct resource *res;
++	int ret;
++	struct mt8173_nor *mt8173_nor;
++
++	if (!pdev->dev.of_node) {
++		dev_err(&pdev->dev, "No DT found\n");
++		return -EINVAL;
++	}
++
++	mt8173_nor = devm_kzalloc(&pdev->dev, sizeof(*mt8173_nor), GFP_KERNEL);
++	if (!mt8173_nor)
++		return -ENOMEM;
++	platform_set_drvdata(pdev, mt8173_nor);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	mt8173_nor->base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(mt8173_nor->base))
++		return PTR_ERR(mt8173_nor->base);
++
++	mt8173_nor->spi_clk = devm_clk_get(&pdev->dev, "spi");
++	if (IS_ERR(mt8173_nor->spi_clk)) {
++		ret = PTR_ERR(mt8173_nor->spi_clk);
++		goto nor_free;
++	}
++
++	mt8173_nor->nor_clk = devm_clk_get(&pdev->dev, "sf");
++	if (IS_ERR(mt8173_nor->nor_clk)) {
++		ret = PTR_ERR(mt8173_nor->nor_clk);
++		goto nor_free;
++	}
++
++	mt8173_nor->dev = &pdev->dev;
++	clk_prepare_enable(mt8173_nor->spi_clk);
++	clk_prepare_enable(mt8173_nor->nor_clk);
++
++	ppdata.of_node = np;
++	ret = mtk_nor_init(mt8173_nor, &ppdata);
++
++nor_free:
++	return ret;
++}
++
++static int mtk_nor_drv_remove(struct platform_device *pdev)
++{
++	struct mt8173_nor *mt8173_nor = platform_get_drvdata(pdev);
++
++	mtd_device_unregister(&mt8173_nor->mtd);
++	clk_disable_unprepare(mt8173_nor->spi_clk);
++	clk_disable_unprepare(mt8173_nor->nor_clk);
++	return 0;
++}
++
++static const struct of_device_id mtk_nor_of_ids[] = {
++	{ .compatible = "mediatek,mt8173-nor"},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, mtk_nor_of_ids);
++
++static struct platform_driver mtk_nor_driver = {
++	.probe = mtk_nor_drv_probe,
++	.remove = mtk_nor_drv_remove,
++	.driver = {
++		.name = "mtk-nor",
++		.of_match_table = mtk_nor_of_ids,
++	},
++};
++
++module_platform_driver(mtk_nor_driver);
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("MediaTek SPI NOR Flash Driver");
 -- 
-2.1.4
+1.8.1.1.dirty
