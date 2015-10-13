@@ -1,21 +1,19 @@
-From: Bayi Cheng <bayi.cheng@mediatek.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>
-CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
- Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>, Bayi Cheng
- <bayi.cheng@mediatek.com>
-Subject: [PATCH v4 3/3] arm64: dts: mt8173: Add nor flash node
-Date: Tue, 13 Oct 2015 17:39:20 +0800
-Message-ID: <1444729160-26433-4-git-send-email-bayi.cheng@mediatek.com>
-In-Reply-To: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
-References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zlx99-0005Aj-V1
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 10:49:32 +0000
+Date: Tue, 13 Oct 2015 12:46:20 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: rnd4@dave-tech.it, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/2] Use badblockbits-like approach in nand_bbt.c
+Message-ID: <20151013124620.79a8f055@bbrezillon>
+In-Reply-To: <1425643938-24749-1-git-send-email-rnd4@dave-tech.it>
+References: <1425643938-24749-1-git-send-email-rnd4@dave-tech.it>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add Mediatek nor flash node
+Hi Brian,
 
-Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8173.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+On Fri,  6 Mar 2015 13:12:16 +0100
+rnd4@dave-tech.it wrote:
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-index d18ee42..385c2e4 100644
---- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-@@ -365,6 +365,21 @@
- 			status = "disabled";
- 		};
- 
-+		nor_flash: spi@1100d000 {
-+			compatible = "mediatek,mt8173-nor";
-+			reg = <0 0x1100d000 0 0xe0>;
-+			clocks = <&pericfg CLK_PERI_SPI>,
-+				 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
-+			clock-names = "spi", "sf";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			flash@0 {
-+				compatible = "jedec,spi-nor";
-+				reg = <0>;
-+			};
-+		};
-+
- 		i2c3: i2c3@11010000 {
- 			compatible = "mediatek,mt8173-i2c";
- 			reg = <0 0x11010000 0 0x70>,
+> 
+> Hi all,
+> 
+> I'm currenlty working with an MLC NAND (MT29F32G08CBACAWP) on a iMX6 based
+> platform (kernel 3.10.17).
+> The first problem I have is about badblock detection. I experienced a lot of bit
+> flips on badblock marker (some of them probalbly due misuse, e.g. powercut).
+> 
+> By looking into the MDT code, I've found that inside nand_base.c there's support
+> for badblockbits feature, which, for short, allow to tolerate 1 or more bitflip
+> when looking for BB.
+> 
+> In my experience usually the marker is 0x00 for bad blocks and 0xFF for good one
+> (at least this is true for my current component).
+> 
+> Unfortunately this approach is not used into BBT code (nand_bbt.c) and thus I have
+> a lot of false positive BB.
+> 
+> With the following patches I try to add badblockbits-like approach to nand_bbt.c
+> code.
+> 
+> The first patch is optional and configure badblockbits depending on SLC vs MLC NAND.
+> 
+> The second patch implements the badblockbits approach into BBT scan.
+> Please note that this is not usually enough, because many NAND controller override
+> nand_bbt_descr and thus requires changes also the the specific controller driver.
+> 
+> The patch has been made in collaboration with Boris Brezillon (thank you for you
+> suggestions Boris).
+> 
+> I tested it on a 3.10.17 kernel, but the second patch applies fine to
+> v3.10 stable and latest 4.0-rc1 (the first patch needs some changes to apply to this
+> one).
+> 
+> Feel free to comment it and tell me if something can be done in a better way
+
+We recently discussed the option of retrieving BBM using raw access
+mode, which will likely require something similar to what this series is
+doing.
+I'm still not happy with the selection of ->badblockbits (4 for MLC
+NANDs and 8 otherwise), but maybe that's something we can adjust later.
+
+What do you think?
+
+Best Regards,
+
+Boris
+
 -- 
-1.8.1.1.dirty
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
