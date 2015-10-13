@@ -1,19 +1,15 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZltQQ-00013H-7e
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 06:51:07 +0000
-Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Subject: Re: [PATCH] UBIFS: Fix possible memory leak in ubifs_readdir()
-From: David Gstir <david@sigma-star.at>
-In-Reply-To: <1444685736-29878-1-git-send-email-richard@nod.at>
-Date: Tue, 13 Oct 2015 08:50:42 +0200
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- dedekind1@gmail.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B14E7E10-F4C2-4200-B59F-B846B31B2AE1@sigma-star.at>
-References: <1444685736-29878-1-git-send-email-richard@nod.at>
-To: Richard Weinberger <richard@nod.at>
+Received: from mail01.prevas.se ([62.95.78.3])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZltQV-00013L-Nr
+ for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 06:51:12 +0000
+From: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+To: <linux-mtd@lists.infradead.org>
+CC: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+Subject: [PATCH v2] mtd: spi-nor: Add support for s25fl004k
+Date: Tue, 13 Oct 2015 08:50:30 +0200
+Message-ID: <1444719030-26781-1-git-send-email-sean.nyekjaer@prevas.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Signed-off-by: Sean Nyekjaer <sean.nyekjaer@prevas.dk>
+---
+Changes since v1:
+- Added support for both dual and quad read
+- Fixed JEDEC id
 
-> On 12.10.2015, at 23:35, Richard Weinberger <richard@nod.at> wrote:
->=20
-> If ubifs_tnc_next_ent() returns something else than -ENOENT
-> we leak file->private_data.
->=20
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
-> fs/ubifs/dir.c | 5 +++--
-> 1 file changed, 3 insertions(+), 2 deletions(-)
->=20
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 5c27c66..cb88ea3 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -449,13 +449,14 @@ static int ubifs_readdir(struct file *file, =
-struct dir_context *ctx)
-> 	}
->=20
-> out:
-> +	kfree(file->private_data);
-> +	file->private_data =3D NULL;
-> +
-> 	if (err !=3D -ENOENT) {
-> 		ubifs_err(c, "cannot find next direntry, error %d", =
-err);
-> 		return err;
-> 	}
->=20
-> -	kfree(file->private_data);
-> -	file->private_data =3D NULL;
-> 	/* 2 is a special value indicating that there are no more =
-direntries */
-> 	ctx->pos =3D 2;
-> 	return 0;
-> --=20
-> 2.5.0
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Looks good to me.
-
-Reviewed-by: David Gstir <david@sigma-star.at>=20
-
-Thanks,
-David=
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 0397dba..9940296 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -649,6 +649,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "s25sl016a",  INFO(0x010214,      0,  64 * 1024,  32, 0) },
+ 	{ "s25sl032a",  INFO(0x010215,      0,  64 * 1024,  64, 0) },
+ 	{ "s25sl064a",  INFO(0x010216,      0,  64 * 1024, 128, 0) },
++	{ "s25fl004k",  INFO(0xef4013,      0,  64 * 1024,   8, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
+-- 
+2.6.1
