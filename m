@@ -1,32 +1,21 @@
-Received: from mail-yk0-x22e.google.com ([2607:f8b0:4002:c07::22e])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmAYR-0002rN-IE
- for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 01:08:32 +0000
-Received: by ykaz22 with SMTP id z22so8248218yka.2
- for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 18:08:09 -0700 (PDT)
+ id 1ZmAsr-0008ID-KD
+ for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 01:29:38 +0000
+Received: by pabws5 with SMTP id ws5so6532206pab.1
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 18:29:16 -0700 (PDT)
+Date: Tue, 13 Oct 2015 18:29:14 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 00/10] mtd: spi-nor: cleanups + block protection support
+ updates
+Message-ID: <20151014012914.GE107187@google.com>
+References: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Sender: djkurtz@google.com
-In-Reply-To: <561D1642.3070105@cogentembedded.com>
-References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
- <1444729160-26433-4-git-send-email-bayi.cheng@mediatek.com>
- <561D1642.3070105@cogentembedded.com>
-From: Daniel Kurtz <djkurtz@chromium.org>
-Date: Wed, 14 Oct 2015 09:07:49 +0800
-Message-ID: <CAGS+omDm=74d6cw7kXwkZ_Jy-faBz7z4-vJQX9ZFVNskQqSS-w@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] arm64: dts: mt8173: Add nor flash node
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: Bayi Cheng <bayi.cheng@mediatek.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- "open list:OPEN FIRMWARE AND..." <devicetree@vger.kernel.org>,
- srv_heupstream <srv_heupstream@mediatek.com>,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- linux-mediatek@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1441137435-52862-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,70 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sergei,
+On Tue, Sep 01, 2015 at 12:57:05PM -0700, Brian Norris wrote:
+> [Note: as this is sent out during the merge window, it's based on the
+> semi-unofficial l2-mtd.git/next branch, which is targeting 4.4, not 4.3]
+> 
+> Hi all,
+> 
+> I've been reviewing various spi-nor drivers as well as working with some
+> Winbond flash to support new locking features. The former helped point out a
+> few more things that could use some improvement, and the latter suggested that
+> we have some glaring oversights in the spi-nor lock/unlock code.
+> 
+> <side note>
+> Some helpful companion code, for mtd-utils:
+> 
+>  http://lists.infradead.org/pipermail/linux-mtd/2015-August/061526.html
+> 
+> This extends the flash_lock tool so that you can more easily test specific
+> ranges, using:
+> 
+>   # flash_lock --lock /dev/mtdX <offset> <block-count>
+>   # flash_lock --unlock /dev/mtdX <offset> <block-count>
+>   # flash_lock --islocked /dev/mtdX <offset> <block-count>
+> </side note>
+> 
+> The first half of this series is fairly self-explanatory. The second might take
+> a bit of thought, as a formulaic approach is a little more subtle than a
+> table-based approach, so I tried to copy the relevant portions distilled from a
+> few datasheets and include comments. Please shout if anything deserves more
+> explanation or looks funny to you.
+> 
+> Highlights:
+> 
+>  * clean up spi-nor.h header
+>  * spi-nor now supports MEMISLOCKED
+>  * MEM{LOCK,UNLOCK} support is a little more robust and extendible
+>  * turn on dual/quad read for Winbond w25q{32,64}dw
+>  * enable block protection for Winbond flash
+> 
+> Regards,
+> Brian
 
-On Tue, Oct 13, 2015 at 10:33 PM, Sergei Shtylyov
-<sergei.shtylyov@cogentembedded.com> wrote:
-> Hello.
->
-> On 10/13/2015 12:39 PM, Bayi Cheng wrote:
->
->> Add Mediatek nor flash node
->>
->> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
->> ---
->>   arch/arm64/boot/dts/mediatek/mt8173.dtsi | 15 +++++++++++++++
->>   1 file changed, 15 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
->> b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
->> index d18ee42..385c2e4 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
->> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
->> @@ -365,6 +365,21 @@
->>                         status = "disabled";
->>                 };
->>
->> +               nor_flash: spi@1100d000 {
->
->
->    I don't think this is a good label name for a SPI controller.
-
-You think "spi" is not a good name for SPI controller?
-Or you mean the label "nor_flash"?
-
-Would you prefer:
-
-  spi_nor_flash: spi@1100d000
-
-
->
->> +                       compatible = "mediatek,mt8173-nor";
->> +                       reg = <0 0x1100d000 0 0xe0>;
->> +                       clocks = <&pericfg CLK_PERI_SPI>,
->> +                                <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
->> +                       clock-names = "spi", "sf";
->> +                       #address-cells = <1>;
->> +                       #size-cells = <0>;
->> +
->> +                       flash@0 {
->> +                               compatible = "jedec,spi-nor";
->> +                               reg = <0>;
->> +                       };
->> +               };
->> +
->>                 i2c3: i2c3@11010000 {
->
->
->    Grr, the name should be "i2c@11010000".
-
-Don't worry.  This is already fixed in Matthias' tree:
-  https://github.com/mbgg/linux-mediatek/commit/1ee35c05d9c67771d649f687e6f76e61e76eb779
-
--Dan
-
->
-> [...]
->
-> MBR, Sergei
->
+Pushed all to l2-mtd.git, with some minor context fixups for patch 8
