@@ -1,20 +1,20 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmKNG-0005c1-Uc
- for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 11:37:39 +0000
-Subject: Re: [PATCH 1/5] mtd: nand: omap2: Support parsing dma channel
- information from DT
+ id 1ZmKRZ-0001kb-AK
+ for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 11:42:06 +0000
+Subject: Re: [PATCH 2/5] mtd: nand: omap2: Start dma request before enabling
+ prefetch
 To: Franklin S Cooper Jr <fcooper@ti.com>, <linux-kernel@vger.kernel.org>,
  <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
  <linux-mtd@lists.infradead.org>, <nsekhar@ti.com>,
  <computersforpeace@gmail.com>, <dwmw2@infradead.org>, <tony@atomide.com>
 References: <1444700338-27582-1-git-send-email-fcooper@ti.com>
- <1444700338-27582-2-git-send-email-fcooper@ti.com>
+ <1444700338-27582-3-git-send-email-fcooper@ti.com>
 From: Roger Quadros <rogerq@ti.com>
-Message-ID: <561E3E4F.9020302@ti.com>
-Date: Wed, 14 Oct 2015 14:36:47 +0300
+Message-ID: <561E3F5B.6040102@ti.com>
+Date: Wed, 14 Oct 2015 14:41:15 +0300
 MIME-Version: 1.0
-In-Reply-To: <1444700338-27582-2-git-send-email-fcooper@ti.com>
+In-Reply-To: <1444700338-27582-3-git-send-email-fcooper@ti.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,32 +27,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 13/10/15 04:38, Franklin S Cooper Jr wrote:
-> Switch from dma_request_channel to allow passing dma channel
-> information from DT rather than hardcoding a value.
+> The prefetch engine sends a dma request once a FIFO threshold has
+> been met. No other requests are received until the previous request
+> is handled.
+> 
+> Starting an edma transfer (dma_async_issue_pending) results in any
+> previous event for the dma channel to be cleared. Therefore, starting
+> the prefetch engine before initiating the dma transfer may result in
+> the prefetch triggering a dma request but instead of it being handled
+> it can end up being cleared. This will result in a hang since the code
+> will continue to wait for the dma request to complete.
+> 
+> By initiating the dma request before enabling the prefetch engine this
+> race condition is avoided and no dma request are missed/cleared.
 > 
 > Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
-
-Acked-by: Roger Quadros <rogerq@ti.com>
-
 > ---
->  drivers/mtd/nand/omap2.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/omap2.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index d0f2620..957c32f 100644
+> index 957c32f..94d11de 100644
 > --- a/drivers/mtd/nand/omap2.c
 > +++ b/drivers/mtd/nand/omap2.c
-> @@ -1866,7 +1866,9 @@ static int omap_nand_probe(struct platform_device *pdev)
->  		dma_cap_zero(mask);
->  		dma_cap_set(DMA_SLAVE, mask);
->  		sig = OMAP24XX_DMA_GPMC;
-> -		info->dma = dma_request_channel(mask, omap_dma_filter_fn, &sig);
-> +		info->dma = dma_request_slave_channel_compat(mask,
-> +			omap_dma_filter_fn, &sig, pdev->dev.parent, "rxtx");
+> @@ -509,6 +509,9 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
+>  	tx->callback_param = &info->comp;
+>  	dmaengine_submit(tx);
+>  
+> +	init_completion(&info->comp);
+> +	dma_async_issue_pending(info->dma);
 > +
->  		if (!info->dma) {
->  			dev_err(&pdev->dev, "DMA engine request failed\n");
->  			err = -ENXIO;
+>  	/*  configure and start prefetch transfer */
+>  	ret = omap_prefetch_enable(info->gpmc_cs,
+>  		PREFETCH_FIFOTHRESHOLD_MAX, 0x1, len, is_write, info);
+> @@ -516,9 +519,6 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
+>  		/* PFPW engine is busy, use cpu copy method */
+>  		goto out_copy_unmap;
+>  
+> -	init_completion(&info->comp);
+> -	dma_async_issue_pending(info->dma);
+> -
+>  	/* setup and start DMA using dma_addr */
+
+Is the above comment misplaced after this change?
+
+>  	wait_for_completion(&info->comp);
+>  	tim = 0;
 > 
 
 cheers,
