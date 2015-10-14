@@ -1,21 +1,32 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-yk0-x22e.google.com ([2607:f8b0:4002:c07::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zm7LS-0003A4-Bo
- for linux-mtd@lists.infradead.org; Tue, 13 Oct 2015 21:42:54 +0000
-Received: by padcn9 with SMTP id cn9so1453415pad.2
- for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 14:42:33 -0700 (PDT)
-Date: Tue, 13 Oct 2015 14:41:53 -0700
-From: Aurelien Chanot <chanot.a@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: Add support for Micron n25q032a
-Message-ID: <20151013214153.GA1079@achanot-lt>
-References: <20151007191008.GA31411@achanot-lt>
- <20151013013828.GU107187@google.com>
+ id 1ZmAYR-0002rN-IE
+ for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 01:08:32 +0000
+Received: by ykaz22 with SMTP id z22so8248218yka.2
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 18:08:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151013013828.GU107187@google.com>
+Sender: djkurtz@google.com
+In-Reply-To: <561D1642.3070105@cogentembedded.com>
+References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
+ <1444729160-26433-4-git-send-email-bayi.cheng@mediatek.com>
+ <561D1642.3070105@cogentembedded.com>
+From: Daniel Kurtz <djkurtz@chromium.org>
+Date: Wed, 14 Oct 2015 09:07:49 +0800
+Message-ID: <CAGS+omDm=74d6cw7kXwkZ_Jy-faBz7z4-vJQX9ZFVNskQqSS-w@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] arm64: dts: mt8173: Add nor flash node
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: Bayi Cheng <bayi.cheng@mediatek.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+ "open list:OPEN FIRMWARE AND..." <devicetree@vger.kernel.org>,
+ srv_heupstream <srv_heupstream@mediatek.com>,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ linux-mediatek@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +36,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 12, 2015 at 06:38:28PM -0700, Brian Norris wrote:
-> On Wed, Oct 07, 2015 at 12:10:08PM -0700, Aurelien Chanot wrote:
-> > The N25Q032A is identical to the N25Q032 except it has a different
-> > supply voltage range. Therefore, it has a new JEDEC ID.
-> > 
-> > Signed-off-by: Aurelien Chanot <chanot.a@gmail.com>
-> 
-> Applied to l2-mtd.git
-> 
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> > index f59aedf..9122a2e 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -585,6 +585,7 @@ static const struct flash_info spi_nor_ids[] = {
-> >  
-> >  	/* Micron */
-> >  	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
-> > +	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
-> 
-> I know the original entry doesn't specify this, but does this flash
-> support 4K sectors and dual read? We should add the flags.
+Sergei,
 
-Yes it does support 4k erase subsectors and, quad and dual fast read.
+On Tue, Oct 13, 2015 at 10:33 PM, Sergei Shtylyov
+<sergei.shtylyov@cogentembedded.com> wrote:
+> Hello.
+>
+> On 10/13/2015 12:39 PM, Bayi Cheng wrote:
+>
+>> Add Mediatek nor flash node
+>>
+>> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+>> ---
+>>   arch/arm64/boot/dts/mediatek/mt8173.dtsi | 15 +++++++++++++++
+>>   1 file changed, 15 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+>> b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+>> index d18ee42..385c2e4 100644
+>> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+>> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+>> @@ -365,6 +365,21 @@
+>>                         status = "disabled";
+>>                 };
+>>
+>> +               nor_flash: spi@1100d000 {
+>
+>
+>    I don't think this is a good label name for a SPI controller.
 
-We can create a new patch to update the flags.
+You think "spi" is not a good name for SPI controller?
+Or you mean the label "nor_flash"?
 
-> 
-> Brian
-> 
-> >  	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
-> >  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
-> >  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
-> 
+Would you prefer:
+
+  spi_nor_flash: spi@1100d000
+
+
+>
+>> +                       compatible = "mediatek,mt8173-nor";
+>> +                       reg = <0 0x1100d000 0 0xe0>;
+>> +                       clocks = <&pericfg CLK_PERI_SPI>,
+>> +                                <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
+>> +                       clock-names = "spi", "sf";
+>> +                       #address-cells = <1>;
+>> +                       #size-cells = <0>;
+>> +
+>> +                       flash@0 {
+>> +                               compatible = "jedec,spi-nor";
+>> +                               reg = <0>;
+>> +                       };
+>> +               };
+>> +
+>>                 i2c3: i2c3@11010000 {
+>
+>
+>    Grr, the name should be "i2c@11010000".
+
+Don't worry.  This is already fixed in Matthias' tree:
+  https://github.com/mbgg/linux-mediatek/commit/1ee35c05d9c67771d649f687e6f76e61e76eb779
+
+-Dan
+
+>
+> [...]
+>
+> MBR, Sergei
+>
