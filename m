@@ -1,16 +1,25 @@
-Received: from mail-lf0-x236.google.com ([2a00:1450:4010:c07::236])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmEj0-0005uq-Vv
- for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 05:35:43 +0000
-Received: by lfaz124 with SMTP id z124so5982262lfa.1
- for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 22:35:20 -0700 (PDT)
+ id 1ZmGfS-0002jI-92
+ for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 07:40:11 +0000
+Subject: Re: [PATCH v3 27/27] ARM: dts: omap3: Fix gpmc and NAND nodes
+To: Tony Lindgren <tony@atomide.com>
+References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
+ <1442588029-13769-28-git-send-email-rogerq@ti.com>
+ <20151013004335.GU23801@atomide.com> <561CA4C3.4@ti.com>
+ <20151013151832.GW23801@atomide.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
+ <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <561E06A1.1020209@ti.com>
+Date: Wed, 14 Oct 2015 10:39:13 +0300
 MIME-Version: 1.0
-Date: Wed, 14 Oct 2015 08:35:20 +0300
-Message-ID: <CAAAVVLTY2UnU0ps6MZr2jL9MUXLDP2tGSr5gp2fJ7kzkhfuCUg@mail.gmail.com>
-Subject: Freeing space on JFFS2 after removing file
-From: =?UTF-8?B?0J3QuNC60L7Qu9Cw0Lkg0JjRgdCw0LXQsg==?= <stvdedal@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20151013151832.GW23801@atomide.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,85 +29,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+Tony,
 
-We have JFFS2 partition with files: X1, X2, X3, ...., Xn. All those
-files have the same size and content.
-When we tried to create new file, the error ENOSPC has occurred, which
-means that the file system is full and all space is used.
-With this file system state, we delete a single file (X1, for example)
-in order to free space that the file used.
-After that, we try to recreate the same file (X1), but the error
-ENOSPC occurs again.
-So, even after deleting a file, the file system does not free space to
-store the same file.
-The same behaviour occurs when we remount file system in order to
-garbage collector does his job.
+On 13/10/15 18:18, Tony Lindgren wrote:
+> * Roger Quadros <rogerq@ti.com> [151012 23:33]:
+>> On 13/10/15 03:43, Tony Lindgren wrote:
+>>> * Roger Quadros <rogerq@ti.com> [150918 08:00]:
+>>>> Add compatible id, GPMC register resource and interrupt
+>>>> resource to NAND controller nodes.
+>>>>
+>>>> The GPMC driver now implements gpiochip and irqchip so
+>>>> enable gpio-controller and interrupt-controller properties.
+>>>>
+>>>> With this the interrupt parent of NAND node changes so fix it
+>>>> accordingly.
+>>> ...
+>>>> --- a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+>>>> +++ b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+>>>> @@ -35,11 +35,14 @@
+>>>>  };
+>>>>  
+>>>>  &gpmc {
+>>>> -	ranges = <0 0 0x00000000 0x1000000>;	/* CS0: 16MB for NAND */
+>>>> +	ranges = <0 0 0x08000000 0x1000000>;	/* CS0: 16MB for NAND */
+>>>>  
+>>>>  	nand@0,0 {
+>>>> -		linux,mtd-name = "micron,mt29f4g16abbda3w";
+>>>> +		compatible = "ti,omap2-nand";
+>>>>  		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
+>>>> +		interrupt-parent = <&intc>;
+>>>> +		interrupts = <20>;
+>>>> +		linux,mtd-name = "micron,mt29f4g16abbda3w";
+>>>>  		nand-bus-width = <16>;
+>>>>  		ti,nand-ecc-opt = "bch8";
+>>>>  		gpmc,sync-clk-ps = <0>;
+>>>
+>>> At least torpedo breaks for NFSroot as NAND now overlaps with
+>>> Ethernet.. What's the policy you have for moving the addresses
+>>> around?
+>>
+>> For OMAP3 I intended to use 0x30000000 for NAND but incorrectly
+>> used 0x08000000 for the torpedo.
+> 
+> Might be worth adding some documentation of suggested standardized
+> mappings.. For most of theme we could just add them as 16MB chunks,
+> then reserve some larger area for NOR?
 
-Questions:
-1. Is it a JFFS2 bug?
-2. Is it possible to determine when removing and subsequent creation
-of a file will be successful?
-3. How can we determine that the free space, shown by JFFS2, fits with
-real free space on the system?
+As GPMC peripherals are not plug and play the GPMC map is specific to
+the board and need not necessarily apply to all boards.
+So I don't think we need to have any standardized mappings.
 
-The bash script shows that:
+> 
+>> Does setting it to 0x30000000 work? If not what is the original
+>> NAND address for this board?
+> 
+> The u-boot addresses are probably what were used in the .dts* files.
+> Setting NAND to 0x30000000 is not enough though, looks like there's
+> a bug where the logicpd-torpedo-37xx-devkit.dts ranges is missing
+> the NAND range in logicpd-torpedo-som.dtsi. Something like the
+> patch below seems to make things work again, might be worth
+> checking what ranges make sense to standardize on though. Please
+> feel free to fold it into your patches.
 
--------------------- cut here -------------------------------------
-mkdir /tmp/jffstest
-cd /tmp/jffstest
+Thanks. I'll post a revised patch.
 
-#
-# create empty directory and
-# mount point directory
-#
-mkdir mnt emptydir
+> 
+>>> There may be other similar cases to check too.
+>>
+>> Just checked that all other OMAP3 boards I've set to 0x30000000
+>> if they were 0x0.
+> 
+> Do you want to reserve a large chunk for NOR at cs0 or what's
+> the reason for picking 0x30000000 for NAND?
 
-#
-# create jffs2 image
-# eraseblock size = 128 Kb
-# total size      = 20 Mb
-#
-mkfs.jffs2 -r emptydir -o image.jffs2 --pad=20971520 -e 128
+All of the OMAP3 boards were using 0x30000000. Probably copy paste effect? :)
+What's the point of reserving anything for NOR. If the board doesn't already
+have NOR it never will. Future board having NOR can have its own GPMC map.
+> 
+> I guess NOR can be also on other chipselects.. Not sure we can
+> standardize on any specific partition scheme?
 
-#
-# mount image file
-#
-modprobe mtdram total_size=20480 erase_size=128
-modprobe mtdblock
-dd if=image.jffs2 of=/dev/mtdblock0
-mount -t jffs2 /dev/mtdblock0 mnt
+Exactly.
 
-#
-# create 15Mb and 512Kb files
-# with random data
-#
-head -c 15m /dev/urandom >big
-head -c 512k /dev/urandom >small
+cheers,
+-roger
 
-#
-# Fill the jffs2 partition
-#  firstly add big file
-#  then add small files until ENOSPC occurred
-#
-cp big mnt/.
-N=1; while cp small mnt/small_$N; do N=$(( N + 1)); done
-
-echo
-echo 'The filesystem is filled completely'
-echo
-
-echo
-echo Test:
-echo
-
-rm -f mnt/small_1     # Remove file
-cp small mnt/small_1  # Try recreate the same.
-                      # But result will be "No space left on device"
-
--------------------- cut here -------------------------------------
-
-The last command will be finished with error: "No space left on device"
-I ran this script on openSUSE 12.3 (Dartmouth) (i586) with kernel 3.7.10
-
-Thanks
+> 
+> Regards,
+> 
+> Tony
+> 
+> 8< --------------------
+> --- a/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
+> +++ b/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
+> @@ -73,7 +73,8 @@
+>  };
+>  
+>  &gpmc {
+> -	ranges = <1 0 0x08000000 0x1000000>;	/* CS1: 16MB for LAN9221 */
+> +	ranges = <0 0 0x30000000 0x1000000	/* CS0: 16MB for NAND */
+> +		  1 0 0x2c000000 0x1000000>;	/* CS1: 16MB for LAN9221 */
+>  
+>  	ethernet@gpmc {
+>  		pinctrl-names = "default";
+> --- a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+> +++ b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+> @@ -35,7 +35,7 @@
+>  };
+>  
+>  &gpmc {
+> -	ranges = <0 0 0x08000000 0x1000000>;	/* CS0: 16MB for NAND */
+> +	ranges = <0 0 0x30000000 0x1000000>;	/* CS0: 16MB for NAND */
+>  
+>  	nand@0,0 {
+>  		compatible = "ti,omap2-nand";
+> 
