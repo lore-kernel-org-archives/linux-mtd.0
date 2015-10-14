@@ -1,21 +1,25 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmAzc-00039P-IZ
- for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 01:36:37 +0000
-Received: by pabws5 with SMTP id ws5so6706114pab.1
- for <linux-mtd@lists.infradead.org>; Tue, 13 Oct 2015 18:36:15 -0700 (PDT)
-Date: Tue, 13 Oct 2015 18:36:13 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Han Xu <han.xu@freescale.com>
-Subject: Re: [PATCH 1/2] mtd: fsl-quadspi: fix printk() format warning for
- size_t
-Message-ID: <20151014013613.GF107187@google.com>
-References: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
+ id 1ZmC9S-0000hy-Or
+ for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 02:50:52 +0000
+From: Yanjiantao <yanjiantao@hisilicon.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: "dmw2@infradead.org" <dmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Caizhiyong <caizhiyong@hisilicon.com>,
+ pengjiancheng <pengjiancheng@huawei.com>
+Subject: =?gb2312?B?tPC4tDogtPC4tDogW1BBVENIXSBtdGQ6IGNtZGxpbmVwYXJ0OiBhbGxvdyBm?=
+ =?gb2312?Q?ill-up_partition_at_any_point?=
+Date: Wed, 14 Oct 2015 02:48:49 +0000
+Message-ID: <A5C805F07496A54EAFF48B92DEC9C1057AECB222@SZXEMA501-MBX.china.huawei.com>
+References: <C3050A4DBA34F345975765E43127F10F62D61353@SZXEMA512-MBX.china.huawei.com>
+ <A5C805F07496A54EAFF48B92DEC9C1057AECB167@SZXEMA501-MBX.china.huawei.com>
+ <20151013175136.GX107187@google.com>
+In-Reply-To: <20151013175136.GX107187@google.com>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1444682116-4708-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +29,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 12, 2015 at 01:35:15PM -0700, Brian Norris wrote:
-> Seen when compile-testing on non-32-bit arch:
-> 
->     CC      drivers/mtd/spi-nor/fsl-quadspi.o
->   drivers/mtd/spi-nor/fsl-quadspi.c: In function 'fsl_qspi_read':
->   drivers/mtd/spi-nor/fsl-quadspi.c:873:2: warning: format '%d' expects argument of type 'int', but argument 6 has type 'size_t' [-Wformat=]
->     dev_dbg(q->dev, "cmd [%x],read from 0x%p, len:%d\n",
->     ^
-> 
-> Also drop the '0x' prefixing to the '%p' formatter, since %p already
-> knows how to format pointers appropriately.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Han Xu <han.xu@freescale.com>
-
-Pushed both to l2-mtd.git
+SGksIEJyaWFuLA0KVGhhbmsgeW91IGZvciB5b3VyIHJlcGx5IQ0KSSBub3RpY2VkIHRoZSBtaXN0
+YWtlIGJ5IHNlbmRpbmcgeW91IHRoZSAxc3QgZW1haWwgYXR0YWNoZWQgd2l0aCB0aGUgY21kbGlu
+ZXBhcnRzIGlzc3VlLCBzbyBJIHJlc2VuZCB5b3UgYSBuZXcgb25lLiBTb3JyeSBmb3IgdGhlIGlu
+Y29udmVuaWVudC4NCg0KVGhpcyBwcm9ibGVtIGlzIG5vdCBqdXN0IHRoZW9yZXRpY2FsLCB3ZSBj
+YW1lIHRvIG1lZXQgYmFkYmxvY2sgc2NhbnMgZmFpbCBpc3N1ZSB1c2luZyBzcGFuc2lvbiBuYW5k
+LCB3aGljaCBmYWN0b3J5IGJhZCBibG9jayBpcyBvbmx5IGluIG9uZSBieXRlIG9mIE9PQiwgYWxs
+IHRoZSBvdGhlciBieXRlcyBhcmUgYWxsIDB4RkZzLg0KQXMgeW91IHNheSwgbWF5YmUgdGhpcyBr
+aW5kIG9mIG5hbmQgZmxhc2ggaGFzIG5vdCBiZWVuIHN1cnBwb3RlZCBjb3JyZWN0bHkgeWV0LCBu
+byBiaWcgZGVhbC4NCg0KLS0tLS3Tyrz+1K28/i0tLS0tDQq3orz+yMs6IEJyaWFuIE5vcnJpcyBb
+bWFpbHRvOmNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbV0gDQq3osvNyrG85DogMjAxNcTqMTDU
+wjE0yNUgMTo1Mg0KytW8/sjLOiBZYW5qaWFudGFvDQqzrcvNOiBkbXcyQGluZnJhZGVhZC5vcmc7
+IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
+b3JnOyBDYWl6aGl5b25nOyBwZW5namlhbmNoZW5nDQrW98ziOiBSZTogtPC4tDogW1BBVENIXSBt
+dGQ6IGNtZGxpbmVwYXJ0OiBhbGxvdyBmaWxsLXVwIHBhcnRpdGlvbiBhdCBhbnkgcG9pbnQNCg0K
+SGksDQoNCkZpcnN0IG9mIGFsbCwgSSBkb24ndCBrbm93IHdoeSB0aGlzIG1lc3NhZ2UgaXMgaW4g
+cmVwbHkgdG8gdGhlICRzdWJqZWN0DQp0aHJlYWQuIEJhZCBibG9jayBtYXJrZXJzIGhhdmUgbm90
+aGluZyB0byBkbyB3aXRoIGNtZGxpbmVwYXJ0cy4NCg0KT24gVHVlLCBPY3QgMTMsIDIwMTUgYXQg
+MDg6NTM6MDRBTSArMDAwMCwgWWFuamlhbnRhbyB3cm90ZToNCj4gSGksDQo+IEluIGxpbnV4LTMu
+MTAgYW5kIGxhdGVyIGtlcm5lbCB2ZXJzaW9ucywgYmxvY2sgJ21hcmtiYWQnIG9yICdjaGVja2Jh
+ZCcgbWV0aG9kIGlzIHRvIG1hcmsgb3IgY2hlY2sgMXN0LCAybmQvbGFzdCBwYWdlLCB3aGljaCBk
+ZXBlbmRzIG9uIGNoaXAtPmJidF9vcHRpb25zOg0KPiBtYXJrYmFkIGZsb3dzIGlzIGFzIGZvbGxv
+d3M6DQo+ICAgICAgICAgICAgICAgICAvKiBXcml0ZSB0byBmaXJzdC9sYXN0IHBhZ2UocykgaWYg
+bmVjZXNzYXJ5ICovDQo+ICAgICAgICAgICAgICAgICBpZiAoY2hpcC0+YmJ0X29wdGlvbnMgJiBO
+QU5EX0JCVF9TQ0FOTEFTVFBBR0UpDQo+ICAgICAgICAgICAgICAgICAgICAgICAgIHdyX29mcyAr
+PSBtdGQtPmVyYXNlc2l6ZSAtIG10ZC0+d3JpdGVzaXplOw0KPiAgICAgICAgICAgICAgICAgZG8g
+ew0KPiAgICAgICAgICAgICAgICAgICAgICAgICByZXMgPSBuYW5kX2RvX3dyaXRlX29vYihtdGQs
+IHdyX29mcywgJm9wcyk7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGlmICghcmV0KQ0KPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldCA9IHJlczsNCj4gDQo+ICAgICAgICAg
+ICAgICAgICAgICAgICAgIGkrKzsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgd3Jfb2ZzICs9
+IG10ZC0+d3JpdGVzaXplOw0KPiAgICAgICAgICAgICAgICAgfSB3aGlsZSAoKGNoaXAtPmJidF9v
+cHRpb25zICYgTkFORF9CQlRfU0NBTjJORFBBR0UpICYmIGkgPCAyKTsNCj4gQ2hlY2sgYmFkIGZs
+b3dzIGlzIHRoZSBzYW1lLg0KPiANCj4gMS4gd2hlbiBOQU5EX0JCVF9TQ0FOTEFTVFBBR0UgaXMg
+c2V0LCBtYXJrYmFkIGFuZCBjaGVja2JhZCBvbiB0aGUgbGFzdCBwYWdlIG9ubHkuDQo+IDIuIHdo
+ZW4gTkFORF9CQlRfU0NBTjJORFBBR0UgaXMgc2V0LCBtYXJrYmFkIGFuZCBjaGVja2JhZCBvbiB0
+aGUgMXN0IGFuZCAybmQgcGFnZS4NCg0KU291bmRzIHJpZ2h0Lg0KDQo+IFF1ZXN0aW9uczoNCj4g
+MS4gZm9yIHNvbWUgTkFORCBGbGFzaCwgYmFkYmxvY2sgbWFya2VyIGlzIG9uIDFzdCBvciAybmQg
+b3IgbGFzdCBwYWdlKHNwYW5zaW9uKSwgaW4gdGhpcyBjYXNlICwgY2hlY2sgYmFkYmxvY2sgbXkg
+ZmFpbC4NCj4gMi4gZm9yIHNvbWUgTkFORCBGbGFzaCwgYmFkIGJsb2NrIG1hcmtlciBpcyBvbiAx
+c3Qgb3IgbGFzdCBwYWdlKGh5bml4IEgyN1VCRzhUMkNUUikgLCBpbiB0aGlzIGNhc2UsIGNoZWNr
+IGJhZGJsb2NrIG1heSBmYWlsIHRvby4NCj4gMy4gc2V0IE5BTkRfQkJUX1NDQU5MQVNUUEFHRSBt
+ZWFucyBvbmx5IG1hcmsgb3IgY2hlY2sgdGhlIGxhc3QgcGFnZSwgd2hpY2ggaXMgbm90IGNvbXBs
+aWFudCB3aXRoIFNBTVNVTkcvIFRPU0hJQkEvIEhZTklYL01JQ1JPTi9zcGFuc2lvbi4gdGhleSBj
+bGFpbSBiYWQgYmxvY2sgbWFya2VyIGlzIG9uIDFzdC8ybmQsIG9yIDFzdC9sYXN0LCBvciAxc3Qv
+Mm5kL2xhc3QsIG9yIHRoZSAxc3Qgb25seS4gDQoNCldlIHRyeSBvdXIgYmVzdCB0byBnZXQgdGhl
+IEJCTSBsb2NhdGlvbnMgY29ycmVjdC4gQnV0IHdlIGhhdmUNCmFja25vd2xlZGdlZCB0aGF0IHRo
+ZXJlIGFyZSBjb3JuZXIgY2FzZXMgb3V0IHRoZXJlIHRoYXQgd2UgZG9uJ3QgZ2V0DQpyaWdodC4g
+U28gZmFyLCBJIGd1ZXNzIG5vYm9keSByZWFsbHkgY2FyZXMuDQoNCkZXSVcsIGluIHByYWN0aWNl
+IGl0IHNlZW1zIHRoYXQgZXZlbiB3aGVuIHRoZSBkYXRhc2hlZXQgc2F5cyBzb21ldGhpbmcNCnNw
+ZWNpZmljIGxpa2UgdGhlIGRlc2NyaXB0aW9ucyB5b3UgbWVudGlvbiBhYm92ZSwgdGhlIGZhY3Rv
+cnkgcHJvY2Vzcw0KanVzdCBmdXNlcyBhbGwgYnl0ZXMgdG8gemVybyAobm90IGp1c3QgT09CLCBh
+bmQgbm90IGp1c3QgaW4gY2VydGFpbg0KcGFnZXM7IGJ1dCBBTEwgYnl0ZXMgaW4gdGhlIGZhY3Rv
+cnktbWFya2VkIGJhZCBibG9jaykuIEhhdmUgeW91IHNlZW4gYW55DQpmYWlsdXJlcyBhcyBhIHJl
+c3VsdCBvZiBiYWQgQkJNIHNjYW5zPyBPciBpcyB0aGUgcHJvYmxlbSBqdXN0DQp0aGVvcmV0aWNh
+bD8NCg0KQWxzbywgeW91IGNhbiByZWZlciB0byB0aGlzIChvbGQpIHRhYmxlIG9mIE5BTkQgZmxh
+c2ggWzFdIHRoYXQgSSBhbmQgYSBmZXcNCm90aGVycyBjYXRhbG9ndWVkLCBhbmQgaXQgbm90ZXMg
+YSBmZXcgZmxhc2ggdGhhdCBhcmUgbm90IHN1cHBvcnRlZA0KY29ycmVjdGx5LiBJdCBtYXkgYmUg
+YSBiaXQgb3V0IG9mIGRhdGUuDQoNCkJyaWFuDQoNClsxXSBodHRwOi8vbGludXgtbXRkLmluZnJh
+ZGVhZC5vcmcvbmFuZC1kYXRhL25hbmRkYXRhLmh0bWwNCg==
