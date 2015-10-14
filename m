@@ -1,23 +1,19 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmHqU-0004m5-60
- for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 08:55:39 +0000
-Subject: [PATCH v4 27/27] ARM: dts: omap3: Fix gpmc and NAND nodes
-To: <tony@atomide.com>
-References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
- <1442588029-13769-28-git-send-email-rogerq@ti.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
- <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <rogerq@ti.com>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <561E1869.7010406@ti.com>
-Date: Wed, 14 Oct 2015 11:55:05 +0300
-MIME-Version: 1.0
-In-Reply-To: <1442588029-13769-28-git-send-email-rogerq@ti.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Received: from lists.s-osg.org ([54.187.51.154])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZmHzy-0007hm-4g
+ for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 09:05:26 +0000
+From: Javier Martinez Canillas <javier@osg.samsung.com>
+To: linux-kernel@vger.kernel.org
+Cc: Fengguang Wu <fengguang.wu@intel.com>,
+ Luis de Bethencourt <luisbg@osg.samsung.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Jeremy Kerr <jk@ozlabs.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Neelesh Gupta <neelegup@linux.vnet.ibm.com>, Cyril Bur <cyrilbur@gmail.com>
+Subject: [PATCH] mtd: Make MTD_BCM47XXSFLASH to depend on MIPS
+Date: Wed, 14 Oct 2015 11:04:54 +0200
+Message-Id: <1444813494-14985-1-git-send-email-javier@osg.samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,313 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add compatible id, GPMC register resource and interrupt
-resource to NAND controller nodes.
+The bcm47xxsflash driver uses the KSEG0ADDR() function to map an address
+to a certain kernel segment. But that is only defined if the MIPS config
+symbol is enabled. The driver does not have an explicit dependency on it
+and relies on a transitive dependency relation:
 
-The GPMC driver now implements gpiochip and irqchip so
-enable gpio-controller and interrupt-controller properties.
+MTD_BCM47XXSFLASH -> BCMA_SFLASH -> BCMA_DRIVER_MIPS -> BCMA && MIPS
 
-With this the interrupt parent of NAND node changes so fix it
-accordingly.
+But BCMA_SFLASH and BCMA_DRIVER_MIPS have only runtime and not buildtime
+dependency with MIPS so can be changed to be built test using the config
+COMPILE_TEST symbol. But that would make MTD_BCM47XXSFLASH be built with
+MIPS not enabled and cause the following build error:
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
+drivers/mtd/devices//bcm47xxsflash.c: In function 'bcm47xxsflash_read':
+drivers/mtd/devices//bcm47xxsflash.c:112:2: error: implicit declaration of function 'KSEG0ADDR' [-Werror=implicit-function-declaration]
+  memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(b47s->window + from),
+  ^
+
+Make MTD_BCM47XXSFLASH depend on MIPS since has a buildtime dependency.
+
+Reported-by: Fengguang Wu <fengguang.wu@intel.com>
+Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
+
 ---
 
-v4: Applied Tony's patch to fix broken ethernet on torpedo.
+ drivers/mtd/devices/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-updated v4 series available at
-
-git@github.com:rogerq/linux.git
- * [branch]      for-v4.4/gpmc-v4
-
- arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts | 3 ++-
- arch/arm/boot/dts/logicpd-torpedo-som.dtsi        | 7 +++++--
- arch/arm/boot/dts/omap3-beagle.dts                | 2 ++
- arch/arm/boot/dts/omap3-cm-t3x.dtsi               | 5 ++++-
- arch/arm/boot/dts/omap3-devkit8000-common.dtsi    | 3 +++
- arch/arm/boot/dts/omap3-evm-37xx.dts              | 7 +++++--
- arch/arm/boot/dts/omap3-gta04.dtsi                | 3 +++
- arch/arm/boot/dts/omap3-igep.dtsi                 | 5 ++++-
- arch/arm/boot/dts/omap3-igep0020-common.dtsi      | 4 ++--
- arch/arm/boot/dts/omap3-igep0030-common.dtsi      | 4 ++++
- arch/arm/boot/dts/omap3-ldp.dts                   | 9 ++++++---
- arch/arm/boot/dts/omap3-lilly-a83x.dtsi           | 5 ++++-
- arch/arm/boot/dts/omap3-pandora-common.dtsi       | 3 +++
- arch/arm/boot/dts/omap3-tao3530.dtsi              | 5 ++++-
- arch/arm/boot/dts/omap3.dtsi                      | 4 ++++
- arch/arm/boot/dts/omap3430-sdp.dts                | 5 ++++-
- 16 files changed, 59 insertions(+), 15 deletions(-)
-
-diff --git a/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts b/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
-index 91146c3..20e157d 100644
---- a/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
-+++ b/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
-@@ -73,7 +73,8 @@
- };
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index f73c41697a00..f5eab3c19356 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -114,7 +114,7 @@ config MTD_SST25L
  
- &gpmc {
--	ranges = <1 0 0x08000000 0x1000000>;	/* CS1: 16MB for LAN9221 */
-+	ranges = <0 0 0x30000000 0x1000000	/* CS0: 16MB for NAND */
-+		  1 0 0x2c000000 0x1000000>;	/* CS1: 16MB for LAN9221 */
- 
- 	ethernet@gpmc {
- 		pinctrl-names = "default";
-diff --git a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
-index 36387b1..f108e55 100644
---- a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
-+++ b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
-@@ -35,11 +35,14 @@
- };
- 
- &gpmc {
--	ranges = <0 0 0x00000000 0x1000000>;	/* CS0: 16MB for NAND */
-+	ranges = <0 0 0x30000000 0x1000000>;	/* CS0: 16MB for NAND */
- 
- 	nand@0,0 {
--		linux,mtd-name = "micron,mt29f4g16abbda3w";
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
-+		linux,mtd-name = "micron,mt29f4g16abbda3w";
- 		nand-bus-width = <16>;
- 		ti,nand-ecc-opt = "bch8";
- 		gpmc,sync-clk-ps = <0>;
-diff --git a/arch/arm/boot/dts/omap3-beagle.dts b/arch/arm/boot/dts/omap3-beagle.dts
-index 67659a0..9b145dd 100644
---- a/arch/arm/boot/dts/omap3-beagle.dts
-+++ b/arch/arm/boot/dts/omap3-beagle.dts
-@@ -384,7 +384,9 @@
- 
- 	/* Chip select 0 */
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>;		/* NAND I/O window, 4 bytes */
-+		interrupt-parent = <&intc>;
- 		interrupts = <20>;
- 		ti,nand-ecc-opt = "ham1";
- 		nand-bus-width = <16>;
-diff --git a/arch/arm/boot/dts/omap3-cm-t3x.dtsi b/arch/arm/boot/dts/omap3-cm-t3x.dtsi
-index 4d091ca..e9d7e28 100644
---- a/arch/arm/boot/dts/omap3-cm-t3x.dtsi
-+++ b/arch/arm/boot/dts/omap3-cm-t3x.dtsi
-@@ -261,10 +261,13 @@
- };
- 
- &gpmc {
--	ranges = <0 0 0x00000000 0x01000000>;
-+	ranges = <0 0 0x30000000 0x01000000>;	/* CS0: 16MB for NAND */
- 
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>;	/* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
- 		nand-bus-width = <8>;
- 		gpmc,device-width = <1>;
- 		ti,nand-ecc-opt = "sw";
-diff --git a/arch/arm/boot/dts/omap3-devkit8000-common.dtsi b/arch/arm/boot/dts/omap3-devkit8000-common.dtsi
-index 9ca2865..e7b46ad 100644
---- a/arch/arm/boot/dts/omap3-devkit8000-common.dtsi
-+++ b/arch/arm/boot/dts/omap3-devkit8000-common.dtsi
-@@ -204,7 +204,10 @@
- 	ranges = <0 0 0x30000000 0x1000000>;       /* CS0: 16MB for NAND */
- 
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
- 		nand-bus-width = <16>;
- 		gpmc,device-width = <2>;
- 		ti,nand-ecc-opt = "sw";
-diff --git a/arch/arm/boot/dts/omap3-evm-37xx.dts b/arch/arm/boot/dts/omap3-evm-37xx.dts
-index 16e8ce3..7081e07 100644
---- a/arch/arm/boot/dts/omap3-evm-37xx.dts
-+++ b/arch/arm/boot/dts/omap3-evm-37xx.dts
-@@ -154,12 +154,15 @@
- };
- 
- &gpmc {
--	ranges = <0 0 0x00000000 0x1000000>,	/* CS0: 16MB for NAND */
-+	ranges = <0 0 0x30000000 0x1000000>,	/* CS0: 16MB for NAND */
- 		 <5 0 0x2c000000 0x01000000>;
- 
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
-+		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
- 		linux,mtd-name= "hynix,h8kds0un0mer-4em";
--		reg = <0 0 4>;	/* CS0, offset 0, IO size 4 */
- 		nand-bus-width = <16>;
- 		gpmc,device-width = <2>;
- 		ti,nand-ecc-opt = "bch8";
-diff --git a/arch/arm/boot/dts/omap3-gta04.dtsi b/arch/arm/boot/dts/omap3-gta04.dtsi
-index 7166d88..4c48b31 100644
---- a/arch/arm/boot/dts/omap3-gta04.dtsi
-+++ b/arch/arm/boot/dts/omap3-gta04.dtsi
-@@ -492,7 +492,10 @@
- 	ranges = <0 0 0x30000000 0x1000000>; /* CS0: 16MB for NAND */
- 
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
- 		nand-bus-width = <16>;
- 		ti,nand-ecc-opt = "bch8";
- 
-diff --git a/arch/arm/boot/dts/omap3-igep.dtsi b/arch/arm/boot/dts/omap3-igep.dtsi
-index 2230e1c..d4dff72 100644
---- a/arch/arm/boot/dts/omap3-igep.dtsi
-+++ b/arch/arm/boot/dts/omap3-igep.dtsi
-@@ -95,8 +95,11 @@
- 
- &gpmc {
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
-+		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
- 		linux,mtd-name= "micron,mt29c4g96maz";
--		reg = <0 0 4>;	/* CS0, offset 0, IO size 4 */
- 		nand-bus-width = <16>;
- 		gpmc,device-width = <2>;
- 		ti,nand-ecc-opt = "bch8";
-diff --git a/arch/arm/boot/dts/omap3-igep0020-common.dtsi b/arch/arm/boot/dts/omap3-igep0020-common.dtsi
-index 5ad688c..eecd7a8 100644
---- a/arch/arm/boot/dts/omap3-igep0020-common.dtsi
-+++ b/arch/arm/boot/dts/omap3-igep0020-common.dtsi
-@@ -210,8 +210,8 @@
- };
- 
- &gpmc {
--	ranges = <0 0 0x00000000 0x20000000>,
--		 <5 0 0x2c000000 0x01000000>;
-+	ranges = <0 0 0x30000000 0x01000000>,	/* CS0: 16MB for NAND */
-+		 <5 0 0x2c000000 0x01000000>;	/* CS5: 16MB for ethernet */
- 
- 	ethernet@gpmc {
- 		pinctrl-names = "default";
-diff --git a/arch/arm/boot/dts/omap3-igep0030-common.dtsi b/arch/arm/boot/dts/omap3-igep0030-common.dtsi
-index 0cb1527..c5d8210 100644
---- a/arch/arm/boot/dts/omap3-igep0030-common.dtsi
-+++ b/arch/arm/boot/dts/omap3-igep0030-common.dtsi
-@@ -58,3 +58,7 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&uart2_pins>;
- };
-+
-+&gpmc {
-+	ranges = <0 0 0x30000000 0x01000000>;   /* CS0: 16MB for NAND */
-+};
-diff --git a/arch/arm/boot/dts/omap3-ldp.dts b/arch/arm/boot/dts/omap3-ldp.dts
-index bd6e676..fb86131 100644
---- a/arch/arm/boot/dts/omap3-ldp.dts
-+++ b/arch/arm/boot/dts/omap3-ldp.dts
-@@ -97,12 +97,15 @@
- };
- 
- &gpmc {
--	ranges = <0 0 0x00000000 0x01000000>,
--		 <1 0 0x08000000 0x01000000>;
-+	ranges = <0 0 0x30000000 0x1000000>,	/* CS0 space, 16MB */
-+		 <1 0 0x08000000 0x1000000>;	/* CS1 space, 16MB */
- 
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
-+		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
- 		linux,mtd-name= "micron,nand";
--		reg = <0 0 4>;	/* CS0, offset 0, IO size 4 */
- 		nand-bus-width = <16>;
- 		gpmc,device-width = <2>;
- 		ti,nand-ecc-opt = "bch8";
-diff --git a/arch/arm/boot/dts/omap3-lilly-a83x.dtsi b/arch/arm/boot/dts/omap3-lilly-a83x.dtsi
-index d0dd036..abc39f4 100644
---- a/arch/arm/boot/dts/omap3-lilly-a83x.dtsi
-+++ b/arch/arm/boot/dts/omap3-lilly-a83x.dtsi
-@@ -362,7 +362,10 @@
- 		<7 0 0x15000000 0x01000000>;
- 
- 	nand@0,0 {
--		reg = <0 0 4>;	/* CS0, offset 0, IO size 4 */
-+		compatible = "ti,omap2-nand";
-+		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
- 		nand-bus-width = <16>;
- 		ti,nand-ecc-opt = "bch8";
- 		/* no elm on omap3 */
-diff --git a/arch/arm/boot/dts/omap3-pandora-common.dtsi b/arch/arm/boot/dts/omap3-pandora-common.dtsi
-index f2084e6..11ada97 100644
---- a/arch/arm/boot/dts/omap3-pandora-common.dtsi
-+++ b/arch/arm/boot/dts/omap3-pandora-common.dtsi
-@@ -546,7 +546,10 @@
- 	ranges = <0 0 0x30000000 0x1000000>; /* CS0: 16MB for NAND */
- 
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
- 		nand-bus-width = <16>;
- 		ti,nand-ecc-opt = "sw";
- 
-diff --git a/arch/arm/boot/dts/omap3-tao3530.dtsi b/arch/arm/boot/dts/omap3-tao3530.dtsi
-index 7bd8d9a..838e0da 100644
---- a/arch/arm/boot/dts/omap3-tao3530.dtsi
-+++ b/arch/arm/boot/dts/omap3-tao3530.dtsi
-@@ -275,10 +275,13 @@
- };
- 
- &gpmc {
--	ranges = <0 0 0x00000000 0x01000000>;
-+	ranges = <0 0 0x30000000 0x01000000>;	/* CS0: 16MB for NAND */
- 
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
- 		nand-bus-width = <16>;
- 		gpmc,device-width = <2>;	/* GPMC_DEVWIDTH_16BIT */
- 		ti,nand-ecc-opt = "sw";
-diff --git a/arch/arm/boot/dts/omap3.dtsi b/arch/arm/boot/dts/omap3.dtsi
-index 8a2b253..7f212b6 100644
---- a/arch/arm/boot/dts/omap3.dtsi
-+++ b/arch/arm/boot/dts/omap3.dtsi
-@@ -721,6 +721,10 @@
- 			gpmc,num-waitpins = <4>;
- 			#address-cells = <2>;
- 			#size-cells = <1>;
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
- 		};
- 
- 		usb_otg_hs: usb_otg_hs@480ab000 {
-diff --git a/arch/arm/boot/dts/omap3430-sdp.dts b/arch/arm/boot/dts/omap3430-sdp.dts
-index 16b0cdf..3f113c5 100644
---- a/arch/arm/boot/dts/omap3430-sdp.dts
-+++ b/arch/arm/boot/dts/omap3430-sdp.dts
-@@ -103,10 +103,13 @@
- 	};
- 
- 	nand@1,0 {
-+		compatible = "ti,omap2-nand";
-+		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&intc>;
-+		interrupts = <20>;
- 		linux,mtd-name= "micron,mt29f1g08abb";
- 		#address-cells = <1>;
- 		#size-cells = <1>;
--		reg = <1 0 4>;	/* CS1, offset 0, IO size 4 */
- 		ti,nand-ecc-opt = "sw";
- 		nand-bus-width = <8>;
- 		gpmc,cs-on-ns = <0>;
+ config MTD_BCM47XXSFLASH
+ 	tristate "R/O support for serial flash on BCMA bus"
+-	depends on BCMA_SFLASH
++	depends on BCMA_SFLASH && MIPS
+ 	help
+ 	  BCMA bus can have various flash memories attached, they are
+ 	  registered by bcma as platform devices. This enables driver for
 -- 
-2.1.4
+2.4.3
