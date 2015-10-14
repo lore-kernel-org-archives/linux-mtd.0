@@ -1,22 +1,27 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmOtH-0001x4-QJ
- for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 16:27:00 +0000
-Received: by pabur7 with SMTP id ur7so9657392pab.3
- for <linux-mtd@lists.infradead.org>; Wed, 14 Oct 2015 09:26:39 -0700 (PDT)
-Date: Wed, 14 Oct 2015 09:26:36 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: han.xu@freescale.com, linux-mtd@lists.infradead.org,
- Fabio Estevam <fabio.estevam@freescale.com>
-Subject: Re: [PATCH] mtd: fsl-quadspi: Include <linux/sizes.h> to avoid build
- error
-Message-ID: <20151014162636.GH107187@google.com>
-References: <1444793984-21655-1-git-send-email-festevam@gmail.com>
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZmQYr-00036Z-7x
+ for linux-mtd@lists.infradead.org; Wed, 14 Oct 2015 18:14:01 +0000
+Date: Wed, 14 Oct 2015 11:13:38 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: "Franklin S Cooper Jr." <fcooper@ti.com>
+Cc: Roger Quadros <rogerq@ti.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org, nsekhar@ti.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH 1/5] mtd: nand: omap2: Support parsing dma channel
+ information from DT
+Message-ID: <20151014181337.GF10113@atomide.com>
+References: <1444700338-27582-1-git-send-email-fcooper@ti.com>
+ <1444700338-27582-2-git-send-email-fcooper@ti.com>
+ <561E3E4F.9020302@ti.com> <561E41EB.3050005@ti.com>
+ <561E5803.5090609@ti.com> <561E629F.5070202@ti.com>
+ <561E6791.3030404@ti.com> <20151014161813.GC10113@atomide.com>
+ <561E8184.6020206@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1444793984-21655-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <561E8184.6020206@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +31,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 14, 2015 at 12:39:44AM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
+* Franklin S Cooper Jr. <fcooper@ti.com> [151014 09:27]:
 > 
-> Building for x86 results in the following build errors:
 > 
->    drivers/mtd/spi-nor/fsl-quadspi.c: In function 'fsl_qspi_init_lut':
-> >> drivers/mtd/spi-nor/fsl-quadspi.c:355:21: error: 'SZ_16M' undeclared (first use in this function)
->      if (q->nor_size <= SZ_16M) {
->                         ^
->    drivers/mtd/spi-nor/fsl-quadspi.c:355:21: note: each undeclared identifier is reported only once for each function it appears in
->    drivers/mtd/spi-nor/fsl-quadspi.c: In function 'fsl_qspi_read':
-> >> drivers/mtd/spi-nor/fsl-quadspi.c:208:27: error: 'SZ_4M' undeclared (first use in this function)
->     #define QUADSPI_MIN_IOMAP SZ_4M
->                               ^
-> >> drivers/mtd/spi-nor/fsl-quadspi.c:845:25: note: in expansion of macro 'QUADSPI_MIN_IOMAP'
->       q->memmap_len = len > QUADSPI_MIN_IOMAP ? len : QUADSPI_MIN_IOMAP;
+> On 10/14/2015 11:18 AM, Tony Lindgren wrote:
+> > * Franklin S Cooper Jr. <fcooper@ti.com> [151014 07:37]:
+> >>
+> >> On 10/14/2015 09:11 AM, Roger Quadros wrote:
+> >>> On 14/10/15 16:26, Franklin S Cooper Jr. wrote:
+> >>>> On 10/14/2015 06:52 AM, Roger Quadros wrote:
+> >>>>> Franklin,
+> >>>>>
+> >>>>> On 14/10/15 14:36, Roger Quadros wrote:
+> >>>>>> On 13/10/15 04:38, Franklin S Cooper Jr wrote:
+> >>>>>>> Switch from dma_request_channel to allow passing dma channel
+> >>>>>>> information from DT rather than hardcoding a value.
+> >>>>>>>
+> >>>>>>> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+> >>>>>> Acked-by: Roger Quadros <rogerq@ti.com>
+> >>>>>>
+> >>>>>>> ---
+> >>>>>>>  drivers/mtd/nand/omap2.c | 4 +++-
+> >>>>>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+> >>>>>>>
+> >>>>>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> >>>>>>> index d0f2620..957c32f 100644
+> >>>>>>> --- a/drivers/mtd/nand/omap2.c
+> >>>>>>> +++ b/drivers/mtd/nand/omap2.c
+> >>>>>>> @@ -1866,7 +1866,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+> >>>>>>>  		dma_cap_zero(mask);
+> >>>>>>>  		dma_cap_set(DMA_SLAVE, mask);
+> >>>>>>>  		sig = OMAP24XX_DMA_GPMC;
+> >>>>>>> -		info->dma = dma_request_channel(mask, omap_dma_filter_fn, &sig);
+> >>>>>>> +		info->dma = dma_request_slave_channel_compat(mask,
+> >>>>>>> +			omap_dma_filter_fn, &sig, pdev->dev.parent, "rxtx");
+> >>>>>>> +
+> >>>>> Just discovered that you are using the parent device node.
+> >>>>>
+> >>>>> How about moving the dma bindings to the nand node instead and using
+> >>>>> pdev->dev here?
+> >>>> Roger,
+> >>>>
+> >>>> From what I can tell the interrupt number and the dma channel will always be
+> >>>> the same no matter what. Doesn't matter if you have multiple nands or a
+> >>>> combination of nands and nors. Since that is the case I think it just makes
+> >>>> sense to leave it in the gpmc parent node and define it once.
+> >>> Is prefetch/writepost dma used for NOR or any other GPMC peripheral
+> >>> or only for NAND?
+> >> The dma seems tied to the prefetch. From what I can tell the prefetch is only
+> >> used by nand.
+> >>> Let's also get Tony's inputs on this.
+> >> Sure.
+> > Hmm so what would keep other devices from using the prefetch
+> Looking at the TRM any references to the prefetch are always with respect to
+> NAND.
 > 
-> Explicitly include <linux/sizes.h> to fix the problem.
-> 
-> Reported-by: kbuild test robot <fengguang.wu@intel.com>
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> I also see the below mentioned in the TRM.
+> Pre-fetch and write posting engine associated with system DMA to get full performance from NAND
+> device with minimum impact on NOR/SRAM concurrent access.
 
-Applied to l2-mtd.git. Thanks.
+OK up to you guys to figure out if it may be usable in a generic way then :)
+
+Regards,
+
+Tony
