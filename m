@@ -1,17 +1,14 @@
-Received: from mx1.kapsi.fi ([2001:1bc8:1004::1:25] helo=mail.kapsi.fi)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmcFz-0008Eh-6V
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 06:43:19 +0000
-From: Mikko Rapeli <mikko.rapeli@iki.fi>
-To: linux-kernel@vger.kernel.org
-Cc: mikko.rapeli@iki.fi, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-api@vger.kernel.org
-Subject: [PATCH v4 70/79] include/uapi/mtd/mtd-user.h: remove stdint.h include
-Date: Thu, 15 Oct 2015 07:56:48 +0200
-Message-Id: <1444888618-4506-71-git-send-email-mikko.rapeli@iki.fi>
-In-Reply-To: <1444888618-4506-1-git-send-email-mikko.rapeli@iki.fi>
-References: <1444888618-4506-1-git-send-email-mikko.rapeli@iki.fi>
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
+To: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>, zmxu@marvell.com,
+ jszhang@marvell.com, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/4] mtd: nand: allow compile test of MTD_NAND_PXA3xx
+Date: Thu, 15 Oct 2015 09:17:28 +0200
+Message-Id: <1444893451-16610-2-git-send-email-antoine.tenart@free-electrons.com>
+In-Reply-To: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
+References: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +18,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kernel headers should use linux/types.h instead.
+Allow compile test of the MTD_NAND_PXA3xx nand driver.
 
-Signed-off-by: Mikko Rapeli <mikko.rapeli@iki.fi>
+Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 ---
- include/uapi/mtd/mtd-user.h | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mtd/nand/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/uapi/mtd/mtd-user.h b/include/uapi/mtd/mtd-user.h
-index 83327c8..e71d555 100644
---- a/include/uapi/mtd/mtd-user.h
-+++ b/include/uapi/mtd/mtd-user.h
-@@ -20,8 +20,6 @@
- #ifndef __MTD_USER_H__
- #define __MTD_USER_H__
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 3324281d1f53..0d3b7c442928 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -329,7 +329,7 @@ config MTD_NAND_ATMEL
  
--#include <stdint.h>
--
- /* This file is blessed for inclusion by userspace */
- #include <mtd/mtd-abi.h>
- 
+ config MTD_NAND_PXA3xx
+ 	tristate "NAND support on PXA3xx and Armada 370/XP"
+-	depends on PXA3xx || ARCH_MMP || PLAT_ORION
++	depends on PXA3xx || ARCH_MMP || PLAT_ORION || COMPILE_TEST
+ 	help
+ 	  This enables the driver for the NAND flash device found on
+ 	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
 -- 
-2.5.0
+2.6.1
