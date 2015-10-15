@@ -1,20 +1,27 @@
-Date: Thu, 15 Oct 2015 11:04:28 -0600
-From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>,
- Rafa?? Mi??ecki <zajec5@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, jogo@openwrt.org
-Subject: Re: [PATCH] mtd: document linux-specific partition parser DT binding
-Message-ID: <20151015170428.GA9250@obsidianresearch.com>
-References: <1444915191-28350-1-git-send-email-linus.walleij@linaro.org>
- <20151015162210.GA4545@localhost>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zmm5i-00018I-Kz
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 17:13:23 +0000
+From: "Franklin S Cooper Jr." <fcooper@ti.com>
+To: Roger Quadros <rogerq@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <nsekhar@ti.com>, <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
+ Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 1/5] mtd: nand: omap2: Support parsing dma channel
+ information from DT
+References: <1444700338-27582-1-git-send-email-fcooper@ti.com>
+ <1444700338-27582-2-git-send-email-fcooper@ti.com> <561E3E4F.9020302@ti.com>
+ <561E41EB.3050005@ti.com> <561E5803.5090609@ti.com> <561E629F.5070202@ti.com>
+ <561E6791.3030404@ti.com> <20151014161813.GC10113@atomide.com>
+ <561E8184.6020206@ti.com> <20151014181337.GF10113@atomide.com>
+ <561EB4FB.8040709@ti.com> <561F573D.6010704@ti.com>
+Message-ID: <561FDE7D.2030307@ti.com>
+Date: Thu, 15 Oct 2015 12:12:29 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151015162210.GA4545@localhost>
+In-Reply-To: <561F573D.6010704@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +31,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 15, 2015 at 09:22:10AM -0700, Brian Norris wrote:
 
-> Are you trying to use this binding, or is this just purely a mechanical
-> documentation issue? I ask, because it seems that binding never really
-> got reviewed at all, and others have recently tried to extend
-> support
 
-I wrote it before ARM started down the DT direction and all these
-formalities were developed.
-
-> That's not to say we can't document the old one, but I'm curious if
-> there are real users. I'd also like to encourage new users to avoid the
-> old one if we can make that feasible.
-
-We continue to use it here, there is just no way to autodetect flash
-partition layouts. I'm not fussed about having to change to something
-else in future.
-
-The reason the original patch exposed the cmdline parser is because
-that is how the internal mechanisms work - but realistically, the
-cmdline parser is a hack to get around the lack of DT partition
-description. If the DT can describe the partitions it should supersede
-and obsolete the old command line hack. IMHO
-
-> Also, if we're really going to support this, we should list exactly what
-> strings we support. And that's one of the problems with the existing
-> binding; it supports any old string Linux supports, which doesn't match
-> how we typically want to add bindings (i.e., via proposal + review).
-
-That is why it is prefixed with linux, the review of the part parser name is
-the responsibility of the MTD crew, not the DT folks.
-
-bcm47xxpart seems like a terrible name for a partition scheme. Really,
-almost any scheme can be used on any SOC, naming a partition parser
-after a SOC family makes very little sense to me..
-
-Jason
+On 10/15/2015 02:35 AM, Roger Quadros wrote:
+> On 14/10/15 23:03, Franklin S Cooper Jr. wrote:
+>>
+>> On 10/14/2015 01:13 PM, Tony Lindgren wrote:
+>>> * Franklin S Cooper Jr. <fcooper@ti.com> [151014 09:27]:
+>>>> On 10/14/2015 11:18 AM, Tony Lindgren wrote:
+>>>>> * Franklin S Cooper Jr. <fcooper@ti.com> [151014 07:37]:
+>>>>>> On 10/14/2015 09:11 AM, Roger Quadros wrote:
+>>>>>>> On 14/10/15 16:26, Franklin S Cooper Jr. wrote:
+>>>>>>>> On 10/14/2015 06:52 AM, Roger Quadros wrote:
+>>>>>>>>> Franklin,
+>>>>>>>>>
+>>>>>>>>> On 14/10/15 14:36, Roger Quadros wrote:
+>>>>>>>>>> On 13/10/15 04:38, Franklin S Cooper Jr wrote:
+>>>>>>>>>>> Switch from dma_request_channel to allow passing dma channel
+>>>>>>>>>>> information from DT rather than hardcoding a value.
+>>>>>>>>>>>
+>>>>>>>>>>> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+>>>>>>>>>> Acked-by: Roger Quadros <rogerq@ti.com>
+>>>>>>>>>>
+>>>>>>>>>>> ---
+>>>>>>>>>>>  drivers/mtd/nand/omap2.c | 4 +++-
+>>>>>>>>>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>>>>>>>>>>
+>>>>>>>>>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>>>>>>>>>>> index d0f2620..957c32f 100644
+>>>>>>>>>>> --- a/drivers/mtd/nand/omap2.c
+>>>>>>>>>>> +++ b/drivers/mtd/nand/omap2.c
+>>>>>>>>>>> @@ -1866,7 +1866,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+>>>>>>>>>>>  		dma_cap_zero(mask);
+>>>>>>>>>>>  		dma_cap_set(DMA_SLAVE, mask);
+>>>>>>>>>>>  		sig = OMAP24XX_DMA_GPMC;
+>>>>>>>>>>> -		info->dma = dma_request_channel(mask, omap_dma_filter_fn, &sig);
+>>>>>>>>>>> +		info->dma = dma_request_slave_channel_compat(mask,
+>>>>>>>>>>> +			omap_dma_filter_fn, &sig, pdev->dev.parent, "rxtx");
+>>>>>>>>>>> +
+>>>>>>>>> Just discovered that you are using the parent device node.
+>>>>>>>>>
+>>>>>>>>> How about moving the dma bindings to the nand node instead and using
+>>>>>>>>> pdev->dev here?
+>>>>>>>> Roger,
+>>>>>>>>
+>>>>>>>> From what I can tell the interrupt number and the dma channel will always be
+>>>>>>>> the same no matter what. Doesn't matter if you have multiple nands or a
+>>>>>>>> combination of nands and nors. Since that is the case I think it just makes
+>>>>>>>> sense to leave it in the gpmc parent node and define it once.
+>>>>>>> Is prefetch/writepost dma used for NOR or any other GPMC peripheral
+>>>>>>> or only for NAND?
+>>>>>> The dma seems tied to the prefetch. From what I can tell the prefetch is only
+>>>>>> used by nand.
+>>>>>>> Let's also get Tony's inputs on this.
+>>>>>> Sure.
+>>>>> Hmm so what would keep other devices from using the prefetch
+>>>> Looking at the TRM any references to the prefetch are always with respect to
+>>>> NAND.
+>>>>
+>>>> I also see the below mentioned in the TRM.
+>>>> Pre-fetch and write posting engine associated with system DMA to get full performance from NAND
+>>>> device with minimum impact on NOR/SRAM concurrent access.
+>>> OK up to you guys to figure out if it may be usable in a generic way then :)
+>> Ok I just got clarification from hw folks. DMA for GPMC can be used for any of the
+>> various modes. But the prefetch is specific to NAND.
+> In that case the dma information must be in the GPMC node.
+Ok I'll be sending a v2 patchset soon but I'll be leaving this as is.
+>
+> cheers,
+> -roger
