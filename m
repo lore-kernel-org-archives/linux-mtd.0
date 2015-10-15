@@ -1,18 +1,20 @@
-Date: Thu, 15 Oct 2015 09:22:10 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Liviu Dudau <Liviu.Dudau@arm.com>, Rafa?? Mi??ecki <zajec5@gmail.com>,
+Date: Thu, 15 Oct 2015 11:04:28 -0600
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>,
+ Rafa?? Mi??ecki <zajec5@gmail.com>,
  Hauke Mehrtens <hauke@hauke-m.de>, jogo@openwrt.org
 Subject: Re: [PATCH] mtd: document linux-specific partition parser DT binding
-Message-ID: <20151015162210.GA4545@localhost>
+Message-ID: <20151015170428.GA9250@obsidianresearch.com>
 References: <1444915191-28350-1-git-send-email-linus.walleij@linaro.org>
+ <20151015162210.GA4545@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1444915191-28350-1-git-send-email-linus.walleij@linaro.org>
+In-Reply-To: <20151015162210.GA4545@localhost>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,72 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ others
+On Thu, Oct 15, 2015 at 09:22:10AM -0700, Brian Norris wrote:
 
-Hi Linus,
+> Are you trying to use this binding, or is this just purely a mechanical
+> documentation issue? I ask, because it seems that binding never really
+> got reviewed at all, and others have recently tried to extend
+> support
 
-On Thu, Oct 15, 2015 at 03:19:51PM +0200, Linus Walleij wrote:
-> The Linux code in drivers/mtd/maps/physmap_of.c will optionally
-> look for this binding for hints on a partition type to look for
-> in the MTD. It was added in commit 9d5da3a9b849
-> "mtd: extend physmap_of to let the device tree specify the parition probe"
-> but no corresponding device tree binding was added. Fix this.
-> 
-> Cc: devicetree@vger.kernel.org
-> Cc: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-> Cc: Liviu Dudau <Liviu.Dudau@arm.com>
-> Reported-by: Liviu Dudau <Liviu.Dudau@arm.com>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+I wrote it before ARM started down the DT direction and all these
+formalities were developed.
 
-Are you trying to use this binding, or is this just purely a mechanical
-documentation issue? I ask, because it seems that binding never really
-got reviewed at all, and others have recently tried to extend support
-for it generically [1], but a few objections came up [2][3].
+> That's not to say we can't document the old one, but I'm curious if
+> there are real users. I'd also like to encourage new users to avoid the
+> old one if we can make that feasible.
 
-Unfortunately I/we dropped the ball a bit on that thread, but we'd
-ideally like to address those concerns in a new binding that is
-supported for all MTDs, and deprecate the old one. The new one would
-probably not directly use the parser name as used by Linux, but define
-some list of compatible strings that fit DT conventions better. Also, I
-don't want people including things like "cmdlinepart" in DT, but it
-should be available as an override if necessary. IOW, DT shouldn't
-supersede the kernel command line.
+We continue to use it here, there is just no way to autodetect flash
+partition layouts. I'm not fussed about having to change to something
+else in future.
 
-That's not to say we can't document the old one, but I'm curious if
-there are real users. I'd also like to encourage new users to avoid the
-old one if we can make that feasible.
+The reason the original patch exposed the cmdline parser is because
+that is how the internal mechanisms work - but realistically, the
+cmdline parser is a hack to get around the lack of DT partition
+description. If the DT can describe the partitions it should supersede
+and obsolete the old command line hack. IMHO
 
-> ---
->  Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> index 4a0a48bf4ecb..0dee084651da 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> +++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> @@ -26,6 +26,9 @@ file systems on embedded devices.
->   - linux,mtd-name: allow to specify the mtd name for retro capability with
->     physmap-flash drivers as boot loader pass the mtd partition via the old
->     device name physmap-flash.
-> + - linux,part-probe: a flash partition type to look for, using the
-> +   Linux-internal partition naming scheme, e.g. "afs" for the ARM
-> +   Flash footers.
+> Also, if we're really going to support this, we should list exactly what
+> strings we support. And that's one of the problems with the existing
+> binding; it supports any old string Linux supports, which doesn't match
+> how we typically want to add bindings (i.e., via proposal + review).
 
-IIUC, this property actually supports a list of parsers, not just a
-single partition type.
+That is why it is prefixed with linux, the review of the part parser name is
+the responsibility of the MTD crew, not the DT folks.
 
-Also, if we're really going to support this, we should list exactly what
-strings we support. And that's one of the problems with the existing
-binding; it supports any old string Linux supports, which doesn't match
-how we typically want to add bindings (i.e., via proposal + review).
+bcm47xxpart seems like a terrible name for a partition scheme. Really,
+almost any scheme can be used on any SOC, naming a partition parser
+after a SOC family makes very little sense to me..
 
->   - use-advanced-sector-protection: boolean to enable support for the
->     advanced sector protection (Spansion: PPB - Persistent Protection
->     Bits) locking.
-
-Brian
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2015-May/059226.html
-[2] http://lists.infradead.org/pipermail/linux-mtd/2015-May/059276.html
-[3] Tail end of Arnd's comments here:
-    http://thread.gmane.org/gmane.linux.drivers.devicetree/122479/focus=122788
+Jason
