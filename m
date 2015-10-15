@@ -1,19 +1,18 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmZtx-0002pj-QH
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 04:12:27 +0000
+ id 1ZmZtz-0002pf-58
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 04:12:29 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <david@sigma-star.at>, <dedekind1@gmail.com>, <richard@nod.at>,
  <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 21/27] ubifs: introduce lprops lib
-Date: Thu, 15 Oct 2015 12:04:44 +0800
-Message-ID: <1444881890-4012-22-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 23/27] ubifs: ubifs_dump: dump lpt area
+Date: Thu, 15 Oct 2015 12:04:46 +0800
+Message-ID: <1444881890-4012-24-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1444881890-4012-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1444881890-4012-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,122 +22,215 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Copy lprops.c from kernel to ubifs-utils/.
+At first dump the ltab and then scan the whole lpt,
+dumping every lprops in it.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/include/lprops.h |  6 ++++
- ubifs-utils/lib/lprops.c     | 79 ++++++++++++++++++++++++++++++++++++++++=
-++++
- 2 files changed, 85 insertions(+)
- create mode 100644 ubifs-utils/include/lprops.h
- create mode 100644 ubifs-utils/lib/lprops.c
+ Makefile                            |   2 +-
+ ubifs-utils/ubifs_dump/ubifs_dump.c | 170 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 171 insertions(+), 1 deletion(-)
 
-diff --git a/ubifs-utils/include/lprops.h b/ubifs-utils/include/lprops.h
-new file mode 100644
-index 0000000..5bf3108
---- /dev/null
-+++ b/ubifs-utils/include/lprops.h
-@@ -0,0 +1,6 @@
-+#ifndef __UBIFS_LPROPS_H__
-+#define __UBIFS_LPROPS_H__
+diff --git a/Makefile b/Makefile
+index 7abbef9..af17307 100644
+--- a/Makefile
++++ b/Makefile
+@@ -133,7 +133,7 @@ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-co
+ $(foreach v,crc16.o lpt.o compr.o devtable.o io.o hashtable.o hashtable_itr.o,$(eval UBIFS_LIBS += ../lib/$(v)))
+ 
+ obj-ubifs_dump = $(UBIFS_LIBS)
+-obj-ubifs_dump += ../lib/scan.o
++obj-ubifs_dump += ../lib/scan.o ../lib/lprops.o
+ LDFLAGS_ubifs_dump = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
+ LDLIBS_ubifs_dump = -lz -llzo2 -lm -luuid
+ $(call mkdep,ubifs-utils/ubifs_dump/,ubifs_dump,,ubi-utils/libubi.a)
+diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
+index d7a2951..4b255e3 100644
+--- a/ubifs-utils/ubifs_dump/ubifs_dump.c
++++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
+@@ -717,6 +717,172 @@ out:
+ 	return err;
+ }
+ 
++void ubifs_dump_lprop(const struct ubifs_info *c, const struct ubifs_lprops *lp)
++{
++	int spc, dark = 0, dead = 0;
 +
-+int ubifs_categorize_lprops(const struct ubifs_info *c,
-+			    const struct ubifs_lprops *lprops);
-+#endif
-diff --git a/ubifs-utils/lib/lprops.c b/ubifs-utils/lib/lprops.c
-new file mode 100644
-index 0000000..818d220
---- /dev/null
-+++ b/ubifs-utils/lib/lprops.c
-@@ -0,0 +1,79 @@
-+/*
-+ * This file is part of UBIFS.
-+ *
-+ * Copyright (C) 2006-2008 Nokia Corporation.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as publishe=
-d by
-+ * the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WIT=
-HOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License f=
-or
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along=
- with
-+ * this program; if not, write to the Free Software Foundation, Inc., 51
-+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-+ *
-+ * Authors: Adrian Hunter
-+ *          Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=
-=D0=B9 =D0=90=D1=80=D1=82=D1=91=D0=BC)
-+ */
++	if ((lp->flags & LPROPS_CAT_MASK) == LPROPS_EMPTY)
++		return;
 +
-+/*
-+ * This file implements the functions that access LEB properties and their
-+ * categories. LEBs are categorized based on the needs of UBIFS, and the
-+ * categories are stored as either heaps or lists to provide a fast way of
-+ * finding a LEB in a particular category. For example, UBIFS may need to =
-find
-+ * an empty LEB for the journal, or a very dirty LEB for garbage collectio=
-n.
-+ */
++	spc = lp->free + lp->dirty;
++	dead = spc;
 +
-+#include "ubifs_common.h"
++	if (lp->flags & LPROPS_INDEX)
++		printf("\tLEB %-7d free %-8d dirty %-8d used %-8d free + dirty %-8d flags %#x (",
++		       lp->lnum, lp->free, lp->dirty, c->leb_size - spc, spc,
++		       lp->flags);
++	else
++		printf("\tLEB %-7d free %-8d dirty %-8d used %-8d free + dirty %-8d dark %-4d dead %-4d nodes fit %-3d flags %#-4x (",
++		       lp->lnum, lp->free, lp->dirty, c->leb_size - spc, spc,
++		       dark, dead, (int)(spc / UBIFS_MAX_NODE_SZ), lp->flags);
 +
-+/* common.h requires the PROGRAM_NAME macro */
-+#define PROGRAM_NAME "ubifs-lprops"
-+#include "common.h"
++	if (lp->flags & LPROPS_TAKEN) {
++		if (lp->flags & LPROPS_INDEX)
++			printf("index, taken");
++		else
++			printf("taken");
++	} else {
++		const char *s;
 +
-+#include "ubifs.h"
++		if (lp->flags & LPROPS_INDEX) {
++			switch (lp->flags & LPROPS_CAT_MASK) {
++			case LPROPS_DIRTY_IDX:
++				s = "dirty index";
++				break;
++			case LPROPS_FRDI_IDX:
++				s = "freeable index";
++				break;
++			default:
++				s = "index";
++			}
++		} else {
++			switch (lp->flags & LPROPS_CAT_MASK) {
++			case LPROPS_UNCAT:
++				s = "not categorized";
++				break;
++			case LPROPS_DIRTY:
++				s = "dirty";
++				break;
++			case LPROPS_FREE:
++				s = "free";
++				break;
++			case LPROPS_EMPTY:
++				s = "empty";
++				break;
++			case LPROPS_FREEABLE:
++				s = "freeable";
++				break;
++			default:
++				s = NULL;
++				break;
++			}
++		}
++		printf("%s", s);
++	}
++
++	if (lp->lnum == c->gc_lnum)
++		printf(", GC LEB");
++	printf(")\n");
++}
++
++void ubifs_dump_lstats(const struct ubifs_lp_stats *lst)
++{
++	printf("\tempty_lebs %d, idx_lebs  %d\n",
++	       lst->empty_lebs, lst->idx_lebs);
++	printf("\ttaken_empty_lebs %d, total_free %lld, total_dirty %lld\n",
++	       lst->taken_empty_lebs, lst->total_free, lst->total_dirty);
++	printf("\ttotal_used %lld, total_dark %lld, total_dead %lld\n",
++	       lst->total_used, lst->total_dark, lst->total_dead);
++	printf("\n");
++}
++
++static int scan_dump_cb(struct ubifs_info *c,
++			 const struct ubifs_lprops *lp, int in_tree __attribute__((unused)),
++			 struct ubifs_lp_stats *lst __attribute__((unused)))
++{
++	ubifs_dump_lprop(c, lp);
++	return 0;
++}
++
++static int ubifs_dump_lprops(struct ubifs_info *c)
++{
++	printf("\tLPROPS statistics: \n");
++	ubifs_dump_lstats(&c->lst);
++	printf("\tLPROPS TREE: \n");
++	c->lpt_nod_buf = malloc(min(c->nnode_sz, c->pnode_sz));
++	ubifs_lpt_scan_nolock(c, c->main_first, c->leb_cnt - 1,
++			  (ubifs_lpt_scan_callback)scan_dump_cb, NULL);
++	printf("\n");
++
++	return 0;
++}
 +
 +/**
-+ * ubifs_categorize_lprops - categorize LEB properties.
++ * read_ltab - read LPT's own lprops table.
 + * @c: UBIFS file-system description object
-+ * @lprops: LEB properties to categorize
 + *
-+ * LEB properties are categorized to enable fast find operations. This fun=
-ction
-+ * returns the LEB category to which the LEB properties belong. Note howev=
-er
-+ * that if the LEB category is stored as a heap and the heap is full, the
-+ * LEB properties may have their category changed to %LPROPS_UNCAT.
++ * This function returns %0 on success and a negative error code on failure.
 + */
-+int ubifs_categorize_lprops(const struct ubifs_info *c,
-+			    const struct ubifs_lprops *lprops)
++static int read_ltab(struct ubifs_info *c)
 +{
-+	if (lprops->flags & LPROPS_TAKEN)
-+		return LPROPS_UNCAT;
++	int err;
++	void *buf;
 +
-+	if (lprops->free =3D=3D c->leb_size) {
-+		ubifs_assert(!(lprops->flags & LPROPS_INDEX));
-+		return LPROPS_EMPTY;
-+	}
-+
-+	if (lprops->free + lprops->dirty =3D=3D c->leb_size) {
-+		if (lprops->flags & LPROPS_INDEX)
-+			return LPROPS_FRDI_IDX;
-+		else
-+			return LPROPS_FREEABLE;
-+	}
-+
-+	if (lprops->flags & LPROPS_INDEX) {
-+		if (lprops->dirty + lprops->free >=3D c->min_idx_node_sz)
-+			return LPROPS_DIRTY_IDX;
-+	} else {
-+		if (lprops->dirty >=3D c->dead_wm &&
-+		    lprops->dirty > lprops->free)
-+			return LPROPS_DIRTY;
-+		if (lprops->free > 0)
-+			return LPROPS_FREE;
-+	}
-+
-+	return LPROPS_UNCAT;
++	buf = vmalloc(c->ltab_sz);
++	if (!buf)
++		return -ENOMEM;
++	err = ubifs_read(c->ltab_lnum * c->leb_size + c->ltab_offs, c->ltab_sz, buf);
++	if (err)
++		goto out;
++	err = unpack_ltab(c, buf);
++out:
++	vfree(buf);
++	return err;
 +}
---=20
++
++static int ubifs_dump_lpt_info(struct ubifs_info *c)
++{
++	int i;
++	int ret = 0;
++
++	c->ltab = malloc(c->lpt_lebs * sizeof(struct ubifs_lprops));
++	if (!c->ltab)
++		return err_msg("unable to allocate LPT ltab");
++
++	ret = read_ltab(c);
++	if (ret)
++		return ret;
++	printf("\tLPT INFO: \n");
++	printf("\tLPT root is at %d:%d\n", c->lpt_lnum, c->lpt_offs);
++	printf("\tLPT head is at %d:%d\n",
++	       c->nhead_lnum, c->nhead_offs);
++	printf("\tLPT ltab is at %d:%d\n", c->ltab_lnum, c->ltab_offs);
++	if (c->big_lpt)
++		printf("\tLPT lsave is at %d:%d\n",
++		       c->lsave_lnum, c->lsave_offs);
++	for (i = 0; i < c->lpt_lebs; i++)
++		printf("\tLPT LEB %d free %d dirty %d tgc %d cmt %d\n",
++		       i + c->lpt_first, c->ltab[i].free, c->ltab[i].dirty,
++		       c->ltab[i].tgc, c->ltab[i].cmt);
++	printf("\n");
++	return 0;
++}
++
++static int dump_lpt(void)
++{
++	int ret = 0;
++
++	printf("LPT AREA: \n");
++	ret = ubifs_dump_lpt_info(c);
++	if (ret)
++		return ret;
++
++	ret = ubifs_dump_lprops(c);
++	if (ret)
++		return ret;
++	return 0;
++}
++
+ static int dump()
+ {
+ 	int err = 0;
+@@ -738,6 +904,10 @@ static int dump()
+ 	err = dump_log();
+ 	if (err)
+ 		goto free;
++
++	err = dump_lpt();
++	if (err)
++		goto free;
+ free:
+ 	free(leb_buf);
+ out:
+-- 
 1.8.4.2
