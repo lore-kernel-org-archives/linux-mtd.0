@@ -1,26 +1,22 @@
-Received: from mail-lb0-f179.google.com ([209.85.217.179])
+Received: from mail-lb0-f175.google.com ([209.85.217.175])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmnJ3-0004Ch-Us
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 18:31:15 +0000
-Received: by lbwr8 with SMTP id r8so79956292lbw.2
- for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 11:30:50 -0700 (PDT)
+ id 1ZmnKy-0004od-Hu
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 18:33:13 +0000
+Received: by lbcao8 with SMTP id ao8so79829899lbc.3
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 11:32:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
-References: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
-Date: Thu, 15 Oct 2015 15:30:50 -0300
-Message-ID: <CAAEAJfBdfc-=AH0z_A8-b70LH_=GJp0qPRp0zCohqDBf8pnokQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] mtd: pxa3xx_nand: rework the timing setup
+In-Reply-To: <20151012210741.GN107187@google.com>
+References: <1444681992-4208-1-git-send-email-computersforpeace@gmail.com>
+ <1444681992-4208-2-git-send-email-computersforpeace@gmail.com>
+ <20151012210741.GN107187@google.com>
+Date: Thu, 15 Oct 2015 15:32:50 -0300
+Message-ID: <CAAEAJfDWY2ztYK5y=cBsrntztP+Hm_cDFovPY2YeyRS4XXrr8w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: pxa3xx_nand: switch to device PM
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Antoine Tenart <antoine.tenart@free-electrons.com>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, zmxu@marvell.com,
- jszhang@marvell.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+To: Brian Norris <computersforpeace@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,56 +28,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ccing Robert as he can provide valuable test on PXA boards.
++Robert
 
-On 15 October 2015 at 04:17, Antoine Tenart
-<antoine.tenart@free-electrons.com> wrote:
-> Hi all,
+On 12 October 2015 at 18:07, Brian Norris <computersforpeace@gmail.com> wro=
+te:
+> On Mon, Oct 12, 2015 at 01:33:12PM -0700, Brian Norris wrote:
+>> The old PM model is deprecated. This is equivalent.
+>>
+>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 >
-> Let's try one more time to get this merged.
+> Sorry, this patch was garbage. Below is the correct one:
 >
-> Another series, introducing the Berlin nand support, depends on this.
+> ---
 >
-> This series was part of a bigger one[1], which was split into smaller
-> ones as asked by Ezequiel[2]. When we take this into account, this is
-> v8.
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
 >
-> The aim here is to use the nand framework to setup the timings,
-> while keeping the old in-driver way of configuration timings for
-> compatibility reasons.
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
+d.c
+> index cce5a32eef60..51b67ae5ac1c 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -1889,21 +1889,21 @@ static int pxa3xx_nand_probe(struct platform_devi=
+ce *pdev)
+>  }
 >
-> You can find the series at:
-> https://github.com/atenart/linux.git berlin/4.3/nand-timings
+>  #ifdef CONFIG_PM
+> -static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_message_=
+t state)
+> +static int pxa3xx_nand_suspend(struct device *dev)
+>  {
+> -       struct pxa3xx_nand_info *info =3D platform_get_drvdata(pdev);
+> +       struct pxa3xx_nand_info *info =3D dev_get_drvdata(dev);
 >
-> Antoine
+>         if (info->state) {
+> -               dev_err(&pdev->dev, "driver busy, state =3D %d\n", info->=
+state);
+> +               dev_err(dev, "driver busy, state =3D %d\n", info->state);
+>                 return -EAGAIN;
+>         }
 >
-> Since v2:
->         - Added back the support for keep-config 16 bits devices
->         - Fixed wrong unit in a calculation
->         - Reworked the pxa3xx_nand_init_timings() logic
->         - Allowed compile test the pxa3xx driver
+>         return 0;
+>  }
 >
-> Since v1:
->         - Rebased on top of v4.2-rc1
+> -static int pxa3xx_nand_resume(struct platform_device *pdev)
+> +static int pxa3xx_nand_resume(struct device *dev)
+>  {
+> -       struct pxa3xx_nand_info *info =3D platform_get_drvdata(pdev);
+> +       struct pxa3xx_nand_info *info =3D dev_get_drvdata(dev);
 >
-> Since the series was split up:
->         - Reworked the ndcr setup
->         - Removed the read_id_bytes update after device detection
+>         /* We don't want to handle interrupt without calling mtd routine =
+*/
+>         disable_int(info, NDCR_INT_MASK);
+> @@ -1930,15 +1930,19 @@ static int pxa3xx_nand_resume(struct platform_dev=
+ice *pdev)
+>  #define pxa3xx_nand_resume     NULL
+>  #endif
 >
-> Antoine Tenart (4):
->   mtd: nand: allow compile test of MTD_NAND_PXA3xx
->   mtd: pxa3xx_nand: add helpers to setup the timings
->   mtd: pxa3xx_nand: rework flash detection and timing setup
->   mtd: pxa3xx_nand: clean up the pxa3xx timings
+> +static const struct dev_pm_ops pxa3xx_nand_pm_ops =3D {
+> +       .suspend        =3D pxa3xx_nand_suspend,
+> +       .resume         =3D pxa3xx_nand_resume,
+> +};
+> +
+>  static struct platform_driver pxa3xx_nand_driver =3D {
+>         .driver =3D {
+>                 .name   =3D "pxa3xx-nand",
+>                 .of_match_table =3D pxa3xx_nand_dt_ids,
+> +               .pm     =3D &pxa3xx_nand_pm_ops,
+>         },
+>         .probe          =3D pxa3xx_nand_probe,
+>         .remove         =3D pxa3xx_nand_remove,
+> -       .suspend        =3D pxa3xx_nand_suspend,
+> -       .resume         =3D pxa3xx_nand_resume,
+>  };
 >
->  drivers/mtd/nand/Kconfig                      |   2 +-
->  drivers/mtd/nand/pxa3xx_nand.c                | 273 ++++++++++++++++----=
-------
->  include/linux/platform_data/mtd-nand-pxa3xx.h |  11 +-
->  3 files changed, 172 insertions(+), 114 deletions(-)
->
+>  module_platform_driver(pxa3xx_nand_driver);
 > --
-> 2.6.1
+> 2.6.0.rc2.230.g3dd15c0
 >
 >
 > ______________________________________________________
