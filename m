@@ -1,22 +1,16 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zmm83-0002ai-8c
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 17:15:47 +0000
-Subject: Re: [PATCH 5/5] ARM: OMAP2+: Update gpmc and nand DT binding
- documentation
-To: Roger Quadros <rogerq@ti.com>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <nsekhar@ti.com>,
- <computersforpeace@gmail.com>, <dwmw2@infradead.org>, <tony@atomide.com>
-References: <1444700338-27582-1-git-send-email-fcooper@ti.com>
- <1444700338-27582-6-git-send-email-fcooper@ti.com> <561E417F.4020304@ti.com>
-From: "Franklin S Cooper Jr." <fcooper@ti.com>
-Message-ID: <561FDF0C.4020902@ti.com>
-Date: Thu, 15 Oct 2015 12:14:52 -0500
-MIME-Version: 1.0
-In-Reply-To: <561E417F.4020304@ti.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com, Hans de Goede <hdegoede@redhat.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH 2/3] mtd: nand: add NAND_NEED_SCRAMBLING flag to the
+ H27UCG8T2ATR-BC definition
+Date: Thu, 15 Oct 2015 19:17:22 +0200
+Message-Id: <1444929443-25537-3-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The H27UCG8T2ATR-BC requires an external data scrambler. Reflect this
+constraint in the nand_flash_ids definition.
 
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_ids.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On 10/14/2015 06:50 AM, Roger Quadros wrote:
-> On 13/10/15 04:38, Franklin S Cooper Jr wrote:
->> Add additional details to the gpmc and nand documentation to clarify
->> what is needed to enable nand dma prefetch.
->>
->> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
->> ---
->>  Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt | 7 ++++++-
->>  Documentation/devicetree/bindings/mtd/gpmc-nand.txt                | 2 ++
->>  2 files changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> index 704be93..b1e2802 100644
->> --- a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> +++ b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> @@ -33,6 +33,10 @@ Required properties:
->>  			As this will change in the future, filling correct
->>  			values here is a requirement.
->>  
->> +GPMC DMA information. Required only when GPMC nand prefetch is enabled.
->> + - dmas			GPMC nand prefetch dma channel
-> s/nand/NAND
->
->> + - dma-names		DMA channel name use as a reference within the Nand driver
-> s/Nand/NAND
->
-> This is inevitably going to be "rxtx". So why not say that it should be "rxtx"
-I'll fix all three of these
->
-> Should these bindings go in bindings/mtd/gpmc-nand.txt instead?
->
->> +
->>  Timing properties for child nodes. All are optional and default to 0.
->>  
->>   - gpmc,sync-clk-ps:	Minimum clock period for synchronous mode, in picoseconds
->> @@ -119,7 +123,8 @@ Example for an AM33xx board:
->>  		ti,hwmods = "gpmc";
->>  		reg = <0x50000000 0x2000>;
->>  		interrupts = <100>;
->> -
->> +		dmas = <&edma 52>;
->> +		dma-names = "rxtx";
-> Why not define these in the NAND node instead of gpmc node?
-Since we decided that the dma entry will stay in the GPMC node I'll leave these as is.
->
->>  		gpmc,num-cs = <8>;
->>  		gpmc,num-waitpins = <2>;
->>  		#address-cells = <2>;
->> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
->> index 253e6de..4b0c240 100644
->> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
->> +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
->> @@ -61,6 +61,8 @@ Example for an AM33xx board:
->>  		ti,hwmods = "gpmc";
->>  		reg = <0x50000000 0x36c>;
->>  		interrupts = <100>;
->> +		dmas = <&edma 52>;
->> +		dma-names = "rxtx";
->>  		gpmc,num-cs = <8>;
->>  		gpmc,num-waitpins = <2>;
->>  		#address-cells = <2>;
->>
-> cheers,
-> -roger
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index a8804a3..ccc05f5 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -50,8 +50,8 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 		  SZ_16K, SZ_8K, SZ_4M, 0, 6, 1280, NAND_ECC_INFO(40, SZ_1K) },
+ 	{"H27UCG8T2ATR-BC 64G 3.3V 8-bit",
+ 		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
+-		  SZ_8K, SZ_8K, SZ_2M, 0, 6, 640, NAND_ECC_INFO(40, SZ_1K),
+-		  4 },
++		  SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
++		  NAND_ECC_INFO(40, SZ_1K), 4 },
+ 
+ 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
+ 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
+-- 
+2.1.4
