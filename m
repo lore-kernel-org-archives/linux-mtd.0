@@ -1,31 +1,21 @@
-Received: from mail-io0-f181.google.com ([209.85.223.181])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zmo8c-0002FK-Dh
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 19:24:31 +0000
-Received: by ioii196 with SMTP id i196so100621965ioi.3
- for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 12:24:09 -0700 (PDT)
-Date: Thu, 15 Oct 2015 14:24:04 -0500
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Casey Schaufler <casey@schaufler-ca.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, James Morris <james.l.morris@oracle.com>,
- "Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v2 7/7] Smack: Handle labels consistently in untrusted
- mounts
-Message-ID: <20151015192404.GC31612@ubuntu-hedt>
-References: <1444755861-54997-1-git-send-email-seth.forshee@canonical.com>
- <1444755861-54997-8-git-send-email-seth.forshee@canonical.com>
- <561F3DC7.4070901@schaufler-ca.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <561F3DC7.4070901@schaufler-ca.com>
+In-Reply-To: <1444929443-25537-2-git-send-email-boris.brezillon@free-electrons.com>
+References: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1444929443-25537-2-git-send-email-boris.brezillon@free-electrons.com>
+From: Julian Calaby <julian.calaby@gmail.com>
+Date: Fri, 16 Oct 2015 09:32:38 +1100
+Message-ID: <CAGRGNgWcCLEX=CB6_OJrK9_n3=78WN1jUb+t4iOQca6_HnFoLg@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH 1/3] mtd: nand: add NAND_NEED_SCRAMBLING
+ option flag
+To: boris.brezillon@free-electrons.com
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi <linux-sunxi@googlegroups.com>, Hans de Goede <hdegoede@redhat.com>,
+ "Mailing List, Arm" <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,52 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 14, 2015 at 10:46:47PM -0700, Casey Schaufler wrote:
-> On 10/13/2015 10:04 AM, Seth Forshee wrote:
-> > The SMACK64, SMACK64EXEC, and SMACK64MMAP labels are all handled
-> > differently in untrusted mounts. This is confusing and
-> > potentically problematic. Change this to handle them all the same
-> > way that SMACK64 is currently handled; that is, read the label
-> > from disk and check it at use time. For SMACK64 and SMACK64MMAP
-> > access is denied if the label does not match smk_root. To be
-> > consistent with suid, a SMACK64EXEC label which does not match
-> > smk_root will still allow execution of the file but will not run
-> > with the label supplied in the xattr.
-> >
-> > Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> 
-> Aside from the one comment below (which I can be talked out of)
-> this looks fine.
-> 
-> > ---
-> >  security/smack/smack_lsm.c | 28 ++++++++++++++++++----------
-> >  1 file changed, 18 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-> > index 621200f86b56..bee0b2652bf4 100644
-> > --- a/security/smack/smack_lsm.c
-> > +++ b/security/smack/smack_lsm.c
-> > @@ -891,6 +891,7 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
-> >  	struct inode *inode = file_inode(bprm->file);
-> >  	struct task_smack *bsp = bprm->cred->security;
-> >  	struct inode_smack *isp;
-> > +	struct superblock_smack *sbsp;
-> >  	int rc;
-> >  
-> >  	if (bprm->cred_prepared)
-> > @@ -900,6 +901,10 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
-> >  	if (isp->smk_task == NULL || isp->smk_task == bsp->smk_task)
-> >  		return 0;
-> >  
-> > +	sbsp = inode->i_sb->s_security;
-> > +	if (sbsp->smk_flags & SMK_SB_UNTRUSTED && isp->smk_task != sbsp->smk_root)
-> 
-> Call me old fashioned, but how about
-> 
-> 	if ((sbsp->smk_flags & SMK_SB_UNTRUSTED) && isp->smk_task != sbsp->smk_root)
-> 
-> naked '&'s give me the willies. 
+Hi Boris,
 
-That's fine by me.
+On Fri, Oct 16, 2015 at 4:17 AM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> Some MLC NANDs are sensible to repeated patterns and require data to be
 
-Seth
+Do you mean "sensitive" instead of "sensible"?
+
+Thanks,
+
+-- 
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
