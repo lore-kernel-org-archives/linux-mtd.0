@@ -1,26 +1,35 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mail-oi0-x230.google.com ([2607:f8b0:4003:c06::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zmd5F-0001gV-QT
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 07:36:18 +0000
-Subject: Re: [PATCH 1/5] mtd: nand: omap2: Support parsing dma channel
- information from DT
-To: "Franklin S Cooper Jr." <fcooper@ti.com>, Tony Lindgren <tony@atomide.com>
-References: <1444700338-27582-1-git-send-email-fcooper@ti.com>
- <1444700338-27582-2-git-send-email-fcooper@ti.com> <561E3E4F.9020302@ti.com>
- <561E41EB.3050005@ti.com> <561E5803.5090609@ti.com> <561E629F.5070202@ti.com>
- <561E6791.3030404@ti.com> <20151014161813.GC10113@atomide.com>
- <561E8184.6020206@ti.com> <20151014181337.GF10113@atomide.com>
- <561EB4FB.8040709@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <nsekhar@ti.com>, <computersforpeace@gmail.com>, <dwmw2@infradead.org>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <561F573D.6010704@ti.com>
-Date: Thu, 15 Oct 2015 10:35:25 +0300
+ id 1Zmd8J-0002yP-4H
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 07:39:27 +0000
+Received: by oies66 with SMTP id s66so1892548oie.1
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 00:39:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <561EB4FB.8040709@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+EcR22oTADfz0Mo=E45_QEKK0Y47PAc2X15Hp-aEj+XC7v3gQ@mail.gmail.com>
+References: <loom.20150918T183854-37@post.gmane.org>
+ <CAFLxGvwJjy=6GLXJm=2frruO9vKqqPG_6yYxSH7HLLr47x9apg@mail.gmail.com>
+ <CA+-FG628WkbiqnzT9tp4Li=SP2qHPM+Nn+KLHjQWqHN-f==+vg@mail.gmail.com>
+ <55FC6BCB.1030901@nod.at>
+ <CA+-FG62MN2FBLKecGJJ6YHqPDyrgrx8BkCAZGezoKbADOCm_0g@mail.gmail.com>
+ <55FC6F56.4050107@nod.at>
+ <CA+-FG62nCCaK_GEGSqBJ4ROvqgVPZdsh7pyEsnq2C0AXZrnkjw@mail.gmail.com>
+ <55FC8712.5040905@nod.at>
+ <CA+EcR23BLTvQgD36bAAiT3yULYSpE0zMiXpRm0kDGQeLOTho8w@mail.gmail.com>
+ <56058D7B.3050005@nod.at>
+ <CA+EcR22DEGWr8v-iMDQBf=NNL3+6SsOBDX6mX5y_O9en4FaPyQ@mail.gmail.com>
+ <CA+-FG62yDf2hbEgo6At92pwPOWbXjTSwQ-WrJjX2z2z-VBYZ=Q@mail.gmail.com>
+ <CA+-FG61mEsrOu_WGUuCm-xgKM4afxSrw2JyQUwCi8BPJU3gkQQ@mail.gmail.com>
+ <561ED48D.5010002@nod.at>
+ <CA+EcR22oTADfz0Mo=E45_QEKK0Y47PAc2X15Hp-aEj+XC7v3gQ@mail.gmail.com>
+Date: Thu, 15 Oct 2015 09:39:05 +0200
+Message-ID: <CAFLxGvxJ0QuSuTfNZc2fDhJMd5u=LpmRKLg9KydNp2gLZ-t4AQ@mail.gmail.com>
+Subject: Re: UBIFS corruptions on NOR-Flash
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Han Xu <xhnjupt@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Roshni Shah <roshni.shah@timesys.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "han.xu@freescale.com" <han.xu@freescale.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,71 +39,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14/10/15 23:03, Franklin S Cooper Jr. wrote:
-> 
-> 
-> On 10/14/2015 01:13 PM, Tony Lindgren wrote:
->> * Franklin S Cooper Jr. <fcooper@ti.com> [151014 09:27]:
->>>
->>> On 10/14/2015 11:18 AM, Tony Lindgren wrote:
->>>> * Franklin S Cooper Jr. <fcooper@ti.com> [151014 07:37]:
->>>>> On 10/14/2015 09:11 AM, Roger Quadros wrote:
->>>>>> On 14/10/15 16:26, Franklin S Cooper Jr. wrote:
->>>>>>> On 10/14/2015 06:52 AM, Roger Quadros wrote:
->>>>>>>> Franklin,
->>>>>>>>
->>>>>>>> On 14/10/15 14:36, Roger Quadros wrote:
->>>>>>>>> On 13/10/15 04:38, Franklin S Cooper Jr wrote:
->>>>>>>>>> Switch from dma_request_channel to allow passing dma channel
->>>>>>>>>> information from DT rather than hardcoding a value.
->>>>>>>>>>
->>>>>>>>>> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
->>>>>>>>> Acked-by: Roger Quadros <rogerq@ti.com>
->>>>>>>>>
->>>>>>>>>> ---
->>>>>>>>>>  drivers/mtd/nand/omap2.c | 4 +++-
->>>>>>>>>>  1 file changed, 3 insertions(+), 1 deletion(-)
->>>>>>>>>>
->>>>>>>>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
->>>>>>>>>> index d0f2620..957c32f 100644
->>>>>>>>>> --- a/drivers/mtd/nand/omap2.c
->>>>>>>>>> +++ b/drivers/mtd/nand/omap2.c
->>>>>>>>>> @@ -1866,7 +1866,9 @@ static int omap_nand_probe(struct platform_device *pdev)
->>>>>>>>>>  		dma_cap_zero(mask);
->>>>>>>>>>  		dma_cap_set(DMA_SLAVE, mask);
->>>>>>>>>>  		sig = OMAP24XX_DMA_GPMC;
->>>>>>>>>> -		info->dma = dma_request_channel(mask, omap_dma_filter_fn, &sig);
->>>>>>>>>> +		info->dma = dma_request_slave_channel_compat(mask,
->>>>>>>>>> +			omap_dma_filter_fn, &sig, pdev->dev.parent, "rxtx");
->>>>>>>>>> +
->>>>>>>> Just discovered that you are using the parent device node.
->>>>>>>>
->>>>>>>> How about moving the dma bindings to the nand node instead and using
->>>>>>>> pdev->dev here?
->>>>>>> Roger,
->>>>>>>
->>>>>>> From what I can tell the interrupt number and the dma channel will always be
->>>>>>> the same no matter what. Doesn't matter if you have multiple nands or a
->>>>>>> combination of nands and nors. Since that is the case I think it just makes
->>>>>>> sense to leave it in the gpmc parent node and define it once.
->>>>>> Is prefetch/writepost dma used for NOR or any other GPMC peripheral
->>>>>> or only for NAND?
->>>>> The dma seems tied to the prefetch. From what I can tell the prefetch is only
->>>>> used by nand.
->>>>>> Let's also get Tony's inputs on this.
->>>>> Sure.
->>>> Hmm so what would keep other devices from using the prefetch
->>> Looking at the TRM any references to the prefetch are always with respect to
->>> NAND.
->>>
->>> I also see the below mentioned in the TRM.
->>> Pre-fetch and write posting engine associated with system DMA to get full performance from NAND
->>> device with minimum impact on NOR/SRAM concurrent access.
->> OK up to you guys to figure out if it may be usable in a generic way then :)
-> Ok I just got clarification from hw folks. DMA for GPMC can be used for any of the
-> various modes. But the prefetch is specific to NAND.
+On Thu, Oct 15, 2015 at 4:20 AM, Han Xu <xhnjupt@gmail.com> wrote:
+> I didn't test UBI on our board since we mount 4M SPI-NOR on board
+> which is not large enough to test UBI.
 
-In that case the dma information must be in the GPMC node.
+So, the driver is completely untested wrt. UBI.
+Maybe UBI uncovers an issue. Wouldn't be
+the first time...
 
-cheers,
--roger
+-- 
+Thanks,
+//richard
