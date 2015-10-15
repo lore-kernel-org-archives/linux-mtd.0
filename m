@@ -1,18 +1,18 @@
-Received: from mail-lf0-f51.google.com ([209.85.215.51])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmiI7-0006hU-FH
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 13:09:56 +0000
-Received: by lffy185 with SMTP id y185so27266720lff.2
- for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 06:09:34 -0700 (PDT)
+Received: from mail-lf0-f52.google.com ([209.85.215.52])
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1ZmiIC-0002XR-7D
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 13:10:00 +0000
+Received: by lfeh64 with SMTP id h64so27166665lfe.3
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 06:09:37 -0700 (PDT)
 From: Linus Walleij <linus.walleij@linaro.org>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 Cc: linux-arm-kernel@lists.infradead.org,
  Linus Walleij <linus.walleij@linaro.org>,
  Ryan Harkin <ryan.harkin@linaro.org>, Liviu Dudau <liviu.dudau@arm.com>
-Subject: [PATCH 08/10] mtd: afs: factor footer parsing into the v1 part parsing
-Date: Thu, 15 Oct 2015 15:08:51 +0200
-Message-Id: <1444914533-27782-9-git-send-email-linus.walleij@linaro.org>
+Subject: [PATCH 09/10] mtd: afs: factor the IIS read into partition parser
+Date: Thu, 15 Oct 2015 15:08:52 +0200
+Message-Id: <1444914533-27782-10-git-send-email-linus.walleij@linaro.org>
 In-Reply-To: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
 References: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,146 +24,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This simplifies the code by factoring in the image footer
-parsing into the single function parsing the AFSv1 partitions.
+Factor the IIS (Image Information Structure) reading into the
+partition parser, giving us a single, clean partition parser
+function.
 
 Cc: Ryan Harkin <ryan.harkin@linaro.org>
 Cc: Liviu Dudau <liviu.dudau@arm.com>
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/mtd/afs.c | 98 ++++++++++++++++++++++---------------------------------
- 1 file changed, 39 insertions(+), 59 deletions(-)
+ drivers/mtd/afs.c | 59 +++++++++++++++++++------------------------------------
+ 1 file changed, 20 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/mtd/afs.c b/drivers/mtd/afs.c
-index ace27f447abc..cdee8295d4c0 100644
+index cdee8295d4c0..1ce6842c917c 100644
 --- a/drivers/mtd/afs.c
 +++ b/drivers/mtd/afs.c
-@@ -89,63 +89,6 @@ static bool afs_is_v1(struct mtd_info *mtd, u_int off)
+@@ -88,42 +88,6 @@ static bool afs_is_v1(struct mtd_info *mtd, u_int off)
+ 	return (magic == AFSV1_FOOTER_MAGIC);
  }
  
- static int
--afs_read_footer_v1(struct mtd_info *mtd, u_int *img_start, u_int *iis_start,
--		   u_int off, u_int mask)
+-static int
+-afs_read_iis_v1(struct mtd_info *mtd, struct image_info_v1 *iis, u_int ptr)
 -{
--	struct footer_v1 fs;
--	u_int ptr = off + mtd->erasesize - sizeof(fs);
 -	size_t sz;
--	int ret;
+-	int ret, i;
 -
--	ret = mtd_read(mtd, ptr, sizeof(fs), &sz, (u_char *)&fs);
--	if (ret >= 0 && sz != sizeof(fs))
+-	memset(iis, 0, sizeof(*iis));
+-	ret = mtd_read(mtd, ptr, sizeof(*iis), &sz, (u_char *)iis);
+-	if (ret < 0)
+-		goto failed;
+-
+-	if (sz != sizeof(*iis)) {
 -		ret = -EINVAL;
--
--	if (ret < 0) {
--		printk(KERN_ERR "AFS: mtd read failed at 0x%x: %d\n",
--			ptr, ret);
--		return ret;
+-		goto failed;
 -	}
 -
--	/*
--	 * Does it contain the magic number?
--	 */
--	if (fs.signature != AFSV1_FOOTER_MAGIC)
--		return 0;
+-	ret = 0;
 -
 -	/*
--	 * Check the checksum.
+-	 * Validate the name - it must be NUL terminated.
 -	 */
--	if (word_sum(&fs, sizeof(fs) / sizeof(u32)) != 0xffffffff)
--		return 0;
+-	for (i = 0; i < sizeof(iis->name); i++)
+-		if (iis->name[i] == '\0')
+-			break;
 -
--	/*
--	 * Don't touch the SIB.
--	 */
--	if (fs.type == 2)
--		return 0;
+-	if (i < sizeof(iis->name))
+-		ret = 1;
 -
--	*iis_start = fs.image_info_base & mask;
--	*img_start = fs.image_start & mask;
+-	return ret;
 -
--	/*
--	 * Check the image info base.  This can not
--	 * be located after the footer structure.
--	 */
--	if (*iis_start >= ptr)
--		return 0;
--
--	/*
--	 * Check the start of this image.  The image
--	 * data can not be located after this block.
--	 */
--	if (*img_start > off)
--		return 0;
--
--	return 1;
+- failed:
+-	printk(KERN_ERR "AFS: mtd read failed at 0x%x: %d\n",
+-		ptr, ret);
+-	return ret;
 -}
 -
--static int
- afs_read_iis_v1(struct mtd_info *mtd, struct image_info_v1 *iis, u_int ptr)
- {
- 	size_t sz;
-@@ -184,6 +127,7 @@ afs_read_iis_v1(struct mtd_info *mtd, struct image_info_v1 *iis, u_int ptr)
  static int afs_parse_v1_partition(struct mtd_info *mtd,
  				  u_int off, struct mtd_partition *part)
  {
-+	struct footer_v1 fs;
- 	struct image_info_v1 iis;
- 	u_int mask;
- 	/*
-@@ -192,6 +136,8 @@ static int afs_parse_v1_partition(struct mtd_info *mtd,
- 	 */
- 	u_int uninitialized_var(iis_ptr);
- 	u_int uninitialized_var(img_ptr);
-+	u_int ptr;
-+	size_t sz;
+@@ -139,6 +103,7 @@ static int afs_parse_v1_partition(struct mtd_info *mtd,
+ 	u_int ptr;
+ 	size_t sz;
  	int ret;
++	int i;
  
  	/*
-@@ -200,9 +146,43 @@ static int afs_parse_v1_partition(struct mtd_info *mtd,
- 	 */
- 	mask = mtd->size - 1;
+ 	 * This is the address mask; we use this to mask off out of
+@@ -185,9 +150,25 @@ static int afs_parse_v1_partition(struct mtd_info *mtd,
+ 		return 0;
  
--	ret = afs_read_footer_v1(mtd, &img_ptr, &iis_ptr, off, mask);
+ 	/* Read the image info block */
+-	ret = afs_read_iis_v1(mtd, &iis, iis_ptr);
 -	if (ret < 0)
-+	ptr = off + mtd->erasesize - sizeof(fs);
-+	ret = mtd_read(mtd, ptr, sizeof(fs), &sz, (u_char *)&fs);
-+	if (ret >= 0 && sz != sizeof(fs))
-+		ret = -EINVAL;
+-		return ret;
++	memset(&iis, 0, sizeof(iis));
++	ret = mtd_read(mtd, iis_ptr, sizeof(iis), &sz, (u_char *)&iis);
 +	if (ret < 0) {
 +		printk(KERN_ERR "AFS: mtd read failed at 0x%x: %d\n",
-+		       ptr, ret);
- 		return ret;
++		       iis_ptr, ret);
++		return -EINVAL;
 +	}
-+	/*
-+	 * Check the checksum.
-+	 */
-+	if (word_sum(&fs, sizeof(fs) / sizeof(u32)) != 0xffffffff)
++
++	if (sz != sizeof(iis))
 +		return -EINVAL;
 +
 +	/*
-+	 * Hide the SIB (System Information Block)
++	 * Validate the name - it must be NUL terminated.
 +	 */
-+	if (fs.type == 2)
-+		return 0;
-+
-+	iis_ptr = fs.image_info_base & mask;
-+	img_ptr = fs.image_start & mask;
-+
-+	/*
-+	 * Check the image info base.  This can not
-+	 * be located after the footer structure.
-+	 */
-+	if (iis_ptr >= ptr)
-+		return 0;
-+
-+	/*
-+	 * Check the start of this image.  The image
-+	 * data can not be located after this block.
-+	 */
-+	if (img_ptr > off)
-+		return 0;
++	for (i = 0; i < sizeof(iis.name); i++)
++		if (iis.name[i] == '\0')
++			break;
++	if (i > sizeof(iis.name))
++		return -EINVAL;
  
- 	/* Read the image info block */
- 	ret = afs_read_iis_v1(mtd, &iis, iis_ptr);
+ 	part->name = kstrdup(iis.name, GFP_KERNEL);
+ 	if (!part->name)
 -- 
 2.4.3
