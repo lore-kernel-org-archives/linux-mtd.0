@@ -1,18 +1,18 @@
-Received: from mail-lb0-f182.google.com ([209.85.217.182])
+Received: from mail-lb0-f173.google.com ([209.85.217.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmiHr-0005MQ-Cz
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 13:09:40 +0000
-Received: by lbbpp2 with SMTP id pp2so39335707lbb.0
- for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 06:09:17 -0700 (PDT)
+ id 1ZmiHs-0005MS-5t
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 13:09:41 +0000
+Received: by lbcao8 with SMTP id ao8so68525679lbc.3
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 06:09:20 -0700 (PDT)
 From: Linus Walleij <linus.walleij@linaro.org>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 Cc: linux-arm-kernel@lists.infradead.org,
  Linus Walleij <linus.walleij@linaro.org>,
  Ryan Harkin <ryan.harkin@linaro.org>, Liviu Dudau <liviu.dudau@arm.com>
-Subject: [PATCH 02/10] mtd: enable AFS selection for ARM64
-Date: Thu, 15 Oct 2015 15:08:45 +0200
-Message-Id: <1444914533-27782-3-git-send-email-linus.walleij@linaro.org>
+Subject: [PATCH 03/10] mtd: afs: break out v1 footer magic to a define
+Date: Thu, 15 Oct 2015 15:08:46 +0200
+Message-Id: <1444914533-27782-4-git-send-email-linus.walleij@linaro.org>
 In-Reply-To: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
 References: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,28 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ARM use their special partitions also on the ARM64 architecture
-reference designs, so enable this for ARM64.
+Break out the magic number to a #defined constant.
 
 Cc: Ryan Harkin <ryan.harkin@linaro.org>
 Cc: Liviu Dudau <liviu.dudau@arm.com>
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/mtd/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/afs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index a03ad2951c7b..42cc953309f1 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -112,7 +112,7 @@ config MTD_CMDLINE_PARTS
+diff --git a/drivers/mtd/afs.c b/drivers/mtd/afs.c
+index 9af00528586f..d09280ae12bd 100644
+--- a/drivers/mtd/afs.c
++++ b/drivers/mtd/afs.c
+@@ -34,6 +34,8 @@
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/partitions.h>
  
- config MTD_AFS_PARTS
- 	tristate "ARM Firmware Suite partition parsing"
--	depends on ARM
-+	depends on (ARM || ARM64)
- 	---help---
- 	  The ARM Firmware Suite allows the user to divide flash devices into
- 	  multiple 'images'. Each such image has a header containing its name
++#define AFSV1_FOOTER_MAGIC 0xA0FFFF9F
++
+ struct footer_v1 {
+ 	u32 image_info_base;	/* Address of first word of ImageFooter  */
+ 	u32 image_start;	/* Start of area reserved by this footer */
+@@ -90,7 +92,7 @@ afs_read_footer_v1(struct mtd_info *mtd, u_int *img_start, u_int *iis_start,
+ 	/*
+ 	 * Does it contain the magic number?
+ 	 */
+-	if (fs.signature != 0xa0ffff9f)
++	if (fs.signature != AFSV1_FOOTER_MAGIC)
+ 		ret = 0;
+ 
+ 	/*
 -- 
 2.4.3
