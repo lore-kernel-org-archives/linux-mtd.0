@@ -1,14 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmZto-0002qX-FT
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 04:12:19 +0000
+ id 1ZmZtp-0002pf-VY
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 04:12:20 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <david@sigma-star.at>, <dedekind1@gmail.com>, <richard@nod.at>,
  <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 03/27] ubifs: move the all io related code into io.[h|c]
-Date: Thu, 15 Oct 2015 12:04:26 +0800
-Message-ID: <1444881890-4012-4-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 12/27] ubifs: copy some important functions in key.h from
+ kernel to ubifs-utils
+Date: Thu, 15 Oct 2015 12:04:35 +0800
+Message-ID: <1444881890-4012-13-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1444881890-4012-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1444881890-4012-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,243 +23,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To cut off the dependence from common lib to mkfs.ubifs,
-this patch refactor the io related functions into a new
-lib named as io.
+We need some more functions in key.h, then copy it from kernel.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- Makefile                            |  2 +-
- ubifs-utils/mkfs.ubifs/io.c         | 33 +++++++++++++++++++++++++++++++++
- ubifs-utils/mkfs.ubifs/io.h         | 15 +++++++++++++++
- ubifs-utils/mkfs.ubifs/lpt.c        | 10 +++++-----
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 34 +++-------------------------------
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.h |  2 +-
- 6 files changed, 58 insertions(+), 38 deletions(-)
- create mode 100644 ubifs-utils/mkfs.ubifs/io.c
- create mode 100644 ubifs-utils/mkfs.ubifs/io.h
+ ubifs-utils/include/key.h | 76 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 75 insertions(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index bb40929..843108c 100644
---- a/Makefile
-+++ b/Makefile
-@@ -129,7 +129,7 @@ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-co
- #
- # Utils in ubifs-utils subdir
- #
--obj-mkfs.ubifs = crc16.o lpt.o compr.o devtable.o \
-+obj-mkfs.ubifs = crc16.o lpt.o compr.o devtable.o io.o\
- 	hashtable/hashtable.o hashtable/hashtable_itr.o
- LDFLAGS_mkfs.ubifs = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
- LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid
-diff --git a/ubifs-utils/mkfs.ubifs/io.c b/ubifs-utils/mkfs.ubifs/io.c
-new file mode 100644
-index 0000000..7aba0a6
---- /dev/null
-+++ b/ubifs-utils/mkfs.ubifs/io.c
-@@ -0,0 +1,33 @@
-+#include "io.h"
-+#define PROGRAM_NAME "ubifs-io"
-+#include <common.h>
-+
-+int out_fd;
-+int out_ubi;
-+libubi_t ubi;
-+
-+/**
-+ * write_leb - copy the image of a LEB to the output target.
-+ * @lnum: LEB number
-+ * @len: length of data in the buffer
-+ * @buf: buffer (must be at least c->leb_size bytes)
-+ */
-+int write_leb(struct ubifs_info *c, int lnum, int len, void *buf)
-+{
-+	off_t pos = (off_t)lnum * c->leb_size;
-+
-+	dbg_msg(3, "LEB %d len %d", lnum, len);
-+	memset(buf + len, 0xff, c->leb_size - len);
-+	if (out_ubi)
-+		if (ubi_leb_change_start(ubi, out_fd, lnum, c->leb_size))
-+			return sys_err_msg("ubi_leb_change_start failed");
-+
-+	if (lseek(out_fd, pos, SEEK_SET) != pos)
-+		return sys_err_msg("lseek failed seeking %"PRIdoff_t, pos);
-+
-+	if (write(out_fd, buf, c->leb_size) != c->leb_size)
-+		return sys_err_msg("write failed writing %d bytes at pos %"PRIdoff_t,
-+				   c->leb_size, pos);
-+
-+	return 0;
-+}
-diff --git a/ubifs-utils/mkfs.ubifs/io.h b/ubifs-utils/mkfs.ubifs/io.h
-new file mode 100644
-index 0000000..e24d0c6
---- /dev/null
-+++ b/ubifs-utils/mkfs.ubifs/io.h
-@@ -0,0 +1,15 @@
-+/**
-+ * Header file for the io to ubi volume
-+ */
-+#ifndef __UBIFS_IO_H__
-+#define __UBIFS_IO_H__
-+
-+#include "ubifs_common.h"
-+#include "ubifs.h"
-+
-+extern int out_fd;
-+extern int out_ubi;
-+extern libubi_t ubi;
-+
-+int write_leb(struct ubifs_info *c, int lnum, int len, void *buf);
-+#endif
-diff --git a/ubifs-utils/mkfs.ubifs/lpt.c b/ubifs-utils/mkfs.ubifs/lpt.c
-index 6aa0b88..cee221c 100644
---- a/ubifs-utils/mkfs.ubifs/lpt.c
-+++ b/ubifs-utils/mkfs.ubifs/lpt.c
-@@ -410,7 +410,7 @@ int create_lpt(struct ubifs_info *c)
- 			alen = ALIGN(len, c->min_io_size);
- 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 			memset(p, 0xff, alen - len);
--			err = write_leb(lnum++, alen, buf);
-+			err = write_leb(c, lnum++, alen, buf);
- 			if (err)
- 				goto out;
- 			p = buf;
-@@ -452,7 +452,7 @@ int create_lpt(struct ubifs_info *c)
- 				set_ltab(c, lnum, c->leb_size - alen,
- 					    alen - len);
- 				memset(p, 0xff, alen - len);
--				err = write_leb(lnum++, alen, buf);
-+				err = write_leb(c, lnum++, alen, buf);
- 				if (err)
- 					goto out;
- 				p = buf;
-@@ -499,7 +499,7 @@ int create_lpt(struct ubifs_info *c)
- 			alen = ALIGN(len, c->min_io_size);
- 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 			memset(p, 0xff, alen - len);
--			err = write_leb(lnum++, alen, buf);
-+			err = write_leb(c, lnum++, alen, buf);
- 			if (err)
- 				goto out;
- 			p = buf;
-@@ -522,7 +522,7 @@ int create_lpt(struct ubifs_info *c)
- 		alen = ALIGN(len, c->min_io_size);
- 		set_ltab(c, lnum, c->leb_size - alen, alen - len);
- 		memset(p, 0xff, alen - len);
--		err = write_leb(lnum++, alen, buf);
-+		err = write_leb(c, lnum++, alen, buf);
- 		if (err)
- 			goto out;
- 		p = buf;
-@@ -542,7 +542,7 @@ int create_lpt(struct ubifs_info *c)
+diff --git a/ubifs-utils/include/key.h b/ubifs-utils/include/key.h
+index d3a02d4..779981a 100644
+--- a/ubifs-utils/include/key.h
++++ b/ubifs-utils/include/key.h
+@@ -37,6 +37,8 @@
+ #ifndef __UBIFS_KEY_H__
+ #define __UBIFS_KEY_H__
  
- 	/* Write remaining buffer */
- 	memset(p, 0xff, alen - len);
--	err = write_leb(lnum, alen, buf);
-+	err = write_leb(c, lnum, alen, buf);
- 	if (err)
- 		goto out;
- 
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index ca17e2b..8e7e4b8 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -97,7 +97,6 @@ struct inum_mapping {
-  */
- struct ubifs_info info_;
- static struct ubifs_info *c = &info_;
--static libubi_t ubi;
- 
- /* Debug levels are: 0 (none), 1 (statistics), 2 (files) ,3 (more details) */
- int debug_level;
-@@ -108,8 +107,6 @@ static char *root;
- static int root_len;
- static struct stat root_st;
- static char *output;
--static int out_fd;
--static int out_ubi;
- static int squash_owner;
- 
- /* The 'head' (position) which nodes are written */
-@@ -739,31 +736,6 @@ static void prepare_node(void *node, int len)
- 	ch->crc = cpu_to_le32(crc);
- }
- 
--/**
-- * write_leb - copy the image of a LEB to the output target.
-- * @lnum: LEB number
-- * @len: length of data in the buffer
-- * @buf: buffer (must be at least c->leb_size bytes)
-- */
--int write_leb(int lnum, int len, void *buf)
--{
--	off_t pos = (off_t)lnum * c->leb_size;
--
--	dbg_msg(3, "LEB %d len %d", lnum, len);
--	memset(buf + len, 0xff, c->leb_size - len);
--	if (out_ubi)
--		if (ubi_leb_change_start(ubi, out_fd, lnum, c->leb_size))
--			return sys_err_msg("ubi_leb_change_start failed");
--
--	if (lseek(out_fd, pos, SEEK_SET) != pos)
--		return sys_err_msg("lseek failed seeking %"PRIdoff_t, pos);
--
--	if (write(out_fd, buf, c->leb_size) != c->leb_size)
--		return sys_err_msg("write failed writing %d bytes at pos %"PRIdoff_t,
--				   c->leb_size, pos);
--
--	return 0;
--}
- 
++#include "defs.h"
++
  /**
-  * write_empty_leb - copy the image of an empty LEB to the output target.
-@@ -771,7 +743,7 @@ int write_leb(int lnum, int len, void *buf)
+  * key_mask_hash - mask a valid hash value.
+  * @val: value to be masked
+@@ -107,7 +109,7 @@ static inline void ino_key_init(union ubifs_key *key, ino_t inum)
+  * @inum: parent inode number
+  * @nm: direntry name and length
   */
- static int write_empty_leb(int lnum)
+-static inline void dent_key_init(const struct ubifs_info *c,
++static inline void dent_key_init(const struct ubifs_info *c __attribute__((unused)),
+ 				 union ubifs_key *key, ino_t inum,
+ 				 const struct qstr *nm)
  {
--	return write_leb(lnum, 0, leb_buf);
-+	return write_leb(c, lnum, 0, leb_buf);
+@@ -186,4 +188,76 @@ static inline int keys_cmp(const union ubifs_key *key1,
+ 	return 0;
  }
  
- /**
-@@ -827,7 +799,7 @@ static int write_node(void *node, int len, int lnum)
- 
- 	len = do_pad(leb_buf, len);
- 
--	return write_leb(lnum, len, leb_buf);
-+	return write_leb(c, lnum, len, leb_buf);
- }
- 
- /**
-@@ -939,7 +911,7 @@ static int flush_nodes(void)
- 	if (!head_offs)
- 		return 0;
- 	len = do_pad(leb_buf, head_offs);
--	err = write_leb(head_lnum, len, leb_buf);
-+	err = write_leb(c, head_lnum, len, leb_buf);
- 	if (err)
- 		return err;
- 	set_lprops(head_lnum, head_offs, head_flags);
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
-index d6d46a2..ba646a6 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
-@@ -34,6 +34,7 @@
- #include "key.h"
- #include "lpt.h"
- #include "compr.h"
-+#include "io.h"
- 
- /*
-  * Compression flags are duplicated so that compr.c can compile without ubifs.h.
-@@ -88,7 +89,6 @@ extern struct ubifs_info info_;
- 
- struct hashtable_itr;
- 
--int write_leb(int lnum, int len, void *buf);
- int parse_devtable(const char *tbl_file);
- struct path_htbl_element *devtbl_find_path(const char *path);
- struct name_htbl_element *devtbl_find_name(struct path_htbl_element *ph_elt,
++/**
++ * key_read - transform a key to in-memory format.
++ * @c: UBIFS file-system description object
++ * @from: the key to transform
++ * @to: the key to store the result
++ */
++static inline void key_read(const struct ubifs_info *c __attribute__((unused)), const void *from,
++			    union ubifs_key *to)
++{
++	const union ubifs_key *f = from;
++
++	to->u32[0] = le32_to_cpu(f->j32[0]);
++	to->u32[1] = le32_to_cpu(f->j32[1]);
++}
++
++/**
++ * invalid_key_init - initialize invalid node key.
++ * @c: UBIFS file-system description object
++ * @key: key to initialize
++ *
++ * This is a helper function which marks a @key object as invalid.
++ */
++static inline void invalid_key_init(const struct ubifs_info *c __attribute__((unused)),
++				    union ubifs_key *key)
++{
++	key->u32[0] = 0xDEADBEAF;
++	key->u32[1] = UBIFS_INVALID_KEY;
++}
++/**
++ * key_type - get key type.
++ * @c: UBIFS file-system description object
++ * @key: key to get type of
++ */
++static inline int key_type(const struct ubifs_info *c __attribute__((unused)),
++			   const union ubifs_key *key)
++{
++	return key->u32[1] >> UBIFS_S_KEY_BLOCK_BITS;
++}
++
++/*
++ * key_hash - get directory entry hash.
++ * @c: UBIFS file-system description object
++ * @key: the key to get hash from
++ */
++static inline uint32_t key_hash(const struct ubifs_info *c __attribute__((unused)),
++				const union ubifs_key *key)
++{
++	return key->u32[1] & UBIFS_S_KEY_HASH_MASK;
++}
++
++/**
++ * key_inum - fetch inode number from key.
++ * @c: UBIFS file-system description object
++ * @k: key to fetch inode number from
++ */
++static inline ino_t key_inum(const struct ubifs_info *c __attribute__((unused)), const void *k)
++{
++	const union ubifs_key *key = k;
++
++	return key->u32[0];
++}
++
++/**
++ * key_block - get data block number.
++ * @c: UBIFS file-system description object
++ * @key: the key to get the block number from
++ */
++static inline unsigned int key_block(const struct ubifs_info *c __attribute__((unused)),
++				     const union ubifs_key *key)
++{
++	return key->u32[1] & UBIFS_S_KEY_BLOCK_MASK;
++}
+ #endif /* !__UBIFS_KEY_H__ */
 -- 
 1.8.4.2
