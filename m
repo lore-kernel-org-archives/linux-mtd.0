@@ -1,22 +1,21 @@
-Received: from mail-lf0-f52.google.com ([209.85.215.52])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmnLv-00057F-0S
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 18:34:11 +0000
-Received: by lffv3 with SMTP id v3so41606227lff.0
- for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 11:33:48 -0700 (PDT)
+ id 1Zmo17-0006hM-A4
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 19:16:47 +0000
+Subject: Re: [PATCH] ubifs: Add new mount option to force fdatasync before
+ rename
+To: Nikhilesh Reddy <reddyn@codeaurora.org>
+References: <560984B4.7090105@codeaurora.org> <560EF960.50808@nod.at>
+ <5612BBD2.9010708@codeaurora.org> <561381B2.2090705@nod.at>
+ <561D5075.1090805@codeaurora.org>
+Cc: linux-mtd@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <561FFB84.1090409@nod.at>
+Date: Thu, 15 Oct 2015 21:16:20 +0200
 MIME-Version: 1.0
-In-Reply-To: <1444681992-4208-1-git-send-email-computersforpeace@gmail.com>
-References: <1444681992-4208-1-git-send-email-computersforpeace@gmail.com>
-Date: Thu, 15 Oct 2015 15:33:48 -0300
-Message-ID: <CAAEAJfCzVxCEA3opQU2B-wS0U+L-yK3R724W68f=95r+uMPAxg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: pxa3xx_nand: don't duplicate MTD suspend/resume
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Brian Norris <computersforpeace@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <561D5075.1090805@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,89 +25,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Robert:
-
-Can you test this on a platform with PM support, and make sure
-the NAND works fine after a resume?
-
-On 12 October 2015 at 17:33, Brian Norris <computersforpeace@gmail.com> wro=
-te:
-> mtd_{suspend,resume}() get called from mtdcore in a class suspend/resume
-> callback. We don't need to call them again here. In practice, this would
-> actually work OK, as nand_base actually handles nesting OK -- it just
-> might print warnings.
->
-> Untested, but there are few (no?) users of PM for this driver AFAIK.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/nand/pxa3xx_nand.c | 17 -----------------
->  1 file changed, 17 deletions(-)
->
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
-d.c
-> index 232c7074624a..cce5a32eef60 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1892,32 +1892,19 @@ static int pxa3xx_nand_probe(struct platform_devi=
-ce *pdev)
->  static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_message_=
-t state)
->  {
->         struct pxa3xx_nand_info *info =3D platform_get_drvdata(pdev);
-> -       struct pxa3xx_nand_platform_data *pdata;
-> -       struct mtd_info *mtd;
-> -       int cs;
->
-> -       pdata =3D dev_get_platdata(&pdev->dev);
->         if (info->state) {
->                 dev_err(&pdev->dev, "driver busy, state =3D %d\n", info->=
-state);
->                 return -EAGAIN;
->         }
->
-> -       for (cs =3D 0; cs < pdata->num_cs; cs++) {
-> -               mtd =3D info->host[cs]->mtd;
-> -               mtd_suspend(mtd);
-> -       }
-> -
->         return 0;
->  }
->
->  static int pxa3xx_nand_resume(struct platform_device *pdev)
->  {
->         struct pxa3xx_nand_info *info =3D platform_get_drvdata(pdev);
-> -       struct pxa3xx_nand_platform_data *pdata;
-> -       struct mtd_info *mtd;
-> -       int cs;
->
-> -       pdata =3D dev_get_platdata(&pdev->dev);
->         /* We don't want to handle interrupt without calling mtd routine =
-*/
->         disable_int(info, NDCR_INT_MASK);
->
-> @@ -1935,10 +1922,6 @@ static int pxa3xx_nand_resume(struct platform_devi=
-ce *pdev)
->          * all status before resume
->          */
->         nand_writel(info, NDSR, NDSR_MASK);
-> -       for (cs =3D 0; cs < pdata->num_cs; cs++) {
-> -               mtd =3D info->host[cs]->mtd;
-> -               mtd_resume(mtd);
-> -       }
->
->         return 0;
->  }
-> --
-> 2.6.0.rc2.230.g3dd15c0
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 
+Am 13.10.2015 um 20:41 schrieb Nikhilesh Reddy:
+> On Tue 06 Oct 2015 01:09:22 AM PDT, Richard Weinberger wrote:
+>> Am 05.10.2015 um 20:05 schrieb Nikhilesh Reddy:
+>>> On 10/02/2015 02:38 PM, Richard Weinberger wrote:
+>>>> Hi!
+>>>>
+>>>> Am 28.09.2015 um 20:19 schrieb Nikhilesh Reddy:
+>>>>> The rename operation in UBIFS is synchronous (or nearly synchronous)
+>>>>> while the write operation is not. This can result in zero length files when
+>>>>> renaming of files followed by an abrupt power down or a crash.
+>>>>>
+>>>>> For example:
+>>>>> 1) Say a file a.txt exists with size 1KB.
+>>>>> 2) Create a file b.tmp (open)
+>>>>> 3) Update the data in b.tmp with new values (write and close)
+>>>>> 4) rename b.tmp to a.txt
+>>>>> 5) Abrupt power down or crash
+>>>>>
+>>>>> This above scenario can result in a.txt becoming a file of zero length and
+>>>>> giving the impression of a.txt being truncated.
+>>>>> This scenario can ofcourse be prevented by calling fsync or fdatasync
+>>>>> before the rename operation.
+>>>>
+>>>> I gave this a try and hacked up something to emulate a powercut *exactly* after
+>>>> rename() in UBIFS.
+>>>>
+>>>> fd = open("b.tmp", ...)
+>>>> write(fd, "foo", ...)
+>>>> close(fd)
+>>>> rename("b.tmp", "a.txt")
+>>>> ^---- powercut
+>>>>
+>>>> After remounting UBIFS both a.txt and b.tmp are present
+>>>> but b.tmp is truncated. Not a.txt as you said.
+>>>>
+>>>> Can you please double check?
+>>>> I want to make sure that we're talking about the same things.
+>>>
+>>> Since you mentioned a.txt and b.tmp are both present... i assume the file a.txt was present even before b.tmp was created?
+>>
+>> Yes.
+>>
+>>> I will try and explain as to what i understand the situation to be.
+>>>
+>>> If both the files are present then the rename didnt actually get written to the device and was probably still in the internal ubifs write buffer.
+>>
+>> A rename operation does not trigger a commit, therefore a powercut directly after rename() would make the rename() void.
+>> In this context "both files present" means a.txt and b.tmp exist and are both synched to disk?
+>>
+>>> I believe there is a small delay between the rename call and the inodes
+>>> being updated on the the device from the internal ubifs write buffer.
+>>>
+>>> The scenario i described above seems to occur when the inode update is committed to the device... i.e here the b.tmp should not exist since the rename was successfully written but
+>>> the file data writeback (that is in the page cache) has not yet been committed to the device.
+>>> Since the writeback buffer is way smaller than the page cache the inode update occurs first or is likely to have.
+>>>
+>>>
+>>> Hopefully i did not mess up on my understanding or explanation.
+>>
+>> Can you please share a reproducer?
+>> A simple sequence of syscall would also do it.
+>>
+>> Thanks,
+>> //richard
+> 
+> Sorry for the delay in my reply
+> I got tied up...
 
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+No big deal.
+
+> as for the reproducer... its exactly as i described in the commit message... though we performed the power reset after a bit of delay. it does take a few tries on our end to
+> reproduce... so we have it on a loop until it is reproduced.
+> 
+> I Will definitely  send you more concrete steps once i have a bit of time.
+
+Please do so.
+As I said, if I do exactly what you wrote, as expected b.tmp will be truncated but the
+already synced file a.txt stays.
+
+Thanks,
+//richard
