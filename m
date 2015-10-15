@@ -1,20 +1,22 @@
-Received: from mail-oi0-f52.google.com ([209.85.218.52])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmmTa-0000t2-Ry
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 17:38:03 +0000
-Received: by oiev17 with SMTP id v17so2799659oie.2
- for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 10:37:41 -0700 (PDT)
-From: Franklin S Cooper Jr <fcooper@ti.com>
-To: linux-kernel@vger.kernel.org, rogerq@ti.com, devicetree@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org, nsekhar@ti.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, tony@atomide.com
-Cc: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: [PATCH v2 5/5] ARM: OMAP2+: Update GPMC and NAND DT binding
- documentation
-Date: Thu, 15 Oct 2015 12:37:28 -0500
-Message-Id: <1444930648-19313-6-git-send-email-fcooper@ti.com>
-In-Reply-To: <1444930648-19313-1-git-send-email-fcooper@ti.com>
-References: <1444930648-19313-1-git-send-email-fcooper@ti.com>
+Date: Thu, 15 Oct 2015 10:47:09 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, jogo@openwrt.org,
+ Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] mtd: document linux-specific partition parser DT binding
+Message-ID: <20151015174709.GB108923@google.com>
+References: <1444915191-28350-1-git-send-email-linus.walleij@linaro.org>
+ <20151015162210.GA4545@localhost>
+ <20151015170428.GA9250@obsidianresearch.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151015170428.GA9250@obsidianresearch.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,56 +26,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add additional details to the GPMC NAND documentation to clarify
-what is needed to enable NAND DMA prefetch.
+Hi Jason,
 
-Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
----
-V2 Changes:
-Replace nand and Nand with NAND
-Specify the value dma-names should be set to
+On Thu, Oct 15, 2015 at 11:04:28AM -0600, Jason Gunthorpe wrote:
+> On Thu, Oct 15, 2015 at 09:22:10AM -0700, Brian Norris wrote:
+> 
+> > Are you trying to use this binding, or is this just purely a mechanical
+> > documentation issue? I ask, because it seems that binding never really
+> > got reviewed at all, and others have recently tried to extend
+> > support
+> 
+> I wrote it before ARM started down the DT direction and all these
+> formalities were developed.
+> 
+> > That's not to say we can't document the old one, but I'm curious if
+> > there are real users. I'd also like to encourage new users to avoid the
+> > old one if we can make that feasible.
+> 
+> We continue to use it here,
 
- Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt | 7 ++++++-
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt                | 2 ++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+Good to know.
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-index 704be93..afae4b3 100644
---- a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-+++ b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-@@ -33,6 +33,10 @@ Required properties:
- 			As this will change in the future, filling correct
- 			values here is a requirement.
- 
-+GPMC DMA information.
-+ - dmas			GPMC NAND prefetch dma channel
-+ - dma-names		Must be set to "rxtx"
-+
- Timing properties for child nodes. All are optional and default to 0.
- 
-  - gpmc,sync-clk-ps:	Minimum clock period for synchronous mode, in picoseconds
-@@ -119,7 +123,8 @@ Example for an AM33xx board:
- 		ti,hwmods = "gpmc";
- 		reg = <0x50000000 0x2000>;
- 		interrupts = <100>;
--
-+		dmas = <&edma 52>;
-+		dma-names = "rxtx";
- 		gpmc,num-cs = <8>;
- 		gpmc,num-waitpins = <2>;
- 		#address-cells = <2>;
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index 253e6de..4b0c240 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -61,6 +61,8 @@ Example for an AM33xx board:
- 		ti,hwmods = "gpmc";
- 		reg = <0x50000000 0x36c>;
- 		interrupts = <100>;
-+		dmas = <&edma 52>;
-+		dma-names = "rxtx";
- 		gpmc,num-cs = <8>;
- 		gpmc,num-waitpins = <2>;
- 		#address-cells = <2>;
--- 
-2.6.1
+> there is just no way to autodetect flash
+> partition layouts.
+
+Right. It'd be lovely if things were more standardized, and we could
+just build all parsers in for all MTDs, like how block devices do it,
+but sadly that's probably not feasible, given the quirks of various
+parsers, and how they often require scanning a large portion of the
+device :(
+
+> I'm not fussed about having to change to something
+> else in future.
+
+OK, good to know. Recent developments have put maintainers in a tough
+position sometimes, since as soon as there's a DT binding used in the
+wild, some people like to claim that it is ABI and must never change.
+This ties the hands when wanting to deprecate/improve/replace features.
+In reality, there are few (my guess: a negligible near-zero-percent) DT
+users that actually have DTs locked into some kind of firmware in a way
+that they (1) can never update their DT and (2) expect to be able to run
+mainline kernels, so this all just becomes a lot of fuss over nothing.
+
+> The reason the original patch exposed the cmdline parser is because
+> that is how the internal mechanisms work
+
+Right. And that's why it's best these days not to directly expose
+internal mechanisms via DT.
+
+> - but realistically, the
+> cmdline parser is a hack to get around the lack of DT partition
+> description. If the DT can describe the partitions it should supersede
+> and obsolete the old command line hack. IMHO
+
+Hmm, I don't know. I wouldn't expect people should really be using
+cmdlineparts as a production solution, but I'd consider it more of a
+debugging/development option -- if I want to override the DT (which is
+sometimes a bit harder to change) or the on-flash layout (e.g.,
+RedBoot), then I can fiddle with the command line. So I wouldn't quite
+qualify it as a hack (though many might use it in a hacky way) nor would
+I suggest that the DT should override it.
+
+> > Also, if we're really going to support this, we should list exactly what
+> > strings we support. And that's one of the problems with the existing
+> > binding; it supports any old string Linux supports, which doesn't match
+> > how we typically want to add bindings (i.e., via proposal + review).
+> 
+> That is why it is prefixed with linux, the review of the part parser name is
+> the responsibility of the MTD crew, not the DT folks.
+
+OK. That works for now. But I don't want to extend this binding to any
+other drivers, if I can help it. And I don't want to encourage it (lest
+it *really* becomes ABI).
+
+I don't think it would be too hard to fix this to not be so
+Linux-specific. I think any partition layouts that people would want to
+specify in DT can be reasonably well-defined to not consider them
+Linux-specific. Some probably didn't even have a Linux target in mind
+when they were developed. We'd just need to give them better names and a
+short description and/or pointers to documentation. e.g. [1][2].
+
+> bcm47xxpart seems like a terrible name for a partition scheme. Really,
+> almost any scheme can be used on any SOC, naming a partition parser
+> after a SOC family makes very little sense to me..
+
+I believe it was defined purely by Broadcom, for use with their
+firmwares mostly seen on that SoC family. And in the spirit of DT
+naming, IP often gets named after the first SoC that implements it, even
+if later revs aren't the same SoC (or SoC family) but are still
+compatible. So I can see the name being reasonable, even if not perfect.
+
+Any better nominations for names?
+
+Brian
+
+[1] http://infocenter.arm.com/help/topic/com.arm.doc.dui0102g/DUI0102F_afs1_4_rg.pdf
+[2] https://sourceware.org/redboot/
