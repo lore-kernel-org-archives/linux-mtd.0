@@ -1,23 +1,28 @@
-Date: Thu, 15 Oct 2015 12:22:24 -0600
-From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, Liviu Dudau <Liviu.Dudau@arm.com>,
- Rafa?? Mi??ecki <zajec5@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, jogo@openwrt.org,
- Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] mtd: document linux-specific partition parser DT binding
-Message-ID: <20151015182224.GB17519@obsidianresearch.com>
-References: <1444915191-28350-1-git-send-email-linus.walleij@linaro.org>
- <20151015162210.GA4545@localhost>
- <20151015170428.GA9250@obsidianresearch.com>
- <20151015174709.GB108923@google.com>
+Received: from mail-lb0-f179.google.com ([209.85.217.179])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZmnJ3-0004Ch-Us
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 18:31:15 +0000
+Received: by lbwr8 with SMTP id r8so79956292lbw.2
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 11:30:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151015174709.GB108923@google.com>
+In-Reply-To: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
+References: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
+Date: Thu, 15 Oct 2015 15:30:50 -0300
+Message-ID: <CAAEAJfBdfc-=AH0z_A8-b70LH_=GJp0qPRp0zCohqDBf8pnokQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] mtd: pxa3xx_nand: rework the timing setup
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Antoine Tenart <antoine.tenart@free-electrons.com>
+Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, zmxu@marvell.com,
+ jszhang@marvell.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ Robert Jarzmik <robert.jarzmik@free.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +32,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 15, 2015 at 10:47:09AM -0700, Brian Norris wrote:
-> Hmm, I don't know. I wouldn't expect people should really be using
-> cmdlineparts as a production solution, but I'd consider it more of a
-> debugging/development option -- if I want to override the DT (which is
-> sometimes a bit harder to change) or the on-flash layout (e.g.,
-> RedBoot), then I can fiddle with the command line.
+Ccing Robert as he can provide valuable test on PXA boards.
 
-We don't have cmdline overrides for very much (if any?) of DT.
+On 15 October 2015 at 04:17, Antoine Tenart
+<antoine.tenart@free-electrons.com> wrote:
+> Hi all,
+>
+> Let's try one more time to get this merged.
+>
+> Another series, introducing the Berlin nand support, depends on this.
+>
+> This series was part of a bigger one[1], which was split into smaller
+> ones as asked by Ezequiel[2]. When we take this into account, this is
+> v8.
+>
+> The aim here is to use the nand framework to setup the timings,
+> while keeping the old in-driver way of configuration timings for
+> compatibility reasons.
+>
+> You can find the series at:
+> https://github.com/atenart/linux.git berlin/4.3/nand-timings
+>
+> Antoine
+>
+> Since v2:
+>         - Added back the support for keep-config 16 bits devices
+>         - Fixed wrong unit in a calculation
+>         - Reworked the pxa3xx_nand_init_timings() logic
+>         - Allowed compile test the pxa3xx driver
+>
+> Since v1:
+>         - Rebased on top of v4.2-rc1
+>
+> Since the series was split up:
+>         - Reworked the ndcr setup
+>         - Removed the read_id_bytes update after device detection
+>
+> Antoine Tenart (4):
+>   mtd: nand: allow compile test of MTD_NAND_PXA3xx
+>   mtd: pxa3xx_nand: add helpers to setup the timings
+>   mtd: pxa3xx_nand: rework flash detection and timing setup
+>   mtd: pxa3xx_nand: clean up the pxa3xx timings
+>
+>  drivers/mtd/nand/Kconfig                      |   2 +-
+>  drivers/mtd/nand/pxa3xx_nand.c                | 273 ++++++++++++++++----=
+------
+>  include/linux/platform_data/mtd-nand-pxa3xx.h |  11 +-
+>  3 files changed, 172 insertions(+), 114 deletions(-)
+>
+> --
+> 2.6.1
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-The DT is supposed to describe the hardware/boot environment, if
-overriding the partition layout is really common, then is the DT
-binding really describing the hardware at all?
 
-The partition layout is already very border line to support in DT, it
-is really very close to a software configuration which is strongly
-discouraged from DT files.
 
-I justify it as the boot loader communicating the partition scheme it
-understands to the OS, so the OS can have a hope of setting up the
-flash in a way the bootloader understands.
-
-I've never used the cmdline option, so maybe I don't see the use case,
-but it seems like a really weird desire to change the partitioning
-away from what the bootloader supports.
-
-> Any better nominations for names?
-
-bcrm-part-table-43 ?
-
-Jason
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
