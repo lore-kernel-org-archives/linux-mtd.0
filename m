@@ -1,15 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZmZtf-0002pj-Ur
- for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 04:12:09 +0000
+ id 1ZmZth-0002pj-Ha
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 04:12:11 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <david@sigma-star.at>, <dedekind1@gmail.com>, <richard@nod.at>,
  <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 02/27] ubifs: pick some common definitions into
- ubifs_common.h
-Date: Thu, 15 Oct 2015 12:04:25 +0800
-Message-ID: <1444881890-4012-3-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 08/27] ubifs: move more functions into io lib
+Date: Thu, 15 Oct 2015 12:04:31 +0800
+Message-ID: <1444881890-4012-9-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1444881890-4012-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1444881890-4012-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -23,144 +22,283 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, lpt.c is including mkfs.ubifs.h. That make
-the lpt depend on mkfs.ubifs. It's not good if we want
-to introduce some more tools for ubifs, such as fsck.ubifs.
-
-This patch start to cut off the dependence from libs, such
-as lpt, devtable, to mkfs.ubifs.
+Move some common functions in mkfs.ubifs.c to io.c
+to let others can use them.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.h   | 46 +-------------------------------
- ubifs-utils/mkfs.ubifs/ubifs_common.h | 50 +++++++++++++++++++++++++++++++++++
- 2 files changed, 51 insertions(+), 45 deletions(-)
- create mode 100644 ubifs-utils/mkfs.ubifs/ubifs_common.h
+ ubifs-utils/include/io.h            |   4 ++
+ ubifs-utils/lib/io.c                | 101 +++++++++++++++++++++++++++++++++++
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 102 +-----------------------------------
+ 3 files changed, 107 insertions(+), 100 deletions(-)
 
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
-index 944a159..d6d46a2 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
-@@ -23,37 +23,12 @@
- #ifndef __MKFS_UBIFS_H__
- #define __MKFS_UBIFS_H__
+diff --git a/ubifs-utils/include/io.h b/ubifs-utils/include/io.h
+index e24d0c6..920645d 100644
+--- a/ubifs-utils/include/io.h
++++ b/ubifs-utils/include/io.h
+@@ -10,6 +10,10 @@
+ extern int out_fd;
+ extern int out_ubi;
+ extern libubi_t ubi;
++extern char *output;
  
--#include <unistd.h>
--#include <stdlib.h>
--#include <stdio.h>
--#include <limits.h>
--#include <string.h>
--#include <stdint.h>
--#include <endian.h>
--#include <byteswap.h>
--#include <linux/types.h>
--#include <linux/fs.h>
--
--#include <getopt.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/ioctl.h>
--#include <fcntl.h>
--#include <dirent.h>
--#include <errno.h>
--#include <libgen.h>
--#include <ctype.h>
--#include <uuid/uuid.h>
--#include <sys/file.h>
--
--#include <mtd/ubifs-media.h>
-+#include "ubifs_common.h"
- 
- /* common.h requires the PROGRAM_NAME macro */
- #define PROGRAM_NAME "mkfs.ubifs"
- #include "common.h"
- 
--#include "libubi.h"
--#include "defs.h"
- #include "crc16.h"
- #include "ubifs.h"
- #include "key.h"
-@@ -74,25 +49,6 @@
- #error MKFS_UBIFS_COMPR_ZLIB != UBIFS_COMPR_ZLIB
+ int write_leb(struct ubifs_info *c, int lnum, int len, void *buf);
++int close_target(void);
++int open_target(struct ubifs_info *c, int yes);
++int open_ubi(struct ubifs_info *c, const char *node);
  #endif
+diff --git a/ubifs-utils/lib/io.c b/ubifs-utils/lib/io.c
+index 7aba0a6..9817d2a 100644
+--- a/ubifs-utils/lib/io.c
++++ b/ubifs-utils/lib/io.c
+@@ -5,6 +5,107 @@
+ int out_fd;
+ int out_ubi;
+ libubi_t ubi;
++char *output;
++
++/**
++ * check_volume_empty - check if the UBI volume is empty.
++ *
++ * This function checks if the UBI volume is empty by looking if its LEBs are
++ * mapped or not.
++ *
++ * Returns %0 in case of success, %1 is the volume is not empty,
++ * and a negative error code in case of failure.
++ */
++static int check_volume_empty(struct ubifs_info *c)
++{
++	int lnum, err;
++
++	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
++		err = ubi_is_mapped(out_fd, lnum);
++		if (err < 0)
++			return err;
++		if (err == 1)
++			return 1;
++	}
++	return 0;
++}
++
++/**
++ * open_ubi - open the UBI volume.
++ * @node: name of the UBI volume character device to fetch information about
++ *
++ * Returns %0 in case of success and %-1 in case of failure
++ */
++int open_ubi(struct ubifs_info *c, const char *node)
++{
++	struct stat st;
++
++	if (stat(node, &st) || !S_ISCHR(st.st_mode))
++		return -1;
++
++	ubi = libubi_open();
++	if (!ubi)
++		return -1;
++	if (ubi_get_vol_info(ubi, node, &c->vi))
++		return -1;
++	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di))
++		return -1;
++	return 0;
++}
++
++/**
++ * open_target - open the output target.
++ * @yes: always ansure yes
++ *
++ * Open the output target. The target can be an UBI volume
++ * or a file.
++ *
++ * Returns %0 in case of success and %-1 in case of failure.
++ */
++int open_target(struct ubifs_info *c, int yes)
++{
++	if (out_ubi) {
++		out_fd = open(output, O_RDWR | O_EXCL);
++
++		if (out_fd == -1)
++			return sys_err_msg("cannot open the UBI volume '%s'",
++					   output);
++		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1))
++			return sys_err_msg("ubi_set_property failed");
++
++		if (!yes && check_volume_empty(c)) {
++			if (!prompt("UBI volume is not empty.  Format anyways?", false))
++				return err_msg("UBI volume is not empty");
++		}
++	} else {
++		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
++			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
++		if (out_fd == -1)
++			return sys_err_msg("cannot create output file '%s'",
++					   output);
++	}
++	return 0;
++}
++
++/**
++ * close_target - close the output target.
++ *
++ * Close the output target. If the target was an UBI
++ * volume, also close libubi.
++ *
++ * Returns %0 in case of success and %-1 in case of failure.
++ */
++int close_target(void)
++{
++	if (ubi)
++		libubi_close(ubi);
++	if (out_fd >= 0 && close(out_fd) == -1)
++		return sys_err_msg("cannot close the target '%s'", output);
++	if (output)
++		free(output);
++	return 0;
++}
++
  
--extern int verbose;
--extern int debug_level;
--
--#define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
--	printf("mkfs.ubifs: %s: " fmt "\n", __FUNCTION__, ##__VA_ARGS__); \
--} while(0)
--
--#define err_msg(fmt, ...) ({                                \
--	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__); \
--	-1;                                                 \
--})
--
--#define sys_err_msg(fmt, ...) ({                                         \
--	int err_ = errno;                                                \
--	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__);              \
--	fprintf(stderr, "       %s (error %d)\n", strerror(err_), err_); \
--	-1;                                                              \
--})
--
  /**
-  * struct path_htbl_element - an element of the path hash table.
-  * @path: the UBIFS path the element describes (the key of the element)
-diff --git a/ubifs-utils/mkfs.ubifs/ubifs_common.h b/ubifs-utils/mkfs.ubifs/ubifs_common.h
-new file mode 100644
-index 0000000..958c20a
---- /dev/null
-+++ b/ubifs-utils/mkfs.ubifs/ubifs_common.h
-@@ -0,0 +1,50 @@
-+#ifndef __UBIFS_COMMON_H__
-+#define __UBIFS_COMMON_H__
-+
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <limits.h>
-+#include <string.h>
-+#include <stdint.h>
-+#include <endian.h>
-+#include <byteswap.h>
-+#include <linux/types.h>
-+#include <linux/fs.h>
-+
-+#include <getopt.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/ioctl.h>
-+#include <fcntl.h>
-+#include <dirent.h>
-+#include <errno.h>
-+#include <libgen.h>
-+#include <ctype.h>
-+#include <uuid/uuid.h>
-+#include <sys/file.h>
-+
-+#include <mtd/ubifs-media.h>
-+
-+#include "libubi.h"
-+#include "defs.h"
-+
-+extern int verbose;
-+extern int debug_level;
-+
-+#define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
-+	printf("ubifs: %s: " fmt "\n", __FUNCTION__, ##__VA_ARGS__); \
-+} while(0)
-+
-+#define err_msg(fmt, ...) ({                                \
-+	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__); \
-+	-1;                                                 \
-+})
-+
-+#define sys_err_msg(fmt, ...) ({                                         \
-+	int err_ = errno;                                                \
-+	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__);              \
-+	fprintf(stderr, "       %s (error %d)\n", strerror(err_), err_); \
-+	-1;                                                              \
-+})
-+#endif
+  * write_leb - copy the image of a LEB to the output target.
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 9795282..b19646f 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -106,7 +106,6 @@ int yes;
+ static char *root;
+ static int root_len;
+ static struct stat root_st;
+-static char *output;
+ static int squash_owner;
+ 
+ /* The 'head' (position) which nodes are written */
+@@ -446,28 +445,6 @@ static long long get_bytes(const char *str)
+ 
+ 	return bytes;
+ }
+-/**
+- * open_ubi - open the UBI volume.
+- * @node: name of the UBI volume character device to fetch information about
+- *
+- * Returns %0 in case of success and %-1 in case of failure
+- */
+-static int open_ubi(const char *node)
+-{
+-	struct stat st;
+-
+-	if (stat(node, &st) || !S_ISCHR(st.st_mode))
+-		return -1;
+-
+-	ubi = libubi_open();
+-	if (!ubi)
+-		return -1;
+-	if (ubi_get_vol_info(ubi, node, &c->vi))
+-		return -1;
+-	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di))
+-		return -1;
+-	return 0;
+-}
+ 
+ static int get_options(int argc, char**argv)
+ {
+@@ -629,7 +606,7 @@ static int get_options(int argc, char**argv)
+ 	if (!output)
+ 		return err_msg("not output device or file specified");
+ 
+-	out_ubi = !open_ubi(output);
++	out_ubi = !open_ubi(c, output);
+ 
+ 	if (out_ubi) {
+ 		c->min_io_size = c->di.min_io_size;
+@@ -2038,81 +2015,6 @@ static int write_orphan_area(void)
+ 	return 0;
+ }
+ 
+-/**
+- * check_volume_empty - check if the UBI volume is empty.
+- *
+- * This function checks if the UBI volume is empty by looking if its LEBs are
+- * mapped or not.
+- *
+- * Returns %0 in case of success, %1 is the volume is not empty,
+- * and a negative error code in case of failure.
+- */
+-static int check_volume_empty(void)
+-{
+-	int lnum, err;
+-
+-	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
+-		err = ubi_is_mapped(out_fd, lnum);
+-		if (err < 0)
+-			return err;
+-		if (err == 1)
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+-/**
+- * open_target - open the output target.
+- *
+- * Open the output target. The target can be an UBI volume
+- * or a file.
+- *
+- * Returns %0 in case of success and %-1 in case of failure.
+- */
+-static int open_target(void)
+-{
+-	if (out_ubi) {
+-		out_fd = open(output, O_RDWR | O_EXCL);
+-
+-		if (out_fd == -1)
+-			return sys_err_msg("cannot open the UBI volume '%s'",
+-					   output);
+-		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1))
+-			return sys_err_msg("ubi_set_property failed");
+-
+-		if (!yes && check_volume_empty()) {
+-			if (!prompt("UBI volume is not empty.  Format anyways?", false))
+-				return err_msg("UBI volume is not empty");
+-		}
+-	} else {
+-		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
+-			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-		if (out_fd == -1)
+-			return sys_err_msg("cannot create output file '%s'",
+-					   output);
+-	}
+-	return 0;
+-}
+-
+-
+-/**
+- * close_target - close the output target.
+- *
+- * Close the output target. If the target was an UBI
+- * volume, also close libubi.
+- *
+- * Returns %0 in case of success and %-1 in case of failure.
+- */
+-static int close_target(void)
+-{
+-	if (ubi)
+-		libubi_close(ubi);
+-	if (out_fd >= 0 && close(out_fd) == -1)
+-		return sys_err_msg("cannot close the target '%s'", output);
+-	if (output)
+-		free(output);
+-	return 0;
+-}
+ 
+ /**
+  * init - initialize things.
+@@ -2279,7 +2181,7 @@ int main(int argc, char *argv[])
+ 	if (err)
+ 		return err;
+ 
+-	err = open_target();
++	err = open_target(c, yes);
+ 	if (err)
+ 		return err;
+ 
 -- 
 1.8.4.2
