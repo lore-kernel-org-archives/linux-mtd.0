@@ -1,21 +1,17 @@
-Date: Thu, 15 Oct 2015 13:52:27 +0200
-From: Antoine Tenart <antoine.tenart@free-electrons.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, kbuild test robot <lkp@intel.com>,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- zmxu@marvell.com, jszhang@marvell.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, kbuild-all@01.org,
- ezequiel.garcia@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, sebastian.hesselbarth@gmail.com
-Subject: Re: [PATCH v3 1/4] mtd: nand: allow compile test of MTD_NAND_PXA3xx
-Message-ID: <20151015115227.GA21506@kwain>
-References: <201510151736.7t9qDlAe%fengguang.wu@intel.com>
- <5425922.4Qu1HbLqzM@wuerfel>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5425922.4Qu1HbLqzM@wuerfel>
+Received: from mail-lf0-f50.google.com ([209.85.215.50])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZmiHd-0005M1-5Y
+ for linux-mtd@lists.infradead.org; Thu, 15 Oct 2015 13:09:27 +0000
+Received: by lfeh64 with SMTP id h64so27158292lfe.3
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2015 06:09:02 -0700 (PDT)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 00/10] ARM MTD AFS v2 partition support
+Date: Thu, 15 Oct 2015 15:08:43 +0200
+Message-Id: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
+Years ago, the ARM reference platforms moved away from the footer
+format parsed by the current AFS code in MTD. As far as I can
+tell this begun with the RealView reference designs (mach-realview)
+and the new format has been used in RealView, Versatile Express
+and recently the Juno Development platform (64bit).
 
-On Thu, Oct 15, 2015 at 01:44:19PM +0200, Arnd Bergmann wrote:
-> On Thursday 15 October 2015 17:12:18 kbuild test robot wrote:
-> >    drivers/mtd/nand/pxa3xx_nand.c: In function 'drain_fifo':
-> > >> drivers/mtd/nand/pxa3xx_nand.c:507:4: error: implicit declaration of function 'readsl' [-Werror=implicit-function-declaration]
-> >        readsl(info->mmio_base + NDDB, data, 8);
-> >        ^
-> 
-> It should be easy to fix this by changing the code to use ioread32_rep() instead
-> of readsl(). They behave the same way on pointers returned from ioremap() etc,
-> and the other one is available on all architectures.
+The code has not been working for newer designs for a long time.
+Proper parsing of the flash image partitions is very helpful when
+you want to replace firmware when running full Linux and none of
+the boot monitors or boot loaders.
 
-Sure, I can add a patch fixing this prior to the one allowing to compile
-test the pxa3xx nand driver.
+After this, AFS parsing will work on all ARM reference designs,
+or well, all I could test. I tested the Integrator/AP, RealView
+PB11MPCore and Juno Development Platform.
 
-Antoine
+The first 9 patches basically refactors the current code to
+make the old partition format more encapsulated, while the last
+patch adds the new v2 format.
+
+Linus Walleij (10):
+  mtd: afs: rename structs and functions for v1
+  mtd: enable AFS selection for ARM64
+  mtd: afs: break out v1 footer magic to a define
+  mtd: afs: refactor v1 partition parsing
+  mtd: afs: simplify partition parsing
+  mtd: afs: simplify partition detection
+  mtd: factor out v1 partition parsing
+  mtd: afs: factor footer parsing into the v1 part parsing
+  mtd: afs: factor the IIS read into partition parser
+  mtd: afs: add v2 partition parsing
+
+ drivers/mtd/Kconfig |   2 +-
+ drivers/mtd/afs.c   | 388 +++++++++++++++++++++++++++++++++++-----------------
+ 2 files changed, 263 insertions(+), 127 deletions(-)
 
 -- 
-Antoine Ténart, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+2.4.3
