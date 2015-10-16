@@ -1,27 +1,27 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Anup Patel <anup.patel@broadcom.com>,
- Scott Branden <sbranden@broadcom.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Kumar Gala <galak@codeaurora.org>,
- Will Deacon <will.deacon@arm.com>, linux-kernel@vger.kernel.org,
- Vikram Prakash <vikramp@broadcom.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Sandeep Tripathy <tripathy@broadcom.com>,
- Ray Jui <rjui@broadcom.com>, Pramod KUMAR <pramodku@broadcom.com>,
- bcm-kernel-feedback-list@broadcom.com, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v2 2/4] mtd: nand: Allow MTD_NAND_BRCMNAND to be selected
- for ARM64
-Date: Fri, 16 Oct 2015 21:39:07 +0200
-Message-ID: <5338147.WN3k6RsNEN@wuerfel>
-In-Reply-To: <56214FC3.2060002@gmail.com>
-References: <1444986537-28387-1-git-send-email-anup.patel@broadcom.com>
- <7901695.AWo8cP6Hz1@wuerfel> <56214FC3.2060002@gmail.com>
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZnCVK-0007ML-2F
+ for linux-mtd@lists.infradead.org; Fri, 16 Oct 2015 21:25:34 +0000
+Date: Fri, 16 Oct 2015 14:25:10 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ ezequiel@vanguardiasur.com.ar, javier@dowhile0.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, fcooper@ti.com
+Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+Message-ID: <20151016212510.GF24370@atomide.com>
+References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
+ <560BC0DB.5020205@ti.com> <20151006083346.GL23801@atomide.com>
+ <56139A72.6040600@ti.com> <20151006100000.GN23801@atomide.com>
+ <56139CE9.8020002@ti.com> <5613A256.8000105@ti.com>
+ <20151006110134.GO23801@atomide.com> <5613ABEF.9000904@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5613ABEF.9000904@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,22 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 16 October 2015 12:28:03 Florian Fainelli wrote:
-> > 
-> > Sorry, can't reproduce it any more. My patch is dated June 4, so it was
-> > probably broken then but got fixed since. I normally try to verify that
-> > the patches are still needed before I send them, but this time I only
-> > saw the current discussion and remembered something vague about it
-> > and sent what I had in my backlog of the randconfig-fixes series.
+* Roger Quadros <rogerq@ti.com> [151006 04:13]:
 > 
-> It may have been a problem before this patch:
+> Fine. The updated series is now at
 > 
-> d80d942bcc8e1555a76774d20be9800cfef2d415 ("ARM: BCM: Do not select
-> CONFIG_MTD_NAND_BRCMNAND")
-> -- 
-> 
+> git@github.com:rogerq/linux.git
+>  * [new branch]      for-v4.4/gpmc-v4
 
-Yes, that must have been it. So my patch was not only outdated but
-also wrong ;-)
+Looks like it produces some build errors, this with RMKs 3430 and 4430
+only .configs:
 
-	Arnd
+drivers/memory/omap-gpmc.c:2035:43: error: ‘struct gpio_chip’ has no
+member named ‘irqdomain’
+drivers/memory/omap-gpmc.c:2116:8: error: implicit declaration of
+function ‘gpiochip_irqchip_add’ [-Werror=implicit-function-declaration]
+
+Maybe run randconfig builds on it for overnight?
+
+Other than that your series seems to behave for me now, so feel
+free to add:
+
+Acked-by: Tony Lindgren <tony@atomide.com>
+
+Regards,
+
+Tony
