@@ -1,29 +1,18 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zn1zM-0003TH-VG
- for linux-mtd@lists.infradead.org; Fri, 16 Oct 2015 10:11:53 +0000
-Received: by wicll6 with SMTP id ll6so2869772wic.0
- for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2015 03:11:29 -0700 (PDT)
+Date: Fri, 16 Oct 2015 12:16:14 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com, Hans de Goede <hdegoede@redhat.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mtd: nand: sunxi: add randomizer support
+Message-ID: <20151016121614.0686ec42@bbrezillon>
+In-Reply-To: <1444929443-25537-4-git-send-email-boris.brezillon@free-electrons.com>
+References: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1444929443-25537-4-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <20151015084727.GG14475@jhogan-linux.le.imgtec.org>
-References: <1444148837-10770-1-git-send-email-harvey.hunt@imgtec.com>
- <1444148837-10770-4-git-send-email-harvey.hunt@imgtec.com>
- <20151015084727.GG14475@jhogan-linux.le.imgtec.org>
-Date: Fri, 16 Oct 2015 11:11:29 +0100
-Message-ID: <CAOFt0_D5mO-7_cnpvm_MwvsZNv1yCFynbeA3dSw=H5hVyQbgTA@mail.gmail.com>
-Subject: Re: [PATCH v7,3/3] MIPS: dts: jz4780/ci20: Add NEMC, BCH and NAND
- device tree nodes
-From: Alex Smith <alex@alex-smith.me.uk>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: Harvey Hunt <harvey.hunt@imgtec.com>, linux-mtd@lists.infradead.org,
- Alex Smith <alex.smith@imgtec.com>,
- Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Paul Burton <paul.burton@imgtec.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips <linux-mips@linux-mips.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,31 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi James,
+On Thu, 15 Oct 2015 19:17:23 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-On 15 October 2015 at 09:47, James Hogan <james.hogan@imgtec.com> wrote:
->> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
->> index 9fcb9e7..453f1d3 100644
->> --- a/arch/mips/boot/dts/ingenic/ci20.dts
->> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
->> @@ -42,3 +42,57 @@
->>  &uart4 {
->>       status = "okay";
->>  };
->> +
->> +&nemc {
->> +     status = "okay";
->> +
->> +     nand: nand@1 {
->> +             compatible = "ingenic,jz4780-nand";
->
-> Isn't the NAND a micron part? This doesn't seem right. Is the device
-> driver and binding already accepted upstream with that compatible
-> string?
+> Add support for the randomizer engine available in Allwinner's NFC IP.
+> 
+> Randomization is useful to support modern NAND chips which are sensible to
+> repeated patterns. On such NANDs you might experience an unexpectedly high
+> number of bitflips when you repeat the same pattern all over a given NAND
+> block.
+> Randomizing input data mitigate this problem by avoiding such repeated
+> patterns.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/sunxi_nand.c | 274 ++++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 250 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index ef46ac6..5508ce8 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -60,6 +60,7 @@
+>  #define NFC_REG_ECC_ERR_CNT(x)	((0x0040 + (x)) & ~0x3)
+>  #define NFC_REG_USER_DATA(x)	(0x0050 + ((x) * 4))
+>  #define NFC_REG_SPARE_AREA	0x00A0
+> +#define NFC_REG_PAT_ID		0x00A4
+>  #define NFC_RAM0_BASE		0x0400
+>  #define NFC_RAM1_BASE		0x0800
+>  
+> @@ -225,6 +226,7 @@ struct sunxi_nand_hw_ecc {
+>   * @node:		used to store NAND chips into a list
+>   * @nand:		base NAND chip structure
+>   * @mtd:		base MTD structure
+> + * @randomize:		randomize data
+>   * @clk_rate:		clk_rate required for this NAND chip
+>   * @timing_cfg		TIMING_CFG register value for this NAND chip
+>   * @selected:		current active CS
+> @@ -235,6 +237,7 @@ struct sunxi_nand_chip {
+>  	struct list_head node;
+>  	struct nand_chip nand;
+>  	struct mtd_info mtd;
+> +	bool randomize;
 
-This is the compatible string for the JZ4780 NAND driver, this patch
-is part of the series adding that. Detection of the NAND part is
-handled by the MTD subsystem.
+This variable is a leftover from a previous version, I'll drop it for
+the next version.
 
-Thanks,
-Alex
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
