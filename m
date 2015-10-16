@@ -1,26 +1,26 @@
-Subject: Re: [PATCH v2 2/4] mtd: nand: Allow MTD_NAND_BRCMNAND to be selected
- for ARM64
-To: Anup Patel <anup.patel@broadcom.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>
-References: <1444986537-28387-1-git-send-email-anup.patel@broadcom.com>
- <1444986537-28387-3-git-send-email-anup.patel@broadcom.com>
-CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, "Mark
- Rutland" <mark.rutland@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "Catalin
- Marinas" <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>,
- "Scott Branden" <sbranden@broadcom.com>, Florian Fainelli
- <f.fainelli@gmail.com>, Pramod KUMAR <pramodku@broadcom.com>, Vikram Prakash
- <vikramp@broadcom.com>, Sandeep Tripathy <tripathy@broadcom.com>,
- <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <bcm-kernel-feedback-list@broadcom.com>
-From: Ray Jui <rjui@broadcom.com>
-Message-ID: <5621199A.1000306@broadcom.com>
-Date: Fri, 16 Oct 2015 08:36:58 -0700
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zn7yp-0002EX-4J
+ for linux-mtd@lists.infradead.org; Fri, 16 Oct 2015 16:35:43 +0000
+Received: by pacez2 with SMTP id ez2so9165624pac.1
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2015 09:35:21 -0700 (PDT)
+Date: Fri, 16 Oct 2015 09:35:19 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 2/2] mtd: pxa3xx_nand: switch to device PM
+Message-ID: <20151016163519.GC108923@google.com>
+References: <1444681992-4208-1-git-send-email-computersforpeace@gmail.com>
+ <1444681992-4208-2-git-send-email-computersforpeace@gmail.com>
+ <20151012210741.GN107187@google.com>
+ <CAAEAJfDWY2ztYK5y=cBsrntztP+Hm_cDFovPY2YeyRS4XXrr8w@mail.gmail.com>
+ <20151016152416.GA14509@laptop.cereza>
 MIME-Version: 1.0
-In-Reply-To: <1444986537-28387-3-git-send-email-anup.patel@broadcom.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151016152416.GA14509@laptop.cereza>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch is the same. I thought it has already been merged by Brian?
+On Fri, Oct 16, 2015 at 12:24:17PM -0300, Ezequiel Garcia wrote:
+> On 15 Oct 03:32 PM, Ezequiel Garcia wrote:
+> > +Robert
+> > 
+> > On 12 October 2015 at 18:07, Brian Norris <computersforpeace@gmail.com> wrote:
+> > > On Mon, Oct 12, 2015 at 01:33:12PM -0700, Brian Norris wrote:
+> > >> The old PM model is deprecated. This is equivalent.
+> > >>
+> > >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > >
+> > > Sorry, this patch was garbage. Below is the correct one:
+> > >
+> 
+> Tested on Armada XP-GP using standby and checking nandtest
+> continues to work after a resume.
+> 
+> Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+> 
+> Patch looks good, so:
+> 
+> Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+> 
+> Thanks!
 
-On 10/16/2015 2:08 AM, Anup Patel wrote:
-> The BRCM NAND driver can be re-used for Broadcom ARM64 SoCs hence
-> this patch updates Kconfig to allow selection of MTD_NAND_BRCMNAND
-> for ARM64.
-> 
-> Signed-off-by: Anup Patel <anup.patel@broadcom.com>
-> Reviewed-by: Vikram Prakash <vikramp@broadcom.com>
-> Reviewed-by: Ray Jui <rjui@broadcom.com>
-> Reviewed-by: Pramod KUMAR <pramodku@broadcom.com>
-> Reviewed-by: Scott Branden <sbranden@broadcom.com>
-> ---
->  drivers/mtd/nand/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 3324281..a1b5819 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -393,7 +393,7 @@ config MTD_NAND_GPMI_NAND
->  
->  config MTD_NAND_BRCMNAND
->  	tristate "Broadcom STB NAND controller"
-> -	depends on ARM || MIPS
-> +	depends on ARM || ARM64 || MIPS
->  	help
->  	  Enables the Broadcom NAND controller driver. The controller was
->  	  originally designed for Set-Top Box but is used on various BCM7xxx,
-> 
+Pushed to l2-mtd.git
