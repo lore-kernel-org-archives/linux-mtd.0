@@ -1,20 +1,25 @@
+Date: Thu, 15 Oct 2015 18:19:47 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Bayi Cheng <bayi.cheng@mediatek.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Daniel Kurtz <djkurtz@chromium.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com
+Subject: Re: [PATCH v4 1/3] doc: dt: add documentation for Mediatek spi-nor
+ controller
+Message-ID: <20151016011947.GA28158@localhost>
+References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
+ <1444729160-26433-2-git-send-email-bayi.cheng@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <1444929443-25537-4-git-send-email-boris.brezillon@free-electrons.com>
-References: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
- <1444929443-25537-4-git-send-email-boris.brezillon@free-electrons.com>
-From: Julian Calaby <julian.calaby@gmail.com>
-Date: Fri, 16 Oct 2015 09:33:59 +1100
-Message-ID: <CAGRGNgV2FtjQorCdcxxVT3Ecac-uQyNN+B=-_PWCzjTqKZLiig@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH 3/3] mtd: nand: sunxi: add randomizer support
-To: boris.brezillon@free-electrons.com
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-sunxi <linux-sunxi@googlegroups.com>, Hans de Goede <hdegoede@redhat.com>,
- "Mailing List, Arm" <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1444729160-26433-2-git-send-email-bayi.cheng@mediatek.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +29,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Bayi,
 
-On Fri, Oct 16, 2015 at 4:17 AM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Add support for the randomizer engine available in Allwinner's NFC IP.
->
-> Randomization is useful to support modern NAND chips which are sensible to
+On Tue, Oct 13, 2015 at 05:39:18PM +0800, Bayi Cheng wrote:
+> Add device tree binding documentation for serial flash with
+> Mediatek serial flash controller
+> 
+> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+> ---
+>  .../devicetree/bindings/mtd/mtk-quadspi.txt        | 30 ++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> new file mode 100644
+> index 0000000..8fff0ed
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> @@ -0,0 +1,30 @@
+> +* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
+> +
+> +Required properties:
+> +- compatible: 	  should be "mediatek,mt8173-nor";
+> +- reg: 		  physical base address and length of the controller's register
+> +- clocks: 	  the phandle of the clock needed by the nor controller
+> +- clock-names: 	  the name of the clocks
+> +		  the clocks needed "spi" and "sf". "spi" is used for spi bus,
+> +		  and "sf" is used for controller, these are the clocks witch
+> +		  hardware needs to enabling nor flash and nor flash controller.
+> +		  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
+> +- #address-cells: should be <1>
+> +- #size-cells:	  should be <0>
+> +
+> +Example:
+> +
+> +nor_flash: spi@1100d000 {
+> +	compatible = "mediatek,mt8173-nor";
+> +	reg = <0 0x1100d000 0 0xe0>;
+> +	clocks = <&pericfg CLK_PERI_SPI>,
+> +		 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
+> +	clock-names = "spi", "sf";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	flash@0 {
 
-Again, did you mean "sensitive" instead of "sensible"?
+I see you've added the 'flash' node as I requested, but you didn't
+document it above, and your driver doesn't use it.
 
-Thanks,
+Brian
 
--- 
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+> +		....
+> +	};
+> +};
+> +
+> -- 
+> 1.8.1.1.dirty
+> 
