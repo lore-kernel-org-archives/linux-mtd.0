@@ -1,23 +1,25 @@
-Date: Fri, 16 Oct 2015 08:38:16 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Julian Calaby <julian.calaby@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Maxime Ripard
- <maxime.ripard@free-electrons.com>, linux-sunxi
- <linux-sunxi@googlegroups.com>, Hans de Goede <hdegoede@redhat.com>,
- "Mailing List, Arm" <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [linux-sunxi] [PATCH 1/3] mtd: nand: add NAND_NEED_SCRAMBLING
- option flag
-Message-ID: <20151016083816.6e212acf@bbrezillon>
-In-Reply-To: <20151016082854.24e076c2@bbrezillon>
-References: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
- <1444929443-25537-2-git-send-email-boris.brezillon@free-electrons.com>
- <CAGRGNgWcCLEX=CB6_OJrK9_n3=78WN1jUb+t4iOQca6_HnFoLg@mail.gmail.com>
- <20151016082854.24e076c2@bbrezillon>
+Date: Fri, 16 Oct 2015 08:38:15 +0200
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, zmxu@marvell.com,
+ jszhang@marvell.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH v3 0/4] mtd: pxa3xx_nand: rework the timing setup
+Message-ID: <20151016063815.GB21506@kwain>
+References: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
+ <CAAEAJfBdfc-=AH0z_A8-b70LH_=GJp0qPRp0zCohqDBf8pnokQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAEAJfBdfc-=AH0z_A8-b70LH_=GJp0qPRp0zCohqDBf8pnokQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +29,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 16 Oct 2015 08:28:54 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Hi Ezequiel,
 
-> Hi Julian,
-> 
-> On Fri, 16 Oct 2015 09:32:38 +1100
-> Julian Calaby <julian.calaby@gmail.com> wrote:
-> 
-> > Hi Boris,
-> > 
-> > On Fri, Oct 16, 2015 at 4:17 AM, Boris Brezillon
-> > <boris.brezillon@free-electrons.com> wrote:
-> > > Some MLC NANDs are sensible to repeated patterns and require data to be
-> > 
-> > Do you mean "sensitive" instead of "sensible"?
-> 
-> Yes (I always mix the too, sensible is the french word for
-                        two
+On Thu, Oct 15, 2015 at 03:30:50PM -0300, Ezequiel Garcia wrote:
+> Ccing Robert as he can provide valuable test on PXA boards.
 
-> sensitive ;-)), I'll fix that.
-> 
-> Best Regards,
-> 
-> Boris
-> 
+Sorry for this, I tried to cc Robert but forgot when sending my
+series...
 
-
+Antoine
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
+Antoine Ténart, Free Electrons
+Embedded Linux, Kernel and Android engineering
 http://free-electrons.com
