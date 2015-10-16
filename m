@@ -1,24 +1,30 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zn80a-0002PX-ME
- for linux-mtd@lists.infradead.org; Fri, 16 Oct 2015 16:37:33 +0000
-Received: by pacez2 with SMTP id ez2so9202160pac.1
- for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2015 09:37:11 -0700 (PDT)
-Date: Fri, 16 Oct 2015 09:37:09 -0700
+Date: Fri, 16 Oct 2015 09:40:51 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 1/2] mtd: pxa3xx_nand: don't duplicate MTD suspend/resume
-Message-ID: <20151016163709.GD108923@google.com>
-References: <1444681992-4208-1-git-send-email-computersforpeace@gmail.com>
- <CAAEAJfCzVxCEA3opQU2B-wS0U+L-yK3R724W68f=95r+uMPAxg@mail.gmail.com>
- <20151016152654.GB14509@laptop.cereza>
+To: Ray Jui <rjui@broadcom.com>
+Cc: Anup Patel <anup.patel@broadcom.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>, Scott Branden <sbranden@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Pramod KUMAR <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH v2 1/4] mtd: brcmnand: Fix pointer type-cast in
+ brcmnand_write()
+Message-ID: <20151016164051.GE108923@google.com>
+References: <1444986537-28387-1-git-send-email-anup.patel@broadcom.com>
+ <1444986537-28387-2-git-send-email-anup.patel@broadcom.com>
+ <56211976.1030401@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151016152654.GB14509@laptop.cereza>
+In-Reply-To: <56211976.1030401@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,37 +34,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 16, 2015 at 12:26:54PM -0300, Ezequiel Garcia wrote:
-> On 15 Oct 03:33 PM, Ezequiel Garcia wrote:
-> > Robert:
-> > 
-> > Can you test this on a platform with PM support, and make sure
-> > the NAND works fine after a resume?
-> > 
-> > On 12 October 2015 at 17:33, Brian Norris <computersforpeace@gmail.com> wrote:
-> > > mtd_{suspend,resume}() get called from mtdcore in a class suspend/resume
-> > > callback. We don't need to call them again here. In practice, this would
-> > > actually work OK, as nand_base actually handles nesting OK -- it just
-> > > might print warnings.
-> > >
-> > > Untested, but there are few (no?) users of PM for this driver AFAIK.
-> > >
-> 
-> Brian,
-> 
-> We discussed this on IRC, but I completely forgot about it :/
+On Fri, Oct 16, 2015 at 08:36:22AM -0700, Ray Jui wrote:
+> Correct me if I remember it wrong, but I thought this patch has already
+> been merged by Brian?
 
-No problem.
+You are correct.
 
-> Without this patch nand_{suspend, resume} is called twice
-> (which seems harmless), tested on Armada XP-GP using nandtest.
+Anup,
 
-Right, I think it's incidentally harmless. But you do get this warning
-without the patch set, right?
+Please base MTD patches on the MTD development tree (i.e., l2-mtd.git):
 
-	nand_resume called for a chip which is not in suspended state
+http://linux-mtd.infradead.org/source.html
 
-> Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+(In this case it's no problem; I'll just ignore the first two patches.)
 
-Pushed to l2-mtd.git
+Brian
