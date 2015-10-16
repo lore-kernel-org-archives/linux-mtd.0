@@ -1,25 +1,22 @@
-Date: Thu, 15 Oct 2015 18:19:47 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Bayi Cheng <bayi.cheng@mediatek.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com
-Subject: Re: [PATCH v4 1/3] doc: dt: add documentation for Mediatek spi-nor
- controller
-Message-ID: <20151016011947.GA28158@localhost>
-References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
- <1444729160-26433-2-git-send-email-bayi.cheng@mediatek.com>
+Date: Fri, 16 Oct 2015 08:28:54 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Julian Calaby <julian.calaby@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, linux-sunxi
+ <linux-sunxi@googlegroups.com>, Hans de Goede <hdegoede@redhat.com>,
+ "Mailing List, Arm" <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [linux-sunxi] [PATCH 1/3] mtd: nand: add NAND_NEED_SCRAMBLING
+ option flag
+Message-ID: <20151016082854.24e076c2@bbrezillon>
+In-Reply-To: <CAGRGNgWcCLEX=CB6_OJrK9_n3=78WN1jUb+t4iOQca6_HnFoLg@mail.gmail.com>
+References: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1444929443-25537-2-git-send-email-boris.brezillon@free-electrons.com>
+ <CAGRGNgWcCLEX=CB6_OJrK9_n3=78WN1jUb+t4iOQca6_HnFoLg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1444729160-26433-2-git-send-email-bayi.cheng@mediatek.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,60 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bayi,
+Hi Julian,
 
-On Tue, Oct 13, 2015 at 05:39:18PM +0800, Bayi Cheng wrote:
-> Add device tree binding documentation for serial flash with
-> Mediatek serial flash controller
+On Fri, 16 Oct 2015 09:32:38 +1100
+Julian Calaby <julian.calaby@gmail.com> wrote:
+
+> Hi Boris,
 > 
-> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
-> ---
->  .../devicetree/bindings/mtd/mtk-quadspi.txt        | 30 ++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> On Fri, Oct 16, 2015 at 4:17 AM, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+> > Some MLC NANDs are sensible to repeated patterns and require data to be
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> new file mode 100644
-> index 0000000..8fff0ed
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> @@ -0,0 +1,30 @@
-> +* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
-> +
-> +Required properties:
-> +- compatible: 	  should be "mediatek,mt8173-nor";
-> +- reg: 		  physical base address and length of the controller's register
-> +- clocks: 	  the phandle of the clock needed by the nor controller
-> +- clock-names: 	  the name of the clocks
-> +		  the clocks needed "spi" and "sf". "spi" is used for spi bus,
-> +		  and "sf" is used for controller, these are the clocks witch
-> +		  hardware needs to enabling nor flash and nor flash controller.
-> +		  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
-> +- #address-cells: should be <1>
-> +- #size-cells:	  should be <0>
-> +
-> +Example:
-> +
-> +nor_flash: spi@1100d000 {
-> +	compatible = "mediatek,mt8173-nor";
-> +	reg = <0 0x1100d000 0 0xe0>;
-> +	clocks = <&pericfg CLK_PERI_SPI>,
-> +		 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
-> +	clock-names = "spi", "sf";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	flash@0 {
+> Do you mean "sensitive" instead of "sensible"?
 
-I see you've added the 'flash' node as I requested, but you didn't
-document it above, and your driver doesn't use it.
+Yes (I always mix the too, sensible is the french word for
+sensitive ;-)), I'll fix that.
 
-Brian
+Best Regards,
 
-> +		....
-> +	};
-> +};
-> +
-> -- 
-> 1.8.1.1.dirty
-> 
+Boris
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
