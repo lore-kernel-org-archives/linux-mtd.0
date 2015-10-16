@@ -1,14 +1,14 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zn6jQ-0003LE-2M
- for linux-mtd@lists.infradead.org; Fri, 16 Oct 2015 15:15:45 +0000
+ id 1Zn6jT-0003NE-Nb
+ for linux-mtd@lists.infradead.org; Fri, 16 Oct 2015 15:15:48 +0000
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: kernel@pengutronix.de, Sascha Hauer <s.hauer@pengutronix.de>,
  Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4/5] mkfs.ubifs: Add extended attribute support
-Date: Fri, 16 Oct 2015 17:15:18 +0200
-Message-Id: <1445008519-19928-5-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 2/5] mkfs.ubifs: use xmalloc/xzalloc for allocating memory
+Date: Fri, 16 Oct 2015 17:15:16 +0200
+Message-Id: <1445008519-19928-3-git-send-email-mkl@pengutronix.de>
 In-Reply-To: <1445008519-19928-1-git-send-email-mkl@pengutronix.de>
 References: <1445008519-19928-1-git-send-email-mkl@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,366 +22,143 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Sascha Hauer <s.hauer@pengutronix.de>
 
-This adds extended attribute support to mkfs.ubifs. When creating
-an image from a directory tree the existing extended attributes are
-added to the UBIFS image.
-
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- mkfs.ubifs/key.h        |  18 +++++
- mkfs.ubifs/mkfs.ubifs.c | 201 +++++++++++++++++++++++++++++++++++++++++-------
- mkfs.ubifs/ubifs.h      |   9 +++
- 3 files changed, 201 insertions(+), 27 deletions(-)
+ mkfs.ubifs/mkfs.ubifs.c | 64 +++++++++++--------------------------------------
+ 1 file changed, 14 insertions(+), 50 deletions(-)
 
-diff --git a/mkfs.ubifs/key.h b/mkfs.ubifs/key.h
-index d3a02d4ff1a6..39379fd48178 100644
---- a/mkfs.ubifs/key.h
-+++ b/mkfs.ubifs/key.h
-@@ -119,6 +119,24 @@ static inline void dent_key_init(const struct ubifs_info *c,
- }
- 
- /**
-+ * xent_key_init - initialize extended attribute entry key.
-+ * @c: UBIFS file-system description object
-+ * @key: key to initialize
-+ * @inum: host inode number
-+ * @nm: extended attribute entry name and length
-+ */
-+static inline void xent_key_init(const struct ubifs_info *c,
-+				 union ubifs_key *key, ino_t inum,
-+				 const struct qstr *nm)
-+{
-+	uint32_t hash = c->key_hash(nm->name, nm->len);
-+
-+	ubifs_assert(!(hash & ~UBIFS_S_KEY_HASH_MASK));
-+	key->u32[0] = inum;
-+	key->u32[1] = hash | (UBIFS_XENT_KEY << UBIFS_S_KEY_HASH_BITS);
-+}
-+
-+/**
-  * data_key_init - initialize data key.
-  * @c: UBIFS file-system description object
-  * @key: key to initialize
 diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
-index a99c61382304..30f80cf14992 100644
+index 1b816ae483e0..049219b52cc5 100644
 --- a/mkfs.ubifs/mkfs.ubifs.c
 +++ b/mkfs.ubifs/mkfs.ubifs.c
-@@ -25,6 +25,8 @@
- #include "mkfs.ubifs.h"
- #include <crc32.h>
- #include "common.h"
-+#include <sys/types.h>
-+#include <attr/xattr.h>
+@@ -259,13 +259,8 @@ static int is_contained(const char *file, const char *dir)
+ 	file_base = dirname(copy);
  
- /* Size (prime number) of hash table for link counting */
- #define HASH_TABLE_SIZE 10099
-@@ -980,20 +982,168 @@ static int add_node(union ubifs_key *key, char *name, void *node, int len)
- 	return 0;
- }
+ 	/* Turn the paths into the canonical form */
+-	real_file = malloc(PATH_MAX);
+-	if (!real_file)
+-		goto out_free;
+-
+-	real_dir = malloc(PATH_MAX);
+-	if (!real_dir)
+-		goto out_free;
++	real_file = xmalloc(PATH_MAX);
++	real_dir = xmalloc(PATH_MAX);
  
-+int add_xattr(struct stat *st, ino_t inum, const void *data, unsigned int data_len,
-+	      struct qstr *nm)
-+{
-+	struct ubifs_ino_node *ino;
-+	struct ubifs_dent_node *xent;
-+	union ubifs_key xkey, nkey;
-+	int len, ret;
-+
-+	xent = xzalloc(sizeof(*xent) + nm->len + 1);
-+	ino = xzalloc(sizeof(*ino) + data_len);
-+
-+	xent_key_init(c, &xkey, inum, nm);
-+	xent->ch.node_type = UBIFS_XENT_NODE;
-+	key_write(&xkey, &xent->key);
-+
-+	len = UBIFS_XENT_NODE_SZ + nm->len + 1;
-+
-+	xent->ch.len = len;
-+	xent->padding1 = 0;
-+	xent->type = UBIFS_ITYPE_DIR;
-+	xent->nlen = cpu_to_le16(nm->len);
-+
-+	memcpy(xent->name, nm->name, nm->len + 1);
-+
-+	inum = ++c->highest_inum;
-+	creat_sqnum = ++c->max_sqnum;
-+
-+	xent->inum = cpu_to_le64(inum);
-+
-+	ret = add_node(&xkey, nm->name, xent, len);
-+	if (ret)
-+		goto out;
-+
-+	ino->creat_sqnum = cpu_to_le64(creat_sqnum);
-+	ino->nlink      = cpu_to_le32(st->st_nlink);
-+	/*
-+	 * The time fields are updated assuming the default time granularity
-+	 * of 1 second. To support finer granularities, utime() would be needed.
-+	 */
-+	ino->atime_sec  = cpu_to_le64(st->st_atime);
-+	ino->ctime_sec  = cpu_to_le64(st->st_ctime);
-+	ino->mtime_sec  = cpu_to_le64(st->st_mtime);
-+	ino->atime_nsec = 0;
-+	ino->ctime_nsec = 0;
-+	ino->mtime_nsec = 0;
-+	ino->uid        = cpu_to_le32(st->st_uid);
-+	ino->gid        = cpu_to_le32(st->st_gid);
-+	ino->compr_type = cpu_to_le16(c->default_compr);
-+	ino->ch.node_type = UBIFS_INO_NODE;
-+
-+	ino_key_init(&nkey, inum);
-+	key_write(&nkey, &ino->key);
-+
-+	ino->size       = cpu_to_le64(data_len);
-+	ino->mode       = cpu_to_le32(S_IFREG);
-+	ino->data_len   = cpu_to_le32(data_len);
-+	ino->flags      = cpu_to_le32(UBIFS_XATTR_FL);
-+
-+	if (data_len)
-+		memcpy(&ino->data, data, data_len);
-+
-+	ret = add_node(&nkey, nm->name, ino, UBIFS_INO_NODE_SZ + data_len) ;
-+
-+out:
-+	free(xent);
-+	free(ino);
-+
-+	return ret;
-+}
-+
-+static int inode_add_xattr(struct ubifs_ino_node *host_ino,
-+		const char *path_name, struct stat *st, ino_t inum)
-+{
-+	int ret;
-+	struct qstr nm;
-+	void *buf = NULL;
-+	ssize_t len;
-+	ssize_t pos = 0;
-+	void *attrval = NULL;
-+
-+	len = llistxattr(path_name, NULL, 0);
-+	if (len < 0) {
-+		if (errno == ENOENT)
-+			return 0;
-+
-+		sys_err_msg("llistxattr failed on %s", path_name);
-+
-+		return len;
-+	}
-+
-+	if (len == 0)
-+		goto noxattr;
-+
-+	buf = xmalloc(len);
-+
-+	len = llistxattr(path_name, buf, len);
-+	if (len < 0) {
-+		sys_err_msg("llistxattr failed on %s", path_name);
-+		goto out_free;
-+	}
-+
-+	while (pos < len) {
-+		char *name;
-+		ssize_t attrsize;
-+
-+		name = buf + pos;
-+		pos += strlen(name) + 1;
-+
-+		attrsize = lgetxattr(path_name, name, NULL, 0);
-+		if (attrsize < 0) {
-+			sys_err_msg("lgetxattr failed on %s", path_name);
-+			goto out_free;
-+		}
-+
-+		attrval = xmalloc(attrsize);
-+		attrsize = lgetxattr(path_name, name, attrval, attrsize);
-+		if (attrsize < 0) {
-+			sys_err_msg("lgetxattr failed on %s", path_name);
-+			goto out_free;
-+		}
-+
-+		nm.name = name;
-+		nm.len = strlen(name);
-+
-+		host_ino->xattr_cnt++;
-+		host_ino->xattr_size += CALC_DENT_SIZE(nm.len);
-+		host_ino->xattr_size += CALC_XATTR_BYTES(attrsize);
-+		host_ino->xattr_names += nm.len;
-+
-+		ret = add_xattr(st, inum, attrval, attrsize, &nm);
-+		if (ret < 0)
-+			goto out_free;
-+
-+		free(attrval);
-+		attrval = NULL;
-+	}
-+
-+noxattr:
-+	free(buf);
-+	return 0;
-+
-+out_free:
-+	free(buf);
-+	free(attrval);
-+
-+	return -1;
-+}
-+
- /**
-- * add_inode_with_data - write an inode.
-+ * add_inode - write an inode.
-  * @st: stat information of source inode
-  * @inum: target inode number
-  * @data: inode data (for special inodes e.g. symlink path etc)
-  * @data_len: inode data length
-  * @flags: source inode flags
-  */
--static int add_inode_with_data(struct stat *st, ino_t inum, void *data,
--			       unsigned int data_len, int flags)
-+static int add_inode(struct stat *st, ino_t inum, void *data,
-+		     unsigned int data_len, int flags, const char *xattr_path)
- {
- 	struct ubifs_ino_node *ino = node_buf;
- 	union ubifs_key key;
--	int len, use_flags = 0;
-+	int len, use_flags = 0, ret;
+ 	if (!realpath(file_base, real_file)) {
+ 		perror("Could not canonicalize file path");
+@@ -500,9 +495,7 @@ static int get_options(int argc, char**argv)
+ 		case 'r':
+ 		case 'd':
+ 			root_len = strlen(optarg);
+-			root = malloc(root_len + 2);
+-			if (!root)
+-				return err_msg("cannot allocate memory");
++			root = xmalloc(root_len + 2);
  
- 	if (c->default_compr != UBIFS_COMPR_NONE)
- 		use_flags |= UBIFS_COMPR_FL;
-@@ -1037,18 +1187,13 @@ static int add_inode_with_data(struct stat *st, ino_t inum, void *data,
+ 			/*
+ 			 * The further code expects '/' at the end of the root
+@@ -910,9 +903,7 @@ static int add_to_index(union ubifs_key *key, char *name, int lnum, int offs,
+ 	struct idx_entry *e;
  
- 	len = UBIFS_INO_NODE_SZ + data_len;
- 
--	return add_node(&key, NULL, ino, len);
--}
-+	if (xattr_path) {
-+		ret = inode_add_xattr(ino, xattr_path, st, inum);
-+		if (ret < 0)
-+			return ret;
-+	}
- 
--/**
-- * add_inode - write an inode.
-- * @st: stat information of source inode
-- * @inum: target inode number
-- * @flags: source inode flags
-- */
--static int add_inode(struct stat *st, ino_t inum, int flags)
--{
--	return add_inode_with_data(st, inum, NULL, 0, flags);
-+	return add_node(&key, NULL, ino, len);
- }
- 
- /**
-@@ -1064,8 +1209,8 @@ static int add_inode(struct stat *st, ino_t inum, int flags)
-  * is being created does not exist at the host file system, but is defined by
-  * the device table.
-  */
--static int add_dir_inode(DIR *dir, ino_t inum, loff_t size, unsigned int nlink,
--			 struct stat *st)
-+static int add_dir_inode(const char *path_name, DIR *dir, ino_t inum, loff_t size,
-+			 unsigned int nlink, struct stat *st)
- {
- 	int fd, flags = 0;
- 
-@@ -1080,7 +1225,7 @@ static int add_dir_inode(DIR *dir, ino_t inum, loff_t size, unsigned int nlink,
- 			flags = 0;
+ 	dbg_msg(3, "LEB %d offs %d len %d", lnum, offs, len);
+-	e = malloc(sizeof(struct idx_entry));
+-	if (!e)
+-		return err_msg("out of memory");
++	e = xmalloc(sizeof(struct idx_entry));
+ 	e->next = NULL;
+ 	e->prev = idx_list_last;
+ 	e->key = *key;
+@@ -1193,9 +1184,7 @@ static struct inum_mapping *lookup_inum_mapping(dev_t dev, ino_t inum)
+ 			return im;
+ 		im = im->next;
  	}
+-	im = malloc(sizeof(struct inum_mapping));
+-	if (!im)
+-		return NULL;
++	im = xmalloc(sizeof(struct inum_mapping));
+ 	im->next = hash_table[k];
+ 	im->prev = NULL;
+ 	im->dev = dev;
+@@ -1355,9 +1344,7 @@ static int add_non_dir(const char *path_name, ino_t *inum, unsigned int nlink,
+ 			/* New entry */
+ 			im->use_inum = *inum;
+ 			im->use_nlink = 1;
+-			im->path_name = malloc(strlen(path_name) + 1);
+-			if (!im->path_name)
+-				return err_msg("out of memory");
++			im->path_name = xmalloc(strlen(path_name) + 1);
+ 			strcpy(im->path_name, path_name);
+ 		} else {
+ 			/* Existing entry */
+@@ -1707,21 +1694,14 @@ static int write_index(void)
+ 	head_flags = LPROPS_INDEX;
+ 	/* Allocate index node */
+ 	idx_sz = ubifs_idx_node_sz(c, c->fanout);
+-	idx = malloc(idx_sz);
+-	if (!idx)
+-		return err_msg("out of memory");
++	idx = xmalloc(idx_sz);
+ 	/* Make an array of pointers to sort the index list */
+ 	sz = idx_cnt * sizeof(struct idx_entry *);
+ 	if (sz / sizeof(struct idx_entry *) != idx_cnt) {
+ 		free(idx);
+ 		return err_msg("index is too big (%zu entries)", idx_cnt);
+ 	}
+-	idx_ptr = malloc(sz);
+-	if (!idx_ptr) {
+-		free(idx);
+-		return err_msg("out of memory - needed %zu bytes for index",
+-			       sz);
+-	}
++	idx_ptr = xmalloc(sz);
+ 	idx_ptr[0] = idx_list_first;
+ 	for (i = 1; i < idx_cnt; i++)
+ 		idx_ptr[i] = idx_ptr[i - 1]->next;
+@@ -2164,13 +2144,8 @@ static int init(void)
+ 	c->lpt_first = UBIFS_LOG_LNUM + c->log_lebs;
+ 	c->lpt_last = c->lpt_first + c->lpt_lebs - 1;
  
--	return add_inode(st, inum, flags);
-+	return add_inode(st, inum, NULL, 0, flags, path_name);
- }
+-	c->lpt = malloc(c->main_lebs * sizeof(struct ubifs_lprops));
+-	if (!c->lpt)
+-		return err_msg("unable to allocate LPT");
+-
+-	c->ltab = malloc(c->lpt_lebs * sizeof(struct ubifs_lprops));
+-	if (!c->ltab)
+-		return err_msg("unable to allocate LPT ltab");
++	c->lpt = xmalloc(c->main_lebs * sizeof(struct ubifs_lprops));
++	c->ltab = xmalloc(c->lpt_lebs * sizeof(struct ubifs_lprops));
  
- /**
-@@ -1089,12 +1234,12 @@ static int add_dir_inode(DIR *dir, ino_t inum, loff_t size, unsigned int nlink,
-  * @inum: target inode number
-  * @flags: source inode flags
-  */
--static int add_dev_inode(struct stat *st, ino_t inum, int flags)
-+static int add_dev_inode(const char *path_name, struct stat *st, ino_t inum, int flags)
- {
- 	union ubifs_dev_desc dev;
+ 	/* Initialize LPT's own lprops */
+ 	for (i = 0; i < c->lpt_lebs; i++) {
+@@ -2182,23 +2157,12 @@ static int init(void)
+ 	c->dark_wm = ALIGN(UBIFS_MAX_NODE_SZ, c->min_io_size);
+ 	dbg_msg(1, "dead_wm %d  dark_wm %d", c->dead_wm, c->dark_wm);
  
- 	dev.huge = cpu_to_le64(makedev(major(st->st_rdev), minor(st->st_rdev)));
--	return add_inode_with_data(st, inum, &dev, 8, flags);
-+	return add_inode(st, inum, &dev, 8, flags, path_name);
- }
+-	leb_buf = malloc(c->leb_size);
+-	if (!leb_buf)
+-		return err_msg("out of memory");
+-
+-	node_buf = malloc(NODE_BUFFER_SIZE);
+-	if (!node_buf)
+-		return err_msg("out of memory");
+-
+-	block_buf = malloc(UBIFS_BLOCK_SIZE);
+-	if (!block_buf)
+-		return err_msg("out of memory");
++	leb_buf = xmalloc(c->leb_size);
++	node_buf = xmalloc(NODE_BUFFER_SIZE);
++	block_buf = xmalloc(UBIFS_BLOCK_SIZE);
  
- /**
-@@ -1117,7 +1262,7 @@ static int add_symlink_inode(const char *path_name, struct stat *st, ino_t inum,
- 	if (len > UBIFS_MAX_INO_DATA)
- 		return err_msg("symlink too long for %s", path_name);
+ 	sz = sizeof(struct inum_mapping *) * HASH_TABLE_SIZE;
+-	hash_table = malloc(sz);
+-	if (!hash_table)
+-		return err_msg("out of memory");
+-	memset(hash_table, 0, sz);
++	hash_table = xzalloc(sz);
  
--	return add_inode_with_data(st, inum, buf, len, flags);
-+	return add_inode(st, inum, buf, len, flags, path_name);
- }
- 
- /**
-@@ -1275,12 +1420,14 @@ static int add_file(const char *path_name, struct stat *st, ino_t inum,
- 			return err;
- 		}
- 	} while (ret != 0);
-+
- 	if (close(fd) == -1)
- 		return sys_err_msg("failed to close file '%s'", path_name);
- 	if (file_size != st->st_size)
- 		return err_msg("file size changed during writing file '%s'",
- 			       path_name);
--	return add_inode(st, inum, flags);
-+
-+	return add_inode(st, inum, NULL, 0, flags, path_name);
- }
- 
- /**
-@@ -1360,15 +1507,15 @@ static int add_non_dir(const char *path_name, ino_t *inum, unsigned int nlink,
- 	if (S_ISREG(st->st_mode))
- 		return add_file(path_name, st, *inum, flags);
- 	if (S_ISCHR(st->st_mode))
--		return add_dev_inode(st, *inum, flags);
-+		return add_dev_inode(path_name, st, *inum, flags);
- 	if (S_ISBLK(st->st_mode))
--		return add_dev_inode(st, *inum, flags);
-+		return add_dev_inode(path_name, st, *inum, flags);
- 	if (S_ISLNK(st->st_mode))
- 		return add_symlink_inode(path_name, st, *inum, flags);
- 	if (S_ISSOCK(st->st_mode))
--		return add_inode(st, *inum, flags);
-+		return add_inode(st, *inum, NULL, 0, flags, NULL);
- 	if (S_ISFIFO(st->st_mode))
--		return add_inode(st, *inum, flags);
-+		return add_inode(st, *inum, NULL, 0, flags, NULL);
- 
- 	return err_msg("file '%s' has unknown inode type", path_name);
- }
-@@ -1548,7 +1695,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
- 
- 	creat_sqnum = dir_creat_sqnum;
- 
--	err = add_dir_inode(dir, dir_inum, size, nlink, st);
-+	err = add_dir_inode(dir ? dir_name : NULL, dir, dir_inum, size, nlink, st);
+ 	err = init_compression();
  	if (err)
- 		goto out_free;
- 
-diff --git a/mkfs.ubifs/ubifs.h b/mkfs.ubifs/ubifs.h
-index 434b651859b3..2f080a8ce708 100644
---- a/mkfs.ubifs/ubifs.h
-+++ b/mkfs.ubifs/ubifs.h
-@@ -42,6 +42,15 @@
-  */
- #define UBIFS_TRUN_KEY UBIFS_KEY_TYPES_CNT
- 
-+/*
-+ * How much a directory entry/extended attribute entry adds to the parent/host
-+ * inode.
-+ */
-+#define CALC_DENT_SIZE(name_len) ALIGN(UBIFS_DENT_NODE_SZ + (name_len) + 1, 8)
-+
-+/* How much an extended attribute adds to the host inode */
-+#define CALC_XATTR_BYTES(data_len) ALIGN(UBIFS_INO_NODE_SZ + (data_len) + 1, 8)
-+
- /* The below union makes it easier to deal with keys */
- union ubifs_key
- {
 -- 
 2.6.1
