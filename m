@@ -1,24 +1,29 @@
-From: Anup Patel <anup.patel@broadcom.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, "Mark
- Rutland" <mark.rutland@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "Catalin
- Marinas" <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ray
- Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Florian
- Fainelli <f.fainelli@gmail.com>, Pramod KUMAR <pramodku@broadcom.com>,
- "Vikram Prakash" <vikramp@broadcom.com>, Sandeep Tripathy
- <tripathy@broadcom.com>, <linux-arm-kernel@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <bcm-kernel-feedback-list@broadcom.com>, "Anup Patel"
- <anup.patel@broadcom.com>
-Subject: [PATCH v2 4/4] arm64: dts: Add BRCM IPROC NAND DT node for NS2
-Date: Fri, 16 Oct 2015 14:38:57 +0530
-Message-ID: <1444986537-28387-5-git-send-email-anup.patel@broadcom.com>
-In-Reply-To: <1444986537-28387-1-git-send-email-anup.patel@broadcom.com>
-References: <1444986537-28387-1-git-send-email-anup.patel@broadcom.com>
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zn1zM-0003TH-VG
+ for linux-mtd@lists.infradead.org; Fri, 16 Oct 2015 10:11:53 +0000
+Received: by wicll6 with SMTP id ll6so2869772wic.0
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2015 03:11:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20151015084727.GG14475@jhogan-linux.le.imgtec.org>
+References: <1444148837-10770-1-git-send-email-harvey.hunt@imgtec.com>
+ <1444148837-10770-4-git-send-email-harvey.hunt@imgtec.com>
+ <20151015084727.GG14475@jhogan-linux.le.imgtec.org>
+Date: Fri, 16 Oct 2015 11:11:29 +0100
+Message-ID: <CAOFt0_D5mO-7_cnpvm_MwvsZNv1yCFynbeA3dSw=H5hVyQbgTA@mail.gmail.com>
+Subject: Re: [PATCH v7,3/3] MIPS: dts: jz4780/ci20: Add NEMC, BCH and NAND
+ device tree nodes
+From: Alex Smith <alex@alex-smith.me.uk>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: Harvey Hunt <harvey.hunt@imgtec.com>, linux-mtd@lists.infradead.org,
+ Alex Smith <alex.smith@imgtec.com>,
+ Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Paul Burton <paul.burton@imgtec.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mips <linux-mips@linux-mips.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,63 +33,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND controller on NS2 SoC is compatible with existing
-BRCM IPROC NAND driver so let's enable it in NS2 DT and
-NS2 SVK DT.
+Hi James,
 
-Signed-off-by: Anup Patel <anup.patel@broadcom.com>
-Reviewed-by: Ray Jui <rjui@broadcom.com>
-Reviewed-by: Scott Branden <sbranden@broadcom.com>
----
- arch/arm64/boot/dts/broadcom/ns2-svk.dts | 12 ++++++++++++
- arch/arm64/boot/dts/broadcom/ns2.dtsi    | 14 ++++++++++++++
- 2 files changed, 26 insertions(+)
+On 15 October 2015 at 09:47, James Hogan <james.hogan@imgtec.com> wrote:
+>> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
+>> index 9fcb9e7..453f1d3 100644
+>> --- a/arch/mips/boot/dts/ingenic/ci20.dts
+>> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+>> @@ -42,3 +42,57 @@
+>>  &uart4 {
+>>       status = "okay";
+>>  };
+>> +
+>> +&nemc {
+>> +     status = "okay";
+>> +
+>> +     nand: nand@1 {
+>> +             compatible = "ingenic,jz4780-nand";
+>
+> Isn't the NAND a micron part? This doesn't seem right. Is the device
+> driver and binding already accepted upstream with that compatible
+> string?
 
-diff --git a/arch/arm64/boot/dts/broadcom/ns2-svk.dts b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-index e5950d5..a754160 100644
---- a/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-+++ b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-@@ -63,5 +63,17 @@
- 		uart3: serial@66130000 {
- 			status = "ok";
- 		};
-+
-+		nand: nand@66460000 {
-+			nandcs@0 {
-+				compatible = "brcm,nandcs";
-+				reg = <0>;
-+				nand-ecc-mode = "hw";
-+				nand-ecc-strength = <8>;
-+				nand-ecc-step-size = <512>;
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+			};
-+		};
- 	};
- };
-diff --git a/arch/arm64/boot/dts/broadcom/ns2.dtsi b/arch/arm64/boot/dts/broadcom/ns2.dtsi
-index f603277..9610822 100644
---- a/arch/arm64/boot/dts/broadcom/ns2.dtsi
-+++ b/arch/arm64/boot/dts/broadcom/ns2.dtsi
-@@ -212,5 +212,19 @@
- 			compatible = "brcm,iproc-rng200";
- 			reg = <0x66220000 0x28>;
- 		};
-+
-+		nand: nand@66460000 {
-+			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
-+			reg = <0x66460000 0x600>,
-+			      <0x67015408 0x600>,
-+			      <0x66460f00 0x20>;
-+			reg-names = "nand", "iproc-idm", "iproc-ext";
-+			interrupts = <GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			brcm,nand-has-wp;
-+		};
- 	};
- };
--- 
-1.9.1
+This is the compatible string for the JZ4780 NAND driver, this patch
+is part of the series adding that. Detection of the NAND part is
+handled by the MTD subsystem.
+
+Thanks,
+Alex
