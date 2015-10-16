@@ -1,16 +1,26 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mail-qk0-f172.google.com ([209.85.220.172])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zn6jT-0003NE-Nb
- for linux-mtd@lists.infradead.org; Fri, 16 Oct 2015 15:15:48 +0000
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: kernel@pengutronix.de, Sascha Hauer <s.hauer@pengutronix.de>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 2/5] mkfs.ubifs: use xmalloc/xzalloc for allocating memory
-Date: Fri, 16 Oct 2015 17:15:16 +0200
-Message-Id: <1445008519-19928-3-git-send-email-mkl@pengutronix.de>
-In-Reply-To: <1445008519-19928-1-git-send-email-mkl@pengutronix.de>
-References: <1445008519-19928-1-git-send-email-mkl@pengutronix.de>
+ id 1Zn6vs-0007Ee-CD
+ for linux-mtd@lists.infradead.org; Fri, 16 Oct 2015 15:28:37 +0000
+Received: by qkht68 with SMTP id t68so55617844qkh.3
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Oct 2015 08:28:14 -0700 (PDT)
+Date: Fri, 16 Oct 2015 12:24:17 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Brian Norris <computersforpeace@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 2/2] mtd: pxa3xx_nand: switch to device PM
+Message-ID: <20151016152416.GA14509@laptop.cereza>
+References: <1444681992-4208-1-git-send-email-computersforpeace@gmail.com>
+ <1444681992-4208-2-git-send-email-computersforpeace@gmail.com>
+ <20151012210741.GN107187@google.com>
+ <CAAEAJfDWY2ztYK5y=cBsrntztP+Hm_cDFovPY2YeyRS4XXrr8w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAEAJfDWY2ztYK5y=cBsrntztP+Hm_cDFovPY2YeyRS4XXrr8w@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,145 +30,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sascha Hauer <s.hauer@pengutronix.de>
+On 15 Oct 03:32 PM, Ezequiel Garcia wrote:
+> +Robert
+> 
+> On 12 October 2015 at 18:07, Brian Norris <computersforpeace@gmail.com> wrote:
+> > On Mon, Oct 12, 2015 at 01:33:12PM -0700, Brian Norris wrote:
+> >> The old PM model is deprecated. This is equivalent.
+> >>
+> >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> >
+> > Sorry, this patch was garbage. Below is the correct one:
+> >
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- mkfs.ubifs/mkfs.ubifs.c | 64 +++++++++++--------------------------------------
- 1 file changed, 14 insertions(+), 50 deletions(-)
+Tested on Armada XP-GP using standby and checking nandtest
+continues to work after a resume.
 
-diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
-index 1b816ae483e0..049219b52cc5 100644
---- a/mkfs.ubifs/mkfs.ubifs.c
-+++ b/mkfs.ubifs/mkfs.ubifs.c
-@@ -259,13 +259,8 @@ static int is_contained(const char *file, const char *dir)
- 	file_base = dirname(copy);
- 
- 	/* Turn the paths into the canonical form */
--	real_file = malloc(PATH_MAX);
--	if (!real_file)
--		goto out_free;
--
--	real_dir = malloc(PATH_MAX);
--	if (!real_dir)
--		goto out_free;
-+	real_file = xmalloc(PATH_MAX);
-+	real_dir = xmalloc(PATH_MAX);
- 
- 	if (!realpath(file_base, real_file)) {
- 		perror("Could not canonicalize file path");
-@@ -500,9 +495,7 @@ static int get_options(int argc, char**argv)
- 		case 'r':
- 		case 'd':
- 			root_len = strlen(optarg);
--			root = malloc(root_len + 2);
--			if (!root)
--				return err_msg("cannot allocate memory");
-+			root = xmalloc(root_len + 2);
- 
- 			/*
- 			 * The further code expects '/' at the end of the root
-@@ -910,9 +903,7 @@ static int add_to_index(union ubifs_key *key, char *name, int lnum, int offs,
- 	struct idx_entry *e;
- 
- 	dbg_msg(3, "LEB %d offs %d len %d", lnum, offs, len);
--	e = malloc(sizeof(struct idx_entry));
--	if (!e)
--		return err_msg("out of memory");
-+	e = xmalloc(sizeof(struct idx_entry));
- 	e->next = NULL;
- 	e->prev = idx_list_last;
- 	e->key = *key;
-@@ -1193,9 +1184,7 @@ static struct inum_mapping *lookup_inum_mapping(dev_t dev, ino_t inum)
- 			return im;
- 		im = im->next;
- 	}
--	im = malloc(sizeof(struct inum_mapping));
--	if (!im)
--		return NULL;
-+	im = xmalloc(sizeof(struct inum_mapping));
- 	im->next = hash_table[k];
- 	im->prev = NULL;
- 	im->dev = dev;
-@@ -1355,9 +1344,7 @@ static int add_non_dir(const char *path_name, ino_t *inum, unsigned int nlink,
- 			/* New entry */
- 			im->use_inum = *inum;
- 			im->use_nlink = 1;
--			im->path_name = malloc(strlen(path_name) + 1);
--			if (!im->path_name)
--				return err_msg("out of memory");
-+			im->path_name = xmalloc(strlen(path_name) + 1);
- 			strcpy(im->path_name, path_name);
- 		} else {
- 			/* Existing entry */
-@@ -1707,21 +1694,14 @@ static int write_index(void)
- 	head_flags = LPROPS_INDEX;
- 	/* Allocate index node */
- 	idx_sz = ubifs_idx_node_sz(c, c->fanout);
--	idx = malloc(idx_sz);
--	if (!idx)
--		return err_msg("out of memory");
-+	idx = xmalloc(idx_sz);
- 	/* Make an array of pointers to sort the index list */
- 	sz = idx_cnt * sizeof(struct idx_entry *);
- 	if (sz / sizeof(struct idx_entry *) != idx_cnt) {
- 		free(idx);
- 		return err_msg("index is too big (%zu entries)", idx_cnt);
- 	}
--	idx_ptr = malloc(sz);
--	if (!idx_ptr) {
--		free(idx);
--		return err_msg("out of memory - needed %zu bytes for index",
--			       sz);
--	}
-+	idx_ptr = xmalloc(sz);
- 	idx_ptr[0] = idx_list_first;
- 	for (i = 1; i < idx_cnt; i++)
- 		idx_ptr[i] = idx_ptr[i - 1]->next;
-@@ -2164,13 +2144,8 @@ static int init(void)
- 	c->lpt_first = UBIFS_LOG_LNUM + c->log_lebs;
- 	c->lpt_last = c->lpt_first + c->lpt_lebs - 1;
- 
--	c->lpt = malloc(c->main_lebs * sizeof(struct ubifs_lprops));
--	if (!c->lpt)
--		return err_msg("unable to allocate LPT");
--
--	c->ltab = malloc(c->lpt_lebs * sizeof(struct ubifs_lprops));
--	if (!c->ltab)
--		return err_msg("unable to allocate LPT ltab");
-+	c->lpt = xmalloc(c->main_lebs * sizeof(struct ubifs_lprops));
-+	c->ltab = xmalloc(c->lpt_lebs * sizeof(struct ubifs_lprops));
- 
- 	/* Initialize LPT's own lprops */
- 	for (i = 0; i < c->lpt_lebs; i++) {
-@@ -2182,23 +2157,12 @@ static int init(void)
- 	c->dark_wm = ALIGN(UBIFS_MAX_NODE_SZ, c->min_io_size);
- 	dbg_msg(1, "dead_wm %d  dark_wm %d", c->dead_wm, c->dark_wm);
- 
--	leb_buf = malloc(c->leb_size);
--	if (!leb_buf)
--		return err_msg("out of memory");
--
--	node_buf = malloc(NODE_BUFFER_SIZE);
--	if (!node_buf)
--		return err_msg("out of memory");
--
--	block_buf = malloc(UBIFS_BLOCK_SIZE);
--	if (!block_buf)
--		return err_msg("out of memory");
-+	leb_buf = xmalloc(c->leb_size);
-+	node_buf = xmalloc(NODE_BUFFER_SIZE);
-+	block_buf = xmalloc(UBIFS_BLOCK_SIZE);
- 
- 	sz = sizeof(struct inum_mapping *) * HASH_TABLE_SIZE;
--	hash_table = malloc(sz);
--	if (!hash_table)
--		return err_msg("out of memory");
--	memset(hash_table, 0, sz);
-+	hash_table = xzalloc(sz);
- 
- 	err = init_compression();
- 	if (err)
+Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+
+Patch looks good, so:
+
+Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+
+Thanks!
+
+> > ---
+> >
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > ---
+> >  drivers/mtd/nand/pxa3xx_nand.c | 18 +++++++++++-------
+> >  1 file changed, 11 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> > index cce5a32eef60..51b67ae5ac1c 100644
+> > --- a/drivers/mtd/nand/pxa3xx_nand.c
+> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> > @@ -1889,21 +1889,21 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+> >  }
+> >
+> >  #ifdef CONFIG_PM
+> > -static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_message_t state)
+> > +static int pxa3xx_nand_suspend(struct device *dev)
+> >  {
+> > -       struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
+> > +       struct pxa3xx_nand_info *info = dev_get_drvdata(dev);
+> >
+> >         if (info->state) {
+> > -               dev_err(&pdev->dev, "driver busy, state = %d\n", info->state);
+> > +               dev_err(dev, "driver busy, state = %d\n", info->state);
+> >                 return -EAGAIN;
+> >         }
+> >
+> >         return 0;
+> >  }
+> >
+> > -static int pxa3xx_nand_resume(struct platform_device *pdev)
+> > +static int pxa3xx_nand_resume(struct device *dev)
+> >  {
+> > -       struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
+> > +       struct pxa3xx_nand_info *info = dev_get_drvdata(dev);
+> >
+> >         /* We don't want to handle interrupt without calling mtd routine */
+> >         disable_int(info, NDCR_INT_MASK);
+> > @@ -1930,15 +1930,19 @@ static int pxa3xx_nand_resume(struct platform_device *pdev)
+> >  #define pxa3xx_nand_resume     NULL
+> >  #endif
+> >
+> > +static const struct dev_pm_ops pxa3xx_nand_pm_ops = {
+> > +       .suspend        = pxa3xx_nand_suspend,
+> > +       .resume         = pxa3xx_nand_resume,
+> > +};
+> > +
+> >  static struct platform_driver pxa3xx_nand_driver = {
+> >         .driver = {
+> >                 .name   = "pxa3xx-nand",
+> >                 .of_match_table = pxa3xx_nand_dt_ids,
+> > +               .pm     = &pxa3xx_nand_pm_ops,
+> >         },
+> >         .probe          = pxa3xx_nand_probe,
+> >         .remove         = pxa3xx_nand_remove,
+> > -       .suspend        = pxa3xx_nand_suspend,
+> > -       .resume         = pxa3xx_nand_resume,
+> >  };
+> >
+> >  module_platform_driver(pxa3xx_nand_driver);
+> > --
+> > 2.6.0.rc2.230.g3dd15c0
+> >
+> >
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
+> 
+> -- 
+> Ezequiel García, VanguardiaSur
+> www.vanguardiasur.com.ar
+
 -- 
-2.6.1
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
