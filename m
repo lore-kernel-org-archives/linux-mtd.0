@@ -1,19 +1,21 @@
-Received: from li271-223.members.linode.com ([178.79.152.223]
- helo=mail.mleia.com)
+Received: from mail-wi0-f173.google.com ([209.85.212.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZnVvY-0006oL-Nj
- for linux-mtd@lists.infradead.org; Sat, 17 Oct 2015 18:09:57 +0000
-From: Vladimir Zapolskiy <vz@mleia.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Roland Stigge <stigge@antcom.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd: lpc32xx_mlc: fix warnings caused by enabling
- unprepared clock
-Date: Sat, 17 Oct 2015 21:09:30 +0300
-Message-Id: <1445105370-576-2-git-send-email-vz@mleia.com>
-In-Reply-To: <1445105370-576-1-git-send-email-vz@mleia.com>
-References: <1445105370-576-1-git-send-email-vz@mleia.com>
+ id 1ZnVwf-0008Ou-RI
+ for linux-mtd@lists.infradead.org; Sat, 17 Oct 2015 18:11:06 +0000
+Received: by wicfv8 with SMTP id fv8so29020548wic.0
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Oct 2015 11:10:44 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <56228D96.7070408@nod.at>
+References: <1445104555-30509-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <56228D96.7070408@nod.at>
+Date: Sat, 17 Oct 2015 15:10:43 -0300
+Message-ID: <CAAEAJfDEPj1nuLbPxcLvmnGUKWh7WNwXncTW2uTpD-3Sa3hz0A@mail.gmail.com>
+Subject: Re: [PATCH] UBI: Fastmap: Fix PEB array type
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Richard Weinberger <richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, hs@denx.de
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,88 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If common clock framework is configured, the driver generates a warning,
-which is fixed by this change:
+On 17 October 2015 at 15:04, Richard Weinberger <richard@nod.at> wrote:
+> Am 17.10.2015 um 19:55 schrieb Ezequiel Garcia:
+>> The PEB array is an array of __be32, so let's fix the
+>> scan_pool() prototype accordingly.
+>>
+>> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+>> ---
+>>  drivers/mtd/ubi/fastmap.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+>> index db3defdfc3c0..c867707a1d04 100644
+>> --- a/drivers/mtd/ubi/fastmap.c
+>> +++ b/drivers/mtd/ubi/fastmap.c
+>> @@ -383,7 +383,7 @@ static void unmap_peb(struct ubi_attach_info *ai, in=
+t pnum)
+>>   * < 0 indicates an internal error.
+>>   */
+>>  static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai=
+,
+>> -                  int *pebs, int pool_size, unsigned long long *max_sqn=
+um,
+>> +                  __be32 *pebs, int pool_size, unsigned long long *max_=
+sqnum,
+>>                    struct list_head *eba_orphans, struct list_head *free=
+)
+>>  {
+>>       struct ubi_vid_hdr *vh;
+>
+> The change makes sense, but does it fix a real issue?
 
-    WARNING: CPU: 0 PID: 1 at drivers/clk/clk.c:727 clk_core_enable+0x2c/0xa4()
-    Modules linked in:
-    CPU: 0 PID: 1 Comm: swapper Not tainted 4.3.0-rc2+ #206
-    Hardware name: LPC32XX SoC (Flattened Device Tree)
-    Backtrace:
-    [<>] (dump_backtrace) from [<>] (show_stack+0x18/0x1c)
-    [<>] (show_stack) from [<>] (dump_stack+0x20/0x28)
-    [<>] (dump_stack) from [<>] (warn_slowpath_common+0x90/0xb8)
-    [<>] (warn_slowpath_common) from [<>] (warn_slowpath_null+0x24/0x2c)
-    [<>] (warn_slowpath_null) from [<>] (clk_core_enable+0x2c/0xa4)
-    [<>] (clk_core_enable) from [<>] (clk_enable+0x24/0x38)
-    [<>] (clk_enable) from [<>] (lpc32xx_nand_probe+0x208/0x248)
-    [<>] (lpc32xx_nand_probe) from [<>] (platform_drv_probe+0x50/0xa0)
-    [<>] (platform_drv_probe) from [<>] (driver_probe_device+0x18c/0x408)
-    [<>] (driver_probe_device) from [<>] (__driver_attach+0x70/0x94)
-    [<>] (__driver_attach) from [<>] (bus_for_each_dev+0x74/0x98)
-    [<>] (bus_for_each_dev) from [<>] (driver_attach+0x20/0x28)
-    [<>] (driver_attach) from [<>] (bus_add_driver+0x11c/0x248)
-    [<>] (bus_add_driver) from [<>] (driver_register+0xa4/0xe8)
-    [<>] (driver_register) from [<>] (__platform_driver_register+0x50/0x64)
-    [<>] (__platform_driver_register) from [<>] (lpc32xx_nand_driver_init+0x18/0x20)
-    [<>] (lpc32xx_nand_driver_init) from [<>] (do_one_initcall+0x11c/0x1dc)
-    [<>] (do_one_initcall) from [<>] (kernel_init_freeable+0x10c/0x1d4)
-    [<>] (kernel_init_freeable) from [<>] (kernel_init+0x10/0xec)
-    [<>] (kernel_init) from [<>] (ret_from_fork+0x14/0x24)
+No, doesn't fix any issue as far as I know.
 
-Signed-off-by: Vladimir Zapolskiy <vz@mleia.com>
----
- drivers/mtd/nand/lpc32xx_mlc.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> I suspect it silences a compiler warning, which one?
+>
 
-diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
-index 9686d02..3475109 100644
---- a/drivers/mtd/nand/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/lpc32xx_mlc.c
-@@ -692,7 +692,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 		res = -ENOENT;
- 		goto err_exit1;
- 	}
--	clk_enable(host->clk);
-+	clk_prepare_enable(host->clk);
- 
- 	nand_chip->cmd_ctrl = lpc32xx_nand_cmd_ctrl;
- 	nand_chip->dev_ready = lpc32xx_nand_device_ready;
-@@ -800,7 +800,7 @@ err_exit3:
- 	if (use_dma)
- 		dma_release_channel(host->dma_chan);
- err_exit2:
--	clk_disable(host->clk);
-+	clk_disable_unprepare(host->clk);
- 	clk_put(host->clk);
- err_exit1:
- 	lpc32xx_wp_enable(host);
-@@ -822,7 +822,7 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
- 	if (use_dma)
- 		dma_release_channel(host->dma_chan);
- 
--	clk_disable(host->clk);
-+	clk_disable_unprepare(host->clk);
- 	clk_put(host->clk);
- 
- 	lpc32xx_wp_enable(host);
-@@ -837,7 +837,7 @@ static int lpc32xx_nand_resume(struct platform_device *pdev)
- 	struct lpc32xx_nand_host *host = platform_get_drvdata(pdev);
- 
- 	/* Re-enable NAND clock */
--	clk_enable(host->clk);
-+	clk_prepare_enable(host->clk);
- 
- 	/* Fresh init of NAND controller */
- 	lpc32xx_nand_setup(host);
-@@ -856,7 +856,7 @@ static int lpc32xx_nand_suspend(struct platform_device *pdev, pm_message_t pm)
- 	lpc32xx_wp_enable(host);
- 
- 	/* Disable clock */
--	clk_disable(host->clk);
-+	clk_disable_unprepare(host->clk);
- 	return 0;
- }
- 
--- 
-2.1.4
+It fixes a silly warning that's printed if -Wpointer-sign. Linux
+disables the warning, so this patch doesn't even fix a warning.
+
+I'd say it's merely cosmetic.
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
