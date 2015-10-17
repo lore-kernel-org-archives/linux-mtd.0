@@ -1,17 +1,19 @@
 Received: from li271-223.members.linode.com ([178.79.152.223]
  helo=mail.mleia.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZnVvY-0006nj-Nj
+ id 1ZnVvY-0006oL-Nj
  for linux-mtd@lists.infradead.org; Sat, 17 Oct 2015 18:09:57 +0000
 From: Vladimir Zapolskiy <vz@mleia.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Roland Stigge <stigge@antcom.de>
 Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] mtd: lpc32xx_slc: fix warnings caused by enabling
+Subject: [PATCH 2/2] mtd: lpc32xx_mlc: fix warnings caused by enabling
  unprepared clock
-Date: Sat, 17 Oct 2015 21:09:29 +0300
-Message-Id: <1445105370-576-1-git-send-email-vz@mleia.com>
+Date: Sat, 17 Oct 2015 21:09:30 +0300
+Message-Id: <1445105370-576-2-git-send-email-vz@mleia.com>
+In-Reply-To: <1445105370-576-1-git-send-email-vz@mleia.com>
+References: <1445105370-576-1-git-send-email-vz@mleia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,7 +28,7 @@ which is fixed by this change:
 
     WARNING: CPU: 0 PID: 1 at drivers/clk/clk.c:727 clk_core_enable+0x2c/0xa4()
     Modules linked in:
-    CPU: 0 PID: 1 Comm: swapper Not tainted 4.3.0-rc2+ #201
+    CPU: 0 PID: 1 Comm: swapper Not tainted 4.3.0-rc2+ #206
     Hardware name: LPC32XX SoC (Flattened Device Tree)
     Backtrace:
     [<>] (dump_backtrace) from [<>] (show_stack+0x18/0x1c)
@@ -35,7 +37,7 @@ which is fixed by this change:
     [<>] (warn_slowpath_common) from [<>] (warn_slowpath_null+0x24/0x2c)
     [<>] (warn_slowpath_null) from [<>] (clk_core_enable+0x2c/0xa4)
     [<>] (clk_core_enable) from [<>] (clk_enable+0x24/0x38)
-    [<>] (clk_enable) from [<>] (lpc32xx_nand_probe+0x290/0x568)
+    [<>] (clk_enable) from [<>] (lpc32xx_nand_probe+0x208/0x248)
     [<>] (lpc32xx_nand_probe) from [<>] (platform_drv_probe+0x50/0xa0)
     [<>] (platform_drv_probe) from [<>] (driver_probe_device+0x18c/0x408)
     [<>] (driver_probe_device) from [<>] (__driver_attach+0x70/0x94)
@@ -52,41 +54,41 @@ which is fixed by this change:
 
 Signed-off-by: Vladimir Zapolskiy <vz@mleia.com>
 ---
- drivers/mtd/nand/lpc32xx_slc.c | 10 +++++-----
+ drivers/mtd/nand/lpc32xx_mlc.c | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index 40c06b2..4f3d4eb 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -814,7 +814,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+index 9686d02..3475109 100644
+--- a/drivers/mtd/nand/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/lpc32xx_mlc.c
+@@ -692,7 +692,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
  		res = -ENOENT;
  		goto err_exit1;
  	}
 -	clk_enable(host->clk);
 +	clk_prepare_enable(host->clk);
  
- 	/* Set NAND IO addresses and command/ready functions */
- 	chip->IO_ADDR_R = SLC_DATA(host->io_base);
-@@ -919,7 +919,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- err_exit3:
- 	dma_release_channel(host->dma_chan);
+ 	nand_chip->cmd_ctrl = lpc32xx_nand_cmd_ctrl;
+ 	nand_chip->dev_ready = lpc32xx_nand_device_ready;
+@@ -800,7 +800,7 @@ err_exit3:
+ 	if (use_dma)
+ 		dma_release_channel(host->dma_chan);
  err_exit2:
 -	clk_disable(host->clk);
 +	clk_disable_unprepare(host->clk);
+ 	clk_put(host->clk);
  err_exit1:
  	lpc32xx_wp_enable(host);
- 
-@@ -943,7 +943,7 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
- 	tmp &= ~SLCCFG_CE_LOW;
- 	writel(tmp, SLC_CTRL(host->io_base));
+@@ -822,7 +822,7 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
+ 	if (use_dma)
+ 		dma_release_channel(host->dma_chan);
  
 -	clk_disable(host->clk);
 +	clk_disable_unprepare(host->clk);
- 	lpc32xx_wp_enable(host);
+ 	clk_put(host->clk);
  
- 	return 0;
-@@ -955,7 +955,7 @@ static int lpc32xx_nand_resume(struct platform_device *pdev)
+ 	lpc32xx_wp_enable(host);
+@@ -837,7 +837,7 @@ static int lpc32xx_nand_resume(struct platform_device *pdev)
  	struct lpc32xx_nand_host *host = platform_get_drvdata(pdev);
  
  	/* Re-enable NAND clock */
@@ -95,14 +97,14 @@ index 40c06b2..4f3d4eb 100644
  
  	/* Fresh init of NAND controller */
  	lpc32xx_nand_setup(host);
-@@ -980,7 +980,7 @@ static int lpc32xx_nand_suspend(struct platform_device *pdev, pm_message_t pm)
+@@ -856,7 +856,7 @@ static int lpc32xx_nand_suspend(struct platform_device *pdev, pm_message_t pm)
  	lpc32xx_wp_enable(host);
  
  	/* Disable clock */
 -	clk_disable(host->clk);
 +	clk_disable_unprepare(host->clk);
- 
  	return 0;
  }
+ 
 -- 
 2.1.4
