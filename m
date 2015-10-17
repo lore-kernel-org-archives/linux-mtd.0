@@ -1,26 +1,16 @@
 Received: from mail-qk0-f171.google.com ([209.85.220.171])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZnS7W-0007A8-VE
- for linux-mtd@lists.infradead.org; Sat, 17 Oct 2015 14:06:03 +0000
-Received: by qkht68 with SMTP id t68so65934052qkh.3
- for <linux-mtd@lists.infradead.org>; Sat, 17 Oct 2015 07:05:41 -0700 (PDT)
-Date: Sat, 17 Oct 2015 11:01:44 -0300
+ id 1ZnVmN-00041U-8h
+ for linux-mtd@lists.infradead.org; Sat, 17 Oct 2015 18:00:27 +0000
+Received: by qkfm62 with SMTP id m62so65558645qkf.1
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Oct 2015 11:00:05 -0700 (PDT)
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Antoine Tenart <antoine.tenart@free-electrons.com>
-Cc: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, zmxu@marvell.com,
- jszhang@marvell.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- robert.jarzmik@free.fr
-Subject: Re: [PATCH v3 3/4] mtd: pxa3xx_nand: rework flash detection and
- timing setup
-Message-ID: <20151017140144.GB1578@laptop.cereza>
-References: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
- <1444893451-16610-4-git-send-email-antoine.tenart@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1444893451-16610-4-git-send-email-antoine.tenart@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: Richard Weinberger <richard@nod.at>, hs@denx.de,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH] UBI: Fastmap: Fix PEB array type
+Date: Sat, 17 Oct 2015 14:55:55 -0300
+Message-Id: <1445104555-30509-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,20 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Antoine,
+The PEB array is an array of __be32, so let's fix the
+scan_pool() prototype accordingly.
 
-On 15 Oct 09:17 AM, Antoine Tenart wrote:
-> Rework the pxa3xx_nand driver to allow using functions exported by the
-> nand framework to detect the flash and the timings. Then setup the
-> timings using the helpers previously added.
-> 
-> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
-> ---
->  drivers/mtd/nand/pxa3xx_nand.c | 118 +++++++++--------------------------------
->  1 file changed, 25 insertions(+), 93 deletions(-)
-> 
+Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+---
+ drivers/mtd/ubi/fastmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This patch is not applying on l2-mtd.git master. Care to rebase it?
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index db3defdfc3c0..c867707a1d04 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -383,7 +383,7 @@ static void unmap_peb(struct ubi_attach_info *ai, int pnum)
+  * < 0 indicates an internal error.
+  */
+ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+-		     int *pebs, int pool_size, unsigned long long *max_sqnum,
++		     __be32 *pebs, int pool_size, unsigned long long *max_sqnum,
+ 		     struct list_head *eba_orphans, struct list_head *free)
+ {
+ 	struct ubi_vid_hdr *vh;
 -- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+2.5.2
