@@ -1,28 +1,21 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zo4ZA-00018L-GL
- for linux-mtd@lists.infradead.org; Mon, 19 Oct 2015 07:09:09 +0000
-Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-To: Tony Lindgren <tony@atomide.com>
-References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
- <560BC0DB.5020205@ti.com> <20151006083346.GL23801@atomide.com>
- <56139A72.6040600@ti.com> <20151006100000.GN23801@atomide.com>
- <56139CE9.8020002@ti.com> <5613A256.8000105@ti.com>
- <20151006110134.GO23801@atomide.com> <5613ABEF.9000904@ti.com>
- <20151016212510.GF24370@atomide.com>
-CC: <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <ezequiel@vanguardiasur.com.ar>,
- <javier@dowhile0.org>, <computersforpeace@gmail.com>,
- <dwmw2@infradead.org>, <fcooper@ti.com>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <562496DB.4050803@ti.com>
-Date: Mon, 19 Oct 2015 10:08:11 +0300
+Date: Mon, 19 Oct 2015 11:32:31 +0200
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com, zmxu@marvell.com,
+ jszhang@marvell.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 2/4] mtd: pxa3xx_nand: add helpers to setup the timings
+Message-ID: <20151019093231.GA29389@kwain>
+References: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
+ <1444893451-16610-3-git-send-email-antoine.tenart@free-electrons.com>
+ <20151017135726.GA1578@laptop.cereza>
 MIME-Version: 1.0
-In-Reply-To: <20151016212510.GF24370@atomide.com>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20151017135726.GA1578@laptop.cereza>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,36 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17/10/15 00:25, Tony Lindgren wrote:
-> * Roger Quadros <rogerq@ti.com> [151006 04:13]:
->>
->> Fine. The updated series is now at
->>
->> git@github.com:rogerq/linux.git
->>  * [new branch]      for-v4.4/gpmc-v4
+Ezequiel,
+
+On Sat, Oct 17, 2015 at 10:57:26AM -0300, Ezequiel Garcia wrote:
+> On 15 Oct 09:17 AM, Antoine Tenart wrote:
+> >  /*
+> >   * Set the data and OOB size, depending on the selected
+> >   * spare and ECC configuration.
+> > @@ -1538,6 +1660,19 @@ KEEP_CONFIG:
+> >  	if (nand_scan_ident(mtd, 1, def))
+> >  		return -ENODEV;
+> >  
+> > +	if (!pdata->keep_config) {
+> > +		ret = pxa3xx_nand_init(host);
+> > +		if (ret) {
+> > +			dev_err(&info->pdev->dev, "Failed to init nand: %d\n",
+> > +				ret);
+> > +			return ret;
+> > +		}
+> > +	}
+> > +
+> > +	ret = pxa3xx_nand_config_flash(info);
+> > +	if (ret)
+> > +		return ret;
+> > +
 > 
-> Looks like it produces some build errors, this with RMKs 3430 and 4430
-> only .configs:
-> 
-> drivers/memory/omap-gpmc.c:2035:43: error: ‘struct gpio_chip’ has no
-> member named ‘irqdomain’
-> drivers/memory/omap-gpmc.c:2116:8: error: implicit declaration of
-> function ‘gpiochip_irqchip_add’ [-Werror=implicit-function-declaration]
-> 
+> Does this chunk belong to this patch? It wasn't here in the v2, and I believe
+> it's not correct as you end up messing with the NDCR setting even if keep_config
+> was passed.
 
-Good catch. We'll have to select GPIOLIB_IRQCHIP for this driver.
+You're right, it should be in "[3/4] mtd: pxa3xx_nand: rework flash
+detection and timing setup". I made a mistake reworking the series...
 
-> Maybe run randconfig builds on it for overnight?
+And yes, pxa3xx_nand_config_flash() should be called before
+"KEEP_CONFIG:".
 
-OK. I'll do that.
+Antoine
 
-> 
-> Other than that your series seems to behave for me now, so feel
-> free to add:
-> 
-> Acked-by: Tony Lindgren <tony@atomide.com>
-
-Thanks for the tests :)
-
-cheers,
--roger
+-- 
+Antoine T�nart, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
