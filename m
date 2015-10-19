@@ -1,18 +1,16 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zo7iq-0001I0-Aw
- for linux-mtd@lists.infradead.org; Mon, 19 Oct 2015 10:31:21 +0000
-Date: Mon, 19 Oct 2015 13:20:05 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: [patch] mtd/docg3: off by one in doc_register_sysfs()
-Message-ID: <20151019102005.GF26688@mwanda>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ id 1ZoGAg-0005VK-SJ
+ for linux-mtd@lists.infradead.org; Mon, 19 Oct 2015 19:32:39 +0000
+Received: by padhk11 with SMTP id hk11so38135916pad.1
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Oct 2015 12:32:18 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Frans Klaver <fransklaver@gmail.com>
+Subject: [PATCH] mtd: maps: rbtx4939-flash: fix compile error
+Date: Mon, 19 Oct 2015 12:31:59 -0700
+Message-Id: <1445283119-96697-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,57 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Smatch found a bug in the error handling:
+We got the syntax wrong here. Compile tested this time!
 
-	drivers/mtd/devices/docg3.c:1634 doc_register_sysfs()
-	error: buffer overflow 'doc_sys_attrs' 4 <= 4
+Error:
 
-The problem is that if the very last device_create_file() fails, then we
-are beyond the end of the array.  Actually, any time i == 3 then there
-is a problem.  We can fix this an simplify the code at the same time by
-moving the !ret conditions out of the for loops and using a goto
-instead.
+   drivers/mtd/maps/rbtx4939-flash.c: In function 'rbtx4939_flash_probe':
+>> drivers/mtd/maps/rbtx4939-flash.c:99:11: error: request for member 'dev' in something not a structure or union
+     info->mtd.dev.parent = &dev->dev;
+              ^
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 9aa7e50276c1 ("mtd: maps: rbtx4939-flash: show parent device in sysfs")
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Frans Klaver <fransklaver@gmail.com>
+---
+ drivers/mtd/maps/rbtx4939-flash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index f00d0da..c3a2695 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -1620,20 +1620,30 @@ static struct device_attribute doc_sys_attrs[DOC_MAX_NBFLOORS][4] = {
- static int doc_register_sysfs(struct platform_device *pdev,
- 			      struct docg3_cascade *cascade)
- {
--	int ret = 0, floor, i = 0;
- 	struct device *dev = &pdev->dev;
-+	int floor;
-+	int ret;
-+	int i;
+diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
+index 18ee361455a2..3a06ecfc55ff 100644
+--- a/drivers/mtd/maps/rbtx4939-flash.c
++++ b/drivers/mtd/maps/rbtx4939-flash.c
+@@ -96,7 +96,7 @@ static int rbtx4939_flash_probe(struct platform_device *dev)
+ 		err = -ENXIO;
+ 		goto err_out;
+ 	}
+-	info->mtd.dev.parent = &dev->dev;
++	info->mtd->dev.parent = &dev->dev;
+ 	err = mtd_device_parse_register(info->mtd, NULL, NULL, pdata->parts,
+ 					pdata->nr_parts);
  
--	for (floor = 0; !ret && floor < DOC_MAX_NBFLOORS &&
--		     cascade->floors[floor]; floor++)
--		for (i = 0; !ret && i < 4; i++)
-+	for (floor = 0;
-+	     floor < DOC_MAX_NBFLOORS && cascade->floors[floor];
-+	     floor++) {
-+		for (i = 0; i < 4; i++) {
- 			ret = device_create_file(dev, &doc_sys_attrs[floor][i]);
--	if (!ret)
--		return 0;
-+			if (ret)
-+				goto remove_files;
-+		}
-+	}
-+
-+	return 0;
-+
-+remove_files:
- 	do {
- 		while (--i >= 0)
- 			device_remove_file(dev, &doc_sys_attrs[floor][i]);
- 		i = 4;
- 	} while (--floor >= 0);
-+
- 	return ret;
- }
- 
+-- 
+2.6.0.rc2.230.g3dd15c0
