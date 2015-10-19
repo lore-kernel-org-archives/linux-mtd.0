@@ -1,23 +1,18 @@
-Date: Mon, 19 Oct 2015 11:32:52 +0200
-From: Antoine Tenart <antoine.tenart@free-electrons.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
- sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, zmxu@marvell.com,
- jszhang@marvell.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- robert.jarzmik@free.fr
-Subject: Re: [PATCH v3 3/4] mtd: pxa3xx_nand: rework flash detection and
- timing setup
-Message-ID: <20151019093252.GB29389@kwain>
-References: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
- <1444893451-16610-4-git-send-email-antoine.tenart@free-electrons.com>
- <20151017140144.GB1578@laptop.cereza>
+Received: from aserp1040.oracle.com ([141.146.126.69])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zo7iq-0001I0-Aw
+ for linux-mtd@lists.infradead.org; Mon, 19 Oct 2015 10:31:21 +0000
+Date: Mon, 19 Oct 2015 13:20:05 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+Subject: [patch] mtd/docg3: off by one in doc_register_sysfs()
+Message-ID: <20151019102005.GF26688@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20151017140144.GB1578@laptop.cereza>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +22,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Oct 17, 2015 at 11:01:44AM -0300, Ezequiel Garcia wrote:
-> On 15 Oct 09:17 AM, Antoine Tenart wrote:
-> > Rework the pxa3xx_nand driver to allow using functions exported by the
-> > nand framework to detect the flash and the timings. Then setup the
-> > timings using the helpers previously added.
-> > 
-> > Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/pxa3xx_nand.c | 118 +++++++++--------------------------------
-> >  1 file changed, 25 insertions(+), 93 deletions(-)
-> > 
-> 
-> This patch is not applying on l2-mtd.git master. Care to rebase it?
+Smatch found a bug in the error handling:
 
-I'll do this for the next version.
+	drivers/mtd/devices/docg3.c:1634 doc_register_sysfs()
+	error: buffer overflow 'doc_sys_attrs' 4 <= 4
 
-Antoine
+The problem is that if the very last device_create_file() fails, then we
+are beyond the end of the array.  Actually, any time i == 3 then there
+is a problem.  We can fix this an simplify the code at the same time by
+moving the !ret conditions out of the for loops and using a goto
+instead.
 
--- 
-Antoine Ténart, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index f00d0da..c3a2695 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -1620,20 +1620,30 @@ static struct device_attribute doc_sys_attrs[DOC_MAX_NBFLOORS][4] = {
+ static int doc_register_sysfs(struct platform_device *pdev,
+ 			      struct docg3_cascade *cascade)
+ {
+-	int ret = 0, floor, i = 0;
+ 	struct device *dev = &pdev->dev;
++	int floor;
++	int ret;
++	int i;
+ 
+-	for (floor = 0; !ret && floor < DOC_MAX_NBFLOORS &&
+-		     cascade->floors[floor]; floor++)
+-		for (i = 0; !ret && i < 4; i++)
++	for (floor = 0;
++	     floor < DOC_MAX_NBFLOORS && cascade->floors[floor];
++	     floor++) {
++		for (i = 0; i < 4; i++) {
+ 			ret = device_create_file(dev, &doc_sys_attrs[floor][i]);
+-	if (!ret)
+-		return 0;
++			if (ret)
++				goto remove_files;
++		}
++	}
++
++	return 0;
++
++remove_files:
+ 	do {
+ 		while (--i >= 0)
+ 			device_remove_file(dev, &doc_sys_attrs[floor][i]);
+ 		i = 4;
+ 	} while (--floor >= 0);
++
+ 	return ret;
+ }
+ 
