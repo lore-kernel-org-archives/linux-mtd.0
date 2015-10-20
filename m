@@ -1,22 +1,21 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZoM3c-0005Ul-Rb
- for linux-mtd@lists.infradead.org; Tue, 20 Oct 2015 01:49:46 +0000
-Message-ID: <56259C0A.6020201@cn.fujitsu.com>
-Date: Tue, 20 Oct 2015 09:42:34 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v2 3/3] mtd: tests: introduce a erase test
-References: <20150930002958.GC143959@google.com>
- <1443574881-12319-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1443574881-12319-4-git-send-email-yangds.fnst@cn.fujitsu.com>
- <20151020011813.GD13239@google.com> <20151020012028.GE13239@google.com>
-In-Reply-To: <20151020012028.GE13239@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1444929443-25537-3-git-send-email-boris.brezillon@free-electrons.com>
+References: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1444929443-25537-3-git-send-email-boris.brezillon@free-electrons.com>
+Date: Tue, 20 Oct 2015 09:20:10 +0200
+Message-ID: <CAFLxGvx_3ZWMqimh36t1uCSAqbHnD5ZU=vQBMsDHzs6qPxUExQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mtd: nand: add NAND_NEED_SCRAMBLING flag to the
+ H27UCG8T2ATR-BC definition
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, linux-sunxi@googlegroups.com,
+ Hans de Goede <hdegoede@redhat.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/20/2015 09:20 AM, Brian Norris wrote:
-> On Mon, Oct 19, 2015 at 06:18:13PM -0700, Brian Norris wrote:
->> + others
+On Thu, Oct 15, 2015 at 7:17 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> The H27UCG8T2ATR-BC requires an external data scrambler. Reflect this
+> constraint in the nand_flash_ids definition.
 >
-> really +others this time!
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_ids.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
->> On Wed, Sep 30, 2015 at 09:01:21AM +0800, Dongsheng Yang wrote:
->>> This test will test the below cases.
->>>
-[...]
->>> +
->>> +MODULE_DESCRIPTION("Erase test module");
->>> +MODULE_AUTHOR("Dongsheng Yang");
->>> +MODULE_LICENSE("GPL");
->>
->> Overall, I'm not sure if this test is really that useful. It does a few
->> sanity checks on the API, but it doesn't really test the erase function
->> itself. If anyone else thinks this test is interesting though, I suppose
->> there's not much harm in putting it into mtd-utils tests/.
+> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+> index a8804a3..ccc05f5 100644
+> --- a/drivers/mtd/nand/nand_ids.c
+> +++ b/drivers/mtd/nand/nand_ids.c
+> @@ -50,8 +50,8 @@ struct nand_flash_dev nand_flash_ids[] = {
+>                   SZ_16K, SZ_8K, SZ_4M, 0, 6, 1280, NAND_ECC_INFO(40, SZ_1K) },
+>         {"H27UCG8T2ATR-BC 64G 3.3V 8-bit",
+>                 { .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
+> -                 SZ_8K, SZ_8K, SZ_2M, 0, 6, 640, NAND_ECC_INFO(40, SZ_1K),
+> -                 4 },
+> +                 SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
+> +                 NAND_ECC_INFO(40, SZ_1K), 4 },
 
-Yes, I found the erase problem about mtdram in my debugging. Then
-I was wondering why we did not find it by running mtd/tests. Finally
-I found there is no testing about it in mtd/tests. So write one and
-send it out here.
+Would it make sense to print a warning if a NAND which needs scrambling
+is used on a NFC which does not support this feature?
 
-As you said, it's much more proper to put them in mtd-utils. I am
-totally agree with that. would port it to userspace.
-
-Thanx
-Yang
->>
->> Brian
-> .
->
+-- 
+Thanks,
+//richard
