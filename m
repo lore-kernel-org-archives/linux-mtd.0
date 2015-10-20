@@ -1,20 +1,18 @@
+Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZoREc-00014i-1E
+ for linux-mtd@lists.infradead.org; Tue, 20 Oct 2015 07:21:27 +0000
+Received: by wicfx6 with SMTP id fx6so31378325wic.1
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Oct 2015 00:21:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1444929443-25537-3-git-send-email-boris.brezillon@free-electrons.com>
-References: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
- <1444929443-25537-3-git-send-email-boris.brezillon@free-electrons.com>
-Date: Tue, 20 Oct 2015 09:20:10 +0200
-Message-ID: <CAFLxGvx_3ZWMqimh36t1uCSAqbHnD5ZU=vQBMsDHzs6qPxUExQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mtd: nand: add NAND_NEED_SCRAMBLING flag to the
- H27UCG8T2ATR-BC definition
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>, linux-sunxi@googlegroups.com,
- Hans de Goede <hdegoede@redhat.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <1445283119-96697-1-git-send-email-computersforpeace@gmail.com>
+References: <1445283119-96697-1-git-send-email-computersforpeace@gmail.com>
+Date: Tue, 20 Oct 2015 09:21:04 +0200
+Message-ID: <CAH6sp9O7jwkcJWxh723CWtV8hFBTxq8QrjF7fwyye4h78uu6vQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: maps: rbtx4939-flash: fix compile error
+From: Frans Klaver <fransklaver@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,32 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 15, 2015 at 7:17 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> The H27UCG8T2ATR-BC requires an external data scrambler. Reflect this
-> constraint in the nand_flash_ids definition.
+On Mon, Oct 19, 2015 at 9:31 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> We got the syntax wrong here. Compile tested this time!
 >
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Error:
+>
+>    drivers/mtd/maps/rbtx4939-flash.c: In function 'rbtx4939_flash_probe':
+>>> drivers/mtd/maps/rbtx4939-flash.c:99:11: error: request for member 'dev' in something not a structure or union
+>      info->mtd.dev.parent = &dev->dev;
+>               ^
+
+*Sigh*
+
+Thanks Brian.
+
+Frans
+
+> Fixes: 9aa7e50276c1 ("mtd: maps: rbtx4939-flash: show parent device in sysfs")
+> Reported-by: kbuild test robot <fengguang.wu@intel.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Frans Klaver <fransklaver@gmail.com>
 > ---
->  drivers/mtd/nand/nand_ids.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/mtd/maps/rbtx4939-flash.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-> index a8804a3..ccc05f5 100644
-> --- a/drivers/mtd/nand/nand_ids.c
-> +++ b/drivers/mtd/nand/nand_ids.c
-> @@ -50,8 +50,8 @@ struct nand_flash_dev nand_flash_ids[] = {
->                   SZ_16K, SZ_8K, SZ_4M, 0, 6, 1280, NAND_ECC_INFO(40, SZ_1K) },
->         {"H27UCG8T2ATR-BC 64G 3.3V 8-bit",
->                 { .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
-> -                 SZ_8K, SZ_8K, SZ_2M, 0, 6, 640, NAND_ECC_INFO(40, SZ_1K),
-> -                 4 },
-> +                 SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
-> +                 NAND_ECC_INFO(40, SZ_1K), 4 },
-
-Would it make sense to print a warning if a NAND which needs scrambling
-is used on a NFC which does not support this feature?
-
--- 
-Thanks,
-//richard
+> diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
+> index 18ee361455a2..3a06ecfc55ff 100644
+> --- a/drivers/mtd/maps/rbtx4939-flash.c
+> +++ b/drivers/mtd/maps/rbtx4939-flash.c
+> @@ -96,7 +96,7 @@ static int rbtx4939_flash_probe(struct platform_device *dev)
+>                 err = -ENXIO;
+>                 goto err_out;
+>         }
+> -       info->mtd.dev.parent = &dev->dev;
+> +       info->mtd->dev.parent = &dev->dev;
+>         err = mtd_device_parse_register(info->mtd, NULL, NULL, pdata->parts,
+>                                         pdata->nr_parts);
+>
+> --
+> 2.6.0.rc2.230.g3dd15c0
+>
