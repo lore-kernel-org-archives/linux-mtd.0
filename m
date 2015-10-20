@@ -1,22 +1,30 @@
-Date: Tue, 20 Oct 2015 11:15:52 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+From: Anup Patel <anup.patel@broadcom.com>
+To: Sudeep Holla <sudeep.holla@arm.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, linux-sunxi@googlegroups.com, Hans de
- Goede <hdegoede@redhat.com>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] mtd: nand: add NAND_NEED_SCRAMBLING flag to the
- H27UCG8T2ATR-BC definition
-Message-ID: <20151020111552.33d4c23f@bbrezillon>
-In-Reply-To: <CAFLxGvx_3ZWMqimh36t1uCSAqbHnD5ZU=vQBMsDHzs6qPxUExQ@mail.gmail.com>
-References: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
- <1444929443-25537-3-git-send-email-boris.brezillon@free-electrons.com>
- <CAFLxGvx_3ZWMqimh36t1uCSAqbHnD5ZU=vQBMsDHzs6qPxUExQ@mail.gmail.com>
+ <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll
+ <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "Catalin
+ Marinas" <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, "Ray
+ Jui" <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, "Florian
+ Fainelli" <f.fainelli@gmail.com>, Pramod Kumar <pramodku@broadcom.com>,
+ "Vikram Prakash" <vikramp@broadcom.com>, Sandeep Tripathy
+ <tripathy@broadcom.com>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, bcm-kernel-feedback-list
+ <bcm-kernel-feedback-list@broadcom.com>
+Subject: RE: [PATCH v2 4/4] arm64: dts: Add BRCM IPROC NAND DT node for NS2
+Date: Tue, 20 Oct 2015 09:25:05 +0000
+Message-ID: <39063E8F96E11742B35A201CC5D095B7AF39AD@SJEXCHMB10.corp.ad.broadcom.com>
+References: <1444986537-28387-1-git-send-email-anup.patel@broadcom.com>
+ <1444986537-28387-5-git-send-email-anup.patel@broadcom.com>
+ <562603F7.7000202@arm.com>
+In-Reply-To: <562603F7.7000202@arm.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +34,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 20 Oct 2015 09:20:10 +0200
-Richard Weinberger <richard.weinberger@gmail.com> wrote:
 
-> On Thu, Oct 15, 2015 at 7:17 PM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > The H27UCG8T2ATR-BC requires an external data scrambler. Reflect this
-> > constraint in the nand_flash_ids definition.
+
+> -----Original Message-----
+> From: Sudeep Holla [mailto:sudeep.holla@arm.com]
+> Sent: 20 October 2015 14:36
+> To: Anup Patel
+> Cc: David Woodhouse; Brian Norris; linux-mtd@lists.infradead.org; Sudeep
+> Holla; Rob Herring; Pawel Moll; Mark Rutland; Ian Campbell; Kumar Gala; C=
+atalin
+> Marinas; Will Deacon; Ray Jui; Scott Branden; Florian Fainelli; Pramod Ku=
+mar;
+> Vikram Prakash; Sandeep Tripathy; linux-arm-kernel@lists.infradead.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; bcm-kernel-
+> feedback-list
+> Subject: Re: [PATCH v2 4/4] arm64: dts: Add BRCM IPROC NAND DT node for
+> NS2
+>=20
+>=20
+>=20
+> On 16/10/15 10:08, Anup Patel wrote:
+> > The NAND controller on NS2 SoC is compatible with existing BRCM IPROC
+> > NAND driver so let's enable it in NS2 DT and
+> > NS2 SVK DT.
 > >
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Signed-off-by: Anup Patel <anup.patel@broadcom.com>
+> > Reviewed-by: Ray Jui <rjui@broadcom.com>
+> > Reviewed-by: Scott Branden <sbranden@broadcom.com>
 > > ---
-> >  drivers/mtd/nand/nand_ids.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >   arch/arm64/boot/dts/broadcom/ns2-svk.dts | 12 ++++++++++++
+> >   arch/arm64/boot/dts/broadcom/ns2.dtsi    | 14 ++++++++++++++
+> >   2 files changed, 26 insertions(+)
 > >
-> > diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-> > index a8804a3..ccc05f5 100644
-> > --- a/drivers/mtd/nand/nand_ids.c
-> > +++ b/drivers/mtd/nand/nand_ids.c
-> > @@ -50,8 +50,8 @@ struct nand_flash_dev nand_flash_ids[] = {
-> >                   SZ_16K, SZ_8K, SZ_4M, 0, 6, 1280, NAND_ECC_INFO(40, SZ_1K) },
-> >         {"H27UCG8T2ATR-BC 64G 3.3V 8-bit",
-> >                 { .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
-> > -                 SZ_8K, SZ_8K, SZ_2M, 0, 6, 640, NAND_ECC_INFO(40, SZ_1K),
-> > -                 4 },
-> > +                 SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
-> > +                 NAND_ECC_INFO(40, SZ_1K), 4 },
-> 
-> Would it make sense to print a warning if a NAND which needs scrambling
-> is used on a NFC which does not support this feature?
-> 
+> > diff --git a/arch/arm64/boot/dts/broadcom/ns2-svk.dts
+> > b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
+> > index e5950d5..a754160 100644
+> > --- a/arch/arm64/boot/dts/broadcom/ns2-svk.dts
+> > +++ b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
+> > @@ -63,5 +63,17 @@
+> >   		uart3: serial@66130000 {
+> >   			status =3D "ok";
+> >   		};
+>=20
+> Better to change even the above reference, see below.
+>=20
+> > +
+> > +		nand: nand@66460000 {
+>=20
+> In most of the cases where such static overlays are done, I have seen the=
+ labels
+> being used to refer back the node. Using the complete node name again is =
+kind
+> of inviting trouble as even minor typo results in creation of another nod=
+e.
 
-Maybe, but if we want to make this warning generic this implies adding
-a new NAND_CONTROLLER_SUPPORTS_SCRAMBLING flag.
+Thanks for pointing. I will use label here for both uart3 and nand.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Regards,
+Anup
