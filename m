@@ -1,22 +1,22 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZoLfc-0005xN-Ec
- for linux-mtd@lists.infradead.org; Tue, 20 Oct 2015 01:24:56 +0000
-Received: by padhk11 with SMTP id hk11so3501899pad.1
- for <linux-mtd@lists.infradead.org>; Mon, 19 Oct 2015 18:24:35 -0700 (PDT)
-Date: Mon, 19 Oct 2015 18:24:32 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Vladimir Zapolskiy <vz@mleia.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Roland Stigge <stigge@antcom.de>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] mtd: lpc32xx_slc: fix warnings caused by enabling
- unprepared clock
-Message-ID: <20151020012432.GF13239@google.com>
-References: <1445105370-576-1-git-send-email-vz@mleia.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZoM3c-0005Ul-Rb
+ for linux-mtd@lists.infradead.org; Tue, 20 Oct 2015 01:49:46 +0000
+Message-ID: <56259C0A.6020201@cn.fujitsu.com>
+Date: Tue, 20 Oct 2015 09:42:34 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1445105370-576-1-git-send-email-vz@mleia.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v2 3/3] mtd: tests: introduce a erase test
+References: <20150930002958.GC143959@google.com>
+ <1443574881-12319-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1443574881-12319-4-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <20151020011813.GD13239@google.com> <20151020012028.GE13239@google.com>
+In-Reply-To: <20151020012028.GE13239@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Oct 17, 2015 at 09:09:29PM +0300, Vladimir Zapolskiy wrote:
-> If common clock framework is configured, the driver generates a warning,
-> which is fixed by this change:
-> 
->     WARNING: CPU: 0 PID: 1 at drivers/clk/clk.c:727 clk_core_enable+0x2c/0xa4()
->     Modules linked in:
->     CPU: 0 PID: 1 Comm: swapper Not tainted 4.3.0-rc2+ #201
->     Hardware name: LPC32XX SoC (Flattened Device Tree)
->     Backtrace:
->     [<>] (dump_backtrace) from [<>] (show_stack+0x18/0x1c)
->     [<>] (show_stack) from [<>] (dump_stack+0x20/0x28)
->     [<>] (dump_stack) from [<>] (warn_slowpath_common+0x90/0xb8)
->     [<>] (warn_slowpath_common) from [<>] (warn_slowpath_null+0x24/0x2c)
->     [<>] (warn_slowpath_null) from [<>] (clk_core_enable+0x2c/0xa4)
->     [<>] (clk_core_enable) from [<>] (clk_enable+0x24/0x38)
->     [<>] (clk_enable) from [<>] (lpc32xx_nand_probe+0x290/0x568)
->     [<>] (lpc32xx_nand_probe) from [<>] (platform_drv_probe+0x50/0xa0)
->     [<>] (platform_drv_probe) from [<>] (driver_probe_device+0x18c/0x408)
->     [<>] (driver_probe_device) from [<>] (__driver_attach+0x70/0x94)
->     [<>] (__driver_attach) from [<>] (bus_for_each_dev+0x74/0x98)
->     [<>] (bus_for_each_dev) from [<>] (driver_attach+0x20/0x28)
->     [<>] (driver_attach) from [<>] (bus_add_driver+0x11c/0x248)
->     [<>] (bus_add_driver) from [<>] (driver_register+0xa4/0xe8)
->     [<>] (driver_register) from [<>] (__platform_driver_register+0x50/0x64)
->     [<>] (__platform_driver_register) from [<>] (lpc32xx_nand_driver_init+0x18/0x20)
->     [<>] (lpc32xx_nand_driver_init) from [<>] (do_one_initcall+0x11c/0x1dc)
->     [<>] (do_one_initcall) from [<>] (kernel_init_freeable+0x10c/0x1d4)
->     [<>] (kernel_init_freeable) from [<>] (kernel_init+0x10/0xec)
->     [<>] (kernel_init) from [<>] (ret_from_fork+0x14/0x24)
-> 
-> Signed-off-by: Vladimir Zapolskiy <vz@mleia.com>
+On 10/20/2015 09:20 AM, Brian Norris wrote:
+> On Mon, Oct 19, 2015 at 06:18:13PM -0700, Brian Norris wrote:
+>> + others
+>
+> really +others this time!
+>
+>> On Wed, Sep 30, 2015 at 09:01:21AM +0800, Dongsheng Yang wrote:
+>>> This test will test the below cases.
+>>>
+[...]
+>>> +
+>>> +MODULE_DESCRIPTION("Erase test module");
+>>> +MODULE_AUTHOR("Dongsheng Yang");
+>>> +MODULE_LICENSE("GPL");
+>>
+>> Overall, I'm not sure if this test is really that useful. It does a few
+>> sanity checks on the API, but it doesn't really test the erase function
+>> itself. If anyone else thinks this test is interesting though, I suppose
+>> there's not much harm in putting it into mtd-utils tests/.
 
-Looks obvious to me. Pushed to l2-mtd.git.
+Yes, I found the erase problem about mtdram in my debugging. Then
+I was wondering why we did not find it by running mtd/tests. Finally
+I found there is no testing about it in mtd/tests. So write one and
+send it out here.
+
+As you said, it's much more proper to put them in mtd-utils. I am
+totally agree with that. would port it to userspace.
+
+Thanx
+Yang
+>>
+>> Brian
+> .
+>
