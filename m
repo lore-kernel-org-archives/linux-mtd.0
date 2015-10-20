@@ -1,27 +1,20 @@
 Received: from smtp04.smtpout.orange.fr ([80.12.242.126]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zoche-0001Cn-0Y
- for linux-mtd@lists.infradead.org; Tue, 20 Oct 2015 19:36:10 +0000
+ id 1Zockf-0002pg-At
+ for linux-mtd@lists.infradead.org; Tue, 20 Oct 2015 19:39:18 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Antoine Tenart <antoine.tenart@free-electrons.com>
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, zmxu@marvell.com,
- jszhang@marvell.com,
- "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Brian Norris <computersforpeace@gmail.com>,
  "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 0/4] mtd: pxa3xx_nand: rework the timing setup
-References: <1444893451-16610-1-git-send-email-antoine.tenart@free-electrons.com>
- <CAAEAJfBdfc-=AH0z_A8-b70LH_=GJp0qPRp0zCohqDBf8pnokQ@mail.gmail.com>
- <20151016063815.GB21506@kwain>
-Date: Tue, 20 Oct 2015 21:30:03 +0200
-In-Reply-To: <20151016063815.GB21506@kwain> (Antoine Tenart's message of "Fri,
- 16 Oct 2015 08:38:15 +0200")
-Message-ID: <87zizdxrr8.fsf@belgarion.home>
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 1/2] mtd: pxa3xx_nand: don't duplicate MTD suspend/resume
+References: <1444681992-4208-1-git-send-email-computersforpeace@gmail.com>
+ <CAAEAJfCzVxCEA3opQU2B-wS0U+L-yK3R724W68f=95r+uMPAxg@mail.gmail.com>
+Date: Tue, 20 Oct 2015 21:33:12 +0200
+In-Reply-To: <CAAEAJfCzVxCEA3opQU2B-wS0U+L-yK3R724W68f=95r+uMPAxg@mail.gmail.com>
+ (Ezequiel Garcia's message of "Thu, 15 Oct 2015 15:33:48 -0300")
+Message-ID: <87vba1xrlz.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,20 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Antoine Tenart <antoine.tenart@free-electrons.com> writes:
+Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
 
-> Hi Ezequiel,
+> Robert:
 >
-> On Thu, Oct 15, 2015 at 03:30:50PM -0300, Ezequiel Garcia wrote:
->> Ccing Robert as he can provide valuable test on PXA boards.
->
-> Sorry for this, I tried to cc Robert but forgot when sending my
-> series...
-Maybe for v4.
-I appreciate even more git tree I can pull from, it eases my test procedure a
-lot.
+> Can you test this on a platform with PM support, and make sure
+> the NAND works fine after a resume?
+
+Euh actually I can't. I'm only sure Suspend to RAM is working for pxa27x, I have
+not yet this proof for pxa3xx, and my last try wasn't very successful 3 monthes
+ago ...
+
+As this regression might be within my platform's configuration (IPL setup, ...),
+I don't yet know where the bug is.
 
 Cheers.
 
--- 
+--
 Robert
