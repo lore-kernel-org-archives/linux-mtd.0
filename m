@@ -1,21 +1,20 @@
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zoas7-0005el-5C
- for linux-mtd@lists.infradead.org; Tue, 20 Oct 2015 17:38:51 +0000
-Received: by wicfx6 with SMTP id fx6so56754756wic.1
- for <linux-mtd@lists.infradead.org>; Tue, 20 Oct 2015 10:38:29 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: handle controller driver limitations in
- spi_nor_read
-To: Brian Norris <computersforpeace@gmail.com>
-References: <5614182B.7060304@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <56267C0D.1020906@gmail.com>
-Date: Tue, 20 Oct 2015 19:38:21 +0200
 MIME-Version: 1.0
-In-Reply-To: <5614182B.7060304@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1444929443-25537-4-git-send-email-boris.brezillon@free-electrons.com>
+References: <1444929443-25537-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1444929443-25537-4-git-send-email-boris.brezillon@free-electrons.com>
+Date: Tue, 20 Oct 2015 20:56:46 +0200
+Message-ID: <CAFLxGvxzvbD4UaL+_Nz_B0e-CTbZ0dkFSOHU1-a_8mbvwbAMCA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd: nand: sunxi: add randomizer support
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, linux-sunxi@googlegroups.com,
+ Hans de Goede <hdegoede@redhat.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,66 +24,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Any feedback on this patch and the two others I sent on Oct 6th/7th?
-
-Thanks
-
-Am 06.10.2015 um 20:51 schrieb Heiner Kallweit:
-> Back in May there was a discussion on how to handle controller driver
-> limitations like max message size (e.g. spi-fsl-espi supports
-> message sizes up to 64Kb only).
-> According to Brian extending the API might not be needed and a better
-> handling of the returned actual_length of the message should be
-> sufficient.
-> 
-> Following the suggestion this patch supports reading chunks.
-> As long as something was read also errors (like -EMSGSIZE) are ignored.
-> 
-> Afterwards related hacks can be removed from affected controller drivers,
-> making them work with any protocol driver.
-> Currently e.g. spi-fsl-espi implicitely assumes that longer reads come
-> from m25p80 protocol driver (if second transfer in message is a read and
-> first transfer is a send then bytes 2-4 of the send are assumed to be a
-> 3 byte address of a flash read).
-> 
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 4be41fb..17b5239 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -761,6 +761,7 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
->  			size_t *retlen, u_char *buf)
->  {
->  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> +	size_t bytes_read, pos = 0;
->  	int ret;
->  
->  	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
-> @@ -769,9 +770,21 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
->  	if (ret)
->  		return ret;
->  
-> -	ret = nor->read(nor, from, len, retlen, buf);
-> +	/* Consider the case that a controller driver is not able
-> +	 * to read all requested bytes at once. It might return
-> +	 * an error and the number of bytes read.
-> +	 * Therefore ignore errors as long as something was read.
-> +	 */
-> +	do {
-> +		bytes_read = 0;
-> +		ret = nor->read(nor, from + pos, len - pos,
-> +				&bytes_read, buf + pos);
-> +		pos += bytes_read;
-> +	} while (pos < len && bytes_read);
->  
->  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
+On Thu, Oct 15, 2015 at 7:17 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> +static const u16 sunxi_nfc_randomizer_page_seeds[] = {
+> +       0x2b75, 0x0bd0, 0x5ca3, 0x62d1, 0x1c93, 0x07e9, 0x2162, 0x3a72,
+> +       0x0d67, 0x67f9, 0x1be7, 0x077d, 0x032f, 0x0dac, 0x2716, 0x2436,
+> +       0x7922, 0x1510, 0x3860, 0x5287, 0x480f, 0x4252, 0x1789, 0x5a2d,
+> +       0x2a49, 0x5e10, 0x437f, 0x4b4e, 0x2f45, 0x216e, 0x5cb7, 0x7130,
+> +       0x2a3f, 0x60e4, 0x4dc9, 0x0ef0, 0x0f52, 0x1bb9, 0x6211, 0x7a56,
+> +       0x226d, 0x4ea7, 0x6f36, 0x3692, 0x38bf, 0x0c62, 0x05eb, 0x4c55,
+> +       0x60f4, 0x728c, 0x3b6f, 0x2037, 0x7f69, 0x0936, 0x651a, 0x4ceb,
+> +       0x6218, 0x79f3, 0x383f, 0x18d9, 0x4f05, 0x5c82, 0x2912, 0x6f17,
+> +       0x6856, 0x5938, 0x1007, 0x61ab, 0x3e7f, 0x57c2, 0x542f, 0x4f62,
+> +       0x7454, 0x2eac, 0x7739, 0x42d4, 0x2f90, 0x435a, 0x2e52, 0x2064,
+> +       0x637c, 0x66ad, 0x2c90, 0x0bad, 0x759c, 0x0029, 0x0986, 0x7126,
+> +       0x1ca7, 0x1605, 0x386a, 0x27f5, 0x1380, 0x6d75, 0x24c3, 0x0f8e,
+> +       0x2b7a, 0x1418, 0x1fd1, 0x7dc1, 0x2d8e, 0x43af, 0x2267, 0x7da3,
+> +       0x4e3d, 0x1338, 0x50db, 0x454d, 0x764d, 0x40a3, 0x42e6, 0x262b,
+> +       0x2d2e, 0x1aea, 0x2e17, 0x173d, 0x3a6e, 0x71bf, 0x25f9, 0x0a5d,
+> +       0x7c57, 0x0fbe, 0x46ce, 0x4939, 0x6b17, 0x37bb, 0x3e91, 0x76db,
+> +};
 > +
-> +	*retlen = pos;
->  	return ret;
->  }
->  
-> 
+> +static const u16 sunxi_nfc_randomizer_ecc512_seeds[] = {
+> +       0x227b, 0x5baa, 0x15ef, 0x5b13, 0x75b8, 0x04f7, 0x4b5e, 0x4db8,
+> +       0x4f31, 0x669a, 0x20af, 0x5b91, 0x1d6d, 0x286a, 0x5e98, 0x07f1,
+> +       0x44b2, 0x0288, 0x3996, 0x7a98, 0x76cc, 0x705a, 0x21c9, 0x5be5,
+> +       0x23b8, 0x7133, 0x5514, 0x6f0b, 0x7528, 0x5e5b, 0x2ae1, 0x37b6,
+> +       0x0d19, 0x1525, 0x2f87, 0x0025, 0x0107, 0x7012, 0x0b4f, 0x12e1,
+> +       0x4e29, 0x6a5e, 0x744a, 0x0032, 0x61c3, 0x1463, 0x3cd4, 0x5636,
+> +       0x5928, 0x57bf, 0x3ce1, 0x6c35, 0x4167, 0x58cc, 0x7e7f, 0x4ecd,
+> +       0x05c9, 0x3063, 0x01ab, 0x194f, 0x6b7c, 0x6575, 0x29f5, 0x04d0,
+> +       0x1e53, 0x4d18, 0x2f12, 0x21c4, 0x3379, 0x12ba, 0x660a, 0x6150,
+> +       0x2f0e, 0x7339, 0x3bd6, 0x5ab0, 0x72fa, 0x568d, 0x5bf6, 0x410d,
+> +       0x1e35, 0x2971, 0x3389, 0x420c, 0x5985, 0x169c, 0x6cb3, 0x3139,
+> +       0x52ac, 0x1475, 0x6611, 0x47df, 0x2c0b, 0x14dd, 0x1839, 0x0853,
+> +       0x667f, 0x245f, 0x3d7e, 0x5eb1, 0x13d1, 0x4945, 0x11ae, 0x4f1e,
+> +       0x19bc, 0x7e72, 0x1206, 0x3a64, 0x6c27, 0x1d33, 0x3726, 0x37db,
+> +       0x6ba3, 0x1dfb, 0x7041, 0x66b5, 0x14b0, 0x13da, 0x5378, 0x0696,
+> +       0x7887, 0x5c44, 0x4a7e, 0x2888, 0x0794, 0x567f, 0x57bb, 0x0ac0,
+> +};
+> +
+> +static const u16 sunxi_nfc_randomizer_ecc1024_seeds[] = {
+> +       0x48a6, 0x595e, 0x42c7, 0x63a7, 0x329c, 0x250d, 0x2306, 0x2324,
+> +       0x4c68, 0x5f64, 0x2656, 0x3a4e, 0x1da6, 0x6b01, 0x775d, 0x2efc,
+> +       0x3afa, 0x07cc, 0x378e, 0x6e39, 0x64cf, 0x00ce, 0x042b, 0x2d6e,
+> +       0x092a, 0x66b7, 0x45cb, 0x5dd8, 0x1ef9, 0x7600, 0x3dcc, 0x2bfa,
+> +       0x0796, 0x4d1c, 0x1cf5, 0x0399, 0x62d3, 0x56fc, 0x33cb, 0x2c74,
+> +       0x26b2, 0x79f7, 0x4f87, 0x6d96, 0x6fec, 0x777b, 0x7dae, 0x2523,
+> +       0x0115, 0x0b1c, 0x323a, 0x6438, 0x7ebd, 0x7a81, 0x0739, 0x1df7,
+> +       0x1d4f, 0x6e1f, 0x0fa4, 0x3f79, 0x18bd, 0x1255, 0x43b1, 0x1f15,
+> +       0x2446, 0x5b56, 0x2b13, 0x79ae, 0x3ce6, 0x674a, 0x7301, 0x1288,
+> +       0x721b, 0x3892, 0x0618, 0x0a05, 0x791e, 0x265b, 0x3062, 0x0914,
+> +       0x46ea, 0x50da, 0x38ad, 0x20e7, 0x04e2, 0x3696, 0x4ed2, 0x0d70,
+> +       0x5585, 0x71f4, 0x080b, 0x2e22, 0x28eb, 0x6f80, 0x5109, 0x2bb0,
+> +       0x0ca1, 0x2159, 0x1a8a, 0x61c1, 0x38b2, 0x59ae, 0x1937, 0x1076,
+> +       0x6a33, 0x7abc, 0x4630, 0x4b37, 0x11b4, 0x4d1b, 0x079f, 0x7e51,
+> +       0x40e8, 0x7b41, 0x7bc4, 0x037a, 0x3a2b, 0x0fb5, 0x7a06, 0x6401,
+> +       0x6792, 0x7fab, 0x7bcd, 0x1ac6, 0x1d51, 0x1b91, 0x781f, 0x5776,
+> +};
+
+Can you please outline which constants and functions are taken as-is from
+the Allwinner BSP?
+
+> +static u16 sunxi_nfc_randomizer_step(u16 state, int count)
+> +{
+> +       state &= 0x7fff;
+> +       while (count--)
+> +               state = ((state >> 1) |
+> +                        ((((state >> 0) ^ (state >> 1)) & 1) << 14)) & 0x7fff;
+
+As discussed on IRC, state >> 0 is state again.
+
+> +
+> +       return state;
+> +}
+> +
+> +static u16 sunxi_nfc_randomizer_state(struct mtd_info *mtd, int page, bool ecc)
+> +{
+> +       const u16 *seeds = sunxi_nfc_randomizer_page_seeds;
+> +       int mod = mtd->erasesize / mtd->writesize;
+
+IIRC mtd.h has a helper for such divisions.
+
+> +       sunxi_nfc_randomizer_enable(mtd);
+>         writel(NFC_DATA_TRANS | NFC_DATA_SWAP_METHOD | NFC_ECC_OP,
+>                nfc->regs + NFC_REG_CMD);
+> +       sunxi_nfc_randomizer_disable(mtd);
+>
+>         ret = sunxi_nfc_wait_int(nfc, NFC_CMD_INT_FLAG, 0);
+>         if (ret)
+>                 return ret;
+>
+> +       *cur_off = oob_off + ecc->bytes + 4;
+
+Hmmm, why do we need this here?
+At the end of this function you do it again.
+
+-- 
+Thanks,
+//richard
