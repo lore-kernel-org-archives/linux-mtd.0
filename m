@@ -1,30 +1,22 @@
-From: Anup Patel <anup.patel@broadcom.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll
- <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "Catalin
- Marinas" <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, "Ray
- Jui" <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, "Florian
- Fainelli" <f.fainelli@gmail.com>, Pramod Kumar <pramodku@broadcom.com>,
- "Vikram Prakash" <vikramp@broadcom.com>, Sandeep Tripathy
- <tripathy@broadcom.com>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, bcm-kernel-feedback-list
- <bcm-kernel-feedback-list@broadcom.com>
-Subject: RE: [PATCH v2 4/4] arm64: dts: Add BRCM IPROC NAND DT node for NS2
-Date: Tue, 20 Oct 2015 09:25:05 +0000
-Message-ID: <39063E8F96E11742B35A201CC5D095B7AF39AD@SJEXCHMB10.corp.ad.broadcom.com>
-References: <1444986537-28387-1-git-send-email-anup.patel@broadcom.com>
- <1444986537-28387-5-git-send-email-anup.patel@broadcom.com>
- <562603F7.7000202@arm.com>
-In-Reply-To: <562603F7.7000202@arm.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZoUEN-0002k4-4q
+ for linux-mtd@lists.infradead.org; Tue, 20 Oct 2015 10:33:25 +0000
+Date: Tue, 20 Oct 2015 12:32:14 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Roy Spliet <r.spliet@ultimaker.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Cc: Linux MTD Mailinglist <linux-mtd@lists.infradead.org>, David Woodhouse
+ <dwmw2@infradead.org>, Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Baruch Siach <baruch@tkos.co.il>, Rafal Milecki <zajec5@gmail.com>
+Subject: Re: [RFC] Support custom timings for NAND chips
+Message-ID: <20151020123214.1aa5c399@bbrezillon>
+In-Reply-To: <1434447904-31748-1-git-send-email-r.spliet@ultimaker.com>
+References: <1434447904-31748-1-git-send-email-r.spliet@ultimaker.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,61 +26,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Roy,
 
+Sorry for the latency.
 
-> -----Original Message-----
-> From: Sudeep Holla [mailto:sudeep.holla@arm.com]
-> Sent: 20 October 2015 14:36
-> To: Anup Patel
-> Cc: David Woodhouse; Brian Norris; linux-mtd@lists.infradead.org; Sudeep
-> Holla; Rob Herring; Pawel Moll; Mark Rutland; Ian Campbell; Kumar Gala; C=
-atalin
-> Marinas; Will Deacon; Ray Jui; Scott Branden; Florian Fainelli; Pramod Ku=
-mar;
-> Vikram Prakash; Sandeep Tripathy; linux-arm-kernel@lists.infradead.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; bcm-kernel-
-> feedback-list
-> Subject: Re: [PATCH v2 4/4] arm64: dts: Add BRCM IPROC NAND DT node for
-> NS2
->=20
->=20
->=20
-> On 16/10/15 10:08, Anup Patel wrote:
-> > The NAND controller on NS2 SoC is compatible with existing BRCM IPROC
-> > NAND driver so let's enable it in NS2 DT and
-> > NS2 SVK DT.
-> >
-> > Signed-off-by: Anup Patel <anup.patel@broadcom.com>
-> > Reviewed-by: Ray Jui <rjui@broadcom.com>
-> > Reviewed-by: Scott Branden <sbranden@broadcom.com>
-> > ---
-> >   arch/arm64/boot/dts/broadcom/ns2-svk.dts | 12 ++++++++++++
-> >   arch/arm64/boot/dts/broadcom/ns2.dtsi    | 14 ++++++++++++++
-> >   2 files changed, 26 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-> > b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-> > index e5950d5..a754160 100644
-> > --- a/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-> > +++ b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-> > @@ -63,5 +63,17 @@
-> >   		uart3: serial@66130000 {
-> >   			status =3D "ok";
-> >   		};
->=20
-> Better to change even the above reference, see below.
->=20
-> > +
-> > +		nand: nand@66460000 {
->=20
-> In most of the cases where such static overlays are done, I have seen the=
- labels
-> being used to refer back the node. Using the complete node name again is =
-kind
-> of inviting trouble as even minor typo results in creation of another nod=
-e.
+On Tue, 16 Jun 2015 11:45:01 +0200
+Roy Spliet <r.spliet@ultimaker.com> wrote:
 
-Thanks for pointing. I will use label here for both uart3 and nand.
+> Hello,
+> 
+> Following is a fairly simple set of three patches that both implement and
+> demonstrate the use of custom timings for chip. This follows from the
+> requirement to support the Hynix H27UBG8T2BTR-BC, as shipped by Olimex on
+> their Allwinner-based ARM-boards.
+> 
+> I motivate my chosen approach as follows:
+> 1) Requirement. The NAND chip is being used in the wild, and using the only
+>    supported ONFI timing (0) is significantly degrading performance.
+> 2) Simplicity. The three patches are fairly straightforward, and do what they
+>    should do without compromise. Alternative approaches like sticking timings
+>    in the DT makes it more difficult for distribution to ship universal
+>    kernels and DTBs, because it's a NAND chip property and not a board
+>    property.
 
-Regards,
-Anup
+AFAICT, it's even worst than that. I tried to boot this Olimex board
+you are talking about, and it seems using ONFI timing mode 0 makes the
+NAND completely unreliable. I'm not sure exactly why this happens but
+here is what I suspect: the NAND is supposed to work in EDO mode, but
+EDO is only active when tRC is lower than 30ns, which is not the case in
+mode 0. ITOH, we cannot switch to mode 4 (which, according to the NAND
+timings described in the datasheet, is the most appropriate) because
+tADL is not met in this mode (tADL = 200ns, while mode 4 expect 70ns).
+
+> 
+> I send this out now (asap), because the only legacy that requires a change is
+> sunxi-nand. The longer we wait, the harder it gets. Don't let that stop you
+> from doing a proper review job! :-)
+> Comments? Ideas?
+
+Hm, maybe we should store nand timings directly in the nand_chip
+struct, and let the core code fill it with ONFI values (when ONFI is
+available) so that controller drivers do not have to do the ONFI mode
+to timing struct dance.
+
+For NAND specific timings like the ones you need for the
+H27UBG8T2BTR-BC chip, maybe we could keep them in a vendor specific file
+instead of defining them in the nand_ids.c file.
+Also, I'm not sure whether we should define them with a new struct
+nand_sdr_timings instance, or just provide a function adjusting some
+fields based on the provided default ONFI timing mode.
+
+Brian, any suggestion?
+
+Best Regards,
+
+Boris
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
