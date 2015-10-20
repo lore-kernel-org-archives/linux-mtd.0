@@ -1,22 +1,27 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZoUEN-0002k4-4q
- for linux-mtd@lists.infradead.org; Tue, 20 Oct 2015 10:33:25 +0000
-Date: Tue, 20 Oct 2015 12:32:14 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roy Spliet <r.spliet@ultimaker.com>, Brian Norris
- <computersforpeace@gmail.com>
-Cc: Linux MTD Mailinglist <linux-mtd@lists.infradead.org>, David Woodhouse
- <dwmw2@infradead.org>, Maxime Ripard <maxime.ripard@free-electrons.com>,
- Baruch Siach <baruch@tkos.co.il>, Rafal Milecki <zajec5@gmail.com>
-Subject: Re: [RFC] Support custom timings for NAND chips
-Message-ID: <20151020123214.1aa5c399@bbrezillon>
-In-Reply-To: <1434447904-31748-1-git-send-email-r.spliet@ultimaker.com>
-References: <1434447904-31748-1-git-send-email-r.spliet@ultimaker.com>
+Received: from mail-wi0-f182.google.com ([209.85.212.182])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZoWso-0002xl-Db
+ for linux-mtd@lists.infradead.org; Tue, 20 Oct 2015 13:23:19 +0000
+Received: by wijp11 with SMTP id p11so47265310wij.0
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Oct 2015 06:22:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20151013001153.GS107187@google.com>
+References: <1427984026-31100-1-git-send-email-richard@nod.at>
+ <20150402160451.GF32500@ld-irv-0074> <551D6BDA.6000606@nod.at>
+ <20150412213120.0414fee5@bbrezillon>
+ <20151013001153.GS107187@google.com>
+Date: Tue, 20 Oct 2015 10:22:56 -0300
+Message-ID: <CAAEAJfBm-b3GrzJEQGYeJT53gk9HqrJFD--4EF6qbNk7dK9ewA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: Add simple read disturb test
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,63 +31,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Roy,
+On 12 October 2015 at 21:11, Brian Norris <computersforpeace@gmail.com> wro=
+te:
+> Resurrecting this old thread, since it was mentioned at ELCE.
+>
+> On Sun, Apr 12, 2015 at 09:31:20PM +0200, Boris Brezillon wrote:
+>> On Thu, 02 Apr 2015 18:18:34 +0200
+>> Richard Weinberger <richard@nod.at> wrote:
+>> > Am 02.04.2015 um 18:04 schrieb Brian Norris:
+>> > > On Thu, Apr 02, 2015 at 04:13:46PM +0200, Richard Weinberger wrote:
+>> > >> This simple MTD tests allows the user to see when read disturb happ=
+ens.
+>> > >> By reading blocks over and over it reports flipped bits.
+>> > >> Currently it reports only flipped bits of the worst page of a block=
+.
+>> > >> If within block X page P1 has 3 bit flips and P6 4, it will report =
+4.
+>> > >> By default every 50th block is read.
+>> > >
+>> > > Didn't read through this much yet, but why do we need another in-ker=
+nel
+>> > > test that coul (AFAICT) be easily replicated in userspace? The same =
+goes
+>> > > for several of the other tests, I think, actually. But at least with
+>> > > those, we have a history of keeping them around, so it's not too muc=
+h
+>> > > burden [1].
+>> >
+>> > I've added the test to drivers/mtd/tests/ because it fits into.
+>> > As simple as that.
+>> >
+>> > > Brian
+>> > >
+>> > > [1] Although there are some latent issues in these tests that are st=
+ill
+>> > > getting get worked out (e.g., bad handling of 64-bit casting; too la=
+rge
+>> > > of stacks; uninterruptibility). The latter two would not even exist =
+if
+>> > > we were in user space.
+>> >
+>> > uninterruptibility got solved by my "[PATCH] mtd: Make MTD tests cance=
+lable" patch.
+>> >
+>> > But if we want to kill drivers/mtd/tests/ I'll happily help out.
+>>
+>> I'd vote for that solution too.
+>> I've looked at in-kernel mtd tests, and I'm pretty sure they can all be
+>> done in userland.
+>> This would prevent any kernel crash caused by buggy test modules.
+>>
+>> > Where shall we move these tests into? mtd-utils?
+>>
+>> I guess so, but I'll let Brian answer that one.
+>> How about dispatching them in mtd-utils' tests/ directory (some of them
+>> are NAND related tests, so creating a tests/nand would make sense,
+>> and others are more generic).
+>
 
-Sorry for the latency.
+... and the converse also applies. The 'nandtest' tool is not that
+NAND-specific,
+and I've used it as a quick test on other types of flash devices.
 
-On Tue, 16 Jun 2015 11:45:01 +0200
-Roy Spliet <r.spliet@ultimaker.com> wrote:
+> mtd-utils makes sense to me. If we're going to do this, let's make it a
+> policy to not add more to drivers/mtd/tests/ then. For instance, this
+> one [1]. Also, would we drop the in-kernel tests completely?
+>
+> If we make the move, we'd need to make sure to update the documentation
+> (mtd-www.git).
+>
 
-> Hello,
-> 
-> Following is a fairly simple set of three patches that both implement and
-> demonstrate the use of custom timings for chip. This follows from the
-> requirement to support the Hynix H27UBG8T2BTR-BC, as shipped by Olimex on
-> their Allwinner-based ARM-boards.
-> 
-> I motivate my chosen approach as follows:
-> 1) Requirement. The NAND chip is being used in the wild, and using the only
->    supported ONFI timing (0) is significantly degrading performance.
-> 2) Simplicity. The three patches are fairly straightforward, and do what they
->    should do without compromise. Alternative approaches like sticking timings
->    in the DT makes it more difficult for distribution to ship universal
->    kernels and DTBs, because it's a NAND chip property and not a board
->    property.
++1 for improving mtd-utils and dropping in-kernel tests.
 
-AFAICT, it's even worst than that. I tried to boot this Olimex board
-you are talking about, and it seems using ONFI timing mode 0 makes the
-NAND completely unreliable. I'm not sure exactly why this happens but
-here is what I suspect: the NAND is supposed to work in EDO mode, but
-EDO is only active when tRC is lower than 30ns, which is not the case in
-mode 0. ITOH, we cannot switch to mode 4 (which, according to the NAND
-timings described in the datasheet, is the most appropriate) because
-tADL is not met in this mode (tADL = 200ns, while mode 4 expect 70ns).
-
-> 
-> I send this out now (asap), because the only legacy that requires a change is
-> sunxi-nand. The longer we wait, the harder it gets. Don't let that stop you
-> from doing a proper review job! :-)
-> Comments? Ideas?
-
-Hm, maybe we should store nand timings directly in the nand_chip
-struct, and let the core code fill it with ONFI values (when ONFI is
-available) so that controller drivers do not have to do the ONFI mode
-to timing struct dance.
-
-For NAND specific timings like the ones you need for the
-H27UBG8T2BTR-BC chip, maybe we could keep them in a vendor specific file
-instead of defining them in the nand_ids.c file.
-Also, I'm not sure whether we should define them with a new struct
-nand_sdr_timings instance, or just provide a function adjusting some
-fields based on the provided default ONFI timing mode.
-
-Brian, any suggestion?
-
-Best Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
