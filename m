@@ -1,23 +1,28 @@
-Received: from mail-bl2on0120.outbound.protection.outlook.com ([65.55.169.120]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from mail-vk0-x22f.google.com ([2607:f8b0:400c:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zp1Jd-00032c-Qg
- for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 21:53:06 +0000
-From: Han Xu <b45815@freescale.com>
-To: <shijie.huang@arm.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <b45815@freescale.com>, <boris.brezillon@free-electrons.com>,
- <fabio.estevam@freescale.com>, <hofrat@osadl.org>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
- <dmaengine@vger.kernel.org>
-Subject: [PATCH v5 3/7] dmaengine: mxs: add i.MX7D APBH DMA support
-Date: Wed, 21 Oct 2015 16:41:37 -0500
-Message-ID: <1445463701-5921-4-git-send-email-b45815@freescale.com>
-In-Reply-To: <1445463701-5921-1-git-send-email-b45815@freescale.com>
-References: <1445463701-5921-1-git-send-email-b45815@freescale.com>
+ id 1Zp1Nf-0007uI-VO
+ for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 21:57:12 +0000
+Received: by vkgy127 with SMTP id y127so37088439vkg.0
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Oct 2015 14:56:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1445463608-5836-7-git-send-email-b45815@freescale.com>
+References: <1445463608-5836-1-git-send-email-b45815@freescale.com>
+ <1445463608-5836-7-git-send-email-b45815@freescale.com>
+Date: Wed, 21 Oct 2015 16:56:50 -0500
+Message-ID: <CA+EcR20tw0a116zLH0k-kfSDXU5dz1f-p7FsBLRo7bCX9_Z9Mw@mail.gmail.com>
+Subject: Re: [PATCH v4 6/6] mtd: nand: gpmi: support NAND on i.MX6UL
+From: Han Xu <xhnjupt@gmail.com>
+To: Han Xu <b45815@freescale.com>
+Cc: Huang Shijie <shijie.huang@arm.com>,
+ Fabio Estevam <fabio.estevam@freescale.com>,
+ boris.brezillon@free-electrons.com, Vinod Koul <vinod.koul@intel.com>,
+ linux-kernel@vger.kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Nicholas Mc Guire <hofrat@osadl.org>,
+ dmaengine@vger.kernel.org, dan.j.williams@intel.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,164 +32,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Adrian Alonso <aalonso@freescale.com>
+Sorry for sending the wrong patch series, please kindly ignore all
+patch series v4 and only check the series v5.
 
-supports APBH DMA on i.MX7D by add extra clock clk_io
-
-Signed-off-by: Fugang Duan <B38611@freescale.com>
-Signed-off-by: Adrian Alonso <aalonso@freescale.com>
-Signed-off-by: Han Xu <b45815@freescale.com>
----
- drivers/dma/mxs-dma.c | 53 ++++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 46 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 7e5800a..72ce1ef 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -1,5 +1,5 @@
- /*
-- * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
-+ * Copyright 2011-2015 Freescale Semiconductor, Inc. All Rights Reserved.
-  *
-  * Refer to drivers/dma/imx-sdma.c
-  *
-@@ -28,7 +28,6 @@
- #include <linux/of_device.h>
- #include <linux/of_dma.h>
- #include <linux/list.h>
--
- #include <asm/irq.h>
- 
- #include "dmaengine.h"
-@@ -135,6 +134,7 @@ enum mxs_dma_devtype {
- enum mxs_dma_id {
- 	IMX23_DMA,
- 	IMX28_DMA,
-+	IMX7D_DMA,
- };
- 
- struct mxs_dma_engine {
-@@ -142,6 +142,7 @@ struct mxs_dma_engine {
- 	enum mxs_dma_devtype		type;
- 	void __iomem			*base;
- 	struct clk			*clk;
-+	struct clk			*clk_io;
- 	struct dma_device		dma_device;
- 	struct device_dma_parameters	dma_parms;
- 	struct mxs_dma_chan		mxs_chans[MXS_DMA_CHANNELS];
-@@ -167,6 +168,9 @@ static struct mxs_dma_type mxs_dma_types[] = {
- 	}, {
- 		.id = IMX28_DMA,
- 		.type = MXS_DMA_APBX,
-+	}, {
-+		.id = IMX7D_DMA,
-+		.type = MXS_DMA_APBH,
- 	}
- };
- 
-@@ -184,6 +188,9 @@ static const struct platform_device_id mxs_dma_ids[] = {
- 		.name = "imx28-dma-apbx",
- 		.driver_data = (kernel_ulong_t) &mxs_dma_types[3],
- 	}, {
-+		.name = "imx7d-dma-apbh",
-+		.driver_data = (kernel_ulong_t) &mxs_dma_types[4],
-+	}, {
- 		/* end of list */
- 	}
- };
-@@ -193,6 +200,7 @@ static const struct of_device_id mxs_dma_dt_ids[] = {
- 	{ .compatible = "fsl,imx23-dma-apbx", .data = &mxs_dma_ids[1], },
- 	{ .compatible = "fsl,imx28-dma-apbh", .data = &mxs_dma_ids[2], },
- 	{ .compatible = "fsl,imx28-dma-apbx", .data = &mxs_dma_ids[3], },
-+	{ .compatible = "fsl,imx7d-dma-apbh", .data = &mxs_dma_ids[4], },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mxs_dma_dt_ids);
-@@ -440,6 +448,13 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
- 	if (ret)
- 		goto err_clk;
- 
-+	/* enable the extra clk_io clock for i.MX7D */
-+	if (mxs_dma->dev_id == IMX7D_DMA) {
-+		ret = clk_prepare_enable(mxs_dma->clk_io);
-+		if (ret)
-+			goto err_clk_unprepare;
-+	}
-+
- 	mxs_dma_reset_chan(chan);
- 
- 	dma_async_tx_descriptor_init(&mxs_chan->desc, chan);
-@@ -450,6 +465,8 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
- 
- 	return 0;
- 
-+err_clk_unprepare:
-+	clk_disable_unprepare(mxs_dma->clk);
- err_clk:
- 	free_irq(mxs_chan->chan_irq, mxs_dma);
- err_irq:
-@@ -471,6 +488,9 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
- 	dma_free_coherent(mxs_dma->dma_device.dev, CCW_BLOCK_SIZE,
- 			mxs_chan->ccw, mxs_chan->ccw_phys);
- 
-+	if (mxs_dma->dev_id == IMX7D_DMA)
-+		clk_disable_unprepare(mxs_dma->clk_io);
-+
- 	clk_disable_unprepare(mxs_dma->clk);
- }
- 
-@@ -701,9 +721,15 @@ static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
- 	if (ret)
- 		return ret;
- 
-+	if (mxs_dma->dev_id == IMX7D_DMA) {
-+		ret = clk_prepare_enable(mxs_dma->clk_io);
-+		if (ret)
-+			goto err_clk_bch;
-+	}
-+
- 	ret = stmp_reset_block(mxs_dma->base);
- 	if (ret)
--		goto err_out;
-+		goto err_clk_io;
- 
- 	/* enable apbh burst */
- 	if (dma_is_apbh(mxs_dma)) {
-@@ -717,7 +743,10 @@ static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
- 	writel(MXS_DMA_CHANNELS_MASK << MXS_DMA_CHANNELS,
- 		mxs_dma->base + HW_APBHX_CTRL1 + STMP_OFFSET_REG_SET);
- 
--err_out:
-+err_clk_io:
-+	if (mxs_dma->dev_id == IMX7D_DMA)
-+		clk_disable_unprepare(mxs_dma->clk_io);
-+err_clk_bch:
- 	clk_disable_unprepare(mxs_dma->clk);
- 	return ret;
- }
-@@ -803,9 +832,19 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 	if (IS_ERR(mxs_dma->base))
- 		return PTR_ERR(mxs_dma->base);
- 
--	mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
--	if (IS_ERR(mxs_dma->clk))
--		return PTR_ERR(mxs_dma->clk);
-+	if (mxs_dma->dev_id == IMX7D_DMA) {
-+		mxs_dma->clk = devm_clk_get(&pdev->dev, "dma_apbh_bch");
-+		if (IS_ERR(mxs_dma->clk))
-+			return PTR_ERR(mxs_dma->clk);
-+		mxs_dma->clk_io = devm_clk_get(&pdev->dev, "dma_apbh_io");
-+		if (IS_ERR(mxs_dma->clk_io))
-+			return PTR_ERR(mxs_dma->clk_io);
-+
-+	} else {
-+		mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
-+		if (IS_ERR(mxs_dma->clk))
-+			return PTR_ERR(mxs_dma->clk);
-+	}
- 
- 	dma_cap_set(DMA_SLAVE, mxs_dma->dma_device.cap_mask);
- 	dma_cap_set(DMA_CYCLIC, mxs_dma->dma_device.cap_mask);
--- 
-1.9.1
+On Wed, Oct 21, 2015 at 4:40 PM, Han Xu <b45815@freescale.com> wrote:
+> support GPMI NAND on i.MX6UL
+>
+> Signed-off-by: Han Xu <han.xu@freescale.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 9 +++++++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h | 4 +++-
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index e038258..ed4e874 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -89,6 +89,12 @@ static const struct gpmi_devdata gpmi_devdata_imx7d = {
+>         .max_chain_delay = 12,
+>  };
+>
+> +static const struct gpmi_devdata gpmi_devdata_imx6ul = {
+> +       .type = IS_MX6UL,
+> +       .bch_max_ecc_strength = 40,
+> +       .max_chain_delay = 12,
+> +};
+> +
+>  static irqreturn_t bch_irq(int irq, void *cookie)
+>  {
+>         struct gpmi_nand_data *this = cookie;
+> @@ -2016,6 +2022,9 @@ static const struct of_device_id gpmi_nand_id_table[] = {
+>                 .compatible = "fsl,imx6sx-gpmi-nand",
+>                 .data = &gpmi_devdata_imx6sx,
+>         }, {
+> +               .compatible = "fsl,imx6ul-gpmi-nand",
+> +               .data = (void *)&gpmi_devdata_imx6ul,
+> +       }, {
+>                 .compatible = "fsl,imx7d-gpmi-nand",
+>                 .data = (void *)&gpmi_devdata_imx7d,
+>         }
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> index 149a442..331f98e 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> @@ -126,6 +126,7 @@ enum gpmi_type {
+>         IS_MX6QP,
+>         IS_MX6SX,
+>         IS_MX7D,
+> +       IS_MX6UL,
+>  };
+>
+>  struct gpmi_devdata {
+> @@ -310,8 +311,9 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
+>  #define GPMI_IS_MX6QP(x)       ((x)->devdata->type == IS_MX6QP)
+>  #define GPMI_IS_MX6SX(x)       ((x)->devdata->type == IS_MX6SX)
+>  #define GPMI_IS_MX7D(x)                ((x)->devdata->type == IS_MX7D)
+> +#define GPMI_IS_MX6UL(x)       ((x)->devdata->type == IS_MX6UL)
+>
+>  #define GPMI_IS_MX6(x)         (GPMI_IS_MX6Q(x) || GPMI_IS_MX6QP(x)\
+> -          || GPMI_IS_MX6SX(x))
+> +          || GPMI_IS_MX6SX(x) || GPMI_IS_MX6UL(x))
+>  #define GPMI_IS_MX7(x)         (GPMI_IS_MX7D(x))
+>  #endif
+> --
+> 1.9.1
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
