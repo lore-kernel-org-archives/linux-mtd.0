@@ -1,27 +1,23 @@
-Received: from muru.com ([72.249.23.125])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZovC8-0002Yy-Fo
- for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 15:20:52 +0000
-Date: Wed, 21 Oct 2015 08:20:28 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, nsekhar@ti.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- ezequiel@vanguardiasur.com.ar, javier@dowhile0.org,
- computersforpeace@gmail.com, dwmw2@infradead.org, fcooper@ti.com
-Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-Message-ID: <20151021152028.GO3078@atomide.com>
-References: <20151006083346.GL23801@atomide.com> <56139A72.6040600@ti.com>
- <20151006100000.GN23801@atomide.com> <56139CE9.8020002@ti.com>
- <5613A256.8000105@ti.com> <20151006110134.GO23801@atomide.com>
- <5613ABEF.9000904@ti.com> <20151016212510.GF24370@atomide.com>
- <562496DB.4050803@ti.com> <56274D69.1090402@ti.com>
+Received: from mail-bl2on0792.outbound.protection.outlook.com
+ ([2a01:111:f400:fc09::792] helo=na01-bl2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zp1I7-0002ZY-KV
+ for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 21:51:28 +0000
+From: Han Xu <b45815@freescale.com>
+To: <shijie.huang@arm.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <b45815@freescale.com>, <boris.brezillon@free-electrons.com>,
+ <fabio.estevam@freescale.com>, <hofrat@osadl.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
+ <dmaengine@vger.kernel.org>
+Subject: [PATCH v4 1/6] mtd: nand: gpmi: add gpmi dsm supend/resume support
+Date: Wed, 21 Oct 2015 16:40:03 -0500
+Message-ID: <1445463608-5836-2-git-send-email-b45815@freescale.com>
+In-Reply-To: <1445463608-5836-1-git-send-email-b45815@freescale.com>
+References: <1445463608-5836-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <56274D69.1090402@ti.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,37 +27,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [151021 01:31]:
-> On 19/10/15 10:08, Roger Quadros wrote:
-> > On 17/10/15 00:25, Tony Lindgren wrote:
-> >> * Roger Quadros <rogerq@ti.com> [151006 04:13]:
-> >>>
-> >>> Fine. The updated series is now at
-> >>>
-> >>> git@github.com:rogerq/linux.git
-> >>>  * [new branch]      for-v4.4/gpmc-v4
-> >>
-> >> Looks like it produces some build errors, this with RMKs 3430 and 4430
-> >> only .configs:
-> >>
-> >> drivers/memory/omap-gpmc.c:2035:43: error: ‘struct gpio_chip’ has no
-> >> member named ‘irqdomain’
-> >> drivers/memory/omap-gpmc.c:2116:8: error: implicit declaration of
-> >> function ‘gpiochip_irqchip_add’ [-Werror=implicit-function-declaration]
-> >>
-> > 
-> > Good catch. We'll have to select GPIOLIB_IRQCHIP for this driver.
-> > 
-> >> Maybe run randconfig builds on it for overnight?
-> > 
-> > OK. I'll do that.
-> 
-> I couldn't run randconfig beyond few iterations as it keeps failing
-> everywhere. How do we limit the randconfig options to OMAP only
-> platforms?
+From: Huang Shijie <b32955@freescale.com>
 
-You can use Felipe's scripts from github.
+i.MX6SX supports deep sleep mode(DSM) that may turn off GPMI/BCH power
+during suspend, add gpmi nand suspend/resume function to release DMA
+channel in suspend function and re-init GPMI/BCH controller during
+resume function.
 
-Regards,
+Although it is not necessary to restore GPMI/BCH registers value for
+i.MX6QDL, the code doesn't distinguish different platforms to keep the
+code simple.
 
-Tony
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Han Xu <han.xu@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 45 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 1b8f350..dfd0ba1 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1,7 +1,7 @@
+ /*
+  * Freescale GPMI NAND Flash Driver
+  *
+- * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
++ * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
+  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -2036,9 +2036,52 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int gpmi_pm_suspend(struct device *dev)
++{
++	struct gpmi_nand_data *this = dev_get_drvdata(dev);
++
++	release_dma_channels(this);
++	return 0;
++}
++
++static int gpmi_pm_resume(struct device *dev)
++{
++	struct gpmi_nand_data *this = dev_get_drvdata(dev);
++	int ret;
++
++	ret = acquire_dma_channels(this);
++	if (ret < 0)
++		return ret;
++
++	/* re-init the GPMI registers */
++	this->flags &= ~GPMI_TIMING_INIT_OK;
++	ret = gpmi_init(this);
++	if (ret) {
++		dev_err(this->dev, "Error setting GPMI : %d\n", ret);
++		return ret;
++	}
++
++	/* re-init the BCH registers */
++	ret = bch_set_geometry(this);
++	if (ret) {
++		dev_err(this->dev, "Error setting BCH : %d\n", ret);
++		return ret;
++	}
++
++	/* re-init others */
++	gpmi_extra_init(this);
++
++	return 0;
++}
++
++static const struct dev_pm_ops gpmi_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(gpmi_pm_suspend, gpmi_pm_resume)
++};
++
+ static struct platform_driver gpmi_nand_driver = {
+ 	.driver = {
+ 		.name = "gpmi-nand",
++		.pm = &gpmi_pm_ops,
+ 		.of_match_table = gpmi_nand_id_table,
+ 	},
+ 	.probe   = gpmi_nand_probe,
+-- 
+1.9.1
