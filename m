@@ -1,8 +1,8 @@
-Received: from mail-bn1on0130.outbound.protection.outlook.com
- ([157.56.110.130] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-bn1on0131.outbound.protection.outlook.com
+ ([157.56.110.131] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zp1Ja-00032a-PP
- for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 21:53:02 +0000
+ id 1Zp1Jc-00033K-Oz
+ for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 21:53:03 +0000
 From: Han Xu <b45815@freescale.com>
 To: <shijie.huang@arm.com>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
@@ -11,9 +11,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
  <dmaengine@vger.kernel.org>
-Subject: [PATCH v5 2/7] dmaengine: mxs: APBH DMA supports deep sleep mode
-Date: Wed, 21 Oct 2015 16:41:36 -0500
-Message-ID: <1445463701-5921-3-git-send-email-b45815@freescale.com>
+Subject: [PATCH v5 7/7] mtd: nand: gpmi: support NAND on i.MX6UL
+Date: Wed, 21 Oct 2015 16:41:41 -0500
+Message-ID: <1445463701-5921-8-git-send-email-b45815@freescale.com>
 In-Reply-To: <1445463701-5921-1-git-send-email-b45815@freescale.com>
 References: <1445463701-5921-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
@@ -27,63 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <b32955@freescale.com>
+support GPMI NAND on i.MX6UL
 
-Deep Sleep Mode(dsm) turns off the power for APBH DMA module, DMA
-need to be re-initialized when system resumed back.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Han Xu <b45815@freescale.com>
+Signed-off-by: Han Xu <han.xu@freescale.com>
 ---
- drivers/dma/mxs-dma.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 9 +++++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h | 4 +++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 60de352..7e5800a 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -693,7 +693,7 @@ static enum dma_status mxs_dma_tx_status(struct dma_chan *chan,
- 	return mxs_chan->status;
- }
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index fff2694..761073eb 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -89,6 +89,12 @@ static const struct gpmi_devdata gpmi_devdata_imx7d = {
+ 	.max_chain_delay = 12,
+ };
  
--static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
-+static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
- {
- 	int ret;
- 
-@@ -835,6 +835,7 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 
- 	mxs_dma->pdev = pdev;
- 	mxs_dma->dma_device.dev = &pdev->dev;
-+	dev_set_drvdata(&pdev->dev, mxs_dma);
- 
- 	/* mxs_dma gets 65535 bytes maximum sg size */
- 	mxs_dma->dma_device.dev->dma_parms = &mxs_dma->dma_parms;
-@@ -872,9 +873,25 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int mxs_dma_pm_resume(struct device *dev)
-+{
-+	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = mxs_dma_init(mxs_dma);
-+	if (ret)
-+		return ret;
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops mxs_dma_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(NULL, mxs_dma_pm_resume)
++static const struct gpmi_devdata gpmi_devdata_imx6ul = {
++	.type = IS_MX6UL,
++	.bch_max_ecc_strength = 40,
++	.max_chain_delay = 12,
 +};
 +
- static struct platform_driver mxs_dma_driver = {
- 	.driver		= {
- 		.name	= "mxs-dma",
-+		.pm = &mxs_dma_pm_ops,
- 		.of_match_table = mxs_dma_dt_ids,
- 	},
- 	.id_table	= mxs_dma_ids,
+ static irqreturn_t bch_irq(int irq, void *cookie)
+ {
+ 	struct gpmi_nand_data *this = cookie;
+@@ -2016,6 +2022,9 @@ static const struct of_device_id gpmi_nand_id_table[] = {
+ 		.compatible = "fsl,imx6sx-gpmi-nand",
+ 		.data = &gpmi_devdata_imx6sx,
+ 	}, {
++		.compatible = "fsl,imx6ul-gpmi-nand",
++		.data = (void *)&gpmi_devdata_imx6ul,
++	}, {
+ 		.compatible = "fsl,imx7d-gpmi-nand",
+ 		.data = (void *)&gpmi_devdata_imx7d,
+ 	}
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 149a442..331f98e 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -126,6 +126,7 @@ enum gpmi_type {
+ 	IS_MX6QP,
+ 	IS_MX6SX,
+ 	IS_MX7D,
++	IS_MX6UL,
+ };
+ 
+ struct gpmi_devdata {
+@@ -310,8 +311,9 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
+ #define GPMI_IS_MX6QP(x)	((x)->devdata->type == IS_MX6QP)
+ #define GPMI_IS_MX6SX(x)	((x)->devdata->type == IS_MX6SX)
+ #define GPMI_IS_MX7D(x)		((x)->devdata->type == IS_MX7D)
++#define GPMI_IS_MX6UL(x)	((x)->devdata->type == IS_MX6UL)
+ 
+ #define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6QP(x)\
+-	   || GPMI_IS_MX6SX(x))
++	   || GPMI_IS_MX6SX(x) || GPMI_IS_MX6UL(x))
+ #define GPMI_IS_MX7(x)		(GPMI_IS_MX7D(x))
+ #endif
 -- 
 1.9.1
