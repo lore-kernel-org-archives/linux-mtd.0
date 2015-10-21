@@ -1,14 +1,27 @@
-Received: from bh-25.webhostbox.net ([208.91.199.152])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZouR2-0007oE-4P
- for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 14:32:13 +0000
-From: Guenter Roeck <linux@roeck-us.net>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH -next] mtd: fsl-quadspi: Never build on SPARC
-Date: Wed, 21 Oct 2015 07:31:46 -0700
-Message-Id: <1445437906-23633-1-git-send-email-linux@roeck-us.net>
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZovC8-0002Yy-Fo
+ for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 15:20:52 +0000
+Date: Wed, 21 Oct 2015 08:20:28 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ ezequiel@vanguardiasur.com.ar, javier@dowhile0.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, fcooper@ti.com
+Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+Message-ID: <20151021152028.GO3078@atomide.com>
+References: <20151006083346.GL23801@atomide.com> <56139A72.6040600@ti.com>
+ <20151006100000.GN23801@atomide.com> <56139CE9.8020002@ti.com>
+ <5613A256.8000105@ti.com> <20151006110134.GO23801@atomide.com>
+ <5613ABEF.9000904@ti.com> <20151016212510.GF24370@atomide.com>
+ <562496DB.4050803@ti.com> <56274D69.1090402@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <56274D69.1090402@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,38 +31,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Attempts to build fsl-quadspi on SPARC fail with
+* Roger Quadros <rogerq@ti.com> [151021 01:31]:
+> On 19/10/15 10:08, Roger Quadros wrote:
+> > On 17/10/15 00:25, Tony Lindgren wrote:
+> >> * Roger Quadros <rogerq@ti.com> [151006 04:13]:
+> >>>
+> >>> Fine. The updated series is now at
+> >>>
+> >>> git@github.com:rogerq/linux.git
+> >>>  * [new branch]      for-v4.4/gpmc-v4
+> >>
+> >> Looks like it produces some build errors, this with RMKs 3430 and 4430
+> >> only .configs:
+> >>
+> >> drivers/memory/omap-gpmc.c:2035:43: error: ‘struct gpio_chip’ has no
+> >> member named ‘irqdomain’
+> >> drivers/memory/omap-gpmc.c:2116:8: error: implicit declaration of
+> >> function ‘gpiochip_irqchip_add’ [-Werror=implicit-function-declaration]
+> >>
+> > 
+> > Good catch. We'll have to select GPIOLIB_IRQCHIP for this driver.
+> > 
+> >> Maybe run randconfig builds on it for overnight?
+> > 
+> > OK. I'll do that.
+> 
+> I couldn't run randconfig beyond few iterations as it keeps failing
+> everywhere. How do we limit the randconfig options to OMAP only
+> platforms?
 
-drivers/mtd/spi-nor/fsl-quadspi.c: In function 'fsl_qspi_init_lut':
-drivers/mtd/spi-nor/fsl-quadspi.c:369:1: error:
-	'LUT_0' undeclared (first use in this function)
-drivers/mtd/spi-nor/fsl-quadspi.c:418:1: error:
-	pasting "LUT_" and "(" does not give a valid preprocessing token
-drivers/mtd/spi-nor/fsl-quadspi.c:418:2: error:
-	implicit declaration of function 'LUT_'
+You can use Felipe's scripts from github.
 
-Never build it on SPARC, even if COMPILE_TEST is enabled.
+Regards,
 
-Fixes: d26a22d06708 ("mtd: fsl-quadspi: allow building for other ARCHes
-	with COMPILE_TEST")
-Cc: Brian Norris <computersforpeace@gmail.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/mtd/spi-nor/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 2fe2a7e90fa9..fceb2886bfd1 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -23,7 +23,7 @@ config MTD_SPI_NOR_USE_4K_SECTORS
- 
- config SPI_FSL_QUADSPI
- 	tristate "Freescale Quad SPI controller"
--	depends on ARCH_MXC || COMPILE_TEST
-+	depends on ARCH_MXC || (COMPILE_TEST && !SPARC)
- 	depends on HAS_IOMEM
- 	help
- 	  This enables support for the Quad SPI controller in master mode.
--- 
-2.1.4
+Tony
