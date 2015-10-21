@@ -1,14 +1,28 @@
-From: Antoine Tenart <antoine.tenart@free-electrons.com>
-To: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, robert.jarzmik@free.fr
-Cc: Antoine Tenart <antoine.tenart@free-electrons.com>, zmxu@marvell.com,
- jszhang@marvell.com, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 5/5] mtd: pxa3xx_nand: clean up the pxa3xx timings
-Date: Wed, 21 Oct 2015 10:29:04 +0200
-Message-Id: <1445416144-9194-6-git-send-email-antoine.tenart@free-electrons.com>
-In-Reply-To: <1445416144-9194-1-git-send-email-antoine.tenart@free-electrons.com>
-References: <1445416144-9194-1-git-send-email-antoine.tenart@free-electrons.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zoooy-00033b-VS
+ for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 08:32:34 +0000
+Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+To: Tony Lindgren <tony@atomide.com>
+References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
+ <560BC0DB.5020205@ti.com> <20151006083346.GL23801@atomide.com>
+ <56139A72.6040600@ti.com> <20151006100000.GN23801@atomide.com>
+ <56139CE9.8020002@ti.com> <5613A256.8000105@ti.com>
+ <20151006110134.GO23801@atomide.com> <5613ABEF.9000904@ti.com>
+ <20151016212510.GF24370@atomide.com> <562496DB.4050803@ti.com>
+CC: <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+ <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <javier@dowhile0.org>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>, <fcooper@ti.com>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <56274D69.1090402@ti.com>
+Date: Wed, 21 Oct 2015 11:31:37 +0300
+MIME-Version: 1.0
+In-Reply-To: <562496DB.4050803@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,66 +32,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the previous modifications, lots of pxa3xx specific definitions can
-be removed.
+On 19/10/15 10:08, Roger Quadros wrote:
+> On 17/10/15 00:25, Tony Lindgren wrote:
+>> * Roger Quadros <rogerq@ti.com> [151006 04:13]:
+>>>
+>>> Fine. The updated series is now at
+>>>
+>>> git@github.com:rogerq/linux.git
+>>>  * [new branch]      for-v4.4/gpmc-v4
+>>
+>> Looks like it produces some build errors, this with RMKs 3430 and 4430
+>> only .configs:
+>>
+>> drivers/memory/omap-gpmc.c:2035:43: error: ‘struct gpio_chip’ has no
+>> member named ‘irqdomain’
+>> drivers/memory/omap-gpmc.c:2116:8: error: implicit declaration of
+>> function ‘gpiochip_irqchip_add’ [-Werror=implicit-function-declaration]
+>>
+> 
+> Good catch. We'll have to select GPIOLIB_IRQCHIP for this driver.
+> 
+>> Maybe run randconfig builds on it for overnight?
+> 
+> OK. I'll do that.
 
-Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
----
- drivers/mtd/nand/pxa3xx_nand.c | 25 ++++++++-----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
+I couldn't run randconfig beyond few iterations as it keeps failing
+everywhere. How do we limit the randconfig options to OMAP only
+platforms?
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 2761282df353..e453ae9a17fa 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -266,14 +266,9 @@ struct pxa3xx_nand_timing {
- };
- 
- struct pxa3xx_nand_flash {
--	char		*name;
- 	uint32_t	chip_id;
--	unsigned int	page_per_block; /* Pages per block (PG_PER_BLK) */
--	unsigned int	page_size;	/* Page size in bytes (PAGE_SZ) */
- 	unsigned int	flash_width;	/* Width of Flash memory (DWIDTH_M) */
- 	unsigned int	dfc_width;	/* Width of flash controller(DWIDTH_C) */
--	unsigned int	num_blocks;	/* Number of physical blocks in Flash */
--
- 	struct pxa3xx_nand_timing *timing;	/* NAND Flash timing */
- };
- 
-@@ -285,15 +280,14 @@ static struct pxa3xx_nand_timing timing[] = {
- };
- 
- static struct pxa3xx_nand_flash builtin_flash_types[] = {
--{ "DEFAULT FLASH",      0,   0, 2048,  8,  8,    0, &timing[0] },
--{ "64MiB 16-bit",  0x46ec,  32,  512, 16, 16, 4096, &timing[1] },
--{ "256MiB 8-bit",  0xdaec,  64, 2048,  8,  8, 2048, &timing[1] },
--{ "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192, &timing[1] },
--{ "128MiB 8-bit",  0xa12c,  64, 2048,  8,  8, 1024, &timing[2] },
--{ "128MiB 16-bit", 0xb12c,  64, 2048, 16, 16, 1024, &timing[2] },
--{ "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, 4096, &timing[2] },
--{ "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, &timing[2] },
--{ "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048, &timing[3] },
-+	{ 0x46ec, 16, 16, &timing[1] },
-+	{ 0xdaec,  8,  8, &timing[1] },
-+	{ 0xd7ec,  8,  8, &timing[1] },
-+	{ 0xa12c,  8,  8, &timing[2] },
-+	{ 0xb12c, 16, 16, &timing[2] },
-+	{ 0xdc2c,  8,  8, &timing[2] },
-+	{ 0xcc2c, 16, 16, &timing[2] },
-+	{ 0xba20, 16, 16, &timing[3] },
- };
- 
- static u8 bbt_pattern[] = {'M', 'V', 'B', 'b', 't', '0' };
-@@ -354,9 +348,6 @@ static struct nand_ecclayout ecc_layout_4KB_bch8bit = {
- 	.oobfree = { }
- };
- 
--/* Define a default flash type setting serve as flash detecting only */
--#define DEFAULT_FLASH_TYPE (&builtin_flash_types[0])
--
- #define NDTR0_tCH(c)	(min((c), 7) << 19)
- #define NDTR0_tCS(c)	(min((c), 7) << 16)
- #define NDTR0_tWH(c)	(min((c), 7) << 11)
--- 
-2.6.2
+cheers,
+-roger
