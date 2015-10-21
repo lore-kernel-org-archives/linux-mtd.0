@@ -1,14 +1,14 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 2/2] mtd: nand: sunxi: avoid retrieving data before ECC pass
-Date: Tue, 20 Oct 2015 22:16:01 +0200
-Message-Id: <1445372161-6529-2-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1445372161-6529-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1445372161-6529-1-git-send-email-boris.brezillon@free-electrons.com>
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
+To: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com, robert.jarzmik@free.fr
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>, zmxu@marvell.com,
+ jszhang@marvell.com, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 2/5] mtd: nand: allow compile test of MTD_NAND_PXA3xx
+Date: Wed, 21 Oct 2015 10:29:01 +0200
+Message-Id: <1445416144-9194-3-git-send-email-antoine.tenart@free-electrons.com>
+In-Reply-To: <1445416144-9194-1-git-send-email-antoine.tenart@free-electrons.com>
+References: <1445416144-9194-1-git-send-email-antoine.tenart@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,28 +18,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The in-band data are copied twice: before ECC correction and after the
-ECC engine has fixed all the fixable bitflips.
-Drop the useless memcpy_fromio operation by passing a NULL pointer when
-calling sunxi_nfc_read_buf().
+Allow compile test of the MTD_NAND_PXA3xx nand driver.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
 ---
- drivers/mtd/nand/sunxi_nand.c | 2 +-
+ drivers/mtd/nand/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 96f7370..8247118 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -586,7 +586,7 @@ static int sunxi_nfc_hw_ecc_read_chunk(struct mtd_info *mtd,
- 	if (*cur_off != data_off)
- 		nand->cmdfunc(mtd, NAND_CMD_RNDOUT, data_off, -1);
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 289664089cf3..554aff7b2f8b 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -329,7 +329,7 @@ config MTD_NAND_ATMEL
  
--	sunxi_nfc_read_buf(mtd, data, ecc->size);
-+	sunxi_nfc_read_buf(mtd, NULL, ecc->size);
- 
- 	if (data_off + ecc->size != oob_off)
- 		nand->cmdfunc(mtd, NAND_CMD_RNDOUT, oob_off, -1);
+ config MTD_NAND_PXA3xx
+ 	tristate "NAND support on PXA3xx and Armada 370/XP"
+-	depends on PXA3xx || ARCH_MMP || PLAT_ORION
++	depends on PXA3xx || ARCH_MMP || PLAT_ORION || COMPILE_TEST
+ 	help
+ 	  This enables the driver for the NAND flash device found on
+ 	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
 -- 
-2.1.4
+2.6.2
