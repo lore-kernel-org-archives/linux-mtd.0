@@ -1,8 +1,8 @@
-Received: from mail-bl2on0120.outbound.protection.outlook.com ([65.55.169.120]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from mail-bn1on0130.outbound.protection.outlook.com
+ ([157.56.110.130] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zp1Ja-00032c-SC
- for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 21:53:01 +0000
+ id 1Zp1Ja-00032a-PP
+ for linux-mtd@lists.infradead.org; Wed, 21 Oct 2015 21:53:02 +0000
 From: Han Xu <b45815@freescale.com>
 To: <shijie.huang@arm.com>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
@@ -11,9 +11,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
  <dmaengine@vger.kernel.org>
-Subject: [PATCH v5 1/7] mtd: nand: gpmi: add gpmi dsm supend/resume support
-Date: Wed, 21 Oct 2015 16:41:35 -0500
-Message-ID: <1445463701-5921-2-git-send-email-b45815@freescale.com>
+Subject: [PATCH v5 2/7] dmaengine: mxs: APBH DMA supports deep sleep mode
+Date: Wed, 21 Oct 2015 16:41:36 -0500
+Message-ID: <1445463701-5921-3-git-send-email-b45815@freescale.com>
 In-Reply-To: <1445463701-5921-1-git-send-email-b45815@freescale.com>
 References: <1445463701-5921-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
@@ -29,86 +29,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Huang Shijie <b32955@freescale.com>
 
-i.MX6SX supports deep sleep mode(DSM) that may turn off GPMI/BCH power
-during suspend, add gpmi nand suspend/resume function to release DMA
-channel in suspend function and re-init GPMI/BCH controller during
-resume function.
-
-Although it is not necessary to restore GPMI/BCH registers value for
-i.MX6QDL, the code doesn't distinguish different platforms to keep the
-code simple.
+Deep Sleep Mode(dsm) turns off the power for APBH DMA module, DMA
+need to be re-initialized when system resumed back.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Han Xu <han.xu@freescale.com>
+Signed-off-by: Han Xu <b45815@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 45 +++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+ drivers/dma/mxs-dma.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 2064ada..61a39cb 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1,7 +1,7 @@
- /*
-  * Freescale GPMI NAND Flash Driver
-  *
-- * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
-+ * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
-  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
-  *
-  * This program is free software; you can redistribute it and/or modify
-@@ -2036,9 +2036,52 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index 60de352..7e5800a 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -693,7 +693,7 @@ static enum dma_status mxs_dma_tx_status(struct dma_chan *chan,
+ 	return mxs_chan->status;
+ }
+ 
+-static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
++static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+ {
+ 	int ret;
+ 
+@@ -835,6 +835,7 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 
+ 	mxs_dma->pdev = pdev;
+ 	mxs_dma->dma_device.dev = &pdev->dev;
++	dev_set_drvdata(&pdev->dev, mxs_dma);
+ 
+ 	/* mxs_dma gets 65535 bytes maximum sg size */
+ 	mxs_dma->dma_device.dev->dma_parms = &mxs_dma->dma_parms;
+@@ -872,9 +873,25 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
  	return 0;
  }
  
-+static int gpmi_pm_suspend(struct device *dev)
++static int mxs_dma_pm_resume(struct device *dev)
 +{
-+	struct gpmi_nand_data *this = dev_get_drvdata(dev);
-+
-+	release_dma_channels(this);
-+	return 0;
-+}
-+
-+static int gpmi_pm_resume(struct device *dev)
-+{
-+	struct gpmi_nand_data *this = dev_get_drvdata(dev);
++	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
 +	int ret;
 +
-+	ret = acquire_dma_channels(this);
-+	if (ret < 0)
++	ret = mxs_dma_init(mxs_dma);
++	if (ret)
 +		return ret;
-+
-+	/* re-init the GPMI registers */
-+	this->flags &= ~GPMI_TIMING_INIT_OK;
-+	ret = gpmi_init(this);
-+	if (ret) {
-+		dev_err(this->dev, "Error setting GPMI : %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* re-init the BCH registers */
-+	ret = bch_set_geometry(this);
-+	if (ret) {
-+		dev_err(this->dev, "Error setting BCH : %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* re-init others */
-+	gpmi_extra_init(this);
-+
 +	return 0;
 +}
 +
-+static const struct dev_pm_ops gpmi_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(gpmi_pm_suspend, gpmi_pm_resume)
++static const struct dev_pm_ops mxs_dma_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(NULL, mxs_dma_pm_resume)
 +};
 +
- static struct platform_driver gpmi_nand_driver = {
- 	.driver = {
- 		.name = "gpmi-nand",
-+		.pm = &gpmi_pm_ops,
- 		.of_match_table = gpmi_nand_id_table,
+ static struct platform_driver mxs_dma_driver = {
+ 	.driver		= {
+ 		.name	= "mxs-dma",
++		.pm = &mxs_dma_pm_ops,
+ 		.of_match_table = mxs_dma_dt_ids,
  	},
- 	.probe   = gpmi_nand_probe,
+ 	.id_table	= mxs_dma_ids,
 -- 
 1.9.1
