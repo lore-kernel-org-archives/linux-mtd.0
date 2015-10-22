@@ -1,16 +1,19 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZpHLr-000498-H3
- for linux-mtd@lists.infradead.org; Thu, 22 Oct 2015 15:00:24 +0000
-Received: by pasz6 with SMTP id z6so88856297pas.2
- for <linux-mtd@lists.infradead.org>; Thu, 22 Oct 2015 08:00:02 -0700 (PDT)
-From: Shraddha Barke <shraddha.6596@gmail.com>
-To: <outreachy-kernel@googlegroups.com>
-Cc: y2038@lists.linaro.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [RESEND v2] mtd: tests: Replace timeval with ktime_t
-Date: Thu, 22 Oct 2015 20:29:54 +0530
-Message-Id: <1445525994-15331-1-git-send-email-shraddha.6596@gmail.com>
+Date: Thu, 22 Oct 2015 17:12:59 +0200
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Antoine Tenart <antoine.tenart@free-electrons.com>
+Cc: sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com, robert.jarzmik@free.fr,
+ zmxu@marvell.com, jszhang@marvell.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Gregory =?UTF-8?B?Q2w=?=
+ =?UTF-8?B?w6ltZW50?= <gregory.clement@free-electrons.com>
+Subject: Re: [PATCH v4 0/5] mtd: pxa3xx_nand: rework the timing setup
+Message-ID: <20151022171259.57581575@free-electrons.com>
+In-Reply-To: <1445416144-9194-1-git-send-email-antoine.tenart@free-electrons.com>
+References: <1445416144-9194-1-git-send-email-antoine.tenart@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,112 +23,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Changes the 32-bit time type timeval to the 64-bit time type
-ktime_t, since 32-bit systems using struct timeval will break in the
-year 2038. Correspondingly change do_gettimeofday() to ktime_get()
-since ktime_get returns a ktime_t, but do_gettimeofday returns a
-struct timeval.Here, ktime_get() is used instead of ktime_get_real()
-since ktime_get() uses monotonic clock.
+Hello Antoine,
 
-Signed-off-by: Shraddha Barke <shraddha.6596@gmail.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
----
-Changes in v2-
- Make commit message clearer.
+On Wed, 21 Oct 2015 10:28:59 +0200, Antoine Tenart wrote:
 
- drivers/mtd/tests/speedtest.c   | 10 +++++-----
- drivers/mtd/tests/torturetest.c | 10 +++++-----
- 2 files changed, 10 insertions(+), 10 deletions(-)
+> Antoine Tenart (5):
+>   mtd: pxa3xx: prepare allowing compile test
+>   mtd: nand: allow compile test of MTD_NAND_PXA3xx
+>   mtd: pxa3xx_nand: add helpers to setup the timings
+>   mtd: pxa3xx_nand: rework flash detection and timing setup
+>   mtd: pxa3xx_nand: clean up the pxa3xx timings
 
-diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
-index 5a6f31a..0b89418 100644
---- a/drivers/mtd/tests/speedtest.c
-+++ b/drivers/mtd/tests/speedtest.c
-@@ -22,6 +22,7 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/init.h>
-+#include <linux/ktime.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/err.h>
-@@ -49,7 +50,7 @@ static int pgsize;
- static int ebcnt;
- static int pgcnt;
- static int goodebcnt;
--static struct timeval start, finish;
-+static ktime_t start, finish;
- 
- static int multiblock_erase(int ebnum, int blocks)
- {
-@@ -168,12 +169,12 @@ static int read_eraseblock_by_2pages(int ebnum)
- 
- static inline void start_timing(void)
- {
--	do_gettimeofday(&start);
-+	start = ktime_get();
- }
- 
- static inline void stop_timing(void)
- {
--	do_gettimeofday(&finish);
-+	finish = ktime_get();
- }
- 
- static long calc_speed(void)
-@@ -181,8 +182,7 @@ static long calc_speed(void)
- 	uint64_t k;
- 	long ms;
- 
--	ms = (finish.tv_sec - start.tv_sec) * 1000 +
--	     (finish.tv_usec - start.tv_usec) / 1000;
-+	ms = ktime_ms_delta(finish, start);
- 	if (ms == 0)
- 		return 0;
- 	k = (uint64_t)goodebcnt * (mtd->erasesize / 1024) * 1000;
-diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
-index e5d6e6d..93c2729 100644
---- a/drivers/mtd/tests/torturetest.c
-+++ b/drivers/mtd/tests/torturetest.c
-@@ -26,6 +26,7 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/init.h>
-+#include <linux/ktime.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/err.h>
-@@ -79,18 +80,18 @@ static unsigned char *check_buf;
- static unsigned int erase_cycles;
- 
- static int pgsize;
--static struct timeval start, finish;
-+static ktime_t start, finish;
- 
- static void report_corrupt(unsigned char *read, unsigned char *written);
- 
- static inline void start_timing(void)
- {
--	do_gettimeofday(&start);
-+	start = ktime_get();
- }
- 
- static inline void stop_timing(void)
- {
--	do_gettimeofday(&finish);
-+	finish = ktime_get();
- }
- 
- /*
-@@ -333,8 +334,7 @@ static int __init tort_init(void)
- 			long ms;
- 
- 			stop_timing();
--			ms = (finish.tv_sec - start.tv_sec) * 1000 +
--			     (finish.tv_usec - start.tv_usec) / 1000;
-+			ms = ktime_ms_delta(finish, start);
- 			pr_info("%08u erase cycles done, took %lu "
- 			       "milliseconds (%lu seconds)\n",
- 			       erase_cycles, ms, ms / 1000);
+I tested your series on Armada 375 DB, which uses the same pxa3xx
+driver, but with the Armada 370 variant.
+
+With the current Device Tree which has nand,keep-config to keep the
+timing configuration from the bootloader, I don't see any problem, so
+there is no regression introduced by your series, at least on this
+platform.
+
+However, when I remove nand,keep-config to use the ONFI timings from
+the NAND, then things work fine (I can mount a UBIFS root filesystem),
+but there is a weird:
+
+pxa3xx-nand f10d0000.nand: Wait time out!!!
+
+After investigating a bit, the following steps occur:
+
+ * The timings are configured as ONFI mode 0
+ * Reset command is sent to the NAND (0xff), two times in a row.
+ * READID command is sent to the NAND (0x90), three times in a row.
+ * PARAM command is sent to the NAND (0xec) and it times out
+ * The NAND is properly identified, and the timings are reconfigured as
+   ONFI mode 5
+ * Everything seems to work fine
+
+In the current implementation of the driver, the nand_cmdfunc()
+function is used for all the identification phase, and only switched
+later to nand_cmdfunc_extended() if we are on an Armada 370/XP variant
+(which Armada 375 is) and the page size is higher than PAGE_CHUNK_SIZE.
+So the timeout occurs when nand_cmdfunc() is in-use. I've tried forcing
+to use nand_cmdfunc_extended() from the beginning, but it times out
+similarly in this function.
+
+Since the driver works fine, maybe the PARAM command has worked
+properly, but just times out for some reason. It would be good to
+understand why.
+
+Thanks,
+
+Thomas
 -- 
-2.1.4
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
