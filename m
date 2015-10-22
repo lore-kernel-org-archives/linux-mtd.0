@@ -1,8 +1,8 @@
-Received: from mail-bn1on0136.outbound.protection.outlook.com
- ([157.56.110.136] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-bl2on0104.outbound.protection.outlook.com ([65.55.169.104]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZpM7a-0003VA-Et
- for linux-mtd@lists.infradead.org; Thu, 22 Oct 2015 20:06:01 +0000
+ id 1ZpM7b-0003Va-Rf
+ for linux-mtd@lists.infradead.org; Thu, 22 Oct 2015 20:06:02 +0000
 From: Han Xu <b45815@freescale.com>
 To: <shijie.huang@arm.com>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
@@ -11,9 +11,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
  <dmaengine@vger.kernel.org>
-Subject: [PATCH v6 6/7] mtd: nand: gpmi: correct bitflip for erased NAND page
-Date: Thu, 22 Oct 2015 14:54:35 -0500
-Message-ID: <1445543676-19876-7-git-send-email-b45815@freescale.com>
+Subject: [PATCH v6 2/7] dmaengine: mxs: APBH DMA supports deep sleep mode
+Date: Thu, 22 Oct 2015 14:54:31 -0500
+Message-ID: <1445543676-19876-3-git-send-email-b45815@freescale.com>
 In-Reply-To: <1445543676-19876-1-git-send-email-b45815@freescale.com>
 References: <1445543676-19876-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
@@ -27,158 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-i.MX6QP and i.MX7D BCH module integrated a new feature to detect the
-bitflip number for erased NAND page. So for these two platform, set the
-erase threshold to ecc_strength and if bitflip detected, GPMI driver will
-correct the data to all 0xFF.
+From: Huang Shijie <b32955@freescale.com>
 
+Deep Sleep Mode(dsm) turns off the power for APBH DMA module, DMA
+need to be re-initialized when system resumed back.
+
+Signed-off-by: Huang Shijie <b32955@freescale.com>
 Signed-off-by: Han Xu <b45815@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/bch-regs.h  | 10 ++++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  5 +++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 24 +++++++++++++++++++++++-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  5 ++++-
- 4 files changed, 42 insertions(+), 2 deletions(-)
+ drivers/dma/mxs-dma.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-index 53e58bc..a84d72b 100644
---- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-+++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-@@ -30,7 +30,13 @@
- #define BM_BCH_CTRL_COMPLETE_IRQ		(1 << 0)
- 
- #define HW_BCH_STATUS0				0x00000010
-+
- #define HW_BCH_MODE				0x00000020
-+#define BP_BCH_MODE_ERASE_THRESHOLD		0
-+#define BM_BCH_MODE_ERASE_THRESHOLD	(0xff << BP_BCH_MODE_ERASE_THRESHOLD)
-+#define BF_BCH_MODE_ERASE_THRESHOLD(v)		\
-+	(((v) << BP_BCH_MODE_ERASE_THRESHOLD) & BM_BCH_MODE_ERASE_THRESHOLD)
-+
- #define HW_BCH_ENCODEPTR			0x00000030
- #define HW_BCH_DATAPTR				0x00000040
- #define HW_BCH_METAPTR				0x00000050
-@@ -125,4 +131,8 @@
- 	)
- 
- #define HW_BCH_VERSION				0x00000160
-+#define HW_BCH_DEBUG1				0x00000170
-+#define BP_BCH_DEBUG1_ERASED_ZERO_COUNT	0
-+#define BM_BCH_DEBUG1_ERASED_ZERO_COUNT		\
-+		(0x1ff << BP_BCH_DEBUG1_ERASED_ZERO_COUNT)
- #endif
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index 1f26a79..0548d84 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -298,6 +298,11 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
- 			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
- 
-+	/* Set erase threshold to ecc_strength for mx6qp and mx7 */
-+	if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
-+		writel(BF_BCH_MODE_ERASE_THRESHOLD(ecc_strength),
-+			r->bch_regs + HW_BCH_MODE);
-+
- 	/* Set *all* chip selects to use layout 0. */
- 	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
- 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index e24fa06..90065ec 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -71,6 +71,12 @@ static const struct gpmi_devdata gpmi_devdata_imx6q = {
- 	.max_chain_delay = 12,
- };
- 
-+static const struct gpmi_devdata gpmi_devdata_imx6qp = {
-+	.type = IS_MX6QP,
-+	.bch_max_ecc_strength = 40,
-+	.max_chain_delay = 12,
-+};
-+
- static const struct gpmi_devdata gpmi_devdata_imx6sx = {
- 	.type = IS_MX6SX,
- 	.bch_max_ecc_strength = 62,
-@@ -1010,6 +1016,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- {
- 	struct gpmi_nand_data *this = chip->priv;
- 	struct bch_geometry *nfc_geo = &this->bch_geometry;
-+	void __iomem *bch_regs = this->resources.bch_regs;
- 	void          *payload_virt;
- 	dma_addr_t    payload_phys;
- 	void          *auxiliary_virt;
-@@ -1018,6 +1025,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	unsigned char *status;
- 	unsigned int  max_bitflips = 0;
- 	int           ret;
-+	int flag = 0;
- 
- 	dev_dbg(this->dev, "page number is : %d\n", page);
- 	ret = read_page_prepare(this, buf, nfc_geo->payload_size,
-@@ -1050,9 +1058,16 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
- 
- 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
--		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
-+		if (*status == STATUS_GOOD)
- 			continue;
- 
-+		if (*status == STATUS_ERASED) {
-+			if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
-+				if (readl(bch_regs + HW_BCH_DEBUG1))
-+					flag = 1;
-+			continue;
-+		}
-+
- 		if (*status == STATUS_UNCORRECTABLE) {
- 			mtd->ecc_stats.failed++;
- 			continue;
-@@ -1081,6 +1096,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			nfc_geo->payload_size,
- 			payload_virt, payload_phys);
- 
-+	/* if bitflip occurred in erased page, change data to all 0xff */
-+	if (flag)
-+		memset(buf, 0xff, nfc_geo->payload_size);
-+
- 	return max_bitflips;
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index 60de352..7e5800a 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -693,7 +693,7 @@ static enum dma_status mxs_dma_tx_status(struct dma_chan *chan,
+ 	return mxs_chan->status;
  }
  
-@@ -1991,6 +2010,9 @@ static const struct of_device_id gpmi_nand_id_table[] = {
- 		.compatible = "fsl,imx6q-gpmi-nand",
- 		.data = &gpmi_devdata_imx6q,
- 	}, {
-+		.compatible = "fsl,imx6qp-gpmi-nand",
-+		.data = (void *)&gpmi_devdata_imx6qp,
-+	}, {
- 		.compatible = "fsl,imx6sx-gpmi-nand",
- 		.data = &gpmi_devdata_imx6sx,
- 	}, {
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 58b3d69..149a442 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -123,6 +123,7 @@ enum gpmi_type {
- 	IS_MX23,
- 	IS_MX28,
- 	IS_MX6Q,
-+	IS_MX6QP,
- 	IS_MX6SX,
- 	IS_MX7D,
- };
-@@ -306,9 +307,11 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
- #define GPMI_IS_MX23(x)		((x)->devdata->type == IS_MX23)
- #define GPMI_IS_MX28(x)		((x)->devdata->type == IS_MX28)
- #define GPMI_IS_MX6Q(x)		((x)->devdata->type == IS_MX6Q)
-+#define GPMI_IS_MX6QP(x)	((x)->devdata->type == IS_MX6QP)
- #define GPMI_IS_MX6SX(x)	((x)->devdata->type == IS_MX6SX)
- #define GPMI_IS_MX7D(x)		((x)->devdata->type == IS_MX7D)
+-static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
++static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+ {
+ 	int ret;
  
--#define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
-+#define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6QP(x)\
-+	   || GPMI_IS_MX6SX(x))
- #define GPMI_IS_MX7(x)		(GPMI_IS_MX7D(x))
- #endif
+@@ -835,6 +835,7 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 
+ 	mxs_dma->pdev = pdev;
+ 	mxs_dma->dma_device.dev = &pdev->dev;
++	dev_set_drvdata(&pdev->dev, mxs_dma);
+ 
+ 	/* mxs_dma gets 65535 bytes maximum sg size */
+ 	mxs_dma->dma_device.dev->dma_parms = &mxs_dma->dma_parms;
+@@ -872,9 +873,25 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int mxs_dma_pm_resume(struct device *dev)
++{
++	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
++	int ret;
++
++	ret = mxs_dma_init(mxs_dma);
++	if (ret)
++		return ret;
++	return 0;
++}
++
++static const struct dev_pm_ops mxs_dma_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(NULL, mxs_dma_pm_resume)
++};
++
+ static struct platform_driver mxs_dma_driver = {
+ 	.driver		= {
+ 		.name	= "mxs-dma",
++		.pm = &mxs_dma_pm_ops,
+ 		.of_match_table = mxs_dma_dt_ids,
+ 	},
+ 	.id_table	= mxs_dma_ids,
 -- 
 1.9.1
