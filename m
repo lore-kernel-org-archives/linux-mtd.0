@@ -1,7 +1,7 @@
-Received: from mail-bn1bon0148.outbound.protection.outlook.com
- ([157.56.111.148] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-bl2on0118.outbound.protection.outlook.com ([65.55.169.118]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZpM7a-0003V9-4O
+ id 1ZpM7Z-0003V7-QO
  for linux-mtd@lists.infradead.org; Thu, 22 Oct 2015 20:06:00 +0000
 From: Han Xu <b45815@freescale.com>
 To: <shijie.huang@arm.com>
@@ -11,9 +11,10 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
  <dmaengine@vger.kernel.org>
-Subject: [PATCH v6 1/7] mtd: nand: gpmi: add gpmi dsm supend/resume support
-Date: Thu, 22 Oct 2015 14:54:30 -0500
-Message-ID: <1445543676-19876-2-git-send-email-b45815@freescale.com>
+Subject: [PATCH v6 4/7] mtd: nand: gpmi: may use minimum required ecc for 744
+ oobsize NAND
+Date: Thu, 22 Oct 2015 14:54:33 -0500
+Message-ID: <1445543676-19876-5-git-send-email-b45815@freescale.com>
 In-Reply-To: <1445543676-19876-1-git-send-email-b45815@freescale.com>
 References: <1445543676-19876-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
@@ -27,88 +28,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <b32955@freescale.com>
+By default NAND driver will choose the highest ecc strength that oob
+could contain, in this case, for some 8K+744 NAND flash, the ecc
+strength will be up to 52bit, which beyonds the i.MX6QDL BCH capability
+(40bit).
 
-i.MX6SX supports deep sleep mode(DSM) that may turn off GPMI/BCH power
-during suspend, add gpmi nand suspend/resume function to release DMA
-channel in suspend function and re-init GPMI/BCH controller during
-resume function.
+This patch allows the NAND driver try to use minimum required ecc
+strength if it failed to use the highest ecc, even without explicitly
+claiming "fsl,use-minimum-ecc" in dts.
 
-Although it is not necessary to restore GPMI/BCH registers value for
-i.MX6QDL, the code doesn't distinguish different platforms to keep the
-code simple.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Han Xu <han.xu@freescale.com>
+Signed-off-by: Han Xu <b45815@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 45 +++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 2064ada..61a39cb 100644
+index 61a39cb..998fa88 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1,7 +1,7 @@
- /*
-  * Freescale GPMI NAND Flash Driver
+@@ -136,7 +136,7 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
   *
-- * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
-+ * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
-  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
-  *
-  * This program is free software; you can redistribute it and/or modify
-@@ -2036,9 +2036,52 @@ static int gpmi_nand_remove(struct platform_device *pdev)
- 	return 0;
+  * We may have available oob space in this case.
+  */
+-static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
++static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+ {
+ 	struct bch_geometry *geo = &this->bch_geometry;
+ 	struct mtd_info *mtd = &this->mtd;
+@@ -145,7 +145,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+ 	unsigned int block_mark_bit_offset;
+ 
+ 	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+-		return false;
++		return -EINVAL;
+ 
+ 	switch (chip->ecc_step_ds) {
+ 	case SZ_512:
+@@ -158,19 +158,19 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+ 		dev_err(this->dev,
+ 			"unsupported nand chip. ecc bits : %d, ecc size : %d\n",
+ 			chip->ecc_strength_ds, chip->ecc_step_ds);
+-		return false;
++		return -EINVAL;
+ 	}
+ 	geo->ecc_chunk_size = chip->ecc_step_ds;
+ 	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
+ 	if (!gpmi_check_ecc(this))
+-		return false;
++		return -EINVAL;
+ 
+ 	/* Keep the C >= O */
+ 	if (geo->ecc_chunk_size < mtd->oobsize) {
+ 		dev_err(this->dev,
+ 			"unsupported nand chip. ecc size: %d, oob size : %d\n",
+ 			chip->ecc_step_ds, mtd->oobsize);
+-		return false;
++		return -EINVAL;
+ 	}
+ 
+ 	/* The default value, see comment in the legacy_set_geometry(). */
+@@ -242,7 +242,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+ 				+ ALIGN(geo->ecc_chunk_count, 4);
+ 
+ 	if (!this->swap_block_mark)
+-		return true;
++		return 0;
+ 
+ 	/* For bit swap. */
+ 	block_mark_bit_offset = mtd->writesize * 8 -
+@@ -251,7 +251,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+ 
+ 	geo->block_mark_byte_offset = block_mark_bit_offset / 8;
+ 	geo->block_mark_bit_offset  = block_mark_bit_offset % 8;
+-	return true;
++	return 0;
  }
  
-+static int gpmi_pm_suspend(struct device *dev)
-+{
-+	struct gpmi_nand_data *this = dev_get_drvdata(dev);
-+
-+	release_dma_channels(this);
-+	return 0;
-+}
-+
-+static int gpmi_pm_resume(struct device *dev)
-+{
-+	struct gpmi_nand_data *this = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = acquire_dma_channels(this);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* re-init the GPMI registers */
-+	this->flags &= ~GPMI_TIMING_INIT_OK;
-+	ret = gpmi_init(this);
-+	if (ret) {
-+		dev_err(this->dev, "Error setting GPMI : %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* re-init the BCH registers */
-+	ret = bch_set_geometry(this);
-+	if (ret) {
-+		dev_err(this->dev, "Error setting BCH : %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* re-init others */
-+	gpmi_extra_init(this);
+ static int legacy_set_geometry(struct gpmi_nand_data *this)
+@@ -285,7 +285,8 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ 	geo->ecc_strength = get_ecc_strength(this);
+ 	if (!gpmi_check_ecc(this)) {
+ 		dev_err(this->dev,
+-			"required ecc strength of the NAND chip: %d is not supported by the GPMI controller (%d)\n",
++			"ecc strength: %d cannot be supported by the controller (%d)\n"
++			"try to use minimum ecc strength that NAND chip required\n",
+ 			geo->ecc_strength,
+ 			this->devdata->bch_max_ecc_strength);
+ 		return -EINVAL;
+@@ -366,10 +367,11 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ 
+ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ {
+-	if (of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc")
+-		&& set_geometry_by_ecc_info(this))
+-		return 0;
+-	return legacy_set_geometry(this);
++	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
++				|| legacy_set_geometry(this))
++		return set_geometry_by_ecc_info(this);
 +
 +	return 0;
-+}
-+
-+static const struct dev_pm_ops gpmi_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(gpmi_pm_suspend, gpmi_pm_resume)
-+};
-+
- static struct platform_driver gpmi_nand_driver = {
- 	.driver = {
- 		.name = "gpmi-nand",
-+		.pm = &gpmi_pm_ops,
- 		.of_match_table = gpmi_nand_id_table,
- 	},
- 	.probe   = gpmi_nand_probe,
+ }
+ 
+ struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
 -- 
 1.9.1
