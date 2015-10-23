@@ -1,16 +1,23 @@
-Received: from mail-bl2on0148.outbound.protection.outlook.com ([65.55.169.148]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZpXGn-0001HW-KL
- for linux-mtd@lists.infradead.org; Fri, 23 Oct 2015 08:00:15 +0000
-From: Yuan Yao <yao.yuan@freescale.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: spi-nor: fsl-quadspi: add big-endian support
-Date: Fri, 23 Oct 2015 15:53:17 +0800
-Message-ID: <1445586797-38383-1-git-send-email-yao.yuan@freescale.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZpXUb-0001Te-S7
+ for linux-mtd@lists.infradead.org; Fri, 23 Oct 2015 08:14:33 +0000
+Date: Fri, 23 Oct 2015 10:14:06 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Andrea Scian
+ <rnd4@dave-tech.it>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>, "Jeff
+ Lauruhn (jlauruhn)" <jlauruhn@micron.com>, "Bean Huo =?UTF-8?B?6ZyN5paM?=
+ =?UTF-8?B?5paM?= (beanhuo)" <beanhuo@micron.com>
+Subject: Re: UBI/UBIFS: dealing with MLC's paired pages
+Message-ID: <20151023101406.6d1490e5@bbrezillon>
+In-Reply-To: <20150917152240.757c9e90@bbrezillon>
+References: <20150917152240.757c9e90@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,395 +27,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add R/W functions for big- or little-endian registers:
-The qSPI controller's endian is independent of the CPU core's endian.
-So far, the qSPI have two versions for big-endian and little-endian.
+Hi,
 
-Signed-off-by: Yuan Yao <yao.yuan@freescale.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 151 +++++++++++++++++++++++---------------
- 1 file changed, 91 insertions(+), 60 deletions(-)
+Here is a quick status update of my progress and a few questions to
+UBI/UBIFS experts.
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index dc38389..cc82379 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -275,6 +275,7 @@ struct fsl_qspi {
- 	u32 clk_rate;
- 	unsigned int chip_base_addr; /* We may support two chips. */
- 	bool has_second_chip;
-+	bool big_endian;
- 	struct mutex lock;
- 	struct pm_qos_request pm_qos_req;
- };
-@@ -300,6 +301,28 @@ static inline int needs_wakeup_wait_mode(struct fsl_qspi *q)
- }
- 
- /*
-+ * R/W functions for big- or little-endian registers:
-+ * The qSPI controller's endian is independent of the CPU core's endian.
-+ * So far, although the CPU core is little-endian but the qSPI have two
-+ * versions for big-endian and little-endian.
-+ */
-+static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem *addr)
-+{
-+	if (q->big_endian)
-+		iowrite32be(val, addr);
-+	else
-+		iowrite32(val, addr);
-+}
-+
-+static u32 qspi_readl(struct fsl_qspi *q, void __iomem *addr)
-+{
-+	if (q->big_endian)
-+		return ioread32be(addr);
-+	else
-+		return ioread32(addr);
-+}
-+
-+/*
-  * An IC bug makes us to re-arrange the 32-bit data.
-  * The following chips, such as IMX6SLX, have fixed this bug.
-  */
-@@ -310,14 +333,14 @@ static inline u32 fsl_qspi_endian_xchg(struct fsl_qspi *q, u32 a)
- 
- static inline void fsl_qspi_unlock_lut(struct fsl_qspi *q)
- {
--	writel(QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
--	writel(QUADSPI_LCKER_UNLOCK, q->iobase + QUADSPI_LCKCR);
-+	qspi_writel(q, QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
-+	qspi_writel(q, QUADSPI_LCKER_UNLOCK, q->iobase + QUADSPI_LCKCR);
- }
- 
- static inline void fsl_qspi_lock_lut(struct fsl_qspi *q)
- {
--	writel(QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
--	writel(QUADSPI_LCKER_LOCK, q->iobase + QUADSPI_LCKCR);
-+	qspi_writel(q, QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
-+	qspi_writel(q, QUADSPI_LCKER_LOCK, q->iobase + QUADSPI_LCKCR);
- }
- 
- static irqreturn_t fsl_qspi_irq_handler(int irq, void *dev_id)
-@@ -326,8 +349,8 @@ static irqreturn_t fsl_qspi_irq_handler(int irq, void *dev_id)
- 	u32 reg;
- 
- 	/* clear interrupt */
--	reg = readl(q->iobase + QUADSPI_FR);
--	writel(reg, q->iobase + QUADSPI_FR);
-+	reg = qspi_readl(q, q->iobase + QUADSPI_FR);
-+	qspi_writel(q, reg, q->iobase + QUADSPI_FR);
- 
- 	if (reg & QUADSPI_FR_TFF_MASK)
- 		complete(&q->c);
-@@ -348,7 +371,7 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
- 
- 	/* Clear all the LUT table */
- 	for (i = 0; i < QUADSPI_LUT_NUM; i++)
--		writel(0, base + QUADSPI_LUT_BASE + i * 4);
-+		qspi_writel(q, 0, base + QUADSPI_LUT_BASE + i * 4);
- 
- 	/* Quad Read */
- 	lut_base = SEQID_QUAD_READ * 4;
-@@ -364,14 +387,15 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
- 		dummy = 8;
- 	}
- 
--	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-+	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
- 			base + QUADSPI_LUT(lut_base));
--	writel(LUT0(DUMMY, PAD1, dummy) | LUT1(READ, PAD4, rxfifo),
-+	qspi_writel(q, LUT0(DUMMY, PAD1, dummy) | LUT1(READ, PAD4, rxfifo),
- 			base + QUADSPI_LUT(lut_base + 1));
- 
- 	/* Write enable */
- 	lut_base = SEQID_WREN * 4;
--	writel(LUT0(CMD, PAD1, SPINOR_OP_WREN), base + QUADSPI_LUT(lut_base));
-+	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WREN),
-+			base + QUADSPI_LUT(lut_base));
- 
- 	/* Page Program */
- 	lut_base = SEQID_PP * 4;
-@@ -385,13 +409,13 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
- 		addrlen = ADDR32BIT;
- 	}
- 
--	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-+	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
- 			base + QUADSPI_LUT(lut_base));
--	writel(LUT0(WRITE, PAD1, 0), base + QUADSPI_LUT(lut_base + 1));
-+	qspi_writel(q, LUT0(WRITE, PAD1, 0), base + QUADSPI_LUT(lut_base + 1));
- 
- 	/* Read Status */
- 	lut_base = SEQID_RDSR * 4;
--	writel(LUT0(CMD, PAD1, SPINOR_OP_RDSR) | LUT1(READ, PAD1, 0x1),
-+	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDSR) | LUT1(READ, PAD1, 0x1),
- 			base + QUADSPI_LUT(lut_base));
- 
- 	/* Erase a sector */
-@@ -400,40 +424,43 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
- 	cmd = q->nor[0].erase_opcode;
- 	addrlen = q->nor_size <= SZ_16M ? ADDR24BIT : ADDR32BIT;
- 
--	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-+	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
- 			base + QUADSPI_LUT(lut_base));
- 
- 	/* Erase the whole chip */
- 	lut_base = SEQID_CHIP_ERASE * 4;
--	writel(LUT0(CMD, PAD1, SPINOR_OP_CHIP_ERASE),
-+	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_CHIP_ERASE),
- 			base + QUADSPI_LUT(lut_base));
- 
- 	/* READ ID */
- 	lut_base = SEQID_RDID * 4;
--	writel(LUT0(CMD, PAD1, SPINOR_OP_RDID) | LUT1(READ, PAD1, 0x8),
-+	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDID) | LUT1(READ, PAD1, 0x8),
- 			base + QUADSPI_LUT(lut_base));
- 
- 	/* Write Register */
- 	lut_base = SEQID_WRSR * 4;
--	writel(LUT0(CMD, PAD1, SPINOR_OP_WRSR) | LUT1(WRITE, PAD1, 0x2),
-+	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WRSR) | LUT1(WRITE, PAD1, 0x2),
- 			base + QUADSPI_LUT(lut_base));
- 
- 	/* Read Configuration Register */
- 	lut_base = SEQID_RDCR * 4;
--	writel(LUT0(CMD, PAD1, SPINOR_OP_RDCR) | LUT1(READ, PAD1, 0x1),
-+	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDCR) | LUT1(READ, PAD1, 0x1),
- 			base + QUADSPI_LUT(lut_base));
- 
- 	/* Write disable */
- 	lut_base = SEQID_WRDI * 4;
--	writel(LUT0(CMD, PAD1, SPINOR_OP_WRDI), base + QUADSPI_LUT(lut_base));
-+	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WRDI),
-+			base + QUADSPI_LUT(lut_base));
- 
- 	/* Enter 4 Byte Mode (Micron) */
- 	lut_base = SEQID_EN4B * 4;
--	writel(LUT0(CMD, PAD1, SPINOR_OP_EN4B), base + QUADSPI_LUT(lut_base));
-+	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_EN4B),
-+			base + QUADSPI_LUT(lut_base));
- 
- 	/* Enter 4 Byte Mode (Spansion) */
- 	lut_base = SEQID_BRWR * 4;
--	writel(LUT0(CMD, PAD1, SPINOR_OP_BRWR), base + QUADSPI_LUT(lut_base));
-+	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_BRWR),
-+			base + QUADSPI_LUT(lut_base));
- 
- 	fsl_qspi_lock_lut(q);
- }
-@@ -488,15 +515,16 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
- 			q->chip_base_addr, addr, len, cmd);
- 
- 	/* save the reg */
--	reg = readl(base + QUADSPI_MCR);
-+	reg = qspi_readl(q, base + QUADSPI_MCR);
- 
--	writel(q->memmap_phy + q->chip_base_addr + addr, base + QUADSPI_SFAR);
--	writel(QUADSPI_RBCT_WMRK_MASK | QUADSPI_RBCT_RXBRD_USEIPS,
-+	qspi_writel(q, q->memmap_phy + q->chip_base_addr + addr,
-+			base + QUADSPI_SFAR);
-+	qspi_writel(q, QUADSPI_RBCT_WMRK_MASK | QUADSPI_RBCT_RXBRD_USEIPS,
- 			base + QUADSPI_RBCT);
--	writel(reg | QUADSPI_MCR_CLR_RXF_MASK, base + QUADSPI_MCR);
-+	qspi_writel(q, reg | QUADSPI_MCR_CLR_RXF_MASK, base + QUADSPI_MCR);
- 
- 	do {
--		reg2 = readl(base + QUADSPI_SR);
-+		reg2 = qspi_readl(q, base + QUADSPI_SR);
- 		if (reg2 & (QUADSPI_SR_IP_ACC_MASK | QUADSPI_SR_AHB_ACC_MASK)) {
- 			udelay(1);
- 			dev_dbg(q->dev, "The controller is busy, 0x%x\n", reg2);
-@@ -507,21 +535,22 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
- 
- 	/* trigger the LUT now */
- 	seqid = fsl_qspi_get_seqid(q, cmd);
--	writel((seqid << QUADSPI_IPCR_SEQID_SHIFT) | len, base + QUADSPI_IPCR);
-+	qspi_writel(q, (seqid << QUADSPI_IPCR_SEQID_SHIFT) | len,
-+			base + QUADSPI_IPCR);
- 
- 	/* Wait for the interrupt. */
- 	if (!wait_for_completion_timeout(&q->c, msecs_to_jiffies(1000))) {
- 		dev_err(q->dev,
- 			"cmd 0x%.2x timeout, addr@%.8x, FR:0x%.8x, SR:0x%.8x\n",
--			cmd, addr, readl(base + QUADSPI_FR),
--			readl(base + QUADSPI_SR));
-+			cmd, addr, qspi_readl(q, base + QUADSPI_FR),
-+			qspi_readl(q, base + QUADSPI_SR));
- 		err = -ETIMEDOUT;
- 	} else {
- 		err = 0;
- 	}
- 
- 	/* restore the MCR */
--	writel(reg, base + QUADSPI_MCR);
-+	qspi_writel(q, reg, base + QUADSPI_MCR);
- 
- 	return err;
- }
-@@ -533,7 +562,7 @@ static void fsl_qspi_read_data(struct fsl_qspi *q, int len, u8 *rxbuf)
- 	int i = 0;
- 
- 	while (len > 0) {
--		tmp = readl(q->iobase + QUADSPI_RBDR + i * 4);
-+		tmp = qspi_readl(q, q->iobase + QUADSPI_RBDR + i * 4);
- 		tmp = fsl_qspi_endian_xchg(q, tmp);
- 		dev_dbg(q->dev, "chip addr:0x%.8x, rcv:0x%.8x\n",
- 				q->chip_base_addr, tmp);
-@@ -561,9 +590,9 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
- {
- 	u32 reg;
- 
--	reg = readl(q->iobase + QUADSPI_MCR);
-+	reg = qspi_readl(q, q->iobase + QUADSPI_MCR);
- 	reg |= QUADSPI_MCR_SWRSTHD_MASK | QUADSPI_MCR_SWRSTSD_MASK;
--	writel(reg, q->iobase + QUADSPI_MCR);
-+	qspi_writel(q, reg, q->iobase + QUADSPI_MCR);
- 
- 	/*
- 	 * The minimum delay : 1 AHB + 2 SFCK clocks.
-@@ -572,7 +601,7 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
- 	udelay(1);
- 
- 	reg &= ~(QUADSPI_MCR_SWRSTHD_MASK | QUADSPI_MCR_SWRSTSD_MASK);
--	writel(reg, q->iobase + QUADSPI_MCR);
-+	qspi_writel(q, reg, q->iobase + QUADSPI_MCR);
- }
- 
- static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
-@@ -586,20 +615,20 @@ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
- 		q->chip_base_addr, to, count);
- 
- 	/* clear the TX FIFO. */
--	tmp = readl(q->iobase + QUADSPI_MCR);
--	writel(tmp | QUADSPI_MCR_CLR_TXF_MASK, q->iobase + QUADSPI_MCR);
-+	tmp = qspi_readl(q, q->iobase + QUADSPI_MCR);
-+	qspi_writel(q, tmp | QUADSPI_MCR_CLR_TXF_MASK, q->iobase + QUADSPI_MCR);
- 
- 	/* fill the TX data to the FIFO */
- 	for (j = 0, i = ((count + 3) / 4); j < i; j++) {
- 		tmp = fsl_qspi_endian_xchg(q, *txbuf);
--		writel(tmp, q->iobase + QUADSPI_TBDR);
-+		qspi_writel(q, tmp, q->iobase + QUADSPI_TBDR);
- 		txbuf++;
- 	}
- 
- 	/* fill the TXFIFO upto 16 bytes for i.MX7d */
- 	if (needs_fill_txfifo(q))
- 		for (; i < 4; i++)
--			writel(tmp, q->iobase + QUADSPI_TBDR);
-+			qspi_writel(q, tmp, q->iobase + QUADSPI_TBDR);
- 
- 	/* Trigger it */
- 	ret = fsl_qspi_runcmd(q, opcode, to, count);
-@@ -615,10 +644,10 @@ static void fsl_qspi_set_map_addr(struct fsl_qspi *q)
- 	int nor_size = q->nor_size;
- 	void __iomem *base = q->iobase;
- 
--	writel(nor_size + q->memmap_phy, base + QUADSPI_SFA1AD);
--	writel(nor_size * 2 + q->memmap_phy, base + QUADSPI_SFA2AD);
--	writel(nor_size * 3 + q->memmap_phy, base + QUADSPI_SFB1AD);
--	writel(nor_size * 4 + q->memmap_phy, base + QUADSPI_SFB2AD);
-+	qspi_writel(q, nor_size + q->memmap_phy, base + QUADSPI_SFA1AD);
-+	qspi_writel(q, nor_size * 2 + q->memmap_phy, base + QUADSPI_SFA2AD);
-+	qspi_writel(q, nor_size * 3 + q->memmap_phy, base + QUADSPI_SFB1AD);
-+	qspi_writel(q, nor_size * 4 + q->memmap_phy, base + QUADSPI_SFB2AD);
- }
- 
- /*
-@@ -640,24 +669,25 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi *q)
- 	int seqid;
- 
- 	/* AHB configuration for access buffer 0/1/2 .*/
--	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF0CR);
--	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF1CR);
--	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF2CR);
-+	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF0CR);
-+	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF1CR);
-+	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF2CR);
- 	/*
- 	 * Set ADATSZ with the maximum AHB buffer size to improve the
- 	 * read performance.
- 	 */
--	writel(QUADSPI_BUF3CR_ALLMST_MASK | ((q->devtype_data->ahb_buf_size / 8)
--			<< QUADSPI_BUF3CR_ADATSZ_SHIFT), base + QUADSPI_BUF3CR);
-+	qspi_writel(q, QUADSPI_BUF3CR_ALLMST_MASK |
-+			((q->devtype_data->ahb_buf_size / 8) <<
-+			 QUADSPI_BUF3CR_ADATSZ_SHIFT), base + QUADSPI_BUF3CR);
- 
- 	/* We only use the buffer3 */
--	writel(0, base + QUADSPI_BUF0IND);
--	writel(0, base + QUADSPI_BUF1IND);
--	writel(0, base + QUADSPI_BUF2IND);
-+	qspi_writel(q, 0, base + QUADSPI_BUF0IND);
-+	qspi_writel(q, 0, base + QUADSPI_BUF1IND);
-+	qspi_writel(q, 0, base + QUADSPI_BUF2IND);
- 
- 	/* Set the default lut sequence for AHB Read. */
- 	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
--	writel(seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
-+	qspi_writel(q, seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
- 		q->iobase + QUADSPI_BFGENCR);
- }
- 
-@@ -713,7 +743,7 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- 		return ret;
- 
- 	/* Reset the module */
--	writel(QUADSPI_MCR_SWRSTSD_MASK | QUADSPI_MCR_SWRSTHD_MASK,
-+	qspi_writel(q, QUADSPI_MCR_SWRSTSD_MASK | QUADSPI_MCR_SWRSTHD_MASK,
- 		base + QUADSPI_MCR);
- 	udelay(1);
- 
-@@ -721,24 +751,24 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- 	fsl_qspi_init_lut(q);
- 
- 	/* Disable the module */
--	writel(QUADSPI_MCR_MDIS_MASK | QUADSPI_MCR_RESERVED_MASK,
-+	qspi_writel(q, QUADSPI_MCR_MDIS_MASK | QUADSPI_MCR_RESERVED_MASK,
- 			base + QUADSPI_MCR);
- 
--	reg = readl(base + QUADSPI_SMPR);
--	writel(reg & ~(QUADSPI_SMPR_FSDLY_MASK
-+	reg = qspi_readl(q, base + QUADSPI_SMPR);
-+	qspi_writel(q, reg & ~(QUADSPI_SMPR_FSDLY_MASK
- 			| QUADSPI_SMPR_FSPHS_MASK
- 			| QUADSPI_SMPR_HSENA_MASK
- 			| QUADSPI_SMPR_DDRSMP_MASK), base + QUADSPI_SMPR);
- 
- 	/* Enable the module */
--	writel(QUADSPI_MCR_RESERVED_MASK | QUADSPI_MCR_END_CFG_MASK,
-+	qspi_writel(q, QUADSPI_MCR_RESERVED_MASK | QUADSPI_MCR_END_CFG_MASK,
- 			base + QUADSPI_MCR);
- 
- 	/* clear all interrupt status */
--	writel(0xffffffff, q->iobase + QUADSPI_FR);
-+	qspi_writel(q, 0xffffffff, q->iobase + QUADSPI_FR);
- 
- 	/* enable the interrupt */
--	writel(QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
-+	qspi_writel(q, QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
- 
- 	return 0;
- }
-@@ -955,6 +985,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 	if (IS_ERR(q->iobase))
- 		return PTR_ERR(q->iobase);
- 
-+	q->big_endian = of_property_read_bool(np, "big-endian");
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
- 					"QuadSPI-memory");
- 	if (!devm_request_mem_region(dev, res->start, resource_size(res),
-@@ -1103,8 +1134,8 @@ static int fsl_qspi_remove(struct platform_device *pdev)
- 	}
- 
- 	/* disable the hardware */
--	writel(QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
--	writel(0x0, q->iobase + QUADSPI_RSER);
-+	qspi_writel(q, QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
-+	qspi_writel(q, 0x0, q->iobase + QUADSPI_RSER);
- 
- 	mutex_destroy(&q->lock);
- 
+On Thu, 17 Sep 2015 15:22:40 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+
+> Hello,
+> 
+> I'm currently working on the paired pages problem we have on MLC chips.
+> I remember discussing it with Artem earlier this year when I was
+> preparing my talk for ELC.
+> 
+> I now have some time I can spend working on this problem and I started
+> looking at how this can be solved.
+> 
+> First let's take a look at the UBI layer.
+> There's one basic thing we have to care about: protecting UBI metadata.
+> There are two kind of metadata:
+> 1/ those stored at the beginning of each erase block (EC and VID
+>    headers)
+> 2/ those stored in specific volumes (layout and fastmap volumes)
+> 
+> We don't have to worry about #2 since those are written using atomic
+> update, and atomic updates are immune to this paired page corruption
+> problem (either the whole write is valid, or none of it is valid).
+> 
+> This leaves problem #1.
+> For this case, Artem suggested to duplicate the EC header in the VID
+> header so that if page 0 is corrupted we can recover the EC info from
+> page 1 (which will contain both VID and EC info).
+> Doing that is fine for dealing with EC header corruption, since, AFAIK,
+> none of the NAND vendors are pairing page 0 with page 1.
+> Still remains the VID header corruption problem. Do prevent that we
+> still have several solutions:
+> a/ skip the page paired with the VID header. This is doable and can be
+>    hidden from UBI users, but it also means that we're loosing another
+>    page for metadata (not a negligible overhead)
+> b/ storing VID info (PEB <-> LEB association) somewhere else. Fastmap
+>    seems the right place to put that in, since fastmap is already
+>    storing those information for almost all blocks. Still we would have
+>    to modify fastmap a bit to store information about all erase blocks
+>    and not only those that are not part of the fastmap pool.
+>    Also, updating that in real-time would require using a log approach,
+>    instead of the atomic update currently used by fastmap when it runs
+>    out of PEBs in it's free PEB pool. Note that the log approach does
+>    not have to be applied to all fastmap data (we just need it for the
+>    PEB <-> LEB info).
+>    Another off-topic note regarding the suggested log approach: we
+>    could also use it to log which PEB was last written/erased, and use
+>    that to handle the unstable bits issue.
+> c/ (also suggested by Artem) delay VID write until we have enough data
+>    to write on the LEB, and thus guarantee that it cannot be corrupted
+>    (at least by programming on the paired page ;-)) anymore.
+>    Doing that would also require logging data to be written on those
+>    LEBs somewhere, not to mention the impact of copying the data twice
+>    (once in the log, and then when we have enough data, in the real
+>    block).
+> 
+> I don't have any strong opinion about which solution is the best, also
+> I'm maybe missing other aspects or better solutions, so feel free to
+> comment on that and share your thoughts.
+
+I decided to go for the simplest solution (but I can't promise I won't
+change my mind if this approach appears to be wrong), which is either
+using a LEB is MLC or SLC mode. In SLC modes, only the first page of
+each pair is used, which completely address the paired pages problem.
+For now the SLC mode logic is hidden in the MTD/NAND layers which are
+providing functions to write/read in SLC mode.
+
+Thanks to this differentiation, UBI is now exposing two kind of LEBs:
+- the secure (small) LEBS (those accessed in SLC mode)
+- the unsecure (big) LEBS (those accessed in MLC mode)
+
+The secure LEBs are marked as such with a flag in the VID header, which
+allows tracking secure/unsecure LEBs and controlling the maximum size a
+UBI user can read/write from/to a LEB.
+This approach assume LEB 0 and 1 are never paired together (which
+AFAICT is always true), because VID is stored on page 1 and we need the
+secure_flag information to know how to access the LEB (SLC or MLC mode).
+Of course I expose a few new helpers in the kernel API, and we'll
+probably have to do it for the ioctl interface too if this approach is
+validated.
+
+That's all I got for the UBI layer.
+Richard, Artem, any feedback so far?
+
+> 
+> That's all for the UBI layer. We will likely need new functions (and
+> new fields in existing structures) to help UBI users deal with MLC
+> NANDs: for example a field exposing the storage type or a function
+> helping users skip one (or several) blocks to secure the data they have
+> written so far. Anyway, those are things we can discuss after deciding
+> which approach we want to take.
+> 
+> Now, let's talk about the UBIFS layer. We are facing pretty much the
+> same problem in there: we need to protect the data we have already
+> written from time to time.
+> AFAIU (correct me if I'm wrong), data should be secure when we sync the
+> file system, or commit the UBIFS journal (feel free to correct me if
+> I'm not using the right terms in my explanation).
+> As explained earlier, the only way to secure data is to skip some pages
+> (those that are paired with the already written ones).
+> 
+> I see two approaches here (there might be more):
+> 1/ do not skip any pages until we are asked to secure the data, and
+>    then skip as much pages as needed to ensure nobody can ever corrupt
+>    the data. With this approach you can loose a non negligible amount
+>    of space. For example, with this paired pages scheme [1], if you
+>    only write page on page 2 and want to secure your data, you'll have
+>    to skip pages 3 to 8.
+> 2/ use the NAND in 'SLC mode' (AKA only write on half the pages in a
+>    block). With this solution you always loose half the NAND capacity,
+>    but in case of small writes, it's still more efficient than #1.
+>    Of course using that solution is not acceptable, because you'll
+>    only be able to use half the NAND capacity, but the plan is to use
+>    it in conjunction with the GC, so that from time to time UBIFS
+>    data chunks/nodes can be put in a single erase block without
+>    skipping half the pages.
+>    Note that currently the GC does not work this way: it tries to
+>    collect chunks one by one and write them to the journal to free a
+>    dirty LEB. What we would need here is a way to collect enough data
+>    to fill an entire block and after that release the LEBs that where
+>    previously using half the LEB capacity.
+> 
+> Of course both of those solutions implies marking the skipped regions
+> as dirty so that the GC can account for the padded space. For #1 we
+> should probably also use padding nodes to reflect how much space is lost
+> on the media, though I'm not sure how this can be done. For #2, we may
+> have to differentiate 'full' and 'half' LEBs in the LPT.
+
+If you followed my un/secure LEB approach described above, you probably
+know that we don't have much solutions for the UBIFS layer.
+
+My idea here is to use a garbage collection mechanism which will
+consolidate data LEBs (LEBs containing valid data nodes).
+By default all LEBs are used in secure (SLC) mode, which makes the
+UBIFS layer reliable. From time to time the consolidation GC will
+choose a few secure LEBs and move their nodes to an unsecure LEB.
+The idea is to fill the entire unsecure LEB, so that we never write on
+it afterwards, thus preventing any paired page corruption. Once this
+copy is finished we can release/unmap the secure LEBs we have
+consolidated (after adding a bud node to reference the unsecure LEB of
+course).
+
+Here are a few details about the implementation I started to develop
+(questions will come after ;-)).
+I added a new category (called LPROPS_FULL) to track the LEBs that are
+almost full (lp->dirty + lp->free < leb_size / 4), so that we can
+easily consolidate 2 to 3 full LEBs into a single unsecure LEB.
+The consolidation is done by filling as much nodes as possible into an
+unsecure LEB, and after a single pass, this should results in at least
+one freed LEB freed: the consolidation moves nodes from at least 2
+secure LEBs into a single one, so you're freeing 2 LEBs but need to
+keep one for the next consolidation iteration, hence the single LEB
+freed.
+
+Now comes the questions to the UBIFS experts:
+- should I create a new journal head to do what's described above?
+  AFAICT I can't use the GC head, because the GC can still do it's job
+  in parallel of the consolidation-GC, and the GC LEB might already be
+  filled with some data nodes, right?
+  I thought about using the data head, but again, it might already
+  point to a partially filled data LEB.
+  I added a journal head called BIG_DATA_HEAD, but I'm not sure this is
+  acceptable, so let me know what you think about that?
+
+- when should we run the consolidation-GC? After the standard GC
+  pass, when this one didn't make any progress, or should we launch
+  it as soon as we have enough full LEBs to fill an unsecure LEB? The
+  second solution might have a small impact on performances of an empty
+  FS (below the half capacity size), but ITOH, it will scale better when
+  the FS size exceed this limit (no need to run the GC each time we
+  want to write new data).
+
+- I still need to understand the races between TNC and GC, since I'm
+  pretty sure I'll face the same kind of problems with the
+  consolidation-GC. Can someone explains that to me, or should I dig
+  further into the code :-)?
+
+I'm pretty sure I forgot a lot of problematics here, also note that my
+implementation is not finished yet, so this consolidation-GC concept
+has not been validated. If you see anything that could defeat this
+approach, please let me know so that I can adjust my development.
+
+Thanks.
+
+Best Regards,
+
+Boris
+
 -- 
-2.1.0.27.g96db324
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
