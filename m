@@ -1,25 +1,28 @@
-From: Anup Patel <anup.patel@broadcom.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Linux MTD <linux-mtd@lists.infradead.org>
-CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, "Mark
- Rutland" <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will.deacon@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, "Ian
- Campbell" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, "Florian
- Fainelli" <f.fainelli@gmail.com>, Pramod KUMAR <pramodku@broadcom.com>,
- Vikram Prakash <vikramp@broadcom.com>, Sandeep Tripathy
- <tripathy@broadcom.com>, Linux ARM Kernel
- <linux-arm-kernel@lists.infradead.org>, Device Tree
- <devicetree@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
- BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>, Anup Patel
- <anup.patel@broadcom.com>
-Subject: [PATCH v3 2/2] arm64: dts: Add BRCM IPROC NAND DT node for NS2
-Date: Fri, 23 Oct 2015 10:46:13 +0530
-Message-ID: <1445577373-21252-3-git-send-email-anup.patel@broadcom.com>
-In-Reply-To: <1445577373-21252-1-git-send-email-anup.patel@broadcom.com>
-References: <1445577373-21252-1-git-send-email-anup.patel@broadcom.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZpWUP-0006cs-Da
+ for linux-mtd@lists.infradead.org; Fri, 23 Oct 2015 07:10:14 +0000
+Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+To: Tony Lindgren <tony@atomide.com>
+References: <20151006083346.GL23801@atomide.com> <56139A72.6040600@ti.com>
+ <20151006100000.GN23801@atomide.com> <56139CE9.8020002@ti.com>
+ <5613A256.8000105@ti.com> <20151006110134.GO23801@atomide.com>
+ <5613ABEF.9000904@ti.com> <20151016212510.GF24370@atomide.com>
+ <562496DB.4050803@ti.com> <56274D69.1090402@ti.com>
+ <20151021152028.GO3078@atomide.com>
+CC: <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+ <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <javier@dowhile0.org>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>, <fcooper@ti.com>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <5629DD1F.60506@ti.com>
+Date: Fri, 23 Oct 2015 10:09:19 +0300
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20151021152028.GO3078@atomide.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,86 +32,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND controller on NS2 SoC is compatible with existing
-BRCM IPROC NAND driver so let's enable it in NS2 DT and
-NS2 SVK DT.
+On 21/10/15 18:20, Tony Lindgren wrote:
+> * Roger Quadros <rogerq@ti.com> [151021 01:31]:
+>> On 19/10/15 10:08, Roger Quadros wrote:
+>>> On 17/10/15 00:25, Tony Lindgren wrote:
+>>>> * Roger Quadros <rogerq@ti.com> [151006 04:13]:
+>>>>>
+>>>>> Fine. The updated series is now at
+>>>>>
+>>>>> git@github.com:rogerq/linux.git
+>>>>>  * [new branch]      for-v4.4/gpmc-v4
+>>>>
+>>>> Looks like it produces some build errors, this with RMKs 3430 and 4430
+>>>> only .configs:
+>>>>
+>>>> drivers/memory/omap-gpmc.c:2035:43: error: ‘struct gpio_chip’ has no
+>>>> member named ‘irqdomain’
+>>>> drivers/memory/omap-gpmc.c:2116:8: error: implicit declaration of
+>>>> function ‘gpiochip_irqchip_add’ [-Werror=implicit-function-declaration]
+>>>>
+>>>
+>>> Good catch. We'll have to select GPIOLIB_IRQCHIP for this driver.
+>>>
+>>>> Maybe run randconfig builds on it for overnight?
+>>>
+>>> OK. I'll do that.
+>>
+>> I couldn't run randconfig beyond few iterations as it keeps failing
+>> everywhere. How do we limit the randconfig options to OMAP only
+>> platforms?
+> 
+> You can use Felipe's scripts from github.
 
-This patch also fixes use of node labels in ns2-svk.dts.
+Thanks. I used his scripts and ran 10 randconfigs per platform.
+Didn't find any issues with this series.
 
-Signed-off-by: Anup Patel <anup.patel@broadcom.com>
-Reviewed-by: Ray Jui <rjui@broadcom.com>
-Reviewed-by: Scott Branden <sbranden@broadcom.com>
----
- arch/arm64/boot/dts/broadcom/ns2-svk.dts | 30 ++++++++++++++++++++----------
- arch/arm64/boot/dts/broadcom/ns2.dtsi    | 14 ++++++++++++++
- 2 files changed, 34 insertions(+), 10 deletions(-)
+How can we proceed?
+Patches are on https://github.com/rogerq/linux/commits/for-v4.4/gpmc-v4
 
-diff --git a/arch/arm64/boot/dts/broadcom/ns2-svk.dts b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-index e5950d5..6bb3d4d 100644
---- a/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-+++ b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-@@ -50,18 +50,28 @@
- 		device_type = "memory";
- 		reg = <0x000000000 0x80000000 0x00000000 0x40000000>;
- 	};
-+};
- 
--	soc: soc {
--		i2c0: i2c@66080000 {
--			status = "ok";
--		};
-+&i2c0 {
-+	status = "ok";
-+};
- 
--		i2c1: i2c@660b0000 {
--			status = "ok";
--		};
-+&i2c1 {
-+	status = "ok";
-+};
-+
-+&uart3 {
-+	status = "ok";
-+};
- 
--		uart3: serial@66130000 {
--			status = "ok";
--		};
-+&nand {
-+	nandcs@0 {
-+		compatible = "brcm,nandcs";
-+		reg = <0>;
-+		nand-ecc-mode = "hw";
-+		nand-ecc-strength = <8>;
-+		nand-ecc-step-size = <512>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
- 	};
- };
-diff --git a/arch/arm64/boot/dts/broadcom/ns2.dtsi b/arch/arm64/boot/dts/broadcom/ns2.dtsi
-index f603277..9610822 100644
---- a/arch/arm64/boot/dts/broadcom/ns2.dtsi
-+++ b/arch/arm64/boot/dts/broadcom/ns2.dtsi
-@@ -212,5 +212,19 @@
- 			compatible = "brcm,iproc-rng200";
- 			reg = <0x66220000 0x28>;
- 		};
-+
-+		nand: nand@66460000 {
-+			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
-+			reg = <0x66460000 0x600>,
-+			      <0x67015408 0x600>,
-+			      <0x66460f00 0x20>;
-+			reg-names = "nand", "iproc-idm", "iproc-ext";
-+			interrupts = <GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			brcm,nand-has-wp;
-+		};
- 	};
- };
--- 
-1.9.1
+cheers,
+-roger
