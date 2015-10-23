@@ -1,23 +1,27 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZpXUb-0001Te-S7
- for linux-mtd@lists.infradead.org; Fri, 23 Oct 2015 08:14:33 +0000
-Date: Fri, 23 Oct 2015 10:14:06 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Andrea Scian
- <rnd4@dave-tech.it>, Iwo Mergler <Iwo.Mergler@netcommwireless.com>, "Jeff
- Lauruhn (jlauruhn)" <jlauruhn@micron.com>, "Bean Huo =?UTF-8?B?6ZyN5paM?=
- =?UTF-8?B?5paM?= (beanhuo)" <beanhuo@micron.com>
-Subject: Re: UBI/UBIFS: dealing with MLC's paired pages
-Message-ID: <20151023101406.6d1490e5@bbrezillon>
-In-Reply-To: <20150917152240.757c9e90@bbrezillon>
-References: <20150917152240.757c9e90@bbrezillon>
+Received: from mail-ob0-f172.google.com ([209.85.214.172])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZpYUL-0005Hz-61
+ for linux-mtd@lists.infradead.org; Fri, 23 Oct 2015 09:18:19 +0000
+Received: by obbwb3 with SMTP id wb3so89246438obb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Oct 2015 02:17:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20151015162210.GA4545@localhost>
+References: <1444915191-28350-1-git-send-email-linus.walleij@linaro.org>
+ <20151015162210.GA4545@localhost>
+Date: Fri, 23 Oct 2015 11:17:54 +0200
+Message-ID: <CACRpkdYboyXQ7tz8gSTafVLJy26E3qLAbcKyjOsEhh8j=3S1bQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: document linux-specific partition parser DT binding
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Liviu Dudau <Liviu.Dudau@arm.com>,
+ "Rafa?? Mi??ecki" <zajec5@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>,
+ Jonas Gorski <jogo@openwrt.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,199 +31,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, Oct 15, 2015 at 6:22 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
 
-Here is a quick status update of my progress and a few questions to
-UBI/UBIFS experts.
+> Are you trying to use this binding, or is this just purely a mechanical
+> documentation issue? I ask, because it seems that binding never really
+> got reviewed at all, and others have recently tried to extend support
+> for it generically [1], but a few objections came up [2][3].
 
-On Thu, 17 Sep 2015 15:22:40 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+I am using it in this devicetree patch:
+http://marc.info/?l=linux-arm-kernel&m=144492610417605&w=2
 
-> Hello,
-> 
-> I'm currently working on the paired pages problem we have on MLC chips.
-> I remember discussing it with Artem earlier this year when I was
-> preparing my talk for ELC.
-> 
-> I now have some time I can spend working on this problem and I started
-> looking at how this can be solved.
-> 
-> First let's take a look at the UBI layer.
-> There's one basic thing we have to care about: protecting UBI metadata.
-> There are two kind of metadata:
-> 1/ those stored at the beginning of each erase block (EC and VID
->    headers)
-> 2/ those stored in specific volumes (layout and fastmap volumes)
-> 
-> We don't have to worry about #2 since those are written using atomic
-> update, and atomic updates are immune to this paired page corruption
-> problem (either the whole write is valid, or none of it is valid).
-> 
-> This leaves problem #1.
-> For this case, Artem suggested to duplicate the EC header in the VID
-> header so that if page 0 is corrupted we can recover the EC info from
-> page 1 (which will contain both VID and EC info).
-> Doing that is fine for dealing with EC header corruption, since, AFAIK,
-> none of the NAND vendors are pairing page 0 with page 1.
-> Still remains the VID header corruption problem. Do prevent that we
-> still have several solutions:
-> a/ skip the page paired with the VID header. This is doable and can be
->    hidden from UBI users, but it also means that we're loosing another
->    page for metadata (not a negligible overhead)
-> b/ storing VID info (PEB <-> LEB association) somewhere else. Fastmap
->    seems the right place to put that in, since fastmap is already
->    storing those information for almost all blocks. Still we would have
->    to modify fastmap a bit to store information about all erase blocks
->    and not only those that are not part of the fastmap pool.
->    Also, updating that in real-time would require using a log approach,
->    instead of the atomic update currently used by fastmap when it runs
->    out of PEBs in it's free PEB pool. Note that the log approach does
->    not have to be applied to all fastmap data (we just need it for the
->    PEB <-> LEB info).
->    Another off-topic note regarding the suggested log approach: we
->    could also use it to log which PEB was last written/erased, and use
->    that to handle the unstable bits issue.
-> c/ (also suggested by Artem) delay VID write until we have enough data
->    to write on the LEB, and thus guarantee that it cannot be corrupted
->    (at least by programming on the paired page ;-)) anymore.
->    Doing that would also require logging data to be written on those
->    LEBs somewhere, not to mention the impact of copying the data twice
->    (once in the log, and then when we have enough data, in the real
->    block).
-> 
-> I don't have any strong opinion about which solution is the best, also
-> I'm maybe missing other aspects or better solutions, so feel free to
-> comment on that and share your thoughts.
+And this devicetree patch:
+http://marc.info/?l=linux-arm-kernel&m=144490455308758&w=2
 
-I decided to go for the simplest solution (but I can't promise I won't
-change my mind if this approach appears to be wrong), which is either
-using a LEB is MLC or SLC mode. In SLC modes, only the first page of
-each pair is used, which completely address the paired pages problem.
-For now the SLC mode logic is hidden in the MTD/NAND layers which are
-providing functions to write/read in SLC mode.
+Otherwise the AFS partition type will not be scanned.
 
-Thanks to this differentiation, UBI is now exposing two kind of LEBs:
-- the secure (small) LEBS (those accessed in SLC mode)
-- the unsecure (big) LEBS (those accessed in MLC mode)
+The other option is to add "afs" to this list in
+drivers/mtd/maps/physmap_of.c:
 
-The secure LEBs are marked as such with a flag in the VID header, which
-allows tracking secure/unsecure LEBs and controlling the maximum size a
-UBI user can read/write from/to a LEB.
-This approach assume LEB 0 and 1 are never paired together (which
-AFAICT is always true), because VID is stored on page 1 and we need the
-secure_flag information to know how to access the LEB (SLC or MLC mode).
-Of course I expose a few new helpers in the kernel API, and we'll
-probably have to do it for the ioctl interface too if this approach is
-validated.
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 3e614e9119d5..6233473a55d6 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -110,7 +110,7 @@ static struct mtd_info *obsolete_probe(struct
+platform_device *dev,
+    default is use. These take precedence over other device tree
+    information. */
+ static const char * const part_probe_types_def[] = {
+-       "cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
++       "cmdlinepart", "RedBoot", "ofpart", "ofoldpart", "afs", NULL };
 
-That's all I got for the UBI layer.
-Richard, Artem, any feedback so far?
+I can send a patch like this if you prefer?
 
-> 
-> That's all for the UBI layer. We will likely need new functions (and
-> new fields in existing structures) to help UBI users deal with MLC
-> NANDs: for example a field exposing the storage type or a function
-> helping users skip one (or several) blocks to secure the data they have
-> written so far. Anyway, those are things we can discuss after deciding
-> which approach we want to take.
-> 
-> Now, let's talk about the UBIFS layer. We are facing pretty much the
-> same problem in there: we need to protect the data we have already
-> written from time to time.
-> AFAIU (correct me if I'm wrong), data should be secure when we sync the
-> file system, or commit the UBIFS journal (feel free to correct me if
-> I'm not using the right terms in my explanation).
-> As explained earlier, the only way to secure data is to skip some pages
-> (those that are paired with the already written ones).
-> 
-> I see two approaches here (there might be more):
-> 1/ do not skip any pages until we are asked to secure the data, and
->    then skip as much pages as needed to ensure nobody can ever corrupt
->    the data. With this approach you can loose a non negligible amount
->    of space. For example, with this paired pages scheme [1], if you
->    only write page on page 2 and want to secure your data, you'll have
->    to skip pages 3 to 8.
-> 2/ use the NAND in 'SLC mode' (AKA only write on half the pages in a
->    block). With this solution you always loose half the NAND capacity,
->    but in case of small writes, it's still more efficient than #1.
->    Of course using that solution is not acceptable, because you'll
->    only be able to use half the NAND capacity, but the plan is to use
->    it in conjunction with the GC, so that from time to time UBIFS
->    data chunks/nodes can be put in a single erase block without
->    skipping half the pages.
->    Note that currently the GC does not work this way: it tries to
->    collect chunks one by one and write them to the journal to free a
->    dirty LEB. What we would need here is a way to collect enough data
->    to fill an entire block and after that release the LEBs that where
->    previously using half the LEB capacity.
-> 
-> Of course both of those solutions implies marking the skipped regions
-> as dirty so that the GC can account for the padded space. For #1 we
-> should probably also use padding nodes to reflect how much space is lost
-> on the media, though I'm not sure how this can be done. For #2, we may
-> have to differentiate 'full' and 'half' LEBs in the LPT.
+> Unfortunately I/we dropped the ball a bit on that thread, but we'd
+> ideally like to address those concerns in a new binding that is
+> supported for all MTDs, and deprecate the old one. The new one would
+> probably not directly use the parser name as used by Linux, but define
+> some list of compatible strings that fit DT conventions better. Also, I
+> don't want people including things like "cmdlinepart" in DT, but it
+> should be available as an override if necessary. IOW, DT shouldn't
+> supersede the kernel command line.
 
-If you followed my un/secure LEB approach described above, you probably
-know that we don't have much solutions for the UBIFS layer.
+This is not for cmdlinepart, as AFS is an actual on-flash format.
 
-My idea here is to use a garbage collection mechanism which will
-consolidate data LEBs (LEBs containing valid data nodes).
-By default all LEBs are used in secure (SLC) mode, which makes the
-UBIFS layer reliable. From time to time the consolidation GC will
-choose a few secure LEBs and move their nodes to an unsecure LEB.
-The idea is to fill the entire unsecure LEB, so that we never write on
-it afterwards, thus preventing any paired page corruption. Once this
-copy is finished we can release/unmap the secure LEBs we have
-consolidated (after adding a bud node to reference the unsecure LEB of
-course).
+> That's not to say we can't document the old one, but I'm curious if
+> there are real users. I'd also like to encourage new users to avoid the
+> old one if we can make that feasible.
 
-Here are a few details about the implementation I started to develop
-(questions will come after ;-)).
-I added a new category (called LPROPS_FULL) to track the LEBs that are
-almost full (lp->dirty + lp->free < leb_size / 4), so that we can
-easily consolidate 2 to 3 full LEBs into a single unsecure LEB.
-The consolidation is done by filling as much nodes as possible into an
-unsecure LEB, and after a single pass, this should results in at least
-one freed LEB freed: the consolidation moves nodes from at least 2
-secure LEBs into a single one, so you're freeing 2 LEBs but need to
-keep one for the next consolidation iteration, hence the single LEB
-freed.
+I'm happy to do either patch, or define a new binding if you
+prefer, like simply:
 
-Now comes the questions to the UBIFS experts:
-- should I create a new journal head to do what's described above?
-  AFAICT I can't use the GC head, because the GC can still do it's job
-  in parallel of the consolidation-GC, and the GC LEB might already be
-  filled with some data nodes, right?
-  I thought about using the data head, but again, it might already
-  point to a partially filled data LEB.
-  I added a journal head called BIG_DATA_HEAD, but I'm not sure this is
-  acceptable, so let me know what you think about that?
+partition-type = <string>;
 
-- when should we run the consolidation-GC? After the standard GC
-  pass, when this one didn't make any progress, or should we launch
-  it as soon as we have enough full LEBs to fill an unsecure LEB? The
-  second solution might have a small impact on performances of an empty
-  FS (below the half capacity size), but ITOH, it will scale better when
-  the FS size exceed this limit (no need to run the GC each time we
-  want to write new data).
+and then we define this as "arm,arm-flash-structure" or something,
+and parse that to "afs" internally in physmap_of.c.
 
-- I still need to understand the races between TNC and GC, since I'm
-  pretty sure I'll face the same kind of problems with the
-  consolidation-GC. Can someone explains that to me, or should I dig
-  further into the code :-)?
+>> + - linux,part-probe: a flash partition type to look for, using the
+>> +   Linux-internal partition naming scheme, e.g. "afs" for the ARM
+>> +   Flash footers.
+>
+> IIUC, this property actually supports a list of parsers, not just a
+> single partition type.
 
-I'm pretty sure I forgot a lot of problematics here, also note that my
-implementation is not finished yet, so this consolidation-GC concept
-has not been validated. If you see anything that could defeat this
-approach, please let me know so that I can adjust my development.
+Ah it does. If we wanna go with this patch I'll fix it.
 
-Thanks.
+> Also, if we're really going to support this, we should list exactly what
+> strings we support. And that's one of the problems with the existing
+> binding; it supports any old string Linux supports, which doesn't match
+> how we typically want to add bindings (i.e., via proposal + review).
 
-Best Regards,
+OK that sounds like a case for "arm,arm-flash-structure" for this
+specific binding.
 
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Yours,
+Linus Walleij
