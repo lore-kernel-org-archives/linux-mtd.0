@@ -1,19 +1,22 @@
-Received: from smtp12.smtpout.orange.fr ([80.12.242.134]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-ig0-x22b.google.com ([2607:f8b0:4001:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zq0rI-0005ec-HF
- for linux-mtd@lists.infradead.org; Sat, 24 Oct 2015 15:35:53 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org
-Subject: Re: [patch] mtd/docg3: off by one in doc_register_sysfs()
-Date: Sat, 24 Oct 2015 11:49:27 +0200
-References: <20151019102005.GF26688@mwanda>
-Message-ID: <87twpgwahr.fsf@belgarion.home>
+ id 1Zq12Y-0001sf-At
+ for linux-mtd@lists.infradead.org; Sat, 24 Oct 2015 15:47:31 +0000
+Received: by igbkq10 with SMTP id kq10so51083916igb.0
+ for <linux-mtd@lists.infradead.org>; Sat, 24 Oct 2015 08:47:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1445586797-38383-1-git-send-email-yao.yuan@freescale.com>
+References: <1445586797-38383-1-git-send-email-yao.yuan@freescale.com>
+Date: Sat, 24 Oct 2015 13:47:09 -0200
+Message-ID: <CAOMZO5AAr30RM7dE-0BEZGH3Nw1j-QpM+qv2WCyyfK4ATrh=VA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: fsl-quadspi: add big-endian support
+From: Fabio Estevam <festevam@gmail.com>
+To: Yuan Yao <yao.yuan@freescale.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Han Xu <b45815@freescale.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dan Carpenter <dan.carpenter@oracle.com> writes:
+On Fri, Oct 23, 2015 at 5:53 AM, Yuan Yao <yao.yuan@freescale.com> wrote:
 
-> Smatch found a bug in the error handling:
->
-> 	drivers/mtd/devices/docg3.c:1634 doc_register_sysfs()
-> 	error: buffer overflow 'doc_sys_attrs' 4 <= 4
->
-> The problem is that if the very last device_create_file() fails, then we
-> are beyond the end of the array.  Actually, any time i == 3 then there
-> is a problem.  We can fix this an simplify the code at the same time by
-> moving the !ret conditions out of the for loops and using a goto
-> instead.
+>  /*
+> + * R/W functions for big- or little-endian registers:
+> + * The qSPI controller's endian is independent of the CPU core's endian.
+> + * So far, although the CPU core is little-endian but the qSPI have two
+> + * versions for big-endian and little-endian.
+> + */
+> +static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem *addr)
+> +{
+> +       if (q->big_endian)
+> +               iowrite32be(val, addr);
+> +       else
+> +               iowrite32(val, addr);
+> +}
 
-Hi Dan,
+I suggest you to implement regmap support for this driver instead.
 
-I must admit I don't see the issue here :
- - if the last device_create_file() fail, we have :
-   - i = 3, ret = -Exxx
-   - doc_sys_attrs[floor][0] is populated
-   - doc_sys_attrs[floor][1] is populated
-   - doc_sys_attrs[floor][2] is populated
-   - doc_sys_attrs[floor][3] is probably NULL
-   - next for loop exits
+Take a look at drivers/watchdog/imx2_wdt.c for a reference.
 
-The while loop takes over :
-   - first iteration :
-     -  --i => i = 2
-	device_remove_file(dev, &doc_sys_attrs[floor][2]);
-   - then the remaining attributes
-
-I don't see the end of array issue. Could you tell me what I miss ?
-
-Cheers.
-
---
-Robert
+Then you only need to pass 'big-endian' as a property for the qspi in
+the .dtsi file and regmap core will take care of endianness.
