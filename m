@@ -1,22 +1,22 @@
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
- helo=smtp.smtpout.orange.fr)
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZqGEj-0006PC-Bn
- for linux-mtd@lists.infradead.org; Sun, 25 Oct 2015 08:01:06 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org
-Subject: Re: [patch] mtd/docg3: off by one in doc_register_sysfs()
-References: <20151019102005.GF26688@mwanda> <87twpgwahr.fsf@belgarion.home>
- <20151024174912.GD7289@mwanda>
-Date: Sun, 25 Oct 2015 08:54:16 +0100
-In-Reply-To: <20151024174912.GD7289@mwanda> (Dan Carpenter's message of "Sat,
- 24 Oct 2015 20:49:12 +0300")
-Message-ID: <87wpubl6xj.fsf@belgarion.home>
+ id 1ZqKYg-0005UV-PJ
+ for linux-mtd@lists.infradead.org; Sun, 25 Oct 2015 12:37:59 +0000
+Date: Sun, 25 Oct 2015 14:33:59 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Felipe Balbi <balbi@ti.com>,
+ Markus Pargmann <mpa@pengutronix.de>, Tejun Heo <tj@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH -mm]
+ signal-turn-dequeue_signal_lock-into-kernel_dequeue_signal-fix
+Message-ID: <20151025133359.GB19437@redhat.com>
+References: <20151003181319.GA1036@redhat.com>
+ <20151003181336.GA1054@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151003181336.GA1054@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dan Carpenter <dan.carpenter@oracle.com> writes:
+Andrew,
 
-> On Sat, Oct 24, 2015 at 11:49:27AM +0200, Robert Jarzmik wrote:
->> Dan Carpenter <dan.carpenter@oracle.com> writes:
->> 
->> > Smatch found a bug in the error handling:
->> >
->> > 	drivers/mtd/devices/docg3.c:1634 doc_register_sysfs()
->> > 	error: buffer overflow 'doc_sys_attrs' 4 <= 4
->> >
->> > The problem is that if the very last device_create_file() fails, then we
->> > are beyond the end of the array.  Actually, any time i == 3 then there
->> > is a problem.  We can fix this an simplify the code at the same time by
->> > moving the !ret conditions out of the for loops and using a goto
->> > instead.
->> 
->> Hi Dan,
->> 
->> I must admit I don't see the issue here :
->>  - if the last device_create_file() fail, we have :
->>    - i = 3, ret = -Exxx
->>    - doc_sys_attrs[floor][0] is populated
->>    - doc_sys_attrs[floor][1] is populated
->>    - doc_sys_attrs[floor][2] is populated
->>    - doc_sys_attrs[floor][3] is probably NULL
+As Markus reports (thanks!)
+
+	signal-turn-dequeue_signal_lock-into-kernel_dequeue_signal.patch
+
+conflicts with the recent change in Linus' tree,
+
+> I just realised that this patch will conflict with a fixup patch for nbd
+> that will be included in rc7.
 >
-> We increment "i" to 4.
-Ah yes, I see it now, thanks. Somehow in my brain the !ret condition in the for
-loop was preventing the increment ... silly.
+> dcc909d90ccd (nbd: Add locking for tasks)
+>
+> I think there is basically one new instance of dequeue_signal_lock() that
+> needs to be replaced with kernel_dequeue_signal().
 
-So:
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Unless I missed something, this new dequeue_signal_lock() should simply
+die, but lets fix the conflict first.
 
-Cheers.
 
---
-Robert
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -592,10 +592,8 @@ static int nbd_thread_send(void *data)
+ 	spin_unlock_irqrestore(&nbd->tasks_lock, flags);
+ 
+ 	/* Clear maybe pending signals */
+-	if (signal_pending(current)) {
+-		siginfo_t info;
+-		dequeue_signal_lock(current, &current->blocked, &info);
+-	}
++	if (signal_pending(current))
++		kernel_dequeue_signal(NULL);
+ 
+ 	return 0;
+ }
