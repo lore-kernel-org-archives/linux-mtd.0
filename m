@@ -1,22 +1,21 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZqpQX-0003x9-Fe
- for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 21:35:40 +0000
-Received: by pabla5 with SMTP id la5so6246246pab.0
- for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 14:35:16 -0700 (PDT)
-Date: Mon, 26 Oct 2015 14:35:14 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 4/4] mtd: warn when registering the same master many times
-Message-ID: <20151026213514.GL13239@google.com>
-References: <1433200640-17858-1-git-send-email-computersforpeace@gmail.com>
- <1433200640-17858-4-git-send-email-computersforpeace@gmail.com>
- <556D633E.70300@nod.at>
+ id 1ZqpWe-0002IP-4S
+ for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 21:41:57 +0000
+Subject: Re: UBIFS corruption after power cut - possibly unstable bits issue?
+To: Tim Harvey <tharvey@gateworks.com>
+References: <CAJ+vNU3eu4qBxaZpDRY=Fidv=9iGmA5pq8b4yUfyBayLTos5oQ@mail.gmail.com>
+ <562E8697.50207@nod.at>
+ <CAJ+vNU1J+MvyWgY1FPv4G7TxQLDtPJWdWw=DP5+1h2HcTi-SxQ@mail.gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <562E9E0B.5030204@nod.at>
+Date: Mon, 26 Oct 2015 22:41:31 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <556D633E.70300@nod.at>
+In-Reply-To: <CAJ+vNU1J+MvyWgY1FPv4G7TxQLDtPJWdWw=DP5+1h2HcTi-SxQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 02, 2015 at 10:03:10AM +0200, Richard Weinberger wrote:
-> Am 02.06.2015 um 01:17 schrieb Brian Norris:
-> > When CONFIG_MTD_PARTITIONED_MASTER=y, it is fatal to call
-> > mtd_device_parse_register() twice on the same MTD, as we try to register
-> > the same device/kobject multipile times.
-> > 
-> > When CONFIG_MTD_PARTITIONED_MASTER=n, calling
-> > mtd_device_parse_register() is more of just a nuisance, as we can mostly
-> > navigate around any conflicting actions.
-> > 
-> > But anyway, doing so is a Bad Thing (TM), and we should complain loudly
-> > for any drivers that try to do this.
-> > 
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > ---
-> >  drivers/mtd/mtdcore.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index 03eec42dc715..f0e157e0be89 100644
-> > --- a/drivers/mtd/mtdcore.c
-> > +++ b/drivers/mtd/mtdcore.c
-> > @@ -387,6 +387,14 @@ int add_mtd_device(struct mtd_info *mtd)
-> >  	struct mtd_notifier *not;
-> >  	int i, error;
-> >  
-> > +	/*
-> > +	 * May occur, for instance, on buggy drivers which call
-> > +	 * mtd_device_parse_register() multiple times on the same master MTD,
-> > +	 * especially with CONFIG_MTD_PARTITIONED_MASTER=y.
-> > +	 */
-> > +	if (WARN(mtd->backing_dev_info, "MTD already registered\n"))
-> > +		return -EEXIST;
-> > +
-> >  	mtd->backing_dev_info = &mtd_bdi;
-> >  
-> >  	BUG_ON(mtd->writesize == 0);
-> > @@ -597,6 +605,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
-> >  	 * does cause problems with parse_mtd_partitions() above (e.g.,
-> >  	 * cmdlineparts will register partitions more than once).
-> >  	 */
-> > +	WARN(mtd->reboot_notifier.notifier_call, "MTD already registered\n");
-> >  	if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
-> >  		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
-> >  		register_reboot_notifier(&mtd->reboot_notifier);
-> 
-> One minor nit, IMHO WARN_ONCE() would make more sense.
-> 
-> Beside of that:
-> Reviewed-by: Richard Weinberger <richard@nod.at>
+Tim,
 
-Changed to WARN_ONCE() and applied
+Am 26.10.2015 um 21:31 schrieb Tim Harvey:
+> What would be causing the bit-flips on the erased pages? Could it have
+> something to do with the larger flash part having a much longer erase
+> time?
+
+According to NAND manufactures can happen also on empty space.
+At the time when UBIFS was designed this was not known nor was it observed.
+These days it seems to happen on some large/cheap NANDs.
+
+> There shouldn't be anything writing to ubifs so I'm not clear what
+> caused this to occur. Note that even if I remove the /etc/fstab that
+> causes root to be re-mounted read/write I always see 'UBIFS (ubi0:0):
+> recovery needed' and I'm not understanding what causes that but it
+> makes me think that NAND is getting touched each and every boot by the
+> recovery process.
+> 
+>> In March there was an attempt to fix that in software.
+>> But no mainline ready solution was presented so far:
+>> http://lists.infradead.org/pipermail/linux-mtd/2014-March/052521.html
+>>
+>> It is not clear whether to implement this directly in gpmi-nand or MTD core.
+>> Currently UBIFS assumes that empty spaces must contain only 0xff octets.
+>> A naive approach would be removing that check from UBIFS, bit this can have
+>> disastrous consequences as UBIFS's recovery algorithm relies on that.
+> 
+> I think I ran across that approach right before the thread you pointed
+> me to: http://thread.gmane.org/gmane.linux.drivers.mtd/52208
+
+:-)
+
+> the second case is not permanent corruption - when the system is
+> power-cycled it comes up fine the next time.
+
+Yeah, but have you checked how the temporary corruption looks like?
+
+Thanks,
+//richard
