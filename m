@@ -1,26 +1,28 @@
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zqo1j-0004qV-92
- for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 20:05:56 +0000
-Received: by pasz6 with SMTP id z6so197346374pas.2
- for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 13:05:34 -0700 (PDT)
-Date: Mon, 26 Oct 2015 13:05:31 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: IMG-MIPSLinuxKerneldevelopers@imgtec.com,
- Alex Smith <alex.smith@imgtec.com>, Alex Smith <alex@alex-smith.me.uk>,
- Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Niklas Cassel <niklas.cassel@axis.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7] mtd: nand: increase ready wait timeout and report
- timeouts
-Message-ID: <20151026200531.GE13239@google.com>
-References: <1444139527-14087-1-git-send-email-harvey.hunt@imgtec.com>
+ id 1Zqo4k-0005KA-Pj
+ for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 20:09:03 +0000
+Received: by igdg1 with SMTP id g1so67510854igd.1
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 13:08:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1444139527-14087-1-git-send-email-harvey.hunt@imgtec.com>
+In-Reply-To: <562E7667.5050406@broadcom.com>
+References: <1445629626-27474-1-git-send-email-clay@daemons.net>
+ <20151023232742.GV13239@google.com> <562AD54B.2000501@broadcom.com>
+ <20151024011219.GW13239@google.com>
+ <CAOVqfW-1YurDwJbKDgUJdQZVxJ_rWDg-x+28++SZtg-vPO4kYg@mail.gmail.com>
+ <20151026181430.GA13239@google.com> <562E7667.5050406@broadcom.com>
+Date: Mon, 26 Oct 2015 13:08:41 -0700
+Message-ID: <CAOVqfW8g2w=u8fO5GTa=5Hw_OOPS6NcGFg3TiLbCPny14id0VQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: brcmnand: Fix NAND_CMD_PARAM byte order
+From: Clay McClure <clay@daemons.net>
+To: Ray Jui <rjui@broadcom.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ "bcm-kernel-feedback-list@broadcom.com"
+ <bcm-kernel-feedback-list@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,58 +32,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 06, 2015 at 02:52:07PM +0100, Harvey Hunt wrote:
-> From: Alex Smith <alex.smith@imgtec.com>
-> 
-> If nand_wait_ready() times out, this is silently ignored, and its
-> caller will then proceed to read from/write to the chip before it is
-> ready. This can potentially result in corruption with no indication as
-> to why.
-> 
-> While a 20ms timeout seems like it should be plenty enough, certain
-> behaviour can cause it to timeout much earlier than expected. The
-> situation which prompted this change was that CPU 0, which is
-> responsible for updating jiffies, was holding interrupts disabled
-> for a fairly long time while writing to the console during a printk,
-> causing several jiffies updates to be delayed. If CPU 1 happens to
-> enter the timeout loop in nand_wait_ready() just before CPU 0 re-
-> enables interrupts and updates jiffies, CPU 1 will immediately time
-> out when the delayed jiffies updates are made. The result of this is
-> that nand_wait_ready() actually waits less time than the NAND chip
-> would normally take to be ready, and then read_page() proceeds to
-> read out bad data from the chip.
-> 
-> The situation described above may seem unlikely, but in fact it can be
-> reproduced almost every boot on the MIPS Creator Ci20.
-> 
-> Therefore, this patch increases the timeout to 400ms. This should be
-> enough to cover cases where jiffies updates get delayed. In nand_wait()
-> the timeout was previously chosen based on whether erasing or
-> programming. This is changed to be 400ms unconditionally as well to
-> avoid similar problems there. nand_wait() is also slightly refactored
-> to be consistent with nand_wait{,_status}_ready(). These changes should
-> have no effect during normal operation.
-> 
-> Debugging this was made more difficult by the misleading comment above
-> nand_wait_ready() stating "The timeout is caught later" - no timeout was
-> ever reported, leading me away from the real source of the problem.
-> Therefore, a pr_warn() is added when a timeout does occur so that it is
-> easier to pinpoint similar problems in future.
-> 
-> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-> Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-> Reviewed-by: Niklas Cassel <niklas.cassel@axis.com>
-> Cc: Alex Smith <alex@alex-smith.me.uk>
-> Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Niklas Cassel <niklas.cassel@axis.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
-> This patch was originally sent in a JZ4780 patch set, but sending
-> it on its own was deemed more appropriate. Alex Smith sent the
-> original patch - this is an unmodified version that he has asked me
-> to send.
+On Mon, Oct 26, 2015 at 11:52 AM, Ray Jui <rjui@broadcom.com> wrote:
 
-Looks good, thanks. Pushed to l2-mtd.git.
+> I guess I still need to get this straight in my brain and I have a few
+> questions here:
+>
+> 1) I remember we had some other discussions related to this before,
+> regarding the NAND data endianness. We confirmed that the raw NAND data
+> programmed with a standard flasher is in LE format. And this is why we need
+> to configure apb bus to LE before accessing these data/cache registers?
+
+According to the ONFI specifications[1], the parameter page is little-endian:
+
+"For parameters that span multiple bytes, the least significant byte
+of the parameter corresponds to the first byte."
+
+I'm not sure if that's what drove the decision to use LE APB
+transfers, but it does simplify the code to use the same byte ordering
+on the bus as in the CPU.
+
+> 2) Are we saying here that, by standard, the ONFI parameters should be in BE
+> format as opposed to the raw NAND data format, and therefore no apb bus
+> config to LE should be done? Or, your current logic seems to do the
+> following:
+>
+> 1) still configure the APB to LE before access data/cache registers
+> 2) do a be32_to_cpu, which in effect causes a byte swap on ARM CPU running
+> in LE (our current case). If data read from APB is already in LE, this makes
+> it become BE
+> 3) return directly from the byte location of the buffer memory, instead of
+> doing a 32-bit based read and doing some arithmetic, to get the byte data
+
+The bug in read_byte() is due to the fact that it currently assumes
+the host CPU byte order is big-endian (i.e., it always extracts byte 0
+from the high bits of the word). If we continue to use LE APB
+transfers, then I think we can exclude the be32_to_cpu() call from
+Brian's patch. Converting flash_cache to a byte array I believe is all
+we need to solve the problem with nand_flash_detect_onfi(). That
+function already includes the necessary byte-order conversions for
+big-endian machines.
+
+Brian, I'll test a variation of this patch on our iProc-based
+platforms and report back.
+
+Thanks,
+
+Clay
+
+[1]: http://www.onfi.org/specifications
