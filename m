@@ -1,23 +1,22 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZqpQG-00033j-67
- for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 21:35:23 +0000
-Received: by padhk11 with SMTP id hk11so199538603pad.1
- for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 14:34:59 -0700 (PDT)
-Date: Mon, 26 Oct 2015 14:34:56 -0700
+ id 1ZqpQX-0003x9-Fe
+ for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 21:35:40 +0000
+Received: by pabla5 with SMTP id la5so6246246pab.0
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 14:35:16 -0700 (PDT)
+Date: Mon, 26 Oct 2015 14:35:14 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Richard Weinberger <richard@nod.at>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/4] mtd: fixup corner case error handling in
- mtd_device_parse_register()
-Message-ID: <20151026213456.GK13239@google.com>
+Subject: Re: [PATCH 4/4] mtd: warn when registering the same master many times
+Message-ID: <20151026213514.GL13239@google.com>
 References: <1433200640-17858-1-git-send-email-computersforpeace@gmail.com>
- <1433200640-17858-3-git-send-email-computersforpeace@gmail.com>
- <556D6339.70607@nod.at>
+ <1433200640-17858-4-git-send-email-computersforpeace@gmail.com>
+ <556D633E.70300@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <556D6339.70607@nod.at>
+In-Reply-To: <556D633E.70300@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,49 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 02, 2015 at 10:03:05AM +0200, Richard Weinberger wrote:
+On Tue, Jun 02, 2015 at 10:03:10AM +0200, Richard Weinberger wrote:
 > Am 02.06.2015 um 01:17 schrieb Brian Norris:
-> > Since commit 3efe41be224c ("mtd: implement common reboot notifier
-> > boilerplate"), we might try to register a reboot notifier for an MTD
-> > that failed to register. Let's avoid this by making the error path
-> > clearer.
+> > When CONFIG_MTD_PARTITIONED_MASTER=y, it is fatal to call
+> > mtd_device_parse_register() twice on the same MTD, as we try to register
+> > the same device/kobject multipile times.
+> > 
+> > When CONFIG_MTD_PARTITIONED_MASTER=n, calling
+> > mtd_device_parse_register() is more of just a nuisance, as we can mostly
+> > navigate around any conflicting actions.
+> > 
+> > But anyway, doing so is a Bad Thing (TM), and we should complain loudly
+> > for any drivers that try to do this.
 > > 
 > > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > > ---
-> >  drivers/mtd/mtdcore.c | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
+> >  drivers/mtd/mtdcore.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
 > > 
 > > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index 8bbbb751bf45..03eec42dc715 100644
+> > index 03eec42dc715..f0e157e0be89 100644
 > > --- a/drivers/mtd/mtdcore.c
 > > +++ b/drivers/mtd/mtdcore.c
-> > @@ -579,9 +579,15 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
-> >  		else
-> >  			ret = nr_parts;
-> >  	}
-> > +	/* Didn't come up with either parsed OR fallback partitions */
-> > +	if (ret < 0) {
-> > +		pr_info("mtd: failed to find partitions\n");
-> > +		goto out;
-> > +	}
+> > @@ -387,6 +387,14 @@ int add_mtd_device(struct mtd_info *mtd)
+> >  	struct mtd_notifier *not;
+> >  	int i, error;
 > >  
-> > -	if (ret >= 0)
-> > -		ret = mtd_add_device_partitions(mtd, real_parts, ret);
-> > +	ret = mtd_add_device_partitions(mtd, real_parts, ret);
-> > +	if (ret)
-> > +		goto out;
+> > +	/*
+> > +	 * May occur, for instance, on buggy drivers which call
+> > +	 * mtd_device_parse_register() multiple times on the same master MTD,
+> > +	 * especially with CONFIG_MTD_PARTITIONED_MASTER=y.
+> > +	 */
+> > +	if (WARN(mtd->backing_dev_info, "MTD already registered\n"))
+> > +		return -EEXIST;
+> > +
+> >  	mtd->backing_dev_info = &mtd_bdi;
 > >  
-> >  	/*
-> >  	 * FIXME: some drivers unfortunately call this function more than once.
-> > @@ -596,6 +602,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+> >  	BUG_ON(mtd->writesize == 0);
+> > @@ -597,6 +605,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+> >  	 * does cause problems with parse_mtd_partitions() above (e.g.,
+> >  	 * cmdlineparts will register partitions more than once).
+> >  	 */
+> > +	WARN(mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+> >  	if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
+> >  		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
 > >  		register_reboot_notifier(&mtd->reboot_notifier);
-> >  	}
-> >  
-> > +out:
-> >  	kfree(real_parts);
-> >  	return ret;
-> >  }
 > 
+> One minor nit, IMHO WARN_ONCE() would make more sense.
+> 
+> Beside of that:
 > Reviewed-by: Richard Weinberger <richard@nod.at>
 
-Not sure why I left this one; applied to l2-mtd.git
+Changed to WARN_ONCE() and applied
