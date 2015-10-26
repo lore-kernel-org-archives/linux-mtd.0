@@ -1,20 +1,16 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZqpaR-00060X-2r
- for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 21:45:52 +0000
-Received: by padhk11 with SMTP id hk11so199757937pad.1
- for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 14:45:30 -0700 (PDT)
-Date: Mon, 26 Oct 2015 14:45:28 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Han Xu <b45815@freescale.com>
-Cc: linux@roeck-us.net, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: fsl-quadspi: change the obfuscate macro definition
-Message-ID: <20151026214528.GM13239@google.com>
-References: <1445624308-27449-1-git-send-email-b45815@freescale.com>
+ id 1Zqpl7-0002NQ-A0
+ for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 21:56:54 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1445624308-27449-1-git-send-email-b45815@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Date: Mon, 26 Oct 2015 14:55:26 -0700
+From: Stefan Agner <stefan@agner.ch>
+To: richard.weinberger@gmail.com
+Cc: linux-mtd@lists.infradead.org, U-Boot <u-boot@lists.denx.de>
+Subject: Monster boot
+Message-ID: <02c03a72e96d41b4c40e60efee4fd988@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,89 +20,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 23, 2015 at 01:18:28PM -0500, Han Xu wrote:
-> Change the READ/WRITE to FSL_READ/FSL_WRITE to de-obfuscate the
-> concatenating string in LUT macro.
-> 
-> Signed-off-by: Han Xu <b45815@freescale.com>
+Hi Richard,
 
-Rewrote the subject and commit message, since it was misleading and not
-informative enough. Pushed to l2-mtd.git.
+Just looked through the slides of your ELCE talk "Current challenges in
+UBIFS". I would like to elaborate the issues wrt moster boot. I did not
+attend the talk (sorry) and also was not able to find a video of it so
+far, hence I don't know what has been said at the talk... So, the last
+slide says:
 
-Brian
+* Don’t boot from UBIFS
+* Your boot loader does not have to know UBIFS nor have full UBI support
+* Use static volumes, you can read out a static UBI volume with 100 LoC
+* Thomas Gleixner sent patches for u-boot
 
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index dc38389..7b10ed4 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -155,15 +155,15 @@
->  #define LUT_MODE		4
->  #define LUT_MODE2		5
->  #define LUT_MODE4		6
-> -#define LUT_READ		7
-> -#define LUT_WRITE		8
-> +#define LUT_FSL_READ		7
-> +#define LUT_FSL_WRITE		8
->  #define LUT_JMP_ON_CS		9
->  #define LUT_ADDR_DDR		10
->  #define LUT_MODE_DDR		11
->  #define LUT_MODE2_DDR		12
->  #define LUT_MODE4_DDR		13
-> -#define LUT_READ_DDR		14
-> -#define LUT_WRITE_DDR		15
-> +#define LUT_FSL_READ_DDR		14
-> +#define LUT_FSL_WRITE_DDR		15
->  #define LUT_DATA_LEARN		16
->  
->  /*
-> @@ -366,7 +366,7 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  
->  	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
->  			base + QUADSPI_LUT(lut_base));
-> -	writel(LUT0(DUMMY, PAD1, dummy) | LUT1(READ, PAD4, rxfifo),
-> +	writel(LUT0(DUMMY, PAD1, dummy) | LUT1(FSL_READ, PAD4, rxfifo),
->  			base + QUADSPI_LUT(lut_base + 1));
->  
->  	/* Write enable */
-> @@ -387,11 +387,11 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  
->  	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
->  			base + QUADSPI_LUT(lut_base));
-> -	writel(LUT0(WRITE, PAD1, 0), base + QUADSPI_LUT(lut_base + 1));
-> +	writel(LUT0(FSL_WRITE, PAD1, 0), base + QUADSPI_LUT(lut_base + 1));
->  
->  	/* Read Status */
->  	lut_base = SEQID_RDSR * 4;
-> -	writel(LUT0(CMD, PAD1, SPINOR_OP_RDSR) | LUT1(READ, PAD1, 0x1),
-> +	writel(LUT0(CMD, PAD1, SPINOR_OP_RDSR) | LUT1(FSL_READ, PAD1, 0x1),
->  			base + QUADSPI_LUT(lut_base));
->  
->  	/* Erase a sector */
-> @@ -410,17 +410,17 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  
->  	/* READ ID */
->  	lut_base = SEQID_RDID * 4;
-> -	writel(LUT0(CMD, PAD1, SPINOR_OP_RDID) | LUT1(READ, PAD1, 0x8),
-> +	writel(LUT0(CMD, PAD1, SPINOR_OP_RDID) | LUT1(FSL_READ, PAD1, 0x8),
->  			base + QUADSPI_LUT(lut_base));
->  
->  	/* Write Register */
->  	lut_base = SEQID_WRSR * 4;
-> -	writel(LUT0(CMD, PAD1, SPINOR_OP_WRSR) | LUT1(WRITE, PAD1, 0x2),
-> +	writel(LUT0(CMD, PAD1, SPINOR_OP_WRSR) | LUT1(FSL_WRITE, PAD1, 0x2),
->  			base + QUADSPI_LUT(lut_base));
->  
->  	/* Read Configuration Register */
->  	lut_base = SEQID_RDCR * 4;
-> -	writel(LUT0(CMD, PAD1, SPINOR_OP_RDCR) | LUT1(READ, PAD1, 0x1),
-> +	writel(LUT0(CMD, PAD1, SPINOR_OP_RDCR) | LUT1(FSL_READ, PAD1, 0x1),
->  			base + QUADSPI_LUT(lut_base));
->  
->  	/* Write disable */
-> -- 
-> 1.9.1
-> 
+Can you elaborate why you disadvise booting from UBIFS?
+
+Here is my analysis on that:
+
+We switched to "monster boot" approach about one year ago. On the plus
+side, U-Boot had already UBIFS read support and it works. Beside that,
+it is basically the standard boot mode for distros on PC-like systems
+(GRUB is able to read the kernel from a ext2/ext3 formatted /boot
+partition, UEFI reads EFI boot loaders or the kernel with the EFI stub
+from FAT partitions directly).
+
+I see the obvious pain point: It makes the boot loader much more
+complex... After all, we had some issues lately, especially with Fastmap
+(e.g. PEB leaks). However, one thing was related to a driver issue, and
+after backporting some Fastmap patches from Linux, Fastmap in U-Boot
+seems to be stable now. Anyway, since these issues were within the
+U-Boot UBI stack (and below), we would probably would have run into them
+even when using static volumes (assuming using the full UBI stack of
+U-Boot). But likely not if we would have used the minimal static volume
+approach of Thomas Gleixner.... On the other hand, we did not had any
+problems with the UBIFS part so far...
+A fallback boot scheme is possible with UBIFS (just have a spare kernel
+ready) but it suffer from the huge stack...
+
+Another disadvantage with monster boot is that we can't replace the
+kernel from U-Boot currently since there is no UBIFS write support,
+however that is not really a problem.
+
+On the advantage side, we do not loose any space (we would likely have
+to create a larger than necessary Kernel volume to reserve some space in
+case customers want to load a bigger kernel). And we can use one UBIFS
+image for multiple modules (multiple device tree in /boot).
+
+I also did some rough performance measurements, and it seems that the
+overhead of mounting the UBIFS is not all that huge:
+UBI Attach (without Fastmap): 1.57s
+UBI Attach (with Fastmap): 0.25s
+UBIFS Mount: 0.06s
+Load kernel from FS: 380ms
+Load DT from FS: 9ms
+
+However, it seems that reading from UBIFS is somewhat slower compared to
+reading from static volumes:
+Load kernel from UBI 4.5MB: 316ms
+Load kernel from UBI 24kB: 6ms
+
+I used the size argument of the ubi read command to avoid reading the
+whole static volume. This is somewhat ugly to handle since the size need
+to be stored in environment variables... I am consider implementing a
+bootubi command which would read only the effective size for a kernel,
+device tree or initramfs by making use of the individual file headers.
+
+I would be glad if you could comment whether I miss anything...
+
+--
+Stefan
