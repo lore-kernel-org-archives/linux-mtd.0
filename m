@@ -1,19 +1,23 @@
-Received: from m109-177.yeah.net ([123.58.177.109])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZqfPG-0000Vt-2q
- for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 10:53:41 +0000
-Date: Mon, 26 Oct 2015 18:53:11 +0800
-From: wangzaiwei <wangzaiwei@top-vision.cn>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Cc: lizhenwei <lizhenwei@top-vision.cn>,
- "'Li Jiaxin'" <lijiaxin@top-vision.cn>
-Reply-To: wangzaiwei <wangzaiwei@top-vision.cn>
-Subject: Another JFFS2 deadlock, kernel 3.4.11
-Mime-Version: 1.0
-Message-ID: <2015102618531107256082@top-vision.cn>
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZqhXr-00022y-37
+ for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 13:10:43 +0000
+Received: by oiad129 with SMTP id d129so99649402oia.0
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 06:10:17 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
+References: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
+Date: Mon, 26 Oct 2015 14:10:17 +0100
+Message-ID: <CACRpkdbH3yP3jbeeGxrAJXoJeXJQtnPfZpQ1dtx7DpP9_uaZhQ@mail.gmail.com>
+Subject: Re: [PATCH 00/10] ARM MTD AFS v2 partition support
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,75 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gYWxso7oNCg0KU29ycnkgZm9yIG15IHBvb2wgRW5nbGlzaCBhbmQgYmFkIEVtYWlsIHVz
-aW5nIGZpcnN0Lg0KDQpJIGhhdmUgZW5jb3VudGVyZWQgYW5vdGhlciBkZWFkbG9jayBiZXR3ZWVu
-IHNldmVyYWwgSkZGUzIgdGhyZWFkcy4NCihJdCBpcyBkaWZmZXJlbnQgZnJvbSB0aGUgb25lIHBv
-c3QgYXQNCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAx
-Mi1PY3RvYmVyLzA0NDI2My5odG1sICkNCg0KVGFyZ2V0IHN5c3RlbSBpcyBhIHNvYyB3aXRoIEJD
-TTY4MzgoRHVhbCBjb3JlLE1JUFMzMiwgQnJvYWRjb20gQk1JUFM0MzUwIFY4LjApDQpXZSBtYWRl
-IGEgamZmczIgcGFydGl0aW9uIG9uIGZsYXNoIChTMzRNTDAxRzIwMFRGSTAwMCAxR2JpdCBTTEMg
-TmFuZCBDaGlwKSwNClRoZW4gd2UgbW91bnQgdGhpcyBqZmZzMiBwYXJ0aXRpb24gb24gYm90aCAv
-YXBwIGFuZCAvZGF0YQ0KbXRkOmRhdGEgb24gL2RhdGEgdHlwZSBqZmZzMiAocncscmVsYXRpbWUp
-DQptdGQ6ZGF0YSBvbiAvYXBwIHR5cGUgamZmczIgKHJ3LHJlbGF0aW1lKQ0KDQpXZSBlbmNvdW50
-ZXJlZCBqZmZzMiBkZWFkbG9jayBpc3N1ZSBmaXJzdCB0aW1lIHdoZW4gd2UgcnVuIGNvbW1hbmQg
-InJlYm9vdCIgDQppbiBzaGVsbCAtLS0gInJlYm9vdCIgc3R1Y2tlZC5UaGVuIHdlIHRyaWVkIHN0
-ZXBzIGJlbG93DQoxLCBXZSBmb3VuZCB0aGF0IG5laXRoZXIgL2FwcCBub3IgL2RhdGEgY291bGQg
-bmVhcmx5IG5vdCBiZSBhY2Nlc3NlZC4NCiJscyIgInRvdWNoIiB3aWxsIGJlIHN0dWNrZWQgdG9v
-Lg0KMiwgV2Ugbm90aWNlZCB0aGF0IFtzeW5jX3N1cGVyc10gd2FzIGF0IGEgc3RhdGUgRC4NCjMs
-IFdlIGNvbXBpbGVkIGEga2VybmVsIG1vZHVsZSB3aGljaCBjYW4gcmVhZCBwcm9jZXNzJ3Mga2Vy
-bmVsIHN0YWNrLGFuZCBmb3VuZA0KW3N5bmNfc3VwZXJzXSBzdHVja2VkIGF0IGxvY2tfcGFnZSgp
-LGp1c3QgYXMgc2FtZSBhcyB3aGljaCBkZXNjcmliZWQgYXQgDQpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTItT2N0b2Jlci8wNDQyNjMuaHRtbCAuDQo0
-LCAicmVib290IiBjYWxsZWQgc3luYygpLHRoZW4gc3R1Y2tlZC4NClNvIHdlIHBhdGNoZWQgb3Vy
-IGtlcm5lbCByZWZlciB0byANCmdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2Vy
-bmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQgDQpTSEEtMTogNWZmZDM0MTJhZTU1MzZhNGM1NzQ2
-OWNiOGVhMzE4ODcxMjFkY2IyZQ0KKiBqZmZzMjogRml4IGxvY2sgYWNxdWlzaXRpb24gb3JkZXIg
-YnVnIGluIGpmZnMyX3dyaXRlX2JlZ2luDQoNCkJ1dCB0aGVzZSBkYXlzLCB3ZSBlbmNvdW50ZXJl
-ZCBhbm90aGVyIGRlYWRsb2NrIC4gDQpvdXIgcHJvY2VzcyBzdHVja2VkIGF0IHN5c3RlbSBjYWxs
-ICd1bmxpbmsoKScgd2hlbiB3ZSBkZWxldGUgYSBmaWxlLg0KDQpFbmNsb3NlZCBzY3JpcHRzIGNh
-biBiZSB1c2VkIHRvIHJlcHJvZHVjZSB0aGlzIG5ldyBpc3N1ZS4NClNjcmlwdHMgMTogIHRlc3Ry
-LnNoDQojIS9iaW4vc2gNCndoaWxlIFsgMSBdDQpkbw0KY2F0IC9hcHAvdGVzdC5maWxlID4vZGV2
-L251bGwNCmRvbmUNCg0KU2NyaXB0cyAyOnRlc3QyLnNoIA0KIyEvYmluL3NoDQp3aGlsZSBbIDEg
-XQ0KZG8NCmxzIC9hcHAgLWFsID4vZGV2L251bGwNCmxzIC9hcHAvdGVzdC5maWxlIC1hbCA+L2Rl
-di9udWxsDQpkb25lDQoNClNjcmlwdHMgMzp0ZXN0cy5zaCANCiMhL2Jpbi9zaA0Kd2hpbGUgWyAx
-IF0NCmRvDQpzeW5jDQpzbGVlcCAxDQpkb25lDQoNClNjcmlwdHMgNDp0ZXN0dy5zaCANCiMhL2Jp
-bi9zaA0Kd2hpbGUgWyAxIF0NCmRvDQpjYXQgL2V0Yy9pbml0dGFiID4+IC9hcHAvdGVzdC5maWxl
-DQpzbGVlcCAxDQpkb25lDQoNClNjcmlwdHMgNTp0ZXN0dy5zaCANCiMhL2Jpbi9zaA0Kd2hpbGUg
-WyAxIF0NCmRvDQpjYXQgL2V0Yy9jb25maWcgPiAvYXBwL3Rlc3QuZmlsZQ0Kc2xlZXAgMTANCmRv
-bmUNCg0KL2V0Yy9jb25maWcgaXMgYSBhc2NpaSB0ZXh0IGZpbGUgKHNpemU6IDEwNzg1Qnl0ZXMp
-DQoNClJ1biB0aGVzZSBzY3JpcHRzIGp1c3QgbGlrZToNCiMgLi90ZXN0dzIuc2ggJg0KIyAuL3Rl
-c3R3Mi5zaCAmDQojIC4vdGVzdHcyLnNoICYNCiMgLi90ZXN0dzIuc2ggJg0KIyAuL3Rlc3R3LnNo
-ICYNCiMgLi90ZXN0dy5zaCAmDQojIC4vdGVzdHcuc2ggJg0KIyAuL3Rlc3R3LnNoICYNCiMgLi90
-ZXN0ci5zaCAmDQojIC4vdGVzdHIuc2ggJg0KIyAuL3Rlc3RyLnNoICYNCiMgLi90ZXN0ci5zaCAm
-DQojIC4vdGVzdHIuc2ggJg0KIyAuL3Rlc3RyLnNoICYNCiMgLi90ZXN0cjIuc2ggJg0KIyAuL3Rl
-c3RyMi5zaCAmDQojIC4vdGVzdHIyLnNoICYNCiMgLi90ZXN0cjIuc2ggJg0KIyAuL3Rlc3RzLnNo
-ICYNCiMgLi90ZXN0cy5zaCAmDQoNCmFib3V0IDEwIG1pbnV0ZXMgbGF0ZXIsIHRoZXNlIHRlc3Qg
-c2NyaXB0cyB3aWxsIGJlIGJsb2NrZWQgaW4gc3RhdGUgJ0QnDQoNCldlIHBhcnNlZCB0aGlzIGlz
-c3VlIGFnYWluLiANCmZvciBbc3luY19zdXBlcnNdDQpqZmZzMl9nYXJiYWdlX2NvbGxlY3RfbGl2
-ZQ0KICAgIG11dGV4X2xvY2soJmYtPnNlbSkgICAgICAgICAgICAgICAgICAgICAgICAgKEEpDQog
-ICAgamZmczJfZ2FyYmFnZV9jb2xsZWN0X2Rub2RlDQogICAgICAgIGpmZnMyX2djX2ZldGNoX3Bh
-Z2UNCiAgICAgICAgICAgIHJlYWRfY2FjaGVfcGFnZV9hc3luYw0KICAgICAgICAgICAgICAgIGRv
-X3JlYWRfY2FjaGVfcGFnZQ0KICAgICAgICAgICAgICAgICAgICBsb2NrX3BhZ2UocGFnZSkgICAg
-ICAgICAgICAgKEIpDQpGb3Igb3RoZXIgdGFza3MNCglnZW5lcmljX2ZpbGVfYWlvX3JlYWQgDQoJ
-CWRvX2dlbmVyaWNfZmlsZV9yZWFkIA0KCQkJbG9ja19wYWdlX2tpbGxhYmxlKHBhZ2UpOyAgICAg
-ICAgICAgICAgICAoQikNCgkJCW1hcHBpbmctPmFfb3BzLT5yZWFkcGFnZSAgo6hqZmZzMl9yZWFk
-cGFnZSCjqSANCgkJCQltdXRleF9sb2NrKCZmLT5zZW0pICAgICAgICAgICAgICAgICAgKEEpDQoN
-CldlIG5vdGljZWQgdGhhdCBqZmZzMl9yZWFkcGFnZSBhbHdheXMgYmUgY2FsbGVkIHdpdGggbG9j
-a19wYWdlKHBhZ2UpIGhvbGQsDQpidXQgbW9zdCBvZiBvdGhlciBmdW5jdGlvbnMgaW4gamZmczIg
-bW9kdWxlIGNhbGwgbXV0ZXhfbG9jaygmZi0+c2VtKSBmaXJzdCwNCmxvY2tfcGFnZShwYWdlKSBz
-ZWNvbmQuIEl0IGlzIHRoZSBzYW1lIGluIGxhdGVzdCBrZXJuZWw6DQpnaXQ6Ly9naXQua2VybmVs
-Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0IA0KSXMgdGhp
-cyBsb2dpY2FsPyBPciBpcyBpdCBqdXN0IG15IHVuZGVyc3RhbmRpbmcgd3Jvbmc/DQoNCk1vcmUg
-aW5mbzoNCldlIGhhdmUgdGVzdGVkIHRoaXMgaXNzdWUgb24gYW5vdGhlciB0YXJnZXQgc3lzdGVt
-LGEgc29jIHdpdGggRnJlZVNjYWxlIE1QQzgzMDgNCihQb3dlclBjIGFyY2gsIGUzMDBjMyksIExp
-bnV4IHZlcnNpb24gMi42LjI5LjYuIGl0IGhhcyBhIGpmZnMyIHBhcnRpdGlvbiBvbiBhDQpub3Ig
-Zmxhc2goUzI5R0w1MTJQMTFURkkwMTApLg0KV2UgbmV2ZXIgcmVwcm9kdWNlZCBhbnkgamZmczIg
-ZGVhZGxvY2sgaXNzdWUgb24gdGhpcyBwb3dlcnBjIHRhcmdldC4NCkV2ZW4gdGhvdWdoIGl0cyBs
-aW51eCBzb3VyY2UgY29kZSBoYXMgdGhlIHByb2JsZSBtZW50aW9uZWQgaW4gDQpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTItT2N0b2Jlci8wNDQyNjMu
-aHRtbC4NCg0KV2hhdCdzIHRoZSBtYWluIGRpZmZlcmVuY2UgYmV0d2VlbiB0aGUgdHdvIHRhcmdl
-dHM/IA0KV2Ugbm90aWNlZCBCYWNraW5nLURldihiZGlfc3luY19zdXBlcnMpIGNvbWluZyBpbnRv
-IGtlcm5lbCBiZXR3ZWVuIHR3byB2ZXJzaW9ucy4gDQphbmQgZGlmZmVyZW50IGZsYXNoIHR5cGVz
-IGJlaW5nIHVzZWQgZm9yIHR3byB0YXJnZXRzKG9uZSBuYW5kICxvbmUgbm9yKQ0KDQotLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpGcm9tOiB3YW5nemFpd2VpDQoxNXRoIFImRCBE
-ZXBhcnRtZW50DQpTdW1hdmlzaW9uIFRlY2hub2xvZ2llcyBDby4sIEx0ZC4g
+On Thu, Oct 15, 2015 at 3:08 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
+
+> Years ago, the ARM reference platforms moved away from the footer
+> format parsed by the current AFS code in MTD. As far as I can
+> tell this begun with the RealView reference designs (mach-realview)
+> and the new format has been used in RealView, Versatile Express
+> and recently the Juno Development platform (64bit).
+>
+> The code has not been working for newer designs for a long time.
+> Proper parsing of the flash image partitions is very helpful when
+> you want to replace firmware when running full Linux and none of
+> the boot monitors or boot loaders.
+>
+> After this, AFS parsing will work on all ARM reference designs,
+> or well, all I could test. I tested the Integrator/AP, RealView
+> PB11MPCore and Juno Development Platform.
+>
+> The first 9 patches basically refactors the current code to
+> make the old partition format more encapsulated, while the last
+> patch adds the new v2 format.
+
+If there are no comments on this series, then can it be
+applied for v4.4?
+
+Yours,
+Linus Walleij
