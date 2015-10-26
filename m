@@ -1,16 +1,19 @@
-Received: from mail-yk0-x236.google.com ([2607:f8b0:4002:c07::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zqhp9-0004AS-9i
- for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 13:28:31 +0000
-Received: by ykek133 with SMTP id k133so851878yke.2
- for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 06:28:09 -0700 (PDT)
+From: Bayi Cheng <bayi.cheng@mediatek.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>
+CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Daniel Kurtz <djkurtz@chromium.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>,
+ <jteki@openedev.com>, <ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH v5 0/3] Mediatek SPI-NOR flash driver 
+Date: Mon, 26 Oct 2015 21:40:36 +0800
+Message-ID: <1445866839-31063-1-git-send-email-bayi.cheng@mediatek.com>
 MIME-Version: 1.0
-Date: Mon, 26 Oct 2015 14:28:09 +0100
-Message-ID: <CALtMJEA7vsVxdg-s03WyehTH+bEHjvFWmGgcW5c5GjVteefFGA@mail.gmail.com>
-Subject: override read-only flag of /dev/mtd1 partition
-From: Andreas Fenkart <afenkart@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+This series is based on v4.3-rc1 and l2-mtd.git
+(git://git.infradead.org/l2-mtd.git)
 
-I try to modify the u-boot params using fw_setenv from linux prompt,
-unfortunately that fails since /dev/mtd1 is read-only
+Change in v5:
+1: add "status = "disable"" to device tree
+2: add document "flash" node
+3: fix some statement error in Kconfig file
+4: fix alphabetical order error in makefile
+5: delete the parament "mtd_info *mtd" in mt8173_nor structure
+6: delete SPINOR_OP_WREN repeated calls
+7: add mt8173_nor_do_tx & mt8173_nor_do_rx for them full potential
+8: use a subnode to represent the flash
 
-# fw_setenv -s enable-rescue-system.txt
-Can't open /dev/mtd1: Permission denied
+Change in v4:
+1: delete the parament "write_enable" for mt8173_nor_write_reg
+2: fix the build warning for calling mt8173_nor_write_single_byte
 
-Obviously, since our u-boot / linux got the flash layout wrong:
+Change in v3:
+1: use switch() to replace some if-else statement
+2: use shifts to replace endianness statement
+3: delete some unused macros
+4: use auto-increment mechanism for single write
+5: write address added to 32bytes
 
-Creating 3 MTD partitions on "m25p80":
-0x000000000000-0x0000000c0000 : "bootloader"
-0x0000000c0000-0x0000000c2000 : "ubparams"
-mtd: partition "ubparams" doesn't end on an erase block -- force read-only
-0x0000000c2000-0x000000400000 : "unused"
-mtd: partition "unused" doesn't start on an erase block boundary --
-force read-only
+Change in v2:
+1. Rebase to 4.3-rc1
+2. propagate error code
+3. delete mux clock and axi clock in dts file
+4. descripts more exactly for binding file
+5. change file names from mtk-nor.c to mtk_quadspi.c
+6. delete some functions witch were used once time
 
-The reason for accessing the u-boot is to switch the bootcmd to boot
-our new and shiny kernel upgrade. Intent is to leave the factory
-kernel untouched and use it as a fallback just in case.
+Bayi Cheng (3):
+  doc: dt: add documentation for Mediatek spi-nor controller
+  mtd: mtk-nor: mtk serial flash controller driver
+  arm64: dts: mt8173: Add nor flash node
 
-What are my options to tinker with the u-boot environment, without
-having to replace the kernel first? Is there some magic knob, to
-switch off the read-only flag. As you can see there is nothing
-valuable coming after the u-boot params, and u-boot itself is aligned
-correctly.
+ .../devicetree/bindings/mtd/mtk-quadspi.txt        |  41 ++
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi           |  16 +
+ drivers/mtd/spi-nor/Kconfig                        |   7 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/mtk-quadspi.c                  | 491 +++++++++++++++++++++
+ 5 files changed, 556 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+ create mode 100644 drivers/mtd/spi-nor/mtk-quadspi.c
 
-kind regards,
-Andi
+--
+1.8.1.1.dirty
