@@ -1,25 +1,18 @@
-Received: from mail-gw3-out.broadcom.com ([216.31.210.64])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zqmsv-00058A-Rg
- for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 18:52:46 +0000
-Subject: Re: [PATCH] mtd: brcmnand: Fix NAND_CMD_PARAM byte order
-To: Brian Norris <computersforpeace@gmail.com>, Clay McClure <clay@daemons.net>
-References: <1445629626-27474-1-git-send-email-clay@daemons.net>
- <20151023232742.GV13239@google.com> <562AD54B.2000501@broadcom.com>
- <20151024011219.GW13239@google.com>
- <CAOVqfW-1YurDwJbKDgUJdQZVxJ_rWDg-x+28++SZtg-vPO4kYg@mail.gmail.com>
- <20151026181430.GA13239@google.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Florian
- Fainelli" <f.fainelli@gmail.com>, Scott Branden <sbranden@broadcom.com>,
- "bcm-kernel-feedback-list@broadcom.com"
- <bcm-kernel-feedback-list@broadcom.com>
-From: Ray Jui <rjui@broadcom.com>
-Message-ID: <562E7667.5050406@broadcom.com>
-Date: Mon, 26 Oct 2015 11:52:23 -0700
+Received: from mail-oi0-x229.google.com ([2607:f8b0:4003:c06::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zqna8-0003d7-I4
+ for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 19:37:26 +0000
+Received: by oiad129 with SMTP id d129so106932922oia.0
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 12:37:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20151026181430.GA13239@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
+Date: Mon, 26 Oct 2015 12:37:02 -0700
+Message-ID: <CAJ+vNU3eu4qBxaZpDRY=Fidv=9iGmA5pq8b4yUfyBayLTos5oQ@mail.gmail.com>
+Subject: UBIFS corruption after power cut - possibly unstable bits issue?
+From: Tim Harvey <tharvey@gateworks.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,156 +22,208 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Greetings,
 
-On 10/26/2015 11:14 AM, Brian Norris wrote:
-> On Sat, Oct 24, 2015 at 11:35:11AM -0700, Clay McClure wrote:
->> On Friday, October 23, 2015, Brian Norris <computersforpeace@gmail.com> wrote:
->>
->>> But to be clear: none of the systems in question are running with big
->>> endian CPUs, correct? If not, then it's apparent we have to do something
->>> different for iProc-based chips than for STB chips; we can't just fiddle
->>> with the cpu_to_*() macros. Maybe this works?
->>>
->>> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c
->>> b/drivers/mtd/nand/brcmnand/brcmnand.c
->>> index 9ü61a9ee4369c..073dbe4ce9bc 100644
->>> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
->>> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
->>> @@ -1168,8 +1168,6 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd,
->>> unsigned command,
->>>                          native_cmd == CMD_PARAMETER_CHANGE_COL) {
->>>                  int i;
->>>
->>> -               brcmnand_soc_data_bus_prepare(ctrl->soc);
->>> -
->>>                  /*
->>>                   * Must cache the FLASH_CACHE now, since changes in
->>>                   * SECTOR_SIZE_1K may invalidate it
->>> @@ -1177,8 +1175,6 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd,
->>> unsigned command,
->>>                  for (i = 0; i < FC_WORDS; i++)
->>>                          ctrl->flash_cache[i] = brcmnand_read_fc(ctrl, i);
->>>
->>> -               brcmnand_soc_data_bus_unprepare(ctrl->soc);
->>> -
->>>                  /* Cleanup from HW quirk: restore SECTOR_SIZE_1K */
->>>                  if (host->hwcfg.sector_size_1k)
->>>                          brcmnand_set_sector_size_1k(host,
->>>
->>
->> Yes, that does solve the problem I'm seeing. I actually tried
->> this approach before submitting my previous patch, but opted not to submit
->> this because it seemed that some thought and effort had gone into making
->> little-endian APB transfers (it's one of the only things iproc_nand
->> actually does), and I assumed it was being done for a reason.
->>
->> If you're happy with this, would you mind if I submit this patch?
->
-> Feel free, though I suppose technically it'd have my authorship. So for
-> the above:
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->
-> I'd like an ack (or test) from Ray too, if possible. Perhaps a comment
-> is in order too, to explain why there is no bus swapping for that
-> instance of brcmnand_read_fc(). (AIUI, the reason is that the base STB
-> design pushes out this data in big endian, so we need to match this on
-> iProc.)
+I'm looking into a re-producible ubifs corruption issue on an IMX6
+based board with a 16Gb MT29F2G08 SLC NAND flash. During boot
+reliability tests we can recreate perhaps 1 in 10000 cases of a UBIFS
+corruption that results in a permanent failure to mount the rootfs.
 
-I guess I still need to get this straight in my brain and I have a few 
-questions here:
+In this scenario the U-Boot bootloader first mounts the ubifs to load
+the kernel/dtb from the /boot directory, then the kernel is mounting
+the rootfs read-only, then later its mounted read/write via /etc/fstab
+but is never written to directly by our software. Our software runs
+various tests for several minutes then power-cuts the board.
 
-1) I remember we had some other discussions related to this before, 
-regarding the NAND data endianness. We confirmed that the raw NAND data 
-programmed with a standard flasher is in LE format. And this is why we 
-need to configure apb bus to LE before accessing these data/cache registers?
+After corruption, U-Boot fails reading the superblock but if I load a
+kernel/dtb from the net and boot it I see some more useful info from
+the kernel:
 
-2) Are we saying here that, by standard, the ONFI parameters should be 
-in BE format as opposed to the raw NAND data format, and therefore no 
-apb bus config to LE should be done? Or, your current logic seems to do 
-the following:
+[    0.000000] Linux version 4.2.0-00012-gd722238 (tharvey@tharvey)
+(gcc version 4.8.3 (OpenWrt/Linaro GCC 4.8-2014.04 r43990) ) #189 SMP
+Fri Oct 23 16:24:27 PDT 2015
+...
+[    2.375663] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xd5
+[    2.382075] nand: Micron MT29F16G08ADACAH4
+[    2.386190] nand: 2048 MiB, SLC, erase size: 256 KiB, page size:
+4096, OOB size: 224
+[    2.394821] gpmi-nand 112000.gpmi-nand: enable the asynchronous EDO mode 5
+[    2.401760] Scanning device for bad blocks
+[    4.000436] 3 ofpart partitions found on MTD device gpmi-nand
+[    4.006201] Creating 3 MTD partitions on "gpmi-nand":
+[    4.011298] 0x000000000000-0x000001000000 : "uboot"
+[    4.021174] 0x000001000000-0x000001100000 : "env"
+[    4.028287] 0x000001100000-0x000080000000 : "rootfs"
+[    4.037134] gpmi-nand 112000.gpmi-nand: driver registered.
+...
+[    8.678875] ubi0: scanning is finished
+[    8.706815] ubi0: attached mtd2 (name "rootfs", size 2031 MiB)
+[    8.712710] ubi0: PEB size: 262144 bytes (256 KiB), LEB size: 253952 bytes
+[    8.719598] ubi0: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
+[    8.726415] ubi0: VID header offset: 4096 (aligned 4096), data offset: 8192
+[    8.733398] ubi0: good PEBs: 8124, bad PEBs: 0, corrupted PEBs: 0
+[    8.739501] ubi0: user volume: 1, internal volumes: 1, max. volumes
+count: 128
+[    8.746748] ubi0: max/mean erase counter: 5/2, WL threshold: 4096,
+image sequence number: 36433972
+[    8.755747] ubi0: available PEBs: 0, total reserved PEBs: 8124,
+PEBs reserved for bad PEB handling: 160
+[    8.765357] ubi0: background thread "ubi_bgt0d" started, PID 79
+...
+[    8.888732] UBIFS (ubi0:0): recovery needed
+[    8.916292] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 36
+864 bytes from PEB 5195:225280, read only 36864 bytes, retry
+[    8.931116] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 36
+864 bytes from PEB 5195:225280, read only 36864 bytes, retry
+[    8.945869] ubi0 warning: ubi_io_read: error -74 (ECC error) while reading 36
+864 bytes from PEB 5195:225280, read only 36864 bytes, retry
+[    8.960676] ubi0 error: ubi_io_read: error -74 (ECC error) while reading 3686
+4 bytes from PEB 5195:225280, read 36864 bytes
+[    8.971859] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.2.0-00012-gd722238 #1
+89
+[    8.979177] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+[    8.985747] Backtrace:
+[    8.988248] [<80013468>] (dump_backtrace) from [<80013654>] (show_stack+0x18/
+0x1c)
+[    8.995848]  r6:80abf960 r5:80abf960 r4:00000000 r3:00000000
+[    9.001649] [<8001363c>] (show_stack) from [<80798948>]
+(dump_stack+0x8c/0xa4)
+[    9.008894] [<807988bc>] (dump_stack) from [<8045d410>]
+(ubi_io_read+0x128/0x304)
+[    9.016428]  r6:00000000 r5:00009000 r4:ffffffb6 r3:ee070000
+[    9.022201] [<8045d2e8>] (ubi_io_read) from [<8045a650>]
+(ubi_eba_read_leb+0x18c/0x430)
+[    9.030210]  r10:00000000 r9:f069e000 r8:0000144b r7:00000179
+r6:00000000 r5:edab6000
+[    9.038189]  r4:edb10000
+[    9.040783] [<8045a4c4>] (ubi_eba_read_leb) from [<80459a08>]
+(ubi_leb_read+0x7c/0xd4)
+[    9.048724]  r10:00000000 r9:00000179 r8:f069e000 r7:edb10000
+r6:00035000 r5:00009000
+[    9.056677]  r4:edab6000
+[    9.059254] [<8045998c>] (ubi_leb_read) from [<80253c2c>]
+(ubifs_leb_read+0x30/0x9c)
+[    9.067044]  r10:ee034000 r9:edb55e40 r8:00000179 r7:00035000
+r6:00009000 r5:ee034000
+[    9.074996]  r4:edb55e40
+[    9.077563] [<80253bfc>] (ubifs_leb_read) from [<8025bfe0>]
+(ubifs_start_scan+0x74/0xf0)
+[    9.085697]  r8:f0669000 r7:00000179 r6:ee034000 r5:00035000 r4:edb55e40
+[    9.092575] [<8025bf6c>] (ubifs_start_scan) from [<8026e624>]
+(ubifs_recover_leb+0x64/0x810)
+[    9.101051]  r8:00009000 r7:00000179 r6:ee034000 r5:edb55cc0 r4:00000179
+[    9.107850] [<8026e5c0>] (ubifs_recover_leb) from [<8025d890>]
+(ubifs_replay_journal+0xed0/0x16a0)
+[    9.116846]  r10:ee034000 r9:edb55e40 r8:edb55e48 r7:ee034000
+r6:edb55cc0 r5:edb55cc0
+[    9.124782]  r4:00000179
+[    9.127344] [<8025c9c0>] (ubifs_replay_journal) from [<802515ec>]
+(ubifs_mount+0x1234/0x19fc)
+[    9.135906]  r10:00000001 r9:ee034008 r8:edb4a300 r7:eda92800
+r6:ee034b38 r5:ee034000
+[    9.143842]  r4:00000000
+[    9.146411] [<802503b8>] (ubifs_mount) from [<80103c6c>] (mount_fs+0x1c/0xb0)
+[    9.153578]  r10:00008001 r9:00000000 r8:80abc2e0 r7:801234a8
+r6:80abc2e0 r5:edb4a280
+[    9.161514]  r4:eda61400
+[    9.164084] [<80103c50>] (mount_fs) from [<8011fedc>]
+(vfs_kern_mount+0x5c/0x144)
+[    9.171602]  r6:00008001 r5:edb4a280 r4:eda61400
+[    9.176282] [<8011fe80>] (vfs_kern_mount) from [<801234a8>]
+(do_mount+0x19c/0xd0c)
+[    9.183886]  r9:80abc2e0 r8:80ab0bdc r7:edb4a240 r6:edb4a280
+r5:00000060 r4:00000000
+[    9.191743] [<8012330c>] (do_mount) from [<801243ac>] (SyS_mount+0x7c/0xa8)
+[    9.198721]  r10:000000d5 r9:80a8d9c8 r8:8094cfa0 r7:00008001
+r6:00000000 r5:edb4a280
+[    9.206660]  r4:edb4a240
+[    9.209227] [<80124330>] (SyS_mount) from [<80a3a248>]
+(mount_block_root+0x114/0x240)
+[    9.217091]  r8:ef5af1c0 r7:80a8d9b8 r6:edb8e000 r5:edb8e000 r4:00008001
+[    9.223907] [<80a3a134>] (mount_block_root) from [<80a3a634>]
+(prepare_namespace+0x98/0x1d0)
+[    9.232380]  r10:000000d5 r9:80a8d998 r8:80a9b5c0 r7:80a8d990
+r6:80a8d9b8 r5:80a8d9b8
+[    9.240297]  r4:80a8d9c8
+[    9.242877] [<80a3a59c>] (prepare_namespace) from [<80a39ee4>]
+(kernel_init_freeable+0x1a4/0x1f0)
+[    9.251780]  r6:80b09000 r5:80b09000 r4:00000007
+[    9.256467] [<80a39d40>] (kernel_init_freeable) from [<80792cdc>]
+(kernel_init+0x10/0xf4)
+[    9.264667]  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:
+80792ccc
+[    9.272614]  r4:00000000
+[    9.275177] [<80792ccc>] (kernel_init) from [<8000f938>]
+(ret_from_fork+0x14/0x3c)
+[    9.282782]  r4:00000000 r3:00000000
+[    9.286909] UBIFS error (ubi0:0 pid 1): ubifs_recover_leb: corrupt
+empty space LEB 377:217088, corruption starts at 24762
+[    9.297900] UBIFS error (ubi0:0 pid 1): ubifs_scanned_corruption:
+corruption at LEB 377:241850
+[    9.306536] UBIFS error (ubi0:0 pid 1): ubifs_scanned_corruption:
+first 8192 bytes from LEB 377:241850
+[    9.315870] 00000000: ffffffef ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff ffffffff  ................................
+[    9.327374] 00000020: ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff ffffffff  ................................
+[    9.338883] 00000040: ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff ffffffff  ................................
+[    9.350389] 00000060: ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff ffffffff  ................................
+...
+[    9.352755] 00001fc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff f
+fffffff ffffffff  ................................
+[    9.352765] 00001fe0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff f
+fffffff ffffffff  ................................
+[    9.352770] UBIFS error (ubi0:0 pid 1): ubifs_recover_leb: LEB 377 scanning f
+ailed
+[   12.271485] VFS: Cannot open root device "ubi0:rootfs" or unknown-block(0,0):
+ error -117
 
-1) still configure the APB to LE before access data/cache registers
-2) do a be32_to_cpu, which in effect causes a byte swap on ARM CPU 
-running in LE (our current case). If data read from APB is already in 
-LE, this makes it become BE
-3) return directly from the byte location of the buffer memory, instead 
-of doing a 32-bit based read and doing some arithmetic, to get the byte data
+Thus far we have encountered this with a 16Gb MT29F16G08 and 'not'
+with a 2Gb MT29F2G08. The two parts have different geometries and the
+16Gb part has a much larger block erase time (2ms) compared to the 2Gb
+(700us).
 
-Thanks,
+We have also seen several occurrences of errors on both NAND chips
+that cause a failure to mount rootfs but are not permanent
+(power-cycle again and all is well):
+[17:39:02][    2.666800] ubi0: attaching mtd2
+[17:39:05][    5.388606] ubi0: scanning is finished
+[17:39:05][    5.395747] ubi0 error: vtbl_check: bad CRC at record 72:
+0xf116c36b, not 0x000000
+[17:39:05][    5.403330] Volume table record 72 dump:
+[17:39:05][    5.407279]        reserved_pebs   0
+[17:39:05][    5.410342]        alignment       0
+[17:39:05][    5.413402]        data_pad        0
+[17:39:05][    5.416481]        vol_type        0
+[17:39:05][    5.419543]        upd_marker      0
+[17:39:05][    5.422603]        name_len        0
+[17:39:05][    5.427696]        name            NULL
+[17:39:05][    5.433237] ubi0 error: vtbl_check: bad CRC at record 72:
+0xf116c36b, not 0x000000
+[17:39:05][    5.440846] Volume table record 72 dump:
+[17:39:05][    5.446806]        reserved_pebs   0
+[17:39:05][    5.451881]        alignment       0
+[17:39:05][    5.456967]        data_pad        0
+[17:39:05][    5.462042]        vol_type        0
+[17:39:05][    5.467137]        upd_marker      0
+[17:39:05][    5.472216]        name_len        0
+[17:39:05][    5.475304]        name            NULL
+[17:39:05][    5.478629] ubi0 error: process_lvol: both volume tables
+are corrupted
+[17:39:05][    5.492599] ubi0 error: ubi_attach_mtd_dev: failed to
+attach mtd2, error -22
+[17:39:05][    5.499728] UBI error: cannot attach mtd2
 
-Ray
+Are any/all of the above the 'unstable bits' issue? Any
+recommendations on what to look for next?
 
->
->> Also, you mentioned that the original code could stand to be cleaned up a
->> bit. Any specific clean ups you'd like to see?
->
-> I wrote up this patch, but it's untested. If you can test this in
-> addition with the above, that'd be great. I'd also like a test from the
-> STB folks, if possible.
->
-> Brian
->
-> ----8<----
->  From 8efc0791d4dbb4a326e2223b14aeae04933ee9af Mon Sep 17 00:00:00 2001
-> From: Brian Norris <computersforpeace@gmail.com>
-> Date: Fri, 23 Oct 2015 17:39:40 -0700
-> Subject: [PATCH] mtd: brcmnand: clean up flash cache for parameter pages
->
-> The read_byte() handling for accessing the flash cache has some awkward
-> swapping being done in the read_byte() function. Let's just make this a
-> byte array, and do the swapping with the word-level macros during the
-> initial buffer copy.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Clay McClure <clay@daemons.net>
-> Cc: Ray Jui <rjui@broadcom.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> ---
->   drivers/mtd/nand/brcmnand/brcmnand.c | 10 ++++++----
->   1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index d694d876631e..249b3728dc75 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -134,7 +134,7 @@ struct brcmnand_controller {
->   	dma_addr_t		dma_pa;
->
->   	/* in-memory cache of the FLASH_CACHE, used only for some commands */
-> -	u32			flash_cache[FC_WORDS];
-> +	u8			flash_cache[FC_BYTES];
->
->   	/* Controller revision details */
->   	const u16		*reg_offsets;
-> @@ -1166,6 +1166,8 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
->
->   	if (native_cmd == CMD_PARAMETER_READ ||
->   			native_cmd == CMD_PARAMETER_CHANGE_COL) {
-> +		/* Copy flash cache word-wise */
-> +		u32 *flash_cache = (u32 *)ctrl->flash_cache;
->   		int i;
->
->   		brcmnand_soc_data_bus_prepare(ctrl->soc);
-> @@ -1175,7 +1177,8 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
->   		 * SECTOR_SIZE_1K may invalidate it
->   		 */
->   		for (i = 0; i < FC_WORDS; i++)
-> -			ctrl->flash_cache[i] = brcmnand_read_fc(ctrl, i);
-> +			/* cache is big endian for parameter pages? */
-> +			flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
->
->   		brcmnand_soc_data_bus_unprepare(ctrl->soc);
->
-> @@ -1228,8 +1231,7 @@ static uint8_t brcmnand_read_byte(struct mtd_info *mtd)
->   		if (host->last_byte > 0 && offs == 0)
->   			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, addr, -1);
->
-> -		ret = ctrl->flash_cache[offs >> 2] >>
-> -					(24 - ((offs & 0x03) << 3));
-> +		ret = ctrl->flash_cache[offs];
->   		break;
->   	case NAND_CMD_GET_FEATURES:
->   		if (host->last_byte >= ONFI_SUBFEATURE_PARAM_LEN) {
->
+Regards,
+
+Tim
+
+Tim Harvey - Principal Software Engineer
+Gateworks Corporation - http://www.gateworks.com/
+3026 S. Higuera St. San Luis Obispo CA 93401
+805-781-2000
