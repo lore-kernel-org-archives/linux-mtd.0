@@ -1,20 +1,23 @@
-Date: Mon, 26 Oct 2015 11:38:36 -0700
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zqmmd-0003N6-HW
+ for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 18:46:16 +0000
+Received: by pacfv9 with SMTP id fv9so204642421pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 11:45:55 -0700 (PDT)
+Date: Mon, 26 Oct 2015 11:45:52 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
- sebastian.hesselbarth@gmail.com, ezequiel.garcia@free-electrons.com,
- dwmw2@infradead.org, thomas.petazzoni@free-electrons.com,
- robert.jarzmik@free.fr, zmxu@marvell.com, jszhang@marvell.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 0/5] mtd: pxa3xx_nand: rework the timing setup
-Message-ID: <20151026183836.GC13239@google.com>
-References: <1445416144-9194-1-git-send-email-antoine.tenart@free-electrons.com>
- <20151026135033.GA1820@laptop>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+Subject: Re: [patch] mtd/docg3: off by one in doc_register_sysfs()
+Message-ID: <20151026184552.GD13239@google.com>
+References: <20151019102005.GF26688@mwanda> <87twpgwahr.fsf@belgarion.home>
+ <20151024174912.GD7289@mwanda> <87wpubl6xj.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151026135033.GA1820@laptop>
+In-Reply-To: <87wpubl6xj.fsf@belgarion.home>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,78 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Mon, Oct 26, 2015 at 10:50:33AM -0300, Ezequiel Garcia wrote:
-> On 21 Oct 10:28 AM, Antoine Tenart wrote:
-> > Hello,
-> > 
-> > Let's try one more time to get this merged.
-> > 
-> > This series was part of a bigger one[1], which was split into smaller
-> > ones as asked by Ezequiel[2]. When we take this into account this is
-> > v9; with a v1 sent in January, 9 months ago.
-
-Thanks for the persistence.
-
-> > Another series, introducing the Berlin nand support, depends on this.
-> > 
-> > The aim here is to use the nand framework to setup the timings,
-> > while keeping the old in-driver way of configuration timings for
-> > compatibility reasons.
-> > 
-> > You can find the series at:
-> > https://github.com/atenart/linux.git berlin/4.3/nand-timings
-> > 
-> > Antoine
-> > 
-> > Since v3:
-> >         - Moved back a chunk into the right patch.
-> >         - Called pxa3xx_nand_config_flash() before KEEP_CONFIG.
-> >         - Rebased on top of l2-mtd.git master.
-> > 
-> > Since v2:
-> >         - Added back the support for keep-config 16 bits devices
-> >         - Fixed wrong unit in a calculation
-> >         - Reworked the pxa3xx_nand_init_timings() logic
-> >         - Allowed compile test the pxa3xx driver
-> > 
-> > Since v1:
-> >         - Rebased on top of v4.2-rc1
-> > 
-> > Since the series was split up:
-> >         - Reworked the ndcr setup
-> >         - Removed the read_id_bytes update after device detection
-> > 
-> > Antoine Tenart (5):
-> >   mtd: pxa3xx: prepare allowing compile test
+On Sun, Oct 25, 2015 at 08:54:16AM +0100, Robert Jarzmik wrote:
+> Dan Carpenter <dan.carpenter@oracle.com> writes:
 > 
-> Nit: This commit subject sounds a bit off.
-
-I fixed that up a bit to my liking.
-
-> >   mtd: nand: allow compile test of MTD_NAND_PXA3xx
-> >   mtd: pxa3xx_nand: add helpers to setup the timings
-> >   mtd: pxa3xx_nand: rework flash detection and timing setup
-> >   mtd: pxa3xx_nand: clean up the pxa3xx timings
-> > 
-> >  drivers/mtd/nand/Kconfig       |   2 +-
-> >  drivers/mtd/nand/pxa3xx_nand.c | 274 +++++++++++++++++++++++++----------------
-> >  2 files changed, 168 insertions(+), 108 deletions(-)
-> > 
+> > On Sat, Oct 24, 2015 at 11:49:27AM +0200, Robert Jarzmik wrote:
+> >> Dan Carpenter <dan.carpenter@oracle.com> writes:
+> >> 
+> >> > Smatch found a bug in the error handling:
+> >> >
+> >> > 	drivers/mtd/devices/docg3.c:1634 doc_register_sysfs()
+> >> > 	error: buffer overflow 'doc_sys_attrs' 4 <= 4
+> >> >
+> >> > The problem is that if the very last device_create_file() fails, then we
+> >> > are beyond the end of the array.  Actually, any time i == 3 then there
+> >> > is a problem.  We can fix this an simplify the code at the same time by
+> >> > moving the !ret conditions out of the for loops and using a goto
+> >> > instead.
+> >> 
+> >> Hi Dan,
+> >> 
+> >> I must admit I don't see the issue here :
+> >>  - if the last device_create_file() fail, we have :
+> >>    - i = 3, ret = -Exxx
+> >>    - doc_sys_attrs[floor][0] is populated
+> >>    - doc_sys_attrs[floor][1] is populated
+> >>    - doc_sys_attrs[floor][2] is populated
+> >>    - doc_sys_attrs[floor][3] is probably NULL
+> >
+> > We increment "i" to 4.
+> Ah yes, I see it now, thanks. Somehow in my brain the !ret condition in the for
+> loop was preventing the increment ... silly.
 > 
-> The series look good and it's certainly a great improvement.
-> Thomas and Robert tested it, so we should be good to go:
-> 
-> Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+> So:
+> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-Thanks for the reviews.
-
-Pushed all but patch 2 to l2-mtd.git.
-
-> We can take a look at the timeout reported by Thomas afterwards.
-> 
-> BTW, it would be great if you could post a patch using Boris'
-> timings helpers: https://patchwork.ozlabs.org/patch/534919/ ?
-
-Brian
+Applied to l2-mtd.git. Thanks.
