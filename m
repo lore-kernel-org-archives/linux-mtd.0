@@ -1,23 +1,25 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zqmmd-0003N6-HW
- for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 18:46:16 +0000
-Received: by pacfv9 with SMTP id fv9so204642421pac.3
- for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 11:45:55 -0700 (PDT)
-Date: Mon, 26 Oct 2015 11:45:52 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: Re: [patch] mtd/docg3: off by one in doc_register_sysfs()
-Message-ID: <20151026184552.GD13239@google.com>
-References: <20151019102005.GF26688@mwanda> <87twpgwahr.fsf@belgarion.home>
- <20151024174912.GD7289@mwanda> <87wpubl6xj.fsf@belgarion.home>
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zqmsv-00058A-Rg
+ for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 18:52:46 +0000
+Subject: Re: [PATCH] mtd: brcmnand: Fix NAND_CMD_PARAM byte order
+To: Brian Norris <computersforpeace@gmail.com>, Clay McClure <clay@daemons.net>
+References: <1445629626-27474-1-git-send-email-clay@daemons.net>
+ <20151023232742.GV13239@google.com> <562AD54B.2000501@broadcom.com>
+ <20151024011219.GW13239@google.com>
+ <CAOVqfW-1YurDwJbKDgUJdQZVxJ_rWDg-x+28++SZtg-vPO4kYg@mail.gmail.com>
+ <20151026181430.GA13239@google.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Florian
+ Fainelli" <f.fainelli@gmail.com>, Scott Branden <sbranden@broadcom.com>,
+ "bcm-kernel-feedback-list@broadcom.com"
+ <bcm-kernel-feedback-list@broadcom.com>
+From: Ray Jui <rjui@broadcom.com>
+Message-ID: <562E7667.5050406@broadcom.com>
+Date: Mon, 26 Oct 2015 11:52:23 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wpubl6xj.fsf@belgarion.home>
+In-Reply-To: <20151026181430.GA13239@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +29,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Oct 25, 2015 at 08:54:16AM +0100, Robert Jarzmik wrote:
-> Dan Carpenter <dan.carpenter@oracle.com> writes:
-> 
-> > On Sat, Oct 24, 2015 at 11:49:27AM +0200, Robert Jarzmik wrote:
-> >> Dan Carpenter <dan.carpenter@oracle.com> writes:
-> >> 
-> >> > Smatch found a bug in the error handling:
-> >> >
-> >> > 	drivers/mtd/devices/docg3.c:1634 doc_register_sysfs()
-> >> > 	error: buffer overflow 'doc_sys_attrs' 4 <= 4
-> >> >
-> >> > The problem is that if the very last device_create_file() fails, then we
-> >> > are beyond the end of the array.  Actually, any time i == 3 then there
-> >> > is a problem.  We can fix this an simplify the code at the same time by
-> >> > moving the !ret conditions out of the for loops and using a goto
-> >> > instead.
-> >> 
-> >> Hi Dan,
-> >> 
-> >> I must admit I don't see the issue here :
-> >>  - if the last device_create_file() fail, we have :
-> >>    - i = 3, ret = -Exxx
-> >>    - doc_sys_attrs[floor][0] is populated
-> >>    - doc_sys_attrs[floor][1] is populated
-> >>    - doc_sys_attrs[floor][2] is populated
-> >>    - doc_sys_attrs[floor][3] is probably NULL
-> >
-> > We increment "i" to 4.
-> Ah yes, I see it now, thanks. Somehow in my brain the !ret condition in the for
-> loop was preventing the increment ... silly.
-> 
-> So:
-> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Hi Brian,
 
-Applied to l2-mtd.git. Thanks.
+On 10/26/2015 11:14 AM, Brian Norris wrote:
+> On Sat, Oct 24, 2015 at 11:35:11AM -0700, Clay McClure wrote:
+>> On Friday, October 23, 2015, Brian Norris <computersforpeace@gmail.com> wrote:
+>>
+>>> But to be clear: none of the systems in question are running with big
+>>> endian CPUs, correct? If not, then it's apparent we have to do something
+>>> different for iProc-based chips than for STB chips; we can't just fiddle
+>>> with the cpu_to_*() macros. Maybe this works?
+>>>
+>>> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c
+>>> b/drivers/mtd/nand/brcmnand/brcmnand.c
+>>> index 9ü61a9ee4369c..073dbe4ce9bc 100644
+>>> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+>>> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+>>> @@ -1168,8 +1168,6 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd,
+>>> unsigned command,
+>>>                          native_cmd == CMD_PARAMETER_CHANGE_COL) {
+>>>                  int i;
+>>>
+>>> -               brcmnand_soc_data_bus_prepare(ctrl->soc);
+>>> -
+>>>                  /*
+>>>                   * Must cache the FLASH_CACHE now, since changes in
+>>>                   * SECTOR_SIZE_1K may invalidate it
+>>> @@ -1177,8 +1175,6 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd,
+>>> unsigned command,
+>>>                  for (i = 0; i < FC_WORDS; i++)
+>>>                          ctrl->flash_cache[i] = brcmnand_read_fc(ctrl, i);
+>>>
+>>> -               brcmnand_soc_data_bus_unprepare(ctrl->soc);
+>>> -
+>>>                  /* Cleanup from HW quirk: restore SECTOR_SIZE_1K */
+>>>                  if (host->hwcfg.sector_size_1k)
+>>>                          brcmnand_set_sector_size_1k(host,
+>>>
+>>
+>> Yes, that does solve the problem I'm seeing. I actually tried
+>> this approach before submitting my previous patch, but opted not to submit
+>> this because it seemed that some thought and effort had gone into making
+>> little-endian APB transfers (it's one of the only things iproc_nand
+>> actually does), and I assumed it was being done for a reason.
+>>
+>> If you're happy with this, would you mind if I submit this patch?
+>
+> Feel free, though I suppose technically it'd have my authorship. So for
+> the above:
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+>
+> I'd like an ack (or test) from Ray too, if possible. Perhaps a comment
+> is in order too, to explain why there is no bus swapping for that
+> instance of brcmnand_read_fc(). (AIUI, the reason is that the base STB
+> design pushes out this data in big endian, so we need to match this on
+> iProc.)
+
+I guess I still need to get this straight in my brain and I have a few 
+questions here:
+
+1) I remember we had some other discussions related to this before, 
+regarding the NAND data endianness. We confirmed that the raw NAND data 
+programmed with a standard flasher is in LE format. And this is why we 
+need to configure apb bus to LE before accessing these data/cache registers?
+
+2) Are we saying here that, by standard, the ONFI parameters should be 
+in BE format as opposed to the raw NAND data format, and therefore no 
+apb bus config to LE should be done? Or, your current logic seems to do 
+the following:
+
+1) still configure the APB to LE before access data/cache registers
+2) do a be32_to_cpu, which in effect causes a byte swap on ARM CPU 
+running in LE (our current case). If data read from APB is already in 
+LE, this makes it become BE
+3) return directly from the byte location of the buffer memory, instead 
+of doing a 32-bit based read and doing some arithmetic, to get the byte data
+
+Thanks,
+
+Ray
+
+>
+>> Also, you mentioned that the original code could stand to be cleaned up a
+>> bit. Any specific clean ups you'd like to see?
+>
+> I wrote up this patch, but it's untested. If you can test this in
+> addition with the above, that'd be great. I'd also like a test from the
+> STB folks, if possible.
+>
+> Brian
+>
+> ----8<----
+>  From 8efc0791d4dbb4a326e2223b14aeae04933ee9af Mon Sep 17 00:00:00 2001
+> From: Brian Norris <computersforpeace@gmail.com>
+> Date: Fri, 23 Oct 2015 17:39:40 -0700
+> Subject: [PATCH] mtd: brcmnand: clean up flash cache for parameter pages
+>
+> The read_byte() handling for accessing the flash cache has some awkward
+> swapping being done in the read_byte() function. Let's just make this a
+> byte array, and do the swapping with the word-level macros during the
+> initial buffer copy.
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Clay McClure <clay@daemons.net>
+> Cc: Ray Jui <rjui@broadcom.com>
+> Cc: Scott Branden <sbranden@broadcom.com>
+> ---
+>   drivers/mtd/nand/brcmnand/brcmnand.c | 10 ++++++----
+>   1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index d694d876631e..249b3728dc75 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -134,7 +134,7 @@ struct brcmnand_controller {
+>   	dma_addr_t		dma_pa;
+>
+>   	/* in-memory cache of the FLASH_CACHE, used only for some commands */
+> -	u32			flash_cache[FC_WORDS];
+> +	u8			flash_cache[FC_BYTES];
+>
+>   	/* Controller revision details */
+>   	const u16		*reg_offsets;
+> @@ -1166,6 +1166,8 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+>
+>   	if (native_cmd == CMD_PARAMETER_READ ||
+>   			native_cmd == CMD_PARAMETER_CHANGE_COL) {
+> +		/* Copy flash cache word-wise */
+> +		u32 *flash_cache = (u32 *)ctrl->flash_cache;
+>   		int i;
+>
+>   		brcmnand_soc_data_bus_prepare(ctrl->soc);
+> @@ -1175,7 +1177,8 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+>   		 * SECTOR_SIZE_1K may invalidate it
+>   		 */
+>   		for (i = 0; i < FC_WORDS; i++)
+> -			ctrl->flash_cache[i] = brcmnand_read_fc(ctrl, i);
+> +			/* cache is big endian for parameter pages? */
+> +			flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
+>
+>   		brcmnand_soc_data_bus_unprepare(ctrl->soc);
+>
+> @@ -1228,8 +1231,7 @@ static uint8_t brcmnand_read_byte(struct mtd_info *mtd)
+>   		if (host->last_byte > 0 && offs == 0)
+>   			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, addr, -1);
+>
+> -		ret = ctrl->flash_cache[offs >> 2] >>
+> -					(24 - ((offs & 0x03) << 3));
+> +		ret = ctrl->flash_cache[offs];
+>   		break;
+>   	case NAND_CMD_GET_FEATURES:
+>   		if (host->last_byte >= ONFI_SUBFEATURE_PARAM_LEN) {
+>
