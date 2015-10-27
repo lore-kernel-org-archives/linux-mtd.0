@@ -1,7 +1,7 @@
-Received: from mail-bn1bbn0103.outbound.protection.outlook.com
- ([157.56.111.103] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-bn1bbn0108.outbound.protection.outlook.com
+ ([157.56.111.108] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrCYL-0007iG-0j
+ id 1ZrCYL-0007iP-Ol
  for linux-mtd@lists.infradead.org; Tue, 27 Oct 2015 22:17:17 +0000
 From: Han Xu <b45815@freescale.com>
 To: <shijie.huang@arm.com>
@@ -11,10 +11,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
  <dmaengine@vger.kernel.org>
-Subject: [PATCH v7 4/7] mtd: nand: gpmi: may use minimum required ecc for 744
- oobsize NAND
-Date: Tue, 27 Oct 2015 17:05:37 -0500
-Message-ID: <1445983540-27155-5-git-send-email-b45815@freescale.com>
+Subject: [PATCH v7 3/7] dmaengine: mxs: add i.MX7D APBH DMA support
+Date: Tue, 27 Oct 2015 17:05:36 -0500
+Message-ID: <1445983540-27155-4-git-send-email-b45815@freescale.com>
 In-Reply-To: <1445983540-27155-1-git-send-email-b45815@freescale.com>
 References: <1445983540-27155-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
@@ -28,108 +27,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-By default NAND driver will choose the highest ecc strength that oob
-could contain, in this case, for some 8K+744 NAND flash, the ecc
-strength will be up to 52bit, which beyonds the i.MX6QDL BCH capability
-(40bit).
+From: Adrian Alonso <aalonso@freescale.com>
 
-This patch allows the NAND driver try to use minimum required ecc
-strength if it failed to use the highest ecc, even without explicitly
-claiming "fsl,use-minimum-ecc" in dts.
+supports APBH DMA on i.MX7D by add extra clock clk_io
 
+Signed-off-by: Fugang Duan <B38611@freescale.com>
+Signed-off-by: Adrian Alonso <aalonso@freescale.com>
 Signed-off-by: Han Xu <b45815@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ drivers/dma/mxs-dma.c | 53 ++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 46 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 0961b93..d8f2403 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -136,7 +136,7 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index b8a4822e..f1878d2 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
++ * Copyright 2011-2015 Freescale Semiconductor, Inc. All Rights Reserved.
   *
-  * We may have available oob space in this case.
-  */
--static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
-+static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- {
- 	struct bch_geometry *geo = &this->bch_geometry;
- 	struct mtd_info *mtd = &this->mtd;
-@@ -145,7 +145,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 	unsigned int block_mark_bit_offset;
+  * Refer to drivers/dma/imx-sdma.c
+  *
+@@ -28,7 +28,6 @@
+ #include <linux/of_device.h>
+ #include <linux/of_dma.h>
+ #include <linux/list.h>
+-
+ #include <asm/irq.h>
  
- 	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
--		return false;
-+		return -EINVAL;
+ #include "dmaengine.h"
+@@ -135,6 +134,7 @@ enum mxs_dma_devtype {
+ enum mxs_dma_id {
+ 	IMX23_DMA,
+ 	IMX28_DMA,
++	IMX7D_DMA,
+ };
  
- 	switch (chip->ecc_step_ds) {
- 	case SZ_512:
-@@ -158,19 +158,19 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 		dev_err(this->dev,
- 			"unsupported nand chip. ecc bits : %d, ecc size : %d\n",
- 			chip->ecc_strength_ds, chip->ecc_step_ds);
--		return false;
-+		return -EINVAL;
+ struct mxs_dma_engine {
+@@ -142,6 +142,7 @@ struct mxs_dma_engine {
+ 	enum mxs_dma_devtype		type;
+ 	void __iomem			*base;
+ 	struct clk			*clk;
++	struct clk			*clk_io;
+ 	struct dma_device		dma_device;
+ 	struct device_dma_parameters	dma_parms;
+ 	struct mxs_dma_chan		mxs_chans[MXS_DMA_CHANNELS];
+@@ -167,6 +168,9 @@ static struct mxs_dma_type mxs_dma_types[] = {
+ 	}, {
+ 		.id = IMX28_DMA,
+ 		.type = MXS_DMA_APBX,
++	}, {
++		.id = IMX7D_DMA,
++		.type = MXS_DMA_APBH,
  	}
- 	geo->ecc_chunk_size = chip->ecc_step_ds;
- 	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
- 	if (!gpmi_check_ecc(this))
--		return false;
-+		return -EINVAL;
+ };
  
- 	/* Keep the C >= O */
- 	if (geo->ecc_chunk_size < mtd->oobsize) {
- 		dev_err(this->dev,
- 			"unsupported nand chip. ecc size: %d, oob size : %d\n",
- 			chip->ecc_step_ds, mtd->oobsize);
--		return false;
-+		return -EINVAL;
+@@ -184,6 +188,9 @@ static const struct platform_device_id mxs_dma_ids[] = {
+ 		.name = "imx28-dma-apbx",
+ 		.driver_data = (kernel_ulong_t) &mxs_dma_types[3],
+ 	}, {
++		.name = "imx7d-dma-apbh",
++		.driver_data = (kernel_ulong_t) &mxs_dma_types[4],
++	}, {
+ 		/* end of list */
  	}
+ };
+@@ -193,6 +200,7 @@ static const struct of_device_id mxs_dma_dt_ids[] = {
+ 	{ .compatible = "fsl,imx23-dma-apbx", .data = &mxs_dma_ids[1], },
+ 	{ .compatible = "fsl,imx28-dma-apbh", .data = &mxs_dma_ids[2], },
+ 	{ .compatible = "fsl,imx28-dma-apbx", .data = &mxs_dma_ids[3], },
++	{ .compatible = "fsl,imx7d-dma-apbh", .data = &mxs_dma_ids[4], },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, mxs_dma_dt_ids);
+@@ -440,6 +448,13 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+ 	if (ret)
+ 		goto err_clk;
  
- 	/* The default value, see comment in the legacy_set_geometry(). */
-@@ -242,7 +242,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 				+ ALIGN(geo->ecc_chunk_count, 4);
- 
- 	if (!this->swap_block_mark)
--		return true;
-+		return 0;
- 
- 	/* For bit swap. */
- 	block_mark_bit_offset = mtd->writesize * 8 -
-@@ -251,7 +251,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 
- 	geo->block_mark_byte_offset = block_mark_bit_offset / 8;
- 	geo->block_mark_bit_offset  = block_mark_bit_offset % 8;
--	return true;
-+	return 0;
- }
- 
- static int legacy_set_geometry(struct gpmi_nand_data *this)
-@@ -285,7 +285,8 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
- 	geo->ecc_strength = get_ecc_strength(this);
- 	if (!gpmi_check_ecc(this)) {
- 		dev_err(this->dev,
--			"required ecc strength of the NAND chip: %d is not supported by the GPMI controller (%d)\n",
-+			"ecc strength: %d cannot be supported by the controller (%d)\n"
-+			"try to use minimum ecc strength that NAND chip required\n",
- 			geo->ecc_strength,
- 			this->devdata->bch_max_ecc_strength);
- 		return -EINVAL;
-@@ -366,10 +367,11 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
- 
- int common_nfc_set_geometry(struct gpmi_nand_data *this)
- {
--	if (of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc")
--		&& set_geometry_by_ecc_info(this))
--		return 0;
--	return legacy_set_geometry(this);
-+	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
-+				|| legacy_set_geometry(this))
-+		return set_geometry_by_ecc_info(this);
++	/* enable the extra clk_io clock for i.MX7D */
++	if (mxs_dma->dev_id == IMX7D_DMA) {
++		ret = clk_prepare_enable(mxs_dma->clk_io);
++		if (ret)
++			goto err_clk_unprepare;
++	}
 +
-+	return 0;
+ 	mxs_dma_reset_chan(chan);
+ 
+ 	dma_async_tx_descriptor_init(&mxs_chan->desc, chan);
+@@ -450,6 +465,8 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+ 
+ 	return 0;
+ 
++err_clk_unprepare:
++	clk_disable_unprepare(mxs_dma->clk);
+ err_clk:
+ 	free_irq(mxs_chan->chan_irq, mxs_dma);
+ err_irq:
+@@ -471,6 +488,9 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
+ 	dma_free_coherent(mxs_dma->dma_device.dev, CCW_BLOCK_SIZE,
+ 			mxs_chan->ccw, mxs_chan->ccw_phys);
+ 
++	if (mxs_dma->dev_id == IMX7D_DMA)
++		clk_disable_unprepare(mxs_dma->clk_io);
++
+ 	clk_disable_unprepare(mxs_dma->clk);
  }
  
- struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
+@@ -701,9 +721,15 @@ static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+ 	if (ret)
+ 		return ret;
+ 
++	if (mxs_dma->dev_id == IMX7D_DMA) {
++		ret = clk_prepare_enable(mxs_dma->clk_io);
++		if (ret)
++			goto err_clk_bch;
++	}
++
+ 	ret = stmp_reset_block(mxs_dma->base);
+ 	if (ret)
+-		goto err_out;
++		goto err_clk_io;
+ 
+ 	/* enable apbh burst */
+ 	if (dma_is_apbh(mxs_dma)) {
+@@ -717,7 +743,10 @@ static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+ 	writel(MXS_DMA_CHANNELS_MASK << MXS_DMA_CHANNELS,
+ 		mxs_dma->base + HW_APBHX_CTRL1 + STMP_OFFSET_REG_SET);
+ 
+-err_out:
++err_clk_io:
++	if (mxs_dma->dev_id == IMX7D_DMA)
++		clk_disable_unprepare(mxs_dma->clk_io);
++err_clk_bch:
+ 	clk_disable_unprepare(mxs_dma->clk);
+ 	return ret;
+ }
+@@ -803,9 +832,19 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mxs_dma->base))
+ 		return PTR_ERR(mxs_dma->base);
+ 
+-	mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(mxs_dma->clk))
+-		return PTR_ERR(mxs_dma->clk);
++	if (mxs_dma->dev_id == IMX7D_DMA) {
++		mxs_dma->clk = devm_clk_get(&pdev->dev, "dma_apbh_bch");
++		if (IS_ERR(mxs_dma->clk))
++			return PTR_ERR(mxs_dma->clk);
++		mxs_dma->clk_io = devm_clk_get(&pdev->dev, "dma_apbh_io");
++		if (IS_ERR(mxs_dma->clk_io))
++			return PTR_ERR(mxs_dma->clk_io);
++
++	} else {
++		mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
++		if (IS_ERR(mxs_dma->clk))
++			return PTR_ERR(mxs_dma->clk);
++	}
+ 
+ 	dma_cap_set(DMA_SLAVE, mxs_dma->dma_device.cap_mask);
+ 	dma_cap_set(DMA_CYCLIC, mxs_dma->dma_device.cap_mask);
 -- 
 1.9.1
