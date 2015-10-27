@@ -1,9 +1,9 @@
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zqu4B-0004W0-Sh
- for linux-mtd@lists.infradead.org; Tue, 27 Oct 2015 02:32:53 +0000
-Received: by pabla5 with SMTP id la5so13231337pab.0
- for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 19:32:31 -0700 (PDT)
+ id 1Zqu4D-0004WL-O8
+ for linux-mtd@lists.infradead.org; Tue, 27 Oct 2015 02:32:55 +0000
+Received: by pabla5 with SMTP id la5so13232067pab.0
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 19:32:33 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
@@ -13,9 +13,9 @@ Cc: <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
  Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
  Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>,
  Huang Shijie <shijie.huang@arm.com>
-Subject: [PATCH 3/5] mtd: spi-nor: drop unnecessary partition parser data
-Date: Mon, 26 Oct 2015 19:31:08 -0700
-Message-Id: <1445913070-17950-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 5/5] mtd: drop 'of_node' partition parser data
+Date: Mon, 26 Oct 2015 19:31:10 -0700
+Message-Id: <1445913070-17950-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1445913070-17950-1-git-send-email-computersforpeace@gmail.com>
 References: <1445913070-17950-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,88 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that the SPI-NOR/MTD framework pass the 'flash_node' through to the
-partition parsing code, we don't have to do it ourselves.
-
-Also convert to mtd_device_register(), since we don't need the 2nd and
-3rd parameters anymore.
+This field is no longer used anywhere, as it is superseded by
+mtd->dev.of_node.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/devices/m25p80.c      | 8 ++------
- drivers/mtd/spi-nor/fsl-quadspi.c | 4 +---
- drivers/mtd/spi-nor/nxp-spifi.c   | 4 +---
- 3 files changed, 4 insertions(+), 12 deletions(-)
+ drivers/mtd/ofpart.c           | 14 ++++----------
+ include/linux/mtd/partitions.h |  4 ----
+ 2 files changed, 4 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 4b5d7a4655fd..d86fa1ae6d1f 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -175,7 +175,6 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index a5dfd73cfc7d..4368badfc653 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -35,11 +35,8 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 	int nr_parts, i;
+ 
+ 
+-	/*
+-	 * of_node can be provided through auxiliary parser data or (preferred)
+-	 * by assigning the master device
+-	 */
+-	node = data && data->of_node ? data->of_node : master->dev.of_node;
++	/* Pull of_node from the master device */
++	node = master->dev.of_node;
+ 	if (!node)
+ 		return 0;
+ 
+@@ -121,11 +118,8 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
+ 	} *part;
+ 	const char *names;
+ 
+-	/*
+-	 * of_node can be provided through auxiliary parser data or (preferred)
+-	 * by assigning the master device
+-	 */
+-	dp = data && data->of_node ? data->of_node : master->dev.of_node;
++	/* Pull of_node from the master device */
++	dp = master->dev.of_node;
+ 	if (!dp)
+ 		return 0;
+ 
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index e742f34b67eb..773975a3c9e6 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -56,13 +56,9 @@ struct device_node;
+ /**
+  * struct mtd_part_parser_data - used to pass data to MTD partition parsers.
+  * @origin: for RedBoot, start address of MTD device
+- * @of_node: for OF parsers, device node containing partitioning information.
+- *           This field is deprecated, as the device node should simply be
+- *           assigned to the master struct device.
   */
- static int m25p_probe(struct spi_device *spi)
- {
--	struct mtd_part_parser_data	ppdata;
- 	struct flash_platform_data	*data;
- 	struct m25p *flash;
- 	struct spi_nor *nor;
-@@ -227,11 +226,8 @@ static int m25p_probe(struct spi_device *spi)
- 	if (ret)
- 		return ret;
- 
--	ppdata.of_node = spi->dev.of_node;
--
--	return mtd_device_parse_register(&nor->mtd, NULL, &ppdata,
--			data ? data->parts : NULL,
--			data ? data->nr_parts : 0);
-+	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
-+				   data ? data->nr_parts : 0);
- }
+ struct mtd_part_parser_data {
+ 	unsigned long origin;
+-	struct device_node *of_node;
+ };
  
  
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 7b10ed413983..95991a2197e8 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -927,7 +927,6 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
- static int fsl_qspi_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
--	struct mtd_part_parser_data ppdata;
- 	struct device *dev = &pdev->dev;
- 	struct fsl_qspi *q;
- 	struct resource *res;
-@@ -1038,8 +1037,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
- 		if (ret)
- 			goto mutex_failed;
- 
--		ppdata.of_node = np;
--		ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
-+		ret = mtd_device_register(mtd, NULL, 0);
- 		if (ret)
- 			goto mutex_failed;
- 
-diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-spifi.c
-index 9e82098ae644..9414495a73cb 100644
---- a/drivers/mtd/spi-nor/nxp-spifi.c
-+++ b/drivers/mtd/spi-nor/nxp-spifi.c
-@@ -271,7 +271,6 @@ static void nxp_spifi_dummy_id_read(struct spi_nor *nor)
- static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
- 				 struct device_node *np)
- {
--	struct mtd_part_parser_data ppdata;
- 	enum read_mode flash_read;
- 	u32 ctrl, property;
- 	u16 mode = 0;
-@@ -361,8 +360,7 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
- 		return ret;
- 	}
- 
--	ppdata.of_node = np;
--	ret = mtd_device_parse_register(&spifi->nor.mtd, NULL, &ppdata, NULL, 0);
-+	ret = mtd_device_register(&spifi->nor.mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(spifi->dev, "mtd device parse failed\n");
- 		return ret;
 -- 
 2.6.0.rc2.230.g3dd15c0
