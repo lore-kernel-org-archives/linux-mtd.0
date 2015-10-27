@@ -1,16 +1,21 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zqpl7-0002NQ-A0
- for linux-mtd@lists.infradead.org; Mon, 26 Oct 2015 21:56:54 +0000
+ id 1ZqtBn-0002Vt-FI
+ for linux-mtd@lists.infradead.org; Tue, 27 Oct 2015 01:36:40 +0000
+From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "David
+ Woodhouse" <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Andrea Scian <rnd4@dave-tech.it>, Iwo Mergler
+ <Iwo.Mergler@netcommwireless.com>, "Jeff Lauruhn (jlauruhn)"
+ <jlauruhn@micron.com>
+Subject: MTD challenge for new generation nand
+Date: Tue, 27 Oct 2015 01:34:20 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4EDAA@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Date: Mon, 26 Oct 2015 14:55:26 -0700
-From: Stefan Agner <stefan@agner.ch>
-To: richard.weinberger@gmail.com
-Cc: linux-mtd@lists.infradead.org, U-Boot <u-boot@lists.denx.de>
-Subject: Monster boot
-Message-ID: <02c03a72e96d41b4c40e60efee4fd988@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,72 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
-
-Just looked through the slides of your ELCE talk "Current challenges in
-UBIFS". I would like to elaborate the issues wrt moster boot. I did not
-attend the talk (sorry) and also was not able to find a video of it so
-far, hence I don't know what has been said at the talk... So, the last
-slide says:
-
-* Don’t boot from UBIFS
-* Your boot loader does not have to know UBIFS nor have full UBI support
-* Use static volumes, you can read out a static UBI volume with 100 LoC
-* Thomas Gleixner sent patches for u-boot
-
-Can you elaborate why you disadvise booting from UBIFS?
-
-Here is my analysis on that:
-
-We switched to "monster boot" approach about one year ago. On the plus
-side, U-Boot had already UBIFS read support and it works. Beside that,
-it is basically the standard boot mode for distros on PC-like systems
-(GRUB is able to read the kernel from a ext2/ext3 formatted /boot
-partition, UEFI reads EFI boot loaders or the kernel with the EFI stub
-from FAT partitions directly).
-
-I see the obvious pain point: It makes the boot loader much more
-complex... After all, we had some issues lately, especially with Fastmap
-(e.g. PEB leaks). However, one thing was related to a driver issue, and
-after backporting some Fastmap patches from Linux, Fastmap in U-Boot
-seems to be stable now. Anyway, since these issues were within the
-U-Boot UBI stack (and below), we would probably would have run into them
-even when using static volumes (assuming using the full UBI stack of
-U-Boot). But likely not if we would have used the minimal static volume
-approach of Thomas Gleixner.... On the other hand, we did not had any
-problems with the UBIFS part so far...
-A fallback boot scheme is possible with UBIFS (just have a spare kernel
-ready) but it suffer from the huge stack...
-
-Another disadvantage with monster boot is that we can't replace the
-kernel from U-Boot currently since there is no UBIFS write support,
-however that is not really a problem.
-
-On the advantage side, we do not loose any space (we would likely have
-to create a larger than necessary Kernel volume to reserve some space in
-case customers want to load a bigger kernel). And we can use one UBIFS
-image for multiple modules (multiple device tree in /boot).
-
-I also did some rough performance measurements, and it seems that the
-overhead of mounting the UBIFS is not all that huge:
-UBI Attach (without Fastmap): 1.57s
-UBI Attach (with Fastmap): 0.25s
-UBIFS Mount: 0.06s
-Load kernel from FS: 380ms
-Load DT from FS: 9ms
-
-However, it seems that reading from UBIFS is somewhat slower compared to
-reading from static volumes:
-Load kernel from UBI 4.5MB: 316ms
-Load kernel from UBI 24kB: 6ms
-
-I used the size argument of the ubi read command to avoid reading the
-whole static volume. This is somewhat ugly to handle since the size need
-to be stored in environment variables... I am consider implementing a
-bootubi command which would read only the effective size for a kernel,
-device tree or initramfs by making use of the individual file headers.
-
-I would be glad if you could comment whether I miss anything...
-
---
-Stefan
+SGksDQpJIGhhdmUgc29tZSBxdWVzdGlvbnMgYWJvdXQgTVREIHN1cHBvcnRzIGZvciBuZXcgZ2Vu
+ZXJhdGlvbiBNVEQsIHdhbnRpbmcgZm9yIHlvdXIgDQpIZWxwLg0KMS4gc2luZ2xlIGNoaXAgb3Zl
+ciA0R0IgZGVuc2l0eSANCldpdGggdGhlIGRldmVsb3BtZW50IG9mIHN0b3JhZ2UgYW5kIHJlcXVp
+cmVtZW50IGZyb20gY3VzdG9tZXIsIHRoZSBsYXRlc3QgbmV3IGdlbmVyYXRpb24gDQpOQU5BIGRl
+bnNpdHkgd2lsbCBtb3JlIGFuZCBtb3JlLCBzdWNoIGFzIDY0R2IsIDEyOEdiLiBGcm9tIG91ciBs
+YXRlc3QgTGludXgga2VybmVsLCBzZWVtcyB0aGF0IA0KTWF4aW11bSBzaW5nbGUgY2hpcCBkZW5z
+aXR5IHN1cHBvcnRlZCBpcyAzMkdiLCBhbSBJIHJpZ2h0ID8gDQoNCjIuIE5WRERSIChzeW5jIG1v
+ZGUgKSBhbmQgTlZERFIyIGludGVyZmFjZSBtb2RlIHN1cHBvcnQNCldlIGFsbCBrbm93ICwgd2Ug
+YWxsIHVzZSBBc3luYyAoU0RSKSBtb2RlIGZvciBMaW51eCwgdW5kZXIgQXN5bmMgbW9kZSAsIHJl
+YWQgZGF0YSBhbmQgRUNDIGp1c3QgYXMgYmVsb3c6DQoNCnN0YXRpYyBpbnQgbmFuZF9yZWFkX3Bh
+Z2VfcmF3KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLA0KCQkJ
+ICAgICAgdWludDhfdCAqYnVmLCBpbnQgb29iX3JlcXVpcmVkLCBpbnQgcGFnZSkNCnsNCgljaGlw
+LT5yZWFkX2J1ZihtdGQsIGJ1ZiwgbXRkLT53cml0ZXNpemUpOw0KCWlmIChvb2JfcmVxdWlyZWQp
+DQoJCWNoaXAtPnJlYWRfYnVmKG10ZCwgY2hpcC0+b29iX3BvaSwgbXRkLT5vb2JzaXplKTsNCgly
+ZXR1cm4gMDsNCn0NCg0KV2UgcmVhZCBkYXRhIGFuZCBPT0Igc2VwYXJhdGVseSwgZm9yIEFzeW5j
+IG1vZGUgLCB0aGlzIGlzIHJpZ2h0Lg0KQnV0IGZvciBOVkREUihzeW5jKSBvciBOVkREUjIsIGl0
+IGRvZXMgbm90IG1ha2Ugc2Vuc2UuDQpUaGV5IG11c3QgcmVhZCB0b2dldGhlci4gSWYgc3BsaXQg
+dHdvIHN0ZXBzIHRvIHJlYWQgc2VwYXJhdGVseSwgDQpGaXJzdCByZWFkIGlzIG9rLCBidXQgZm9y
+IHNlY29uZCByZWFkLCB0aGVyZSB3aWxsIHNraXAgc2V2ZXJhbCBieXRlcyBkYXRhDQpBdCB0aGUg
+YmVnaW5uaW5nIG9mIGRhdGEgYnVmZmVyLiBJIG1lYW4sIHVuZGVyIE5WRERSIG1vZGUgKHN5bmMp
+ICwgYmV0d2Vlbg0KdGhlIGZpcnN0IHJlYWQgYW5kIHNlY29uZCByZWFkIHRpbWUgc2xvdCwgTkFO
+RCBzdGlsbCBvdXRwdXQgZGF0YSwgYnV0IGF0IHRoaXMgbW9tZW50LA0KaG9zdCBub3QgcmVhZCwg
+c28gZm9yIHNlY29uZCByZWFkLCB0aGVyZSB3aWxsIHNraXAgc2V2ZXJhbCBieXRlcyBkYXRhLg0K
+QW0gSSByaWdodCA/ICANCg0KLS1CZWFuIEh1bw0KDQo=
