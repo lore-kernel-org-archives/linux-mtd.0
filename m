@@ -1,17 +1,38 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZquAP-0000Aj-SC
- for linux-mtd@lists.infradead.org; Tue, 27 Oct 2015 02:39:19 +0000
-Received: by pasz6 with SMTP id z6so206312585pas.2
- for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 19:38:57 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: <linux-kernel@vger.kernel.org>, Felipe Balbi <balbi@ti.com>,
- tony@atomide.com, Brian Norris <computersforpeace@gmail.com>,
- stable@vger.kernel.org
-Subject: [PATCH] mtd: blkdevs: fix potential deadlock + lockdep warnings
-Date: Mon, 26 Oct 2015 19:38:49 -0700
-Message-Id: <1445913529-19887-1-git-send-email-computersforpeace@gmail.com>
+Received: from mail.kernel.org ([198.145.29.136])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZqvzT-00008s-N1
+ for linux-mtd@lists.infradead.org; Tue, 27 Oct 2015 04:36:08 +0000
+Received: from mail.kernel.org (localhost [127.0.0.1])
+ by mail.kernel.org (Postfix) with ESMTP id 222EE205B8
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Oct 2015 04:35:46 +0000 (UTC)
+Received: from mail-yk0-f174.google.com (mail-yk0-f174.google.com
+ [209.85.160.174])
+ (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2938620711
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Oct 2015 04:35:44 +0000 (UTC)
+Received: by ykek133 with SMTP id k133so24309798yke.2
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Oct 2015 21:35:43 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20151011200402.GE3696@localhost>
+References: <cover.1439911625.git.hramrach@gmail.com>
+ <e47db0c8eeaeb11353bcb2f4dcd138e813c3ecd7.1439911625.git.hramrach@gmail.com>
+ <20151011200402.GE3696@localhost>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Mon, 26 Oct 2015 23:35:24 -0500
+Message-ID: <CAL_JsqJ4Ha7R92=6xkwYXZjpEprjWoVxyXM6cG=yykVoTMH-vw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] mtd: ofpart: update devicetree binding
+ specification
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Michal Suchanek <hramrach@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,171 +42,151 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 073db4a51ee4 ("mtd: fix: avoid race condition when accessing
-mtd->usecount") fixed a race condition but due to poor ordering of the
-mutex acquisition, introduced a potential deadlock.
+On Sun, Oct 11, 2015 at 3:04 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> Hi DT maintainers,
+>
+> It's a bit hypocritical of me, since I've been a slow reviewer as well,
+> but... can we get some review on this one? Usually, I'm comfortable
+> taking driver DT bindings without your review, but this one is a bit
+> more generic and is more far-reaching than the average driver.
 
-The deadlock can occur, for example, when rmmod'ing the m25p80 module, which
-will delete one or more MTDs, along with any corresponding mtdblock
-devices. This could potentially race with an acquisition of the block
-device as follows.
+Sorry, missed this one. This would be a good one to send to
+devicetree-spec to BTW.
 
- -> blktrans_open()
-    ->  mutex_lock(&dev->lock);
-    ->  mutex_lock(&mtd_table_mutex);
+> I'm not a big fan of this change, and I don't quite understand why the
+> bus driver (the SPI bus, which is a level up from the SPI device / MTD
+> node) can specify its grandchildren (see spi-samsung.txt). But given the
 
- -> del_mtd_device()
-    ->  mutex_lock(&mtd_table_mutex);
-    ->  blktrans_notify_remove() -> del_mtd_blktrans_dev()
-       ->  mutex_lock(&dev->lock);
+That's just an example. I just would change it.
 
-This is a classic (potential) ABBA deadlock, which can be fixed by
-making the A->B ordering consistent everywhere. There was no real
-purpose to the ordering in the original patch, AFAIR, so this shouldn't
-be a problem. This ordering was actually already present in
-del_mtd_blktrans_dev(), for one, where the function tried to ensure that
-its caller already held mtd_table_mutex before it acquired &dev->lock:
+> constraints, I think Michal's solution is OK. And I do agree that MTD's
+> ofpart should be bit more specific.
+>
+> Anyway, a quick look and an Ack/Nak would be appreciated.
 
-        if (mutex_trylock(&mtd_table_mutex)) {
-                mutex_unlock(&mtd_table_mutex);
-                BUG();
-        }
+Looks fine to me:
 
-So, reverse the ordering of acquisition of &dev->lock and &mtd_table_mutex so
-we always acquire mtd_table_mutex first.
+Acked-by: Rob Herring <robh@kernel.org>
 
-Snippets of the lockdep output follow:
-
-  # modprobe -r m25p80
-  [   53.419251]
-  [   53.420838] ======================================================
-  [   53.427300] [ INFO: possible circular locking dependency detected ]
-  [   53.433865] 4.3.0-rc6 #96 Not tainted
-  [   53.437686] -------------------------------------------------------
-  [   53.444220] modprobe/372 is trying to acquire lock:
-  [   53.449320]  (&new->lock){+.+...}, at: [<c043fe4c>] del_mtd_blktrans_dev+0x80/0xdc
-  [   53.457271]
-  [   53.457271] but task is already holding lock:
-  [   53.463372]  (mtd_table_mutex){+.+.+.}, at: [<c0439994>] del_mtd_device+0x18/0x100
-  [   53.471321]
-  [   53.471321] which lock already depends on the new lock.
-  [   53.471321]
-  [   53.479856]
-  [   53.479856] the existing dependency chain (in reverse order) is:
-  [   53.487660]
-  -> #1 (mtd_table_mutex){+.+.+.}:
-  [   53.492331]        [<c043fc5c>] blktrans_open+0x34/0x1a4
-  [   53.497879]        [<c01afce0>] __blkdev_get+0xc4/0x3b0
-  [   53.503364]        [<c01b0bb8>] blkdev_get+0x108/0x320
-  [   53.508743]        [<c01713c0>] do_dentry_open+0x218/0x314
-  [   53.514496]        [<c0180454>] path_openat+0x4c0/0xf9c
-  [   53.519959]        [<c0182044>] do_filp_open+0x5c/0xc0
-  [   53.525336]        [<c0172758>] do_sys_open+0xfc/0x1cc
-  [   53.530716]        [<c000f740>] ret_fast_syscall+0x0/0x1c
-  [   53.536375]
-  -> #0 (&new->lock){+.+...}:
-  [   53.540587]        [<c063f124>] mutex_lock_nested+0x38/0x3cc
-  [   53.546504]        [<c043fe4c>] del_mtd_blktrans_dev+0x80/0xdc
-  [   53.552606]        [<c043f164>] blktrans_notify_remove+0x7c/0x84
-  [   53.558891]        [<c04399f0>] del_mtd_device+0x74/0x100
-  [   53.564544]        [<c043c670>] del_mtd_partitions+0x80/0xc8
-  [   53.570451]        [<c0439aa0>] mtd_device_unregister+0x24/0x48
-  [   53.576637]        [<c046ce6c>] spi_drv_remove+0x1c/0x34
-  [   53.582207]        [<c03de0f0>] __device_release_driver+0x88/0x114
-  [   53.588663]        [<c03de19c>] device_release_driver+0x20/0x2c
-  [   53.594843]        [<c03dd9e8>] bus_remove_device+0xd8/0x108
-  [   53.600748]        [<c03dacc0>] device_del+0x10c/0x210
-  [   53.606127]        [<c03dadd0>] device_unregister+0xc/0x20
-  [   53.611849]        [<c046d878>] __unregister+0x10/0x20
-  [   53.617211]        [<c03da868>] device_for_each_child+0x50/0x7c
-  [   53.623387]        [<c046eae8>] spi_unregister_master+0x58/0x8c
-  [   53.629578]        [<c03e12f0>] release_nodes+0x15c/0x1c8
-  [   53.635223]        [<c03de0f8>] __device_release_driver+0x90/0x114
-  [   53.641689]        [<c03de900>] driver_detach+0xb4/0xb8
-  [   53.647147]        [<c03ddc78>] bus_remove_driver+0x4c/0xa0
-  [   53.652970]        [<c00cab50>] SyS_delete_module+0x11c/0x1e4
-  [   53.658976]        [<c000f740>] ret_fast_syscall+0x0/0x1c
-  [   53.664621]
-  [   53.664621] other info that might help us debug this:
-  [   53.664621]
-  [   53.672979]  Possible unsafe locking scenario:
-  [   53.672979]
-  [   53.679169]        CPU0                    CPU1
-  [   53.683900]        ----                    ----
-  [   53.688633]   lock(mtd_table_mutex);
-  [   53.692383]                                lock(&new->lock);
-  [   53.698306]                                lock(mtd_table_mutex);
-  [   53.704658]   lock(&new->lock);
-  [   53.707946]
-  [   53.707946]  *** DEADLOCK ***
-
-Fixes: 073db4a51ee4 ("mtd: fix: avoid race condition when accessing mtd->usecount")
-Reported-by: Felipe Balbi <balbi@ti.com>
-Tested-by: Felipe Balbi <balbi@ti.com>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: <stable@vger.kernel.org>
----
-Resending as a proper patch
-
-Note: I tried to reproduce this lockdep warning myself but couldn't. But I saw
-no problem under the new patch either.
-
- drivers/mtd/mtd_blkdevs.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 44dc965a2f7c..e7a02ed9fba8 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -192,8 +192,8 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
- 	if (!dev)
- 		return -ERESTARTSYS; /* FIXME: busy loop! -arnd*/
- 
--	mutex_lock(&dev->lock);
- 	mutex_lock(&mtd_table_mutex);
-+	mutex_lock(&dev->lock);
- 
- 	if (dev->open)
- 		goto unlock;
-@@ -217,8 +217,8 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
- 
- unlock:
- 	dev->open++;
--	mutex_unlock(&mtd_table_mutex);
- 	mutex_unlock(&dev->lock);
-+	mutex_unlock(&mtd_table_mutex);
- 	blktrans_dev_put(dev);
- 	return ret;
- 
-@@ -228,8 +228,8 @@ error_release:
- error_put:
- 	module_put(dev->tr->owner);
- 	kref_put(&dev->ref, blktrans_dev_release);
--	mutex_unlock(&mtd_table_mutex);
- 	mutex_unlock(&dev->lock);
-+	mutex_unlock(&mtd_table_mutex);
- 	blktrans_dev_put(dev);
- 	return ret;
- }
-@@ -241,8 +241,8 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
- 	if (!dev)
- 		return;
- 
--	mutex_lock(&dev->lock);
- 	mutex_lock(&mtd_table_mutex);
-+	mutex_lock(&dev->lock);
- 
- 	if (--dev->open)
- 		goto unlock;
-@@ -256,8 +256,8 @@ static void blktrans_release(struct gendisk *disk, fmode_t mode)
- 		__put_mtd_device(dev->mtd);
- 	}
- unlock:
--	mutex_unlock(&mtd_table_mutex);
- 	mutex_unlock(&dev->lock);
-+	mutex_unlock(&mtd_table_mutex);
- 	blktrans_dev_put(dev);
- }
- 
--- 
-2.6.0.rc2.230.g3dd15c0
+>
+> Thanks,
+> Brian
+>
+> On Tue, Aug 18, 2015 at 03:34:08PM -0000, Michal Suchanek wrote:
+>> To avoid conflict with other drivers using subnodes of the mtd device
+>> create only one ofpart-specific node rather than any number of
+>> arbitrary partition subnodes.
+>>
+>> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+>> ---
+>> v3:
+>>
+>>  - rename DT node ofpart -> partitions
+>> ---
+>>  .../devicetree/bindings/mtd/partition.txt          | 68 +++++++++++++---------
+>>  1 file changed, 40 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+>> index 8e5557d..8c2aff7 100644
+>> --- a/Documentation/devicetree/bindings/mtd/partition.txt
+>> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
+>> @@ -4,10 +4,16 @@ Partitions can be represented by sub-nodes of an mtd device. This can be used
+>>  on platforms which have strong conventions about which portions of a flash are
+>>  used for what purposes, but which don't use an on-flash partition table such
+>>  as RedBoot.
+>> +
+>> +The partition table should be partitions subnode of the mtd node. Partitions are
+>> +defined in subnodes of the partitions node.
+>> +
+>> +For backwards compatibility partitions as direct subnodes of the mtd device are
+>> +supported. This use is discouraged.
+>>  NOTE: if the sub-node has a compatible string, then it is not a partition.
+>>
+>> -#address-cells & #size-cells must both be present in the mtd device. There are
+>> -two valid values for both:
+>> +#address-cells & #size-cells must both be present in the partitions subnode of the
+>> +mtd device. There are two valid values for both:
+>>  <1>: for partitions that require a single 32-bit cell to represent their
+>>       size/address (aka the value is below 4 GiB)
+>>  <2>: for partitions that require two 32-bit cells to represent their
+>> @@ -28,44 +34,50 @@ Examples:
+>>
+>>
+>>  flash@0 {
+>> -     #address-cells = <1>;
+>> -     #size-cells = <1>;
+>> +     partitions {
+>> +             #address-cells = <1>;
+>> +             #size-cells = <1>;
+>>
+>> -     partition@0 {
+>> -             label = "u-boot";
+>> -             reg = <0x0000000 0x100000>;
+>> -             read-only;
+>> -     };
+>> +             partition@0 {
+>> +                     label = "u-boot";
+>> +                     reg = <0x0000000 0x100000>;
+>> +                     read-only;
+>> +             };
+>>
+>> -     uimage@100000 {
+>> -             reg = <0x0100000 0x200000>;
+>> +             uimage@100000 {
+>> +                     reg = <0x0100000 0x200000>;
+>> +             };
+>>       };
+>>  };
+>>
+>>  flash@1 {
+>> -     #address-cells = <1>;
+>> -     #size-cells = <2>;
+>> +     partitions {
+>> +             #address-cells = <1>;
+>> +             #size-cells = <2>;
+>>
+>> -     /* a 4 GiB partition */
+>> -     partition@0 {
+>> -             label = "filesystem";
+>> -             reg = <0x00000000 0x1 0x00000000>;
+>> +             /* a 4 GiB partition */
+>> +             partition@0 {
+>> +                     label = "filesystem";
+>> +                     reg = <0x00000000 0x1 0x00000000>;
+>> +             };
+>>       };
+>>  };
+>>
+>>  flash@2 {
+>> -     #address-cells = <2>;
+>> -     #size-cells = <2>;
+>> +     partitions {
+>> +             #address-cells = <2>;
+>> +             #size-cells = <2>;
+>>
+>> -     /* an 8 GiB partition */
+>> -     partition@0 {
+>> -             label = "filesystem #1";
+>> -             reg = <0x0 0x00000000 0x2 0x00000000>;
+>> -     };
+>> +             /* an 8 GiB partition */
+>> +             partition@0 {
+>> +                     label = "filesystem #1";
+>> +                     reg = <0x0 0x00000000 0x2 0x00000000>;
+>> +             };
+>>
+>> -     /* a 4 GiB partition */
+>> -     partition@200000000 {
+>> -             label = "filesystem #2";
+>> -             reg = <0x2 0x00000000 0x1 0x00000000>;
+>> +             /* a 4 GiB partition */
+>> +             partition@200000000 {
+>> +                     label = "filesystem #2";
+>> +                     reg = <0x2 0x00000000 0x1 0x00000000>;
+>> +             };
+>>       };
+>>  };
+>> --
+>> 2.1.4
+>>
