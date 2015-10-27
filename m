@@ -1,27 +1,23 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrBHg-0007v3-JV
- for linux-mtd@lists.infradead.org; Tue, 27 Oct 2015 20:55:57 +0000
-Subject: Re: [PATCH] mtd: brcmnand: Fix NAND_CMD_PARAM byte order
-To: Brian Norris <computersforpeace@gmail.com>, Clay McClure <clay@daemons.net>
-References: <1445629626-27474-1-git-send-email-clay@daemons.net>
- <20151023232742.GV13239@google.com> <562AD54B.2000501@broadcom.com>
- <20151024011219.GW13239@google.com>
- <CAOVqfW-1YurDwJbKDgUJdQZVxJ_rWDg-x+28++SZtg-vPO4kYg@mail.gmail.com>
- <20151026181430.GA13239@google.com> <562E7667.5050406@broadcom.com>
- <CAOVqfW8g2w=u8fO5GTa=5Hw_OOPS6NcGFg3TiLbCPny14id0VQ@mail.gmail.com>
- <20151027204023.GV13239@google.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Florian
- Fainelli" <f.fainelli@gmail.com>, Scott Branden <sbranden@broadcom.com>,
- "bcm-kernel-feedback-list@broadcom.com"
- <bcm-kernel-feedback-list@broadcom.com>
-From: Ray Jui <rjui@broadcom.com>
-Message-ID: <562FE4C4.3040605@broadcom.com>
-Date: Tue, 27 Oct 2015 13:55:32 -0700
+Received: from mail-bl2on0108.outbound.protection.outlook.com ([65.55.169.108]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZrCYK-0007iC-VD
+ for linux-mtd@lists.infradead.org; Tue, 27 Oct 2015 22:17:14 +0000
+From: Han Xu <b45815@freescale.com>
+To: <shijie.huang@arm.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <b45815@freescale.com>, <boris.brezillon@free-electrons.com>,
+ <fabio.estevam@freescale.com>, <hofrat@osadl.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
+ <dmaengine@vger.kernel.org>
+Subject: [PATCH v7 7/7] mtd: nand: gpmi: support NAND on i.MX6UL
+Date: Tue, 27 Oct 2015 17:05:40 -0500
+Message-ID: <1445983540-27155-8-git-send-email-b45815@freescale.com>
+In-Reply-To: <1445983540-27155-1-git-send-email-b45815@freescale.com>
+References: <1445983540-27155-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <20151027204023.GV13239@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,95 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+support GPMI NAND on i.MX6UL
 
-On 10/27/2015 1:40 PM, Brian Norris wrote:
-> Hi,
->
-> I'm not sure I can properly answer all of Ray's questions, but I'll try
-> to come back to them. There is at least one wrong statement here to
-> correct, and perhaps that can help inform Ray before we return to his
-> questions.
->
-> On Mon, Oct 26, 2015 at 01:08:41PM -0700, Clay McClure wrote:
->> The bug in read_byte() is due to the fact that it currently assumes
->> the host CPU byte order is big-endian (i.e., it always extracts byte 0
->> from the high bits of the word).
->
-> No, the bug isn't really in read_byte() specifically, and it definitely
-> isn't about the CPU being big-endian. As I said before, this is
-> primarily tested on *little* endian MIPS and ARM STB chips.
->
-> It appears that on these SoCs, at least, somehow (I have to wave my
-> hands here; I really don't know why; I can only presume poor HW design)
-> the PARAMETER_READ command fills the flash cache with big endian -like
-> data. So when I looked at the parameter page in a register viewer, I'd
-> see data like this:
->
-> FLASH_CACHE[0] = 0x4f4e4649  (i.e., "ONFI")
-> FLASH_CAHCE[1] = ....
->
-> That is, byte[0] is 0x49 ("I"), byte[1] is 0x46 ("F"), byte[2] is 0x4e
-> ("N"), byte[3] is 0x4f ("O"), and so on. That means this data needs to
-> be byte-swapped before we can push it out of the brcmnand driver. There
-> are no sideband toggles to reconfigure buses or anything, so the driver
-> must do the swap on its own. Currently, that is done via ugly word
-> shifting, but it can be more clearly done with this patch [1]. Note that
-> this patch [1] just a simple refactoring and does not actually fix
-> anything. It is just to clarify the logic.
->
-> (Incidentally, I believe the above is all correct even for STB
-> big-endian MIPS too, but I haven't tested.)
->
+Signed-off-by: Han Xu <han.xu@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 9 +++++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h | 4 +++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-Don't you think this may have something to do with the APB bus 
-endianness setting that's not used for all non-iProc SoCs? I suspect not 
-just the ONFI paramter page, but all other NAND data read into 
-FLASH_CACHE are in BE format on those SoCs (or am I completely out of my 
-mind and missing something here?)
-
-That is why the original code (before this change) did not work for 
-iProc based SoCs. Because the APB bus has been configured to LE before 
-accessing the flash cache registers for iProc SoCs, data read from NAND, 
-through APB, to DDR, are in LE. But the driver logic is obviously 
-assuming that data is in BE. This may explain why it did not work for 
-iProc SoCs?
-
->> If we continue to use LE APB
->> transfers, then I think we can exclude the be32_to_cpu() call from
->> Brian's patch.
->
-> I don't believe we can safely drop the be32_to_cpu(). That is just a
-> refactoring of the existing logic. Please stop suggesting ways to break
-> STB SoCs.
->
->> Converting flash_cache to a byte array I believe is all
->> we need to solve the problem with nand_flash_detect_onfi(). That
->> function already includes the necessary byte-order conversions for
->> big-endian machines.
->
-> How we pull data out of our NAND controller core is completely
-> orthogonal to the data structure contained within that data. i.e., it
-> has nothing to do with ONFI standards and nand_flash_detect_onfi()'s
-> byte swapping. It just means we need to get (the right) byte[0] into
-> byte[0], byte[1] into byte[1], etc.
->
-> Thus, the byte-order conversions in nand_flash_detect_onfi() shouldn't
-> really have much to do with this conversation. They just make sure that
-> after *we* pull the data out correctly, nand_base interprets it
-> correctly.
->
->> Brian, I'll test a variation of this patch on our iProc-based
->> platforms and report back.
->
-> OK, getting testing feedback from an iProc-based system using ONFI would
-> be somewhat illuminating.
->
-> Brian
->
->> Thanks,
->>
->> Clay
->
-> [1] http://patchwork.ozlabs.org/patch/536148/
->
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index d34c35014..8bdf8a1 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -89,6 +89,12 @@ static const struct gpmi_devdata gpmi_devdata_imx7d = {
+ 	.max_chain_delay = 12,
+ };
+ 
++static const struct gpmi_devdata gpmi_devdata_imx6ul = {
++	.type = IS_MX6UL,
++	.bch_max_ecc_strength = 40,
++	.max_chain_delay = 12,
++};
++
+ static irqreturn_t bch_irq(int irq, void *cookie)
+ {
+ 	struct gpmi_nand_data *this = cookie;
+@@ -2016,6 +2022,9 @@ static const struct of_device_id gpmi_nand_id_table[] = {
+ 		.compatible = "fsl,imx6sx-gpmi-nand",
+ 		.data = &gpmi_devdata_imx6sx,
+ 	}, {
++		.compatible = "fsl,imx6ul-gpmi-nand",
++		.data = (void *)&gpmi_devdata_imx6ul,
++	}, {
+ 		.compatible = "fsl,imx7d-gpmi-nand",
+ 		.data = (void *)&gpmi_devdata_imx7d,
+ 	}, { /* sentinel */ }
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 149a442..331f98e 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -126,6 +126,7 @@ enum gpmi_type {
+ 	IS_MX6QP,
+ 	IS_MX6SX,
+ 	IS_MX7D,
++	IS_MX6UL,
+ };
+ 
+ struct gpmi_devdata {
+@@ -310,8 +311,9 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
+ #define GPMI_IS_MX6QP(x)	((x)->devdata->type == IS_MX6QP)
+ #define GPMI_IS_MX6SX(x)	((x)->devdata->type == IS_MX6SX)
+ #define GPMI_IS_MX7D(x)		((x)->devdata->type == IS_MX7D)
++#define GPMI_IS_MX6UL(x)	((x)->devdata->type == IS_MX6UL)
+ 
+ #define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6QP(x)\
+-	   || GPMI_IS_MX6SX(x))
++	   || GPMI_IS_MX6SX(x) || GPMI_IS_MX6UL(x))
+ #define GPMI_IS_MX7(x)		(GPMI_IS_MX7D(x))
+ #endif
+-- 
+1.9.1
