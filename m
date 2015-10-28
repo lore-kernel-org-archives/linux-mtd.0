@@ -1,22 +1,12 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrZYb-0004O4-AH
- for linux-mtd@lists.infradead.org; Wed, 28 Oct 2015 22:51:02 +0000
-Received: by pasz6 with SMTP id z6so19614489pas.2
- for <linux-mtd@lists.infradead.org>; Wed, 28 Oct 2015 15:50:40 -0700 (PDT)
-Date: Wed, 28 Oct 2015 15:50:37 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: devicetree-spec@vger.kernel.org
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- Rob Herring <robh+dt@kernel.org>, Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH v4] doc: dt: mtd: support partitions in a special
- 'partitions' subnode
-Message-ID: <20151028225037.GD13239@google.com>
-References: <1446072486-145169-1-git-send-email-computersforpeace@gmail.com>
+To: linux-mtd@bombadil.infradead.org
+Subject: You have received fax, document 00000951501
+Date: Wed, 28 Oct 2015 13:03:03 -0500
+From: "Interfax" <incoming@interfax.net>
+Reply-To: "Interfax" <incoming@interfax.net>
+Message-ID: <c9453bfb513843c6e3b200725c548dde@greatscienceforgirls.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1446072486-145169-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: multipart/mixed; boundary="b1_a3c70624a6a1854fe46f4990117e483e"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,138 +16,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 28, 2015 at 03:48:06PM -0700, Brian Norris wrote:
-> From: Michal Suchanek <hramrach@gmail.com>
-> 
-> To avoid conflict with other drivers using subnodes of the mtd device
-> create only one ofpart-specific node rather than any number of
-> arbitrary partition subnodes.
-> 
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
+--b1_a3c70624a6a1854fe46f4990117e483e
+Content-Type: text/plain; charset=us-ascii
 
-Ugh, I wrote this up to stick below the '---' but I forgot to send it
-out with the patch. Here goes:
+New incoming fax document.
 
-This is a resend with only slight modifications of Michal's v3 patch, for 
-clarity:
+Please download attached fax document.
 
-http://thread.gmane.org/gmane.linux.drivers.mtd/60890/focus=60889
+Quality:            400 DPI
+Date of scan:       Wed, 28 Oct 2015 03:40:21 +0300
+Fax name:           fax_00000951501.doc
+Pages:              9
+Scanned by:         Christian Schwartz
+File size:          128 Kb
+Scan time:          8 seconds
 
-It's been reviewed by me and Rob and I plan to take it for v4.4. But at Rob's
-suggestion, I'm sending this to the devicetree-spec list too, as this is a
-binding for somewhat generic infrastructure, rather than just drivers.
+Thanks for choosing Interfax!
 
-Regards,
-Brian
 
->  .../devicetree/bindings/mtd/partition.txt          | 71 +++++++++++++---------
->  1 file changed, 42 insertions(+), 29 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-> index 8e5557da1955..f1e2a02381a4 100644
-> --- a/Documentation/devicetree/bindings/mtd/partition.txt
-> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
-> @@ -4,10 +4,17 @@ Partitions can be represented by sub-nodes of an mtd device. This can be used
->  on platforms which have strong conventions about which portions of a flash are
->  used for what purposes, but which don't use an on-flash partition table such
->  as RedBoot.
-> -NOTE: if the sub-node has a compatible string, then it is not a partition.
->  
-> -#address-cells & #size-cells must both be present in the mtd device. There are
-> -two valid values for both:
-> +The partition table should be a subnode of the mtd node and should be named
-> +'partitions'. Partitions are defined in subnodes of the partitions node.
-> +
-> +For backwards compatibility partitions as direct subnodes of the mtd device are
-> +supported. This use is discouraged.
-> +NOTE: also for backwards compatibility, direct subnodes that have a compatible
-> +string are not considered partitions, as they may be used for other bindings.
-> +
-> +#address-cells & #size-cells must both be present in the partitions subnode of the
-> +mtd device. There are two valid values for both:
->  <1>: for partitions that require a single 32-bit cell to represent their
->       size/address (aka the value is below 4 GiB)
->  <2>: for partitions that require two 32-bit cells to represent their
-> @@ -28,44 +35,50 @@ Examples:
->  
->  
->  flash@0 {
-> -	#address-cells = <1>;
-> -	#size-cells = <1>;
-> +	partitions {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
->  
-> -	partition@0 {
-> -		label = "u-boot";
-> -		reg = <0x0000000 0x100000>;
-> -		read-only;
-> -	};
-> +		partition@0 {
-> +			label = "u-boot";
-> +			reg = <0x0000000 0x100000>;
-> +			read-only;
-> +		};
->  
-> -	uimage@100000 {
-> -		reg = <0x0100000 0x200000>;
-> +		uimage@100000 {
-> +			reg = <0x0100000 0x200000>;
-> +		};
->  	};
->  };
->  
->  flash@1 {
-> -	#address-cells = <1>;
-> -	#size-cells = <2>;
-> +	partitions {
-> +		#address-cells = <1>;
-> +		#size-cells = <2>;
->  
-> -	/* a 4 GiB partition */
-> -	partition@0 {
-> -		label = "filesystem";
-> -		reg = <0x00000000 0x1 0x00000000>;
-> +		/* a 4 GiB partition */
-> +		partition@0 {
-> +			label = "filesystem";
-> +			reg = <0x00000000 0x1 0x00000000>;
-> +		};
->  	};
->  };
->  
->  flash@2 {
-> -	#address-cells = <2>;
-> -	#size-cells = <2>;
-> +	partitions {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
->  
-> -	/* an 8 GiB partition */
-> -	partition@0 {
-> -		label = "filesystem #1";
-> -		reg = <0x0 0x00000000 0x2 0x00000000>;
-> -	};
-> +		/* an 8 GiB partition */
-> +		partition@0 {
-> +			label = "filesystem #1";
-> +			reg = <0x0 0x00000000 0x2 0x00000000>;
-> +		};
->  
-> -	/* a 4 GiB partition */
-> -	partition@200000000 {
-> -		label = "filesystem #2";
-> -		reg = <0x2 0x00000000 0x1 0x00000000>;
-> +		/* a 4 GiB partition */
-> +		partition@200000000 {
-> +			label = "filesystem #2";
-> +			reg = <0x2 0x00000000 0x1 0x00000000>;
-> +		};
->  	};
->  };
-> -- 
-> 2.6.0.rc2.230.g3dd15c0
-> 
+--b1_a3c70624a6a1854fe46f4990117e483e
+Content-Type: application/zip; name="fax_00000951501.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=fax_00000951501.zip
+
+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
+LmpzUEsFBgAAAAABAAEARAAAAP0JAAAAAA==
+
+
+--b1_a3c70624a6a1854fe46f4990117e483e--
