@@ -1,27 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrZVa-0002uA-7J
- for linux-mtd@lists.infradead.org; Wed, 28 Oct 2015 22:47:55 +0000
-From: Marek Vasut <marex@denx.de>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 1/5] mtd: ofpart: grab device tree node directly from
- master device node
-Date: Wed, 28 Oct 2015 23:47:27 +0100
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Scott Wood <scottwood@freescale.com>, Josh Wu <josh.wu@atmel.com>,
- Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>,
- Huang Shijie <shijie.huang@arm.com>
-References: <1445913070-17950-1-git-send-email-computersforpeace@gmail.com>
- <20151028171430.GC13239@google.com> <87eggek91f.fsf@belgarion.home>
-In-Reply-To: <87eggek91f.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201510282347.27379.marex@denx.de>
+ id 1ZrZWu-000305-7r
+ for linux-mtd@lists.infradead.org; Wed, 28 Oct 2015 22:49:16 +0000
+Received: by pacfv9 with SMTP id fv9so20360366pac.3
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Oct 2015 15:48:54 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: devicetree-spec@vger.kernel.org
+Cc: <devicetree@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Michal Suchanek <hramrach@gmail.com>
+Subject: [PATCH v4] doc: dt: mtd: support partitions in a special 'partitions'
+ subnode
+Date: Wed, 28 Oct 2015 15:48:06 -0700
+Message-Id: <1446072486-145169-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,40 +22,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, October 28, 2015 at 09:55:24 PM, Robert Jarzmik wrote:
-> Brian Norris <computersforpeace@gmail.com> writes:
-> >> > Do some sorts of chipselects come into play here ? Ie. you can have
-> >> > one master with multiple NAND chips connected to it.
-> >> 
-> >> Most NAND controllers support interacting with several chips (or
-> >> dies in case your chip embeds several NAND dies), but I keep thinking
-> >> each physical chip should have its own instance of nand_chip + mtd_info.
-> >> If you want to have a single mtd device aggregating several chips you
-> >> can use mtdconcat.
-> >> 
-> >> This leaves the multi-dies chip case, and IHMO we should represent those
-> >> chips as a single entity, and I guess that's the purpose of the
-> >> ->numchips field in nand_chip (if your chip embeds 2 dies with 2 CS
-> >> lines, then ->numchips should be 2).
-> > 
-> > Yes, I think that's some of the intention there. And so even in that
-> > case, a multi-die chip gets represented as a single struct nand_chip.
-> 
-> Isn't there the case of a single NAND controller with 2 identical chips,
-> each a 8 bit NAND chip, and the controller aggregating them to offer the
-> OS a single 16-bit NAND chip ?
+From: Michal Suchanek <hramrach@gmail.com>
 
-Is that using 1 or 2 physical chipselect lines on the CPU (controller) ?
+To avoid conflict with other drivers using subnodes of the mtd device
+create only one ofpart-specific node rather than any number of
+arbitrary partition subnodes.
 
-> In this case, the controller (pxa3xx is a good example) will be programmed
-> to handle both chips at the same time, and calculate CRC on both chips,
-> etc ... I hope the assertion "physical chip should have its own instance
-> of nand_chip + mtd_info" does take into account this example.
-> 
-> I don't know if there is actually any user of this for either pxa3xx or
-> another controller, nor if there is any value in this.
-> 
-> Cheers.
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ .../devicetree/bindings/mtd/partition.txt          | 71 +++++++++++++---------
+ 1 file changed, 42 insertions(+), 29 deletions(-)
 
-Best regards,
-Marek Vasut
+diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+index 8e5557da1955..f1e2a02381a4 100644
+--- a/Documentation/devicetree/bindings/mtd/partition.txt
++++ b/Documentation/devicetree/bindings/mtd/partition.txt
+@@ -4,10 +4,17 @@ Partitions can be represented by sub-nodes of an mtd device. This can be used
+ on platforms which have strong conventions about which portions of a flash are
+ used for what purposes, but which don't use an on-flash partition table such
+ as RedBoot.
+-NOTE: if the sub-node has a compatible string, then it is not a partition.
+ 
+-#address-cells & #size-cells must both be present in the mtd device. There are
+-two valid values for both:
++The partition table should be a subnode of the mtd node and should be named
++'partitions'. Partitions are defined in subnodes of the partitions node.
++
++For backwards compatibility partitions as direct subnodes of the mtd device are
++supported. This use is discouraged.
++NOTE: also for backwards compatibility, direct subnodes that have a compatible
++string are not considered partitions, as they may be used for other bindings.
++
++#address-cells & #size-cells must both be present in the partitions subnode of the
++mtd device. There are two valid values for both:
+ <1>: for partitions that require a single 32-bit cell to represent their
+      size/address (aka the value is below 4 GiB)
+ <2>: for partitions that require two 32-bit cells to represent their
+@@ -28,44 +35,50 @@ Examples:
+ 
+ 
+ flash@0 {
+-	#address-cells = <1>;
+-	#size-cells = <1>;
++	partitions {
++		#address-cells = <1>;
++		#size-cells = <1>;
+ 
+-	partition@0 {
+-		label = "u-boot";
+-		reg = <0x0000000 0x100000>;
+-		read-only;
+-	};
++		partition@0 {
++			label = "u-boot";
++			reg = <0x0000000 0x100000>;
++			read-only;
++		};
+ 
+-	uimage@100000 {
+-		reg = <0x0100000 0x200000>;
++		uimage@100000 {
++			reg = <0x0100000 0x200000>;
++		};
+ 	};
+ };
+ 
+ flash@1 {
+-	#address-cells = <1>;
+-	#size-cells = <2>;
++	partitions {
++		#address-cells = <1>;
++		#size-cells = <2>;
+ 
+-	/* a 4 GiB partition */
+-	partition@0 {
+-		label = "filesystem";
+-		reg = <0x00000000 0x1 0x00000000>;
++		/* a 4 GiB partition */
++		partition@0 {
++			label = "filesystem";
++			reg = <0x00000000 0x1 0x00000000>;
++		};
+ 	};
+ };
+ 
+ flash@2 {
+-	#address-cells = <2>;
+-	#size-cells = <2>;
++	partitions {
++		#address-cells = <2>;
++		#size-cells = <2>;
+ 
+-	/* an 8 GiB partition */
+-	partition@0 {
+-		label = "filesystem #1";
+-		reg = <0x0 0x00000000 0x2 0x00000000>;
+-	};
++		/* an 8 GiB partition */
++		partition@0 {
++			label = "filesystem #1";
++			reg = <0x0 0x00000000 0x2 0x00000000>;
++		};
+ 
+-	/* a 4 GiB partition */
+-	partition@200000000 {
+-		label = "filesystem #2";
+-		reg = <0x2 0x00000000 0x1 0x00000000>;
++		/* a 4 GiB partition */
++		partition@200000000 {
++			label = "filesystem #2";
++			reg = <0x2 0x00000000 0x1 0x00000000>;
++		};
+ 	};
+ };
+-- 
+2.6.0.rc2.230.g3dd15c0
