@@ -1,27 +1,32 @@
-Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrDca-0007xb-6V
- for linux-mtd@lists.infradead.org; Tue, 27 Oct 2015 23:25:40 +0000
-Received: by igbdj2 with SMTP id dj2so90397872igb.1
- for <linux-mtd@lists.infradead.org>; Tue, 27 Oct 2015 16:25:18 -0700 (PDT)
+Date: Tue, 27 Oct 2015 17:14:43 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Anup Patel <anup.patel@broadcom.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Pramod KUMAR <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>,
+ Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>,
+ Device Tree <devicetree@vger.kernel.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: [PATCH v3 1/2] mtd: brcmnand: Force 8bit mode before doing
+ nand_scan_ident()
+Message-ID: <20151028001443.GX13239@google.com>
+References: <1445577373-21252-1-git-send-email-anup.patel@broadcom.com>
+ <1445577373-21252-2-git-send-email-anup.patel@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <1445983540-27155-3-git-send-email-b45815@freescale.com>
-References: <1445983540-27155-1-git-send-email-b45815@freescale.com>
- <1445983540-27155-3-git-send-email-b45815@freescale.com>
-Date: Tue, 27 Oct 2015 21:25:18 -0200
-Message-ID: <CAOMZO5CcXdV_hjaZ01UXBADgPKyD1DSiVWjmvCfSBU0jBCSNZQ@mail.gmail.com>
-Subject: Re: [PATCH v7 2/7] dmaengine: mxs: APBH DMA supports deep sleep mode
-From: Fabio Estevam <festevam@gmail.com>
-To: Han Xu <b45815@freescale.com>
-Cc: shijie.huang@arm.com, Fabio Estevam <fabio.estevam@freescale.com>,
- boris.brezillon@free-electrons.com, Vinod Koul <vinod.koul@intel.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- hofrat@osadl.org, dmaengine@vger.kernel.org,
- Dan Williams <dan.j.williams@intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1445577373-21252-2-git-send-email-anup.patel@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,12 +36,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 27, 2015 at 8:05 PM, Han Xu <b45815@freescale.com> wrote:
-> From: Huang Shijie <b32955@freescale.com>
->
-> Deep Sleep Mode(dsm) turns off the power for APBH DMA module, DMA
-> need to be re-initialized when system resumed back.
->
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
+On Fri, Oct 23, 2015 at 10:46:12AM +0530, Anup Patel wrote:
+> Just like other NAND controllers, the NAND READID command only works
+> in 8bit mode for all versions of BRCMNAND controller.
+> 
+> This patch forces 8bit mode for each NAND CS in brcmnand_init_cs()
+> before doing nand_scan_ident() to ensure that BRCMNAND controller
+> is in 8bit mode when NAND READID command is issued.
+> 
+> Signed-off-by: Anup Patel <anup.patel@broadcom.com>
+> Reviewed-by: Ray Jui <rjui@broadcom.com>
+> Reviewed-by: Scott Branden <sbranden@broadcom.com>
+> ---
+>  drivers/mtd/nand/brcmnand/brcmnand.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index 4cba03d..0be8ef9 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -1888,6 +1888,7 @@ static int brcmnand_init_cs(struct brcmnand_host *host)
+>  	struct mtd_info *mtd;
+>  	struct nand_chip *chip;
+>  	int ret;
+> +	u16 cfg_offs;
+>  	struct mtd_part_parser_data ppdata = { .of_node = dn };
+>  
+>  	ret = of_property_read_u32(dn, "reg", &host->cs);
+> @@ -1930,6 +1931,14 @@ static int brcmnand_init_cs(struct brcmnand_host *host)
+>  
+>  	chip->controller = &ctrl->controller;
+>  
+> +	/*
+> +	 * The bootloader might have configured 16bit mode but
+> +	 * NAND READID command only works in 8bit mode. We force
+> +	 * 8bit mode here to ensure that NAND READID commands works.
+> +	 */
+> +	cfg_offs = brcmnand_cs_offset(ctrl, host->cs, BRCMNAND_CS_CFG);
+> +	nand_writereg(ctrl, cfg_offs, nand_readreg(ctrl, cfg_offs) & ~BIT(23));
 
-Huang's FSL address is no longer valid.
+Can we get a new enum for cfg bits? Unfortunately, I never managed that
+in brcmnand_set_cfg(); just magic numbers :( But I'd like to stop that
+if we're going to have to touch these bits outside of
+brcmnand_set_cfg().
+
+> +
+>  	if (nand_scan_ident(mtd, 1, NULL))
+>  		return -ENXIO;
+>  
+
+How about the following, as a preparatory patch? Only compile tested.
+
+>From c5423a86dbfa33b550d2b170bda3c12ecf4d5313 Mon Sep 17 00:00:00 2001
+From: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 27 Oct 2015 17:12:13 -0700
+Subject: [PATCH] mtd: brcmnand: factor out CFG and CFG_EXT bitfields
+
+These used magic numbers. Shame on me.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Anup Patel <anup.patel@broadcom.com>
+---
+ drivers/mtd/nand/brcmnand/brcmnand.c | 38 +++++++++++++++++++++++++++++-------
+ 1 file changed, 31 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index d694d876631e..c93fbc3869ee 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -344,6 +344,28 @@ static const u8 brcmnand_cs_offsets_cs0[] = {
+ 	[BRCMNAND_CS_TIMING2]		= 0x14,
+ };
+ 
++/*
++ * Bitfields for the CFG and CFG_EXT registers. Pre-v7.1 controllers only had
++ * one config register, but once the bitfields overflowed, newer controllers
++ * (v7.1 and newer) added a CFG_EXT register and shuffled a few fields around.
++ */
++enum {
++	CFG_BLK_ADR_BYTES_SHIFT		= 8,
++	CFG_COL_ADR_BYTES_SHIFT		= 12,
++	CFG_FUL_ADR_BYTES_SHIFT		= 16,
++	CFG_BUS_WIDTH_SHIFT		= 23,
++	CFG_BUS_WIDTH			= BIT(CFG_BUS_WIDTH_SHIFT),
++	CFG_DEVICE_SIZE_SHIFT		= 24,
++
++	/* Only for pre-v7.1 (with no CFG_EXT register) */
++	CFG_PAGE_SIZE_SHIFT		= 20,
++	CFG_BLK_SIZE_SHIFT		= 28,
++
++	/* Only for v7.1+ (with CFG_EXT register) */
++	CFG_EXT_PAGE_SIZE_SHIFT		= 0,
++	CFG_EXT_BLK_SIZE_SHIFT		= 4,
++};
++
+ /* BRCMNAND_INTFC_STATUS */
+ enum {
+ 	INTFC_FLASH_STATUS		= GENMASK(7, 0),
+@@ -1710,17 +1732,19 @@ static int brcmnand_set_cfg(struct brcmnand_host *host,
+ 	}
+ 	device_size = fls64(cfg->device_size) - fls64(BRCMNAND_MIN_DEVSIZE);
+ 
+-	tmp = (cfg->blk_adr_bytes << 8) |
+-		(cfg->col_adr_bytes << 12) |
+-		(cfg->ful_adr_bytes << 16) |
+-		(!!(cfg->device_width == 16) << 23) |
+-		(device_size << 24);
++	tmp = (cfg->blk_adr_bytes << CFG_BLK_ADR_BYTES_SHIFT) |
++		(cfg->col_adr_bytes << CFG_BLK_ADR_BYTES_SHIFT) |
++		(cfg->ful_adr_bytes << CFG_FUL_ADR_BYTES_SHIFT) |
++		(!!(cfg->device_width == 16) << CFG_BUS_WIDTH_SHIFT) |
++		(device_size << CFG_DEVICE_SIZE_SHIFT);
+ 	if (cfg_offs == cfg_ext_offs) {
+-		tmp |= (page_size << 20) | (block_size << 28);
++		tmp |= (page_size << CFG_PAGE_SIZE_SHIFT) |
++		       (block_size << CFG_BLK_SIZE_SHIFT);
+ 		nand_writereg(ctrl, cfg_offs, tmp);
+ 	} else {
+ 		nand_writereg(ctrl, cfg_offs, tmp);
+-		tmp = page_size | (block_size << 4);
++		tmp = (page_size << CFG_EXT_PAGE_SIZE_SHIFT) |
++		      (block_size << CFG_EXT_BLK_SIZE_SHIFT);
+ 		nand_writereg(ctrl, cfg_ext_offs, tmp);
+ 	}
+ 
+-- 
+2.6.0.rc2.230.g3dd15c0
