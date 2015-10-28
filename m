@@ -1,26 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrLh0-0002GT-3J
- for linux-mtd@lists.infradead.org; Wed, 28 Oct 2015 08:02:54 +0000
-Date: Wed, 28 Oct 2015 09:02:23 +0100
+ id 1ZrMTM-0001k2-HZ
+ for linux-mtd@lists.infradead.org; Wed, 28 Oct 2015 08:52:45 +0000
+Date: Wed, 28 Oct 2015 09:52:22 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, Marek Vasut <marex@denx.de>,
- Scott Wood <scottwood@freescale.com>, Josh Wu <josh.wu@atmel.com>, Robert
- Jarzmik <robert.jarzmik@free.fr>, Kyungmin Park
- <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>, Huang Shijie
- <shijie.huang@arm.com>
-Subject: Re: [PATCH 1/5] mtd: ofpart: grab device tree node directly from
- master device node
-Message-ID: <20151028090223.4564a966@bbrezillon>
-In-Reply-To: <20151028010102.GB13239@google.com>
-References: <1445913070-17950-1-git-send-email-computersforpeace@gmail.com>
- <1445913070-17950-2-git-send-email-computersforpeace@gmail.com>
- <20151027084200.2434180f@bbrezillon>
- <20151027175446.GT13239@google.com>
- <20151028010102.GB13239@google.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH] mtd: ofpart: drop undocumented, nonfunctional 'lock'
+ property
+Message-ID: <20151028095222.0d61fb05@bbrezillon>
+In-Reply-To: <20151027183244.GU13239@google.com>
+References: <1445910966-11415-1-git-send-email-computersforpeace@gmail.com>
+ <20151027071106.GI25308@pengutronix.de>
+ <20151027183244.GU13239@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -35,56 +29,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Brian,
 
-On Tue, 27 Oct 2015 18:01:02 -0700
+On Tue, 27 Oct 2015 11:32:44 -0700
 Brian Norris <computersforpeace@gmail.com> wrote:
 
-> On Tue, Oct 27, 2015 at 10:54:46AM -0700, Brian Norris wrote:
-> > On Tue, Oct 27, 2015 at 08:42:00AM +0100, Boris Brezillon wrote:
-> > > On Mon, 26 Oct 2015 19:31:06 -0700
-> > > I like the idea, but how about pushing the solution even further and
-> > > killing the ->flash_node field which AFAICT is rendered useless by
-> > > your patch?
-> > 
-> > I suppose we could do that. I do think there's something to be said for
-> > layering, though. Historically, we haven't done a very good job of
-> > layering in MTD, so low-level drivers often have to poke around in the
-> > MTD structures, even if they really should only have to know a few
-> > things about their helper subsystem/library, like NAND or SPI NOR. So
-> > with that in mind, I think the ->flash_node serves some purpose --
-> > drivers can just initialize struct nand_chip/spi_nor and be assured that
-> > the NAND/SPI-NOR subsystems will take care of things.
-> > 
-> > Now, I don't think there's much reason to suspect that we'd have a more
-> > complex mapping than 1:1 between struct mtd_info and struct nand_chip or
-> > struct spi_nor, so maybe we don't actually need duplicate storage
-> > (mtd.dev.of_node and {spi_nor,nand_chip}.flash_node), and the layering
-> > is just have these APIs:
-> > 
-> > 	nand_set_flash_node()
-> > 	spi_nor_set_flash_node()
-> > 
-> > which just call mtd_set_of_node()?
+> Hi Sascha,
 > 
-> I looked at this quickly for NAND, and it's hard to do right now because
-> of the below quote. The SPI NOR layering is better though, so that
-> works. Mind if I defer the dropping the flash_node in NAND but do the
-> SPI NOR one?
-
-No, I don't mind (we'll solve that later).
-
+> On Tue, Oct 27, 2015 at 08:11:06AM +0100, Sascha Hauer wrote:
+> > On Mon, Oct 26, 2015 at 06:56:06PM -0700, Brian Norris wrote:
+> > > The 'lock' property of a partition does nothing, because it effectively
+> > > only sets the flags for the partition device, not the master device. And
+> > > no MTD driver checks for MTD_POWERUP_LOCK in the partition device, only
+> > > the master device.
+> > 
+> > This is not true. The flag gets checked in add_mtd_device:
+> > 
+> > 	/* Some chips always power up locked. Unlock them now */
+> > 	if ((mtd->flags & MTD_WRITEABLE) && (mtd->flags & MTD_POWERUP_LOCK)) {
+> > 		error = mtd_unlock(mtd, 0, mtd->size);
+> > 		...
+> > 	}
+> > 
+> > add_mtd_device() is called either for the master mtd device or for each
+> > partition (if there are partitions). The flow is like that:
+> > 
+> > - Some flash devices come up locked from power on. Drivers for these
+> >   devices set the MTD_POWERUP_LOCK flag (cfi_cmdset_0001.c,
+> >   cfi_cmdset_0002.c)
+> > - The partitions inherit the flags from the master device, but not the
+> >   ones set in mask_flags:
+> > 
+> > 	ofpart.c:
+> > 
+> > 	if (of_get_property(pp, "lock", &len))
+> > 		(*pparts)[i].mask_flags |= MTD_POWERUP_LOCK;
+> > 
+> > 	mtdpart.c:
+> > 
+> > 	slave->mtd.flags = master->flags & ~part->mask_flags;
+> > 
+> > - So if the lock property is not set then the MTD_POWERUP_LOCK flag is
+> >   still set in add_mtd_device() for the partition and the corresponding
+> >   partition is not unlocked. Otherwise the partition is unlocked.
 > 
-> > Speaking of layering: why do we have NAND drivers initializing mtd->priv
-> > for us, yet nand_base just assumes that it points to a struct nand_chip?
-> > And why isn't struct mtd_info just embedded in struct nand_chip? Are
-> > there ever cases we want more than one (master) MTD per nand_chip? Or
-> > vice versa?
+> Wow, you're absolutely correct, and I'm not sure how I overlooked that.
+> So I guess this patch [1] should be rewritten to be clearer, and the
+> $subject patch dropped.
 > 
-> The layering (or lack thereof) make it hard to extract a struct mtd_info
-> from a struct nand_chip.
+> > So how I see it the mechanism is still functional, except that it's
+> > broken when the recently introduced option MTD_PARTITIONED_MASTER is
+> > set. When it's set then add_mtd_device() is called for the master device
+> > aswell and the whole device gets unlocked. When the partitions are
+> > registered later then it makes no difference whether they are unlocked
+> > or not, they are already unlocked anyway.
+> 
+> It's also broken for overlapping partitions. Similarly to some previous
+> proposals for per-partition ECC handling for NAND, I think.
 
-That's true, and that's why we'd better rework a few things (embed
-or point to an allocated mtd struct in nand_chip) before trying to
-automatically assign mtd->priv to a nand_chip pointer.
+But do we really care about this case? I mean, if someone is stupid
+enough to put different values for two overlapping partitions it
+won't work correctly. The only thing we could do is complain loudly
+about this mismatch.
+For the per-partition proposal I posted a few weeks ago I assumed
+overlapping partitions with different ECC configs were valid, which
+means data will only be readable from one of the partitions: the one
+who last wrote data on it (note that this is not true if you're using
+raw access mode).
 
 Best Regards,
 
