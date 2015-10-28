@@ -1,27 +1,40 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrEru-0007N0-Uj
- for linux-mtd@lists.infradead.org; Wed, 28 Oct 2015 00:45:35 +0000
-Received: by pacfv9 with SMTP id fv9so248590779pac.3
- for <linux-mtd@lists.infradead.org>; Tue, 27 Oct 2015 17:45:14 -0700 (PDT)
-Date: Tue, 27 Oct 2015 17:45:11 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Marek Vasut <marex@denx.de>, Scott Wood <scottwood@freescale.com>,
- Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Han Xu <han.xu@freescale.com>, Huang Shijie <shijie.huang@arm.com>
-Subject: Re: [PATCH 2/5] mtd: nand: drop unnecessary partition parser data
-Message-ID: <20151028004511.GA13239@google.com>
-References: <1445913070-17950-1-git-send-email-computersforpeace@gmail.com>
- <1445913070-17950-3-git-send-email-computersforpeace@gmail.com>
+Received: from mail.kernel.org ([198.145.29.136])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZrEsy-0007YZ-0I
+ for linux-mtd@lists.infradead.org; Wed, 28 Oct 2015 00:46:40 +0000
+Received: from mail.kernel.org (localhost [127.0.0.1])
+ by mail.kernel.org (Postfix) with ESMTP id F25BB2063F
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Oct 2015 00:46:18 +0000 (UTC)
+Received: from mail-yk0-f173.google.com (mail-yk0-f173.google.com
+ [209.85.160.173])
+ (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 944A22089F
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Oct 2015 00:46:17 +0000 (UTC)
+Received: by ykek133 with SMTP id k133so55426706yke.2
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Oct 2015 17:46:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1445913070-17950-3-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <20151027225000.GA64073@google.com>
+References: <cover.1439911625.git.hramrach@gmail.com>
+ <e47db0c8eeaeb11353bcb2f4dcd138e813c3ecd7.1439911625.git.hramrach@gmail.com>
+ <20151011200402.GE3696@localhost>
+ <CAL_JsqJ4Ha7R92=6xkwYXZjpEprjWoVxyXM6cG=yykVoTMH-vw@mail.gmail.com>
+ <20151027225000.GA64073@google.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Tue, 27 Oct 2015 19:45:57 -0500
+Message-ID: <CAL_JsqKz63fqfDAwLv8u0dJL1eBxKd-41k7LgU96ku4Ke=383A@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] mtd: ofpart: update devicetree binding
+ specification
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Michal Suchanek <hramrach@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,81 +44,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 26, 2015 at 07:31:07PM -0700, Brian Norris wrote:
-> All of these drivers set up a parser data struct just to communicate DT
-> partition data. This field has been deprecated and is instead supported
-> by telling nand_scan_ident() about the 'flash_node'.
-> 
-> This patch:
->  * sets chip->flash_node for those drivers that didn't already (but used
->    OF partitioning)
->  * drops the parser data
->  * switches to the simpler mtd_device_register() where possible, now
->    that we've eliminated one of the auxiliary parameters
-> 
-> Now that we've assigned chip->flash_node for these drivers, we can
-> probably rely on nand_dt_init() to do more of the DT parsing for us, but
-> for now, I don't want to fiddle with each of these drivers. The parsing
-> is done in duplicate for now on some drivers. I don't think this should
-> break things. (Famous last words.)
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/nand/atmel_nand.c                 |  7 +++----
->  drivers/mtd/nand/brcmnand/brcmnand.c          |  3 +--
->  drivers/mtd/nand/davinci_nand.c               | 10 +++-------
->  drivers/mtd/nand/fsl_elbc_nand.c              |  5 ++---
->  drivers/mtd/nand/fsl_ifc_nand.c               |  5 ++---
+On Tue, Oct 27, 2015 at 5:50 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> Hi Rob,
+>
+> Thanks for the review.
+>
+> On Mon, Oct 26, 2015 at 11:35:24PM -0500, Rob Herring wrote:
+>> On Sun, Oct 11, 2015 at 3:04 PM, Brian Norris
+>> <computersforpeace@gmail.com> wrote:
+>> > Hi DT maintainers,
+>> >
+>> > It's a bit hypocritical of me, since I've been a slow reviewer as well,
+>> > but... can we get some review on this one? Usually, I'm comfortable
+>> > taking driver DT bindings without your review, but this one is a bit
+>> > more generic and is more far-reaching than the average driver.
+>>
+>> Sorry, missed this one. This would be a good one to send to
+>> devicetree-spec to BTW.
+>
+> I'm not very familiar with that list. With the intention of getting into
+> an ePAPR (or similar) spec? Or just for additional review? If the
+> former, would you suggest codifying both the old and the new, or just
+> the new?
 
-Found some compile errors in the above 2 FSL drivers. Will squash the
-below (or similar) into v2.
+I would say it is for anything not driver specific. It was created to
+separate out the driver binding firehose from the common bindings and
+get more non-Linux participation on those. Perhaps it was poorly
+named. I want to improve the split in docs so the appropriate list is
+used.
 
->  drivers/mtd/nand/fsl_upm.c                    |  5 ++---
->  drivers/mtd/nand/fsmc_nand.c                  |  7 +++----
->  drivers/mtd/nand/gpio.c                       |  8 +++-----
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c        |  5 ++---
->  drivers/mtd/nand/hisi504_nand.c               |  5 ++---
->  drivers/mtd/nand/lpc32xx_mlc.c                |  7 +++----
->  drivers/mtd/nand/lpc32xx_slc.c                |  7 +++----
->  drivers/mtd/nand/mpc5121_nfc.c                |  5 ++---
->  drivers/mtd/nand/mxc_nand.c                   |  5 ++---
->  drivers/mtd/nand/ndfc.c                       |  5 ++---
->  drivers/mtd/nand/omap2.c                      |  6 ++----
->  drivers/mtd/nand/orion_nand.c                 |  6 ++----
->  drivers/mtd/nand/plat_nand.c                  |  5 ++---
->  drivers/mtd/nand/pxa3xx_nand.c                | 10 +++++-----
->  drivers/mtd/nand/sh_flctl.c                   |  6 ++----
->  drivers/mtd/nand/socrates_nand.c              |  5 ++---
->  drivers/mtd/nand/sunxi_nand.c                 |  4 +---
->  drivers/mtd/nand/vf610_nfc.c                  |  6 +-----
->  drivers/staging/mt29f_spinand/mt29f_spinand.c |  5 ++---
->  24 files changed, 54 insertions(+), 88 deletions(-)
+Sending to both devicetree and devicetree-spec is fine.
 
-Brian
-
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index f3d6e83e193b..850546dc98c8 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -748,7 +748,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
- 	/* Fill in fsl_elbc_mtd structure */
- 	priv->mtd.priv = chip;
- 	priv->mtd.dev.parent = priv->dev;
--	chip->flash_node = priv->dev.of_node;
-+	chip->flash_node = priv->dev->of_node;
- 
- 	/* set timeout to maximum */
- 	priv->fmr = 15 << FMR_CWTO_SHIFT;
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 60978b737cac..8ae2a237ed4d 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -883,7 +883,7 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
- 	/* Fill in fsl_ifc_mtd structure */
- 	priv->mtd.priv = chip;
- 	priv->mtd.dev.parent = priv->dev;
--	chip->flash_node = priv->dev.of_node;
-+	chip->flash_node = priv->dev->of_node;
- 
- 	/* fill in nand_chip structure */
- 	/* set up function call table */
+Rob
