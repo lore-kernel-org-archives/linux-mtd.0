@@ -1,27 +1,32 @@
+Date: Tue, 27 Oct 2015 17:39:35 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ray Jui <rjui@broadcom.com>
+Cc: Anup Patel <anup.patel@broadcom.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Scott Branden <sbranden@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Pramod KUMAR <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>,
+ Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>,
+ Device Tree <devicetree@vger.kernel.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
 Subject: Re: [PATCH v3 2/2] arm64: dts: Add BRCM IPROC NAND DT node for NS2
-To: Brian Norris <computersforpeace@gmail.com>, Anup Patel
- <anup.patel@broadcom.com>
+Message-ID: <20151028003935.GZ13239@google.com>
 References: <1445577373-21252-1-git-send-email-anup.patel@broadcom.com>
  <1445577373-21252-3-git-send-email-anup.patel@broadcom.com>
- <20151028001920.GY13239@google.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Linux MTD
- <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll
- <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Sudeep Holla
- <sudeep.holla@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Kumar
- Gala" <galak@codeaurora.org>, Scott Branden <sbranden@broadcom.com>, Florian
- Fainelli <f.fainelli@gmail.com>, Pramod KUMAR <pramodku@broadcom.com>, Vikram
- Prakash <vikramp@broadcom.com>, "Sandeep Tripathy" <tripathy@broadcom.com>,
- Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>, Device Tree
- <devicetree@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
- BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-From: Ray Jui <rjui@broadcom.com>
-Message-ID: <563015FC.9040006@broadcom.com>
-Date: Tue, 27 Oct 2015 17:25:32 -0700
+ <20151028001920.GY13239@google.com> <563015FC.9040006@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <20151028001920.GY13239@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <563015FC.9040006@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,91 +36,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Oct 27, 2015 at 05:25:32PM -0700, Ray Jui wrote:
+> On 10/27/2015 5:19 PM, Brian Norris wrote:
+> >On Fri, Oct 23, 2015 at 10:46:13AM +0530, Anup Patel wrote:
+> >>diff --git a/arch/arm64/boot/dts/broadcom/ns2.dtsi b/arch/arm64/boot/dts/broadcom/ns2.dtsi
+> >>index f603277..9610822 100644
+> >>--- a/arch/arm64/boot/dts/broadcom/ns2.dtsi
+> >>+++ b/arch/arm64/boot/dts/broadcom/ns2.dtsi
+> >>@@ -212,5 +212,19 @@
+> >>  			compatible = "brcm,iproc-rng200";
+> >>  			reg = <0x66220000 0x28>;
+> >>  		};
+> >>+
+> >>+		nand: nand@66460000 {
+> >>+			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
+> >
+> >Technically, the binding says you should also have "brcm,brcmnand" as a
+> >last resort. Otherwise (for the NAND parts):
+> >
+> 
+> I believe Anup was seeing issues when both "brcm,nand-iproc" and
+> "brcm,brcmnand" are present.
+> 
+> Note "brcm,nand-iproc" invokes 'iproc_nand_probe', which calls
+> 'brcmnand_probe' in the end.
+> 
+> "brcm,brcmnand" invokes 'brcmstb_nand_probe', which also calls
+> 'brcmstb_probe', but without all the prep configuration required for
+> "brcm,nand-iproc".
 
+Ah, I forgot about that problem. That seems like an OF infrastructure
+issue that could be fixed. We could lump these drivers back together,
+and make sure that "brcm,nand-iproc" gets the priority in the
+of_device_id list.
 
-On 10/27/2015 5:19 PM, Brian Norris wrote:
-> On Fri, Oct 23, 2015 at 10:46:13AM +0530, Anup Patel wrote:
->> The NAND controller on NS2 SoC is compatible with existing
->> BRCM IPROC NAND driver so let's enable it in NS2 DT and
->> NS2 SVK DT.
->>
->> This patch also fixes use of node labels in ns2-svk.dts.
->>
->> Signed-off-by: Anup Patel <anup.patel@broadcom.com>
->> Reviewed-by: Ray Jui <rjui@broadcom.com>
->> Reviewed-by: Scott Branden <sbranden@broadcom.com>
->> ---
->>   arch/arm64/boot/dts/broadcom/ns2-svk.dts | 30 ++++++++++++++++++++----------
->>   arch/arm64/boot/dts/broadcom/ns2.dtsi    | 14 ++++++++++++++
->>   2 files changed, 34 insertions(+), 10 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/broadcom/ns2-svk.dts b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
->> index e5950d5..6bb3d4d 100644
->> --- a/arch/arm64/boot/dts/broadcom/ns2-svk.dts
->> +++ b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
->> @@ -50,18 +50,28 @@
->>   		device_type = "memory";
->>   		reg = <0x000000000 0x80000000 0x00000000 0x40000000>;
->>   	};
->> +};
->>
->> -	soc: soc {
->> -		i2c0: i2c@66080000 {
->> -			status = "ok";
->> -		};
->> +&i2c0 {
->> +	status = "ok";
->> +};
->>
->> -		i2c1: i2c@660b0000 {
->> -			status = "ok";
->> -		};
->> +&i2c1 {
->> +	status = "ok";
->> +};
->> +
->> +&uart3 {
->> +	status = "ok";
->> +};
->>
->> -		uart3: serial@66130000 {
->> -			status = "ok";
->> -		};
->> +&nand {
->> +	nandcs@0 {
->> +		compatible = "brcm,nandcs";
->> +		reg = <0>;
->> +		nand-ecc-mode = "hw";
->> +		nand-ecc-strength = <8>;
->> +		nand-ecc-step-size = <512>;
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->>   	};
->>   };
->> diff --git a/arch/arm64/boot/dts/broadcom/ns2.dtsi b/arch/arm64/boot/dts/broadcom/ns2.dtsi
->> index f603277..9610822 100644
->> --- a/arch/arm64/boot/dts/broadcom/ns2.dtsi
->> +++ b/arch/arm64/boot/dts/broadcom/ns2.dtsi
->> @@ -212,5 +212,19 @@
->>   			compatible = "brcm,iproc-rng200";
->>   			reg = <0x66220000 0x28>;
->>   		};
->> +
->> +		nand: nand@66460000 {
->> +			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
->
-> Technically, the binding says you should also have "brcm,brcmnand" as a
-> last resort. Otherwise (for the NAND parts):
->
+Or we could just relax the DT binding.
 
-I believe Anup was seeing issues when both "brcm,nand-iproc" and 
-"brcm,brcmnand" are present.
+But wait, wouldn't cygnus already have that problem? You're using the
+binding I suggested in arch/arm/boot/dts/bcm-cygnus.dtsi.
 
-Note "brcm,nand-iproc" invokes 'iproc_nand_probe', which calls 
-'brcmnand_probe' in the end.
+Oh, and I see we hacked this one in drivers/mtd/nand/brcmnand/Makefile:
 
-"brcm,brcmnand" invokes 'brcmstb_nand_probe', which also calls 
-'brcmstb_probe', but without all the prep configuration required for 
-"brcm,nand-iproc".
+  # link order matters; don't link the more generic brcmstb_nand.o before the
+  # more specific iproc_nand.o, for instance
 
-> Reviewed-by: Brian Norris <computersforpeace@gmail.com>
+Brian
