@@ -1,28 +1,29 @@
-Subject: Re: [PATCH v3 2/2] arm64: dts: Add BRCM IPROC NAND DT node for NS2
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1445577373-21252-1-git-send-email-anup.patel@broadcom.com>
- <1445577373-21252-3-git-send-email-anup.patel@broadcom.com>
- <20151028001920.GY13239@google.com> <563015FC.9040006@broadcom.com>
- <20151028003935.GZ13239@google.com>
-CC: Anup Patel <anup.patel@broadcom.com>, David Woodhouse
- <dwmw2@infradead.org>, Linux MTD <linux-mtd@lists.infradead.org>, Rob Herring
- <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, "Will
- Deacon" <will.deacon@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, "Ian
- Campbell" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- Scott Branden <sbranden@broadcom.com>, Florian Fainelli
- <f.fainelli@gmail.com>, Pramod KUMAR <pramodku@broadcom.com>, Vikram Prakash
- <vikramp@broadcom.com>, Sandeep Tripathy <tripathy@broadcom.com>, "Linux ARM
- Kernel" <linux-arm-kernel@lists.infradead.org>, Device Tree
- <devicetree@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
- BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-From: Ray Jui <rjui@broadcom.com>
-Message-ID: <56301B00.1020301@broadcom.com>
-Date: Tue, 27 Oct 2015 17:46:56 -0700
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZrF7G-0007Jl-1y
+ for linux-mtd@lists.infradead.org; Wed, 28 Oct 2015 01:01:26 +0000
+Received: by pabla5 with SMTP id la5so45354876pab.0
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Oct 2015 18:01:05 -0700 (PDT)
+Date: Tue, 27 Oct 2015 18:01:02 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Marek Vasut <marex@denx.de>, Scott Wood <scottwood@freescale.com>,
+ Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Han Xu <han.xu@freescale.com>, Huang Shijie <shijie.huang@arm.com>
+Subject: Re: [PATCH 1/5] mtd: ofpart: grab device tree node directly from
+ master device node
+Message-ID: <20151028010102.GB13239@google.com>
+References: <1445913070-17950-1-git-send-email-computersforpeace@gmail.com>
+ <1445913070-17950-2-git-send-email-computersforpeace@gmail.com>
+ <20151027084200.2434180f@bbrezillon>
+ <20151027175446.GT13239@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20151028003935.GZ13239@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151027175446.GT13239@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,70 +33,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Oct 27, 2015 at 10:54:46AM -0700, Brian Norris wrote:
+> On Tue, Oct 27, 2015 at 08:42:00AM +0100, Boris Brezillon wrote:
+> > On Mon, 26 Oct 2015 19:31:06 -0700
+> > I like the idea, but how about pushing the solution even further and
+> > killing the ->flash_node field which AFAICT is rendered useless by
+> > your patch?
+> 
+> I suppose we could do that. I do think there's something to be said for
+> layering, though. Historically, we haven't done a very good job of
+> layering in MTD, so low-level drivers often have to poke around in the
+> MTD structures, even if they really should only have to know a few
+> things about their helper subsystem/library, like NAND or SPI NOR. So
+> with that in mind, I think the ->flash_node serves some purpose --
+> drivers can just initialize struct nand_chip/spi_nor and be assured that
+> the NAND/SPI-NOR subsystems will take care of things.
+> 
+> Now, I don't think there's much reason to suspect that we'd have a more
+> complex mapping than 1:1 between struct mtd_info and struct nand_chip or
+> struct spi_nor, so maybe we don't actually need duplicate storage
+> (mtd.dev.of_node and {spi_nor,nand_chip}.flash_node), and the layering
+> is just have these APIs:
+> 
+> 	nand_set_flash_node()
+> 	spi_nor_set_flash_node()
+> 
+> which just call mtd_set_of_node()?
 
+I looked at this quickly for NAND, and it's hard to do right now because
+of the below quote. The SPI NOR layering is better though, so that
+works. Mind if I defer the dropping the flash_node in NAND but do the
+SPI NOR one?
 
-On 10/27/2015 5:39 PM, Brian Norris wrote:
-> On Tue, Oct 27, 2015 at 05:25:32PM -0700, Ray Jui wrote:
->> On 10/27/2015 5:19 PM, Brian Norris wrote:
->>> On Fri, Oct 23, 2015 at 10:46:13AM +0530, Anup Patel wrote:
->>>> diff --git a/arch/arm64/boot/dts/broadcom/ns2.dtsi b/arch/arm64/boot/dts/broadcom/ns2.dtsi
->>>> index f603277..9610822 100644
->>>> --- a/arch/arm64/boot/dts/broadcom/ns2.dtsi
->>>> +++ b/arch/arm64/boot/dts/broadcom/ns2.dtsi
->>>> @@ -212,5 +212,19 @@
->>>>   			compatible = "brcm,iproc-rng200";
->>>>   			reg = <0x66220000 0x28>;
->>>>   		};
->>>> +
->>>> +		nand: nand@66460000 {
->>>> +			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
->>>
->>> Technically, the binding says you should also have "brcm,brcmnand" as a
->>> last resort. Otherwise (for the NAND parts):
->>>
->>
->> I believe Anup was seeing issues when both "brcm,nand-iproc" and
->> "brcm,brcmnand" are present.
->>
->> Note "brcm,nand-iproc" invokes 'iproc_nand_probe', which calls
->> 'brcmnand_probe' in the end.
->>
->> "brcm,brcmnand" invokes 'brcmstb_nand_probe', which also calls
->> 'brcmstb_probe', but without all the prep configuration required for
->> "brcm,nand-iproc".
->
-> Ah, I forgot about that problem. That seems like an OF infrastructure
-> issue that could be fixed. We could lump these drivers back together,
-> and make sure that "brcm,nand-iproc" gets the priority in the
-> of_device_id list.
->
-> Or we could just relax the DT binding.
->
-> But wait, wouldn't cygnus already have that problem? You're using the
-> binding I suggested in arch/arm/boot/dts/bcm-cygnus.dtsi.
+> Speaking of layering: why do we have NAND drivers initializing mtd->priv
+> for us, yet nand_base just assumes that it points to a struct nand_chip?
+> And why isn't struct mtd_info just embedded in struct nand_chip? Are
+> there ever cases we want more than one (master) MTD per nand_chip? Or
+> vice versa?
 
-Interestingly, we do not see this problem with Cygnus or NSP, but only 
-on NS2 (arm64 based). There may be a difference between how OF devices 
-are instantiated between arm and arm64?
+The layering (or lack thereof) make it hard to extract a struct mtd_info
+from a struct nand_chip.
 
->
-> Oh, and I see we hacked this one in drivers/mtd/nand/brcmnand/Makefile:
->
->    # link order matters; don't link the more generic brcmstb_nand.o before the
->    # more specific iproc_nand.o, for instance
-
-Yes, I see that too (after sending out my previous email, :)). Maybe 
-Anup can help to elaborate on the problem. I'm now getting a bit 
-confused on how the problem can surface on NS2.
-
-But in general, I think it's a good idea to relax the requirement in the 
-DT binding document to not require "brcm,brcmnand", in the case when 
-"brcm,nand-iproc" and "brcm,nand-bcm63138" are present.
-
->
-> Brian
->
-
-Thanks,
-
-Ray
+Brian
