@@ -1,12 +1,26 @@
-To: linux-mtd@bombadil.infradead.org
-Subject: You have received fax, document 00000951501
-Date: Wed, 28 Oct 2015 13:03:03 -0500
-From: "Interfax" <incoming@interfax.net>
-Reply-To: "Interfax" <incoming@interfax.net>
-Message-ID: <c9453bfb513843c6e3b200725c548dde@greatscienceforgirls.org>
+Date: Wed, 28 Oct 2015 18:52:37 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: "bayi.cheng" <bayi.cheng@mediatek.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Daniel Kurtz <djkurtz@chromium.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com
+Subject: Re: [PATCH v4 2/3] mtd: mtk-nor: mtk serial flash controller driver
+Message-ID: <20151029015237.GE13239@google.com>
+References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
+ <1444729160-26433-3-git-send-email-bayi.cheng@mediatek.com>
+ <20151016073959.GB28158@localhost>
+ <1445178035.4832.23.camel@mhfsdcap03>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_a3c70624a6a1854fe46f4990117e483e"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1445178035.4832.23.camel@mhfsdcap03>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,76 +30,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_a3c70624a6a1854fe46f4990117e483e
-Content-Type: text/plain; charset=us-ascii
+Hi Bayi,
 
-New incoming fax document.
+I'm looking over your v5, and I still have a lot of comments. I'll send
+those soon. But I still question one of your responses here:
 
-Please download attached fax document.
+On Sun, Oct 18, 2015 at 10:20:35PM +0800, bayi.cheng wrote:
+> On Fri, 2015-10-16 at 00:39 -0700, Brian Norris wrote:
+> > On Tue, Oct 13, 2015 at 05:39:19PM +0800, Bayi Cheng wrote:
 
-Quality:            400 DPI
-Date of scan:       Wed, 28 Oct 2015 03:40:21 +0300
-Fax name:           fax_00000951501.doc
-Pages:              9
-Scanned by:         Christian Schwartz
-File size:          128 Kb
-Scan time:          8 seconds
+> > > diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+> > > new file mode 100644
+> > > index 0000000..c6ac366
+> > > --- /dev/null
+> > > +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+> > > @@ -0,0 +1,486 @@
+[...]
+> > > +#define MTK_NOR_CMD_REG			0x00
+> > > +#define MTK_NOR_CNT_REG			0x04
+> > > +#define MTK_NOR_RDSR_REG		0x08
+> > > +#define MTK_NOR_RDATA_REG		0x0c
+> > > +#define MTK_NOR_RADR0_REG		0x10
+> > > +#define MTK_NOR_RADR1_REG		0x14
+> > > +#define MTK_NOR_RADR2_REG		0x18
+> > > +#define MTK_NOR_WDATA_REG		0x1c
+> > > +#define MTK_NOR_PRGDATA0_REG		0x20
+> > > +#define MTK_NOR_PRGDATA1_REG		0x24
+> > > +#define MTK_NOR_PRGDATA2_REG		0x28
+> > > +#define MTK_NOR_PRGDATA3_REG		0x2c
+> > > +#define MTK_NOR_PRGDATA4_REG		0x30
+> > > +#define MTK_NOR_PRGDATA5_REG		0x34
 
-Thanks for choosing Interfax!
+^^ so you have 6 "TX" registers.
 
+> > > +#define MTK_NOR_SHREG0_REG		0x38
+> > > +#define MTK_NOR_SHREG1_REG		0x3c
+> > > +#define MTK_NOR_SHREG2_REG		0x40
+> > > +#define MTK_NOR_SHREG3_REG		0x44
+> > > +#define MTK_NOR_SHREG4_REG		0x48
+> > > +#define MTK_NOR_SHREG5_REG		0x4c
 
---b1_a3c70624a6a1854fe46f4990117e483e
-Content-Type: application/zip; name="fax_00000951501.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=fax_00000951501.zip
+^^ and you have at least 6 "RX" registers (looking at the mt8173 manual,
+I'm not sure what the SHREG{6..9} are for). So I don't see why you can't
+program MTK_NOR_CNT_REG to 48 (6 bytes * 8 bits/byte) to get 6 bytes
+TX/RX, or IOW, 1 byte of opcode and 5 bytes of either RX or TX data. So
+I'm still not convinced about your claim below.
 
-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
-LmpzUEsFBgAAAAABAAEARAAAAP0JAAAAAA==
+I was able to rewrite your driver to do the above, and I can read out 5
+bytes no problem, but unfortunately, the flash device I have has only 3
+bytes of ID, so the last two bytes are zero, which doesn't tell me too
+much if this is working right.
 
+> > > +#define MTK_NOR_SHREG6_REG		0x50
+> > > +#define MTK_NOR_SHREG7_REG		0x54
+> > > +#define MTK_NOR_SHREG8_REG		0x58
+> > > +#define MTK_NOR_SHREG9_REG		0x5c
+> > > +#define MTK_NOR_CFG1_REG		0x60
+> > > +#define MTK_NOR_CFG2_REG		0x64
+> > > +#define MTK_NOR_CFG3_REG		0x68
+> > > +#define MTK_NOR_STATUS0_REG		0x70
+> > > +#define MTK_NOR_STATUS1_REG		0x74
+> > > +#define MTK_NOR_STATUS2_REG		0x78
+> > > +#define MTK_NOR_STATUS3_REG		0x7c
+> > > +#define MTK_NOR_FLHCFG_REG		0x84
+> > > +#define MTK_NOR_TIME_REG		0x94
+> > > +#define MTK_NOR_PP_DATA_REG		0x98
+> > > +#define MTK_NOR_PREBUF_STUS_REG		0x9c
+> > > +#define MTK_NOR_DELSEL0_REG		0xa0
+> > > +#define MTK_NOR_DELSEL1_REG		0xa4
+> > > +#define MTK_NOR_INTRSTUS_REG		0xa8
+> > > +#define MTK_NOR_INTREN_REG		0xac
+> > > +#define MTK_NOR_CHKSUM_CTL_REG		0xb8
+> > > +#define MTK_NOR_CHKSUM_REG		0xbc
+> > > +#define MTK_NOR_CMD2_REG		0xc0
+> > > +#define MTK_NOR_WRPROT_REG		0xc4
+> > > +#define MTK_NOR_RADR3_REG		0xc8
+> > > +#define MTK_NOR_DUAL_REG		0xcc
+> > > +#define MTK_NOR_DELSEL2_REG		0xd0
+> > > +#define MTK_NOR_DELSEL3_REG		0xd4
+> > > +#define MTK_NOR_DELSEL4_REG		0xd8
 
---b1_a3c70624a6a1854fe46f4990117e483e--
+...
+
+> > > +static int mt8173_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+> > > +{
+> > > +	int ret;
+> > > +	struct mt8173_nor *mt8173_nor = nor->priv;
+> > > +
+> > > +	/* mtk nor controller doesn't supoort SPINOR_OP_RDCR */
+> > > +	switch (opcode) {
+> > > +	case SPINOR_OP_RDID:
+> > > +		/* read JEDEC ID need 4 bytes commands */
+> > > +		ret = mt8173_nor_set_cmd(mt8173_nor, 0, 32, SPINOR_OP_RDID);
+> > > +		if (ret < 0)
+> > > +			return ret;
+> > > +
+> > > +		/* mtk nor flash controller only support 3 bytes IDs */
+> > 
+> > Are you absolutely sure of this? That would be highly unfortunate, but
+> > I also don't believe it's true.
+> > 
+> Yes, for this issue I have asked our designer of nor flash controller,
+> unfortunately, it is true, and I have tried to read more IDs, but our
+> controller just accept 3 IDs from nor flash, and our next generation IC
+> may solve this problem.
+
+How exactly did you try? Did you do what I suggested above? Are the
+"shift registers" not all actually functional?
+
+> > > +		buf[2] = readb(mt8173_nor->base + MTK_NOR_SHREG0_REG);
+> > > +		buf[1] = readb(mt8173_nor->base + MTK_NOR_SHREG1_REG);
+> > > +		buf[0] = readb(mt8173_nor->base + MTK_NOR_SHREG2_REG);
+> > > +		break;
+
+[...]
+
+Brian
