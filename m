@@ -1,28 +1,28 @@
-Received: from mail-bn1on0110.outbound.protection.outlook.com
- ([157.56.110.110] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zrs6v-0001WE-Me
- for linux-mtd@lists.infradead.org; Thu, 29 Oct 2015 18:39:43 +0000
-Date: Thu, 29 Oct 2015 13:28:03 -0500
-From: Han Xu <han.xu@freescale.com>
-To: Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-CC: "b45815@freescale.com" <b45815@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shijie.huang@arm.com" <shijie.huang@arm.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "vinod.koul@intel.com"
- <vinod.koul@intel.com>, Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, "dmaengine@vger.kernel.org"
- <dmaengine@vger.kernel.org>
-Subject: Re: [PATCH v7 4/7] mtd: nand: gpmi: may use minimum required ecc
-Message-ID: <20151029182801.GA7007@chopperman.am.freescale.net>
-References: <A765B125120D1346A63912DDE6D8B6310BF4F18D@NTXXIAMBX02.xacn.micron.com>
- <20151028155757.GB4035@chopperman.am.freescale.net>
- <A765B125120D1346A63912DDE6D8B6310BF4F392@NTXXIAMBX02.xacn.micron.com>
+ id 1ZrtuZ-00005s-9V
+ for linux-mtd@lists.infradead.org; Thu, 29 Oct 2015 20:35:04 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Scott Wood <scottwood@freescale.com>, Josh Wu <josh.wu@atmel.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>,
+ Huang Shijie <shijie.huang@arm.com>
+Subject: Re: [PATCH 1/5] mtd: ofpart: grab device tree node directly from
+ master device node
+References: <1445913070-17950-1-git-send-email-computersforpeace@gmail.com>
+ <87611qjibi.fsf@belgarion.home> <20151029082448.2a89c791@bbrezillon>
+ <201510291823.47976.marex@denx.de>
+ <20151029183421.5d2c73cf@bbrezillon>
+Date: Thu, 29 Oct 2015 21:28:01 +0100
+In-Reply-To: <20151029183421.5d2c73cf@bbrezillon> (Boris Brezillon's message
+ of "Thu, 29 Oct 2015 18:34:21 +0100")
+Message-ID: <87wpu5ifn2.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4F392@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,62 +32,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 29, 2015 at 04:34:37AM +0000, Bean Huo 霍斌斌 (beanhuo) wrote:
-> > > > By default NAND driver will choose the highest ecc strength that oob
-> > > > could contain, in this case, for some 8K+744 NAND flash, the ecc
-> > > > strength will be up to 52bit, which beyonds the i.MX6QDL BCH capability
-> > (40bit).
-> > >
-> > >
-> > > For normal working environment, if hardware BCH ECC cannot meet NAND
-> > > ecc requirement, We can set a minimum required ecc strength, and file
-> > system refresh/scrub can control bitflips under NAND ecc strength. But during
-> > reflow solder, it is very possible that NAND bitflips may increase over your
-> > hardware BCH capability, I don't know how this controller handle this?
-> > > For example, NAND require 80bit ECC, but hardware BCH ECC can only hold
-> > 40bit.
-> > > After reflow, there are some blocks that bitflips over 40bit.
-> > 
-> > if the minimum ecc strength read from NAND ONFI parameter exceeds the
-> > BCH ECC capability, the NAND driver quits and reports unsupport NAND chip.
-> 
-> Current Linux already set ECC strength according to NAND minimum required ECC that read
-> from ONFI table. So if NAND minimum required ECC is 60bit, but this BCH controller can only hold 40bit,
-> NAND driver quits? Why not transfer to use software BCH ECC? 
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-SW ECC brings huge computational complexity, that's why needs HW ECC. I
-think user should choose the proper NAND chip according to platfrom
-capability rather than involve SW ECC in driver.
+> On Thu, 29 Oct 2015 18:23:47 +0100
+> Marek Vasut <marex@denx.de> wrote:
+> Except it's now how devices supporting 16 bits data bus are supposed to
+> work, which means your NAND controller will probably not be able to
+> send the command/address value on the higher 8 bits...
+Correct.
 
-> 
-> > Do you mean reflow solder may change the NAND minimum required ECC
-> > strength, in other word, the actual minimum ECC may larger than it said in
-> > NAND chip SPEC?
-> 
-> NAND minimum required ECC does not changed because of reflow.
-> I mean that if hardware BCH ECC Can not meet nand minimum required ECC, during normal working, we can set
-> ECC strength according to Your hardware ECC capability. 
-> for example in this case, NAND minimum required ECC is 60bit, but hardware ECC capability Is 40bit, during normal working,
-> we can set ECC strength according to 40bit, this can work, it will definitely increase PE cycle.
-> But for reflow operation, there are some blocks that their bitflips will increase over your hardware ECC 40bit, so how do you handle this?
-> Or you don't meet this case?
+>> > 2/ NAND chips can have bad blocks, so even if you were able to address
+>> > 2 chips (which according to #1 is impossible), you might try to write
+>> > on a bad block on the chip connected on the MSB side of the data bus.
+>> 
+>> This one is a valid problem. The other valid issue here is where the
+>> command might fail on one chip and pass on the other.
+Probably the bad block wins, and the command is reported as a failure.
 
-I don't quite understand, why 60bit ECC NAND can work on 40bit ECC
-platform, it is quite possible to get uncorrectable ECC error. Excuse
-me, I didn't get your point about reflow operation part, in your case,
-the original ECC read from ONFI table has already beyond the HW ECC,
-even without reflow.
+>> > 3/ There probably are plenty of other reasons why this is not
+>> > possible ;-).
+>> 
+>> It's possible, implementable, but a really bad idea.
+>
+> Possible and implementable, maybe with an adapted software stack
+> and a customized NAND controller. I know you're working on emulating
+> flash devices using FPGA, so the next step is to create a new NAND
+> controller IP supporting that kind of stuff and adding support for
+> this feature to the NAND framework ;-).
+> Anyway, it"s definitely a bad idea.
+I agree, a bad idea.
 
-> 
-> 
-> 
-> > --
-> > Best Regards,
-> > 
-> > Han "Allen" Xu
-> 
+Just to finish the discussion, let me quote the pxa3xx developper manual volume
+2, chapter 3.7.6.1 "Flash Memory Data Width when Two Flash Devices Connect to
+the Same Chip" :
+    When NDCR[DWIDTH_C] = 1 and NDCR[DWIDTH_M] = 0, two flash devices are
+    connected to the same chip select with DF_IO<7:0> interfacing to one device,
+    and DF_IO<15:8> interfacing to the second device. In this scenario, since
+    two devices are accessed simultaneously, the command and address are
+    replicated between the lower and upper byte of the interface.
+
+Now, regardless of this, please continue with your patches, this corner case is
+not important, at least I don't care at all.
+
+Cheers.
 
 -- 
-Best Regards,
-
-Han "Allen" Xu
+Robert
