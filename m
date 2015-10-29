@@ -1,28 +1,26 @@
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-yk0-x242.google.com ([2607:f8b0:4002:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrtuZ-00005s-9V
- for linux-mtd@lists.infradead.org; Thu, 29 Oct 2015 20:35:04 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Scott Wood <scottwood@freescale.com>, Josh Wu <josh.wu@atmel.com>,
- Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>,
- Huang Shijie <shijie.huang@arm.com>
-Subject: Re: [PATCH 1/5] mtd: ofpart: grab device tree node directly from
- master device node
-References: <1445913070-17950-1-git-send-email-computersforpeace@gmail.com>
- <87611qjibi.fsf@belgarion.home> <20151029082448.2a89c791@bbrezillon>
- <201510291823.47976.marex@denx.de>
- <20151029183421.5d2c73cf@bbrezillon>
-Date: Thu, 29 Oct 2015 21:28:01 +0100
-In-Reply-To: <20151029183421.5d2c73cf@bbrezillon> (Boris Brezillon's message
- of "Thu, 29 Oct 2015 18:34:21 +0100")
-Message-ID: <87wpu5ifn2.fsf@belgarion.home>
+ id 1ZruQy-0005SO-Kd
+ for linux-mtd@lists.infradead.org; Thu, 29 Oct 2015 21:08:33 +0000
+Received: by ykba4 with SMTP id a4so4543992ykb.3
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2015 14:08:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1445983540-27155-4-git-send-email-b45815@freescale.com>
+References: <1445983540-27155-1-git-send-email-b45815@freescale.com>
+ <1445983540-27155-4-git-send-email-b45815@freescale.com>
+Date: Thu, 29 Oct 2015 23:08:10 +0200
+Message-ID: <CAHp75Vf3OddaGgwrOyk0EE46oFmjoRt+rj3su2VBJQwUnGdRAw@mail.gmail.com>
+Subject: Re: [PATCH v7 3/7] dmaengine: mxs: add i.MX7D APBH DMA support
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Han Xu <b45815@freescale.com>
+Cc: shijie.huang@arm.com, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, boris.brezillon@free-electrons.com,
+ fabio.estevam@freescale.com, hofrat@osadl.org,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Vinod Koul <vinod.koul@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>, dmaengine <dmaengine@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,49 +30,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris Brezillon <boris.brezillon@free-electrons.com> writes:
-
-> On Thu, 29 Oct 2015 18:23:47 +0100
-> Marek Vasut <marex@denx.de> wrote:
-> Except it's now how devices supporting 16 bits data bus are supposed to
-> work, which means your NAND controller will probably not be able to
-> send the command/address value on the higher 8 bits...
-Correct.
-
->> > 2/ NAND chips can have bad blocks, so even if you were able to address
->> > 2 chips (which according to #1 is impossible), you might try to write
->> > on a bad block on the chip connected on the MSB side of the data bus.
->> 
->> This one is a valid problem. The other valid issue here is where the
->> command might fail on one chip and pass on the other.
-Probably the bad block wins, and the command is reported as a failure.
-
->> > 3/ There probably are plenty of other reasons why this is not
->> > possible ;-).
->> 
->> It's possible, implementable, but a really bad idea.
+On Wed, Oct 28, 2015 at 12:05 AM, Han Xu <b45815@freescale.com> wrote:
+> From: Adrian Alonso <aalonso@freescale.com>
 >
-> Possible and implementable, maybe with an adapted software stack
-> and a customized NAND controller. I know you're working on emulating
-> flash devices using FPGA, so the next step is to create a new NAND
-> controller IP supporting that kind of stuff and adding support for
-> this feature to the NAND framework ;-).
-> Anyway, it"s definitely a bad idea.
-I agree, a bad idea.
+> supports APBH DMA on i.MX7D by add extra clock clk_io
 
-Just to finish the discussion, let me quote the pxa3xx developper manual volume
-2, chapter 3.7.6.1 "Flash Memory Data Width when Two Flash Devices Connect to
-the Same Chip" :
-    When NDCR[DWIDTH_C] = 1 and NDCR[DWIDTH_M] = 0, two flash devices are
-    connected to the same chip select with DF_IO<7:0> interfacing to one device,
-    and DF_IO<15:8> interfacing to the second device. In this scenario, since
-    two devices are accessed simultaneously, the command and address are
-    replicated between the lower and upper byte of the interface.
+[]
 
-Now, regardless of this, please continue with your patches, this corner case is
-not important, at least I don't care at all.
+>  MODULE_DEVICE_TABLE(of, mxs_dma_dt_ids);
+> @@ -440,6 +448,13 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+>         if (ret)
+>                 goto err_clk;
+>
+> +       /* enable the extra clk_io clock for i.MX7D */
+> +       if (mxs_dma->dev_id == IMX7D_DMA) {
+> +               ret = clk_prepare_enable(mxs_dma->clk_io);
+> +               if (ret)
+> +                       goto err_clk_unprepare;
 
-Cheers.
+Perhaps err_clk.
+
+> +       }
+> +
+>         mxs_dma_reset_chan(chan);
+>
+>         dma_async_tx_descriptor_init(&mxs_chan->desc, chan);
+> @@ -450,6 +465,8 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+>
+>         return 0;
+>
+> +err_clk_unprepare:
+> +       clk_disable_unprepare(mxs_dma->clk);
+>  err_clk:
+>         free_irq(mxs_chan->chan_irq, mxs_dma);
+>  err_irq:
+> @@ -471,6 +488,9 @@ static void mxs_dma_free_chan_resources(struct dma_chan *chan)
+>         dma_free_coherent(mxs_dma->dma_device.dev, CCW_BLOCK_SIZE,
+>                         mxs_chan->ccw, mxs_chan->ccw_phys);
+>
+> +       if (mxs_dma->dev_id == IMX7D_DMA)
+> +               clk_disable_unprepare(mxs_dma->clk_io);
+> +
+>         clk_disable_unprepare(mxs_dma->clk);
+>  }
+>
+> @@ -701,9 +721,15 @@ static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+>         if (ret)
+>                 return ret;
+>
+> +       if (mxs_dma->dev_id == IMX7D_DMA) {
+> +               ret = clk_prepare_enable(mxs_dma->clk_io);
+> +               if (ret)
+> +                       goto err_clk_bch;
+> +       }
+> +
+>         ret = stmp_reset_block(mxs_dma->base);
+>         if (ret)
+> -               goto err_out;
+> +               goto err_clk_io;
+>
+>         /* enable apbh burst */
+>         if (dma_is_apbh(mxs_dma)) {
+> @@ -717,7 +743,10 @@ static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+>         writel(MXS_DMA_CHANNELS_MASK << MXS_DMA_CHANNELS,
+>                 mxs_dma->base + HW_APBHX_CTRL1 + STMP_OFFSET_REG_SET);
+>
+> -err_out:
+> +err_clk_io:
+> +       if (mxs_dma->dev_id == IMX7D_DMA)
+> +               clk_disable_unprepare(mxs_dma->clk_io);
+> +err_clk_bch:
+>         clk_disable_unprepare(mxs_dma->clk);
+>         return ret;
+>  }
+> @@ -803,9 +832,19 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+>         if (IS_ERR(mxs_dma->base))
+>                 return PTR_ERR(mxs_dma->base);
+>
+> -       mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
+> -       if (IS_ERR(mxs_dma->clk))
+> -               return PTR_ERR(mxs_dma->clk);
+> +       if (mxs_dma->dev_id == IMX7D_DMA) {
+> +               mxs_dma->clk = devm_clk_get(&pdev->dev, "dma_apbh_bch");
+> +               if (IS_ERR(mxs_dma->clk))
+> +                       return PTR_ERR(mxs_dma->clk);
+> +               mxs_dma->clk_io = devm_clk_get(&pdev->dev, "dma_apbh_io");
+> +               if (IS_ERR(mxs_dma->clk_io))
+> +                       return PTR_ERR(mxs_dma->clk_io);
+> +
+
+Redundant empty line.
+
+> +       } else {
+> +               mxs_dma->clk = devm_clk_get(&pdev->dev, NULL);
+> +               if (IS_ERR(mxs_dma->clk))
+> +                       return PTR_ERR(mxs_dma->clk);
+> +       }
+
+
 
 -- 
-Robert
+With Best Regards,
+Andy Shevchenko
