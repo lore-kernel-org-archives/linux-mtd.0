@@ -1,30 +1,18 @@
-Date: Thu, 29 Oct 2015 09:03:31 -0700
+Date: Thu, 29 Oct 2015 09:29:08 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: "bayi.cheng" <bayi.cheng@mediatek.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com,
- Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH v4 2/3] mtd: mtk-nor: mtk serial flash controller driver
-Message-ID: <20151029160331.GA12954@localhost>
-References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
- <1444729160-26433-3-git-send-email-bayi.cheng@mediatek.com>
- <20151016073959.GB28158@localhost>
- <1445178035.4832.23.camel@mhfsdcap03>
- <20151029015237.GE13239@google.com>
- <1446089334.25711.10.camel@mhfsdcap03>
- <1446126991.25711.23.camel@mhfsdcap03>
+To: Linus Walleij <linus.walleij@linaro.org>, devicetree-spec@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Liviu Dudau <Liviu.Dudau@arm.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, hauke@hauke-m.de
+Subject: Re: [PATCH 1/3] mtd: create a partition type device tree binding
+Message-ID: <20151029162908.GA13275@localhost>
+References: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1446126991.25711.23.camel@mhfsdcap03>
+In-Reply-To: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,59 +22,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 29, 2015 at 09:56:31PM +0800, bayi.cheng wrote:
-> On Thu, 2015-10-29 at 11:28 +0800, bayi.cheng wrote:
-> > On Wed, 2015-10-28 at 18:52 -0700, Brian Norris wrote:
-> > > On Sun, Oct 18, 2015 at 10:20:35PM +0800, bayi.cheng wrote:
-> > > > On Fri, 2015-10-16 at 00:39 -0700, Brian Norris wrote:
-> > > > > On Tue, Oct 13, 2015 at 05:39:19PM +0800, Bayi Cheng wrote:
++ devicetree-spec and others, since other non-driver-specific MTD
+partitioning stuff has gotten directed there [1], and this binding
+should probably get promoted in short order to the core mtdpart.c
+partitioning
 
-> > > > > > +	/* mtk nor controller doesn't supoort SPINOR_OP_RDCR */
-> > > > > > +	switch (opcode) {
-> > > > > > +	case SPINOR_OP_RDID:
-> > > > > > +		/* read JEDEC ID need 4 bytes commands */
-> > > > > > +		ret = mt8173_nor_set_cmd(mt8173_nor, 0, 32, SPINOR_OP_RDID);
-> > > > > > +		if (ret < 0)
-> > > > > > +			return ret;
-> > > > > > +
-> > > > > > +		/* mtk nor flash controller only support 3 bytes IDs */
-> > > > > 
-> > > > > Are you absolutely sure of this? That would be highly unfortunate, but
-> > > > > I also don't believe it's true.
-> > > > > 
-> > > > Yes, for this issue I have asked our designer of nor flash controller,
-> > > > unfortunately, it is true, and I have tried to read more IDs, but our
-> > > > controller just accept 3 IDs from nor flash, and our next generation IC
-> > > > may solve this problem.
-> > > 
-> > > How exactly did you try? Did you do what I suggested above? Are the
-> > > "shift registers" not all actually functional?
-> > > 
-> > Hi Brian, For this problem, I have asked our nor controller designer to
-> > double confirm again, and he promise to do some simulation testes, On
-> > the other hand, I have got some Spansion nor flash which has 5 IDs, and
-> > after our designer make sure our controller can support 5 or 6 IDs, then
-> > I will rework a special platform with S25FL256SA. If we have any
-> > progress, I will inform you immediately!  Thanks!!
-> > 
-> Hi Brian, Thanks very much for your perseverance!!
-> Actually, You idea is correct, and our designer has completed some
-> simulation test on spansion nor flash witch has more than 3 IDs, and the
-> results has prove that we can support to read 5 IDs. I also double
+On Thu, Oct 29, 2015 at 01:52:30PM +0100, Linus Walleij wrote:
+> The Linux code in drivers/mtd/maps/physmap_of.c will optionally
+> look for the linux,part-probe binding for hints on a partition type to
+> look for in the MTD. It was added in commit 9d5da3a9b849
+> "mtd: extend physmap_of to let the device tree specify the parition probe"
+> 
+> This solution is too Linux-specific and depend on some
+> Linux kernel-internal naming conventions. We need a proper
+> way of describing partition types that follow the pattern set by
+> other device tree bindings.
+> 
+> Create a "partition-type" binding for this, and add "my" bindings
+> for "arm,arm-flash-structure" as a starter for others to follow.
+> A follow-on patch adds support to the Linux kernel to handle this
+> binding, with some infrastructure for others to use it too.
 
-Awesome!
+Overall, I like this. And thanks for expanding the explanation of DT
+partitions vs. parsers. It'd be good if we make parsers like this easier
+to integrate, so we see less hard-coded partitions in device tree.
 
-> confirmed with spansion nor flash. The only pity is that our nor
-> controller can't support 6 IDs, we just support 5 IDs.
+> Cc: devicetree@vger.kernel.org
+> Cc: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+> Cc: Liviu Dudau <Liviu.Dudau@arm.com>
+> Reported-by: Liviu Dudau <Liviu.Dudau@arm.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  .../devicetree/bindings/mtd/mtd-physmap.txt        |  2 ++
+>  .../devicetree/bindings/mtd/partition.txt          | 35 +++++++++++++++++++---
+>  2 files changed, 33 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> index 4a0a48bf4ecb..863560bdbb19 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> +++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> @@ -23,6 +23,8 @@ file systems on embedded devices.
+>     unaligned accesses as implemented in the JFFS2 code via memcpy().
+>     By defining "no-unaligned-direct-access", the flash will not be
+>     exposed directly to the MTD users (e.g. JFFS2) any more.
+> + - partition-type : a flash partition type to expect and probe for
+> +   on this device. See "partition.txt" for available partition types.
+>   - linux,mtd-name: allow to specify the mtd name for retro capability with
+>     physmap-flash drivers as boot loader pass the mtd partition via the old
+>     device name physmap-flash.
+> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+> index 8e5557da1955..85d45764a4b3 100644
+> --- a/Documentation/devicetree/bindings/mtd/partition.txt
+> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
+> @@ -1,9 +1,36 @@
+>  Representing flash partitions in devicetree
+>  
+> -Partitions can be represented by sub-nodes of an mtd device. This can be used
+> -on platforms which have strong conventions about which portions of a flash are
+> -used for what purposes, but which don't use an on-flash partition table such
+> -as RedBoot.
+> +On-device partition types:
+> +
+> +It is possible for some drivers to indicate an on-device partition type, i.e.
+> +partition tables, footers or other binary pattern in the flash used to
+> +define how the flash is partitioned. This can be done in the device tree node
+> +of an MTD device by specifying partition-type = "foo"; This tells the operating
+> +system to look for the partition type indicated.
+> +
+> +Required properties:
+> +- partition-type : the type of partition. Only one type can be specified.
 
-That's not quite as awesome. But that's still much more workable than
-only 3 bytes. Perhaps we'll want a way to communicate that to the
-spi-nor layer, so it doesn't think it can match a full 6 bytes?
+You're supporting this as a list property (for future expansion,
+presumably), so I can only assume the "only one type" is referring to
+the number of different parsers available currently, not the behavior of
+the property itself? This should probably be worded differently if
+that's the intention. Like, "a list of partition types ... ordered by
+priority .... We currently support the following: (list only the AFS
+type)" (fill in the blanks how you'd like).
 
-> I will submit my changes to V6 version. Thanks again!!
+Also, this patch will conflict with [1]. I'll probably take [1] soon, so
+one of us will have to rebase this.
 
-OK, but let me take another look at v5 and send you comments on that one
-first.
-
-Regards,
 Brian
+
+[1] http://thread.gmane.org/gmane.comp.devicetree.spec/191
+
+> +  Valid types are:
+> +  "arm,arm-flash-structure" (also called AFS)
+> +
+> +Example:
+> +
+> +flash0@40000000 {
+> +	/* 2 * 32MiB NOR Flash memory */
+> +	compatible = "arm,vexpress-flash", "cfi-flash";
+> +	partition-type = "arm,arm-flash-structure";
+> +	reg = <0x40000000 0x04000000>;
+> +	bank-width = <4>;
+> +};
+> +
+> +
+> +Device Tree specified partitions:
+> +
+> +If there is no specified on-device binary format, partitions can be
+> +represented by sub-nodes of an mtd device. This can be used on platforms which
+> +have strong conventions about which portions of a flash are used for what
+> +purposes.
+> +
+>  NOTE: if the sub-node has a compatible string, then it is not a partition.
+>  
+>  #address-cells & #size-cells must both be present in the mtd device. There are
+> -- 
+> 2.4.3
+> 
