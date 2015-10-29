@@ -1,27 +1,19 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrhaF-0000MM-LK
- for linux-mtd@lists.infradead.org; Thu, 29 Oct 2015 07:25:17 +0000
-Date: Thu, 29 Oct 2015 08:24:48 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, Scott Wood
- <scottwood@freescale.com>, Josh Wu <josh.wu@atmel.com>, Kyungmin Park
- <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>, Huang Shijie
- <shijie.huang@arm.com>
-Subject: Re: [PATCH 1/5] mtd: ofpart: grab device tree node directly from
- master device node
-Message-ID: <20151029082448.2a89c791@bbrezillon>
-In-Reply-To: <87611qjibi.fsf@belgarion.home>
-References: <1445913070-17950-1-git-send-email-computersforpeace@gmail.com>
- <20151028171430.GC13239@google.com> <87eggek91f.fsf@belgarion.home>
- <201510282347.27379.marex@denx.de> <87611qjibi.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZrmhV-0000dQ-LI
+ for linux-mtd@lists.infradead.org; Thu, 29 Oct 2015 12:53:07 +0000
+Received: by lfbn126 with SMTP id n126so18023170lfb.2
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2015 05:52:43 -0700 (PDT)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>, devicetree@vger.kernel.org,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Liviu Dudau <Liviu.Dudau@arm.com>
+Subject: [PATCH 1/3] mtd: create a partition type device tree binding
+Date: Thu, 29 Oct 2015 13:52:30 +0100
+Message-Id: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,42 +23,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Robert,
+The Linux code in drivers/mtd/maps/physmap_of.c will optionally
+look for the linux,part-probe binding for hints on a partition type to
+look for in the MTD. It was added in commit 9d5da3a9b849
+"mtd: extend physmap_of to let the device tree specify the parition probe"
 
-On Thu, 29 Oct 2015 07:32:33 +0100
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+This solution is too Linux-specific and depend on some
+Linux kernel-internal naming conventions. We need a proper
+way of describing partition types that follow the pattern set by
+other device tree bindings.
 
-> Marek Vasut <marex@denx.de> writes:
-> 
-> >> Isn't there the case of a single NAND controller with 2 identical chips,
-> >> each a 8 bit NAND chip, and the controller aggregating them to offer the
-> >> OS a single 16-bit NAND chip ?
+Create a "partition-type" binding for this, and add "my" bindings
+for "arm,arm-flash-structure" as a starter for others to follow.
+A follow-on patch adds support to the Linux kernel to handle this
+binding, with some infrastructure for others to use it too.
 
-Honestly, I don't know how this can possibly work, do you have a real
-example of that use case.
+Cc: devicetree@vger.kernel.org
+Cc: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+Cc: Liviu Dudau <Liviu.Dudau@arm.com>
+Reported-by: Liviu Dudau <Liviu.Dudau@arm.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ .../devicetree/bindings/mtd/mtd-physmap.txt        |  2 ++
+ .../devicetree/bindings/mtd/partition.txt          | 35 +++++++++++++++++++---
+ 2 files changed, 33 insertions(+), 4 deletions(-)
 
-Here are a few reasons making it impossible:
-
-1/ NAND are accessed using specific command sequences, and those
-commands and addresses cycles are sent on through the data bus (AFAIR
-only the lower 8bits of a 16bits bus are used for those
-command/address cycles), so even if you connect the CLE/ALE/CS/RB pins
-on both chips, the one connected on the MSB side of the data bus will
-just receive garbage during the command/address sequences, and your
-program/read operations won't work
-
-2/ NAND chips can have bad blocks, so even if you were able to address
-2 chips (which according to #1 is impossible), you might try to write
-on a bad block on the chip connected on the MSB side of the data bus.
-
-3/ There probably are plenty of other reasons why this is not
-possible ;-).
-
-Best Regards,
-
-Boris
-
+diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+index 4a0a48bf4ecb..863560bdbb19 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
++++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+@@ -23,6 +23,8 @@ file systems on embedded devices.
+    unaligned accesses as implemented in the JFFS2 code via memcpy().
+    By defining "no-unaligned-direct-access", the flash will not be
+    exposed directly to the MTD users (e.g. JFFS2) any more.
++ - partition-type : a flash partition type to expect and probe for
++   on this device. See "partition.txt" for available partition types.
+  - linux,mtd-name: allow to specify the mtd name for retro capability with
+    physmap-flash drivers as boot loader pass the mtd partition via the old
+    device name physmap-flash.
+diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+index 8e5557da1955..85d45764a4b3 100644
+--- a/Documentation/devicetree/bindings/mtd/partition.txt
++++ b/Documentation/devicetree/bindings/mtd/partition.txt
+@@ -1,9 +1,36 @@
+ Representing flash partitions in devicetree
+ 
+-Partitions can be represented by sub-nodes of an mtd device. This can be used
+-on platforms which have strong conventions about which portions of a flash are
+-used for what purposes, but which don't use an on-flash partition table such
+-as RedBoot.
++On-device partition types:
++
++It is possible for some drivers to indicate an on-device partition type, i.e.
++partition tables, footers or other binary pattern in the flash used to
++define how the flash is partitioned. This can be done in the device tree node
++of an MTD device by specifying partition-type = "foo"; This tells the operating
++system to look for the partition type indicated.
++
++Required properties:
++- partition-type : the type of partition. Only one type can be specified.
++  Valid types are:
++  "arm,arm-flash-structure" (also called AFS)
++
++Example:
++
++flash0@40000000 {
++	/* 2 * 32MiB NOR Flash memory */
++	compatible = "arm,vexpress-flash", "cfi-flash";
++	partition-type = "arm,arm-flash-structure";
++	reg = <0x40000000 0x04000000>;
++	bank-width = <4>;
++};
++
++
++Device Tree specified partitions:
++
++If there is no specified on-device binary format, partitions can be
++represented by sub-nodes of an mtd device. This can be used on platforms which
++have strong conventions about which portions of a flash are used for what
++purposes.
++
+ NOTE: if the sub-node has a compatible string, then it is not a partition.
+ 
+ #address-cells & #size-cells must both be present in the mtd device. There are
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.4.3
