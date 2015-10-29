@@ -1,27 +1,28 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zrevn-00086L-8j
- for linux-mtd@lists.infradead.org; Thu, 29 Oct 2015 04:35:20 +0000
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Han Xu <han.xu@freescale.com>
-CC: "b45815@freescale.com" <b45815@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shijie.huang@arm.com" <shijie.huang@arm.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "vinod.koul@intel.com" <vinod.koul@intel.com>,
+ id 1Zrgrx-0003Sq-RK
+ for linux-mtd@lists.infradead.org; Thu, 29 Oct 2015 06:39:30 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Marek Vasut <marex@denx.de>
+Cc: Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, "dmaengine@vger.kernel.org"
- <dmaengine@vger.kernel.org>
-Subject: RE: [PATCH v7 4/7] mtd: nand: gpmi: may use minimum required ecc
-Date: Thu, 29 Oct 2015 04:34:37 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4F392@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF4F18D@NTXXIAMBX02.xacn.micron.com>
- <20151028155757.GB4035@chopperman.am.freescale.net>
-In-Reply-To: <20151028155757.GB4035@chopperman.am.freescale.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Scott Wood <scottwood@freescale.com>, Josh Wu <josh.wu@atmel.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>,
+ Huang Shijie <shijie.huang@arm.com>
+Subject: Re: [PATCH 1/5] mtd: ofpart: grab device tree node directly from
+ master device node
+References: <1445913070-17950-1-git-send-email-computersforpeace@gmail.com>
+ <20151028171430.GC13239@google.com> <87eggek91f.fsf@belgarion.home>
+ <201510282347.27379.marex@denx.de>
+Date: Thu, 29 Oct 2015 07:32:33 +0100
+In-Reply-To: <201510282347.27379.marex@denx.de> (Marek Vasut's message of
+ "Wed, 28 Oct 2015 23:47:27 +0100")
+Message-ID: <87611qjibi.fsf@belgarion.home>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,39 +32,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiA+ID4gQnkgZGVmYXVsdCBOQU5EIGRyaXZlciB3aWxsIGNob29zZSB0aGUgaGlnaGVzdCBlY2Mg
-c3RyZW5ndGggdGhhdCBvb2INCj4gPiA+IGNvdWxkIGNvbnRhaW4sIGluIHRoaXMgY2FzZSwgZm9y
-IHNvbWUgOEsrNzQ0IE5BTkQgZmxhc2gsIHRoZSBlY2MNCj4gPiA+IHN0cmVuZ3RoIHdpbGwgYmUg
-dXAgdG8gNTJiaXQsIHdoaWNoIGJleW9uZHMgdGhlIGkuTVg2UURMIEJDSCBjYXBhYmlsaXR5DQo+
-ICg0MGJpdCkuDQo+ID4NCj4gPg0KPiA+IEZvciBub3JtYWwgd29ya2luZyBlbnZpcm9ubWVudCwg
-aWYgaGFyZHdhcmUgQkNIIEVDQyBjYW5ub3QgbWVldCBOQU5EDQo+ID4gZWNjIHJlcXVpcmVtZW50
-LCBXZSBjYW4gc2V0IGEgbWluaW11bSByZXF1aXJlZCBlY2Mgc3RyZW5ndGgsIGFuZCBmaWxlDQo+
-IHN5c3RlbSByZWZyZXNoL3NjcnViIGNhbiBjb250cm9sIGJpdGZsaXBzIHVuZGVyIE5BTkQgZWNj
-IHN0cmVuZ3RoLiBCdXQgZHVyaW5nDQo+IHJlZmxvdyBzb2xkZXIsIGl0IGlzIHZlcnkgcG9zc2li
-bGUgdGhhdCBOQU5EIGJpdGZsaXBzIG1heSBpbmNyZWFzZSBvdmVyIHlvdXINCj4gaGFyZHdhcmUg
-QkNIIGNhcGFiaWxpdHksIEkgZG9uJ3Qga25vdyBob3cgdGhpcyBjb250cm9sbGVyIGhhbmRsZSB0
-aGlzPw0KPiA+IEZvciBleGFtcGxlLCBOQU5EIHJlcXVpcmUgODBiaXQgRUNDLCBidXQgaGFyZHdh
-cmUgQkNIIEVDQyBjYW4gb25seSBob2xkDQo+IDQwYml0Lg0KPiA+IEFmdGVyIHJlZmxvdywgdGhl
-cmUgYXJlIHNvbWUgYmxvY2tzIHRoYXQgYml0ZmxpcHMgb3ZlciA0MGJpdC4NCj4gDQo+IGlmIHRo
-ZSBtaW5pbXVtIGVjYyBzdHJlbmd0aCByZWFkIGZyb20gTkFORCBPTkZJIHBhcmFtZXRlciBleGNl
-ZWRzIHRoZQ0KPiBCQ0ggRUNDIGNhcGFiaWxpdHksIHRoZSBOQU5EIGRyaXZlciBxdWl0cyBhbmQg
-cmVwb3J0cyB1bnN1cHBvcnQgTkFORCBjaGlwLg0KDQpDdXJyZW50IExpbnV4IGFscmVhZHkgc2V0
-IEVDQyBzdHJlbmd0aCBhY2NvcmRpbmcgdG8gTkFORCBtaW5pbXVtIHJlcXVpcmVkIEVDQyB0aGF0
-IHJlYWQNCmZyb20gT05GSSB0YWJsZS4gU28gaWYgTkFORCBtaW5pbXVtIHJlcXVpcmVkIEVDQyBp
-cyA2MGJpdCwgYnV0IHRoaXMgQkNIIGNvbnRyb2xsZXIgY2FuIG9ubHkgaG9sZCA0MGJpdCwNCk5B
-TkQgZHJpdmVyIHF1aXRzPyBXaHkgbm90IHRyYW5zZmVyIHRvIHVzZSBzb2Z0d2FyZSBCQ0ggRUND
-PyANCg0KPiBEbyB5b3UgbWVhbiByZWZsb3cgc29sZGVyIG1heSBjaGFuZ2UgdGhlIE5BTkQgbWlu
-aW11bSByZXF1aXJlZCBFQ0MNCj4gc3RyZW5ndGgsIGluIG90aGVyIHdvcmQsIHRoZSBhY3R1YWwg
-bWluaW11bSBFQ0MgbWF5IGxhcmdlciB0aGFuIGl0IHNhaWQgaW4NCj4gTkFORCBjaGlwIFNQRUM/
-DQoNCk5BTkQgbWluaW11bSByZXF1aXJlZCBFQ0MgZG9lcyBub3QgY2hhbmdlZCBiZWNhdXNlIG9m
-IHJlZmxvdy4NCkkgbWVhbiB0aGF0IGlmIGhhcmR3YXJlIEJDSCBFQ0MgQ2FuIG5vdCBtZWV0IG5h
-bmQgbWluaW11bSByZXF1aXJlZCBFQ0MsIGR1cmluZyBub3JtYWwgd29ya2luZywgd2UgY2FuIHNl
-dA0KRUNDIHN0cmVuZ3RoIGFjY29yZGluZyB0byBZb3VyIGhhcmR3YXJlIEVDQyBjYXBhYmlsaXR5
-LiANCmZvciBleGFtcGxlIGluIHRoaXMgY2FzZSwgTkFORCBtaW5pbXVtIHJlcXVpcmVkIEVDQyBp
-cyA2MGJpdCwgYnV0IGhhcmR3YXJlIEVDQyBjYXBhYmlsaXR5IElzIDQwYml0LCBkdXJpbmcgbm9y
-bWFsIHdvcmtpbmcsDQp3ZSBjYW4gc2V0IEVDQyBzdHJlbmd0aCBhY2NvcmRpbmcgdG8gNDBiaXQs
-IHRoaXMgY2FuIHdvcmssIGl0IHdpbGwgZGVmaW5pdGVseSBpbmNyZWFzZSBQRSBjeWNsZS4NCkJ1
-dCBmb3IgcmVmbG93IG9wZXJhdGlvbiwgdGhlcmUgYXJlIHNvbWUgYmxvY2tzIHRoYXQgdGhlaXIg
-Yml0ZmxpcHMgd2lsbCBpbmNyZWFzZSBvdmVyIHlvdXIgaGFyZHdhcmUgRUNDIDQwYml0LCBzbyBo
-b3cgZG8geW91IGhhbmRsZSB0aGlzPw0KT3IgeW91IGRvbid0IG1lZXQgdGhpcyBjYXNlPw0KDQoN
-Cg0KPiAtLQ0KPiBCZXN0IFJlZ2FyZHMsDQo+IA0KPiBIYW4gIkFsbGVuIiBYdQ0KDQo=
+Marek Vasut <marex@denx.de> writes:
+
+>> Isn't there the case of a single NAND controller with 2 identical chips,
+>> each a 8 bit NAND chip, and the controller aggregating them to offer the
+>> OS a single 16-bit NAND chip ?
+>
+> Is that using 1 or 2 physical chipselect lines on the CPU (controller) ?
+I think it's 2 physical chipselects (CS0 and CS1). The way I understand it is
+that the NAND controller asserts them both, issues the command on the command
+line (shared between the 2 chips), and reads/writes on the separate data lines.
+
+Cheers.
+
+-- 
+Robert
