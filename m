@@ -1,16 +1,16 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZrxJ5-0003O6-Uu
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 00:12:36 +0000
-Received: by pacfv9 with SMTP id fv9so57379847pac.3
- for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2015 17:12:12 -0700 (PDT)
+ id 1ZryR3-0005YA-Vg
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 01:24:54 +0000
+Received: by pacfv9 with SMTP id fv9so59164562pac.3
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2015 18:24:33 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Subject: [mtd-utils PATCH] nandtest: support hex/dec/oct for --offset and
- --length
-Date: Thu, 29 Oct 2015 17:12:01 -0700
-Message-Id: <1446163921-115867-1-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
+ Bayi Cheng <bayi.cheng@mediatek.com>
+Subject: [PATCH 1/2] mtd: spi-nor: provide default erase_sector implementation
+Date: Thu, 29 Oct 2015 18:24:20 -0700
+Message-Id: <1446168261-4102-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +20,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These two options are handled inconsistently, which caused an
-unnecessary amount of head scratching. Let's just use the simple helpers
-too, so we get the error handling right.
+Some spi-nor drivers perform sector erase by duplicating their
+write_reg() command. Let's not require that the driver fill this out,
+and provide a default instead.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nandtest.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 30 ++++++++++++++++++++++++++----
+ include/linux/mtd/spi-nor.h   |  3 ++-
+ 2 files changed, 28 insertions(+), 5 deletions(-)
 
-diff --git a/nandtest.c b/nandtest.c
-index 08053876506a..2ef7cc824d59 100644
---- a/nandtest.c
-+++ b/nandtest.c
-@@ -15,6 +15,7 @@
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 49883905a434..58a435372be7 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -313,6 +313,29 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+ }
  
- #include <asm/types.h>
- #include "mtd/mtd-user.h"
-+#include "common.h"
+ /*
++ * Initiate the erasure of a single sector
++ */
++static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
++{
++	u8 buf[nor->addr_width];
++	int i;
++
++	if (nor->erase)
++		return nor->erase(nor, addr);
++
++	/*
++	 * Default implementation, if driver doesn't have a specialized HW
++	 * control
++	 */
++	for (i = nor->addr_width - 1; i >= 0; i--) {
++		buf[i] = addr & 0xff;
++		addr >>= 8;
++	}
++
++	return nor->write_reg(nor, nor->erase_opcode, buf, nor->addr_width);
++}
++
++/*
+  * Erase an address range on the nor chip.  The address range may extend
+  * one or more erase sectors.  Return an error is there is a problem erasing.
+  */
+@@ -371,10 +394,9 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		while (len) {
+ 			write_enable(nor);
  
- void usage(int status)
+-			if (nor->erase(nor, addr)) {
+-				ret = -EIO;
++			ret = spi_nor_erase_sector(nor, addr);
++			if (ret)
+ 				goto erase_err;
+-			}
+ 
+ 			addr += mtd->erasesize;
+ 			len -= mtd->erasesize;
+@@ -1138,7 +1160,7 @@ static int set_quad_mode(struct spi_nor *nor, const struct flash_info *info)
+ static int spi_nor_check(struct spi_nor *nor)
  {
-@@ -154,6 +155,7 @@ int main(int argc, char **argv)
- 	int keep_contents = 0;
- 	uint32_t offset = 0;
- 	uint32_t length = -1;
-+	int error = 0;
- 
- 	seed = time(NULL);
- 
-@@ -205,17 +207,19 @@ int main(int argc, char **argv)
- 			break;
- 
- 		case 'o':
--			offset = atol(optarg);
-+			offset = simple_strtoul(optarg, &error);
- 			break;
- 
- 		case 'l':
--			length = strtol(optarg, NULL, 0);
-+			length = simple_strtoul(optarg, &error);
- 			break;
- 
- 		}
+ 	if (!nor->dev || !nor->read || !nor->write ||
+-		!nor->read_reg || !nor->write_reg || !nor->erase) {
++		!nor->read_reg || !nor->write_reg) {
+ 		pr_err("spi-nor: please fill all the necessary fields!\n");
+ 		return -EINVAL;
  	}
- 	if (argc - optind != 1)
- 		usage(1);
-+	if (error)
-+		errmsg_die("Try --help for more information");
- 
- 	fd = open(argv[optind], O_RDWR);
- 	if (fd < 0) {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index c8723b62c4cd..69898b675ade 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -144,7 +144,8 @@ struct mtd_info;
+  * @read:		[DRIVER-SPECIFIC] read data from the SPI NOR
+  * @write:		[DRIVER-SPECIFIC] write data to the SPI NOR
+  * @erase:		[DRIVER-SPECIFIC] erase a sector of the SPI NOR
+- *			at the offset @offs
++ *			at the offset @offs; if not provided by the driver,
++ *			spi-nor will send the erase opcode via write_reg()
+  * @flash_lock:		[FLASH-SPECIFIC] lock a region of the SPI NOR
+  * @flash_unlock:	[FLASH-SPECIFIC] unlock a region of the SPI NOR
+  * @flash_is_locked:	[FLASH-SPECIFIC] check if a region of the SPI NOR is
 -- 
 2.6.0.rc2.230.g3dd15c0
