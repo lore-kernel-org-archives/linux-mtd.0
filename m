@@ -1,16 +1,18 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZryR3-0005YA-Vg
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 01:24:54 +0000
-Received: by pacfv9 with SMTP id fv9so59164562pac.3
+ id 1ZryR4-0005YI-Cb
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 01:24:55 +0000
+Received: by pasz6 with SMTP id z6so56786747pas.2
  for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2015 18:24:33 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
  Bayi Cheng <bayi.cheng@mediatek.com>
-Subject: [PATCH 1/2] mtd: spi-nor: provide default erase_sector implementation
-Date: Thu, 29 Oct 2015 18:24:20 -0700
-Message-Id: <1446168261-4102-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/2] mtd: m25p80: drop erase() callback
+Date: Thu, 29 Oct 2015 18:24:21 -0700
+Message-Id: <1446168261-4102-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1446168261-4102-1-git-send-email-computersforpeace@gmail.com>
+References: <1446168261-4102-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,85 +22,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some spi-nor drivers perform sector erase by duplicating their
-write_reg() command. Let's not require that the driver fill this out,
-and provide a default instead.
+Just use the spi-nor default instead.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 30 ++++++++++++++++++++++++++----
- include/linux/mtd/spi-nor.h   |  3 ++-
- 2 files changed, 28 insertions(+), 5 deletions(-)
+ drivers/mtd/devices/m25p80.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 49883905a434..58a435372be7 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -313,6 +313,29 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 4b5d7a4655fd..822b6c73dd50 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -152,22 +152,6 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	return 0;
  }
  
+-static int m25p80_erase(struct spi_nor *nor, loff_t offset)
+-{
+-	struct m25p *flash = nor->priv;
+-
+-	dev_dbg(nor->dev, "%dKiB at 0x%08x\n",
+-		flash->spi_nor.mtd.erasesize / 1024, (u32)offset);
+-
+-	/* Set up command buffer. */
+-	flash->command[0] = nor->erase_opcode;
+-	m25p_addr2cmd(nor, offset, flash->command);
+-
+-	spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
+-
+-	return 0;
+-}
+-
  /*
-+ * Initiate the erasure of a single sector
-+ */
-+static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
-+{
-+	u8 buf[nor->addr_width];
-+	int i;
-+
-+	if (nor->erase)
-+		return nor->erase(nor, addr);
-+
-+	/*
-+	 * Default implementation, if driver doesn't have a specialized HW
-+	 * control
-+	 */
-+	for (i = nor->addr_width - 1; i >= 0; i--) {
-+		buf[i] = addr & 0xff;
-+		addr >>= 8;
-+	}
-+
-+	return nor->write_reg(nor, nor->erase_opcode, buf, nor->addr_width);
-+}
-+
-+/*
-  * Erase an address range on the nor chip.  The address range may extend
-  * one or more erase sectors.  Return an error is there is a problem erasing.
-  */
-@@ -371,10 +394,9 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 		while (len) {
- 			write_enable(nor);
+  * board specific setup should have ensured the SPI clock used here
+  * matches what the READ command supports, at least until this driver
+@@ -194,7 +178,6 @@ static int m25p_probe(struct spi_device *spi)
+ 	/* install the hooks */
+ 	nor->read = m25p80_read;
+ 	nor->write = m25p80_write;
+-	nor->erase = m25p80_erase;
+ 	nor->write_reg = m25p80_write_reg;
+ 	nor->read_reg = m25p80_read_reg;
  
--			if (nor->erase(nor, addr)) {
--				ret = -EIO;
-+			ret = spi_nor_erase_sector(nor, addr);
-+			if (ret)
- 				goto erase_err;
--			}
- 
- 			addr += mtd->erasesize;
- 			len -= mtd->erasesize;
-@@ -1138,7 +1160,7 @@ static int set_quad_mode(struct spi_nor *nor, const struct flash_info *info)
- static int spi_nor_check(struct spi_nor *nor)
- {
- 	if (!nor->dev || !nor->read || !nor->write ||
--		!nor->read_reg || !nor->write_reg || !nor->erase) {
-+		!nor->read_reg || !nor->write_reg) {
- 		pr_err("spi-nor: please fill all the necessary fields!\n");
- 		return -EINVAL;
- 	}
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index c8723b62c4cd..69898b675ade 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -144,7 +144,8 @@ struct mtd_info;
-  * @read:		[DRIVER-SPECIFIC] read data from the SPI NOR
-  * @write:		[DRIVER-SPECIFIC] write data to the SPI NOR
-  * @erase:		[DRIVER-SPECIFIC] erase a sector of the SPI NOR
-- *			at the offset @offs
-+ *			at the offset @offs; if not provided by the driver,
-+ *			spi-nor will send the erase opcode via write_reg()
-  * @flash_lock:		[FLASH-SPECIFIC] lock a region of the SPI NOR
-  * @flash_unlock:	[FLASH-SPECIFIC] unlock a region of the SPI NOR
-  * @flash_is_locked:	[FLASH-SPECIFIC] check if a region of the SPI NOR is
 -- 
 2.6.0.rc2.230.g3dd15c0
