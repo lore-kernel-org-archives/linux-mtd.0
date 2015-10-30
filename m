@@ -1,18 +1,25 @@
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZryR4-0005YI-Cb
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 01:24:55 +0000
-Received: by pasz6 with SMTP id z6so56786747pas.2
- for <linux-mtd@lists.infradead.org>; Thu, 29 Oct 2015 18:24:33 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
- Bayi Cheng <bayi.cheng@mediatek.com>
-Subject: [PATCH 2/2] mtd: m25p80: drop erase() callback
-Date: Thu, 29 Oct 2015 18:24:21 -0700
-Message-Id: <1446168261-4102-2-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1446168261-4102-1-git-send-email-computersforpeace@gmail.com>
-References: <1446168261-4102-1-git-send-email-computersforpeace@gmail.com>
+Message-ID: <1446171159.25711.36.camel@mhfsdcap03>
+Subject: Re: [PATCH v4 2/3] mtd: mtk-nor: mtk serial flash controller driver
+From: bayi.cheng <bayi.cheng@mediatek.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: Mark Rutland <mark.rutland@arm.com>, <devicetree@vger.kernel.org>, "Marek
+ Vasut" <marex@denx.de>, <srv_heupstream@mediatek.com>, Pawel Moll
+ <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Sascha
+ Hauer" <s.hauer@pengutronix.de>, <linux-kernel@vger.kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>, Kumar Gala
+ <galak@codeaurora.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>
+Date: Fri, 30 Oct 2015 10:12:39 +0800
+In-Reply-To: <20151029160331.GA12954@localhost>
+References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
+ <1444729160-26433-3-git-send-email-bayi.cheng@mediatek.com>
+ <20151016073959.GB28158@localhost> <1445178035.4832.23.camel@mhfsdcap03>
+ <20151029015237.GE13239@google.com> <1446089334.25711.10.camel@mhfsdcap03>
+ <1446126991.25711.23.camel@mhfsdcap03> <20151029160331.GA12954@localhost>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +29,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Just use the spi-nor default instead.
+On Thu, 2015-10-29 at 09:03 -0700, Brian Norris wrote:
+> On Thu, Oct 29, 2015 at 09:56:31PM +0800, bayi.cheng wrote:
+> > On Thu, 2015-10-29 at 11:28 +0800, bayi.cheng wrote:
+> > > On Wed, 2015-10-28 at 18:52 -0700, Brian Norris wrote:
+> > > > On Sun, Oct 18, 2015 at 10:20:35PM +0800, bayi.cheng wrote:
+> > > > > On Fri, 2015-10-16 at 00:39 -0700, Brian Norris wrote:
+> > > > > > On Tue, Oct 13, 2015 at 05:39:19PM +0800, Bayi Cheng wrote:
+> 
+> > > > > > > +	/* mtk nor controller doesn't supoort SPINOR_OP_RDCR */
+> > > > > > > +	switch (opcode) {
+> > > > > > > +	case SPINOR_OP_RDID:
+> > > > > > > +		/* read JEDEC ID need 4 bytes commands */
+> > > > > > > +		ret = mt8173_nor_set_cmd(mt8173_nor, 0, 32, SPINOR_OP_RDID);
+> > > > > > > +		if (ret < 0)
+> > > > > > > +			return ret;
+> > > > > > > +
+> > > > > > > +		/* mtk nor flash controller only support 3 bytes IDs */
+> > > > > > 
+> > > > > > Are you absolutely sure of this? That would be highly unfortunate, but
+> > > > > > I also don't believe it's true.
+> > > > > > 
+> > > > > Yes, for this issue I have asked our designer of nor flash controller,
+> > > > > unfortunately, it is true, and I have tried to read more IDs, but our
+> > > > > controller just accept 3 IDs from nor flash, and our next generation IC
+> > > > > may solve this problem.
+> > > > 
+> > > > How exactly did you try? Did you do what I suggested above? Are the
+> > > > "shift registers" not all actually functional?
+> > > > 
+> > > Hi Brian, For this problem, I have asked our nor controller designer to
+> > > double confirm again, and he promise to do some simulation testes, On
+> > > the other hand, I have got some Spansion nor flash which has 5 IDs, and
+> > > after our designer make sure our controller can support 5 or 6 IDs, then
+> > > I will rework a special platform with S25FL256SA. If we have any
+> > > progress, I will inform you immediately!  Thanks!!
+> > > 
+> > Hi Brian, Thanks very much for your perseverance!!
+> > Actually, You idea is correct, and our designer has completed some
+> > simulation test on spansion nor flash witch has more than 3 IDs, and the
+> > results has prove that we can support to read 5 IDs. I also double
+> 
+> Awesome!
+> 
+> > confirmed with spansion nor flash. The only pity is that our nor
+> > controller can't support 6 IDs, we just support 5 IDs.
+> 
+> That's not quite as awesome. But that's still much more workable than
+> only 3 bytes. Perhaps we'll want a way to communicate that to the
+> spi-nor layer, so it doesn't think it can match a full 6 bytes?
+> 
+Hi Brian,  The current station is as follows.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/devices/m25p80.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+1: put 0x9F to MTK_NOR_PRGDATA5_REG, and five 0x0 to
+MTK_NOR_PRGDATA4_REG ~ MTK_NOR_PRGDATA0_REG, then set (1 + 5) * 8 
+to MTK_NOR_CNT_REG, for this way, we can read five IDs.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 4b5d7a4655fd..822b6c73dd50 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -152,22 +152,6 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	return 0;
- }
- 
--static int m25p80_erase(struct spi_nor *nor, loff_t offset)
--{
--	struct m25p *flash = nor->priv;
--
--	dev_dbg(nor->dev, "%dKiB at 0x%08x\n",
--		flash->spi_nor.mtd.erasesize / 1024, (u32)offset);
--
--	/* Set up command buffer. */
--	flash->command[0] = nor->erase_opcode;
--	m25p_addr2cmd(nor, offset, flash->command);
--
--	spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
--
--	return 0;
--}
--
- /*
-  * board specific setup should have ensured the SPI clock used here
-  * matches what the READ command supports, at least until this driver
-@@ -194,7 +178,6 @@ static int m25p_probe(struct spi_device *spi)
- 	/* install the hooks */
- 	nor->read = m25p80_read;
- 	nor->write = m25p80_write;
--	nor->erase = m25p80_erase;
- 	nor->write_reg = m25p80_write_reg;
- 	nor->read_reg = m25p80_read_reg;
- 
--- 
-2.6.0.rc2.230.g3dd15c0
+2: put 0x9F to MTK_NOR_PRGDATA5_REG, and five 0x0 to
+MTK_NOR_PRGDATA4_REG ~ MTK_NOR_PRGDATA0_REG, then set (1 + 5 + 1) * 8
+to MTK_NOR_CNT_REG, for this way, we can read six IDs.
+In this case, nor flash IDs can be read from MTK_NOR_SHREG5_REG to
+MTK_NOR_SHREG0_REG . Thanks!
+
+> > I will submit my changes to V6 version. Thanks again!!
+> 
+> OK, but let me take another look at v5 and send you comments on that one
+> first.
+> 
+> Regards,
+> Brian
+> 
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
