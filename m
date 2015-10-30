@@ -1,25 +1,26 @@
-From: Anup Patel <anup.patel@broadcom.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Linux MTD <linux-mtd@lists.infradead.org>
-CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, "Mark
- Rutland" <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will.deacon@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, "Ian
- Campbell" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, "Florian
- Fainelli" <f.fainelli@gmail.com>, Pramod KUMAR <pramodku@broadcom.com>,
- Vikram Prakash <vikramp@broadcom.com>, Sandeep Tripathy
- <tripathy@broadcom.com>, Linux ARM Kernel
- <linux-arm-kernel@lists.infradead.org>, Device Tree
- <devicetree@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
- BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>, Anup Patel
- <anup.patel@broadcom.com>
-Subject: [PATCH v5 3/3] arm64: dts: Add BRCM IPROC NAND DT node for NS2
-Date: Fri, 30 Oct 2015 12:29:21 +0530
-Message-ID: <1446188361-15146-4-git-send-email-anup.patel@broadcom.com>
-In-Reply-To: <1446188361-15146-1-git-send-email-anup.patel@broadcom.com>
-References: <1446188361-15146-1-git-send-email-anup.patel@broadcom.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zs4qf-0005TC-5W
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 08:15:47 +0000
+Date: Fri, 30 Oct 2015 09:15:21 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Richard Weinberger  <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Andrea Scian <rnd4@dave-tech.it>, Iwo
+ Mergler <Iwo.Mergler@netcommwireless.com>, "Jeff Lauruhn (jlauruhn)"
+ <jlauruhn@micron.com>, "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= \"(beanhuo)\""
+ <beanhuo@micron.com>
+Subject: Re: UBI/UBIFS: dealing with MLC's paired pages
+Message-ID: <20151030091521.439f436b@bbrezillon>
+In-Reply-To: <1446035085.12536.71.camel@gmail.com>
+References: <20150917152240.757c9e90@bbrezillon>
+ <20151023101406.6d1490e5@bbrezillon>
+ <1446035085.12536.71.camel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,87 +30,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND controller on NS2 SoC is compatible with existing
-BRCM IPROC NAND driver so let's enable it in NS2 DT and
-NS2 SVK DT.
+Hi Artem,
 
-This patch also fixes use of node labels in ns2-svk.dts.
+Don't take the following answer as a try to teach you how UBI/UBIFS work
+or should work with MLC NANDs. I still listen to your suggestions, but
+when I had a look at how this "skip pages on demand" approach could
+be implemented I realized it was not so simple.
 
-Signed-off-by: Anup Patel <anup.patel@broadcom.com>
-Reviewed-by: Ray Jui <rjui@broadcom.com>
-Reviewed-by: Scott Branden <sbranden@broadcom.com>
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
----
- arch/arm64/boot/dts/broadcom/ns2-svk.dts | 30 ++++++++++++++++++++----------
- arch/arm64/boot/dts/broadcom/ns2.dtsi    | 14 ++++++++++++++
- 2 files changed, 34 insertions(+), 10 deletions(-)
+Also, if you don't mind I'd like to finish my consolidation-GC
+implementation before trying a new approach, which don't mean I won't
+consider the "skip pages on demand" one.
 
-diff --git a/arch/arm64/boot/dts/broadcom/ns2-svk.dts b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-index e5950d5..6bb3d4d 100644
---- a/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-+++ b/arch/arm64/boot/dts/broadcom/ns2-svk.dts
-@@ -50,18 +50,28 @@
- 		device_type = "memory";
- 		reg = <0x000000000 0x80000000 0x00000000 0x40000000>;
- 	};
-+};
- 
--	soc: soc {
--		i2c0: i2c@66080000 {
--			status = "ok";
--		};
-+&i2c0 {
-+	status = "ok";
-+};
- 
--		i2c1: i2c@660b0000 {
--			status = "ok";
--		};
-+&i2c1 {
-+	status = "ok";
-+};
-+
-+&uart3 {
-+	status = "ok";
-+};
- 
--		uart3: serial@66130000 {
--			status = "ok";
--		};
-+&nand {
-+	nandcs@0 {
-+		compatible = "brcm,nandcs";
-+		reg = <0>;
-+		nand-ecc-mode = "hw";
-+		nand-ecc-strength = <8>;
-+		nand-ecc-step-size = <512>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
- 	};
- };
-diff --git a/arch/arm64/boot/dts/broadcom/ns2.dtsi b/arch/arm64/boot/dts/broadcom/ns2.dtsi
-index f603277..9610822 100644
---- a/arch/arm64/boot/dts/broadcom/ns2.dtsi
-+++ b/arch/arm64/boot/dts/broadcom/ns2.dtsi
-@@ -212,5 +212,19 @@
- 			compatible = "brcm,iproc-rng200";
- 			reg = <0x66220000 0x28>;
- 		};
-+
-+		nand: nand@66460000 {
-+			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
-+			reg = <0x66460000 0x600>,
-+			      <0x67015408 0x600>,
-+			      <0x66460f00 0x20>;
-+			reg-names = "nand", "iproc-idm", "iproc-ext";
-+			interrupts = <GIC_SPI 420 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			brcm,nand-has-wp;
-+		};
- 	};
- };
+On Wed, 28 Oct 2015 14:24:45 +0200
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
+
+> On Fri, 2015-10-23 at 10:14 +0200, Boris Brezillon wrote:
+> > I decided to go for the simplest solution (but I can't promise I
+> > won't
+> > change my mind if this approach appears to be wrong), which is either
+> > using a LEB is MLC or SLC mode. In SLC modes, only the first page of
+> > each pair is used, which completely address the paired pages problem.
+> > For now the SLC mode logic is hidden in the MTD/NAND layers which are
+> > providing functions to write/read in SLC mode.
+> 
+> Most of the writes go through the journalling subsystem.
+> 
+> There are some non-journal writes, related to internal meta-date
+> management, like from other subsystems: log, the master node, LPT,
+> index, GC.
+> 
+> In case of journal subsystem, in MLC mode you just skip pages every
+> time the "flush write-buffer" API call is used.
+> 
+> In LPT subsystem, you invent a custom solution, skip pages as needed.
+> 
+> In master - probably nothing needs to be done, since we have 2 copies.
+> 
+> Index, GC - data also goes via journal, so the journal subsystem
+> solution will probably cover it.
+
+For the general concept I agree that it should probably work, but here
+are my concerns (maybe you'll prove me wrong ;-)):
+
+1/ will you ever be able to use a full LEB without skipping any pages?
+I mean, when use the "skip pages on demand" you can easily have more
+than half the page in your LEB skipped, because when you write only on
+one page, you'll have to skip between 3 to 8 pages (it depends on the
+pairing scheme). I'll try to run gather some statistics to see how
+often wbuf are synced to see if that's a real problem.
+The consolidation approach has the advantage of being able to
+consolidate existing LEBs to completely fill them, but the consolidation
+stuff could probably work with the "skip pages on demand".
+
+2/ skipping pages on demand is not as easy as only writing on lower
+pages of each pair. As you might know, when skipping pages to secure
+your data, you'll also have to skip some lower pages so that you end up
+with an offset to a memory region that can be contiguously written to,
+and when you skip those lower pages, you have to write on it, because
+NAND chips require that the lower page of each pair be programmed
+before the higher one (ignoring this will just render some pages
+unreliable).
+
+3/ UBIFS is really picky when it comes to corrupted nodes detection,
+and there are a few cases where it refuses to mount the FS when a
+corrupted node is detected. One of this case is when the corrupted
+page (filled with one or several nodes) is filled with non-ff data,
+which is likely to happen with MLC NANDs (paired pages are not
+contiguous). We discussed about relaxing this policy a few weeks ago,
+but what should we do when such a corruption is detected? Drop all
+nodes with a sequence higher or equal to the last valid node on the
+LEB?
+Note that with the consolidation-GC approach we don't have this
+problem because the consolidate LEB is added to journal after it has
+been completely filled with data, and marked as full (->free = 0) so
+that nobody can reclaim it to write data on it.
+
+> 
+> 
+> > Thanks to this differentiation, UBI is now exposing two kind of LEBs:
+> > - the secure (small) LEBS (those accessed in SLC mode)
+> > - the unsecure (big) LEBS (those accessed in MLC mode)
+> 
+> Is this really necessary? Feels like a bit of over-complication to the
+> UBI layer.
+
+Hm, it's actually not so complicated: SLC mode is implemented by the
+NAND layer and UBI is just using MTD functions to access the NAND in
+SLC mode. I'm more concerned by the on-flash format changes problem
+raised by Richard.
+
+> 
+> Can UBI care about itself WRT MLC safeness, and let UBIFS care about
+> itself?
+> 
+
+Sorry but I don't agree here. By exposing the secure LEB concept, UBI
+does not specifically care about UBIFS, it just provides a way for all
+UBI users to address the problem brought by paired pages in a generic
+way.
+Maybe the secure LEB approach is wrong, but in the end UBI will expose
+other functions to handle those paired pages problems
+(ubi_secure_data() to skip pages for example), and this layering
+(NAND/MTD/UBI/UBIFS) is IMO the only sane way to let each layer handle
+what it's supposed to handle and let the upper layers use the new
+features to mitigate the problems.
+So, no matter which solution is chosen, it will impact the UBI, MTD,
+and NAND layers.
+
+Best Regards,
+
+Boris
+
 -- 
-1.9.1
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
