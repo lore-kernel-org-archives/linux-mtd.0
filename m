@@ -1,30 +1,24 @@
-Date: Thu, 29 Oct 2015 22:02:49 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: "bayi.cheng" <bayi.cheng@mediatek.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Marek Vasut <marex@denx.de>, srv_heupstream@mediatek.com,
- Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mediatek@lists.infradead.org,
- Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 2/3] mtd: mtk-nor: mtk serial flash controller driver
-Message-ID: <20151030050249.GB31863@localhost>
-References: <1444729160-26433-1-git-send-email-bayi.cheng@mediatek.com>
- <1444729160-26433-3-git-send-email-bayi.cheng@mediatek.com>
- <20151016073959.GB28158@localhost>
- <1445178035.4832.23.camel@mhfsdcap03>
- <20151029015237.GE13239@google.com>
- <1446089334.25711.10.camel@mhfsdcap03>
- <1446126991.25711.23.camel@mhfsdcap03>
- <20151029160331.GA12954@localhost>
- <1446171159.25711.36.camel@mhfsdcap03>
+From: Anup Patel <anup.patel@broadcom.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Linux MTD <linux-mtd@lists.infradead.org>
+CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, "Mark
+ Rutland" <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, "Ian
+ Campbell" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, "Florian
+ Fainelli" <f.fainelli@gmail.com>, Pramod KUMAR <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>, Sandeep Tripathy
+ <tripathy@broadcom.com>, Linux ARM Kernel
+ <linux-arm-kernel@lists.infradead.org>, Device Tree
+ <devicetree@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
+ BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: [PATCH v4 1/3] mtd: brcmnand: factor out CFG and CFG_EXT bitfields
+Date: Fri, 30 Oct 2015 11:48:56 +0530
+Message-ID: <1446185938-17520-2-git-send-email-anup.patel@broadcom.com>
+In-Reply-To: <1446185938-17520-1-git-send-email-anup.patel@broadcom.com>
+References: <1446185938-17520-1-git-send-email-anup.patel@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1446171159.25711.36.camel@mhfsdcap03>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,44 +28,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bayi,
+From: Brian Norris <computersforpeace@gmail.com>
 
-On Fri, Oct 30, 2015 at 10:12:39AM +0800, bayi.cheng wrote:
-> Hi Brian,  The current station is as follows.
-> 
-> 1: put 0x9F to MTK_NOR_PRGDATA5_REG, and five 0x0 to
-> MTK_NOR_PRGDATA4_REG ~ MTK_NOR_PRGDATA0_REG, then set (1 + 5) * 8 
-> to MTK_NOR_CNT_REG, for this way, we can read five IDs.
-> 
-> 2: put 0x9F to MTK_NOR_PRGDATA5_REG, and five 0x0 to
-> MTK_NOR_PRGDATA4_REG ~ MTK_NOR_PRGDATA0_REG, then set (1 + 5 + 1) * 8
-> to MTK_NOR_CNT_REG, for this way, we can read six IDs.
-> In this case, nor flash IDs can be read from MTK_NOR_SHREG5_REG to
-> MTK_NOR_SHREG0_REG . Thanks!
+Use enum instead of magic numbers for CFG and CFG_EXT bitfields.
 
-Thanks for the update. Glad to hear you can read more bytes there; the
-extra number of Shift Registers *looked* to me like you should be able
-to read even more than 5...
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Tested-by: Anup Patel <anup.patel@broadcom.com>
+---
+ drivers/mtd/nand/brcmnand/brcmnand.c | 38 +++++++++++++++++++++++++++++-------
+ 1 file changed, 31 insertions(+), 7 deletions(-)
 
-So in my other email, I showed you how I generalized the TX/RX function,
-so it can handle most of both the write_reg() and read_reg() functions.
-I'm not 100% sure now that it has all of the RX path correct; it worked
-for the cases I could test, but it's confusing when reading the manual
-to figure out which SHREG register I should start from. But anyway, I
-think it should only take some small adjustments to my patch to make it
-handle things properly.
-
-I'd really appreciate it if you could incorporate my feedback and
-review/improve the ..._do_tx_rx() function I wrote, to make sure it
-handles reading any arbitrary number of bytes (at least up to 6). So,
-you might, for example, run some tests where you have spi-nor.c call
-
-	nor->read_reg(nor, SPINOR_OP_RDID, id, idlen)
-
-with varying values for 'idlen', and make sure they all work properly.
-
-Let me know if you have any questions about comments either here, or on
-v5.
-
-Regards,
-Brian
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index 4cba03d..dda96fa 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -344,6 +344,28 @@ static const u8 brcmnand_cs_offsets_cs0[] = {
+ 	[BRCMNAND_CS_TIMING2]		= 0x14,
+ };
+ 
++/*
++ * Bitfields for the CFG and CFG_EXT registers. Pre-v7.1 controllers only had
++ * one config register, but once the bitfields overflowed, newer controllers
++ * (v7.1 and newer) added a CFG_EXT register and shuffled a few fields around.
++ */
++enum {
++	CFG_BLK_ADR_BYTES_SHIFT		= 8,
++	CFG_COL_ADR_BYTES_SHIFT		= 12,
++	CFG_FUL_ADR_BYTES_SHIFT		= 16,
++	CFG_BUS_WIDTH_SHIFT		= 23,
++	CFG_BUS_WIDTH			= BIT(CFG_BUS_WIDTH_SHIFT),
++	CFG_DEVICE_SIZE_SHIFT		= 24,
++
++	/* Only for pre-v7.1 (with no CFG_EXT register) */
++	CFG_PAGE_SIZE_SHIFT		= 20,
++	CFG_BLK_SIZE_SHIFT		= 28,
++
++	/* Only for v7.1+ (with CFG_EXT register) */
++	CFG_EXT_PAGE_SIZE_SHIFT		= 0,
++	CFG_EXT_BLK_SIZE_SHIFT		= 4,
++};
++
+ /* BRCMNAND_INTFC_STATUS */
+ enum {
+ 	INTFC_FLASH_STATUS		= GENMASK(7, 0),
+@@ -1720,17 +1742,19 @@ static int brcmnand_set_cfg(struct brcmnand_host *host,
+ 	}
+ 	device_size = fls64(cfg->device_size) - fls64(BRCMNAND_MIN_DEVSIZE);
+ 
+-	tmp = (cfg->blk_adr_bytes << 8) |
+-		(cfg->col_adr_bytes << 12) |
+-		(cfg->ful_adr_bytes << 16) |
+-		(!!(cfg->device_width == 16) << 23) |
+-		(device_size << 24);
++	tmp = (cfg->blk_adr_bytes << CFG_BLK_ADR_BYTES_SHIFT) |
++		(cfg->col_adr_bytes << CFG_COL_ADR_BYTES_SHIFT) |
++		(cfg->ful_adr_bytes << CFG_FUL_ADR_BYTES_SHIFT) |
++		(!!(cfg->device_width == 16) << CFG_BUS_WIDTH_SHIFT) |
++		(device_size << CFG_DEVICE_SIZE_SHIFT);
+ 	if (cfg_offs == cfg_ext_offs) {
+-		tmp |= (page_size << 20) | (block_size << 28);
++		tmp |= (page_size << CFG_PAGE_SIZE_SHIFT) |
++		       (block_size << CFG_BLK_SIZE_SHIFT);
+ 		nand_writereg(ctrl, cfg_offs, tmp);
+ 	} else {
+ 		nand_writereg(ctrl, cfg_offs, tmp);
+-		tmp = page_size | (block_size << 4);
++		tmp = (page_size << CFG_EXT_PAGE_SIZE_SHIFT) |
++		      (block_size << CFG_EXT_BLK_SIZE_SHIFT);
+ 		nand_writereg(ctrl, cfg_ext_offs, tmp);
+ 	}
+ 
+-- 
+1.9.1
