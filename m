@@ -1,23 +1,25 @@
-Date: Fri, 30 Oct 2015 10:51:45 -0700
+Date: Fri, 30 Oct 2015 11:15:18 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: devicetree-spec@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Liviu Dudau <Liviu.Dudau@arm.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>
-Subject: Re: [PATCH 1/3] mtd: create a partition type device tree binding
-Message-ID: <20151030175145.GF13239@google.com>
-References: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
- <20151029162908.GA13275@localhost>
- <CACRpkdYS5Jf8UC2K0bNdEQZDjTeZZx44Uu-kkof+9E=4Ny0oDg@mail.gmail.com>
+To: Bayi Cheng <bayi.cheng@mediatek.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Daniel Kurtz <djkurtz@chromium.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com,
+ jteki@openedev.com, ezequiel@vanguardiasur.com.ar
+Subject: Re: [PATCH v5 2/3] mtd: mtk-nor: mtk serial flash controller driver
+Message-ID: <20151030181518.GG13239@google.com>
+References: <1445866839-31063-1-git-send-email-bayi.cheng@mediatek.com>
+ <1445866839-31063-3-git-send-email-bayi.cheng@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdYS5Jf8UC2K0bNdEQZDjTeZZx44Uu-kkof+9E=4Ny0oDg@mail.gmail.com>
+In-Reply-To: <1445866839-31063-3-git-send-email-bayi.cheng@mediatek.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +29,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 30, 2015 at 03:00:57PM +0100, Linus Walleij wrote:
-> On Thu, Oct 29, 2015 at 5:29 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> 
-> >> +Required properties:
-> >> +- partition-type : the type of partition. Only one type can be specified.
-> >
-> > You're supporting this as a list property (for future expansion,
-> > presumably), so I can only assume the "only one type" is referring to
-> > the number of different parsers available currently, not the behavior of
-> > the property itself?
-> 
-> I was thinking that it would not be a list actually.
-> 
-> The reason being that if you're anyways going to the trouble of
-> specifying exactly what partition type is going to be used, you're
-> not really interested in specifying a few different ones, you know
-> exactly what type it is going to be.
+Hi Bayi,
 
-OK, that makes sense. I think it's still *possible* that a board might
-have the option of more than one partition parser, and so they might
-just include both in the DTS, but that seems unlikely and so it makes
-sense not to (over)engineer for it before it's needed. Anyway, your
-binding can easily be expanded in the future if needed.
+In reviewing your updated instructions on how to read 6 bytes of ID, I
+have one more question about how the PRGDATA and SHREG registers are
+supposed to work.
 
-> But if you think it needs to be a list, I'll specify that, no big
-> deal. I'll also try to get the Linux code to handle a list then.
+On Mon, Oct 26, 2015 at 09:40:38PM +0800, Bayi Cheng wrote:
+[...]
+> +static void mt8173_nor_set_read_mode(struct mt8173_nor *mt8173_nor)
+> +{
+> +	struct spi_nor *nor = &mt8173_nor->nor;
+> +
+> +	writeb(nor->read_opcode, mt8173_nor->base + MTK_NOR_PRGDATA3_REG);
 
-No, I think your proposal is OK then. It's possible there is some room
-for clarification in the binding, since I was confused, but that could
-mostly be attributed to my pre-existing assumptions, not a fault of the
-text.
+So far, I've generalized your code to say that except for a few commands
+that are treated specially by your controller, all other opcodes are
+queued up in the program/shift register this:
 
-> > Also, this patch will conflict with [1]. I'll probably take [1] soon, so
-> > one of us will have to rebase this.
-> 
-> Sure I'll rebase on whatever you say.
+(1) total number of bits to send/receive goes in the COUNT register (so
+    far, as many as 7*8=56?)
+(2) opcode is written to PRGDATA5
+(3) other "transmit" data (like addresses), if any, are placed on PRGDATA4..0
+(4) command is sent (execute_cmd())
+(5) data is read back in SHREG{X..0}, if needed
 
-OK, I'll let you know.
+However, I see that
 
+(a) here in mt8173_nor_set_read_mode(), you use only PRGDATA3 (i.e.,
+this is different than step (2) above). Why is that different? Is this
+just a quirk of the read mode, which is different than the other
+arbitrary opcodes (like READ ID)?
+
+(b) it's really unclear how to determine 'X' in step (5). It seems like
+it might just be the number of bytes minus 1, since the first byte
+aligns with the "opcode" cycle. But I'm not really sure, since in one
+case (the 'default' in mt8173_nor_read_reg()) you seemingly randomly
+chose to read *only* from SHREG2. That looks wrong to me, but I don't
+actually know, because your SoC is very unclear.
+
+My patch at the end of this [1] tries to encapsulate (1)-(5) as best as
+I could, but it's really missing out on the answer to (b).
+
+Anyway, I'd really appreciate a good answer to these questions. We
+really need to get this stuff right, so your driver can handle NOR flash
+opcodes as generically as possible. Right now, your driver mostly looks
+like a series of cobbled together switch/case statements to handle the
+couple of opcodes you've tested.
+
+Regard,
 Brian
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2015-October/062919.html
+
+> +	switch (nor->flash_read) {
+> +	case SPI_NOR_FAST:
+> +		writeb(MTK_NOR_FAST_READ, mt8173_nor->base +
+> +		       MTK_NOR_CFG1_REG);
+> +		break;
+> +	case SPI_NOR_DUAL:
+> +		writeb(MTK_NOR_DUAL_READ_EN, mt8173_nor->base +
+> +		       MTK_NOR_DUAL_REG);
+> +		break;
+> +	case SPI_NOR_QUAD:
+> +		writeb(MTK_NOR_QUAD_READ_EN, mt8173_nor->base +
+> +		       MTK_NOR_DUAL_REG);
+> +		break;
+> +	default:
+> +		writeb(MTK_NOR_DUAL_DISABLE, mt8173_nor->base +
+> +		       MTK_NOR_DUAL_REG);
+> +		break;
+> +	}
+> +}
