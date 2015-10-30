@@ -1,16 +1,16 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZsFnO-0007f8-FA
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 19:57:06 +0000
-Received: by padhy1 with SMTP id hy1so77081249pad.0
- for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 12:56:45 -0700 (PDT)
+ id 1ZsGO0-0002uG-L2
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 20:34:57 +0000
+Received: by pasz6 with SMTP id z6so83791988pas.2
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 13:34:35 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH] mtd: spi-nor: remove unnecessary leading space from dbg print
-Date: Fri, 30 Oct 2015 12:56:22 -0700
-Message-Id: <1446234982-130911-1-git-send-email-computersforpeace@gmail.com>
+Cc: <devicetree@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Michal Suchanek <hramrach@gmail.com>
+Subject: [PATCH v4] mtd: ofpart: document the lock flag.
+Date: Fri, 30 Oct 2015 13:34:00 -0700
+Message-Id: <1446237240-10695-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As Crille noted [1], this line is wrong.
+From: Michal Suchanek <hramrach@gmail.com>
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2015-September/061725.html
+The lock flag of ofpart is undocumented. Add to binding doc.
 
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It seems my reasoning here [1] was wrong (thanks Sascha!). This is a rewrite of
+Michal's binding doc from [2].
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 49883905a434..87a722a22f11 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -856,7 +856,7 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+Note that this property is still broken for the CONFIG_MTD_PARTITIONED_MASTER=y
+case.
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2015-October/062822.html
+[2] http://lists.infradead.org/pipermail/linux-mtd/2015-August/061155.html
+
+ Documentation/devicetree/bindings/mtd/partition.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+index 8e5557da1955..a7d4d35550e3 100644
+--- a/Documentation/devicetree/bindings/mtd/partition.txt
++++ b/Documentation/devicetree/bindings/mtd/partition.txt
+@@ -23,6 +23,8 @@ Optional properties:
+   partition should only be mounted read-only. This is usually used for flash
+   partitions containing early-boot firmware images or data which should not be
+   clobbered.
++- lock : Do not unlock the partition at initialization time (not supported on
++  all devices)
  
- 	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
- 	if (tmp < 0) {
--		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
-+		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", tmp);
- 		return ERR_PTR(tmp);
- 	}
+ Examples:
  
 -- 
 2.6.0.rc2.230.g3dd15c0
