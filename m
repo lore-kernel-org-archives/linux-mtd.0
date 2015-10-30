@@ -1,30 +1,30 @@
-Subject: Re: [PATCH v3 2/2] arm64: dts: Add BRCM IPROC NAND DT node for NS2
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1445577373-21252-1-git-send-email-anup.patel@broadcom.com>
- <1445577373-21252-3-git-send-email-anup.patel@broadcom.com>
- <20151028001920.GY13239@google.com> <563015FC.9040006@broadcom.com>
- <20151028003935.GZ13239@google.com> <56301B00.1020301@broadcom.com>
- <39063E8F96E11742B35A201CC5D095B7AFFB81@SJEXCHMB10.corp.ad.broadcom.com>
- <5630F2E2.8060508@broadcom.com> <20151030184907.GH13239@google.com>
-CC: Anup Patel <anup.patel@broadcom.com>, David Woodhouse
- <dwmw2@infradead.org>, Linux MTD <linux-mtd@lists.infradead.org>, Rob Herring
- <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, "Will
- Deacon" <will.deacon@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, "Ian
- Campbell" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
- Scott Branden <sbranden@broadcom.com>, Florian Fainelli
- <f.fainelli@gmail.com>, Pramod Kumar <pramodku@broadcom.com>, Vikram Prakash
- <vikramp@broadcom.com>, Sandeep Tripathy <tripathy@broadcom.com>, "Linux ARM
- Kernel" <linux-arm-kernel@lists.infradead.org>, Device Tree
- <devicetree@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-From: Ray Jui <rjui@broadcom.com>
-Message-ID: <5633BD2D.1050808@broadcom.com>
-Date: Fri, 30 Oct 2015 11:55:41 -0700
+Date: Fri, 30 Oct 2015 12:31:52 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Anup Patel <anup.patel@broadcom.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Pramod KUMAR <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>,
+ Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>,
+ Device Tree <devicetree@vger.kernel.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: [PATCH v5 0/3] NAND support for Broadcom NS2 SoC
+Message-ID: <20151030193152.GI13239@google.com>
+References: <1446188361-15146-1-git-send-email-anup.patel@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <20151030184907.GH13239@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1446188361-15146-1-git-send-email-anup.patel@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,56 +34,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Oct 30, 2015 at 12:29:18PM +0530, Anup Patel wrote:
+> We enable NAND support for Broadcom NS2 SoC by reusing existing
+> BRCMNAND driver.
+> 
+> This patchset applies on-top of "arm64: Simple additions to
+> NS2 DT" v1 patchset and is available in ns2_nand_v5 branch of
+> https://github.com/Broadcom/arm64-linux.git.
+> 
+> The patchset is tested on NS2 SVK.
 
+Applied patches 1 and 2. My "Reviewed-by" on patch 3 stands.
 
-On 10/30/2015 11:49 AM, Brian Norris wrote:
-> On Wed, Oct 28, 2015 at 09:08:02AM -0700, Ray Jui wrote:
->> On 10/28/2015 2:06 AM, Anup Patel wrote:
->>>
->>> I think for a newly created OF devices the Linux device driver framework will
->>> match the platform drivers in the order in which they are registered by module
->>> init functions. Now the order of module init function calls will be based how
->>> the .initcall section is formed by linker and order in which objects are linked.
->>>
->>
->> Yes, what you said is my understanding as well, but then here is the
->> mystery. This is the link order in brcmnand/Makefile:
->>
->> 1 # link order matters; don't link the more generic brcmstb_nand.o
->> before the
->> 2 # more specific iproc_nand.o, for instance
->> 3 obj-$(CONFIG_MTD_NAND_BRCMNAND) += iproc_nand.o
->> 4 obj-$(CONFIG_MTD_NAND_BRCMNAND) += bcm63138_nand.o
->> 5 obj-$(CONFIG_MTD_NAND_BRCMNAND) += brcmstb_nand.o
->> 6 obj-$(CONFIG_MTD_NAND_BRCMNAND) += brcmnand.o
->>
->> Based on the order above, probe from iproc_nand should always be
->> called first if a matching compatible string is found. If so, then
->> why having both compatible strings "brcm,brcmnand" and
->> "brcm,nand-iproc" causes issues for NS2 (I remember it broke
->> smoketest in the past when you submitted the change)? I'm not saying
->> we should have "brcm,brcmnand" for iProc devices, but I don't get
->> why it would cause any issue.
->
-> FWIW, the above hack doesn't do anything if these are built as modules,
-> AFAICT. So I guess udev's (or similar) module rules would be another
-> point of failure here? Not that any of us probably care too much about
-> this driver as a module, but just throwing it out there...
->
-> I have a feeling we'll have to solve this locally, by avoiding having
-> "independent" drivers handling similar compatible properties, as I
-> expect (despite our expectation that compatible ordering should matter)
-> this problem will not be solved any time soon in the generic
-> infrastructure.
->
-> Or we can just use a hack (as Anup is doing) to leave off the
-> "brcm,brcmnand" compatibility property. Unless someone has brilliant
-> ideas, I guess we go with Anup's hack for now.
-
-I'm fine with that, :)
-
-Ray
-
->
-> Brian
->
+Thanks,
+Brian
