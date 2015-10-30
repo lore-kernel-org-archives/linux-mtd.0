@@ -1,19 +1,27 @@
-Received: from antispamrelay02.bull-services.ch ([62.12.170.133])
+Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zs9wu-0003ze-Jj
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 13:42:33 +0000
-From: Thomas Kaufmann <Thomas.Kaufmann@duagon.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: UBIFS remounted ro during operation or from boot time
-Date: Fri, 30 Oct 2015 13:42:00 +0000
-Message-ID: <5a2a0ec8ad11410e839e958d1449b3bc@chdua14.duagon.ads>
-References: <38b87e8310d347efba70c1d3cf79f226@chdua14.duagon.ads>
- <CAFLxGvycP4Nh23asK4jxsf6AkGL=jtcqwwfofNuMrEoD983-Tg@mail.gmail.com>
-In-Reply-To: <CAFLxGvycP4Nh23asK4jxsf6AkGL=jtcqwwfofNuMrEoD983-Tg@mail.gmail.com>
-Content-Language: de-DE
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1ZsAF4-0003Dm-Rm
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 14:01:19 +0000
+Received: by obbwb3 with SMTP id wb3so44820768obb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 07:00:57 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20151029162908.GA13275@localhost>
+References: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
+ <20151029162908.GA13275@localhost>
+Date: Fri, 30 Oct 2015 15:00:57 +0100
+Message-ID: <CACRpkdYS5Jf8UC2K0bNdEQZDjTeZZx44Uu-kkof+9E=4Ny0oDg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mtd: create a partition type device tree binding
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: devicetree-spec@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Liviu Dudau <Liviu.Dudau@arm.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,66 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UmljaGFyZCwNCg0KdGhhbmsgZm9yIHRoZSBxdWljayByZXBseSwgc2VlIHRoZSBhbnN3ZXJzIGJl
-bG93Og0KDQo+IEhvdyBkb2VzIHRoZSBwcm9ibGVtIGR1cmluZyBvcGVyYXRpb24gbG9vayBsaWtl
-PyBJcyBpdCBleGFjdGx5IHRoZSBzYW1lPw0KDQpUaGlzIGlzIGhhcmQgdG8gc2F5LCBJIGRpZCBu
-b3QgbWFuYWdlIHRvIGdldCBhIHByb3BlciBkbWVzZyBmcm9tIHRoZSBpbmNpZGVudC4gVGhlcmUg
-YXJlIGxvdCBvZiBpcnJlbGV2YW50IGtlcm5lbCBtZXNzYWdlcyBpbiBvdXIgc3lzdGVtLg0KSWYg
-cG9zc2libGUgSSB0cnkgc29vbiB3aXRoIGEga2VybmVsIHdpdGggbGVzcyBkZWJ1Z2dpbmcgbWVz
-c2FnZXMuDQoNCj4gDQo+ID4gWyAgIDEyLjIyNDA5MF0gVUJJRlM6IHJlY292ZXJ5IG5lZWRlZA0K
-PiA+IFsgICAxMi44MDAwMThdIFVCSUZTOiByZWNvdmVyeSBjb21wbGV0ZWQNCj4gPiBbICAgMTIu
-ODAzODk0XSBVQklGUzogbW91bnRlZCBVQkkgZGV2aWNlIDAsIHZvbHVtZSAwLCBuYW1lICJyb290
-ZnMiDQo+ID4gWyAgIDEyLjgxMDE4MF0gVUJJRlM6IGZpbGUgc3lzdGVtIHNpemU6ICAgNDA3NzE1
-ODQwIGJ5dGVzICgzOTgxNjAgS2lCLCAzODgNCj4gTWlCLCA3OTAgTEVCcykNCj4gPiBbICAgMTIu
-ODE4NDIwXSBVQklGUzogam91cm5hbCBzaXplOiAgICAgICAxMDQ1Mjk5MiBieXRlcyAoMTAyMDgg
-S2lCLCA5IE1pQiwgMjENCj4gTEVCcykNCj4gPiBbICAgMTIuODI2MjMyXSBVQklGUzogbWVkaWEg
-Zm9ybWF0OiAgICAgICB3NC9yMCAobGF0ZXN0IGlzIHc0L3IwKQ0KPiA+IFsgICAxMi44MzIzMzZd
-IFVCSUZTOiBkZWZhdWx0IGNvbXByZXNzb3I6IGx6bw0KPiA+IFsgICAxMi44MzY1NzhdIFVCSUZT
-OiByZXNlcnZlZCBmb3Igcm9vdDogIDAgYnl0ZXMgKDAgS2lCKQ0KPiA+IFsgICAxMi44NDQ5NzBd
-IFZGUzogTW91bnRlZCByb290ICh1YmlmcyBmaWxlc3lzdGVtKSBvbiBkZXZpY2UgMDoxMy4NCj4g
-Pg0KPiA+IFsgICAxOC44OTk4NDFdIFVCSUZTIGVycm9yIChwaWQgMTgwMCk6IHViaWZzX2NoZWNr
-X25vZGU6IGJhZCBDUkM6IGNhbGN1bGF0ZWQNCj4gMHhjNmZkMjIzMiwgcmVhZCAweGVmMzdhOGMw
-DQo+IA0KPiBVQklGUyBnb3Qgc29tZXRoaW5nIHVuZXhwZWN0ZWQuDQo+IEl0IHdvdWxkIGJlIGlu
-dGVyZXN0aW5nIHdoYXQgdGhlIExFQiBpbiBxdWVzdGlvbiBjb250YWlucy4NCj4gRG9lcyBpdCBj
-b250YWluIGdhcmJhZ2UsIGFyZSBqdXN0IGEgZmV3IGJpdHMgZmxpcHBlZCwgaXMgb25seSBhIHBh
-Z2UgYmFkPw0KDQpUaGUgcHJpbnRvdXQgSSByZW1vdmVkIHN0YXJ0cyBsaWtlIHRoaXM6DQpbICAg
-MTguOTI1ODcyXSAwMDAwMDAwMDogMDYxMDE4MzEgZWYzN2E4YzAgMGQyZWY3ZmEgMDAwMDAwMDAg
-MDAwMDA2NjEgMDAwMDAwMDEgMDAwMDg3ZjIgMjAwMDAwNDEgIDEuLi4uLjcuLi4uLi4uLi5hLi4u
-Li4uLi4uLi5BLi4gDQpbICAgMTguOTI1OTAzXSAwMDAwMDAyMDogMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDEwMDAgMDAwMDAwMDEgNzA2ZDYxMGMgMjAyMDIwM2QgMzAzMTJlMzQgMjAwYTIwMjAgIC4u
-Li4uLi4uLi4uLi4uLi4uYW1wPSAgIDQuMTAgIC4gDQpbICAgMTguOTI1OTAzXSAwMDAwMDA0MDog
-MDAwMTAyMjAgMDAwMDNjM2QgNjQwYTA4MDAgNzQ3MzYxNGMgNzQ3MzY5NDggNTI3OTcyNmYgM2Qy
-MDZkNzAgMzUzOTM3MjAgICAuLi49PC4uLi4uZExhc3RIaXN0b3J5UnBtID0gNzk1DQpbICAgMTgu
-OTI1OTMzXSAwMDAwMDA2MDogNmMwYTMwMmUgMDIwMDAyNTggNjU3MDUzMjAgNjE1NjY0NjUgNzQ2
-MTY5NzIgMjA2ZTZmNjkgMzcyMDIwM2QgMDcwMDAzNmMgIC4wLmxYLi4uIFNwZWVkVmFyaWF0aW9u
-ID0gIDdsLi4uDQoNCnRoaXMgbG9va3MgbGlrZSBmaWxlIGNvbnRhbnRlcywgdW50aWwgaGVyZQ0K
-DQpbICAgMTguOTI5NTY1XSAwMDAwMTJjMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMWMgMDAw
-MDAwMDUgMDAwMDBlMGMgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgIC4uLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLi4uLi4uLi4uDQoNCnRvIGhlcmUsIGFsbCBpcyAwLg0KDQpbICAgMTguOTMyMDM3
-XSAwMDAwMWZlMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
-Li4uDQoNCj4gDQo+ID4gWyAgIDE4LjkwOTUxNV0gVUJJRlMgZXJyb3IgKHBpZCAxODAwKTogdWJp
-ZnNfY2hlY2tfbm9kZTogYmFkIG5vZGUgYXQgTEVCDQo+IDQ4NjoyMDA0ODANCj4gPiBbICAgMTgu
-OTE3MjA1XSBVQklGUyBlcnJvciAocGlkIDE4MDApOiB1Ymlmc19zY2FubmVkX2NvcnJ1cHRpb246
-IGNvcnJ1cHRpb24NCj4gYXQgTEVCIDQ4NjoyMDA0ODANCj4gPiA8dGhlbiBJIHRoaW5rIGl0IHBy
-aW50cyB0aGUgTEVCPg0KPiA+IFsgICAxOC45MzIwMzddIFVCSUZTIGVycm9yIChwaWQgMTgwMCk6
-IHViaWZzX3NjYW46IExFQiA0ODYgc2Nhbm5pbmcgZmFpbGVkDQo+ID4gWyAgIDE4LjkzOTA1Nl0g
-VUJJRlMgd2FybmluZyAocGlkIDE4MDApOiB1Ymlmc19yb19tb2RlOiBzd2l0Y2hlZCB0byByZWFk
-LQ0KPiBvbmx5IG1vZGUsIGVycm9yIC0xMTcNCj4gPiA8bW9yZSBrZXJuZWwgdHJhY2VzPg0KPiA+
-IFsgICAxOS4wOTU1ODFdIFVCSUZTIGVycm9yIChwaWQgMTgwMCk6IG1ha2VfcmVzZXJ2YXRpb246
-IGNhbm5vdCByZXNlcnZlIDgzDQo+IGJ5dGVzIGluIGpoZWFkIDIsIGVycm9yIC0xMTcNCj4gPiBb
-ICAgMTkuMTA1MTAyXSBVQklGUyBlcnJvciAocGlkIDE4MDApOiBkb193cml0ZXBhZ2U6IGNhbm5v
-dCB3cml0ZSBwYWdlIDAgb2YNCj4gaW5vZGUgMTA3NTQsIGVycm9yIC0xMTcNCj4gPg0KPiA+IFRo
-aXMgaXMgd2hlbiB0aGUgaXNzdWUgaXMgcHJlc2VudCBhdCBib290dXAuDQo+ID4gU29tZXRpbWVz
-IHRoaXMgaXNzdWUgY2FuIGJlIHJlc29sdmVkIGJ5IHJlYm9vdGluZywgYnV0IG5vdCBhbHdheXMu
-DQo+ID4NCj4gPiBJcyB0aGlzIGhhcHBlbmluZyBkdWUgdG8gYSBjb3JydXB0ZWQgb3IgZGVmZWN0
-aXZlIGZsYXNoIChoYXJkd2FyZSBwcm9ibGVtKT8NCj4gDQo+IE1URCBkaWQgbm90IHJlcG9ydCBh
-biBFQ0MgZXJyb3Igbm9yIGEgYmFkIGJsb2NrIC0+IGZyb20gTVREJ3MgcG9pbnQgb2Ygdmlldw0K
-PiBldmVyeXRoaW5nIGlzIG9rLg0KPiBJdCBkb2VzIG5vdCBwcm92ZSB0aGUgdGhhdCBoYXJkd2Fy
-ZSBpcyBwZXJmZWN0bHkgZmluZSBidXQgYXQgbGVhc3QgdGhlIE5BTkQgZGlkDQo+IG5vdCB0dXJu
-IGJhZC4NCg0KdGhhbmtzLCB0aGlzIGlzIGdvb2QgdG8ga25vdywgU28gSSB3aWxsIGxvb2sgZnVy
-dGhlciBpbnRvIHRoZSBVQkkgcGFydC4NCg0KPiANCj4gPiBPciBpcyB0aGVyZSBhIGtub3duIHBy
-b2JsZW0gaW4gdGhlIHNvZnR3YXJlIHZlcnNpb25zIHdlIGFyZSB1c2luZz8NCj4gDQo+IENhbiBi
-ZS4gTWF5YmUgYSBkcml2ZXIgaXNzdWUuDQo+IERvZXMgeW91ciBib2FyZCBwYXNzIGFsbCBNVEQv
-VUJJIHRlc3RzPw0KDQpJIHdpbGwgZGlzY3VzcyB0aGlzIHdpdGggbXkgY29sbGVhZ3VlcyB3aG8g
-ZGV2ZWxvcGVkIHRoZSBib2FyZC4NCg0KVGhhbmsgeW91DQotVGhvbWFzDQo=
+On Thu, Oct 29, 2015 at 5:29 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+
+>> +Required properties:
+>> +- partition-type : the type of partition. Only one type can be specified.
+>
+> You're supporting this as a list property (for future expansion,
+> presumably), so I can only assume the "only one type" is referring to
+> the number of different parsers available currently, not the behavior of
+> the property itself?
+
+I was thinking that it would not be a list actually.
+
+The reason being that if you're anyways going to the trouble of
+specifying exactly what partition type is going to be used, you're
+not really interested in specifying a few different ones, you know
+exactly what type it is going to be.
+
+But if you think it needs to be a list, I'll specify that, no big
+deal. I'll also try to get the Linux code to handle a list then.
+
+> Also, this patch will conflict with [1]. I'll probably take [1] soon, so
+> one of us will have to rebase this.
+
+Sure I'll rebase on whatever you say.
+
+Yours,
+Linus Walleij
