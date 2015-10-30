@@ -1,25 +1,35 @@
-Date: Fri, 30 Oct 2015 11:15:18 -0700
+Date: Fri, 30 Oct 2015 11:49:07 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Bayi Cheng <bayi.cheng@mediatek.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+To: Ray Jui <rjui@broadcom.com>
+Cc: Anup Patel <anup.patel@broadcom.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com,
- jteki@openedev.com, ezequiel@vanguardiasur.com.ar
-Subject: Re: [PATCH v5 2/3] mtd: mtk-nor: mtk serial flash controller driver
-Message-ID: <20151030181518.GG13239@google.com>
-References: <1445866839-31063-1-git-send-email-bayi.cheng@mediatek.com>
- <1445866839-31063-3-git-send-email-bayi.cheng@mediatek.com>
+ Kumar Gala <galak@codeaurora.org>, Scott Branden <sbranden@broadcom.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Pramod Kumar <pramodku@broadcom.com>,
+ Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>,
+ Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>,
+ Device Tree <devicetree@vger.kernel.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: [PATCH v3 2/2] arm64: dts: Add BRCM IPROC NAND DT node for NS2
+Message-ID: <20151030184907.GH13239@google.com>
+References: <1445577373-21252-1-git-send-email-anup.patel@broadcom.com>
+ <1445577373-21252-3-git-send-email-anup.patel@broadcom.com>
+ <20151028001920.GY13239@google.com> <563015FC.9040006@broadcom.com>
+ <20151028003935.GZ13239@google.com> <56301B00.1020301@broadcom.com>
+ <39063E8F96E11742B35A201CC5D095B7AFFB81@SJEXCHMB10.corp.ad.broadcom.com>
+ <5630F2E2.8060508@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1445866839-31063-3-git-send-email-bayi.cheng@mediatek.com>
+In-Reply-To: <5630F2E2.8060508@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,75 +39,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bayi,
+On Wed, Oct 28, 2015 at 09:08:02AM -0700, Ray Jui wrote:
+> On 10/28/2015 2:06 AM, Anup Patel wrote:
+> >
+> >I think for a newly created OF devices the Linux device driver framework will
+> >match the platform drivers in the order in which they are registered by module
+> >init functions. Now the order of module init function calls will be based how
+> >the .initcall section is formed by linker and order in which objects are linked.
+> >
+> 
+> Yes, what you said is my understanding as well, but then here is the
+> mystery. This is the link order in brcmnand/Makefile:
+> 
+> 1 # link order matters; don't link the more generic brcmstb_nand.o
+> before the
+> 2 # more specific iproc_nand.o, for instance
+> 3 obj-$(CONFIG_MTD_NAND_BRCMNAND) += iproc_nand.o
+> 4 obj-$(CONFIG_MTD_NAND_BRCMNAND) += bcm63138_nand.o
+> 5 obj-$(CONFIG_MTD_NAND_BRCMNAND) += brcmstb_nand.o
+> 6 obj-$(CONFIG_MTD_NAND_BRCMNAND) += brcmnand.o
+> 
+> Based on the order above, probe from iproc_nand should always be
+> called first if a matching compatible string is found. If so, then
+> why having both compatible strings "brcm,brcmnand" and
+> "brcm,nand-iproc" causes issues for NS2 (I remember it broke
+> smoketest in the past when you submitted the change)? I'm not saying
+> we should have "brcm,brcmnand" for iProc devices, but I don't get
+> why it would cause any issue.
 
-In reviewing your updated instructions on how to read 6 bytes of ID, I
-have one more question about how the PRGDATA and SHREG registers are
-supposed to work.
+FWIW, the above hack doesn't do anything if these are built as modules,
+AFAICT. So I guess udev's (or similar) module rules would be another
+point of failure here? Not that any of us probably care too much about
+this driver as a module, but just throwing it out there...
 
-On Mon, Oct 26, 2015 at 09:40:38PM +0800, Bayi Cheng wrote:
-[...]
-> +static void mt8173_nor_set_read_mode(struct mt8173_nor *mt8173_nor)
-> +{
-> +	struct spi_nor *nor = &mt8173_nor->nor;
-> +
-> +	writeb(nor->read_opcode, mt8173_nor->base + MTK_NOR_PRGDATA3_REG);
+I have a feeling we'll have to solve this locally, by avoiding having
+"independent" drivers handling similar compatible properties, as I
+expect (despite our expectation that compatible ordering should matter)
+this problem will not be solved any time soon in the generic
+infrastructure.
 
-So far, I've generalized your code to say that except for a few commands
-that are treated specially by your controller, all other opcodes are
-queued up in the program/shift register this:
+Or we can just use a hack (as Anup is doing) to leave off the
+"brcm,brcmnand" compatibility property. Unless someone has brilliant
+ideas, I guess we go with Anup's hack for now.
 
-(1) total number of bits to send/receive goes in the COUNT register (so
-    far, as many as 7*8=56?)
-(2) opcode is written to PRGDATA5
-(3) other "transmit" data (like addresses), if any, are placed on PRGDATA4..0
-(4) command is sent (execute_cmd())
-(5) data is read back in SHREG{X..0}, if needed
-
-However, I see that
-
-(a) here in mt8173_nor_set_read_mode(), you use only PRGDATA3 (i.e.,
-this is different than step (2) above). Why is that different? Is this
-just a quirk of the read mode, which is different than the other
-arbitrary opcodes (like READ ID)?
-
-(b) it's really unclear how to determine 'X' in step (5). It seems like
-it might just be the number of bytes minus 1, since the first byte
-aligns with the "opcode" cycle. But I'm not really sure, since in one
-case (the 'default' in mt8173_nor_read_reg()) you seemingly randomly
-chose to read *only* from SHREG2. That looks wrong to me, but I don't
-actually know, because your SoC is very unclear.
-
-My patch at the end of this [1] tries to encapsulate (1)-(5) as best as
-I could, but it's really missing out on the answer to (b).
-
-Anyway, I'd really appreciate a good answer to these questions. We
-really need to get this stuff right, so your driver can handle NOR flash
-opcodes as generically as possible. Right now, your driver mostly looks
-like a series of cobbled together switch/case statements to handle the
-couple of opcodes you've tested.
-
-Regard,
 Brian
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2015-October/062919.html
-
-> +	switch (nor->flash_read) {
-> +	case SPI_NOR_FAST:
-> +		writeb(MTK_NOR_FAST_READ, mt8173_nor->base +
-> +		       MTK_NOR_CFG1_REG);
-> +		break;
-> +	case SPI_NOR_DUAL:
-> +		writeb(MTK_NOR_DUAL_READ_EN, mt8173_nor->base +
-> +		       MTK_NOR_DUAL_REG);
-> +		break;
-> +	case SPI_NOR_QUAD:
-> +		writeb(MTK_NOR_QUAD_READ_EN, mt8173_nor->base +
-> +		       MTK_NOR_DUAL_REG);
-> +		break;
-> +	default:
-> +		writeb(MTK_NOR_DUAL_DISABLE, mt8173_nor->base +
-> +		       MTK_NOR_DUAL_REG);
-> +		break;
-> +	}
-> +}
