@@ -1,28 +1,24 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zs6G0-0007BR-2z
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 09:46:00 +0000
-Date: Fri, 30 Oct 2015 10:45:37 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Andrea Scian <rnd4@dave-tech.it>, Iwo
- Mergler <Iwo.Mergler@netcommwireless.com>, "Jeff Lauruhn (jlauruhn)"
- <jlauruhn@micron.com>, "Bean Huo =?UTF-8?B?6ZyN5paM5paM?=
- \"\"(beanhuo)\"\"" <beanhuo@micron.com>
-Subject: Re: UBI/UBIFS: dealing with MLC's paired pages
-Message-ID: <20151030104537.2196c4a8@bbrezillon>
-In-Reply-To: <1446196090.6126.48.camel@gmail.com>
-References: <20150917152240.757c9e90@bbrezillon>
- <20151023101406.6d1490e5@bbrezillon>
- <1446035085.12536.71.camel@gmail.com>
- <20151030091521.439f436b@bbrezillon>
- <1446196090.6126.48.camel@gmail.com>
+Received: from mail-bn1on0113.outbound.protection.outlook.com
+ ([157.56.110.113] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zs6Jw-0008Kq-ET
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 09:50:06 +0000
+From: Yao Yuan <yao.yuan@freescale.com>
+To: Fabio Estevam <festevam@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Li Leo <LeoLi@freescale.com>,
+ Scott Wood <scottwood@freescale.com>, Xu Han <han.xu@freescale.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mtd: spi-nor: fsl-quadspi: add big-endian support
+Date: Fri, 30 Oct 2015 09:49:41 +0000
+Message-ID: <BLUPR03MB134C1F7A783914F4F1ACCDF832F0@BLUPR03MB134.namprd03.prod.outlook.com>
+References: <1445586797-38383-1-git-send-email-yao.yuan@freescale.com>
+ <CAOMZO5AAr30RM7dE-0BEZGH3Nw1j-QpM+qv2WCyyfK4ATrh=VA@mail.gmail.com>
+In-Reply-To: <CAOMZO5AAr30RM7dE-0BEZGH3Nw1j-QpM+qv2WCyyfK4ATrh=VA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,60 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 30 Oct 2015 11:08:10 +0200
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
-
-> On Fri, 2015-10-30 at 09:15 +0100, Boris Brezillon wrote:
-> > Hi Artem,
-> > 
-> > Don't take the following answer as a try to teach you how UBI/UBIFS
-> > work
-> > or should work with MLC NANDs. I still listen to your suggestions,
-> > but
-> > when I had a look at how this "skip pages on demand" approach could
-> > be implemented I realized it was not so simple.
-> 
-> Sure.
-> 
-> Could you verify my understanding please.
-> 
-> You realized that "skip on demand" is not easy, and you suggest that we
-> simply write all the data twice - first time we skip pages, and then we
-> garbage collect everything. At the end, roughly speaking, we trade off
-> half of the IO speed, power, and NAND lifetime.
-
-That will be pretty much the same with the "skip on demand" approach,
-because you'll probably loose a lot of space when syncing the wbuf.
-Remember that you have to skip between 3 and 8 pages, so if your
-buffers are regularly synced (either manually of by the timer), you'll
-increase the dirty space in those LEBs, and in the end you'll just rely
-on the regular GC to collect those partially written LEB. Except that
-the regular GC will in turn loose some space when syncing its wbuf.
-
-Moreover, the standard GC only takes place when you can't find a free
-LEB anymore, which will probably happen when you reach something close
-to half the partition size in case of MLC chips (it may be a bit
-higher if you managed to occupy more than half of each LEB capacity).
-This means that your FS will become slower when you reach this limit,
-though maybe this can be addressed by triggering the GC before we run
-out of free LEBs.
-
-> 
-> About secure LEBs - do you suggest UBI exposes 2 different LEB sizes at
-> the same time - secure and unsecure, or you it could be only in one of
-> the modes.
-
-A given LEB can only be in secure or unsecure mode, but a UBI volume
-can expose both unsecure and secure LEBs, and those LEBs have different
-sizes.
-The secure/unsecure mode is chosen when mapping the LEB, and the LEB
-stays in this mode until it's unmapped.
-
-Best Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+SGkgRmFiaW8gRXN0ZXZhbSwNCg0KVGhhbmtzIGZvciB5b3VyIHN1Z2dlc3Rpb24uDQpXZSBoYXZl
+IGFuIGludGVybmFsIGRpc2N1c3Npb25zIGZvciB0aGF0Lg0KDQpXZSB0aGluayB0aGF0Og0KQWNj
+b3JkaW5nIHRvIHRoZSBpbml0aWFsIGNvbW1pdCBtZXNzYWdlIG9mIHJlZ21hcCwgaXQgaXMgdGFy
+Z2V0aW5nIG5vbi1tZW1vcnkgbWFwcGVkIGJ1c2VzLiAocmVnbWFwOiBBZGQgZ2VuZXJpYyBub24t
+bWVtb3J5IG1hcHBlZCByZWdpc3RlciBhY2Nlc3MgQVBJKSAgQnV0IGluIHRoZSBpbXgyX3dkdCBk
+cml2ZXIsIGl0IGlzIHVzZWQgZm9yIG1lbW9yeS1tYXBwZWQgcmVnaXN0ZXIgc3BhY2UuICBTbyBp
+dCBzZWVtcyB0aGF0IHVzaW5nIHN1Y2ggYSBjb21wbGV4IGZyYW1ld29yayBqdXN0IHRvIGRlYWwg
+d2l0aCBlbmRpYW4gaXMgYW4gb3Zlci1raWxsLg0KDQp3aGVuIGl0IGlzIG5vdCBuZWNlc3Nhcnkg
+dG8gZW5hYmxlIHRoZSBjbG9jayBldmVyeSB0aW1lIHdlIGFjY2VzcyB0aGUgcmVnaXN0ZXIuICAN
+CldlIGRvbid0IHRoaW5rIGl0IGlzIG9idmlvdXMgdG8gdXMgaG93IHRvIHVzZSBpdCBmb3IgaGFu
+ZGxpbmcgZW5kaWFubmVzcywgZXNwZWNpYWxseSBub3QgdGhlIHdheSBpbXgyX3dkdCB1c2VzIHJl
+Z21hcC4gIF9fcmVnbWFwX2luaXRfbW1pb19jbGsoKSBjYWxscyByZWdtYXBfbW1pb19nZW5fY29u
+dGV4dCgpIHdoaWNoIGVycm9ycyBvdXQgaWYgcmVnX2Zvcm1hdF9lbmRpYW4gaXMgbm90IFJFR01B
+UF9FTkRJQU5fREVGQVVMVCBvciBSRUdNQVBfRU5ESUFOX05BVElWRSwgYW5kIGVsc2V3aGVyZSBy
+ZWdtYXAtbW1pby5jIEl0IHNlZW1zIG9ubHkgbGl0dGxlLWVuZGlhbiBhY2Nlc3NvcnMuDQoNCkFs
+dGhvdWdoIGl0IGlzIHBvc3NpYmxlIHRvIGFkZCB0aGUgZW5kaWFubmVzcyBzdXBwb3J0IGluIHRo
+ZSByZWdtYXBfbW1pbyBkcml2ZXIsIHdlIGRvbid0IHNlZSB0b28gbXVjaCB2YWx1ZSBpbiB1c2lu
+ZyBpdCBlc3BlY2lhbGx5IA0KDQpTbyB3ZSB0aGluazoNCnN0YXRpYyB2b2lkIHFzcGlfd3JpdGVs
+KHN0cnVjdCBmc2xfcXNwaSAqcSwgdTMyIHZhbCwgdm9pZCBfX2lvbWVtDQoqYWRkcikgew0KICAg
+ICAgaWYgKHEtPmJpZ19lbmRpYW4pDQogICAgICAgICAgICAgIGlvd3JpdGUzMmJlKHZhbCwgYWRk
+cik7DQogICAgICBlbHNlDQogICAgICAgICAgICAgIGlvd3JpdGUzMih2YWwsIGFkZHIpOw0KfQ0K
+VGhpcyB3YXkgaXMgYW4gZWFzaWVyLCBtb3JlIGVmZmVjdGl2ZSBzb2x1dGlvbiB0byBkbyB0aGUg
+ZW5kaWFuIGlzc3VlLg0KDQpIb3cgYWJvdXQgeW91ciB0aGluaz8NCg0KQmVzdCBSZWdhcmRzLA0K
+WXVhbiBZYW8NCg0KT24gU2F0LCBPY3QgMjQsIDIwMTUgYXQgMTE6NDcgUE0sIEZhYmlvIEVzdGV2
+YW0gPGZlc3RldmFtQGdtYWlsLmNvbT4gd3JvdGU6DQo+IE9uIEZyaSwgT2N0IDIzLCAyMDE1IGF0
+IDU6NTMgQU0sIFl1YW4gWWFvIDx5YW8ueXVhbkBmcmVlc2NhbGUuY29tPiB3cm90ZToNCj4gDQo+
+ID4gK3N0YXRpYyB2b2lkIHFzcGlfd3JpdGVsKHN0cnVjdCBmc2xfcXNwaSAqcSwgdTMyIHZhbCwg
+dm9pZCBfX2lvbWVtDQo+ID4gKyphZGRyKSB7DQo+ID4gKyAgICAgICBpZiAocS0+YmlnX2VuZGlh
+bikNCj4gPiArICAgICAgICAgICAgICAgaW93cml0ZTMyYmUodmFsLCBhZGRyKTsNCj4gPiArICAg
+ICAgIGVsc2UNCj4gPiArICAgICAgICAgICAgICAgaW93cml0ZTMyKHZhbCwgYWRkcik7DQo+ID4g
+K30NCj4gDQo+IEkgc3VnZ2VzdCB5b3UgdG8gaW1wbGVtZW50IHJlZ21hcCBzdXBwb3J0IGZvciB0
+aGlzIGRyaXZlciBpbnN0ZWFkLg0KPiANCj4gVGFrZSBhIGxvb2sgYXQgZHJpdmVycy93YXRjaGRv
+Zy9pbXgyX3dkdC5jIGZvciBhIHJlZmVyZW5jZS4NCj4gDQo+IFRoZW4geW91IG9ubHkgbmVlZCB0
+byBwYXNzICdiaWctZW5kaWFuJyBhcyBhIHByb3BlcnR5IGZvciB0aGUgcXNwaSBpbiB0aGUgLmR0
+c2kNCj4gZmlsZSBhbmQgcmVnbWFwIGNvcmUgd2lsbCB0YWtlIGNhcmUgb2YgZW5kaWFubmVzcy4N
+Cg==
