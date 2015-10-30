@@ -1,27 +1,27 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zs4wR-0007TH-Da
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 08:21:43 +0000
-Date: Fri, 30 Oct 2015 09:21:20 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Richard Weinberger  <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Andrea Scian <rnd4@dave-tech.it>, Iwo
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zs5PY-0000de-6g
+ for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 08:51:49 +0000
+From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Artem Bityutskiy
+ <dedekind1@gmail.com>
+CC: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Andrea Scian <rnd4@dave-tech.it>, Iwo
  Mergler <Iwo.Mergler@netcommwireless.com>, "Jeff Lauruhn (jlauruhn)"
- <jlauruhn@micron.com>, "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= \"(beanhuo)\""
- <beanhuo@micron.com>
-Subject: Re: UBI/UBIFS: dealing with MLC's paired pages
-Message-ID: <20151030092120.2d7df596@bbrezillon>
-In-Reply-To: <20151030091521.439f436b@bbrezillon>
+ <jlauruhn@micron.com>
+Subject: RE: UBI/UBIFS: dealing with MLC's paired pages
+Date: Fri, 30 Oct 2015 08:50:37 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4F722@NTXXIAMBX02.xacn.micron.com>
 References: <20150917152240.757c9e90@bbrezillon>
- <20151023101406.6d1490e5@bbrezillon>
- <1446035085.12536.71.camel@gmail.com>
+ <20151023101406.6d1490e5@bbrezillon>	<1446035085.12536.71.camel@gmail.com>
  <20151030091521.439f436b@bbrezillon>
+In-Reply-To: <20151030091521.439f436b@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,38 +31,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 30 Oct 2015 09:15:21 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> 
-> 2/ skipping pages on demand is not as easy as only writing on lower
-> pages of each pair. As you might know, when skipping pages to secure
-> your data, you'll also have to skip some lower pages so that you end up
-> with an offset to a memory region that can be contiguously written to,
-> and when you skip those lower pages, you have to write on it, because
-> NAND chips require that the lower page of each pair be programmed
-> before the higher one (ignoring this will just render some pages
-> unreliable).
-> 
-> 3/ UBIFS is really picky when it comes to corrupted nodes detection,
-> and there are a few cases where it refuses to mount the FS when a
-> corrupted node is detected. One of this case is when the corrupted
-> page (filled with one or several nodes) is filled with non-ff data,
-
-I meant, "Once of this case is when the corrupted page is followed by
-a page filled with non-ff data" 
-
-> which is likely to happen with MLC NANDs (paired pages are not
-> contiguous). We discussed about relaxing this policy a few weeks ago,
-> but what should we do when such a corruption is detected? Drop all
-> nodes with a sequence higher or equal to the last valid node on the
-> LEB?
-> Note that with the consolidation-GC approach we don't have this
-> problem because the consolidate LEB is added to journal after it has
-> been completely filled with data, and marked as full (->free = 0) so
-> that nobody can reclaim it to write data on it.
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+DQo+IEhpIEFydGVtLA0KPiANCj4gRG9uJ3QgdGFrZSB0aGUgZm9sbG93aW5nIGFuc3dlciBhcyBh
+IHRyeSB0byB0ZWFjaCB5b3UgaG93IFVCSS9VQklGUyB3b3JrIG9yDQo+IHNob3VsZCB3b3JrIHdp
+dGggTUxDIE5BTkRzLiBJIHN0aWxsIGxpc3RlbiB0byB5b3VyIHN1Z2dlc3Rpb25zLCBidXQgd2hl
+biBJIGhhZA0KPiBhIGxvb2sgYXQgaG93IHRoaXMgInNraXAgcGFnZXMgb24gZGVtYW5kIiBhcHBy
+b2FjaCBjb3VsZCBiZSBpbXBsZW1lbnRlZCBJDQo+IHJlYWxpemVkIGl0IHdhcyBub3Qgc28gc2lt
+cGxlLg0KPiANCj4gQWxzbywgaWYgeW91IGRvbid0IG1pbmQgSSdkIGxpa2UgdG8gZmluaXNoIG15
+IGNvbnNvbGlkYXRpb24tR0MgaW1wbGVtZW50YXRpb24NCj4gYmVmb3JlIHRyeWluZyBhIG5ldyBh
+cHByb2FjaCwgd2hpY2ggZG9uJ3QgbWVhbiBJIHdvbid0IGNvbnNpZGVyIHRoZSAic2tpcA0KPiBw
+YWdlcyBvbiBkZW1hbmQiIG9uZS4NCg0KIlNraXAgcGFnZSIgaXMgcmVhbGx5IGEgdG91Z2ggc29s
+dXRpb24gdG8gY29kZSBpbiBVQkkuIEdlbmVyYWxseSwgSSBrbm93IHRoYXQgc2tpcCBwYWdlIGlt
+cGxlbWVudA0KaW4gRlRMIGxheWVyIHRvIHNvbHZlIE1MQyBwYWlyZWQgcGFnZSBpc3N1ZSwgdGhh
+dCBpcyBlYXN5IHRvIGNvZGUuDQpJcyBpdCBuZWNlc3NhcnkgdG8gaW1wbGVtZW50IGluIExpbnV4
+PyBJIGRvbid0IGtub3cuDQoNCj4gT24gV2VkLCAyOCBPY3QgMjAxNSAxNDoyNDo0NSArMDIwMA0K
+PiBBcnRlbSBCaXR5dXRza2l5IDxkZWRla2luZDFAZ21haWwuY29tPiB3cm90ZToNCj4gDQo+ID4g
+T24gRnJpLCAyMDE1LTEwLTIzIGF0IDEwOjE0ICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
+DQo+ID4gPiBJIGRlY2lkZWQgdG8gZ28gZm9yIHRoZSBzaW1wbGVzdCBzb2x1dGlvbiAoYnV0IEkg
+Y2FuJ3QgcHJvbWlzZSBJDQo+ID4gPiB3b24ndCBjaGFuZ2UgbXkgbWluZCBpZiB0aGlzIGFwcHJv
+YWNoIGFwcGVhcnMgdG8gYmUgd3JvbmcpLCB3aGljaCBpcw0KPiA+ID4gZWl0aGVyIHVzaW5nIGEg
+TEVCIGlzIE1MQyBvciBTTEMgbW9kZS4gSW4gU0xDIG1vZGVzLCBvbmx5IHRoZSBmaXJzdA0KPiA+
+ID4gcGFnZSBvZiBlYWNoIHBhaXIgaXMgdXNlZCwgd2hpY2ggY29tcGxldGVseSBhZGRyZXNzIHRo
+ZSBwYWlyZWQgcGFnZXMNCj4gPiA+IHByb2JsZW0uDQo+ID4gPiBGb3Igbm93IHRoZSBTTEMgbW9k
+ZSBsb2dpYyBpcyBoaWRkZW4gaW4gdGhlIE1URC9OQU5EIGxheWVycyB3aGljaA0KPiA+ID4gYXJl
+IHByb3ZpZGluZyBmdW5jdGlvbnMgdG8gd3JpdGUvcmVhZCBpbiBTTEMgbW9kZS4NCj4gPg0KPiA+
+IE1vc3Qgb2YgdGhlIHdyaXRlcyBnbyB0aHJvdWdoIHRoZSBqb3VybmFsbGluZyBzdWJzeXN0ZW0u
+DQo+ID4NCj4gPiBUaGVyZSBhcmUgc29tZSBub24tam91cm5hbCB3cml0ZXMsIHJlbGF0ZWQgdG8g
+aW50ZXJuYWwgbWV0YS1kYXRlDQo+ID4gbWFuYWdlbWVudCwgbGlrZSBmcm9tIG90aGVyIHN1YnN5
+c3RlbXM6IGxvZywgdGhlIG1hc3RlciBub2RlLCBMUFQsDQo+ID4gaW5kZXgsIEdDLg0KPiA+DQo+
+ID4gSW4gY2FzZSBvZiBqb3VybmFsIHN1YnN5c3RlbSwgaW4gTUxDIG1vZGUgeW91IGp1c3Qgc2tp
+cCBwYWdlcyBldmVyeQ0KPiA+IHRpbWUgdGhlICJmbHVzaCB3cml0ZS1idWZmZXIiIEFQSSBjYWxs
+IGlzIHVzZWQuDQo+ID4NCj4gPiBJbiBMUFQgc3Vic3lzdGVtLCB5b3UgaW52ZW50IGEgY3VzdG9t
+IHNvbHV0aW9uLCBza2lwIHBhZ2VzIGFzIG5lZWRlZC4NCj4gPg0KPiA+IEluIG1hc3RlciAtIHBy
+b2JhYmx5IG5vdGhpbmcgbmVlZHMgdG8gYmUgZG9uZSwgc2luY2Ugd2UgaGF2ZSAyIGNvcGllcy4N
+Cj4gPg0KPiA+IEluZGV4LCBHQyAtIGRhdGEgYWxzbyBnb2VzIHZpYSBqb3VybmFsLCBzbyB0aGUg
+am91cm5hbCBzdWJzeXN0ZW0NCj4gPiBzb2x1dGlvbiB3aWxsIHByb2JhYmx5IGNvdmVyIGl0Lg0K
+PiANCj4gRm9yIHRoZSBnZW5lcmFsIGNvbmNlcHQgSSBhZ3JlZSB0aGF0IGl0IHNob3VsZCBwcm9i
+YWJseSB3b3JrLCBidXQgaGVyZSBhcmUgbXkNCj4gY29uY2VybnMgKG1heWJlIHlvdSdsbCBwcm92
+ZSBtZSB3cm9uZyA7LSkpOg0KPiANCj4gMS8gd2lsbCB5b3UgZXZlciBiZSBhYmxlIHRvIHVzZSBh
+IGZ1bGwgTEVCIHdpdGhvdXQgc2tpcHBpbmcgYW55IHBhZ2VzPw0KPiBJIG1lYW4sIHdoZW4gdXNl
+IHRoZSAic2tpcCBwYWdlcyBvbiBkZW1hbmQiIHlvdSBjYW4gZWFzaWx5IGhhdmUgbW9yZSB0aGFu
+DQo+IGhhbGYgdGhlIHBhZ2UgaW4geW91ciBMRUIgc2tpcHBlZCwgYmVjYXVzZSB3aGVuIHlvdSB3
+cml0ZSBvbmx5IG9uIG9uZSBwYWdlLA0KPiB5b3UnbGwgaGF2ZSB0byBza2lwIGJldHdlZW4gMyB0
+byA4IHBhZ2VzIChpdCBkZXBlbmRzIG9uIHRoZSBwYWlyaW5nIHNjaGVtZSkuIEknbGwNCj4gdHJ5
+IHRvIHJ1biBnYXRoZXIgc29tZSBzdGF0aXN0aWNzIHRvIHNlZSBob3cgb2Z0ZW4gd2J1ZiBhcmUg
+c3luY2VkIHRvIHNlZSBpZg0KPiB0aGF0J3MgYSByZWFsIHByb2JsZW0uDQo+IFRoZSBjb25zb2xp
+ZGF0aW9uIGFwcHJvYWNoIGhhcyB0aGUgYWR2YW50YWdlIG9mIGJlaW5nIGFibGUgdG8gY29uc29s
+aWRhdGUNCj4gZXhpc3RpbmcgTEVCcyB0byBjb21wbGV0ZWx5IGZpbGwgdGhlbSwgYnV0IHRoZSBj
+b25zb2xpZGF0aW9uIHN0dWZmIGNvdWxkIHByb2JhYmx5DQo+IHdvcmsgd2l0aCB0aGUgInNraXAg
+cGFnZXMgb24gZGVtYW5kIi4NCj4gDQo+IDIvIHNraXBwaW5nIHBhZ2VzIG9uIGRlbWFuZCBpcyBu
+b3QgYXMgZWFzeSBhcyBvbmx5IHdyaXRpbmcgb24gbG93ZXIgcGFnZXMgb2YNCj4gZWFjaCBwYWly
+LiBBcyB5b3UgbWlnaHQga25vdywgd2hlbiBza2lwcGluZyBwYWdlcyB0byBzZWN1cmUgeW91ciBk
+YXRhLCB5b3UnbGwNCj4gYWxzbyBoYXZlIHRvIHNraXAgc29tZSBsb3dlciBwYWdlcyBzbyB0aGF0
+IHlvdSBlbmQgdXAgd2l0aCBhbiBvZmZzZXQgdG8gYQ0KPiBtZW1vcnkgcmVnaW9uIHRoYXQgY2Fu
+IGJlIGNvbnRpZ3VvdXNseSB3cml0dGVuIHRvLCBhbmQgd2hlbiB5b3Ugc2tpcCB0aG9zZQ0KPiBs
+b3dlciBwYWdlcywgeW91IGhhdmUgdG8gd3JpdGUgb24gaXQsIGJlY2F1c2UgTkFORCBjaGlwcyBy
+ZXF1aXJlIHRoYXQgdGhlDQo+IGxvd2VyIHBhZ2Ugb2YgZWFjaCBwYWlyIGJlIHByb2dyYW1tZWQg
+YmVmb3JlIHRoZSBoaWdoZXIgb25lIChpZ25vcmluZyB0aGlzDQo+IHdpbGwganVzdCByZW5kZXIg
+c29tZSBwYWdlcyB1bnJlbGlhYmxlKS4NCj4gDQo+IDMvIFVCSUZTIGlzIHJlYWxseSBwaWNreSB3
+aGVuIGl0IGNvbWVzIHRvIGNvcnJ1cHRlZCBub2RlcyBkZXRlY3Rpb24sIGFuZCB0aGVyZQ0KPiBh
+cmUgYSBmZXcgY2FzZXMgd2hlcmUgaXQgcmVmdXNlcyB0byBtb3VudCB0aGUgRlMgd2hlbiBhIGNv
+cnJ1cHRlZCBub2RlIGlzDQo+IGRldGVjdGVkLiBPbmUgb2YgdGhpcyBjYXNlIGlzIHdoZW4gdGhl
+IGNvcnJ1cHRlZCBwYWdlIChmaWxsZWQgd2l0aCBvbmUgb3INCj4gc2V2ZXJhbCBub2RlcykgaXMg
+ZmlsbGVkIHdpdGggbm9uLWZmIGRhdGEsIHdoaWNoIGlzIGxpa2VseSB0byBoYXBwZW4gd2l0aCBN
+TEMNCj4gTkFORHMgKHBhaXJlZCBwYWdlcyBhcmUgbm90IGNvbnRpZ3VvdXMpLiBXZSBkaXNjdXNz
+ZWQgYWJvdXQgcmVsYXhpbmcgdGhpcw0KPiBwb2xpY3kgYSBmZXcgd2Vla3MgYWdvLCBidXQgd2hh
+dCBzaG91bGQgd2UgZG8gd2hlbiBzdWNoIGEgY29ycnVwdGlvbiBpcw0KPiBkZXRlY3RlZD8gRHJv
+cCBhbGwgbm9kZXMgd2l0aCBhIHNlcXVlbmNlIGhpZ2hlciBvciBlcXVhbCB0byB0aGUgbGFzdCB2
+YWxpZA0KPiBub2RlIG9uIHRoZSBMRUI/DQo+IE5vdGUgdGhhdCB3aXRoIHRoZSBjb25zb2xpZGF0
+aW9uLUdDIGFwcHJvYWNoIHdlIGRvbid0IGhhdmUgdGhpcyBwcm9ibGVtDQo+IGJlY2F1c2UgdGhl
+IGNvbnNvbGlkYXRlIExFQiBpcyBhZGRlZCB0byBqb3VybmFsIGFmdGVyIGl0IGhhcyBiZWVuIGNv
+bXBsZXRlbHkNCj4gZmlsbGVkIHdpdGggZGF0YSwgYW5kIG1hcmtlZCBhcyBmdWxsICgtPmZyZWUg
+PSAwKSBzbyB0aGF0IG5vYm9keSBjYW4gcmVjbGFpbSBpdA0KPiB0byB3cml0ZSBkYXRhIG9uIGl0
+Lg0KPiANCj4gPg0KPiA+DQo+ID4gPiBUaGFua3MgdG8gdGhpcyBkaWZmZXJlbnRpYXRpb24sIFVC
+SSBpcyBub3cgZXhwb3NpbmcgdHdvIGtpbmQgb2YgTEVCczoNCj4gPiA+IC0gdGhlIHNlY3VyZSAo
+c21hbGwpIExFQlMgKHRob3NlIGFjY2Vzc2VkIGluIFNMQyBtb2RlKQ0KPiA+ID4gLSB0aGUgdW5z
+ZWN1cmUgKGJpZykgTEVCUyAodGhvc2UgYWNjZXNzZWQgaW4gTUxDIG1vZGUpDQo+ID4NCj4gPiBJ
+cyB0aGlzIHJlYWxseSBuZWNlc3Nhcnk/IEZlZWxzIGxpa2UgYSBiaXQgb2Ygb3Zlci1jb21wbGlj
+YXRpb24gdG8gdGhlDQo+ID4gVUJJIGxheWVyLg0KPiANCj4gSG0sIGl0J3MgYWN0dWFsbHkgbm90
+IHNvIGNvbXBsaWNhdGVkOiBTTEMgbW9kZSBpcyBpbXBsZW1lbnRlZCBieSB0aGUgTkFORA0KPiBs
+YXllciBhbmQgVUJJIGlzIGp1c3QgdXNpbmcgTVREIGZ1bmN0aW9ucyB0byBhY2Nlc3MgdGhlIE5B
+TkQgaW4gU0xDIG1vZGUuIEknbQ0KPiBtb3JlIGNvbmNlcm5lZCBieSB0aGUgb24tZmxhc2ggZm9y
+bWF0IGNoYW5nZXMgcHJvYmxlbSByYWlzZWQgYnkgUmljaGFyZC4NCj4gDQo+ID4NCj4gPiBDYW4g
+VUJJIGNhcmUgYWJvdXQgaXRzZWxmIFdSVCBNTEMgc2FmZW5lc3MsIGFuZCBsZXQgVUJJRlMgY2Fy
+ZSBhYm91dA0KPiA+IGl0c2VsZj8NCj4gPg0KPiANCj4gU29ycnkgYnV0IEkgZG9uJ3QgYWdyZWUg
+aGVyZS4gQnkgZXhwb3NpbmcgdGhlIHNlY3VyZSBMRUIgY29uY2VwdCwgVUJJIGRvZXMgbm90DQo+
+IHNwZWNpZmljYWxseSBjYXJlIGFib3V0IFVCSUZTLCBpdCBqdXN0IHByb3ZpZGVzIGEgd2F5IGZv
+ciBhbGwgVUJJIHVzZXJzIHRvIGFkZHJlc3MNCj4gdGhlIHByb2JsZW0gYnJvdWdodCBieSBwYWly
+ZWQgcGFnZXMgaW4gYSBnZW5lcmljIHdheS4NCj4gTWF5YmUgdGhlIHNlY3VyZSBMRUIgYXBwcm9h
+Y2ggaXMgd3JvbmcsIGJ1dCBpbiB0aGUgZW5kIFVCSSB3aWxsIGV4cG9zZSBvdGhlcg0KPiBmdW5j
+dGlvbnMgdG8gaGFuZGxlIHRob3NlIHBhaXJlZCBwYWdlcyBwcm9ibGVtcw0KPiAodWJpX3NlY3Vy
+ZV9kYXRhKCkgdG8gc2tpcCBwYWdlcyBmb3IgZXhhbXBsZSksIGFuZCB0aGlzIGxheWVyaW5nDQo+
+IChOQU5EL01URC9VQkkvVUJJRlMpIGlzIElNTyB0aGUgb25seSBzYW5lIHdheSB0byBsZXQgZWFj
+aCBsYXllciBoYW5kbGUNCj4gd2hhdCBpdCdzIHN1cHBvc2VkIHRvIGhhbmRsZSBhbmQgbGV0IHRo
+ZSB1cHBlciBsYXllcnMgdXNlIHRoZSBuZXcgZmVhdHVyZXMgdG8NCj4gbWl0aWdhdGUgdGhlIHBy
+b2JsZW1zLg0KPiBTbywgbm8gbWF0dGVyIHdoaWNoIHNvbHV0aW9uIGlzIGNob3NlbiwgaXQgd2ls
+bCBpbXBhY3QgdGhlIFVCSSwgTVRELCBhbmQgTkFORA0KPiBsYXllcnMuDQo+IA0KPiBCZXN0IFJl
+Z2FyZHMsDQo+IA0KPiBCb3Jpcw0KPiANCj4gLS0NCj4gQm9yaXMgQnJlemlsbG9uLCBGcmVlIEVs
+ZWN0cm9ucw0KPiBFbWJlZGRlZCBMaW51eCBhbmQgS2VybmVsIGVuZ2luZWVyaW5nDQo+IGh0dHA6
+Ly9mcmVlLWVsZWN0cm9ucy5jb20NCg==
