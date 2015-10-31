@@ -1,21 +1,23 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZsK1K-0006CT-Kd
- for linux-mtd@lists.infradead.org; Sat, 31 Oct 2015 00:27:47 +0000
-Received: by pasz6 with SMTP id z6so88013719pas.2
- for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 17:27:25 -0700 (PDT)
-Date: Fri, 30 Oct 2015 17:27:23 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Felipe Balbi <balbi@ti.com>,
- tony@atomide.com, stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: blkdevs: fix potential deadlock + lockdep warnings
-Message-ID: <20151031002723.GN13239@google.com>
-References: <1445913529-19887-1-git-send-email-computersforpeace@gmail.com>
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZsL8u-0006wM-7w
+ for linux-mtd@lists.infradead.org; Sat, 31 Oct 2015 01:39:40 +0000
+Date: Sat, 31 Oct 2015 07:12:44 +0530
+From: Vinod Koul <vinod.koul@intel.com>
+To: Han Xu <b45815@freescale.com>
+Cc: shijie.huang@arm.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, fabio.estevam@freescale.com,
+ hofrat@osadl.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, dan.j.williams@intel.com,
+ dmaengine@vger.kernel.org
+Subject: Re: [PATCH v7 2/7] dmaengine: mxs: APBH DMA supports deep sleep mode
+Message-ID: <20151031014244.GF21326@localhost>
+References: <1445983540-27155-1-git-send-email-b45815@freescale.com>
+ <1445983540-27155-3-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1445913529-19887-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1445983540-27155-3-git-send-email-b45815@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 26, 2015 at 07:38:49PM -0700, Brian Norris wrote:
-> Commit 073db4a51ee4 ("mtd: fix: avoid race condition when accessing
-> mtd->usecount") fixed a race condition but due to poor ordering of the
-> mutex acquisition, introduced a potential deadlock.
-[...]
-> 
-> Fixes: 073db4a51ee4 ("mtd: fix: avoid race condition when accessing mtd->usecount")
-> Reported-by: Felipe Balbi <balbi@ti.com>
-> Tested-by: Felipe Balbi <balbi@ti.com>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: <stable@vger.kernel.org>
+On Tue, Oct 27, 2015 at 05:05:35PM -0500, Han Xu wrote:
+>  
+> -static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+> +static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
 
-Pushed to l2-mtd.git.
+This change seems unrelated to patch description, can you explain why?
 
-> ---
-> Resending as a proper patch
-> 
-> Note: I tried to reproduce this lockdep warning myself but couldn't. But I saw
-> no problem under the new patch either.
+> +#ifdef CONFIG_PM_SLEEP
+> +static int mxs_dma_pm_resume(struct device *dev)
+> +{
+> +	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = mxs_dma_init(mxs_dma);
+> +	if (ret)
+> +		return ret;
+> +	return 0;
+
+why not return mxs_dma_init() then!
+
+-- 
+~Vinod
