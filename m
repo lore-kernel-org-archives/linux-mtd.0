@@ -1,9 +1,9 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZsMvf-0005Dx-JY
+ id 1ZsMvg-0005Dy-Jo
  for linux-mtd@lists.infradead.org; Sat, 31 Oct 2015 03:34:10 +0000
-Received: by pasz6 with SMTP id z6so91124794pas.2
- for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 20:33:47 -0700 (PDT)
+Received: by pasz6 with SMTP id z6so91125042pas.2
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 20:33:48 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,10 @@ Cc: linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marex@denx.de>, Scott Wood <scottwood@freescale.com>,
  Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
  Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>
-Subject: [PATCH v2 04/11] mtd: nand: convert to nand_set_flash_node()
-Date: Fri, 30 Oct 2015 20:33:23 -0700
-Message-Id: <1446262410-45754-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 05/11] mtd: spi-nor: convert to spi_nor_{get,
+ set}_flash_node()
+Date: Fri, 30 Oct 2015 20:33:24 -0700
+Message-Id: <1446262410-45754-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
 References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,74 +33,82 @@ Used semantic patch with 'make coccicheck MODE=patch COCCI=script.cocci':
 virtual patch
 
 @@
-struct nand_chip *c;
-struct device_node *d;
+struct spi_nor b;
+struct spi_nor *c;
+expression d;
 @@
+(
+-(b).flash_node = (d)
++spi_nor_set_flash_node(&b, d)
+|
 -(c)->flash_node = (d)
-+nand_set_flash_node(c, d)
++spi_nor_set_flash_node(c, d)
+)
 ---8<----
+
+And a manual conversion for the one use of spi_nor_get_flash_node().
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
 v2: new
 
- drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
- drivers/mtd/nand/fsmc_nand.c         | 2 +-
- drivers/mtd/nand/sunxi_nand.c        | 2 +-
- drivers/mtd/nand/vf610_nfc.c         | 2 +-
+ drivers/mtd/devices/m25p80.c      | 2 +-
+ drivers/mtd/spi-nor/fsl-quadspi.c | 2 +-
+ drivers/mtd/spi-nor/nxp-spifi.c   | 2 +-
+ drivers/mtd/spi-nor/spi-nor.c     | 2 +-
  4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index 12c6190c6e33..7bd4102fde42 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -1925,7 +1925,7 @@ static int brcmnand_init_cs(struct brcmnand_host *host)
- 	mtd = &host->mtd;
- 	chip = &host->chip;
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 4b5d7a4655fd..556b4554007f 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -199,7 +199,7 @@ static int m25p_probe(struct spi_device *spi)
+ 	nor->read_reg = m25p80_read_reg;
  
--	chip->flash_node = dn;
-+	nand_set_flash_node(chip, dn);
- 	chip->priv = host;
- 	mtd->priv = chip;
- 	mtd->name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "brcmnand.%d",
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 07af3dc7a4d2..6f9e422e947e 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -1033,7 +1033,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	nand->options = pdata->options;
- 	nand->select_chip = fsmc_select_chip;
- 	nand->badblockbits = 7;
--	nand->flash_node = np;
-+	nand_set_flash_node(nand, np);
+ 	nor->dev = &spi->dev;
+-	nor->flash_node = spi->dev.of_node;
++	spi_nor_set_flash_node(nor, spi->dev.of_node);
+ 	nor->priv = flash;
  
- 	if (pdata->width == FSMC_NAND_BW16)
- 		nand->options |= NAND_BUSWIDTH_16;
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index ef46ac66248b..df62c637c25e 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -1330,7 +1330,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
- 	 * in the DT.
- 	 */
- 	nand->ecc.mode = NAND_ECC_HW;
--	nand->flash_node = np;
-+	nand_set_flash_node(nand, np);
- 	nand->select_chip = sunxi_nfc_select_chip;
- 	nand->cmd_ctrl = sunxi_nfc_cmd_ctrl;
- 	nand->read_buf = sunxi_nfc_read_buf;
-diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-index 8805d6325579..7b952abf4722 100644
---- a/drivers/mtd/nand/vf610_nfc.c
-+++ b/drivers/mtd/nand/vf610_nfc.c
-@@ -714,7 +714,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 				goto error;
- 			}
+ 	spi_set_drvdata(spi, flash);
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 7b10ed413983..8f4d9204d2b2 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -1013,7 +1013,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		mtd = &nor->mtd;
  
--			chip->flash_node = child;
-+			nand_set_flash_node(chip, child);
- 		}
- 	}
+ 		nor->dev = dev;
+-		nor->flash_node = np;
++		spi_nor_set_flash_node(nor, np);
+ 		nor->priv = q;
+ 
+ 		/* fill the hooks */
+diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-spifi.c
+index 9e82098ae644..4524b2886946 100644
+--- a/drivers/mtd/spi-nor/nxp-spifi.c
++++ b/drivers/mtd/spi-nor/nxp-spifi.c
+@@ -330,7 +330,7 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+ 	writel(ctrl, spifi->io_base + SPIFI_CTRL);
+ 
+ 	spifi->nor.dev   = spifi->dev;
+-	spifi->nor.flash_node = np;
++	spi_nor_set_flash_node(&spifi->nor, np);
+ 	spifi->nor.priv  = spifi;
+ 	spifi->nor.read  = nxp_spifi_read;
+ 	spifi->nor.write = nxp_spifi_write;
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 1d3107ccee61..924d455dadb5 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1151,7 +1151,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	const struct flash_info *info = NULL;
+ 	struct device *dev = nor->dev;
+ 	struct mtd_info *mtd = &nor->mtd;
+-	struct device_node *np = nor->flash_node;
++	struct device_node *np = spi_nor_get_flash_node(nor);
+ 	int ret;
+ 	int i;
  
 -- 
 2.6.0.rc2.230.g3dd15c0
