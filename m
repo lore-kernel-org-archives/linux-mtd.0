@@ -1,9 +1,9 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZsMvg-0005E1-Jn
- for linux-mtd@lists.infradead.org; Sat, 31 Oct 2015 03:34:12 +0000
-Received: by pacfv9 with SMTP id fv9so94863064pac.3
- for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 20:33:52 -0700 (PDT)
+ id 1ZsMvi-0005E0-DB
+ for linux-mtd@lists.infradead.org; Sat, 31 Oct 2015 03:34:13 +0000
+Received: by padhk11 with SMTP id hk11so91290612pad.1
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 20:33:50 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,9 @@ Cc: linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marex@denx.de>, Scott Wood <scottwood@freescale.com>,
  Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
  Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>
-Subject: [PATCH v2 09/11] mtd: drop unnecessary partition parser data
-Date: Fri, 30 Oct 2015 20:33:28 -0700
-Message-Id: <1446262410-45754-10-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 07/11] mtd: spi-nor: drop unnecessary partition parser data
+Date: Fri, 30 Oct 2015 20:33:26 -0700
+Message-Id: <1446262410-45754-8-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
 References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,212 +26,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We should assign the MTD dev.of_node instead of the parser data field.
-This gets us the equivalent partition parser behavior with fewer special
-fields and parameter passing.
+Now that the SPI-NOR/MTD framework pass the 'flash_node' through to the
+partition parsing code, we don't have to do it ourselves.
 
-Also convert several of these to mtd_device_register(), since we don't
-need the 2nd and 3rd parameters anymore.
+Also convert to mtd_device_register(), since we don't need the 2nd and
+3rd parameters anymore.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-v2: use new helpers
+v2: no change
 
- drivers/mtd/devices/mtd_dataflash.c | 5 ++---
- drivers/mtd/devices/spear_smi.c     | 6 ++----
- drivers/mtd/devices/st_spi_fsm.c    | 5 ++---
- drivers/mtd/maps/lantiq-flash.c     | 5 ++---
- drivers/mtd/maps/physmap_of.c       | 5 ++---
- drivers/mtd/onenand/omap2.c         | 8 +++-----
- 6 files changed, 13 insertions(+), 21 deletions(-)
+ drivers/mtd/devices/m25p80.c      | 8 ++------
+ drivers/mtd/spi-nor/fsl-quadspi.c | 4 +---
+ drivers/mtd/spi-nor/nxp-spifi.c   | 4 +---
+ 3 files changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 39666d552682..0ada3ed6c23f 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -624,7 +624,6 @@ static int add_dataflash_otp(struct spi_device *spi, char *name, int nr_pages,
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 556b4554007f..6dbf7832e77a 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -175,7 +175,6 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
+  */
+ static int m25p_probe(struct spi_device *spi)
  {
- 	struct dataflash		*priv;
- 	struct mtd_info			*device;
 -	struct mtd_part_parser_data	ppdata;
- 	struct flash_platform_data	*pdata = dev_get_platdata(&spi->dev);
- 	char				*otp_tag = "";
- 	int				err = 0;
-@@ -656,6 +655,7 @@ static int add_dataflash_otp(struct spi_device *spi, char *name, int nr_pages,
- 	device->priv = priv;
- 
- 	device->dev.parent = &spi->dev;
-+	mtd_set_of_node(device, spi->dev.of_node);
- 
- 	if (revision >= 'c')
- 		otp_tag = otp_setup(device, revision);
-@@ -665,8 +665,7 @@ static int add_dataflash_otp(struct spi_device *spi, char *name, int nr_pages,
- 			pagesize, otp_tag);
- 	spi_set_drvdata(spi, priv);
+ 	struct flash_platform_data	*data;
+ 	struct m25p *flash;
+ 	struct spi_nor *nor;
+@@ -227,11 +226,8 @@ static int m25p_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
  
 -	ppdata.of_node = spi->dev.of_node;
--	err = mtd_device_parse_register(device, NULL, &ppdata,
-+	err = mtd_device_register(device,
- 			pdata ? pdata->parts : NULL,
- 			pdata ? pdata->nr_parts : 0);
+-
+-	return mtd_device_parse_register(&nor->mtd, NULL, &ppdata,
+-			data ? data->parts : NULL,
+-			data ? data->nr_parts : 0);
++	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
++				   data ? data->nr_parts : 0);
+ }
  
-diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index 64c7458344d4..dd5069876537 100644
---- a/drivers/mtd/devices/spear_smi.c
-+++ b/drivers/mtd/devices/spear_smi.c
-@@ -810,7 +810,6 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
- 				 u32 bank, struct device_node *np)
- {
- 	struct spear_smi *dev = platform_get_drvdata(pdev);
--	struct mtd_part_parser_data ppdata = {};
- 	struct spear_smi_flash_info *flash_info;
- 	struct spear_smi_plat_data *pdata;
- 	struct spear_snor_flash *flash;
-@@ -855,6 +854,7 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
- 		flash->mtd.name = flash_devices[flash_index].name;
  
- 	flash->mtd.dev.parent = &pdev->dev;
-+	mtd_set_of_node(&flash->mtd, np);
- 	flash->mtd.type = MTD_NORFLASH;
- 	flash->mtd.writesize = 1;
- 	flash->mtd.flags = MTD_CAP_NORFLASH;
-@@ -881,10 +881,8 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
- 		count = flash_info->nr_partitions;
- 	}
- #endif
--	ppdata.of_node = np;
- 
--	ret = mtd_device_parse_register(&flash->mtd, NULL, &ppdata, parts,
--					count);
-+	ret = mtd_device_register(&flash->mtd, parts, count);
- 	if (ret) {
- 		dev_err(&dev->pdev->dev, "Err MTD partition=%d\n", ret);
- 		return ret;
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 3060025c8af4..5454b4113589 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -2025,7 +2025,6 @@ boot_device_fail:
- static int stfsm_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 8f4d9204d2b2..9e7f657af6a5 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -927,7 +927,6 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+ static int fsl_qspi_probe(struct platform_device *pdev)
  {
  	struct device_node *np = pdev->dev.of_node;
 -	struct mtd_part_parser_data ppdata;
- 	struct flash_info *info;
+ 	struct device *dev = &pdev->dev;
+ 	struct fsl_qspi *q;
  	struct resource *res;
- 	struct stfsm *fsm;
-@@ -2035,7 +2034,6 @@ static int stfsm_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "No DT found\n");
- 		return -EINVAL;
- 	}
--	ppdata.of_node = np;
+@@ -1038,8 +1037,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		if (ret)
+ 			goto mutex_failed;
  
- 	fsm = devm_kzalloc(&pdev->dev, sizeof(*fsm), GFP_KERNEL);
- 	if (!fsm)
-@@ -2106,6 +2104,7 @@ static int stfsm_probe(struct platform_device *pdev)
+-		ppdata.of_node = np;
+-		ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
++		ret = mtd_device_register(mtd, NULL, 0);
+ 		if (ret)
+ 			goto mutex_failed;
  
- 	fsm->mtd.name		= info->name;
- 	fsm->mtd.dev.parent	= &pdev->dev;
-+	mtd_set_of_node(&fsm->mtd, np);
- 	fsm->mtd.type		= MTD_NORFLASH;
- 	fsm->mtd.writesize	= 4;
- 	fsm->mtd.writebufsize	= fsm->mtd.writesize;
-@@ -2124,7 +2123,7 @@ static int stfsm_probe(struct platform_device *pdev)
- 		(long long)fsm->mtd.size, (long long)(fsm->mtd.size >> 20),
- 		fsm->mtd.erasesize, (fsm->mtd.erasesize >> 10));
- 
--	return mtd_device_parse_register(&fsm->mtd, NULL, &ppdata, NULL, 0);
-+	return mtd_device_register(&fsm->mtd, NULL, 0);
- }
- 
- static int stfsm_remove(struct platform_device *pdev)
-diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
-index 93852054977e..33840f957269 100644
---- a/drivers/mtd/maps/lantiq-flash.c
-+++ b/drivers/mtd/maps/lantiq-flash.c
-@@ -110,7 +110,6 @@ ltq_copy_to(struct map_info *map, unsigned long to,
- static int
- ltq_mtd_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-spifi.c
+index 4524b2886946..ae428cb0e04b 100644
+--- a/drivers/mtd/spi-nor/nxp-spifi.c
++++ b/drivers/mtd/spi-nor/nxp-spifi.c
+@@ -271,7 +271,6 @@ static void nxp_spifi_dummy_id_read(struct spi_nor *nor)
+ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+ 				 struct device_node *np)
  {
 -	struct mtd_part_parser_data ppdata;
- 	struct ltq_mtd *ltq_mtd;
- 	struct cfi_private *cfi;
- 	int err;
-@@ -161,13 +160,13 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	enum read_mode flash_read;
+ 	u32 ctrl, property;
+ 	u16 mode = 0;
+@@ -361,8 +360,7 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+ 		return ret;
  	}
  
- 	ltq_mtd->mtd->dev.parent = &pdev->dev;
-+	mtd_set_of_node(&ltq_mtd->mtd, pdev->dev.of_node);
- 
- 	cfi = ltq_mtd->map->fldrv_priv;
- 	cfi->addr_unlock1 ^= 1;
- 	cfi->addr_unlock2 ^= 1;
- 
--	ppdata.of_node = pdev->dev.of_node;
--	err = mtd_device_parse_register(ltq_mtd->mtd, NULL, &ppdata, NULL, 0);
-+	err = mtd_device_register(ltq_mtd->mtd, NULL, 0);
- 	if (err) {
- 		dev_err(&pdev->dev, "failed to add partitions\n");
- 		goto err_destroy;
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index e46b4e983666..b78265688075 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -166,7 +166,6 @@ static int of_flash_probe(struct platform_device *dev)
- 	int reg_tuple_size;
- 	struct mtd_info **mtd_list = NULL;
- 	resource_size_t res_size;
--	struct mtd_part_parser_data ppdata;
- 	bool map_indirect;
- 	const char *mtd_name = NULL;
- 
-@@ -310,13 +309,13 @@ static int of_flash_probe(struct platform_device *dev)
- 	if (err)
- 		goto err_out;
- 
--	ppdata.of_node = dp;
-+	mtd_set_of_node(info->cmtd, dp);
- 	part_probe_types = of_get_probes(dp);
- 	if (!part_probe_types) {
- 		err = -ENOMEM;
- 		goto err_out;
- 	}
--	mtd_device_parse_register(info->cmtd, part_probe_types, &ppdata,
-+	mtd_device_parse_register(info->cmtd, part_probe_types, NULL,
- 			NULL, 0);
- 	of_free_probes(part_probe_types);
- 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index 3e0285696227..0aacf125938b 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -614,7 +614,6 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- 	struct onenand_chip *this;
- 	int r;
- 	struct resource *res;
--	struct mtd_part_parser_data ppdata = {};
- 
- 	pdata = dev_get_platdata(&pdev->dev);
- 	if (pdata == NULL) {
-@@ -713,6 +712,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- 	c->mtd.priv = &c->onenand;
- 
- 	c->mtd.dev.parent = &pdev->dev;
-+	mtd_set_of_node(&c->mtd, pdata->of_node);
- 
- 	this = &c->onenand;
- 	if (c->dma_channel >= 0) {
-@@ -743,10 +743,8 @@ static int omap2_onenand_probe(struct platform_device *pdev)
- 	if ((r = onenand_scan(&c->mtd, 1)) < 0)
- 		goto err_release_regulator;
- 
--	ppdata.of_node = pdata->of_node;
--	r = mtd_device_parse_register(&c->mtd, NULL, &ppdata,
--				      pdata ? pdata->parts : NULL,
--				      pdata ? pdata->nr_parts : 0);
-+	r = mtd_device_register(&c->mtd, pdata ? pdata->parts : NULL,
-+				pdata ? pdata->nr_parts : 0);
- 	if (r)
- 		goto err_release_onenand;
- 
+-	ppdata.of_node = np;
+-	ret = mtd_device_parse_register(&spifi->nor.mtd, NULL, &ppdata, NULL, 0);
++	ret = mtd_device_register(&spifi->nor.mtd, NULL, 0);
+ 	if (ret) {
+ 		dev_err(spifi->dev, "mtd device parse failed\n");
+ 		return ret;
 -- 
 2.6.0.rc2.230.g3dd15c0
