@@ -1,14 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZsU9I-0001Hq-Oo
- for linux-mtd@lists.infradead.org; Sat, 31 Oct 2015 11:16:42 +0000
+ id 1ZsU9I-0001Hu-On
+ for linux-mtd@lists.infradead.org; Sat, 31 Oct 2015 11:16:43 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Cc: david@sigma-star.at,
-	yangds.fnst@cn.fujitsu.com
-Subject: [RFC] UBIFS unpacker v0
-Date: Sat, 31 Oct 2015 12:15:49 +0100
-Message-Id: <1446290160-30696-1-git-send-email-richard@nod.at>
+Cc: david@sigma-star.at, yangds.fnst@cn.fujitsu.com,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH 04/11] ubifs: add decompression functions
+Date: Sat, 31 Oct 2015 12:15:53 +0100
+Message-Id: <1446290160-30696-5-git-send-email-richard@nod.at>
+In-Reply-To: <1446290160-30696-1-git-send-email-richard@nod.at>
+References: <1446290160-30696-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,66 +20,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+From: David Gstir <david@sigma-star.at>
 
-This is the first public release of the UBIFS unpack tool.
-Using this tool you can unpack an UBIFS to a local directory,
-it can operate directly on UBI volumes (i.e. /dev/ubiX_Y)
-or nanddumps (without OOB!). If you dump from a nandump,
-you have to specify the UBI volume ID you want to dump from.
-So far it is rather strict and refuses to unpack if the filesystem
-is corrupted. We plan to implement also a "fuzzy unpack" mode.
+This enables decompression of lzo and zlib compressed data in addition to the
+existin compression functions.
 
-The patches apply on Yang's mtd-utils restructure work.
+Signed-off-by: David Gstir <david@sigma-star.at>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ ubifs-utils/include/compr.h |  1 +
+ ubifs-utils/lib/compr.c     | 75 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 76 insertions(+)
 
-Thanks,
-//richard
-
-David Gstir (10):
-      ubifs: fix typo in ubifs_read
-      Make cli byte parsing from ubi-utils available for all tools
-      ubifs: add decompression functions
-      ubifs: remove ununsed ubifs context from key helpers
-      ubifs: keep scan buffer in ubifs_info
-      ubifs: extend master scanning code
-      ubifs: add missing include to defs.h
-      ubifs: Add more key helper functions
-      ubifs: add emubi, a minimal UBI emulation layer
-      ubifs: add ubifs_unpack
-
-Richard Weinberger (1):
-      ubifs: add complete version of list.h
-
- Makefile                                |  11 +-
- include/common.h                        |  90 ++++
- ubi-utils/include/ubiutils-common.h     |   2 -
- ubi-utils/mtdinfo.c                     |   6 +-
- ubi-utils/ubiattach.c                   |   6 +-
- ubi-utils/ubiformat.c                   |   8 +-
- ubi-utils/ubimkvol.c                    |   6 +-
- ubi-utils/ubinfo.c                      |  10 +-
- ubi-utils/ubinize.c                     |  10 +-
- ubi-utils/ubirsvol.c                    |   2 +-
- ubi-utils/ubiutils-common.c             |  93 ----
- ubifs-utils/include/compr.h             |   1 +
- ubifs-utils/include/defs.h              |   1 +
- ubifs-utils/include/emubi.h             |  82 +++
- ubifs-utils/include/io.h                |   2 +
- ubifs-utils/include/key.h               | 102 +++-
- ubifs-utils/include/list.h              | 305 +++++++----
- ubifs-utils/include/list_sort.h         |  11 +
- ubifs-utils/include/master.h            |   7 +
- ubifs-utils/include/ubifs.h             |  62 +++
- ubifs-utils/lib/compr.c                 |  75 +++
- ubifs-utils/lib/emubi.c                 | 371 ++++++++++++++
- ubifs-utils/lib/io.c                    |  65 ++-
- ubifs-utils/lib/list_sort.c             | 157 ++++++
- ubifs-utils/lib/master.c                | 311 ++++++++++++
- ubifs-utils/lib/scan.c                  |  20 +-
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c     |  66 +--
- ubifs-utils/ubifs_dump/ubifs_dump.c     |  89 +---
- ubifs-utils/ubifs_unpack/index.c        | 648 ++++++++++++++++++++++++
- ubifs-utils/ubifs_unpack/replay.c       | 865 ++++++++++++++++++++++++++++++++
- ubifs-utils/ubifs_unpack/ubifs_unpack.c | 619 +++++++++++++++++++++++
- ubifs-utils/ubifs_unpack/ubifs_unpack.h | 107 ++++
- 32 files changed, 3832 insertions(+), 378 deletions(-)
+diff --git a/ubifs-utils/include/compr.h b/ubifs-utils/include/compr.h
+index d44a2ba..9f6a173 100644
+--- a/ubifs-utils/include/compr.h
++++ b/ubifs-utils/include/compr.h
+@@ -39,6 +39,7 @@ enum compression_type
+ };
+ 
+ int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len, int type, int lzo_percent);
++int decompress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len, int type);
+ int init_compression(void);
+ void destroy_compression(void);
+ 
+diff --git a/ubifs-utils/lib/compr.c b/ubifs-utils/lib/compr.c
+index 35cc447..a4591f8 100644
+--- a/ubifs-utils/lib/compr.c
++++ b/ubifs-utils/lib/compr.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (C) 2008 Nokia Corporation.
+  * Copyright (C) 2008 University of Szeged, Hungary
++ * Copyright (C) 2015 sigma star gmbh
+  *
+  * This program is free software; you can redistribute it and/or modify it
+  * under the terms of the GNU General Public License version 2 as published by
+@@ -18,6 +19,8 @@
+  * Authors: Artem Bityutskiy
+  *          Adrian Hunter
+  *          Zoltan Sogor
++ *          Richard Weinberger
++ *          David Gstir
+  */
+ 
+ #include "ubifs_common.h"
+@@ -79,6 +82,47 @@ static int zlib_deflate(void *in_buf, size_t in_len, void *out_buf,
+ 	return 0;
+ }
+ 
++static int zlib_inflate(void *in_buf, size_t in_len, void *out_buf,
++			size_t *out_len)
++{
++	z_stream strm;
++
++	strm.zalloc = NULL;
++	strm.zfree = NULL;
++
++	/*
++	 * Match exactly the zlib parameters used by the Linux kernel crypto
++	 * API.
++	 */
++        if (inflateInit2(&strm, -DEFLATE_DEF_WINBITS)) {
++		errcnt += 1;
++		return -1;
++	}
++
++	strm.next_in = in_buf;
++	strm.avail_in = in_len;
++	strm.total_in = 0;
++
++	strm.next_out = out_buf;
++	strm.avail_out = *out_len;
++	strm.total_out = 0;
++
++	if (inflate(&strm, Z_FINISH) != Z_STREAM_END) {
++		inflateEnd(&strm);
++		errcnt += 1;
++		return -1;
++	}
++
++	if (inflateEnd(&strm) != Z_OK) {
++		errcnt += 1;
++		return -1;
++	}
++
++	*out_len = strm.total_out;
++
++	return 0;
++}
++
+ static int lzo_compress(void *in_buf, size_t in_len, void *out_buf,
+ 			size_t *out_len)
+ {
+@@ -189,6 +233,37 @@ int compress_data(void *in_buf, size_t in_len, void *out_buf,
+ 	return type;
+ }
+ 
++int decompress_data(void *in_buf, size_t in_len, void *out_buf,
++		    size_t *out_len, int type)
++{
++	int err = 0;
++
++	switch (type) {
++	case UBIFS_COMPR_NONE:
++		if (*out_len < in_len) {
++			err = -1;
++			goto out;
++		}
++		memcpy(out_buf, in_buf, in_len);
++		*out_len = in_len;
++		break;
++	case UBIFS_COMPR_LZO:
++		err = lzo1x_decompress_safe(in_buf, in_len, (unsigned char *)out_buf, out_len, NULL);
++		err = (err == LZO_E_OK) ? 0 : -1;
++		break;
++	case UBIFS_COMPR_ZLIB:
++		err = zlib_inflate(in_buf, in_len, out_buf, out_len);
++		break;
++	default:
++		errcnt += 1;
++		err = 1;
++		break;
++	}
++
++out:
++	return err;
++}
++
+ int init_compression(void)
+ {
+ 	lzo_mem = malloc(LZO1X_999_MEM_COMPRESS);
+-- 
+2.5.0
