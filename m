@@ -1,15 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZsU9I-0001Ht-Oq
+ id 1ZsU9I-0001Hs-Or
  for linux-mtd@lists.infradead.org; Sat, 31 Oct 2015 11:16:45 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david@sigma-star.at, yangds.fnst@cn.fujitsu.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH 03/11] Make cli byte parsing from ubi-utils available for all
- tools
-Date: Sat, 31 Oct 2015 12:15:52 +0100
-Message-Id: <1446290160-30696-4-git-send-email-richard@nod.at>
+Subject: [PATCH 01/11] ubifs: add complete version of list.h
+Date: Sat, 31 Oct 2015 12:15:50 +0100
+Message-Id: <1446290160-30696-2-git-send-email-richard@nod.at>
 In-Reply-To: <1446290160-30696-1-git-send-email-richard@nod.at>
 References: <1446290160-30696-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,551 +20,559 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Gstir <david@sigma-star.at>
-
-ubiutils_get_bytes(str) parses strings like "12MiB" and returns the value in
-bytes. We want this function to be available to all tools not just ubi specific
-ones. The function is now simply named parse_bytes
-
-ubiutils_print_bytes() performs the reverse and is now named print_bytes.
+See http://lists.infradead.org/pipermail/linux-mtd/2015-October/062421.html
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- include/common.h                    | 90 +++++++++++++++++++++++++++++++++++
- ubi-utils/include/ubiutils-common.h |  2 -
- ubi-utils/mtdinfo.c                 |  6 +--
- ubi-utils/ubiattach.c               |  6 +--
- ubi-utils/ubiformat.c               |  8 ++--
- ubi-utils/ubimkvol.c                |  6 +--
- ubi-utils/ubinfo.c                  | 10 ++--
- ubi-utils/ubinize.c                 | 10 ++--
- ubi-utils/ubirsvol.c                |  2 +-
- ubi-utils/ubiutils-common.c         | 93 -------------------------------------
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 66 ++------------------------
- 11 files changed, 119 insertions(+), 180 deletions(-)
+ ubifs-utils/include/list.h | 305 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 213 insertions(+), 92 deletions(-)
 
-diff --git a/include/common.h b/include/common.h
-index fb0ca83..460d2aa 100644
---- a/include/common.h
-+++ b/include/common.h
-@@ -213,6 +213,96 @@ do { \
- 	printf("%s %s\n", PROGRAM_NAME, VERSION); \
- } while (0)
+diff --git a/ubifs-utils/include/list.h b/ubifs-utils/include/list.h
+index 0cffa33..080ea39 100644
+--- a/ubifs-utils/include/list.h
++++ b/ubifs-utils/include/list.h
+@@ -17,6 +17,10 @@
+ #ifndef _LINUX_LIST_H
+ #define _LINUX_LIST_H
  
-+/**
-+ * get_multiplier - convert size specifier to an integer multiplier.
-+ * @str: the size specifier string
-+ *
-+ * This function parses the @str size specifier, which may be one of
-+ * 'KiB', 'MiB', or 'GiB' into an integer multiplier. Returns positive
-+ * size multiplier in case of success and %-1 in case of failure.
-+ */
-+static inline int get_multiplier(const char *str)
-+{
-+	if (!str)
-+		return 1;
++struct list_head {
++	struct list_head *next, *prev;
++};
 +
-+	/* Remove spaces before the specifier */
-+	while (*str == ' ' || *str == '\t')
-+		str += 1;
-+
-+	if (!strcmp(str, "KiB"))
-+		return 1024;
-+	if (!strcmp(str, "MiB"))
-+		return 1024 * 1024;
-+	if (!strcmp(str, "GiB"))
-+		return 1024 * 1024 * 1024;
-+
-+	return -1;
-+}
-+
-+/**
-+ * parse_bytes - convert a string containing amount of bytes into an
-+ * integer
-+ * @str: string to convert
-+ *
-+ * This function parses @str which may have one of 'KiB', 'MiB', or 'GiB'
-+ * size specifiers. Returns positive amount of bytes in case of success and %-1
-+ * in case of failure.
-+ */
-+static inline long long parse_bytes(const char *str)
-+{
-+	char *endp;
-+	long long bytes = strtoull(str, &endp, 0);
-+
-+	if (endp == str || bytes < 0)
-+		return errmsg("incorrect amount of bytes: \"%s\"\n", str);
-+
-+	if (*endp != '\0') {
-+		int mult = get_multiplier(endp);
-+
-+		if (mult == -1)
-+			return errmsg("bad size specifier: \"%s\" - "
-+			        "should be 'KiB', 'MiB' or 'GiB'\n", endp);
-+		bytes *= mult;
-+	}
-+
-+	return bytes;
-+}
-+
-+/**
-+ * print_bytes - print bytes.
-+ * @bytes: variable to print
-+ * @bracket: whether brackets have to be put or not
-+ *
-+ * This is a helper function which prints amount of bytes in a human-readable
-+ * form, i.e., it prints the exact amount of bytes following by the approximate
-+ * amount of Kilobytes, Megabytes, or Gigabytes, depending on how big @bytes
-+ * is.
-+ */
-+static inline void print_bytes(long long bytes, int bracket)
-+{
-+	const char *p;
-+
-+	if (bracket)
-+		p = " (";
-+	else
-+		p = ", ";
-+
-+	printf("%lld bytes", bytes);
-+
-+	if (bytes > 1024 * 1024 * 1024)
-+		printf("%s%.1f GiB", p, (double)bytes / (1024 * 1024 * 1024));
-+	else if (bytes > 1024 * 1024)
-+		printf("%s%.1f MiB", p, (double)bytes / (1024 * 1024));
-+	else if (bytes > 1024 && bytes != 0)
-+		printf("%s%.1f KiB", p, (double)bytes / 1024);
-+	else
-+		return;
-+
-+	if (bracket)
-+		printf(")");
-+}
-+
- #include "xalloc.h"
+ #define LIST_POISON1  ((struct list_head *) 0x00100100)
+ #define LIST_POISON2  ((struct list_head *) 0x00200200)
  
- #ifdef __cplusplus
-diff --git a/ubi-utils/include/ubiutils-common.h b/ubi-utils/include/ubiutils-common.h
-index 9762837..a86ca2f 100644
---- a/ubi-utils/include/ubiutils-common.h
-+++ b/ubi-utils/include/ubiutils-common.h
-@@ -23,8 +23,6 @@
- extern "C" {
- #endif
+@@ -30,10 +34,6 @@
+  * using the generic single-entry routines.
+  */
  
--long long ubiutils_get_bytes(const char *str);
--void ubiutils_print_bytes(long long bytes, int bracket);
- void ubiutils_print_text(FILE *stream, const char *txt, int len);
- int ubiutils_srand(void);
+-struct list_head {
+-	struct list_head *next, *prev;
+-};
+-
+ #define LIST_HEAD_INIT(name) { &(name), &(name) }
  
-diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
-index a86abd1..e360fcd 100644
---- a/ubi-utils/mtdinfo.c
-+++ b/ubi-utils/mtdinfo.c
-@@ -172,7 +172,7 @@ static void print_ubi_info(const struct mtd_info *mtd_info,
- 	printf("Default UBI VID header offset:  %d\n", ui.vid_hdr_offs);
- 	printf("Default UBI data offset:        %d\n", ui.data_offs);
- 	printf("Default UBI LEB size:           ");
--	ubiutils_print_bytes(ui.leb_size, 0);
-+	print_bytes(ui.leb_size, 0);
- 	printf("\n");
- 	printf("Maximum UBI volumes count:      %d\n", ui.max_volumes);
+ #define LIST_HEAD(name) \
+@@ -52,17 +52,17 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
+  * the prev/next entries already!
+  */
+ #ifndef CONFIG_DEBUG_LIST
+-static inline void __list_add(struct list_head *xnew,
++static inline void __list_add(struct list_head *new,
+ 			      struct list_head *prev,
+ 			      struct list_head *next)
+ {
+-	next->prev = xnew;
+-	xnew->next = next;
+-	xnew->prev = prev;
+-	prev->next = xnew;
++	next->prev = new;
++	new->next = next;
++	new->prev = prev;
++	prev->next = new;
  }
-@@ -306,10 +306,10 @@ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int
- 	printf("Name:                           %s\n", mtd.name);
- 	printf("Type:                           %s\n", mtd.type_str);
- 	printf("Eraseblock size:                ");
--	ubiutils_print_bytes(mtd.eb_size, 0);
-+	print_bytes(mtd.eb_size, 0);
- 	printf("\n");
- 	printf("Amount of eraseblocks:          %d (", mtd.eb_cnt);
--	ubiutils_print_bytes(mtd.size, 0);
-+	print_bytes(mtd.size, 0);
- 	printf(")\n");
- 	printf("Minimum input/output unit size: %d %s\n",
- 	       mtd.min_io_size, mtd.min_io_size > 1 ? "bytes" : "byte");
-diff --git a/ubi-utils/ubiattach.c b/ubi-utils/ubiattach.c
-index a7c62d0..a4844fa 100644
---- a/ubi-utils/ubiattach.c
-+++ b/ubi-utils/ubiattach.c
-@@ -238,11 +238,11 @@ int main(int argc, char * const argv[])
- 	}
+ #else
+-extern void __list_add(struct list_head *xnew,
++extern void __list_add(struct list_head *new,
+ 			      struct list_head *prev,
+ 			      struct list_head *next);
+ #endif
+@@ -75,14 +75,10 @@ extern void __list_add(struct list_head *xnew,
+  * Insert a new entry after the specified head.
+  * This is good for implementing stacks.
+  */
+-#ifndef CONFIG_DEBUG_LIST
+-static inline void list_add(struct list_head *xnew, struct list_head *head)
++static inline void list_add(struct list_head *new, struct list_head *head)
+ {
+-	__list_add(xnew, head, head->next);
++	__list_add(new, head, head->next);
+ }
+-#else
+-extern void list_add(struct list_head *xnew, struct list_head *head);
+-#endif
  
- 	printf("UBI device number %d, total %d LEBs (", dev_info.dev_num, dev_info.total_lebs);
--	ubiutils_print_bytes(dev_info.total_bytes, 0);
-+	print_bytes(dev_info.total_bytes, 0);
- 	printf("), available %d LEBs (", dev_info.avail_lebs);
--	ubiutils_print_bytes(dev_info.avail_bytes, 0);
-+	print_bytes(dev_info.avail_bytes, 0);
- 	printf("), LEB size ");
--	ubiutils_print_bytes(dev_info.leb_size, 1);
-+	print_bytes(dev_info.leb_size, 1);
- 	printf("\n");
- 
- 	libubi_close(libubi);
-diff --git a/ubi-utils/ubiformat.c b/ubi-utils/ubiformat.c
-index 21409ca..4064da0 100644
---- a/ubi-utils/ubiformat.c
-+++ b/ubi-utils/ubiformat.c
-@@ -143,7 +143,7 @@ static int parse_opt(int argc, char * const argv[])
- 
- 		switch (key) {
- 		case 's':
--			args.subpage_size = ubiutils_get_bytes(optarg);
-+			args.subpage_size = parse_bytes(optarg);
- 			if (args.subpage_size <= 0)
- 				return errmsg("bad sub-page size: \"%s\"", optarg);
- 			if (!is_power_of_2(args.subpage_size))
-@@ -170,7 +170,7 @@ static int parse_opt(int argc, char * const argv[])
- 			break;
- 
- 		case 'S':
--			args.image_sz = ubiutils_get_bytes(optarg);
-+			args.image_sz = parse_bytes(optarg);
- 			if (args.image_sz <= 0)
- 				return errmsg("bad image-size: \"%s\"", optarg);
- 			break;
-@@ -791,9 +791,9 @@ int main(int argc, char * const argv[])
- 
- 	if (!args.quiet) {
- 		normsg_cont("mtd%d (%s), size ", mtd.mtd_num, mtd.type_str);
--		ubiutils_print_bytes(mtd.size, 1);
-+		print_bytes(mtd.size, 1);
- 		printf(", %d eraseblocks of ", mtd.eb_cnt);
--		ubiutils_print_bytes(mtd.eb_size, 1);
-+		print_bytes(mtd.eb_size, 1);
- 		printf(", min. I/O size %d bytes\n", mtd.min_io_size);
- 	}
- 
-diff --git a/ubi-utils/ubimkvol.c b/ubi-utils/ubimkvol.c
-index 7c2a234..84cb65a 100644
---- a/ubi-utils/ubimkvol.c
-+++ b/ubi-utils/ubimkvol.c
-@@ -137,7 +137,7 @@ static int parse_opt(int argc, char * const argv[])
- 			break;
- 
- 		case 's':
--			args.bytes = ubiutils_get_bytes(optarg);
-+			args.bytes = parse_bytes(optarg);
- 			if (args.bytes <= 0)
- 				return errmsg("bad volume size: \"%s\"", optarg);
- 			break;
-@@ -278,9 +278,9 @@ int main(int argc, char * const argv[])
- 	}
- 
- 	printf("Volume ID %d, size %d LEBs (", vol_info.vol_id, vol_info.rsvd_lebs);
--	ubiutils_print_bytes(vol_info.rsvd_bytes, 0);
-+	print_bytes(vol_info.rsvd_bytes, 0);
- 	printf("), LEB size ");
--	ubiutils_print_bytes(vol_info.leb_size, 1);
-+	print_bytes(vol_info.leb_size, 1);
- 	printf(", %s, name \"%s\", alignment %d\n",
- 	       req.vol_type == UBI_DYNAMIC_VOLUME ? "dynamic" : "static",
- 	       vol_info.name, vol_info.alignment);
-diff --git a/ubi-utils/ubinfo.c b/ubi-utils/ubinfo.c
-index cb88f53..bd97198 100644
---- a/ubi-utils/ubinfo.c
-+++ b/ubi-utils/ubinfo.c
-@@ -211,12 +211,12 @@ static int print_vol_info(libubi_t libubi, int dev_num, int vol_id)
- 	printf("Alignment:   %d\n", vol_info.alignment);
- 
- 	printf("Size:        %d LEBs (", vol_info.rsvd_lebs);
--	ubiutils_print_bytes(vol_info.rsvd_bytes, 0);
-+	print_bytes(vol_info.rsvd_bytes, 0);
- 	printf(")\n");
- 
- 	if (vol_info.type == UBI_STATIC_VOLUME) {
- 		printf("Data bytes:  ");
--		ubiutils_print_bytes(vol_info.data_bytes, 1);
-+		print_bytes(vol_info.data_bytes, 1);
- 		printf("\n");
- 	}
- 	printf("State:       %s\n", vol_info.corrupted ? "corrupted" : "OK");
-@@ -240,15 +240,15 @@ static int print_dev_info(libubi_t libubi, int dev_num, int all)
- 	printf("ubi%d\n", dev_info.dev_num);
- 	printf("Volumes count:                           %d\n", dev_info.vol_count);
- 	printf("Logical eraseblock size:                 ");
--	ubiutils_print_bytes(dev_info.leb_size, 0);
-+	print_bytes(dev_info.leb_size, 0);
- 	printf("\n");
- 
- 	printf("Total amount of logical eraseblocks:     %d (", dev_info.total_lebs);
--	ubiutils_print_bytes(dev_info.total_bytes, 0);
-+	print_bytes(dev_info.total_bytes, 0);
- 	printf(")\n");
- 
- 	printf("Amount of available logical eraseblocks: %d (", dev_info.avail_lebs);
--	ubiutils_print_bytes(dev_info.avail_bytes, 0);
-+	print_bytes(dev_info.avail_bytes, 0);
- 	printf(")\n");
- 
- 	printf("Maximum count of volumes                 %d\n", dev_info.max_vol_count);
-diff --git a/ubi-utils/ubinize.c b/ubi-utils/ubinize.c
-index 34f465a..e7c0a36 100644
---- a/ubi-utils/ubinize.c
-+++ b/ubi-utils/ubinize.c
-@@ -176,13 +176,13 @@ static int parse_opt(int argc, char * const argv[])
- 			break;
- 
- 		case 'p':
--			args.peb_size = ubiutils_get_bytes(optarg);
-+			args.peb_size = parse_bytes(optarg);
- 			if (args.peb_size <= 0)
- 				return errmsg("bad physical eraseblock size: \"%s\"", optarg);
- 			break;
- 
- 		case 'm':
--			args.min_io_size = ubiutils_get_bytes(optarg);
-+			args.min_io_size = parse_bytes(optarg);
- 			if (args.min_io_size <= 0)
- 				return errmsg("bad min. I/O unit size: \"%s\"", optarg);
- 			if (!is_power_of_2(args.min_io_size))
-@@ -190,7 +190,7 @@ static int parse_opt(int argc, char * const argv[])
- 			break;
- 
- 		case 's':
--			args.subpage_size = ubiutils_get_bytes(optarg);
-+			args.subpage_size = parse_bytes(optarg);
- 			if (args.subpage_size <= 0)
- 				return errmsg("bad sub-page size: \"%s\"", optarg);
- 			if (!is_power_of_2(args.subpage_size))
-@@ -368,7 +368,7 @@ static int read_section(const struct ubigen_info *ui, const char *sname,
- 	sprintf(buf, "%s:vol_size", sname);
- 	p = iniparser_getstring(args.dict, buf, NULL);
- 	if (p) {
--		vi->bytes = ubiutils_get_bytes(p);
-+		vi->bytes = parse_bytes(p);
- 		if (vi->bytes <= 0)
- 			return errmsg("bad \"vol_size\" key value \"%s\" (section \"%s\")",
- 				      p, sname);
-@@ -397,7 +397,7 @@ static int read_section(const struct ubigen_info *ui, const char *sname,
- 
- 		normsg_cont("volume size was not specified in section \"%s\", assume"
- 			    " minimum to fit image \"%s\"", sname, *img);
--		ubiutils_print_bytes(vi->bytes, 1);
-+		print_bytes(vi->bytes, 1);
- 		printf("\n");
- 	}
- 
-diff --git a/ubi-utils/ubirsvol.c b/ubi-utils/ubirsvol.c
-index c469060..d60cf49 100644
---- a/ubi-utils/ubirsvol.c
-+++ b/ubi-utils/ubirsvol.c
-@@ -114,7 +114,7 @@ static int parse_opt(int argc, char * const argv[])
- 
- 		switch (key) {
- 		case 's':
--			args.bytes = ubiutils_get_bytes(optarg);
-+			args.bytes = parse_bytes(optarg);
- 			if (args.bytes <= 0)
- 				return errmsg("bad volume size: \"%s\"", optarg);
- 			break;
-diff --git a/ubi-utils/ubiutils-common.c b/ubi-utils/ubiutils-common.c
-index 6609a6b..d9ea3b7 100644
---- a/ubi-utils/ubiutils-common.c
-+++ b/ubi-utils/ubiutils-common.c
-@@ -34,99 +34,6 @@
- #include <unistd.h>
- #include "common.h"
- 
--/**
-- * get_multiplier - convert size specifier to an integer multiplier.
-- * @str: the size specifier string
-- *
-- * This function parses the @str size specifier, which may be one of
-- * 'KiB', 'MiB', or 'GiB' into an integer multiplier. Returns positive
-- * size multiplier in case of success and %-1 in case of failure.
-- */
--static int get_multiplier(const char *str)
--{
--	if (!str)
--		return 1;
--
--	/* Remove spaces before the specifier */
--	while (*str == ' ' || *str == '\t')
--		str += 1;
--
--	if (!strcmp(str, "KiB"))
--		return 1024;
--	if (!strcmp(str, "MiB"))
--		return 1024 * 1024;
--	if (!strcmp(str, "GiB"))
--		return 1024 * 1024 * 1024;
--
--	return -1;
--}
--
--/**
-- * ubiutils_get_bytes - convert a string containing amount of bytes into an
-- * integer
-- * @str: string to convert
-- *
-- * This function parses @str which may have one of 'KiB', 'MiB', or 'GiB'
-- * size specifiers. Returns positive amount of bytes in case of success and %-1
-- * in case of failure.
-- */
--long long ubiutils_get_bytes(const char *str)
--{
--	char *endp;
--	long long bytes = strtoull(str, &endp, 0);
--
--	if (endp == str || bytes < 0) {
--		fprintf(stderr, "incorrect amount of bytes: \"%s\"\n", str);
--		return -1;
--	}
--
--	if (*endp != '\0') {
--		int mult = get_multiplier(endp);
--
--		if (mult == -1) {
--			fprintf(stderr, "bad size specifier: \"%s\" - "
--			        "should be 'KiB', 'MiB' or 'GiB'\n", endp);
--			return -1;
--		}
--		bytes *= mult;
--	}
--
--	return bytes;
--}
--
--/**
-- * ubiutils_print_bytes - print bytes.
-- * @bytes: variable to print
-- * @bracket: whether brackets have to be put or not
-- *
-- * This is a helper function which prints amount of bytes in a human-readable
-- * form, i.e., it prints the exact amount of bytes following by the approximate
-- * amount of Kilobytes, Megabytes, or Gigabytes, depending on how big @bytes
-- * is.
-- */
--void ubiutils_print_bytes(long long bytes, int bracket)
--{
--	const char *p;
--
--	if (bracket)
--		p = " (";
--	else
--		p = ", ";
--
--	printf("%lld bytes", bytes);
--
--	if (bytes > 1024 * 1024 * 1024)
--		printf("%s%.1f GiB", p, (double)bytes / (1024 * 1024 * 1024));
--	else if (bytes > 1024 * 1024)
--		printf("%s%.1f MiB", p, (double)bytes / (1024 * 1024));
--	else if (bytes > 1024 && bytes != 0)
--		printf("%s%.1f KiB", p, (double)bytes / 1024);
--	else
--		return;
--
--	if (bracket)
--		printf(")");
--}
  
  /**
-  * ubiutils_print_text - print text and fold it.
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index b19646f..8a3baea 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -390,62 +390,6 @@ static int validate_options(void)
- 	return 0;
+@@ -93,9 +89,9 @@ extern void list_add(struct list_head *xnew, struct list_head *head);
+  * Insert a new entry before the specified head.
+  * This is useful for implementing queues.
+  */
+-static inline void list_add_tail(struct list_head *xnew, struct list_head *head)
++static inline void list_add_tail(struct list_head *new, struct list_head *head)
+ {
+-	__list_add(xnew, head->prev, head);
++	__list_add(new, head->prev, head);
  }
  
--/**
-- * get_multiplier - convert size specifier to an integer multiplier.
-- * @str: the size specifier string
-- *
-- * This function parses the @str size specifier, which may be one of
-- * 'KiB', 'MiB', or 'GiB' into an integer multiplier. Returns positive
-- * size multiplier in case of success and %-1 in case of failure.
-- */
--static int get_multiplier(const char *str)
--{
--	if (!str)
--		return 1;
--
--	/* Remove spaces before the specifier */
--	while (*str == ' ' || *str == '\t')
--		str += 1;
--
--	if (!strcmp(str, "KiB"))
--		return 1024;
--	if (!strcmp(str, "MiB"))
--		return 1024 * 1024;
--	if (!strcmp(str, "GiB"))
--		return 1024 * 1024 * 1024;
--
--	return -1;
--}
--
--/**
-- * get_bytes - convert a string containing amount of bytes into an
-- *             integer.
-- * @str: string to convert
-- *
-- * This function parses @str which may have one of 'KiB', 'MiB', or 'GiB' size
-- * specifiers. Returns positive amount of bytes in case of success and %-1 in
-- * case of failure.
-- */
--static long long get_bytes(const char *str)
--{
--	char *endp;
--	long long bytes = strtoull(str, &endp, 0);
--
--	if (endp == str || bytes < 0)
--		return err_msg("incorrect amount of bytes: \"%s\"", str);
--
--	if (*endp != '\0') {
--		int mult = get_multiplier(endp);
--
--		if (mult == -1)
--			return err_msg("bad size specifier: \"%s\" - "
--				       "should be 'KiB', 'MiB' or 'GiB'", endp);
--		bytes *= mult;
--	}
--
--	return bytes;
--}
--
- static int get_options(int argc, char**argv)
+ /*
+@@ -114,10 +110,15 @@ static inline void __list_del(struct list_head * prev, struct list_head * next)
+ /**
+  * list_del - deletes entry from list.
+  * @entry: the element to delete from the list.
+- * Note: list_empty on entry does not return true after this, the entry is
++ * Note: list_empty() on entry does not return true after this, the entry is
+  * in an undefined state.
+  */
+ #ifndef CONFIG_DEBUG_LIST
++static inline void __list_del_entry(struct list_head *entry)
++{
++	__list_del(entry->prev, entry->next);
++}
++
+ static inline void list_del(struct list_head *entry)
  {
- 	int opt, i;
-@@ -493,17 +437,17 @@ static int get_options(int argc, char**argv)
- 						   root);
- 			break;
- 		case 'm':
--			c->min_io_size = get_bytes(optarg);
-+			c->min_io_size = parse_bytes(optarg);
- 			if (c->min_io_size <= 0)
- 				return err_msg("bad min. I/O size");
- 			break;
- 		case 'e':
--			c->leb_size = get_bytes(optarg);
-+			c->leb_size = parse_bytes(optarg);
- 			if (c->leb_size <= 0)
- 				return err_msg("bad LEB size");
- 			break;
- 		case 'c':
--			c->max_leb_cnt = get_bytes(optarg);
-+			c->max_leb_cnt = parse_bytes(optarg);
- 			if (c->max_leb_cnt <= 0)
- 				return err_msg("bad maximum LEB count");
- 			break;
-@@ -585,12 +529,12 @@ static int get_options(int argc, char**argv)
- 					       optarg);
- 			break;
- 		case 'j':
--			c->max_bud_bytes = get_bytes(optarg);
-+			c->max_bud_bytes = parse_bytes(optarg);
- 			if (c->max_bud_bytes <= 0)
- 				return err_msg("bad maximum amount of buds");
- 			break;
- 		case 'R':
--			c->rp_size = get_bytes(optarg);
-+			c->rp_size = parse_bytes(optarg);
- 			if (c->rp_size < 0)
- 				return err_msg("bad reserved bytes count");
- 			break;
+ 	__list_del(entry->prev, entry->next);
+@@ -125,6 +126,7 @@ static inline void list_del(struct list_head *entry)
+ 	entry->prev = LIST_POISON2;
+ }
+ #else
++extern void __list_del_entry(struct list_head *entry);
+ extern void list_del(struct list_head *entry);
+ #endif
+ 
+@@ -132,30 +134,32 @@ extern void list_del(struct list_head *entry);
+  * list_replace - replace old entry by new one
+  * @old : the element to be replaced
+  * @new : the new element to insert
+- * Note: if 'old' was empty, it will be overwritten.
++ *
++ * If @old was empty, it will be overwritten.
+  */
+ static inline void list_replace(struct list_head *old,
+-				struct list_head *xnew)
++				struct list_head *new)
+ {
+-	xnew->next = old->next;
+-	xnew->next->prev = xnew;
+-	xnew->prev = old->prev;
+-	xnew->prev->next = xnew;
++	new->next = old->next;
++	new->next->prev = new;
++	new->prev = old->prev;
++	new->prev->next = new;
+ }
+ 
+ static inline void list_replace_init(struct list_head *old,
+-					struct list_head *xnew)
++					struct list_head *new)
+ {
+-	list_replace(old, xnew);
++	list_replace(old, new);
+ 	INIT_LIST_HEAD(old);
+ }
++
+ /**
+  * list_del_init - deletes entry from list and reinitialize it.
+  * @entry: the element to delete from the list.
+  */
+ static inline void list_del_init(struct list_head *entry)
+ {
+-	__list_del(entry->prev, entry->next);
++	__list_del_entry(entry);
+ 	INIT_LIST_HEAD(entry);
+ }
+ 
+@@ -166,8 +170,8 @@ static inline void list_del_init(struct list_head *entry)
+  */
+ static inline void list_move(struct list_head *list, struct list_head *head)
+ {
+-        __list_del(list->prev, list->next);
+-        list_add(list, head);
++	__list_del_entry(list);
++	list_add(list, head);
+ }
+ 
+ /**
+@@ -178,8 +182,8 @@ static inline void list_move(struct list_head *list, struct list_head *head)
+ static inline void list_move_tail(struct list_head *list,
+ 				  struct list_head *head)
+ {
+-        __list_del(list->prev, list->next);
+-        list_add_tail(list, head);
++	__list_del_entry(list);
++	list_add_tail(list, head);
+ }
+ 
+ /**
+@@ -221,6 +225,69 @@ static inline int list_empty_careful(const struct list_head *head)
+ 	return (next == head) && (next == head->prev);
+ }
+ 
++/**
++ * list_rotate_left - rotate the list to the left
++ * @head: the head of the list
++ */
++static inline void list_rotate_left(struct list_head *head)
++{
++	struct list_head *first;
++
++	if (!list_empty(head)) {
++		first = head->next;
++		list_move_tail(first, head);
++	}
++}
++
++/**
++ * list_is_singular - tests whether a list has just one entry.
++ * @head: the list to test.
++ */
++static inline int list_is_singular(const struct list_head *head)
++{
++	return !list_empty(head) && (head->next == head->prev);
++}
++
++static inline void __list_cut_position(struct list_head *list,
++		struct list_head *head, struct list_head *entry)
++{
++	struct list_head *new_first = entry->next;
++	list->next = head->next;
++	list->next->prev = list;
++	list->prev = entry;
++	entry->next = list;
++	head->next = new_first;
++	new_first->prev = head;
++}
++
++/**
++ * list_cut_position - cut a list into two
++ * @list: a new list to add all removed entries
++ * @head: a list with entries
++ * @entry: an entry within head, could be the head itself
++ *	and if so we won't cut the list
++ *
++ * This helper moves the initial part of @head, up to and
++ * including @entry, from @head to @list. You should
++ * pass on @entry an element you know is on @head. @list
++ * should be an empty list or a list you do not care about
++ * losing its data.
++ *
++ */
++static inline void list_cut_position(struct list_head *list,
++		struct list_head *head, struct list_head *entry)
++{
++	if (list_empty(head))
++		return;
++	if (list_is_singular(head) &&
++		(head->next != entry && head != entry))
++		return;
++	if (entry == head)
++		INIT_LIST_HEAD(list);
++	else
++		__list_cut_position(list, head, entry);
++}
++
+ static inline void __list_splice(const struct list_head *list,
+ 				 struct list_head *prev,
+ 				 struct list_head *next)
+@@ -236,11 +303,12 @@ static inline void __list_splice(const struct list_head *list,
+ }
+ 
+ /**
+- * list_splice - join two lists
++ * list_splice - join two lists, this is designed for stacks
+  * @list: the new list to add.
+  * @head: the place to add it in the first list.
+  */
+-static inline void list_splice(struct list_head *list, struct list_head *head)
++static inline void list_splice(const struct list_head *list,
++				struct list_head *head)
+ {
+ 	if (!list_empty(list))
+ 		__list_splice(list, head, head->next);
+@@ -295,7 +363,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+  * list_entry - get the struct for this entry
+  * @ptr:	the &struct list_head pointer.
+  * @type:	the type of the struct this is embedded in.
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  */
+ #define list_entry(ptr, type, member) \
+ 	container_of(ptr, type, member)
+@@ -304,7 +372,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+  * list_first_entry - get the first element from a list
+  * @ptr:	the list head to take the element from.
+  * @type:	the type of the struct this is embedded in.
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  *
+  * Note, that list is expected to be not empty.
+  */
+@@ -312,35 +380,49 @@ static inline void list_splice_tail_init(struct list_head *list,
+ 	list_entry((ptr)->next, type, member)
+ 
+ /**
+- * list_next_entry - get the next element from a list
++ * list_last_entry - get the last element from a list
+  * @ptr:	the list head to take the element from.
+- * @member:	the name of the list_struct within the struct.
++ * @type:	the type of the struct this is embedded in.
++ * @member:	the name of the list_head within the struct.
+  *
+- * Note, that next is expected to be not null.
++ * Note, that list is expected to be not empty.
+  */
+-#define list_next_entry(ptr, member) \
+-	list_entry((ptr)->member.next, typeof(*ptr), member)
++#define list_last_entry(ptr, type, member) \
++	list_entry((ptr)->prev, type, member)
+ 
+ /**
+- * list_for_each	-	iterate over a list
+- * @pos:	the &struct list_head to use as a loop cursor.
+- * @head:	the head for your list.
++ * list_first_entry_or_null - get the first element from a list
++ * @ptr:	the list head to take the element from.
++ * @type:	the type of the struct this is embedded in.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Note that if the list is empty, it returns NULL.
+  */
+-#define list_for_each(pos, head) \
+-	for (pos = (head)->next; pos != (head); \
+-        	pos = pos->next)
++#define list_first_entry_or_null(ptr, type, member) \
++	(!list_empty(ptr) ? list_first_entry(ptr, type, member) : NULL)
++
++/**
++ * list_next_entry - get the next element in list
++ * @pos:	the type * to cursor
++ * @member:	the name of the list_head within the struct.
++ */
++#define list_next_entry(pos, member) \
++	list_entry((pos)->member.next, typeof(*(pos)), member)
+ 
+ /**
+- * __list_for_each	-	iterate over a list
++ * list_prev_entry - get the prev element in list
++ * @pos:	the type * to cursor
++ * @member:	the name of the list_head within the struct.
++ */
++#define list_prev_entry(pos, member) \
++	list_entry((pos)->member.prev, typeof(*(pos)), member)
++
++/**
++ * list_for_each	-	iterate over a list
+  * @pos:	the &struct list_head to use as a loop cursor.
+  * @head:	the head for your list.
+- *
+- * This variant differs from list_for_each() in that it's the
+- * simplest possible list iteration code, no prefetching is done.
+- * Use this for code that knows the list to be very short (empty
+- * or 1 entry) most of the time.
+  */
+-#define __list_for_each(pos, head) \
++#define list_for_each(pos, head) \
+ 	for (pos = (head)->next; pos != (head); pos = pos->next)
+ 
+ /**
+@@ -349,8 +431,7 @@ static inline void list_splice_tail_init(struct list_head *list,
+  * @head:	the head for your list.
+  */
+ #define list_for_each_prev(pos, head) \
+-	for (pos = (head)->prev; pos != (head); \
+-        	pos = pos->prev)
++	for (pos = (head)->prev; pos != (head); pos = pos->prev)
+ 
+ /**
+  * list_for_each_safe - iterate over a list safe against removal of list entry
+@@ -363,34 +444,45 @@ static inline void list_splice_tail_init(struct list_head *list,
+ 		pos = n, n = pos->next)
+ 
+ /**
++ * list_for_each_prev_safe - iterate over a list backwards safe against removal of list entry
++ * @pos:	the &struct list_head to use as a loop cursor.
++ * @n:		another &struct list_head to use as temporary storage
++ * @head:	the head for your list.
++ */
++#define list_for_each_prev_safe(pos, n, head) \
++	for (pos = (head)->prev, n = pos->prev; \
++	     pos != (head); \
++	     pos = n, n = pos->prev)
++
++/**
+  * list_for_each_entry	-	iterate over list of given type
+  * @pos:	the type * to use as a loop cursor.
+  * @head:	the head for your list.
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  */
+ #define list_for_each_entry(pos, head, member)				\
+-	for (pos = list_entry((head)->next, typeof(*pos), member);	\
+-	     &pos->member != (head); 	\
+-	     pos = list_entry(pos->member.next, typeof(*pos), member))
++	for (pos = list_first_entry(head, typeof(*pos), member);	\
++	     &pos->member != (head);					\
++	     pos = list_next_entry(pos, member))
+ 
+ /**
+  * list_for_each_entry_reverse - iterate backwards over list of given type.
+  * @pos:	the type * to use as a loop cursor.
+  * @head:	the head for your list.
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  */
+ #define list_for_each_entry_reverse(pos, head, member)			\
+-	for (pos = list_entry((head)->prev, typeof(*pos), member);	\
+-	     &pos->member != (head); 	\
+-	     pos = list_entry(pos->member.prev, typeof(*pos), member))
++	for (pos = list_last_entry(head, typeof(*pos), member);		\
++	     &pos->member != (head); 					\
++	     pos = list_prev_entry(pos, member))
+ 
+ /**
+- * list_prepare_entry - prepare a pos entry for use in list_for_each_entry_continue
++ * list_prepare_entry - prepare a pos entry for use in list_for_each_entry_continue()
+  * @pos:	the type * to use as a start point
+  * @head:	the head of the list
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  *
+- * Prepares a pos entry for use as a start point in list_for_each_entry_continue.
++ * Prepares a pos entry for use as a start point in list_for_each_entry_continue().
+  */
+ #define list_prepare_entry(pos, head, member) \
+ 	((pos) ? : list_entry(head, typeof(*pos), member))
+@@ -399,86 +491,115 @@ static inline void list_splice_tail_init(struct list_head *list,
+  * list_for_each_entry_continue - continue iteration over list of given type
+  * @pos:	the type * to use as a loop cursor.
+  * @head:	the head for your list.
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  *
+  * Continue to iterate over list of given type, continuing after
+  * the current position.
+  */
+ #define list_for_each_entry_continue(pos, head, member) 		\
+-	for (pos = list_entry(pos->member.next, typeof(*pos), member);	\
+-	     &pos->member != (head);	\
+-	     pos = list_entry(pos->member.next, typeof(*pos), member))
++	for (pos = list_next_entry(pos, member);			\
++	     &pos->member != (head);					\
++	     pos = list_next_entry(pos, member))
++
++/**
++ * list_for_each_entry_continue_reverse - iterate backwards from the given point
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Start to iterate over list of given type backwards, continuing after
++ * the current position.
++ */
++#define list_for_each_entry_continue_reverse(pos, head, member)		\
++	for (pos = list_prev_entry(pos, member);			\
++	     &pos->member != (head);					\
++	     pos = list_prev_entry(pos, member))
+ 
+ /**
+  * list_for_each_entry_from - iterate over list of given type from the current point
+  * @pos:	the type * to use as a loop cursor.
+  * @head:	the head for your list.
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  *
+  * Iterate over list of given type, continuing from current position.
+  */
+ #define list_for_each_entry_from(pos, head, member) 			\
+-	for (; &pos->member != (head);	\
+-	     pos = list_entry(pos->member.next, typeof(*pos), member))
++	for (; &pos->member != (head);					\
++	     pos = list_next_entry(pos, member))
+ 
+ /**
+  * list_for_each_entry_safe - iterate over list of given type safe against removal of list entry
+  * @pos:	the type * to use as a loop cursor.
+  * @n:		another type * to use as temporary storage
+  * @head:	the head for your list.
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  */
+ #define list_for_each_entry_safe(pos, n, head, member)			\
+-	for (pos = list_entry((head)->next, typeof(*pos), member),	\
+-		n = list_entry(pos->member.next, typeof(*pos), member);	\
++	for (pos = list_first_entry(head, typeof(*pos), member),	\
++		n = list_next_entry(pos, member);			\
+ 	     &pos->member != (head); 					\
+-	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
++	     pos = n, n = list_next_entry(n, member))
+ 
+ /**
+- * list_for_each_entry_safe_continue
++ * list_for_each_entry_safe_continue - continue list iteration safe against removal
+  * @pos:	the type * to use as a loop cursor.
+  * @n:		another type * to use as temporary storage
+  * @head:	the head for your list.
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  *
+  * Iterate over list of given type, continuing after current point,
+  * safe against removal of list entry.
+  */
+ #define list_for_each_entry_safe_continue(pos, n, head, member) 		\
+-	for (pos = list_entry(pos->member.next, typeof(*pos), member), 		\
+-		n = list_entry(pos->member.next, typeof(*pos), member);		\
++	for (pos = list_next_entry(pos, member), 				\
++		n = list_next_entry(pos, member);				\
+ 	     &pos->member != (head);						\
+-	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
++	     pos = n, n = list_next_entry(n, member))
+ 
+ /**
+- * list_for_each_entry_safe_from
++ * list_for_each_entry_safe_from - iterate over list from current point safe against removal
+  * @pos:	the type * to use as a loop cursor.
+  * @n:		another type * to use as temporary storage
+  * @head:	the head for your list.
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  *
+  * Iterate over list of given type from current point, safe against
+  * removal of list entry.
+  */
+ #define list_for_each_entry_safe_from(pos, n, head, member) 			\
+-	for (n = list_entry(pos->member.next, typeof(*pos), member);		\
++	for (n = list_next_entry(pos, member);					\
+ 	     &pos->member != (head);						\
+-	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
++	     pos = n, n = list_next_entry(n, member))
+ 
+ /**
+- * list_for_each_entry_safe_reverse
++ * list_for_each_entry_safe_reverse - iterate backwards over list safe against removal
+  * @pos:	the type * to use as a loop cursor.
+  * @n:		another type * to use as temporary storage
+  * @head:	the head for your list.
+- * @member:	the name of the list_struct within the struct.
++ * @member:	the name of the list_head within the struct.
+  *
+  * Iterate backwards over list of given type, safe against removal
+  * of list entry.
+  */
+ #define list_for_each_entry_safe_reverse(pos, n, head, member)		\
+-	for (pos = list_entry((head)->prev, typeof(*pos), member),	\
+-		n = list_entry(pos->member.prev, typeof(*pos), member);	\
++	for (pos = list_last_entry(head, typeof(*pos), member),		\
++		n = list_prev_entry(pos, member);			\
+ 	     &pos->member != (head); 					\
+-	     pos = n, n = list_entry(n->member.prev, typeof(*n), member))
++	     pos = n, n = list_prev_entry(n, member))
++
++/**
++ * list_safe_reset_next - reset a stale list_for_each_entry_safe loop
++ * @pos:	the loop cursor used in the list_for_each_entry_safe loop
++ * @n:		temporary storage used in list_for_each_entry_safe
++ * @member:	the name of the list_head within the struct.
++ *
++ * list_safe_reset_next is not safe to use in general if the list may be
++ * modified concurrently (eg. the lock is dropped in the loop body). An
++ * exception to this is if the cursor element (pos) is pinned in the list,
++ * and list_safe_reset_next is called after re-taking the lock and before
++ * completing the current iteration of the loop body.
++ */
++#define list_safe_reset_next(pos, n, member)				\
++	n = list_next_entry(pos, member)
+ 
+ #endif
 -- 
 2.5.0
