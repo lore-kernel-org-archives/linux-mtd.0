@@ -1,21 +1,27 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZsGs0-0000Jx-Mf
- for linux-mtd@lists.infradead.org; Fri, 30 Oct 2015 21:05:57 +0000
-Received: by pasz6 with SMTP id z6so84384092pas.2
- for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 14:05:35 -0700 (PDT)
-Date: Fri, 30 Oct 2015 14:05:33 -0700
+ id 1ZsJvm-0003jE-D3
+ for linux-mtd@lists.infradead.org; Sat, 31 Oct 2015 00:22:02 +0000
+Received: by pasz6 with SMTP id z6so87914625pas.2
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 17:21:41 -0700 (PDT)
+Date: Fri, 30 Oct 2015 17:21:38 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Marek Vasut <marex@denx.de>, Bayi Cheng <bayi.cheng@mediatek.com>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: provide default erase_sector
- implementation
-Message-ID: <20151030210533.GK13239@google.com>
-References: <1446168261-4102-1-git-send-email-computersforpeace@gmail.com>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 5/5] mtd: ofpart: move ofpart partitions to a
+ dedicated dt node
+Message-ID: <20151031002138.GL13239@google.com>
+References: <cover.1439911625.git.hramrach@gmail.com>
+ <78e45e51c94899f92ec5d189846c5dd5cf9d8f7a.1439911625.git.hramrach@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1446168261-4102-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <78e45e51c94899f92ec5d189846c5dd5cf9d8f7a.1439911625.git.hramrach@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +31,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 29, 2015 at 06:24:20PM -0700, Brian Norris wrote:
-> Some spi-nor drivers perform sector erase by duplicating their
-> write_reg() command. Let's not require that the driver fill this out,
-> and provide a default instead.
+On Tue, Aug 18, 2015 at 03:34:09PM -0000, Michal Suchanek wrote:
+> Parsing direct subnodes of a mtd device as partitions is unreliable
+> since the mtd device is also part of its bus subsystem and can contain
+> bus data in subnodes.
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 30 ++++++++++++++++++++++++++----
->  include/linux/mtd/spi-nor.h   |  3 ++-
->  2 files changed, 28 insertions(+), 5 deletions(-)
+> Move ofpart data to a subnode of its own so it is clear which data is
+> part of the partition layout.
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 49883905a434..58a435372be7 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -313,6 +313,29 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
->  }
->  
->  /*
-> + * Initiate the erasure of a single sector
-> + */
-> +static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
-> +{
-> +	u8 buf[nor->addr_width];
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 
-Hmm, I see some warnings about variable length arrays here. Probably
-better to just set a MAX macro with the value of 4, since the extra byte
-really doesn't matter that much.
-
-I'll send v2.
-
-Brian
+Applied this patch to l2-mtd.git. Thanks!
