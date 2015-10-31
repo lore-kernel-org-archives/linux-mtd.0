@@ -1,9 +1,9 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZsMvg-0005E2-UE
+ id 1ZsMvh-0005E6-Oj
  for linux-mtd@lists.infradead.org; Sat, 31 Oct 2015 03:34:11 +0000
-Received: by padhk11 with SMTP id hk11so91291344pad.1
- for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 20:33:52 -0700 (PDT)
+Received: by padhk11 with SMTP id hk11so91291745pad.1
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Oct 2015 20:33:54 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,10 @@ Cc: linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marex@denx.de>, Scott Wood <scottwood@freescale.com>,
  Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
  Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>
-Subject: [PATCH v2 08/11] mtd: spi-nor: drop flash_node field
-Date: Fri, 30 Oct 2015 20:33:27 -0700
-Message-Id: <1446262410-45754-9-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 11/11] mtd: physmap_of: assign parent for the concatenated
+ MTD
+Date: Fri, 30 Oct 2015 20:33:30 -0700
+Message-Id: <1446262410-45754-12-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
 References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,62 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We can just alias to the MTD of_node.
+If there is more than one map region for this device, then the
+concatenated MTD will not have a parent device assigned to it -- only
+the sub-devices (which are not actually registered with the framework)
+will have their parents assigned. Let's assign the concatenated device
+correctly.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-v2: new
+v2: lumped into this series, since its context depends on this series
 
- drivers/mtd/spi-nor/spi-nor.c | 1 -
- include/linux/mtd/spi-nor.h   | 6 ++----
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ drivers/mtd/maps/physmap_of.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 924d455dadb5..12041e181630 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1258,7 +1258,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 		mtd->flags |= MTD_NO_ERASE;
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index b78265688075..70c453144f00 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -309,6 +309,7 @@ static int of_flash_probe(struct platform_device *dev)
+ 	if (err)
+ 		goto err_out;
  
- 	mtd->dev.parent = dev;
--	mtd_set_of_node(mtd, np);
- 	nor->page_size = info->page_size;
- 	mtd->writebufsize = nor->page_size;
- 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 6d991df8f986..955f268d159a 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -124,7 +124,6 @@ struct mtd_info;
-  * @mtd:		point to a mtd_info structure
-  * @lock:		the lock for the read/write/erase/lock/unlock operations
-  * @dev:		point to a spi device, or a spi nor controller device.
-- * @flash_node:		point to a device node describing this flash instance.
-  * @page_size:		the page size of the SPI NOR
-  * @addr_width:		number of address bytes
-  * @erase_opcode:	the opcode for erasing a sector
-@@ -155,7 +154,6 @@ struct spi_nor {
- 	struct mtd_info		mtd;
- 	struct mutex		lock;
- 	struct device		*dev;
--	struct device_node	*flash_node;
- 	u32			page_size;
- 	u8			addr_width;
- 	u8			erase_opcode;
-@@ -188,12 +186,12 @@ struct spi_nor {
- static inline void spi_nor_set_flash_node(struct spi_nor *nor,
- 					  struct device_node *np)
- {
--	nor->flash_node = np;
-+	mtd_set_of_node(&nor->mtd, np);
- }
- 
- static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
- {
--	return nor->flash_node;
-+	return mtd_get_of_node(&nor->mtd);
- }
- 
- /**
++	info->cmtd->dev.parent = &dev->dev;
+ 	mtd_set_of_node(info->cmtd, dp);
+ 	part_probe_types = of_get_probes(dp);
+ 	if (!part_probe_types) {
 -- 
 2.6.0.rc2.230.g3dd15c0
