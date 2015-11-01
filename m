@@ -1,21 +1,21 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zt1gl-0004Bs-R4
- for linux-mtd@lists.infradead.org; Sun, 01 Nov 2015 23:05:28 +0000
-Date: Mon, 2 Nov 2015 00:05:04 +0100
+ id 1Zt22v-00058T-Jw
+ for linux-mtd@lists.infradead.org; Sun, 01 Nov 2015 23:28:22 +0000
+Date: Mon, 2 Nov 2015 00:27:58 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Marek Vasut
- <marex@denx.de>, Scott Wood <scottwood@freescale.com>, Josh Wu
- <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Kyungmin Park
- <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>, Stefan Agner
- <stefan@agner.ch>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/11] mtd: nand: convert to nand_get_flash_node()
-Message-ID: <20151102000504.2e614e72@bbrezillon>
-In-Reply-To: <1446418954-31310-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1446418954-31310-1-git-send-email-boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Ezequiel
+ Garcia <ezequiel@vanguardiasur.com.ar>, Marek Vasut <marex@denx.de>, Scott
+ Wood <scottwood@freescale.com>, Josh Wu <josh.wu@atmel.com>, Robert Jarzmik
+ <robert.jarzmik@free.fr>, Kyungmin Park <kyungmin.park@samsung.com>, Han Xu
+ <han.xu@freescale.com>
+Subject: Re: [PATCH v2 01/11] mtd: add get/set of_node/flash_node helpers
+Message-ID: <20151102002758.51e34a71@bbrezillon>
+In-Reply-To: <1446262410-45754-2-git-send-email-computersforpeace@gmail.com>
+References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
+ <1446262410-45754-2-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,110 +28,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Oops, this patch was meant to be sent in reply to your "mtd: migrate
-'of_node' handling to core, not in mtd_part_parser_data" series. Sorry
-for the noise.
+On Fri, 30 Oct 2015 20:33:20 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-On Mon,  2 Nov 2015 00:02:34 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> Used semantic patch with 'make coccicheck MODE=patch COCCI=script.cocci':
+> We are going to begin using the mtd->dev.of_node field for MTD device
+> nodes, so let's add helpers for it. Also, we'll be making some
+> conversions on spi_nor (and nand_chip eventually) too, so get that ready
+> with their own helpers.
 > 
-> ---8<----
-> virtual patch
-> 
-> @@
-> struct nand_chip c;
-> struct nand_chip *cp;
-> @@
-> (
-> -(cp)->flash_node
-> +nand_get_flash_node(cp)
-> |
-> -(c).flash_node
-> +nand_get_flash_node(&c)
-> )
-> ---8<----
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > ---
-> Hi Brian,
+> v2: new
 > 
-> I think this patch could be part of your series too.
+>  include/linux/mtd/mtd.h     | 11 +++++++++++
+>  include/linux/mtd/nand.h    | 11 +++++++++++
+>  include/linux/mtd/spi-nor.h | 11 +++++++++++
+>  3 files changed, 33 insertions(+)
 > 
-> Best Regards,
-> 
-> Boris
-> 
->  drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
->  drivers/mtd/nand/nand_base.c         | 6 +++---
->  drivers/mtd/nand/vf610_nfc.c         | 6 +++---
->  3 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index a37659d..2a437c7 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -1816,7 +1816,7 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index f17fa75809aa..cc84923011c0 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -254,6 +254,17 @@ struct mtd_info {
+>  	int usecount;
+>  };
 >  
->  	memset(cfg, 0, sizeof(*cfg));
->  
-> -	ret = of_property_read_u32(chip->flash_node,
-> +	ret = of_property_read_u32(nand_get_flash_node(chip),
->  				   "brcm,nand-oob-sector-size",
->  				   &oob_sector);
->  	if (ret) {
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 939ab3d..4ac4efe 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3989,11 +3989,11 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
->  	struct nand_flash_dev *type;
->  	int ret;
->  
-> -	if (chip->flash_node) {
-> +	if (nand_get_flash_node(chip)) {
->  		/* MTD can automatically handle DT partitions, etc. */
-> -		mtd_set_of_node(mtd, chip->flash_node);
-> +		mtd_set_of_node(mtd, nand_get_flash_node(chip));
->  
-> -		ret = nand_dt_init(mtd, chip, chip->flash_node);
-> +		ret = nand_dt_init(mtd, chip, nand_get_flash_node(chip));
->  		if (ret)
->  			return ret;
->  	}
-> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-> index b6df4c6..1c86c6b 100644
-> --- a/drivers/mtd/nand/vf610_nfc.c
-> +++ b/drivers/mtd/nand/vf610_nfc.c
-> @@ -707,7 +707,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->  	for_each_available_child_of_node(nfc->dev->of_node, child) {
->  		if (of_device_is_compatible(child, "fsl,vf610-nfc-nandcs")) {
->  
-> -			if (chip->flash_node) {
-> +			if (nand_get_flash_node(chip)) {
->  				dev_err(nfc->dev,
->  					"Only one NAND chip supported!\n");
->  				err = -EINVAL;
-> @@ -718,7 +718,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->  		}
->  	}
->  
-> -	if (!chip->flash_node) {
-> +	if (!nand_get_flash_node(chip)) {
->  		dev_err(nfc->dev, "NAND chip sub-node missing!\n");
->  		err = -ENODEV;
->  		goto err_clk;
-> @@ -814,7 +814,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->  	return mtd_device_register(mtd, NULL, 0);
->  
->  error:
-> -	of_node_put(chip->flash_node);
-> +	of_node_put(nand_get_flash_node(chip));
->  err_clk:
->  	clk_disable_unprepare(nfc->clk);
->  	return err;
+> +static inline void mtd_set_of_node(struct mtd_info *mtd,
+> +				   struct device_node *np)
+> +{
+> +	mtd->dev.of_node = np;
 
+Maybe we should retain a reference to the device_node here (IOW,
+replace '= np' by '= of_node_get(np)'). Of course this implies calling
+of_node_put() when the mtd device is unregistered.
+
+> +}
+> +
+> +static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
+> +{
+> +	return mtd->dev.of_node;
+
+Not sure this is relevant to to the same here before returning the
+device_node because it's mostly used by the MTD drivers and those are
+the ones who called mtd_set_of_node() in the first place, so we can
+assume it's safe to return an non-retained reference to a device_node.
 
 
 -- 
