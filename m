@@ -1,8 +1,8 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zt1eN-0002jl-Ra
- for linux-mtd@lists.infradead.org; Sun, 01 Nov 2015 23:03:01 +0000
+ id 1Zt1fO-0002ot-9a
+ for linux-mtd@lists.infradead.org; Sun, 01 Nov 2015 23:04:03 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
@@ -13,8 +13,10 @@ Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
  Stefan Agner <stefan@agner.ch>, linux-kernel@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
 Subject: [PATCH v2 12/11] mtd: nand: convert to nand_get_flash_node()
-Date: Mon,  2 Nov 2015 00:02:34 +0100
-Message-Id: <1446418954-31310-1-git-send-email-boris.brezillon@free-electrons.com>
+Date: Mon,  2 Nov 2015 00:03:38 +0100
+Message-Id: <1446419018-31435-1-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
+References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
