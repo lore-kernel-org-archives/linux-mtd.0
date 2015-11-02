@@ -1,24 +1,21 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtH33-0004i0-Mw
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 15:29:30 +0000
-Date: Mon, 2 Nov 2015 16:29:06 +0100
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Han Xu <b45815@freescale.com>, fabio.estevam@freescale.com,
- boris.brezillon@free-electrons.com, linux-kernel@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-mtd@lists.infradead.org, hofrat@osadl.org,
- shijie.huang@arm.com, dan.j.williams@intel.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Subject: Re: [PATCH v7 2/7] dmaengine: mxs: APBH DMA supports deep sleep mode
-Message-ID: <20151102162906.1e3c29da@free-electrons.com>
-In-Reply-To: <20151031014244.GF21326@localhost>
-References: <1445983540-27155-1-git-send-email-b45815@freescale.com>
- <1445983540-27155-3-git-send-email-b45815@freescale.com>
- <20151031014244.GF21326@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ id 1ZtHCF-0000De-Ar
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 15:38:59 +0000
+Message-ID: <1446478715.6126.109.camel@gmail.com>
+Subject: Re: [PATCH 05/11] ubifs: remove ununsed ubifs context from key helpers
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: david@sigma-star.at
+Date: Mon, 02 Nov 2015 17:38:35 +0200
+In-Reply-To: <5636BC3D.5000200@cn.fujitsu.com>
+References: <1446290160-30696-1-git-send-email-richard@nod.at>
+ <1446290160-30696-6-git-send-email-richard@nod.at>
+ <5636BC3D.5000200@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,32 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Vinod,
+On Mon, 2015-11-02 at 09:28 +0800, Dongsheng Yang wrote:
+> Yes, all ubifs_info *c in key.h are not used, But I am
+> not sure about is that intentional or not.
 
-On Sat, 31 Oct 2015 07:12:44 +0530, Vinod Koul wrote:
-> On Tue, Oct 27, 2015 at 05:05:35PM -0500, Han Xu wrote:
-> >  
-> > -static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
-> > +static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
-> 
-> This change seems unrelated to patch description, can you explain why?
+Hi,
 
-It seems related: mxs_dma_init() is now no longer called at
-initialization time, but also when resuming, as visible...
+the intention was that there would be multiple key formats supported,
+and these functions would look at something like c->key_format to
+figure out how to work with this key.
 
-> 
-> > +#ifdef CONFIG_PM_SLEEP
-> > +static int mxs_dma_pm_resume(struct device *dev)
-> > +{
-> > +	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
-> > +	int ret;
-> > +
-> > +	ret = mxs_dma_init(mxs_dma);
+Right now there is only one key type, so these are not needed as of
+today.
 
-... here.
-
-Thomas
--- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+Artem.
