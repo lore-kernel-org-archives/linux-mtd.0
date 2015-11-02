@@ -1,23 +1,24 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zt39N-0001EY-Qn
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 00:39:07 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Marek Vasut <marex@denx.de>, Scott Wood <scottwood@freescale.com>,
- Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>,
- Stefan Agner <stefan@agner.ch>, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v2 13/11] mtd: assign mtd->dev.of_node when creating partition
- devices
-Date: Mon,  2 Nov 2015 01:38:41 +0100
-Message-Id: <1446424721-23471-1-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
-References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
+Received: from mail-qk0-x236.google.com ([2607:f8b0:400d:c09::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zt3C9-0003q7-If
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 00:42:01 +0000
+Received: by qkcl124 with SMTP id l124so49185309qkc.3
+ for <linux-mtd@lists.infradead.org>; Sun, 01 Nov 2015 16:41:35 -0800 (PST)
+Date: Sun, 1 Nov 2015 21:37:33 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-sunxi@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mtd: nand: automate NAND timings selection
+Message-ID: <20151102003733.GA677@laptop.cereza>
+References: <1445598236-14036-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1445598236-14036-2-git-send-email-boris.brezillon@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1445598236-14036-2-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,130 +28,324 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD partitions may have been created from a DT definition, and in this case
-the ->of_node of the struct device embedded in mtd_info should point to
-the DT node that was used to create the partition.
+Hi Boris,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
-Hi Brian,
+This looks nice. I gave a try at this patch and it allows to simplify
+pxa3xx-nand greatly. A few comments below.
 
-Yet another patch that IMO should go into your "mtd: migrate 'of_node'
-handling to core, not in mtd_part_parser_data" series.
+On 23 Oct 01:03 PM, Boris Brezillon wrote:
+> The NAND framework provides several helpers to query timing modes supported
+> by a NAND chip, but this implies that all NAND controller drivers have
+> to implement the same timings selection dance.
+> 
+> Provide a common logic to select the best timings based on ONFI or
+> ->onfi_timing_mode_default information.
+> NAND controller willing to support timings adjustment should just
+> implement the ->setup_data_interface() method.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 189 ++++++++++++++++++++++++++++++++++++++++++-
+>  include/linux/mtd/nand.h     | 115 +++++++++++++++-----------
+>  2 files changed, 254 insertions(+), 50 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index eaf1fcd..52a1f89 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3323,6 +3323,144 @@ static void nand_onfi_detect_micron(struct nand_chip *chip,
+>  	chip->setup_read_retry = nand_setup_read_retry_micron;
+>  }
+>  
+> +/**
+> + * nand_setup_data_interface - Setup the data interface and timings on the
+> + *			       controller side
+> + * @mtd: MTD device structure
+> + * @conf: new configuration to apply
+> + *
+> + * Try to configure the NAND controller to support the provided data
+> + * interface configuration.
+> + *
+> + * Returns 0 in case of success or -ERROR_CODE.
+> + */
+> +static int nand_setup_data_interface(struct mtd_info *mtd,
+> +				     const struct nand_data_interface *conf)
+> +{
+> +	struct nand_chip *chip = mtd->priv;
+> +	int ret;
+> +
+> +	if (!chip->setup_data_interface)
+> +		return -ENOTSUPP;
+> +
+> +	ret = chip->setup_data_interface(mtd, conf, false);
+> +	if (ret)
+> +		return ret;
+> +
+> +	*chip->data_iface = *conf;
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * nand_setup_data_interface - Check if a data interface config is supported
 
-Best Regards,
+s/setup/check
 
-Boris
+> + *			       by the NAND controller
+> + * @mtd: MTD device structure
+> + * @conf: new configuration to apply
+> + *
+> + * Check if the provided data interface configuration is supported by the
+> + * NAND controller.
+> + *
+> + * Returns 0 if it is supported or -ERROR_CODE.
+> + */
+> +static int nand_check_data_interface(struct mtd_info *mtd,
+> +				     const struct nand_data_interface *conf)
+> +{
+> +	struct nand_chip *chip = mtd->priv;
+> +
+> +	if (!chip->setup_data_interface)
+> +		return -ENOTSUPP;
+> +
+> +	return chip->setup_data_interface(mtd, conf, true);
+> +}
+> +
+> +/**
+> + * nand_configure_data_interface - Configure the data interface and timings
+> + * @mtd: MTD device structure
+> + *
+> + * Try to configure the data interface and NAND timings appropriately.
+> + * First tries to retrieve supported timing modes from ONFI information,
+> + * and if the NAND chip does not support ONFI, relies on the
+> + * ->onfi_timing_mode_default specified in the nand_ids table.
+> + *
+> + * Returns 0 in case of success or -ERROR_CODE.
+> + */
+> +static int nand_configure_data_interface(struct mtd_info *mtd)
+> +{
+> +	struct nand_chip *chip = mtd->priv;
+> +	struct nand_data_interface *conf;
+> +	int modes, mode, ret = -EINVAL;
+> +
+> +	conf = kzalloc(sizeof(*conf), GFP_KERNEL);
+> +	if (!conf)
+> +		return -ENOMEM;
+> +
+> +	/* TODO: support DDR interfaces */
+> +	conf->type = NAND_SDR_IFACE;
+> +
+> +	/*
+> +	 * First try to identify the best timings from ONFI parameters and
+> +	 * if the NAND does not support ONFI, fallback to the default ONFI
+> +	 * timing mode.
+> +	 */
+> +	modes = onfi_get_async_timing_mode(chip);
+> +	if (modes != ONFI_TIMING_MODE_UNKNOWN) {
+> +		for (mode = fls(modes) - 1; mode >= 0; mode--) {
+> +			conf->timings.sdr =
+> +				*onfi_async_timing_mode_to_sdr_timings(mode);
+> +
+> +			ret = nand_check_data_interface(mtd, conf);
+> +			if (!ret)
+> +				break;
+> +		}
+> +	} else {
+> +		mode = chip->onfi_timing_mode_default;
+> +		conf->timings.sdr =
+> +				*onfi_async_timing_mode_to_sdr_timings(mode);
+> +
+> +		ret = nand_check_data_interface(mtd, conf);
+> +	}
+> +
+> +	if (!ret) {
+> +		uint8_t tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = { mode };
+> +		int i;
+> +
+> +		/*
+> +		 * Ensure the timing mode has be changed on the chip side
+> +		 * before changing timings on the controller side.
+> +		 */
+> +		if (modes != ONFI_TIMING_MODE_UNKNOWN) {
+> +			/*
+> +			 * FIXME: should we really set the timing mode on all
+> +			 * dies?
+> +			 */
+> +			for (i = 0; i < chip->numchips; i++) {
+> +				chip->select_chip(mtd, i);
+> +				ret = chip->onfi_set_features(mtd, chip,
+> +						ONFI_FEATURE_ADDR_TIMING_MODE,
+> +						tmode_param);
+> +			}
+> +			chip->select_chip(mtd, -1);
+> +		}
+> +
+> +		if (!ret) {
+> +			ret = nand_setup_data_interface(mtd, conf);
+> +
+> +			/*
+> +			 * Reset the NAND chip if the data interface setup
+> +			 * failed so that the chip goes back to a known state
+> +			 * (timing mode 0).
+> +			 */
+> +			if (ret)
+> +				chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+> +		}
+> +	}
+> +
+> +	kfree(conf);
+> +
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+>   */
+> @@ -3906,6 +4044,11 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+>  		chip->options &= ~NAND_SAMSUNG_LP_OPTIONS;
+>  ident_done:
+>  
+> +	/*
+> +	 * Setup the NAND interface (interface type + timings).
+> +	 */
+> +	nand_configure_data_interface(mtd);
+> +
 
- drivers/mtd/mtdcore.c          | 17 +++++++++++++----
- drivers/mtd/mtdpart.c          |  3 +++
- drivers/mtd/ofpart.c           |  1 +
- include/linux/mtd/partitions.h |  1 +
- 4 files changed, 18 insertions(+), 4 deletions(-)
+Need to check the returned value.
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index b1eea48..6101288 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -32,6 +32,7 @@
- #include <linux/err.h>
- #include <linux/ioctl.h>
- #include <linux/init.h>
-+#include <linux/of.h>
- #include <linux/proc_fs.h>
- #include <linux/idr.h>
- #include <linux/backing-dev.h>
-@@ -584,11 +585,13 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 			      const struct mtd_partition *parts,
- 			      int nr_parts)
- {
--	int ret;
-+	int ret, i;
- 	struct mtd_partition *real_parts = NULL;
+Also, it doesn't feel right to configure the timings in nand_get_flash_type.
+How about something like this:
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 947e74d24ee8..5fae81101c32 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4009,11 +4009,6 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 		chip->options &= ~NAND_SAMSUNG_LP_OPTIONS;
+ ident_done:
  
- 	ret = parse_mtd_partitions(mtd, types, &real_parts, parser_data);
--	if (ret <= 0 && nr_parts && parts) {
-+	if (ret > 0) {
-+		nr_parts = ret;
-+	} else if (nr_parts && parts) {
- 		real_parts = kmemdup(parts, sizeof(*parts) * nr_parts,
- 				     GFP_KERNEL);
- 		if (!real_parts)
-@@ -604,7 +607,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 		ret = 0;
+-	/*
+-	 * Setup the NAND interface (interface type + timings).
+-	 */
+-	nand_configure_data_interface(mtd);
+-
+ 	/* Try to identify manufacturer */
+ 	for (maf_idx = 0; nand_manuf_ids[maf_idx].id != 0x0; maf_idx++) {
+ 		if (nand_manuf_ids[maf_idx].id == *maf_id)
+@@ -4189,6 +4184,13 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 		goto err;
  	}
  
--	ret = mtd_add_device_partitions(mtd, real_parts, ret);
-+	ret = mtd_add_device_partitions(mtd, real_parts, nr_parts);
- 	if (ret)
- 		goto out;
- 
-@@ -623,7 +626,13 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 	}
- 
- out:
--	kfree(real_parts);
-+	if (real_parts) {
-+		for (i = 0; i < nr_parts; i++)
-+			of_node_put(real_parts[i].of_node);
++	/*
++	 * Setup the NAND interface (interface type + timings).
++	 */
++	ret = nand_configure_data_interface(mtd);
++	if (ret)
++		return ret;
 +
-+		kfree(real_parts);
-+	}
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_device_parse_register);
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index f8ba153..95f3a0d 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -29,6 +29,7 @@
- #include <linux/kmod.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/of.h>
- #include <linux/err.h>
- #include <linux/kconfig.h>
+ 	chip->select_chip(mtd, -1);
+[..]
  
-@@ -319,6 +320,7 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 
- static inline void free_partition(struct mtd_part *p)
- {
-+	of_node_put(mtd_get_of_node(&p->mtd));
- 	kfree(p->mtd.name);
- 	kfree(p);
- }
-@@ -391,6 +393,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	slave->mtd.dev.parent = IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) ?
- 				&master->dev :
- 				master->dev.parent;
-+	mtd_set_of_node(&slave->mtd, of_node_get(part->of_node));
- 
- 	slave->mtd._read = part_read;
- 	slave->mtd._write = part_write;
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index f78d2ae..5c64e04 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -111,6 +111,7 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 		if (of_get_property(pp, "lock", &len))
- 			(*pparts)[i].mask_flags |= MTD_POWERUP_LOCK;
- 
-+		(*pparts)[i].of_node = of_node_get(pp);
- 		i++;
- 	}
- 
-diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-index 773975a..282644c 100644
---- a/include/linux/mtd/partitions.h
-+++ b/include/linux/mtd/partitions.h
-@@ -42,6 +42,7 @@ struct mtd_partition {
- 	uint64_t offset;		/* offset within the master MTD space */
- 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
- 	struct nand_ecclayout *ecclayout;	/* out of band layout for this partition (NAND only) */
-+	struct device_node *of_node;	/* OF node attached to the partition */
- };
- 
- #define MTDPART_OFS_RETAIN	(-3)
+
+>  	/* Try to identify manufacturer */
+>  	for (maf_idx = 0; nand_manuf_ids[maf_idx].id != 0x0; maf_idx++) {
+>  		if (nand_manuf_ids[maf_idx].id == *maf_id)
+> @@ -4033,6 +4176,41 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+>  	/* Set the default functions */
+>  	nand_set_defaults(chip, chip->options & NAND_BUSWIDTH_16);
+>  
+> +	/*
+> +	 * Allocate an interface config struct if the controller implements the
+> +	 * ->apply_interface_conf() method.
+> +	 */
+> +	if (chip->setup_data_interface) {
+> +		chip->data_iface = kzalloc(sizeof(*chip->data_iface),
+> +					   GFP_KERNEL);
+> +		if (!chip->data_iface)
+> +			return -ENOMEM;
+> +
+> +		/*
+> +		 * The ONFI specification says:
+> +		 * "
+> +		 * To transition from NV-DDR or NV-DDR2 to the SDR data
+> +		 * interface, the host shall use the Reset (FFh) command
+> +		 * using SDR timing mode 0. A device in any timing mode is
+> +		 * required to recognize Reset (FFh) command issued in SDR
+> +		 * timing mode 0.
+> +		 * "
+> +		 *
+> +		 * Configure the data interface in SDR mode and set the
+> +		 * timings to timing mode 0. The Reset command is issued
+> +		 * in nand_get_flash_type().
+> +		 */
+> +
+> +		chip->data_iface->type = NAND_SDR_IFACE;
+> +		chip->data_iface->timings.sdr =
+> +				*onfi_async_timing_mode_to_sdr_timings(0);
+> +		ret = chip->setup_data_interface(mtd, chip->data_iface, false);
+> +		if (ret) {
+> +			pr_err("Failed to configure data interface to SDR timing mode 0\n");
+> +			goto err;
+> +		}
+> +	}
+> +
+>  	/* Read the flash type */
+>  	type = nand_get_flash_type(mtd, chip, &nand_maf_id,
+>  				   &nand_dev_id, table);
+> @@ -4041,7 +4219,9 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+>  		if (!(chip->options & NAND_SCAN_SILENT_NODEV))
+>  			pr_warn("No NAND device found\n");
+>  		chip->select_chip(mtd, -1);
+> -		return PTR_ERR(type);
+> +		kfree(chip->data_iface);
+
+You free data_iface here...
+
+> +		ret = PTR_ERR(type);
+> +		goto err;
+>  	}
+>  
+>  	chip->select_chip(mtd, -1);
+> @@ -4069,6 +4249,10 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+>  	mtd->size = i * chip->chipsize;
+>  
+>  	return 0;
+> +
+> +err:
+> +	kfree(chip->data_iface);
+
+...and again here.
+
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL(nand_scan_ident);
+>  
+> @@ -4476,6 +4660,9 @@ void nand_release(struct mtd_info *mtd)
+>  
+>  	mtd_device_unregister(mtd);
+>  
+> +	/* Free interface config struct */
+> +	kfree(chip->data_iface);
+> +
+>  	/* Free bad block table memory */
+>  	kfree(chip->bbt);
+>  	if (!(chip->options & NAND_OWN_BUFFERS))
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+[..]
+>  /**
+>   * struct nand_chip - NAND Private Flash Chip Data
+>   * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
+> @@ -690,6 +750,10 @@ struct nand_chip {
+>  	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
+>  			int feature_addr, uint8_t *subfeature_para);
+>  	int (*setup_read_retry)(struct mtd_info *mtd, int retry_mode);
+> +	int (*setup_data_interface)(struct mtd_info *mtd,
+> +				    const struct nand_data_interface *conf,
+> +				    bool check_only);
+
+The function lacks its proper documentation in the comment above
+the struct.
+
 -- 
-2.1.4
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
