@@ -1,18 +1,16 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtIFa-0005t3-JV
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 16:46:31 +0000
-Subject: Re: master node can not be recovered
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <A765B125120D1346A63912DDE6D8B6310BF4FB2A@NTXXIAMBX02.xacn.micron.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5637934D.5000503@nod.at>
-Date: Mon, 2 Nov 2015 17:46:05 +0100
+ id 1ZtISm-0004JK-0E
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 17:00:08 +0000
+From: Mike Scherban <m-scherban@ti.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
+ <m-karicheri2@ti.com>, <nsekhar@ti.com>, Mike Scherban <m-scherban@ti.com>
+Subject: [RESEND PATCH] mtd: davinci-nand: correct empty sector bit flips
+Date: Mon, 2 Nov 2015 10:59:17 -0600
+Message-ID: <1446483557-31098-1-git-send-email-m-scherban@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4FB2A@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +20,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bean,
+Currently empty page bit flips are not corrected and report 0 errors.
+If there happens to be a bit flip, this will cause UBIFS to fail to
+mount with a "corruption in empty space" error. The only way to recover
+from this is to reflash the NAND partition.
 
-Am 02.11.2015 um 17:10 schrieb Bean Huo »ô±ó±ó (beanhuo):
-> Hi, Richard 
-> I tested my UBI power loss solution, have a question about master node.
-> We all know that if master node be corrupted by power loss , we can recover it by second one. But from my testing results, in fact,
-> It cannot be recovered by second backup master node. If first master node be corrupted by power loss, this relevant block will be correctly read, get_master_node will not reture 0, so next time recover operation will not run.
-> Or I'm wrong?
+This changes the empty page handling to count the number of bit flips
+and correct them if they are under or equal to the ECC strength. UBI
+will then resolve the mounting error without requiring a reflash.
 
-ubifs_recover_master_node() is very strict.
-Can it be that in your case more than the last written page is corrupted?
+Signed-off-by: Mike Scherban <m-scherban@ti.com>
+---
+ drivers/mtd/nand/davinci_nand.c |   21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-Thanks,
-//richard
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index feb6d18..8189d8a 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -316,12 +316,27 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
+ 	unsigned num_errors, corrected;
+ 	unsigned long timeo;
+ 
+-	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
+-	for (i = 0; i < 10; i++) {
++	/* All bytes 0xff?  It's an erased page;
++	 * Ignore its ECC, but check for bit flips.
++	 */
++	for (i = 0; i < info->chip.ecc.bytes; i++) {
+ 		if (ecc_code[i] != 0xff)
+ 			goto compare;
+ 	}
+-	return 0;
++
++	/* Count bit flips in empty space. */
++	for (i = 0, corrected = 0; i < info->chip.ecc.size; i++)
++		corrected += hweight8(~data[i]);
++
++	/* If bit flips are above the ecc strength produce an error */
++	if (corrected > info->chip.ecc.strength)
++		return -EIO;
++
++	/* If there are bit flips correct the data */
++	if (corrected)
++		memset(data, 0xff, info->chip.ecc.size);
++
++	return corrected;
+ 
+ compare:
+ 	/* Unpack ten bytes into eight 10 bit values.  We know we're
+-- 
+1.7.9.5
