@@ -1,18 +1,18 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtHoh-00088j-Vr
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 16:18:45 +0000
-Subject: Re: MTD mounting problem
-To: "Krug, Markus" <Markus.Krug@bruker.com>
-References: <9B6BBBFFF27FBB469F5F9ECB4655AFDA40FBF7@bruexc005.brumgt.local>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1ZtIFa-0005t3-JV
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 16:46:31 +0000
+Subject: Re: master node can not be recovered
+To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <A765B125120D1346A63912DDE6D8B6310BF4FB2A@NTXXIAMBX02.xacn.micron.com>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <56378CC8.2030100@nod.at>
-Date: Mon, 2 Nov 2015 17:18:16 +0100
+Message-ID: <5637934D.5000503@nod.at>
+Date: Mon, 2 Nov 2015 17:46:05 +0100
 MIME-Version: 1.0
-In-Reply-To: <9B6BBBFFF27FBB469F5F9ECB4655AFDA40FBF7@bruexc005.brumgt.local>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4FB2A@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,19 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 02.11.2015 um 16:55 schrieb Krug, Markus:
-> Thanks Richard,
-> The problem was the minor number of the block device, which differs from the minor number of the char device.
-> With
-> mknod /dev/mtd5 c 31 10
-> mknod /dev/mtdblock5 b 90 5
-> I was able to mount the device.
+Bean,
 
-:-)
+Am 02.11.2015 um 17:10 schrieb Bean Huo »ô±ó±ó (beanhuo):
+> Hi, Richard 
+> I tested my UBI power loss solution, have a question about master node.
+> We all know that if master node be corrupted by power loss , we can recover it by second one. But from my testing results, in fact,
+> It cannot be recovered by second backup master node. If first master node be corrupted by power loss, this relevant block will be correctly read, get_master_node will not reture 0, so next time recover operation will not run.
+> Or I'm wrong?
 
-> However I still don't know, why the devices are not created in /dev at start up. 
-
-Well, how is your /dev mount managed?
+ubifs_recover_master_node() is very strict.
+Can it be that in your case more than the last written page is corrupted?
 
 Thanks,
 //richard
