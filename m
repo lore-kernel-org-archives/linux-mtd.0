@@ -1,7 +1,7 @@
 Received: from ns.lynxeye.de ([87.118.118.114] helo=lynxeye.de)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtLxW-0007rK-Nf
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 20:44:07 +0000
+ id 1ZtLxW-0007rJ-Nh
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 20:44:08 +0000
 From: Lucas Stach <dev@lynxeye.de>
 To: Stephen Warren <swarren@wwwdotorg.org>,
  Thierry Reding <thierry.reding@gmail.com>,
@@ -10,9 +10,9 @@ To: Stephen Warren <swarren@wwwdotorg.org>,
  Brian Norris <computersforpeace@gmail.com>
 Cc: linux-tegra@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH v4 5/5] ARM: tegra: enable NAND flash on Colibri T20
-Date: Mon,  2 Nov 2015 21:33:22 +0100
-Message-Id: <1446496402-8142-6-git-send-email-dev@lynxeye.de>
+Subject: [PATCH v4 4/5] ARM: tegra: add Tegra20 NAND flash controller node
+Date: Mon,  2 Nov 2015 21:33:21 +0100
+Message-Id: <1446496402-8142-5-git-send-email-dev@lynxeye.de>
 In-Reply-To: <1446496402-8142-1-git-send-email-dev@lynxeye.de>
 References: <1446496402-8142-1-git-send-email-dev@lynxeye.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,30 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This enables the on-module ONFI conformant NAND flash.
+Add basic controller description to be extended
+by individual boards.
 
 Signed-off-by: Lucas Stach <dev@lynxeye.de>
 ---
- arch/arm/boot/dts/tegra20-colibri-512.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm/boot/dts/tegra20.dtsi | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm/boot/dts/tegra20-colibri-512.dtsi b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-index 8e0066a..f688282 100644
---- a/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-+++ b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-@@ -455,6 +455,13 @@
- 		};
+diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
+index 969b828..5735314 100644
+--- a/arch/arm/boot/dts/tegra20.dtsi
++++ b/arch/arm/boot/dts/tegra20.dtsi
+@@ -376,6 +376,19 @@
+ 		status = "disabled";
  	};
  
-+	nand@70008000 {
-+		status = "okay";
-+		nand-bus-width = <8>;
-+		nand-on-flash-bbt;
-+		wp-gpios = <&gpio TEGRA_GPIO(S, 0) GPIO_ACTIVE_HIGH>;
++	nand: nand@70008000 {
++		compatible = "nvidia,tegra20-nand";
++		reg = <0x70008000 0x100>;
++		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
++		clock-names = "nand";
++		resets = <&tegra_car 13>;
++		reset-names = "nand";
++		status = "disabled";
++		#address-cells = <1>;
++		#size-cells = <1>;
 +	};
 +
- 	usb@c5004000 {
- 		status = "okay";
- 		nvidia,phy-reset-gpio = <&gpio TEGRA_GPIO(V, 1)
+ 	pwm: pwm@7000a000 {
+ 		compatible = "nvidia,tegra20-pwm";
+ 		reg = <0x7000a000 0x100>;
 -- 
 2.4.3
