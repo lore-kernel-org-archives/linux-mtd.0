@@ -1,20 +1,23 @@
 Received: from bh-25.webhostbox.net ([208.91.199.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtLMH-0005Rg-Di
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 20:05:38 +0000
-Date: Mon, 2 Nov 2015 12:05:13 -0800
+ id 1ZtLQQ-0007Gt-CF
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 20:09:55 +0000
+Date: Mon, 2 Nov 2015 12:09:31 -0800
 From: Guenter Roeck <linux@roeck-us.net>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, cdoban@broadcom.com, rjui@broadcom.com,
- sbranden@broadcom.com
-Subject: Re: [3/3] mtd: cfi_cmdset_{0001, 0002}: use common MTD reboot
- boilerplate
-Message-ID: <20151102200513.GA26475@roeck-us.net>
-References: <1417746968-28747-3-git-send-email-computersforpeace@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jesper Nilsson <jespern@axis.com>, linux-cris-kernel@axis.com
+Subject: Re: Problems with 'mtd: warn when registering the same master many
+ times'
+Message-ID: <20151102200931.GA26577@roeck-us.net>
+References: <5637843C.10307@roeck-us.net>
+ <20151102174356.GA13101@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1417746968-28747-3-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <20151102174356.GA13101@localhost>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,178 +27,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 04, 2014 at 06:36:08PM -0800, Brian Norris wrote:
-> We don't have to implement this glue code in the chip driver any more.
+On Mon, Nov 02, 2015 at 09:43:56AM -0800, Brian Norris wrote:
+> On Mon, Nov 02, 2015 at 07:41:48AM -0800, Guenter Roeck wrote:
+> > Brian,
+> > 
+> > I see the following warnings in recent mips qemu tests on linux-next.
+> > 
+> > WARNING: CPU: 0 PID: 1 at drivers/mtd/mtdcore.c:619 mtd_device_parse_register+0x160/0x16c()
+> > MTD already registered
+> > 
+> > Looking into the code, this is the result of your patch 'mtd: warn when registering
+> > the same master many times'.
+> > 
+> > This patch is supposed to warn if mtd_device_parse_register is called multiple times
+> > with the same mtd_info structure pointer as parameter.
+> > 
+> > At the surface, the check appears to make sense. However, it has a problem.
+> > The output of "git grep reboot_notifier.notifier_call" in drivers/mtd results in
+> > 
+> > chips/cfi_cmdset_0001.c:        mtd->reboot_notifier.notifier_call = cfi_intelext_reboot;
+> > chips/cfi_cmdset_0002.c:        mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
+> > mtdcore.c:      WARN_ONCE(mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+> > mtdcore.c:      if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
+> > mtdcore.c:              mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
+> > 
+> > As it turns out, the observed warning is not seen because mtd_device_parse_register()
+> > is called multiple times. It is seen because mtd->reboot_notifier.notifier_call
+> > is already set to cfi_intelext_reboot by the time it is checked.
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
-> Not tested yet
+> Hmm, you're right. I overlooked this one. FWIW, this would be
+> ameliorated by this patch [1] but I never got around to testing it
+> properly, so I didn't merge it. (Could you test it? If so, I might just
+> apply it as a fix.)
 > 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Seems to be working, or at least my test passes without problems after I applied
+it on top of -next. I sent you a Tested-by: as response to that patch.
 
->  drivers/mtd/chips/cfi_cmdset_0001.c | 22 +++-------------------
->  drivers/mtd/chips/cfi_cmdset_0002.c | 22 +++-------------------
->  2 files changed, 6 insertions(+), 38 deletions(-)
+> > I don't know if this is a bug in the mtd code, or if this is a valid use case.
+> > Whatever it is, the warning does not warn about the driver, it warns about a potential
+> > inconsistency in the mtd code itself (and if it is is a valid use case, the warning
+> > is inappropriate). Maybe it would make sense to change the warning as follows ?
+> > 
+> > WARN_ONCE(mtd->_reboot && mtd->reboot_notifier.notifier_call, "MTD already registered\n");
 > 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 286b97a304cf..3df9744496b2 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -28,7 +28,6 @@
->  #include <linux/slab.h>
->  #include <linux/delay.h>
->  #include <linux/interrupt.h>
-> -#include <linux/reboot.h>
->  #include <linux/bitmap.h>
->  #include <linux/mtd/xip.h>
->  #include <linux/mtd/map.h>
-> @@ -80,7 +79,7 @@ static int cfi_intelext_get_user_prot_info(struct mtd_info *, size_t,
->  #endif
->  static int cfi_intelext_suspend (struct mtd_info *);
->  static void cfi_intelext_resume (struct mtd_info *);
-> -static int cfi_intelext_reboot (struct notifier_block *, unsigned long, void *);
-> +static void cfi_intelext_reset(struct mtd_info *);
->  
->  static void cfi_intelext_destroy(struct mtd_info *);
->  
-> @@ -486,13 +485,12 @@ struct mtd_info *cfi_cmdset_0001(struct map_info *map, int primary)
->  	mtd->_is_locked = cfi_intelext_is_locked;
->  	mtd->_suspend = cfi_intelext_suspend;
->  	mtd->_resume  = cfi_intelext_resume;
-> +	mtd->_reboot  = cfi_intelext_reset;
->  	mtd->flags   = MTD_CAP_NORFLASH;
->  	mtd->name    = map->name;
->  	mtd->writesize = 1;
->  	mtd->writebufsize = cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
->  
-> -	mtd->reboot_notifier.notifier_call = cfi_intelext_reboot;
-> -
->  	if (cfi->cfi_mode == CFI_MODE_CFI) {
->  		/*
->  		 * It's a real CFI chip, not one for which the probe
-> @@ -646,7 +644,6 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
->  		goto setup_err;
->  
->  	__module_get(THIS_MODULE);
-> -	register_reboot_notifier(&mtd->reboot_notifier);
->  	return mtd;
->  
->   setup_err:
-> @@ -2605,7 +2602,7 @@ static void cfi_intelext_resume(struct mtd_info *mtd)
->  		cfi_intelext_restore_locks(mtd);
->  }
->  
-> -static int cfi_intelext_reset(struct mtd_info *mtd)
-> +static void cfi_intelext_reset(struct mtd_info *mtd)
->  {
->  	struct map_info *map = mtd->priv;
->  	struct cfi_private *cfi = map->fldrv_priv;
-> @@ -2626,18 +2623,6 @@ static int cfi_intelext_reset(struct mtd_info *mtd)
->  		}
->  		mutex_unlock(&chip->mutex);
->  	}
-> -
-> -	return 0;
-> -}
-> -
-> -static int cfi_intelext_reboot(struct notifier_block *nb, unsigned long val,
-> -			       void *v)
-> -{
-> -	struct mtd_info *mtd;
-> -
-> -	mtd = container_of(nb, struct mtd_info, reboot_notifier);
-> -	cfi_intelext_reset(mtd);
-> -	return NOTIFY_DONE;
->  }
->  
->  static void cfi_intelext_destroy(struct mtd_info *mtd)
-> @@ -2647,7 +2632,6 @@ static void cfi_intelext_destroy(struct mtd_info *mtd)
->  	struct mtd_erase_region_info *region;
->  	int i;
->  	cfi_intelext_reset(mtd);
-> -	unregister_reboot_notifier(&mtd->reboot_notifier);
->  	kfree(cfi->cmdset_priv);
->  	kfree(cfi->cfiq);
->  	kfree(cfi->chips[0].priv);
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index c50d8cf0f60d..c4f63482cf96 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -31,7 +31,6 @@
->  #include <linux/slab.h>
->  #include <linux/delay.h>
->  #include <linux/interrupt.h>
-> -#include <linux/reboot.h>
->  #include <linux/of.h>
->  #include <linux/of_platform.h>
->  #include <linux/mtd/map.h>
-> @@ -57,7 +56,7 @@ static int cfi_amdstd_erase_varsize(struct mtd_info *, struct erase_info *);
->  static void cfi_amdstd_sync (struct mtd_info *);
->  static int cfi_amdstd_suspend (struct mtd_info *);
->  static void cfi_amdstd_resume (struct mtd_info *);
-> -static int cfi_amdstd_reboot(struct notifier_block *, unsigned long, void *);
-> +static void cfi_amdstd_reset(struct mtd_info *);
->  static int cfi_amdstd_get_fact_prot_info(struct mtd_info *, size_t,
->  					 size_t *, struct otp_info *);
->  static int cfi_amdstd_get_user_prot_info(struct mtd_info *, size_t,
-> @@ -529,6 +528,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
->  	mtd->_sync    = cfi_amdstd_sync;
->  	mtd->_suspend = cfi_amdstd_suspend;
->  	mtd->_resume  = cfi_amdstd_resume;
-> +	mtd->_reboot  = cfi_amdstd_reset;
->  	mtd->_read_user_prot_reg = cfi_amdstd_read_user_prot_reg;
->  	mtd->_read_fact_prot_reg = cfi_amdstd_read_fact_prot_reg;
->  	mtd->_get_fact_prot_info = cfi_amdstd_get_fact_prot_info;
-> @@ -544,7 +544,6 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
->  			mtd->writebufsize);
->  
->  	mtd->_panic_write = cfi_amdstd_panic_write;
-> -	mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
->  
->  	if (cfi->cfi_mode==CFI_MODE_CFI){
->  		unsigned char bootloc;
-> @@ -717,7 +716,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
->  	}
->  
->  	__module_get(THIS_MODULE);
-> -	register_reboot_notifier(&mtd->reboot_notifier);
->  	return mtd;
->  
->   setup_err:
-> @@ -2871,7 +2869,7 @@ static void cfi_amdstd_resume(struct mtd_info *mtd)
->   * the flash is in query/program/erase mode will prevent the CPU from
->   * fetching the bootloader code, requiring a hard reset or power cycle.
->   */
-> -static int cfi_amdstd_reset(struct mtd_info *mtd)
-> +static void cfi_amdstd_reset(struct mtd_info *mtd)
->  {
->  	struct map_info *map = mtd->priv;
->  	struct cfi_private *cfi = map->fldrv_priv;
-> @@ -2893,19 +2891,6 @@ static int cfi_amdstd_reset(struct mtd_info *mtd)
->  
->  		mutex_unlock(&chip->mutex);
->  	}
-> -
-> -	return 0;
-> -}
-> -
-> -
-> -static int cfi_amdstd_reboot(struct notifier_block *nb, unsigned long val,
-> -			       void *v)
-> -{
-> -	struct mtd_info *mtd;
-> -
-> -	mtd = container_of(nb, struct mtd_info, reboot_notifier);
-> -	cfi_amdstd_reset(mtd);
-> -	return NOTIFY_DONE;
->  }
->  
->  
-> @@ -2915,7 +2900,6 @@ static void cfi_amdstd_destroy(struct mtd_info *mtd)
->  	struct cfi_private *cfi = map->fldrv_priv;
->  
->  	cfi_amdstd_reset(mtd);
-> -	unregister_reboot_notifier(&mtd->reboot_notifier);
->  	kfree(cfi->cmdset_priv);
->  	kfree(cfi->cfiq);
->  	kfree(cfi);
+> That would be an OK fix, in the event that the above patch isn't taken.
+> 
+> > I am not sure, though, if that is correct, since even that might be a valid use case
+> > (a caller registering a cfi based mtd device with a _reboot callback).
+> 
+> No, those two are supposed to be mutually exclusive before MTD
+> registration; either the MTD driver provides a _reboot() callback and
+> MTD core registers the notifier (which fills out .notifier_call), or the
+> driver itself steals that notifier structure but never registers a
+> _reboot() callback. So no driver should actually need both.
+> 
+> I'd really prefer it if we could just transition to the CFI drivers to
+> let MTD register the notifier for us, but I'm not 100% confident without
+> testing.
+> 
+> > I also see the warning in crisv32 runtime tests. This is because the code in
+> > arch/cris/arch-v32/drivers/axisflashmap.c calls mtd_device_register() multiple times
+> > with the same mtd_info argument, each time to register a different partition.
+> > I am not sure if the check is appropriate for this case either, since the code calls
+> > mtd_device_register(), both 'type' and 'parser_data' are NULL, parse_mtd_partitions()
+> > does not do anything, and the problem you are concerned about does not apply.
+> 
+> Actually, that platform is probably one of the main reasons for the
+> warning patch. It is not kosher to call mtd_device_register() as many
+> times as it does. So, you get a warning until somebody can be bothered
+> to fix that ugly code.
+> 
+> > How about changing the warning to something like the following ?
+> > 
+> > WARN_ONCE(types && mtd->_reboot && mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+> 
+> No, that doesn't make much sense. We might as well just be removing the
+> check entirely at that point, since this just looks like you're shooting
+> at a random/fragile hack.
+> 
+> > This would eliminate (what I think are) false positives and only warn if there
+> > is a real problem.
+> 
+> I think we have the option of either taking patch [1] or taking your
+> first suggestion. But the axisflashmap.c is not a false positive, and it
+> should be fixed. Or just live with the warning, if it's unmaintained.
+> 
+We'll see if Jesper has any comments. I didn't see an easy way to fix that
+driver myself, so I guess we may have to live with the warning for now.
+
+Thanks,
+Guenter
