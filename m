@@ -1,28 +1,16 @@
-Received: from hm1831-12.locaweb.com.br ([189.126.112.32])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZvnJu-00053a-El
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 14:21:19 +0000
-Received: from mcbain0008.correio.biz (189.126.112.84) by
- hm1831-n-113.locaweb.com.br id h82lts15cto2 for
- <linux-mtd@lists.infradead.org>;
- Mon, 9 Nov 2015 12:04:01 -0200 (envelope-from <ibrahim.neto@writesys.com.br>)
-Received: from bart0123.correio.pw (unknown [10.30.172.245])
- by mcbain0008.correio.biz (Postfix) with ESMTP id DF3CA23FBF9
- for <linux-mtd@lists.infradead.org>; Mon,  9 Nov 2015 12:04:01 -0200 (BRST)
-Received: from [10.185.5.13] (unknown [189.39.5.1])
- (Authenticated sender: ibrahim.neto@writesys.com.br)
- by bart0123.correio.pw (Postfix) with ESMTPSA id 61CA176863ADC
- for <linux-mtd@lists.infradead.org>; Mon,  9 Nov 2015 12:04:01 -0200 (BRST)
-To: linux-mtd@lists.infradead.org
-References: <1315747066.18731.53.camel@sauron>
-Subject: can't mount ubifs after resizing with ubirsvol
-From: Ibrahim Mattus Neto <ibrahim.neto@writesys.com.br>
-Message-ID: <5640A7D0.6080104@writesys.com.br>
-Date: Mon, 9 Nov 2015 12:04:00 -0200
+Received: from mail1.bemta5.messagelabs.com ([195.245.231.147])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZtHSl-0003nH-Ot
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 15:56:05 +0000
+From: "Krug, Markus" <Markus.Krug@bruker.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: MTD mounting problem
+Message-ID: <9B6BBBFFF27FBB469F5F9ECB4655AFDA40FBF7@bruexc005.brumgt.local>
+Content-Language: de-DE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <1315747066.18731.53.camel@sauron>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,53 +19,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Mon, 02 Nov 2015 15:56:05 -0000
 
-Hi!
-
-I am having problems resizing a ubifs volume, I used the command 
-ubirsvol (version: 1.5.1) but when I try mounting it I get the following 
-error:
-
-[ 8840.450000] UBIFS error (ubi0:1 pid 720): validate_sb: bad LEB count: 
-413 in superblock, 331 on UBI volume, 19 minimum required
-[ 8840.460000] UBIFS error (ubi0:1 pid 720): validate_sb: bad 
-superblock, error 1
-[ 8840.470000]  magic          0x6101831
-[ 8840.480000]  crc            0x539e8e1c
-[ 8840.480000]  node_type      6 (superblock node)
-[ 8840.480000]  group_type     0 (no node group)
-[ 8840.490000]  sqnum          1
-[ 8840.490000]  len            4096
-[ 8840.490000]  key_hash       0 (R5)
-[ 8840.500000]  key_fmt        0 (simple)
-[ 8840.500000]  flags          0x0
-[ 8840.500000]  big_lpt        0
-[ 8840.510000]  space_fixup    0
-[ 8840.510000]  min_io_size    2048
-[ 8840.510000]  leb_size       126976
-[ 8840.520000]  leb_cnt        413
-[ 8840.520000]  max_leb_cnt    413
-[ 8840.520000]  max_bud_bytes  2158592
-[ 8840.530000]  log_lebs       3
-[ 8840.530000]  lpt_lebs       2
-[ 8840.530000]  orph_lebs      2
-[ 8840.540000]  jhead_cnt      1
-[ 8840.540000]  fanout         8
-[ 8840.540000]  lsave_cnt      256
-[ 8840.540000]  default_compr  1
-[ 8840.550000]  rp_size        2558566
-[ 8840.550000]  rp_uid         0
-[ 8840.550000]  rp_gid         0
-[ 8840.560000]  fmt_version    4
-[ 8840.560000]  time_gran      1000000000
-[ 8840.560000]  UUID           B1F16610-EEDF-471F-B5AD-279F21C00729
-mount: mounting ubi0:recover on /recover failed: Invalid argument
-
-I was reading through the archives and found a similar issue but no 
-solution, is there a way to shrink a volume?
-
-I was thinking about changing the LEB count inside the superblock but I 
-didn't know how to (and thought it would be too risky)
-
-Thanks in advance,
-Ibrahim
+VGhhbmtzIFJpY2hhcmQsDQpUaGUgcHJvYmxlbSB3YXMgdGhlIG1pbm9yIG51bWJlciBvZiB0aGUg
+YmxvY2sgZGV2aWNlLCB3aGljaCBkaWZmZXJzIGZyb20gdGhlIG1pbm9yIG51bWJlciBvZiB0aGUg
+Y2hhciBkZXZpY2UuDQpXaXRoDQpta25vZCAvZGV2L210ZDUgYyAzMSAxMA0KbWtub2QgL2Rldi9t
+dGRibG9jazUgYiA5MCA1DQpJIHdhcyBhYmxlIHRvIG1vdW50IHRoZSBkZXZpY2UuIA0KSG93ZXZl
+ciBJIHN0aWxsIGRvbid0IGtub3csIHdoeSB0aGUgZGV2aWNlcyBhcmUgbm90IGNyZWF0ZWQgaW4g
+L2RldiBhdCBzdGFydCB1cC4gDQoNCk1hcmt1cw0KDQotLS0tLVVyc3Byw7xuZ2xpY2hlIE5hY2hy
+aWNodC0tLS0tDQpWb246IFJpY2hhcmQgV2VpbmJlcmdlciBbbWFpbHRvOnJpY2hhcmQud2VpbmJl
+cmdlckBnbWFpbC5jb21dIA0KR2VzZW5kZXQ6IE1vbnRhZywgMi4gTm92ZW1iZXIgMjAxNSAxNDow
+OQ0KQW46IEtydWcsIE1hcmt1cw0KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpC
+ZXRyZWZmOiBSZTogTVREIG1vdW50aW5nIHByb2JsZW0NCg0KT24gTW9uLCBOb3YgMiwgMjAxNSBh
+dCAxOjIxIFBNLCBLcnVnLCBNYXJrdXMgPE1hcmt1cy5LcnVnQGJydWtlci5jb20+IHdyb3RlOg0K
+PiBhbmQgL3Byb2MvbXRkIHNob3dzOg0KPiBkZXY6ICAgIHNpemUgICBlcmFzZXNpemUgIG5hbWUN
+Cj4gbXRkMDogMDAxMDAwMDAgMDAwMTAwMDAgInFzcGktZnNibC11Ym9vdCINCj4gbXRkMTogMDA1
+MDAwMDAgMDAwMTAwMDAgInFzcGktbGludXgiDQo+IG10ZDI6IDAwMDIwMDAwIDAwMDEwMDAwICJx
+c3BpLWRldmljZS10cmVlIg0KPiBtdGQzOiAwMDVlMDAwMCAwMDAxMDAwMCAicXNwaS1yb290ZnMi
+DQo+IG10ZDQ6IDAwNDAwMDAwIDAwMDEwMDAwICJxc3BpLWJpdHN0cmVhbSINCj4gbXRkNTogMDEw
+MDAwMDAgMDAwMTAwMDAgInFzcGktZGF0YSINCj4gU28gZXZlcnl0aGluZyBzZWVtcyB0byBiZSBm
+aW5lLg0KPiBCdXQgaW4gL2RldiB0aGVyZSBhcmUgb25seSBtdGQwLCBtdGQxLCBtdGRibG9jazAg
+YW5kIG10ZGJsb2NrMS4NCj4gU28gSSBhZGRlZCB3aXRoIG1rbm9kIHRoZSBtaXNzaW5nIHBhcnRp
+dGlvbnMuDQoNClRoaXMgc2hvdWxkIG5vdCBoYXBwZW4uDQpJcyB5b3VyIC9kZXYgcmVhbGx5IG5v
+dCBtYW5hZ2VkIGJ5IHVkZXYgb3IgZGV2dG1wZnM/DQoNCj4gVGhlbiBJIHJ1bjoNCj4gZmxhc2hf
+ZXJhc2VhbGwgL2Rldi9tdGQ1IChubyBwcm9ibGVtKQ0KPiBtb3VudCAtdCBqZmZzMiAvZGV2L210
+ZGJsb2NrNSAvbW50DQo+IHRoZSBtb3VudGluZyBmYWlsZWQ6DQo+IG1vdW50OiBtb3VudGluZyAv
+ZGV2L210ZGJsb2NrNSBvbiAvbW50IGZhaWxlZDogTm8gc3VjaCBkZXZpY2UNCj4NCj4gRG9lcyBz
+b21lb25lIGtub3cgd2hhdHMgZ29pbmcgd3Jvbmc/DQoNCkkgdGhpbmsgdGhlIHJvb3QgY2F1c2Ug
+aXMgdGhlIG1pc3NpbmcgZGV2aWNlIG5vZGUuDQpQbGVhc2UgZG91YmxlIGNoZWNrIHdoeSBpdCBp
+cyBub3QgcHJlc2VudC4NCg0KLS0gDQpUaGFua3MsDQovL3JpY2hhcmQNCg==
