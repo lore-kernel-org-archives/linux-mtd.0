@@ -1,16 +1,27 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtISm-0004JK-0E
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 17:00:08 +0000
-From: Mike Scherban <m-scherban@ti.com>
-To: <linux-mtd@lists.infradead.org>
-CC: <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
- <m-karicheri2@ti.com>, <nsekhar@ti.com>, Mike Scherban <m-scherban@ti.com>
-Subject: [RESEND PATCH] mtd: davinci-nand: correct empty sector bit flips
-Date: Mon, 2 Nov 2015 10:59:17 -0600
-Message-ID: <1446483557-31098-1-git-send-email-m-scherban@ti.com>
+From: Anup Patel <anup.patel@broadcom.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Linux MTD
+ <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll
+ <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Sudeep Holla
+ <sudeep.holla@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Kumar
+ Gala" <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>, Scott Branden
+ <sbranden@broadcom.com>, Florian Fainelli <f.fainelli@gmail.com>, "Pramod
+ Kumar" <pramodku@broadcom.com>, Vikram Prakash <vikramp@broadcom.com>,
+ Sandeep Tripathy <tripathy@broadcom.com>, Linux ARM Kernel
+ <linux-arm-kernel@lists.infradead.org>, Device Tree
+ <devicetree@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+Subject: RE: [PATCH v5 0/3] NAND support for Broadcom NS2 SoC
+Date: Mon, 2 Nov 2015 17:02:18 +0000
+Message-ID: <39063E8F96E11742B35A201CC5D095B7B063A5@SJEXCHMB10.corp.ad.broadcom.com>
+References: <1446188361-15146-1-git-send-email-anup.patel@broadcom.com>
+ <20151030193152.GI13239@google.com>
+In-Reply-To: <20151030193152.GI13239@google.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,54 +31,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently empty page bit flips are not corrected and report 0 errors.
-If there happens to be a bit flip, this will cause UBIFS to fail to
-mount with a "corruption in empty space" error. The only way to recover
-from this is to reflash the NAND partition.
 
-This changes the empty page handling to count the number of bit flips
-and correct them if they are under or equal to the ECC strength. UBI
-will then resolve the mounting error without requiring a reflash.
 
-Signed-off-by: Mike Scherban <m-scherban@ti.com>
----
- drivers/mtd/nand/davinci_nand.c |   21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+> -----Original Message-----
+> From: Brian Norris [mailto:computersforpeace@gmail.com]
+> Sent: 31 October 2015 01:02
+> To: Anup Patel
+> Cc: David Woodhouse; Linux MTD; Rob Herring; Pawel Moll; Mark Rutland;
+> Catalin Marinas; Will Deacon; Sudeep Holla; Ian Campbell; Kumar Gala; Ray=
+ Jui;
+> Scott Branden; Florian Fainelli; Pramod Kumar; Vikram Prakash; Sandeep
+> Tripathy; Linux ARM Kernel; Device Tree; Linux Kernel; bcm-kernel-feedbac=
+k-list
+> Subject: Re: [PATCH v5 0/3] NAND support for Broadcom NS2 SoC
+>=20
+> On Fri, Oct 30, 2015 at 12:29:18PM +0530, Anup Patel wrote:
+> > We enable NAND support for Broadcom NS2 SoC by reusing existing
+> > BRCMNAND driver.
+> >
+> > This patchset applies on-top of "arm64: Simple additions to
+> > NS2 DT" v1 patchset and is available in ns2_nand_v5 branch of
+> > https://github.com/Broadcom/arm64-linux.git.
+> >
+> > The patchset is tested on NS2 SVK.
+>=20
+> Applied patches 1 and 2. My "Reviewed-by" on patch 3 stands.
+>=20
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index feb6d18..8189d8a 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -316,12 +316,27 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
- 	unsigned num_errors, corrected;
- 	unsigned long timeo;
- 
--	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
--	for (i = 0; i < 10; i++) {
-+	/* All bytes 0xff?  It's an erased page;
-+	 * Ignore its ECC, but check for bit flips.
-+	 */
-+	for (i = 0; i < info->chip.ecc.bytes; i++) {
- 		if (ecc_code[i] != 0xff)
- 			goto compare;
- 	}
--	return 0;
-+
-+	/* Count bit flips in empty space. */
-+	for (i = 0, corrected = 0; i < info->chip.ecc.size; i++)
-+		corrected += hweight8(~data[i]);
-+
-+	/* If bit flips are above the ecc strength produce an error */
-+	if (corrected > info->chip.ecc.strength)
-+		return -EIO;
-+
-+	/* If there are bit flips correct the data */
-+	if (corrected)
-+		memset(data, 0xff, info->chip.ecc.size);
-+
-+	return corrected;
- 
- compare:
- 	/* Unpack ten bytes into eight 10 bit values.  We know we're
--- 
-1.7.9.5
+Thanks Brian.
+
+Regards,
+Anup
