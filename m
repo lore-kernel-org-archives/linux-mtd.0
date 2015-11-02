@@ -1,25 +1,32 @@
 Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtOQ7-0008Vv-5U
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 23:21:48 +0000
-Received: by pasz6 with SMTP id z6so162070309pas.2
- for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2015 15:21:24 -0800 (PST)
-Date: Mon, 2 Nov 2015 15:21:22 -0800
+ id 1ZtOZJ-0004eY-7W
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 23:31:17 +0000
+Received: by padec8 with SMTP id ec8so53125755pad.1
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2015 15:30:56 -0800 (PST)
+Date: Mon, 2 Nov 2015 15:30:54 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-mtd@lists.infradead.org, cdoban@broadcom.com, rjui@broadcom.com,
- sbranden@broadcom.com
-Subject: Re: [3/3] mtd: cfi_cmdset_{0001, 0002}: use common MTD reboot
- boilerplate
-Message-ID: <20151102232122.GG7274@google.com>
-References: <1417746968-28747-3-git-send-email-computersforpeace@gmail.com>
- <20151102200513.GA26475@roeck-us.net>
- <20151102215818.GD7274@google.com>
- <20151102221633.GA30556@roeck-us.net>
+To: Clay McClure <clay@daemons.net>
+Cc: Ray Jui <rjui@broadcom.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ "bcm-kernel-feedback-list@broadcom.com"
+ <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: [PATCH] mtd: brcmnand: Fix NAND_CMD_PARAM byte order
+Message-ID: <20151102233054.GH7274@google.com>
+References: <1445629626-27474-1-git-send-email-clay@daemons.net>
+ <20151023232742.GV13239@google.com> <562AD54B.2000501@broadcom.com>
+ <20151024011219.GW13239@google.com>
+ <CAOVqfW-1YurDwJbKDgUJdQZVxJ_rWDg-x+28++SZtg-vPO4kYg@mail.gmail.com>
+ <20151026181430.GA13239@google.com> <562E7667.5050406@broadcom.com>
+ <CAOVqfW8g2w=u8fO5GTa=5Hw_OOPS6NcGFg3TiLbCPny14id0VQ@mail.gmail.com>
+ <20151027204023.GV13239@google.com>
+ <CAOVqfW_HXf9E4JNBHOCgAk7rpGexhpKHyfrQvSR7e3poiSHi2A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151102221633.GA30556@roeck-us.net>
+In-Reply-To: <CAOVqfW_HXf9E4JNBHOCgAk7rpGexhpKHyfrQvSR7e3poiSHi2A@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,35 +36,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 02, 2015 at 02:16:33PM -0800, Guenter Roeck wrote:
-> On Mon, Nov 02, 2015 at 01:58:18PM -0800, Brian Norris wrote:
-> > On Mon, Nov 02, 2015 at 12:05:13PM -0800, Guenter Roeck wrote:
-> > > On Thu, Dec 04, 2014 at 06:36:08PM -0800, Brian Norris wrote:
-> > > > We don't have to implement this glue code in the chip driver any more.
-> > > > 
-> > > > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > > > ---
-> > > > Not tested yet
-> > > > 
-> > > Tested-by: Guenter Roeck <linux@roeck-us.net>
-> > 
-> > Thanks! Did you verify that your reboot notifier callback (e.g.,
-> > cfi_intelext_reset()) is actually called on reboot?
-> > 
-> No, I just verified that it boots and shuts down correctly.
+On Mon, Nov 02, 2015 at 03:10:05PM -0800, Clay McClure wrote:
+> On Tue, Oct 27, 2015 at 1:40 PM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+> >
+> > OK, getting testing feedback from an iProc-based system using ONFI would
+> > be somewhat illuminating.
 > 
-> Do you want me to verify if the notifier is called, given the
-> problems you discovered with the patch ?
+> I've tested your refactoring patch [1] on Helix4 (an iProc-based
+> switch chip); seems to work fine.
 
-Up to you. It'd be nice to know, but even with that info, we'd have more
-work to do before we can take this, since I'm pretty sure there are
-platforms out there where the notifier won't be called.
+You mean, you tested with a combo of my [1] and either [2] or [3]? Can I
+get a 'Tested-by' line to add to them?
 
-(And sorry, my emails can be a little evolutionary as they progress,
-when I start to type before I've finished investigating everything.)
+e.g.: 'Tested-by: Your Name <your@email>'
 
-BTW, do you want to send out the patch for your suggestion in the other
-thread, or should I?
-
-Thanks,
+Regards,
 Brian
+
+> 
+> [1] http://patchwork.ozlabs.org/patch/536148/
+
+[2] http://patchwork.ozlabs.org/patch/539145/ (except your patch is
+    whitespace damaged and patchwork didn't like it)
+
+[3] http://patchwork.ozlabs.org/patch/535330/
