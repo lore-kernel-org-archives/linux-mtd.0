@@ -1,23 +1,19 @@
-Subject: Re: [PATCH linux-next 0/4] mtd: spi-nor: fix Quad SPI memory support
-To: Marek Vasut <marex@denx.de>
-References: <cover.1442590224.git.cyrille.pitchen@atmel.com>
- <201511020207.57031.marex@denx.de>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: <nicolas.ferre@atmel.com>, <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <zajec5@gmail.com>, <beanhuo@micron.com>,
- <juhosg@openwrt.org>, <ben@decadent.org.uk>, <jogo@openwrt.org>,
- <jteki@openedev.com>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
- <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>,
- <linux-mtd@lists.infradead.org>
-Message-ID: <56375D8F.5040403@atmel.com>
-Date: Mon, 2 Nov 2015 13:56:47 +0100
+Received: from mail-ob0-x22e.google.com ([2607:f8b0:4003:c01::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZtErm-00011p-3g
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 13:09:42 +0000
+Received: by obbwb3 with SMTP id wb3so94246648obb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2015 05:09:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <201511020207.57031.marex@denx.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <9B6BBBFFF27FBB469F5F9ECB4655AFDA40FBA7@bruexc005.brumgt.local>
+References: <9B6BBBFFF27FBB469F5F9ECB4655AFDA40FBA7@bruexc005.brumgt.local>
+Date: Mon, 2 Nov 2015 14:09:20 +0100
+Message-ID: <CAFLxGvziG728VCtfeDUd1=uze6RBSxDmtaU=8eGQnxFqbBwvkA@mail.gmail.com>
+Subject: Re: MTD mounting problem
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: "Krug, Markus" <Markus.Krug@bruker.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,61 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 02/11/2015 02:07, Marek Vasut a écrit :
-> On Friday, September 18, 2015 at 05:49:24 PM, Cyrille Pitchen wrote:
->> Hi all,
-> 
-> Hi!
-> 
-Hi Marek!
+On Mon, Nov 2, 2015 at 1:21 PM, Krug, Markus <Markus.Krug@bruker.com> wrote:
+> and /proc/mtd shows:
+> dev:    size   erasesize  name
+> mtd0: 00100000 00010000 "qspi-fsbl-uboot"
+> mtd1: 00500000 00010000 "qspi-linux"
+> mtd2: 00020000 00010000 "qspi-device-tree"
+> mtd3: 005e0000 00010000 "qspi-rootfs"
+> mtd4: 00400000 00010000 "qspi-bitstream"
+> mtd5: 01000000 00010000 "qspi-data"
+> So everything seems to be fine.
+> But in /dev there are only mtd0, mtd1, mtdblock0 and mtdblock1.
+> So I added with mknod the missing partitions.
 
->> this series of patches fixes the QSPI support mostly for Micron and
->> Macronix memories. There are also some updates for Spansion memories.
->> There are also many comments to explain the implementation choices based
->> on the datasheets from memory manufacturers.
->>
->> The series was backported to a at91-4.1 kernel then tested on a sama5d2
->> xplained board, which embeds a at25df321a memory on a SPI controller and
->> a Micron n25q128a13 QSPI memory on the new Atmel QSPI controller.
->>
->> The at25 memory was used to check non regression on the m25p80 driver
->> whereas the Micron memory was used to test the fixes of the spi-nor
->> framework. The driver for the Atmel QSPI controller will be sent in a
->> dedicated series.
-> 
-> Are there any news on this patch series? I'd like to use that for my own
-> QSPI driver (the Cadence one), so I'd like to check on the status. Are you
-> still working on this please ?
-> 
-Nothing new from my side. This series of patches should have taken into account
-all the comments I'd received from previous series. At least, I hope so.
-If I forgot some points or if something is still missing, let me know and I'll
-update the series accordingly.
+This should not happen.
+Is your /dev really not managed by udev or devtmpfs?
 
-I also wait for a kind of agreement on how we could update the framework API
-so that more QSPI memories could be supported. I have already written a driver
-for an Atmel QSPI controller. This driver is based on this series of patches.
-I have to know what the updated API will be before sending another series for
-the QSPI controller driver. So this series is one proposal for some API updates
-but other proposals may exist.
+> Then I run:
+> flash_eraseall /dev/mtd5 (no problem)
+> mount -t jffs2 /dev/mtdblock5 /mnt
+> the mounting failed:
+> mount: mounting /dev/mtdblock5 on /mnt failed: No such device
+>
+> Does someone know whats going wrong?
 
-I've asked Brian on IRC for review and pieces of advice on how he thinks the
-work should be done. I've understood he's right now a little bit busy. I'm fine
-with it. I also often have to deal with many topics almost in the same time so
-I can understand whether he needs more time.
+I think the root cause is the missing device node.
+Please double check why it is not present.
 
-Anyway, I guess Brian has already started to review these patches since last
-Friday he referred to a previous talk we had about some leading space:
-
-http://lists.infradead.org/pipermail/linux-mtd/2015-October/062956.html
-
-
-> Thanks!
-> 
-> Best regards,
-> Marek Vasut
-> 
-
-Best regards,
-
-Cyrille
+-- 
+Thanks,
+//richard
