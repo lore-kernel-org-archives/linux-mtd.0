@@ -1,17 +1,18 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtHhG-0004RX-Mk
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 16:11:03 +0000
-From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: Richard Weinberger <richard@nod.at>
-Subject: master node can not be recovered
-Date: Mon, 2 Nov 2015 16:10:37 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4FB2A@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ id 1ZtHoh-00088j-Vr
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 16:18:45 +0000
+Subject: Re: MTD mounting problem
+To: "Krug, Markus" <Markus.Krug@bruker.com>
+References: <9B6BBBFFF27FBB469F5F9ECB4655AFDA40FBF7@bruexc005.brumgt.local>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56378CC8.2030100@nod.at>
+Date: Mon, 2 Nov 2015 17:18:16 +0100
 MIME-Version: 1.0
+In-Reply-To: <9B6BBBFFF27FBB469F5F9ECB4655AFDA40FBF7@bruexc005.brumgt.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,12 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksIFJpY2hhcmQgDQpJIHRlc3RlZCBteSBVQkkgcG93ZXIgbG9zcyBzb2x1dGlvbiwgaGF2ZSBh
-IHF1ZXN0aW9uIGFib3V0IG1hc3RlciBub2RlLg0KV2UgYWxsIGtub3cgdGhhdCBpZiBtYXN0ZXIg
-bm9kZSBiZSBjb3JydXB0ZWQgYnkgcG93ZXIgbG9zcyAsIHdlIGNhbiByZWNvdmVyIGl0IGJ5IHNl
-Y29uZCBvbmUuIEJ1dCBmcm9tIG15IHRlc3RpbmcgcmVzdWx0cywgaW4gZmFjdCwNCkl0IGNhbm5v
-dCBiZSByZWNvdmVyZWQgYnkgc2Vjb25kIGJhY2t1cCBtYXN0ZXIgbm9kZS4gSWYgZmlyc3QgbWFz
-dGVyIG5vZGUgYmUgY29ycnVwdGVkIGJ5IHBvd2VyIGxvc3MsIHRoaXMgcmVsZXZhbnQgYmxvY2sg
-d2lsbCBiZSBjb3JyZWN0bHkgcmVhZCwgZ2V0X21hc3Rlcl9ub2RlIHdpbGwgbm90IHJldHVyZSAw
-LCBzbyBuZXh0IHRpbWUgcmVjb3ZlciBvcGVyYXRpb24gd2lsbCBub3QgcnVuLg0KT3IgSSdtIHdy
-b25nPw0KDQpCZXN0IFJlZ2FyZHMhDQoNCkJlYW5IdW8NCg0K
+Am 02.11.2015 um 16:55 schrieb Krug, Markus:
+> Thanks Richard,
+> The problem was the minor number of the block device, which differs from the minor number of the char device.
+> With
+> mknod /dev/mtd5 c 31 10
+> mknod /dev/mtdblock5 b 90 5
+> I was able to mount the device.
+
+:-)
+
+> However I still don't know, why the devices are not created in /dev at start up. 
+
+Well, how is your /dev mount managed?
+
+Thanks,
+//richard
