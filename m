@@ -1,32 +1,22 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from bh-25.webhostbox.net ([208.91.199.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtNKa-0006PC-OI
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 22:12:01 +0000
-Received: by pabfh17 with SMTP id fh17so36465733pab.0
- for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2015 14:11:39 -0800 (PST)
-Date: Mon, 2 Nov 2015 14:11:36 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Tim Harvey <tharvey@gateworks.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- Elie De Brauwer <eliedebrauwer@gmail.com>,
- Huang Shijie <shijie.huang@arm.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: UBIFS corruption after power cut - possibly unstable bits issue?
-Message-ID: <20151102221136.GF7274@google.com>
-References: <CAJ+vNU3eu4qBxaZpDRY=Fidv=9iGmA5pq8b4yUfyBayLTos5oQ@mail.gmail.com>
- <562E8697.50207@nod.at>
- <CAJ+vNU1J+MvyWgY1FPv4G7TxQLDtPJWdWw=DP5+1h2HcTi-SxQ@mail.gmail.com>
- <562E9E0B.5030204@nod.at>
- <CAJ+vNU1GV1GxYfLgHh2ZerAGjRxi=azXHLg_dNO=BaUrkkDU1w@mail.gmail.com>
- <562FD60E.9020807@nod.at>
- <CAJ+vNU28eboKDTei09-rjWOTJ_17CPQ0+UxpOOuc0cr_kj0qhw@mail.gmail.com>
- <CAJ+vNU3Y_SnLSAojp3-hXxR02dtfX5n78GkS6Zt-izDZMh2msQ@mail.gmail.com>
- <5637D649.8060802@nod.at>
+ id 1ZtNPN-0001Pu-TW
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 22:16:59 +0000
+Date: Mon, 2 Nov 2015 14:16:33 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, cdoban@broadcom.com, rjui@broadcom.com,
+ sbranden@broadcom.com
+Subject: Re: [3/3] mtd: cfi_cmdset_{0001, 0002}: use common MTD reboot
+ boilerplate
+Message-ID: <20151102221633.GA30556@roeck-us.net>
+References: <1417746968-28747-3-git-send-email-computersforpeace@gmail.com>
+ <20151102200513.GA26475@roeck-us.net>
+ <20151102215818.GD7274@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5637D649.8060802@nod.at>
+In-Reply-To: <20151102215818.GD7274@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,24 +26,232 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Boris
-
-On Mon, Nov 02, 2015 at 10:31:53PM +0100, Richard Weinberger wrote:
-> Am 02.11.2015 um 21:31 schrieb Tim Harvey:
+On Mon, Nov 02, 2015 at 01:58:18PM -0800, Brian Norris wrote:
+> On Mon, Nov 02, 2015 at 12:05:13PM -0800, Guenter Roeck wrote:
+> > On Thu, Dec 04, 2014 at 06:36:08PM -0800, Brian Norris wrote:
+> > > We don't have to implement this glue code in the chip driver any more.
+> > > 
+> > > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > > ---
+> > > Not tested yet
+> > > 
+> > Tested-by: Guenter Roeck <linux@roeck-us.net>
 > 
-> >> I've cc'd Huang, Elie, and Brian who were involved in the patch to
-> >> detect bit-flips in gpmi-nand.c reads - perhaps they have some more
-> >> ideas. I find it interesting that in one case that patch resolves the
-> >> issue and in the other it does not.
+> Thanks! Did you verify that your reboot notifier callback (e.g.,
+> cfi_intelext_reset()) is actually called on reboot?
 > 
-> Yeah, good idea!
+No, I just verified that it boots and shuts down correctly.
 
-Sorry, I don't have much time to care about gpmi-nand right now. I
-recall that there was ugly support for detecting bitflips in erased
-pages posted at some point (in case that's relevant; didn't read the
-whole essay), but that never got merged, and Huang left Freescale.
+Do you want me to verify if the notifier is called, given the
+problems you discovered with the patch ?
 
-I also recall Boris struggled with that driver at some point. Perhaps he
-can be persuaded to care.
+Thanks,
+Guenter
 
-Brian
+> And actually, I do see a problem with this patch now, so I'm less likely
+> to take it as-is; we never guarantee that this mtd_info struct actually
+> gets registered via mtd_device_parse_register(), so even though we
+> stick the right callback in mtd->_reboot(), we haven't actually ensured
+> it will ever get called.
+> 
+> See, for instance, the calling path in (speaking of the devil)
+> arch/cris/arch-v10/drivers/axisflashmap.c:
+> 
+> static struct mtd_info *flash_probe(void)
+> {
+> ...
+> 	mtd_cse0 = probe_cs(&map_cse0);
+> 	mtd_cse1 = probe_cs(&map_cse1);
+> ...
+>         if (mtd_cse0 && mtd_cse1) {
+>                 struct mtd_info *mtds[] = { mtd_cse0, mtd_cse1 };
+> 
+> ...
+>                 mtd_cse = mtd_concat_create(mtds, ARRAY_SIZE(mtds),
+>                                             "cse0+cse1");
+> 
+> 
+> So, either of map_cse0 or map_cse1 could be a CFI-based map, and so only the
+> concatenation would be registered, and therefore the reboot() notifier will
+> just be left assigned to the sub-device, but never registered with the core.
+> 
+> Now, it looks like this is one of very few cases that we'd have to worry
+> about... right now I've only found physmap_of.c that does the same
+> mtdconcat stuff. So maybe if we fixed mtdconcat, we could solve this...
+> 
+> MTD is too hairy :(
+> 
+> Anyway, I'll have to NAK my own patch still, and we should probalby go
+> with your other solution to your current problems from here:
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2015-November/063022.html
+> 
+> Regards,
+> Brian
+> 
+> > >  drivers/mtd/chips/cfi_cmdset_0001.c | 22 +++-------------------
+> > >  drivers/mtd/chips/cfi_cmdset_0002.c | 22 +++-------------------
+> > >  2 files changed, 6 insertions(+), 38 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+> > > index 286b97a304cf..3df9744496b2 100644
+> > > --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> > > +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> > > @@ -28,7 +28,6 @@
+> > >  #include <linux/slab.h>
+> > >  #include <linux/delay.h>
+> > >  #include <linux/interrupt.h>
+> > > -#include <linux/reboot.h>
+> > >  #include <linux/bitmap.h>
+> > >  #include <linux/mtd/xip.h>
+> > >  #include <linux/mtd/map.h>
+> > > @@ -80,7 +79,7 @@ static int cfi_intelext_get_user_prot_info(struct mtd_info *, size_t,
+> > >  #endif
+> > >  static int cfi_intelext_suspend (struct mtd_info *);
+> > >  static void cfi_intelext_resume (struct mtd_info *);
+> > > -static int cfi_intelext_reboot (struct notifier_block *, unsigned long, void *);
+> > > +static void cfi_intelext_reset(struct mtd_info *);
+> > >  
+> > >  static void cfi_intelext_destroy(struct mtd_info *);
+> > >  
+> > > @@ -486,13 +485,12 @@ struct mtd_info *cfi_cmdset_0001(struct map_info *map, int primary)
+> > >  	mtd->_is_locked = cfi_intelext_is_locked;
+> > >  	mtd->_suspend = cfi_intelext_suspend;
+> > >  	mtd->_resume  = cfi_intelext_resume;
+> > > +	mtd->_reboot  = cfi_intelext_reset;
+> > >  	mtd->flags   = MTD_CAP_NORFLASH;
+> > >  	mtd->name    = map->name;
+> > >  	mtd->writesize = 1;
+> > >  	mtd->writebufsize = cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
+> > >  
+> > > -	mtd->reboot_notifier.notifier_call = cfi_intelext_reboot;
+> > > -
+> > >  	if (cfi->cfi_mode == CFI_MODE_CFI) {
+> > >  		/*
+> > >  		 * It's a real CFI chip, not one for which the probe
+> > > @@ -646,7 +644,6 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
+> > >  		goto setup_err;
+> > >  
+> > >  	__module_get(THIS_MODULE);
+> > > -	register_reboot_notifier(&mtd->reboot_notifier);
+> > >  	return mtd;
+> > >  
+> > >   setup_err:
+> > > @@ -2605,7 +2602,7 @@ static void cfi_intelext_resume(struct mtd_info *mtd)
+> > >  		cfi_intelext_restore_locks(mtd);
+> > >  }
+> > >  
+> > > -static int cfi_intelext_reset(struct mtd_info *mtd)
+> > > +static void cfi_intelext_reset(struct mtd_info *mtd)
+> > >  {
+> > >  	struct map_info *map = mtd->priv;
+> > >  	struct cfi_private *cfi = map->fldrv_priv;
+> > > @@ -2626,18 +2623,6 @@ static int cfi_intelext_reset(struct mtd_info *mtd)
+> > >  		}
+> > >  		mutex_unlock(&chip->mutex);
+> > >  	}
+> > > -
+> > > -	return 0;
+> > > -}
+> > > -
+> > > -static int cfi_intelext_reboot(struct notifier_block *nb, unsigned long val,
+> > > -			       void *v)
+> > > -{
+> > > -	struct mtd_info *mtd;
+> > > -
+> > > -	mtd = container_of(nb, struct mtd_info, reboot_notifier);
+> > > -	cfi_intelext_reset(mtd);
+> > > -	return NOTIFY_DONE;
+> > >  }
+> > >  
+> > >  static void cfi_intelext_destroy(struct mtd_info *mtd)
+> > > @@ -2647,7 +2632,6 @@ static void cfi_intelext_destroy(struct mtd_info *mtd)
+> > >  	struct mtd_erase_region_info *region;
+> > >  	int i;
+> > >  	cfi_intelext_reset(mtd);
+> > > -	unregister_reboot_notifier(&mtd->reboot_notifier);
+> > >  	kfree(cfi->cmdset_priv);
+> > >  	kfree(cfi->cfiq);
+> > >  	kfree(cfi->chips[0].priv);
+> > > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> > > index c50d8cf0f60d..c4f63482cf96 100644
+> > > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> > > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> > > @@ -31,7 +31,6 @@
+> > >  #include <linux/slab.h>
+> > >  #include <linux/delay.h>
+> > >  #include <linux/interrupt.h>
+> > > -#include <linux/reboot.h>
+> > >  #include <linux/of.h>
+> > >  #include <linux/of_platform.h>
+> > >  #include <linux/mtd/map.h>
+> > > @@ -57,7 +56,7 @@ static int cfi_amdstd_erase_varsize(struct mtd_info *, struct erase_info *);
+> > >  static void cfi_amdstd_sync (struct mtd_info *);
+> > >  static int cfi_amdstd_suspend (struct mtd_info *);
+> > >  static void cfi_amdstd_resume (struct mtd_info *);
+> > > -static int cfi_amdstd_reboot(struct notifier_block *, unsigned long, void *);
+> > > +static void cfi_amdstd_reset(struct mtd_info *);
+> > >  static int cfi_amdstd_get_fact_prot_info(struct mtd_info *, size_t,
+> > >  					 size_t *, struct otp_info *);
+> > >  static int cfi_amdstd_get_user_prot_info(struct mtd_info *, size_t,
+> > > @@ -529,6 +528,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+> > >  	mtd->_sync    = cfi_amdstd_sync;
+> > >  	mtd->_suspend = cfi_amdstd_suspend;
+> > >  	mtd->_resume  = cfi_amdstd_resume;
+> > > +	mtd->_reboot  = cfi_amdstd_reset;
+> > >  	mtd->_read_user_prot_reg = cfi_amdstd_read_user_prot_reg;
+> > >  	mtd->_read_fact_prot_reg = cfi_amdstd_read_fact_prot_reg;
+> > >  	mtd->_get_fact_prot_info = cfi_amdstd_get_fact_prot_info;
+> > > @@ -544,7 +544,6 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+> > >  			mtd->writebufsize);
+> > >  
+> > >  	mtd->_panic_write = cfi_amdstd_panic_write;
+> > > -	mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
+> > >  
+> > >  	if (cfi->cfi_mode==CFI_MODE_CFI){
+> > >  		unsigned char bootloc;
+> > > @@ -717,7 +716,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+> > >  	}
+> > >  
+> > >  	__module_get(THIS_MODULE);
+> > > -	register_reboot_notifier(&mtd->reboot_notifier);
+> > >  	return mtd;
+> > >  
+> > >   setup_err:
+> > > @@ -2871,7 +2869,7 @@ static void cfi_amdstd_resume(struct mtd_info *mtd)
+> > >   * the flash is in query/program/erase mode will prevent the CPU from
+> > >   * fetching the bootloader code, requiring a hard reset or power cycle.
+> > >   */
+> > > -static int cfi_amdstd_reset(struct mtd_info *mtd)
+> > > +static void cfi_amdstd_reset(struct mtd_info *mtd)
+> > >  {
+> > >  	struct map_info *map = mtd->priv;
+> > >  	struct cfi_private *cfi = map->fldrv_priv;
+> > > @@ -2893,19 +2891,6 @@ static int cfi_amdstd_reset(struct mtd_info *mtd)
+> > >  
+> > >  		mutex_unlock(&chip->mutex);
+> > >  	}
+> > > -
+> > > -	return 0;
+> > > -}
+> > > -
+> > > -
+> > > -static int cfi_amdstd_reboot(struct notifier_block *nb, unsigned long val,
+> > > -			       void *v)
+> > > -{
+> > > -	struct mtd_info *mtd;
+> > > -
+> > > -	mtd = container_of(nb, struct mtd_info, reboot_notifier);
+> > > -	cfi_amdstd_reset(mtd);
+> > > -	return NOTIFY_DONE;
+> > >  }
+> > >  
+> > >  
+> > > @@ -2915,7 +2900,6 @@ static void cfi_amdstd_destroy(struct mtd_info *mtd)
+> > >  	struct cfi_private *cfi = map->fldrv_priv;
+> > >  
+> > >  	cfi_amdstd_reset(mtd);
+> > > -	unregister_reboot_notifier(&mtd->reboot_notifier);
+> > >  	kfree(cfi->cmdset_priv);
+> > >  	kfree(cfi->cfiq);
+> > >  	kfree(cfi);
