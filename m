@@ -1,25 +1,31 @@
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtHGy-0003lG-Bv
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 15:43:52 +0000
-Date: Mon, 2 Nov 2015 21:16:59 +0530
-From: Vinod Koul <vinod.koul@intel.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Han Xu <b45815@freescale.com>, fabio.estevam@freescale.com,
- boris.brezillon@free-electrons.com, linux-kernel@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-mtd@lists.infradead.org,
- hofrat@osadl.org, shijie.huang@arm.com, dan.j.williams@intel.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Subject: Re: [PATCH v7 2/7] dmaengine: mxs: APBH DMA supports deep sleep mode'
-Message-ID: <20151102154659.GR21326@localhost>
-References: <1445983540-27155-1-git-send-email-b45815@freescale.com>
- <1445983540-27155-3-git-send-email-b45815@freescale.com>
- <20151031014244.GF21326@localhost>
- <20151102162906.1e3c29da@free-electrons.com>
+Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZtHN3-0006KE-1z
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 15:50:10 +0000
+Received: by wicll6 with SMTP id ll6so52747523wic.1
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2015 07:49:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151102162906.1e3c29da@free-electrons.com>
+In-Reply-To: <20151022171259.57581575@free-electrons.com>
+References: <1445416144-9194-1-git-send-email-antoine.tenart@free-electrons.com>
+ <20151022171259.57581575@free-electrons.com>
+Date: Mon, 2 Nov 2015 12:49:47 -0300
+Message-ID: <CAAEAJfDDxhiKyPAt+HY7HL4XJ5VZA87R2igA0EiO4FZyVL7wrQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] mtd: pxa3xx_nand: rework the timing setup
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>, zmxu@marvell.com,
+ jszhang@marvell.com, Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ =?UTF-8?Q?Gregory_Cl=C3=A9ment?= <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,21 +35,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 02, 2015 at 04:29:06PM +0100, Thomas Petazzoni wrote:
-> Vinod,
-> 
-> On Sat, 31 Oct 2015 07:12:44 +0530, Vinod Koul wrote:
-> > On Tue, Oct 27, 2015 at 05:05:35PM -0500, Han Xu wrote:
-> > >  
-> > > -static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
-> > > +static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
-> > 
-> > This change seems unrelated to patch description, can you explain why?
-> 
-> It seems related: mxs_dma_init() is now no longer called at
-> initialization time, but also when resuming, as visible...
+On 22 October 2015 at 12:12, Thomas Petazzoni
+<thomas.petazzoni@free-electrons.com> wrote:
+> Hello Antoine,
+>
+> On Wed, 21 Oct 2015 10:28:59 +0200, Antoine Tenart wrote:
+>
+>> Antoine Tenart (5):
+>>   mtd: pxa3xx: prepare allowing compile test
+>>   mtd: nand: allow compile test of MTD_NAND_PXA3xx
+>>   mtd: pxa3xx_nand: add helpers to setup the timings
+>>   mtd: pxa3xx_nand: rework flash detection and timing setup
+>>   mtd: pxa3xx_nand: clean up the pxa3xx timings
+>
+> I tested your series on Armada 375 DB, which uses the same pxa3xx
+> driver, but with the Armada 370 variant.
+>
+> With the current Device Tree which has nand,keep-config to keep the
+> timing configuration from the bootloader, I don't see any problem, so
+> there is no regression introduced by your series, at least on this
+> platform.
+>
+> However, when I remove nand,keep-config to use the ONFI timings from
+> the NAND, then things work fine (I can mount a UBIFS root filesystem),
+> but there is a weird:
+>
+> pxa3xx-nand f10d0000.nand: Wait time out!!!
+>
+> After investigating a bit, the following steps occur:
+>
+>  * The timings are configured as ONFI mode 0
+>  * Reset command is sent to the NAND (0xff), two times in a row.
+>  * READID command is sent to the NAND (0x90), three times in a row.
+>  * PARAM command is sent to the NAND (0xec) and it times out
 
-Right looks good then
+This timeout happens because initial chunk_size is 512, but the PARAM
+page read is now set to read  2048 (only on the NFCv2 controller variant).
 
--- 
-~Vinod
+I'll prepare a patchset soon.
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
