@@ -1,21 +1,18 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtHCF-0000De-Ar
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 15:38:59 +0000
-Message-ID: <1446478715.6126.109.camel@gmail.com>
-Subject: Re: [PATCH 05/11] ubifs: remove ununsed ubifs context from key helpers
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: david@sigma-star.at
-Date: Mon, 02 Nov 2015 17:38:35 +0200
-In-Reply-To: <5636BC3D.5000200@cn.fujitsu.com>
-References: <1446290160-30696-1-git-send-email-richard@nod.at>
- <1446290160-30696-6-git-send-email-richard@nod.at>
- <5636BC3D.5000200@cn.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZtHFP-0003Ri-UU
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 15:42:17 +0000
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jesper Nilsson <jespern@axis.com>, linux-cris-kernel@axis.com
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Problems with 'mtd: warn when registering the same master many times'
+Message-ID: <5637843C.10307@roeck-us.net>
+Date: Mon, 2 Nov 2015 07:41:48 -0800
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,17 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2015-11-02 at 09:28 +0800, Dongsheng Yang wrote:
-> Yes, all ubifs_info *c in key.h are not used, But I am
-> not sure about is that intentional or not.
+Brian,
 
-Hi,
+I see the following warnings in recent mips qemu tests on linux-next.
 
-the intention was that there would be multiple key formats supported,
-and these functions would look at something like c->key_format to
-figure out how to work with this key.
+WARNING: CPU: 0 PID: 1 at drivers/mtd/mtdcore.c:619 mtd_device_parse_register+0x160/0x16c()
+MTD already registered
 
-Right now there is only one key type, so these are not needed as of
-today.
+Looking into the code, this is the result of your patch 'mtd: warn when registering
+the same master many times'.
 
-Artem.
+This patch is supposed to warn if mtd_device_parse_register is called multiple times
+with the same mtd_info structure pointer as parameter.
+
+At the surface, the check appears to make sense. However, it has a problem.
+The output of "git grep reboot_notifier.notifier_call" in drivers/mtd results in
+
+chips/cfi_cmdset_0001.c:        mtd->reboot_notifier.notifier_call = cfi_intelext_reboot;
+chips/cfi_cmdset_0002.c:        mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
+mtdcore.c:      WARN_ONCE(mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+mtdcore.c:      if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
+mtdcore.c:              mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
+
+As it turns out, the observed warning is not seen because mtd_device_parse_register()
+is called multiple times. It is seen because mtd->reboot_notifier.notifier_call
+is already set to cfi_intelext_reboot by the time it is checked.
+
+I don't know if this is a bug in the mtd code, or if this is a valid use case.
+Whatever it is, the warning does not warn about the driver, it warns about a potential
+inconsistency in the mtd code itself (and if it is is a valid use case, the warning
+is inappropriate). Maybe it would make sense to change the warning as follows ?
+
+WARN_ONCE(mtd->_reboot && mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+
+I am not sure, though, if that is correct, since even that might be a valid use case
+(a caller registering a cfi based mtd device with a _reboot callback).
+
+I also see the warning in crisv32 runtime tests. This is because the code in
+arch/cris/arch-v32/drivers/axisflashmap.c calls mtd_device_register() multiple times
+with the same mtd_info argument, each time to register a different partition.
+I am not sure if the check is appropriate for this case either, since the code calls
+mtd_device_register(), both 'type' and 'parser_data' are NULL, parse_mtd_partitions()
+does not do anything, and the problem you are concerned about does not apply.
+
+How about changing the warning to something like the following ?
+
+WARN_ONCE(types && mtd->_reboot && mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+
+This would eliminate (what I think are) false positives and only warn if there
+is a real problem.
+
+Thanks,
+Guenter
