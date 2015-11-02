@@ -1,10 +1,10 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtMDJ-0002xY-Cg
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 21:00:25 +0000
-Received: by pasz6 with SMTP id z6so158994106pas.2
- for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2015 13:00:03 -0800 (PST)
-Date: Mon, 2 Nov 2015 13:00:01 -0800
+ id 1ZtMPo-0002DY-KQ
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 21:13:21 +0000
+Received: by pacfv9 with SMTP id fv9so165988019pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2015 13:12:58 -0800 (PST)
+Date: Mon, 2 Nov 2015 13:12:55 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -12,15 +12,15 @@ Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Marek Vasut <marex@denx.de>, Scott Wood <scottwood@freescale.com>,
  Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
  Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>
-Subject: Re: [PATCH v2 06/11] mtd: nand: drop unnecessary partition parser data
-Message-ID: <20151102210001.GB7274@google.com>
+Subject: Re: [PATCH v2 01/11] mtd: add get/set of_node/flash_node helpers
+Message-ID: <20151102211255.GC7274@google.com>
 References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
- <1446262410-45754-7-git-send-email-computersforpeace@gmail.com>
- <20151101233237.21155d9e@bbrezillon>
+ <1446262410-45754-2-git-send-email-computersforpeace@gmail.com>
+ <20151102002758.51e34a71@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151101233237.21155d9e@bbrezillon>
+In-Reply-To: <20151102002758.51e34a71@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,29 +30,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 01, 2015 at 11:32:37PM +0100, Boris Brezillon wrote:
-> On Fri, 30 Oct 2015 20:33:25 -0700
+On Mon, Nov 02, 2015 at 12:27:58AM +0100, Boris Brezillon wrote:
+> On Fri, 30 Oct 2015 20:33:20 -0700
 > Brian Norris <computersforpeace@gmail.com> wrote:
 > 
-[...]
-> > diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-> > index dcb1f7f4873f..850546dc98c8 100644
-> > --- a/drivers/mtd/nand/fsl_elbc_nand.c
-> > +++ b/drivers/mtd/nand/fsl_elbc_nand.c
-> > @@ -748,6 +748,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
-> >  	/* Fill in fsl_elbc_mtd structure */
-> >  	priv->mtd.priv = chip;
-> >  	priv->mtd.dev.parent = priv->dev;
-> > +	chip->flash_node = priv->dev->of_node;
+> > We are going to begin using the mtd->dev.of_node field for MTD device
+> > nodes, so let's add helpers for it. Also, we'll be making some
+> > conversions on spi_nor (and nand_chip eventually) too, so get that ready
+> > with their own helpers.
+> > 
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > ---
+> > v2: new
+> > 
+> >  include/linux/mtd/mtd.h     | 11 +++++++++++
+> >  include/linux/mtd/nand.h    | 11 +++++++++++
+> >  include/linux/mtd/spi-nor.h | 11 +++++++++++
+> >  3 files changed, 33 insertions(+)
+> > 
+> > diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> > index f17fa75809aa..cc84923011c0 100644
+> > --- a/include/linux/mtd/mtd.h
+> > +++ b/include/linux/mtd/mtd.h
+> > @@ -254,6 +254,17 @@ struct mtd_info {
+> >  	int usecount;
+> >  };
+> >  
+> > +static inline void mtd_set_of_node(struct mtd_info *mtd,
+> > +				   struct device_node *np)
+> > +{
+> > +	mtd->dev.of_node = np;
 > 
-> Shouldn't we use the nand_set_flash_node() helper here? Here is a diff replacing
-> all 'chip->flash_node =' occurrences by nand_set_flash_node():
+> Maybe we should retain a reference to the device_node here (IOW,
+> replace '= np' by '= of_node_get(np)'). Of course this implies calling
+> of_node_put() when the mtd device is unregistered.
 
-Hmm, I don't know why I overlooked those. I think maybe I did the
-initial replacement before this patch and forgot to do the same
-replacement on my subsequent work. I guess that's what happens when I
-rebase/rework too much...
+I'll admit I never really followed (nor verified) the OF get/put logic
+that well. But I suppose that makes sense.
 
-Thanks for the diff. I'll probably squash it into v3 if/when that comes.
+> > +}
+> > +
+> > +static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
+> > +{
+> > +	return mtd->dev.of_node;
+> 
+> Not sure this is relevant to to the same here before returning the
+> device_node because it's mostly used by the MTD drivers and those are
+> the ones who called mtd_set_of_node() in the first place, so we can
+> assume it's safe to return an non-retained reference to a device_node.
+
+I think once the node has been "set", its consumers should stay in sync
+with the lifetime of the MTD; so I think just that initial refcount is
+sufficient.
+
+IOW, if MTD drivers are still fiddling with an MTD's of_node after the
+MTD is unregistered, then we've failed somewhere else.
 
 Brian
