@@ -1,24 +1,23 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zt22v-00058T-Jw
- for linux-mtd@lists.infradead.org; Sun, 01 Nov 2015 23:28:22 +0000
-Date: Mon, 2 Nov 2015 00:27:58 +0100
+ id 1Zt39N-0001EY-Qn
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 00:39:07 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Ezequiel
- Garcia <ezequiel@vanguardiasur.com.ar>, Marek Vasut <marex@denx.de>, Scott
- Wood <scottwood@freescale.com>, Josh Wu <josh.wu@atmel.com>, Robert Jarzmik
- <robert.jarzmik@free.fr>, Kyungmin Park <kyungmin.park@samsung.com>, Han Xu
- <han.xu@freescale.com>
-Subject: Re: [PATCH v2 01/11] mtd: add get/set of_node/flash_node helpers
-Message-ID: <20151102002758.51e34a71@bbrezillon>
-In-Reply-To: <1446262410-45754-2-git-send-email-computersforpeace@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Marek Vasut <marex@denx.de>, Scott Wood <scottwood@freescale.com>,
+ Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>,
+ Stefan Agner <stefan@agner.ch>, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 13/11] mtd: assign mtd->dev.of_node when creating partition
+ devices
+Date: Mon,  2 Nov 2015 01:38:41 +0100
+Message-Id: <1446424721-23471-1-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
 References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
- <1446262410-45754-2-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,53 +27,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 30 Oct 2015 20:33:20 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+MTD partitions may have been created from a DT definition, and in this case
+the ->of_node of the struct device embedded in mtd_info should point to
+the DT node that was used to create the partition.
 
-> We are going to begin using the mtd->dev.of_node field for MTD device
-> nodes, so let's add helpers for it. Also, we'll be making some
-> conversions on spi_nor (and nand_chip eventually) too, so get that ready
-> with their own helpers.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
-> v2: new
-> 
->  include/linux/mtd/mtd.h     | 11 +++++++++++
->  include/linux/mtd/nand.h    | 11 +++++++++++
->  include/linux/mtd/spi-nor.h | 11 +++++++++++
->  3 files changed, 33 insertions(+)
-> 
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index f17fa75809aa..cc84923011c0 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -254,6 +254,17 @@ struct mtd_info {
->  	int usecount;
->  };
->  
-> +static inline void mtd_set_of_node(struct mtd_info *mtd,
-> +				   struct device_node *np)
-> +{
-> +	mtd->dev.of_node = np;
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+Hi Brian,
 
-Maybe we should retain a reference to the device_node here (IOW,
-replace '= np' by '= of_node_get(np)'). Of course this implies calling
-of_node_put() when the mtd device is unregistered.
+Yet another patch that IMO should go into your "mtd: migrate 'of_node'
+handling to core, not in mtd_part_parser_data" series.
 
-> +}
-> +
-> +static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
-> +{
-> +	return mtd->dev.of_node;
+Best Regards,
 
-Not sure this is relevant to to the same here before returning the
-device_node because it's mostly used by the MTD drivers and those are
-the ones who called mtd_set_of_node() in the first place, so we can
-assume it's safe to return an non-retained reference to a device_node.
+Boris
 
+ drivers/mtd/mtdcore.c          | 17 +++++++++++++----
+ drivers/mtd/mtdpart.c          |  3 +++
+ drivers/mtd/ofpart.c           |  1 +
+ include/linux/mtd/partitions.h |  1 +
+ 4 files changed, 18 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index b1eea48..6101288 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -32,6 +32,7 @@
+ #include <linux/err.h>
+ #include <linux/ioctl.h>
+ #include <linux/init.h>
++#include <linux/of.h>
+ #include <linux/proc_fs.h>
+ #include <linux/idr.h>
+ #include <linux/backing-dev.h>
+@@ -584,11 +585,13 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 			      const struct mtd_partition *parts,
+ 			      int nr_parts)
+ {
+-	int ret;
++	int ret, i;
+ 	struct mtd_partition *real_parts = NULL;
+ 
+ 	ret = parse_mtd_partitions(mtd, types, &real_parts, parser_data);
+-	if (ret <= 0 && nr_parts && parts) {
++	if (ret > 0) {
++		nr_parts = ret;
++	} else if (nr_parts && parts) {
+ 		real_parts = kmemdup(parts, sizeof(*parts) * nr_parts,
+ 				     GFP_KERNEL);
+ 		if (!real_parts)
+@@ -604,7 +607,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 		ret = 0;
+ 	}
+ 
+-	ret = mtd_add_device_partitions(mtd, real_parts, ret);
++	ret = mtd_add_device_partitions(mtd, real_parts, nr_parts);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -623,7 +626,13 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 	}
+ 
+ out:
+-	kfree(real_parts);
++	if (real_parts) {
++		for (i = 0; i < nr_parts; i++)
++			of_node_put(real_parts[i].of_node);
++
++		kfree(real_parts);
++	}
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_device_parse_register);
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index f8ba153..95f3a0d 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -29,6 +29,7 @@
+ #include <linux/kmod.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/of.h>
+ #include <linux/err.h>
+ #include <linux/kconfig.h>
+ 
+@@ -319,6 +320,7 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 
+ static inline void free_partition(struct mtd_part *p)
+ {
++	of_node_put(mtd_get_of_node(&p->mtd));
+ 	kfree(p->mtd.name);
+ 	kfree(p);
+ }
+@@ -391,6 +393,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 	slave->mtd.dev.parent = IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) ?
+ 				&master->dev :
+ 				master->dev.parent;
++	mtd_set_of_node(&slave->mtd, of_node_get(part->of_node));
+ 
+ 	slave->mtd._read = part_read;
+ 	slave->mtd._write = part_write;
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index f78d2ae..5c64e04 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -111,6 +111,7 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 		if (of_get_property(pp, "lock", &len))
+ 			(*pparts)[i].mask_flags |= MTD_POWERUP_LOCK;
+ 
++		(*pparts)[i].of_node = of_node_get(pp);
+ 		i++;
+ 	}
+ 
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 773975a..282644c 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -42,6 +42,7 @@ struct mtd_partition {
+ 	uint64_t offset;		/* offset within the master MTD space */
+ 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
+ 	struct nand_ecclayout *ecclayout;	/* out of band layout for this partition (NAND only) */
++	struct device_node *of_node;	/* OF node attached to the partition */
+ };
+ 
+ #define MTDPART_OFS_RETAIN	(-3)
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.1.4
