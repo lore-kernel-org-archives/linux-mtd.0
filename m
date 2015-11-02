@@ -1,21 +1,20 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from bh-25.webhostbox.net ([208.91.199.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtJHp-0004LL-Qj
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 17:52:54 +0000
-Received: by pabfh17 with SMTP id fh17so30833347pab.0
- for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2015 09:52:33 -0800 (PST)
-Date: Mon, 2 Nov 2015 09:52:30 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Mike Scherban <m-scherban@ti.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, m-karicheri2@ti.com,
- nsekhar@ti.com, Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [RESEND PATCH] mtd: davinci-nand: correct empty sector bit flips
-Message-ID: <20151102175230.GA9515@localhost>
-References: <1446483557-31098-1-git-send-email-m-scherban@ti.com>
+ id 1ZtLMH-0005Rg-Di
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 20:05:38 +0000
+Date: Mon, 2 Nov 2015 12:05:13 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, cdoban@broadcom.com, rjui@broadcom.com,
+ sbranden@broadcom.com
+Subject: Re: [3/3] mtd: cfi_cmdset_{0001, 0002}: use common MTD reboot
+ boilerplate
+Message-ID: <20151102200513.GA26475@roeck-us.net>
+References: <1417746968-28747-3-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1446483557-31098-1-git-send-email-m-scherban@ti.com>
+In-Reply-To: <1417746968-28747-3-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,69 +24,178 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Boris
-
-On Mon, Nov 02, 2015 at 10:59:17AM -0600, Mike Scherban wrote:
-> Currently empty page bit flips are not corrected and report 0 errors.
-> If there happens to be a bit flip, this will cause UBIFS to fail to
-> mount with a "corruption in empty space" error. The only way to recover
-> from this is to reflash the NAND partition.
+On Thu, Dec 04, 2014 at 06:36:08PM -0800, Brian Norris wrote:
+> We don't have to implement this glue code in the chip driver any more.
 > 
-> This changes the empty page handling to count the number of bit flips
-> and correct them if they are under or equal to the ECC strength. UBI
-> will then resolve the mounting error without requiring a reflash.
-> 
-> Signed-off-by: Mike Scherban <m-scherban@ti.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > ---
->  drivers/mtd/nand/davinci_nand.c |   21 ++++++++++++++++++---
->  1 file changed, 18 insertions(+), 3 deletions(-)
+> Not tested yet
 > 
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index feb6d18..8189d8a 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -316,12 +316,27 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
->  	unsigned num_errors, corrected;
->  	unsigned long timeo;
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+>  drivers/mtd/chips/cfi_cmdset_0001.c | 22 +++-------------------
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 22 +++-------------------
+>  2 files changed, 6 insertions(+), 38 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+> index 286b97a304cf..3df9744496b2 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> @@ -28,7 +28,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/delay.h>
+>  #include <linux/interrupt.h>
+> -#include <linux/reboot.h>
+>  #include <linux/bitmap.h>
+>  #include <linux/mtd/xip.h>
+>  #include <linux/mtd/map.h>
+> @@ -80,7 +79,7 @@ static int cfi_intelext_get_user_prot_info(struct mtd_info *, size_t,
+>  #endif
+>  static int cfi_intelext_suspend (struct mtd_info *);
+>  static void cfi_intelext_resume (struct mtd_info *);
+> -static int cfi_intelext_reboot (struct notifier_block *, unsigned long, void *);
+> +static void cfi_intelext_reset(struct mtd_info *);
 >  
-> -	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
-> -	for (i = 0; i < 10; i++) {
-> +	/* All bytes 0xff?  It's an erased page;
-> +	 * Ignore its ECC, but check for bit flips.
-> +	 */
-> +	for (i = 0; i < info->chip.ecc.bytes; i++) {
->  		if (ecc_code[i] != 0xff)
->  			goto compare;
+>  static void cfi_intelext_destroy(struct mtd_info *);
+>  
+> @@ -486,13 +485,12 @@ struct mtd_info *cfi_cmdset_0001(struct map_info *map, int primary)
+>  	mtd->_is_locked = cfi_intelext_is_locked;
+>  	mtd->_suspend = cfi_intelext_suspend;
+>  	mtd->_resume  = cfi_intelext_resume;
+> +	mtd->_reboot  = cfi_intelext_reset;
+>  	mtd->flags   = MTD_CAP_NORFLASH;
+>  	mtd->name    = map->name;
+>  	mtd->writesize = 1;
+>  	mtd->writebufsize = cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
+>  
+> -	mtd->reboot_notifier.notifier_call = cfi_intelext_reboot;
+> -
+>  	if (cfi->cfi_mode == CFI_MODE_CFI) {
+>  		/*
+>  		 * It's a real CFI chip, not one for which the probe
+> @@ -646,7 +644,6 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
+>  		goto setup_err;
+>  
+>  	__module_get(THIS_MODULE);
+> -	register_reboot_notifier(&mtd->reboot_notifier);
+>  	return mtd;
+>  
+>   setup_err:
+> @@ -2605,7 +2602,7 @@ static void cfi_intelext_resume(struct mtd_info *mtd)
+>  		cfi_intelext_restore_locks(mtd);
+>  }
+>  
+> -static int cfi_intelext_reset(struct mtd_info *mtd)
+> +static void cfi_intelext_reset(struct mtd_info *mtd)
+>  {
+>  	struct map_info *map = mtd->priv;
+>  	struct cfi_private *cfi = map->fldrv_priv;
+> @@ -2626,18 +2623,6 @@ static int cfi_intelext_reset(struct mtd_info *mtd)
+>  		}
+>  		mutex_unlock(&chip->mutex);
 >  	}
+> -
 > -	return 0;
-> +
-> +	/* Count bit flips in empty space. */
-> +	for (i = 0, corrected = 0; i < info->chip.ecc.size; i++)
-> +		corrected += hweight8(~data[i]);
-> +
-> +	/* If bit flips are above the ecc strength produce an error */
-> +	if (corrected > info->chip.ecc.strength)
-> +		return -EIO;
-> +
-> +	/* If there are bit flips correct the data */
-> +	if (corrected)
-> +		memset(data, 0xff, info->chip.ecc.size);
-> +
-> +	return corrected;
-
-NAK. We don't need any more badly-done local hacks (it's not enough to
-just check the in-band data bytes; you have to check the spare area
-too). Please review/test this instead:
-
-http://lists.infradead.org/pipermail/linux-mtd/2015-September/061617.html
-http://thread.gmane.org/gmane.linux.drivers.mtd/61358
-
-Regards,
-Brian
-
+> -}
+> -
+> -static int cfi_intelext_reboot(struct notifier_block *nb, unsigned long val,
+> -			       void *v)
+> -{
+> -	struct mtd_info *mtd;
+> -
+> -	mtd = container_of(nb, struct mtd_info, reboot_notifier);
+> -	cfi_intelext_reset(mtd);
+> -	return NOTIFY_DONE;
+>  }
 >  
->  compare:
->  	/* Unpack ten bytes into eight 10 bit values.  We know we're
-> -- 
-> 1.7.9.5
-> 
+>  static void cfi_intelext_destroy(struct mtd_info *mtd)
+> @@ -2647,7 +2632,6 @@ static void cfi_intelext_destroy(struct mtd_info *mtd)
+>  	struct mtd_erase_region_info *region;
+>  	int i;
+>  	cfi_intelext_reset(mtd);
+> -	unregister_reboot_notifier(&mtd->reboot_notifier);
+>  	kfree(cfi->cmdset_priv);
+>  	kfree(cfi->cfiq);
+>  	kfree(cfi->chips[0].priv);
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index c50d8cf0f60d..c4f63482cf96 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -31,7 +31,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/delay.h>
+>  #include <linux/interrupt.h>
+> -#include <linux/reboot.h>
+>  #include <linux/of.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/mtd/map.h>
+> @@ -57,7 +56,7 @@ static int cfi_amdstd_erase_varsize(struct mtd_info *, struct erase_info *);
+>  static void cfi_amdstd_sync (struct mtd_info *);
+>  static int cfi_amdstd_suspend (struct mtd_info *);
+>  static void cfi_amdstd_resume (struct mtd_info *);
+> -static int cfi_amdstd_reboot(struct notifier_block *, unsigned long, void *);
+> +static void cfi_amdstd_reset(struct mtd_info *);
+>  static int cfi_amdstd_get_fact_prot_info(struct mtd_info *, size_t,
+>  					 size_t *, struct otp_info *);
+>  static int cfi_amdstd_get_user_prot_info(struct mtd_info *, size_t,
+> @@ -529,6 +528,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+>  	mtd->_sync    = cfi_amdstd_sync;
+>  	mtd->_suspend = cfi_amdstd_suspend;
+>  	mtd->_resume  = cfi_amdstd_resume;
+> +	mtd->_reboot  = cfi_amdstd_reset;
+>  	mtd->_read_user_prot_reg = cfi_amdstd_read_user_prot_reg;
+>  	mtd->_read_fact_prot_reg = cfi_amdstd_read_fact_prot_reg;
+>  	mtd->_get_fact_prot_info = cfi_amdstd_get_fact_prot_info;
+> @@ -544,7 +544,6 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+>  			mtd->writebufsize);
+>  
+>  	mtd->_panic_write = cfi_amdstd_panic_write;
+> -	mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
+>  
+>  	if (cfi->cfi_mode==CFI_MODE_CFI){
+>  		unsigned char bootloc;
+> @@ -717,7 +716,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+>  	}
+>  
+>  	__module_get(THIS_MODULE);
+> -	register_reboot_notifier(&mtd->reboot_notifier);
+>  	return mtd;
+>  
+>   setup_err:
+> @@ -2871,7 +2869,7 @@ static void cfi_amdstd_resume(struct mtd_info *mtd)
+>   * the flash is in query/program/erase mode will prevent the CPU from
+>   * fetching the bootloader code, requiring a hard reset or power cycle.
+>   */
+> -static int cfi_amdstd_reset(struct mtd_info *mtd)
+> +static void cfi_amdstd_reset(struct mtd_info *mtd)
+>  {
+>  	struct map_info *map = mtd->priv;
+>  	struct cfi_private *cfi = map->fldrv_priv;
+> @@ -2893,19 +2891,6 @@ static int cfi_amdstd_reset(struct mtd_info *mtd)
+>  
+>  		mutex_unlock(&chip->mutex);
+>  	}
+> -
+> -	return 0;
+> -}
+> -
+> -
+> -static int cfi_amdstd_reboot(struct notifier_block *nb, unsigned long val,
+> -			       void *v)
+> -{
+> -	struct mtd_info *mtd;
+> -
+> -	mtd = container_of(nb, struct mtd_info, reboot_notifier);
+> -	cfi_amdstd_reset(mtd);
+> -	return NOTIFY_DONE;
+>  }
+>  
+>  
+> @@ -2915,7 +2900,6 @@ static void cfi_amdstd_destroy(struct mtd_info *mtd)
+>  	struct cfi_private *cfi = map->fldrv_priv;
+>  
+>  	cfi_amdstd_reset(mtd);
+> -	unregister_reboot_notifier(&mtd->reboot_notifier);
+>  	kfree(cfi->cmdset_priv);
+>  	kfree(cfi->cfiq);
+>  	kfree(cfi);
