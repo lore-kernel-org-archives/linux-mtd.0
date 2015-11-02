@@ -1,29 +1,24 @@
-From: Anup Patel <anup.patel@broadcom.com>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Linux MTD
- <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll
- <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Sudeep Holla
- <sudeep.holla@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Kumar
- Gala" <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>, Scott Branden
- <sbranden@broadcom.com>, Florian Fainelli <f.fainelli@gmail.com>, "Pramod
- Kumar" <pramodku@broadcom.com>, Vikram Prakash <vikramp@broadcom.com>,
- Sandeep Tripathy <tripathy@broadcom.com>, Linux ARM Kernel
- <linux-arm-kernel@lists.infradead.org>, Device Tree
- <devicetree@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-Subject: RE: [PATCH v5 2/3] mtd: brcmnand: Force 8bit mode before doing
- nand_scan_ident()
-Date: Mon, 2 Nov 2015 17:06:08 +0000
-Message-ID: <39063E8F96E11742B35A201CC5D095B7B063F0@SJEXCHMB10.corp.ad.broadcom.com>
-References: <1446188361-15146-1-git-send-email-anup.patel@broadcom.com>
- <1446188361-15146-3-git-send-email-anup.patel@broadcom.com>
- <20151030194744.GJ13239@google.com>
-In-Reply-To: <20151030194744.GJ13239@google.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZtJ9Y-0000EE-Q1
+ for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 17:44:21 +0000
+Received: by pasz6 with SMTP id z6so154709927pas.2
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Nov 2015 09:44:00 -0800 (PST)
+Date: Mon, 2 Nov 2015 09:43:56 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jesper Nilsson <jespern@axis.com>, linux-cris-kernel@axis.com
+Subject: Re: Problems with 'mtd: warn when registering the same master many
+ times'
+Message-ID: <20151102174356.GA13101@localhost>
+References: <5637843C.10307@roeck-us.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5637843C.10307@roeck-us.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,61 +28,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Nov 02, 2015 at 07:41:48AM -0800, Guenter Roeck wrote:
+> Brian,
+> 
+> I see the following warnings in recent mips qemu tests on linux-next.
+> 
+> WARNING: CPU: 0 PID: 1 at drivers/mtd/mtdcore.c:619 mtd_device_parse_register+0x160/0x16c()
+> MTD already registered
+> 
+> Looking into the code, this is the result of your patch 'mtd: warn when registering
+> the same master many times'.
+> 
+> This patch is supposed to warn if mtd_device_parse_register is called multiple times
+> with the same mtd_info structure pointer as parameter.
+> 
+> At the surface, the check appears to make sense. However, it has a problem.
+> The output of "git grep reboot_notifier.notifier_call" in drivers/mtd results in
+> 
+> chips/cfi_cmdset_0001.c:        mtd->reboot_notifier.notifier_call = cfi_intelext_reboot;
+> chips/cfi_cmdset_0002.c:        mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
+> mtdcore.c:      WARN_ONCE(mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+> mtdcore.c:      if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
+> mtdcore.c:              mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
+> 
+> As it turns out, the observed warning is not seen because mtd_device_parse_register()
+> is called multiple times. It is seen because mtd->reboot_notifier.notifier_call
+> is already set to cfi_intelext_reboot by the time it is checked.
 
+Hmm, you're right. I overlooked this one. FWIW, this would be
+ameliorated by this patch [1] but I never got around to testing it
+properly, so I didn't merge it. (Could you test it? If so, I might just
+apply it as a fix.)
 
-> -----Original Message-----
-> From: Brian Norris [mailto:computersforpeace@gmail.com]
-> Sent: 31 October 2015 01:18
-> To: Anup Patel
-> Cc: David Woodhouse; Linux MTD; Rob Herring; Pawel Moll; Mark Rutland;
-> Catalin Marinas; Will Deacon; Sudeep Holla; Ian Campbell; Kumar Gala; Ray=
- Jui;
-> Scott Branden; Florian Fainelli; Pramod Kumar; Vikram Prakash; Sandeep
-> Tripathy; Linux ARM Kernel; Device Tree; Linux Kernel; bcm-kernel-feedbac=
-k-list
-> Subject: Re: [PATCH v5 2/3] mtd: brcmnand: Force 8bit mode before doing
-> nand_scan_ident()
->=20
-> On Fri, Oct 30, 2015 at 12:29:20PM +0530, Anup Patel wrote:
-> > Just like other NAND controllers,
->=20
-> ^^ That part isn't strictly true. While READ ID data only comes out on th=
-e lower 8
-> bits, that doesn't *actually* mean you can't get valid data from a 16-bit=
- bus in
-> general; you just have to drop the upper 8 bits. That's what these two co=
-mmits
-> did for read ID and parameter page read commands:
->=20
-> commit 3dad2344e92c6e1aeae42df1c4824f307c51bcc7
-> Author: Brian Norris <computersforpeace@gmail.com>
-> Date:   Wed Jan 29 14:08:12 2014 -0800
->=20
->     mtd: nand: force NAND_CMD_READID onto 8-bit bus
->=20
-> commit bd9c6e99b58255b9de1982711ac9487c9a2f18be
-> Author: Brian Norris <computersforpeace@gmail.com>
-> Date:   Fri Nov 29 22:04:28 2013 -0800
->=20
->     mtd: nand: don't use read_buf for 8-bit ONFI transfers
->=20
-> > the NAND READID command only works
-> > in 8bit mode for all versions of BRCMNAND controller.
->=20
-> But I presume *this* statement is actually true. This NAND controller doe=
-sn't
-> exactly give us a fully-flexible READID / read_byte / read_word command, =
-as it
-> works at a higher level than that (although LOW_LEVEL_OP gives us this
-> flexibility now). I could imagine (though I never tested 16-bit NAND) tha=
-t 16-bit
-> READID is broken.
->=20
-> BTW, did you ask the HW designer about this? It'd be nice to be 100% sure=
-.
+> I don't know if this is a bug in the mtd code, or if this is a valid use case.
+> Whatever it is, the warning does not warn about the driver, it warns about a potential
+> inconsistency in the mtd code itself (and if it is is a valid use case, the warning
+> is inappropriate). Maybe it would make sense to change the warning as follows ?
+> 
+> WARN_ONCE(mtd->_reboot && mtd->reboot_notifier.notifier_call, "MTD already registered\n");
 
-Yes, we had a discussed with HW designers and they confirmed
-that READID command will only work in 8bit mode.
+That would be an OK fix, in the event that the above patch isn't taken.
 
-Regards,
-Anup
+> I am not sure, though, if that is correct, since even that might be a valid use case
+> (a caller registering a cfi based mtd device with a _reboot callback).
+
+No, those two are supposed to be mutually exclusive before MTD
+registration; either the MTD driver provides a _reboot() callback and
+MTD core registers the notifier (which fills out .notifier_call), or the
+driver itself steals that notifier structure but never registers a
+_reboot() callback. So no driver should actually need both.
+
+I'd really prefer it if we could just transition to the CFI drivers to
+let MTD register the notifier for us, but I'm not 100% confident without
+testing.
+
+> I also see the warning in crisv32 runtime tests. This is because the code in
+> arch/cris/arch-v32/drivers/axisflashmap.c calls mtd_device_register() multiple times
+> with the same mtd_info argument, each time to register a different partition.
+> I am not sure if the check is appropriate for this case either, since the code calls
+> mtd_device_register(), both 'type' and 'parser_data' are NULL, parse_mtd_partitions()
+> does not do anything, and the problem you are concerned about does not apply.
+
+Actually, that platform is probably one of the main reasons for the
+warning patch. It is not kosher to call mtd_device_register() as many
+times as it does. So, you get a warning until somebody can be bothered
+to fix that ugly code.
+
+> How about changing the warning to something like the following ?
+> 
+> WARN_ONCE(types && mtd->_reboot && mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+
+No, that doesn't make much sense. We might as well just be removing the
+check entirely at that point, since this just looks like you're shooting
+at a random/fragile hack.
+
+> This would eliminate (what I think are) false positives and only warn if there
+> is a real problem.
+
+I think we have the option of either taking patch [1] or taking your
+first suggestion. But the axisflashmap.c is not a false positive, and it
+should be fixed. Or just live with the warning, if it's unmaintained.
+
+Brian
+
+[1] http://patchwork.ozlabs.org/patch/417981/
