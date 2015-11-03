@@ -1,28 +1,21 @@
-From: Anup Patel <anup.patel@broadcom.com>
-To: Brian Norris <computersforpeace@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- Olof Johansson <olof@lixom.net>
-CC: David Woodhouse <dwmw2@infradead.org>, Linux MTD
- <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll
- <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Sudeep Holla
- <sudeep.holla@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Kumar
- Gala" <galak@codeaurora.org>, Ray Jui <rjui@broadcom.com>, Scott Branden
- <sbranden@broadcom.com>, Florian Fainelli <f.fainelli@gmail.com>, "Pramod
- Kumar" <pramodku@broadcom.com>, Vikram Prakash <vikramp@broadcom.com>,
- Sandeep Tripathy <tripathy@broadcom.com>, Linux ARM Kernel
- <linux-arm-kernel@lists.infradead.org>, Device Tree
- <devicetree@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-Subject: RE: [PATCH v5 0/3] NAND support for Broadcom NS2 SoC
-Date: Tue, 3 Nov 2015 08:12:27 +0000
-Message-ID: <39063E8F96E11742B35A201CC5D095B7B07457@SJEXCHMB10.corp.ad.broadcom.com>
-References: <1446188361-15146-1-git-send-email-anup.patel@broadcom.com>
- <20151030193152.GI13239@google.com>
-In-Reply-To: <20151030193152.GI13239@google.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZtX1G-0002gw-Lo
+ for linux-mtd@lists.infradead.org; Tue, 03 Nov 2015 08:32:44 +0000
+Message-ID: <1446539539.6126.110.camel@gmail.com>
+Subject: Re: master node can not be recovered
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Bean Huo =?UTF-8?Q?=E9=9C=8D=E6=96=8C=E6=96=8C?= "(beanhuo)"
+ <beanhuo@micron.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Cc: Richard Weinberger <richard@nod.at>
+Date: Tue, 03 Nov 2015 10:32:19 +0200
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF4FB2A@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF4FB2A@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,7 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Arnd, +Olof
+On Mon, 2015-11-02 at 16:10 +0000, Bean Huo 霍斌斌 (beanhuo) wrote:
+> Hi, Richard 
+> I tested my UBI power loss solution, have a question about master
+> node.
+> We all know that if master node be corrupted by power loss , we can
+> recover it by second one. But from my testing results, in fact,
+> It cannot be recovered by second backup master node. If first master
+> node be corrupted by power loss, this relevant block will be
+> correctly read, get_master_node will not reture 0, so next time
+> recover operation will not run.
+> Or I'm wrong?
 
-Regards,
-Anup
+There are debugging messages, can you please try to enable them and
+share the resutl, so that we could see what was going on?
