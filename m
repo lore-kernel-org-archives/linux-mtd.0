@@ -1,22 +1,15 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtXeB-0007XN-Kj
- for linux-mtd@lists.infradead.org; Tue, 03 Nov 2015 09:12:55 +0000
-Message-ID: <1446541937.6126.125.camel@gmail.com>
-Subject: Re: master node can not be recovered
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>, Bean Huo
- =?UTF-8?Q?=E9=9C=8D=E6=96=8C=E6=96=8C?= "(beanhuo)"
- <beanhuo@micron.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Date: Tue, 03 Nov 2015 11:12:17 +0200
-In-Reply-To: <5637934D.5000503@nod.at>
-References: <A765B125120D1346A63912DDE6D8B6310BF4FB2A@NTXXIAMBX02.xacn.micron.com>
- <5637934D.5000503@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Vignesh R <vigneshr@ti.com>
+To: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>
+CC: Michal Suchanek <hramrach@gmail.com>, Russell King
+ <linux@arm.linux.org.uk>, Vignesh R <vigneshr@ti.com>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
+Subject: [PATCH v2 0/5] Add memory mapped read support for ti-qspi
+Date: Tue, 3 Nov 2015 15:36:09 +0530
+Message-ID: <1446545174-14193-1-git-send-email-vigneshr@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +19,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2015-11-02 at 17:46 +0100, Richard Weinberger wrote:
-> ubifs_recover_master_node() is very strict.
 
-Just like the rest of the recovery code, the master node part is
-consistent with that.
+Changes since v1:
+Introduce API in SPI core that MTD flash driver can call for mmap read
+instead of directly calling spi-master driver callback. This API makes
+sure that SPI core msg queue is locked during mmap transfers.
+v1: https://lkml.org/lkml/2015/9/4/103
 
-> Can it be that in your case more than the last written page is
-> corrupted?
 
-I suspect so too.
+Cover letter:
+
+This patch series adds support for memory mapped read port of ti-qspi.
+ti-qspi has a special memory mapped port through which SPI flash
+memories can be accessed directly via SoC specific memory region.
+
+First patch adds a method to pass flash specific information like read
+opcode, dummy bytes etc and to request mmap read. Second patch
+implements mmap read method in ti-qspi driver. Patch 3 adapts m25p80 to
+use mmap read method before trying normal SPI transfer. Patch 4 and 5
+add memory map region DT entries for DRA7xx and AM43xx SoCs.
+
+This patch series is based on the discussions here:
+http://www.spinics.net/lists/linux-spi/msg04796.html
+
+Tested on DRA74 EVM and AM437x-SK.
+Read performance increases from ~100kB/s to ~2.5MB/s.
+
+
+Vignesh R (5):
+  spi: introduce mmap read support for spi flash devices
+  spi: spi-ti-qspi: add mmap mode read support
+  mtd: devices: m25p80: add support for mmap read request
+  ARM: dts: DRA7: add entry for qspi mmap region
+  ARM: dts: AM4372: add entry for qspi mmap region
+
+ Documentation/devicetree/bindings/spi/ti_qspi.txt | 18 ++++-
+ arch/arm/boot/dts/am4372.dtsi                     |  4 +-
+ arch/arm/boot/dts/dra7.dtsi                       |  6 +-
+ drivers/mtd/devices/m25p80.c                      |  5 ++
+ drivers/spi/spi-ti-qspi.c                         | 92 ++++++++++++++++++++++-
+ drivers/spi/spi.c                                 | 35 +++++++++
+ include/linux/spi/spi.h                           | 23 ++++++
+ 7 files changed, 174 insertions(+), 9 deletions(-)
+
+-- 
+2.6.2
