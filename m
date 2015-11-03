@@ -1,21 +1,29 @@
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ztbnt-0002sp-Mx
+ for linux-mtd@lists.infradead.org; Tue, 03 Nov 2015 13:39:14 +0000
+Date: Tue, 3 Nov 2015 14:38:50 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Tim Harvey <tharvey@gateworks.com>
+Cc: Richard Weinberger <richard@nod.at>, Elie De Brauwer
+ <eliedebrauwer@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>, Adrian
+ Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org, Huang
+ Shijie <shijie.huang@arm.com>, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: UBIFS corruption after power cut - possibly unstable bits issue?
+Message-ID: <20151103143850.45c4ded9@bbrezillon>
+In-Reply-To: <CAJ+vNU3Y_SnLSAojp3-hXxR02dtfX5n78GkS6Zt-izDZMh2msQ@mail.gmail.com>
+References: <CAJ+vNU3eu4qBxaZpDRY=Fidv=9iGmA5pq8b4yUfyBayLTos5oQ@mail.gmail.com>
+ <562E8697.50207@nod.at>
+ <CAJ+vNU1J+MvyWgY1FPv4G7TxQLDtPJWdWw=DP5+1h2HcTi-SxQ@mail.gmail.com>
+ <562E9E0B.5030204@nod.at>
+ <CAJ+vNU1GV1GxYfLgHh2ZerAGjRxi=azXHLg_dNO=BaUrkkDU1w@mail.gmail.com>
+ <562FD60E.9020807@nod.at>
+ <CAJ+vNU28eboKDTei09-rjWOTJ_17CPQ0+UxpOOuc0cr_kj0qhw@mail.gmail.com>
+ <CAJ+vNU3Y_SnLSAojp3-hXxR02dtfX5n78GkS6Zt-izDZMh2msQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1446545174-14193-2-git-send-email-vigneshr@ti.com>
-References: <1446545174-14193-1-git-send-email-vigneshr@ti.com>
- <1446545174-14193-2-git-send-email-vigneshr@ti.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Tue, 3 Nov 2015 12:19:18 +0100
-Message-ID: <CAOMqctQ7uPXo5GzVK918DfvuaAPBvbooxW00jFP4ryyfcdLURA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] spi: introduce mmap read support for spi flash
- devices
-To: Vignesh R <vigneshr@ti.com>
-Cc: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>,
- Russell King <linux@arm.linux.org.uk>, devicetree <devicetree@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-omap@vger.kernel.org,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,127 +33,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3 November 2015 at 11:06, Vignesh R <vigneshr@ti.com> wrote:
-> In addition to providing direct access to SPI bus, some spi controller
-> hardwares (like ti-qspi) provide special memory mapped port
-> to accesses SPI flash devices in order to increase read performance.
-> This means the controller can automatically send the SPI signals
-> required to read data from the SPI flash device.
-> For this, spi controller needs to know flash specific information like
-> read command to use, dummy bytes and address width. Once these settings
-> are populated in hardware registers, any read accesses to flash's memory
-> map region(SoC specific) through memcpy (or mem-to mem DMA copy) will be
-> handled by controller hardware. The hardware will automatically generate
-> SPI signals required to read data from flash and present it to CPU/DMA.
->
-> Introduce spi_mtd_mmap_read() interface to support memory mapped read
-> over SPI flash devices. SPI master drivers can implement this callback to
-> support memory mapped read interfaces. m25p80 flash driver and other
-> flash drivers can call this to request memory mapped read. The interface
-> should only be used MTD flashes and cannot be used with other SPI devices.
->
-> Signed-off-by: Vignesh R <vigneshr@ti.com>
-> ---
->  drivers/spi/spi.c       | 35 +++++++++++++++++++++++++++++++++++
->  include/linux/spi/spi.h | 23 +++++++++++++++++++++++
->  2 files changed, 58 insertions(+)
->
-> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-> index a5f53de813d3..5a5c7a7d47f2 100644
-> --- a/drivers/spi/spi.c
-> +++ b/drivers/spi/spi.c
-> @@ -1059,6 +1059,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
->                 }
->         }
->
-> +       mutex_lock(&master->mmap_lock_mutex);
->         trace_spi_message_start(master->cur_msg);
->
->         if (master->prepare_message) {
-> @@ -1068,6 +1069,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
->                                 "failed to prepare message: %d\n", ret);
->                         master->cur_msg->status = ret;
->                         spi_finalize_current_message(master);
-> +                       mutex_unlock(&master->mmap_lock_mutex);
->                         return;
->                 }
->                 master->cur_msg_prepared = true;
-> @@ -1077,6 +1079,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
->         if (ret) {
->                 master->cur_msg->status = ret;
->                 spi_finalize_current_message(master);
-> +               mutex_unlock(&master->mmap_lock_mutex);
->                 return;
->         }
->
-> @@ -1084,8 +1087,10 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
->         if (ret) {
->                 dev_err(&master->dev,
->                         "failed to transfer one message from queue\n");
-> +               mutex_unlock(&master->mmap_lock_mutex);
->                 return;
->         }
-> +       mutex_unlock(&master->mmap_lock_mutex);
->  }
->
->  /**
-> @@ -1732,6 +1737,7 @@ int spi_register_master(struct spi_master *master)
->         spin_lock_init(&master->queue_lock);
->         spin_lock_init(&master->bus_lock_spinlock);
->         mutex_init(&master->bus_lock_mutex);
-> +       mutex_init(&master->mmap_lock_mutex);
->         master->bus_lock_flag = 0;
->         init_completion(&master->xfer_completion);
->         if (!master->max_dma_len)
-> @@ -2237,6 +2243,35 @@ int spi_async_locked(struct spi_device *spi, struct spi_message *message)
->  EXPORT_SYMBOL_GPL(spi_async_locked);
->
->
-> +int spi_mtd_mmap_read(struct spi_device *spi, loff_t from, size_t len,
-> +                     size_t *retlen, u_char *buf, u8 read_opcode,
-> +                     u8 addr_width, u8 dummy_bytes)
-> +
-> +{
-> +       struct spi_master *master = spi->master;
-> +       int ret;
-> +
-> +       if (master->auto_runtime_pm) {
-> +               ret = pm_runtime_get_sync(master->dev.parent);
-> +               if (ret < 0) {
-> +                       dev_err(&master->dev, "Failed to power device: %d\n",
-> +                               ret);
-> +                       goto err;
-> +               }
-> +       }
-> +       mutex_lock(&master->mmap_lock_mutex);
-> +       ret = master->spi_mtd_mmap_read(spi, from, len, retlen, buf,
-> +                                       read_opcode, addr_width,
-> +                                       dummy_bytes);
-> +       mutex_unlock(&master->mmap_lock_mutex);
-> +       if (master->auto_runtime_pm)
-> +               pm_runtime_put(master->dev.parent);
-> +
-> +err:
-> +       return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(spi_mtd_mmap_read);
-> +
->  /*-------------------------------------------------------------------------*/
->
->  /* Utility methods for SPI master protocol drivers, layered on
-> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-> index 6b00f18f5e6b..0a6d8ad57357 100644
-> --- a/include/linux/spi/spi.h
-> +++ b/include/linux/spi/spi.h
-> @@ -297,6 +297,7 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
->   * @flags: other constraints relevant to this driver
->   * @bus_lock_spinlock: spinlock for SPI bus locking
->   * @bus_lock_mutex: mutex for SPI bus locking
-> + * @mmap_lock_mutex: mutex for locking SPI bus when mmap transfer is on.
+Hi Tim,
 
-Any reason to not use the bus_lock_mutex here? The bus is busy as much
-during mmap transfer as it is during any other transfer.
+On Mon, 2 Nov 2015 12:31:11 -0800
+Tim Harvey <tharvey@gateworks.com> wrote:
 
-Thanks
+> On Mon, Nov 2, 2015 at 12:27 PM, Tim Harvey <tharvey@gateworks.com> wrote:
+> > [    8.635364] UBIFS (ubi0:0): recovery needed
+> > [    8.676203] ubi0 warning: ubi_io_read: error -74 (ECC error) while
+> > reading 69632 bytes from PEB 2254:192512, read only 69632 bytes, retry
+> > [    8.692460] ubi0 warning: ubi_io_read: error -74 (ECC error) while
+> > reading 69632 bytes from PEB 2254:192512, read only 69632 bytes, retry
+> > [    8.708741] ubi0 warning: ubi_io_read: error -74 (ECC error) while
+> > reading 69632 bytes from PEB 2254:192512, read only 69632 bytes, retry
+> > ^^^^ non correctable ecc error on PEB 2254  - I verified that this was
+> > not the first time this PEB has been used
 
-Michal
+I suspect one of the bit in PEB 2254 to be stuck at 0 (even after
+erasing the block the bit stays at 0). Have you tried to erase this
+block (flash_erase /dev/mtd2 0x23380000 1) and dump it in raw mode
+(nanddump -n -l 0x40000 -s 0x23380000 -f /tmp/dump /dev/mtd2)?
+
+> >
+> > I've cc'd Huang, Elie, and Brian who were involved in the patch to
+> > detect bit-flips in gpmi-nand.c reads - perhaps they have some more
+> > ideas. I find it interesting that in one case that patch resolves the
+> > issue and in the other it does not.
+
+I posted a slightly reworked version of Huang's patch [1] a while ago
+addressing the "account for bitflips in OOB area" problem, but maybe we
+could do better (avoid this extra "read in raw mode" step, or use the
+generic nand_check_erased_ecc_chunk() function when ECC bytes are
+aligned).
+
+Best Regards,
+
+Boris
+
+[1]https://patchwork.ozlabs.org/patch/416543/
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
