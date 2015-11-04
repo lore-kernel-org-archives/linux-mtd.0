@@ -1,18 +1,31 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtmZW-0008DM-Nf
- for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 01:09:08 +0000
-Received: by pacdm15 with SMTP id dm15so10264677pac.3
- for <linux-mtd@lists.infradead.org>; Tue, 03 Nov 2015 17:08:44 -0800 (PST)
+ id 1ZtnRw-0001Fd-Q3
+ for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 02:05:21 +0000
+Received: by pacdm15 with SMTP id dm15so11801423pac.3
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Nov 2015 18:04:59 -0800 (PST)
+Date: Tue, 3 Nov 2015 18:04:57 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- Jesper Nilsson <jespern@axis.com>, linux-cris-kernel@axis.com
-Subject: [PATCH] mtd: don't WARN about overloaded users of
- mtd->reboot_notifier.notifier_call
-Date: Tue,  3 Nov 2015 17:01:53 -0800
-Message-Id: <1446598913-133086-1-git-send-email-computersforpeace@gmail.com>
+To: Ray Jui <rjui@broadcom.com>
+Cc: Clay McClure <clay@daemons.net>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Scott Branden <sbranden@broadcom.com>,
+ "bcm-kernel-feedback-list@broadcom.com"
+ <bcm-kernel-feedback-list@broadcom.com>, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH] mtd: brcmnand: Fix NAND_CMD_PARAM byte order
+Message-ID: <20151104020457.GM7274@google.com>
+References: <1445629626-27474-1-git-send-email-clay@daemons.net>
+ <20151023232742.GV13239@google.com> <562AD54B.2000501@broadcom.com>
+ <20151024011219.GW13239@google.com>
+ <CAOVqfW-1YurDwJbKDgUJdQZVxJ_rWDg-x+28++SZtg-vPO4kYg@mail.gmail.com>
+ <20151026181430.GA13239@google.com> <562E7667.5050406@broadcom.com>
+ <CAOVqfW8g2w=u8fO5GTa=5Hw_OOPS6NcGFg3TiLbCPny14id0VQ@mail.gmail.com>
+ <20151027204023.GV13239@google.com> <562FE4C4.3040605@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <562FE4C4.3040605@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +35,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are multiple types of users of mtd->reboot_notifier.notifier_call:
+On Tue, Oct 27, 2015 at 01:55:32PM -0700, Ray Jui wrote:
+> On 10/27/2015 1:40 PM, Brian Norris wrote:
+> >On Mon, Oct 26, 2015 at 01:08:41PM -0700, Clay McClure wrote:
+> >>The bug in read_byte() is due to the fact that it currently assumes
+> >>the host CPU byte order is big-endian (i.e., it always extracts byte 0
+> >>from the high bits of the word).
+> >
+> >No, the bug isn't really in read_byte() specifically, and it definitely
+> >isn't about the CPU being big-endian. As I said before, this is
+> >primarily tested on *little* endian MIPS and ARM STB chips.
+> >
+> >It appears that on these SoCs, at least, somehow (I have to wave my
+> >hands here; I really don't know why; I can only presume poor HW design)
+> >the PARAMETER_READ command fills the flash cache with big endian -like
+> >data. So when I looked at the parameter page in a register viewer, I'd
+> >see data like this:
+> >
+> >FLASH_CACHE[0] = 0x4f4e4649  (i.e., "ONFI")
+> >FLASH_CAHCE[1] = ....
+> >
+> >That is, byte[0] is 0x49 ("I"), byte[1] is 0x46 ("F"), byte[2] is 0x4e
+> >("N"), byte[3] is 0x4f ("O"), and so on. That means this data needs to
+> >be byte-swapped before we can push it out of the brcmnand driver. There
+> >are no sideband toggles to reconfigure buses or anything, so the driver
+> >must do the swap on its own. Currently, that is done via ugly word
+> >shifting, but it can be more clearly done with this patch [1]. Note that
+> >this patch [1] just a simple refactoring and does not actually fix
+> >anything. It is just to clarify the logic.
+> >
+> >(Incidentally, I believe the above is all correct even for STB
+> >big-endian MIPS too, but I haven't tested.)
+> >
+> 
+> Don't you think this may have something to do with the APB bus
+> endianness setting that's not used for all non-iProc SoCs? I suspect
+> not just the ONFI paramter page, but all other NAND data read into
+> FLASH_CACHE are in BE format on those SoCs (or am I completely out
+> of my mind and missing something here?)
 
-(1) A while back, the cfi_cmdset_000{1,2} chip drivers implemented a
-reboot notifier to (on a best effort basis) attempt to reset their flash
-chips before rebooting.
+No, I don't think the NAND data in FLASH_CACHE is always in BE format.
+If you look at brcmnand_read_by_pio() and consider the LE STB case
+(i.e., no APB swapping to configure), then data is copied word-wise
+(with no swapping) into a byte array (note the cast in
+brcmnand_read_page(), for instance).
 
-(2) More recently, we implemented a common _reboot() hook so that MTD
-drivers (particularly, NAND flash) could better halt I/O operations
-without having to reimplement the same notifier boilerplate.
+So in the read page case, the FLASH_CACHE is currently treated as native
+endianness -- i.e., "little endian".
 
-Currently, the WARN_ONCE() condition here was written to handle (2), but
-at the same time it mis-diagnosed case (1) as an already-registered MTD.
-Let's fix this by having the WARN_ONCE() condition better imitate the
-condition that immediately follows it. (Wow, I don't know how I missed
-that one.)
+Now, I don't think any of this means that you're out of your mind. I can
+definitively claim that I do *not* know what's going on here. I expect
+that this is some convoluted concoction of a disorganized and
+distributed (across different business units) "design" of a NAND
+controller.
 
-(Side note: Unfortunately, we can't yet combine the reboot notifier code
-for (1) and (2) with a patch like [1], because some users of (1) also
-use mtdconcat, and so the mtd_info struct from cfi_cmdset_000{1,2} won't
-actually get registered with mtdcore, and therefore their reboot
-notifier won't get registered.)
+I think you need to consult with:
+(1) real hardware for all affected cases (i.e., both STB SoCs and iProc,
+    for starters) and
+(2) the core designers. (At a minimum, I think they should answer for
+    why ONFI parameter pages show up in big endian on STB chips. But
+    there are definitely more questions than that.)
 
-[1] http://patchwork.ozlabs.org/patch/417981/
+As I am no longer at Broadcom, I don't have access to my usual hardware
+for (1), and I definitely don't have access to (2).
 
-Suggested-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Jesper Nilsson <jespern@axis.com>
-Cc: linux-cris-kernel@axis.com
----
-This is probably a 4.4 candidate
+Incidentally, I'm not sure it's best I'm the (sole) maintainer for
+drivers/mtd/nand/brcmnand/ any more, given my lack of hardware. (I could
+probably acquire consumer BRCM-based routers to hack on, but that's not
+quite my bread and butter, nor the source of this particular thorn.) I'm
+open to other additions to MAINTAINERS, and specifically someone who can
+answer for STB SoCs, where this mess all originated from. Florian?
+Kamal?
 
- drivers/mtd/mtdcore.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index b1eea48c501d..a91cee90aef9 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -616,7 +616,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 	 * does cause problems with parse_mtd_partitions() above (e.g.,
- 	 * cmdlineparts will register partitions more than once).
- 	 */
--	WARN_ONCE(mtd->reboot_notifier.notifier_call, "MTD already registered\n");
-+	WARN_ONCE(mtd->_reboot && mtd->reboot_notifier.notifier_call,
-+		  "MTD already registered\n");
- 	if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
- 		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
- 		register_reboot_notifier(&mtd->reboot_notifier);
--- 
-2.6.0.rc2.230.g3dd15c0
+Brian
