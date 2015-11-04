@@ -1,18 +1,18 @@
-Received: from mail-qk0-x22a.google.com ([2607:f8b0:400d:c09::22a])
+Received: from mail-qg0-x235.google.com ([2607:f8b0:400d:c04::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zu0la-00017G-4X
- for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 16:18:31 +0000
-Received: by qkct129 with SMTP id t129so21915035qkc.2
- for <linux-mtd@lists.infradead.org>; Wed, 04 Nov 2015 08:18:07 -0800 (PST)
+ id 1Zu0lb-00017P-U7
+ for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 16:18:33 +0000
+Received: by qgeo38 with SMTP id o38so44608539qge.0
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Nov 2015 08:18:10 -0800 (PST)
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: <linux-mtd@lists.infradead.org>
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
  Antoine Tenart <antoine.tenart@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: [PATCH 2/6] mtd: pxa3xx_nand: Fix initial controller configuration
-Date: Wed,  4 Nov 2015 13:13:42 -0300
-Message-Id: <1446653626-14802-3-git-send-email-ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH 3/6] nand: pxa3xx: Simplify pxa3xx_nand_scan
+Date: Wed,  4 Nov 2015 13:13:43 -0300
+Message-Id: <1446653626-14802-4-git-send-email-ezequiel@vanguardiasur.com.ar>
 In-Reply-To: <1446653626-14802-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 References: <1446653626-14802-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,108 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Data Flash Control Register (NDCR) contains two types
-of parameters: those that are needed for device identification,
-and those that can only be set after device identification.
-
-Therefore, the driver can't set them all at once and instead
-needs to configure the first group before nand_scan_ident()
-and the second group later.
-
-Let's split pxa3xx_nand_config in two halves, and set the
-parameters that depend on the device geometry once this is known.
+This commit simplifies the initial configuration performed
+by pxa3xx_nand_scan. No functionality change is intended.
 
 Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 35 ++++++++++++++++++++++-------------
- 1 file changed, 22 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 30 ++++++++++++++----------------
+ 1 file changed, 14 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 3d3ae903eec8..a82f52d150f8 100644
+index a82f52d150f8..fd8658a9281e 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1387,34 +1387,43 @@ static int pxa3xx_nand_waitfunc(struct mtd_info *mtd, struct nand_chip *this)
- 	return NAND_STATUS_READY;
+@@ -1413,7 +1413,7 @@ static void pxa3xx_nand_config_tail(struct pxa3xx_nand_info *info)
+ 	info->reg_ndcr |= (mtd->writesize == 2048) ? NDCR_PAGE_SZ : 0;
  }
  
--static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info)
-+static int pxa3xx_nand_config_ident(struct pxa3xx_nand_info *info)
+-static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
++static void pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
  {
  	struct platform_device *pdev = info->pdev;
  	struct pxa3xx_nand_platform_data *pdata = dev_get_platdata(&pdev->dev);
--	struct pxa3xx_nand_host *host = info->host[info->cs];
--	struct mtd_info *mtd = host->mtd;
--	struct nand_chip *chip = mtd->priv;
- 
--	/* configure default flash values */
-+	/* Configure default flash values */
-+	info->chunk_size = PAGE_CHUNK_SIZE;
- 	info->reg_ndcr = 0x0; /* enable all interrupts */
+@@ -1426,7 +1426,6 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
  	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
- 	info->reg_ndcr |= NDCR_RD_ID_CNT(READ_ID_BYTES);
--	info->reg_ndcr |= NDCR_SPARE_EN; /* enable spare by default */
-+	info->reg_ndcr |= NDCR_SPARE_EN;
-+
-+	return 0;
-+}
-+
-+static void pxa3xx_nand_config_tail(struct pxa3xx_nand_info *info)
-+{
-+	struct pxa3xx_nand_host *host = info->host[info->cs];
-+	struct mtd_info *mtd = host->mtd;
-+	struct nand_chip *chip = mtd->priv;
-+
- 	info->reg_ndcr |= (host->col_addr_cycles == 2) ? NDCR_RA_START : 0;
- 	info->reg_ndcr |= (chip->page_shift == 6) ? NDCR_PG_PER_BLK : 0;
- 	info->reg_ndcr |= (mtd->writesize == 2048) ? NDCR_PAGE_SZ : 0;
--
+ 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
+ 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
 -	return 0;
  }
  
- static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- {
-+	struct platform_device *pdev = info->pdev;
-+	struct pxa3xx_nand_platform_data *pdata = dev_get_platdata(&pdev->dev);
- 	uint32_t ndcr = nand_readl(info, NDCR);
+ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+@@ -1597,22 +1596,21 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ 	int ret;
+ 	uint16_t ecc_strength, ecc_step;
  
- 	/* Set an initial chunk size */
- 	info->chunk_size = ndcr & NDCR_PAGE_SZ ? 2048 : 512;
- 	info->reg_ndcr = ndcr &
- 		~(NDCR_INT_MASK | NDCR_ND_ARB_EN | NFCV1_NDCR_ARB_CNTL);
-+	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
- 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
- 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
- 	return 0;
-@@ -1591,10 +1600,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
- 		goto KEEP_CONFIG;
- 
--	/* Set a default chunk size */
--	info->chunk_size = PAGE_CHUNK_SIZE;
+-	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
+-		goto KEEP_CONFIG;
 -
--	ret = pxa3xx_nand_config_flash(info);
-+	ret = pxa3xx_nand_config_ident(info);
- 	if (ret)
- 		return ret;
- 
-@@ -1607,7 +1613,6 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+-	ret = pxa3xx_nand_config_ident(info);
+-	if (ret)
+-		return ret;
+-
+-	ret = pxa3xx_nand_sensing(host);
+-	if (ret) {
+-		dev_info(&info->pdev->dev, "There is no chip on cs %d!\n",
+-			 info->cs);
+-
+-		return ret;
++	if (pdata->keep_config) {
++		pxa3xx_nand_detect_config(info);
++	} else {
++		ret = pxa3xx_nand_config_ident(info);
++		if (ret)
++			return ret;
++		ret = pxa3xx_nand_sensing(host);
++		if (ret) {
++			dev_info(&info->pdev->dev,
++				 "There is no chip on cs %d!\n",
++				 info->cs);
++			return ret;
++		}
  	}
  
- KEEP_CONFIG:
--	info->reg_ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
+-KEEP_CONFIG:
  	if (info->reg_ndcr & NDCR_DWIDTH_M)
  		chip->options |= NAND_BUSWIDTH_16;
- 
-@@ -1692,6 +1697,10 @@ KEEP_CONFIG:
- 		host->row_addr_cycles = 3;
- 	else
- 		host->row_addr_cycles = 2;
-+
-+	if (!pdata->keep_config)
-+		pxa3xx_nand_config_tail(info);
-+
- 	return nand_scan_tail(mtd);
- }
  
 -- 
 2.5.2
