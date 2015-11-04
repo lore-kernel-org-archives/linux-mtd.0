@@ -1,22 +1,21 @@
-Subject: Re: [PATCH v2 1/5] spi: introduce mmap read support for spi flash
- devices
-To: Michal Suchanek <hramrach@gmail.com>
-References: <1446545174-14193-1-git-send-email-vigneshr@ti.com>
- <1446545174-14193-2-git-send-email-vigneshr@ti.com>
- <CAOMqctQ7uPXo5GzVK918DfvuaAPBvbooxW00jFP4ryyfcdLURA@mail.gmail.com>
-CC: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>, Russell
- King <linux@arm.linux.org.uk>, devicetree <devicetree@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, MTD Maling List
- <linux-mtd@lists.infradead.org>, linux-spi <linux-spi@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <56398E18.4010100@ti.com>
-Date: Wed, 4 Nov 2015 10:18:24 +0530
-MIME-Version: 1.0
-In-Reply-To: <CAOMqctQ7uPXo5GzVK918DfvuaAPBvbooxW00jFP4ryyfcdLURA@mail.gmail.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZtsjY-0005qg-S5
+ for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 07:43:53 +0000
+From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>, Richard Weinberger
+ <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: master node can not be recovered
+Date: Wed, 4 Nov 2015 07:43:22 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF4FE9E@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF4FB2A@NTXXIAMBX02.xacn.micron.com>
+ <5637934D.5000503@nod.at> <1446541937.6126.125.camel@gmail.com>
+In-Reply-To: <1446541937.6126.125.camel@gmail.com>
+Content-Language: en-US
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,137 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On 11/03/2015 04:49 PM, Michal Suchanek wrote:
-> On 3 November 2015 at 11:06, Vignesh R <vigneshr@ti.com> wrote:
->> In addition to providing direct access to SPI bus, some spi controller
->> hardwares (like ti-qspi) provide special memory mapped port
->> to accesses SPI flash devices in order to increase read performance.
->> This means the controller can automatically send the SPI signals
->> required to read data from the SPI flash device.
->> For this, spi controller needs to know flash specific information like
->> read command to use, dummy bytes and address width. Once these settings
->> are populated in hardware registers, any read accesses to flash's memory
->> map region(SoC specific) through memcpy (or mem-to mem DMA copy) will be
->> handled by controller hardware. The hardware will automatically generate
->> SPI signals required to read data from flash and present it to CPU/DMA.
->>
->> Introduce spi_mtd_mmap_read() interface to support memory mapped read
->> over SPI flash devices. SPI master drivers can implement this callback to
->> support memory mapped read interfaces. m25p80 flash driver and other
->> flash drivers can call this to request memory mapped read. The interface
->> should only be used MTD flashes and cannot be used with other SPI devices.
->>
->> Signed-off-by: Vignesh R <vigneshr@ti.com>
->> ---
->>  drivers/spi/spi.c       | 35 +++++++++++++++++++++++++++++++++++
->>  include/linux/spi/spi.h | 23 +++++++++++++++++++++++
->>  2 files changed, 58 insertions(+)
->>
->> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
->> index a5f53de813d3..5a5c7a7d47f2 100644
->> --- a/drivers/spi/spi.c
->> +++ b/drivers/spi/spi.c
->> @@ -1059,6 +1059,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
->>                 }
->>         }
->>
->> +       mutex_lock(&master->mmap_lock_mutex);
->>         trace_spi_message_start(master->cur_msg);
->>
->>         if (master->prepare_message) {
->> @@ -1068,6 +1069,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
->>                                 "failed to prepare message: %d\n", ret);
->>                         master->cur_msg->status = ret;
->>                         spi_finalize_current_message(master);
->> +                       mutex_unlock(&master->mmap_lock_mutex);
->>                         return;
->>                 }
->>                 master->cur_msg_prepared = true;
->> @@ -1077,6 +1079,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
->>         if (ret) {
->>                 master->cur_msg->status = ret;
->>                 spi_finalize_current_message(master);
->> +               mutex_unlock(&master->mmap_lock_mutex);
->>                 return;
->>         }
->>
->> @@ -1084,8 +1087,10 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
->>         if (ret) {
->>                 dev_err(&master->dev,
->>                         "failed to transfer one message from queue\n");
->> +               mutex_unlock(&master->mmap_lock_mutex);
->>                 return;
->>         }
->> +       mutex_unlock(&master->mmap_lock_mutex);
->>  }
->>
->>  /**
->> @@ -1732,6 +1737,7 @@ int spi_register_master(struct spi_master *master)
->>         spin_lock_init(&master->queue_lock);
->>         spin_lock_init(&master->bus_lock_spinlock);
->>         mutex_init(&master->bus_lock_mutex);
->> +       mutex_init(&master->mmap_lock_mutex);
->>         master->bus_lock_flag = 0;
->>         init_completion(&master->xfer_completion);
->>         if (!master->max_dma_len)
->> @@ -2237,6 +2243,35 @@ int spi_async_locked(struct spi_device *spi, struct spi_message *message)
->>  EXPORT_SYMBOL_GPL(spi_async_locked);
->>
->>
->> +int spi_mtd_mmap_read(struct spi_device *spi, loff_t from, size_t len,
->> +                     size_t *retlen, u_char *buf, u8 read_opcode,
->> +                     u8 addr_width, u8 dummy_bytes)
->> +
->> +{
->> +       struct spi_master *master = spi->master;
->> +       int ret;
->> +
->> +       if (master->auto_runtime_pm) {
->> +               ret = pm_runtime_get_sync(master->dev.parent);
->> +               if (ret < 0) {
->> +                       dev_err(&master->dev, "Failed to power device: %d\n",
->> +                               ret);
->> +                       goto err;
->> +               }
->> +       }
->> +       mutex_lock(&master->mmap_lock_mutex);
->> +       ret = master->spi_mtd_mmap_read(spi, from, len, retlen, buf,
->> +                                       read_opcode, addr_width,
->> +                                       dummy_bytes);
->> +       mutex_unlock(&master->mmap_lock_mutex);
->> +       if (master->auto_runtime_pm)
->> +               pm_runtime_put(master->dev.parent);
->> +
->> +err:
->> +       return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(spi_mtd_mmap_read);
->> +
->>  /*-------------------------------------------------------------------------*/
->>
->>  /* Utility methods for SPI master protocol drivers, layered on
->> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
->> index 6b00f18f5e6b..0a6d8ad57357 100644
->> --- a/include/linux/spi/spi.h
->> +++ b/include/linux/spi/spi.h
->> @@ -297,6 +297,7 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
->>   * @flags: other constraints relevant to this driver
->>   * @bus_lock_spinlock: spinlock for SPI bus locking
->>   * @bus_lock_mutex: mutex for SPI bus locking
->> + * @mmap_lock_mutex: mutex for locking SPI bus when mmap transfer is on.
-> 
-> Any reason to not use the bus_lock_mutex here? The bus is busy as much
-> during mmap transfer as it is during any other transfer.
-
-If bus_lock_mutex is used, it will unnecessarily block queueing of new
-messages when __spi_pump_messages() is calling transfer_one_message()
-even in the case where there is no mmap mode. Hence, I chose to add new
-mutex. But looks like it doesn't matter much as __spi_sync() anyways
-blocks till message is transferred. I will drop the new mutex and use
-bus_lock_mutex in v3. Thanks!
-
--- 
-Regards
-Vignesh
+DQo+IE9uIE1vbiwgMjAxNS0xMS0wMiBhdCAxNzo0NiArMDEwMCwgUmljaGFyZCBXZWluYmVyZ2Vy
+IHdyb3RlOg0KPiA+IHViaWZzX3JlY292ZXJfbWFzdGVyX25vZGUoKSBpcyB2ZXJ5IHN0cmljdC4N
+Cj4gDQo+IEp1c3QgbGlrZSB0aGUgcmVzdCBvZiB0aGUgcmVjb3ZlcnkgY29kZSwgdGhlIG1hc3Rl
+ciBub2RlIHBhcnQgaXMgY29uc2lzdGVudCB3aXRoDQo+IHRoYXQuDQo+IA0KPiA+IENhbiBpdCBi
+ZSB0aGF0IGluIHlvdXIgY2FzZSBtb3JlIHRoYW4gdGhlIGxhc3Qgd3JpdHRlbiBwYWdlIGlzDQo+
+ID4gY29ycnVwdGVkPw0KPiANCj4gSSBzdXNwZWN0IHNvIHRvby4NCg0KSGksIEFydGVtDQoJVGhl
+IHNlY29uZCBtYXN0ZXIgbm9kZSBub3QgYmUgY29ycnVwdGVkLiBJIHdpbGwgdGVzdCBhZ2FpbiBs
+YXRlciwgYW5kIHNlbmQgaXQgb3V0Lg0K
