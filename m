@@ -1,37 +1,18 @@
-Received: from mout.web.de ([212.227.15.4])
+Received: from mail-qg0-x233.google.com ([2607:f8b0:400d:c04::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zu3SQ-0003tf-SU
- for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 19:10:55 +0000
-Subject: [PATCH] UBIFS: Delete unnecessary checks before the function call
- "iput"
-References: <5307CAA2.8060406@users.sourceforge.net>
- <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
- <530A086E.8010901@users.sourceforge.net>
- <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
- <530A72AA.3000601@users.sourceforge.net>
- <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
- <530B5FB6.6010207@users.sourceforge.net>
- <alpine.DEB.2.10.1402241710370.2074@hadrien>
- <530C5E18.1020800@users.sourceforge.net>
- <alpine.DEB.2.10.1402251014170.2080@hadrien>
- <530CD2C4.4050903@users.sourceforge.net>
- <alpine.DEB.2.10.1402251840450.7035@hadrien>
- <530CF8FF.8080600@users.sourceforge.net>
- <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
- <530DD06F.4090703@users.sourceforge.net>
- <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
- <5317A59D.4@users.sourceforge.net>
-To: Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
- Julia Lawall <julia.lawall@lip6.fr>
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Message-ID: <563A581B.7070708@users.sourceforge.net>
-Date: Wed, 4 Nov 2015 20:10:19 +0100
+ id 1Zu4Yz-0003ZD-DP
+ for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 20:21:46 +0000
+Received: by qgem9 with SMTP id m9so50227697qge.1
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Nov 2015 12:21:23 -0800 (PST)
+Date: Wed, 4 Nov 2015 15:21:21 -0500 (EST)
+From: Nicolas Pitre <nicolas.pitre@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+cc: linux-mtd@lists.infradead.org
+Subject: mtd/sm_ftl.c: fix wrong do_div() usage
+Message-ID: <alpine.LFD.2.20.1511041519320.630@knanqh.ubzr>
 MIME-Version: 1.0
-In-Reply-To: <5317A59D.4@users.sourceforge.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,42 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 4 Nov 2015 20:00:42 +0100
+do_div() is meant to be used with an unsigned dividend.
 
-The iput() function tests whether its argument is NULL and then
-returns immediately. Thus the test around the call is not needed.
+Signed-off-by: Nicolas Pitre <nico@linaro.org>
 
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- fs/ubifs/recovery.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index 2a1f0bc..586d593 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -1331,8 +1331,7 @@ void ubifs_destroy_size_tree(struct ubifs_info *c)
- 	struct size_entry *e, *n;
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index c23184a47f..b096f8bb05 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -206,9 +206,10 @@ static loff_t sm_mkoffset(struct sm_ftl *ftl, int zone, int block, int boffset)
+ }
  
- 	rbtree_postorder_for_each_entry_safe(e, n, &c->size_tree, rb) {
--		if (e->inode)
--			iput(e->inode);
-+		iput(e->inode);
- 		kfree(e);
- 	}
- 
-@@ -1533,8 +1532,7 @@ int ubifs_recover_size(struct ubifs_info *c)
- 				err = fix_size_in_place(c, e);
- 				if (err)
- 					return err;
--				if (e->inode)
--					iput(e->inode);
-+				iput(e->inode);
- 			}
- 		}
- 
--- 
-2.6.2
+ /* Breaks offset into parts */
+-static void sm_break_offset(struct sm_ftl *ftl, loff_t offset,
++static void sm_break_offset(struct sm_ftl *ftl, loff_t loffset,
+ 			    int *zone, int *block, int *boffset)
+ {
++	u64 offset = loffset;
+ 	*boffset = do_div(offset, ftl->block_size);
+ 	*block = do_div(offset, ftl->max_lba);
+ 	*zone = offset >= ftl->zone_count ? -1 : offset;
