@@ -1,31 +1,22 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtnRw-0001Fd-Q3
- for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 02:05:21 +0000
-Received: by pacdm15 with SMTP id dm15so11801423pac.3
- for <linux-mtd@lists.infradead.org>; Tue, 03 Nov 2015 18:04:59 -0800 (PST)
-Date: Tue, 3 Nov 2015 18:04:57 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ray Jui <rjui@broadcom.com>
-Cc: Clay McClure <clay@daemons.net>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Scott Branden <sbranden@broadcom.com>,
- "bcm-kernel-feedback-list@broadcom.com"
- <bcm-kernel-feedback-list@broadcom.com>, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: Re: [PATCH] mtd: brcmnand: Fix NAND_CMD_PARAM byte order
-Message-ID: <20151104020457.GM7274@google.com>
-References: <1445629626-27474-1-git-send-email-clay@daemons.net>
- <20151023232742.GV13239@google.com> <562AD54B.2000501@broadcom.com>
- <20151024011219.GW13239@google.com>
- <CAOVqfW-1YurDwJbKDgUJdQZVxJ_rWDg-x+28++SZtg-vPO4kYg@mail.gmail.com>
- <20151026181430.GA13239@google.com> <562E7667.5050406@broadcom.com>
- <CAOVqfW8g2w=u8fO5GTa=5Hw_OOPS6NcGFg3TiLbCPny14id0VQ@mail.gmail.com>
- <20151027204023.GV13239@google.com> <562FE4C4.3040605@broadcom.com>
+Subject: Re: [PATCH v2 1/5] spi: introduce mmap read support for spi flash
+ devices
+To: Michal Suchanek <hramrach@gmail.com>
+References: <1446545174-14193-1-git-send-email-vigneshr@ti.com>
+ <1446545174-14193-2-git-send-email-vigneshr@ti.com>
+ <CAOMqctQ7uPXo5GzVK918DfvuaAPBvbooxW00jFP4ryyfcdLURA@mail.gmail.com>
+CC: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>, Russell
+ King <linux@arm.linux.org.uk>, devicetree <devicetree@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, MTD Maling List
+ <linux-mtd@lists.infradead.org>, linux-spi <linux-spi@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <56398E18.4010100@ti.com>
+Date: Wed, 4 Nov 2015 10:18:24 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <562FE4C4.3040605@broadcom.com>
+In-Reply-To: <CAOMqctQ7uPXo5GzVK918DfvuaAPBvbooxW00jFP4ryyfcdLURA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,76 +26,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 27, 2015 at 01:55:32PM -0700, Ray Jui wrote:
-> On 10/27/2015 1:40 PM, Brian Norris wrote:
-> >On Mon, Oct 26, 2015 at 01:08:41PM -0700, Clay McClure wrote:
-> >>The bug in read_byte() is due to the fact that it currently assumes
-> >>the host CPU byte order is big-endian (i.e., it always extracts byte 0
-> >>from the high bits of the word).
-> >
-> >No, the bug isn't really in read_byte() specifically, and it definitely
-> >isn't about the CPU being big-endian. As I said before, this is
-> >primarily tested on *little* endian MIPS and ARM STB chips.
-> >
-> >It appears that on these SoCs, at least, somehow (I have to wave my
-> >hands here; I really don't know why; I can only presume poor HW design)
-> >the PARAMETER_READ command fills the flash cache with big endian -like
-> >data. So when I looked at the parameter page in a register viewer, I'd
-> >see data like this:
-> >
-> >FLASH_CACHE[0] = 0x4f4e4649  (i.e., "ONFI")
-> >FLASH_CAHCE[1] = ....
-> >
-> >That is, byte[0] is 0x49 ("I"), byte[1] is 0x46 ("F"), byte[2] is 0x4e
-> >("N"), byte[3] is 0x4f ("O"), and so on. That means this data needs to
-> >be byte-swapped before we can push it out of the brcmnand driver. There
-> >are no sideband toggles to reconfigure buses or anything, so the driver
-> >must do the swap on its own. Currently, that is done via ugly word
-> >shifting, but it can be more clearly done with this patch [1]. Note that
-> >this patch [1] just a simple refactoring and does not actually fix
-> >anything. It is just to clarify the logic.
-> >
-> >(Incidentally, I believe the above is all correct even for STB
-> >big-endian MIPS too, but I haven't tested.)
-> >
+Hi,
+
+On 11/03/2015 04:49 PM, Michal Suchanek wrote:
+> On 3 November 2015 at 11:06, Vignesh R <vigneshr@ti.com> wrote:
+>> In addition to providing direct access to SPI bus, some spi controller
+>> hardwares (like ti-qspi) provide special memory mapped port
+>> to accesses SPI flash devices in order to increase read performance.
+>> This means the controller can automatically send the SPI signals
+>> required to read data from the SPI flash device.
+>> For this, spi controller needs to know flash specific information like
+>> read command to use, dummy bytes and address width. Once these settings
+>> are populated in hardware registers, any read accesses to flash's memory
+>> map region(SoC specific) through memcpy (or mem-to mem DMA copy) will be
+>> handled by controller hardware. The hardware will automatically generate
+>> SPI signals required to read data from flash and present it to CPU/DMA.
+>>
+>> Introduce spi_mtd_mmap_read() interface to support memory mapped read
+>> over SPI flash devices. SPI master drivers can implement this callback to
+>> support memory mapped read interfaces. m25p80 flash driver and other
+>> flash drivers can call this to request memory mapped read. The interface
+>> should only be used MTD flashes and cannot be used with other SPI devices.
+>>
+>> Signed-off-by: Vignesh R <vigneshr@ti.com>
+>> ---
+>>  drivers/spi/spi.c       | 35 +++++++++++++++++++++++++++++++++++
+>>  include/linux/spi/spi.h | 23 +++++++++++++++++++++++
+>>  2 files changed, 58 insertions(+)
+>>
+>> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+>> index a5f53de813d3..5a5c7a7d47f2 100644
+>> --- a/drivers/spi/spi.c
+>> +++ b/drivers/spi/spi.c
+>> @@ -1059,6 +1059,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
+>>                 }
+>>         }
+>>
+>> +       mutex_lock(&master->mmap_lock_mutex);
+>>         trace_spi_message_start(master->cur_msg);
+>>
+>>         if (master->prepare_message) {
+>> @@ -1068,6 +1069,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
+>>                                 "failed to prepare message: %d\n", ret);
+>>                         master->cur_msg->status = ret;
+>>                         spi_finalize_current_message(master);
+>> +                       mutex_unlock(&master->mmap_lock_mutex);
+>>                         return;
+>>                 }
+>>                 master->cur_msg_prepared = true;
+>> @@ -1077,6 +1079,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
+>>         if (ret) {
+>>                 master->cur_msg->status = ret;
+>>                 spi_finalize_current_message(master);
+>> +               mutex_unlock(&master->mmap_lock_mutex);
+>>                 return;
+>>         }
+>>
+>> @@ -1084,8 +1087,10 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
+>>         if (ret) {
+>>                 dev_err(&master->dev,
+>>                         "failed to transfer one message from queue\n");
+>> +               mutex_unlock(&master->mmap_lock_mutex);
+>>                 return;
+>>         }
+>> +       mutex_unlock(&master->mmap_lock_mutex);
+>>  }
+>>
+>>  /**
+>> @@ -1732,6 +1737,7 @@ int spi_register_master(struct spi_master *master)
+>>         spin_lock_init(&master->queue_lock);
+>>         spin_lock_init(&master->bus_lock_spinlock);
+>>         mutex_init(&master->bus_lock_mutex);
+>> +       mutex_init(&master->mmap_lock_mutex);
+>>         master->bus_lock_flag = 0;
+>>         init_completion(&master->xfer_completion);
+>>         if (!master->max_dma_len)
+>> @@ -2237,6 +2243,35 @@ int spi_async_locked(struct spi_device *spi, struct spi_message *message)
+>>  EXPORT_SYMBOL_GPL(spi_async_locked);
+>>
+>>
+>> +int spi_mtd_mmap_read(struct spi_device *spi, loff_t from, size_t len,
+>> +                     size_t *retlen, u_char *buf, u8 read_opcode,
+>> +                     u8 addr_width, u8 dummy_bytes)
+>> +
+>> +{
+>> +       struct spi_master *master = spi->master;
+>> +       int ret;
+>> +
+>> +       if (master->auto_runtime_pm) {
+>> +               ret = pm_runtime_get_sync(master->dev.parent);
+>> +               if (ret < 0) {
+>> +                       dev_err(&master->dev, "Failed to power device: %d\n",
+>> +                               ret);
+>> +                       goto err;
+>> +               }
+>> +       }
+>> +       mutex_lock(&master->mmap_lock_mutex);
+>> +       ret = master->spi_mtd_mmap_read(spi, from, len, retlen, buf,
+>> +                                       read_opcode, addr_width,
+>> +                                       dummy_bytes);
+>> +       mutex_unlock(&master->mmap_lock_mutex);
+>> +       if (master->auto_runtime_pm)
+>> +               pm_runtime_put(master->dev.parent);
+>> +
+>> +err:
+>> +       return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(spi_mtd_mmap_read);
+>> +
+>>  /*-------------------------------------------------------------------------*/
+>>
+>>  /* Utility methods for SPI master protocol drivers, layered on
+>> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+>> index 6b00f18f5e6b..0a6d8ad57357 100644
+>> --- a/include/linux/spi/spi.h
+>> +++ b/include/linux/spi/spi.h
+>> @@ -297,6 +297,7 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+>>   * @flags: other constraints relevant to this driver
+>>   * @bus_lock_spinlock: spinlock for SPI bus locking
+>>   * @bus_lock_mutex: mutex for SPI bus locking
+>> + * @mmap_lock_mutex: mutex for locking SPI bus when mmap transfer is on.
 > 
-> Don't you think this may have something to do with the APB bus
-> endianness setting that's not used for all non-iProc SoCs? I suspect
-> not just the ONFI paramter page, but all other NAND data read into
-> FLASH_CACHE are in BE format on those SoCs (or am I completely out
-> of my mind and missing something here?)
+> Any reason to not use the bus_lock_mutex here? The bus is busy as much
+> during mmap transfer as it is during any other transfer.
 
-No, I don't think the NAND data in FLASH_CACHE is always in BE format.
-If you look at brcmnand_read_by_pio() and consider the LE STB case
-(i.e., no APB swapping to configure), then data is copied word-wise
-(with no swapping) into a byte array (note the cast in
-brcmnand_read_page(), for instance).
+If bus_lock_mutex is used, it will unnecessarily block queueing of new
+messages when __spi_pump_messages() is calling transfer_one_message()
+even in the case where there is no mmap mode. Hence, I chose to add new
+mutex. But looks like it doesn't matter much as __spi_sync() anyways
+blocks till message is transferred. I will drop the new mutex and use
+bus_lock_mutex in v3. Thanks!
 
-So in the read page case, the FLASH_CACHE is currently treated as native
-endianness -- i.e., "little endian".
-
-Now, I don't think any of this means that you're out of your mind. I can
-definitively claim that I do *not* know what's going on here. I expect
-that this is some convoluted concoction of a disorganized and
-distributed (across different business units) "design" of a NAND
-controller.
-
-I think you need to consult with:
-(1) real hardware for all affected cases (i.e., both STB SoCs and iProc,
-    for starters) and
-(2) the core designers. (At a minimum, I think they should answer for
-    why ONFI parameter pages show up in big endian on STB chips. But
-    there are definitely more questions than that.)
-
-As I am no longer at Broadcom, I don't have access to my usual hardware
-for (1), and I definitely don't have access to (2).
-
-Incidentally, I'm not sure it's best I'm the (sole) maintainer for
-drivers/mtd/nand/brcmnand/ any more, given my lack of hardware. (I could
-probably acquire consumer BRCM-based routers to hack on, but that's not
-quite my bread and butter, nor the source of this particular thorn.) I'm
-open to other additions to MAINTAINERS, and specifically someone who can
-answer for STB SoCs, where this mess all originated from. Florian?
-Kamal?
-
-Brian
+-- 
+Regards
+Vignesh
