@@ -1,29 +1,37 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mout.web.de ([212.227.15.4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zu3CA-0002ZL-5p
- for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 18:54:07 +0000
-Received: by pabfh17 with SMTP id fh17so60575088pab.0
- for <linux-mtd@lists.infradead.org>; Wed, 04 Nov 2015 10:53:45 -0800 (PST)
-Date: Wed, 4 Nov 2015 10:53:41 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Javier Martinez Canillas <javier@osg.samsung.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Fengguang Wu <fengguang.wu@intel.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
- Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Cyril Bur <cyrilbur@gmail.com>
-Subject: Re: [PATCH] mtd: Make MTD_BCM47XXSFLASH to depend on MIPS
-Message-ID: <20151104185341.GN7274@google.com>
-References: <1444813494-14985-1-git-send-email-javier@osg.samsung.com>
- <CACna6rwjMfTT4UgbyO=VmLaPic4xGcPxoMEL5yRmLW7hhvhXJQ@mail.gmail.com>
+ id 1Zu3SQ-0003tf-SU
+ for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 19:10:55 +0000
+Subject: [PATCH] UBIFS: Delete unnecessary checks before the function call
+ "iput"
+References: <5307CAA2.8060406@users.sourceforge.net>
+ <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
+ <530A086E.8010901@users.sourceforge.net>
+ <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
+ <530A72AA.3000601@users.sourceforge.net>
+ <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
+ <530B5FB6.6010207@users.sourceforge.net>
+ <alpine.DEB.2.10.1402241710370.2074@hadrien>
+ <530C5E18.1020800@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251014170.2080@hadrien>
+ <530CD2C4.4050903@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251840450.7035@hadrien>
+ <530CF8FF.8080600@users.sourceforge.net>
+ <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
+ <530DD06F.4090703@users.sourceforge.net>
+ <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
+ <5317A59D.4@users.sourceforge.net>
+To: Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+ Julia Lawall <julia.lawall@lip6.fr>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Message-ID: <563A581B.7070708@users.sourceforge.net>
+Date: Wed, 4 Nov 2015 20:10:19 +0100
 MIME-Version: 1.0
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rwjMfTT4UgbyO=VmLaPic4xGcPxoMEL5yRmLW7hhvhXJQ@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,37 +41,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 04, 2015 at 10:04:26AM +0100, Rafał Miłecki wrote:
-> On 14 October 2015 at 11:04, Javier Martinez Canillas
-> <javier@osg.samsung.com> wrote:
-> > The bcm47xxsflash driver uses the KSEG0ADDR() function to map an address
-> > to a certain kernel segment. But that is only defined if the MIPS config
-> > symbol is enabled. The driver does not have an explicit dependency on it
-> > and relies on a transitive dependency relation:
-> >
-> > MTD_BCM47XXSFLASH -> BCMA_SFLASH -> BCMA_DRIVER_MIPS -> BCMA && MIPS
-> >
-> > But BCMA_SFLASH and BCMA_DRIVER_MIPS have only runtime and not buildtime
-> > dependency with MIPS so can be changed to be built test using the config
-> > COMPILE_TEST symbol. But that would make MTD_BCM47XXSFLASH be built with
-> > MIPS not enabled and cause the following build error:
-> >
-> > drivers/mtd/devices//bcm47xxsflash.c: In function 'bcm47xxsflash_read':
-> > drivers/mtd/devices//bcm47xxsflash.c:112:2: error: implicit declaration of function 'KSEG0ADDR' [-Werror=implicit-function-declaration]
-> >   memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(b47s->window + from),
-> 
-> I think we're not really supposed to use KSEG0ADDR anyway. What about
-> replacing it with ioremap_nocache?
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 4 Nov 2015 20:00:42 +0100
 
-I'm not really a MIPS expert, but isn't KSEG0 actually *cached*? (And is
-that correct, then?)
+The iput() function tests whether its argument is NULL and then
+returns immediately. Thus the test around the call is not needed.
 
-AIUI, ioremap_nocache() will actually get you a KSEG1 address here, I
-think.
+This issue was detected by using the Coccinelle software.
 
-Also (a bit of a tangent) couldn't "window" be better passed as a second
-resource by drivers/bcma/driver_chipcommon_sflash.c? Seems like that
-would fit the device/resource model better, and then you wouldn't have
-to do any __iomem casts in bcm47xxsflash.c.
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ fs/ubifs/recovery.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Brian
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index 2a1f0bc..586d593 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -1331,8 +1331,7 @@ void ubifs_destroy_size_tree(struct ubifs_info *c)
+ 	struct size_entry *e, *n;
+ 
+ 	rbtree_postorder_for_each_entry_safe(e, n, &c->size_tree, rb) {
+-		if (e->inode)
+-			iput(e->inode);
++		iput(e->inode);
+ 		kfree(e);
+ 	}
+ 
+@@ -1533,8 +1532,7 @@ int ubifs_recover_size(struct ubifs_info *c)
+ 				err = fix_size_in_place(c, e);
+ 				if (err)
+ 					return err;
+-				if (e->inode)
+-					iput(e->inode);
++				iput(e->inode);
+ 			}
+ 		}
+ 
+-- 
+2.6.2
