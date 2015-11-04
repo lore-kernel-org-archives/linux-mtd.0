@@ -1,25 +1,24 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZttOp-0005V7-EO
- for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 08:26:32 +0000
-From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-To: "beanhuo@micron.com" <beanhuo@micron.com>, "richard@nod.at"
- <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ id 1Zttd6-0004or-Ka
+ for linux-mtd@lists.infradead.org; Wed, 04 Nov 2015 08:41:17 +0000
+Date: Wed, 4 Nov 2015 09:40:49 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, "Bean Huo =?UTF-8?B?6ZyN5paM5paM?=
+ \"(beanhuo)\"" <beanhuo@micron.com>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>
 Subject: Re: master node can not be recovered
-Date: Wed, 4 Nov 2015 08:25:59 +0000
-Message-ID: <1446625558.20949.31.camel@intel.com>
+Message-ID: <20151104094049.123e87b8@bbrezillon>
+In-Reply-To: <1446625250.20949.26.camel@gmail.com>
 References: <A765B125120D1346A63912DDE6D8B6310BF4FB2A@NTXXIAMBX02.xacn.micron.com>
  <5637934D.5000503@nod.at> <1446541937.6126.125.camel@gmail.com>
  <A765B125120D1346A63912DDE6D8B6310BF4FE9E@NTXXIAMBX02.xacn.micron.com>
  <5639BBDE.5000604@nod.at> <1446625250.20949.26.camel@gmail.com>
-In-Reply-To: <1446625250.20949.26.camel@gmail.com>
-Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <91435CAD2AA0DF4FB108223A9DDE9654@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQpPbiBXZWQsIDIwMTUtMTEtMDQgYXQgMTA6MjAgKzAyMDAsIEFydGVtIEJpdHl1dHNraXkgd3Jv
-dGU6DQo+IFJpZ2h0LCBhbmQgSSBoZWFyIHRoYXQgYSBsb3Qgb2YgYnVnIHJlcG9ydHMgYW5kIGZy
-dXN0cmF0aW9uIGNvbWVzDQo+IGZyb20NCj4gdGhpcy4gVGhpcyB3b3JrZWQgd2l0aCBTTENzIHdl
-IHdlcmUgdXNpbmcgd2hlbiBpbXBsZW1lbnRpbmcgVUJJRlMNCj4gKHBhcnRpY3VsYXJseSwgU2Ft
-c3VuZyBPbmVOQU5EIHdhcyB1c2VkLCBpdCB3YXMgdmVyeSBoaWdoLXF1YWxpdHkNCj4gTkFORCku
-IE5vd2FkYXlzLCB0aGlzIG5lZWRzIHRvIGJlIGNoYW5nZWQuDQo+IA0KPiBVQklGUyBsb2dpYyBp
-cyB0aGlzLiBJZiB0aGVyZSBpcyBhIGNvcnJ1cHRpb24sIHRoZW4gaXQgbXVzdCBiZSBpbiB0aGUN
-Cj4gbGFzdCB1c2VkIE5BTkQgcGFnZS4gUGFnZXMgYWZ0ZXIgdGhpcyBOQU5EIHBhZ2UgbXVzdCBj
-b250YWluIGVtcHR5DQo+IHNwYWNlLg0KPiANCj4gQSBzbWFsbCBjb21wbGljYXRpb24sIHdoaWNo
-IGlzIG5vdCBpbXBvcnRhbnQgbm93LCBpcyB0aGF0IFVCSUZTIG1heQ0KPiBvcGVyYXRlIHdpdGgg
-bXVsdGlwbGUgTkFORCBwYWdlcywgdGhpcyBkZXBlbmRzIG9uIHdoYXQgdGhlIGRyaXZlcg0KPiB0
-ZWxscw0KPiBpcyB0aGUgbWluLiBJTyBzaXplLg0KPiANCj4gTm8gdGhlIGxvZ2ljIGJlaGluZCB0
-aGlzIHdhcyB0aGF0IHdlIGFsd2F5cyB3cml0ZSBkYXRhIGZyb20gdGhlDQo+IGJlZ2lubmluZyBv
-ZiB0aGUgTEVCLCBhbmQgY29udGludWUgdG8gaXRzIGVuZC4gSW4gY2FzZSBvZiBhIHBvd2VyDQo+
-IGN1dCwNCj4gd2UgY2FuIG9ubHkgZ2V0IGNvcnJ1cHRpb24gaW4gdGhlIGxhc3QgTkFORCBwYWdl
-IChvciBtb3JlIHN0cmljdGx5LA0KPiBtaW4uIEkvTyB1bml0KSB3aGVyZSB3ZSB3ZXJlIHdyaXRp
-bmcgdG8uIFRoZSBuZXh0IE5BTkQgcGFnZSBhbmQgYWxsDQo+IHRoZQ0KPiBOQU5EIHBhZ2VzIGFm
-dGVyIGl0IHNob3VsZCBiZSBlbXB0eS4gVGhlIHByZXZpb3VzIE5BTkQgcGFnZSBhbmQgYWxsDQo+
-IHRoZQ0KPiBOQU5EIHBhZ2VzIGJlZm9yZSBpdCBzaG91bGQgY29udGFpbiB2YWxpZCBkYXRhIChD
-UkMgT0spLg0KPiANCj4gUHJldHR5IHNpbXBsZS4gV29ya2VkIHdlbGwuDQo+IA0KPiBTbyB3aGF0
-IGhhcyB0byBiZSBjaGFuZ2VkIGluIHRoaXMgbG9naWM/IE9idmlvdXNseSwgdGhlIGRlZmluaXRp
-b24gb2YNCj4gZW1wdHkgc3BhY2Ugc2hvdWxkIGJlIGNoYW5nZWQsIGl0IHNlZW1zLCBiZWNhdXNl
-IG9idmlvdXNseSBub3QgZXZlcnkNCj4gZHJpdmVyIHdhbnRzL2NhbiBFQ0MtcHJvdGVjdCB0aGUg
-ZW1wdHkgc3BhY2UuDQo+IA0KPiBXaGF0IGVsc2U/DQoNCkFuZCBieSB0aGUgd2F5LCBmcm9tIG15
-IHBvaW50IG9mIHZpZXcsIGlmIHNvbWVvbmUgd2FudHMgdG8gYWRkIE1MQw0Kc3VwcG9ydCwganVz
-dCBmaXhpbmcgdGhpcyBwcm9ibGVtIGlzIGEgZ29vZCBwcmFjdGljYWwgc3RlcCBmb3J3YXJkLiBJ
-DQpzZWUgYSBsb3Qgb2YgZGlzY3Vzc2lvbnMgYWJvdXQgTUxDIHN1cHBvcnQsIGFuZCB3ZSBldmVu
-IGhhdmUgc29tZQ0KYXJndW1lbnRzLCBhbmQgdGhlIHdob2xlIHRoaW5nIGxvb2tzIGNvbXBsZXgu
-IEJ1dCB0aGlzIGlzIGEgbXVjaA0Kc21hbGxlciBpc29sYXRlZCBwaWVjZSBvZiB3b3JrIHdoaWNo
-IHdvdWxkIGNvbnRyaWJ1dGUgdG8gdGhlIE1MQw0Kc3VwcG9ydCBlZmZvcnQsIGFuZCB0aGUgaW1w
-bGVtZW50ZXIgd291bGQgbGVhcm4gVUJJRlMgd2hpbGUNCmltcGxlbWVudGluZyB0aGlzLCBhbmQg
-d291bGQgYmUgYSBsb3QgbW9yZSBjb25maWRlbnQgYWJvdXQgbWFraW5nIFVCSUZTDQpjaGFuZ2Vz
-LiBJIHRoaW5rIEkgY2FuIHNlbnNlIHRoaXMgYXR0aXR1ZGU6IG9oLCBVQklGUyBpcyBjb21wbGV4
-LCBsZXQncw0KdHJ5IHRvIGRvIG1vc3QgaW4gVUJJLCBpdCBzZWVtcyBzaW1wbGVyIHRvIGRlYWwg
-d2l0aC4NCg0KLS0gDQpCZXN0IFJlZ2FyZHMsDQoNCkFydGVtIEJpdHl1dHNraXkNCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQpJbnRlbCBGaW5sYW5kIE95ClJlZ2lzdGVyZWQgQWRkcmVzczogUEwgMjgxLCAwMDE4MSBI
-ZWxzaW5raSAKQnVzaW5lc3MgSWRlbnRpdHkgQ29kZTogMDM1NzYwNiAtIDQgCkRvbWljaWxlZCBp
-biBIZWxzaW5raSAKClRoaXMgZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4g
-Y29uZmlkZW50aWFsIG1hdGVyaWFsIGZvcgp0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJl
-Y2lwaWVudChzKS4gQW55IHJldmlldyBvciBkaXN0cmlidXRpb24KYnkgb3RoZXJzIGlzIHN0cmlj
-dGx5IHByb2hpYml0ZWQuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZApyZWNpcGllbnQsIHBs
-ZWFzZSBjb250YWN0IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSBhbGwgY29waWVzLgo=
+Hi Artem,
+
+On Wed, 04 Nov 2015 10:20:50 +0200
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
+
+> On Wed, 2015-11-04 at 09:03 +0100, Richard Weinberger wrote:
+> > But if two or more pages are corrupted UBIFS will give up as this
+> > most not happen
+> > from UBIFS's point of view.
+> 
+> Right, and I hear that a lot of bug reports and frustration comes from
+> this. This worked with SLCs we were using when implementing UBIFS
+> (particularly, Samsung OneNAND was used, it was very high-quality
+> NAND). Nowadays, this needs to be changed.
+> 
+> UBIFS logic is this. If there is a corruption, then it must be in the
+> last used NAND page. Pages after this NAND page must contain empty
+> space.
+> 
+> A small complication, which is not important now, is that UBIFS may
+> operate with multiple NAND pages, this depends on what the driver tells
+> is the min. IO size.
+> 
+> No the logic behind this was that we always write data from the
+> beginning of the LEB, and continue to its end. In case of a power cut,
+> we can only get corruption in the last NAND page (or more strictly,
+> min. I/O unit) where we were writing to. The next NAND page and all the
+> NAND pages after it should be empty. The previous NAND page and all the
+> NAND pages before it should contain valid data (CRC OK).
+> 
+> Pretty simple. Worked well.
+> 
+> So what has to be changed in this logic? Obviously, the definition of
+> empty space should be changed, it seems, because obviously not every
+> driver wants/can ECC-protect the empty space.
+
+There's a series trying to address this problem by fixing bitflips in
+erased pages, and hopefully all NAND controller drivers will be fixed
+at some point (either by using the generic helper or by implementing a
+similar logic to detect bitflips in erased pages).
+
+> 
+> What else?
+
+Well I don't know if this is the subject here, but for MLC NANDs,
+because of paired pages, the corruption can occur between two pages
+that have already been correctly written.
+The question is, what should we do in this case? Should we drop all the
+pages following the corrupted page in the LEB? Should we only drop the
+faulty page and parse the nodes in the valid pages we can find after
+this corruption (I don't know if it can be the case, but if some nodes
+depend on other nodes, doing that may not work)? Any other option?
+
+Best Regards,
+
+Boris
+
+[1]http://thread.gmane.org/gmane.linux.drivers.mtd/61358
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
