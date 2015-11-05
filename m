@@ -1,18 +1,22 @@
-Received: from mail02.rohde-schwarz.com ([80.246.32.97])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZuPQV-0006Gd-JW
- for linux-mtd@lists.infradead.org; Thu, 05 Nov 2015 18:38:24 +0000
-Received: from rus19.rsint.net ([10.0.33.19])
- by amu315.rsint.net (Totemo SMTP Server) with SMTP ID 87
- for <linux-mtd@lists.infradead.org>;
- Thu, 5 Nov 2015 19:38:40 +0100 (CET)
+ id 1ZuRKa-0002P3-Th
+ for linux-mtd@lists.infradead.org; Thu, 05 Nov 2015 20:40:25 +0000
+Received: by pabfh17 with SMTP id fh17so97459587pab.0
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Nov 2015 12:40:03 -0800 (PST)
+Date: Thu, 5 Nov 2015 12:40:01 -0800
+From: Brian Norris <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>, Jesper Nilsson <jespern@axis.com>,
+ linux-cris-kernel@axis.com, Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] mtd: don't WARN about overloaded users of
+ mtd->reboot_notifier.notifier_call
+Message-ID: <20151105204001.GB12143@google.com>
+References: <1446598913-133086-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Subject: jffs2: Excess summary entries
-From: Thomas.Betker@rohde-schwarz.com
-Message-ID: <OF1A12855F.4E78FEFE-ONC1257EF4.004CEFDC-C1257EF4.00663F07@rohde-schwarz.com>
-Date: Thu, 5 Nov 2015 19:36:47 +0100
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1446598913-133086-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,88 +26,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We ran into a problem with jffs2 where the filesystem became unusable 
-after some specific MTD failures; summary was enabled, write buffering was 
-disabled:
++ Guenter
 
-1. For some reason, mtd_writev() returned -EINTR and *retlen == 0. No 
-INODE data was written to flash, but jffs2_flash_direct_writev() still 
-added a summary entry, by jffs2_sum_add_kvec(). Actually, this happened 
-twice in a row:
+I guess I picked a tag (Suggested-by) that git-send-email *doesn't*
+automatically CC, then forgot to CC Guenter manually. And now I feel
+like a doofus waiting for Guenter's 'Tested-by'.
 
-        jffs2: Write of 4164 bytes at 0x00ec5b88 failed. returned -4, 
-retlen 0
-        jffs2: Not marking the space at 0x00ec5b88 as dirty because the 
-flash driver returned retlen zero
-        jffs2: Write of 4164 bytes at 0x00ec5b88 failed. returned -4, 
-retlen 0
-        jffs2: Not marking the space at 0x00ec5b88 as dirty because the 
-flash driver returned retlen zero
+Brian
 
-2. When rebooting after the summary data was written to flash (including 
-the two excess entries), we got the following messages:
-
-        jffs2: error: (79) jffs2_link_node_ref: Adding new ref c3048d18 at 
-(0x00ec5b88-0x00ec6bcc) not immediately after previous 
-(0x00ec5b88-0x00ec5b88)
-        jffs2: error: (79) jffs2_link_node_ref: Adding new ref c3048d20 at 
-(0x00ec5b88-0x00ec6000) not immediately after previous 
-(0x00ec5b88-0x00ec5b88)
-        ...
-        jffs2: warning: (79) jffs2_sum_scan_sumnode: Free size 0xffffdf78 
-bytes in eraseblock @0x00ec0000 with summary?
-
-        jffs2: Checked all inodes but still 0x2088 bytes of unchecked 
-space?
-        jffs2: No space for garbage collection. Aborting GC thread
-
-The excess entries added up to "unchecked space", so that 
-jffs2_garbage_collect_pass() returned -ENOSPC.
-
-3. Since garbage collection was off, the flash filled up over time until 
-the filesystem could no longer be modified (can't add or write to files, 
-can't even delete files -- "No space left on device"). Basically, we were 
-bricked.
-
-Here are the solutions I have considered so far:
-
-The minimal solution would be to check *retlen == 0 in 
-jffs2_flash_direct_writev() and jffs2_flash_direct_write() before running 
-jffs2_sum_add_kvec().
-
-        if (jffs2_sum_active() && *retlen) {
-                ...
-                res = jffs2_sum_add_kvec(...)
-                ...
-        }
-
-The general failure case, though, is (ret != 0 || *retlen != len), where 
-'ret' is the return code of mtd_writev(), and 'len' is the data size to be 
-written. When write buffering is enabled, jffs2_flash_writev() in wbuf.c 
-skips the summary entry in this case; perhaps we should do this in 
-writev.c as well?
-
-        if (jffs2_sum_active() && !ret && *retlen == len) {
-                ...
-                res = jffs2_sum_add_kvec(...)
-                ...
-        }
-
-I ran some quick tests, simulating write failures, and it seems that 
-adding the summary entry doesn't harm when *retlen != 0 [so the minimal 
-solution would suffice]. This is because the calling function will reserve 
-the node space, marking it as dirty, and there is no confusion about 
-unchecked space.
-
-On the other hand, running the same quick tests _without_ adding the 
-summary entry didn't seem to harm either [so the general solution would 
-work as well]. It is entirely possible that I have overlooked something, 
-though.
-
-Any opinions on that? When in doubt, I would provide a patch for the 
-minimal solution, changing as little as possible. However, it may make 
-sense to go for the general solution to be consistent with write 
-buffering.
-
-Best regards,
-Thomas Betker
+On Tue, Nov 03, 2015 at 05:01:53PM -0800, Brian Norris wrote:
+> There are multiple types of users of mtd->reboot_notifier.notifier_call:
+> 
+> (1) A while back, the cfi_cmdset_000{1,2} chip drivers implemented a
+> reboot notifier to (on a best effort basis) attempt to reset their flash
+> chips before rebooting.
+> 
+> (2) More recently, we implemented a common _reboot() hook so that MTD
+> drivers (particularly, NAND flash) could better halt I/O operations
+> without having to reimplement the same notifier boilerplate.
+> 
+> Currently, the WARN_ONCE() condition here was written to handle (2), but
+> at the same time it mis-diagnosed case (1) as an already-registered MTD.
+> Let's fix this by having the WARN_ONCE() condition better imitate the
+> condition that immediately follows it. (Wow, I don't know how I missed
+> that one.)
+> 
+> (Side note: Unfortunately, we can't yet combine the reboot notifier code
+> for (1) and (2) with a patch like [1], because some users of (1) also
+> use mtdconcat, and so the mtd_info struct from cfi_cmdset_000{1,2} won't
+> actually get registered with mtdcore, and therefore their reboot
+> notifier won't get registered.)
+> 
+> [1] http://patchwork.ozlabs.org/patch/417981/
+> 
+> Suggested-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Jesper Nilsson <jespern@axis.com>
+> Cc: linux-cris-kernel@axis.com
+> ---
+> This is probably a 4.4 candidate
+> 
+>  drivers/mtd/mtdcore.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index b1eea48c501d..a91cee90aef9 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -616,7 +616,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+>  	 * does cause problems with parse_mtd_partitions() above (e.g.,
+>  	 * cmdlineparts will register partitions more than once).
+>  	 */
+> -	WARN_ONCE(mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+> +	WARN_ONCE(mtd->_reboot && mtd->reboot_notifier.notifier_call,
+> +		  "MTD already registered\n");
+>  	if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
+>  		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
+>  		register_reboot_notifier(&mtd->reboot_notifier);
+> -- 
+> 2.6.0.rc2.230.g3dd15c0
+> 
