@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZuTWA-00073m-Q4
+ id 1ZuTWA-00071X-Q3
  for linux-mtd@lists.infradead.org; Thu, 05 Nov 2015 23:00:37 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: boris.brezillon@free-electrons.com, alex@nextthing.co,
  Daniel Walter <dwalter@sigma-star.at>, Richard Weinberger <richard@nod.at>
-Subject: [PATCH 3/4] Initial implementation for ubihealthd.
-Date: Fri,  6 Nov 2015 00:00:02 +0100
-Message-Id: <1446764403-22742-4-git-send-email-richard@nod.at>
+Subject: [PATCH 1/4] Add kernel style linked lists
+Date: Fri,  6 Nov 2015 00:00:00 +0100
+Message-Id: <1446764403-22742-2-git-send-email-richard@nod.at>
 In-Reply-To: <1446764403-22742-1-git-send-email-richard@nod.at>
 References: <1446764403-22742-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,734 +22,629 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Daniel Walter <dwalter@sigma-star.at>
 
-ubihealthd will read / scrub all PEBs
-of a given ubi device over a given amount
-of time. This should detect and fix common
-errors on various mtds.
-
 Signed-off-by: Daniel Walter <dwalter@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- Makefile               |   3 +-
- ubi-utils/.gitignore   |   1 +
- ubi-utils/ubihealthd.c | 686 +++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 689 insertions(+), 1 deletion(-)
- create mode 100644 ubi-utils/ubihealthd.c
+ include/list.h | 611 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 611 insertions(+)
+ create mode 100644 include/list.h
 
-diff --git a/Makefile b/Makefile
-index 3ce8587..9556da9 100644
---- a/Makefile
-+++ b/Makefile
-@@ -28,7 +28,8 @@ MTD_BINS = \
- 	sumtool jffs2reader
- UBI_BINS = \
- 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
--	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
-+	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock \
-+	ubihealthd
- 
- BINS = $(MTD_BINS)
- BINS += mkfs.ubifs/mkfs.ubifs
-diff --git a/ubi-utils/.gitignore b/ubi-utils/.gitignore
-index 19653a8..80edc23 100644
---- a/ubi-utils/.gitignore
-+++ b/ubi-utils/.gitignore
-@@ -11,3 +11,4 @@
- /ubirsvol
- /ubiblock
- /mtdinfo
-+/ubihealthd
-diff --git a/ubi-utils/ubihealthd.c b/ubi-utils/ubihealthd.c
+diff --git a/include/list.h b/include/list.h
 new file mode 100644
-index 0000000..97ffbac
+index 0000000..e8d58eb
 --- /dev/null
-+++ b/ubi-utils/ubihealthd.c
-@@ -0,0 +1,686 @@
-+#include <stdio.h>
-+#include <stdarg.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <stdint.h>
-+#include <sys/ioctl.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <time.h>
-+#include <mtd/ubi-user.h>
-+#include <sys/signalfd.h>
-+#include <signal.h>
-+#include <poll.h>
-+#include <sys/timerfd.h>
-+#include <inttypes.h>
-+
-+#include <getopt.h>
-+#include <libubi.h>
-+
-+#include "list.h"
-+
-+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-+#ifndef NDEBUG
-+#define _log(lvl, M, ...) __log(lvl, "[%s:%d] " M, __FILE__, __LINE__, ##__VA_ARGS__);
-+#else
-+#define _log(lvl, M, ...) __log(lvl, M, ##__VA_ARGS__);
-+#endif
-+#define log(M, ...) _log(2, M, ##__VA_ARGS__);
-+#define log_fatal(M, ...) _log(0, "[FATAL]" M, ##__VA_ARGS__);
-+#define log_err(M, ...) _log(1, "[ERR]" M, ##__VA_ARGS__);
-+#define log_warn(M, ...) _log(2, "[WARN]" M, ##__VA_ARGS__);
-+#define log_info(M, ...) _log(3, "[INFO]" M, ##__VA_ARGS__);
-+#define log_debug(M, ...) _log(4, "[DEBUG]" M, ##__VA_ARGS__);
-+
-+
-+int log_level;
-+
-+static void __log(int level, const char *fmt, ...)
-+{
-+	va_list ap;
-+	if (level > log_level)
-+		return;
-+	va_start(ap, fmt);
-+	vfprintf(stderr, fmt, ap);
-+	va_end(ap);
-+	fprintf(stderr, "\n");
-+}
-+
-+static const uint64_t UBIHEALTHD_MAGIC_VERSION = 0x00000001LLU;
-+
++++ b/include/list.h
+@@ -0,0 +1,611 @@
 +/*
-+ * Basic algorithm:
-+ *  - get number of PEBs and identify sleep times between scheduling
-+ *  - read stats to identify hotspots (schedule full block read if identified as such)
-+ *  - read PEB and remove from list (move to tail ?)
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public
++ * License v2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public
++ * License along with this program; if not, write to the
++ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++ * Boston, MA 021110-1307, USA.
 + */
 +
-+static const char opt_string[] = "d:f:hr:s:x:v:";
-+static const struct option options[] = {
-+	{
-+		.name = "device",
-+		.has_arg = required_argument,
-+		.flag = NULL,
-+		.val = 'd'
-+	},
-+	{
-+		.name = "file",
-+		.has_arg = required_argument,
-+		.flag = NULL,
-+		.val = 'f'
-+	},
-+	{
-+		.name = "read_complete",
-+		.has_arg = required_argument,
-+		.flag = NULL,
-+		.val = 'r'
-+	},
-+	{
-+		.name = "scrub_complete",
-+		.has_arg = required_argument,
-+		.flag = NULL,
-+		.val = 's'
-+	},
-+	{
-+		.name = "read_threshold",
-+		.has_arg = required_argument,
-+		.flag = NULL,
-+		.val = 'x'
-+	},
-+	{
-+		.name = "help",
-+		.has_arg = no_argument,
-+		.flag = NULL,
-+		.val = 'h'
-+	},
-+	{
-+		.name = "verbosity",
-+		.has_arg = required_argument,
-+		.flag = NULL,
-+		.val = 'v'
-+	}
++#ifndef _LINUX_LIST_H
++#define _LINUX_LIST_H
++
++struct list_head {
++	struct list_head *next, *prev;
 +};
 +
-+struct peb_info {
-+	int64_t peb_num;
-+	uint64_t err_cnt;
-+	uint64_t read_cnt;
-+	uint64_t prev_read_cnt;
-+	time_t last_stat_update;
-+	time_t last_read;
-+	time_t last_err;
-+} __attribute__((packed));
++#define LIST_POISON1  ((struct list_head *) 0x00100100)
++#define LIST_POISON2  ((struct list_head *) 0x00200200)
 +
-+typedef enum {
-+	SCHED_READ,
-+	SCHED_SCRUB
-+} sched_type;
++#define _offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 +
-+struct sched_peb {
-+	struct peb_info *peb;
-+	sched_type type;
-+	struct list_head list;
-+};
++#define container_of(ptr, type, member) ({                      \
++        const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
++               (type *)( (char *)__mptr - _offsetof(type,member) );})
 +
-+struct peb_list {
-+	struct peb_info *peb;
-+	struct list_head list;
-+};
++/*
++ * Simple doubly linked list implementation.
++ *
++ * Some of the internal functions ("__xxx") are useful when
++ * manipulating whole lists rather than single entries, as
++ * sometimes we already know the next/prev entries and we can
++ * generate better code by using them directly rather than
++ * using the generic single-entry routines.
++ */
 +
-+static const char *help_str = \
-+"[OPTIONS]\n" \
-+"  -h, --help\t\tShow this message and exit\n" \
-+"  -d, --device\t\tDevice to be monitored (default: /dev/ubi0)\n" \
-+"  -f, --file\t\tPath to statistics save file\n" \
-+"  -r, --read_complete\tTimeframe for reading all PEBs in seconds\n" \
-+"  -s, --scrub_complete\tTimeframe for scrubbing all PEBs in seconds\n" \
-+"  -x, --read_threshold\tNumber of reads between two stats updates\n" \
-+"                      \twhich will trigger a PEB read\n" \
-+"  -v, --verbosity\t\tlog level (0-4)\n";
++#define LIST_HEAD_INIT(name) { &(name), &(name) }
 +
-+static void usage(const char* progname)
++#define LIST_HEAD(name) \
++	struct list_head name = LIST_HEAD_INIT(name)
++
++static inline void INIT_LIST_HEAD(struct list_head *list)
 +{
-+	printf("usage: %s [OPTIONS]", progname);
-+	printf("\n%s\n", help_str);
-+	_exit(1);
++	list->next = list;
++	list->prev = list;
 +}
 +
-+static int64_t get_num_pebs(const char *ubi_dev)
++/*
++ * Insert a new entry between two known consecutive entries.
++ *
++ * This is only for internal list manipulation where we know
++ * the prev/next entries already!
++ */
++#ifndef CONFIG_DEBUG_LIST
++static inline void __list_add(struct list_head *new,
++			      struct list_head *prev,
++			      struct list_head *next)
 +{
-+	libubi_t libubi = libubi_open();
-+	struct ubi_dev_info dev_info;
-+	int err;
-+	err = ubi_get_dev_info(libubi, ubi_dev, &dev_info);
-+	if (err) {
-+		log_err("Could not get ubi info for device %s", ubi_dev);
-+		return -1;
-+	}
-+	libubi_close(libubi);
-+	return dev_info.total_lebs;
++	next->prev = new;
++	new->next = next;
++	new->prev = prev;
++	prev->next = new;
 +}
++#else
++extern void __list_add(struct list_head *new,
++			      struct list_head *prev,
++			      struct list_head *next);
++#endif
 +
-+static int write_stats_file(const char *filename, struct peb_list *peb_head, struct sched_peb *sched_read_head, struct sched_peb *sched_scrub_head, int pnum)
++/**
++ * list_add - add a new entry
++ * @new: new entry to be added
++ * @head: list head to add it after
++ *
++ * Insert a new entry after the specified head.
++ * This is good for implementing stacks.
++ */
++static inline void list_add(struct list_head *new, struct list_head *head)
 +{
-+	int64_t next_read_peb = 0;
-+	int64_t next_scrub_peb = 0;
-+	struct peb_info *peb = NULL;
-+	struct peb_list *tmpp = NULL;
-+	struct sched_peb *p = NULL;
-+	FILE *file = fopen(filename, "wb");
-+	if (file == NULL)
-+		return -1;
-+	p = list_first_entry_or_null(&sched_read_head->list, struct sched_peb, list);
-+	if (p)
-+		next_read_peb = p->peb->peb_num;
-+	p = list_first_entry_or_null(&sched_scrub_head->list, struct sched_peb, list);
-+	if (p)
-+		next_scrub_peb = p->peb->peb_num;
-+	fwrite(&UBIHEALTHD_MAGIC_VERSION, sizeof(UBIHEALTHD_MAGIC_VERSION), 1, file);
-+	fwrite(&pnum, sizeof(pnum), 1, file);
-+	fwrite(&next_read_peb, sizeof(next_read_peb), 1, file);
-+	fwrite(&next_scrub_peb, sizeof(next_scrub_peb), 1, file);
-+	list_for_each_entry(tmpp, &peb_head->list, list) {
-+		peb = tmpp->peb;
-+		fwrite(peb, sizeof(struct peb_info), 1, file);
-+	}
-+	fclose(file);
-+	return 0;
++	__list_add(new, head, head->next);
 +}
 +
 +
-+static int init_stats(int fd, struct list_head *head, int pnum)
++/**
++ * list_add_tail - add a new entry
++ * @new: new entry to be added
++ * @head: list head to add it before
++ *
++ * Insert a new entry before the specified head.
++ * This is useful for implementing queues.
++ */
++static inline void list_add_tail(struct list_head *new, struct list_head *head)
 +{
-+	int i, err = 0;
-+	size_t req_size = pnum * sizeof(struct ubi_stats_entry);
-+	struct ubi_stats_req *req = malloc(sizeof(struct ubi_stats_req) + req_size);
-+	if (!req) {
-+		log_err("Could not alloc ubi_stats_req: %s", strerror(errno));
-+		return -1;
-+	}
-+	req->req_len = req_size + sizeof(struct ubi_stats_req);
-+	req->req_pnum = -1;
-+	err = ioctl(fd, UBI_IOCSTATS, req);
-+	if (err < 0) {
-+		log_err("Could not init stats via ioctl: %s", strerror(errno));
-+		free(req);
-+		return -1;
-+	}
-+	log_info("Kernel reported stats for %d PEBs", err);
-+	struct peb_info *peb = NULL;
-+	struct peb_list *p = NULL;
-+	time_t now = time(NULL);
-+	for (i = 0; i < err; i++) {
-+		struct ubi_stats_entry *s = &req->stats[i];
-+		peb = malloc(sizeof(struct peb_info));
-+		if (!peb) {
-+			log_err("Could not alloc peb_info");
-+			free(req);
-+			return -1;
-+		}
-+		peb->peb_num = s->pnum;
-+		peb->err_cnt = s->ec;
-+		peb->read_cnt = s->rc;
-+		peb->prev_read_cnt = s->rc;
-+		peb->last_stat_update = now;
-+		p = malloc(sizeof(struct peb_list));
-+		if (!p) {
-+			log_err("Could not alloc peb_list element");
-+			free(req);
-+			return -1;
-+		}
-+		p->peb = peb;
-+		list_add_tail(&p->list, head);
-+	}
-+	free(req);
-+	return 0;
++	__list_add(new, head->prev, head);
 +}
 +
-+static void free_list(struct peb_list *head)
++/*
++ * Delete a list entry by making the prev/next entries
++ * point to each other.
++ *
++ * This is only for internal list manipulation where we know
++ * the prev/next entries already!
++ */
++static inline void __list_del(struct list_head * prev, struct list_head * next)
 +{
-+	if (list_empty(&head->list))
++	next->prev = prev;
++	prev->next = next;
++}
++
++/**
++ * list_del - deletes entry from list.
++ * @entry: the element to delete from the list.
++ * Note: list_empty() on entry does not return true after this, the entry is
++ * in an undefined state.
++ */
++#ifndef CONFIG_DEBUG_LIST
++static inline void __list_del_entry(struct list_head *entry)
++{
++	__list_del(entry->prev, entry->next);
++}
++
++static inline void list_del(struct list_head *entry)
++{
++	__list_del(entry->prev, entry->next);
++	entry->next = LIST_POISON1;
++	entry->prev = LIST_POISON2;
++}
++#else
++extern void __list_del_entry(struct list_head *entry);
++extern void list_del(struct list_head *entry);
++#endif
++
++/**
++ * list_replace - replace old entry by new one
++ * @old : the element to be replaced
++ * @new : the new element to insert
++ *
++ * If @old was empty, it will be overwritten.
++ */
++static inline void list_replace(struct list_head *old,
++				struct list_head *new)
++{
++	new->next = old->next;
++	new->next->prev = new;
++	new->prev = old->prev;
++	new->prev->next = new;
++}
++
++static inline void list_replace_init(struct list_head *old,
++					struct list_head *new)
++{
++	list_replace(old, new);
++	INIT_LIST_HEAD(old);
++}
++
++/**
++ * list_del_init - deletes entry from list and reinitialize it.
++ * @entry: the element to delete from the list.
++ */
++static inline void list_del_init(struct list_head *entry)
++{
++	__list_del_entry(entry);
++	INIT_LIST_HEAD(entry);
++}
++
++/**
++ * list_move - delete from one list and add as another's head
++ * @list: the entry to move
++ * @head: the head that will precede our entry
++ */
++static inline void list_move(struct list_head *list, struct list_head *head)
++{
++	__list_del_entry(list);
++	list_add(list, head);
++}
++
++/**
++ * list_move_tail - delete from one list and add as another's tail
++ * @list: the entry to move
++ * @head: the head that will follow our entry
++ */
++static inline void list_move_tail(struct list_head *list,
++				  struct list_head *head)
++{
++	__list_del_entry(list);
++	list_add_tail(list, head);
++}
++
++/**
++ * list_is_last - tests whether @list is the last entry in list @head
++ * @list: the entry to test
++ * @head: the head of the list
++ */
++static inline int list_is_last(const struct list_head *list,
++				const struct list_head *head)
++{
++	return list->next == head;
++}
++
++/**
++ * list_empty - tests whether a list is empty
++ * @head: the list to test.
++ */
++static inline int list_empty(const struct list_head *head)
++{
++	return head->next == head;
++}
++
++/**
++ * list_empty_careful - tests whether a list is empty and not being modified
++ * @head: the list to test
++ *
++ * Description:
++ * tests whether a list is empty _and_ checks that no other CPU might be
++ * in the process of modifying either member (next or prev)
++ *
++ * NOTE: using list_empty_careful() without synchronization
++ * can only be safe if the only activity that can happen
++ * to the list entry is list_del_init(). Eg. it cannot be used
++ * if another CPU could re-list_add() it.
++ */
++static inline int list_empty_careful(const struct list_head *head)
++{
++	struct list_head *next = head->next;
++	return (next == head) && (next == head->prev);
++}
++
++/**
++ * list_rotate_left - rotate the list to the left
++ * @head: the head of the list
++ */
++static inline void list_rotate_left(struct list_head *head)
++{
++	struct list_head *first;
++
++	if (!list_empty(head)) {
++		first = head->next;
++		list_move_tail(first, head);
++	}
++}
++
++/**
++ * list_is_singular - tests whether a list has just one entry.
++ * @head: the list to test.
++ */
++static inline int list_is_singular(const struct list_head *head)
++{
++	return !list_empty(head) && (head->next == head->prev);
++}
++
++static inline void __list_cut_position(struct list_head *list,
++		struct list_head *head, struct list_head *entry)
++{
++	struct list_head *new_first = entry->next;
++	list->next = head->next;
++	list->next->prev = list;
++	list->prev = entry;
++	entry->next = list;
++	head->next = new_first;
++	new_first->prev = head;
++}
++
++/**
++ * list_cut_position - cut a list into two
++ * @list: a new list to add all removed entries
++ * @head: a list with entries
++ * @entry: an entry within head, could be the head itself
++ *	and if so we won't cut the list
++ *
++ * This helper moves the initial part of @head, up to and
++ * including @entry, from @head to @list. You should
++ * pass on @entry an element you know is on @head. @list
++ * should be an empty list or a list you do not care about
++ * losing its data.
++ *
++ */
++static inline void list_cut_position(struct list_head *list,
++		struct list_head *head, struct list_head *entry)
++{
++	if (list_empty(head))
 +		return;
-+	struct peb_list *p = NULL;
-+	struct peb_list *tmp = NULL;
-+	list_for_each_entry_safe(p, tmp, &head->list, list) {
-+		list_del(&p->list);
-+		free(p->peb);
-+		free(p);
-+	}
++	if (list_is_singular(head) &&
++		(head->next != entry && head != entry))
++		return;
++	if (entry == head)
++		INIT_LIST_HEAD(list);
++	else
++		__list_cut_position(list, head, entry);
 +}
 +
-+static int update_stats(int fd, struct peb_list *head, int pnum)
++static inline void __list_splice(const struct list_head *list,
++				 struct list_head *prev,
++				 struct list_head *next)
 +{
-+	if (list_empty(&head->list)) {
-+		log_fatal("PEB list not initialized");
-+		return -1;
-+	}
-+	int i, err = 0;
-+	size_t req_size = pnum * sizeof(struct ubi_stats_entry);
-+	struct ubi_stats_req *req = malloc(sizeof(struct ubi_stats_req) + req_size);
-+	if (!req) {
-+		log_err("Could not alloc ubi_stats_req: %s", strerror(errno));
-+		return -1;
-+	}
-+	memset(req, 0, sizeof(struct ubi_stats_req));
-+	req->req_len = req_size + sizeof(struct ubi_stats_req);
-+	req->req_pnum = -1;
-+	log_debug("req_len: %d, req_pnum: %d", req->req_len, req->req_pnum);
-+	err = ioctl(fd, UBI_IOCSTATS, req);
-+	if (err < 0) {
-+		log_err("Could not get stats for PEBs, [%d] %s", errno, strerror(errno));
-+		free(req);
-+		return -1;
-+	}
-+	log_debug("Kernel reported stats for %d PEBs", err);
-+	time_t now = time(NULL);
-+	for (i = 0; i < err; i++) {
-+		struct ubi_stats_entry *s = &req->stats[i];
-+		struct peb_list *p = NULL;
-+		struct peb_info *peb = NULL;
-+		list_for_each_entry(p, &head->list, list) {
-+			if (p->peb && (p->peb->peb_num == s->pnum)) {
-+				peb = p->peb;
-+				break;
-+			}
-+		}
-+		if (!peb) {
-+			log_warn("Could not get stats for PEB %d", i);
-+			continue;
-+		}
-+		/* TODO(sahne): check for overflow ! */
-+		peb->err_cnt = s->ec;
-+		peb->prev_read_cnt = peb->read_cnt;
-+		peb->read_cnt = s->rc;
-+		/* check if peb was erased (read_cnt would be reset to 0 if it was) */
-+		if (peb->read_cnt < peb->prev_read_cnt)
-+			peb->prev_read_cnt = peb->read_cnt;
-+		peb->last_stat_update = now;
-+	}
-+	free(req);
-+	return 0;
++	struct list_head *first = list->next;
++	struct list_head *last = list->prev;
++
++	first->prev = prev;
++	prev->next = first;
++
++	last->next = next;
++	next->prev = last;
 +}
 +
-+static int read_peb(int fd, struct peb_info *peb)
++/**
++ * list_splice - join two lists, this is designed for stacks
++ * @list: the new list to add.
++ * @head: the place to add it in the first list.
++ */
++static inline void list_splice(const struct list_head *list,
++				struct list_head *head)
 +{
-+	time_t now = time(NULL);
-+	log_debug("Reading PEB %"PRIu64 , peb->peb_num);
-+	int err = ioctl(fd, UBI_IOCRPEB, &peb->peb_num);
-+	if (err < 0) {
-+		log_err("Error while reading PEB %" PRIu64, peb->peb_num);
-+		return -1;
-+	}
-+	peb->last_read = now;
-+	return 0;
++	if (!list_empty(list))
++		__list_splice(list, head, head->next);
 +}
 +
-+static int scrub_peb(int fd, struct peb_info *peb)
++/**
++ * list_splice_tail - join two lists, each list being a queue
++ * @list: the new list to add.
++ * @head: the place to add it in the first list.
++ */
++static inline void list_splice_tail(struct list_head *list,
++				struct list_head *head)
 +{
-+	time_t now = time(NULL);
-+	log_debug("Scrubbing PEB %"PRIu64, peb->peb_num);
-+	int err = ioctl (fd, UBI_IOCSPEB, &peb->peb_num);
-+	if (err < 0) {
-+		log_err("Error while scrubbing PEB %" PRIu64, peb->peb_num);
-+		return -1;
-+	}
-+	peb->last_read = now;
-+	return 0;
++	if (!list_empty(list))
++		__list_splice(list, head->prev, head);
 +}
 +
-+static int schedule_peb(struct list_head *sched_list, struct peb_info *peb, sched_type type)
++/**
++ * list_splice_init - join two lists and reinitialise the emptied list.
++ * @list: the new list to add.
++ * @head: the place to add it in the first list.
++ *
++ * The list at @list is reinitialised
++ */
++static inline void list_splice_init(struct list_head *list,
++				    struct list_head *head)
 +{
-+	struct sched_peb *s = malloc(sizeof(struct sched_peb));
-+	if (!s) {
-+		log_err("Could not allocate memory");
-+		return -1;
++	if (!list_empty(list)) {
++		__list_splice(list, head, head->next);
++		INIT_LIST_HEAD(list);
 +	}
-+	s->peb = peb;
-+	s->type = type;
-+	list_add_tail(&s->list, sched_list);
-+	return 0;
 +}
 +
-+static int work(struct sched_peb *sched_list, int fd)
++/**
++ * list_splice_tail_init - join two lists and reinitialise the emptied list
++ * @list: the new list to add.
++ * @head: the place to add it in the first list.
++ *
++ * Each of the lists is a queue.
++ * The list at @list is reinitialised
++ */
++static inline void list_splice_tail_init(struct list_head *list,
++					 struct list_head *head)
 +{
-+	if (list_empty(&sched_list->list))
-+		return 0;
-+	struct sched_peb *sched = list_first_entry(&sched_list->list, struct sched_peb, list);
-+	struct peb_info *peb = sched->peb;
-+	if (peb == NULL) {
-+		log_warn("invalid peb");
-+		return -1;
++	if (!list_empty(list)) {
++		__list_splice(list, head->prev, head);
++		INIT_LIST_HEAD(list);
 +	}
-+	/* delete entry from list, we will add it if needed */
-+	list_del(&sched->list);
-+	switch(sched->type) {
-+	case SCHED_READ:
-+		read_peb(fd, peb);
-+		break;
-+	case SCHED_SCRUB:
-+		scrub_peb(fd, peb);
-+		break;
-+	default:
-+		log_warn("Unknown work type: %d", sched->type);
-+		free(sched);
-+		return -1;
-+	}
-+	/* reschedule PEB */
-+	/* TODO(sahne): check error read/scrub in case PEB went bad (so we don't reschedule it) */
-+	schedule_peb(&sched_list->list, peb, sched->type);
-+	free(sched);
-+	return 1;
 +}
 +
-+static int create_and_arm_timer(int seconds)
-+{
-+	int tfd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
-+	if (tfd < 0) {
-+		log_err("Could not create timer");
-+		return -1;
-+	}
-+	struct itimerspec tspec = {
-+		.it_interval = {
-+			.tv_sec = seconds,
-+			.tv_nsec = 0,
-+		},
-+		.it_value = {
-+			.tv_sec = 0,
-+			.tv_nsec = 1,
-+		},
-+	};
-+	if (timerfd_settime(tfd, 0, &tspec, NULL) < 0) {
-+		log_err("Could not arm timer");
-+		close(tfd);
-+		return -1;
-+	}
++/**
++ * list_entry - get the struct for this entry
++ * @ptr:	the &struct list_head pointer.
++ * @type:	the type of the struct this is embedded in.
++ * @member:	the name of the list_head within the struct.
++ */
++#define list_entry(ptr, type, member) \
++	container_of(ptr, type, member)
 +
-+	return tfd;
-+}
++/**
++ * list_first_entry - get the first element from a list
++ * @ptr:	the list head to take the element from.
++ * @type:	the type of the struct this is embedded in.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Note, that list is expected to be not empty.
++ */
++#define list_first_entry(ptr, type, member) \
++	list_entry((ptr)->next, type, member)
 +
-+static int read_stats_file(const char *filename, struct peb_list *peb_head, struct sched_peb *sched_read_head, struct sched_peb *sched_scrub_head)
-+{
-+	int num_pebs = 0;
-+	int64_t next_read_peb;
-+	int64_t next_scrub_peb;
-+	uint64_t magic_version;
-+	FILE *file = fopen(filename, "rb");
-+	ssize_t i;
-+	if (file == NULL)
-+		return -1;
-+	fread(&magic_version, sizeof(magic_version), 1, file);
-+	if (magic_version != UBIHEALTHD_MAGIC_VERSION) {
-+		log_warn("Magic mismatching, aborting reading from stats file");
-+		fclose(file);
-+		return -1;
-+	}
-+	fread(&num_pebs, sizeof(num_pebs), 1, file);
-+	fread(&next_read_peb, sizeof(next_read_peb), 1, file);
-+	fread(&next_scrub_peb, sizeof(next_scrub_peb), 1, file);
-+	for (i = 0; i < num_pebs; i++) {
-+		struct peb_info *peb = malloc(sizeof(struct peb_info));
-+		if (!peb) {
-+			log_err("Could not allocate peb_info");
-+			return -1;
-+		}
-+		struct peb_list *p = NULL;
-+		fread(peb, sizeof(struct peb_info), 1, file);
-+		list_for_each_entry(p, &peb_head->list, list) {
-+			if (p->peb && (p->peb->peb_num == peb->peb_num)) {
-+				free(p->peb);
-+				p->peb = peb;
-+			}
-+		}
-+	}
-+	/* init read and scrub lists */
-+	struct peb_list *p = NULL;
-+	list_for_each_entry(p, &peb_head->list, list) {
-+		if (p->peb->peb_num >= next_read_peb)
-+			schedule_peb(&sched_read_head->list, p->peb, SCHED_READ);
-+		if (p->peb->peb_num >= next_scrub_peb)
-+			schedule_peb(&sched_scrub_head->list, p->peb, SCHED_SCRUB);
-+	}
-+	p = NULL;
-+	list_for_each_entry(p, &peb_head->list, list) {
-+		if (p->peb->peb_num < next_read_peb)
-+			schedule_peb(&sched_read_head->list, p->peb, SCHED_READ);
-+		if (p->peb->peb_num < next_scrub_peb)
-+			schedule_peb(&sched_scrub_head->list, p->peb, SCHED_SCRUB);
-+	}
++/**
++ * list_last_entry - get the last element from a list
++ * @ptr:	the list head to take the element from.
++ * @type:	the type of the struct this is embedded in.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Note, that list is expected to be not empty.
++ */
++#define list_last_entry(ptr, type, member) \
++	list_entry((ptr)->prev, type, member)
 +
-+	return 0;
-+}
++/**
++ * list_first_entry_or_null - get the first element from a list
++ * @ptr:	the list head to take the element from.
++ * @type:	the type of the struct this is embedded in.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Note that if the list is empty, it returns NULL.
++ */
++#define list_first_entry_or_null(ptr, type, member) \
++	(!list_empty(ptr) ? list_first_entry(ptr, type, member) : NULL)
 +
-+static int init_sigfd()
-+{
-+	int sigfd;
-+	sigset_t mask;
-+	sigemptyset(&mask);
-+	sigaddset(&mask, SIGINT);
-+	sigaddset(&mask, SIGQUIT);
-+	sigaddset(&mask, SIGHUP);
-+	sigaddset(&mask, SIGTERM);
-+	sigaddset(&mask, SIGUSR1);
-+	if (sigprocmask(SIG_BLOCK, &mask, NULL) == -1) {
-+		log_warn("Could not init sigprocmask");
-+		return -1;
-+	}
-+	sigfd = signalfd(-1, &mask, SFD_CLOEXEC | SFD_NONBLOCK);
-+	if (sigfd < 0) {
-+		log_warn("Could not init signal handling");
-+		return -1;
-+	}
-+	return sigfd;
-+}
++/**
++ * list_next_entry - get the next element in list
++ * @pos:	the type * to cursor
++ * @member:	the name of the list_head within the struct.
++ */
++#define list_next_entry(pos, member) \
++	list_entry((pos)->member.next, typeof(*(pos)), member)
 +
-+int main(int argc, char **argv)
-+{
-+	int c, i;
-+	int64_t num_pebs;
-+	time_t read_completion = 100000;
-+	time_t scrub_completion = 1000000;
-+	uint64_t read_threshold = 10000;
-+	struct sched_peb *sched_read_head;
-+	struct sched_peb *sched_scrub_head;
-+	struct peb_list *peb_head;
-+	const char *stats_file = "/tmp/ubihealth_stats";
-+	const char *ubi_dev = "/dev/ubi0";
-+	log_level = 4;
++/**
++ * list_prev_entry - get the prev element in list
++ * @pos:	the type * to cursor
++ * @member:	the name of the list_head within the struct.
++ */
++#define list_prev_entry(pos, member) \
++	list_entry((pos)->member.prev, typeof(*(pos)), member)
 +
-+	while ((c = getopt_long(argc, argv, opt_string, options, &i)) != -1) {
-+		switch(c) {
-+		case 'd':
-+			ubi_dev = optarg;
-+			break;
-+		case 'h':
-+			usage(argv[0]);
-+			break;
-+		case 'f':
-+			stats_file = optarg;
-+			break;
-+		case 'r':
-+			read_completion = atoi(optarg);
-+			break;
-+		case 's':
-+			scrub_completion = atoi(optarg);
-+			break;
-+		case 'x':
-+			read_threshold = atoi(optarg);
-+			break;
-+		case 'v':
-+			log_level = atoi(optarg);
-+			if (log_level < 0)
-+				log_level = 0;
-+			else if (log_level > 4)
-+				log_level = 4;
-+		case '?':
-+		default:
-+			break;
++/**
++ * list_for_each	-	iterate over a list
++ * @pos:	the &struct list_head to use as a loop cursor.
++ * @head:	the head for your list.
++ */
++#define list_for_each(pos, head) \
++	for (pos = (head)->next; pos != (head); pos = pos->next)
 +
-+		}
-+	}
-+	/* signal handling */
-+	struct signalfd_siginfo fdsi;
-+	int sigfd = init_sigfd();
-+	if (sigfd < 0) {
-+		log_fatal("Could not init signal handling, aborting");
-+		_exit(EXIT_FAILURE);
-+	}
++/**
++ * list_for_each_prev	-	iterate over a list backwards
++ * @pos:	the &struct list_head to use as a loop cursor.
++ * @head:	the head for your list.
++ */
++#define list_for_each_prev(pos, head) \
++	for (pos = (head)->prev; pos != (head); pos = pos->prev)
 +
-+	/* init sched_list */
-+	peb_head = malloc(sizeof(struct peb_list));
-+	if (!peb_head) {
-+		log_fatal("Could not allocate peb_list");
-+		_exit(EXIT_FAILURE);
-+	}
-+	peb_head->peb = NULL;
-+	INIT_LIST_HEAD(&peb_head->list);
-+	sched_read_head = malloc(sizeof(struct sched_peb));
-+	if (!sched_read_head) {
-+		log_fatal("Could not allocate read scheduler");
-+		_exit(EXIT_FAILURE);
-+	}
-+	INIT_LIST_HEAD(&sched_read_head->list);
-+	sched_read_head->peb = NULL;
-+	sched_scrub_head = malloc(sizeof(struct sched_peb));
-+	if (!sched_read_head) {
-+		log_fatal("Could not allocate scrub scheduler");
-+		_exit(EXIT_FAILURE);
-+	}
-+	INIT_LIST_HEAD(&sched_scrub_head->list);
-+	sched_scrub_head->peb = NULL;
-+	int fd = open(ubi_dev, O_RDONLY);
-+	if (fd < 0) {
-+		log_fatal("Could not open device %s", ubi_dev);
-+		return 1;
-+	}
++/**
++ * list_for_each_safe - iterate over a list safe against removal of list entry
++ * @pos:	the &struct list_head to use as a loop cursor.
++ * @n:		another &struct list_head to use as temporary storage
++ * @head:	the head for your list.
++ */
++#define list_for_each_safe(pos, n, head) \
++	for (pos = (head)->next, n = pos->next; pos != (head); \
++		pos = n, n = pos->next)
 +
-+	/* get peb info */
-+	num_pebs = get_num_pebs(ubi_dev);
-+	if (num_pebs < 1) {
-+		log_err("Invalid number of PEBs");
-+		return 1;
-+	}
-+	if (init_stats(fd, &peb_head->list, num_pebs) < 0) {
-+		log_fatal("Could not init statistics, aborting");
-+		_exit(EXIT_FAILURE);
-+	}
-+	/* init peb list */
-+	log_debug("Number of PEBs: %" PRIu64, num_pebs);
++/**
++ * list_for_each_prev_safe - iterate over a list backwards safe against removal of list entry
++ * @pos:	the &struct list_head to use as a loop cursor.
++ * @n:		another &struct list_head to use as temporary storage
++ * @head:	the head for your list.
++ */
++#define list_for_each_prev_safe(pos, n, head) \
++	for (pos = (head)->prev, n = pos->prev; \
++	     pos != (head); \
++	     pos = n, n = pos->prev)
 +
++/**
++ * list_for_each_entry	-	iterate over list of given type
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ */
++#define list_for_each_entry(pos, head, member)				\
++	for (pos = list_first_entry(head, typeof(*pos), member);	\
++	     &pos->member != (head);					\
++	     pos = list_next_entry(pos, member))
 +
-+	if (read_stats_file(stats_file, peb_head, sched_read_head, sched_scrub_head) < 0) {
-+		log_warn("Could not init stats from file %s", stats_file);
-+		/* init read and scrub lists */
-+		struct peb_list *p = NULL;
-+		list_for_each_entry(p, &peb_head->list, list) {
-+			schedule_peb(&sched_read_head->list, p->peb, SCHED_READ);
-+			schedule_peb(&sched_scrub_head->list, p->peb, SCHED_SCRUB);
-+		}
-+	}
++/**
++ * list_for_each_entry_reverse - iterate backwards over list of given type.
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ */
++#define list_for_each_entry_reverse(pos, head, member)			\
++	for (pos = list_last_entry(head, typeof(*pos), member);		\
++	     &pos->member != (head); 					\
++	     pos = list_prev_entry(pos, member))
 +
-+	int shutdown = 0;
-+	int stats_timer = create_and_arm_timer(60);
-+	if (stats_timer < 0) {
-+		log_fatal("Could not create stats timer, aborting");
-+		_exit(1);
-+	}
-+	int read_peb_timer = create_and_arm_timer(read_completion / num_pebs);
-+	if (read_peb_timer < 0) {
-+		log_fatal("Could not create read timer, aborting");
-+		_exit(1);
-+	}
-+	int scrub_peb_timer = create_and_arm_timer(scrub_completion / num_pebs);
-+	if (scrub_peb_timer < 0) {
-+		log_fatal("Could not create scrubbing timer, aborting");
-+		_exit(1);
-+	}
-+	struct pollfd pfd[4];
-+	pfd[0].fd = sigfd;
-+	pfd[0].events = POLLIN;
-+	pfd[1].fd = stats_timer;
-+	pfd[1].events = POLLIN;
-+	pfd[2].fd = read_peb_timer;
-+	pfd[2].events = POLLIN;
-+	pfd[3].fd = scrub_peb_timer;
-+	pfd[3].events = POLLIN;
-+	while (!shutdown) {
-+		int n = poll(pfd, ARRAY_SIZE(pfd), -1);
-+		if (n == -1) {
-+			log_err("poll error: %s", strerror(errno));
-+			shutdown = 1;
-+		}
-+		if (n == 0) {
-+			continue;
-+		}
-+		/* signalfd */
-+		if (pfd[0].revents & POLLIN) {
-+			ssize_t s = read(sigfd, &fdsi, sizeof(fdsi));
-+			if (s != sizeof(fdsi)) {
-+				log_warn("Could not read from signal fd");
-+				continue;
-+			}
-+			switch(fdsi.ssi_signo) {
-+			case SIGUSR1:
-+				/* write back stats to disk */
-+				write_stats_file(stats_file, peb_head, sched_read_head, sched_scrub_head, num_pebs);
-+				break;
-+			default:
-+				shutdown = 1;
-+				break;
-+			}
-+		}
-+		/* stats timer */
-+		if (pfd[1].revents & POLLIN) {
-+			uint64_t tmp;
-+			read(stats_timer, &tmp, sizeof(tmp));
-+			/* update stats */
-+			if (update_stats(fd, peb_head, num_pebs) < 0) {
-+				log_warn("Could not update stats");
-+				continue;
-+			}
++/**
++ * list_prepare_entry - prepare a pos entry for use in list_for_each_entry_continue()
++ * @pos:	the type * to use as a start point
++ * @head:	the head of the list
++ * @member:	the name of the list_head within the struct.
++ *
++ * Prepares a pos entry for use as a start point in list_for_each_entry_continue().
++ */
++#define list_prepare_entry(pos, head, member) \
++	((pos) ? : list_entry(head, typeof(*pos), member))
 +
-+			struct peb_list *p = NULL;
-+			/* check if we need to act on any block */
-+			list_for_each_entry(p, &peb_head->list, list) {
-+				struct peb_info *peb = p->peb;
-+				if (!peb)
-+					continue;
-+				uint64_t read_stats = peb->read_cnt - peb->prev_read_cnt;
-+				/* read whole PEB if number of reads since last check is above threshold */
-+				if (read_stats >= read_threshold) {
-+					log_info("Too many reads for PEB %" PRIu64 " between stats updates, scheduling READ", peb->peb_num);
-+					read_peb(fd, peb);
-+				}
-+			}
-+		}
++/**
++ * list_for_each_entry_continue - continue iteration over list of given type
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Continue to iterate over list of given type, continuing after
++ * the current position.
++ */
++#define list_for_each_entry_continue(pos, head, member) 		\
++	for (pos = list_next_entry(pos, member);			\
++	     &pos->member != (head);					\
++	     pos = list_next_entry(pos, member))
 +
-+		/* read_peb_timer */
-+		if (pfd[2].revents & POLLIN) {
-+			uint64_t tmp;
-+			read(pfd[2].fd, &tmp, sizeof(tmp));
-+			/* do next peb read */
-+			if (work(sched_read_head, fd) < 0) {
-+				log_err("Error while reading PEB");
-+			}
-+		}
++/**
++ * list_for_each_entry_continue_reverse - iterate backwards from the given point
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Start to iterate over list of given type backwards, continuing after
++ * the current position.
++ */
++#define list_for_each_entry_continue_reverse(pos, head, member)		\
++	for (pos = list_prev_entry(pos, member);			\
++	     &pos->member != (head);					\
++	     pos = list_prev_entry(pos, member))
 +
-+		/* scrub pebs */
-+		if (pfd[3].revents & POLLIN) {
-+			uint64_t tmp;
-+			read(pfd[3].fd, &tmp, sizeof(tmp));
-+			/* do next peb scrub */
-+			if (work(sched_scrub_head, fd) < 0) {
-+				log_err("Error while scrubbing PEB");
-+			}
-+		}
++/**
++ * list_for_each_entry_from - iterate over list of given type from the current point
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Iterate over list of given type, continuing from current position.
++ */
++#define list_for_each_entry_from(pos, head, member) 			\
++	for (; &pos->member != (head);					\
++	     pos = list_next_entry(pos, member))
 +
-+	}
-+	log_info("Shutting down");
-+	write_stats_file(stats_file, peb_head, sched_read_head, sched_scrub_head, num_pebs);
-+	close(fd);
-+	free_list(peb_head);
++/**
++ * list_for_each_entry_safe - iterate over list of given type safe against removal of list entry
++ * @pos:	the type * to use as a loop cursor.
++ * @n:		another type * to use as temporary storage
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ */
++#define list_for_each_entry_safe(pos, n, head, member)			\
++	for (pos = list_first_entry(head, typeof(*pos), member),	\
++		n = list_next_entry(pos, member);			\
++	     &pos->member != (head); 					\
++	     pos = n, n = list_next_entry(n, member))
 +
-+	return 0;
-+}
++/**
++ * list_for_each_entry_safe_continue - continue list iteration safe against removal
++ * @pos:	the type * to use as a loop cursor.
++ * @n:		another type * to use as temporary storage
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Iterate over list of given type, continuing after current point,
++ * safe against removal of list entry.
++ */
++#define list_for_each_entry_safe_continue(pos, n, head, member) 		\
++	for (pos = list_next_entry(pos, member), 				\
++		n = list_next_entry(pos, member);				\
++	     &pos->member != (head);						\
++	     pos = n, n = list_next_entry(n, member))
++
++/**
++ * list_for_each_entry_safe_from - iterate over list from current point safe against removal
++ * @pos:	the type * to use as a loop cursor.
++ * @n:		another type * to use as temporary storage
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Iterate over list of given type from current point, safe against
++ * removal of list entry.
++ */
++#define list_for_each_entry_safe_from(pos, n, head, member) 			\
++	for (n = list_next_entry(pos, member);					\
++	     &pos->member != (head);						\
++	     pos = n, n = list_next_entry(n, member))
++
++/**
++ * list_for_each_entry_safe_reverse - iterate backwards over list safe against removal
++ * @pos:	the type * to use as a loop cursor.
++ * @n:		another type * to use as temporary storage
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ *
++ * Iterate backwards over list of given type, safe against removal
++ * of list entry.
++ */
++#define list_for_each_entry_safe_reverse(pos, n, head, member)		\
++	for (pos = list_last_entry(head, typeof(*pos), member),		\
++		n = list_prev_entry(pos, member);			\
++	     &pos->member != (head); 					\
++	     pos = n, n = list_prev_entry(n, member))
++
++/**
++ * list_safe_reset_next - reset a stale list_for_each_entry_safe loop
++ * @pos:	the loop cursor used in the list_for_each_entry_safe loop
++ * @n:		temporary storage used in list_for_each_entry_safe
++ * @member:	the name of the list_head within the struct.
++ *
++ * list_safe_reset_next is not safe to use in general if the list may be
++ * modified concurrently (eg. the lock is dropped in the loop body). An
++ * exception to this is if the cursor element (pos) is pinned in the list,
++ * and list_safe_reset_next is called after re-taking the lock and before
++ * completing the current iteration of the loop body.
++ */
++#define list_safe_reset_next(pos, n, member)				\
++	n = list_next_entry(pos, member)
++
++#endif
 -- 
 2.5.0
