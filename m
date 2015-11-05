@@ -1,19 +1,23 @@
-Subject: Re: [PATCH v2 2/5] spi: spi-ti-qspi: add mmap mode read support
-To: Mark Brown <broonie@kernel.org>
-References: <1446545174-14193-1-git-send-email-vigneshr@ti.com>
- <1446545174-14193-3-git-send-email-vigneshr@ti.com>
- <20151104144112.GJ1717@sirena.org.uk>
-CC: Tony Lindgren <tony@atomide.com>, Michal Suchanek <hramrach@gmail.com>,
- Russell King <linux@arm.linux.org.uk>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <563AF429.1000406@ti.com>
-Date: Thu, 5 Nov 2015 11:46:09 +0530
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZuGGJ-0006QC-0t
+ for linux-mtd@lists.infradead.org; Thu, 05 Nov 2015 08:51:15 +0000
+Date: Thu, 5 Nov 2015 09:49:30 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Ezequiel
+ Garcia <ezequiel@vanguardiasur.com.ar>, Marek Vasut <marex@denx.de>, Scott
+ Wood <scottwood@freescale.com>, Josh Wu <josh.wu@atmel.com>, Robert Jarzmik
+ <robert.jarzmik@free.fr>, Kyungmin Park <kyungmin.park@samsung.com>, Han Xu
+ <han.xu@freescale.com>
+Subject: Re: [PATCH v2 09/11] mtd: drop unnecessary partition parser data
+Message-ID: <20151105094930.3536ea34@bbrezillon>
+In-Reply-To: <1446262410-45754-10-git-send-email-computersforpeace@gmail.com>
+References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
+ <1446262410-45754-10-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20151104144112.GJ1717@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,31 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 30 Oct 2015 20:33:28 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
+> --- a/drivers/mtd/maps/lantiq-flash.c
+> +++ b/drivers/mtd/maps/lantiq-flash.c
+> @@ -110,7 +110,6 @@ ltq_copy_to(struct map_info *map, unsigned long to,
+>  static int
+>  ltq_mtd_probe(struct platform_device *pdev)
+>  {
+> -	struct mtd_part_parser_data ppdata;
+>  	struct ltq_mtd *ltq_mtd;
+>  	struct cfi_private *cfi;
+>  	int err;
+> @@ -161,13 +160,13 @@ ltq_mtd_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	ltq_mtd->mtd->dev.parent = &pdev->dev;
+> +	mtd_set_of_node(&ltq_mtd->mtd, pdev->dev.of_node);
 
-On 11/04/2015 08:11 PM, Mark Brown wrote:
-> On Tue, Nov 03, 2015 at 03:36:11PM +0530, Vignesh R wrote:
-> 
->> +	ti_qspi_enable_memory_map(spi);
->> +	ti_qspi_setup_mmap_read(spi, read_opcode, addr_width,
->> +				dummy_bytes);
->> +	memcpy_fromio(buf, qspi->mmap_base + from, len);
->> +	*retlen = len;
->> +	ti_qspi_disable_memory_map(spi);
-> 
-> We'll be constantly enabling and disabling memory mapping with this.
-> I'm not sure that's a meaningful cost given that it doesn't actually
-> remap anything but rather just switches hardware modes, we can always
-> optimise it later if it is.
-> 
+Should be:
 
-Hmm, I will move the ti_qspi_disable_memory_map() call to
-ti_qspi_start_transfer_one(), so that mmap mode is disabled only when
-normal SPI bus transfer is requested. Further, "mmap_enabled" status
-flag can be used to determine whether mode switch is required or not.
-This should help to overcome enabling and disabling memory mapping
-between successive mmap read requests.
+	mtd_set_of_node(ltq_mtd->mtd, pdev->dev.of_node);
+
+(This error was reported by your aiaiai build test)
 
 -- 
-Regards
-Vignesh
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
