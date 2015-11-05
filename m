@@ -1,24 +1,15 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZuGGJ-0006QC-0t
- for linux-mtd@lists.infradead.org; Thu, 05 Nov 2015 08:51:15 +0000
-Date: Thu, 5 Nov 2015 09:49:30 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Ezequiel
- Garcia <ezequiel@vanguardiasur.com.ar>, Marek Vasut <marex@denx.de>, Scott
- Wood <scottwood@freescale.com>, Josh Wu <josh.wu@atmel.com>, Robert Jarzmik
- <robert.jarzmik@free.fr>, Kyungmin Park <kyungmin.park@samsung.com>, Han Xu
- <han.xu@freescale.com>
-Subject: Re: [PATCH v2 09/11] mtd: drop unnecessary partition parser data
-Message-ID: <20151105094930.3536ea34@bbrezillon>
-In-Reply-To: <1446262410-45754-10-git-send-email-computersforpeace@gmail.com>
-References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
- <1446262410-45754-10-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZuGTX-0006G1-Gy
+ for linux-mtd@lists.infradead.org; Thu, 05 Nov 2015 09:04:56 +0000
+Received: by wmeg8 with SMTP id g8so7179668wme.1
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Nov 2015 01:04:33 -0800 (PST)
+From: Andreas Fenkart <afenkart@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Andreas Fenkart <andreas.fenkart@dev.digitalstrom.org>
+Subject: [PATCH] spi-nor: mx25l3205d/mx25l6405d: append SECT_4K
+Date: Thu,  5 Nov 2015 10:04:23 +0100
+Message-Id: <1446714263-4374-1-git-send-email-andreas.fenkart@dev.digitalstrom.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 30 Oct 2015 20:33:28 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+according datasheet both chips can erase 4kByte sectors individually
 
-> --- a/drivers/mtd/maps/lantiq-flash.c
-> +++ b/drivers/mtd/maps/lantiq-flash.c
-> @@ -110,7 +110,6 @@ ltq_copy_to(struct map_info *map, unsigned long to,
->  static int
->  ltq_mtd_probe(struct platform_device *pdev)
->  {
-> -	struct mtd_part_parser_data ppdata;
->  	struct ltq_mtd *ltq_mtd;
->  	struct cfi_private *cfi;
->  	int err;
-> @@ -161,13 +160,13 @@ ltq_mtd_probe(struct platform_device *pdev)
->  	}
->  
->  	ltq_mtd->mtd->dev.parent = &pdev->dev;
-> +	mtd_set_of_node(&ltq_mtd->mtd, pdev->dev.of_node);
+Signed-off-by: Andreas Fenkart <andreas.fenkart@dev.digitalstrom.org>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Should be:
-
-	mtd_set_of_node(ltq_mtd->mtd, pdev->dev.of_node);
-
-(This error was reported by your aiaiai build test)
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 14a5d23..abf7cb4 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -565,9 +565,9 @@ static const struct spi_device_id spi_nor_ids[] = {
+ 	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
+ 	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
+ 	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
+-	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
++	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
+-	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
++	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.6.1
