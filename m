@@ -1,20 +1,19 @@
-Subject: Re: [PATCH v2 5/5] ARM: dts: AM4372: add entry for qspi mmap region
-To: Felipe Balbi <balbi@ti.com>, Rob Herring <robh@kernel.org>
-References: <1446545174-14193-1-git-send-email-vigneshr@ti.com>
- <1446545174-14193-6-git-send-email-vigneshr@ti.com>
- <20151105235124.GA2805@rob-hp-laptop> <878u6b1zgg.fsf@saruman.tx.rr.com>
-CC: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>, Michal
- Suchanek <hramrach@gmail.com>,
- Russell King <linux@arm.linux.org.uk>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <563C9B36.3010107@ti.com>
-Date: Fri, 6 Nov 2015 17:51:10 +0530
-MIME-Version: 1.0
-In-Reply-To: <878u6b1zgg.fsf@saruman.tx.rr.com>
-Content-Type: text/plain; charset="windows-1252"
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zug77-0001Fn-A4
+ for linux-mtd@lists.infradead.org; Fri, 06 Nov 2015 12:27:31 +0000
+Message-ID: <1446812825.20949.137.camel@gmail.com>
+Subject: Re: [PATCH 3/5] UBI: Expose the bitrot interface
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, alex@nextthing.co
+Date: Fri, 06 Nov 2015 14:27:05 +0200
+In-Reply-To: <1446764217-15021-4-git-send-email-richard@nod.at>
+References: <1446764217-15021-1-git-send-email-richard@nod.at>
+ <1446764217-15021-4-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,58 +24,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+All the comments in this e-mail are about improving commentaries and
+naming conventions to make the code more consistent, may be a bit more
+"formal", and more self-documenting.
 
+On Thu, 2015-11-05 at 23:56 +0100, Richard Weinberger wrote:
 
-On 11/06/2015 10:44 AM, Felipe Balbi wrote:
-> 
-> Hi,
-> 
-> Rob Herring <robh@kernel.org> writes:
->> On Tue, Nov 03, 2015 at 03:36:14PM +0530, Vignesh R wrote:
->>> Add qspi memory mapped region entries for AM43xx based SoCs. Also,
->>> update the binding documents for the controller to document this change.
->>>
->>> Signed-off-by: Vignesh R <vigneshr@ti.com>
->>
->> Acked-by: Rob Herring <robh@kernel.org>
->>
->>> ---
->>>  Documentation/devicetree/bindings/spi/ti_qspi.txt | 5 +++--
->>>  arch/arm/boot/dts/am4372.dtsi                     | 4 +++-
->>>  2 files changed, 6 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/spi/ti_qspi.txt b/Documentation/devicetree/bindings/spi/ti_qspi.txt
->>> index f05dd631bef1..05488970060b 100644
->>> --- a/Documentation/devicetree/bindings/spi/ti_qspi.txt
->>> +++ b/Documentation/devicetree/bindings/spi/ti_qspi.txt
->>> @@ -17,9 +17,10 @@ Recommended properties:
->>>  
->>>  Example:
->>>  
->>> +For am4372:
->>>  qspi: qspi@4b300000 {
->>> -	compatible = "ti,dra7xxx-qspi";
->>> -	reg = <0x47900000 0x100>, <0x30000000 0x3ffffff>;
->>> +	compatible = "ti,am4372-qspi";
->>> +	reg = <0x47900000 0x100>, <0x30000000 0x4000000>;
->>>  	reg-names = "qspi_base", "qspi_mmap";
->>>  	#address-cells = <1>;
->>>  	#size-cells = <0>;
-> 
-> and how does the user for this look like ? Don't you need to give this a
-> proper 'ranges' binding ?
-> 
+> diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+> index d16fccf..f500451 100644
+> --- a/drivers/mtd/ubi/cdev.c
+> +++ b/drivers/mtd/ubi/cdev.c
+> @@ -963,6 +963,36 @@ static long ubi_cdev_ioctl(struct file *file,
+> unsigned int cmd,
+>  		break;
+>  	}
+>  
+> +	/* Read a PEB */
 
+Naive reader's thoughts: Hmm, I thought tor read a PEB I can just read
+from the character device. Hmm, there is an IOCTL for reading? And it
+returns me the data?
 
-There are no other users of qspi_mmap region except ti-qspi driver itself:
-In probe:
-	res_mmap = platform_get_resource_byname(pdev,
-			IORESOURCE_MEM, "qspi_mmap");
-	qspi->mmap_base = devm_ioremap_resource(&pdev->dev, res_mmap);
+Suggestion: please, improve the comment. Tell what it actually does and
+why is it needed. Something like "Check whether the PEB has bit-flips
+and hence, needs scrubbing" would do.
 
-and for reading from mmap region:
-	memcpy_fromio(buf, qspi->mmap_base + from, len);
+> +	case UBI_IOCRPEB:
+> +	{
+> +		int pnum;
+> +
+> +		err = get_user(pnum, (__user int32_t *)argp);
+> +		if (err) {
+> +			err = -EFAULT;
+> +			break;
+> +		}
+> +
+> +		err = ubi_bitrot_check(ubi, pnum, 0);
 
--- 
-Regards
-Vignesh
+So I see 2 terms used: bitflips and bitrots. Would we please stick to
+one of them, and I'd suggest the former, and leave the latter.
+
+E.g.: ubi_check_bitflips() ?
+
+> +	/* Scrub a PEB */
+
+Naive reader's question: does it scrub unconditionally or only if there
+are bit-flips. Is it really just scrub, or check-and-scrub?
+
+Suggestion: improve the comment a bit.
+
+> +	case UBI_IOCSPEB:
+> +	{
+> +		int pnum;
+> +
+> +		err = get_user(pnum, (__user int32_t *)argp);
+> +		if (err) {
+> +			err = -EFAULT;
+> +			break;
+> +		}
+> +
+> +		err = ubi_bitrot_check(ubi, pnum, 1);
+
+Name is confusing, because it says "check", while the ioctl said
+"scrub". But I guess we can leave with this, and I do not have better
+ideas.
+
+> +/**
+> + * ubi_bitrot_check - Check an eraseblock for bitflips
+
+But in the comment you do need to say something like 'check and scrub
+an eraseblock' or something, so that it is clear this is not only about
+'checking'.
+
+> + * @pnum: the physical eraseblock to schedule
+> + * @force_scrub: force scrubbing if non-zero
+> + *
+
+And here I'd put some additional comment about the function - what it
+does, is scrubbing unconditional or not, etc.
