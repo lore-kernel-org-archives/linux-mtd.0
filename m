@@ -1,23 +1,22 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zukvb-0006r1-Ic
- for linux-mtd@lists.infradead.org; Fri, 06 Nov 2015 17:35:56 +0000
-Received: by pabfh17 with SMTP id fh17so128838773pab.0
- for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2015 09:35:34 -0800 (PST)
-Date: Fri, 6 Nov 2015 09:35:32 -0800
+ id 1ZulK7-00032Y-Vj
+ for linux-mtd@lists.infradead.org; Fri, 06 Nov 2015 18:01:16 +0000
+Received: by padhx2 with SMTP id hx2so121305686pad.1
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Nov 2015 10:00:55 -0800 (PST)
+Date: Fri, 6 Nov 2015 10:00:52 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- linux-cris-kernel@axis.com, Jesper Nilsson <jespern@axis.com>
-Subject: Re: [PATCH] mtd: don't WARN about overloaded users of
- mtd->reboot_notifier.notifier_call
-Message-ID: <20151106173532.GD12143@google.com>
-References: <1446598913-133086-1-git-send-email-computersforpeace@gmail.com>
- <20151106141537.GA25969@roeck-us.net>
+To: "Andrew E. Mileski" <andrewm@isoar.ca>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Scott Branden <sbranden@broadcom.com>
+Subject: Re: Hang on reboot in nand_get_device()
+Message-ID: <20151106180052.GE12143@google.com>
+References: <55958F4C.1020002@isoar.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151106141537.GA25969@roeck-us.net>
+In-Reply-To: <55958F4C.1020002@isoar.ca>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +26,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 06, 2015 at 06:15:37AM -0800, Guenter Roeck wrote:
-> On Tue, Nov 03, 2015 at 05:01:53PM -0800, Brian Norris wrote:
-> > There are multiple types of users of mtd->reboot_notifier.notifier_call:
-> > 
-> > (1) A while back, the cfi_cmdset_000{1,2} chip drivers implemented a
-> > reboot notifier to (on a best effort basis) attempt to reset their flash
-> > chips before rebooting.
-> > 
-> > (2) More recently, we implemented a common _reboot() hook so that MTD
-> > drivers (particularly, NAND flash) could better halt I/O operations
-> > without having to reimplement the same notifier boilerplate.
-> > 
-> > Currently, the WARN_ONCE() condition here was written to handle (2), but
-> > at the same time it mis-diagnosed case (1) as an already-registered MTD.
-> > Let's fix this by having the WARN_ONCE() condition better imitate the
-> > condition that immediately follows it. (Wow, I don't know how I missed
-> > that one.)
-> > 
-> > (Side note: Unfortunately, we can't yet combine the reboot notifier code
-> > for (1) and (2) with a patch like [1], because some users of (1) also
-> > use mtdconcat, and so the mtd_info struct from cfi_cmdset_000{1,2} won't
-> > actually get registered with mtdcore, and therefore their reboot
-> > notifier won't get registered.)
-> > 
-> > [1] http://patchwork.ozlabs.org/patch/417981/
-> > 
-> > Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > Cc: Jesper Nilsson <jespern@axis.com>
-> > Cc: linux-cris-kernel@axis.com
++ others
+
+Hi Andrew,
+
+Sorry for the delay here. I overlooked this.
+
+On Thu, Jul 02, 2015 at 03:21:48PM -0400, Andrew E. Mileski wrote:
+> I'm experiencing a hang on reboot with a Freescale P1022 PowerPC system, with a
+> dual chip-select NAND part (specified in the device tree as two
+> separate devices), and kernel v4.0.6.
+
+Which driver?
+
+> It appears to be a hang in mtd/nand/nand_base.c:nand_get_device() waiting on
+> chip->controller->active.
 > 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> Shouldn't nand_shutdown(), or perhaps a special case in nand_get_device() for
+> FL_SHUTDOWN, set chip->controller->active = NULL before returning?
 
-Thanks! Pushed to l2-mtd.git.
+I don't think that's exactly the right solution, but you're in the right
+ballpark I expect.
 
-I'll be queueing up the 4.4-rc1 pull request soon.
+> This seems to fix the problem for me, but I don't know all the code well enough
+> to know whether doing so is appropriate, or sufficient.
+
+I'm going to guess you're seeing two reboot handlers trying to 'get' the
+same controller structure. We could probably confirm that if we see your
+driver.
+
+But I see this could be a problem with a wide class of drivers.
+Basically, any NAND driver that has multiple NAND chips attached will
+see multiple reboot handlers that point at the same controller lock.
+This will obviously deadlock, since only one of the chips will make it
+through the nand_shutdown() function successfully.
+
+And now that I begin describing the problem and grepping through the
+source logs... I see that this problem was already resolved back in
+2009, except for the FL_PM_SUSPENDED mode:
+
+commit 6b0d9a84124937f048bcb8b21313152b23063978
+Author: Li Yang <leoli@freescale.com>
+Date:   Tue Nov 17 14:45:49 2009 -0800
+
+    mtd: nand: fix multi-chip suspend problem
+
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=6b0d9a84124937f048bcb8b21313152b23063978
+    
+I actually don't see why we can't just use
+nand_get_device(FL_PM_SUSPENDED) for the shutdown/reboot case, like
+this:
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index cc74142938b0..ece544efccc3 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3110,7 +3110,7 @@ static void nand_resume(struct mtd_info *mtd)
+  */
+ static void nand_shutdown(struct mtd_info *mtd)
+ {
+-	nand_get_device(mtd, FL_SHUTDOWN);
++	nand_get_device(mtd, FL_PM_SUSPENDED);
+ }
+ 
+ /* Set default functions */
+
+
+It's also possible that this could be better solved in a proper
+refactor/rewrite of the NAND subsystem using a better controller/chip
+split, so there's only one reboot handler per NAND controller. Boris has
+been looking at that.
+
+Anyway, if the above looks OK, I can send a proper patch and get your
+'Tested-by's.
 
 Brian
