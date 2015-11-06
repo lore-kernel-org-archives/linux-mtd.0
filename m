@@ -1,17 +1,18 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zug77-0001Fn-A4
- for linux-mtd@lists.infradead.org; Fri, 06 Nov 2015 12:27:31 +0000
-Message-ID: <1446812825.20949.137.camel@gmail.com>
+ id 1ZugA1-0003Tb-JL
+ for linux-mtd@lists.infradead.org; Fri, 06 Nov 2015 12:30:30 +0000
+Message-ID: <1446813006.20949.140.camel@gmail.com>
 Subject: Re: [PATCH 3/5] UBI: Expose the bitrot interface
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
 Cc: boris.brezillon@free-electrons.com, alex@nextthing.co
-Date: Fri, 06 Nov 2015 14:27:05 +0200
-In-Reply-To: <1446764217-15021-4-git-send-email-richard@nod.at>
+Date: Fri, 06 Nov 2015 14:30:06 +0200
+In-Reply-To: <563C9990.4040602@nod.at>
 References: <1446764217-15021-1-git-send-email-richard@nod.at>
  <1446764217-15021-4-git-send-email-richard@nod.at>
+ <1446811178.20949.111.camel@gmail.com> <563C9990.4040602@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -24,81 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All the comments in this e-mail are about improving commentaries and
-naming conventions to make the code more consistent, may be a bit more
-"formal", and more self-documenting.
+On Fri, 2015-11-06 at 13:14 +0100, Richard Weinberger wrote:
+> Am 06.11.2015 um 12:59 schrieb Artem Bityutskiy:
+> > On Thu, 2015-11-05 at 23:56 +0100, Richard Weinberger wrote:
+> > > +#define UBI_IOCRPEB _IOW(UBI_IOC_MAGIC, 4, __s32)
+> > > +#define UBI_IOCSPEB _IOW(UBI_IOC_MAGIC, 5, __s32)
+> > 
+> > Could you please, add short comments telling what are these ioctls
+> > about.
+> 
+> Sure.
+> 
+> Something like:
+> 
+> +/* Trigger re-read of a given PEB */
 
-On Thu, 2015-11-05 at 23:56 +0100, Richard Weinberger wrote:
+Something more end-user oriented. Trigger re-read does not tell the end
+user anything, but "check if a PEB has bitflips" does tell exactly why
+the ioctl exists.
 
-> diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-> index d16fccf..f500451 100644
-> --- a/drivers/mtd/ubi/cdev.c
-> +++ b/drivers/mtd/ubi/cdev.c
-> @@ -963,6 +963,36 @@ static long ubi_cdev_ioctl(struct file *file,
-> unsigned int cmd,
->  		break;
->  	}
->  
-> +	/* Read a PEB */
+> +#define UBI_IOCRPEB _IOW(UBI_IOC_MAGIC, 4, __s32)
+> +/* Trigger scrubbing of a given PEB */
 
-Naive reader's thoughts: Hmm, I thought tor read a PEB I can just read
-from the character device. Hmm, there is an IOCTL for reading? And it
-returns me the data?
+Sounds good to me, although if you could also tell at the same time
+whether this is unconditional or only if the PEB has bit-flips.
 
-Suggestion: please, improve the comment. Tell what it actually does and
-why is it needed. Something like "Check whether the PEB has bit-flips
-and hence, needs scrubbing" would do.
+> +#define UBI_IOCSPEB _IOW(UBI_IOC_MAGIC, 5, __s32)
 
-> +	case UBI_IOCRPEB:
-> +	{
-> +		int pnum;
-> +
-> +		err = get_user(pnum, (__user int32_t *)argp);
-> +		if (err) {
-> +			err = -EFAULT;
-> +			break;
-> +		}
-> +
-> +		err = ubi_bitrot_check(ubi, pnum, 0);
+> While we're here, would it make sense to do a manpage for UBI's
+> ioctl()s?
 
-So I see 2 terms used: bitflips and bitrots. Would we please stick to
-one of them, and I'd suggest the former, and leave the latter.
+Well, more documentation is always a great thing, I invested a lot of
+time into mtd web site at some point, and I think it payed off at the
+end. Investing time into a man page would pay off too I believe.
 
-E.g.: ubi_check_bitflips() ?
-
-> +	/* Scrub a PEB */
-
-Naive reader's question: does it scrub unconditionally or only if there
-are bit-flips. Is it really just scrub, or check-and-scrub?
-
-Suggestion: improve the comment a bit.
-
-> +	case UBI_IOCSPEB:
-> +	{
-> +		int pnum;
-> +
-> +		err = get_user(pnum, (__user int32_t *)argp);
-> +		if (err) {
-> +			err = -EFAULT;
-> +			break;
-> +		}
-> +
-> +		err = ubi_bitrot_check(ubi, pnum, 1);
-
-Name is confusing, because it says "check", while the ioctl said
-"scrub". But I guess we can leave with this, and I do not have better
-ideas.
-
-> +/**
-> + * ubi_bitrot_check - Check an eraseblock for bitflips
-
-But in the comment you do need to say something like 'check and scrub
-an eraseblock' or something, so that it is clear this is not only about
-'checking'.
-
-> + * @pnum: the physical eraseblock to schedule
-> + * @force_scrub: force scrubbing if non-zero
-> + *
-
-And here I'd put some additional comment about the function - what it
-does, is scrubbing unconditional or not, etc.
+Thanks!
