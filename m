@@ -1,21 +1,19 @@
-From: Felipe Balbi <balbi@ti.com>
-To: Rob Herring <robh@kernel.org>, Vignesh R <vigneshr@ti.com>
-CC: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>, Michal
- Suchanek <hramrach@gmail.com>,
- Russell King <linux@arm.linux.org.uk>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH v2 5/5] ARM: dts: AM4372: add entry for qspi mmap region
-In-Reply-To: <20151105235124.GA2805@rob-hp-laptop>
-References: <1446545174-14193-1-git-send-email-vigneshr@ti.com>
- <1446545174-14193-6-git-send-email-vigneshr@ti.com>
- <20151105235124.GA2805@rob-hp-laptop>
-Date: Thu, 5 Nov 2015 23:14:39 -0600
-Message-ID: <878u6b1zgg.fsf@saruman.tx.rr.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZudH7-0005n3-EM
+ for linux-mtd@lists.infradead.org; Fri, 06 Nov 2015 09:25:38 +0000
+Subject: Re: [PATCH v6] ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com
+References: <1440126626-18446-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <56101FC5.6090900@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <563C71F7.9050004@nod.at>
+Date: Fri, 6 Nov 2015 10:25:11 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg=pgp-sha1;
- protocol="application/pgp-signature"
+In-Reply-To: <56101FC5.6090900@nod.at>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,70 +23,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-
-Hi,
-
-Rob Herring <robh@kernel.org> writes:
-> On Tue, Nov 03, 2015 at 03:36:14PM +0530, Vignesh R wrote:
->> Add qspi memory mapped region entries for AM43xx based SoCs. Also,
->> update the binding documents for the controller to document this change.
->>=20
->> Signed-off-by: Vignesh R <vigneshr@ti.com>
->
-> Acked-by: Rob Herring <robh@kernel.org>
->
+Am 03.10.2015 um 20:34 schrieb Richard Weinberger:
+> Am 21.08.2015 um 05:10 schrieb Dongsheng Yang:
+>> To make ubifs support atime flexily, this commit introduces
+>> a Kconfig option named as UBIFS_ATIME_SUPPORT.
+>>
+>> With UBIFS_ATIME_SUPPORT=n:
+>> 	ubifs keeps the full compatibility to no_atime from
+>> the start of ubifs.
+>> =================UBIFS_ATIME_SUPPORT=n=======================
+>> -o - no atime
+>> -o atime - no atime
+>> -o noatime - no atime
+>> -o relatime - no atime
+>> -o strictatime - no atime
+>> -o lazyatime - no atime
+>>
+>> With UBIFS_ATIME_SUPPORT=y:
+>> 	ubifs supports the atime same with other main stream
+>> file systems.
+>> =================UBIFS_ATIME_SUPPORT=y=======================
+>> -o - default behavior (relatime currently)
+>> -o atime - atime support
+>> -o noatime - no atime support
+>> -o relatime - relative atime support
+>> -o strictatime - strict atime support
+>> -o lazyatime - lazy atime support
+>>
+>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 >> ---
->>  Documentation/devicetree/bindings/spi/ti_qspi.txt | 5 +++--
->>  arch/arm/boot/dts/am4372.dtsi                     | 4 +++-
->>  2 files changed, 6 insertions(+), 3 deletions(-)
->>=20
->> diff --git a/Documentation/devicetree/bindings/spi/ti_qspi.txt b/Documen=
-tation/devicetree/bindings/spi/ti_qspi.txt
->> index f05dd631bef1..05488970060b 100644
->> --- a/Documentation/devicetree/bindings/spi/ti_qspi.txt
->> +++ b/Documentation/devicetree/bindings/spi/ti_qspi.txt
->> @@ -17,9 +17,10 @@ Recommended properties:
->>=20=20
->>  Example:
->>=20=20
->> +For am4372:
->>  qspi: qspi@4b300000 {
->> -	compatible =3D "ti,dra7xxx-qspi";
->> -	reg =3D <0x47900000 0x100>, <0x30000000 0x3ffffff>;
->> +	compatible =3D "ti,am4372-qspi";
->> +	reg =3D <0x47900000 0x100>, <0x30000000 0x4000000>;
->>  	reg-names =3D "qspi_base", "qspi_mmap";
->>  	#address-cells =3D <1>;
->>  	#size-cells =3D <0>;
+>> 	-v2:
+>> 		implement update_time for ubifs
+>> 	-v3:
+>> 		Oops, forgot to assign update_time for
+>> 		ubifs_dir_inode_operations.
+>> 	-v4:
+>> 		drop the patch to change 'Y' to 'N' in
+>> 		Kconfig
+>> 	-v5:
+>> 		simplify the warning in atime supporting
+>> 	-v6:
+>> 		* replace ubifs_warn with ubifs_msg
+>> 		* rewrite the messages in Kconfig as Artem suggested
+>> 		* remove S_VERSION related code
+>>  fs/ubifs/Kconfig | 15 +++++++++++++++
+>>  fs/ubifs/dir.c   |  3 +++
+>>  fs/ubifs/file.c  | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+>>  fs/ubifs/super.c | 12 ++++++++++--
+>>  fs/ubifs/ubifs.h |  1 +
+>>  5 files changed, 77 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+>> index ba66d50..7ff7712 100644
+>> --- a/fs/ubifs/Kconfig
+>> +++ b/fs/ubifs/Kconfig
+>> @@ -35,3 +35,18 @@ config UBIFS_FS_ZLIB
+>>  	default y
+>>  	help
+>>  	  Zlib compresses better than LZO but it is slower. Say 'Y' if unsure.
+>> +
+>> +config UBIFS_ATIME_SUPPORT
+>> +	bool "Access time support" if UBIFS_FS
+>> +	depends on UBIFS_FS
+>> +	default n
+>> +	help
+>> +	  Originally UBIFS did not support atime, because it looked like a bad idea due
+>> +	  increased flash wear. This option adds atime support and it is disabled by default
+>> +	  to preserve the old behavior. If you enable this option, UBIFS starts updating atime,
+>> +	  which means that file-system read operations will cause writes (inode atime
+>> +	  updates). This may affect file-system performance and increase flash device wear,
+>> +	  so be careful. How often atime is updated depends on the selected strategy:
+>> +	  strictatime is the "heavy", relatime is "lighter", etc.
+>> +
+>> +	  If unsure, say 'N'
+>> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+>> index 27060fc..8d93427 100644
+>> --- a/fs/ubifs/dir.c
+>> +++ b/fs/ubifs/dir.c
+>> @@ -1187,6 +1187,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
+>>  	.getxattr    = ubifs_getxattr,
+>>  	.listxattr   = ubifs_listxattr,
+>>  	.removexattr = ubifs_removexattr,
+>> +#ifdef CONFIG_UBIFS_ATIME_SUPPORT
+>> +	.update_time = ubifs_update_time,
+>> +#endif
+>>  };
+>>  
+>>  const struct file_operations ubifs_dir_operations = {
+>> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+>> index 35efc10..423ce6b 100644
+>> --- a/fs/ubifs/file.c
+>> +++ b/fs/ubifs/file.c
+>> @@ -1364,6 +1364,45 @@ static inline int mctime_update_needed(const struct inode *inode,
+>>  }
+>>  
+>>  /**
+>> + * ubifs_update_time - update time of inode.
+>> + * @inode: inode to update
+>> + *
+>> + * This function updates time of the inode.
+>> + */
+>> +int ubifs_update_time(struct inode *inode, struct timespec *time,
+>> +			     int flags)
+> 
+> This function should be under an "#ifdef CONFIG_UBIFS_ATIME_SUPPORT".
+> 
+> Beside of that,
+> Reviewed-by: Richard Weinberger <richard@nod.at>
+> 
+> I think we can queue it for v4.4. Artem, what do you think?
 
-and how does the user for this look like ? Don't you need to give this a
-proper 'ranges' binding ?
+Yang, ping?
+Artem and I would like to have this in v4.4.
 
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJWPDdAAAoJEIaOsuA1yqREHKEP/R4PUJz+OIvfv6uTsS8vm6Kx
-PBgXBM1N4IcswdRVUHKvm5Zhg8QG+B4PukBdM2Va5kzle2wM3FzBrkx3wedem2Oh
-dUR+56Y8u7+3Iz6pqp0/NhHFGw/8kZdmSAIOaKjt/Q5kDIwWYksA3hZ/6iMRzZ7C
-i6pbSrKRQNCpeyxdL75F6sCfiA9yl1LomWekzZ2/lVzPVCD8Qr7m6xgy6Gu4F+SJ
-/2fjmr3e3x640t9eaqzn2IdQqV9dxjk6AgW/ym1Rq712LAyU+iETYU9zSsRDKdr1
-z1o7Zm6eCXgOVw85nGxdCBwAxzq3JVev5qF6VgMHLUwyUu5NeXFTrUWBil0BB5Or
-6kKCNEVZUWjtacs4EC+03QrAKaEJEyzsMRi2D25X3DALz4hHa5mOhZL1VGeUMlT/
-uvr388oSZfpahC/r5M7GZar+HH+ykz+7g7/qXGTmFeB7cLob8Of3O4MTG46gtT2B
-jFOO47Rg58jN2DYkjQMihZYU6z+R8ZopWR7Lde576XnhBUJYfJna9evT/EKYrPBa
-BCczWGyrCC9NvGutN7Oyv3r/nYd8s1chxyR93U3zTBeWGoLlKV1bRgbY6dEV+I4p
-w6J8p/2HqjrmzAfMLEpogf6u5wxY24ms7d+4Z3wPjmJT3na5l11dywXif8CG/ogN
-LaEsTgEbXyqjE7XxL8yt
-=Vw+s
------END PGP SIGNATURE-----
---=-=-=--
+Thanks,
+//richard
