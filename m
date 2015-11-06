@@ -1,25 +1,20 @@
-MIME-Version: 1.0
-In-Reply-To: <20151030175145.GF13239@google.com>
-References: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
- <20151029162908.GA13275@localhost>
- <CACRpkdYS5Jf8UC2K0bNdEQZDjTeZZx44Uu-kkof+9E=4Ny0oDg@mail.gmail.com>
- <20151030175145.GF13239@google.com>
-From: Rob Herring <robh@kernel.org>
-Date: Fri, 6 Nov 2015 08:13:13 -0600
-Message-ID: <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mtd: create a partition type device tree binding
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZuhoB-0001MH-7k
+ for linux-mtd@lists.infradead.org; Fri, 06 Nov 2015 14:16:04 +0000
+Date: Fri, 6 Nov 2015 06:15:37 -0800
+From: Guenter Roeck <linux@roeck-us.net>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Liviu Dudau <Liviu.Dudau@arm.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>
-Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ linux-cris-kernel@axis.com, Jesper Nilsson <jespern@axis.com>
+Subject: Re: [PATCH] mtd: don't WARN about overloaded users of
+ mtd->reboot_notifier.notifier_call
+Message-ID: <20151106141537.GA25969@roeck-us.net>
+References: <1446598913-133086-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1446598913-133086-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,34 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 30, 2015 at 12:51 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Fri, Oct 30, 2015 at 03:00:57PM +0100, Linus Walleij wrote:
->> On Thu, Oct 29, 2015 at 5:29 PM, Brian Norris
->> <computersforpeace@gmail.com> wrote:
->>
->> >> +Required properties:
->> >> +- partition-type : the type of partition. Only one type can be specified.
->> >
->> > You're supporting this as a list property (for future expansion,
->> > presumably), so I can only assume the "only one type" is referring to
->> > the number of different parsers available currently, not the behavior of
->> > the property itself?
->>
->> I was thinking that it would not be a list actually.
->>
->> The reason being that if you're anyways going to the trouble of
->> specifying exactly what partition type is going to be used, you're
->> not really interested in specifying a few different ones, you know
->> exactly what type it is going to be.
->
-> OK, that makes sense. I think it's still *possible* that a board might
-> have the option of more than one partition parser, and so they might
-> just include both in the DTS, but that seems unlikely and so it makes
-> sense not to (over)engineer for it before it's needed. Anyway, your
-> binding can easily be expanded in the future if needed.
+On Tue, Nov 03, 2015 at 05:01:53PM -0800, Brian Norris wrote:
+> There are multiple types of users of mtd->reboot_notifier.notifier_call:
+> 
+> (1) A while back, the cfi_cmdset_000{1,2} chip drivers implemented a
+> reboot notifier to (on a best effort basis) attempt to reset their flash
+> chips before rebooting.
+> 
+> (2) More recently, we implemented a common _reboot() hook so that MTD
+> drivers (particularly, NAND flash) could better halt I/O operations
+> without having to reimplement the same notifier boilerplate.
+> 
+> Currently, the WARN_ONCE() condition here was written to handle (2), but
+> at the same time it mis-diagnosed case (1) as an already-registered MTD.
+> Let's fix this by having the WARN_ONCE() condition better imitate the
+> condition that immediately follows it. (Wow, I don't know how I missed
+> that one.)
+> 
+> (Side note: Unfortunately, we can't yet combine the reboot notifier code
+> for (1) and (2) with a patch like [1], because some users of (1) also
+> use mtdconcat, and so the mtd_info struct from cfi_cmdset_000{1,2} won't
+> actually get registered with mtdcore, and therefore their reboot
+> notifier won't get registered.)
+> 
+> [1] http://patchwork.ozlabs.org/patch/417981/
+> 
+> Suggested-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Jesper Nilsson <jespern@axis.com>
+> Cc: linux-cris-kernel@axis.com
 
-Since we now have partitions contained in a sub node, how about using
-compatible for that sub node instead.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Rob
+> ---
+> This is probably a 4.4 candidate
+> 
+>  drivers/mtd/mtdcore.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index b1eea48c501d..a91cee90aef9 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -616,7 +616,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+>  	 * does cause problems with parse_mtd_partitions() above (e.g.,
+>  	 * cmdlineparts will register partitions more than once).
+>  	 */
+> -	WARN_ONCE(mtd->reboot_notifier.notifier_call, "MTD already registered\n");
+> +	WARN_ONCE(mtd->_reboot && mtd->reboot_notifier.notifier_call,
+> +		  "MTD already registered\n");
+>  	if (mtd->_reboot && !mtd->reboot_notifier.notifier_call) {
+>  		mtd->reboot_notifier.notifier_call = mtd_reboot_notifier;
+>  		register_reboot_notifier(&mtd->reboot_notifier);
+> -- 
+> 2.6.0.rc2.230.g3dd15c0
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
