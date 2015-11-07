@@ -1,23 +1,19 @@
-Received: from mail-bn1on0063.outbound.protection.outlook.com ([157.56.110.63]
- helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zv0Tw-0004do-FT
- for linux-mtd@lists.infradead.org; Sat, 07 Nov 2015 10:12:25 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "markmarshall14@gmail.com" <markmarshall14@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: Add locking to
- cfi_cmdset_001:do_getlockstatus_oneblock
-Date: Sat, 7 Nov 2015 10:11:39 +0000
-Message-ID: <1446891117.21216.223.camel@infinera.com>
-References: <563CAFD7.7060803@gmail.com>
-In-Reply-To: <563CAFD7.7060803@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-15"
-Content-ID: <2B47CBCDD8B6B64CA42F816EEFA2438C@infinera.com>
-Content-Transfer-Encoding: quoted-printable
+ id 1Zv0pp-0006E3-QA
+ for linux-mtd@lists.infradead.org; Sat, 07 Nov 2015 10:35:03 +0000
+Subject: Re: [PATCH v4] ubifs: make ubifs_[get|set]xattr atomic
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, dedekind1@gmail.com
+References: <1439872716-4810-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1439887431.31419.110.camel@gmail.com> <563D7FB8.60600@cn.fujitsu.com>
+Cc: linux-mtd@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <563DD3B8.3080908@nod.at>
+Date: Sat, 7 Nov 2015 11:34:32 +0100
 MIME-Version: 1.0
+In-Reply-To: <563D7FB8.60600@cn.fujitsu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2015-11-06 at 14:49 +0100, Mark Marshall wrote:
-> The function (do_getlockstatus_oneblock) switches the flash out of
-> array-read mode and into query mode.  It should not run in parallel to
-> another function that uses array-read mode.  We therefore need to
-> acquire the chip mutex and call get_chip(..., FL_JEDEC_QUERY).
->=20
-Hmm, this mail has NL breaks in it for long lines and won't apply.
-Is it on my end or yours?
+Am 07.11.2015 um 05:36 schrieb Dongsheng Yang:
+> On 08/18/2015 04:43 PM, Artem Bityutskiy wrote:
+>> On Tue, 2015-08-18 at 12:38 +0800, Dongsheng Yang wrote:
+>>> This commit make the ubifs_[get|set]xattr protected by ui_mutex.
+>>>
+>>> Originally, there is a possibility that ubifs_getxattr to get
+>>> a wrong value.
+>>>
+>>>    P1                                  P2
+>>> ----------                      ----------
+>>> ubifs_getxattr                      ubifs_setxattr
+>>>                     - kfree()
+>>> - memcpy()
+>>>                     - kmemdup()
+>>>
+>>> Then ubifs_getxattr() would get a non-sense data. To solve this
+>>> problem, this commit make the xattr of ubifs_inode updated in
+>>> atomic.
+>>
+>> Picked this one, thanks!
+> 
+> Hi Artem and Richard,
+>     I did not find this one in linux-ubifs.git, is that
+> planed for 4.4?
 
->  drivers/mtd/chips/cfi_cmdset_0001.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->=20
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c
-> b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 286b97a..d675efb 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -2051,13 +2051,32 @@ static int __xipram
-> do_getlockstatus_oneblock(struct map_info *map,
->  {
->  > 	> struct cfi_private *cfi =3D map->fldrv_priv;
->  > 	> int status, ofs_factor =3D cfi->interleave * cfi->device_type;
-> +> 	> int ret;
->=20
->  > 	> adr +=3D chip->start;
-> +
-> +> 	> mutex_lock(&chip->mutex);
-> +> 	> ret =3D get_chip(map, chip, adr, FL_JEDEC_QUERY);
-> +> 	> if (ret) {
-> +> 	> 	> mutex_unlock(&chip->mutex);
-> +> 	> 	> return ret;
-> +> 	> }
-> +
-> +> 	> /* let's ensure we're not reading back cached data from array mode =
-*/
-> +> 	> INVALIDATE_CACHED_RANGE(map, adr+(2*ofs_factor), 1);
-> +
->  > 	> xip_disable(map, chip, adr+(2*ofs_factor));
->  > 	> map_write(map, CMD(0x90), adr+(2*ofs_factor));
->  > 	> chip->state =3D FL_JEDEC_QUERY;
->  > 	> status =3D cfi_read_query(map, adr+(2*ofs_factor));
->  > 	> xip_enable(map, chip, 0);
-> +
-> +> 	> /* then ensure we don't keep query data in the cache */
-> +> 	> INVALIDATE_CACHED_RANGE(map, adr+(2*ofs_factor), 1);
-> +
-> +> 	> put_chip(map, chip, adr);
-> +> 	> mutex_unlock(&chip->mutex);
-> +
->  > 	> return status;
->  }
->=20
+Hmm, it should. Artem, forgot to push?
+Anyway, I've added it now to linux-ubifs.git master.
+
+Thanks,
+//richard
