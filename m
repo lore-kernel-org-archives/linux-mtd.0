@@ -1,27 +1,23 @@
-Date: Mon, 9 Nov 2015 10:39:22 -0600
-From: Rob Herring <robh@kernel.org>
-To: Bayi Cheng <bayi.cheng@mediatek.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com,
- jteki@openedev.com, ezequiel@vanguardiasur.com.ar
-Subject: Re: [PATCH v6 1/3] doc: dt: add documentation for Mediatek spi-nor
- controller
-Message-ID: <20151109163922.GA13578@rob-hp-laptop>
-References: <1446824889-16144-1-git-send-email-bayi.cheng@mediatek.com>
- <1446824889-16144-2-git-send-email-bayi.cheng@mediatek.com>
+Received: from smtp.transmode.se ([31.15.61.139])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZvqOQ-0003bG-EZ
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 17:38:12 +0000
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: "markmarshall14@gmail.com" <markmarshall14@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: Add locking to
+ cfi_cmdset_001:do_getlockstatus_oneblock
+Date: Mon, 9 Nov 2015 17:37:41 +0000
+Message-ID: <1447090660.21216.276.camel@transmode.se>
+References: <563CAFD7.7060803@gmail.com>
+ <1446891117.21216.223.camel@infinera.com> <563E729C.1010905@gmail.com>
+In-Reply-To: <563E729C.1010905@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-15"
+Content-ID: <2F597D7446379045AB056EAF8F5D88F2@transmode.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1446824889-16144-2-git-send-email-bayi.cheng@mediatek.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,66 +27,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 06, 2015 at 11:48:07PM +0800, Bayi Cheng wrote:
-> Add device tree binding documentation for serial flash with
-> Mediatek serial flash controller
-> 
-> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+On Sat, 2015-11-07 at 22:52 +0100, Mark Marshall wrote:
+>=20
+> On 07/11/15 11:11, Joakim Tjernlund wrote:
+> > On Fri, 2015-11-06 at 14:49 +0100, Mark Marshall wrote:
+> > > The function (do_getlockstatus_oneblock) switches the flash out of
+> > > array-read mode and into query mode.  It should not run in parallel t=
+o
+> > > another function that uses array-read mode.  We therefore need to
+> > > acquire the chip mutex and call get_chip(..., FL_JEDEC_QUERY).
+> > >=20
+> > Hmm, this mail has NL breaks in it for long lines and won't apply.
+> > Is it on my end or yours?
+> >=20
+>=20
+> Sorry, it was on my end, here it is again.
+>=20
+> From 49a50d75c7f4eed7a367d35f11afcdbd4573d193 Mon Sep 17 00:00:00 2001
+> From: Mark Marshall <mark.marshall@omicron.at>
+> Date: Fri, 6 Nov 2015 14:09:49 +0100
+> Subject: [PATCH] mtd: Add locking to cfi_cmdset_001:do_getlockstatus_oneb=
+lock
+>=20
+> The function (do_getlockstatus_oneblock) switches the flash out of
+> array-read mode and into query mode.  It should not run in parallel to
+> another function that uses array-read mode.  We therefore need to
+> acquire the chip mutex and call get_chip(..., FL_JEDEC_QUERY).
+>=20
+> I also assume that we should invalidate the cache in the same way that
+> we do for do_otp_read.
+>=20
+> Signed-off-by: Mark Marshall <Mark.Marshall@omicron.at>
 
-Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Joakim Tjernlund <joakim.tjernlund@transmode.se>
 
 > ---
->  .../devicetree/bindings/mtd/mtk-quadspi.txt        | 41 ++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> new file mode 100644
-> index 0000000..866b492
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
-> @@ -0,0 +1,41 @@
-> +* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
+
+I tested and reviewed this patch.
+Unfortunately it didn't fix our problem but I see now that we have a differ=
+ent bug.
+
+ Jocke
+
+>=20
+> Hi all,
+>=20
+> We have had a device in production (and operation) for a long time
+> running Linux and using a CFI NOR flash chip.  We have recently
+> started to get devices come back from the field with strange errors in
+> the JFFS2 file system that is on this flash.  It appeared that blocks
+> of files on the image were being dropped (not flash blocks, just 4K
+> sections from the middle of the files were being replaced with 0's).
+>=20
+> After some debugging I found that sometimes, when the JFFS2 FS was
+> reading the JFFS2 inode block it would get an CRC error.  After adding
+> some debug code I could see that in the error cases the "second half"
+> of the read data was replaced with a fixed repeating pattern, and that
+> this pattern was part of the CFI "QRY" data (It contained the flash
+> manufacturer and device ID's).
+>=20
+> This led me to think that maybe the problem was that some part of the
+> MTD code was switching the device out of the normal "array-read" mode
+> and into the query mode.  After looking through the mtd code I found
+> that the function 'do_getlockstatus_oneblock' does switch the mode of
+> the flash without taking the chip mutex.  Adding code to take the
+> mutex has fixed our problem.
+>=20
+> I am slightly surprised that no one else has seen this bug - the only
+> thing I can think of is that reading the lock status of the flash is
+> not something that happens in normal operation very often?  We have a
+> process on the device that generates a hardware check report at boot
+> up, and one of the things that it does is report on the 'locked'
+> status of the flash.  This is always running while the JFFS2 code is
+> performing it's initial scan.
+>=20
+> The bug is fairly easy to reproduce if you have a system with the
+> correct type of flash.  In one terminal run something like:
+>=20
+>  while true ; do ( hd -n 65536 /dev/mtd0 | md5sum ) ; done
+>=20
+> And in a second terminal run a program or utility that will check the
+> lock status of the flash (mtdinfo should work).  Assuming nothing else
+> is writing to the flash partition mtd0 the md5sum will remain
+> constant.  When the bug bites you can see the md5sum change (but then
+> recover).
+>=20
+> Best Regards,
+>=20
+> Mark Marshall
+>=20
+> (mark dot marshall at omicron dot at)
+>=20
+>  drivers/mtd/chips/cfi_cmdset_0001.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>=20
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_=
+cmdset_0001.c
+> index 286b97a..d675efb 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> @@ -2051,13 +2051,32 @@ static int __xipram do_getlockstatus_oneblock(str=
+uct map_info *map,
+>  {
+>  	struct cfi_private *cfi =3D map->fldrv_priv;
+>  	int status, ofs_factor =3D cfi->interleave * cfi->device_type;
+> +	int ret;
+> =20
+>  	adr +=3D chip->start;
 > +
-> +Required properties:
-> +- compatible: 	  should be "mediatek,mt8173-nor";
-> +- reg: 		  physical base address and length of the controller's register
-> +- clocks: 	  the phandle of the clock needed by the nor controller
-> +- clock-names: 	  the name of the clocks
-> +		  the clocks needed "spi" and "sf". "spi" is used for spi bus,
-> +		  and "sf" is used for controller, these are the clocks witch
-> +		  hardware needs to enabling nor flash and nor flash controller.
-> +		  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
-> +- #address-cells: should be <1>
-> +- #size-cells:	  should be <0>
+> +	mutex_lock(&chip->mutex);
+> +	ret =3D get_chip(map, chip, adr, FL_JEDEC_QUERY);
+> +	if (ret) {
+> +		mutex_unlock(&chip->mutex);
+> +		return ret;
+> +	}
 > +
-> +The SPI Flash must be a child of the nor_flash node and must have a
-> +compatible property.
+> +	/* let's ensure we're not reading back cached data from array mode */
+> +	INVALIDATE_CACHED_RANGE(map, adr+(2*ofs_factor), 1);
 > +
-> +Required properties:
-> +- compatible:	  May include a device-specific string consisting of the manufacturer
-> +		  and name of the chip. Must also include "jedec,spi-nor" for any
-> +		  SPI NOR flash that can be identified by the JEDEC READ ID opcode (0x9F).
-> +- reg :		  Chip-Select number
+>  	xip_disable(map, chip, adr+(2*ofs_factor));
+>  	map_write(map, CMD(0x90), adr+(2*ofs_factor));
+>  	chip->state =3D FL_JEDEC_QUERY;
+>  	status =3D cfi_read_query(map, adr+(2*ofs_factor));
+>  	xip_enable(map, chip, 0);
 > +
-> +Example:
+> +	/* then ensure we don't keep query data in the cache */
+> +	INVALIDATE_CACHED_RANGE(map, adr+(2*ofs_factor), 1);
 > +
-> +nor_flash: spi@1100d000 {
-> +	compatible = "mediatek,mt8173-nor";
-> +	reg = <0 0x1100d000 0 0xe0>;
-> +	clocks = <&pericfg CLK_PERI_SPI>,
-> +		 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
-> +	clock-names = "spi", "sf";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	status = "disabled";
+> +	put_chip(map, chip, adr);
+> +	mutex_unlock(&chip->mutex);
 > +
-> +	flash@0 {
-> +		compatible = "jedec,spi-nor";
-> +		reg = <0>;
-> +	};
-> +};
-> +
-> -- 
-> 1.8.1.1.dirty
-> 
+>  	return status;
+>  }
+> =20
