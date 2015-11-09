@@ -1,29 +1,28 @@
-Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zz88w-0007hD-MH
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 19:11:47 +0000
-Date: Wed, 18 Nov 2015 14:10:45 -0500
-From: Theodore Ts'o <tytso@mit.edu>
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: Al Viro <viro@ZenIV.linux.org.uk>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/7] User namespace mount updates
-Message-ID: <20151118191045.GB3434@thunk.org>
-References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
- <20151117170556.GV22011@ZenIV.linux.org.uk>
- <20151117172551.GA108807@ubuntu-hedt>
- <20151117175506.GW22011@ZenIV.linux.org.uk>
- <20151117183444.GB108807@ubuntu-hedt>
+Received: from hm1831-12.locaweb.com.br ([189.126.112.32])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZvnJu-00053a-El
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 14:21:19 +0000
+Received: from mcbain0008.correio.biz (189.126.112.84) by
+ hm1831-n-113.locaweb.com.br id h82lts15cto2 for
+ <linux-mtd@lists.infradead.org>;
+ Mon, 9 Nov 2015 12:04:01 -0200 (envelope-from <ibrahim.neto@writesys.com.br>)
+Received: from bart0123.correio.pw (unknown [10.30.172.245])
+ by mcbain0008.correio.biz (Postfix) with ESMTP id DF3CA23FBF9
+ for <linux-mtd@lists.infradead.org>; Mon,  9 Nov 2015 12:04:01 -0200 (BRST)
+Received: from [10.185.5.13] (unknown [189.39.5.1])
+ (Authenticated sender: ibrahim.neto@writesys.com.br)
+ by bart0123.correio.pw (Postfix) with ESMTPSA id 61CA176863ADC
+ for <linux-mtd@lists.infradead.org>; Mon,  9 Nov 2015 12:04:01 -0200 (BRST)
+To: linux-mtd@lists.infradead.org
+References: <1315747066.18731.53.camel@sauron>
+Subject: can't mount ubifs after resizing with ubirsvol
+From: Ibrahim Mattus Neto <ibrahim.neto@writesys.com.br>
+Message-ID: <5640A7D0.6080104@writesys.com.br>
+Date: Mon, 9 Nov 2015 12:04:00 -0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151117183444.GB108807@ubuntu-hedt>
+In-Reply-To: <1315747066.18731.53.camel@sauron>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,40 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 17, 2015 at 12:34:44PM -0600, Seth Forshee wrote:
-> On Tue, Nov 17, 2015 at 05:55:06PM +0000, Al Viro wrote:
-> > On Tue, Nov 17, 2015 at 11:25:51AM -0600, Seth Forshee wrote:
-> > 
-> > > Shortly after that I plan to follow with support for ext4. I've been
-> > > fuzzing ext4 for a while now and it has held up well, and I'm currently
-> > > working on hand-crafted attacks. Ted has commented privately (to others,
-> > > not to me personally) that he will fix bugs for such attacks, though I
-> > > haven't seen any public comments to that effect.
-> > 
-> > _Static_ attacks, or change-image-under-mounted-fs attacks?
-> 
-> Right now only static attacks, change-image-under-mounted-fs attacks
-> will be next.
+Hi!
 
-I will fix bugs about static attacks.  That is, it's interesting to me
-that a buggy file system (no matter how it is created), not cause the
-kernel to crash --- and privilege escalation attacks tend to be
-strongly related to those bugs where we're not doing strong enough
-checking.
+I am having problems resizing a ubifs volume, I used the command 
+ubirsvol (version: 1.5.1) but when I try mounting it I get the following 
+error:
 
-Protecting against a malicious user which changes the image under the
-file system is a whole other kettle of fish.  I am not at all user you
-can do this without completely sacrificing performance or making the
-code impossible to maintain.  So my comments do *not* extend to
-protecting against a malicious user who is changing the block device
-underneath the kernel.
+[ 8840.450000] UBIFS error (ubi0:1 pid 720): validate_sb: bad LEB count: 
+413 in superblock, 331 on UBI volume, 19 minimum required
+[ 8840.460000] UBIFS error (ubi0:1 pid 720): validate_sb: bad 
+superblock, error 1
+[ 8840.470000]  magic          0x6101831
+[ 8840.480000]  crc            0x539e8e1c
+[ 8840.480000]  node_type      6 (superblock node)
+[ 8840.480000]  group_type     0 (no node group)
+[ 8840.490000]  sqnum          1
+[ 8840.490000]  len            4096
+[ 8840.490000]  key_hash       0 (R5)
+[ 8840.500000]  key_fmt        0 (simple)
+[ 8840.500000]  flags          0x0
+[ 8840.500000]  big_lpt        0
+[ 8840.510000]  space_fixup    0
+[ 8840.510000]  min_io_size    2048
+[ 8840.510000]  leb_size       126976
+[ 8840.520000]  leb_cnt        413
+[ 8840.520000]  max_leb_cnt    413
+[ 8840.520000]  max_bud_bytes  2158592
+[ 8840.530000]  log_lebs       3
+[ 8840.530000]  lpt_lebs       2
+[ 8840.530000]  orph_lebs      2
+[ 8840.540000]  jhead_cnt      1
+[ 8840.540000]  fanout         8
+[ 8840.540000]  lsave_cnt      256
+[ 8840.540000]  default_compr  1
+[ 8840.550000]  rp_size        2558566
+[ 8840.550000]  rp_uid         0
+[ 8840.550000]  rp_gid         0
+[ 8840.560000]  fmt_version    4
+[ 8840.560000]  time_gran      1000000000
+[ 8840.560000]  UUID           B1F16610-EEDF-471F-B5AD-279F21C00729
+mount: mounting ubi0:recover on /recover failed: Invalid argument
 
-If you want to submit patches to make the kernel more robust against
-these attacks, I'm certainly willing to look at the patches.  But I'm
-certainly not guaranteeing that they will go in, and I'm certainly not
-promising to fix all vulnerabilities that you might find that are
-caused by a malicious block device.  Sorry, that's too much buying a
-pig in a poke....
+I was reading through the archives and found a similar issue but no 
+solution, is there a way to shrink a volume?
 
-						- Ted
-				
+I was thinking about changing the LEB count inside the superblock but I 
+didn't know how to (and thought it would be too risky)
+
+Thanks in advance,
+Ibrahim
