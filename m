@@ -1,23 +1,18 @@
-Received: from smtp.transmode.se ([31.15.61.139])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZvqOQ-0003bG-EZ
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 17:38:12 +0000
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: "markmarshall14@gmail.com" <markmarshall14@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: Add locking to
- cfi_cmdset_001:do_getlockstatus_oneblock
-Date: Mon, 9 Nov 2015 17:37:41 +0000
-Message-ID: <1447090660.21216.276.camel@transmode.se>
-References: <563CAFD7.7060803@gmail.com>
- <1446891117.21216.223.camel@infinera.com> <563E729C.1010905@gmail.com>
-In-Reply-To: <563E729C.1010905@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-15"
-Content-ID: <2F597D7446379045AB056EAF8F5D88F2@transmode.com>
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2015102618531107256082@top-vision.cn>
+References: <2015102618531107256082@top-vision.cn>
+To: wangzaiwei <wangzaiwei@top-vision.cn>
+Cc: 'Li Jiaxin' <lijiaxin@top-vision.cn>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-mtd" <linux-mtd-bounces@lists.infradead.org>,
+ lizhenwei <lizhenwei@top-vision.cn>, "Deng Chao" <deng.chao1@zte.com.cn>,
+ "Ming Liu" <liu.ming50@gmail.com>,
+ "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
 MIME-Version: 1.0
+Subject: Re: Another JFFS2 deadlock, kernel 3.4.11
+From: Thomas.Betker@rohde-schwarz.com
+Message-ID: <OF29DE4023.3FDE364E-ONC1257EF8.004B3067-C1257EF8.00613BF0@rohde-schwarz.com>
+Date: Mon, 9 Nov 2015 18:42:01 +0100
+Content-Type: text/plain; charset="ISO-2022-JP"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,136 +22,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2015-11-07 at 22:52 +0100, Mark Marshall wrote:
->=20
-> On 07/11/15 11:11, Joakim Tjernlund wrote:
-> > On Fri, 2015-11-06 at 14:49 +0100, Mark Marshall wrote:
-> > > The function (do_getlockstatus_oneblock) switches the flash out of
-> > > array-read mode and into query mode.  It should not run in parallel t=
-o
-> > > another function that uses array-read mode.  We therefore need to
-> > > acquire the chip mutex and call get_chip(..., FL_JEDEC_QUERY).
-> > >=20
-> > Hmm, this mail has NL breaks in it for long lines and won't apply.
-> > Is it on my end or yours?
-> >=20
->=20
-> Sorry, it was on my end, here it is again.
->=20
-> From 49a50d75c7f4eed7a367d35f11afcdbd4573d193 Mon Sep 17 00:00:00 2001
-> From: Mark Marshall <mark.marshall@omicron.at>
-> Date: Fri, 6 Nov 2015 14:09:49 +0100
-> Subject: [PATCH] mtd: Add locking to cfi_cmdset_001:do_getlockstatus_oneb=
-lock
->=20
-> The function (do_getlockstatus_oneblock) switches the flash out of
-> array-read mode and into query mode.  It should not run in parallel to
-> another function that uses array-read mode.  We therefore need to
-> acquire the chip mutex and call get_chip(..., FL_JEDEC_QUERY).
->=20
-> I also assume that we should invalidate the cache in the same way that
-> we do for do_otp_read.
->=20
-> Signed-off-by: Mark Marshall <Mark.Marshall@omicron.at>
+Hello wangzaiwei:
 
-Acked-by: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+> So we patched our kernel refer to 
+> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
+> SHA-1: 5ffd3412ae5536a4c57469cb8ea31887121dcb2e
+> * jffs2: Fix lock acquisition order bug in jffs2_write_begin
+> 
+> But these days, we encountered another deadlock . 
+> our process stucked at system call 'unlink()' when we delete a file.
+> 
+> Enclosed scripts can be used to reproduce this new issue.
 
-> ---
+[snip]
 
-I tested and reviewed this patch.
-Unfortunately it didn't fix our problem but I see now that we have a differ=
-ent bug.
+> about 10 minutes later, these test scripts will be blocked in state 'D'
+> 
+> We parsed this issue again. 
+> for [sync_supers]
+> jffs2_garbage_collect_live
+>     mutex_lock(&f->sem)                         (A)
+>     jffs2_garbage_collect_dnode
+>         jffs2_gc_fetch_page
+>             read_cache_page_async
+>                 do_read_cache_page
+>                     lock_page(page)             (B)
+> For other tasks
+>    generic_file_aio_read 
+>       do_generic_file_read 
+>          lock_page_killable(page);                (B)
+>          mapping->a_ops->readpage  （jffs2_readpage ） 
+>             mutex_lock(&f->sem)                  (A)
+> 
+> We noticed that jffs2_readpage always be called with lock_page(page) 
+hold,
+> but most of other functions in jffs2 module call mutex_lock(&f->sem) 
+first,
+> lock_page(page) second. It is the same in latest kernel:
+> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
+> Is this logical? Or is it just my understanding wrong?
 
- Jocke
+This looks suspiciously like a deadlock reported by Ming Liu 
+(22-Aug-2013). This deadlock, and another one reported by Deng Chao 
+(23-Jul-2013), were introduced by my patch, "jffs2: Fix lock acquisition 
+order bug in jffs2_write_begin".
 
->=20
-> Hi all,
->=20
-> We have had a device in production (and operation) for a long time
-> running Linux and using a CFI NOR flash chip.  We have recently
-> started to get devices come back from the field with strange errors in
-> the JFFS2 file system that is on this flash.  It appeared that blocks
-> of files on the image were being dropped (not flash blocks, just 4K
-> sections from the middle of the files were being replaced with 0's).
->=20
-> After some debugging I found that sometimes, when the JFFS2 FS was
-> reading the JFFS2 inode block it would get an CRC error.  After adding
-> some debug code I could see that in the error cases the "second half"
-> of the read data was replaced with a fixed repeating pattern, and that
-> this pattern was part of the CFI "QRY" data (It contained the flash
-> manufacturer and device ID's).
->=20
-> This led me to think that maybe the problem was that some part of the
-> MTD code was switching the device out of the normal "array-read" mode
-> and into the query mode.  After looking through the mtd code I found
-> that the function 'do_getlockstatus_oneblock' does switch the mode of
-> the flash without taking the chip mutex.  Adding code to take the
-> mutex has fixed our problem.
->=20
-> I am slightly surprised that no one else has seen this bug - the only
-> thing I can think of is that reading the lock status of the flash is
-> not something that happens in normal operation very often?  We have a
-> process on the device that generates a hardware check report at boot
-> up, and one of the things that it does is report on the 'locked'
-> status of the flash.  This is always running while the JFFS2 code is
-> performing it's initial scan.
->=20
-> The bug is fairly easy to reproduce if you have a system with the
-> correct type of flash.  In one terminal run something like:
->=20
->  while true ; do ( hd -n 65536 /dev/mtd0 | md5sum ) ; done
->=20
-> And in a second terminal run a program or utility that will check the
-> lock status of the flash (mtdinfo should work).  Assuming nothing else
-> is writing to the flash partition mtd0 the md5sum will remain
-> constant.  When the bug bites you can see the md5sum change (but then
-> recover).
->=20
-> Best Regards,
->=20
-> Mark Marshall
->=20
-> (mark dot marshall at omicron dot at)
->=20
->  drivers/mtd/chips/cfi_cmdset_0001.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->=20
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_=
-cmdset_0001.c
-> index 286b97a..d675efb 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -2051,13 +2051,32 @@ static int __xipram do_getlockstatus_oneblock(str=
-uct map_info *map,
->  {
->  	struct cfi_private *cfi =3D map->fldrv_priv;
->  	int status, ofs_factor =3D cfi->interleave * cfi->device_type;
-> +	int ret;
-> =20
->  	adr +=3D chip->start;
-> +
-> +	mutex_lock(&chip->mutex);
-> +	ret =3D get_chip(map, chip, adr, FL_JEDEC_QUERY);
-> +	if (ret) {
-> +		mutex_unlock(&chip->mutex);
-> +		return ret;
-> +	}
-> +
-> +	/* let's ensure we're not reading back cached data from array mode */
-> +	INVALIDATE_CACHED_RANGE(map, adr+(2*ofs_factor), 1);
-> +
->  	xip_disable(map, chip, adr+(2*ofs_factor));
->  	map_write(map, CMD(0x90), adr+(2*ofs_factor));
->  	chip->state =3D FL_JEDEC_QUERY;
->  	status =3D cfi_read_query(map, adr+(2*ofs_factor));
->  	xip_enable(map, chip, 0);
-> +
-> +	/* then ensure we don't keep query data in the cache */
-> +	INVALIDATE_CACHED_RANGE(map, adr+(2*ofs_factor), 1);
-> +
-> +	put_chip(map, chip, adr);
-> +	mutex_unlock(&chip->mutex);
-> +
->  	return status;
->  }
-> =20
+Deng Chao has created a patch which a) removes the deadlock I wanted to 
+get rid of originally, without b) introducing the new deadlocks; see 
+http://lists.infradead.org/pipermail/linux-mtd/2013-August/048352.html. 
+However, his patch modifies mm/filemap.c, and we were hoping to find a 
+more light-weight solution -- which never came to be.
+
+I do use his patch here around, though, and so far, it has worked fine. I 
+will try to run your test scripts on one of our devices, and see if it 
+holds up.
+
+Anyway, I think I should revert my patch (and should have done so a long 
+time ago) even if this means that my original deadlock will come back. 
+This is neccessary in any case to clear the way for Deng Chao's patch, or 
+perhaps for some other solution. Joakim, what's your take on this?
+
+Best regards,
+Thomas Betker
