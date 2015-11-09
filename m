@@ -1,22 +1,18 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zvfrz-0002FM-G1
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 06:24:00 +0000
-Received: by pabfh17 with SMTP id fh17so188817080pab.0
- for <linux-mtd@lists.infradead.org>; Sun, 08 Nov 2015 22:23:37 -0800 (PST)
-From: Saurabh Sengar <saurabh.truth@gmail.com>
-To: andy.shevchenko@gmail.com
-Cc: joern@lazybastard.org, dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Saurabh Sengar <saurabh.truth@gmail.com>
-Subject: [PATCH v2] mtd: phram: error handling
-Date: Mon,  9 Nov 2015 11:53:18 +0530
-Message-Id: <1447050198-20562-1-git-send-email-saurabh.truth@gmail.com>
-In-Reply-To: <CAHp75VeUie1VdWUgXfFD6XqU5t_9j-40papME3-8MUvjMh1iMw@mail.gmail.com>
-References: <CAHp75VeUie1VdWUgXfFD6XqU5t_9j-40papME3-8MUvjMh1iMw@mail.gmail.com>
+ id 1Zvh0j-0005Bv-Nx
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 07:37:07 +0000
+From: Wei Fang <fangwei1@huawei.com>
+Subject: Re: jffs2: Excess summary entries
+References: <OF1A12855F.4E78FEFE-ONC1257EF4.004CEFDC-C1257EF4.00663F07@rohde-schwarz.com>
+To: <Thomas.Betker@rohde-schwarz.com>
+CC: <linux-mtd@lists.infradead.org>
+Message-ID: <56404913.3060104@huawei.com>
+Date: Mon, 9 Nov 2015 15:19:47 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <OF1A12855F.4E78FEFE-ONC1257EF4.004CEFDC-C1257EF4.00663F07@rohde-schwarz.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +22,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-registering the device with NULL pointer can lead to crash,
-hence fixing it
+Hi Thomas,
 
-Signed-off-by: Saurabh Sengar <saurabh.truth@gmail.com>
----
-> Andy Shevchenko wrote:
-> Hmm… Why not just checking it before an register attempt? I think user
-> is in right to know as many problems as they have at one shot, with
-> your patch if there are two problems the user has to try twice.
-Yes, taken your feedback, fixing it here in v2 as you recommended
+On 2015/11/6 2:36, Thomas.Betker@rohde-schwarz.com wrote:
+> We ran into a problem with jffs2 where the filesystem became unusable 
+> after some specific MTD failures; summary was enabled, write buffering was 
+> disabled:
 
- drivers/mtd/devices/phram.c | 3 +++
- 1 file changed, 3 insertions(+)
+[snip...]
 
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index 8b66e52..46b7a8a 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -257,6 +257,9 @@ static int phram_setup(const char *val)
- 		parse_err("illegal device length\n");
- 	}
- 
-+	if(!name)
-+		return -EINVAL;
-+
- 	ret = register_device(name, start, len);
- 	if (!ret)
- 		pr_info("%s device: %#llx at %#llx\n", name, len, start);
--- 
-1.9.1
+> Here are the solutions I have considered so far:
+> 
+> The minimal solution would be to check *retlen == 0 in 
+> jffs2_flash_direct_writev() and jffs2_flash_direct_write() before running 
+> jffs2_sum_add_kvec().
+> 
+>         if (jffs2_sum_active() && *retlen) {
+>                 ...
+>                 res = jffs2_sum_add_kvec(...)
+>                 ...
+>         }
+> 
+> The general failure case, though, is (ret != 0 || *retlen != len), where 
+> 'ret' is the return code of mtd_writev(), and 'len' is the data size to be 
+> written. When write buffering is enabled, jffs2_flash_writev() in wbuf.c 
+> skips the summary entry in this case; perhaps we should do this in 
+> writev.c as well?
+> 
+>         if (jffs2_sum_active() && !ret && *retlen == len) {
+>                 ...
+>                 res = jffs2_sum_add_kvec(...)
+>                 ...
+>         }
+
+I prefer:
+	if (jffs2_sum_active() && *retlen == len) {
+		...
+		res = jffs2_sum_add_kvec(...)
+		...
+	}
+
+In the case that part of node has been written to flash, this whole node
+will be marked as dirty node, only in memory, not marked without
+JFFS2_NODE_ACCURATE on flash.
+
+If the summary is stored when *retlen != len, there are two cases:
+
+* In most case, another write with the same node info performs
+  successfully later, the node written partially before will be marked
+  as obsolete node when scan, and we won't read from it
+* This node is the newest node about this region, it will be treated
+  as normal node when scan, and we may read the data already corrupted.
+  Yet it won't break any rules of JFFS2 and lead to a muddle
+
+The node written partially will be treated as normal node in a full scan
+routine too, so I think we should mark this node as dirty on flash in
+the case that *retlen != len.
+
+Thanks,
+Wei
+
+> I ran some quick tests, simulating write failures, and it seems that 
+> adding the summary entry doesn't harm when *retlen != 0 [so the minimal 
+> solution would suffice]. This is because the calling function will reserve 
+> the node space, marking it as dirty, and there is no confusion about 
+> unchecked space.
+>
+> On the other hand, running the same quick tests _without_ adding the 
+> summary entry didn't seem to harm either [so the general solution would 
+> work as well]. It is entirely possible that I have overlooked something, 
+> though.
+> 
+> Any opinions on that? When in doubt, I would provide a patch for the 
+> minimal solution, changing as little as possible. However, it may make 
+> sense to go for the general solution to be consistent with write 
+> buffering.
+> 
+> Best regards,
+> Thomas Betker
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
