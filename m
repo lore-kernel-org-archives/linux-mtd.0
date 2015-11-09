@@ -1,25 +1,23 @@
-Received: from v094114.home.net.pl ([79.96.170.134])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zvtqq-0004ZK-M7
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 21:19:45 +0000
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
- Russell King <linux@arm.linux.org.uk>, linux-acpi@vger.kernel.org,
- drbd-user@lists.linbit.com, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Oleg Drokin <oleg.drokin@intel.com>,
- Andreas Dilger <andreas.dilger@intel.com>, codalist@coda.cs.cmu.edu,
- linux-mtd@lists.infradead.org, Jan Kara <jack@suse.com>,
- linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
- Tony Luck <tony.luck@intel.com>, Boris Petkov <bp@suse.de>
-Subject: Re: [PATCH] tree wide: Use kvfree() than conditional kfree()/vfree()
-Date: Mon, 09 Nov 2015 22:48:37 +0100
-Message-ID: <5253459.IxnqkcU2vL@vostro.rjw.lan>
-In-Reply-To: <1447070170-8512-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
-References: <1447070170-8512-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zvu7B-0005uQ-6M
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 21:36:37 +0000
+Date: Mon, 9 Nov 2015 22:36:13 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "Andrew E. Mileski" <andrewm@isoar.ca>, linux-mtd
+ <linux-mtd@lists.infradead.org>, Scott Branden <sbranden@broadcom.com>
+Subject: Re: Hang on reboot in nand_get_device()
+Message-ID: <20151109223613.1e83b256@bbrezillon>
+In-Reply-To: <20151109215508.7b14f5f3@bbrezillon>
+References: <55958F4C.1020002@isoar.ca> <20151106180052.GE12143@google.com>
+ <20151106195903.0d55d819@bbrezillon>
+ <20151109194651.GI12143@google.com>
+ <20151109215508.7b14f5f3@bbrezillon>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,21 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, November 09, 2015 08:56:10 PM Tetsuo Handa wrote:
-> There are many locations that do
-> 
->   if (memory_was_allocated_by_vmalloc)
->     vfree(ptr);
->   else
->     kfree(ptr);
-> 
-> but kvfree() can handle both kmalloc()ed memory and vmalloc()ed memory
-> using is_vmalloc_addr(). Unless callers have special reasons, we can
-> replace this branch with kvfree(). Please check and reply if you found
-> problems.
+Hi again,
 
-ACK for the ACPI changes (and CCing Tony and Boris for the heads-up as they
-are way more famailiar with the APEI code than I am).
+Just want to add that this discussion shouldn't prevent your fix from
+being applied. The main reason I'm arguing here is because I want to
+understand the rationale behind the current handling of FL_PM_SUSPENDED
+and FL_SHUTDOWN.
 
-Thanks,
-Rafael
+On Mon, 9 Nov 2015 21:55:08 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+
+> > > 
+> > > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > > index ceb68ca..812b8b1 100644
+> > > --- a/drivers/mtd/nand/nand_base.c
+> > > +++ b/drivers/mtd/nand/nand_base.c
+> > > @@ -830,6 +830,20 @@ nand_get_device(struct mtd_info *mtd, int new_state)
+> > >  retry:
+> > >         spin_lock(lock);
+> > >  
+> > > +       /* putting the NAND chip in shutdown state should always succeed. */
+> > > +       if (new_state == FL_SHUTDOWN) {
+> > > +               /*
+> > > +                * release the controller if the chip put in shutdown state
+> > > +                * is the current active device.
+> > > +                */
+> > > +               if (chip->controller->active == chip)
+> > > +                       chip->controller->active = NULL;
+> > > +
+> > > +               chip->state = new_state;
+> > > +               spin_unlock(lock);
+> > > +               return 0;
+> > > +       }
+> > > +
+> > >         /* Hardware controller shared among independent devices */
+> > >         if (!chip->controller->active)
+> > >                 chip->controller->active = chip;
+> > > 
+> > 
+> > This looks a lot more subtle and potentially wrong. What exactly is the
+> > rationale here? It appears you're kind of unlocking the controller (any
+> > other flash on the same controller can still go ahead) but at the same
+> > time forcing no further users of this particular flash.
+
+It's even worst: I'm not waiting for the chip to become ready, so I'm
+potentially re-introducing the bug Scott was trying to solve with his
+reboot notifier.
+
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
