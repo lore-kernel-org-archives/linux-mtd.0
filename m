@@ -1,25 +1,27 @@
-Received: from shards.monkeyblade.net ([2001:4f8:3:36:211:85ff:fe63:a549])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZvpHS-0006jJ-Ir
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 16:26:55 +0000
-Date: Mon, 09 Nov 2015 11:26:29 -0500 (EST)
-Message-Id: <20151109.112629.1860510744923009883.davem@davemloft.net>
-To: jack@suse.cz
-Cc: penguin-kernel@I-love.SAKURA.ne.jp, akpm@linux-foundation.org,
- linux-mm@kvack.org, linux@arm.linux.org.uk, linux-acpi@vger.kernel.org,
- drbd-user@lists.linbit.com, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, oleg.drokin@intel.com,
- andreas.dilger@intel.com, codalist@coda.cs.cmu.edu,
- linux-mtd@lists.infradead.org, jack@suse.com,
- linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] tree wide: Use kvfree() than conditional kfree()/vfree()
-From: David Miller <davem@davemloft.net>
-In-Reply-To: <20151109121126.GD11149@quack.suse.cz>
-References: <1447070170-8512-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
- <20151109121126.GD11149@quack.suse.cz>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Mon, 9 Nov 2015 10:39:22 -0600
+From: Rob Herring <robh@kernel.org>
+To: Bayi Cheng <bayi.cheng@mediatek.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Daniel Kurtz <djkurtz@chromium.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com,
+ jteki@openedev.com, ezequiel@vanguardiasur.com.ar
+Subject: Re: [PATCH v6 1/3] doc: dt: add documentation for Mediatek spi-nor
+ controller
+Message-ID: <20151109163922.GA13578@rob-hp-laptop>
+References: <1446824889-16144-1-git-send-email-bayi.cheng@mediatek.com>
+ <1446824889-16144-2-git-send-email-bayi.cheng@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1446824889-16144-2-git-send-email-bayi.cheng@mediatek.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,16 +31,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jan Kara <jack@suse.cz>
-Date: Mon, 9 Nov 2015 13:11:26 +0100
-
-> You can add
+On Fri, Nov 06, 2015 at 11:48:07PM +0800, Bayi Cheng wrote:
+> Add device tree binding documentation for serial flash with
+> Mediatek serial flash controller
 > 
-> Acked-by: Jan Kara <jack@suse.com>
+> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+
+Acked-by: Rob Herring <robh@kernel.org>
+
+> ---
+>  .../devicetree/bindings/mtd/mtk-quadspi.txt        | 41 ++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
 > 
-> for the UDF and fs/xattr.c parts.
-
-Please do not quote and entire large patch just to give an ACK.
-
-Just quote the minimum necessary context, which is usually just
-the commit message.
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> new file mode 100644
+> index 0000000..866b492
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> @@ -0,0 +1,41 @@
+> +* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
+> +
+> +Required properties:
+> +- compatible: 	  should be "mediatek,mt8173-nor";
+> +- reg: 		  physical base address and length of the controller's register
+> +- clocks: 	  the phandle of the clock needed by the nor controller
+> +- clock-names: 	  the name of the clocks
+> +		  the clocks needed "spi" and "sf". "spi" is used for spi bus,
+> +		  and "sf" is used for controller, these are the clocks witch
+> +		  hardware needs to enabling nor flash and nor flash controller.
+> +		  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
+> +- #address-cells: should be <1>
+> +- #size-cells:	  should be <0>
+> +
+> +The SPI Flash must be a child of the nor_flash node and must have a
+> +compatible property.
+> +
+> +Required properties:
+> +- compatible:	  May include a device-specific string consisting of the manufacturer
+> +		  and name of the chip. Must also include "jedec,spi-nor" for any
+> +		  SPI NOR flash that can be identified by the JEDEC READ ID opcode (0x9F).
+> +- reg :		  Chip-Select number
+> +
+> +Example:
+> +
+> +nor_flash: spi@1100d000 {
+> +	compatible = "mediatek,mt8173-nor";
+> +	reg = <0 0x1100d000 0 0xe0>;
+> +	clocks = <&pericfg CLK_PERI_SPI>,
+> +		 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
+> +	clock-names = "spi", "sf";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	status = "disabled";
+> +
+> +	flash@0 {
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0>;
+> +	};
+> +};
+> +
+> -- 
+> 1.8.1.1.dirty
+> 
