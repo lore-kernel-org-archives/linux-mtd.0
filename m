@@ -1,18 +1,21 @@
-In-Reply-To: <2015102618531107256082@top-vision.cn>
-References: <2015102618531107256082@top-vision.cn>
-To: wangzaiwei <wangzaiwei@top-vision.cn>
-Cc: 'Li Jiaxin' <lijiaxin@top-vision.cn>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-mtd" <linux-mtd-bounces@lists.infradead.org>,
- lizhenwei <lizhenwei@top-vision.cn>, "Deng Chao" <deng.chao1@zte.com.cn>,
- "Ming Liu" <liu.ming50@gmail.com>,
- "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
+Received: from 206-248-167-68.dsl.teksavvy.com ([206.248.167.68]
+ helo=mail.isoar.ca)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZvrQM-0004Ht-AN
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 18:44:15 +0000
+Message-ID: <5640E95D.5060405@isoar.ca>
+Date: Mon, 09 Nov 2015 13:43:41 -0500
+From: "Andrew E. Mileski" <andrewm@isoar.ca>
 MIME-Version: 1.0
-Subject: Re: Another JFFS2 deadlock, kernel 3.4.11
-From: Thomas.Betker@rohde-schwarz.com
-Message-ID: <OF29DE4023.3FDE364E-ONC1257EF8.004B3067-C1257EF8.00613BF0@rohde-schwarz.com>
-Date: Mon, 9 Nov 2015 18:42:01 +0100
-Content-Type: text/plain; charset="ISO-2022-JP"
+To: Brian Norris <computersforpeace@gmail.com>
+CC: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Scott Branden <sbranden@broadcom.com>
+Subject: Re: Hang on reboot in nand_get_device()
+References: <55958F4C.1020002@isoar.ca> <20151106180052.GE12143@google.com>
+In-Reply-To: <20151106180052.GE12143@google.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +25,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello wangzaiwei:
+On 2015-11-06 13:00, Brian Norris wrote:
+>
+> On Thu, Jul 02, 2015 at 03:21:48PM -0400, Andrew E. Mileski wrote:
+>> I'm experiencing a hang on reboot with a Freescale P1022 PowerPC system, with a
+>> dual chip-select NAND part (specified in the device tree as two
+>> separate devices), and kernel v4.0.6.
+>
+> Which driver?
 
-> So we patched our kernel refer to 
-> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
-> SHA-1: 5ffd3412ae5536a4c57469cb8ea31887121dcb2e
-> * jffs2: Fix lock acquisition order bug in jffs2_write_begin
-> 
-> But these days, we encountered another deadlock . 
-> our process stucked at system call 'unlink()' when we delete a file.
-> 
-> Enclosed scripts can be used to reproduce this new issue.
+Sorry, I wasn't specific enough:  fsl_elbc_nand.c
 
-[snip]
+Currently using the 4.2.0 Linux kernel version, and the problem persists.
 
-> about 10 minutes later, these test scripts will be blocked in state 'D'
-> 
-> We parsed this issue again. 
-> for [sync_supers]
-> jffs2_garbage_collect_live
->     mutex_lock(&f->sem)                         (A)
->     jffs2_garbage_collect_dnode
->         jffs2_gc_fetch_page
->             read_cache_page_async
->                 do_read_cache_page
->                     lock_page(page)             (B)
-> For other tasks
->    generic_file_aio_read 
->       do_generic_file_read 
->          lock_page_killable(page);                (B)
->          mapping->a_ops->readpage  （jffs2_readpage ） 
->             mutex_lock(&f->sem)                  (A)
-> 
-> We noticed that jffs2_readpage always be called with lock_page(page) 
-hold,
-> but most of other functions in jffs2 module call mutex_lock(&f->sem) 
-first,
-> lock_page(page) second. It is the same in latest kernel:
-> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
-> Is this logical? Or is it just my understanding wrong?
+I've actually made a small hack to it to enable software ECC, but it isn't fit 
+for distribution.
 
-This looks suspiciously like a deadlock reported by Ming Liu 
-(22-Aug-2013). This deadlock, and another one reported by Deng Chao 
-(23-Jul-2013), were introduced by my patch, "jffs2: Fix lock acquisition 
-order bug in jffs2_write_begin".
+The stock driver is rather ugly in my opinion, and makes some overly broad 
+assumptions about the hardware; the driver really is only intended to support 
+hardware ECC.  I've taken a few stabs at cleaning-up the stock driver, but they 
+all end-up being complete re-writes (for multi-die support), which is a bit more 
+than I can chew.
 
-Deng Chao has created a patch which a) removes the deadlock I wanted to 
-get rid of originally, without b) introducing the new deadlocks; see 
-http://lists.infradead.org/pipermail/linux-mtd/2013-August/048352.html. 
-However, his patch modifies mm/filemap.c, and we were hoping to find a 
-more light-weight solution -- which never came to be.
+The driver otherwise is usable as-is, albeit with only hardware ECC (that is 
+insufficient for many modern NAND devices), and exhibits the same problem.
 
-I do use his patch here around, though, and so far, it has worked fine. I 
-will try to run your test scripts on one of our devices, and see if it 
-holds up.
+>> It appears to be a hang in mtd/nand/nand_base.c:nand_get_device() waiting on
+>> chip->controller->active.
+>
+> And now that I begin describing the problem and grepping through the
+> source logs... I see that this problem was already resolved back in
+> 2009, except for the FL_PM_SUSPENDED mode:
+>
+> commit 6b0d9a84124937f048bcb8b21313152b23063978
+> Author: Li Yang <leoli@freescale.com>
+> Date:   Tue Nov 17 14:45:49 2009 -0800
+>
+>      mtd: nand: fix multi-chip suspend problem
+>
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=6b0d9a84124937f048bcb8b21313152b23063978
+>
+> I actually don't see why we can't just use
+> nand_get_device(FL_PM_SUSPENDED) for the shutdown/reboot case, like
+> this:
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index cc74142938b0..ece544efccc3 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3110,7 +3110,7 @@ static void nand_resume(struct mtd_info *mtd)
+>    */
+>   static void nand_shutdown(struct mtd_info *mtd)
+>   {
+> -	nand_get_device(mtd, FL_SHUTDOWN);
+> +	nand_get_device(mtd, FL_PM_SUSPENDED);
+>   }
+>
+>   /* Set default functions */
+>
+>
+> It's also possible that this could be better solved in a proper
+> refactor/rewrite of the NAND subsystem using a better controller/chip
+> split, so there's only one reboot handler per NAND controller. Boris has
+> been looking at that.
+>
+> Anyway, if the above looks OK, I can send a proper patch and get your
+> 'Tested-by's.
+>
+> Brian
 
-Anyway, I think I should revert my patch (and should have done so a long 
-time ago) even if this means that my original deadlock will come back. 
-This is neccessary in any case to clear the way for Deng Chao's patch, or 
-perhaps for some other solution. Joakim, what's your take on this?
+That seems to work too!  Thanks!
 
-Best regards,
-Thomas Betker
+~~Andrew E. Mileski
