@@ -1,23 +1,32 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZvuMK-00044W-AP
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 21:52:17 +0000
-Subject: Re: Hang on reboot in nand_get_device()
-To: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-References: <55958F4C.1020002@isoar.ca> <20151106180052.GE12143@google.com>
- <20151106195903.0d55d819@bbrezillon> <20151109194651.GI12143@google.com>
- <20151109215508.7b14f5f3@bbrezillon> <20151109223613.1e83b256@bbrezillon>
- <20151109214456.GJ12143@google.com>
-CC: "Andrew E. Mileski" <andrewm@isoar.ca>, linux-mtd
- <linux-mtd@lists.infradead.org>
-From: Scott Branden <sbranden@broadcom.com>
-Message-ID: <56411579.6040507@broadcom.com>
-Date: Mon, 9 Nov 2015 13:51:53 -0800
+ id 1Zvvp8-0004mm-SI
+ for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 23:26:07 +0000
+From: "Luck, Tony" <tony.luck@intel.com>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Tetsuo Handa
+ <penguin-kernel@i-love.sakura.ne.jp>
+CC: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>, Russell King
+ <linux@arm.linux.org.uk>, "linux-acpi@vger.kernel.org"
+ <linux-acpi@vger.kernel.org>, "drbd-user@lists.linbit.com"
+ <drbd-user@lists.linbit.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
+ <dri-devel@lists.freedesktop.org>, "Drokin, Oleg" <oleg.drokin@intel.com>,
+ "Dilger, Andreas" <andreas.dilger@intel.com>, "codalist@coda.cs.cmu.edu"
+ <codalist@coda.cs.cmu.edu>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Jan Kara <jack@suse.com>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Boris Petkov <bp@suse.de>
+Subject: RE: [PATCH] tree wide: Use kvfree() than conditional kfree()/vfree()
+Date: Mon, 9 Nov 2015 23:25:44 +0000
+Message-ID: <3908561D78D1C84285E8C5FCA982C28F32B83DE2@ORSMSX114.amr.corp.intel.com>
+References: <1447070170-8512-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+ <5253459.IxnqkcU2vL@vostro.rjw.lan>
+In-Reply-To: <5253459.IxnqkcU2vL@vostro.rjw.lan>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20151109214456.GJ12143@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,72 +36,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-I'm confused as to what the outcome is here and what the final patch is. 
-  Will this affect the previous fixes we made such that shutdown is 
-called on reboot so that MTD operations to the controller are not in 
-progress on reboot?
-
-Thanks,
-  Scott
-
-On 15-11-09 01:44 PM, Brian Norris wrote:
-> On Mon, Nov 09, 2015 at 10:36:13PM +0100, Boris Brezillon wrote:
->> Just want to add that this discussion shouldn't prevent your fix from
->> being applied. The main reason I'm arguing here is because I want to
->> understand the rationale behind the current handling of FL_PM_SUSPENDED
->> and FL_SHUTDOWN.
->
-> Sure, that's reasonable. I'd also like to touch this code only once (or
-> very close to that) in the near future, so it's best if we get to a good
-> understanding.
->
-> I'll send this as a proper patch, if that sounds OK:
->
-> http://patchwork.ozlabs.org/patch/541065/
->
->> On Mon, 9 Nov 2015 21:55:08 +0100
->> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->>
->>>>>
->>>>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->>>>> index ceb68ca..812b8b1 100644
->>>>> --- a/drivers/mtd/nand/nand_base.c
->>>>> +++ b/drivers/mtd/nand/nand_base.c
->>>>> @@ -830,6 +830,20 @@ nand_get_device(struct mtd_info *mtd, int new_state)
->>>>>   retry:
->>>>>          spin_lock(lock);
->>>>>
->>>>> +       /* putting the NAND chip in shutdown state should always succeed. */
->>>>> +       if (new_state == FL_SHUTDOWN) {
->>>>> +               /*
->>>>> +                * release the controller if the chip put in shutdown state
->>>>> +                * is the current active device.
->>>>> +                */
->>>>> +               if (chip->controller->active == chip)
->>>>> +                       chip->controller->active = NULL;
->>>>> +
->>>>> +               chip->state = new_state;
->>>>> +               spin_unlock(lock);
->>>>> +               return 0;
->>>>> +       }
->>>>> +
->>>>>          /* Hardware controller shared among independent devices */
->>>>>          if (!chip->controller->active)
->>>>>                  chip->controller->active = chip;
->>>>>
->>>>
->>>> This looks a lot more subtle and potentially wrong. What exactly is the
->>>> rationale here? It appears you're kind of unlocking the controller (any
->>>> other flash on the same controller can still go ahead) but at the same
->>>> time forcing no further users of this particular flash.
->>
->> It's even worst: I'm not waiting for the chip to become ready, so I'm
->> potentially re-introducing the bug Scott was trying to solve with his
->> reboot notifier.
->
-> Ah, I see! Good catch. My distaste for duplication pays off, then :)
->
-> Brian
->
+PiBBQ0sgZm9yIHRoZSBBQ1BJIGNoYW5nZXMgKGFuZCBDQ2luZyBUb255IGFuZCBCb3JpcyBmb3Ig
+dGhlIGhlYWRzLXVwIGFzIHRoZXkNCj4gYXJlIHdheSBtb3JlIGZhbWFpbGlhciB3aXRoIHRoZSBB
+UEVJIGNvZGUgdGhhbiBJIGFtKS4NCg0KU3VyZS4gSWYga3ZmcmVlKCkgcmVhbGx5IGlzIHNtYXJ0
+IGVub3VnaCB0byBmaWd1cmUgaXQgb3V0IHRoZW4gdGhlcmUNCml0IG5vIHBvaW50IGluIHRoZSBp
+ZiAoYmxhaCkga2ZyZWUoKSBlbHNlIHZmcmVlKCkuDQoNClRoZSBkcml2ZXJzL2FjcGkvYXBlaS9l
+cnN0LmMgY29kZSBpc24ndCBkb2luZyBhbnl0aGluZyBzdWJ0bGUgb3IgbWFnaWMgaGVyZS4NCg0K
+LVRvbnkNCg==
