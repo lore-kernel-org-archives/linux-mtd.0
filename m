@@ -1,18 +1,17 @@
-Received: from mout1.freenet.de ([2001:748:100:40::2:3])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwGPd-0002i0-Tm
- for linux-mtd@lists.infradead.org; Tue, 10 Nov 2015 21:25:12 +0000
-From: Thomas Betker <thomas.betker@freenet.de>
-To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: Joakim Tjernlund <joakim.tjernlund@transmode.se>,
- Deng Chao <deng.chao1@zte.com.cn>, Ming Liu <liu.ming50@gmail.com>,
- wangzaiwei <wangzaiwei@top-vision.cn>,
- Thomas Betker <thomas.betker@rohde-schwarz.com>, stable@vger.kernel.org
-Subject: [PATCH] Revert "jffs2: Fix lock acquisition order bug in
- jffs2_write_begin"
-Date: Tue, 10 Nov 2015 22:18:15 +0100
-Message-Id: <1447190295-5883-1-git-send-email-thomas.betker@freenet.de>
+ id 1ZwH76-0003Xp-Bc
+ for linux-mtd@lists.infradead.org; Tue, 10 Nov 2015 22:10:06 +0000
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UBI/UBIFS updates for 4.4-rc1
+Message-ID: <56426B1F.50303@nod.at>
+Date: Tue, 10 Nov 2015 23:09:35 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,131 +21,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Thomas Betker <thomas.betker@rohde-schwarz.com>
+Linus,
 
-This reverts commit 5ffd3412ae55 
-("jffs2: Fix lock acquisition order bug in jffs2_write_begin").
+the following changes since commit 9ffecb10283508260936b96022d4ee43a7798b4c:
 
-The commit modified jffs2_write_begin() to remove a deadlock with
-jffs2_garbage_collect_live(), but this introduced new deadlocks found
-by multiple users. page_lock() actually has to be called before
-mutex_lock(&c->alloc_sem) or mutex_lock(&f->sem) because
-jffs2_write_end() and jffs2_readpage() are called with the page locked,
-and they acquire c->alloc_sem and f->sem, resp.
+  Linux 4.3-rc3 (2015-09-27 07:50:08 -0400)
 
-In other words, the lock order in jffs2_write_begin() was correct, and
-it is the jffs2_garbage_collect_live() path that has to be changed.
+are available in the git repository at:
 
-Revert the commit to get rid of the new deadlocks, and to clear the way
-for a better fix of the original deadlock.
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.4-rc1
 
-Reported-by: Deng Chao <deng.chao1@zte.com.cn>
-Reported-by: Ming Liu <liu.ming50@gmail.com>
-Reported-by: wangzaiwei <wangzaiwei@top-vision.cn>
-Signed-off-by: Thomas Betker <thomas.betker@rohde-schwarz.com>
-Cc: stable@vger.kernel.org
----
- fs/jffs2/file.c | 39 ++++++++++++++++++---------------------
- 1 file changed, 18 insertions(+), 21 deletions(-)
+for you to fetch changes up to 8c1c5f263833ec2dc8fd716cf4281265c485d7ad:
 
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index f509f62..3361979 100644
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -137,39 +137,33 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
- 	struct page *pg;
- 	struct inode *inode = mapping->host;
- 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
--	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
--	struct jffs2_raw_inode ri;
--	uint32_t alloc_len = 0;
- 	pgoff_t index = pos >> PAGE_CACHE_SHIFT;
- 	uint32_t pageofs = index << PAGE_CACHE_SHIFT;
- 	int ret = 0;
- 
--	jffs2_dbg(1, "%s()\n", __func__);
--
--	if (pageofs > inode->i_size) {
--		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
--					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
--		if (ret)
--			return ret;
--	}
--
--	mutex_lock(&f->sem);
- 	pg = grab_cache_page_write_begin(mapping, index, flags);
--	if (!pg) {
--		if (alloc_len)
--			jffs2_complete_reservation(c);
--		mutex_unlock(&f->sem);
-+	if (!pg)
- 		return -ENOMEM;
--	}
- 	*pagep = pg;
- 
--	if (alloc_len) {
-+	jffs2_dbg(1, "%s()\n", __func__);
-+
-+	if (pageofs > inode->i_size) {
- 		/* Make new hole frag from old EOF to new page */
-+		struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
-+		struct jffs2_raw_inode ri;
- 		struct jffs2_full_dnode *fn;
-+		uint32_t alloc_len;
- 
- 		jffs2_dbg(1, "Writing new hole frag 0x%x-0x%x between current EOF and new page\n",
- 			  (unsigned int)inode->i_size, pageofs);
- 
-+		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
-+					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
-+		if (ret)
-+			goto out_page;
-+
-+		mutex_lock(&f->sem);
- 		memset(&ri, 0, sizeof(ri));
- 
- 		ri.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
-@@ -196,6 +190,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
- 		if (IS_ERR(fn)) {
- 			ret = PTR_ERR(fn);
- 			jffs2_complete_reservation(c);
-+			mutex_unlock(&f->sem);
- 			goto out_page;
- 		}
- 		ret = jffs2_add_full_dnode_to_inode(c, f, fn);
-@@ -210,10 +205,12 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
- 			jffs2_mark_node_obsolete(c, fn->raw);
- 			jffs2_free_full_dnode(fn);
- 			jffs2_complete_reservation(c);
-+			mutex_unlock(&f->sem);
- 			goto out_page;
- 		}
- 		jffs2_complete_reservation(c);
- 		inode->i_size = pageofs;
-+		mutex_unlock(&f->sem);
- 	}
- 
- 	/*
-@@ -222,18 +219,18 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
- 	 * case of a short-copy.
- 	 */
- 	if (!PageUptodate(pg)) {
-+		mutex_lock(&f->sem);
- 		ret = jffs2_do_readpage_nolock(inode, pg);
-+		mutex_unlock(&f->sem);
- 		if (ret)
- 			goto out_page;
- 	}
--	mutex_unlock(&f->sem);
- 	jffs2_dbg(1, "end write_begin(). pg->flags %lx\n", pg->flags);
- 	return ret;
- 
- out_page:
- 	unlock_page(pg);
- 	page_cache_release(pg);
--	mutex_unlock(&f->sem);
- 	return ret;
- }
- 
--- 
-2.6.3
+  ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs (2015-11-07 11:35:08 +0100)
+
+----------------------------------------------------------------
+This pull request includes the following UBI/UBIFS changes:
+* access time support for UBIFS by Dongsheng Yang
+* random cleanups and bug fixes all over the place
+
+----------------------------------------------------------------
+Andrew Murray (1):
+      UBI: Update comments to reflect UBI_METAONLY flag
+
+Andrzej Hajda (1):
+      UBIFS: use kmemdup rather than duplicating its implementation
+
+Dongsheng Yang (3):
+      UBIFS: fix a typo in comment of ubifs_budget_req
+      ubifs: make ubifs_[get|set]xattr atomic
+      ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
+
+Ezequiel García (1):
+      UBI: Fastmap: Fix PEB array type
+
+Julia Lawall (1):
+      UBI: drop null test before destroy functions
+
+Markus Elfring (1):
+      UBIFS: Delete unnecessary checks before the function call "iput"
+
+Richard Weinberger (6):
+      UBI: Fastmap: Simplify expression
+      UBI: Fix typo in comment
+      UBI: Fix debug message
+      ubi: fastmap: Implement produce_free_peb()
+      UBIFS: Fix possible memory leak in ubifs_readdir()
+      UBI: Remove in vain semicolon
+
+Yaowei Bai (1):
+      fs/ubifs: remove unnecessary new_valid_dev check
+
+shengyong (2):
+      UBIFS: call dbg_is_power_cut() instead of reading c->dbg->pc_happened
+      UBIFS: print verbose message when rescanning a corrupted node
+
+ drivers/mtd/ubi/attach.c     |  4 +---
+ drivers/mtd/ubi/cdev.c       |  2 +-
+ drivers/mtd/ubi/eba.c        |  2 +-
+ drivers/mtd/ubi/fastmap-wl.c | 29 +++++++++++++++++++++++++
+ drivers/mtd/ubi/fastmap.c    |  4 ++--
+ drivers/mtd/ubi/gluebi.c     |  4 ++--
+ drivers/mtd/ubi/ubi-media.h  |  2 +-
+ fs/ubifs/Kconfig             | 15 +++++++++++++
+ fs/ubifs/debug.c             |  8 +++----
+ fs/ubifs/dir.c               | 11 +++++-----
+ fs/ubifs/file.c              | 50 ++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/lpt.c               |  6 ++----
+ fs/ubifs/misc.h              |  9 ++------
+ fs/ubifs/recovery.c          |  8 +++----
+ fs/ubifs/super.c             | 12 +++++++++--
+ fs/ubifs/tnc.c               |  3 +--
+ fs/ubifs/ubifs.h             |  7 +++++--
+ fs/ubifs/xattr.c             | 12 ++++++++---
+ 18 files changed, 144 insertions(+), 44 deletions(-)
