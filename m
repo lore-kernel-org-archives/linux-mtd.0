@@ -1,20 +1,24 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZvwxQ-000328-Cc
- for linux-mtd@lists.infradead.org; Tue, 10 Nov 2015 00:38:45 +0000
-Received: by pacdm15 with SMTP id dm15so191263099pac.3
- for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2015 16:38:23 -0800 (PST)
+Date: Mon, 9 Nov 2015 18:46:11 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Ray Jui <rjui@broadcom.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Scott Branden <sbranden@broadcom.com>,
- "Andrew E . Mileski" <andrewm@isoar.ca>
-Subject: [PATCH] mtd: nand: fix shutdown/reboot for multi-chip systems
-Date: Mon,  9 Nov 2015 16:37:28 -0800
-Message-Id: <1447115848-92621-1-git-send-email-computersforpeace@gmail.com>
+To: Bayi Cheng <bayi.cheng@mediatek.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Daniel Kurtz <djkurtz@chromium.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com,
+ jteki@openedev.com, ezequiel@vanguardiasur.com.ar
+Subject: Re: [PATCH v6 0/3] Mediatek SPI-NOR flash driver
+Message-ID: <20151110024611.GL12143@google.com>
+References: <1446824889-16144-1-git-send-email-bayi.cheng@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1446824889-16144-1-git-send-email-bayi.cheng@mediatek.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +28,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If multiple NAND chips are registered to the same controller, then when
-rebooting the system, the first one will grab the controller lock, while
-the second will wait forever for the first one to release it. i.e., a
-classic deadlock.
+Hi Bayi,
 
-This problem was solved for a similar case (suspend/resume) back in
-commit 6b0d9a841249 ("mtd: nand: fix multi-chip suspend problem"), and
-the shutdown state really isn't much different for us, so rather than
-adding a new special case to nand_get_device(), we can just overload the
-FL_PM_SUSPENDED state.
+On Fri, Nov 06, 2015 at 11:48:06PM +0800, Bayi Cheng wrote:
+> This series is based on v4.3-rc1 and l2-mtd.git [0] and erase_sector
+> implementation patch [1]
+> 
+> [0]: git://git.infradead.org/l2-mtd.git
+> [1]: http://lists.infradead.org/pipermail/linux-mtd/2015-October//062959.html
+> 
+> Change in v6:
+> 1: delete mt8173_nor_do_rx
+> 2: delete mt8173_nor_do_rx
+> 3: add mt8173_nor_do_tx_rx for general usage
+> 4: support nor flash with 6 IDs
+> 5: delete mt8173_nor_erase_sector and use "nor->erase_opcode"
+> 6: add mt8173_nor_set_addr to programming the address register
+> 7: initialize the ppdata in mtk_nor_init
 
-Now, multiple chips can "get" the same controller lock (preventing
-further I/O), while we still allow other chips to pass through
-nand_shutdown().
+This series is looking a lot better to me. Thanks for incorporating (and
+I hope fully reviewing and testing!) my suggested changes. I have a just
+a few small comments that I might post to the driver patch, and if
+that's all that's outstanding, I can fix them up myself before applying.
 
-Original report:
-http://thread.gmane.org/gmane.linux.drivers.mtd/59726
-http://lists.infradead.org/pipermail/linux-mtd/2015-July/059992.html
+I believe you didn't completely answer all my questions from v5 though.
+I'll repeat a bit here. Particularly, refer to [1].
+I'll summarize; I understand that your common transmit/receive operation
+works something like this:
 
-Fixes: 72ea403669c7 ("mtd: nand: added nand_shutdown")
-Reported-by: Andrew E. Mileski <andrewm@isoar.ca>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Scott Branden <sbranden@broadcom.com>
-Cc: Andrew E. Mileski <andrewm@isoar.ca>
----
-I only compile-tested
+Quoting from [1]:
+> (1) total number of bits to send/receive goes in the COUNT register (so
+>     far, as many as 7*8=56?)
+> (2) opcode is written to PRGDATA5
+> (3) other "transmit" data (like addresses), if any, are placed on PRGDATA4..0
+> (4) command is sent (execute_cmd())
+> (5) data is read back in SHREG{X..0}, if needed
 
-If we get proper tests, this is probably 4.4 material
+My questions were:
 
- drivers/mtd/nand/nand_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+(a) Why does mt8173_nor_set_read_mode() use PRGDATA3? That's not
+    mentioned in the SoC manual, and it doesn't really match any of the
+    steps above. Perhaps it's just a quirk of the controller's
+    programming model?
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index cc74142938b0..ece544efccc3 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3110,7 +3110,7 @@ static void nand_resume(struct mtd_info *mtd)
-  */
- static void nand_shutdown(struct mtd_info *mtd)
- {
--	nand_get_device(mtd, FL_SHUTDOWN);
-+	nand_get_device(mtd, FL_PM_SUSPENDED);
- }
- 
- /* Set default functions */
--- 
-2.6.0.rc2.230.g3dd15c0
+(b) How do you determine X from step (5)?
+
+Right now, your code seems to answer that X is "rxlen - 1". Correct?
+
+If that's correct and if I put all of my understanding together
+correctly, this means that you can actually shift out (in PRGDATA) up to
+6 bytes (that is, 1 opcode and 5 tx bytes) and shift in (in SHREG) up to
+7 bytes, except that the first byte is received during the opcode cycle,
+and so it is discarded, and we effectively receive only 6 bytes.
+
+Is that all correct? If so, then I think you still need to adjust the
+boundary conditions in your do_tx_rx() function. (I'll comment on the
+driver to point out the specifics.)
+
+Regards,
+Brian
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2015-October/062951.html
