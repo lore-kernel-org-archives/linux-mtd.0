@@ -1,32 +1,30 @@
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zvvp8-0004mm-SI
- for linux-mtd@lists.infradead.org; Mon, 09 Nov 2015 23:26:07 +0000
-From: "Luck, Tony" <tony.luck@intel.com>
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Tetsuo Handa
- <penguin-kernel@i-love.sakura.ne.jp>
-CC: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>, Russell King
- <linux@arm.linux.org.uk>, "linux-acpi@vger.kernel.org"
- <linux-acpi@vger.kernel.org>, "drbd-user@lists.linbit.com"
- <drbd-user@lists.linbit.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
- <dri-devel@lists.freedesktop.org>, "Drokin, Oleg" <oleg.drokin@intel.com>,
- "Dilger, Andreas" <andreas.dilger@intel.com>, "codalist@coda.cs.cmu.edu"
- <codalist@coda.cs.cmu.edu>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Jan Kara <jack@suse.com>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Boris Petkov <bp@suse.de>
-Subject: RE: [PATCH] tree wide: Use kvfree() than conditional kfree()/vfree()
-Date: Mon, 9 Nov 2015 23:25:44 +0000
-Message-ID: <3908561D78D1C84285E8C5FCA982C28F32B83DE2@ORSMSX114.amr.corp.intel.com>
-References: <1447070170-8512-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
- <5253459.IxnqkcU2vL@vostro.rjw.lan>
-In-Reply-To: <5253459.IxnqkcU2vL@vostro.rjw.lan>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZvwiE-0003Hy-Tz
+ for linux-mtd@lists.infradead.org; Tue, 10 Nov 2015 00:23:04 +0000
+Received: by pacdm15 with SMTP id dm15so190857512pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Nov 2015 16:22:42 -0800 (PST)
+Date: Mon, 9 Nov 2015 16:22:39 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Scott Branden <sbranden@broadcom.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "Andrew E. Mileski" <andrewm@isoar.ca>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: Hang on reboot in nand_get_device()
+Message-ID: <20151110002239.GK12143@google.com>
+References: <55958F4C.1020002@isoar.ca> <20151106180052.GE12143@google.com>
+ <20151106195903.0d55d819@bbrezillon>
+ <20151109194651.GI12143@google.com>
+ <20151109215508.7b14f5f3@bbrezillon>
+ <20151109223613.1e83b256@bbrezillon>
+ <20151109214456.GJ12143@google.com> <56411579.6040507@broadcom.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56411579.6040507@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,10 +34,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBBQ0sgZm9yIHRoZSBBQ1BJIGNoYW5nZXMgKGFuZCBDQ2luZyBUb255IGFuZCBCb3JpcyBmb3Ig
-dGhlIGhlYWRzLXVwIGFzIHRoZXkNCj4gYXJlIHdheSBtb3JlIGZhbWFpbGlhciB3aXRoIHRoZSBB
-UEVJIGNvZGUgdGhhbiBJIGFtKS4NCg0KU3VyZS4gSWYga3ZmcmVlKCkgcmVhbGx5IGlzIHNtYXJ0
-IGVub3VnaCB0byBmaWd1cmUgaXQgb3V0IHRoZW4gdGhlcmUNCml0IG5vIHBvaW50IGluIHRoZSBp
-ZiAoYmxhaCkga2ZyZWUoKSBlbHNlIHZmcmVlKCkuDQoNClRoZSBkcml2ZXJzL2FjcGkvYXBlaS9l
-cnN0LmMgY29kZSBpc24ndCBkb2luZyBhbnl0aGluZyBzdWJ0bGUgb3IgbWFnaWMgaGVyZS4NCg0K
-LVRvbnkNCg==
+Hi Scott,
+
+On Mon, Nov 09, 2015 at 01:51:53PM -0800, Scott Branden wrote:
+> I'm confused as to what the outcome is here and what the final patch
+> is.  Will this affect the previous fixes we made such that shutdown
+> is called on reboot so that MTD operations to the controller are not
+> in progress on reboot?
+
+There is no "final outcome" yet, but the plan is below:
+
+> On 15-11-09 01:44 PM, Brian Norris wrote:
+> >On Mon, Nov 09, 2015 at 10:36:13PM +0100, Boris Brezillon wrote:
+> >>Just want to add that this discussion shouldn't prevent your fix from
+> >>being applied.
+[...]
+> >I'll send this as a proper patch, if that sounds OK:
+> >
+> >http://patchwork.ozlabs.org/patch/541065/
+
+^^ I plan to resend that patch as an independent thread, and give people
+a chance to test/ack/nak anything there. I'll CC you, so you can ensure
+it doesn't break anything you did previously. (I don't see how it
+would.)
+
+> >>On Mon, 9 Nov 2015 21:55:08 +0100
+> >>Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> >>
+> >>It's even worst: I'm not waiting for the chip to become ready, so I'm
+> >>potentially re-introducing the bug Scott was trying to solve with his
+> >>reboot notifier.
+> >
+> >Ah, I see! Good catch. My distaste for duplication pays off, then :)
+
+In case this hunk was confusing: Boris was providing another reason to
+reject one of his suggested alternative patches, and I was agreeing with
+him.
+
+Stay tuned.
+
+Brian
+
+P.S. Richard and I had some discussion on IRC, and I think there was a
+rough agreement that the whole reboot handler dance really doesn't
+belong (exclusively) in the MTD layer. Your patch was inspired by
+problems with UBI, and (at least for non-initrd cases) we think UBI
+should probably learn how to clean up after itself before we reboot. So
+in the long term, there may be an attempt to fix up UBI and drop the MTD
+reboot handlers. But that's probably not going to happen today.
