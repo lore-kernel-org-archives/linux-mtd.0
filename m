@@ -1,18 +1,18 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mout1.freenet.de ([2001:748:100:40::2:3])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwFKk-00053J-0C
- for linux-mtd@lists.infradead.org; Tue, 10 Nov 2015 20:16:02 +0000
-Received: by padhx2 with SMTP id hx2so6808417pad.1
- for <linux-mtd@lists.infradead.org>; Tue, 10 Nov 2015 12:15:41 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Bayi Cheng <bayi.cheng@mediatek.com>, Marek Vasut <marex@denx.de>
-Subject: [PATCH v2 2/2] mtd: m25p80: drop erase() callback
-Date: Tue, 10 Nov 2015 12:15:28 -0800
-Message-Id: <1447186528-42263-2-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1447186528-42263-1-git-send-email-computersforpeace@gmail.com>
-References: <1447186528-42263-1-git-send-email-computersforpeace@gmail.com>
+ id 1ZwGPd-0002i0-Tm
+ for linux-mtd@lists.infradead.org; Tue, 10 Nov 2015 21:25:12 +0000
+From: Thomas Betker <thomas.betker@freenet.de>
+To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: Joakim Tjernlund <joakim.tjernlund@transmode.se>,
+ Deng Chao <deng.chao1@zte.com.cn>, Ming Liu <liu.ming50@gmail.com>,
+ wangzaiwei <wangzaiwei@top-vision.cn>,
+ Thomas Betker <thomas.betker@rohde-schwarz.com>, stable@vger.kernel.org
+Subject: [PATCH] Revert "jffs2: Fix lock acquisition order bug in
+ jffs2_write_begin"
+Date: Tue, 10 Nov 2015 22:18:15 +0100
+Message-Id: <1447190295-5883-1-git-send-email-thomas.betker@freenet.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +22,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Just use the spi-nor default instead.
+From: Thomas Betker <thomas.betker@rohde-schwarz.com>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+This reverts commit 5ffd3412ae55 
+("jffs2: Fix lock acquisition order bug in jffs2_write_begin").
+
+The commit modified jffs2_write_begin() to remove a deadlock with
+jffs2_garbage_collect_live(), but this introduced new deadlocks found
+by multiple users. page_lock() actually has to be called before
+mutex_lock(&c->alloc_sem) or mutex_lock(&f->sem) because
+jffs2_write_end() and jffs2_readpage() are called with the page locked,
+and they acquire c->alloc_sem and f->sem, resp.
+
+In other words, the lock order in jffs2_write_begin() was correct, and
+it is the jffs2_garbage_collect_live() path that has to be changed.
+
+Revert the commit to get rid of the new deadlocks, and to clear the way
+for a better fix of the original deadlock.
+
+Reported-by: Deng Chao <deng.chao1@zte.com.cn>
+Reported-by: Ming Liu <liu.ming50@gmail.com>
+Reported-by: wangzaiwei <wangzaiwei@top-vision.cn>
+Signed-off-by: Thomas Betker <thomas.betker@rohde-schwarz.com>
+Cc: stable@vger.kernel.org
 ---
-v2: no change
+ fs/jffs2/file.c | 39 ++++++++++++++++++---------------------
+ 1 file changed, 18 insertions(+), 21 deletions(-)
 
-v1: http://lists.infradead.org/pipermail/linux-mtd/2015-October/062917.html
-
- drivers/mtd/devices/m25p80.c | 17 -----------------
- 1 file changed, 17 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 4b5d7a4655fd..822b6c73dd50 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -152,22 +152,6 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	return 0;
+diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+index f509f62..3361979 100644
+--- a/fs/jffs2/file.c
++++ b/fs/jffs2/file.c
+@@ -137,39 +137,33 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+ 	struct page *pg;
+ 	struct inode *inode = mapping->host;
+ 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
+-	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
+-	struct jffs2_raw_inode ri;
+-	uint32_t alloc_len = 0;
+ 	pgoff_t index = pos >> PAGE_CACHE_SHIFT;
+ 	uint32_t pageofs = index << PAGE_CACHE_SHIFT;
+ 	int ret = 0;
+ 
+-	jffs2_dbg(1, "%s()\n", __func__);
+-
+-	if (pageofs > inode->i_size) {
+-		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
+-					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	mutex_lock(&f->sem);
+ 	pg = grab_cache_page_write_begin(mapping, index, flags);
+-	if (!pg) {
+-		if (alloc_len)
+-			jffs2_complete_reservation(c);
+-		mutex_unlock(&f->sem);
++	if (!pg)
+ 		return -ENOMEM;
+-	}
+ 	*pagep = pg;
+ 
+-	if (alloc_len) {
++	jffs2_dbg(1, "%s()\n", __func__);
++
++	if (pageofs > inode->i_size) {
+ 		/* Make new hole frag from old EOF to new page */
++		struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
++		struct jffs2_raw_inode ri;
+ 		struct jffs2_full_dnode *fn;
++		uint32_t alloc_len;
+ 
+ 		jffs2_dbg(1, "Writing new hole frag 0x%x-0x%x between current EOF and new page\n",
+ 			  (unsigned int)inode->i_size, pageofs);
+ 
++		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
++					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
++		if (ret)
++			goto out_page;
++
++		mutex_lock(&f->sem);
+ 		memset(&ri, 0, sizeof(ri));
+ 
+ 		ri.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
+@@ -196,6 +190,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+ 		if (IS_ERR(fn)) {
+ 			ret = PTR_ERR(fn);
+ 			jffs2_complete_reservation(c);
++			mutex_unlock(&f->sem);
+ 			goto out_page;
+ 		}
+ 		ret = jffs2_add_full_dnode_to_inode(c, f, fn);
+@@ -210,10 +205,12 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+ 			jffs2_mark_node_obsolete(c, fn->raw);
+ 			jffs2_free_full_dnode(fn);
+ 			jffs2_complete_reservation(c);
++			mutex_unlock(&f->sem);
+ 			goto out_page;
+ 		}
+ 		jffs2_complete_reservation(c);
+ 		inode->i_size = pageofs;
++		mutex_unlock(&f->sem);
+ 	}
+ 
+ 	/*
+@@ -222,18 +219,18 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+ 	 * case of a short-copy.
+ 	 */
+ 	if (!PageUptodate(pg)) {
++		mutex_lock(&f->sem);
+ 		ret = jffs2_do_readpage_nolock(inode, pg);
++		mutex_unlock(&f->sem);
+ 		if (ret)
+ 			goto out_page;
+ 	}
+-	mutex_unlock(&f->sem);
+ 	jffs2_dbg(1, "end write_begin(). pg->flags %lx\n", pg->flags);
+ 	return ret;
+ 
+ out_page:
+ 	unlock_page(pg);
+ 	page_cache_release(pg);
+-	mutex_unlock(&f->sem);
+ 	return ret;
  }
  
--static int m25p80_erase(struct spi_nor *nor, loff_t offset)
--{
--	struct m25p *flash = nor->priv;
--
--	dev_dbg(nor->dev, "%dKiB at 0x%08x\n",
--		flash->spi_nor.mtd.erasesize / 1024, (u32)offset);
--
--	/* Set up command buffer. */
--	flash->command[0] = nor->erase_opcode;
--	m25p_addr2cmd(nor, offset, flash->command);
--
--	spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
--
--	return 0;
--}
--
- /*
-  * board specific setup should have ensured the SPI clock used here
-  * matches what the READ command supports, at least until this driver
-@@ -194,7 +178,6 @@ static int m25p_probe(struct spi_device *spi)
- 	/* install the hooks */
- 	nor->read = m25p80_read;
- 	nor->write = m25p80_write;
--	nor->erase = m25p80_erase;
- 	nor->write_reg = m25p80_write_reg;
- 	nor->read_reg = m25p80_read_reg;
- 
 -- 
-2.6.0.rc2.230.g3dd15c0
+2.6.3
