@@ -1,22 +1,21 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwHzI-0002Ea-H7
- for linux-mtd@lists.infradead.org; Tue, 10 Nov 2015 23:06:05 +0000
-Received: by pabfh17 with SMTP id fh17so10822978pab.0
- for <linux-mtd@lists.infradead.org>; Tue, 10 Nov 2015 15:05:43 -0800 (PST)
-Date: Tue, 10 Nov 2015 15:05:40 -0800
+Date: Tue, 10 Nov 2015 15:23:41 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Abhilash Jindal <klock.android@gmail.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- Arnd Bergmann <arnd@arndb.de>, Shraddha Barke <shraddha.6596@gmail.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: tests: Use boottime
-Message-ID: <20151110230540.GT12143@google.com>
-References: <1439309774-12539-1-git-send-email-klock.android@gmail.com>
+To: Vignesh R <vigneshr@ti.com>
+Cc: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>,
+ Rob Herring <robh@kernel.org>, Michal Suchanek <hramrach@gmail.com>,
+ Russell King <linux@arm.linux.org.uk>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/5] spi: introduce mmap read support for spi flash
+ devices
+Message-ID: <20151110232341.GU12143@google.com>
+References: <1447133399-25658-1-git-send-email-vigneshr@ti.com>
+ <1447133399-25658-2-git-send-email-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1439309774-12539-1-git-send-email-klock.android@gmail.com>
+In-Reply-To: <1447133399-25658-2-git-send-email-vigneshr@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,112 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ others
+Hi Vignesh,
 
-On Tue, Aug 11, 2015 at 12:16:14PM -0400, Abhilash Jindal wrote:
-> Wall time obtained from do_gettimeofday is susceptible to sudden jumps due to
-> user setting the time or due to NTP.  Boot time is constantly increasing time
-> better suited for comparing two timestamps.
-> 
-> Signed-off-by: Abhilash Jindal <klock.android@gmail.com>
+Sorry for the late review. I did not have time to review much back when
+you submitted your first RFCs for this.
 
-Sorry, didn't notice this one earlier. We've merged an alternative patch
-that uses ktime_get():
+On Tue, Nov 10, 2015 at 10:59:55AM +0530, Vignesh R wrote:
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index cce80e6dc7d1..2f2c431b8917 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -361,6 +361,11 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+>   * @handle_err: the subsystem calls the driver to handle an error that occurs
+>   *		in the generic implementation of transfer_one_message().
+>   * @unprepare_message: undo any work done by prepare_message().
+> + * @spi_mtd_mmap_read: some spi-controller hardwares provide memory.
+> + *                     Flash drivers (like m25p80) can request memory
+> + *                     mapped read via this method. This interface
+> + *                     should only be used by mtd flashes and cannot be
+> + *                     used by other spi devices.
+>   * @cs_gpios: Array of GPIOs to use as chip select lines; one per CS
+>   *	number. Any individual value may be -ENOENT for CS lines that
+>   *	are not GPIOs (driven by the SPI controller itself).
+> @@ -507,6 +512,11 @@ struct spi_master {
+>  			       struct spi_message *message);
+>  	int (*unprepare_message)(struct spi_master *master,
+>  				 struct spi_message *message);
+> +	int (*spi_mtd_mmap_read)(struct  spi_device *spi,
+> +				 loff_t from, size_t len,
+> +				 size_t *retlen, u_char *buf,
+> +				 u8 read_opcode, u8 addr_width,
+> +				 u8 dummy_bytes);
 
-commit af30c0a00aa0d086a820c2ec75544c07611834d7
-Author: Shraddha Barke <shraddha.6596@gmail.com>
-Date:   Thu Oct 22 20:29:54 2015 +0530
+Is this API really sufficient? There are actually quite a few other
+flash-related parameters that might be relevant to a controller. I
+presume you happen not hit them because of the particular cases you're
+using this for right now, but:
 
-    mtd: tests: Replace timeval with ktime_t
+ * How many I/O lines are being used? These can vary depending on the
+   type of flash and the number of I/O lines supported by the controller
+   and connected on the board.
 
->From reading the API description, it's not really clear to me if
-ktime_get() includes NTP jumps or not.
+ * The previous point can vary across parts of the message. There are
+   various combinations of 1/2/4 lines used for opcode/address/data. We
+   only support a few of those combinations in m25p80 right now, but
+   you're not specifying any of that in this API. I guess you're just
+   making assumptions? (BTW, I think there are others having problems
+   with the difference between different "quad" modes on Micron flash; I
+   haven't sorted through all the discussion there.)
 
-In any case, if you still need this patch, please rebase on the latest
--next.
+   There are typically both flash device and SPI controller constraints
+   on this question, so there needs to be some kind of negotiation
+   involved, I expect. Or at least, the SPI master needs to expose which
+   modes it can support with this flash-read API.
 
-Regards,
+Also, this API doesn't actually have anything to do with memory mapping.
+It has to do with the de facto standard flash protocol. So I don't think
+mmap belongs in the name; it should be something about flash. (I know of
+at least one other controller that could probably use this API, excpet
+it doesn't use memory mapping to accomplish the accelerated flash read.)
+
+>  
+>  	/*
+>  	 * These hooks are for drivers that use a generic implementation
+
 Brian
-
-> ---
->  drivers/mtd/tests/speedtest.c   |    9 ++++-----
->  drivers/mtd/tests/torturetest.c |    9 ++++-----
->  2 files changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
-> index 5a6f31a..854b707 100644
-> --- a/drivers/mtd/tests/speedtest.c
-> +++ b/drivers/mtd/tests/speedtest.c
-> @@ -49,7 +49,7 @@ static int pgsize;
->  static int ebcnt;
->  static int pgcnt;
->  static int goodebcnt;
-> -static struct timeval start, finish;
-> +static ktime_t start, finish;
->  
->  static int multiblock_erase(int ebnum, int blocks)
->  {
-> @@ -168,12 +168,12 @@ static int read_eraseblock_by_2pages(int ebnum)
->  
->  static inline void start_timing(void)
->  {
-> -	do_gettimeofday(&start);
-> +	start = ktime_get_boottime();
->  }
->  
->  static inline void stop_timing(void)
->  {
-> -	do_gettimeofday(&finish);
-> +	finish = ktime_get_boottime();
->  }
->  
->  static long calc_speed(void)
-> @@ -181,8 +181,7 @@ static long calc_speed(void)
->  	uint64_t k;
->  	long ms;
->  
-> -	ms = (finish.tv_sec - start.tv_sec) * 1000 +
-> -	     (finish.tv_usec - start.tv_usec) / 1000;
-> +	ms = ktime_to_ms(ktime_sub(finish, start));
->  	if (ms == 0)
->  		return 0;
->  	k = (uint64_t)goodebcnt * (mtd->erasesize / 1024) * 1000;
-> diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
-> index e5d6e6d..228023a 100644
-> --- a/drivers/mtd/tests/torturetest.c
-> +++ b/drivers/mtd/tests/torturetest.c
-> @@ -79,18 +79,18 @@ static unsigned char *check_buf;
->  static unsigned int erase_cycles;
->  
->  static int pgsize;
-> -static struct timeval start, finish;
-> +static ktime_t start, finish;
->  
->  static void report_corrupt(unsigned char *read, unsigned char *written);
->  
->  static inline void start_timing(void)
->  {
-> -	do_gettimeofday(&start);
-> +	start = ktime_get_boottime();
->  }
->  
->  static inline void stop_timing(void)
->  {
-> -	do_gettimeofday(&finish);
-> +	finish = ktime_get_boottime();
->  }
->  
->  /*
-> @@ -333,8 +333,7 @@ static int __init tort_init(void)
->  			long ms;
->  
->  			stop_timing();
-> -			ms = (finish.tv_sec - start.tv_sec) * 1000 +
-> -			     (finish.tv_usec - start.tv_usec) / 1000;
-> +			ms = ktime_to_ms(ktime_sub(finish, start));
->  			pr_info("%08u erase cycles done, took %lu "
->  			       "milliseconds (%lu seconds)\n",
->  			       erase_cycles, ms, ms / 1000);
-> -- 
-> 1.7.9.5
-> 
