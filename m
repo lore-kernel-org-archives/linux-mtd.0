@@ -1,17 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwH76-0003Xp-Bc
- for linux-mtd@lists.infradead.org; Tue, 10 Nov 2015 22:10:06 +0000
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [GIT PULL] UBI/UBIFS updates for 4.4-rc1
-Message-ID: <56426B1F.50303@nod.at>
-Date: Tue, 10 Nov 2015 23:09:35 +0100
+ id 1ZwHzI-0002Ea-H7
+ for linux-mtd@lists.infradead.org; Tue, 10 Nov 2015 23:06:05 +0000
+Received: by pabfh17 with SMTP id fh17so10822978pab.0
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Nov 2015 15:05:43 -0800 (PST)
+Date: Tue, 10 Nov 2015 15:05:40 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Abhilash Jindal <klock.android@gmail.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ Arnd Bergmann <arnd@arndb.de>, Shraddha Barke <shraddha.6596@gmail.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: tests: Use boottime
+Message-ID: <20151110230540.GT12143@google.com>
+References: <1439309774-12539-1-git-send-email-klock.android@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1439309774-12539-1-git-send-email-klock.android@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,77 +26,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
++ others
 
-the following changes since commit 9ffecb10283508260936b96022d4ee43a7798b4c:
+On Tue, Aug 11, 2015 at 12:16:14PM -0400, Abhilash Jindal wrote:
+> Wall time obtained from do_gettimeofday is susceptible to sudden jumps due to
+> user setting the time or due to NTP.  Boot time is constantly increasing time
+> better suited for comparing two timestamps.
+> 
+> Signed-off-by: Abhilash Jindal <klock.android@gmail.com>
 
-  Linux 4.3-rc3 (2015-09-27 07:50:08 -0400)
+Sorry, didn't notice this one earlier. We've merged an alternative patch
+that uses ktime_get():
 
-are available in the git repository at:
+commit af30c0a00aa0d086a820c2ec75544c07611834d7
+Author: Shraddha Barke <shraddha.6596@gmail.com>
+Date:   Thu Oct 22 20:29:54 2015 +0530
 
-  git://git.infradead.org/linux-ubifs.git tags/upstream-4.4-rc1
+    mtd: tests: Replace timeval with ktime_t
 
-for you to fetch changes up to 8c1c5f263833ec2dc8fd716cf4281265c485d7ad:
+>From reading the API description, it's not really clear to me if
+ktime_get() includes NTP jumps or not.
 
-  ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs (2015-11-07 11:35:08 +0100)
+In any case, if you still need this patch, please rebase on the latest
+-next.
 
-----------------------------------------------------------------
-This pull request includes the following UBI/UBIFS changes:
-* access time support for UBIFS by Dongsheng Yang
-* random cleanups and bug fixes all over the place
+Regards,
+Brian
 
-----------------------------------------------------------------
-Andrew Murray (1):
-      UBI: Update comments to reflect UBI_METAONLY flag
-
-Andrzej Hajda (1):
-      UBIFS: use kmemdup rather than duplicating its implementation
-
-Dongsheng Yang (3):
-      UBIFS: fix a typo in comment of ubifs_budget_req
-      ubifs: make ubifs_[get|set]xattr atomic
-      ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs
-
-Ezequiel García (1):
-      UBI: Fastmap: Fix PEB array type
-
-Julia Lawall (1):
-      UBI: drop null test before destroy functions
-
-Markus Elfring (1):
-      UBIFS: Delete unnecessary checks before the function call "iput"
-
-Richard Weinberger (6):
-      UBI: Fastmap: Simplify expression
-      UBI: Fix typo in comment
-      UBI: Fix debug message
-      ubi: fastmap: Implement produce_free_peb()
-      UBIFS: Fix possible memory leak in ubifs_readdir()
-      UBI: Remove in vain semicolon
-
-Yaowei Bai (1):
-      fs/ubifs: remove unnecessary new_valid_dev check
-
-shengyong (2):
-      UBIFS: call dbg_is_power_cut() instead of reading c->dbg->pc_happened
-      UBIFS: print verbose message when rescanning a corrupted node
-
- drivers/mtd/ubi/attach.c     |  4 +---
- drivers/mtd/ubi/cdev.c       |  2 +-
- drivers/mtd/ubi/eba.c        |  2 +-
- drivers/mtd/ubi/fastmap-wl.c | 29 +++++++++++++++++++++++++
- drivers/mtd/ubi/fastmap.c    |  4 ++--
- drivers/mtd/ubi/gluebi.c     |  4 ++--
- drivers/mtd/ubi/ubi-media.h  |  2 +-
- fs/ubifs/Kconfig             | 15 +++++++++++++
- fs/ubifs/debug.c             |  8 +++----
- fs/ubifs/dir.c               | 11 +++++-----
- fs/ubifs/file.c              | 50 ++++++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/lpt.c               |  6 ++----
- fs/ubifs/misc.h              |  9 ++------
- fs/ubifs/recovery.c          |  8 +++----
- fs/ubifs/super.c             | 12 +++++++++--
- fs/ubifs/tnc.c               |  3 +--
- fs/ubifs/ubifs.h             |  7 +++++--
- fs/ubifs/xattr.c             | 12 ++++++++---
- 18 files changed, 144 insertions(+), 44 deletions(-)
+> ---
+>  drivers/mtd/tests/speedtest.c   |    9 ++++-----
+>  drivers/mtd/tests/torturetest.c |    9 ++++-----
+>  2 files changed, 8 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
+> index 5a6f31a..854b707 100644
+> --- a/drivers/mtd/tests/speedtest.c
+> +++ b/drivers/mtd/tests/speedtest.c
+> @@ -49,7 +49,7 @@ static int pgsize;
+>  static int ebcnt;
+>  static int pgcnt;
+>  static int goodebcnt;
+> -static struct timeval start, finish;
+> +static ktime_t start, finish;
+>  
+>  static int multiblock_erase(int ebnum, int blocks)
+>  {
+> @@ -168,12 +168,12 @@ static int read_eraseblock_by_2pages(int ebnum)
+>  
+>  static inline void start_timing(void)
+>  {
+> -	do_gettimeofday(&start);
+> +	start = ktime_get_boottime();
+>  }
+>  
+>  static inline void stop_timing(void)
+>  {
+> -	do_gettimeofday(&finish);
+> +	finish = ktime_get_boottime();
+>  }
+>  
+>  static long calc_speed(void)
+> @@ -181,8 +181,7 @@ static long calc_speed(void)
+>  	uint64_t k;
+>  	long ms;
+>  
+> -	ms = (finish.tv_sec - start.tv_sec) * 1000 +
+> -	     (finish.tv_usec - start.tv_usec) / 1000;
+> +	ms = ktime_to_ms(ktime_sub(finish, start));
+>  	if (ms == 0)
+>  		return 0;
+>  	k = (uint64_t)goodebcnt * (mtd->erasesize / 1024) * 1000;
+> diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
+> index e5d6e6d..228023a 100644
+> --- a/drivers/mtd/tests/torturetest.c
+> +++ b/drivers/mtd/tests/torturetest.c
+> @@ -79,18 +79,18 @@ static unsigned char *check_buf;
+>  static unsigned int erase_cycles;
+>  
+>  static int pgsize;
+> -static struct timeval start, finish;
+> +static ktime_t start, finish;
+>  
+>  static void report_corrupt(unsigned char *read, unsigned char *written);
+>  
+>  static inline void start_timing(void)
+>  {
+> -	do_gettimeofday(&start);
+> +	start = ktime_get_boottime();
+>  }
+>  
+>  static inline void stop_timing(void)
+>  {
+> -	do_gettimeofday(&finish);
+> +	finish = ktime_get_boottime();
+>  }
+>  
+>  /*
+> @@ -333,8 +333,7 @@ static int __init tort_init(void)
+>  			long ms;
+>  
+>  			stop_timing();
+> -			ms = (finish.tv_sec - start.tv_sec) * 1000 +
+> -			     (finish.tv_usec - start.tv_usec) / 1000;
+> +			ms = ktime_to_ms(ktime_sub(finish, start));
+>  			pr_info("%08u erase cycles done, took %lu "
+>  			       "milliseconds (%lu seconds)\n",
+>  			       erase_cycles, ms, ms / 1000);
+> -- 
+> 1.7.9.5
+> 
