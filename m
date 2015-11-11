@@ -1,28 +1,21 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zwan8-0005sw-Of
- for linux-mtd@lists.infradead.org; Wed, 11 Nov 2015 19:10:47 +0000
-Received: by pabfh17 with SMTP id fh17so38838870pab.0
- for <linux-mtd@lists.infradead.org>; Wed, 11 Nov 2015 11:10:26 -0800 (PST)
-Date: Wed, 11 Nov 2015 11:10:23 -0800
+Date: Wed, 11 Nov 2015 11:24:41 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Han Xu <han.xu@freescale.com>
-Cc: Yuan Yao-B46683 <yao.yuan@freescale.com>,
- Fabio Estevam <festevam@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Li Yang-Leo-R58472 <LeoLi@freescale.com>,
- Wood Scott-B07421 <scottwood@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: fsl-quadspi: add big-endian support
-Message-ID: <20151111191023.GF12143@google.com>
-References: <1445586797-38383-1-git-send-email-yao.yuan@freescale.com>
- <CAOMZO5AAr30RM7dE-0BEZGH3Nw1j-QpM+qv2WCyyfK4ATrh=VA@mail.gmail.com>
- <BLUPR03MB134C1F7A783914F4F1ACCDF832F0@BLUPR03MB134.namprd03.prod.outlook.com>
- <20151111175112.GA30612@chopperman.am.freescale.net>
+To: Vignesh R <vigneshr@ti.com>
+Cc: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>,
+ Rob Herring <robh@kernel.org>, Michal Suchanek <hramrach@gmail.com>,
+ Russell King <linux@arm.linux.org.uk>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH v3 1/5] spi: introduce mmap read support for spi flash
+ devices
+Message-ID: <20151111192441.GG12143@google.com>
+References: <1447133399-25658-1-git-send-email-vigneshr@ti.com>
+ <1447133399-25658-2-git-send-email-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151111175112.GA30612@chopperman.am.freescale.net>
+In-Reply-To: <1447133399-25658-2-git-send-email-vigneshr@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,52 +25,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ devicetree
+In addition to my other comments:
 
-On Wed, Nov 11, 2015 at 11:51:13AM -0600, Han Xu wrote:
-> On Fri, Oct 30, 2015 at 04:49:41AM -0500, Yuan Yao-B46683 wrote:
-
-(BTW Yuan, replying on top doesn't make the conversation as easy to
-follow)
-
-> > Although it is possible to add the endianness support in the
-> > regmap_mmio driver, we don't see too much value in using it
-> > especially 
-> > 
-> > So we think:
-> > static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
-> > *addr) {
-> >       if (q->big_endian)
-> >               iowrite32be(val, addr);
-> >       else
-> >               iowrite32(val, addr);
-> > }
-> > This way is an easier, more effective solution to do the endian issue.
-> > 
-> > How about your think?
+On Tue, Nov 10, 2015 at 10:59:55AM +0530, Vignesh R wrote:
+> In addition to providing direct access to SPI bus, some spi controller
+> hardwares (like ti-qspi) provide special memory mapped port
+> to accesses SPI flash devices in order to increase read performance.
+> This means the controller can automatically send the SPI signals
+> required to read data from the SPI flash device.
+> For this, spi controller needs to know flash specific information like
+> read command to use, dummy bytes and address width. Once these settings
+> are populated in hardware registers, any read accesses to flash's memory
+> map region(SoC specific) through memcpy (or mem-to mem DMA copy) will be
+> handled by controller hardware. The hardware will automatically generate
+> SPI signals required to read data from flash and present it to CPU/DMA.
 > 
-> I think the implement is fine, but I prefer to use quirk rather than
-> read from dts? Please also rebase the patch to latest l2-mtd code.
+> Introduce spi_mtd_mmap_read() interface to support memory mapped read
+> over SPI flash devices. SPI master drivers can implement this callback to
+> support memory mapped read interfaces. m25p80 flash driver and other
+> flash drivers can call this to request memory mapped read. The interface
+> should only be used MTD flashes and cannot be used with other SPI devices.
+> 
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
+> ---
+...
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index cce80e6dc7d1..2f2c431b8917 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -361,6 +361,11 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+>   * @handle_err: the subsystem calls the driver to handle an error that occurs
+>   *		in the generic implementation of transfer_one_message().
+>   * @unprepare_message: undo any work done by prepare_message().
+> + * @spi_mtd_mmap_read: some spi-controller hardwares provide memory.
+> + *                     Flash drivers (like m25p80) can request memory
+> + *                     mapped read via this method. This interface
+> + *                     should only be used by mtd flashes and cannot be
+> + *                     used by other spi devices.
+>   * @cs_gpios: Array of GPIOs to use as chip select lines; one per CS
+>   *	number. Any individual value may be -ENOENT for CS lines that
+>   *	are not GPIOs (driven by the SPI controller itself).
+> @@ -507,6 +512,11 @@ struct spi_master {
+>  			       struct spi_message *message);
+>  	int (*unprepare_message)(struct spi_master *master,
+>  				 struct spi_message *message);
+> +	int (*spi_mtd_mmap_read)(struct  spi_device *spi,
+> +				 loff_t from, size_t len,
+> +				 size_t *retlen, u_char *buf,
+> +				 u8 read_opcode, u8 addr_width,
+> +				 u8 dummy_bytes);
 
-If it really is just a endianness difference, then I think it makes
-sense to use the existing DT bindings for it, rather than relying on a
-new compatible string / quirk option. That doesn't mean you can't have a
-new SoC-inspired compatible property in addition...
+This is seeming to be a longer and longer list of arguments. I know MTD
+has a bad habit of long argument lists (which then cause a ton of
+unnecessary churn when things need changed in the API), but perhaps we
+can limit the damage to the SPI layer. Perhaps this deserves a struct to
+encapsulate all the flash read arguments? Like:
 
-> > Best Regards,
-> > Yuan Yao
-> > 
-> > On Sat, Oct 24, 2015 at 11:47 PM, Fabio Estevam <festevam@gmail.com> wrote:
-> > > I suggest you to implement regmap support for this driver instead.
-> > > 
-> > > Take a look at drivers/watchdog/imx2_wdt.c for a reference.
-> > > 
-> > > Then you only need to pass 'big-endian' as a property for the qspi in the .dtsi
-> > > file and regmap core will take care of endianness.
+struct spi_flash_read_message {
+	loff_t from;
+	size_t len;
+	size_t *retlen;
+	void *buf;
+	u8 read_opcode;
+	u8 addr_width;
+	u8 dummy_bits;
+	// additional fields to describe rx_nbits for opcode/addr/data
+};
 
-To use the standard binding also means that whether or not you choose to
-use regmap right now, it's an easy option in the future, and the core
-code will already handle it for you. That's really one of the main
-reasons for using standardized bindings in the first place.
+struct spi_master {
+	...
+	int (*spi_flash_read)(struct spi_device *spi,
+			      struct spi_flash_message *msg);
+};
+
+>  
+>  	/*
+>  	 * These hooks are for drivers that use a generic implementation
+
+...
 
 Brian
