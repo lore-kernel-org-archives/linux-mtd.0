@@ -1,25 +1,17 @@
-Received: from mail-bl2on0749.outbound.protection.outlook.com
- ([2a01:111:f400:fc09::749] helo=na01-bl2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwZjr-0005mL-Tk
- for linux-mtd@lists.infradead.org; Wed, 11 Nov 2015 18:03:21 +0000
-Date: Wed, 11 Nov 2015 11:51:13 -0600
-From: Han Xu <han.xu@freescale.com>
-To: Yuan Yao-B46683 <yao.yuan@freescale.com>
-CC: Fabio Estevam <festevam@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Li Yang-Leo-R58472
- <LeoLi@freescale.com>, Wood Scott-B07421 <scottwood@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, linux-kernel
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: fsl-quadspi: add big-endian support
-Message-ID: <20151111175112.GA30612@chopperman.am.freescale.net>
-References: <1445586797-38383-1-git-send-email-yao.yuan@freescale.com>
- <CAOMZO5AAr30RM7dE-0BEZGH3Nw1j-QpM+qv2WCyyfK4ATrh=VA@mail.gmail.com>
- <BLUPR03MB134C1F7A783914F4F1ACCDF832F0@BLUPR03MB134.namprd03.prod.outlook.com>
+Date: Wed, 11 Nov 2015 10:09:01 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Ryan Harkin <ryan.harkin@linaro.org>,
+ Liviu Dudau <liviu.dudau@arm.com>
+Subject: Re: [PATCH 09/10] mtd: afs: factor the IIS read into partition parser
+Message-ID: <20151111180901.GC12143@google.com>
+References: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
+ <1444914533-27782-10-git-send-email-linus.walleij@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BLUPR03MB134C1F7A783914F4F1ACCDF832F0@BLUPR03MB134.namprd03.prod.outlook.com>
+In-Reply-To: <1444914533-27782-10-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,58 +21,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 30, 2015 at 04:49:41AM -0500, Yuan Yao-B46683 wrote:
-> Hi Fabio Estevam,
-> 
-> Thanks for your suggestion.
-> We have an internal discussions for that.
-> 
-> We think that:
-> According to the initial commit message of regmap, it is targeting non-memory mapped buses. (regmap: Add generic non-memory mapped register access API)  But in the imx2_wdt driver, it is used for memory-mapped register space.  So it seems that using such a complex framework just to deal with endian is an over-kill.
-> 
-> when it is not necessary to enable the clock every time we access the register.  
-> We don't think it is obvious to us how to use it for handling endianness, especially not the way imx2_wdt uses regmap.  __regmap_init_mmio_clk() calls regmap_mmio_gen_context() which errors out if reg_format_endian is not REGMAP_ENDIAN_DEFAULT or REGMAP_ENDIAN_NATIVE, and elsewhere regmap-mmio.c It seems only little-endian accessors.
-> 
-> Although it is possible to add the endianness support in the regmap_mmio driver, we don't see too much value in using it especially 
-> 
-> So we think:
-> static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
-> *addr) {
->       if (q->big_endian)
->               iowrite32be(val, addr);
->       else
->               iowrite32(val, addr);
-> }
-> This way is an easier, more effective solution to do the endian issue.
-> 
-> How about your think?
+Hi Linus,
 
-I think the implement is fine, but I prefer to use quirk rather than
-read from dts? Please also rebase the patch to latest l2-mtd code.
-
+On Thu, Oct 15, 2015 at 03:08:52PM +0200, Linus Walleij wrote:
+> Factor the IIS (Image Information Structure) reading into the
+> partition parser, giving us a single, clean partition parser
+> function.
 > 
-> Best Regards,
-> Yuan Yao
+> Cc: Ryan Harkin <ryan.harkin@linaro.org>
+> Cc: Liviu Dudau <liviu.dudau@arm.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  drivers/mtd/afs.c | 59 +++++++++++++++++++------------------------------------
+>  1 file changed, 20 insertions(+), 39 deletions(-)
 > 
-> On Sat, Oct 24, 2015 at 11:47 PM, Fabio Estevam <festevam@gmail.com> wrote:
-> > On Fri, Oct 23, 2015 at 5:53 AM, Yuan Yao <yao.yuan@freescale.com> wrote:
-> > 
-> > > +static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
-> > > +*addr) {
-> > > +       if (q->big_endian)
-> > > +               iowrite32be(val, addr);
-> > > +       else
-> > > +               iowrite32(val, addr);
-> > > +}
-> > 
-> > I suggest you to implement regmap support for this driver instead.
-> > 
-> > Take a look at drivers/watchdog/imx2_wdt.c for a reference.
-> > 
-> > Then you only need to pass 'big-endian' as a property for the qspi in the .dtsi
-> > file and regmap core will take care of endianness.
+> diff --git a/drivers/mtd/afs.c b/drivers/mtd/afs.c
+> index cdee8295d4c0..1ce6842c917c 100644
+> --- a/drivers/mtd/afs.c
+> +++ b/drivers/mtd/afs.c
+> @@ -88,42 +88,6 @@ static bool afs_is_v1(struct mtd_info *mtd, u_int off)
+>  	return (magic == AFSV1_FOOTER_MAGIC);
+>  }
+>  
+> -static int
+> -afs_read_iis_v1(struct mtd_info *mtd, struct image_info_v1 *iis, u_int ptr)
+> -{
+> -	size_t sz;
+> -	int ret, i;
+> -
+> -	memset(iis, 0, sizeof(*iis));
+> -	ret = mtd_read(mtd, ptr, sizeof(*iis), &sz, (u_char *)iis);
+> -	if (ret < 0)
+> -		goto failed;
+> -
+> -	if (sz != sizeof(*iis)) {
+> -		ret = -EINVAL;
+> -		goto failed;
+> -	}
+> -
+> -	ret = 0;
+> -
+> -	/*
+> -	 * Validate the name - it must be NUL terminated.
+> -	 */
+> -	for (i = 0; i < sizeof(iis->name); i++)
+> -		if (iis->name[i] == '\0')
+> -			break;
+> -
+> -	if (i < sizeof(iis->name))
+> -		ret = 1;
+> -
+> -	return ret;
+> -
+> - failed:
+> -	printk(KERN_ERR "AFS: mtd read failed at 0x%x: %d\n",
+> -		ptr, ret);
+> -	return ret;
+> -}
+> -
+>  static int afs_parse_v1_partition(struct mtd_info *mtd,
+>  				  u_int off, struct mtd_partition *part)
+>  {
+> @@ -139,6 +103,7 @@ static int afs_parse_v1_partition(struct mtd_info *mtd,
+>  	u_int ptr;
+>  	size_t sz;
+>  	int ret;
+> +	int i;
+>  
+>  	/*
+>  	 * This is the address mask; we use this to mask off out of
+> @@ -185,9 +150,25 @@ static int afs_parse_v1_partition(struct mtd_info *mtd,
+>  		return 0;
+>  
+>  	/* Read the image info block */
+> -	ret = afs_read_iis_v1(mtd, &iis, iis_ptr);
+> -	if (ret < 0)
+> -		return ret;
+> +	memset(&iis, 0, sizeof(iis));
+> +	ret = mtd_read(mtd, iis_ptr, sizeof(iis), &sz, (u_char *)&iis);
+> +	if (ret < 0) {
+> +		printk(KERN_ERR "AFS: mtd read failed at 0x%x: %d\n",
+> +		       iis_ptr, ret);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (sz != sizeof(iis))
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Validate the name - it must be NUL terminated.
+> +	 */
+> +	for (i = 0; i < sizeof(iis.name); i++)
+> +		if (iis.name[i] == '\0')
+> +			break;
+> +	if (i > sizeof(iis.name))
 
--- 
-Best Regards,
+The above condition is not a correct refactoring. That should be an
+inclusive comparison (i.e., i >= sizeof(iis.name)).
 
-Han "Allen" Xu
+> +		return -EINVAL;
+>  
+>  	part->name = kstrdup(iis.name, GFP_KERNEL);
+>  	if (!part->name)
+
+Brian
