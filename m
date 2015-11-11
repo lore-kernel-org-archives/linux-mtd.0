@@ -1,17 +1,17 @@
-Date: Tue, 10 Nov 2015 19:09:04 -0800
+Date: Tue, 10 Nov 2015 19:15:52 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Linus Walleij <linus.walleij@linaro.org>
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, Ryan Harkin <ryan.harkin@linaro.org>,
  Liviu Dudau <liviu.dudau@arm.com>
-Subject: Re: [PATCH 06/10] mtd: afs: simplify partition detection
-Message-ID: <20151111030904.GX12143@google.com>
+Subject: Re: [PATCH 07/10] mtd: factor out v1 partition parsing
+Message-ID: <20151111031552.GY12143@google.com>
 References: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
- <1444914533-27782-7-git-send-email-linus.walleij@linaro.org>
+ <1444914533-27782-8-git-send-email-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1444914533-27782-7-git-send-email-linus.walleij@linaro.org>
+In-Reply-To: <1444914533-27782-8-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,105 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+Hi,
 
-On Thu, Oct 15, 2015 at 03:08:49PM +0200, Linus Walleij wrote:
-> Instead of reading out the AFS footers twice, create a separate
-> function to just check if there is a footer or not. Rids a few
-> local variables and prepare us to join the actual parser into
-> one function.
+On Thu, Oct 15, 2015 at 03:08:50PM +0200, Linus Walleij wrote:
+> This breaks out the parsing of v1 partitions so we can later add
+> a v2 partition parser.
 > 
 > Cc: Ryan Harkin <ryan.harkin@linaro.org>
 > Cc: Liviu Dudau <liviu.dudau@arm.com>
 > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  drivers/mtd/afs.c | 33 ++++++++++++++++++++++-----------
->  1 file changed, 22 insertions(+), 11 deletions(-)
+>  drivers/mtd/afs.c | 88 +++++++++++++++++++++++++++++++------------------------
+>  1 file changed, 50 insertions(+), 38 deletions(-)
 > 
 > diff --git a/drivers/mtd/afs.c b/drivers/mtd/afs.c
-> index 9e6089615f16..2307f54195f5 100644
+> index 2307f54195f5..ace27f447abc 100644
 > --- a/drivers/mtd/afs.c
 > +++ b/drivers/mtd/afs.c
-> @@ -68,6 +68,26 @@ static u32 word_sum(void *words, int num)
->  	return sum;
+> @@ -181,14 +181,18 @@ afs_read_iis_v1(struct mtd_info *mtd, struct image_info_v1 *iis, u_int ptr)
+>  	return ret;
 >  }
 >  
-> +static bool afs_is_v1(struct mtd_info *mtd, u_int off)
-> +{
-> +	/* The magic is 12 bytes from the end of the erase block */
-> +	u_int ptr = off + mtd->erasesize - 12;
-> +	u32 magic;
-> +	size_t sz;
+> -static int parse_afs_partitions(struct mtd_info *mtd,
+> -				struct mtd_partition **pparts,
+> -				struct mtd_part_parser_data *data)
+> +static int afs_parse_v1_partition(struct mtd_info *mtd,
+> +				  u_int off, struct mtd_partition *part)
+>  {
+> -	struct mtd_partition *parts;
+> -	u_int mask, off, sz;
+> -	int ret = 0;
+> -	int i;
+> +	struct image_info_v1 iis;
+> +	u_int mask;
+> +	/*
+> +	 * Static checks cannot see that we bail out if we have an error
+> +	 * reading the footer.
+> +	 */
+> +	u_int uninitialized_var(iis_ptr);
+> +	u_int uninitialized_var(img_ptr);
+
+What's this uninitialized_var() stuff about? These variables seem to
+clearly be initialized before use. Did this hang around from some
+preliminary code that got refactored?
+
 > +	int ret;
-> +
-> +	ret = mtd_read(mtd, ptr, 4, &sz, (u_char *)&magic);
-> +	if (ret < 0) {
-> +		printk(KERN_ERR "AFS: mtd read failed at 0x%x: %d\n",
-> +		       ptr, ret);
-> +		return false;
-> +	}
-> +	if (ret >= 0 && sz != 4)
-> +		return false;
-> +
-> +	return (magic == AFSV1_FOOTER_MAGIC);
-> +}
-> +
->  static int
->  afs_read_footer_v1(struct mtd_info *mtd, u_int *img_start, u_int *iis_start,
->  		   u_int off, u_int mask)
-> @@ -176,18 +196,9 @@ static int parse_afs_partitions(struct mtd_info *mtd,
->  	 */
->  	mask = mtd->size - 1;
 >  
-> -	/*
-> -	 * First, calculate the size of the array we need for the
-> -	 * partition information.  We include in this the size of
-> -	 * the strings.
-> -	 */
-> +	/* Count the partitions by looping over all erase blocks */
->  	for (i = off = sz = 0; off < mtd->size; off += mtd->erasesize) {
-> -		u_int iis_ptr, img_ptr;
-> -
-> -		ret = afs_read_footer_v1(mtd, &img_ptr, &iis_ptr, off, mask);
-> -		if (ret < 0)
-> -			return ret;
-> -		if (ret) {
-> +		if (afs_is_v1(mtd, off)) {
->  			sz += sizeof(struct mtd_partition);
->  			i += 1;
->  		}
+>  	/*
+>  	 * This is the address mask; we use this to mask off out of
 
-I think this change is more subtle than it looks at first glance. There
-are a few points:
+...
 
-(1) This kind of flash format is naturally fairly imprecise and
-unfocused; the parser is scanning every block on the device, so its
-scans have to have pretty good heuristics to ensure that it doesn't
-treat some other block of data as containing AFS metadata. This usually
-works out OK when using magic strings and checksums, but it's still not
-100% foolproof.
+Otherwise, looks OK.
 
-(2) You're dropping some of the safeguards -- particularly the checksum
--- from the first pass that calculates the number of partitions. This
-seems OK for now, since you still do the same checks later, and if they
-fail, you just skip the block. But it means that if the block isn't
-exactly perfect (whether it's due to malice, coincidence, or
-corruption), then we have a problem in the second pass through the
-device.
-
-(3) The "problem" from (2) is currently only a slightly
-larger-than-necessary memory allocation -- we allocate for too many
-partitions -- which is benign. But in later patches, you change the
-second loop's behavior so that checksum errors become fatal. That means
-that any block that happens to have the magic number in the right (or
-wrong, depending on your POV) place will cause the entire parsing
-process to fail. That's probably a bug, not a feature.
-
-So, is it really worth saving mtd_read()'ing 16 bytes of flash really
-worth this extra fragility? I think you should still read the whole
-footer and check its checksum before declaring it a 'v1' footer. And
-don't make a checksum failure completely fatal; just make it skip the
-block.
-
-Regards,
 Brian
