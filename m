@@ -1,21 +1,15 @@
-Date: Tue, 10 Nov 2015 15:23:41 -0800
+Date: Tue, 10 Nov 2015 18:15:49 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>,
- Rob Herring <robh@kernel.org>, Michal Suchanek <hramrach@gmail.com>,
- Russell King <linux@arm.linux.org.uk>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/5] spi: introduce mmap read support for spi flash
- devices
-Message-ID: <20151110232341.GU12143@google.com>
-References: <1447133399-25658-1-git-send-email-vigneshr@ti.com>
- <1447133399-25658-2-git-send-email-vigneshr@ti.com>
+Subject: Re: [PATCH 00/10] ARM MTD AFS v2 partition support
+Message-ID: <20151111021549.GV12143@google.com>
+References: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1447133399-25658-2-git-send-email-vigneshr@ti.com>
+In-Reply-To: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +19,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vignesh,
+Hi Linus,
 
-Sorry for the late review. I did not have time to review much back when
-you submitted your first RFCs for this.
+On Thu, Oct 15, 2015 at 03:08:43PM +0200, Linus Walleij wrote:
+> Years ago, the ARM reference platforms moved away from the footer
+> format parsed by the current AFS code in MTD. As far as I can
+> tell this begun with the RealView reference designs (mach-realview)
+> and the new format has been used in RealView, Versatile Express
+> and recently the Juno Development platform (64bit).
+> 
+> The code has not been working for newer designs for a long time.
+> Proper parsing of the flash image partitions is very helpful when
+> you want to replace firmware when running full Linux and none of
+> the boot monitors or boot loaders.
+> 
+> After this, AFS parsing will work on all ARM reference designs,
+> or well, all I could test. I tested the Integrator/AP, RealView
+> PB11MPCore and Juno Development Platform.
+> 
+> The first 9 patches basically refactors the current code to
+> make the old partition format more encapsulated, while the last
+> patch adds the new v2 format.
 
-On Tue, Nov 10, 2015 at 10:59:55AM +0530, Vignesh R wrote:
-> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-> index cce80e6dc7d1..2f2c431b8917 100644
-> --- a/include/linux/spi/spi.h
-> +++ b/include/linux/spi/spi.h
-> @@ -361,6 +361,11 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
->   * @handle_err: the subsystem calls the driver to handle an error that occurs
->   *		in the generic implementation of transfer_one_message().
->   * @unprepare_message: undo any work done by prepare_message().
-> + * @spi_mtd_mmap_read: some spi-controller hardwares provide memory.
-> + *                     Flash drivers (like m25p80) can request memory
-> + *                     mapped read via this method. This interface
-> + *                     should only be used by mtd flashes and cannot be
-> + *                     used by other spi devices.
->   * @cs_gpios: Array of GPIOs to use as chip select lines; one per CS
->   *	number. Any individual value may be -ENOENT for CS lines that
->   *	are not GPIOs (driven by the SPI controller itself).
-> @@ -507,6 +512,11 @@ struct spi_master {
->  			       struct spi_message *message);
->  	int (*unprepare_message)(struct spi_master *master,
->  				 struct spi_message *message);
-> +	int (*spi_mtd_mmap_read)(struct  spi_device *spi,
-> +				 loff_t from, size_t len,
-> +				 size_t *retlen, u_char *buf,
-> +				 u8 read_opcode, u8 addr_width,
-> +				 u8 dummy_bytes);
+Pushed the first 4 to l2-mtd.git/next (for 4.5). I'll move them to
+/master when the merge window closes.
 
-Is this API really sufficient? There are actually quite a few other
-flash-related parameters that might be relevant to a controller. I
-presume you happen not hit them because of the particular cases you're
-using this for right now, but:
+I'm reviewing the rest, but I have some comments on patch 5.
 
- * How many I/O lines are being used? These can vary depending on the
-   type of flash and the number of I/O lines supported by the controller
-   and connected on the board.
+Also, do you have a pointer that documents the v2 format? I can probably
+find something myself, but I'm a bit lazy, and if you have something
+easy to point me to, that'd save me some time :)
 
- * The previous point can vary across parts of the message. There are
-   various combinations of 1/2/4 lines used for opcode/address/data. We
-   only support a few of those combinations in m25p80 right now, but
-   you're not specifying any of that in this API. I guess you're just
-   making assumptions? (BTW, I think there are others having problems
-   with the difference between different "quad" modes on Micron flash; I
-   haven't sorted through all the discussion there.)
-
-   There are typically both flash device and SPI controller constraints
-   on this question, so there needs to be some kind of negotiation
-   involved, I expect. Or at least, the SPI master needs to expose which
-   modes it can support with this flash-read API.
-
-Also, this API doesn't actually have anything to do with memory mapping.
-It has to do with the de facto standard flash protocol. So I don't think
-mmap belongs in the name; it should be something about flash. (I know of
-at least one other controller that could probably use this API, excpet
-it doesn't use memory mapping to accomplish the accelerated flash read.)
-
->  
->  	/*
->  	 * These hooks are for drivers that use a generic implementation
-
+Regards,
 Brian
