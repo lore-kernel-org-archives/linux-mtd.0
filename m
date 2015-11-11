@@ -1,24 +1,22 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zwddr-0003Na-Ox
- for linux-mtd@lists.infradead.org; Wed, 11 Nov 2015 22:13:24 +0000
-Received: by pabfh17 with SMTP id fh17so42839109pab.0
- for <linux-mtd@lists.infradead.org>; Wed, 11 Nov 2015 14:13:03 -0800 (PST)
-Received: from google.com ([2620:0:1000:1301:b5e8:66ef:5e80:54ae])
- by smtp.gmail.com with ESMTPSA id jp1sm8952465pbc.54.2015.11.11.14.13.02
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
- Wed, 11 Nov 2015 14:13:02 -0800 (PST)
-Date: Wed, 11 Nov 2015 14:13:00 -0800
+ id 1ZwduL-0001fH-Qf
+ for linux-mtd@lists.infradead.org; Wed, 11 Nov 2015 22:30:57 +0000
+Received: by pabfh17 with SMTP id fh17so43217489pab.0
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Nov 2015 14:30:10 -0800 (PST)
+Date: Wed, 11 Nov 2015 14:30:07 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH mtd-utils 00/11] flash_{un,}lock upgrades
-Message-ID: <20151111221300.GB71848@google.com>
-References: <1441060472-82169-1-git-send-email-computersforpeace@gmail.com>
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Cc: david@sigma-star.at, dedekind1@gmail.com, richard@nod.at,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH V3 01/27] mtd-utils: Restructure the mtd-utils source.
+Message-ID: <20151111223007.GC71848@google.com>
+References: <1444882208-4455-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1446261121-9978-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1441060472-82169-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1446261121-9978-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +26,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 31, 2015 at 03:34:21PM -0700, Brian Norris wrote:
-> Hi,
+On Sat, Oct 31, 2015 at 11:12:01AM +0800, Dongsheng Yang wrote:
+> * There is no code modification in this commit, only moving
+> * the files to proper place.
 > 
-> I've done a bit of work to make the flash_lock tool more useful, in order to
-> help test some new SPI NOR block protection features. Of note:
+> The user tools looks a little messy as we place almost
+> the all tools in the root directory of mtd-utils. To make
+> it more clear, I propose to introduce the following structure
+> for our source code.
 > 
->  * added getopt support
->  * further unified flash_unlock and flash_lock -- the only difference now is
->    their default feature, and both binaries contain support for all features
->  * add support for MEMISLOCKED, so we can query arbitrary regions for
->    protection status
->  * mtdinfo -M already can dump some block lock information, but you get a
->    little more flexibility using flash_lock --info, so both seem worth having
->    IMO
+> mtd-utils/
+> 	|-- lib
+> 	|-- include
+> 	|-- misc-utils
+> 	|-- jffsX-utils
+> 	|-- nand-utils
+> 	|-- nor-utils
+> 	|-- ubi-utils
+> 	|-- ubifs-utils
+> 	`-- tests
 > 
-> Unsolved issues:
-> 
->  * the MEM{LOCK,UNLOCK,ISLOCKED} ioctls all still use the out-dated 32-bit
->    erase_info_user struct, which means they'll have problems supporting >=4GB
->    flash. This isn't a mtd-utils problem, per se, and at the moment, Linux NAND
->    (the only (?) candidate for >=4GB flash) support doesn't implement any of
->    the locking APIs. But just an observation I ran across.
->  * Deprecation plan: it would make sense to deprecate and remove flash_unlock
->    eventually (in favor of 'flash_lock --unlock'), but this isn't really
->    pressing, so I don't see a good reason to spend much effort on it.
-> 
-> Enjoy,
-> Brian
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> ---
+> changelog:
+> 	v1:
+> 		- move tools in flash-utils to misc-utils
+> 		- change dir in gitignore
+> 		- remove flash_info in gitignore
+> 		- add mtdpart in gitignore
+>  .gitignore                                         | 54 +++++++++----------
 
-Pushed to mtd-utils.git
+This patch doesn't apply, due to .gitignore. I don't know what repo
+you're patching of, but it's not the tip of mtd-utils.git...
+
+...
+
+> diff --git a/.gitignore b/.gitignore
+> index 83ca938..e1d23cd 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -18,33 +18,33 @@
+>  #
+>  # Our programs
+>  #
+> -/doc_loadbios
+> -/docfdisk
+> -/flash_erase
+> -/flash_info
+> -/flash_lock
+> -/flash_otp_dump
+> -/flash_otp_info
+> -/flash_otp_lock
+> -/flash_otp_write
+> -/flash_unlock
+> -/flashcp
+> -/ftl_check
+> -/ftl_format
+> -/jffs2dump
+> -/jffs2reader
+> -/mkfs.jffs2
+> -/mtd_debug
+
+You're missing mtdpart?
+
+> -/nanddump
+> -/nandtest
+> -/nandwrite
+> -/nftl_format
+> -/nftldump
+> -/recv_image
+> -/rfddump
+> -/rfdformat
+> -/serve_image
+> -/sumtool
+> +/misc-utils/mtdpart
+
+But it shows up here?
+
+> +/misc-utils/doc_loadbios
+> +/misc-utils/docfdisk
+> +/misc-utils/flash_erase
+> +/misc-utils/flash_lock
+> +/misc-utils/flash_otp_dump
+> +/misc-utils/flash_otp_info
+> +/misc-utils/flash_otp_lock
+> +/misc-utils/flash_otp_write
+> +/misc-utils/flash_unlock
+> +/misc-utils/flashcp
+> +/misc-utils/ftl_check
+> +/misc-utils/ftl_format
+> +/jffsX-utils/jffs2dump
+> +/jffsX-utils/jffs2reader
+> +/jffsX-utils/mkfs.jffs2
+> +/misc-utils/mtd_debug
+> +/nand-utils/nanddump
+> +/nand-utils/nandtest
+> +/nand-utils/nandwrite
+> +/nand-utils/nftl_format
+> +/nand-utils/nftldump
+> +/misc-utils/recv_image
+> +/nor-utils/rfddump
+> +/nor-utils/rfdformat
+> +/misc-utils/serve_image
+> +/jffsX-utils/sumtool
+>  
+>  #
+>  # Top-level generic files
+
+Brian
