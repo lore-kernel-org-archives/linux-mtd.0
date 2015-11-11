@@ -1,26 +1,15 @@
-Date: Wed, 11 Nov 2015 12:26:21 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: bayi cheng <bayi.cheng@mediatek.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com,
- jteki@openedev.com, ezequiel@vanguardiasur.com.ar
-Subject: Re: [PATCH v6 0/3] Mediatek SPI-NOR flash driver
-Message-ID: <20151111202621.GI12143@google.com>
-References: <1446824889-16144-1-git-send-email-bayi.cheng@mediatek.com>
- <20151110024611.GL12143@google.com>
- <1447250654.19991.15.camel@mhfsdcap03>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1447250654.19991.15.camel@mhfsdcap03>
+Received: from mout3.freenet.de ([2001:748:100:40::2:5])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zwc38-0000Ev-5E
+ for linux-mtd@lists.infradead.org; Wed, 11 Nov 2015 20:31:24 +0000
+From: Thomas Betker <thomas.betker@freenet.de>
+To: David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+ Thomas Betker <thomas.betker@rohde-schwarz.com>
+Subject: [PATCH] jffs2: Don't add summary entry when MTD write fails
+Date: Wed, 11 Nov 2015 21:27:46 +0100
+Message-Id: <1447273666-2679-1-git-send-email-thomas.betker@freenet.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,74 +19,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 11, 2015 at 10:04:14PM +0800, Bayi Cheng wrote:
-> On Mon, 2015-11-09 at 18:46 -0800, Brian Norris wrote:
-> > I believe you didn't completely answer all my questions from v5 though.
-> > I'll repeat a bit here. Particularly, refer to [1].
-> > I'll summarize; I understand that your common transmit/receive operation
-> > works something like this:
-> > 
-> > Quoting from [1]:
-> > > (1) total number of bits to send/receive goes in the COUNT register (so
-> > >     far, as many as 7*8=56?)
-> > > (2) opcode is written to PRGDATA5
-> > > (3) other "transmit" data (like addresses), if any, are placed on PRGDATA4..0
-> > > (4) command is sent (execute_cmd())
-> > > (5) data is read back in SHREG{X..0}, if needed
-> > 
-> > My questions were:
-> > 
-> > (a) Why does mt8173_nor_set_read_mode() use PRGDATA3? That's not
-> >     mentioned in the SoC manual, and it doesn't really match any of the
-> >     steps above. Perhaps it's just a quirk of the controller's
-> >     programming model?
-> > 
-> yes, for this question, I have done some testes, If I change the
-> PRGDATA3 to PRGDATA5 for mt8173_nor_set_read_mode() like others
-> functions, then the controller will be hanged, and I have asked our
-> designer for double confirm.
+From: Thomas Betker <thomas.betker@rohde-schwarz.com>
 
-I wasn't suggesting to change this to PRGDATA5. I just was wondering why
-the difference. It's not documented. (I suppose an acceptable answer is
-just "because that's how the HW works.")
+jffs2_flash_direct_writev() always invokes jffs2_sum_add_kvec(), even
+if mtd_writev() fails. Usually, this results in an extra summary entry
+pointing to dirty node space, which should be ignored -- it is a bit of
+a waste, but harmless.
 
-> > (b) How do you determine X from step (5)?
-> > 
-> > Right now, your code seems to answer that X is "rxlen - 1". Correct?
-> > 
-> yes, I have used "rxlen -1", because the first of nor flash output is
-> located at SHREG[0], in the other words, the output data starts at
-> SHREG[0] and go up to SHREG[relen -1]
+When mtd_writev() returns *retlen == 0, though, the node space is not
+reserved as dirty, but re-used; the extra summary entry then points
+into the space of the next node. After the erase block has been closed,
+we get the following messages on remount:
 
-But, we aren't reading from SHREG[0] first; we're reading backwards from
-SHREG[rxlen - 1] down to SHREG[0]. It seems that's correct, right?
+    jffs2: error: (79) jffs2_link_node_ref:
+        Adding new ref c3048d18 at (0x00ec5b88-0x00ec6bcc)
+        not immediately after previous (0x00ec5b88-0x00ec5b88)
+    ...
+    jffs2: Checked all inodes but still 0x2088 bytes of unchecked space?
+    jffs2: No space for garbage collection. Aborting GC thread
 
-> > If that's correct and if I put all of my understanding together
-> > correctly, this means that you can actually shift out (in PRGDATA) up to
-> > 6 bytes (that is, 1 opcode and 5 tx bytes) and shift in (in SHREG) up to
-> > 7 bytes, except that the first byte is received during the opcode cycle,
-> > and so it is discarded, and we effectively receive only 6 bytes.
-> > 
-> > Is that all correct? If so, then I think you still need to adjust the
-> > boundary conditions in your do_tx_rx() function. (I'll comment on the
-> > driver to point out the specifics.)
-> 
-> Yes, you are right! and I will adjust the boundary conditions in
-> do_tx_rx() function.
+The extra summary entries amount to "unchecked space", so that
+jffs2_garbage_collect_pass() returns -ENOSPC. And without garbage
+collection, the filesystem becomes unuseable over time as the erase
+blocks fill up.
 
-OK, good. BTW, can you make sure to rewrite the appropriate MAX macro(s)
-to reflect the right values? It seems like maybe you'll want separate
-macros for the maximum TX and RX -- and total (?), or is this just the
-same as RX? -- since they seem to have different limits.
+Fix this by skipping jffs2_sum_add_kvec() when the MTD write fails. We
+don't need the summary entry anyway, and the behaviour matches that of
+jffs2_flash_writev() in wbuf.c (with write buffering enabled).
 
-> By the way, could you tell me whether I need to publish a new patch? or
-> you can fix them up directly?
+Signed-off-by: Thomas Betker <thomas.betker@rohde-schwarz.com>
+---
+ fs/jffs2/writev.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-I think there are a few more adjustments to make, so please just post a
-new version of the driver only. The DT binding and DTS changes look good
-to go now.
-
-Regards,
-Brian
-
-> > [1] http://lists.infradead.org/pipermail/linux-mtd/2015-October/062951.html
+diff --git a/fs/jffs2/writev.c b/fs/jffs2/writev.c
+index a1bda9d..eec4197 100644
+--- a/fs/jffs2/writev.c
++++ b/fs/jffs2/writev.c
+@@ -16,9 +16,18 @@
+ int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
+ 			      unsigned long count, loff_t to, size_t *retlen)
+ {
++	int ret;
++
++	ret = mtd_writev(c->mtd, vecs, count, to, retlen);
++
+ 	if (!jffs2_is_writebuffered(c)) {
+ 		if (jffs2_sum_active()) {
+ 			int res;
++
++			if (ret ||
++			    *retlen != iov_length((struct iovec *) vecs, count))
++				return ret;
++
+ 			res = jffs2_sum_add_kvec(c, vecs, count, (uint32_t) to);
+ 			if (res) {
+ 				return res;
+@@ -26,19 +35,23 @@ int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
+ 		}
+ 	}
+ 
+-	return mtd_writev(c->mtd, vecs, count, to, retlen);
++	return ret;
+ }
+ 
+ int jffs2_flash_direct_write(struct jffs2_sb_info *c, loff_t ofs, size_t len,
+ 			size_t *retlen, const u_char *buf)
+ {
+ 	int ret;
++
+ 	ret = mtd_write(c->mtd, ofs, len, retlen, buf);
+ 
+ 	if (jffs2_sum_active()) {
+ 		struct kvec vecs[1];
+ 		int res;
+ 
++		if (ret || *retlen != len)
++			return ret;
++
+ 		vecs[0].iov_base = (unsigned char *) buf;
+ 		vecs[0].iov_len = len;
+ 
+@@ -47,5 +60,6 @@ int jffs2_flash_direct_write(struct jffs2_sb_info *c, loff_t ofs, size_t len,
+ 			return res;
+ 		}
+ 	}
++
+ 	return ret;
+ }
+-- 
+2.6.3
