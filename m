@@ -1,26 +1,25 @@
 Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwdE3-00015X-8H
- for linux-mtd@lists.infradead.org; Wed, 11 Nov 2015 21:46:43 +0000
-Received: by pasz6 with SMTP id z6so43556275pas.2
- for <linux-mtd@lists.infradead.org>; Wed, 11 Nov 2015 13:46:22 -0800 (PST)
-Date: Wed, 11 Nov 2015 13:46:19 -0800
+ id 1ZwdXD-0001Kh-3q
+ for linux-mtd@lists.infradead.org; Wed, 11 Nov 2015 22:06:31 +0000
+Received: by pabfh17 with SMTP id fh17so42684993pab.0
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Nov 2015 14:06:10 -0800 (PST)
+Received: from google.com ([2620:0:1000:1301:b5e8:66ef:5e80:54ae])
+ by smtp.gmail.com with ESMTPSA id wh10sm11151277pab.2.2015.11.11.14.06.09
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
+ Wed, 11 Nov 2015 14:06:09 -0800 (PST)
+Date: Wed, 11 Nov 2015 14:06:07 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Marek Vasut <marex@denx.de>, Scott Wood <scottwood@freescale.com>,
- Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@freescale.com>
-Subject: Re: [PATCH v2 01/11] mtd: add get/set of_node/flash_node helpers
-Message-ID: <20151111214619.GM12143@google.com>
-References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
- <1446262410-45754-2-git-send-email-computersforpeace@gmail.com>
+Subject: Re: [mtd-utils PATCH] nandtest: support hex/dec/oct for --offset and
+ --length
+Message-ID: <20151111220607.GA71848@google.com>
+References: <1446163921-115867-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1446262410-45754-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1446163921-115867-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +29,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 30, 2015 at 08:33:20PM -0700, Brian Norris wrote:
-> We are going to begin using the mtd->dev.of_node field for MTD device
-> nodes, so let's add helpers for it. Also, we'll be making some
-> conversions on spi_nor (and nand_chip eventually) too, so get that ready
-> with their own helpers.
+On Thu, Oct 29, 2015 at 05:12:01PM -0700, Brian Norris wrote:
+> These two options are handled inconsistently, which caused an
+> unnecessary amount of head scratching. Let's just use the simple helpers
+> too, so we get the error handling right.
 > 
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
-> v2: new
 
-Pushed the first 5 to l2-mtd.git/next. Still re-reviewing the comments
-on the latter half of the series.
+Pushed to mtd-utils.git
