@@ -1,20 +1,24 @@
-In-Reply-To: <2015111020502373692025@top-vision.cn>
-References: <2015102618531107256082@top-vision.cn>,
- <OF29DE4023.3FDE364E-ONC1257EF8.004B3067-C1257EF8.00613BF0@rohde-schwarz.com>
- <2015111020502373692025@top-vision.cn>
-To: wangzaiwei <wangzaiwei@top-vision.cn>
-Cc: Deng Chao <deng.chao1@zte.com.cn>,
- Joakim Tjernlund <joakim.tjernlund@transmode.se>,
- 'Li Jiaxin' <lijiaxin@top-vision.cn>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-mtd <linux-mtd-bounces@lists.infradead.org>,
- Ming Liu <liu.ming50@gmail.com>, lizhenwei <lizhenwei@top-vision.cn>
+Message-ID: <1447249892.19991.5.camel@mhfsdcap03>
+Subject: Re: [PATCH v6 2/3] mtd: mtk-nor: mtk serial flash controller driver
+From: bayi cheng <bayi.cheng@mediatek.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: Mark Rutland <mark.rutland@arm.com>, <devicetree@vger.kernel.org>,
+ <srv_heupstream@mediatek.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, Sascha Hauer <s.hauer@pengutronix.de>,
+ <linux-kernel@vger.kernel.org>, <jteki@openedev.com>, Rob Herring
+ <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>,
+ <ezequiel@vanguardiasur.com.ar>, Kumar Gala <galak@codeaurora.org>,
+ "Matthias Brugger" <matthias.bgg@gmail.com>, <linux-mtd@lists.infradead.org>,
+ "David Woodhouse" <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>
+Date: Wed, 11 Nov 2015 21:51:32 +0800
+In-Reply-To: <20151110030115.GM12143@google.com>
+References: <1446824889-16144-1-git-send-email-bayi.cheng@mediatek.com>
+ <1446824889-16144-3-git-send-email-bayi.cheng@mediatek.com>
+ <20151110030115.GM12143@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Subject: Re: Another JFFS2 deadlock, kernel 3.4.11
-From: Thomas.Betker@rohde-schwarz.com
-Message-ID: <OF69D506BE.C7212435-ONC1257EFA.002F1880-C1257EFA.0043D703@rohde-schwarz.com>
-Date: Wed, 11 Nov 2015 13:20:57 +0100
-Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +28,172 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello wangzaiwei:
-
-> > Deng Chao has created a patch which a) removes the deadlock I wanted 
-to 
-> > get rid of originally, without b) introducing the new deadlocks; see 
-> > http://lists.infradead.org/pipermail/linux-mtd/2013-August/048352.html
-. 
-> > However, his patch modifies mm/filemap.c, and we were hoping to find a 
-
-> > more light-weight solution -- which never came to be.
+On Mon, 2015-11-09 at 19:01 -0800, Brian Norris wrote:
+> Hi Bayi,
 > 
-> > I do use his patch here around, though, and so far, it has worked 
-fine. I 
-> > will try to run your test scripts on one of our devices, and see if it 
-
-> > holds up.
-
-I have run your scripts on my device (with Deng Chao's patch) for three 
-hours. None of the scripts got into state 'D', and the system is still 
-alive (2 CPUs, so if a deadlock had occurred, the system would have 
-stopped dead).
-
-> Though I didn't know about that Deng Chao and Ming Liu had reported the 
-issue,
-> I have had the same patch thinking.
+> A few small comments.
 > 
-> Yes,these deadlock issues which we have found always occured between
-> gc thread(may 
-> actived by sync system call) and other user tasks
-> 
-> gc thread just like :
-> > for [sync_supers]
-> > jffs2_garbage_collect_live
-> >     mutex_lock(&f->sem)                         (A)
-> >     jffs2_garbage_collect_dnode
-> >         jffs2_gc_fetch_page
-> >             read_cache_page_async
-> >                 do_read_cache_page
-> >                     lock_page(page)             (B)
+> On Fri, Nov 06, 2015 at 11:48:08PM +0800, Bayi Cheng wrote:
+> > add spi nor flash driver for mediatek controller
+> > 
+> > Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+> > ---
+> >  drivers/mtd/spi-nor/Kconfig       |   7 +
+> >  drivers/mtd/spi-nor/Makefile      |   1 +
+> >  drivers/mtd/spi-nor/mtk-quadspi.c | 475 ++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 483 insertions(+)
+> >  create mode 100644 drivers/mtd/spi-nor/mtk-quadspi.c
 > 
 > 
-> if we change lock_page(page) above to lock_page_try(page),deadlock 
-> will go away.
+> > diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+> > index e53333e..0bf3a7f8 100644
+> > --- a/drivers/mtd/spi-nor/Makefile
+> > +++ b/drivers/mtd/spi-nor/Makefile
+> > @@ -1,3 +1,4 @@
+> >  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+> >  obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
+> > +obj-$(CONFIG_MTD_MT81xx_NOR)    += mtk-quadspi.o
+> >  obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
+> > diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+> > new file mode 100644
+> > index 0000000..6582811
+> > --- /dev/null
+> > +++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+> > @@ -0,0 +1,475 @@
 > 
-> But i worry about this workaround. jffs2_garbage_collect_live action
-> will changed.
-> and jffs2_garbage_collect_live is called not only by gc thread.
-> Is it ok to return an error rather than blocking . 
-> Can syscall 'sync' still reach its goal ?
+> ...
+> 
+> > +/* Can shift up to 48 bits (6 bytes) of TX/RX */
+> > +#define MTK_NOR_MAX_SHIFT		6
+> 
+> ...
+> 
+> > +static int mt8173_nor_do_tx_rx(struct mt8173_nor *mt8173_nor, u8 op,
+> > +			       u8 *tx, int txlen, u8 *rx, int rxlen)
+> > +{
+> > +	int len = 1 + txlen + rxlen;
+> > +	int i, ret, idx;
+> > +
+> > +	if (len > MTK_NOR_MAX_SHIFT + 1)
+> > +		return -EINVAL;
+> 
+> So I see you adjusted these bounds to add 1, which inspired one of my
+> questions on the cover letter.
+> 
+> Why do you allow len=7, which means you'd program 7*8 to the COUNT
+> register, when the SoC manual says it has a max of 48? Is the manual
+> wrong?
+> 
+Hi Brian, you are right, the manual is wrong here, Actually, it has a
+max of 56. when we want to read 6 IDs, we need transfer 1 byte command
+and 6 bytes null address to nor flash, then we can read the six IDs from
+SHREGx register.
 
-I think that Deng Chao has discussed this in his patch. We have been using 
-the patch for almost two years now, and I didn't see any bad effects yet.
+> I notice you added the '+ 1' to your driver, so it allows:
+> 
+> 	do_tx_rx( txlen = 0 , rxlen = 6) /* e.g., for READ ID */
+> 
+> but that means your driver also allows:
+> 
+> 	do_tx_rx( txlen = 6, rxlen = 0) /* ERROR: this will allow out of
+> 					   bounds write on PRGDATA
+> 					   register -1 */
+> 
+> If I understand correctly, the following constraints are more correct:
+> 
+> 	/* Can only transmit 1 opcode and 5 other bytes */
+> 	if (1 + txlen > MTK_NOR_MAX_SHIFT)
+> 		return -EINVAL;
+> 
+> 	/* Can only receive 6 bytes after the opcode */
+> 	if (rxlen > MTK_NOR_MAX_SHIFT)
+> 		return -EINVAL;
+> 
+> 	/* Can only handle XXX bytes total */
+> 	/* How many bytes is the max for register MTK_NOR_CNT_REG ? */
+> 	if (len > XXX)
+> 		return -EINVAL;
+> 
+yes, your constraints seems more correct, and I will adapt these lines
+to next patch.
+> > +
+> > +	writeb(len * 8, mt8173_nor->base + MTK_NOR_CNT_REG);
+> > +
+> > +	/* start at PRGDATA5, go down to PRGDATA0 */
+> > +	idx = MTK_NOR_MAX_SHIFT - 1;
+> > +
+> > +	/* opcode */
+> > +	writeb(op, mt8173_nor->base + MTK_NOR_PRG_REG(idx));
+> > +	idx--;
+> > +
+> > +	/* program TX data */
+> > +	for (i = 0; i < txlen; i++, idx--)
+> > +		writeb(tx[i], mt8173_nor->base + MTK_NOR_PRG_REG(idx));
+> > +
+> > +	/* clear out rest of TX registers */
+> > +	while (idx >= 0) {
+> > +		writeb(0, mt8173_nor->base + MTK_NOR_PRG_REG(idx));
+> > +		idx--;
+> > +	}
+> > +
+> > +	ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PRG_CMD);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* restart at first RX byte */
+> > +	idx = rxlen - 1;
+> > +
+> > +	/* read out RX data */
+> > +	for (i = 0; i < rxlen; i++, idx--)
+> > +		rx[i] = readb(mt8173_nor->base + MTK_NOR_SHREG(idx));
+> > +
+> > +	return 0;
+> > +}
+> > +
+> 
+> ...
+> 
+> > +static int __init mtk_nor_init(struct mt8173_nor *mt8173_nor,
+> > +			       struct device_node *flash_node)
+> > +{
+> > +	struct mtd_part_parser_data ppdata = {
+> > +		.of_node = flash_node,
+> > +	};
+> > +	int ret;
+> > +	struct spi_nor *nor;
+> 
+> Normally we'd have a blank line here.
+> 
+Ok, I will fix it, and thanks for your advice.
 
-Best regards,
-Thomas Betker
+> > +	/* initialize controller to accept commands */
+> > +	writel(MTK_NOR_ENABLE_SF_CMD, mt8173_nor->base + MTK_NOR_WRPROT_REG);
+> > +
+> > +	nor = &mt8173_nor->nor;
+> > +	nor->dev = mt8173_nor->dev;
+> > +	nor->priv = mt8173_nor;
+> > +	nor->flash_node = flash_node;
+> > +
+> > +	/* fill the hooks to spi nor */
+> > +	nor->read = mt8173_nor_read;
+> > +	nor->read_reg = mt8173_nor_read_reg;
+> > +	nor->write = mt8173_nor_write;
+> > +	nor->write_reg = mt8173_nor_write_reg;
+> > +	nor->mtd.owner = THIS_MODULE;
+> > +	nor->mtd.name = "mtk_nor";
+> > +	/* initialized with NULL */
+> > +	ret = spi_nor_scan(nor, NULL, SPI_NOR_DUAL);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return mtd_device_parse_register(&nor->mtd, NULL, &ppdata, NULL, 0);
+> > +}
+> 
+> ...
+> 
+> Brian
+> 
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
