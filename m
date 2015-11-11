@@ -1,18 +1,22 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwWpU-0000JO-3m
- for linux-mtd@lists.infradead.org; Wed, 11 Nov 2015 14:56:57 +0000
-Date: Wed, 11 Nov 2015 15:56:30 +0100
-From: Daniel Walter <dwalter@sigma-star.at>
-To: linux-mtd@lists.infradead.org
-Cc: mkl@pengutronix.de
-Subject: Re: [PATCH 0/5] mkfs.ubifs: cleanups + extended attribute support
-Message-ID: <20151111145630.GA1089@dw-nb.local>
-References: <1445008519-19928-1-git-send-email-mkl@pengutronix.de>
+Received: from mail-oi0-x22c.google.com ([2607:f8b0:4003:c06::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZwX5j-0005uV-6a
+ for linux-mtd@lists.infradead.org; Wed, 11 Nov 2015 15:13:43 +0000
+Received: by oige206 with SMTP id e206so16921633oig.2
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Nov 2015 07:13:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1445008519-19928-1-git-send-email-mkl@pengutronix.de>
+In-Reply-To: <20151111021549.GV12143@google.com>
+References: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
+ <20151111021549.GV12143@google.com>
+Date: Wed, 11 Nov 2015 16:13:19 +0100
+Message-ID: <CACRpkdafrinB=EdjRT2coHbG9o==QGPHqe0YNOk99gnFRkP_bg@mail.gmail.com>
+Subject: Re: [PATCH 00/10] ARM MTD AFS v2 partition support
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 16, 2015 at 05:15:14PM +0200, Marc Kleine-Budde wrote:
-> Hello,
-> 
-> this series applies to current git master. The first 3 patches are cleanup
-> patches, in the 4th adds extended attributes support. Patch 5 adds a option to
-> write the used inode number to a extended attribute, so that other offline
-> tools like IMA, that process the inode number can work. See description of
-> patch 5 for a detailed explanation.
-> 
-> regards,
-> Marc
->
+On Wed, Nov 11, 2015 at 3:15 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
 
-Hi Marc,
+> Also, do you have a pointer that documents the v2 format? I can probably
+> find something myself, but I'm a bit lazy, and if you have something
+> easy to point me to, that'd save me some time :)
 
-I had a quick look at the first 3 patches and they all seem fine, so
-feel free to add a reviewed-by from me.
+There are no documents. The documentation is the source code for
+the on-board boot monitor (first thing started by the ROM) that
+comes with the board on a CD/DVD. A .h file documents the struct
+that is simply written to flash as footer and image info. I don't
+think I may post it, the structs in the kernel correspond to these
+structs.
 
-Since there is already a WITHOUT_XATTR build flag (to disable xattr
-support) for mkfs.jffs2, would you mind using it for mkfs.ubi as well ?
-
-
-cheers,
-
-daniel
+Yours,
+Linus Walleij
