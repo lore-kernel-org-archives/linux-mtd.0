@@ -1,15 +1,26 @@
-Received: from mout3.freenet.de ([2001:748:100:40::2:5])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zwc38-0000Ev-5E
- for linux-mtd@lists.infradead.org; Wed, 11 Nov 2015 20:31:24 +0000
-From: Thomas Betker <thomas.betker@freenet.de>
-To: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- Thomas Betker <thomas.betker@rohde-schwarz.com>
-Subject: [PATCH] jffs2: Don't add summary entry when MTD write fails
-Date: Wed, 11 Nov 2015 21:27:46 +0100
-Message-Id: <1447273666-2679-1-git-send-email-thomas.betker@freenet.de>
+Date: Wed, 11 Nov 2015 12:38:23 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Bayi Cheng <bayi.cheng@mediatek.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Daniel Kurtz <djkurtz@chromium.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com,
+ jteki@openedev.com, ezequiel@vanguardiasur.com.ar
+Subject: Re: [PATCH v6 1/3] doc: dt: add documentation for Mediatek spi-nor
+ controller
+Message-ID: <20151111203823.GJ12143@google.com>
+References: <1446824889-16144-1-git-send-email-bayi.cheng@mediatek.com>
+ <1446824889-16144-2-git-send-email-bayi.cheng@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1446824889-16144-2-git-send-email-bayi.cheng@mediatek.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,93 +30,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Thomas Betker <thomas.betker@rohde-schwarz.com>
+On Fri, Nov 06, 2015 at 11:48:07PM +0800, Bayi Cheng wrote:
+> Add device tree binding documentation for serial flash with
+> Mediatek serial flash controller
+> 
+> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+> ---
 
-jffs2_flash_direct_writev() always invokes jffs2_sum_add_kvec(), even
-if mtd_writev() fails. Usually, this results in an extra summary entry
-pointing to dirty node space, which should be ignored -- it is a bit of
-a waste, but harmless.
+Applied to l2-mtd.git/next (for 4.5). This will show up in
+linux-next.git after the merge window.
 
-When mtd_writev() returns *retlen == 0, though, the node space is not
-reserved as dirty, but re-used; the extra summary entry then points
-into the space of the next node. After the erase block has been closed,
-we get the following messages on remount:
+Also squashed in a small diff (below), to fix up some language issues
+and to refer the reader to the jedec,spi-nor.txt document.
 
-    jffs2: error: (79) jffs2_link_node_ref:
-        Adding new ref c3048d18 at (0x00ec5b88-0x00ec6bcc)
-        not immediately after previous (0x00ec5b88-0x00ec5b88)
-    ...
-    jffs2: Checked all inodes but still 0x2088 bytes of unchecked space?
-    jffs2: No space for garbage collection. Aborting GC thread
+>  .../devicetree/bindings/mtd/mtk-quadspi.txt        | 41 ++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> new file mode 100644
+> index 0000000..866b492
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> @@ -0,0 +1,41 @@
+> +* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
 
-The extra summary entries amount to "unchecked space", so that
-jffs2_garbage_collect_pass() returns -ENOSPC. And without garbage
-collection, the filesystem becomes unuseable over time as the erase
-blocks fill up.
+The DT binding document shouldn't be talking about software (i.e.,
+shouldn't be talking about "drivers").
 
-Fix this by skipping jffs2_sum_add_kvec() when the MTD write fails. We
-don't need the summary entry anyway, and the behaviour matches that of
-jffs2_flash_writev() in wbuf.c (with write buffering enabled).
+> +
+> +Required properties:
+> +- compatible: 	  should be "mediatek,mt8173-nor";
+> +- reg: 		  physical base address and length of the controller's register
+> +- clocks: 	  the phandle of the clock needed by the nor controller
+> +- clock-names: 	  the name of the clocks
+> +		  the clocks needed "spi" and "sf". "spi" is used for spi bus,
+> +		  and "sf" is used for controller, these are the clocks witch
+> +		  hardware needs to enabling nor flash and nor flash controller.
+> +		  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
+> +- #address-cells: should be <1>
+> +- #size-cells:	  should be <0>
+> +
+> +The SPI Flash must be a child of the nor_flash node and must have a
+> +compatible property.
+> +
+> +Required properties:
+> +- compatible:	  May include a device-specific string consisting of the manufacturer
+> +		  and name of the chip. Must also include "jedec,spi-nor" for any
+> +		  SPI NOR flash that can be identified by the JEDEC READ ID opcode (0x9F).
+> +- reg :		  Chip-Select number
+> +
+> +Example:
+> +
+> +nor_flash: spi@1100d000 {
+> +	compatible = "mediatek,mt8173-nor";
+> +	reg = <0 0x1100d000 0 0xe0>;
+> +	clocks = <&pericfg CLK_PERI_SPI>,
+> +		 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
+> +	clock-names = "spi", "sf";
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	status = "disabled";
+> +
+> +	flash@0 {
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0>;
+> +	};
+> +};
+> +
 
-Signed-off-by: Thomas Betker <thomas.betker@rohde-schwarz.com>
----
- fs/jffs2/writev.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/fs/jffs2/writev.c b/fs/jffs2/writev.c
-index a1bda9d..eec4197 100644
---- a/fs/jffs2/writev.c
-+++ b/fs/jffs2/writev.c
-@@ -16,9 +16,18 @@
- int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
- 			      unsigned long count, loff_t to, size_t *retlen)
- {
-+	int ret;
-+
-+	ret = mtd_writev(c->mtd, vecs, count, to, retlen);
-+
- 	if (!jffs2_is_writebuffered(c)) {
- 		if (jffs2_sum_active()) {
- 			int res;
-+
-+			if (ret ||
-+			    *retlen != iov_length((struct iovec *) vecs, count))
-+				return ret;
-+
- 			res = jffs2_sum_add_kvec(c, vecs, count, (uint32_t) to);
- 			if (res) {
- 				return res;
-@@ -26,19 +35,23 @@ int jffs2_flash_direct_writev(struct jffs2_sb_info *c, const struct kvec *vecs,
- 		}
- 	}
+diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+index 866b492c38d2..fb314f09861b 100644
+--- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
++++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+@@ -1,19 +1,19 @@
+-* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
++* Serial NOR flash controller for MTK MT81xx (and similar)
  
--	return mtd_writev(c->mtd, vecs, count, to, retlen);
-+	return ret;
- }
+ Required properties:
+ - compatible: 	  should be "mediatek,mt8173-nor";
+ - reg: 		  physical base address and length of the controller's register
+-- clocks: 	  the phandle of the clock needed by the nor controller
+-- clock-names: 	  the name of the clocks
+-		  the clocks needed "spi" and "sf". "spi" is used for spi bus,
++- clocks: 	  the phandle of the clocks needed by the nor controller
++- clock-names: 	  the names of the clocks
++		  the clocks should be named "spi" and "sf". "spi" is used for spi bus,
+ 		  and "sf" is used for controller, these are the clocks witch
+ 		  hardware needs to enabling nor flash and nor flash controller.
+ 		  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
+ - #address-cells: should be <1>
+ - #size-cells:	  should be <0>
  
- int jffs2_flash_direct_write(struct jffs2_sb_info *c, loff_t ofs, size_t len,
- 			size_t *retlen, const u_char *buf)
- {
- 	int ret;
-+
- 	ret = mtd_write(c->mtd, ofs, len, retlen, buf);
+-The SPI Flash must be a child of the nor_flash node and must have a
+-compatible property.
++The SPI flash must be a child of the nor_flash node and must have a
++compatible property. Also see jedec,spi-nor.txt.
  
- 	if (jffs2_sum_active()) {
- 		struct kvec vecs[1];
- 		int res;
- 
-+		if (ret || *retlen != len)
-+			return ret;
-+
- 		vecs[0].iov_base = (unsigned char *) buf;
- 		vecs[0].iov_len = len;
- 
-@@ -47,5 +60,6 @@ int jffs2_flash_direct_write(struct jffs2_sb_info *c, loff_t ofs, size_t len,
- 			return res;
- 		}
- 	}
-+
- 	return ret;
- }
--- 
-2.6.3
+ Required properties:
+ - compatible:	  May include a device-specific string consisting of the manufacturer
