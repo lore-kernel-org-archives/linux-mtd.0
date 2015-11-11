@@ -1,18 +1,22 @@
-Date: Tue, 10 Nov 2015 19:20:05 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Ryan Harkin <ryan.harkin@linaro.org>,
- Liviu Dudau <liviu.dudau@arm.com>
-Subject: Re: [PATCH 10/10] mtd: afs: add v2 partition parsing
-Message-ID: <20151111032005.GA12143@google.com>
-References: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
- <1444914533-27782-11-git-send-email-linus.walleij@linaro.org>
+Subject: Re: [PATCH v3 1/5] spi: introduce mmap read support for spi flash
+ devices
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1447133399-25658-1-git-send-email-vigneshr@ti.com>
+ <1447133399-25658-2-git-send-email-vigneshr@ti.com>
+ <20151110232341.GU12143@google.com>
+CC: Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>, Rob
+ Herring <robh@kernel.org>, Michal Suchanek <hramrach@gmail.com>,
+ Russell King <linux@arm.linux.org.uk>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>
+From: "R, Vignesh" <vigneshr@ti.com>
+Message-ID: <5642E546.3040806@ti.com>
+Date: Wed, 11 Nov 2015 12:20:46 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1444914533-27782-11-git-send-email-linus.walleij@linaro.org>
+In-Reply-To: <20151110232341.GU12143@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,273 +26,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Brain,
 
-Only reviewing part of this patch, as I gotta run now.
-
-On Thu, Oct 15, 2015 at 03:08:53PM +0200, Linus Walleij wrote:
-> The AFS v2 partition type appear in later ARM reference designs
-> such as RealView, Versatile Express and the 64bit Juno Development
-> Platform.
+On 11/11/2015 4:53 AM, Brian Norris wrote:
+> Hi Vignesh,
 > 
-> The image informations is padded with a 32bit word (4 bytes) on
-> the 32bit platforms and a 64bit word (8 bytes) on the 64bit
-> platforms. The boot monitor source code gives at hand that this
-> is because the first entry in the struct mapped over the image
-> information is a "next" pointer for a linked list, filled in
-> by firmware after reading in the info block, and always zero
-> in the flash. We adjust padding by checking what padding gives
-> the right checksum.
+> Sorry for the late review. I did not have time to review much back when
+> you submitted your first RFCs for this.
 > 
-> This was tested on:
-> - Integrator/AP (v1 partitions)
-> - RealView PB11MPCore (v2 32bit partitions)
-> - Juno Development System (v2 64bit partitions)
+> On Tue, Nov 10, 2015 at 10:59:55AM +0530, Vignesh R wrote:
+>> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+>> index cce80e6dc7d1..2f2c431b8917 100644Hi
+>> --- a/include/linux/spi/spi.h
+>> +++ b/include/linux/spi/spi.h
+>> @@ -361,6 +361,11 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+>>   * @handle_err: the subsystem calls the driver to handle an error that occurs
+>>   *		in the generic implementation of transfer_one_message().
+>>   * @unprepare_message: undo any work done by prepare_message().
+>> + * @spi_mtd_mmap_read: some spi-controller hardwares provide memory.
+>> + *                     Flash drivers (like m25p80) can request memory
+>> + *                     mapped read via this method. This interface
+>> + *                     should only be used by mtd flashes and cannot be
+>> + *                     used by other spi devices.
+>>   * @cs_gpios: Array of GPIOs to use as chip select lines; one per CS
+>>   *	number. Any individual value may be -ENOENT for CS lines that
+>>   *	are not GPIOs (driven by the SPI controller itself).
+>> @@ -507,6 +512,11 @@ struct spi_master {
+>>  			       struct spi_message *message);
+>>  	int (*unprepare_message)(struct spi_master *master,
+>>  				 struct spi_message *message);
+>> +	int (*spi_mtd_mmap_read)(struct  spi_device *spi,
+>> +				 loff_t from, size_t len,
+>> +				 size_t *retlen, u_char *buf,
+>> +				 u8 read_opcode, u8 addr_width,
+>> +				 u8 dummy_bytes);
 > 
-> All systems display the images in flash very nicely as separate
-> partitions, e.g on Juno:
+> Is this API really sufficient? There are actually quite a few other
+> flash-related parameters that might be relevant to a controller. I
+> presume you happen not hit them because of the particular cases you're
+> using this for right now, but:
 > 
-> 4 afs partitions found on MTD device 8000000.flash
-> Creating 4 MTD partitions on "8000000.flash":
-> 0x000000040000-0x0000000c0000 : "fip"
-> 0x000000ec0000-0x0000018c0000 : "Image"
-> 0x000000f00000-0x000000f40000 : "juno"
-> 0x000003ec0000-0x000003f00000 : "bl1"
+>  * How many I/O lines are being used? These can vary depending on the
+>    type of flash and the number of I/O lines supported by the controller
+>    and connected on the board.
 > 
-> Cc: Ryan Harkin <ryan.harkin@linaro.org>
-> Cc: Liviu Dudau <liviu.dudau@arm.com>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  drivers/mtd/afs.c | 158 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 157 insertions(+), 1 deletion(-)
+
+This API communicates whatever data is currently communicated via
+spi_message through spi_sync/transfer_one interfaces.
+
+>  * The previous point can vary across parts of the message. There are
+>    various combinations of 1/2/4 lines used for opcode/address/data. We
+>    only support a few of those combinations in m25p80 right now, but
+>    you're not specifying any of that in this API. I guess you're just
+>    making assumptions? (BTW, I think there are others having problems
+>    with the difference between different "quad" modes on Micron flash; I
+>    haven't sorted through all the discussion there.)
 > 
-> diff --git a/drivers/mtd/afs.c b/drivers/mtd/afs.c
-> index 1ce6842c917c..e46b035bf4d2 100644
-> --- a/drivers/mtd/afs.c
-> +++ b/drivers/mtd/afs.c
-> @@ -3,6 +3,7 @@
->      drivers/mtd/afs.c: ARM Flash Layout/Partitioning
->  
->      Copyright © 2000 ARM Limited
-> +    Copyright (C) 2015 Linus Walleij
 
-The two copyright symbols don't match.
+How is the spi controller currently being made aware of this via
+m25p80_read / spi_sync() interface? AFAIK, mode field of spi_device
+struct tell whether to do normal/dual/quad read but there is no info
+communicated wrt 1/2/4 opcode/address/data combinations. And there is no
+info indicating capabilities of spi-master wrt no of IO lines for
+opcode/address/data that it can support.
 
->  
->     This program is free software; you can redistribute it and/or modify
->     it under the terms of the GNU General Public License as published by
-> @@ -35,6 +36,8 @@
->  #include <linux/mtd/partitions.h>
->  
->  #define AFSV1_FOOTER_MAGIC 0xA0FFFF9F
-> +#define AFSV2_FOOTER_MAGIC1 0x464C5348 /* "FLSH" */
-> +#define AFSV2_FOOTER_MAGIC2 0x464F4F54 /* "FOOT" */
->  
->  struct footer_v1 {
->  	u32 image_info_base;	/* Address of first word of ImageFooter  */
-> @@ -68,6 +71,22 @@ static u32 word_sum(void *words, int num)
->  	return sum;
->  }
->  
-> +static u32 word_sum_v2(u32 *p, u32 num)
-> +{
-> +	u32 sum = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < num; i++) {
-> +		u32 val;
-> +
-> +		val = p[i];
-> +		if (val > ~sum)
-> +			sum++;
-> +		sum += val;
-> +	}
-> +	return ~sum;
-> +}
-> +
->  static bool afs_is_v1(struct mtd_info *mtd, u_int off)
->  {
->  	/* The magic is 12 bytes from the end of the erase block */
-> @@ -88,6 +107,27 @@ static bool afs_is_v1(struct mtd_info *mtd, u_int off)
->  	return (magic == AFSV1_FOOTER_MAGIC);
->  }
->  
-> +static bool afs_is_v2(struct mtd_info *mtd, u_int off)
-> +{
-> +	/* The magic is the 8 last bytes of the erase block */
-> +	u_int ptr = off + mtd->erasesize - 8;
-> +	u32 foot[2];
-> +	size_t sz;
-> +	int ret;
-> +
-> +	ret = mtd_read(mtd, ptr, 8, &sz, (u_char *)foot);
-> +	if (ret < 0) {
-> +		printk(KERN_ERR "AFS: mtd read failed at 0x%x: %d\n",
-> +		       ptr, ret);
-> +		return false;
-> +	}
-> +	if (ret >= 0 && sz != 8)
-> +		return false;
-> +
-> +	return (foot[0] == AFSV2_FOOTER_MAGIC1 &&
-> +		foot[1] == AFSV2_FOOTER_MAGIC2);
-> +}
-> +
->  static int afs_parse_v1_partition(struct mtd_info *mtd,
->  				  u_int off, struct mtd_partition *part)
->  {
-> @@ -185,6 +225,113 @@ static int afs_parse_v1_partition(struct mtd_info *mtd,
->  	return 0;
->  }
->  
-> +static int afs_parse_v2_partition(struct mtd_info *mtd,
-> +				  u_int off, struct mtd_partition *part)
-> +{
-> +	u_int ptr;
-> +	u32 footer[12];
-> +	u32 imginfo[36];
-> +	char *name;
-> +	u32 version;
-> +	u32 entrypoint;
-> +	u32 attributes;
-> +	u32 region_count;
-> +	u32 block_start;
-> +	u32 block_end;
-> +	u32 crc;
-> +	size_t sz;
-> +	int ret;
-> +	int i;
-> +	int pad = 0;
-> +
-> +	pr_debug("Parsing v2 partition @%08x-%08x\n",
-> +		 off, off + mtd->erasesize);
-> +
-> +	/* First read the footer */
-> +	ptr = off + mtd->erasesize - sizeof(footer);
-> +	ret = mtd_read(mtd, ptr, sizeof(footer), &sz, (u_char *)footer);
-> +	if ((ret < 0) || (ret >= 0 && sz != sizeof(footer))) {
-> +		pr_err("AFS: mtd read failed at 0x%x: %d\n",
-> +		       ptr, ret);
-> +		return -EIO;
-> +	}
-> +	name = (char *) &footer[0];
-> +	version = footer[9];
-> +	ptr = off + mtd->erasesize - sizeof(footer) - footer[8];
-> +
-> +	pr_debug("found image \"%s\", version %08x, info @%08x\n",
-> +		 name, version, ptr);
-> +
-> +	/* Then read the image information */
-> +	ret = mtd_read(mtd, ptr, sizeof(imginfo), &sz, (u_char *)imginfo);
-> +	if ((ret < 0) || (ret >= 0 && sz != sizeof(imginfo))) {
-> +		pr_err("AFS: mtd read failed at 0x%x: %d\n",
-> +		       ptr, ret);
-> +		return -EIO;
-> +	}
-> +
-> +	/* 32bit platforms have 4 bytes padding */
-> +	crc = word_sum_v2(&imginfo[1], 34);
-> +	if (!crc) {
-> +		pr_debug("Padding 1 word (4 bytes)\n");
-> +		pad = 1;
-> +	} else {
-> +		/* 64bit platforms have 8 bytes padding */
-> +		crc = word_sum_v2(&imginfo[2], 34);
-> +		if (!crc) {
-> +			pr_debug("Padding 2 words (8 bytes)\n");
-> +			pad = 2;
-> +		}
-> +	}
-> +	if (crc) {
-> +		pr_err("AFS: bad checksum on v2 image info: %08x\n", crc);
-> +		return -EINVAL;
-> +	}
-> +	entrypoint = imginfo[pad];
-> +	attributes = imginfo[pad+1];
-> +	region_count = imginfo[pad+2];
-> +	block_start = imginfo[20];
-> +	block_end = imginfo[21];
-> +
-> +	pr_debug("image entry=%08x, attr=%08x, regions=%08x, "
-> +		 "bs=%08x, be=%08x\n",
-> +		 entrypoint, attributes, region_count,
-> +		 block_start, block_end);
-> +
-> +	for (i = 0; i < region_count; i++) {
-> +		u32 region_load_addr = imginfo[pad + 3 + i*4];
-> +		u32 region_size = imginfo[pad + 4 + i*4];
-> +		u32 region_offset = imginfo[pad + 5 + i*4];
-> +		u32 region_start;
-> +		u32 region_end;
-> +
-> +		pr_debug("  region %d: address: %08x, size: %08x, "
-> +			 "offset: %08x\n",
-> +			 i,
-> +			 region_load_addr,
-> +			 region_size,
-> +			 region_offset);
-> +
-> +		region_start = off + region_offset;
-> +		region_end = region_start + region_size;
-> +		/* Align partition to end of erase block */
-> +		region_end += (mtd->erasesize - 1);
-> +		region_end &= ~(mtd->erasesize -1);
-> +		pr_debug("   partition start = %08x, partition end = %08x\n",
-> +			 region_start, region_end);
-> +
-> +		/* Create one partition per region */
-> +		part->name = kstrdup(name, GFP_KERNEL);
-> +		if (!part->name)
-> +			return -ENOMEM;
-> +		part->offset = region_start;
-> +		part->size = region_end - region_start;
-> +		part->mask_flags = 0;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int parse_afs_partitions(struct mtd_info *mtd,
->  				struct mtd_partition **pparts,
->  				struct mtd_part_parser_data *data)
-> @@ -200,6 +347,10 @@ static int parse_afs_partitions(struct mtd_info *mtd,
->  			sz += sizeof(struct mtd_partition);
->  			i += 1;
->  		}
-> +		if (afs_is_v2(mtd, off)) {
-> +			sz += sizeof(struct mtd_partition);
-> +			i += 1;
-> +		}
->  	}
->  
->  	if (!i)
-> @@ -213,13 +364,18 @@ static int parse_afs_partitions(struct mtd_info *mtd,
->  	 * Identify the partitions
->  	 */
->  	for (i = off = 0; off < mtd->size; off += mtd->erasesize) {
-> -
->  		if (afs_is_v1(mtd, off)) {
->  			ret = afs_parse_v1_partition(mtd, off, &parts[i]);
->  			if (ret)
->  				goto out_free_parts;
->  			i++;
->  		}
-> +		if (afs_is_v2(mtd, off)) {
+>    There are typically both flash device and SPI controller constraints
+>    on this question, so there needs to be some kind of negotiation
+>    involved, I expect. Or at least, the SPI master needs to expose which
+>    modes it can support with this flash-read API.
+> 
 
-Do we really want to allow a single block to be counted as both v1 and
-v2? I'm not sure if that's possible given the data structure, but this
-seems like it should be an 'else if', to avoid unnecessary scanning.
+If spi-master capabilities are known then spi_mmap_read_supported() (or
+a new function perhaps) can be used for negotiation. These capabilities
+can be added incrementally once ability to specify spi-master
+capabilities are in place.
 
-You also might save yourself a bit if you check for v2 first. Not a big
-deal but I thought I'd throw it out there.
+> Also, this API doesn't actually have anything to do with memory mapping.
+> It has to do with the de facto standard flash protocol. So I don't think
+> mmap belongs in the name; it should be something about flash. (I know of
+> at least one other controller that could probably use this API, excpet
+> it doesn't use memory mapping to accomplish the accelerated flash read.)
+> 
 
-> +			ret = afs_parse_v2_partition(mtd, off, &parts[i]);
-> +			if (ret)
-> +				goto out_free_parts;
-> +			i++;
-> +		}
->  	}
->  
->  	*pparts = parts;
+As far as TI QSPI controller is concerned, the accelerated read happens
+via mmap port whereby a predefined memory address space of SoC is
+exposed as QSPI mmap region. This region can be accessed like normal
+RAM(via memcpy()) and the QSPI controller interface takes care of
+fetching data from flash on SPI bus automatically hence, I named it as
+above. But, I have no hard feelings if it needs to be generalized to
+spi_mtd_read() or something else.
 
-Brian
+Regards
+Vignesh
