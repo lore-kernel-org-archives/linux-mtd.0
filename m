@@ -1,17 +1,17 @@
-Date: Tue, 10 Nov 2015 18:28:09 -0800
+Date: Tue, 10 Nov 2015 19:09:04 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Linus Walleij <linus.walleij@linaro.org>
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, Ryan Harkin <ryan.harkin@linaro.org>,
  Liviu Dudau <liviu.dudau@arm.com>
-Subject: Re: [PATCH 05/10] mtd: afs: simplify partition parsing
-Message-ID: <20151111022809.GW12143@google.com>
+Subject: Re: [PATCH 06/10] mtd: afs: simplify partition detection
+Message-ID: <20151111030904.GX12143@google.com>
 References: <1444914533-27782-1-git-send-email-linus.walleij@linaro.org>
- <1444914533-27782-6-git-send-email-linus.walleij@linaro.org>
+ <1444914533-27782-7-git-send-email-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1444914533-27782-6-git-send-email-linus.walleij@linaro.org>
+In-Reply-To: <1444914533-27782-7-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,176 +23,103 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Linus,
 
-On Thu, Oct 15, 2015 at 03:08:48PM +0200, Linus Walleij wrote:
-> This simplifies the AFS partition parsing to make the code
-> more straight-forward and readable.
-> 
-> Before this patch the code tried to calculate the memory required
-> to hold the partition info by adding up the sizes of the strings
-> of the names and adding that to a single memory allocation,
-> indexing the name pointers in front of the struct mtd_partition
-> allocations so all allocated data was in one chunk.
-> 
-> This is overzealous. Instead use kstrdup and bail out,
-> kfree():ing the memory used for MTD partitions and names alike
-> on the errorpath.
-> 
-> In the process rename the index variable from idx to i.
+On Thu, Oct 15, 2015 at 03:08:49PM +0200, Linus Walleij wrote:
+> Instead of reading out the AFS footers twice, create a separate
+> function to just check if there is a footer or not. Rids a few
+> local variables and prepare us to join the actual parser into
+> one function.
 > 
 > Cc: Ryan Harkin <ryan.harkin@linaro.org>
 > Cc: Liviu Dudau <liviu.dudau@arm.com>
 > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  drivers/mtd/afs.c | 67 ++++++++++++++++++++++++++-----------------------------
->  1 file changed, 32 insertions(+), 35 deletions(-)
+>  drivers/mtd/afs.c | 33 ++++++++++++++++++++++-----------
+>  1 file changed, 22 insertions(+), 11 deletions(-)
 > 
 > diff --git a/drivers/mtd/afs.c b/drivers/mtd/afs.c
-> index a1eea50ce180..9e6089615f16 100644
+> index 9e6089615f16..2307f54195f5 100644
 > --- a/drivers/mtd/afs.c
 > +++ b/drivers/mtd/afs.c
-> @@ -166,9 +166,9 @@ static int parse_afs_partitions(struct mtd_info *mtd,
->  				struct mtd_part_parser_data *data)
->  {
->  	struct mtd_partition *parts;
-> -	u_int mask, off, idx, sz;
-> +	u_int mask, off, sz;
->  	int ret = 0;
-> -	char *str;
-> +	int i;
->  
->  	/*
->  	 * This is the address mask; we use this to mask off out of
-> @@ -181,78 +181,75 @@ static int parse_afs_partitions(struct mtd_info *mtd,
->  	 * partition information.  We include in this the size of
->  	 * the strings.
->  	 */
-
-Nit: you rewrite this comment in the next patch, when it really should
-be rewritten here, since this is where you change the allocation
-behavior. I wouldn't worry about this, except that I have other comments
-below that I think you'll need to address.
-
-> -	for (idx = off = sz = 0; off < mtd->size; off += mtd->erasesize) {
-> -		struct image_info_v1 iis;
-> +	for (i = off = sz = 0; off < mtd->size; off += mtd->erasesize) {
->  		u_int iis_ptr, img_ptr;
->  
->  		ret = afs_read_footer_v1(mtd, &img_ptr, &iis_ptr, off, mask);
->  		if (ret < 0)
-> -			break;
-> +			return ret;
->  		if (ret) {
-> -			ret = afs_read_iis_v1(mtd, &iis, iis_ptr);
-> -			if (ret < 0)
-> -				break;
-> -			if (ret == 0)
-> -				continue;
-> -
->  			sz += sizeof(struct mtd_partition);
-> -			sz += strlen(iis.name) + 1;
-> -			idx += 1;
-> +			i += 1;
->  		}
->  	}
->  
-> -	if (!sz)
-> -		return ret;
-> +	if (!i)
-> +		return 0;
->  
->  	parts = kzalloc(sz, GFP_KERNEL);
->  	if (!parts)
->  		return -ENOMEM;
->  
-> -	str = (char *)(parts + idx);
-> -
->  	/*
->  	 * Identify the partitions
->  	 */
-> -	for (idx = off = 0; off < mtd->size; off += mtd->erasesize) {
-> +	for (i = off = 0; off < mtd->size; off += mtd->erasesize) {
->  		struct image_info_v1 iis;
->  		u_int iis_ptr, img_ptr;
->  
->  		/* Read the footer. */
->  		ret = afs_read_footer_v1(mtd, &img_ptr, &iis_ptr, off, mask);
->  		if (ret < 0)
-> -			break;
-> +			goto out_free_parts;
->  		if (ret == 0)
->  			continue;
->  
->  		/* Read the image info block */
->  		ret = afs_read_iis_v1(mtd, &iis, iis_ptr);
->  		if (ret < 0)
-> -			break;
-> +			goto out_free_parts;
->  		if (ret == 0)
->  			continue;
->  
-> -		strcpy(str, iis.name);
-> +		parts[i].name = kstrdup(iis.name, GFP_KERNEL);
-
-Unfortunately, there's a (sort of) good reason the name strings were
-allocated along with the partition info all in one go; the calling code
-expects to be able to kfree() just the struct to free up all the
-parser's memory (see mtd_device_parse_register(), which does
-kfree(real_parts)). So you're introducing N string allocations that will
-never be freed in the "success" case -- i.e., a memory leak.
-
-Now, it kinda sucks that MTD has such limited cleanup facilities for its
-parsers. I believe we either have similar ugly code (or just more memory
-leaks) in other parsers. It'd be nice if we added a cleanup hook to
-struct mtd_part_parser, so we can allow parsers to do arbitrary
-cleanups.
-
-Brian
-
-> +		if (!parts[i].name) {
-> +			ret = -ENOMEM;
-> +			goto out_free_parts;
-> +		}
->  
-> -		parts[idx].name		= str;
-> -		parts[idx].size		= (iis.length + mtd->erasesize - 1) & ~(mtd->erasesize - 1);
-> -		parts[idx].offset	= img_ptr;
-> -		parts[idx].mask_flags	= 0;
-> +		parts[i].size		= (iis.length + mtd->erasesize - 1) & ~(mtd->erasesize - 1);
-> +		parts[i].offset	= img_ptr;
-> +		parts[i].mask_flags	= 0;
->  
->  		printk("  mtd%d: at 0x%08x, %5lluKiB, %8u, %s\n",
-> -			idx, img_ptr, parts[idx].size / 1024,
-> -			iis.imageNumber, str);
-> -
-> -		idx += 1;
-> -		str = str + strlen(iis.name) + 1;
-> -	}
-> +			i, img_ptr, parts[i].size / 1024,
-> +			iis.imageNumber, parts[i].name);
->  
-> -	if (!idx) {
-> -		kfree(parts);
-> -		parts = NULL;
-> +		i += 1;
->  	}
->  
->  	*pparts = parts;
-> -	return idx ? idx : ret;
-> +	return i;
-> +
-> +out_free_parts:
-> +	while (i >= 0) {
-> +		if (parts[i].name)
-> +			kfree(parts[i].name);
-> +		i--;
-> +	}
-> +	kfree(parts);
-> +	*pparts = NULL;
-> +	return ret;
+> @@ -68,6 +68,26 @@ static u32 word_sum(void *words, int num)
+>  	return sum;
 >  }
 >  
->  static struct mtd_part_parser afs_parser = {
-> -- 
-> 2.4.3
-> 
+> +static bool afs_is_v1(struct mtd_info *mtd, u_int off)
+> +{
+> +	/* The magic is 12 bytes from the end of the erase block */
+> +	u_int ptr = off + mtd->erasesize - 12;
+> +	u32 magic;
+> +	size_t sz;
+> +	int ret;
+> +
+> +	ret = mtd_read(mtd, ptr, 4, &sz, (u_char *)&magic);
+> +	if (ret < 0) {
+> +		printk(KERN_ERR "AFS: mtd read failed at 0x%x: %d\n",
+> +		       ptr, ret);
+> +		return false;
+> +	}
+> +	if (ret >= 0 && sz != 4)
+> +		return false;
+> +
+> +	return (magic == AFSV1_FOOTER_MAGIC);
+> +}
+> +
+>  static int
+>  afs_read_footer_v1(struct mtd_info *mtd, u_int *img_start, u_int *iis_start,
+>  		   u_int off, u_int mask)
+> @@ -176,18 +196,9 @@ static int parse_afs_partitions(struct mtd_info *mtd,
+>  	 */
+>  	mask = mtd->size - 1;
+>  
+> -	/*
+> -	 * First, calculate the size of the array we need for the
+> -	 * partition information.  We include in this the size of
+> -	 * the strings.
+> -	 */
+> +	/* Count the partitions by looping over all erase blocks */
+>  	for (i = off = sz = 0; off < mtd->size; off += mtd->erasesize) {
+> -		u_int iis_ptr, img_ptr;
+> -
+> -		ret = afs_read_footer_v1(mtd, &img_ptr, &iis_ptr, off, mask);
+> -		if (ret < 0)
+> -			return ret;
+> -		if (ret) {
+> +		if (afs_is_v1(mtd, off)) {
+>  			sz += sizeof(struct mtd_partition);
+>  			i += 1;
+>  		}
+
+I think this change is more subtle than it looks at first glance. There
+are a few points:
+
+(1) This kind of flash format is naturally fairly imprecise and
+unfocused; the parser is scanning every block on the device, so its
+scans have to have pretty good heuristics to ensure that it doesn't
+treat some other block of data as containing AFS metadata. This usually
+works out OK when using magic strings and checksums, but it's still not
+100% foolproof.
+
+(2) You're dropping some of the safeguards -- particularly the checksum
+-- from the first pass that calculates the number of partitions. This
+seems OK for now, since you still do the same checks later, and if they
+fail, you just skip the block. But it means that if the block isn't
+exactly perfect (whether it's due to malice, coincidence, or
+corruption), then we have a problem in the second pass through the
+device.
+
+(3) The "problem" from (2) is currently only a slightly
+larger-than-necessary memory allocation -- we allocate for too many
+partitions -- which is benign. But in later patches, you change the
+second loop's behavior so that checksum errors become fatal. That means
+that any block that happens to have the magic number in the right (or
+wrong, depending on your POV) place will cause the entire parsing
+process to fail. That's probably a bug, not a feature.
+
+So, is it really worth saving mtd_read()'ing 16 bytes of flash really
+worth this extra fragility? I think you should still read the whole
+footer and check its checksum before declaring it a 'v1' footer. And
+don't make a checksum failure completely fatal; just make it skip the
+block.
+
+Regards,
+Brian
