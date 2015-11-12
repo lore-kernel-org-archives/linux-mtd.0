@@ -1,22 +1,21 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwwO1-0001b5-OG
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 18:14:18 +0000
-Received: by pasz6 with SMTP id z6so74472128pas.2
- for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 10:13:57 -0800 (PST)
-Date: Thu, 12 Nov 2015 10:13:54 -0800
+ id 1ZwwW9-00058C-7O
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 18:22:41 +0000
+Received: by padhx2 with SMTP id hx2so72176597pad.1
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 10:22:20 -0800 (PST)
+Date: Thu, 12 Nov 2015 10:22:17 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org,
- Brian Foster <brian.foster@maximintegrated.com>
-Subject: Re: [PATCH] mtd: partitions: kill unused ecclayout struct
-Message-ID: <20151112181354.GC126029@google.com>
-References: <1447290356-60040-1-git-send-email-computersforpeace@gmail.com>
- <20151112094241.598944ec@bbrezillon>
+To: Daniel Walter <dwalter@sigma-star.at>
+Cc: linux-mtd@lists.infradead.org, richard@nod.at
+Subject: Re: [PATCH v2] mkfs.ubifs: fix compiler warning for WITHOUT_LZO
+Message-ID: <20151112182217.GA130183@google.com>
+References: <20151112115209.GA2876@dw-nb.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20151112094241.598944ec@bbrezillon>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20151112115209.GA2876@dw-nb.local>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 12, 2015 at 09:42:41AM +0100, Boris Brezillon wrote:
-> On Wed, 11 Nov 2015 17:05:56 -0800
-> Brian Norris <computersforpeace@gmail.com> wrote:
+On Thu, Nov 12, 2015 at 12:52:09PM +0100, Daniel Walter wrote:
+> Fix compiler warning about an unused variable.
 > 
-> > This field is not used.
-> > 
-> > Reported here:
-> > 
-> > http://lists.infradead.org/pipermail/linux-mtd/2015-October/062417.html
-> > 
-> > Reported-by: Brian Foster <brian.foster@maximintegrated.com>
-> > Cc: Brian Foster <brian.foster@maximintegrated.com>
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ubifs-utils/mkfs.ubifs/compr.c:41:27: warning: ‘c’ defined but not used [-Wunused-variable]
+>  static struct ubifs_info *c = &info_;
 > 
-> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> 
+> Signed-off-by: Daniel Walter <dwalter@sigma-star.at>
+> ---
+> Changes since v1:
+>    * added exact compiler warning to commit message as requested
 
-Adjusted the context a bit and pushed to l2-mtd.git/next
+Applied
