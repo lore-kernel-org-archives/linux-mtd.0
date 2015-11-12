@@ -1,14 +1,14 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwoEX-00037D-EG
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 09:31:58 +0000
+ id 1ZwoEh-00038P-EI
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 09:32:09 +0000
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: kernel@pengutronix.de, Sascha Hauer <s.hauer@pengutronix.de>,
  Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 1/5] mkfs.ubifs: change add_directory argument to 'existing'
-Date: Thu, 12 Nov 2015 10:31:24 +0100
-Message-Id: <1447320688-3086-2-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v2 2/5] mkfs.ubifs: use xmalloc/xzalloc for allocating memory
+Date: Thu, 12 Nov 2015 10:31:25 +0100
+Message-Id: <1447320688-3086-3-git-send-email-mkl@pengutronix.de>
 In-Reply-To: <1447320688-3086-1-git-send-email-mkl@pengutronix.de>
 References: <1447320688-3086-1-git-send-email-mkl@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,98 +22,144 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Sascha Hauer <s.hauer@pengutronix.de>
 
-A 'non_existing' argument which is only used with !non_existing
-is just too confusing. Change this to positive logic.
-
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Reviewed-by: Daniel Walter <dwalter@sigma-star.at>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 64 ++++++++-----------------------------
+ 1 file changed, 14 insertions(+), 50 deletions(-)
 
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index ca17e2bca3ac..1b816ae483e0 100644
+index 1b816ae483e0..049219b52cc5 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -1395,12 +1395,12 @@ static int add_non_dir(const char *path_name, ino_t *inum, unsigned int nlink,
-  * @dir_name: directory path name
-  * @dir_inum: UBIFS inode number of directory
-  * @st: directory inode statistics
-- * @non_existing: non-zero if this function is called for a directory which
-- *                does not exist on the host file-system and it is being
-- *                created because it is defined in the device table file.
-+ * @existing: zero if this function is called for a directory which
-+ *            does not exist on the host file-system and it is being
-+ *            created because it is defined in the device table file.
-  */
- static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
--			 int non_existing)
-+			 int existing)
- {
- 	struct dirent *entry;
- 	DIR *dir = NULL;
-@@ -1416,7 +1416,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
- 	unsigned long long dir_creat_sqnum = ++c->max_sqnum;
+@@ -259,13 +259,8 @@ static int is_contained(const char *file, const char *dir)
+ 	file_base = dirname(copy);
  
- 	dbg_msg(2, "%s", dir_name);
--	if (!non_existing) {
-+	if (existing) {
- 		dir = opendir(dir_name);
- 		if (dir == NULL)
- 			return sys_err_msg("cannot open directory '%s'",
-@@ -1434,7 +1434,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
- 	 * Before adding the directory itself, we have to iterate over all the
- 	 * entries the device table adds to this directory and create them.
- 	 */
--	for (; !non_existing;) {
-+	for (; existing;) {
- 		struct stat dent_st;
+ 	/* Turn the paths into the canonical form */
+-	real_file = malloc(PATH_MAX);
+-	if (!real_file)
+-		goto out_free;
+-
+-	real_dir = malloc(PATH_MAX);
+-	if (!real_dir)
+-		goto out_free;
++	real_file = xmalloc(PATH_MAX);
++	real_dir = xmalloc(PATH_MAX);
  
- 		errno = 0;
-@@ -1492,7 +1492,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
- 		inum = ++c->highest_inum;
+ 	if (!realpath(file_base, real_file)) {
+ 		perror("Could not canonicalize file path");
+@@ -500,9 +495,7 @@ static int get_options(int argc, char**argv)
+ 		case 'r':
+ 		case 'd':
+ 			root_len = strlen(optarg);
+-			root = malloc(root_len + 2);
+-			if (!root)
+-				return err_msg("cannot allocate memory");
++			root = xmalloc(root_len + 2);
  
- 		if (S_ISDIR(dent_st.st_mode)) {
--			err = add_directory(name, inum, &dent_st, 0);
-+			err = add_directory(name, inum, &dent_st, 1);
- 			if (err)
- 				goto out_free;
- 			nlink += 1;
-@@ -1544,7 +1544,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
- 		inum = ++c->highest_inum;
+ 			/*
+ 			 * The further code expects '/' at the end of the root
+@@ -910,9 +903,7 @@ static int add_to_index(union ubifs_key *key, char *name, int lnum, int offs,
+ 	struct idx_entry *e;
  
- 		if (S_ISDIR(nh_elt->mode)) {
--			err = add_directory(name, inum, &fake_st, 1);
-+			err = add_directory(name, inum, &fake_st, 0);
- 			if (err)
- 				goto out_free;
- 			nlink += 1;
-@@ -1570,14 +1570,14 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
- 		goto out_free;
- 
- 	free(name);
--	if (!non_existing && closedir(dir) == -1)
-+	if (existing && closedir(dir) == -1)
- 		return sys_err_msg("error closing directory '%s'", dir_name);
- 
- 	return 0;
- 
- out_free:
- 	free(name);
--	if (!non_existing)
-+	if (existing)
- 		closedir(dir);
- 	return -1;
- }
-@@ -1624,7 +1624,7 @@ static int write_data(void)
+ 	dbg_msg(3, "LEB %d offs %d len %d", lnum, offs, len);
+-	e = malloc(sizeof(struct idx_entry));
+-	if (!e)
+-		return err_msg("out of memory");
++	e = xmalloc(sizeof(struct idx_entry));
+ 	e->next = NULL;
+ 	e->prev = idx_list_last;
+ 	e->key = *key;
+@@ -1193,9 +1184,7 @@ static struct inum_mapping *lookup_inum_mapping(dev_t dev, ino_t inum)
+ 			return im;
+ 		im = im->next;
  	}
+-	im = malloc(sizeof(struct inum_mapping));
+-	if (!im)
+-		return NULL;
++	im = xmalloc(sizeof(struct inum_mapping));
+ 	im->next = hash_table[k];
+ 	im->prev = NULL;
+ 	im->dev = dev;
+@@ -1355,9 +1344,7 @@ static int add_non_dir(const char *path_name, ino_t *inum, unsigned int nlink,
+ 			/* New entry */
+ 			im->use_inum = *inum;
+ 			im->use_nlink = 1;
+-			im->path_name = malloc(strlen(path_name) + 1);
+-			if (!im->path_name)
+-				return err_msg("out of memory");
++			im->path_name = xmalloc(strlen(path_name) + 1);
+ 			strcpy(im->path_name, path_name);
+ 		} else {
+ 			/* Existing entry */
+@@ -1707,21 +1694,14 @@ static int write_index(void)
+ 	head_flags = LPROPS_INDEX;
+ 	/* Allocate index node */
+ 	idx_sz = ubifs_idx_node_sz(c, c->fanout);
+-	idx = malloc(idx_sz);
+-	if (!idx)
+-		return err_msg("out of memory");
++	idx = xmalloc(idx_sz);
+ 	/* Make an array of pointers to sort the index list */
+ 	sz = idx_cnt * sizeof(struct idx_entry *);
+ 	if (sz / sizeof(struct idx_entry *) != idx_cnt) {
+ 		free(idx);
+ 		return err_msg("index is too big (%zu entries)", idx_cnt);
+ 	}
+-	idx_ptr = malloc(sz);
+-	if (!idx_ptr) {
+-		free(idx);
+-		return err_msg("out of memory - needed %zu bytes for index",
+-			       sz);
+-	}
++	idx_ptr = xmalloc(sz);
+ 	idx_ptr[0] = idx_list_first;
+ 	for (i = 1; i < idx_cnt; i++)
+ 		idx_ptr[i] = idx_ptr[i - 1]->next;
+@@ -2164,13 +2144,8 @@ static int init(void)
+ 	c->lpt_first = UBIFS_LOG_LNUM + c->log_lebs;
+ 	c->lpt_last = c->lpt_first + c->lpt_lebs - 1;
  
- 	head_flags = 0;
--	err = add_directory(root, UBIFS_ROOT_INO, &root_st, !root);
-+	err = add_directory(root, UBIFS_ROOT_INO, &root_st, !!root);
+-	c->lpt = malloc(c->main_lebs * sizeof(struct ubifs_lprops));
+-	if (!c->lpt)
+-		return err_msg("unable to allocate LPT");
+-
+-	c->ltab = malloc(c->lpt_lebs * sizeof(struct ubifs_lprops));
+-	if (!c->ltab)
+-		return err_msg("unable to allocate LPT ltab");
++	c->lpt = xmalloc(c->main_lebs * sizeof(struct ubifs_lprops));
++	c->ltab = xmalloc(c->lpt_lebs * sizeof(struct ubifs_lprops));
+ 
+ 	/* Initialize LPT's own lprops */
+ 	for (i = 0; i < c->lpt_lebs; i++) {
+@@ -2182,23 +2157,12 @@ static int init(void)
+ 	c->dark_wm = ALIGN(UBIFS_MAX_NODE_SZ, c->min_io_size);
+ 	dbg_msg(1, "dead_wm %d  dark_wm %d", c->dead_wm, c->dark_wm);
+ 
+-	leb_buf = malloc(c->leb_size);
+-	if (!leb_buf)
+-		return err_msg("out of memory");
+-
+-	node_buf = malloc(NODE_BUFFER_SIZE);
+-	if (!node_buf)
+-		return err_msg("out of memory");
+-
+-	block_buf = malloc(UBIFS_BLOCK_SIZE);
+-	if (!block_buf)
+-		return err_msg("out of memory");
++	leb_buf = xmalloc(c->leb_size);
++	node_buf = xmalloc(NODE_BUFFER_SIZE);
++	block_buf = xmalloc(UBIFS_BLOCK_SIZE);
+ 
+ 	sz = sizeof(struct inum_mapping *) * HASH_TABLE_SIZE;
+-	hash_table = malloc(sz);
+-	if (!hash_table)
+-		return err_msg("out of memory");
+-	memset(hash_table, 0, sz);
++	hash_table = xzalloc(sz);
+ 
+ 	err = init_compression();
  	if (err)
- 		return err;
- 	err = add_multi_linked_files();
 -- 
 2.6.1
