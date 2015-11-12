@@ -1,33 +1,18 @@
-Received: from mail-ob0-x22b.google.com ([2607:f8b0:4003:c01::22b])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwpGz-00033T-Gn
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 10:38:34 +0000
-Received: by obdgf3 with SMTP id gf3so43414917obd.3
- for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 02:38:10 -0800 (PST)
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <1447324339.31665.120.camel@linux.intel.com>
-References: <1446691741-8393-1-git-send-email-punnaia@xilinx.com>
- <1447077023.31665.72.camel@linux.intel.com>
- <CAGnW=BYBRfVhuj-jFpe8BYTTg=n4ZqDsbfYDprapf538R=wZ9w@mail.gmail.com>
- <1447324339.31665.120.camel@linux.intel.com>
-Date: Thu, 12 Nov 2015 11:38:10 +0100
-Message-ID: <CAMuHMdXDizMgNvgZdNCzDuTXSTBwswBN6QvxEmgqqD=VxUgkQw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] mtd: nand: Add support for Arasan Nand Flash
- Controller
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: punnaiah choudary kalluri <punnaia@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "michals@xilinx.com" <michals@xilinx.com>, wangzhou1@hisilicon.com,
- Florian Fainelli <f.fainelli@gmail.com>, Gerhard Sittig <gsi@denx.de>,
- haokexin@gmail.com, Roger Quadros <rogerq@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ id 1ZwpRU-00017J-Mo
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 10:49:26 +0000
+To: hujianyang <hujianyang@huawei.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Punnaiah Choudary <kpc528@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+ mpa@pengutronix.de
+From: Richard Weinberger <richard@nod.at>
+Subject: UBIFS assert failed in ubifs_log_start_commit at 412 (pid 6)
+Message-ID: <56446E97.3040004@nod.at>
+Date: Thu, 12 Nov 2015 11:48:55 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,57 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 12, 2015 at 11:32 AM, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> On Thu, 2015-11-12 at 10:18 +0530, punnaiah choudary kalluri wrote:
->> On Mon, Nov 9, 2015 at 7:20 PM, Andy Shevchenko
->> <andriy.shevchenko@linux.intel.com> wrote:
->> > On Thu, 2015-11-05 at 08:19 +0530, Punnaiah Choudary Kalluri wrote:
->> > > Added the basic driver for Arasan Nand Flash Controller used in
->> > > Zynq UltraScale+ MPSoC. It supports only Hw Ecc and upto 24bit
->> > > correction.
->> > >
->> >
->> > > +config MTD_NAND_ARASAN
->> > > +     tristate "Support for Arasan Nand Flash controller"
->> > > +     depends on MTD_NAND
->> >
->> > This looks useless since you can't see the item without MTD_NAND is
->> > chosen.
->> >
->> > > +     help
->> > > +       Enables the driver for the Arasan Nand Flash controller
->> > > on
->> > > +       Zynq UltraScale+ MPSoC.
->> > > +
->> > >  endif # MTD_NAND
->> > >
->> >
->> > +obj-$(CONFIG_MTD_NAND_ARASAN)          += arasan_nfc.o
->> >
->> > "nfc" part a bit ambiguous since NFC might be Near Field
->> > Communication.
->>
->> This driver is under mtd/nand so, there is no point of confusion and
->> in this context nfc is nand flash controller.
->
-> Imagine that at some point arasan (whatever) releases NFC chip, and
-> someone puts the driver under corresponding folder but with the same
-> file name (and driver name). Do you see a problem? I see two:
-> - if you built-in both how you supply command line parameters?
-> - some platform code may do request_module() or
-> platform_driver_register() with the name you provided as DRIVER_NAME.
+Hi!
 
-#3: Module filenames must be unique, too. "modprobe arasan_nfc.ko" won't
-know which module to load.
+Markus is facing this assert:
 
-Gr{oetje,eeting}s,
+UBIFS assert failed in ubifs_log_start_commit at 412 (pid 6)
+CPU: 0 PID: 6 Comm: kworker/u2:0 Not tainted 4.1.0-20150730-1 #1
+Hardware name: Freescale i.MX53 (Device Tree Support)
+Workqueue: writeback bdi_writeback_workfn (flush-ubifs_0_1)
+[<c000fe89>] (unwind_backtrace) from [<c000ed8b>] (show_stack+0xb/0xc)
+[<c000ed8b>] (show_stack) from [<c00e9327>] (ubifs_log_start_commit+0xff/0x264)
+[<c00e9327>] (ubifs_log_start_commit) from [<c00e9cc5>] (do_commit+0x145/0x3a0)
+[<c00e9cc5>] (do_commit) from [<c00db4ad>] (make_reservation+0x211/0x29c)
+[<c00db4ad>] (make_reservation) from [<c00dbb4f>] (ubifs_jnl_write_data+0xfb/0x1c0)
+[<c00dbb4f>] (ubifs_jnl_write_data) from [<c00dcd2f>] (do_writepage+0x8f/0x180)
+[<c00dcd2f>] (do_writepage) from [<c0044ff3>] (__writepage+0xb/0x34)
+[<c0044ff3>] (__writepage) from [<c0045fa9>] (write_cache_pages+0x165/0x1ea)
+[<c0045fa9>] (write_cache_pages) from [<c004604f>] (generic_writepages+0x21/0x36)
+[<c004604f>] (generic_writepages) from [<c007423d>] (__writeback_single_inode+0x25/0xd8)
+[<c007423d>] (__writeback_single_inode) from [<c00744cd>] (writeback_sb_inodes+0x121/0x22c)
+[<c00744cd>] (writeback_sb_inodes) from [<c0074619>] (__writeback_inodes_wb+0x41/0x68)
+[<c0074619>] (__writeback_inodes_wb) from [<c00746df>] (wb_writeback+0x9f/0xe0)
+[<c00746df>] (wb_writeback) from [<c0074853>] (bdi_writeback_workfn+0x133/0x208)
+[<c0074853>] (bdi_writeback_workfn) from [<c00207d7>] (process_one_work+0x11b/0x1dc)
+[<c00207d7>] (process_one_work) from [<c0020a63>] (worker_thread+0x1b1/0x28e)
+[<c0020a63>] (worker_thread) from [<c0023263>] (kthread+0x87/0x98)
+[<c0023263>] (kthread) from [<c000cde1>] (ret_from_fork+0x11/0x30)
 
-                        Geert
+Hu, this ubifs_assert was added by your commit 25601a3c9737fed554169759582c690b98ead5d4.
+If I understand it correctly the assert is harmless as UBIFS can deal with that condition just fine.
+The assertion was added to identify code paths where this can be triggered as you thought
+you have fixed all paths?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+IMHO the ubifs_assert() should be converted to a plain ubifs_msg().
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+//richard
