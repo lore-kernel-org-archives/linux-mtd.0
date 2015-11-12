@@ -1,20 +1,22 @@
-Received: from mail-ob0-x22b.google.com ([2607:f8b0:4003:c01::22b])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwtNO-0001n5-1K
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 15:01:26 +0000
-Received: by obbnk6 with SMTP id nk6so48111971obb.2
- for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 07:01:05 -0800 (PST)
+ id 1ZwwMZ-0000hq-LI
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 18:12:48 +0000
+Received: by padhx2 with SMTP id hx2so71936570pad.1
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 10:12:26 -0800 (PST)
+Date: Thu, 12 Nov 2015 10:12:23 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] mtd: grab a reference to the MTD of_node before
+ registering it
+Message-ID: <20151112181223.GA126029@google.com>
+References: <1447287964-63309-1-git-send-email-computersforpeace@gmail.com>
+ <20151112095120.5ae32efd@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <1447336537-3705-1-git-send-email-debrabander@gmail.com>
-References: <1447336537-3705-1-git-send-email-debrabander@gmail.com>
-Date: Thu, 12 Nov 2015 16:01:05 +0100
-Message-ID: <CAFLxGvydxAF5hVqqEGhTec9=rpD5jga0VP8=DvDVDpBZJQ2zuw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: orion_nand: support selecting ECC mode via the
- device tree
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Frank de Brabander <debrabander@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151112095120.5ae32efd@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 12, 2015 at 2:55 PM, Frank de Brabander
-<debrabander@gmail.com> wrote:
-> Currently the Orion NAND ECC mode is hardcoded to NAND_ECC_SOFT, it does not
-> allow selecting any other ECC mode. This change makes it possible to use the
-> device tree to select other ECC modes. It still defaults to the original
-> mode NAND_ECC_SOFT.
->
-> This makes the driver more in line with other mtd nand drivers, that already
-> support similar ways to select the ECC mode.
->
-> Signed-off-by: Frank de Brabander <debrabander@gmail.com>
-> ---
->  Documentation/devicetree/bindings/mtd/orion-nand.txt | 4 ++++
->  drivers/mtd/nand/orion_nand.c                        | 6 +++++-
->  2 files changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/mtd/orion-nand.txt b/Documentation/devicetree/bindings/mtd/orion-nand.txt
-> index 2d6ab66..908c321 100644
-> --- a/Documentation/devicetree/bindings/mtd/orion-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/orion-nand.txt
-> @@ -11,6 +11,9 @@ Optional properties:
->  - bank-width : Width in bytes of the device. Default is 1
->  - chip-delay : Chip dependent delay for transferring data from array to read
->                 registers in usecs
-> +- nand-ecc-mode : String, operation mode of the NAND ecc mode, soft by default.
-> +  Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-> +  "soft_bch".
+On Thu, Nov 12, 2015 at 09:51:20AM +0100, Boris Brezillon wrote:
+> On Wed, 11 Nov 2015 16:26:04 -0800
+> Brian Norris <computersforpeace@gmail.com> wrote:
+> 
+> > We now stick the device node representing the current MTD (if any) into
+> > sysfs, so let's make sure we have a reference to it before doing that.
+> > 
+> > Suggested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> 
+> Looks good to me,
+> 
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Does the driver (and the NFC) really support all these modes?
-
--- 
-Thanks,
-//richard
+Pushed to l2-mtd.git/next
