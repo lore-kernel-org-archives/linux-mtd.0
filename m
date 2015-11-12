@@ -1,14 +1,15 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwoET-00036F-MG
+ id 1ZwoET-00036H-MH
  for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 09:31:55 +0000
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: kernel@pengutronix.de, Sascha Hauer <s.hauer@pengutronix.de>,
  Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 3/5] mkfs.ubifs: simplify make_path with xasprintf
-Date: Thu, 12 Nov 2015 10:31:26 +0100
-Message-Id: <1447320688-3086-4-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH v2 5/5] mkfs.ubifs: Optionally create extended attribute with
+ inode number
+Date: Thu, 12 Nov 2015 10:31:28 +0100
+Message-Id: <1447320688-3086-6-git-send-email-mkl@pengutronix.de>
 In-Reply-To: <1447320688-3086-1-git-send-email-mkl@pengutronix.de>
 References: <1447320688-3086-1-git-send-email-mkl@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,33 +23,188 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Sascha Hauer <s.hauer@pengutronix.de>
 
+This is done to allow creating images suitable for IMA directory
+appraisal. IMA creates a hash for directories and attaches this
+hash to the directory itself as an extended attribute. Among other
+things the inode numbers of the files are hashed. So, to create
+a valid hash in the UBIFS image the evmctl tool needs to know
+the inode numbers which the files in the UBIFS image will have.
+evmctl will read the inode numbers from the user.image-inode-number
+extended attribute. Since extended attributes are inodes themselves
+the inode numbers for the generated image will change when the
+extended attributes change, so to generate a correctly hashed
+UBIFS image, both evmctl and mkfs.ubifs must be run twice:
+
+1) execute evmctl to iterate over the directory tree. This will
+   create the security.ima and security.evm extended attributes.
+   The existence of the attributes makes sure that subsequent
+   calls to mkfs.ubifs will use the same inode numbers. evmctl
+   will use the inode numbers from the host filesystem in this
+   step which makes the resulting image unusable
+2) execute mkfs.ubifs -a. This will create the user.image-inode-number
+   extended attributes on files/directories added to the image.
+3) execture evmctl again. This time evmctl will pick the inode
+   numbers from the user.image-inode-number extended attribute
+   instead of the ones from the host filesystem
+4) execute mkfs.ubifs again. This will create the correct image.
+   The now existing user.image-inode-number extended attributes
+   are ignored and not added to the image.
+
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Reviewed-by: Daniel Walter <dwalter@sigma-star.at>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 69 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 68 insertions(+), 1 deletion(-)
 
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index 049219b52cc5..a99c61382304 100644
+index 30cd10c25819..58200dea9732 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -227,13 +227,9 @@ static char *make_path(const char *dir, const char *name)
- {
- 	char *s;
+@@ -115,6 +115,7 @@ static char *output;
+ static int out_fd;
+ static int out_ubi;
+ static int squash_owner;
++static int do_create_inum_attr;
  
--	s = malloc(strlen(dir) + strlen(name) + 2);
--	if (!s)
--		return NULL;
--	strcpy(s, dir);
--	if (dir[strlen(dir) - 1] != '/')
--		strcat(s, "/");
--	strcat(s, name);
-+	xasprintf(&s, "%s%s%s",
-+		  dir, dir[strlen(dir) - 1] == '/' ? "" : "/", name);
+ /* The 'head' (position) which nodes are written */
+ static int head_lnum;
+@@ -137,7 +138,7 @@ static struct inum_mapping **hash_table;
+ /* Inode creation sequence number */
+ static unsigned long long creat_sqnum;
+ 
+-static const char *optstring = "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:j:UQq";
++static const char *optstring = "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:j:UQqa";
+ 
+ static const struct option longopts[] = {
+ 	{"root",               1, NULL, 'r'},
+@@ -161,6 +162,7 @@ static const struct option longopts[] = {
+ 	{"log-lebs",           1, NULL, 'l'},
+ 	{"orph-lebs",          1, NULL, 'p'},
+ 	{"squash-uids" ,       0, NULL, 'U'},
++	{"set-inode-attr",     0, NULL, 'a'},
+ 	{NULL, 0, NULL, 0}
+ };
+ 
+@@ -201,6 +203,9 @@ static const char *helptext =
+ "-V, --version            display version information\n"
+ "-g, --debug=LEVEL        display debug information (0 - none, 1 - statistics,\n"
+ "                         2 - files, 3 - more details)\n"
++"-a, --set-inum-attr      create user.image-inode-number extended attribute on files\n"
++"                         added to the image. The attribute will contain the inode\n"
++"                         number the file has in the generated image.\n"
+ "-h, --help               display this help text\n\n"
+ "Note, SIZE is specified in bytes, but it may also be specified in Kilobytes,\n"
+ "Megabytes, and Gigabytes if a KiB, MiB, or GiB suffix is used.\n\n"
+@@ -616,6 +621,10 @@ static int get_options(int argc, char**argv)
+ 		case 'U':
+ 			squash_owner = 1;
+ 			break;
++		case 'a':
++			do_create_inum_attr = 1;
++			break;
 +
- 	return s;
+ 		}
+ 	}
+ 
+@@ -985,6 +994,14 @@ static int add_node(union ubifs_key *key, char *name, void *node, int len)
  }
  
+ #ifdef WITHOUT_XATTR
++static inline int create_inum_attr(ino_t inum, const char *name)
++{
++	(void)inum;
++	(void)name;
++
++	return 0;
++}
++
+ static inline int inode_add_xattr(struct ubifs_ino_node *host_ino,
+ 				  const char *path_name, struct stat *st, ino_t inum)
+ {
+@@ -996,6 +1013,26 @@ static inline int inode_add_xattr(struct ubifs_ino_node *host_ino,
+ 	return 0;
+ }
+ #else
++static int create_inum_attr(ino_t inum, const char *name)
++{
++	char *str;
++	int ret;
++
++	if (!do_create_inum_attr)
++		return 0;
++
++	ret = asprintf(&str, "%llu", (unsigned long long)inum);
++	if (ret < 0)
++		return -1;
++
++	ret = lsetxattr(name, "user.image-inode-number", str, ret, 0);
++
++	free(str);
++
++	return ret;
++}
++
++
+ static int add_xattr(struct stat *st, ino_t inum, const void *data,
+ 		     unsigned int data_len, struct qstr *nm)
+ {
+@@ -1110,6 +1147,23 @@ static int inode_add_xattr(struct ubifs_ino_node *host_ino,
+ 			goto out_free;
+ 		}
+ 
++		if (!strcmp(name, "user.image-inode-number")) {
++			ino_t inum_from_xattr;
++
++			inum_from_xattr = strtoull(attrbuf, NULL, 10);
++			if (inum != inum_from_xattr) {
++				errno = EINVAL;
++				sys_err_msg("calculated inum (%llu) doesn't match inum from xattr (%llu) size (%zd) on %s",
++					    (unsigned long long)inum,
++					    (unsigned long long)inum_from_xattr,
++					    attrsize,
++					    path_name);
++				goto out_free;
++			}
++
++			continue;
++		}
++
+ 		nm.name = name;
+ 		nm.len = strlen(name);
+ 
+@@ -1637,6 +1691,10 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
+ 				goto out_free;
+ 		}
+ 
++		err = create_inum_attr(inum, name);
++		if (err)
++			goto out_free;
++
+ 		err = add_dent_node(dir_inum, entry->d_name, inum, type);
+ 		if (err)
+ 			goto out_free;
+@@ -1689,6 +1747,10 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
+ 				goto out_free;
+ 		}
+ 
++		err = create_inum_attr(inum, name);
++		if (err)
++			goto out_free;
++
+ 		err = add_dent_node(dir_inum, nh_elt->name, inum, type);
+ 		if (err)
+ 			goto out_free;
+@@ -1758,6 +1820,11 @@ static int write_data(void)
+ 	}
+ 
+ 	head_flags = 0;
++
++	err = create_inum_attr(UBIFS_ROOT_INO, root);
++	if (err)
++		return err;
++
+ 	err = add_directory(root, UBIFS_ROOT_INO, &root_st, !!root);
+ 	if (err)
+ 		return err;
 -- 
 2.6.1
