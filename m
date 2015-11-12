@@ -1,16 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mail-ob0-x232.google.com ([2607:f8b0:4003:c01::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwoEh-00038P-EI
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 09:32:09 +0000
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: kernel@pengutronix.de, Sascha Hauer <s.hauer@pengutronix.de>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH v2 2/5] mkfs.ubifs: use xmalloc/xzalloc for allocating memory
-Date: Thu, 12 Nov 2015 10:31:25 +0100
-Message-Id: <1447320688-3086-3-git-send-email-mkl@pengutronix.de>
+ id 1ZwoZV-00065g-Dj
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 09:53:38 +0000
+Received: by obdgf3 with SMTP id gf3so42713283obd.3
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 01:53:15 -0800 (PST)
+MIME-Version: 1.0
 In-Reply-To: <1447320688-3086-1-git-send-email-mkl@pengutronix.de>
 References: <1447320688-3086-1-git-send-email-mkl@pengutronix.de>
+Date: Thu, 12 Nov 2015 10:53:15 +0100
+Message-ID: <CAFLxGvzd8R3ZWD7WHUzTwjdEfd9y+249x7CTUWLJvbPWOF7cnA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] mkfs.ubifs: cleanups + extended attribute support
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ kernel@pengutronix.de
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,146 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sascha Hauer <s.hauer@pengutronix.de>
+On Thu, Nov 12, 2015 at 10:31 AM, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> Hello,
+>
+> this series applies to current git master. The first 3 patches are cleanup
+> patches, in the 4th adds extended attributes support. Patch 5 adds a option to
+> write the used inode number to an extended attribute, so that other offline
+> tools like IMA, that process the inode number can work. See description of
+> patch 5 for a detailed explanation.
+>
+> regards,
+> Marc
+>
+> changes since v1:
+> - add Daniel Walter's reviewed by to patches 1-3
+> - add option to build without xattr support - patches 4,5 (as Daniel suggested)
+> - switch from dynamically allocated attr value buffer to fixed size array on stack,
+>   as inode numbers where not stable between mkfs.ubifs invocations - patch 4
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Reviewed-by: Daniel Walter <dwalter@sigma-star.at>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 64 ++++++++-----------------------------
- 1 file changed, 14 insertions(+), 50 deletions(-)
+Applied and pushed.
+And bonus points for rebasing to the latest mtd-utils tree! :-)
 
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index 1b816ae483e0..049219b52cc5 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -259,13 +259,8 @@ static int is_contained(const char *file, const char *dir)
- 	file_base = dirname(copy);
- 
- 	/* Turn the paths into the canonical form */
--	real_file = malloc(PATH_MAX);
--	if (!real_file)
--		goto out_free;
--
--	real_dir = malloc(PATH_MAX);
--	if (!real_dir)
--		goto out_free;
-+	real_file = xmalloc(PATH_MAX);
-+	real_dir = xmalloc(PATH_MAX);
- 
- 	if (!realpath(file_base, real_file)) {
- 		perror("Could not canonicalize file path");
-@@ -500,9 +495,7 @@ static int get_options(int argc, char**argv)
- 		case 'r':
- 		case 'd':
- 			root_len = strlen(optarg);
--			root = malloc(root_len + 2);
--			if (!root)
--				return err_msg("cannot allocate memory");
-+			root = xmalloc(root_len + 2);
- 
- 			/*
- 			 * The further code expects '/' at the end of the root
-@@ -910,9 +903,7 @@ static int add_to_index(union ubifs_key *key, char *name, int lnum, int offs,
- 	struct idx_entry *e;
- 
- 	dbg_msg(3, "LEB %d offs %d len %d", lnum, offs, len);
--	e = malloc(sizeof(struct idx_entry));
--	if (!e)
--		return err_msg("out of memory");
-+	e = xmalloc(sizeof(struct idx_entry));
- 	e->next = NULL;
- 	e->prev = idx_list_last;
- 	e->key = *key;
-@@ -1193,9 +1184,7 @@ static struct inum_mapping *lookup_inum_mapping(dev_t dev, ino_t inum)
- 			return im;
- 		im = im->next;
- 	}
--	im = malloc(sizeof(struct inum_mapping));
--	if (!im)
--		return NULL;
-+	im = xmalloc(sizeof(struct inum_mapping));
- 	im->next = hash_table[k];
- 	im->prev = NULL;
- 	im->dev = dev;
-@@ -1355,9 +1344,7 @@ static int add_non_dir(const char *path_name, ino_t *inum, unsigned int nlink,
- 			/* New entry */
- 			im->use_inum = *inum;
- 			im->use_nlink = 1;
--			im->path_name = malloc(strlen(path_name) + 1);
--			if (!im->path_name)
--				return err_msg("out of memory");
-+			im->path_name = xmalloc(strlen(path_name) + 1);
- 			strcpy(im->path_name, path_name);
- 		} else {
- 			/* Existing entry */
-@@ -1707,21 +1694,14 @@ static int write_index(void)
- 	head_flags = LPROPS_INDEX;
- 	/* Allocate index node */
- 	idx_sz = ubifs_idx_node_sz(c, c->fanout);
--	idx = malloc(idx_sz);
--	if (!idx)
--		return err_msg("out of memory");
-+	idx = xmalloc(idx_sz);
- 	/* Make an array of pointers to sort the index list */
- 	sz = idx_cnt * sizeof(struct idx_entry *);
- 	if (sz / sizeof(struct idx_entry *) != idx_cnt) {
- 		free(idx);
- 		return err_msg("index is too big (%zu entries)", idx_cnt);
- 	}
--	idx_ptr = malloc(sz);
--	if (!idx_ptr) {
--		free(idx);
--		return err_msg("out of memory - needed %zu bytes for index",
--			       sz);
--	}
-+	idx_ptr = xmalloc(sz);
- 	idx_ptr[0] = idx_list_first;
- 	for (i = 1; i < idx_cnt; i++)
- 		idx_ptr[i] = idx_ptr[i - 1]->next;
-@@ -2164,13 +2144,8 @@ static int init(void)
- 	c->lpt_first = UBIFS_LOG_LNUM + c->log_lebs;
- 	c->lpt_last = c->lpt_first + c->lpt_lebs - 1;
- 
--	c->lpt = malloc(c->main_lebs * sizeof(struct ubifs_lprops));
--	if (!c->lpt)
--		return err_msg("unable to allocate LPT");
--
--	c->ltab = malloc(c->lpt_lebs * sizeof(struct ubifs_lprops));
--	if (!c->ltab)
--		return err_msg("unable to allocate LPT ltab");
-+	c->lpt = xmalloc(c->main_lebs * sizeof(struct ubifs_lprops));
-+	c->ltab = xmalloc(c->lpt_lebs * sizeof(struct ubifs_lprops));
- 
- 	/* Initialize LPT's own lprops */
- 	for (i = 0; i < c->lpt_lebs; i++) {
-@@ -2182,23 +2157,12 @@ static int init(void)
- 	c->dark_wm = ALIGN(UBIFS_MAX_NODE_SZ, c->min_io_size);
- 	dbg_msg(1, "dead_wm %d  dark_wm %d", c->dead_wm, c->dark_wm);
- 
--	leb_buf = malloc(c->leb_size);
--	if (!leb_buf)
--		return err_msg("out of memory");
--
--	node_buf = malloc(NODE_BUFFER_SIZE);
--	if (!node_buf)
--		return err_msg("out of memory");
--
--	block_buf = malloc(UBIFS_BLOCK_SIZE);
--	if (!block_buf)
--		return err_msg("out of memory");
-+	leb_buf = xmalloc(c->leb_size);
-+	node_buf = xmalloc(NODE_BUFFER_SIZE);
-+	block_buf = xmalloc(UBIFS_BLOCK_SIZE);
- 
- 	sz = sizeof(struct inum_mapping *) * HASH_TABLE_SIZE;
--	hash_table = malloc(sz);
--	if (!hash_table)
--		return err_msg("out of memory");
--	memset(hash_table, 0, sz);
-+	hash_table = xzalloc(sz);
- 
- 	err = init_compression();
- 	if (err)
 -- 
-2.6.1
+Thanks,
+//richard
