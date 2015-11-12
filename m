@@ -1,25 +1,23 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zwx66-0006pH-0n
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 18:59:51 +0000
-Received: by pacdm15 with SMTP id dm15so72925356pac.3
- for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 10:59:29 -0800 (PST)
-Date: Thu, 12 Nov 2015 10:59:26 -0800
+ id 1ZwxFj-0002ER-T1
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 19:09:48 +0000
+Received: by pabfh17 with SMTP id fh17so73361717pab.0
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 11:09:27 -0800 (PST)
+Date: Thu, 12 Nov 2015 11:09:24 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- Mark Brown <broonie@kernel.org>
-Subject: Re: m25p80: Commit "allow arbitrary OF matching for "jedec, spi-nor""
- breaks module autoloading
-Message-ID: <20151112185926.GC8456@google.com>
-References: <56104E88.3040807@gmail.com>
+To: Marcus Prebble <marcus.prebble@axis.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ricard =?iso-8859-1?Q?Wanderl=F6f?= <ricardw@axis.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd-utils: lib: mtd_read: Take the buffer offset into
+ account when reading
+Message-ID: <20151112190924.GD8456@google.com>
+References: <A612847CFE53224C91B23E3A5B48BAC7B9E316CFDF@xmail3.se.axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <56104E88.3040807@gmail.com>
+In-Reply-To: <A612847CFE53224C91B23E3A5B48BAC7B9E316CFDF@xmail3.se.axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ others
+Hi Marcus,
 
-On Sat, Oct 03, 2015 at 11:54:16PM +0200, Heiner Kallweit wrote:
-> Seems like commit 43163022927b6e7d202a7e6f939c3f392465494d
-> (allow arbitrary OF matching for "jedec,spi-nor") broke autoloading
-> of the m25p80 module.
-> MODALIAS is "spi:spi-nor" and removing "spi-nor" as device alias
-> prevents module autoloading.
+On Tue, Oct 06, 2015 at 02:13:23PM +0200, Marcus Prebble wrote:
+> Hi mtd-list,
 > 
-> Of course we could revert the removal of the "spi-nor" device alias.
-> However it might be better to switch to DT-based matching for
-> DT-configured devices.
+> Assuming the read() call does not return zero and the result is less
+> than len, the current implementation will overwrite the data already
+> read in buf which doesn't seem correct.
+
+In addition, this means we might not actually fill up the entire buffer,
+since 2 or more short read()'s might get us to exit the loop with a
+cumulative value in 'rd', but only a partially-filled buffer. That could
+cause a user to try and handle garbage/uninitialized data.
+
+> Suggested patch attached (git format-patch)
 > 
-> Adding a call to of_device_uevent_modalias to spi_uevent in spi.c
-> solved the issue for me, drawback however is that just the first
-> "compatible" value is used as modalias. In case of m25p80 this means
-> that "jedec,spi-nor" has to be the first "compatible" value.
-> This constraint might be too strict ..
+> -Marcus
+
+> From 5dccbbd87604665e896472d52f3351c14c24d2b3 Mon Sep 17 00:00:00 2001
+> From: Marcus Prebble <prebble@axis.com>
+> Date: Mon, 5 Oct 2015 17:32:54 +0200
+> Subject: [PATCH] mtd_read: Take the buffer offset into account when reading
 > 
-> Having said that I'm not sure what could be a better way to fix
-> the issue than just re-introducing the "spi-nor" device alias.
+> Subsequent calls to read() within the loop will now no longer
+> overwrite the existing contents of buf.
+> ---
+>  lib/libmtd.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/libmtd.c b/lib/libmtd.c
+> index 60b4782..bf6d71f 100644
+> --- a/lib/libmtd.c
+> +++ b/lib/libmtd.c
+> @@ -1072,10 +1072,10 @@ int mtd_read(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
+>  				  mtd->mtd_num, seek);
+>  
+>  	while (rd < len) {
+> -		ret = read(fd, buf, len);
+> +		ret = read(fd, buf + rd, len - rd);
+>  		if (ret < 0)
+>  			return sys_errmsg("cannot read %d bytes from mtd%d (eraseblock %d, offset %d)",
+> -					  len, mtd->mtd_num, eb, offs);
+> +					  len - rd, mtd->mtd_num, eb, offs + rd);
+>  		rd += ret;
+>  	}
+>  
 
-Is this [1] getting fixed in SPI any time soon? Looks like there was
-some progress [2], but AFAICT it's not completed.
+Patch looks OK. Did you test it? Have you seen MTD drivers that will
+return short reads?
 
-I'd just like to know what the way forward here should be for m25p80.
-Really, "jedec,spi-nor" never autoloaded modules very reliably because
-of the SPI core constaints. So I'm not sure I'd consider this a
-regression, and I might be OK waiting around if it'll be fixed in a
-reasonable time frame.
-
-FWIW, I can do testing if somebody's tackling this still. Just CC me.
-
-Regards,
 Brian
-
-[1] https://lkml.org/lkml/2014/9/11/458
-[2] https://lkml.org/lkml/2015/8/20/109
