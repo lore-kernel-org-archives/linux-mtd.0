@@ -1,21 +1,19 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwmI9-0007cx-WC
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 07:27:35 +0000
-Message-ID: <56443DA1.6040908@cn.fujitsu.com>
-Date: Thu, 12 Nov 2015 15:20:01 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-CC: <david@sigma-star.at>, <dedekind1@gmail.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH V3 01/27] mtd-utils: Restructure the mtd-utils source.
-References: <1444882208-4455-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <1446261121-9978-1-git-send-email-yangds.fnst@cn.fujitsu.com>
- <20151111223007.GC71848@google.com> <20151111224035.GD71848@google.com>
-In-Reply-To: <20151111224035.GD71848@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zwmbb-0008Bo-9n
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 07:47:39 +0000
+Received: by wmvv187 with SMTP id v187so19260076wmv.1
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Nov 2015 23:47:17 -0800 (PST)
+From: LABBE Corentin <clabbe.montjoie@gmail.com>
+To: baruch@tkos.co.il, clabbe.montjoie@gmail.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, fransklaver@gmail.com, k.kozlowski.k@gmail.com,
+ luis@debethencourt.com, s.hauer@pengutronix.de,
+ u.kleine-koenig@pengutronix.de
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: mxc_nand: fix a possible NULL dereference
+Date: Thu, 12 Nov 2015 08:46:55 +0100
+Message-Id: <1447314423-31225-1-git-send-email-clabbe.montjoie@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/12/2015 06:40 AM, Brian Norris wrote:
-> On Wed, Nov 11, 2015 at 02:30:07PM -0800, Brian Norris wrote:
-[...]
+of_match_device could return NULL, and so cause a NULL pointer
+dereference later.
 
- >>>		- add mtdpart in gitignore
->>>   .gitignore                                         | 54 +++++++++----------
->>
->> This patch doesn't apply, due to .gitignore. I don't know what repo
->> you're patching of, but it's not the tip of mtd-utils.git...
->
-> Anyway, I fixed the conflicts and pushed this patch to mtd-utils.git.
-> Please let me know if you see any problems.
+Signed-off-by: LABBE Corentin <clabbe.montjoie@gmail.com>
+---
+ drivers/mtd/nand/mxc_nand.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Oh, my bad. Thanx for the fixing.
-
-  I will rebase my rest patches. :)
-
-Yang
->
-> I'm probably not the one to review/apply the rest of this series, so
-> I'll leave that to Richard and others.
->
-> Brian
-> .
->
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 136e73a..9e42431 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1464,8 +1464,7 @@ static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
+ {
+ 	struct device_node *np = host->dev->of_node;
+ 	struct mxc_nand_platform_data *pdata = &host->pdata;
+-	const struct of_device_id *of_id =
+-		of_match_device(mxcnd_dt_ids, host->dev);
++	const struct of_device_id *of_id;
+ 	int buswidth;
+ 
+ 	if (!np)
+@@ -1482,6 +1481,9 @@ static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
+ 
+ 	pdata->width = buswidth / 8;
+ 
++	of_id = of_match_device(mxcnd_dt_ids, host->dev);
++	if (!of_id)
++		return -ENODEV;
+ 	host->devtype_data = of_id->data;
+ 
+ 	return 0;
+-- 
+2.4.10
