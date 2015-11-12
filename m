@@ -1,24 +1,13 @@
-Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwoC8-0000VC-Af
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 09:29:29 +0000
-Received: by wmvv187 with SMTP id v187so23096464wmv.1
- for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 01:29:06 -0800 (PST)
-Date: Thu, 12 Nov 2015 10:29:03 +0100
-From: LABBE Corentin <clabbe.montjoie@gmail.com>
-To: Joachim Eastwood <manabian@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, josh.wu@atmel.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: atmel_nand: fix a possible NULL dereference
-Message-ID: <20151112092903.GB9850@Red>
-References: <1447314579-31374-1-git-send-email-clabbe.montjoie@gmail.com>
- <CAGhQ9VyGeYUuaHTOnte--ASX9Wvd5wkDrRDx8mRoD=aJqD7JTA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGhQ9VyGeYUuaHTOnte--ASX9Wvd5wkDrRDx8mRoD=aJqD7JTA@mail.gmail.com>
+ id 1ZwoET-00036D-MI
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 09:31:54 +0000
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: kernel@pengutronix.de
+Subject: [PATCH v2 0/5] mkfs.ubifs: cleanups + extended attribute support
+Date: Thu, 12 Nov 2015 10:31:23 +0100
+Message-Id: <1447320688-3086-1-git-send-email-mkl@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +17,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 12, 2015 at 09:29:57AM +0100, Joachim Eastwood wrote:
-> On 12 November 2015 at 08:49, LABBE Corentin <clabbe.montjoie@gmail.com> wrote:
-> > of_match_device could return NULL, and so cause a NULL pointer
-> > dereference later.
-> >
-> > Signed-off-by: LABBE Corentin <clabbe.montjoie@gmail.com>
-> > ---
-> >  drivers/mtd/nand/atmel_nand.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> > index 475c938..f3cf68b 100644
-> > --- a/drivers/mtd/nand/atmel_nand.c
-> > +++ b/drivers/mtd/nand/atmel_nand.c
-> > @@ -1495,9 +1495,12 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
-> >         int ecc_mode;
-> >         struct atmel_nand_data *board = &host->board;
-> >         enum of_gpio_flags flags = 0;
-> > +       const struct of_device_id *of_id;
-> >
-> > -       host->caps = (struct atmel_nand_caps *)
-> > -               of_match_device(atmel_nand_dt_ids, host->dev)->data;
-> > +       of_id = of_match_device(atmel_nand_dt_ids, host->dev);
-> > +       if (!of_id)
-> > +               return -ENODEV;
-> > +       host->caps = of_id->data;
-> 
-> It might be cleaner to use of_device_get_match_data() here.
-> 
+Hello,
 
-I agree, I will resend shortly with it.
-And this time, I wont forgot the patch which permit to supress the kbuild_robot warning.
+this series applies to current git master. The first 3 patches are cleanup
+patches, in the 4th adds extended attributes support. Patch 5 adds a option to
+write the used inode number to an extended attribute, so that other offline
+tools like IMA, that process the inode number can work. See description of
+patch 5 for a detailed explanation.
 
-Regards
+regards,
+Marc
 
-LABBE Corentin
+changes since v1:
+- add Daniel Walter's reviewed by to patches 1-3
+- add option to build without xattr support - patches 4,5 (as Daniel suggested)
+- switch from dynamically allocated attr value buffer to fixed size array on stack,
+  as inode numbers where not stable between mkfs.ubifs invocations - patch 4
