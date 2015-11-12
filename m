@@ -1,21 +1,19 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zwpvk-0006zl-2R
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 11:20:41 +0000
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by mail.sigma-star.at (Postfix) with ESMTP id B9C4224E0001
- for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 12:20:16 +0100 (CET)
-Received: from dw-book (80-110-110-134.cgn.dynamic.surfer.at [80.110.110.134])
- by mail.sigma-star.at (Postfix) with ESMTPSA id EC80D16B47BA
- for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 12:20:14 +0100 (CET)
-Date: Thu, 12 Nov 2015 12:20:14 +0100
-From: Daniel Walter <dwalter@sigma-star.at>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mkfs.ubifs: fix compiler warning for WITHOUT_LZO
-Message-ID: <20151112112014.GA22505@dw-nb.local>
+Received: from mail-oi0-x231.google.com ([2607:f8b0:4003:c06::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZwqDW-0005rP-TY
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 11:39:03 +0000
+Received: by oige206 with SMTP id e206so31198733oig.2
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 03:38:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20151112112014.GA22505@dw-nb.local>
+References: <20151112112014.GA22505@dw-nb.local>
+Date: Thu, 12 Nov 2015 12:38:41 +0100
+Message-ID: <CAFLxGvxJcaqWLf-3scEWSLye90PqRVcBsuCgFE98R+buWWCASQ@mail.gmail.com>
+Subject: Re: [PATCH] mkfs.ubifs: fix compiler warning for WITHOUT_LZO
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Daniel Walter <dwalter@sigma-star.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix compiler warning for WITHOUT_LZO builds 
+On Thu, Nov 12, 2015 at 12:20 PM, Daniel Walter <dwalter@sigma-star.at> wrote:
+> Fix compiler warning for WITHOUT_LZO builds
+>
+> Signed-off-by: Daniel Walter <dwalter@sigma-star.at>
 
-Signed-off-by: Daniel Walter <dwalter@sigma-star.at>
----
- ubifs-utils/mkfs.ubifs/compr.c | 2 ++
- 1 file changed, 2 insertions(+)
+Please add the compiler warning into the commit message
+such that google can find this patch by searching for the message.
 
-diff --git a/ubifs-utils/mkfs.ubifs/compr.c b/ubifs-utils/mkfs.ubifs/compr.c
-index d534f10..8eff186 100644
---- a/ubifs-utils/mkfs.ubifs/compr.c
-+++ b/ubifs-utils/mkfs.ubifs/compr.c
-@@ -38,7 +38,9 @@
- 
- static void *lzo_mem;
- static unsigned long long errcnt = 0;
-+#ifndef WITHOUT_LZO
- static struct ubifs_info *c = &info_;
-+#endif
- 
- #define DEFLATE_DEF_LEVEL     Z_DEFAULT_COMPRESSION
- #define DEFLATE_DEF_WINBITS   11
 -- 
-2.6.2
+Thanks,
+//richard
