@@ -1,21 +1,24 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZwwW9-00058C-7O
- for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 18:22:41 +0000
-Received: by padhx2 with SMTP id hx2so72176597pad.1
- for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 10:22:20 -0800 (PST)
-Date: Thu, 12 Nov 2015 10:22:17 -0800
+ id 1Zwwnq-0007Re-6E
+ for linux-mtd@lists.infradead.org; Thu, 12 Nov 2015 18:40:58 +0000
+Received: by pabfh17 with SMTP id fh17so72666586pab.0
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Nov 2015 10:40:37 -0800 (PST)
+Date: Thu, 12 Nov 2015 10:40:34 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Daniel Walter <dwalter@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org, richard@nod.at
-Subject: Re: [PATCH v2] mkfs.ubifs: fix compiler warning for WITHOUT_LZO
-Message-ID: <20151112182217.GA130183@google.com>
-References: <20151112115209.GA2876@dw-nb.local>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ kernel@pengutronix.de
+Subject: Re: [PATCH v2 0/5] mkfs.ubifs: cleanups + extended attribute support
+Message-ID: <20151112184034.GB8456@google.com>
+References: <1447320688-3086-1-git-send-email-mkl@pengutronix.de>
+ <CAFLxGvzd8R3ZWD7WHUzTwjdEfd9y+249x7CTUWLJvbPWOF7cnA@mail.gmail.com>
+ <56446247.9030808@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20151112115209.GA2876@dw-nb.local>
+In-Reply-To: <56446247.9030808@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 12, 2015 at 12:52:09PM +0100, Daniel Walter wrote:
-> Fix compiler warning about an unused variable.
+On Thu, Nov 12, 2015 at 10:56:23AM +0100, Marc Kleine-Budde wrote:
+> On 11/12/2015 10:53 AM, Richard Weinberger wrote:
+> > And bonus points for rebasing to the latest mtd-utils tree! :-)
 > 
-> ubifs-utils/mkfs.ubifs/compr.c:41:27: warning: ‘c’ defined but not used [-Wunused-variable]
->  static struct ubifs_info *c = &info_;
-> 
-> 
-> Signed-off-by: Daniel Walter <dwalter@sigma-star.at>
-> ---
-> Changes since v1:
->    * added exact compiler warning to commit message as requested
+> I've to pass at least half of the bonus points to the git developers, as
+> git detected and handled the tree restructuring without any manual
+> interaction. \o/
 
-Applied
++1
+
+I'll also take this time to confess that for the longest time, I didn't
+have am.threeWay set in my .gitconfig. That really helps as a maintainer
+for applying patches that *aren't* quite rebased to the latest tree.
+
+Brian
