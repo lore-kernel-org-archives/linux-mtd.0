@@ -1,28 +1,26 @@
-Date: Fri, 13 Nov 2015 11:13:01 -0800
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZxJrQ-0002Ls-2r
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 19:18:17 +0000
+Received: by pacej9 with SMTP id ej9so1713380pac.2
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Nov 2015 11:17:51 -0800 (PST)
+Date: Fri, 13 Nov 2015 11:17:48 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: bayi cheng <bayi.cheng@mediatek.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com,
- jteki@openedev.com, ezequiel@vanguardiasur.com.ar
-Subject: Re: [PATCH v6 1/3] doc: dt: add documentation for Mediatek spi-nor
- controller
-Message-ID: <20151113191301.GG8456@google.com>
-References: <1446824889-16144-1-git-send-email-bayi.cheng@mediatek.com>
- <1446824889-16144-2-git-send-email-bayi.cheng@mediatek.com>
- <20151111203823.GJ12143@google.com>
- <1447399245.9118.14.camel@mhfsdcap03>
+To: Marcus Prebble <marcus.prebble@axis.com>
+Cc: Marcus Prebble <prebble@axis.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ricard =?iso-8859-1?Q?Wanderl=F6f?= <ricardw@axis.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd-utils: lib: mtd_read: Take the buffer offset into
+ account when reading
+Message-ID: <20151113191748.GH8456@google.com>
+References: <A612847CFE53224C91B23E3A5B48BAC7B9E316CFDF@xmail3.se.axis.com>
+ <20151112190924.GD8456@google.com>
+ <A612847CFE53224C91B23E3A5B48BAC7C6EFB4B65B@xmail3.se.axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1447399245.9118.14.camel@mhfsdcap03>
+In-Reply-To: <A612847CFE53224C91B23E3A5B48BAC7C6EFB4B65B@xmail3.se.axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 13, 2015 at 03:20:45PM +0800, Bayi Cheng wrote:
-> On Wed, 2015-11-11 at 12:38 -0800, Brian Norris wrote:
-> > Applied to l2-mtd.git/next (for 4.5). This will show up in
-> > linux-next.git after the merge window.
-> > 
-> > Also squashed in a small diff (below), to fix up some language issues
-> > and to refer the reader to the jedec,spi-nor.txt document.
-> > 
+Hi,
+
+On Fri, Nov 13, 2015 at 11:07:12AM +0100, Marcus Prebble wrote:
+> Thanks for looking at the patch!
+
+Thanks for the patch!
+
+> On Thu, 2015-11-12 at 11:09 -0800, Brian Norris wrote:
+> > Patch looks OK. Did you test it? Have you seen MTD drivers that will
+> > return short reads?
 > 
-> OK, I will fix it in next patch!
+> I only noticed in passing, not because I was hit by the error. I smoke
+> tested it, but did not hack a driver to return less than len.
+> If I had to guess, I would say that in nearly all cases the drivers do
+> not return short reads otherwise this would probably have been picked up
+> by now. 
 
-No, you don't need to send another patch. I already merged just this one
-(the DT documentation) with my own small fixes, with a plan to go into
-4.5. You only need to send another version of patch 2 (the driver).
+OK, that's fine. It's good to know when things are likely to cause real
+problems vs. when things need fixed just for best practice.
 
-During the merge window, I'm stashing changes in l2-mtd.git's 'next'
-branch, so we can keep stuff that's going to 4.5 separate from stuff
-thats getting merged to 4.4 right now. You can see it here for now:
-
-http://git.infradead.org/l2-mtd.git/shortlog/refs/heads/next
-
-After the merge window closes (probably on Sunday), I'll bring this into
-+master.
+BTW, I noticed there isn't a 'Signed-off-by' tag in the patch. It's
+mostly a formality, but we really shouldn't be taking patches without
+it. Can you paste one in reply to your patch, and I'll C&P it?
 
 Regards,
 Brian
