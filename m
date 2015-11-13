@@ -1,14 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zx7kK-0001uN-2j
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 06:22:21 +0000
+ id 1Zx7kV-0001vG-Os
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 06:22:22 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>
 CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 21/27] ubifs: lpt: implement functions to scan lpt
-Date: Fri, 13 Nov 2015 14:13:32 +0800
-Message-ID: <1447395218-7061-22-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 25/27] ubifs: introduce hexdump lib
+Date: Fri, 13 Nov 2015 14:13:36 +0800
+Message-ID: <1447395218-7061-26-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1447395218-7061-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1447395218-7061-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,711 +22,248 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Implement ubifs_scan_lpt_nolock() in lpt to scan lpt.
-And then we can use this function to scan the lpt
-and dump all lprops out.
+Introduce a hexdump lib to allow us to dump data in hex format
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/include/lpt.h |   3 +
- ubifs-utils/lib/lpt.c     | 661 +++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 663 insertions(+), 1 deletion(-)
+ ubifs-utils/include/hexdump.h |  21 +++++
+ ubifs-utils/lib/hexdump.c     | 200 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 221 insertions(+)
+ create mode 100644 ubifs-utils/include/hexdump.h
+ create mode 100644 ubifs-utils/lib/hexdump.c
 
-diff --git a/ubifs-utils/include/lpt.h b/ubifs-utils/include/lpt.h
-index e2f7348..d4264c3 100644
---- a/ubifs-utils/include/lpt.h
-+++ b/ubifs-utils/include/lpt.h
-@@ -25,5 +25,8 @@
- int calc_dflt_lpt_geom(struct ubifs_info *c, int *main_lebs, int *big_lpt);
- int create_lpt(struct ubifs_info *c);
- int ubifs_calc_lpt_geom(struct ubifs_info *c);
-+int unpack_ltab(const struct ubifs_info *c, void *buf);
-+int ubifs_lpt_scan_nolock(struct ubifs_info *c, int start_lnum, int end_lnum,
-+			  ubifs_lpt_scan_callback scan_cb, void *data);
- 
- #endif
-diff --git a/ubifs-utils/lib/lpt.c b/ubifs-utils/lib/lpt.c
-index 26fb4dd..52fbcfa 100644
---- a/ubifs-utils/lib/lpt.c
-+++ b/ubifs-utils/lib/lpt.c
-@@ -29,6 +29,7 @@
- #include "crc16.h"
- #include "ubifs.h"
- #include "lpt.h"
-+#include "lprops.h"
- #include "io.h"
- 
- /**
-@@ -402,7 +403,6 @@ int create_lpt(struct ubifs_info *c)
- 	len = 0;
- 	/* Number of leaf nodes (pnodes) */
- 	cnt = (c->main_lebs + UBIFS_LPT_FANOUT - 1) >> UBIFS_LPT_FANOUT_SHIFT;
--	//printf("pnode_cnt=%d\n",cnt);
- 
- 	/*
- 	 * To calculate the internal node branches, we keep information about
-@@ -614,3 +614,662 @@ int ubifs_calc_lpt_geom(struct ubifs_info *c)
- 	}
- 	return 0;
- }
+diff --git a/ubifs-utils/include/hexdump.h b/ubifs-utils/include/hexdump.h
+new file mode 100644
+index 0000000..f5f2800
+--- /dev/null
++++ b/ubifs-utils/include/hexdump.h
+@@ -0,0 +1,21 @@
++#ifndef __UBIFS_HEXDUMP_H__
++#define __UBIFS_HEXDUMP_H__
 +
-+/**
-+ * struct lpt_scan_node - somewhere to put nodes while we scan LPT.
-+ * @nnode: where to keep a nnode
-+ * @pnode: where to keep a pnode
-+ * @cnode: where to keep a cnode
-+ * @in_tree: is the node in the tree in memory
-+ * @ptr.nnode: pointer to the nnode (if it is an nnode) which may be here or in
-+ * the tree
-+ * @ptr.pnode: ditto for pnode
-+ * @ptr.cnode: ditto for cnode
-+ */
-+struct lpt_scan_node {
-+	union {
-+		struct ubifs_nnode nnode;
-+		struct ubifs_pnode pnode;
-+		struct ubifs_cnode cnode;
-+	};
-+	int in_tree;
-+	union {
-+		struct ubifs_nnode *nnode;
-+		struct ubifs_pnode *pnode;
-+		struct ubifs_cnode *cnode;
-+	} ptr;
++#include "ubifs_common.h"
++
++static const char hex_asc[] = "0123456789abcdef";
++static const char hex_asc_upper[] = "0123456789ABCDEF";
++
++#define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
++#define hex_asc_hi(x)	hex_asc[((x) & 0xf0) >> 4]
++
++enum {
++	DUMP_PREFIX_NONE,
++	DUMP_PREFIX_ADDRESS,
++	DUMP_PREFIX_OFFSET
 +};
 +
-+/**
-+ * ubifs_unpack_bits - unpack bit fields.
-+ * @addr: address at which to unpack (passed and next address returned)
-+ * @pos: bit position at which to unpack (passed and next position returned)
-+ * @nrbits: number of bits of value to unpack (1-32)
++void print_hex_dump(const char *prefix_str, int prefix_type,
++		    int rowsize, int groupsize,
++		    const void *buf, size_t len, int ascii);
++#endif
+diff --git a/ubifs-utils/lib/hexdump.c b/ubifs-utils/lib/hexdump.c
+new file mode 100644
+index 0000000..c58f7cc
+--- /dev/null
++++ b/ubifs-utils/lib/hexdump.c
+@@ -0,0 +1,200 @@
++/*
++ * lib/hexdump.c
 + *
-+ * This functions returns the value unpacked.
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation. See README and COPYING for
++ * more details.
 + */
-+uint32_t ubifs_unpack_bits(uint8_t **addr, int *pos, int nrbits)
++#include "hexdump.h"
++#define PROGRAM_NAME "hexdump"
++#include "common.h"
++/**
++ * hex_dump_to_buffer - convert a blob of data to "hex ASCII" in memory
++ * @buf: data blob to dump
++ * @len: number of bytes in the @buf
++ * @rowsize: number of bytes to print per line; must be 16 or 32
++ * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
++ * @linebuf: where to put the converted data
++ * @linebuflen: total size of @linebuf, including space for terminating NUL
++ * @ascii: include ASCII after the hex output
++ *
++ * hex_dump_to_buffer() works on one "line" of output at a time, i.e.,
++ * 16 or 32 bytes of input data converted to hex + ASCII output.
++ *
++ * Given a buffer of u8 data, hex_dump_to_buffer() converts the input data
++ * to a hex + ASCII dump at the supplied memory location.
++ * The converted output is always NUL-terminated.
++ *
++ * E.g.:
++ *   hex_dump_to_buffer(frame->data, frame->len, 16, 1,
++ *			linebuf, sizeof(linebuf), true);
++ *
++ * example output buffer:
++ * 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
++ *
++ * Return:
++ * The amount of bytes placed in the buffer without terminating NUL. If the
++ * output was truncated, then the return value is the number of bytes
++ * (excluding the terminating NUL) which would have been written to the final
++ * string if enough space had been available.
++ */
++int hex_dump_to_buffer(const void *buf, size_t len, int rowsize, int groupsize,
++		       char *linebuf, size_t linebuflen, int ascii)
 +{
-+	const int k = 32 - nrbits;
-+	uint8_t *p = *addr;
-+	int b = *pos;
-+	uint32_t val = 0;
-+	const int bytes = (nrbits + b + 7) >> 3;
++	const u8 *ptr = buf;
++	int ngroups;
++	u8 ch;
++	int j, lx = 0;
++	int ascii_column;
++	int ret;
 +
-+	ubifs_assert(nrbits > 0);
-+	ubifs_assert(nrbits <= 32);
-+	ubifs_assert(*pos >= 0);
-+	ubifs_assert(*pos < 8);
-+	if (b) {
-+		switch (bytes) {
-+		case 2:
-+			val = p[1];
-+			break;
-+		case 3:
-+			val = p[1] | ((uint32_t)p[2] << 8);
-+			break;
-+		case 4:
-+			val = p[1] | ((uint32_t)p[2] << 8) |
-+				     ((uint32_t)p[3] << 16);
-+			break;
-+		case 5:
-+			val = p[1] | ((uint32_t)p[2] << 8) |
-+				     ((uint32_t)p[3] << 16) |
-+				     ((uint32_t)p[4] << 24);
++	if (rowsize != 16 && rowsize != 32)
++		rowsize = 16;
++
++	if (len > rowsize)		/* limit to one line at a time */
++		len = rowsize;
++	if (!is_power_of_2(groupsize) || groupsize > 8)
++		groupsize = 1;
++	if ((len % groupsize) != 0)	/* no mixed size output */
++		groupsize = 1;
++
++	ngroups = len / groupsize;
++	ascii_column = rowsize * 2 + rowsize / groupsize + 1;
++
++	if (!linebuflen)
++		goto overflow1;
++
++	if (!len)
++		goto nil;
++
++	if (groupsize == 8) {
++		const u64 *ptr8 = buf;
++
++		for (j = 0; j < ngroups; j++) {
++			ret = snprintf(linebuf + lx, linebuflen - lx,
++				       "%s%16.16llx", j ? " " : "",
++				       (unsigned long long)*(ptr8 + j));
++			if (ret >= linebuflen - lx)
++				goto overflow1;
++			lx += ret;
 +		}
-+		val <<= (8 - b);
-+		val |= *p >> b;
-+		nrbits += b;
-+	} else {
-+		switch (bytes) {
-+		case 1:
-+			val = p[0];
-+			break;
-+		case 2:
-+			val = p[0] | ((uint32_t)p[1] << 8);
-+			break;
-+		case 3:
-+			val = p[0] | ((uint32_t)p[1] << 8) |
-+				     ((uint32_t)p[2] << 16);
-+			break;
-+		case 4:
-+			val = p[0] | ((uint32_t)p[1] << 8) |
-+				     ((uint32_t)p[2] << 16) |
-+				     ((uint32_t)p[3] << 24);
-+			break;
++	} else if (groupsize == 4) {
++		const u32 *ptr4 = buf;
++
++		for (j = 0; j < ngroups; j++) {
++			ret = snprintf(linebuf + lx, linebuflen - lx,
++				       "%s%8.8x", j ? " " : "",
++				       *(ptr4 + j));
++			if (ret >= linebuflen - lx)
++				goto overflow1;
++			lx += ret;
 +		}
-+	}
-+	val <<= k;
-+	val >>= k;
-+	b = nrbits & 7;
-+	p += nrbits >> 3;
-+	*addr = p;
-+	*pos = b;
-+	ubifs_assert((val >> nrbits) == 0 || nrbits - b == 32);
-+	return val;
-+}
-+/**
-+ * calc_nnode_num_from_parent - calculate nnode number.
-+ * @c: UBIFS file-system description object
-+ * @parent: parent nnode
-+ * @iip: index in parent
-+ *
-+ * The nnode number is a number that uniquely identifies a nnode and can be used
-+ * easily to traverse the tree from the root to that nnode.
-+ *
-+ * This function calculates and returns the nnode number based on the parent's
-+ * nnode number and the index in parent.
-+ */
-+static int calc_nnode_num_from_parent(const struct ubifs_info *c,
-+				      struct ubifs_nnode *parent, int iip)
-+{
-+	int num, shft;
++	} else if (groupsize == 2) {
++		const u16 *ptr2 = buf;
 +
-+	if (!parent)
-+		return 1;
-+	shft = (c->lpt_hght - parent->level) * UBIFS_LPT_FANOUT_SHIFT;
-+	num = parent->num ^ (1 << shft);
-+	num |= (UBIFS_LPT_FANOUT + iip) << shft;
-+	return num;
-+}
-+
-+int ubifs_unpack_nnode(const struct ubifs_info *c, void *buf,
-+		       struct ubifs_nnode *nnode);
-+/**
-+ * scan_get_nnode - for the scan, get a nnode from either the tree or flash.
-+ * @c: the UBIFS file-system description object
-+ * @path: where to put the nnode
-+ * @parent: parent of the nnode
-+ * @iip: index in parent of the nnode
-+ *
-+ * This function returns a pointer to the nnode on success or a negative error
-+ * code on failure.
-+ */
-+static struct ubifs_nnode *scan_get_nnode(struct ubifs_info *c,
-+					  struct lpt_scan_node *path,
-+					  struct ubifs_nnode *parent, int iip)
-+{
-+	struct ubifs_nbranch *branch;
-+	struct ubifs_nnode *nnode;
-+	int i = max_t(int, c->nnode_sz, c->pnode_sz);
-+	void *buf = malloc(i);;
-+	int err;
-+
-+	branch = &parent->nbranch[iip];
-+	nnode = branch->nnode;
-+	if (nnode) {
-+		path->in_tree = 1;
-+		path->ptr.nnode = nnode;
-+		free(buf);
-+		return nnode;
-+	}
-+	nnode = &path->nnode;
-+	path->in_tree = 0;
-+	path->ptr.nnode = nnode;
-+	memset(nnode, 0, sizeof(struct ubifs_nnode));
-+	if (branch->lnum == 0) {
-+		/*
-+		 * This nnode was not written which just means that the LEB
-+		 * properties in the subtree below it describe empty LEBs. We
-+		 * make the nnode as though we had read it, which in fact means
-+		 * doing almost nothing.
-+		 */
-+		if (c->big_lpt)
-+			nnode->num = calc_nnode_num_from_parent(c, parent, iip);
-+	} else {
-+		err = ubifs_read(branch->lnum * c->leb_size + branch->offs, c->nnode_sz, buf);
-+		if (err) {
-+			free(buf);
-+			return ERR_PTR(err);
-+		}
-+		err = ubifs_unpack_nnode(c, buf, nnode);
-+		if (err) {
-+			free(buf);
-+			return ERR_PTR(err);
-+		}
-+	}
-+	if (!c->big_lpt)
-+		nnode->num = calc_nnode_num_from_parent(c, parent, iip);
-+	nnode->level = parent->level - 1;
-+	nnode->parent = parent;
-+	nnode->iip = iip;
-+
-+	free(buf);
-+	return nnode;
-+}
-+/**
-+ * calc_pnode_num_from_parent - calculate pnode number.
-+ * @c: UBIFS file-system description object
-+ * @parent: parent nnode
-+ * @iip: index in parent
-+ *
-+ * The pnode number is a number that uniquely identifies a pnode and can be used
-+ * easily to traverse the tree from the root to that pnode.
-+ *
-+ * This function calculates and returns the pnode number based on the parent's
-+ * nnode number and the index in parent.
-+ */
-+static int calc_pnode_num_from_parent(const struct ubifs_info *c,
-+				      struct ubifs_nnode *parent, int iip)
-+{
-+	int i, n = c->lpt_hght - 1, pnum = parent->num, num = 0;
-+
-+	for (i = 0; i < n; i++) {
-+		num <<= UBIFS_LPT_FANOUT_SHIFT;
-+		num |= pnum & (UBIFS_LPT_FANOUT - 1);
-+		pnum >>= UBIFS_LPT_FANOUT_SHIFT;
-+	}
-+	num <<= UBIFS_LPT_FANOUT_SHIFT;
-+	num |= iip;
-+	return num;
-+}
-+/**
-+ * set_pnode_lnum - set LEB numbers on a pnode.
-+ * @c: UBIFS file-system description object
-+ * @pnode: pnode to update
-+ *
-+ * This function calculates the LEB numbers for the LEB properties it contains
-+ * based on the pnode number.
-+ */
-+static void set_pnode_lnum(const struct ubifs_info *c,
-+			   struct ubifs_pnode *pnode)
-+{
-+	int i, lnum;
-+
-+	lnum = (pnode->num << UBIFS_LPT_FANOUT_SHIFT) + c->main_first;
-+	for (i = 0; i < UBIFS_LPT_FANOUT; i++) {
-+		if (lnum >= c->leb_cnt)
-+			return;
-+		pnode->lprops[i].lnum = lnum++;
-+	}
-+}
-+/**
-+ * check_lpt_crc - check LPT node crc is correct.
-+ * @c: UBIFS file-system description object
-+ * @buf: buffer containing node
-+ * @len: length of node
-+ *
-+ * This function returns %0 on success and a negative error code on failure.
-+ */
-+int check_lpt_crc(const struct ubifs_info *c __attribute__((unused)), void *buf, int len)
-+{
-+	int pos = 0;
-+	uint8_t *addr = buf;
-+	uint16_t crc, calc_crc;
-+
-+	crc = ubifs_unpack_bits(&addr, &pos, UBIFS_LPT_CRC_BITS);
-+	calc_crc = crc16(-1, buf + UBIFS_LPT_CRC_BYTES,
-+			 len - UBIFS_LPT_CRC_BYTES);
-+	if (crc != calc_crc) {
-+		ubifs_err(c, "invalid crc in LPT node: crc %hx calc %hx",
-+			  crc, calc_crc);
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+/**
-+ * check_lpt_type - check LPT node type is correct.
-+ * @c: UBIFS file-system description object
-+ * @addr: address of type bit field is passed and returned updated here
-+ * @pos: position of type bit field is passed and returned updated here
-+ * @type: expected type
-+ *
-+ * This function returns %0 on success and a negative error code on failure.
-+ */
-+int check_lpt_type(const struct ubifs_info *c __attribute__((unused)), uint8_t **addr,
-+			  int *pos, int type)
-+{
-+	int node_type;
-+
-+	node_type = ubifs_unpack_bits(addr, pos, UBIFS_LPT_TYPE_BITS);
-+	if (node_type != type) {
-+		ubifs_err(c, "invalid type (%d) in LPT node type %d",
-+			  node_type, type);
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+/**
-+ * unpack_pnode - unpack a pnode.
-+ * @c: UBIFS file-system description object
-+ * @buf: buffer containing packed pnode to unpack
-+ * @pnode: pnode structure to fill
-+ *
-+ * This function returns %0 on success and a negative error code on failure.
-+ */
-+static int unpack_pnode(const struct ubifs_info *c, void *buf,
-+			struct ubifs_pnode *pnode)
-+{
-+	uint8_t *addr = buf + UBIFS_LPT_CRC_BYTES;
-+	int i, pos = 0, err;
-+
-+	err = check_lpt_type(c, &addr, &pos, UBIFS_LPT_PNODE);
-+	if (err)
-+		return err;
-+	if (c->big_lpt)
-+		pnode->num = ubifs_unpack_bits(&addr, &pos, c->pcnt_bits);
-+	for (i = 0; i < UBIFS_LPT_FANOUT; i++) {
-+		struct ubifs_lprops * const lprops = &pnode->lprops[i];
-+
-+		lprops->free = ubifs_unpack_bits(&addr, &pos, c->space_bits);
-+		lprops->free <<= 3;
-+		lprops->dirty = ubifs_unpack_bits(&addr, &pos, c->space_bits);
-+		lprops->dirty <<= 3;
-+
-+		if (ubifs_unpack_bits(&addr, &pos, 1))
-+			lprops->flags = LPROPS_INDEX;
-+		else
-+			lprops->flags = 0;
-+		lprops->flags |= ubifs_categorize_lprops(c, lprops);
-+	}
-+	err = check_lpt_crc(c, buf, c->pnode_sz);
-+	return err;
-+}
-+/**
-+ * ubifs_unpack_nnode - unpack a nnode.
-+ * @c: UBIFS file-system description object
-+ * @buf: buffer containing packed nnode to unpack
-+ * @nnode: nnode structure to fill
-+ *
-+ * This function returns %0 on success and a negative error code on failure.
-+ */
-+int ubifs_unpack_nnode(const struct ubifs_info *c, void *buf,
-+		       struct ubifs_nnode *nnode)
-+{
-+	uint8_t *addr = buf + UBIFS_LPT_CRC_BYTES;
-+	int i, pos = 0, err;
-+
-+	err = check_lpt_type(c, &addr, &pos, UBIFS_LPT_NNODE);
-+	if (err)
-+		return err;
-+	if (c->big_lpt)
-+		nnode->num = ubifs_unpack_bits(&addr, &pos, c->pcnt_bits);
-+	for (i = 0; i < UBIFS_LPT_FANOUT; i++) {
-+		int lnum;
-+
-+		lnum = ubifs_unpack_bits(&addr, &pos, c->lpt_lnum_bits) +
-+		       c->lpt_first;
-+		if (lnum == c->lpt_last + 1)
-+			lnum = 0;
-+		nnode->nbranch[i].lnum = lnum;
-+		nnode->nbranch[i].offs = ubifs_unpack_bits(&addr, &pos,
-+						     c->lpt_offs_bits);
-+	}
-+	err = check_lpt_crc(c, buf, c->nnode_sz);
-+	return err;
-+}
-+/**
-+ * unpack_ltab - unpack the LPT's own lprops table.
-+ * @c: UBIFS file-system description object
-+ * @buf: buffer from which to unpack
-+ *
-+ * This function returns %0 on success and a negative error code on failure.
-+ */
-+int unpack_ltab(const struct ubifs_info *c, void *buf)
-+{
-+	uint8_t *addr = buf + UBIFS_LPT_CRC_BYTES;
-+	int i, pos = 0, err;
-+
-+	err = check_lpt_type(c, &addr, &pos, UBIFS_LPT_LTAB);
-+	if (err)
-+		return err;
-+	for (i = 0; i < c->lpt_lebs; i++) {
-+		int free = ubifs_unpack_bits(&addr, &pos, c->lpt_spc_bits);
-+		int dirty = ubifs_unpack_bits(&addr, &pos, c->lpt_spc_bits);
-+
-+		if (free < 0 || free > c->leb_size || dirty < 0 ||
-+		    dirty > c->leb_size || free + dirty > c->leb_size)
-+			return -EINVAL;
-+
-+		c->ltab[i].free = free;
-+		c->ltab[i].dirty = dirty;
-+		c->ltab[i].tgc = 0;
-+		c->ltab[i].cmt = 0;
-+	}
-+	return 0;
-+}
-+
-+/**
-+ * scan_get_pnode - for the scan, get a pnode from either the tree or flash.
-+ * @c: the UBIFS file-system description object
-+ * @path: where to put the pnode
-+ * @parent: parent of the pnode
-+ * @iip: index in parent of the pnode
-+ *
-+ * This function returns a pointer to the pnode on success or a negative error
-+ * code on failure.
-+ */
-+static struct ubifs_pnode *scan_get_pnode(struct ubifs_info *c,
-+					  struct lpt_scan_node *path,
-+					  struct ubifs_nnode *parent, int iip)
-+{
-+	struct ubifs_nbranch *branch;
-+	struct ubifs_pnode *pnode;
-+	int i = max_t(int, c->nnode_sz, c->pnode_sz);
-+	void *buf = malloc(i);;
-+	int err;
-+
-+	branch = &parent->nbranch[iip];
-+	pnode = branch->pnode;
-+	if (pnode) {
-+		path->in_tree = 1;
-+		path->ptr.pnode = pnode;
-+		free(buf);
-+		return pnode;
-+	}
-+	pnode = &path->pnode;
-+	path->in_tree = 0;
-+	path->ptr.pnode = pnode;
-+	memset(pnode, 0, sizeof(struct ubifs_pnode));
-+	if (branch->lnum == 0) {
-+		/*
-+		 * This pnode was not written which just means that the LEB
-+		 * properties in it describe empty LEBs. We make the pnode as
-+		 * though we had read it.
-+		 */
-+		int i;
-+
-+		if (c->big_lpt)
-+			pnode->num = calc_pnode_num_from_parent(c, parent, iip);
-+		for (i = 0; i < UBIFS_LPT_FANOUT; i++) {
-+			struct ubifs_lprops * const lprops = &pnode->lprops[i];
-+
-+			lprops->free = c->leb_size;
-+			lprops->flags = ubifs_categorize_lprops(c, lprops);
++		for (j = 0; j < ngroups; j++) {
++			ret = snprintf(linebuf + lx, linebuflen - lx,
++				       "%s%4.4x", j ? " " : "",
++				       *(ptr2 + j));
++			if (ret >= linebuflen - lx)
++				goto overflow1;
++			lx += ret;
 +		}
 +	} else {
-+		ubifs_assert(branch->lnum >= c->lpt_first &&
-+			     branch->lnum <= c->lpt_last);
-+		ubifs_assert(branch->offs >= 0 && branch->offs < c->leb_size);
-+		err = ubifs_read(branch->lnum * c->leb_size + branch->offs, c->pnode_sz, buf);
-+		if (err) {
-+			free(buf);
-+			return ERR_PTR(err);
++		for (j = 0; j < len; j++) {
++			if (linebuflen < lx + 3)
++				goto overflow2;
++			ch = ptr[j];
++			linebuf[lx++] = hex_asc_hi(ch);
++			linebuf[lx++] = hex_asc_lo(ch);
++			linebuf[lx++] = ' ';
 +		}
-+		err = unpack_pnode(c, buf, pnode);
-+		if (err) {
-+			free(buf);
-+			return ERR_PTR(err);
-+		}
++		if (j)
++			lx--;
 +	}
-+	if (!c->big_lpt)
-+		pnode->num = calc_pnode_num_from_parent(c, parent, iip);
-+	pnode->parent = parent;
-+	pnode->iip = iip;
-+	set_pnode_lnum(c, pnode);
-+	free(buf);
-+	return pnode;
-+}
-+/**
-+ * ubifs_read_nnode - read a nnode from flash and link it to the tree in memory.
-+ * @c: UBIFS file-system description object
-+ * @parent: parent nnode (or NULL for the root)
-+ * @iip: index in parent
-+ *
-+ * This function returns %0 on success and a negative error code on failure.
-+ */
-+int ubifs_read_nnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip)
-+{
-+	struct ubifs_nbranch *branch = NULL;
-+	struct ubifs_nnode *nnode = NULL;
-+	void *buf = c->lpt_nod_buf;
-+	int err, lnum, offs;
++	if (!ascii)
++		goto nil;
 +
-+	if (parent) {
-+		branch = &parent->nbranch[iip];
-+		lnum = branch->lnum;
-+		offs = branch->offs;
-+	} else {
-+		lnum = c->lpt_lnum;
-+		offs = c->lpt_offs;
++	while (lx < ascii_column) {
++		if (linebuflen < lx + 2)
++			goto overflow2;
++		linebuf[lx++] = ' ';
 +	}
-+	nnode = kzalloc(sizeof(struct ubifs_nnode), GFP_NOFS);
-+	if (!nnode) {
-+		err = -ENOMEM;
-+		goto out;
++	for (j = 0; j < len; j++) {
++		if (linebuflen < lx + 2)
++			goto overflow2;
++		ch = ptr[j];
++		linebuf[lx++] = (isascii(ch) && isprint(ch)) ? ch : '.';
 +	}
-+	if (lnum == 0) {
-+		/*
-+		 * This nnode was not written which just means that the LEB
-+		 * properties in the subtree below it describe empty LEBs. We
-+		 * make the nnode as though we had read it, which in fact means
-+		 * doing almost nothing.
-+		 */
-+		if (c->big_lpt)
-+			nnode->num = calc_nnode_num_from_parent(c, parent, iip);
-+	} else {
-+		err = ubifs_read(lnum * c->leb_size + offs, c->nnode_sz, buf);
-+		if (err)
-+			goto out;
-+		err = ubifs_unpack_nnode(c, buf, nnode);
-+		if (err)
-+			goto out;
-+	}
-+	if (!c->big_lpt)
-+		nnode->num = calc_nnode_num_from_parent(c, parent, iip);
-+	if (parent) {
-+		branch->nnode = nnode;
-+		nnode->level = parent->level - 1;
-+	} else {
-+		c->nroot = nnode;
-+		nnode->level = c->lpt_hght;
-+	}
-+	nnode->parent = parent;
-+	nnode->iip = iip;
-+	return 0;
-+
-+out:
-+	ubifs_err(c, "error %d reading nnode at %d:%d", err, lnum, offs);
-+	kfree(nnode);
-+	return err;
++nil:
++	linebuf[lx] = '\0';
++	return lx;
++overflow2:
++	linebuf[lx++] = '\0';
++overflow1:
++	return ascii ? ascii_column + len : (groupsize * 2 + 1) * ngroups - 1;
 +}
 +
 +/**
-+ * ubifs_lpt_scan_nolock - scan the LPT.
-+ * @c: the UBIFS file-system description object
-+ * @start_lnum: LEB number from which to start scanning
-+ * @end_lnum: LEB number at which to stop scanning
-+ * @scan_cb: callback function called for each lprops
-+ * @data: data to be passed to the callback function
++ * print_hex_dump - print a text hex dump to syslog for a binary blob of data
++ * @prefix_str: string to prefix each line with;
++ *  caller supplies trailing spaces for alignment if desired
++ * @prefix_type: controls whether prefix of an offset, address, or none
++ *  is printed (%DUMP_PREFIX_OFFSET, %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_NONE)
++ * @rowsize: number of bytes to print per line; must be 16 or 32
++ * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
++ * @buf: data blob to dump
++ * @len: number of bytes in the @buf
++ * @ascii: include ASCII after the hex output
 + *
-+ * This function returns %0 on success and a negative error code on failure.
++ * Given a buffer of u8 data, print_hex_dump() prints a hex + ASCII dump
++ * to the kernel log at the specified kernel log level, with an optional
++ * leading prefix.
++ *
++ * print_hex_dump() works on one "line" of output at a time, i.e.,
++ * 16 or 32 bytes of input data converted to hex + ASCII output.
++ * print_hex_dump() iterates over the entire input @buf, breaking it into
++ * "line size" chunks to format and print.
++ *
++ * E.g.:
++ *   print_hex_dump(KERN_DEBUG, "raw data: ", DUMP_PREFIX_ADDRESS,
++ *		    16, 1, frame->data, frame->len, true);
++ *
++ * Example output using %DUMP_PREFIX_OFFSET and 1-byte mode:
++ * 0009ab42: 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
++ * Example output using %DUMP_PREFIX_ADDRESS and 4-byte mode:
++ * ffffffff88089af0: 73727170 77767574 7b7a7978 7f7e7d7c  pqrstuvwxyz{|}~.
 + */
-+int ubifs_lpt_scan_nolock(struct ubifs_info *c, int start_lnum, int end_lnum,
-+			  ubifs_lpt_scan_callback scan_cb, void *data)
++void print_hex_dump(const char *prefix_str, int prefix_type,
++		    int rowsize, int groupsize,
++		    const void *buf, size_t len, int ascii)
 +{
-+	int err = 0, i, h, iip, shft;
-+	struct ubifs_nnode *nnode;
-+	struct ubifs_pnode *pnode;
-+	struct lpt_scan_node *path;
++	const u8 *ptr = buf;
++	int i, linelen, remaining = len;
++	char linebuf[32 * 3 + 2 + 32 + 1];
 +
-+	if (start_lnum == -1) {
-+		start_lnum = end_lnum + 1;
-+		if (start_lnum >= c->leb_cnt)
-+			start_lnum = c->main_first;
-+	}
++	if (rowsize != 16 && rowsize != 32)
++		rowsize = 16;
 +
-+	ubifs_assert(start_lnum >= c->main_first && start_lnum < c->leb_cnt);
-+	ubifs_assert(end_lnum >= c->main_first && end_lnum < c->leb_cnt);
++	for (i = 0; i < len; i += rowsize) {
++		linelen = min(remaining, rowsize);
++		remaining -= rowsize;
 +
-+	if (!c->nroot) {
-+		err = ubifs_read_nnode(c, NULL, 0);
-+		if (err)
-+			return err;
-+	}
++		hex_dump_to_buffer(ptr + i, linelen, rowsize, groupsize,
++				   linebuf, sizeof(linebuf), ascii);
 +
-+	path = kmalloc(sizeof(struct lpt_scan_node) * (c->lpt_hght + 1),
-+		       GFP_NOFS);
-+	if (!path)
-+		return -ENOMEM;
-+
-+	path[0].ptr.nnode = c->nroot;
-+	path[0].in_tree = 1;
-+again:
-+	/* Descend to the pnode containing start_lnum */
-+	nnode = c->nroot;
-+	i = start_lnum - c->main_first;
-+	shft = c->lpt_hght * UBIFS_LPT_FANOUT_SHIFT;
-+	for (h = 1; h < c->lpt_hght; h++) {
-+		iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
-+		shft -= UBIFS_LPT_FANOUT_SHIFT;
-+		nnode = scan_get_nnode(c, path + h, nnode, iip);
-+		if (IS_ERR(nnode)) {
-+			err = PTR_ERR(nnode);
-+			goto out;
-+		}
-+	}
-+	iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
-+	pnode = scan_get_pnode(c, path + h, nnode, iip);
-+	if (IS_ERR(pnode)) {
-+		err = PTR_ERR(pnode);
-+		goto out;
-+	}
-+	iip = (i & (UBIFS_LPT_FANOUT - 1));
-+
-+	/* Loop for each lprops */
-+	while (1) {
-+		struct ubifs_lprops *lprops = &pnode->lprops[iip];
-+		int ret, lnum = lprops->lnum;
-+
-+		ret = scan_cb(c, lprops, path[h].in_tree, data);
-+		if (ret < 0) {
-+			err = ret;
-+			goto out;
-+		}
-+		if (ret & LPT_SCAN_ADD) {
-+			/* Add all the nodes in path to the tree in memory */
-+			for (h = 1; h < c->lpt_hght; h++) {
-+				const size_t sz = sizeof(struct ubifs_nnode);
-+				struct ubifs_nnode *parent;
-+
-+				if (path[h].in_tree)
-+					continue;
-+				nnode = malloc(sz);
-+				if (!nnode) {
-+					err = -ENOMEM;
-+					goto out;
-+				}
-+				memcpy(nnode, &path[h].nnode, sz);
-+				parent = nnode->parent;
-+				parent->nbranch[nnode->iip].nnode = nnode;
-+				path[h].ptr.nnode = nnode;
-+				path[h].in_tree = 1;
-+				path[h + 1].cnode.parent = nnode;
-+			}
-+		}
-+		if (ret & LPT_SCAN_STOP) {
-+			err = 0;
++		switch (prefix_type) {
++		case DUMP_PREFIX_ADDRESS:
++			printf("%s%p: %s\n",
++			       prefix_str, ptr + i, linebuf);
++			break;
++		case DUMP_PREFIX_OFFSET:
++			printf("%s%.8x: %s\n", prefix_str, i, linebuf);
++			break;
++		default:
++			printf("%s%s\n", prefix_str, linebuf);
 +			break;
 +		}
-+		/* Get the next lprops */
-+		if (lnum == end_lnum) {
-+			/*
-+			 * We got to the end without finding what we were
-+			 * looking for
-+			 */
-+			err = -ENOSPC;
-+			goto out;
-+		}
-+		if (lnum + 1 >= c->leb_cnt) {
-+			/* Wrap-around to the beginning */
-+			start_lnum = c->main_first;
-+			goto again;
-+		}
-+		if (iip + 1 < UBIFS_LPT_FANOUT) {
-+			/* Next lprops is in the same pnode */
-+			iip += 1;
-+			continue;
-+		}
-+		/* We need to get the next pnode. Go up until we can go right */
-+		iip = pnode->iip;
-+		while (1) {
-+			h -= 1;
-+			ubifs_assert(h >= 0);
-+			nnode = path[h].ptr.nnode;
-+			if (iip + 1 < UBIFS_LPT_FANOUT)
-+				break;
-+			iip = nnode->iip;
-+		}
-+		/* Go right */
-+		iip += 1;
-+		/* Descend to the pnode */
-+		h += 1;
-+		for (; h < c->lpt_hght; h++) {
-+			nnode = scan_get_nnode(c, path + h, nnode, iip);
-+			if (IS_ERR(nnode)) {
-+				err = PTR_ERR(nnode);
-+				goto out;
-+			}
-+			iip = 0;
-+		}
-+		pnode = scan_get_pnode(c, path + h, nnode, iip);
-+		if (IS_ERR(pnode)) {
-+			err = PTR_ERR(pnode);
-+			goto out;
-+		}
-+		iip = 0;
 +	}
-+out:
-+	kfree(path);
-+	return err;
 +}
 -- 
 1.8.4.2
