@@ -1,14 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zx7kH-0001vG-6W
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 06:22:05 +0000
+ id 1Zx7kM-0001vG-M7
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 06:22:10 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>
 CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 19/27] ubifs: ubifs_dump: dump log area
-Date: Fri, 13 Nov 2015 14:13:30 +0800
-Message-ID: <1447395218-7061-20-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 23/27] ubifs: ubifs_dump: dump index area
+Date: Fri, 13 Nov 2015 14:13:34 +0800
+Message-ID: <1447395218-7061-24-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1447395218-7061-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1447395218-7061-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,166 +22,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-scan the log lebs and dump the log nodes out.
+Scan the whole index tree and dump each index node.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/ubifs_dump/ubifs_dump.c | 140 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 140 insertions(+)
+ ubifs-utils/ubifs_dump/ubifs_dump.c | 95 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 95 insertions(+)
 
 diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
-index 4f67621..d7a2951 100644
+index 4b255e3..e72b8dd 100644
 --- a/ubifs-utils/ubifs_dump/ubifs_dump.c
 +++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
-@@ -581,6 +581,142 @@ static int dump_master(void)
+@@ -883,6 +883,97 @@ static int dump_lpt(void)
  	return 0;
  }
  
-+static int __dump_log_leb(int leb_num)
++/**
++ * ubifs_read_node - read node.
++ * @c: UBIFS file-system description object
++ * @buf: buffer to read to
++ * @type: node type
++ * @len: node length (not aligned)
++ * @lnum: logical eraseblock number
++ * @offs: offset within the logical eraseblock
++ *
++ * This function reads a node of known type and and length, checks it and
++ * stores in @buf. Returns zero in case of success, %-EUCLEAN if CRC mismatched
++ * and a negative error code in case of failure.
++ */
++int ubifs_read_node(const struct ubifs_info *c, void *buf, int len,
++		    int lnum, loff_t offs)
 +{
-+	int err = 0;
-+	struct ubifs_scan_leb *sleb;
-+	struct ubifs_scan_node *snod;
-+	const struct ubifs_cs_node *node;
-+	static int cs_sqnum = 0;
-+	int lnum = leb_num;
-+	loff_t offs = 0;
-+	int node_num = 0;
++	int err;
 +
-+	sleb = ubifs_scan(c, lnum, offs, leb_buf, 0);
-+	if (IS_ERR(sleb)) {
-+		printf("Error in scaning log leb");
-+		return PTR_ERR(sleb);
-+	}
++	ubifs_assert(lnum >= 0 && lnum < c->leb_cnt && offs >= 0);
++	ubifs_assert(len >= UBIFS_CH_SZ && offs + len <= c->leb_size);
++	ubifs_assert(!(offs & 7) && offs < c->leb_size);
++	ubifs_assert(type >= 0 && type < UBIFS_NODE_TYPES_CNT);
 +
-+	if (sleb->nodes_cnt == 0) {
-+		err = 1;
-+		goto out;
-+	}
++	err = ubifs_read((loff_t)lnum * c->leb_size + offs, len, buf);
++	if (err && err != -EBADMSG)
++		return err;
 +
-+	node = sleb->buf;
-+	snod = list_entry(sleb->nodes.next, struct ubifs_scan_node, list);
-+	if (cs_sqnum == 0) {
-+		/*
-+		 * This is the first log LEB we are looking at, make sure that
-+		 * the first node is a commit start node. Also record its
-+		 * sequence number so that UBIFS can determine where the log
-+		 * ends, because all nodes which were have higher sequence
-+		 * numbers.
-+		 */
-+		if (snod->type != UBIFS_CS_NODE) {
-+			ubifs_err(c, "first log node at LEB %d:%lu is not CS node",
-+				  lnum, offs);
-+			goto out_dump;
-+		}
-+		if (le64_to_cpu(node->cmt_no) != mst.cmt_no) {
-+			ubifs_err(c, "first CS node at LEB %d:%lu has wrong commit number %llu expected %llu",
-+				  lnum, offs,
-+				  (unsigned long long)le64_to_cpu(node->cmt_no),
-+				  mst.cmt_no);
-+			goto out_dump;
-+		}
-+
-+		cs_sqnum = le64_to_cpu(node->ch.sqnum);
-+	}
-+
-+	if (snod->sqnum < cs_sqnum) {
-+		/*
-+		 * This means that we reached end of log and now
-+		 * look to the older log data, which was already
-+		 * committed but the eraseblock was not erased (UBIFS
-+		 * only un-maps it). So this basically means we have to
-+		 * exit with "end of log" code.
-+		 */
-+		err = 1;
-+		goto out;
-+	}
-+
-+	/* Make sure the first node sits at offset zero of the LEB */
-+	if (snod->offs != 0) {
-+		ubifs_err(c, "first node is not at zero offset");
-+		goto out_dump;
-+	}
-+
-+	printf("\tLOG LEB %d\n", lnum);
-+	list_for_each_entry(snod, &sleb->nodes, list) {
-+		if (snod->sqnum < cs_sqnum) {
-+			ubifs_err(c, "bad sqnum %llu, commit sqnum %d",
-+				  snod->sqnum, cs_sqnum);
-+			goto out_dump;
-+		}
-+
-+		printf("\tNODE %d", node_num++);
-+		switch (snod->type) {
-+		case UBIFS_CS_NODE:
-+			printf(" <START COMMIT>");
-+		case UBIFS_REF_NODE: {
-+			printf(":\n");
-+			dump_node(c, snod->node);
-+			break;
-+		}
-+		default:
-+			ubifs_err(c, "unexpected node in log");
-+			goto out_dump;
-+		}
-+	}
-+	err = !sleb->endpt;
-+out:
-+	ubifs_scan_destroy(sleb);
-+	return err;
-+
-+out_dump:
-+	ubifs_err(c, "log error detected while replaying the log at LEB %d:%lu",
-+		  lnum, offs + snod->offs);
-+	ubifs_scan_destroy(sleb);
-+	return -EINVAL;
-+
++	return 0;
 +}
 +
-+static int dump_log(void)
++static int dump_zbr(struct ubifs_info *c, struct ubifs_zbranch *zbr)
 +{
-+	int err, lnum, ltail_lnum, log_last;
++	int i = 0;
++	int err = 0;
++	struct ubifs_idx_node *idx;
++	void *buf;
 +
-+	lnum = ltail_lnum = mst.log_lnum;
-+	log_last = UBIFS_LOG_LNUM + sup.log_lebs - 1;
-+	printf("LOG AREA:\n");
-+	while (lnum <= log_last) {
-+		err = __dump_log_leb(lnum);
-+		if (err == 1) {
-+			if (lnum != mst.log_lnum)
-+				/* We hit the end of the log */
-+				break;
++	buf = malloc(zbr->len);
++	if (!buf)
++		return -ENOMEM;
 +
-+			/*
-+			 * The head of the log must always start with the
-+			 * "commit start" node on a properly formatted UBIFS.
-+			 * But we found no nodes at all, which means that
-+			 * someting went wrong and we cannot proceed mounting
-+			 * the file-system.
-+			 */
-+			ubifs_err(c, "no UBIFS nodes found at the log head LEB %d:%d, possibly corrupted",
-+				  lnum, 0);
-+			err = -EINVAL;
-+		}
++	err = ubifs_read_node(c, buf, zbr->len, zbr->lnum, zbr->offs);
++	if (err)
++		goto out;
++
++	dump_node(c, buf);
++
++	if (((struct ubifs_ch *)buf)->node_type != UBIFS_IDX_NODE)
++		goto out;
++
++	idx = ((struct ubifs_idx_node *)buf);
++	for (i = 0; i < le16_to_cpu(idx->child_cnt); i++) {
++		struct ubifs_branch *br;
++		struct ubifs_zbranch child;
++
++		br = ubifs_idx_branch(c, idx, i);
++		child.lnum = le32_to_cpu(br->lnum);
++		child.offs = le32_to_cpu(br->offs);
++		child.len = le32_to_cpu(br->len);
++		err = dump_zbr(c, &child);
 +		if (err)
 +			goto out;
-+		lnum++;
 +	}
 +
-+	err = 0;
 +out:
++	free(buf);
 +	return err;
++}
++
++static int dump_index()
++{
++	int err = 0;
++
++	printf("\tINDEX AREA: \n");
++	err = dump_zbr(c, &c->zroot);
++	if (err)
++		return err;
++	return 0;
++}
++
++static int dump_main()
++{
++	int err = 0;
++	printf("MAIN AREA: \n");
++	err = dump_index();
++	if (err)
++		return err;
++
++	return 0;
 +}
 +
  static int dump()
  {
  	int err = 0;
-@@ -598,6 +734,10 @@ static int dump()
- 	err = dump_master();
+@@ -908,6 +999,10 @@ static int dump()
+ 	err = dump_lpt();
  	if (err)
  		goto free;
 +
-+	err = dump_log();
++	err = dump_main();
 +	if (err)
 +		goto free;
  free:
