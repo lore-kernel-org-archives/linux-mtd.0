@@ -1,21 +1,22 @@
-Message-ID: <1447397107.9118.10.camel@mhfsdcap03>
-Subject: Re: [PATCH v6 0/3] Mediatek SPI-NOR flash driver
+Message-ID: <1447399245.9118.14.camel@mhfsdcap03>
+Subject: Re: [PATCH v6 1/3] doc: dt: add documentation for Mediatek spi-nor
+ controller
 From: bayi cheng <bayi.cheng@mediatek.com>
 To: Brian Norris <computersforpeace@gmail.com>
-CC: Mark Rutland <mark.rutland@arm.com>, <devicetree@vger.kernel.org>,
- <srv_heupstream@mediatek.com>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, Sascha Hauer <s.hauer@pengutronix.de>,
- <linux-kernel@vger.kernel.org>, <jteki@openedev.com>, Rob Herring
- <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>,
- <ezequiel@vanguardiasur.com.ar>, Kumar Gala <galak@codeaurora.org>,
- "Matthias Brugger" <matthias.bgg@gmail.com>, <linux-mtd@lists.infradead.org>,
- "David Woodhouse" <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>
-Date: Fri, 13 Nov 2015 14:45:07 +0800
-In-Reply-To: <20151111202621.GI12143@google.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, "Ian
+ Campbell" <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, "Daniel Kurtz"
+ <djkurtz@chromium.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>,
+ <jteki@openedev.com>, <ezequiel@vanguardiasur.com.ar>
+Date: Fri, 13 Nov 2015 15:20:45 +0800
+In-Reply-To: <20151111203823.GJ12143@google.com>
 References: <1446824889-16144-1-git-send-email-bayi.cheng@mediatek.com>
- <20151110024611.GL12143@google.com> <1447250654.19991.15.camel@mhfsdcap03>
- <20151111202621.GI12143@google.com>
+ <1446824889-16144-2-git-send-email-bayi.cheng@mediatek.com>
+ <20151111203823.GJ12143@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
@@ -28,99 +29,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2015-11-11 at 12:26 -0800, Brian Norris wrote:
-> On Wed, Nov 11, 2015 at 10:04:14PM +0800, Bayi Cheng wrote:
-> > On Mon, 2015-11-09 at 18:46 -0800, Brian Norris wrote:
-> > > I believe you didn't completely answer all my questions from v5 though.
-> > > I'll repeat a bit here. Particularly, refer to [1].
-> > > I'll summarize; I understand that your common transmit/receive operation
-> > > works something like this:
-> > > 
-> > > Quoting from [1]:
-> > > > (1) total number of bits to send/receive goes in the COUNT register (so
-> > > >     far, as many as 7*8=56?)
-> > > > (2) opcode is written to PRGDATA5
-> > > > (3) other "transmit" data (like addresses), if any, are placed on PRGDATA4..0
-> > > > (4) command is sent (execute_cmd())
-> > > > (5) data is read back in SHREG{X..0}, if needed
-> > > 
-> > > My questions were:
-> > > 
-> > > (a) Why does mt8173_nor_set_read_mode() use PRGDATA3? That's not
-> > >     mentioned in the SoC manual, and it doesn't really match any of the
-> > >     steps above. Perhaps it's just a quirk of the controller's
-> > >     programming model?
-> > > 
-> > yes, for this question, I have done some testes, If I change the
-> > PRGDATA3 to PRGDATA5 for mt8173_nor_set_read_mode() like others
-> > functions, then the controller will be hanged, and I have asked our
-> > designer for double confirm.
-> 
-> I wasn't suggesting to change this to PRGDATA5. I just was wondering why
-> the difference. It's not documented. (I suppose an acceptable answer is
-> just "because that's how the HW works.")
-> 
-I have synced with our designer, and just as you said, that's how the HW
-works, and the read operation is different is different from other
-operation. By the way, I have double confirm our driver code, and I have
-made a mistake for quad read operation, the quad command need use
-PRGDATA4 Instead PRGDATA3.
-PS: write PRGDATA4 0xEB(4bit I/O read mode) or 0x6B(4 bit output mode),
-So I will modify mt8173_nor_set_read_mode function in next patch.
-
-
-> > > (b) How do you determine X from step (5)?
-> > > 
-> > > Right now, your code seems to answer that X is "rxlen - 1". Correct?
-> > > 
-> > yes, I have used "rxlen -1", because the first of nor flash output is
-> > located at SHREG[0], in the other words, the output data starts at
-> > SHREG[0] and go up to SHREG[relen -1]
-> 
-> But, we aren't reading from SHREG[0] first; we're reading backwards from
-> SHREG[rxlen - 1] down to SHREG[0]. It seems that's correct, right?
-
-Yes, You are right!
-> 
-> > > If that's correct and if I put all of my understanding together
-> > > correctly, this means that you can actually shift out (in PRGDATA) up to
-> > > 6 bytes (that is, 1 opcode and 5 tx bytes) and shift in (in SHREG) up to
-> > > 7 bytes, except that the first byte is received during the opcode cycle,
-> > > and so it is discarded, and we effectively receive only 6 bytes.
-> > > 
-> > > Is that all correct? If so, then I think you still need to adjust the
-> > > boundary conditions in your do_tx_rx() function. (I'll comment on the
-> > > driver to point out the specifics.)
+On Wed, 2015-11-11 at 12:38 -0800, Brian Norris wrote:
+> On Fri, Nov 06, 2015 at 11:48:07PM +0800, Bayi Cheng wrote:
+> > Add device tree binding documentation for serial flash with
+> > Mediatek serial flash controller
 > > 
-> > Yes, you are right! and I will adjust the boundary conditions in
-> > do_tx_rx() function.
+> > Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+> > ---
 > 
-> OK, good. BTW, can you make sure to rewrite the appropriate MAX macro(s)
-> to reflect the right values? It seems like maybe you'll want separate
-> macros for the maximum TX and RX -- and total (?), or is this just the
-> same as RX? -- since they seem to have different limits.
+> Applied to l2-mtd.git/next (for 4.5). This will show up in
+> linux-next.git after the merge window.
+> 
+> Also squashed in a small diff (below), to fix up some language issues
+> and to refer the reader to the jedec,spi-nor.txt document.
 > 
 
-OK, I will use two MAX macros, one is for TX&RX, and the other is for 
-the total.
+OK, I will fix it in next patch!
 
-> > By the way, could you tell me whether I need to publish a new patch? or
-> > you can fix them up directly?
+> >  .../devicetree/bindings/mtd/mtk-quadspi.txt        | 41 ++++++++++++++++++++++
+> >  1 file changed, 41 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> > new file mode 100644
+> > index 0000000..866b492
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> > @@ -0,0 +1,41 @@
+> > +* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
 > 
-> I think there are a few more adjustments to make, so please just post a
-> new version of the driver only. The DT binding and DTS changes look good
-> to go now.
+> The DT binding document shouldn't be talking about software (i.e.,
+> shouldn't be talking about "drivers").
+> 
 
-Yes, I will publish a new patch next week, and Thanks again for your
-grate help and support!
+OK, I will fix it.
 
+> > +
+> > +Required properties:
+> > +- compatible: 	  should be "mediatek,mt8173-nor";
+> > +- reg: 		  physical base address and length of the controller's register
+> > +- clocks: 	  the phandle of the clock needed by the nor controller
+> > +- clock-names: 	  the name of the clocks
+> > +		  the clocks needed "spi" and "sf". "spi" is used for spi bus,
+> > +		  and "sf" is used for controller, these are the clocks witch
+> > +		  hardware needs to enabling nor flash and nor flash controller.
+> > +		  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
+> > +- #address-cells: should be <1>
+> > +- #size-cells:	  should be <0>
+> > +
+> > +The SPI Flash must be a child of the nor_flash node and must have a
+> > +compatible property.
+> > +
+> > +Required properties:
+> > +- compatible:	  May include a device-specific string consisting of the manufacturer
+> > +		  and name of the chip. Must also include "jedec,spi-nor" for any
+> > +		  SPI NOR flash that can be identified by the JEDEC READ ID opcode (0x9F).
+> > +- reg :		  Chip-Select number
+> > +
+> > +Example:
+> > +
+> > +nor_flash: spi@1100d000 {
+> > +	compatible = "mediatek,mt8173-nor";
+> > +	reg = <0 0x1100d000 0 0xe0>;
+> > +	clocks = <&pericfg CLK_PERI_SPI>,
+> > +		 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
+> > +	clock-names = "spi", "sf";
+> > +	#address-cells = <1>;
+> > +	#size-cells = <0>;
+> > +	status = "disabled";
+> > +
+> > +	flash@0 {
+> > +		compatible = "jedec,spi-nor";
+> > +		reg = <0>;
+> > +	};
+> > +};
+> > +
 > 
-> Regards,
-> Brian
-> 
-> > > [1] http://lists.infradead.org/pipermail/linux-mtd/2015-October/062951.html
-> 
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> index 866b492c38d2..fb314f09861b 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-quadspi.txt
+> @@ -1,19 +1,19 @@
+> -* MTD SPI nor driver for MTK MT81xx (and similar) serial flash controller
+> +* Serial NOR flash controller for MTK MT81xx (and similar)
+>  
+>  Required properties:
+>  - compatible: 	  should be "mediatek,mt8173-nor";
+>  - reg: 		  physical base address and length of the controller's register
+> -- clocks: 	  the phandle of the clock needed by the nor controller
+> -- clock-names: 	  the name of the clocks
+> -		  the clocks needed "spi" and "sf". "spi" is used for spi bus,
+> +- clocks: 	  the phandle of the clocks needed by the nor controller
+> +- clock-names: 	  the names of the clocks
+> +		  the clocks should be named "spi" and "sf". "spi" is used for spi bus,
+>  		  and "sf" is used for controller, these are the clocks witch
+>  		  hardware needs to enabling nor flash and nor flash controller.
+>  		  See Documentation/devicetree/bindings/clock/clock-bindings.txt for details.
+>  - #address-cells: should be <1>
+>  - #size-cells:	  should be <0>
+>  
+> -The SPI Flash must be a child of the nor_flash node and must have a
+> -compatible property.
+> +The SPI flash must be a child of the nor_flash node and must have a
+> +compatible property. Also see jedec,spi-nor.txt.
+>  
+>  Required properties:
+>  - compatible:	  May include a device-specific string consisting of the manufacturer
+
+Thanks for your instruction! and I will fix it in the next patch!
