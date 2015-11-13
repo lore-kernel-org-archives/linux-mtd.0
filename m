@@ -1,19 +1,18 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zx7kH-0001vC-BZ
+ id 1Zx7kH-0001vG-6W
  for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 06:22:05 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>
 CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 20/27] ubifs: introduce lprops lib
-Date: Fri, 13 Nov 2015 14:13:31 +0800
-Message-ID: <1447395218-7061-21-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 19/27] ubifs: ubifs_dump: dump log area
+Date: Fri, 13 Nov 2015 14:13:30 +0800
+Message-ID: <1447395218-7061-20-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1447395218-7061-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1447395218-7061-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,122 +22,170 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Copy lprops.c from kernel to ubifs-utils/.
+scan the log lebs and dump the log nodes out.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/include/lprops.h |  6 ++++
- ubifs-utils/lib/lprops.c     | 79 ++++++++++++++++++++++++++++++++++++++++=
-++++
- 2 files changed, 85 insertions(+)
- create mode 100644 ubifs-utils/include/lprops.h
- create mode 100644 ubifs-utils/lib/lprops.c
+ ubifs-utils/ubifs_dump/ubifs_dump.c | 140 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 140 insertions(+)
 
-diff --git a/ubifs-utils/include/lprops.h b/ubifs-utils/include/lprops.h
-new file mode 100644
-index 0000000..5bf3108
---- /dev/null
-+++ b/ubifs-utils/include/lprops.h
-@@ -0,0 +1,6 @@
-+#ifndef __UBIFS_LPROPS_H__
-+#define __UBIFS_LPROPS_H__
-+
-+int ubifs_categorize_lprops(const struct ubifs_info *c,
-+			    const struct ubifs_lprops *lprops);
-+#endif
-diff --git a/ubifs-utils/lib/lprops.c b/ubifs-utils/lib/lprops.c
-new file mode 100644
-index 0000000..818d220
---- /dev/null
-+++ b/ubifs-utils/lib/lprops.c
-@@ -0,0 +1,79 @@
-+/*
-+ * This file is part of UBIFS.
-+ *
-+ * Copyright (C) 2006-2008 Nokia Corporation.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as publishe=
-d by
-+ * the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WIT=
-HOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License f=
-or
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along=
- with
-+ * this program; if not, write to the Free Software Foundation, Inc., 51
-+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-+ *
-+ * Authors: Adrian Hunter
-+ *          Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=
-=D0=B9 =D0=90=D1=80=D1=82=D1=91=D0=BC)
-+ */
-+
-+/*
-+ * This file implements the functions that access LEB properties and their
-+ * categories. LEBs are categorized based on the needs of UBIFS, and the
-+ * categories are stored as either heaps or lists to provide a fast way of
-+ * finding a LEB in a particular category. For example, UBIFS may need to =
-find
-+ * an empty LEB for the journal, or a very dirty LEB for garbage collectio=
-n.
-+ */
-+
-+#include "ubifs_common.h"
-+
-+/* common.h requires the PROGRAM_NAME macro */
-+#define PROGRAM_NAME "ubifs-lprops"
-+#include "common.h"
-+
-+#include "ubifs.h"
-+
-+/**
-+ * ubifs_categorize_lprops - categorize LEB properties.
-+ * @c: UBIFS file-system description object
-+ * @lprops: LEB properties to categorize
-+ *
-+ * LEB properties are categorized to enable fast find operations. This fun=
-ction
-+ * returns the LEB category to which the LEB properties belong. Note howev=
-er
-+ * that if the LEB category is stored as a heap and the heap is full, the
-+ * LEB properties may have their category changed to %LPROPS_UNCAT.
-+ */
-+int ubifs_categorize_lprops(const struct ubifs_info *c,
-+			    const struct ubifs_lprops *lprops)
+diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
+index 4f67621..d7a2951 100644
+--- a/ubifs-utils/ubifs_dump/ubifs_dump.c
++++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
+@@ -581,6 +581,142 @@ static int dump_master(void)
+ 	return 0;
+ }
+ 
++static int __dump_log_leb(int leb_num)
 +{
-+	if (lprops->flags & LPROPS_TAKEN)
-+		return LPROPS_UNCAT;
++	int err = 0;
++	struct ubifs_scan_leb *sleb;
++	struct ubifs_scan_node *snod;
++	const struct ubifs_cs_node *node;
++	static int cs_sqnum = 0;
++	int lnum = leb_num;
++	loff_t offs = 0;
++	int node_num = 0;
 +
-+	if (lprops->free =3D=3D c->leb_size) {
-+		ubifs_assert(!(lprops->flags & LPROPS_INDEX));
-+		return LPROPS_EMPTY;
++	sleb = ubifs_scan(c, lnum, offs, leb_buf, 0);
++	if (IS_ERR(sleb)) {
++		printf("Error in scaning log leb");
++		return PTR_ERR(sleb);
 +	}
 +
-+	if (lprops->free + lprops->dirty =3D=3D c->leb_size) {
-+		if (lprops->flags & LPROPS_INDEX)
-+			return LPROPS_FRDI_IDX;
-+		else
-+			return LPROPS_FREEABLE;
++	if (sleb->nodes_cnt == 0) {
++		err = 1;
++		goto out;
 +	}
 +
-+	if (lprops->flags & LPROPS_INDEX) {
-+		if (lprops->dirty + lprops->free >=3D c->min_idx_node_sz)
-+			return LPROPS_DIRTY_IDX;
-+	} else {
-+		if (lprops->dirty >=3D c->dead_wm &&
-+		    lprops->dirty > lprops->free)
-+			return LPROPS_DIRTY;
-+		if (lprops->free > 0)
-+			return LPROPS_FREE;
++	node = sleb->buf;
++	snod = list_entry(sleb->nodes.next, struct ubifs_scan_node, list);
++	if (cs_sqnum == 0) {
++		/*
++		 * This is the first log LEB we are looking at, make sure that
++		 * the first node is a commit start node. Also record its
++		 * sequence number so that UBIFS can determine where the log
++		 * ends, because all nodes which were have higher sequence
++		 * numbers.
++		 */
++		if (snod->type != UBIFS_CS_NODE) {
++			ubifs_err(c, "first log node at LEB %d:%lu is not CS node",
++				  lnum, offs);
++			goto out_dump;
++		}
++		if (le64_to_cpu(node->cmt_no) != mst.cmt_no) {
++			ubifs_err(c, "first CS node at LEB %d:%lu has wrong commit number %llu expected %llu",
++				  lnum, offs,
++				  (unsigned long long)le64_to_cpu(node->cmt_no),
++				  mst.cmt_no);
++			goto out_dump;
++		}
++
++		cs_sqnum = le64_to_cpu(node->ch.sqnum);
 +	}
 +
-+	return LPROPS_UNCAT;
++	if (snod->sqnum < cs_sqnum) {
++		/*
++		 * This means that we reached end of log and now
++		 * look to the older log data, which was already
++		 * committed but the eraseblock was not erased (UBIFS
++		 * only un-maps it). So this basically means we have to
++		 * exit with "end of log" code.
++		 */
++		err = 1;
++		goto out;
++	}
++
++	/* Make sure the first node sits at offset zero of the LEB */
++	if (snod->offs != 0) {
++		ubifs_err(c, "first node is not at zero offset");
++		goto out_dump;
++	}
++
++	printf("\tLOG LEB %d\n", lnum);
++	list_for_each_entry(snod, &sleb->nodes, list) {
++		if (snod->sqnum < cs_sqnum) {
++			ubifs_err(c, "bad sqnum %llu, commit sqnum %d",
++				  snod->sqnum, cs_sqnum);
++			goto out_dump;
++		}
++
++		printf("\tNODE %d", node_num++);
++		switch (snod->type) {
++		case UBIFS_CS_NODE:
++			printf(" <START COMMIT>");
++		case UBIFS_REF_NODE: {
++			printf(":\n");
++			dump_node(c, snod->node);
++			break;
++		}
++		default:
++			ubifs_err(c, "unexpected node in log");
++			goto out_dump;
++		}
++	}
++	err = !sleb->endpt;
++out:
++	ubifs_scan_destroy(sleb);
++	return err;
++
++out_dump:
++	ubifs_err(c, "log error detected while replaying the log at LEB %d:%lu",
++		  lnum, offs + snod->offs);
++	ubifs_scan_destroy(sleb);
++	return -EINVAL;
++
 +}
---=20
++
++static int dump_log(void)
++{
++	int err, lnum, ltail_lnum, log_last;
++
++	lnum = ltail_lnum = mst.log_lnum;
++	log_last = UBIFS_LOG_LNUM + sup.log_lebs - 1;
++	printf("LOG AREA:\n");
++	while (lnum <= log_last) {
++		err = __dump_log_leb(lnum);
++		if (err == 1) {
++			if (lnum != mst.log_lnum)
++				/* We hit the end of the log */
++				break;
++
++			/*
++			 * The head of the log must always start with the
++			 * "commit start" node on a properly formatted UBIFS.
++			 * But we found no nodes at all, which means that
++			 * someting went wrong and we cannot proceed mounting
++			 * the file-system.
++			 */
++			ubifs_err(c, "no UBIFS nodes found at the log head LEB %d:%d, possibly corrupted",
++				  lnum, 0);
++			err = -EINVAL;
++		}
++		if (err)
++			goto out;
++		lnum++;
++	}
++
++	err = 0;
++out:
++	return err;
++}
++
+ static int dump()
+ {
+ 	int err = 0;
+@@ -598,6 +734,10 @@ static int dump()
+ 	err = dump_master();
+ 	if (err)
+ 		goto free;
++
++	err = dump_log();
++	if (err)
++		goto free;
+ free:
+ 	free(leb_buf);
+ out:
+-- 
 1.8.4.2
