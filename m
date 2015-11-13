@@ -1,14 +1,16 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zx7jm-0001uN-97
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 06:21:32 +0000
+ id 1Zx7jm-0001vG-9A
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 06:21:33 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>
 CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v3 00/27] Introduce ubifs_dump in ubifs-utils
-Date: Fri, 13 Nov 2015 14:13:11 +0800
-Message-ID: <1447395218-7061-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 02/27] ubifs: move the all io related code into io.[h|c]
+Date: Fri, 13 Nov 2015 14:13:13 +0800
+Message-ID: <1447395218-7061-3-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1447395218-7061-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+References: <1447395218-7061-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,142 +22,243 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-	The first one patch is in master. Then rebase the others
-here and resend them.
+To cut off the dependence from common lib to mkfs.ubifs,
+this patch refactor the io related functions into a new
+lib named as io.
 
-https://github.com/yangdongsheng/mtd-utils ubifs_dump_v3
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+---
+ Makefile                            |  2 +-
+ ubifs-utils/mkfs.ubifs/io.c         | 33 +++++++++++++++++++++++++++++++++
+ ubifs-utils/mkfs.ubifs/io.h         | 15 +++++++++++++++
+ ubifs-utils/mkfs.ubifs/lpt.c        | 10 +++++-----
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 34 +++-------------------------------
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.h |  2 +-
+ 6 files changed, 58 insertions(+), 38 deletions(-)
+ create mode 100644 ubifs-utils/mkfs.ubifs/io.c
+ create mode 100644 ubifs-utils/mkfs.ubifs/io.h
 
-Yang
-
-Dongsheng Yang (27):
-  ubifs: pick some common definitions into ubifs_common.h
-  ubifs: move the all io related code into io.[h|c]
-  ubifs: remove the including of mkfs.ubifs.h in lpt.c
-  ubifs: cut off the dependence from compr.o to mkfs.ubifs
-  ubifs: cut off the dependence from devtable to mkfs.ubifs.h
-  ubifs: introduce ubifs-utils/include and ubifs-utils/lib
-  ubifs: move more functions into io lib
-  ubifs: introduce a new tool ubifs_dump
-  ubifs: introduce list.h
-  ubifs: copy some important data in ubifs.h from kernel to ubifs-utils
-  ubifs: copy some important functions in key.h from kernel to
-    ubifs-utils
-  ubifs: ubifs_dump: add dump_ch and dump_node functions
-  ubifs: defs.h: introduce some compatible definition for printk class
-  ubifs: io: introduce ubifs_read function to read ubi volume
-  ubifs: ubifs_dump: dump super block
-  ubifs: introduce scan for ubifs-utils
-  ubifs: add some more compatible definitions in defs.h
-  ubifs: ubifs_dump: dump master node
-  ubifs: ubifs_dump: dump log area
-  ubifs: introduce lprops lib
-  ubifs: lpt: implement functions to scan lpt
-  ubifs: ubifs_dump: dump lpt area
-  ubifs: ubifs_dump: dump index area
-  ubifs: defs.h: introduce some compatible definitions about integer
-    such as __u16
-  ubifs: introduce hexdump lib
-  ubifs: ubifs_dump: dump data in hex format
-  gitignore: add ubifs_dump in gitignore
-
- .gitignore                                         |    1 +
- Makefile                                           |   16 +-
- ubifs-utils/COPYING                                |  340 ++++++
- ubifs-utils/README                                 |    9 +
- ubifs-utils/include/compr.h                        |   45 +
- ubifs-utils/include/crc16.h                        |   27 +
- ubifs-utils/include/defs.h                         |  215 ++++
- ubifs-utils/include/devtable.h                     |   55 +
- ubifs-utils/include/hashtable.h                    |  199 +++
- ubifs-utils/include/hashtable_itr.h                |  112 ++
- ubifs-utils/include/hashtable_private.h            |   85 ++
- ubifs-utils/include/hexdump.h                      |   21 +
- ubifs-utils/include/io.h                           |   21 +
- ubifs-utils/include/key.h                          |  281 +++++
- ubifs-utils/include/list.h                         |  484 ++++++++
- ubifs-utils/include/lprops.h                       |    6 +
- ubifs-utils/include/lpt.h                          |   32 +
- ubifs-utils/include/scan.h                         |    8 +
- ubifs-utils/include/ubifs.h                        |  536 ++++++++
- ubifs-utils/include/ubifs_common.h                 |   50 +
- ubifs-utils/lib/compr.c                            |  229 ++++
- ubifs-utils/lib/crc16.c                            |   56 +
- ubifs-utils/lib/devtable.c                         |  525 ++++++++
- ubifs-utils/lib/hashtable.c                        |  277 +++++
- ubifs-utils/lib/hashtable_itr.c                    |  176 +++
- ubifs-utils/lib/hexdump.c                          |  200 +++
- ubifs-utils/lib/io.c                               |  152 +++
- ubifs-utils/lib/lprops.c                           |   79 ++
- ubifs-utils/lib/lpt.c                              | 1275 ++++++++++++++++++++
- ubifs-utils/lib/scan.c                             |  318 +++++
- ubifs-utils/mkfs.ubifs/COPYING                     |  340 ------
- ubifs-utils/mkfs.ubifs/README                      |    9 -
- ubifs-utils/mkfs.ubifs/compr.c                     |  234 ----
- ubifs-utils/mkfs.ubifs/compr.h                     |   46 -
- ubifs-utils/mkfs.ubifs/crc16.c                     |   56 -
- ubifs-utils/mkfs.ubifs/crc16.h                     |   27 -
- ubifs-utils/mkfs.ubifs/defs.h                      |   92 --
- ubifs-utils/mkfs.ubifs/devtable.c                  |  524 --------
- ubifs-utils/mkfs.ubifs/hashtable/hashtable.c       |  277 -----
- ubifs-utils/mkfs.ubifs/hashtable/hashtable.h       |  199 ---
- ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.c   |  176 ---
- ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.h   |  112 --
- .../mkfs.ubifs/hashtable/hashtable_private.h       |   85 --
- ubifs-utils/mkfs.ubifs/key.h                       |  207 ----
- ubifs-utils/mkfs.ubifs/lpt.c                       |  578 ---------
- ubifs-utils/mkfs.ubifs/lpt.h                       |   28 -
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c                |  144 +--
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.h                |  102 +-
- ubifs-utils/mkfs.ubifs/ubifs.h                     |  450 -------
- ubifs-utils/ubifs_dump/ubifs_dump.c                | 1038 ++++++++++++++++
- 50 files changed, 6878 insertions(+), 3676 deletions(-)
- create mode 100644 ubifs-utils/COPYING
- create mode 100644 ubifs-utils/README
- create mode 100644 ubifs-utils/include/compr.h
- create mode 100644 ubifs-utils/include/crc16.h
- create mode 100644 ubifs-utils/include/defs.h
- create mode 100644 ubifs-utils/include/devtable.h
- create mode 100644 ubifs-utils/include/hashtable.h
- create mode 100644 ubifs-utils/include/hashtable_itr.h
- create mode 100644 ubifs-utils/include/hashtable_private.h
- create mode 100644 ubifs-utils/include/hexdump.h
- create mode 100644 ubifs-utils/include/io.h
- create mode 100644 ubifs-utils/include/key.h
- create mode 100644 ubifs-utils/include/list.h
- create mode 100644 ubifs-utils/include/lprops.h
- create mode 100644 ubifs-utils/include/lpt.h
- create mode 100644 ubifs-utils/include/scan.h
- create mode 100644 ubifs-utils/include/ubifs.h
- create mode 100644 ubifs-utils/include/ubifs_common.h
- create mode 100644 ubifs-utils/lib/compr.c
- create mode 100644 ubifs-utils/lib/crc16.c
- create mode 100644 ubifs-utils/lib/devtable.c
- create mode 100644 ubifs-utils/lib/hashtable.c
- create mode 100644 ubifs-utils/lib/hashtable_itr.c
- create mode 100644 ubifs-utils/lib/hexdump.c
- create mode 100644 ubifs-utils/lib/io.c
- create mode 100644 ubifs-utils/lib/lprops.c
- create mode 100644 ubifs-utils/lib/lpt.c
- create mode 100644 ubifs-utils/lib/scan.c
- delete mode 100644 ubifs-utils/mkfs.ubifs/COPYING
- delete mode 100644 ubifs-utils/mkfs.ubifs/README
- delete mode 100644 ubifs-utils/mkfs.ubifs/compr.c
- delete mode 100644 ubifs-utils/mkfs.ubifs/compr.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/crc16.c
- delete mode 100644 ubifs-utils/mkfs.ubifs/crc16.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/defs.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/devtable.c
- delete mode 100644 ubifs-utils/mkfs.ubifs/hashtable/hashtable.c
- delete mode 100644 ubifs-utils/mkfs.ubifs/hashtable/hashtable.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.c
- delete mode 100644 ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/hashtable/hashtable_private.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/key.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/lpt.c
- delete mode 100644 ubifs-utils/mkfs.ubifs/lpt.h
- delete mode 100644 ubifs-utils/mkfs.ubifs/ubifs.h
- create mode 100644 ubifs-utils/ubifs_dump/ubifs_dump.c
-
+diff --git a/Makefile b/Makefile
+index bd9504a..8864675 100644
+--- a/Makefile
++++ b/Makefile
+@@ -126,7 +126,7 @@ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-co
+ #
+ # Utils in ubifs-utils subdir
+ #
+-obj-mkfs.ubifs = crc16.o lpt.o compr.o devtable.o \
++obj-mkfs.ubifs = crc16.o lpt.o compr.o devtable.o io.o\
+ 	hashtable/hashtable.o hashtable/hashtable_itr.o
+ LDFLAGS_mkfs.ubifs = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
+ LDLIBS_mkfs.ubifs = -lz $(LZOLDLIBS) -lm -luuid
+diff --git a/ubifs-utils/mkfs.ubifs/io.c b/ubifs-utils/mkfs.ubifs/io.c
+new file mode 100644
+index 0000000..7aba0a6
+--- /dev/null
++++ b/ubifs-utils/mkfs.ubifs/io.c
+@@ -0,0 +1,33 @@
++#include "io.h"
++#define PROGRAM_NAME "ubifs-io"
++#include <common.h>
++
++int out_fd;
++int out_ubi;
++libubi_t ubi;
++
++/**
++ * write_leb - copy the image of a LEB to the output target.
++ * @lnum: LEB number
++ * @len: length of data in the buffer
++ * @buf: buffer (must be at least c->leb_size bytes)
++ */
++int write_leb(struct ubifs_info *c, int lnum, int len, void *buf)
++{
++	off_t pos = (off_t)lnum * c->leb_size;
++
++	dbg_msg(3, "LEB %d len %d", lnum, len);
++	memset(buf + len, 0xff, c->leb_size - len);
++	if (out_ubi)
++		if (ubi_leb_change_start(ubi, out_fd, lnum, c->leb_size))
++			return sys_err_msg("ubi_leb_change_start failed");
++
++	if (lseek(out_fd, pos, SEEK_SET) != pos)
++		return sys_err_msg("lseek failed seeking %"PRIdoff_t, pos);
++
++	if (write(out_fd, buf, c->leb_size) != c->leb_size)
++		return sys_err_msg("write failed writing %d bytes at pos %"PRIdoff_t,
++				   c->leb_size, pos);
++
++	return 0;
++}
+diff --git a/ubifs-utils/mkfs.ubifs/io.h b/ubifs-utils/mkfs.ubifs/io.h
+new file mode 100644
+index 0000000..e24d0c6
+--- /dev/null
++++ b/ubifs-utils/mkfs.ubifs/io.h
+@@ -0,0 +1,15 @@
++/**
++ * Header file for the io to ubi volume
++ */
++#ifndef __UBIFS_IO_H__
++#define __UBIFS_IO_H__
++
++#include "ubifs_common.h"
++#include "ubifs.h"
++
++extern int out_fd;
++extern int out_ubi;
++extern libubi_t ubi;
++
++int write_leb(struct ubifs_info *c, int lnum, int len, void *buf);
++#endif
+diff --git a/ubifs-utils/mkfs.ubifs/lpt.c b/ubifs-utils/mkfs.ubifs/lpt.c
+index 6aa0b88..cee221c 100644
+--- a/ubifs-utils/mkfs.ubifs/lpt.c
++++ b/ubifs-utils/mkfs.ubifs/lpt.c
+@@ -410,7 +410,7 @@ int create_lpt(struct ubifs_info *c)
+ 			alen = ALIGN(len, c->min_io_size);
+ 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 			memset(p, 0xff, alen - len);
+-			err = write_leb(lnum++, alen, buf);
++			err = write_leb(c, lnum++, alen, buf);
+ 			if (err)
+ 				goto out;
+ 			p = buf;
+@@ -452,7 +452,7 @@ int create_lpt(struct ubifs_info *c)
+ 				set_ltab(c, lnum, c->leb_size - alen,
+ 					    alen - len);
+ 				memset(p, 0xff, alen - len);
+-				err = write_leb(lnum++, alen, buf);
++				err = write_leb(c, lnum++, alen, buf);
+ 				if (err)
+ 					goto out;
+ 				p = buf;
+@@ -499,7 +499,7 @@ int create_lpt(struct ubifs_info *c)
+ 			alen = ALIGN(len, c->min_io_size);
+ 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 			memset(p, 0xff, alen - len);
+-			err = write_leb(lnum++, alen, buf);
++			err = write_leb(c, lnum++, alen, buf);
+ 			if (err)
+ 				goto out;
+ 			p = buf;
+@@ -522,7 +522,7 @@ int create_lpt(struct ubifs_info *c)
+ 		alen = ALIGN(len, c->min_io_size);
+ 		set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 		memset(p, 0xff, alen - len);
+-		err = write_leb(lnum++, alen, buf);
++		err = write_leb(c, lnum++, alen, buf);
+ 		if (err)
+ 			goto out;
+ 		p = buf;
+@@ -542,7 +542,7 @@ int create_lpt(struct ubifs_info *c)
+ 
+ 	/* Write remaining buffer */
+ 	memset(p, 0xff, alen - len);
+-	err = write_leb(lnum, alen, buf);
++	err = write_leb(c, lnum, alen, buf);
+ 	if (err)
+ 		goto out;
+ 
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 90e727c..5b63d32 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -101,7 +101,6 @@ struct inum_mapping {
+  */
+ struct ubifs_info info_;
+ static struct ubifs_info *c = &info_;
+-static libubi_t ubi;
+ 
+ /* Debug levels are: 0 (none), 1 (statistics), 2 (files) ,3 (more details) */
+ int debug_level;
+@@ -112,8 +111,6 @@ static char *root;
+ static int root_len;
+ static struct stat root_st;
+ static char *output;
+-static int out_fd;
+-static int out_ubi;
+ static int squash_owner;
+ static int do_create_inum_attr;
+ 
+@@ -753,31 +750,6 @@ static void prepare_node(void *node, int len)
+ 	ch->crc = cpu_to_le32(crc);
+ }
+ 
+-/**
+- * write_leb - copy the image of a LEB to the output target.
+- * @lnum: LEB number
+- * @len: length of data in the buffer
+- * @buf: buffer (must be at least c->leb_size bytes)
+- */
+-int write_leb(int lnum, int len, void *buf)
+-{
+-	off_t pos = (off_t)lnum * c->leb_size;
+-
+-	dbg_msg(3, "LEB %d len %d", lnum, len);
+-	memset(buf + len, 0xff, c->leb_size - len);
+-	if (out_ubi)
+-		if (ubi_leb_change_start(ubi, out_fd, lnum, c->leb_size))
+-			return sys_err_msg("ubi_leb_change_start failed");
+-
+-	if (lseek(out_fd, pos, SEEK_SET) != pos)
+-		return sys_err_msg("lseek failed seeking %"PRIdoff_t, pos);
+-
+-	if (write(out_fd, buf, c->leb_size) != c->leb_size)
+-		return sys_err_msg("write failed writing %d bytes at pos %"PRIdoff_t,
+-				   c->leb_size, pos);
+-
+-	return 0;
+-}
+ 
+ /**
+  * write_empty_leb - copy the image of an empty LEB to the output target.
+@@ -785,7 +757,7 @@ int write_leb(int lnum, int len, void *buf)
+  */
+ static int write_empty_leb(int lnum)
+ {
+-	return write_leb(lnum, 0, leb_buf);
++	return write_leb(c, lnum, 0, leb_buf);
+ }
+ 
+ /**
+@@ -841,7 +813,7 @@ static int write_node(void *node, int len, int lnum)
+ 
+ 	len = do_pad(leb_buf, len);
+ 
+-	return write_leb(lnum, len, leb_buf);
++	return write_leb(c, lnum, len, leb_buf);
+ }
+ 
+ /**
+@@ -951,7 +923,7 @@ static int flush_nodes(void)
+ 	if (!head_offs)
+ 		return 0;
+ 	len = do_pad(leb_buf, head_offs);
+-	err = write_leb(head_lnum, len, leb_buf);
++	err = write_leb(c, head_lnum, len, leb_buf);
+ 	if (err)
+ 		return err;
+ 	set_lprops(head_lnum, head_offs, head_flags);
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
+index d6d46a2..ba646a6 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
+@@ -34,6 +34,7 @@
+ #include "key.h"
+ #include "lpt.h"
+ #include "compr.h"
++#include "io.h"
+ 
+ /*
+  * Compression flags are duplicated so that compr.c can compile without ubifs.h.
+@@ -88,7 +89,6 @@ extern struct ubifs_info info_;
+ 
+ struct hashtable_itr;
+ 
+-int write_leb(int lnum, int len, void *buf);
+ int parse_devtable(const char *tbl_file);
+ struct path_htbl_element *devtbl_find_path(const char *path);
+ struct name_htbl_element *devtbl_find_name(struct path_htbl_element *ph_elt,
 -- 
 1.8.4.2
