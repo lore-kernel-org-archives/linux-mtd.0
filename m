@@ -1,24 +1,27 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZxKDO-0004cd-Js
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 19:40:55 +0000
-Received: by pacej9 with SMTP id ej9so2211862pac.2
- for <linux-mtd@lists.infradead.org>; Fri, 13 Nov 2015 11:40:34 -0800 (PST)
-Date: Fri, 13 Nov 2015 11:40:31 -0800
+Date: Fri, 13 Nov 2015 14:00:39 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Heiner Kallweit <hkallweit1@gmail.com>, Mark Brown <broonie@kernel.org>,
- Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: linux-mtd@lists.infradead.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: spi: OF module autoloading is still broken (was: Re: m25p80: Commit
- "allow arbitrary OF matching for "jedec,spi-nor"" breaks module autoloading)
-Message-ID: <20151113194031.GI8456@google.com>
-References: <56104E88.3040807@gmail.com>
- <20151112185926.GC8456@google.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Liviu Dudau <Liviu.Dudau@arm.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 1/3] mtd: create a partition type device tree binding
+Message-ID: <20151113220039.GA74382@google.com>
+References: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
+ <20151029162908.GA13275@localhost>
+ <CACRpkdYS5Jf8UC2K0bNdEQZDjTeZZx44Uu-kkof+9E=4Ny0oDg@mail.gmail.com>
+ <20151030175145.GF13239@google.com>
+ <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151112185926.GC8456@google.com>
+In-Reply-To: <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +31,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Changing subject line, because apparently some people ignore mail if it
-doesn't have 'SPI' in the subject line)
+On Fri, Nov 06, 2015 at 08:13:13AM -0600, Rob Herring wrote:
+> Since we now have partitions contained in a sub node, how about using
+> compatible for that sub node instead.
 
-On Thu, Nov 12, 2015 at 10:59:26AM -0800, Brian Norris wrote:
-> + others
-> 
-> On Sat, Oct 03, 2015 at 11:54:16PM +0200, Heiner Kallweit wrote:
-> > Seems like commit 43163022927b6e7d202a7e6f939c3f392465494d
-> > (allow arbitrary OF matching for "jedec,spi-nor") broke autoloading
-> > of the m25p80 module.
-> > MODALIAS is "spi:spi-nor" and removing "spi-nor" as device alias
-> > prevents module autoloading.
-> > 
-> > Of course we could revert the removal of the "spi-nor" device alias.
-> > However it might be better to switch to DT-based matching for
-> > DT-configured devices.
-> > 
-> > Adding a call to of_device_uevent_modalias to spi_uevent in spi.c
-> > solved the issue for me, drawback however is that just the first
-> > "compatible" value is used as modalias. In case of m25p80 this means
-> > that "jedec,spi-nor" has to be the first "compatible" value.
-> > This constraint might be too strict ..
-> > 
-> > Having said that I'm not sure what could be a better way to fix
-> > the issue than just re-introducing the "spi-nor" device alias.
-> 
-> Is this [1] getting fixed in SPI any time soon? Looks like there was
-> some progress [2], but AFAICT it's not completed.
-> 
-> I'd just like to know what the way forward here should be for m25p80.
-> Really, "jedec,spi-nor" never autoloaded modules very reliably because
-> of the SPI core constaints. So I'm not sure I'd consider this a
-> regression, and I might be OK waiting around if it'll be fixed in a
-> reasonable time frame.
-> 
-> FWIW, I can do testing if somebody's tackling this still. Just CC me.
-> 
-> Regards,
-> Brian
-> 
-> [1] https://lkml.org/lkml/2014/9/11/458
-> [2] https://lkml.org/lkml/2015/8/20/109
+I see that Linus and I spoke up in agreement on this one.
+
+I took a little look at adding of_match_table support to the core MTD
+partitioning code (not sure if that's duplicating anything Linus was
+attempting on his own?), and I'm observing that there's potential for
+conflict with the new binding [1]. If we're going to start overloading
+the 'partitions' node to support other partitioning types via
+'compatible' property, then we either need to:
+
+ (1) go back to specifying that full ofpart specifications must have
+ *no* compatible property or
+
+ (2) we should define a comptible property for the hard-coded
+ partitioning case (e.g., compatible = "partitions")
+
+IOW, I could imagine a new partition parser that needs a DT like this:
+
+	flash@xxx {
+		compatible = "vendor,flash-type";
+		...
+		partitions {
+			compatible = "some-new-partition-parser";
+			...
+			subnode {
+				// "some-new-partition-parser" might
+				// need to put something here
+			};
+		};
+	};
+
+But currently, the binding would say that 'subnode' must be a partition,
+even if it's really something else auxiliary to
+"some-new-partition-parser" [2].
+
+If we went with option (1), then we'd just have ofpart.c see that
+'partitions' has a compatible property and bail out. That seems kinda
+hacky.
+
+If we went with option (2), then ofpart.c could just check only for
+'compatible = "partitions"' (or similar), and if not found bail out.
+
+I think option (2) makes more sense. But it would require an update to
+the binding and code for 4.4, since [1] was only introduced during this
+release cycle.
+
+Brian
+
+[1] fe2585e9c29a ("doc: dt: mtd: support partitions in a special 'partitions' subnode")
+
+[2] Possibilities: something relevant to partition splitting. See some
+previous work, which I haven't gotten around to fully addressing yet,
+but can hopefully be rolled into this work:
+
+http://patchwork.ozlabs.org/patch/476373/
+http://patchwork.ozlabs.org/patch/473364/
+http://patchwork.ozlabs.org/patch/475988/
