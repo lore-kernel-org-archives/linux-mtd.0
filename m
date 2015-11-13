@@ -1,27 +1,25 @@
-Date: Fri, 13 Nov 2015 14:00:39 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Liviu Dudau <Liviu.Dudau@arm.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH 1/3] mtd: create a partition type device tree binding
-Message-ID: <20151113220039.GA74382@google.com>
-References: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
- <20151029162908.GA13275@localhost>
- <CACRpkdYS5Jf8UC2K0bNdEQZDjTeZZx44Uu-kkof+9E=4Ny0oDg@mail.gmail.com>
- <20151030175145.GF13239@google.com>
- <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZxMae-00075g-9D
+ for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 22:13:06 +0000
+Date: Fri, 13 Nov 2015 22:12:28 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ linux-mtd@lists.infradead.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Message-ID: <20151113221228.GT12392@sirena.org.uk>
+References: <56104E88.3040807@gmail.com> <20151112185926.GC8456@google.com>
+ <20151113194031.GI8456@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="ZNotpC0yWfjHZxBL"
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
+In-Reply-To: <20151113194031.GI8456@google.com>
+Subject: Re: spi: OF module autoloading is still broken (was: Re: m25p80:
+ Commit "allow arbitrary OF matching for "jedec,spi-nor"" breaks module
+ autoloading)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,63 +29,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 06, 2015 at 08:13:13AM -0600, Rob Herring wrote:
-> Since we now have partitions contained in a sub node, how about using
-> compatible for that sub node instead.
 
-I see that Linus and I spoke up in agreement on this one.
+--ZNotpC0yWfjHZxBL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I took a little look at adding of_match_table support to the core MTD
-partitioning code (not sure if that's duplicating anything Linus was
-attempting on his own?), and I'm observing that there's potential for
-conflict with the new binding [1]. If we're going to start overloading
-the 'partitions' node to support other partitioning types via
-'compatible' property, then we either need to:
+On Fri, Nov 13, 2015 at 11:40:31AM -0800, Brian Norris wrote:
 
- (1) go back to specifying that full ofpart specifications must have
- *no* compatible property or
+> (Changing subject line, because apparently some people ignore mail if it
+> doesn't have 'SPI' in the subject line)
 
- (2) we should define a comptible property for the hard-coded
- partitioning case (e.g., compatible = "partitions")
+Well, if you mean me I'm getting CCed on such a large number of large
+threads about MTD patches that only have relevance to SPI in that
+they're for a driver that uses SPI that I pretty delete a very large
+proportion of mail that looks like it's about MTD patch unread I'm
+afraid.  It's almost all completely irrelevant and uninteresting to me.
 
-IOW, I could imagine a new partition parser that needs a DT like this:
+> > Is this [1] getting fixed in SPI any time soon? Looks like there was
+> > some progress [2], but AFAICT it's not completed.
 
-	flash@xxx {
-		compatible = "vendor,flash-type";
-		...
-		partitions {
-			compatible = "some-new-partition-parser";
-			...
-			subnode {
-				// "some-new-partition-parser" might
-				// need to put something here
-			};
-		};
-	};
+Please include human readable descriptions of things like commits IDs
+and issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access.
+I do frequently catch up on my mail on flights or while otherwise
+travelling so this is even more pressing for me than just being about
+making things a bit easier to read.
 
-But currently, the binding would say that 'subnode' must be a partition,
-even if it's really something else auxiliary to
-"some-new-partition-parser" [2].
+> > I'd just like to know what the way forward here should be for m25p80.
+> > Really, "jedec,spi-nor" never autoloaded modules very reliably because
+> > of the SPI core constaints. So I'm not sure I'd consider this a
+> > regression, and I might be OK waiting around if it'll be fixed in a
+> > reasonable time frame.
 
-If we went with option (1), then we'd just have ofpart.c see that
-'partitions' has a compatible property and bail out. That seems kinda
-hacky.
+Someone will need to tell me what the actual problem is for m25p80
+before I can understand what the way forward might be.  From a brief
+scan through of the thread it looks like if Javier's series solves the
+problem it needs a bit more analysis and/or a clearer presentation and
+probably a resubmit.
 
-If we went with option (2), then ofpart.c could just check only for
-'compatible = "partitions"' (or similar), and if not found bail out.
+--ZNotpC0yWfjHZxBL
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I think option (2) makes more sense. But it would require an update to
-the binding and code for 4.4, since [1] was only introduced during this
-release cycle.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Brian
+iQEcBAEBCAAGBQJWRmBMAAoJECTWi3JdVIfQOToH/29eMcGoWfQvUycC8pIA5jgG
+Cgla/RW3QTCWfenJ9POx39Srp09zGj+ic1ftrf8xrazV9fcUcwXtST2aU3EnMauC
+FQOCwwSVTpDQwnc4qJ7rZfsRkovJqmKNRmITEcHJbcng9RK6PacpgsENKSC/Iw/u
+PQQRD2sSc66joqiyus8pT5RVY+qH3McSEVEt3XRUE+STnRJs6s/oJIwgEjs1/oW8
+XosjNW0ukTpA9d59Vz1DeGkYoDJOAi46rqSMpG6G0CgvcSnV7iNFpGICQvZ778P1
+VZ/xyeTXuYik5eJAKZZepUwm6nrE012Inisz8YBXyBbahf2GxtsNwXFsiiRevPk=
+=W4xW
+-----END PGP SIGNATURE-----
 
-[1] fe2585e9c29a ("doc: dt: mtd: support partitions in a special 'partitions' subnode")
-
-[2] Possibilities: something relevant to partition splitting. See some
-previous work, which I haven't gotten around to fully addressing yet,
-but can hopefully be rolled into this work:
-
-http://patchwork.ozlabs.org/patch/476373/
-http://patchwork.ozlabs.org/patch/473364/
-http://patchwork.ozlabs.org/patch/475988/
+--ZNotpC0yWfjHZxBL--
