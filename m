@@ -1,20 +1,33 @@
-Received: from mail-gw1-out.broadcom.com ([216.31.210.62])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZxO6G-0000q6-Qc
- for linux-mtd@lists.infradead.org; Fri, 13 Nov 2015 23:49:49 +0000
-Subject: Re: [PATCH] mtd: nand: fix shutdown/reboot for multi-chip systems
-To: Brian Norris <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-References: <1447115848-92621-1-git-send-email-computersforpeace@gmail.com>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, Ray Jui <rjui@broadcom.com>, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>, "Andrew E . Mileski" <andrewm@isoar.ca>
-From: Scott Branden <sbranden@broadcom.com>
-Message-ID: <564676F0.70404@broadcom.com>
-Date: Fri, 13 Nov 2015 15:49:04 -0800
+Received: from mail-ob0-x232.google.com ([2607:f8b0:4003:c01::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZxYMa-00009L-Vn
+ for linux-mtd@lists.infradead.org; Sat, 14 Nov 2015 10:47:23 +0000
+Received: by obbbj7 with SMTP id bj7so73055088obb.1
+ for <linux-mtd@lists.infradead.org>; Sat, 14 Nov 2015 02:46:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1447115848-92621-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20151113220039.GA74382@google.com>
+References: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
+ <20151029162908.GA13275@localhost>
+ <CACRpkdYS5Jf8UC2K0bNdEQZDjTeZZx44Uu-kkof+9E=4Ny0oDg@mail.gmail.com>
+ <20151030175145.GF13239@google.com>
+ <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
+ <20151113220039.GA74382@google.com>
+Date: Sat, 14 Nov 2015 11:46:59 +0100
+Message-ID: <CACRpkdakyae95f_Lc-R7Uf7wndj5hyfCqqHziwmZjwm-uNkGAg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mtd: create a partition type device tree binding
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Rob Herring <robh@kernel.org>,
+ "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Liviu Dudau <Liviu.Dudau@arm.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Michal Suchanek <hramrach@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,56 +37,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15-11-09 04:37 PM, Brian Norris wrote:
-> If multiple NAND chips are registered to the same controller, then when
-> rebooting the system, the first one will grab the controller lock, while
-> the second will wait forever for the first one to release it. i.e., a
-> classic deadlock.
->
-> This problem was solved for a similar case (suspend/resume) back in
-> commit 6b0d9a841249 ("mtd: nand: fix multi-chip suspend problem"), and
-> the shutdown state really isn't much different for us, so rather than
-> adding a new special case to nand_get_device(), we can just overload the
-> FL_PM_SUSPENDED state.
->
-> Now, multiple chips can "get" the same controller lock (preventing
-> further I/O), while we still allow other chips to pass through
-> nand_shutdown().
->
-> Original report:
-> http://thread.gmane.org/gmane.linux.drivers.mtd/59726
-> http://lists.infradead.org/pipermail/linux-mtd/2015-July/059992.html
->
-> Fixes: 72ea403669c7 ("mtd: nand: added nand_shutdown")
-> Reported-by: Andrew E. Mileski <andrewm@isoar.ca>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> Cc: Andrew E. Mileski <andrewm@isoar.ca>
-> ---
-> I only compile-tested
->
-> If we get proper tests, this is probably 4.4 material
+On Fri, Nov 13, 2015 at 11:00 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
 
-I reviewed the code in nand_get_device and it looks sane whether 
-FL_SHUTDOWN or PL_PM_SUSPENDED is called.
+(...)
+>  (2) we should define a comptible property for the hard-coded
+>  partitioning case (e.g., compatible = "partitions")
+(...)
+> If we went with option (2), then ofpart.c could just check only for
+> 'compatible = "partitions"' (or similar), and if not found bail out.
 
-Acked-by: Scott Branden <sbranden@broadcom.com>
+So this "hard-coded partitioning case" the case is where all partitions
+are defined in the device tree as described in
+Documentation/devicetree/bindings/mtd/partition.txt ?
 
->
->   drivers/mtd/nand/nand_base.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index cc74142938b0..ece544efccc3 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3110,7 +3110,7 @@ static void nand_resume(struct mtd_info *mtd)
->    */
->   static void nand_shutdown(struct mtd_info *mtd)
->   {
-> -	nand_get_device(mtd, FL_SHUTDOWN);
-> +	nand_get_device(mtd, FL_PM_SUSPENDED);
->   }
->
->   /* Set default functions */
->
+Or is it a way to indicate that this array
+static const char * const part_probe_types_def[] = {
+        "cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
+in physmap_of.c should be used?
+
+Sorry if I don't fully follow, I'm a bit stupid when it comes to the MTD
+helicopter  view of the situation.... :(
+
+> I think option (2) makes more sense. But it would require an update to
+> the binding and code for 4.4, since [1] was only introduced during this
+> release cycle.
+
+Does that mean all old device trees that specify no compatible
+string all of a sudden stop working? We can't break the DT ABI, so I
+guess not.
+
+A bit confused here, I can't really see what I should do with the patch...
+
+Yours,
+Linus Walleij
