@@ -1,23 +1,18 @@
-Received: from mail-ob0-x232.google.com ([2607:f8b0:4003:c01::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZxYMa-00009L-Vn
- for linux-mtd@lists.infradead.org; Sat, 14 Nov 2015 10:47:23 +0000
-Received: by obbbj7 with SMTP id bj7so73055088obb.1
- for <linux-mtd@lists.infradead.org>; Sat, 14 Nov 2015 02:46:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20151113220039.GA74382@google.com>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
 References: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
  <20151029162908.GA13275@localhost>
  <CACRpkdYS5Jf8UC2K0bNdEQZDjTeZZx44Uu-kkof+9E=4Ny0oDg@mail.gmail.com>
  <20151030175145.GF13239@google.com>
  <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
- <20151113220039.GA74382@google.com>
-Date: Sat, 14 Nov 2015 11:46:59 +0100
-Message-ID: <CACRpkdakyae95f_Lc-R7Uf7wndj5hyfCqqHziwmZjwm-uNkGAg@mail.gmail.com>
+Date: Sun, 15 Nov 2015 10:06:07 +0100
+Message-ID: <CAMuHMdVBdnjH0xQoMY7yT6Q-Z4bnukWgjBcWNYzhhNpO6263Rg@mail.gmail.com>
 Subject: Re: [PATCH 1/3] mtd: create a partition type device tree binding
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Rob Herring <robh@kernel.org>,
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
  "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
  David Woodhouse <dwmw2@infradead.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -26,7 +21,7 @@ Cc: Rob Herring <robh@kernel.org>,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
  Liviu Dudau <Liviu.Dudau@arm.com>,
  =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, Michal Suchanek <hramrach@gmail.com>
+ Hauke Mehrtens <hauke@hauke-m.de>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,37 +32,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 13, 2015 at 11:00 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
+On Fri, Nov 6, 2015 at 3:13 PM, Rob Herring <robh@kernel.org> wrote:
+> On Fri, Oct 30, 2015 at 12:51 PM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+>> On Fri, Oct 30, 2015 at 03:00:57PM +0100, Linus Walleij wrote:
+>>> On Thu, Oct 29, 2015 at 5:29 PM, Brian Norris
+>>> <computersforpeace@gmail.com> wrote:
+>>>
+>>> >> +Required properties:
+>>> >> +- partition-type : the type of partition. Only one type can be specified.
+>>> >
+>>> > You're supporting this as a list property (for future expansion,
+>>> > presumably), so I can only assume the "only one type" is referring to
+>>> > the number of different parsers available currently, not the behavior of
+>>> > the property itself?
+>>>
+>>> I was thinking that it would not be a list actually.
 
-(...)
->  (2) we should define a comptible property for the hard-coded
->  partitioning case (e.g., compatible = "partitions")
-(...)
-> If we went with option (2), then ofpart.c could just check only for
-> 'compatible = "partitions"' (or similar), and if not found bail out.
+Why not? It is (was) not uncommon to have multiple partition table types on
+hard disks (e.g. bsd disklabel and msdos and/or amiga rdb).
 
-So this "hard-coded partitioning case" the case is where all partitions
-are defined in the device tree as described in
-Documentation/devicetree/bindings/mtd/partition.txt ?
+>>> The reason being that if you're anyways going to the trouble of
+>>> specifying exactly what partition type is going to be used, you're
+>>> not really interested in specifying a few different ones, you know
+>>> exactly what type it is going to be.
+>>
+>> OK, that makes sense. I think it's still *possible* that a board might
+>> have the option of more than one partition parser, and so they might
+>> just include both in the DTS, but that seems unlikely and so it makes
+>> sense not to (over)engineer for it before it's needed. Anyway, your
+>> binding can easily be expanded in the future if needed.
+>
+> Since we now have partitions contained in a sub node, how about using
+> compatible for that sub node instead.
 
-Or is it a way to indicate that this array
-static const char * const part_probe_types_def[] = {
-        "cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
-in physmap_of.c should be used?
+And "compatible" supports a list of multiple values.
 
-Sorry if I don't fully follow, I'm a bit stupid when it comes to the MTD
-helicopter  view of the situation.... :(
+BTW, this means it also (can) becomes more generic. Will it be applicable
+to other block devices (e.g. hard disks), too?
+Integration with block/partitions?
 
-> I think option (2) makes more sense. But it would require an update to
-> the binding and code for 4.4, since [1] was only introduced during this
-> release cycle.
+Gr{oetje,eeting}s,
 
-Does that mean all old device trees that specify no compatible
-string all of a sudden stop working? We can't break the DT ABI, so I
-guess not.
+                        Geert
 
-A bit confused here, I can't really see what I should do with the patch...
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Yours,
-Linus Walleij
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
