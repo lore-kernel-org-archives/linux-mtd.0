@@ -1,16 +1,18 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyOjp-0001hB-7L
- for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 18:42:54 +0000
-Received: by pacej9 with SMTP id ej9so76240462pac.2
- for <linux-mtd@lists.infradead.org>; Mon, 16 Nov 2015 10:42:28 -0800 (PST)
+ id 1ZyOmw-0005Rl-I2
+ for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 18:46:03 +0000
+Received: by pacdm15 with SMTP id dm15so182977698pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Nov 2015 10:45:41 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Cc: <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+Cc: Brian Norris <computersforpeace@gmail.com>, <linux-kernel@vger.kernel.org>,
  Han Xu <han.xu@freescale.com>
-Subject: [PATCH] mtd: fsl-quadspi: possible NULL reference
-Date: Mon, 16 Nov 2015 10:42:19 -0800
-Message-Id: <1447699339-43027-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2] mtd: fsl-quadspi: possible NULL dereference
+Date: Mon, 16 Nov 2015 10:45:30 -0800
+Message-Id: <1447699530-50014-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1447699339-43027-1-git-send-email-computersforpeace@gmail.com>
+References: <1447699339-43027-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,13 +33,26 @@ Coverity complained about this one.
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 Cc: Han Xu <han.xu@freescale.com>
 ---
- drivers/mtd/spi-nor/fsl-quadspi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+v2:
+ * missed a 'const' warning
+ * s/reference/dereference in $subject
+
+ drivers/mtd/spi-nor/fsl-quadspi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index cc3a70b9b020..68fe7a2ecd5c 100644
+index cc3a70b9b020..916d6dd5b575 100644
 --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -269,7 +269,7 @@ struct fsl_qspi {
+ 	struct clk *clk, *clk_en;
+ 	struct device *dev;
+ 	struct completion c;
+-	struct fsl_qspi_devtype_data *devtype_data;
++	const struct fsl_qspi_devtype_data *devtype_data;
+ 	u32 nor_size;
+ 	u32 nor_num;
+ 	u32 clk_rate;
 @@ -933,8 +933,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
  	struct spi_nor *nor;
  	struct mtd_info *mtd;
