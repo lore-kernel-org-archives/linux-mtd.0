@@ -30,9 +30,9 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 08/27] sh: nand: make use of mtd_to_nand() where appropriate
-Date: Mon, 16 Nov 2015 14:37:41 +0100
-Message-Id: <1447681080-31232-9-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 12/27] mtd: nand: embed an mtd_info structure into nand_chip
+Date: Mon, 16 Nov 2015 14:37:45 +0100
+Message-Id: <1447681080-31232-13-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -44,27 +44,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd_to_nand() was recently introduced to avoid direct accesses to the
-mtd->priv field. Update all SH specific implementations to use this
-helper.
+Currently all NAND controller drivers are providing both the mtd_info and
+nand_chip struct and then let the NAND subsystem to initialize a few
+things before registering the mtd instance to the MTD layer.
+Embed an mtd_info field into nand_chip to add some consistency to all NAND
+controller drivers.
+This change will also help factorizing boilerplate code copied in all NAND
+drivers.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- arch/sh/boards/mach-migor/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mtd/nand.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/sh/boards/mach-migor/setup.c b/arch/sh/boards/mach-migor/setup.c
-index 29b7c0d..8673f91 100644
---- a/arch/sh/boards/mach-migor/setup.c
-+++ b/arch/sh/boards/mach-migor/setup.c
-@@ -167,7 +167,7 @@ static struct mtd_partition migor_nand_flash_partitions[] = {
- static void migor_nand_flash_cmd_ctl(struct mtd_info *mtd, int cmd,
- 				     unsigned int ctrl)
- {
--	struct nand_chip *chip = mtd->priv;
-+	struct nand_chip *chip = mtd_to_nand(mtd);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 056d165..c4e39ff 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -540,6 +540,7 @@ struct nand_buffers {
  
- 	if (cmd == NAND_CMD_NONE)
- 		return;
+ /**
+  * struct nand_chip - NAND Private Flash Chip Data
++ * @mtd:		MTD device registered to the MTD framework
+  * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
+  *			flash device
+  * @IO_ADDR_W:		[BOARDSPECIFIC] address to write the 8 I/O lines of the
+@@ -640,6 +641,7 @@ struct nand_buffers {
+  */
+ 
+ struct nand_chip {
++	struct mtd_info mtd;
+ 	void __iomem *IO_ADDR_R;
+ 	void __iomem *IO_ADDR_W;
+ 
 -- 
 2.1.4
