@@ -1,24 +1,26 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyOtu-0000Yy-JR
- for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 18:53:15 +0000
-Received: by padhx2 with SMTP id hx2so183302015pad.1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Nov 2015 10:52:53 -0800 (PST)
-Date: Mon, 16 Nov 2015 10:52:51 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Ray Jui <rjui@broadcom.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Scott Branden <sbranden@broadcom.com>,
- "Andrew E . Mileski" <andrewm@isoar.ca>
-Subject: Re: [PATCH] mtd: nand: fix shutdown/reboot for multi-chip systems
-Message-ID: <20151116185251.GN8456@google.com>
-References: <1447115848-92621-1-git-send-email-computersforpeace@gmail.com>
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZyP5O-00016Z-5B
+ for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 19:05:07 +0000
+Received: from localhost.localdomain ([127.0.0.1]:59700 "EHLO linux-mips.org"
+ rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+ id S27013948AbbKPTEn5Nqv8 (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Mon, 16 Nov 2015 20:04:43 +0100
+Date: Mon, 16 Nov 2015 20:04:39 +0100
+From: Ralf Baechle <ralf@linux-mips.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-mips@linux-mips.org
+Subject: Re: [PATCH] mtd: jz4740_nand: fix build on jz4740 after removing
+ gpio.h
+Message-ID: <20151116190439.GD9425@linux-mips.org>
+References: <1447284976-96693-1-git-send-email-computersforpeace@gmail.com>
+ <20151116132328.GB9425@linux-mips.org>
+ <20151116184917.GM8456@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1447115848-92621-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <20151116184917.GM8456@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +30,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 09, 2015 at 04:37:28PM -0800, Brian Norris wrote:
-> If multiple NAND chips are registered to the same controller, then when
-> rebooting the system, the first one will grab the controller lock, while
-> the second will wait forever for the first one to release it. i.e., a
-> classic deadlock.
-> 
-> This problem was solved for a similar case (suspend/resume) back in
-> commit 6b0d9a841249 ("mtd: nand: fix multi-chip suspend problem"), and
-> the shutdown state really isn't much different for us, so rather than
-> adding a new special case to nand_get_device(), we can just overload the
-> FL_PM_SUSPENDED state.
-> 
-> Now, multiple chips can "get" the same controller lock (preventing
-> further I/O), while we still allow other chips to pass through
-> nand_shutdown().
-> 
-> Original report:
-> http://thread.gmane.org/gmane.linux.drivers.mtd/59726
-> http://lists.infradead.org/pipermail/linux-mtd/2015-July/059992.html
-> 
-> Fixes: 72ea403669c7 ("mtd: nand: added nand_shutdown")
-> Reported-by: Andrew E. Mileski <andrewm@isoar.ca>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> Cc: Andrew E. Mileski <andrewm@isoar.ca>
+On Mon, Nov 16, 2015 at 10:49:17AM -0800, Brian Norris wrote:
 
-Pushed to linux-mtd.git
+> Actually, if you don't mind, I'll take it through MTD. I think I'll have
+> a few things to push upstream this week anyway, and I'd like to get some
+> of my MIPS-based build test configs working again in my development
+> trees.
+> 
+> So...pushed to linux-mtd.git
+
+Cool, thanks!
+
+  Ralf
