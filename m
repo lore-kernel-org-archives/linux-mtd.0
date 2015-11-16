@@ -1,28 +1,20 @@
-Received: from mail-bl2on0110.outbound.protection.outlook.com ([65.55.169.110]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from mail-bn1on0112.outbound.protection.outlook.com
+ ([157.56.110.112] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyFsZ-0004Cd-0i
- for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 09:15:16 +0000
-From: Yao Yuan <yao.yuan@freescale.com>
+ id 1ZyGZt-0000I2-E4
+ for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 10:00:02 +0000
+From: Brian Foster <brian.foster@maximintegrated.com>
 To: Brian Norris <computersforpeace@gmail.com>
-CC: Fabio Estevam <festevam@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Li Leo <LeoLi@freescale.com>, Scott Wood <scottwood@freescale.com>, Xu Han
- <han.xu@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] mtd: spi-nor: fsl-quadspi: add big-endian support
-Date: Mon, 16 Nov 2015 09:14:51 +0000
-Message-ID: <BLUPR03MB134DAF43514B4899DC03AAD831E0@BLUPR03MB134.namprd03.prod.outlook.com>
-References: <1445586797-38383-1-git-send-email-yao.yuan@freescale.com>
- <CAOMZO5AAr30RM7dE-0BEZGH3Nw1j-QpM+qv2WCyyfK4ATrh=VA@mail.gmail.com>
- <BLUPR03MB134C1F7A783914F4F1ACCDF832F0@BLUPR03MB134.namprd03.prod.outlook.com>
- <20151111190359.GE12143@google.com>
- <BLUPR03MB134D5B98BF8C5DA5E763B1E831E0@BLUPR03MB134.namprd03.prod.outlook.com>
- <20151116042141.GB4021@brian-ubuntu>
-In-Reply-To: <20151116042141.GB4021@brian-ubuntu>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+CC: <linux-mtd@lists.infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: partitions: kill unused ecclayout struct
+Date: Mon, 16 Nov 2015 10:59:29 +0100
+Message-ID: <5936561.ym9EsYrDYb@laclwks004>
+In-Reply-To: <1447290356-60040-1-git-send-email-computersforpeace@gmail.com>
+References: <1447290356-60040-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,30 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Wednesday 11-November-2015 17:05:56 Brian Norris wrote:
+> This field is not used.
+> 
+> Reported here:
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2015-October/062417.html
+> 
+> Reported-by: Brian Foster <brian.foster@maximintegrated.com>
+> Cc: Brian Foster <brian.foster@maximintegrated.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+> Depends on this for killing its last use:
+> 
+>   http://patchwork.ozlabs.org/patch/543159/
 
-Thanks for your information.
+  Looks Ok to me.
 
-Best Regards,
-Yuan Yao
+cheers!
+	-blf-
 
-On Mon, Nov 16, 2015 at 12:22:30PM +0000, Brian Norris wrote:
-> On Mon, Nov 16, 2015 at 04:08:39AM +0000, Yao Yuan wrote:
-> > It looks like easier to read, use and change.
-> > Is it?
->=20
-> It looks fine either way, IMO.
->=20
-> > And David Woodhouse, Xu Han, Mark Brown is there any other comments
-> > from you?
->=20
-> FYI, Mark Brown doesn't really have much to do with this. Though he maint=
-ains
-> the SPI subsystem (and regmap, as a matter of fact), SPI *NOR* code is on=
-ly a
-> user of the SPI subsystem (and, potentially, regmap). I hear he's not int=
-erested
-> in reviewing MTD work, given the volume of email he already receives.
->=20
-> Regards,
-> Brian
+-- 
+Brian Foster
+Principal MTS, Software        |  La Ciotat, France
+Maxim Integrated               |  http://www.maximintegrated.com/
