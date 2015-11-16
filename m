@@ -1,19 +1,19 @@
-Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyRun-0007aj-Im
- for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 22:06:22 +0000
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Kevin Cernekee <cernekee@gmail.com>
-From: Simon Arlott <simon@fire.lp0.eu>
-Subject: [PATCH] brcmnand: Clear EXT_ADDR error registers in PIO mode
-Message-ID: <564A5333.9000200@simon.arlott.org.uk>
-Date: Mon, 16 Nov 2015 22:05:39 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZySN2-0004DD-1x
+ for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 22:35:32 +0000
+Received: by pacdm15 with SMTP id dm15so188454921pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Nov 2015 14:35:09 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: <linux-kernel@vger.kernel.org>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Heiner Kallweit <hkallweit1@gmail.com>, <devicetree@vger.kernel.org>
+Subject: [PATCH 0/3] mtd: m25p80: fix some module and documentation issues
+Date: Mon, 16 Nov 2015 14:34:49 -0800
+Message-Id: <1447713292-91525-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If an error occurs in flash above 4GB in PIO mode then the EXT_ADDR
-registers will be set to the location of the error and never cleared.
+Hi,
 
-Reset them to 0 before reading.
+There were a few mistakes and improvements pointed out at various points in
+this thread, subject:
 
-Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
----
- drivers/mtd/nand/brcmnand/brcmnand.c | 2 ++
- 1 file changed, 2 insertions(+)
+    spi: OF module autoloading is still broken
+    (was: Re: m25p80: Commit "allow arbitrary OF matching for "jedec,spi-nor""
+    breaks module autoloading)
 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index 12c6190..2c8f67f 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -1400,6 +1400,8 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
- 	/* Clear error addresses */
- 	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_ADDR, 0);
- 	brcmnand_write_reg(ctrl, BRCMNAND_CORR_ADDR, 0);
-+	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_EXT_ADDR, 0);
-+	brcmnand_write_reg(ctrl, BRCMNAND_CORR_EXT_ADDR, 0);
- 
- 	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
- 			(host->cs << 16) | ((addr >> 32) & 0xffff));
+    http://lists.infradead.org/pipermail/linux-mtd/2015-October/062369.html
+    https://lkml.org/lkml/2015/11/12/574
+
+That thread covers some other interesting issues that are still not solved, but
+let's fix the ones we can here in MTD right now.
+
+Regards,
+Brian
+
+
+Brian Norris (3):
+  mtd: m25p80: fix module autoloading for "jedec,spi-nor" and "spi-nor"
+  mtd: m25p80: replace leftover "nor-jedec" with "spi-nor" in comments
+  doc: dt: mtd: stop referring to driver code for spi-nor IDs
+
+ .../devicetree/bindings/mtd/jedec,spi-nor.txt      | 56 ++++++++++++++++++++--
+ drivers/mtd/devices/m25p80.c                       | 17 +++++--
+ 2 files changed, 64 insertions(+), 9 deletions(-)
+
 -- 
-2.1.4
-
--- 
-Simon Arlott
+2.6.0.rc2.230.g3dd15c0
