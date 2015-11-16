@@ -30,10 +30,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 21/27] staging: mt29f_spinand: remove useless mtd->priv = chip
- assignment
-Date: Mon, 16 Nov 2015 14:37:54 +0100
-Message-Id: <1447681080-31232-22-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 05/27] blackfin: nand: make use of mtd_to_nand() where
+ appropriate
+Date: Mon, 16 Nov 2015 14:37:38 +0100
+Message-Id: <1447681080-31232-6-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -45,43 +45,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd_to_nand_chip() now uses the container_of() approach to transform an
-mtd_info pointer into a nand_chip one. Drop useless mtd->priv
-assignments from NAND controller drivers.
+mtd_to_nand() was recently introduced to avoid direct accesses to the
+mtd->priv field. Update all blackfin specific implementations to use
+this helper.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
-Patch generated with the following coccinelle script:
+ arch/blackfin/mach-bf537/boards/stamp.c   | 2 +-
+ arch/blackfin/mach-bf561/boards/acvilon.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
----8<----
-virtual patch
-
-@@
-struct mtd_info mtd;
-struct mtd_info *mtdptr;
-struct nand_chip *chipptr;
-expression d;
-@@
-(
--(mtd).priv = (chipptr);
-|
--(mtdptr)->priv = (chipptr);
----8<----
----
- drivers/staging/mt29f_spinand/mt29f_spinand.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index 8171b74..b7d429d 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -907,7 +907,6 @@ static int spinand_probe(struct spi_device *spi_nand)
+diff --git a/arch/blackfin/mach-bf537/boards/stamp.c b/arch/blackfin/mach-bf537/boards/stamp.c
+index 88a19fc..c181543 100644
+--- a/arch/blackfin/mach-bf537/boards/stamp.c
++++ b/arch/blackfin/mach-bf537/boards/stamp.c
+@@ -404,7 +404,7 @@ static struct mtd_partition bfin_plat_nand_partitions[] = {
+ #define BFIN_NAND_PLAT_ALE 1
+ static void bfin_plat_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ {
+-	struct nand_chip *this = mtd->priv;
++	struct nand_chip *this = mtd_to_nand(mtd);
  
- 	dev_set_drvdata(&spi_nand->dev, mtd);
+ 	if (cmd == NAND_CMD_NONE)
+ 		return;
+diff --git a/arch/blackfin/mach-bf561/boards/acvilon.c b/arch/blackfin/mach-bf561/boards/acvilon.c
+index 6ab9515..37f8f25 100644
+--- a/arch/blackfin/mach-bf561/boards/acvilon.c
++++ b/arch/blackfin/mach-bf561/boards/acvilon.c
+@@ -267,7 +267,7 @@ static struct mtd_partition bfin_plat_nand_partitions[] = {
+ static void bfin_plat_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
+ 				    unsigned int ctrl)
+ {
+-	struct nand_chip *this = mtd->priv;
++	struct nand_chip *this = mtd_to_nand(mtd);
  
--	mtd->priv = chip;
- 	mtd->dev.parent = &spi_nand->dev;
- 	mtd->oobsize = 64;
- 
+ 	if (cmd == NAND_CMD_NONE)
+ 		return;
 -- 
 2.1.4
