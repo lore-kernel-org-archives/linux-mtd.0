@@ -1,28 +1,27 @@
+Received: from mail-bn1on0139.outbound.protection.outlook.com
+ ([157.56.110.139] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZyB6E-0000cf-GS
+ for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 04:09:03 +0000
+From: Yao Yuan <yao.yuan@freescale.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: Fabio Estevam <festevam@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Li Leo <LeoLi@freescale.com>, Scott Wood <scottwood@freescale.com>, Xu Han
+ <han.xu@freescale.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>
+Subject: RE: [PATCH] mtd: spi-nor: fsl-quadspi: add big-endian support
+Date: Mon, 16 Nov 2015 04:08:39 +0000
+Message-ID: <BLUPR03MB134D5B98BF8C5DA5E763B1E831E0@BLUPR03MB134.namprd03.prod.outlook.com>
+References: <1445586797-38383-1-git-send-email-yao.yuan@freescale.com>
+ <CAOMZO5AAr30RM7dE-0BEZGH3Nw1j-QpM+qv2WCyyfK4ATrh=VA@mail.gmail.com>
+ <BLUPR03MB134C1F7A783914F4F1ACCDF832F0@BLUPR03MB134.namprd03.prod.outlook.com>
+ <20151111190359.GE12143@google.com>
+In-Reply-To: <20151111190359.GE12143@google.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
-References: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
- <20151029162908.GA13275@localhost>
- <CACRpkdYS5Jf8UC2K0bNdEQZDjTeZZx44Uu-kkof+9E=4Ny0oDg@mail.gmail.com>
- <20151030175145.GF13239@google.com>
- <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
-Date: Sun, 15 Nov 2015 10:06:07 +0100
-Message-ID: <CAMuHMdVBdnjH0xQoMY7yT6Q-Z4bnukWgjBcWNYzhhNpO6263Rg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mtd: create a partition type device tree binding
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Liviu Dudau <Liviu.Dudau@arm.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>
-Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,53 +31,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 6, 2015 at 3:13 PM, Rob Herring <robh@kernel.org> wrote:
-> On Fri, Oct 30, 2015 at 12:51 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
->> On Fri, Oct 30, 2015 at 03:00:57PM +0100, Linus Walleij wrote:
->>> On Thu, Oct 29, 2015 at 5:29 PM, Brian Norris
->>> <computersforpeace@gmail.com> wrote:
->>>
->>> >> +Required properties:
->>> >> +- partition-type : the type of partition. Only one type can be specified.
->>> >
->>> > You're supporting this as a list property (for future expansion,
->>> > presumably), so I can only assume the "only one type" is referring to
->>> > the number of different parsers available currently, not the behavior of
->>> > the property itself?
->>>
->>> I was thinking that it would not be a list actually.
+Hi Brian Norris,
 
-Why not? It is (was) not uncommon to have multiple partition table types on
-hard disks (e.g. bsd disklabel and msdos and/or amiga rdb).
+Thanks for your information and the documents shared by you.
+It's very helpful for me to understand the regmap.
 
->>> The reason being that if you're anyways going to the trouble of
->>> specifying exactly what partition type is going to be used, you're
->>> not really interested in specifying a few different ones, you know
->>> exactly what type it is going to be.
->>
->> OK, that makes sense. I think it's still *possible* that a board might
->> have the option of more than one partition parser, and so they might
->> just include both in the DTS, but that seems unlikely and so it makes
->> sense not to (over)engineer for it before it's needed. Anyway, your
->> binding can easily be expanded in the future if needed.
->
-> Since we now have partitions contained in a sub node, how about using
-> compatible for that sub node instead.
+But I think if we use:
+static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
+*addr) {
+       if (q->big_endian)
+               iowrite32be(val, addr);
+       else
+               iowrite32(val, addr);
+ }
+It looks like easier to read, use and change.
+Is it?
 
-And "compatible" supports a list of multiple values.
+And David Woodhouse, Xu Han, Mark Brown
+is there any other comments from you?
 
-BTW, this means it also (can) becomes more generic. Will it be applicable
-to other block devices (e.g. hard disks), too?
-Integration with block/partitions?
+Thank.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+On Thu, Nov 12, 2015 3:04 AM Brian Norris wrote:
+> On Fri, Oct 30, 2015 at 09:49:41AM +0000, Yao Yuan wrote:
+> > Hi Fabio Estevam,
+> >
+> > Thanks for your suggestion.
+> > We have an internal discussions for that.
+> >
+> > We think that:
+> > According to the initial commit message of regmap, it is targeting
+> > non-memory mapped buses. (regmap: Add generic non-memory mapped
+> > register access API)  But in the imx2_wdt driver, it is used for
+> > memory-mapped register space.  So it seems that using such a complex
+> > framework just to deal with endian is an over-kill.
+>=20
+> It is definitely useful for non-MMIO cases, but it's certainly not exclus=
+ive too it.
+>=20
+> > when it is not necessary to enable the clock every time we access the r=
+egister.
+>=20
+> You don't have to give it a clock. Just pass a NULL clk_id.
+>=20
+> > We don't think it is obvious to us how to use it for handling
+> > endianness, especially not the way imx2_wdt uses regmap.
+> > __regmap_init_mmio_clk() calls regmap_mmio_gen_context() which errors
+> > out if reg_format_endian is not REGMAP_ENDIAN_DEFAULT or
+> > REGMAP_ENDIAN_NATIVE, and elsewhere regmap-mmio.c It seems only
+> > little-endian accessors.
+> >
+> > Although it is possible to add the endianness support in the
+> > regmap_mmio driver, we don't see too much value in using it especially
+>=20
+> It already has DT endianness configuration support. See __regmap_init(),
+> which reconfigures the endianness according to regmap_get_val_endian().
+> So you don't need to do anything but just try it... I exepct it'll work j=
+ust fine.
+>=20
+> > So we think:
+> > static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
+> > *addr) {
+> >       if (q->big_endian)
+> >               iowrite32be(val, addr);
+> >       else
+> >               iowrite32(val, addr);
+> > }
+> > This way is an easier, more effective solution to do the endian issue.
+> >
+> > How about your think?
+>=20
+> I think there's at least one more advantage: you get pretty good tracing
+> support for free. For debugging, for example, you can turn on regmap trac=
+ing
+> to see all the register reads and writes done in your driver, all within =
+the nice
+> tracefs event infrastructure. I'm sure there are other advantages too, bu=
+t not
+> all are applicable here.
+>=20
+> Anyway, I do agree on the complexity argument. It's not actually that com=
+plex
+> to use (the imx2_wdt.c example really does show you everything you need t=
+o
+> know), it is a bit more complex to sort through all its features and unde=
+rstand
+> exactly what it's doing. But I'm confident it has everything you need.
+>=20
+> So, make your choice. I just wanted to educate on several points, so that=
+ your
+> decision is not just driven by lack of correct information.
+>=20
+> For more information, a quick google search shows a few links, but no off=
+icial
+> docs:
+>=20
+> http://elinux.org/images/a/a3/Regmap-
+> _The_Power_of_Subsystems_and_Abstractions.pdf
+> https://lwn.net/Articles/451789/
+>=20
+> Brian
+>=20
+> > Best Regards,
+> > Yuan Yao
+> >
+> > On Sat, Oct 24, 2015 at 11:47 PM, Fabio Estevam <festevam@gmail.com>
+> wrote:
+> > > On Fri, Oct 23, 2015 at 5:53 AM, Yuan Yao <yao.yuan@freescale.com> wr=
+ote:
+> > >
+> > > > +static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
+> > > > +*addr) {
+> > > > +       if (q->big_endian)
+> > > > +               iowrite32be(val, addr);
+> > > > +       else
+> > > > +               iowrite32(val, addr); }
+> > >
+> > > I suggest you to implement regmap support for this driver instead.
+> > >
+> > > Take a look at drivers/watchdog/imx2_wdt.c for a reference.
+> > >
+> > > Then you only need to pass 'big-endian' as a property for the qspi
+> > > in the .dtsi file and regmap core will take care of endianness.
