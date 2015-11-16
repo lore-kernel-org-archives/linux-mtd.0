@@ -30,10 +30,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 16/27] staging: mt29f_spinand: use the mtd instance embedded
- in struct nand_chip
-Date: Mon, 16 Nov 2015 14:37:49 +0100
-Message-Id: <1447681080-31232-17-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 17/27] cris: nand: use the mtd instance embedded in struct
+ nand_chip
+Date: Mon, 16 Nov 2015 14:37:50 +0100
+Message-Id: <1447681080-31232-18-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -45,28 +45,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-struct nand_chip now embeds an mtd device, use it instead of allocating
-a new one.
+struct nand_chip now embeds an mtd device. Patch all drivers to make use
+of this mtd instance instead of using the instance embedded in their
+private struct or dynamically allocated.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/staging/mt29f_spinand/mt29f_spinand.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Most of those changes were generate with this coccinelle script:
+http://code.bulix.org/5vxuih-89429
+---
+ arch/cris/arch-v32/drivers/mach-a3/nandflash.c | 3 +--
+ arch/cris/arch-v32/drivers/mach-fs/nandflash.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index 8924a96..8171b74 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -903,9 +903,7 @@ static int spinand_probe(struct spi_device *spi_nand)
- 	chip->options	|= NAND_CACHEPRG;
- 	chip->select_chip = spinand_select_chip;
+diff --git a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
+index db953cf..ad78b97 100644
+--- a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
++++ b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
+@@ -36,7 +36,6 @@
+ #define CE_BIT 12
  
--	mtd = devm_kzalloc(&spi_nand->dev, sizeof(struct mtd_info), GFP_KERNEL);
--	if (!mtd)
--		return -ENOMEM;
-+	mtd = nand_to_mtd(chip);
+ struct mtd_info_wrapper {
+-	struct mtd_info info;
+ 	struct nand_chip chip;
+ };
  
- 	dev_set_drvdata(&spi_nand->dev, mtd);
+@@ -148,7 +147,7 @@ struct mtd_info *__init crisv32_nand_flash_probe(void)
  
+ 	/* Get pointer to private data */
+ 	this = &wrapper->chip;
+-	crisv32_mtd = &wrapper->info;
++	crisv32_mtd = nand_to_mtd(&wrapper->chip);
+ 
+ 	/* Link the private data with the MTD structure */
+ 	crisv32_mtd->priv = this;
+diff --git a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
+index 22a6467..00a277b 100644
+--- a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
++++ b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
+@@ -31,7 +31,6 @@
+ #define BY_BIT 7
+ 
+ struct mtd_info_wrapper {
+-	struct mtd_info info;
+ 	struct nand_chip chip;
+ };
+ 
+@@ -129,7 +128,7 @@ struct mtd_info *__init crisv32_nand_flash_probe(void)
+ 
+ 	/* Get pointer to private data */
+ 	this = &wrapper->chip;
+-	crisv32_mtd = &wrapper->info;
++	crisv32_mtd = nand_to_mtd(&wrapper->chip);
+ 
+ 	pa_oe.oe |= 1 << CE_BIT;
+ 	pa_oe.oe |= 1 << ALE_BIT;
 -- 
 2.1.4
