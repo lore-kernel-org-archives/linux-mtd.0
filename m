@@ -1,24 +1,40 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyJlH-0008QW-Gl
- for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 13:24:30 +0000
-Received: from localhost.localdomain ([127.0.0.1]:54770 "EHLO linux-mips.org"
- rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
- id S27012320AbbKPNXfEuVTh (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Mon, 16 Nov 2015 14:23:35 +0100
-Date: Mon, 16 Nov 2015 14:23:28 +0100
-From: Ralf Baechle <ralf@linux-mips.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-mips@linux-mips.org
-Subject: Re: [PATCH] mtd: jz4740_nand: fix build on jz4740 after removing
- gpio.h
-Message-ID: <20151116132328.GB9425@linux-mips.org>
-References: <1447284976-96693-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1447284976-96693-1-git-send-email-computersforpeace@gmail.com>
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Ryan Mallon <rmallon@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <kernel@pengutronix.de>, Imre Kaloz <kaloz@openwrt.org>,
+ Krzysztof Halasa <khalasa@piap.pl>, Tony Lindgren <tony@atomide.com>,
+ linux-omap@vger.kernel.org, Alexander Clouter <alex@digriz.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory CLEMENT <gregory.clement@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Marek Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>,
+ adi-buildroot-devel@lists.sourceforge.net,
+ Mikael Starvik <starvik@axis.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>, linux-cris-kernel@axis.com,
+ Josh Wu <josh.wu@atmel.com>, Wan ZongShun <mcuos.com@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ linux-samsung-soc@vger.kernel.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Stefan Agner <stefan@agner.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ devel@driverdev.osuosl.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH 02/27] mtd: nand: add an mtd_to_nand() helper
+Date: Mon, 16 Nov 2015 14:37:35 +0100
+Message-Id: <1447681080-31232-3-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +44,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 11, 2015 at 03:36:16PM -0800, Brian Norris wrote:
+Some drivers are retrieving the nand_chip pointer using the container_of
+macro on a struct wrapping both the nand_chip and the mtd_info struct while
+the standard way of retrieving this pointer is through mtd->priv.
+Provide an helper to do that.
 
-> Fallout from commit 832f5dacfa0b ("MIPS: Remove all the uses of custom gpio.h")
-> 
-> We see errors like this:
-> 
-> drivers/mtd/nand/jz4740_nand.c: In function 'jz_nand_detect_bank':
-> drivers/mtd/nand/jz4740_nand.c:340:9: error: 'JZ_GPIO_MEM_CS0' undeclared (first use in this function)
-> drivers/mtd/nand/jz4740_nand.c:340:9: note: each undeclared identifier is reported only once for each function it appears in
-> drivers/mtd/nand/jz4740_nand.c:359:2: error: implicit declaration of function 'jz_gpio_set_function' [-Werror=implicit-function-declaration]
-> drivers/mtd/nand/jz4740_nand.c:359:29: error: 'JZ_GPIO_FUNC_MEM_CS0' undeclared (first use in this function)
-> drivers/mtd/nand/jz4740_nand.c:399:29: error: 'JZ_GPIO_FUNC_NONE' undeclared (first use in this function)
-> drivers/mtd/nand/jz4740_nand.c: In function 'jz_nand_probe':
-> drivers/mtd/nand/jz4740_nand.c:528:13: error: 'JZ_GPIO_MEM_CS0' undeclared (first use in this function)
-> drivers/mtd/nand/jz4740_nand.c: In function 'jz_nand_remove':
-> drivers/mtd/nand/jz4740_nand.c:555:14: error: 'JZ_GPIO_MEM_CS0' undeclared (first use in this function)
-> 
-> Patched similarly to:
-> 
-> https://patchwork.linux-mips.org/patch/11089/
-> 
-> Fixes: 832f5dacfa0b ("MIPS: Remove all the uses of custom gpio.h")
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ include/linux/mtd/nand.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Looks, good, shall I funnel this upstream?
-
-  Ralf
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 4f7c9b9..056d165 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -730,6 +730,11 @@ static inline struct device_node *nand_get_flash_node(struct nand_chip *chip)
+ 	return chip->flash_node;
+ }
+ 
++static inline struct nand_chip *mtd_to_nand(struct mtd_info *mtd)
++{
++	return mtd->priv;
++}
++
+ /*
+  * NAND Flash Manufacturer ID Codes
+  */
+-- 
+2.1.4
