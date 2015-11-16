@@ -1,29 +1,25 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyNwJ-0001bv-5J
- for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 17:51:39 +0000
-Date: Mon, 16 Nov 2015 17:51:12 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Javier Martinez Canillas <javier@osg.samsung.com>
+Received: from lists.s-osg.org ([54.187.51.154])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZyO2f-0004kJ-Eq
+ for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 17:58:14 +0000
+Subject: Re: spi: OF module autoloading is still broken
+To: Mark Brown <broonie@kernel.org>
+References: <56104E88.3040807@gmail.com> <20151112185926.GC8456@google.com>
+ <20151113194031.GI8456@google.com> <20151113221228.GT12392@sirena.org.uk>
+ <20151113225113.GJ8456@google.com> <20151113231410.GV12392@sirena.org.uk>
+ <20151113234857.GK8456@google.com> <564A101F.9090807@osg.samsung.com>
+ <20151116174942.GG31303@sirena.org.uk>
 Cc: Brian Norris <computersforpeace@gmail.com>,
  Heiner Kallweit <hkallweit1@gmail.com>, linux-mtd@lists.infradead.org,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Message-ID: <20151116175112.GH31303@sirena.org.uk>
-References: <56104E88.3040807@gmail.com> <20151112185926.GC8456@google.com>
- <20151113194031.GI8456@google.com>
- <20151113221228.GT12392@sirena.org.uk>
- <20151113225113.GJ8456@google.com>
- <20151113231410.GV12392@sirena.org.uk>
- <20151113234857.GK8456@google.com>
- <20151116135342.GD31303@sirena.org.uk>
- <564A11D9.80109@osg.samsung.com>
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org
+From: Javier Martinez Canillas <javier@osg.samsung.com>
+Message-ID: <564A191B.3040004@osg.samsung.com>
+Date: Mon, 16 Nov 2015 14:57:47 -0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="/Gk0KcsbyUMelFU1"
-Content-Disposition: inline
-In-Reply-To: <564A11D9.80109@osg.samsung.com>
-Subject: Re: spi: OF module autoloading is still broken
+In-Reply-To: <20151116174942.GG31303@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,41 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Mark,
 
---/Gk0KcsbyUMelFU1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 11/16/2015 02:49 PM, Mark Brown wrote:
+> On Mon, Nov 16, 2015 at 02:19:27PM -0300, Javier Martinez Canillas wrote:
+>> On 11/13/2015 08:48 PM, Brian Norris wrote:
+> 
+>>> (I believe I avoided this in the first place for mostly-aesthetic
+>>> reasons; technically this allows people to put garbage in their DT, like
+>>> "garbage,spi-nor". It's unclear whether "garbage" becomes part of the
+>>> mythical DT ABI [1].)
+> 
+>> I don't believe your examples are part of the mythical DT ABI. What I
+>> understand is that an ABI is whatever is documented in the DT binding
+>> docs but the only document that mentions the m25p80 is:
+> 
+>> Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+> 
+> Not really, in practice an ABI is something that people notice breaking.
+> This means that if enough people ship an undocumented ABI (or it goes
+> into important enough products) it's just as good as something that's
+> documented, perhaps better than something that's documented and nobody
+> ever uses as an ABI.
+> 
 
-On Mon, Nov 16, 2015 at 02:26:49PM -0300, Javier Martinez Canillas wrote:
-> On 11/16/2015 10:53 AM, Mark Brown wrote:
+I see, fair enough. Let's see what Brian say about the spi-nor case and
+I'll also post my RFC patch but as a proper patch and adding the comments
+you asked me later today.
 
-> > What I don't really understand here is why we've decided to push all
-> > this stuff into the subsystems, it seems like if we're managing to do
-> > the matching based on the compatible we really ought to be able to have
-> > the core figure out the uevents for us too.  I need to go have a look at
-> > that...
+It would be unfortunate if the SPI drivers would have as a requirement to
+always have an SPI device ID table even for OF-only IPs but I don't think
+that is that bad either.
 
-> There is already a set of generic OF uevents that are reported by the core
-> but IIUC those are not used by udev. Please take a look to of_device_uevent()
-> in drivers/of/device.c and dev_uevent() that calls it in drivers/base/core.c.
-
-I know what the current situation is, my point is that I don't
-understand why we would choose to do that ("What I don't really
-understand here...").
-
---/Gk0KcsbyUMelFU1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWShePAAoJECTWi3JdVIfQbwcH/RmG3l7Uiejndi/d+ERkmgeb
-rUF+Bm5IgbBKjhLqPK4J0qbAYGf+bKgNCXTm2Nmw9PFkdnWOcQO7DPODeszWdKR8
-YyH87j5Pgbvjlcp254flVfJRKwJ+mybSxD7Q6/WRNYNACVMVMLz99JldcB5rSJPp
-q6jxtahYSb0WDbcAMs/7CMWXgzAp+sqS4Am4NKl9ftKVvsxsEvLetAswmV69pBLD
-VyWaJnQTMgowxVtHvalfEQKXXMCjifab4a+0E9Ab6huOdMdvXtgjP66GTNPveJkv
-DTbqGxQ+iGYDjeiHqt0G3MJOgAmOcUCMg2ELe908uzy+hDG0pgESrJL/q+AtX3s=
-=QBjS
------END PGP SIGNATURE-----
-
---/Gk0KcsbyUMelFU1--
+Best regards,
+-- 
+Javier Martinez Canillas
+Open Source Group
+Samsung Research America
