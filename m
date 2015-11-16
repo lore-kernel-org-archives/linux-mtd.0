@@ -1,27 +1,29 @@
-Received: from mail-bn1on0139.outbound.protection.outlook.com
- ([157.56.110.139] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyB6E-0000cf-GS
- for linux-mtd@lists.infradead.org; Mon, 16 Nov 2015 04:09:03 +0000
-From: Yao Yuan <yao.yuan@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: Fabio Estevam <festevam@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Li Leo <LeoLi@freescale.com>, Scott Wood <scottwood@freescale.com>, Xu Han
- <han.xu@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>
-Subject: RE: [PATCH] mtd: spi-nor: fsl-quadspi: add big-endian support
-Date: Mon, 16 Nov 2015 04:08:39 +0000
-Message-ID: <BLUPR03MB134D5B98BF8C5DA5E763B1E831E0@BLUPR03MB134.namprd03.prod.outlook.com>
-References: <1445586797-38383-1-git-send-email-yao.yuan@freescale.com>
- <CAOMZO5AAr30RM7dE-0BEZGH3Nw1j-QpM+qv2WCyyfK4ATrh=VA@mail.gmail.com>
- <BLUPR03MB134C1F7A783914F4F1ACCDF832F0@BLUPR03MB134.namprd03.prod.outlook.com>
- <20151111190359.GE12143@google.com>
-In-Reply-To: <20151111190359.GE12143@google.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Date: Sun, 15 Nov 2015 20:12:44 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Rob Herring <robh@kernel.org>,
+ "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Liviu Dudau <Liviu.Dudau@arm.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH 1/3] mtd: create a partition type device tree binding
+Message-ID: <20151116041244.GA4021@brian-ubuntu>
+References: <1446123152-22666-1-git-send-email-linus.walleij@linaro.org>
+ <20151029162908.GA13275@localhost>
+ <CACRpkdYS5Jf8UC2K0bNdEQZDjTeZZx44Uu-kkof+9E=4Ny0oDg@mail.gmail.com>
+ <20151030175145.GF13239@google.com>
+ <CAL_JsqL2F3p7qBPbOiGytVyzF_aNLWbrCT0mAX1WZo6SxE3JoA@mail.gmail.com>
+ <20151113220039.GA74382@google.com>
+ <CACRpkdakyae95f_Lc-R7Uf7wndj5hyfCqqHziwmZjwm-uNkGAg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdakyae95f_Lc-R7Uf7wndj5hyfCqqHziwmZjwm-uNkGAg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,125 +33,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian Norris,
+On Sat, Nov 14, 2015 at 11:46:59AM +0100, Linus Walleij wrote:
+> On Fri, Nov 13, 2015 at 11:00 PM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+> 
+> (...)
+> >  (2) we should define a comptible property for the hard-coded
+> >  partitioning case (e.g., compatible = "partitions")
+> (...)
+> > If we went with option (2), then ofpart.c could just check only for
+> > 'compatible = "partitions"' (or similar), and if not found bail out.
+> 
+> So this "hard-coded partitioning case" the case is where all partitions
+> are defined in the device tree as described in
+> Documentation/devicetree/bindings/mtd/partition.txt ?
 
-Thanks for your information and the documents shared by you.
-It's very helpful for me to understand the regmap.
+Right.
 
-But I think if we use:
-static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
-*addr) {
-       if (q->big_endian)
-               iowrite32be(val, addr);
-       else
-               iowrite32(val, addr);
- }
-It looks like easier to read, use and change.
-Is it?
+> Or is it a way to indicate that this array
+> static const char * const part_probe_types_def[] = {
+>         "cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
+> in physmap_of.c should be used?
 
-And David Woodhouse, Xu Han, Mark Brown
-is there any other comments from you?
+No. At this point, I would consider that to be a legacy method. We still
+have to support this for many cases (including the non-DT case; but
+hopefully we can do better than that soon), and that would be an option.
 
-Thank.
+> Sorry if I don't fully follow, I'm a bit stupid when it comes to the MTD
+> helicopter  view of the situation.... :(
 
-On Thu, Nov 12, 2015 3:04 AM Brian Norris wrote:
-> On Fri, Oct 30, 2015 at 09:49:41AM +0000, Yao Yuan wrote:
-> > Hi Fabio Estevam,
-> >
-> > Thanks for your suggestion.
-> > We have an internal discussions for that.
-> >
-> > We think that:
-> > According to the initial commit message of regmap, it is targeting
-> > non-memory mapped buses. (regmap: Add generic non-memory mapped
-> > register access API)  But in the imx2_wdt driver, it is used for
-> > memory-mapped register space.  So it seems that using such a complex
-> > framework just to deal with endian is an over-kill.
->=20
-> It is definitely useful for non-MMIO cases, but it's certainly not exclus=
-ive too it.
->=20
-> > when it is not necessary to enable the clock every time we access the r=
-egister.
->=20
-> You don't have to give it a clock. Just pass a NULL clk_id.
->=20
-> > We don't think it is obvious to us how to use it for handling
-> > endianness, especially not the way imx2_wdt uses regmap.
-> > __regmap_init_mmio_clk() calls regmap_mmio_gen_context() which errors
-> > out if reg_format_endian is not REGMAP_ENDIAN_DEFAULT or
-> > REGMAP_ENDIAN_NATIVE, and elsewhere regmap-mmio.c It seems only
-> > little-endian accessors.
-> >
-> > Although it is possible to add the endianness support in the
-> > regmap_mmio driver, we don't see too much value in using it especially
->=20
-> It already has DT endianness configuration support. See __regmap_init(),
-> which reconfigures the endianness according to regmap_get_val_endian().
-> So you don't need to do anything but just try it... I exepct it'll work j=
-ust fine.
->=20
-> > So we think:
-> > static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
-> > *addr) {
-> >       if (q->big_endian)
-> >               iowrite32be(val, addr);
-> >       else
-> >               iowrite32(val, addr);
-> > }
-> > This way is an easier, more effective solution to do the endian issue.
-> >
-> > How about your think?
->=20
-> I think there's at least one more advantage: you get pretty good tracing
-> support for free. For debugging, for example, you can turn on regmap trac=
-ing
-> to see all the register reads and writes done in your driver, all within =
-the nice
-> tracefs event infrastructure. I'm sure there are other advantages too, bu=
-t not
-> all are applicable here.
->=20
-> Anyway, I do agree on the complexity argument. It's not actually that com=
-plex
-> to use (the imx2_wdt.c example really does show you everything you need t=
-o
-> know), it is a bit more complex to sort through all its features and unde=
-rstand
-> exactly what it's doing. But I'm confident it has everything you need.
->=20
-> So, make your choice. I just wanted to educate on several points, so that=
- your
-> decision is not just driven by lack of correct information.
->=20
-> For more information, a quick google search shows a few links, but no off=
-icial
-> docs:
->=20
-> http://elinux.org/images/a/a3/Regmap-
-> _The_Power_of_Subsystems_and_Abstractions.pdf
-> https://lwn.net/Articles/451789/
->=20
-> Brian
->=20
-> > Best Regards,
-> > Yuan Yao
-> >
-> > On Sat, Oct 24, 2015 at 11:47 PM, Fabio Estevam <festevam@gmail.com>
-> wrote:
-> > > On Fri, Oct 23, 2015 at 5:53 AM, Yuan Yao <yao.yuan@freescale.com> wr=
-ote:
-> > >
-> > > > +static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
-> > > > +*addr) {
-> > > > +       if (q->big_endian)
-> > > > +               iowrite32be(val, addr);
-> > > > +       else
-> > > > +               iowrite32(val, addr); }
-> > >
-> > > I suggest you to implement regmap support for this driver instead.
-> > >
-> > > Take a look at drivers/watchdog/imx2_wdt.c for a reference.
-> > >
-> > > Then you only need to pass 'big-endian' as a property for the qspi
-> > > in the .dtsi file and regmap core will take care of endianness.
+Yeah...sorry if I wasn't too clear. And I definitely don't blame you for
+not understanding the mess that MTD often is :(
+
+> > I think option (2) makes more sense. But it would require an update to
+> > the binding and code for 4.4, since [1] was only introduced during this
+> > release cycle.
+> 
+> Does that mean all old device trees that specify no compatible
+> string all of a sudden stop working? We can't break the DT ABI, so I
+> guess not.
+
+No, that's not what I was intending. The binding before commmit
+fe2585e9c29a ("doc: dt: mtd: support partitions in a special
+'partitions' subnode") should still stay working as-is. That is, we
+don't mess with the way things worked for anything that doesn't have a
+'partitions' subnode. But now that we have a 'partitions' subnode (in
+4.4-rc1), I'm just suggesting that we enforce this always have a
+compatible property, so we can be more clear on the difference between:
+
+	partitions {
+		// do I have a
+		// compatible = "partitons";
+		// here?
+
+		partition@0 {
+			label = "foo-partition";
+			reg = <0 0x100000>;
+		};
+	};
+
+and
+
+	partitions {
+		compatible = "arm,arm-flash-structure";
+
+		subnode {
+			// what if we need something here eventually?
+		};
+	};
+
+This would require some modifications to partitions.txt and to
+drivers/mtd/ofpart.c.
+
+> A bit confused here, I can't really see what I should do with the patch...
+
+Hopefully that cleared up a bit? The code changes for my suggestion
+would just be something like this, I think. (Not tested in any way.)
+
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index 669c3452f278..6811bc5440a4 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -50,6 +50,10 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 			master->name, mtd_node->full_name);
+ 		ofpart_node = mtd_node;
+ 		dedicated = false;
++	} else {
++		/* The "partitions" subnode may belong to some other parser */
++		if (!of_device_is_compatible(ofpart_node, "partitions"))
++			return 0;
+ 	}
+ 
+ 	/* First count the subnodes */
+
+I was just bringing this up for discussion, since it's related to
+your/Rob's new proposal. I'll send a proper (and tested) patch, along
+with a doc update, if that looks reasonable.
+
+Brian
