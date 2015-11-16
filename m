@@ -30,10 +30,9 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 27/27] staging: mt29f_spinand: make use of
- nand_set/get_controller_data() helpers
-Date: Mon, 16 Nov 2015 14:38:00 +0100
-Message-Id: <1447681080-31232-28-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 25/27] ARM: make use of nand_set/get_controller_data() helpers
+Date: Mon, 16 Nov 2015 14:37:58 +0100
+Message-Id: <1447681080-31232-26-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -50,57 +49,30 @@ them where appropriate.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/staging/mt29f_spinand/mt29f_spinand.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/arm/mach-ixp4xx/ixdp425-setup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index b7d429d..5b3027a 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -32,7 +32,7 @@
- static inline struct spinand_state *mtd_to_state(struct mtd_info *mtd)
+diff --git a/arch/arm/mach-ixp4xx/ixdp425-setup.c b/arch/arm/mach-ixp4xx/ixdp425-setup.c
+index 333b0f9..508c2d7 100644
+--- a/arch/arm/mach-ixp4xx/ixdp425-setup.c
++++ b/arch/arm/mach-ixp4xx/ixdp425-setup.c
+@@ -77,7 +77,7 @@ static void
+ ixdp425_flash_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
  {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct spinand_info *info = (struct spinand_info *)chip->priv;
-+	struct spinand_info *info = (struct spinand_info *)nand_get_controller_data(chip);
- 	struct spinand_state *state = (struct spinand_state *)info->priv;
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+-	int offset = (int)this->priv;
++	int offset = (int)nand_get_controller_data(this);
  
- 	return state;
-@@ -633,7 +633,7 @@ static int spinand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- 	u8 *p = buf;
- 	int eccsize = chip->ecc.size;
- 	int eccsteps = chip->ecc.steps;
--	struct spinand_info *info = (struct spinand_info *)chip->priv;
-+	struct spinand_info *info = (struct spinand_info *)nand_get_controller_data(chip);
+ 	if (ctrl & NAND_CTRL_CHANGE) {
+ 		if (ctrl & NAND_NCE) {
+@@ -88,7 +88,7 @@ ixdp425_flash_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
  
- 	enable_read_hw_ecc = 1;
+ 		offset = (ctrl & NAND_CLE) ? IXDP425_NAND_CMD_BYTE : 0;
+ 		offset |= (ctrl & NAND_ALE) ? IXDP425_NAND_ADDR_BYTE : 0;
+-		this->priv = (void *)offset;
++		nand_set_controller_data(this, (void *)offset);
+ 	}
  
-@@ -679,7 +679,7 @@ static u8 spinand_read_byte(struct mtd_info *mtd)
- 
- static int spinand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- {
--	struct spinand_info *info = (struct spinand_info *)chip->priv;
-+	struct spinand_info *info = (struct spinand_info *)nand_get_controller_data(chip);
- 
- 	unsigned long timeo = jiffies;
- 	int retval, state = chip->state;
-@@ -745,7 +745,7 @@ static void spinand_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 			    int column, int page)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct spinand_info *info = (struct spinand_info *)chip->priv;
-+	struct spinand_info *info = (struct spinand_info *)nand_get_controller_data(chip);
- 	struct spinand_state *state = (struct spinand_state *)info->priv;
- 
- 	switch (command) {
-@@ -894,7 +894,7 @@ static int spinand_probe(struct spi_device *spi_nand)
- #endif
- 
- 	nand_set_flash_node(chip, spi_nand->dev.of_node);
--	chip->priv	= info;
-+	nand_set_controller_data(chip, info);
- 	chip->read_buf	= spinand_read_buf;
- 	chip->write_buf	= spinand_write_buf;
- 	chip->read_byte	= spinand_read_byte;
+ 	if (cmd != NAND_CMD_NONE)
 -- 
 2.1.4
