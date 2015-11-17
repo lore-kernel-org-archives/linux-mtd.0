@@ -1,16 +1,21 @@
-Received: from mail-gw3-out.broadcom.com ([216.31.210.64])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZylLc-0002uc-0b
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 18:51:20 +0000
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: <linux-mtd@lists.infradead.org>, <computersforpeace@gmail.com>
-CC: <f.fainelli@gmail.com>, <bcm-kernel-feedback-list@broadcom.com>, "Kamal
- Dasu" <kdasu.kdev@gmail.com>
-Subject: [PATCH] MAINTAINERS: brcmnand: Add co-maintainer for Broadcom SoCs
-Date: Tue, 17 Nov 2015 13:50:08 -0500
-Message-ID: <1447786208-20102-1-git-send-email-kdasu.kdev@gmail.com>
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZylVc-0006Vb-IE
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 19:01:41 +0000
+Received: by pabfh17 with SMTP id fh17so17683355pab.0
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 11:01:19 -0800 (PST)
+Message-ID: <564B7944.9050506@gmail.com>
+Date: Tue, 17 Nov 2015 11:00:20 -0800
+From: Florian Fainelli <f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com
+CC: bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH] MAINTAINERS: brcmnand: Add co-maintainer for Broadcom SoCs
+References: <1447786208-20102-1-git-send-email-kdasu.kdev@gmail.com>
+In-Reply-To: <1447786208-20102-1-git-send-email-kdasu.kdev@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adding myself as co-maintainer of nand controller driver
-for the Broadcom SoCs.
+On 17/11/15 10:50, Kamal Dasu wrote:
+> Adding myself as co-maintainer of nand controller driver
+> for the Broadcom SoCs.
+> 
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index da691aa..d20d6f3 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2449,6 +2449,7 @@ F:	drivers/firmware/broadcom/*
- 
- BROADCOM STB NAND FLASH DRIVER
- M:	Brian Norris <computersforpeace@gmail.com>
-+M:	Kamal Dasu <kdasu.kdev@gmail.com>
- L:	linux-mtd@lists.infradead.org
- L:	bcm-kernel-feedback-list@broadcom.com
- S:	Maintained
+Thanks!
+
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index da691aa..d20d6f3 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2449,6 +2449,7 @@ F:	drivers/firmware/broadcom/*
+>  
+>  BROADCOM STB NAND FLASH DRIVER
+>  M:	Brian Norris <computersforpeace@gmail.com>
+> +M:	Kamal Dasu <kdasu.kdev@gmail.com>
+>  L:	linux-mtd@lists.infradead.org
+>  L:	bcm-kernel-feedback-list@broadcom.com
+>  S:	Maintained
+> 
+
+
 -- 
-2.3.2
+Florian
