@@ -1,22 +1,20 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyUJw-0004uw-Nj
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 00:40:29 +0000
-Received: by padhx2 with SMTP id hx2so191649316pad.1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Nov 2015 16:40:08 -0800 (PST)
-Date: Mon, 16 Nov 2015 16:40:05 -0800
+ id 1ZyUMT-0006FO-5t
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 00:43:05 +0000
+Received: by padhx2 with SMTP id hx2so191715121pad.1
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Nov 2015 16:42:44 -0800 (PST)
+Date: Mon, 16 Nov 2015 16:42:42 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Simon Arlott <simon@fire.lp0.eu>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Kevin Cernekee <cernekee@gmail.com>, bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH] brcmnand: Clear EXT_ADDR error registers in PIO mode
-Message-ID: <20151117004005.GU8456@google.com>
-References: <564A5333.9000200@simon.arlott.org.uk>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mtd@lists.infradead.org, bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH] MAINTAINERS: brcmnand: Add Broadcom internal mailing-list
+Message-ID: <20151117004242.GA896@google.com>
+References: <1447716855-6535-1-git-send-email-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <564A5333.9000200@simon.arlott.org.uk>
+In-Reply-To: <1447716855-6535-1-git-send-email-f.fainelli@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ bcm-kernel-feedback-list
-
-On Mon, Nov 16, 2015 at 10:05:39PM +0000, Simon Arlott wrote:
-> If an error occurs in flash above 4GB in PIO mode then the EXT_ADDR
-> registers will be set to the location of the error and never cleared.
+On Mon, Nov 16, 2015 at 03:34:15PM -0800, Florian Fainelli wrote:
+> The Broadcom NAND driver is used by many different groups at Broadcom
+> now, so use the same mailing-list we use for other areas of the kernel.
 > 
-> Reset them to 0 before reading.
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e9caa4b28828..da691aad7031 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2450,6 +2450,7 @@ F:	drivers/firmware/broadcom/*
+>  BROADCOM STB NAND FLASH DRIVER
+>  M:	Brian Norris <computersforpeace@gmail.com>
+>  L:	linux-mtd@lists.infradead.org
+> +L:	bcm-kernel-feedback-list@broadcom.com
+>  S:	Maintained
+>  F:	drivers/mtd/nand/brcmnand/
+>  
 
-Patch looks OK. Did you see this problem in practice, or is this just
-theoretical? I thought the documentation seemed to suggest these
-registers were cleared together with their non-_EXT counterparts. But
-implementation definitely trumps documentation for HW.
+LGTM. Pushed to linux-mtd.git. I'll probably send it upstream this week.
 
 Brian
-
-> ---
->  drivers/mtd/nand/brcmnand/brcmnand.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index 12c6190..2c8f67f 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -1400,6 +1400,8 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
->  	/* Clear error addresses */
->  	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_ADDR, 0);
->  	brcmnand_write_reg(ctrl, BRCMNAND_CORR_ADDR, 0);
-> +	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_EXT_ADDR, 0);
-> +	brcmnand_write_reg(ctrl, BRCMNAND_CORR_EXT_ADDR, 0);
->  
->  	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
->  			(host->cs << 16) | ((addr >> 32) & 0xffff));
-> -- 
-> 2.1.4
-> 
-> -- 
-> Simon Arlott
