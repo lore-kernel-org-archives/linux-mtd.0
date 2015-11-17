@@ -1,24 +1,19 @@
 Received: from lists.s-osg.org ([54.187.51.154])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZygTG-0006tf-UM
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 13:38:55 +0000
-Subject: Re: spi: OF module autoloading is still broken
-To: Mark Brown <broonie@kernel.org>
-References: <56104E88.3040807@gmail.com> <20151112185926.GC8456@google.com>
- <20151113194031.GI8456@google.com> <20151113221228.GT12392@sirena.org.uk>
- <20151113225113.GJ8456@google.com> <20151113231410.GV12392@sirena.org.uk>
- <20151113234857.GK8456@google.com> <564A101F.9090807@osg.samsung.com>
- <20151116192434.GO8456@google.com> <564A35EB.5080008@osg.samsung.com>
- <20151117133455.GQ31303@sirena.org.uk>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>, linux-mtd@lists.infradead.org,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org
+ id 1ZygjK-0000OX-Mr
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 13:55:31 +0000
+Subject: Re: [PATCH 1/3] mtd: m25p80: fix module autoloading for
+ "jedec,spi-nor" and "spi-nor"
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+References: <1447713292-91525-1-git-send-email-computersforpeace@gmail.com>
+ <1447713292-91525-2-git-send-email-computersforpeace@gmail.com>
 From: Javier Martinez Canillas <javier@osg.samsung.com>
-Message-ID: <564B2DD5.2060502@osg.samsung.com>
-Date: Tue, 17 Nov 2015 10:38:29 -0300
+Cc: linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <564B31B8.70104@osg.samsung.com>
+Date: Tue, 17 Nov 2015 10:55:04 -0300
 MIME-Version: 1.0
-In-Reply-To: <20151117133455.GQ31303@sirena.org.uk>
+In-Reply-To: <1447713292-91525-2-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,29 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Mark,
+Hello Brian,
 
-On 11/17/2015 10:34 AM, Mark Brown wrote:
-> On Mon, Nov 16, 2015 at 05:00:43PM -0300, Javier Martinez Canillas wrote:
+On 11/16/2015 07:34 PM, Brian Norris wrote:
+> Commit 43163022927b ("mtd: m25p80: allow arbitrary OF matching for
+> "jedec,spi-nor"") moved the "jedec,spi-nor" handling from the
+> spi_device_id table to the of_match_table, to better handle matching
+> complex device tree compatible strings. With that patch, device tree
+> support works as expected when m25p80.c is built into the kernel.
+>
+> However, that commit ignored the fact that:
 > 
->> Now that I think about it, there is another issue and is that today spi:foo
->> defines a namespace while changing to of: will make the namespace flat so
->> a platform driver that has the same vendor and model will have the same
->> modalias.
-> 
->> IOW, for board files will be platform:bar and i2c:bar while for OF will be
->> of:NfooT<NULL>Cfoo,bar in both cases. I wonder if we should reuse the type
->> for that and store the subsystem prefix there. What do you think?
-> 
-> I'm not sure that's a big issue - if we end up loading an extra module
-> with a second bus glue it'll waste a little memory but it's not going to
-> be a huge amount.  Obviously it'd be nice to fix but it doesn't seem
-> super important compared to getting the modules loaded.
-> 
+>  (1) (non-DT) platform devices might want to use the "spi-nor" string
+>      for matching with this driver, rather than picking an arbitrary one
+>      like "m25p80"
+>  (2) the core SPI uevent/modalias code doesn't yet support kernel module
+>      autoloading via of_match_table strings; so for DT-based devices, it
+>      will only report (part of) the first compatible string used
+>
 
-Agreed, it has indeed lower priority. That's why I added it
-to my TODO list so it can be fixed later as a follow up.
+Very nice changelog message!
 
+Patch looks good to me.
+
+Reviewed-by: Javier Martinez Canillas <javier@osg.samsung.com>
+ 
 Best regards,
 -- 
 Javier Martinez Canillas
