@@ -1,20 +1,37 @@
-Received: from mail-bn1on0133.outbound.protection.outlook.com
- ([157.56.110.133] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyoDB-0005yi-5L
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 21:54:49 +0000
-Date: Tue, 17 Nov 2015 15:42:30 -0600
-From: Han Xu <han.xu@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mtd: fsl-quadspi: possible NULL dereference
-Message-ID: <20151117214230.GA26480@chopperman.am.freescale.net>
-References: <1447699339-43027-1-git-send-email-computersforpeace@gmail.com>
- <1447699530-50014-1-git-send-email-computersforpeace@gmail.com>
+ id 1ZyoIq-0002es-UR
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 22:00:42 +0000
+Received: by wmww144 with SMTP id w144so173147836wmw.1
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 14:00:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1447699530-50014-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <564B8A20.9090607@nod.at>
+References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
+ <20151117170556.GV22011@ZenIV.linux.org.uk>
+ <20151117172551.GA108807@ubuntu-hedt>
+ <20151117175506.GW22011@ZenIV.linux.org.uk>
+ <20151117183444.GB108807@ubuntu-hedt>
+ <CAFLxGvx1UqJOhM3wqAGqT+TrkapeP1zkmg0a1K=DjySePx4mEA@mail.gmail.com>
+ <20151117192141.GD108807@ubuntu-hedt>
+ <CAE1zotLNq1v_ZegT9LyFsTiHWQnOAow+KKQFFvOYKUyRWPjfGA@mail.gmail.com>
+ <564B8A20.9090607@nod.at>
+Date: Wed, 18 Nov 2015 00:00:17 +0200
+Message-ID: <CAE1zotJRp3=G2Vdud7kVbkToKe2YsTF3gXUnLCNzKV6F0oumdg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] User namespace mount updates
+From: Octavian Purdila <octavian.purdila@intel.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Seth Forshee <seth.forshee@canonical.com>,
+ Al Viro <viro@zeniv.linux.org.uk>,
+ "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
+ device-mapper development <dm-devel@redhat.com>,
+ "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ LSM <linux-security-module@vger.kernel.org>,
+ selinux@tycho.nsa.gov, Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, LKML <linux-kernel@vger.kernel.org>,
+ "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,63 +41,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 16, 2015 at 10:45:30AM -0800, Brian Norris wrote:
-> It is theoretically possible to probe this driver without a matching
-> device tree, so let's guard against this.
-> 
-> Also, use the of_device_get_match_data() helper to make this a bit
-> simpler.
-> 
-> Coverity complained about this one.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Han Xu <han.xu@freescale.com>
-> ---
-> v2:
->  * missed a 'const' warning
->  * s/reference/dereference in $subject
-> 
->  drivers/mtd/spi-nor/fsl-quadspi.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index cc3a70b9b020..916d6dd5b575 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -269,7 +269,7 @@ struct fsl_qspi {
->  	struct clk *clk, *clk_en;
->  	struct device *dev;
->  	struct completion c;
-> -	struct fsl_qspi_devtype_data *devtype_data;
-> +	const struct fsl_qspi_devtype_data *devtype_data;
->  	u32 nor_size;
->  	u32 nor_num;
->  	u32 clk_rate;
-> @@ -933,8 +933,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->  	struct spi_nor *nor;
->  	struct mtd_info *mtd;
->  	int ret, i = 0;
-> -	const struct of_device_id *of_id =
-> -			of_match_device(fsl_qspi_dt_ids, &pdev->dev);
->  
->  	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
->  	if (!q)
-> @@ -945,7 +943,9 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->  		return -ENODEV;
->  
->  	q->dev = dev;
-> -	q->devtype_data = (struct fsl_qspi_devtype_data *)of_id->data;
-> +	q->devtype_data = of_device_get_match_data(dev);
-> +	if (!q->devtype_data)
-> +		return -ENODEV;
->  	platform_set_drvdata(pdev, q);
->  
->  	/* find the resources */
-> -- 
-> 2.6.0.rc2.230.g3dd15c0
-> 
-Acked-by: Han xu <han.xu@freescale.com>
--- 
-Best Regards,
+On Tue, Nov 17, 2015 at 10:12 PM, Richard Weinberger <richard@nod.at> wrote:
+> Am 17.11.2015 um 20:25 schrieb Octavian Purdila:
+>> On Tue, Nov 17, 2015 at 9:21 PM, Seth Forshee
+>> <seth.forshee@canonical.com> wrote:
+>>>
+>>> On Tue, Nov 17, 2015 at 08:12:31PM +0100, Richard Weinberger wrote:
+>>>> On Tue, Nov 17, 2015 at 7:34 PM, Seth Forshee
+>>>> <seth.forshee@canonical.com> wrote:
+>>>>> On Tue, Nov 17, 2015 at 05:55:06PM +0000, Al Viro wrote:
+>>>>>> On Tue, Nov 17, 2015 at 11:25:51AM -0600, Seth Forshee wrote:
+>>>>>>
+>>>>>>> Shortly after that I plan to follow with support for ext4. I've been
+>>>>>>> fuzzing ext4 for a while now and it has held up well, and I'm currently
+>>>>>>> working on hand-crafted attacks. Ted has commented privately (to others,
+>>>>>>> not to me personally) that he will fix bugs for such attacks, though I
+>>>>>>> haven't seen any public comments to that effect.
+>>>>>>
+>>>>>> _Static_ attacks, or change-image-under-mounted-fs attacks?
+>>>>>
+>>>>> Right now only static attacks, change-image-under-mounted-fs attacks
+>>>>> will be next.
+>>>>
+>>>> Do we *really* need to enable unprivileged mounting of kernel filesystems?
+>>>> What about just enabling fuse and implement ext4 and friends as fuse
+>>>> filesystems?
+>>>> Using the approaching Linux Kernel Libary[1] this is easy.
+>>>
+>>> I haven't looked at this project, but I'm guessing that programs must be
+>>> written specifically to make use of it? I.e. you can't just use the
+>>> mount syscall, and thus all existing software still doesn't work?
+>>>
+>>
+>> The projects includes a lklfuse program that uses fuse to mount a
+>> fileystem image.
+>
+> Cool. I gave it a try.
+> It seems to work fine, but only if I run it in foreground (using -d)
+> otherwise fuse blocks every filesystem request.
+>
 
-Han "Allen" Xu
+Now it should work in the background as well, thanks for reporting the issue.
