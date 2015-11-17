@@ -1,18 +1,35 @@
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
+Received: from mail-io0-x22f.google.com ([2607:f8b0:4001:c06::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zylmp-0007mL-WF
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 19:19:29 +0000
-Received: by wmdw130 with SMTP id w130so169214921wmd.0
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 11:19:06 -0800 (PST)
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH 3/3] mtd: spi-nor: fix error handling in spi_nor_erase
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Message-ID: <564B7D9E.4070901@gmail.com>
-Date: Tue, 17 Nov 2015 20:18:54 +0100
+ id 1Zylq5-0002Sj-T2
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 19:22:50 +0000
+Received: by iouu10 with SMTP id u10so29971622iou.0
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 11:22:28 -0800 (PST)
+Date: Tue, 17 Nov 2015 13:21:41 -0600
+From: Seth Forshee <seth.forshee@canonical.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+ "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
+ device-mapper development <dm-devel@redhat.com>,
+ "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>,
+ LKML <linux-kernel@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ Octavian Purdila <octavian.purdila@intel.com>
+Subject: Re: [PATCH v3 0/7] User namespace mount updates
+Message-ID: <20151117192141.GD108807@ubuntu-hedt>
+References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
+ <20151117170556.GV22011@ZenIV.linux.org.uk>
+ <20151117172551.GA108807@ubuntu-hedt>
+ <20151117175506.GW22011@ZenIV.linux.org.uk>
+ <20151117183444.GB108807@ubuntu-hedt>
+ <CAFLxGvx1UqJOhM3wqAGqT+TrkapeP1zkmg0a1K=DjySePx4mEA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvx1UqJOhM3wqAGqT+TrkapeP1zkmg0a1K=DjySePx4mEA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +39,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The documenting comment of mtd_erase in mtdcore.c states:
-Device drivers are supposed to call instr->callback() whenever
-the operation completes, even if it completes with a failure.
+On Tue, Nov 17, 2015 at 08:12:31PM +0100, Richard Weinberger wrote:
+> On Tue, Nov 17, 2015 at 7:34 PM, Seth Forshee
+> <seth.forshee@canonical.com> wrote:
+> > On Tue, Nov 17, 2015 at 05:55:06PM +0000, Al Viro wrote:
+> >> On Tue, Nov 17, 2015 at 11:25:51AM -0600, Seth Forshee wrote:
+> >>
+> >> > Shortly after that I plan to follow with support for ext4. I've been
+> >> > fuzzing ext4 for a while now and it has held up well, and I'm currently
+> >> > working on hand-crafted attacks. Ted has commented privately (to others,
+> >> > not to me personally) that he will fix bugs for such attacks, though I
+> >> > haven't seen any public comments to that effect.
+> >>
+> >> _Static_ attacks, or change-image-under-mounted-fs attacks?
+> >
+> > Right now only static attacks, change-image-under-mounted-fs attacks
+> > will be next.
+> 
+> Do we *really* need to enable unprivileged mounting of kernel filesystems?
+> What about just enabling fuse and implement ext4 and friends as fuse
+> filesystems?
+> Using the approaching Linux Kernel Libary[1] this is easy.
 
-Currently the callback isn't called in case of failure. Fix this.
+I haven't looked at this project, but I'm guessing that programs must be
+written specifically to make use of it? I.e. you can't just use the
+mount syscall, and thus all existing software still doesn't work?
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 4988390..b4d6e93 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -387,17 +387,13 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 
- 	write_disable(nor);
- 
-+erase_err:
- 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_ERASE);
- 
--	instr->state = MTD_ERASE_DONE;
-+	instr->state = ret ? MTD_ERASE_FAILED : MTD_ERASE_DONE;
- 	mtd_erase_callback(instr);
- 
- 	return ret;
--
--erase_err:
--	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_ERASE);
--	instr->state = MTD_ERASE_FAILED;
--	return ret;
- }
- 
- static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
--- 
-2.6.2
+> [1] https://lkml.org/lkml/2015/11/3/706
+> -- 
+> Thanks,
+> //richard
