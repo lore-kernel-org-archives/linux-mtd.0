@@ -1,25 +1,28 @@
-Date: Tue, 17 Nov 2015 09:48:56 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marex@denx.de>, Michal Suchanek <hramrach@gmail.com>,
- Russell King <linux@arm.linux.org.uk>, devicetree@vger.kernel.org,
- Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/5] spi: introduce mmap read support for spi flash
- devices
-Message-ID: <20151117174856.GB8456@google.com>
-References: <1447133399-25658-1-git-send-email-vigneshr@ti.com>
- <1447133399-25658-2-git-send-email-vigneshr@ti.com>
- <20151110232341.GU12143@google.com> <5642E546.3040806@ti.com>
- <20151111072041.GA13174@localhost> <56460A4D.30303@atmel.com>
- <564AC9FD.6090909@ti.com>
+Received: from [2002:c35c:fd02::1] (helo=ZenIV.linux.org.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZykTe-00050q-RB
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 17:55:35 +0000
+Date: Tue, 17 Nov 2015 17:55:06 +0000
+From: Al Viro <viro@ZenIV.linux.org.uk>
+To: Seth Forshee <seth.forshee@canonical.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org,
+ Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v3 0/7] User namespace mount updates
+Message-ID: <20151117175506.GW22011@ZenIV.linux.org.uk>
+References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
+ <20151117170556.GV22011@ZenIV.linux.org.uk>
+ <20151117172551.GA108807@ubuntu-hedt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <564AC9FD.6090909@ti.com>
+In-Reply-To: <20151117172551.GA108807@ubuntu-hedt>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,50 +32,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, Nov 17, 2015 at 11:25:51AM -0600, Seth Forshee wrote:
 
-On Tue, Nov 17, 2015 at 12:02:29PM +0530, Vignesh R wrote:
-> On 11/13/2015 09:35 PM, Cyrille Pitchen wrote:
-> > 
-> > In September I've sent a series of patches to enhance the support of QSPI flash
-> > memories. Patch 4 was dedicated to the m25p80 driver and set the
-> > rx_nbits / tx_nbits fields of spi_transfer struct(s) in order to configure the
-> > number of I/O lines independently for the opcode, address and data parts.
-> > The work was done for m25p80_read() but also for _read_reg(), _write_reg() and
-> > _write().
-> > The patched m25p80 driver was then tested with an at25 memory to check non-
-> > regression.
-> > 
-> > This series of patches also added 4 enum spi_protocol fields inside struct
-> > spi_nor so the spi-nor framework can tell the (Q)SPI controller driver what SPI
-> > protocol should be use for erase, read, write and register read/write
-> > operations, depending on the memory manufacturer and the command opcode.
-> > This was done to better support Micron, Spansion and Macronix QSPI memories.
-> > 
-> > I have tested the series with Micron QSPI memories and Atmel QSPI controller
-> > and I guess Marek also tested it on his side with Spansion QSPI memories and
-> > another QSPI controller.
-> > 
-> > So if it can help other developers to develop QSPI controller drivers, the
-> > series is still available there:
-> > 
-> > for the whole series:
-> > http://lists.infradead.org/pipermail/linux-arm-kernel/2015-September/371170.html
-> > 
-> > for patch 4 (depends on patch 2 for enum spi_protocol):
-> > http://lists.infradead.org/pipermail/linux-arm-kernel/2015-September/371173.html
-> > 
-> 
-> Should I rebase my next version on top of above patches by Cyrille or
-> shall I post on top of 4.4-rc1?
+> Shortly after that I plan to follow with support for ext4. I've been
+> fuzzing ext4 for a while now and it has held up well, and I'm currently
+> working on hand-crafted attacks. Ted has commented privately (to others,
+> not to me personally) that he will fix bugs for such attacks, though I
+> haven't seen any public comments to that effect.
 
-I'm sorry to say I really haven't had the time to review that properly.
-I'm also not sure it is a true dependency for your series, as you're
-tackling different pieces of the puzzle. So it's mostly just a conflict,
-not a real direct help.
-
-So unless I'm misunderstanding, I'd suggest submitting MTD stuff against
-the latest l2-mtd.git (or linux-next.git; l2-mtd.git is included there),
-and I'll let you know if conflicts come up that need fixing.
-
-Brian
+_Static_ attacks, or change-image-under-mounted-fs attacks?
