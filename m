@@ -1,33 +1,20 @@
-Received: from mail-io0-x229.google.com ([2607:f8b0:4001:c06::229])
+Received: from mail-bn1on0133.outbound.protection.outlook.com
+ ([157.56.110.133] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zynt6-00063Q-Ed
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 21:34:05 +0000
-Received: by iouu10 with SMTP id u10so33801055iou.0
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 13:33:43 -0800 (PST)
-Date: Tue, 17 Nov 2015 15:32:55 -0600
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Austin S Hemmelgarn <ahferroin7@gmail.com>
-Cc: Al Viro <viro@ZenIV.linux.org.uk>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v3 0/7] User namespace mount updates
-Message-ID: <20151117213255.GE108807@ubuntu-hedt>
-References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
- <20151117170556.GV22011@ZenIV.linux.org.uk>
- <20151117172551.GA108807@ubuntu-hedt>
- <20151117175506.GW22011@ZenIV.linux.org.uk>
- <564B79B1.3040207@gmail.com> <20151117191606.GC108807@ubuntu-hedt>
- <564B941A.2070601@gmail.com>
+ id 1ZyoDB-0005yi-5L
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 21:54:49 +0000
+Date: Tue, 17 Nov 2015 15:42:30 -0600
+From: Han Xu <han.xu@freescale.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: fsl-quadspi: possible NULL dereference
+Message-ID: <20151117214230.GA26480@chopperman.am.freescale.net>
+References: <1447699339-43027-1-git-send-email-computersforpeace@gmail.com>
+ <1447699530-50014-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <564B941A.2070601@gmail.com>
+In-Reply-To: <1447699530-50014-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,52 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 17, 2015 at 03:54:50PM -0500, Austin S Hemmelgarn wrote:
-> On 2015-11-17 14:16, Seth Forshee wrote:
-> >On Tue, Nov 17, 2015 at 02:02:09PM -0500, Austin S Hemmelgarn wrote:
-> >>On 2015-11-17 12:55, Al Viro wrote:
-> >>>On Tue, Nov 17, 2015 at 11:25:51AM -0600, Seth Forshee wrote:
-> >>>
-> >>>>Shortly after that I plan to follow with support for ext4. I've been
-> >>>>fuzzing ext4 for a while now and it has held up well, and I'm currently
-> >>>>working on hand-crafted attacks. Ted has commented privately (to others,
-> >>>>not to me personally) that he will fix bugs for such attacks, though I
-> >>>>haven't seen any public comments to that effect.
-> >>>
-> >>>_Static_ attacks, or change-image-under-mounted-fs attacks?
-> >>To properly protect against attacks on mounted filesystems, we'd
-> >>need some new concept of a userspace immutable file (that is, one
-> >>where nobody can write to it except the kernel, and only the kernel
-> >>can change it between regular access and this new state), and then
-> >>have the kernel set an image (or block device) to this state when a
-> >>filesystem is mounted from it (this introduces all kinds of other
-> >>issues too however, for example stuff that allows an online fsck on
-> >>the device will stop working, as will many un-deletion tools).
-> >
-> >Yeah, Serge and I were just tossing that idea around on irc. If we can
-> >make that work then it's probably the best solution.
-> >
-> > From a naive perspective it seems like all we really have to do is make
-> >the block device inode immutable to userspace when it is mounted. And
-> >the parent block device if it's a partition, which might be a bit
-> >troublesome. We'd have to ensure that writes couldn't happen via any fds
-> >already open when the device was mounted too.
-> >
-> >We'd need some cooperation from the loop driver too I suppose, to make
-> >sure the file backing the loop device is also immutable.
-> >
-> From a completeness perspective, you'd also need to hook into DM,
-> MD, and bcache to handle their backing devices.  There's not much we
-> could do about iSCSI/ATAoE/NBD devices, and I think being able to
+On Mon, Nov 16, 2015 at 10:45:30AM -0800, Brian Norris wrote:
+> It is theoretically possible to probe this driver without a matching
+> device tree, so let's guard against this.
+> 
+> Also, use the of_device_get_match_data() helper to make this a bit
+> simpler.
+> 
+> Coverity complained about this one.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Han Xu <han.xu@freescale.com>
+> ---
+> v2:
+>  * missed a 'const' warning
+>  * s/reference/dereference in $subject
+> 
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index cc3a70b9b020..916d6dd5b575 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -269,7 +269,7 @@ struct fsl_qspi {
+>  	struct clk *clk, *clk_en;
+>  	struct device *dev;
+>  	struct completion c;
+> -	struct fsl_qspi_devtype_data *devtype_data;
+> +	const struct fsl_qspi_devtype_data *devtype_data;
+>  	u32 nor_size;
+>  	u32 nor_num;
+>  	u32 clk_rate;
+> @@ -933,8 +933,6 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  	struct spi_nor *nor;
+>  	struct mtd_info *mtd;
+>  	int ret, i = 0;
+> -	const struct of_device_id *of_id =
+> -			of_match_device(fsl_qspi_dt_ids, &pdev->dev);
+>  
+>  	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
+>  	if (!q)
+> @@ -945,7 +943,9 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  		return -ENODEV;
+>  
+>  	q->dev = dev;
+> -	q->devtype_data = (struct fsl_qspi_devtype_data *)of_id->data;
+> +	q->devtype_data = of_device_get_match_data(dev);
+> +	if (!q->devtype_data)
+> +		return -ENODEV;
+>  	platform_set_drvdata(pdev, q);
+>  
+>  	/* find the resources */
+> -- 
+> 2.6.0.rc2.230.g3dd15c0
+> 
+Acked-by: Han xu <han.xu@freescale.com>
+-- 
+Best Regards,
 
-But really no one would be able to mount any of those without
-intervention from a privileged user anyway. The same is true today of
-loop devices, but I have some patches to change that.
-
-> restrict stuff calling mount from a userns to only be able to use
-> FUSE would still be useful (FWIW, GRUB2 has a tool to use FUSE for
-> testing it's own filesystem drivers, which I use regularly when I
-> just need a read-only mount).
-
-Agreed, fuse alone is very useful, though there is a performance
-penalty.
+Han "Allen" Xu
