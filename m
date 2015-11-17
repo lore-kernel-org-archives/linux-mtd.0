@@ -1,19 +1,19 @@
 Received: from lists.s-osg.org ([54.187.51.154])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZygjK-0000OX-Mr
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 13:55:31 +0000
-Subject: Re: [PATCH 1/3] mtd: m25p80: fix module autoloading for
- "jedec,spi-nor" and "spi-nor"
+ id 1Zygjq-0000t2-FB
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 13:56:03 +0000
+Subject: Re: [PATCH 2/3] mtd: m25p80: replace leftover "nor-jedec" with
+ "spi-nor" in comments
 To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 References: <1447713292-91525-1-git-send-email-computersforpeace@gmail.com>
- <1447713292-91525-2-git-send-email-computersforpeace@gmail.com>
-From: Javier Martinez Canillas <javier@osg.samsung.com>
+ <1447713292-91525-3-git-send-email-computersforpeace@gmail.com>
 Cc: linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <564B31B8.70104@osg.samsung.com>
-Date: Tue, 17 Nov 2015 10:55:04 -0300
+ <zajec5@gmail.com>
+From: Javier Martinez Canillas <javier@osg.samsung.com>
+Message-ID: <564B31DA.1030502@osg.samsung.com>
+Date: Tue, 17 Nov 2015 10:55:38 -0300
 MIME-Version: 1.0
-In-Reply-To: <1447713292-91525-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1447713292-91525-3-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,28 +28,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Hello Brian,
 
 On 11/16/2015 07:34 PM, Brian Norris wrote:
-> Commit 43163022927b ("mtd: m25p80: allow arbitrary OF matching for
-> "jedec,spi-nor"") moved the "jedec,spi-nor" handling from the
-> spi_device_id table to the of_match_table, to better handle matching
-> complex device tree compatible strings. With that patch, device tree
-> support works as expected when m25p80.c is built into the kernel.
->
-> However, that commit ignored the fact that:
+> I overlooked a few comments in commit 8947e396a829 ("Documentation: dt:
+> mtd: replace "nor-jedec" binding with "jedec, spi-nor""). Fix these up
+> now.
 > 
->  (1) (non-DT) platform devices might want to use the "spi-nor" string
->      for matching with this driver, rather than picking an arbitrary one
->      like "m25p80"
->  (2) the core SPI uevent/modalias code doesn't yet support kernel module
->      autoloading via of_match_table strings; so for DT-based devices, it
->      will only report (part of) the first compatible string used
->
-
-Very nice changelog message!
-
-Patch looks good to me.
+> Suggested-by: Javier Martinez Canillas <javier@osg.samsung.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
 
 Reviewed-by: Javier Martinez Canillas <javier@osg.samsung.com>
- 
+
 Best regards,
 -- 
 Javier Martinez Canillas
