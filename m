@@ -1,24 +1,28 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from nm15.bullet.mail.bf1.yahoo.com ([98.139.212.174])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZykTi-00052b-Td
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 17:55:41 +0000
-Received: by pacdm15 with SMTP id dm15so15356159pac.3
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 09:55:18 -0800 (PST)
-Date: Tue, 17 Nov 2015 09:55:15 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Simon Arlott <simon@fire.lp0.eu>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Kevin Cernekee <cernekee@gmail.com>, bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH] brcmnand: Clear EXT_ADDR error registers in PIO mode
-Message-ID: <20151117175515.GC8456@google.com>
-References: <564A5333.9000200@simon.arlott.org.uk>
- <20151117004005.GU8456@google.com>
- <564ADA21.8070700@simon.arlott.org.uk>
+ id 1Zykvn-0006FQ-HR
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 18:24:42 +0000
+Subject: Re: [PATCH v3 7/7] Smack: Handle labels consistently in untrusted
+ mounts
+To: Seth Forshee <seth.forshee@canonical.com>,
+ "Eric W. Biederman" <ebiederm@xmission.com>
+References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
+ <1447778351-118699-8-git-send-email-seth.forshee@canonical.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
+ selinux@tycho.nsa.gov, James Morris <james.l.morris@oracle.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>
+From: Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <564B70CA.6020106@schaufler-ca.com>
+Date: Tue, 17 Nov 2015 10:24:10 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <564ADA21.8070700@simon.arlott.org.uk>
+In-Reply-To: <1447778351-118699-8-git-send-email-seth.forshee@canonical.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,67 +32,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 17, 2015 at 07:41:21AM +0000, Simon Arlott wrote:
-> On 17/11/15 00:40, Brian Norris wrote:
-> > + bcm-kernel-feedback-list
-> > 
-> > On Mon, Nov 16, 2015 at 10:05:39PM +0000, Simon Arlott wrote:
-> >> If an error occurs in flash above 4GB in PIO mode then the EXT_ADDR
-> >> registers will be set to the location of the error and never cleared.
-> >> 
-> >> Reset them to 0 before reading.
-> >> 
-> >> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
-> > 
-> > Patch looks OK. Did you see this problem in practice, or is this just
-> > theoretical? I thought the documentation seemed to suggest these
-> > registers were cleared together with their non-_EXT counterparts. But
-> > implementation definitely trumps documentation for HW.
-> 
-> It's theoretical (I don't have 4GB+ flash), but the Broadcom version of
-> the NAND driver does this.
+On 11/17/2015 8:39 AM, Seth Forshee wrote:
+> The SMACK64, SMACK64EXEC, and SMACK64MMAP labels are all handled
+> differently in untrusted mounts. This is confusing and
+> potentically problematic. Change this to handle them all the same
+> way that SMACK64 is currently handled; that is, read the label
+> from disk and check it at use time. For SMACK64 and SMACK64MMAP
+> access is denied if the label does not match smk_root. To be
+> consistent with suid, a SMACK64EXEC label which does not match
+> smk_root will still allow execution of the file but will not run
+> with the label supplied in the xattr.
+>
+> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 
-That's a funny thing to say :) There never really was a single "Broadcom
-version" until we settled on upstreaming this one. It's a direct
-descendant of this [1], which also does not do these writes, and was
-tested on >4GB flash, though not extensively.
+Acked-by: Casey Schaufler <casey@schaufler-ca.com>
 
-Which product line did you get your driver from, then?
-
-Anyway, unless someone still at Broadcom can confirm or deny, I suppose
-this patch is mostly harmless and I can take it.
-
-Brian
-
-> > Brian
-> > 
-> >> ---
-> >>  drivers/mtd/nand/brcmnand/brcmnand.c | 2 ++
-> >>  1 file changed, 2 insertions(+)
-> >> 
-> >> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> >> index 12c6190..2c8f67f 100644
-> >> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> >> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> >> @@ -1400,6 +1400,8 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
-> >>  	/* Clear error addresses */
-> >>  	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_ADDR, 0);
-> >>  	brcmnand_write_reg(ctrl, BRCMNAND_CORR_ADDR, 0);
-> >> +	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_EXT_ADDR, 0);
-> >> +	brcmnand_write_reg(ctrl, BRCMNAND_CORR_EXT_ADDR, 0);
-> >>  
-> >>  	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
-> >>  			(host->cs << 16) | ((addr >> 32) & 0xffff));
-> >> -- 
-> >> 2.1.4
-> >> 
-> >> -- 
-> >> Simon Arlott
-> > 
-> 
-> 
-> -- 
-> Simon Arlott
-
-[1] https://github.com/Broadcom/stblinux-3.8/blob/master/linux/drivers/mtd/nand/brcmstb_nand.c
-    Disclaimer: I used to work at Broadcom.
+> ---
+>   security/smack/smack_lsm.c | 29 +++++++++++++++++++----------
+>   1 file changed, 19 insertions(+), 10 deletions(-)
+>
+> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> index 621200f86b56..9b7ff781df9a 100644
+> --- a/security/smack/smack_lsm.c
+> +++ b/security/smack/smack_lsm.c
+> @@ -891,6 +891,7 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
+>   	struct inode *inode = file_inode(bprm->file);
+>   	struct task_smack *bsp = bprm->cred->security;
+>   	struct inode_smack *isp;
+> +	struct superblock_smack *sbsp;
+>   	int rc;
+>   
+>   	if (bprm->cred_prepared)
+> @@ -900,6 +901,11 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
+>   	if (isp->smk_task == NULL || isp->smk_task == bsp->smk_task)
+>   		return 0;
+>   
+> +	sbsp = inode->i_sb->s_security;
+> +	if ((sbsp->smk_flags & SMK_SB_UNTRUSTED) &&
+> +	    isp->smk_task != sbsp->smk_root)
+> +		return 0;
+> +
+>   	if (bprm->unsafe & (LSM_UNSAFE_PTRACE | LSM_UNSAFE_PTRACE_CAP)) {
+>   		struct task_struct *tracer;
+>   		rc = 0;
+> @@ -1703,6 +1709,7 @@ static int smack_mmap_file(struct file *file,
+>   	struct task_smack *tsp;
+>   	struct smack_known *okp;
+>   	struct inode_smack *isp;
+> +	struct superblock_smack *sbsp;
+>   	int may;
+>   	int mmay;
+>   	int tmay;
+> @@ -1714,6 +1721,10 @@ static int smack_mmap_file(struct file *file,
+>   	isp = file_inode(file)->i_security;
+>   	if (isp->smk_mmap == NULL)
+>   		return 0;
+> +	sbsp = file_inode(file)->i_sb->s_security;
+> +	if (sbsp->smk_flags & SMK_SB_UNTRUSTED &&
+> +	    isp->smk_mmap != sbsp->smk_root)
+> +		return -EACCES;
+>   	mkp = isp->smk_mmap;
+>   
+>   	tsp = current_security();
+> @@ -3492,16 +3503,14 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
+>   			if (rc >= 0)
+>   				transflag = SMK_INODE_TRANSMUTE;
+>   		}
+> -		if (!(sbsp->smk_flags & SMK_SB_UNTRUSTED)) {
+> -			/*
+> -			 * Don't let the exec or mmap label be "*" or "@".
+> -			 */
+> -			skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
+> -			if (IS_ERR(skp) || skp == &smack_known_star ||
+> -			    skp == &smack_known_web)
+> -				skp = NULL;
+> -			isp->smk_task = skp;
+> -		}
+> +		/*
+> +		 * Don't let the exec or mmap label be "*" or "@".
+> +		 */
+> +		skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
+> +		if (IS_ERR(skp) || skp == &smack_known_star ||
+> +		    skp == &smack_known_web)
+> +			skp = NULL;
+> +		isp->smk_task = skp;
+>   
+>   		skp = smk_fetch(XATTR_NAME_SMACKMMAP, inode, dp);
+>   		if (IS_ERR(skp) || skp == &smack_known_star ||
