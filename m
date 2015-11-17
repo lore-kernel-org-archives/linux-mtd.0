@@ -1,32 +1,23 @@
-Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zylkh-0006vu-Hd
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 19:17:16 +0000
-Received: by igvi2 with SMTP id i2so103611758igv.0
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 11:16:54 -0800 (PST)
-Date: Tue, 17 Nov 2015 13:16:06 -0600
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Austin S Hemmelgarn <ahferroin7@gmail.com>
-Cc: Al Viro <viro@ZenIV.linux.org.uk>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v3 0/7] User namespace mount updates
-Message-ID: <20151117191606.GC108807@ubuntu-hedt>
-References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
- <20151117170556.GV22011@ZenIV.linux.org.uk>
- <20151117172551.GA108807@ubuntu-hedt>
- <20151117175506.GW22011@ZenIV.linux.org.uk>
- <564B79B1.3040207@gmail.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zyllt-0007Ja-KA
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 19:18:31 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by mail.sigma-star.at (Postfix) with ESMTP id B7E6924E0002
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 20:18:07 +0100 (CET)
+Received: from dw-book (80-110-107-146.cgn.dynamic.surfer.at [80.110.107.146])
+ by mail.sigma-star.at (Postfix) with ESMTPSA id 3A1ED24E0001
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 20:18:06 +0100 (CET)
+Date: Tue, 17 Nov 2015 20:18:01 +0100
+From: Daniel Walter <dwalter@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC] [PATCH] mtd: add tracepoints for mtd_read and mtd_write
+Message-ID: <20151117191801.GA864@dw-nb.local>
+References: <20151117191448.GA5367@dw-nb.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <564B79B1.3040207@gmail.com>
+In-Reply-To: <20151117191448.GA5367@dw-nb.local>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,34 +27,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 17, 2015 at 02:02:09PM -0500, Austin S Hemmelgarn wrote:
-> On 2015-11-17 12:55, Al Viro wrote:
-> >On Tue, Nov 17, 2015 at 11:25:51AM -0600, Seth Forshee wrote:
-> >
-> >>Shortly after that I plan to follow with support for ext4. I've been
-> >>fuzzing ext4 for a while now and it has held up well, and I'm currently
-> >>working on hand-crafted attacks. Ted has commented privately (to others,
-> >>not to me personally) that he will fix bugs for such attacks, though I
-> >>haven't seen any public comments to that effect.
-> >
-> >_Static_ attacks, or change-image-under-mounted-fs attacks?
-> To properly protect against attacks on mounted filesystems, we'd
-> need some new concept of a userspace immutable file (that is, one
-> where nobody can write to it except the kernel, and only the kernel
-> can change it between regular access and this new state), and then
-> have the kernel set an image (or block device) to this state when a
-> filesystem is mounted from it (this introduces all kinds of other
-> issues too however, for example stuff that allows an online fsck on
-> the device will stop working, as will many un-deletion tools).
+Add tracepoints to mtd subsystem for read and write
+operations. This should allow us to identify applications
+which are generating too much reads/writes on a flash-device.
 
-Yeah, Serge and I were just tossing that idea around on irc. If we can
-make that work then it's probably the best solution.
+Signed-off-by: Daniel Walter <dwalter@sigma-star.at>
+---
+ drivers/mtd/mtdcore.c      |  6 +++++-
+ include/trace/events/mtd.h | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+), 1 deletion(-)
+ create mode 100644 include/trace/events/mtd.h
 
->From a naive perspective it seems like all we really have to do is make
-the block device inode immutable to userspace when it is mounted. And
-the parent block device if it's a partition, which might be a bit
-troublesome. We'd have to ensure that writes couldn't happen via any fds
-already open when the device was mounted too.
-
-We'd need some cooperation from the loop driver too I suppose, to make
-sure the file backing the loop device is also immutable.
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 8bbbb75..8f85bfb 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -43,6 +43,9 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ 
++#define CREATE_TRACE_POINTS
++#include <trace/events/mtd.h>
++
+ #include "mtdcore.h"
+ 
+ static struct backing_dev_info mtd_bdi = {
+@@ -882,7 +885,7 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 		return -EINVAL;
+ 	if (!len)
+ 		return 0;
+-
++	trace_mtd_read(current, len);
+ 	/*
+ 	 * In the absence of an error, drivers return a non-negative integer
+ 	 * representing the maximum number of bitflips that were corrected on
+@@ -907,6 +910,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 		return -EROFS;
+ 	if (!len)
+ 		return 0;
++	trace_mtd_write(current, len);
+ 	return mtd->_write(mtd, to, len, retlen, buf);
+ }
+ EXPORT_SYMBOL_GPL(mtd_write);
+diff --git a/include/trace/events/mtd.h b/include/trace/events/mtd.h
+new file mode 100644
+index 0000000..7191b72
+--- /dev/null
++++ b/include/trace/events/mtd.h
+@@ -0,0 +1,45 @@
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM mtd
++
++#if !defined(_TRACE_MTD_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_MTD_H
++
++#include <linux/tracepoint.h>
++
++TRACE_EVENT(mtd_read,
++	TP_PROTO(struct task_struct *task, size_t rlen),
++	TP_ARGS(task, rlen),
++	TP_STRUCT__entry(
++		__field(pid_t, pid)
++		__array(char, comm, TASK_COMM_LEN)
++		__field(size_t, rlen)
++	),
++	TP_fast_assign(
++		__entry->pid = task->pid;
++		memcpy(__entry->comm, task->comm, TASK_COMM_LEN);
++		__entry->rlen = rlen;
++	),
++	TP_printk("pid=%d comm=%s rlen=%zu",
++		__entry->pid, __entry->comm, __entry->rlen)
++);
++
++TRACE_EVENT(mtd_write,
++	TP_PROTO(struct task_struct *task, size_t wlen),
++	TP_ARGS(task, wlen),
++	TP_STRUCT__entry(
++		__field(pid_t, pid)
++		__array(char, comm, TASK_COMM_LEN)
++		__field(size_t, wlen)
++	),
++	TP_fast_assign(
++		__entry->pid = task->pid;
++		memcpy(__entry->comm, task->comm, TASK_COMM_LEN);
++		__entry->wlen = wlen;
++	),
++	TP_printk("pid=%d comm=%s wlen=%zu",
++		__entry->pid, __entry->comm, __entry->wlen)
++);
++#endif /* _TRACE_MTD_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
+-- 
+2.6.2
