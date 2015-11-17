@@ -1,20 +1,39 @@
-Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zyatu-0005DD-Tm
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 07:42:06 +0000
-Subject: Re: [PATCH] brcmnand: Clear EXT_ADDR error registers in PIO mode
+Date: Tue, 17 Nov 2015 09:26:16 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-References: <564A5333.9000200@simon.arlott.org.uk>
- <20151117004005.GU8456@google.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Kevin Cernekee <cernekee@gmail.com>, bcm-kernel-feedback-list@broadcom.com
-From: Simon Arlott <simon@fire.lp0.eu>
-Message-ID: <564ADA21.8070700@simon.arlott.org.uk>
-Date: Tue, 17 Nov 2015 07:41:21 +0000
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, Hartley
+ Sweeten <hsweeten@visionengravers.com>, Ryan Mallon <rmallon@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Imre
+ Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, Tony
+ Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, Alexander Clouter
+ <alex@digriz.org.uk>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
+ <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Marek
+ Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>,
+ adi-buildroot-devel@lists.sourceforge.net, Mikael Starvik
+ <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>,
+ linux-cris-kernel@axis.com, Josh Wu <josh.wu@atmel.com>, Wan ZongShun
+ <mcuos.com@gmail.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Maxim Levitsky
+ <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof
+ Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, linux-sunxi@googlegroups.com, Stefan Agner
+ <stefan@agner.ch>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ devel@driverdev.osuosl.org
+Subject: Re: [PATCH 18/27] mtd: nand: update mtd_to_nand()
+Message-ID: <20151117092616.0e33d2f3@bbrezillon>
+In-Reply-To: <20151117030353.GZ8456@google.com>
+References: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1447681080-31232-19-git-send-email-boris.brezillon@free-electrons.com>
+ <20151117030353.GZ8456@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20151117004005.GU8456@google.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,51 +44,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17/11/15 00:40, Brian Norris wrote:
-> + bcm-kernel-feedback-list
-> 
-> On Mon, Nov 16, 2015 at 10:05:39PM +0000, Simon Arlott wrote:
->> If an error occurs in flash above 4GB in PIO mode then the EXT_ADDR
->> registers will be set to the location of the error and never cleared.
->> 
->> Reset them to 0 before reading.
->> 
->> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
-> 
-> Patch looks OK. Did you see this problem in practice, or is this just
-> theoretical? I thought the documentation seemed to suggest these
-> registers were cleared together with their non-_EXT counterparts. But
-> implementation definitely trumps documentation for HW.
+On Mon, 16 Nov 2015 19:03:53 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-It's theoretical (I don't have 4GB+ flash), but the Broadcom version of
-the NAND driver does this.
+> On Mon, Nov 16, 2015 at 02:37:51PM +0100, Boris Brezillon wrote:
+> > Now that all drivers are using the mtd instance embedded in the nand_chip
+> 
+> Do you have a script that verifies this? I thought you did at some
+> point, and it'd be nice to note it, so I can also use it to verify
+> things once it gets applied.
 
-> Brian
+No, didn't write that script, but it should probably look like the one
+I used to remove the mtd field from driver private struct.
+
 > 
->> ---
->>  drivers/mtd/nand/brcmnand/brcmnand.c | 2 ++
->>  1 file changed, 2 insertions(+)
->> 
->> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
->> index 12c6190..2c8f67f 100644
->> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
->> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
->> @@ -1400,6 +1400,8 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
->>  	/* Clear error addresses */
->>  	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_ADDR, 0);
->>  	brcmnand_write_reg(ctrl, BRCMNAND_CORR_ADDR, 0);
->> +	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_EXT_ADDR, 0);
->> +	brcmnand_write_reg(ctrl, BRCMNAND_CORR_EXT_ADDR, 0);
->>  
->>  	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
->>  			(host->cs << 16) | ((addr >> 32) & 0xffff));
->> -- 
->> 2.1.4
->> 
->> -- 
->> Simon Arlott
+> > struct we can safely update the mtd_to_nand_chip() implementation to use
 > 
+> Nit: s/mtd_to_nand_chip/mtd_to_nand/
+
+Yep, I'll fix that.
+
+> 
+> > the container_of macro instead of returning the content of mtd->priv.
+> > This will allow us to remove mtd->priv = chip assignments done in all
+> > NAND controller drivers.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> >  include/linux/mtd/nand.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> > index 8ec071e..873646d 100644
+> > --- a/include/linux/mtd/nand.h
+> > +++ b/include/linux/mtd/nand.h
+> > @@ -734,7 +734,7 @@ static inline struct device_node *nand_get_flash_node(struct nand_chip *chip)
+> >  
+> >  static inline struct nand_chip *mtd_to_nand(struct mtd_info *mtd)
+> >  {
+> > -	return mtd->priv;
+> > +	return container_of(mtd, struct nand_chip, mtd);
+> >  }
+> >  
+> >  static inline struct mtd_info *nand_to_mtd(struct nand_chip *chip)
+> > -- 
+> > 2.1.4
+> > 
+
 
 
 -- 
-Simon Arlott
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
