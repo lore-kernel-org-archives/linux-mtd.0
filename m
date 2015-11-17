@@ -1,15 +1,15 @@
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zylmo-0007le-Tj
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 19:19:27 +0000
-Received: by wmww144 with SMTP id w144so40551985wmw.0
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 11:19:05 -0800 (PST)
+ id 1Zylmp-0007mL-WF
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 19:19:29 +0000
+Received: by wmdw130 with SMTP id w130so169214921wmd.0
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 11:19:06 -0800 (PST)
 From: Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH 2/3] mtd: m25p80: handle failed spi_write in m25p80_erase
+Subject: [PATCH 3/3] mtd: spi-nor: fix error handling in spi_nor_erase
 To: Brian Norris <computersforpeace@gmail.com>
 Cc: linux-mtd@lists.infradead.org
-Message-ID: <564B7D87.5090804@gmail.com>
-Date: Tue, 17 Nov 2015 20:18:31 +0100
+Message-ID: <564B7D9E.4070901@gmail.com>
+Date: Tue, 17 Nov 2015 20:18:54 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
@@ -22,27 +22,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Handle the case that spi_write fails.
+The documenting comment of mtd_erase in mtdcore.c states:
+Device drivers are supposed to call instr->callback() whenever
+the operation completes, even if it completes with a failure.
+
+Currently the callback isn't called in case of failure. Fix this.
 
 Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 ---
- drivers/mtd/devices/m25p80.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 634b0c4..f10daa8 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -171,9 +171,7 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
- 	flash->command[0] = nor->erase_opcode;
- 	m25p_addr2cmd(nor, offset, flash->command);
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 4988390..b4d6e93 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -387,17 +387,13 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
  
--	spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
+ 	write_disable(nor);
+ 
++erase_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_ERASE);
+ 
+-	instr->state = MTD_ERASE_DONE;
++	instr->state = ret ? MTD_ERASE_FAILED : MTD_ERASE_DONE;
+ 	mtd_erase_callback(instr);
+ 
+ 	return ret;
 -
--	return 0;
-+	return spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
+-erase_err:
+-	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_ERASE);
+-	instr->state = MTD_ERASE_FAILED;
+-	return ret;
  }
  
- /*
+ static void stm_get_locked_range(struct spi_nor *nor, u8 sr, loff_t *ofs,
 -- 
 2.6.2
