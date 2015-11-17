@@ -1,26 +1,25 @@
-Received: from mail-io0-x22e.google.com ([2607:f8b0:4001:c06::22e])
+Received: from [2002:c35c:fd02::1] (helo=ZenIV.linux.org.uk)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyjJ4-0004up-FT
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 16:40:37 +0000
-Received: by iofh3 with SMTP id h3so24302493iof.3
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 08:40:13 -0800 (PST)
-From: Seth Forshee <seth.forshee@canonical.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Casey Schaufler <casey@schaufler-ca.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org,
+ id 1Zyji7-0007kP-C5
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 17:06:29 +0000
+Date: Tue, 17 Nov 2015 17:05:56 +0000
+From: Al Viro <viro@ZenIV.linux.org.uk>
+To: Seth Forshee <seth.forshee@canonical.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
  linux-bcache@vger.kernel.org, dm-devel@redhat.com,
  linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
- selinux@tycho.nsa.gov, Seth Forshee <seth.forshee@canonical.com>,
- James Morris <james.l.morris@oracle.com>,
- "Serge E. Hallyn" <serge@hallyn.com>
-Subject: [PATCH v3 7/7] Smack: Handle labels consistently in untrusted mounts
-Date: Tue, 17 Nov 2015 10:39:10 -0600
-Message-Id: <1447778351-118699-8-git-send-email-seth.forshee@canonical.com>
-In-Reply-To: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
+ linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] User namespace mount updates
+Message-ID: <20151117170556.GV22011@ZenIV.linux.org.uk>
 References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,88 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The SMACK64, SMACK64EXEC, and SMACK64MMAP labels are all handled
-differently in untrusted mounts. This is confusing and
-potentically problematic. Change this to handle them all the same
-way that SMACK64 is currently handled; that is, read the label
-from disk and check it at use time. For SMACK64 and SMACK64MMAP
-access is denied if the label does not match smk_root. To be
-consistent with suid, a SMACK64EXEC label which does not match
-smk_root will still allow execution of the file but will not run
-with the label supplied in the xattr.
+On Tue, Nov 17, 2015 at 10:39:03AM -0600, Seth Forshee wrote:
+> Hi Eric,
+> 
+> Here's another update to my patches for user namespace mounts, based on
+> your for-testing branch. These patches add safeguards necessary to allow
+> unprivileged mounts and update SELinux and Smack to safely handle
+> device-backed mounts from unprivileged users.
+> 
+> The v2 posting received very little in the way of feedback, so changes
+> are minimal. I've made a trivial style change to the Smack changes at
+> Casey's request, and I've added Stephen's ack for the SELinux changes.
 
-Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
----
- security/smack/smack_lsm.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+Would you mind explaining which filesystem types do you plan to allow?
+SELinux and the rest of Linux S&M bunch do fuck-all for attacks via
+handcrafted fs image fed to the code in fs driver that does not expect
+a given kind of inconsistencies.
 
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 621200f86b56..9b7ff781df9a 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -891,6 +891,7 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
- 	struct inode *inode = file_inode(bprm->file);
- 	struct task_smack *bsp = bprm->cred->security;
- 	struct inode_smack *isp;
-+	struct superblock_smack *sbsp;
- 	int rc;
- 
- 	if (bprm->cred_prepared)
-@@ -900,6 +901,11 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
- 	if (isp->smk_task == NULL || isp->smk_task == bsp->smk_task)
- 		return 0;
- 
-+	sbsp = inode->i_sb->s_security;
-+	if ((sbsp->smk_flags & SMK_SB_UNTRUSTED) &&
-+	    isp->smk_task != sbsp->smk_root)
-+		return 0;
-+
- 	if (bprm->unsafe & (LSM_UNSAFE_PTRACE | LSM_UNSAFE_PTRACE_CAP)) {
- 		struct task_struct *tracer;
- 		rc = 0;
-@@ -1703,6 +1709,7 @@ static int smack_mmap_file(struct file *file,
- 	struct task_smack *tsp;
- 	struct smack_known *okp;
- 	struct inode_smack *isp;
-+	struct superblock_smack *sbsp;
- 	int may;
- 	int mmay;
- 	int tmay;
-@@ -1714,6 +1721,10 @@ static int smack_mmap_file(struct file *file,
- 	isp = file_inode(file)->i_security;
- 	if (isp->smk_mmap == NULL)
- 		return 0;
-+	sbsp = file_inode(file)->i_sb->s_security;
-+	if (sbsp->smk_flags & SMK_SB_UNTRUSTED &&
-+	    isp->smk_mmap != sbsp->smk_root)
-+		return -EACCES;
- 	mkp = isp->smk_mmap;
- 
- 	tsp = current_security();
-@@ -3492,16 +3503,14 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
- 			if (rc >= 0)
- 				transflag = SMK_INODE_TRANSMUTE;
- 		}
--		if (!(sbsp->smk_flags & SMK_SB_UNTRUSTED)) {
--			/*
--			 * Don't let the exec or mmap label be "*" or "@".
--			 */
--			skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
--			if (IS_ERR(skp) || skp == &smack_known_star ||
--			    skp == &smack_known_web)
--				skp = NULL;
--			isp->smk_task = skp;
--		}
-+		/*
-+		 * Don't let the exec or mmap label be "*" or "@".
-+		 */
-+		skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
-+		if (IS_ERR(skp) || skp == &smack_known_star ||
-+		    skp == &smack_known_web)
-+			skp = NULL;
-+		isp->smk_task = skp;
- 
- 		skp = smk_fetch(XATTR_NAME_SMACKMMAP, inode, dp);
- 		if (IS_ERR(skp) || skp == &smack_known_star ||
--- 
-1.9.1
+As it is, validation of on-disk metadata is not particularly strong;
+what's more, protection against concurrent malicious *changes* of
+fs image (via direct writes by root) is simply inexistent.
+
+So what is that about?
