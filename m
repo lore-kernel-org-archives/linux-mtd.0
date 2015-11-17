@@ -1,20 +1,20 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from diplomat.websitewelcome.com ([192.185.2.59])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZysHP-0002Ar-Af
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 02:15:28 +0000
-Received: by pabfh17 with SMTP id fh17so28712183pab.0
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 18:15:05 -0800 (PST)
-Date: Tue, 17 Nov 2015 18:15:03 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Simon Falsig <simon@newtec.dk>
-Cc: linux-mtd@lists.infradead.org, Vignesh R <vigneshr@ti.com>
-Subject: Re: mmap support for m25p80 device
-Message-ID: <20151118021503.GA140057@google.com>
-References: <9d83b70759c3d2507200432b4ff162be@mail.gmail.com>
+ id 1ZysOp-0004wX-Kk
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 02:23:08 +0000
+Received: from gourmetf by diplomat.websitewelcome.com with local (Exim 4.85)
+ (envelope-from <gourmetf@diplomat.websitewelcome.com>)
+ id 1Zyq0n-0003Dq-8b
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 17:50:09 -0600
+To: linux-mtd@lists.infradead.org
+Subject: You have received fax, document 0000928716
+Date: Tue, 17 Nov 2015 17:50:09 -0600
+From: "Interfax Service" <incoming@interfax.net>
+Reply-To: "Interfax Service" <incoming@interfax.net>
+Message-ID: <7fb55008992369b7e00084c5651839e9@gourmetfoods-hawaii.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9d83b70759c3d2507200432b4ff162be@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="b1_c48ac9acdc4b198b3bfbab0a7df7806d"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Vignesh
+--b1_c48ac9acdc4b198b3bfbab0a7df7806d
+Content-Type: text/plain; charset=us-ascii
 
-Vignesh is working on supporting mmap'd flash reads in the SPI core,
-particularly for the TI QSPI driver. I don't believe he's planning on
-exposing this to userspace, though, and I believe that might be pretty
-difficult to do now.
+You have a new fax!
 
-Perhaps Vignesh can comment.
+Scanned fax document is attached to this email.
 
-On Tue, Oct 20, 2015 at 04:31:20PM +0200, Simon Falsig wrote:
-> Hi,
-> 
-> I'm currently working on a new custom board (with a TI AM3356 ARM-Cortex
-> A8
-> CPU), with a 32 kB Everspin MR25H256 MRAM chip, attached over SPI. It
-> works
-> fine using the m25p80 driver, but I was wondering how complex it would be
-> to
-> add the possibility of memory-mapping the device in userspace? - mainly to
-> make the interface consistent with the board that it is replacing, which
-> uses
-> a different, mmap-able, RAM chip.
-> 
-> I'm not very experienced in the deeper aspects of the kernel, but I've
-> been
-> poking around a bit in the mtd subsystem, and it seems as if the main
-> thing
-> that is missing, is a valid get_unmapped_area() function for the m25p80
-> driver, and then to change the mtdchar_mmap() function (in mtdchar.c) to
-> actually allow mmap'ing on MMU systems.
+Sender:              Ron Parker
+Filesize:            263 Kb
+Fax name:            scan-0000928716.doc
+Number of pages:     13
+Scanned at:          Tue, 17 Nov 2015 09:04:40 +0300
+Scan duration:       42 seconds
+Scan quality:        400 DPI
 
-It's not quite so simple. Read the comments in mtdchar, and you'll see
-that there's some layering bugs that caused us to disable MMU mmap
-entirely. Apparently no one cared so far. Read the comments here:
+Thank you for using Interfax!
 
-commit f5cf8f07423b2677cebebcebc863af77223a4972
-Author: David Woodhouse <David.Woodhouse@intel.com>
-Date:   Tue Oct 9 15:08:10 2012 +0100
 
-    mtd: Disable mtdchar mmap on MMU systems
+--b1_c48ac9acdc4b198b3bfbab0a7df7806d
+Content-Type: application/zip; name="scan-0000928716.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=scan-0000928716.zip
 
-But feel free to fix it.
+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
 
-> But - does it even make sense to create such a function for m25p80? - and
-> how would I start?
 
-SPI drivers don't really expose a mmap-able interface, so this isn't
-possible at the moment. Even once it can be done, it would be restricted
-only to those controllers that can do memory map for you. AIUI, your SoC
-might (?).
-
-But even if it supports it, I expect you'll have difficulty coordinating
-this properly, since the SPI bus technically can be shared with multiple
-devices, whereas mmap would kind of assume that user-space can access
-the flash at any time. So I guess m25p80 would have to grab exclusive
-access of the entire SPI bus? If your system design can handle that,
-then I guess it CAN be done...
-
-...but why do you want to do this, again?
-
-Brian
-
-> Any pointers and/or comments are appreciated!
-> Thanks and best regards,
-> Simon Falsig
-> simon@newtec.dk
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--b1_c48ac9acdc4b198b3bfbab0a7df7806d--
