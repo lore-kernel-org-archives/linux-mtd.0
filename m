@@ -1,35 +1,28 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZymcN-0001Os-1h
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 20:12:43 +0000
-Subject: Re: [PATCH v3 0/7] User namespace mount updates
-To: Octavian Purdila <octavian.purdila@intel.com>,
- Seth Forshee <seth.forshee@canonical.com>
-References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
- <20151117170556.GV22011@ZenIV.linux.org.uk>
- <20151117172551.GA108807@ubuntu-hedt>
- <20151117175506.GW22011@ZenIV.linux.org.uk>
- <20151117183444.GB108807@ubuntu-hedt>
- <CAFLxGvx1UqJOhM3wqAGqT+TrkapeP1zkmg0a1K=DjySePx4mEA@mail.gmail.com>
- <20151117192141.GD108807@ubuntu-hedt>
- <CAE1zotLNq1v_ZegT9LyFsTiHWQnOAow+KKQFFvOYKUyRWPjfGA@mail.gmail.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
- "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
- device-mapper development <dm-devel@redhat.com>,
- "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+ id 1ZymxN-00029Y-22
+ for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 20:34:25 +0000
+Received: by pacdm15 with SMTP id dm15so19175617pac.3
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 12:34:03 -0800 (PST)
+Date: Tue, 17 Nov 2015 12:34:01 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Marcus Prebble <marcus.prebble@axis.com>
+Cc: Marcus Prebble <prebble@axis.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, LKML <linux-kernel@vger.kernel.org>,
- Theodore Ts'o <tytso@mit.edu>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <564B8A20.9090607@nod.at>
-Date: Tue, 17 Nov 2015 21:12:16 +0100
+ Ricard =?iso-8859-1?Q?Wanderl=F6f?= <ricardw@axis.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd-utils: lib: mtd_read: Take the buffer offset into
+ account when reading
+Message-ID: <20151117203401.GA110024@google.com>
+References: <A612847CFE53224C91B23E3A5B48BAC7B9E316CFDF@xmail3.se.axis.com>
+ <20151112190924.GD8456@google.com>
+ <A612847CFE53224C91B23E3A5B48BAC7C6EFB4B65B@xmail3.se.axis.com>
+ <20151113191748.GH8456@google.com>
+ <A612847CFE53224C91B23E3A5B48BAC7C6EFB4B670@xmail3.se.axis.com>
 MIME-Version: 1.0
-In-Reply-To: <CAE1zotLNq1v_ZegT9LyFsTiHWQnOAow+KKQFFvOYKUyRWPjfGA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <A612847CFE53224C91B23E3A5B48BAC7C6EFB4B670@xmail3.se.axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,43 +32,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 17.11.2015 um 20:25 schrieb Octavian Purdila:
-> On Tue, Nov 17, 2015 at 9:21 PM, Seth Forshee
-> <seth.forshee@canonical.com> wrote:
->>
->> On Tue, Nov 17, 2015 at 08:12:31PM +0100, Richard Weinberger wrote:
->>> On Tue, Nov 17, 2015 at 7:34 PM, Seth Forshee
->>> <seth.forshee@canonical.com> wrote:
->>>> On Tue, Nov 17, 2015 at 05:55:06PM +0000, Al Viro wrote:
->>>>> On Tue, Nov 17, 2015 at 11:25:51AM -0600, Seth Forshee wrote:
->>>>>
->>>>>> Shortly after that I plan to follow with support for ext4. I've been
->>>>>> fuzzing ext4 for a while now and it has held up well, and I'm currently
->>>>>> working on hand-crafted attacks. Ted has commented privately (to others,
->>>>>> not to me personally) that he will fix bugs for such attacks, though I
->>>>>> haven't seen any public comments to that effect.
->>>>>
->>>>> _Static_ attacks, or change-image-under-mounted-fs attacks?
->>>>
->>>> Right now only static attacks, change-image-under-mounted-fs attacks
->>>> will be next.
->>>
->>> Do we *really* need to enable unprivileged mounting of kernel filesystems?
->>> What about just enabling fuse and implement ext4 and friends as fuse
->>> filesystems?
->>> Using the approaching Linux Kernel Libary[1] this is easy.
->>
->> I haven't looked at this project, but I'm guessing that programs must be
->> written specifically to make use of it? I.e. you can't just use the
->> mount syscall, and thus all existing software still doesn't work?
->>
+On Tue, Nov 17, 2015 at 09:43:40AM +0100, Marcus Prebble wrote:
+> On Fri, 2015-11-13 at 11:17 -0800, Brian Norris wrote:
 > 
-> The projects includes a lklfuse program that uses fuse to mount a
-> fileystem image.
+> > BTW, I noticed there isn't a 'Signed-off-by' tag in the patch. 
+> >  Can you paste one in reply to your patch, and I'll C&P it?
+> > 
+> 
+> Signed-off-by: Marcus Prebble <marcus.prebble@axis.com>
 
-Cool. I gave it a try.
-It seems to work fine, but only if I run it in foreground (using -d)
-otherwise fuse blocks every filesystem request.
-
-Thanks,
-//richard
+Pushed to mtd-utils.git. Thanks!
