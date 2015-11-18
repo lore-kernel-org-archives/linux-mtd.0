@@ -1,20 +1,15 @@
-From: Bayi Cheng <bayi.cheng@mediatek.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>
-CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
- Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>,
- <jteki@openedev.com>, <ezequiel@vanguardiasur.com.ar>, Bayi Cheng
- <bayi.cheng@mediatek.com>
-Subject: [PATCH v8 1/2] mtd: mtk-nor: mtk serial flash controller driver
-Date: Wed, 18 Nov 2015 11:30:02 +0800
-Message-ID: <1447817403-16631-2-git-send-email-bayi.cheng@mediatek.com>
-In-Reply-To: <1447817403-16631-1-git-send-email-bayi.cheng@mediatek.com>
-References: <1447817403-16631-1-git-send-email-bayi.cheng@mediatek.com>
+Received: from mail-bn1bon0117.outbound.protection.outlook.com
+ ([157.56.111.117] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zyyv8-0004BP-PF
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 09:20:56 +0000
+From: Yuan Yao <yao.yuan@freescale.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <han.xu@freescale.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2] mtd: spi-nor: fsl-quadspi: add big-endian support
+Date: Wed, 18 Nov 2015 17:13:28 +0800
+Message-ID: <1447838008-3744-1-git-send-email-yao.yuan@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,534 +21,404 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add spi nor flash driver for mediatek controller
+Add R/W functions for big- or little-endian registers:
+The qSPI controller's endian is independent of the CPU core's endian.
+So far, the qSPI have two versions for big-endian and little-endian.
 
-Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
+Signed-off-by: Yuan Yao <yao.yuan@freescale.com>
 ---
- drivers/mtd/spi-nor/Kconfig       |   7 +
- drivers/mtd/spi-nor/Makefile      |   1 +
- drivers/mtd/spi-nor/mtk-quadspi.c | 486 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 494 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/mtk-quadspi.c
+Changed in v2:
+Rebase to the lastest code.
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 157 +++++++++++++++++++++++---------------
+ 1 file changed, 97 insertions(+), 60 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 2fe2a7e..0dc9275 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -7,6 +7,13 @@ menuconfig MTD_SPI_NOR
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 9e7f657..0ce7768 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -275,6 +275,7 @@ struct fsl_qspi {
+ 	u32 clk_rate;
+ 	unsigned int chip_base_addr; /* We may support two chips. */
+ 	bool has_second_chip;
++	bool big_endian;
+ 	struct mutex lock;
+ 	struct pm_qos_request pm_qos_req;
+ };
+@@ -300,6 +301,28 @@ static inline int needs_wakeup_wait_mode(struct fsl_qspi *q)
+ }
  
- if MTD_SPI_NOR
- 
-+config MTD_MT81xx_NOR
-+	tristate "Mediatek MT81xx SPI NOR flash controller"
-+	help
-+	  This enables access to SPI NOR flash, using MT81xx SPI NOR flash
-+	  controller. This controller does not support generic SPI BUS, it only
-+	  supports SPI NOR Flash.
-+
- config MTD_SPI_NOR_USE_4K_SECTORS
- 	bool "Use small 4096 B erase sectors"
- 	default y
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index e53333e..0bf3a7f8 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -1,3 +1,4 @@
- obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
- obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
-+obj-$(CONFIG_MTD_MT81xx_NOR)    += mtk-quadspi.o
- obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
-diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-new file mode 100644
-index 0000000..7723ac7
---- /dev/null
-+++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-@@ -0,0 +1,486 @@
-+/*
-+ * Copyright (c) 2015 MediaTek Inc.
-+ * Author: Bayi Cheng <bayi.cheng@mediatek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
+ /*
++ * R/W functions for big- or little-endian registers:
++ * The qSPI controller's endian is independent of the CPU core's endian.
++ * So far, although the CPU core is little-endian but the qSPI have two
++ * versions for big-endian and little-endian.
 + */
-+
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/ioport.h>
-+#include <linux/math64.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mutex.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/pinctrl/consumer.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mtd/spi-nor.h>
-+
-+#define MTK_NOR_CMD_REG			0x00
-+#define MTK_NOR_CNT_REG			0x04
-+#define MTK_NOR_RDSR_REG		0x08
-+#define MTK_NOR_RDATA_REG		0x0c
-+#define MTK_NOR_RADR0_REG		0x10
-+#define MTK_NOR_RADR1_REG		0x14
-+#define MTK_NOR_RADR2_REG		0x18
-+#define MTK_NOR_WDATA_REG		0x1c
-+#define MTK_NOR_PRGDATA0_REG		0x20
-+#define MTK_NOR_PRGDATA1_REG		0x24
-+#define MTK_NOR_PRGDATA2_REG		0x28
-+#define MTK_NOR_PRGDATA3_REG		0x2c
-+#define MTK_NOR_PRGDATA4_REG		0x30
-+#define MTK_NOR_PRGDATA5_REG		0x34
-+#define MTK_NOR_SHREG0_REG		0x38
-+#define MTK_NOR_SHREG1_REG		0x3c
-+#define MTK_NOR_SHREG2_REG		0x40
-+#define MTK_NOR_SHREG3_REG		0x44
-+#define MTK_NOR_SHREG4_REG		0x48
-+#define MTK_NOR_SHREG5_REG		0x4c
-+#define MTK_NOR_SHREG6_REG		0x50
-+#define MTK_NOR_SHREG7_REG		0x54
-+#define MTK_NOR_SHREG8_REG		0x58
-+#define MTK_NOR_SHREG9_REG		0x5c
-+#define MTK_NOR_CFG1_REG		0x60
-+#define MTK_NOR_CFG2_REG		0x64
-+#define MTK_NOR_CFG3_REG		0x68
-+#define MTK_NOR_STATUS0_REG		0x70
-+#define MTK_NOR_STATUS1_REG		0x74
-+#define MTK_NOR_STATUS2_REG		0x78
-+#define MTK_NOR_STATUS3_REG		0x7c
-+#define MTK_NOR_FLHCFG_REG		0x84
-+#define MTK_NOR_TIME_REG		0x94
-+#define MTK_NOR_PP_DATA_REG		0x98
-+#define MTK_NOR_PREBUF_STUS_REG		0x9c
-+#define MTK_NOR_DELSEL0_REG		0xa0
-+#define MTK_NOR_DELSEL1_REG		0xa4
-+#define MTK_NOR_INTRSTUS_REG		0xa8
-+#define MTK_NOR_INTREN_REG		0xac
-+#define MTK_NOR_CHKSUM_CTL_REG		0xb8
-+#define MTK_NOR_CHKSUM_REG		0xbc
-+#define MTK_NOR_CMD2_REG		0xc0
-+#define MTK_NOR_WRPROT_REG		0xc4
-+#define MTK_NOR_RADR3_REG		0xc8
-+#define MTK_NOR_DUAL_REG		0xcc
-+#define MTK_NOR_DELSEL2_REG		0xd0
-+#define MTK_NOR_DELSEL3_REG		0xd4
-+#define MTK_NOR_DELSEL4_REG		0xd8
-+
-+/* commands for mtk nor controller */
-+#define MTK_NOR_READ_CMD		0x0
-+#define MTK_NOR_RDSR_CMD		0x2
-+#define MTK_NOR_PRG_CMD			0x4
-+#define MTK_NOR_WR_CMD			0x10
-+#define MTK_NOR_PIO_WR_CMD		0x90
-+#define MTK_NOR_WRSR_CMD		0x20
-+#define MTK_NOR_PIO_READ_CMD		0x81
-+#define MTK_NOR_WR_BUF_ENABLE		0x1
-+#define MTK_NOR_WR_BUF_DISABLE		0x0
-+#define MTK_NOR_ENABLE_SF_CMD		0x30
-+#define MTK_NOR_DUAD_ADDR_EN		0x8
-+#define MTK_NOR_QUAD_READ_EN		0x4
-+#define MTK_NOR_DUAL_ADDR_EN		0x2
-+#define MTK_NOR_DUAL_READ_EN		0x1
-+#define MTK_NOR_DUAL_DISABLE		0x0
-+#define MTK_NOR_FAST_READ		0x1
-+
-+#define SFLASH_WRBUF_SIZE		128
-+
-+/* Can shift up to 48 bits (6 bytes) of TX/RX */
-+#define MTK_NOR_MAX_RX_TX_SHIFT		6
-+/* can shift up to 56 bits (7 bytes) transfer by MTK_NOR_PRG_CMD */
-+#define MTK_NOR_MAX_SHIFT		7
-+
-+/* Helpers for accessing the program data / shift data registers */
-+#define MTK_NOR_PRG_REG(n)		(MTK_NOR_PRGDATA0_REG + 4 * (n))
-+#define MTK_NOR_SHREG(n)		(MTK_NOR_SHREG0_REG + 4 * (n))
-+
-+struct mt8173_nor {
-+	struct spi_nor nor;
-+	struct device *dev;
-+	void __iomem *base;	/* nor flash base address */
-+	struct clk *spi_clk;
-+	struct clk *nor_clk;
-+};
-+
-+static void mt8173_nor_set_read_mode(struct mt8173_nor *mt8173_nor)
++static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem *addr)
 +{
-+	struct spi_nor *nor = &mt8173_nor->nor;
-+
-+	switch (nor->flash_read) {
-+	case SPI_NOR_FAST:
-+		writeb(nor->read_opcode, mt8173_nor->base +
-+		       MTK_NOR_PRGDATA3_REG);
-+		writeb(MTK_NOR_FAST_READ, mt8173_nor->base +
-+		       MTK_NOR_CFG1_REG);
-+		break;
-+	case SPI_NOR_DUAL:
-+		writeb(nor->read_opcode, mt8173_nor->base +
-+		       MTK_NOR_PRGDATA3_REG);
-+		writeb(MTK_NOR_DUAL_READ_EN, mt8173_nor->base +
-+		       MTK_NOR_DUAL_REG);
-+		break;
-+	case SPI_NOR_QUAD:
-+		writeb(nor->read_opcode, mt8173_nor->base +
-+		       MTK_NOR_PRGDATA4_REG);
-+		writeb(MTK_NOR_QUAD_READ_EN, mt8173_nor->base +
-+		       MTK_NOR_DUAL_REG);
-+		break;
-+	default:
-+		writeb(MTK_NOR_DUAL_DISABLE, mt8173_nor->base +
-+		       MTK_NOR_DUAL_REG);
-+		break;
-+	}
++	if (q->big_endian)
++		iowrite32be(val, addr);
++	else
++		iowrite32(val, addr);
 +}
 +
-+static int mt8173_nor_execute_cmd(struct mt8173_nor *mt8173_nor, u8 cmdval)
++static u32 qspi_readl(struct fsl_qspi *q, void __iomem *addr)
 +{
-+	int reg;
-+	u8 val = cmdval & 0x1f;
-+
-+	writeb(cmdval, mt8173_nor->base + MTK_NOR_CMD_REG);
-+	return readl_poll_timeout(mt8173_nor->base + MTK_NOR_CMD_REG, reg,
-+				  !(reg & val), 100, 10000);
++	if (q->big_endian)
++		return ioread32be(addr);
++	else
++		return ioread32(addr);
 +}
 +
-+static int mt8173_nor_do_tx_rx(struct mt8173_nor *mt8173_nor, u8 op,
-+			       u8 *tx, int txlen, u8 *rx, int rxlen)
-+{
-+	int len = 1 + txlen + rxlen;
-+	int i, ret, idx;
-+
-+	if (len > MTK_NOR_MAX_SHIFT)
-+		return -EINVAL;
-+
-+	writeb(len * 8, mt8173_nor->base + MTK_NOR_CNT_REG);
-+
-+	/* start at PRGDATA5, go down to PRGDATA0 */
-+	idx = MTK_NOR_MAX_RX_TX_SHIFT  - 1;
-+
-+	/* opcode */
-+	writeb(op, mt8173_nor->base + MTK_NOR_PRG_REG(idx));
-+	idx--;
-+
-+	/* program TX data */
-+	for (i = 0; i < txlen; i++, idx--)
-+		writeb(tx[i], mt8173_nor->base + MTK_NOR_PRG_REG(idx));
-+
-+	/* clear out rest of TX registers */
-+	while (idx >= 0) {
-+		writeb(0, mt8173_nor->base + MTK_NOR_PRG_REG(idx));
-+		idx--;
-+	}
-+
-+	ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PRG_CMD);
-+	if (ret)
-+		return ret;
-+
-+	/* restart at first RX byte */
-+	idx = rxlen - 1;
-+
-+	/* read out RX data */
-+	for (i = 0; i < rxlen; i++, idx--)
-+		rx[i] = readb(mt8173_nor->base + MTK_NOR_SHREG(idx));
-+
-+	return 0;
-+}
-+
-+/* Do a WRSR (Write Status Register) command */
-+static int mt8173_nor_wr_sr(struct mt8173_nor *mt8173_nor, u8 sr)
-+{
-+	writeb(sr, mt8173_nor->base + MTK_NOR_PRGDATA5_REG);
-+	writeb(8, mt8173_nor->base + MTK_NOR_CNT_REG);
-+	return mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_WRSR_CMD);
-+}
-+
-+static int mt8173_nor_write_buffer_enable(struct mt8173_nor *mt8173_nor)
-+{
-+	u8 reg;
-+
-+	/* the bit0 of MTK_NOR_CFG2_REG is pre-fetch buffer
-+	 * 0: pre-fetch buffer use for read
-+	 * 1: pre-fetch buffer use for page program
-+	 */
-+	writel(MTK_NOR_WR_BUF_ENABLE, mt8173_nor->base + MTK_NOR_CFG2_REG);
-+	return readb_poll_timeout(mt8173_nor->base + MTK_NOR_CFG2_REG, reg,
-+				  0x01 == (reg & 0x01), 100, 10000);
-+}
-+
-+static int mt8173_nor_write_buffer_disable(struct mt8173_nor *mt8173_nor)
-+{
-+	u8 reg;
-+
-+	writel(MTK_NOR_WR_BUF_DISABLE, mt8173_nor->base + MTK_NOR_CFG2_REG);
-+	return readb_poll_timeout(mt8173_nor->base + MTK_NOR_CFG2_REG, reg,
-+				  MTK_NOR_WR_BUF_DISABLE == (reg & 0x1), 100,
-+				  10000);
-+}
-+
-+static void mt8173_nor_set_addr(struct mt8173_nor *mt8173_nor, u32 addr)
-+{
-+	int i;
-+
-+	for (i = 0; i < 3; i++) {
-+		writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR0_REG + i * 4);
-+		addr >>= 8;
-+	}
-+	/* Last register is non-contiguous */
-+	writeb(addr & 0xff, mt8173_nor->base + MTK_NOR_RADR3_REG);
-+}
-+
-+static int mt8173_nor_read(struct spi_nor *nor, loff_t from, size_t length,
-+			   size_t *retlen, u_char *buffer)
-+{
-+	int i, ret;
-+	int addr = (int)from;
-+	u8 *buf = (u8 *)buffer;
-+	struct mt8173_nor *mt8173_nor = nor->priv;
-+
-+	/* set mode for fast read mode ,dual mode or quad mode */
-+	mt8173_nor_set_read_mode(mt8173_nor);
-+	mt8173_nor_set_addr(mt8173_nor, addr);
-+
-+	for (i = 0; i < length; i++, (*retlen)++) {
-+		ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PIO_READ_CMD);
-+		if (ret < 0)
-+			return ret;
-+		buf[i] = readb(mt8173_nor->base + MTK_NOR_RDATA_REG);
-+	}
-+	return 0;
-+}
-+
-+static int mt8173_nor_write_single_byte(struct mt8173_nor *mt8173_nor,
-+					int addr, int length, u8 *data)
-+{
-+	int i, ret;
-+
-+	mt8173_nor_set_addr(mt8173_nor, addr);
-+
-+	for (i = 0; i < length; i++) {
-+		ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PIO_WR_CMD);
-+		if (ret < 0)
-+			return ret;
-+		writeb(*data++, mt8173_nor->base + MTK_NOR_WDATA_REG);
-+	}
-+	return 0;
-+}
-+
-+static int mt8173_nor_write_buffer(struct mt8173_nor *mt8173_nor, int addr,
-+				   const u8 *buf)
-+{
-+	int i, bufidx, data;
-+
-+	mt8173_nor_set_addr(mt8173_nor, addr);
-+
-+	bufidx = 0;
-+	for (i = 0; i < SFLASH_WRBUF_SIZE; i += 4) {
-+		data = buf[bufidx + 3]<<24 | buf[bufidx + 2]<<16 |
-+		       buf[bufidx + 1]<<8 | buf[bufidx];
-+		bufidx += 4;
-+		writel(data, mt8173_nor->base + MTK_NOR_PP_DATA_REG);
-+	}
-+	return mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_WR_CMD);
-+}
-+
-+static void mt8173_nor_write(struct spi_nor *nor, loff_t to, size_t len,
-+			     size_t *retlen, const u_char *buf)
-+{
-+	int ret;
-+	struct mt8173_nor *mt8173_nor = nor->priv;
-+
-+	ret = mt8173_nor_write_buffer_enable(mt8173_nor);
-+	if (ret < 0)
-+		dev_warn(mt8173_nor->dev, "write buffer enable failed!\n");
-+
-+	while (len >= SFLASH_WRBUF_SIZE) {
-+		ret = mt8173_nor_write_buffer(mt8173_nor, to, buf);
-+		if (ret < 0)
-+			dev_err(mt8173_nor->dev, "write buffer failed!\n");
-+		len -= SFLASH_WRBUF_SIZE;
-+		to += SFLASH_WRBUF_SIZE;
-+		buf += SFLASH_WRBUF_SIZE;
-+		(*retlen) += SFLASH_WRBUF_SIZE;
-+	}
-+	ret = mt8173_nor_write_buffer_disable(mt8173_nor);
-+	if (ret < 0)
-+		dev_warn(mt8173_nor->dev, "write buffer disable failed!\n");
-+
-+	if (len) {
-+		ret = mt8173_nor_write_single_byte(mt8173_nor, to, (int)len,
-+						   (u8 *)buf);
-+		if (ret < 0)
-+			dev_err(mt8173_nor->dev, "write single byte failed!\n");
-+		(*retlen) += len;
-+	}
-+}
-+
-+static int mt8173_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-+{
-+	int ret;
-+	struct mt8173_nor *mt8173_nor = nor->priv;
-+
-+	switch (opcode) {
-+	case SPINOR_OP_RDSR:
-+		ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_RDSR_CMD);
-+		if (ret < 0)
-+			return ret;
-+		if (len == 1)
-+			*buf = readb(mt8173_nor->base + MTK_NOR_RDSR_REG);
-+		else
-+			dev_err(mt8173_nor->dev, "len should be 1 for read status!\n");
-+		break;
-+	default:
-+		ret = mt8173_nor_do_tx_rx(mt8173_nor, opcode, NULL, 0, buf, len);
-+		break;
-+	}
-+	return ret;
-+}
-+
-+static int mt8173_nor_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-+				int len)
-+{
-+	int ret;
-+	struct mt8173_nor *mt8173_nor = nor->priv;
-+
-+	switch (opcode) {
-+	case SPINOR_OP_WRSR:
-+		/* We only handle 1 byte */
-+		ret = mt8173_nor_wr_sr(mt8173_nor, *buf);
-+		break;
-+	default:
-+		ret = mt8173_nor_do_tx_rx(mt8173_nor, opcode, buf, len, NULL, 0);
-+		if (ret)
-+			dev_warn(mt8173_nor->dev, "write reg failure!\n");
-+		break;
-+	}
-+	return ret;
-+}
-+
-+static int __init mtk_nor_init(struct mt8173_nor *mt8173_nor,
-+			       struct device_node *flash_node)
-+{
-+	int ret;
-+	struct spi_nor *nor;
-+
-+	/* initialize controller to accept commands */
-+	writel(MTK_NOR_ENABLE_SF_CMD, mt8173_nor->base + MTK_NOR_WRPROT_REG);
-+
-+	nor = &mt8173_nor->nor;
-+	nor->dev = mt8173_nor->dev;
-+	nor->priv = mt8173_nor;
-+	spi_nor_set_flash_node(nor, flash_node);
-+
-+	/* fill the hooks to spi nor */
-+	nor->read = mt8173_nor_read;
-+	nor->read_reg = mt8173_nor_read_reg;
-+	nor->write = mt8173_nor_write;
-+	nor->write_reg = mt8173_nor_write_reg;
-+	nor->mtd.owner = THIS_MODULE;
-+	nor->mtd.name = "mtk_nor";
-+	/* initialized with NULL */
-+	ret = spi_nor_scan(nor, NULL, SPI_NOR_DUAL);
-+	if (ret)
-+		return ret;
-+
-+	return mtd_device_register(&nor->mtd, NULL, 0);
-+}
-+
-+static int mtk_nor_drv_probe(struct platform_device *pdev)
-+{
-+	struct device_node *flash_np;
-+	struct resource *res;
-+	int ret;
-+	struct mt8173_nor *mt8173_nor;
-+
-+	if (!pdev->dev.of_node) {
-+		dev_err(&pdev->dev, "No DT found\n");
-+		return -EINVAL;
-+	}
-+
-+	mt8173_nor = devm_kzalloc(&pdev->dev, sizeof(*mt8173_nor), GFP_KERNEL);
-+	if (!mt8173_nor)
-+		return -ENOMEM;
-+	platform_set_drvdata(pdev, mt8173_nor);
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	mt8173_nor->base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(mt8173_nor->base))
-+		return PTR_ERR(mt8173_nor->base);
-+
-+	mt8173_nor->spi_clk = devm_clk_get(&pdev->dev, "spi");
-+	if (IS_ERR(mt8173_nor->spi_clk))
-+		return PTR_ERR(mt8173_nor->spi_clk);
-+
-+	mt8173_nor->nor_clk = devm_clk_get(&pdev->dev, "sf");
-+	if (IS_ERR(mt8173_nor->nor_clk))
-+		return PTR_ERR(mt8173_nor->nor_clk);
-+
-+	mt8173_nor->dev = &pdev->dev;
-+	ret = clk_prepare_enable(mt8173_nor->spi_clk);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_prepare_enable(mt8173_nor->nor_clk);
-+	if (ret) {
-+		clk_disable_unprepare(mt8173_nor->spi_clk);
-+		return ret;
-+	}
-+	/* only support one attached flash */
-+	flash_np = of_get_next_available_child(pdev->dev.of_node, NULL);
-+	if (!flash_np) {
-+		dev_err(&pdev->dev, "no SPI flash device to configure\n");
-+		ret = -ENODEV;
-+		goto nor_free;
-+	}
-+	ret = mtk_nor_init(mt8173_nor, flash_np);
-+
-+nor_free:
-+	if (ret) {
-+		clk_disable_unprepare(mt8173_nor->spi_clk);
-+		clk_disable_unprepare(mt8173_nor->nor_clk);
-+	}
-+	return ret;
-+}
-+
-+static int mtk_nor_drv_remove(struct platform_device *pdev)
-+{
-+	struct mt8173_nor *mt8173_nor = platform_get_drvdata(pdev);
-+
-+	clk_disable_unprepare(mt8173_nor->spi_clk);
-+	clk_disable_unprepare(mt8173_nor->nor_clk);
-+	return 0;
-+}
-+
-+static const struct of_device_id mtk_nor_of_ids[] = {
-+	{ .compatible = "mediatek,mt8173-nor"},
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, mtk_nor_of_ids);
-+
-+static struct platform_driver mtk_nor_driver = {
-+	.probe = mtk_nor_drv_probe,
-+	.remove = mtk_nor_drv_remove,
-+	.driver = {
-+		.name = "mtk-nor",
-+		.of_match_table = mtk_nor_of_ids,
-+	},
-+};
-+
-+module_platform_driver(mtk_nor_driver);
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("MediaTek SPI NOR Flash Driver");
++/*
+  * An IC bug makes us to re-arrange the 32-bit data.
+  * The following chips, such as IMX6SLX, have fixed this bug.
+  */
+@@ -310,14 +333,14 @@ static inline u32 fsl_qspi_endian_xchg(struct fsl_qspi *q, u32 a)
+ 
+ static inline void fsl_qspi_unlock_lut(struct fsl_qspi *q)
+ {
+-	writel(QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
+-	writel(QUADSPI_LCKER_UNLOCK, q->iobase + QUADSPI_LCKCR);
++	qspi_writel(q, QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
++	qspi_writel(q, QUADSPI_LCKER_UNLOCK, q->iobase + QUADSPI_LCKCR);
+ }
+ 
+ static inline void fsl_qspi_lock_lut(struct fsl_qspi *q)
+ {
+-	writel(QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
+-	writel(QUADSPI_LCKER_LOCK, q->iobase + QUADSPI_LCKCR);
++	qspi_writel(q, QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
++	qspi_writel(q, QUADSPI_LCKER_LOCK, q->iobase + QUADSPI_LCKCR);
+ }
+ 
+ static irqreturn_t fsl_qspi_irq_handler(int irq, void *dev_id)
+@@ -326,8 +349,8 @@ static irqreturn_t fsl_qspi_irq_handler(int irq, void *dev_id)
+ 	u32 reg;
+ 
+ 	/* clear interrupt */
+-	reg = readl(q->iobase + QUADSPI_FR);
+-	writel(reg, q->iobase + QUADSPI_FR);
++	reg = qspi_readl(q, q->iobase + QUADSPI_FR);
++	qspi_writel(q, reg, q->iobase + QUADSPI_FR);
+ 
+ 	if (reg & QUADSPI_FR_TFF_MASK)
+ 		complete(&q->c);
+@@ -348,7 +371,7 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 
+ 	/* Clear all the LUT table */
+ 	for (i = 0; i < QUADSPI_LUT_NUM; i++)
+-		writel(0, base + QUADSPI_LUT_BASE + i * 4);
++		qspi_writel(q, 0, base + QUADSPI_LUT_BASE + i * 4);
+ 
+ 	/* Quad Read */
+ 	lut_base = SEQID_QUAD_READ * 4;
+@@ -364,14 +387,15 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 		dummy = 8;
+ 	}
+ 
+-	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
++	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+ 			base + QUADSPI_LUT(lut_base));
+-	writel(LUT0(DUMMY, PAD1, dummy) | LUT1(FSL_READ, PAD4, rxfifo),
++	qspi_writel(q, LUT0(DUMMY, PAD1, dummy) | LUT1(FSL_READ, PAD4, rxfifo),
+ 			base + QUADSPI_LUT(lut_base + 1));
+ 
+ 	/* Write enable */
+ 	lut_base = SEQID_WREN * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_WREN), base + QUADSPI_LUT(lut_base));
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WREN),
++			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Page Program */
+ 	lut_base = SEQID_PP * 4;
+@@ -385,13 +409,15 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 		addrlen = ADDR32BIT;
+ 	}
+ 
+-	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
++	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+ 			base + QUADSPI_LUT(lut_base));
+-	writel(LUT0(FSL_WRITE, PAD1, 0), base + QUADSPI_LUT(lut_base + 1));
++	qspi_writel(q, LUT0(FSL_WRITE, PAD1, 0),
++			base + QUADSPI_LUT(lut_base + 1));
+ 
+ 	/* Read Status */
+ 	lut_base = SEQID_RDSR * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_RDSR) | LUT1(FSL_READ, PAD1, 0x1),
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDSR) |
++			LUT1(FSL_READ, PAD1, 0x1),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Erase a sector */
+@@ -400,40 +426,46 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 	cmd = q->nor[0].erase_opcode;
+ 	addrlen = q->nor_size <= SZ_16M ? ADDR24BIT : ADDR32BIT;
+ 
+-	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
++	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Erase the whole chip */
+ 	lut_base = SEQID_CHIP_ERASE * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_CHIP_ERASE),
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_CHIP_ERASE),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* READ ID */
+ 	lut_base = SEQID_RDID * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_RDID) | LUT1(FSL_READ, PAD1, 0x8),
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDID) |
++			LUT1(FSL_READ, PAD1, 0x8),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Write Register */
+ 	lut_base = SEQID_WRSR * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_WRSR) | LUT1(FSL_WRITE, PAD1, 0x2),
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WRSR) |
++			LUT1(FSL_WRITE, PAD1, 0x2),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Read Configuration Register */
+ 	lut_base = SEQID_RDCR * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_RDCR) | LUT1(FSL_READ, PAD1, 0x1),
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDCR) |
++			LUT1(FSL_READ, PAD1, 0x1),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Write disable */
+ 	lut_base = SEQID_WRDI * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_WRDI), base + QUADSPI_LUT(lut_base));
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WRDI),
++			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Enter 4 Byte Mode (Micron) */
+ 	lut_base = SEQID_EN4B * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_EN4B), base + QUADSPI_LUT(lut_base));
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_EN4B),
++			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Enter 4 Byte Mode (Spansion) */
+ 	lut_base = SEQID_BRWR * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_BRWR), base + QUADSPI_LUT(lut_base));
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_BRWR),
++			base + QUADSPI_LUT(lut_base));
+ 
+ 	fsl_qspi_lock_lut(q);
+ }
+@@ -488,15 +520,16 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
+ 			q->chip_base_addr, addr, len, cmd);
+ 
+ 	/* save the reg */
+-	reg = readl(base + QUADSPI_MCR);
++	reg = qspi_readl(q, base + QUADSPI_MCR);
+ 
+-	writel(q->memmap_phy + q->chip_base_addr + addr, base + QUADSPI_SFAR);
+-	writel(QUADSPI_RBCT_WMRK_MASK | QUADSPI_RBCT_RXBRD_USEIPS,
++	qspi_writel(q, q->memmap_phy + q->chip_base_addr + addr,
++			base + QUADSPI_SFAR);
++	qspi_writel(q, QUADSPI_RBCT_WMRK_MASK | QUADSPI_RBCT_RXBRD_USEIPS,
+ 			base + QUADSPI_RBCT);
+-	writel(reg | QUADSPI_MCR_CLR_RXF_MASK, base + QUADSPI_MCR);
++	qspi_writel(q, reg | QUADSPI_MCR_CLR_RXF_MASK, base + QUADSPI_MCR);
+ 
+ 	do {
+-		reg2 = readl(base + QUADSPI_SR);
++		reg2 = qspi_readl(q, base + QUADSPI_SR);
+ 		if (reg2 & (QUADSPI_SR_IP_ACC_MASK | QUADSPI_SR_AHB_ACC_MASK)) {
+ 			udelay(1);
+ 			dev_dbg(q->dev, "The controller is busy, 0x%x\n", reg2);
+@@ -507,21 +540,22 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
+ 
+ 	/* trigger the LUT now */
+ 	seqid = fsl_qspi_get_seqid(q, cmd);
+-	writel((seqid << QUADSPI_IPCR_SEQID_SHIFT) | len, base + QUADSPI_IPCR);
++	qspi_writel(q, (seqid << QUADSPI_IPCR_SEQID_SHIFT) | len,
++			base + QUADSPI_IPCR);
+ 
+ 	/* Wait for the interrupt. */
+ 	if (!wait_for_completion_timeout(&q->c, msecs_to_jiffies(1000))) {
+ 		dev_err(q->dev,
+ 			"cmd 0x%.2x timeout, addr@%.8x, FR:0x%.8x, SR:0x%.8x\n",
+-			cmd, addr, readl(base + QUADSPI_FR),
+-			readl(base + QUADSPI_SR));
++			cmd, addr, qspi_readl(q, base + QUADSPI_FR),
++			qspi_readl(q, base + QUADSPI_SR));
+ 		err = -ETIMEDOUT;
+ 	} else {
+ 		err = 0;
+ 	}
+ 
+ 	/* restore the MCR */
+-	writel(reg, base + QUADSPI_MCR);
++	qspi_writel(q, reg, base + QUADSPI_MCR);
+ 
+ 	return err;
+ }
+@@ -533,7 +567,7 @@ static void fsl_qspi_read_data(struct fsl_qspi *q, int len, u8 *rxbuf)
+ 	int i = 0;
+ 
+ 	while (len > 0) {
+-		tmp = readl(q->iobase + QUADSPI_RBDR + i * 4);
++		tmp = qspi_readl(q, q->iobase + QUADSPI_RBDR + i * 4);
+ 		tmp = fsl_qspi_endian_xchg(q, tmp);
+ 		dev_dbg(q->dev, "chip addr:0x%.8x, rcv:0x%.8x\n",
+ 				q->chip_base_addr, tmp);
+@@ -561,9 +595,9 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
+ {
+ 	u32 reg;
+ 
+-	reg = readl(q->iobase + QUADSPI_MCR);
++	reg = qspi_readl(q, q->iobase + QUADSPI_MCR);
+ 	reg |= QUADSPI_MCR_SWRSTHD_MASK | QUADSPI_MCR_SWRSTSD_MASK;
+-	writel(reg, q->iobase + QUADSPI_MCR);
++	qspi_writel(q, reg, q->iobase + QUADSPI_MCR);
+ 
+ 	/*
+ 	 * The minimum delay : 1 AHB + 2 SFCK clocks.
+@@ -572,7 +606,7 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
+ 	udelay(1);
+ 
+ 	reg &= ~(QUADSPI_MCR_SWRSTHD_MASK | QUADSPI_MCR_SWRSTSD_MASK);
+-	writel(reg, q->iobase + QUADSPI_MCR);
++	qspi_writel(q, reg, q->iobase + QUADSPI_MCR);
+ }
+ 
+ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+@@ -586,20 +620,20 @@ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+ 		q->chip_base_addr, to, count);
+ 
+ 	/* clear the TX FIFO. */
+-	tmp = readl(q->iobase + QUADSPI_MCR);
+-	writel(tmp | QUADSPI_MCR_CLR_TXF_MASK, q->iobase + QUADSPI_MCR);
++	tmp = qspi_readl(q, q->iobase + QUADSPI_MCR);
++	qspi_writel(q, tmp | QUADSPI_MCR_CLR_TXF_MASK, q->iobase + QUADSPI_MCR);
+ 
+ 	/* fill the TX data to the FIFO */
+ 	for (j = 0, i = ((count + 3) / 4); j < i; j++) {
+ 		tmp = fsl_qspi_endian_xchg(q, *txbuf);
+-		writel(tmp, q->iobase + QUADSPI_TBDR);
++		qspi_writel(q, tmp, q->iobase + QUADSPI_TBDR);
+ 		txbuf++;
+ 	}
+ 
+ 	/* fill the TXFIFO upto 16 bytes for i.MX7d */
+ 	if (needs_fill_txfifo(q))
+ 		for (; i < 4; i++)
+-			writel(tmp, q->iobase + QUADSPI_TBDR);
++			qspi_writel(q, tmp, q->iobase + QUADSPI_TBDR);
+ 
+ 	/* Trigger it */
+ 	ret = fsl_qspi_runcmd(q, opcode, to, count);
+@@ -615,10 +649,10 @@ static void fsl_qspi_set_map_addr(struct fsl_qspi *q)
+ 	int nor_size = q->nor_size;
+ 	void __iomem *base = q->iobase;
+ 
+-	writel(nor_size + q->memmap_phy, base + QUADSPI_SFA1AD);
+-	writel(nor_size * 2 + q->memmap_phy, base + QUADSPI_SFA2AD);
+-	writel(nor_size * 3 + q->memmap_phy, base + QUADSPI_SFB1AD);
+-	writel(nor_size * 4 + q->memmap_phy, base + QUADSPI_SFB2AD);
++	qspi_writel(q, nor_size + q->memmap_phy, base + QUADSPI_SFA1AD);
++	qspi_writel(q, nor_size * 2 + q->memmap_phy, base + QUADSPI_SFA2AD);
++	qspi_writel(q, nor_size * 3 + q->memmap_phy, base + QUADSPI_SFB1AD);
++	qspi_writel(q, nor_size * 4 + q->memmap_phy, base + QUADSPI_SFB2AD);
+ }
+ 
+ /*
+@@ -640,24 +674,26 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi *q)
+ 	int seqid;
+ 
+ 	/* AHB configuration for access buffer 0/1/2 .*/
+-	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF0CR);
+-	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF1CR);
+-	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF2CR);
++	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF0CR);
++	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF1CR);
++	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF2CR);
+ 	/*
+ 	 * Set ADATSZ with the maximum AHB buffer size to improve the
+ 	 * read performance.
+ 	 */
+-	writel(QUADSPI_BUF3CR_ALLMST_MASK | ((q->devtype_data->ahb_buf_size / 8)
+-			<< QUADSPI_BUF3CR_ADATSZ_SHIFT), base + QUADSPI_BUF3CR);
++	qspi_writel(q, QUADSPI_BUF3CR_ALLMST_MASK |
++			((q->devtype_data->ahb_buf_size / 8)
++			<< QUADSPI_BUF3CR_ADATSZ_SHIFT),
++			base + QUADSPI_BUF3CR);
+ 
+ 	/* We only use the buffer3 */
+-	writel(0, base + QUADSPI_BUF0IND);
+-	writel(0, base + QUADSPI_BUF1IND);
+-	writel(0, base + QUADSPI_BUF2IND);
++	qspi_writel(q, 0, base + QUADSPI_BUF0IND);
++	qspi_writel(q, 0, base + QUADSPI_BUF1IND);
++	qspi_writel(q, 0, base + QUADSPI_BUF2IND);
+ 
+ 	/* Set the default lut sequence for AHB Read. */
+ 	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
+-	writel(seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
++	qspi_writel(q, seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
+ 		q->iobase + QUADSPI_BFGENCR);
+ }
+ 
+@@ -713,7 +749,7 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
+ 		return ret;
+ 
+ 	/* Reset the module */
+-	writel(QUADSPI_MCR_SWRSTSD_MASK | QUADSPI_MCR_SWRSTHD_MASK,
++	qspi_writel(q, QUADSPI_MCR_SWRSTSD_MASK | QUADSPI_MCR_SWRSTHD_MASK,
+ 		base + QUADSPI_MCR);
+ 	udelay(1);
+ 
+@@ -721,24 +757,24 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
+ 	fsl_qspi_init_lut(q);
+ 
+ 	/* Disable the module */
+-	writel(QUADSPI_MCR_MDIS_MASK | QUADSPI_MCR_RESERVED_MASK,
++	qspi_writel(q, QUADSPI_MCR_MDIS_MASK | QUADSPI_MCR_RESERVED_MASK,
+ 			base + QUADSPI_MCR);
+ 
+-	reg = readl(base + QUADSPI_SMPR);
+-	writel(reg & ~(QUADSPI_SMPR_FSDLY_MASK
++	reg = qspi_readl(q, base + QUADSPI_SMPR);
++	qspi_writel(q, reg & ~(QUADSPI_SMPR_FSDLY_MASK
+ 			| QUADSPI_SMPR_FSPHS_MASK
+ 			| QUADSPI_SMPR_HSENA_MASK
+ 			| QUADSPI_SMPR_DDRSMP_MASK), base + QUADSPI_SMPR);
+ 
+ 	/* Enable the module */
+-	writel(QUADSPI_MCR_RESERVED_MASK | QUADSPI_MCR_END_CFG_MASK,
++	qspi_writel(q, QUADSPI_MCR_RESERVED_MASK | QUADSPI_MCR_END_CFG_MASK,
+ 			base + QUADSPI_MCR);
+ 
+ 	/* clear all interrupt status */
+-	writel(0xffffffff, q->iobase + QUADSPI_FR);
++	qspi_writel(q, 0xffffffff, q->iobase + QUADSPI_FR);
+ 
+ 	/* enable the interrupt */
+-	writel(QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
++	qspi_writel(q, QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
+ 
+ 	return 0;
+ }
+@@ -954,6 +990,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	if (IS_ERR(q->iobase))
+ 		return PTR_ERR(q->iobase);
+ 
++	q->big_endian = of_property_read_bool(np, "big-endian");
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+ 					"QuadSPI-memory");
+ 	if (!devm_request_mem_region(dev, res->start, resource_size(res),
+@@ -1101,8 +1138,8 @@ static int fsl_qspi_remove(struct platform_device *pdev)
+ 	}
+ 
+ 	/* disable the hardware */
+-	writel(QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
+-	writel(0x0, q->iobase + QUADSPI_RSER);
++	qspi_writel(q, QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
++	qspi_writel(q, 0x0, q->iobase + QUADSPI_RSER);
+ 
+ 	mutex_destroy(&q->lock);
+ 
 -- 
-1.8.1.1.dirty
+2.1.0.27.g96db324
