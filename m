@@ -1,34 +1,17 @@
-Received: from mail-io0-x22d.google.com ([2607:f8b0:4001:c06::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zz4JT-0000ha-GZ
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 15:06:24 +0000
-Received: by iofh3 with SMTP id h3so56189259iof.3
- for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2015 07:06:02 -0800 (PST)
-Date: Wed, 18 Nov 2015 09:05:12 -0600
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: Austin S Hemmelgarn <ahferroin7@gmail.com>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v3 0/7] User namespace mount updates
-Message-ID: <20151118150512.GE134139@ubuntu-hedt>
-References: <20151117170556.GV22011@ZenIV.linux.org.uk>
- <20151117172551.GA108807@ubuntu-hedt>
- <20151117175506.GW22011@ZenIV.linux.org.uk>
- <564B79B1.3040207@gmail.com> <20151117191606.GC108807@ubuntu-hedt>
- <564B941A.2070601@gmail.com> <20151117213255.GE108807@ubuntu-hedt>
- <564C6DD4.6090308@gmail.com> <20151118142238.GB134139@ubuntu-hedt>
- <20151118145818.GC22011@ZenIV.linux.org.uk>
+Received: from mvx1.ifxnw.com.ve ([200.62.27.83])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zz4K5-0000wy-GO
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 15:07:02 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151118145818.GC22011@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Wed, 18 Nov 2015 16:06:25 +0100
+From: =?UTF-8?Q?LendFair_Loans=C2=AE?= <info.cp@multivision.com.ve>
+To: undisclosed-recipients:;
+Subject: belangrijke post
+Reply-To: <lendfair_loans@outlook.com>
+Message-ID: <3757edf0fd6d6e46449ce933cc5ec370@multivision.com.ve>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,30 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 18, 2015 at 02:58:18PM +0000, Al Viro wrote:
-> On Wed, Nov 18, 2015 at 08:22:38AM -0600, Seth Forshee wrote:
-> 
-> > But it still requires the admin set it up that way, no? And aren't
-> > privileges required to set up those devices in the first place?
-> > 
-> > I'm not saying that it wouldn't be a good idea to lock down the backing
-> > stores for those types of devices too, just that it isn't something that
-> > a regular user could exploit without an admin doing something to
-> > facilitate it.
-> 
-> Sigh...  If it boils down to "all admins within all containers must be
-> trusted not to try and break out" (along with "roothole in any container
-> escalates to kernel-mode code execution on host"), then what the fuck
-> is the *point* of bothering with containers, userns, etc. in the first
-> place?  If your model is basically "you want isolation, just use kvm",
-> fine, but where's the place for userns in all that?
-> 
-> And if you are talking about the _host_ admin, then WTF not have him just
-> mount what's needed as part of setup and to hell with mounting those
-> inside the container?
 
-Yes, the host admin. I'm not talking about trusting the admin inside the
-container at all.
 
->From my perspective the idea is essentially to allow mounting with fuse
-or with ext4 using "mount -o loop ..." within a container.
+-- 
+Goede dag,
+
+     Ik ben mevrouw Ruth Ashenden, het uitvoerend orgaan voor een goed 
+erkende legitieme kredietgever bekend als LendFair Loans®. Heeft u een 
+slecht krediet of u behoefte aan geld om je rekeningen te betalen? We 
+geven alle soorten lening aan individuele of bedrijf zo laag als 3% 
+rente.
+
+    Vul het onderstaande formulier als belanghebbende.
+
+   Volledige naam:
+   Geslacht:
+   Benodigd
+   Duur:
+
+   U kunt contact met ons opnemen via Tel: (+44) 703 1920 090 e-mail: 
+lendfair_loans@outlook.com
+
+    Met vriendelijke groet
+   Mevrouw Ruth Ashenden
