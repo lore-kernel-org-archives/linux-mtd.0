@@ -1,20 +1,25 @@
-Received: from mail-ob0-x233.google.com ([2607:f8b0:4003:c01::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zz8vP-0002cz-US
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 20:01:53 +0000
-Received: by obbnk6 with SMTP id nk6so42547551obb.2
- for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2015 12:01:29 -0800 (PST)
+Received: from lists.s-osg.org ([54.187.51.154])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zz915-0005Fg-Cw
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 20:07:44 +0000
+Subject: Re: spi: OF module autoloading is still broken
+To: Brian Norris <computersforpeace@gmail.com>
+References: <56104E88.3040807@gmail.com> <20151112185926.GC8456@google.com>
+ <20151113194031.GI8456@google.com> <20151113221228.GT12392@sirena.org.uk>
+ <20151113225113.GJ8456@google.com> <20151113231410.GV12392@sirena.org.uk>
+ <20151113234857.GK8456@google.com> <564A101F.9090807@osg.samsung.com>
+ <20151116192434.GO8456@google.com> <564A35EB.5080008@osg.samsung.com>
+ <20151116204702.GP8456@google.com> <564A4B66.6090107@osg.samsung.com>
+From: Javier Martinez Canillas <javier@osg.samsung.com>
+Cc: Mark Brown <broonie@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>,
+ linux-mtd@lists.infradead.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Message-ID: <564CDA72.8030800@osg.samsung.com>
+Date: Wed, 18 Nov 2015 17:07:14 -0300
 MIME-Version: 1.0
-In-Reply-To: <5640A7D0.6080104@writesys.com.br>
-References: <1315747066.18731.53.camel@sauron>
- <5640A7D0.6080104@writesys.com.br>
-Date: Wed, 18 Nov 2015 21:01:29 +0100
-Message-ID: <CAFLxGvwZ0gXkGHDu5fGo5ZX-td2rk1Wt=pHZBH+a_gp-PgyN=g@mail.gmail.com>
-Subject: Re: can't mount ubifs after resizing with ubirsvol
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Ibrahim Mattus Neto <ibrahim.neto@writesys.com.br>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <564A4B66.6090107@osg.samsung.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,57 +29,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 9, 2015 at 3:04 PM, Ibrahim Mattus Neto
-<ibrahim.neto@writesys.com.br> wrote:
-> Hi!
->
-> I am having problems resizing a ubifs volume, I used the command ubirsvol
-> (version: 1.5.1) but when I try mounting it I get the following error:
->
-> [ 8840.450000] UBIFS error (ubi0:1 pid 720): validate_sb: bad LEB count: 413
-> in superblock, 331 on UBI volume, 19 minimum required
-> [ 8840.460000] UBIFS error (ubi0:1 pid 720): validate_sb: bad superblock,
-> error 1
-> [ 8840.470000]  magic          0x6101831
-> [ 8840.480000]  crc            0x539e8e1c
-> [ 8840.480000]  node_type      6 (superblock node)
-> [ 8840.480000]  group_type     0 (no node group)
-> [ 8840.490000]  sqnum          1
-> [ 8840.490000]  len            4096
-> [ 8840.490000]  key_hash       0 (R5)
-> [ 8840.500000]  key_fmt        0 (simple)
-> [ 8840.500000]  flags          0x0
-> [ 8840.500000]  big_lpt        0
-> [ 8840.510000]  space_fixup    0
-> [ 8840.510000]  min_io_size    2048
-> [ 8840.510000]  leb_size       126976
-> [ 8840.520000]  leb_cnt        413
-> [ 8840.520000]  max_leb_cnt    413
-> [ 8840.520000]  max_bud_bytes  2158592
-> [ 8840.530000]  log_lebs       3
-> [ 8840.530000]  lpt_lebs       2
-> [ 8840.530000]  orph_lebs      2
-> [ 8840.540000]  jhead_cnt      1
-> [ 8840.540000]  fanout         8
-> [ 8840.540000]  lsave_cnt      256
-> [ 8840.540000]  default_compr  1
-> [ 8840.550000]  rp_size        2558566
-> [ 8840.550000]  rp_uid         0
-> [ 8840.550000]  rp_gid         0
-> [ 8840.560000]  fmt_version    4
-> [ 8840.560000]  time_gran      1000000000
-> [ 8840.560000]  UUID           B1F16610-EEDF-471F-B5AD-279F21C00729
-> mount: mounting ubi0:recover on /recover failed: Invalid argument
->
-> I was reading through the archives and found a similar issue but no
-> solution, is there a way to shrink a volume?
->
-> I was thinking about changing the LEB count inside the superblock but I
-> didn't know how to (and thought it would be too risky)
+Hello Brian and Mark,
 
-Please more details. :)
-What exactly did you do?
+On 11/16/2015 06:32 PM, Javier Martinez Canillas wrote:
+> On 11/16/2015 05:47 PM, Brian Norris wrote:
+>> On Mon, Nov 16, 2015 at 05:00:43PM -0300, Javier Martinez Canillas wrote:
+>>> On 11/16/2015 04:24 PM, Brian Norris wrote:
 
+[snip]
+
+>>>> I don't think you have problems only with bad FDTs. I think you have a
+>>>> problem with perfectly valid DTs.
+>>>>
+>>>
+>>> Agreed, I wonder if spi_uevent() shouldn't be changed to report both the
+>>> OF and old SPI modaliases to avoid breaking a lot of drivers but at the
+>>> same time allowing DT-only drivers to not need an SPI ID table.
+>>
+>> That's the solution I imagined, though I haven't tested it yet. I don't
+>> see much precedent for reporting multiple modaliases, so there could be
+>> some kind of ABI issues around that too.
+>>
+> 
+> Ok, I'm glad that we agree. This definitely needs to be discussed with more
+> people. I'll re-spin my patch and post a v2 reporting multiple modaliases
+> tomorrow after testing.
+> 
+
+So I had some time today to test this approach but unfortunately it seems
+this workaround will not be possible because AFAICT kmod only takes into
+account the last MODALIAS reported as a uevent. I still have to check the
+kmod source code but that's my conclusion from trying to report both aliases.
+
+When looking at the uevent sysfs entry for the device, I see that both aliases
+are reported but if only a OF alias is built into the module, then kmod does
+not auto load the module unless the OF MODALIAS is the last one reported, i.e:
+
+# grep MODALIAS /sys/devices/platform/12d40000.spi/spi_master/spi2/spi2.0/uevent
+MODALIAS=spi:cros-ec-spi
+MODALIAS=of:Ncros-ecT<NULL>Cgoogle,cros-ec-spi
+
+# modinfo cros_ec_spi | grep alias
+alias:          of:N*T*Cgoogle,cros-ec-spi*
+
+If I invert the order on which the uevent are reported, then the module is
+not autoloaded, i.e:
+
+# grep MODALIAS /sys/devices/platform/12d40000.spi/spi_master/spi2/spi2.0/uevent
+MODALIAS=of:Ncros-ecT<NULL>Cgoogle,cros-ec-spi
+MODALIAS=spi:cros-ec-spi
+
+# modinfo cros_ec_spi | grep alias
+alias:          of:N*T*Cgoogle,cros-ec-spi*
+
+In this case only is loaded if the module has a spi:<alias>, i.e:
+
+# modinfo cros_ec_spi | grep alias
+alias:          of:N*T*Cgoogle,cros-ec-spi*
+alias:          spi:cros-ec-spi
+
+IOW, even when is possible to report more than one MODALIAS, user-space seems
+to only use the last one reported so using both don't work.
+
+Of course kmod can be changed to check for more than one MODALIAS but since
+the kernel should not break old user-space, the fact that a single MODALIAS
+was reported seems to be an ABI now due how is used.
+
+Best regards,
 -- 
-Thanks,
-//richard
+Javier Martinez Canillas
+Open Source Group
+Samsung Research America
