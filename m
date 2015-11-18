@@ -1,22 +1,19 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyrCS-0001GE-Vf
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 01:06:17 +0000
-Received: by pabfh17 with SMTP id fh17so26729498pab.0
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 17:05:56 -0800 (PST)
-Date: Tue, 17 Nov 2015 17:05:53 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Wang YanQing <udknight@gmail.com>, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, fransmeulenbroeks@gmail.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: mtd: improve nand_ecc.txt for readability
- and correctness
-Message-ID: <20151118010553.GA140706@google.com>
-References: <20151029163632.GA2175@udknight>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZyrEM-0001Sz-1q
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 01:08:15 +0000
+Subject: Re: [PATCH] mtd: brcmnand: clean up flash cache for parameter pages
+To: Brian Norris <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+References: <1447721773-18417-1-git-send-email-computersforpeace@gmail.com>
+CC: Clay McClure <clay@daemons.net>, Scott Branden <sbranden@broadcom.com>,
+ <bcm-kernel-feedback-list@broadcom.com>
+From: Ray Jui <rjui@broadcom.com>
+Message-ID: <564BCF2D.7060909@broadcom.com>
+Date: Tue, 17 Nov 2015 17:06:53 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151029163632.GA2175@udknight>
+In-Reply-To: <1447721773-18417-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +23,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 30, 2015 at 12:36:33AM +0800, Wang YanQing wrote:
-> This patch correct some representation errors, add a little
-> clarification in some places, and fix indentation problems
-> for pseudo code.
-> 
-> It also delete one more white space for one place.
-> 
-> Signed-off-by: Wang YanQing <udknight@gmail.com>
 
-Applied to l2-mtd.git, with the following diff squashed in.
 
-I don't believe these particular phrases have anything to do with
-endianness, although the algorithm does swap a few things differently
-depending on the host CPU endianness.
+On 11/16/2015 4:56 PM, Brian Norris wrote:
+> The read_byte() handling for accessing the flash cache has some awkward
+> swapping being done in the read_byte() function. Let's just make this a
+> byte array, and do the swapping with the word-level macros during the
+> initial buffer copy.
+>
+> This is just a refactoring patch, with no (intended) functional change.
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Clay McClure <clay@daemons.net>
+> Cc: Ray Jui <rjui@broadcom.com>
+> Cc: Scott Branden <sbranden@broadcom.com>
+> Cc: <bcm-kernel-feedback-list@broadcom.com>
+> Tested-by: Clay McClure <clay@daemons.net>
+> ---
+> I wanted to get this out there as a proper patch, since there was some
+> confusion on the previous thread in which this appeared.
+>
+> This does *not* fix the bug reported by Cyrille in the thread "mtd: brcmnand:
+> Fix NAND_CMD_PARAM byte order". There is a candidate patch which fixes this:
+>
+>    http://patchwork.ozlabs.org/patch/535330/
+>
+> But I'm awaiting a better explanation from Broadcom folks before I
+> respin/accept anything like that.
 
-diff --git a/Documentation/mtd/nand_ecc.txt b/Documentation/mtd/nand_ecc.txt
-index ccb1f260828c..f8c3284bf6a7 100644
---- a/Documentation/mtd/nand_ecc.txt
-+++ b/Documentation/mtd/nand_ecc.txt
-@@ -273,9 +273,9 @@ byte. A quick analysis:
- for the column parity we use the par variable. When extending to 32 bits
- we can in the end easily calculate rp0 and rp1 from it.
- (because par now consists of 4 bytes, contributing to rp1, rp0, rp1, rp0
--respectively, from MSB to LSB in little endian mode)
-+respectively, from MSB to LSB)
- also rp2 and rp3 can be easily retrieved from par as rp3 covers the
--first two MSBs and rp2 covers the last two LSBs in little endian mode.
-+first two MSBs and rp2 covers the last two LSBs.
- 
- Note that of course now the loop is executed only 64 times (256/4).
- And note that care must taken wrt byte ordering. The way bytes are
-@@ -387,7 +387,7 @@ Analysis 2
- 
- The code (of course) works, and hurray: we are a little bit faster than
- the linux driver code (about 15%). But wait, don't cheer too quickly.
--THere is more to be gained.
-+There is more to be gained.
- If we look at e.g. rp14 and rp15 we see that we either xor our data with
- rp14 or with rp15. However we also have par which goes over all data.
- This means there is no need to calculate rp14 as it can be calculated from
+Yeah still on our to-do list. Will find time to talk to our ASIC engineer.
+
+>
+>   drivers/mtd/nand/brcmnand/brcmnand.c | 13 +++++++++----
+>   1 file changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index 2a437c7ed175..0f43bc95ece4 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -134,7 +134,7 @@ struct brcmnand_controller {
+>   	dma_addr_t		dma_pa;
+>
+>   	/* in-memory cache of the FLASH_CACHE, used only for some commands */
+> -	u32			flash_cache[FC_WORDS];
+> +	u8			flash_cache[FC_BYTES];
+>
+>   	/* Controller revision details */
+>   	const u16		*reg_offsets;
+> @@ -1188,6 +1188,8 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+>
+>   	if (native_cmd == CMD_PARAMETER_READ ||
+>   			native_cmd == CMD_PARAMETER_CHANGE_COL) {
+> +		/* Copy flash cache word-wise */
+> +		u32 *flash_cache = (u32 *)ctrl->flash_cache;
+>   		int i;
+>
+>   		brcmnand_soc_data_bus_prepare(ctrl->soc);
+> @@ -1197,7 +1199,11 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
+>   		 * SECTOR_SIZE_1K may invalidate it
+>   		 */
+>   		for (i = 0; i < FC_WORDS; i++)
+> -			ctrl->flash_cache[i] = brcmnand_read_fc(ctrl, i);
+> +			/*
+> +			 * Flash cache is big endian for parameter pages, at
+> +			 * least on STB SoCs
+> +			 */
+> +			flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
+>
+>   		brcmnand_soc_data_bus_unprepare(ctrl->soc);
+>
+> @@ -1250,8 +1256,7 @@ static uint8_t brcmnand_read_byte(struct mtd_info *mtd)
+>   		if (host->last_byte > 0 && offs == 0)
+>   			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, addr, -1);
+>
+> -		ret = ctrl->flash_cache[offs >> 2] >>
+> -					(24 - ((offs & 0x03) << 3));
+> +		ret = ctrl->flash_cache[offs];
+>   		break;
+>   	case NAND_CMD_GET_FEATURES:
+>   		if (host->last_byte >= ONFI_SUBFEATURE_PARAM_LEN) {
+>
+
+"Tested" on Cygnus, and as expected, nothing changes. NAND still works 
+and ONFI still fails.
+
+Thanks,
+
+Ray
