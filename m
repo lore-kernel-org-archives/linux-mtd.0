@@ -1,23 +1,21 @@
 Received: from lists.s-osg.org ([54.187.51.154])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zz915-0005Fg-Cw
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 20:07:44 +0000
-Subject: Re: spi: OF module autoloading is still broken
+ id 1Zz9Gn-0002zX-V1
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 20:23:59 +0000
+Subject: Re: [PATCH 3/3] doc: dt: mtd: stop referring to driver code for
+ spi-nor IDs
 To: Brian Norris <computersforpeace@gmail.com>
-References: <56104E88.3040807@gmail.com> <20151112185926.GC8456@google.com>
- <20151113194031.GI8456@google.com> <20151113221228.GT12392@sirena.org.uk>
- <20151113225113.GJ8456@google.com> <20151113231410.GV12392@sirena.org.uk>
- <20151113234857.GK8456@google.com> <564A101F.9090807@osg.samsung.com>
- <20151116192434.GO8456@google.com> <564A35EB.5080008@osg.samsung.com>
- <20151116204702.GP8456@google.com> <564A4B66.6090107@osg.samsung.com>
+References: <1447713292-91525-1-git-send-email-computersforpeace@gmail.com>
+ <1447713292-91525-4-git-send-email-computersforpeace@gmail.com>
+ <564B3407.2020403@osg.samsung.com> <20151118194340.GF140057@google.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ devicetree@vger.kernel.org
 From: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: Mark Brown <broonie@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>,
- linux-mtd@lists.infradead.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Message-ID: <564CDA72.8030800@osg.samsung.com>
-Date: Wed, 18 Nov 2015 17:07:14 -0300
+Message-ID: <564CDE43.9020103@osg.samsung.com>
+Date: Wed, 18 Nov 2015 17:23:31 -0300
 MIME-Version: 1.0
-In-Reply-To: <564A4B66.6090107@osg.samsung.com>
+In-Reply-To: <20151118194340.GF140057@google.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,71 +27,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Brian and Mark,
+Hello Brian,
 
-On 11/16/2015 06:32 PM, Javier Martinez Canillas wrote:
-> On 11/16/2015 05:47 PM, Brian Norris wrote:
->> On Mon, Nov 16, 2015 at 05:00:43PM -0300, Javier Martinez Canillas wrote:
->>> On 11/16/2015 04:24 PM, Brian Norris wrote:
+On 11/18/2015 04:43 PM, Brian Norris wrote:
+> Hi,
+> 
+> On Tue, Nov 17, 2015 at 11:04:55AM -0300, Javier Martinez Canillas wrote:
+>> On 11/16/2015 07:34 PM, Brian Norris wrote:
+>>> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+>>> index 2bee68103b01..2c91c03e7eb0 100644
+>>> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+>>> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+>>> @@ -1,15 +1,61 @@
+>>> -* MTD SPI driver for ST M25Pxx (and similar) serial flash chips
+>>> +* SPI NOR flash: ST M25Pxx (and similar) serial flash chips
+>>>  
+>>>  Required properties:
+>>>  - #address-cells, #size-cells : Must be present if the device has sub-nodes
+>>>    representing partitions.
+>>>  - compatible : May include a device-specific string consisting of the
+>>> -               manufacturer and name of the chip. Bear in mind the DT binding
+>>> -               is not Linux-only, but in case of Linux, see the "m25p_ids"
+>>> -               table in drivers/mtd/devices/m25p80.c for the list of supported
+>>> -               chips.
+>>> +               manufacturer and name of the chip. A list of supported chip
+>>> +               names follows.
+>>
+>> Here says that the compatible string consists of manufacturer and name...
+>>
+>>>                 Must also include "jedec,spi-nor" for any SPI NOR flash that can
+>>>                 be identified by the JEDEC READ ID opcode (0x9F).
+>>> +
+>>> +               Supported chip names:
+>>> +                 at25df321a
+>>> +                 at25df641
+> [...]
+>> +
+>>
+>> ... but the entries in the list don't have a manufacturer. I know this is
+>> due backward compatibility because as we discussed in the thread mentioned
+>> in the cover letter, the SPI core didn't use the manufacturer and that
+>> implementation detail leaked into the DTBs.
+>>
+>> But I think that either only the correct list with vendor should be added
+>> to the DT binding docs (but make sure that backward compatibility in the
+>> driver and SPI core is maintained) or both the wrong and correct list should
+>> be documented and the former be marked as deprecated.
+> 
+> First, note that the list says "Supported chip *names*" (not "Supported
+> compatible values"). It does not attempt to specify the full compatible
+> value, and that's intentional.
+> 
 
-[snip]
+Right, sorry I missed that subtlety.
 
->>>> I don't think you have problems only with bad FDTs. I think you have a
->>>> problem with perfectly valid DTs.
->>>>
+> Second, I believe it is hard to determine after-the-fact what all the
+> reasonable pairings of vendors might be. For some of these parts,
+> various companies have produced parts under the same chip ID -- usually
+> because one company bought another. For most chips though, this probably
+> isn't a problem, so I could probably pick reasonable vendor pairings.
+>
+> IOW, there isn't just "a wrong" and "a correct" list; there's a
+> (probably?) correct list and an enormous space of "I don't know what
+> people might have put here" list. It's nearly unbounded, but even a
+> reasonable list might get pretty large. So in practice, we'd essentially
+> be sacrificing completeness for...what reason?
+>
+
+I see.
+
+>>> +               The following chip names have been used historically to
+>>> +               designate quirky versions of flash chips that do not support the
+>>> +               JEDEC READ ID opcode (0x9F):
+>>> +                 m25p05-nonjedec
+>>> +                 m25p10-nonjedec
+>>> +                 m25p20-nonjedec
+>>> +                 m25p40-nonjedec
+>>> +                 m25p80-nonjedec
+>>> +                 m25p16-nonjedec
+>>> +                 m25p32-nonjedec
+>>> +                 m25p64-nonjedec
+>>> +                 m25p128-nonjedec
+>>> +
+>>
+>> Same here, I would prefer if the DT binding make it clear that not having
+>> a vendor is wrong and is only documented to maintain backward compatibility.
+> 
+> The doc never says anything about not including the vendor. It says
+> 
+>   "May include a device-specific string consisting of the manufacturer
+>   and name of the chip"
+> 
+> and it lists the chip names. So if someone is actually following the
+> documentation, they will include a vendor. The vendor names are not
+> listed because they're really not relevant to the implementation. But I
+> could try to include them.
+>
+
+My goal was to start forcing people to use a complete compatible string
+to avoid the "garbage,chip-name" that you mentioned in the other thread.
+
+The vendor are not relevant in the current implementation because how the
+SPI core is implemented but I think that shouldn't affect the accuracy on
+which hardware is described in the DT.
+ 
+>>>  - reg : Chip-Select number
+>>>  - spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
+>>>  
 >>>
->>> Agreed, I wonder if spi_uevent() shouldn't be changed to report both the
->>> OF and old SPI modaliases to avoid breaking a lot of drivers but at the
->>> same time allowing DT-only drivers to not need an SPI ID table.
->>
->> That's the solution I imagined, though I haven't tested it yet. I don't
->> see much precedent for reporting multiple modaliases, so there could be
->> some kind of ABI issues around that too.
->>
 > 
-> Ok, I'm glad that we agree. This definitely needs to be discussed with more
-> people. I'll re-spin my patch and post a v2 reporting multiple modaliases
-> tomorrow after testing.
-> 
+> So, what makes sense? I can make a separate list of vendors (my
+> preference), or even try to pair up vendors with chip names (even if
+> it's sometimes an N:1 relationship). But I don't see that really buying
+> us much, since the implementation never has (and probably never will)
+> enforce this. What do you think?
+>
 
-So I had some time today to test this approach but unfortunately it seems
-this workaround will not be possible because AFAICT kmod only takes into
-account the last MODALIAS reported as a uevent. I still have to check the
-kmod source code but that's my conclusion from trying to report both aliases.
+Yes, you are right that is hard to come with a reasonable list specially since
+the vendor and chip relation could be N:1 as you said.
 
-When looking at the uevent sysfs entry for the device, I see that both aliases
-are reported but if only a OF alias is built into the module, then kmod does
-not auto load the module unless the OF MODALIAS is the last one reported, i.e:
+$SUBJECT is definitely an improvement over the current doc that mentions the
+"m25p_ids" table in the driver though. So we can update later the DT binding
+once / if the SPI core is modified to report proper OF modalias so OF-only
+drivers can get rid of their SPI id table.
 
-# grep MODALIAS /sys/devices/platform/12d40000.spi/spi_master/spi2/spi2.0/uevent
-MODALIAS=spi:cros-ec-spi
-MODALIAS=of:Ncros-ecT<NULL>Cgoogle,cros-ec-spi
+So for this patch:
 
-# modinfo cros_ec_spi | grep alias
-alias:          of:N*T*Cgoogle,cros-ec-spi*
-
-If I invert the order on which the uevent are reported, then the module is
-not autoloaded, i.e:
-
-# grep MODALIAS /sys/devices/platform/12d40000.spi/spi_master/spi2/spi2.0/uevent
-MODALIAS=of:Ncros-ecT<NULL>Cgoogle,cros-ec-spi
-MODALIAS=spi:cros-ec-spi
-
-# modinfo cros_ec_spi | grep alias
-alias:          of:N*T*Cgoogle,cros-ec-spi*
-
-In this case only is loaded if the module has a spi:<alias>, i.e:
-
-# modinfo cros_ec_spi | grep alias
-alias:          of:N*T*Cgoogle,cros-ec-spi*
-alias:          spi:cros-ec-spi
-
-IOW, even when is possible to report more than one MODALIAS, user-space seems
-to only use the last one reported so using both don't work.
-
-Of course kmod can be changed to check for more than one MODALIAS but since
-the kernel should not break old user-space, the fact that a single MODALIAS
-was reported seems to be an ABI now due how is used.
+Reviewed-by: Javier Martinez Canillas <javier@osg.samsung.com>
 
 Best regards,
 -- 
