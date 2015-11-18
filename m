@@ -1,18 +1,20 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyrIE-0003xw-JG
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 01:12:14 +0000
-Subject: Re: [PATCH] mtd: brcmnand: drop unused subpage_read() support
-To: Brian Norris <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>, <bcm-kernel-feedback-list@broadcom.com>
-References: <1447722248-135635-1-git-send-email-computersforpeace@gmail.com>
-From: Ray Jui <rjui@broadcom.com>
-Message-ID: <564BD03A.4030309@broadcom.com>
-Date: Tue, 17 Nov 2015 17:11:22 -0800
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZysHP-0002Ar-Af
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 02:15:28 +0000
+Received: by pabfh17 with SMTP id fh17so28712183pab.0
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 18:15:05 -0800 (PST)
+Date: Tue, 17 Nov 2015 18:15:03 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Simon Falsig <simon@newtec.dk>
+Cc: linux-mtd@lists.infradead.org, Vignesh R <vigneshr@ti.com>
+Subject: Re: mmap support for m25p80 device
+Message-ID: <20151118021503.GA140057@google.com>
+References: <9d83b70759c3d2507200432b4ff162be@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1447722248-135635-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9d83b70759c3d2507200432b4ff162be@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,54 +24,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
++ Vignesh
 
+Vignesh is working on supporting mmap'd flash reads in the SPI core,
+particularly for the TI QSPI driver. I don't believe he's planning on
+exposing this to userspace, though, and I believe that might be pretty
+difficult to do now.
 
-On 11/16/2015 5:04 PM, Brian Norris wrote:
-> AFAIR this driver was never tested with subpage read support, and this
-> code is currently unused because we don't set the NAND_SUBPAGE_READ
-> flag. It can be resurrected if someone tests it properly.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->   drivers/mtd/nand/brcmnand/brcmnand.c | 11 -----------
->   1 file changed, 11 deletions(-)
->
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index 2a437c7ed175..569d57b5a180 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -1546,16 +1546,6 @@ static int brcmnand_read_oob_raw(struct mtd_info *mtd, struct nand_chip *chip,
->   	return 0;
->   }
->
-> -static int brcmnand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
-> -				 uint32_t data_offs, uint32_t readlen,
-> -				 uint8_t *bufpoi, int page)
-> -{
-> -	struct brcmnand_host *host = chip->priv;
-> -
-> -	return brcmnand_read(mtd, chip, host->last_addr + data_offs,
-> -			readlen >> FC_SHIFT, (u32 *)bufpoi, NULL);
-> -}
-> -
->   static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
->   			  u64 addr, const u32 *buf, u8 *oob)
->   {
-> @@ -1944,7 +1934,6 @@ static int brcmnand_init_cs(struct brcmnand_host *host)
->
->   	chip->ecc.mode = NAND_ECC_HW;
->   	chip->ecc.read_page = brcmnand_read_page;
-> -	chip->ecc.read_subpage = brcmnand_read_subpage;
->   	chip->ecc.write_page = brcmnand_write_page;
->   	chip->ecc.read_page_raw = brcmnand_read_page_raw;
->   	chip->ecc.write_page_raw = brcmnand_write_page_raw;
->
+Perhaps Vignesh can comment.
 
-Sanity tested on Cygnus WA board. Finished booting to command prompt 
-with UBIFS based rootfs.
+On Tue, Oct 20, 2015 at 04:31:20PM +0200, Simon Falsig wrote:
+> Hi,
+> 
+> I'm currently working on a new custom board (with a TI AM3356 ARM-Cortex
+> A8
+> CPU), with a 32 kB Everspin MR25H256 MRAM chip, attached over SPI. It
+> works
+> fine using the m25p80 driver, but I was wondering how complex it would be
+> to
+> add the possibility of memory-mapping the device in userspace? - mainly to
+> make the interface consistent with the board that it is replacing, which
+> uses
+> a different, mmap-able, RAM chip.
+> 
+> I'm not very experienced in the deeper aspects of the kernel, but I've
+> been
+> poking around a bit in the mtd subsystem, and it seems as if the main
+> thing
+> that is missing, is a valid get_unmapped_area() function for the m25p80
+> driver, and then to change the mtdchar_mmap() function (in mtdchar.c) to
+> actually allow mmap'ing on MMU systems.
 
-Thanks!
+It's not quite so simple. Read the comments in mtdchar, and you'll see
+that there's some layering bugs that caused us to disable MMU mmap
+entirely. Apparently no one cared so far. Read the comments here:
 
-Tested-by: Ray Jui <rjui@broadcom.com>
+commit f5cf8f07423b2677cebebcebc863af77223a4972
+Author: David Woodhouse <David.Woodhouse@intel.com>
+Date:   Tue Oct 9 15:08:10 2012 +0100
 
-Ray
+    mtd: Disable mtdchar mmap on MMU systems
+
+But feel free to fix it.
+
+> But - does it even make sense to create such a function for m25p80? - and
+> how would I start?
+
+SPI drivers don't really expose a mmap-able interface, so this isn't
+possible at the moment. Even once it can be done, it would be restricted
+only to those controllers that can do memory map for you. AIUI, your SoC
+might (?).
+
+But even if it supports it, I expect you'll have difficulty coordinating
+this properly, since the SPI bus technically can be shared with multiple
+devices, whereas mmap would kind of assume that user-space can access
+the flash at any time. So I guess m25p80 would have to grab exclusive
+access of the entire SPI bus? If your system design can handle that,
+then I guess it CAN be done...
+
+...but why do you want to do this, again?
+
+Brian
+
+> Any pointers and/or comments are appreciated!
+> Thanks and best regards,
+> Simon Falsig
+> simon@newtec.dk
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
