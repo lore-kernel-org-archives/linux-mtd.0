@@ -1,20 +1,13 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzAkH-0008Iw-FA
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 21:58:30 +0000
-Date: Wed, 18 Nov 2015 21:57:55 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Message-ID: <20151118215755.GL31303@sirena.org.uk>
-References: <564CEB61.2000601@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="Uus2/pBTyv0r7Av1"
-Content-Disposition: inline
-In-Reply-To: <564CEB61.2000601@gmail.com>
-Subject: Re: RfC: Handle SPI controller limitations like maximum message length
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+To: linux-iio@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, Peter Meerwald <pmeerw@pmeerw.net>,
+ Lars-Peter Clausen <lars@metafoo.de>, Hartmut Knaack <knaack.h@gmx.de>,
+ bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-pm@vger.kernel.org
+Subject: [PATCH 0/4] add missing of_node_put
+Date: Wed, 18 Nov 2015 23:04:10 +0100
+Message-Id: <1447884254-26336-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +17,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The various for_each device_node iterators performs an of_node_get on each
+iteration, so a break out of the loop requires an of_node_put.
 
---Uus2/pBTyv0r7Av1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The complete semantic patch that fixes this problem is
+(http://coccinelle.lip6.fr):
 
-On Wed, Nov 18, 2015 at 10:19:29PM +0100, Heiner Kallweit wrote:
-> There have been few discussions in the past about how to handle SPI contr=
-oller
-> limitations like max message length. However they don't seem to have resu=
-lted
-> in accepted patches yet.
+// <smpl>
+@r@
+local idexpression n;
+expression e1,e2;
+iterator name for_each_node_by_name, for_each_node_by_type,
+for_each_compatible_node, for_each_matching_node,
+for_each_matching_node_and_match, for_each_child_of_node,
+for_each_available_child_of_node, for_each_node_with_property;
+iterator i;
+statement S;
+expression list [n1] es;
+@@
 
-No, they've resulted in people writing code.  We've got a bunch of
-things in the spi_master struct like the limits on speeds and bits per
-word.
+(
+(
+for_each_node_by_name(n,e1) S
+|
+for_each_node_by_type(n,e1) S
+|
+for_each_compatible_node(n,e1,e2) S
+|
+for_each_matching_node(n,e1) S
+|
+for_each_matching_node_and_match(n,e1,e2) S
+|
+for_each_child_of_node(e1,n) S
+|
+for_each_available_child_of_node(e1,n) S
+|
+for_each_node_with_property(n,e1) S
+)
+&
+i(es,n,...) S
+)
 
-> Maybe a better approach would be to introduce a new member of spi_master
-> dealing with controller limitations.
+@@
+local idexpression r.n;
+iterator r.i;
+expression e;
+expression list [r.n1] es;
+@@
 
-That's what we've been doing...
+ i(es,n,...) {
+   ...
+(
+   of_node_put(n);
+|
+   e = n
+|
+   return n;
+|
++  of_node_put(n);
+?  return ...;
+)
+   ...
+ }
 
-> I also add an example how a protocol driver could use this extension.
-> Appreciate any comment.
->=20
->=20
-> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-> index 269e8af..8a27c66 100644
+@@
+local idexpression r.n;
+iterator r.i;
+expression e;
+expression list [r.n1] es;
+@@
 
-Please don't send patches without a signoff, see SubmittingPatches.
+ i(es,n,...) {
+   ...
+(
+   of_node_put(n);
+|
+   e = n
+|
++  of_node_put(n);
+?  break;
+)
+   ...
+ }
+... when != n
 
---Uus2/pBTyv0r7Av1
-Content-Type: application/pgp-signature; name="signature.asc"
+@@
+local idexpression r.n;
+iterator r.i;
+expression e;
+identifier l;
+expression list [r.n1] es;
+@@
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+ i(es,n,...) {
+   ...
+(
+   of_node_put(n);
+|
+   e = n
+|
++  of_node_put(n);
+?  goto l;
+)
+   ...
+ }
+...
+l: ... when != n// </smpl>
 
-iQEcBAEBCAAGBQJWTPRiAAoJECTWi3JdVIfQZvcH/ReFJlRpCrsCfb0FcyHU80kT
-snkXL/UOZfG0264pl9NFuO4cXCGfYTOE0wobHGptcFn49atVM5ynZtTutBXu/Ray
-YeHkWRpKTE/OBQkp/Tw7kMHLGdkgcFiMrSadHHhgrz/igVJPWTkKXJmXvPZAC+nt
-PvpWkYKMtRYu6cX76MxfhxtLPg9sNkM24lwZiWMNMi/N4mhh3DfERcIJwVXtZ8Py
-YaGTqZjPL1ieNRuPlyEOdB5xXhN8U73ZZKpnBOvyt7FJ9oM7p3ICfwqF4OB1xCIk
-KIMX9ntaeg8kk1IL4hAYYTTIDXceLCBqYh6unt9+T812e5W6A7glx2E593sxkEQ=
-=Wkp2
------END PGP SIGNATURE-----
+---
 
---Uus2/pBTyv0r7Av1--
+ drivers/iio/adc/qcom-spmi-vadc.c     |    4 +++-
+ drivers/mtd/nand/brcmnand/brcmnand.c |   14 ++++++++++----
+ drivers/mtd/nand/sunxi_nand.c        |    4 +++-
+ drivers/power/reset/at91-reset.c     |    1 +
+ 4 files changed, 17 insertions(+), 6 deletions(-)
