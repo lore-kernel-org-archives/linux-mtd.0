@@ -1,16 +1,31 @@
-Received: from mail1.bemta5.messagelabs.com ([195.245.231.147])
+Received: from mail-io0-x22d.google.com ([2607:f8b0:4001:c06::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZtHSl-0003nH-Ot
- for linux-mtd@lists.infradead.org; Mon, 02 Nov 2015 15:56:05 +0000
-From: "Krug, Markus" <Markus.Krug@bruker.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: MTD mounting problem
-Message-ID: <9B6BBBFFF27FBB469F5F9ECB4655AFDA40FBF7@bruexc005.brumgt.local>
-Content-Language: de-DE
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1Zz8Qh-00085K-Es
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 19:30:09 +0000
+Received: by iouu10 with SMTP id u10so65984417iou.0
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2015 11:29:45 -0800 (PST)
+Date: Wed, 18 Nov 2015 13:28:55 -0600
+From: Seth Forshee <seth.forshee@canonical.com>
+To: Theodore Ts'o <tytso@mit.edu>, Al Viro <viro@ZenIV.linux.org.uk>,
+ "Eric W. Biederman" <ebiederm@xmission.com>,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] User namespace mount updates
+Message-ID: <20151118192855.GH134139@ubuntu-hedt>
+References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
+ <20151117170556.GV22011@ZenIV.linux.org.uk>
+ <20151117172551.GA108807@ubuntu-hedt>
+ <20151117175506.GW22011@ZenIV.linux.org.uk>
+ <20151117183444.GB108807@ubuntu-hedt>
+ <20151118191045.GB3434@thunk.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151118191045.GB3434@thunk.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,32 +34,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Mon, 02 Nov 2015 15:56:05 -0000
 
-VGhhbmtzIFJpY2hhcmQsDQpUaGUgcHJvYmxlbSB3YXMgdGhlIG1pbm9yIG51bWJlciBvZiB0aGUg
-YmxvY2sgZGV2aWNlLCB3aGljaCBkaWZmZXJzIGZyb20gdGhlIG1pbm9yIG51bWJlciBvZiB0aGUg
-Y2hhciBkZXZpY2UuDQpXaXRoDQpta25vZCAvZGV2L210ZDUgYyAzMSAxMA0KbWtub2QgL2Rldi9t
-dGRibG9jazUgYiA5MCA1DQpJIHdhcyBhYmxlIHRvIG1vdW50IHRoZSBkZXZpY2UuIA0KSG93ZXZl
-ciBJIHN0aWxsIGRvbid0IGtub3csIHdoeSB0aGUgZGV2aWNlcyBhcmUgbm90IGNyZWF0ZWQgaW4g
-L2RldiBhdCBzdGFydCB1cC4gDQoNCk1hcmt1cw0KDQotLS0tLVVyc3Byw7xuZ2xpY2hlIE5hY2hy
-aWNodC0tLS0tDQpWb246IFJpY2hhcmQgV2VpbmJlcmdlciBbbWFpbHRvOnJpY2hhcmQud2VpbmJl
-cmdlckBnbWFpbC5jb21dIA0KR2VzZW5kZXQ6IE1vbnRhZywgMi4gTm92ZW1iZXIgMjAxNSAxNDow
-OQ0KQW46IEtydWcsIE1hcmt1cw0KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpC
-ZXRyZWZmOiBSZTogTVREIG1vdW50aW5nIHByb2JsZW0NCg0KT24gTW9uLCBOb3YgMiwgMjAxNSBh
-dCAxOjIxIFBNLCBLcnVnLCBNYXJrdXMgPE1hcmt1cy5LcnVnQGJydWtlci5jb20+IHdyb3RlOg0K
-PiBhbmQgL3Byb2MvbXRkIHNob3dzOg0KPiBkZXY6ICAgIHNpemUgICBlcmFzZXNpemUgIG5hbWUN
-Cj4gbXRkMDogMDAxMDAwMDAgMDAwMTAwMDAgInFzcGktZnNibC11Ym9vdCINCj4gbXRkMTogMDA1
-MDAwMDAgMDAwMTAwMDAgInFzcGktbGludXgiDQo+IG10ZDI6IDAwMDIwMDAwIDAwMDEwMDAwICJx
-c3BpLWRldmljZS10cmVlIg0KPiBtdGQzOiAwMDVlMDAwMCAwMDAxMDAwMCAicXNwaS1yb290ZnMi
-DQo+IG10ZDQ6IDAwNDAwMDAwIDAwMDEwMDAwICJxc3BpLWJpdHN0cmVhbSINCj4gbXRkNTogMDEw
-MDAwMDAgMDAwMTAwMDAgInFzcGktZGF0YSINCj4gU28gZXZlcnl0aGluZyBzZWVtcyB0byBiZSBm
-aW5lLg0KPiBCdXQgaW4gL2RldiB0aGVyZSBhcmUgb25seSBtdGQwLCBtdGQxLCBtdGRibG9jazAg
-YW5kIG10ZGJsb2NrMS4NCj4gU28gSSBhZGRlZCB3aXRoIG1rbm9kIHRoZSBtaXNzaW5nIHBhcnRp
-dGlvbnMuDQoNClRoaXMgc2hvdWxkIG5vdCBoYXBwZW4uDQpJcyB5b3VyIC9kZXYgcmVhbGx5IG5v
-dCBtYW5hZ2VkIGJ5IHVkZXYgb3IgZGV2dG1wZnM/DQoNCj4gVGhlbiBJIHJ1bjoNCj4gZmxhc2hf
-ZXJhc2VhbGwgL2Rldi9tdGQ1IChubyBwcm9ibGVtKQ0KPiBtb3VudCAtdCBqZmZzMiAvZGV2L210
-ZGJsb2NrNSAvbW50DQo+IHRoZSBtb3VudGluZyBmYWlsZWQ6DQo+IG1vdW50OiBtb3VudGluZyAv
-ZGV2L210ZGJsb2NrNSBvbiAvbW50IGZhaWxlZDogTm8gc3VjaCBkZXZpY2UNCj4NCj4gRG9lcyBz
-b21lb25lIGtub3cgd2hhdHMgZ29pbmcgd3Jvbmc/DQoNCkkgdGhpbmsgdGhlIHJvb3QgY2F1c2Ug
-aXMgdGhlIG1pc3NpbmcgZGV2aWNlIG5vZGUuDQpQbGVhc2UgZG91YmxlIGNoZWNrIHdoeSBpdCBp
-cyBub3QgcHJlc2VudC4NCg0KLS0gDQpUaGFua3MsDQovL3JpY2hhcmQNCg==
+On Wed, Nov 18, 2015 at 02:10:45PM -0500, Theodore Ts'o wrote:
+> On Tue, Nov 17, 2015 at 12:34:44PM -0600, Seth Forshee wrote:
+> > On Tue, Nov 17, 2015 at 05:55:06PM +0000, Al Viro wrote:
+> > > On Tue, Nov 17, 2015 at 11:25:51AM -0600, Seth Forshee wrote:
+> > > 
+> > > > Shortly after that I plan to follow with support for ext4. I've been
+> > > > fuzzing ext4 for a while now and it has held up well, and I'm currently
+> > > > working on hand-crafted attacks. Ted has commented privately (to others,
+> > > > not to me personally) that he will fix bugs for such attacks, though I
+> > > > haven't seen any public comments to that effect.
+> > > 
+> > > _Static_ attacks, or change-image-under-mounted-fs attacks?
+> > 
+> > Right now only static attacks, change-image-under-mounted-fs attacks
+> > will be next.
+> 
+> I will fix bugs about static attacks.  That is, it's interesting to me
+> that a buggy file system (no matter how it is created), not cause the
+> kernel to crash --- and privilege escalation attacks tend to be
+> strongly related to those bugs where we're not doing strong enough
+> checking.
+> 
+> Protecting against a malicious user which changes the image under the
+> file system is a whole other kettle of fish.  I am not at all user you
+> can do this without completely sacrificing performance or making the
+> code impossible to maintain.  So my comments do *not* extend to
+> protecting against a malicious user who is changing the block device
+> underneath the kernel.
+> 
+> If you want to submit patches to make the kernel more robust against
+> these attacks, I'm certainly willing to look at the patches.  But I'm
+> certainly not guaranteeing that they will go in, and I'm certainly not
+> promising to fix all vulnerabilities that you might find that are
+> caused by a malicious block device.  Sorry, that's too much buying a
+> pig in a poke....
+
+Thanks Ted. My plan right now is to explore the possibility of blocking
+writes to the backing store from userspace while it's mounted.
