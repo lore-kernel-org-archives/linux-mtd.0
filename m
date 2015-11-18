@@ -1,22 +1,20 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzA7E-0003zQ-TB
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 21:18:09 +0000
-Received: by pacej9 with SMTP id ej9so56414173pac.2
- for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2015 13:17:48 -0800 (PST)
-Date: Wed, 18 Nov 2015 13:17:44 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org,
- bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH] MAINTAINERS: brcmnand: Add co-maintainer for Broadcom SoCs
-Message-ID: <20151118211744.GG140057@google.com>
-References: <1447786208-20102-1-git-send-email-kdasu.kdev@gmail.com>
- <564B7944.9050506@gmail.com>
+ id 1ZzA98-0004Sz-7t
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 21:20:07 +0000
+Received: by wmww144 with SMTP id w144so90397840wmw.0
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2015 13:19:44 -0800 (PST)
+Subject: Re: Error handling in spi-nor and dealing with short reads/writes
+To: Brian Norris <computersforpeace@gmail.com>
+References: <56157571.4090007@gmail.com> <20151118004553.GI8456@google.com>
+Cc: linux-mtd@lists.infradead.org
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <564CE59F.4070905@gmail.com>
+Date: Wed, 18 Nov 2015 21:54:55 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <564B7944.9050506@gmail.com>
+In-Reply-To: <20151118004553.GI8456@google.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +24,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 17, 2015 at 11:00:20AM -0800, Florian Fainelli wrote:
-> On 17/11/15 10:50, Kamal Dasu wrote:
-> > Adding myself as co-maintainer of nand controller driver
-> > for the Broadcom SoCs.
-> > 
-> > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+Am 18.11.2015 um 01:45 schrieb Brian Norris:
+> Hi Heiner,
 > 
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> I see you've sent followup patches for this already. Haven't had a
+> chance to look at them fully yet, but I can answer a bit.
 > 
-> Thanks!
+> On Wed, Oct 07, 2015 at 09:41:37PM +0200, Heiner Kallweit wrote:
+>> I stumbled across some missing error handling in spi-nor and when having a look at the
+>> list archive I found some proposed patches and related discussions.
+> 
+> Looking at this?
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2015-August/061058.html
 
-Fine with me, pushed to linux-mtd.git
+Yes, I refered to this mail thread. Especially this mail:
+https://lkml.org/lkml/2015/5/22/94
+> 
+> (Unfortunately, this series got dropped by patchwork:
+> http://patchwork.ozlabs.org/project/linux-mtd/list/)
+> 
+>> However it seems like there was no result, at least I didn't find accepted patches
+>> dealing with this issue.
+> 
+> Yes, they haven't been accepted yet. IIRC, they partly had to do with
+> buggy SPI drivers, and so it was hard to get things straight when the
+> submitter just wanted to paper over driver bugs. I haven't had the
+> incentive or time to properly revisit the later versions of those
+> patches. But I may review/merge them soon, and it looks like that may
+> conflict with your patches.
+> 
+> It'd be great if you could review those patches.
+> 
+Sure, I'll have a look.
+
+>> To summarize few issues:
+>>
+>> 1. I didn't find any clear definition how the read / write callbacks in spi_nor and mtd_info
+>>    are supposed to handle the retlen argument (returning the actual length of the current
+>>    transfer or adding it to the current value of *retlen).
+> 
+> Yeah...they're not extremely well specified. mtd_info, at least, has a
+> fairly well established de facto specification, but spi-nor might be a
+> bit more inconsistent.
+> 
+>>    Maybe due to this missing specification there are different implementations of the read
+>>    callback in spi_nor:
+>>    m25p80_read: sets *retlen to the actual length of the current transfer
+>>    nxp_spifi_read: adds it to *retlen
+>>    fsl_qspi_read: adds it to *retlen
+>>    Luckily this has no impact so far as mtd_read initializes *retlen to 0 before calling
+>>    the _read callback (once).
+> 
+> Right, all MTD users assume that the core MTD code initializes *retlen.
+> That was done because otherwise, the initialization was done
+> inconsistently across all drivers.
+> 
+>> 2. The write callback in spi_nor is defined with a void return type and doesn't allow to
+>>    handle the case of a failing transfer.
+> 
+> That one has been odd to me.
+> 
+>> 3. It's unclear at which layer incomplete reads/writes are acceptable (and therefore which
+>>    layer can / should loop to assemble chunks).
+> 
+> Yep.
+> 
+>> My 2ct:
+>>
+>> 1. They should return the actual length of the current transfer in *retlen.
+> 
+> Seems reasonable.
+> 
+>>    In case of a partial transfer they should return an error (e.g. -EIO or -EMSGSIZE).
+>>    This allows the caller to identify a partial transfer and the amount of
+>>    bytes successfully transferred. Then the caller can decide whether he wants
+>>    to retry for the failed part of the transfer and later assemble the chunks.
+> 
+> I don't think we want to handle both errors and *retlen; those are
+> mutually exclusive. If we have to negotiate a max message size for some
+> reason, that's a different story.
+
+I have to admit that when thinking about assembling read chunks I had the fsl-espi
+controller in mind which has a 64K message size limitation.
+Currently this limitation is handled in the controller driver using ugly implicit
+assumptions (bytes 2-4 in a message are assumed to be a SPI NOR 3-byte address etc.)
+
+I'll send a proposal for handling such limitations in a structured way and I'll
+involve Mark as it touches the spi_master struct.
+> 
+>> 2. Make it return int (like _write in mtd_info).
+> 
+> I assume 'it' is spi_nor->_write() callback. Then yes.
+> 
+>> 3. I prefer to handle read chunks in spi_nor_read (submitted a related patch already).
+> 
+> Sounds OK.
+> 
+>>    Not sure whether it would make sense to add chunk handling also for writes.
+>>    I'm not aware of any controller which is not able to transfer at least a single page
+>>    at once.
+> 
+> At most, we should just make sure the error reporting and *retlen
+> handling is correct, and if drivers run into problems, then we can talk.
+> For one, you sometimes get less wear reliability from NOR flash when
+> writing in smaller-than-page-size chunks, so we shouldn't encourage it.
+> 
+>> This is meant as a RfC. Also I may have missed important parts of the discussion.
+>> Appreciate any hint or comment.
+> 
+> Brian
+> 
+Heiner
