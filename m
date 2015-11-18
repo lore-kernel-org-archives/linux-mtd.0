@@ -1,19 +1,18 @@
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzA98-0004Sz-7t
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 21:20:07 +0000
-Received: by wmww144 with SMTP id w144so90397840wmw.0
- for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2015 13:19:44 -0800 (PST)
-Subject: Re: Error handling in spi-nor and dealing with short reads/writes
+ id 1ZzA99-0004TL-4l
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 21:20:08 +0000
+Received: by wmww144 with SMTP id w144so90398731wmw.0
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2015 13:19:45 -0800 (PST)
 To: Brian Norris <computersforpeace@gmail.com>
-References: <56157571.4090007@gmail.com> <20151118004553.GI8456@google.com>
-Cc: linux-mtd@lists.infradead.org
+Cc: Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <564CE59F.4070905@gmail.com>
-Date: Wed, 18 Nov 2015 21:54:55 +0100
+Subject: RfC: Handle SPI controller limitations like maximum message length
+Message-ID: <564CEB61.2000601@gmail.com>
+Date: Wed, 18 Nov 2015 22:19:29 +0100
 MIME-Version: 1.0
-In-Reply-To: <20151118004553.GI8456@google.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,115 +23,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 18.11.2015 um 01:45 schrieb Brian Norris:
-> Hi Heiner,
-> 
-> I see you've sent followup patches for this already. Haven't had a
-> chance to look at them fully yet, but I can answer a bit.
-> 
-> On Wed, Oct 07, 2015 at 09:41:37PM +0200, Heiner Kallweit wrote:
->> I stumbled across some missing error handling in spi-nor and when having a look at the
->> list archive I found some proposed patches and related discussions.
-> 
-> Looking at this?
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2015-August/061058.html
+There have been few discussions in the past about how to handle SPI controller
+limitations like max message length. However they don't seem to have resulted
+in accepted patches yet.
+I also stumbled across this topic because I own a device using Freescale's
+ESPI which has a 64K message size limitation.
 
-Yes, I refered to this mail thread. Especially this mail:
-https://lkml.org/lkml/2015/5/22/94
-> 
-> (Unfortunately, this series got dropped by patchwork:
-> http://patchwork.ozlabs.org/project/linux-mtd/list/)
-> 
->> However it seems like there was no result, at least I didn't find accepted patches
->> dealing with this issue.
-> 
-> Yes, they haven't been accepted yet. IIRC, they partly had to do with
-> buggy SPI drivers, and so it was hard to get things straight when the
-> submitter just wanted to paper over driver bugs. I haven't had the
-> incentive or time to properly revisit the later versions of those
-> patches. But I may review/merge them soon, and it looks like that may
-> conflict with your patches.
-> 
-> It'd be great if you could review those patches.
-> 
-Sure, I'll have a look.
+At least one agreed fact is that silently assembling chunks in protocol
+drivers is not the preferred approach.
 
->> To summarize few issues:
->>
->> 1. I didn't find any clear definition how the read / write callbacks in spi_nor and mtd_info
->>    are supposed to handle the retlen argument (returning the actual length of the current
->>    transfer or adding it to the current value of *retlen).
-> 
-> Yeah...they're not extremely well specified. mtd_info, at least, has a
-> fairly well established de facto specification, but spi-nor might be a
-> bit more inconsistent.
-> 
->>    Maybe due to this missing specification there are different implementations of the read
->>    callback in spi_nor:
->>    m25p80_read: sets *retlen to the actual length of the current transfer
->>    nxp_spifi_read: adds it to *retlen
->>    fsl_qspi_read: adds it to *retlen
->>    Luckily this has no impact so far as mtd_read initializes *retlen to 0 before calling
->>    the _read callback (once).
-> 
-> Right, all MTD users assume that the core MTD code initializes *retlen.
-> That was done because otherwise, the initialization was done
-> inconsistently across all drivers.
-> 
->> 2. The write callback in spi_nor is defined with a void return type and doesn't allow to
->>    handle the case of a failing transfer.
-> 
-> That one has been odd to me.
-> 
->> 3. It's unclear at which layer incomplete reads/writes are acceptable (and therefore which
->>    layer can / should loop to assemble chunks).
-> 
-> Yep.
-> 
->> My 2ct:
->>
->> 1. They should return the actual length of the current transfer in *retlen.
-> 
-> Seems reasonable.
-> 
->>    In case of a partial transfer they should return an error (e.g. -EIO or -EMSGSIZE).
->>    This allows the caller to identify a partial transfer and the amount of
->>    bytes successfully transferred. Then the caller can decide whether he wants
->>    to retry for the failed part of the transfer and later assemble the chunks.
-> 
-> I don't think we want to handle both errors and *retlen; those are
-> mutually exclusive. If we have to negotiate a max message size for some
-> reason, that's a different story.
+Maybe a better approach would be to introduce a new member of spi_master
+dealing with controller limitations.
+My issue is just the message size limitation but most likely there are more
+and different limitations in other controllers.
 
-I have to admit that when thinking about assembling read chunks I had the fsl-espi
-controller in mind which has a 64K message size limitation.
-Currently this limitation is handled in the controller driver using ugly implicit
-assumptions (bytes 2-4 in a message are assumed to be a SPI NOR 3-byte address etc.)
+I'd introduce a struct spi_controller_restrictions and add a member to spi_master
+pointing to such a struct. Then a controller driver could do something like this:
 
-I'll send a proposal for handling such limitations in a structured way and I'll
-involve Mark as it touches the spi_master struct.
-> 
->> 2. Make it return int (like _write in mtd_info).
-> 
-> I assume 'it' is spi_nor->_write() callback. Then yes.
-> 
->> 3. I prefer to handle read chunks in spi_nor_read (submitted a related patch already).
-> 
-> Sounds OK.
-> 
->>    Not sure whether it would make sense to add chunk handling also for writes.
->>    I'm not aware of any controller which is not able to transfer at least a single page
->>    at once.
-> 
-> At most, we should just make sure the error reporting and *retlen
-> handling is correct, and if drivers run into problems, then we can talk.
-> For one, you sometimes get less wear reliability from NOR flash when
-> writing in smaller-than-page-size chunks, so we shouldn't encourage it.
-> 
->> This is meant as a RfC. Also I may have missed important parts of the discussion.
->> Appreciate any hint or comment.
-> 
-> Brian
-> 
-Heiner
+static const struct spi_controller_restrictions fsl_espi_restrictions = {
+	.max_msg_size	= 0xffff,
+};
+
+master->restrictions = &fsl_espi_restrictions;
+
+I also add an example how a protocol driver could use this extension.
+Appreciate any comment.
+
+
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 269e8af..8a27c66 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -276,6 +276,17 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+ 			spi_unregister_driver)
+ 
+ /**
++ * struct spi_controller_restrictions - restrictions of the controller
++ * @max_msg_size: maximum length of a SPI message
++ * SPI controllers can have different restrictions like a maximum
++ * supported message size.
++ * This struct most likely is going to be extended over time.
++ */
++struct spi_controller_restrictions {
++	size_t max_msg_size;
++};
++
++/**
+  * struct spi_master - interface to SPI master controller
+  * @dev: device interface to this driver
+  * @list: link with the global spi_master list
+@@ -295,6 +306,7 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+  * @min_speed_hz: Lowest supported transfer speed
+  * @max_speed_hz: Highest supported transfer speed
+  * @flags: other constraints relevant to this driver
++ * @restrictions: controller restrictions like max supported message size
+  * @bus_lock_spinlock: spinlock for SPI bus locking
+  * @bus_lock_mutex: mutex for SPI bus locking
+  * @bus_lock_flag: indicates that the SPI bus is locked for exclusive use
+@@ -417,6 +429,9 @@ struct spi_master {
+ #define SPI_MASTER_MUST_RX      BIT(3)		/* requires rx */
+ #define SPI_MASTER_MUST_TX      BIT(4)		/* requires tx */
+ 
++	/* collection of restrictions like max supported message size */
++	struct spi_controller_restrictions *restrictions;
++
+ 	/* lock and mutex for SPI bus locking */
+ 	spinlock_t		bus_lock_spinlock;
+ 	struct mutex		bus_lock_mutex;
+-- 
+2.6.2
+
+
+
+
+---
+ drivers/mtd/devices/m25p80.c | 41 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 36 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index f10daa8..0e46fb1f 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -115,11 +115,7 @@ static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+ 	}
+ }
+ 
+-/*
+- * Read an address range from the nor chip.  The address range
+- * may be any size provided it is within the physical boundaries.
+- */
+-static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
++static int _m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 			size_t *retlen, u_char *buf)
+ {
+ 	struct m25p *flash = nor->priv;
+@@ -160,6 +156,41 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	return ret;
+ }
+ 
++/*
++ * Read an address range from the nor chip.  The address range
++ * may be any size provided it is within the physical boundaries.
++ */
++static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
++			size_t *retlen, u_char *buf)
++{
++	struct m25p *flash = nor->priv;
++	struct spi_controller_restrictions *restrictions =
++		flash->spi->master->restrictions;
++	size_t cmd_len, xfer_len, max_len;
++	int ret = 0;
++
++	/* convert the dummy cycles to the number of bytes */
++	cmd_len = m25p_cmdsz(nor) + nor->read_dummy / 8;
++
++	max_len = (restrictions && restrictions->max_msg_size) ?
++		  restrictions->max_msg_size : SIZE_MAX;
++
++	if (unlikely(max_len < cmd_len))
++		return -EINVAL;
++
++	max_len -= cmd_len;
++
++	while (len) {
++		xfer_len = min(len, max_len);
++		ret = _m25p80_read(nor, from, xfer_len, retlen, buf);
++		if (ret < 0)
++			break;
++		from += xfer_len;
++		len -= xfer_len;
++	}
++
++	return ret;
++}
++
+ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
+ {
+ 	struct m25p *flash = nor->priv;
+-- 
+2.6.2
