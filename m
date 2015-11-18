@@ -1,33 +1,22 @@
-Received: from mail-io0-x22d.google.com ([2607:f8b0:4001:c06::22d])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zyqyh-0000b8-Gw
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 00:52:04 +0000
-Received: by ioir85 with SMTP id r85so37752243ioi.1
- for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 16:51:41 -0800 (PST)
-Date: Tue, 17 Nov 2015 18:50:52 -0600
-From: Seth Forshee <seth.forshee@canonical.com>
-To: James Morris <jmorris@namei.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Casey Schaufler <casey@schaufler-ca.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- James Morris <james.l.morris@oracle.com>,
- "Serge E. Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH v3 7/7] Smack: Handle labels consistently in untrusted
- mounts
-Message-ID: <20151118005052.GA131992@ubuntu-hedt>
-References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
- <1447778351-118699-8-git-send-email-seth.forshee@canonical.com>
- <alpine.LRH.2.20.1511181112090.1460@namei.org>
+ id 1ZyrCS-0001GE-Vf
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 01:06:17 +0000
+Received: by pabfh17 with SMTP id fh17so26729498pab.0
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 17:05:56 -0800 (PST)
+Date: Tue, 17 Nov 2015 17:05:53 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Wang YanQing <udknight@gmail.com>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, fransmeulenbroeks@gmail.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: mtd: improve nand_ecc.txt for readability
+ and correctness
+Message-ID: <20151118010553.GA140706@google.com>
+References: <20151029163632.GA2175@udknight>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.20.1511181112090.1460@namei.org>
+In-Reply-To: <20151029163632.GA2175@udknight>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,21 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 18, 2015 at 11:12:51AM +1100, James Morris wrote:
-> On Tue, 17 Nov 2015, Seth Forshee wrote:
+On Fri, Oct 30, 2015 at 12:36:33AM +0800, Wang YanQing wrote:
+> This patch correct some representation errors, add a little
+> clarification in some places, and fix indentation problems
+> for pseudo code.
 > 
-> > +	sbsp = inode->i_sb->s_security;
-> > +	if ((sbsp->smk_flags & SMK_SB_UNTRUSTED) &&
+> It also delete one more white space for one place.
 > 
-> Where is SMK_SB_UNTRUSTED defined?
-> 
-> I can't see it in this patch series, mainline or security next.
+> Signed-off-by: Wang YanQing <udknight@gmail.com>
 
-Eric's already applied a few of my patches to a branch in his tree,
-including the one that defines this. See the for-testing branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git,
-specifically
-https://git.kernel.org/cgit/linux/kernel/git/ebiederm/user-namespace.git/commit/?id=36979551f2345d4e20714c1fc53d6a15c87f8b64.
+Applied to l2-mtd.git, with the following diff squashed in.
 
-Thanks,
-Seth
+I don't believe these particular phrases have anything to do with
+endianness, although the algorithm does swap a few things differently
+depending on the host CPU endianness.
+
+diff --git a/Documentation/mtd/nand_ecc.txt b/Documentation/mtd/nand_ecc.txt
+index ccb1f260828c..f8c3284bf6a7 100644
+--- a/Documentation/mtd/nand_ecc.txt
++++ b/Documentation/mtd/nand_ecc.txt
+@@ -273,9 +273,9 @@ byte. A quick analysis:
+ for the column parity we use the par variable. When extending to 32 bits
+ we can in the end easily calculate rp0 and rp1 from it.
+ (because par now consists of 4 bytes, contributing to rp1, rp0, rp1, rp0
+-respectively, from MSB to LSB in little endian mode)
++respectively, from MSB to LSB)
+ also rp2 and rp3 can be easily retrieved from par as rp3 covers the
+-first two MSBs and rp2 covers the last two LSBs in little endian mode.
++first two MSBs and rp2 covers the last two LSBs.
+ 
+ Note that of course now the loop is executed only 64 times (256/4).
+ And note that care must taken wrt byte ordering. The way bytes are
+@@ -387,7 +387,7 @@ Analysis 2
+ 
+ The code (of course) works, and hurray: we are a little bit faster than
+ the linux driver code (about 15%). But wait, don't cheer too quickly.
+-THere is more to be gained.
++There is more to be gained.
+ If we look at e.g. rp14 and rp15 we see that we either xor our data with
+ rp14 or with rp15. However we also have par which goes over all data.
+ This means there is no need to calculate rp14 as it can be calculated from
