@@ -1,21 +1,32 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zz7Xo-0001pY-Vk
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 18:33:25 +0000
-Received: by padhx2 with SMTP id hx2so52537232pad.1
- for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2015 10:33:03 -0800 (PST)
-Date: Wed, 18 Nov 2015 10:32:59 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Han Xu <han.xu@freescale.com>
-Subject: Re: [PATCH v2] mtd: fsl-quadspi: possible NULL dereference
-Message-ID: <20151118183259.GD140057@google.com>
-References: <1447699339-43027-1-git-send-email-computersforpeace@gmail.com>
- <1447699530-50014-1-git-send-email-computersforpeace@gmail.com>
+Received: from fieldses.org ([2600:3c00::f03c:91ff:fe50:41d6])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zz7pN-0003V5-TC
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 18:51:34 +0000
+Date: Wed, 18 Nov 2015 13:44:08 -0500
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Cc: Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Seth Forshee <seth.forshee@canonical.com>,
+ "Eric W. Biederman" <ebiederm@xmission.com>,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org,
+ Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v3 0/7] User namespace mount updates
+Message-ID: <20151118184408.GA806@fieldses.org>
+References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
+ <20151117170556.GV22011@ZenIV.linux.org.uk>
+ <20151117172551.GA108807@ubuntu-hedt>
+ <20151117175506.GW22011@ZenIV.linux.org.uk>
+ <564B79B1.3040207@gmail.com>
+ <20151117193012.GX22011@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1447699530-50014-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <20151117193012.GX22011@ZenIV.linux.org.uk>
+From: bfields@fieldses.org (J. Bruce Fields)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +36,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 16, 2015 at 10:45:30AM -0800, Brian Norris wrote:
-> It is theoretically possible to probe this driver without a matching
-> device tree, so let's guard against this.
+On Tue, Nov 17, 2015 at 07:30:12PM +0000, Al Viro wrote:
+> On Tue, Nov 17, 2015 at 02:02:09PM -0500, Austin S Hemmelgarn wrote:
 > 
-> Also, use the of_device_get_match_data() helper to make this a bit
-> simpler.
+> > >_Static_ attacks, or change-image-under-mounted-fs attacks?
+> > To properly protect against attacks on mounted filesystems, we'd
+> > need some new concept of a userspace immutable file (that is, one
+> > where nobody can write to it except the kernel, and only the kernel
+> > can change it between regular access and this new state), and then
+> > have the kernel set an image (or block device) to this state when a
+> > filesystem is mounted from it (this introduces all kinds of other
+> > issues too however, for example stuff that allows an online fsck on
+> > the device will stop working, as will many un-deletion tools).
+> > 
+> > The only other option would be to force the FS to cache all metadata
+> > in memory, and validate between the cache and what's on disk on
+> > every access, which is not realistic for any real world system.
 > 
-> Coverity complained about this one.
+> Doctor, it hurt when I do it...
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Han Xu <han.xu@freescale.com>
-> ---
-> v2:
->  * missed a 'const' warning
->  * s/reference/dereference in $subject
+> IOW, the other option is to refuse attempting this insanity.  Fuse probably
+> can be handled, but being able to mount (with kernel-space drivera) an
+> arbitrary ext4 image is equivalent to being able to do anything and it's
+> going to stay that way for the forseeable future.
 
-Pushed to l2-mtd.git
+What about the filesystems that desktop users commonly mount? (fat,
+isofs, udf?)
+
+--b.
