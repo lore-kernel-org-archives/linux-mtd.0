@@ -1,12 +1,11 @@
-Received: from mail-io0-x22d.google.com ([2607:f8b0:4001:c06::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zz8Qh-00085K-Es
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 19:30:09 +0000
-Received: by iouu10 with SMTP id u10so65984417iou.0
- for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2015 11:29:45 -0800 (PST)
-Date: Wed, 18 Nov 2015 13:28:55 -0600
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Theodore Ts'o <tytso@mit.edu>, Al Viro <viro@ZenIV.linux.org.uk>,
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zz8U6-0002LR-Q3
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 19:33:39 +0000
+Date: Wed, 18 Nov 2015 19:32:40 +0000
+From: Serge Hallyn <serge.hallyn@ubuntu.com>
+To: Theodore Ts'o <tytso@mit.edu>, Seth Forshee <seth.forshee@canonical.com>,
+ Al Viro <viro@ZenIV.linux.org.uk>,
  "Eric W. Biederman" <ebiederm@xmission.com>,
  linux-bcache@vger.kernel.org, dm-devel@redhat.com,
  linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
@@ -15,7 +14,7 @@ To: Theodore Ts'o <tytso@mit.edu>, Al Viro <viro@ZenIV.linux.org.uk>,
  Serge Hallyn <serge.hallyn@canonical.com>,
  Andy Lutomirski <luto@amacapital.net>, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v3 0/7] User namespace mount updates
-Message-ID: <20151118192855.GH134139@ubuntu-hedt>
+Message-ID: <20151118193240.GA26454@ubuntumail>
 References: <1447778351-118699-1-git-send-email-seth.forshee@canonical.com>
  <20151117170556.GV22011@ZenIV.linux.org.uk>
  <20151117172551.GA108807@ubuntu-hedt>
@@ -35,7 +34,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 18, 2015 at 02:10:45PM -0500, Theodore Ts'o wrote:
+Quoting Theodore Ts'o (tytso@mit.edu):
 > On Tue, Nov 17, 2015 at 12:34:44PM -0600, Seth Forshee wrote:
 > > On Tue, Nov 17, 2015 at 05:55:06PM +0000, Al Viro wrote:
 > > > On Tue, Nov 17, 2015 at 11:25:51AM -0600, Seth Forshee wrote:
@@ -63,13 +62,18 @@ On Wed, Nov 18, 2015 at 02:10:45PM -0500, Theodore Ts'o wrote:
 > code impossible to maintain.  So my comments do *not* extend to
 > protecting against a malicious user who is changing the block device
 > underneath the kernel.
-> 
+
+Yup, thanks, Ted.  I think the only sane thing to do is work on making the
+mounted files immutable.  Guarding against under-mounted-writes seems
+crazy.  Well, actually it seems like a fascinating problem, and maybe
+solvable without fs changes, but not in scope here.
+
 > If you want to submit patches to make the kernel more robust against
 > these attacks, I'm certainly willing to look at the patches.  But I'm
 > certainly not guaranteeing that they will go in, and I'm certainly not
 > promising to fix all vulnerabilities that you might find that are
 > caused by a malicious block device.  Sorry, that's too much buying a
 > pig in a poke....
-
-Thanks Ted. My plan right now is to explore the possibility of blocking
-writes to the backing store from userspace while it's mounted.
+> 
+> 						- Ted
+> 				
