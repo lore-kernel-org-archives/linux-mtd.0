@@ -1,17 +1,16 @@
 Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZyrEM-0001Sz-1q
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 01:08:15 +0000
-Subject: Re: [PATCH] mtd: brcmnand: clean up flash cache for parameter pages
-To: Brian Norris <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-References: <1447721773-18417-1-git-send-email-computersforpeace@gmail.com>
-CC: Clay McClure <clay@daemons.net>, Scott Branden <sbranden@broadcom.com>,
- <bcm-kernel-feedback-list@broadcom.com>
+ id 1ZyrIE-0003xw-JG
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 01:12:14 +0000
+Subject: Re: [PATCH] mtd: brcmnand: drop unused subpage_read() support
+To: Brian Norris <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <bcm-kernel-feedback-list@broadcom.com>
+References: <1447722248-135635-1-git-send-email-computersforpeace@gmail.com>
 From: Ray Jui <rjui@broadcom.com>
-Message-ID: <564BCF2D.7060909@broadcom.com>
-Date: Tue, 17 Nov 2015 17:06:53 -0800
+Message-ID: <564BD03A.4030309@broadcom.com>
+Date: Tue, 17 Nov 2015 17:11:22 -0800
 MIME-Version: 1.0
-In-Reply-To: <1447721773-18417-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1447722248-135635-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,88 +24,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 
-On 11/16/2015 4:56 PM, Brian Norris wrote:
-> The read_byte() handling for accessing the flash cache has some awkward
-> swapping being done in the read_byte() function. Let's just make this a
-> byte array, and do the swapping with the word-level macros during the
-> initial buffer copy.
->
-> This is just a refactoring patch, with no (intended) functional change.
+On 11/16/2015 5:04 PM, Brian Norris wrote:
+> AFAIR this driver was never tested with subpage read support, and this
+> code is currently unused because we don't set the NAND_SUBPAGE_READ
+> flag. It can be resurrected if someone tests it properly.
 >
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Clay McClure <clay@daemons.net>
-> Cc: Ray Jui <rjui@broadcom.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> Cc: <bcm-kernel-feedback-list@broadcom.com>
-> Tested-by: Clay McClure <clay@daemons.net>
 > ---
-> I wanted to get this out there as a proper patch, since there was some
-> confusion on the previous thread in which this appeared.
->
-> This does *not* fix the bug reported by Cyrille in the thread "mtd: brcmnand:
-> Fix NAND_CMD_PARAM byte order". There is a candidate patch which fixes this:
->
->    http://patchwork.ozlabs.org/patch/535330/
->
-> But I'm awaiting a better explanation from Broadcom folks before I
-> respin/accept anything like that.
-
-Yeah still on our to-do list. Will find time to talk to our ASIC engineer.
-
->
->   drivers/mtd/nand/brcmnand/brcmnand.c | 13 +++++++++----
->   1 file changed, 9 insertions(+), 4 deletions(-)
+>   drivers/mtd/nand/brcmnand/brcmnand.c | 11 -----------
+>   1 file changed, 11 deletions(-)
 >
 > diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index 2a437c7ed175..0f43bc95ece4 100644
+> index 2a437c7ed175..569d57b5a180 100644
 > --- a/drivers/mtd/nand/brcmnand/brcmnand.c
 > +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -134,7 +134,7 @@ struct brcmnand_controller {
->   	dma_addr_t		dma_pa;
+> @@ -1546,16 +1546,6 @@ static int brcmnand_read_oob_raw(struct mtd_info *mtd, struct nand_chip *chip,
+>   	return 0;
+>   }
 >
->   	/* in-memory cache of the FLASH_CACHE, used only for some commands */
-> -	u32			flash_cache[FC_WORDS];
-> +	u8			flash_cache[FC_BYTES];
+> -static int brcmnand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+> -				 uint32_t data_offs, uint32_t readlen,
+> -				 uint8_t *bufpoi, int page)
+> -{
+> -	struct brcmnand_host *host = chip->priv;
+> -
+> -	return brcmnand_read(mtd, chip, host->last_addr + data_offs,
+> -			readlen >> FC_SHIFT, (u32 *)bufpoi, NULL);
+> -}
+> -
+>   static int brcmnand_write(struct mtd_info *mtd, struct nand_chip *chip,
+>   			  u64 addr, const u32 *buf, u8 *oob)
+>   {
+> @@ -1944,7 +1934,6 @@ static int brcmnand_init_cs(struct brcmnand_host *host)
 >
->   	/* Controller revision details */
->   	const u16		*reg_offsets;
-> @@ -1188,6 +1188,8 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
->
->   	if (native_cmd == CMD_PARAMETER_READ ||
->   			native_cmd == CMD_PARAMETER_CHANGE_COL) {
-> +		/* Copy flash cache word-wise */
-> +		u32 *flash_cache = (u32 *)ctrl->flash_cache;
->   		int i;
->
->   		brcmnand_soc_data_bus_prepare(ctrl->soc);
-> @@ -1197,7 +1199,11 @@ static void brcmnand_cmdfunc(struct mtd_info *mtd, unsigned command,
->   		 * SECTOR_SIZE_1K may invalidate it
->   		 */
->   		for (i = 0; i < FC_WORDS; i++)
-> -			ctrl->flash_cache[i] = brcmnand_read_fc(ctrl, i);
-> +			/*
-> +			 * Flash cache is big endian for parameter pages, at
-> +			 * least on STB SoCs
-> +			 */
-> +			flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
->
->   		brcmnand_soc_data_bus_unprepare(ctrl->soc);
->
-> @@ -1250,8 +1256,7 @@ static uint8_t brcmnand_read_byte(struct mtd_info *mtd)
->   		if (host->last_byte > 0 && offs == 0)
->   			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, addr, -1);
->
-> -		ret = ctrl->flash_cache[offs >> 2] >>
-> -					(24 - ((offs & 0x03) << 3));
-> +		ret = ctrl->flash_cache[offs];
->   		break;
->   	case NAND_CMD_GET_FEATURES:
->   		if (host->last_byte >= ONFI_SUBFEATURE_PARAM_LEN) {
+>   	chip->ecc.mode = NAND_ECC_HW;
+>   	chip->ecc.read_page = brcmnand_read_page;
+> -	chip->ecc.read_subpage = brcmnand_read_subpage;
+>   	chip->ecc.write_page = brcmnand_write_page;
+>   	chip->ecc.read_page_raw = brcmnand_read_page_raw;
+>   	chip->ecc.write_page_raw = brcmnand_write_page_raw;
 >
 
-"Tested" on Cygnus, and as expected, nothing changes. NAND still works 
-and ONFI still fails.
+Sanity tested on Cygnus WA board. Finished booting to command prompt 
+with UBIFS based rootfs.
 
-Thanks,
+Thanks!
+
+Tested-by: Ray Jui <rjui@broadcom.com>
 
 Ray
