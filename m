@@ -1,20 +1,23 @@
-Received: from diplomat.websitewelcome.com ([192.185.2.59])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZysOp-0004wX-Kk
- for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 02:23:08 +0000
-Received: from gourmetf by diplomat.websitewelcome.com with local (Exim 4.85)
- (envelope-from <gourmetf@diplomat.websitewelcome.com>)
- id 1Zyq0n-0003Dq-8b
- for linux-mtd@lists.infradead.org; Tue, 17 Nov 2015 17:50:09 -0600
-To: linux-mtd@lists.infradead.org
-Subject: You have received fax, document 0000928716
-Date: Tue, 17 Nov 2015 17:50:09 -0600
-From: "Interfax Service" <incoming@interfax.net>
-Reply-To: "Interfax Service" <incoming@interfax.net>
-Message-ID: <7fb55008992369b7e00084c5651839e9@gourmetfoods-hawaii.com>
+ id 1ZyspN-0000ti-LQ
+ for linux-mtd@lists.infradead.org; Wed, 18 Nov 2015 02:50:37 +0000
+Received: by pabfh17 with SMTP id fh17so29693730pab.0
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Nov 2015 18:50:13 -0800 (PST)
+Date: Tue, 17 Nov 2015 18:50:10 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: enhance ONFI table reliability/stable
+Message-ID: <20151118025010.GB140057@google.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF37D1C@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_c48ac9acdc4b198b3bfbab0a7df7806d"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF37D1C@NTXXIAMBX02.xacn.micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_c48ac9acdc4b198b3bfbab0a7df7806d
-Content-Type: text/plain; charset=us-ascii
+Hi Bean,
 
-You have a new fax!
+I was sorting through old email and I found this.
 
-Scanned fax document is attached to this email.
+On Tue, Jul 21, 2015 at 02:42:34PM +0000, Bean Huo 霍斌斌 (beanhuo) wrote:
+> Hi, 
+> 
+> Recently, I faced some case about ONFI table reliability, now it used CRC.
+> If there is bit flips in ONFI parameter pages, parameter backup page will be taken. 
+> For latest linux,default read three copys.
+> 
+> 	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
+> 	for (i = 0; i < 3; i++) {
+> 		for (j = 0; j < sizeof(*p); j++)
+> 			((uint8_t *)p)[j] = chip->read_byte(mtd);
+> 		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
+> 				le16_to_cpu(p->crc)) {
+> 			break;
+> 		}
+> 	}
+> 
+> However ,with technoogy improvement,for TLC and new generatin MLC,I
+> think, three copys of 
 
-Sender:              Ron Parker
-Filesize:            263 Kb
-Fax name:            scan-0000928716.doc
-Number of pages:     13
-Scanned at:          Tue, 17 Nov 2015 09:04:40 +0300
-Scan duration:       42 seconds
-Scan quality:        400 DPI
+Ha, "improvement" :)
 
-Thank you for using Interfax!
+> Parameter tables is not powerful enough.my question is that if there
+> is a good method to protect and corrent parameter page. For example,we
+> can use linux software BCH ecc. Any suggections and input be
+> welcomed,if you having any concerns about this,don't free tell me.
 
+I recall this being brought up at my old job, and I all I can say is...
+(please pardon my censored language)
 
---b1_c48ac9acdc4b198b3bfbab0a7df7806d
-Content-Type: application/zip; name="scan-0000928716.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=scan-0000928716.zip
+...that is complete and utter bulls***. An ONFI standard that can't
+guarantee "reliable enough" parameter pages is no standard at all.
 
-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
+To step back a bit: How would one expect to store and retrieve ECC
+parity data? ...on the NAND flash? But to do that, we have to know the
+geometry parameters of said NAND flash. How do we figure out the
+geometry? From the ONFI parameter pages! Nice Catch 22 you have there.
 
+Please encourage your employer never to produce "ONFI-compliant" flash
+that are this bad.
 
---b1_c48ac9acdc4b198b3bfbab0a7df7806d--
+Regards,
+Brian
