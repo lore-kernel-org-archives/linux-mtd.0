@@ -1,22 +1,35 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzQk7-00030F-VZ
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 15:03:30 +0000
-Subject: Re: can't mount ubifs after resizing with ubirsvol
-To: Konstantin Tokarev <annulen@yandex.ru>,
- Ibrahim Mattus Neto <ibrahim.neto@writesys.com.br>
-References: <1315747066.18731.53.camel@sauron>
- <5640A7D0.6080104@writesys.com.br>
- <CAFLxGvwZ0gXkGHDu5fGo5ZX-td2rk1Wt=pHZBH+a_gp-PgyN=g@mail.gmail.com>
- <564DCFED.2070902@writesys.com.br> <564DD1DF.9070009@nod.at>
- <203731447942192@web14h.yandex.ru>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1ZzQlE-00042u-3T
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 15:04:34 +0000
+Subject: Re: [PATCH v3 0/7] User namespace mount updates
+To: "Serge E. Hallyn" <serge.hallyn@ubuntu.com>
+References: <564B941A.2070601@gmail.com> <20151117213255.GE108807@ubuntu-hedt>
+ <564C6DD4.6090308@gmail.com> <20151118142238.GB134139@ubuntu-hedt>
+ <20151118145818.GC22011@ZenIV.linux.org.uk>
+ <20151118150512.GE134139@ubuntu-hedt>
+ <20151118151335.GD22011@ZenIV.linux.org.uk>
+ <CAFLxGvwwhXqVM71m1kEDTZk_YTKGtbJ3gWoXw3wRgcwDiC38Bg@mail.gmail.com>
+ <alpine.LRH.2.20.1511191845510.10804@namei.org> <564D7FF6.50408@nod.at>
+ <20151119142113.GA5607@mail.hallyn.com>
+Cc: James Morris <jmorris@namei.org>, Al Viro <viro@zeniv.linux.org.uk>,
+ Seth Forshee <seth.forshee@canonical.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
+ device-mapper development <dm-devel@redhat.com>,
+ "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>, LKML <linux-kernel@vger.kernel.org>,
+ Theodore Ts'o <tytso@mit.edu>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <564DE4A3.1070609@nod.at>
-Date: Thu, 19 Nov 2015 16:02:59 +0100
+Message-ID: <564DE4E6.4000803@nod.at>
+Date: Thu, 19 Nov 2015 16:04:06 +0100
 MIME-Version: 1.0
-In-Reply-To: <203731447942192@web14h.yandex.ru>
-Content-Type: text/plain; charset=koi8-r
+In-Reply-To: <20151119142113.GA5607@mail.hallyn.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,15 +40,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 19.11.2015 um 15:09 schrieb Konstantin Tokarev:
-> I can confirm that shrinking UBIFS volume corrupts it.
+Am 19.11.2015 um 15:21 schrieb Serge E. Hallyn:
+> On Thu, Nov 19, 2015 at 08:53:26AM +0100, Richard Weinberger wrote:
+>> Am 19.11.2015 um 08:47 schrieb James Morris:
+>>> On Wed, 18 Nov 2015, Richard Weinberger wrote:
+>>>
+>>>> On Wed, Nov 18, 2015 at 4:13 PM, Al Viro <viro@zeniv.linux.org.uk> wrote:
+>>>>> On Wed, Nov 18, 2015 at 09:05:12AM -0600, Seth Forshee wrote:
+>>>>>
+>>>>>> Yes, the host admin. I'm not talking about trusting the admin inside the
+>>>>>> container at all.
+>>>>>
+>>>>> Then why not have the same host admin just plain mount it when setting the
+>>>>> container up and be done with that?  From the host namespace, before spawning
+>>>>> the docker instance or whatever framework you are using.  IDGI...
+>>>>
+>>>> Because hosting companies sell containers as "full virtual machines"
+>>>> and customers expect to be able mount stuff like disk images they upload.
+>>>
+>>> I don't think this is a valid reason for merging functionality into the 
+>>> kernel.
+>>
+>> Erm, I don't want this in the kernel. That's why I've proposed the lklfuse approach.
+> 
+> That would require the fuse-in-containers functionality, right?
 
-There are no UBIFS volumes.
-If you shrink a UBI volume, you kill UBIFS for sure.
-It is like shrinking a HDD partition without resizing ext4 before.
-
-Maybe we can do a resizeubifs tool at some point.
-I'm currently checking the source what we need for a online-shrink...
+Correct.
+Still a less large attack surface. :-)
 
 Thanks,
 //richard
