@@ -1,23 +1,44 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzSoe-0005ru-1W
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 17:16:13 +0000
-Date: Thu, 19 Nov 2015 17:15:38 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Martin Sperl <martin@sperl.org>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Message-ID: <20151119171538.GO31303@sirena.org.uk>
-References: <564CEB61.2000601@gmail.com> <20151118215755.GL31303@sirena.org.uk>
- <564D0098.4030107@gmail.com> <20151119114057.GN31303@sirena.org.uk>
- <F224F5F3-FAD5-47FE-9419-39E53BCBB8C6@sperl.org>
+Date: Thu, 19 Nov 2015 11:07:07 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Ryan Mallon <rmallon@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <kernel@pengutronix.de>,
+ Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
+ Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ Alexander Clouter <alex@digriz.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory CLEMENT <gregory.clement@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Marek Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>,
+ adi-buildroot-devel@lists.sourceforge.net,
+ Mikael Starvik <starvik@axis.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
+ linux-cris-kernel@axis.com, Josh Wu <josh.wu@atmel.com>,
+ Wan ZongShun <mcuos.com@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ linux-samsung-soc@vger.kernel.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Stefan Agner <stefan@agner.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
+Subject: Re: [PATCH 01/27] mtd: nand: fix drivers abusing mtd->priv
+Message-ID: <20151119190707.GE64635@google.com>
+References: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1447681080-31232-2-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="0Wg1ddIY7KV0vpwL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <F224F5F3-FAD5-47FE-9419-39E53BCBB8C6@sperl.org>
-Subject: Re: RfC: Handle SPI controller limitations like maximum message length
+In-Reply-To: <1447681080-31232-2-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,73 +48,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Nov 16, 2015 at 02:37:34PM +0100, Boris Brezillon wrote:
+> The ->priv field of the mtd_info object attached to a nand_chip device
+> should point to the nand_chip device. The pxa and cafe drivers are
+> assigning this field their own private structure, which works fine as long
+> as the nand_chip field is the first one in the driver private struct but
+> seems a bit fragile.
+> Fix that by setting mtd->priv to point the nand_chip field and assigning
+> chip->priv to the private structure head.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
---0Wg1ddIY7KV0vpwL
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Nov 19, 2015 at 04:00:45PM +0100, Martin Sperl wrote:
-
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
-
-> On the bcm2835 there are also some =E2=80=9Climitations=E2=80=9D (when tr=
-ansfers are not aligned
-> to word, transfers>65535 can=E2=80=99t DMA) which we work around right no=
-w inefficiently.
-
-Alignment is a general issue which all clients should be trying to
-ensure as a matter of course - never mind individual blocks of hardware,
-some common CPU architectures suffer noticable penalties from unaligned
-accesses so it's just generally good practice to try to avoid them.
-
-You shouldn't be doing anything about transfer size limitations in your
-driver, if you have this restriction you should be adding code to the
-core and just flagging the limit in your driver.
-
-> I am in the progress of writing a (minimal) spi-core extension, that woul=
-d allow=20
-> a spi_master to have a prepare_message function that would call some =E2=
-=80=9Cmessage
-> translation functions=E2=80=9D.
-
-> The ones I have currently come up with are:
-> int spi_split_transfer_alignment(struct spi_message *msg, int alignment);
-> int spi_split_transfer_maxsize(struct spi_message *msg, size_t max_size);
-
-Please don't do things this way, please make this more data driven -
-have the drivers declare their capabilities so the core can just do
-these things based on those flags rather than requiring active code in
-drivers.  This keeps the code central which in turn helps keep things
-maintainable.
-
-> I guess this is a more transparent approach that does not require the
-> individual device drivers to query the spi_master about limitations
-> and replicate code in several drivers - also there is no maintenance cost=
- on
-> individual device drivers to track when there is a new limitation introdu=
-ced.
-
-You've got this back to front - drivers are responsible for initialising
-the master when they instantiate it.  There's nothing stopping them
-using the data if they have variants to handle but they shouldn't be
-speculatively looking at it on the off chance there's some limit.
-
---0Wg1ddIY7KV0vpwL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWTgO5AAoJECTWi3JdVIfQDxMH/3inzKLd6Hou90K3+YPRleu1
-sOuEnw8HF/bGZoYeoyV+moUuj3N1FX8Suj06B/X77SpxHPkUDznjMMQha6J2Ao+/
-BYZZPn7KPI+iSQY7WGHXDDXyYBBEIRfP/8ayRNDBaa29inWGFrbQRaq49EmdlxeC
-tTIbW7fR5x+sMxustZwkQ3nzjWHPHBq0xIyxOugO1UrHrdo00CvwXOj7NcHudwB6
-4w05PBESq5xd53iTauF7KNCAdlqChg52sj4MUSSu5TWg/5kzWdw5bkeD64QDbek1
-epPMUbYnrRvq3KFS9206NOHH3h9YHkS+Y92gGW8MJJUQlXHoG69uVJAe0Q+vewk=
-=tcju
------END PGP SIGNATURE-----
-
---0Wg1ddIY7KV0vpwL--
+Applied to l2-mtd.git
