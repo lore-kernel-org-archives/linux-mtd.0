@@ -1,22 +1,36 @@
-Received: from forward2h.mail.yandex.net ([2a02:6b8:0:f05::2])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzPum-0007Ly-GY
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 14:10:24 +0000
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: Richard Weinberger <richard@nod.at>,
- Ibrahim Mattus Neto <ibrahim.neto@writesys.com.br>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-In-Reply-To: <564DD1DF.9070009@nod.at>
-References: <1315747066.18731.53.camel@sauron>
- <5640A7D0.6080104@writesys.com.br>
- <CAFLxGvwZ0gXkGHDu5fGo5ZX-td2rk1Wt=pHZBH+a_gp-PgyN=g@mail.gmail.com>
- <564DCFED.2070902@writesys.com.br> <564DD1DF.9070009@nod.at>
-Subject: Re: can't mount ubifs after resizing with ubirsvol
+Received: from h2.hallyn.com ([78.46.35.8])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZzQ5h-0004vI-FZ
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 14:21:38 +0000
+Date: Thu, 19 Nov 2015 08:21:13 -0600
+From: "Serge E. Hallyn" <serge.hallyn@ubuntu.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: James Morris <jmorris@namei.org>, Al Viro <viro@zeniv.linux.org.uk>,
+ Seth Forshee <seth.forshee@canonical.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
+ device-mapper development <dm-devel@redhat.com>,
+ "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>,
+ LKML <linux-kernel@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v3 0/7] User namespace mount updates
+Message-ID: <20151119142113.GA5607@mail.hallyn.com>
+References: <564B941A.2070601@gmail.com> <20151117213255.GE108807@ubuntu-hedt>
+ <564C6DD4.6090308@gmail.com> <20151118142238.GB134139@ubuntu-hedt>
+ <20151118145818.GC22011@ZenIV.linux.org.uk>
+ <20151118150512.GE134139@ubuntu-hedt>
+ <20151118151335.GD22011@ZenIV.linux.org.uk>
+ <CAFLxGvwwhXqVM71m1kEDTZk_YTKGtbJ3gWoXw3wRgcwDiC38Bg@mail.gmail.com>
+ <alpine.LRH.2.20.1511191845510.10804@namei.org>
+ <564D7FF6.50408@nod.at>
 MIME-Version: 1.0
-Message-Id: <203731447942192@web14h.yandex.ru>
-Date: Thu, 19 Nov 2015 17:09:52 +0300
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=koi8-r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <564D7FF6.50408@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +40,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Nov 19, 2015 at 08:53:26AM +0100, Richard Weinberger wrote:
+> Am 19.11.2015 um 08:47 schrieb James Morris:
+> > On Wed, 18 Nov 2015, Richard Weinberger wrote:
+> > 
+> >> On Wed, Nov 18, 2015 at 4:13 PM, Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >>> On Wed, Nov 18, 2015 at 09:05:12AM -0600, Seth Forshee wrote:
+> >>>
+> >>>> Yes, the host admin. I'm not talking about trusting the admin inside the
+> >>>> container at all.
+> >>>
+> >>> Then why not have the same host admin just plain mount it when setting the
+> >>> container up and be done with that?  From the host namespace, before spawning
+> >>> the docker instance or whatever framework you are using.  IDGI...
+> >>
+> >> Because hosting companies sell containers as "full virtual machines"
+> >> and customers expect to be able mount stuff like disk images they upload.
+> > 
+> > I don't think this is a valid reason for merging functionality into the 
+> > kernel.
+> 
+> Erm, I don't want this in the kernel. That's why I've proposed the lklfuse approach.
 
-
-19.11.2015, 16:44, "Richard Weinberger" <richard@nod.at>:
-> Hi!
->
-> Am 19.11.2015 um 14:34 schrieb Ibrahim Mattus Neto:
->> šHi Richard!
->>
->> šThanks for the response.
->>
->> šWhat I did was:
->>
->> š1) I created an .ubi file using the following configuration.
->> š[rootfs]
->> šmode=ubi
->> švol_id=0
->> švol_type=dynamic
->> švol_name=rootfs
->> švol_alignment=1
->> šimage=rootfs.ubifs
->> švol_size=80MiB
->>
->> š[data]
->> šmode=ubi
->> švol_id=1
->> švol_type=dynamic
->> švol_name=data
->> švol_alignment=1
->> švol_flags=autoresize
->> švol_size=10MiB
->>
->> š[recover]
->> šmode=ubi
->> švol_id=2
->> švol_type=dynamic
->> švol_name=recover
->> švol_alignment=1
->> švol_size=5MiB
->>
->> š2) After booting I tried to shrink "data" and increase the size of recover using ubirsvol:
->>
->> šubirsvol /dev/ubi0 -n 1 -s 4MiB (data)
->>
->> šubirsvol /dev/ubi0 -n 2 -s 15MiB (recover)
->>
->> š3) After the resizing I tried to mount "data"
->>
->> šmount /home/data/
->> š[ 88.510000] UBIFS error (ubi0:1 pid 668): validate_sb: bad LEB count: 1159 in superblock, 34 on UBI volume, 20 minimum required
->> š[ 88.520000] UBIFS error (ubi0:1 pid 668): validate_sb: bad superblock, error 1
->
-> This cannot work. You resized the UBI *volume*, not the UBIFS filesystem.
-> And unless I'm very mistaken UBIFS does not support shrinking anyway.
-
-I can confirm that shrinking UBIFS volume corrupts it.
-
--- 
-Regards,
-Konstantin
+That would require the fuse-in-containers functionality, right?
