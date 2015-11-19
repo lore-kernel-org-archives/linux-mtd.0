@@ -1,25 +1,22 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzD1C-0008OL-6T
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 00:24:09 +0000
-Received: by pacdm15 with SMTP id dm15so60868607pac.3
- for <linux-mtd@lists.infradead.org>; Wed, 18 Nov 2015 16:23:39 -0800 (PST)
-Date: Wed, 18 Nov 2015 16:23:37 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-cc: akpm@linux-foundation.org, linux-mm@kvack.org,
- Russell King <linux@arm.linux.org.uk>, linux-acpi@vger.kernel.org,
- drbd-user@lists.linbit.com, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Oleg Drokin <oleg.drokin@intel.com>,
- Andreas Dilger <andreas.dilger@intel.com>, codalist@coda.cs.cmu.edu,
- linux-mtd@lists.infradead.org, Jan Kara <jack@suse.com>,
- linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] tree wide: Use kvfree() than conditional kfree()/vfree()
-In-Reply-To: <1447070170-8512-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
-Message-ID: <alpine.DEB.2.10.1511181623240.1381@chino.kir.corp.google.com>
-References: <1447070170-8512-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+ id 1ZzGiy-0000HN-Pt
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 04:21:33 +0000
+From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Boris
+ Brezillon" <boris.brezillon@free-electrons.com>
+Subject: RE: enhance ONFI table reliability/stable
+Date: Thu, 19 Nov 2015 04:21:01 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF51459@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF37D1C@NTXXIAMBX02.xacn.micron.com>
+ <20151118025010.GB140057@google.com>
+In-Reply-To: <20151118025010.GB140057@google.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,34 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 9 Nov 2015, Tetsuo Handa wrote:
-
-> There are many locations that do
-> 
->   if (memory_was_allocated_by_vmalloc)
->     vfree(ptr);
->   else
->     kfree(ptr);
-> 
-> but kvfree() can handle both kmalloc()ed memory and vmalloc()ed memory
-> using is_vmalloc_addr(). Unless callers have special reasons, we can
-> replace this branch with kvfree(). Please check and reply if you found
-> problems.
-> 
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Cc: Russell King <linux@arm.linux.org.uk> # arm
-> Cc: <linux-acpi@vger.kernel.org> # apei
-> Cc: <drbd-user@lists.linbit.com> # drbd
-> Cc: <linux-kernel@vger.kernel.org> # mspec
-> Cc: <dri-devel@lists.freedesktop.org> # drm
-> Cc: Oleg Drokin <oleg.drokin@intel.com> # lustre
-> Cc: Andreas Dilger <andreas.dilger@intel.com> # lustre
-> Cc: <codalist@coda.cs.cmu.edu> # coda
-> Cc: <linux-mtd@lists.infradead.org> # jffs2
-> Cc: Jan Kara <jack@suse.com> # udf
-> Cc: <linux-fsdevel@vger.kernel.org> # xattr
-> Cc: <linux-mm@kvack.org> # ipc + mm
-> Cc: <netdev@vger.kernel.org> # ipv4
-
-Acked-by: David Rientjes <rientjes@google.com>
+PiANCj4gSGkgQmVhbiwNCj4gDQo+IEkgd2FzIHNvcnRpbmcgdGhyb3VnaCBvbGQgZW1haWwgYW5k
+IEkgZm91bmQgdGhpcy4NCj4gDQo+IE9uIFR1ZSwgSnVsIDIxLCAyMDE1IGF0IDAyOjQyOjM0UE0g
+KzAwMDAsIEJlYW4gSHVvIOmcjeaWjOaWjCAoYmVhbmh1bykNCj4gd3JvdGU6DQo+ID4gSGksDQo+
+ID4NCj4gPiBSZWNlbnRseSwgSSBmYWNlZCBzb21lIGNhc2UgYWJvdXQgT05GSSB0YWJsZSByZWxp
+YWJpbGl0eSwgbm93IGl0IHVzZWQgQ1JDLg0KPiA+IElmIHRoZXJlIGlzIGJpdCBmbGlwcyBpbiBP
+TkZJIHBhcmFtZXRlciBwYWdlcywgcGFyYW1ldGVyIGJhY2t1cCBwYWdlIHdpbGwgYmUNCj4gdGFr
+ZW4uDQo+ID4gRm9yIGxhdGVzdCBsaW51eCxkZWZhdWx0IHJlYWQgdGhyZWUgY29weXMuDQo+ID4N
+Cj4gPiAJY2hpcC0+Y21kZnVuYyhtdGQsIE5BTkRfQ01EX1BBUkFNLCAwLCAtMSk7DQo+ID4gCWZv
+ciAoaSA9IDA7IGkgPCAzOyBpKyspIHsNCj4gPiAJCWZvciAoaiA9IDA7IGogPCBzaXplb2YoKnAp
+OyBqKyspDQo+ID4gCQkJKCh1aW50OF90ICopcClbal0gPSBjaGlwLT5yZWFkX2J5dGUobXRkKTsN
+Cj4gPiAJCWlmIChvbmZpX2NyYzE2KE9ORklfQ1JDX0JBU0UsICh1aW50OF90ICopcCwgMjU0KSA9
+PQ0KPiA+IAkJCQlsZTE2X3RvX2NwdShwLT5jcmMpKSB7DQo+ID4gCQkJYnJlYWs7DQo+ID4gCQl9
+DQo+ID4gCX0NCj4gPg0KPiA+IEhvd2V2ZXIgLHdpdGggdGVjaG5vb2d5IGltcHJvdmVtZW50LGZv
+ciBUTEMgYW5kIG5ldyBnZW5lcmF0aW4gTUxDLEkNCj4gPiB0aGluaywgdGhyZWUgY29weXMgb2YN
+Cj4gDQo+IEhhLCAiaW1wcm92ZW1lbnQiIDopDQo+IA0KPiA+IFBhcmFtZXRlciB0YWJsZXMgaXMg
+bm90IHBvd2VyZnVsIGVub3VnaC5teSBxdWVzdGlvbiBpcyB0aGF0IGlmIHRoZXJlDQo+ID4gaXMg
+YSBnb29kIG1ldGhvZCB0byBwcm90ZWN0IGFuZCBjb3JyZW50IHBhcmFtZXRlciBwYWdlLiBGb3Ig
+ZXhhbXBsZSx3ZQ0KPiA+IGNhbiB1c2UgbGludXggc29mdHdhcmUgQkNIIGVjYy4gQW55IHN1Z2dl
+Y3Rpb25zIGFuZCBpbnB1dCBiZQ0KPiA+IHdlbGNvbWVkLGlmIHlvdSBoYXZpbmcgYW55IGNvbmNl
+cm5zIGFib3V0IHRoaXMsZG9uJ3QgZnJlZSB0ZWxsIG1lLg0KPiANCj4gSSByZWNhbGwgdGhpcyBi
+ZWluZyBicm91Z2h0IHVwIGF0IG15IG9sZCBqb2IsIGFuZCBJIGFsbCBJIGNhbiBzYXkgaXMuLi4N
+Cj4gKHBsZWFzZSBwYXJkb24gbXkgY2Vuc29yZWQgbGFuZ3VhZ2UpDQoNCg0KWWVzICwgeW91IGV2
+ZXIgdG9sZCBhYm91dCB0aGlzLiBJIGp1c3QgZm9sbG93Lg0KU29ycnkgZm9yIG15IHJ1ZGUgZm9s
+bG93aW5nLg0KSSBvbmx5IHdhbnQgdG8gc2hhcmUgbXkgb25lIHN1Z2dlc3Rpb24gYWJvdXQgdXNp
+bmcgc29mdHdhcmUgRUNDIHRvIHByb3RlY3QgDQpPTkZJIHRhYmxlIHRoYXQgcmVhZCBmcm9tIE5B
+TkQuIEkgd2FudCB0byBoZWFyIGV2ZXJ5IE1URCBleHBlcnQgJ3MgdmFsdWFibGUgDQpGZWVkYmFj
+ayBvbiB0aGlzLiBpZiBPSywgSSBjYW4gZG8gaXQuIA0KDQo+IC4uLnRoYXQgaXMgY29tcGxldGUg
+YW5kIHV0dGVyIGJ1bGxzKioqLiBBbiBPTkZJIHN0YW5kYXJkIHRoYXQgY2FuJ3QgZ3VhcmFudGVl
+DQo+ICJyZWxpYWJsZSBlbm91Z2giIHBhcmFtZXRlciBwYWdlcyBpcyBubyBzdGFuZGFyZCBhdCBh
+bGwuDQo+IA0KPiBUbyBzdGVwIGJhY2sgYSBiaXQ6IEhvdyB3b3VsZCBvbmUgZXhwZWN0IHRvIHN0
+b3JlIGFuZCByZXRyaWV2ZSBFQ0MgcGFyaXR5DQo+IGRhdGE/IC4uLm9uIHRoZSBOQU5EIGZsYXNo
+PyBCdXQgdG8gZG8gdGhhdCwgd2UgaGF2ZSB0byBrbm93IHRoZSBnZW9tZXRyeQ0KPiBwYXJhbWV0
+ZXJzIG9mIHNhaWQgTkFORCBmbGFzaC4gSG93IGRvIHdlIGZpZ3VyZSBvdXQgdGhlIGdlb21ldHJ5
+PyBGcm9tIHRoZQ0KPiBPTkZJIHBhcmFtZXRlciBwYWdlcyEgTmljZSBDYXRjaCAyMiB5b3UgaGF2
+ZSB0aGVyZS4NCj4gDQo+IFBsZWFzZSBlbmNvdXJhZ2UgeW91ciBlbXBsb3llciBuZXZlciB0byBw
+cm9kdWNlICJPTkZJLWNvbXBsaWFudCIgZmxhc2ggdGhhdA0KPiBhcmUgdGhpcyBiYWQuDQo+IA0K
+PiBSZWdhcmRzLA0KPiBCcmlhbg0K
