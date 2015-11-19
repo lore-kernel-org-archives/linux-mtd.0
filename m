@@ -1,28 +1,28 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzYU5-0003ac-BF
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 23:19:22 +0000
-Received: by pacdm15 with SMTP id dm15so95451277pac.3
- for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 15:19:00 -0800 (PST)
-Date: Thu, 19 Nov 2015 15:18:57 -0800
+ id 1ZzYns-00047D-B0
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 23:39:49 +0000
+Received: by pabfh17 with SMTP id fh17so99022309pab.0
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 15:39:27 -0800 (PST)
+Date: Thu, 19 Nov 2015 15:39:24 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Michal Suchanek <hramrach@gmail.com>
 Cc: Hou Zhiqiang <B48286@freescale.com>, shijie.huang@intel.com,
  David Woodhouse <dwmw2@infradead.org>, Han Xu <han.xu@freescale.com>,
  =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Huang Shijie <b32955@freescale.com>,
  Ben Hutchings <ben@decadent.org.uk>, Marek Vasut <marex@denx.de>,
  Gabor Juhos <juhosg@openwrt.org>,
  Bean Huo =?utf-8?B?6ZyN5paM5paMLA==?=  <beanhuo@micron.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 6/7] mtd: spi-nor: simplify write loop
-Message-ID: <20151119231857.GM64635@google.com>
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Huang Shijie <shijie.huang@arm.com>, Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH v4 7/7] mtd: spi-nor: add read loop
+Message-ID: <20151119233924.GN64635@google.com>
 References: <cover.1439543572.git.hramrach@gmail.com>
- <e1251eea4ec9cc8c72d54300f3396919a3afe4b1.1439543572.git.hramrach@gmail.com>
+ <1592668a061137b33c9a6392dfccc67c69fc1fe6.1439543572.git.hramrach@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e1251eea4ec9cc8c72d54300f3396919a3afe4b1.1439543572.git.hramrach@gmail.com>
+In-Reply-To: <1592668a061137b33c9a6392dfccc67c69fc1fe6.1439543572.git.hramrach@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,118 +32,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Michal,
++ Heiner
 
-Sorry this has sat so long...
+On Fri, Aug 14, 2015 at 09:23:09AM -0000, Michal Suchanek wrote:
+> mtdblock and ubi do not handle the situation when read returns less data
+> than requested. Loop in spi-nor until buffer is filled or an error is
+> returned.
 
-On Fri, Aug 14, 2015 at 09:23:08AM -0000, Michal Suchanek wrote:
-> The spi-nor write loop assumes that what is passed to the hardware
-> driver write() is what gets written.
-> 
-> When write() writes less than page size at once data is dropped on the
-> floor. Check the amount of data writen.
+I'm slightly torn on this patch. I believe this is inspired by issues in
+the SPI layer. But I believe there is some agreement from the SPI layer
+that protocol drivers (such as m25p80.c/spi-nor.c) should not have to
+worry about spi_messages getting truncated [1]. Heiner is looking at
+that.
 
-Have you seen write() return less than the page size? I know you've
-struggled with a SPI driver that can't do "very" (for some definition of
-very) long transfers, due to unknown bugs, but I thought that "very" was
-much larger than the page size.
+But on the other hand, it's possible that some non-SPI driver would have
+similar limitations, and so spi-nor.c should be handling the issue.
 
-> This also means that write can start mid-page any time so there is
-> no special case for first page.
-
-I think we'd have some problems if we start seeing hardware that can't
-write ~256 bytes at a time. If nothing else, this can be a problem
-because some SPI NOR flash are known to have inferior reliability if you
-regularly write in small chunks. I believe this is because they actually
-use some kind of internal ECC.
-
-So, if you're just guarding against a theoretical behavior, perhaps it's
-best if this is done with some kind of assertion, as I'd rather not
-encourage non-aligned writes if possible. I notice you used BUG_ON() in
-another patch, but I'd suggest maybe something less harsh, like WARN()
-or WARN_ONCE().
-
-Brian
-
-> 
 > Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 48 ++++++++++++++-----------------------------
->  1 file changed, 15 insertions(+), 33 deletions(-)
+>  drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++------
+>  1 file changed, 14 insertions(+), 6 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 837e3df..e0ae9cf 100644
+> index e0ae9cf..246fac7 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -836,7 +836,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  	size_t *retlen, const u_char *buf)
->  {
->  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> -	u32 page_offset, page_size, i;
-> +	size_t page_offset, page_remain, i;
->  	int ret;
->  
->  	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
-> @@ -845,45 +845,27 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+> @@ -738,14 +738,22 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
 >  	if (ret)
 >  		return ret;
 >  
-> -	write_enable(nor);
-> -
-> -	page_offset = to & (nor->page_size - 1);
-> +	for (i = 0; i < len; ) {
-> +		int written;
->  
-> -	/* do all the bytes fit onto one page? */
-> -	if (page_offset + len <= nor->page_size) {
-> -		ret = nor->write(nor, to, len, buf);
-> -		if (ret < 0)
-> -			goto write_err;
-> -		*retlen += ret;
-> -	} else {
-> +		page_offset = to & (nor->page_size - 1);
->  		/* the size of data remaining on the first page */
-> -		page_size = nor->page_size - page_offset;
-> -		ret = nor->write(nor, to, page_size, buf);
-> +		page_remain = min_t(size_t,
-> +				    nor->page_size - page_offset, len - i);
+> -	ret = nor->read(nor, from, len, buf);
+> +	while (len) {
+> +		ret = nor->read(nor, from, len, buf);
+> +		if (ret <= 0)
+> +			goto read_err;
+
+Do we really want to exit silently when ret==0, but len!=0?
+
 > +
-> +		write_enable(nor);
-> +		ret = nor->write(nor, to + i, page_remain, buf + i);
->  		if (ret < 0)
->  			goto write_err;
-> -		*retlen += ret;
-> -
-> -		/* write everything in nor->page_size chunks */
-> -		for (i = ret; i < len; ) {
-> -			page_size = len - i;
-> -			if (page_size > nor->page_size)
-> -				page_size = nor->page_size;
-> -
-> -			ret = spi_nor_wait_till_ready(nor);
-> -			if (ret)
-> -				goto write_err;
-> +		written = ret;
+> +		BUG_ON(ret > len);
+
+Maybe the condition here should be 'ret > len || len == 0', since this
+shouldn't happen.
+
+Also, please don't use BUG_ON(). Even though this is really unexpected,
+we don't need to crash the system. Perhaps:
+
+		if (WARN_ON(ret > len || ret == 0)) {
+			ret = -EIO;
+			goto read_err;
+		}
+
+> +		*retlen += ret;
+> +		buf += ret;
+> +		from += ret;
+> +		len -= ret;
+> +	}
+> +	ret = 0;
 >  
-> -			write_enable(nor);
+> +read_err:
+>  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
+> -	if (ret < 0)
+> -		return ret;
 > -
-> -			ret = nor->write(nor, to + i, page_size, buf + i);
-> -			if (ret < 0)
-> -				goto write_err;
-> -			*retlen += ret;
-> -			i += ret;
-> -		}
-> +		ret = spi_nor_wait_till_ready(nor);
-> +		if (ret)
-> +			goto write_err;
-> +		*retlen += written;
-> +		i += written;
->  	}
+> -	*retlen += ret;
+> -	return 0;
+> +	return ret;
+>  }
 >  
-> -	ret = spi_nor_wait_till_ready(nor);
->  write_err:
->  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
->  	return ret;
-> -- 
-> 2.1.4
-> 
+>  static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+
+Brian
+
+[1] http://www.spinics.net/lists/linux-spi/msg05877.html
+    "RfC: Handle SPI controller limitations like maximum message length"
+
+    I'm honestly not really sure what the conclusion from that thread
+    is, so far. It seems like the SPI master "should" be exposing its
+    max length to the SPI core, but it's unclear whether that would get
+    propagated as a short write/read (i.e., shorter-than-expected
+    spi_message::actual_length), or whether the SPI core should be
+    somehow splitting up the messages into manageable chunks for us. I'm
+    not even sure if the latter is legal for things like
+    read-from-flash; might this cause the chip select to get toggled,
+    potentially disrupting the operation?
+
+    Anyway, in the former case, we need something like your patch. But
+    in the latter case, we actually don't need anything, other than
+    maybe an assertion that ret == len.
