@@ -1,38 +1,23 @@
-Received: from mail-io0-x22a.google.com ([2607:f8b0:4001:c06::22a])
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzS8f-0000lh-Fl
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 16:32:51 +0000
-Received: by iouu10 with SMTP id u10so96157666iou.0
- for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 08:32:27 -0800 (PST)
-Date: Thu, 19 Nov 2015 10:31:34 -0600
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Octavian Purdila <octavian.purdila@intel.com>
-Cc: Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>,
- "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
- device-mapper development <dm-devel@redhat.com>,
- "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>,
- LKML <linux-kernel@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v3 0/7] User namespace mount updates
-Message-ID: <20151119163134.GB45540@ubuntu-hedt>
-References: <20151117172551.GA108807@ubuntu-hedt>
- <20151117175506.GW22011@ZenIV.linux.org.uk>
- <20151117183444.GB108807@ubuntu-hedt>
- <CAFLxGvx1UqJOhM3wqAGqT+TrkapeP1zkmg0a1K=DjySePx4mEA@mail.gmail.com>
- <20151117192141.GD108807@ubuntu-hedt>
- <CAE1zotLNq1v_ZegT9LyFsTiHWQnOAow+KKQFFvOYKUyRWPjfGA@mail.gmail.com>
- <564B8A20.9090607@nod.at>
- <CAE1zotJRp3=G2Vdud7kVbkToKe2YsTF3gXUnLCNzKV6F0oumdg@mail.gmail.com>
- <20151119152347.GA45540@ubuntu-hedt>
- <CAE1zot+G=SohXzuV6Gs7APdCo5pu9xLwE38kZKNUuWRnSh++BA@mail.gmail.com>
+ id 1ZzSoe-0005ru-1W
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 17:16:13 +0000
+Date: Thu, 19 Nov 2015 17:15:38 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Martin Sperl <martin@sperl.org>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Message-ID: <20151119171538.GO31303@sirena.org.uk>
+References: <564CEB61.2000601@gmail.com> <20151118215755.GL31303@sirena.org.uk>
+ <564D0098.4030107@gmail.com> <20151119114057.GN31303@sirena.org.uk>
+ <F224F5F3-FAD5-47FE-9419-39E53BCBB8C6@sperl.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="0Wg1ddIY7KV0vpwL"
 Content-Disposition: inline
-In-Reply-To: <CAE1zot+G=SohXzuV6Gs7APdCo5pu9xLwE38kZKNUuWRnSh++BA@mail.gmail.com>
+In-Reply-To: <F224F5F3-FAD5-47FE-9419-39E53BCBB8C6@sperl.org>
+Subject: Re: RfC: Handle SPI controller limitations like maximum message length
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,101 +27,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 19, 2015 at 06:19:10PM +0200, Octavian Purdila wrote:
-> On Thu, Nov 19, 2015 at 5:23 PM, Seth Forshee
-> <seth.forshee@canonical.com> wrote:
-> > On Wed, Nov 18, 2015 at 12:00:17AM +0200, Octavian Purdila wrote:
-> >> On Tue, Nov 17, 2015 at 10:12 PM, Richard Weinberger <richard@nod.at> wrote:
-> >> > Am 17.11.2015 um 20:25 schrieb Octavian Purdila:
-> >> >> On Tue, Nov 17, 2015 at 9:21 PM, Seth Forshee
-> >> >> <seth.forshee@canonical.com> wrote:
-> >> >>>
-> >> >>> On Tue, Nov 17, 2015 at 08:12:31PM +0100, Richard Weinberger wrote:
-> >> >>>> On Tue, Nov 17, 2015 at 7:34 PM, Seth Forshee
-> >> >>>> <seth.forshee@canonical.com> wrote:
-> >> >>>>> On Tue, Nov 17, 2015 at 05:55:06PM +0000, Al Viro wrote:
-> >> >>>>>> On Tue, Nov 17, 2015 at 11:25:51AM -0600, Seth Forshee wrote:
-> >> >>>>>>
-> >> >>>>>>> Shortly after that I plan to follow with support for ext4. I've been
-> >> >>>>>>> fuzzing ext4 for a while now and it has held up well, and I'm currently
-> >> >>>>>>> working on hand-crafted attacks. Ted has commented privately (to others,
-> >> >>>>>>> not to me personally) that he will fix bugs for such attacks, though I
-> >> >>>>>>> haven't seen any public comments to that effect.
-> >> >>>>>>
-> >> >>>>>> _Static_ attacks, or change-image-under-mounted-fs attacks?
-> >> >>>>>
-> >> >>>>> Right now only static attacks, change-image-under-mounted-fs attacks
-> >> >>>>> will be next.
-> >> >>>>
-> >> >>>> Do we *really* need to enable unprivileged mounting of kernel filesystems?
-> >> >>>> What about just enabling fuse and implement ext4 and friends as fuse
-> >> >>>> filesystems?
-> >> >>>> Using the approaching Linux Kernel Libary[1] this is easy.
-> >> >>>
-> >> >>> I haven't looked at this project, but I'm guessing that programs must be
-> >> >>> written specifically to make use of it? I.e. you can't just use the
-> >> >>> mount syscall, and thus all existing software still doesn't work?
-> >> >>>
-> >> >>
-> >> >> The projects includes a lklfuse program that uses fuse to mount a
-> >> >> fileystem image.
-> >> >
-> >> > Cool. I gave it a try.
-> >> > It seems to work fine, but only if I run it in foreground (using -d)
-> >> > otherwise fuse blocks every filesystem request.
-> >> >
-> >>
-> >> Now it should work in the background as well, thanks for reporting the issue.
-> >
-> 
-> Hi Seth,
-> 
-> > I'm playing with lklfuse now, it's surprisingly easy to get up and
-> > running. I did have a few problems though that I thought you'd like to
-> > know about.
-> >
-> 
-> Great, thanks for giving it a try and reporting the issues.
 
-No problem, looks like a promising project.
+--0Wg1ddIY7KV0vpwL
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Unfortunately I still can't run it in background mode, I get a segfault.
-> 
-> I got it to reproduce as well now. Not sure why how it worked before,
-> probably a race condition between lkl initialization and fuse calls.
-> 
-> > It's working fine on light workloads, but I'm having issues when I start
-> > trying to stress it. In a couple runs of the stress-ng filesystem
-> > stressors I saw both stress-ng and lklfuse get stuck in uninterruptible
-> > sleep during the first run, and during the second I got some OOM errors
-> > in lklfuse followed by I/O errors and eventually a journal error that
-> > cause the filesystem to go read-only.
-> >
-> > The command I used for the first run was:
-> >
-> >  stress-ng --class filesystem --all 0
-> >
-> 
-> I will reproduce it and take a look.
-> 
-> > And for the second:
-> >
-> >  stress-ng --class filesystem --seq 0 -v -t 60
-> >
-> > There really wasn't anything interesting in the lklfuse output for the
-> > first run, but for the second run I pasted the output here:
-> > http://paste.ubuntu.com/13346993/
-> 
-> lklfuse allocates a fixed 100MB to the kernel and this is probably not
-> enough. For the short term I can add a parameter to lklfuse that
-> allows the user to specify the amount of memory to allocate to lkl. A
-> better fix would probably be to dynamically adjust the memory size of
-> lkl. I am thinking of using the ballon virtio driver or the memory
-> hotplug infrastructure. Any other suggestions?
-> 
-> I created a couple of issues in github [1] that you can track if you
-> want - I want to avoid spamming the list with reporting progress on
-> them.
+On Thu, Nov 19, 2015 at 04:00:45PM +0100, Martin Sperl wrote:
 
-Makes sense, I'm watching those issues now and will direct any furure
-discussion there. Thanks!
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
+
+> On the bcm2835 there are also some =E2=80=9Climitations=E2=80=9D (when tr=
+ansfers are not aligned
+> to word, transfers>65535 can=E2=80=99t DMA) which we work around right no=
+w inefficiently.
+
+Alignment is a general issue which all clients should be trying to
+ensure as a matter of course - never mind individual blocks of hardware,
+some common CPU architectures suffer noticable penalties from unaligned
+accesses so it's just generally good practice to try to avoid them.
+
+You shouldn't be doing anything about transfer size limitations in your
+driver, if you have this restriction you should be adding code to the
+core and just flagging the limit in your driver.
+
+> I am in the progress of writing a (minimal) spi-core extension, that woul=
+d allow=20
+> a spi_master to have a prepare_message function that would call some =E2=
+=80=9Cmessage
+> translation functions=E2=80=9D.
+
+> The ones I have currently come up with are:
+> int spi_split_transfer_alignment(struct spi_message *msg, int alignment);
+> int spi_split_transfer_maxsize(struct spi_message *msg, size_t max_size);
+
+Please don't do things this way, please make this more data driven -
+have the drivers declare their capabilities so the core can just do
+these things based on those flags rather than requiring active code in
+drivers.  This keeps the code central which in turn helps keep things
+maintainable.
+
+> I guess this is a more transparent approach that does not require the
+> individual device drivers to query the spi_master about limitations
+> and replicate code in several drivers - also there is no maintenance cost=
+ on
+> individual device drivers to track when there is a new limitation introdu=
+ced.
+
+You've got this back to front - drivers are responsible for initialising
+the master when they instantiate it.  There's nothing stopping them
+using the data if they have variants to handle but they shouldn't be
+speculatively looking at it on the off chance there's some limit.
+
+--0Wg1ddIY7KV0vpwL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWTgO5AAoJECTWi3JdVIfQDxMH/3inzKLd6Hou90K3+YPRleu1
+sOuEnw8HF/bGZoYeoyV+moUuj3N1FX8Suj06B/X77SpxHPkUDznjMMQha6J2Ao+/
+BYZZPn7KPI+iSQY7WGHXDDXyYBBEIRfP/8ayRNDBaa29inWGFrbQRaq49EmdlxeC
+tTIbW7fR5x+sMxustZwkQ3nzjWHPHBq0xIyxOugO1UrHrdo00CvwXOj7NcHudwB6
+4w05PBESq5xd53iTauF7KNCAdlqChg52sj4MUSSu5TWg/5kzWdw5bkeD64QDbek1
+epPMUbYnrRvq3KFS9206NOHH3h9YHkS+Y92gGW8MJJUQlXHoG69uVJAe0Q+vewk=
+=tcju
+-----END PGP SIGNATURE-----
+
+--0Wg1ddIY7KV0vpwL--
