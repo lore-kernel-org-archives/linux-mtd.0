@@ -1,45 +1,29 @@
-Date: Thu, 19 Nov 2015 11:22:07 -0800
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZzUrB-0003jS-6i
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 19:26:57 +0000
+Received: by pacdm15 with SMTP id dm15so90021313pac.3
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 11:26:36 -0800 (PST)
+Date: Thu, 19 Nov 2015 11:26:32 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Ryan Mallon <rmallon@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <kernel@pengutronix.de>,
- Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
- Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- Alexander Clouter <alex@digriz.org.uk>,
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org,
+ bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org,
+ Russell King - ARM Linux <linux@arm.linux.org.uk>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Gregory CLEMENT <gregory.clement@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Marek Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>,
- adi-buildroot-devel@lists.sourceforge.net,
- Mikael Starvik <starvik@axis.com>,
- Jesper Nilsson <jesper.nilsson@axis.com>,
- linux-cris-kernel@axis.com, Josh Wu <josh.wu@atmel.com>,
- Wan ZongShun <mcuos.com@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Stefan Agner <stefan@agner.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
-Subject: Re: [PATCH 03/27] mtd: nand: update examples in the documentation to
- use mtd_to_nand()
-Message-ID: <20151119192207.GG64635@google.com>
-References: <1447681080-31232-1-git-send-email-boris.brezillon@free-electrons.com>
- <1447681080-31232-4-git-send-email-boris.brezillon@free-electrons.com>
+ Andrew Lunn <andrew@lunn.ch>, Bjorn Helgaas <bhelgaas@google.com>,
+ Jason Cooper <jason@lakedaemon.net>, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH 1/4] mtd: brcmnand: improve memory management
+Message-ID: <20151119192632.GH64635@google.com>
+References: <1447884254-26336-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1447884254-26336-2-git-send-email-Julia.Lawall@lip6.fr>
+ <20151118224440.GC64635@google.com>
+ <alpine.DEB.2.02.1511190713140.2008@localhost6.localdomain6>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1447681080-31232-4-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <alpine.DEB.2.02.1511190713140.2008@localhost6.localdomain6>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -49,11 +33,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 16, 2015 at 02:37:36PM +0100, Boris Brezillon wrote:
-> mtd_to_nand() has been introduced to hide accesses to mtd->priv.
-> All NAND controller drivers should use it instead of directly accessing
-> the ->priv field.
+On Thu, Nov 19, 2015 at 07:13:45AM +0100, Julia Lawall wrote:
+> On Wed, 18 Nov 2015, Brian Norris wrote:
+> > On Wed, Nov 18, 2015 at 11:04:11PM +0100, Julia Lawall wrote:
+> > > 3. If the continue is not taken, then host is added to a list, that has a
+> > > lifetime beyond the end of the for_each_available_child_of_node loop body.
+> > > Thus, of_node_get is needed on child, which is referenced by host.  A
+> > > corresponding of_node_put is needed in the remove function.
+> > 
+> > This one's a bit silly. We really shouldn't be keeping the reference in
+> > 'host' at all. Also, as of commit 215a02fd3087 ("mtd: grab a reference to
+> > the MTD of_node before registering it"), the MTD core will actually be
+> > refcounting the node for us, too, so this isn't really necessary.
+> > 
+> > I have a patch to remove brcmnand_host::of_node (appended below), which
+> > should make this step obsolete, and be more obvious that no extra
+> > of_node_get()'ing is required.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> OK.  Should I resend my patch without this change?
 
-Pushed to l2-mtd.git
+Sure, that'd be good. Then I could merge/rebase mine on top.
+
+Thanks,
+Brian
