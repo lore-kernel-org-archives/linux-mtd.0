@@ -1,23 +1,28 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzYA0-0001Ne-3S
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 22:58:36 +0000
-Received: by padhx2 with SMTP id hx2so94930025pad.1
- for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 14:58:14 -0800 (PST)
-Date: Thu, 19 Nov 2015 14:58:11 -0800
+ id 1ZzYU5-0003ac-BF
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 23:19:22 +0000
+Received: by pacdm15 with SMTP id dm15so95451277pac.3
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 15:19:00 -0800 (PST)
+Date: Thu, 19 Nov 2015 15:18:57 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: spi-nor: Check the return value from read_sr()
-Message-ID: <20151119225811.GL64635@google.com>
-References: <1447771824-9147-1-git-send-email-fabio.estevam@freescale.com>
- <20151119215443.GK64635@google.com>
- <CAOMZO5ADJSW446A20wO+Hv-oY9vXjtP3nG0v6hBnAA=FT_-OqA@mail.gmail.com>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Hou Zhiqiang <B48286@freescale.com>, shijie.huang@intel.com,
+ David Woodhouse <dwmw2@infradead.org>, Han Xu <han.xu@freescale.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Huang Shijie <b32955@freescale.com>,
+ Ben Hutchings <ben@decadent.org.uk>, Marek Vasut <marex@denx.de>,
+ Gabor Juhos <juhosg@openwrt.org>,
+ Bean Huo =?utf-8?B?6ZyN5paM5paMLA==?=  <beanhuo@micron.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 6/7] mtd: spi-nor: simplify write loop
+Message-ID: <20151119231857.GM64635@google.com>
+References: <cover.1439543572.git.hramrach@gmail.com>
+ <e1251eea4ec9cc8c72d54300f3396919a3afe4b1.1439543572.git.hramrach@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOMZO5ADJSW446A20wO+Hv-oY9vXjtP3nG0v6hBnAA=FT_-OqA@mail.gmail.com>
+In-Reply-To: <e1251eea4ec9cc8c72d54300f3396919a3afe4b1.1439543572.git.hramrach@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +32,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 19, 2015 at 08:48:23PM -0200, Fabio Estevam wrote:
-> On Thu, Nov 19, 2015 at 7:54 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
+Hi Michal,
+
+Sorry this has sat so long...
+
+On Fri, Aug 14, 2015 at 09:23:08AM -0000, Michal Suchanek wrote:
+> The spi-nor write loop assumes that what is passed to the hardware
+> driver write() is what gets written.
 > 
-> > Hmm, by changing status_old from u8 to int, do we propagate any
-> > sign-extension issues in this function? What if BIT(7) is set? If I
-> 
-> If the value returned by read_sr() has BIT(7) set then it is not an
-> error, right?
-> 
-> read_sr() can return negative on error and u8 on success.
-> 
-> Not sure I understand your concern.
+> When write() writes less than page size at once data is dropped on the
+> floor. Check the amount of data writen.
 
-I guess my comment was based on my misplaced uncertainty on whether u8
-would sign-extend or zero-extend when converted to int. It appears the
-standard says that unsigned values get zero-extended. i.e.:
+Have you seen write() return less than the page size? I know you've
+struggled with a SPI driver that can't do "very" (for some definition of
+very) long transfers, due to unknown bugs, but I thought that "very" was
+much larger than the page size.
 
-	u8 val = BIT(7); // 0x80
+> This also means that write can start mid-page any time so there is
+> no special case for first page.
 
-gets zero-extended to:
+I think we'd have some problems if we start seeing hardware that can't
+write ~256 bytes at a time. If nothing else, this can be a problem
+because some SPI NOR flash are known to have inferior reliability if you
+regularly write in small chunks. I believe this is because they actually
+use some kind of internal ECC.
 
-	return val; // that is, 0x00000080, not 0xffffff80
-
-If we stick with u8, then it doesn't really matter which one it is.
-
-The only remaining concern is over the mild awkwardness of comparing and
-manipulating status_old and status_new, where one is int and the other
-is u8. But I guess there are no issues yet, AFAICT.
+So, if you're just guarding against a theoretical behavior, perhaps it's
+best if this is done with some kind of assertion, as I'd rather not
+encourage non-aligned writes if possible. I notice you used BUG_ON() in
+another patch, but I'd suggest maybe something less harsh, like WARN()
+or WARN_ONCE().
 
 Brian
+
+> 
+> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 48 ++++++++++++++-----------------------------
+>  1 file changed, 15 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 837e3df..e0ae9cf 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -836,7 +836,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  	size_t *retlen, const u_char *buf)
+>  {
+>  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> -	u32 page_offset, page_size, i;
+> +	size_t page_offset, page_remain, i;
+>  	int ret;
+>  
+>  	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
+> @@ -845,45 +845,27 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  	if (ret)
+>  		return ret;
+>  
+> -	write_enable(nor);
+> -
+> -	page_offset = to & (nor->page_size - 1);
+> +	for (i = 0; i < len; ) {
+> +		int written;
+>  
+> -	/* do all the bytes fit onto one page? */
+> -	if (page_offset + len <= nor->page_size) {
+> -		ret = nor->write(nor, to, len, buf);
+> -		if (ret < 0)
+> -			goto write_err;
+> -		*retlen += ret;
+> -	} else {
+> +		page_offset = to & (nor->page_size - 1);
+>  		/* the size of data remaining on the first page */
+> -		page_size = nor->page_size - page_offset;
+> -		ret = nor->write(nor, to, page_size, buf);
+> +		page_remain = min_t(size_t,
+> +				    nor->page_size - page_offset, len - i);
+> +
+> +		write_enable(nor);
+> +		ret = nor->write(nor, to + i, page_remain, buf + i);
+>  		if (ret < 0)
+>  			goto write_err;
+> -		*retlen += ret;
+> -
+> -		/* write everything in nor->page_size chunks */
+> -		for (i = ret; i < len; ) {
+> -			page_size = len - i;
+> -			if (page_size > nor->page_size)
+> -				page_size = nor->page_size;
+> -
+> -			ret = spi_nor_wait_till_ready(nor);
+> -			if (ret)
+> -				goto write_err;
+> +		written = ret;
+>  
+> -			write_enable(nor);
+> -
+> -			ret = nor->write(nor, to + i, page_size, buf + i);
+> -			if (ret < 0)
+> -				goto write_err;
+> -			*retlen += ret;
+> -			i += ret;
+> -		}
+> +		ret = spi_nor_wait_till_ready(nor);
+> +		if (ret)
+> +			goto write_err;
+> +		*retlen += written;
+> +		i += written;
+>  	}
+>  
+> -	ret = spi_nor_wait_till_ready(nor);
+>  write_err:
+>  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
+>  	return ret;
+> -- 
+> 2.1.4
+> 
