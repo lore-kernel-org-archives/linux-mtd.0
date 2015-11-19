@@ -1,38 +1,21 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzK2W-0007jA-OP
- for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 07:53:58 +0000
-Subject: Re: [PATCH v3 0/7] User namespace mount updates
-To: James Morris <jmorris@namei.org>
-References: <20151117172551.GA108807@ubuntu-hedt>
- <20151117175506.GW22011@ZenIV.linux.org.uk> <564B79B1.3040207@gmail.com>
- <20151117191606.GC108807@ubuntu-hedt> <564B941A.2070601@gmail.com>
- <20151117213255.GE108807@ubuntu-hedt> <564C6DD4.6090308@gmail.com>
- <20151118142238.GB134139@ubuntu-hedt>
- <20151118145818.GC22011@ZenIV.linux.org.uk>
- <20151118150512.GE134139@ubuntu-hedt>
- <20151118151335.GD22011@ZenIV.linux.org.uk>
- <CAFLxGvwwhXqVM71m1kEDTZk_YTKGtbJ3gWoXw3wRgcwDiC38Bg@mail.gmail.com>
- <alpine.LRH.2.20.1511191845510.10804@namei.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
- Seth Forshee <seth.forshee@canonical.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
- device-mapper development <dm-devel@redhat.com>,
- "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>, LKML <linux-kernel@vger.kernel.org>,
- Theodore Ts'o <tytso@mit.edu>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <564D7FF6.50408@nod.at>
-Date: Thu, 19 Nov 2015 08:53:26 +0100
+ id 1ZzNad-0004fS-VI
+ for linux-mtd@lists.infradead.org; Thu, 19 Nov 2015 11:41:24 +0000
+Date: Thu, 19 Nov 2015 11:40:57 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Message-ID: <20151119114057.GN31303@sirena.org.uk>
+References: <564CEB61.2000601@gmail.com> <20151118215755.GL31303@sirena.org.uk>
+ <564D0098.4030107@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LRH.2.20.1511191845510.10804@namei.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="oWj5HoUXCVjyUFuT"
+Content-Disposition: inline
+In-Reply-To: <564D0098.4030107@gmail.com>
+Subject: Re: RfC: Handle SPI controller limitations like maximum message length
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,26 +25,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 19.11.2015 um 08:47 schrieb James Morris:
-> On Wed, 18 Nov 2015, Richard Weinberger wrote:
-> 
->> On Wed, Nov 18, 2015 at 4:13 PM, Al Viro <viro@zeniv.linux.org.uk> wrote:
->>> On Wed, Nov 18, 2015 at 09:05:12AM -0600, Seth Forshee wrote:
->>>
->>>> Yes, the host admin. I'm not talking about trusting the admin inside the
->>>> container at all.
->>>
->>> Then why not have the same host admin just plain mount it when setting the
->>> container up and be done with that?  From the host namespace, before spawning
->>> the docker instance or whatever framework you are using.  IDGI...
->>
->> Because hosting companies sell containers as "full virtual machines"
->> and customers expect to be able mount stuff like disk images they upload.
-> 
-> I don't think this is a valid reason for merging functionality into the 
-> kernel.
 
-Erm, I don't want this in the kernel. That's why I've proposed the lklfuse approach.
+--oWj5HoUXCVjyUFuT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-//richard
+On Wed, Nov 18, 2015 at 11:50:00PM +0100, Heiner Kallweit wrote:
+> Am 18.11.2015 um 22:57 schrieb Mark Brown:
+> > On Wed, Nov 18, 2015 at 10:19:29PM +0100, Heiner Kallweit wrote:
+
+> >> There have been few discussions in the past about how to handle SPI controller
+> >> limitations like max message length. However they don't seem to have resulted
+> >> in accepted patches yet.
+
+> > No, they've resulted in people writing code.  We've got a bunch of
+> > things in the spi_master struct like the limits on speeds and bits per
+> > word.
+
+> Sure, I'm aware of this. To you it might sound obvious to handle such
+> limitations in the SPI core, however there have been several attempts
+> to deal with such limitations in controller or protocol drivers.
+
+They're documented using terms like "limits" and "constraints" - it's
+hard to see what we're missing there.
+
+> >> Maybe a better approach would be to introduce a new member of spi_master
+> >> dealing with controller limitations.
+
+> > That's what we've been doing...
+
+> Primary addressees of my comment were users of the SPI core trying to deal
+> in their own code with things which might be better dealt with in the core.
+
+Well, we do to the extent we can do anything useful in the core we have
+code to deal with them - we constrain clocks and we have error checking
+for the bits per word settings for example.
+
+> In case there should be more need to reflect such limitations in spi_master
+> it might be good to encapsulate them in a separate struct instead of adding
+> more such members to spi_master directly.
+
+It's going to be annoying to move everything over and TBH I'm not sure
+it really helps much.  This is honestly the first time I can recall
+anyone expressing any confusion here.
+
+--oWj5HoUXCVjyUFuT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWTbVIAAoJECTWi3JdVIfQ+D4H/1Kvzg/gVzQiCTCMkuXmX3HA
+d/V6dCj5lqpx/tvVRAm94e35qgwFIjZKX68py8Dlsseg0PBe13JR2KzS0eVnXsFj
+EjUPQdhSkytEZU9BZ5eKP7RgrjiBM9rSIuBaubJIx2YDQds/gB4u31uToWIZnrTN
+PSCxEUlrIKXjX+UzqVrrNEPSqD0+ZnEYfdxg2xcqcJH0puVupSLcruNlnCAtMP5T
+1CKo+gVJ2aGhugRAlb2A60Aux0VTRX3lMhQQkkmhtoBPrHuGvZ3UV8gh6fISg3kG
+KQTT27vlDu8TOBeeL6IfU9OOwvquB8L9TNxyqXrauD6U6SbWEy2LUYzL1sW78Do=
+=/0Pl
+-----END PGP SIGNATURE-----
+
+--oWj5HoUXCVjyUFuT--
