@@ -1,28 +1,15 @@
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzrcE-00031e-Je
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 19:45:03 +0000
-Received: by wmdw130 with SMTP id w130so32193094wmd.0
- for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 11:44:41 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20151120192157.GF1929@sirena.org.uk>
-References: <564CEB61.2000601@gmail.com> <20151120000226.GP64635@google.com>
- <564EC4E0.90602@gmail.com>
- <CAFSsGVsJBi6yPin7X9MCS8LD6nygjynfgDgFicjojkm0rOJSJw@mail.gmail.com>
- <20151120123540.GC1929@sirena.org.uk> <564F6D99.8090203@gmail.com>
- <CAOMqctTt=78C4m2jjMb9mRBOkoZ5uZ4neVm0NS39iNO8otn=dA@mail.gmail.com>
- <20151120192157.GF1929@sirena.org.uk>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Fri, 20 Nov 2015 20:44:01 +0100
-Message-ID: <CAOMqctSCMO93BWD0HOAmKniZLmZkXvXG5hbUQ3kD9PrxNzKw+w@mail.gmail.com>
-Subject: Re: RfC: Handle SPI controller limitations like maximum message length
-To: Mark Brown <broonie@kernel.org>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Martin Sperl <martin@sperl.org>
-Content-Type: text/plain; charset=UTF-8
+ id 1Zzttx-0007a2-BO
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 22:11:29 +0000
+Received: by pacdm15 with SMTP id dm15so128508484pac.3
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 14:11:08 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] UBI: fix use of "VID" vs. "EC" in header self-check
+Date: Fri, 20 Nov 2015 14:10:54 -0800
+Message-Id: <1448057454-32664-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,35 +19,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 20 November 2015 at 20:21, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Nov 20, 2015 at 08:05:48PM +0100, Michal Suchanek wrote:
->
->> I don't think ignoring errors in general is good idea.
->
->> If it's desirable that a partial transfer is reported as error then a
->> particular error value should be defined for this case and drivers
->> that can continue the transfer in a driver-specific way (such as
->> spi-nor) can check for this error and handle it appropriately and pass
->> through any other error.
->
-> Fundamentally callers just shouldn't be trying to do excessively large
-> transfers in the first place, this is why we want capability reporting.
-> *Any* error code could indicate a truncation, we may have truncated due
-> to some length limitation but it could also be that there was some
-> hardware problem that occurred mid transfer or something similar.
+Looks like a typo, using UBI_EC_HDR_SIZE_CRC (note the "EC") to compute
+the CRC for the VID header.
 
-Indeed, and in the case the SPI master driver truncated the message
-due to known limitation before it even attempted a transfer it can
-assure with as much certainty as is possible with SPI bus that this
-much data was transferred, no more and no less. In contrast, a DMA
-failure that is detected after the fact can leave the hardware in
-unknown state. So I see a difference here.
+This shouldn't cause any functional change, as both structures are 64
+bytes. Verified with:
 
-And yes, for some driver protocols transferring less data than was
-initially requested is not acceptable. For example, if you transferred
-Ethernet frames to an Ethernet controller the frames must be
-transferred fully.
+	BUILD_BUG_ON(UBI_VID_HDR_SIZE_CRC != UBI_EC_HDR_SIZE_CRC);
 
-Thanks
+Reported here:
+http://lists.infradead.org/pipermail/linux-mtd/2013-September/048570.html
 
-Michal
+Reported by: Bill Pringlemeir <bpringlemeir@gmail.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+I was sorting through really old email. Don't ask.
+
+ drivers/mtd/ubi/io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index 1fc23e48fe8e..10cf3b549959 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -1299,7 +1299,7 @@ static int self_check_peb_vid_hdr(const struct ubi_device *ubi, int pnum)
+ 	if (err && err != UBI_IO_BITFLIPS && !mtd_is_eccerr(err))
+ 		goto exit;
+ 
+-	crc = crc32(UBI_CRC32_INIT, vid_hdr, UBI_EC_HDR_SIZE_CRC);
++	crc = crc32(UBI_CRC32_INIT, vid_hdr, UBI_VID_HDR_SIZE_CRC);
+ 	hdr_crc = be32_to_cpu(vid_hdr->hdr_crc);
+ 	if (hdr_crc != crc) {
+ 		ubi_err(ubi, "bad VID header CRC at PEB %d, calculated %#08x, read %#08x",
+-- 
+2.6.0.rc2.230.g3dd15c0
