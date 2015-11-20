@@ -1,20 +1,22 @@
-Received: from smtp2.macqel.be ([109.135.2.61])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzhGr-0002PV-Qa
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 08:42:24 +0000
-Date: Fri, 20 Nov 2015 09:41:52 +0100
-From: Philippe De Muyter <phdm@macqel.be>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Simon Falsig <simon@newtec.dk>, linux-mtd@lists.infradead.org,
- Vignesh R <vigneshr@ti.com>
-Subject: Re: mmap support for m25p80 device
-Message-ID: <20151120084152.GA26112@frolo.macqel>
-References: <9d83b70759c3d2507200432b4ff162be@mail.gmail.com>
- <20151118021503.GA140057@google.com> <20151119213119.GA106769@google.com>
+Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zziay-0002Ja-SX
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 10:07:09 +0000
+Received: by wmvv187 with SMTP id v187so64557583wmv.1
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 02:06:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151119213119.GA106769@google.com>
+In-Reply-To: <564EC4E0.90602@gmail.com>
+References: <564CEB61.2000601@gmail.com> <20151120000226.GP64635@google.com>
+ <564EC4E0.90602@gmail.com>
+Date: Fri, 20 Nov 2015 11:06:47 +0100
+Message-ID: <CAFSsGVsJBi6yPin7X9MCS8LD6nygjynfgDgFicjojkm0rOJSJw@mail.gmail.com>
+Subject: Re: RfC: Handle SPI controller limitations like maximum message length
+From: Heiner Kallweit <hkallweit1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ Michal Suchanek <hramrach@gmail.com>, martin@sperl.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,98 +26,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 19, 2015 at 01:31:19PM -0800, Brian Norris wrote:
-> + Philippe
-> 
-> On Tue, Nov 17, 2015 at 06:15:03PM -0800, Brian Norris wrote:
-> > + Vignesh
-> > 
-> > Vignesh is working on supporting mmap'd flash reads in the SPI core,
-> > particularly for the TI QSPI driver. I don't believe he's planning on
-> > exposing this to userspace, though, and I believe that might be pretty
-> > difficult to do now.
-> > 
-> > Perhaps Vignesh can comment.
-> > 
-> > On Tue, Oct 20, 2015 at 04:31:20PM +0200, Simon Falsig wrote:
-> > > Hi,
-> > > 
-> > > I'm currently working on a new custom board (with a TI AM3356 ARM-Cortex
-> > > A8
-> > > CPU), with a 32 kB Everspin MR25H256 MRAM chip, attached over SPI. It
-> > > works
-> > > fine using the m25p80 driver, but I was wondering how complex it would be
-> > > to
-> > > add the possibility of memory-mapping the device in userspace? - mainly to
-> > > make the interface consistent with the board that it is replacing, which
-> > > uses
-> > > a different, mmap-able, RAM chip.
-> > > 
-> > > I'm not very experienced in the deeper aspects of the kernel, but I've
-> > > been
-> > > poking around a bit in the mtd subsystem, and it seems as if the main
-> > > thing
-> > > that is missing, is a valid get_unmapped_area() function for the m25p80
-> > > driver, and then to change the mtdchar_mmap() function (in mtdchar.c) to
-> > > actually allow mmap'ing on MMU systems.
-> > 
-> > It's not quite so simple. Read the comments in mtdchar, and you'll see
-> > that there's some layering bugs that caused us to disable MMU mmap
-> > entirely. Apparently no one cared so far. Read the comments here:
-> > 
-> > commit f5cf8f07423b2677cebebcebc863af77223a4972
-> > Author: David Woodhouse <David.Woodhouse@intel.com>
-> > Date:   Tue Oct 9 15:08:10 2012 +0100
-> > 
-> >     mtd: Disable mtdchar mmap on MMU systems
-> > 
-> > But feel free to fix it.
-> 
-> I see there's an old patch that never got reviewed/tested, for doing
-> this:
-> 
-> http://patchwork.ozlabs.org/patch/327981/
+On Fri, Nov 20, 2015 at 7:59 AM, Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> Am 20.11.2015 um 01:02 schrieb Brian Norris:
+>> On Wed, Nov 18, 2015 at 10:19:29PM +0100, Heiner Kallweit wrote:
+>>> There have been few discussions in the past about how to handle SPI controller
+>>> limitations like max message length. However they don't seem to have resulted
+>>> in accepted patches yet.
+>>> I also stumbled across this topic because I own a device using Freescale's
+>>> ESPI which has a 64K message size limitation.
+>>>
+>>> At least one agreed fact is that silently assembling chunks in protocol
+>>> drivers is not the preferred approach.
+>>
+>> Hmm, are you referring to this sort of approach [1], where the
+>> spi_message::acutal_length informs the spi_nor layer that the transfer
+>> was truncated?
+>>
+>> [1] [PATCH v4 7/7] mtd: spi-nor: add read loop
+>>     http://lists.infradead.org/pipermail/linux-mtd/2015-August/061062.html
+>>
+>>> Maybe a better approach would be to introduce a new member of spi_master
+>>> dealing with controller limitations.
+>>> My issue is just the message size limitation but most likely there are more
+>>> and different limitations in other controllers.
+>>>
+>>> I'd introduce a struct spi_controller_restrictions and add a member to spi_master
+>>> pointing to such a struct. Then a controller driver could do something like this:
+>>>
+>>> static const struct spi_controller_restrictions fsl_espi_restrictions = {
+>>>      .max_msg_size   = 0xffff,
+>>> };
+>>>
+>>> master->restrictions = &fsl_espi_restrictions;
+>>
+>> OK, so I think Mark suggested we not move to a 'restrictions' struct,
+>> but otherwise it doesn't sound like he's opposed to this.
+>>
+> That's how I read his comments too.
+>
+>>> I also add an example how a protocol driver could use this extension.
+>>> Appreciate any comment.
+>>
+>> One question I have: is it necessary to push the handling out into the
+>> protocol driver? I feel like I've seen a partial answer to this: the
+>> 'actual_legnth' return field suggests that the protocol driver already
+>> has to deal with shorter-than-desired transfers.
+>>
+>> Then I have another one: is the 'actual_length' field really
+>> insufficient? For instance, is it non-kosher for a spi_master to just
+>> cutoff the message at (for instance) 64K, and expect the protocol
+>> driver to handle that (e.g., with Michal's patch from [1])? And if that
+>> is kosher, then is there a good reason for the protocol driver to know
+>> the exact maximum for its spi_master?
+>>
+> It would be sufficient if it's a valid case that spi_master returns 0
+> and an actual_length < requested_length as this is some kind of error
+> situation.
 
-I use that patch to access a battery-back-up'ed SRAM connected to the
-WEIM bus of a Freescale i.MX6q ARM processor, and it works perfectly for
-that.  On that processor, the WEIM bus maps the connected peripherals in
-the physical memory addresses range, so it is really easy to make that
-user-accessible through mmap.  Only the above patch was needed.
+I had one more look at the SPI core and e.g. spi_write_then_read
+calls spi_sync w/o checking actual_length afterwards.
+This can mean the discussed case is not valid, however it also could be
+simply a bug.
 
-Philippe
+If the discussed case is valid a clear hint to all users of spi_sync and
+friends should be added that the caller can not rely on status code 0
+only but must check actual_length to verify that the complete message
+was transferred.
 
-> 
-> You could check that out.
-> 
-> Brian
-> 
-> > > But - does it even make sense to create such a function for m25p80? - and
-> > > how would I start?
-> > 
-> > SPI drivers don't really expose a mmap-able interface, so this isn't
-> > possible at the moment. Even once it can be done, it would be restricted
-> > only to those controllers that can do memory map for you. AIUI, your SoC
-> > might (?).
-> > 
-> > But even if it supports it, I expect you'll have difficulty coordinating
-> > this properly, since the SPI bus technically can be shared with multiple
-> > devices, whereas mmap would kind of assume that user-space can access
-> > the flash at any time. So I guess m25p80 would have to grab exclusive
-> > access of the entire SPI bus? If your system design can handle that,
-> > then I guess it CAN be done...
-> > 
-> > ...but why do you want to do this, again?
-> > 
-> > Brian
-> > 
-> > > Any pointers and/or comments are appreciated!
-> > > Thanks and best regards,
-> > > Simon Falsig
-> > > simon@newtec.dk
-> > > 
-> > > ______________________________________________________
-> > > Linux MTD discussion mailing list
-> > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+It would be good to hear Mark's opinion on this.
 
--- 
-Philippe De Muyter +32 2 6101532 Macq SA rue de l'Aeronef 2 B-1140 Bruxelles
+> I could also fully understand if spi_master doesn't return 0 but
+> -EMSGSIZE in such a case.
+> And the suggested patch would bail out of the chunk-assembling loop
+> once it get's an error from the SPI transfer
+> (after applying patch 2 of the series which introduces checking
+> the return code of the spi_sync call in m25p80_read).
+>
+>> [snip example]
+>>
+>> Brian
+>>
+>
