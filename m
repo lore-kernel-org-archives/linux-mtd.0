@@ -1,37 +1,24 @@
-Received: from h2.hallyn.com ([78.46.35.8])
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzpZK-0005cX-8p
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 17:33:55 +0000
-Date: Fri, 20 Nov 2015 11:33:29 -0600
-From: "Serge E. Hallyn" <serge.hallyn@ubuntu.com>
-To: Octavian Purdila <octavian.purdila@intel.com>
-Cc: Seth Forshee <seth.forshee@canonical.com>,
- Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>,
- "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
- device-mapper development <dm-devel@redhat.com>,
- "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Andy Lutomirski <luto@amacapital.net>,
- LKML <linux-kernel@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v3 0/7] User namespace mount updates
-Message-ID: <20151120173329.GA20909@mail.hallyn.com>
-References: <20151117172551.GA108807@ubuntu-hedt>
- <20151117175506.GW22011@ZenIV.linux.org.uk>
- <20151117183444.GB108807@ubuntu-hedt>
- <CAFLxGvx1UqJOhM3wqAGqT+TrkapeP1zkmg0a1K=DjySePx4mEA@mail.gmail.com>
- <20151117192141.GD108807@ubuntu-hedt>
- <CAE1zotLNq1v_ZegT9LyFsTiHWQnOAow+KKQFFvOYKUyRWPjfGA@mail.gmail.com>
- <564B8A20.9090607@nod.at>
- <CAE1zotJRp3=G2Vdud7kVbkToKe2YsTF3gXUnLCNzKV6F0oumdg@mail.gmail.com>
- <20151119152347.GA45540@ubuntu-hedt>
- <CAE1zot+G=SohXzuV6Gs7APdCo5pu9xLwE38kZKNUuWRnSh++BA@mail.gmail.com>
+ id 1Zzpw6-0002xU-Sw
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 17:57:27 +0000
+Received: by pacdm15 with SMTP id dm15so122928295pac.3
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 09:57:06 -0800 (PST)
+Date: Fri, 20 Nov 2015 09:57:03 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Cc: LABBE Corentin <clabbe.montjoie@gmail.com>, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 1/2] mtd: nand: atmel_nand: constify atmel_nand_caps
+ structures
+Message-ID: <20151120175703.GU64635@google.com>
+References: <1448005517-26004-1-git-send-email-clabbe.montjoie@gmail.com>
+ <1448005517-26004-2-git-send-email-clabbe.montjoie@gmail.com>
+ <564ED99A.2050502@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAE1zot+G=SohXzuV6Gs7APdCo5pu9xLwE38kZKNUuWRnSh++BA@mail.gmail.com>
+In-Reply-To: <564ED99A.2050502@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,34 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 19, 2015 at 06:19:10PM +0200, Octavian Purdila wrote:
-> On Thu, Nov 19, 2015 at 5:23 PM, Seth Forshee
-> > And for the second:
-> >
-> >  stress-ng --class filesystem --seq 0 -v -t 60
-> >
-> > There really wasn't anything interesting in the lklfuse output for the
-> > first run, but for the second run I pasted the output here:
-> > http://paste.ubuntu.com/13346993/
+On Fri, Nov 20, 2015 at 04:28:10PM +0800, Josh Wu wrote:
+> Hi, Corentin
 > 
-> lklfuse allocates a fixed 100MB to the kernel and this is probably not
-> enough. For the short term I can add a parameter to lklfuse that
-> allows the user to specify the amount of memory to allocate to lkl. A
-> better fix would probably be to dynamically adjust the memory size of
-> lkl. I am thinking of using the ballon virtio driver or the memory
-> hotplug infrastructure. Any other suggestions?
+> Thanks for the patch.
+> 
+> On 11/20/2015 3:45 PM, LABBE Corentin wrote:
+> >All atmel_nand_caps are never modified, consitify them.
+> >
+> >Signed-off-by: LABBE Corentin <clabbe.montjoie@gmail.com>
+> 
+> Acked-by: Josh Wu <josh.wu@atmel.com>
 
-Hi Octavian,
-
-Like Seth said this was very nice to install and run.  But I think I'm
-doing something wrong.  I cloned the lkl/linux git tree into a 9G ext4
-loopback file, both one mounted with lkl and one mounted as loopback.
-The results were worse than I expected - loopback was 0m10.078s for
-clone and 0m0.877s for rm -rf;  lkl was 5m5.625s for clone and 0m44.332s
-for rm -rf.  I assume this has to do with the 100MB buffer and subsequent
-thrashing?  How should I tune this to  make it perform better?
-
-No crashes from this, though.
-
-thanks,
--serge
+Pushed patch 1 to l2-mtd.git
