@@ -1,18 +1,28 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zzd0S-00081K-K8
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 04:09:05 +0000
-Subject: Re: mmap support for m25p80 device
-To: Brian Norris <computersforpeace@gmail.com>, Simon Falsig <simon@newtec.dk>
-References: <9d83b70759c3d2507200432b4ff162be@mail.gmail.com>
- <20151118021503.GA140057@google.com>
-CC: <linux-mtd@lists.infradead.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <564E9CC5.50709@ti.com>
-Date: Fri, 20 Nov 2015 09:38:37 +0530
+ id 1ZzfAL-0006Dl-4q
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 06:27:26 +0000
+Received: by wmec201 with SMTP id c201so57557288wme.0
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 22:27:03 -0800 (PST)
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH v4 7/7] mtd: spi-nor: add read loop
+To: Brian Norris <computersforpeace@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>
+References: <cover.1439543572.git.hramrach@gmail.com>
+ <1592668a061137b33c9a6392dfccc67c69fc1fe6.1439543572.git.hramrach@gmail.com>
+ <20151119233924.GN64635@google.com>
+Cc: Hou Zhiqiang <B48286@freescale.com>, shijie.huang@intel.com,
+ David Woodhouse <dwmw2@infradead.org>, Han Xu <han.xu@freescale.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Ben Hutchings <ben@decadent.org.uk>, Marek Vasut <marex@denx.de>,
+ Gabor Juhos <juhosg@openwrt.org>, Bean Huo <beanhuo@micron.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Huang Shijie <shijie.huang@arm.com>
+Message-ID: <564EBD2B.50101@gmail.com>
+Date: Fri, 20 Nov 2015 07:26:51 +0100
 MIME-Version: 1.0
-In-Reply-To: <20151118021503.GA140057@google.com>
-Content-Type: text/plain; charset="windows-1252"
+In-Reply-To: <20151119233924.GN64635@google.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,84 +33,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 11/18/2015 07:45 AM, Brian Norris wrote:
-> + Vignesh
+Am 20.11.2015 um 00:39 schrieb Brian Norris:
+> + Heiner
 > 
-> Vignesh is working on supporting mmap'd flash reads in the SPI core,
-> particularly for the TI QSPI driver. I don't believe he's planning on
-> exposing this to userspace, though, and I believe that might be pretty
-> difficult to do now.
+> On Fri, Aug 14, 2015 at 09:23:09AM -0000, Michal Suchanek wrote:
+>> mtdblock and ubi do not handle the situation when read returns less data
+>> than requested. Loop in spi-nor until buffer is filled or an error is
+>> returned.
 > 
-> Perhaps Vignesh can comment.
-
-I have no plans of exposing this to userspace anytime sooner. Supporting
-DMA and all types of opcode/address/data combinations are the first steps.
-
+> I'm slightly torn on this patch. I believe this is inspired by issues in
+> the SPI layer. But I believe there is some agreement from the SPI layer
+> that protocol drivers (such as m25p80.c/spi-nor.c) should not have to
+> worry about spi_messages getting truncated [1]. Heiner is looking at
+> that.
 > 
-> On Tue, Oct 20, 2015 at 04:31:20PM +0200, Simon Falsig wrote:
->> Hi,
+> But on the other hand, it's possible that some non-SPI driver would have
+> similar limitations, and so spi-nor.c should be handling the issue.
+> 
+>> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++------
+>>  1 file changed, 14 insertions(+), 6 deletions(-)
 >>
->> I'm currently working on a new custom board (with a TI AM3356 ARM-Cortex
->> A8
->> CPU), with a 32 kB Everspin MR25H256 MRAM chip, attached over SPI. It
->> works
->> fine using the m25p80 driver, but I was wondering how complex it would be
->> to
->> add the possibility of memory-mapping the device in userspace? - mainly to
->> make the interface consistent with the board that it is replacing, which
->> uses
->> a different, mmap-able, RAM chip.
->>
->> I'm not very experienced in the deeper aspects of the kernel, but I've
->> been
->> poking around a bit in the mtd subsystem, and it seems as if the main
->> thing
->> that is missing, is a valid get_unmapped_area() function for the m25p80
->> driver, and then to change the mtdchar_mmap() function (in mtdchar.c) to
->> actually allow mmap'ing on MMU systems.
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index e0ae9cf..246fac7 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -738,14 +738,22 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> -	ret = nor->read(nor, from, len, buf);
+>> +	while (len) {
+>> +		ret = nor->read(nor, from, len, buf);
+>> +		if (ret <= 0)
+>> +			goto read_err;
 > 
-> It's not quite so simple. Read the comments in mtdchar, and you'll see
-> that there's some layering bugs that caused us to disable MMU mmap
-> entirely. Apparently no one cared so far. Read the comments here:
+> Do we really want to exit silently when ret==0, but len!=0?
 > 
-> commit f5cf8f07423b2677cebebcebc863af77223a4972
-> Author: David Woodhouse <David.Woodhouse@intel.com>
-> Date:   Tue Oct 9 15:08:10 2012 +0100
+>> +
+>> +		BUG_ON(ret > len);
 > 
->     mtd: Disable mtdchar mmap on MMU systems
+> Maybe the condition here should be 'ret > len || len == 0', since this
+> shouldn't happen.
 > 
-> But feel free to fix it.
+> Also, please don't use BUG_ON(). Even though this is really unexpected,
+> we don't need to crash the system. Perhaps:
 > 
->> But - does it even make sense to create such a function for m25p80? - and
->> how would I start?
+> 		if (WARN_ON(ret > len || ret == 0)) {
+> 			ret = -EIO;
+> 			goto read_err;
+> 		}
 > 
-> SPI drivers don't really expose a mmap-able interface, so this isn't
-> possible at the moment. Even once it can be done, it would be restricted
-> only to those controllers that can do memory map for you. AIUI, your SoC
-> might (?).
-> 
-> But even if it supports it, I expect you'll have difficulty coordinating
-> this properly, since the SPI bus technically can be shared with multiple
-> devices, whereas mmap would kind of assume that user-space can access
-> the flash at any time. So I guess m25p80 would have to grab exclusive
-> access of the entire SPI bus? If your system design can handle that,
-> then I guess it CAN be done...
-> 
-> ...but why do you want to do this, again?
+>> +		*retlen += ret;
+>> +		buf += ret;
+>> +		from += ret;
+>> +		len -= ret;
+>> +	}
+>> +	ret = 0;
+>>  
+>> +read_err:
+>>  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
+>> -	if (ret < 0)
+>> -		return ret;
+>> -
+>> -	*retlen += ret;
+>> -	return 0;
+>> +	return ret;
+>>  }
+>>  
+>>  static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
 > 
 > Brian
 > 
->> Any pointers and/or comments are appreciated!
->> Thanks and best regards,
->> Simon Falsig
->> simon@newtec.dk
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> [1] http://www.spinics.net/lists/linux-spi/msg05877.html
+>     "RfC: Handle SPI controller limitations like maximum message length"
+> 
+>     I'm honestly not really sure what the conclusion from that thread
+>     is, so far. It seems like the SPI master "should" be exposing its
+>     max length to the SPI core, but it's unclear whether that would get
+>     propagated as a short write/read (i.e., shorter-than-expected
+>     spi_message::actual_length), or whether the SPI core should be
+>     somehow splitting up the messages into manageable chunks for us. I'm
+>     not even sure if the latter is legal for things like
+>     read-from-flash; might this cause the chip select to get toggled,
+>     potentially disrupting the operation?
 
--- 
-Regards
-Vignesh
+That's exactly my issue with Freescale ESPI.
+You provide a message length (up to 64K) to the chip and it sets / resets
+CS internally. Resuming a short read requires to set the (SPI NOR)
+start address for the next read properly.
+And this can be done by the protocol driver only.
+Currently the fsl-espi controller driver includes some ugly
+(protocol driver) logic to deal with this.
+One consequence is that this controller driver can be used with
+SPI NOR devices only.
+
+At a first glance I see two options:
+
+1. The controller driver returns an error like EMSGSIZE and the number
+   of read bytes. Then the protocol driver can loop and assemble the chunks.
+
+2. The SPI master exposes the SPI message length constraint and the
+   protocol driver can proactively deal with this limitation.
+
+I have a little headache with option 1 because I'm not sure that we can
+in general rely on the number of read bytes if an error is returned.
+Some controller driver might return whatever value assuming that the
+caller ignores it anyway if an error is returned.
+
+Options 2 I like better as it doesn't require the controller driver
+to handle an error situation like a short read in a specific way.
+
+And it seems like Mark could be fine with an additional member of
+spi_master like size_t max_msg_size.
+The idea of a struct encapsulating all constraints he didn't like too much.
+
+> 
+>     Anyway, in the former case, we need something like your patch. But
+>     in the latter case, we actually don't need anything, other than
+>     maybe an assertion that ret == len.
+> 
