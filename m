@@ -1,15 +1,19 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzcNn-000155-O3
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 03:29:08 +0000
-Received: by pabfh17 with SMTP id fh17so105187973pab.0
- for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 19:28:46 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: partitions: turn PART() macro into inline function
-Date: Thu, 19 Nov 2015 19:28:39 -0800
-Message-Id: <1447990119-128216-1-git-send-email-computersforpeace@gmail.com>
+ id 1Zzd0S-00081K-K8
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 04:09:05 +0000
+Subject: Re: mmap support for m25p80 device
+To: Brian Norris <computersforpeace@gmail.com>, Simon Falsig <simon@newtec.dk>
+References: <9d83b70759c3d2507200432b4ff162be@mail.gmail.com>
+ <20151118021503.GA140057@google.com>
+CC: <linux-mtd@lists.infradead.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <564E9CC5.50709@ti.com>
+Date: Fri, 20 Nov 2015 09:38:37 +0530
+MIME-Version: 1.0
+In-Reply-To: <20151118021503.GA140057@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,268 +23,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We can guard against reorganization of struct mtd_part by using
-container_of(). We can also make sure we're using the right pointer
-types by making this a static inline function instead of a macro.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/mtdpart.c | 63 +++++++++++++++++++++++++++------------------------
- 1 file changed, 33 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 5146c4e71a47..f59b23d9cf85 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -48,9 +48,12 @@ struct mtd_part {
- 
- /*
-  * Given a pointer to the MTD object in the mtd_part structure, we can retrieve
-- * the pointer to that structure with this macro.
-+ * the pointer to that structure.
-  */
--#define PART(x)  ((struct mtd_part *)(x))
-+static inline struct mtd_part *mtd_to_part(const struct mtd_info *mtd)
-+{
-+	return container_of(mtd, struct mtd_part, mtd);
-+}
- 
- 
- /*
-@@ -61,7 +64,7 @@ struct mtd_part {
- static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
- 		size_t *retlen, u_char *buf)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	struct mtd_ecc_stats stats;
- 	int res;
- 
-@@ -80,7 +83,7 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
- static int part_point(struct mtd_info *mtd, loff_t from, size_t len,
- 		size_t *retlen, void **virt, resource_size_t *phys)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 
- 	return part->master->_point(part->master, from + part->offset, len,
- 				    retlen, virt, phys);
-@@ -88,7 +91,7 @@ static int part_point(struct mtd_info *mtd, loff_t from, size_t len,
- 
- static int part_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 
- 	return part->master->_unpoint(part->master, from + part->offset, len);
- }
-@@ -98,7 +101,7 @@ static unsigned long part_get_unmapped_area(struct mtd_info *mtd,
- 					    unsigned long offset,
- 					    unsigned long flags)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 
- 	offset += part->offset;
- 	return part->master->_get_unmapped_area(part->master, len, offset,
-@@ -108,7 +111,7 @@ static unsigned long part_get_unmapped_area(struct mtd_info *mtd,
- static int part_read_oob(struct mtd_info *mtd, loff_t from,
- 		struct mtd_oob_ops *ops)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	int res;
- 
- 	if (from >= mtd->size)
-@@ -146,7 +149,7 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
- static int part_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 		size_t len, size_t *retlen, u_char *buf)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_read_user_prot_reg(part->master, from, len,
- 						 retlen, buf);
- }
-@@ -154,7 +157,7 @@ static int part_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
- static int part_get_user_prot_info(struct mtd_info *mtd, size_t len,
- 				   size_t *retlen, struct otp_info *buf)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_get_user_prot_info(part->master, len, retlen,
- 						 buf);
- }
-@@ -162,7 +165,7 @@ static int part_get_user_prot_info(struct mtd_info *mtd, size_t len,
- static int part_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
- 		size_t len, size_t *retlen, u_char *buf)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_read_fact_prot_reg(part->master, from, len,
- 						 retlen, buf);
- }
-@@ -170,7 +173,7 @@ static int part_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
- static int part_get_fact_prot_info(struct mtd_info *mtd, size_t len,
- 				   size_t *retlen, struct otp_info *buf)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_get_fact_prot_info(part->master, len, retlen,
- 						 buf);
- }
-@@ -178,7 +181,7 @@ static int part_get_fact_prot_info(struct mtd_info *mtd, size_t len,
- static int part_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		size_t *retlen, const u_char *buf)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_write(part->master, to + part->offset, len,
- 				    retlen, buf);
- }
-@@ -186,7 +189,7 @@ static int part_write(struct mtd_info *mtd, loff_t to, size_t len,
- static int part_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		size_t *retlen, const u_char *buf)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_panic_write(part->master, to + part->offset, len,
- 					  retlen, buf);
- }
-@@ -194,7 +197,7 @@ static int part_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
- static int part_write_oob(struct mtd_info *mtd, loff_t to,
- 		struct mtd_oob_ops *ops)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 
- 	if (to >= mtd->size)
- 		return -EINVAL;
-@@ -206,7 +209,7 @@ static int part_write_oob(struct mtd_info *mtd, loff_t to,
- static int part_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 		size_t len, size_t *retlen, u_char *buf)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_write_user_prot_reg(part->master, from, len,
- 						  retlen, buf);
- }
-@@ -214,21 +217,21 @@ static int part_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
- static int part_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 		size_t len)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_lock_user_prot_reg(part->master, from, len);
- }
- 
- static int part_writev(struct mtd_info *mtd, const struct kvec *vecs,
- 		unsigned long count, loff_t to, size_t *retlen)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_writev(part->master, vecs, count,
- 				     to + part->offset, retlen);
- }
- 
- static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	int ret;
- 
- 	instr->addr += part->offset;
-@@ -244,7 +247,7 @@ static int part_erase(struct mtd_info *mtd, struct erase_info *instr)
- void mtd_erase_callback(struct erase_info *instr)
- {
- 	if (instr->mtd->_erase == part_erase) {
--		struct mtd_part *part = PART(instr->mtd);
-+		struct mtd_part *part = mtd_to_part(instr->mtd);
- 
- 		if (instr->fail_addr != MTD_FAIL_ADDR_UNKNOWN)
- 			instr->fail_addr -= part->offset;
-@@ -257,57 +260,57 @@ EXPORT_SYMBOL_GPL(mtd_erase_callback);
- 
- static int part_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_lock(part->master, ofs + part->offset, len);
- }
- 
- static int part_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_unlock(part->master, ofs + part->offset, len);
- }
- 
- static int part_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_is_locked(part->master, ofs + part->offset, len);
- }
- 
- static void part_sync(struct mtd_info *mtd)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	part->master->_sync(part->master);
- }
- 
- static int part_suspend(struct mtd_info *mtd)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return part->master->_suspend(part->master);
- }
- 
- static void part_resume(struct mtd_info *mtd)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	part->master->_resume(part->master);
- }
- 
- static int part_block_isreserved(struct mtd_info *mtd, loff_t ofs)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	ofs += part->offset;
- 	return part->master->_block_isreserved(part->master, ofs);
- }
- 
- static int part_block_isbad(struct mtd_info *mtd, loff_t ofs)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	ofs += part->offset;
- 	return part->master->_block_isbad(part->master, ofs);
- }
- 
- static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	int res;
- 
- 	ofs += part->offset;
-@@ -558,7 +561,7 @@ static ssize_t mtd_partition_offset_show(struct device *dev,
- 		struct device_attribute *attr, char *buf)
- {
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
--	struct mtd_part *part = PART(mtd);
-+	struct mtd_part *part = mtd_to_part(mtd);
- 	return snprintf(buf, PAGE_SIZE, "%lld\n", part->offset);
- }
- 
-@@ -817,6 +820,6 @@ uint64_t mtd_get_device_size(const struct mtd_info *mtd)
- 	if (!mtd_is_partition(mtd))
- 		return mtd->size;
- 
--	return PART(mtd)->master->size;
-+	return mtd_to_part(mtd)->master->size;
- }
- EXPORT_SYMBOL_GPL(mtd_get_device_size);
+On 11/18/2015 07:45 AM, Brian Norris wrote:
+> + Vignesh
+> 
+> Vignesh is working on supporting mmap'd flash reads in the SPI core,
+> particularly for the TI QSPI driver. I don't believe he's planning on
+> exposing this to userspace, though, and I believe that might be pretty
+> difficult to do now.
+> 
+> Perhaps Vignesh can comment.
+
+I have no plans of exposing this to userspace anytime sooner. Supporting
+DMA and all types of opcode/address/data combinations are the first steps.
+
+> 
+> On Tue, Oct 20, 2015 at 04:31:20PM +0200, Simon Falsig wrote:
+>> Hi,
+>>
+>> I'm currently working on a new custom board (with a TI AM3356 ARM-Cortex
+>> A8
+>> CPU), with a 32 kB Everspin MR25H256 MRAM chip, attached over SPI. It
+>> works
+>> fine using the m25p80 driver, but I was wondering how complex it would be
+>> to
+>> add the possibility of memory-mapping the device in userspace? - mainly to
+>> make the interface consistent with the board that it is replacing, which
+>> uses
+>> a different, mmap-able, RAM chip.
+>>
+>> I'm not very experienced in the deeper aspects of the kernel, but I've
+>> been
+>> poking around a bit in the mtd subsystem, and it seems as if the main
+>> thing
+>> that is missing, is a valid get_unmapped_area() function for the m25p80
+>> driver, and then to change the mtdchar_mmap() function (in mtdchar.c) to
+>> actually allow mmap'ing on MMU systems.
+> 
+> It's not quite so simple. Read the comments in mtdchar, and you'll see
+> that there's some layering bugs that caused us to disable MMU mmap
+> entirely. Apparently no one cared so far. Read the comments here:
+> 
+> commit f5cf8f07423b2677cebebcebc863af77223a4972
+> Author: David Woodhouse <David.Woodhouse@intel.com>
+> Date:   Tue Oct 9 15:08:10 2012 +0100
+> 
+>     mtd: Disable mtdchar mmap on MMU systems
+> 
+> But feel free to fix it.
+> 
+>> But - does it even make sense to create such a function for m25p80? - and
+>> how would I start?
+> 
+> SPI drivers don't really expose a mmap-able interface, so this isn't
+> possible at the moment. Even once it can be done, it would be restricted
+> only to those controllers that can do memory map for you. AIUI, your SoC
+> might (?).
+> 
+> But even if it supports it, I expect you'll have difficulty coordinating
+> this properly, since the SPI bus technically can be shared with multiple
+> devices, whereas mmap would kind of assume that user-space can access
+> the flash at any time. So I guess m25p80 would have to grab exclusive
+> access of the entire SPI bus? If your system design can handle that,
+> then I guess it CAN be done...
+> 
+> ...but why do you want to do this, again?
+> 
+> Brian
+> 
+>> Any pointers and/or comments are appreciated!
+>> Thanks and best regards,
+>> Simon Falsig
+>> simon@newtec.dk
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
 -- 
-2.6.0.rc2.230.g3dd15c0
+Regards
+Vignesh
