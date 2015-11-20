@@ -1,25 +1,28 @@
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zzqus-00071s-Iq
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 19:00:16 +0000
-Received: by wmww144 with SMTP id w144so30695534wmw.1
- for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 10:59:53 -0800 (PST)
-Subject: Re: RfC: Handle SPI controller limitations like maximum message length
-References: <564CEB61.2000601@gmail.com> <20151120000226.GP64635@google.com>
- <564EC4E0.90602@gmail.com>
- <CAFSsGVsJBi6yPin7X9MCS8LD6nygjynfgDgFicjojkm0rOJSJw@mail.gmail.com>
- <20151120123540.GC1929@sirena.org.uk>
-Cc: Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Michal Suchanek <hramrach@gmail.com>, martin@sperl.org
-To: Brian Norris <computersforpeace@gmail.com>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <564F6D99.8090203@gmail.com>
-Date: Fri, 20 Nov 2015 19:59:37 +0100
+ id 1ZzqvX-0008Or-Uc
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 19:00:56 +0000
+Received: by wmec201 with SMTP id c201so85112448wme.0
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 11:00:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20151120123540.GC1929@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20151119231857.GM64635@google.com>
+References: <cover.1439543572.git.hramrach@gmail.com>
+ <e1251eea4ec9cc8c72d54300f3396919a3afe4b1.1439543572.git.hramrach@gmail.com>
+ <20151119231857.GM64635@google.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Fri, 20 Nov 2015 19:59:54 +0100
+Message-ID: <CAOMqctSn=bMu0b4YgtAs=GJCZ6YiEcR4Q0ZgisyQ8SAAnObH-w@mail.gmail.com>
+Subject: Re: [PATCH v4 6/7] mtd: spi-nor: simplify write loop
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Hou Zhiqiang <B48286@freescale.com>, Huang Shijie <shijie.huang@intel.com>,
+ David Woodhouse <dwmw2@infradead.org>, Han Xu <han.xu@freescale.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Huang Shijie <b32955@freescale.com>, Ben Hutchings <ben@decadent.org.uk>,
+ Marek Vasut <marex@denx.de>, Gabor Juhos <juhosg@openwrt.org>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMLA==?= <beanhuo@micron.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,43 +32,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 20.11.2015 um 13:35 schrieb Mark Brown:
-> On Fri, Nov 20, 2015 at 11:06:47AM +0100, Heiner Kallweit wrote:
->> On Fri, Nov 20, 2015 at 7:59 AM, Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> 
->>> It would be sufficient if it's a valid case that spi_master returns 0
->>> and an actual_length < requested_length as this is some kind of error
->>> situation.
-> 
->> I had one more look at the SPI core and e.g. spi_write_then_read
->> calls spi_sync w/o checking actual_length afterwards.
->> This can mean the discussed case is not valid, however it also could be
->> simply a bug.
-> 
-> We can't assume that users of spi_write_then_read() will cope with a
-> restarted transfer - the usual use case is things like register I/O
-> where restarting a partial transfer wouldn't produce the desired result
-> so it's just a plain error for users of that interface.  Anything that
-> is able to cope needs to be using the core API directly.
-> 
->> If the discussed case is valid a clear hint to all users of spi_sync and
->> friends should be added that the caller can not rely on status code 0
->> only but must check actual_length to verify that the complete message
->> was transferred.
-> 
-> You'll get an error on truncation.  It may be possible to recover.
-> 
-OK, I interpret this as:
-Controller drivers shall return 0 only if the complete message was
-transferred successfully.
-If  a controller driver returns an error it has the option to set
-actual_length to what was transferred successfully.
+On 20 November 2015 at 00:18, Brian Norris <computersforpeace@gmail.com> wrote:
+> Hi Michal,
+>
+> Sorry this has sat so long...
+>
+> On Fri, Aug 14, 2015 at 09:23:08AM -0000, Michal Suchanek wrote:
+>> The spi-nor write loop assumes that what is passed to the hardware
+>> driver write() is what gets written.
+>>
+>> When write() writes less than page size at once data is dropped on the
+>> floor. Check the amount of data writen.
+>
+> Have you seen write() return less than the page size? I know you've
+> struggled with a SPI driver that can't do "very" (for some definition of
+> very) long transfers, due to unknown bugs, but I thought that "very" was
+> much larger than the page size.
 
-This means we can't use patch 4 from Michal because it bails out as soon
-as the underlying SPI transfer returns an error.
+Not in the case of a driver that can transfer 63 bytes at a time. It
+because the DMA engine needed for normal operation was not merged yet,
+though.
 
-Instead something like the spi-nor patch I sent on Oct 6th would be needed:
-[PATCH] mtd: spi-nor: handle controller driver limitations in spi_nor_read
+>
+>> This also means that write can start mid-page any time so there is
+>> no special case for first page.
+>
+> I think we'd have some problems if we start seeing hardware that can't
+> write ~256 bytes at a time. If nothing else, this can be a problem
+> because some SPI NOR flash are known to have inferior reliability if you
+> regularly write in small chunks. I believe this is because they actually
+> use some kind of internal ECC.
+>
+> So, if you're just guarding against a theoretical behavior, perhaps it's
+> best if this is done with some kind of assertion, as I'd rather not
+> encourage non-aligned writes if possible. I notice you used BUG_ON() in
+> another patch, but I'd suggest maybe something less harsh, like WARN()
+> or WARN_ONCE().
 
-It loops over nor->read and ignores errors as long as at least something
-was read.
+I agree that a warning is in order in the case when whole page cannot
+be written in one go.
+
+Thanks
+
+Michal
