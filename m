@@ -1,15 +1,22 @@
-Received: from mail-yk0-x22e.google.com ([2607:f8b0:4002:c07::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzqOr-0006F6-Us
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 18:27:10 +0000
-Received: by ykdv3 with SMTP id v3so174290787ykd.0
- for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 10:26:48 -0800 (PST)
-From: Fabio Estevam <festevam@gmail.com>
-To: computersforpeace@gmail.com
-Cc: linux-mtd@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH v2] mtd: spi-nor: Check the return value from read_sr()
-Date: Fri, 20 Nov 2015 16:26:11 -0200
-Message-Id: <1448043971-20230-1-git-send-email-festevam@gmail.com>
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Zzqdw-0006IQ-93
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 18:42:46 +0000
+Subject: Re: [PATCH] brcmnand: Clear EXT_ADDR error registers in PIO mode
+To: Brian Norris <computersforpeace@gmail.com>
+References: <564A5333.9000200@simon.arlott.org.uk>
+ <20151117004005.GU8456@google.com> <564ADA21.8070700@simon.arlott.org.uk>
+ <20151117175515.GC8456@google.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Kevin Cernekee <cernekee@gmail.com>, bcm-kernel-feedback-list@broadcom.com
+From: Simon Arlott <simon@fire.lp0.eu>
+Message-ID: <564F6980.3050806@simon.arlott.org.uk>
+Date: Fri, 20 Nov 2015 18:42:08 +0000
+MIME-Version: 1.0
+In-Reply-To: <20151117175515.GC8456@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,61 +26,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On 17/11/15 17:55, Brian Norris wrote:
+> On Tue, Nov 17, 2015 at 07:41:21AM +0000, Simon Arlott wrote:
+>> On 17/11/15 00:40, Brian Norris wrote:
+>> > + bcm-kernel-feedback-list
+>> > 
+>> > On Mon, Nov 16, 2015 at 10:05:39PM +0000, Simon Arlott wrote:
+>> >> If an error occurs in flash above 4GB in PIO mode then the EXT_ADDR
+>> >> registers will be set to the location of the error and never cleared.
+>> >> 
+>> >> Reset them to 0 before reading.
+>> >> 
+>> >> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+>> > 
+>> > Patch looks OK. Did you see this problem in practice, or is this just
+>> > theoretical? I thought the documentation seemed to suggest these
+>> > registers were cleared together with their non-_EXT counterparts. But
+>> > implementation definitely trumps documentation for HW.
+>> 
+>> It's theoretical (I don't have 4GB+ flash), but the Broadcom version of
+>> the NAND driver does this.
+> 
+> That's a funny thing to say :) There never really was a single "Broadcom
+> version" until we settled on upstreaming this one. It's a direct
+> descendant of this [1], which also does not do these writes, and was
+> tested on >4GB flash, though not extensively.
+> 
+> Which product line did you get your driver from, then?
 
-We should better check the return value from read_sr() and
-propagate it in the case of error.
+I have a file called bcm963xx_4.12L.06B_consumer/kernel/linux/drivers/mtd/brcmnand/brcmnand_base.c:
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v1:
-- Change status_old and status_new to int (Brian).
+        /* Clear ECC registers */
+        chip->ctrl_write(BCHP_NAND_ECC_CORR_ADDR, 0);
+        chip->ctrl_write(BCHP_NAND_ECC_UNC_ADDR, 0);
+#if CONFIG_MTD_BRCMNAND_VERSION >= CONFIG_MTD_BRCMNAND_VERS_1_0
+        chip->ctrl_write(BCHP_NAND_ECC_CORR_EXT_ADDR, 0);
+        chip->ctrl_write(BCHP_NAND_ECC_UNC_EXT_ADDR, 0);
+#endif
 
- drivers/mtd/spi-nor/spi-nor.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+There's also a workaround (brcmnand_handle_false_read_ecc_unc_errors)
+that I'm going to write a patch for as it affects my v4.0 device. It'd
+be useful to know which version of the controller fixes the issue:
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 16c9f55..b5e505d 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -459,11 +459,13 @@ static int stm_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
- static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- {
- 	struct mtd_info *mtd = &nor->mtd;
--	u8 status_old, status_new;
-+	int status_old, status_new;
- 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
- 	u8 shift = ffs(mask) - 1, pow, val;
- 
- 	status_old = read_sr(nor);
-+	if (status_old < 0)
-+		return status_old;
- 
- 	/* SPI NOR always locks to the end */
- 	if (ofs + len != mtd->size) {
-@@ -509,11 +511,13 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
- {
- 	struct mtd_info *mtd = &nor->mtd;
--	uint8_t status_old, status_new;
-+	int status_old, status_new;
- 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
- 	u8 shift = ffs(mask) - 1, pow, val;
- 
- 	status_old = read_sr(nor);
-+	if (status_old < 0)
-+		return status_old;
- 
- 	/* Cannot unlock; would unlock larger region than requested */
- 	if (stm_is_locked_sr(nor, status_old, ofs - mtd->erasesize,
-@@ -1013,6 +1017,8 @@ static int macronix_quad_enable(struct spi_nor *nor)
- 	int ret, val;
- 
- 	val = read_sr(nor);
-+	if (val < 0)
-+		return val;
- 	write_enable(nor);
- 
- 	write_sr(nor, val | SR_QUAD_EN_MX);
+       /* Flash chip returns errors 
+        || There is a bug in the controller, where if one reads from an erased block that has NOT been written to,
+        || this error is raised.  
+        || (Writing to OOB area does not have any effect on this bug)
+        || The workaround is to also look into the OOB area, to see if they are all 0xFF
+        */
+
+> Anyway, unless someone still at Broadcom can confirm or deny, I suppose
+> this patch is mostly harmless and I can take it.
+> 
+> Brian
+> 
+>> > Brian
+>> > 
+>> >> ---
+>> >>  drivers/mtd/nand/brcmnand/brcmnand.c | 2 ++
+>> >>  1 file changed, 2 insertions(+)
+>> >> 
+>> >> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+>> >> index 12c6190..2c8f67f 100644
+>> >> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+>> >> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+>> >> @@ -1400,6 +1400,8 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+>> >>  	/* Clear error addresses */
+>> >>  	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_ADDR, 0);
+>> >>  	brcmnand_write_reg(ctrl, BRCMNAND_CORR_ADDR, 0);
+>> >> +	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_EXT_ADDR, 0);
+>> >> +	brcmnand_write_reg(ctrl, BRCMNAND_CORR_EXT_ADDR, 0);
+>> >>  
+>> >>  	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
+>> >>  			(host->cs << 16) | ((addr >> 32) & 0xffff));
+>> >> -- 
+>> >> 2.1.4
+>> >> 
+>> >> -- 
+>> >> Simon Arlott
+>> > 
+>> 
+>> 
+>> -- 
+>> Simon Arlott
+> 
+> [1] https://github.com/Broadcom/stblinux-3.8/blob/master/linux/drivers/mtd/nand/brcmstb_nand.c
+>     Disclaimer: I used to work at Broadcom.
+> 
+
+
 -- 
-1.9.1
+Simon Arlott
