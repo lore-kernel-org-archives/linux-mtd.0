@@ -1,27 +1,23 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzrGI-0002ra-4x
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 19:22:22 +0000
-Date: Fri, 20 Nov 2015 19:21:57 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Michal Suchanek <hramrach@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Martin Sperl <martin@sperl.org>
-Message-ID: <20151120192157.GF1929@sirena.org.uk>
-References: <564CEB61.2000601@gmail.com> <20151120000226.GP64635@google.com>
- <564EC4E0.90602@gmail.com>
- <CAFSsGVsJBi6yPin7X9MCS8LD6nygjynfgDgFicjojkm0rOJSJw@mail.gmail.com>
- <20151120123540.GC1929@sirena.org.uk> <564F6D99.8090203@gmail.com>
- <CAOMqctTt=78C4m2jjMb9mRBOkoZ5uZ4neVm0NS39iNO8otn=dA@mail.gmail.com>
+Date: Fri, 20 Nov 2015 11:24:50 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Cory Tusar <cory.tusar@pid1solutions.com>,
+	Han Xu <han.xu@freescale.com>
+Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ shawnguo@kernel.org, kernel@pengutronix.de, han.xu@freescale.com,
+ dwmw2@infradead.org, stefan@agner.ch, linux@arm.linux.org.uk,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ andrew@lunn.ch
+Subject: Re: [PATCH v1 3/7] mtd: fsl-quadspi: Support both 24- and 32-bit
+ addressed commands.
+Message-ID: <20151120192450.GW64635@google.com>
+References: <1436386881-28088-1-git-send-email-cory.tusar@pid1solutions.com>
+ <1436386881-28088-4-git-send-email-cory.tusar@pid1solutions.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="4f28nU6agdXSinmL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOMqctTt=78C4m2jjMb9mRBOkoZ5uZ4neVm0NS39iNO8otn=dA@mail.gmail.com>
-Subject: Re: RfC: Handle SPI controller limitations like maximum message length
+In-Reply-To: <1436386881-28088-4-git-send-email-cory.tusar@pid1solutions.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,40 +27,224 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Cory and Han,
 
---4f28nU6agdXSinmL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Did this series get dropped on the floor? I recall Han arguing
+previously that this controller is always used with two identical chips.
+But apparently that is not the case.
 
-On Fri, Nov 20, 2015 at 08:05:48PM +0100, Michal Suchanek wrote:
+If this request is not truly dead, I'd appreciate it if Han could
+review/test.
 
-> I don't think ignoring errors in general is good idea.
+Brian
 
-> If it's desirable that a partial transfer is reported as error then a
-> particular error value should be defined for this case and drivers
-> that can continue the transfer in a driver-specific way (such as
-> spi-nor) can check for this error and handle it appropriately and pass
-> through any other error.
-
-Fundamentally callers just shouldn't be trying to do excessively large
-transfers in the first place, this is why we want capability reporting.
-*Any* error code could indicate a truncation, we may have truncated due
-to some length limitation but it could also be that there was some
-hardware problem that occurred mid transfer or something similar.
-
---4f28nU6agdXSinmL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWT3LVAAoJECTWi3JdVIfQm+kH/iCuYCtjXTEkZk8I5D5ZU9Yv
-Y24RO6PFYZHkRJoyv0rOb2jl+Hads2lX0xW7jcbO/peVyyxoPgG37OadKUnlTsE5
-EyMYPzykLIg359rvrwt2hBBpq0iiawV2MIsuWZAJtFErEvOjb32rn/YNgm3Gzi4c
-3KEYDnUd7Zw1yc/oWjK4AFU/PMSVxud/hWaDB3eEJK1Z2ZOQuXnIb6Zy1i8pmMA6
-bmPYEZusUR5bMCJmpKCwmUgTzlXZFtadux3lboLciPi/OMpbQAJACRZR1kP0A5qH
-AWuuG5ZXv5vZ8QOAr296TurMCmba/THFLknqZUqWu4E0fvlY1rnQSiubyyHb+y4=
-=eG+H
------END PGP SIGNATURE-----
-
---4f28nU6agdXSinmL--
+On Wed, Jul 08, 2015 at 04:21:17PM -0400, Cory Tusar wrote:
+> The current fsl-quadspi implementation assumes that all connected
+> devices are of the same size and type.  This commit adds lookup table
+> entries for both 24- and 32-bit addressed variants of the read, sector
+> erase, and page program operations as a precursor to later changes which
+> generalize the flash layout parsing logic and allow for non-contiguous
+> and non-homogeneous chip combinations.
+> 
+> Signed-off-by: Cory Tusar <cory.tusar@pid1solutions.com>
+> ---
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 116 ++++++++++++++++++++------------------
+>  1 file changed, 60 insertions(+), 56 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 52a872f..4b8038b 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -178,18 +178,21 @@
+>  #define QUADSPI_LUT_NUM		64
+>  
+>  /* SEQID -- we can have 16 seqids at most. */
+> -#define SEQID_QUAD_READ		0
+> -#define SEQID_WREN		1
+> -#define SEQID_WRDI		2
+> -#define SEQID_RDSR		3
+> -#define SEQID_SE		4
+> -#define SEQID_CHIP_ERASE	5
+> -#define SEQID_PP		6
+> -#define SEQID_RDID		7
+> -#define SEQID_WRSR		8
+> -#define SEQID_RDCR		9
+> -#define SEQID_EN4B		10
+> -#define SEQID_BRWR		11
+> +#define SEQID_QUAD_READ_24	0
+> +#define SEQID_QUAD_READ_32	1
+> +#define SEQID_WREN		2
+> +#define SEQID_WRDI		3
+> +#define SEQID_RDSR		4
+> +#define SEQID_SE_24		5
+> +#define SEQID_SE_32		5
+> +#define SEQID_CHIP_ERASE	7
+> +#define SEQID_PP_24		8
+> +#define SEQID_PP_32		8
+> +#define SEQID_RDID		9
+> +#define SEQID_WRSR		10
+> +#define SEQID_RDCR		11
+> +#define SEQID_EN4B		12
+> +#define SEQID_BRWR		13
+>  
+>  enum fsl_qspi_devtype {
+>  	FSL_QUADSPI_VYBRID,
+> @@ -287,7 +290,6 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>  	void __iomem *base = q->iobase;
+>  	int rxfifo = q->devtype_data->rxfifo;
+>  	u32 lut_base;
+> -	u8 cmd, addrlen, dummy;
+>  	int i;
+>  
+>  	fsl_qspi_unlock_lut(q);
+> @@ -297,22 +299,16 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>  		writel(0, base + QUADSPI_LUT_BASE + i * 4);
+>  
+>  	/* Quad Read */
+> -	lut_base = SEQID_QUAD_READ * 4;
+> -
+> -	if (q->nor_size <= SZ_16M) {
+> -		cmd = SPINOR_OP_READ_1_1_4;
+> -		addrlen = ADDR24BIT;
+> -		dummy = 8;
+> -	} else {
+> -		/* use the 4-byte address */
+> -		cmd = SPINOR_OP_READ_1_1_4;
+> -		addrlen = ADDR32BIT;
+> -		dummy = 8;
+> -	}
+> +	lut_base = SEQID_QUAD_READ_24 * 4;
+> +	writel(LUT0(CMD, PAD1, SPINOR_OP_READ_1_1_4) | LUT1(ADDR, PAD1, ADDR24BIT),
+> +			base + QUADSPI_LUT(lut_base));
+> +	writel(LUT0(DUMMY, PAD1, 8) | LUT1(READ, PAD4, rxfifo),
+> +			base + QUADSPI_LUT(lut_base + 1));
+>  
+> -	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+> +	lut_base = SEQID_QUAD_READ_32 * 4;
+> +	writel(LUT0(CMD, PAD1, SPINOR_OP_READ_1_1_4) | LUT1(ADDR, PAD1, ADDR32BIT),
+>  			base + QUADSPI_LUT(lut_base));
+> -	writel(LUT0(DUMMY, PAD1, dummy) | LUT1(READ, PAD4, rxfifo),
+> +	writel(LUT0(DUMMY, PAD1, 8) | LUT1(READ, PAD4, rxfifo),
+>  			base + QUADSPI_LUT(lut_base + 1));
+>  
+>  	/* Write enable */
+> @@ -320,18 +316,13 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>  	writel(LUT0(CMD, PAD1, SPINOR_OP_WREN), base + QUADSPI_LUT(lut_base));
+>  
+>  	/* Page Program */
+> -	lut_base = SEQID_PP * 4;
+> -
+> -	if (q->nor_size <= SZ_16M) {
+> -		cmd = SPINOR_OP_PP;
+> -		addrlen = ADDR24BIT;
+> -	} else {
+> -		/* use the 4-byte address */
+> -		cmd = SPINOR_OP_PP;
+> -		addrlen = ADDR32BIT;
+> -	}
+> +	lut_base = SEQID_PP_24 * 4;
+> +	writel(LUT0(CMD, PAD1, SPINOR_OP_PP) | LUT1(ADDR, PAD1, ADDR24BIT),
+> +			base + QUADSPI_LUT(lut_base));
+> +	writel(LUT0(WRITE, PAD1, 0), base + QUADSPI_LUT(lut_base + 1));
+>  
+> -	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+> +	lut_base = SEQID_PP_32 * 4;
+> +	writel(LUT0(CMD, PAD1, SPINOR_OP_PP) | LUT1(ADDR, PAD1, ADDR32BIT),
+>  			base + QUADSPI_LUT(lut_base));
+>  	writel(LUT0(WRITE, PAD1, 0), base + QUADSPI_LUT(lut_base + 1));
+>  
+> @@ -341,18 +332,12 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>  			base + QUADSPI_LUT(lut_base));
+>  
+>  	/* Erase a sector */
+> -	lut_base = SEQID_SE * 4;
+> -
+> -	if (q->nor_size <= SZ_16M) {
+> -		cmd = SPINOR_OP_SE;
+> -		addrlen = ADDR24BIT;
+> -	} else {
+> -		/* use the 4-byte address */
+> -		cmd = SPINOR_OP_SE;
+> -		addrlen = ADDR32BIT;
+> -	}
+> +	lut_base = SEQID_SE_24 * 4;
+> +	writel(LUT0(CMD, PAD1, SPINOR_OP_SE) | LUT1(ADDR, PAD1, ADDR24BIT),
+> +			base + QUADSPI_LUT(lut_base));
+>  
+> -	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+> +	lut_base = SEQID_SE_32 * 4;
+> +	writel(LUT0(CMD, PAD1, SPINOR_OP_SE) | LUT1(ADDR, PAD1, ADDR32BIT),
+>  			base + QUADSPI_LUT(lut_base));
+>  
+>  	/* Erase the whole chip */
+> @@ -391,11 +376,17 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>  }
+>  
+>  /* Get the SEQID for the command */
+> -static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
+> +static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd, u8 addr_width)
+>  {
+>  	switch (cmd) {
+>  	case SPINOR_OP_READ_1_1_4:
+> -		return SEQID_QUAD_READ;
+> +		if (addr_width == 3)
+> +			return SEQID_QUAD_READ_24;
+> +		if (addr_width == 4)
+> +			return SEQID_QUAD_READ_32;
+> +		dev_err(q->dev, "Unsupported addr_width (%d) for cmd 0x%.2x\n",
+> +			addr_width, cmd);
+> +		break;
+>  	case SPINOR_OP_WREN:
+>  		return SEQID_WREN;
+>  	case SPINOR_OP_WRDI:
+> @@ -403,11 +394,23 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
+>  	case SPINOR_OP_RDSR:
+>  		return SEQID_RDSR;
+>  	case SPINOR_OP_SE:
+> -		return SEQID_SE;
+> +		if (addr_width == 3)
+> +			return SEQID_SE_24;
+> +		if (addr_width == 4)
+> +			return SEQID_SE_32;
+> +		dev_err(q->dev, "Unsupported addr_width (%d) for cmd 0x%.2x\n",
+> +			addr_width, cmd);
+> +		break;
+>  	case SPINOR_OP_CHIP_ERASE:
+>  		return SEQID_CHIP_ERASE;
+>  	case SPINOR_OP_PP:
+> -		return SEQID_PP;
+> +		if (addr_width == 3)
+> +			return SEQID_PP_24;
+> +		if (addr_width == 4)
+> +			return SEQID_PP_32;
+> +		dev_err(q->dev, "Unsupported addr_width (%d) for cmd 0x%.2x\n",
+> +			addr_width, cmd);
+> +		break;
+>  	case SPINOR_OP_RDID:
+>  		return SEQID_RDID;
+>  	case SPINOR_OP_WRSR:
+> @@ -456,7 +459,7 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
+>  	} while (1);
+>  
+>  	/* trigger the LUT now */
+> -	seqid = fsl_qspi_get_seqid(q, cmd);
+> +	seqid = fsl_qspi_get_seqid(q, cmd, q->nor[0].addr_width);
+>  	writel((seqid << QUADSPI_IPCR_SEQID_SHIFT) | len, base + QUADSPI_IPCR);
+>  
+>  	/* Wait for the interrupt. */
+> @@ -601,9 +604,10 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi *q)
+>  	writel(0, base + QUADSPI_BUF2IND);
+>  
+>  	/* Set the default lut sequence for AHB Read. */
+> -	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
+> +	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode,
+> +			q->nor[0].addr_width);
+>  	writel(seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
+> -		q->iobase + QUADSPI_BFGENCR);
+> +			q->iobase + QUADSPI_BFGENCR);
+>  }
+>  
+>  /* We use this function to do some basic init for spi_nor_scan(). */
+> -- 
+> 2.3.6
+> 
