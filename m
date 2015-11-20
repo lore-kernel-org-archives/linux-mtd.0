@@ -1,21 +1,37 @@
-Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
+Received: from h2.hallyn.com ([78.46.35.8])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzlFi-0003p3-GE
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 12:57:23 +0000
-Received: by wmww144 with SMTP id w144so18409220wmw.1
- for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 04:57:00 -0800 (PST)
+ id 1ZzpZK-0005cX-8p
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 17:33:55 +0000
+Date: Fri, 20 Nov 2015 11:33:29 -0600
+From: "Serge E. Hallyn" <serge.hallyn@ubuntu.com>
+To: Octavian Purdila <octavian.purdila@intel.com>
+Cc: Seth Forshee <seth.forshee@canonical.com>,
+ Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>,
+ "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
+ device-mapper development <dm-devel@redhat.com>,
+ "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Andy Lutomirski <luto@amacapital.net>,
+ LKML <linux-kernel@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v3 0/7] User namespace mount updates
+Message-ID: <20151120173329.GA20909@mail.hallyn.com>
+References: <20151117172551.GA108807@ubuntu-hedt>
+ <20151117175506.GW22011@ZenIV.linux.org.uk>
+ <20151117183444.GB108807@ubuntu-hedt>
+ <CAFLxGvx1UqJOhM3wqAGqT+TrkapeP1zkmg0a1K=DjySePx4mEA@mail.gmail.com>
+ <20151117192141.GD108807@ubuntu-hedt>
+ <CAE1zotLNq1v_ZegT9LyFsTiHWQnOAow+KKQFFvOYKUyRWPjfGA@mail.gmail.com>
+ <564B8A20.9090607@nod.at>
+ <CAE1zotJRp3=G2Vdud7kVbkToKe2YsTF3gXUnLCNzKV6F0oumdg@mail.gmail.com>
+ <20151119152347.GA45540@ubuntu-hedt>
+ <CAE1zot+G=SohXzuV6Gs7APdCo5pu9xLwE38kZKNUuWRnSh++BA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <564CEB61.2000601@gmail.com>
-References: <564CEB61.2000601@gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Fri, 20 Nov 2015 13:56:21 +0100
-Message-ID: <CAOMqctQo58yCfzU3u=u3N0zNfhQph2Pw2vnrxsVvAEXi5n2HRw@mail.gmail.com>
-Subject: Re: RfC: Handle SPI controller limitations like maximum message length
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE1zot+G=SohXzuV6Gs7APdCo5pu9xLwE38kZKNUuWRnSh++BA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +41,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Thu, Nov 19, 2015 at 06:19:10PM +0200, Octavian Purdila wrote:
+> On Thu, Nov 19, 2015 at 5:23 PM, Seth Forshee
+> > And for the second:
+> >
+> >  stress-ng --class filesystem --seq 0 -v -t 60
+> >
+> > There really wasn't anything interesting in the lklfuse output for the
+> > first run, but for the second run I pasted the output here:
+> > http://paste.ubuntu.com/13346993/
+> 
+> lklfuse allocates a fixed 100MB to the kernel and this is probably not
+> enough. For the short term I can add a parameter to lklfuse that
+> allows the user to specify the amount of memory to allocate to lkl. A
+> better fix would probably be to dynamically adjust the memory size of
+> lkl. I am thinking of using the ballon virtio driver or the memory
+> hotplug infrastructure. Any other suggestions?
 
-On 18 November 2015 at 22:19, Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> There have been few discussions in the past about how to handle SPI controller
-> limitations like max message length. However they don't seem to have resulted
-> in accepted patches yet.
-> I also stumbled across this topic because I own a device using Freescale's
-> ESPI which has a 64K message size limitation.
->
-> At least one agreed fact is that silently assembling chunks in protocol
-> drivers is not the preferred approach.
->
-> Maybe a better approach would be to introduce a new member of spi_master
-> dealing with controller limitations.
-> My issue is just the message size limitation but most likely there are more
-> and different limitations in other controllers.
->
+Hi Octavian,
 
-There are multiple sides to this problem.
+Like Seth said this was very nice to install and run.  But I think I'm
+doing something wrong.  I cloned the lkl/linux git tree into a 9G ext4
+loopback file, both one mounted with lkl and one mounted as loopback.
+The results were worse than I expected - loopback was 0m10.078s for
+clone and 0m0.877s for rm -rf;  lkl was 5m5.625s for clone and 0m44.332s
+for rm -rf.  I assume this has to do with the 100MB buffer and subsequent
+thrashing?  How should I tune this to  make it perform better?
 
-The first is the nature of the limitation of the driver. I was dealing
-with a driver that can transfer up to 63 bytes because it has 64byte
-fifo and the hardware locks up when it's full. The limitation is only
-due to the driver cutting way too many corners. There is dmaengine
-support available for the platform which has been merged recently so
-the driver can use DMA for arbitrarily long transfers. Even without
-DMA there is possibility to to drive CS manually and compose multiple
-transfers into single logical message or whatever.
+No crashes from this, though.
 
-Either way, the limit of 63 bytes is very low and would actually cause
-problems with many device drivers so it was agreed that fixing the
-master one way or another is desirable.
-
-64k limit on the other hand is something more usable from driver
-writer standpoint and some banked mmap access to flash memories would
-have similar granularity.
-
-I would also like to point out that the limit depends on the transfer
-settings. For example, a SPI controller can have no limit on transfer
-size but when accessing a flash memory through mmap interface the mmap
-window limits the amount of data you can transfer at once. This
-particular case may be fixable by moving the mmap window transparently
-inside the driver.
-
-Thanks
-
-Michal
+thanks,
+-serge
