@@ -1,21 +1,22 @@
 Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zzkqz-0006tz-3h
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 12:31:49 +0000
-Date: Fri, 20 Nov 2015 12:31:23 +0000
+ id 1Zzkv9-0000DJ-LZ
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 12:36:08 +0000
+Date: Fri, 20 Nov 2015 12:35:40 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>, linux-mtd@lists.infradead.org,
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- hramrach@gmail.com, martin@sperl.org
-Message-ID: <20151120123123.GB1929@sirena.org.uk>
-References: <564CEB61.2000601@gmail.com>
- <20151120000226.GP64635@google.com>
+ Michal Suchanek <hramrach@gmail.com>, martin@sperl.org
+Message-ID: <20151120123540.GC1929@sirena.org.uk>
+References: <564CEB61.2000601@gmail.com> <20151120000226.GP64635@google.com>
+ <564EC4E0.90602@gmail.com>
+ <CAFSsGVsJBi6yPin7X9MCS8LD6nygjynfgDgFicjojkm0rOJSJw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="uZ3hkaAS1mZxFaxD"
+ protocol="application/pgp-signature"; boundary="GZVR6ND4mMseVXL/"
 Content-Disposition: inline
-In-Reply-To: <20151120000226.GP64635@google.com>
+In-Reply-To: <CAFSsGVsJBi6yPin7X9MCS8LD6nygjynfgDgFicjojkm0rOJSJw@mail.gmail.com>
 Subject: Re: RfC: Handle SPI controller limitations like maximum message length
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,48 +28,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---uZ3hkaAS1mZxFaxD
+--GZVR6ND4mMseVXL/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Nov 19, 2015 at 04:02:26PM -0800, Brian Norris wrote:
-> On Wed, Nov 18, 2015 at 10:19:29PM +0100, Heiner Kallweit wrote:
+On Fri, Nov 20, 2015 at 11:06:47AM +0100, Heiner Kallweit wrote:
+> On Fri, Nov 20, 2015 at 7:59 AM, Heiner Kallweit <hkallweit1@gmail.com> wrote:
 
-> > I also add an example how a protocol driver could use this extension.
-> > Appreciate any comment.
+> > It would be sufficient if it's a valid case that spi_master returns 0
+> > and an actual_length < requested_length as this is some kind of error
+> > situation.
 
-> One question I have: is it necessary to push the handling out into the
-> protocol driver? I feel like I've seen a partial answer to this: the
-> 'actual_legnth' return field suggests that the protocol driver already
-> has to deal with shorter-than-desired transfers.
+> I had one more look at the SPI core and e.g. spi_write_then_read
+> calls spi_sync w/o checking actual_length afterwards.
+> This can mean the discussed case is not valid, however it also could be
+> simply a bug.
 
-It should be possible to use actual_length if the hardware doesn't mind
-the transfer being curtailed unexpectedly.
+We can't assume that users of spi_write_then_read() will cope with a
+restarted transfer - the usual use case is things like register I/O
+where restarting a partial transfer wouldn't produce the desired result
+so it's just a plain error for users of that interface.  Anything that
+is able to cope needs to be using the core API directly.
 
-> Then I have another one: is the 'actual_length' field really
-> insufficient? For instance, is it non-kosher for a spi_master to just
-> cutoff the message at (for instance) 64K, and expect the protocol
-> driver to handle that (e.g., with Michal's patch from [1])? And if that
-> is kosher, then is there a good reason for the protocol driver to know
-> the exact maximum for its spi_master?
+> If the discussed case is valid a clear hint to all users of spi_sync and
+> friends should be added that the caller can not rely on status code 0
+> only but must check actual_length to verify that the complete message
+> was transferred.
 
-It really depends if the hardware is able to cope with the error
-handling (and ideally the SPI core will be able to transparently split
-the transfer up into chunks the controller can cope with anyway).
+You'll get an error on truncation.  It may be possible to recover.
 
---uZ3hkaAS1mZxFaxD
+--GZVR6ND4mMseVXL/
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBCAAGBQJWTxKaAAoJECTWi3JdVIfQwCYH+wZOY+oLa+AY/juLNWZA587T
-Ovr6Qp8O7bpN4gwW58D03SeKXQBsc2Yht8Tqvuzd08rtc5sncMvlVsxNo0O7gK3E
-mj/nTyR6ShA9WHzXp68533GG0ys4EmYfvj4agqzEHolOH8JJr+0i9jp11pMRDhvf
-0t5koZCFv0tEYCC2P/q3AIcyXdi1h8791wtFK/EAZqpBzh3KHNmfqHWkQP7sIixR
-VAmd+r2kA0rmaiemMCwmDr6lsKA6E2do1GbtypB+3U2UzBZJDjhj6bg4bmXrP3VB
-2Eq330kXlw7WaeBpD2GtVD8Z+kQVZqt1qjB+gKQ2kRNWHodxT3MyVkKA81k/tqg=
-=WFGH
+iQEcBAEBCAAGBQJWTxObAAoJECTWi3JdVIfQ52kIAIPHA+/Gb7/HKArUY3G+u/If
+OasT/W2ANTvqFeM3FU+JNsDyFhqKqj/Q1qbEhb2+Ubr0E5OzXZEGM2baA7ibXDkh
+bkZ9kmMhYnvXhUG5paIfigbVOROoVO+7k7UDYG1nVf6Is3zN7PMcUryX3Dx4QM+k
++YjHTSnftTV3nvuf2jBfaZGKqFFF7vTUtAAvic2ZoEPx7V+vw9m1/sM1w6/V3FF6
+cWWeUUGrlKzUwCtOknmgdgDQ9dRwiuadsrlVmcMzFDOxHPyL6Iy3N8Qw/IP1SQop
+v6HjX05QzjuB8cSd6zxiXEcPiIR62msg+2J1NNgfGXnUczr6h6WT/hmFC+EjEfA=
+=a7DU
 -----END PGP SIGNATURE-----
 
---uZ3hkaAS1mZxFaxD--
+--GZVR6ND4mMseVXL/--
