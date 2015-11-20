@@ -1,23 +1,23 @@
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzZOF-0006ty-7Q
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 00:17:24 +0000
-Message-ID: <564E64CD.7010802@cn.fujitsu.com>
-Date: Fri, 20 Nov 2015 08:09:49 +0800
-From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZzZsW-0007Ne-W9
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 00:48:41 +0000
+Received: by padhx2 with SMTP id hx2so97640341pad.1
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 16:48:20 -0800 (PST)
+Date: Thu, 19 Nov 2015 16:48:17 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Heiner Kallweit <hkallweit1@gmail.com>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 0/3] mtd: m25p80: fix some module and documentation issues
+Message-ID: <20151120004817.GR64635@google.com>
+References: <1447713292-91525-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, Konstantin Tokarev
- <annulen@yandex.ru>, Ibrahim Mattus Neto <ibrahim.neto@writesys.com.br>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: can't mount ubifs after resizing with ubirsvol
-References: <1315747066.18731.53.camel@sauron>
- <5640A7D0.6080104@writesys.com.br>
- <CAFLxGvwZ0gXkGHDu5fGo5ZX-td2rk1Wt=pHZBH+a_gp-PgyN=g@mail.gmail.com>
- <564DCFED.2070902@writesys.com.br> <564DD1DF.9070009@nod.at>
- <203731447942192@web14h.yandex.ru> <564DE4A3.1070609@nod.at>
-In-Reply-To: <564DE4A3.1070609@nod.at>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1447713292-91525-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/19/2015 11:02 PM, Richard Weinberger wrote:
-> Am 19.11.2015 um 15:09 schrieb Konstantin Tokarev:
->> I can confirm that shrinking UBIFS volume corrupts it.
->
-> There are no UBIFS volumes.
-> If you shrink a UBI volume, you kill UBIFS for sure.
-> It is like shrinking a HDD partition without resizing ext4 before.
->
-> Maybe we can do a resizeubifs tool at some point.
-> I'm currently checking the source what we need for a online-shrink...
+On Mon, Nov 16, 2015 at 02:34:49PM -0800, Brian Norris wrote:
+> Hi,
+> 
+> There were a few mistakes and improvements pointed out at various points in
+> this thread, subject:
+> 
+>     spi: OF module autoloading is still broken
+>     (was: Re: m25p80: Commit "allow arbitrary OF matching for "jedec,spi-nor""
+>     breaks module autoloading)
+> 
+>     http://lists.infradead.org/pipermail/linux-mtd/2015-October/062369.html
+>     https://lkml.org/lkml/2015/11/12/574
+> 
+> That thread covers some other interesting issues that are still not solved, but
+> let's fix the ones we can here in MTD right now.
+> 
+> Regards,
+> Brian
 
-Interesting idea. What about a ubifs tool with a subcommand named as
-resize? Then we can add more subcommands for ubifs. Anyway, waiting for 
-your
-patch. :)
-
-Thanx
-Yang
-
->
-> Thanks,
-> //richard
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Pushed all to l2-mtd.git
