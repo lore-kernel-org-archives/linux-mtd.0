@@ -1,20 +1,20 @@
 Received: from nasmtp01.atmel.com ([192.199.1.246]
  helo=DVREDG02.corp.atmel.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zzh3t-0002Jg-H1
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 08:28:54 +0000
-Subject: Re: [PATCH v2 1/2] mtd: nand: atmel_nand: constify atmel_nand_caps
- structures
+ id 1Zzh8W-0004IL-0V
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 08:33:40 +0000
+Subject: Re: [PATCH v2 2/2] mtd: nand: atmel_nand: fix a possible NULL
+ dereference
 To: LABBE Corentin <clabbe.montjoie@gmail.com>, <computersforpeace@gmail.com>,
  <dwmw2@infradead.org>
 References: <1448005517-26004-1-git-send-email-clabbe.montjoie@gmail.com>
- <1448005517-26004-2-git-send-email-clabbe.montjoie@gmail.com>
+ <1448005517-26004-3-git-send-email-clabbe.montjoie@gmail.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
 From: Josh Wu <josh.wu@atmel.com>
-Message-ID: <564ED99A.2050502@atmel.com>
-Date: Fri, 20 Nov 2015 16:28:10 +0800
+Message-ID: <564EDACA.30204@atmel.com>
+Date: Fri, 20 Nov 2015 16:33:14 +0800
 MIME-Version: 1.0
-In-Reply-To: <1448005517-26004-2-git-send-email-clabbe.montjoie@gmail.com>
+In-Reply-To: <1448005517-26004-3-git-send-email-clabbe.montjoie@gmail.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,45 +28,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi, Corentin
 
-Thanks for the patch.
+Thanks for the patch. It looks fine to me, just one nitpick in below:
 
 On 11/20/2015 3:45 PM, LABBE Corentin wrote:
-> All atmel_nand_caps are never modified, consitify them.
+> of_match_device could return NULL, and so cause a NULL pointer
+> dereference later.
 >
 > Signed-off-by: LABBE Corentin <clabbe.montjoie@gmail.com>
+> ---
+>   drivers/mtd/nand/atmel_nand.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index 475c938..7902967 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -1496,8 +1496,9 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+>   	struct atmel_nand_data *board = &host->board;
+>   	enum of_gpio_flags flags = 0;
+>   
+> -	host->caps = (struct atmel_nand_caps *)
+> -		of_match_device(atmel_nand_dt_ids, host->dev)->data;
+> +	host->caps = of_device_get_match_data(host->dev);
+> +	if (!host->caps)
+> +		return 1;
 
-Acked-by: Josh Wu <josh.wu@atmel.com>
+it's better to use -EINVAL here.
 
 Best Regards,
 Josh Wu
-> ---
->   drivers/mtd/nand/atmel_nand.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 583cdd9..475c938 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -128,7 +128,7 @@ struct atmel_nand_host {
+
 >   
->   	struct atmel_nfc	*nfc;
->   
-> -	struct atmel_nand_caps	*caps;
-> +	const struct atmel_nand_caps	*caps;
->   	bool			has_pmecc;
->   	u8			pmecc_corr_cap;
->   	u16			pmecc_sector_size;
-> @@ -2304,11 +2304,11 @@ static int atmel_nand_remove(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> -static struct atmel_nand_caps at91rm9200_caps = {
-> +static const struct atmel_nand_caps at91rm9200_caps = {
->   	.pmecc_correct_erase_page = false,
->   };
->   
-> -static struct atmel_nand_caps sama5d4_caps = {
-> +static const struct atmel_nand_caps sama5d4_caps = {
->   	.pmecc_correct_erase_page = true,
->   };
->   
+>   	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
+>   		if (val >= 32) {
