@@ -1,24 +1,23 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-io0-x22c.google.com ([2607:f8b0:4001:c06::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zzpw6-0002xU-Sw
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 17:57:27 +0000
-Received: by pacdm15 with SMTP id dm15so122928295pac.3
- for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 09:57:06 -0800 (PST)
-Date: Fri, 20 Nov 2015 09:57:03 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Cc: LABBE Corentin <clabbe.montjoie@gmail.com>, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] mtd: nand: atmel_nand: constify atmel_nand_caps
- structures
-Message-ID: <20151120175703.GU64635@google.com>
-References: <1448005517-26004-1-git-send-email-clabbe.montjoie@gmail.com>
- <1448005517-26004-2-git-send-email-clabbe.montjoie@gmail.com>
- <564ED99A.2050502@atmel.com>
+ id 1ZzqNg-0005ju-Iz
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 18:25:57 +0000
+Received: by iouu10 with SMTP id u10so134177233iou.0
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 10:25:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <564ED99A.2050502@atmel.com>
+In-Reply-To: <20151119225811.GL64635@google.com>
+References: <1447771824-9147-1-git-send-email-fabio.estevam@freescale.com>
+ <20151119215443.GK64635@google.com>
+ <CAOMZO5ADJSW446A20wO+Hv-oY9vXjtP3nG0v6hBnAA=FT_-OqA@mail.gmail.com>
+ <20151119225811.GL64635@google.com>
+Date: Fri, 20 Nov 2015 16:25:35 -0200
+Message-ID: <CAOMZO5A2NnqoBMEcyBdEKCc2S6_q-gBqitj-u0uE4h0+LTekzA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: Check the return value from read_sr()
+From: Fabio Estevam <festevam@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +27,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 20, 2015 at 04:28:10PM +0800, Josh Wu wrote:
-> Hi, Corentin
-> 
-> Thanks for the patch.
-> 
-> On 11/20/2015 3:45 PM, LABBE Corentin wrote:
-> >All atmel_nand_caps are never modified, consitify them.
-> >
-> >Signed-off-by: LABBE Corentin <clabbe.montjoie@gmail.com>
-> 
-> Acked-by: Josh Wu <josh.wu@atmel.com>
+On Thu, Nov 19, 2015 at 8:58 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
 
-Pushed patch 1 to l2-mtd.git
+> The only remaining concern is over the mild awkwardness of comparing and
+> manipulating status_old and status_new, where one is int and the other
+> is u8. But I guess there are no issues yet, AFAICT.
+
+Good point. I will change status_old and status_new to int in v2, thanks.
