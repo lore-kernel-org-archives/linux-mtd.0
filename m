@@ -1,30 +1,17 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zzbuj-0004rx-KN
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 02:59:06 +0000
-Received: by pacdm15 with SMTP id dm15so101153989pac.3
- for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 18:58:45 -0800 (PST)
-Date: Thu, 19 Nov 2015 18:58:42 -0800
+ id 1ZzcLs-0000ZW-LG
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 03:27:09 +0000
+Received: by pacdm15 with SMTP id dm15so101901261pac.3
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Nov 2015 19:26:47 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Marek Vasut <marex@denx.de>, Scott Wood <scottwood@freescale.com>,
- Josh Wu <josh.wu@atmel.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Han Xu <han.xu@freescale.com>, Stefan Agner <stefan@agner.ch>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 13/11] mtd: assign mtd->dev.of_node when creating
- partition devices
-Message-ID: <20151120025842.GT64635@google.com>
-References: <1446262410-45754-1-git-send-email-computersforpeace@gmail.com>
- <1446424721-23471-1-git-send-email-boris.brezillon@free-electrons.com>
- <20151112001550.GD96199@google.com>
- <20151112142220.374154b7@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151112142220.374154b7@bbrezillon>
+To: <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 0/3] mtd: support cleanup callback for partition parsers
+Date: Thu, 19 Nov 2015 19:26:34 -0800
+Message-Id: <1447989997-108476-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,28 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 12, 2015 at 02:22:20PM +0100, Boris Brezillon wrote:
-> On Wed, 11 Nov 2015 16:15:50 -0800
-> Brian Norris <computersforpeace@gmail.com> wrote:
-> > IOW, I think we can grab the reference in add_mtd_device() and drop it
-> > in del_mtd_device(). This would handle both the partition and
-> > non-partition case the same.
-> 
-> Hm, actually I think we need it. When you iterate over child nodes with
-> for_each_child_of_node(), the node is released (of_node_put() is
-> called) after each iteration. While this is not a problem for mtd
-> device registration (because the controller usually retain the
-> reference when add_mtd_device() is called), this is not true for the
-> partitions. And if the partitions are ever defined using an overlay,
-> this can be a problem.
+Hi,
 
-Yep.
-
-> To sum-up, I think we should retain the node reference until
-> add_mtd_device() has retained it, so maybe we should have a ->cleanup()
-> function in mtd part parsers.
-
-OK. I'll drop my patch and send out my ->cleanup() stuff instead, so you
-can patch on top of that.
+Currently, we assume that all of the resources used by partition parsers can be
+cleaned up with a single kfree(), but that can be burdensome to work around.
+This series (particularly, patch 3) supports a cleanup() callback for parsers.
 
 Brian
+
+Brian Norris (3):
+  mtd: rename MTD parser get/put
+  mtd: untangle error codes and number of partitions
+  mtd: support a cleanup callback for partition parsers
+
+ drivers/mtd/mtdcore.c          | 22 ++++++++++++++++------
+ drivers/mtd/mtdcore.h          | 25 ++++++++++++++++++++++++-
+ drivers/mtd/mtdpart.c          | 19 +++++++++++--------
+ include/linux/mtd/partitions.h |  1 +
+ 4 files changed, 52 insertions(+), 15 deletions(-)
+
+-- 
+2.6.0.rc2.230.g3dd15c0
