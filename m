@@ -1,22 +1,18 @@
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Zziay-0002Ja-SX
- for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 10:07:09 +0000
-Received: by wmvv187 with SMTP id v187so64557583wmv.1
- for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 02:06:47 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <564EC4E0.90602@gmail.com>
-References: <564CEB61.2000601@gmail.com> <20151120000226.GP64635@google.com>
- <564EC4E0.90602@gmail.com>
-Date: Fri, 20 Nov 2015 11:06:47 +0100
-Message-ID: <CAFSsGVsJBi6yPin7X9MCS8LD6nygjynfgDgFicjojkm0rOJSJw@mail.gmail.com>
-Subject: Re: RfC: Handle SPI controller limitations like maximum message length
-From: Heiner Kallweit <hkallweit1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Michal Suchanek <hramrach@gmail.com>, martin@sperl.org
-Content-Type: text/plain; charset=UTF-8
+ id 1ZziiP-0006Q1-Fv
+ for linux-mtd@lists.infradead.org; Fri, 20 Nov 2015 10:14:49 +0000
+Received: by pacej9 with SMTP id ej9so112625158pac.2
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 02:14:28 -0800 (PST)
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] UBI: fix return error code
+Date: Fri, 20 Nov 2015 15:44:20 +0530
+Message-Id: <1448014460-1371-1-git-send-email-sudipm.mukherjee@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,84 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 20, 2015 at 7:59 AM, Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> Am 20.11.2015 um 01:02 schrieb Brian Norris:
->> On Wed, Nov 18, 2015 at 10:19:29PM +0100, Heiner Kallweit wrote:
->>> There have been few discussions in the past about how to handle SPI controller
->>> limitations like max message length. However they don't seem to have resulted
->>> in accepted patches yet.
->>> I also stumbled across this topic because I own a device using Freescale's
->>> ESPI which has a 64K message size limitation.
->>>
->>> At least one agreed fact is that silently assembling chunks in protocol
->>> drivers is not the preferred approach.
->>
->> Hmm, are you referring to this sort of approach [1], where the
->> spi_message::acutal_length informs the spi_nor layer that the transfer
->> was truncated?
->>
->> [1] [PATCH v4 7/7] mtd: spi-nor: add read loop
->>     http://lists.infradead.org/pipermail/linux-mtd/2015-August/061062.html
->>
->>> Maybe a better approach would be to introduce a new member of spi_master
->>> dealing with controller limitations.
->>> My issue is just the message size limitation but most likely there are more
->>> and different limitations in other controllers.
->>>
->>> I'd introduce a struct spi_controller_restrictions and add a member to spi_master
->>> pointing to such a struct. Then a controller driver could do something like this:
->>>
->>> static const struct spi_controller_restrictions fsl_espi_restrictions = {
->>>      .max_msg_size   = 0xffff,
->>> };
->>>
->>> master->restrictions = &fsl_espi_restrictions;
->>
->> OK, so I think Mark suggested we not move to a 'restrictions' struct,
->> but otherwise it doesn't sound like he's opposed to this.
->>
-> That's how I read his comments too.
->
->>> I also add an example how a protocol driver could use this extension.
->>> Appreciate any comment.
->>
->> One question I have: is it necessary to push the handling out into the
->> protocol driver? I feel like I've seen a partial answer to this: the
->> 'actual_legnth' return field suggests that the protocol driver already
->> has to deal with shorter-than-desired transfers.
->>
->> Then I have another one: is the 'actual_length' field really
->> insufficient? For instance, is it non-kosher for a spi_master to just
->> cutoff the message at (for instance) 64K, and expect the protocol
->> driver to handle that (e.g., with Michal's patch from [1])? And if that
->> is kosher, then is there a good reason for the protocol driver to know
->> the exact maximum for its spi_master?
->>
-> It would be sufficient if it's a valid case that spi_master returns 0
-> and an actual_length < requested_length as this is some kind of error
-> situation.
+We are checking dfs_rootdir for error value or NULL. But in the
+conditional ternary operator we returned -ENODEV if dfs_rootdir contains
+an error value and returned PTR_ERR(dfs_rootdir) if dfs_rootdir is NULL.
+So in the case of dfs_rootdir being NULL we actually assigned 0 to err
+and returned it to the caller implying a success.
+Lets return -ENODEV when dfs_rootdir is NULL else return
+PTR_ERR(dfs_rootdir).
 
-I had one more look at the SPI core and e.g. spi_write_then_read
-calls spi_sync w/o checking actual_length afterwards.
-This can mean the discussed case is not valid, however it also could be
-simply a bug.
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
+ drivers/mtd/ubi/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If the discussed case is valid a clear hint to all users of spi_sync and
-friends should be added that the caller can not rely on status code 0
-only but must check actual_length to verify that the complete message
-was transferred.
-
-It would be good to hear Mark's opinion on this.
-
-> I could also fully understand if spi_master doesn't return 0 but
-> -EMSGSIZE in such a case.
-> And the suggested patch would bail out of the chunk-assembling loop
-> once it get's an error from the SPI transfer
-> (after applying patch 2 of the series which introduces checking
-> the return code of the spi_sync call in m25p80_read).
->
->> [snip example]
->>
->> Brian
->>
->
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index b077e43..c4cb15a 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -236,7 +236,7 @@ int ubi_debugfs_init(void)
+ 
+ 	dfs_rootdir = debugfs_create_dir("ubi", NULL);
+ 	if (IS_ERR_OR_NULL(dfs_rootdir)) {
+-		int err = dfs_rootdir ? -ENODEV : PTR_ERR(dfs_rootdir);
++		int err = dfs_rootdir ? PTR_ERR(dfs_rootdir) : -ENODEV;
+ 
+ 		pr_err("UBI error: cannot create \"ubi\" debugfs directory, error %d\n",
+ 		       err);
+-- 
+1.9.1
