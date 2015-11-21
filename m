@@ -1,30 +1,26 @@
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a0AY6-0003L1-J9
- for linux-mtd@lists.infradead.org; Sat, 21 Nov 2015 15:58:03 +0000
-Received: by wmec201 with SMTP id c201so55663041wme.1
- for <linux-mtd@lists.infradead.org>; Sat, 21 Nov 2015 07:57:40 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <56507B3B.4080608@gmail.com>
-References: <564CEB61.2000601@gmail.com> <20151118215755.GL31303@sirena.org.uk>
- <564D0098.4030107@gmail.com> <20151119114057.GN31303@sirena.org.uk>
- <F224F5F3-FAD5-47FE-9419-39E53BCBB8C6@sperl.org>
- <20151119171538.GO31303@sirena.org.uk>
- <9CDADBED-FD18-4635-82A9-5AB14C9ABCAE@sperl.org>
- <20151120120502.GT31303@sirena.org.uk>
- <08871ECD-52DF-4CBF-AF3D-4C3A442C008A@sperl.org>
- <20151121134946.GI26072@sirena.org.uk> <56507B3B.4080608@gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Sat, 21 Nov 2015 16:57:01 +0100
-Message-ID: <CAOMqctR=UDEPbgJDY3YvxpbVEEp4t6ajkyv=cVAZp2fLBNBanA@mail.gmail.com>
-Subject: Re: RfC: Handle SPI controller limitations like maximum message length
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Martin Sperl <martin@sperl.org>,
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a0Bai-0001BL-Pt
+ for linux-mtd@lists.infradead.org; Sat, 21 Nov 2015 17:04:50 +0000
+Subject: [PATCH 2/2 (v2)] mtd: brcmnand: Add support for the BCM63268
+To: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+References: <56506D55.3000907@simon.arlott.org.uk>
+ <56506DD0.3030806@simon.arlott.org.uk>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Florian Fainelli <f.fainelli@gmail.com>,
+ Jonas Gorski <jogo@openwrt.org>
+From: Simon Arlott <simon@fire.lp0.eu>
+Message-ID: <5650A402.7030404@simon.arlott.org.uk>
+Date: Sat, 21 Nov 2015 17:04:02 +0000
+MIME-Version: 1.0
+In-Reply-To: <56506DD0.3030806@simon.arlott.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,143 +30,247 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 21 November 2015 at 00:22, Brian Norris <computersforpeace@gmail.com> wr=
-ote:
-> On Fri, Nov 20, 2015 at 08:05:48PM +0100, Michal Suchanek wrote:
+The BCM63268 has a NAND interrupt register with combined status and enable
+registers. It also has a clock for the NAND controller that needs to be
+enabled.
 
->> If it's desirable that a partial transfer is reported as error then a
->> particular error value should be defined for this case and drivers
->> that can continue the transfer in a driver-specific way (such as
->> spi-nor) can check for this error and handle it appropriately and pass
->> through any other error.
->
-> Based on Mark's further comments (and my own intuition), I'd rather not
-> try to interpret different error codes to mean "truncated but keep
-> going" vs. "truncated for other reason, stop now", unless we really have
-> to.
->
-> I think if we do what Heiner was proposing from the beginning -- expose
-> a reasonable max SPI message length -- then I think we'll cover the bulk
-> of what we want. SPI NOR drivers can then try "small enough" transfers,
-> and if we see any errors, those are unexpected, and we abort.
->
-> Sound OK?
+Set up the device by enabling the clock, disabling and acking all
+interrupts, then handle the CTRL_READY interrupt.
 
-It sounds ok.
+Add a "device_remove" function to struct brcmnand_soc so that the clock
+can be disabled when the device is removed.
 
-We actually have use case for both cases even in spi-nor.
+Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+---
+On 21/11/15 13:12, Simon Arlott wrote:
+> The BCM63268 has a NAND interrupt register with combined status and enable
+> registers.
 
-Write transfers a page at a time and when whole page cannot be written
-an error should be reported and propagated. When the master controller
-cannot write like 260 bytes at once the flash becomes effectively
-read-only.
+Sorry, that version won't even compile...
 
-Read can do arbitrary size blocks so the limit should be checked and
-the transfer done in appropriately sized chunks.
+ drivers/mtd/nand/brcmnand/Makefile        |   1 +
+ drivers/mtd/nand/brcmnand/bcm63268_nand.c | 171 ++++++++++++++++++++++++++++++
+ drivers/mtd/nand/brcmnand/brcmnand.c      |   3 +
+ drivers/mtd/nand/brcmnand/brcmnand.h      |   1 +
+ 4 files changed, 176 insertions(+)
+ create mode 100644 drivers/mtd/nand/brcmnand/bcm63268_nand.c
 
-On 21 November 2015 at 00:07, Brian Norris <computersforpeace@gmail.com> wr=
-ote:
+diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
+index 3b1fbfd..b83a9ae 100644
+--- a/drivers/mtd/nand/brcmnand/Makefile
++++ b/drivers/mtd/nand/brcmnand/Makefile
+@@ -2,5 +2,6 @@
+ # more specific iproc_nand.o, for instance
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
++obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63268_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
+diff --git a/drivers/mtd/nand/brcmnand/bcm63268_nand.c b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
+new file mode 100644
+index 0000000..58a8d84
+--- /dev/null
++++ b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
+@@ -0,0 +1,171 @@
++/*
++ * Copyright 2015 Simon Arlott
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ *
++ * Derived from bcm63138_nand.c:
++ * Copyright © 2015 Broadcom Corporation
++ *
++ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/include/bcm963xx/63268_map_part.h:
++ * Copyright 2000-2010 Broadcom Corporation
++ *
++ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/flash/nandflash.c:
++ * Copyright 2000-2010 Broadcom Corporation
++ */
++
++#include <linux/device.h>
++#include <linux/clk.h>
++#include <linux/io.h>
++#include <linux/ioport.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++#include "brcmnand.h"
++
++struct bcm63268_nand_soc {
++	struct brcmnand_soc soc;
++	void __iomem *base;
++	struct clk *clk;
++};
++
++#define BCM63268_NAND_INT		0x00
++#define  BCM63268_NAND_STATUS_SHIFT	0
++#define  BCM63268_NAND_STATUS_MASK	(0xfff << BCM63268_NAND_STATUS_SHIFT)
++#define  BCM63268_NAND_ENABLE_SHIFT	16
++#define  BCM63268_NAND_ENABLE_MASK	(0xffff << BCM63268_NAND_ENABLE_SHIFT)
++#define BCM63268_NAND_BASE_ADDR0	0x04
++#define BCM63268_NAND_BASE_ADDR1	0x0c
++
++enum {
++	BCM63268_NP_READ	= BIT(0),
++	BCM63268_BLOCK_ERASE	= BIT(1),
++	BCM63268_COPY_BACK	= BIT(2),
++	BCM63268_PAGE_PGM	= BIT(3),
++	BCM63268_CTRL_READY	= BIT(4),
++	BCM63268_DEV_RBPIN	= BIT(5),
++	BCM63268_ECC_ERR_UNC	= BIT(6),
++	BCM63268_ECC_ERR_CORR	= BIT(7),
++};
++
++static bool bcm63268_nand_intc_ack(struct brcmnand_soc *soc)
++{
++	struct bcm63268_nand_soc *priv =
++			container_of(soc, struct bcm63268_nand_soc, soc);
++	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
++	u32 val = brcmnand_readl(mmio);
++
++	if (val & (BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT)) {
++		/* Ack interrupt */
++		val &= ~BCM63268_NAND_STATUS_MASK;
++		val |= BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT;
++		brcmnand_writel(val, mmio);
++		return true;
++	}
++
++	return false;
++}
++
++static void bcm63268_nand_intc_set(struct brcmnand_soc *soc, bool en)
++{
++	struct bcm63268_nand_soc *priv =
++			container_of(soc, struct bcm63268_nand_soc, soc);
++	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
++	u32 val = brcmnand_readl(mmio);
++
++	/* Don't ack any interrupts */
++	val &= ~BCM63268_NAND_STATUS_MASK;
++
++	if (en)
++		val |= BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT;
++	else
++		val &= ~(BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT);
++
++	brcmnand_writel(val, mmio);
++}
++
++static void bcm63268_nand_remove(struct bcm63268_nand_soc *priv)
++{
++	clk_disable_unprepare(priv->clk);
++	clk_put(priv->clk);
++}
++
++static int bcm63268_nand_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct bcm63268_nand_soc *priv;
++	struct brcmnand_soc *soc;
++	struct resource *res;
++	int ret;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++	soc = &priv->soc;
++
++	res = platform_get_resource_byname(pdev,
++		IORESOURCE_MEM, "nand-intr-base");
++	if (!res)
++		return -EINVAL;
++
++	priv->base = devm_ioremap_resource(dev, res);
++	if (IS_ERR(priv->base))
++		return PTR_ERR(priv->base);
++
++	priv->clk = of_clk_get(dev->of_node, 0);
++	if (IS_ERR(priv->clk))
++		return PTR_ERR(priv->clk);
++
++	ret = clk_prepare_enable(priv->clk);
++	if (ret) {
++		clk_put(priv->clk);
++		return ret;
++	}
++
++	soc->ctlrdy_ack = bcm63268_nand_intc_ack;
++	soc->ctlrdy_set_enabled = bcm63268_nand_intc_set;
++	soc->remove_device = bcm63268_nand_remove;
++
++	/* Disable and ack all interrupts  */
++	brcmnand_writel(0, priv->base + BCM63268_NAND_INT);
++	brcmnand_writel(BCM63268_NAND_STATUS_MASK,
++			priv->base + BCM63268_NAND_INT);
++
++	ret = brcmnand_probe(pdev, soc);
++	if (ret) {
++		clk_disable_unprepare(priv->clk);
++		clk_put(priv->clk);
++	}
++
++	return ret;
++}
++
++static const struct of_device_id bcm63268_nand_of_match[] = {
++	{ .compatible = "brcm,nand-bcm63268" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, bcm63268_nand_of_match);
++
++static struct platform_driver bcm63268_nand_driver = {
++	.probe			= bcm63268_nand_probe,
++	.remove			= brcmnand_remove,
++	.driver = {
++		.name		= "bcm63268_nand",
++		.pm		= &brcmnand_pm_ops,
++		.of_match_table	= bcm63268_nand_of_match,
++	}
++};
++module_platform_driver(bcm63268_nand_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Simon Arlott");
++MODULE_DESCRIPTION("NAND driver for BCM63268");
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index 2c8f67f..7b4988f 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -2270,6 +2270,9 @@ int brcmnand_remove(struct platform_device *pdev)
+ 	list_for_each_entry(host, &ctrl->host_list, node)
+ 		nand_release(&host->mtd);
+ 
++	if (ctrl->soc && ctrl->soc->remove_device)
++		ctrl->soc->remove_device(ctrl->soc);
++
+ 	dev_set_drvdata(&pdev->dev, NULL);
+ 
+ 	return 0;
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
+index ef5eabb..5c5dc2d 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.h
++++ b/drivers/mtd/nand/brcmnand/brcmnand.h
+@@ -24,6 +24,7 @@ struct brcmnand_soc {
+ 	bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
+ 	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
+ 	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
++	void (*remove_device)(struct brcmnand_soc *soc);
+ };
+ 
+ static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
+-- 
+2.1.4
 
->> 64k limit on the other hand is something more usable from driver
->> writer standpoint and some banked mmap access to flash memories would
->> have similar granularity.
->
-> Right.
->
->> I would also like to point out that the limit depends on the transfer
->> settings. For example, a SPI controller can have no limit on transfer
->> size but when accessing a flash memory through mmap interface the mmap
->> window limits the amount of data you can transfer at once. This
->> particular case may be fixable by moving the mmap window transparently
->> inside the driver.
->
-> Hmm, I'm not sure I have much opinion on that one without having a
-> non-theoretical case. It seems like it'd be best if the SPI master
-> driver can work as best as it can to respect a single reasonable "max
-> mesage size", even if that means choosing the lowest common denominator
-> of all limitations.
-
-I don't have an actual example either. All the cases I can think of
-fall into two categories
-
-1) it can be handled transparently
-2) something is broken
-
-maybe master driver could recalculate the limit when the transfer
-parameters are changed if really needed.
-
-On 21 November 2015 at 15:10, Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> Am 21.11.2015 um 14:49 schrieb Mark Brown:
->> On Fri, Nov 20, 2015 at 01:56:13PM +0100, Martin Sperl wrote:
->>
->>>> Every line of code that's in a driver that could be in the core is a
->>>> maintainence burden, people will want to start doing things like
->>>> combining functions in fun ways and if we want to try to do things lik=
-e
->>>> figure out if we can coalesce adjacent transfers in the core (which we
->>>> really ought to) it won't know what the limitations that exist are.
->>
->>> this =E2=80=9Ccolaesce=E2=80=9D of transfers into one could be one of t=
-hose
->>> =E2=80=9Ctransformation=E2=80=9D I am talking about - and this one woul=
-d be implemented
->>> in core making certain assumptions (like starting on a page, ...)
->>
->> Why would we want to force that assumption?  It massively reduces the
->> utility for DMA controllers that don't have such limitations.
->>
->>>>> I wonder if such a variant-construct does not create more headaches i=
-n
->>>>> the long run as each spi_driver wanting to do something =E2=80=9Csome=
-thing=E2=80=9D
->>>>> special would then need to get updated for any additional constraint=
-=E2=80=A6
->>
->>>> I'm sorry but I don't understand what you mean here.  However we
->>>> implement things anything that wants to know about constraints is goin=
-g
->>>> to need to be updated to use them.
->>
->>> That is what I want to avoid if possible - the one thing that may come
->>> handy (at least from my perspective) could be to give some hints to
->>> make optimal use of the HW
->>> Say:
->>> * preferred alignment on X byte boundry
->>> * preferred max spi_transfer.length
->>
->>> All the other possible constraints parameters should be opaque to
->>> a spi_device driver, so I would not want to include those inside the
->>> spi_master structure, as _then_ these get used.
->>
->> You're conflating two unrelated design decisions here.  Yes, it's
->> unfortunate that the SPI API was written to allow client drivers to see
->> the master structure but that doesn't mean that converting data into
->> code is a good idea, that's still a bad pattern independently of the
->> visibility issue.
->>
-> Currently the only (?) way for a protocol driver like spi-nor to get
-> info about HW restrictions described in the controller driver
-> is via the master structure and its "constraint" members.
->
-> As you say this visibility of the master structure is unfortunate:
-> What could be a (maybe long-term) better way to propagate restrictions
-> that can't be handled transparently in the core like max message size
-> and SPI NOR to protocol drivers?
->
-
-Actually, the fact that the maximum size of SPI transfer can be
-limited is a fact which was already observed by some protocol driver
-writers and handled in a driver-specific way. So adding this to the
-core makes sense.
-
-In most cases you practically cannot hit the limit because it is very
-large. In the cases when some practically feasible transfer can trip
-the limit it should be reported as master limitation.
-
-As the possibility to coalesce something is protocol-specific the
-protocol driver is in the position to make decision how a limitation
-should be handled and should know about the limitation.
-
-Thanks
-
-Michal
+-- 
+Simon Arlott
