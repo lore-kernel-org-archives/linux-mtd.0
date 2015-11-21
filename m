@@ -1,26 +1,29 @@
-Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a0Bai-0001BL-Pt
- for linux-mtd@lists.infradead.org; Sat, 21 Nov 2015 17:04:50 +0000
-Subject: [PATCH 2/2 (v2)] mtd: brcmnand: Add support for the BCM63268
-To: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-References: <56506D55.3000907@simon.arlott.org.uk>
- <56506DD0.3030806@simon.arlott.org.uk>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Florian Fainelli <f.fainelli@gmail.com>,
- Jonas Gorski <jogo@openwrt.org>
-From: Simon Arlott <simon@fire.lp0.eu>
-Message-ID: <5650A402.7030404@simon.arlott.org.uk>
-Date: Sat, 21 Nov 2015 17:04:02 +0000
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a0HL6-0003P0-O1
+ for linux-mtd@lists.infradead.org; Sat, 21 Nov 2015 23:13:05 +0000
+Received: by wmec201 with SMTP id c201so115966686wme.0
+ for <linux-mtd@lists.infradead.org>; Sat, 21 Nov 2015 15:12:43 -0800 (PST)
+Subject: Re: RfC: Handle SPI controller limitations like maximum message length
+To: Brian Norris <computersforpeace@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>
+References: <564CEB61.2000601@gmail.com> <20151120000226.GP64635@google.com>
+ <564EC4E0.90602@gmail.com>
+ <CAFSsGVsJBi6yPin7X9MCS8LD6nygjynfgDgFicjojkm0rOJSJw@mail.gmail.com>
+ <20151120123540.GC1929@sirena.org.uk> <564F6D99.8090203@gmail.com>
+ <CAOMqctTt=78C4m2jjMb9mRBOkoZ5uZ4neVm0NS39iNO8otn=dA@mail.gmail.com>
+ <20151120232211.GA64635@google.com>
+Cc: Mark Brown <broonie@kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ Martin Sperl <martin@sperl.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <5650F5D5.2040901@gmail.com>
+Date: Sat, 21 Nov 2015 23:53:09 +0100
 MIME-Version: 1.0
-In-Reply-To: <56506DD0.3030806@simon.arlott.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20151120232211.GA64635@google.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,247 +33,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BCM63268 has a NAND interrupt register with combined status and enable
-registers. It also has a clock for the NAND controller that needs to be
-enabled.
+Am 21.11.2015 um 00:22 schrieb Brian Norris:
+> On Fri, Nov 20, 2015 at 08:05:48PM +0100, Michal Suchanek wrote:
+>> On 20 November 2015 at 19:59, Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>>> Am 20.11.2015 um 13:35 schrieb Mark Brown:
+>>>> On Fri, Nov 20, 2015 at 11:06:47AM +0100, Heiner Kallweit wrote:
+>>>>> If the discussed case is valid a clear hint to all users of spi_sync and
+>>>>> friends should be added that the caller can not rely on status code 0
+>>>>> only but must check actual_length to verify that the complete message
+>>>>> was transferred.
+>>>>
+>>>> You'll get an error on truncation.  It may be possible to recover.
+>>>>
+>>> OK, I interpret this as:
+>>> Controller drivers shall return 0 only if the complete message was
+>>> transferred successfully.
+>>> If  a controller driver returns an error it has the option to set
+>>> actual_length to what was transferred successfully.
+>>>
+>>> This means we can't use patch 4 from Michal because it bails out as soon
+>>> as the underlying SPI transfer returns an error.
+> 
+> Right (although you meant patch 7).
+> 
+>>> Instead something like the spi-nor patch I sent on Oct 6th would be needed:
+>>> [PATCH] mtd: spi-nor: handle controller driver limitations in spi_nor_read
+> 
+> I don't think your patch is good either...
+> 
+>>> It loops over nor->read and ignores errors as long as at least something
+>>> was read.
+>>>
+>>
+>> I don't think ignoring errors in general is good idea.
+> 
+> ...for this reason, at least.
+> 
+>> If it's desirable that a partial transfer is reported as error then a
+>> particular error value should be defined for this case and drivers
+>> that can continue the transfer in a driver-specific way (such as
+>> spi-nor) can check for this error and handle it appropriately and pass
+>> through any other error.
+> 
+> Based on Mark's further comments (and my own intuition), I'd rather not
+> try to interpret different error codes to mean "truncated but keep
+> going" vs. "truncated for other reason, stop now", unless we really have
+> to.
+> 
+> I think if we do what Heiner was proposing from the beginning -- expose
+> a reasonable max SPI message length -- then I think we'll cover the bulk
+> of what we want. SPI NOR drivers can then try "small enough" transfers,
+> and if we see any errors, those are unexpected, and we abort.
 
-Set up the device by enabling the clock, disabling and acking all
-interrupts, then handle the CTRL_READY interrupt.
+Based on what was discussed so far I'll submit a patch series as basis
+for further discussion.
 
-Add a "device_remove" function to struct brcmnand_soc so that the clock
-can be disabled when the device is removed.
-
-Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
----
-On 21/11/15 13:12, Simon Arlott wrote:
-> The BCM63268 has a NAND interrupt register with combined status and enable
-> registers.
-
-Sorry, that version won't even compile...
-
- drivers/mtd/nand/brcmnand/Makefile        |   1 +
- drivers/mtd/nand/brcmnand/bcm63268_nand.c | 171 ++++++++++++++++++++++++++++++
- drivers/mtd/nand/brcmnand/brcmnand.c      |   3 +
- drivers/mtd/nand/brcmnand/brcmnand.h      |   1 +
- 4 files changed, 176 insertions(+)
- create mode 100644 drivers/mtd/nand/brcmnand/bcm63268_nand.c
-
-diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
-index 3b1fbfd..b83a9ae 100644
---- a/drivers/mtd/nand/brcmnand/Makefile
-+++ b/drivers/mtd/nand/brcmnand/Makefile
-@@ -2,5 +2,6 @@
- # more specific iproc_nand.o, for instance
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
-+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63268_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
-diff --git a/drivers/mtd/nand/brcmnand/bcm63268_nand.c b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
-new file mode 100644
-index 0000000..58a8d84
---- /dev/null
-+++ b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
-@@ -0,0 +1,171 @@
-+/*
-+ * Copyright 2015 Simon Arlott
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ *
-+ * Derived from bcm63138_nand.c:
-+ * Copyright © 2015 Broadcom Corporation
-+ *
-+ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/include/bcm963xx/63268_map_part.h:
-+ * Copyright 2000-2010 Broadcom Corporation
-+ *
-+ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/flash/nandflash.c:
-+ * Copyright 2000-2010 Broadcom Corporation
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include "brcmnand.h"
-+
-+struct bcm63268_nand_soc {
-+	struct brcmnand_soc soc;
-+	void __iomem *base;
-+	struct clk *clk;
-+};
-+
-+#define BCM63268_NAND_INT		0x00
-+#define  BCM63268_NAND_STATUS_SHIFT	0
-+#define  BCM63268_NAND_STATUS_MASK	(0xfff << BCM63268_NAND_STATUS_SHIFT)
-+#define  BCM63268_NAND_ENABLE_SHIFT	16
-+#define  BCM63268_NAND_ENABLE_MASK	(0xffff << BCM63268_NAND_ENABLE_SHIFT)
-+#define BCM63268_NAND_BASE_ADDR0	0x04
-+#define BCM63268_NAND_BASE_ADDR1	0x0c
-+
-+enum {
-+	BCM63268_NP_READ	= BIT(0),
-+	BCM63268_BLOCK_ERASE	= BIT(1),
-+	BCM63268_COPY_BACK	= BIT(2),
-+	BCM63268_PAGE_PGM	= BIT(3),
-+	BCM63268_CTRL_READY	= BIT(4),
-+	BCM63268_DEV_RBPIN	= BIT(5),
-+	BCM63268_ECC_ERR_UNC	= BIT(6),
-+	BCM63268_ECC_ERR_CORR	= BIT(7),
-+};
-+
-+static bool bcm63268_nand_intc_ack(struct brcmnand_soc *soc)
-+{
-+	struct bcm63268_nand_soc *priv =
-+			container_of(soc, struct bcm63268_nand_soc, soc);
-+	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	if (val & (BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT)) {
-+		/* Ack interrupt */
-+		val &= ~BCM63268_NAND_STATUS_MASK;
-+		val |= BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT;
-+		brcmnand_writel(val, mmio);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static void bcm63268_nand_intc_set(struct brcmnand_soc *soc, bool en)
-+{
-+	struct bcm63268_nand_soc *priv =
-+			container_of(soc, struct bcm63268_nand_soc, soc);
-+	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	/* Don't ack any interrupts */
-+	val &= ~BCM63268_NAND_STATUS_MASK;
-+
-+	if (en)
-+		val |= BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT;
-+	else
-+		val &= ~(BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT);
-+
-+	brcmnand_writel(val, mmio);
-+}
-+
-+static void bcm63268_nand_remove(struct bcm63268_nand_soc *priv)
-+{
-+	clk_disable_unprepare(priv->clk);
-+	clk_put(priv->clk);
-+}
-+
-+static int bcm63268_nand_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct bcm63268_nand_soc *priv;
-+	struct brcmnand_soc *soc;
-+	struct resource *res;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+	soc = &priv->soc;
-+
-+	res = platform_get_resource_byname(pdev,
-+		IORESOURCE_MEM, "nand-intr-base");
-+	if (!res)
-+		return -EINVAL;
-+
-+	priv->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	priv->clk = of_clk_get(dev->of_node, 0);
-+	if (IS_ERR(priv->clk))
-+		return PTR_ERR(priv->clk);
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret) {
-+		clk_put(priv->clk);
-+		return ret;
-+	}
-+
-+	soc->ctlrdy_ack = bcm63268_nand_intc_ack;
-+	soc->ctlrdy_set_enabled = bcm63268_nand_intc_set;
-+	soc->remove_device = bcm63268_nand_remove;
-+
-+	/* Disable and ack all interrupts  */
-+	brcmnand_writel(0, priv->base + BCM63268_NAND_INT);
-+	brcmnand_writel(BCM63268_NAND_STATUS_MASK,
-+			priv->base + BCM63268_NAND_INT);
-+
-+	ret = brcmnand_probe(pdev, soc);
-+	if (ret) {
-+		clk_disable_unprepare(priv->clk);
-+		clk_put(priv->clk);
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id bcm63268_nand_of_match[] = {
-+	{ .compatible = "brcm,nand-bcm63268" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, bcm63268_nand_of_match);
-+
-+static struct platform_driver bcm63268_nand_driver = {
-+	.probe			= bcm63268_nand_probe,
-+	.remove			= brcmnand_remove,
-+	.driver = {
-+		.name		= "bcm63268_nand",
-+		.pm		= &brcmnand_pm_ops,
-+		.of_match_table	= bcm63268_nand_of_match,
-+	}
-+};
-+module_platform_driver(bcm63268_nand_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Simon Arlott");
-+MODULE_DESCRIPTION("NAND driver for BCM63268");
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index 2c8f67f..7b4988f 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -2270,6 +2270,9 @@ int brcmnand_remove(struct platform_device *pdev)
- 	list_for_each_entry(host, &ctrl->host_list, node)
- 		nand_release(&host->mtd);
- 
-+	if (ctrl->soc && ctrl->soc->remove_device)
-+		ctrl->soc->remove_device(ctrl->soc);
-+
- 	dev_set_drvdata(&pdev->dev, NULL);
- 
- 	return 0;
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
-index ef5eabb..5c5dc2d 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.h
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.h
-@@ -24,6 +24,7 @@ struct brcmnand_soc {
- 	bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
- 	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
- 	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
-+	void (*remove_device)(struct brcmnand_soc *soc);
- };
- 
- static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
--- 
-2.1.4
-
--- 
-Simon Arlott
+Heiner
+> 
+> Sound OK?
+> 
+> Brian
+> 
