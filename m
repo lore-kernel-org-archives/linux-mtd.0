@@ -1,16 +1,20 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZzxAU-00038V-EH
- for linux-mtd@lists.infradead.org; Sat, 21 Nov 2015 01:40:46 +0000
-Received: by pabfh17 with SMTP id fh17so136588700pab.0
- for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 17:40:25 -0800 (PST)
+ id 1ZzyQ4-00076s-OG
+ for linux-mtd@lists.infradead.org; Sat, 21 Nov 2015 03:00:57 +0000
+Received: by padhx2 with SMTP id hx2so134118766pad.1
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Nov 2015 19:00:35 -0800 (PST)
+Date: Fri, 20 Nov 2015 19:00:26 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Bayi Cheng <bayi.cheng@mediatek.com>
-Subject: [PATCH] mtd: mtk-quadspi: drop unnecessary .owner assignment
-Date: Fri, 20 Nov 2015 17:40:13 -0800
-Message-Id: <1448070013-139538-1-git-send-email-computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: [GIT PULL] MTD updates for 4.4-rc2
+Message-ID: <20151121030026.GA28964@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As of commit 807f16d4db95 ("mtd: core: set some defaults when
-dev.parent is set"), the MTD core will set this for us.
+Hi Linus,
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Bayi Cheng <bayi.cheng@mediatek.com>
----
- drivers/mtd/spi-nor/mtk-quadspi.c | 1 -
- 1 file changed, 1 deletion(-)
+The following changes since commit 8005c49d9aea74d382f474ce11afbbc7d7130bec:
 
-diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-index dd269650cd16..e1dd9fd16fbe 100644
---- a/drivers/mtd/spi-nor/mtk-quadspi.c
-+++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-@@ -390,7 +390,6 @@ static int __init mtk_nor_init(struct mt8173_nor *mt8173_nor,
- 	nor->read_reg = mt8173_nor_read_reg;
- 	nor->write = mt8173_nor_write;
- 	nor->write_reg = mt8173_nor_write_reg;
--	nor->mtd.owner = THIS_MODULE;
- 	nor->mtd.name = "mtk_nor";
- 	/* initialized with NULL */
- 	ret = spi_nor_scan(nor, NULL, SPI_NOR_DUAL);
--- 
-2.6.0.rc2.230.g3dd15c0
+  Linux 4.4-rc1 (2015-11-15 17:00:27 -0800)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20151120
+
+for you to fetch changes up to 1ddaa021b000220b5f2ad023e4f15ed44990974b:
+
+  MAINTAINERS: brcmnand: Add co-maintainer for Broadcom SoCs (2015-11-18 13:16:58 -0800)
+
+----------------------------------------------------------------
+MTD fixes for 4.4-rc2:
+
+ * MAINTAINERS updates for brcmnand driver
+
+ * Fix reboot hangs seen when multiple NAND flash chips are registered with the
+   same controller
+
+ * Fix build issues on jz4740 NAND driver; the error was introduced in 4.3, so
+   I guess nobody really cared, but we might as well fix it
+
+----------------------------------------------------------------
+Brian Norris (2):
+      mtd: jz4740_nand: fix build on jz4740 after removing gpio.h
+      mtd: nand: fix shutdown/reboot for multi-chip systems
+
+Florian Fainelli (1):
+      MAINTAINERS: brcmnand: Add Broadcom internal mailing-list
+
+Kamal Dasu (1):
+      MAINTAINERS: brcmnand: Add co-maintainer for Broadcom SoCs
+
+ MAINTAINERS                    |    2 ++
+ drivers/mtd/nand/jz4740_nand.c |    1 +
+ drivers/mtd/nand/nand_base.c   |    2 +-
+ 3 files changed, 4 insertions(+), 1 deletion(-)
