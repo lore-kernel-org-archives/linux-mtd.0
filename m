@@ -1,24 +1,27 @@
-Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a07yh-0004Bk-GZ
- for linux-mtd@lists.infradead.org; Sat, 21 Nov 2015 13:13:20 +0000
-Subject: [PATCH 2/2] mtd: brcmnand: Add support for BCM63268 interrupts
-To: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-References: <56506D55.3000907@simon.arlott.org.uk>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Florian Fainelli <f.fainelli@gmail.com>
-From: Simon Arlott <simon@fire.lp0.eu>
-Message-ID: <56506DD0.3030806@simon.arlott.org.uk>
-Date: Sat, 21 Nov 2015 13:12:48 +0000
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a08YX-0000id-EJ
+ for linux-mtd@lists.infradead.org; Sat, 21 Nov 2015 13:50:22 +0000
+Date: Sat, 21 Nov 2015 13:49:46 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Martin Sperl <martin@sperl.org>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Message-ID: <20151121134946.GI26072@sirena.org.uk>
+References: <564CEB61.2000601@gmail.com> <20151118215755.GL31303@sirena.org.uk>
+ <564D0098.4030107@gmail.com> <20151119114057.GN31303@sirena.org.uk>
+ <F224F5F3-FAD5-47FE-9419-39E53BCBB8C6@sperl.org>
+ <20151119171538.GO31303@sirena.org.uk>
+ <9CDADBED-FD18-4635-82A9-5AB14C9ABCAE@sperl.org>
+ <20151120120502.GT31303@sirena.org.uk>
+ <08871ECD-52DF-4CBF-AF3D-4C3A442C008A@sperl.org>
 MIME-Version: 1.0
-In-Reply-To: <56506D55.3000907@simon.arlott.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="6b3yLyRKT1M6kiA0"
+Content-Disposition: inline
+In-Reply-To: <08871ECD-52DF-4CBF-AF3D-4C3A442C008A@sperl.org>
+Subject: Re: RfC: Handle SPI controller limitations like maximum message length
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,210 +31,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BCM63268 has a NAND interrupt register with combined status and enable
-registers.
 
-Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
----
- drivers/mtd/nand/brcmnand/Makefile        |   1 +
- drivers/mtd/nand/brcmnand/bcm63268_nand.c | 175 ++++++++++++++++++++++++++++++
- 2 files changed, 176 insertions(+)
- create mode 100644 drivers/mtd/nand/brcmnand/bcm63268_nand.c
+--6b3yLyRKT1M6kiA0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
-index 3b1fbfd..c20bf40 100644
---- a/drivers/mtd/nand/brcmnand/Makefile
-+++ b/drivers/mtd/nand/brcmnand/Makefile
-@@ -2,5 +2,6 @@
- # more specific iproc_nand.o, for instance
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
-+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63268_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
-diff --git a/drivers/mtd/nand/brcmnand/bcm63268_nand.c b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
-new file mode 100644
-index 0000000..79b54f3
---- /dev/null
-+++ b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
-@@ -0,0 +1,175 @@
-+/*
-+ * Copyright 2015 Simon Arlott
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ *
-+ * Derived from bcm63138_nand.c:
-+ * Copyright © 2015 Broadcom Corporation
-+ *
-+ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/include/bcm963xx/63268_map_part.h:
-+ * Copyright 2000-2010 Broadcom Corporation
-+ *
-+ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/flash/nandflash.c:
-+ * Copyright 2000-2010 Broadcom Corporation
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include "brcmnand.h"
-+
-+struct bcm63268_nand_soc {
-+	struct brcmnand_soc soc;
-+	void __iomem *base;
-+	struct clk *clk;
-+};
-+
-+#define BCM63268_NAND_INT		0x00
-+#define  BCM63268_NAND_STATUS_SHIFT	0
-+#define  BCM63268_NAND_STATUS_MASK	(0xfff << BCM63268_NAND_STATUS_SHIFT)
-+#define  BCM63268_NAND_ENABLE_SHIFT	16
-+#define  BCM63268_NAND_ENABLE_MASK	(0xffff << BCM63268_NAND_ENABLE_SHIFT)
-+#define BCM63268_NAND_BASE_ADDR0	0x04
-+#define BCM63268_NAND_BASE_ADDR1	0x0c
-+
-+enum {
-+	BCM63268_NP_READ	= BIT(0),
-+	BCM63268_BLOCK_ERASE	= BIT(1),
-+	BCM63268_COPY_BACK	= BIT(2),
-+	BCM63268_PAGE_PGM	= BIT(3),
-+	BCM63268_CTRL_READY	= BIT(4),
-+	BCM63268_DEV_RBPIN	= BIT(5),
-+	BCM63268_ECC_ERR_UNC	= BIT(6),
-+	BCM63268_ECC_ERR_CORR	= BIT(7),
-+};
-+
-+static bool bcm63268_nand_intc_ack(struct brcmnand_soc *soc)
-+{
-+	struct bcm63268_nand_soc *priv =
-+			container_of(soc, struct bcm63268_nand_soc, soc);
-+	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	if (val & (BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT)) {
-+		/* Ack interrupt */
-+		val &= ~BCM63268_NAND_STATUS_MASK;
-+		val |= BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT;
-+		brcmnand_writel(val, mmio);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static void bcm63268_nand_intc_set(struct brcmnand_soc *soc, bool en)
-+{
-+	struct bcm63268_nand_soc *priv =
-+			container_of(soc, struct bcm63268_nand_soc, soc);
-+	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	/* Don't ack any interrupts */
-+	val &= ~BCM63268_NAND_STATUS_MASK;
-+
-+	if (en)
-+		val |= BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT;
-+	else
-+		val &= ~(BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT);
-+
-+	brcmnand_writel(val, mmio);
-+}
-+
-+static int bcm63268_nand_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct bcm63268_nand_soc *priv;
-+	struct brcmnand_soc *soc;
-+	struct resource *res;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+	soc = &priv->soc;
-+
-+	res = platform_get_resource_byname(pdev,
-+		IORESOURCE_MEM, "nand-intr-base");
-+	if (!res)
-+		return -EINVAL;
-+
-+	priv->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	priv->clk = of_clk_get(dev->of_node, 0);
-+	if (IS_ERR(priv->clk))
-+		return PTR_ERR(priv->clk);
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret) {
-+		clk_put(priv->clk);
-+		return ret;
-+	}
-+
-+	soc->ctlrdy_ack = bcm63268_nand_intc_ack;
-+	soc->ctlrdy_set_enabled = bcm63268_nand_intc_set;
-+
-+	/* Disable and ack all interrupts  */
-+	brcmnand_writel(0, priv->base + BCM63268_NAND_INT);
-+	brcmnand_writel(BCM63268_NAND_STATUS_MASK,
-+			priv->base + BCM63268_NAND_INT);
-+
-+	ret = brcmnand_probe(pdev, soc);
-+	if (ret) {
-+		clk_disable_unprepare(priv->clk);
-+		clk_put(priv->clk);
-+	}
-+
-+	return ret;
-+}
-+
-+static int bcm63268_nand_remove(struct platform_device *pdev)
-+{
-+	struct brcmnand_controller *ctrl = dev_get_drvdata(&pdev->dev);
-+	struct bcm63268_nand_soc *priv =
-+			container_of(ctrl->soc, struct bcm63268_nand_soc, soc);
-+
-+	clk_disable_unprepare(priv->clk);
-+	clk_put(priv->clk);
-+
-+	return brcmnand_remove(pdev);
-+}
-+
-+static const struct of_device_id bcm63268_nand_of_match[] = {
-+	{ .compatible = "brcm,nand-bcm63268" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, bcm63268_nand_of_match);
-+
-+static struct platform_driver bcm63268_nand_driver = {
-+	.probe			= bcm63268_nand_probe,
-+	.remove			= bcm63268_nand_remove,
-+	.driver = {
-+		.name		= "bcm63268_nand",
-+		.pm		= &brcmnand_pm_ops,
-+		.of_match_table	= bcm63268_nand_of_match,
-+	}
-+};
-+module_platform_driver(bcm63268_nand_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Simon Arlott");
-+MODULE_DESCRIPTION("NAND driver for BCM63268");
--- 
-2.1.4
+On Fri, Nov 20, 2015 at 01:56:13PM +0100, Martin Sperl wrote:
 
--- 
-Simon Arlott
+> > Every line of code that's in a driver that could be in the core is a
+> > maintainence burden, people will want to start doing things like
+> > combining functions in fun ways and if we want to try to do things like
+> > figure out if we can coalesce adjacent transfers in the core (which we
+> > really ought to) it won't know what the limitations that exist are.
+
+> this =E2=80=9Ccolaesce=E2=80=9D of transfers into one could be one of tho=
+se=20
+> =E2=80=9Ctransformation=E2=80=9D I am talking about - and this one would =
+be implemented
+> in core making certain assumptions (like starting on a page, ...)
+
+Why would we want to force that assumption?  It massively reduces the
+utility for DMA controllers that don't have such limitations.
+
+> >> I wonder if such a variant-construct does not create more headaches in
+> >> the long run as each spi_driver wanting to do something =E2=80=9Csomet=
+hing=E2=80=9D
+> >> special would then need to get updated for any additional constraint=
+=E2=80=A6
+
+> > I'm sorry but I don't understand what you mean here.  However we
+> > implement things anything that wants to know about constraints is going
+> > to need to be updated to use them.
+
+> That is what I want to avoid if possible - the one thing that may come
+> handy (at least from my perspective) could be to give some hints to
+> make optimal use of the HW
+> Say:
+> * preferred alignment on X byte boundry
+> * preferred max spi_transfer.length
+
+> All the other possible constraints parameters should be opaque to=20
+> a spi_device driver, so I would not want to include those inside the
+> spi_master structure, as _then_ these get used.
+
+You're conflating two unrelated design decisions here.  Yes, it's
+unfortunate that the SPI API was written to allow client drivers to see
+the master structure but that doesn't mean that converting data into
+code is a good idea, that's still a bad pattern independently of the
+visibility issue.
+
+> Also the =E2=80=9Crestrictions=E2=80=9D on the spi HW need to get defined=
+ inside the
+> driver, so there will not be a new =E2=80=9Crestriction=E2=80=9D that app=
+lies to
+> an existing piece of HW just because we incorporate new options.
+
+That's what I was saying?
+
+--6b3yLyRKT1M6kiA0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWUHZ5AAoJECTWi3JdVIfQXI0H/jXDo8oNREzJHNDjafAAurcs
+DNTRCHy5wq74vvkYwPRtCVUN8kmUeow7yx7N7krEYE+KIBD94tyw/IEGjDkSOOgi
+O1pLV/NMh/ZFVmpzx5rqgRHPlMOv+zb6MU3q9oiR8zPsmSL549lTbCkvt6KkwWdn
+HE/z++efWlY7I4+BNU18NWuqrHBe4b1LpF5c2dzqL5/AgfsezypAltbeSXHJ5/kE
+khqyAh66lNW+OlwjP1Zj8vKw+F3hrZBYN8rzYeX2R3TCKLyqeLdF+6cyWJLVXJUn
+DMKGJJJuTenx4euZ8tfVQ8fEjDuev0nVJPiMygDm8wwOo7Ecyv3Sqy3QMRfGE7Q=
+=wKEn
+-----END PGP SIGNATURE-----
+
+--6b3yLyRKT1M6kiA0--
