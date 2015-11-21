@@ -1,28 +1,30 @@
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
+Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a0HL6-0003P0-O1
- for linux-mtd@lists.infradead.org; Sat, 21 Nov 2015 23:13:05 +0000
-Received: by wmec201 with SMTP id c201so115966686wme.0
- for <linux-mtd@lists.infradead.org>; Sat, 21 Nov 2015 15:12:43 -0800 (PST)
-Subject: Re: RfC: Handle SPI controller limitations like maximum message length
-To: Brian Norris <computersforpeace@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>
-References: <564CEB61.2000601@gmail.com> <20151120000226.GP64635@google.com>
- <564EC4E0.90602@gmail.com>
- <CAFSsGVsJBi6yPin7X9MCS8LD6nygjynfgDgFicjojkm0rOJSJw@mail.gmail.com>
- <20151120123540.GC1929@sirena.org.uk> <564F6D99.8090203@gmail.com>
- <CAOMqctTt=78C4m2jjMb9mRBOkoZ5uZ4neVm0NS39iNO8otn=dA@mail.gmail.com>
- <20151120232211.GA64635@google.com>
-Cc: Mark Brown <broonie@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Martin Sperl <martin@sperl.org>
+ id 1a0HL8-0003PE-9u
+ for linux-mtd@lists.infradead.org; Sat, 21 Nov 2015 23:13:06 +0000
+Received: by wmec201 with SMTP id c201so115967452wme.0
+ for <linux-mtd@lists.infradead.org>; Sat, 21 Nov 2015 15:12:46 -0800 (PST)
 From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <5650F5D5.2040901@gmail.com>
-Date: Sat, 21 Nov 2015 23:53:09 +0100
+Subject: [PATCH 1/3] spi: core: add max_msg_size to spi_master
+To: Mark Brown <broonie@kernel.org>, Brian Norris <computersforpeace@gmail.com>
+References: <564CEB61.2000601@gmail.com>
+ <20151118215755.GL31303@sirena.org.uk> <564D0098.4030107@gmail.com>
+ <20151119114057.GN31303@sirena.org.uk>
+ <F224F5F3-FAD5-47FE-9419-39E53BCBB8C6@sperl.org>
+ <20151119171538.GO31303@sirena.org.uk>
+ <9CDADBED-FD18-4635-82A9-5AB14C9ABCAE@sperl.org>
+ <20151120120502.GT31303@sirena.org.uk>
+ <08871ECD-52DF-4CBF-AF3D-4C3A442C008A@sperl.org>
+ <20151121134946.GI26072@sirena.org.uk> <56507B3B.4080608@gmail.com>
+ <CAOMqctR=UDEPbgJDY3YvxpbVEEp4t6ajkyv=cVAZp2fLBNBanA@mail.gmail.com>
+Cc: Michal Suchanek <hramrach@gmail.com>, Martin Sperl <martin@sperl.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Message-ID: <5650F7D4.1090209@gmail.com>
+Date: Sun, 22 Nov 2015 00:01:40 +0100
 MIME-Version: 1.0
-In-Reply-To: <20151120232211.GA64635@google.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <CAOMqctR=UDEPbgJDY3YvxpbVEEp4t6ajkyv=cVAZp2fLBNBanA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,64 +35,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 21.11.2015 um 00:22 schrieb Brian Norris:
-> On Fri, Nov 20, 2015 at 08:05:48PM +0100, Michal Suchanek wrote:
->> On 20 November 2015 at 19:59, Heiner Kallweit <hkallweit1@gmail.com> wrote:
->>> Am 20.11.2015 um 13:35 schrieb Mark Brown:
->>>> On Fri, Nov 20, 2015 at 11:06:47AM +0100, Heiner Kallweit wrote:
->>>>> If the discussed case is valid a clear hint to all users of spi_sync and
->>>>> friends should be added that the caller can not rely on status code 0
->>>>> only but must check actual_length to verify that the complete message
->>>>> was transferred.
->>>>
->>>> You'll get an error on truncation.  It may be possible to recover.
->>>>
->>> OK, I interpret this as:
->>> Controller drivers shall return 0 only if the complete message was
->>> transferred successfully.
->>> If  a controller driver returns an error it has the option to set
->>> actual_length to what was transferred successfully.
->>>
->>> This means we can't use patch 4 from Michal because it bails out as soon
->>> as the underlying SPI transfer returns an error.
-> 
-> Right (although you meant patch 7).
-> 
->>> Instead something like the spi-nor patch I sent on Oct 6th would be needed:
->>> [PATCH] mtd: spi-nor: handle controller driver limitations in spi_nor_read
-> 
-> I don't think your patch is good either...
-> 
->>> It loops over nor->read and ignores errors as long as at least something
->>> was read.
->>>
->>
->> I don't think ignoring errors in general is good idea.
-> 
-> ...for this reason, at least.
-> 
->> If it's desirable that a partial transfer is reported as error then a
->> particular error value should be defined for this case and drivers
->> that can continue the transfer in a driver-specific way (such as
->> spi-nor) can check for this error and handle it appropriately and pass
->> through any other error.
-> 
-> Based on Mark's further comments (and my own intuition), I'd rather not
-> try to interpret different error codes to mean "truncated but keep
-> going" vs. "truncated for other reason, stop now", unless we really have
-> to.
-> 
-> I think if we do what Heiner was proposing from the beginning -- expose
-> a reasonable max SPI message length -- then I think we'll cover the bulk
-> of what we want. SPI NOR drivers can then try "small enough" transfers,
-> and if we see any errors, those are unexpected, and we abort.
+Add a member to spi_master allowing to better handle
+SPI chips with a message size HW limit.
 
-Based on what was discussed so far I'll submit a patch series as basis
-for further discussion.
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+ include/linux/spi/spi.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Heiner
-> 
-> Sound OK?
-> 
-> Brian
-> 
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index cce80e6..23e259b 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -302,6 +302,7 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+  *	and it's up to the individual driver to perform any validation.
+  * @min_speed_hz: Lowest supported transfer speed
+  * @max_speed_hz: Highest supported transfer speed
++ * @max_msg_size: maximum message size
+  * @flags: other constraints relevant to this driver
+  * @bus_lock_spinlock: spinlock for SPI bus locking
+  * @bus_lock_mutex: mutex for SPI bus locking
+@@ -417,6 +418,9 @@ struct spi_master {
+ 	u32			min_speed_hz;
+ 	u32			max_speed_hz;
+ 
++	/* maximum message size */
++	size_t			max_msg_size;
++
+ 	/* other constraints relevant to this driver */
+ 	u16			flags;
+ #define SPI_MASTER_HALF_DUPLEX	BIT(0)		/* can't do full duplex */
+-- 
+2.6.2
