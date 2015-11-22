@@ -1,26 +1,31 @@
-Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a0Vjr-0004Qx-MA
- for linux-mtd@lists.infradead.org; Sun, 22 Nov 2015 14:35:37 +0000
-Subject: [PATCH (v3) 2/2] mtd: brcmnand: Add support for the BCM63268
-To: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-References: <56506D55.3000907@simon.arlott.org.uk>
- <56506DD0.3030806@simon.arlott.org.uk> <5650A402.7030404@simon.arlott.org.uk>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Florian Fainelli <f.fainelli@gmail.com>,
- Jonas Gorski <jogo@openwrt.org>
-From: Simon Arlott <simon@fire.lp0.eu>
-Message-ID: <5651D28F.5040906@simon.arlott.org.uk>
-Date: Sun, 22 Nov 2015 14:34:55 +0000
+Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a0XIa-00087w-8s
+ for linux-mtd@lists.infradead.org; Sun, 22 Nov 2015 16:15:33 +0000
+Received: by wmww144 with SMTP id w144so76726856wmw.0
+ for <linux-mtd@lists.infradead.org>; Sun, 22 Nov 2015 08:15:10 -0800 (PST)
+Subject: Re: [PATCH 1/3] spi: core: add max_msg_size to spi_master
+To: Mark Brown <broonie@kernel.org>
+References: <20151119114057.GN31303@sirena.org.uk>
+ <F224F5F3-FAD5-47FE-9419-39E53BCBB8C6@sperl.org>
+ <20151119171538.GO31303@sirena.org.uk>
+ <9CDADBED-FD18-4635-82A9-5AB14C9ABCAE@sperl.org>
+ <20151120120502.GT31303@sirena.org.uk>
+ <08871ECD-52DF-4CBF-AF3D-4C3A442C008A@sperl.org>
+ <20151121134946.GI26072@sirena.org.uk> <56507B3B.4080608@gmail.com>
+ <CAOMqctR=UDEPbgJDY3YvxpbVEEp4t6ajkyv=cVAZp2fLBNBanA@mail.gmail.com>
+ <5650F7D4.1090209@gmail.com> <20151122131626.GN26072@sirena.org.uk>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>, Martin Sperl <martin@sperl.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <5651EA08.5090400@gmail.com>
+Date: Sun, 22 Nov 2015 17:15:04 +0100
 MIME-Version: 1.0
-In-Reply-To: <5650A402.7030404@simon.arlott.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20151122131626.GN26072@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,253 +35,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BCM63268 has a NAND interrupt register with combined status and enable
-registers. It also has a clock for the NAND controller that needs to be
-enabled.
+Am 22.11.2015 um 14:16 schrieb Mark Brown:
+> On Sun, Nov 22, 2015 at 12:01:40AM +0100, Heiner Kallweit wrote:
+>> Add a member to spi_master allowing to better handle
+>> SPI chips with a message size HW limit.
+> 
+> How many devices have an actual message size limit (as opposed to a
+> transfer size limit)?  It seems like the restrictions here are really on
+> transfer sizes and that we probably want a second limit for devices that
+> aren't able to deal with multiple transfers independently.
+> 
+To avoid misunderstandings:
+For fsl-espi the length of a SPI transfer has to be programmed (max 64K)
+and after this number of bytes has been transferred CS is deselected
+internally. There's no way to control CS directly.
+Do you consider this a message or transfer size limit?
+To me this seems to be exactly what you describe as "devices that aren't
+able to deal with multiple transfers independently".
 
-Set up the device by enabling the clock, disabling and acking all
-interrupts, then handle the CTRL_READY interrupt.
-
-Add a "device_remove" function to struct brcmnand_soc so that the clock
-can be disabled when the device is removed.
-
-Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
----
-On 21/11/15 17:04, Simon Arlott wrote:
-> The BCM63268 has a NAND interrupt register with combined status and enable
-> registers. It also has a clock for the NAND controller that needs to be
-> enabled.
->  drivers/mtd/nand/brcmnand/bcm63268_nand.c | 171 ++++++++++++++++++++++++++++++
-
-Changed argument of bcm63268_nand_remove() from struct bcm63268_nand_soc
-to struct brcmnand_soc.
-
- drivers/mtd/nand/brcmnand/Makefile        |   1 +
- drivers/mtd/nand/brcmnand/bcm63268_nand.c | 174 ++++++++++++++++++++++++++++++
- drivers/mtd/nand/brcmnand/brcmnand.c      |   3 +
- drivers/mtd/nand/brcmnand/brcmnand.h      |   1 +
- 4 files changed, 179 insertions(+)
- create mode 100644 drivers/mtd/nand/brcmnand/bcm63268_nand.c
-
-diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
-index 3b1fbfd..b83a9ae 100644
---- a/drivers/mtd/nand/brcmnand/Makefile
-+++ b/drivers/mtd/nand/brcmnand/Makefile
-@@ -2,5 +2,6 @@
- # more specific iproc_nand.o, for instance
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
-+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63268_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
-diff --git a/drivers/mtd/nand/brcmnand/bcm63268_nand.c b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
-new file mode 100644
-index 0000000..70b142e
---- /dev/null
-+++ b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
-@@ -0,0 +1,174 @@
-+/*
-+ * Copyright 2015 Simon Arlott
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ *
-+ * Derived from bcm63138_nand.c:
-+ * Copyright © 2015 Broadcom Corporation
-+ *
-+ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/include/bcm963xx/63268_map_part.h:
-+ * Copyright 2000-2010 Broadcom Corporation
-+ *
-+ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/flash/nandflash.c:
-+ * Copyright 2000-2010 Broadcom Corporation
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include "brcmnand.h"
-+
-+struct bcm63268_nand_soc {
-+	struct brcmnand_soc soc;
-+	void __iomem *base;
-+	struct clk *clk;
-+};
-+
-+#define BCM63268_NAND_INT		0x00
-+#define  BCM63268_NAND_STATUS_SHIFT	0
-+#define  BCM63268_NAND_STATUS_MASK	(0xfff << BCM63268_NAND_STATUS_SHIFT)
-+#define  BCM63268_NAND_ENABLE_SHIFT	16
-+#define  BCM63268_NAND_ENABLE_MASK	(0xffff << BCM63268_NAND_ENABLE_SHIFT)
-+#define BCM63268_NAND_BASE_ADDR0	0x04
-+#define BCM63268_NAND_BASE_ADDR1	0x0c
-+
-+enum {
-+	BCM63268_NP_READ	= BIT(0),
-+	BCM63268_BLOCK_ERASE	= BIT(1),
-+	BCM63268_COPY_BACK	= BIT(2),
-+	BCM63268_PAGE_PGM	= BIT(3),
-+	BCM63268_CTRL_READY	= BIT(4),
-+	BCM63268_DEV_RBPIN	= BIT(5),
-+	BCM63268_ECC_ERR_UNC	= BIT(6),
-+	BCM63268_ECC_ERR_CORR	= BIT(7),
-+};
-+
-+static bool bcm63268_nand_intc_ack(struct brcmnand_soc *soc)
-+{
-+	struct bcm63268_nand_soc *priv =
-+			container_of(soc, struct bcm63268_nand_soc, soc);
-+	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	if (val & (BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT)) {
-+		/* Ack interrupt */
-+		val &= ~BCM63268_NAND_STATUS_MASK;
-+		val |= BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT;
-+		brcmnand_writel(val, mmio);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static void bcm63268_nand_intc_set(struct brcmnand_soc *soc, bool en)
-+{
-+	struct bcm63268_nand_soc *priv =
-+			container_of(soc, struct bcm63268_nand_soc, soc);
-+	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	/* Don't ack any interrupts */
-+	val &= ~BCM63268_NAND_STATUS_MASK;
-+
-+	if (en)
-+		val |= BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT;
-+	else
-+		val &= ~(BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT);
-+
-+	brcmnand_writel(val, mmio);
-+}
-+
-+static void bcm63268_nand_remove(struct brcmnand_soc *soc)
-+{
-+	struct bcm63268_nand_soc *priv =
-+			container_of(soc, struct bcm63268_nand_soc, soc);
-+
-+	clk_disable_unprepare(priv->clk);
-+	clk_put(priv->clk);
-+}
-+
-+static int bcm63268_nand_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct bcm63268_nand_soc *priv;
-+	struct brcmnand_soc *soc;
-+	struct resource *res;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+	soc = &priv->soc;
-+
-+	res = platform_get_resource_byname(pdev,
-+		IORESOURCE_MEM, "nand-intr-base");
-+	if (!res)
-+		return -EINVAL;
-+
-+	priv->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	priv->clk = of_clk_get(dev->of_node, 0);
-+	if (IS_ERR(priv->clk))
-+		return PTR_ERR(priv->clk);
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret) {
-+		clk_put(priv->clk);
-+		return ret;
-+	}
-+
-+	soc->ctlrdy_ack = bcm63268_nand_intc_ack;
-+	soc->ctlrdy_set_enabled = bcm63268_nand_intc_set;
-+	soc->remove_device = bcm63268_nand_remove;
-+
-+	/* Disable and ack all interrupts  */
-+	brcmnand_writel(0, priv->base + BCM63268_NAND_INT);
-+	brcmnand_writel(BCM63268_NAND_STATUS_MASK,
-+			priv->base + BCM63268_NAND_INT);
-+
-+	ret = brcmnand_probe(pdev, soc);
-+	if (ret) {
-+		clk_disable_unprepare(priv->clk);
-+		clk_put(priv->clk);
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id bcm63268_nand_of_match[] = {
-+	{ .compatible = "brcm,nand-bcm63268" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, bcm63268_nand_of_match);
-+
-+static struct platform_driver bcm63268_nand_driver = {
-+	.probe			= bcm63268_nand_probe,
-+	.remove			= brcmnand_remove,
-+	.driver = {
-+		.name		= "bcm63268_nand",
-+		.pm		= &brcmnand_pm_ops,
-+		.of_match_table	= bcm63268_nand_of_match,
-+	}
-+};
-+module_platform_driver(bcm63268_nand_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Simon Arlott");
-+MODULE_DESCRIPTION("NAND driver for BCM63268");
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index 2c8f67f..7b4988f 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -2270,6 +2270,9 @@ int brcmnand_remove(struct platform_device *pdev)
- 	list_for_each_entry(host, &ctrl->host_list, node)
- 		nand_release(&host->mtd);
- 
-+	if (ctrl->soc && ctrl->soc->remove_device)
-+		ctrl->soc->remove_device(ctrl->soc);
-+
- 	dev_set_drvdata(&pdev->dev, NULL);
- 
- 	return 0;
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
-index ef5eabb..5c5dc2d 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.h
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.h
-@@ -24,6 +24,7 @@ struct brcmnand_soc {
- 	bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
- 	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
- 	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
-+	void (*remove_device)(struct brcmnand_soc *soc);
- };
- 
- static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
--- 
-2.1.4
-
--- 
-Simon Arlott
+> For slightly more complex things like this it probably also makes sense
+> to use an accessor - I can see us wanting to combine restrictions from
+> DMA engines into restrictions for the SPI controller for example.  That
+> gives us a bit of insulation between the clients and the API.
+> 
+When you talk about accessors do you think of hooks in spi_master so that
+each controller driver can provide its own implementation of e.g.
+something like get_max_msg_size()?
