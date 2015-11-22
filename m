@@ -1,26 +1,29 @@
-Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+Received: from mail.kernel.org ([198.145.29.136])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a0cxR-0007rP-Np
- for linux-mtd@lists.infradead.org; Sun, 22 Nov 2015 22:18:06 +0000
-Subject: [PATCH (v4) 2/2] mtd: brcmnand: Add support for the BCM63268
-To: Rob Herring <robh@kernel.org>
-References: <56506D55.3000907@simon.arlott.org.uk>
- <20151122215945.GA5930@rob-hp-laptop> <56523E85.905@simon.arlott.org.uk>
+ id 1a0d39-0001p1-LV
+ for linux-mtd@lists.infradead.org; Sun, 22 Nov 2015 22:24:00 +0000
+Date: Sun, 22 Nov 2015 16:23:34 -0600
+From: Rob Herring <robh@kernel.org>
+To: Simon Arlott <simon@fire.lp0.eu>
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@codeaurora.org>, Florian Fainelli <f.fainelli@gmail.com>,
  Jonas Gorski <jogo@openwrt.org>
-From: Simon Arlott <simon@fire.lp0.eu>
-Message-ID: <56523EFF.9050502@simon.arlott.org.uk>
-Date: Sun, 22 Nov 2015 22:17:35 +0000
+Subject: Re: [PATCH (v4) 1/2] mtd: brcmnand: Add brcm,bcm63268-nand device
+ tree binding
+Message-ID: <20151122222334.GA18996@rob-hp-laptop>
+References: <56506D55.3000907@simon.arlott.org.uk>
+ <20151122215945.GA5930@rob-hp-laptop>
+ <56523E85.905@simon.arlott.org.uk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <56523E85.905@simon.arlott.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,252 +33,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BCM63268 has a NAND interrupt register with combined status and enable
-registers. It also has a clock for the NAND controller that needs to be
-enabled.
+On Sun, Nov 22, 2015 at 10:15:33PM +0000, Simon Arlott wrote:
+> Add device tree binding for NAND on the BCM63268.
+> 
+> The BCM63268 has a NAND interrupt register with combined status and enable
+> registers.
+> 
+> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
 
-Set up the device by enabling the clock, disabling and acking all
-interrupts, then handle the CTRL_READY interrupt.
+Acked-by: Rob Herring <robh@kernel.org>
 
-Add a "device_remove" function to struct brcmnand_soc so that the clock
-can be disabled when the device is removed.
-
-Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
----
-On 22/11/15 21:59, Rob Herring wrote:
->> >> + * "brcm,nand-bcm63268"
->> >> + - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
+> ---
+> On 22/11/15 21:59, Rob Herring wrote:
+> >> + * "brcm,nand-bcm63268"
+> >> + - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
 > >
 > > vendor,<soc>-device is preferred.
-
-The existing two bindings use brcm,nand-<soc>, but I've changed this one.
-
- drivers/mtd/nand/brcmnand/Makefile        |   1 +
- drivers/mtd/nand/brcmnand/bcm63268_nand.c | 174 ++++++++++++++++++++++++++++++
- drivers/mtd/nand/brcmnand/brcmnand.c      |   3 +
- drivers/mtd/nand/brcmnand/brcmnand.h      |   1 +
- 4 files changed, 179 insertions(+)
- create mode 100644 drivers/mtd/nand/brcmnand/bcm63268_nand.c
-
-diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
-index 3b1fbfd..b83a9ae 100644
---- a/drivers/mtd/nand/brcmnand/Makefile
-+++ b/drivers/mtd/nand/brcmnand/Makefile
-@@ -2,5 +2,6 @@
- # more specific iproc_nand.o, for instance
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
-+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63268_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
-diff --git a/drivers/mtd/nand/brcmnand/bcm63268_nand.c b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
-new file mode 100644
-index 0000000..88b32fa
---- /dev/null
-+++ b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
-@@ -0,0 +1,174 @@
-+/*
-+ * Copyright 2015 Simon Arlott
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ *
-+ * Derived from bcm63138_nand.c:
-+ * Copyright © 2015 Broadcom Corporation
-+ *
-+ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/include/bcm963xx/63268_map_part.h:
-+ * Copyright 2000-2010 Broadcom Corporation
-+ *
-+ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/flash/nandflash.c:
-+ * Copyright 2000-2010 Broadcom Corporation
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include "brcmnand.h"
-+
-+struct bcm63268_nand_soc {
-+	struct brcmnand_soc soc;
-+	void __iomem *base;
-+	struct clk *clk;
-+};
-+
-+#define BCM63268_NAND_INT		0x00
-+#define  BCM63268_NAND_STATUS_SHIFT	0
-+#define  BCM63268_NAND_STATUS_MASK	(0xfff << BCM63268_NAND_STATUS_SHIFT)
-+#define  BCM63268_NAND_ENABLE_SHIFT	16
-+#define  BCM63268_NAND_ENABLE_MASK	(0xffff << BCM63268_NAND_ENABLE_SHIFT)
-+#define BCM63268_NAND_BASE_ADDR0	0x04
-+#define BCM63268_NAND_BASE_ADDR1	0x0c
-+
-+enum {
-+	BCM63268_NP_READ	= BIT(0),
-+	BCM63268_BLOCK_ERASE	= BIT(1),
-+	BCM63268_COPY_BACK	= BIT(2),
-+	BCM63268_PAGE_PGM	= BIT(3),
-+	BCM63268_CTRL_READY	= BIT(4),
-+	BCM63268_DEV_RBPIN	= BIT(5),
-+	BCM63268_ECC_ERR_UNC	= BIT(6),
-+	BCM63268_ECC_ERR_CORR	= BIT(7),
-+};
-+
-+static bool bcm63268_nand_intc_ack(struct brcmnand_soc *soc)
-+{
-+	struct bcm63268_nand_soc *priv =
-+			container_of(soc, struct bcm63268_nand_soc, soc);
-+	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	if (val & (BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT)) {
-+		/* Ack interrupt */
-+		val &= ~BCM63268_NAND_STATUS_MASK;
-+		val |= BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT;
-+		brcmnand_writel(val, mmio);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static void bcm63268_nand_intc_set(struct brcmnand_soc *soc, bool en)
-+{
-+	struct bcm63268_nand_soc *priv =
-+			container_of(soc, struct bcm63268_nand_soc, soc);
-+	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	/* Don't ack any interrupts */
-+	val &= ~BCM63268_NAND_STATUS_MASK;
-+
-+	if (en)
-+		val |= BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT;
-+	else
-+		val &= ~(BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT);
-+
-+	brcmnand_writel(val, mmio);
-+}
-+
-+static void bcm63268_nand_remove(struct brcmnand_soc *soc)
-+{
-+	struct bcm63268_nand_soc *priv =
-+			container_of(soc, struct bcm63268_nand_soc, soc);
-+
-+	clk_disable_unprepare(priv->clk);
-+	clk_put(priv->clk);
-+}
-+
-+static int bcm63268_nand_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct bcm63268_nand_soc *priv;
-+	struct brcmnand_soc *soc;
-+	struct resource *res;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+	soc = &priv->soc;
-+
-+	res = platform_get_resource_byname(pdev,
-+		IORESOURCE_MEM, "nand-intr-base");
-+	if (!res)
-+		return -EINVAL;
-+
-+	priv->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	priv->clk = of_clk_get(dev->of_node, 0);
-+	if (IS_ERR(priv->clk))
-+		return PTR_ERR(priv->clk);
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret) {
-+		clk_put(priv->clk);
-+		return ret;
-+	}
-+
-+	soc->ctlrdy_ack = bcm63268_nand_intc_ack;
-+	soc->ctlrdy_set_enabled = bcm63268_nand_intc_set;
-+	soc->remove_device = bcm63268_nand_remove;
-+
-+	/* Disable and ack all interrupts  */
-+	brcmnand_writel(0, priv->base + BCM63268_NAND_INT);
-+	brcmnand_writel(BCM63268_NAND_STATUS_MASK,
-+			priv->base + BCM63268_NAND_INT);
-+
-+	ret = brcmnand_probe(pdev, soc);
-+	if (ret) {
-+		clk_disable_unprepare(priv->clk);
-+		clk_put(priv->clk);
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id bcm63268_nand_of_match[] = {
-+	{ .compatible = "brcm,bcm63268-nand" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, bcm63268_nand_of_match);
-+
-+static struct platform_driver bcm63268_nand_driver = {
-+	.probe			= bcm63268_nand_probe,
-+	.remove			= brcmnand_remove,
-+	.driver = {
-+		.name		= "bcm63268_nand",
-+		.pm		= &brcmnand_pm_ops,
-+		.of_match_table	= bcm63268_nand_of_match,
-+	}
-+};
-+module_platform_driver(bcm63268_nand_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Simon Arlott");
-+MODULE_DESCRIPTION("NAND driver for BCM63268");
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index 2c8f67f..7b4988f 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -2270,6 +2270,9 @@ int brcmnand_remove(struct platform_device *pdev)
- 	list_for_each_entry(host, &ctrl->host_list, node)
- 		nand_release(&host->mtd);
- 
-+	if (ctrl->soc && ctrl->soc->remove_device)
-+		ctrl->soc->remove_device(ctrl->soc);
-+
- 	dev_set_drvdata(&pdev->dev, NULL);
- 
- 	return 0;
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
-index ef5eabb..5c5dc2d 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.h
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.h
-@@ -24,6 +24,7 @@ struct brcmnand_soc {
- 	bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
- 	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
- 	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare);
-+	void (*remove_device)(struct brcmnand_soc *soc);
- };
- 
- static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc)
--- 
-2.1.4
-
--- 
-Simon Arlott
+> 
+> The existing two bindings use brcm,nand-<soc>, but I've changed this one.
+> 
+>  .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 33 ++++++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> index 4ff7128..2644d6c 100644
+> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> @@ -72,6 +72,13 @@ we define additional 'compatible' properties and associated register resources w
+>         and enable registers
+>       - reg-names: (required) "nand-int-base"
+>  
+> +   * "brcm,bcm63268-nand"
+> +     - compatible: should contain "brcm,bcm<soc>-nand", "brcm,bcm63268-nand"
+> +     - reg: (required) the 'NAND_INTR_BASE' register range, with combined status
+> +       and enable registers, and boot address registers
+> +     - reg-names: (required) "nand-intr-base"
+> +     - clock: (required) reference to the clock for NAND controller
+> +
+>     * "brcm,nand-iproc"
+>       - reg: (required) the "IDM" register range, for interrupt enable and APB
+>         bus access endianness configuration, and the "EXT" register range,
+> @@ -148,3 +155,29 @@ nand@f0442800 {
+>  		};
+>  	};
+>  };
+> +
+> +nand@0x10000200 {
+> +	compatible = "brcm,bcm63168-nand", "brcm,bcm63268-nand",
+> +		"brcm,brcmnand-v4.0", "brcm,brcmnand";
+> +	reg = <0x10000200 0x180>,
+> +	      <0x10000600 0x200>,
+> +	      <0x100000b0 0x10>;
+> +	reg-names = "nand", "nand-cache", "nand-intr-base";
+> +	interrupt-parent = <&periph_intc>;
+> +	interrupts = <50>;
+> +	clocks = <&periph_clk 20>;
+> +
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	nand0: nandcs@0 {
+> +		compatible = "brcm,nandcs";
+> +		reg = <0>;
+> +		nand-on-flash-bbt;
+> +		nand-ecc-strength = <1>;
+> +		nand-ecc-step-size = <512>;
+> +
+> +		#address-cells = <0>;
+> +		#size-cells = <0>;
+> +	};
+> +};
+> -- 
+> 2.1.4
+> 
+> -- 
+> Simon Arlott
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
