@@ -1,20 +1,23 @@
-Received: from szxga01-in.huawei.com ([58.251.152.64])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a0gM7-0001wt-S9
- for linux-mtd@lists.infradead.org; Mon, 23 Nov 2015 01:55:49 +0000
-Message-ID: <56527199.9080306@huawei.com>
-Date: Mon, 23 Nov 2015 09:53:29 +0800
-From: Sheng Yong <shengyong1@huawei.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-CC: <dwmw2@infradead.org>, <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [RFC PATCH 0/5] MTD: nandsim: simulate multiple chips
-References: <1438764954-36976-1-git-send-email-shengyong1@huawei.com>
- <20151120190630.GV64635@google.com>
-In-Reply-To: <20151120190630.GV64635@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1447884254-26336-3-git-send-email-Julia.Lawall@lip6.fr>
+References: <1447884254-26336-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1447884254-26336-3-git-send-email-Julia.Lawall@lip6.fr>
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Mon, 23 Nov 2015 15:26:18 +0800
+Message-ID: <CAGb2v64R1729v48dBZW15MuBjqJ4vqJGnFPEDgaGDN55mszseA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] mtd: nand: sunxi: add missing of_node_put
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: David Woodhouse <dwmw2@infradead.org>, kernel-janitors@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-mtd@lists.infradead.org,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Russell King - ARM Linux <linux@arm.linux.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Andrew Lunn <andrew@lunn.ch>,
+ Bjorn Helgaas <bhelgaas@google.com>, Jason Cooper <jason@lakedaemon.net>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,59 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Nov 19, 2015 at 6:04 AM, Julia Lawall <Julia.Lawall@lip6.fr> wrote:
+> for_each_child_of_node performs an of_node_get on each iteration, so
+> a break out of the loop requires an of_node_put.
+>
+> A simplified version of the semantic patch that fixes this problem is as
+> follows (http://coccinelle.lip6.fr):
+>
+> // <smpl>
+> @@
+> expression root,e;
+> local idexpression child;
+> @@
+>
+>  for_each_child_of_node(root, child) {
+>    ... when != of_node_put(child)
+>        when != e = child
+> (
+>    return child;
+> |
+> +  of_node_put(child);
+> ?  return ...;
+> )
+>    ...
+>  }
+> // </smpl>
+>
+> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
-
-On 11/21/2015 3:06 AM, Brian Norris wrote:
-> On Wed, Aug 05, 2015 at 08:55:49AM +0000, Sheng Yong wrote:
->> Hi, folks,
->>
->> These patchset add a new module parameter, numchips, to supports to
->> simulate NAND flash with multiple chips.
->>
->> This simulation helps to test and improve generic NAND driver on
->> multiple chips NAND flash.
-> 
-Hi, Brian
-
-Thanks for your reply.
-> I'm not quite sure I understand the real purpose of this feature. Seems
-> like you're just testing different corners of the internals of the NAND
-> framework, but not actually exposing anything new that an MTD user would
-> care about. Care to clarify?
-> 
-Sorry for I didn't put much explaination in the last mail. Test for multi-
-chips NAND flash detection is not the main purpose. The main purpose of doing
-this is that if nand_scan_ident() fails to read the first chip, it will not
-continue to try to setup the other chips, while if we make an appropriate
-partition strategy, the other chips may contains data we expect.
-
-So we think it may worth trying to skip the faulty chips and continue scanning
-the other chips and setup the partitions that are not on the faulty chips. We
-are not quiet sure if it's correct to do so, but we think simulating a multi-
-chip NAND is the first step.
-
-thanks,
-Sheng
-
-> Brian
-> 
->> MTD test (except for mtd_nandbiterr) are passed. 
->>
->> Thanks,
->> Sheng
->>
->> Sheng Yong (5):
->>   MTD: nandsim: add numchips module parameter
->>   MTD: nandsim: fix column address size of large page
->>   MTD: nandsim: fix page address size
->>   MTD: nandsim: add ADJUST_ROW() to find the real page number
->>   MTD: nandsim: extent outprint messages
->>
->>  drivers/mtd/nand/nandsim.c | 632 +++++++++++++++++++++++++++------------------
->>  1 file changed, 377 insertions(+), 255 deletions(-)
->>
->> -- 
->> 1.8.3.4
->>
-> 
-> 
+Acked-by: Chen-Yu Tsai <wens@csie.org>
