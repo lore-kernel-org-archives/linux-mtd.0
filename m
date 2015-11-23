@@ -1,25 +1,20 @@
-Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+Received: from galois.linutronix.de ([2001:470:1f0b:db:abcd:42:0:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a0vVH-00074t-6B
- for linux-mtd@lists.infradead.org; Mon, 23 Nov 2015 18:06:15 +0000
-Received: by oiww189 with SMTP id w189so135778283oiw.3
- for <linux-mtd@lists.infradead.org>; Mon, 23 Nov 2015 10:05:52 -0800 (PST)
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <1448295329-3087-1-git-send-email-saurabh.truth@gmail.com>
-References: <201511232333.kj6JWXch%fengguang.wu@intel.com>
- <1448295329-3087-1-git-send-email-saurabh.truth@gmail.com>
-Date: Mon, 23 Nov 2015 19:05:52 +0100
-Message-ID: <CAMuHMdUw-Da+5wX4vv7KAo408yvM+AaHCRSZOgfB0-J1fAHEcQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: use of_property_read_u8()
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Saurabh Sengar <saurabh.truth@gmail.com>
-Cc: =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>,
- David Woodhouse <dwmw2@infradead.org>,
+ id 1a0vYd-0000RG-T5
+ for linux-mtd@lists.infradead.org; Mon, 23 Nov 2015 18:09:45 +0000
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, tglx@linutronix.de,
+ Peter Zijlstra <peterz@infradead.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [RFC PATCH 1/2] mtd: nand: schedule() after releasing the device
+Date: Mon, 23 Nov 2015 19:09:06 +0100
+Message-Id: <1448302147-19272-2-git-send-email-bigeasy@linutronix.de>
+In-Reply-To: <1448302147-19272-1-git-send-email-bigeasy@linutronix.de>
+References: <1448302147-19272-1-git-send-email-bigeasy@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,76 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Saurab,
+I have here a live lock in UBI doing
+  ensure_wear_leveling() -> wear_leveling_worker() -> ubi_eba_copy_leb()
+  MOVE_RETRY -> schedule_erase() -> ensure_wear_leveling()
 
-On Mon, Nov 23, 2015 at 5:15 PM, Saurabh Sengar <saurabh.truth@gmail.com> wrote:
-> use of_property_read_u8() for u8 values
+on the same PEB over and over again. The reason for MOVE_RETRY is that
+the LEB-Lock owner is stucked in nand_get_device() and does not get the
+device lock. The PEB-lock owner is only scheduled on the CPU while the UBI
+thread is idle during erase or read while (again) owning the device-lock
+so the LEB-lock owner makes no progress.
 
-Why are you making this change?
-Have you tested this?
+To fix this live lock the patch adds a schedule() invocation if the wait
+queue for the nand-device lock is not empty so the waiter can grab the
+lock and make progress.
 
-drivers/of/base.c says
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ drivers/mtd/nand/nand_base.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-     * dts entry of array should be like:
-     *      property = /bits/ 8 <0x50 0x60 0x70>;
-
-but Documentation/devicetree/bindings/mtd/orion-nand.txt doesn't say
-anything about the "/bits/ 8" part, thus "normal" 32-bit cells are assumed.
-
-> Signed-off-by: Saurabh Sengar <saurabh.truth@gmail.com>
-> ---
-> v2 :  added the missed semi colon
->  drivers/mtd/nand/orion_nand.c | 22 +++++++---------------
->  1 file changed, 7 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> index ee83749..0cbebc5 100644
->
-> --- a/drivers/mtd/nand/orion_nand.c
-> +++ b/drivers/mtd/nand/orion_nand.c
-> @@ -83,7 +83,6 @@ static int __init orion_nand_probe(struct platform_device *pdev)
->         struct clk *clk;
->         void __iomem *io_base;
->         int ret = 0;
-> -       u32 val = 0;
->
->         nc = devm_kzalloc(&pdev->dev,
->                         sizeof(struct nand_chip) + sizeof(struct mtd_info),
-> @@ -103,22 +102,15 @@ static int __init orion_nand_probe(struct platform_device *pdev)
->                                         GFP_KERNEL);
->                 if (!board)
->                         return -ENOMEM;
-> -               if (!of_property_read_u32(pdev->dev.of_node, "cle", &val))
-> -                       board->cle = (u8)val;
-> -               else
-> -                       board->cle = 0;
-> -               if (!of_property_read_u32(pdev->dev.of_node, "ale", &val))
-> -                       board->ale = (u8)val;
-> -               else
-> +               of_property_read_u8(pdev->dev.of_node, "cle", &board->cle);
-> +
-> +               if (of_property_read_u8(pdev->dev.of_node, "ale", &board->ale))
->                         board->ale = 1;
-> -               if (!of_property_read_u32(pdev->dev.of_node,
-> -                                               "bank-width", &val))
-> -                       board->width = (u8)val * 8;
-> -               else
-> +               if (of_property_read_u8(pdev->dev.of_node,
-> +                                               "bank-width", &board->width))
->                         board->width = 8;
-> -               if (!of_property_read_u32(pdev->dev.of_node,
-> -                                               "chip-delay", &val))
-> -                       board->chip_delay = (u8)val;
-> +               of_property_read_u8(pdev->dev.of_node,
-> +                                       "chip-delay", &board->chip_delay);
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ece544efccc3..3dc2dff01802 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -133,13 +133,23 @@ static int check_offs_len(struct mtd_info *mtd,
+ static void nand_release_device(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd->priv;
++	bool do_sched = false;
+ 
+ 	/* Release the controller and the chip */
+ 	spin_lock(&chip->controller->lock);
+ 	chip->controller->active = NULL;
+ 	chip->state = FL_READY;
++	/*
++	 * Check if we have a waiter. If so we will schedule() right away so the
++	 * waiter can grab the device while it is released and not after _this_
++	 * caller gained the device (again) without leaving the CPU in between.
++	 */
++	if (waitqueue_active(&chip->controller->wq))
++		do_sched = true;
+ 	wake_up(&chip->controller->wq);
+ 	spin_unlock(&chip->controller->lock);
++	if (do_sched)
++		schedule();
+ }
+ 
+ /**
+-- 
+2.6.2
