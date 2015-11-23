@@ -1,18 +1,29 @@
-Date: Mon, 23 Nov 2015 19:18:11 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, tglx@linutronix.de
-Subject: Re: [RFC PATCH 1/2] mtd: nand: schedule() after releasing the device
-Message-ID: <20151123181811.GO17308@twins.programming.kicks-ass.net>
-References: <1448302147-19272-1-git-send-email-bigeasy@linutronix.de>
- <1448302147-19272-2-git-send-email-bigeasy@linutronix.de>
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a0vme-00010V-CL
+ for linux-mtd@lists.infradead.org; Mon, 23 Nov 2015 18:24:13 +0000
+Received: by pacej9 with SMTP id ej9so198512498pac.2
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Nov 2015 10:23:51 -0800 (PST)
+Message-ID: <56535977.9050201@gmail.com>
+Date: Mon, 23 Nov 2015 10:22:47 -0800
+From: Florian Fainelli <f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1448302147-19272-2-git-send-email-bigeasy@linutronix.de>
+To: Simon Arlott <simon@fire.lp0.eu>, Rob Herring <robh@kernel.org>
+CC: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Jonas Gorski <jogo@openwrt.org>
+Subject: Re: [PATCH (v4) 2/2] mtd: brcmnand: Add support for the BCM63268
+References: <56506D55.3000907@simon.arlott.org.uk>
+ <20151122215945.GA5930@rob-hp-laptop> <56523E85.905@simon.arlott.org.uk>
+ <56523EFF.9050502@simon.arlott.org.uk>
+In-Reply-To: <56523EFF.9050502@simon.arlott.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +33,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 23, 2015 at 07:09:06PM +0100, Sebastian Andrzej Siewior wrote:
->  	/* Release the controller and the chip */
->  	spin_lock(&chip->controller->lock);
->  	chip->controller->active = NULL;
->  	chip->state = FL_READY;
-> +	/*
-> +	 * Check if we have a waiter. If so we will schedule() right away so the
-> +	 * waiter can grab the device while it is released and not after _this_
-> +	 * caller gained the device (again) without leaving the CPU in between.
-> +	 */
-> +	if (waitqueue_active(&chip->controller->wq))
-> +		do_sched = true;
->  	wake_up(&chip->controller->wq);
->  	spin_unlock(&chip->controller->lock);
-> +	if (do_sched)
-> +		schedule();
+On 22/11/15 14:17, Simon Arlott wrote:
+> The BCM63268 has a NAND interrupt register with combined status and enable
+> registers. It also has a clock for the NAND controller that needs to be
+> enabled.
+> 
+> Set up the device by enabling the clock, disabling and acking all
+> interrupts, then handle the CTRL_READY interrupt.
+> 
+> Add a "device_remove" function to struct brcmnand_soc so that the clock
+> can be disabled when the device is removed.
+> 
+> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+> ---
+> On 22/11/15 21:59, Rob Herring wrote:
+>>>>> + * "brcm,nand-bcm63268"
+>>>>> + - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
+>>>
+>>> vendor,<soc>-device is preferred.
+> 
+> The existing two bindings use brcm,nand-<soc>, but I've changed this one.
 
-I've not looked at the code, but this _cannot_ be a correct fix.
+Could we stick with the existing binding naming convention of using:
 
-schedule() can be a no-op, that is, current can be the most eligible
-task to run and be selected again.
+brcm,nand-<soc> just so automated tools or other things can match this
+one too, and +1 for consistency?
 
-(with FIFO and this the highest prio task in the system that is a
-guarantee)
-
-I'll try and have an actual look at the problem description later.
+Other than, that, same comment as Jonas, why do we we need the
+device_remove callback to be called from the main driver down to this one?
+-- 
+Florian
