@@ -1,29 +1,19 @@
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a0d39-0001p1-LV
- for linux-mtd@lists.infradead.org; Sun, 22 Nov 2015 22:24:00 +0000
-Date: Sun, 22 Nov 2015 16:23:34 -0600
-From: Rob Herring <robh@kernel.org>
-To: Simon Arlott <simon@fire.lp0.eu>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Florian Fainelli <f.fainelli@gmail.com>,
- Jonas Gorski <jogo@openwrt.org>
-Subject: Re: [PATCH (v4) 1/2] mtd: brcmnand: Add brcm,bcm63268-nand device
- tree binding
-Message-ID: <20151122222334.GA18996@rob-hp-laptop>
-References: <56506D55.3000907@simon.arlott.org.uk>
- <20151122215945.GA5930@rob-hp-laptop>
- <56523E85.905@simon.arlott.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56523E85.905@simon.arlott.org.uk>
+Received: from mail-qg0-x22d.google.com ([2607:f8b0:400d:c04::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a0fit-0003SU-1M
+ for linux-mtd@lists.infradead.org; Mon, 23 Nov 2015 01:15:16 +0000
+Received: by qgec40 with SMTP id c40so106360667qge.2
+ for <linux-mtd@lists.infradead.org>; Sun, 22 Nov 2015 17:14:53 -0800 (PST)
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Stas Sergeev <stsp@list.ru>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH] mtd: spi-nor: wait until lock/unlock operations are ready
+Date: Sun, 22 Nov 2015 22:09:57 -0300
+Message-Id: <1448240997-26969-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,82 +23,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 22, 2015 at 10:15:33PM +0000, Simon Arlott wrote:
-> Add device tree binding for NAND on the BCM63268.
-> 
-> The BCM63268 has a NAND interrupt register with combined status and enable
-> registers.
-> 
-> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+On Micron and Numonyx devices, the status register write command
+(WRSR), raises a work-in-progress bit (WIP) on the status register.
+The datasheets for these devices specify that while the status
+register write is in progress, the status register WIP bit can still
+be read to check the end of the operation.
 
-Acked-by: Rob Herring <robh@kernel.org>
+This commit adds a wait_till_ready call on lock/unlock operations,
+only for these manufacturers. This is needed to prevent applications
+from issuing erase or program operations before the unlock operation
+is completed.
 
-> ---
-> On 22/11/15 21:59, Rob Herring wrote:
-> >> + * "brcm,nand-bcm63268"
-> >> + - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
-> >
-> > vendor,<soc>-device is preferred.
-> 
-> The existing two bindings use brcm,nand-<soc>, but I've changed this one.
-> 
->  .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 33 ++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> index 4ff7128..2644d6c 100644
-> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> @@ -72,6 +72,13 @@ we define additional 'compatible' properties and associated register resources w
->         and enable registers
->       - reg-names: (required) "nand-int-base"
->  
-> +   * "brcm,bcm63268-nand"
-> +     - compatible: should contain "brcm,bcm<soc>-nand", "brcm,bcm63268-nand"
-> +     - reg: (required) the 'NAND_INTR_BASE' register range, with combined status
-> +       and enable registers, and boot address registers
-> +     - reg-names: (required) "nand-intr-base"
-> +     - clock: (required) reference to the clock for NAND controller
-> +
->     * "brcm,nand-iproc"
->       - reg: (required) the "IDM" register range, for interrupt enable and APB
->         bus access endianness configuration, and the "EXT" register range,
-> @@ -148,3 +155,29 @@ nand@f0442800 {
->  		};
->  	};
->  };
-> +
-> +nand@0x10000200 {
-> +	compatible = "brcm,bcm63168-nand", "brcm,bcm63268-nand",
-> +		"brcm,brcmnand-v4.0", "brcm,brcmnand";
-> +	reg = <0x10000200 0x180>,
-> +	      <0x10000600 0x200>,
-> +	      <0x100000b0 0x10>;
-> +	reg-names = "nand", "nand-cache", "nand-intr-base";
-> +	interrupt-parent = <&periph_intc>;
-> +	interrupts = <50>;
-> +	clocks = <&periph_clk 20>;
-> +
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	nand0: nandcs@0 {
-> +		compatible = "brcm,nandcs";
-> +		reg = <0>;
-> +		nand-on-flash-bbt;
-> +		nand-ecc-strength = <1>;
-> +		nand-ecc-step-size = <512>;
-> +
-> +		#address-cells = <0>;
-> +		#size-cells = <0>;
-> +	};
-> +};
-> -- 
-> 2.1.4
-> 
-> -- 
-> Simon Arlott
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Reported-by: Stas Sergeev <stsp@list.ru>
+Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index e9c26c0e2258..acc9b05e02be 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -485,6 +485,7 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	u8 status_old, status_new;
+ 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+ 	u8 shift = ffs(mask) - 1, pow, val;
++	int ret;
+ 
+ 	status_old = read_sr(nor);
+ 
+@@ -521,7 +522,13 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 		return -EINVAL;
+ 
+ 	write_enable(nor);
+-	return write_sr(nor, status_new);
++	ret = write_sr(nor, status_new);
++	if (ret)
++		return ret;
++	ret = spi_nor_wait_till_ready(nor);
++	if (ret)
++		return ret;
++	return 0;
+ }
+ 
+ /*
+@@ -535,6 +542,7 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	uint8_t status_old, status_new;
+ 	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+ 	u8 shift = ffs(mask) - 1, pow, val;
++	int ret;
+ 
+ 	status_old = read_sr(nor);
+ 
+@@ -569,7 +577,13 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 		return -EINVAL;
+ 
+ 	write_enable(nor);
+-	return write_sr(nor, status_new);
++	ret = write_sr(nor, status_new);
++	if (ret)
++		return ret;
++	ret = spi_nor_wait_till_ready(nor);
++	if (ret)
++		return ret;
++	return 0;
+ }
+ 
+ /*
+-- 
+2.6.2
