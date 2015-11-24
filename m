@@ -1,15 +1,26 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: cfi: enforce valid geometry configuration
-Date: Mon, 23 Nov 2015 23:12:40 +0100
-Message-ID: <4492128.vrqmf1niG3@wuerfel>
-In-Reply-To: <3747078.dk5V5gxuXa@wuerfel>
-References: <3747078.dk5V5gxuXa@wuerfel>
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a18iX-0003a3-Uy
+ for linux-mtd@lists.infradead.org; Tue, 24 Nov 2015 08:12:51 +0000
+Subject: Re: [PATCH (v4) 2/2] mtd: brcmnand: Add support for the BCM63268
+To: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh@kernel.org>
+References: <56506D55.3000907@simon.arlott.org.uk>
+ <20151122215945.GA5930@rob-hp-laptop> <56523E85.905@simon.arlott.org.uk>
+ <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Jonas Gorski <jogo@openwrt.org>
+From: Simon Arlott <simon@fire.lp0.eu>
+Message-ID: <56541BD3.4070202@simon.arlott.org.uk>
+Date: Tue, 24 Nov 2015 08:12:03 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <56535977.9050201@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,19 +30,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 23 November 2015 14:39:33 Arnd Bergmann wrote:
-> MTD allows compile-time configuration of the possible CFI geometry
-> settings that are allowed by the kernel, but that includes a couple of
-> invalid configurations, where no bank width or no interleave setting
-> is allowed. These are then caught with a compile-time warning:
+On 23/11/15 18:22, Florian Fainelli wrote:
+> On 22/11/15 14:17, Simon Arlott wrote:
+>> The BCM63268 has a NAND interrupt register with combined status and enable
+>> registers. It also has a clock for the NAND controller that needs to be
+>> enabled.
+>> 
+>> Set up the device by enabling the clock, disabling and acking all
+>> interrupts, then handle the CTRL_READY interrupt.
+>> 
+>> Add a "device_remove" function to struct brcmnand_soc so that the clock
+>> can be disabled when the device is removed.
+>> 
+>> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+>> ---
+>> On 22/11/15 21:59, Rob Herring wrote:
+>>>>>> + * "brcm,nand-bcm63268"
+>>>>>> + - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
+>>>>
+>>>> vendor,<soc>-device is preferred.
+>> 
+>> The existing two bindings use brcm,nand-<soc>, but I've changed this one.
 > 
-> include/linux/mtd/cfi.h:76:2: warning: #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work.
-> include/linux/mtd/map.h:145:2: warning: #warning "No CONFIG_MTD_MAP_BANK_WIDTH_xx selected. No NOR chip support can work"
+> Could we stick with the existing binding naming convention of using:
 > 
+> brcm,nand-<soc> just so automated tools or other things can match this
+> one too, and +1 for consistency?
 
-I'm actually still getting the warnings for any file that includes <linux/mtd/map.h>
-while CONFIG_MTD is disabled. I have a fix now that I'm testing overnight
-and plan to post tomorrow, then we can decide whether it should be part of
-the same patch, or we should have two separate patches.
+I could submit another patch renaming the existing bindings to
+brcm,<soc>-nand, and add that to the drivers? Then they'd be consistent.
 
-	Arnd
+> Other than, that, same comment as Jonas, why do we we need the
+> device_remove callback to be called from the main driver down to this one?
+
+I'll add a "struct brcmnand_soc *brcmnand_get_socdata(struct device *)"
+instead so that I can access the soc data before calling brcmnand_remove.
+
+-- 
+Simon Arlott
