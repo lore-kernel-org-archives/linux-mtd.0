@@ -1,26 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a19iH-0006e1-O7
- for linux-mtd@lists.infradead.org; Tue, 24 Nov 2015 09:17:05 +0000
+Received: from mga14.intel.com ([192.55.52.115])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a1DBD-0003zG-Fw
+ for linux-mtd@lists.infradead.org; Tue, 24 Nov 2015 12:58:44 +0000
+Message-ID: <1448369897.23789.47.camel@gmail.com>
 Subject: Re: [RFC PATCH 2/2] mtd: ubi: wl: avoid erasing a PEB which is empty
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
 To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
  linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>
+Date: Tue, 24 Nov 2015 14:58:17 +0200
+In-Reply-To: <1448302147-19272-3-git-send-email-bigeasy@linutronix.de>
 References: <1448302147-19272-1-git-send-email-bigeasy@linutronix.de>
  <1448302147-19272-3-git-send-email-bigeasy@linutronix.de>
- <56538568.2040800@nod.at> <56541F3B.3070009@linutronix.de>
- <5654225A.9070702@nod.at> <56542308.1020409@linutronix.de>
- <565427AF.8040906@nod.at> <565428C4.8030304@linutronix.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, tglx@linutronix.de,
- Peter Zijlstra <peterz@infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56542ADE.6090200@nod.at>
-Date: Tue, 24 Nov 2015 10:16:14 +0100
-MIME-Version: 1.0
-In-Reply-To: <565428C4.8030304@linutronix.de>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 24.11.2015 um 10:07 schrieb Sebastian Andrzej Siewior:
-> On 11/24/2015 10:02 AM, Richard Weinberger wrote:
->> Am 24.11.2015 um 09:42 schrieb Sebastian Andrzej Siewior:
->>> On 11/24/2015 09:39 AM, Richard Weinberger wrote:
->>>>>>> +	} else {
->>>>>>> +		err = do_sync_erase(ubi, e2, vol_id, lnum, torture);
->>>>>>> +		if (err) {
->>>>>>> +			wl_entry_destroy(ubi, e2);
->>>>>>
->>>>>> Why that? The erase_worker will free e2 if it encounters
->>>>>> a fatal error and gives up this PEB. You're introducing a double free.
->>>>>
->>>>> Hmmm. That is real bad error handling you have there. So you invoke
->>>>> do_sync_erase(), the kmalloc() fails and how exactly you free e2 here?
->>>>
->>>> Why do you want to free e2? We free an erase entry only if we give
->>>> it up. wear leveling entries are allocated at init time and destroyed
->>>> when you detach UBI.
->>>
->>> The reference to it in the RB-tree (free) was removed. Is there another
->>> reference to it?
->>
->> UBI supports only single references.
->> Everything else would be a bug.
-> 
-> So if there is no reference to e2 which was just removed from the
-> RB-tree free and do_sync_erase() can't kmalloc() then we leak e2,
-> correct?
+On Mon, 2015-11-23 at 19:09 +0100, Sebastian Andrzej Siewior wrote:
+> wear_leveling_worker() currently unconditionally puts a PEB on erase
+> in
+> the error case even it just been taken from the free_list and never
+> used.
+> In case the PEB was never used it can be put back on the free list
+> saving an erase cycle.
 
-Yes, you are right. That definitely needs improvement.
+Did you think about putting LEBs like that to the protection queue
+instead of playing tricks with scheduler?
 
-A possible solution would be iterating over ubi->lookuptbl upon
-detach time and call wl_entry_destroy() on every non-NULL entry.
+The protection queue is there in order to protect eraseblocks from the
+wear-leveling subsystem (not the best choice of words, but terminology
+could be improved separately)
 
-...or rework do_sync_erase(), currently it calls the erase worker directly.
-The erase worker destroys a failed wl entry upon failure. But from the return code
-of do_sync_erase() we cannot know whether the erase worker destroyed it already.
+And this is what you need - you want the wear-leveling subsystem to
+leave the eraseblock alone for some time, right?
 
-Thanks,
-//richard
+The protection queue uses the erase cycles counts instead of the actual
+time, but this seems OK for the situation you described.
+
+Just to remind why this protection queue exists - when the WL subsystem
+gives an eraseblock to the user, this may be an eraseblock with a high
+erase counter, and it may be a candidate for being moved, the WL
+subsystem just did not have a chance to do this yet. But if we give the
+eraseblock to the user, the user will probably write something there
+soon, and we do not want the WL subsystem to initiate data relocation
+while the user is writing the data there. Instead, we want to wait a
+little, and then move the data in background without interfering with
+the user.
+
+Back to my idea - what if you add the MOVE_RETRY eraseblocks to the
+protection queue. May be not to the tail, may be to the head.
