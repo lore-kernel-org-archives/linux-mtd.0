@@ -1,30 +1,30 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1IYb-0006ID-KD
- for linux-mtd@lists.infradead.org; Tue, 24 Nov 2015 18:43:14 +0000
-Received: by padhx2 with SMTP id hx2so30125438pad.1
- for <linux-mtd@lists.infradead.org>; Tue, 24 Nov 2015 10:42:52 -0800 (PST)
-Message-ID: <5654AF69.7040901@gmail.com>
-Date: Tue, 24 Nov 2015 10:41:45 -0800
-From: Florian Fainelli <f.fainelli@gmail.com>
-MIME-Version: 1.0
-To: Simon Arlott <simon@fire.lp0.eu>, Rob Herring <robh@kernel.org>
-CC: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Jonas Gorski <jogo@openwrt.org>
-Subject: Re: [PATCH (v4) 2/2] mtd: brcmnand: Add support for the BCM63268
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a1K4R-0002NU-6T
+ for linux-mtd@lists.infradead.org; Tue, 24 Nov 2015 20:20:12 +0000
+Message-ID: <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
+In-Reply-To: <5654AF69.7040901@gmail.com>
 References: <56506D55.3000907@simon.arlott.org.uk>
- <20151122215945.GA5930@rob-hp-laptop> <56523E85.905@simon.arlott.org.uk>
+ <20151122215945.GA5930@rob-hp-laptop>
+ <56523E85.905@simon.arlott.org.uk>
  <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
- <56541BD3.4070202@simon.arlott.org.uk>
-In-Reply-To: <56541BD3.4070202@simon.arlott.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+ <56541BD3.4070202@simon.arlott.org.uk> <5654AF69.7040901@gmail.com>
+Date: Tue, 24 Nov 2015 20:19:37 -0000
+Subject: [PATCH (v6) 1/2] mtd: brcmnand: Add brcm,bcm63268-nand device tree
+ binding
+From: "Simon Arlott" <simon@fire.lp0.eu>
+To: "Florian Fainelli" <f.fainelli@gmail.com>
+Cc: "Rob Herring" <robh@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "Brian Norris" <computersforpeace@gmail.com>,
+ "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+ "David Woodhouse" <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ "Pawel Moll" <pawel.moll@arm.com>, "Mark Rutland" <mark.rutland@arm.com>,
+ "Ian Campbell" <ijc+devicetree@hellion.org.uk>,
+ "Kumar Gala" <galak@codeaurora.org>, "Jonas Gorski" <jogo@openwrt.org>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,51 +34,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 24/11/15 00:12, Simon Arlott wrote:
-> On 23/11/15 18:22, Florian Fainelli wrote:
->> On 22/11/15 14:17, Simon Arlott wrote:
->>> The BCM63268 has a NAND interrupt register with combined status and enable
->>> registers. It also has a clock for the NAND controller that needs to be
->>> enabled.
->>>
->>> Set up the device by enabling the clock, disabling and acking all
->>> interrupts, then handle the CTRL_READY interrupt.
->>>
->>> Add a "device_remove" function to struct brcmnand_soc so that the clock
->>> can be disabled when the device is removed.
->>>
->>> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
->>> ---
->>> On 22/11/15 21:59, Rob Herring wrote:
->>>>>>> + * "brcm,nand-bcm63268"
->>>>>>> + - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
->>>>>
->>>>> vendor,<soc>-device is preferred.
->>>
->>> The existing two bindings use brcm,nand-<soc>, but I've changed this one.
->>
->> Could we stick with the existing binding naming convention of using:
->>
->> brcm,nand-<soc> just so automated tools or other things can match this
->> one too, and +1 for consistency?
-> 
-> I could submit another patch renaming the existing bindings to
-> brcm,<soc>-nand, and add that to the drivers? Then they'd be consistent.
+Add device tree binding for NAND on the BCM63268.
 
-No, let's not create unnecessary churn because of a minor mistake. So,
-yes we *should* have used brcm,<soc>-nand in the first place, but now
-that there are DTSes out there using "brcm,nand-<soc>" there is not
-really any point in doing this, so please update your patches so they
-match the existing convention.
+The BCM63268 has a NAND interrupt register with combined status and enable
+registers.
 
-> 
->> Other than, that, same comment as Jonas, why do we we need the
->> device_remove callback to be called from the main driver down to this one?
-> 
-> I'll add a "struct brcmnand_soc *brcmnand_get_socdata(struct device *)"
-> instead so that I can access the soc data before calling brcmnand_remove.
-> 
+Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+---
+ .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 35 ++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+index 4ff7128..f2a71c8 100644
+--- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
++++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+@@ -72,6 +72,14 @@ we define additional 'compatible' properties and associated register resources w
+        and enable registers
+      - reg-names: (required) "nand-int-base"
+
++   * "brcm,nand-bcm63268"
++     - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
++     - reg: (required) the 'NAND_INTR_BASE' register range, with combined status
++       and enable registers, and boot address registers
++     - reg-names: (required) "nand-intr-base"
++     - clock: (required) reference to the clock for the NAND controller
++     - clock-names: (required) "nand"
++
+    * "brcm,nand-iproc"
+      - reg: (required) the "IDM" register range, for interrupt enable and APB
+        bus access endianness configuration, and the "EXT" register range,
+@@ -148,3 +156,30 @@ nand@f0442800 {
+ 		};
+ 	};
+ };
++
++nand@10000200 {
++	compatible = "brcm,nand-bcm63168", "brcm,nand-bcm63268",
++		"brcm,brcmnand-v4.0", "brcm,brcmnand";
++	reg = <0x10000200 0x180>,
++	      <0x10000600 0x200>,
++	      <0x100000b0 0x10>;
++	reg-names = "nand", "nand-cache", "nand-intr-base";
++	interrupt-parent = <&periph_intc>;
++	interrupts = <50>;
++	clocks = <&periph_clk 20>;
++	clock-names = "nand";
++
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	nand0: nandcs@0 {
++		compatible = "brcm,nandcs";
++		reg = <0>;
++		nand-on-flash-bbt;
++		nand-ecc-strength = <1>;
++		nand-ecc-step-size = <512>;
++
++		#address-cells = <0>;
++		#size-cells = <0>;
++	};
++};
+-- 
+2.1.4
 
 -- 
-Florian
+Simon Arlott
