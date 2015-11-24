@@ -1,26 +1,23 @@
-Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a18iX-0003a3-Uy
- for linux-mtd@lists.infradead.org; Tue, 24 Nov 2015 08:12:51 +0000
-Subject: Re: [PATCH (v4) 2/2] mtd: brcmnand: Add support for the BCM63268
-To: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh@kernel.org>
-References: <56506D55.3000907@simon.arlott.org.uk>
- <20151122215945.GA5930@rob-hp-laptop> <56523E85.905@simon.arlott.org.uk>
- <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+Received: from galois.linutronix.de ([2001:470:1f0b:db:abcd:42:0:1])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a18wE-0003hk-9h
+ for linux-mtd@lists.infradead.org; Tue, 24 Nov 2015 08:27:00 +0000
+Subject: Re: [RFC PATCH 2/2] mtd: ubi: wl: avoid erasing a PEB which is empty
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+References: <1448302147-19272-1-git-send-email-bigeasy@linutronix.de>
+ <1448302147-19272-3-git-send-email-bigeasy@linutronix.de>
+ <56538568.2040800@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Jonas Gorski <jogo@openwrt.org>
-From: Simon Arlott <simon@fire.lp0.eu>
-Message-ID: <56541BD3.4070202@simon.arlott.org.uk>
-Date: Tue, 24 Nov 2015 08:12:03 +0000
+ Artem Bityutskiy <dedekind1@gmail.com>, tglx@linutronix.de,
+ Peter Zijlstra <peterz@infradead.org>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Message-ID: <56541F3B.3070009@linutronix.de>
+Date: Tue, 24 Nov 2015 09:26:35 +0100
 MIME-Version: 1.0
-In-Reply-To: <56535977.9050201@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <56538568.2040800@nod.at>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,41 +27,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 23/11/15 18:22, Florian Fainelli wrote:
-> On 22/11/15 14:17, Simon Arlott wrote:
->> The BCM63268 has a NAND interrupt register with combined status and enable
->> registers. It also has a clock for the NAND controller that needs to be
->> enabled.
->> 
->> Set up the device by enabling the clock, disabling and acking all
->> interrupts, then handle the CTRL_READY interrupt.
->> 
->> Add a "device_remove" function to struct brcmnand_soc so that the clock
->> can be disabled when the device is removed.
->> 
->> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
->> ---
->> On 22/11/15 21:59, Rob Herring wrote:
->>>>>> + * "brcm,nand-bcm63268"
->>>>>> + - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
->>>>
->>>> vendor,<soc>-device is preferred.
->> 
->> The existing two bindings use brcm,nand-<soc>, but I've changed this one.
+On 11/23/2015 10:30 PM, Richard Weinberger wrote:
+>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+>> index eb4489f9082f..709ca27e103c 100644
+>> --- a/drivers/mtd/ubi/wl.c
+>> +++ b/drivers/mtd/ubi/wl.c
+>> @@ -652,6 +653,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+>>  #endif
+>>  	struct ubi_wl_entry *e1, *e2;
+>>  	struct ubi_vid_hdr *vid_hdr;
+>> +	int to_leb_clean = 0;
 > 
-> Could we stick with the existing binding naming convention of using:
+> Can we please rename this variable?
+> I know it means "the `to` LEB is clean". But for everybody else this reads as "I'm going to clean a LEB". ;)
+
+such a shame that you can't make files RO. Any suggestions? dst_clean ?
+
+>>  	kfree(wrk);
+>>  	if (shutdown)
+>> @@ -900,15 +906,26 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+>>  		wl_tree_add(e1, &ubi->scrub);
+>>  	else
+>>  		wl_tree_add(e1, &ubi->used);
+>> +	if (to_leb_clean) {
+>> +		wl_tree_add(e2, &ubi->free);
+>> +		ubi->free_count++;
+>> +	}
+>> +
+>>  	ubi_assert(!ubi->move_to_put);
+>>  	ubi->move_from = ubi->move_to = NULL;
+>>  	ubi->wl_scheduled = 0;
+>>  	spin_unlock(&ubi->wl_lock);
+>>  
+>>  	ubi_free_vid_hdr(ubi, vid_hdr);
+>> -	err = do_sync_erase(ubi, e2, vol_id, lnum, torture);
+>> -	if (err)
+>> -		goto out_ro;
+>> +	if (to_leb_clean) {
+>> +		ensure_wear_leveling(ubi, 0);
 > 
-> brcm,nand-<soc> just so automated tools or other things can match this
-> one too, and +1 for consistency?
+> Why are you rescheduling wear leveling?
 
-I could submit another patch renaming the existing bindings to
-brcm,<soc>-nand, and add that to the drivers? Then they'd be consistent.
+Because we had it pending and we didn't do anything. If I don't
+schedule it would be deferred until another LEB is going to be deleted.
+Before the change it happens after do_sync_erase() work job completes
+but now we add it back to the free list.
 
-> Other than, that, same comment as Jonas, why do we we need the
-> device_remove callback to be called from the main driver down to this one?
+> And the nested variable has to be set to no-zero as you're calling it from a UBI worker.
+Ah, okay. I've been looking at it and got wrong then. As I said in my
+cover mail, this was forwarded ported.
 
-I'll add a "struct brcmnand_soc *brcmnand_get_socdata(struct device *)"
-instead so that I can access the soc data before calling brcmnand_remove.
+> 
+>> +	} else {
+>> +		err = do_sync_erase(ubi, e2, vol_id, lnum, torture);
+>> +		if (err) {
+>> +			wl_entry_destroy(ubi, e2);
+> 
+> Why that? The erase_worker will free e2 if it encounters
+> a fatal error and gives up this PEB. You're introducing a double free.
 
--- 
-Simon Arlott
+Hmmm. That is real bad error handling you have there. So you invoke
+do_sync_erase(), the kmalloc() fails and how exactly you free e2 here?
+You don't so I did what I did. But then if this succeeds but
+erase_worker() fails then we have a double free here. Indeed.
+
+> I think you have copy&pasted from:
+>         err = do_sync_erase(ubi, e1, vol_id, lnum, 0);
+>         if (err) {
+>                 if (e2)
+>                         wl_entry_destroy(ubi, e2);
+>                 goto out_ro;
+>         }
+> 
+> ...which looks wrong too. I'll double check tomorrow with a fresh brain.
+> 
+> Thanks,
+> //richard
+
+Sebastian
