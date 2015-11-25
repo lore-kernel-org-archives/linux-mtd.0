@@ -1,20 +1,20 @@
-Received: from mail-by2on0148.outbound.protection.outlook.com
- ([207.46.100.148] helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-by2on0116.outbound.protection.outlook.com
+ ([207.46.100.116] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1fj2-0003FC-He
- for linux-mtd@lists.infradead.org; Wed, 25 Nov 2015 19:27:33 +0000
-Date: Wed, 25 Nov 2015 13:14:56 -0600
+ id 1a1fkV-0004Og-Ob
+ for linux-mtd@lists.infradead.org; Wed, 25 Nov 2015 19:29:08 +0000
+Date: Wed, 25 Nov 2015 13:16:28 -0600
 From: Han Xu <han.xu@freescale.com>
 To: Yuan Yao <yao.yuan@freescale.com>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: spi-nor: fsl-quadspi: add support for ls1021a
-Message-ID: <20151125191456.GB2959@chopperman.am.freescale.net>
-References: <1447838103-6034-1-git-send-email-yao.yuan@freescale.com>
+Subject: Re: [PATCH 4/5] mtd: spi-nor: fsl-quadspi: add support for layerscape
+Message-ID: <20151125191627.GC2959@chopperman.am.freescale.net>
+References: <1447838342-9932-1-git-send-email-yao.yuan@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1447838103-6034-1-git-send-email-yao.yuan@freescale.com>
+In-Reply-To: <1447838342-9932-1-git-send-email-yao.yuan@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 18, 2015 at 05:15:03PM +0800, Yuan Yao wrote:
-> LS1021a also support Freescale Quad SPI controller.
-> Add fsl-quadspi support for ls1021a chip and make SPI_FSL_QUADSPI
-> selectable for LS1021A SOC hardwares.
+On Wed, Nov 18, 2015 at 05:19:02PM +0800, Yuan Yao wrote:
+> LS1043a and LS2080A in the Layerscape family also support Freescale Quad
+> SPI, make Quad SPI selectable for these hardwares.
 > 
 > Signed-off-by: Yuan Yao <yao.yuan@freescale.com>
 > ---
->  drivers/mtd/spi-nor/Kconfig       |  2 +-
->  drivers/mtd/spi-nor/fsl-quadspi.c | 10 ++++++++++
->  2 files changed, 11 insertions(+), 1 deletion(-)
+>  drivers/mtd/spi-nor/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index 2fe2a7e..1368221 100644
+> index 1368221..9373141 100644
 > --- a/drivers/mtd/spi-nor/Kconfig
 > +++ b/drivers/mtd/spi-nor/Kconfig
 > @@ -23,7 +23,7 @@ config MTD_SPI_NOR_USE_4K_SECTORS
 >  
 >  config SPI_FSL_QUADSPI
 >  	tristate "Freescale Quad SPI controller"
-> -	depends on ARCH_MXC || COMPILE_TEST
-> +	depends on ARCH_MXC || SOC_LS1021A || COMPILE_TEST
+> -	depends on ARCH_MXC || SOC_LS1021A || COMPILE_TEST
+> +	depends on ARCH_MXC || SOC_LS1021A || ARCH_LAYERSCAPE || COMPILE_TEST
+
+So will you add new compatible entries in qspi driver for these two platforms?
+
 >  	depends on HAS_IOMEM
 >  	help
 >  	  This enables support for the Quad SPI controller in master mode.
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 0ce7768..03a589d 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -213,6 +213,7 @@ enum fsl_qspi_devtype {
->  	FSL_QUADSPI_IMX6SX,
->  	FSL_QUADSPI_IMX7D,
->  	FSL_QUADSPI_IMX6UL,
-> +	FSL_QUADSPI_LS1021A,
->  };
->  
->  struct fsl_qspi_devtype_data {
-> @@ -258,6 +259,14 @@ static struct fsl_qspi_devtype_data imx6ul_data = {
->  		       | QUADSPI_QUIRK_4X_INT_CLK,
->  };
->  
-> +static struct fsl_qspi_devtype_data ls1021a_data = {
-> +	.devtype = FSL_QUADSPI_LS1021A,
-> +	.rxfifo = 128,
-> +	.txfifo = 64,
-> +	.ahb_buf_size = 1024,
-> +	.driver_data = 0,
-> +};
-> +
->  #define FSL_QSPI_MAX_CHIP	4
->  struct fsl_qspi {
->  	struct spi_nor nor[FSL_QSPI_MAX_CHIP];
-> @@ -812,6 +821,7 @@ static const struct of_device_id fsl_qspi_dt_ids[] = {
->  	{ .compatible = "fsl,imx6sx-qspi", .data = (void *)&imx6sx_data, },
->  	{ .compatible = "fsl,imx7d-qspi", .data = (void *)&imx7d_data, },
->  	{ .compatible = "fsl,imx6ul-qspi", .data = (void *)&imx6ul_data, },
-> +	{ .compatible = "fsl,ls1021a-qspi", .data = (void *)&ls1021a_data, },
-
-Same comments, document this compatible.
-
->  	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, fsl_qspi_dt_ids);
 > -- 
 > 2.1.0.27.g96db324
 > 
 
-Acked-by: Han xu <han.xu@freescale.com>
 -- 
 Best Regards,
 
