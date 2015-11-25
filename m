@@ -1,20 +1,34 @@
-Received: from mail-by2on0116.outbound.protection.outlook.com
- ([207.46.100.116] helo=na01-by2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1fkV-0004Og-Ob
- for linux-mtd@lists.infradead.org; Wed, 25 Nov 2015 19:29:08 +0000
-Date: Wed, 25 Nov 2015 13:16:28 -0600
-From: Han Xu <han.xu@freescale.com>
-To: Yuan Yao <yao.yuan@freescale.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 4/5] mtd: spi-nor: fsl-quadspi: add support for layerscape
-Message-ID: <20151125191627.GC2959@chopperman.am.freescale.net>
-References: <1447838342-9932-1-git-send-email-yao.yuan@freescale.com>
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a1g4Z-0001hF-9l
+ for linux-mtd@lists.infradead.org; Wed, 25 Nov 2015 19:49:49 +0000
+Subject: [PATCH (v7) 2/2] mtd: brcmnand: Add support for the BCM63268
+To: Jonas Gorski <jogo@openwrt.org>
+References: <56506D55.3000907@simon.arlott.org.uk>
+ <20151122215945.GA5930@rob-hp-laptop> <56523E85.905@simon.arlott.org.uk>
+ <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
+ <56541BD3.4070202@simon.arlott.org.uk> <5654AF69.7040901@gmail.com>
+ <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
+ <210ac819ff369893bd7d10640026a5b75455e684@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
+ <CAOiHx==RsnZKb93hp1PXhz-Am_uJ4g_RR3R8VQ_dnd8hd1Wcpw@mail.gmail.com>
+ <772c4df64731e4e4f5bbbb9051cea28aaf805f4e@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
+ <CAOiHx=mTPfiU40Tbz24vWELcoKEWhi=N2mqwL92SnV61dA2Myg@mail.gmail.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>
+From: Simon Arlott <simon@fire.lp0.eu>
+Message-ID: <565610B9.5040407@simon.arlott.org.uk>
+Date: Wed, 25 Nov 2015 19:49:13 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1447838342-9932-1-git-send-email-yao.yuan@freescale.com>
+In-Reply-To: <CAOiHx=mTPfiU40Tbz24vWELcoKEWhi=N2mqwL92SnV61dA2Myg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +38,260 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 18, 2015 at 05:19:02PM +0800, Yuan Yao wrote:
-> LS1043a and LS2080A in the Layerscape family also support Freescale Quad
-> SPI, make Quad SPI selectable for these hardwares.
-> 
-> Signed-off-by: Yuan Yao <yao.yuan@freescale.com>
-> ---
->  drivers/mtd/spi-nor/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-> index 1368221..9373141 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -23,7 +23,7 @@ config MTD_SPI_NOR_USE_4K_SECTORS
->  
->  config SPI_FSL_QUADSPI
->  	tristate "Freescale Quad SPI controller"
-> -	depends on ARCH_MXC || SOC_LS1021A || COMPILE_TEST
-> +	depends on ARCH_MXC || SOC_LS1021A || ARCH_LAYERSCAPE || COMPILE_TEST
+The BCM63268 has a NAND interrupt register with combined status and enable
+registers. It also has a clock for the NAND controller that needs to be
+enabled.
 
-So will you add new compatible entries in qspi driver for these two platforms?
+Set up the device by enabling the clock, disabling and acking all
+interrupts, then handle the CTRL_READY interrupt.
 
->  	depends on HAS_IOMEM
->  	help
->  	  This enables support for the Quad SPI controller in master mode.
-> -- 
-> 2.1.0.27.g96db324
-> 
+Add a brcmnand_get_socdata() function so that bcm63268_nand can obtain its
+data and disable the clock when the device is removed.
+
+Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+---
+Added EXPORT_SYMBOL_GPL(brcmnand_get_socdata)
+
+(As the brcmnand module must be loaded first its compatible string will
+apply to any existing devices before the soc-specific module can be
+loaded.)
+
+ drivers/mtd/nand/brcmnand/Makefile        |   1 +
+ drivers/mtd/nand/brcmnand/bcm63268_nand.c | 179 ++++++++++++++++++++++++++++++
+ drivers/mtd/nand/brcmnand/brcmnand.c      |   8 ++
+ drivers/mtd/nand/brcmnand/brcmnand.h      |   1 +
+ 4 files changed, 189 insertions(+)
+ create mode 100644 drivers/mtd/nand/brcmnand/bcm63268_nand.c
+
+diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
+index 3b1fbfd..b83a9ae 100644
+--- a/drivers/mtd/nand/brcmnand/Makefile
++++ b/drivers/mtd/nand/brcmnand/Makefile
+@@ -2,5 +2,6 @@
+ # more specific iproc_nand.o, for instance
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
++obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63268_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
+diff --git a/drivers/mtd/nand/brcmnand/bcm63268_nand.c b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
+new file mode 100644
+index 0000000..70ad907
+--- /dev/null
++++ b/drivers/mtd/nand/brcmnand/bcm63268_nand.c
+@@ -0,0 +1,179 @@
++/*
++ * Copyright 2015 Simon Arlott
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ *
++ * Derived from bcm63138_nand.c:
++ * Copyright © 2015 Broadcom Corporation
++ *
++ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/include/bcm963xx/63268_map_part.h:
++ * Copyright 2000-2010 Broadcom Corporation
++ *
++ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/flash/nandflash.c:
++ * Copyright 2000-2010 Broadcom Corporation
++ */
++
++#include <linux/device.h>
++#include <linux/clk.h>
++#include <linux/io.h>
++#include <linux/ioport.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++#include "brcmnand.h"
++
++struct bcm63268_nand_soc {
++	struct brcmnand_soc soc;
++	void __iomem *base;
++	struct clk *clk;
++};
++
++#define BCM63268_NAND_INT		0x00
++#define  BCM63268_NAND_STATUS_SHIFT	0
++#define  BCM63268_NAND_STATUS_MASK	(0xfff << BCM63268_NAND_STATUS_SHIFT)
++#define  BCM63268_NAND_ENABLE_SHIFT	16
++#define  BCM63268_NAND_ENABLE_MASK	(0xffff << BCM63268_NAND_ENABLE_SHIFT)
++#define BCM63268_NAND_BASE_ADDR0	0x04
++#define BCM63268_NAND_BASE_ADDR1	0x0c
++
++enum {
++	BCM63268_NP_READ	= BIT(0),
++	BCM63268_BLOCK_ERASE	= BIT(1),
++	BCM63268_COPY_BACK	= BIT(2),
++	BCM63268_PAGE_PGM	= BIT(3),
++	BCM63268_CTRL_READY	= BIT(4),
++	BCM63268_DEV_RBPIN	= BIT(5),
++	BCM63268_ECC_ERR_UNC	= BIT(6),
++	BCM63268_ECC_ERR_CORR	= BIT(7),
++};
++
++static bool bcm63268_nand_intc_ack(struct brcmnand_soc *soc)
++{
++	struct bcm63268_nand_soc *priv =
++			container_of(soc, struct bcm63268_nand_soc, soc);
++	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
++	u32 val = brcmnand_readl(mmio);
++
++	if (val & (BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT)) {
++		/* Ack interrupt */
++		val &= ~BCM63268_NAND_STATUS_MASK;
++		val |= BCM63268_CTRL_READY << BCM63268_NAND_STATUS_SHIFT;
++		brcmnand_writel(val, mmio);
++		return true;
++	}
++
++	return false;
++}
++
++static void bcm63268_nand_intc_set(struct brcmnand_soc *soc, bool en)
++{
++	struct bcm63268_nand_soc *priv =
++			container_of(soc, struct bcm63268_nand_soc, soc);
++	void __iomem *mmio = priv->base + BCM63268_NAND_INT;
++	u32 val = brcmnand_readl(mmio);
++
++	/* Don't ack any interrupts */
++	val &= ~BCM63268_NAND_STATUS_MASK;
++
++	if (en)
++		val |= BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT;
++	else
++		val &= ~(BCM63268_CTRL_READY << BCM63268_NAND_ENABLE_SHIFT);
++
++	brcmnand_writel(val, mmio);
++}
++
++static int bcm63268_nand_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct bcm63268_nand_soc *priv;
++	struct brcmnand_soc *soc;
++	struct resource *res;
++	int ret;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++	soc = &priv->soc;
++
++	res = platform_get_resource_byname(pdev,
++		IORESOURCE_MEM, "nand-intr-base");
++	if (!res)
++		return -EINVAL;
++
++	priv->base = devm_ioremap_resource(dev, res);
++	if (IS_ERR(priv->base))
++		return PTR_ERR(priv->base);
++
++	priv->clk = devm_clk_get(&pdev->dev, "nand");
++	if (IS_ERR(priv->clk))
++		return PTR_ERR(priv->clk);
++
++	ret = clk_prepare_enable(priv->clk);
++	if (ret)
++		return ret;
++
++	soc->ctlrdy_ack = bcm63268_nand_intc_ack;
++	soc->ctlrdy_set_enabled = bcm63268_nand_intc_set;
++
++	/* Disable and ack all interrupts  */
++	brcmnand_writel(0, priv->base + BCM63268_NAND_INT);
++	brcmnand_writel(BCM63268_NAND_STATUS_MASK,
++			priv->base + BCM63268_NAND_INT);
++
++	ret = brcmnand_probe(pdev, soc);
++	if (ret)
++		clk_disable_unprepare(priv->clk);
++
++	return ret;
++}
++
++static int bcm63268_nand_remove(struct platform_device *pdev)
++{
++	struct brcmnand_soc *soc = brcmnand_get_socdata(pdev);
++	struct bcm63268_nand_soc *priv = NULL;
++	int ret;
++
++	if (soc)
++		priv = container_of(soc, struct bcm63268_nand_soc, soc);
++
++	ret = brcmnand_remove(pdev);
++	if (ret)
++		return ret;
++
++	if (priv)
++		clk_disable_unprepare(priv->clk);
++
++	return 0;
++}
++
++static const struct of_device_id bcm63268_nand_of_match[] = {
++	{ .compatible = "brcm,nand-bcm63268" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, bcm63268_nand_of_match);
++
++static struct platform_driver bcm63268_nand_driver = {
++	.probe			= bcm63268_nand_probe,
++	.remove			= bcm63268_nand_remove,
++	.driver = {
++		.name		= "bcm63268_nand",
++		.pm		= &brcmnand_pm_ops,
++		.of_match_table	= bcm63268_nand_of_match,
++	}
++};
++module_platform_driver(bcm63268_nand_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Simon Arlott");
++MODULE_DESCRIPTION("NAND driver for BCM63268");
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index 2c8f67f..5f26b8a 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -2262,6 +2262,14 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ }
+ EXPORT_SYMBOL_GPL(brcmnand_probe);
+ 
++struct brcmnand_soc *brcmnand_get_socdata(struct platform_device *pdev)
++{
++	struct brcmnand_controller *ctrl = dev_get_drvdata(&pdev->dev);
++
++	return ctrl ? ctrl->soc : NULL;
++}
++EXPORT_SYMBOL_GPL(brcmnand_get_socdata);
++
+ int brcmnand_remove(struct platform_device *pdev)
+ {
+ 	struct brcmnand_controller *ctrl = dev_get_drvdata(&pdev->dev);
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.h b/drivers/mtd/nand/brcmnand/brcmnand.h
+index ef5eabb..6680419 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.h
++++ b/drivers/mtd/nand/brcmnand/brcmnand.h
+@@ -65,6 +65,7 @@ static inline void brcmnand_writel(u32 val, void __iomem *addr)
+ 
+ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc);
+ int brcmnand_remove(struct platform_device *pdev);
++struct brcmnand_soc *brcmnand_get_socdata(struct platform_device *pdev);
+ 
+ extern const struct dev_pm_ops brcmnand_pm_ops;
+ 
+-- 
+2.1.4
 
 -- 
-Best Regards,
-
-Han "Allen" Xu
+Simon Arlott
