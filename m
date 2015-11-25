@@ -1,26 +1,33 @@
-Subject: Re: [PATCH v8 2/2] arm64: dts: mt8173: Add nor flash node
-To: Yingjoe Chen <yingjoe.chen@mediatek.com>
-References: <1447817403-16631-1-git-send-email-bayi.cheng@mediatek.com>
- <1447817403-16631-3-git-send-email-bayi.cheng@mediatek.com>
- <56559274.1090900@gmail.com> <1448449042.24527.0.camel@mtksdaap41>
-Cc: Bayi Cheng <bayi.cheng@mediatek.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- srv_heupstream@mediatek.com, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mediatek@lists.infradead.org,
- ezequiel@vanguardiasur.com.ar, Kumar Gala <galak@codeaurora.org>,
- jteki@openedev.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <5655AA12.4070903@gmail.com>
-Date: Wed, 25 Nov 2015 13:31:14 +0100
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a1ZKr-0002Bb-Bd
+ for linux-mtd@lists.infradead.org; Wed, 25 Nov 2015 12:38:10 +0000
+Message-ID: <772c4df64731e4e4f5bbbb9051cea28aaf805f4e@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
+In-Reply-To: <CAOiHx==RsnZKb93hp1PXhz-Am_uJ4g_RR3R8VQ_dnd8hd1Wcpw@mail.gmail.com>
+References: <56506D55.3000907@simon.arlott.org.uk>
+ <20151122215945.GA5930@rob-hp-laptop>
+ <56523E85.905@simon.arlott.org.uk>
+ <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
+ <56541BD3.4070202@simon.arlott.org.uk> <5654AF69.7040901@gmail.com>
+ <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
+ <210ac819ff369893bd7d10640026a5b75455e684@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
+ <CAOiHx==RsnZKb93hp1PXhz-Am_uJ4g_RR3R8VQ_dnd8hd1Wcpw@mail.gmail.com>
+Date: Wed, 25 Nov 2015 12:37:31 -0000
+Subject: Re: [PATCH (v6) 2/2] mtd: brcmnand: Add support for the BCM63268
+From: "Simon Arlott" <simon@fire.lp0.eu>
+To: "Jonas Gorski" <jogo@openwrt.org>
+Cc: "Florian Fainelli" <f.fainelli@gmail.com>, "Rob Herring" <robh@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "Brian Norris" <computersforpeace@gmail.com>,
+ "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+ "David Woodhouse" <dwmw2@infradead.org>,
+ "MTD Maling List" <linux-mtd@lists.infradead.org>,
+ "Pawel Moll" <pawel.moll@arm.com>, "Mark Rutland" <mark.rutland@arm.com>,
+ "Ian Campbell" <ijc+devicetree@hellion.org.uk>,
+ "Kumar Gala" <galak@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <1448449042.24527.0.camel@mtksdaap41>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,62 +37,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, November 25, 2015 10:44, Jonas Gorski wrote:
+> On Tue, Nov 24, 2015 at 9:21 PM, Simon Arlott <simon@fire.lp0.eu> wrote:
+>> The BCM63268 has a NAND interrupt register with combined status and enable
+>> registers. It also has a clock for the NAND controller that needs to be
+>> enabled.
+>>
+>> Set up the device by enabling the clock, disabling and acking all
+>> interrupts, then handle the CTRL_READY interrupt.
+>>
+>> Add a brcmnand_get_socdata() function so that bcm63268_nand can obtain its
+>> data and disable the clock when the device is removed.
+>
+> To me this now mostly looks good, one thing though ...
+> (snip)
+>> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+>> index 2c8f67f..99ca69e 100644
+>> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+>> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+>> @@ -2262,6 +2262,13 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+>>  }
+>>  EXPORT_SYMBOL_GPL(brcmnand_probe);
+>>
+>> +struct brcmnand_soc *brcmnand_get_socdata(struct platform_device *pdev)
+>> +{
+>> +       struct brcmnand_controller *ctrl = dev_get_drvdata(&pdev->dev);
+>> +
+>> +       return ctrl ? ctrl->soc : NULL;
+>> +}
+>> +
+>
+> Don't you need to EXPORT_SYMBOL_GPL this one in case you build
+> brcmnand as module?
 
+No, because all of the code is built into the one object file:
+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63268_nand.o
+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
 
-On 25/11/15 11:57, Yingjoe Chen wrote:
-> On Wed, 2015-11-25 at 11:50 +0100, Matthias Brugger wrote:
->>
->> On 18/11/15 04:30, Bayi Cheng wrote:
->>> Add Mediatek nor flash node
->>>
->>> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
->>> Acked-by: Brian Norris <computersforpeace@gmail.com>
->>> ---
->>>    arch/arm64/boot/dts/mediatek/mt8173.dtsi | 18 +++++++++++++++++-
->>>    1 file changed, 17 insertions(+), 1 deletion(-)
->>>
->>
->> Applied to v4.5-next/dts
->>
->> Thanks.
->> Matthias
->>
->>> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
->>> index 4dd5f93..7988656 100644
->>> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
->>> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
->>> @@ -387,7 +387,23 @@
->>>    			status = "disabled";
->>>    		};
->>>
->>> -		i2c3: i2c@11010000 {
->>> +		nor_flash: spi@1100d000 {
->>> +			compatible = "mediatek,mt8173-nor";
->>> +			reg = <0 0x1100d000 0 0xe0>;
->>> +			clocks = <&pericfg CLK_PERI_SPI>,
->>> +				 <&topckgen CLK_TOP_SPINFI_IFR_SEL>;
->>> +			clock-names = "spi", "sf";
->>> +			#address-cells = <1>;
->>> +			#size-cells = <0>;
->>> +			status = "disabled";
->>> +
->>> +			flash@0 {
->>> +				compatible = "jedec,spi-nor";
->>> +				reg = <0>;
->>> +			};
->>> +		};
->>> +
->>> +		i2c3: i2c3@11010000 {
->
-> Hi Matthias,
->
-> Just notice this one. Please make sure this line should be
->
-> i2c3: i2c@11010000 {
->
-> instead of
->
-> i2c3: i2c3@11010000 {
->
+They almost have to be otherwise you could load separate parts as different
+modules in the wrong order.
 
-Fixed, thanks for catching this.
+The existing exported symbols are not required either.
+
+-- 
+Simon Arlott
