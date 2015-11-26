@@ -1,23 +1,15 @@
-Received: from galois.linutronix.de ([2001:470:1f0b:db:abcd:42:0:1])
+Received: from static.88-198-24-112.clients.your-server.de ([88.198.24.112]
+ helo=nbd.name)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1xyo-0007v1-Ti
- for linux-mtd@lists.infradead.org; Thu, 26 Nov 2015 14:57:04 +0000
-Subject: Re: [RFC PATCH 2/2] mtd: ubi: wl: avoid erasing a PEB which is empty
-To: dedekind1@gmail.com, linux-mtd@lists.infradead.org
-References: <1448302147-19272-1-git-send-email-bigeasy@linutronix.de>
- <1448302147-19272-3-git-send-email-bigeasy@linutronix.de>
- <1448369897.23789.47.camel@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, tglx@linutronix.de,
- Peter Zijlstra <peterz@infradead.org>
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Message-ID: <56571DA7.3070106@linutronix.de>
-Date: Thu, 26 Nov 2015 15:56:39 +0100
-MIME-Version: 1.0
-In-Reply-To: <1448369897.23789.47.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ id 1a1zOJ-0005s8-VR
+ for linux-mtd@lists.infradead.org; Thu, 26 Nov 2015 16:27:28 +0000
+From: Felix Fietkau <nbd@openwrt.org>
+To: linux-mtd@lists.infradead.org
+Cc: computersforpeace@gmail.com
+Subject: [PATCH] Revert "mtd: spi-nor: disable protection for Winbond flash at
+ startup"
+Date: Thu, 26 Nov 2015 17:27:01 +0100
+Message-Id: <1448555221-24257-1-git-send-email-nbd@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/24/2015 01:58 PM, Artem Bityutskiy wrote:
-> On Mon, 2015-11-23 at 19:09 +0100, Sebastian Andrzej Siewior wrote:
-> Back to my idea - what if you add the MOVE_RETRY eraseblocks to the
-> protection queue. May be not to the tail, may be to the head.
+This reverts commit c6fc2171b249e73745c497b578b417a2946f1b2f.
 
-I've been thinking about this. The protected list protects EBs from the
-WL worker. There are 10 slots and after one successful erase process
-all EB from this slot will be moved back to ->used list. So e2 can't be
-placed there because it belongs on the ->free list.
+This commit is breaking read access on at least s25fl064k, but also
+possibly other Spansion flash chips.
 
-e1 could be added there so it is protected from the WL worker until at
-least one erase cycle happened. This is no guarantee that MOVE_RETRY
-does not happen again but an optimistic try :)
+Any mtd read seems to succeed, but simply returns a zero-filled buffer.
 
-However once the protection time ends, it won't be added to the ->scrub
-list but the ->used list instead. The difference is that if it has an
-average number of erase cycles it won't be considered by the WL worker
-any time soon. So if it was added to the ->scrub list because a bitflip
-was detected on read then you lose this information.
-For that reason I think it is not worth putting it on the protected
-list.
+Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Sebastian
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 4988390..8b8842e 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1194,14 +1194,13 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	mutex_init(&nor->lock);
+ 
+ 	/*
+-	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
+-	 * with the software protection bits set
++	 * Atmel, SST and Intel/Numonyx serial nor tend to power
++	 * up with the software protection bits set
+ 	 */
+ 
+ 	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
+ 	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
+-	    JEDEC_MFR(info) == SNOR_MFR_SST ||
+-	    JEDEC_MFR(info) == SNOR_MFR_WINBOND) {
++	    JEDEC_MFR(info) == SNOR_MFR_SST) {
+ 		write_enable(nor);
+ 		write_sr(nor, 0);
+ 	}
+-- 
+2.2.2
