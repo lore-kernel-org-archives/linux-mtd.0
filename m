@@ -1,24 +1,19 @@
-Received: from mail-bn1bon0134.outbound.protection.outlook.com
- ([157.56.111.134] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a1qY7-0007Qt-1V
- for linux-mtd@lists.infradead.org; Thu, 26 Nov 2015 07:00:59 +0000
-From: Yao Yuan <yao.yuan@freescale.com>
-To: Xu Han <han.xu@freescale.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH] mtd: spi-nor: fsl-quadspi: add support for ls1021a
-Date: Thu, 26 Nov 2015 07:00:36 +0000
-Message-ID: <BLUPR03MB134442483CD6D63BBDFA04783040@BLUPR03MB134.namprd03.prod.outlook.com>
-References: <1447838103-6034-1-git-send-email-yao.yuan@freescale.com>
- <20151125191456.GB2959@chopperman.am.freescale.net>
-In-Reply-To: <20151125191456.GB2959@chopperman.am.freescale.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1a1rYw-00081P-GM
+ for linux-mtd@lists.infradead.org; Thu, 26 Nov 2015 08:05:55 +0000
+Received: by wmww144 with SMTP id w144so10721165wmw.1
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Nov 2015 00:05:32 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Subject: [PATCH] mtd: spi-nor: include mtd.h header for struct mtd_info
+ definition
+Date: Thu, 26 Nov 2015 09:05:04 +0100
+Message-Id: <1448525104-20101-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,89 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ok.
-Thanks.
+So far struct spi_nor was using just a pointer to struct mtd_info so it
+wasn't needed to have it fully defined there. After recent change we
+embed whole struct so we need to include a proper header.
 
------Original Message-----
-From: Han Xu [mailto:han.xu@freescale.com]=20
-Sent: Wednesday, November 25, 2015 2:15 PM
-To: Yuan Yao-B46683 <yao.yuan@freescale.com>
-Cc: dwmw2@infradead.org; computersforpeace@gmail.com; linux-kernel@vger.ker=
-nel.org; linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: fsl-quadspi: add support for ls1021a
+Fixes: 1976367173a4 ("mtd: spi-nor: embed struct mtd_info within struct spi_nor")
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ include/linux/mtd/spi-nor.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On Wed, Nov 18, 2015 at 05:15:03PM +0800, Yuan Yao wrote:
-> LS1021a also support Freescale Quad SPI controller.
-> Add fsl-quadspi support for ls1021a chip and make SPI_FSL_QUADSPI=20
-> selectable for LS1021A SOC hardwares.
->=20
-> Signed-off-by: Yuan Yao <yao.yuan@freescale.com>
-> ---
->  drivers/mtd/spi-nor/Kconfig       |  2 +-
->  drivers/mtd/spi-nor/fsl-quadspi.c | 10 ++++++++++
->  2 files changed, 11 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig=20
-> index 2fe2a7e..1368221 100644
-> --- a/drivers/mtd/spi-nor/Kconfig
-> +++ b/drivers/mtd/spi-nor/Kconfig
-> @@ -23,7 +23,7 @@ config MTD_SPI_NOR_USE_4K_SECTORS
-> =20
->  config SPI_FSL_QUADSPI
->  	tristate "Freescale Quad SPI controller"
-> -	depends on ARCH_MXC || COMPILE_TEST
-> +	depends on ARCH_MXC || SOC_LS1021A || COMPILE_TEST
->  	depends on HAS_IOMEM
->  	help
->  	  This enables support for the Quad SPI controller in master mode.
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c=20
-> b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 0ce7768..03a589d 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -213,6 +213,7 @@ enum fsl_qspi_devtype {
->  	FSL_QUADSPI_IMX6SX,
->  	FSL_QUADSPI_IMX7D,
->  	FSL_QUADSPI_IMX6UL,
-> +	FSL_QUADSPI_LS1021A,
->  };
-> =20
->  struct fsl_qspi_devtype_data {
-> @@ -258,6 +259,14 @@ static struct fsl_qspi_devtype_data imx6ul_data =3D =
-{
->  		       | QUADSPI_QUIRK_4X_INT_CLK,
->  };
-> =20
-> +static struct fsl_qspi_devtype_data ls1021a_data =3D {
-> +	.devtype =3D FSL_QUADSPI_LS1021A,
-> +	.rxfifo =3D 128,
-> +	.txfifo =3D 64,
-> +	.ahb_buf_size =3D 1024,
-> +	.driver_data =3D 0,
-> +};
-> +
->  #define FSL_QSPI_MAX_CHIP	4
->  struct fsl_qspi {
->  	struct spi_nor nor[FSL_QSPI_MAX_CHIP]; @@ -812,6 +821,7 @@ static=20
-> const struct of_device_id fsl_qspi_dt_ids[] =3D {
->  	{ .compatible =3D "fsl,imx6sx-qspi", .data =3D (void *)&imx6sx_data, },
->  	{ .compatible =3D "fsl,imx7d-qspi", .data =3D (void *)&imx7d_data, },
->  	{ .compatible =3D "fsl,imx6ul-qspi", .data =3D (void *)&imx6ul_data, },
-> +	{ .compatible =3D "fsl,ls1021a-qspi", .data =3D (void *)&ls1021a_data,=
-=20
-> +},
-
-Same comments, document this compatible.
-
->  	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, fsl_qspi_dt_ids);
-> --
-> 2.1.0.27.g96db324
->=20
-
-Acked-by: Han xu <han.xu@freescale.com>
---=20
-Best Regards,
-
-Han "Allen" Xu
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 7bed974..fac3f6f 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -12,6 +12,7 @@
+ 
+ #include <linux/bitops.h>
+ #include <linux/mtd/cfi.h>
++#include <linux/mtd/mtd.h>
+ 
+ /*
+  * Manufacturer IDs
+@@ -117,8 +118,6 @@ enum spi_nor_option_flags {
+ 	SNOR_F_USE_FSR		= BIT(0),
+ };
+ 
+-struct mtd_info;
+-
+ /**
+  * struct spi_nor - Structure for defining a the SPI NOR layer
+  * @mtd:		point to a mtd_info structure
+-- 
+1.8.4.5
