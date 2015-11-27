@@ -1,21 +1,17 @@
-Received: from mail-ig0-x236.google.com ([2607:f8b0:4001:c05::236])
+Received: from szxga01-in.huawei.com ([58.251.152.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a2FIG-0006au-QK
- for linux-mtd@lists.infradead.org; Fri, 27 Nov 2015 09:26:17 +0000
-Received: by igbxm8 with SMTP id xm8so26975762igb.1
- for <linux-mtd@lists.infradead.org>; Fri, 27 Nov 2015 01:25:55 -0800 (PST)
+ id 1a2J8b-0003yr-FQ
+ for linux-mtd@lists.infradead.org; Fri, 27 Nov 2015 13:32:41 +0000
+From: <panxuesong@huawei.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <zhihui.gao@huawei.com>, <chenjie6@huawei.com>, panxuesong
+ <panxuesong@huawei.com>, <stable@vger.kernel.org>
+Subject: [PATCH] jffs2: fix double free jffs2_sb_info when jffs2_parse_options
+ failed
+Date: Fri, 27 Nov 2015 21:15:30 +0800
+Message-ID: <1448630130-8640-1-git-send-email-panxuesong@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <1448525104-20101-1-git-send-email-zajec5@gmail.com>
-References: <1448525104-20101-1-git-send-email-zajec5@gmail.com>
-Date: Fri, 27 Nov 2015 10:25:55 +0100
-Message-ID: <CACna6rxs==Be4Ua_AUuqZgc8ey0DYXrgUOe=7TqxBEEF7AOzKw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: include mtd.h header for struct mtd_info
- definition
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +21,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 26 November 2015 at 09:05, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wr=
-ote:
-> So far struct spi_nor was using just a pointer to struct mtd_info so it
-> wasn't needed to have it fully defined there. After recent change we
-> embed whole struct so we need to include a proper header.
->
-> Fixes: 1976367173a4 ("mtd: spi-nor: embed struct mtd_info within struct s=
-pi_nor")
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+From: panxuesong <panxuesong@huawei.com>
 
-This may be worth taking as a fix for 4.4. However I'm not aware of
-any upstream driver failing to build because of this.
+When mount jffs2 passing a invalid argument, such as "compr=xxx". 
+In jffs2_fill_super , function jffs2_parse_options will return failed 
+and then will free jffs2_sb_info for the first time.
 
---=20
-Rafa=C5=82
+While jffs2_fill_super failed, would call jffs2_kill_sb, 
+which will free jffs2_sb_info for the second time.
+
+static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
+{
+	......
+	ret = jffs2_parse_options(c, data);
+	if (ret) {
+		kfree(c);
+		return -EINVAL;
+	}
+
+	......
+}
+
+static void jffs2_kill_sb(struct super_block *sb)
+{
+	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
+	if (!(sb->s_flags & MS_RDONLY))
+		jffs2_stop_garbage_collect_thread(c);
+	kill_mtd_super(sb);
+	kfree(c);
+}
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Pan Xuesong <panxuesong@huawei.com>
+
+---
+ fs/jffs2/super.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index d86c5e3..20b4d84 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -286,7 +286,6 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	ret = jffs2_parse_options(c, data);
+ 	if (ret) {
+-		kfree(c);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+1.8.0
