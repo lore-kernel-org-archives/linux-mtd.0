@@ -1,16 +1,21 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-ig0-x236.google.com ([2607:f8b0:4001:c05::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a2E2j-0001lX-4U
- for linux-mtd@lists.infradead.org; Fri, 27 Nov 2015 08:06:10 +0000
-Received: by pacdm15 with SMTP id dm15so108143641pac.3
- for <linux-mtd@lists.infradead.org>; Fri, 27 Nov 2015 00:05:48 -0800 (PST)
-From: Anup Limbu <anuplimbu14@gmail.com>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Anup Limbu <anuplimbu14@gmail.com>
-Subject: [PATCH] mtd: nand: davinci: remove unnecessary if cases
-Date: Fri, 27 Nov 2015 13:35:34 +0530
-Message-Id: <1448611534-21142-1-git-send-email-anuplimbu14@gmail.com>
+ id 1a2FIG-0006au-QK
+ for linux-mtd@lists.infradead.org; Fri, 27 Nov 2015 09:26:17 +0000
+Received: by igbxm8 with SMTP id xm8so26975762igb.1
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Nov 2015 01:25:55 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1448525104-20101-1-git-send-email-zajec5@gmail.com>
+References: <1448525104-20101-1-git-send-email-zajec5@gmail.com>
+Date: Fri, 27 Nov 2015 10:25:55 +0100
+Message-ID: <CACna6rxs==Be4Ua_AUuqZgc8ey0DYXrgUOe=7TqxBEEF7AOzKw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: include mtd.h header for struct mtd_info
+ definition
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-remove unnecessary if cases
+On 26 November 2015 at 09:05, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wr=
+ote:
+> So far struct spi_nor was using just a pointer to struct mtd_info so it
+> wasn't needed to have it fully defined there. After recent change we
+> embed whole struct so we need to include a proper header.
+>
+> Fixes: 1976367173a4 ("mtd: spi-nor: embed struct mtd_info within struct s=
+pi_nor")
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
 
-Signed-off-by: Anup Limbu <anuplimbu14@gmail.com>
----
- drivers/mtd/nand/davinci_nand.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+This may be worth taking as a fix for 4.4. However I'm not aware of
+any upstream driver failing to build because of this.
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index c72313d..1f86ee1 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -568,21 +568,16 @@ static struct davinci_nand_pdata
- 		pdev->dev.platform_data = pdata;
- 		if (!pdata)
- 			return ERR_PTR(-ENOMEM);
--		if (!of_property_read_u32(pdev->dev.of_node,
--			"ti,davinci-chipselect", &prop))
--			pdev->id = prop;
--		else
-+		if (of_property_read_u32(pdev->dev.of_node,
-+			"ti,davinci-chipselect", &pdev->id))
- 			return ERR_PTR(-EINVAL);
- 
--		if (!of_property_read_u32(pdev->dev.of_node,
--			"ti,davinci-mask-ale", &prop))
--			pdata->mask_ale = prop;
--		if (!of_property_read_u32(pdev->dev.of_node,
--			"ti,davinci-mask-cle", &prop))
--			pdata->mask_cle = prop;
--		if (!of_property_read_u32(pdev->dev.of_node,
--			"ti,davinci-mask-chipsel", &prop))
--			pdata->mask_chipsel = prop;
-+		of_property_read_u32(pdev->dev.of_node,
-+			"ti,davinci-mask-ale", &pdata->mask_ale);
-+		of_property_read_u32(pdev->dev.of_node,
-+			"ti,davinci-mask-cle", &pdata->mask_cle);
-+		of_property_read_u32(pdev->dev.of_node,
-+			"ti,davinci-mask-chipsel", &pdata->mask_chipsel);
- 		if (!of_property_read_string(pdev->dev.of_node,
- 			"nand-ecc-mode", &mode) ||
- 		    !of_property_read_string(pdev->dev.of_node,
-@@ -594,9 +589,8 @@ static struct davinci_nand_pdata
- 			if (!strncmp("hw", mode, 2))
- 				pdata->ecc_mode = NAND_ECC_HW;
- 		}
--		if (!of_property_read_u32(pdev->dev.of_node,
--			"ti,davinci-ecc-bits", &prop))
--			pdata->ecc_bits = prop;
-+		of_property_read_u32(pdev->dev.of_node,
-+			"ti,davinci-ecc-bits", &pdata->ecc_bits);
- 
- 		prop = of_get_nand_bus_width(pdev->dev.of_node);
- 		if (0 < prop || !of_property_read_u32(pdev->dev.of_node,
--- 
-1.9.1
+--=20
+Rafa=C5=82
