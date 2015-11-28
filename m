@@ -1,21 +1,25 @@
-Received: from arrakis.dune.hu ([78.24.191.176])
+Received: from mail-ig0-x232.google.com ([2607:f8b0:4001:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a2bMb-0008Iq-87
- for linux-mtd@lists.infradead.org; Sat, 28 Nov 2015 09:00:14 +0000
-Subject: Re: [PATCH] Revert "mtd: spi-nor: disable protection for Winbond
- flash at startup"
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1448555221-24257-1-git-send-email-nbd@openwrt.org>
- <20151127222701.GA19615@localhost>
-Cc: linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-From: Felix Fietkau <nbd@openwrt.org>
-Message-ID: <56596CFF.10002@openwrt.org>
-Date: Sat, 28 Nov 2015 09:59:43 +0100
+ id 1a2g8J-0005Mj-Rn
+ for linux-mtd@lists.infradead.org; Sat, 28 Nov 2015 14:05:48 +0000
+Received: by igcph11 with SMTP id ph11so40562545igc.1
+ for <linux-mtd@lists.infradead.org>; Sat, 28 Nov 2015 06:05:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20151127222701.GA19615@localhost>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20151127223340.GB19615@localhost>
+References: <1448525104-20101-1-git-send-email-zajec5@gmail.com>
+ <CACna6rxs==Be4Ua_AUuqZgc8ey0DYXrgUOe=7TqxBEEF7AOzKw@mail.gmail.com>
+ <20151127223340.GB19615@localhost>
+Date: Sat, 28 Nov 2015 15:05:26 +0100
+Message-ID: <CACna6ryU3AorbbL3f7REVueREHJZMfZpvoZs0ijVj1SNG4Z6ng@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: include mtd.h header for struct mtd_info
+ definition
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +29,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015-11-27 23:27, Brian Norris wrote:
-> Hi Felix,
-> 
-> On Thu, Nov 26, 2015 at 05:27:01PM +0100, Felix Fietkau wrote:
->> This reverts commit c6fc2171b249e73745c497b578b417a2946f1b2f.
->> 
->> This commit is breaking read access on at least s25fl064k, but also
->> possibly other Spansion flash chips.
-> 
-> This makes no sense. This patch is about Winbond flash, but you're
-> referencing Spansion flash in the commit subject. I suspect you have
-> either some more explaining, or some better investigation to do, because
-> I don't understand how the commit in question could be the problem for
-> you.
-Take a look at these Spansion flash ids:
+On 27 November 2015 at 23:33, Brian Norris <computersforpeace@gmail.com> wr=
+ote:
+> On Fri, Nov 27, 2015 at 10:25:55AM +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> On 26 November 2015 at 09:05, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>=
+ wrote:
+>> > Fixes: 1976367173a4 ("mtd: spi-nor: embed struct mtd_info within struc=
+t spi_nor")
+>
+> I'm not 100% sure, but I thought I recall the -stable folks picking up
+> for-linus commits just based on the 'Fixes:' tags. I feel like that
+> isn't always ideal, though.
 
-    { "s25fl004k",  INFO(0xef4013,      0,  64 * 1024,   8, SECT_4K |
-SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-    { "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K |
-SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-    { "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K |
-SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-    { "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
+I'm confused. Do you mean I shouldn't include it?
+Do you have a reference to more detailed Fixes usage? All I found is
+info in Documentation/SubmittingPatches:
+> If your patch fixes a bug in a specific commit, e.g. you found an issue u=
+sing
+> git-bisect, please use the 'Fixes:' tag
+I think 'Fixes' usage is OK in this case.
 
-Note how they start with 0xef (SNOR_MFR_WINBOND).
 
->> Any mtd read seems to succeed, but simply returns a zero-filled buffer.
-> 
-> If this is the symptom you're looking at, I doubt you have the right
-> fix. Wild guess: something similar to this patch:
-> 
->   http://patchwork.ozlabs.org/patch/547367/
->   "mtd: spi-nor: wait until lock/unlock operations are ready"
-When I have access to a similar device again, I can give this fix a try.
-If that doesn't work, then maybe we need to add an extra check to
-exclude Spansion flashes from the codepath that checks for SNOR_MFR_WINBOND.
+>> > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+>>
+>> This may be worth taking as a fix for 4.4. However I'm not aware of
+>> any upstream driver failing to build because of this.
+>
+> I don't see why it would need rushed out. All users of spi-nor.h
+> currently include mtd.h first. So there are no build failures because of
+> it.
 
-- Felix
+OK. It was just an OpenWrt out-of-tree driver that failed to compile.
+
+--=20
+Rafa=C5=82
