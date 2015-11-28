@@ -1,16 +1,21 @@
-Received: from mail-io0-x234.google.com ([2607:f8b0:4001:c06::234])
+Received: from arrakis.dune.hu ([78.24.191.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a2ZSW-0001rr-Mx
- for linux-mtd@lists.infradead.org; Sat, 28 Nov 2015 06:58:13 +0000
-Received: by ioir85 with SMTP id r85so130505865ioi.1
- for <linux-mtd@lists.infradead.org>; Fri, 27 Nov 2015 22:57:51 -0800 (PST)
-From: Nikolay Martynov <mar.kolya@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Nikolay Martynov <mar.kolya@gmail.com>, dwmw2@infradead.org,
- computersforpeace@gmail.com
-Subject: [PATCH] mtd: nandsim: use id_bytes exactly as passed
-Date: Sat, 28 Nov 2015 01:57:04 -0500
-Message-Id: <1448693824-8696-1-git-send-email-mar.kolya@gmail.com>
+ id 1a2bMb-0008Iq-87
+ for linux-mtd@lists.infradead.org; Sat, 28 Nov 2015 09:00:14 +0000
+Subject: Re: [PATCH] Revert "mtd: spi-nor: disable protection for Winbond
+ flash at startup"
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1448555221-24257-1-git-send-email-nbd@openwrt.org>
+ <20151127222701.GA19615@localhost>
+Cc: linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+From: Felix Fietkau <nbd@openwrt.org>
+Message-ID: <56596CFF.10002@openwrt.org>
+Date: Sat, 28 Nov 2015 09:59:43 +0100
+MIME-Version: 1.0
+In-Reply-To: <20151127222701.GA19615@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently when 5 bytes are passed as id_bytes the actual id
-would be set to 6 bytes long. This means that it is not possible
-to properly emulate chips with 5 bytes ids.
+On 2015-11-27 23:27, Brian Norris wrote:
+> Hi Felix,
+> 
+> On Thu, Nov 26, 2015 at 05:27:01PM +0100, Felix Fietkau wrote:
+>> This reverts commit c6fc2171b249e73745c497b578b417a2946f1b2f.
+>> 
+>> This commit is breaking read access on at least s25fl064k, but also
+>> possibly other Spansion flash chips.
+> 
+> This makes no sense. This patch is about Winbond flash, but you're
+> referencing Spansion flash in the commit subject. I suspect you have
+> either some more explaining, or some better investigation to do, because
+> I don't understand how the commit in question could be the problem for
+> you.
+Take a look at these Spansion flash ids:
 
-This patch addresses this problem
+    { "s25fl004k",  INFO(0xef4013,      0,  64 * 1024,   8, SECT_4K |
+SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+    { "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K |
+SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+    { "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K |
+SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+    { "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
 
-Signed-off-by: Nikolay Martynov <mar.kolya@gmail.com>
----
- drivers/mtd/nand/nandsim.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+Note how they start with 0xef (SNOR_MFR_WINBOND).
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 52c0c1a..4659540 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -107,6 +107,7 @@ static unsigned int overridesize = 0;
- static char *cache_file = NULL;
- static unsigned int bbt;
- static unsigned int bch;
-+static unsigned int id_bytes_length;
- static u_char id_bytes[8] = {
- 	[0] = CONFIG_NANDSIM_FIRST_ID_BYTE,
- 	[1] = CONFIG_NANDSIM_SECOND_ID_BYTE,
-@@ -115,7 +116,7 @@ static u_char id_bytes[8] = {
- 	[4 ... 7] = 0xFF,
- };
- 
--module_param_array(id_bytes, byte, NULL, 0400);
-+module_param_array(id_bytes, byte, &id_bytes_length, 0400);
- module_param_named(first_id_byte, id_bytes[0], byte, 0400);
- module_param_named(second_id_byte, id_bytes[1], byte, 0400);
- module_param_named(third_id_byte, id_bytes[2], byte, 0400);
-@@ -2288,14 +2289,14 @@ static int __init ns_init_module(void)
- 	 * Perform minimum nandsim structure initialization to handle
- 	 * the initial ID read command correctly
- 	 */
--	if (id_bytes[6] != 0xFF || id_bytes[7] != 0xFF)
--		nand->geom.idbytes = 8;
--	else if (id_bytes[4] != 0xFF || id_bytes[5] != 0xFF)
--		nand->geom.idbytes = 6;
--	else if (id_bytes[2] != 0xFF || id_bytes[3] != 0xFF)
--		nand->geom.idbytes = 4;
--	else
--		nand->geom.idbytes = 2;
-+	if (id_bytes_length > 0) {
-+		nand->geom.idbytes = id_bytes_length;
-+	} else {
-+		if (id_bytes[2] != 0xFF || id_bytes[3] != 0xFF)
-+			nand->geom.idbytes = 4;
-+		else
-+			nand->geom.idbytes = 2;
-+	}
- 	nand->regs.status = NS_STATUS_OK(nand);
- 	nand->nxstate = STATE_UNKNOWN;
- 	nand->options |= OPT_PAGE512; /* temporary value */
--- 
-2.6.3
+>> Any mtd read seems to succeed, but simply returns a zero-filled buffer.
+> 
+> If this is the symptom you're looking at, I doubt you have the right
+> fix. Wild guess: something similar to this patch:
+> 
+>   http://patchwork.ozlabs.org/patch/547367/
+>   "mtd: spi-nor: wait until lock/unlock operations are ready"
+When I have access to a similar device again, I can give this fix a try.
+If that doesn't work, then maybe we need to add an extra check to
+exclude Spansion flashes from the codepath that checks for SNOR_MFR_WINBOND.
+
+- Felix
