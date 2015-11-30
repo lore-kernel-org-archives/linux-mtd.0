@@ -1,28 +1,27 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3RXO-0007uK-7w
- for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 16:42:52 +0000
-Date: Mon, 30 Nov 2015 16:42:23 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>, Martin Sperl <martin@sperl.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Message-ID: <20151130164223.GE1929@sirena.org.uk>
-References: <20151120120502.GT31303@sirena.org.uk>
- <08871ECD-52DF-4CBF-AF3D-4C3A442C008A@sperl.org>
- <20151121134946.GI26072@sirena.org.uk> <56507B3B.4080608@gmail.com>
- <CAOMqctR=UDEPbgJDY3YvxpbVEEp4t6ajkyv=cVAZp2fLBNBanA@mail.gmail.com>
- <5650F7D4.1090209@gmail.com> <20151122131626.GN26072@sirena.org.uk>
- <5651EA08.5090400@gmail.com> <20151123113846.GH1929@sirena.org.uk>
- <5658AE7C.3050507@gmail.com>
+ id 1a3RbL-0002iP-7c
+ for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 16:46:56 +0000
+From: Marek Vasut <marex@denx.de>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Subject: Re: [PATCH] spi/nor: Fix error message with unrecognized JEDEC
+Date: Mon, 30 Nov 2015 17:46:29 +0100
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Huang Shijie <shijie.huang@intel.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Gabor Juhos <juhosg@openwrt.org>, "Bean Huo
+ =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= (beanhuo)" <beanhuo@micron.com>,
+ Furquan Shaikh <furquan@google.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <1448897111-30713-1-git-send-email-ricardo.ribalda@gmail.com>
+In-Reply-To: <1448897111-30713-1-git-send-email-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="Tk7bxryrhVQGv1nz"
-Content-Disposition: inline
-In-Reply-To: <5658AE7C.3050507@gmail.com>
-Subject: Re: [PATCH 1/3] spi: core: add max_msg_size to spi_master
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201511301746.29684.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,39 +31,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Monday, November 30, 2015 at 04:25:11 PM, Ricardo Ribalda Delgado wrote:
+> The error message was:
+> 
+> m25p80 spi32766.0: unrecognized JEDEC id bytes: 00,  0,  0
+> 
+> The new error message:
+> 
+> m25p80 spi32766.0: unrecognized JEDEC id bytes: 00, 00, 00
+> 
+> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index b7c038c75684..7d2b96d5f350 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -890,7 +890,7 @@ static const struct flash_info *spi_nor_read_id(struct
+> spi_nor *nor) return &spi_nor_ids[tmp];
+>  		}
+>  	}
+> -	dev_err(nor->dev, "unrecognized JEDEC id bytes: %02x, %2x, %2x\n",
+> +	dev_err(nor->dev, "unrecognized JEDEC id bytes: %.2x, %.2x, %.2x\n",
 
---Tk7bxryrhVQGv1nz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You can change it to %02x to make it consistent, no ? What do you think ?
 
-On Fri, Nov 27, 2015 at 08:26:52PM +0100, Heiner Kallweit wrote:
-> Am 23.11.2015 um 12:38 schrieb Mark Brown:
+>  		id[0], id[1], id[2]);
+>  	return ERR_PTR(-ENODEV);
+>  }
 
-> > No, for the clients so they aren't peering at the struct.
-
-> Sure, do you think of a simple getter like this or a more complex thing?
-
-> size_t spi_get_max_msg_size(struct spi_master *master)
-> {
-> 	return master->max_msg_size;
-> }
-
-That's fine, the point is to allow it to get complicated later rather
-than that we have anything else to put in there right now.
-
---Tk7bxryrhVQGv1nz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWXHxuAAoJECTWi3JdVIfQhz8H/j6Q8safY93quZf53Pc3ZifY
-MebdOPRqkXqW4jqJbDWJlMZWQxQT9GN8pX2jXpJ5ET+uuve6AnBKBZF2aTKOWJBK
-XxSAEkIywhVmrjOv1ihsvjx6rZe+hKrBrXC/I7p0Krxzlq0Kv3rUsK0J/51E7+jZ
-Cu73/qRyGc6/Y1tWhH/25UFL6ii0YyPRC9SAaxiuxYTmFcQh8L+vUgdSGHpuqptX
-uhgP0bBCEUSj0yZZre2ZUkd97rO2ZN7hqgoWf+1pGUrkDDBLkoUWav2Gnhjqp35h
-Er2+pA0iH7xQSHeAWa0m0tswxRvLvmJshHMxhaC6hbD/e2FWhqM/8hcFRxNhpPI=
-=pmZU
------END PGP SIGNATURE-----
-
---Tk7bxryrhVQGv1nz--
+Best regards,
+Marek Vasut
