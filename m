@@ -1,25 +1,22 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3UXY-0005Kx-Rh
- for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 19:55:14 +0000
-Received: by pacdm15 with SMTP id dm15so194572135pac.3
- for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 11:54:52 -0800 (PST)
-Date: Mon, 30 Nov 2015 11:54:49 -0800
+ id 1a3UfM-0003HH-2I
+ for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 20:03:16 +0000
+Received: by pacej9 with SMTP id ej9so194702881pac.2
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 12:02:55 -0800 (PST)
+Date: Mon, 30 Nov 2015 12:02:53 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: tony@atomide.com, dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
- javier@dowhile0.org, fcooper@ti.com, nsekhar@ti.com,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-Message-ID: <20151130195449.GI64635@google.com>
-References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
- <20151026212346.GJ13239@google.com> <562F45BF.8020205@ti.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: include mtd.h header for struct mtd_info
+ definition
+Message-ID: <20151130200253.GJ64635@google.com>
+References: <1448525104-20101-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <562F45BF.8020205@ti.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1448525104-20101-1-git-send-email-zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,77 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Roger,
-
-On Tue, Oct 27, 2015 at 11:37:03AM +0200, Roger Quadros wrote:
-> On 26/10/15 23:23, Brian Norris wrote:
-> > I'm not too familiar with OMAP platforms, and I might have missed out on
-> > prior discussions/context, so please forgive if I'm asking silly or old
-> > questions here.
+On Thu, Nov 26, 2015 at 09:05:04AM +0100, Rafał Miłecki wrote:
+> So far struct spi_nor was using just a pointer to struct mtd_info so it
+> wasn't needed to have it fully defined there. After recent change we
+> embed whole struct so we need to include a proper header.
 > 
-> No worries at all.
-> 
-> > 
-> > On Fri, Sep 18, 2015 at 05:53:22PM +0300, Roger Quadros wrote:
-> >> - Remove NAND IRQ handling from omap-gpmc driver, share the GPMC IRQ
-> >> with the omap2-nand driver and handle NAND IRQ events in the NAND driver.
-> >> This causes performance increase when using prefetch-irq mode.
-> >> 30% increase in read, 17% increase in write in prefetch-irq mode.
-> > 
-> > Have you pinpointed the exact causes for the performance increase, or
-> > can you give an educated guess? AIUI, you're reducing the number of
-> > interrupts needed for NAND prefetch mode, but you're also removing a bit
-> > of abstraction and implementing hooks that look awfully like the
-> > existing abstractions:
-> > 
-> > +       int (*nand_irq_enable)(enum gpmc_nand_irq irq);
-> > +       int (*nand_irq_disable)(enum gpmc_nand_irq irq);
-> > +       void (*nand_irq_clear)(enum gpmc_nand_irq irq);
-> > +       u32 (*nand_irq_status)(void);
-> > 
-> > That's not really a problem if there's a good reason for them (brcmnand
-> > implements similar hooks because of quirks in the implementation of
-> > interrupts across various BRCM SoCs, and it's not worth writing irqchip
-> > drivers for those cases). I'm mainly curious for an explanation.
-> 
-> I have both implementations with me. My guess is that the 20% performance
-> gain is due to absence of irqchip/irqdomain translation code.
-> I haven't investigated further though.
+> Fixes: 1976367173a4 ("mtd: spi-nor: embed struct mtd_info within struct spi_nor")
+> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 
-I don't have much context for whether this makes sense or not. According
-to your tests, you're getting ~800K interrupts over ~15 seconds. So
-should you start noticing performance hits due to abstraction at 53K
-interrupts per second?
-
-But anyway, I'm not sure that completely answered my question. My
-question was whether you were removing the irqchip code solely for
-performance reasons, or are there others?
-
-> Another concern I have is that I'm not using any locking around
-> gpmc_nand_irq_enable/disable(). Could this pose problems in multiple NAND
-> use cases? My understanding is that it should not as the controller access
-> is serialized between multiple NAND chips.
-
-Right, if you're touching just a NAND interrupt, and it's only used by a
-single instance of this NAND controller, then the NAND controller
-serialization code will handle this for you.
-
-> However I do need to add some locking as the GPMC_IRQENABLE register is shared
-> between NAND and GPMC driver.
-> 
-> NOTE: We are not using prefetch-irq mode for any of the OMAP boards because
-> of lesser performance than prefetch-polled mode. So if the less performance
-> for an unused mode is a lesser concern compared to cleaner code then
-> I can resend this with the irqdomain implementation.
-> 
-> Below are performance logs of irqdomain vs hooks.
-> 
-> --
-> cheers,
-> -roger
-> 
-> test logs.
-
-[snip]
-
-Brian
+Applied to l2-mtd.git
