@@ -1,17 +1,28 @@
-Date: Mon, 30 Nov 2015 12:55:05 -0800
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a3VjN-0004XG-10
+ for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 21:11:29 +0000
+Received: by pabfh17 with SMTP id fh17so202259049pab.0
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 13:11:08 -0800 (PST)
+Date: Mon, 30 Nov 2015 13:11:05 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org,
+To: punnaiah choudary kalluri <punnaia@xilinx.com>
+Cc: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
  David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: cfi: don't warn about broken geometry for !CONFIG_MTD
-Message-ID: <20151130205505.GN64635@google.com>
-References: <3747078.dk5V5gxuXa@wuerfel> <4492128.vrqmf1niG3@wuerfel>
- <7025557.qur2fOT79A@wuerfel>
+ "michals@xilinx.com" <michals@xilinx.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-api@vger.kernel.org, Punnaiah Choudary <kpc528@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: Expand the ecc placement locations to 1216
+Message-ID: <20151130211105.GO64635@google.com>
+References: <1446742735-20824-1-git-send-email-punnaia@xilinx.com>
+ <20151120193342.GX64635@google.com>
+ <CAGnW=BZzoo1YFyAYx+oKkCPBOCTSz_KYY+t0=2wh4Fscx7e0eg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7025557.qur2fOT79A@wuerfel>
+In-Reply-To: <CAGnW=BZzoo1YFyAYx+oKkCPBOCTSz_KYY+t0=2wh4Fscx7e0eg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +32,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 24, 2015 at 11:09:02PM +0100, Arnd Bergmann wrote:
-> The linux/mtd/map.h header file is included by a couple of
-> platform specific files that are built even when CONFIG_MTD
-> is disabled, and we always get
-> 
->  warning "No CONFIG_MTD_MAP_BANK_WIDTH_xx selected. No NOR chip support can work"
-> 
-> in that case. This adds an #ifdef around the pointless warning,
-> as everything is really fine when we don't build the drivers
-> anyway.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> > I'm actually still getting the warnings for any file that includes <linux/mtd/map.h>
-> > while CONFIG_MTD is disabled. I have a fix now that I'm testing overnight
-> > and plan to post tomorrow, then we can decide whether it should be part of
-> > the same patch, or we should have two separate patches.
-> 
-> The patch fixes the remaining warnings I see on ARM randconfigs in this file,
-> and I think it makes sense to keep it as a separate patch, as these are really
-> distinct problems even thought the symptom is the same.
-> 
-> Please apply both.
-> 
-> diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-> index 366cf77953b5..58f3ba709ade 100644
-> --- a/include/linux/mtd/map.h
-> +++ b/include/linux/mtd/map.h
-> @@ -142,7 +142,9 @@
->  #endif
->  
->  #ifndef map_bankwidth
-> +#ifdef CONFIG_MTD
->  #warning "No CONFIG_MTD_MAP_BANK_WIDTH_xx selected. No NOR chip support can work"
-> +#endif
->  static inline int map_bankwidth(void *map)
->  {
->  	BUG();
-> 
+Hi Punnaiah,
 
-I guess no one includes mtd/cfi.h with CONFIG_MTD=n? Otherwise, we might
-have the same problems there.
+On Sat, Nov 21, 2015 at 08:59:15PM +0530, punnaiah choudary kalluri wrote:
+> On Sat, Nov 21, 2015 at 1:03 AM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+> > On Thu, Nov 05, 2015 at 10:28:55PM +0530, Punnaiah Choudary Kalluri wrote:
+> >> Device like MT29F32G08ABCDBJ4 have a writesize/oobsize of 16K/1216 Bytes.
+> >> So, increasing the maximum ecc placement locations to 1216
+> >
+> > I'd really prefer not increasing the size of the internal arrays any
+> > more. The structures should be rewritten to be dynamic.
+> 
+> Ok. I have seen the comment "nand_ecclayout should be expandable in the
+> future simply by the above macros" and so increased the macro sizes.
+> As you said, it is ideal to have memory allocated dynamically for eccpos and
+> oobfree fields.
 
-Pushed to l2-mtd.git, thanks!
+Yes, it *can* be done. Previously, we couldn't do this, because any
+change there would also change the ABI, which is off limits, but I fixed
+that by separating the 'nand_ecclayout' and 'nand_ecclayout_user'
+structs. That still doesn't make it preferable. These structs are
+getting pretty big, and they hold a very low density of information...
+
+> >
+> >> Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
+> >> ---
+> >>  include/linux/mtd/mtd.h    | 2 +-
+> >>  include/uapi/mtd/mtd-abi.h | 4 ++--
+> >>  2 files changed, 3 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> >> index f17fa75..1fd3cc6 100644
+> >> --- a/include/linux/mtd/mtd.h
+> >> +++ b/include/linux/mtd/mtd.h
+> >> @@ -95,7 +95,7 @@ struct mtd_oob_ops {
+> >>  };
+> >>
+> >>  #define MTD_MAX_OOBFREE_ENTRIES_LARGE        32
+> >> -#define MTD_MAX_ECCPOS_ENTRIES_LARGE 640
+> >> +#define MTD_MAX_ECCPOS_ENTRIES_LARGE 1216
+> >>  /*
+> >>   * Internal ECC layout control structure. For historical reasons, there is a
+> >>   * similar, smaller struct nand_ecclayout_user (in mtd-abi.h) that is retained
+> >> diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+> >> index 763bb69..c4d592c 100644
+> >> --- a/include/uapi/mtd/mtd-abi.h
+> >> +++ b/include/uapi/mtd/mtd-abi.h
+> >> @@ -220,8 +220,8 @@ struct nand_oobfree {
+> >>       __u32 length;
+> >>  };
+> >>
+> >> -#define MTD_MAX_OOBFREE_ENTRIES      8
+> >> -#define MTD_MAX_ECCPOS_ENTRIES       64
+> >> +#define MTD_MAX_OOBFREE_ENTRIES      32
+> >> +#define MTD_MAX_ECCPOS_ENTRIES       1216
+> >
+> > NAK. This is part of the ABI, and changing this will break user space.
+> > If you actually bothered to read code, you might understand why there
+> > are now internal and external versions of this struct. The external
+> > (user space) version cannot be changed. The internal version can be
+> > refactored, as long as the external version still maintains some sanity,
+> > at least for old/small devices.
+> 
+> Sorry, I am confused here.
+> Arasan nand controller supports 24 bit ecc and uses BCH algorithm. So,
+> it requires
+> 672 ecc positions. in this case, how the user space know which are the free
+> slots available in spare area?
+> because as per the above definitions only 64 positions can be defined.
+
+If you actually need to know this info from user space, then you need to
+define a new interface to expose that. The existing one is legacy, and
+it is insufficient for most modern use cases. It won't work for you.
+
+Other mechanisms can already help you though. For one, auto-placed OOB
+(e.g., 'nandwrite --autoplace') can let the MTD layer automatically put
+your data into the available spare area.
+
+Why do you need to access the spare area anyway? Modern NAND filesystems
+shouldn't really be storing anything there anyway.
 
 Brian
