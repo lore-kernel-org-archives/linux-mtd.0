@@ -1,27 +1,25 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3ULV-0007Lc-E9
- for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 19:42:45 +0000
-Received: by pacdm15 with SMTP id dm15so194272532pac.3
- for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 11:42:24 -0800 (PST)
-Date: Mon, 30 Nov 2015 11:42:22 -0800
+ id 1a3UXY-0005Kx-Rh
+ for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 19:55:14 +0000
+Received: by pacdm15 with SMTP id dm15so194572135pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 11:54:52 -0800 (PST)
+Date: Mon, 30 Nov 2015 11:54:49 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Stable <stable@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: include mtd.h header for struct mtd_info
- definition
-Message-ID: <20151130194222.GH64635@google.com>
-References: <1448525104-20101-1-git-send-email-zajec5@gmail.com>
- <CACna6rxs==Be4Ua_AUuqZgc8ey0DYXrgUOe=7TqxBEEF7AOzKw@mail.gmail.com>
- <20151127223340.GB19615@localhost>
- <CACna6ryU3AorbbL3f7REVueREHJZMfZpvoZs0ijVj1SNG4Z6ng@mail.gmail.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: tony@atomide.com, dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
+ javier@dowhile0.org, fcooper@ti.com, nsekhar@ti.com,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+Message-ID: <20151130195449.GI64635@google.com>
+References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
+ <20151026212346.GJ13239@google.com> <562F45BF.8020205@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6ryU3AorbbL3f7REVueREHJZMfZpvoZs0ijVj1SNG4Z6ng@mail.gmail.com>
+In-Reply-To: <562F45BF.8020205@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,28 +29,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Nov 28, 2015 at 03:05:26PM +0100, Rafał Miłecki wrote:
-> On 27 November 2015 at 23:33, Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Fri, Nov 27, 2015 at 10:25:55AM +0100, Rafał Miłecki wrote:
-> >> On 26 November 2015 at 09:05, Rafał Miłecki <zajec5@gmail.com> wrote:
-> >> > Fixes: 1976367173a4 ("mtd: spi-nor: embed struct mtd_info within struct spi_nor")
-> >
-> > I'm not 100% sure, but I thought I recall the -stable folks picking up
-> > for-linus commits just based on the 'Fixes:' tags. I feel like that
-> > isn't always ideal, though.
+Hi Roger,
+
+On Tue, Oct 27, 2015 at 11:37:03AM +0200, Roger Quadros wrote:
+> On 26/10/15 23:23, Brian Norris wrote:
+> > I'm not too familiar with OMAP platforms, and I might have missed out on
+> > prior discussions/context, so please forgive if I'm asking silly or old
+> > questions here.
 > 
-> I'm confused. Do you mean I shouldn't include it?
+> No worries at all.
+> 
+> > 
+> > On Fri, Sep 18, 2015 at 05:53:22PM +0300, Roger Quadros wrote:
+> >> - Remove NAND IRQ handling from omap-gpmc driver, share the GPMC IRQ
+> >> with the omap2-nand driver and handle NAND IRQ events in the NAND driver.
+> >> This causes performance increase when using prefetch-irq mode.
+> >> 30% increase in read, 17% increase in write in prefetch-irq mode.
+> > 
+> > Have you pinpointed the exact causes for the performance increase, or
+> > can you give an educated guess? AIUI, you're reducing the number of
+> > interrupts needed for NAND prefetch mode, but you're also removing a bit
+> > of abstraction and implementing hooks that look awfully like the
+> > existing abstractions:
+> > 
+> > +       int (*nand_irq_enable)(enum gpmc_nand_irq irq);
+> > +       int (*nand_irq_disable)(enum gpmc_nand_irq irq);
+> > +       void (*nand_irq_clear)(enum gpmc_nand_irq irq);
+> > +       u32 (*nand_irq_status)(void);
+> > 
+> > That's not really a problem if there's a good reason for them (brcmnand
+> > implements similar hooks because of quirks in the implementation of
+> > interrupts across various BRCM SoCs, and it's not worth writing irqchip
+> > drivers for those cases). I'm mainly curious for an explanation.
+> 
+> I have both implementations with me. My guess is that the 20% performance
+> gain is due to absence of irqchip/irqdomain translation code.
+> I haven't investigated further though.
 
-No, the 'Fixes' usage is fine. I'm just not clear what importance is
-placed on it by others.
+I don't have much context for whether this makes sense or not. According
+to your tests, you're getting ~800K interrupts over ~15 seconds. So
+should you start noticing performance hits due to abstraction at 53K
+interrupts per second?
 
-> Do you have a reference to more detailed Fixes usage? All I found is
-> info in Documentation/SubmittingPatches:
-> > If your patch fixes a bug in a specific commit, e.g. you found an issue using
-> > git-bisect, please use the 'Fixes:' tag
-> I think 'Fixes' usage is OK in this case.
+But anyway, I'm not sure that completely answered my question. My
+question was whether you were removing the irqchip code solely for
+performance reasons, or are there others?
 
-I don't have any better reference. Perhaps I'm completely mistaken, and
-'Fixes' is never taken as the sole source of for-stable annotation.
+> Another concern I have is that I'm not using any locking around
+> gpmc_nand_irq_enable/disable(). Could this pose problems in multiple NAND
+> use cases? My understanding is that it should not as the controller access
+> is serialized between multiple NAND chips.
+
+Right, if you're touching just a NAND interrupt, and it's only used by a
+single instance of this NAND controller, then the NAND controller
+serialization code will handle this for you.
+
+> However I do need to add some locking as the GPMC_IRQENABLE register is shared
+> between NAND and GPMC driver.
+> 
+> NOTE: We are not using prefetch-irq mode for any of the OMAP boards because
+> of lesser performance than prefetch-polled mode. So if the less performance
+> for an unused mode is a lesser concern compared to cleaner code then
+> I can resend this with the irqdomain implementation.
+> 
+> Below are performance logs of irqdomain vs hooks.
+> 
+> --
+> cheers,
+> -roger
+> 
+> test logs.
+
+[snip]
 
 Brian
