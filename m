@@ -1,20 +1,28 @@
-Date: Mon, 30 Nov 2015 17:15:49 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, tglx@linutronix.de
-Subject: Re: [PATCH] mtd: nand: do FIFO processing in nand_get_device()
-Message-ID: <20151130161549.GL17308@twins.programming.kicks-ass.net>
-References: <1448302147-19272-1-git-send-email-bigeasy@linutronix.de>
- <1448302147-19272-2-git-send-email-bigeasy@linutronix.de>
- <20151123181811.GO17308@twins.programming.kicks-ass.net>
- <20151125173543.GA17151@linutronix.de>
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a3RXO-0007uK-7w
+ for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 16:42:52 +0000
+Date: Mon, 30 Nov 2015 16:42:23 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>, Martin Sperl <martin@sperl.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Message-ID: <20151130164223.GE1929@sirena.org.uk>
+References: <20151120120502.GT31303@sirena.org.uk>
+ <08871ECD-52DF-4CBF-AF3D-4C3A442C008A@sperl.org>
+ <20151121134946.GI26072@sirena.org.uk> <56507B3B.4080608@gmail.com>
+ <CAOMqctR=UDEPbgJDY3YvxpbVEEp4t6ajkyv=cVAZp2fLBNBanA@mail.gmail.com>
+ <5650F7D4.1090209@gmail.com> <20151122131626.GN26072@sirena.org.uk>
+ <5651EA08.5090400@gmail.com> <20151123113846.GH1929@sirena.org.uk>
+ <5658AE7C.3050507@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="Tk7bxryrhVQGv1nz"
 Content-Disposition: inline
-In-Reply-To: <20151125173543.GA17151@linutronix.de>
+In-Reply-To: <5658AE7C.3050507@gmail.com>
+Subject: Re: [PATCH 1/3] spi: core: add max_msg_size to spi_master
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,75 +32,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 25, 2015 at 06:35:43PM +0100, Sebastian Andrzej Siewior wrote:
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -137,8 +137,25 @@ static void nand_release_device(struct mtd_info *mtd)
->  	/* Release the controller and the chip */
->  	spin_lock(&chip->controller->lock);
->  	chip->controller->active = NULL;
-> -	chip->state = FL_READY;
-> -	wake_up(&chip->controller->wq);
-> +
-> +	if (waitqueue_active(&chip->controller->wq)) {
-> +		wait_queue_head_t *q;
-> +		wait_queue_t *waiter;
-> +		unsigned long flags;
-> +
-> +		q = &chip->controller->wq;
-> +		chip->state = FL_HANDOVER;
-> +
-> +		spin_lock_irqsave(&q->lock, flags);
 
-This lock is actually not required, as your add/remove_wait_queue calls
-are also under chip->controller->lock.
+--Tk7bxryrhVQGv1nz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +		waiter = list_first_entry(&q->task_list, wait_queue_t,
-> +					  task_list);
-> +		spin_unlock_irqrestore(&q->lock, flags);
+On Fri, Nov 27, 2015 at 08:26:52PM +0100, Heiner Kallweit wrote:
+> Am 23.11.2015 um 12:38 schrieb Mark Brown:
 
-And the one read instruction under a spinlock is a tad pointless anyway.
+> > No, for the clients so they aren't peering at the struct.
 
-> +
-> +		chip->controller->handover_waiter = waiter;
+> Sure, do you think of a simple getter like this or a more complex thing?
 
-You could consider using ->active for this; as it stands you never use
-both at the same time. Its a tad icky, but it avoids adding that new
-field.
+> size_t spi_get_max_msg_size(struct spi_master *master)
+> {
+> 	return master->max_msg_size;
+> }
 
-> +		wake_up(q);
-> +	} else {
-> +		chip->state = FL_READY;
-> +	}
->  	spin_unlock(&chip->controller->lock);
->  }
->  
-> @@ -843,10 +860,18 @@ nand_get_device(struct mtd_info *mtd, int new_state)
->  	if (!chip->controller->active)
->  		chip->controller->active = chip;
->  
-> -	if (chip->controller->active == chip && chip->state == FL_READY) {
-> -		chip->state = new_state;
-> -		spin_unlock(lock);
-> -		return 0;
-> +	if (chip->controller->active == chip) {
-> +		if (chip->state == FL_READY) {
-> +			chip->state = new_state;
-> +			spin_unlock(lock);
-> +			return 0;
-> +		}
-> +		if (chip->state == FL_HANDOVER &&
-> +		    chip->controller->handover_waiter == &wait) {
-> +			chip->state = new_state;
-> +			spin_unlock(lock);
-> +			return 0;
-> +		}
->  	}
+That's fine, the point is to allow it to get complicated later rather
+than that we have anything else to put in there right now.
 
-That means this would become:
+--Tk7bxryrhVQGv1nz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	if (chip->state == FL_HANDOVER && chip->controller->active == &wait) {
-		chip->controller->active = chip;
-		chip->state = new_state;
-	}
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-	... existing code ...
+iQEcBAEBCAAGBQJWXHxuAAoJECTWi3JdVIfQhz8H/j6Q8safY93quZf53Pc3ZifY
+MebdOPRqkXqW4jqJbDWJlMZWQxQT9GN8pX2jXpJ5ET+uuve6AnBKBZF2aTKOWJBK
+XxSAEkIywhVmrjOv1ihsvjx6rZe+hKrBrXC/I7p0Krxzlq0Kv3rUsK0J/51E7+jZ
+Cu73/qRyGc6/Y1tWhH/25UFL6ii0YyPRC9SAaxiuxYTmFcQh8L+vUgdSGHpuqptX
+uhgP0bBCEUSj0yZZre2ZUkd97rO2ZN7hqgoWf+1pGUrkDDBLkoUWav2Gnhjqp35h
+Er2+pA0iH7xQSHeAWa0m0tswxRvLvmJshHMxhaC6hbD/e2FWhqM/8hcFRxNhpPI=
+=pmZU
+-----END PGP SIGNATURE-----
+
+--Tk7bxryrhVQGv1nz--
