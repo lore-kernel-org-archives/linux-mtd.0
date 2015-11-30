@@ -7,9 +7,11 @@ CC: Rob Herring <robh+dt@kernel.org>, Russell King <linux@arm.linux.org.uk>,
  <linux-arm-kernel@lists.infradead.org>,
  <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
  Vignesh R <vigneshr@ti.com>
-Subject: [PATCH v4 0/5] Add memory mapped read support for ti-qspi
-Date: Mon, 30 Nov 2015 10:45:10 +0530
-Message-ID: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
+Subject: [PATCH v4 3/5] mtd: devices: m25p80: add support for mmap read request
+Date: Mon, 30 Nov 2015 10:45:13 +0530
+Message-ID: <1448860515-28336-4-git-send-email-vigneshr@ti.com>
+In-Reply-To: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
+References: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,56 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Changes since v3:
-Rework to introduce spi_flash_read_message struct.
-Support different opcode/addr/data formats as per Brian's suggestion
-here: https://lkml.org/lkml/2015/11/11/454
+Certain spi controllers may provide accelerated interface to read from
+m25p80 type flash devices. This interface provides better read
+performance than regular SPI interface.
+Call spi_flash_read(), if supported, to make use of such interface.
 
-Changes since v2:
-Remove mmap_lock_mutex.
-Optimize enable/disable of mmap mode.
+Signed-off-by: Vignesh R <vigneshr@ti.com>
+---
 
-Changes since v1:
-Introduce API in SPI core that MTD flash driver can call for mmap read
-instead of directly calling spi-master driver callback. This API makes
-sure that SPI core msg queue is locked during mmap transfers.
-v1: https://lkml.org/lkml/2015/9/4/103
+v4: 
+ * Use spi_flash_read_message struct to pass args.
+ * support passing of opcode/addr/data nbits.
 
+ drivers/mtd/devices/m25p80.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-Cover letter:
-
-This patch series adds support for memory mapped read port of ti-qspi.
-ti-qspi has a special memory mapped port through which SPI flash
-memories can be accessed directly via SoC specific memory region.
-
-First patch adds a method to pass flash specific information like read
-opcode, dummy bytes etc and to request mmap read. Second patch
-implements mmap read method in ti-qspi driver. Patch 3 adapts m25p80 to
-use mmap read method before trying normal SPI transfer. Patch 4 and 5
-add memory map region DT entries for DRA7xx and AM43xx SoCs.
-
-This patch series is based on the discussions here:
-http://www.spinics.net/lists/linux-spi/msg04796.html
-
-Tested on DRA74 EVM and AM437x-SK.
-Read performance increases from ~100kB/s to ~2.5MB/s.
-
-
-Vignesh R (5):
-  spi: introduce accelerated read support for spi flash devices
-  spi: spi-ti-qspi: add mmap mode read support
-  mtd: devices: m25p80: add support for mmap read request
-  ARM: dts: DRA7: add entry for qspi mmap region
-  ARM: dts: AM4372: add entry for qspi mmap region
-
- Documentation/devicetree/bindings/spi/ti_qspi.txt |  19 +++-
- arch/arm/boot/dts/am4372.dtsi                     |   4 +-
- arch/arm/boot/dts/dra7.dtsi                       |   7 +-
- drivers/mtd/devices/m25p80.c                      |  20 +++++
- drivers/spi/spi-ti-qspi.c                         | 101 ++++++++++++++++++++--
- drivers/spi/spi.c                                 |  45 ++++++++++
- include/linux/spi/spi.h                           |  41 +++++++++
- 7 files changed, 225 insertions(+), 12 deletions(-)
-
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index fe9ceb7b5405..00094a668c62 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -131,6 +131,26 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	/* convert the dummy cycles to the number of bytes */
+ 	dummy /= 8;
+ 
++	if (spi_flash_read_supported(spi)) {
++		struct spi_flash_read_message msg;
++		int ret;
++
++		msg.buf = buf;
++		msg.from = from;
++		msg.len = len;
++		msg.read_opcode = nor->read_opcode;
++		msg.addr_width = nor->addr_width;
++		msg.dummy_bytes = dummy;
++		/* TODO: Support other combinations */
++		msg.opcode_nbits = SPI_NBITS_SINGLE;
++		msg.addr_nbits = SPI_NBITS_SINGLE;
++		msg.data_nbits = m25p80_rx_nbits(nor);
++
++		ret = spi_flash_read(spi, &msg);
++		*retlen = msg.retlen;
++		return ret;
++	}
++
+ 	spi_message_init(&m);
+ 	memset(t, 0, (sizeof t));
+ 
 -- 
 2.6.3
