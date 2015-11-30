@@ -1,23 +1,26 @@
-Received: from arrakis.dune.hu ([78.24.191.176])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3Rzt-0007ab-O1
- for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 17:12:19 +0000
-Subject: Re: [PATCH] Revert "mtd: spi-nor: disable protection for Winbond
- flash at startup"
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-References: <1448555221-24257-1-git-send-email-nbd@openwrt.org>
- <CAAEAJfDk=21tvXRMtpgckct9pKjUkmWJ9hPDikgt88sxhpvQ6A@mail.gmail.com>
- <565A26D6.5090504@openwrt.org>
- <CAAEAJfCjjAQaECdbLa=w4tpHre+g_T7b6PfrF=K1CeFxE_7xFQ@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-From: Felix Fietkau <nbd@openwrt.org>
-Message-ID: <565C8350.3000508@openwrt.org>
-Date: Mon, 30 Nov 2015 18:11:44 +0100
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a3SDt-0000VQ-KS
+ for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 17:26:46 +0000
+Date: Mon, 30 Nov 2015 09:26:19 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ ezequiel@vanguardiasur.com.ar, javier@dowhile0.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, fcooper@ti.com
+Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+Message-ID: <20151130172619.GF2517@atomide.com>
+References: <20151006100000.GN23801@atomide.com> <56139CE9.8020002@ti.com>
+ <5613A256.8000105@ti.com> <20151006110134.GO23801@atomide.com>
+ <5613ABEF.9000904@ti.com> <20151016212510.GF24370@atomide.com>
+ <562496DB.4050803@ti.com> <56274D69.1090402@ti.com>
+ <20151021152028.GO3078@atomide.com> <5629DD1F.60506@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAEAJfCjjAQaECdbLa=w4tpHre+g_T7b6PfrF=K1CeFxE_7xFQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5629DD1F.60506@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,63 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2015-11-30 15:50, Ezequiel Garcia wrote:
-> On 28 November 2015 at 19:12, Felix Fietkau <nbd@openwrt.org> wrote:
->> On 2015-11-28 22:56, Ezequiel Garcia wrote:
->>> On 26 November 2015 at 13:27, Felix Fietkau <nbd@openwrt.org> wrote:
->>>> This reverts commit c6fc2171b249e73745c497b578b417a2946f1b2f.
->>>>
->>>> This commit is breaking read access on at least s25fl064k, but also
->>>> possibly other Spansion flash chips.
->>>>
->>>> Any mtd read seems to succeed, but simply returns a zero-filled buffer.
->>>>
->>>> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
->>>> ---
->>>>  drivers/mtd/spi-nor/spi-nor.c | 7 +++----
->>>>  1 file changed, 3 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->>>> index 4988390..8b8842e 100644
->>>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>>> @@ -1194,14 +1194,13 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->>>>         mutex_init(&nor->lock);
->>>>
->>>>         /*
->>>> -        * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
->>>> -        * with the software protection bits set
->>>> +        * Atmel, SST and Intel/Numonyx serial nor tend to power
->>>> +        * up with the software protection bits set
->>>>          */
->>>>
->>>>         if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
->>>>             JEDEC_MFR(info) == SNOR_MFR_INTEL ||
->>>> -           JEDEC_MFR(info) == SNOR_MFR_SST ||
->>>> -           JEDEC_MFR(info) == SNOR_MFR_WINBOND) {
->>>> +           JEDEC_MFR(info) == SNOR_MFR_SST) {
->>>>                 write_enable(nor);
->>>>                 write_sr(nor, 0);
->>>>         }
->>>
->>> As Brian mentioned, this looks definitely fishy.
->>>
->>> IIUC, the above statement is trying to unlock flashes that power-up as
->>> locked. But you say your flash is still locked after booting? And
->>> moreover, removing the unlock quirk fixes it?
->> The flash isn't locked when the system boots, reads and writes work just
->> fine.
->>
->>> I think a more complete description of your problem might help us fix
->>> this the right way. Perhaps the above line clearing the status
->>> register is wrong?
->> Without the write_enable/write_sr, the flash is readable and writable.
->> With it, any reads return only null-bytes as data. What other info about
->> the problem do you need?
->>
+* Roger Quadros <rogerq@ti.com> [151023 00:09]:
+> On 21/10/15 18:20, Tony Lindgren wrote:
+> > * Roger Quadros <rogerq@ti.com> [151021 01:31]:
+> >>
+> >> I couldn't run randconfig beyond few iterations as it keeps failing
+> >> everywhere. How do we limit the randconfig options to OMAP only
+> >> platforms?
+> > 
+> > You can use Felipe's scripts from github.
 > 
-> Well, printing the status register right before a read (i.e. when the
-> problem shows) might help understand what's going on.
-Will do that once I have access to suitable test hardware again.
+> Thanks. I used his scripts and ran 10 randconfigs per platform.
+> Didn't find any issues with this series.
+> 
+> How can we proceed?
+> Patches are on https://github.com/rogerq/linux/commits/for-v4.4/gpmc-v4
 
-- Felix
+Sorry for the delay on this one. I suggest you get this series into
+linux next and then we can merge it for v4.5 via arm-soc as long as
+the pending comments are addressed. As far as I'm concerned, feel free
+to add for the whole series:
+
+Acked-by: Tony Lindgren <tony@atomide.com>
+
+Regards,
+
+Tony
