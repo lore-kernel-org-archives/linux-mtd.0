@@ -1,23 +1,17 @@
-Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a31qA-0005dW-Al
- for linux-mtd@lists.infradead.org; Sun, 29 Nov 2015 13:16:31 +0000
-Received: by wmww144 with SMTP id w144so106095020wmw.0
- for <linux-mtd@lists.infradead.org>; Sun, 29 Nov 2015 05:16:08 -0800 (PST)
+From: Vignesh R <vigneshr@ti.com>
+To: Tony Lindgren <tony@atomide.com>, Brian Norris
+ <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>
+CC: Rob Herring <robh+dt@kernel.org>, Russell King <linux@arm.linux.org.uk>,
+ <hramrach@gmail.com>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
+ Vignesh R <vigneshr@ti.com>
+Subject: [PATCH v4 0/5] Add memory mapped read support for ti-qspi
+Date: Mon, 30 Nov 2015 10:45:10 +0530
+Message-ID: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAEAJfAnTbRxEYVGHD-=XiJULmPzANLGWMvDCYAv69Uns1Kq=Q@mail.gmail.com>
-References: <5615780D.7050407@gmail.com> <20151120232836.GC64635@google.com>
- <CAOMqctRDMqsJAAiUFw6jbhTeCCp1yKPtpqke7c0PnqTavAUTwg@mail.gmail.com>
- <CAAEAJfAnTbRxEYVGHD-=XiJULmPzANLGWMvDCYAv69Uns1Kq=Q@mail.gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Sun, 29 Nov 2015 14:15:29 +0100
-Message-ID: <CAOMqctRpmqHn87qvdFtpg4ZeOD92M-rUWwtfPUdtNEP0TsToqg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: handle failed spi_write in m25p80_erase
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Heiner Kallweit <hkallweit1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +21,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29 November 2015 at 12:34, Ezequiel Garcia
-<ezequiel@vanguardiasur.com.ar> wrote:
-> On 29 November 2015 at 08:18, Michal Suchanek <hramrach@gmail.com> wrote:
->> Hello,
->>
->> On 21 November 2015 at 00:28, Brian Norris <computersforpeace@gmail.com> wrote:
->>> On Wed, Oct 07, 2015 at 09:52:45PM +0200, Heiner Kallweit wrote:
->>>> Return an error if spi_write fails.
->>>>
->>>> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->>>> ---
->>>>  drivers/mtd/devices/m25p80.c | 4 +---
->>>>  1 file changed, 1 insertion(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->>>> index 634b0c4..f10daa8 100644
->>>> --- a/drivers/mtd/devices/m25p80.c
->>>> +++ b/drivers/mtd/devices/m25p80.c
->>>> @@ -171,9 +171,7 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
->>>>       flash->command[0] = nor->erase_opcode;
->>>>       m25p_addr2cmd(nor, offset, flash->command);
->>>>
->>>> -     spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
->>>> -
->>>> -     return 0;
->>>> +     return spi_write(flash->spi, flash->command, m25p_cmdsz(nor));
->>>>  }
->>>>
->>>>  /*
->>>
->>> m25p80_erase() has been dropped, as it can be implemented in spi-nor.c,
->>> with calls only to ->write_reg(). This error handling is done correctly
->>> there. See:
->>>
->>> cd78ea02dc82 ("mtd: m25p80: drop erase() callback")
->>> c67cbb839da9 ("mtd: spi-nor: provide default erase_sector implementation")
->>>
->>
->> Where are these patches applied?
->>
->
-> As per [1] latest MTD patches are in http://git.infradead.org/l2-mtd.git.
->
-> [1] http://www.linux-mtd.infradead.org/source.html
->
+Changes since v3:
+Rework to introduce spi_flash_read_message struct.
+Support different opcode/addr/data formats as per Brian's suggestion
+here: https://lkml.org/lkml/2015/11/11/454
 
-Yes, that has those patches.
+Changes since v2:
+Remove mmap_lock_mutex.
+Optimize enable/disable of mmap mode.
 
-Thanks
+Changes since v1:
+Introduce API in SPI core that MTD flash driver can call for mmap read
+instead of directly calling spi-master driver callback. This API makes
+sure that SPI core msg queue is locked during mmap transfers.
+v1: https://lkml.org/lkml/2015/9/4/103
 
-Michal
+
+Cover letter:
+
+This patch series adds support for memory mapped read port of ti-qspi.
+ti-qspi has a special memory mapped port through which SPI flash
+memories can be accessed directly via SoC specific memory region.
+
+First patch adds a method to pass flash specific information like read
+opcode, dummy bytes etc and to request mmap read. Second patch
+implements mmap read method in ti-qspi driver. Patch 3 adapts m25p80 to
+use mmap read method before trying normal SPI transfer. Patch 4 and 5
+add memory map region DT entries for DRA7xx and AM43xx SoCs.
+
+This patch series is based on the discussions here:
+http://www.spinics.net/lists/linux-spi/msg04796.html
+
+Tested on DRA74 EVM and AM437x-SK.
+Read performance increases from ~100kB/s to ~2.5MB/s.
+
+
+Vignesh R (5):
+  spi: introduce accelerated read support for spi flash devices
+  spi: spi-ti-qspi: add mmap mode read support
+  mtd: devices: m25p80: add support for mmap read request
+  ARM: dts: DRA7: add entry for qspi mmap region
+  ARM: dts: AM4372: add entry for qspi mmap region
+
+ Documentation/devicetree/bindings/spi/ti_qspi.txt |  19 +++-
+ arch/arm/boot/dts/am4372.dtsi                     |   4 +-
+ arch/arm/boot/dts/dra7.dtsi                       |   7 +-
+ drivers/mtd/devices/m25p80.c                      |  20 +++++
+ drivers/spi/spi-ti-qspi.c                         | 101 ++++++++++++++++++++--
+ drivers/spi/spi.c                                 |  45 ++++++++++
+ include/linux/spi/spi.h                           |  41 +++++++++
+ 7 files changed, 225 insertions(+), 12 deletions(-)
+
+-- 
+2.6.3
