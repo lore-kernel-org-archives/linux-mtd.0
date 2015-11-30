@@ -1,22 +1,21 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-io0-x232.google.com ([2607:f8b0:4001:c06::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3YGi-0001jQ-AW
- for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 23:54:05 +0000
-Received: by padhx2 with SMTP id hx2so200378569pad.1
- for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 15:53:43 -0800 (PST)
-Date: Mon, 30 Nov 2015 15:53:40 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 3/3] mtd: support a cleanup callback for partition parsers
-Message-ID: <20151130235340.GP64635@google.com>
-References: <1447989997-108476-1-git-send-email-computersforpeace@gmail.com>
- <1447989997-108476-4-git-send-email-computersforpeace@gmail.com>
- <20151130193624.152c032a@bbrezillon>
+ id 1a3YML-0004dE-S7
+ for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 23:59:54 +0000
+Received: by iouu10 with SMTP id u10so195371138iou.0
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 15:59:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151130193624.152c032a@bbrezillon>
+In-Reply-To: <20151130203518.GL64635@google.com>
+References: <1448519122-6259-1-git-send-email-mar.kolya@gmail.com>
+ <20151130203518.GL64635@google.com>
+Date: Mon, 30 Nov 2015 18:59:32 -0500
+Message-ID: <CALGY4fv1rbzng+aUbevJQRwj5X0R3NmzZ0iXz5ZNXxya0Rx6zw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: Fix Spansion sparearea size detection
+From: Nikolay Martynov <mar.kolya@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,121 +25,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi.
 
-On Mon, Nov 30, 2015 at 07:36:24PM +0100, Boris Brezillon wrote:
-> On Thu, 19 Nov 2015 19:26:37 -0800
-> Brian Norris <computersforpeace@gmail.com> wrote:
-> 
-> > If partition parsers need to clean up their resources, we shouldn't
-> > assume that all memory will fit in a single kmalloc() that the caller
-> > can kfree(). We should allow the parser to provide a proper cleanup
-> > routine.
-> > 
-> > Note that this means we need to keep a hold on the parser's module for a
-> > bit longer, and release it later with mtd_part_parser_put().
-> 
-> I like the general idea behind this patch but I would have done it
-> sightly differently. Here you are keeping the parser around and the
-> parse_mtd_partitions() caller is responsible for calling the
-> appropriate cleanup method and releasing the parser reference if any.
-> 
-> How about simplifying callers life by doing all this behind the scene
-> and keeping the parser reference directly inside the mtd_partition
-> object (see the following diff).
-> Of course this implies adding an extra ->parser field to all partitions
-> while all we need is one parser reference per partition array, but
-> IMHO, it also keeps the code more readable (I guess it's a matter of
-> taste).
-> Another solution would be to declare an mtd_partitions struct
-> containing the number of partitions, the partition array and a
-> reference to the partition parser, which would even further simplify
-> the caller logic (nr_parts would be directly available in the
-> mtd_partitions struct).
-> 
-> What do you think?
+  Thanks for your response!
+  I'm sorry, I only have board with S34ML02G2 and I've tested by
+change on it - it works fine. But unfortunately I do not have any way
+to test S34ML01G2.
+  It looks like that logic can be simplified if just check id_data[1]
+is one of 0xda, 0xdc, 0xca, 0xcc - this should be safer option.
 
-I guess I do like the idea of hiding the handling of the parser
-reference so mtd_device_parse_register() doesn't have to track the
-parser directly. I'll admit I didn't like yet another
-return-by-pointer-argument, but I didn't bother finding a better
-solution at the time.
+  I'm sorry, I'm very new to all this. This patch made kernel boot on
+a board that I have. The kernel was 'oldish' - 3.18. So I'm not sure
+why ONFI is not used here, I will see if I can figure it out.
 
-About the extra parser field: it's awkward that you assume the first
-partition has the reference, making all the other instances of that
-field pointless. Maybe a new mtd_partitions struct would be nice for
-encapsulating everything properly.
+Thanks!
 
-> Best Regards,
-> 
-> Boris
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index c8d5494..e0bd54d 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -630,7 +630,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
->  	}
->  
->  out:
-> -	kfree(real_parts);
-> +	mtd_part_cleanup(real_parts, nr_parts);
 
-I purposely distinguished the parsed partitions case from the "provided
-by driver" partitions. With your patch, you're letting
-mtd_part_cleanup() handle even the case where the parsing code did not
-generate 'real_parts'. Though that works for now, I think it's a bad
-choice. So we should still have something like:
+2015-11-30 15:35 GMT-05:00 Brian Norris <computersforpeace@gmail.com>:
+> Hi Nikolay,
+>
+> On Thu, Nov 26, 2015 at 01:25:22AM -0500, Nikolay Martynov wrote:
+>> According to datasheet S34ML02G2 and S34ML04G2 have
+>> larger sparea area size than was detected.
+>>
+>> Signed-off-by: Nikolay Martynov <mar.kolya@gmail.com>
+>> ---
+>>  drivers/mtd/nand/nand_base.c | 9 +++++++++
+>>  1 file changed, 9 insertions(+)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index ceb68ca..2c01f9e 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -3415,6 +3415,7 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+>>       /*
+>>        * Field definitions are in the following datasheets:
+>>        * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
+>> +      *                          Spansion S34ML02G2 (p.33)
+>>        * New Samsung (6 byte ID): Samsung K9GAG08U0F (p.44)
+>>        * Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22)
+>>        *
+>> @@ -3512,6 +3513,14 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+>>               *busw = (extid & 0x01) ? NAND_BUSWIDTH_16 : 0;
+>>
+>>               /*
+>> +              * Spansion S34ML0[24]G2 have oobsize twice as large
+>> +              * as S34ML01G2 encoded in the same bit. We
+>> +              * differentiate them by their ID length
+>
+> Hmm, are you sure the ID length heuristic works correctly for these
+> particular flash? i.e., did you actually test both of these flash?
+> Sometimes it's hard to tell if a device has a 4-byte or 5-byte ID just
+> from reading out bytes, since a "4-byte ID" NAND may just have a "don't
+> care" byte for the 5th one, and so we might still compute id_len == 5.
+>
+> Also, why do you even need nand_decode_ext_id() for these flash?
+> According to the datasheet, these flash support ONFI.
+>
+> Brian
+>
+>> +              */
+>> +             if (id_len == 5 && id_data[0] == NAND_MFR_AMD)
+>> +                     mtd->oobsize *= 2;
+>> +
+>> +             /*
+>>                * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
+>>                * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
+>>                * follows:
+>> --
+>> 2.6.3
+>>
 
-	if (parser /* or some other equivalent condition */ )
-		mtd_part_cleanup( /* stuff allocated in parse_mtd_partitions() */ );
-	else
-		kfree( /* stuff we allocated in mtd_device_parse_register() */ );
 
-But wait...why do we even kmemdup() anything in
-mtd_device_parse_register() at all? add_mtd_partitions() already makes
-sure to copy any relevant info, and it passes everything around as
-'const'. We should just drop the kmemdup() entirely.
 
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(mtd_device_parse_register);
-> diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
-> index 102cdef..b8a6e07 100644
-> --- a/drivers/mtd/mtdcore.h
-> +++ b/drivers/mtd/mtdcore.h
-> @@ -21,6 +21,25 @@ static inline void mtd_part_parser_put(struct mtd_part_parser *p)
->  	module_put(p->owner);
->  }
->  
-> +static inline void mtd_part_cleanup(struct mtd_partition *pparts, int nrparts)
-> +{
-> +	struct mtd_part_parser *parser = pparts->parser;
-> +
-> +	/* Some parsers provide their own cleanup function */
-> +	if (parser && parser->cleanup)
-> +		parser->cleanup(pparts, nrparts);
-> +	/*
-> +	 * Others have historically relied on the core to kfree() their data.
-> +	 * Retain this behavior for legacy.
-> +	 */
-> +	else
-> +		kfree(pparts);
-
-Now that I'm looking at my code again, I'm thinking this could work
-better as a default cleanup function. i.e., have __register_mtd_parser()
-assign parser->cleanup to something that just calls kfree().
-
-> +
-> +	/* Release the reference to the partition parser if any */
-> +	if (parser)
-> +		mtd_part_parser_put(parser);
-> +}
-> +
->  int __init init_mtdchar(void);
->  void __exit cleanup_mtdchar(void);
->  
-
-[snip]
-
-Brian
+-- 
+Martynov Nikolay.
+Email: mar.kolya@gmail.com
