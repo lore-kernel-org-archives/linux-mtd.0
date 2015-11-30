@@ -1,19 +1,16 @@
-From: Vignesh R <vigneshr@ti.com>
-To: Tony Lindgren <tony@atomide.com>, Brian Norris
- <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>
-CC: Rob Herring <robh+dt@kernel.org>, Russell King <linux@arm.linux.org.uk>,
- <hramrach@gmail.com>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
- Vignesh R <vigneshr@ti.com>
-Subject: [PATCH v4 5/5] ARM: dts: AM4372: add entry for qspi mmap region
-Date: Mon, 30 Nov 2015 10:45:15 +0530
-Message-ID: <1448860515-28336-6-git-send-email-vigneshr@ti.com>
-In-Reply-To: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
-References: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
+Received: from sessmg23.ericsson.net ([193.180.251.45])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a30P2-0003cT-D2
+ for linux-mtd@lists.infradead.org; Sun, 29 Nov 2015 11:44:25 +0000
+From: Goran Cengic <goran.cengic@ericsson.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: UBIFS node magic number off by single zero-byte
+Date: Mon, 30 Nov 2015 10:46:58 +0000
+Message-ID: <2F27BCDE355D444CB7EA7E1569D84650289D6DDD@ESESSMB203.ericsson.se>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +20,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add qspi memory mapped region entries for AM43xx based SoCs. Also,
-update the binding documents for the controller to document this change.
+Hi all,
 
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Vignesh R <vigneshr@ti.com>
----
+I've encountered a peculiar issue with the UBIFS failing to mount because o=
+f an unclean node.
+UBIFS complains that the node is unclean since it can't find the magic numb=
+er,
+however in the bytes dumped I can see that the magic number is there except=
+ that it is offset
+by a single zero-byte. Here is the log:
 
-v4: No changes.
+[11996.131746] UBIFS error (pid 1635): ubifs_check_node: bad magic 0x101831=
+00, expected 0x6101831
+[11996.150772] UBIFS error (pid 1635): ubifs_check_node: bad node at LEB 22=
+:4096
+[11996.157958] Not a node, first 24 bytes:
+[11996.161647] 00000000: 00 31 18 10 06 08 34 38 e5 cd 26 00 00 00 00 00 00=
+ a0 00 00 00 00 02 00                          .1....48..&.............
+[11996.174759] CPU: 0 PID: 1635 Comm: syslogd Tainted: G           O 3.10.6=
+2.R1A08-rt62 #1
+[11996.182824] [] (unwind_backtrace+0x0/0xe0) from [] (show_stack+0x10/0x14=
+)
+[11996.191405] [] (show_stack+0x10/0x14) from [] (ubifs_check_node+0x258/0x=
+280)
+[11996.200245] [] (ubifs_check_node+0x258/0x280) from [] (ubifs_read_node+0=
+x19c/0x26c)
+[11996.209693] [] (ubifs_read_node+0x19c/0x26c) from [] (ubifs_tnc_read_nod=
+e+0x44/0x11c)
+[11996.219311] [] (ubifs_tnc_read_node+0x44/0x11c) from [] (ubifs_tnc_locat=
+e+0x100/0x18c)
+[11996.229013] [] (ubifs_tnc_locate+0x100/0x18c) from [] (ubifs_iget+0x60/0=
+x5b8)
+[11996.237937] [] (ubifs_iget+0x60/0x5b8) from [] (ubifs_lookup+0x194/0x1c4=
+)
+[11996.246511] [] (ubifs_lookup+0x194/0x1c4) from [] (lookup_real+0x30/0x4c=
+)
+[11996.255079] [] (lookup_real+0x30/0x4c) from [] (do_last.isra.29+0x510/0x=
+b28)
+[11996.263913] [] (do_last.isra.29+0x510/0xb28) from [] (path_openat+0xa8/0=
+x428)
+[11996.272832] [] (path_openat+0xa8/0x428) from [] (do_filp_open+0x2c/0x78)
+[11996.281317] [] (do_filp_open+0x2c/0x78) from [] (do_sys_open+0xf8/0x184)
+[11996.289802] [] (do_sys_open+0xf8/0x184) from [] (ret_fast_syscall+0x0/0x=
+30)
+[11996.298543] UBIFS error (pid 1635): ubifs_read_node: expected node type =
+0
+[11996.305365] UBIFS error (pid 1635): ubifs_iget: failed to read inode 94,=
+ error -117
+[11996.313071] UBIFS error (pid 1635): ubifs_lookup: dead directory entry '=
+messages', error -117
 
- Documentation/devicetree/bindings/spi/ti_qspi.txt | 5 +++--
- arch/arm/boot/dts/am4372.dtsi                     | 4 +++-
- 2 files changed, 6 insertions(+), 3 deletions(-)
+I see this issue on kernel v3.10 and I've googled it but have come up with =
+nothing.=20
+I'm unable to reproduce the issue deterministically but it shows up randoml=
+y on
+a couple of different boards we run in our continuous integration setup and=
+ the symptom
+is always exactly the same even though the failed process might be differen=
+t.
 
-diff --git a/Documentation/devicetree/bindings/spi/ti_qspi.txt b/Documentation/devicetree/bindings/spi/ti_qspi.txt
-index 334aa3f32cbc..5a1542eda387 100644
---- a/Documentation/devicetree/bindings/spi/ti_qspi.txt
-+++ b/Documentation/devicetree/bindings/spi/ti_qspi.txt
-@@ -17,9 +17,10 @@ Recommended properties:
- 
- Example:
- 
-+For am4372:
- qspi: qspi@4b300000 {
--	compatible = "ti,dra7xxx-qspi";
--	reg = <0x47900000 0x100>, <0x30000000 0x3ffffff>;
-+	compatible = "ti,am4372-qspi";
-+	reg = <0x47900000 0x100>, <0x30000000 0x4000000>;
- 	reg-names = "qspi_base", "qspi_mmap";
- 	#address-cells = <1>;
- 	#size-cells = <0>;
-diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
-index d83ff9c9701e..e32d164102d1 100644
---- a/arch/arm/boot/dts/am4372.dtsi
-+++ b/arch/arm/boot/dts/am4372.dtsi
-@@ -963,7 +963,9 @@
- 
- 		qspi: qspi@47900000 {
- 			compatible = "ti,am4372-qspi";
--			reg = <0x47900000 0x100>;
-+			reg = <0x47900000 0x100>,
-+			      <0x30000000 0x4000000>;
-+			reg-names = "qspi_base", "qspi_mmap";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			ti,hwmods = "qspi";
--- 
-2.6.3
+I wonder if anyone on the list has seen anything similar?
+
+With kind regards,
+
+	Goran
