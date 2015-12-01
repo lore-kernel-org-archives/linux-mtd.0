@@ -1,26 +1,19 @@
-Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3oH3-00027S-Bz
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 16:59:30 +0000
-Date: 1 Dec 2015 16:51:04 -0000
-Message-Id: <777e381ffb750354e51e347af36994c86ad91035.1448988089.git.hramrach@gmail.com>
-In-Reply-To: <cover.1448988089.git.hramrach@gmail.com>
-References: <cover.1448988089.git.hramrach@gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v5 04/10] mtd: spi-nor: check return value from read/write
-To: Heiner Kallweit <hkallweit1@gmail.com>,
-  David Woodhouse <dwmw2@infradead.org>,
-  Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
-  Mark Brown <broonie@kernel.org>, Michal Suchanek <hramrach@gmail.com>,
-  Boris Brezillon <boris.brezillon@free-electrons.com>,
-  Javier Martinez Canillas <javier@osg.samsung.com>,
-  Stephen Warren <swarren@nvidia.com>, "Andrew F. Davis" <afd@ti.com>,
-  Marek Vasut <marex@denx.de>, "Rafał Miłecki" <zajec5@gmail.com>,
-  Mika Westerberg <mika.westerberg@linux.intel.com>,
-  Gabor Juhos <juhosg@openwrt.org>,
-  "Bean Huo 霍斌斌 " <beanhuo@micron.com>,
-  Furquan Shaikh <furquan@google.com>, linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+Received: from mail-gw1-out.broadcom.com ([216.31.210.62])
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a3SyI-0004wr-Rj
+ for linux-mtd@lists.infradead.org; Mon, 30 Nov 2015 18:14:44 +0000
+Subject: Re: [PATCH] mtd: brcmnand: drop brcmnand_host::of_node field
+To: Brian Norris <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+References: <1448935287-144366-1-git-send-email-computersforpeace@gmail.com>
+CC: Julia Lawall <julia.lawall@lip6.fr>,
+ <bcm-kernel-feedback-list@broadcom.com>, Kamal Dasu <kdasu.kdev@gmail.com>
+From: Scott Branden <sbranden@broadcom.com>
+Message-ID: <565DD627.5010400@broadcom.com>
+Date: Tue, 1 Dec 2015 09:17:27 -0800
+MIME-Version: 1.0
+In-Reply-To: <1448935287-144366-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,128 +23,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SPI NOR hardware drivers now return useful value from their read/write
-functions so check them.
+Looks good.
 
-Signed-off-by: Michal Suchanek <hramrach@gmail.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 50 +++++++++++++++++++++++++++++++------------
- 1 file changed, 36 insertions(+), 14 deletions(-)
+On 15-11-30 06:01 PM, Brian Norris wrote:
+> We don't actually need to stash a copy of this device_node indefinitely;
+> we only need it in brcmnand_init_cs().
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: <bcm-kernel-feedback-list@broadcom.com>
+> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+Acked-by: Scott Branden <sbranden@broadcom.com>
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index b7c038c..5f91bfa 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -910,7 +910,10 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	ret = nor->read(nor, from, len, retlen, buf);
- 
- 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
- }
- 
- static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
-@@ -936,10 +939,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		nor->program_opcode = SPINOR_OP_BP;
- 
- 		/* write one byte. */
--		nor->write(nor, to, 1, retlen, buf);
-+		ret = nor->write(nor, to, 1, retlen, buf);
-+		if (ret < 0)
-+			goto sst_write_err;
-+		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
-+		     (int)ret);
- 		ret = spi_nor_wait_till_ready(nor);
- 		if (ret)
--			goto time_out;
-+			goto sst_write_err;
- 	}
- 	to += actual;
- 
-@@ -948,10 +955,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		nor->program_opcode = SPINOR_OP_AAI_WP;
- 
- 		/* write two bytes. */
--		nor->write(nor, to, 2, retlen, buf + actual);
-+		ret = nor->write(nor, to, 2, retlen, buf + actual);
-+		if (ret < 0)
-+			goto sst_write_err;
-+		WARN(ret != 2, "While writing 2 bytes written %i bytes\n",
-+		     (int)ret);
- 		ret = spi_nor_wait_till_ready(nor);
- 		if (ret)
--			goto time_out;
-+			goto sst_write_err;
- 		to += 2;
- 		nor->sst_write_second = true;
- 	}
-@@ -960,21 +971,24 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	write_disable(nor);
- 	ret = spi_nor_wait_till_ready(nor);
- 	if (ret)
--		goto time_out;
-+		goto sst_write_err;
- 
- 	/* Write out trailing byte if it exists. */
- 	if (actual != len) {
- 		write_enable(nor);
- 
- 		nor->program_opcode = SPINOR_OP_BP;
--		nor->write(nor, to, 1, retlen, buf + actual);
--
-+		ret = nor->write(nor, to, 1, retlen, buf + actual);
-+		if (ret < 0)
-+			goto sst_write_err;
-+		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
-+		     (int)ret);
- 		ret = spi_nor_wait_till_ready(nor);
- 		if (ret)
--			goto time_out;
-+			goto sst_write_err;
- 		write_disable(nor);
- 	}
--time_out:
-+sst_write_err:
- 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
- 	return ret;
- }
-@@ -1003,14 +1017,18 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- 	/* do all the bytes fit onto one page? */
- 	if (page_offset + len <= nor->page_size) {
--		nor->write(nor, to, len, retlen, buf);
-+		ret = nor->write(nor, to, len, retlen, buf);
-+		if (ret < 0)
-+			goto write_err;
- 	} else {
- 		/* the size of data remaining on the first page */
- 		page_size = nor->page_size - page_offset;
--		nor->write(nor, to, page_size, retlen, buf);
-+		ret = nor->write(nor, to, page_size, retlen, buf);
-+		if (ret < 0)
-+			goto write_err;
- 
- 		/* write everything in nor->page_size chunks */
--		for (i = page_size; i < len; i += page_size) {
-+		for (i = ret; i < len; ) {
- 			page_size = len - i;
- 			if (page_size > nor->page_size)
- 				page_size = nor->page_size;
-@@ -1021,7 +1039,11 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- 			write_enable(nor);
- 
--			nor->write(nor, to + i, page_size, retlen, buf + i);
-+			ret = nor->write(nor, to + i, page_size, retlen,
-+					 buf + i);
-+			if (ret < 0)
-+				goto write_err;
-+			i += ret;
- 		}
- 	}
- 
--- 
-2.6.2
+> ---
+>   drivers/mtd/nand/brcmnand/brcmnand.c | 7 ++-----
+>   1 file changed, 2 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index ad756f626f4b..35d78f739d91 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -176,7 +176,6 @@ struct brcmnand_cfg {
+>
+>   struct brcmnand_host {
+>   	struct list_head	node;
+> -	struct device_node	*of_node;
+>
+>   	struct nand_chip	chip;
+>   	struct mtd_info		mtd;
+> @@ -1902,10 +1901,9 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+>   	return 0;
+>   }
+>
+> -static int brcmnand_init_cs(struct brcmnand_host *host)
+> +static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
+>   {
+>   	struct brcmnand_controller *ctrl = host->ctrl;
+> -	struct device_node *dn = host->of_node;
+>   	struct platform_device *pdev = host->pdev;
+>   	struct mtd_info *mtd;
+>   	struct nand_chip *chip;
+> @@ -2239,9 +2237,8 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+>   			}
+>   			host->pdev = pdev;
+>   			host->ctrl = ctrl;
+> -			host->of_node = child;
+>
+> -			ret = brcmnand_init_cs(host);
+> +			ret = brcmnand_init_cs(host, child);
+>   			if (ret) {
+>   				devm_kfree(dev, host);
+>   				continue; /* Try all chip-selects */
+>
