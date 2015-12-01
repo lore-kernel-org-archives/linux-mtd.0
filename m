@@ -1,23 +1,31 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3a8E-0005VL-5k
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 01:53:26 +0000
-Received: by pacej9 with SMTP id ej9so203606663pac.2
- for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 17:53:05 -0800 (PST)
-Date: Mon, 30 Nov 2015 17:53:02 -0800
+ id 1a3aBL-0007IK-SK
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 01:56:40 +0000
+Received: by pacej9 with SMTP id ej9so203697915pac.2
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 17:56:17 -0800 (PST)
+Date: Mon, 30 Nov 2015 17:56:15 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Simon Arlott <simon@fire.lp0.eu>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Kevin Cernekee <cernekee@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
- Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: Re: [PATCH] brcmnand: Clear EXT_ADDR error registers in PIO mode
-Message-ID: <20151201015302.GU64635@google.com>
-References: <564A5333.9000200@simon.arlott.org.uk>
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org,
+ bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org,
+ Russell King - ARM Linux <linux@arm.linux.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Andrew Lunn <andrew@lunn.ch>, Bjorn Helgaas <bhelgaas@google.com>,
+ Jason Cooper <jason@lakedaemon.net>, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH 1/4 v2] mtd: brcmnand: improve memory management
+Message-ID: <20151201015615.GV64635@google.com>
+References: <1447884254-26336-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1447884254-26336-2-git-send-email-Julia.Lawall@lip6.fr>
+ <20151118224440.GC64635@google.com>
+ <alpine.DEB.2.02.1511190713140.2008@localhost6.localdomain6>
+ <20151119192632.GH64635@google.com>
+ <alpine.DEB.2.02.1511192231330.2106@localhost6.localdomain6>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <564A5333.9000200@simon.arlott.org.uk>
+In-Reply-To: <alpine.DEB.2.02.1511192231330.2106@localhost6.localdomain6>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +35,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 16, 2015 at 10:05:39PM +0000, Simon Arlott wrote:
-> If an error occurs in flash above 4GB in PIO mode then the EXT_ADDR
-> registers will be set to the location of the error and never cleared.
+On Thu, Nov 19, 2015 at 10:32:15PM +0100, Julia Lawall wrote:
+> This patch addresses two related memory management issues in the probe
+> function:
 > 
-> Reset them to 0 before reading.
+> 1. for_each_available_child_of_node performs an of_node_get on each
+> iteration, so a break out of the loop requires an of_node_put.
 > 
-> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+> A simplified version of the semantic patch that fixes this problem is as
+> follows (http://coccinelle.lip6.fr):
+> 
+> // <smpl>
+> @@
+> expression root,e;
+> local idexpression child;
+> @@
+> 
+>  for_each_available_child_of_node(root, child) {
+>    ... when != of_node_put(child)
+>        when != e = child
+> (
+>    return child;
+> |
+> +  of_node_put(child);
+> ?  return ...;
+> )
+>    ...
+>  }
+> // </smpl>
+> 
+> 2. The devm_kzalloc'd data is not used if brcmnand_init_cs fails.  Free it
+> immediately, using devm_kfree in this case, instead of waiting for the
+> remove function.
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+> 
 > ---
->  drivers/mtd/nand/brcmnand/brcmnand.c | 2 ++
->  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index 12c6190..2c8f67f 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -1400,6 +1400,8 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
->  	/* Clear error addresses */
->  	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_ADDR, 0);
->  	brcmnand_write_reg(ctrl, BRCMNAND_CORR_ADDR, 0);
-> +	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_EXT_ADDR, 0);
-> +	brcmnand_write_reg(ctrl, BRCMNAND_CORR_EXT_ADDR, 0);
->  
->  	brcmnand_write_reg(ctrl, BRCMNAND_CMD_EXT_ADDRESS,
->  			(host->cs << 16) | ((addr >> 32) & 0xffff));
+> v2: Drop of_node_get addition, as another patch will get rid of the need
+> for it completely.
 
-Applied to l2-mtd.git
+Pushed to l2-mtd.git
