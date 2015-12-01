@@ -1,11 +1,14 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3o9H-00066I-BG
+ id 1a3o9H-0006HJ-BC
  for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 16:51:29 +0000
-Date: 1 Dec 2015 16:51:03 -0000
-Message-Id: <cover.1448988089.git.hramrach@gmail.com>
+Date: 1 Dec 2015 16:51:04 -0000
+Message-Id: <ad10a42f8c502b9b91fcba05b3e46c42663e1141.1448988089.git.hramrach@gmail.com>
+In-Reply-To: <cover.1448988089.git.hramrach@gmail.com>
+References: <cover.1448988089.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v5 00/10] add error checking to spi-nor read and write
+Subject: [PATCH v5 03/10] mtd: fsl-quadspi: return amount of data read/written
+ or error
 To: Heiner Kallweit <hkallweit1@gmail.com>,
   David Woodhouse <dwmw2@infradead.org>,
   Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
@@ -28,39 +31,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Return amount of data read/written or error as read(2)/write(2) does.
 
-as this is getting discussed a lot lately I am sending a rebase of the spi-nor patchset on top of current MTD patch queue.
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-I need to do some testing of the rebase with some actual SPI device.
-
-However, I do not have the espi hardware and I hope to get testing on that platform as well.
-
-Also I would like to get comments on the integration of the spi_max_transfer_size
-
-Thanks
-
-Michal
-
-Michal Suchanek (10):
-  mtd: spi-nor: change return value of read/write
-  mtd: m25p80: return amount of data transferred or error in read/write
-  mtd: fsl-quadspi: return amount of data read/written or error
-  mtd: spi-nor: check return value from read/write
-  mtd: spi-nor: stop passing around retlen
-  mtd: spi-nor: simplify write loop
-  mtd: spi-nor: add read loop
-  spi: expose master transfer size limitation.
-  spi: fsl-espi: expose maximum transfer size limit
-  spi: m25p80: read in spi_max_transfer_size chunks
-
- drivers/mtd/devices/m25p80.c      | 34 +++++++++-----
- drivers/mtd/spi-nor/fsl-quadspi.c | 29 ++++++------
- drivers/mtd/spi-nor/spi-nor.c     | 95 +++++++++++++++++++++++++--------------
- drivers/spi/spi-fsl-espi.c        |  6 +++
- include/linux/mtd/spi-nor.h       |  8 ++--
- include/linux/spi/spi.h           | 15 +++++++
- 6 files changed, 125 insertions(+), 62 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 10d2b59..9beb739 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -575,7 +575,7 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
+ 	writel(reg, q->iobase + QUADSPI_MCR);
+ }
+ 
+-static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
++static ssize_t fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+ 				u8 opcode, unsigned int to, u32 *txbuf,
+ 				unsigned count, size_t *retlen)
+ {
+@@ -604,8 +604,11 @@ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+ 	/* Trigger it */
+ 	ret = fsl_qspi_runcmd(q, opcode, to, count);
+ 
+-	if (ret == 0 && retlen)
+-		*retlen += count;
++	if (ret == 0) {
++		if (retlen)
++			*retlen += count;
++		return count;
++	}
+ 
+ 	return ret;
+ }
+@@ -814,6 +817,8 @@ static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	} else if (len > 0) {
+ 		ret = fsl_qspi_nor_write(q, nor, opcode, 0,
+ 					(u32 *)buf, len, NULL);
++		if (ret > 0)
++			return 0;
+ 	} else {
+ 		dev_err(q->dev, "invalid cmd %d\n", opcode);
+ 		ret = -EINVAL;
+@@ -827,12 +832,12 @@ static ssize_t fsl_qspi_write(struct spi_nor *nor, loff_t to,
+ {
+ 	struct fsl_qspi *q = nor->priv;
+ 
+-	fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
++	ssize_t ret = fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
+ 				(u32 *)buf, len, retlen);
+ 
+ 	/* invalid the data in the AHB buffer. */
+ 	fsl_qspi_invalid(q);
+-	return 0;
++	return ret;
+ }
+ 
+ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
+@@ -878,8 +883,7 @@ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
+ 	memcpy(buf, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
+ 		len);
+ 
+-	*retlen += len;
+-	return 0;
++	return len;
+ }
+ 
+ static int fsl_qspi_erase(struct spi_nor *nor, loff_t offs)
 -- 
 2.6.2
