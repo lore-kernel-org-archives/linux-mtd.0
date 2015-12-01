@@ -1,22 +1,17 @@
-Date: Mon, 30 Nov 2015 17:56:37 -0800
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a3aGl-0004II-PW
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 02:02:16 +0000
+Received: by pabfh17 with SMTP id fh17so209961774pab.0
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 18:02:00 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: David Woodhouse <dwmw2@infradead.org>, kernel-janitors@vger.kernel.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Andrew Lunn <andrew@lunn.ch>, Bjorn Helgaas <bhelgaas@google.com>,
- Jason Cooper <jason@lakedaemon.net>
-Subject: Re: [PATCH 2/4] mtd: nand: sunxi: add missing of_node_put
-Message-ID: <20151201015637.GW64635@google.com>
-References: <1447884254-26336-1-git-send-email-Julia.Lawall@lip6.fr>
- <1447884254-26336-3-git-send-email-Julia.Lawall@lip6.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1447884254-26336-3-git-send-email-Julia.Lawall@lip6.fr>
+To: <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Julia Lawall <julia.lawall@lip6.fr>, bcm-kernel-feedback-list@broadcom.com,
+ Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH] mtd: brcmnand: drop brcmnand_host::of_node field
+Date: Mon, 30 Nov 2015 18:01:27 -0800
+Message-Id: <1448935287-144366-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +21,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 18, 2015 at 11:04:12PM +0100, Julia Lawall wrote:
-> for_each_child_of_node performs an of_node_get on each iteration, so
-> a break out of the loop requires an of_node_put.
-> 
-> A simplified version of the semantic patch that fixes this problem is as
-> follows (http://coccinelle.lip6.fr):
-> 
-> // <smpl>
-> @@
-> expression root,e;
-> local idexpression child;
-> @@
-> 
->  for_each_child_of_node(root, child) {
->    ... when != of_node_put(child)
->        when != e = child
-> (
->    return child;
-> |
-> +  of_node_put(child);
-> ?  return ...;
-> )
->    ...
->  }
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-> 
+We don't actually need to stash a copy of this device_node indefinitely;
+we only need it in brcmnand_init_cs().
 
-Pushed to l2-mtd.git
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: <bcm-kernel-feedback-list@broadcom.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+ drivers/mtd/nand/brcmnand/brcmnand.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index ad756f626f4b..35d78f739d91 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -176,7 +176,6 @@ struct brcmnand_cfg {
+ 
+ struct brcmnand_host {
+ 	struct list_head	node;
+-	struct device_node	*of_node;
+ 
+ 	struct nand_chip	chip;
+ 	struct mtd_info		mtd;
+@@ -1902,10 +1901,9 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+ 	return 0;
+ }
+ 
+-static int brcmnand_init_cs(struct brcmnand_host *host)
++static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
+ {
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+-	struct device_node *dn = host->of_node;
+ 	struct platform_device *pdev = host->pdev;
+ 	struct mtd_info *mtd;
+ 	struct nand_chip *chip;
+@@ -2239,9 +2237,8 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 			}
+ 			host->pdev = pdev;
+ 			host->ctrl = ctrl;
+-			host->of_node = child;
+ 
+-			ret = brcmnand_init_cs(host);
++			ret = brcmnand_init_cs(host, child);
+ 			if (ret) {
+ 				devm_kfree(dev, host);
+ 				continue; /* Try all chip-selects */
+-- 
+2.6.0.rc2.230.g3dd15c0
