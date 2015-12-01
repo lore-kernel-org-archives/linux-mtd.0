@@ -1,23 +1,22 @@
-Received: from mail-ig0-x22f.google.com ([2607:f8b0:4001:c05::22f])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3YfX-0007Lo-Nr
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 00:19:44 +0000
-Received: by igbxm8 with SMTP id xm8so85793651igb.1
- for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 16:19:22 -0800 (PST)
+ id 1a3Yzg-0003P0-3J
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 00:40:32 +0000
+Received: by pabfh17 with SMTP id fh17so207577696pab.0
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 16:40:11 -0800 (PST)
+Date: Mon, 30 Nov 2015 16:40:08 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Anup Limbu <anuplimbu14@gmail.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: davinci: remove unnecessary if cases
+Message-ID: <20151201004008.GR64635@google.com>
+References: <1448611534-21142-1-git-send-email-anuplimbu14@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20151201000923.GQ64635@google.com>
-References: <1448519122-6259-1-git-send-email-mar.kolya@gmail.com>
- <20151130203518.GL64635@google.com>
- <CALGY4fv1rbzng+aUbevJQRwj5X0R3NmzZ0iXz5ZNXxya0Rx6zw@mail.gmail.com>
- <20151201000923.GQ64635@google.com>
-Date: Mon, 30 Nov 2015 19:19:22 -0500
-Message-ID: <CALGY4ftNVdGs_fYQAeCWe5_NUOTh7d8T5TGvEtbjeHXhs9VKdA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: Fix Spansion sparearea size detection
-From: Nikolay Martynov <mar.kolya@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1448611534-21142-1-git-send-email-anuplimbu14@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +26,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi.
+On Fri, Nov 27, 2015 at 01:35:34PM +0530, Anup Limbu wrote:
+> remove unnecessary if cases
+> 
+> Signed-off-by: Anup Limbu <anuplimbu14@gmail.com>
+> ---
 
-  I'm using mt7621 board, so this would be mtk_nand with matches from openwrt.
+Did you test this?
 
-2015-11-30 19:09 GMT-05:00 Brian Norris <computersforpeace@gmail.com>:
-> Hi Nikolay,
->
-> On Mon, Nov 30, 2015 at 06:59:32PM -0500, Nikolay Martynov wrote:
->>   I'm sorry, I only have board with S34ML02G2 and I've tested by
->> change on it - it works fine. But unfortunately I do not have any way
->> to test S34ML01G2.
->>   It looks like that logic can be simplified if just check id_data[1]
->> is one of 0xda, 0xdc, 0xca, 0xcc - this should be safer option.
->
-> Possibly safer, but it's uglier, and I'd like not to have to make this
-> change at all, if ONFI can help it.
->
->>   I'm sorry, I'm very new to all this. This patch made kernel boot on
->> a board that I have. The kernel was 'oldish' - 3.18. So I'm not sure
->> why ONFI is not used here, I will see if I can figure it out.
->
-> What NAND driver are you using? It's possible that it doesn't support
-> the PARAMETER READ command properly. If so, it'd be better to fix that
-> than to clutter the NAND core.
->
-> Regards,
-> Brian
+>  drivers/mtd/nand/davinci_nand.c | 26 ++++++++++----------------
+>  1 file changed, 10 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+> index c72313d..1f86ee1 100644
+> --- a/drivers/mtd/nand/davinci_nand.c
+> +++ b/drivers/mtd/nand/davinci_nand.c
+> @@ -568,21 +568,16 @@ static struct davinci_nand_pdata
+>  		pdev->dev.platform_data = pdata;
+>  		if (!pdata)
+>  			return ERR_PTR(-ENOMEM);
+> -		if (!of_property_read_u32(pdev->dev.of_node,
+> -			"ti,davinci-chipselect", &prop))
+> -			pdev->id = prop;
+> -		else
+> +		if (of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-chipselect", &pdev->id))
+>  			return ERR_PTR(-EINVAL);
+>  
+> -		if (!of_property_read_u32(pdev->dev.of_node,
+> -			"ti,davinci-mask-ale", &prop))
+> -			pdata->mask_ale = prop;
+> -		if (!of_property_read_u32(pdev->dev.of_node,
+> -			"ti,davinci-mask-cle", &prop))
+> -			pdata->mask_cle = prop;
+> -		if (!of_property_read_u32(pdev->dev.of_node,
+> -			"ti,davinci-mask-chipsel", &prop))
+> -			pdata->mask_chipsel = prop;
+> +		of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-mask-ale", &pdata->mask_ale);
+> +		of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-mask-cle", &pdata->mask_cle);
+> +		of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-mask-chipsel", &pdata->mask_chipsel);
+>  		if (!of_property_read_string(pdev->dev.of_node,
+>  			"nand-ecc-mode", &mode) ||
+>  		    !of_property_read_string(pdev->dev.of_node,
+> @@ -594,9 +589,8 @@ static struct davinci_nand_pdata
+>  			if (!strncmp("hw", mode, 2))
+>  				pdata->ecc_mode = NAND_ECC_HW;
+>  		}
+> -		if (!of_property_read_u32(pdev->dev.of_node,
+> -			"ti,davinci-ecc-bits", &prop))
+> -			pdata->ecc_bits = prop;
+> +		of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-ecc-bits", &pdata->ecc_bits);
+
+NAK! You're treating a u8 as u32. This should give you some subset of
+the following warnings, from gcc and sparse:
+
+In file included from include/linux/of_device.h:8:0,
+                 from drivers/mtd/nand/davinci_nand.c:35:
+include/linux/of.h:857:19: note: expected ‘u32 *’ but argument is of type ‘u8 *’
+drivers/mtd/nand/davinci_nand.c: In function ‘nand_davinci_get_pdata’:
+drivers/mtd/nand/davinci_nand.c:593:4: warning: passing argument 3 of ‘of_property_read_u32’ from incompatible pointer type [enabled by default]
+drivers/mtd/nand/davinci_nand.c:572:51: warning: incorrect type in argument 3 (different signedness) [sparse]
+drivers/mtd/nand/davinci_nand.c:572:51:    expected unsigned int [usertype] *out_value [sparse]
+drivers/mtd/nand/davinci_nand.c:572:51:    got int *<noident> [sparse]
+drivers/mtd/nand/davinci_nand.c:593:49: warning: incorrect type in argument 3 (different type sizes) [sparse]
+drivers/mtd/nand/davinci_nand.c:593:49:    expected unsigned int [usertype] *out_value [sparse]
+drivers/mtd/nand/davinci_nand.c:593:49:    got unsigned char *<noident> [sparse]
 
 
+and it leaves you open to memory corruption, as of_property_read_u32()
+might try clobbering 3 more bytes of data after the ecc_bits field.
 
--- 
-Martynov Nikolay.
-Email: mar.kolya@gmail.com
+All in all, there's a reason the code is written the way it is, and I
+don't see any good reason to do what your patch does.
+
+Brian
+
+>  
+>  		prop = of_get_nand_bus_width(pdev->dev.of_node);
+>  		if (0 < prop || !of_property_read_u32(pdev->dev.of_node,
+> -- 
+> 1.9.1
+> 
