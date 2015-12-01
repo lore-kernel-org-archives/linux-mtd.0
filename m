@@ -1,20 +1,32 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3qsn-0001xP-Fr
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 19:46:39 +0000
-Subject: Re: [PATCH 3/3] mtd: ubi: wl: avoid erasing a PEB which is empty
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Artem Bityutskiy <dedekind1@gmail.com>
-References: <1448569430-885-1-git-send-email-bigeasy@linutronix.de>
- <1448569430-885-3-git-send-email-bigeasy@linutronix.de>
-Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <565DF901.40208@nod.at>
-Date: Tue, 1 Dec 2015 20:46:09 +0100
+ id 1a3r51-0000H9-Iv
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 19:59:17 +0000
+Date: Tue, 1 Dec 2015 19:58:16 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Stephen Warren <swarren@nvidia.com>, "Andrew F. Davis" <afd@ti.com>,
+ Marek Vasut <marex@denx.de>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Gabor Juhos <juhosg@openwrt.org>,
+ Bean Huo =?utf-8?B?6ZyN5paM5paM?= <beanhuo@micron.com>,
+ Furquan Shaikh <furquan@google.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Message-ID: <20151201195816.GS1929@sirena.org.uk>
+References: <cover.1448988089.git.hramrach@gmail.com>
+ <8c34c7790244489c2ce0072c72bd9bc7c4cdb965.1448988089.git.hramrach@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1448569430-885-3-git-send-email-bigeasy@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="v98/5hv2LQXhs+5A"
+Content-Disposition: inline
+In-Reply-To: <8c34c7790244489c2ce0072c72bd9bc7c4cdb965.1448988089.git.hramrach@gmail.com>
+Subject: Re: [PATCH v5 08/10] spi: expose master transfer size limitation.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +36,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 26.11.2015 um 21:23 schrieb Sebastian Andrzej Siewior:
-> wear_leveling_worker() currently unconditionally puts a PEB on erase in
-> the error case even it just been taken from the free_list and never
-> used.
-> In case the PEB was never used it can be put back on the free list
-> saving a precious erase cycle.
-> 
-> v1…v2:
-> 	- to_leb_clean -> dst_leb_clean
-> 	- use the nested option for ensure_wear_leveling()
-> 	- do_sync_erase() can't go -ENOMEM so we can just go into
-> 	  RO-mode now.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Thanks a lot for the error handling cleanup and this improvement!
-All three patches look good to me.
-Artem, unless you have objections I'd merge them.
+--v98/5hv2LQXhs+5A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-//richard
+On Tue, Dec 01, 2015 at 04:51:06PM -0000, Michal Suchanek wrote:
+> On some SPI controllers it is not feasible to transfer arbitrary amount
+> of data at once.
+>=20
+> When the limit on transfer size is a few kilobytes at least it makes
+> sense to use the SPI hardware rather than reverting to gpio driver.
+
+> +	/*
+> +	 * on some hardware transfer size may be constrained
+> +	 * the limit may depend on device transfer settings
+> +	 */
+> +	size_t (*max_transfer_size)(struct spi_device *spi);
+
+Heiner submitted a *very* similar patch just now with a straight
+variable plus accessor instead of a function and using a name with _msg.
+I'm ambivalent on the implementation but prefer the naming here since
+that's more the limitation we're trying to express I think (some
+hardware does have limiations about multple transfers too).  Can the two
+of you come up with something that works for both of you?
+
+--v98/5hv2LQXhs+5A
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWXfvYAAoJECTWi3JdVIfQ+csH/jQoupku0nMby5MfE9iDpwif
+jN/8jQm3WpdH7oGihAYfqmCLyAdEKuACkqrCLuE5X0a4qJB3aqjsOm6aAT5P+nL1
+GTTLGJ1RDdStgiyyFbyfW9CUL4ltvKt4Cefi7DozO+xXQaOheW0VwHG8HkfSX5fZ
+PPHIF82+NexFIpJANK4bRvsZGhtLiHS3LRjm5n/pHsrLZAbzJqPMRSIGd485B0Tx
+jvWNV1Nzz4ZWAq5Od7HTFl9y91x/9Mxjura2YilV0+vfVwkYGWcPMCOOzk5va8C7
+RHjSNCRt69TljR6kS1oPpUZQWW8ADhaebfLkNFLW4mQ5dTuFHqcYeS+SXCH2H+c=
+=70ge
+-----END PGP SIGNATURE-----
+
+--v98/5hv2LQXhs+5A--
