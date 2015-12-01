@@ -1,9 +1,7 @@
-Date: Tue, 1 Dec 2015 12:17:44 +0100 (CET)
-From: Julia Lawall <julia.lawall@lip6.fr>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
  Hartley Sweeten <hsweeten@visionengravers.com>,
  Ryan Mallon <rmallon@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
@@ -30,15 +28,13 @@ cc: David Woodhouse <dwmw2@infradead.org>,
  Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
  Stefan Agner <stefan@agner.ch>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- devel@driverdev.osuosl.org, Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: Re: [PATCH v2 11/25] coccinelle: nand: detect and correct drivers
- embedding an mtd_info object
-In-Reply-To: <1448967802-25796-12-git-send-email-boris.brezillon@free-electrons.com>
-Message-ID: <alpine.DEB.2.10.1512011207580.2736@hadrien>
+ devel@driverdev.osuosl.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 09/25] mtd: nand: embed an mtd_info structure into nand_chip
+Date: Tue,  1 Dec 2015 12:03:06 +0100
+Message-Id: <1448967802-25796-10-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
- <1448967802-25796-12-git-send-email-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,152 +44,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Currently all NAND controller drivers are providing both the mtd_info and
+nand_chip struct and then let the NAND subsystem to initialize a few
+things before registering the mtd instance to the MTD layer.
+Embed an mtd_info field into nand_chip to add some consistency to all NAND
+controller drivers.
+This change will also help factorizing boilerplate code copied in all NAND
+drivers.
 
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ include/linux/mtd/nand.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Tue, 1 Dec 2015, Boris Brezillon wrote:
-
-> Add nand-priv-no-mtd.cocci to detect and correct NAND controller drivers
-> directly embedding an mtd_info struct in their private struct.
->
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Julia Lawall <Julia.Lawall@lip6.fr>
-> ---
-> Hi Julia,
->
-> Not sure this is the correct way to detect and fix offending drivers,
-> but I get some warnings when launching coccicheck in org or report mode:
->
-> "warning: fix2: inherited metavariable __chipfield not used in the -, +,
-> or context code"
->
-> Note that I don't get those warnings when running in patch mode.
->
-> Any idea (feel free to propose a better solution to detect and fix those
-> offending drivers)?
-
-Hi,
-
-Is this code generated with sgen?  If so, could you send me the original
-semantic patch?
-
-Another thing that is immediately apparent is that you have <... ...> on
-the outside of one of the rules.  This should never be needed.
-
-The warning suggests that your org and report versions are not doing as
-much as the patch version.  If you have used sgen to generate the semantic
-patch then that would be strange.  If you have hand written the whole
-thing, then maybe you could simplify it to just do the patch version, and
-then I can check it and run sgen on it to make a complete version.
-
-julia
-
->
-> Best Regards,
->
-> Boris
-> ---
->  scripts/coccinelle/api/nand-priv-no-mtd.cocci | 91 +++++++++++++++++++++++++++
->  1 file changed, 91 insertions(+)
->  create mode 100644 scripts/coccinelle/api/nand-priv-no-mtd.cocci
->
-> diff --git a/scripts/coccinelle/api/nand-priv-no-mtd.cocci b/scripts/coccinelle/api/nand-priv-no-mtd.cocci
-> new file mode 100644
-> index 0000000..b2c0c22
-> --- /dev/null
-> +++ b/scripts/coccinelle/api/nand-priv-no-mtd.cocci
-> @@ -0,0 +1,91 @@
-> +/// Fix NAND controller drivers declaring their own mtd_info struct instead
-> +/// of the one provided in struct nand_chip.
-> +///
-> +// Confidence: Low
-> +// Copyright: (C) 2015 Boris Brezillon GPL v2.
-> +
-> +virtual patch
-> +virtual context
-> +virtual org
-> +virtual report
-> +
-> +@match1@
-> +identifier __chipfield, __mtdfield;
-> +type __type;
-> +@@
-> +(
-> +	__type {
-> +		...
-> +		struct nand_chip __chipfield;
-> +		...
-> +		struct mtd_info __mtdfield;
-> +		...
-> +	};
-> +|
-> +	__type {
-> +		...
-> +		struct mtd_info __mtdfield;
-> +		...
-> +		struct nand_chip __chipfield;
-> +		...
-> +	};
-> +)
-> +
-> +@fix1 depends on match1 && patch && !context && !org && !report@
-> +identifier match1.__mtdfield;
-> +type match1.__type;
-> +@@
-> +	__type {
-> +		...
-> +-		struct mtd_info __mtdfield;
-> +		...
-> +	};
-> +
-> +@fix2 depends on match1 && patch && !context && !org && !report@
-> +identifier match1.__chipfield, match1.__mtdfield;
-> +identifier __subfield;
-> +type match1.__type;
-> +__type *__priv;
-> +@@
-> +<...
-> +(
-> +-	__priv->__mtdfield.__subfield
-> ++	nand_to_mtd(&__priv->__chipfield)->__subfield
-> +|
-> +-	&(__priv->__mtdfield)
-> ++	nand_to_mtd(&__priv->__chipfield)
-> +)
-> +...>
-> +
-> +// ----------------------------------------------------------------------------
-> +
-> +@fix1_context depends on match1 && !patch && (context || org || report)@
-> +identifier match1.__mtdfield;
-> +type match1.__type;
-> +position j0;
-> +@@
-> +
-> +	__type {
-> +		...
-> +*		struct mtd_info __mtdfield@j0;
-> +		...
-> +	};
-> +
-> +// ----------------------------------------------------------------------------
-> +
-> +@script:python fix1_org depends on org@
-> +j0 << fix1_context.j0;
-> +@@
-> +
-> +msg = "struct nand_chip already embeds an mtd_info object (use nand_to_mtd())."
-> +coccilib.org.print_todo(j0[0], msg)
-> +
-> +// ----------------------------------------------------------------------------
-> +
-> +@script:python fix1_report depends on report@
-> +j0 << fix1_context.j0;
-> +@@
-> +
-> +msg = "struct nand_chip already embeds an mtd_info object (use nand_to_mtd())."
-> +coccilib.report.print_report(j0[0], msg)
-> +
-> --
-> 2.1.4
->
->
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 056d165..c4e39ff 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -540,6 +540,7 @@ struct nand_buffers {
+ 
+ /**
+  * struct nand_chip - NAND Private Flash Chip Data
++ * @mtd:		MTD device registered to the MTD framework
+  * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
+  *			flash device
+  * @IO_ADDR_W:		[BOARDSPECIFIC] address to write the 8 I/O lines of the
+@@ -640,6 +641,7 @@ struct nand_buffers {
+  */
+ 
+ struct nand_chip {
++	struct mtd_info mtd;
+ 	void __iomem *IO_ADDR_R;
+ 	void __iomem *IO_ADDR_W;
+ 
+-- 
+2.1.4
