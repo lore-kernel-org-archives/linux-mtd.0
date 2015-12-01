@@ -1,32 +1,23 @@
-Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3q7k-0000x9-3b
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 18:58:01 +0000
-Received: by wmvv187 with SMTP id v187so221639353wmv.1
- for <linux-mtd@lists.infradead.org>; Tue, 01 Dec 2015 10:57:38 -0800 (PST)
-Subject: Re: [PATCH resubmit 2/2] spi: fsl-espi: make use of max_msg_size in
- spi_master to handle HW restrictions
-To: Mark Brown <broonie@kernel.org>
-References: <20151119114057.GN31303@sirena.org.uk>
- <F224F5F3-FAD5-47FE-9419-39E53BCBB8C6@sperl.org>
- <20151119171538.GO31303@sirena.org.uk>
- <9CDADBED-FD18-4635-82A9-5AB14C9ABCAE@sperl.org>
- <20151120120502.GT31303@sirena.org.uk>
- <08871ECD-52DF-4CBF-AF3D-4C3A442C008A@sperl.org>
- <20151121134946.GI26072@sirena.org.uk> <56507B3B.4080608@gmail.com>
- <CAOMqctR=UDEPbgJDY3YvxpbVEEp4t6ajkyv=cVAZp2fLBNBanA@mail.gmail.com>
- <565CB0C0.9060104@gmail.com> <20151201141923.GJ1929@sirena.org.uk>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>, Martin Sperl <martin@sperl.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <565DECC4.2030507@gmail.com>
-Date: Tue, 1 Dec 2015 19:53:56 +0100
+ id 1a3qF4-0004LY-5I
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 19:05:35 +0000
+Received: by pabfh17 with SMTP id fh17so14212467pab.0
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Dec 2015 11:05:13 -0800 (PST)
+Date: Tue, 1 Dec 2015 11:05:10 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: fix ONFI parameter page layout
+Message-ID: <20151201190510.GY64635@google.com>
+References: <1448274187-22174-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20151130201729.GK64635@google.com>
+ <20151201103318.16a2e46a@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <20151201141923.GJ1929@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151201103318.16a2e46a@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,26 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 01.12.2015 um 15:19 schrieb Mark Brown:
-> On Mon, Nov 30, 2015 at 09:25:36PM +0100, Heiner Kallweit wrote:
->> Propagate the 64K message size limitation allowing client drivers
->> to deal properly with this limitation.
+On Tue, Dec 01, 2015 at 10:33:18AM +0100, Boris Brezillon wrote:
+> On Mon, 30 Nov 2015 12:17:29 -0800
+> Brian Norris <computersforpeace@gmail.com> wrote:
+> > On Mon, Nov 23, 2015 at 11:23:07AM +0100, Boris Brezillon wrote:
+> > > src_ssync_features field is only 1 byte large, and the 4th reserved area
+> > > is actually 8 bytes large.
+> > > 
+> > > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > > Fixes d1e1f4e42b5 ("mtd: nand: add support for reading ONFI parameters from NAND device")
+> > > Cc: <stable@vger.kernel.org> #v2.6.37+
+> > 
+> > Did you see an actual problem from this? (And is this deserving of
+> > stable?) I could imagine an out-of-tree driver might try to use t_ald
+> > (which should actually be t_adl, right?)
 > 
-> Please don't submit patches into the middle of existing threads, it
-> makes it very confusing trying to work out what the currently proposed
-> patches are:
+> Yes, should be t_adl, not t_ald. Do you want me to send another patch
+> for that, or will you take care of it?
+
+I'll send a quick patch.
+
+> > and get the wrong value. But no
+> > one does that in-tree yet.
 > 
->    8592 N T 11/22 Heiner Kallweit (2.1K) │                   │ ├─>[PATCH 2/3] mt
->    8593 N C 11/22 Michal Suchanek (0.5K) │                   │ │ └─>
-> -> 8594 N T 11/22 Heiner Kallweit (0.9K) │                   │ ├─>[PATCH 3/3] sp
->    8595 N T 11/30 Heiner Kallweit (1.7K) │                   │ ├─>[PATCH v2 1/2]
->    8596 N T 11/30 Heiner Kallweit (0.9K) │                   │ └─>[PATCH resubmi
->    8597 NsF 11/22 To Heiner Kallw (1.4K) │                   └─>Re: RfC: Handle
-> 
-> I *think* the two messages from yesterday are supposed to be a single
-> patch series but they're buried in the middle of a huge thread at the
-> same level as some older patches and for soem reason have different tags
-> (one of which is "resubmit" which is really just adding noise).
-> 
-Sorry, my mail template referred to the discussion thread.
-I'll resubmit.
+> Fair enough, we can just drop the stable and fixes tag. Do you want me
+> to resend it?
+
+I presume this means you didn't see any actual problems caused by this
+patch, other than new development referencing it?
+
+Applied without the stable tag. I kept the fixes tag.
+
+Thanks,
+Brian
