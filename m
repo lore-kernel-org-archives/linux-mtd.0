@@ -1,14 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3ig2-0001cs-T4
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 11:00:58 +0000
+ id 1a3ig8-0001cs-5Y
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 11:01:02 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard.weinberger@gmail.com>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v1 4/7] mtd: mtd_raid: introduce raid single implementation
-Date: Tue, 1 Dec 2015 18:52:34 +0800
-Message-ID: <1448967157-17423-5-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v1 7/7] mtd: mtd_raid: implement ioctl for mtd raid
+Date: Tue, 1 Dec 2015 18:52:37 +0800
+Message-ID: <1448967157-17423-8-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1448967157-17423-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1448967157-17423-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,21 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is impletion of raid-single, raid-single works
-similar with mtd_concat.
+This is ioctl interface for mtd raid. Currently
+we support two operations create and destroy.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- drivers/mtd/mtd_raid/raid_single.c | 156 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 156 insertions(+)
- create mode 100644 drivers/mtd/mtd_raid/raid_single.c
+ drivers/mtd/mtd_raid/ioctl.c | 137 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 137 insertions(+)
+ create mode 100644 drivers/mtd/mtd_raid/ioctl.c
 
-diff --git a/drivers/mtd/mtd_raid/raid_single.c b/drivers/mtd/mtd_raid/raid_single.c
+diff --git a/drivers/mtd/mtd_raid/ioctl.c b/drivers/mtd/mtd_raid/ioctl.c
 new file mode 100644
-index 0000000..e1421d0
+index 0000000..22facee
 --- /dev/null
-+++ b/drivers/mtd/mtd_raid/raid_single.c
-@@ -0,0 +1,156 @@
++++ b/drivers/mtd/mtd_raid/ioctl.c
+@@ -0,0 +1,137 @@
 +/*
 + * This file is part of MTD RAID.
 + *
@@ -58,140 +58,121 @@ index 0000000..e1421d0
 + * Authors: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 + */
 +
-+/*
-+ * This file implement single raild level.
-+ *
-+ * RAID_SINGLE:
-+ *
-+ * Flash A:
-+ * 	------------------------------
-+ * 	|  A1   |  A2   | ... |  An  |
-+ * 	------------------------------
-+ * Flash B:
-+ * 	------------------------------
-+ * 	|  B1   |  B2   | ... |  Bn  |
-+ * 	------------------------------
-+ * Flash C:
-+ * 	------------------------------
-+ * 	|  C1   |  C2   | ... |  Cn  |
-+ * 	------------------------------
-+ *
-+ * RAID_SINGLE:
-+ * 	---------------------------------------------------------------------
-+ * 	|  A1   |  A2  | ... |  An  |  B1  | ... |  Bn  |  C1  | ... |  Cn  |
-+ * 	---------------------------------------------------------------------
-+ *
-+ * It works similarly with concat.
-+ */
-+#include <linux/kthread.h>
++#include <linux/compat.h>
 +#include <linux/slab.h>
++#include <linux/string.h>
 +
 +#include "mtd_raid.h"
 +
-+/**
-+ *
-+ */
-+static int raid_single_logical_to_physical(struct mtd_raid *raid, loff_t from, size_t len, int copy_num,
-+					   int *devid, loff_t *subdev_off, size_t *size)
++static int ioctl_create_check(int *mtd_nums, int dev_count, size_t substripe_size)
 +{
-+	struct mtd_info *subdev = NULL;
 +	int i = 0;
 +
-+	*subdev_off = from;
-+	for (i = 0; i < raid->dev_count; i++) {
-+		subdev = raid->devs[i].mtd;
-+		if (from >= subdev->size) {
-+			from -= subdev->size;
-+			*subdev_off = 0;
-+			*size = 0;
-+			continue;
-+		}
-+
-+		*subdev_off = from;
-+		if (from + len > subdev->size)
-+			*size = subdev->size - *subdev_off;
-+		else
-+			*size = len;
-+
-+		*devid = i;
-+		break;
-+	}
-+
-+	if (i == raid->dev_count)
++	if (dev_count < 0 || substripe_size < 0)
 +		return -EINVAL;
++
++	for (i = 0; i < dev_count; i++) {
++		if (mtd_nums[i] < 0)
++			return -EINVAL;
++	}
 +
 +	return 0;
 +}
 +
-+struct mtd_raid *mtd_raid_single_create(int *mtd_nums, int dev_count, size_t substripe_size)
++int mtd_raid_ioctl_create(struct mtd_raid_create_req *create_req, int *mtd_nums)
 +{
-+	struct mtd_raid_single *raid_single = NULL;
++	enum mtd_raid_level raid_level = create_req->raid_level;
++	int dev_count = create_req->dev_count;
++	int substripe_size = create_req->substripe_size;
++
++	if (ioctl_create_check(mtd_nums, dev_count, substripe_size))
++		return -EINVAL;
++
++	return mtd_raid_create(raid_level, mtd_nums, dev_count, substripe_size);
++}
++
++int mtd_raid_ioctl_destroy(struct mtd_raid_destroy_req *destroy_req)
++{
 +	struct mtd_raid *raid = NULL;
 +
-+	raid_single = kzalloc(sizeof(struct mtd_raid_single) + sizeof(struct mtd_raid_dev) * dev_count, GFP_KERNEL);
-+	if (!raid_single)
-+		goto out;
++	raid = mtd_raid_list_get(destroy_req->mtd_num);
++	if (!raid)
++		return -EINVAL;
 +
-+	raid = &raid_single->raid;
-+	raid->raid_level = MTD_RAID_LEVEL_SINGLE;
-+	raid->ops = &mtd_raid_single_ops;
-+	raid->ncopies = 1;
-+	raid->npebs_per_leb = 1;
-+
-+	return &raid_single->raid;
-+out:
-+	return NULL;
++	return mtd_raid_destroy(raid);
 +}
 +
-+static int raid_single_init(struct mtd_raid *raid,
-+			    int dev_count, size_t substripe_size)
++static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 +{
-+	int ret = 0;
-+	int i = 0;
-+	int raid_id = 0;
-+	struct mtd_info *mtd = &raid->mtd;
-+	struct mtd_info *subdev = raid->devs[0].mtd;
++	int err = 0;
++	void __user *argp = (void __user *)arg;
 +
-+	raid_id = mtd_raid_list_register(MTD_RAID_LEVEL_SINGLE, raid);
-+	sprintf(raid->name, "mtdsingle-%d", raid_id);
-+	mtd->name = raid->name;
++	if (!capable(CAP_SYS_RESOURCE))
++		return -EPERM;
 +
-+	/*
-+	 * Same erasesize with subdevs
-+	 **/
-+	mtd->erasesize = subdev->erasesize;
-+	for (i = 0; i < dev_count; i++) {
-+		subdev = raid->devs[i].mtd;
-+		if (mtd->erasesize != subdev->erasesize) {
-+			pr_err("Incompatible erasesize on \"%s\"",
-+			       subdev->name);
-+			ret = -EINVAL;
-+			goto err;
++	switch (cmd) {
++	case MTD_RAID_IOC_CREATE:
++	{
++		struct mtd_raid_create_req *req;
++		int dev_count = 0;
++		int *mtd_nums = NULL;
++
++		req = memdup_user(argp, sizeof(*req));
++		if (IS_ERR(req)) {
++			err = PTR_ERR(req);
++			goto out;
 +		}
-+		/*
-+		 * mtd->size is the sum of all subdevs
-+		 **/
-+		mtd->size += subdev->size;
++
++		dev_count = req->dev_count;
++		mtd_nums = memdup_user(argp + sizeof(*req), sizeof(int) * dev_count);
++		if (IS_ERR(mtd_nums)) {
++			err = PTR_ERR(mtd_nums);
++			goto out;
++		}
++
++		err = mtd_raid_ioctl_create(req, mtd_nums);
++		break;
 +	}
-+	return ret;
-+err:
-+	mtd_raid_list_unregister(raid);
-+	return ret;
++	case MTD_RAID_IOC_DESTROY:
++	{
++		struct mtd_raid_destroy_req *req;
++
++		req = memdup_user(argp, sizeof(*req));
++		if (IS_ERR(req)) {
++			err = PTR_ERR(req);
++			goto out;
++		}
++
++		err = mtd_raid_ioctl_destroy(req);
++		break;
++	}
++
++	default:
++		err = -ENOTTY;
++		break;
++	}
++
++out:
++	return err;
 +}
 +
-+
-+static void raid_single_destroy(struct mtd_raid *mtd_raid)
++#ifdef CONFIG_COMPAT
++static long ctrl_cdev_compat_ioctl(struct file *file, unsigned int cmd,
++				   unsigned long arg)
 +{
-+	struct mtd_raid_single *raid_single = MTD_RAID_SINGLE(mtd_raid);
++	unsigned long translated_arg = (unsigned long)compat_ptr(arg);
 +
-+	mtd_raid_list_unregister(&raid_single->raid);
-+	kfree(raid_single);
++	return ctrl_cdev_ioctl(file, cmd, translated_arg);
 +}
++#else
++#define ctrl_cdev_compat_ioctl NULL
++#endif
 +
-+const struct mtd_raid_operations mtd_raid_single_ops = {
-+	.init    = raid_single_init,
-+	.destroy = raid_single_destroy,
-+	.logical_to_physical  = raid_single_logical_to_physical,
++const struct file_operations mtd_raid_ctrl_cdev_operations = {
++	.owner          = THIS_MODULE,
++	.unlocked_ioctl = ctrl_cdev_ioctl,
++	.compat_ioctl   = ctrl_cdev_compat_ioctl,
++	.llseek		= no_llseek,
 +};
 -- 
 1.8.4.2
