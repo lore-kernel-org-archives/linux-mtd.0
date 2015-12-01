@@ -1,31 +1,24 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3lmd-0003MU-4d
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 14:19:56 +0000
-Date: Tue, 1 Dec 2015 14:19:23 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>, Martin Sperl <martin@sperl.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Message-ID: <20151201141923.GJ1929@sirena.org.uk>
-References: <20151119114057.GN31303@sirena.org.uk>
- <F224F5F3-FAD5-47FE-9419-39E53BCBB8C6@sperl.org>
- <20151119171538.GO31303@sirena.org.uk>
- <9CDADBED-FD18-4635-82A9-5AB14C9ABCAE@sperl.org>
- <20151120120502.GT31303@sirena.org.uk>
- <08871ECD-52DF-4CBF-AF3D-4C3A442C008A@sperl.org>
- <20151121134946.GI26072@sirena.org.uk> <56507B3B.4080608@gmail.com>
- <CAOMqctR=UDEPbgJDY3YvxpbVEEp4t6ajkyv=cVAZp2fLBNBanA@mail.gmail.com>
- <565CB0C0.9060104@gmail.com>
+ id 1a3m8E-0008QX-UB
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 14:42:16 +0000
+Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
+ <20151026212346.GJ13239@google.com> <562F45BF.8020205@ti.com>
+ <20151130195449.GI64635@google.com>
+CC: <tony@atomide.com>, <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <javier@dowhile0.org>, <fcooper@ti.com>, <nsekhar@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <565DB18C.7040505@ti.com>
+Date: Tue, 1 Dec 2015 16:41:16 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="Cm5JD8EdJoAV/WT0"
-Content-Disposition: inline
-In-Reply-To: <565CB0C0.9060104@gmail.com>
-Subject: Re: [PATCH resubmit 2/2] spi: fsl-espi: make use of max_msg_size in
- spi_master to handle HW restrictions
+In-Reply-To: <20151130195449.GI64635@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,51 +28,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Brian,
 
---Cm5JD8EdJoAV/WT0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 30/11/15 21:54, Brian Norris wrote:
+> Hi Roger,
+> 
+> On Tue, Oct 27, 2015 at 11:37:03AM +0200, Roger Quadros wrote:
+>> On 26/10/15 23:23, Brian Norris wrote:
+>>> I'm not too familiar with OMAP platforms, and I might have missed out on
+>>> prior discussions/context, so please forgive if I'm asking silly or old
+>>> questions here.
+>>
+>> No worries at all.
+>>
+>>>
+>>> On Fri, Sep 18, 2015 at 05:53:22PM +0300, Roger Quadros wrote:
+>>>> - Remove NAND IRQ handling from omap-gpmc driver, share the GPMC IRQ
+>>>> with the omap2-nand driver and handle NAND IRQ events in the NAND driver.
+>>>> This causes performance increase when using prefetch-irq mode.
+>>>> 30% increase in read, 17% increase in write in prefetch-irq mode.
+>>>
+>>> Have you pinpointed the exact causes for the performance increase, or
+>>> can you give an educated guess? AIUI, you're reducing the number of
+>>> interrupts needed for NAND prefetch mode, but you're also removing a bit
+>>> of abstraction and implementing hooks that look awfully like the
+>>> existing abstractions:
+>>>
+>>> +       int (*nand_irq_enable)(enum gpmc_nand_irq irq);
+>>> +       int (*nand_irq_disable)(enum gpmc_nand_irq irq);
+>>> +       void (*nand_irq_clear)(enum gpmc_nand_irq irq);
+>>> +       u32 (*nand_irq_status)(void);
+>>>
+>>> That's not really a problem if there's a good reason for them (brcmnand
+>>> implements similar hooks because of quirks in the implementation of
+>>> interrupts across various BRCM SoCs, and it's not worth writing irqchip
+>>> drivers for those cases). I'm mainly curious for an explanation.
+>>
+>> I have both implementations with me. My guess is that the 20% performance
+>> gain is due to absence of irqchip/irqdomain translation code.
+>> I haven't investigated further though.
+> 
+> I don't have much context for whether this makes sense or not. According
+> to your tests, you're getting ~800K interrupts over ~15 seconds. So
+> should you start noticing performance hits due to abstraction at 53K
+> interrupts per second?
 
-On Mon, Nov 30, 2015 at 09:25:36PM +0100, Heiner Kallweit wrote:
-> Propagate the 64K message size limitation allowing client drivers
-> to deal properly with this limitation.
+Yes, this was my understanding.
 
-Please don't submit patches into the middle of existing threads, it
-makes it very confusing trying to work out what the currently proposed
-patches are:
+> 
+> But anyway, I'm not sure that completely answered my question. My
+> question was whether you were removing the irqchip code solely for
+> performance reasons, or are there others?
 
-   8592 N T 11/22 Heiner Kallweit (2.1K) =E2=94=82                   =E2=94=
-=82 =E2=94=9C=E2=94=80>[PATCH 2/3] mt
-   8593 N C 11/22 Michal Suchanek (0.5K) =E2=94=82                   =E2=94=
-=82 =E2=94=82 =E2=94=94=E2=94=80>
--> 8594 N T 11/22 Heiner Kallweit (0.9K) =E2=94=82                   =E2=94=
-=82 =E2=94=9C=E2=94=80>[PATCH 3/3] sp
-   8595 N T 11/30 Heiner Kallweit (1.7K) =E2=94=82                   =E2=94=
-=82 =E2=94=9C=E2=94=80>[PATCH v2 1/2]
-   8596 N T 11/30 Heiner Kallweit (0.9K) =E2=94=82                   =E2=94=
-=82 =E2=94=94=E2=94=80>[PATCH resubmi
-   8597 NsF 11/22 To Heiner Kallw (1.4K) =E2=94=82                   =E2=94=
-=94=E2=94=80>Re: RfC: Handle
+Yes. Only for performance reasons.
 
-I *think* the two messages from yesterday are supposed to be a single
-patch series but they're buried in the middle of a huge thread at the
-same level as some older patches and for soem reason have different tags
-(one of which is "resubmit" which is really just adding noise).
+> 
+>> Another concern I have is that I'm not using any locking around
+>> gpmc_nand_irq_enable/disable(). Could this pose problems in multiple NAND
+>> use cases? My understanding is that it should not as the controller access
+>> is serialized between multiple NAND chips.
+> 
+> Right, if you're touching just a NAND interrupt, and it's only used by a
+> single instance of this NAND controller, then the NAND controller
+> serialization code will handle this for you.
 
---Cm5JD8EdJoAV/WT0
-Content-Type: application/pgp-signature; name="signature.asc"
+OK.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWXaxqAAoJECTWi3JdVIfQ60wH/2Oeaz2hc1bb4SCre3MWHxsK
-dpgHFbhZDP0NWxNPbUtTJnszYnuZTemYOIikn/RPXtE5uenTvnzL3HaT6vRzH2uB
-YwhpGYlk4sng7T7z9NA+vhiIp37FC+oehklWzp9ReXlG7fNYahCb2f9ibKCy1eqW
-BN+Dj2Lu0yJIASiTcqG9kWnwiVS5CqclOrI/+Ric68NFpux6nZey3bvrzdaFrkgF
-5O18SssKmJ4+LbwdzcOxQu5ADNs9x4Fhhw4Le/sv14z7Z/ATZa7jO9UNUh49k9w7
-Yy0bscNAT/LZrLFtsJjq/fDdyd4Imjb4tklRDvITNcAiP3APuSER8o3adQKnOIY=
-=t3pC
------END PGP SIGNATURE-----
-
---Cm5JD8EdJoAV/WT0--
+cheers,
+-roger
