@@ -1,24 +1,40 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3iuF-0007rP-6Y
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 11:15:45 +0000
-Date: Tue, 1 Dec 2015 12:15:12 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
- dwmw2@infradead.org, michals@xilinx.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, kpc528@gmail.com,
- kalluripunnaiahchoudary@gmail.com, Punnaiah Choudary Kalluri
- <punnaia@xilinx.com>
-Subject: Re: [PATCH] mtd: Expand the ecc placement locations to 1216
-Message-ID: <20151201121512.40ce9cce@bbrezillon>
-In-Reply-To: <20151120193342.GX64635@google.com>
-References: <1446742735-20824-1-git-send-email-punnaia@xilinx.com>
- <20151120193342.GX64635@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Ryan Mallon <rmallon@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <kernel@pengutronix.de>, Imre Kaloz <kaloz@openwrt.org>,
+ Krzysztof Halasa <khalasa@piap.pl>, Tony Lindgren <tony@atomide.com>,
+ linux-omap@vger.kernel.org, Alexander Clouter <alex@digriz.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory CLEMENT <gregory.clement@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Marek Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>,
+ adi-buildroot-devel@lists.sourceforge.net,
+ Mikael Starvik <starvik@axis.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>, linux-cris-kernel@axis.com,
+ Josh Wu <josh.wu@atmel.com>, Wan ZongShun <mcuos.com@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ linux-samsung-soc@vger.kernel.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Stefan Agner <stefan@agner.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ devel@driverdev.osuosl.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 08/25] staging: mt29f_spinand: make use of mtd_to_nand()
+Date: Tue,  1 Dec 2015 12:03:05 +0100
+Message-Id: <1448967802-25796-9-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +44,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian, Punnaiah,
+mtd_to_nand() was recently introduced to avoid direct accesses to the
+mtd->priv field. Use it where appropriate.
 
-On Fri, 20 Nov 2015 11:33:42 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/staging/mt29f_spinand/mt29f_spinand.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> On Thu, Nov 05, 2015 at 10:28:55PM +0530, Punnaiah Choudary Kalluri wrote:
-> > Device like MT29F32G08ABCDBJ4 have a writesize/oobsize of 16K/1216 Bytes.
-> > So, increasing the maximum ecc placement locations to 1216
-> 
-> I'd really prefer not increasing the size of the internal arrays any
-> more. The structures should be rewritten to be dynamic.
-
-I already started this migration (you can find the code here [1]). I
-was planning to rework this series to make the eccpos definition mimic
-what's done for oobfree (as suggested by Brian) before sending it, but
-I'm not sure when I'll be able to do that, so if you really need that
-quickly I suggest you submit those patches instead of reimplementing
-it yourself.
-
-Best Regards,
-
-Boris
-
-[1]https://github.com/bbrezillon/linux-sunxi/commits/nand/ecclayout
-
+diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+index 6536066..8924a96 100644
+--- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
++++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+@@ -31,7 +31,7 @@
+ 
+ static inline struct spinand_state *mtd_to_state(struct mtd_info *mtd)
+ {
+-	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
++	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct spinand_info *info = (struct spinand_info *)chip->priv;
+ 	struct spinand_state *state = (struct spinand_state *)info->priv;
+ 
+@@ -744,7 +744,7 @@ static void spinand_reset(struct spi_device *spi_nand)
+ static void spinand_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 			    int column, int page)
+ {
+-	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
++	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct spinand_info *info = (struct spinand_info *)chip->priv;
+ 	struct spinand_state *state = (struct spinand_state *)info->priv;
+ 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.1.4
