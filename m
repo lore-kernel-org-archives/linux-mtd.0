@@ -1,23 +1,31 @@
-Subject: Re: [PATCH v4 2/5] spi: spi-ti-qspi: add mmap mode read support
-To: "Balbi, Felipe" <balbi@ti.com>, Tony Lindgren <tony@atomide.com>, Brian
- Norris <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>
-References: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
- <1448860515-28336-3-git-send-email-vigneshr@ti.com>
- <87lh9f15fh.fsf@saruman.tx.rr.com>
-CC: Rob Herring <robh+dt@kernel.org>, Russell King <linux@arm.linux.org.uk>,
- "hramrach@gmail.com" <hramrach@gmail.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org"
- <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <565D4FE1.50704@ti.com>
-Date: Tue, 1 Dec 2015 13:14:33 +0530
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a3gzn-0003et-U5
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 09:13:15 +0000
+Date: Tue, 1 Dec 2015 10:12:49 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Tim Harvey <tharvey@gateworks.com>
+Cc: Richard Weinberger <richard@nod.at>, Elie De Brauwer
+ <eliedebrauwer@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>, Adrian
+ Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org, Huang
+ Shijie <shijie.huang@arm.com>, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: UBIFS corruption after power cut - possibly unstable bits issue?
+Message-ID: <20151201101249.1fc3448f@bbrezillon>
+In-Reply-To: <CAJ+vNU2M5getk6=J-wXDhQf1qwPr7ivRQFtO8pV1695WK7ZR+g@mail.gmail.com>
+References: <CAJ+vNU3eu4qBxaZpDRY=Fidv=9iGmA5pq8b4yUfyBayLTos5oQ@mail.gmail.com>
+ <562E8697.50207@nod.at>
+ <CAJ+vNU1J+MvyWgY1FPv4G7TxQLDtPJWdWw=DP5+1h2HcTi-SxQ@mail.gmail.com>
+ <562E9E0B.5030204@nod.at>
+ <CAJ+vNU1GV1GxYfLgHh2ZerAGjRxi=azXHLg_dNO=BaUrkkDU1w@mail.gmail.com>
+ <562FD60E.9020807@nod.at>
+ <CAJ+vNU28eboKDTei09-rjWOTJ_17CPQ0+UxpOOuc0cr_kj0qhw@mail.gmail.com>
+ <CAJ+vNU3Y_SnLSAojp3-hXxR02dtfX5n78GkS6Zt-izDZMh2msQ@mail.gmail.com>
+ <20151103143850.45c4ded9@bbrezillon>
+ <CAJ+vNU2Sm9wzdM7mbe6c-qtKbYcOkn_KauPfSpmS6Kao=+AjWQ@mail.gmail.com>
+ <CAJ+vNU2M5getk6=J-wXDhQf1qwPr7ivRQFtO8pV1695WK7ZR+g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87lh9f15fh.fsf@saruman.tx.rr.com>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,124 +36,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Felipe,
+On Mon, 30 Nov 2015 13:58:34 -0800
+Tim Harvey <tharvey@gateworks.com> wrote:
 
-On 12/01/2015 04:05 AM, Balbi, Felipe wrote:
+> On Mon, Nov 16, 2015 at 7:01 AM, Tim Harvey <tharvey@gateworks.com> wrote:
+> > On Tue, Nov 3, 2015 at 5:38 AM, Boris Brezillon
+> > <boris.brezillon@free-electrons.com> wrote:
+> >> Hi Tim,
+> >>
+> >> On Mon, 2 Nov 2015 12:31:11 -0800
+> >> Tim Harvey <tharvey@gateworks.com> wrote:
+> >>
+> >>> On Mon, Nov 2, 2015 at 12:27 PM, Tim Harvey <tharvey@gateworks.com> wrote:
+> >>> > [    8.635364] UBIFS (ubi0:0): recovery needed
+> >>> > [    8.676203] ubi0 warning: ubi_io_read: error -74 (ECC error) while
+> >>> > reading 69632 bytes from PEB 2254:192512, read only 69632 bytes, retry
+> >>> > [    8.692460] ubi0 warning: ubi_io_read: error -74 (ECC error) while
+> >>> > reading 69632 bytes from PEB 2254:192512, read only 69632 bytes, retry
+> >>> > [    8.708741] ubi0 warning: ubi_io_read: error -74 (ECC error) while
+> >>> > reading 69632 bytes from PEB 2254:192512, read only 69632 bytes, retry
+> >>> > ^^^^ non correctable ecc error on PEB 2254  - I verified that this was
+> >>> > not the first time this PEB has been used
+> >>
+> >> I suspect one of the bit in PEB 2254 to be stuck at 0 (even after
+> >> erasing the block the bit stays at 0). Have you tried to erase this
+> >> block (flash_erase /dev/mtd2 0x23380000 1) and dump it in raw mode
+> >> (nanddump -n -l 0x40000 -s 0x23380000 -f /tmp/dump /dev/mtd2)?
+> >
+> > Boris,
+> >
+> > I examined the bad PEB on several boards now that I have reproduced
+> > this issue with and found no stuck bits (no 0's following erase, no
+> > 1's following erase and raw write all ff's).
+> >
+> > So in this case it doesn't appear to be a bad block. Incidentally for
+> > UBI/UBIFS, what is in charge of detecting bad blocks, how are they
+> > detected, and when/how are they marked?
+> >
+> >>
+> >>> >
+> >>> > I've cc'd Huang, Elie, and Brian who were involved in the patch to
+> >>> > detect bit-flips in gpmi-nand.c reads - perhaps they have some more
+> >>> > ideas. I find it interesting that in one case that patch resolves the
+> >>> > issue and in the other it does not.
+> >>
+> >> I posted a slightly reworked version of Huang's patch [1] a while ago
+> >> addressing the "account for bitflips in OOB area" problem, but maybe we
+> >> could do better (avoid this extra "read in raw mode" step, or use the
+> >> generic nand_check_erased_ecc_chunk() function when ECC bytes are
+> >> aligned).
+> >>
+> >> Best Regards,
+> >>
+> >> Boris
+> >>
+> >> [1]https://patchwork.ozlabs.org/patch/416543/
+> >
+> > At this point I likely need to reproduce this problem with additional
+> > debugging enabled to show what last erased and/or wrote to the PEB's
+> > that are corrupt. I will also try your patch as well and see if that
+> > resolves anything.
+> >
+> > Regards,
+> >
+> > Tim
 > 
-> Hi,
+> Boris,
 > 
-> Vignesh R <vigneshr@ti.com> writes:
-[...]
->> +}
->> +
->> +static int ti_qspi_spi_flash_read(struct  spi_device *spi,
->> +				  struct spi_flash_read_message *msg)
->> +{
->> +	struct ti_qspi *qspi = spi_master_get_devdata(spi->master);
->> +	int ret = 0;
->> +
->> +	mutex_lock(&qspi->list_lock);
->> +
->> +	if (!qspi->mmap_enabled)
->> +		ti_qspi_enable_memory_map(spi);
->> +	ti_qspi_setup_mmap_read(spi, msg);
->> +	memcpy_fromio(msg->buf, qspi->mmap_base + msg->from, msg->len);
->> +	msg->retlen = msg->len;
+> I tried your patch [1] on a week-long test over 10x IMX6 boards
+> booting over 60K times across temperature ranges and the patch
+> resolved many previous failures to mount rootfs errors (previously I
+> would encounter around 1% failure to mount rootfs). In addition I saw
+> no nand corruption where I would have expected to see it several times
+> with those numbers so I suspect this may have resolved that as well.
 > 
-> the way I have always expected this to work was that spi controller
-> would setup the mmap region (using ranges?) and pass the base address to
-> the SPI NOR flash instead, so that could call standard
-> write[bwl]/read[bwl] functions.
-> 
-> I mean, when we're dealing with AXI, AHB, PCI, OCP, whatever we
-> completely ignore these details, why should SPI be different ? If it's
-> memory mapped, the SW view of the thing is a piece of memory and that
-> should be accessible with standard {read,write}[bwl]() calls.
-> 
+> Can you re-submit your patch for inclusion and/or discussion?
 
-This is just an acceleration provided to improve flash read speeds.
-Whenever there is an access to QSPI memory map region, there is a
-SFI_MM_IF block in QSPI IP that generates SPI bus signals in order fetch
-the data from flash. This SFI_MM_IF must first be configured with flash
-specific information like read opcode, read mode, dummy bytes etc (which
-may vary from flash to flash), by writing to QSPI_SPI_SETUP*_REG also,
-SFI_MM_IF needs to be selected by writing to QSPI_SPI_SWITCH_REG.
-IMO, there has to be a call from spi-nor to ti-qspi before using
-standard {read,write}[bwl]() calls for populating flash info, power mgmt
-and locking SPI bus.
+I'm quite busy on other topics lately, but feel free to adapt/resubmit
+the patch.
 
-> I really think $subject is not a good way forward because it gives too
-> much responsibility to the SPI controller driver; note that this driver
-> is the one actually accessing the memory map region, instead of simply
-> setting it up and passing it along.
-> 
+Best Regards,
 
-How would you propose to setup mmap transfers while taking care of SPI
-bus locking and passing of flash info to ti-qspi?
-
-
-> So the way I see it, the DTS should be like so:
-> 
-> qspi@XYZ {
->          reg = <XYZ foo>;
->          [...]
->          ranges = <0 0 0x30000000 $size>;
-> 
->          flash@0,0 {
->                    compatible = "mp2580";
->                    reg = <0 0 $flash_size>;
->          };
-> };
-> 
-> 
-> if you have more than one device sitting on this SPI bus using different
-> chip selects, that's easy too, just change your ranges property:
-> 
-> qspi@XYZ {
->          reg = <XYZ foo>;
->          [...]
->          ranges = <0 0 0x30000000 0x1000
->                    1 0 0x30001000 0x1000
->                    2 0 0x30002000 0x1000>;
-> 
->          flash@0,0 {
->                  [...]
->          };
-> 
->          flash@1,0 {
->                    [...]
->          };
-> 
->          flash@2,0 {
->                    [...]
-> 	};
-> };
-> 
-
-No, even if there are multiple slaves, all slaves map to the same start
-address (0x30000000 in above example). Based on the chip-select line
-that is asserted (selected by writing to a particular CTRL_MODULE
-register field), the corresponding slave responds. Different slaves
-cannot be mapped to different address ranges inside mmap address space.
-The ranges property will always be the same for all slaves and all
-chip-selects.
-
-> and so on. From ti-qspi perspective, you should just setup the memory
-> map and from mp25p80 you would check if your reg property pointed to an
-> address that looks like memory, then ioremap it and use tradicional
-> {read,write}[bwl]() accessors. Any reasons why that wasn't done the way
-> pointed out above ?
-> 
-
-There might be a SPI controller that provides accelerated interface for
-SPI flash read not as a memory mapping but some-other way. Brian Norris
-has pointed out that there is at least one other controller which
-provides such acceleration w/o memory mapping[1] May be Brian can
-explain that better?
-
-
-[1]https://lkml.org/lkml/2015/11/10/618
+Boris
 
 -- 
-Regards
-Vignesh
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
