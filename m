@@ -1,19 +1,22 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3qLD-0003F4-M7
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 19:11:57 +0000
-Date: Tue, 1 Dec 2015 20:11:33 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: nand: fix typo (t_ald -> t_adl)
-Message-ID: <20151201201133.40f8f350@bbrezillon>
-In-Reply-To: <1448996912-14677-1-git-send-email-computersforpeace@gmail.com>
-References: <1448996912-14677-1-git-send-email-computersforpeace@gmail.com>
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a3qSW-0004wk-P6
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 19:19:29 +0000
+Received: by pacej9 with SMTP id ej9so14064702pac.2
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Dec 2015 11:19:07 -0800 (PST)
+Date: Tue, 1 Dec 2015 11:19:05 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Scott Branden <sbranden@broadcom.com>
+Cc: linux-mtd@lists.infradead.org, Julia Lawall <julia.lawall@lip6.fr>,
+ bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH] mtd: brcmnand: drop brcmnand_host::of_node field
+Message-ID: <20151201191905.GZ64635@google.com>
+References: <1448935287-144366-1-git-send-email-computersforpeace@gmail.com>
+ <565DD627.5010400@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <565DD627.5010400@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  1 Dec 2015 11:08:32 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> It's "ADL" ("ALE to data loading" time) not "ALD".
+On Tue, Dec 01, 2015 at 09:17:27AM -0800, Scott Branden wrote:
+> Looks good.
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> On 15-11-30 06:01 PM, Brian Norris wrote:
+> >We don't actually need to stash a copy of this device_node indefinitely;
+> >we only need it in brcmnand_init_cs().
+> >
+> >Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> >Cc: <bcm-kernel-feedback-list@broadcom.com>
+> >Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> Acked-by: Scott Branden <sbranden@broadcom.com>
 
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-> ---
-> Caught by inspection. Compile tested only.
-> 
->  include/linux/mtd/nand.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index eaf48b5a95dd..fad634ea1685 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -283,7 +283,7 @@ struct nand_onfi_params {
->  	u8 input_pin_capacitance_max;
->  	u8 driver_strength_support;
->  	__le16 t_int_r;
-> -	__le16 t_ald;
-> +	__le16 t_adl;
->  	u8 reserved4[8];
->  
->  	/* vendor */
-> @@ -407,7 +407,7 @@ struct nand_jedec_params {
->  	__le16 input_pin_capacitance_typ;
->  	__le16 clk_pin_capacitance_typ;
->  	u8 driver_strength_support;
-> -	__le16 t_ald;
-> +	__le16 t_adl;
->  	u8 reserved4[36];
->  
->  	/* ECC and endurance block */
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Applied
