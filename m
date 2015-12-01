@@ -1,14 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3o9H-0006BK-BV
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 16:51:31 +0000
-Date: 1 Dec 2015 16:51:04 -0000
-Message-Id: <addb82044e8f8472ac0d02bd08ee5dca1a186117.1448988089.git.hramrach@gmail.com>
+ id 1a3o9H-000669-BK
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 16:51:32 +0000
+Date: 1 Dec 2015 16:51:03 -0000
+Message-Id: <b255ef9e237b9b58e2cfb13ee0047df62cabe9a5.1448988089.git.hramrach@gmail.com>
 In-Reply-To: <cover.1448988089.git.hramrach@gmail.com>
 References: <cover.1448988089.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v5 02/10] mtd: m25p80: return amount of data transferred or
- error in read/write
+Subject: [PATCH v5 01/10] mtd: spi-nor: change return value of read/write
 To: Heiner Kallweit <hkallweit1@gmail.com>,
   David Woodhouse <dwmw2@infradead.org>,
   Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
@@ -31,71 +30,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add checking of SPI transfer errors and return them from read/write
-functions. Also return the amount of data transferred.
+Change the return value of spi-nor device read and write methods to
+allow returning amount of data transferred and errors as
+read(2)/write(2) does.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 ---
- drivers/mtd/devices/m25p80.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+
+ - avoid compiler warning
+---
+ drivers/mtd/devices/m25p80.c      | 5 +++--
+ drivers/mtd/spi-nor/fsl-quadspi.c | 5 +++--
+ include/linux/mtd/spi-nor.h       | 4 ++--
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 6ee3bb3..fc694fd 100644
+index c9c3b7f..6ee3bb3 100644
 --- a/drivers/mtd/devices/m25p80.c
 +++ b/drivers/mtd/devices/m25p80.c
-@@ -81,6 +81,7 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 	struct spi_transfer t[2] = {};
- 	struct spi_message m;
- 	int cmd_sz = m25p_cmdsz(nor);
-+	ssize_t ret;
+@@ -73,7 +73,7 @@ static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	return spi_write(spi, flash->command, len + 1);
+ }
  
- 	spi_message_init(&m);
+-static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
++static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+ 			size_t *retlen, const u_char *buf)
+ {
+ 	struct m25p *flash = nor->priv;
+@@ -101,6 +101,7 @@ static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+ 	spi_sync(spi, &m);
  
-@@ -98,10 +99,15 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
- 
--	spi_sync(spi, &m);
-+	ret = spi_sync(spi, &m);
-+	if (ret)
-+		return ret;
- 
--	*retlen += m.actual_length - cmd_sz;
--	return 0;
-+	ret = m.actual_length - cmd_sz;
-+	if (ret < 0)
-+		return -EIO;
-+	*retlen += ret;
-+	return ret;
+ 	*retlen += m.actual_length - cmd_sz;
++	return 0;
  }
  
  static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
-@@ -128,6 +134,7 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	struct spi_transfer t[2];
- 	struct spi_message m;
- 	unsigned int dummy = nor->read_dummy;
-+	ssize_t ret;
- 
- 	/* convert the dummy cycles to the number of bytes */
- 	dummy /= 8;
-@@ -147,10 +154,15 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
- 
--	spi_sync(spi, &m);
-+	ret = spi_sync(spi, &m);
-+	if (ret)
-+		return ret;
- 
--	*retlen = m.actual_length - m25p_cmdsz(nor) - dummy;
--	return 0;
-+	ret = m.actual_length - m25p_cmdsz(nor) - dummy;
-+	if (ret < 0)
-+		return -EIO;
-+	*retlen += ret;
-+	return ret;
+@@ -119,7 +120,7 @@ static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+  * Read an address range from the nor chip.  The address range
+  * may be any size provided it is within the physical boundaries.
+  */
+-static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
++static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 			size_t *retlen, u_char *buf)
+ {
+ 	struct m25p *flash = nor->priv;
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 54640f1..10d2b59 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -822,7 +822,7 @@ static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	return ret;
  }
  
- /*
+-static void fsl_qspi_write(struct spi_nor *nor, loff_t to,
++static ssize_t fsl_qspi_write(struct spi_nor *nor, loff_t to,
+ 		size_t len, size_t *retlen, const u_char *buf)
+ {
+ 	struct fsl_qspi *q = nor->priv;
+@@ -832,9 +832,10 @@ static void fsl_qspi_write(struct spi_nor *nor, loff_t to,
+ 
+ 	/* invalid the data in the AHB buffer. */
+ 	fsl_qspi_invalid(q);
++	return 0;
+ }
+ 
+-static int fsl_qspi_read(struct spi_nor *nor, loff_t from,
++static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
+ 		size_t len, size_t *retlen, u_char *buf)
+ {
+ 	struct fsl_qspi *q = nor->priv;
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 7bed974..6080701 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -171,9 +171,9 @@ struct spi_nor {
+ 	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+ 	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+ 
+-	int (*read)(struct spi_nor *nor, loff_t from,
++	ssize_t (*read)(struct spi_nor *nor, loff_t from,
+ 			size_t len, size_t *retlen, u_char *read_buf);
+-	void (*write)(struct spi_nor *nor, loff_t to,
++	ssize_t (*write)(struct spi_nor *nor, loff_t to,
+ 			size_t len, size_t *retlen, const u_char *write_buf);
+ 	int (*erase)(struct spi_nor *nor, loff_t offs);
+ 
 -- 
 2.6.2
