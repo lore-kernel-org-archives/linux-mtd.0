@@ -1,29 +1,18 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3gzn-0003et-U5
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 09:13:15 +0000
-Date: Tue, 1 Dec 2015 10:12:49 +0100
+ id 1a3hJc-0005BT-J9
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 09:33:41 +0000
+Date: Tue, 1 Dec 2015 10:33:18 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Tim Harvey <tharvey@gateworks.com>
-Cc: Richard Weinberger <richard@nod.at>, Elie De Brauwer
- <eliedebrauwer@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>, Adrian
- Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org, Huang
- Shijie <shijie.huang@arm.com>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: UBIFS corruption after power cut - possibly unstable bits issue?
-Message-ID: <20151201101249.1fc3448f@bbrezillon>
-In-Reply-To: <CAJ+vNU2M5getk6=J-wXDhQf1qwPr7ivRQFtO8pV1695WK7ZR+g@mail.gmail.com>
-References: <CAJ+vNU3eu4qBxaZpDRY=Fidv=9iGmA5pq8b4yUfyBayLTos5oQ@mail.gmail.com>
- <562E8697.50207@nod.at>
- <CAJ+vNU1J+MvyWgY1FPv4G7TxQLDtPJWdWw=DP5+1h2HcTi-SxQ@mail.gmail.com>
- <562E9E0B.5030204@nod.at>
- <CAJ+vNU1GV1GxYfLgHh2ZerAGjRxi=azXHLg_dNO=BaUrkkDU1w@mail.gmail.com>
- <562FD60E.9020807@nod.at>
- <CAJ+vNU28eboKDTei09-rjWOTJ_17CPQ0+UxpOOuc0cr_kj0qhw@mail.gmail.com>
- <CAJ+vNU3Y_SnLSAojp3-hXxR02dtfX5n78GkS6Zt-izDZMh2msQ@mail.gmail.com>
- <20151103143850.45c4ded9@bbrezillon>
- <CAJ+vNU2Sm9wzdM7mbe6c-qtKbYcOkn_KauPfSpmS6Kao=+AjWQ@mail.gmail.com>
- <CAJ+vNU2M5getk6=J-wXDhQf1qwPr7ivRQFtO8pV1695WK7ZR+g@mail.gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: fix ONFI parameter page layout
+Message-ID: <20151201103318.16a2e46a@bbrezillon>
+In-Reply-To: <20151130201729.GK64635@google.com>
+References: <1448274187-22174-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20151130201729.GK64635@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -36,84 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 30 Nov 2015 13:58:34 -0800
-Tim Harvey <tharvey@gateworks.com> wrote:
+Hi Brian,
 
-> On Mon, Nov 16, 2015 at 7:01 AM, Tim Harvey <tharvey@gateworks.com> wrote:
-> > On Tue, Nov 3, 2015 at 5:38 AM, Boris Brezillon
-> > <boris.brezillon@free-electrons.com> wrote:
-> >> Hi Tim,
-> >>
-> >> On Mon, 2 Nov 2015 12:31:11 -0800
-> >> Tim Harvey <tharvey@gateworks.com> wrote:
-> >>
-> >>> On Mon, Nov 2, 2015 at 12:27 PM, Tim Harvey <tharvey@gateworks.com> wrote:
-> >>> > [    8.635364] UBIFS (ubi0:0): recovery needed
-> >>> > [    8.676203] ubi0 warning: ubi_io_read: error -74 (ECC error) while
-> >>> > reading 69632 bytes from PEB 2254:192512, read only 69632 bytes, retry
-> >>> > [    8.692460] ubi0 warning: ubi_io_read: error -74 (ECC error) while
-> >>> > reading 69632 bytes from PEB 2254:192512, read only 69632 bytes, retry
-> >>> > [    8.708741] ubi0 warning: ubi_io_read: error -74 (ECC error) while
-> >>> > reading 69632 bytes from PEB 2254:192512, read only 69632 bytes, retry
-> >>> > ^^^^ non correctable ecc error on PEB 2254  - I verified that this was
-> >>> > not the first time this PEB has been used
-> >>
-> >> I suspect one of the bit in PEB 2254 to be stuck at 0 (even after
-> >> erasing the block the bit stays at 0). Have you tried to erase this
-> >> block (flash_erase /dev/mtd2 0x23380000 1) and dump it in raw mode
-> >> (nanddump -n -l 0x40000 -s 0x23380000 -f /tmp/dump /dev/mtd2)?
-> >
-> > Boris,
-> >
-> > I examined the bad PEB on several boards now that I have reproduced
-> > this issue with and found no stuck bits (no 0's following erase, no
-> > 1's following erase and raw write all ff's).
-> >
-> > So in this case it doesn't appear to be a bad block. Incidentally for
-> > UBI/UBIFS, what is in charge of detecting bad blocks, how are they
-> > detected, and when/how are they marked?
-> >
-> >>
-> >>> >
-> >>> > I've cc'd Huang, Elie, and Brian who were involved in the patch to
-> >>> > detect bit-flips in gpmi-nand.c reads - perhaps they have some more
-> >>> > ideas. I find it interesting that in one case that patch resolves the
-> >>> > issue and in the other it does not.
-> >>
-> >> I posted a slightly reworked version of Huang's patch [1] a while ago
-> >> addressing the "account for bitflips in OOB area" problem, but maybe we
-> >> could do better (avoid this extra "read in raw mode" step, or use the
-> >> generic nand_check_erased_ecc_chunk() function when ECC bytes are
-> >> aligned).
-> >>
-> >> Best Regards,
-> >>
-> >> Boris
-> >>
-> >> [1]https://patchwork.ozlabs.org/patch/416543/
-> >
-> > At this point I likely need to reproduce this problem with additional
-> > debugging enabled to show what last erased and/or wrote to the PEB's
-> > that are corrupt. I will also try your patch as well and see if that
-> > resolves anything.
-> >
-> > Regards,
-> >
-> > Tim
-> 
-> Boris,
-> 
-> I tried your patch [1] on a week-long test over 10x IMX6 boards
-> booting over 60K times across temperature ranges and the patch
-> resolved many previous failures to mount rootfs errors (previously I
-> would encounter around 1% failure to mount rootfs). In addition I saw
-> no nand corruption where I would have expected to see it several times
-> with those numbers so I suspect this may have resolved that as well.
-> 
-> Can you re-submit your patch for inclusion and/or discussion?
+On Mon, 30 Nov 2015 12:17:29 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-I'm quite busy on other topics lately, but feel free to adapt/resubmit
-the patch.
+> On Mon, Nov 23, 2015 at 11:23:07AM +0100, Boris Brezillon wrote:
+> > src_ssync_features field is only 1 byte large, and the 4th reserved area
+> > is actually 8 bytes large.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Fixes d1e1f4e42b5 ("mtd: nand: add support for reading ONFI parameters from NAND device")
+> > Cc: <stable@vger.kernel.org> #v2.6.37+
+> 
+> Did you see an actual problem from this? (And is this deserving of
+> stable?) I could imagine an out-of-tree driver might try to use t_ald
+> (which should actually be t_adl, right?)
+
+Yes, should be t_adl, not t_ald. Do you want me to send another patch
+for that, or will you take care of it?
+
+> and get the wrong value. But no
+> one does that in-tree yet.
+
+Fair enough, we can just drop the stable and fixes tag. Do you want me
+to resend it?
 
 Best Regards,
 
