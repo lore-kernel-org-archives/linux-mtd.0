@@ -1,17 +1,21 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3aGl-0004II-PW
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 02:02:16 +0000
-Received: by pabfh17 with SMTP id fh17so209961774pab.0
- for <linux-mtd@lists.infradead.org>; Mon, 30 Nov 2015 18:02:00 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Julia Lawall <julia.lawall@lip6.fr>, bcm-kernel-feedback-list@broadcom.com,
- Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH] mtd: brcmnand: drop brcmnand_host::of_node field
-Date: Mon, 30 Nov 2015 18:01:27 -0800
-Message-Id: <1448935287-144366-1-git-send-email-computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 4/5] ARM: dts: DRA7: add entry for qspi mmap region
+To: Tony Lindgren <tony@atomide.com>
+References: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
+ <1448860515-28336-5-git-send-email-vigneshr@ti.com>
+ <20151130223408.GJ23396@atomide.com>
+CC: Brian Norris <computersforpeace@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Russell King
+ <linux@arm.linux.org.uk>, <hramrach@gmail.com>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <565D25E6.4070206@ti.com>
+Date: Tue, 1 Dec 2015 10:15:26 +0530
+MIME-Version: 1.0
+In-Reply-To: <20151130223408.GJ23396@atomide.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,50 +25,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We don't actually need to stash a copy of this device_node indefinitely;
-we only need it in brcmnand_init_cs().
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: <bcm-kernel-feedback-list@broadcom.com>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>
----
- drivers/mtd/nand/brcmnand/brcmnand.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index ad756f626f4b..35d78f739d91 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -176,7 +176,6 @@ struct brcmnand_cfg {
- 
- struct brcmnand_host {
- 	struct list_head	node;
--	struct device_node	*of_node;
- 
- 	struct nand_chip	chip;
- 	struct mtd_info		mtd;
-@@ -1902,10 +1901,9 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 	return 0;
- }
- 
--static int brcmnand_init_cs(struct brcmnand_host *host)
-+static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
- {
- 	struct brcmnand_controller *ctrl = host->ctrl;
--	struct device_node *dn = host->of_node;
- 	struct platform_device *pdev = host->pdev;
- 	struct mtd_info *mtd;
- 	struct nand_chip *chip;
-@@ -2239,9 +2237,8 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 			}
- 			host->pdev = pdev;
- 			host->ctrl = ctrl;
--			host->of_node = child;
- 
--			ret = brcmnand_init_cs(host);
-+			ret = brcmnand_init_cs(host, child);
- 			if (ret) {
- 				devm_kfree(dev, host);
- 				continue; /* Try all chip-selects */
+On 12/01/2015 04:04 AM, Tony Lindgren wrote:
+> * Vignesh R <vigneshr@ti.com> [151129 21:16]:
+>> Add qspi memory mapped region entries for DRA7xx based SoCs. Also,
+>> update the binding documents for the controller to document this change.
+>>
+>> Acked-by: Rob Herring <robh@kernel.org>
+>> Signed-off-by: Vignesh R <vigneshr@ti.com>
+> ...
+>> --- a/Documentation/devicetree/bindings/spi/ti_qspi.txt
+>> +++ b/Documentation/devicetree/bindings/spi/ti_qspi.txt
+>> @@ -26,3 +26,17 @@ qspi: qspi@4b300000 {
+>>  	spi-max-frequency = <25000000>;
+>>  	ti,hwmods = "qspi";
+>>  };
+>> +
+>> +For dra7xx:
+>> +qspi: qspi@4b300000 {
+>> +	compatible = "ti,dra7xxx-qspi";
+>> +	reg = <0x4b300000 0x100>,
+>> +	      <0x5c000000 0x4000000>,
+>> +	      <0x4a002558 0x4>;
+>> +	reg-names = "qspi_base", "qspi_mmap",
+>> +		    "qspi_ctrlmod";
+>> +	#address-cells = <1>;
+>> +	#size-cells = <0>;
+>> +	spi-max-frequency = <48000000>;
+>> +	ti,hwmods = "qspi";
+>> +};
+> 
+> Actually none of the IO areas above are within the same interconnect target:
+> 
+> 0x4b300000  QSPI0 address space in L3 main interconnect
+> 0x5c000000  QSPI1 address space in L3 main interconnect
+
+
+First address range (configuration port: 0x4b300000) corresponds to QSPI
+registers space. These registers alone are sufficient for generic SPI
+communication (serial flash as well as non-flash SPI devices).
+
+In order to speed up SPI flash reads SFI_MM_IF(SPI memory mapped
+interface) is provided by QSPI IP. This _cannot_ be used with non-flash
+devices.
+The second address range (0x5c000000) corresponds to memory-mapped
+region of SFI_MM_IF, through which SPI flash memories can be read as if
+though they were RAM addresses (i.e using readl/memcpy). The SFI_MM_IF
+block that takes care of communicating over SPI bus and getting the data
+from flash device.
+But SFI_MM_IF block needs to know some flash specific information(such
+as read opcode, address bytes, dummy bytes, mode). This information must
+first be populated in QSPI_SPI_SETUP*_REG(0x4B300054-60) before
+accessing SFI_MM_IF address range via readl.
+Both addresses space belong to same instance of the driver, one
+corresponds to register space and other is memory-mapped region.
+Therefore both regions are claimed by the same driver.
+
+> 0x4a002558  CTRL_CORE_CONTROL_IO_2 in System Control Module (SCM) in L4_CFG
+> 
+> The first two address spaces should be two separate instances of this driver.
+
+Not actually two instances.
+
+> The CTRL_CORE_CONTROL_IO_2 needs seems like a shared clock register that
+> needs to be accessed using the clock framework most likely.
+> 
+
+Not shared clock.
+The CTRL_CORE_CONTROL_IO_2[10:8] QSPI_MEMMAPPED_CS bit fields provides a
+functionality for remapping the previously described address space which
+starts at 0x5C000000 L3_MAIN address to one of the four supported chip
+selects.
+How about using syscon to access CTRL_CORE_CONTROL_IO_2?
+
 -- 
-2.6.0.rc2.230.g3dd15c0
+Regards
+Vignesh
