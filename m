@@ -1,22 +1,20 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3qSW-0004wk-P6
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 19:19:29 +0000
-Received: by pacej9 with SMTP id ej9so14064702pac.2
- for <linux-mtd@lists.infradead.org>; Tue, 01 Dec 2015 11:19:07 -0800 (PST)
-Date: Tue, 1 Dec 2015 11:19:05 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Scott Branden <sbranden@broadcom.com>
-Cc: linux-mtd@lists.infradead.org, Julia Lawall <julia.lawall@lip6.fr>,
- bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: Re: [PATCH] mtd: brcmnand: drop brcmnand_host::of_node field
-Message-ID: <20151201191905.GZ64635@google.com>
-References: <1448935287-144366-1-git-send-email-computersforpeace@gmail.com>
- <565DD627.5010400@broadcom.com>
+ id 1a3qsn-0001xP-Fr
+ for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 19:46:39 +0000
+Subject: Re: [PATCH 3/3] mtd: ubi: wl: avoid erasing a PEB which is empty
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+References: <1448569430-885-1-git-send-email-bigeasy@linutronix.de>
+ <1448569430-885-3-git-send-email-bigeasy@linutronix.de>
+Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <565DF901.40208@nod.at>
+Date: Tue, 1 Dec 2015 20:46:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <565DD627.5010400@broadcom.com>
+In-Reply-To: <1448569430-885-3-git-send-email-bigeasy@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 01, 2015 at 09:17:27AM -0800, Scott Branden wrote:
-> Looks good.
+Am 26.11.2015 um 21:23 schrieb Sebastian Andrzej Siewior:
+> wear_leveling_worker() currently unconditionally puts a PEB on erase in
+> the error case even it just been taken from the free_list and never
+> used.
+> In case the PEB was never used it can be put back on the free list
+> saving a precious erase cycle.
 > 
-> On 15-11-30 06:01 PM, Brian Norris wrote:
-> >We don't actually need to stash a copy of this device_node indefinitely;
-> >we only need it in brcmnand_init_cs().
-> >
-> >Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> >Cc: <bcm-kernel-feedback-list@broadcom.com>
-> >Cc: Kamal Dasu <kdasu.kdev@gmail.com>
-> Acked-by: Scott Branden <sbranden@broadcom.com>
+> v1…v2:
+> 	- to_leb_clean -> dst_leb_clean
+> 	- use the nested option for ensure_wear_leveling()
+> 	- do_sync_erase() can't go -ENOMEM so we can just go into
+> 	  RO-mode now.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Applied
+Thanks a lot for the error handling cleanup and this improvement!
+All three patches look good to me.
+Artem, unless you have objections I'd merge them.
+
+Thanks,
+//richard
