@@ -1,25 +1,13 @@
-Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a44oO-0004Up-RK
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 10:39:03 +0000
-Date: 2 Dec 2015 10:38:21 -0000
-Message-Id: <8b7f438323e5d9002ad4f62bedc7810154ffd474.1449052427.git.hramrach@gmail.com>
-In-Reply-To: <cover.1449052427.git.hramrach@gmail.com>
-References: <cover.1449052427.git.hramrach@gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v6 08/10] spi: expose master transfer size limitation.
-To: Heiner Kallweit <hkallweit1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
- Mark Brown <broonie@kernel.org>, Michal Suchanek <hramrach@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- "Rafal Milecki" <zajec5@gmail.com>, Jagan Teki <jteki@openedev.com>,
- "Andrew F. Davis" <afd@ti.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>, "Bean Huo  " <beanhuo@micron.com>,
- Furquan Shaikh <furquan@google.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 0/3] mtd: nand: add randomizer support
+Date: Wed,  2 Dec 2015 12:01:04 +0100
+Message-Id: <1449054067-16751-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,56 +17,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On some SPI controllers it is not feasible to transfer arbitrary amount
-of data at once.
+Hello,
 
-When the limit on transfer size is a few kilobytes at least it makes
-sense to use the SPI hardware rather than reverting to gpio driver.
+This series is a proposal to add support for randomizers (either software
+or hardware) to NAND flash controller drivers.
 
-The protocol drivers need a way to check that they do not sent overly
-long messages, though.
+The last patch is the sunxi HW randomizer implementation and is just given
+as an example (it won't apply on the MTD tree, because it depends on other
+stuff not yet posted on the MTD ML, but if you want a full overview of the
+NAND Flash controller driver you can take a look at this series [2]).
 
-Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+I can also provide a software implementation based on LFSR (Left Feedback
+Shift Register) algorithm, thought I haven't tested it yet, hence why it's
+not part of this series. Let me know if you're interested in this
+implementation.
 
----
+This series depends on the "per-partition ECC" series [1], because I need
+the randomizer seed to be different depending on the partition (for the
+same reason I needed ECC config to be different for each partition: the
+bootrom config might not fit the NAND chip requirements).
 
- - return SIZE_MAX when no limit is known
----
- include/linux/spi/spi.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+I'd like to have feedback from both MTD maintainers and driver
+developers who might need to implement (or use) a randomizer in their
+system, so feel free to comment on this series.
 
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index cce80e6..3eebc6c 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -425,6 +425,12 @@ struct spi_master {
- #define SPI_MASTER_MUST_RX      BIT(3)		/* requires rx */
- #define SPI_MASTER_MUST_TX      BIT(4)		/* requires tx */
- 
-+	/*
-+	 * on some hardware transfer size may be constrained
-+	 * the limit may depend on device transfer settings
-+	 */
-+	size_t (*max_transfer_size)(struct spi_device *spi);
-+
- 	/* lock and mutex for SPI bus locking */
- 	spinlock_t		bus_lock_spinlock;
- 	struct mutex		bus_lock_mutex;
-@@ -832,6 +838,15 @@ extern int spi_async(struct spi_device *spi, struct spi_message *message);
- extern int spi_async_locked(struct spi_device *spi,
- 			    struct spi_message *message);
- 
-+static inline size_t
-+spi_max_transfer_size(struct spi_device *spi)
-+{
-+	struct spi_master *master = spi->master;
-+	if (!master->max_transfer_size)
-+		return SIZE_MAX;
-+	return master->max_transfer_size(spi);
-+}
-+
- /*---------------------------------------------------------------------------*/
- 
- /* All these synchronous SPI transfer routines are utilities layered
+Best Regards,
+
+Boris
+
+[1] https://lkml.org/lkml/2014/2/12/627
+[2] https://groups.google.com/forum/#!msg/linux-sunxi/s3lBb01I0Js/z2NoCFJ83g4J 
+
+Changes since v1:
+- add some comments to explain how the sunxi randomizer works
+- fix a few minor bugs and coding style issues
+
+Boris Brezillon (3):
+  mtd: nand: add NAND_NEED_SCRAMBLING option flag
+  mtd: nand: add NAND_NEED_SCRAMBLING flag to the H27UCG8T2ATR-BC
+    definition
+  mtd: nand: sunxi: add randomizer support
+
+ drivers/mtd/nand/nand_ids.c   |   4 +-
+ drivers/mtd/nand/sunxi_nand.c | 287 ++++++++++++++++++++++++++++++++++++++----
+ include/linux/mtd/nand.h      |   6 +
+ 3 files changed, 269 insertions(+), 28 deletions(-)
+
 -- 
-2.6.2
+2.1.4
