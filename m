@@ -1,35 +1,31 @@
-Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4DFr-0001mK-5l
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 19:39:56 +0000
-Received: by igcto18 with SMTP id to18so39505665igc.0
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 11:39:34 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20151202190555.GJ64635@google.com>
-References: <56506D55.3000907@simon.arlott.org.uk>
- <20151122215945.GA5930@rob-hp-laptop>
- <56523E85.905@simon.arlott.org.uk> <56523EFF.9050502@simon.arlott.org.uk>
- <56535977.9050201@gmail.com> <56541BD3.4070202@simon.arlott.org.uk>
- <5654AF69.7040901@gmail.com>
- <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
- <20151202190555.GJ64635@google.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Date: Wed, 2 Dec 2015 11:38:54 -0800
-Message-ID: <CAGVrzcZa2LNcajdnZHgZ2j+2Yj0_0a-7VmtXoBtWwFK2C02CyA@mail.gmail.com>
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4DHr-0003lS-0p
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 19:42:02 +0000
 Subject: Re: [PATCH (v6) 1/2] mtd: brcmnand: Add brcm,bcm63268-nand device
  tree binding
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: Simon Arlott <simon@fire.lp0.eu>, Rob Herring <robh@kernel.org>,
+References: <56506D55.3000907@simon.arlott.org.uk>
+ <20151122215945.GA5930@rob-hp-laptop> <56523E85.905@simon.arlott.org.uk>
+ <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
+ <56541BD3.4070202@simon.arlott.org.uk> <5654AF69.7040901@gmail.com>
+ <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
+ <20151202190555.GJ64635@google.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh@kernel.org>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@codeaurora.org>, Jonas Gorski <jogo@openwrt.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+ bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+From: Simon Arlott <simon@fire.lp0.eu>
+Message-ID: <565F4953.2070206@simon.arlott.org.uk>
+Date: Wed, 2 Dec 2015 19:41:07 +0000
+MIME-Version: 1.0
+In-Reply-To: <20151202190555.GJ64635@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,20 +35,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2015-12-02 11:05 GMT-08:00 Brian Norris <computersforpeace@gmail.com>:
+On 02/12/15 19:05, Brian Norris wrote:
 > + Broadcom list + Kamal
->
+> 
 > On Tue, Nov 24, 2015 at 08:19:37PM -0000, Simon Arlott wrote:
 >> Add device tree binding for NAND on the BCM63268.
->>
+>> 
 >> The BCM63268 has a NAND interrupt register with combined status and enable
 >> registers.
->>
+>> 
 >> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
 >> ---
 >>  .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 35 ++++++++++++++++++++++
 >>  1 file changed, 35 insertions(+)
->>
+>> 
 >> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
 >> b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
 >> index 4ff7128..f2a71c8 100644
@@ -61,19 +57,87 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 >> @@ -72,6 +72,14 @@ we define additional 'compatible' properties and associated register resources w
 >>         and enable registers
 >>       - reg-names: (required) "nand-int-base"
->>
+>> 
 >> +   * "brcm,nand-bcm63268"
 >> +     - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
->
+> 
 > Looks like you're aiming to support bcm63168? Is bcm63268 the first
 > chip to include this style of register then? The numbering seems
 > backwards, but that may just be reality.
 
-6362 (NAND rev 2.1, ann. Sep 8, 2009), 6368 (v0.1?!?, ann. Jan 7,
-2009) and 6328 (v2.1, can't find release date) are earlier chips that
-have an identical combined interrupt enable + status register and a
-NAND controller within the same 32-bits word, so these would qualify
-as a better compatible string for this specific addition integration
-stub here. I would gowith 6368 here then?
+Yes, I have a BCM963168VX (BCM63168) but all the Broadcom code refers to
+this SoC as BCM63268. This is the only one with these registers in the
+source code of similar MIPS that I have.
+
+
+https://github.com/lp0/bcm963xx_4.12L.06B_consumer/blob/master/bcmdrivers/opensource/char/board/bcm963xx/impl1/board.c#L6595
+
+int kerSysGetChipId() {
+...
+        /* Force BCM63168, BCM63169, and BCM63269 to be BCM63268) */
+        if( ( (r & 0xffffe) == 0x63168 )
+          || ( (r & 0xffffe) == 0x63268 ))
+            r = 0x63268;
+
+>> +     - reg: (required) the 'NAND_INTR_BASE' register range, with combined status
+>> +       and enable registers, and boot address registers
+>> +     - reg-names: (required) "nand-intr-base"
+>> +     - clock: (required) reference to the clock for the NAND controller
+>> +     - clock-names: (required) "nand"
+>> +
+>>     * "brcm,nand-iproc"
+>>       - reg: (required) the "IDM" register range, for interrupt enable and APB
+>>         bus access endianness configuration, and the "EXT" register range,
+>> @@ -148,3 +156,30 @@ nand@f0442800 {
+>>  		};
+>>  	};
+>>  };
+>> +
+>> +nand@10000200 {
+>> +	compatible = "brcm,nand-bcm63168", "brcm,nand-bcm63268",
+>> +		"brcm,brcmnand-v4.0", "brcm,brcmnand";
+>> +	reg = <0x10000200 0x180>,
+>> +	      <0x10000600 0x200>,
+>> +	      <0x100000b0 0x10>;
+>> +	reg-names = "nand", "nand-cache", "nand-intr-base";
+>> +	interrupt-parent = <&periph_intc>;
+>> +	interrupts = <50>;
+>> +	clocks = <&periph_clk 20>;
+>> +	clock-names = "nand";
+>> +
+>> +	#address-cells = <1>;
+>> +	#size-cells = <0>;
+>> +
+>> +	nand0: nandcs@0 {
+>> +		compatible = "brcm,nandcs";
+>> +		reg = <0>;
+>> +		nand-on-flash-bbt;
+>> +		nand-ecc-strength = <1>;
+>> +		nand-ecc-step-size = <512>;
+>> +
+>> +		#address-cells = <0>;
+>> +		#size-cells = <0>;
+> 
+> What are these {address,size}-cells for? If you need them for
+> partitioning, then those are wrong -- they shouldn't be zero. Maybe just
+> drop them? (I can cut them out when applying, if that's the only change
+> to make.)
+
+This is the correct way to do partitioning, there would be a
+"partitions" block with no address/size that contains the partitions as
+child nodes. [Documentation/devicetree/bindings/mtd/partition.txt]
+
+I think they're also implicit so you can just remove those two lines.
+
+I've created a bcm963268part driver so there won't need to be any
+partitions in DT for bcm63268.
+
+>> +	};
+>> +};
+> 
+> Brian
+> 
+
+
 -- 
-Florian
+Simon Arlott
