@@ -1,16 +1,35 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a43G6-0004D2-K5
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 08:59:32 +0000
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by mail.sigma-star.at (Postfix) with ESMTP id BE8FB16B4D16
- for <linux-mtd@lists.infradead.org>; Wed,  2 Dec 2015 09:59:06 +0100 (CET)
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-To: linux-mtd@lists.infradead.org
-Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH] mtd-utils: Fix return status in mtd_torture test function
-Date: Wed,  2 Dec 2015 09:58:24 +0100
-Message-Id: <1449046704-4783-1-git-send-email-david.oberhollenzer@sigma-star.at>
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a43tF-0006Rg-QU
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 09:39:59 +0000
+Received: by wmec201 with SMTP id c201so49624883wme.1
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 01:39:36 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20151201231233.GA1929@sirena.org.uk>
+References: <cover.1448988089.git.hramrach@gmail.com>
+ <8c34c7790244489c2ce0072c72bd9bc7c4cdb965.1448988089.git.hramrach@gmail.com>
+ <20151201231233.GA1929@sirena.org.uk>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Wed, 2 Dec 2015 10:38:56 +0100
+Message-ID: <CAOMqctS6KaXuX0nS_pO7O80466j-3G8g_MAySdwRcCK10jozFw@mail.gmail.com>
+Subject: Re: [PATCH v5 08/10] spi: expose master transfer size limitation.
+To: Mark Brown <broonie@kernel.org>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Stephen Warren <swarren@nvidia.com>,
+ "Andrew F. Davis" <afd@ti.com>, Marek Vasut <marex@denx.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Gabor Juhos <juhosg@openwrt.org>,
+ =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paM?= <beanhuo@micron.com>,
+ Furquan Shaikh <furquan@google.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,70 +39,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes the return status of the mtd_torture function
-in libmtd.
+On 2 December 2015 at 00:12, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Dec 01, 2015 at 04:51:06PM -0000, Michal Suchanek wrote:
+>
+>> +static inline size_t
+>> +spi_max_transfer_size(struct spi_device *spi)
+>> +{
+>> +     struct spi_master *master = spi->master;
+>> +     if (!master->max_transfer_size)
+>> +             return 0;
+>> +     return master->max_transfer_size(spi);
+>> +}
+>
+> Can we change this to return SIZE_MAX instead (ie, the maximum value for
+> a size_t)?  That way callers don't need to worry if there is a limit, if
+> they want to handle it they can just unconditionally assume that a limit
+> will be provided.
 
-The torture test function is currently only used by the ubiformat
-utilitiy to check if a block is bad after a write fails (blocks are
-marked bad if the function returns an error status). However, the
-way the function was written, it ALWAYS returns an error value
-irregardless of whether it failed or not.
+Yes, that sounds reasonable.
 
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
----
- lib/libmtd.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Thanks
 
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index bf6d71f..1717468 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -939,7 +939,7 @@ static uint8_t patterns[] = {0xa5, 0x5a, 0x0};
-  * @patt: the pattern to check
-  * @size: buffer size in bytes
-  *
-- * This function returns %1 in there are only @patt bytes in @buf, and %0 if
-+ * This function returns %0 if there are only @patt bytes in @buf, and %-1 if
-  * something else was also found.
-  */
- static int check_pattern(const void *buf, uint8_t patt, int size)
-@@ -948,8 +948,8 @@ static int check_pattern(const void *buf, uint8_t patt, int size)
- 
- 	for (i = 0; i < size; i++)
- 		if (((const uint8_t *)buf)[i] != patt)
--			return 0;
--	return 1;
-+			return -1;
-+	return 0;
- }
- 
- int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
-@@ -973,7 +973,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
- 			goto out;
- 
- 		err = check_pattern(buf, 0xFF, mtd->eb_size);
--		if (err == 0) {
-+		if (err) {
- 			errmsg("erased PEB %d, but a non-0xFF byte found", eb);
- 			errno = EIO;
- 			goto out;
-@@ -992,7 +992,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
- 			goto out;
- 
- 		err = check_pattern(buf, patterns[i], mtd->eb_size);
--		if (err == 0) {
-+		if (err) {
- 			errmsg("pattern %x checking failed for PEB %d",
- 				patterns[i], eb);
- 			errno = EIO;
-@@ -1005,7 +1005,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
- 
- out:
- 	free(buf);
--	return -1;
-+	return err;
- }
- 
- int mtd_is_bad(const struct mtd_dev_info *mtd, int fd, int eb)
--- 
-2.6.2
+Michal
