@@ -1,13 +1,15 @@
-Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
+Received: from mail-io0-x232.google.com ([2607:f8b0:4001:c06::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a49YR-0007mp-JA
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 15:42:55 +0000
-Received: by igbxm8 with SMTP id xm8so35036710igb.1
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 07:42:31 -0800 (PST)
+ id 1a49YU-0007nZ-29
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 15:42:59 +0000
+Received: by iouu10 with SMTP id u10so50612832iou.0
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 07:42:33 -0800 (PST)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Serge Hallyn <serge.hallyn@canonical.com>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ James Morris <james.l.morris@oracle.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
  Richard Weinberger <richard.weinberger@gmail.com>,
  Austin S Hemmelgarn <ahferroin7@gmail.com>,
  Miklos Szeredi <miklos@szeredi.hu>, linux-bcache@vger.kernel.org,
@@ -16,10 +18,10 @@ Cc: Serge Hallyn <serge.hallyn@canonical.com>,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
  Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH 14/19] fs: Permit FIBMAP for users with CAP_SYS_RAWIO in
- s_user_ns
-Date: Wed,  2 Dec 2015 09:40:14 -0600
-Message-Id: <1449070821-73820-15-git-send-email-seth.forshee@canonical.com>
+Subject: [PATCH 15/19] capabilities: Allow privileged user in s_user_ns to set
+ file caps
+Date: Wed,  2 Dec 2015 09:40:15 -0600
+Message-Id: <1449070821-73820-16-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
 References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,23 +33,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+A privileged user in a super block's s_user_ns is privileged
+towards that file system and thus should be allowed to set file
+capabilities. The file capabilities will not be trusted outside
+of s_user_ns, so an unprivileged user cannot use this to gain
+privileges in a user namespace where they are not already
+privileged.
+
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 ---
- fs/ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/commoncap.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ioctl.c b/fs/ioctl.c
-index 5d01d2638ca5..45c371bed7ee 100644
---- a/fs/ioctl.c
-+++ b/fs/ioctl.c
-@@ -55,7 +55,7 @@ static int ioctl_fibmap(struct file *filp, int __user *p)
- 	/* do we support this mess? */
- 	if (!mapping->a_ops->bmap)
- 		return -EINVAL;
--	if (!capable(CAP_SYS_RAWIO))
-+	if (!ns_capable(filp->f_inode->i_sb->s_user_ns, CAP_SYS_RAWIO))
+diff --git a/security/commoncap.c b/security/commoncap.c
+index 2119421613f6..d6c80c19c449 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -653,15 +653,17 @@ int cap_bprm_secureexec(struct linux_binprm *bprm)
+ int cap_inode_setxattr(struct dentry *dentry, const char *name,
+ 		       const void *value, size_t size, int flags)
+ {
++	struct user_namespace *user_ns = dentry->d_sb->s_user_ns;
++
+ 	if (!strcmp(name, XATTR_NAME_CAPS)) {
+-		if (!capable(CAP_SETFCAP))
++		if (!ns_capable(user_ns, CAP_SETFCAP))
+ 			return -EPERM;
+ 		return 0;
+ 	}
+ 
+ 	if (!strncmp(name, XATTR_SECURITY_PREFIX,
+ 		     sizeof(XATTR_SECURITY_PREFIX) - 1) &&
+-	    !capable(CAP_SYS_ADMIN))
++	    !ns_capable(user_ns, CAP_SYS_ADMIN))
  		return -EPERM;
- 	res = get_user(block, p);
- 	if (res)
+ 	return 0;
+ }
+@@ -679,15 +681,17 @@ int cap_inode_setxattr(struct dentry *dentry, const char *name,
+  */
+ int cap_inode_removexattr(struct dentry *dentry, const char *name)
+ {
++	struct user_namespace *user_ns = dentry->d_sb->s_user_ns;
++
+ 	if (!strcmp(name, XATTR_NAME_CAPS)) {
+-		if (!capable(CAP_SETFCAP))
++		if (!ns_capable(user_ns, CAP_SETFCAP))
+ 			return -EPERM;
+ 		return 0;
+ 	}
+ 
+ 	if (!strncmp(name, XATTR_SECURITY_PREFIX,
+ 		     sizeof(XATTR_SECURITY_PREFIX) - 1) &&
+-	    !capable(CAP_SYS_ADMIN))
++	    !ns_capable(user_ns, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 	return 0;
+ }
 -- 
 1.9.1
