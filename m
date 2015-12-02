@@ -1,31 +1,23 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-by2on0137.outbound.protection.outlook.com
+ ([207.46.100.137] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4Fo1-0003md-DE
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 22:23:22 +0000
-Received: by pabfh17 with SMTP id fh17so54198269pab.0
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 14:23:00 -0800 (PST)
-Date: Wed, 2 Dec 2015 14:22:57 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Jonas Gorski <jogo@openwrt.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Simon Arlott <simon@fire.lp0.eu>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: brcmnand: Workaround false ECC uncorrectable errors
-Message-ID: <20151202222257.GS64635@google.com>
-References: <5659FF4A.7080203@simon.arlott.org.uk>
- <CAOiHx=nMZwQK9ESw9Ggqc6pHWqYQriB-t2eWq++pke8cXhvupw@mail.gmail.com>
- <565F51D2.4010204@simon.arlott.org.uk>
- <CAOiHx=mLmEW=gK_HE6oVqaFZjMUAWoP1PxZchc_mC_A5PJn-Cw@mail.gmail.com>
- <20151202205415.GQ64635@google.com>
- <CAOiHx=mAaU_nny5SmzAEmqBB=OTT_mqGcYhD7ZhjZWbG9wcKsw@mail.gmail.com>
+ id 1a4GO7-0008MY-R1
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 23:00:42 +0000
+From: Han Xu <b45815@freescale.com>
+To: <shijie.huang@arm.com>
+CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <b45815@freescale.com>, <boris.brezillon@free-electrons.com>,
+ <fabio.estevam@freescale.com>, <hofrat@osadl.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
+ <dmaengine@vger.kernel.org>
+Subject: [PATCH v8 2/7] dmaengine: mxs: APBH DMA supports deep sleep mode
+Date: Wed, 2 Dec 2015 16:47:41 -0600
+Message-ID: <1449096466-18064-3-git-send-email-b45815@freescale.com>
+In-Reply-To: <1449096466-18064-1-git-send-email-b45815@freescale.com>
+References: <1449096466-18064-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOiHx=mAaU_nny5SmzAEmqBB=OTT_mqGcYhD7ZhjZWbG9wcKsw@mail.gmail.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,38 +27,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 02, 2015 at 10:08:20PM +0100, Jonas Gorski wrote:
-> On Wed, Dec 2, 2015 at 9:54 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > If that's really an issue (i.e., we have an implementation + data), I'm
-> > sure we could add optimization to nand_check_erased_ecc_chunk() to
-> > support the bitflip_threshold == 0 case.
-> 
-> Maybe I'm missing something, but wasn't the point of introducing
-> nand_check_erased_ecc_chunk that bitflips in erased pages should be
-> treated as bitflips corrected by the ecc, and therefore fixed up
-> before passing the data further on? So having a theshold of 0 would be
-> wrong / no protection at all, and could be quite destructive on MLC
-> nand, where bitflips in erased pages are rather common.
+From: Huang Shijie <b32955@freescale.com>
 
-Yes, that would be pretty destructive on MLC NAND. But there might be
-cases where this is reasonable. For instance, we might have:
+Deep Sleep Mode(dsm) turns off the power for APBH DMA module, DMA
+need to be re-initialized when system resumed back.
 
- (a) SLC NAND that specifies up to 1 bitflip per 512 bytes
- (b) a Hamming ECC engine that can correct 1 bitflip
- (c) said Hamming engine does not handle all-0xff pages correctly, nor
- does it handle near-0xff pages (e.g., with a single 0 bit) correctly
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Han Xu <b45815@freescale.com>
+---
+ drivers/dma/mxs-dma.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-Now, we might (for instance) allow up to ecc_strength / 2 bitflips in
-erased pages [1], as a general rule, but for the above case, that means we
-don't allow any on Hamming ECC. Hence, bitflip_threshold = 1 / 2 = 0.
-
-This is kind of a degenerate case, so we might consider supporting it
-differently than we would for BCH. e.g., don't use
-nand_check_erased_ecc_chunk() at all.
-
-Brian
-
-[1] We might do this because we can expect that if an unprogrammed page
-has N bitflips, there might be even more than N bitflips after
-programming the page.
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index 60de352..eba51fc 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -693,7 +693,7 @@ static enum dma_status mxs_dma_tx_status(struct dma_chan *chan,
+ 	return mxs_chan->status;
+ }
+ 
+-static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
++static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
+ {
+ 	int ret;
+ 
+@@ -835,6 +835,7 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 
+ 	mxs_dma->pdev = pdev;
+ 	mxs_dma->dma_device.dev = &pdev->dev;
++	dev_set_drvdata(&pdev->dev, mxs_dma);
+ 
+ 	/* mxs_dma gets 65535 bytes maximum sg size */
+ 	mxs_dma->dma_device.dev->dma_parms = &mxs_dma->dma_parms;
+@@ -872,9 +873,23 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int mxs_dma_pm_resume(struct device *dev)
++{
++	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
++
++	return mxs_dma_init(mxs_dma);
++}
++#endif /* CONFIG_PM_SLEEP */
++
++static const struct dev_pm_ops mxs_dma_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(NULL, mxs_dma_pm_resume)
++};
++
+ static struct platform_driver mxs_dma_driver = {
+ 	.driver		= {
+ 		.name	= "mxs-dma",
++		.pm = &mxs_dma_pm_ops,
+ 		.of_match_table = mxs_dma_dt_ids,
+ 	},
+ 	.id_table	= mxs_dma_ids,
+-- 
+1.9.1
