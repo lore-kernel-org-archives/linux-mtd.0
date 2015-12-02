@@ -1,8 +1,8 @@
-Received: from mail-by2on0137.outbound.protection.outlook.com
- ([207.46.100.137] helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-bl2on0128.outbound.protection.outlook.com ([65.55.169.128]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4GO7-0008MY-R1
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 23:00:42 +0000
+ id 1a4GO8-0008Qp-UW
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 23:00:44 +0000
 From: Han Xu <b45815@freescale.com>
 To: <shijie.huang@arm.com>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
@@ -11,11 +11,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
  <dmaengine@vger.kernel.org>
-Subject: [PATCH v8 2/7] dmaengine: mxs: APBH DMA supports deep sleep mode
-Date: Wed, 2 Dec 2015 16:47:41 -0600
-Message-ID: <1449096466-18064-3-git-send-email-b45815@freescale.com>
-In-Reply-To: <1449096466-18064-1-git-send-email-b45815@freescale.com>
-References: <1449096466-18064-1-git-send-email-b45815@freescale.com>
+Subject: [PATCH v8 0/7] mtd: nand: gpmi: gpmi-nand DSM and bitflip support
+Date: Wed, 2 Dec 2015 16:47:39 -0600
+Message-ID: <1449096466-18064-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,61 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <b32955@freescale.com>
+v1 ---> v2
+change the erased page bitflip threshold to ecc strength in bitflip patch
 
-Deep Sleep Mode(dsm) turns off the power for APBH DMA module, DMA
-need to be re-initialized when system resumed back.
+v2 ---> v3
+remove unnecessary function in mxs-dma
+change the log message when legacy_set_geometry failed fix the comment message
+for bitflip add comma for all field entries
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Han Xu <b45815@freescale.com>
----
- drivers/dma/mxs-dma.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+v3 ---> v4
+code style change for indentation
 
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 60de352..eba51fc 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -693,7 +693,7 @@ static enum dma_status mxs_dma_tx_status(struct dma_chan *chan,
- 	return mxs_chan->status;
- }
- 
--static int __init mxs_dma_init(struct mxs_dma_engine *mxs_dma)
-+static int mxs_dma_init(struct mxs_dma_engine *mxs_dma)
- {
- 	int ret;
- 
-@@ -835,6 +835,7 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 
- 	mxs_dma->pdev = pdev;
- 	mxs_dma->dma_device.dev = &pdev->dev;
-+	dev_set_drvdata(&pdev->dev, mxs_dma);
- 
- 	/* mxs_dma gets 65535 bytes maximum sg size */
- 	mxs_dma->dma_device.dev->dma_parms = &mxs_dma->dma_parms;
-@@ -872,9 +873,23 @@ static int __init mxs_dma_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int mxs_dma_pm_resume(struct device *dev)
-+{
-+	struct mxs_dma_engine *mxs_dma = dev_get_drvdata(dev);
-+
-+	return mxs_dma_init(mxs_dma);
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static const struct dev_pm_ops mxs_dma_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(NULL, mxs_dma_pm_resume)
-+};
-+
- static struct platform_driver mxs_dma_driver = {
- 	.driver		= {
- 		.name	= "mxs-dma",
-+		.pm = &mxs_dma_pm_ops,
- 		.of_match_table = mxs_dma_dt_ids,
- 	},
- 	.id_table	= mxs_dma_ids,
+v4 ---> v5
+split the DMA PM and i.MX7D support into two patches add more comments fix the
+DMA clock count mismatch issue for i.MX7D
+
+v5 ---> v6
+add a sentinel entry for of_device_id to fix build error
+
+v6 ---> v7
+add CONFIG_PM_SLEEP for GPMI/DMA PM code
+
+v7 ---> v8
+remove empty line
+simplify mxs_dma_init return check
+
+Adrian Alonso (1):
+  dmaengine: mxs: add i.MX7D APBH DMA support
+
+Han Xu (4):
+  mtd: nand: gpmi: may use minimum required ecc for 744 oobsize NAND
+  mtd: nand: gpmi: add GPMI NAND support for i.MX7D
+  mtd: nand: gpmi: correct bitflip for erased NAND page
+  mtd: nand: gpmi: support NAND on i.MX6UL
+
+Huang Shijie (2):
+  mtd: nand: gpmi: add gpmi dsm supend/resume support
+  dmaengine: mxs: APBH DMA supports deep sleep mode
+
+ drivers/dma/mxs-dma.c                  |  69 +++++++++++++++--
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  |  24 ++++--
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  15 +++-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 133 ++++++++++++++++++++++++++++-----
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  14 +++-
+ 5 files changed, 214 insertions(+), 41 deletions(-)
+
 -- 
 1.9.1
