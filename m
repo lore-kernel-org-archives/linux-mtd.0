@@ -1,29 +1,28 @@
-Received: from mail-by2on0146.outbound.protection.outlook.com
- ([207.46.100.146] helo=na01-by2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4Eo6-0000rq-Cq
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 21:19:23 +0000
-Date: Wed, 2 Dec 2015 15:06:28 -0600
-From: Han Xu <han.xu@freescale.com>
-To: Michal Suchanek <hramrach@gmail.com>
-CC: Heiner Kallweit <hkallweit1@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Mark Brown
- <broonie@kernel.org>, Boris Brezillon <boris.brezillon@free-electrons.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>, Rafal Milecki
- <zajec5@gmail.com>, Jagan Teki <jteki@openedev.com>, "Andrew F. Davis"
- <afd@ti.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Gabor Juhos
- <juhosg@openwrt.org>, Bean Huo <beanhuo@micron.com>, Furquan Shaikh
- <furquan@google.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH v6 03/10] mtd: fsl-quadspi: return amount of data
- read/written or error
-Message-ID: <20151202210626.GA21512@chopperman.am.freescale.net>
-References: <cover.1449052427.git.hramrach@gmail.com>
- <ad10a42f8c502b9b91fcba05b3e46c42663e1141.1449052427.git.hramrach@gmail.com>
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4Eya-00038W-Ry
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 21:30:22 +0000
+Subject: Re: [PATCH] mtd: brcmnand: Workaround false ECC uncorrectable errors
+To: Jonas Gorski <jogo@openwrt.org>, Brian Norris <computersforpeace@gmail.com>
+References: <5659FF4A.7080203@simon.arlott.org.uk>
+ <CAOiHx=nMZwQK9ESw9Ggqc6pHWqYQriB-t2eWq++pke8cXhvupw@mail.gmail.com>
+ <565F51D2.4010204@simon.arlott.org.uk>
+ <CAOiHx=mLmEW=gK_HE6oVqaFZjMUAWoP1PxZchc_mC_A5PJn-Cw@mail.gmail.com>
+ <20151202205415.GQ64635@google.com>
+ <CAOiHx=mAaU_nny5SmzAEmqBB=OTT_mqGcYhD7ZhjZWbG9wcKsw@mail.gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
+From: Simon Arlott <simon@fire.lp0.eu>
+Message-ID: <565F62C7.8010009@simon.arlott.org.uk>
+Date: Wed, 2 Dec 2015 21:29:43 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ad10a42f8c502b9b91fcba05b3e46c42663e1141.1449052427.git.hramrach@gmail.com>
+In-Reply-To: <CAOiHx=mAaU_nny5SmzAEmqBB=OTT_mqGcYhD7ZhjZWbG9wcKsw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,87 +32,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 02, 2015 at 10:38:19AM +0000, Michal Suchanek wrote:
-> Return amount of data read/written or error as read(2)/write(2) does.
+On 02/12/15 21:08, Jonas Gorski wrote:
+> On Wed, Dec 2, 2015 at 9:54 PM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+>>
+>> BTW, I think Kamal had code to handle protecting bitflips in erased
+>> pages code in the Broadcom STB Linux BSP. Perhaps he can port that to
+>> upstream with nand_check_erased_ecc_chunk()? IIUC, that would probably
+>> handle your case too, Simon, although it wouldn't be optimal for an
+>> all-0xff check (i.e., bitflip_threshold == 0).
+>>
+>> If that's really an issue (i.e., we have an implementation + data), I'm
+>> sure we could add optimization to nand_check_erased_ecc_chunk() to
+>> support the bitflip_threshold == 0 case.
 > 
-> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 18 +++++++++++-------
->  1 file changed, 11 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 10d2b59..9beb739 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -575,7 +575,7 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
->  	writel(reg, q->iobase + QUADSPI_MCR);
->  }
->  
-> -static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
-> +static ssize_t fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+> Maybe I'm missing something, but wasn't the point of introducing
+> nand_check_erased_ecc_chunk that bitflips in erased pages should be
+> treated as bitflips corrected by the ecc, and therefore fixed up
+> before passing the data further on? So having a theshold of 0 would be
+> wrong / no protection at all, and could be quite destructive on MLC
+> nand, where bitflips in erased pages are rather common.
 
-conflict with the patch I acked.
-
-https://patchwork.ozlabs.org/patch/545925/
-
-I may change it and test on my side.
-
->  				u8 opcode, unsigned int to, u32 *txbuf,
->  				unsigned count, size_t *retlen)
->  {
-> @@ -604,8 +604,11 @@ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
->  	/* Trigger it */
->  	ret = fsl_qspi_runcmd(q, opcode, to, count);
->  
-> -	if (ret == 0 && retlen)
-> -		*retlen += count;
-> +	if (ret == 0) {
-> +		if (retlen)
-> +			*retlen += count;
-> +		return count;
-> +	}
->  
->  	return ret;
->  }
-> @@ -814,6 +817,8 @@ static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
->  	} else if (len > 0) {
->  		ret = fsl_qspi_nor_write(q, nor, opcode, 0,
->  					(u32 *)buf, len, NULL);
-> +		if (ret > 0)
-> +			return 0;
->  	} else {
->  		dev_err(q->dev, "invalid cmd %d\n", opcode);
->  		ret = -EINVAL;
-> @@ -827,12 +832,12 @@ static ssize_t fsl_qspi_write(struct spi_nor *nor, loff_t to,
->  {
->  	struct fsl_qspi *q = nor->priv;
->  
-> -	fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
-> +	ssize_t ret = fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
->  				(u32 *)buf, len, retlen);
->  
->  	/* invalid the data in the AHB buffer. */
->  	fsl_qspi_invalid(q);
-> -	return 0;
-> +	return ret;
->  }
->  
->  static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
-> @@ -878,8 +883,7 @@ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
->  	memcpy(buf, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
->  		len);
->  
-> -	*retlen += len;
-> -	return 0;
-> +	return len;
->  }
->  
->  static int fsl_qspi_erase(struct spi_nor *nor, loff_t offs)
-> -- 
-> 2.6.2
-> 
+Without this patch I can't access erased pages at all. I don't know if
+the controller will still return an uncorrectable error if the page is
+erased but has 1 or more bit flips.
 
 -- 
-Best Regards,
-
-Han "Allen" Xu
+Simon Arlott
