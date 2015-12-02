@@ -1,30 +1,22 @@
 Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4Dm2-0006wJ-GW
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 20:13:11 +0000
-Subject: Re: [PATCH (v6) 1/2] mtd: brcmnand: Add brcm,bcm63268-nand device
- tree binding
-To: Brian Norris <computersforpeace@gmail.com>
-References: <56506D55.3000907@simon.arlott.org.uk>
- <20151122215945.GA5930@rob-hp-laptop> <56523E85.905@simon.arlott.org.uk>
- <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
- <56541BD3.4070202@simon.arlott.org.uk> <5654AF69.7040901@gmail.com>
- <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
- <20151202190555.GJ64635@google.com> <565F4953.2070206@simon.arlott.org.uk>
- <20151202200036.GL64635@google.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ id 1a4DqX-0000qs-Jk
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 20:17:50 +0000
+Subject: Re: [PATCH] mtd: brcmnand: Workaround false ECC uncorrectable errors
+To: Jonas Gorski <jogo@openwrt.org>
+References: <5659FF4A.7080203@simon.arlott.org.uk>
+ <CAOiHx=nMZwQK9ESw9Ggqc6pHWqYQriB-t2eWq++pke8cXhvupw@mail.gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Jonas Gorski <jogo@openwrt.org>,
- bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+ Florian Fainelli <f.fainelli@gmail.com>
 From: Simon Arlott <simon@fire.lp0.eu>
-Message-ID: <565F50B0.4020802@simon.arlott.org.uk>
-Date: Wed, 2 Dec 2015 20:12:32 +0000
+Message-ID: <565F51D2.4010204@simon.arlott.org.uk>
+Date: Wed, 2 Dec 2015 20:17:22 +0000
 MIME-Version: 1.0
-In-Reply-To: <20151202200036.GL64635@google.com>
+In-Reply-To: <CAOiHx=nMZwQK9ESw9Ggqc6pHWqYQriB-t2eWq++pke8cXhvupw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,53 +28,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/12/15 20:00, Brian Norris wrote:
-> Hi,
+On 01/12/15 10:41, Jonas Gorski wrote:
+> On Sat, Nov 28, 2015 at 8:23 PM, Simon Arlott <simon@fire.lp0.eu> wrote:
+>> +
+>> +       /* Go to start of buffer */
+>> +       buf -= FC_WORDS;
+>> +
+>> +       /* Erased if all data bytes are 0xFF */
+>> +       buf_erased = memchr_inv(buf, 0xFF, FC_WORDS) == NULL;
+>> +
+>> +       if (!buf_erased)
+>> +               goto out_free;
 > 
-> On Wed, Dec 02, 2015 at 07:41:07PM +0000, Simon Arlott wrote:
->> >> +	nand0: nandcs@0 {
->> >> +		compatible = "brcm,nandcs";
->> >> +
->> >> +		#address-cells = <0>;
->> >> +		#size-cells = <0>;
-> 
->> I think they're also implicit so you can just remove those two lines.
-> 
-> From ePAPR: "The #address-cells and #size-cells properties are not
-> inherited from ancestors in the device tree. They shall be explicitly
-> defined."
-> 
-> But we don't want to define them. I'd drop them, at least from the
-> example, as they're not relevant.
+> We now have a function exactly for that use case in 4.4,
+> nand_check_erased_buf [1], consider using that. This also has the
+> benefit of treating bit flips as correctable as long as the ECC scheme
+> is strong enough.
 
-Ok.
+I have no idea whether or not it's appropriate to specify
+bitflips_threshold > 0 so it'd just be a more complex way to do
+a memchr_inv() search for 0xFF.
 
->> I've created a bcm963268part driver so there won't need to be any
->> partitions in DT for bcm63268.
+The code also has to check for the hamming code bytes being all 0x00,
+because according to the comments [2], the controller also has
+difficulty with the non-erased all-0xFFs scenario too.
+
+[2] https://github.com/lp0/bcm963xx_4.12L.06B_consumer/blob/dd8fcb13046f738c311507dc2fcfd3e5d57a88e0/kernel/linux/drivers/mtd/brcmnand/brcmnand_base.c#L2459
+
 > 
-> Just curious, do you plan to submit this driver? We're working on
-
-Yes, it's just the most recent one I've been working on. I still have
-USBH and IUDMA to submit
-
-> matching up partition parsers to flash devices via device tree
-> of_match_table's, so you could do something like this:
+> Jonas
 > 
-> 	nand0: nandcs@0 {
-> 		compatible = "brcm,nandcs";
-> 		...
+> [1] https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/drivers/mtd/nand/nand_base.c#n1110
 > 
-> 		partitions {
-> 			compatible = "brcm,bcm963268-partitions";
-> 			...
-> 		};
-> 	};
-
-I modified brcmnand to look for a machine matching "brcm,bcm963268", but
-that way is ok with me. Presumably "ofpart" defers to another matching
-partition parser?
-
-Is there a patch for that method of parser detection available?
 
 -- 
 Simon Arlott
