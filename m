@@ -1,14 +1,13 @@
-Received: from mail-ig0-f173.google.com ([209.85.213.173])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a49Y9-0007g8-25
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 15:42:35 +0000
-Received: by igbxm8 with SMTP id xm8so35028852igb.1
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 07:42:11 -0800 (PST)
+Received: from mail-ig0-x234.google.com ([2607:f8b0:4001:c05::234])
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1a49YC-0005aB-5B
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 15:42:36 +0000
+Received: by igcmv3 with SMTP id mv3so120225832igc.0
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 07:42:13 -0800 (PST)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Casey Schaufler <casey@schaufler-ca.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Serge Hallyn <serge.hallyn@canonical.com>,
  Richard Weinberger <richard.weinberger@gmail.com>,
  Austin S Hemmelgarn <ahferroin7@gmail.com>,
  Miklos Szeredi <miklos@szeredi.hu>, linux-bcache@vger.kernel.org,
@@ -16,12 +15,10 @@ Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- Seth Forshee <seth.forshee@canonical.com>,
- James Morris <james.l.morris@oracle.com>,
- "Serge E. Hallyn" <serge@hallyn.com>
-Subject: [PATCH 06/19] Smack: Handle labels consistently in untrusted mounts
-Date: Wed,  2 Dec 2015 09:40:06 -0600
-Message-Id: <1449070821-73820-7-git-send-email-seth.forshee@canonical.com>
+ Seth Forshee <seth.forshee@canonical.com>
+Subject: [PATCH 07/19] fs: Check for invalid i_uid in may_follow_link()
+Date: Wed,  2 Dec 2015 09:40:07 -0600
+Message-Id: <1449070821-73820-8-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
 References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,89 +30,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The SMACK64, SMACK64EXEC, and SMACK64MMAP labels are all handled
-differently in untrusted mounts. This is confusing and
-potentically problematic. Change this to handle them all the same
-way that SMACK64 is currently handled; that is, read the label
-from disk and check it at use time. For SMACK64 and SMACK64MMAP
-access is denied if the label does not match smk_root. To be
-consistent with suid, a SMACK64EXEC label which does not match
-smk_root will still allow execution of the file but will not run
-with the label supplied in the xattr.
+Filesystem uids which don't map into a user namespace may result
+in inode->i_uid being INVALID_UID. A symlink and its parent
+could have different owners in the filesystem can both get
+mapped to INVALID_UID, which may result in following a symlink
+when this would not have otherwise been permitted when protected
+symlinks are enabled.
+
+Add a new helper function, uid_valid_eq(), and use this to
+validate that the ids in may_follow_link() are both equal and
+valid. Also add an equivalent helper for gids, which is
+currently unused.
 
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-Acked-by: Casey Schaufler <casey@schaufler-ca.com>
 ---
- security/smack/smack_lsm.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ fs/namei.c             |  2 +-
+ include/linux/uidgid.h | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 16cac04214e2..0e555f64ded0 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -921,6 +921,7 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
- 	struct inode *inode = file_inode(bprm->file);
- 	struct task_smack *bsp = bprm->cred->security;
- 	struct inode_smack *isp;
-+	struct superblock_smack *sbsp;
- 	int rc;
- 
- 	if (bprm->cred_prepared)
-@@ -930,6 +931,11 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
- 	if (isp->smk_task == NULL || isp->smk_task == bsp->smk_task)
+diff --git a/fs/namei.c b/fs/namei.c
+index 288e8a74bf88..4ccafd391697 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -902,7 +902,7 @@ static inline int may_follow_link(struct nameidata *nd)
  		return 0;
  
-+	sbsp = inode->i_sb->s_security;
-+	if ((sbsp->smk_flags & SMK_SB_UNTRUSTED) &&
-+	    isp->smk_task != sbsp->smk_root)
-+		return 0;
+ 	/* Allowed if parent directory and link owner match. */
+-	if (uid_eq(parent->i_uid, inode->i_uid))
++	if (uid_valid_eq(parent->i_uid, inode->i_uid))
+ 		return 0;
+ 
+ 	if (nd->flags & LOOKUP_RCU)
+diff --git a/include/linux/uidgid.h b/include/linux/uidgid.h
+index 03835522dfcb..e09529fe2668 100644
+--- a/include/linux/uidgid.h
++++ b/include/linux/uidgid.h
+@@ -117,6 +117,16 @@ static inline bool gid_valid(kgid_t gid)
+ 	return __kgid_val(gid) != (gid_t) -1;
+ }
+ 
++static inline bool uid_valid_eq(kuid_t left, kuid_t right)
++{
++	return uid_eq(left, right) && uid_valid(left);
++}
 +
- 	if (bprm->unsafe & (LSM_UNSAFE_PTRACE | LSM_UNSAFE_PTRACE_CAP)) {
- 		struct task_struct *tracer;
- 		rc = 0;
-@@ -1733,6 +1739,7 @@ static int smack_mmap_file(struct file *file,
- 	struct task_smack *tsp;
- 	struct smack_known *okp;
- 	struct inode_smack *isp;
-+	struct superblock_smack *sbsp;
- 	int may;
- 	int mmay;
- 	int tmay;
-@@ -1744,6 +1751,10 @@ static int smack_mmap_file(struct file *file,
- 	isp = file_inode(file)->i_security;
- 	if (isp->smk_mmap == NULL)
- 		return 0;
-+	sbsp = file_inode(file)->i_sb->s_security;
-+	if (sbsp->smk_flags & SMK_SB_UNTRUSTED &&
-+	    isp->smk_mmap != sbsp->smk_root)
-+		return -EACCES;
- 	mkp = isp->smk_mmap;
++static inline bool gid_valid_eq(kgid_t left, kgid_t right)
++{
++	return gid_eq(left, right) && gid_valid(left);
++}
++
+ #ifdef CONFIG_USER_NS
  
- 	tsp = current_security();
-@@ -3532,16 +3543,14 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
- 			if (rc >= 0)
- 				transflag = SMK_INODE_TRANSMUTE;
- 		}
--		if (!(sbsp->smk_flags & SMK_SB_UNTRUSTED)) {
--			/*
--			 * Don't let the exec or mmap label be "*" or "@".
--			 */
--			skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
--			if (IS_ERR(skp) || skp == &smack_known_star ||
--			    skp == &smack_known_web)
--				skp = NULL;
--			isp->smk_task = skp;
--		}
-+		/*
-+		 * Don't let the exec or mmap label be "*" or "@".
-+		 */
-+		skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
-+		if (IS_ERR(skp) || skp == &smack_known_star ||
-+		    skp == &smack_known_web)
-+			skp = NULL;
-+		isp->smk_task = skp;
- 
- 		skp = smk_fetch(XATTR_NAME_SMACKMMAP, inode, dp);
- 		if (IS_ERR(skp) || skp == &smack_known_star ||
+ extern kuid_t make_kuid(struct user_namespace *from, uid_t uid);
 -- 
 1.9.1
