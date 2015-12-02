@@ -1,36 +1,35 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4DaF-0004lV-S7
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 20:01:00 +0000
-Received: by pabfh17 with SMTP id fh17so51274552pab.0
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 12:00:39 -0800 (PST)
-Date: Wed, 2 Dec 2015 12:00:36 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Simon Arlott <simon@fire.lp0.eu>
-Cc: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Jonas Gorski <jogo@openwrt.org>,
- bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4DcS-0001Ag-EY
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 20:03:17 +0000
 Subject: Re: [PATCH (v6) 1/2] mtd: brcmnand: Add brcm,bcm63268-nand device
  tree binding
-Message-ID: <20151202200036.GL64635@google.com>
+To: Florian Fainelli <f.fainelli@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>
 References: <56506D55.3000907@simon.arlott.org.uk>
- <20151122215945.GA5930@rob-hp-laptop>
- <56523E85.905@simon.arlott.org.uk>
+ <20151122215945.GA5930@rob-hp-laptop> <56523E85.905@simon.arlott.org.uk>
  <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
  <56541BD3.4070202@simon.arlott.org.uk> <5654AF69.7040901@gmail.com>
  <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
  <20151202190555.GJ64635@google.com>
- <565F4953.2070206@simon.arlott.org.uk>
+ <CAGVrzcZa2LNcajdnZHgZ2j+2Yj0_0a-7VmtXoBtWwFK2C02CyA@mail.gmail.com>
+Cc: Rob Herring <robh@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Jonas Gorski <jogo@openwrt.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>
+From: Simon Arlott <simon@fire.lp0.eu>
+Message-ID: <565F4E63.3030100@simon.arlott.org.uk>
+Date: Wed, 2 Dec 2015 20:02:43 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <565F4953.2070206@simon.arlott.org.uk>
+In-Reply-To: <CAGVrzcZa2LNcajdnZHgZ2j+2Yj0_0a-7VmtXoBtWwFK2C02CyA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,65 +39,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Wed, Dec 02, 2015 at 07:41:07PM +0000, Simon Arlott wrote:
-> >> +	nand0: nandcs@0 {
-> >> +		compatible = "brcm,nandcs";
-> >> +		reg = <0>;
-> >> +		nand-on-flash-bbt;
-> >> +		nand-ecc-strength = <1>;
-> >> +		nand-ecc-step-size = <512>;
-> >> +
-> >> +		#address-cells = <0>;
-> >> +		#size-cells = <0>;
-> > 
-> > What are these {address,size}-cells for? If you need them for
-> > partitioning, then those are wrong -- they shouldn't be zero. Maybe just
-> > drop them? (I can cut them out when applying, if that's the only change
-> > to make.)
+On 02/12/15 19:38, Florian Fainelli wrote:
+> 2015-12-02 11:05 GMT-08:00 Brian Norris <computersforpeace@gmail.com>:
+>> + Broadcom list + Kamal
+>>
+>> On Tue, Nov 24, 2015 at 08:19:37PM -0000, Simon Arlott wrote:
+>>> Add device tree binding for NAND on the BCM63268.
+>>>
+>>> The BCM63268 has a NAND interrupt register with combined status and enable
+>>> registers.
+>>>
+>>> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+>>> ---
+>>>  .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 35 ++++++++++++++++++++++
+>>>  1 file changed, 35 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+>>> b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+>>> index 4ff7128..f2a71c8 100644
+>>> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+>>> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+>>> @@ -72,6 +72,14 @@ we define additional 'compatible' properties and associated register resources w
+>>>         and enable registers
+>>>       - reg-names: (required) "nand-int-base"
+>>>
+>>> +   * "brcm,nand-bcm63268"
+>>> +     - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
+>>
+>> Looks like you're aiming to support bcm63168? Is bcm63268 the first
+>> chip to include this style of register then? The numbering seems
+>> backwards, but that may just be reality.
 > 
-> This is the correct way to do partitioning, there would be a
-> "partitions" block with no address/size that contains the partitions as
-> child nodes. [Documentation/devicetree/bindings/mtd/partition.txt]
+> 6362 (NAND rev 2.1, ann. Sep 8, 2009), 6368 (v0.1?!?, ann. Jan 7,
+> 2009) and 6328 (v2.1, can't find release date) are earlier chips that
+> have an identical combined interrupt enable + status register and a
+> NAND controller within the same 32-bits word, so these would qualify
+> as a better compatible string for this specific addition integration
+> stub here. I would gowith 6368 here then?
+> 
 
-That doc says nothing about {address,size}-cells = 0. When using the new
-binding with a 'partitions' subnode, I'm not sure the address
-translation specification really matters anyway; the flash space is a
-new address space unrelated to the parents, and we don't do any
-translation from the 'flash' node to the 'partitions' node. So you don't
-need #{address,size}-cells in the flash node, but you do in the
-'partitions' node.
+I could change it to 6368 but there's no documented NAND_INTR_BASE for
+it. Only the 63268 and 6818 have a #define for NAND_INTR_BASE.
 
-> I think they're also implicit so you can just remove those two lines.
-
->From ePAPR: "The #address-cells and #size-cells properties are not
-inherited from ancestors in the device tree. They shall be explicitly
-defined."
-
-But we don't want to define them. I'd drop them, at least from the
-example, as they're not relevant.
-
-> I've created a bcm963268part driver so there won't need to be any
-> partitions in DT for bcm63268.
-
-Just curious, do you plan to submit this driver? We're working on
-matching up partition parsers to flash devices via device tree
-of_match_table's, so you could do something like this:
-
-	nand0: nandcs@0 {
-		compatible = "brcm,nandcs";
-		...
-
-		partitions {
-			compatible = "brcm,bcm963268-partitions";
-			...
-		};
-	};
-
-FYI.
-
-> >> +	};
-> >> +};
-
-Brian
+-- 
+Simon Arlott
