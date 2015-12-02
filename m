@@ -1,26 +1,24 @@
-Received: from muru.com ([72.249.23.125])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a48wZ-00088t-Ue
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 15:03:47 +0000
-Date: Wed, 2 Dec 2015 07:03:17 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org,
- ezequiel@vanguardiasur.com.ar, javier@dowhile0.org, fcooper@ti.com,
- nsekhar@ti.com, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-Message-ID: <20151202150317.GC23396@atomide.com>
-References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
- <20151026212346.GJ13239@google.com> <562F45BF.8020205@ti.com>
- <20151130195449.GI64635@google.com> <565DB18C.7040505@ti.com>
- <20151202032643.GF64635@google.com> <565E7DAC.7060401@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <565E7DAC.7060401@ti.com>
+Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a49Xz-0007f2-14
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 15:42:24 +0000
+Received: by igcph11 with SMTP id ph11so112805655igc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 07:42:01 -0800 (PST)
+From: Seth Forshee <seth.forshee@canonical.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ fuse-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org,
+ selinux@tycho.nsa.gov
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
+ Seth Forshee <seth.forshee@canonical.com>
+Subject: [PATCH 00/19] Support fuse mounts in user namespaces
+Date: Wed,  2 Dec 2015 09:40:00 -0600
+Message-Id: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,20 +28,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [151201 21:13]:
-> On 02/12/15 08:56, Brian Norris wrote:
-> > 
-> > I'll take another pass over your patch set, but if things are looking
-> > better, how do you expect to merge this? There are significant portions
-> > that touch at least 2 or 3 different subsystem trees, AFAICT.
-> 
-> Tony could create an immutable branch with all the dts and memory changes.
-> You could base the mtd changes on top of that?
+These patches implement support for mounting filesystems in user
+namespaces using fuse. I've sent the full set of patches this time
+because I feel that previous discussions could have benefited from more
+context. I've also dropped any patches from my previous postings not
+specifically required for fuse mounts.
 
-If we all agree on that it will be immutable Roger can set up the branch
-with our acks and we can all merge it in as needed. I believe v4.4-rc1
-should work as a base for us all?
+These are based on the patches in the for-testing branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git,
+but I've rebased them onto 4.4-rc3. I've pushed all of this to:
 
-Regards,
+ git://git.kernel.org/pub/scm/linux/kernel/git/sforshee/linux.git fuse-userns
 
-Tony
+The patches are organized into three high-level groups.
+
+Patches 1-6 are related to security, adding restrictions for
+unprivileged mounts and updating the LSMs as needed. Patches 1-2
+(checking inode permissions for block device mounts) may not be strictly
+necessary for fuseblk mounts since fuse doesn't do any IO on the block
+device in the kernel, but it still seems like a good idea to fail the
+mount if the user doesn't have the required permissions for the inode
+(though this is a bit misleading with fuse since the mounts are done via
+a suid-root helper).
+
+Patches 7-15 update most of the vfs to translate ids correctly and deal
+with inodes which may have invalid user/group ids. I've omitted patches
+for anything not used by fuse - quota, fs freezing, some helper
+functions, etc. - but if these are wanted for the sake of completeness I
+can include them.
+
+Patches 16-19 update fuse to deal with mounts from non-init pid and user
+namespaces and enable mounting from user namespaces.
+
+Thanks,
+Seth
+
+Andy Lutomirski (1):
+  fs: Treat foreign mounts as nosuid
+
+Seth Forshee (18):
+  block_dev: Support checking inode permissions in lookup_bdev()
+  block_dev: Check permissions towards block device inode when mounting
+  selinux: Add support for unprivileged mounts from user namespaces
+  userns: Replace in_userns with current_in_userns
+  Smack: Handle labels consistently in untrusted mounts
+  fs: Check for invalid i_uid in may_follow_link()
+  cred: Reject inodes with invalid ids in set_create_file_as()
+  fs: Refuse uid/gid changes which don't map into s_user_ns
+  fs: Update posix_acl support to handle user namespace mounts
+  fs: Ensure the mounter of a filesystem is privileged towards its
+    inodes
+  fs: Don't remove suid for CAP_FSETID in s_user_ns
+  fs: Allow superblock owner to access do_remount_sb()
+  fs: Permit FIBMAP for users with CAP_SYS_RAWIO in s_user_ns
+  capabilities: Allow privileged user in s_user_ns to set file caps
+  fuse: Add support for pid namespaces
+  fuse: Support fuse filesystems outside of init_user_ns
+  fuse: Restrict allow_other to the superblock's namespace or a
+    descendant
+  fuse: Allow user namespace mounts
+
+ drivers/md/bcache/super.c       |  2 +-
+ drivers/md/dm-table.c           |  2 +-
+ drivers/mtd/mtdsuper.c          |  2 +-
+ fs/attr.c                       | 11 +++++
+ fs/block_dev.c                  | 18 ++++++--
+ fs/exec.c                       |  2 +-
+ fs/fuse/cuse.c                  |  3 +-
+ fs/fuse/dev.c                   | 26 +++++++++---
+ fs/fuse/dir.c                   | 91 ++++++++++++++++++++++++++--------------
+ fs/fuse/file.c                  | 22 +++++++---
+ fs/fuse/fuse_i.h                | 18 +++++---
+ fs/fuse/inode.c                 | 92 ++++++++++++++++++++++++++++++-----------
+ fs/inode.c                      |  6 ++-
+ fs/ioctl.c                      |  2 +-
+ fs/namei.c                      |  2 +-
+ fs/namespace.c                  | 17 +++++++-
+ fs/posix_acl.c                  | 67 +++++++++++++++++++-----------
+ fs/quota/quota.c                |  2 +-
+ fs/xattr.c                      | 19 ++++++---
+ include/linux/fs.h              |  2 +-
+ include/linux/mount.h           |  1 +
+ include/linux/posix_acl_xattr.h | 17 ++++++--
+ include/linux/uidgid.h          | 10 +++++
+ include/linux/user_namespace.h  |  6 +--
+ kernel/capability.c             | 13 ++++--
+ kernel/cred.c                   |  2 +
+ kernel/user_namespace.c         |  6 +--
+ security/commoncap.c            | 16 ++++---
+ security/selinux/hooks.c        | 25 ++++++++++-
+ security/smack/smack_lsm.c      | 29 ++++++++-----
+ 30 files changed, 386 insertions(+), 145 deletions(-)
