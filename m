@@ -1,27 +1,33 @@
-Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4Eya-00038W-Ry
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 21:30:22 +0000
-Subject: Re: [PATCH] mtd: brcmnand: Workaround false ECC uncorrectable errors
-To: Jonas Gorski <jogo@openwrt.org>, Brian Norris <computersforpeace@gmail.com>
-References: <5659FF4A.7080203@simon.arlott.org.uk>
- <CAOiHx=nMZwQK9ESw9Ggqc6pHWqYQriB-t2eWq++pke8cXhvupw@mail.gmail.com>
- <565F51D2.4010204@simon.arlott.org.uk>
- <CAOiHx=mLmEW=gK_HE6oVqaFZjMUAWoP1PxZchc_mC_A5PJn-Cw@mail.gmail.com>
- <20151202205415.GQ64635@google.com>
- <CAOiHx=mAaU_nny5SmzAEmqBB=OTT_mqGcYhD7ZhjZWbG9wcKsw@mail.gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
-From: Simon Arlott <simon@fire.lp0.eu>
-Message-ID: <565F62C7.8010009@simon.arlott.org.uk>
-Date: Wed, 2 Dec 2015 21:29:43 +0000
+ id 1a4FDe-0000D4-FB
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 21:45:47 +0000
+Message-ID: <565F662A.2060903@broadcom.com>
+Date: Wed, 2 Dec 2015 13:44:10 -0800
+From: Florian Fainelli <fainelli@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOiHx=mAaU_nny5SmzAEmqBB=OTT_mqGcYhD7ZhjZWbG9wcKsw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+To: Simon Arlott <simon@fire.lp0.eu>, Florian Fainelli <f.fainelli@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>
+CC: Rob Herring <robh@kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Pawel Moll
+ <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, "Jonas
+ Gorski" <jogo@openwrt.org>, bcm-kernel-feedback-list
+ <bcm-kernel-feedback-list@broadcom.com>, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH (v6) 1/2] mtd: brcmnand: Add brcm,bcm63268-nand device
+ tree binding
+References: <56506D55.3000907@simon.arlott.org.uk>
+ <20151122215945.GA5930@rob-hp-laptop> <56523E85.905@simon.arlott.org.uk>
+ <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
+ <56541BD3.4070202@simon.arlott.org.uk> <5654AF69.7040901@gmail.com>
+ <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
+ <20151202190555.GJ64635@google.com>
+ <CAGVrzcZa2LNcajdnZHgZ2j+2Yj0_0a-7VmtXoBtWwFK2C02CyA@mail.gmail.com>
+ <565F4E63.3030100@simon.arlott.org.uk>
+In-Reply-To: <565F4E63.3030100@simon.arlott.org.uk>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,30 +38,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/12/15 21:08, Jonas Gorski wrote:
-> On Wed, Dec 2, 2015 at 9:54 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
+On 02/12/15 12:02, Simon Arlott wrote:
+> On 02/12/15 19:38, Florian Fainelli wrote:
+>> 2015-12-02 11:05 GMT-08:00 Brian Norris <computersforpeace@gmail.com>:
+>>> + Broadcom list + Kamal
+>>>
+>>> On Tue, Nov 24, 2015 at 08:19:37PM -0000, Simon Arlott wrote:
+>>>> Add device tree binding for NAND on the BCM63268.
+>>>>
+>>>> The BCM63268 has a NAND interrupt register with combined status and enable
+>>>> registers.
+>>>>
+>>>> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+>>>> ---
+>>>>  .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 35 ++++++++++++++++++++++
+>>>>  1 file changed, 35 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+>>>> b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+>>>> index 4ff7128..f2a71c8 100644
+>>>> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+>>>> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+>>>> @@ -72,6 +72,14 @@ we define additional 'compatible' properties and associated register resources w
+>>>>         and enable registers
+>>>>       - reg-names: (required) "nand-int-base"
+>>>>
+>>>> +   * "brcm,nand-bcm63268"
+>>>> +     - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
+>>>
+>>> Looks like you're aiming to support bcm63168? Is bcm63268 the first
+>>> chip to include this style of register then? The numbering seems
+>>> backwards, but that may just be reality.
 >>
->> BTW, I think Kamal had code to handle protecting bitflips in erased
->> pages code in the Broadcom STB Linux BSP. Perhaps he can port that to
->> upstream with nand_check_erased_ecc_chunk()? IIUC, that would probably
->> handle your case too, Simon, although it wouldn't be optimal for an
->> all-0xff check (i.e., bitflip_threshold == 0).
+>> 6362 (NAND rev 2.1, ann. Sep 8, 2009), 6368 (v0.1?!?, ann. Jan 7,
+>> 2009) and 6328 (v2.1, can't find release date) are earlier chips that
+>> have an identical combined interrupt enable + status register and a
+>> NAND controller within the same 32-bits word, so these would qualify
+>> as a better compatible string for this specific addition integration
+>> stub here. I would gowith 6368 here then?
 >>
->> If that's really an issue (i.e., we have an implementation + data), I'm
->> sure we could add optimization to nand_check_erased_ecc_chunk() to
->> support the bitflip_threshold == 0 case.
 > 
-> Maybe I'm missing something, but wasn't the point of introducing
-> nand_check_erased_ecc_chunk that bitflips in erased pages should be
-> treated as bitflips corrected by the ecc, and therefore fixed up
-> before passing the data further on? So having a theshold of 0 would be
-> wrong / no protection at all, and could be quite destructive on MLC
-> nand, where bitflips in erased pages are rather common.
+> I could change it to 6368 but there's no documented NAND_INTR_BASE for
+> it. Only the 63268 and 6818 have a #define for NAND_INTR_BASE.
+> 
 
-Without this patch I can't access erased pages at all. I don't know if
-the controller will still return an uncorrectable error if the page is
-erased but has 1 or more bit flips.
-
+It looks exactly the same as the 63268 layout, and double checking, this
+appears to be a v2.1 controller as well, it was not just properly
+documented as such.
 -- 
-Simon Arlott
+Florian
