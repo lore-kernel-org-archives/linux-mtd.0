@@ -1,24 +1,16 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a43C6-0001IW-KA
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 08:55:24 +0000
-Date: Wed, 2 Dec 2015 09:55:00 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 3/3] mtd: support a cleanup callback for partition parsers
-Message-ID: <20151202095500.02cc5894@bbrezillon>
-In-Reply-To: <20151202031209.GE64635@google.com>
-References: <1447989997-108476-1-git-send-email-computersforpeace@gmail.com>
- <1447989997-108476-4-git-send-email-computersforpeace@gmail.com>
- <20151130193624.152c032a@bbrezillon>
- <20151130235340.GP64635@google.com>
- <20151201133732.440f2357@bbrezillon>
- <20151202031209.GE64635@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ id 1a43G6-0004D2-K5
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 08:59:32 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by mail.sigma-star.at (Postfix) with ESMTP id BE8FB16B4D16
+ for <linux-mtd@lists.infradead.org>; Wed,  2 Dec 2015 09:59:06 +0100 (CET)
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH] mtd-utils: Fix return status in mtd_torture test function
+Date: Wed,  2 Dec 2015 09:58:24 +0100
+Message-Id: <1449046704-4783-1-git-send-email-david.oberhollenzer@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +20,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 1 Dec 2015 19:12:09 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
+This patch fixes the return status of the mtd_torture function
+in libmtd.
 
-> On Tue, Dec 01, 2015 at 01:37:32PM +0100, Boris Brezillon wrote:
-> > On Mon, 30 Nov 2015 15:53:40 -0800
-> > Brian Norris <computersforpeace@gmail.com> wrote:
-> > > On Mon, Nov 30, 2015 at 07:36:24PM +0100, Boris Brezillon wrote:
-> > > > What do you think?
-> > > 
-> > > I guess I do like the idea of hiding the handling of the parser
-> > > reference so mtd_device_parse_register() doesn't have to track the
-> > > parser directly. I'll admit I didn't like yet another
-> > > return-by-pointer-argument, but I didn't bother finding a better
-> > > solution at the time.
-> > > 
-> > > About the extra parser field: it's awkward that you assume the first
-> > > partition has the reference, making all the other instances of that
-> > > field pointless. Maybe a new mtd_partitions struct would be nice for
-> > > encapsulating everything properly.
-> > 
-> > Agreed. I just wanted to show that with a minimal amount of changes we
-> > could have a simpler implementation, but I clearly prefer the
-> > mtd_partitions approach.
-> 
-> OK, do you want to roll up all the suggestions into a new patch series,
-> or should I?
+The torture test function is currently only used by the ubiformat
+utilitiy to check if a block is bad after a write fails (blocks are
+marked bad if the function returns an error status). However, the
+way the function was written, it ALWAYS returns an error value
+irregardless of whether it failed or not.
 
-If you don't mind and have some time I'll let you do it ;-).
+Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+---
+ lib/libmtd.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Thanks,
-
-Boris
-
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index bf6d71f..1717468 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -939,7 +939,7 @@ static uint8_t patterns[] = {0xa5, 0x5a, 0x0};
+  * @patt: the pattern to check
+  * @size: buffer size in bytes
+  *
+- * This function returns %1 in there are only @patt bytes in @buf, and %0 if
++ * This function returns %0 if there are only @patt bytes in @buf, and %-1 if
+  * something else was also found.
+  */
+ static int check_pattern(const void *buf, uint8_t patt, int size)
+@@ -948,8 +948,8 @@ static int check_pattern(const void *buf, uint8_t patt, int size)
+ 
+ 	for (i = 0; i < size; i++)
+ 		if (((const uint8_t *)buf)[i] != patt)
+-			return 0;
+-	return 1;
++			return -1;
++	return 0;
+ }
+ 
+ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+@@ -973,7 +973,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+ 			goto out;
+ 
+ 		err = check_pattern(buf, 0xFF, mtd->eb_size);
+-		if (err == 0) {
++		if (err) {
+ 			errmsg("erased PEB %d, but a non-0xFF byte found", eb);
+ 			errno = EIO;
+ 			goto out;
+@@ -992,7 +992,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+ 			goto out;
+ 
+ 		err = check_pattern(buf, patterns[i], mtd->eb_size);
+-		if (err == 0) {
++		if (err) {
+ 			errmsg("pattern %x checking failed for PEB %d",
+ 				patterns[i], eb);
+ 			errno = EIO;
+@@ -1005,7 +1005,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+ 
+ out:
+ 	free(buf);
+-	return -1;
++	return err;
+ }
+ 
+ int mtd_is_bad(const struct mtd_dev_info *mtd, int fd, int eb)
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.6.2
