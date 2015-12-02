@@ -1,14 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a44o5-0004Mi-Sr
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 10:38:45 +0000
-Date: 2 Dec 2015 10:38:19 -0000
-Message-Id: <addb82044e8f8472ac0d02bd08ee5dca1a186117.1449052427.git.hramrach@gmail.com>
+ id 1a44o9-0004PB-RR
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 10:38:48 +0000
+Date: 2 Dec 2015 10:38:20 -0000
+Message-Id: <42c51bf17e21a5ae658174000f14035a56b0879b.1449052427.git.hramrach@gmail.com>
 In-Reply-To: <cover.1449052427.git.hramrach@gmail.com>
 References: <cover.1449052427.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v6 02/10] mtd: m25p80: return amount of data transferred or
- error in read/write
+Subject: [PATCH v6 07/10] mtd: spi-nor: add read loop
 To: Heiner Kallweit <hkallweit1@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
@@ -30,71 +29,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add checking of SPI transfer errors and return them from read/write
-functions. Also return the amount of data transferred.
+mtdblock and ubi do not handle the situation when read returns less data
+than requested. Loop in spi-nor until buffer is filled or an error is
+returned.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
----
- drivers/mtd/devices/m25p80.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 6ee3bb3..fc694fd 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -81,6 +81,7 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 	struct spi_transfer t[2] = {};
- 	struct spi_message m;
- 	int cmd_sz = m25p_cmdsz(nor);
-+	ssize_t ret;
+---
+ - use WARN_ON rather than BUG_ON
+---
+ drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 115c123..ded79ae 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -907,14 +907,22 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if (ret)
+ 		return ret;
  
- 	spi_message_init(&m);
+-	ret = nor->read(nor, from, len, buf);
++	while (len) {
++		ret = nor->read(nor, from, len, buf);
++		if (ret <= 0)
++			goto read_err;
++
++		WARN_ON(ret > len);
++		*retlen += ret;
++		buf += ret;
++		from += ret;
++		len -= ret;
++	}
++	ret = 0;
  
-@@ -98,10 +99,15 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
- 
--	spi_sync(spi, &m);
-+	ret = spi_sync(spi, &m);
-+	if (ret)
-+		return ret;
- 
--	*retlen += m.actual_length - cmd_sz;
++read_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
+-	if (ret < 0)
+-		return ret;
+-
+-	*retlen += ret;
 -	return 0;
-+	ret = m.actual_length - cmd_sz;
-+	if (ret < 0)
-+		return -EIO;
-+	*retlen += ret;
 +	return ret;
  }
  
- static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
-@@ -128,6 +134,7 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	struct spi_transfer t[2];
- 	struct spi_message m;
- 	unsigned int dummy = nor->read_dummy;
-+	ssize_t ret;
- 
- 	/* convert the dummy cycles to the number of bytes */
- 	dummy /= 8;
-@@ -147,10 +154,15 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
- 
--	spi_sync(spi, &m);
-+	ret = spi_sync(spi, &m);
-+	if (ret)
-+		return ret;
- 
--	*retlen = m.actual_length - m25p_cmdsz(nor) - dummy;
--	return 0;
-+	ret = m.actual_length - m25p_cmdsz(nor) - dummy;
-+	if (ret < 0)
-+		return -EIO;
-+	*retlen += ret;
-+	return ret;
- }
- 
- /*
+ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
 -- 
 2.6.2
