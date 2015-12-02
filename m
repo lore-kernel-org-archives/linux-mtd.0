@@ -1,13 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a44o9-0004PB-RR
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 10:38:48 +0000
+ id 1a44o9-0004Po-RS
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 10:38:49 +0000
 Date: 2 Dec 2015 10:38:20 -0000
-Message-Id: <42c51bf17e21a5ae658174000f14035a56b0879b.1449052427.git.hramrach@gmail.com>
+Message-Id: <777e381ffb750354e51e347af36994c86ad91035.1449052427.git.hramrach@gmail.com>
 In-Reply-To: <cover.1449052427.git.hramrach@gmail.com>
 References: <cover.1449052427.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v6 07/10] mtd: spi-nor: add read loop
+Subject: [PATCH v6 04/10] mtd: spi-nor: check return value from read/write
 To: Heiner Kallweit <hkallweit1@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
@@ -29,50 +29,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtdblock and ubi do not handle the situation when read returns less data
-than requested. Loop in spi-nor until buffer is filled or an error is
-returned.
+SPI NOR hardware drivers now return useful value from their read/write
+functions so check them.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-
 ---
- - use WARN_ON rather than BUG_ON
----
- drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 50 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 36 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 115c123..ded79ae 100644
+index b7c038c..5f91bfa 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -907,14 +907,22 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if (ret)
- 		return ret;
+@@ -910,7 +910,10 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	ret = nor->read(nor, from, len, retlen, buf);
  
--	ret = nor->read(nor, from, len, buf);
-+	while (len) {
-+		ret = nor->read(nor, from, len, buf);
-+		if (ret <= 0)
-+			goto read_err;
-+
-+		WARN_ON(ret > len);
-+		*retlen += ret;
-+		buf += ret;
-+		from += ret;
-+		len -= ret;
-+	}
-+	ret = 0;
- 
-+read_err:
  	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
--	if (ret < 0)
--		return ret;
--
--	*retlen += ret;
--	return 0;
-+	return ret;
+-	return ret;
++	if (ret < 0)
++		return ret;
++
++	return 0;
  }
  
  static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+@@ -936,10 +939,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		nor->program_opcode = SPINOR_OP_BP;
+ 
+ 		/* write one byte. */
+-		nor->write(nor, to, 1, retlen, buf);
++		ret = nor->write(nor, to, 1, retlen, buf);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 	}
+ 	to += actual;
+ 
+@@ -948,10 +955,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		nor->program_opcode = SPINOR_OP_AAI_WP;
+ 
+ 		/* write two bytes. */
+-		nor->write(nor, to, 2, retlen, buf + actual);
++		ret = nor->write(nor, to, 2, retlen, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 2, "While writing 2 bytes written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 		to += 2;
+ 		nor->sst_write_second = true;
+ 	}
+@@ -960,21 +971,24 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	write_disable(nor);
+ 	ret = spi_nor_wait_till_ready(nor);
+ 	if (ret)
+-		goto time_out;
++		goto sst_write_err;
+ 
+ 	/* Write out trailing byte if it exists. */
+ 	if (actual != len) {
+ 		write_enable(nor);
+ 
+ 		nor->program_opcode = SPINOR_OP_BP;
+-		nor->write(nor, to, 1, retlen, buf + actual);
+-
++		ret = nor->write(nor, to, 1, retlen, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 		write_disable(nor);
+ 	}
+-time_out:
++sst_write_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
+ 	return ret;
+ }
+@@ -1003,14 +1017,18 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 	/* do all the bytes fit onto one page? */
+ 	if (page_offset + len <= nor->page_size) {
+-		nor->write(nor, to, len, retlen, buf);
++		ret = nor->write(nor, to, len, retlen, buf);
++		if (ret < 0)
++			goto write_err;
+ 	} else {
+ 		/* the size of data remaining on the first page */
+ 		page_size = nor->page_size - page_offset;
+-		nor->write(nor, to, page_size, retlen, buf);
++		ret = nor->write(nor, to, page_size, retlen, buf);
++		if (ret < 0)
++			goto write_err;
+ 
+ 		/* write everything in nor->page_size chunks */
+-		for (i = page_size; i < len; i += page_size) {
++		for (i = ret; i < len; ) {
+ 			page_size = len - i;
+ 			if (page_size > nor->page_size)
+ 				page_size = nor->page_size;
+@@ -1021,7 +1039,11 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 			write_enable(nor);
+ 
+-			nor->write(nor, to + i, page_size, retlen, buf + i);
++			ret = nor->write(nor, to + i, page_size, retlen,
++					 buf + i);
++			if (ret < 0)
++				goto write_err;
++			i += ret;
+ 		}
+ 	}
+ 
 -- 
 2.6.2
