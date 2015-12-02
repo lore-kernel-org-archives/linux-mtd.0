@@ -1,26 +1,34 @@
 Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4CWb-0002A5-UP
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 18:53:11 +0000
-Received: by pabfh17 with SMTP id fh17so49741238pab.0
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 10:52:49 -0800 (PST)
-Date: Wed, 2 Dec 2015 10:52:46 -0800
+ id 1a4CjL-0000K4-7y
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 19:06:20 +0000
+Received: by pabfh17 with SMTP id fh17so50031157pab.0
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 11:05:58 -0800 (PST)
+Date: Wed, 2 Dec 2015 11:05:55 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>, linux-mtd@lists.infradead.org,
+To: Simon Arlott <simon@fire.lp0.eu>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, tglx@linutronix.de
-Subject: Re: [PATCH] mtd: nand: do FIFO processing in nand_get_device()
-Message-ID: <20151202185246.GI64635@google.com>
-References: <1448302147-19272-1-git-send-email-bigeasy@linutronix.de>
- <1448302147-19272-2-git-send-email-bigeasy@linutronix.de>
- <20151123181811.GO17308@twins.programming.kicks-ass.net>
- <20151125173543.GA17151@linutronix.de>
+ linux-mtd@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Jonas Gorski <jogo@openwrt.org>,
+ bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH (v6) 1/2] mtd: brcmnand: Add brcm,bcm63268-nand device
+ tree binding
+Message-ID: <20151202190555.GJ64635@google.com>
+References: <56506D55.3000907@simon.arlott.org.uk>
+ <20151122215945.GA5930@rob-hp-laptop>
+ <56523E85.905@simon.arlott.org.uk>
+ <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
+ <56541BD3.4070202@simon.arlott.org.uk> <5654AF69.7040901@gmail.com>
+ <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151125173543.GA17151@linutronix.de>
+In-Reply-To: <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,37 +38,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 25, 2015 at 06:35:43PM +0100, Sebastian Andrzej Siewior wrote:
-> I have here a live lock in UBI doing
->   ensure_wear_leveling() -> wear_leveling_worker() -> ubi_eba_copy_leb()
->   MOVE_RETRY -> schedule_erase() -> ensure_wear_leveling()
++ Broadcom list + Kamal
+
+On Tue, Nov 24, 2015 at 08:19:37PM -0000, Simon Arlott wrote:
+> Add device tree binding for NAND on the BCM63268.
 > 
-> on the same PEB over and over again. The reason for MOVE_RETRY is that
-> the LEB-Lock owner is stucked in nand_get_device() and does not get the
-> device lock. The PEB-lock owner is only scheduled on the CPU while the UBI
-> thread is idle during erase or read while (again) owning the device-lock
-> so the LEB-lock owner makes no progress.
+> The BCM63268 has a NAND interrupt register with combined status and enable
+> registers.
 > 
-> To fix this live lock I ensure that there FIFO processing in
-> nand_get_device(). On release the first waiter is marked as the new
-> owner. If someone asks for the device and is not the waiter to which
-> nand device has been handed over then it will put itself on the
-> waitqueue.
-> The FIFO processing was suggested by Peter Zijlstra.
-> 
-> As a small optimization I use add_wait_queue_exclusive() instead
-> add_wait_queue() to make sure that only _one_ waiter is woken up and not
-> all of them.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
 > ---
-> Would a stable be considered as reasonable?
+>  .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 35 ++++++++++++++++++++++
+>  1 file changed, 35 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> index 4ff7128..f2a71c8 100644
+> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> @@ -72,6 +72,14 @@ we define additional 'compatible' properties and associated register resources w
+>         and enable registers
+>       - reg-names: (required) "nand-int-base"
+> 
+> +   * "brcm,nand-bcm63268"
+> +     - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm63268"
 
-Your threading is a bit confusing. Is this patch still needed, or did
-you fix everything by fixing UBI with these?
+Looks like you're aiming to support bcm63168? Is bcm63268 the first
+chip to include this style of register then? The numbering seems
+backwards, but that may just be reality.
 
-http://lists.infradead.org/pipermail/linux-mtd/2015-November/063745.html
-http://lists.infradead.org/pipermail/linux-mtd/2015-November/063744.html
-http://lists.infradead.org/pipermail/linux-mtd/2015-November/063746.html
+> +     - reg: (required) the 'NAND_INTR_BASE' register range, with combined status
+> +       and enable registers, and boot address registers
+> +     - reg-names: (required) "nand-intr-base"
+> +     - clock: (required) reference to the clock for the NAND controller
+> +     - clock-names: (required) "nand"
+> +
+>     * "brcm,nand-iproc"
+>       - reg: (required) the "IDM" register range, for interrupt enable and APB
+>         bus access endianness configuration, and the "EXT" register range,
+> @@ -148,3 +156,30 @@ nand@f0442800 {
+>  		};
+>  	};
+>  };
+> +
+> +nand@10000200 {
+> +	compatible = "brcm,nand-bcm63168", "brcm,nand-bcm63268",
+> +		"brcm,brcmnand-v4.0", "brcm,brcmnand";
+> +	reg = <0x10000200 0x180>,
+> +	      <0x10000600 0x200>,
+> +	      <0x100000b0 0x10>;
+> +	reg-names = "nand", "nand-cache", "nand-intr-base";
+> +	interrupt-parent = <&periph_intc>;
+> +	interrupts = <50>;
+> +	clocks = <&periph_clk 20>;
+> +	clock-names = "nand";
+> +
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	nand0: nandcs@0 {
+> +		compatible = "brcm,nandcs";
+> +		reg = <0>;
+> +		nand-on-flash-bbt;
+> +		nand-ecc-strength = <1>;
+> +		nand-ecc-step-size = <512>;
+> +
+> +		#address-cells = <0>;
+> +		#size-cells = <0>;
+
+What are these {address,size}-cells for? If you need them for
+partitioning, then those are wrong -- they shouldn't be zero. Maybe just
+drop them? (I can cut them out when applying, if that's the only change
+to make.)
+
+> +	};
+> +};
 
 Brian
