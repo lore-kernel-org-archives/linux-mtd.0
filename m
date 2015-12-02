@@ -1,27 +1,26 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4CNe-0004YX-3H
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 18:43:54 +0000
-Received: by pabfh17 with SMTP id fh17so49543508pab.0
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 10:43:32 -0800 (PST)
-Date: Wed, 2 Dec 2015 10:43:30 -0800
+ id 1a4CWb-0002A5-UP
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 18:53:11 +0000
+Received: by pabfh17 with SMTP id fh17so49741238pab.0
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 10:52:49 -0800 (PST)
+Date: Wed, 2 Dec 2015 10:52:46 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: tony@atomide.com, dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
- javier@dowhile0.org, fcooper@ti.com, nsekhar@ti.com,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-Message-ID: <20151202184330.GH64635@google.com>
-References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
- <20151026212346.GJ13239@google.com> <562F45BF.8020205@ti.com>
- <20151130195449.GI64635@google.com> <565DB18C.7040505@ti.com>
- <20151202032643.GF64635@google.com> <565E7DAC.7060401@ti.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, tglx@linutronix.de
+Subject: Re: [PATCH] mtd: nand: do FIFO processing in nand_get_device()
+Message-ID: <20151202185246.GI64635@google.com>
+References: <1448302147-19272-1-git-send-email-bigeasy@linutronix.de>
+ <1448302147-19272-2-git-send-email-bigeasy@linutronix.de>
+ <20151123181811.GO17308@twins.programming.kicks-ass.net>
+ <20151125173543.GA17151@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <565E7DAC.7060401@ti.com>
+In-Reply-To: <20151125173543.GA17151@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,25 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Roger,
-
-On Wed, Dec 02, 2015 at 10:42:12AM +0530, Roger Quadros wrote:
-> On 02/12/15 08:56, Brian Norris wrote:
-> > On Tue, Dec 01, 2015 at 04:41:16PM +0200, Roger Quadros wrote:
-> >> On 30/11/15 21:54, Brian Norris wrote:
-> >>> But anyway, I'm not sure that completely answered my question. My
-> >>> question was whether you were removing the irqchip code solely for
-> >>> performance reasons, or are there others?
-> >>
-> >> Yes. Only for performance reasons.
-> > 
-> > Hmm, that's not my favorite answer. I'd prefer that more analysis was
-> > done here before scrapping irqchip...
+On Wed, Nov 25, 2015 at 06:35:43PM +0100, Sebastian Andrzej Siewior wrote:
+> I have here a live lock in UBI doing
+>   ensure_wear_leveling() -> wear_leveling_worker() -> ubi_eba_copy_leb()
+>   MOVE_RETRY -> schedule_erase() -> ensure_wear_leveling()
 > 
-> I agree. We could retain the irqchip model till we have more satisfying
-> analysis.
+> on the same PEB over and over again. The reason for MOVE_RETRY is that
+> the LEB-Lock owner is stucked in nand_get_device() and does not get the
+> device lock. The PEB-lock owner is only scheduled on the CPU while the UBI
+> thread is idle during erase or read while (again) owning the device-lock
+> so the LEB-lock owner makes no progress.
+> 
+> To fix this live lock I ensure that there FIFO processing in
+> nand_get_device(). On release the first waiter is marked as the new
+> owner. If someone asks for the device and is not the waiter to which
+> nand device has been handed over then it will put itself on the
+> waitqueue.
+> The FIFO processing was suggested by Peter Zijlstra.
+> 
+> As a small optimization I use add_wait_queue_exclusive() instead
+> add_wait_queue() to make sure that only _one_ waiter is woken up and not
+> all of them.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+> Would a stable be considered as reasonable?
 
-I won't insist, though if it's not too ugly/horrible to do so, I think
-that would make sense. I'll leave it as your call.
+Your threading is a bit confusing. Is this patch still needed, or did
+you fix everything by fixing UBI with these?
+
+http://lists.infradead.org/pipermail/linux-mtd/2015-November/063745.html
+http://lists.infradead.org/pipermail/linux-mtd/2015-November/063744.html
+http://lists.infradead.org/pipermail/linux-mtd/2015-November/063746.html
 
 Brian
