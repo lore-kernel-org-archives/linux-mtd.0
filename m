@@ -1,32 +1,20 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a3u73-00071p-RZ
- for linux-mtd@lists.infradead.org; Tue, 01 Dec 2015 23:13:34 +0000
-Date: Tue, 1 Dec 2015 23:12:33 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Michal Suchanek <hramrach@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Stephen Warren <swarren@nvidia.com>, "Andrew F. Davis" <afd@ti.com>,
- Marek Vasut <marex@denx.de>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>,
- Bean Huo =?utf-8?B?6ZyN5paM5paM?= <beanhuo@micron.com>,
- Furquan Shaikh <furquan@google.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Message-ID: <20151201231233.GA1929@sirena.org.uk>
-References: <cover.1448988089.git.hramrach@gmail.com>
- <8c34c7790244489c2ce0072c72bd9bc7c4cdb965.1448988089.git.hramrach@gmail.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a3w48-0001a9-Uw
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 01:18:43 +0000
+Message-ID: <565E44D0.8000708@cn.fujitsu.com>
+Date: Wed, 2 Dec 2015 09:09:36 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="2GxxjMFQpcQtANqJ"
-Content-Disposition: inline
-In-Reply-To: <8c34c7790244489c2ce0072c72bd9bc7c4cdb965.1448988089.git.hramrach@gmail.com>
-Subject: Re: [PATCH v5 08/10] spi: expose master transfer size limitation.
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Brian Norris <computersforpeace@gmail.com>,
+ <richard.weinberger@gmail.com>, <linux-mtd@lists.infradead.org>, Dongsheng
+ Yang <yangds.fnst@cn.fujitsu.com>
+Subject: Re: [PATCH v1 0/7] Add a mtd raid layer
+References: <1448967157-17423-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+In-Reply-To: <1448967157-17423-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,40 +24,154 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Adding Boris...
 
---2GxxjMFQpcQtANqJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Boris,
+	I found you are working on the problem of
+data lose in MLC, there is another idea to protect
+the our data, by raid5. What do you think?
 
-On Tue, Dec 01, 2015 at 04:51:06PM -0000, Michal Suchanek wrote:
+https://en.wikipedia.org/wiki/Standard_RAID_levels#RAID_5
 
-> +static inline size_t
-> +spi_max_transfer_size(struct spi_device *spi)
-> +{
-> +	struct spi_master *master = spi->master;
-> +	if (!master->max_transfer_size)
-> +		return 0;
-> +	return master->max_transfer_size(spi);
-> +}
+Yang
 
-Can we change this to return SIZE_MAX instead (ie, the maximum value for
-a size_t)?  That way callers don't need to worry if there is a limit, if
-they want to handle it they can just unconditionally assume that a limit
-will be provided.
-
---2GxxjMFQpcQtANqJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWXilhAAoJECTWi3JdVIfQK9UH/jE+6AVpFzPt0VbOKZrcz2Vg
-v7RRHUgejDpmu1oX/BYWkKtP8s+8148lOXNTH8kXoGEbXbNpFCe9iAv7Y/7YXQx8
-fbXnMj+pdJcJGOddZbWbrAkybuJ27gN0zubQP+i3QhP3YOw8qbZHtgJMl2qpmX1/
-aWy26urStV//8UnvzPUERIIvf1G77zJuSDuo164tqcgipuw6Y+uBu66ppYHivIxX
-RXefE+RIFL3YEJiEdVzVC7DLl0XWjN+Ao6HDGbyUDCn/2PiW9lQuOpUToUxaMMQG
-qBMroy5ZZW2md92GniJz1vfzPdUdQB+XZbIqu2TpeLeWv7OlnhlemwfolwHHxLQ=
-=O0zK
------END PGP SIGNATURE-----
-
---2GxxjMFQpcQtANqJ--
+On 12/01/2015 06:52 PM, Dongsheng Yang wrote:
+> Hi guys,
+> 	I am here to release v1 of the mtd raid layer. It's a layer
+> shown as below:
+>
+> ---------      -------------
+> |  ubi  |      |  mtdchar  |
+> ---------      -------------
+>     |                |
+>     v                v
+> ----------------------------
+> |        MTD RAID          |    <----- a new layer here (drivers/mtd/mtd_raid/*)
+> ----------------------------
+>             |
+>             v
+>     ----------------
+>     |   mtd driver |
+>     ----------------
+>
+> Of course, that's optional.
+>
+> There are two ways to use mtd raid.
+> (1). For multi-chips driver:
+>
+> 	   /dev/mtd0
+> |--------------------------------|
+> |  ----------------------------  |
+> |  |        MTD RAID          |  |
+> |  ----------------------------  |
+> |      |             |           |
+> |      v             v           |
+> |  -----------   -----------     |
+> |  | mtd_info|   | mtd_info|     |
+> |  -----------   -----------     |
+> |--------------------------------|
+>
+> When a driver have multiple chips, we can use mtd raid framework to build
+> them into a raid array and expose a mtd device. There are some drivers
+> are using mtd_concat, we can do the same thing with mtd_single. At the same
+> time, mtd raid provides more choices to them, such as raid0 or raid1.
+>
+> (2). For user:
+>
+>             /dev/mtd2
+> |--------------------------------|
+> |  ----------------------------  |
+> |  |        MTD RAID          |  |
+> |  ----------------------------  |
+> |      |             |           |
+> |      v             v           |
+> |  -----------   -----------     |
+> |  |/dev/mtd0|   |/dev/mtd1|     |
+> |  -----------   -----------     |
+> |--------------------------------|
+>
+> we have a user tool for mtd raid, and user can use it to build raid array.
+>
+> Example:
+> 	# mtd_raid create --level=0 /dev/mtd0 /dev/mtd1 /dev/mtd2 /dev/mtd3
+> 	# mtdinfo /dev/mtd4
+> 	mtd4
+> 	Name:                           mtdraid0-1
+> 	Type:                           nand
+> 	Eraseblock size:                65536 bytes, 64.0 KiB
+> 	Amount of eraseblocks:          8192 (536870912 bytes, 512.0 MiB)
+> 	Minimum input/output unit size: 512 bytes
+> 	Sub-page size:                  256 bytes
+> 	OOB size:                       16 bytes
+> 	Character device major/minor:   90:8
+> 	Bad blocks are allowed:         true
+> 	Device is writable:             true
+>
+> There are 4 mtd devices simulated by nandsim, then we create a raid0 with
+> them.
+> ---------------------------------------------------------------------------
+> | device| size |  throughput (dd if=/dev/mtdX of=/dev/null bs=1M count=10)|
+> |--------------------------------------------------------------------------
+> | mtd0  | 128M |  14.0 MB/s						  |
+> |--------------------------------------------------------------------------
+> | mtd1  | 128M |  14.0 MB/s						  |
+> |--------------------------------------------------------------------------
+> | mtd2  | 128M |  14.0 MB/s						  |
+> |--------------------------------------------------------------------------
+> | mtd3  | 128M |  14.0 MB/s						  |
+> |--------------------------------------------------------------------------
+> | mtd4  | 512M |  51.1 MB/s						  |
+> ---------------------------------------------------------------------------
+>
+> Also we can use raid1 to get a mirror for robustness.
+>
+> TODO:
+> 	In this framework, we can implement more raid levels. The most useful
+> one I think is raid5/6, which would do a parity and fixup work in reading. That's
+> important for MLC or TLC. Raid-level is refered to:
+>
+> https://en.wikipedia.org/wiki/Standard_RAID_levels
+>
+>
+> Code:
+> 	kernel:  https://github.com/yangdongsheng/linux  mtd_raid_v1
+> 	user  :  https://github.com/yangdongsheng/mtd-utils mtd_raid_v1
+>
+> Thanx
+> Yang
+>
+> Dongsheng Yang (7):
+>    mtd: nandsim: remove the abuse of reference to globle variable.
+>    mtd: nansim: add support of multi devices.
+>    mtd: mtd_raid: Init a new layer of MTD RAID
+>    mtd: mtd_raid: introduce raid single implementation
+>    mtd: mtd_raid: introduce raid0 implementation
+>    mtd: mtd_raid: introduce raid1 implementation
+>    mtd: mtd_raid: implement ioctl for mtd raid
+>
+>   Documentation/ioctl/ioctl-number.txt |    1 +
+>   drivers/mtd/Kconfig                  |    2 +
+>   drivers/mtd/Makefile                 |    1 +
+>   drivers/mtd/mtd_raid/Kconfig         |   12 +
+>   drivers/mtd/mtd_raid/Makefile        |    3 +
+>   drivers/mtd/mtd_raid/core.c          | 1000 ++++++++++++++++++++++++++++++++++
+>   drivers/mtd/mtd_raid/ioctl.c         |  137 +++++
+>   drivers/mtd/mtd_raid/mtd_raid.h      |  264 +++++++++
+>   drivers/mtd/mtd_raid/raid0.c         |  136 +++++
+>   drivers/mtd/mtd_raid/raid1.c         |  156 ++++++
+>   drivers/mtd/mtd_raid/raid_io.c       |  449 +++++++++++++++
+>   drivers/mtd/mtd_raid/raid_single.c   |  156 ++++++
+>   drivers/mtd/nand/nandsim.c           |  312 ++++++-----
+>   include/uapi/mtd/mtd-raid-user.h     |   33 ++
+>   14 files changed, 2518 insertions(+), 144 deletions(-)
+>   create mode 100644 drivers/mtd/mtd_raid/Kconfig
+>   create mode 100644 drivers/mtd/mtd_raid/Makefile
+>   create mode 100644 drivers/mtd/mtd_raid/core.c
+>   create mode 100644 drivers/mtd/mtd_raid/ioctl.c
+>   create mode 100644 drivers/mtd/mtd_raid/mtd_raid.h
+>   create mode 100644 drivers/mtd/mtd_raid/raid0.c
+>   create mode 100644 drivers/mtd/mtd_raid/raid1.c
+>   create mode 100644 drivers/mtd/mtd_raid/raid_io.c
+>   create mode 100644 drivers/mtd/mtd_raid/raid_single.c
+>   create mode 100644 include/uapi/mtd/mtd-raid-user.h
+>
