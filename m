@@ -1,33 +1,23 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4GV9-0004uY-Vc
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 23:07:56 +0000
-Received: by pacej9 with SMTP id ej9so53543603pac.2
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 15:07:35 -0800 (PST)
-Date: Wed, 2 Dec 2015 15:07:32 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Han Xu <han.xu@freescale.com>
-Cc: Michal Suchanek <hramrach@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Mark Brown <broonie@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Rafal Milecki <zajec5@gmail.com>, Jagan Teki <jteki@openedev.com>,
- "Andrew F. Davis" <afd@ti.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>, Bean Huo <beanhuo@micron.com>,
- Furquan Shaikh <furquan@google.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v6 03/10] mtd: fsl-quadspi: return amount of data
- read/written or error
-Message-ID: <20151202230732.GT64635@google.com>
-References: <cover.1449052427.git.hramrach@gmail.com>
- <ad10a42f8c502b9b91fcba05b3e46c42663e1141.1449052427.git.hramrach@gmail.com>
- <20151202210626.GA21512@chopperman.am.freescale.net>
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4H2H-0003aV-S5
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 23:42:11 +0000
+From: Simon Arlott <simon@fire.lp0.eu>
+To: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Florian Fainelli <f.fainelli@gmail.com>,
+ bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [PATCH 1/3] mtd: brcmnand: Add brcm,bcm6368-nand device tree binding
+Message-ID: <565F81A6.6060307@simon.arlott.org.uk>
+Date: Wed, 2 Dec 2015 23:41:26 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151202210626.GA21512@chopperman.am.freescale.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,35 +27,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 02, 2015 at 03:06:28PM -0600, Han Xu wrote:
-> On Wed, Dec 02, 2015 at 10:38:19AM +0000, Michal Suchanek wrote:
-> > Return amount of data read/written or error as read(2)/write(2) does.
-> > 
-> > Signed-off-by: Michal Suchanek <hramrach@gmail.com>
-> > ---
-> >  drivers/mtd/spi-nor/fsl-quadspi.c | 18 +++++++++++-------
-> >  1 file changed, 11 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > index 10d2b59..9beb739 100644
-> > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > @@ -575,7 +575,7 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
-> >  	writel(reg, q->iobase + QUADSPI_MCR);
-> >  }
-> >  
-> > -static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
-> > +static ssize_t fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
-> 
-> conflict with the patch I acked.
-> 
-> https://patchwork.ozlabs.org/patch/545925/
-> 
-> I may change it and test on my side.
+Add device tree binding for NAND on the BCM6368.
 
-I'll let you know if I need things rebased. If conflicts are trivial, I
-can handle it. But right now, the linked patch (big endian support) is
-incomplete (no documentation), and Michal's was just sent today. So it
-remains to be seen which will be "ready" first.
+The BCM6368 has a NAND interrupt register with combined status and enable
+registers. It also requires a clock, so add an optional clock to the
+common brcmnand binding.
 
-Brian
+Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+---
+Renamed from BCM63268, made clock a generic property.
+
+ .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 32 ++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+index 4ff7128..16d7835 100644
+--- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
++++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+@@ -45,6 +45,8 @@ Required properties:
+ - #size-cells      : <0>
+ 
+ Optional properties:
++- clock                     : reference to the clock for the NAND controller
++- clock-names               : "nand" (required for the above clock)
+ - brcm,nand-has-wp          : Some versions of this IP include a write-protect
+                               (WP) control bit. It is always available on >=
+                               v7.0. Use this property to describe the rare
+@@ -72,6 +74,12 @@ we define additional 'compatible' properties and associated register resources w
+        and enable registers
+      - reg-names: (required) "nand-int-base"
+ 
++   * "brcm,nand-bcm6368"
++     - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm6368"
++     - reg: (required) the 'NAND_INTR_BASE' register range, with combined status
++       and enable registers, and boot address registers
++     - reg-names: (required) "nand-intr-base"
++
+    * "brcm,nand-iproc"
+      - reg: (required) the "IDM" register range, for interrupt enable and APB
+        bus access endianness configuration, and the "EXT" register range,
+@@ -148,3 +156,27 @@ nand@f0442800 {
+ 		};
+ 	};
+ };
++
++nand@10000200 {
++	compatible = "brcm,nand-bcm63168", "brcm,nand-bcm6368",
++		"brcm,brcmnand-v4.0", "brcm,brcmnand";
++	reg = <0x10000200 0x180>,
++	      <0x10000600 0x200>,
++	      <0x100000b0 0x10>;
++	reg-names = "nand", "nand-cache", "nand-intr-base";
++	interrupt-parent = <&periph_intc>;
++	interrupts = <50>;
++	clocks = <&periph_clk 20>;
++	clock-names = "nand";
++
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	nand0: nandcs@0 {
++		compatible = "brcm,nandcs";
++		reg = <0>;
++		nand-on-flash-bbt;
++		nand-ecc-strength = <1>;
++		nand-ecc-step-size = <512>;
++	};
++};
+-- 
+2.1.4
+
+-- 
+Simon Arlott
