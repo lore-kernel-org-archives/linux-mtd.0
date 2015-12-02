@@ -1,13 +1,13 @@
 Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
  by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a44oJ-0004Sj-RL
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 10:39:00 +0000
+ id 1a44oO-0004XP-RK
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 10:39:02 +0000
 Date: 2 Dec 2015 10:38:21 -0000
-Message-Id: <515f8373f20ed814f8761ebadfec0e306517b0e3.1449052427.git.hramrach@gmail.com>
+Message-Id: <77973c7d90afb034f3bee55db7bff5be23e2a812.1449052427.git.hramrach@gmail.com>
 In-Reply-To: <cover.1449052427.git.hramrach@gmail.com>
 References: <cover.1449052427.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH v6 09/10] spi: fsl-espi: expose maximum transfer size limit
+Subject: [PATCH v6 10/10] mtd: m25p80: read in spi_max_transfer_size chunks
 To: Heiner Kallweit <hkallweit1@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
@@ -29,40 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The fsl-espi hardware can trasfer at most 64K data so report teh
-limitation.
+Take into account transfer size limitation of SPI master.
 
-Based on patch by Heiner Kallweit <hkallweit1@gmail.com>
-
-CC: Heiner Kallweit <hkallweit1@gmail.com>
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
----
- drivers/spi/spi-fsl-espi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/spi/spi-fsl-espi.c b/drivers/spi/spi-fsl-espi.c
-index c27124a..7fd6a4c 100644
---- a/drivers/spi/spi-fsl-espi.c
-+++ b/drivers/spi/spi-fsl-espi.c
-@@ -643,6 +643,11 @@ static int fsl_espi_runtime_resume(struct device *dev)
- }
- #endif
+---
+
+ - update for: return SIZE_MAX when no limit is known
+---
+ drivers/mtd/devices/m25p80.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 58ecfa4..f36ffc6 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -150,7 +150,7 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
  
-+static size_t fsl_espi_max_transfer_size(struct spi_device *spi)
-+{
-+	return SPCOM_TRANLEN_MAX;
-+}
-+
- static struct spi_master * fsl_espi_probe(struct device *dev,
- 		struct resource *mem, unsigned int irq)
- {
-@@ -670,6 +675,7 @@ static struct spi_master * fsl_espi_probe(struct device *dev,
- 	master->cleanup = fsl_espi_cleanup;
- 	master->transfer_one_message = fsl_espi_do_one_msg;
- 	master->auto_runtime_pm = true;
-+	master->max_transfer_size = fsl_espi_max_transfer_size;
+ 	t[1].rx_buf = buf;
+ 	t[1].rx_nbits = m25p80_rx_nbits(nor);
+-	t[1].len = len;
++	t[1].len = min_t(size_t, len, spi_max_transfer_size(spi));
+ 	spi_message_add_tail(&t[1], &m);
  
- 	mpc8xxx_spi = spi_master_get_devdata(master);
- 
+ 	ret = spi_sync(spi, &m);
 -- 
 2.6.2
