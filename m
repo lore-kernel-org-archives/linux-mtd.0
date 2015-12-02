@@ -1,10 +1,10 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4DuQ-0002lJ-NN
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 20:21:51 +0000
-Received: by pacdm15 with SMTP id dm15so50124014pac.3
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 12:21:29 -0800 (PST)
-Date: Wed, 2 Dec 2015 12:21:27 -0800
+ id 1a4Dxb-0003v7-9U
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 20:25:07 +0000
+Received: by pacej9 with SMTP id ej9so50362614pac.2
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 12:24:46 -0800 (PST)
+Date: Wed, 2 Dec 2015 12:24:44 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Simon Arlott <simon@fire.lp0.eu>
 Cc: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh@kernel.org>,
@@ -19,19 +19,19 @@ Cc: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh@kernel.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>
 Subject: Re: [PATCH (v6) 1/2] mtd: brcmnand: Add brcm,bcm63268-nand device
  tree binding
-Message-ID: <20151202202127.GN64635@google.com>
-References: <56523E85.905@simon.arlott.org.uk>
- <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
+Message-ID: <20151202202444.GO64635@google.com>
+References: <56523EFF.9050502@simon.arlott.org.uk> <56535977.9050201@gmail.com>
  <56541BD3.4070202@simon.arlott.org.uk> <5654AF69.7040901@gmail.com>
  <afc6fb02d51a5378e315ade84a134eaf7a58a94f@8b5064a13e22126c1b9329f0dc35b8915774b7c3.invalid>
  <20151202190555.GJ64635@google.com>
  <565F4953.2070206@simon.arlott.org.uk>
  <20151202200036.GL64635@google.com>
  <565F50B0.4020802@simon.arlott.org.uk>
+ <20151202202127.GN64635@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <565F50B0.4020802@simon.arlott.org.uk>
+In-Reply-To: <20151202202127.GN64635@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,59 +41,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Simon,
-
-On Wed, Dec 02, 2015 at 08:12:32PM +0000, Simon Arlott wrote:
-> On 02/12/15 20:00, Brian Norris wrote:
-> > On Wed, Dec 02, 2015 at 07:41:07PM +0000, Simon Arlott wrote:
-> >> I've created a bcm963268part driver so there won't need to be any
-> >> partitions in DT for bcm63268.
-> > 
-> > Just curious, do you plan to submit this driver? We're working on
+On Wed, Dec 02, 2015 at 12:21:27PM -0800, Brian Norris wrote:
+> On Wed, Dec 02, 2015 at 08:12:32PM +0000, Simon Arlott wrote:
+> > Is there a patch for that method of parser detection available?
 > 
-> Yes, it's just the most recent one I've been working on. I still have
-> USBH and IUDMA to submit
+> I have something working here, but I haven't had time to finish cleaning
+> it up and submitting it. There's an older patch that works similarly,
+> though it has some deficiencies:
 > 
-> > matching up partition parsers to flash devices via device tree
-> > of_match_table's, so you could do something like this:
-> > 
-> > 	nand0: nandcs@0 {
-> > 		compatible = "brcm,nandcs";
-> > 		...
-> > 
-> > 		partitions {
-> > 			compatible = "brcm,bcm963268-partitions";
-> > 			...
-> > 		};
-> > 	};
+> http://patchwork.ozlabs.org/patch/475988/
 > 
-> I modified brcmnand to look for a machine matching "brcm,bcm963268", but
+> The main difference between that and my (yet-to-be-submitted) proposal
+> is that I'd like parsers to opt in by adding a proper of_match_table
+> with non-Linux-specific DT bindings, and then we can drop the
+> "linux,..." naming and make it a reasonably generic property.
 
-Like this?
+For other related work: Linus Walleij attempted something similar here:
 
-http://patchwork.ozlabs.org/patch/473180/
-
-I'd like to avoid that (hence the "Rejected" status).
-
-> that way is ok with me. Presumably "ofpart" defers to another matching
-> partition parser?
-
-Yes, "ofpart" is for specifying the entire partition table in the device
-tree as subnodes of either the flash node or of the flash's "partitions"
-subnode. It's not the most flexible, but it does work generically.
-
-> Is there a patch for that method of parser detection available?
-
-I have something working here, but I haven't had time to finish cleaning
-it up and submitting it. There's an older patch that works similarly,
-though it has some deficiencies:
-
-http://patchwork.ozlabs.org/patch/475988/
-
-The main difference between that and my (yet-to-be-submitted) proposal
-is that I'd like parsers to opt in by adding a proper of_match_table
-with non-Linux-specific DT bindings, and then we can drop the
-"linux,..." naming and make it a reasonably generic property.
-
-Regards,
-Brian
+http://lists.infradead.org/pipermail/linux-mtd/2015-October/062899.html
