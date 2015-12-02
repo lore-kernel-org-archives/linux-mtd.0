@@ -1,35 +1,25 @@
-Received: from mail-wm0-x235.google.com ([2a00:1450:400c:c09::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4493-0000z2-Cm
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 09:56:18 +0000
-Received: by wmec201 with SMTP id c201so244736994wme.0
- for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2015 01:55:55 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20151201195816.GS1929@sirena.org.uk>
-References: <cover.1448988089.git.hramrach@gmail.com>
- <8c34c7790244489c2ce0072c72bd9bc7c4cdb965.1448988089.git.hramrach@gmail.com>
- <20151201195816.GS1929@sirena.org.uk>
+Received: from dec59.ruk.cuni.cz ([2001:718:1e03:4::11])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a44o5-0004O8-Sg
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 10:38:43 +0000
+Date: 2 Dec 2015 10:38:19 -0000
+Message-Id: <b255ef9e237b9b58e2cfb13ee0047df62cabe9a5.1449052427.git.hramrach@gmail.com>
+In-Reply-To: <cover.1449052427.git.hramrach@gmail.com>
+References: <cover.1449052427.git.hramrach@gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Date: Wed, 2 Dec 2015 10:55:16 +0100
-Message-ID: <CAOMqctTbJVpxbGaRHhfNGfN6gVCZBQkiVRLe1Cm8LeGzwtamcQ@mail.gmail.com>
-Subject: Re: [PATCH v5 08/10] spi: expose master transfer size limitation.
-To: Mark Brown <broonie@kernel.org>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+Subject: [PATCH v6 01/10] mtd: spi-nor: change return value of read/write
+To: Heiner Kallweit <hkallweit1@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
+ Mark Brown <broonie@kernel.org>, Michal Suchanek <hramrach@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Javier Martinez Canillas <javier@osg.samsung.com>,
- Stephen Warren <swarren@nvidia.com>,
- "Andrew F. Davis" <afd@ti.com>, Marek Vasut <marex@denx.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ "Rafal Milecki" <zajec5@gmail.com>, Jagan Teki <jteki@openedev.com>,
+ "Andrew F. Davis" <afd@ti.com>,
  Mika Westerberg <mika.westerberg@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>,
- =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paM?= <beanhuo@micron.com>,
- Furquan Shaikh <furquan@google.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+ Gabor Juhos <juhosg@openwrt.org>, "Bean Huo  " <beanhuo@micron.com>,
+ Furquan Shaikh <furquan@google.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,33 +29,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 1 December 2015 at 20:58, Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Dec 01, 2015 at 04:51:06PM -0000, Michal Suchanek wrote:
->> On some SPI controllers it is not feasible to transfer arbitrary amount
->> of data at once.
->>
->> When the limit on transfer size is a few kilobytes at least it makes
->> sense to use the SPI hardware rather than reverting to gpio driver.
->
->> +     /*
->> +      * on some hardware transfer size may be constrained
->> +      * the limit may depend on device transfer settings
->> +      */
->> +     size_t (*max_transfer_size)(struct spi_device *spi);
->
-> Heiner submitted a *very* similar patch just now with a straight
-> variable plus accessor instead of a function and using a name with _msg.
-> I'm ambivalent on the implementation but prefer the naming here since
-> that's more the limitation we're trying to express I think (some
-> hardware does have limiations about multple transfers too).  Can the two
-> of you come up with something that works for both of you?
+Change the return value of spi-nor device read and write methods to
+allow returning amount of data transferred and errors as
+read(2)/write(2) does.
 
-Sorry, missed there is a patch because it shows in the middle of the
-discussion for me.
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
+---
 
-I don't really care which one it is so long as I can get the last
-patch in this series based on it.
+ - avoid compiler warning
+---
+ drivers/mtd/devices/m25p80.c      | 5 +++--
+ drivers/mtd/spi-nor/fsl-quadspi.c | 5 +++--
+ include/linux/mtd/spi-nor.h       | 4 ++--
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
-Thanks
-
-Michal
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index c9c3b7f..6ee3bb3 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -73,7 +73,7 @@ static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	return spi_write(spi, flash->command, len + 1);
+ }
+ 
+-static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
++static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+ 			size_t *retlen, const u_char *buf)
+ {
+ 	struct m25p *flash = nor->priv;
+@@ -101,6 +101,7 @@ static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+ 	spi_sync(spi, &m);
+ 
+ 	*retlen += m.actual_length - cmd_sz;
++	return 0;
+ }
+ 
+ static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+@@ -119,7 +120,7 @@ static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+  * Read an address range from the nor chip.  The address range
+  * may be any size provided it is within the physical boundaries.
+  */
+-static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
++static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 			size_t *retlen, u_char *buf)
+ {
+ 	struct m25p *flash = nor->priv;
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 54640f1..10d2b59 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -822,7 +822,7 @@ static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	return ret;
+ }
+ 
+-static void fsl_qspi_write(struct spi_nor *nor, loff_t to,
++static ssize_t fsl_qspi_write(struct spi_nor *nor, loff_t to,
+ 		size_t len, size_t *retlen, const u_char *buf)
+ {
+ 	struct fsl_qspi *q = nor->priv;
+@@ -832,9 +832,10 @@ static void fsl_qspi_write(struct spi_nor *nor, loff_t to,
+ 
+ 	/* invalid the data in the AHB buffer. */
+ 	fsl_qspi_invalid(q);
++	return 0;
+ }
+ 
+-static int fsl_qspi_read(struct spi_nor *nor, loff_t from,
++static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
+ 		size_t len, size_t *retlen, u_char *buf)
+ {
+ 	struct fsl_qspi *q = nor->priv;
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 7bed974..6080701 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -171,9 +171,9 @@ struct spi_nor {
+ 	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+ 	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+ 
+-	int (*read)(struct spi_nor *nor, loff_t from,
++	ssize_t (*read)(struct spi_nor *nor, loff_t from,
+ 			size_t len, size_t *retlen, u_char *read_buf);
+-	void (*write)(struct spi_nor *nor, loff_t to,
++	ssize_t (*write)(struct spi_nor *nor, loff_t to,
+ 			size_t len, size_t *retlen, const u_char *write_buf);
+ 	int (*erase)(struct spi_nor *nor, loff_t offs);
+ 
+-- 
+2.6.2
