@@ -1,8 +1,8 @@
-Received: from mail-by2on0137.outbound.protection.outlook.com
- ([207.46.100.137] helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-by2on0106.outbound.protection.outlook.com
+ ([207.46.100.106] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4GOA-0008MY-K4
- for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 23:00:45 +0000
+ id 1a4GO7-0008QN-VH
+ for linux-mtd@lists.infradead.org; Wed, 02 Dec 2015 23:00:47 +0000
 From: Han Xu <b45815@freescale.com>
 To: <shijie.huang@arm.com>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
@@ -11,9 +11,9 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <vinod.koul@intel.com>, <dan.j.williams@intel.com>,
  <dmaengine@vger.kernel.org>
-Subject: [PATCH v8 1/7] mtd: nand: gpmi: add gpmi dsm supend/resume support
-Date: Wed, 2 Dec 2015 16:47:40 -0600
-Message-ID: <1449096466-18064-2-git-send-email-b45815@freescale.com>
+Subject: [PATCH v8 6/7] mtd: nand: gpmi: correct bitflip for erased NAND page
+Date: Wed, 2 Dec 2015 16:47:45 -0600
+Message-ID: <1449096466-18064-7-git-send-email-b45815@freescale.com>
 In-Reply-To: <1449096466-18064-1-git-send-email-b45815@freescale.com>
 References: <1449096466-18064-1-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
@@ -27,90 +27,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <b32955@freescale.com>
+i.MX6QP and i.MX7D BCH module integrated a new feature to detect the
+bitflip number for erased NAND page. So for these two platform, set the
+erase threshold to ecc_strength and if bitflip detected, GPMI driver will
+correct the data to all 0xFF.
 
-i.MX6SX supports deep sleep mode(DSM) that may turn off GPMI/BCH power
-during suspend, add gpmi nand suspend/resume function to release DMA
-channel in suspend function and re-init GPMI/BCH controller during
-resume function.
-
-Although it is not necessary to restore GPMI/BCH registers value for
-i.MX6QDL, the code doesn't distinguish different platforms to keep the
-code simple.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Han Xu <han.xu@freescale.com>
+Signed-off-by: Han Xu <b45815@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 47 +++++++++++++++++++++++++++++++++-
- 1 file changed, 46 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  | 10 ++++++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  5 +++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 24 +++++++++++++++++++++++-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  5 ++++-
+ 4 files changed, 42 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+index 53e58bc..a84d72b 100644
+--- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
++++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+@@ -30,7 +30,13 @@
+ #define BM_BCH_CTRL_COMPLETE_IRQ		(1 << 0)
+ 
+ #define HW_BCH_STATUS0				0x00000010
++
+ #define HW_BCH_MODE				0x00000020
++#define BP_BCH_MODE_ERASE_THRESHOLD		0
++#define BM_BCH_MODE_ERASE_THRESHOLD	(0xff << BP_BCH_MODE_ERASE_THRESHOLD)
++#define BF_BCH_MODE_ERASE_THRESHOLD(v)		\
++	(((v) << BP_BCH_MODE_ERASE_THRESHOLD) & BM_BCH_MODE_ERASE_THRESHOLD)
++
+ #define HW_BCH_ENCODEPTR			0x00000030
+ #define HW_BCH_DATAPTR				0x00000040
+ #define HW_BCH_METAPTR				0x00000050
+@@ -125,4 +131,8 @@
+ 	)
+ 
+ #define HW_BCH_VERSION				0x00000160
++#define HW_BCH_DEBUG1				0x00000170
++#define BP_BCH_DEBUG1_ERASED_ZERO_COUNT	0
++#define BM_BCH_DEBUG1_ERASED_ZERO_COUNT		\
++		(0x1ff << BP_BCH_DEBUG1_ERASED_ZERO_COUNT)
+ #endif
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 1f26a79..0548d84 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -298,6 +298,11 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
+ 			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
+ 
++	/* Set erase threshold to ecc_strength for mx6qp and mx7 */
++	if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
++		writel(BF_BCH_MODE_ERASE_THRESHOLD(ecc_strength),
++			r->bch_regs + HW_BCH_MODE);
++
+ 	/* Set *all* chip selects to use layout 0. */
+ 	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
+ 
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 5a9b696..ba5975f 100644
+index 9f67f0f..9dea56e 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1,7 +1,7 @@
- /*
-  * Freescale GPMI NAND Flash Driver
-  *
-- * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
-+ * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
-  * Copyright (C) 2008 Embedded Alley Solutions, Inc.
-  *
-  * This program is free software; you can redistribute it and/or modify
-@@ -2035,9 +2035,54 @@ static int gpmi_nand_remove(struct platform_device *pdev)
- 	return 0;
- }
+@@ -71,6 +71,12 @@ static const struct gpmi_devdata gpmi_devdata_imx6q = {
+ 	.max_chain_delay = 12,
+ };
  
-+#ifdef CONFIG_PM_SLEEP
-+static int gpmi_pm_suspend(struct device *dev)
-+{
-+	struct gpmi_nand_data *this = dev_get_drvdata(dev);
-+
-+	release_dma_channels(this);
-+	return 0;
-+}
-+
-+static int gpmi_pm_resume(struct device *dev)
-+{
-+	struct gpmi_nand_data *this = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = acquire_dma_channels(this);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* re-init the GPMI registers */
-+	this->flags &= ~GPMI_TIMING_INIT_OK;
-+	ret = gpmi_init(this);
-+	if (ret) {
-+		dev_err(this->dev, "Error setting GPMI : %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* re-init the BCH registers */
-+	ret = bch_set_geometry(this);
-+	if (ret) {
-+		dev_err(this->dev, "Error setting BCH : %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* re-init others */
-+	gpmi_extra_init(this);
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static const struct dev_pm_ops gpmi_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(gpmi_pm_suspend, gpmi_pm_resume)
++static const struct gpmi_devdata gpmi_devdata_imx6qp = {
++	.type = IS_MX6QP,
++	.bch_max_ecc_strength = 40,
++	.max_chain_delay = 12,
 +};
 +
- static struct platform_driver gpmi_nand_driver = {
- 	.driver = {
- 		.name = "gpmi-nand",
-+		.pm = &gpmi_pm_ops,
- 		.of_match_table = gpmi_nand_id_table,
- 	},
- 	.probe   = gpmi_nand_probe,
+ static const struct gpmi_devdata gpmi_devdata_imx6sx = {
+ 	.type = IS_MX6SX,
+ 	.bch_max_ecc_strength = 62,
+@@ -1010,6 +1016,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ {
+ 	struct gpmi_nand_data *this = chip->priv;
+ 	struct bch_geometry *nfc_geo = &this->bch_geometry;
++	void __iomem *bch_regs = this->resources.bch_regs;
+ 	void          *payload_virt;
+ 	dma_addr_t    payload_phys;
+ 	void          *auxiliary_virt;
+@@ -1018,6 +1025,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	unsigned char *status;
+ 	unsigned int  max_bitflips = 0;
+ 	int           ret;
++	int flag = 0;
+ 
+ 	dev_dbg(this->dev, "page number is : %d\n", page);
+ 	ret = read_page_prepare(this, buf, nfc_geo->payload_size,
+@@ -1050,9 +1058,16 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+ 
+ 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+-		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
++		if (*status == STATUS_GOOD)
+ 			continue;
+ 
++		if (*status == STATUS_ERASED) {
++			if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
++				if (readl(bch_regs + HW_BCH_DEBUG1))
++					flag = 1;
++			continue;
++		}
++
+ 		if (*status == STATUS_UNCORRECTABLE) {
+ 			mtd->ecc_stats.failed++;
+ 			continue;
+@@ -1081,6 +1096,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 			nfc_geo->payload_size,
+ 			payload_virt, payload_phys);
+ 
++	/* if bitflip occurred in erased page, change data to all 0xff */
++	if (flag)
++		memset(buf, 0xff, nfc_geo->payload_size);
++
+ 	return max_bitflips;
+ }
+ 
+@@ -1990,6 +2009,9 @@ static const struct of_device_id gpmi_nand_id_table[] = {
+ 		.compatible = "fsl,imx6q-gpmi-nand",
+ 		.data = &gpmi_devdata_imx6q,
+ 	}, {
++		.compatible = "fsl,imx6qp-gpmi-nand",
++		.data = (void *)&gpmi_devdata_imx6qp,
++	}, {
+ 		.compatible = "fsl,imx6sx-gpmi-nand",
+ 		.data = &gpmi_devdata_imx6sx,
+ 	}, {
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 58b3d69..149a442 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -123,6 +123,7 @@ enum gpmi_type {
+ 	IS_MX23,
+ 	IS_MX28,
+ 	IS_MX6Q,
++	IS_MX6QP,
+ 	IS_MX6SX,
+ 	IS_MX7D,
+ };
+@@ -306,9 +307,11 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
+ #define GPMI_IS_MX23(x)		((x)->devdata->type == IS_MX23)
+ #define GPMI_IS_MX28(x)		((x)->devdata->type == IS_MX28)
+ #define GPMI_IS_MX6Q(x)		((x)->devdata->type == IS_MX6Q)
++#define GPMI_IS_MX6QP(x)	((x)->devdata->type == IS_MX6QP)
+ #define GPMI_IS_MX6SX(x)	((x)->devdata->type == IS_MX6SX)
+ #define GPMI_IS_MX7D(x)		((x)->devdata->type == IS_MX7D)
+ 
+-#define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
++#define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6QP(x)\
++	   || GPMI_IS_MX6SX(x))
+ #define GPMI_IS_MX7(x)		(GPMI_IS_MX7D(x))
+ #endif
 -- 
 1.9.1
