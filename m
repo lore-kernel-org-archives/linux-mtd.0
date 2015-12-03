@@ -1,23 +1,19 @@
-Subject: Re: [PATCH v4 3/5] mtd: devices: m25p80: add support for mmap read
- request
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Tony Lindgren
- <tony@atomide.com>, Brian Norris <computersforpeace@gmail.com>, Mark Brown
- <broonie@kernel.org>
-References: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
- <1448860515-28336-4-git-send-email-vigneshr@ti.com>
- <56600E7B.8010208@atmel.com>
-CC: <devicetree@vger.kernel.org>, <hramrach@gmail.com>, Russell King
- <linux@arm.linux.org.uk>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, Marek Vasut <marex@denx.de>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <5660263C.8020406@ti.com>
-Date: Thu, 3 Dec 2015 16:53:40 +0530
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4SbF-0006MQ-Fo
+ for linux-mtd@lists.infradead.org; Thu, 03 Dec 2015 12:03:03 +0000
+From: Harvey Hunt <harvey.hunt@imgtec.com>
+To: <linux-mtd@lists.infradead.org>
+CC: Harvey Hunt <harvey.hunt@imgtec.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, "Paul
+ Burton" <paul.burton@imgtec.com>, Zubair Lutfullah Kakakhel
+ <Zubair.Kakakhel@imgtec.com>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mips@linux-mips.org>
+Subject: [PATCH v9 0/3] mtd: nand: jz4780: Add NAND and BCH drivers
+Date: Thu, 3 Dec 2015 12:02:19 +0000
+Message-ID: <1449144142-24004-1-git-send-email-harvey.hunt@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <56600E7B.8010208@atmel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,132 +25,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On 12/03/2015 03:12 PM, Cyrille Pitchen wrote:
-> Hi Vignesh,
-> 
-> Le 30/11/2015 06:15, Vignesh R a écrit :
->> Certain spi controllers may provide accelerated interface to read from
->> m25p80 type flash devices. This interface provides better read
->> performance than regular SPI interface.
->> Call spi_flash_read(), if supported, to make use of such interface.
->>
->> Signed-off-by: Vignesh R <vigneshr@ti.com>
->> ---
->>
->> v4: 
->>  * Use spi_flash_read_message struct to pass args.
->>  * support passing of opcode/addr/data nbits.
->>
->>  drivers/mtd/devices/m25p80.c | 20 ++++++++++++++++++++
->>  1 file changed, 20 insertions(+)
->>
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->> index fe9ceb7b5405..00094a668c62 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -131,6 +131,26 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->>  	/* convert the dummy cycles to the number of bytes */
->>  	dummy /= 8;
->>  
->> +	if (spi_flash_read_supported(spi)) {
->> +		struct spi_flash_read_message msg;
->> +		int ret;
->> +
->> +		msg.buf = buf;
->> +		msg.from = from;
->> +		msg.len = len;
->> +		msg.read_opcode = nor->read_opcode;
->> +		msg.addr_width = nor->addr_width;
->> +		msg.dummy_bytes = dummy;
->> +		/* TODO: Support other combinations */
->> +		msg.opcode_nbits = SPI_NBITS_SINGLE;
->> +		msg.addr_nbits = SPI_NBITS_SINGLE;
->> +		msg.data_nbits = m25p80_rx_nbits(nor);
-> 
-> I wanted to let you know that the support of other SPI protocols has already
-> been implemented by this series:
-> http://lists.infradead.org/pipermail/linux-arm-kernel/2015-September/371170.html
-> 
-> patches 2 & 3 handle the probing of the (Q)SPI memory in spi_nor_scan() and
-> select the right protocols for register read/write, memory read, memory write,
-> and memory erase operations. The choice is done according to both the memory
-> and SPI controller capabilities.
-> 
-> patch 4 updates the m25p80 driver to take advantage of the bandwidth increase
-> allowed by QSPI protocols. For instance, the Atmel QSPI controller, like TI
-> one, maps the SPI NOR memory to the system bus. Yesterday I ran mtd_speedtest
-> to compare Fast Read 1-1-1 (0x0b) and Fast Read 1-1-4 (0x6b). The SPI clock
-> frequency was limited to 83MHz. The QSPI memory is a Micron n25q128a13.
-> 
-> I only had to change the mode argument of spi_nor_scan() from SPI_NOR_QUAD to
-> SPI_NOR_FAST in the atmel_quadspi driver (based on fsl-quadspi driver from
-> Freescale since Atmel's driver also uses the system bus mapping for memory
-> write operations) to force the spi-nor framework to choose the SPI 1-1-1
-> protocol instead of the SPI-1-1-4.
-> 
-> 1 - Fast Read 1-1-1
-> 
-> mtd_speedtest: testing eraseblock write speed
-> mtd_speedtest: eraseblock read speed is 9319 KiB/s
-> [...]
-> mtd_speedtest: testing page read speed
-> mtd_speedtest: page read speed is 6649 KiB/s
-> [...]
-> mtd_speedtest: testing 2 page read speed
-> mtd_speedtest: 2 page read speed is 7757 KiB/s
-> 
-> 2 - Fast Read 1-1-4
-> 
-> mtd_speedtest: testing eraseblock read speed
-> mtd_speedtest: eraseblock read speed is 30117 KiB/s
-> [...]
-> mtd_speedtest: testing page read speed
-> mtd_speedtest: page read speed is 13096 KiB/s
-> [...]
-> mtd_speedtest: testing 2 page read speed
-> mtd_speedtest: 2 page read speed is 18224 KiB/s
-> 
-> So the performance improvements are:
-> eraseblock read speed (65536 bytes) : +223%
-> page read speed (512 bytes)         :  +97%
-> 2 page read speed (1024 bytes)      : +135%
-> 
-> 
-> That's why I believe that you could take advantage of these performance
-> improvements in the TI (Q)SPI controller driver.
-> 
+This series adds support for the BCH controller and NAND devices on
+the Ingenic JZ4780 SoC.
 
-Well, I based my patches on linux-next as per Brian's suggestion. If
-patches to support other flash protocol modes are accepted, I would be
-happy to rebase and make use of other modes. It would just be the matter
-of populating msg.{opcode/addr}_n_bits correctly.
+Tested on the MIPS Creator Ci20 board. All dependencies are now in
+mainline.
 
+This version of the series is based on 4.4-rc3.
 
-> 
-> Also please note that you may have to add in the struct spi_flash_read_message
-> two other fields for the number of option/mode cycles and their value.
-> Option/mode cycles are sent between the address and dummy cycles. They are
-> used by some memory manufacturers such as Spansion, Micron and Macronix to
-> enter/leave their continuous read mode.
-> So if uninitialized dummy cycles are interpreted by the QSPI memory as
-> option/mode cycles, depending on the actual value, the memory may enter by
-> mistake in continuous mode. Once in continuous mode, the command op code byte
-> must not be sent and is not expected by the memory: the memory implicitly uses
-> the read op code sent in the SPI message which triggered the memory to enter
-> continuous read mode. Next SPI messages start from the address cycles until
-> the right option/mode cycles are sent to leave the continuous read mode.
-> 
-> Currently the mtd layer doesn't use this feature but it should be aware of it.
-> That's why I believe we'll have to address this point in spi_nor_scan() and the
-> "regular" m25p80() sooner or later.
-> 
+As suggested by Boris [0], refactoring work has been done to treat NAND
+chips as children nodes of the NAND controller.
 
-Above feature can be added incrementally over this series, (as and when
-m25p80 is updated) moreover ti-qspi controller does not support
-option/mode cycles in memory-mapped mode, so I wont be able to test this
-feature anyway.
+Review and feedback welcome.
 
+Thanks,
+
+Harvey
+
+[0] https://patchwork.ozlabs.org/patch/526818/
+
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org
+Cc: linux-mtd@lists.infradead.org
+
+Alex Smith (3):
+  dt-bindings: binding for jz4780-{nand,bch}
+  mtd: nand: jz4780: driver for NAND devices on JZ4780 SoCs
+  MIPS: dts: jz4780/ci20: Add NEMC, BCH and NAND device tree nodes
+
+ .../bindings/mtd/ingenic,jz4780-nand.txt           |  86 +++++
+ arch/mips/boot/dts/ingenic/ci20.dts                |  63 ++++
+ arch/mips/boot/dts/ingenic/jz4780.dtsi             |  26 ++
+ drivers/mtd/nand/Kconfig                           |   7 +
+ drivers/mtd/nand/Makefile                          |   1 +
+ drivers/mtd/nand/jz4780_bch.c                      | 361 ++++++++++++++++++
+ drivers/mtd/nand/jz4780_bch.h                      |  42 +++
+ drivers/mtd/nand/jz4780_nand.c                     | 420 +++++++++++++++++++++
+ 8 files changed, 1006 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+ create mode 100644 drivers/mtd/nand/jz4780_bch.c
+ create mode 100644 drivers/mtd/nand/jz4780_bch.h
+ create mode 100644 drivers/mtd/nand/jz4780_nand.c
 
 -- 
-Regards
-Vignesh
+2.6.2
