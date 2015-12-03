@@ -1,25 +1,23 @@
-Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+Received: from mail.kernel.org ([198.145.29.136])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4a4w-00033t-4d
- for linux-mtd@lists.infradead.org; Thu, 03 Dec 2015 20:02:11 +0000
-Subject: [PATCH linux-next 3/3] mtd: brcmnand: Add support for the BCM6368
-To: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ id 1a4baI-00013o-TY
+ for linux-mtd@lists.infradead.org; Thu, 03 Dec 2015 21:38:39 +0000
+Date: Thu, 3 Dec 2015 15:38:12 -0600
+From: Rob Herring <robh@kernel.org>
+To: Harvey Hunt <harvey.hunt@imgtec.com>
+Cc: linux-mtd@lists.infradead.org, Alex Smith <alex.smith@imgtec.com>,
+ Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-References: <56609F09.7020607@simon.arlott.org.uk>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Florian Fainelli <f.fainelli@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
-From: Simon Arlott <simon@fire.lp0.eu>
-Message-ID: <56609FA3.5030505@simon.arlott.org.uk>
-Date: Thu, 3 Dec 2015 20:01:39 +0000
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 1/3] dt-bindings: binding for jz4780-{nand,bch}
+Message-ID: <20151203213812.GA32235@rob-hp-laptop>
+References: <1449144142-24004-1-git-send-email-harvey.hunt@imgtec.com>
+ <1449144142-24004-2-git-send-email-harvey.hunt@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <56609F09.7020607@simon.arlott.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1449144142-24004-2-git-send-email-harvey.hunt@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,187 +27,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BCM6368 has a NAND interrupt register with combined status and enable
-registers.
+On Thu, Dec 03, 2015 at 12:02:20PM +0000, Harvey Hunt wrote:
+> From: Alex Smith <alex.smith@imgtec.com>
+> 
+> Add DT bindings for NAND devices connected to the NEMC on JZ4780 SoCs,
+> as well as the hardware BCH controller, used by the jz4780_{nand,bch}
+> drivers.
+> 
+> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+> Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
+> ---
+> v8 -> v9:
+>  - Document that partitions are represented as a child node of a NAND chip.
 
-As the BCM6328, BCM6362 and BCM6368 all use v2.1 controllers, the first
-variant that will work with this driver is the BCM63268 using a v4.0
-controller.
+Don't multiple flash chips typically get interleaved in order to get 
+parallelism needed for performance? Then the view of the partitions 
+would apply across all chips. Anyway, it's optional, so:
 
-Set up the device by disabling and acking all interrupts, then handle
-the CTRL_READY interrupt.
+Acked-by: Rob Herring <robh@kernel.org>
 
-Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
----
- drivers/mtd/nand/brcmnand/Makefile       |   1 +
- drivers/mtd/nand/brcmnand/bcm6368_nand.c | 145 +++++++++++++++++++++++++++++++
- 2 files changed, 146 insertions(+)
- create mode 100644 drivers/mtd/nand/brcmnand/bcm6368_nand.c
-
-diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
-index 3b1fbfd..b28ffb59 100644
---- a/drivers/mtd/nand/brcmnand/Makefile
-+++ b/drivers/mtd/nand/brcmnand/Makefile
-@@ -2,5 +2,6 @@
- # more specific iproc_nand.o, for instance
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
-+obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm6368_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
-diff --git a/drivers/mtd/nand/brcmnand/bcm6368_nand.c b/drivers/mtd/nand/brcmnand/bcm6368_nand.c
-new file mode 100644
-index 0000000..c347ea5
---- /dev/null
-+++ b/drivers/mtd/nand/brcmnand/bcm6368_nand.c
-@@ -0,0 +1,145 @@
-+/*
-+ * Copyright 2015 Simon Arlott
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-+ * GNU General Public License for more details.
-+ *
-+ * Derived from bcm63138_nand.c:
-+ * Copyright © 2015 Broadcom Corporation
-+ *
-+ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/include/bcm963xx/63268_map_part.h:
-+ * Copyright 2000-2010 Broadcom Corporation
-+ *
-+ * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/flash/nandflash.c:
-+ * Copyright 2000-2010 Broadcom Corporation
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include "brcmnand.h"
-+
-+struct bcm6368_nand_soc {
-+	struct brcmnand_soc soc;
-+	void __iomem *base;
-+};
-+
-+#define BCM6368_NAND_INT		0x00
-+#define  BCM6368_NAND_STATUS_SHIFT	0
-+#define  BCM6368_NAND_STATUS_MASK	(0xfff << BCM6368_NAND_STATUS_SHIFT)
-+#define  BCM6368_NAND_ENABLE_SHIFT	16
-+#define  BCM6368_NAND_ENABLE_MASK	(0xffff << BCM6368_NAND_ENABLE_SHIFT)
-+#define BCM6368_NAND_BASE_ADDR0	0x04
-+#define BCM6368_NAND_BASE_ADDR1	0x0c
-+
-+enum {
-+	BCM6368_NP_READ		= BIT(0),
-+	BCM6368_BLOCK_ERASE	= BIT(1),
-+	BCM6368_COPY_BACK	= BIT(2),
-+	BCM6368_PAGE_PGM	= BIT(3),
-+	BCM6368_CTRL_READY	= BIT(4),
-+	BCM6368_DEV_RBPIN	= BIT(5),
-+	BCM6368_ECC_ERR_UNC	= BIT(6),
-+	BCM6368_ECC_ERR_CORR	= BIT(7),
-+};
-+
-+static bool bcm6368_nand_intc_ack(struct brcmnand_soc *soc)
-+{
-+	struct bcm6368_nand_soc *priv =
-+			container_of(soc, struct bcm6368_nand_soc, soc);
-+	void __iomem *mmio = priv->base + BCM6368_NAND_INT;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	if (val & (BCM6368_CTRL_READY << BCM6368_NAND_STATUS_SHIFT)) {
-+		/* Ack interrupt */
-+		val &= ~BCM6368_NAND_STATUS_MASK;
-+		val |= BCM6368_CTRL_READY << BCM6368_NAND_STATUS_SHIFT;
-+		brcmnand_writel(val, mmio);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static void bcm6368_nand_intc_set(struct brcmnand_soc *soc, bool en)
-+{
-+	struct bcm6368_nand_soc *priv =
-+			container_of(soc, struct bcm6368_nand_soc, soc);
-+	void __iomem *mmio = priv->base + BCM6368_NAND_INT;
-+	u32 val = brcmnand_readl(mmio);
-+
-+	/* Don't ack any interrupts */
-+	val &= ~BCM6368_NAND_STATUS_MASK;
-+
-+	if (en)
-+		val |= BCM6368_CTRL_READY << BCM6368_NAND_ENABLE_SHIFT;
-+	else
-+		val &= ~(BCM6368_CTRL_READY << BCM6368_NAND_ENABLE_SHIFT);
-+
-+	brcmnand_writel(val, mmio);
-+}
-+
-+static int bcm6368_nand_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct bcm6368_nand_soc *priv;
-+	struct brcmnand_soc *soc;
-+	struct resource *res;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+	soc = &priv->soc;
-+
-+	res = platform_get_resource_byname(pdev,
-+		IORESOURCE_MEM, "nand-intr-base");
-+	if (!res)
-+		return -EINVAL;
-+
-+	priv->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	soc->ctlrdy_ack = bcm6368_nand_intc_ack;
-+	soc->ctlrdy_set_enabled = bcm6368_nand_intc_set;
-+
-+	/* Disable and ack all interrupts  */
-+	brcmnand_writel(0, priv->base + BCM6368_NAND_INT);
-+	brcmnand_writel(BCM6368_NAND_STATUS_MASK,
-+			priv->base + BCM6368_NAND_INT);
-+
-+	return brcmnand_probe(pdev, soc);
-+}
-+
-+static const struct of_device_id bcm6368_nand_of_match[] = {
-+	{ .compatible = "brcm,nand-bcm6368" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, bcm6368_nand_of_match);
-+
-+static struct platform_driver bcm6368_nand_driver = {
-+	.probe			= bcm6368_nand_probe,
-+	.remove			= brcmnand_remove,
-+	.driver = {
-+		.name		= "bcm6368_nand",
-+		.pm		= &brcmnand_pm_ops,
-+		.of_match_table	= bcm6368_nand_of_match,
-+	}
-+};
-+module_platform_driver(bcm6368_nand_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Simon Arlott");
-+MODULE_DESCRIPTION("NAND driver for BCM6368");
--- 
-2.1.4
-
--- 
-Simon Arlott
+> v7 -> v8:
+>  - Describe how NAND chips are now child nodes of the NAND controller.
+> 
+> v6 -> v7:
+>  - Add nand-ecc-mode to DT bindings.
+>  - Add nand-on-flash-bbt to DT bindings.
+> 
+> v5 -> v6:
+>  - No change.
+> 
+> v4 -> v5:
+>  - Rename ingenic,bch-device to ingenic,bch-controller to fit with
+>    existing convention.
+> 
+> v3 -> v4:
+>  - No change
+> 
+> v2 -> v3:
+>  - Rebase to 4.0-rc6
+>  - Changed ingenic,ecc-size to common nand-ecc-step-size
+>  - Changed ingenic,ecc-strength to common nand-ecc-strength
+>  - Changed ingenic,busy-gpio to common rb-gpios
+>  - Changed ingenic,wp-gpio to common wp-gpios
+> 
+> v1 -> v2:
+>  - Rebase to 4.0-rc3
+> 
+>  .../bindings/mtd/ingenic,jz4780-nand.txt           | 86 ++++++++++++++++++++++
+>  1 file changed, 86 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+> new file mode 100644
+> index 0000000..29ea585
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt
+> @@ -0,0 +1,86 @@
+> +* Ingenic JZ4780 NAND/BCH
+> +
+> +This file documents the device tree bindings for NAND flash devices on the
+> +JZ4780. NAND devices are connected to the NEMC controller (described in
+> +memory-controllers/ingenic,jz4780-nemc.txt), and thus NAND device nodes must
+> +be children of the NEMC node.
+> +
+> +Required NAND controller device properties:
+> +- compatible: Should be set to "ingenic,jz4780-nand".
+> +- reg: For each bank with a NAND chip attached, should specify a bank number,
+> +  an offset of 0 and a size of 0x1000000 (i.e. the whole NEMC bank).
+> +
+> +Optional NAND controller device properties:
+> +- ingenic,bch-controller: To make use of the hardware BCH controller, this
+> +  property must contain a phandle for the BCH controller node. The required
+> +  properties for this node are described below. If this is not specified,
+> +  software BCH will be used instead.
+> +
+> +Optional children nodes:
+> +- Individual NAND chips are children of the NAND controller node.
+> +
+> +Required children node properties:
+> +- reg: An integer ranging from 1 to 6 representing the CS line to use.
+> +
+> +Optional children node properties:
+> +- nand-ecc-step-size: ECC block size in bytes.
+> +- nand-ecc-strength: ECC strength (max number of correctable bits).
+> +- nand-ecc-mode: String, operation mode of the NAND ecc mode. "hw" by default
+> +- nand-on-flash-bbt: boolean to enable on flash bbt option, if not present false
+> +- rb-gpios: GPIO specifier for the busy pin.
+> +- wp-gpios: GPIO specifier for the write protect pin.
+> +
+> +Optional child node of NAND chip nodes:
+> +- partitions: see Documentation/devicetree/bindings/mtd/partition.txt
+> +
+> +Example:
+> +
+> +nemc: nemc@13410000 {
+> +	...
+> +
+> +	nandc: nand-controller@1 {
+> +		compatible = "ingenic,jz4780-nand";
+> +		reg = <1 0 0x1000000>;	/* Bank 1 */
+> +
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		ingenic,bch-controller = <&bch>;
+> +
+> +		nand@1 {
+> +			reg = <1>;
+> +
+> +			nand-ecc-step-size = <1024>;
+> +			nand-ecc-strength = <24>;
+> +			nand-ecc-mode = "hw";
+> +			nand-on-flash-bbt;
+> +
+> +			rb-gpios = <&gpa 20 GPIO_ACTIVE_LOW>;
+> +			wp-gpios = <&gpf 22 GPIO_ACTIVE_LOW>;
+> +
+> +			partitions {
+> +				#address-cells = <2>;
+> +				#size-cells = <2>;
+> +				...
+> +			}
+> +		};
+> +	};
+> +};
+> +
+> +The BCH controller is a separate SoC component used for error correction on
+> +NAND devices. The following is a description of the device properties for a
+> +BCH controller.
+> +
+> +Required BCH properties:
+> +- compatible: Should be set to "ingenic,jz4780-bch".
+> +- reg: Should specify the BCH controller registers location and length.
+> +- clocks: Clock for the BCH controller.
+> +
+> +Example:
+> +
+> +bch: bch@134d0000 {
+> +	compatible = "ingenic,jz4780-bch";
+> +	reg = <0x134d0000 0x10000>;
+> +
+> +	clocks = <&cgu JZ4780_CLK_BCH>;
+> +};
+> -- 
+> 2.6.2
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
