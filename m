@@ -1,27 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4PSu-0006tk-UQ
- for linux-mtd@lists.infradead.org; Thu, 03 Dec 2015 08:42:14 +0000
-Date: Thu, 3 Dec 2015 09:41:46 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Roger Quadros <rogerq@ti.com>, tony@atomide.com, dwmw2@infradead.org,
- ezequiel@vanguardiasur.com.ar, javier@dowhile0.org, fcooper@ti.com,
- nsekhar@ti.com, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Alex Smith
- <alex.smith@imgtec.com>, Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: Re: [PATCH v3 18/27] mtd: nand: omap2: Implement NAND ready using
- gpiolib
-Message-ID: <20151203094146.41eba882@bbrezillon>
-In-Reply-To: <20151203044544.GC120110@google.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4Pma-0003kw-0o
+ for linux-mtd@lists.infradead.org; Thu, 03 Dec 2015 09:02:32 +0000
+Subject: Re: [PATCH v3 00/27] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+To: Brian Norris <computersforpeace@gmail.com>, <tony@atomide.com>
 References: <1442588029-13769-1-git-send-email-rogerq@ti.com>
- <1442588029-13769-19-git-send-email-rogerq@ti.com>
- <20151026204900.GI13239@google.com>
- <20151027092832.4d7bb114@bbrezillon>
- <20151203044544.GC120110@google.com>
+ <20151203050905.GE120110@google.com> <565FDC4E.4000200@ti.com>
+ <20151203062206.GB16368@brian-ubuntu>
+CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <javier@dowhile0.org>, <fcooper@ti.com>, <nsekhar@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <566004F1.2040806@ti.com>
+Date: Thu, 3 Dec 2015 14:31:37 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20151203062206.GB16368@brian-ubuntu>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,115 +28,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-On Wed, 2 Dec 2015 20:45:44 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> (to be clear, this branch of discussion isn't directly regarding the TI
-> changes; we can handle any generic handling afterward, as long as we get
-> the DT binding right now)
+On 03/12/15 11:52, Brian Norris wrote:
+> Hi,
 > 
-> On Tue, Oct 27, 2015 at 09:28:32AM +0100, Boris Brezillon wrote:
-> > On Mon, 26 Oct 2015 13:49:00 -0700
-> > Brian Norris <computersforpeace@gmail.com> wrote:
-> > > On Fri, Sep 18, 2015 at 05:53:40PM +0300, Roger Quadros wrote:
-> > > > @@ -1782,7 +1780,9 @@ static int omap_nand_probe(struct platform_device *pdev)
-> > > >  		info->reg = pdata->reg;
-> > > >  		info->of_node = pdata->of_node;
-> > > >  		info->ecc_opt = pdata->ecc_opt;
-> > > > -		info->dev_ready	= pdata->dev_ready;
-> > > > +		if (pdata->dev_ready)
-> > > > +			dev_info(&pdev->dev, "pdata->dev_ready is deprecated\n");
-> > > > +
-> > > >  		info->xfer_type = pdata->xfer_type;
-> > > >  		info->devsize = pdata->devsize;
-> > > >  		info->elm_of_node = pdata->elm_of_node;
-> > > > @@ -1815,6 +1815,13 @@ static int omap_nand_probe(struct platform_device *pdev)
-> > > >  	nand_chip->IO_ADDR_W = nand_chip->IO_ADDR_R;
-> > > >  	nand_chip->cmd_ctrl  = omap_hwcontrol;
-> > > >  
-> > > > +	info->ready_gpiod = devm_gpiod_get_optional(&pdev->dev, "ready",
-> > > > +						    GPIOD_IN);
-> > > 
-> > > Others have been looking at using GPIOs for the ready/busy pin too. At a
-> > > minimum, we need an updated DT binding doc for this, since I see you're
-> > > adding this via device tree in a later patch (I don't see any DT binding
-> > > patch for this; but I could just be overlooking it). It'd also be great
-> > > if this support was moved to nand_dt_init() so other platforms can
-> > > benefit, but I won't require that.
-> > 
-> > Actually I started to work on a generic solution parsing the DT and
-> > creating CS, WP and RB gpios when they are provided, but I think it's a
-> > bit more complicated than just moving the rb-gpios parsing into
-> > nand_dt_init().
-> > First you'll need something to store your gpio_desc pointers, which
-> > means you'll have to allocate a table of gpio_desc pointers (or a table
-> > of struct embedding a gpio_desc pointer).
+> On Thu, Dec 03, 2015 at 11:38:14AM +0530, Roger Quadros wrote:
+>> On 03/12/15 10:39, Brian Norris wrote:
+>>> On Fri, Sep 18, 2015 at 05:53:22PM +0300, Roger Quadros wrote:
+>>>> We do a couple of things in this series which result in
+>>>> cleaner device tree implementation, faster perfomance and
+>>>> multi-platform support. As an added bonus we get new GPI/Interrupt pins
+>>>> for use in the system.
+>>>>
+>>>> - Establish a custom interface between NAND and GPMC driver. This is
+>>>> needed because all of the NAND registers sit in the GPMC register space.
+>>>> Some bits like NAND IRQ are even shared with GPMC.
+>>>>
+>>>> - Remove NAND IRQ handling from omap-gpmc driver, share the GPMC IRQ
+>>>> with the omap2-nand driver and handle NAND IRQ events in the NAND driver.
+>>>> This causes performance increase when using prefetch-irq mode.
+>>>> 30% increase in read, 17% increase in write in prefetch-irq mode.
+>>>>
+>>>> - Clean up device tree support so that omap-gpmc IP and the omap2 NAND
+>>>> driver can be used on non-OMAP platforms. e.g. Keystone.
+>>>>
+>>>> - Implement GPIOCHIP + IRQCHIP for the GPMC WAITPINS. SoCs can contain
+>>>> 2 to 4 of these and most of them would be unused otherwise. It also
+>>>> allows a cleaner implementation of NAND Ready pin status for the NAND driver.
+>>>>
+>>>> - Implement GPIOlib based NAND ready pin checking for OMAP NAND driver.
+>>>>
+>>>> This series is available at
+>>>> git@github.com:rogerq/linux.git
+>>>> in branch
+>>>> for-v4.4/gpmc-v3
+>>>>
+>>>> cheers,
+>>>> -roger
+>>>>
+>>>> Changelog:
+>>>> v3:
+>>>> -Fixed and tested NAND using legacy boot on omap3-beagle.
+>>>> -Support rising and falling edge interrupts on WAITpins.
+>>>> -Update DT node of all gpmc users.
+>>>
+>>> The MTD stuff looks mostly good to me know. I've made all my comments
+>>> for now, but I'm not sure how you're going to end up rebasing/splitting
+>>> and what you're going to do with the irqchip removal, so I'll refrain
+>>> from ack's for now. Hopefully I can either ack or merge v4.
+>>
+>> I'll retain the irqchip model for now and send a v4 with all comments
+>> addressed and better subsystem wise patch split.
+>>
+>>>
+>>> I brought it up on one other patch, but it's not really clear to me what
+>>> the split is on board file vs. device tree handling, since you seem to
+>>> have a combination of both (i.e., platform data that passes along device
+>>> nodes). What's the plan on that?
+>>
+>> Platform data no longer passes device nodes. We're either true device tree
+>> or plain legacy. The deprecated fields are no longer used once the series is
+>> applied.
 > 
-> I'm not sure what you mean by table. It seems like we would just have a
-> few gpio_desc pointers in struct nand_chip, no?
-
-Nope, because a single nand_chip can use several CS and R/B lines,
-hence the gpio_desc array.
-
+> Well, they're still sorta used (you assign info->of_node =
+> pdata->of_node, for instance). As dicussed in the other thread, I think
+> we can avoid the deprecation part and just kill the fields though, and
+> that would make things clearer.
 > 
-> > The other blocking point is that when nand_scan_ident() is called, the
-> > caller is supposed to have filled the ->dev_ready() or ->waitfunc()
-> > fields, and to choose how to implement it he may need to know
-> > which kind of RB handler should be used (this is the case in the sunxi
-> > driver, where the user can either use a GPIO or native R/B pin directly
-> > connected to the controller).
+>>> And of course, there's the question of how exactly to merge this, given
+>>> the:
+>>> (1) conflicts already existing in the MTD dev tree
+>>
+>> I'll rebase the series on top of MTD dev tree.
 > 
-> Right, I was thinking about this one.
+> OK. FWIW, we so far only need to base them on commit a61ae81a1907 ("mtd:
+> nand: drop unnecessary partition parser data"). Maybe when queueing up a
+> branch, that'd be the best starting point for Tony, so he doesn't need
+> to have all of MTD's stuff in his tree too? I can set up a signed tag or
+> something, if that would be helpful.
 > 
-> > All this makes me think that maybe nand_dt_init() should be called
-> > separately or in a different helper (nand_init() ?) taking care of the
-> > basic nand_chip initializations/allocations without interacting with
-> > the NAND itself.
+> But for sending patches, the latest l2-mtd.git is fine too.
 > 
-> Yeah, I feel like there have been other good reasons for something like
-> this before, and we just have worked around them so far. Maybe something
-> more like the alloc/add split in many other subsystems? e.g.,
-> platform_device_{alloc,add}, spi_{alloc,add}_device. Now we might want
-> nand_alloc()?
+>>> (2) this touches several trees, often in the same patch and
+>>
+>> I'll try my best to split the patches but not sure if this could be 100%
+>> clean split without functional breakage.
+>>
+>>> (3) even if the patches were split out a little better into MTD and
+>>>     non-MTD stuff, I think there would still be dependencies such that
+>>>     we'd need at least 1 (probably 2) cross merges to get it all
+>>>     straight
+>>
+>> That is correct.
+>> Is it OK if functionality breaks if for example only MTD changes are considered?
 > 
-> On a slight tangent, it seems silly that nand_scan_tail() doesn't
-> register the MTD, but nand_release() unregisters it. That shouldn't be.
-
-Yep, that's one of the things we should address too.
-
+> I think I may have misunderstood the branch proposal. If Tony queues up:
 > 
-> > Another solution would be to add an ->init() function to nand_chip
-> > and call it after the generic initialization has been done (but before
-> > NAND chip detection). This way the NAND controller driver could adapt
-> > some fields and parse controller specific properties.
+>   l2-mtd.git (or just up to commit a61ae81a1907)
+>   +
+>   your patches
 > 
-> That could work too, I guess.
+> and I pull that back into l2-mtd.git as well, then we don't need to
+> worry about patches that touch multiple "trees". Just do whatever makes
+> things clearest, including disregarding some of my comments along the
+> line of (3).
 
-Hm, all these suggestions have been made before I started my
-nand_controller/nand_chip separation work, and I think we can get
-something way simpler if we switch to a model where the core
-implements most of the initialization steps (including parsing of
-generic DT properties) and ask the controller to do its specific
-initialization (as is done in the SPI subsystem for example).
+Tony,
 
-If you want to have an idea of where I'm heading to, you can have a
-look at the last commits in this branch [1]. The generic DT parsing is
-not yet automated but it could easily be places here [2], so that when
-controller->ops->add() is called everything is in place and the driver
-can overload the default behavior with its own implementation.
+Are you fine with this?
 
-Any objection to this approach?
-
-Best Regards,
-
-Boris
-
-[1]https://github.com/bbrezillon/linux-sunxi/commits/nand/layering-rework
-[2]https://github.com/bbrezillon/linux-sunxi/blob/nand/layering-rework/drivers/mtd/nand/nand_base.c#L4025
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+cheers,
+-roger
