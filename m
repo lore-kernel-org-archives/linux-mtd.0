@@ -1,22 +1,37 @@
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4sjn-0001qH-DC
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 15:57:36 +0000
-Date: Fri, 4 Dec 2015 09:57:10 -0600
-From: Rob Herring <robh@kernel.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Simon Arlott <simon@fire.lp0.eu>, Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH for-4.4 2/2] doc: dt: mtd: partitions: add compatible
- property to "partitions" node
-Message-ID: <20151204155710.GA29035@rob-hp-laptop>
-References: <1449194529-145705-1-git-send-email-computersforpeace@gmail.com>
- <1449194529-145705-2-git-send-email-computersforpeace@gmail.com>
+Received: from arrakis.dune.hu ([78.24.191.176])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4sr7-0004Ab-7x
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 16:05:10 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by arrakis.dune.hu (Postfix) with ESMTP id 2A9E028A22C
+ for <linux-mtd@lists.infradead.org>; Fri,  4 Dec 2015 17:04:35 +0100 (CET)
+Received: from mail-lb0-f180.google.com (mail-lb0-f180.google.com
+ [209.85.217.180])
+ by arrakis.dune.hu (Postfix) with ESMTPSA id 07A5C28BCA9
+ for <linux-mtd@lists.infradead.org>; Fri,  4 Dec 2015 17:04:20 +0100 (CET)
+Received: by lbbed20 with SMTP id ed20so8747484lbb.2
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 08:04:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1449194529-145705-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <565F81A6.6060307@simon.arlott.org.uk>
+References: <565F81A6.6060307@simon.arlott.org.uk>
+From: Jonas Gorski <jogo@openwrt.org>
+Date: Fri, 4 Dec 2015 17:04:06 +0100
+Message-ID: <CAOiHx=kLrJPfvQUjNiEmvAMVj8v37RMFqaMp=tqzAVe22q+9fQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mtd: brcmnand: Add brcm,
+ bcm6368-nand device tree binding
+To: Simon Arlott <simon@fire.lp0.eu>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,122 +41,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 03, 2015 at 06:02:09PM -0800, Brian Norris wrote:
-> As noted here [1], there are potentially future conflicts if we try to
-> use MTD's "partitions" subnode to describe anything besides just the
-> fixed-in-the-device-tree partitions currently described in this
-> document. Particularly, there was a proposal to use this node for the
-> AFS parser too.
-> 
-> It can pose a (small) problem to try to differentiate the following
-> nodes:
-> 
-> 	// using binding as currently specified
-> 	partitions {
-> 		#address-cells = <x>;
-> 		#size-cells = <y>;
-> 		partition@0 {
-> 			...;
-> 		};
-> 	};
-> 
-> and
-> 
-> 	// proposed future binding
-> 	partitions {
-> 		compatible = "arm,arm-flash-structure";
-> 	};
-> 
-> It's especially difficult if other uses of this node start having
-> subnodes.
-> 
-> So, since the "partitions" node is new in v4.4, let's fixup the binding
-> before release so that it requires a compatible property, so it's much
-> clearer to distinguish. e.g.:
-> 
-> 	// proposed
-> 	partitions {
-> 		compatible = "partitions";
-> 		#address-cells = <x>;
-> 		#size-cells = <y>;
-> 		partition@0 {
-> 			...;
-> 		};
-> 	};
-> 
-> [1] Subject: "mtd: create a partition type device tree binding"
->     http://lkml.kernel.org/g/20151113220039.GA74382@google.com
->     http://lists.infradead.org/pipermail/linux-mtd/2015-November/063355.html
->     http://lists.infradead.org/pipermail/linux-mtd/2015-November/063364.html
-> 
-> Cc: Michal Suchanek <hramrach@gmail.com>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+On Thu, Dec 3, 2015 at 12:41 AM, Simon Arlott <simon@fire.lp0.eu> wrote:
+> Add device tree binding for NAND on the BCM6368.
+>
+> The BCM6368 has a NAND interrupt register with combined status and enable
+> registers. It also requires a clock, so add an optional clock to the
+> common brcmnand binding.
+>
+> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
 > ---
-> This one is more of a future proofing patch. We should probably take this for
-> 4.4, before the binding "stabilizes" (I don't actually see any users yet), or
-> else we'll have to find some other (possibly more complicated) way to avoid
-> this potential collision on future development.
+> Renamed from BCM63268, made clock a generic property.
+>
+>  .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 32 ++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> index 4ff7128..16d7835 100644
+> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> @@ -45,6 +45,8 @@ Required properties:
+>  - #size-cells      : <0>
+>
+>  Optional properties:
+> +- clock                     : reference to the clock for the NAND controller
+> +- clock-names               : "nand" (required for the above clock)
+>  - brcm,nand-has-wp          : Some versions of this IP include a write-protect
+>                                (WP) control bit. It is always available on >=
+>                                v7.0. Use this property to describe the rare
+> @@ -72,6 +74,12 @@ we define additional 'compatible' properties and associated register resources w
+>         and enable registers
+>       - reg-names: (required) "nand-int-base"
+>
+> +   * "brcm,nand-bcm6368"
+> +     - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm6368"
+> +     - reg: (required) the 'NAND_INTR_BASE' register range, with combined status
+> +       and enable registers, and boot address registers
+> +     - reg-names: (required) "nand-intr-base"
 
-Acked-by: Rob Herring <robh@kernel.org>
+Can't we use the same name as bcm63138, i.e. nand-int-base?
 
-> 
->  Documentation/devicetree/bindings/mtd/partition.txt | 7 ++++++-
->  drivers/mtd/ofpart.c                                | 3 +++
->  2 files changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-> index f1e2a02381a4..047e80575881 100644
-> --- a/Documentation/devicetree/bindings/mtd/partition.txt
-> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
-> @@ -6,7 +6,9 @@ used for what purposes, but which don't use an on-flash partition table such
->  as RedBoot.
->  
->  The partition table should be a subnode of the mtd node and should be named
-> -'partitions'. Partitions are defined in subnodes of the partitions node.
-> +'partitions'. This node should have the following property:
-> +- compatible : (required) must be "partitions"
-> +Partitions are then defined in subnodes of the partitions node.
->  
->  For backwards compatibility partitions as direct subnodes of the mtd device are
->  supported. This use is discouraged.
-> @@ -36,6 +38,7 @@ Examples:
->  
->  flash@0 {
->  	partitions {
-> +		compatible = "partitions";
->  		#address-cells = <1>;
->  		#size-cells = <1>;
->  
-> @@ -53,6 +56,7 @@ flash@0 {
->  
->  flash@1 {
->  	partitions {
-> +		compatible = "partitions";
->  		#address-cells = <1>;
->  		#size-cells = <2>;
->  
-> @@ -66,6 +70,7 @@ flash@1 {
->  
->  flash@2 {
->  	partitions {
-> +		compatible = "partitions";
->  		#address-cells = <2>;
->  		#size-cells = <2>;
->  
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index 3e9c5857c991..23cd809fad4c 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -55,6 +55,9 @@ static int parse_ofpart_partitions(struct mtd_info *master,
->  			 master->name, mtd_node->full_name);
->  		ofpart_node = mtd_node;
->  		dedicated = false;
-> +	} else if (!of_device_is_compatible(ofpart_node, "partitions")) {
-> +		/* The 'partitions' subnode might be used by another parser */
-> +		return 0;
->  	}
->  
->  	/* First count the subnodes */
-> -- 
-> 2.6.0.rc2.230.g3dd15c0
-> 
+> +
+>     * "brcm,nand-iproc"
+>       - reg: (required) the "IDM" register range, for interrupt enable and APB
+>         bus access endianness configuration, and the "EXT" register range,
+> @@ -148,3 +156,27 @@ nand@f0442800 {
+>                 };
+>         };
+>  };
+> +
+> +nand@10000200 {
+> +       compatible = "brcm,nand-bcm63168", "brcm,nand-bcm6368",
+> +               "brcm,brcmnand-v4.0", "brcm,brcmnand";
+
+I know it's now much too late, but this is IMHO a very odd way of
+defining that this is a v4 nand, but uses bcm6368 compatible
+interrupts, as bcm6368 is a much older, unsupported nand revision.
+
+
+Jonas
