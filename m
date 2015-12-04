@@ -1,14 +1,16 @@
-Received: from h2.hallyn.com ([78.46.35.8])
+Received: from mail-io0-x233.google.com ([2607:f8b0:4001:c06::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4we6-0001F2-A2
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 20:07:59 +0000
-Date: Fri, 4 Dec 2015 14:07:36 -0600
-From: "Serge E. Hallyn" <serge@hallyn.com>
-To: Theodore Ts'o <tytso@mit.edu>, "Serge E. Hallyn" <serge@hallyn.com>,
- Seth Forshee <seth.forshee@canonical.com>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
+ id 1a4x7V-00083S-2d
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 20:38:21 +0000
+Received: by iouu10 with SMTP id u10so130935388iou.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 12:38:00 -0800 (PST)
+Date: Fri, 4 Dec 2015 14:36:27 -0600
+From: Seth Forshee <seth.forshee@canonical.com>
+To: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
  Serge Hallyn <serge.hallyn@canonical.com>,
+ James Morris <james.l.morris@oracle.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
  Richard Weinberger <richard.weinberger@gmail.com>,
  Austin S Hemmelgarn <ahferroin7@gmail.com>,
  Miklos Szeredi <miklos@szeredi.hu>, linux-bcache@vger.kernel.org,
@@ -16,17 +18,16 @@ To: Theodore Ts'o <tytso@mit.edu>, "Serge E. Hallyn" <serge@hallyn.com>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
-Subject: Re: [PATCH 14/19] fs: Permit FIBMAP for users with CAP_SYS_RAWIO in
- s_user_ns
-Message-ID: <20151204200736.GJ3624@mail.hallyn.com>
+Subject: Re: [PATCH 15/19] capabilities: Allow privileged user in s_user_ns
+ to set file caps
+Message-ID: <20151204203627.GD147214@ubuntu-hedt>
 References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
- <1449070821-73820-15-git-send-email-seth.forshee@canonical.com>
- <20151204191143.GE3624@mail.hallyn.com>
- <20151204200528.GC18359@thunk.org>
+ <1449070821-73820-16-git-send-email-seth.forshee@canonical.com>
+ <20151204194206.GF3624@mail.hallyn.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20151204200528.GC18359@thunk.org>
+In-Reply-To: <20151204194206.GF3624@mail.hallyn.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,55 +37,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Heh, I was looking over http://www.gossamer-threads.com/lists/linux/kernel/103611
-a little while ago :)  The same question was asked 16 years ago.  Apparently
-the answer then was that it was easier than fixing the code.
+On Fri, Dec 04, 2015 at 01:42:06PM -0600, Serge E. Hallyn wrote:
+> Quoting Seth Forshee (seth.forshee@canonical.com):
+> > A privileged user in a super block's s_user_ns is privileged
+> > towards that file system and thus should be allowed to set file
+> > capabilities. The file capabilities will not be trusted outside
+> > of s_user_ns, so an unprivileged user cannot use this to gain
+> > privileges in a user namespace where they are not already
+> > privileged.
+> > 
+> > Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+> > ---
+> >  security/commoncap.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/security/commoncap.c b/security/commoncap.c
+> > index 2119421613f6..d6c80c19c449 100644
+> > --- a/security/commoncap.c
+> > +++ b/security/commoncap.c
+> > @@ -653,15 +653,17 @@ int cap_bprm_secureexec(struct linux_binprm *bprm)
+> >  int cap_inode_setxattr(struct dentry *dentry, const char *name,
+> >  		       const void *value, size_t size, int flags)
+> >  {
+> > +	struct user_namespace *user_ns = dentry->d_sb->s_user_ns;
+> > +
+> >  	if (!strcmp(name, XATTR_NAME_CAPS)) {
+> > -		if (!capable(CAP_SETFCAP))
+> > +		if (!ns_capable(user_ns, CAP_SETFCAP))
+> >  			return -EPERM;
+> 
+> This, for file capabilities, is fine,
+> 
+> >  		return 0;
+> >  	}
+> >  
+> >  	if (!strncmp(name, XATTR_SECURITY_PREFIX,
+> >  		     sizeof(XATTR_SECURITY_PREFIX) - 1) &&
+> > -	    !capable(CAP_SYS_ADMIN))
+> > +	    !ns_capable(user_ns, CAP_SYS_ADMIN))
+> 
+> but this is for all other security.*.
+> 
+> It's probably still ok, but let's think about it a sec.  MAC like
+> selinux or smack should be orthogonal to DAC.  Capabilities are the
+> same in essence, but the reason they can be treated differently here
+> is because capabilties are in fact targated at a user namespace.
+> Apparmor namespaces, for instance, are completely orthogonal to user
+> namespaces, as are contexts in selinux.
+> 
+> Now, if smack or selinux xattrs are being set then those modules
+> should be gating these writes.  Booting a kernel without those
+> modules should be a challenge for an untrusted user.  But such a
+> situation could be exploited opportunistically if it were to happen.
+> 
+> The problem with simply not changing this here is that if selinux
+> or smack authorizes the xattr write, then commoncap shouldn't be
+> denying it.
 
-Quoting Theodore Ts'o (tytso@mit.edu):
-> The fact that we need CAP_SYS_RAIO for FIBMAP is pretty silly, given
-> that FIEMAP does not require privileges --- and in fact the preferred
-> interface.  Why not just simply drop the requirement for privileges
-> for FIBMAP?
+This is partly the logic behind the change, the other part being that
+the user could already insert the xattrs directly into the backing store
+so the LSMs must be prepared not to trust them in any case. But the
+commit message doesn't explain that, my mistake. And it's a question
+worth revisiting.
+
+> I get the feeling we need cooperation among the modules (i.e. "if
+> the write is to 'security.$lsm' and $lsm is not loaded, then require
+> capable(CAP_SYS_ADMIN), else just allow)  But that's not how things are
+> structured right now.
 > 
-> (Seth, Serge, this isn't a real objection to your patch; but the fact
-> that FIBMAP requires root has always been a bit silly, and this would
-> be a great opportunity to simplify things a bit.)
-> 
-> 						- Ted
-> 						
-> 
-> On Fri, Dec 04, 2015 at 01:11:43PM -0600, Serge E. Hallyn wrote:
-> > Quoting Seth Forshee (seth.forshee@canonical.com):
-> > > Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> > 
-> > Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
-> > 
-> > > ---
-> > >  fs/ioctl.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/ioctl.c b/fs/ioctl.c
-> > > index 5d01d2638ca5..45c371bed7ee 100644
-> > > --- a/fs/ioctl.c
-> > > +++ b/fs/ioctl.c
-> > > @@ -55,7 +55,7 @@ static int ioctl_fibmap(struct file *filp, int __user *p)
-> > >  	/* do we support this mess? */
-> > >  	if (!mapping->a_ops->bmap)
-> > >  		return -EINVAL;
-> > > -	if (!capable(CAP_SYS_RAWIO))
-> > > +	if (!ns_capable(filp->f_inode->i_sb->s_user_ns, CAP_SYS_RAWIO))
-> > >  		return -EPERM;
-> > >  	res = get_user(block, p);
-> > >  	if (res)
-> > > -- 
-> > > 1.9.1
-> > > 
-> > > --
-> > > To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> > > the body of a message to majordomo@vger.kernel.org
-> > > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> > > Please read the FAQ at  http://www.tux.org/lkml/
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-fsdevel" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Maybe security.ko could grow central logic to 'assign' security.*
+> capabilities to specific lsms and gate writes to those if $lsm is not
+> loaded.
+
+I don't see any meaningful difference between this case and the case of
+inserting them into the backing store before mounting. We can't do
+anything to prevent the latter, so LSMs just have to be aware of
+unprivileged mounts and handle them with care. Previous patches do this
+for SELinux and Smack by adopting a policy that doesn't respect security
+labels on disk for these mounts. So I don't think that refusing to set
+security.* xattrs for an LSM that isn't loaded really accomplishes
+anything.
+
+Then there's the case of setting xattrs for an LSM that is currently
+loaded. I think that SELinux and Smack are both going to refuse these
+writes, Smack rather directly by seeing that the user lacks global
+CAP_MAC_ADMIN and SELinux by virtue of the fact that the previous patch
+in this series applies mountpoint labeling to these mounts. As far as I
+can tell the other LSMs don't take security policy from xattrs.
+
+So, as far as I can tell, removing the check doesn't create any
+vulnerabilities.
+
+But that's not to say it's the right thing to do. After reconsidering
+it, I'm inclined to be more conservative and to keep requiring
+capable(CAP_SYS_ADMIN) until such time as there's a use case for
+allowing a user privileged only in s_user_ns to write these xattrs.
+
+> Does anything break if the second hunk in each fn in this patch is
+> not applied?
+
+Not that I'm aware of, no.
+
+Seth
