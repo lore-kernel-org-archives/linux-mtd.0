@@ -1,20 +1,35 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from h2.hallyn.com ([78.46.35.8])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4zy1-0005r8-U8
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 23:40:46 +0000
-Received: by pacej9 with SMTP id ej9so93908281pac.2
- for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 15:40:25 -0800 (PST)
-Date: Fri, 4 Dec 2015 15:40:22 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/3] mtd: spi-nor: fix error handling in spi_nor_erase
-Message-ID: <20151204234022.GI120110@google.com>
-References: <564B7D9E.4070901@gmail.com>
+ id 1a501L-0006MW-GV
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 23:44:13 +0000
+Date: Fri, 4 Dec 2015 17:43:49 -0600
+From: "Serge E. Hallyn" <serge.hallyn@ubuntu.com>
+To: Theodore Ts'o <tytso@mit.edu>, Seth Forshee <seth.forshee@canonical.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>,
+ "Eric W. Biederman" <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
+Subject: Re: [PATCH 14/19] fs: Permit FIBMAP for users with CAP_SYS_RAWIO in
+ s_user_ns
+Message-ID: <20151204234348.GA6908@mail.hallyn.com>
+References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
+ <1449070821-73820-15-git-send-email-seth.forshee@canonical.com>
+ <20151204191143.GE3624@mail.hallyn.com>
+ <20151204200528.GC18359@thunk.org>
+ <20151204200736.GJ3624@mail.hallyn.com>
+ <20151204204532.GG147214@ubuntu-hedt>
+ <20151204231152.GE18359@thunk.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <564B7D9E.4070901@gmail.com>
+In-Reply-To: <20151204231152.GE18359@thunk.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +39,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 17, 2015 at 08:18:54PM +0100, Heiner Kallweit wrote:
-> The documenting comment of mtd_erase in mtdcore.c states:
-> Device drivers are supposed to call instr->callback() whenever
-> the operation completes, even if it completes with a failure.
+On Fri, Dec 04, 2015 at 06:11:52PM -0500, Theodore Ts'o wrote:
+> On Fri, Dec 04, 2015 at 02:45:32PM -0600, Seth Forshee wrote:
+> > On Fri, Dec 04, 2015 at 02:07:36PM -0600, Serge E. Hallyn wrote:
+> > > Heh, I was looking over http://www.gossamer-threads.com/lists/linux/kernel/103611
+> > > a little while ago :)  The same question was asked 16 years ago.  Apparently
+> > > the answer then was that it was easier than fixing the code.
+> > 
+> > So it seems then that either it still isn't safe and so unprivileged
+> > users shouldn't be allowed to do it at all, or else it's safe and we
+> > should drop the requirement completely. I can't say which is right,
+> > unfortunately.
 > 
-> Currently the callback isn't called in case of failure. Fix this.
-> 
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> It may not have been safe 16 years agoo, but giving invalid arguments
+> to FIBMAP is safe for ext4 and ext2.  This is the sort of thing that
+> tools like trinity should and does test for, so I think it should be
+> fine to remove the root check for FIBMAP.
 
-Applied patch 3 to l2-mtd.git. Thanks!
+Seth, can I tempt you into sending a standalone patch to remove that? :)
+
+-serge
