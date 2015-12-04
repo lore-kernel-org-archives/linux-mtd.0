@@ -1,27 +1,31 @@
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4rwh-0005pP-V5
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 15:06:52 +0000
-Date: Fri, 4 Dec 2015 09:06:27 -0600
-From: Rob Herring <robh@kernel.org>
-To: Simon Arlott <simon@fire.lp0.eu>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Florian Fainelli <f.fainelli@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: Re: [PATCH 1/3] mtd: brcmnand: Add brcm,bcm6368-nand device tree
- binding
-Message-ID: <20151204150627.GA29587@rob-hp-laptop>
-References: <565F81A6.6060307@simon.arlott.org.uk>
+Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4sTY-0003Hm-Jy
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 15:40:49 +0000
+Received: by igl9 with SMTP id 9so35299229igl.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 07:40:26 -0800 (PST)
+Date: Fri, 4 Dec 2015 09:38:55 -0600
+From: Seth Forshee <seth.forshee@canonical.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>,
+ Miklos Szeredi <miklos@szeredi.hu>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com,
+ linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ fuse-devel@lists.sourceforge.net,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
+Subject: Re: [PATCH 17/19] fuse: Support fuse filesystems outside of
+ init_user_ns
+Message-ID: <20151204153855.GB147214@ubuntu-hedt>
+References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
+ <1449070821-73820-18-git-send-email-seth.forshee@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <565F81A6.6060307@simon.arlott.org.uk>
+In-Reply-To: <1449070821-73820-18-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,79 +35,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 02, 2015 at 11:41:26PM +0000, Simon Arlott wrote:
-> Add device tree binding for NAND on the BCM6368.
-> 
-> The BCM6368 has a NAND interrupt register with combined status and enable
-> registers. It also requires a clock, so add an optional clock to the
-> common brcmnand binding.
-> 
-> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
-
-Acked-by: Rob Herring <robh@kernel.org>
-
-> ---
-> Renamed from BCM63268, made clock a generic property.
-> 
->  .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 32 ++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> index 4ff7128..16d7835 100644
-> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> @@ -45,6 +45,8 @@ Required properties:
->  - #size-cells      : <0>
+On Wed, Dec 02, 2015 at 09:40:17AM -0600, Seth Forshee wrote:
+> @@ -155,11 +155,22 @@ static ino_t fuse_squash_ino(u64 ino64)
+>  	return ino;
+>  }
 >  
->  Optional properties:
-> +- clock                     : reference to the clock for the NAND controller
-> +- clock-names               : "nand" (required for the above clock)
->  - brcm,nand-has-wp          : Some versions of this IP include a write-protect
->                                (WP) control bit. It is always available on >=
->                                v7.0. Use this property to describe the rare
-> @@ -72,6 +74,12 @@ we define additional 'compatible' properties and associated register resources w
->         and enable registers
->       - reg-names: (required) "nand-int-base"
->  
-> +   * "brcm,nand-bcm6368"
-> +     - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm6368"
-> +     - reg: (required) the 'NAND_INTR_BASE' register range, with combined status
-> +       and enable registers, and boot address registers
-> +     - reg-names: (required) "nand-intr-base"
+> -void fuse_change_attributes_common(struct inode *inode, struct fuse_attr *attr,
+> -				   u64 attr_valid)
+> +int fuse_change_attributes_common(struct inode *inode, struct fuse_attr *attr,
+> +				  u64 attr_valid)
+>  {
+>  	struct fuse_conn *fc = get_fuse_conn(inode);
+>  	struct fuse_inode *fi = get_fuse_inode(inode);
+> +	kuid_t uid;
+> +	kgid_t gid;
 > +
->     * "brcm,nand-iproc"
->       - reg: (required) the "IDM" register range, for interrupt enable and APB
->         bus access endianness configuration, and the "EXT" register range,
-> @@ -148,3 +156,27 @@ nand@f0442800 {
->  		};
->  	};
->  };
-> +
-> +nand@10000200 {
-> +	compatible = "brcm,nand-bcm63168", "brcm,nand-bcm6368",
-> +		"brcm,brcmnand-v4.0", "brcm,brcmnand";
-> +	reg = <0x10000200 0x180>,
-> +	      <0x10000600 0x200>,
-> +	      <0x100000b0 0x10>;
-> +	reg-names = "nand", "nand-cache", "nand-intr-base";
-> +	interrupt-parent = <&periph_intc>;
-> +	interrupts = <50>;
-> +	clocks = <&periph_clk 20>;
-> +	clock-names = "nand";
-> +
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	nand0: nandcs@0 {
-> +		compatible = "brcm,nandcs";
-> +		reg = <0>;
-> +		nand-on-flash-bbt;
-> +		nand-ecc-strength = <1>;
-> +		nand-ecc-step-size = <512>;
-> +	};
-> +};
-> -- 
-> 2.1.4
-> 
-> -- 
-> Simon Arlott
+> +	uid = make_kuid(fc->user_ns, attr->uid);
+> +	gid = make_kgid(fc->user_ns, attr->gid);
+> +	if (!uid_valid(uid) || !gid_valid(gid)) {
+> +		make_bad_inode(inode);
+> +		return -EIO;
+> +	}
+
+Eric - I had kind of forgotten about this part until just now, but
+previously with these patches we had discussed how to handle ids from
+the filesystem that aren't valid in s_user_ns. My intention is to set
+the kuids in the inode to invalid, and in these patches I've updated the
+vfs so that it should be safe to do that. But at some point I think you
+had suggested marking the inodes bad, and I must have added this as a
+result. I guess we need to decide which way to go. I favor using invalid
+ids so that a user privileged in s_user_ns can still access the inode,
+change ownership, etc., but I'm interested to hear your opinion.
+
+Thanks,
+Seth
