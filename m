@@ -1,17 +1,17 @@
-Received: from mail-pf0-x232.google.com ([2607:f8b0:400e:c00::232])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4zjs-0003iE-Sf
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 23:26:10 +0000
-Received: by pfdd184 with SMTP id d184so33020061pfd.3
- for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 15:25:47 -0800 (PST)
+ id 1a4zjt-0003iQ-N6
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 23:26:11 +0000
+Received: by pabfh17 with SMTP id fh17so96225308pab.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 15:25:48 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Linus Walleij <linus.walleij@linaro.org>, Simon Arlott <simon@fire.lp0.eu>
-Subject: [PATCH v2 1/6] mtd: ofpart: assign return argument exactly once
-Date: Fri,  4 Dec 2015 15:25:13 -0800
-Message-Id: <1449271518-118900-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 3/6] mtd: partitions: rename MTD parser get/put
+Date: Fri,  4 Dec 2015 15:25:15 -0800
+Message-Id: <1449271518-118900-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1449271518-118900-1-git-send-email-computersforpeace@gmail.com>
 References: <1449271518-118900-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,134 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's easier to refactor these parsers if the return value gets assigned
-only once, just like every other MTD partition parser.
-
-This prepares for making the second arg to the parse_fn() const. This is
-OK if we construct the partitions completely first, and assign them to
-the return pointer only after we're done modifying them.
+We're going to reuse put_partition_parser(), so let's fix up the prefix
+naming a bit, to hopefully be more consistent. Also make convert to a
+true C function instead of a macro.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-New in v2
+v2: keep mtd_part_parser_put() in the *.c file instead of the header, since
+    we'll only use it in a wrapper now instead of exporting it directly
 
- drivers/mtd/ofpart.c | 35 +++++++++++++++++++----------------
- 1 file changed, 19 insertions(+), 16 deletions(-)
+ drivers/mtd/mtdpart.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 478538100ddd..4800fecaf8cf 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -29,6 +29,7 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 				   struct mtd_partition **pparts,
- 				   struct mtd_part_parser_data *data)
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 1fa3ca95d9c1..c6fd4b24c822 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -684,7 +684,7 @@ int add_mtd_partitions(struct mtd_info *master,
+ static DEFINE_SPINLOCK(part_parser_lock);
+ static LIST_HEAD(part_parsers);
+ 
+-static struct mtd_part_parser *get_partition_parser(const char *name)
++static struct mtd_part_parser *mtd_part_parser_get(const char *name)
  {
-+	struct mtd_partition *parts;
- 	struct device_node *mtd_node;
- 	struct device_node *ofpart_node;
- 	const char *partname;
-@@ -62,8 +63,8 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 	if (nr_parts == 0)
- 		return 0;
+ 	struct mtd_part_parser *p, *ret = NULL;
  
--	*pparts = kzalloc(nr_parts * sizeof(**pparts), GFP_KERNEL);
--	if (!*pparts)
-+	parts = kzalloc(nr_parts * sizeof(*parts), GFP_KERNEL);
-+	if (!parts)
- 		return -ENOMEM;
- 
- 	i = 0;
-@@ -97,19 +98,19 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 			goto ofpart_fail;
- 		}
- 
--		(*pparts)[i].offset = of_read_number(reg, a_cells);
--		(*pparts)[i].size = of_read_number(reg + a_cells, s_cells);
-+		parts[i].offset = of_read_number(reg, a_cells);
-+		parts[i].size = of_read_number(reg + a_cells, s_cells);
- 
- 		partname = of_get_property(pp, "label", &len);
- 		if (!partname)
- 			partname = of_get_property(pp, "name", &len);
--		(*pparts)[i].name = partname;
-+		parts[i].name = partname;
- 
- 		if (of_get_property(pp, "read-only", &len))
--			(*pparts)[i].mask_flags |= MTD_WRITEABLE;
-+			parts[i].mask_flags |= MTD_WRITEABLE;
- 
- 		if (of_get_property(pp, "lock", &len))
--			(*pparts)[i].mask_flags |= MTD_POWERUP_LOCK;
-+			parts[i].mask_flags |= MTD_POWERUP_LOCK;
- 
- 		i++;
- 	}
-@@ -117,6 +118,7 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 	if (!nr_parts)
- 		goto ofpart_none;
- 
-+	*pparts = parts;
- 	return nr_parts;
- 
- ofpart_fail:
-@@ -125,8 +127,7 @@ ofpart_fail:
- 	ret = -EINVAL;
- ofpart_none:
- 	of_node_put(pp);
--	kfree(*pparts);
--	*pparts = NULL;
-+	kfree(parts);
+@@ -701,7 +701,10 @@ static struct mtd_part_parser *get_partition_parser(const char *name)
  	return ret;
  }
  
-@@ -139,6 +140,7 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
- 				      struct mtd_partition **pparts,
- 				      struct mtd_part_parser_data *data)
+-#define put_partition_parser(p) do { module_put((p)->owner); } while (0)
++static inline void mtd_part_parser_put(const struct mtd_part_parser *p)
++{
++	module_put(p->owner);
++}
+ 
+ int __register_mtd_parser(struct mtd_part_parser *p, struct module *owner)
  {
-+	struct mtd_partition *parts;
- 	struct device_node *dp;
- 	int i, plen, nr_parts;
- 	const struct {
-@@ -160,32 +162,33 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
+@@ -765,9 +768,9 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
  
- 	nr_parts = plen / sizeof(part[0]);
- 
--	*pparts = kzalloc(nr_parts * sizeof(*(*pparts)), GFP_KERNEL);
--	if (!*pparts)
-+	parts = kzalloc(nr_parts * sizeof(*parts), GFP_KERNEL);
-+	if (!parts)
- 		return -ENOMEM;
- 
- 	names = of_get_property(dp, "partition-names", &plen);
- 
- 	for (i = 0; i < nr_parts; i++) {
--		(*pparts)[i].offset = be32_to_cpu(part->offset);
--		(*pparts)[i].size   = be32_to_cpu(part->len) & ~1;
-+		parts[i].offset = be32_to_cpu(part->offset);
-+		parts[i].size   = be32_to_cpu(part->len) & ~1;
- 		/* bit 0 set signifies read only partition */
- 		if (be32_to_cpu(part->len) & 1)
--			(*pparts)[i].mask_flags = MTD_WRITEABLE;
-+			parts[i].mask_flags = MTD_WRITEABLE;
- 
- 		if (names && (plen > 0)) {
- 			int len = strlen(names) + 1;
- 
--			(*pparts)[i].name = names;
-+			parts[i].name = names;
- 			plen -= len;
- 			names += len;
- 		} else {
--			(*pparts)[i].name = "unnamed";
-+			parts[i].name = "unnamed";
- 		}
- 
- 		part++;
- 	}
- 
-+	*pparts = parts;
- 	return nr_parts;
- }
- 
+ 	for ( ; *types; types++) {
+ 		pr_debug("%s: parsing partitions %s\n", master->name, *types);
+-		parser = get_partition_parser(*types);
++		parser = mtd_part_parser_get(*types);
+ 		if (!parser && !request_module("%s", *types))
+-			parser = get_partition_parser(*types);
++			parser = mtd_part_parser_get(*types);
+ 		pr_debug("%s: got parser %s\n", master->name,
+ 			 parser ? parser->name : NULL);
+ 		if (!parser)
+@@ -775,7 +778,7 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 		ret = (*parser->parse_fn)(master, pparts, data);
+ 		pr_debug("%s: parser %s: %i\n",
+ 			 master->name, parser->name, ret);
+-		put_partition_parser(parser);
++		mtd_part_parser_put(parser);
+ 		if (ret > 0) {
+ 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
+ 			       ret, parser->name, master->name);
 -- 
 2.6.0.rc2.230.g3dd15c0
