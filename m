@@ -1,26 +1,19 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4cW9-0007W1-Qo
- for linux-mtd@lists.infradead.org; Thu, 03 Dec 2015 22:38:26 +0000
-Received: by pacej9 with SMTP id ej9so76097227pac.2
- for <linux-mtd@lists.infradead.org>; Thu, 03 Dec 2015 14:38:04 -0800 (PST)
-Date: Thu, 3 Dec 2015 14:38:01 -0800
+ id 1a4fid-0003Ld-7t
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 02:03:32 +0000
+Received: by pacdm15 with SMTP id dm15so78481650pac.3
+ for <linux-mtd@lists.infradead.org>; Thu, 03 Dec 2015 18:03:09 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Harvey Hunt <harvey.hunt@imgtec.com>, linux-mtd@lists.infradead.org,
- Alex Smith <alex.smith@imgtec.com>,
- Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
- David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 1/3] dt-bindings: binding for jz4780-{nand,bch}
-Message-ID: <20151203223801.GA64180@google.com>
-References: <1449144142-24004-1-git-send-email-harvey.hunt@imgtec.com>
- <1449144142-24004-2-git-send-email-harvey.hunt@imgtec.com>
- <20151203213812.GA32235@rob-hp-laptop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151203213812.GA32235@rob-hp-laptop>
+To: <linux-mtd@lists.infradead.org>
+Cc: <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Simon Arlott <simon@fire.lp0.eu>, Michal Suchanek <hramrach@gmail.com>
+Subject: [PATCH for-4.4 1/2] mtd: ofpart: don't complain about missing
+ 'partitions' node too loudly
+Date: Thu,  3 Dec 2015 18:02:08 -0800
+Message-Id: <1449194529-145705-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 03, 2015 at 03:38:12PM -0600, Rob Herring wrote:
-> On Thu, Dec 03, 2015 at 12:02:20PM +0000, Harvey Hunt wrote:
-> > v8 -> v9:
-> >  - Document that partitions are represented as a child node of a NAND chip.
-> 
-> Don't multiple flash chips typically get interleaved in order to get 
-> parallelism needed for performance? Then the view of the partitions 
-> would apply across all chips.
+The ofpart partition parser might be run on DT-enabled systems that
+don't have any "ofpart" partition subnodes at all, since "ofpart" is in
+the default parser list. So don't complain loudly on every boot.
 
-Not in MTD so far. We have mtdconcat to do some combination of flash,
-but it's not too easy to use right now. There are also some "MTD RAID"
-patches submitted recently that might cover what you're talking about,
-but that's brand new and unreviewed, and I don't think anyone has
-considered trying to handle partitions for such a thing yet.
-Partitioning of this kind isn't even that useful for NAND flash,
-actually, since fixed assignment of flash ranges restricts the
-flexibility of UBI's wear-leveling algorithms.
+Example: using m25p80.c with no intent to use ofpart:
 
-It probably makes more sense to deal with UBI volumes instead of MTD
-partitions when talking about NAND flash. And those aren't specified in
-DT.
+&spi2 {
+	status = "okay";
 
-> Anyway, it's optional, so:
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+	};
+};
 
-Brian
+I see this warning:
+
+[    0.588471] m25p80 spi2.0: gd25q32 (4096 Kbytes)
+[    0.593091] spi2.0: 'partitions' subnode not found on /spi@ff130000/flash@0. Trying to parse direct subnodes as partitions.
+
+Cc: Michal Suchanek <hramrach@gmail.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+This one really seems like we should put it into 4.4. Basically everyone with a
+DT-enabled MTD using the default parsers will get this warning, even if they're
+not intending to use ofpart at all.
+
+ drivers/mtd/ofpart.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index 669c3452f278..3e9c5857c991 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -46,8 +46,13 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 
+ 	ofpart_node = of_get_child_by_name(mtd_node, "partitions");
+ 	if (!ofpart_node) {
+-		pr_warn("%s: 'partitions' subnode not found on %s. Trying to parse direct subnodes as partitions.\n",
+-			master->name, mtd_node->full_name);
++		/*
++		 * We might get here even when ofpart isn't used at all (e.g.,
++		 * when using another parser), so don't be louder than
++		 * KERN_DEBUG
++		 */
++		pr_debug("%s: 'partitions' subnode not found on %s. Trying to parse direct subnodes as partitions.\n",
++			 master->name, mtd_node->full_name);
+ 		ofpart_node = mtd_node;
+ 		dedicated = false;
+ 	}
+-- 
+2.6.0.rc2.230.g3dd15c0
