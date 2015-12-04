@@ -1,31 +1,22 @@
-Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4sTY-0003Hm-Jy
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 15:40:49 +0000
-Received: by igl9 with SMTP id 9so35299229igl.0
- for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 07:40:26 -0800 (PST)
-Date: Fri, 4 Dec 2015 09:38:55 -0600
-From: Seth Forshee <seth.forshee@canonical.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Miklos Szeredi <miklos@szeredi.hu>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
-Subject: Re: [PATCH 17/19] fuse: Support fuse filesystems outside of
- init_user_ns
-Message-ID: <20151204153855.GB147214@ubuntu-hedt>
-References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
- <1449070821-73820-18-git-send-email-seth.forshee@canonical.com>
+Received: from mail.kernel.org ([198.145.29.136])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4sjn-0001qH-DC
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 15:57:36 +0000
+Date: Fri, 4 Dec 2015 09:57:10 -0600
+From: Rob Herring <robh@kernel.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Simon Arlott <simon@fire.lp0.eu>, Michal Suchanek <hramrach@gmail.com>
+Subject: Re: [PATCH for-4.4 2/2] doc: dt: mtd: partitions: add compatible
+ property to "partitions" node
+Message-ID: <20151204155710.GA29035@rob-hp-laptop>
+References: <1449194529-145705-1-git-send-email-computersforpeace@gmail.com>
+ <1449194529-145705-2-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1449070821-73820-18-git-send-email-seth.forshee@canonical.com>
+In-Reply-To: <1449194529-145705-2-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,37 +26,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 02, 2015 at 09:40:17AM -0600, Seth Forshee wrote:
-> @@ -155,11 +155,22 @@ static ino_t fuse_squash_ino(u64 ino64)
->  	return ino;
->  }
+On Thu, Dec 03, 2015 at 06:02:09PM -0800, Brian Norris wrote:
+> As noted here [1], there are potentially future conflicts if we try to
+> use MTD's "partitions" subnode to describe anything besides just the
+> fixed-in-the-device-tree partitions currently described in this
+> document. Particularly, there was a proposal to use this node for the
+> AFS parser too.
+> 
+> It can pose a (small) problem to try to differentiate the following
+> nodes:
+> 
+> 	// using binding as currently specified
+> 	partitions {
+> 		#address-cells = <x>;
+> 		#size-cells = <y>;
+> 		partition@0 {
+> 			...;
+> 		};
+> 	};
+> 
+> and
+> 
+> 	// proposed future binding
+> 	partitions {
+> 		compatible = "arm,arm-flash-structure";
+> 	};
+> 
+> It's especially difficult if other uses of this node start having
+> subnodes.
+> 
+> So, since the "partitions" node is new in v4.4, let's fixup the binding
+> before release so that it requires a compatible property, so it's much
+> clearer to distinguish. e.g.:
+> 
+> 	// proposed
+> 	partitions {
+> 		compatible = "partitions";
+> 		#address-cells = <x>;
+> 		#size-cells = <y>;
+> 		partition@0 {
+> 			...;
+> 		};
+> 	};
+> 
+> [1] Subject: "mtd: create a partition type device tree binding"
+>     http://lkml.kernel.org/g/20151113220039.GA74382@google.com
+>     http://lists.infradead.org/pipermail/linux-mtd/2015-November/063355.html
+>     http://lists.infradead.org/pipermail/linux-mtd/2015-November/063364.html
+> 
+> Cc: Michal Suchanek <hramrach@gmail.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+> This one is more of a future proofing patch. We should probably take this for
+> 4.4, before the binding "stabilizes" (I don't actually see any users yet), or
+> else we'll have to find some other (possibly more complicated) way to avoid
+> this potential collision on future development.
+
+Acked-by: Rob Herring <robh@kernel.org>
+
+> 
+>  Documentation/devicetree/bindings/mtd/partition.txt | 7 ++++++-
+>  drivers/mtd/ofpart.c                                | 3 +++
+>  2 files changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+> index f1e2a02381a4..047e80575881 100644
+> --- a/Documentation/devicetree/bindings/mtd/partition.txt
+> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
+> @@ -6,7 +6,9 @@ used for what purposes, but which don't use an on-flash partition table such
+>  as RedBoot.
 >  
-> -void fuse_change_attributes_common(struct inode *inode, struct fuse_attr *attr,
-> -				   u64 attr_valid)
-> +int fuse_change_attributes_common(struct inode *inode, struct fuse_attr *attr,
-> +				  u64 attr_valid)
->  {
->  	struct fuse_conn *fc = get_fuse_conn(inode);
->  	struct fuse_inode *fi = get_fuse_inode(inode);
-> +	kuid_t uid;
-> +	kgid_t gid;
-> +
-> +	uid = make_kuid(fc->user_ns, attr->uid);
-> +	gid = make_kgid(fc->user_ns, attr->gid);
-> +	if (!uid_valid(uid) || !gid_valid(gid)) {
-> +		make_bad_inode(inode);
-> +		return -EIO;
-> +	}
-
-Eric - I had kind of forgotten about this part until just now, but
-previously with these patches we had discussed how to handle ids from
-the filesystem that aren't valid in s_user_ns. My intention is to set
-the kuids in the inode to invalid, and in these patches I've updated the
-vfs so that it should be safe to do that. But at some point I think you
-had suggested marking the inodes bad, and I must have added this as a
-result. I guess we need to decide which way to go. I favor using invalid
-ids so that a user privileged in s_user_ns can still access the inode,
-change ownership, etc., but I'm interested to hear your opinion.
-
-Thanks,
-Seth
+>  The partition table should be a subnode of the mtd node and should be named
+> -'partitions'. Partitions are defined in subnodes of the partitions node.
+> +'partitions'. This node should have the following property:
+> +- compatible : (required) must be "partitions"
+> +Partitions are then defined in subnodes of the partitions node.
+>  
+>  For backwards compatibility partitions as direct subnodes of the mtd device are
+>  supported. This use is discouraged.
+> @@ -36,6 +38,7 @@ Examples:
+>  
+>  flash@0 {
+>  	partitions {
+> +		compatible = "partitions";
+>  		#address-cells = <1>;
+>  		#size-cells = <1>;
+>  
+> @@ -53,6 +56,7 @@ flash@0 {
+>  
+>  flash@1 {
+>  	partitions {
+> +		compatible = "partitions";
+>  		#address-cells = <1>;
+>  		#size-cells = <2>;
+>  
+> @@ -66,6 +70,7 @@ flash@1 {
+>  
+>  flash@2 {
+>  	partitions {
+> +		compatible = "partitions";
+>  		#address-cells = <2>;
+>  		#size-cells = <2>;
+>  
+> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+> index 3e9c5857c991..23cd809fad4c 100644
+> --- a/drivers/mtd/ofpart.c
+> +++ b/drivers/mtd/ofpart.c
+> @@ -55,6 +55,9 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+>  			 master->name, mtd_node->full_name);
+>  		ofpart_node = mtd_node;
+>  		dedicated = false;
+> +	} else if (!of_device_is_compatible(ofpart_node, "partitions")) {
+> +		/* The 'partitions' subnode might be used by another parser */
+> +		return 0;
+>  	}
+>  
+>  	/* First count the subnodes */
+> -- 
+> 2.6.0.rc2.230.g3dd15c0
+> 
