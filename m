@@ -1,21 +1,23 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4fid-0003Lo-Mp
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 02:03:32 +0000
-Received: by pacej9 with SMTP id ej9so78686192pac.2
- for <linux-mtd@lists.infradead.org>; Thu, 03 Dec 2015 18:03:10 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
+ id 1a4kB2-0004HJ-6i
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 06:49:09 +0000
+To: Frans Klaver <fransklaver@gmail.com>
+Reply-To: hs@denx.de
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Simon Arlott <simon@fire.lp0.eu>, Michal Suchanek <hramrach@gmail.com>
-Subject: [PATCH for-4.4 2/2] doc: dt: mtd: partitions: add compatible property
- to "partitions" node
-Date: Thu,  3 Dec 2015 18:02:09 -0800
-Message-Id: <1449194529-145705-2-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1449194529-145705-1-git-send-email-computersforpeace@gmail.com>
-References: <1449194529-145705-1-git-send-email-computersforpeace@gmail.com>
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Pekon Gupta <pekon@pek-sem.com>, Roger Quadros <rogerq@ti.com>,
+ Nicholas Mc Guire <hofrat@osadl.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Stefano Babic <sbabic@denx.de>,
+ "Stahl Martin (Helbling Technik)" <Martin.Stahl@helbling.ch>
+From: Heiko Schocher <hs@denx.de>
+Subject: mtd, nand, omap2: parse cmdline partition fail
+Message-ID: <56613747.8040907@denx.de>
+Date: Fri, 4 Dec 2015 07:48:39 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,117 +27,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As noted here [1], there are potentially future conflicts if we try to
-use MTD's "partitions" subnode to describe anything besides just the
-fixed-in-the-device-tree partitions currently described in this
-document. Particularly, there was a proposal to use this node for the
-AFS parser too.
+Hello Frans,
 
-It can pose a (small) problem to try to differentiate the following
-nodes:
+I just tried current mainline kernel:
+commit 2255702db4014d1c69d6037ed7bdad2d2e271985
+Merge: 9e5d25e c86576e
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon Nov 30 16:06:44 2015 -0800
 
-	// using binding as currently specified
-	partitions {
-		#address-cells = <x>;
-		#size-cells = <y>;
-		partition@0 {
-			...;
-		};
-	};
+     Merge tag 'mn10300-for-linus-v4.4-rc4' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging
 
-and
+on an am3517 based board (mainlining soon). And with your commit:
+commit 853f1c58c4b2: mtd: nand: omap2: show parent device structure in sysfs
 
-	// proposed future binding
-	partitions {
-		compatible = "arm,arm-flash-structure";
-	};
+MTD partitions from cmdline are not longer detected:
 
-It's especially difficult if other uses of this node start having
-subnodes.
+[    2.087305] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xcc
+[    2.094097] nand: Micron MT29F4G16ABADAWP
+[    2.098303] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+[    2.106296] nand: WARNING: MT29F4G16ABADAWP: the ECC used on your system is too weak compared to 
+the one required by the NAND chip
+[    2.118674] MT29F4G16ABADAWP: 'partitions' subnode not found on /ocp/gpmc@6e000000/nand@0,0. 
+Trying to parse direct subnodes as partitions.
+[...]
 
-So, since the "partitions" node is new in v4.4, let's fixup the binding
-before release so that it requires a compatible property, so it's much
-clearer to distinguish. e.g.:
+before this patch it worked:
+[    2.307444] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xcc
+[    2.314092] nand: Micron MT29F4G16ABADAWP
+[    2.318348] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+[    2.326331] nand: WARNING: omap2-nand.0: the ECC used on your system is too weak compared to the 
+one required by the NAND chip
+[    2.338336] 5 cmdlinepart partitions found on MTD device omap2-nand.0
+[    2.345129] Creating 5 MTD partitions on "omap2-nand.0":
+[    2.350704] 0x000000000000-0x000000080000 : "MLO"
+[    2.366877] 0x000000080000-0x000000180000 : "u-boot"
+[    2.379179] 0x000000180000-0x0000001c0000 : "env1"
+[    2.390627] 0x0000001c0000-0x000000200000 : "env2"
+[    2.402255] 0x000000200000-0x000020000000 : "common_data"
 
-	// proposed
-	partitions {
-		compatible = "partitions";
-		#address-cells = <x>;
-		#size-cells = <y>;
-		partition@0 {
-			...;
-		};
-	};
+Reason is taht the mtd->name has changed from "omap2-nand.0" to the
+nand chip name ...
 
-[1] Subject: "mtd: create a partition type device tree binding"
-    http://lkml.kernel.org/g/20151113220039.GA74382@google.com
-    http://lists.infradead.org/pipermail/linux-mtd/2015-November/063355.html
-    http://lists.infradead.org/pipermail/linux-mtd/2015-November/063364.html
+If I revert this part from the patch
 
-Cc: Michal Suchanek <hramrach@gmail.com>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
-This one is more of a future proofing patch. We should probably take this for
-4.4, before the binding "stabilizes" (I don't actually see any users yet), or
-else we'll have to find some other (possibly more complicated) way to avoid
-this potential collision on future development.
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 93f664c..28dcf66 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1685,6 +1685,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+         info->ecc_opt           = pdata->ecc_opt;
+         mtd                     = &info->mtd;
+         mtd->priv               = &info->nand;
++       mtd->name               = dev_name(&pdev->dev);
+         mtd->dev.parent         = &pdev->dev;
+         nand_chip               = &info->nand;
+         nand_chip->ecc.priv     = NULL;
 
- Documentation/devicetree/bindings/mtd/partition.txt | 7 ++++++-
- drivers/mtd/ofpart.c                                | 3 +++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+It works again ...
 
-diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-index f1e2a02381a4..047e80575881 100644
---- a/Documentation/devicetree/bindings/mtd/partition.txt
-+++ b/Documentation/devicetree/bindings/mtd/partition.txt
-@@ -6,7 +6,9 @@ used for what purposes, but which don't use an on-flash partition table such
- as RedBoot.
- 
- The partition table should be a subnode of the mtd node and should be named
--'partitions'. Partitions are defined in subnodes of the partitions node.
-+'partitions'. This node should have the following property:
-+- compatible : (required) must be "partitions"
-+Partitions are then defined in subnodes of the partitions node.
- 
- For backwards compatibility partitions as direct subnodes of the mtd device are
- supported. This use is discouraged.
-@@ -36,6 +38,7 @@ Examples:
- 
- flash@0 {
- 	partitions {
-+		compatible = "partitions";
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 
-@@ -53,6 +56,7 @@ flash@0 {
- 
- flash@1 {
- 	partitions {
-+		compatible = "partitions";
- 		#address-cells = <1>;
- 		#size-cells = <2>;
- 
-@@ -66,6 +70,7 @@ flash@1 {
- 
- flash@2 {
- 	partitions {
-+		compatible = "partitions";
- 		#address-cells = <2>;
- 		#size-cells = <2>;
- 
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 3e9c5857c991..23cd809fad4c 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -55,6 +55,9 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 			 master->name, mtd_node->full_name);
- 		ofpart_node = mtd_node;
- 		dedicated = false;
-+	} else if (!of_device_is_compatible(ofpart_node, "partitions")) {
-+		/* The 'partitions' subnode might be used by another parser */
-+		return 0;
- 	}
- 
- 	/* First count the subnodes */
+So the question is, is it intended to change the "mtd->name"?
+But wondering, if there are two or more identical nand chips in the
+system, they will have the same mtd->name ... which seems buggy to me...
+
+bye,
+Heiko
 -- 
-2.6.0.rc2.230.g3dd15c0
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
