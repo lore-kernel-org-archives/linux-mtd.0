@@ -1,16 +1,34 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4yxB-00056z-GR
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 22:35:51 +0000
-From: Antoine Tenart <antoine.tenart@free-electrons.com>
-To: computersforpeace@gmail.com, dwmw2@infradead.org,
- boris.brezillon@free-electrons.com
-Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: nand: support JEDEC additional redundant parameter pages
-Date: Fri,  4 Dec 2015 23:35:28 +0100
-Message-Id: <1449268528-18154-1-git-send-email-antoine.tenart@free-electrons.com>
+Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4zWU-0006Wl-OB
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 23:12:19 +0000
+Date: Fri, 4 Dec 2015 18:11:52 -0500
+From: Theodore Ts'o <tytso@mit.edu>
+To: Seth Forshee <seth.forshee@canonical.com>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>,
+ "Eric W. Biederman" <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
+Subject: Re: [PATCH 14/19] fs: Permit FIBMAP for users with CAP_SYS_RAWIO in
+ s_user_ns
+Message-ID: <20151204231152.GE18359@thunk.org>
+References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
+ <1449070821-73820-15-git-send-email-seth.forshee@canonical.com>
+ <20151204191143.GE3624@mail.hallyn.com>
+ <20151204200528.GC18359@thunk.org>
+ <20151204200736.GJ3624@mail.hallyn.com>
+ <20151204204532.GG147214@ubuntu-hedt>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151204204532.GG147214@ubuntu-hedt>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,94 +38,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The JEDEC standard defines the JEDEC parameter page data structure.
-One page plus two redundant pages are always there, in bits 0-1535.
-Additionnal redundant parameter pages can be stored at bits 1536+.
-Add support to read these pages.
+On Fri, Dec 04, 2015 at 02:45:32PM -0600, Seth Forshee wrote:
+> On Fri, Dec 04, 2015 at 02:07:36PM -0600, Serge E. Hallyn wrote:
+> > Heh, I was looking over http://www.gossamer-threads.com/lists/linux/kernel/103611
+> > a little while ago :)  The same question was asked 16 years ago.  Apparently
+> > the answer then was that it was easier than fixing the code.
+> 
+> So it seems then that either it still isn't safe and so unprivileged
+> users shouldn't be allowed to do it at all, or else it's safe and we
+> should drop the requirement completely. I can't say which is right,
+> unfortunately.
 
-The first 3 JEDEC parameter pages are always checked, and if none
-is valid we try to read additional redundant pages following the
-standard definition: we continue while at least two of the four bytes
-of the parameter page signature match (stored in the first dword).
+It may not have been safe 16 years agoo, but giving invalid arguments
+to FIBMAP is safe for ext4 and ext2.  This is the sort of thing that
+tools like trinity should and does test for, so I think it should be
+fine to remove the root check for FIBMAP.
 
-There is no limit to the number of additional redundant parameter
-page.
-
-Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
----
- drivers/mtd/nand/nand_base.c | 44 ++++++++++++++++++++++++++++++++++----------
- 1 file changed, 34 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index cc74142938b0..31f4a6585703 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3392,6 +3392,32 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	return 1;
- }
- 
-+static int nand_flash_jedec_read_param(struct mtd_info *mtd,
-+				       struct nand_chip *chip,
-+				       struct nand_jedec_params *p)
-+{
-+	int i, match = 0;
-+	char sig[4] = "JESD";
-+
-+	for (i = 0; i < sizeof(*p); i++)
-+		((uint8_t *)p)[i] = chip->read_byte(mtd);
-+
-+	for (i = 0; i < 4; i++)
-+		if (p->sig[i] == sig[i])
-+			match++;
-+
-+	if (match < 2) {
-+		pr_warn("Invalid JEDEC page\n");
-+		return -EINVAL;
-+	}
-+
-+	if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
-+			le16_to_cpu(p->crc))
-+		return 0;
-+
-+	return -EAGAIN;
-+}
-+
- /*
-  * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
-  */
-@@ -3400,8 +3426,7 @@ static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
- {
- 	struct nand_jedec_params *p = &chip->jedec_params;
- 	struct jedec_ecc_info *ecc;
--	int val;
--	int i, j;
-+	int val, i, ret = 0;
- 
- 	/* Try JEDEC for unknown chip or LP */
- 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x40, -1);
-@@ -3411,16 +3436,15 @@ static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
- 		return 0;
- 
- 	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0x40, -1);
--	for (i = 0; i < 3; i++) {
--		for (j = 0; j < sizeof(*p); j++)
--			((uint8_t *)p)[j] = chip->read_byte(mtd);
--
--		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
--				le16_to_cpu(p->crc))
-+	for (i = 0; i < 3; i++)
-+		if (!nand_flash_jedec_read_param(mtd, chip, p))
- 			break;
--	}
- 
--	if (i == 3) {
-+	/* Try reading additional parameter pages */
-+	if (i == 3)
-+		while ((ret = nand_flash_jedec_read_param(mtd, chip, p)) ==
-+				-EAGAIN);
-+	if (ret) {
- 		pr_err("Could not find valid JEDEC parameter page; aborting\n");
- 		return 0;
- 	}
--- 
-2.6.3
+							- Ted
