@@ -1,18 +1,18 @@
-Received: from mail-pf0-x22f.google.com ([2607:f8b0:400e:c00::22f])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4zjt-0003iJ-1b
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 23:26:11 +0000
-Received: by pfu207 with SMTP id 207so33008934pfu.2
- for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 15:25:47 -0800 (PST)
+ id 1a4zjt-0003iX-N4
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 23:26:12 +0000
+Received: by pabfh17 with SMTP id fh17so96225557pab.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 15:25:50 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Linus Walleij <linus.walleij@linaro.org>, Simon Arlott <simon@fire.lp0.eu>
-Subject: [PATCH v2 2/6] mtd: partitions: make parsers return 'const' partition
- arrays
-Date: Fri,  4 Dec 2015 15:25:14 -0800
-Message-Id: <1449271518-118900-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 5/6] mtd: partitions: pass around 'mtd_partitions' wrapper
+ struct
+Date: Fri,  4 Dec 2015 15:25:17 -0800
+Message-Id: <1449271518-118900-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1449271518-118900-1-git-send-email-computersforpeace@gmail.com>
 References: <1449271518-118900-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,138 +24,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We only want to modify these arrays inside the parser "drivers", so the
-drivers should construct them however they like, then return them as
-immutable arrays.
-
-This will make other refactorings easier.
+For some of the core partitioning code, it helps to keep info about the
+parsed partition (and who parsed them) together in one place.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
 New in v2
 
- drivers/mtd/afs.c              | 2 +-
- drivers/mtd/ar7part.c          | 2 +-
- drivers/mtd/bcm47xxpart.c      | 2 +-
- drivers/mtd/bcm63xxpart.c      | 2 +-
- drivers/mtd/cmdlinepart.c      | 2 +-
- drivers/mtd/ofpart.c           | 4 ++--
- drivers/mtd/redboot.c          | 2 +-
- include/linux/mtd/partitions.h | 2 +-
- 8 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/mtd/mtdcore.c          | 33 +++++++++++++++++++--------------
+ drivers/mtd/mtdcore.h          |  5 ++++-
+ drivers/mtd/mtdpart.c          | 15 ++++++++-------
+ include/linux/mtd/partitions.h |  7 +++++++
+ 4 files changed, 38 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/mtd/afs.c b/drivers/mtd/afs.c
-index e02dae3b739b..d61b7edfc938 100644
---- a/drivers/mtd/afs.c
-+++ b/drivers/mtd/afs.c
-@@ -162,7 +162,7 @@ afs_read_iis_v1(struct mtd_info *mtd, struct image_info_v1 *iis, u_int ptr)
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 868ee52d5063..20b2b38247b6 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -532,9 +532,10 @@ out_error:
  }
  
- static int parse_afs_partitions(struct mtd_info *mtd,
--				struct mtd_partition **pparts,
-+				const struct mtd_partition **pparts,
- 				struct mtd_part_parser_data *data)
+ static int mtd_add_device_partitions(struct mtd_info *mtd,
+-				     const struct mtd_partition *real_parts,
+-				     int nbparts)
++				     struct mtd_partitions *parts)
  {
- 	struct mtd_partition *parts;
-diff --git a/drivers/mtd/ar7part.c b/drivers/mtd/ar7part.c
-index 9203b96fd789..90575deff0ae 100644
---- a/drivers/mtd/ar7part.c
-+++ b/drivers/mtd/ar7part.c
-@@ -43,7 +43,7 @@ struct ar7_bin_rec {
- };
++	const struct mtd_partition *real_parts = parts->parts;
++	int nbparts = parts->nr_parts;
+ 	int ret;
  
- static int create_mtd_partitions(struct mtd_info *master,
--				 struct mtd_partition **pparts,
-+				 const struct mtd_partition **pparts,
- 				 struct mtd_part_parser_data *data)
+ 	if (nbparts == 0 || IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER)) {
+@@ -588,23 +589,27 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 			      const struct mtd_partition *parts,
+ 			      int nr_parts)
  {
- 	struct ar7_bin_rec header;
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 92a6dd18198b..8282f47bcf5d 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -82,7 +82,7 @@ out_default:
++	struct mtd_partitions parsed;
+ 	int ret;
+-	const struct mtd_partition *real_parts = NULL;
+ 
+-	ret = parse_mtd_partitions(mtd, types, &real_parts, parser_data);
+-	if (ret <= 0 && nr_parts && parts) {
+-		real_parts = parts;
+-		ret = nr_parts;
+-	}
+-	/* Didn't come up with either parsed OR fallback partitions */
+-	if (ret < 0) {
++	memset(&parsed, 0, sizeof(parsed));
++
++	ret = parse_mtd_partitions(mtd, types, &parsed, parser_data);
++	if ((ret < 0 || parsed.nr_parts == 0) && parts && nr_parts) {
++		/* Fall back to driver-provided partitions */
++		parsed = (struct mtd_partitions){
++			.parts		= parts,
++			.nr_parts	= nr_parts,
++		};
++	} else if (ret < 0) {
++		/* Didn't come up with parsed OR fallback partitions */
+ 		pr_info("mtd: failed to find partitions; one or more parsers reports errors (%d)\n",
+ 			ret);
+ 		/* Don't abort on errors; we can still use unpartitioned MTD */
+-		ret = 0;
++		memset(&parsed, 0, sizeof(parsed));
+ 	}
+ 
+-	ret = mtd_add_device_partitions(mtd, real_parts, ret);
++	ret = mtd_add_device_partitions(mtd, &parsed);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -625,8 +630,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 
+ out:
+ 	/* Cleanup any parsed partitions */
+-	if (real_parts != parts)
+-		kfree(real_parts);
++	if (parsed.parser)
++		kfree(parsed.parts);
+ 	return ret;
  }
+ EXPORT_SYMBOL_GPL(mtd_device_parse_register);
+diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
+index 537ec66f9cfd..ce81cc2002f4 100644
+--- a/drivers/mtd/mtdcore.h
++++ b/drivers/mtd/mtdcore.h
+@@ -10,8 +10,11 @@ int add_mtd_device(struct mtd_info *mtd);
+ int del_mtd_device(struct mtd_info *mtd);
+ int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *, int);
+ int del_mtd_partitions(struct mtd_info *);
++
++struct mtd_partitions;
++
+ int parse_mtd_partitions(struct mtd_info *master, const char * const *types,
+-			 const struct mtd_partition **pparts,
++			 struct mtd_partitions *pparts,
+ 			 struct mtd_part_parser_data *data);
  
- static int bcm47xxpart_parse(struct mtd_info *master,
--			     struct mtd_partition **pparts,
-+			     const struct mtd_partition **pparts,
- 			     struct mtd_part_parser_data *data)
- {
- 	struct mtd_partition *parts;
-diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
-index cf02135320bc..440936998593 100644
---- a/drivers/mtd/bcm63xxpart.c
-+++ b/drivers/mtd/bcm63xxpart.c
-@@ -68,7 +68,7 @@ static int bcm63xx_detect_cfe(struct mtd_info *master)
- }
- 
- static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
--					struct mtd_partition **pparts,
-+					const struct mtd_partition **pparts,
- 					struct mtd_part_parser_data *data)
- {
- 	/* CFE, NVRAM and global Linux are always present */
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index 420489864bc2..fbd5affc0acf 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -304,7 +304,7 @@ static int mtdpart_setup_real(char *s)
-  * the first one in the chain if a NULL mtd_id is passed in.
+ int __init init_mtdchar(void);
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 86691a5c68b9..c5108e0efe88 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -740,7 +740,7 @@ static const char * const default_mtd_part_types[] = {
+  * parse_mtd_partitions - parse MTD partitions
+  * @master: the master partition (describes whole MTD device)
+  * @types: names of partition parsers to try or %NULL
+- * @pparts: array of partitions found is returned here
++ * @pparts: info about partitions found is returned here
+  * @data: MTD partition parser-specific data
+  *
+  * This function tries to find partition on MTD device @master. It uses MTD
+@@ -752,12 +752,11 @@ static const char * const default_mtd_part_types[] = {
+  *
+  * This function may return:
+  * o a negative error code in case of failure
+- * o zero if no partitions were found
+- * o a positive number of found partitions, in which case on exit @pparts will
+- *   point to an array containing this number of &struct mtd_info objects.
++ * o zero otherwise, and @pparts will describe the partitions, number of
++ *   partitions, and the parser which parsed them
   */
- static int parse_cmdline_partitions(struct mtd_info *master,
--				    struct mtd_partition **pparts,
-+				    const struct mtd_partition **pparts,
- 				    struct mtd_part_parser_data *data)
+ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+-			 const struct mtd_partition **pparts,
++			 struct mtd_partitions *pparts,
+ 			 struct mtd_part_parser_data *data)
  {
- 	unsigned long long offset;
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 4800fecaf8cf..8a027a71e662 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -26,7 +26,7 @@ static bool node_has_compatible(struct device_node *pp)
- }
- 
- static int parse_ofpart_partitions(struct mtd_info *master,
--				   struct mtd_partition **pparts,
-+				   const struct mtd_partition **pparts,
- 				   struct mtd_part_parser_data *data)
- {
- 	struct mtd_partition *parts;
-@@ -137,7 +137,7 @@ static struct mtd_part_parser ofpart_parser = {
- };
- 
- static int parse_ofoldpart_partitions(struct mtd_info *master,
--				      struct mtd_partition **pparts,
-+				      const struct mtd_partition **pparts,
- 				      struct mtd_part_parser_data *data)
- {
- 	struct mtd_partition *parts;
-diff --git a/drivers/mtd/redboot.c b/drivers/mtd/redboot.c
-index 11c3447eb8ff..7623ac5fc586 100644
---- a/drivers/mtd/redboot.c
-+++ b/drivers/mtd/redboot.c
-@@ -57,7 +57,7 @@ static inline int redboot_checksum(struct fis_image_desc *img)
- }
- 
- static int parse_redboot_partitions(struct mtd_info *master,
--				    struct mtd_partition **pparts,
-+				    const struct mtd_partition **pparts,
- 				    struct mtd_part_parser_data *data)
- {
- 	int nrparts = 0;
+ 	struct mtd_part_parser *parser;
+@@ -775,14 +774,16 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 			 parser ? parser->name : NULL);
+ 		if (!parser)
+ 			continue;
+-		ret = (*parser->parse_fn)(master, pparts, data);
++		ret = (*parser->parse_fn)(master, &pparts->parts, data);
+ 		pr_debug("%s: parser %s: %i\n",
+ 			 master->name, parser->name, ret);
+ 		mtd_part_parser_put(parser);
+ 		if (ret > 0) {
+ 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
+ 			       ret, parser->name, master->name);
+-			return ret;
++			pparts->nr_parts = ret;
++			pparts->parser = parser;
++			return 0;
+ 		}
+ 		/*
+ 		 * Stash the first error we see; only report it if no parser
 diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-index d002d9b5d797..6185536daacc 100644
+index 6185536daacc..cceaf7bd1537 100644
 --- a/include/linux/mtd/partitions.h
 +++ b/include/linux/mtd/partitions.h
-@@ -69,7 +69,7 @@ struct mtd_part_parser {
- 	struct list_head list;
- 	struct module *owner;
- 	const char *name;
--	int (*parse_fn)(struct mtd_info *, struct mtd_partition **,
-+	int (*parse_fn)(struct mtd_info *, const struct mtd_partition **,
+@@ -73,6 +73,13 @@ struct mtd_part_parser {
  			struct mtd_part_parser_data *);
  };
  
++/* Container for passing around a set of parsed partitions */
++struct mtd_partitions {
++	const struct mtd_partition *parts;
++	int nr_parts;
++	const struct mtd_part_parser *parser;
++};
++
+ extern int __register_mtd_parser(struct mtd_part_parser *parser,
+ 				 struct module *owner);
+ #define register_mtd_parser(parser) __register_mtd_parser(parser, THIS_MODULE)
 -- 
 2.6.0.rc2.230.g3dd15c0
