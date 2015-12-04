@@ -1,34 +1,27 @@
-Received: from 212-186-180-163.dynamic.surfer.at ([212.186.180.163]
- helo=cgate.sperl.org)
+Received: from mail.kernel.org ([198.145.29.136])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4rOP-0004Tz-Pm
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 14:31:27 +0000
-Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Subject: Re: [PATCH v5 08/10] spi: expose master transfer size limitation.
-From: Martin Sperl <martin@sperl.org>
-In-Reply-To: <20151201231233.GA1929@sirena.org.uk>
-Date: Fri, 4 Dec 2015 15:30:50 +0100
-Cc: Michal Suchanek <hramrach@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>,
+ id 1a4rwh-0005pP-V5
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 15:06:52 +0000
+Date: Fri, 4 Dec 2015 09:06:27 -0600
+From: Rob Herring <robh@kernel.org>
+To: Simon Arlott <simon@fire.lp0.eu>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Stephen Warren <swarren@nvidia.com>, "Andrew F. Davis" <afd@ti.com>,
- Marek Vasut <marex@denx.de>,
- =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>,
- =?utf-8?Q?Bean_Huo_=E9=9C=8D=E6=96=8C=E6=96=8C?= <beanhuo@micron.com>,
- Furquan Shaikh <furquan@google.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <5FC39638-EEE0-4CFA-B464-0B4743CB6AB6@sperl.org>
-References: <cover.1448988089.git.hramrach@gmail.com>
- <8c34c7790244489c2ce0072c72bd9bc7c4cdb965.1448988089.git.hramrach@gmail.com>
- <20151201231233.GA1929@sirena.org.uk>
-To: Mark Brown <broonie@kernel.org>
+ linux-mtd@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Florian Fainelli <f.fainelli@gmail.com>,
+ bcm-kernel-feedback-list@broadcom.com, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH 1/3] mtd: brcmnand: Add brcm,bcm6368-nand device tree
+ binding
+Message-ID: <20151204150627.GA29587@rob-hp-laptop>
+References: <565F81A6.6060307@simon.arlott.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <565F81A6.6060307@simon.arlott.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,29 +31,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-> On 02.12.2015, at 00:12, Mark Brown <broonie@kernel.org> wrote:
+On Wed, Dec 02, 2015 at 11:41:26PM +0000, Simon Arlott wrote:
+> Add device tree binding for NAND on the BCM6368.
 > 
-> On Tue, Dec 01, 2015 at 04:51:06PM -0000, Michal Suchanek wrote:
+> The BCM6368 has a NAND interrupt register with combined status and enable
+> registers. It also requires a clock, so add an optional clock to the
+> common brcmnand binding.
 > 
->> +static inline size_t
->> +spi_max_transfer_size(struct spi_device *spi)
->> +{
->> +	struct spi_master *master = spi->master;
->> +	if (!master->max_transfer_size)
->> +		return 0;
->> +	return master->max_transfer_size(spi);
->> +}
+> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+
+Acked-by: Rob Herring <robh@kernel.org>
+
+> ---
+> Renamed from BCM63268, made clock a generic property.
 > 
-> Can we change this to return SIZE_MAX instead (ie, the maximum value for
-> a size_t)?  That way callers don't need to worry if there is a limit, if
-> they want to handle it they can just unconditionally assume that a limit
-> will be provided.
-
-As I just came across: spi_master.max_dma_len, so I wonder how this 
-value would differ from the proposed spi_master.max_transfer_size
-on specific HW?
-
-For all practical purposes I would assume both are identical.
-
-Martin
+>  .../devicetree/bindings/mtd/brcm,brcmnand.txt      | 32 ++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> index 4ff7128..16d7835 100644
+> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> @@ -45,6 +45,8 @@ Required properties:
+>  - #size-cells      : <0>
+>  
+>  Optional properties:
+> +- clock                     : reference to the clock for the NAND controller
+> +- clock-names               : "nand" (required for the above clock)
+>  - brcm,nand-has-wp          : Some versions of this IP include a write-protect
+>                                (WP) control bit. It is always available on >=
+>                                v7.0. Use this property to describe the rare
+> @@ -72,6 +74,12 @@ we define additional 'compatible' properties and associated register resources w
+>         and enable registers
+>       - reg-names: (required) "nand-int-base"
+>  
+> +   * "brcm,nand-bcm6368"
+> +     - compatible: should contain "brcm,nand-bcm<soc>", "brcm,nand-bcm6368"
+> +     - reg: (required) the 'NAND_INTR_BASE' register range, with combined status
+> +       and enable registers, and boot address registers
+> +     - reg-names: (required) "nand-intr-base"
+> +
+>     * "brcm,nand-iproc"
+>       - reg: (required) the "IDM" register range, for interrupt enable and APB
+>         bus access endianness configuration, and the "EXT" register range,
+> @@ -148,3 +156,27 @@ nand@f0442800 {
+>  		};
+>  	};
+>  };
+> +
+> +nand@10000200 {
+> +	compatible = "brcm,nand-bcm63168", "brcm,nand-bcm6368",
+> +		"brcm,brcmnand-v4.0", "brcm,brcmnand";
+> +	reg = <0x10000200 0x180>,
+> +	      <0x10000600 0x200>,
+> +	      <0x100000b0 0x10>;
+> +	reg-names = "nand", "nand-cache", "nand-intr-base";
+> +	interrupt-parent = <&periph_intc>;
+> +	interrupts = <50>;
+> +	clocks = <&periph_clk 20>;
+> +	clock-names = "nand";
+> +
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	nand0: nandcs@0 {
+> +		compatible = "brcm,nandcs";
+> +		reg = <0>;
+> +		nand-on-flash-bbt;
+> +		nand-ecc-strength = <1>;
+> +		nand-ecc-step-size = <512>;
+> +	};
+> +};
+> -- 
+> 2.1.4
+> 
+> -- 
+> Simon Arlott
