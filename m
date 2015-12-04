@@ -1,33 +1,16 @@
-Received: from h2.hallyn.com ([78.46.35.8])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a4yTs-0008QY-22
- for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 22:05:33 +0000
-Date: Fri, 4 Dec 2015 16:05:09 -0600
-From: "Serge E. Hallyn" <serge.hallyn@ubuntu.com>
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: "Serge E. Hallyn" <serge@hallyn.com>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- James Morris <james.l.morris@oracle.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <miklos@szeredi.hu>, linux-bcache@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
-Subject: Re: [PATCH 15/19] capabilities: Allow privileged user in s_user_ns
- to set file caps
-Message-ID: <20151204220509.GC5699@mail.hallyn.com>
-References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
- <1449070821-73820-16-git-send-email-seth.forshee@canonical.com>
- <20151204194206.GF3624@mail.hallyn.com>
- <20151204203627.GD147214@ubuntu-hedt>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151204203627.GD147214@ubuntu-hedt>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a4yxB-00056z-GR
+ for linux-mtd@lists.infradead.org; Fri, 04 Dec 2015 22:35:51 +0000
+From: Antoine Tenart <antoine.tenart@free-electrons.com>
+To: computersforpeace@gmail.com, dwmw2@infradead.org,
+ boris.brezillon@free-electrons.com
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: nand: support JEDEC additional redundant parameter pages
+Date: Fri,  4 Dec 2015 23:35:28 +0100
+Message-Id: <1449268528-18154-1-git-send-email-antoine.tenart@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,116 +20,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 04, 2015 at 02:36:27PM -0600, Seth Forshee wrote:
-> On Fri, Dec 04, 2015 at 01:42:06PM -0600, Serge E. Hallyn wrote:
-> > Quoting Seth Forshee (seth.forshee@canonical.com):
-> > > A privileged user in a super block's s_user_ns is privileged
-> > > towards that file system and thus should be allowed to set file
-> > > capabilities. The file capabilities will not be trusted outside
-> > > of s_user_ns, so an unprivileged user cannot use this to gain
-> > > privileges in a user namespace where they are not already
-> > > privileged.
-> > > 
-> > > Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> > > ---
-> > >  security/commoncap.c | 12 ++++++++----
-> > >  1 file changed, 8 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/security/commoncap.c b/security/commoncap.c
-> > > index 2119421613f6..d6c80c19c449 100644
-> > > --- a/security/commoncap.c
-> > > +++ b/security/commoncap.c
-> > > @@ -653,15 +653,17 @@ int cap_bprm_secureexec(struct linux_binprm *bprm)
-> > >  int cap_inode_setxattr(struct dentry *dentry, const char *name,
-> > >  		       const void *value, size_t size, int flags)
-> > >  {
-> > > +	struct user_namespace *user_ns = dentry->d_sb->s_user_ns;
-> > > +
-> > >  	if (!strcmp(name, XATTR_NAME_CAPS)) {
-> > > -		if (!capable(CAP_SETFCAP))
-> > > +		if (!ns_capable(user_ns, CAP_SETFCAP))
-> > >  			return -EPERM;
-> > 
-> > This, for file capabilities, is fine,
-> > 
-> > >  		return 0;
-> > >  	}
-> > >  
-> > >  	if (!strncmp(name, XATTR_SECURITY_PREFIX,
-> > >  		     sizeof(XATTR_SECURITY_PREFIX) - 1) &&
-> > > -	    !capable(CAP_SYS_ADMIN))
-> > > +	    !ns_capable(user_ns, CAP_SYS_ADMIN))
-> > 
-> > but this is for all other security.*.
-> > 
-> > It's probably still ok, but let's think about it a sec.  MAC like
-> > selinux or smack should be orthogonal to DAC.  Capabilities are the
-> > same in essence, but the reason they can be treated differently here
-> > is because capabilties are in fact targated at a user namespace.
-> > Apparmor namespaces, for instance, are completely orthogonal to user
-> > namespaces, as are contexts in selinux.
-> > 
-> > Now, if smack or selinux xattrs are being set then those modules
-> > should be gating these writes.  Booting a kernel without those
-> > modules should be a challenge for an untrusted user.  But such a
-> > situation could be exploited opportunistically if it were to happen.
-> > 
-> > The problem with simply not changing this here is that if selinux
-> > or smack authorizes the xattr write, then commoncap shouldn't be
-> > denying it.
-> 
-> This is partly the logic behind the change, the other part being that
-> the user could already insert the xattrs directly into the backing store
-> so the LSMs must be prepared not to trust them in any case. But the
-> commit message doesn't explain that, my mistake. And it's a question
-> worth revisiting.
-> 
-> > I get the feeling we need cooperation among the modules (i.e. "if
-> > the write is to 'security.$lsm' and $lsm is not loaded, then require
-> > capable(CAP_SYS_ADMIN), else just allow)  But that's not how things are
-> > structured right now.
-> > 
-> > Maybe security.ko could grow central logic to 'assign' security.*
-> > capabilities to specific lsms and gate writes to those if $lsm is not
-> > loaded.
-> 
-> I don't see any meaningful difference between this case and the case of
-> inserting them into the backing store before mounting. We can't do
-> anything to prevent the latter, so LSMs just have to be aware of
-> unprivileged mounts and handle them with care. Previous patches do this
-> for SELinux and Smack by adopting a policy that doesn't respect security
-> labels on disk for these mounts. So I don't think that refusing to set
-> security.* xattrs for an LSM that isn't loaded really accomplishes
-> anything.
+The JEDEC standard defines the JEDEC parameter page data structure.
+One page plus two redundant pages are always there, in bits 0-1535.
+Additionnal redundant parameter pages can be stored at bits 1536+.
+Add support to read these pages.
 
-Good point.  I think that's the thing to point in the patch description.
-(The original patch description doesn't mention any change apart from
-file capabilities, which I think it should)
+The first 3 JEDEC parameter pages are always checked, and if none
+is valid we try to read additional redundant pages following the
+standard definition: we continue while at least two of the four bytes
+of the parameter page signature match (stored in the first dword).
 
-> Then there's the case of setting xattrs for an LSM that is currently
-> loaded. I think that SELinux and Smack are both going to refuse these
-> writes, Smack rather directly by seeing that the user lacks global
-> CAP_MAC_ADMIN and SELinux by virtue of the fact that the previous patch
-> in this series applies mountpoint labeling to these mounts. As far as I
-> can tell the other LSMs don't take security policy from xattrs.
-> 
-> So, as far as I can tell, removing the check doesn't create any
-> vulnerabilities.
-> 
-> But that's not to say it's the right thing to do. After reconsidering
-> it, I'm inclined to be more conservative and to keep requiring
-> capable(CAP_SYS_ADMIN) until such time as there's a use case for
-> allowing a user privileged only in s_user_ns to write these xattrs.
-> 
-> > Does anything break if the second hunk in each fn in this patch is
-> > not applied?
-> 
-> Not that I'm aware of, no.
+There is no limit to the number of additional redundant parameter
+page.
 
-That's ok, let's leave the patch as is, with updated description.
+Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 44 ++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 34 insertions(+), 10 deletions(-)
 
-Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
-
-thanks!
-
--serge
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index cc74142938b0..31f4a6585703 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3392,6 +3392,32 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	return 1;
+ }
+ 
++static int nand_flash_jedec_read_param(struct mtd_info *mtd,
++				       struct nand_chip *chip,
++				       struct nand_jedec_params *p)
++{
++	int i, match = 0;
++	char sig[4] = "JESD";
++
++	for (i = 0; i < sizeof(*p); i++)
++		((uint8_t *)p)[i] = chip->read_byte(mtd);
++
++	for (i = 0; i < 4; i++)
++		if (p->sig[i] == sig[i])
++			match++;
++
++	if (match < 2) {
++		pr_warn("Invalid JEDEC page\n");
++		return -EINVAL;
++	}
++
++	if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
++			le16_to_cpu(p->crc))
++		return 0;
++
++	return -EAGAIN;
++}
++
+ /*
+  * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
+  */
+@@ -3400,8 +3426,7 @@ static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
+ {
+ 	struct nand_jedec_params *p = &chip->jedec_params;
+ 	struct jedec_ecc_info *ecc;
+-	int val;
+-	int i, j;
++	int val, i, ret = 0;
+ 
+ 	/* Try JEDEC for unknown chip or LP */
+ 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x40, -1);
+@@ -3411,16 +3436,15 @@ static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
+ 		return 0;
+ 
+ 	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0x40, -1);
+-	for (i = 0; i < 3; i++) {
+-		for (j = 0; j < sizeof(*p); j++)
+-			((uint8_t *)p)[j] = chip->read_byte(mtd);
+-
+-		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
+-				le16_to_cpu(p->crc))
++	for (i = 0; i < 3; i++)
++		if (!nand_flash_jedec_read_param(mtd, chip, p))
+ 			break;
+-	}
+ 
+-	if (i == 3) {
++	/* Try reading additional parameter pages */
++	if (i == 3)
++		while ((ret = nand_flash_jedec_read_param(mtd, chip, p)) ==
++				-EAGAIN);
++	if (ret) {
+ 		pr_err("Could not find valid JEDEC parameter page; aborting\n");
+ 		return 0;
+ 	}
+-- 
+2.6.3
