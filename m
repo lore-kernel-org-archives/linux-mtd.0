@@ -1,37 +1,23 @@
-Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
+Received: from mail-pf0-x229.google.com ([2607:f8b0:400e:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a50I2-0004sx-9u
- for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 00:01:28 +0000
-Received: by igcto18 with SMTP id to18so47501493igc.0
- for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 16:01:05 -0800 (PST)
-Subject: Re: [PATCH 14/19] fs: Permit FIBMAP for users with CAP_SYS_RAWIO in
- s_user_ns
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_EE500999-1F4A-473D-9466-533245EFCD34";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-From: Andreas Dilger <adilger@dilger.ca>
-In-Reply-To: <20151204231152.GE18359@thunk.org>
-Date: Fri, 4 Dec 2015 17:00:58 -0700
-Cc: Theodore Ts'o <tytso@mit.edu>, "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <miklos@szeredi.hu>, linux-bcache@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- fuse-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org,
- selinux@tycho.nsa.gov
-Message-Id: <DB9A6172-D1AF-4704-9D0D-936365A44AD0@dilger.ca>
-References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
- <1449070821-73820-15-git-send-email-seth.forshee@canonical.com>
- <20151204191143.GE3624@mail.hallyn.com> <20151204200528.GC18359@thunk.org>
- <20151204200736.GJ3624@mail.hallyn.com> <20151204204532.GG147214@ubuntu-hedt>
- <20151204231152.GE18359@thunk.org>
-To: Seth Forshee <seth.forshee@canonical.com>,
- "Serge E. Hallyn" <serge@hallyn.com>
+ id 1a50JN-0005GT-9a
+ for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 00:02:49 +0000
+Received: by pfnn128 with SMTP id n128so33356679pfn.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 16:02:28 -0800 (PST)
+Date: Fri, 4 Dec 2015 16:02:25 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
+ Simon Arlott <simon@fire.lp0.eu>
+Subject: Re: [PATCH v2 3/6] mtd: partitions: rename MTD parser get/put
+Message-ID: <20151205000225.GJ120110@google.com>
+References: <1449271518-118900-1-git-send-email-computersforpeace@gmail.com>
+ <1449271518-118900-4-git-send-email-computersforpeace@gmail.com>
+ <20151205010002.51a1bd57@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151205010002.51a1bd57@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,82 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sat, Dec 05, 2015 at 01:00:02AM +0100, Boris Brezillon wrote:
+> On Fri,  4 Dec 2015 15:25:15 -0800
+> Brian Norris <computersforpeace@gmail.com> wrote:
+> > We're going to reuse put_partition_parser(), so let's fix up the prefix
+> > naming a bit, to hopefully be more consistent. Also make convert to a
+> > true C function instead of a macro.
+> > 
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > ---
+> > v2: keep mtd_part_parser_put() in the *.c file instead of the header, since
+> >     we'll only use it in a wrapper now instead of exporting it directly
+> 
+> Don't know if you forgot my R-b tag or if you dropped it on purpose
+> because of this change, but it still applies here.
 
---Apple-Mail=_EE500999-1F4A-473D-9466-533245EFCD34
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Was intentional, for that reason.
 
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-> On Dec 4, 2015, at 4:11 PM, Theodore Ts'o <tytso@mit.edu> wrote:
->=20
-> On Fri, Dec 04, 2015 at 02:45:32PM -0600, Seth Forshee wrote:
->> On Fri, Dec 04, 2015 at 02:07:36PM -0600, Serge E. Hallyn wrote:
->>> Heh, I was looking over =
-http://www.gossamer-threads.com/lists/linux/kernel/103611
->>> a little while ago :)  The same question was asked 16 years ago.  =
-Apparently
->>> the answer then was that it was easier than fixing the code.
->>=20
->> So it seems then that either it still isn't safe and so unprivileged
->> users shouldn't be allowed to do it at all, or else it's safe and we
->> should drop the requirement completely. I can't say which is right,
->> unfortunately.
->=20
-> It may not have been safe 16 years agoo, but giving invalid arguments
-> to FIBMAP is safe for ext4 and ext2.  This is the sort of thing that
-> tools like trinity should and does test for, so I think it should be
-> fine to remove the root check for FIBMAP.
-
-You can use FIEMAP on regular files and directories without special =
-permission:
-
-$ filefrag -v /etc
-Filesystem type is: ef53
-File size of /etc is 12288 (3 blocks of 4096 bytes)
- ext:     logical_offset:        physical_offset: length:   expected: =
-flags:
-   0:        0..       0:    8396832..   8396832:      1:
-   1:        1..       2:    8397051..   8397052:      2:    8396833: =
-last,eof
-/etc: 2 extents found
-
-
-FIEMAP also has the benefit that you don't need to call it millions of =
-times
-for large files, like is needed for FIBMAP.
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_EE500999-1F4A-473D-9466-533245EFCD34
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP using GPGMail
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIVAwUBVmIpOnKl2rkXzB/gAQiv8xAAps7t3Ska0yZZLMZZpbom7CuzBl76wRN6
-d44HirTWGiHhS+29eoruiXIrBnxz8pcnBM7E4ilM/EiTJehIMH9v/aoLuCxZQ4cv
-IlZzZBgcf5Sl3CJ7xXA7eMhJLgglNz+dS+3biT2ovXnktVU7vXvBXBpXuJp+lGGg
-mYrdjjrBDoYsUge/wbqeOY7+UrBdam2zxfwCn3Mb7nHXZ0a5haYAsQHasOuzcS2G
-4a3Vhz9rOgbA+MismKFVbSCwAphGtp9r1ixhPxCLNKw+0Pt7zBXzL/ldznw065RV
-oI0ahJk5z9qiGvo53S5+NAcf8PSfpjcBSV+dwrqOGfcLBFcxdJD9SDu2iVMmLYWY
-QF4h3CwN4ld1ka041UNXwFuSRmor6ToiA5yoRbwo5q9+YQVbNl4f7iR+lfXNVJco
-O5zYqt1tuverbhsJU6yb7gmQjNQROiHQuCyi9CWe8n1kMHbqLW4X1uEsUnvybVOW
-WpbPyKu+gNS9QQ4tEvWPoWZ6/g2LUIN7HoGZyxDNrAJgvNsiESFym/HsQSk/Dq63
-0VFOjUk3DVtdeSAlmp0fa/HbCFng2yHsNxmrSv3kt0WhVt6DZSC+8AOrH9MsBIqe
-hAeeISULRfEuWnT/Fxo3uDlERwogEYMN6OHflfaeInWZAo+ezeymUoldpoaqBopD
-AvY4m5kZRjM=
-=lPI3
------END PGP SIGNATURE-----
-
---Apple-Mail=_EE500999-1F4A-473D-9466-533245EFCD34--
+Thanks!
