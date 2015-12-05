@@ -1,21 +1,37 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a50Hr-0004qv-BC
- for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 00:01:16 +0000
-Date: Sat, 5 Dec 2015 01:00:52 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: <linux-mtd@lists.infradead.org>, Linus Walleij
- <linus.walleij@linaro.org>, Simon Arlott <simon@fire.lp0.eu>
-Subject: Re: [PATCH v2 4/6] mtd: partitions: remove kmemdup()
-Message-ID: <20151205010052.2aada5c3@bbrezillon>
-In-Reply-To: <1449271518-118900-5-git-send-email-computersforpeace@gmail.com>
-References: <1449271518-118900-1-git-send-email-computersforpeace@gmail.com>
- <1449271518-118900-5-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a50I2-0004sx-9u
+ for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 00:01:28 +0000
+Received: by igcto18 with SMTP id to18so47501493igc.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 16:01:05 -0800 (PST)
+Subject: Re: [PATCH 14/19] fs: Permit FIBMAP for users with CAP_SYS_RAWIO in
+ s_user_ns
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_EE500999-1F4A-473D-9466-533245EFCD34";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+From: Andreas Dilger <adilger@dilger.ca>
+In-Reply-To: <20151204231152.GE18359@thunk.org>
+Date: Fri, 4 Dec 2015 17:00:58 -0700
+Cc: Theodore Ts'o <tytso@mit.edu>, "Eric W. Biederman" <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ fuse-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org,
+ selinux@tycho.nsa.gov
+Message-Id: <DB9A6172-D1AF-4704-9D0D-936365A44AD0@dilger.ca>
+References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
+ <1449070821-73820-15-git-send-email-seth.forshee@canonical.com>
+ <20151204191143.GE3624@mail.hallyn.com> <20151204200528.GC18359@thunk.org>
+ <20151204200736.GJ3624@mail.hallyn.com> <20151204204532.GG147214@ubuntu-hedt>
+ <20151204231152.GE18359@thunk.org>
+To: Seth Forshee <seth.forshee@canonical.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,100 +41,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  4 Dec 2015 15:25:16 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
 
-> The use of kmemdup() complicates the error handling a bit. We don't
-> actually need to allocate new memory, since this reference is treated as
-> const, and it is copied into new memory by the partition registration
-> code anyway. So remove it.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+--Apple-Mail=_EE500999-1F4A-473D-9466-533245EFCD34
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-> ---
-> New in v2
-> 
->  drivers/mtd/mtdcore.c | 16 +++++++---------
->  drivers/mtd/mtdcore.h |  2 +-
->  drivers/mtd/mtdpart.c |  2 +-
->  3 files changed, 9 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 62f83b050978..868ee52d5063 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -532,7 +532,7 @@ out_error:
->  }
->  
->  static int mtd_add_device_partitions(struct mtd_info *mtd,
-> -				     struct mtd_partition *real_parts,
-> +				     const struct mtd_partition *real_parts,
->  				     int nbparts)
->  {
->  	int ret;
-> @@ -589,16 +589,12 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
->  			      int nr_parts)
->  {
->  	int ret;
-> -	struct mtd_partition *real_parts = NULL;
-> +	const struct mtd_partition *real_parts = NULL;
->  
->  	ret = parse_mtd_partitions(mtd, types, &real_parts, parser_data);
->  	if (ret <= 0 && nr_parts && parts) {
-> -		real_parts = kmemdup(parts, sizeof(*parts) * nr_parts,
-> -				     GFP_KERNEL);
-> -		if (!real_parts)
-> -			ret = -ENOMEM;
-> -		else
-> -			ret = nr_parts;
-> +		real_parts = parts;
-> +		ret = nr_parts;
->  	}
->  	/* Didn't come up with either parsed OR fallback partitions */
->  	if (ret < 0) {
-> @@ -628,7 +624,9 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
->  	}
->  
->  out:
-> -	kfree(real_parts);
-> +	/* Cleanup any parsed partitions */
-> +	if (real_parts != parts)
-> +		kfree(real_parts);
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(mtd_device_parse_register);
-> diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
-> index 7b0353399a10..537ec66f9cfd 100644
-> --- a/drivers/mtd/mtdcore.h
-> +++ b/drivers/mtd/mtdcore.h
-> @@ -11,7 +11,7 @@ int del_mtd_device(struct mtd_info *mtd);
->  int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *, int);
->  int del_mtd_partitions(struct mtd_info *);
->  int parse_mtd_partitions(struct mtd_info *master, const char * const *types,
-> -			 struct mtd_partition **pparts,
-> +			 const struct mtd_partition **pparts,
->  			 struct mtd_part_parser_data *data);
->  
->  int __init init_mtdchar(void);
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index c6fd4b24c822..86691a5c68b9 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -757,7 +757,7 @@ static const char * const default_mtd_part_types[] = {
->   *   point to an array containing this number of &struct mtd_info objects.
->   */
->  int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
-> -			 struct mtd_partition **pparts,
-> +			 const struct mtd_partition **pparts,
->  			 struct mtd_part_parser_data *data)
->  {
->  	struct mtd_part_parser *parser;
+> On Dec 4, 2015, at 4:11 PM, Theodore Ts'o <tytso@mit.edu> wrote:
+>=20
+> On Fri, Dec 04, 2015 at 02:45:32PM -0600, Seth Forshee wrote:
+>> On Fri, Dec 04, 2015 at 02:07:36PM -0600, Serge E. Hallyn wrote:
+>>> Heh, I was looking over =
+http://www.gossamer-threads.com/lists/linux/kernel/103611
+>>> a little while ago :)  The same question was asked 16 years ago.  =
+Apparently
+>>> the answer then was that it was easier than fixing the code.
+>>=20
+>> So it seems then that either it still isn't safe and so unprivileged
+>> users shouldn't be allowed to do it at all, or else it's safe and we
+>> should drop the requirement completely. I can't say which is right,
+>> unfortunately.
+>=20
+> It may not have been safe 16 years agoo, but giving invalid arguments
+> to FIBMAP is safe for ext4 and ext2.  This is the sort of thing that
+> tools like trinity should and does test for, so I think it should be
+> fine to remove the root check for FIBMAP.
+
+You can use FIEMAP on regular files and directories without special =
+permission:
+
+$ filefrag -v /etc
+Filesystem type is: ef53
+File size of /etc is 12288 (3 blocks of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: =
+flags:
+   0:        0..       0:    8396832..   8396832:      1:
+   1:        1..       2:    8397051..   8397052:      2:    8396833: =
+last,eof
+/etc: 2 extents found
+
+
+FIEMAP also has the benefit that you don't need to call it millions of =
+times
+for large files, like is needed for FIBMAP.
+
+Cheers, Andreas
 
 
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+
+
+
+--Apple-Mail=_EE500999-1F4A-473D-9466-533245EFCD34
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP using GPGMail
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIVAwUBVmIpOnKl2rkXzB/gAQiv8xAAps7t3Ska0yZZLMZZpbom7CuzBl76wRN6
+d44HirTWGiHhS+29eoruiXIrBnxz8pcnBM7E4ilM/EiTJehIMH9v/aoLuCxZQ4cv
+IlZzZBgcf5Sl3CJ7xXA7eMhJLgglNz+dS+3biT2ovXnktVU7vXvBXBpXuJp+lGGg
+mYrdjjrBDoYsUge/wbqeOY7+UrBdam2zxfwCn3Mb7nHXZ0a5haYAsQHasOuzcS2G
+4a3Vhz9rOgbA+MismKFVbSCwAphGtp9r1ixhPxCLNKw+0Pt7zBXzL/ldznw065RV
+oI0ahJk5z9qiGvo53S5+NAcf8PSfpjcBSV+dwrqOGfcLBFcxdJD9SDu2iVMmLYWY
+QF4h3CwN4ld1ka041UNXwFuSRmor6ToiA5yoRbwo5q9+YQVbNl4f7iR+lfXNVJco
+O5zYqt1tuverbhsJU6yb7gmQjNQROiHQuCyi9CWe8n1kMHbqLW4X1uEsUnvybVOW
+WpbPyKu+gNS9QQ4tEvWPoWZ6/g2LUIN7HoGZyxDNrAJgvNsiESFym/HsQSk/Dq63
+0VFOjUk3DVtdeSAlmp0fa/HbCFng2yHsNxmrSv3kt0WhVt6DZSC+8AOrH9MsBIqe
+hAeeISULRfEuWnT/Fxo3uDlERwogEYMN6OHflfaeInWZAo+ezeymUoldpoaqBopD
+AvY4m5kZRjM=
+=lPI3
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_EE500999-1F4A-473D-9466-533245EFCD34--
