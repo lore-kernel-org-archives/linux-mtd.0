@@ -1,9 +1,9 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a55GK-0005WS-Ch
+ id 1a55GL-0005WY-Km
  for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 05:20:03 +0000
-Received: by pacdm15 with SMTP id dm15so96814504pac.3
- for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 21:19:39 -0800 (PST)
+Received: by pacwq6 with SMTP id wq6so19542937pac.1
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 21:19:41 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: <linux-kernel@vger.kernel.org>,
@@ -17,9 +17,10 @@ Cc: <linux-kernel@vger.kernel.org>,
  <devicetree-spec@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
  Hauke Mehrtens <hauke@hauke-m.de>, Arnd Bergmann <arnd@arndb.de>
-Subject: [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format binding
-Date: Fri,  4 Dec 2015 21:19:19 -0800
-Message-Id: <1449292763-129421-4-git-send-email-computersforpeace@gmail.com>
+Subject: [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and
+ of_mtd_match_mtd_parser() helpers
+Date: Fri,  4 Dec 2015 21:19:20 -0800
+Message-Id: <1449292763-129421-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
 References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,134 +32,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The platform description (such as the type of partition formats used on
-a given flash) should be done independently of the flash driver in use.
-However, we can't reasonably have *all* partition parsers run on all
-flash (until they find a match), so let's overload the 'partitions'
-subnode to support specifying which format(s) to try in the device tree.
-
-Start by supporting Google's (Chrome OS) FMAP structure.
-
-There have been others interested in extending devicetree support to
-other parsers, like the bcm47xxpart parser:
-
-  http://patchwork.ozlabs.org/patch/475986/
-
-and the AFS (ARM Flash Structure?) parser:
-
-  http://patchwork.ozlabs.org/patch/537827/
+Like the corresponding OF-based device/driver matching infrascture,
+let's begin to support a mtd/partition-parser matching infrastructure.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- .../devicetree/bindings/mtd/partition.txt          | 75 ++++++++++++++++++++--
- 1 file changed, 69 insertions(+), 6 deletions(-)
+ drivers/of/of_mtd.c            | 33 +++++++++++++++++++++++++++++++++
+ include/linux/mtd/partitions.h |  2 ++
+ include/linux/of_mtd.h         | 13 +++++++++++++
+ 3 files changed, 48 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-index 28ae56f5c972..1bf9a7243993 100644
---- a/Documentation/devicetree/bindings/mtd/partition.txt
-+++ b/Documentation/devicetree/bindings/mtd/partition.txt
-@@ -1,29 +1,56 @@
--Representing flash partitions in devicetree
-+Flash partitions in device tree
-+===============================
+diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+index b7361ed70537..169d7500af5d 100644
+--- a/drivers/of/of_mtd.c
++++ b/drivers/of/of_mtd.c
+@@ -9,6 +9,7 @@
+ #include <linux/kernel.h>
+ #include <linux/of_mtd.h>
+ #include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
+ #include <linux/export.h>
  
--Partitions can be represented by sub-nodes of an mtd device. This can be used
-+Flash devices can be partitioned into one or more functional ranges (e.g.,
-+"boot code", "nvram", and "kernel") in at least two distinct ways:
+ /**
+@@ -117,3 +118,35 @@ bool of_get_nand_on_flash_bbt(struct device_node *np)
+ 	return of_property_read_bool(np, "nand-on-flash-bbt");
+ }
+ EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
 +
-+ (A) a fixed flash layout at production time or
-+ (B) with an on-flash partition table, such as RedBoot, that describes the
-+     geometry and naming/purpose of each functional region
++static const struct of_device_id *of_match_mtd_parser(
++		struct mtd_part_parser *parser, struct device_node *np)
++{
++	if (!parser || !np)
++		return NULL;
 +
-+The former typically requires an operating system to learn about the
-+partitioning from some kind of metadata provided by the bootloader/firmware.
-+Such partitions can be described using the method in "Section A: Fixed Partitions".
++	return of_match_node(parser->of_match_table, np);
++}
 +
-+The latter is somewhat analogous to partition tables used on block devices
-+(e.g., MBR or GPT), except that there is less standardization for flash
-+devices, and it is not always safe or efficient to attempt to search for all of
-+them on every flash device in the system, particularly since many of them allow
-+their data structures to be placed anywhere on the flash, and so require
-+scanning the entire flash device to find them.
++static struct device_node *mtd_get_partitions_of_node(struct mtd_info *master)
++{
++	struct device_node *np = mtd_get_of_node(master);
 +
-+To assist system software in locating these partition tables, we provide a
-+binding to describe which partition format(s) may be used on a given flash,
-+found below in "Section B: On-Flash Partition Tables".
++	if (!np)
++		return NULL;
 +
++	return of_get_child_by_name(np, "partitions");
++}
 +
-+Section A: Fixed Partitions
-+---------------------------
++bool of_mtd_match_mtd_parser(struct mtd_info *mtd,
++			     struct mtd_part_parser *parser)
++{
++	struct device_node *np = mtd_get_partitions_of_node(mtd);
++	bool ret;
 +
-+Partitions can be represented by sub-nodes of a flash device. This can be used
- on platforms which have strong conventions about which portions of a flash are
- used for what purposes, but which don't use an on-flash partition table such
- as RedBoot.
++	ret = of_match_mtd_parser(parser, np) != NULL;
++	of_node_put(np);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(of_mtd_match_mtd_parser);
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 70736e1e6c8f..2e68ef561a40 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -51,6 +51,7 @@ struct mtd_partition {
  
--The partition table should be a subnode of the mtd node and should be named
-+The partition table should be a subnode of the flash node and should be named
- 'partitions'. This node should have the following property:
- - compatible : (required) must be "partitions"
- Partitions are then defined in subnodes of the partitions node.
+ struct mtd_info;
+ struct device_node;
++struct of_device_id;
  
--For backwards compatibility partitions as direct subnodes of the mtd device are
-+For backwards compatibility partitions as direct subnodes of the flash device are
- supported. This use is discouraged.
- NOTE: also for backwards compatibility, direct subnodes that have a compatible
- string are not considered partitions, as they may be used for other bindings.
+ /**
+  * struct mtd_part_parser_data - used to pass data to MTD partition parsers.
+@@ -69,6 +70,7 @@ struct mtd_part_parser {
+ 	struct list_head list;
+ 	struct module *owner;
+ 	const char *name;
++	const struct of_device_id *of_match_table;
+ 	int (*parse_fn)(struct mtd_info *, const struct mtd_partition **,
+ 			struct mtd_part_parser_data *);
+ 	void (*cleanup)(const struct mtd_partition *pparts, int nr_parts);
+diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+index e266caa36402..781362d0be0c 100644
+--- a/include/linux/of_mtd.h
++++ b/include/linux/of_mtd.h
+@@ -9,6 +9,10 @@
+ #ifndef __LINUX_OF_MTD_H
+ #define __LINUX_OF_MTD_H
  
- #address-cells & #size-cells must both be present in the partitions subnode of the
--mtd device. There are two valid values for both:
-+flash device. There are two valid values for both:
- <1>: for partitions that require a single 32-bit cell to represent their
-      size/address (aka the value is below 4 GiB)
- <2>: for partitions that require two 32-bit cells to represent their
-      size/address (aka the value is 4 GiB or greater).
++#include <linux/mtd/mtd.h>
++
++struct mtd_part_parser;
++
+ #ifdef CONFIG_OF_MTD
  
- Required properties:
--- reg : The partition's offset and size within the mtd bank.
-+- reg : The partition's offset and size within the flash
+ #include <linux/of.h>
+@@ -18,6 +22,9 @@ int of_get_nand_ecc_strength(struct device_node *np);
+ int of_get_nand_bus_width(struct device_node *np);
+ bool of_get_nand_on_flash_bbt(struct device_node *np);
  
- Optional properties:
- - label : The label / name for this partition.  If omitted, the label is taken
-@@ -89,3 +116,39 @@ flash@2 {
- 		};
- 	};
- };
++bool of_mtd_match_mtd_parser(struct mtd_info *mtd,
++			     struct mtd_part_parser *parser);
 +
+ #else /* CONFIG_OF_MTD */
+ 
+ static inline int of_get_nand_ecc_mode(struct device_node *np)
+@@ -45,6 +52,12 @@ static inline bool of_get_nand_on_flash_bbt(struct device_node *np)
+ 	return false;
+ }
+ 
++static inline bool of_mtd_match_mtd_parser(struct mtd_info *mtd,
++					   struct mtd_part_parser *parser)
++{
++	return false;
++}
 +
-+Section B: On-Flash Partition Tables
-+------------------------------------
-+
-+System designers use a variety of on-flash data structures to describe the
-+layout of the flash. Because it's not always optimal for system software to
-+scan for every sort of data structure that might be used, one can specify which
-+structure(s) might be used on a given flash using the 'partitions' subnode of
-+the flash node.
-+
-+Node name: partitions
-+Properties:
-+ - compatible: (required) used to define which partition format(s) may be in
-+   use on this flash may contain one or more of the strings defined in the
-+   following subsections
-+
-+
-+Google's FMAP (Flash MAP)
-+#########################
-+
-+Often used to describe the boot flash on Chrome OS devices. Specified here:
-+
-+  https://github.com/dhendrix/flashmap/blob/wiki/FmapSpec.md
-+
-+Properties:
-+- compatible: (required) must include "google,fmap"
-+
-+
-+Examples:
-+
-+flash@0 {
-+	partitions {
-+		compatible = "google,fmap";
-+	};
-+};
+ #endif /* CONFIG_OF_MTD */
+ 
+ #endif /* __LINUX_OF_MTD_H */
 -- 
 2.6.0.rc2.230.g3dd15c0
