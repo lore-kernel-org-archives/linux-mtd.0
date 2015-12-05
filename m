@@ -1,18 +1,20 @@
-Received: from mail-wm0-x22f.google.com ([2a00:1450:400c:c09::22f])
+Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a5HFX-0004vh-Nx
- for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 18:08:00 +0000
-Received: by wmec201 with SMTP id c201so103136342wme.1
- for <linux-mtd@lists.infradead.org>; Sat, 05 Dec 2015 10:07:36 -0800 (PST)
+ id 1a5KTP-000834-Jc
+ for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 21:34:32 +0000
+Received: by wmec201 with SMTP id c201so106399755wme.1
+ for <linux-mtd@lists.infradead.org>; Sat, 05 Dec 2015 13:34:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUJXHs_OhT0da+kzc=D4MOFUT9BB3eJ+7a_p6DYx-PKBA@mail.gmail.com>
+In-Reply-To: <CAOiHx=nz2bdA_R610ozsQHhccdcrHVVCamTtne5ReHrA-FcaaQ@mail.gmail.com>
 References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
- <CAMuHMdUJXHs_OhT0da+kzc=D4MOFUT9BB3eJ+7a_p6DYx-PKBA@mail.gmail.com>
+ <1449292763-129421-4-git-send-email-computersforpeace@gmail.com>
+ <CAOiHx=nz2bdA_R610ozsQHhccdcrHVVCamTtne5ReHrA-FcaaQ@mail.gmail.com>
 From: Michal Suchanek <hramrach@gmail.com>
-Date: Sat, 5 Dec 2015 19:06:57 +0100
-Message-ID: <CAOMqctTPq56Ukp89+KfLW8n2FUWv_=UoeK0SJ3NzGpq4Lr6Pzw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] mtd: partitions: add of_match_table support
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sat, 5 Dec 2015 22:33:30 +0100
+Message-ID: <CAOMqctTbUNd0GtY07YJuxem9HkU1WZ-NtO556=Yg2QrsF49Xjw@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format
+ binding
+To: Jonas Gorski <jogo@openwrt.org>
 Cc: Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Arnd Bergmann <arnd@arndb.de>,
@@ -23,8 +25,7 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- David Hendricks <dhendrix@chromium.org>,
- Jonas Gorski <jogo@openwrt.org>, Rob Herring <robh+dt@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
  MTD Maling List <linux-mtd@lists.infradead.org>,
  Hauke Mehrtens <hauke@hauke-m.de>
 Content-Type: text/plain; charset=UTF-8
@@ -37,33 +38,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5 December 2015 at 11:15, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On 5 December 2015 at 12:39, Jonas Gorski <jogo@openwrt.org> wrote:
 > On Sat, Dec 5, 2015 at 6:19 AM, Brian Norris
 > <computersforpeace@gmail.com> wrote:
->> There have been several discussions [1] about adding a device tree binding for
->> associating flash devices with the partition parser(s) that are used on the
->> flash. There are a few reasons:
->>
->>  (1) drivers shouldn't have to be encoding platform knowledge by listing what
->>      parsers might be used on a given system (this is the currently all that's
->>      supported)
->>  (2) we can't just scan for all supported parsers (like the block system does), since
->>      there is a wide diversity of "formats" (no standardization), and it is not
->>      always safe or efficient to attempt to do so, particularly since many of
->>      them allow their data structures to be placed anywhere on the flash, and
->>      so require scanning the entire flash device to find them.
->
-> I read the second reason, but would it be useful to (partially) merge
-> block/partitions/ and drivers/mtd/partitions/, so I can use e.g. msdos
-> partitions
-> on an mtd device??
->
 
-Using msdos partition on a MTD device does not sound terribly useful.
-On what kind of non-block device would you expect to find one?
+>> +
+>> +Examples:
+>> +
+>> +flash@0 {
+>> +       partitions {
+>> +               compatible = "google,fmap";
+>> +       };
+>> +};
+>
+> I wonder if this wouldn't be better served in a separate binding doc
+> with its compatible name as the filename, like we do with
+> driver^Whardware blocks, especially if we want to add more parsers.
 
-On the other hand, using FMAP on a block device might work an even
-might have some uses.
+
+I find that *very* counter productive for bindings that go to the same
+node. You have a description of a node, and then suddenly there you
+have another file with another description of the same node. Totally
+awesome.
+
+Also how do you plan to write partitioning schemes with parameters
+like with non-zero offset of the partition table.
 
 Thanks
 
