@@ -1,38 +1,25 @@
-Received: from mail-io0-x22c.google.com ([2607:f8b0:4001:c06::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a56AK-0003Yv-1D
- for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 06:17:52 +0000
-Received: by iofh3 with SMTP id h3so137670153iof.3
- for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 22:17:30 -0800 (PST)
-Date: Sat, 5 Dec 2015 00:15:58 -0600
-From: Seth Forshee <seth.forshee@canonical.com>
-To: "Serge E. Hallyn" <serge.hallyn@ubuntu.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, "Serge E. Hallyn" <serge@hallyn.com>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <miklos@szeredi.hu>, linux-bcache@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
-Subject: Re: [PATCH 14/19] fs: Permit FIBMAP for users with CAP_SYS_RAWIO in
- s_user_ns
-Message-ID: <20151205061558.GA14580@ubuntu-hedt>
-References: <1449070821-73820-1-git-send-email-seth.forshee@canonical.com>
- <1449070821-73820-15-git-send-email-seth.forshee@canonical.com>
- <20151204191143.GE3624@mail.hallyn.com>
- <20151204200528.GC18359@thunk.org>
- <20151204200736.GJ3624@mail.hallyn.com>
- <20151204204532.GG147214@ubuntu-hedt>
- <20151204231152.GE18359@thunk.org>
- <20151204234348.GA6908@mail.hallyn.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a583H-0000ID-SD
+ for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 08:18:45 +0000
+Date: Sat, 5 Dec 2015 09:18:20 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
+ Simon Arlott <simon@fire.lp0.eu>
+Subject: Re: [PATCH v2 5/6] mtd: partitions: pass around 'mtd_partitions'
+ wrapper struct
+Message-ID: <20151205091820.198a004c@bbrezillon>
+In-Reply-To: <20151205041835.GL120110@google.com>
+References: <1449271518-118900-1-git-send-email-computersforpeace@gmail.com>
+ <1449271518-118900-6-git-send-email-computersforpeace@gmail.com>
+ <20151205013049.0c66d38b@bbrezillon>
+ <20151205014511.GK120110@google.com>
+ <20151205041835.GL120110@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151204234348.GA6908@mail.hallyn.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,24 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 04, 2015 at 05:43:49PM -0600, Serge E. Hallyn wrote:
-> On Fri, Dec 04, 2015 at 06:11:52PM -0500, Theodore Ts'o wrote:
-> > On Fri, Dec 04, 2015 at 02:45:32PM -0600, Seth Forshee wrote:
-> > > On Fri, Dec 04, 2015 at 02:07:36PM -0600, Serge E. Hallyn wrote:
-> > > > Heh, I was looking over http://www.gossamer-threads.com/lists/linux/kernel/103611
-> > > > a little while ago :)  The same question was asked 16 years ago.  Apparently
-> > > > the answer then was that it was easier than fixing the code.
-> > > 
-> > > So it seems then that either it still isn't safe and so unprivileged
-> > > users shouldn't be allowed to do it at all, or else it's safe and we
-> > > should drop the requirement completely. I can't say which is right,
-> > > unfortunately.
-> > 
-> > It may not have been safe 16 years agoo, but giving invalid arguments
-> > to FIBMAP is safe for ext4 and ext2.  This is the sort of thing that
-> > tools like trinity should and does test for, so I think it should be
-> > fine to remove the root check for FIBMAP.
-> 
-> Seth, can I tempt you into sending a standalone patch to remove that? :)
+On Fri, 4 Dec 2015 20:18:35 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-Patch sent. I'll drop this patch in v2.
+> Hi Boris,
+> 
+> On Fri, Dec 04, 2015 at 05:45:11PM -0800, Brian Norris wrote:
+> > On Sat, Dec 05, 2015 at 01:30:49AM +0100, Boris Brezillon wrote:
+> > > How about defining a new function to encourage mtd drivers to pass an
+> > > mtd_partitions structure instead of the parts + nr_parts arguments.
+> 
+> ...
+> 
+> > > Hm, you updated the ->parse_fn() prototype to take a const mtd_partition **
+> > > in patch 2, and it seemed pretty easy.
+> > > How about updating it again to take an mtd_partitions pointer here?
+> 
+> OK, so I've hacked around at these two suggestions, and I'm not very
+> happy with the results so far. I mentioned some of my objection to the
+> first above already, and when I tried to do some kind of compromise, it
+> doesn't end up much cleaner IMO.
+> 
+> For the second suggestion, I don't really like the circular dependency,
+> where we have struct mtd_part_parser include pointers to struct
+> mtd_partitions which includes pointers to mtd_part_parser. This is
+> partly because of the re-use of the parts of the same struct as both an
+> input and an output, depending on the context. I don't think that's very
+> clean.
+> 
+> So, if there are good ways to extend some version of your suggestions,
+> perhaps they can be tackled after this patch set?
+
+Okay.
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
