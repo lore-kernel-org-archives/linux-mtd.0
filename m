@@ -1,9 +1,9 @@
-Received: from mail-pf0-x22e.google.com ([2607:f8b0:400e:c00::22e])
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a55GI-0005W2-7U
- for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 05:19:58 +0000
-Received: by pfdd184 with SMTP id d184so36333248pfd.3
- for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 21:19:37 -0800 (PST)
+ id 1a55GJ-0005WH-BT
+ for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 05:20:01 +0000
+Received: by pabfh17 with SMTP id fh17so99547124pab.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Dec 2015 21:19:38 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: <linux-kernel@vger.kernel.org>,
@@ -17,9 +17,9 @@ Cc: <linux-kernel@vger.kernel.org>,
  <devicetree-spec@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
  Hauke Mehrtens <hauke@hauke-m.de>, Arnd Bergmann <arnd@arndb.de>
-Subject: [RFC PATCH 1/7] mtd: move partition parsers to drivers/mtd/partitions/
-Date: Fri,  4 Dec 2015 21:19:17 -0800
-Message-Id: <1449292763-129421-2-git-send-email-computersforpeace@gmail.com>
+Subject: [RFC PATCH 2/7] mtd: move partition parsers' Kconfig under a sub-menu
+Date: Fri,  4 Dec 2015 21:19:18 -0800
+Message-Id: <1449292763-129421-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
 References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,84 +35,292 @@ For better organization.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/Makefile                       | 8 +-------
- drivers/mtd/partitions/Makefile            | 7 +++++++
- drivers/mtd/{ => partitions}/afs.c         | 0
- drivers/mtd/{ => partitions}/ar7part.c     | 0
- drivers/mtd/{ => partitions}/bcm47xxpart.c | 0
- drivers/mtd/{ => partitions}/bcm63xxpart.c | 0
- drivers/mtd/{ => partitions}/cmdlinepart.c | 0
- drivers/mtd/{ => partitions}/ofpart.c      | 0
- drivers/mtd/{ => partitions}/redboot.c     | 0
- 9 files changed, 8 insertions(+), 7 deletions(-)
- create mode 100644 drivers/mtd/partitions/Makefile
- rename drivers/mtd/{ => partitions}/afs.c (100%)
- rename drivers/mtd/{ => partitions}/ar7part.c (100%)
- rename drivers/mtd/{ => partitions}/bcm47xxpart.c (100%)
- rename drivers/mtd/{ => partitions}/bcm63xxpart.c (100%)
- rename drivers/mtd/{ => partitions}/cmdlinepart.c (100%)
- rename drivers/mtd/{ => partitions}/ofpart.c (100%)
- rename drivers/mtd/{ => partitions}/redboot.c (100%)
+ drivers/mtd/Kconfig            | 134 +----------------------------------------
+ drivers/mtd/partitions/Kconfig | 131 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 134 insertions(+), 131 deletions(-)
+ create mode 100644 drivers/mtd/partitions/Kconfig
 
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 99bb9a1f6e16..1c0cd3b1c7c3 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -6,13 +6,7 @@
- obj-$(CONFIG_MTD)		+= mtd.o
- mtd-y				:= mtdcore.o mtdsuper.o mtdconcat.o mtdpart.o mtdchar.o
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 42cc953309f1..a06e80d24499 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -23,137 +23,9 @@ config MTD_TESTS
+ 	  WARNING: some of the tests will ERASE entire MTD device which they
+ 	  test. Do not use these tests unless you really know what you do.
  
--obj-$(CONFIG_MTD_OF_PARTS)	+= ofpart.o
--obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
--obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
--obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
--obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
--obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
--obj-$(CONFIG_MTD_BCM47XX_PARTS)	+= bcm47xxpart.o
-+obj-y				+= partitions/
+-config MTD_REDBOOT_PARTS
+-	tristate "RedBoot partition table parsing"
+-	---help---
+-	  RedBoot is a ROM monitor and bootloader which deals with multiple
+-	  'images' in flash devices by putting a table one of the erase
+-	  blocks on the device, similar to a partition table, which gives
+-	  the offsets, lengths and names of all the images stored in the
+-	  flash.
+-
+-	  If you need code which can detect and parse this table, and register
+-	  MTD 'partitions' corresponding to each image in the table, enable
+-	  this option.
+-
+-	  You will still need the parsing functions to be called by the driver
+-	  for your particular device. It won't happen automatically. The
+-	  SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for
+-	  example.
+-
+-if MTD_REDBOOT_PARTS
+-
+-config MTD_REDBOOT_DIRECTORY_BLOCK
+-	int "Location of RedBoot partition table"
+-	default "-1"
+-	---help---
+-	  This option is the Linux counterpart to the
+-	  CYGNUM_REDBOOT_FIS_DIRECTORY_BLOCK RedBoot compile time
+-	  option.
+-
+-	  The option specifies which Flash sectors holds the RedBoot
+-	  partition table.  A zero or positive value gives an absolute
+-	  erase block number. A negative value specifies a number of
+-	  sectors before the end of the device.
+-
+-	  For example "2" means block number 2, "-1" means the last
+-	  block and "-2" means the penultimate block.
+-
+-config MTD_REDBOOT_PARTS_UNALLOCATED
+-	bool "Include unallocated flash regions"
+-	help
+-	  If you need to register each unallocated flash region as a MTD
+-	  'partition', enable this option.
+-
+-config MTD_REDBOOT_PARTS_READONLY
+-	bool "Force read-only for RedBoot system images"
+-	help
+-	  If you need to force read-only for 'RedBoot', 'RedBoot Config' and
+-	  'FIS directory' images, enable this option.
+-
+-endif # MTD_REDBOOT_PARTS
+-
+-config MTD_CMDLINE_PARTS
+-	tristate "Command line partition table parsing"
+-	depends on MTD
+-	---help---
+-	  Allow generic configuration of the MTD partition tables via the kernel
+-	  command line. Multiple flash resources are supported for hardware where
+-	  different kinds of flash memory are available.
+-
+-	  You will still need the parsing functions to be called by the driver
+-	  for your particular device. It won't happen automatically. The
+-	  SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for
+-	  example.
+-
+-	  The format for the command line is as follows:
+-
+-	  mtdparts=<mtddef>[;<mtddef]
+-	  <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
+-	  <partdef> := <size>[@offset][<name>][ro]
+-	  <mtd-id>  := unique id used in mapping driver/device
+-	  <size>    := standard linux memsize OR "-" to denote all
+-	  remaining space
+-	  <name>    := (NAME)
+-
+-	  Due to the way Linux handles the command line, no spaces are
+-	  allowed in the partition definition, including mtd id's and partition
+-	  names.
+-
+-	  Examples:
+-
+-	  1 flash resource (mtd-id "sa1100"), with 1 single writable partition:
+-	  mtdparts=sa1100:-
+-
+-	  Same flash, but 2 named partitions, the first one being read-only:
+-	  mtdparts=sa1100:256k(ARMboot)ro,-(root)
+-
+-	  If unsure, say 'N'.
+-
+-config MTD_AFS_PARTS
+-	tristate "ARM Firmware Suite partition parsing"
+-	depends on (ARM || ARM64)
+-	---help---
+-	  The ARM Firmware Suite allows the user to divide flash devices into
+-	  multiple 'images'. Each such image has a header containing its name
+-	  and offset/size etc.
+-
+-	  If you need code which can detect and parse these tables, and
+-	  register MTD 'partitions' corresponding to each image detected,
+-	  enable this option.
+-
+-	  You will still need the parsing functions to be called by the driver
+-	  for your particular device. It won't happen automatically. The
+-	  'physmap' map driver (CONFIG_MTD_PHYSMAP) does this, for example.
+-
+-config MTD_OF_PARTS
+-	tristate "OpenFirmware partitioning information support"
+-	default y
+-	depends on OF
+-	help
+-	  This provides a partition parsing function which derives
+-	  the partition map from the children of the flash node,
+-	  as described in Documentation/devicetree/bindings/mtd/partition.txt.
+-
+-config MTD_AR7_PARTS
+-	tristate "TI AR7 partitioning support"
+-	---help---
+-	  TI AR7 partitioning support
+-
+-config MTD_BCM63XX_PARTS
+-	tristate "BCM63XX CFE partitioning support"
+-	depends on BCM63XX
+-	select CRC32
+-	help
+-	  This provides partions parsing for BCM63xx devices with CFE
+-	  bootloaders.
+-
+-config MTD_BCM47XX_PARTS
+-	tristate "BCM47XX partitioning support"
+-	depends on BCM47XX || ARCH_BCM_5301X
+-	help
+-	  This provides partitions parser for devices based on BCM47xx
+-	  boards.
++menu "Partition Parsers"
++source "drivers/mtd/partitions/Kconfig"
++endmenu
  
- # 'Users' - code which presents functionality to userspace.
- obj-$(CONFIG_MTD_BLKDEVS)	+= mtd_blkdevs.o
-diff --git a/drivers/mtd/partitions/Makefile b/drivers/mtd/partitions/Makefile
+ comment "User Modules And Translation Layers"
+ 
+diff --git a/drivers/mtd/partitions/Kconfig b/drivers/mtd/partitions/Kconfig
 new file mode 100644
-index 000000000000..89822f2bfa59
+index 000000000000..0827d7a8be4e
 --- /dev/null
-+++ b/drivers/mtd/partitions/Makefile
-@@ -0,0 +1,7 @@
-+obj-$(CONFIG_MTD_OF_PARTS)	+= ofpart.o
-+obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
-+obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
-+obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
-+obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
-+obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
-+obj-$(CONFIG_MTD_BCM47XX_PARTS)	+= bcm47xxpart.o
-diff --git a/drivers/mtd/afs.c b/drivers/mtd/partitions/afs.c
-similarity index 100%
-rename from drivers/mtd/afs.c
-rename to drivers/mtd/partitions/afs.c
-diff --git a/drivers/mtd/ar7part.c b/drivers/mtd/partitions/ar7part.c
-similarity index 100%
-rename from drivers/mtd/ar7part.c
-rename to drivers/mtd/partitions/ar7part.c
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/partitions/bcm47xxpart.c
-similarity index 100%
-rename from drivers/mtd/bcm47xxpart.c
-rename to drivers/mtd/partitions/bcm47xxpart.c
-diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/partitions/bcm63xxpart.c
-similarity index 100%
-rename from drivers/mtd/bcm63xxpart.c
-rename to drivers/mtd/partitions/bcm63xxpart.c
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/partitions/cmdlinepart.c
-similarity index 100%
-rename from drivers/mtd/cmdlinepart.c
-rename to drivers/mtd/partitions/cmdlinepart.c
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/partitions/ofpart.c
-similarity index 100%
-rename from drivers/mtd/ofpart.c
-rename to drivers/mtd/partitions/ofpart.c
-diff --git a/drivers/mtd/redboot.c b/drivers/mtd/partitions/redboot.c
-similarity index 100%
-rename from drivers/mtd/redboot.c
-rename to drivers/mtd/partitions/redboot.c
++++ b/drivers/mtd/partitions/Kconfig
+@@ -0,0 +1,131 @@
++config MTD_REDBOOT_PARTS
++	tristate "RedBoot partition table parsing"
++	---help---
++	  RedBoot is a ROM monitor and bootloader which deals with multiple
++	  'images' in flash devices by putting a table one of the erase
++	  blocks on the device, similar to a partition table, which gives
++	  the offsets, lengths and names of all the images stored in the
++	  flash.
++
++	  If you need code which can detect and parse this table, and register
++	  MTD 'partitions' corresponding to each image in the table, enable
++	  this option.
++
++	  You will still need the parsing functions to be called by the driver
++	  for your particular device. It won't happen automatically. The
++	  SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for
++	  example.
++
++if MTD_REDBOOT_PARTS
++
++config MTD_REDBOOT_DIRECTORY_BLOCK
++	int "Location of RedBoot partition table"
++	default "-1"
++	---help---
++	  This option is the Linux counterpart to the
++	  CYGNUM_REDBOOT_FIS_DIRECTORY_BLOCK RedBoot compile time
++	  option.
++
++	  The option specifies which Flash sectors holds the RedBoot
++	  partition table.  A zero or positive value gives an absolute
++	  erase block number. A negative value specifies a number of
++	  sectors before the end of the device.
++
++	  For example "2" means block number 2, "-1" means the last
++	  block and "-2" means the penultimate block.
++
++config MTD_REDBOOT_PARTS_UNALLOCATED
++	bool "Include unallocated flash regions"
++	help
++	  If you need to register each unallocated flash region as a MTD
++	  'partition', enable this option.
++
++config MTD_REDBOOT_PARTS_READONLY
++	bool "Force read-only for RedBoot system images"
++	help
++	  If you need to force read-only for 'RedBoot', 'RedBoot Config' and
++	  'FIS directory' images, enable this option.
++
++endif # MTD_REDBOOT_PARTS
++
++config MTD_CMDLINE_PARTS
++	tristate "Command line partition table parsing"
++	depends on MTD
++	---help---
++	  Allow generic configuration of the MTD partition tables via the kernel
++	  command line. Multiple flash resources are supported for hardware where
++	  different kinds of flash memory are available.
++
++	  You will still need the parsing functions to be called by the driver
++	  for your particular device. It won't happen automatically. The
++	  SA1100 map driver (CONFIG_MTD_SA1100) has an option for this, for
++	  example.
++
++	  The format for the command line is as follows:
++
++	  mtdparts=<mtddef>[;<mtddef]
++	  <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
++	  <partdef> := <size>[@offset][<name>][ro]
++	  <mtd-id>  := unique id used in mapping driver/device
++	  <size>    := standard linux memsize OR "-" to denote all
++	  remaining space
++	  <name>    := (NAME)
++
++	  Due to the way Linux handles the command line, no spaces are
++	  allowed in the partition definition, including mtd id's and partition
++	  names.
++
++	  Examples:
++
++	  1 flash resource (mtd-id "sa1100"), with 1 single writable partition:
++	  mtdparts=sa1100:-
++
++	  Same flash, but 2 named partitions, the first one being read-only:
++	  mtdparts=sa1100:256k(ARMboot)ro,-(root)
++
++	  If unsure, say 'N'.
++
++config MTD_AFS_PARTS
++	tristate "ARM Firmware Suite partition parsing"
++	depends on (ARM || ARM64)
++	---help---
++	  The ARM Firmware Suite allows the user to divide flash devices into
++	  multiple 'images'. Each such image has a header containing its name
++	  and offset/size etc.
++
++	  If you need code which can detect and parse these tables, and
++	  register MTD 'partitions' corresponding to each image detected,
++	  enable this option.
++
++	  You will still need the parsing functions to be called by the driver
++	  for your particular device. It won't happen automatically. The
++	  'physmap' map driver (CONFIG_MTD_PHYSMAP) does this, for example.
++
++config MTD_OF_PARTS
++	tristate "OpenFirmware partitioning information support"
++	default y
++	depends on OF
++	help
++	  This provides a partition parsing function which derives
++	  the partition map from the children of the flash node,
++	  as described in Documentation/devicetree/bindings/mtd/partition.txt.
++
++config MTD_AR7_PARTS
++	tristate "TI AR7 partitioning support"
++	---help---
++	  TI AR7 partitioning support
++
++config MTD_BCM63XX_PARTS
++	tristate "BCM63XX CFE partitioning support"
++	depends on BCM63XX
++	select CRC32
++	help
++	  This provides partions parsing for BCM63xx devices with CFE
++	  bootloaders.
++
++config MTD_BCM47XX_PARTS
++	tristate "BCM47XX partitioning support"
++	depends on BCM47XX || ARCH_BCM_5301X
++	help
++	  This provides partitions parser for devices based on BCM47xx
++	  boards.
 -- 
 2.6.0.rc2.230.g3dd15c0
