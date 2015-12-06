@@ -1,34 +1,19 @@
-Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
+Received: from mail-lb0-x232.google.com ([2a00:1450:4010:c04::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a5KTP-000834-Jc
- for linux-mtd@lists.infradead.org; Sat, 05 Dec 2015 21:34:32 +0000
-Received: by wmec201 with SMTP id c201so106399755wme.1
- for <linux-mtd@lists.infradead.org>; Sat, 05 Dec 2015 13:34:09 -0800 (PST)
+ id 1a5Wbz-0005EP-83
+ for linux-mtd@lists.infradead.org; Sun, 06 Dec 2015 10:32:11 +0000
+Received: by lbblt2 with SMTP id lt2so41942100lbb.3
+ for <linux-mtd@lists.infradead.org>; Sun, 06 Dec 2015 02:31:48 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Subject: [PATCH] mtd: bcm47xxpart: don't fail because of bit-flips
+Date: Sun,  6 Dec 2015 11:31:38 +0100
+Message-Id: <1449397898-28703-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOiHx=nz2bdA_R610ozsQHhccdcrHVVCamTtne5ReHrA-FcaaQ@mail.gmail.com>
-References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
- <1449292763-129421-4-git-send-email-computersforpeace@gmail.com>
- <CAOiHx=nz2bdA_R610ozsQHhccdcrHVVCamTtne5ReHrA-FcaaQ@mail.gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Sat, 5 Dec 2015 22:33:30 +0100
-Message-ID: <CAOMqctTbUNd0GtY07YJuxem9HkU1WZ-NtO556=Yg2QrsF49Xjw@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format
- binding
-To: Jonas Gorski <jogo@openwrt.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- devicetree-spec@vger.kernel.org,
- Simon Arlott <simon@fire.lp0.eu>, Linus Walleij <linus.walleij@linaro.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Rob Herring <robh+dt@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,32 +23,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5 December 2015 at 12:39, Jonas Gorski <jogo@openwrt.org> wrote:
-> On Sat, Dec 5, 2015 at 6:19 AM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
+Bit-flip errors may occur on NAND flashes and are harmless. Handle them
+gracefully as read content is still reliable and can be parsed.
 
->> +
->> +Examples:
->> +
->> +flash@0 {
->> +       partitions {
->> +               compatible = "google,fmap";
->> +       };
->> +};
->
-> I wonder if this wouldn't be better served in a separate binding doc
-> with its compatible name as the filename, like we do with
-> driver^Whardware blocks, especially if we want to add more parsers.
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/mtd/bcm47xxpart.c | 38 ++++++++++++++++++++++----------------
+ 1 file changed, 22 insertions(+), 16 deletions(-)
 
-
-I find that *very* counter productive for bindings that go to the same
-node. You have a description of a node, and then suddenly there you
-have another file with another description of the same node. Totally
-awesome.
-
-Also how do you plan to write partitioning schemes with parameters
-like with non-zero offset of the partition table.
-
-Thanks
-
-Michal
+diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+index 4450e74..1ab3451 100644
+--- a/drivers/mtd/bcm47xxpart.c
++++ b/drivers/mtd/bcm47xxpart.c
+@@ -66,11 +66,13 @@ static const char *bcm47xxpart_trx_data_part_name(struct mtd_info *master,
+ {
+ 	uint32_t buf;
+ 	size_t bytes_read;
++	int err;
+ 
+-	if (mtd_read(master, offset, sizeof(buf), &bytes_read,
+-		     (uint8_t *)&buf) < 0) {
+-		pr_err("mtd_read error while parsing (offset: 0x%X)!\n",
+-			offset);
++	err  = mtd_read(master, offset, sizeof(buf), &bytes_read,
++			(uint8_t *)&buf);
++	if (err && !mtd_is_bitflip(err)) {
++		pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
++			offset, err);
+ 		goto out_default;
+ 	}
+ 
+@@ -95,6 +97,7 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 	int trx_part = -1;
+ 	int last_trx_part = -1;
+ 	int possible_nvram_sizes[] = { 0x8000, 0xF000, 0x10000, };
++	int err;
+ 
+ 	/*
+ 	 * Some really old flashes (like AT45DB*) had smaller erasesize-s, but
+@@ -128,10 +131,11 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 		}
+ 
+ 		/* Read beginning of the block */
+-		if (mtd_read(master, offset, BCM47XXPART_BYTES_TO_READ,
+-			     &bytes_read, (uint8_t *)buf) < 0) {
+-			pr_err("mtd_read error while parsing (offset: 0x%X)!\n",
+-			       offset);
++		err = mtd_read(master, offset, BCM47XXPART_BYTES_TO_READ,
++			       &bytes_read, (uint8_t *)buf);
++		if (err && !mtd_is_bitflip(err)) {
++			pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
++			       offset, err);
+ 			continue;
+ 		}
+ 
+@@ -254,10 +258,11 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 		}
+ 
+ 		/* Read middle of the block */
+-		if (mtd_read(master, offset + 0x8000, 0x4,
+-			     &bytes_read, (uint8_t *)buf) < 0) {
+-			pr_err("mtd_read error while parsing (offset: 0x%X)!\n",
+-			       offset);
++		err = mtd_read(master, offset + 0x8000, 0x4, &bytes_read,
++			       (uint8_t *)buf);
++		if (err && !mtd_is_bitflip(err)) {
++			pr_err("mtd_read error while parsing (offset: 0x%X): %d\n",
++			       offset, err);
+ 			continue;
+ 		}
+ 
+@@ -277,10 +282,11 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 		}
+ 
+ 		offset = master->size - possible_nvram_sizes[i];
+-		if (mtd_read(master, offset, 0x4, &bytes_read,
+-			     (uint8_t *)buf) < 0) {
+-			pr_err("mtd_read error while reading at offset 0x%X!\n",
+-			       offset);
++		err = mtd_read(master, offset, 0x4, &bytes_read,
++			       (uint8_t *)buf);
++		if (err && !mtd_is_bitflip(err)) {
++			pr_err("mtd_read error while reading (offset 0x%X): %d\n",
++			       offset, err);
+ 			continue;
+ 		}
+ 
+-- 
+1.8.4.5
