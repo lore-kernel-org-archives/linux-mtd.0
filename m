@@ -1,9 +1,9 @@
-Received: from mail-io0-x22c.google.com ([2607:f8b0:4001:c06::22c])
+Received: from mail-io0-x22d.google.com ([2607:f8b0:4001:c06::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a63GC-0008DD-7n
- for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 21:23:54 +0000
-Received: by iofh3 with SMTP id h3so3964327iof.3
- for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 13:23:31 -0800 (PST)
+ id 1a63GE-0008FJ-3G
+ for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 21:23:57 +0000
+Received: by iofh3 with SMTP id h3so3966392iof.3
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 13:23:36 -0800 (PST)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
  Alexander Viro <viro@zeniv.linux.org.uk>
@@ -16,10 +16,9 @@ Cc: Serge Hallyn <serge.hallyn@canonical.com>,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
  Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH v2 09/18] fs: Refuse uid/gid changes which don't map into
- s_user_ns
-Date: Mon,  7 Dec 2015 15:21:18 -0600
-Message-Id: <1449523289-144238-10-git-send-email-seth.forshee@canonical.com>
+Subject: [PATCH v2 12/18] fs: Don't remove suid for CAP_FSETID in s_user_ns
+Date: Mon,  7 Dec 2015 15:21:21 -0600
+Message-Id: <1449523289-144238-13-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1449523289-144238-1-git-send-email-seth.forshee@canonical.com>
 References: <1449523289-144238-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,37 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add checks to inode_change_ok to verify that uid and gid changes
-will map into the superblock's user namespace. If they do not
-fail with -EOVERFLOW. This cannot be overriden with ATTR_FORCE.
+Expand the check in should_remove_suid() to keep privileges for
+CAP_FSETID in s_user_ns rather than init_user_ns.
 
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 ---
- fs/attr.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ fs/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/attr.c b/fs/attr.c
-index 6530ced19697..55b46e3aa888 100644
---- a/fs/attr.c
-+++ b/fs/attr.c
-@@ -42,6 +42,17 @@ int inode_change_ok(const struct inode *inode, struct iattr *attr)
- 			return error;
- 	}
+diff --git a/fs/inode.c b/fs/inode.c
+index 01c036fe1950..3e7c74da9304 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1684,7 +1684,8 @@ int should_remove_suid(struct dentry *dentry)
+ 	if (unlikely((mode & S_ISGID) && (mode & S_IXGRP)))
+ 		kill |= ATTR_KILL_SGID;
  
-+	/*
-+	 * Verify that uid/gid changes are valid in the target namespace
-+	 * of the superblock. This cannot be overriden using ATTR_FORCE.
-+	 */
-+	if (ia_valid & ATTR_UID &&
-+	    from_kuid(inode->i_sb->s_user_ns, attr->ia_uid) == (uid_t)-1)
-+		return -EOVERFLOW;
-+	if (ia_valid & ATTR_GID &&
-+	    from_kgid(inode->i_sb->s_user_ns, attr->ia_gid) == (gid_t)-1)
-+		return -EOVERFLOW;
-+
- 	/* If force is set do it anyway. */
- 	if (ia_valid & ATTR_FORCE)
- 		return 0;
+-	if (unlikely(kill && !capable(CAP_FSETID) && S_ISREG(mode)))
++	if (unlikely(kill && !ns_capable(dentry->d_sb->s_user_ns, CAP_FSETID) &&
++		     S_ISREG(mode)))
+ 		return kill;
+ 
+ 	return 0;
 -- 
 1.9.1
