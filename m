@@ -15,10 +15,9 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
  punnaiah choudary kalluri <punnaia@xilinx.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 06/23] mtd: nand: kill unused ->ecclayout field in
- platform_nand_chip struct
-Date: Mon,  7 Dec 2015 23:26:01 +0100
-Message-Id: <1449527178-5930-7-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 07/23] staging: mt29f_spinand: kill unused ecclayout field
+Date: Mon,  7 Dec 2015 23:26:02 +0100
+Message-Id: <1449527178-5930-8-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1449527178-5930-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1449527178-5930-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,45 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This field is not set in any board file and can thus be dropped.
+The spinand_info struct embeds a pointer to an ecclayout definition, but
+this field is never used in the mt29f driver.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/plat_nand.c | 1 -
- include/linux/mtd/nand.h     | 2 --
- 2 files changed, 3 deletions(-)
+ drivers/staging/mt29f_spinand/mt29f_spinand.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 06ac6c6..71aaa09 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -74,7 +74,6 @@ static int plat_nand_probe(struct platform_device *pdev)
- 	data->chip.bbt_options |= pdata->chip.bbt_options;
+diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.h b/drivers/staging/mt29f_spinand/mt29f_spinand.h
+index ae62975..457dc7f 100644
+--- a/drivers/staging/mt29f_spinand/mt29f_spinand.h
++++ b/drivers/staging/mt29f_spinand/mt29f_spinand.h
+@@ -78,7 +78,6 @@
+ #define BL_ALL_UNLOCKED    0
  
- 	data->chip.ecc.hwctl = pdata->ctrl.hwcontrol;
--	data->chip.ecc.layout = pdata->chip.ecclayout;
- 	data->chip.ecc.mode = NAND_ECC_SOFT;
- 
- 	platform_set_drvdata(pdev, data);
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index fad634e..cbedcb0 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -866,7 +866,6 @@ extern int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
-  * @chip_delay:		R/B delay value in us
-  * @options:		Option flags, e.g. 16bit buswidth
-  * @bbt_options:	BBT option flags, e.g. NAND_BBT_USE_FLASH
-- * @ecclayout:		ECC layout info structure
-  * @part_probe_types:	NULL-terminated array of probe types
-  */
- struct platform_nand_chip {
-@@ -874,7 +873,6 @@ struct platform_nand_chip {
- 	int chip_offset;
- 	int nr_partitions;
- 	struct mtd_partition *partitions;
+ struct spinand_info {
 -	struct nand_ecclayout *ecclayout;
- 	int chip_delay;
- 	unsigned int options;
- 	unsigned int bbt_options;
+ 	struct spi_device *spi;
+ 	void *priv;
+ };
 -- 
 2.1.4
