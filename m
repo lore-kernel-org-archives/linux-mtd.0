@@ -1,25 +1,31 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
- Josh Wu <josh.wu@atmel.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Stefan Agner <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>,
+Date: Tue, 8 Dec 2015 06:48:53 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: kbuild-all@01.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
+ linux-mips@linux-mips.org, Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ linux-samsung-soc@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+ linux-sunxi@googlegroups.com, Ralf Baechle <ralf@linux-mips.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ linux-kernel@vger.kernel.org, Josh Wu <josh.wu@atmel.com>,
+ Chen-Yu Tsai <wens@csie.org>, Kukjin Kim <kgene@kernel.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  punnaiah choudary kalluri <punnaia@xilinx.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 19/23] mtd: nand: switch all drivers to mtd_ooblayout_ops
-Date: Mon,  7 Dec 2015 23:26:14 +0100
-Message-Id: <1449527178-5930-20-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1449527178-5930-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1449527178-5930-1-git-send-email-boris.brezillon@free-electrons.com>
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Stefan Agner <stefan@agner.ch>, Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH 12/23] mtd: use mtd_eccpos() and mtd_oobfree() where
+ appropriate
+Message-ID: <201512080642.2MUjuxx4%fengguang.wu@intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="GvXjxJ+pjyke8COw"
+Content-Disposition: inline
+In-Reply-To: <1449527178-5930-13-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,3453 +35,583 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Implementing the mtd_ooblayout_ops interface is the new way of exposing
-ECC/OOB layout to MTD users. Modify all NAND drivers to switch to this
-approach.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+--GvXjxJ+pjyke8COw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Boris,
+
+[auto build test ERROR on next-20151207]
+[cannot apply to staging/staging-testing v4.4-rc4 v4.4-rc3 v4.4-rc2 v4.4-rc4]
+
+url:    https://github.com/0day-ci/linux/commits/Boris-Brezillon/mtd-rework-ECC-layout-definition/20151208-063127
+config: i386-randconfig-x006-12070758 (attached as .config)
+reproduce:
+        # save the attached .config to linux build tree
+        make ARCH=i386 
+
+All error/warnings (new ones prefixed by >>):
+
+   In file included from include/linux/linkage.h:4:0,
+                    from include/linux/kernel.h:6,
+                    from drivers/mtd/mtdswap.c:27:
+   drivers/mtd/mtdswap.c: In function 'mtdswap_add_mtd':
+>> drivers/mtd/mtdswap.c:1449:6: error: too few arguments to function 'mtd_oobfree'
+     if (mtd_oobfree(mtd, 0) < 0) {
+         ^
+   include/linux/compiler.h:147:28: note: in definition of macro '__trace_if'
+     if (__builtin_constant_p((cond)) ? !!(cond) :   \
+                               ^
+>> drivers/mtd/mtdswap.c:1449:2: note: in expansion of macro 'if'
+     if (mtd_oobfree(mtd, 0) < 0) {
+     ^
+   In file included from drivers/mtd/mtdswap.c:29:0:
+   include/linux/mtd/mtd.h:267:19: note: declared here
+    static inline int mtd_oobfree(struct mtd_info *mtd, int section,
+                      ^
+   In file included from include/linux/linkage.h:4:0,
+                    from include/linux/kernel.h:6,
+                    from drivers/mtd/mtdswap.c:27:
+>> drivers/mtd/mtdswap.c:1449:6: error: too few arguments to function 'mtd_oobfree'
+     if (mtd_oobfree(mtd, 0) < 0) {
+         ^
+   include/linux/compiler.h:147:40: note: in definition of macro '__trace_if'
+     if (__builtin_constant_p((cond)) ? !!(cond) :   \
+                                           ^
+>> drivers/mtd/mtdswap.c:1449:2: note: in expansion of macro 'if'
+     if (mtd_oobfree(mtd, 0) < 0) {
+     ^
+   In file included from drivers/mtd/mtdswap.c:29:0:
+   include/linux/mtd/mtd.h:267:19: note: declared here
+    static inline int mtd_oobfree(struct mtd_info *mtd, int section,
+                      ^
+   In file included from include/linux/linkage.h:4:0,
+                    from include/linux/kernel.h:6,
+                    from drivers/mtd/mtdswap.c:27:
+>> drivers/mtd/mtdswap.c:1449:6: error: too few arguments to function 'mtd_oobfree'
+     if (mtd_oobfree(mtd, 0) < 0) {
+         ^
+   include/linux/compiler.h:158:16: note: in definition of macro '__trace_if'
+      ______r = !!(cond);     \
+                   ^
+>> drivers/mtd/mtdswap.c:1449:2: note: in expansion of macro 'if'
+     if (mtd_oobfree(mtd, 0) < 0) {
+     ^
+   In file included from drivers/mtd/mtdswap.c:29:0:
+   include/linux/mtd/mtd.h:267:19: note: declared here
+    static inline int mtd_oobfree(struct mtd_info *mtd, int section,
+                      ^
+
+vim +/mtd_oobfree +1449 drivers/mtd/mtdswap.c
+
+  1443		if (PAGE_SIZE % mtd->writesize || mtd->writesize > PAGE_SIZE) {
+  1444			printk(KERN_ERR "%s: PAGE_SIZE %lu not multiple of write size"
+  1445				" %u\n", MTDSWAP_PREFIX, PAGE_SIZE, mtd->writesize);
+  1446			return;
+  1447		}
+  1448	
+> 1449		if (mtd_oobfree(mtd, 0) < 0) {
+  1450			printk(KERN_ERR "%s: mtd%d does not have OOB\n",
+  1451				MTDSWAP_PREFIX, mtd->index);
+  1452			return;
 
 ---
-This commit is a collection of commits that have been squashed to into
-a single one to limit the size of the patchset. If you want to have
-separate commit for each of the NAND drivers you can have a look at
-this branch [1].
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
-[1]https://github.com/bbrezillon/linux-sunxi/commits/nand/ecclayout2
----
- arch/arm/mach-pxa/spitz.c                       |  41 +++-
- arch/mips/include/asm/mach-jz4740/jz4740_nand.h |   2 +-
- arch/mips/jz4740/board-qi_lb60.c                |  83 ++++---
- drivers/mtd/nand/atmel_nand.c                   |  81 +++----
- drivers/mtd/nand/bf5xx_nand.c                   |  47 ++--
- drivers/mtd/nand/brcmnand/brcmnand.c            | 255 ++++++++++++--------
- drivers/mtd/nand/cafe_nand.c                    |  42 +++-
- drivers/mtd/nand/davinci_nand.c                 | 114 ++++-----
- drivers/mtd/nand/denali.c                       |  48 ++--
- drivers/mtd/nand/diskonchip.c                   |  34 ++-
- drivers/mtd/nand/docg4.c                        |  29 ++-
- drivers/mtd/nand/fsl_elbc_nand.c                |  79 ++++---
- drivers/mtd/nand/fsl_ifc_nand.c                 | 224 +++++-------------
- drivers/mtd/nand/fsmc_nand.c                    | 294 +++++++-----------------
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c          |  48 +++-
- drivers/mtd/nand/hisi504_nand.c                 |  26 ++-
- drivers/mtd/nand/jz4740_nand.c                  |   2 +-
- drivers/mtd/nand/lpc32xx_mlc.c                  |  49 ++--
- drivers/mtd/nand/lpc32xx_slc.c                  |  37 ++-
- drivers/mtd/nand/mxc_nand.c                     | 206 ++++++++---------
- drivers/mtd/nand/omap2.c                        | 184 ++++++++-------
- drivers/mtd/nand/pxa3xx_nand.c                  | 101 ++++----
- drivers/mtd/nand/s3c2410.c                      |  28 ++-
- drivers/mtd/nand/sh_flctl.c                     |  80 +++++--
- drivers/mtd/nand/sharpsl.c                      |   2 +-
- drivers/mtd/nand/sm_common.c                    |  88 +++++--
- drivers/mtd/nand/sunxi_nand.c                   | 112 ++++-----
- drivers/mtd/nand/vf610_nfc.c                    |  34 +--
- include/linux/mtd/sharpsl.h                     |   2 +-
- 29 files changed, 1226 insertions(+), 1146 deletions(-)
+--GvXjxJ+pjyke8COw
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index f4e2e27..13ed4e3 100644
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -763,14 +763,35 @@ static struct nand_bbt_descr spitz_nand_bbt = {
- 	.pattern	= scan_ff_pattern
- };
- 
--static struct nand_ecclayout akita_oobinfo = {
--	.oobfree	= { {0x08, 0x09} },
--	.eccbytes	= 24,
--	.eccpos		= {
--			0x05, 0x01, 0x02, 0x03, 0x06, 0x07, 0x15, 0x11,
--			0x12, 0x13, 0x16, 0x17, 0x25, 0x21, 0x22, 0x23,
--			0x26, 0x27, 0x35, 0x31, 0x32, 0x33, 0x36, 0x37,
--	},
-+static int akita_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	static int eccpos[] = {
-+		0x05, 0x01, 0x02, 0x03, 0x06, 0x07, 0x15, 0x11,
-+		0x12, 0x13, 0x16, 0x17, 0x25, 0x21, 0x22, 0x23,
-+		0x26, 0x27, 0x35, 0x31, 0x32, 0x33, 0x36, 0x37,
-+	};
-+
-+	if (eccbyte >= ARRAY_SIZE(eccpos))
-+		return -ERANGE;
-+
-+	return eccpos[eccbyte];
-+}
-+
-+static int akita_oobfree(struct mtd_info *mtd, int section,
-+			 struct nand_oobfree *oobfree)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	oobfree->offset = 8;
-+	oobfree->length = 9;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops akita_ooblayout_ops = {
-+	.eccpos = akita_eccpos,
-+	.oobfree = akita_oobfree,
- };
- 
- static struct sharpsl_nand_platform_data spitz_nand_pdata = {
-@@ -804,11 +825,11 @@ static void __init spitz_nand_init(void)
- 	} else if (machine_is_akita()) {
- 		spitz_nand_partitions[1].size = 58 * 1024 * 1024;
- 		spitz_nand_bbt.len = 1;
--		spitz_nand_pdata.ecc_layout = &akita_oobinfo;
-+		spitz_nand_pdata.ecc_layout = &akita_ooblayout_ops;
- 	} else if (machine_is_borzoi()) {
- 		spitz_nand_partitions[1].size = 32 * 1024 * 1024;
- 		spitz_nand_bbt.len = 1;
--		spitz_nand_pdata.ecc_layout = &akita_oobinfo;
-+		spitz_nand_pdata.ecc_layout = &akita_ooblayout_ops;
- 	}
- 
- 	platform_device_register(&spitz_nand_device);
-diff --git a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h b/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-index 398733e..7f7b0fc 100644
---- a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-+++ b/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-@@ -27,7 +27,7 @@ struct jz_nand_platform_data {
- 
- 	unsigned char banks[JZ_NAND_NUM_BANKS];
- 
--	void (*ident_callback)(struct platform_device *, struct nand_chip *,
-+	void (*ident_callback)(struct platform_device *, struct mtd_info *,
- 				struct mtd_partition **, int *num_partitions);
- };
- 
-diff --git a/arch/mips/jz4740/board-qi_lb60.c b/arch/mips/jz4740/board-qi_lb60.c
-index 934b15b..951621a 100644
---- a/arch/mips/jz4740/board-qi_lb60.c
-+++ b/arch/mips/jz4740/board-qi_lb60.c
-@@ -50,20 +50,6 @@ static bool is_avt2;
- #define QI_LB60_GPIO_KEYIN8		JZ_GPIO_PORTD(26)
- 
- /* NAND */
--static struct nand_ecclayout qi_lb60_ecclayout_1gb = {
--	.eccbytes = 36,
--	.eccpos = {
--		6,  7,	8,  9,	10, 11, 12, 13,
--		14, 15, 16, 17, 18, 19, 20, 21,
--		22, 23, 24, 25, 26, 27, 28, 29,
--		30, 31, 32, 33, 34, 35, 36, 37,
--		38, 39, 40, 41
--	},
--	.oobfree = {
--		{ .offset = 2, .length = 4 },
--		{ .offset = 42, .length = 22 }
--	},
--};
- 
- /* Early prototypes of the QI LB60 had only 1GB of NAND.
-  * In order to support these devices as well the partition and ecc layout is
-@@ -86,25 +72,6 @@ static struct mtd_partition qi_lb60_partitions_1gb[] = {
- 	},
- };
- 
--static struct nand_ecclayout qi_lb60_ecclayout_2gb = {
--	.eccbytes = 72,
--	.eccpos = {
--		12, 13, 14, 15, 16, 17, 18, 19,
--		20, 21, 22, 23, 24, 25, 26, 27,
--		28, 29, 30, 31, 32, 33, 34, 35,
--		36, 37, 38, 39, 40, 41, 42, 43,
--		44, 45, 46, 47, 48, 49, 50, 51,
--		52, 53, 54, 55, 56, 57, 58, 59,
--		60, 61, 62, 63, 64, 65, 66, 67,
--		68, 69, 70, 71, 72, 73, 74, 75,
--		76, 77, 78, 79, 80, 81, 82, 83
--	},
--	.oobfree = {
--		{ .offset = 2, .length = 10 },
--		{ .offset = 84, .length = 44 },
--	},
--};
--
- static struct mtd_partition qi_lb60_partitions_2gb[] = {
- 	{
- 		.name = "NAND BOOT partition",
-@@ -123,19 +90,63 @@ static struct mtd_partition qi_lb60_partitions_2gb[] = {
- 	},
- };
- 
-+static int qi_lb60_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	int eccbytes = 36, eccoff = 6;
-+
-+	if (mtd->oobsize == 128) {
-+		eccbytes *= 2;
-+		eccoff *= 2;
-+	}
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	return eccoff + eccbyte;
-+}
-+
-+static int qi_lb60_oobfree(struct mtd_info *mtd, int section,
-+			   struct nand_oobfree *oobfree)
-+{
-+	int eccbytes = 36, eccoff = 6;
-+
-+	if (section > 1)
-+		return -ERANGE;
-+
-+	if (mtd->oobsize == 128) {
-+		eccbytes *= 2;
-+		eccoff *= 2;
-+	}
-+
-+	if (!section) {
-+		oobfree->offset = 2;
-+		oobfree->length = eccoff - 2;
-+	} else {
-+		oobfree->offset = eccoff + eccbytes;
-+		oobfree->length = mtd->oobsize - oobfree->offset;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops qi_lb60_ooblayout_ops = {
-+	.eccpos = qi_lb60_eccpos,
-+	.oobfree = qi_lb60_oobfree,
-+};
-+
- static void qi_lb60_nand_ident(struct platform_device *pdev,
--		struct nand_chip *chip, struct mtd_partition **partitions,
-+		struct mtd_info *mtd, struct mtd_partition **partitions,
- 		int *num_partitions)
- {
- 	if (chip->page_shift == 12) {
--		chip->ecc.layout = &qi_lb60_ecclayout_2gb;
- 		*partitions = qi_lb60_partitions_2gb;
- 		*num_partitions = ARRAY_SIZE(qi_lb60_partitions_2gb);
- 	} else {
--		chip->ecc.layout = &qi_lb60_ecclayout_1gb;
- 		*partitions = qi_lb60_partitions_1gb;
- 		*num_partitions = ARRAY_SIZE(qi_lb60_partitions_1gb);
- 	}
-+
-+	mtd_set_ooblayout(mtd, &qi_lb60_ooblayout_ops);
- }
- 
- static struct jz_nand_platform_data qi_lb60_nand_pdata = {
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index da16b1a..e67a502 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -67,30 +67,40 @@ struct atmel_nand_caps {
- 	bool pmecc_correct_erase_page;
- };
- 
--/* oob layout for large page size
-+/*
-+ * oob layout for large page size
-  * bad block info is on bytes 0 and 1
-  * the bytes have to be consecutives to avoid
-  * several NAND_CMD_RNDOUT during read
-- */
--static struct nand_ecclayout atmel_oobinfo_large = {
--	.eccbytes = 4,
--	.eccpos = {60, 61, 62, 63},
--	.oobfree = {
--		{2, 58}
--	},
--};
--
--/* oob layout for small page size
-+ *
-+ * oob layout for small page size
-  * bad block info is on bytes 4 and 5
-  * the bytes have to be consecutives to avoid
-  * several NAND_CMD_RNDOUT during read
-  */
--static struct nand_ecclayout atmel_oobinfo_small = {
--	.eccbytes = 4,
--	.eccpos = {0, 1, 2, 3},
--	.oobfree = {
--		{6, 10}
--	},
-+static int atmel_eccpos_sp(struct mtd_info *mtd, int eccbyte)
-+{
-+	if (eccbyte >= 4)
-+		return -ERANGE;
-+
-+	return eccbyte;
-+}
-+
-+static int atmel_oobfree_sp(struct mtd_info *mtd, int section,
-+			    struct nand_oobfree *oobfree)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	oobfree->offset = 6;
-+	oobfree->length = mtd->oobsize - oobfree->offset;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops atmel_ooblayout_sp_ops = {
-+	.eccpos = atmel_eccpos_sp,
-+	.oobfree = atmel_oobfree_sp,
- };
- 
- struct atmel_nfc {
-@@ -157,8 +167,6 @@ struct atmel_nand_host {
- 	int			*pmecc_delta;
- };
- 
--static struct nand_ecclayout atmel_pmecc_oobinfo;
--
- /*
-  * Enable NAND.
-  */
-@@ -474,22 +482,6 @@ static int pmecc_get_ecc_bytes(int cap, int sector_size)
- 	return (m * cap + 7) / 8;
- }
- 
--static void pmecc_config_ecc_layout(struct nand_ecclayout *layout,
--				    int oobsize, int ecc_len)
--{
--	int i;
--
--	layout->eccbytes = ecc_len;
--
--	/* ECC will occupy the last ecc_len bytes continuously */
--	for (i = 0; i < ecc_len; i++)
--		layout->eccpos[i] = oobsize - ecc_len + i;
--
--	layout->oobfree[0].offset = PMECC_OOB_RESERVED_BYTES;
--	layout->oobfree[0].length =
--		oobsize - ecc_len - layout->oobfree[0].offset;
--}
--
- static void __iomem *pmecc_get_alpha_to(struct atmel_nand_host *host)
- {
- 	int table_size;
-@@ -993,8 +985,8 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
- {
- 	struct nand_chip *nand_chip = mtd->priv;
- 	struct atmel_nand_host *host = nand_chip->priv;
-+	int eccbytes = nand_chip->ecc.bytes * nand_chip->ecc.steps;
- 	uint32_t val = 0;
--	struct nand_ecclayout *ecc_layout;
- 
- 	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
- 	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
-@@ -1041,11 +1033,9 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
- 		| PMECC_CFG_AUTO_DISABLE);
- 	pmecc_writel(host->ecc, CFG, val);
- 
--	ecc_layout = nand_chip->ecc.layout;
- 	pmecc_writel(host->ecc, SAREA, mtd->oobsize - 1);
- 	pmecc_writel(host->ecc, SADDR, mtd_eccpos(mtd, 0));
--	pmecc_writel(host->ecc, EADDR,
--			mtd_eccpos(mtd, ecc_layout->eccbytes - 1));
-+	pmecc_writel(host->ecc, EADDR, mtd_eccpos(mtd, eccbytes - 1));
- 	/* See datasheet about PMECC Clock Control Register */
- 	pmecc_writel(host->ecc, CLK, 2);
- 	pmecc_writel(host->ecc, IDR, 0xff);
-@@ -1260,11 +1250,8 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 			err_no = -EINVAL;
- 			goto err;
- 		}
--		pmecc_config_ecc_layout(&atmel_pmecc_oobinfo,
--					mtd->oobsize,
--					nand_chip->ecc.total);
- 
--		nand_chip->ecc.layout = &atmel_pmecc_oobinfo;
-+		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
- 		break;
- 	default:
- 		dev_warn(host->dev,
-@@ -1607,19 +1594,19 @@ static int atmel_hw_nand_init_params(struct platform_device *pdev,
- 	/* set ECC page size and oob layout */
- 	switch (mtd->writesize) {
- 	case 512:
--		nand_chip->ecc.layout = &atmel_oobinfo_small;
-+		mtd_set_ooblayout(mtd, &atmel_ooblayout_sp_ops);
- 		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_528);
- 		break;
- 	case 1024:
--		nand_chip->ecc.layout = &atmel_oobinfo_large;
-+		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
- 		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_1056);
- 		break;
- 	case 2048:
--		nand_chip->ecc.layout = &atmel_oobinfo_large;
-+		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
- 		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_2112);
- 		break;
- 	case 4096:
--		nand_chip->ecc.layout = &atmel_oobinfo_large;
-+		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
- 		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_4224);
- 		break;
- 	default:
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 61bd216..c0bbcd6 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -109,28 +109,29 @@ static const unsigned short bfin_nfc_pin_req[] =
- 	 0};
- 
- #ifdef CONFIG_MTD_NAND_BF5XX_BOOTROM_ECC
--static struct nand_ecclayout bootrom_ecclayout = {
--	.eccbytes = 24,
--	.eccpos = {
--		0x8 * 0, 0x8 * 0 + 1, 0x8 * 0 + 2,
--		0x8 * 1, 0x8 * 1 + 1, 0x8 * 1 + 2,
--		0x8 * 2, 0x8 * 2 + 1, 0x8 * 2 + 2,
--		0x8 * 3, 0x8 * 3 + 1, 0x8 * 3 + 2,
--		0x8 * 4, 0x8 * 4 + 1, 0x8 * 4 + 2,
--		0x8 * 5, 0x8 * 5 + 1, 0x8 * 5 + 2,
--		0x8 * 6, 0x8 * 6 + 1, 0x8 * 6 + 2,
--		0x8 * 7, 0x8 * 7 + 1, 0x8 * 7 + 2
--	},
--	.oobfree = {
--		{ 0x8 * 0 + 3, 5 },
--		{ 0x8 * 1 + 3, 5 },
--		{ 0x8 * 2 + 3, 5 },
--		{ 0x8 * 3 + 3, 5 },
--		{ 0x8 * 4 + 3, 5 },
--		{ 0x8 * 5 + 3, 5 },
--		{ 0x8 * 6 + 3, 5 },
--		{ 0x8 * 7 + 3, 5 },
--	}
-+static int bootrom_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	if (eccbyte >= 24)
-+		return -ERANGE;
-+
-+	return ((eccbyte / 3) * 8) + (eccbyte % 3);
-+}
-+
-+static int bootrom_oobfree(struct mtd_info *mtd, int section,
-+			   struct nand_oobfree *oobfree)
-+{
-+	if (section > 7)
-+		return -ERANGE;
-+
-+	oobfree->offset = section * 8;
-+	oobfree->length = 5;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops bootrom_ooblayout_ops = {
-+	.eccpos = bootrom_eccpos,
-+	.oobfree = bootrom_oobfree,
- };
- #endif
- 
-@@ -793,7 +794,7 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
- 	/* setup hardware ECC data struct */
- 	if (hardware_ecc) {
- #ifdef CONFIG_MTD_NAND_BF5XX_BOOTROM_ECC
--		chip->ecc.layout = &bootrom_ecclayout;
-+		mtd_set_ooblayout(mtd, &bootrom_ooblayout_ops);
- #endif
- 		chip->read_buf      = bf5xx_nand_dma_read_buf;
- 		chip->write_buf     = bf5xx_nand_dma_write_buf;
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index a906ec2..5815afd 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -746,126 +746,179 @@ static inline bool is_hamming_ecc(struct brcmnand_cfg *cfg)
- }
- 
- /*
-- * Returns a nand_ecclayout strucutre for the given layout/configuration.
-- * Returns NULL on failure.
-+ * Set mtd->ooblayout to the appropriate mtd_ooblayout_ops given
-+ * the layout/configuration.
-+ * Returns -ERRCODE on failure.
-  */
--static struct nand_ecclayout *brcmnand_create_layout(int ecc_level,
--						     struct brcmnand_host *host)
-+static int brcmnand_hamming_eccpos(struct mtd_info *mtd, int eccbyte)
- {
-+	struct nand_chip *chip = mtd->priv;
-+	struct brcmnand_host *host = chip->priv;
- 	struct brcmnand_cfg *cfg = &host->hwcfg;
--	int i, j;
--	struct nand_ecclayout *layout;
--	int req;
--	int sectors;
--	int sas;
--	int idx1, idx2;
--
--	layout = devm_kzalloc(&host->pdev->dev, sizeof(*layout), GFP_KERNEL);
--	if (!layout)
--		return NULL;
--
--	sectors = cfg->page_size / (512 << cfg->sector_size_1k);
--	sas = cfg->spare_area_size << cfg->sector_size_1k;
--
--	/* Hamming */
--	if (is_hamming_ecc(cfg)) {
--		for (i = 0, idx1 = 0, idx2 = 0; i < sectors; i++) {
--			/* First sector of each page may have BBI */
--			if (i == 0) {
--				layout->oobfree[idx2].offset = i * sas + 1;
--				/* Small-page NAND use byte 6 for BBI */
--				if (cfg->page_size == 512)
--					layout->oobfree[idx2].offset--;
--				layout->oobfree[idx2].length = 5;
--			} else {
--				layout->oobfree[idx2].offset = i * sas;
--				layout->oobfree[idx2].length = 6;
--			}
--			idx2++;
--			layout->eccpos[idx1++] = i * sas + 6;
--			layout->eccpos[idx1++] = i * sas + 7;
--			layout->eccpos[idx1++] = i * sas + 8;
--			layout->oobfree[idx2].offset = i * sas + 9;
--			layout->oobfree[idx2].length = 7;
--			idx2++;
--			/* Leave zero-terminated entry for OOBFREE */
--			if (idx1 >= MTD_MAX_ECCPOS_ENTRIES_LARGE ||
--				    idx2 >= MTD_MAX_OOBFREE_ENTRIES_LARGE - 1)
--				break;
-+	int sas = cfg->spare_area_size << cfg->sector_size_1k;
-+	int sectors = cfg->page_size / (512 << cfg->sector_size_1k);
-+	int sector = eccbyte / 3;
-+
-+	if (sector >= sectors)
-+		return -ERANGE;
-+
-+	return (sector * sas) + (eccbyte % 3) + 6;
-+}
-+
-+static int brcmnand_hamming_oobfree(struct mtd_info *mtd, int section,
-+				    struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct brcmnand_host *host = chip->priv;
-+	struct brcmnand_cfg *cfg = &host->hwcfg;
-+	int sas = cfg->spare_area_size << cfg->sector_size_1k;
-+	int sectors = cfg->page_size / (512 << cfg->sector_size_1k);
-+
-+	if (section >= sectors * 2)
-+		return -ERANGE;
-+
-+	oobfree->offset = (section / 2) * sas;
-+
-+	if (section & 1) {
-+		oobfree->offset += 9;
-+		oobfree->length = 7;
-+	} else {
-+		oobfree->length = 6;
-+
-+		/* First sector of each page may have BBI */
-+		if (!section) {
-+			/*
-+			 * Small-page NAND use byte 6 for BBI while large-page
-+			 * NAND use byte 0.
-+			 */
-+			if (cfg->page_size > 512)
-+				oobfree->offset++;
-+			oobfree->length--;
- 		}
--		goto out;
- 	}
- 
--	/*
--	 * CONTROLLER_VERSION:
--	 *   < v5.0: ECC_REQ = ceil(BCH_T * 13/8)
--	 *  >= v5.0: ECC_REQ = ceil(BCH_T * 14/8)
--	 * But we will just be conservative.
--	 */
--	req = DIV_ROUND_UP(ecc_level * 14, 8);
--	if (req >= sas) {
--		dev_err(&host->pdev->dev,
--			"error: ECC too large for OOB (ECC bytes %d, spare sector %d)\n",
--			req, sas);
--		return NULL;
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops brcmnand_hamming_ooblayout_ops = {
-+	.eccpos = brcmnand_hamming_eccpos,
-+	.oobfree = brcmnand_hamming_oobfree,
-+};
-+
-+static int brcmnand_bch_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct brcmnand_host *host = chip->priv;
-+	struct brcmnand_cfg *cfg = &host->hwcfg;
-+	int sas = cfg->spare_area_size << cfg->sector_size_1k;
-+	int sectors = cfg->page_size / (512 << cfg->sector_size_1k);
-+	int sector = eccbyte / chip->ecc.bytes;
-+
-+	if (sector >= sectors)
-+		return -ERANGE;
-+
-+	return (sector * (sas + 1)) - chip->ecc.bytes +
-+	       (eccbyte % chip->ecc.bytes);
-+}
-+
-+static int brcmnand_bch_oobfree_lp(struct mtd_info *mtd, int section,
-+				   struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct brcmnand_host *host = chip->priv;
-+	struct brcmnand_cfg *cfg = &host->hwcfg;
-+	int sas = cfg->spare_area_size << cfg->sector_size_1k;
-+	int sectors = cfg->page_size / (512 << cfg->sector_size_1k);
-+
-+	if (section >= sectors)
-+		return -ERANGE;
-+
-+	if (sas <= chip->ecc.bytes)
-+		return 0;
-+
-+	oobfree->offset = section * sas;
-+	oobfree->length = sas - chip->ecc.bytes;
-+
-+	if (!section) {
-+		oobfree->offset++;
-+		oobfree->length--;
- 	}
- 
--	layout->eccbytes = req * sectors;
--	for (i = 0, idx1 = 0, idx2 = 0; i < sectors; i++) {
--		for (j = sas - req; j < sas && idx1 <
--				MTD_MAX_ECCPOS_ENTRIES_LARGE; j++, idx1++)
--			layout->eccpos[idx1] = i * sas + j;
-+	return 0;
-+}
- 
--		/* First sector of each page may have BBI */
--		if (i == 0) {
--			if (cfg->page_size == 512 && (sas - req >= 6)) {
--				/* Small-page NAND use byte 6 for BBI */
--				layout->oobfree[idx2].offset = 0;
--				layout->oobfree[idx2].length = 5;
--				idx2++;
--				if (sas - req > 6) {
--					layout->oobfree[idx2].offset = 6;
--					layout->oobfree[idx2].length =
--						sas - req - 6;
--					idx2++;
--				}
--			} else if (sas > req + 1) {
--				layout->oobfree[idx2].offset = i * sas + 1;
--				layout->oobfree[idx2].length = sas - req - 1;
--				idx2++;
--			}
--		} else if (sas > req) {
--			layout->oobfree[idx2].offset = i * sas;
--			layout->oobfree[idx2].length = sas - req;
--			idx2++;
--		}
--		/* Leave zero-terminated entry for OOBFREE */
--		if (idx1 >= MTD_MAX_ECCPOS_ENTRIES_LARGE ||
--				idx2 >= MTD_MAX_OOBFREE_ENTRIES_LARGE - 1)
--			break;
-+static int brcmnand_bch_oobfree_sp(struct mtd_info *mtd, int section,
-+				   struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct brcmnand_host *host = chip->priv;
-+	struct brcmnand_cfg *cfg = &host->hwcfg;
-+	int sas = cfg->spare_area_size << cfg->sector_size_1k;
-+
-+	if (section > 1 || sas - chip->ecc.bytes < 6 ||
-+	    (section && sas - chip->ecc.bytes == 6))
-+		return -ERANGE;
-+
-+	if (!section) {
-+		oobfree->offset = 0;
-+		oobfree->length = 5;
-+	} else {
-+		oobfree->offset = 6;
-+		oobfree->length = sas - chip->ecc.bytes - 6;
- 	}
--out:
--	return layout;
-+
-+	return 0;
- }
- 
--static struct nand_ecclayout *brcmstb_choose_ecc_layout(
--		struct brcmnand_host *host)
-+static const struct mtd_ooblayout_ops brcmnand_bch_lp_ooblayout_ops = {
-+	.eccpos = brcmnand_bch_eccpos,
-+	.oobfree = brcmnand_bch_oobfree_lp,
-+};
-+
-+static const struct mtd_ooblayout_ops brcmnand_bch_sp_ooblayout_ops = {
-+	.eccpos = brcmnand_bch_eccpos,
-+	.oobfree = brcmnand_bch_oobfree_sp,
-+};
-+
-+static int brcmstb_choose_ecc_layout(struct brcmnand_host *host)
- {
--	struct nand_ecclayout *layout;
- 	struct brcmnand_cfg *p = &host->hwcfg;
-+	struct mtd_info *mtd = &host->mtd;
-+	struct nand_ecc_ctrl *ecc = &host->chip.ecc;
- 	unsigned int ecc_level = p->ecc_level;
-+	int sas = p->spare_area_size << p->sector_size_1k;
-+	int sectors = p->page_size / (512 << p->sector_size_1k);
- 
- 	if (p->sector_size_1k)
- 		ecc_level <<= 1;
- 
--	layout = brcmnand_create_layout(ecc_level, host);
--	if (!layout) {
-+	if (is_hamming_ecc(p)) {
-+		ecc->bytes = 3 * sectors;
-+		mtd_set_ooblayout(mtd, &brcmnand_hamming_ooblayout_ops);
-+		return 0;
-+	} else {
-+		/*
-+		 * CONTROLLER_VERSION:
-+		 *   < v5.0: ECC_REQ = ceil(BCH_T * 13/8)
-+		 *  >= v5.0: ECC_REQ = ceil(BCH_T * 14/8)
-+		 * But we will just be conservative.
-+		 */
-+		ecc->bytes = DIV_ROUND_UP(ecc_level * 14, 8);
-+
-+		if (p->page_size == 512)
-+			mtd_set_ooblayout(mtd, &brcmnand_bch_sp_ooblayout_ops);
-+		else
-+			mtd_set_ooblayout(mtd, &brcmnand_bch_lp_ooblayout_ops);
-+	}
-+
-+	if (ecc->bytes >= sas) {
- 		dev_err(&host->pdev->dev,
--				"no proper ecc_layout for this NAND cfg\n");
--		return NULL;
-+			"error: ECC too large for OOB (ECC bytes %d, spare sector %d)\n",
-+			ecc->bytes, sas);
-+		return -EINVAL;
- 	}
- 
--	return layout;
-+	return 0;
- }
- 
- static void brcmnand_wp(struct mtd_info *mtd, int wp)
-@@ -1976,9 +2029,9 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
- 	/* only use our internal HW threshold */
- 	mtd->bitflip_threshold = 1;
- 
--	chip->ecc.layout = brcmstb_choose_ecc_layout(host);
--	if (!chip->ecc.layout)
--		return -ENXIO;
-+	ret = brcmstb_choose_ecc_layout(host);
-+	if (ret)
-+		return ret;
- 
- 	if (nand_scan_tail(mtd))
- 		return -ENXIO;
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index cce3ac4..39b2dcd 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -459,10 +459,35 @@ static int cafe_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	return max_bitflips;
- }
- 
--static struct nand_ecclayout cafe_oobinfo_2048 = {
--	.eccbytes = 14,
--	.eccpos = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13},
--	.oobfree = {{14, 50}}
-+static int cafe_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	int eccbytes = chip->ecc.steps * chip->ecc.bytes;
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	return eccbyte;
-+}
-+
-+static int cafe_oobfree(struct mtd_info *mtd, int section,
-+			struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	int eccbytes = chip->ecc.steps * chip->ecc.bytes;
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	oobfree->offset = eccbytes;
-+	oobfree->length = mtd->oobsize - eccbytes;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops cafe_ooblayout_ops = {
-+	.eccpos = cafe_eccpos,
-+	.oobfree = cafe_oobfree,
- };
- 
- /* Ick. The BBT code really ought to be able to work this bit out
-@@ -494,12 +519,6 @@ static struct nand_bbt_descr cafe_bbt_mirror_descr_2048 = {
- 	.pattern = cafe_mirror_pattern_2048
- };
- 
--static struct nand_ecclayout cafe_oobinfo_512 = {
--	.eccbytes = 14,
--	.eccpos = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13},
--	.oobfree = {{14, 2}}
--};
--
- static struct nand_bbt_descr cafe_bbt_main_descr_512 = {
- 	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
- 		| NAND_BBT_2BIT | NAND_BBT_VERSION,
-@@ -744,12 +763,11 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 		cafe->ctl2 |= 1<<29; /* 2KiB page size */
- 
- 	/* Set up ECC according to the type of chip we found */
-+	mtd_set_ooblayout(mtd, &cafe_ooblayout_ops);
- 	if (mtd->writesize == 2048) {
--		cafe->nand.ecc.layout = &cafe_oobinfo_2048;
- 		cafe->nand.bbt_td = &cafe_bbt_main_descr_2048;
- 		cafe->nand.bbt_md = &cafe_bbt_mirror_descr_2048;
- 	} else if (mtd->writesize == 512) {
--		cafe->nand.ecc.layout = &cafe_oobinfo_512;
- 		cafe->nand.bbt_td = &cafe_bbt_main_descr_512;
- 		cafe->nand.bbt_md = &cafe_bbt_mirror_descr_512;
- 	} else {
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 8e351af..116ee76 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -55,7 +55,6 @@
- struct davinci_nand_info {
- 	struct mtd_info		mtd;
- 	struct nand_chip	chip;
--	struct nand_ecclayout	ecclayout;
- 
- 	struct device		*dev;
- 	struct clk		*clk;
-@@ -487,63 +486,39 @@ static int nand_davinci_dev_ready(struct mtd_info *mtd)
-  * ten ECC bytes plus the manufacturer's bad block marker byte, and
-  * and not overlapping the default BBT markers.
-  */
--static struct nand_ecclayout hwecc4_small = {
--	.eccbytes = 10,
--	.eccpos = { 0, 1, 2, 3, 4,
--		/* offset 5 holds the badblock marker */
--		6, 7,
--		13, 14, 15, },
--	.oobfree = {
--		{.offset = 8, .length = 5, },
--		{.offset = 16, },
--	},
--};
-+static int hwecc4_small_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	if (eccbyte >= 10)
-+		return -ERANGE;
- 
--/* An ECC layout for using 4-bit ECC with large-page (2048bytes) flash,
-- * storing ten ECC bytes plus the manufacturer's bad block marker byte,
-- * and not overlapping the default BBT markers.
-- */
--static struct nand_ecclayout hwecc4_2048 = {
--	.eccbytes = 40,
--	.eccpos = {
--		/* at the end of spare sector */
--		24, 25, 26, 27, 28, 29,	30, 31, 32, 33,
--		34, 35, 36, 37, 38, 39,	40, 41, 42, 43,
--		44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
--		54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
--		},
--	.oobfree = {
--		/* 2 bytes at offset 0 hold manufacturer badblock markers */
--		{.offset = 2, .length = 22, },
--		/* 5 bytes at offset 8 hold BBT markers */
--		/* 8 bytes at offset 16 hold JFFS2 clean markers */
--	},
--};
-+	if (eccbyte < 5)
-+		return eccbyte;
-+	else if (eccbyte < 7)
-+		return eccbyte + 1;
- 
--/*
-- * An ECC layout for using 4-bit ECC with large-page (4096bytes) flash,
-- * storing ten ECC bytes plus the manufacturer's bad block marker byte,
-- * and not overlapping the default BBT markers.
-- */
--static struct nand_ecclayout hwecc4_4096 = {
--	.eccbytes = 80,
--	.eccpos = {
--		/* at the end of spare sector */
--		48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
--		58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
--		68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
--		78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
--		88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
--		98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
--		108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
--		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
--	},
--	.oobfree = {
--		/* 2 bytes at offset 0 hold manufacturer badblock markers */
--		{.offset = 2, .length = 46, },
--		/* 5 bytes at offset 8 hold BBT markers */
--		/* 8 bytes at offset 16 hold JFFS2 clean markers */
--	},
-+	return eccbyte + 6;
-+}
-+
-+static int hwecc4_small_oobfree(struct mtd_info *mtd, int section,
-+				struct nand_oobfree *oobfree)
-+{
-+	if (section > 1)
-+		return -ERANGE;
-+
-+	if (!section) {
-+		oobfree->offset = 8;
-+		oobfree->length = 5;
-+	} else {
-+		oobfree->offset = 16;
-+		oobfree->length = mtd->oobsize - 16;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops hwecc4_small_ooblayout_ops = {
-+	.eccpos = hwecc4_small_eccpos,
-+	.oobfree = hwecc4_small_oobfree,
- };
- 
- #if defined(CONFIG_OF)
-@@ -810,27 +785,16 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 		 * table marker fits in the free bytes.
- 		 */
- 		if (chunks == 1) {
--			info->ecclayout = hwecc4_small;
--			info->ecclayout.oobfree[1].length =
--				info->mtd.oobsize - 16;
--			goto syndrome_done;
--		}
--		if (chunks == 4) {
--			info->ecclayout = hwecc4_2048;
-+			mtd_set_ooblayout(&info->mtd,
-+					  &hwecc4_small_ooblayout_ops);
-+		} else if (chunks == 4 || chunks == 8) {
-+			mtd_set_ooblayout(&info->mtd,
-+					  &nand_ooblayout_lp_ops);
- 			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
--			goto syndrome_done;
--		}
--		if (chunks == 8) {
--			info->ecclayout = hwecc4_4096;
--			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
--			goto syndrome_done;
-+		} else {
-+			ret = -EIO;
-+			goto err;
- 		}
--
--		ret = -EIO;
--		goto err;
--
--syndrome_done:
--		info->chip.ecc.layout = &info->ecclayout;
- 	}
- 
- 	ret = nand_scan_tail(&info->mtd);
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 67eb2be..23086e3 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1369,13 +1369,39 @@ static void denali_hw_init(struct denali_nand_info *denali)
-  * correction
-  */
- #define ECC_8BITS	14
--static struct nand_ecclayout nand_8bit_oob = {
--	.eccbytes = 14,
--};
--
- #define ECC_15BITS	26
--static struct nand_ecclayout nand_15bit_oob = {
--	.eccbytes = 26,
-+
-+static int denali_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int eccbytes = chip->ecc.bytes * chip->ecc.steps;
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	return eccbyte + denali->bbtskipbytes;
-+}
-+
-+static int denali_oobfree(struct mtd_info *mtd, int section,
-+			  struct nand_oobfree *oobfree)
-+{
-+	struct denali_nand_info *denali = mtd_to_denali(mtd);
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int eccbytes = chip->ecc.bytes * chip->ecc.steps;
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	oobfree->offset = eccbytes + denali->bbtskipbytes;
-+	oobfree->length = mtd->oobsize - oobfree->offset;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops denali_ooblayout_ops = {
-+	.eccpos = denali_eccpos,
-+	.oobfree = denali_oobfree,
- };
- 
- static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
-@@ -1556,7 +1582,6 @@ int denali_init(struct denali_nand_info *denali)
- 			ECC_SECTOR_SIZE)))) {
- 		/* if MLC OOB size is large enough, use 15bit ECC*/
- 		denali->nand.ecc.strength = 15;
--		denali->nand.ecc.layout = &nand_15bit_oob;
- 		denali->nand.ecc.bytes = ECC_15BITS;
- 		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
- 	} else if (denali->mtd.oobsize < (denali->bbtskipbytes +
-@@ -1566,20 +1591,13 @@ int denali_init(struct denali_nand_info *denali)
- 		goto failed_req_irq;
- 	} else {
- 		denali->nand.ecc.strength = 8;
--		denali->nand.ecc.layout = &nand_8bit_oob;
- 		denali->nand.ecc.bytes = ECC_8BITS;
- 		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
- 	}
- 
-+	mtd_set_ooblayout(&denali->mtd, &denali_ooblayout_ops);
- 	denali->nand.ecc.bytes *= denali->devnum;
- 	denali->nand.ecc.strength *= denali->devnum;
--	denali->nand.ecc.layout->eccbytes *=
--		denali->mtd.writesize / ECC_SECTOR_SIZE;
--	denali->nand.ecc.layout->oobfree[0].offset =
--		denali->bbtskipbytes + denali->nand.ecc.layout->eccbytes;
--	denali->nand.ecc.layout->oobfree[0].length =
--		denali->mtd.oobsize - denali->nand.ecc.layout->eccbytes -
--		denali->bbtskipbytes;
- 
- 	/*
- 	 * Let driver know the total blocks number and how many blocks
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index 0802158..7101c9a 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -993,10 +993,34 @@ static int doc200x_correct_data(struct mtd_info *mtd, u_char *dat,
-  * safer.  The only problem with it is that any code that parses oobfree must
-  * be able to handle out-of-order segments.
-  */
--static struct nand_ecclayout doc200x_oobinfo = {
--	.eccbytes = 6,
--	.eccpos = {0, 1, 2, 3, 4, 5},
--	.oobfree = {{8, 8}, {6, 2}}
-+static int doc200x_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	if (eccbyte > 5)
-+		return -ERANGE;
-+
-+	return eccbyte;
-+}
-+
-+static int doc200x_oobfree(struct mtd_info *mtd, int section,
-+			   struct nand_oobfree *oobfree)
-+{
-+	if (section > 1)
-+		return -ERANGE;
-+
-+	if (!section) {
-+		oobfree->offset = 8;
-+		oobfree->length = 8;
-+	} else {
-+		oobfree->offset = 6;
-+		oobfree->length = 2;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops doc200x_ooblayout_ops = {
-+	.eccpos = doc200x_eccpos,
-+	.oobfree = doc200x_oobfree,
- };
- 
- /* Find the (I)NFTL Media Header, and optionally also the mirror media header.
-@@ -1571,6 +1595,7 @@ static int __init doc_probe(unsigned long physadr)
- 
- 	mtd->priv		= nand;
- 	mtd->owner		= THIS_MODULE;
-+	mtd_set_ooblayout(mtd, &doc200x_ooblayout_ops);
- 
- 	nand->priv		= doc;
- 	nand->select_chip	= doc200x_select_chip;
-@@ -1582,7 +1607,6 @@ static int __init doc_probe(unsigned long physadr)
- 	nand->ecc.calculate	= doc200x_calculate_ecc;
- 	nand->ecc.correct	= doc200x_correct_data;
- 
--	nand->ecc.layout	= &doc200x_oobinfo;
- 	nand->ecc.mode		= NAND_ECC_HW_SYNDROME;
- 	nand->ecc.size		= 512;
- 	nand->ecc.bytes		= 6;
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index fdce91a..c032536 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -222,10 +222,29 @@ struct docg4_priv {
-  * Bytes 8 - 14 are hw-generated ecc covering entire page + oob bytes 0 - 14.
-  * Byte 15 (the last) is used by the driver as a "page written" flag.
-  */
--static struct nand_ecclayout docg4_oobinfo = {
--	.eccbytes = 9,
--	.eccpos = {7, 8, 9, 10, 11, 12, 13, 14, 15},
--	.oobfree = { {.offset = 2, .length = 5} }
-+static int docg4_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	if (eccbyte > 8)
-+		return -ERANGE;
-+
-+	return eccbyte + 7;
-+}
-+
-+static int docg4_oobfree(struct mtd_info *mtd, int section,
-+			 struct nand_oobfree *oobfree)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	oobfree->offset = 2;
-+	oobfree->length = 5;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops docg4_ooblayout_ops = {
-+	.eccpos = docg4_eccpos,
-+	.oobfree = docg4_oobfree,
- };
- 
- /*
-@@ -1209,6 +1228,7 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
- 	mtd->writesize = DOCG4_PAGE_SIZE;
- 	mtd->erasesize = DOCG4_BLOCK_SIZE;
- 	mtd->oobsize = DOCG4_OOB_SIZE;
-+	mtd_set_ooblayout(mtd, &docg4_ooblayout_ops);
- 	nand->chipsize = DOCG4_CHIP_SIZE;
- 	nand->chip_shift = DOCG4_CHIP_SHIFT;
- 	nand->bbt_erase_shift = nand->phys_erase_shift = DOCG4_ERASE_SHIFT;
-@@ -1217,7 +1237,6 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
- 	nand->pagemask = 0x3ffff;
- 	nand->badblockpos = NAND_LARGE_BADBLOCK_POS;
- 	nand->badblockbits = 8;
--	nand->ecc.layout = &docg4_oobinfo;
- 	nand->ecc.mode = NAND_ECC_HW_SYNDROME;
- 	nand->ecc.size = DOCG4_PAGE_SIZE;
- 	nand->ecc.prepad = 8;
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index bd6d493..716ecb3 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -80,32 +80,53 @@ struct fsl_elbc_fcm_ctrl {
- 
- /* These map to the positions used by the FCM hardware ECC generator */
- 
--/* Small Page FLASH with FMR[ECCM] = 0 */
--static struct nand_ecclayout fsl_elbc_oob_sp_eccm0 = {
--	.eccbytes = 3,
--	.eccpos = {6, 7, 8},
--	.oobfree = { {0, 5}, {9, 7} },
--};
-+static int fsl_elbc_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct fsl_elbc_mtd *priv = chip->priv;
-+	int eccbytes = chip->ecc.bytes * chip->ecc.steps;
-+	int eccpos;
- 
--/* Small Page FLASH with FMR[ECCM] = 1 */
--static struct nand_ecclayout fsl_elbc_oob_sp_eccm1 = {
--	.eccbytes = 3,
--	.eccpos = {8, 9, 10},
--	.oobfree = { {0, 5}, {6, 2}, {11, 5} },
--};
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
- 
--/* Large Page FLASH with FMR[ECCM] = 0 */
--static struct nand_ecclayout fsl_elbc_oob_lp_eccm0 = {
--	.eccbytes = 12,
--	.eccpos = {6, 7, 8, 22, 23, 24, 38, 39, 40, 54, 55, 56},
--	.oobfree = { {1, 5}, {9, 13}, {25, 13}, {41, 13}, {57, 7} },
--};
-+	eccpos = ((eccbyte / chip->ecc.bytes) * 16) +
-+		 (eccbyte % chip->ecc.bytes) + 6;
-+	if (priv->fmr & FMR_ECCM)
-+		eccpos += 2;
-+
-+	return eccpos;
-+}
-+
-+static int fsl_elbc_oobfree(struct mtd_info *mtd, int section,
-+			    struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct fsl_elbc_mtd *priv = chip->priv;
- 
--/* Large Page FLASH with FMR[ECCM] = 1 */
--static struct nand_ecclayout fsl_elbc_oob_lp_eccm1 = {
--	.eccbytes = 12,
--	.eccpos = {8, 9, 10, 24, 25, 26, 40, 41, 42, 56, 57, 58},
--	.oobfree = { {1, 7}, {11, 13}, {27, 13}, {43, 13}, {59, 5} },
-+	if (section > chip->ecc.steps)
-+		return -ERANGE;
-+
-+	if (!section) {
-+		oobfree->offset = 0;
-+		if (mtd->writesize > 512)
-+			oobfree->offset++;
-+		oobfree->length = (priv->fmr & FMR_ECCM) ? 7 : 5;
-+	} else {
-+		oobfree->offset = (16 * section) -
-+				  ((priv->fmr & FMR_ECCM) ? 5 : 7);
-+		if (section < chip->ecc.steps)
-+			oobfree->length = 13;
-+		else
-+			oobfree->length = mtd->oobsize - oobfree->offset;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops fsl_elbc_ooblayout_ops = {
-+	.eccpos = fsl_elbc_eccpos,
-+	.oobfree = fsl_elbc_oobfree,
- };
- 
- /*
-@@ -676,14 +697,6 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
- 	} else if (mtd->writesize == 2048) {
- 		priv->page_size = 1;
- 		setbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
--		/* adjust ecc setup if needed */
--		if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
--		    BR_DECC_CHK_GEN) {
--			chip->ecc.size = 512;
--			chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
--			                   &fsl_elbc_oob_lp_eccm1 :
--			                   &fsl_elbc_oob_lp_eccm0;
--		}
- 	} else {
- 		dev_err(priv->dev,
- 		        "fsl_elbc_init: page size %d is not supported\n",
-@@ -781,9 +794,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
- 	if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
- 	    BR_DECC_CHK_GEN) {
- 		chip->ecc.mode = NAND_ECC_HW;
--		/* put in small page settings and adjust later if needed */
--		chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
--				&fsl_elbc_oob_sp_eccm1 : &fsl_elbc_oob_sp_eccm0;
-+		mtd_set_ooblayout(&priv->mtd, &fsl_elbc_ooblayout_op);
- 		chip->ecc.size = 512;
- 		chip->ecc.bytes = 3;
- 		chip->ecc.strength = 1;
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 610308e..fbd2548 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -68,136 +68,6 @@ struct fsl_ifc_nand_ctrl {
- 
- static struct fsl_ifc_nand_ctrl *ifc_nand_ctrl;
- 
--/* 512-byte page with 4-bit ECC, 8-bit */
--static struct nand_ecclayout oob_512_8bit_ecc4 = {
--	.eccbytes = 8,
--	.eccpos = {8, 9, 10, 11, 12, 13, 14, 15},
--	.oobfree = { {0, 5}, {6, 2} },
--};
--
--/* 512-byte page with 4-bit ECC, 16-bit */
--static struct nand_ecclayout oob_512_16bit_ecc4 = {
--	.eccbytes = 8,
--	.eccpos = {8, 9, 10, 11, 12, 13, 14, 15},
--	.oobfree = { {2, 6}, },
--};
--
--/* 2048-byte page size with 4-bit ECC */
--static struct nand_ecclayout oob_2048_ecc4 = {
--	.eccbytes = 32,
--	.eccpos = {
--		8, 9, 10, 11, 12, 13, 14, 15,
--		16, 17, 18, 19, 20, 21, 22, 23,
--		24, 25, 26, 27, 28, 29, 30, 31,
--		32, 33, 34, 35, 36, 37, 38, 39,
--	},
--	.oobfree = { {2, 6}, {40, 24} },
--};
--
--/* 4096-byte page size with 4-bit ECC */
--static struct nand_ecclayout oob_4096_ecc4 = {
--	.eccbytes = 64,
--	.eccpos = {
--		8, 9, 10, 11, 12, 13, 14, 15,
--		16, 17, 18, 19, 20, 21, 22, 23,
--		24, 25, 26, 27, 28, 29, 30, 31,
--		32, 33, 34, 35, 36, 37, 38, 39,
--		40, 41, 42, 43, 44, 45, 46, 47,
--		48, 49, 50, 51, 52, 53, 54, 55,
--		56, 57, 58, 59, 60, 61, 62, 63,
--		64, 65, 66, 67, 68, 69, 70, 71,
--	},
--	.oobfree = { {2, 6}, {72, 56} },
--};
--
--/* 4096-byte page size with 8-bit ECC -- requires 218-byte OOB */
--static struct nand_ecclayout oob_4096_ecc8 = {
--	.eccbytes = 128,
--	.eccpos = {
--		8, 9, 10, 11, 12, 13, 14, 15,
--		16, 17, 18, 19, 20, 21, 22, 23,
--		24, 25, 26, 27, 28, 29, 30, 31,
--		32, 33, 34, 35, 36, 37, 38, 39,
--		40, 41, 42, 43, 44, 45, 46, 47,
--		48, 49, 50, 51, 52, 53, 54, 55,
--		56, 57, 58, 59, 60, 61, 62, 63,
--		64, 65, 66, 67, 68, 69, 70, 71,
--		72, 73, 74, 75, 76, 77, 78, 79,
--		80, 81, 82, 83, 84, 85, 86, 87,
--		88, 89, 90, 91, 92, 93, 94, 95,
--		96, 97, 98, 99, 100, 101, 102, 103,
--		104, 105, 106, 107, 108, 109, 110, 111,
--		112, 113, 114, 115, 116, 117, 118, 119,
--		120, 121, 122, 123, 124, 125, 126, 127,
--		128, 129, 130, 131, 132, 133, 134, 135,
--	},
--	.oobfree = { {2, 6}, {136, 82} },
--};
--
--/* 8192-byte page size with 4-bit ECC */
--static struct nand_ecclayout oob_8192_ecc4 = {
--	.eccbytes = 128,
--	.eccpos = {
--		8, 9, 10, 11, 12, 13, 14, 15,
--		16, 17, 18, 19, 20, 21, 22, 23,
--		24, 25, 26, 27, 28, 29, 30, 31,
--		32, 33, 34, 35, 36, 37, 38, 39,
--		40, 41, 42, 43, 44, 45, 46, 47,
--		48, 49, 50, 51, 52, 53, 54, 55,
--		56, 57, 58, 59, 60, 61, 62, 63,
--		64, 65, 66, 67, 68, 69, 70, 71,
--		72, 73, 74, 75, 76, 77, 78, 79,
--		80, 81, 82, 83, 84, 85, 86, 87,
--		88, 89, 90, 91, 92, 93, 94, 95,
--		96, 97, 98, 99, 100, 101, 102, 103,
--		104, 105, 106, 107, 108, 109, 110, 111,
--		112, 113, 114, 115, 116, 117, 118, 119,
--		120, 121, 122, 123, 124, 125, 126, 127,
--		128, 129, 130, 131, 132, 133, 134, 135,
--	},
--	.oobfree = { {2, 6}, {136, 208} },
--};
--
--/* 8192-byte page size with 8-bit ECC -- requires 218-byte OOB */
--static struct nand_ecclayout oob_8192_ecc8 = {
--	.eccbytes = 256,
--	.eccpos = {
--		8, 9, 10, 11, 12, 13, 14, 15,
--		16, 17, 18, 19, 20, 21, 22, 23,
--		24, 25, 26, 27, 28, 29, 30, 31,
--		32, 33, 34, 35, 36, 37, 38, 39,
--		40, 41, 42, 43, 44, 45, 46, 47,
--		48, 49, 50, 51, 52, 53, 54, 55,
--		56, 57, 58, 59, 60, 61, 62, 63,
--		64, 65, 66, 67, 68, 69, 70, 71,
--		72, 73, 74, 75, 76, 77, 78, 79,
--		80, 81, 82, 83, 84, 85, 86, 87,
--		88, 89, 90, 91, 92, 93, 94, 95,
--		96, 97, 98, 99, 100, 101, 102, 103,
--		104, 105, 106, 107, 108, 109, 110, 111,
--		112, 113, 114, 115, 116, 117, 118, 119,
--		120, 121, 122, 123, 124, 125, 126, 127,
--		128, 129, 130, 131, 132, 133, 134, 135,
--		136, 137, 138, 139, 140, 141, 142, 143,
--		144, 145, 146, 147, 148, 149, 150, 151,
--		152, 153, 154, 155, 156, 157, 158, 159,
--		160, 161, 162, 163, 164, 165, 166, 167,
--		168, 169, 170, 171, 172, 173, 174, 175,
--		176, 177, 178, 179, 180, 181, 182, 183,
--		184, 185, 186, 187, 188, 189, 190, 191,
--		192, 193, 194, 195, 196, 197, 198, 199,
--		200, 201, 202, 203, 204, 205, 206, 207,
--		208, 209, 210, 211, 212, 213, 214, 215,
--		216, 217, 218, 219, 220, 221, 222, 223,
--		224, 225, 226, 227, 228, 229, 230, 231,
--		232, 233, 234, 235, 236, 237, 238, 239,
--		240, 241, 242, 243, 244, 245, 246, 247,
--		248, 249, 250, 251, 252, 253, 254, 255,
--		256, 257, 258, 259, 260, 261, 262, 263,
--	},
--	.oobfree = { {2, 6}, {264, 80} },
--};
--
- /*
-  * Generic flash bbt descriptors
-  */
-@@ -224,6 +94,55 @@ static struct nand_bbt_descr bbt_mirror_descr = {
- 	.pattern = mirror_pattern,
- };
- 
-+static int fsl_ifc_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int eccbytes = chip->ecc.bytes * chip->ecc.steps;
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	return eccbyte + 8;
-+}
-+
-+static int fsl_ifc_oobfree(struct mtd_info *mtd, int section,
-+			   struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int eccbytes = chip->ecc.bytes * chip->ecc.steps;
-+
-+	if (section > 1)
-+		return -ERANGE;
-+
-+	if (mtd->writesize == 512 &&
-+	    !(chip->options & NAND_BUSWIDTH_16)) {
-+		if (!section) {
-+			oobfree->offset = 0;
-+			oobfree->length = 5;
-+		} else {
-+			oobfree->offset = 6;
-+			oobfree->length = 2;
-+		}
-+
-+		return 0;
-+	}
-+
-+	if (!section) {
-+		oobfree->offset = 2;
-+		oobfree->length = 6;
-+	} else {
-+		oobfree->offset = eccbytes + 8;
-+		oobfree->length = mtd->oobsize - oobfree->offset;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops fsl_ifc_ooblayout_ops = {
-+	.eccpos = fsl_ifc_eccpos,
-+	.oobfree = fsl_ifc_oobfree,
-+};
-+
- /*
-  * Set up the IFC hardware block and page address fields, and the ifc nand
-  * structure addr field to point to the correct IFC buffer in memory
-@@ -877,7 +796,6 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
- 	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
- 	struct fsl_ifc_regs __iomem *ifc = ctrl->regs;
- 	struct nand_chip *chip = &priv->chip;
--	struct nand_ecclayout *layout;
- 	u32 csor;
- 
- 	/* Fill in fsl_ifc_mtd structure */
-@@ -922,18 +840,9 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
- 
- 	csor = ifc_in32(&ifc->csor_cs[priv->bank].csor);
- 
--	/* Hardware generates ECC per 512 Bytes */
--	chip->ecc.size = 512;
--	chip->ecc.bytes = 8;
--	chip->ecc.strength = 4;
--
- 	switch (csor & CSOR_NAND_PGS_MASK) {
- 	case CSOR_NAND_PGS_512:
--		if (chip->options & NAND_BUSWIDTH_16) {
--			layout = &oob_512_16bit_ecc4;
--		} else {
--			layout = &oob_512_8bit_ecc4;
--
-+		if (!(chip->options & NAND_BUSWIDTH_16)) {
- 			/* Avoid conflict with bad block marker */
- 			bbt_main_descr.offs = 0;
- 			bbt_mirror_descr.offs = 0;
-@@ -943,35 +852,16 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
- 		break;
- 
- 	case CSOR_NAND_PGS_2K:
--		layout = &oob_2048_ecc4;
- 		priv->bufnum_mask = 3;
- 		break;
- 
- 	case CSOR_NAND_PGS_4K:
--		if ((csor & CSOR_NAND_ECC_MODE_MASK) ==
--		    CSOR_NAND_ECC_MODE_4) {
--			layout = &oob_4096_ecc4;
--		} else {
--			layout = &oob_4096_ecc8;
--			chip->ecc.bytes = 16;
--			chip->ecc.strength = 8;
--		}
--
- 		priv->bufnum_mask = 1;
- 		break;
- 
- 	case CSOR_NAND_PGS_8K:
--		if ((csor & CSOR_NAND_ECC_MODE_MASK) ==
--		    CSOR_NAND_ECC_MODE_4) {
--			layout = &oob_8192_ecc4;
--		} else {
--			layout = &oob_8192_ecc8;
--			chip->ecc.bytes = 16;
--			chip->ecc.strength = 8;
--		}
--
- 		priv->bufnum_mask = 0;
--	break;
-+		break;
- 
- 	default:
- 		dev_err(priv->dev, "bad csor %#x: bad page size\n", csor);
-@@ -981,7 +871,17 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
- 	/* Must also set CSOR_NAND_ECC_ENC_EN if DEC_EN set */
- 	if (csor & CSOR_NAND_ECC_DEC_EN) {
- 		chip->ecc.mode = NAND_ECC_HW;
--		chip->ecc.layout = layout;
-+		mtd_set_ooblayout(&priv->mtd, &fsl_ifc_ooblayout_ops);
-+
-+		/* Hardware generates ECC per 512 Bytes */
-+		chip->ecc.size = 512;
-+		if ((csor & CSOR_NAND_ECC_MODE_MASK) == CSOR_NAND_ECC_MODE_4) {
-+			chip->ecc.bytes = 8;
-+			chip->ecc.strength = 4;
-+		} else {
-+			chip->ecc.bytes = 16;
-+			chip->ecc.strength = 8;
-+		}
- 	} else {
- 		chip->ecc.mode = NAND_ECC_SOFT;
- 	}
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 59fc6d0..14fd7f6 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -39,212 +39,6 @@
- #include <linux/amba/bus.h>
- #include <mtd/mtd-abi.h>
- 
--static struct nand_ecclayout fsmc_ecc1_128_layout = {
--	.eccbytes = 24,
--	.eccpos = {2, 3, 4, 18, 19, 20, 34, 35, 36, 50, 51, 52,
--		66, 67, 68, 82, 83, 84, 98, 99, 100, 114, 115, 116},
--	.oobfree = {
--		{.offset = 8, .length = 8},
--		{.offset = 24, .length = 8},
--		{.offset = 40, .length = 8},
--		{.offset = 56, .length = 8},
--		{.offset = 72, .length = 8},
--		{.offset = 88, .length = 8},
--		{.offset = 104, .length = 8},
--		{.offset = 120, .length = 8}
--	}
--};
--
--static struct nand_ecclayout fsmc_ecc1_64_layout = {
--	.eccbytes = 12,
--	.eccpos = {2, 3, 4, 18, 19, 20, 34, 35, 36, 50, 51, 52},
--	.oobfree = {
--		{.offset = 8, .length = 8},
--		{.offset = 24, .length = 8},
--		{.offset = 40, .length = 8},
--		{.offset = 56, .length = 8},
--	}
--};
--
--static struct nand_ecclayout fsmc_ecc1_16_layout = {
--	.eccbytes = 3,
--	.eccpos = {2, 3, 4},
--	.oobfree = {
--		{.offset = 8, .length = 8},
--	}
--};
--
--/*
-- * ECC4 layout for NAND of pagesize 8192 bytes & OOBsize 256 bytes. 13*16 bytes
-- * of OB size is reserved for ECC, Byte no. 0 & 1 reserved for bad block and 46
-- * bytes are free for use.
-- */
--static struct nand_ecclayout fsmc_ecc4_256_layout = {
--	.eccbytes = 208,
--	.eccpos = {  2,   3,   4,   5,   6,   7,   8,
--		9,  10,  11,  12,  13,  14,
--		18,  19,  20,  21,  22,  23,  24,
--		25,  26,  27,  28,  29,  30,
--		34,  35,  36,  37,  38,  39,  40,
--		41,  42,  43,  44,  45,  46,
--		50,  51,  52,  53,  54,  55,  56,
--		57,  58,  59,  60,  61,  62,
--		66,  67,  68,  69,  70,  71,  72,
--		73,  74,  75,  76,  77,  78,
--		82,  83,  84,  85,  86,  87,  88,
--		89,  90,  91,  92,  93,  94,
--		98,  99, 100, 101, 102, 103, 104,
--		105, 106, 107, 108, 109, 110,
--		114, 115, 116, 117, 118, 119, 120,
--		121, 122, 123, 124, 125, 126,
--		130, 131, 132, 133, 134, 135, 136,
--		137, 138, 139, 140, 141, 142,
--		146, 147, 148, 149, 150, 151, 152,
--		153, 154, 155, 156, 157, 158,
--		162, 163, 164, 165, 166, 167, 168,
--		169, 170, 171, 172, 173, 174,
--		178, 179, 180, 181, 182, 183, 184,
--		185, 186, 187, 188, 189, 190,
--		194, 195, 196, 197, 198, 199, 200,
--		201, 202, 203, 204, 205, 206,
--		210, 211, 212, 213, 214, 215, 216,
--		217, 218, 219, 220, 221, 222,
--		226, 227, 228, 229, 230, 231, 232,
--		233, 234, 235, 236, 237, 238,
--		242, 243, 244, 245, 246, 247, 248,
--		249, 250, 251, 252, 253, 254
--	},
--	.oobfree = {
--		{.offset = 15, .length = 3},
--		{.offset = 31, .length = 3},
--		{.offset = 47, .length = 3},
--		{.offset = 63, .length = 3},
--		{.offset = 79, .length = 3},
--		{.offset = 95, .length = 3},
--		{.offset = 111, .length = 3},
--		{.offset = 127, .length = 3},
--		{.offset = 143, .length = 3},
--		{.offset = 159, .length = 3},
--		{.offset = 175, .length = 3},
--		{.offset = 191, .length = 3},
--		{.offset = 207, .length = 3},
--		{.offset = 223, .length = 3},
--		{.offset = 239, .length = 3},
--		{.offset = 255, .length = 1}
--	}
--};
--
--/*
-- * ECC4 layout for NAND of pagesize 4096 bytes & OOBsize 224 bytes. 13*8 bytes
-- * of OOB size is reserved for ECC, Byte no. 0 & 1 reserved for bad block & 118
-- * bytes are free for use.
-- */
--static struct nand_ecclayout fsmc_ecc4_224_layout = {
--	.eccbytes = 104,
--	.eccpos = {  2,   3,   4,   5,   6,   7,   8,
--		9,  10,  11,  12,  13,  14,
--		18,  19,  20,  21,  22,  23,  24,
--		25,  26,  27,  28,  29,  30,
--		34,  35,  36,  37,  38,  39,  40,
--		41,  42,  43,  44,  45,  46,
--		50,  51,  52,  53,  54,  55,  56,
--		57,  58,  59,  60,  61,  62,
--		66,  67,  68,  69,  70,  71,  72,
--		73,  74,  75,  76,  77,  78,
--		82,  83,  84,  85,  86,  87,  88,
--		89,  90,  91,  92,  93,  94,
--		98,  99, 100, 101, 102, 103, 104,
--		105, 106, 107, 108, 109, 110,
--		114, 115, 116, 117, 118, 119, 120,
--		121, 122, 123, 124, 125, 126
--	},
--	.oobfree = {
--		{.offset = 15, .length = 3},
--		{.offset = 31, .length = 3},
--		{.offset = 47, .length = 3},
--		{.offset = 63, .length = 3},
--		{.offset = 79, .length = 3},
--		{.offset = 95, .length = 3},
--		{.offset = 111, .length = 3},
--		{.offset = 127, .length = 97}
--	}
--};
--
--/*
-- * ECC4 layout for NAND of pagesize 4096 bytes & OOBsize 128 bytes. 13*8 bytes
-- * of OOB size is reserved for ECC, Byte no. 0 & 1 reserved for bad block & 22
-- * bytes are free for use.
-- */
--static struct nand_ecclayout fsmc_ecc4_128_layout = {
--	.eccbytes = 104,
--	.eccpos = {  2,   3,   4,   5,   6,   7,   8,
--		9,  10,  11,  12,  13,  14,
--		18,  19,  20,  21,  22,  23,  24,
--		25,  26,  27,  28,  29,  30,
--		34,  35,  36,  37,  38,  39,  40,
--		41,  42,  43,  44,  45,  46,
--		50,  51,  52,  53,  54,  55,  56,
--		57,  58,  59,  60,  61,  62,
--		66,  67,  68,  69,  70,  71,  72,
--		73,  74,  75,  76,  77,  78,
--		82,  83,  84,  85,  86,  87,  88,
--		89,  90,  91,  92,  93,  94,
--		98,  99, 100, 101, 102, 103, 104,
--		105, 106, 107, 108, 109, 110,
--		114, 115, 116, 117, 118, 119, 120,
--		121, 122, 123, 124, 125, 126
--	},
--	.oobfree = {
--		{.offset = 15, .length = 3},
--		{.offset = 31, .length = 3},
--		{.offset = 47, .length = 3},
--		{.offset = 63, .length = 3},
--		{.offset = 79, .length = 3},
--		{.offset = 95, .length = 3},
--		{.offset = 111, .length = 3},
--		{.offset = 127, .length = 1}
--	}
--};
--
--/*
-- * ECC4 layout for NAND of pagesize 2048 bytes & OOBsize 64 bytes. 13*4 bytes of
-- * OOB size is reserved for ECC, Byte no. 0 & 1 reserved for bad block and 10
-- * bytes are free for use.
-- */
--static struct nand_ecclayout fsmc_ecc4_64_layout = {
--	.eccbytes = 52,
--	.eccpos = {  2,   3,   4,   5,   6,   7,   8,
--		9,  10,  11,  12,  13,  14,
--		18,  19,  20,  21,  22,  23,  24,
--		25,  26,  27,  28,  29,  30,
--		34,  35,  36,  37,  38,  39,  40,
--		41,  42,  43,  44,  45,  46,
--		50,  51,  52,  53,  54,  55,  56,
--		57,  58,  59,  60,  61,  62,
--	},
--	.oobfree = {
--		{.offset = 15, .length = 3},
--		{.offset = 31, .length = 3},
--		{.offset = 47, .length = 3},
--		{.offset = 63, .length = 1},
--	}
--};
--
--/*
-- * ECC4 layout for NAND of pagesize 512 bytes & OOBsize 16 bytes. 13 bytes of
-- * OOB size is reserved for ECC, Byte no. 4 & 5 reserved for bad block and One
-- * byte is free for use.
-- */
--static struct nand_ecclayout fsmc_ecc4_16_layout = {
--	.eccbytes = 13,
--	.eccpos = { 0,  1,  2,  3,  6,  7, 8,
--		9, 10, 11, 12, 13, 14
--	},
--	.oobfree = {
--		{.offset = 15, .length = 1},
--	}
--};
--
- /*
-  * ECC placement definitions in oobfree type format.
-  * There are 13 bytes of ecc for every 512 byte block and it has to be read
-@@ -274,6 +68,80 @@ static struct fsmc_eccplace fsmc_ecc4_sp_place = {
- 	}
- };
- 
-+static int fsmc_ecc1_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int eccbytes = chip->ecc.bytes * chip->ecc.steps;
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	return ((eccbyte / 3) * 16) + (eccbyte % 3) + 2;
-+}
-+
-+static int fsmc_ecc1_oobfree(struct mtd_info *mtd, int section,
-+			     struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	if (section >= chip->ecc.steps)
-+		return -ERANGE;
-+
-+	oobfree->offset = (section * 16) + 8;
-+
-+	if (section < chip->ecc.steps - 1)
-+		oobfree->length = 8;
-+	else
-+		oobfree->length = mtd->oobsize - oobfree->offset;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops fsmc_ecc1_ooblayout_ops = {
-+	.eccpos = fsmc_ecc1_eccpos,
-+	.oobfree = fsmc_ecc1_oobfree,
-+};
-+
-+static int fsmc_ecc4_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int eccbytes = chip->ecc.bytes * chip->ecc.steps;
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	if (mtd->writesize > 512)
-+		return ((eccbyte / 13) * 16) + (eccbyte % 13) + 2;
-+
-+	if (eccbyte < 4)
-+		return eccbyte;
-+
-+	return eccbyte + 2;
-+}
-+
-+static int fsmc_ecc4_oobfree(struct mtd_info *mtd, int section,
-+			     struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	if (section >= chip->ecc.steps)
-+		return -ERANGE;
-+
-+	oobfree->offset = (section * 16) + 15;
-+
-+	if (section < chip->ecc.steps - 1)
-+		oobfree->length = 3;
-+	else
-+		oobfree->length = mtd->oobsize - oobfree->offset;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops fsmc_ecc4_ooblayout_ops = {
-+	.eccpos = fsmc_ecc4_eccpos,
-+	.oobfree = fsmc_ecc4_oobfree,
-+};
-+
- /**
-  * struct fsmc_nand_data - structure for FSMC NAND device state
-  *
-@@ -1089,23 +957,18 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	if (AMBA_REV_BITS(host->pid) >= 8) {
- 		switch (host->mtd.oobsize) {
- 		case 16:
--			nand->ecc.layout = &fsmc_ecc4_16_layout;
- 			host->ecc_place = &fsmc_ecc4_sp_place;
- 			break;
- 		case 64:
--			nand->ecc.layout = &fsmc_ecc4_64_layout;
- 			host->ecc_place = &fsmc_ecc4_lp_place;
- 			break;
- 		case 128:
--			nand->ecc.layout = &fsmc_ecc4_128_layout;
- 			host->ecc_place = &fsmc_ecc4_lp_place;
- 			break;
- 		case 224:
--			nand->ecc.layout = &fsmc_ecc4_224_layout;
- 			host->ecc_place = &fsmc_ecc4_lp_place;
- 			break;
- 		case 256:
--			nand->ecc.layout = &fsmc_ecc4_256_layout;
- 			host->ecc_place = &fsmc_ecc4_lp_place;
- 			break;
- 		default:
-@@ -1114,6 +977,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 			ret = -EINVAL;
- 			goto err_probe;
- 		}
-+
-+		mtd_set_ooblayout(mtd, &fsmc_ecc4_ooblayout_ops);
- 	} else {
- 		switch (nand->ecc.mode) {
- 		case NAND_ECC_HW:
-@@ -1140,13 +1005,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 		if (nand->ecc.mode != NAND_ECC_SOFT_BCH) {
- 			switch (host->mtd.oobsize) {
- 			case 16:
--				nand->ecc.layout = &fsmc_ecc1_16_layout;
--				break;
- 			case 64:
--				nand->ecc.layout = &fsmc_ecc1_64_layout;
--				break;
- 			case 128:
--				nand->ecc.layout = &fsmc_ecc1_128_layout;
-+				mtd_set_ooblayout(mtd,
-+						  &fsmc_ecc1_ooblayout_ops);
- 				break;
- 			default:
- 				dev_warn(&pdev->dev,
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index c208f5e..9894843 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -47,10 +47,41 @@ static struct nand_bbt_descr gpmi_bbt_descr = {
-  * We may change the layout if we can get the ECC info from the datasheet,
-  * else we will use all the (page + OOB).
-  */
--static struct nand_ecclayout gpmi_hw_ecclayout = {
--	.eccbytes = 0,
--	.eccpos = { 0, },
--	.oobfree = { {.offset = 0, .length = 0} }
-+static int gpmi_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct gpmi_nand_data *this = chip->priv;
-+	struct bch_geometry *geo = &this->bch_geometry;
-+	int eccbytes = geo->page_size - mtd->writesize;
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	return eccbyte;
-+}
-+
-+static int gpmi_oobfree(struct mtd_info *mtd, int section,
-+			struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct gpmi_nand_data *this = chip->priv;
-+	struct bch_geometry *geo = &this->bch_geometry;
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	/* The available oob size we have. */
-+	if (geo->page_size < mtd->writesize + mtd->oobsize) {
-+		oobfree->offset = geo->page_size - mtd->writesize;
-+		oobfree->length = mtd->oobsize - oobfree->offset;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops gpmi_ooblayout_ops = {
-+	.eccpos = gpmi_eccpos,
-+	.oobfree = gpmi_oobfree,
- };
- 
- static const struct gpmi_devdata gpmi_devdata_imx23 = {
-@@ -141,7 +172,6 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 	struct bch_geometry *geo = &this->bch_geometry;
- 	struct mtd_info *mtd = &this->mtd;
- 	struct nand_chip *chip = mtd->priv;
--	struct nand_oobfree *of = gpmi_hw_ecclayout.oobfree;
- 	unsigned int block_mark_bit_offset;
- 
- 	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
-@@ -229,12 +259,6 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 	geo->page_size = mtd->writesize + geo->metadata_size +
- 		(geo->gf_len * geo->ecc_strength * geo->ecc_chunk_count) / 8;
- 
--	/* The available oob size we have. */
--	if (geo->page_size < mtd->writesize + mtd->oobsize) {
--		of->offset = geo->page_size - mtd->writesize;
--		of->length = mtd->oobsize - of->offset;
--	}
--
- 	geo->payload_size = mtd->writesize;
- 
- 	geo->auxiliary_status_offset = ALIGN(geo->metadata_size, 4);
-@@ -1861,7 +1885,7 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
- 	ecc->mode	= NAND_ECC_HW;
- 	ecc->size	= bch_geo->ecc_chunk_size;
- 	ecc->strength	= bch_geo->ecc_strength;
--	ecc->layout	= &gpmi_hw_ecclayout;
-+	mtd_set_ooblayout(mtd, &gpmi_ooblayout_ops);
- 
- 	/*
- 	 * We only enable the subpage read when:
-diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
-index 32a5a4c..dd12cd7 100644
---- a/drivers/mtd/nand/hisi504_nand.c
-+++ b/drivers/mtd/nand/hisi504_nand.c
-@@ -632,8 +632,28 @@ static void hisi_nfc_host_init(struct hinfc_host *host)
- 	hinfc_write(host, HINFC504_INTEN_DMA, HINFC504_INTEN);
- }
- 
--static struct nand_ecclayout nand_ecc_2K_16bits = {
--	.oobfree = { {2, 6} },
-+static int hisi_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	/* FIXME: add real eccpos definition. */
-+	return 0;
-+}
-+
-+static int hisi_oobfree(struct mtd_info *mtd, int section,
-+			struct nand_oobfree *oobfree)
-+{
-+	/* FIXME: add full oobfree definition. */
-+	if (section)
-+		return -ERANGE;
-+
-+	oobfree->offset = 2;
-+	oobfree->length = 6;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops hisi_ooblayout_ops = {
-+	.eccpos = hisi_eccpos,
-+	.oobfree = hisi_oobfree,
- };
- 
- static int hisi_nfc_ecc_probe(struct hinfc_host *host)
-@@ -669,7 +689,7 @@ static int hisi_nfc_ecc_probe(struct hinfc_host *host)
- 	case 16:
- 		ecc_bits = 6;
- 		if (mtd->writesize == 2048)
--			chip->ecc.layout = &nand_ecc_2K_16bits;
-+			mtd_set_ooblayout(mtd, &hisi_ooblayout_ops);
- 
- 		/* TODO: add more page size support */
- 		break;
-diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
-index c4fe446..ec8bd6d 100644
---- a/drivers/mtd/nand/jz4740_nand.c
-+++ b/drivers/mtd/nand/jz4740_nand.c
-@@ -495,7 +495,7 @@ static int jz_nand_probe(struct platform_device *pdev)
- 	}
- 
- 	if (pdata && pdata->ident_callback) {
--		pdata->ident_callback(pdev, chip, &pdata->partitions,
-+		pdata->ident_callback(pdev, mtd, &pdata->partitions,
- 					&pdata->num_partitions);
- 	}
- 
-diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
-index 0ee81a0..80f66ac 100644
---- a/drivers/mtd/nand/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/lpc32xx_mlc.c
-@@ -139,22 +139,36 @@ struct lpc32xx_nand_cfg_mlc {
- 	unsigned num_parts;
- };
- 
--static struct nand_ecclayout lpc32xx_nand_oob = {
--	.eccbytes = 40,
--	.eccpos = { 6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
--		   22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
--		   38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
--		   54, 55, 56, 57, 58, 59, 60, 61, 62, 63 },
--	.oobfree = {
--		{ .offset = 0,
--		  .length = 6, },
--		{ .offset = 16,
--		  .length = 6, },
--		{ .offset = 32,
--		  .length = 6, },
--		{ .offset = 48,
--		  .length = 6, },
--		},
-+static int lpc32xx_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	int eccbytes = nand_chip->ecc.steps * nand_chip->ecc.bytes;
-+	int off = 16 - nand_chip->ecc.bytes;
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	return ((eccbyte / nand_chip->ecc.bytes) * 16) + off +
-+	       (eccbyte % nand_chip->ecc.bytes);
-+}
-+
-+static int lpc32xx_oobfree(struct mtd_info *mtd, int section,
-+			   struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+
-+	if (section >= nand_chip->ecc.steps)
-+		return -ERANGE;
-+
-+	oobfree->offset = 16 * section;
-+	oobfree->length = 16 - nand_chip->ecc.bytes;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops lpc32xx_ooblayout_ops = {
-+	.eccpos = lpc32xx_eccpos,
-+	.oobfree = lpc32xx_oobfree,
- };
- 
- static struct nand_bbt_descr lpc32xx_nand_bbt = {
-@@ -714,6 +728,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	nand_chip->ecc.write_oob = lpc32xx_write_oob;
- 	nand_chip->ecc.read_oob = lpc32xx_read_oob;
- 	nand_chip->ecc.strength = 4;
-+	nand_chip->ecc.bytes = 10;
- 	nand_chip->waitfunc = lpc32xx_waitfunc;
- 
- 	nand_chip->options = NAND_NO_SUBPAGE_WRITE;
-@@ -752,7 +767,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 
- 	nand_chip->ecc.mode = NAND_ECC_HW;
- 	nand_chip->ecc.size = 512;
--	nand_chip->ecc.layout = &lpc32xx_nand_oob;
-+	mtd_set_ooblayout(mtd, &lpc32xx_ooblayout_ops);
- 	host->mlcsubpages = mtd->writesize / 512;
- 
- 	/* initially clear interrupt status */
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index 47dcfddd..3301c77 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -146,13 +146,34 @@
-  * NAND ECC Layout for small page NAND devices
-  * Note: For large and huge page devices, the default layouts are used
-  */
--static struct nand_ecclayout lpc32xx_nand_oob_16 = {
--	.eccbytes = 6,
--	.eccpos = {10, 11, 12, 13, 14, 15},
--	.oobfree = {
--		{ .offset = 0, .length = 4 },
--		{ .offset = 6, .length = 4 },
--	},
-+static int lpc32xx_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	if (eccbyte > 5)
-+		return -ERANGE;
-+
-+	return eccbyte + 10;
-+}
-+
-+static int lpc32xx_oobfree(struct mtd_info *mtd, int section,
-+			   struct nand_oobfree *oobfree)
-+{
-+	if (section > 1)
-+		return -ERANGE;
-+
-+	if (!section) {
-+		oobfree->offset = 0;
-+		oobfree->length = 4;
-+	} else {
-+		oobfree->offset = 6;
-+		oobfree->length = 4;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops lpc32xx_ooblayout_ops = {
-+	.eccpos = lpc32xx_eccpos,
-+	.oobfree = lpc32xx_oobfree,
- };
- 
- static u8 bbt_pattern[] = {'B', 'b', 't', '0' };
-@@ -877,7 +898,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	 * custom BBT marker layout.
- 	 */
- 	if (mtd->writesize <= 512)
--		chip->ecc.layout = &lpc32xx_nand_oob_16;
-+		mtd_set_ooblayout(mtd, &lpc32xx_ooblayout_ops);
- 
- 	/* These sizes remain the same regardless of page size */
- 	chip->ecc.size = 256;
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index f507d36..7ea9c50 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -149,7 +149,7 @@ struct mxc_nand_devtype_data {
- 	int (*check_int)(struct mxc_nand_host *);
- 	void (*irq_control)(struct mxc_nand_host *, int);
- 	u32 (*get_ecc_status)(struct mxc_nand_host *);
--	struct nand_ecclayout *ecclayout_512, *ecclayout_2k, *ecclayout_4k;
-+	const struct mtd_ooblayout_ops *ooblayout;
- 	void (*select_chip)(struct mtd_info *mtd, int chip);
- 	int (*correct_data)(struct mtd_info *mtd, u_char *dat,
- 			u_char *read_ecc, u_char *calc_ecc);
-@@ -201,73 +201,6 @@ struct mxc_nand_host {
- 	struct mxc_nand_platform_data pdata;
- };
- 
--/* OOB placement block for use with hardware ecc generation */
--static struct nand_ecclayout nandv1_hw_eccoob_smallpage = {
--	.eccbytes = 5,
--	.eccpos = {6, 7, 8, 9, 10},
--	.oobfree = {{0, 5}, {12, 4}, }
--};
--
--static struct nand_ecclayout nandv1_hw_eccoob_largepage = {
--	.eccbytes = 20,
--	.eccpos = {6, 7, 8, 9, 10, 22, 23, 24, 25, 26,
--		   38, 39, 40, 41, 42, 54, 55, 56, 57, 58},
--	.oobfree = {{2, 4}, {11, 10}, {27, 10}, {43, 10}, {59, 5}, }
--};
--
--/* OOB description for 512 byte pages with 16 byte OOB */
--static struct nand_ecclayout nandv2_hw_eccoob_smallpage = {
--	.eccbytes = 1 * 9,
--	.eccpos = {
--		 7,  8,  9, 10, 11, 12, 13, 14, 15
--	},
--	.oobfree = {
--		{.offset = 0, .length = 5}
--	}
--};
--
--/* OOB description for 2048 byte pages with 64 byte OOB */
--static struct nand_ecclayout nandv2_hw_eccoob_largepage = {
--	.eccbytes = 4 * 9,
--	.eccpos = {
--		 7,  8,  9, 10, 11, 12, 13, 14, 15,
--		23, 24, 25, 26, 27, 28, 29, 30, 31,
--		39, 40, 41, 42, 43, 44, 45, 46, 47,
--		55, 56, 57, 58, 59, 60, 61, 62, 63
--	},
--	.oobfree = {
--		{.offset = 2, .length = 4},
--		{.offset = 16, .length = 7},
--		{.offset = 32, .length = 7},
--		{.offset = 48, .length = 7}
--	}
--};
--
--/* OOB description for 4096 byte pages with 128 byte OOB */
--static struct nand_ecclayout nandv2_hw_eccoob_4k = {
--	.eccbytes = 8 * 9,
--	.eccpos = {
--		7,  8,  9, 10, 11, 12, 13, 14, 15,
--		23, 24, 25, 26, 27, 28, 29, 30, 31,
--		39, 40, 41, 42, 43, 44, 45, 46, 47,
--		55, 56, 57, 58, 59, 60, 61, 62, 63,
--		71, 72, 73, 74, 75, 76, 77, 78, 79,
--		87, 88, 89, 90, 91, 92, 93, 94, 95,
--		103, 104, 105, 106, 107, 108, 109, 110, 111,
--		119, 120, 121, 122, 123, 124, 125, 126, 127,
--	},
--	.oobfree = {
--		{.offset = 2, .length = 4},
--		{.offset = 16, .length = 7},
--		{.offset = 32, .length = 7},
--		{.offset = 48, .length = 7},
--		{.offset = 64, .length = 7},
--		{.offset = 80, .length = 7},
--		{.offset = 96, .length = 7},
--		{.offset = 112, .length = 7},
--	}
--};
--
- static const char * const part_probes[] = {
- 	"cmdlinepart", "RedBoot", "ofpart", NULL };
- 
-@@ -943,6 +876,93 @@ static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
- 	}
- }
- 
-+static int mxc_v1_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	int eccbytes = nand_chip->ecc.steps * nand_chip->ecc.bytes;
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	return ((eccbyte / nand_chip->ecc.bytes) * 16) + 6 +
-+	       (eccbyte % nand_chip->ecc.bytes);
-+}
-+
-+static int mxc_v1_oobfree(struct mtd_info *mtd, int section,
-+			  struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+
-+	if (section > nand_chip->ecc.steps)
-+		return -ERANGE;
-+
-+	if (!section) {
-+		if (mtd->writesize <= 512) {
-+			oobfree->offset = 0;
-+			oobfree->length = 5;
-+		} else {
-+			oobfree->offset = 2;
-+			oobfree->length = 4;
-+		}
-+	} else {
-+		oobfree->offset = ((section - 1) * 16) +
-+				  nand_chip->ecc.bytes + 6;
-+		if (section < nand_chip->ecc.steps)
-+			oobfree->length = (section * 16) + 6 - oobfree->offset;
-+		else
-+			oobfree->length = mtd->oobsize - oobfree->offset;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops mxc_v1_ooblayout_ops = {
-+	.eccpos = mxc_v1_eccpos,
-+	.oobfree = mxc_v1_oobfree,
-+};
-+
-+static int mxc_v2_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	int eccbytes = nand_chip->ecc.steps * nand_chip->ecc.bytes;
-+	int stepsize = nand_chip->ecc.bytes == 9 ? 16 : 26;
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	return ((eccbyte / nand_chip->ecc.bytes) * stepsize) + 7;
-+}
-+
-+static int mxc_v2_oobfree(struct mtd_info *mtd, int section,
-+			  struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	int stepsize = nand_chip->ecc.bytes == 9 ? 16 : 26;
-+
-+	if (section > nand_chip->ecc.steps)
-+		return -ERANGE;
-+
-+	if (!section) {
-+		if (mtd->writesize <= 512) {
-+			oobfree->offset = 0;
-+			oobfree->length = 5;
-+		} else {
-+			oobfree->offset = 2;
-+			oobfree->length = 4;
-+		}
-+	} else {
-+		oobfree->offset = section * stepsize;
-+		oobfree->length = 7;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops mxc_v2_ooblayout_ops = {
-+	.eccpos = mxc_v2_eccpos,
-+	.oobfree = mxc_v2_oobfree,
-+};
-+
- /*
-  * v2 and v3 type controllers can do 4bit or 8bit ecc depending
-  * on how much oob the nand chip has. For 8bit ecc we need at least
-@@ -960,23 +980,6 @@ static int get_eccsize(struct mtd_info *mtd)
- 		return 8;
- }
- 
--static void ecc_8bit_layout_4k(struct nand_ecclayout *layout)
--{
--	int i, j;
--
--	layout->eccbytes = 8*18;
--	for (i = 0; i < 8; i++)
--		for (j = 0; j < 18; j++)
--			layout->eccpos[i*18 + j] = i*26 + j + 7;
--
--	layout->oobfree[0].offset = 2;
--	layout->oobfree[0].length = 4;
--	for (i = 1; i < 8; i++) {
--		layout->oobfree[i].offset = i*26;
--		layout->oobfree[i].length = 7;
--	}
--}
--
- static void preset_v1(struct mtd_info *mtd)
- {
- 	struct nand_chip *nand_chip = mtd->priv;
-@@ -1270,9 +1273,7 @@ static const struct mxc_nand_devtype_data imx21_nand_devtype_data = {
- 	.check_int = check_int_v1_v2,
- 	.irq_control = irq_control_v1_v2,
- 	.get_ecc_status = get_ecc_status_v1,
--	.ecclayout_512 = &nandv1_hw_eccoob_smallpage,
--	.ecclayout_2k = &nandv1_hw_eccoob_largepage,
--	.ecclayout_4k = &nandv1_hw_eccoob_smallpage, /* XXX: needs fix */
-+	.ooblayout = &mxc_v1_ooblayout_ops,
- 	.select_chip = mxc_nand_select_chip_v1_v3,
- 	.correct_data = mxc_nand_correct_data_v1,
- 	.irqpending_quirk = 1,
-@@ -1295,9 +1296,7 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
- 	.check_int = check_int_v1_v2,
- 	.irq_control = irq_control_v1_v2,
- 	.get_ecc_status = get_ecc_status_v1,
--	.ecclayout_512 = &nandv1_hw_eccoob_smallpage,
--	.ecclayout_2k = &nandv1_hw_eccoob_largepage,
--	.ecclayout_4k = &nandv1_hw_eccoob_smallpage, /* XXX: needs fix */
-+	.ooblayout = &mxc_v1_ooblayout_ops,
- 	.select_chip = mxc_nand_select_chip_v1_v3,
- 	.correct_data = mxc_nand_correct_data_v1,
- 	.irqpending_quirk = 0,
-@@ -1321,9 +1320,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
- 	.check_int = check_int_v1_v2,
- 	.irq_control = irq_control_v1_v2,
- 	.get_ecc_status = get_ecc_status_v2,
--	.ecclayout_512 = &nandv2_hw_eccoob_smallpage,
--	.ecclayout_2k = &nandv2_hw_eccoob_largepage,
--	.ecclayout_4k = &nandv2_hw_eccoob_4k,
-+	.ooblayout = &mxc_v2_ooblayout_ops,
- 	.select_chip = mxc_nand_select_chip_v2,
- 	.correct_data = mxc_nand_correct_data_v2_v3,
- 	.irqpending_quirk = 0,
-@@ -1347,9 +1344,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
- 	.check_int = check_int_v3,
- 	.irq_control = irq_control_v3,
- 	.get_ecc_status = get_ecc_status_v3,
--	.ecclayout_512 = &nandv2_hw_eccoob_smallpage,
--	.ecclayout_2k = &nandv2_hw_eccoob_largepage,
--	.ecclayout_4k = &nandv2_hw_eccoob_smallpage, /* XXX: needs fix */
-+	.ooblayout = &mxc_v2_ooblayout_ops,
- 	.select_chip = mxc_nand_select_chip_v1_v3,
- 	.correct_data = mxc_nand_correct_data_v2_v3,
- 	.irqpending_quirk = 0,
-@@ -1374,9 +1369,7 @@ static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
- 	.check_int = check_int_v3,
- 	.irq_control = irq_control_v3,
- 	.get_ecc_status = get_ecc_status_v3,
--	.ecclayout_512 = &nandv2_hw_eccoob_smallpage,
--	.ecclayout_2k = &nandv2_hw_eccoob_largepage,
--	.ecclayout_4k = &nandv2_hw_eccoob_smallpage, /* XXX: needs fix */
-+	.ooblayout = &mxc_v2_ooblayout_ops,
- 	.select_chip = mxc_nand_select_chip_v1_v3,
- 	.correct_data = mxc_nand_correct_data_v2_v3,
- 	.irqpending_quirk = 0,
-@@ -1578,7 +1571,7 @@ static int mxcnd_probe(struct platform_device *pdev)
- 
- 	this->select_chip = host->devtype_data->select_chip;
- 	this->ecc.size = 512;
--	this->ecc.layout = host->devtype_data->ecclayout_512;
-+	mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
- 
- 	if (host->pdata.hw_ecc) {
- 		this->ecc.calculate = mxc_nand_calculate_ecc;
-@@ -1651,12 +1644,11 @@ static int mxcnd_probe(struct platform_device *pdev)
- 	/* Call preset again, with correct writesize this time */
- 	host->devtype_data->preset(mtd);
- 
--	if (mtd->writesize == 2048)
--		this->ecc.layout = host->devtype_data->ecclayout_2k;
--	else if (mtd->writesize == 4096) {
--		this->ecc.layout = host->devtype_data->ecclayout_4k;
--		if (get_eccsize(mtd) == 8)
--			ecc_8bit_layout_4k(this->ecc.layout);
-+	if (!this->ecc.bytes) {
-+		if (host->eccsize == 8)
-+			this->ecc.bytes = 18;
-+		else if (host->eccsize == 4)
-+			this->ecc.bytes = 9;
- 	}
- 
- 	/*
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 6a598b1..3570e31 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -170,8 +170,6 @@ struct omap_nand_info {
- 	u_char				*buf;
- 	int					buf_len;
- 	struct gpmc_nand_regs		reg;
--	/* generated at runtime depending on ECC algorithm and layout selected */
--	struct nand_ecclayout		oobinfo;
- 	/* fields specific for BCHx_HW ECC scheme */
- 	struct device			*elm_dev;
- 	struct device_node		*of_node;
-@@ -1649,19 +1647,98 @@ static bool omap2_nand_ecc_check(struct omap_nand_info *info,
- 	return true;
- }
- 
-+static int omap_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int off = chip->options & NAND_BUSWIDTH_16 ?
-+		  BADBLOCK_MARKER_LENGTH : 1;
-+
-+	if (eccbyte >= chip->ecc.bytes * chip->ecc.steps)
-+		return -ERANGE;
-+
-+	return eccbyte + off;
-+}
-+
-+static int omap_oobfree(struct mtd_info *mtd, int section,
-+			struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int off = chip->options & NAND_BUSWIDTH_16 ?
-+		  BADBLOCK_MARKER_LENGTH : 1;
-+	if (section)
-+		return -ERANGE;
-+
-+	off += chip->ecc.bytes * chip->ecc.steps;
-+	if (off >= mtd->oobsize)
-+		return -ERANGE;
-+
-+	oobfree->offset = off;
-+	oobfree->length = mtd->oobsize - off;
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops omap_ooblayout_ops = {
-+	.eccpos = omap_eccpos,
-+	.oobfree = omap_oobfree,
-+};
-+
-+static int omap_sw_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int off = chip->options & NAND_BUSWIDTH_16 ?
-+		  BADBLOCK_MARKER_LENGTH : 1;
-+
-+	if (eccbyte >= chip->ecc.bytes * chip->ecc.steps)
-+		return -ERANGE;
-+
-+	/*
-+	 * When SW correction is employed, one OMAP specific marker byte is
-+	 * reserved after each ECC step.
-+	 */
-+	return (eccbyte % chip->ecc.bytes) + (eccbyte / chip->ecc.bytes) + off;
-+}
-+
-+static int omap_sw_oobfree(struct mtd_info *mtd, int section,
-+			   struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int off = chip->options & NAND_BUSWIDTH_16 ?
-+		  BADBLOCK_MARKER_LENGTH : 1;
-+	if (section)
-+		return -ERANGE;
-+
-+	/*
-+	 * When SW correction is employed, one OMAP specific marker byte is
-+	 * reserved after each ECC step.
-+	 */
-+	off += ((chip->ecc.bytes + 1) * chip->ecc.steps);
-+	if (off >= mtd->oobsize)
-+		return -ERANGE;
-+
-+	oobfree->offset = off;
-+	oobfree->length = mtd->oobsize - off;
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops omap_sw_ooblayout_ops = {
-+	.eccpos = omap_sw_eccpos,
-+	.oobfree = omap_sw_oobfree,
-+};
-+
- static int omap_nand_probe(struct platform_device *pdev)
- {
- 	struct omap_nand_info		*info;
- 	struct omap_nand_platform_data	*pdata;
- 	struct mtd_info			*mtd;
- 	struct nand_chip		*nand_chip;
--	struct nand_ecclayout		*ecclayout;
- 	int				err;
--	int				i;
- 	dma_cap_mask_t			mask;
- 	unsigned			sig;
--	unsigned			oob_index;
- 	struct resource			*res;
-+	int				min_oobbytes;
-+	int				oobbytes_per_step;
- 
- 	pdata = dev_get_platdata(&pdev->dev);
- 	if (pdata == NULL) {
-@@ -1821,7 +1898,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 
- 	/*
- 	 * Bail out earlier to let NAND_ECC_SOFT code create its own
--	 * ecclayout instead of using ours.
-+	 * ooblayout instead of using ours.
- 	 */
- 	if (info->ecc_opt == OMAP_ECC_HAM1_CODE_SW) {
- 		nand_chip->ecc.mode = NAND_ECC_SOFT;
-@@ -1829,8 +1906,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	}
- 
- 	/* populate MTD interface based on ECC scheme */
--	ecclayout		= &info->oobinfo;
--	nand_chip->ecc.layout	= ecclayout;
- 	switch (info->ecc_opt) {
- 	case OMAP_ECC_HAM1_CODE_HW:
- 		pr_info("nand: using OMAP_ECC_HAM1_CODE_HW\n");
-@@ -1841,19 +1916,8 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->ecc.calculate        = omap_calculate_ecc;
- 		nand_chip->ecc.hwctl            = omap_enable_hwecc;
- 		nand_chip->ecc.correct          = omap_correct_data;
--		/* define ECC layout */
--		ecclayout->eccbytes		= nand_chip->ecc.bytes *
--							(mtd->writesize /
--							nand_chip->ecc.size);
--		if (nand_chip->options & NAND_BUSWIDTH_16)
--			oob_index		= BADBLOCK_MARKER_LENGTH;
--		else
--			oob_index		= 1;
--		for (i = 0; i < ecclayout->eccbytes; i++, oob_index++)
--			ecclayout->eccpos[i]	= oob_index;
--		/* no reserved-marker in ecclayout for this ecc-scheme */
--		ecclayout->oobfree->offset	=
--				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
-+		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
-+		oobbytes_per_step		= nand_chip->ecc.bytes;
- 		break;
- 
- 	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
-@@ -1865,19 +1929,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
- 		nand_chip->ecc.correct		= nand_bch_correct_data;
- 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
--		/* define ECC layout */
--		ecclayout->eccbytes		= nand_chip->ecc.bytes *
--							(mtd->writesize /
--							nand_chip->ecc.size);
--		oob_index			= BADBLOCK_MARKER_LENGTH;
--		for (i = 0; i < ecclayout->eccbytes; i++, oob_index++) {
--			ecclayout->eccpos[i] = oob_index;
--			if (((i + 1) % nand_chip->ecc.bytes) == 0)
--				oob_index++;
--		}
--		/* include reserved-marker in ecclayout->oobfree calculation */
--		ecclayout->oobfree->offset	= 1 +
--				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
-+		mtd_set_ooblayout(mtd, &omap_sw_ooblayout_ops);
-+		/* Reserve one byte for the OMAP marker */
-+		oobbytes_per_step		= nand_chip->ecc.bytes + 1;
- 		/* software bch library is used for locating errors */
- 		nand_chip->ecc.priv		= nand_bch_init(mtd);
- 		if (!nand_chip->ecc.priv) {
-@@ -1899,16 +1953,8 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
- 		nand_chip->ecc.read_page	= omap_read_page_bch;
- 		nand_chip->ecc.write_page	= omap_write_page_bch;
--		/* define ECC layout */
--		ecclayout->eccbytes		= nand_chip->ecc.bytes *
--							(mtd->writesize /
--							nand_chip->ecc.size);
--		oob_index			= BADBLOCK_MARKER_LENGTH;
--		for (i = 0; i < ecclayout->eccbytes; i++, oob_index++)
--			ecclayout->eccpos[i]	= oob_index;
--		/* reserved marker already included in ecclayout->eccbytes */
--		ecclayout->oobfree->offset	=
--				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
-+		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
-+		oobbytes_per_step		= nand_chip->ecc.bytes;
- 
- 		err = elm_config(info->elm_dev, BCH4_ECC,
- 				 info->mtd.writesize / nand_chip->ecc.size,
-@@ -1926,19 +1972,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
- 		nand_chip->ecc.correct		= nand_bch_correct_data;
- 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
--		/* define ECC layout */
--		ecclayout->eccbytes		= nand_chip->ecc.bytes *
--							(mtd->writesize /
--							nand_chip->ecc.size);
--		oob_index			= BADBLOCK_MARKER_LENGTH;
--		for (i = 0; i < ecclayout->eccbytes; i++, oob_index++) {
--			ecclayout->eccpos[i] = oob_index;
--			if (((i + 1) % nand_chip->ecc.bytes) == 0)
--				oob_index++;
--		}
--		/* include reserved-marker in ecclayout->oobfree calculation */
--		ecclayout->oobfree->offset	= 1 +
--				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
-+		mtd_set_ooblayout(mtd, &omap_sw_ooblayout_ops);
-+		/* Reserve one byte for the OMAP marker */
-+		oobbytes_per_step		= nand_chip->ecc.bytes + 1;
- 		/* software bch library is used for locating errors */
- 		nand_chip->ecc.priv		= nand_bch_init(mtd);
- 		if (!nand_chip->ecc.priv) {
-@@ -1960,6 +1996,8 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
- 		nand_chip->ecc.read_page	= omap_read_page_bch;
- 		nand_chip->ecc.write_page	= omap_write_page_bch;
-+		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
-+		oobbytes_per_step		= nand_chip->ecc.bytes;
- 
- 		err = elm_config(info->elm_dev, BCH8_ECC,
- 				 info->mtd.writesize / nand_chip->ecc.size,
-@@ -1967,16 +2005,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		if (err < 0)
- 			goto return_error;
- 
--		/* define ECC layout */
--		ecclayout->eccbytes		= nand_chip->ecc.bytes *
--							(mtd->writesize /
--							nand_chip->ecc.size);
--		oob_index			= BADBLOCK_MARKER_LENGTH;
--		for (i = 0; i < ecclayout->eccbytes; i++, oob_index++)
--			ecclayout->eccpos[i]	= oob_index;
--		/* reserved marker already included in ecclayout->eccbytes */
--		ecclayout->oobfree->offset	=
--				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
- 		break;
- 
- 	case OMAP_ECC_BCH16_CODE_HW:
-@@ -1990,6 +2018,8 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
- 		nand_chip->ecc.read_page	= omap_read_page_bch;
- 		nand_chip->ecc.write_page	= omap_write_page_bch;
-+		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
-+		oobbytes_per_step		= nand_chip->ecc.bytes;
- 
- 		err = elm_config(info->elm_dev, BCH16_ECC,
- 				 info->mtd.writesize / nand_chip->ecc.size,
-@@ -1997,16 +2027,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		if (err < 0)
- 			goto return_error;
- 
--		/* define ECC layout */
--		ecclayout->eccbytes		= nand_chip->ecc.bytes *
--							(mtd->writesize /
--							nand_chip->ecc.size);
--		oob_index			= BADBLOCK_MARKER_LENGTH;
--		for (i = 0; i < ecclayout->eccbytes; i++, oob_index++)
--			ecclayout->eccpos[i]	= oob_index;
--		/* reserved marker already included in ecclayout->eccbytes */
--		ecclayout->oobfree->offset	=
--				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
- 		break;
- 	default:
- 		dev_err(&info->pdev->dev, "invalid or unsupported ECC scheme\n");
-@@ -2014,13 +2034,15 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		goto return_error;
- 	}
- 
--	/* all OOB bytes from oobfree->offset till end off OOB are free */
--	ecclayout->oobfree->length = mtd->oobsize - ecclayout->oobfree->offset;
- 	/* check if NAND device's OOB is enough to store ECC signatures */
--	if (mtd->oobsize < (ecclayout->eccbytes + BADBLOCK_MARKER_LENGTH)) {
-+	min_oobbytes = (oobbytes_per_step *
-+			(mtd->writesize / nand_chip->ecc.size)) +
-+		       (nand_chip->options & NAND_BUSWIDTH_16 ?
-+			BADBLOCK_MARKER_LENGTH : 1);
-+	if (mtd->oobsize < min_oobbytes) {
- 		dev_err(&info->pdev->dev,
- 			"not enough OOB bytes required = %d, available=%d\n",
--			ecclayout->eccbytes, mtd->oobsize);
-+			min_oobbytes, mtd->oobsize);
- 		err = -EINVAL;
- 		goto return_error;
- 	}
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index bdbc2c2..d0f163f 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -285,6 +285,59 @@ static struct pxa3xx_nand_flash builtin_flash_types[] = {
- 	{ 0xba20, 16, 16, &timing[3] },
- };
- 
-+static int pxa3xx_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct pxa3xx_nand_host *host = chip->priv;
-+	struct pxa3xx_nand_info *info = host->info_data;
-+	int chunk = eccbyte / info->ecc_size;
-+	int nchunks = mtd->writesize / info->chunk_size;
-+
-+	if (chunk >= nchunks)
-+		return -ERANGE;
-+
-+	return (eccbyte % info->ecc_size) + info->spare_size +
-+	       ((info->ecc_size + info->spare_size) * chunk);
-+}
-+
-+static int pxa3xx_oobfree(struct mtd_info *mtd, int section,
-+			  struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct pxa3xx_nand_host *host = chip->priv;
-+	struct pxa3xx_nand_info *info = host->info_data;
-+	int nchunks = mtd->writesize / info->chunk_size;
-+
-+	if (section >= nchunks)
-+		return -ERANGE;
-+
-+	if (!info->spare_size)
-+		return 0;
-+
-+	oobfree->offset = section * (info->ecc_size + info->spare_size);
-+	oobfree->length = info->spare_size;
-+	if (!section) {
-+		/*
-+		 * Bootrom looks in bytes 0 & 5 for bad blocks for the
-+		 * 4KB page / 4bit BCH combination.
-+		 */
-+		if (mtd->writesize == 4096 && info->chunk_size == 2048) {
-+			oobfree->offset += 6;
-+			oobfree->length -= 6;
-+		} else {
-+			oobfree->offset += 2;
-+			oobfree->length -= 2;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops pxa3xx_ooblayout_ops = {
-+	.eccpos = pxa3xx_eccpos,
-+	.oobfree = pxa3xx_oobfree,
-+};
-+
- static u8 bbt_pattern[] = {'M', 'V', 'B', 'b', 't', '0' };
- static u8 bbt_mirror_pattern[] = {'1', 't', 'b', 'B', 'V', 'M' };
- 
-@@ -308,41 +361,6 @@ static struct nand_bbt_descr bbt_mirror_descr = {
- 	.pattern = bbt_mirror_pattern
- };
- 
--static struct nand_ecclayout ecc_layout_2KB_bch4bit = {
--	.eccbytes = 32,
--	.eccpos = {
--		32, 33, 34, 35, 36, 37, 38, 39,
--		40, 41, 42, 43, 44, 45, 46, 47,
--		48, 49, 50, 51, 52, 53, 54, 55,
--		56, 57, 58, 59, 60, 61, 62, 63},
--	.oobfree = { {2, 30} }
--};
--
--static struct nand_ecclayout ecc_layout_4KB_bch4bit = {
--	.eccbytes = 64,
--	.eccpos = {
--		32,  33,  34,  35,  36,  37,  38,  39,
--		40,  41,  42,  43,  44,  45,  46,  47,
--		48,  49,  50,  51,  52,  53,  54,  55,
--		56,  57,  58,  59,  60,  61,  62,  63,
--		96,  97,  98,  99,  100, 101, 102, 103,
--		104, 105, 106, 107, 108, 109, 110, 111,
--		112, 113, 114, 115, 116, 117, 118, 119,
--		120, 121, 122, 123, 124, 125, 126, 127},
--	/* Bootrom looks in bytes 0 & 5 for bad blocks */
--	.oobfree = { {6, 26}, { 64, 32} }
--};
--
--static struct nand_ecclayout ecc_layout_4KB_bch8bit = {
--	.eccbytes = 128,
--	.eccpos = {
--		32,  33,  34,  35,  36,  37,  38,  39,
--		40,  41,  42,  43,  44,  45,  46,  47,
--		48,  49,  50,  51,  52,  53,  54,  55,
--		56,  57,  58,  59,  60,  61,  62,  63},
--	.oobfree = { }
--};
--
- #define NDTR0_tCH(c)	(min((c), 7) << 19)
- #define NDTR0_tCS(c)	(min((c), 7) << 16)
- #define NDTR0_tWH(c)	(min((c), 7) << 11)
-@@ -1502,9 +1520,12 @@ static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
- }
- 
- static int pxa_ecc_init(struct pxa3xx_nand_info *info,
--			struct nand_ecc_ctrl *ecc,
-+			struct mtd_info *mtd,
- 			int strength, int ecc_stepsize, int page_size)
- {
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+
- 	if (strength == 1 && ecc_stepsize == 512 && page_size == 2048) {
- 		info->chunk_size = 2048;
- 		info->spare_size = 40;
-@@ -1532,7 +1553,7 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 		info->ecc_size = 32;
- 		ecc->mode = NAND_ECC_HW;
- 		ecc->size = info->chunk_size;
--		ecc->layout = &ecc_layout_2KB_bch4bit;
-+		mtd_set_ooblayout(mtd, &pxa3xx_ooblayout_ops);
- 		ecc->strength = 16;
- 
- 	} else if (strength == 4 && ecc_stepsize == 512 && page_size == 4096) {
-@@ -1542,7 +1563,7 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 		info->ecc_size = 32;
- 		ecc->mode = NAND_ECC_HW;
- 		ecc->size = info->chunk_size;
--		ecc->layout = &ecc_layout_4KB_bch4bit;
-+		mtd_set_ooblayout(mtd, &pxa3xx_ooblayout_ops);
- 		ecc->strength = 16;
- 
- 	/*
-@@ -1556,7 +1577,7 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 		info->ecc_size = 32;
- 		ecc->mode = NAND_ECC_HW;
- 		ecc->size = info->chunk_size;
--		ecc->layout = &ecc_layout_4KB_bch8bit;
-+		mtd_set_ooblayout(mtd, &pxa3xx_ooblayout_ops);
- 		ecc->strength = 16;
- 	} else {
- 		dev_err(&info->pdev->dev,
-@@ -1647,7 +1668,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 		ecc_step = 512;
- 	}
- 
--	ret = pxa_ecc_init(info, &chip->ecc, ecc_strength,
-+	ret = pxa_ecc_init(info, mtd, ecc_strength,
- 			   ecc_step, mtd->writesize);
- 	if (ret)
- 		return ret;
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index b569200..83c3920 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -84,11 +84,29 @@
- 
- /* new oob placement block for use with hardware ecc generation
-  */
-+static int s3c2410_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	if (eccbyte > 2)
-+		return -ERANGE;
-+
-+	return eccbyte;
-+}
-+
-+static int s3c2410_oobfree(struct mtd_info *mtd, int section,
-+			   struct nand_oobfree *oobfree)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	oobfree->offset = 8;
-+	oobfree->length = 8;
-+
-+	return 0;
-+}
- 
--static struct nand_ecclayout nand_hw_eccoob = {
--	.eccbytes = 3,
--	.eccpos = {0, 1, 2},
--	.oobfree = {{8, 8}}
-+const struct mtd_ooblayout_ops s3c2410_ooblayout_ops = {
-+	.eccpos = s3c2410_eccpos,
-+	.oobfree = s3c2410_oobfree,
- };
- 
- /* controller and mtd information */
-@@ -918,7 +936,7 @@ static void s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
- 	} else {
- 		chip->ecc.size	    = 512;
- 		chip->ecc.bytes	    = 3;
--		chip->ecc.layout    = &nand_hw_eccoob;
-+		mtd_set_ooblayout(&nmtd->mtd, &s3c2410_ooblayout_ops);
- 	}
- }
- 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 57dc525..0430375 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -43,26 +43,66 @@
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/sh_flctl.h>
- 
--static struct nand_ecclayout flctl_4secc_oob_16 = {
--	.eccbytes = 10,
--	.eccpos = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
--	.oobfree = {
--		{.offset = 12,
--		. length = 4} },
-+static int flctl_4secc_oob_smallpage_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	if (eccbyte >= chip->ecc.bytes)
-+		return -ERANGE;
-+
-+	return eccbyte;
-+}
-+
-+static int flctl_4secc_oob_smallpage_oobfree(struct mtd_info *mtd, int section,
-+					     struct nand_oobfree *oobfree)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	oobfree->offset = 12;
-+	oobfree->length = 4;
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops flctl_4secc_oob_smallpage_ops = {
-+	.eccpos = flctl_4secc_oob_smallpage_eccpos,
-+	.oobfree = flctl_4secc_oob_smallpage_oobfree,
- };
- 
--static struct nand_ecclayout flctl_4secc_oob_64 = {
--	.eccbytes = 4 * 10,
--	.eccpos = {
--		 6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
--		22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
--		38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
--		54, 55, 56, 57, 58, 59, 60, 61, 62, 63 },
--	.oobfree = {
--		{.offset =  2, .length = 4},
--		{.offset = 16, .length = 6},
--		{.offset = 32, .length = 6},
--		{.offset = 48, .length = 6} },
-+static int flctl_4secc_oob_largepage_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	if (eccbyte >= chip->ecc.bytes * chip->ecc.steps)
-+		return -ERANGE;
-+
-+	return ((eccbyte / chip->ecc.bytes) * 16) + 6 +
-+	       (eccbyte % chip->ecc.bytes);
-+}
-+
-+static int flctl_4secc_oob_largepage_oobfree(struct mtd_info *mtd, int section,
-+					     struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	if (section >= chip->ecc.steps)
-+		return -ERANGE;
-+
-+	oobfree->offset = section * 16;
-+	oobfree->length = 6;
-+
-+	if (!section) {
-+		oobfree->offset += 2;
-+		oobfree->length -= 2;
-+	}
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops flctl_4secc_oob_largepage_ops = {
-+	.eccpos = flctl_4secc_oob_largepage_eccpos,
-+	.oobfree = flctl_4secc_oob_largepage_oobfree,
- };
- 
- static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
-@@ -987,10 +1027,10 @@ static int flctl_chip_init_tail(struct mtd_info *mtd)
- 
- 	if (flctl->hwecc) {
- 		if (mtd->writesize == 512) {
--			chip->ecc.layout = &flctl_4secc_oob_16;
-+			mtd_set_ooblayout(mtd, &flctl_4secc_oob_smallpage_ops);
- 			chip->badblock_pattern = &flctl_4secc_smallpage;
- 		} else {
--			chip->ecc.layout = &flctl_4secc_oob_64;
-+			mtd_set_ooblayout(mtd, &flctl_4secc_oob_largepage_ops);
- 			chip->badblock_pattern = &flctl_4secc_largepage;
- 		}
- 
-diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
-index 082b600..e49eb95 100644
---- a/drivers/mtd/nand/sharpsl.c
-+++ b/drivers/mtd/nand/sharpsl.c
-@@ -145,6 +145,7 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
- 	/* Link the private data with the MTD structure */
- 	sharpsl->mtd.priv = this;
- 	sharpsl->mtd.dev.parent = &pdev->dev;
-+	mtd_set_ooblayout(&sharpsl->mtd, data->ecc_layout);
- 
- 	platform_set_drvdata(pdev, sharpsl);
- 
-@@ -167,7 +168,6 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
- 	this->ecc.bytes = 3;
- 	this->ecc.strength = 1;
- 	this->badblock_pattern = data->badblock_pattern;
--	this->ecc.layout = data->ecc_layout;
- 	this->ecc.hwctl = sharpsl_nand_enable_hwecc;
- 	this->ecc.calculate = sharpsl_nand_calculate_ecc;
- 	this->ecc.correct = nand_correct_data;
-diff --git a/drivers/mtd/nand/sm_common.c b/drivers/mtd/nand/sm_common.c
-index e06b5e5..398d534 100644
---- a/drivers/mtd/nand/sm_common.c
-+++ b/drivers/mtd/nand/sm_common.c
-@@ -12,14 +12,46 @@
- #include <linux/sizes.h>
- #include "sm_common.h"
- 
--static struct nand_ecclayout nand_oob_sm = {
--	.eccbytes = 6,
--	.eccpos = {8, 9, 10, 13, 14, 15},
--	.oobfree = {
--		{.offset = 0 , .length = 4}, /* reserved */
--		{.offset = 6 , .length = 2}, /* LBA1 */
--		{.offset = 11, .length = 2}  /* LBA2 */
-+static int oob_sm_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	if (eccbyte > 5)
-+		return -ERANGE;
-+
-+	if (eccbyte < 3)
-+		return eccbyte + 8;
-+
-+	return eccbyte + 13;
-+}
-+
-+static int oob_sm_oobfree(struct mtd_info *mtd, int section,
-+			  struct nand_oobfree *oobfree)
-+{
-+	switch (section) {
-+	case 0:
-+		/* reserved */
-+		oobfree->offset = 0;
-+		oobfree->length = 4;
-+		break;
-+	case 1:
-+		/* LBA1 */
-+		oobfree->offset = 6;
-+		oobfree->length = 2;
-+		break;
-+	case 2:
-+		/* LBA2 */
-+		oobfree->offset = 11;
-+		oobfree->length = 2;
-+		break;
-+	default:
-+		return -ERANGE;
- 	}
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops oob_sm_ops = {
-+	.eccpos = oob_sm_eccpos,
-+	.oobfree = oob_sm_oobfree,
- };
- 
- /* NOTE: This layout is is not compatabable with SmartMedia, */
-@@ -28,15 +60,39 @@ static struct nand_ecclayout nand_oob_sm = {
- /* If you use smftl, it will bypass this and work correctly */
- /* If you not, then you break SmartMedia compliance anyway */
- 
--static struct nand_ecclayout nand_oob_sm_small = {
--	.eccbytes = 3,
--	.eccpos = {0, 1, 2},
--	.oobfree = {
--		{.offset = 3 , .length = 2}, /* reserved */
--		{.offset = 6 , .length = 2}, /* LBA1 */
-+static int oob_sm_small_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	if (eccbyte > 2)
-+		return -ERANGE;
-+
-+	return eccbyte;
-+}
-+
-+static int oob_sm_small_oobfree(struct mtd_info *mtd, int section,
-+				struct nand_oobfree *oobfree)
-+{
-+	switch (section) {
-+	case 0:
-+		/* reserved */
-+		oobfree->offset = 3;
-+		oobfree->length = 2;
-+		break;
-+	case 1:
-+		/* LBA1 */
-+		oobfree->offset = 6;
-+		oobfree->length = 2;
-+		break;
-+	default:
-+		return -ERANGE;
- 	}
--};
- 
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops oob_sm_small_ops = {
-+	.eccpos = oob_sm_small_eccpos,
-+	.oobfree = oob_sm_small_oobfree,
-+};
- 
- static int sm_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
-@@ -121,9 +177,9 @@ int sm_register_device(struct mtd_info *mtd, int smartmedia)
- 
- 	/* ECC layout */
- 	if (mtd->writesize == SM_SECTOR_SIZE)
--		chip->ecc.layout = &nand_oob_sm;
-+		mtd_set_ooblayout(mtd, &oob_sm_ops);
- 	else if (mtd->writesize == SM_SMALL_PAGE)
--		chip->ecc.layout = &nand_oob_sm_small;
-+		mtd_set_ooblayout(mtd, &oob_sm_small_ops);
- 	else
- 		return -ENODEV;
- 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 1bbcc0c..0443410 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -211,12 +211,9 @@ struct sunxi_nand_chip_sel {
-  * sunxi HW ECC infos: stores information related to HW ECC support
-  *
-  * @mode:	the sunxi ECC mode field deduced from ECC requirements
-- * @layout:	the OOB layout depending on the ECC requirements and the
-- *		selected ECC mode
-  */
- struct sunxi_nand_hw_ecc {
- 	int mode;
--	struct nand_ecclayout layout;
- };
- 
- /*
-@@ -1026,6 +1023,55 @@ static int sunxi_nand_chip_init_timings(struct sunxi_nand_chip *chip,
- 	return sunxi_nand_chip_set_timings(chip, timings);
- }
- 
-+static int sunxi_nand_eccpos(struct mtd_info *mtd, int eccbyte)
-+{
-+	struct nand_chip *nand = mtd->priv;
-+	struct nand_ecc_ctrl *ecc = &nand->ecc;
-+	int eccbytes = ecc->bytes * ecc->steps;
-+
-+	if (eccbyte >= eccbytes)
-+		return -ERANGE;
-+
-+	return ((eccbyte / ecc->bytes) * (ecc->bytes + 4)) +
-+	       (eccbyte % ecc->bytes);
-+}
-+
-+static int sunxi_nand_oobfree(struct mtd_info *mtd, int section,
-+			      struct nand_oobfree *oobfree)
-+{
-+	struct nand_chip *nand = mtd->priv;
-+	struct nand_ecc_ctrl *ecc = &nand->ecc;
-+
-+	if (section > ecc->steps)
-+		return -ERANGE;
-+
-+	/*
-+	 * The first 2 bytes are used for BB markers, hence we
-+	 * only have 2 bytes available in the first user data
-+	 * section.
-+	 */
-+	if (!section && ecc->mode == NAND_ECC_HW) {
-+		oobfree->offset = 2;
-+		oobfree->length = 2;
-+
-+		return 0;
-+	}
-+
-+	oobfree->offset = section * (ecc->bytes + 4);
-+
-+	if (section < ecc->steps)
-+		oobfree->length = 4;
-+	else
-+		oobfree->offset = mtd->oobsize - oobfree->offset;
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops sunxi_nand_ooblayout_ops = {
-+	.eccpos = sunxi_nand_eccpos,
-+	.oobfree = sunxi_nand_oobfree,
-+};
-+
- static int sunxi_nand_hw_common_ecc_ctrl_init(struct mtd_info *mtd,
- 					      struct nand_ecc_ctrl *ecc,
- 					      struct device_node *np)
-@@ -1035,7 +1081,6 @@ static int sunxi_nand_hw_common_ecc_ctrl_init(struct mtd_info *mtd,
- 	struct sunxi_nand_chip *sunxi_nand = to_sunxi_nand(nand);
- 	struct sunxi_nfc *nfc = to_sunxi_nfc(sunxi_nand->nand.controller);
- 	struct sunxi_nand_hw_ecc *data;
--	struct nand_ecclayout *layout;
- 	int nsectors;
- 	int ret;
- 	int i;
-@@ -1064,7 +1109,6 @@ static int sunxi_nand_hw_common_ecc_ctrl_init(struct mtd_info *mtd,
- 	/* HW ECC always work with even numbers of ECC bytes */
- 	ecc->bytes = ALIGN(ecc->bytes, 2);
- 
--	layout = &data->layout;
- 	nsectors = mtd->writesize / ecc->size;
- 
- 	if (mtd->oobsize < ((ecc->bytes + 4) * nsectors)) {
-@@ -1072,9 +1116,7 @@ static int sunxi_nand_hw_common_ecc_ctrl_init(struct mtd_info *mtd,
- 		goto err;
- 	}
- 
--	layout->eccbytes = (ecc->bytes * nsectors);
--
--	ecc->layout = layout;
-+	mtd_set_ooblayout(mtd, &sunxi_nand_ooblayout_ops);
- 	ecc->priv = data;
- 
- 	return 0;
-@@ -1094,9 +1136,6 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
- 				       struct nand_ecc_ctrl *ecc,
- 				       struct device_node *np)
- {
--	struct nand_ecclayout *layout;
--	int nsectors;
--	int i, j;
- 	int ret;
- 
- 	ret = sunxi_nand_hw_common_ecc_ctrl_init(mtd, ecc, np);
-@@ -1105,40 +1144,6 @@ static int sunxi_nand_hw_ecc_ctrl_init(struct mtd_info *mtd,
- 
- 	ecc->read_page = sunxi_nfc_hw_ecc_read_page;
- 	ecc->write_page = sunxi_nfc_hw_ecc_write_page;
--	layout = ecc->layout;
--	nsectors = mtd->writesize / ecc->size;
--
--	for (i = 0; i < nsectors; i++) {
--		if (i) {
--			layout->oobfree[i].offset =
--				layout->oobfree[i - 1].offset +
--				layout->oobfree[i - 1].length +
--				ecc->bytes;
--			layout->oobfree[i].length = 4;
--		} else {
--			/*
--			 * The first 2 bytes are used for BB markers, hence we
--			 * only have 2 bytes available in the first user data
--			 * section.
--			 */
--			layout->oobfree[i].length = 2;
--			layout->oobfree[i].offset = 2;
--		}
--
--		for (j = 0; j < ecc->bytes; j++)
--			layout->eccpos[(ecc->bytes * i) + j] =
--					layout->oobfree[i].offset +
--					layout->oobfree[i].length + j;
--	}
--
--	if (mtd->oobsize > (ecc->bytes + 4) * nsectors) {
--		layout->oobfree[nsectors].offset =
--				layout->oobfree[nsectors - 1].offset +
--				layout->oobfree[nsectors - 1].length +
--				ecc->bytes;
--		layout->oobfree[nsectors].length = mtd->oobsize -
--				((ecc->bytes + 4) * nsectors);
--	}
- 
- 	return 0;
- }
-@@ -1147,9 +1152,6 @@ static int sunxi_nand_hw_syndrome_ecc_ctrl_init(struct mtd_info *mtd,
- 						struct nand_ecc_ctrl *ecc,
- 						struct device_node *np)
- {
--	struct nand_ecclayout *layout;
--	int nsectors;
--	int i;
- 	int ret;
- 
- 	ret = sunxi_nand_hw_common_ecc_ctrl_init(mtd, ecc, np);
-@@ -1160,15 +1162,6 @@ static int sunxi_nand_hw_syndrome_ecc_ctrl_init(struct mtd_info *mtd,
- 	ecc->read_page = sunxi_nfc_hw_syndrome_ecc_read_page;
- 	ecc->write_page = sunxi_nfc_hw_syndrome_ecc_write_page;
- 
--	layout = ecc->layout;
--	nsectors = mtd->writesize / ecc->size;
--
--	for (i = 0; i < (ecc->bytes * nsectors); i++)
--		layout->eccpos[i] = i;
--
--	layout->oobfree[0].length = mtd->oobsize - i;
--	layout->oobfree[0].offset = i;
--
- 	return 0;
- }
- 
-@@ -1180,7 +1173,6 @@ static void sunxi_nand_ecc_cleanup(struct nand_ecc_ctrl *ecc)
- 		sunxi_nand_hw_common_ecc_ctrl_cleanup(ecc);
- 		break;
- 	case NAND_ECC_NONE:
--		kfree(ecc->layout);
- 	default:
- 		break;
- 	}
-@@ -1214,10 +1206,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
- 			return ret;
- 		break;
- 	case NAND_ECC_NONE:
--		ecc->layout = kzalloc(sizeof(*ecc->layout), GFP_KERNEL);
--		if (!ecc->layout)
--			return -ENOMEM;
--		ecc->layout->oobfree[0].length = mtd->oobsize;
- 	case NAND_ECC_SOFT:
- 		break;
- 	default:
-diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-index 0413e24..9055ee5 100644
---- a/drivers/mtd/nand/vf610_nfc.c
-+++ b/drivers/mtd/nand/vf610_nfc.c
-@@ -173,34 +173,6 @@ struct vf610_nfc {
- 
- #define mtd_to_nfc(_mtd) container_of(_mtd, struct vf610_nfc, mtd)
- 
--static struct nand_ecclayout vf610_nfc_ecc45 = {
--	.eccbytes = 45,
--	.eccpos = {19, 20, 21, 22, 23,
--		   24, 25, 26, 27, 28, 29, 30, 31,
--		   32, 33, 34, 35, 36, 37, 38, 39,
--		   40, 41, 42, 43, 44, 45, 46, 47,
--		   48, 49, 50, 51, 52, 53, 54, 55,
--		   56, 57, 58, 59, 60, 61, 62, 63},
--	.oobfree = {
--		{.offset = 2,
--		 .length = 17} }
--};
--
--static struct nand_ecclayout vf610_nfc_ecc60 = {
--	.eccbytes = 60,
--	.eccpos = { 4,  5,  6,  7,  8,  9, 10, 11,
--		   12, 13, 14, 15, 16, 17, 18, 19,
--		   20, 21, 22, 23, 24, 25, 26, 27,
--		   28, 29, 30, 31, 32, 33, 34, 35,
--		   36, 37, 38, 39, 40, 41, 42, 43,
--		   44, 45, 46, 47, 48, 49, 50, 51,
--		   52, 53, 54, 55, 56, 57, 58, 59,
--		   60, 61, 62, 63 },
--	.oobfree = {
--		{.offset = 2,
--		 .length = 2} }
--};
--
- static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
- {
- 	return readl(nfc->regs + reg);
-@@ -780,14 +752,16 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 		if (mtd->oobsize > 64)
- 			mtd->oobsize = 64;
- 
-+		/*
-+		 * mtd->ecclayout is not specified here because we're using the
-+		 * default large page ECC layout defined in NAND core.
-+		 */
- 		if (chip->ecc.strength == 32) {
- 			nfc->ecc_mode = ECC_60_BYTE;
- 			chip->ecc.bytes = 60;
--			chip->ecc.layout = &vf610_nfc_ecc60;
- 		} else if (chip->ecc.strength == 24) {
- 			nfc->ecc_mode = ECC_45_BYTE;
- 			chip->ecc.bytes = 45;
--			chip->ecc.layout = &vf610_nfc_ecc45;
- 		} else {
- 			dev_err(nfc->dev, "Unsupported ECC strength\n");
- 			err = -ENXIO;
-diff --git a/include/linux/mtd/sharpsl.h b/include/linux/mtd/sharpsl.h
-index 25f4d2a..a8c23b2 100644
---- a/include/linux/mtd/sharpsl.h
-+++ b/include/linux/mtd/sharpsl.h
-@@ -14,7 +14,7 @@
- 
- struct sharpsl_nand_platform_data {
- 	struct nand_bbt_descr	*badblock_pattern;
--	struct nand_ecclayout	*ecc_layout;
-+	struct nand_ooblayout_ops *ecc_layout;
- 	struct mtd_partition	*partitions;
- 	unsigned int		nr_partitions;
- };
--- 
-2.1.4
+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
+
+--GvXjxJ+pjyke8COw--
