@@ -1,43 +1,20 @@
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a612B-0002Jc-3p
- for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 19:01:15 +0000
-Received: from mail.kernel.org (localhost [127.0.0.1])
- by mail.kernel.org (Postfix) with ESMTP id 0C69A20562
- for <linux-mtd@lists.infradead.org>; Mon,  7 Dec 2015 19:00:53 +0000 (UTC)
-Received: from mail-qk0-f173.google.com (mail-qk0-f173.google.com
- [209.85.220.173])
- (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id AE3192054C
- for <linux-mtd@lists.infradead.org>; Mon,  7 Dec 2015 19:00:50 +0000 (UTC)
-Received: by qkdb5 with SMTP id b5so36669008qkd.0
- for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 11:00:49 -0800 (PST)
+Date: Mon, 7 Dec 2015 11:34:41 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: linux-mtd@lists.infradead.org, nicolas.ferre@atmel.com, marex@denx.de,
+ vigneshr@ti.com, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ Bean Huo =?utf-8?B?6ZyN5paM5paM?= <beanhuo@micron.com>
+Subject: Re: [PATCH linux-next 0/5] mtd: spi-nor: add driver for Atmel QSPI
+ controller
+Message-ID: <20151207193441.GO120110@google.com>
+References: <cover.1449494420.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <20151207181308.GN120110@google.com>
-References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
- <1449292763-129421-5-git-send-email-computersforpeace@gmail.com>
- <CAL_JsqLV1mDpW9tD0XjWRxZSSsYuDiqHbuADQmBUtACgYiHJ+w@mail.gmail.com>
- <20151207181308.GN120110@google.com>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Mon, 7 Dec 2015 13:00:30 -0600
-Message-ID: <CAL_JsqJ_dN6tDhjmB29Li6zxTcOcNRbr8Hw2MfnUAT3uWDgzuQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and
- of_mtd_match_mtd_parser() helpers
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Simon Arlott <simon@fire.lp0.eu>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Jonas Gorski <jogo@openwrt.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1449494420.git.cyrille.pitchen@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,34 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 7, 2015 at 12:13 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Sun, Dec 06, 2015 at 08:45:40PM -0600, Rob Herring wrote:
->> On Fri, Dec 4, 2015 at 11:19 PM, Brian Norris
->> <computersforpeace@gmail.com> wrote:
->> >  drivers/of/of_mtd.c            | 33 +++++++++++++++++++++++++++++++++
->>
->> BTW, this file should be moved to drivers/mtd/ at some point.
->
-> How about s/at some point/now/ ?
++ Bean Huo
 
-Great.
+Hi Cyrille,
 
-> I can send a separate patch. It also
-> seems like these should just get linked into the 'mtd' module (when
-> CONFIG_OF=y) instead of having a tiny module for just a few functions.
+On Mon, Dec 07, 2015 at 03:09:09PM +0100, Cyrille Pitchen wrote:
+> Hi all,
+> 
+> this series of patches adds support to the Atmel QSPI controller available
+> on sama5d2 SoCs. It was tested on a sama5d2 xplained ultra board with a 
+> Micron n25q128a13 QSPI memory and a at25df321a SPI memory.
+> 
+> In order to use the Micron memory in its Quad SPI mode, the spi-nor
+> framework needed to be patched to fix the support of Quad/Dual SPI
+> protocols with some memory manufacturers such as Spansion, Micron and
+> Macronix. There are many comments in the source code to explain the
+> implementation choices based on the datasheets from memory manufacturers.
+> 
+> 
+> This series was based and tested on linux-next-20151207
+> 
+> 1 - Atmel QSPI + Micron n25q128a13 (atmel-quadspi.c driver)
+> 
+> SPI 1-1-1: This mode was tested replacing SPI_NOR_QUAD by SPI_NOR_FAST as
+>            argument to spi_nor_scan() called from atmel_qspi_probe().
+> 
+> SPI 1-1-4: Bootloaders (at91bootstrap/uboot) don't enable the Quad SPI
+>            mode of the Micron memory. When probed from Linux, the memory
+>            uses its Extended SPI mode and replies to the regular Read ID
+>            (0x9f) command.
+> 
+> SPI 4-4-4: The romcode enabled the Quad SPI mode the of Micron memory
+>            before loading the at91bootstrap. When probed from Linux, the
+>            memory uses its Quad SPI mode and no longer replies to the
+>            regular Read ID (0x9f) command but instead to the Read ID
+>            Multiple I/O (0xaf) command. The memory expects ALL commands
+>            to use the SPI 4-4-4 protocol.
 
-Agreed.
+I'll admit I'm a little fuzzy on the differences between dual and quad
+modes on various flash manufacturers. Can you help clear it up for me?
+I think some of the comments on patch 2 help too, but I'll just comment
+here for now.
 
-> Why did files like this get placed here anyway? Is there a reason that
-> there are things like of_net and of_pci here too?
+It looks like the current driver has problems regarding the non 1-x-y
+modes (e.g., 4-4-4), right? But I see that spi-nor.c never tries to
+send a 4_4_4 command; it only sets read_opcode to
+SPINOR_OP_READ_1_1_{1,2,4}. So is this an oversight in patches like
+Bean's patch?
 
-Things started out here, but as the number of subsystems and
-associated bindings grew it became evident that binding specific
-things should go with the subsystems. I also have a secret goal to
-eliminate drivers/of. Don't tell anyone.
+    commit 548cd3ab54da ("mtd: spi-nor: Add quad I/O support for Micron
+    SPI NOR")
 
-of_net should probably move, just no one has had the itch to do it.
-PCI is a bit special and somewhat tied into the rest of the core.
+Why would we even need to enable quad modes like that, if we're not
+going to send the 4-4-4 opcodes?
 
-Rob
+My next question (if my understanding is roughly correct) is, do we need
+the 4-4-4 modes, and what risks come with them? I understand we can
+shorten the command and address phases, but does that alone yield much
+performance benefit? And I think the risk is that a given system might
+not be prepared for the flash to be in a 4-4-4 mode, if the boot code
+tries to use 1-x-y commands.
+
+Also, I see a lot of good comments in patch 2 about Spansion vs.
+Macronix vs. Micron memories. I wonder if previous developers have
+completely tested their patches, or if they're just reading the
+datasheets... so, what kind have testing have you done? Do you have
+samples of all these flash to test?
+
+Regards,
+Brian
