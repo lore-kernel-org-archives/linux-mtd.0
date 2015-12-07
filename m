@@ -15,9 +15,9 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
  punnaiah choudary kalluri <punnaia@xilinx.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 03/23] mtd: nftl: kill unused oobinfo field
-Date: Mon,  7 Dec 2015 23:25:58 +0100
-Message-Id: <1449527178-5930-4-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 08/23] mtd: nand: lpc32xx_mlc: fix ecc.size
+Date: Mon,  7 Dec 2015 23:26:03 +0100
+Message-Id: <1449527178-5930-9-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1449527178-5930-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1449527178-5930-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,22 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+According to the ECC layout description the actual ecc.size is 512 bytes
+and not mtd->writesize.
+
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- include/linux/mtd/nftl.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/lpc32xx_mlc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mtd/nftl.h b/include/linux/mtd/nftl.h
-index b059629..044daa0 100644
---- a/include/linux/mtd/nftl.h
-+++ b/include/linux/mtd/nftl.h
-@@ -50,7 +50,6 @@ struct NFTLrecord {
-         unsigned int nb_blocks;		/* number of physical blocks */
-         unsigned int nb_boot_blocks;	/* number of blocks used by the bios */
-         struct erase_info instr;
--	struct nand_ecclayout oobinfo;
- };
+diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+index 57c4b71..0ee81a0 100644
+--- a/drivers/mtd/nand/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/lpc32xx_mlc.c
+@@ -751,7 +751,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	}
  
- int NFTL_mount(struct NFTLrecord *s);
+ 	nand_chip->ecc.mode = NAND_ECC_HW;
+-	nand_chip->ecc.size = mtd->writesize;
++	nand_chip->ecc.size = 512;
+ 	nand_chip->ecc.layout = &lpc32xx_nand_oob;
+ 	host->mlcsubpages = mtd->writesize / 512;
+ 
 -- 
 2.1.4
