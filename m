@@ -1,35 +1,24 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+Received: from mail-io0-x22f.google.com ([2607:f8b0:4001:c06::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a62Fj-0001mC-Jl
- for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 20:19:20 +0000
-Date: Mon, 7 Dec 2015 20:18:04 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Martin Sperl <martin@sperl.org>
-Cc: Michal Suchanek <hramrach@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Stephen Warren <swarren@nvidia.com>, "Andrew F. Davis" <afd@ti.com>,
- Marek Vasut <marex@denx.de>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>,
- Bean Huo =?utf-8?B?6ZyN5paM5paM?= <beanhuo@micron.com>,
- Furquan Shaikh <furquan@google.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Message-ID: <20151207201804.GP5727@sirena.org.uk>
-References: <cover.1448988089.git.hramrach@gmail.com>
- <8c34c7790244489c2ce0072c72bd9bc7c4cdb965.1448988089.git.hramrach@gmail.com>
- <20151201231233.GA1929@sirena.org.uk>
- <5FC39638-EEE0-4CFA-B464-0B4743CB6AB6@sperl.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="QAdlk5ze2izLk3Ap"
-Content-Disposition: inline
-In-Reply-To: <5FC39638-EEE0-4CFA-B464-0B4743CB6AB6@sperl.org>
-Subject: Re: [PATCH v5 08/10] spi: expose master transfer size limitation.
+ id 1a63Fv-00088W-QT
+ for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 21:23:36 +0000
+Received: by ioir85 with SMTP id r85so4058173ioi.1
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 13:23:13 -0800 (PST)
+From: Seth Forshee <seth.forshee@canonical.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ fuse-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org,
+ selinux@tycho.nsa.gov
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
+ Seth Forshee <seth.forshee@canonical.com>
+Subject: [PATCH v2 00/19] Support fuse mounts in user namespaces
+Date: Mon,  7 Dec 2015 15:21:09 -0600
+Message-Id: <1449523289-144238-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,44 +28,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+These patches implement support for mounting filesystems in user
+namespaces using fuse. They are based on the patches in the for-testing
+branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git,
+but I've rebased them onto 4.4-rc3. I've pushed all of this to:
 
---QAdlk5ze2izLk3Ap
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ git://git.kernel.org/pub/scm/linux/kernel/git/sforshee/linux.git fuse-userns
 
-On Fri, Dec 04, 2015 at 03:30:50PM +0100, Martin Sperl wrote:
-> > On 02.12.2015, at 00:12, Mark Brown <broonie@kernel.org> wrote:
+The patches are organized into three high-level groups.
 
-> > Can we change this to return SIZE_MAX instead (ie, the maximum value for
-> > a size_t)?  That way callers don't need to worry if there is a limit, if
-> > they want to handle it they can just unconditionally assume that a limit
-> > will be provided.
+Patches 1-6 are related to security, adding restrictions for
+unprivileged mounts and updating the LSMs as needed. Patches 1-2
+(checking inode permissions for block device mounts) may not be strictly
+necessary for fuseblk mounts since fuse doesn't do any IO on the block
+device in the kernel, but it still seems like a good idea to fail the
+mount if the user doesn't have the required permissions for the inode
+(though this is a bit misleading with fuse since the mounts are done via
+a suid-root helper).
 
-> As I just came across: spi_master.max_dma_len, so I wonder how this=20
-> value would differ from the proposed spi_master.max_transfer_size
-> on specific HW?
+Patches 7-14 update most of the vfs to translate ids correctly and deal
+with inodes which may have invalid user/group ids. I've omitted patches
+for anything not used by fuse - quota, fs freezing, some helper
+functions, etc. - but if these are wanted for the sake of completeness I
+can include them.
 
-> For all practical purposes I would assume both are identical.
+Patches 15-18 update fuse to deal with mounts from non-init pid and user
+namespaces and enable mounting from user namespaces.
 
-Yeah, we should probably just remove the DMA specific one in time though
-it may be useful for some devices with built in DMA engines if they're
-oddly limited I'm not sure how practical their DMA would be if it
-differed from the overall transfer length.
+Changes since v1:
+ - Drop patch for FIBMAP.
+ - Use current_in_userns in fuse_allow_current_process.
+ - Remove checks for uid/gid validity in fuse. Intead, ids from the
+   backing store which do not map into s_user_ns will result in invalid
+   ids in the vfs inode. Checks in the vfs will prevent unmappable ids
+   from being passed in from above.
+ - Update a couple of commit messages to provide more detail about
+   changes.
 
---QAdlk5ze2izLk3Ap
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Seth
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Andy Lutomirski (1):
+  fs: Treat foreign mounts as nosuid
 
-iQEcBAEBCAAGBQJWZel7AAoJECTWi3JdVIfQjjQH/iy91T7A4JvYs/YwGF+FG0Uj
-B8qw/GNfCdVEH3FFCXPO6knkp5FVlHWGRhdnZzt2lWb2FfrZoN5OefDALP+g/PRK
-gFzHqoBMCE8lcuPMMRQsJuShGG94N1I+q4RuriA//0DXYXnJuyWms2k/yo0EWtlV
-9zK5M6gg4tkTnMJBz1z5+2vzoD5xPK4VzHQSmoPk60E2SZ+987f+fhuCtqwu7t1e
-589uV8Ko3XE12QK+ulBlbwQorItX6S6QtyNZC7k9UBnq35QVnROPaQ1VY2ElwIPy
-DM5sqtNCGFjVEXVqq1lkuQMkXcx1fqxPLXdzsp6pp+oGzlo05XdbKkomQk6e8GA=
-=lDk6
------END PGP SIGNATURE-----
+Seth Forshee (17):
+  block_dev: Support checking inode permissions in lookup_bdev()
+  block_dev: Check permissions towards block device inode when mounting
+  selinux: Add support for unprivileged mounts from user namespaces
+  userns: Replace in_userns with current_in_userns
+  Smack: Handle labels consistently in untrusted mounts
+  fs: Check for invalid i_uid in may_follow_link()
+  cred: Reject inodes with invalid ids in set_create_file_as()
+  fs: Refuse uid/gid changes which don't map into s_user_ns
+  fs: Update posix_acl support to handle user namespace mounts
+  fs: Ensure the mounter of a filesystem is privileged towards its
+    inodes
+  fs: Don't remove suid for CAP_FSETID in s_user_ns
+  fs: Allow superblock owner to access do_remount_sb()
+  capabilities: Allow privileged user in s_user_ns to set security.*
+    xattrs
+  fuse: Add support for pid namespaces
+  fuse: Support fuse filesystems outside of init_user_ns
+  fuse: Restrict allow_other to the superblock's namespace or a
+    descendant
+  fuse: Allow user namespace mounts
 
---QAdlk5ze2izLk3Ap--
+ drivers/md/bcache/super.c       |  2 +-
+ drivers/md/dm-table.c           |  2 +-
+ drivers/mtd/mtdsuper.c          |  2 +-
+ fs/attr.c                       | 11 +++++++
+ fs/block_dev.c                  | 18 +++++++++--
+ fs/exec.c                       |  2 +-
+ fs/fuse/cuse.c                  |  3 +-
+ fs/fuse/dev.c                   | 26 ++++++++++++----
+ fs/fuse/dir.c                   | 16 +++++-----
+ fs/fuse/file.c                  | 22 +++++++++++---
+ fs/fuse/fuse_i.h                | 10 +++++-
+ fs/fuse/inode.c                 | 42 +++++++++++++++++---------
+ fs/inode.c                      |  6 +++-
+ fs/namei.c                      |  2 +-
+ fs/namespace.c                  | 17 +++++++++--
+ fs/posix_acl.c                  | 67 ++++++++++++++++++++++++++---------------
+ fs/quota/quota.c                |  2 +-
+ fs/xattr.c                      | 19 +++++++++---
+ include/linux/fs.h              |  2 +-
+ include/linux/mount.h           |  1 +
+ include/linux/posix_acl_xattr.h | 17 ++++++++---
+ include/linux/uidgid.h          | 10 ++++++
+ include/linux/user_namespace.h  |  6 ++--
+ kernel/capability.c             | 13 +++++---
+ kernel/cred.c                   |  2 ++
+ kernel/user_namespace.c         |  6 ++--
+ security/commoncap.c            | 16 ++++++----
+ security/selinux/hooks.c        | 25 ++++++++++++++-
+ security/smack/smack_lsm.c      | 29 ++++++++++++------
+ 29 files changed, 287 insertions(+), 109 deletions(-)
+
+-- 
+1.9.1
