@@ -1,41 +1,36 @@
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a5lom-0002uF-7R
- for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 02:46:24 +0000
-Received: from mail.kernel.org (localhost [127.0.0.1])
- by mail.kernel.org (Postfix) with ESMTP id BA1162056E
- for <linux-mtd@lists.infradead.org>; Mon,  7 Dec 2015 02:46:02 +0000 (UTC)
-Received: from mail-yk0-f181.google.com (mail-yk0-f181.google.com
- [209.85.160.181])
- (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1EAE32055B
- for <linux-mtd@lists.infradead.org>; Mon,  7 Dec 2015 02:46:01 +0000 (UTC)
-Received: by ykdr82 with SMTP id r82so180149199ykd.3
- for <linux-mtd@lists.infradead.org>; Sun, 06 Dec 2015 18:46:00 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1449292763-129421-5-git-send-email-computersforpeace@gmail.com>
-References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
- <1449292763-129421-5-git-send-email-computersforpeace@gmail.com>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Sun, 6 Dec 2015 20:45:40 -0600
-Message-ID: <CAL_JsqLV1mDpW9tD0XjWRxZSSsYuDiqHbuADQmBUtACgYiHJ+w@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and
- of_mtd_match_mtd_parser() helpers
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+Received: from ozlabs.org ([103.22.144.67])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a5m6g-00082Y-Bh
+ for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 03:04:55 +0000
+Date: Mon, 7 Dec 2015 12:36:28 +1100
+From: David Gibson <david@gibson.dropbear.id.au>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: Jonas Gorski <jogo@openwrt.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Linus Walleij <linus.walleij@linaro.org>,
+ Arnd Bergmann <arnd@arndb.de>,
  Geert Uytterhoeven <geert+renesas@glider.be>,
- Simon Arlott <simon@fire.lp0.eu>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Jonas Gorski <jogo@openwrt.org>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset=UTF-8
+ devicetree-spec@vger.kernel.org, Simon Arlott <simon@fire.lp0.eu>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: Re: [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format
+ binding
+Message-ID: <20151207013628.GC20139@voom.fritz.box>
+References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
+ <1449292763-129421-4-git-send-email-computersforpeace@gmail.com>
+ <CAOiHx=nz2bdA_R610ozsQHhccdcrHVVCamTtne5ReHrA-FcaaQ@mail.gmail.com>
+ <CAOMqctTbUNd0GtY07YJuxem9HkU1WZ-NtO556=Yg2QrsF49Xjw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
+Content-Disposition: inline
+In-Reply-To: <CAOMqctTbUNd0GtY07YJuxem9HkU1WZ-NtO556=Yg2QrsF49Xjw@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,72 +40,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 4, 2015 at 11:19 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> Like the corresponding OF-based device/driver matching infrascture,
 
-typo.
+--Md/poaVZ8hnGTzuv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> let's begin to support a mtd/partition-parser matching infrastructure.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/of/of_mtd.c            | 33 +++++++++++++++++++++++++++++++++
+On Sat, Dec 05, 2015 at 10:33:30PM +0100, Michal Suchanek wrote:
+> On 5 December 2015 at 12:39, Jonas Gorski <jogo@openwrt.org> wrote:
+> > On Sat, Dec 5, 2015 at 6:19 AM, Brian Norris
+> > <computersforpeace@gmail.com> wrote:
+>=20
+> >> +
+> >> +Examples:
+> >> +
+> >> +flash@0 {
+> >> +       partitions {
+> >> +               compatible =3D "google,fmap";
+> >> +       };
+> >> +};
+> >
+> > I wonder if this wouldn't be better served in a separate binding doc
+> > with its compatible name as the filename, like we do with
+> > driver^Whardware blocks, especially if we want to add more parsers.
+>=20
+>=20
+> I find that *very* counter productive for bindings that go to the same
+> node. You have a description of a node, and then suddenly there you
+> have another file with another description of the same node. Totally
+> awesome.
 
-BTW, this file should be moved to drivers/mtd/ at some point.
+I can't actually work out from that if you're agreeing with the
+original post or the first reply.
 
->  include/linux/mtd/partitions.h |  2 ++
->  include/linux/of_mtd.h         | 13 +++++++++++++
->  3 files changed, 48 insertions(+)
->
-> diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
-> index b7361ed70537..169d7500af5d 100644
-> --- a/drivers/of/of_mtd.c
-> +++ b/drivers/of/of_mtd.c
-> @@ -9,6 +9,7 @@
->  #include <linux/kernel.h>
->  #include <linux/of_mtd.h>
->  #include <linux/mtd/nand.h>
-> +#include <linux/mtd/partitions.h>
->  #include <linux/export.h>
->
->  /**
-> @@ -117,3 +118,35 @@ bool of_get_nand_on_flash_bbt(struct device_node *np)
->         return of_property_read_bool(np, "nand-on-flash-bbt");
->  }
->  EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
-> +
-> +static const struct of_device_id *of_match_mtd_parser(
+> Also how do you plan to write partitioning schemes with parameters
+> like with non-zero offset of the partition table.
 
-This function name and the only caller's function name are very
-similar. Why not just move this function inline.
+Presumably with properties in the patitions node.  Not seeing the
+problem here.
 
-> +               struct mtd_part_parser *parser, struct device_node *np)
-> +{
-> +       if (!parser || !np)
-> +               return NULL;
-> +
-> +       return of_match_node(parser->of_match_table, np);
-> +}
-> +
-> +static struct device_node *mtd_get_partitions_of_node(struct mtd_info *master)
-> +{
-> +       struct device_node *np = mtd_get_of_node(master);
-> +
-> +       if (!np)
-> +               return NULL;
-> +
-> +       return of_get_child_by_name(np, "partitions");
-> +}
-> +
-> +bool of_mtd_match_mtd_parser(struct mtd_info *mtd,
-> +                            struct mtd_part_parser *parser)
-> +{
-> +       struct device_node *np = mtd_get_partitions_of_node(mtd);
-> +       bool ret;
-> +
-> +       ret = of_match_mtd_parser(parser, np) != NULL;
-> +       of_node_put(np);
-> +
-> +       return ret;
-> +}
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--Md/poaVZ8hnGTzuv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJWZOKbAAoJEGw4ysog2bOSVUsQAMtI5JFXm2WzQrFHqxgSpKUp
+/FeQiNTO93Zwsi1qFlTqkLf0bET66lt0vQNHLKnDpPCnRAJ6EQZqEF2b0WyDYmYM
+imBC1+J6Y4WaC5IXtV7BG/hDp6sCf7FII2okZhZ7VXlTNfJSt7gQw/3z9Aebhuc9
+JysF+c8GUiVdq48+3V1zXTyZN9rOBdx0JamT0XTQ6fM6mrDUIg/wDRFxiHwH5t71
+M6xHpTwuvSjOcfEyegBkIOHm+iM2ofvTGx9Bbr3W0CFVs7yzOaL2X5oTP4UNnW/i
+KQSUGhv0emI9g3M1WpQMgN3WjZUfGlrPz8gx5q4S9dIG7udwh4NITAuJL83WhkE6
+Gg1qlH8O7T50oD/SQW16ic1CNmUUM6DUIHLcM9KRkoLxWsxYnt/CTkDGs8MOQD87
+1BC8oy1rN4ACSUNsm6T9e9QUqTdRT4rh+70xf4VI/Gw8ADnRaO590ZZivxiBblFX
+1B5jhBIsGUYzLegGfhmCuFy3ix3yZ/wK/snkSMZz/XUhOY0zofn3RGlw0aqJuZnv
+eSUgqwqOR0ca3T0PbXsVfwvyrUku6XPR3DvT6fgmlesSfcKq77aYRIbbCnuulQ3h
+RtTHTi5zv931WBWyofGl7d2eXrgtd9pDXDu5KazRhbxntTQqiJQ0+dFphRROWVNC
+Scn1qD+Zp6Qgy5MtvN3y
+=OXEZ
+-----END PGP SIGNATURE-----
+
+--Md/poaVZ8hnGTzuv--
