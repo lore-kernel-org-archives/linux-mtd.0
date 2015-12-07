@@ -1,27 +1,34 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a603v-00055W-PK
- for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 17:59:00 +0000
-Received: by pacdm15 with SMTP id dm15so128348979pac.3
- for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 09:58:38 -0800 (PST)
-Date: Mon, 7 Dec 2015 09:58:35 -0800
+ id 1a60I0-0003Mu-OX
+ for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 18:13:33 +0000
+Received: by pabfh17 with SMTP id fh17so132118067pab.0
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 10:13:11 -0800 (PST)
+Date: Mon, 7 Dec 2015 10:13:08 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Jonas Gorski <jogo@openwrt.org>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
+To: Rob Herring <robh+dt@kernel.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Simon Arlott <simon@fire.lp0.eu>, Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [PATCH for-4.4 2/2] doc: dt: mtd: partitions: add compatible
- property to "partitions" node
-Message-ID: <20151207175835.GM120110@google.com>
-References: <1449194529-145705-1-git-send-email-computersforpeace@gmail.com>
- <1449194529-145705-2-git-send-email-computersforpeace@gmail.com>
- <CAOiHx=kP8hT-UH=tfUZYYpr__i458-ZL3bOhcAJb8hmSbqBdCA@mail.gmail.com>
+ Linus Walleij <linus.walleij@linaro.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Simon Arlott <simon@fire.lp0.eu>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Jonas Gorski <jogo@openwrt.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and
+ of_mtd_match_mtd_parser() helpers
+Message-ID: <20151207181308.GN120110@google.com>
+References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
+ <1449292763-129421-5-git-send-email-computersforpeace@gmail.com>
+ <CAL_JsqLV1mDpW9tD0XjWRxZSSsYuDiqHbuADQmBUtACgYiHJ+w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOiHx=kP8hT-UH=tfUZYYpr__i458-ZL3bOhcAJb8hmSbqBdCA@mail.gmail.com>
+In-Reply-To: <CAL_JsqLV1mDpW9tD0XjWRxZSSsYuDiqHbuADQmBUtACgYiHJ+w@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +38,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 05, 2015 at 12:45:36PM +0100, Jonas Gorski wrote:
-> On Fri, Dec 4, 2015 at 3:02 AM, Brian Norris
+On Sun, Dec 06, 2015 at 08:45:40PM -0600, Rob Herring wrote:
+> On Fri, Dec 4, 2015 at 11:19 PM, Brian Norris
 > <computersforpeace@gmail.com> wrote:
-> >         // proposed
-> >         partitions {
-> >                 compatible = "partitions";
+> >  drivers/of/of_mtd.c            | 33 +++++++++++++++++++++++++++++++++
 > 
-> "partitions" sounds mode like a device_type thing than a compatible
-> name, maybe "fixed-partitions"? IMHO that would describe better what
-> these are, and doesn't invite to think using compatible =
-> "arm,arm-flash-structure", "partitions"; is a good idea.
+> BTW, this file should be moved to drivers/mtd/ at some point.
 
-"fixed-partitions" sounds OK to me. If no objections, I'll apply these
-patches, with (approximately) a:
+How about s/at some point/now/ ? I can send a separate patch. It also
+seems like these should just get linked into the 'mtd' module (when
+CONFIG_OF=y) instead of having a tiny module for just a few functions.
 
-s/"partitions"/"fixed-partitions"/
+Why did files like this get placed here anyway? Is there a reason that
+there are things like of_net and of_pci here too?
 
-Thanks,
 Brian
-
-> >                 #address-cells = <x>;
-> >                 #size-cells = <y>;
-> >                 partition@0 {
-> >                         ...;
-> >                 };
-> >         };
