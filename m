@@ -1,28 +1,41 @@
-Received: from linutronix.de ([2001:470:1f0b:db:abcd:42:0:1]
- helo=Galois.linutronix.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a5aE0-00054s-0d
- for linux-mtd@lists.infradead.org; Sun, 06 Dec 2015 14:23:41 +0000
-Date: Sun, 6 Dec 2015 15:23:18 +0100
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, tglx@linutronix.de
-Subject: [PATCH v2] mtd: nand: do FIFO processing in nand_get_device()
-Message-ID: <20151206142318.GB5816@linutronix.de>
-References: <1448302147-19272-1-git-send-email-bigeasy@linutronix.de>
- <1448302147-19272-2-git-send-email-bigeasy@linutronix.de>
- <20151123181811.GO17308@twins.programming.kicks-ass.net>
- <20151125173543.GA17151@linutronix.de>
- <20151130161549.GL17308@twins.programming.kicks-ass.net>
- <20151206141757.GA5816@linutronix.de>
+Received: from mail.kernel.org ([198.145.29.136])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a5lom-0002uF-7R
+ for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 02:46:24 +0000
+Received: from mail.kernel.org (localhost [127.0.0.1])
+ by mail.kernel.org (Postfix) with ESMTP id BA1162056E
+ for <linux-mtd@lists.infradead.org>; Mon,  7 Dec 2015 02:46:02 +0000 (UTC)
+Received: from mail-yk0-f181.google.com (mail-yk0-f181.google.com
+ [209.85.160.181])
+ (using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1EAE32055B
+ for <linux-mtd@lists.infradead.org>; Mon,  7 Dec 2015 02:46:01 +0000 (UTC)
+Received: by ykdr82 with SMTP id r82so180149199ykd.3
+ for <linux-mtd@lists.infradead.org>; Sun, 06 Dec 2015 18:46:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20151206141757.GA5816@linutronix.de>
+In-Reply-To: <1449292763-129421-5-git-send-email-computersforpeace@gmail.com>
+References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
+ <1449292763-129421-5-git-send-email-computersforpeace@gmail.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Sun, 6 Dec 2015 20:45:40 -0600
+Message-ID: <CAL_JsqLV1mDpW9tD0XjWRxZSSsYuDiqHbuADQmBUtACgYiHJ+w@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/7] mtd: add of_match_mtd_parser() and
+ of_mtd_match_mtd_parser() helpers
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Simon Arlott <simon@fire.lp0.eu>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Jonas Gorski <jogo@openwrt.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "devicetree-spec@vger.kernel.org" <devicetree-spec@vger.kernel.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,120 +45,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have here a live lock in UBI doing
-  ensure_wear_leveling() -> wear_leveling_worker() -> ubi_eba_copy_leb()
-  MOVE_RETRY -> schedule_erase() -> ensure_wear_leveling()
+On Fri, Dec 4, 2015 at 11:19 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> Like the corresponding OF-based device/driver matching infrascture,
 
-on the same PEB over and over again. The reason for MOVE_RETRY is that
-the LEB-Lock owner is stucked in nand_get_device() and does not get the
-device lock. The PEB-lock owner is only scheduled on the CPU while the UBI
-thread is idle during erase or read while (again) owning the device-lock
-so the LEB-lock owner makes no progress.
+typo.
 
-To fix this live lock I ensure that there FIFO processing in
-nand_get_device(). On release the first waiter is marked as the new
-owner. If someone asks for the device and is not the waiter to which
-nand device has been handed over then it will put itself on the
-waitqueue.
-The FIFO processing was suggested by Peter Zijlstra.
+> let's begin to support a mtd/partition-parser matching infrastructure.
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/of/of_mtd.c            | 33 +++++++++++++++++++++++++++++++++
 
-As a small optimization I use add_wait_queue_exclusive() instead
-add_wait_queue() to make sure that only _one_ waiter is woken up and not
-all of them.
+BTW, this file should be moved to drivers/mtd/ at some point.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
-v1=E2=80=A6v2: drop superfluously locking around list_first_entry()
+>  include/linux/mtd/partitions.h |  2 ++
+>  include/linux/of_mtd.h         | 13 +++++++++++++
+>  3 files changed, 48 insertions(+)
+>
+> diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+> index b7361ed70537..169d7500af5d 100644
+> --- a/drivers/of/of_mtd.c
+> +++ b/drivers/of/of_mtd.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/of_mtd.h>
+>  #include <linux/mtd/nand.h>
+> +#include <linux/mtd/partitions.h>
+>  #include <linux/export.h>
+>
+>  /**
+> @@ -117,3 +118,35 @@ bool of_get_nand_on_flash_bbt(struct device_node *np)
+>         return of_property_read_bool(np, "nand-on-flash-bbt");
+>  }
+>  EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
+> +
+> +static const struct of_device_id *of_match_mtd_parser(
 
- drivers/mtd/nand/nand_base.c  | 36 +++++++++++++++++++++++++++++-------
- include/linux/mtd/flashchip.h |  1 +
- include/linux/mtd/nand.h      |  1 +
- 3 files changed, 31 insertions(+), 7 deletions(-)
+This function name and the only caller's function name are very
+similar. Why not just move this function inline.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ece544efccc3..bd46b75b3540 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -137,8 +137,22 @@ static void nand_release_device(struct mtd_info *mtd)
- 	/* Release the controller and the chip */
- 	spin_lock(&chip->controller->lock);
- 	chip->controller->active =3D NULL;
--	chip->state =3D FL_READY;
--	wake_up(&chip->controller->wq);
-+
-+	if (waitqueue_active(&chip->controller->wq)) {
-+		wait_queue_head_t *q;
-+		wait_queue_t *waiter;
-+
-+		q =3D &chip->controller->wq;
-+		chip->state =3D FL_HANDOVER;
-+
-+		waiter =3D list_first_entry(&q->task_list, wait_queue_t,
-+					  task_list);
-+
-+		chip->controller->handover_waiter =3D waiter;
-+		wake_up(q);
-+	} else {
-+		chip->state =3D FL_READY;
-+	}
- 	spin_unlock(&chip->controller->lock);
- }
-=20
-@@ -843,10 +857,18 @@ nand_get_device(struct mtd_info *mtd, int new_state)
- 	if (!chip->controller->active)
- 		chip->controller->active =3D chip;
-=20
--	if (chip->controller->active =3D=3D chip && chip->state =3D=3D FL_READY) {
--		chip->state =3D new_state;
--		spin_unlock(lock);
--		return 0;
-+	if (chip->controller->active =3D=3D chip) {
-+		if (chip->state =3D=3D FL_READY) {
-+			chip->state =3D new_state;
-+			spin_unlock(lock);
-+			return 0;
-+		}
-+		if (chip->state =3D=3D FL_HANDOVER &&
-+		    chip->controller->handover_waiter =3D=3D &wait) {
-+			chip->state =3D new_state;
-+			spin_unlock(lock);
-+			return 0;
-+		}
- 	}
- 	if (new_state =3D=3D FL_PM_SUSPENDED) {
- 		if (chip->controller->active->state =3D=3D FL_PM_SUSPENDED) {
-@@ -856,7 +878,7 @@ nand_get_device(struct mtd_info *mtd, int new_state)
- 		}
- 	}
- 	set_current_state(TASK_UNINTERRUPTIBLE);
--	add_wait_queue(wq, &wait);
-+	add_wait_queue_exclusive(wq, &wait);
- 	spin_unlock(lock);
- 	schedule();
- 	remove_wait_queue(wq, &wait);
-diff --git a/include/linux/mtd/flashchip.h b/include/linux/mtd/flashchip.h
-index b63fa457febd..c855f4fd51b8 100644
---- a/include/linux/mtd/flashchip.h
-+++ b/include/linux/mtd/flashchip.h
-@@ -58,6 +58,7 @@ typedef enum {
- 	FL_OTPING,
- 	FL_PREPARING_ERASE,
- 	FL_VERIFYING_ERASE,
-+	FL_HANDOVER,
-=20
- 	FL_UNKNOWN
- } flstate_t;
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 5a9d1d4c2487..2686dc5dd51b 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -439,6 +439,7 @@ struct nand_hw_control {
- 	spinlock_t lock;
- 	struct nand_chip *active;
- 	wait_queue_head_t wq;
-+	wait_queue_t *handover_waiter;
- };
-=20
- /**
---=20
-2.6.2
+> +               struct mtd_part_parser *parser, struct device_node *np)
+> +{
+> +       if (!parser || !np)
+> +               return NULL;
+> +
+> +       return of_match_node(parser->of_match_table, np);
+> +}
+> +
+> +static struct device_node *mtd_get_partitions_of_node(struct mtd_info *master)
+> +{
+> +       struct device_node *np = mtd_get_of_node(master);
+> +
+> +       if (!np)
+> +               return NULL;
+> +
+> +       return of_get_child_by_name(np, "partitions");
+> +}
+> +
+> +bool of_mtd_match_mtd_parser(struct mtd_info *mtd,
+> +                            struct mtd_part_parser *parser)
+> +{
+> +       struct device_node *np = mtd_get_partitions_of_node(mtd);
+> +       bool ret;
+> +
+> +       ret = of_match_mtd_parser(parser, np) != NULL;
+> +       of_node_put(np);
+> +
+> +       return ret;
+> +}
