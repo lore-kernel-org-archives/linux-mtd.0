@@ -1,16 +1,14 @@
-Received: from mail-io0-x22d.google.com ([2607:f8b0:4001:c06::22d])
+Received: from mail-io0-x235.google.com ([2607:f8b0:4001:c06::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a63G4-0008Au-Au
+ id 1a63G7-0008C8-Fa
  for linux-mtd@lists.infradead.org; Mon, 07 Dec 2015 21:23:49 +0000
-Received: by ioir85 with SMTP id r85so4062762ioi.1
- for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 13:23:23 -0800 (PST)
+Received: by ioc74 with SMTP id 74so3999791ioc.2
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 13:23:26 -0800 (PST)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- James Morris <james.l.morris@oracle.com>,
- "Serge E. Hallyn" <serge@hallyn.com>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
  Austin S Hemmelgarn <ahferroin7@gmail.com>,
  Miklos Szeredi <miklos@szeredi.hu>, linux-bcache@vger.kernel.org,
  dm-devel@redhat.com, linux-raid@vger.kernel.org,
@@ -18,9 +16,9 @@ Cc: Richard Weinberger <richard.weinberger@gmail.com>,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
  Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH v2 05/18] userns: Replace in_userns with current_in_userns
-Date: Mon,  7 Dec 2015 15:21:14 -0600
-Message-Id: <1449523289-144238-6-git-send-email-seth.forshee@canonical.com>
+Subject: [PATCH v2 07/18] fs: Check for invalid i_uid in may_follow_link()
+Date: Mon,  7 Dec 2015 15:21:16 -0600
+Message-Id: <1449523289-144238-8-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1449523289-144238-1-git-send-email-seth.forshee@canonical.com>
 References: <1449523289-144238-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,88 +30,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All current callers of in_userns pass current_user_ns as the
-first argument. Simplify by replacing in_userns with
-current_in_userns which checks whether current_user_ns is in the
-namespace supplied as an argument.
+Filesystem uids which don't map into a user namespace may result
+in inode->i_uid being INVALID_UID. A symlink and its parent
+could have different owners in the filesystem can both get
+mapped to INVALID_UID, which may result in following a symlink
+when this would not have otherwise been permitted when protected
+symlinks are enabled.
+
+Add a new helper function, uid_valid_eq(), and use this to
+validate that the ids in may_follow_link() are both equal and
+valid. Also add an equivalent helper for gids, which is
+currently unused.
 
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-Acked-by: James Morris <james.l.morris@oracle.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 ---
- fs/namespace.c                 | 2 +-
- include/linux/user_namespace.h | 6 ++----
- kernel/user_namespace.c        | 6 +++---
- security/commoncap.c           | 2 +-
- 4 files changed, 7 insertions(+), 9 deletions(-)
+ fs/namei.c             |  2 +-
+ include/linux/uidgid.h | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/fs/namespace.c b/fs/namespace.c
-index 2101ce7b96ab..18fc58760aec 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -3286,7 +3286,7 @@ bool mnt_may_suid(struct vfsmount *mnt)
- 	 * in other namespaces.
- 	 */
- 	return !(mnt->mnt_flags & MNT_NOSUID) && check_mnt(real_mount(mnt)) &&
--	       in_userns(current_user_ns(), mnt->mnt_sb->s_user_ns);
-+	       current_in_userns(mnt->mnt_sb->s_user_ns);
- }
- 
- static struct ns_common *mntns_get(struct task_struct *task)
-diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
-index a43faa727124..9217169c64cb 100644
---- a/include/linux/user_namespace.h
-+++ b/include/linux/user_namespace.h
-@@ -72,8 +72,7 @@ extern ssize_t proc_projid_map_write(struct file *, const char __user *, size_t,
- extern ssize_t proc_setgroups_write(struct file *, const char __user *, size_t, loff_t *);
- extern int proc_setgroups_show(struct seq_file *m, void *v);
- extern bool userns_may_setgroups(const struct user_namespace *ns);
--extern bool in_userns(const struct user_namespace *ns,
--		      const struct user_namespace *target_ns);
-+extern bool current_in_userns(const struct user_namespace *target_ns);
- #else
- 
- static inline struct user_namespace *get_user_ns(struct user_namespace *ns)
-@@ -103,8 +102,7 @@ static inline bool userns_may_setgroups(const struct user_namespace *ns)
- 	return true;
- }
- 
--static inline bool in_userns(const struct user_namespace *ns,
--			     const struct user_namespace *target_ns)
-+static inline bool current_in_userns(const struct user_namespace *target_ns)
- {
- 	return true;
- }
-diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-index 69fbc377357b..5960edc7e644 100644
---- a/kernel/user_namespace.c
-+++ b/kernel/user_namespace.c
-@@ -949,10 +949,10 @@ bool userns_may_setgroups(const struct user_namespace *ns)
-  * Returns true if @ns is the same namespace as or a descendant of
-  * @target_ns.
-  */
--bool in_userns(const struct user_namespace *ns,
--	       const struct user_namespace *target_ns)
-+bool current_in_userns(const struct user_namespace *target_ns)
- {
--	for (; ns; ns = ns->parent) {
-+	struct user_namespace *ns;
-+	for (ns = current_user_ns(); ns; ns = ns->parent) {
- 		if (ns == target_ns)
- 			return true;
- 	}
-diff --git a/security/commoncap.c b/security/commoncap.c
-index 6243aef5860e..2119421613f6 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -450,7 +450,7 @@ static int get_file_caps(struct linux_binprm *bprm, bool *effective, bool *has_c
- 
- 	if (!mnt_may_suid(bprm->file->f_path.mnt))
- 		return 0;
--	if (!in_userns(current_user_ns(), bprm->file->f_path.mnt->mnt_sb->s_user_ns))
-+	if (!current_in_userns(bprm->file->f_path.mnt->mnt_sb->s_user_ns))
+diff --git a/fs/namei.c b/fs/namei.c
+index 288e8a74bf88..4ccafd391697 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -902,7 +902,7 @@ static inline int may_follow_link(struct nameidata *nd)
  		return 0;
  
- 	rc = get_vfs_caps_from_disk(bprm->file->f_path.dentry, &vcaps);
+ 	/* Allowed if parent directory and link owner match. */
+-	if (uid_eq(parent->i_uid, inode->i_uid))
++	if (uid_valid_eq(parent->i_uid, inode->i_uid))
+ 		return 0;
+ 
+ 	if (nd->flags & LOOKUP_RCU)
+diff --git a/include/linux/uidgid.h b/include/linux/uidgid.h
+index 03835522dfcb..e09529fe2668 100644
+--- a/include/linux/uidgid.h
++++ b/include/linux/uidgid.h
+@@ -117,6 +117,16 @@ static inline bool gid_valid(kgid_t gid)
+ 	return __kgid_val(gid) != (gid_t) -1;
+ }
+ 
++static inline bool uid_valid_eq(kuid_t left, kuid_t right)
++{
++	return uid_eq(left, right) && uid_valid(left);
++}
++
++static inline bool gid_valid_eq(kgid_t left, kgid_t right)
++{
++	return gid_eq(left, right) && gid_valid(left);
++}
++
+ #ifdef CONFIG_USER_NS
+ 
+ extern kuid_t make_kuid(struct user_namespace *from, uid_t uid);
 -- 
 1.9.1
