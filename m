@@ -1,25 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6L6V-0001IJ-A8
- for linux-mtd@lists.infradead.org; Tue, 08 Dec 2015 16:27:04 +0000
-Date: Tue, 8 Dec 2015 17:26:41 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: <linux-mtd@lists.infradead.org>, Zubair Lutfullah Kakakhel
- <Zubair.Kakakhel@imgtec.com>, <linux-kernel@vger.kernel.org>, Alex Smith
- <alex.smith@imgtec.com>, Brian Norris <computersforpeace@gmail.com>, "David
- Woodhouse" <dwmw2@infradead.org>
-Subject: Re: [PATCH v9 2/3] mtd: nand: jz4780: driver for NAND devices on
- JZ4780 SoCs
-Message-ID: <20151208172641.4e1f935a@bbrezillon>
-In-Reply-To: <5666FF6B.5090309@imgtec.com>
-References: <1449144142-24004-1-git-send-email-harvey.hunt@imgtec.com>
- <1449144142-24004-3-git-send-email-harvey.hunt@imgtec.com>
- <20151208151436.11ce72f4@bbrezillon> <5666FF6B.5090309@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <3152458.D3kElfhRW2@wuerfel>
+References: <3152458.D3kElfhRW2@wuerfel>
+Date: Tue, 8 Dec 2015 17:30:02 +0100
+Message-ID: <CAMuHMdVWss6Kz8sVrcUR3a4iJ+Z8D1q1Er6eH_uRMoS5DCN5pw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: sh_flctl: pass FIFO as physical address
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ Magnus Damm <magnus.damm@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Simon Horman <horms@verge.net.au>,
+ Frans Klaver <fransklaver@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 8 Dec 2015 16:03:55 +0000
-Harvey Hunt <harvey.hunt@imgtec.com> wrote:
+On Tue, Dec 8, 2015 at 4:38 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> By convention, the FIFO address we pass using dmaengine_slave_config
+> is a physical address in the form that is understood by the DMA
+> engine, as a dma_addr_t, phys_addr_t or resource_size_t.
+>
+> The sh_flctl driver however passes a virtual __iomem address that
+> gets cast to dma_addr_t in the slave driver. This happens to work
+> on shmobile because that platform sets up an identity mapping for
+> its MMIO regions, but such code is not portable to other platforms,
+> and prevents us from ever changing the platform mapping or reusing
+> the driver on other architectures like ARM64 that might not have the
+> mapping.
 
-> >
-> > static void jz4780_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
-> > 				 unsigned int ctrl)
-> > {
-> > 	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(mtd);
-> > 	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
-> > 	struct jz4780_nand_cs *cs;
-> >
-> > 	if (WARN_ON(nfc->selected < 0))
-> > 		return;
-> >
-> > 	cs = &nfc->cs[nfc->selected];
-> >
-> > 	if (ctrl & NAND_CTRL_CHANGE) {
-> > 		if (cmd != NAND_CMD_NONE) {
-> > 			if (ctrl & NAND_ALE)
-> > 				writeb(cmd, cs->base + OFFSET_ADDR);
-> > 			else if (ctrl & NAND_CLE)
-> > 				writeb(cmd, cs->base + OFFSET_CMD);
-> > 		}
-> >
-> > 		jz4780_nemc_assert(nfc->dev, cs->bank, ctrl & NAND_NCE);
-> > 	}
-> > }
-> >
-> 
-> Okay, I understand your point now. I would also have to implement the 
-> read/write functions to replace the defaults, correct? If so, it feels 
-> strange to add functions to reimplement the default ones.
-> 
+Note that since the removal of (ARM) sh7367/sh7377/sh7372 support, this
+driver is used on SH only.
 
-Actually it should be something like this, because NAND_CTRL_CHANGE is
-cleared after the first address cycle.
+I'll send a patch to update Kconfig.
 
-static void jz4780_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
- 				 unsigned int ctrl)
-{
-	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(mtd);
-	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
-	struct jz4780_nand_cs *cs;
+Gr{oetje,eeting}s,
 
-	if (WARN_ON(nfc->selected < 0))
-		return;
+                        Geert
 
-	cs = &nfc->cs[nfc->selected];
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-	jz4780_nemc_assert(nfc->dev, cs->bank, ctrl & NAND_NCE);
-
- 	if (cmd == NAND_CMD_NONE)
-		return;
-
-	if (ctrl & NAND_ALE)
-		writeb(cmd, cs->base + OFFSET_ADDR);
- 	else if (ctrl & NAND_CLE)
- 		writeb(cmd, cs->base + OFFSET_CMD);
-}
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
