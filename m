@@ -1,44 +1,31 @@
-Date: Tue, 8 Dec 2015 09:35:13 +0100
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- linux-doc@vger.kernel.org, Hartley Sweeten <hsweeten@visionengravers.com>,
- Ryan Mallon <rmallon@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <kernel@pengutronix.de>, Imre Kaloz <kaloz@openwrt.org>,
- Krzysztof Halasa <khalasa@piap.pl>, Tony Lindgren <tony@atomide.com>,
- linux-omap@vger.kernel.org, Alexander Clouter <alex@digriz.org.uk>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Gregory CLEMENT <gregory.clement@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Marek Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>,
- adi-buildroot-devel@lists.sourceforge.net,
- Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jespern@axis.com>,
- linux-cris-kernel@axis.com, Josh Wu <josh.wu@atmel.com>,
- Wan ZongShun <mcuos.com@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Stefan Agner <stefan@agner.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
-Subject: Re: [PATCH v2 15/25] cris: nand: use the mtd instance embedded in
- struct nand_chip
-Message-ID: <20151208083513.GQ22903@axis.com>
-References: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
- <1448967802-25796-16-git-send-email-boris.brezillon@free-electrons.com>
+Date: Tue, 8 Dec 2015 09:43:58 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Julian Calaby <julian.calaby@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Daniel Mack
+ <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert
+ Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>, Krzysztof
+ Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
+ "Mailing List, Arm" <linux-arm-kernel@lists.infradead.org>, Ralf Baechle
+ <ralf@linux-mips.org>, linux-mips@linux-mips.org, Josh Wu
+ <josh.wu@atmel.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Stefan Agner
+ <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, "devel@driverdev.osuosl.org"
+ <devel@driverdev.osuosl.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, punnaiah choudary kalluri
+ <punnaia@xilinx.com>
+Subject: Re: [linux-sunxi] [PATCH 21/23] staging: mt29f_spinand: switch to
+ mtd_ooblayout_ops
+Message-ID: <20151208094358.2be0f191@bbrezillon>
+In-Reply-To: <CAGRGNgV09JJ7+hDVJwZcp89nEsgNS6r2Mo1_R+EEAT9=aR-Z_g@mail.gmail.com>
+References: <1449527178-5930-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1449527178-5930-22-git-send-email-boris.brezillon@free-electrons.com>
+ <CAGRGNgV09JJ7+hDVJwZcp89nEsgNS6r2Mo1_R+EEAT9=aR-Z_g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1448967802-25796-16-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,15 +35,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 01, 2015 at 12:03:12PM +0100, Boris Brezillon wrote:
-> struct nand_chip now embeds an mtd device. Patch all drivers to make use
-> of this mtd instance instead of using the instance embedded in their
-> private struct or dynamically allocated.
+Hi Julian,
+
+On Tue, 8 Dec 2015 10:59:53 +1100
+Julian Calaby <julian.calaby@gmail.com> wrote:
+
+> Hi Boris,
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> On Tue, Dec 8, 2015 at 9:26 AM, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> >  drivers/staging/mt29f_spinand/mt29f_spinand.c | 44 ++++++++++++++++-----------
+> >  1 file changed, 26 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+> > index cb9d5ab..967d50a 100644
+> > --- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
+> > +++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+> > @@ -42,23 +42,29 @@ static inline struct spinand_state *mtd_to_state(struct mtd_info *mtd)
+> >  static int enable_hw_ecc;
+> >  static int enable_read_hw_ecc;
+> >
+> > -static struct nand_ecclayout spinand_oob_64 = {
+> > -       .eccbytes = 24,
+> > -       .eccpos = {
+> > -               1, 2, 3, 4, 5, 6,
+> > -               17, 18, 19, 20, 21, 22,
+> > -               33, 34, 35, 36, 37, 38,
+> > -               49, 50, 51, 52, 53, 54, },
+> > -       .oobfree = {
+> > -               {.offset = 8,
+> > -                       .length = 8},
+> > -               {.offset = 24,
+> > -                       .length = 8},
+> > -               {.offset = 40,
+> > -                       .length = 8},
+> > -               {.offset = 56,
+> > -                       .length = 8},
+> > -       }
+> > +static int spinand_oob_64_eccpos(struct mtd_info *mtd, int eccbyte)
+> > +{
+> > +       if (eccbyte > 23)
+> > +               return -ERANGE;
+> > +
+> > +       return ((eccbyte / 6) * 16) + 1;
+> 
+> Are you sure this is correct? My reading of this is that we'd get 1
+> for eccbytes 0 through 5.
+> 
+> Would
+> 
+> ((eccbyte / 6) * 16) + (eccbyte % 6) + 1
+> 
+> be more correct?
 
-Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+Absolutely. I'll fix that.
 
-/^JN - Jesper Nilsson
+Thanks,
+
+Boris
+
 -- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
