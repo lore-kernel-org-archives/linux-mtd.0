@@ -1,24 +1,23 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a68Fz-00071C-7M
- for linux-mtd@lists.infradead.org; Tue, 08 Dec 2015 02:44:00 +0000
-Received: by pacdm15 with SMTP id dm15so3960630pac.3
- for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 18:43:37 -0800 (PST)
-Date: Mon, 7 Dec 2015 18:43:34 -0800
+ id 1a68LR-0000T3-K2
+ for linux-mtd@lists.infradead.org; Tue, 08 Dec 2015 02:49:38 +0000
+Received: by pfdd184 with SMTP id d184so4042760pfd.3
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 18:49:16 -0800 (PST)
+Date: Mon, 7 Dec 2015 18:49:14 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Felix Fietkau <nbd@openwrt.org>
-Cc: linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Marek Vasut <marex@denx.de>, Bayi Cheng <bayi.cheng@mediatek.com>
+Cc: linux-mtd@lists.infradead.org, Bayi Cheng <bayi.cheng@mediatek.com>,
+ Marek Vasut <marex@denx.de>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 Subject: Re: [PATCH] Revert "mtd: spi-nor: disable protection for Winbond
  flash at startup"
-Message-ID: <20151208024334.GA121937@google.com>
+Message-ID: <20151208024914.GB121937@google.com>
 References: <1448555221-24257-1-git-send-email-nbd@openwrt.org>
- <20151127222701.GA19615@localhost> <56596CFF.10002@openwrt.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <56596CFF.10002@openwrt.org>
+In-Reply-To: <1448555221-24257-1-git-send-email-nbd@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,46 +27,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
++ others
 
-On Sat, Nov 28, 2015 at 09:59:43AM +0100, Felix Fietkau wrote:
-> On 2015-11-27 23:27, Brian Norris wrote:
-> > On Thu, Nov 26, 2015 at 05:27:01PM +0100, Felix Fietkau wrote:
-> >> This reverts commit c6fc2171b249e73745c497b578b417a2946f1b2f.
-> >> 
-> >> This commit is breaking read access on at least s25fl064k, but also
-> >> possibly other Spansion flash chips.
-> > 
-> > This makes no sense. This patch is about Winbond flash, but you're
-> > referencing Spansion flash in the commit subject. I suspect you have
-> > either some more explaining, or some better investigation to do, because
-> > I don't understand how the commit in question could be the problem for
-> > you.
-> Take a look at these Spansion flash ids:
+Hi Felix,
+
+On Thu, Nov 26, 2015 at 05:27:01PM +0100, Felix Fietkau wrote:
+> This reverts commit c6fc2171b249e73745c497b578b417a2946f1b2f.
 > 
->     { "s25fl004k",  INFO(0xef4013,      0,  64 * 1024,   8, SECT_4K |
-> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->     { "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K |
-> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->     { "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K |
-> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->     { "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
+> This commit is breaking read access on at least s25fl064k, but also
+> possibly other Spansion flash chips.
 > 
-> Note how they start with 0xef (SNOR_MFR_WINBOND).
+> Any mtd read seems to succeed, but simply returns a zero-filled buffer.
+> 
+> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 4988390..8b8842e 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1194,14 +1194,13 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  	mutex_init(&nor->lock);
+>  
+>  	/*
+> -	 * Atmel, SST, Intel/Numonyx, and others serial NOR tend to power up
+> -	 * with the software protection bits set
+> +	 * Atmel, SST and Intel/Numonyx serial nor tend to power
+> +	 * up with the software protection bits set
+>  	 */
+>  
+>  	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
+>  	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
+> -	    JEDEC_MFR(info) == SNOR_MFR_SST ||
+> -	    JEDEC_MFR(info) == SNOR_MFR_WINBOND) {
+> +	    JEDEC_MFR(info) == SNOR_MFR_SST) {
+>  		write_enable(nor);
+>  		write_sr(nor, 0);
+>  	}
 
-Ugh, that really sucks :(
+So I think we've more or less agreed that this part needs applied for
+4.4 (to prevent regressions), and hopefully we can work out a good way
+forward for 4.5, to keep Winbond support.
 
-Maybe we should do the revert [*] now, and fix it for the next release.
-Maybe we can add something to the table entry to (optionally) specify
-the manufacturer, so we can specify that even if these look like they're
-Winbond, they're actually Spansion.
+But, I think if this part is breaking you, then ioctl(MEMLOCK) would
+also mess up your flash, and so you'll need something like this too:
 
-However, it seems like the lock/unlock features (e.g., top/bottom; 4K
-sector ranges) supported vary significantly across not only vendors, but
-generation. So maybe we just need some more opt-in flags in the table,
-so we don't have to try to make blanket statements, like "all Winbond
-flash support flash locking in SR."
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 3b2460efc019..3c88ebddf4db 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1236,8 +1236,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	mtd->_read = spi_nor_read;
+ 
+ 	/* NOR protection support for STmicro/Micron chips and similar */
+-	if (JEDEC_MFR(info) == SNOR_MFR_MICRON ||
+-	    JEDEC_MFR(info) == SNOR_MFR_WINBOND) {
++	if (JEDEC_MFR(info) == SNOR_MFR_MICRON) {
+ 		nor->flash_lock = stm_lock;
+ 		nor->flash_unlock = stm_unlock;
+ 		nor->flash_is_locked = stm_is_locked;
 
+Do you think you can put together (and test) a patch with a fuller
+description soon? Might mention the fact that Winbond and Spansion
+shared vendor IDs on some parts. Then I can apply it for 4.4 and try for
+a better solution on 4.5.
+
+Thanks,
 Brian
-
-[*] I have a comment for this patch. I'll reply to the top-level.
