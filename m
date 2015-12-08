@@ -1,16 +1,24 @@
-Date: Mon, 7 Dec 2015 19:13:06 -0800
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a68qA-0007t8-Ej
+ for linux-mtd@lists.infradead.org; Tue, 08 Dec 2015 03:21:25 +0000
+Received: by pacwq6 with SMTP id wq6so4464779pac.1
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 19:21:01 -0800 (PST)
+Date: Mon, 7 Dec 2015 19:20:59 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: arm@kernel.org
-Cc: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Subject: [GIT PULL] MTD/NAND cleanups for v4.5
-Message-ID: <20151208031306.GP120110@google.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Steven Miao <realmz6@gmail.com>
+Cc: adi-buildroot-devel@lists.sourceforge.net,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 02/25] blackfin: nand: make use of mtd_to_nand() where
+ appropriate
+Message-ID: <20151208032059.GQ120110@google.com>
+References: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1448967802-25796-3-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1448967802-25796-3-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +28,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+(Reducing CC, since adi-buildroot-devel@lists.sourceforge.net doesn't
+like that many...)
 
-Per discussion with Arnd, I plan to pull these into the MTD tree for
-4.5, but you should probably have them too.
+Hi Steven,
 
-Full series posted here:
+On Tue, Dec 01, 2015 at 12:02:59PM +0100, Boris Brezillon wrote:
+> mtd_to_nand() was recently introduced to avoid direct accesses to the
+> mtd->priv field. Update all blackfin specific implementations to use
+> this helper.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  arch/blackfin/mach-bf537/boards/stamp.c   | 2 +-
+>  arch/blackfin/mach-bf561/boards/acvilon.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/blackfin/mach-bf537/boards/stamp.c b/arch/blackfin/mach-bf537/boards/stamp.c
+> index 88a19fc..c181543 100644
+> --- a/arch/blackfin/mach-bf537/boards/stamp.c
+> +++ b/arch/blackfin/mach-bf537/boards/stamp.c
+> @@ -404,7 +404,7 @@ static struct mtd_partition bfin_plat_nand_partitions[] = {
+>  #define BFIN_NAND_PLAT_ALE 1
+>  static void bfin_plat_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>  {
+> -	struct nand_chip *this = mtd->priv;
+> +	struct nand_chip *this = mtd_to_nand(mtd);
+>  
+>  	if (cmd == NAND_CMD_NONE)
+>  		return;
+> diff --git a/arch/blackfin/mach-bf561/boards/acvilon.c b/arch/blackfin/mach-bf561/boards/acvilon.c
+> index 6ab9515..37f8f25 100644
+> --- a/arch/blackfin/mach-bf561/boards/acvilon.c
+> +++ b/arch/blackfin/mach-bf561/boards/acvilon.c
+> @@ -267,7 +267,7 @@ static struct mtd_partition bfin_plat_nand_partitions[] = {
+>  static void bfin_plat_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
+>  				    unsigned int ctrl)
+>  {
+> -	struct nand_chip *this = mtd->priv;
+> +	struct nand_chip *this = mtd_to_nand(mtd);
+>  
+>  	if (cmd == NAND_CMD_NONE)
+>  		return;
 
-http://lists.infradead.org/pipermail/linux-mtd/2015-December/063828.html
+FWIW:
 
-FYI, I got Arnd's 'ack' to take this one solely via MTD, since it's
-unlikely to get conflicts:
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-http://lists.infradead.org/pipermail/linux-mtd/2015-December/063840.html
+What would you like done with this? I can just take it via MTD, since
+it's pretty small. Or I can queue up this and 1 dependent change as a
+pull request for you.
 
-The following changes since commit 8005c49d9aea74d382f474ce11afbbc7d7130bec:
-
-  Linux 4.4-rc1 (2015-11-15 17:00:27 -0800)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/arm-soc/for-4.5/cleanup
-
-for you to fetch changes up to c993e09504fca192bac4ac3f5a3411ac68cba2e6:
-
-  ARM: nand: make use of mtd_to_nand() where appropriate (2015-12-07 18:58:20 -0800)
-
-----------------------------------------------------------------
-Two changes for NAND/MTD refactoring. The mtd_to_nand() helper will allow us to
-stop using mtd->priv for NAND drivers.
-
-----------------------------------------------------------------
-Boris BREZILLON (2):
-      mtd: nand: add an mtd_to_nand() helper
-      ARM: nand: make use of mtd_to_nand() where appropriate
-
- arch/arm/mach-ep93xx/snappercl15.c   | 4 ++--
- arch/arm/mach-ep93xx/ts72xx.c        | 4 ++--
- arch/arm/mach-imx/mach-qong.c        | 2 +-
- arch/arm/mach-ixp4xx/ixdp425-setup.c | 2 +-
- arch/arm/mach-omap1/board-nand.c     | 2 +-
- arch/arm/mach-orion5x/ts78xx-setup.c | 6 +++---
- arch/arm/mach-pxa/balloon3.c         | 2 +-
- arch/arm/mach-pxa/em-x270.c          | 2 +-
- arch/arm/mach-pxa/palmtx.c           | 2 +-
- include/linux/mtd/nand.h             | 5 +++++
- 10 files changed, 18 insertions(+), 13 deletions(-)
+Regards,
+Brian
