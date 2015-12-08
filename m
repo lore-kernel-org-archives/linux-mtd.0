@@ -1,24 +1,23 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pf0-x233.google.com ([2607:f8b0:400e:c00::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a68qA-0007t8-Ej
- for linux-mtd@lists.infradead.org; Tue, 08 Dec 2015 03:21:25 +0000
-Received: by pacwq6 with SMTP id wq6so4464779pac.1
- for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 19:21:01 -0800 (PST)
-Date: Mon, 7 Dec 2015 19:20:59 -0800
+ id 1a68we-0004aH-9G
+ for linux-mtd@lists.infradead.org; Tue, 08 Dec 2015 03:28:04 +0000
+Received: by pfdd184 with SMTP id d184so4540832pfd.3
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 19:27:43 -0800 (PST)
+Date: Mon, 7 Dec 2015 19:27:40 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Steven Miao <realmz6@gmail.com>
-Cc: adi-buildroot-devel@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 02/25] blackfin: nand: make use of mtd_to_nand() where
+ Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>
+Cc: linux-mtd@lists.infradead.org, linux-cris-kernel@axis.com
+Subject: Re: [PATCH v2 03/25] cris: nand: make use of mtd_to_nand() where
  appropriate
-Message-ID: <20151208032059.GQ120110@google.com>
+Message-ID: <20151208032740.GR120110@google.com>
 References: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
- <1448967802-25796-3-git-send-email-boris.brezillon@free-electrons.com>
+ <1448967802-25796-4-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1448967802-25796-3-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1448967802-25796-4-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,56 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Reducing CC, since adi-buildroot-devel@lists.sourceforge.net doesn't
-like that many...)
+(Reducing CC)
 
-Hi Steven,
+Hi Mikael and Jesper,
 
-On Tue, Dec 01, 2015 at 12:02:59PM +0100, Boris Brezillon wrote:
+On Tue, Dec 01, 2015 at 12:03:00PM +0100, Boris Brezillon wrote:
 > mtd_to_nand() was recently introduced to avoid direct accesses to the
-> mtd->priv field. Update all blackfin specific implementations to use
-> this helper.
+> mtd->priv field. Update all CRIS specific implementations to use this
+> helper.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
->  arch/blackfin/mach-bf537/boards/stamp.c   | 2 +-
->  arch/blackfin/mach-bf561/boards/acvilon.c | 2 +-
+>  arch/cris/arch-v32/drivers/mach-a3/nandflash.c | 2 +-
+>  arch/cris/arch-v32/drivers/mach-fs/nandflash.c | 2 +-
 >  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/blackfin/mach-bf537/boards/stamp.c b/arch/blackfin/mach-bf537/boards/stamp.c
-> index 88a19fc..c181543 100644
-> --- a/arch/blackfin/mach-bf537/boards/stamp.c
-> +++ b/arch/blackfin/mach-bf537/boards/stamp.c
-> @@ -404,7 +404,7 @@ static struct mtd_partition bfin_plat_nand_partitions[] = {
->  #define BFIN_NAND_PLAT_ALE 1
->  static void bfin_plat_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+> diff --git a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
+> index 7fb5212..db953cf 100644
+> --- a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
+> +++ b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
+> @@ -52,7 +52,7 @@ static void crisv32_hwcontrol(struct mtd_info *mtd, int cmd,
 >  {
+>  	unsigned long flags;
+>  	reg_pio_rw_dout dout;
 > -	struct nand_chip *this = mtd->priv;
 > +	struct nand_chip *this = mtd_to_nand(mtd);
 >  
->  	if (cmd == NAND_CMD_NONE)
->  		return;
-> diff --git a/arch/blackfin/mach-bf561/boards/acvilon.c b/arch/blackfin/mach-bf561/boards/acvilon.c
-> index 6ab9515..37f8f25 100644
-> --- a/arch/blackfin/mach-bf561/boards/acvilon.c
-> +++ b/arch/blackfin/mach-bf561/boards/acvilon.c
-> @@ -267,7 +267,7 @@ static struct mtd_partition bfin_plat_nand_partitions[] = {
->  static void bfin_plat_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
->  				    unsigned int ctrl)
+>  	local_irq_save(flags);
+>  
+> diff --git a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
+> index e032384..22a6467 100644
+> --- a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
+> +++ b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
+> @@ -51,7 +51,7 @@ static void crisv32_hwcontrol(struct mtd_info *mtd, int cmd,
 >  {
+>  	unsigned long flags;
+>  	reg_gio_rw_pa_dout dout;
 > -	struct nand_chip *this = mtd->priv;
 > +	struct nand_chip *this = mtd_to_nand(mtd);
 >  
->  	if (cmd == NAND_CMD_NONE)
->  		return;
-
-FWIW:
+>  	local_irq_save(flags);
+>  
 
 Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-What would you like done with this? I can just take it via MTD, since
-it's pretty small. Or I can queue up this and 1 dependent change as a
-pull request for you.
+This patch and patch 18 touch arch/cris/ marginally. It's a little
+complicated to give you all the dependencies for the later stuff without
+bringing in a bunch of MTD stuff. I plan to take them both to MTD
+directly. An ack would be nice.
 
 Regards,
 Brian
