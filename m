@@ -1,23 +1,28 @@
-Received: from mail-pf0-x22a.google.com ([2607:f8b0:400e:c00::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a68yo-000557-Hq
- for linux-mtd@lists.infradead.org; Tue, 08 Dec 2015 03:30:19 +0000
-Received: by pfu207 with SMTP id 207so4608332pfu.2
- for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 19:29:57 -0800 (PST)
-Date: Mon, 7 Dec 2015 19:29:55 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mtd@lists.infradead.org, linux-mips@linux-mips.org
-Subject: Re: [PATCH v2 04/25] mips: nand: make use of mtd_to_nand() where
- appropriate
-Message-ID: <20151208032955.GS120110@google.com>
-References: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
- <1448967802-25796-5-git-send-email-boris.brezillon@free-electrons.com>
+From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Brian Norris <computersforpeace@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>, "marex@denx.de"
+ <marex@denx.de>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk"
+ <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org"
+ <galak@codeaurora.org>
+Subject: RE: [PATCH linux-next 0/5] mtd: spi-nor: add driver for Atmel QSPI
+ controller
+Date: Tue, 8 Dec 2015 06:21:00 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF53437@NTXXIAMBX02.xacn.micron.com>
+References: <cover.1449494420.git.cyrille.pitchen@atmel.com>
+ <20151207193441.GO120110@google.com>
+In-Reply-To: <20151207193441.GO120110@google.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1448967802-25796-5-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,94 +32,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Trim CC list)
-
-Hi Ralf,
-
-On Tue, Dec 01, 2015 at 12:03:01PM +0100, Boris Brezillon wrote:
-> mtd_to_nand() was recently introduced to avoid direct accesses to the
-> mtd->priv field. Update all MIPS specific implementations to use this
-> helper.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  arch/mips/alchemy/devboards/db1200.c | 2 +-
->  arch/mips/alchemy/devboards/db1300.c | 2 +-
->  arch/mips/alchemy/devboards/db1550.c | 2 +-
->  arch/mips/pnx833x/common/platform.c  | 2 +-
->  arch/mips/rb532/devices.c            | 2 +-
->  5 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/mips/alchemy/devboards/db1200.c b/arch/mips/alchemy/devboards/db1200.c
-> index 8c13675..992442a 100644
-> --- a/arch/mips/alchemy/devboards/db1200.c
-> +++ b/arch/mips/alchemy/devboards/db1200.c
-> @@ -200,7 +200,7 @@ static struct i2c_board_info db1200_i2c_devs[] __initdata = {
->  static void au1200_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
->  				 unsigned int ctrl)
->  {
-> -	struct nand_chip *this = mtd->priv;
-> +	struct nand_chip *this = mtd_to_nand(mtd);
->  	unsigned long ioaddr = (unsigned long)this->IO_ADDR_W;
->  
->  	ioaddr &= 0xffffff00;
-> diff --git a/arch/mips/alchemy/devboards/db1300.c b/arch/mips/alchemy/devboards/db1300.c
-> index b580770..d3c087f 100644
-> --- a/arch/mips/alchemy/devboards/db1300.c
-> +++ b/arch/mips/alchemy/devboards/db1300.c
-> @@ -150,7 +150,7 @@ static void __init db1300_gpio_config(void)
->  static void au1300_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
->  				 unsigned int ctrl)
->  {
-> -	struct nand_chip *this = mtd->priv;
-> +	struct nand_chip *this = mtd_to_nand(mtd);
->  	unsigned long ioaddr = (unsigned long)this->IO_ADDR_W;
->  
->  	ioaddr &= 0xffffff00;
-> diff --git a/arch/mips/alchemy/devboards/db1550.c b/arch/mips/alchemy/devboards/db1550.c
-> index 5740bcf..b518f02 100644
-> --- a/arch/mips/alchemy/devboards/db1550.c
-> +++ b/arch/mips/alchemy/devboards/db1550.c
-> @@ -128,7 +128,7 @@ static struct i2c_board_info db1550_i2c_devs[] __initdata = {
->  static void au1550_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
->  				 unsigned int ctrl)
->  {
-> -	struct nand_chip *this = mtd->priv;
-> +	struct nand_chip *this = mtd_to_nand(mtd);
->  	unsigned long ioaddr = (unsigned long)this->IO_ADDR_W;
->  
->  	ioaddr &= 0xffffff00;
-> diff --git a/arch/mips/pnx833x/common/platform.c b/arch/mips/pnx833x/common/platform.c
-> index b4b774b..3cd3577 100644
-> --- a/arch/mips/pnx833x/common/platform.c
-> +++ b/arch/mips/pnx833x/common/platform.c
-> @@ -180,7 +180,7 @@ static struct platform_device pnx833x_sata_device = {
->  static void
->  pnx833x_flash_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
->  {
-> -	struct nand_chip *this = mtd->priv;
-> +	struct nand_chip *this = mtd_to_nand(mtd);
->  	unsigned long nandaddr = (unsigned long)this->IO_ADDR_W;
->  
->  	if (cmd == NAND_CMD_NONE)
-> diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-> index 9bd7a2d..0966adc 100644
-> --- a/arch/mips/rb532/devices.c
-> +++ b/arch/mips/rb532/devices.c
-> @@ -148,7 +148,7 @@ static int rb532_dev_ready(struct mtd_info *mtd)
->  
->  static void rb532_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
->  {
-> -	struct nand_chip *chip = mtd->priv;
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
->  	unsigned char orbits, nandbits;
->  
->  	if (ctrl & NAND_CTRL_CHANGE) {
-
-Acked-by: Brian Norris <computersforpeace@gmail.com>
-
-Do you want me to queue a pull request with this patch + 1 dependent
-change for you? I'm perfectly fine just taking this directly too.
-
-Regards,
-Brian
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCcmlhbiBOb3JyaXMgW21haWx0
+bzpjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb21dDQo+IFNlbnQ6IFR1ZXNkYXksIERlY2VtYmVy
+IDA4LCAyMDE1IDM6MzUgQU0NCj4gVG86IEN5cmlsbGUgUGl0Y2hlbg0KPiBDYzogbGludXgtbXRk
+QGxpc3RzLmluZnJhZGVhZC5vcmc7IG5pY29sYXMuZmVycmVAYXRtZWwuY29tOyBtYXJleEBkZW54
+LmRlOw0KPiB2aWduZXNockB0aS5jb207IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+
+IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtl
+cm5lbC5vcmc7DQo+IHJvYmgrZHRAa2VybmVsLm9yZzsgcGF3ZWwubW9sbEBhcm0uY29tOyBtYXJr
+LnJ1dGxhbmRAYXJtLmNvbTsNCj4gaWpjK2RldmljZXRyZWVAaGVsbGlvbi5vcmcudWs7IGdhbGFr
+QGNvZGVhdXJvcmEub3JnOyBCZWFuIEh1byC79LHzsfMNCj4gKGJlYW5odW8pDQo+IFN1YmplY3Q6
+IFJlOiBbUEFUQ0ggbGludXgtbmV4dCAwLzVdIG10ZDogc3BpLW5vcjogYWRkIGRyaXZlciBmb3Ig
+QXRtZWwgUVNQSQ0KPiBjb250cm9sbGVyDQo+IA0KPiArIEJlYW4gSHVvDQo+IA0KPiBIaSBDeXJp
+bGxlLA0KPiANCj4gT24gTW9uLCBEZWMgMDcsIDIwMTUgYXQgMDM6MDk6MDlQTSArMDEwMCwgQ3ly
+aWxsZSBQaXRjaGVuIHdyb3RlOg0KPiA+IEhpIGFsbCwNCj4gPg0KPiA+IHRoaXMgc2VyaWVzIG9m
+IHBhdGNoZXMgYWRkcyBzdXBwb3J0IHRvIHRoZSBBdG1lbCBRU1BJIGNvbnRyb2xsZXINCj4gPiBh
+dmFpbGFibGUgb24gc2FtYTVkMiBTb0NzLiBJdCB3YXMgdGVzdGVkIG9uIGEgc2FtYTVkMiB4cGxh
+aW5lZCB1bHRyYQ0KPiA+IGJvYXJkIHdpdGggYSBNaWNyb24gbjI1cTEyOGExMyBRU1BJIG1lbW9y
+eSBhbmQgYSBhdDI1ZGYzMjFhIFNQSQ0KPiBtZW1vcnkuDQo+ID4NCj4gPiBJbiBvcmRlciB0byB1
+c2UgdGhlIE1pY3JvbiBtZW1vcnkgaW4gaXRzIFF1YWQgU1BJIG1vZGUsIHRoZSBzcGktbm9yDQo+
+ID4gZnJhbWV3b3JrIG5lZWRlZCB0byBiZSBwYXRjaGVkIHRvIGZpeCB0aGUgc3VwcG9ydCBvZiBR
+dWFkL0R1YWwgU1BJDQo+ID4gcHJvdG9jb2xzIHdpdGggc29tZSBtZW1vcnkgbWFudWZhY3R1cmVy
+cyBzdWNoIGFzIFNwYW5zaW9uLCBNaWNyb24gYW5kDQo+ID4gTWFjcm9uaXguIFRoZXJlIGFyZSBt
+YW55IGNvbW1lbnRzIGluIHRoZSBzb3VyY2UgY29kZSB0byBleHBsYWluIHRoZQ0KPiA+IGltcGxl
+bWVudGF0aW9uIGNob2ljZXMgYmFzZWQgb24gdGhlIGRhdGFzaGVldHMgZnJvbSBtZW1vcnkNCj4g
+bWFudWZhY3R1cmVycy4NCj4gPg0KPiA+DQo+ID4gVGhpcyBzZXJpZXMgd2FzIGJhc2VkIGFuZCB0
+ZXN0ZWQgb24gbGludXgtbmV4dC0yMDE1MTIwNw0KPiA+DQo+ID4gMSAtIEF0bWVsIFFTUEkgKyBN
+aWNyb24gbjI1cTEyOGExMyAoYXRtZWwtcXVhZHNwaS5jIGRyaXZlcikNCj4gPg0KPiA+IFNQSSAx
+LTEtMTogVGhpcyBtb2RlIHdhcyB0ZXN0ZWQgcmVwbGFjaW5nIFNQSV9OT1JfUVVBRCBieQ0KPiBT
+UElfTk9SX0ZBU1QgYXMNCj4gPiAgICAgICAgICAgIGFyZ3VtZW50IHRvIHNwaV9ub3Jfc2Nhbigp
+IGNhbGxlZCBmcm9tIGF0bWVsX3FzcGlfcHJvYmUoKS4NCj4gPg0KPiA+IFNQSSAxLTEtNDogQm9v
+dGxvYWRlcnMgKGF0OTFib290c3RyYXAvdWJvb3QpIGRvbid0IGVuYWJsZSB0aGUgUXVhZCBTUEkN
+Cj4gPiAgICAgICAgICAgIG1vZGUgb2YgdGhlIE1pY3JvbiBtZW1vcnkuIFdoZW4gcHJvYmVkIGZy
+b20gTGludXgsIHRoZQ0KPiBtZW1vcnkNCj4gPiAgICAgICAgICAgIHVzZXMgaXRzIEV4dGVuZGVk
+IFNQSSBtb2RlIGFuZCByZXBsaWVzIHRvIHRoZSByZWd1bGFyIFJlYWQgSUQNCj4gPiAgICAgICAg
+ICAgICgweDlmKSBjb21tYW5kLg0KPiA+DQo+ID4gU1BJIDQtNC00OiBUaGUgcm9tY29kZSBlbmFi
+bGVkIHRoZSBRdWFkIFNQSSBtb2RlIHRoZSBvZiBNaWNyb24gbWVtb3J5DQo+ID4gICAgICAgICAg
+ICBiZWZvcmUgbG9hZGluZyB0aGUgYXQ5MWJvb3RzdHJhcC4gV2hlbiBwcm9iZWQgZnJvbSBMaW51
+eCwNCj4gdGhlDQo+ID4gICAgICAgICAgICBtZW1vcnkgdXNlcyBpdHMgUXVhZCBTUEkgbW9kZSBh
+bmQgbm8gbG9uZ2VyIHJlcGxpZXMgdG8gdGhlDQo+ID4gICAgICAgICAgICByZWd1bGFyIFJlYWQg
+SUQgKDB4OWYpIGNvbW1hbmQgYnV0IGluc3RlYWQgdG8gdGhlIFJlYWQgSUQNCj4gPiAgICAgICAg
+ICAgIE11bHRpcGxlIEkvTyAoMHhhZikgY29tbWFuZC4gVGhlIG1lbW9yeSBleHBlY3RzIEFMTA0K
+PiBjb21tYW5kcw0KPiA+ICAgICAgICAgICAgdG8gdXNlIHRoZSBTUEkgNC00LTQgcHJvdG9jb2wu
+DQo+IA0KPiBJJ2xsIGFkbWl0IEknbSBhIGxpdHRsZSBmdXp6eSBvbiB0aGUgZGlmZmVyZW5jZXMg
+YmV0d2VlbiBkdWFsIGFuZCBxdWFkIG1vZGVzIG9uDQo+IHZhcmlvdXMgZmxhc2ggbWFudWZhY3R1
+cmVycy4gQ2FuIHlvdSBoZWxwIGNsZWFyIGl0IHVwIGZvciBtZT8NCg0KRm9yIE1pY3JvbiBTUEkg
+Tk9SIHNwaSBxdWFkIG1vZGUsIG1lYW5zIHRoYXQgUWF1ZCBJL08gcHJvdG90b2NvbCwgaXQgZm9s
+bG93cyBJL08NCkJ1cyB3aWR0aCBpcyBjb21tYW5kLWFkZHJlc3MtRGF0YSA0LTQtNCwgYXQgdGhp
+cyB0aW1lLCBEUTAsRFExLERRMixEUTMNCmFyZSBhbGwgdXNlZCB0byB0cmFuc2ZlciBhZGRyZXNz
+L2NvbW1hbmQvZGF0YS4gRm9yIHRoaXMgbWF5YmUgbm90IHRoZSBzYW1lIGJldHdlZW4NCmRpZmZl
+cmVudCBmbGFzaCBtYW51ZmFjdHVyZXMuIEZvciBleGFtcGxlLCBmb3IgU3BhbnNpb24gUXNwaSBO
+T1IsIGl0cyBhbGwgaW5zdHJ1Y3Rpb25zIGFyZQ0KdHJhbnNmZXJyZWQgZnJvbSBob3N0IHRvIG1l
+bW9yeSBhcyBhIHNpbmdsZSBiaXQgc2VyaWFsIHNlcXVlbmNlIG9uIHRoZSBEUTAgc2lnbmFsLCBl
+dmVuIHVuZGVyDQpRdWFkIG1vZGUuICBEdWFsIG1vZGUgdGhlIHNhbWUgYXMgUWF1ZCBtb2RlIHNj
+ZW5hcmlvLg0KDQpmb3IgU1BJIE5PUiAxLTEtNCwgbWVhbnMgY29tbWFuZCBhbmQgYWRkcmVzcyBh
+cmUgdHJhbnNmZXJyZWQgb24gdGhlIERRMCwNCmJ1dCBmb3IgZGF0YSwgYmVpbmcgdHJhbnNmZXJy
+ZWQgb24gRFEwLERRMSxEUTIsRFEzLkZvciB0aGlzLCBpdCBpcyB0aGUgc2FtZQ0KYmV0d2VlbiBk
+aWZmZXJlbnQgZmxhc2ggbWFudWZhY3R1cmVycy4gT2YgY291cnNlLCBhdCB0aGlzIG1vbWVudCwg
+U1BJIE5PUg0Kc2hvdWxkIHdvcmsgdW5kZXIgZXh0ZW5kZWQgSS9PIG1vZGUuDQoNCj4gSSB0aGlu
+ayBzb21lIG9mIHRoZSBjb21tZW50cyBvbiBwYXRjaCAyIGhlbHAgdG9vLCBidXQgSSdsbCBqdXN0
+IGNvbW1lbnQgaGVyZQ0KPiBmb3Igbm93Lg0KPiBJdCBsb29rcyBsaWtlIHRoZSBjdXJyZW50IGRy
+aXZlciBoYXMgcHJvYmxlbXMgcmVnYXJkaW5nIHRoZSBub24gMS14LXkgbW9kZXMNCj4gKGUuZy4s
+IDQtNC00KSwgcmlnaHQ/IEJ1dCBJIHNlZSB0aGF0IHNwaS1ub3IuYyBuZXZlciB0cmllcyB0byBz
+ZW5kIGEgNF80XzQNCj4gY29tbWFuZDsgaXQgb25seSBzZXRzIHJlYWRfb3Bjb2RlIHRvIFNQSU5P
+Ul9PUF9SRUFEXzFfMV97MSwyLDR9LiBTbyBpcw0KPiB0aGlzIGFuIG92ZXJzaWdodCBpbiBwYXRj
+aGVzIGxpa2UgQmVhbidzIHBhdGNoPw0KDQpGb3IgU1BJTk9SX09QX1JFQURfMV8xX3sxLDIsNH0g
+Y29tbWFuZHMsIFNwaSBOT1IgYWN0dWFsbHkgd29ya3MgdW5kZXINCkV4dGVuZGVkIEkvTyBtb2Rl
+LCBub3QgUXVhZCBtb2RlLiBUaGV5IGp1c3QgcHVzaCBTcGkgTk9SIG91dHB1dCBkYXRhIGJ5IFF1
+YWQgbW9kZSwNCkNvbW1hbmQgYW5kIGFkZHJlc3Mgc3RpbGwgZm9sbG93aW5nIGV4dGVuZGVkIEkv
+TyBtb2RlLg0KRm9yIDQtNC00IEkvTyBwcm90b2NvbCwgU1BJIE5PUiBzaG91bGQgY2hhbmdlIHRv
+IFF1YWQgbW9kZShqdXN0IGFzIG15IHBhdGNoKSwgDQpvZiBjb3Vyc2UsIFNQSSBjb250cm9sbGVy
+IHNob3VsZCBzdXBwb3J0IHRoaXMuIGZvciBNaWNyb24gUXNwaSBOT1IsIHVuZGVyIHF1YWQgbW9k
+ZSwNCmFsbCBjb21tYW5kcy9hZGRyZXNzL2RhdGEgYXJlIHRyYW5zZmVycmVkIG9uIERRMCxEUTEs
+RFEyLERRMyBzaWduYWxzLiBObyBtYXR0ZXIgd2hhdA0Ka2luZCBvZiBjb21tYW5kLiANCg0KDQo+
+ICAgICBjb21taXQgNTQ4Y2QzYWI1NGRhICgibXRkOiBzcGktbm9yOiBBZGQgcXVhZCBJL08gc3Vw
+cG9ydCBmb3IgTWljcm9uDQo+ICAgICBTUEkgTk9SIikNCj4gDQo+IFdoeSB3b3VsZCB3ZSBldmVu
+IG5lZWQgdG8gZW5hYmxlIHF1YWQgbW9kZXMgbGlrZSB0aGF0LCBpZiB3ZSdyZSBub3QgZ29pbmcN
+Cj4gdG8gc2VuZCB0aGUgNC00LTQgb3Bjb2Rlcz8NCkkgdGhpbmssIGluIG9yZGVyIHRvIGhpZ2gg
+c3BlZWQgU1BJIE5PUiwgYWZ0ZXIgZW5hYmxlIHF1YWQgbW9kZSwgDQpTUElOT1JfT1BfUkVBRF8x
+XzFfezEsMiw0fSBjb21tYW5kcyBkb24ndCBuZWVkIGFueSBtb3JlLCBub3JtYWwgcmVhZCBjb21t
+YW5kICgweDAzKQ0KQ2FuIGltcGxlbWVudCBhcyB0aGVtLg0KDQo+IE15IG5leHQgcXVlc3Rpb24g
+KGlmIG15IHVuZGVyc3RhbmRpbmcgaXMgcm91Z2hseSBjb3JyZWN0KSBpcywgZG8gd2UgbmVlZCB0
+aGUNCj4gNC00LTQgbW9kZXMsIGFuZCB3aGF0IHJpc2tzIGNvbWUgd2l0aCB0aGVtPyBJIHVuZGVy
+c3RhbmQgd2UgY2FuIHNob3J0ZW4NCj4gdGhlIGNvbW1hbmQgYW5kIGFkZHJlc3MgcGhhc2VzLCBi
+dXQgZG9lcyB0aGF0IGFsb25lIHlpZWxkIG11Y2gNCj4gcGVyZm9ybWFuY2UgYmVuZWZpdD8gQW5k
+IEkgdGhpbmsgdGhlIHJpc2sgaXMgdGhhdCBhIGdpdmVuIHN5c3RlbSBtaWdodCBub3QgYmUNCj4g
+cHJlcGFyZWQgZm9yIHRoZSBmbGFzaCB0byBiZSBpbiBhIDQtNC00IG1vZGUsIGlmIHRoZSBib290
+IGNvZGUgdHJpZXMgdG8gdXNlIDEteC15DQo+IGNvbW1hbmRzLg0KDQpBcyBmYXIgYXMgbXkgY3Vy
+cmVudCBleHBlcmllbmNlIGFuZCBrbm93bGVkZ2UsIHRoaXMgc3RpbGwgbmVlZCB0byBiZSBlbmFi
+bGVkLCBlc3BlY2lhbGx5IGZvcg0KZmFzdCBib290LCBhbmQgc29tZSBJT1QgZGV2aWNlcyB0byBz
+dG9yZSBpbmZvIGludG8gU1BJIE5PUi4NCkZvciB0aGlzIHBhdGNoZXMsIG15IGN1cnJlbnQgY29u
+Y2VybiBpcyB0aGF0IGhvc3Qgc2lkZSBob3cgdG8gZ2V0IGRpZmZlcmVudCBJL08gcHJvdG9jb2wg
+Y2hhbmdlcywNCmFuZCBkaXN0aW5ndWlzaCBiZXR3ZWVuIGRpZmZlcmVudCBmbGFzaCBtYW51ZmFj
+dHVyZXJzIEkvTyBtb2RlLg0KDQo+IEFsc28sIEkgc2VlIGEgbG90IG9mIGdvb2QgY29tbWVudHMg
+aW4gcGF0Y2ggMiBhYm91dCBTcGFuc2lvbiB2cy4NCj4gTWFjcm9uaXggdnMuIE1pY3JvbiBtZW1v
+cmllcy4gSSB3b25kZXIgaWYgcHJldmlvdXMgZGV2ZWxvcGVycyBoYXZlDQo+IGNvbXBsZXRlbHkg
+dGVzdGVkIHRoZWlyIHBhdGNoZXMsIG9yIGlmIHRoZXkncmUganVzdCByZWFkaW5nIHRoZSBkYXRh
+c2hlZXRzLi4uIHNvLA0KPiB3aGF0IGtpbmQgaGF2ZSB0ZXN0aW5nIGhhdmUgeW91IGRvbmU/IERv
+IHlvdSBoYXZlIHNhbXBsZXMgb2YgYWxsIHRoZXNlIGZsYXNoDQo+IHRvIHRlc3Q/DQo+IFJlZ2Fy
+ZHMsDQo+IEJyaWFuDQo=
