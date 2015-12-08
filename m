@@ -1,28 +1,29 @@
-From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>, "marex@denx.de"
- <marex@denx.de>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk"
- <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org"
- <galak@codeaurora.org>
-Subject: RE: [PATCH linux-next 0/5] mtd: spi-nor: add driver for Atmel QSPI
- controller
-Date: Tue, 8 Dec 2015 06:21:00 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF53437@NTXXIAMBX02.xacn.micron.com>
-References: <cover.1449494420.git.cyrille.pitchen@atmel.com>
- <20151207193441.GO120110@google.com>
-In-Reply-To: <20151207193441.GO120110@google.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Message-ID: <1449556985.25438.8.camel@plaes.org>
+Subject: Re: [linux-sunxi] [PATCH 01/23] mtd: kill the ecclayout->oobavail
+ field
+From: Priit Laes <plaes@plaes.org>
+To: boris.brezillon@free-electrons.com, David Woodhouse
+ <dwmw2@infradead.org>,  Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>,  Robert Jarzmik <robert.jarzmik@free.fr>,
+ Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski
+ <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>,
+ linux-mips@linux-mips.org, Josh Wu <josh.wu@atmel.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-sunxi@googlegroups.com, Stefan Agner <stefan@agner.ch>, Kyungmin Park
+ <kyungmin.park@samsung.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,  devel@driverdev.osuosl.org,
+ linux-kernel@vger.kernel.org, punnaiah choudary kalluri <punnaia@xilinx.com>
+Date: Tue, 08 Dec 2015 08:43:05 +0200
+In-Reply-To: <1449527178-5930-2-git-send-email-boris.brezillon@free-electrons.com>
+References: <1449527178-5930-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1449527178-5930-2-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,101 +33,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCcmlhbiBOb3JyaXMgW21haWx0
-bzpjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb21dDQo+IFNlbnQ6IFR1ZXNkYXksIERlY2VtYmVy
-IDA4LCAyMDE1IDM6MzUgQU0NCj4gVG86IEN5cmlsbGUgUGl0Y2hlbg0KPiBDYzogbGludXgtbXRk
-QGxpc3RzLmluZnJhZGVhZC5vcmc7IG5pY29sYXMuZmVycmVAYXRtZWwuY29tOyBtYXJleEBkZW54
-LmRlOw0KPiB2aWduZXNockB0aS5jb207IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+
-IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtl
-cm5lbC5vcmc7DQo+IHJvYmgrZHRAa2VybmVsLm9yZzsgcGF3ZWwubW9sbEBhcm0uY29tOyBtYXJr
-LnJ1dGxhbmRAYXJtLmNvbTsNCj4gaWpjK2RldmljZXRyZWVAaGVsbGlvbi5vcmcudWs7IGdhbGFr
-QGNvZGVhdXJvcmEub3JnOyBCZWFuIEh1byC79LHzsfMNCj4gKGJlYW5odW8pDQo+IFN1YmplY3Q6
-IFJlOiBbUEFUQ0ggbGludXgtbmV4dCAwLzVdIG10ZDogc3BpLW5vcjogYWRkIGRyaXZlciBmb3Ig
-QXRtZWwgUVNQSQ0KPiBjb250cm9sbGVyDQo+IA0KPiArIEJlYW4gSHVvDQo+IA0KPiBIaSBDeXJp
-bGxlLA0KPiANCj4gT24gTW9uLCBEZWMgMDcsIDIwMTUgYXQgMDM6MDk6MDlQTSArMDEwMCwgQ3ly
-aWxsZSBQaXRjaGVuIHdyb3RlOg0KPiA+IEhpIGFsbCwNCj4gPg0KPiA+IHRoaXMgc2VyaWVzIG9m
-IHBhdGNoZXMgYWRkcyBzdXBwb3J0IHRvIHRoZSBBdG1lbCBRU1BJIGNvbnRyb2xsZXINCj4gPiBh
-dmFpbGFibGUgb24gc2FtYTVkMiBTb0NzLiBJdCB3YXMgdGVzdGVkIG9uIGEgc2FtYTVkMiB4cGxh
-aW5lZCB1bHRyYQ0KPiA+IGJvYXJkIHdpdGggYSBNaWNyb24gbjI1cTEyOGExMyBRU1BJIG1lbW9y
-eSBhbmQgYSBhdDI1ZGYzMjFhIFNQSQ0KPiBtZW1vcnkuDQo+ID4NCj4gPiBJbiBvcmRlciB0byB1
-c2UgdGhlIE1pY3JvbiBtZW1vcnkgaW4gaXRzIFF1YWQgU1BJIG1vZGUsIHRoZSBzcGktbm9yDQo+
-ID4gZnJhbWV3b3JrIG5lZWRlZCB0byBiZSBwYXRjaGVkIHRvIGZpeCB0aGUgc3VwcG9ydCBvZiBR
-dWFkL0R1YWwgU1BJDQo+ID4gcHJvdG9jb2xzIHdpdGggc29tZSBtZW1vcnkgbWFudWZhY3R1cmVy
-cyBzdWNoIGFzIFNwYW5zaW9uLCBNaWNyb24gYW5kDQo+ID4gTWFjcm9uaXguIFRoZXJlIGFyZSBt
-YW55IGNvbW1lbnRzIGluIHRoZSBzb3VyY2UgY29kZSB0byBleHBsYWluIHRoZQ0KPiA+IGltcGxl
-bWVudGF0aW9uIGNob2ljZXMgYmFzZWQgb24gdGhlIGRhdGFzaGVldHMgZnJvbSBtZW1vcnkNCj4g
-bWFudWZhY3R1cmVycy4NCj4gPg0KPiA+DQo+ID4gVGhpcyBzZXJpZXMgd2FzIGJhc2VkIGFuZCB0
-ZXN0ZWQgb24gbGludXgtbmV4dC0yMDE1MTIwNw0KPiA+DQo+ID4gMSAtIEF0bWVsIFFTUEkgKyBN
-aWNyb24gbjI1cTEyOGExMyAoYXRtZWwtcXVhZHNwaS5jIGRyaXZlcikNCj4gPg0KPiA+IFNQSSAx
-LTEtMTogVGhpcyBtb2RlIHdhcyB0ZXN0ZWQgcmVwbGFjaW5nIFNQSV9OT1JfUVVBRCBieQ0KPiBT
-UElfTk9SX0ZBU1QgYXMNCj4gPiAgICAgICAgICAgIGFyZ3VtZW50IHRvIHNwaV9ub3Jfc2Nhbigp
-IGNhbGxlZCBmcm9tIGF0bWVsX3FzcGlfcHJvYmUoKS4NCj4gPg0KPiA+IFNQSSAxLTEtNDogQm9v
-dGxvYWRlcnMgKGF0OTFib290c3RyYXAvdWJvb3QpIGRvbid0IGVuYWJsZSB0aGUgUXVhZCBTUEkN
-Cj4gPiAgICAgICAgICAgIG1vZGUgb2YgdGhlIE1pY3JvbiBtZW1vcnkuIFdoZW4gcHJvYmVkIGZy
-b20gTGludXgsIHRoZQ0KPiBtZW1vcnkNCj4gPiAgICAgICAgICAgIHVzZXMgaXRzIEV4dGVuZGVk
-IFNQSSBtb2RlIGFuZCByZXBsaWVzIHRvIHRoZSByZWd1bGFyIFJlYWQgSUQNCj4gPiAgICAgICAg
-ICAgICgweDlmKSBjb21tYW5kLg0KPiA+DQo+ID4gU1BJIDQtNC00OiBUaGUgcm9tY29kZSBlbmFi
-bGVkIHRoZSBRdWFkIFNQSSBtb2RlIHRoZSBvZiBNaWNyb24gbWVtb3J5DQo+ID4gICAgICAgICAg
-ICBiZWZvcmUgbG9hZGluZyB0aGUgYXQ5MWJvb3RzdHJhcC4gV2hlbiBwcm9iZWQgZnJvbSBMaW51
-eCwNCj4gdGhlDQo+ID4gICAgICAgICAgICBtZW1vcnkgdXNlcyBpdHMgUXVhZCBTUEkgbW9kZSBh
-bmQgbm8gbG9uZ2VyIHJlcGxpZXMgdG8gdGhlDQo+ID4gICAgICAgICAgICByZWd1bGFyIFJlYWQg
-SUQgKDB4OWYpIGNvbW1hbmQgYnV0IGluc3RlYWQgdG8gdGhlIFJlYWQgSUQNCj4gPiAgICAgICAg
-ICAgIE11bHRpcGxlIEkvTyAoMHhhZikgY29tbWFuZC4gVGhlIG1lbW9yeSBleHBlY3RzIEFMTA0K
-PiBjb21tYW5kcw0KPiA+ICAgICAgICAgICAgdG8gdXNlIHRoZSBTUEkgNC00LTQgcHJvdG9jb2wu
-DQo+IA0KPiBJJ2xsIGFkbWl0IEknbSBhIGxpdHRsZSBmdXp6eSBvbiB0aGUgZGlmZmVyZW5jZXMg
-YmV0d2VlbiBkdWFsIGFuZCBxdWFkIG1vZGVzIG9uDQo+IHZhcmlvdXMgZmxhc2ggbWFudWZhY3R1
-cmVycy4gQ2FuIHlvdSBoZWxwIGNsZWFyIGl0IHVwIGZvciBtZT8NCg0KRm9yIE1pY3JvbiBTUEkg
-Tk9SIHNwaSBxdWFkIG1vZGUsIG1lYW5zIHRoYXQgUWF1ZCBJL08gcHJvdG90b2NvbCwgaXQgZm9s
-bG93cyBJL08NCkJ1cyB3aWR0aCBpcyBjb21tYW5kLWFkZHJlc3MtRGF0YSA0LTQtNCwgYXQgdGhp
-cyB0aW1lLCBEUTAsRFExLERRMixEUTMNCmFyZSBhbGwgdXNlZCB0byB0cmFuc2ZlciBhZGRyZXNz
-L2NvbW1hbmQvZGF0YS4gRm9yIHRoaXMgbWF5YmUgbm90IHRoZSBzYW1lIGJldHdlZW4NCmRpZmZl
-cmVudCBmbGFzaCBtYW51ZmFjdHVyZXMuIEZvciBleGFtcGxlLCBmb3IgU3BhbnNpb24gUXNwaSBO
-T1IsIGl0cyBhbGwgaW5zdHJ1Y3Rpb25zIGFyZQ0KdHJhbnNmZXJyZWQgZnJvbSBob3N0IHRvIG1l
-bW9yeSBhcyBhIHNpbmdsZSBiaXQgc2VyaWFsIHNlcXVlbmNlIG9uIHRoZSBEUTAgc2lnbmFsLCBl
-dmVuIHVuZGVyDQpRdWFkIG1vZGUuICBEdWFsIG1vZGUgdGhlIHNhbWUgYXMgUWF1ZCBtb2RlIHNj
-ZW5hcmlvLg0KDQpmb3IgU1BJIE5PUiAxLTEtNCwgbWVhbnMgY29tbWFuZCBhbmQgYWRkcmVzcyBh
-cmUgdHJhbnNmZXJyZWQgb24gdGhlIERRMCwNCmJ1dCBmb3IgZGF0YSwgYmVpbmcgdHJhbnNmZXJy
-ZWQgb24gRFEwLERRMSxEUTIsRFEzLkZvciB0aGlzLCBpdCBpcyB0aGUgc2FtZQ0KYmV0d2VlbiBk
-aWZmZXJlbnQgZmxhc2ggbWFudWZhY3R1cmVycy4gT2YgY291cnNlLCBhdCB0aGlzIG1vbWVudCwg
-U1BJIE5PUg0Kc2hvdWxkIHdvcmsgdW5kZXIgZXh0ZW5kZWQgSS9PIG1vZGUuDQoNCj4gSSB0aGlu
-ayBzb21lIG9mIHRoZSBjb21tZW50cyBvbiBwYXRjaCAyIGhlbHAgdG9vLCBidXQgSSdsbCBqdXN0
-IGNvbW1lbnQgaGVyZQ0KPiBmb3Igbm93Lg0KPiBJdCBsb29rcyBsaWtlIHRoZSBjdXJyZW50IGRy
-aXZlciBoYXMgcHJvYmxlbXMgcmVnYXJkaW5nIHRoZSBub24gMS14LXkgbW9kZXMNCj4gKGUuZy4s
-IDQtNC00KSwgcmlnaHQ/IEJ1dCBJIHNlZSB0aGF0IHNwaS1ub3IuYyBuZXZlciB0cmllcyB0byBz
-ZW5kIGEgNF80XzQNCj4gY29tbWFuZDsgaXQgb25seSBzZXRzIHJlYWRfb3Bjb2RlIHRvIFNQSU5P
-Ul9PUF9SRUFEXzFfMV97MSwyLDR9LiBTbyBpcw0KPiB0aGlzIGFuIG92ZXJzaWdodCBpbiBwYXRj
-aGVzIGxpa2UgQmVhbidzIHBhdGNoPw0KDQpGb3IgU1BJTk9SX09QX1JFQURfMV8xX3sxLDIsNH0g
-Y29tbWFuZHMsIFNwaSBOT1IgYWN0dWFsbHkgd29ya3MgdW5kZXINCkV4dGVuZGVkIEkvTyBtb2Rl
-LCBub3QgUXVhZCBtb2RlLiBUaGV5IGp1c3QgcHVzaCBTcGkgTk9SIG91dHB1dCBkYXRhIGJ5IFF1
-YWQgbW9kZSwNCkNvbW1hbmQgYW5kIGFkZHJlc3Mgc3RpbGwgZm9sbG93aW5nIGV4dGVuZGVkIEkv
-TyBtb2RlLg0KRm9yIDQtNC00IEkvTyBwcm90b2NvbCwgU1BJIE5PUiBzaG91bGQgY2hhbmdlIHRv
-IFF1YWQgbW9kZShqdXN0IGFzIG15IHBhdGNoKSwgDQpvZiBjb3Vyc2UsIFNQSSBjb250cm9sbGVy
-IHNob3VsZCBzdXBwb3J0IHRoaXMuIGZvciBNaWNyb24gUXNwaSBOT1IsIHVuZGVyIHF1YWQgbW9k
-ZSwNCmFsbCBjb21tYW5kcy9hZGRyZXNzL2RhdGEgYXJlIHRyYW5zZmVycmVkIG9uIERRMCxEUTEs
-RFEyLERRMyBzaWduYWxzLiBObyBtYXR0ZXIgd2hhdA0Ka2luZCBvZiBjb21tYW5kLiANCg0KDQo+
-ICAgICBjb21taXQgNTQ4Y2QzYWI1NGRhICgibXRkOiBzcGktbm9yOiBBZGQgcXVhZCBJL08gc3Vw
-cG9ydCBmb3IgTWljcm9uDQo+ICAgICBTUEkgTk9SIikNCj4gDQo+IFdoeSB3b3VsZCB3ZSBldmVu
-IG5lZWQgdG8gZW5hYmxlIHF1YWQgbW9kZXMgbGlrZSB0aGF0LCBpZiB3ZSdyZSBub3QgZ29pbmcN
-Cj4gdG8gc2VuZCB0aGUgNC00LTQgb3Bjb2Rlcz8NCkkgdGhpbmssIGluIG9yZGVyIHRvIGhpZ2gg
-c3BlZWQgU1BJIE5PUiwgYWZ0ZXIgZW5hYmxlIHF1YWQgbW9kZSwgDQpTUElOT1JfT1BfUkVBRF8x
-XzFfezEsMiw0fSBjb21tYW5kcyBkb24ndCBuZWVkIGFueSBtb3JlLCBub3JtYWwgcmVhZCBjb21t
-YW5kICgweDAzKQ0KQ2FuIGltcGxlbWVudCBhcyB0aGVtLg0KDQo+IE15IG5leHQgcXVlc3Rpb24g
-KGlmIG15IHVuZGVyc3RhbmRpbmcgaXMgcm91Z2hseSBjb3JyZWN0KSBpcywgZG8gd2UgbmVlZCB0
-aGUNCj4gNC00LTQgbW9kZXMsIGFuZCB3aGF0IHJpc2tzIGNvbWUgd2l0aCB0aGVtPyBJIHVuZGVy
-c3RhbmQgd2UgY2FuIHNob3J0ZW4NCj4gdGhlIGNvbW1hbmQgYW5kIGFkZHJlc3MgcGhhc2VzLCBi
-dXQgZG9lcyB0aGF0IGFsb25lIHlpZWxkIG11Y2gNCj4gcGVyZm9ybWFuY2UgYmVuZWZpdD8gQW5k
-IEkgdGhpbmsgdGhlIHJpc2sgaXMgdGhhdCBhIGdpdmVuIHN5c3RlbSBtaWdodCBub3QgYmUNCj4g
-cHJlcGFyZWQgZm9yIHRoZSBmbGFzaCB0byBiZSBpbiBhIDQtNC00IG1vZGUsIGlmIHRoZSBib290
-IGNvZGUgdHJpZXMgdG8gdXNlIDEteC15DQo+IGNvbW1hbmRzLg0KDQpBcyBmYXIgYXMgbXkgY3Vy
-cmVudCBleHBlcmllbmNlIGFuZCBrbm93bGVkZ2UsIHRoaXMgc3RpbGwgbmVlZCB0byBiZSBlbmFi
-bGVkLCBlc3BlY2lhbGx5IGZvcg0KZmFzdCBib290LCBhbmQgc29tZSBJT1QgZGV2aWNlcyB0byBz
-dG9yZSBpbmZvIGludG8gU1BJIE5PUi4NCkZvciB0aGlzIHBhdGNoZXMsIG15IGN1cnJlbnQgY29u
-Y2VybiBpcyB0aGF0IGhvc3Qgc2lkZSBob3cgdG8gZ2V0IGRpZmZlcmVudCBJL08gcHJvdG9jb2wg
-Y2hhbmdlcywNCmFuZCBkaXN0aW5ndWlzaCBiZXR3ZWVuIGRpZmZlcmVudCBmbGFzaCBtYW51ZmFj
-dHVyZXJzIEkvTyBtb2RlLg0KDQo+IEFsc28sIEkgc2VlIGEgbG90IG9mIGdvb2QgY29tbWVudHMg
-aW4gcGF0Y2ggMiBhYm91dCBTcGFuc2lvbiB2cy4NCj4gTWFjcm9uaXggdnMuIE1pY3JvbiBtZW1v
-cmllcy4gSSB3b25kZXIgaWYgcHJldmlvdXMgZGV2ZWxvcGVycyBoYXZlDQo+IGNvbXBsZXRlbHkg
-dGVzdGVkIHRoZWlyIHBhdGNoZXMsIG9yIGlmIHRoZXkncmUganVzdCByZWFkaW5nIHRoZSBkYXRh
-c2hlZXRzLi4uIHNvLA0KPiB3aGF0IGtpbmQgaGF2ZSB0ZXN0aW5nIGhhdmUgeW91IGRvbmU/IERv
-IHlvdSBoYXZlIHNhbXBsZXMgb2YgYWxsIHRoZXNlIGZsYXNoDQo+IHRvIHRlc3Q/DQo+IFJlZ2Fy
-ZHMsDQo+IEJyaWFuDQo=
+On Mon, 2015-12-07 at 23:25 +0100, Boris Brezillon wrote:
+> ecclayout->oobavail is just redundant with the mtd->oobavail field.
+> Moreover, it prevents static const definition of ecc layouts since
+> the
+> NAND framework is calculating this value based on the ecclayout-
+> >oobfree
+> field.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/devices/docg3.c                   |  5 ++-
+>  drivers/mtd/mtdswap.c                         | 16 ++++-----
+>  drivers/mtd/nand/brcmnand/brcmnand.c          |  3 --
+>  drivers/mtd/nand/docg4.c                      |  1 -
+>  drivers/mtd/nand/hisi504_nand.c               |  1 -
+>  drivers/mtd/nand/nand_base.c                  | 12 +++----
+>  drivers/mtd/onenand/onenand_base.c            | 16 ++++-----
+>  drivers/mtd/tests/oobtest.c                   | 49 +++++++++++++--
+> ------------
+>  drivers/staging/mt29f_spinand/mt29f_spinand.c |  1 -
+>  fs/jffs2/wbuf.c                               |  6 ++--
+>  include/linux/mtd/mtd.h                       |  1 -
+>  11 files changed, 48 insertions(+), 63 deletions(-)
+> 
+[..]
+>  
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c
+> b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index 35d78f7..a906ec2 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -845,9 +845,6 @@ static struct nand_ecclayout *brcmnand_create_layout(int ecc_level,
+>  			break;
+>  	}
+>  out:
+> -	/* Sum available OOB */
+> -	for (i = 0; i < MTD_MAX_OOBFREE_ENTRIES_LARGE; i++)
+> -		layout->oobavail += layout->oobfree[i].length;
+>  	return layout;
+>  }
+
+You can get rid of the 'out' label and replace the single goto in this
+function with 'return layout'.
+
+[...]
+>  
+> diff --git a/drivers/mtd/nand/nand_base.c
+> b/drivers/mtd/nand/nand_base.c
+> index 0748a13..1107f5c1 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2037,7 +2037,7 @@ static int nand_do_read_oob(struct mtd_info
+> *mtd, loff_t from,
+>  	stats = mtd->ecc_stats;
+>  
+>  	if (ops->mode == MTD_OPS_AUTO_OOB)
+> -		len = chip->ecc.layout->oobavail;
+> +		len = mtd->oobavail;
+>  	else
+>  		len = mtd->oobsize;
+>  
+> @@ -2728,7 +2728,7 @@ static int nand_do_write_oob(struct mtd_info
+> *mtd, loff_t to,
+>  			 __func__, (unsigned int)to, (int)ops-
+> >ooblen);
+>  
+>  	if (ops->mode == MTD_OPS_AUTO_OOB)
+> -		len = chip->ecc.layout->oobavail;
+> +		len = mtd->oobavail;
+>  	else
+>  		len = mtd->oobsize;
+>  
+[...]
+> diff --git a/drivers/mtd/onenand/onenand_base.c
+> b/drivers/mtd/onenand/onenand_base.c
+> index 43b3392..d70bbfd 100644
+> --- a/drivers/mtd/onenand/onenand_base.c
+> +++ b/drivers/mtd/onenand/onenand_base.c
+> @@ -1125,7 +1125,7 @@ static int onenand_mlc_read_ops_nolock(struct
+> mtd_info *mtd, loff_t from,
+>  			(int)len);
+>  
+>  	if (ops->mode == MTD_OPS_AUTO_OOB)
+> -		oobsize = this->ecclayout->oobavail;
+> +		oobsize = mtd->oobavail;
+>  	else
+>  		oobsize = mtd->oobsize;
+>  
+> @@ -1230,7 +1230,7 @@ static int onenand_read_ops_nolock(struct
+> mtd_info *mtd, loff_t from,
+>  			(int)len);
+>  
+>  	if (ops->mode == MTD_OPS_AUTO_OOB)
+> -		oobsize = this->ecclayout->oobavail;
+> +		oobsize = mtd->oobavail;
+>  	else
+>  		oobsize = mtd->oobsize;
+>  
+> @@ -1365,7 +1365,7 @@ static int onenand_read_oob_nolock(struct
+> mtd_info *mtd, loff_t from,
+>  	ops->oobretlen = 0;
+>  
+>  	if (mode == MTD_OPS_AUTO_OOB)
+> -		oobsize = this->ecclayout->oobavail;
+> +		oobsize = mtd->oobavail;
+>  	else
+>  		oobsize = mtd->oobsize;
+>  
+> @@ -1887,7 +1887,7 @@ static int onenand_write_ops_nolock(struct
+> mtd_info *mtd, loff_t to,
+>  		return 0;
+>  
+>  	if (ops->mode == MTD_OPS_AUTO_OOB)
+> -		oobsize = this->ecclayout->oobavail;
+> +		oobsize = mtd->oobavail;
+>  	else
+>  		oobsize = mtd->oobsize;
+>  
+> @@ -2063,7 +2063,7 @@ static int onenand_write_oob_nolock(struct
+> mtd_info *mtd, loff_t to,
+>  	ops->oobretlen = 0;
+>  
+>  	if (mode == MTD_OPS_AUTO_OOB)
+> -		oobsize = this->ecclayout->oobavail;
+> +		oobsize = mtd->oobavail;
+>  	else
+>  		oobsize = mtd->oobsize;
+
+This identical construction seems to occur multiple times in multiple
+files. Would it make sense to create a macro for it?
+
+
+Päikest,
+Priit Laes :)
