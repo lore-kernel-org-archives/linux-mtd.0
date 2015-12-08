@@ -1,23 +1,23 @@
-Received: from mail-pf0-x233.google.com ([2607:f8b0:400e:c00::233])
+Received: from mail-pf0-x22a.google.com ([2607:f8b0:400e:c00::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a68we-0004aH-9G
- for linux-mtd@lists.infradead.org; Tue, 08 Dec 2015 03:28:04 +0000
-Received: by pfdd184 with SMTP id d184so4540832pfd.3
- for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 19:27:43 -0800 (PST)
-Date: Mon, 7 Dec 2015 19:27:40 -0800
+ id 1a68yo-000557-Hq
+ for linux-mtd@lists.infradead.org; Tue, 08 Dec 2015 03:30:19 +0000
+Received: by pfu207 with SMTP id 207so4608332pfu.2
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Dec 2015 19:29:57 -0800 (PST)
+Date: Mon, 7 Dec 2015 19:29:55 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>
-Cc: linux-mtd@lists.infradead.org, linux-cris-kernel@axis.com
-Subject: Re: [PATCH v2 03/25] cris: nand: make use of mtd_to_nand() where
+ Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mtd@lists.infradead.org, linux-mips@linux-mips.org
+Subject: Re: [PATCH v2 04/25] mips: nand: make use of mtd_to_nand() where
  appropriate
-Message-ID: <20151208032740.GR120110@google.com>
+Message-ID: <20151208032955.GS120110@google.com>
 References: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
- <1448967802-25796-4-git-send-email-boris.brezillon@free-electrons.com>
+ <1448967802-25796-5-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1448967802-25796-4-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1448967802-25796-5-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +27,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Reducing CC)
+(Trim CC list)
 
-Hi Mikael and Jesper,
+Hi Ralf,
 
-On Tue, Dec 01, 2015 at 12:03:00PM +0100, Boris Brezillon wrote:
+On Tue, Dec 01, 2015 at 12:03:01PM +0100, Boris Brezillon wrote:
 > mtd_to_nand() was recently introduced to avoid direct accesses to the
-> mtd->priv field. Update all CRIS specific implementations to use this
+> mtd->priv field. Update all MIPS specific implementations to use this
 > helper.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
->  arch/cris/arch-v32/drivers/mach-a3/nandflash.c | 2 +-
->  arch/cris/arch-v32/drivers/mach-fs/nandflash.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  arch/mips/alchemy/devboards/db1200.c | 2 +-
+>  arch/mips/alchemy/devboards/db1300.c | 2 +-
+>  arch/mips/alchemy/devboards/db1550.c | 2 +-
+>  arch/mips/pnx833x/common/platform.c  | 2 +-
+>  arch/mips/rb532/devices.c            | 2 +-
+>  5 files changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-> index 7fb5212..db953cf 100644
-> --- a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-> +++ b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-> @@ -52,7 +52,7 @@ static void crisv32_hwcontrol(struct mtd_info *mtd, int cmd,
+> diff --git a/arch/mips/alchemy/devboards/db1200.c b/arch/mips/alchemy/devboards/db1200.c
+> index 8c13675..992442a 100644
+> --- a/arch/mips/alchemy/devboards/db1200.c
+> +++ b/arch/mips/alchemy/devboards/db1200.c
+> @@ -200,7 +200,7 @@ static struct i2c_board_info db1200_i2c_devs[] __initdata = {
+>  static void au1200_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
+>  				 unsigned int ctrl)
 >  {
->  	unsigned long flags;
->  	reg_pio_rw_dout dout;
 > -	struct nand_chip *this = mtd->priv;
 > +	struct nand_chip *this = mtd_to_nand(mtd);
+>  	unsigned long ioaddr = (unsigned long)this->IO_ADDR_W;
 >  
->  	local_irq_save(flags);
->  
-> diff --git a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-> index e032384..22a6467 100644
-> --- a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-> +++ b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-> @@ -51,7 +51,7 @@ static void crisv32_hwcontrol(struct mtd_info *mtd, int cmd,
+>  	ioaddr &= 0xffffff00;
+> diff --git a/arch/mips/alchemy/devboards/db1300.c b/arch/mips/alchemy/devboards/db1300.c
+> index b580770..d3c087f 100644
+> --- a/arch/mips/alchemy/devboards/db1300.c
+> +++ b/arch/mips/alchemy/devboards/db1300.c
+> @@ -150,7 +150,7 @@ static void __init db1300_gpio_config(void)
+>  static void au1300_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
+>  				 unsigned int ctrl)
 >  {
->  	unsigned long flags;
->  	reg_gio_rw_pa_dout dout;
 > -	struct nand_chip *this = mtd->priv;
 > +	struct nand_chip *this = mtd_to_nand(mtd);
+>  	unsigned long ioaddr = (unsigned long)this->IO_ADDR_W;
 >  
->  	local_irq_save(flags);
+>  	ioaddr &= 0xffffff00;
+> diff --git a/arch/mips/alchemy/devboards/db1550.c b/arch/mips/alchemy/devboards/db1550.c
+> index 5740bcf..b518f02 100644
+> --- a/arch/mips/alchemy/devboards/db1550.c
+> +++ b/arch/mips/alchemy/devboards/db1550.c
+> @@ -128,7 +128,7 @@ static struct i2c_board_info db1550_i2c_devs[] __initdata = {
+>  static void au1550_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
+>  				 unsigned int ctrl)
+>  {
+> -	struct nand_chip *this = mtd->priv;
+> +	struct nand_chip *this = mtd_to_nand(mtd);
+>  	unsigned long ioaddr = (unsigned long)this->IO_ADDR_W;
 >  
+>  	ioaddr &= 0xffffff00;
+> diff --git a/arch/mips/pnx833x/common/platform.c b/arch/mips/pnx833x/common/platform.c
+> index b4b774b..3cd3577 100644
+> --- a/arch/mips/pnx833x/common/platform.c
+> +++ b/arch/mips/pnx833x/common/platform.c
+> @@ -180,7 +180,7 @@ static struct platform_device pnx833x_sata_device = {
+>  static void
+>  pnx833x_flash_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>  {
+> -	struct nand_chip *this = mtd->priv;
+> +	struct nand_chip *this = mtd_to_nand(mtd);
+>  	unsigned long nandaddr = (unsigned long)this->IO_ADDR_W;
+>  
+>  	if (cmd == NAND_CMD_NONE)
+> diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
+> index 9bd7a2d..0966adc 100644
+> --- a/arch/mips/rb532/devices.c
+> +++ b/arch/mips/rb532/devices.c
+> @@ -148,7 +148,7 @@ static int rb532_dev_ready(struct mtd_info *mtd)
+>  
+>  static void rb532_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>  {
+> -	struct nand_chip *chip = mtd->priv;
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+>  	unsigned char orbits, nandbits;
+>  
+>  	if (ctrl & NAND_CTRL_CHANGE) {
 
 Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-This patch and patch 18 touch arch/cris/ marginally. It's a little
-complicated to give you all the dependencies for the later stuff without
-bringing in a bunch of MTD stuff. I plan to take them both to MTD
-directly. An ack would be nice.
+Do you want me to queue a pull request with this patch + 1 dependent
+change for you? I'm perfectly fine just taking this directly too.
 
 Regards,
 Brian
