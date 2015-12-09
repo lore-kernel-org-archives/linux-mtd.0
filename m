@@ -1,22 +1,24 @@
-Subject: Re: [PATCH] arm64: dts: mt8173: Add nor flash node
-To: Daniel Kurtz <djkurtz@chromium.org>, bayi cheng <bayi.cheng@mediatek.com>
-References: <1449460394-31601-1-git-send-email-bayi.cheng@mediatek.com>
- <CAGS+omCuB3VGcPk3fezakdVDnFB3GAmMD+wZ_6nGdv+uHoB40g@mail.gmail.com>
- <1449462852.9118.25.camel@mhfsdcap03> <1449463619.9118.31.camel@mhfsdcap03>
- <CAGS+omBycHuNaMy5vuEf0ZSRTniCS50qEdAY0=L1_1Wno4EBTQ@mail.gmail.com>
-Cc: "open list:OPEN FIRMWARE AND..." <devicetree@vger.kernel.org>,
- srv_heupstream <srv_heupstream@mediatek.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org,
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a6dSF-0003Zq-96
+ for linux-mtd@lists.infradead.org; Wed, 09 Dec 2015 12:02:43 +0000
+Received: by pacdm15 with SMTP id dm15so29053810pac.3
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2015 04:02:22 -0800 (PST)
+Date: Wed, 9 Dec 2015 17:32:17 +0530
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <5668024C.7020509@gmail.com>
-Date: Wed, 9 Dec 2015 11:28:28 +0100
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] UBI: fix return error code
+Message-ID: <20151209120217.GE24852@sudip-pc>
+References: <1448014460-1371-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <564EF353.2050806@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <CAGS+omBycHuNaMy5vuEf0ZSRTniCS50qEdAY0=L1_1Wno4EBTQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <564EF353.2050806@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Nov 20, 2015 at 11:17:55AM +0100, Richard Weinberger wrote:
+> Am 20.11.2015 um 11:14 schrieb Sudip Mukherjee:
+> > We are checking dfs_rootdir for error value or NULL. But in the
+> > conditional ternary operator we returned -ENODEV if dfs_rootdir contains
+> > an error value and returned PTR_ERR(dfs_rootdir) if dfs_rootdir is NULL.
+> > So in the case of dfs_rootdir being NULL we actually assigned 0 to err
+> > and returned it to the caller implying a success.
+> > Lets return -ENODEV when dfs_rootdir is NULL else return
+> > PTR_ERR(dfs_rootdir).
+> > 
+> > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+> > ---
+> >  drivers/mtd/ubi/debug.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+> > index b077e43..c4cb15a 100644
+> > --- a/drivers/mtd/ubi/debug.c
+> > +++ b/drivers/mtd/ubi/debug.c
+> > @@ -236,7 +236,7 @@ int ubi_debugfs_init(void)
+> >  
+> >  	dfs_rootdir = debugfs_create_dir("ubi", NULL);
+> >  	if (IS_ERR_OR_NULL(dfs_rootdir)) {
+> > -		int err = dfs_rootdir ? -ENODEV : PTR_ERR(dfs_rootdir);
+> > +		int err = dfs_rootdir ? PTR_ERR(dfs_rootdir) : -ENODEV;
+> >  
+> 
+> Nice catch!
 
+Hi Richard,
+It is still not on linus-next. Did you miss it?
 
-On 07/12/15 09:19, Daniel Kurtz wrote:
-> Bayi,
->
-> On Mon, Dec 7, 2015 at 12:46 PM, bayi cheng <bayi.cheng@mediatek.com> wrote:
->> On Mon, 2015-12-07 at 12:34 +0800, bayi cheng wrote:
->>> On Mon, 2015-12-07 at 12:09 +0800, Daniel Kurtz wrote:
->>>> Bayi,
->>>>
->>>> On Mon, Dec 7, 2015 at 11:53 AM, Bayi Cheng <bayi.cheng@mediatek.com> wrote:
->>>>> Add Mediatek nor flash node
->>>>>
->>>>> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
->>>>> Acked-by: Brian Norris <computersforpeace@gmail.com>
->>>>> ---
->>>>> Previous version of this patch is
->>>>> http://lists.infradead.org/pipermail/linux-arm-kernel/2015-November/386005.html
->>>>> Drop flash node from mt8173.dtsi accroding review comment
->>>>
->>>> Is there a flash on mt8173-evb that can be accessed by the nor_flash ?
->>>> If so, can you include flash@0 node in the mt8173-evb.dts.
->>>>
->>>> -Dan
->>>>
->>> Hi Daniel, Thanks for your comments! you are right, there is a flash on
->>> mt8173-evb which can be accessed by the nor_flash, and I will include
->>> flash@0 node in mt8173-evb.dts (kernel v3.18) too.
->>>
->>> Bayi
->>
->> Hi Dan, I have reworked a EVB board for spi nor verify, we replaced the
->> spi nand flash with spi nor flash on EVB board,
->> and our shipping EVB board haven't support spi nor flash, So I will not
->> include flash@0 node in the mt8173-evb.dts. I am sorry to made you
->> confused!
->
-> Thanks for confirming.
->
-> Reviewed-by: Daniel Kurtz <djkurtz@chromium. org>
->
-
-Added to v4.5-next/dts
-Thanks a lot.
+regards
+sudip
