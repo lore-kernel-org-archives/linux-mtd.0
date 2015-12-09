@@ -1,30 +1,23 @@
-Received: from mail-oi0-x22e.google.com ([2607:f8b0:4003:c06::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6lvL-000463-9A
- for linux-mtd@lists.infradead.org; Wed, 09 Dec 2015 21:05:20 +0000
-Received: by oiww189 with SMTP id w189so33805635oiw.3
- for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2015 13:04:58 -0800 (PST)
-Subject: Re: [PATCH linux-next (v2) 3/3] mtd: brcmnand: Add support for the
- BCM6368
-To: Simon Arlott <simon@fire.lp0.eu>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-References: <566891DA.1050208@simon.arlott.org.uk>
- <5668928A.50601@simon.arlott.org.uk>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, bcm-kernel-feedback-list@broadcom.com,
- Kamal Dasu <kdasu.kdev@gmail.com>, Jonas Gorski <jogo@openwrt.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <56689776.20107@gmail.com>
-Date: Wed, 9 Dec 2015 13:04:54 -0800
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a6ma4-0006m8-I8
+ for linux-mtd@lists.infradead.org; Wed, 09 Dec 2015 21:47:25 +0000
+Date: Wed, 9 Dec 2015 22:46:50 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
+ Simon Arlott <simon@fire.lp0.eu>
+Subject: Re: [PATCH v3 6/6] mtd: partitions: support a cleanup callback for
+ parsers
+Message-ID: <20151209224650.47d644d8@bbrezillon>
+In-Reply-To: <20151209182403.GW120110@google.com>
+References: <1449271518-118900-1-git-send-email-computersforpeace@gmail.com>
+ <1449271518-118900-7-git-send-email-computersforpeace@gmail.com>
+ <20151209182403.GW120110@google.com>
 MIME-Version: 1.0
-In-Reply-To: <5668928A.50601@simon.arlott.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,193 +27,160 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 09/12/2015 12:43, Simon Arlott a écrit :
-> The BCM6368 has a NAND interrupt register with combined status and enable
-> registers.
-> 
-> As the BCM6328, BCM6362 and BCM6368 all use v2.1 controllers, the first
-> variant that will work with this driver is the BCM63268 using a v4.0
-> controller.
-> 
-> Set up the device by disabling and acking all interrupts, then handle
-> the CTRL_READY interrupt.
-> 
-> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+On Wed, 9 Dec 2015 10:24:03 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> If partition parsers need to clean up their resources, we shouldn't
+> assume that all memory will fit in a single kmalloc() that the caller
+> can kfree(). We should allow the parser to provide a proper cleanup
+> routine.
+> 
+> Note that this means we need to keep a hold on the parser's module for a
+> bit longer, and release it later with mtd_part_parser_put().
+> 
+> Alongside this, define a default callback that we'll automatically use
+> if the parser doesn't provide one, so we can still retain the old
+> behavior.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
 > ---
-> Changed "nand-intr-base" reg name to "nand-int-base".
+> v3:
+>  * drop redundant 'if (parsed.parser)' condition before cleanup
 > 
->  drivers/mtd/nand/brcmnand/Makefile       |   1 +
->  drivers/mtd/nand/brcmnand/bcm6368_nand.c | 145 +++++++++++++++++++++++++++++++
->  2 files changed, 146 insertions(+)
->  create mode 100644 drivers/mtd/nand/brcmnand/bcm6368_nand.c
+> v2:
+>  * put more common logic in mtd_part_parser_cleanup()
+>  * provide default cleanup routine (i.e., kfree()) for parsers
 > 
-> diff --git a/drivers/mtd/nand/brcmnand/Makefile b/drivers/mtd/nand/brcmnand/Makefile
-> index 3b1fbfd..b28ffb59 100644
-> --- a/drivers/mtd/nand/brcmnand/Makefile
-> +++ b/drivers/mtd/nand/brcmnand/Makefile
-> @@ -2,5 +2,6 @@
->  # more specific iproc_nand.o, for instance
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
-> +obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm6368_nand.o
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
-> diff --git a/drivers/mtd/nand/brcmnand/bcm6368_nand.c b/drivers/mtd/nand/brcmnand/bcm6368_nand.c
-> new file mode 100644
-> index 0000000..7f5359b
-> --- /dev/null
-> +++ b/drivers/mtd/nand/brcmnand/bcm6368_nand.c
-> @@ -0,0 +1,145 @@
+>  drivers/mtd/mtdcore.c          |  3 +--
+>  drivers/mtd/mtdcore.h          |  2 ++
+>  drivers/mtd/mtdpart.c          | 35 +++++++++++++++++++++++++++++++++--
+>  include/linux/mtd/partitions.h |  1 +
+>  4 files changed, 37 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 20b2b38247b6..89d811e7b04a 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -630,8 +630,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+>  
+>  out:
+>  	/* Cleanup any parsed partitions */
+> -	if (parsed.parser)
+> -		kfree(parsed.parts);
+> +	mtd_part_parser_cleanup(&parsed);
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(mtd_device_parse_register);
+> diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
+> index ce81cc2002f4..55fdb8e1fd2a 100644
+> --- a/drivers/mtd/mtdcore.h
+> +++ b/drivers/mtd/mtdcore.h
+> @@ -17,6 +17,8 @@ int parse_mtd_partitions(struct mtd_info *master, const char * const *types,
+>  			 struct mtd_partitions *pparts,
+>  			 struct mtd_part_parser_data *data);
+>  
+> +void mtd_part_parser_cleanup(struct mtd_partitions *parts);
+> +
+>  int __init init_mtdchar(void);
+>  void __exit cleanup_mtdchar(void);
+>  
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 53517d7653cb..10bf304027dd 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -709,10 +709,23 @@ static inline void mtd_part_parser_put(const struct mtd_part_parser *p)
+>  	module_put(p->owner);
+>  }
+>  
 > +/*
-> + * Copyright 2015 Simon Arlott
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-> + * GNU General Public License for more details.
-> + *
-> + * Derived from bcm63138_nand.c:
-> + * Copyright © 2015 Broadcom Corporation
-> + *
-> + * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/include/bcm963xx/63268_map_part.h:
-> + * Copyright 2000-2010 Broadcom Corporation
-> + *
-> + * Derived from bcm963xx_4.12L.06B_consumer/shared/opensource/flash/nandflash.c:
-> + * Copyright 2000-2010 Broadcom Corporation
+> + * Many partition parsers just expected the core to kfree() all their data in
+> + * one chunk. Do that by default.
 > + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include <linux/ioport.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +
-> +#include "brcmnand.h"
-> +
-> +struct bcm6368_nand_soc {
-> +	struct brcmnand_soc soc;
-> +	void __iomem *base;
-> +};
-> +
-> +#define BCM6368_NAND_INT		0x00
-> +#define  BCM6368_NAND_STATUS_SHIFT	0
-> +#define  BCM6368_NAND_STATUS_MASK	(0xfff << BCM6368_NAND_STATUS_SHIFT)
-> +#define  BCM6368_NAND_ENABLE_SHIFT	16
-> +#define  BCM6368_NAND_ENABLE_MASK	(0xffff << BCM6368_NAND_ENABLE_SHIFT)
-> +#define BCM6368_NAND_BASE_ADDR0	0x04
-> +#define BCM6368_NAND_BASE_ADDR1	0x0c
-> +
-> +enum {
-> +	BCM6368_NP_READ		= BIT(0),
-> +	BCM6368_BLOCK_ERASE	= BIT(1),
-> +	BCM6368_COPY_BACK	= BIT(2),
-> +	BCM6368_PAGE_PGM	= BIT(3),
-> +	BCM6368_CTRL_READY	= BIT(4),
-> +	BCM6368_DEV_RBPIN	= BIT(5),
-> +	BCM6368_ECC_ERR_UNC	= BIT(6),
-> +	BCM6368_ECC_ERR_CORR	= BIT(7),
-> +};
-> +
-> +static bool bcm6368_nand_intc_ack(struct brcmnand_soc *soc)
+> +static void mtd_part_parser_cleanup_default(const struct mtd_partition *pparts,
+> +					    int nr_parts)
 > +{
-> +	struct bcm6368_nand_soc *priv =
-> +			container_of(soc, struct bcm6368_nand_soc, soc);
-> +	void __iomem *mmio = priv->base + BCM6368_NAND_INT;
-> +	u32 val = brcmnand_readl(mmio);
+> +	kfree(pparts);
+> +}
 > +
-> +	if (val & (BCM6368_CTRL_READY << BCM6368_NAND_STATUS_SHIFT)) {
-> +		/* Ack interrupt */
-> +		val &= ~BCM6368_NAND_STATUS_MASK;
-> +		val |= BCM6368_CTRL_READY << BCM6368_NAND_STATUS_SHIFT;
-> +		brcmnand_writel(val, mmio);
-> +		return true;
+>  int __register_mtd_parser(struct mtd_part_parser *p, struct module *owner)
+>  {
+>  	p->owner = owner;
+>  
+> +	if (!p->cleanup)
+> +		p->cleanup = &mtd_part_parser_cleanup_default;
+> +
+>  	spin_lock(&part_parser_lock);
+>  	list_add(&p->list, &part_parsers);
+>  	spin_unlock(&part_parser_lock);
+> @@ -756,7 +769,9 @@ static const char * const default_mtd_part_types[] = {
+>   * This function may return:
+>   * o a negative error code in case of failure
+>   * o zero otherwise, and @pparts will describe the partitions, number of
+> - *   partitions, and the parser which parsed them
+> + *   partitions, and the parser which parsed them. Caller must release
+> + *   resources with mtd_part_parser_cleanup() when finished with the returned
+> + *   data.
+>   */
+>  int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+>  			 struct mtd_partitions *pparts,
+> @@ -780,7 +795,6 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+>  		ret = (*parser->parse_fn)(master, &pparts->parts, data);
+>  		pr_debug("%s: parser %s: %i\n",
+>  			 master->name, parser->name, ret);
+> -		mtd_part_parser_put(parser);
+>  		if (ret > 0) {
+>  			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
+>  			       ret, parser->name, master->name);
+> @@ -788,6 +802,7 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+>  			pparts->parser = parser;
+>  			return 0;
+>  		}
+> +		mtd_part_parser_put(parser);
+>  		/*
+>  		 * Stash the first error we see; only report it if no parser
+>  		 * succeeds
+> @@ -798,6 +813,22 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+>  	return err;
+>  }
+>  
+> +void mtd_part_parser_cleanup(struct mtd_partitions *parts)
+> +{
+> +	const struct mtd_part_parser *parser;
+> +
+> +	if (!parts)
+> +		return;
+> +
+> +	parser = parts->parser;
+> +	if (parser) {
+> +		if (parser->cleanup)
+> +			parser->cleanup(parts->parts, parts->nr_parts);
+> +
+> +		mtd_part_parser_put(parser);
 > +	}
-> +
-> +	return false;
 > +}
 > +
-> +static void bcm6368_nand_intc_set(struct brcmnand_soc *soc, bool en)
-> +{
-> +	struct bcm6368_nand_soc *priv =
-> +			container_of(soc, struct bcm6368_nand_soc, soc);
-> +	void __iomem *mmio = priv->base + BCM6368_NAND_INT;
-> +	u32 val = brcmnand_readl(mmio);
-> +
-> +	/* Don't ack any interrupts */
-> +	val &= ~BCM6368_NAND_STATUS_MASK;
-> +
-> +	if (en)
-> +		val |= BCM6368_CTRL_READY << BCM6368_NAND_ENABLE_SHIFT;
-> +	else
-> +		val &= ~(BCM6368_CTRL_READY << BCM6368_NAND_ENABLE_SHIFT);
-> +
-> +	brcmnand_writel(val, mmio);
-> +}
-> +
-> +static int bcm6368_nand_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct bcm6368_nand_soc *priv;
-> +	struct brcmnand_soc *soc;
-> +	struct resource *res;
-> +
-> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +	soc = &priv->soc;
-> +
-> +	res = platform_get_resource_byname(pdev,
-> +		IORESOURCE_MEM, "nand-int-base");
-> +	if (!res)
-> +		return -EINVAL;
-> +
-> +	priv->base = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(priv->base))
-> +		return PTR_ERR(priv->base);
-> +
-> +	soc->ctlrdy_ack = bcm6368_nand_intc_ack;
-> +	soc->ctlrdy_set_enabled = bcm6368_nand_intc_set;
-> +
-> +	/* Disable and ack all interrupts  */
-> +	brcmnand_writel(0, priv->base + BCM6368_NAND_INT);
-> +	brcmnand_writel(BCM6368_NAND_STATUS_MASK,
-> +			priv->base + BCM6368_NAND_INT);
-> +
-> +	return brcmnand_probe(pdev, soc);
-> +}
-> +
-> +static const struct of_device_id bcm6368_nand_of_match[] = {
-> +	{ .compatible = "brcm,nand-bcm6368" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, bcm6368_nand_of_match);
-> +
-> +static struct platform_driver bcm6368_nand_driver = {
-> +	.probe			= bcm6368_nand_probe,
-> +	.remove			= brcmnand_remove,
-> +	.driver = {
-> +		.name		= "bcm6368_nand",
-> +		.pm		= &brcmnand_pm_ops,
-> +		.of_match_table	= bcm6368_nand_of_match,
-> +	}
-> +};
-> +module_platform_driver(bcm6368_nand_driver);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Simon Arlott");
-> +MODULE_DESCRIPTION("NAND driver for BCM6368");
-> 
+>  int mtd_is_partition(const struct mtd_info *mtd)
+>  {
+>  	struct mtd_part *part;
+> diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+> index cceaf7bd1537..70736e1e6c8f 100644
+> --- a/include/linux/mtd/partitions.h
+> +++ b/include/linux/mtd/partitions.h
+> @@ -71,6 +71,7 @@ struct mtd_part_parser {
+>  	const char *name;
+>  	int (*parse_fn)(struct mtd_info *, const struct mtd_partition **,
+>  			struct mtd_part_parser_data *);
+> +	void (*cleanup)(const struct mtd_partition *pparts, int nr_parts);
+>  };
+>  
+>  /* Container for passing around a set of parsed partitions */
+
 
 
 -- 
-Florian
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
