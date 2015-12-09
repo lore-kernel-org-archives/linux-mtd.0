@@ -1,43 +1,21 @@
-Date: Tue, 8 Dec 2015 16:36:24 -0800
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a6TCN-0003pT-Ap
+ for linux-mtd@lists.infradead.org; Wed, 09 Dec 2015 01:05:40 +0000
+Received: by pabur14 with SMTP id ur14so20559885pab.0
+ for <linux-mtd@lists.infradead.org>; Tue, 08 Dec 2015 17:05:18 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Ryan Mallon <rmallon@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <kernel@pengutronix.de>,
- Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
- Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- Alexander Clouter <alex@digriz.org.uk>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Gregory CLEMENT <gregory.clement@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Marek Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>,
- adi-buildroot-devel@lists.sourceforge.net,
- Mikael Starvik <starvik@axis.com>,
- Jesper Nilsson <jesper.nilsson@axis.com>,
- linux-cris-kernel@axis.com, Josh Wu <josh.wu@atmel.com>,
- Wan ZongShun <mcuos.com@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Stefan Agner <stefan@agner.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
-Subject: Re: [PATCH v2 00/25] mtd: nand: refactor the NAND subsystem (part 1)
-Message-ID: <20151209003624.GU120110@google.com>
-References: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ linux-wireless@vger.kernel.org
+Subject: [PATCH] mtd: bcm47xxnflash: really unregister NAND on device removal
+Date: Tue,  8 Dec 2015 17:04:59 -0800
+Message-Id: <1449623099-21634-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1448967802-25796-1-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,185 +25,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+The field bcma_nflash::mtd is never set to be non-zero anywhere, but we
+test for it in the removal path. So the MTD is never unregistered.
 
-On Tue, Dec 01, 2015 at 12:02:57PM +0100, Boris Brezillon wrote:
-> Hello,
-> 
-> This huge series aims at clarifying the relationship between the mtd and
-> nand_chip structures and hiding NAND framework internals to NAND
-> controller drivers.
-> 
-> The first part of the series provide an mtd_to_nand() helper to hide the
-> way mtd and nand_chip are linked together.
-> 
-> The second part of the series embeds the mtd structure into the nand_chip
-> one so that NAND controller drivers don't have to bother allocating the
-> MTD device and linking it with the NAND chip.
-> 
-> The last part of the series hides accesses to the chip->priv field behind
-> two helper functions.
-> 
-> This allows removal of some of the boilerplate code done in all NAND
-> controller drivers, but most importantly, it unifies a bit the way NAND
-> chip structures are instantiated (even though we still have two different
-> kinds of drivers: those embedding the nand_chip struct into their private
-> nand chip representation, and those allocating two different structures
-> and linking them together with the chip->priv field).
-> 
-> As said in the title, this refactoring is only the first step. I plan to
-> rework the NAND controller / NAND chip separation for pretty much the same
-> reasons: clarifying the separation between the two concepts, and getting
-> rid of more boilerplate code in NAND controller drivers.
-> 
-> Stay tuned ;-).
-> 
-> Best Regards,
-> 
-> Boris
-> 
-> Changes since v1:
-> - dropped already applied patches
-> - fixed some typos
-> - manually fixed some modifications omitted by the coccinelle scripts
-> - manually reworked modifactions done by coccinelle scripts to improve
->   readability and fix coding style issues
-> 
-> Boris Brezillon (25):
->   ARM: nand: make use of mtd_to_nand() where appropriate
+Also, we should use nand_release(), not mtd_device_unregister().
 
-I've sent this (+ the introduction of mtd_to_nand()) in a pull request
-to arm-soc, as well as to l2-mtd.git.
+Finally, we don't need to use the 'platdata' for stashing/retrieving our
+*driver* data -- that's what *_{get,set}_drvdata() are for.
 
->   blackfin: nand: make use of mtd_to_nand() where appropriate
->   cris: nand: make use of mtd_to_nand() where appropriate
->   mips: nand: make use of mtd_to_nand() where appropriate
+So, kill off bcm_nflash::mtd, and stash the struct bcm47xxnflash in
+drvdata instead. Also move the forward declaration of mtd_info up a bit,
+since struct bcma_sflash should be using it.
 
-I've based these on v4.4-rc1 and brought them into l2-mtd.git, in case
-any arch/{blackfin,cris,mips}/ people want to pull them in too.
+Caught while inspecting other changes being made to this driver. Compile
+tested only.
 
->   sh: nand: make use of mtd_to_nand() where appropriate
->   mtd: nand: make use of mtd_to_nand() in NAND core code
->   mtd: nand: make use of mtd_to_nand() in NAND drivers
->   staging: mt29f_spinand: make use of mtd_to_nand()
->   mtd: nand: embed an mtd_info structure into nand_chip
->   mtd: nand: add nand_to_mtd() helper
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: "Rafał Miłecki" <zajec5@gmail.com>
+Cc: linux-wireless@vger.kernel.org
+---
+Might have some small conflict with Boris' NAND/MTD refactoring patch set. I
+can rebase this small one if his gets in proper shape. Just wanted to get this
+out there.
 
-Pulled the rest up to here into l2-mtd.git.
+ drivers/mtd/nand/bcm47xxnflash/main.c       | 7 ++++---
+ include/linux/bcma/bcma_driver_chipcommon.h | 6 ++----
+ 2 files changed, 6 insertions(+), 7 deletions(-)
 
->   coccinelle: nand: detect and correct drivers embedding an mtd_info
->     object
-
-I believe Julia had comments on this. That probably would go through the
-kbuild tree in the end anyway (?).
-
->   mtd: nand: use the mtd instance embedded in struct nand_chip
-
-There's still at least one problem in this patch (commented on the
-patch). It touches a lot of drivers, so any extra review would be great.
-
->   mtd: nand: update the documentation to reflect framework changes
->   staging: mt29f_spinand: use the mtd instance embedded in struct
->     nand_chip
->   cris: nand: use the mtd instance embedded in struct nand_chip
->   mtd: nand: update mtd_to_nand()
->   mtd: nand: remove useless mtd->priv = chip assignments
->   cris: nand: remove useless mtd->priv = chip assignments
->   staging: mt29f_spinand: remove useless mtd->priv = chip assignment
->   mtd: nand: simplify nand_dt_init() usage
->   mtd: nand: kill the chip->flash_node field
->   mtd: nand: add helpers to access ->priv
->   ARM: make use of nand_set/get_controller_data() helpers
->   mtd: nand: make use of nand_set/get_controller_data() helpers
->   staging: mt29f_spinand: make use of nand_set/get_controller_data()
->     helpers
-
-All the rest look good to me. I'll wait until I get a good copy of patch
-12 before taking them.
-
-Brian
-
->  Documentation/DocBook/mtdnand.tmpl             |  31 +++---
->  arch/arm/mach-ep93xx/snappercl15.c             |   4 +-
->  arch/arm/mach-ep93xx/ts72xx.c                  |   4 +-
->  arch/arm/mach-imx/mach-qong.c                  |   2 +-
->  arch/arm/mach-ixp4xx/ixdp425-setup.c           |   6 +-
->  arch/arm/mach-omap1/board-nand.c               |   2 +-
->  arch/arm/mach-orion5x/ts78xx-setup.c           |   6 +-
->  arch/arm/mach-pxa/balloon3.c                   |   2 +-
->  arch/arm/mach-pxa/em-x270.c                    |   2 +-
->  arch/arm/mach-pxa/palmtx.c                     |   2 +-
->  arch/blackfin/mach-bf537/boards/stamp.c        |   2 +-
->  arch/blackfin/mach-bf561/boards/acvilon.c      |   2 +-
->  arch/cris/arch-v32/drivers/mach-a3/nandflash.c |   8 +-
->  arch/cris/arch-v32/drivers/mach-fs/nandflash.c |   8 +-
->  arch/mips/alchemy/devboards/db1200.c           |   2 +-
->  arch/mips/alchemy/devboards/db1300.c           |   2 +-
->  arch/mips/alchemy/devboards/db1550.c           |   2 +-
->  arch/mips/pnx833x/common/platform.c            |   2 +-
->  arch/mips/rb532/devices.c                      |   2 +-
->  arch/sh/boards/mach-migor/setup.c              |   2 +-
->  drivers/mtd/nand/ams-delta.c                   |  26 ++---
->  drivers/mtd/nand/atmel_nand.c                  | 118 ++++++++++----------
->  drivers/mtd/nand/au1550nd.c                    |  40 +++----
->  drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h |   1 -
->  drivers/mtd/nand/bcm47xxnflash/main.c          |   9 +-
->  drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c   |  34 +++---
->  drivers/mtd/nand/bf5xx_nand.c                  |  25 ++---
->  drivers/mtd/nand/brcmnand/brcmnand.c           |  54 +++++----
->  drivers/mtd/nand/cafe_nand.c                   |  51 +++++----
->  drivers/mtd/nand/cmx270_nand.c                 |  20 ++--
->  drivers/mtd/nand/cs553x_nand.c                 |  30 +++--
->  drivers/mtd/nand/davinci_nand.c                |  37 ++++---
->  drivers/mtd/nand/denali.c                      |  67 ++++++-----
->  drivers/mtd/nand/denali.h                      |   1 -
->  drivers/mtd/nand/diskonchip.c                  | 148 ++++++++++++-------------
->  drivers/mtd/nand/docg4.c                       |  91 ++++++++-------
->  drivers/mtd/nand/fsl_elbc_nand.c               |  61 +++++-----
->  drivers/mtd/nand/fsl_ifc_nand.c                |  71 ++++++------
->  drivers/mtd/nand/fsl_upm.c                     |  31 +++---
->  drivers/mtd/nand/fsmc_nand.c                   |  69 ++++++------
->  drivers/mtd/nand/gpio.c                        |  19 ++--
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c          |   2 +-
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c         |  67 ++++++-----
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h         |   1 -
->  drivers/mtd/nand/hisi504_nand.c                |  48 ++++----
->  drivers/mtd/nand/jz4740_nand.c                 |  14 +--
->  drivers/mtd/nand/lpc32xx_mlc.c                 |  32 +++---
->  drivers/mtd/nand/lpc32xx_slc.c                 |  42 ++++---
->  drivers/mtd/nand/mpc5121_nfc.c                 |  52 +++++----
->  drivers/mtd/nand/mxc_nand.c                    |  76 +++++++------
->  drivers/mtd/nand/nand_base.c                   | 102 +++++++++--------
->  drivers/mtd/nand/nand_bbt.c                    |  32 +++---
->  drivers/mtd/nand/nand_bch.c                    |   4 +-
->  drivers/mtd/nand/nand_ecc.c                    |   4 +-
->  drivers/mtd/nand/nandsim.c                     |  35 +++---
->  drivers/mtd/nand/ndfc.c                        |  53 ++++-----
->  drivers/mtd/nand/nuc900_nand.c                 |  25 ++---
->  drivers/mtd/nand/omap2.c                       | 109 ++++++++++--------
->  drivers/mtd/nand/orion_nand.c                  |  13 +--
->  drivers/mtd/nand/pasemi_nand.c                 |  21 ++--
->  drivers/mtd/nand/plat_nand.c                   |  16 +--
->  drivers/mtd/nand/pxa3xx_nand.c                 |  70 ++++++------
->  drivers/mtd/nand/r852.c                        |  41 +++----
->  drivers/mtd/nand/r852.h                        |   1 -
->  drivers/mtd/nand/s3c2410.c                     |  32 +++---
->  drivers/mtd/nand/sh_flctl.c                    |   9 +-
->  drivers/mtd/nand/sharpsl.c                     |  23 ++--
->  drivers/mtd/nand/sm_common.c                   |   2 +-
->  drivers/mtd/nand/socrates_nand.c               |  24 ++--
->  drivers/mtd/nand/sunxi_nand.c                  |  40 ++++---
->  drivers/mtd/nand/tmio_nand.c                   |  13 ++-
->  drivers/mtd/nand/txx9ndfmc.c                   |  25 ++---
->  drivers/mtd/nand/vf610_nfc.c                   |   9 +-
->  drivers/mtd/nand/xway_nand.c                   |   4 +-
->  drivers/staging/mt29f_spinand/mt29f_spinand.c  |  19 ++--
->  include/linux/mtd/nand.h                       |  26 ++++-
->  include/linux/mtd/sh_flctl.h                   |   3 +-
->  scripts/coccinelle/api/nand-priv-no-mtd.cocci  |  91 +++++++++++++++
->  78 files changed, 1179 insertions(+), 1097 deletions(-)
->  create mode 100644 scripts/coccinelle/api/nand-priv-no-mtd.cocci
-> 
-> -- 
-> 2.1.4
-> 
+diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
+index 9ba0c0f2cd9b..0b3acc439181 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/main.c
++++ b/drivers/mtd/nand/bcm47xxnflash/main.c
+@@ -49,6 +49,8 @@ static int bcm47xxnflash_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
++	platform_set_drvdata(pdev, b47n);
++
+ 	err = mtd_device_parse_register(&b47n->mtd, probes, NULL, NULL, 0);
+ 	if (err) {
+ 		pr_err("Failed to register MTD device: %d\n", err);
+@@ -60,10 +62,9 @@ static int bcm47xxnflash_probe(struct platform_device *pdev)
+ 
+ static int bcm47xxnflash_remove(struct platform_device *pdev)
+ {
+-	struct bcma_nflash *nflash = dev_get_platdata(&pdev->dev);
++	struct bcm47xxnflash *nflash = platform_get_drvdata(pdev);
+ 
+-	if (nflash->mtd)
+-		mtd_device_unregister(nflash->mtd);
++	nand_release(&nflash->mtd);
+ 
+ 	return 0;
+ }
+diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
+index cf038431a5cc..db51a6ffb7d6 100644
+--- a/include/linux/bcma/bcma_driver_chipcommon.h
++++ b/include/linux/bcma/bcma_driver_chipcommon.h
+@@ -579,6 +579,8 @@ struct bcma_pflash {
+ };
+ 
+ #ifdef CONFIG_BCMA_SFLASH
++struct mtd_info;
++
+ struct bcma_sflash {
+ 	bool present;
+ 	u32 window;
+@@ -592,13 +594,9 @@ struct bcma_sflash {
+ #endif
+ 
+ #ifdef CONFIG_BCMA_NFLASH
+-struct mtd_info;
+-
+ struct bcma_nflash {
+ 	bool present;
+ 	bool boot;		/* This is the flash the SoC boots from */
+-
+-	struct mtd_info *mtd;
+ };
+ #endif
+ 
+-- 
+2.6.0.rc2.230.g3dd15c0
