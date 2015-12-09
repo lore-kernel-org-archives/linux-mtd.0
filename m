@@ -1,22 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pf0-x230.google.com ([2607:f8b0:400e:c00::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6dXS-000697-RN
- for linux-mtd@lists.infradead.org; Wed, 09 Dec 2015 12:08:08 +0000
-Subject: Re: [PATCH] UBI: fix return error code
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-References: <1448014460-1371-1-git-send-email-sudipm.mukherjee@gmail.com>
- <564EF353.2050806@nod.at> <20151209120217.GE24852@sudip-pc>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5668198B.3050504@nod.at>
-Date: Wed, 9 Dec 2015 13:07:39 +0100
+ id 1a6jPf-0002qP-GW
+ for linux-mtd@lists.infradead.org; Wed, 09 Dec 2015 18:24:28 +0000
+Received: by pfdd184 with SMTP id d184so33784885pfd.3
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2015 10:24:06 -0800 (PST)
+Date: Wed, 9 Dec 2015 10:24:03 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Simon Arlott <simon@fire.lp0.eu>
+Subject: [PATCH v3 6/6] mtd: partitions: support a cleanup callback for parsers
+Message-ID: <20151209182403.GW120110@google.com>
+References: <1449271518-118900-1-git-send-email-computersforpeace@gmail.com>
+ <1449271518-118900-7-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20151209120217.GE24852@sudip-pc>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1449271518-118900-7-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +26,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 09.12.2015 um 13:02 schrieb Sudip Mukherjee:
-> On Fri, Nov 20, 2015 at 11:17:55AM +0100, Richard Weinberger wrote:
->> Am 20.11.2015 um 11:14 schrieb Sudip Mukherjee:
->>> We are checking dfs_rootdir for error value or NULL. But in the
->>> conditional ternary operator we returned -ENODEV if dfs_rootdir contains
->>> an error value and returned PTR_ERR(dfs_rootdir) if dfs_rootdir is NULL.
->>> So in the case of dfs_rootdir being NULL we actually assigned 0 to err
->>> and returned it to the caller implying a success.
->>> Lets return -ENODEV when dfs_rootdir is NULL else return
->>> PTR_ERR(dfs_rootdir).
->>>
->>> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
->>> ---
->>>  drivers/mtd/ubi/debug.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
->>> index b077e43..c4cb15a 100644
->>> --- a/drivers/mtd/ubi/debug.c
->>> +++ b/drivers/mtd/ubi/debug.c
->>> @@ -236,7 +236,7 @@ int ubi_debugfs_init(void)
->>>  
->>>  	dfs_rootdir = debugfs_create_dir("ubi", NULL);
->>>  	if (IS_ERR_OR_NULL(dfs_rootdir)) {
->>> -		int err = dfs_rootdir ? -ENODEV : PTR_ERR(dfs_rootdir);
->>> +		int err = dfs_rootdir ? PTR_ERR(dfs_rootdir) : -ENODEV;
->>>  
->>
->> Nice catch!
-> 
-> Hi Richard,
-> It is still not on linus-next. Did you miss it?
+If partition parsers need to clean up their resources, we shouldn't
+assume that all memory will fit in a single kmalloc() that the caller
+can kfree(). We should allow the parser to provide a proper cleanup
+routine.
 
-I did not miss it, currently I'm traveling a lot and the
-days before xmas are always super crazy here.
-That's why I'm horrible backlogged.
+Note that this means we need to keep a hold on the parser's module for a
+bit longer, and release it later with mtd_part_parser_put().
 
-Thanks,
-//richard
+Alongside this, define a default callback that we'll automatically use
+if the parser doesn't provide one, so we can still retain the old
+behavior.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+v3:
+ * drop redundant 'if (parsed.parser)' condition before cleanup
+
+v2:
+ * put more common logic in mtd_part_parser_cleanup()
+ * provide default cleanup routine (i.e., kfree()) for parsers
+
+ drivers/mtd/mtdcore.c          |  3 +--
+ drivers/mtd/mtdcore.h          |  2 ++
+ drivers/mtd/mtdpart.c          | 35 +++++++++++++++++++++++++++++++++--
+ include/linux/mtd/partitions.h |  1 +
+ 4 files changed, 37 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 20b2b38247b6..89d811e7b04a 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -630,8 +630,7 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 
+ out:
+ 	/* Cleanup any parsed partitions */
+-	if (parsed.parser)
+-		kfree(parsed.parts);
++	mtd_part_parser_cleanup(&parsed);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_device_parse_register);
+diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
+index ce81cc2002f4..55fdb8e1fd2a 100644
+--- a/drivers/mtd/mtdcore.h
++++ b/drivers/mtd/mtdcore.h
+@@ -17,6 +17,8 @@ int parse_mtd_partitions(struct mtd_info *master, const char * const *types,
+ 			 struct mtd_partitions *pparts,
+ 			 struct mtd_part_parser_data *data);
+ 
++void mtd_part_parser_cleanup(struct mtd_partitions *parts);
++
+ int __init init_mtdchar(void);
+ void __exit cleanup_mtdchar(void);
+ 
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 53517d7653cb..10bf304027dd 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -709,10 +709,23 @@ static inline void mtd_part_parser_put(const struct mtd_part_parser *p)
+ 	module_put(p->owner);
+ }
+ 
++/*
++ * Many partition parsers just expected the core to kfree() all their data in
++ * one chunk. Do that by default.
++ */
++static void mtd_part_parser_cleanup_default(const struct mtd_partition *pparts,
++					    int nr_parts)
++{
++	kfree(pparts);
++}
++
+ int __register_mtd_parser(struct mtd_part_parser *p, struct module *owner)
+ {
+ 	p->owner = owner;
+ 
++	if (!p->cleanup)
++		p->cleanup = &mtd_part_parser_cleanup_default;
++
+ 	spin_lock(&part_parser_lock);
+ 	list_add(&p->list, &part_parsers);
+ 	spin_unlock(&part_parser_lock);
+@@ -756,7 +769,9 @@ static const char * const default_mtd_part_types[] = {
+  * This function may return:
+  * o a negative error code in case of failure
+  * o zero otherwise, and @pparts will describe the partitions, number of
+- *   partitions, and the parser which parsed them
++ *   partitions, and the parser which parsed them. Caller must release
++ *   resources with mtd_part_parser_cleanup() when finished with the returned
++ *   data.
+  */
+ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 			 struct mtd_partitions *pparts,
+@@ -780,7 +795,6 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 		ret = (*parser->parse_fn)(master, &pparts->parts, data);
+ 		pr_debug("%s: parser %s: %i\n",
+ 			 master->name, parser->name, ret);
+-		mtd_part_parser_put(parser);
+ 		if (ret > 0) {
+ 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
+ 			       ret, parser->name, master->name);
+@@ -788,6 +802,7 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 			pparts->parser = parser;
+ 			return 0;
+ 		}
++		mtd_part_parser_put(parser);
+ 		/*
+ 		 * Stash the first error we see; only report it if no parser
+ 		 * succeeds
+@@ -798,6 +813,22 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 	return err;
+ }
+ 
++void mtd_part_parser_cleanup(struct mtd_partitions *parts)
++{
++	const struct mtd_part_parser *parser;
++
++	if (!parts)
++		return;
++
++	parser = parts->parser;
++	if (parser) {
++		if (parser->cleanup)
++			parser->cleanup(parts->parts, parts->nr_parts);
++
++		mtd_part_parser_put(parser);
++	}
++}
++
+ int mtd_is_partition(const struct mtd_info *mtd)
+ {
+ 	struct mtd_part *part;
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index cceaf7bd1537..70736e1e6c8f 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -71,6 +71,7 @@ struct mtd_part_parser {
+ 	const char *name;
+ 	int (*parse_fn)(struct mtd_info *, const struct mtd_partition **,
+ 			struct mtd_part_parser_data *);
++	void (*cleanup)(const struct mtd_partition *pparts, int nr_parts);
+ };
+ 
+ /* Container for passing around a set of parsed partitions */
+-- 
+2.6.0.rc2.230.g3dd15c0
