@@ -30,10 +30,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 32/58] mtd: nand: omap2: use the mtd instance embedded in
+Subject: [PATCH v4 31/58] mtd: nand: nuc900: use the mtd instance embedded in
  struct nand_chip
-Date: Thu, 10 Dec 2015 09:00:16 +0100
-Message-Id: <1449734442-18672-33-git-send-email-boris.brezillon@free-electrons.com>
+Date: Thu, 10 Dec 2015 09:00:15 +0100
+Message-Id: <1449734442-18672-32-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -91,71 +91,73 @@ __type *__priv;
 )
 --->8---
 ---
- drivers/mtd/nand/omap2.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/nuc900_nand.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 1fb40db..f9d0b58 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -152,7 +152,6 @@ static struct nand_hw_control omap_gpmc_controller = {
+diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/nuc900_nand.c
+index 65908c0..4dad170 100644
+--- a/drivers/mtd/nand/nuc900_nand.c
++++ b/drivers/mtd/nand/nuc900_nand.c
+@@ -55,7 +55,6 @@
+ 	__raw_writel((val), (dev)->reg + REG_SMADDR)
  
- struct omap_nand_info {
- 	struct omap_nand_platform_data	*pdata;
--	struct mtd_info			mtd;
- 	struct nand_chip		nand;
- 	struct platform_device		*pdev;
+ struct nuc900_nand {
+-	struct mtd_info mtd;
+ 	struct nand_chip chip;
+ 	void __iomem *reg;
+ 	struct clk *clk;
+@@ -64,7 +63,7 @@ struct nuc900_nand {
  
-@@ -179,8 +178,9 @@ struct omap_nand_info {
- 
- static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
+ static inline struct nuc900_nand *mtd_to_nuc900(struct mtd_info *mtd)
  {
--	return container_of(mtd, struct omap_nand_info, mtd);
-+	return container_of(mtd_to_nand(mtd), struct omap_nand_info, nand);
+-	return container_of(mtd, struct nuc900_nand, mtd);
++	return container_of(mtd_to_nand(mtd), struct nuc900_nand, chip);
  }
-+
- /**
-  * omap_prefetch_enable - configures and starts prefetch transfer
-  * @cs: cs (chip select) number
-@@ -1670,10 +1670,10 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	info->reg		= pdata->reg;
- 	info->of_node		= pdata->of_node;
- 	info->ecc_opt		= pdata->ecc_opt;
--	mtd			= &info->mtd;
-+	nand_chip		= &info->nand;
-+	mtd			= nand_to_mtd(nand_chip);
- 	mtd->priv		= &info->nand;
- 	mtd->dev.parent		= &pdev->dev;
--	nand_chip		= &info->nand;
- 	nand_chip->ecc.priv	= NULL;
- 	nand_set_flash_node(nand_chip, pdata->of_node);
  
-@@ -1897,7 +1897,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
+ static const struct mtd_partition partitions[] = {
+@@ -236,6 +235,7 @@ static int nuc900_nand_probe(struct platform_device *pdev)
+ {
+ 	struct nuc900_nand *nuc900_nand;
+ 	struct nand_chip *chip;
++	struct mtd_info *mtd;
+ 	struct resource *res;
  
- 		err = elm_config(info->elm_dev, BCH4_ECC,
--				 info->mtd.writesize / nand_chip->ecc.size,
-+				 mtd->writesize / nand_chip->ecc.size,
- 				 nand_chip->ecc.size, nand_chip->ecc.bytes);
- 		if (err < 0)
- 			goto return_error;
-@@ -1951,7 +1951,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->ecc.write_page	= omap_write_page_bch;
+ 	nuc900_nand = devm_kzalloc(&pdev->dev, sizeof(struct nuc900_nand),
+@@ -243,9 +243,10 @@ static int nuc900_nand_probe(struct platform_device *pdev)
+ 	if (!nuc900_nand)
+ 		return -ENOMEM;
+ 	chip = &(nuc900_nand->chip);
++	mtd = nand_to_mtd(chip);
  
- 		err = elm_config(info->elm_dev, BCH8_ECC,
--				 info->mtd.writesize / nand_chip->ecc.size,
-+				 mtd->writesize / nand_chip->ecc.size,
- 				 nand_chip->ecc.size, nand_chip->ecc.bytes);
- 		if (err < 0)
- 			goto return_error;
-@@ -1981,7 +1981,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->ecc.write_page	= omap_write_page_bch;
+-	nuc900_nand->mtd.priv	= chip;
+-	nuc900_nand->mtd.dev.parent = &pdev->dev;
++	mtd->priv		= chip;
++	mtd->dev.parent		= &pdev->dev;
+ 	spin_lock_init(&nuc900_nand->lock);
  
- 		err = elm_config(info->elm_dev, BCH16_ECC,
--				 info->mtd.writesize / nand_chip->ecc.size,
-+				 mtd->writesize / nand_chip->ecc.size,
- 				 nand_chip->ecc.size, nand_chip->ecc.bytes);
- 		if (err < 0)
- 			goto return_error;
+ 	nuc900_nand->clk = devm_clk_get(&pdev->dev, NULL);
+@@ -269,11 +270,10 @@ static int nuc900_nand_probe(struct platform_device *pdev)
+ 
+ 	nuc900_nand_enable(nuc900_nand);
+ 
+-	if (nand_scan(&(nuc900_nand->mtd), 1))
++	if (nand_scan(mtd, 1))
+ 		return -ENXIO;
+ 
+-	mtd_device_register(&(nuc900_nand->mtd), partitions,
+-			    ARRAY_SIZE(partitions));
++	mtd_device_register(mtd, partitions, ARRAY_SIZE(partitions));
+ 
+ 	platform_set_drvdata(pdev, nuc900_nand);
+ 
+@@ -284,7 +284,7 @@ static int nuc900_nand_remove(struct platform_device *pdev)
+ {
+ 	struct nuc900_nand *nuc900_nand = platform_get_drvdata(pdev);
+ 
+-	nand_release(&nuc900_nand->mtd);
++	nand_release(nand_to_mtd(&nuc900_nand->chip));
+ 	clk_disable(nuc900_nand->clk);
+ 
+ 	return 0;
 -- 
 2.1.4
