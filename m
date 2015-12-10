@@ -1,22 +1,37 @@
-Received: from mail-pf0-x22c.google.com ([2607:f8b0:400e:c00::22c])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a77iH-0007X1-Ay
- for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 20:21:18 +0000
-Received: by pfbg73 with SMTP id g73so54389094pfb.1
- for <linux-mtd@lists.infradead.org>; Thu, 10 Dec 2015 12:20:56 -0800 (PST)
-Date: Thu, 10 Dec 2015 12:20:52 -0800
+ id 1a7845-0005a5-LI
+ for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 20:43:50 +0000
+Received: by pacwq6 with SMTP id wq6so52816610pac.1
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Dec 2015 12:43:28 -0800 (PST)
+Date: Thu, 10 Dec 2015 12:43:24 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Antoine Tenart <antoine.tenart@free-electrons.com>
-Cc: dwmw2@infradead.org, boris.brezillon@free-electrons.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: support JEDEC additional redundant parameter
- pages
-Message-ID: <20151210202052.GJ144338@google.com>
-References: <1449268528-18154-1-git-send-email-antoine.tenart@free-electrons.com>
+To: David Gibson <david@gibson.dropbear.id.au>
+Cc: Michal Suchanek <hramrach@gmail.com>, Jonas Gorski <jogo@openwrt.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ devicetree-spec@vger.kernel.org, Simon Arlott <simon@fire.lp0.eu>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: Re: [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format
+ binding
+Message-ID: <20151210204324.GK144338@google.com>
+References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
+ <1449292763-129421-4-git-send-email-computersforpeace@gmail.com>
+ <CAOiHx=nz2bdA_R610ozsQHhccdcrHVVCamTtne5ReHrA-FcaaQ@mail.gmail.com>
+ <CAOMqctTbUNd0GtY07YJuxem9HkU1WZ-NtO556=Yg2QrsF49Xjw@mail.gmail.com>
+ <20151207013628.GC20139@voom.fritz.box>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1449268528-18154-1-git-send-email-antoine.tenart@free-electrons.com>
+In-Reply-To: <20151207013628.GC20139@voom.fritz.box>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,146 +41,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 04, 2015 at 11:35:28PM +0100, Antoine Tenart wrote:
-> The JEDEC standard defines the JEDEC parameter page data structure.
-> One page plus two redundant pages are always there, in bits 0-1535.
-> Additionnal redundant parameter pages can be stored at bits 1536+.
-> Add support to read these pages.
+On Mon, Dec 07, 2015 at 12:36:28PM +1100, David Gibson wrote:
+> On Sat, Dec 05, 2015 at 10:33:30PM +0100, Michal Suchanek wrote:
+> > On 5 December 2015 at 12:39, Jonas Gorski <jogo@openwrt.org> wrote:
+> > > On Sat, Dec 5, 2015 at 6:19 AM, Brian Norris
+> > > <computersforpeace@gmail.com> wrote:
+> > 
+> > >> +
+> > >> +Examples:
+> > >> +
+> > >> +flash@0 {
+> > >> +       partitions {
+> > >> +               compatible = "google,fmap";
+> > >> +       };
+> > >> +};
+> > >
+> > > I wonder if this wouldn't be better served in a separate binding doc
+> > > with its compatible name as the filename, like we do with
+> > > driver^Whardware blocks, especially if we want to add more parsers.
+> > 
+> > 
+> > I find that *very* counter productive for bindings that go to the same
+> > node. You have a description of a node, and then suddenly there you
+> > have another file with another description of the same node. Totally
+> > awesome.
 > 
-> The first 3 JEDEC parameter pages are always checked, and if none
-> is valid we try to read additional redundant pages following the
-> standard definition: we continue while at least two of the four bytes
-> of the parameter page signature match (stored in the first dword).
-> 
-> There is no limit to the number of additional redundant parameter
-> page.
+> I can't actually work out from that if you're agreeing with the
+> original post or the first reply.
 
-Hmm, do we really want this to be unbounded? What if (for example) a
-driver is buggy and has some kind of wraparound, so that it keeps
-returning the same parameter page (or a sequence of a few pages)?
+Perhaps I'm biased, but I think he was agreeing with the first reply.
+(Particularly, "I find that *very* counter productive" uses the word
+"that" to refer to "separate binding doc[s]".)
 
-Also, is this actually solving any real problem? Have you seen flash
-that have more than the first 3 parameter pages? Have you tested
-this beyond the first 3?
+> > Also how do you plan to write partitioning schemes with parameters
+> > like with non-zero offset of the partition table.
 
-> Signed-off-by: Antoine Tenart <antoine.tenart@free-electrons.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 44 ++++++++++++++++++++++++++++++++++----------
->  1 file changed, 34 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index cc74142938b0..31f4a6585703 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3392,6 +3392,32 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
->  	return 1;
->  }
->  
-> +static int nand_flash_jedec_read_param(struct mtd_info *mtd,
-> +				       struct nand_chip *chip,
-> +				       struct nand_jedec_params *p)
-> +{
-> +	int i, match = 0;
-> +	char sig[4] = "JESD";
+If you are directing this question at me: I don't have a specific plan
+for it. MTD parsers don't currently take external input for this; many
+scan the whole device, but some might also have conventions built into
+the parser itself too, so this just gets hooked based on "compatible".
+But if the need arose, I would hope we could work out a common binding.
 
-sparse likes to complain about this:
+> Presumably with properties in the patitions node.  Not seeing the
+> problem here.
 
-drivers/mtd/nand/nand_base.c:3400:23: warning: too long initializer-string for array of char(no space for nul char) [sparse]
+I believe Michal is bringing up the (important, IMO) point that if
+distinct partition types are being described in the same node, then any
+use of additional properties *must* be closely coordinated. We can't
+have two parsers "foo" and "bar" defining conflicting uses of the same
+property in the same node, like this:
 
-I'm not sure it has a real effect (though I haven't checked the C spec
-for what happens here), because we're not really using it like a
-0-terminated string, but perhaps we can do something small to squash it?
-e.g., don't specify the [4], and just do this?
+	partitions {
+		compatible = "foo", "bar";
+		property-baz = ...; // e.g., reg = <...>;
+	};
 
-	char sig[] = "JESD";
+where if "foo" is not found, we fall back to "bar". But what if "foo"
+and "bar" use "property-baz" differently?
 
-> +
-> +	for (i = 0; i < sizeof(*p); i++)
-> +		((uint8_t *)p)[i] = chip->read_byte(mtd);
-> +
-> +	for (i = 0; i < 4; i++)
-
-Maybe s/4/ARRAY_SIZE(p->sig)/ ?
-
-Also could use a comment either here or above
-nand_flash_jedec_read_param() as to what the match criteria are.
-
-> +		if (p->sig[i] == sig[i])
-> +			match++;
-> +
-> +	if (match < 2) {
-> +		pr_warn("Invalid JEDEC page\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
-> +			le16_to_cpu(p->crc))
-> +		return 0;
-> +
-> +	return -EAGAIN;
-> +}
-> +
->  /*
->   * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
->   */
-> @@ -3400,8 +3426,7 @@ static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
->  {
->  	struct nand_jedec_params *p = &chip->jedec_params;
->  	struct jedec_ecc_info *ecc;
-> -	int val;
-> -	int i, j;
-> +	int val, i, ret = 0;
->  
->  	/* Try JEDEC for unknown chip or LP */
->  	chip->cmdfunc(mtd, NAND_CMD_READID, 0x40, -1);
-> @@ -3411,16 +3436,15 @@ static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
->  		return 0;
->  
->  	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0x40, -1);
-> -	for (i = 0; i < 3; i++) {
-> -		for (j = 0; j < sizeof(*p); j++)
-> -			((uint8_t *)p)[j] = chip->read_byte(mtd);
-> -
-> -		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
-> -				le16_to_cpu(p->crc))
-> +	for (i = 0; i < 3; i++)
-> +		if (!nand_flash_jedec_read_param(mtd, chip, p))
->  			break;
-> -	}
->  
-> -	if (i == 3) {
-> +	/* Try reading additional parameter pages */
-> +	if (i == 3)
-> +		while ((ret = nand_flash_jedec_read_param(mtd, chip, p)) ==
-> +				-EAGAIN);
-
-This loop has a few problems aesthetically and functionally. As
-mentioned before, the unbounded loop is not very nice. I would suggest
-at least putting some kind of bound to it. Also, it's probably best not
-to try so hard to cram everything into one "line". And for a rare
-change, I agree with checkpatch.pl:
-
-ERROR:TRAILING_STATEMENTS: trailing statements should be on next line
-#89: FILE: drivers/mtd/nand/nand_base.c:3445:
-+               while ((ret = nand_flash_jedec_read_param(mtd, chip, p)) ==
-+                               -EAGAIN);
-
-In this case, I think it's saying the empty statement (;) should be on a new
-line.
-
-So, it could more clearly be something like:
-
-	if (i == 3) {
-		do {
-			ret = nand_flash_jedec_read_param(mtd, chip, p);
-		} while (ret == -EAGAIN);
-	}
-
-Or even better, convert to a for loop with a max # of iterations.
-
-> +	if (ret) {
->  		pr_err("Could not find valid JEDEC parameter page; aborting\n");
->  		return 0;
->  	}
+Having everything in one doc would help ensure that the entire
+"partitions" binding is considered as a whole when extending it, in my
+(and an in my interpretation of Michal's) opinion.
 
 Brian
