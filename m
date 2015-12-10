@@ -1,27 +1,24 @@
-Date: Thu, 10 Dec 2015 09:44:08 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Russell King <linux@arm.linux.org.uk>,
- "hramrach@gmail.com" <hramrach@gmail.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH v4 4/5] ARM: dts: DRA7: add entry for qspi mmap region
-Message-ID: <20151210174407.GF23396@atomide.com>
-References: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
- <1448860515-28336-5-git-send-email-vigneshr@ti.com>
- <20151130223408.GJ23396@atomide.com> <565D25E6.4070206@ti.com>
- <20151201163950.GR23396@atomide.com> <566017A8.5040106@ti.com>
- <566907D7.6040003@ti.com>
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a76K4-0008Au-Vo
+ for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 18:52:15 +0000
+Subject: Re: [PATCH linux-next] mtd: part: Add BCM962368 CFE partitioning
+ support
+To: Florian Fainelli <f.fainelli@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <5668A33E.4040405@simon.arlott.org.uk> <5669B965.5030105@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Jonas Gorski <jogo@openwrt.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+From: Simon Arlott <simon@fire.lp0.eu>
+Message-ID: <5669C9B9.1070103@simon.arlott.org.uk>
+Date: Thu, 10 Dec 2015 18:51:37 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <566907D7.6040003@ti.com>
+In-Reply-To: <5669B965.5030105@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,59 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Vignesh R <vigneshr@ti.com> [151209 21:05]:
+On 10/12/15 17:41, Florian Fainelli wrote:
+> Le 09/12/2015 13:55, Simon Arlott a écrit :
+>>  drivers/mtd/Kconfig         |  21 +++
+>>  drivers/mtd/Makefile        |   1 +
+>>  drivers/mtd/bcm963268part.c | 373 ++++++++++++++++++++++++++++++++++++++++++++
+>>  3 files changed, 395 insertions(+)
+>>  create mode 100644 drivers/mtd/bcm963268part.c
 > 
-> 
-> On 12/03/2015 03:51 PM, Vignesh R wrote:
-> > 
-> > 
-> > On 12/01/2015 10:09 PM, Tony Lindgren wrote:
-> >> * Vignesh R <vigneshr@ti.com> [151130 20:46]:
-> >>> On 12/01/2015 04:04 AM, Tony Lindgren wrote:
-> >>>>
-> ...
-> >>
-> >> OK. They are both on L3 main so that won't cause any issues for separate
-> >> interconnect driver instances. As they are still separate targets flushing
-> >> a posted write to one area will not flush anything to the other.
-> >>
-> > 
-> > I didn't quite understand what you meant by interconnect driver instance.
-> > qspi_base and qspi_mmap region are tightly bound to each other and both
-> > needs to be accessed by ti-qspi driver (though different targets).
-> > Besides qspi_mmap region is only used to read data, there will not be
-> > any write accesses to this target. Are you saying this binding is not
-> > viable?
-> > 
-> 
-> As I stated above qspi_base and qspi_mmap region are tightly bound,
-> there is no way to use qspi_mmap region w/o accessing qspi_base. So I am
-> planning to keep them as it is. I will move qspi_ctrlmod to use syscon.
-> Something like:
-> 
-> qspi: qspi@4b300000 {
->        compatible = "ti,dra7xxx-qspi";
->        reg = <0x4b300000 0x100>,
->              <0x5c000000 0x4000000>,
->        reg-names = "qspi_base", "qspi_mmap";
->        syscon-chipselects = <&scm_conf 0x558>;
->        #address-cells = <1>;
->        #size-cells = <0>;
->        spi-max-frequency = <48000000>;
->        ti,hwmods = "qspi";
-> };
-> 
-> Do you think this is not viable in future?
+> What motivated created a separate partition parser rather then using the
+> extended the existing one?
 
-That's OK, they are on the same interconnect instance. And with the
-syscon you're not directly tinkering with the SCM registers. So
-yeah, that should work in the long run too.
+I started off doing that but had to split it up because how it handles
+the nvram and bcm_tag to construct the partition layout is significantly
+different. The nvram isn't even read from flash in bcm63xxpart, and the
+psi size value isn't used by bcm963268.
 
-The absolute addresses will get changed to just offsets from the
-interconnect target. But if you use the Linux standard functions like
-platform_get_resource_byname + devm_request_mem_region + devm_ioremap
-then no changes are needed to your driver later on.
+> I would imagine that, at some point, the partition parser could know
+> what kind of flash it needs to parse: SPI/P-NOR or NAND, and based on
+> that, do an appropriate definition?
 
-Thanks,
+With the device tree changes Brian's introducing it can be specified in
+there, otherwise a common parser would need to read from the
+miscStrapBus register which would be difficult for a partition parser as
+it's not a device and has no memory resources.
 
-Tony
+-- 
+Simon Arlott
