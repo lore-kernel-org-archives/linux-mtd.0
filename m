@@ -1,19 +1,20 @@
-Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6qWV-0003iy-6h
- for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 02:00:00 +0000
-Received: by pacfl14 with SMTP id fl14so3983584pac.1
- for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2015 17:59:39 -0800 (PST)
-From: Karl Zhang <shuangshuo@gmail.com>
-To: computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org
-Cc: peterpandong@micron.com, beanhuo@micron.com, zszubbocsev@micron.com,
- Karl Zhang <karlzhang@micron.com>
-Subject: [PATCH 2/2] mtd: spi-nor: add new device MT35X
-Date: Thu, 10 Dec 2015 01:59:00 +0000
-Message-Id: <1449712740-22900-3-git-send-email-karlzhang@micron.com>
-In-Reply-To: <1449712740-22900-1-git-send-email-karlzhang@micron.com>
-References: <1449712740-22900-1-git-send-email-karlzhang@micron.com>
+ id 1a6qo1-0004tv-Uu
+ for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 02:18:06 +0000
+Received: by pacwq6 with SMTP id wq6so39038123pac.1
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2015 18:17:44 -0800 (PST)
+Date: Wed, 9 Dec 2015 18:17:41 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: Check the return value from read_sr()
+Message-ID: <20151210021741.GF144338@google.com>
+References: <1448043971-20230-1-git-send-email-festevam@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1448043971-20230-1-git-send-email-festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Micron has announced a new SPI NOR device MT35X(XTRMFlash).
-The device can support x1 or x8 bus I/O for high speed.
+On Fri, Nov 20, 2015 at 04:26:11PM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> We should better check the return value from read_sr() and
+> propagate it in the case of error.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+> Changes since v1:
+> - Change status_old and status_new to int (Brian).
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 16c9f55..b5e505d 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -459,11 +459,13 @@ static int stm_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+>  static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  {
+>  	struct mtd_info *mtd = &nor->mtd;
+> -	u8 status_old, status_new;
+> +	int status_old, status_new;
+>  	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+>  	u8 shift = ffs(mask) - 1, pow, val;
+>  
+>  	status_old = read_sr(nor);
+> +	if (status_old < 0)
+> +		return status_old;
 
-This patch is purpose to add MT35X into the arch, only
-extended mode (x1) was enabled. Octal mode I/O will be done
-in the futrue.
+This wasn't exactly what I was imagining (I figured have an 'int ret'
+just for th error code, but still keep 'u8 status_{old,new}'), but still
+looks good to me. Applied to l2-mtd.git. Thanks!
 
-Signed-off-by: Karl Zhang <karlzhang@micron.com>
----
- drivers/mtd/devices/m25p80.c  | 1 +
- drivers/mtd/spi-nor/spi-nor.c | 2 ++
- 2 files changed, 3 insertions(+)
+Brian
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index c9c3b7f..e57d391 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -259,6 +259,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{"mx25l4005a"},	{"mx25l1606e"},	{"mx25l6405d"},	{"mx25l12805d"},
- 	{"mx25l25635e"},{"mx66l51235l"},
- 	{"n25q064"},	{"n25q128a11"},	{"n25q128a13"},	{"n25q512a"},
-+	{"mt35x512"},
- 	{"s25fl256s1"},	{"s25fl512s"},	{"s25sl12801"},	{"s25fl008k"},
- 	{"s25fl064k"},
- 	{"sst25vf040b"},{"sst25vf016b"},{"sst25vf032b"},{"sst25wf040"},
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 3b2460e..34686b5 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -192,6 +192,7 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
- 
- 	switch (JEDEC_MFR(info)) {
- 	case SNOR_MFR_MICRON:
-+	case SNOR_MFR_MICRON_JEDEC:
- 		/* Some Micron need WREN command; all will accept it */
- 		need_wren = true;
- 	case SNOR_MFR_MACRONIX:
-@@ -756,6 +757,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
- 	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
- 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-+	{ "mt35x512",    INFO(0x2c5b1a, 0, 128 * 1024, 512, SECT_4K | USE_FSR) },
- 
- 	/* PMC */
- 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
--- 
-1.9.1
+>  
+>  	/* SPI NOR always locks to the end */
+>  	if (ofs + len != mtd->size) {
+> @@ -509,11 +511,13 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+>  {
+>  	struct mtd_info *mtd = &nor->mtd;
+> -	uint8_t status_old, status_new;
+> +	int status_old, status_new;
+>  	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+>  	u8 shift = ffs(mask) - 1, pow, val;
+>  
+>  	status_old = read_sr(nor);
+> +	if (status_old < 0)
+> +		return status_old;
+>  
+>  	/* Cannot unlock; would unlock larger region than requested */
+>  	if (stm_is_locked_sr(nor, status_old, ofs - mtd->erasesize,
+> @@ -1013,6 +1017,8 @@ static int macronix_quad_enable(struct spi_nor *nor)
+>  	int ret, val;
+>  
+>  	val = read_sr(nor);
+> +	if (val < 0)
+> +		return val;
+>  	write_enable(nor);
+>  
+>  	write_sr(nor, val | SR_QUAD_EN_MX);
+> -- 
+> 1.9.1
+> 
