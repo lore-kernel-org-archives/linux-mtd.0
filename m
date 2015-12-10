@@ -1,23 +1,21 @@
-Received: from mail-pf0-x229.google.com ([2607:f8b0:400e:c00::229])
+Received: from mail-pf0-x230.google.com ([2607:f8b0:400e:c00::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6odC-0004Cb-Jh
- for linux-mtd@lists.infradead.org; Wed, 09 Dec 2015 23:58:47 +0000
-Received: by pfu207 with SMTP id 207so37770158pfu.2
- for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2015 15:58:26 -0800 (PST)
-Date: Wed, 9 Dec 2015 15:58:23 -0800
+ id 1a6ojk-0007N7-1p
+ for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 00:05:32 +0000
+Received: by pfdd184 with SMTP id d184so37810474pfd.3
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2015 16:05:11 -0800 (PST)
+Date: Wed, 9 Dec 2015 16:05:08 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Helmut Schaa <helmut.schaa@googlemail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Pekon Gupta <pekon.gupta@gmail.com>
-Subject: Re: [PATCH] mtd: nand: Disable subpage writes for drivers without
- ecc->hwctl
-Message-ID: <20151209235823.GD144338@google.com>
-References: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mkfs.ubifs: use gid from table instead 2x uid
+Message-ID: <20151210000508.GE144338@google.com>
+References: <1408726141-25608-1-git-send-email-bigeasy@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
+In-Reply-To: <1408726141-25608-1-git-send-email-bigeasy@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+With the archaeology hat on...
 
-I have my archaeology hat on, in the deep corners of my mailbox...
-
-On Wed, Apr 09, 2014 at 11:13:24AM +0200, Helmut Schaa wrote:
-> nand_write_subpage_hwecc causes a crash if the driver did not register
-> ecc->hwctl or ecc->calculate. Fix this by disabling subpage writes if
-> ecc->hwctl or ecc->calculate is not provided by the driver.
+On Fri, Aug 22, 2014 at 06:49:01PM +0200, Sebastian Andrzej Siewior wrote:
+> If the devtable is used then the tool uses uid twice and doesn't
+> consider gid at all. This changes it to use gid & uid.
 > 
-> This behavior was introduced in commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9
-> "mtd: nand: subpage write support for hardware based ECC schemes".
-> 
-> This fixes a crash with fsl_elbc_nand and maybe others:
-> 
-[...]
-> 
-> Cc: Gupta, Pekon <pekon@ti.com>
-> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Cc: David Woodhouse <David.Woodhouse@intel.com>
-> Signed-off-by: Helmut Schaa <helmut.schaa@googlemail.com>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > ---
-> I noticed this bug on openwrt with kernel 3.10 but it looks as if this can
-> still happen in more recent kernels.
-> 
->  drivers/mtd/nand/nand_base.c | 2 +-
+>  mkfs.ubifs/mkfs.ubifs.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 9715a7b..2298289 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3768,7 +3768,7 @@ int nand_scan_tail(struct mtd_info *mtd)
->  			ecc->write_oob = nand_write_oob_std;
->  		if (!ecc->read_subpage)
->  			ecc->read_subpage = nand_read_subpage;
-> -		if (!ecc->write_subpage)
-> +		if (!ecc->write_subpage && ecc->hwctl && ecc->calculate)
->  			ecc->write_subpage = nand_write_subpage_hwecc;
+> diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+> index 200c8a5..d7a252c 100644
+> --- a/mkfs.ubifs/mkfs.ubifs.c
+> +++ b/mkfs.ubifs/mkfs.ubifs.c
+> @@ -1535,7 +1535,7 @@ static int add_directory(const char *dir_name, ino_t dir_inum, struct stat *st,
 >  
->  	case NAND_ECC_HW_SYNDROME:
+>  		memcpy(&fake_st, &root_st, sizeof(struct stat));
+>  		fake_st.st_uid  = nh_elt->uid;
+> -		fake_st.st_uid  = nh_elt->uid;
+> +		fake_st.st_gid  = nh_elt->gid;
+>  		fake_st.st_mode = nh_elt->mode;
+>  		fake_st.st_rdev = nh_elt->dev;
+>  		fake_st.st_nlink = 1;
 
-I realize we've merged a fix for fsl_elbc_nand long ago (commit
-f034d87def51 "mtd: eLBC NAND: fix subpage write support"), but this
-change still looks sane, applies, and could possibly fix some other
-drivers that are lurking somewhere. Any reason I shouldn't apply it?
-
-Regards,
-Brian
+LGTM. Applied to mtd-utils.git
