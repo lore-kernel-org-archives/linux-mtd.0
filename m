@@ -30,10 +30,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 09/58] mtd: nand: bf5xx: use the mtd instance embedded in
+Subject: [PATCH v4 10/58] mtd: nand: brcm: use the mtd instance embedded in
  struct nand_chip
-Date: Thu, 10 Dec 2015 08:59:53 +0100
-Message-Id: <1449734442-18672-10-git-send-email-boris.brezillon@free-electrons.com>
+Date: Thu, 10 Dec 2015 08:59:54 +0100
+Message-Id: <1449734442-18672-11-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -91,73 +91,67 @@ __type *__priv;
 )
 --->8---
 ---
- drivers/mtd/nand/bf5xx_nand.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/brcmnand/brcmnand.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index d9da5ed..928d599 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -142,7 +142,6 @@ static struct nand_ecclayout bootrom_ecclayout = {
- struct bf5xx_nand_info {
- 	/* mtd info */
- 	struct nand_hw_control		controller;
--	struct mtd_info			mtd;
- 	struct nand_chip		chip;
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index 190a99a..26b64bc 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -178,7 +178,6 @@ struct brcmnand_host {
+ 	struct list_head	node;
  
- 	/* platform info */
-@@ -160,7 +159,8 @@ struct bf5xx_nand_info {
-  */
- static struct bf5xx_nand_info *mtd_to_nand_info(struct mtd_info *mtd)
+ 	struct nand_chip	chip;
+-	struct mtd_info		mtd;
+ 	struct platform_device	*pdev;
+ 	int			cs;
+ 
+@@ -1074,7 +1073,7 @@ static int brcmnand_low_level_op(struct brcmnand_host *host,
+ 				 enum brcmnand_llop_type type, u32 data,
+ 				 bool last_op)
  {
--	return container_of(mtd, struct bf5xx_nand_info, mtd);
-+	return container_of(mtd_to_nand(mtd), struct bf5xx_nand_info,
-+			    chip);
- }
+-	struct mtd_info *mtd = &host->mtd;
++	struct mtd_info *mtd = nand_to_mtd(&host->chip);
+ 	struct nand_chip *chip = &host->chip;
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+ 	u32 tmp;
+@@ -1802,7 +1801,7 @@ static inline int get_blk_adr_bytes(u64 size, u32 writesize)
  
- static struct bf5xx_nand_info *to_nand_info(struct platform_device *pdev)
-@@ -660,7 +660,7 @@ static int bf5xx_nand_hw_init(struct bf5xx_nand_info *info)
-  */
- static int bf5xx_nand_add_partition(struct bf5xx_nand_info *info)
+ static int brcmnand_setup_dev(struct brcmnand_host *host)
  {
--	struct mtd_info *mtd = &info->mtd;
-+	struct mtd_info *mtd = nand_to_mtd(&info->chip);
- 	struct mtd_partition *parts = info->platform->partitions;
- 	int nr = info->platform->nr_partitions;
+-	struct mtd_info *mtd = &host->mtd;
++	struct mtd_info *mtd = nand_to_mtd(&host->chip);
+ 	struct nand_chip *chip = &host->chip;
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+ 	struct brcmnand_cfg *cfg = &host->hwcfg;
+@@ -1916,7 +1915,7 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
+ 		return -ENXIO;
+ 	}
  
-@@ -675,7 +675,7 @@ static int bf5xx_nand_remove(struct platform_device *pdev)
- 	 * and their partitions, then go through freeing the
- 	 * resources used
- 	 */
--	nand_release(&info->mtd);
-+	nand_release(nand_to_mtd(&info->chip));
+-	mtd = &host->mtd;
++	mtd = nand_to_mtd(&host->chip);
+ 	chip = &host->chip;
  
- 	peripheral_free_list(bfin_nfc_pin_req);
- 	bf5xx_nand_dma_remove(info);
-@@ -756,6 +756,7 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
+ 	nand_set_flash_node(chip, dn);
+@@ -2060,8 +2059,8 @@ static int brcmnand_resume(struct device *dev)
+ 	}
  
- 	/* initialise chip data struct */
- 	chip = &info->chip;
-+	mtd = nand_to_mtd(&info->chip);
+ 	list_for_each_entry(host, &ctrl->host_list, node) {
+-		struct mtd_info *mtd = &host->mtd;
+-		struct nand_chip *chip = mtd_to_nand(mtd);
++		struct nand_chip *chip = &host->chip;
++		struct mtd_info *mtd = nand_to_mtd(chip);
  
- 	if (plat->data_width)
- 		chip->options |= NAND_BUSWIDTH_16;
-@@ -772,7 +773,7 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
- 	chip->cmd_ctrl     = bf5xx_nand_hwcontrol;
- 	chip->dev_ready    = bf5xx_nand_devready;
+ 		brcmnand_save_restore_cs_config(host, 1);
  
--	chip->priv	   = &info->mtd;
-+	chip->priv	   = mtd;
- 	chip->controller   = &info->controller;
+@@ -2262,7 +2261,7 @@ int brcmnand_remove(struct platform_device *pdev)
+ 	struct brcmnand_host *host;
  
- 	chip->IO_ADDR_R    = (void __iomem *) NFC_READ;
-@@ -781,7 +782,6 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
- 	chip->chip_delay   = 0;
+ 	list_for_each_entry(host, &ctrl->host_list, node)
+-		nand_release(&host->mtd);
++		nand_release(nand_to_mtd(&host->chip));
  
- 	/* initialise mtd info data struct */
--	mtd 		= &info->mtd;
- 	mtd->priv	= chip;
- 	mtd->dev.parent = &pdev->dev;
+ 	dev_set_drvdata(&pdev->dev, NULL);
  
 -- 
 2.1.4
