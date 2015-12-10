@@ -1,41 +1,25 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Ryan Mallon <rmallon@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <kernel@pengutronix.de>, Imre Kaloz <kaloz@openwrt.org>,
- Krzysztof Halasa <khalasa@piap.pl>, Tony Lindgren <tony@atomide.com>,
- linux-omap@vger.kernel.org, Alexander Clouter <alex@digriz.org.uk>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Gregory CLEMENT <gregory.clement@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Marek Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>,
- adi-buildroot-devel@lists.sourceforge.net,
- Mikael Starvik <starvik@axis.com>,
- Jesper Nilsson <jesper.nilsson@axis.com>, linux-cris-kernel@axis.com,
- Josh Wu <josh.wu@atmel.com>, Wan ZongShun <mcuos.com@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Stefan Agner <stefan@agner.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- devel@driverdev.osuosl.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 38/58] mtd: nand: s3c2410: use the mtd instance embedded in
- struct nand_chip
-Date: Thu, 10 Dec 2015 09:00:22 +0100
-Message-Id: <1449734442-18672-39-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20151210022146.GH144338@google.com>
+References: <3152458.D3kElfhRW2@wuerfel>
+ <CAMuHMdVWss6Kz8sVrcUR3a4iJ+Z8D1q1Er6eH_uRMoS5DCN5pw@mail.gmail.com>
+ <20151210022146.GH144338@google.com>
+Date: Thu, 10 Dec 2015 10:02:06 +0100
+Message-ID: <CAMuHMdXjquhLKsby1QZ+U9JN7bVrxX4guPgC0EQuLXJcmVKACw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: sh_flctl: pass FIFO as physical address
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ Magnus Damm <magnus.damm@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Simon Horman <horms@verge.net.au>,
+ Frans Klaver <fransklaver@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,141 +29,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-struct nand_chip now embeds an mtd device. Make use of this mtd instance.
+Hi Brian,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
-Changes generated with the following coccinelle script
+On Thu, Dec 10, 2015 at 3:21 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Tue, Dec 08, 2015 at 05:30:02PM +0100, Geert Uytterhoeven wrote:
+>> On Tue, Dec 8, 2015 at 4:38 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+>> > By convention, the FIFO address we pass using dmaengine_slave_config
+>> > is a physical address in the form that is understood by the DMA
+>> > engine, as a dma_addr_t, phys_addr_t or resource_size_t.
+>> >
+>> > The sh_flctl driver however passes a virtual __iomem address that
+>> > gets cast to dma_addr_t in the slave driver. This happens to work
+>> > on shmobile because that platform sets up an identity mapping for
+>> > its MMIO regions, but such code is not portable to other platforms,
+>> > and prevents us from ever changing the platform mapping or reusing
+>> > the driver on other architectures like ARM64 that might not have the
+>> > mapping.
+>>
+>> Note that since the removal of (ARM) sh7367/sh7377/sh7372 support, this
+>> driver is used on SH only.
+>
+> It's still available as COMPILE_TEST, so it's still worth fixing.
+>
+> But really, does anyone use this driver any more?
 
---->8---
-virtual patch
+It's used on the sh7723-based AP-325RXA board.
+No idea if anyone is really using it.
 
-@fix1@
-identifier __chipfield, __mtdfield;
-type __type;
-@@
-(
-	__type {
-		...
-		struct nand_chip __chipfield;
-		...
--		struct mtd_info __mtdfield;
-		...
-	};
-|
-	__type {
-		...
--		struct mtd_info __mtdfield;
-		...
-		struct nand_chip __chipfield;
-		...
-	};
-)
+Gr{oetje,eeting}s,
 
-@fix2 depends on fix1@
-identifier fix1.__chipfield, fix1.__mtdfield;
-identifier __subfield;
-type fix1.__type;
-__type *__priv;
-@@
-(
--	__priv->__mtdfield.__subfield
-+	nand_to_mtd(&__priv->__chipfield)->__subfield
-|
--	&(__priv->__mtdfield)
-+	nand_to_mtd(&__priv->__chipfield)
-)
---->8---
----
- drivers/mtd/nand/s3c2410.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+                        Geert
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index e658b29..c074a49 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -104,7 +104,6 @@ struct s3c2410_nand_info;
-  * @scan_res: The result from calling nand_scan_ident().
- */
- struct s3c2410_nand_mtd {
--	struct mtd_info			mtd;
- 	struct nand_chip		chip;
- 	struct s3c2410_nand_set		*set;
- 	struct s3c2410_nand_info	*info;
-@@ -168,7 +167,8 @@ struct s3c2410_nand_info {
- 
- static struct s3c2410_nand_mtd *s3c2410_nand_mtd_toours(struct mtd_info *mtd)
- {
--	return container_of(mtd, struct s3c2410_nand_mtd, mtd);
-+	return container_of(mtd_to_nand(mtd), struct s3c2410_nand_mtd,
-+			    chip);
- }
- 
- static struct s3c2410_nand_info *s3c2410_nand_mtd_toinfo(struct mtd_info *mtd)
-@@ -745,7 +745,7 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
- 
- 		for (mtdno = 0; mtdno < info->mtd_count; mtdno++, ptr++) {
- 			pr_debug("releasing mtd %d (%p)\n", mtdno, ptr);
--			nand_release(&ptr->mtd);
-+			nand_release(nand_to_mtd(&ptr->chip));
- 		}
- 	}
- 
-@@ -762,9 +762,11 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
- 				      struct s3c2410_nand_set *set)
- {
- 	if (set) {
--		mtd->mtd.name = set->name;
-+		struct mtd_info *mtdinfo = nand_to_mtd(&mtd->chip);
- 
--		return mtd_device_parse_register(&mtd->mtd, NULL, NULL,
-+		mtdinfo->name = set->name;
-+
-+		return mtd_device_parse_register(mtdinfo, NULL, NULL,
- 					 set->partitions, set->nr_partitions);
- 	}
- 
-@@ -786,6 +788,7 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
- 				   struct s3c2410_nand_set *set)
- {
- 	struct nand_chip *chip = &nmtd->chip;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	void __iomem *regs = info->regs;
- 
- 	chip->write_buf    = s3c2410_nand_write_buf;
-@@ -831,7 +834,7 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
- 	chip->IO_ADDR_R = chip->IO_ADDR_W;
- 
- 	nmtd->info	   = info;
--	nmtd->mtd.priv	   = chip;
-+	mtd->priv	   = chip;
- 	nmtd->set	   = set;
- 
- #ifdef CONFIG_MTD_NAND_S3C2410_HWECC
-@@ -1012,19 +1015,21 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 	nmtd = info->mtds;
- 
- 	for (setno = 0; setno < nr_sets; setno++, nmtd++) {
-+		struct mtd_info *mtd = nand_to_mtd(&nmtd->chip);
-+
- 		pr_debug("initialising set %d (%p, info %p)\n",
- 			 setno, nmtd, info);
- 
--		nmtd->mtd.dev.parent = &pdev->dev;
-+		mtd->dev.parent = &pdev->dev;
- 		s3c2410_nand_init_chip(info, nmtd, sets);
- 
--		nmtd->scan_res = nand_scan_ident(&nmtd->mtd,
-+		nmtd->scan_res = nand_scan_ident(mtd,
- 						 (sets) ? sets->nr_chips : 1,
- 						 NULL);
- 
- 		if (nmtd->scan_res == 0) {
- 			s3c2410_nand_update_chip(info, nmtd);
--			nand_scan_tail(&nmtd->mtd);
-+			nand_scan_tail(mtd);
- 			s3c2410_nand_add_partition(info, nmtd, sets);
- 		}
- 
--- 
-2.1.4
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
