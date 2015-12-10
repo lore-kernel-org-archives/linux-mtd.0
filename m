@@ -30,10 +30,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 23/58] mtd: nand: gpmi: use the mtd instance embedded in
+Subject: [PATCH v4 26/58] mtd: nand: lpc32xx: use the mtd instance embedded in
  struct nand_chip
-Date: Thu, 10 Dec 2015 09:00:07 +0100
-Message-Id: <1449734442-18672-24-git-send-email-boris.brezillon@free-electrons.com>
+Date: Thu, 10 Dec 2015 09:00:10 +0100
+Message-Id: <1449734442-18672-27-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -91,133 +91,89 @@ __type *__priv;
 )
 --->8---
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  2 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 23 +++++++++++------------
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  1 -
- 3 files changed, 12 insertions(+), 14 deletions(-)
+ drivers/mtd/nand/lpc32xx_mlc.c | 7 +++----
+ drivers/mtd/nand/lpc32xx_slc.c | 7 +++----
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index 43fa16b..0f68a99 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -919,7 +919,7 @@ static int enable_edo_mode(struct gpmi_nand_data *this, int mode)
- {
- 	struct resources  *r = &this->resources;
- 	struct nand_chip *nand = &this->nand;
--	struct mtd_info	 *mtd = &this->mtd;
-+	struct mtd_info	 *mtd = nand_to_mtd(nand);
- 	uint8_t *feature;
- 	unsigned long rate;
- 	int ret;
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 802adb0..38b07c7 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -107,7 +107,7 @@ static irqreturn_t bch_irq(int irq, void *cookie)
- static inline int get_ecc_strength(struct gpmi_nand_data *this)
- {
- 	struct bch_geometry *geo = &this->bch_geometry;
--	struct mtd_info	*mtd = &this->mtd;
-+	struct mtd_info	*mtd = nand_to_mtd(&this->nand);
- 	int ecc_strength;
- 
- 	ecc_strength = ((mtd->oobsize - geo->metadata_size) * 8)
-@@ -139,8 +139,8 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
- static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- {
- 	struct bch_geometry *geo = &this->bch_geometry;
--	struct mtd_info *mtd = &this->mtd;
--	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_chip *chip = &this->nand;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_oobfree *of = gpmi_hw_ecclayout.oobfree;
- 	unsigned int block_mark_bit_offset;
- 
-@@ -257,7 +257,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- static int legacy_set_geometry(struct gpmi_nand_data *this)
- {
- 	struct bch_geometry *geo = &this->bch_geometry;
--	struct mtd_info *mtd = &this->mtd;
-+	struct mtd_info *mtd = nand_to_mtd(&this->nand);
- 	unsigned int metadata_size;
- 	unsigned int status_size;
- 	unsigned int block_mark_bit_offset;
-@@ -804,7 +804,7 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
- {
- 	struct bch_geometry *geo = &this->bch_geometry;
- 	struct device *dev = this->dev;
--	struct mtd_info *mtd = &this->mtd;
-+	struct mtd_info *mtd = nand_to_mtd(&this->nand);
- 
- 	/* [1] Allocate a command buffer. PAGE_SIZE is enough. */
- 	this->cmd_buffer = kzalloc(PAGE_SIZE, GFP_DMA | GFP_KERNEL);
-@@ -1600,8 +1600,8 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
- {
- 	struct boot_rom_geometry *rom_geo = &this->rom_geometry;
- 	struct device *dev = this->dev;
--	struct mtd_info *mtd = &this->mtd;
- 	struct nand_chip *chip = &this->nand;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	unsigned int search_area_size_in_strides;
- 	unsigned int stride;
- 	unsigned int page;
-@@ -1655,8 +1655,8 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
- {
- 	struct device *dev = this->dev;
- 	struct boot_rom_geometry *rom_geo = &this->rom_geometry;
--	struct mtd_info *mtd = &this->mtd;
- 	struct nand_chip *chip = &this->nand;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	unsigned int block_size_in_pages;
- 	unsigned int search_area_size_in_strides;
- 	unsigned int search_area_size_in_pages;
-@@ -1735,7 +1735,7 @@ static int mx23_boot_init(struct gpmi_nand_data  *this)
- {
- 	struct device *dev = this->dev;
- 	struct nand_chip *chip = &this->nand;
--	struct mtd_info *mtd = &this->mtd;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	unsigned int block_count;
- 	unsigned int block;
- 	int     chipnr;
-@@ -1831,14 +1831,13 @@ static int gpmi_set_geometry(struct gpmi_nand_data *this)
- 
- static void gpmi_nand_exit(struct gpmi_nand_data *this)
- {
--	nand_release(&this->mtd);
-+	nand_release(nand_to_mtd(&this->nand));
- 	gpmi_free_dma_buffer(this);
- }
- 
- static int gpmi_init_last(struct gpmi_nand_data *this)
- {
--	struct mtd_info *mtd = &this->mtd;
--	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_chip *chip = &this->nand;
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	struct bch_geometry *bch_geo = &this->bch_geometry;
- 	int ret;
-@@ -1886,8 +1885,8 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
- 
- static int gpmi_nand_init(struct gpmi_nand_data *this)
- {
--	struct mtd_info  *mtd = &this->mtd;
- 	struct nand_chip *chip = &this->nand;
-+	struct mtd_info  *mtd = nand_to_mtd(chip);
- 	int ret;
- 
- 	/* init current chip */
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 544062f..4e49a1f 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -160,7 +160,6 @@ struct gpmi_nand_data {
- 
- 	/* MTD / NAND */
- 	struct nand_chip	nand;
+diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+index 3738856..3400b3f 100644
+--- a/drivers/mtd/nand/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/lpc32xx_mlc.c
+@@ -173,7 +173,6 @@ struct lpc32xx_nand_host {
+ 	struct nand_chip	nand_chip;
+ 	struct lpc32xx_mlc_platform_data *pdata;
+ 	struct clk		*clk;
 -	struct mtd_info		mtd;
+ 	void __iomem		*io_base;
+ 	int			irq;
+ 	struct lpc32xx_nand_cfg_mlc	*ncfg;
+@@ -566,7 +565,7 @@ static void lpc32xx_ecc_enable(struct mtd_info *mtd, int mode)
  
- 	/* General-use Variables */
- 	int			current_chip;
+ static int lpc32xx_dma_setup(struct lpc32xx_nand_host *host)
+ {
+-	struct mtd_info *mtd = &host->mtd;
++	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
+ 	dma_cap_mask_t mask;
+ 
+ 	if (!host->pdata || !host->pdata->dma_filter) {
+@@ -660,8 +659,8 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	
+ 	host->io_base_phy = rc->start;
+ 
+-	mtd = &host->mtd;
+ 	nand_chip = &host->nand_chip;
++	mtd = nand_to_mtd(nand_chip);
+ 	if (pdev->dev.of_node)
+ 		host->ncfg = lpc32xx_parse_dt(&pdev->dev);
+ 	if (!host->ncfg) {
+@@ -814,7 +813,7 @@ err_exit1:
+ static int lpc32xx_nand_remove(struct platform_device *pdev)
+ {
+ 	struct lpc32xx_nand_host *host = platform_get_drvdata(pdev);
+-	struct mtd_info *mtd = &host->mtd;
++	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
+ 
+ 	nand_release(mtd);
+ 	free_irq(host->irq, host);
+diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+index fcd9fac..61b2961 100644
+--- a/drivers/mtd/nand/lpc32xx_slc.c
++++ b/drivers/mtd/nand/lpc32xx_slc.c
+@@ -204,7 +204,6 @@ struct lpc32xx_nand_host {
+ 	struct nand_chip	nand_chip;
+ 	struct lpc32xx_slc_platform_data *pdata;
+ 	struct clk		*clk;
+-	struct mtd_info		mtd;
+ 	void __iomem		*io_base;
+ 	struct lpc32xx_nand_cfg_slc *ncfg;
+ 
+@@ -703,7 +702,7 @@ static int lpc32xx_nand_write_page_raw_syndrome(struct mtd_info *mtd,
+ 
+ static int lpc32xx_nand_dma_setup(struct lpc32xx_nand_host *host)
+ {
+-	struct mtd_info *mtd = &host->mtd;
++	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
+ 	dma_cap_mask_t mask;
+ 
+ 	if (!host->pdata || !host->pdata->dma_filter) {
+@@ -799,8 +798,8 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 
+ 	host->pdata = dev_get_platdata(&pdev->dev);
+ 
+-	mtd = &host->mtd;
+ 	chip = &host->nand_chip;
++	mtd = nand_to_mtd(chip);
+ 	chip->priv = host;
+ 	nand_set_flash_node(chip, pdev->dev.of_node);
+ 	mtd->priv = chip;
+@@ -932,7 +931,7 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
+ {
+ 	uint32_t tmp;
+ 	struct lpc32xx_nand_host *host = platform_get_drvdata(pdev);
+-	struct mtd_info *mtd = &host->mtd;
++	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
+ 
+ 	nand_release(mtd);
+ 	dma_release_channel(host->dma_chan);
 -- 
 2.1.4
