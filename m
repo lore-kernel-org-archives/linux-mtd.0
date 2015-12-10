@@ -1,27 +1,26 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6rXr-0001ML-Lf
- for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 03:05:28 +0000
-From: =?gb2312?B?S2FybCBaaGFuZyDVxcurwuAgKGthcmx6aGFuZyk=?=
- <karlzhang@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>, Karl Zhang
- <shuangshuo@gmail.com>
-CC: =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
- <peterpandong@micron.com>, "Zoltan Szubbocsev (zszubbocsev)"
- <zszubbocsev@micron.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>,
- =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: RE: [PATCH 0/2] mtd: spi-nor: add new device MT35X
-Date: Thu, 10 Dec 2015 03:04:21 +0000
-Message-ID: <D067BF0533BDBE4F821CF557AAAE784484958732@NTXXIAMBX01.xacn.micron.com>
-References: <1449712740-22900-1-git-send-email-karlzhang@micron.com>
- <20151210024623.GB29459@google.com>
-In-Reply-To: <20151210024623.GB29459@google.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Subject: Re: [PATCH v4 4/5] ARM: dts: DRA7: add entry for qspi mmap region
+To: Tony Lindgren <tony@atomide.com>
+References: <1448860515-28336-1-git-send-email-vigneshr@ti.com>
+ <1448860515-28336-5-git-send-email-vigneshr@ti.com>
+ <20151130223408.GJ23396@atomide.com> <565D25E6.4070206@ti.com>
+ <20151201163950.GR23396@atomide.com> <566017A8.5040106@ti.com>
+CC: Brian Norris <computersforpeace@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Russell King
+ <linux@arm.linux.org.uk>, "hramrach@gmail.com" <hramrach@gmail.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <566907D7.6040003@ti.com>
+Date: Thu, 10 Dec 2015 10:34:23 +0530
 MIME-Version: 1.0
+In-Reply-To: <566017A8.5040106@ti.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,22 +30,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiA+IE1pY3JvbiBoYXMgYW5ub3VuY2VkIGEgbmV3IFNQSSBOT1IgZGV2aWNlIE1UMzVYIChYVFJN
-Rmxhc2gpLg0KPiANCj4gQW5ub3VuY2VkPyBEbyB5b3UgaGF2ZSBhIGZsYXNoIHNhbXBsZT8gRGlk
-IHlvdSB0ZXN0Pw0KPiANCj4gQnJpYW4NCj4gDQpZZXMsIHdlIGhhdmUgc2FtcGxlcywgYW5kIHRl
-c3RlZCBpdCB3aXRoIFNQSSB4MSBJL08uDQoNCkthcmwNCg0KPiA+IFRoaXMgZGV2aWNlJ3MgbWFu
-dWZhY3R1cmVyIElEIGlzIHVzaW5nIDJDaCB3aGljaCBhcnJhbmdlZCBieSBKRURFQy4NCj4gPiBU
-aGUgMjBoIGlzIGFsc28gTWljcm9uJ3MgSUQgZHVlIHRvIHRoZSBoaXN0b3J5Lg0KPiA+DQo+ID4g
-VGhpcyBuZXcgZGV2aWNlIHN1cHBvcnQgaGlnaCBzcGVlZCBJL08gaW50ZXJmYWNlLiBUaGUgY2xv
-Y2sgZnJlcXVlbmN5DQo+ID4gY291bGQgdXAgdG8gMjAwIE1IeiAoTUFYKSBpbiBERFIgKDQwMCBN
-Qi9zKSB3aXRoIERRUy4gVGhlIGRldmljZSBidXMNCj4gPiB3aWR0aCBjb3VsZCBiZSAxIG9yIDgs
-IGFuZCBpdCdzIGRlZmF1bHQgd2lkdGggaXMgY29uZmlndXJhYmxlLg0KPiA+DQo+ID4gS2FybCBa
-aGFuZyAoMik6DQo+ID4gICBtdGQ6IHNwaS1ub3I6IGFkZCBNYW51ZmFjdHVyZXIgSUQgZm9yIE1p
-Y3Jvbg0KPiA+ICAgbXRkOiBzcGktbm9yOiBhZGQgbmV3IGRldmljZSBNVDM1WA0KPiA+DQo+ID4g
-IGRyaXZlcnMvbXRkL2RldmljZXMvbTI1cDgwLmMgIHwgMSArDQo+ID4gIGRyaXZlcnMvbXRkL3Nw
-aS1ub3Ivc3BpLW5vci5jIHwgMiArKw0KPiA+ICBpbmNsdWRlL2xpbnV4L210ZC9jZmkuaCAgICAg
-ICB8IDEgKw0KPiA+ICBpbmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmggICB8IDIgKysNCj4gPiAg
-NCBmaWxlcyBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykNCj4gPg0KPiA+IC0tDQo+ID4gMS45LjEN
-Cj4gPg0KPiANCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fDQo+IExpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KPiBodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8NCg==
+
+
+On 12/03/2015 03:51 PM, Vignesh R wrote:
+> 
+> 
+> On 12/01/2015 10:09 PM, Tony Lindgren wrote:
+>> * Vignesh R <vigneshr@ti.com> [151130 20:46]:
+>>> On 12/01/2015 04:04 AM, Tony Lindgren wrote:
+>>>>
+...
+>>
+>> OK. They are both on L3 main so that won't cause any issues for separate
+>> interconnect driver instances. As they are still separate targets flushing
+>> a posted write to one area will not flush anything to the other.
+>>
+> 
+> I didn't quite understand what you meant by interconnect driver instance.
+> qspi_base and qspi_mmap region are tightly bound to each other and both
+> needs to be accessed by ti-qspi driver (though different targets).
+> Besides qspi_mmap region is only used to read data, there will not be
+> any write accesses to this target. Are you saying this binding is not
+> viable?
+> 
+
+As I stated above qspi_base and qspi_mmap region are tightly bound,
+there is no way to use qspi_mmap region w/o accessing qspi_base. So I am
+planning to keep them as it is. I will move qspi_ctrlmod to use syscon.
+Something like:
+
+qspi: qspi@4b300000 {
+       compatible = "ti,dra7xxx-qspi";
+       reg = <0x4b300000 0x100>,
+             <0x5c000000 0x4000000>,
+       reg-names = "qspi_base", "qspi_mmap";
+       syscon-chipselects = <&scm_conf 0x558>;
+       #address-cells = <1>;
+       #size-cells = <0>;
+       spi-max-frequency = <48000000>;
+       ti,hwmods = "qspi";
+};
+
+Do you think this is not viable in future?
+
+
+-- 
+Regards
+Vignesh
