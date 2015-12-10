@@ -1,24 +1,20 @@
-Received: from mail-ig0-x234.google.com ([2607:f8b0:4001:c05::234])
+Received: from mail-bl2on0087.outbound.protection.outlook.com ([65.55.169.87]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6xZq-0004Bh-DY
- for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 09:31:55 +0000
-Received: by igbxm8 with SMTP id xm8so11433802igb.1
- for <linux-mtd@lists.infradead.org>; Thu, 10 Dec 2015 01:31:33 -0800 (PST)
+ id 1a73SN-0007m4-0k
+ for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 15:48:38 +0000
+From: Graham Moore <grmoore@opensource.altera.com>
+To: <linux-mtd@lists.infradead.org>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, <linux-kernel@vger.kernel.org>, Alan Tull
+ <atull@opensource.altera.com>, Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>, Graham Moore
+ <grmoore@opensource.altera.com>
+Subject: [PATCH] ARM: socfpga: dts: Add NAND device tree for Altera Arria10
+Date: Thu, 10 Dec 2015 09:43:45 -0600
+Message-ID: <1449762225-3592-1-git-send-email-grmoore@opensource.altera.com>
 MIME-Version: 1.0
-In-Reply-To: <20151209235823.GD144338@google.com>
-References: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
- <20151209235823.GD144338@google.com>
-Date: Thu, 10 Dec 2015 10:31:32 +0100
-Message-ID: <CAGXE3d_v9hKCqNeTWfjpad_Uj=sKo1fn0B=Wz2s_t76JKUZhzQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: Disable subpage writes for drivers without
- ecc->hwctl
-From: Helmut Schaa <helmut.schaa@googlemail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Pekon Gupta <pekon.gupta@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +24,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 10, 2015 at 12:58 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> Hi,
->
-> I have my archaeology hat on, in the deep corners of my mailbox...
->
-> On Wed, Apr 09, 2014 at 11:13:24AM +0200, Helmut Schaa wrote:
->> nand_write_subpage_hwecc causes a crash if the driver did not register
->> ecc->hwctl or ecc->calculate. Fix this by disabling subpage writes if
->> ecc->hwctl or ecc->calculate is not provided by the driver.
->>
->> This behavior was introduced in commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9
->> "mtd: nand: subpage write support for hardware based ECC schemes".
->>
->> This fixes a crash with fsl_elbc_nand and maybe others:
->>
-> [...]
->>
->> Cc: Gupta, Pekon <pekon@ti.com>
->> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->> Cc: David Woodhouse <David.Woodhouse@intel.com>
->> Signed-off-by: Helmut Schaa <helmut.schaa@googlemail.com>
->> ---
->> I noticed this bug on openwrt with kernel 3.10 but it looks as if this can
->> still happen in more recent kernels.
->>
->>  drivers/mtd/nand/nand_base.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index 9715a7b..2298289 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -3768,7 +3768,7 @@ int nand_scan_tail(struct mtd_info *mtd)
->>                       ecc->write_oob = nand_write_oob_std;
->>               if (!ecc->read_subpage)
->>                       ecc->read_subpage = nand_read_subpage;
->> -             if (!ecc->write_subpage)
->> +             if (!ecc->write_subpage && ecc->hwctl && ecc->calculate)
->>                       ecc->write_subpage = nand_write_subpage_hwecc;
->>
->>       case NAND_ECC_HW_SYNDROME:
->
-> I realize we've merged a fix for fsl_elbc_nand long ago (commit
-> f034d87def51 "mtd: eLBC NAND: fix subpage write support"), but this
-> change still looks sane, applies, and could possibly fix some other
-> drivers that are lurking somewhere. Any reason I shouldn't apply it?
+Add socfpga_arria10_socdk_nand.dts board file for supporting NAND
+on Altera Arria10.
 
-I'm not carrying this patch in my tree anymore and did not see any more
-crashes with the flash configuration I'm using. So, I think the original patch
-is kind of superfluous.
+Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+---
+ arch/arm/boot/dts/Makefile                       |  1 +
+ arch/arm/boot/dts/socfpga_arria10_socdk_nand.dts | 44 ++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+)
+ create mode 100644 arch/arm/boot/dts/socfpga_arria10_socdk_nand.dts
 
-Regards,
-Helmut
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 30bbc37..7031603 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -556,6 +556,7 @@ dtb-$(CONFIG_ARCH_SHMOBILE_MULTI) += \
+ 	sh73a0-kzm9g.dtb
+ dtb-$(CONFIG_ARCH_SOCFPGA) += \
+ 	socfpga_arria5_socdk.dtb \
++	socfpga_arria10_socdk_nand.dtb \
+ 	socfpga_arria10_socdk_sdmmc.dtb \
+ 	socfpga_cyclone5_socdk.dtb \
+ 	socfpga_cyclone5_de0_sockit.dtb \
+diff --git a/arch/arm/boot/dts/socfpga_arria10_socdk_nand.dts b/arch/arm/boot/dts/socfpga_arria10_socdk_nand.dts
+new file mode 100644
+index 0000000..e69144b
+--- /dev/null
++++ b/arch/arm/boot/dts/socfpga_arria10_socdk_nand.dts
+@@ -0,0 +1,44 @@
++/*
++ * Copyright (C) 2015 Altera Corporation. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++/dts-v1/;
++#include "socfpga_arria10_socdk.dtsi"
++
++/ {
++	soc {
++		nand: nand@ffb90000 {
++			#address-cells = <1>;
++			#size-cells = <1>;
++			compatible = "denali,denali-nand-dt";
++			reg = <0xffb90000 0x72000>, <0xffb80000 0x10000>;
++			reg-names = "nand_data", "denali_reg";
++			interrupts = <0 99 4>;
++			dma-mask = <0xffffffff>;
++			clocks = <&nand_clk>;
++			have-hw-ecc-fixup;
++			status = "okay";
++
++			partition@nand-boot {
++				label = "Boot and fpga data";
++				reg = <0x0 0x1C00000>;
++			};
++			partition@nand-rootfs {
++				label = "Root Filesystem - JFFS2";
++				reg = <0x1C00000 0x6400000>;
++			};
++		};
++	};
++};
+-- 
+2.5.0
