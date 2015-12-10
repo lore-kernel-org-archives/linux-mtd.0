@@ -30,10 +30,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 26/58] mtd: nand: lpc32xx: use the mtd instance embedded in
+Subject: [PATCH v4 24/58] mtd: nand: hisi504: use the mtd instance embedded in
  struct nand_chip
-Date: Thu, 10 Dec 2015 09:00:10 +0100
-Message-Id: <1449734442-18672-27-git-send-email-boris.brezillon@free-electrons.com>
+Date: Thu, 10 Dec 2015 09:00:08 +0100
+Message-Id: <1449734442-18672-25-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -91,89 +91,67 @@ __type *__priv;
 )
 --->8---
 ---
- drivers/mtd/nand/lpc32xx_mlc.c | 7 +++----
- drivers/mtd/nand/lpc32xx_slc.c | 7 +++----
- 2 files changed, 6 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/hisi504_nand.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
-index 3738856..3400b3f 100644
---- a/drivers/mtd/nand/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/lpc32xx_mlc.c
-@@ -173,7 +173,6 @@ struct lpc32xx_nand_host {
- 	struct nand_chip	nand_chip;
- 	struct lpc32xx_mlc_platform_data *pdata;
- 	struct clk		*clk;
+diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
+index 6358d4a..6e6e482 100644
+--- a/drivers/mtd/nand/hisi504_nand.c
++++ b/drivers/mtd/nand/hisi504_nand.c
+@@ -134,7 +134,6 @@
+ 
+ struct hinfc_host {
+ 	struct nand_chip	chip;
 -	struct mtd_info		mtd;
- 	void __iomem		*io_base;
- 	int			irq;
- 	struct lpc32xx_nand_cfg_mlc	*ncfg;
-@@ -566,7 +565,7 @@ static void lpc32xx_ecc_enable(struct mtd_info *mtd, int mode)
+ 	struct device		*dev;
+ 	void __iomem		*iobase;
+ 	void __iomem		*mmio;
+@@ -189,8 +188,8 @@ static void wait_controller_finished(struct hinfc_host *host)
  
- static int lpc32xx_dma_setup(struct lpc32xx_nand_host *host)
+ static void hisi_nfc_dma_transfer(struct hinfc_host *host, int todev)
  {
--	struct mtd_info *mtd = &host->mtd;
-+	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
- 	dma_cap_mask_t mask;
+-	struct mtd_info	*mtd = &host->mtd;
+-	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct nand_chip *chip = &host->chip;
++	struct mtd_info	*mtd = nand_to_mtd(chip);
+ 	unsigned long val;
+ 	int ret;
  
- 	if (!host->pdata || !host->pdata->dma_filter) {
-@@ -660,8 +659,8 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	
- 	host->io_base_phy = rc->start;
+@@ -262,7 +261,7 @@ static int hisi_nfc_send_cmd_pageprog(struct hinfc_host *host)
  
--	mtd = &host->mtd;
- 	nand_chip = &host->nand_chip;
-+	mtd = nand_to_mtd(nand_chip);
- 	if (pdev->dev.of_node)
- 		host->ncfg = lpc32xx_parse_dt(&pdev->dev);
- 	if (!host->ncfg) {
-@@ -814,7 +813,7 @@ err_exit1:
- static int lpc32xx_nand_remove(struct platform_device *pdev)
+ static int hisi_nfc_send_cmd_readstart(struct hinfc_host *host)
  {
- 	struct lpc32xx_nand_host *host = platform_get_drvdata(pdev);
+-	struct mtd_info	*mtd = &host->mtd;
++	struct mtd_info	*mtd = nand_to_mtd(&host->chip);
+ 
+ 	if ((host->addr_value[0] == host->cache_addr_value[0]) &&
+ 	    (host->addr_value[1] == host->cache_addr_value[1]))
+@@ -643,7 +642,7 @@ static int hisi_nfc_ecc_probe(struct hinfc_host *host)
+ 	int size, strength, ecc_bits;
+ 	struct device *dev = host->dev;
+ 	struct nand_chip *chip = &host->chip;
 -	struct mtd_info *mtd = &host->mtd;
-+	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct device_node *np = host->dev->of_node;
+ 
+ 	size = of_get_nand_ecc_step_size(np);
+@@ -712,7 +711,7 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, host);
+ 	chip = &host->chip;
+-	mtd  = &host->mtd;
++	mtd  = nand_to_mtd(chip);
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+@@ -822,7 +821,7 @@ err_res:
+ static int hisi_nfc_remove(struct platform_device *pdev)
+ {
+ 	struct hinfc_host *host = platform_get_drvdata(pdev);
+-	struct mtd_info *mtd = &host->mtd;
++	struct mtd_info *mtd = nand_to_mtd(&host->chip);
  
  	nand_release(mtd);
- 	free_irq(host->irq, host);
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index fcd9fac..61b2961 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -204,7 +204,6 @@ struct lpc32xx_nand_host {
- 	struct nand_chip	nand_chip;
- 	struct lpc32xx_slc_platform_data *pdata;
- 	struct clk		*clk;
--	struct mtd_info		mtd;
- 	void __iomem		*io_base;
- 	struct lpc32xx_nand_cfg_slc *ncfg;
  
-@@ -703,7 +702,7 @@ static int lpc32xx_nand_write_page_raw_syndrome(struct mtd_info *mtd,
- 
- static int lpc32xx_nand_dma_setup(struct lpc32xx_nand_host *host)
- {
--	struct mtd_info *mtd = &host->mtd;
-+	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
- 	dma_cap_mask_t mask;
- 
- 	if (!host->pdata || !host->pdata->dma_filter) {
-@@ -799,8 +798,8 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 
- 	host->pdata = dev_get_platdata(&pdev->dev);
- 
--	mtd = &host->mtd;
- 	chip = &host->nand_chip;
-+	mtd = nand_to_mtd(chip);
- 	chip->priv = host;
- 	nand_set_flash_node(chip, pdev->dev.of_node);
- 	mtd->priv = chip;
-@@ -932,7 +931,7 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
- {
- 	uint32_t tmp;
- 	struct lpc32xx_nand_host *host = platform_get_drvdata(pdev);
--	struct mtd_info *mtd = &host->mtd;
-+	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
- 
- 	nand_release(mtd);
- 	dma_release_channel(host->dma_chan);
 -- 
 2.1.4
