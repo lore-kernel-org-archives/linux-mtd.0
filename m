@@ -1,23 +1,25 @@
-Received: from mail-bl2on0088.outbound.protection.outlook.com ([65.55.169.88]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from mail-ob0-x234.google.com ([2607:f8b0:4003:c01::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a74Rv-0008TP-73
- for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 16:52:12 +0000
-Message-ID: <5669ABE6.5030607@opensource.altera.com>
-Date: Thu, 10 Dec 2015 10:44:22 -0600
-From: Dinh Nguyen <dinguyen@opensource.altera.com>
+ id 1a75ES-0003z4-Tq
+ for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 17:42:21 +0000
+Received: by obciw8 with SMTP id iw8so64408292obc.1
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Dec 2015 09:42:00 -0800 (PST)
+Subject: Re: [PATCH linux-next] mtd: part: Add BCM962368 CFE partitioning
+ support
+To: Simon Arlott <simon@fire.lp0.eu>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <5668A33E.4040405@simon.arlott.org.uk>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Jonas Gorski <jogo@openwrt.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <5669B965.5030105@gmail.com>
+Date: Thu, 10 Dec 2015 09:41:57 -0800
 MIME-Version: 1.0
-To: Graham Moore <grmoore@opensource.altera.com>,
- <linux-mtd@lists.infradead.org>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, <linux-kernel@vger.kernel.org>, Alan Tull
- <atull@opensource.altera.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>
-Subject: Re: [PATCH] ARM: socfpga: dts: Add NAND device tree for Altera Arria10
-References: <1449762225-3592-1-git-send-email-grmoore@opensource.altera.com>
-In-Reply-To: <1449762225-3592-1-git-send-email-grmoore@opensource.altera.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <5668A33E.4040405@simon.arlott.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,101 +29,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/10/2015 09:43 AM, Graham Moore wrote:
-> Add socfpga_arria10_socdk_nand.dts board file for supporting NAND
-> on Altera Arria10.
+Le 09/12/2015 13:55, Simon Arlott a écrit :
+> Add partitioning support for BCM963268 boards with CFE bootloaders.
+> The following partitions are defined:
+>   "boot":           CFE and nvram data
+>   "rootfs":         Currently selected rootfs
+>   "data":           Configuration data
+>   "rootfs1_update": Container for the whole flash area used
+>                     for the first rootfs to allow it to be
+>                     updated.
+>   "rootfs2_update": Container for the whole flash area used
+>                     for the second rootfs to allow it to be
+>                     updated.
+>   "rootfs_other":   The other (not currently selected) rootfs
 > 
-> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> Example:
+> [    1.904302] nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xf1
+> [    1.911000] nand: Macronix NAND 128MiB 3,3V 8-bit
+> [    1.915855] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> [    1.923797] bcm6368_nand 10000200.nand: detected 128MiB total, 128KiB blocks, 2KiB pages, 16B OOB, 8-bit, Hamming ECC
+> [    1.936994] Bad block table found at page 65472, version 0x01
+> [    1.944121] Bad block table found at page 65408, version 0x01
+> [    1.951166] nand_read_bbt: bad block at 0x000007480000
+> [    1.990043] bcm963268part: rootfs1: CFE boot tag found at 0x20000 with version 6, board type 963168VX and sequence number 2
+> [    2.003060] bcm963268part: rootfs2: CFE boot tag found at 0x4000000 with version 6, board type 963168VX and sequence number 1
+> [    2.015159] bcm963268part: CFE bootline selected latest image rootfs1
+> [    2.022080] 6 bcm963268part partitions found on MTD device brcmnand.0
+> [    2.042659] Creating 6 MTD partitions on "brcmnand.0":
+> [    2.048025] 0x000000000000-0x000000020000 : "boot"
+> [    2.062134] 0x000000040000-0x000001120000 : "rootfs"
+> [    2.077632] 0x000007b00000-0x000007f00000 : "data"
+> [    2.091363] 0x000000020000-0x000003ac0000 : "rootfs1_update"
+> [    2.106228] 0x000004000000-0x000007ac0000 : "rootfs2_update"
+> [    2.121093] 0x000004020000-0x000005060000 : "rootfs_other"
+> 
+> The nvram contains the offset and size of the boot, rootfs1, rootfs2
+> and data partitions. The presence of CFE and nvram is verified by
+> reading from the boot partition which is assumed to be at offset 0
+> and the process aborts if the nvram read indicates that this is not
+> the case.
+> 
+> There is bcm_tag information at the start of each rootfs that is used
+> to determine which rootfs is newer and what its real offset/size is.
+> 
+> The CFE bootline or nvram partition number is used to select a rootfs.
+> 
+> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
 > ---
->  arch/arm/boot/dts/Makefile                       |  1 +
->  arch/arm/boot/dts/socfpga_arria10_socdk_nand.dts | 44 ++++++++++++++++++++++++
->  2 files changed, 45 insertions(+)
->  create mode 100644 arch/arm/boot/dts/socfpga_arria10_socdk_nand.dts
+> I'm aware that this is not compatible with the mtd partition/device tree
+> reorganisation patches and will rework the patch when this is committed.
 > 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 30bbc37..7031603 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -556,6 +556,7 @@ dtb-$(CONFIG_ARCH_SHMOBILE_MULTI) += \
->  	sh73a0-kzm9g.dtb
->  dtb-$(CONFIG_ARCH_SOCFPGA) += \
->  	socfpga_arria5_socdk.dtb \
-> +	socfpga_arria10_socdk_nand.dtb \
+> Should I try to put the "struct bcm963268_nvram" in a common header file
+> for all 63xx SoCs? It's hard to know if there is only one purpose for
+> each byte in the nvram across all SoCs or whether it would be a complex
+> type involving unions for different SoCs.
 
-This patch does not apply:
+Even harder is knowing what vendors ended up using in the reserved
+fields when they decided on a particular reference design and started to
+build their product...
 
-error: patch failed: arch/arm/boot/dts/Makefile:556
-error: arch/arm/boot/dts/Makefile: patch does not apply
+I would look at what exists in the OpenWrt tree and create e.g:
+include/uapi/linux/bcm963xx_nvram.h or something along these lines so we
+have at least a central location where the (potentially) different NVRAM
+formats for imagetag are there.
 
-Can you please rebase this patch to my branch:
+> 
+> The partitioning needs to match what exists already for this board so
+> that it's practical to swap between an flash image released by the
+> manufacturer/distributor of the hardware, and a custom image based on
+> the latest vanilla kernel.
+> 
+>  drivers/mtd/Kconfig         |  21 +++
+>  drivers/mtd/Makefile        |   1 +
+>  drivers/mtd/bcm963268part.c | 373 ++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 395 insertions(+)
+>  create mode 100644 drivers/mtd/bcm963268part.c
 
-https://git.kernel.org/cgit/linux/kernel/git/dinguyen/linux.git/log/?h=socfpga_for_next_v4.5_dts
+What motivated created a separate partition parser rather then using the
+extended the existing one?
 
-
->  	socfpga_arria10_socdk_sdmmc.dtb \
->  	socfpga_cyclone5_socdk.dtb \
->  	socfpga_cyclone5_de0_sockit.dtb \
-> diff --git a/arch/arm/boot/dts/socfpga_arria10_socdk_nand.dts b/arch/arm/boot/dts/socfpga_arria10_socdk_nand.dts
-> new file mode 100644
-> index 0000000..e69144b
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/socfpga_arria10_socdk_nand.dts
-> @@ -0,0 +1,44 @@
-> +/*
-> + * Copyright (C) 2015 Altera Corporation. All rights reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms and conditions of the GNU General Public License,
-> + * version 2, as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope it will be useful, but WITHOUT
-> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-> + * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-> + * more details.
-> + *
-> + * You should have received a copy of the GNU General Public License along with
-> + * this program.  If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +
-> +/dts-v1/;
-> +#include "socfpga_arria10_socdk.dtsi"
-> +
-> +/ {
-> +	soc {
-> +		nand: nand@ffb90000 {
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			compatible = "denali,denali-nand-dt";
-> +			reg = <0xffb90000 0x72000>, <0xffb80000 0x10000>;
-> +			reg-names = "nand_data", "denali_reg";
-> +			interrupts = <0 99 4>;
-> +			dma-mask = <0xffffffff>;
-> +			clocks = <&nand_clk>;
-> +			have-hw-ecc-fixup;
-
-"have-hw-ecc-fixup" is not documented anywhere. What is this?
-
-Also, for v2, please resend this patch with to the appropriate people
-per what get_maintainers.pl reports:
-
-Dinh Nguyen <dinguyen@opensource.altera.com> (maintainer:ARM/SOCFPGA
-ARCHITECTURE)
-Rob Herring <robh+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED
-DEVICE TREE BINDINGS)
-Pawel Moll <pawel.moll@arm.com> (maintainer:OPEN FIRMWARE AND FLATTENED
-DEVICE TREE BINDINGS)
-Mark Rutland <mark.rutland@arm.com> (maintainer:OPEN FIRMWARE AND
-FLATTENED DEVICE TREE BINDINGS)
-Ian Campbell <ijc+devicetree@hellion.org.uk> (maintainer:OPEN FIRMWARE
-AND FLATTENED DEVICE TREE BINDINGS)
-Kumar Gala <galak@codeaurora.org> (maintainer:OPEN FIRMWARE AND
-FLATTENED DEVICE TREE BINDINGS)
-Russell King <linux@arm.linux.org.uk> (maintainer:ARM PORT)
-devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE
-TREE BINDINGS)
-linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT)
-linux-kernel@vger.kernel.org (open list)
-
-
-Thanks,
-Dinh
+I would imagine that, at some point, the partition parser could know
+what kind of flash it needs to parse: SPI/P-NOR or NAND, and based on
+that, do an appropriate definition?
+-- 
+Florian
