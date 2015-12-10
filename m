@@ -30,10 +30,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 47/58] staging: mt29f_spinand: use the mtd instance
- embedded in struct nand_chip
-Date: Thu, 10 Dec 2015 09:00:31 +0100
-Message-Id: <1449734442-18672-48-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v4 45/58] mtd: nand: vf610: use the mtd instance embedded in
+ struct nand_chip
+Date: Thu, 10 Dec 2015 09:00:29 +0100
+Message-Id: <1449734442-18672-46-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -45,28 +45,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-struct nand_chip now embeds an mtd device, use it instead of allocating
-a new one.
+struct nand_chip now embeds an mtd device. Make use of this mtd instance.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/staging/mt29f_spinand/mt29f_spinand.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Changes generated with the following coccinelle script
 
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index 8924a96..8171b74 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -903,9 +903,7 @@ static int spinand_probe(struct spi_device *spi_nand)
- 	chip->options	|= NAND_CACHEPRG;
- 	chip->select_chip = spinand_select_chip;
+--->8---
+virtual patch
+
+@fix1@
+identifier __chipfield, __mtdfield;
+type __type;
+@@
+(
+	__type {
+		...
+		struct nand_chip __chipfield;
+		...
+-		struct mtd_info __mtdfield;
+		...
+	};
+|
+	__type {
+		...
+-		struct mtd_info __mtdfield;
+		...
+		struct nand_chip __chipfield;
+		...
+	};
+)
+
+@fix2 depends on fix1@
+identifier fix1.__chipfield, fix1.__mtdfield;
+identifier __subfield;
+type fix1.__type;
+__type *__priv;
+@@
+(
+-	__priv->__mtdfield.__subfield
++	nand_to_mtd(&__priv->__chipfield)->__subfield
+|
+-	&(__priv->__mtdfield)
++	nand_to_mtd(&__priv->__chipfield)
+)
+--->8---
+---
+ drivers/mtd/nand/vf610_nfc.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+index 1c86c6b..1bbb93a 100644
+--- a/drivers/mtd/nand/vf610_nfc.c
++++ b/drivers/mtd/nand/vf610_nfc.c
+@@ -156,7 +156,6 @@ enum vf610_nfc_variant {
+ };
  
--	mtd = devm_kzalloc(&spi_nand->dev, sizeof(struct mtd_info), GFP_KERNEL);
--	if (!mtd)
--		return -ENOMEM;
+ struct vf610_nfc {
+-	struct mtd_info mtd;
+ 	struct nand_chip chip;
+ 	struct device *dev;
+ 	void __iomem *regs;
+@@ -171,7 +170,10 @@ struct vf610_nfc {
+ 	u32 ecc_mode;
+ };
+ 
+-#define mtd_to_nfc(_mtd) container_of(_mtd, struct vf610_nfc, mtd)
++static inline struct vf610_nfc *mtd_to_nfc(struct mtd_info *mtd)
++{
++	return container_of(mtd_to_nand(mtd), struct vf610_nfc, chip);
++}
+ 
+ static struct nand_ecclayout vf610_nfc_ecc45 = {
+ 	.eccbytes = 45,
+@@ -674,8 +676,8 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	nfc->dev = &pdev->dev;
+-	mtd = &nfc->mtd;
+ 	chip = &nfc->chip;
 +	mtd = nand_to_mtd(chip);
  
- 	dev_set_drvdata(&spi_nand->dev, mtd);
- 
+ 	mtd->priv = chip;
+ 	mtd->owner = THIS_MODULE;
 -- 
 2.1.4
