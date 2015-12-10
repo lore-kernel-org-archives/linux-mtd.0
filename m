@@ -30,10 +30,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 27/58] mtd: nand: mpc5121: use the mtd instance embedded in
+Subject: [PATCH v4 28/58] mtd: nand: mxc: use the mtd instance embedded in
  struct nand_chip
-Date: Thu, 10 Dec 2015 09:00:11 +0100
-Message-Id: <1449734442-18672-28-git-send-email-boris.brezillon@free-electrons.com>
+Date: Thu, 10 Dec 2015 09:00:12 +0100
+Message-Id: <1449734442-18672-29-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -91,30 +91,38 @@ __type *__priv;
 )
 --->8---
 ---
- drivers/mtd/nand/mpc5121_nfc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/nand/mxc_nand.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index 642c486..8b4cd82 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -118,7 +118,6 @@
- #define NFC_TIMEOUT		(HZ / 10)	/* 1/10 s */
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index b291258..9dd71af 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -173,7 +173,6 @@ struct mxc_nand_devtype_data {
+ };
  
- struct mpc5121_nfc_prv {
+ struct mxc_nand_host {
 -	struct mtd_info		mtd;
- 	struct nand_chip	chip;
- 	int			irq;
- 	void __iomem		*regs;
-@@ -654,8 +653,8 @@ static int mpc5121_nfc_probe(struct platform_device *op)
- 	if (!prv)
- 		return -ENOMEM;
+ 	struct nand_chip	nand;
+ 	struct device		*dev;
  
--	mtd = &prv->mtd;
- 	chip = &prv->chip;
-+	mtd = nand_to_mtd(chip);
+@@ -1514,7 +1513,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 	host->dev = &pdev->dev;
+ 	/* structures must be linked */
+ 	this = &host->nand;
+-	mtd = &host->mtd;
++	mtd = nand_to_mtd(this);
+ 	mtd->priv = this;
+ 	mtd->dev.parent = &pdev->dev;
+ 	mtd->name = DRIVER_NAME;
+@@ -1702,7 +1701,7 @@ static int mxcnd_remove(struct platform_device *pdev)
+ {
+ 	struct mxc_nand_host *host = platform_get_drvdata(pdev);
  
- 	mtd->priv = chip;
- 	mtd->dev.parent = dev;
+-	nand_release(&host->mtd);
++	nand_release(nand_to_mtd(&host->nand));
+ 	if (host->clk_act)
+ 		clk_disable_unprepare(host->clk);
+ 
 -- 
 2.1.4
