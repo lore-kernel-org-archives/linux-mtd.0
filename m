@@ -30,10 +30,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 06/58] mtd: nand: atmel: use the mtd instance embedded in
+Subject: [PATCH v4 08/58] mtd: nand: bcm47xx: use the mtd instance embedded in
  struct nand_chip
-Date: Thu, 10 Dec 2015 08:59:50 +0100
-Message-Id: <1449734442-18672-7-git-send-email-boris.brezillon@free-electrons.com>
+Date: Thu, 10 Dec 2015 08:59:52 +0100
+Message-Id: <1449734442-18672-9-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -91,71 +91,68 @@ __type *__priv;
 )
 --->8---
 ---
- drivers/mtd/nand/atmel_nand.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h | 1 -
+ drivers/mtd/nand/bcm47xxnflash/main.c          | 8 +++++---
+ drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c   | 2 +-
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index edd191a..9ba2831 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -116,7 +116,6 @@ static struct atmel_nfc	nand_nfc;
+diff --git a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
+index c005a62..8ea7571 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
++++ b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
+@@ -12,7 +12,6 @@ struct bcm47xxnflash {
+ 	struct bcma_drv_cc *cc;
  
- struct atmel_nand_host {
- 	struct nand_chip	nand_chip;
--	struct mtd_info		mtd;
- 	void __iomem		*io_base;
- 	dma_addr_t		io_phys;
- 	struct atmel_nand_data	board;
-@@ -317,8 +316,10 @@ static int nfc_set_sram_bank(struct atmel_nand_host *host, unsigned int bank)
- 		return -EINVAL;
+ 	struct nand_chip nand_chip;
+-	struct mtd_info mtd;
  
- 	if (bank) {
-+		struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
-+
- 		/* Only for a 2k-page or lower flash, NFC can handle 2 banks */
--		if (host->mtd.writesize > 2048)
-+		if (mtd->writesize > 2048)
- 			return -EINVAL;
- 		nfc_writel(host->nfc->hsmc_regs, BANK, ATMEL_HSMC_NFC_BANK1);
- 	} else {
-@@ -1159,8 +1160,8 @@ static uint16_t *create_lookup_table(struct device *dev, int sector_size)
- static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 					 struct atmel_nand_host *host)
+ 	unsigned curr_command;
+ 	int curr_page_addr;
+diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
+index 9ba0c0f..4711ca2b 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/main.c
++++ b/drivers/mtd/nand/bcm47xxnflash/main.c
+@@ -27,6 +27,7 @@ static int bcm47xxnflash_probe(struct platform_device *pdev)
  {
--	struct mtd_info *mtd = &host->mtd;
- 	struct nand_chip *nand_chip = &host->nand_chip;
-+	struct mtd_info *mtd = nand_to_mtd(nand_chip);
- 	struct resource *regs, *regs_pmerr, *regs_rom;
- 	uint16_t *galois_table;
- 	int cap, sector_size, err_no;
-@@ -1586,8 +1587,8 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
- static int atmel_hw_nand_init_params(struct platform_device *pdev,
- 					 struct atmel_nand_host *host)
- {
--	struct mtd_info *mtd = &host->mtd;
- 	struct nand_chip *nand_chip = &host->nand_chip;
-+	struct mtd_info *mtd = nand_to_mtd(nand_chip);
- 	struct resource		*regs;
+ 	struct bcma_nflash *nflash = dev_get_platdata(&pdev->dev);
+ 	struct bcm47xxnflash *b47n;
++	struct mtd_info *mtd;
+ 	int err = 0;
  
- 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-@@ -2112,8 +2113,8 @@ static int atmel_nand_probe(struct platform_device *pdev)
+ 	b47n = devm_kzalloc(&pdev->dev, sizeof(*b47n), GFP_KERNEL);
+@@ -34,8 +35,9 @@ static int bcm47xxnflash_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	b47n->nand_chip.priv = b47n;
+-	b47n->mtd.dev.parent = &pdev->dev;
+-	b47n->mtd.priv = &b47n->nand_chip; /* Required */
++	mtd = nand_to_mtd(&b47n->nand_chip);
++	mtd->dev.parent = &pdev->dev;
++	mtd->priv = &b47n->nand_chip; /* Required */
+ 	b47n->cc = container_of(nflash, struct bcma_drv_cc, nflash);
+ 
+ 	if (b47n->cc->core->bus->chipinfo.id == BCMA_CHIP_ID_BCM4706) {
+@@ -49,7 +51,7 @@ static int bcm47xxnflash_probe(struct platform_device *pdev)
+ 		return err;
  	}
- 	host->io_phys = (dma_addr_t)mem->start;
  
--	mtd = &host->mtd;
- 	nand_chip = &host->nand_chip;
-+	mtd = nand_to_mtd(nand_chip);
- 	host->dev = &pdev->dev;
- 	if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
- 		nand_set_flash_node(nand_chip, pdev->dev.of_node);
-@@ -2283,7 +2284,7 @@ err_nand_ioremap:
- static int atmel_nand_remove(struct platform_device *pdev)
- {
- 	struct atmel_nand_host *host = platform_get_drvdata(pdev);
--	struct mtd_info *mtd = &host->mtd;
-+	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
+-	err = mtd_device_parse_register(&b47n->mtd, probes, NULL, NULL, 0);
++	err = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
+ 	if (err) {
+ 		pr_err("Failed to register MTD device: %d\n", err);
+ 		return err;
+diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+index e5b2e48..6524780 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
++++ b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+@@ -421,7 +421,7 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
+ 			(w4 << 24 | w3 << 18 | w2 << 12 | w1 << 6 | w0));
  
- 	nand_release(mtd);
- 
+ 	/* Scan NAND */
+-	err = nand_scan(&b47n->mtd, 1);
++	err = nand_scan(nand_to_mtd(&b47n->nand_chip), 1);
+ 	if (err) {
+ 		pr_err("Could not scan NAND flash: %d\n", err);
+ 		goto exit;
 -- 
 2.1.4
