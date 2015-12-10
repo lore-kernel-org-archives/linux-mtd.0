@@ -1,23 +1,27 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a6rGp-0001vt-I9
- for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 02:47:52 +0000
-Received: by pacej9 with SMTP id ej9so39662081pac.2
- for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2015 18:47:30 -0800 (PST)
-Date: Wed, 9 Dec 2015 18:47:28 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Karl Zhang <shuangshuo@gmail.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- peterpandong@micron.com, beanhuo@micron.com, zszubbocsev@micron.com,
- Karl Zhang <karlzhang@micron.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: add new device MT35X
-Message-ID: <20151210024728.GC29459@google.com>
+ id 1a6rJH-0002OM-N4
+ for linux-mtd@lists.infradead.org; Thu, 10 Dec 2015 02:50:24 +0000
+From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Brian Norris <computersforpeace@gmail.com>, Karl Zhang
+ <shuangshuo@gmail.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ <peterpandong@micron.com>, "Zoltan Szubbocsev (zszubbocsev)"
+ <zszubbocsev@micron.com>,
+ =?gb2312?B?S2FybCBaaGFuZyDVxcurwuAgKGthcmx6aGFuZyk=?= <karlzhang@micron.com>
+Subject: RE: [PATCH 2/2] mtd: spi-nor: add new device MT35X
+Date: Thu, 10 Dec 2015 02:49:26 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF53B62@NTXXIAMBX02.xacn.micron.com>
 References: <1449712740-22900-1-git-send-email-karlzhang@micron.com>
  <1449712740-22900-3-git-send-email-karlzhang@micron.com>
+ <20151210024728.GC29459@google.com>
+In-Reply-To: <20151210024728.GC29459@google.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1449712740-22900-3-git-send-email-karlzhang@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +31,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 10, 2015 at 01:59:00AM +0000, Karl Zhang wrote:
-> Micron has announced a new SPI NOR device MT35X(XTRMFlash).
-> The device can support x1 or x8 bus I/O for high speed.
-> 
-> This patch is purpose to add MT35X into the arch, only
-> extended mode (x1) was enabled. Octal mode I/O will be done
-> in the futrue.
-> 
-> Signed-off-by: Karl Zhang <karlzhang@micron.com>
-> ---
->  drivers/mtd/devices/m25p80.c  | 1 +
->  drivers/mtd/spi-nor/spi-nor.c | 2 ++
->  2 files changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index c9c3b7f..e57d391 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -259,6 +259,7 @@ static const struct spi_device_id m25p_ids[] = {
->  	{"mx25l4005a"},	{"mx25l1606e"},	{"mx25l6405d"},	{"mx25l12805d"},
->  	{"mx25l25635e"},{"mx66l51235l"},
->  	{"n25q064"},	{"n25q128a11"},	{"n25q128a13"},	{"n25q512a"},
-> +	{"mt35x512"},
-
-Did you read the text above this array?
-
-Brian
-
->  	{"s25fl256s1"},	{"s25fl512s"},	{"s25sl12801"},	{"s25fl008k"},
->  	{"s25fl064k"},
->  	{"sst25vf040b"},{"sst25vf016b"},{"sst25vf032b"},{"sst25wf040"},
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 3b2460e..34686b5 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -192,6 +192,7 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
->  
->  	switch (JEDEC_MFR(info)) {
->  	case SNOR_MFR_MICRON:
-> +	case SNOR_MFR_MICRON_JEDEC:
->  		/* Some Micron need WREN command; all will accept it */
->  		need_wren = true;
->  	case SNOR_MFR_MACRONIX:
-> @@ -756,6 +757,7 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
->  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
->  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
-> +	{ "mt35x512",    INFO(0x2c5b1a, 0, 128 * 1024, 512, SECT_4K | USE_FSR) },
->  
->  	/* PMC */
->  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-> -- 
-> 1.9.1
-> 
+PiA+IFRoaXMgcGF0Y2ggaXMgcHVycG9zZSB0byBhZGQgTVQzNVggaW50byB0aGUgYXJjaCwgb25s
+eSBleHRlbmRlZCBtb2RlDQo+ID4gKHgxKSB3YXMgZW5hYmxlZC4gT2N0YWwgbW9kZSBJL08gd2ls
+bCBiZSBkb25lIGluIHRoZSBmdXRydWUuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBLYXJsIFpo
+YW5nIDxrYXJsemhhbmdAbWljcm9uLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tdGQvZGV2
+aWNlcy9tMjVwODAuYyAgfCAxICsNCj4gPiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMg
+fCAyICsrDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvZGV2aWNlcy9tMjVwODAuYw0KPiA+IGIvZHJpdmVycy9t
+dGQvZGV2aWNlcy9tMjVwODAuYyBpbmRleCBjOWMzYjdmLi5lNTdkMzkxIDEwMDY0NA0KPiA+IC0t
+LSBhL2RyaXZlcnMvbXRkL2RldmljZXMvbTI1cDgwLmMNCj4gPiArKysgYi9kcml2ZXJzL210ZC9k
+ZXZpY2VzL20yNXA4MC5jDQo+ID4gQEAgLTI1OSw2ICsyNTksNyBAQCBzdGF0aWMgY29uc3Qgc3Ry
+dWN0IHNwaV9kZXZpY2VfaWQgbTI1cF9pZHNbXSA9IHsNCj4gPiAgCXsibXgyNWw0MDA1YSJ9LAl7
+Im14MjVsMTYwNmUifSwJeyJteDI1bDY0MDVkIn0sDQo+IAl7Im14MjVsMTI4MDVkIn0sDQo+ID4g
+IAl7Im14MjVsMjU2MzVlIn0seyJteDY2bDUxMjM1bCJ9LA0KPiA+ICAJeyJuMjVxMDY0In0sCXsi
+bjI1cTEyOGExMSJ9LAl7Im4yNXExMjhhMTMifSwJeyJuMjVxNTEyYSJ9LA0KPiA+ICsJeyJtdDM1
+eDUxMiJ9LA0KPiANCj4gRGlkIHlvdSByZWFkIHRoZSB0ZXh0IGFib3ZlIHRoaXMgYXJyYXk/DQo+
+IA0KPiBCcmlhbg0KS2FybCAsIEkgdGhpbmssIHlvdSBjYW4gcmVtb3ZlIHRoaXMgaXRlbSBpbiB5
+b3VyIG5leHQgdmVyc2lvbiBwYXRjaC4NCg0KPiA+ICAJeyJzMjVmbDI1NnMxIn0sCXsiczI1Zmw1
+MTJzIn0sCXsiczI1c2wxMjgwMSJ9LAl7InMyNWZsMDA4ayJ9LA0KPiA+ICAJeyJzMjVmbDA2NGsi
+fSwNCj4gPiAgCXsic3N0MjV2ZjA0MGIifSx7InNzdDI1dmYwMTZiIn0seyJzc3QyNXZmMDMyYiJ9
+LHsic3N0MjV3ZjA0MCJ9LA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3Nw
+aS1ub3IuYw0KPiA+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgaW5kZXggM2IyNDYw
+ZS4uMzQ2ODZiNSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1ub3Iu
+Yw0KPiA+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+ID4gQEAgLTE5Miw2
+ICsxOTIsNyBAQCBzdGF0aWMgaW5saW5lIGludCBzZXRfNGJ5dGUoc3RydWN0IHNwaV9ub3IgKm5v
+ciwNCj4gPiBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyAqaW5mbywNCj4gPg0KPiA+ICAJc3dpdGNo
+IChKRURFQ19NRlIoaW5mbykpIHsNCj4gPiAgCWNhc2UgU05PUl9NRlJfTUlDUk9OOg0KPiA+ICsJ
+Y2FzZSBTTk9SX01GUl9NSUNST05fSkVERUM6DQo+ID4gIAkJLyogU29tZSBNaWNyb24gbmVlZCBX
+UkVOIGNvbW1hbmQ7IGFsbCB3aWxsIGFjY2VwdCBpdCAqLw0KPiA+ICAJCW5lZWRfd3JlbiA9IHRy
+dWU7DQo+ID4gIAljYXNlIFNOT1JfTUZSX01BQ1JPTklYOg0KPiA+IEBAIC03NTYsNiArNzU3LDcg
+QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIHNwaV9ub3JfaWRzW10gPSB7DQo+ID4g
+IAl7ICJuMjVxNTEyYSIsICAgIElORk8oMHgyMGJiMjAsIDAsIDY0ICogMTAyNCwgMTAyNCwgU0VD
+VF80SyB8DQo+IFVTRV9GU1IgfCBTUElfTk9SX1FVQURfUkVBRCkgfSwNCj4gPiAgCXsgIm4yNXE1
+MTJheDMiLCAgSU5GTygweDIwYmEyMCwgMCwgNjQgKiAxMDI0LCAxMDI0LCBTRUNUXzRLIHwNCj4g
+VVNFX0ZTUiB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPiA+ICAJeyAibjI1cTAwIiwgICAgICBJ
+TkZPKDB4MjBiYTIxLCAwLCA2NCAqIDEwMjQsIDIwNDgsIFNFQ1RfNEsgfA0KPiBVU0VfRlNSIHwg
+U1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+ID4gKwl7ICJtdDM1eDUxMiIsICAgIElORk8oMHgyYzVi
+MWEsIDAsIDEyOCAqIDEwMjQsIDUxMiwgU0VDVF80SyB8DQo+IFVTRV9GU1IpIH0sDQo+ID4NCj4g
+PiAgCS8qIFBNQyAqLw0KPiA+ICAJeyAicG0yNWx2NTEyIiwgICBJTkZPKDAsICAgICAgICAwLCAz
+MiAqIDEwMjQsICAgIDIsIFNFQ1RfNEtfUE1DKSB9LA0KPiA+IC0tDQo+ID4gMS45LjENCj4gPg0K
