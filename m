@@ -1,36 +1,50 @@
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a7QPx-0003dx-9f
- for linux-mtd@lists.infradead.org; Fri, 11 Dec 2015 16:19:38 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id n186so36912526wmn.1
- for <linux-mtd@lists.infradead.org>; Fri, 11 Dec 2015 08:19:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdV2feXKWkJzRkMUBiAUCxp4LwaRgg+aPYwm0sUnKzm0Rg@mail.gmail.com>
-References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
- <CAMuHMdUJXHs_OhT0da+kzc=D4MOFUT9BB3eJ+7a_p6DYx-PKBA@mail.gmail.com>
- <20151210205449.GL144338@google.com>
- <CAMuHMdV-uethsChWVZGSx1JNcAofODmg14ppGYJP2ewfwhEv1Q@mail.gmail.com>
- <CAOMqctQVMCEa_k4xMW1qooEpe8X1-NhUOjD6pp0qJpDP_H+8hw@mail.gmail.com>
- <CAMuHMdV2feXKWkJzRkMUBiAUCxp4LwaRgg+aPYwm0sUnKzm0Rg@mail.gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Fri, 11 Dec 2015 17:18:36 +0100
-Message-ID: <CAOMqctSbrnnUF62LHyJBZTJO3gFKVE81Mcpqyb3Z-5=v5SqLYA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] mtd: partitions: add of_match_table support
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- devicetree-spec@vger.kernel.org,
- Simon Arlott <simon@fire.lp0.eu>, Linus Walleij <linus.walleij@linaro.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- David Hendricks <dhendrix@chromium.org>,
- Jonas Gorski <jogo@openwrt.org>, Rob Herring <robh+dt@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>
+In-Reply-To: <20151211161008.056a0f47@bbrezillon>
+References: <1449734442-18672-2-git-send-email-boris.brezillon@free-electrons.com>
+ <1449842554-29898-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20151211161008.056a0f47@bbrezillon>
+Date: Fri, 11 Dec 2015 10:50:21 -0600
+Message-ID: <CADhT+wcNFxD6Zv9w8W0sontVWa6zOkHjyK42Tw=Y_1X2XCTZfQ@mail.gmail.com>
+Subject: Re: [PATCH v5 01/58] mtd: nand: denali: add missing nand_release()
+ call in denali_remove()
+From: Dinh Nguyen <dinh.linux@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, Andrew Lunn <andrew@lunn.ch>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ Tony Lindgren <tony@atomide.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, Stefan Agner <stefan@agner.ch>,
+ linux-sunxi@googlegroups.com,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Alexander Clouter <alex@digriz.org.uk>,
+ "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
+ linux-samsung-soc@vger.kernel.org, Maxim Levitsky <maximlevitsky@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, Marek Vasut <marek.vasut@gmail.com>,
+ Chen-Yu Tsai <wens@csie.org>, Kukjin Kim <kgene@kernel.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Dinh Nguyen <dinguyen@altera.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Wan ZongShun <mcuos.com@gmail.com>, Steven Miao <realmz6@gmail.com>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Mikael Starvik <starvik@axis.com>,
+ Krzysztof Halasa <khalasa@piap.pl>,
+ Gregory CLEMENT <gregory.clement@free-electrons.com>,
+ linux-omap@vger.kernel.org,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Ryan Mallon <rmallon@gmail.com>,
+ linux-cris-kernel@axis.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Linux List <linux-kernel@vger.kernel.org>,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Sascha Hauer <kernel@pengutronix.de>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Imre Kaloz <kaloz@openwrt.org>, Shawn Guo <shawnguo@kernel.org>,
+ Daniel Mack <daniel@zonque.org>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -41,79 +55,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11 December 2015 at 17:00, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> Hi Michal,
+Hi Boris,
+
+On Fri, Dec 11, 2015 at 9:10 AM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> + Dinh (who made commit 2a0a288ec258)
 >
-> On Fri, Dec 11, 2015 at 4:34 PM, Michal Suchanek <hramrach@gmail.com> wrote:
->> On 11 December 2015 at 09:44, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->>> On Thu, Dec 10, 2015 at 9:54 PM, Brian Norris
->>> <computersforpeace@gmail.com> wrote:
->>>> On Sat, Dec 05, 2015 at 11:15:54AM +0100, Geert Uytterhoeven wrote:
->>>>> On Sat, Dec 5, 2015 at 6:19 AM, Brian Norris
->>>>> <computersforpeace@gmail.com> wrote:
->>>>> > There have been several discussions [1] about adding a device tree binding for
->>>>> > associating flash devices with the partition parser(s) that are used on the
->>>>> > flash. There are a few reasons:
->>>>> >
->>>>> >  (1) drivers shouldn't have to be encoding platform knowledge by listing what
->>>>> >      parsers might be used on a given system (this is the currently all that's
->>>>> >      supported)
->>>>> >  (2) we can't just scan for all supported parsers (like the block system does), since
->>>>> >      there is a wide diversity of "formats" (no standardization), and it is not
->>>>> >      always safe or efficient to attempt to do so, particularly since many of
->>>>> >      them allow their data structures to be placed anywhere on the flash, and
->>>>> >      so require scanning the entire flash device to find them.
->>>>>
->>>>> I read the second reason, but would it be useful to (partially) merge
->>>>> block/partitions/ and drivers/mtd/partitions/, so I can use e.g. msdos
->>>>> partitions
->>>>> on an mtd device??
->>>>
->>>> I kinda agree with Michal: is there a good use case?
->>>
->>> I don't have an immediate use case.
->>> Just looking at it from a high-level viewpoint.
->>>
->>>> Really, MTD partitioning is not a highly-scalable design. Particularly,
->>>> it's not typically that well-suited to large (read: unreliable) NAND
->>>> flash, where fixing partitions at the raw flash level mostly serves to
->>>> restrict UBI's ability to wear-level across the device. For that sort of
->>>> case, it's best if people are using UBI volumes on a (mostly?)
->>>> unpartitioned MTD, instead of using MTD partitions as the main
->>>> separation mechanism. Also, most partition designs (either MTD or block)
->>>> aren't very robust against bitflips, read disturb, etc.
->>>>
->>>> IOW, I wouldn't expect MBR or GPT to work well on large raw NAND flash,
->>>> and so I don't plan to do that sort of work myself. If you can provide
->>>> some better argument for it, and some nice maintainable code to go with
->>>> it, then of course it could be considered :)
->>>
->>> There's also NOR FLASH (e.g. SPI-NOR), which is what most boards I'm
->>> working on have.
->>>
+> Also added back the Fixes tag.
+>
+> On Fri, 11 Dec 2015 15:02:34 +0100
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+>
+>> Unregister the NAND device from the NAND subsystem when removing a denali
+>> NAND controller, otherwise the MTD attached to the NAND device is still
+>> exposed by the MTD layer, and accesses to this device will likely crash
+>> the system.
 >>
->> Yes, you can dump the content of a NOR flash to a file, attach a loop
->> device to it, and if block devices had the ability to use flash
->> partitioning access the different partitions.
+>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>
+> Fixes: 2a0a288ec258 ("mtd: denali: split the generic driver and PCI layer")
+>
+>> ---
+>> Changes since v4:
+>> - remove Cc stable and fixes tags
+>> - calculate the dma buffer size before calling nand_release()
 >>
->> Maybe it would be more useful to use some kind of mtdloop, though.
->> There might even be one already. I never needed it.
->
-> That's the inverse, which looks like a solid use case to me ;-)
-> E.g. for investigation or virtualization.
->
-> You can do this already in userspace with kpartx, though.
->
+>>  drivers/mtd/nand/denali.c | 6 ++++--
+>>  1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+>> index 67eb2be..fdfea05 100644
+>> --- a/drivers/mtd/nand/denali.c
+>> +++ b/drivers/mtd/nand/denali.c
+>> @@ -1622,9 +1622,11 @@ EXPORT_SYMBOL(denali_init);
+>>  /* driver exit point */
+>>  void denali_remove(struct denali_nand_info *denali)
+>>  {
+>> +     int bufsize = denali->mtd.writesize + denali->mtd.oobsize;
+>> +
+>> +     nand_release(&denali->mtd);
+>>       denali_irq_cleanup(denali->irq, denali);
+>> -     dma_unmap_single(denali->dev, denali->buf.dma_buf,
+>> -                      denali->mtd.writesize + denali->mtd.oobsize,
+>> +     dma_unmap_single(denali->dev, denali->buf.dma_buf, bufsize,
+>>                        DMA_BIDIRECTIONAL);
 
-What kind of partitioning does kpartx support? I do not see that
-documented anywhere.
+Not sure what is the need to add bufsize here, but the commit message
+doesn't reflect the change.
 
-Anyway, it seems there is no mtdblock so in case of non-ecc (or
-hidden-ecc) flashes you could use losetup -P and block2mtd on each
-partition to look at the dumped flash content or even prepare flash
-images. So long as the kernel supports the partitioning scheme used on
-the flash.
-
-Thanks
-
-Michal
+Dinh
