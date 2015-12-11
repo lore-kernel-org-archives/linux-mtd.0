@@ -1,21 +1,41 @@
-Date: Fri, 11 Dec 2015 09:09:35 -0600
-From: Rob Herring <robh@kernel.org>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- Russell King <linux@arm.linux.org.uk>, hramrach@gmail.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v5 4/5] ARM: dts: DRA7: add entry for qspi mmap region
-Message-ID: <20151211150935.GA15654@rob-hp-laptop>
-References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
- <1449807000-6457-5-git-send-email-vigneshr@ti.com>
+Date: Fri, 11 Dec 2015 16:10:08 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, Hartley
+ Sweeten <hsweeten@visionengravers.com>, Ryan Mallon <rmallon@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Imre
+ Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, Tony
+ Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, Alexander Clouter
+ <alex@digriz.org.uk>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
+ <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Marek
+ Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>, Mikael
+ Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>,
+ linux-cris-kernel@axis.com, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Wan ZongShun <mcuos.com@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Maxim Levitsky
+ <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof
+ Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, linux-sunxi@googlegroups.com, Stefan Agner
+ <stefan@agner.ch>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ devel@driverdev.osuosl.org, Dinh Nguyen <dinguyen@altera.com>, Dan
+ Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v5 01/58] mtd: nand: denali: add missing nand_release()
+ call in denali_remove()
+Message-ID: <20151211161008.056a0f47@bbrezillon>
+In-Reply-To: <1449842554-29898-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1449734442-18672-2-git-send-email-boris.brezillon@free-electrons.com>
+ <1449842554-29898-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1449807000-6457-5-git-send-email-vigneshr@ti.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +45,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 11, 2015 at 09:39:59AM +0530, Vignesh R wrote:
-> Add qspi memory mapped region entries for DRA7xx based SoCs. Also,
-> update the binding documents for the controller to document this change.
-> 
-> Signed-off-by: Vignesh R <vigneshr@ti.com>
++ Dinh (who made commit 2a0a288ec258)
 
-Acked-by: Rob Herring <robh@kernel.org>
+Also added back the Fixes tag.
+
+On Fri, 11 Dec 2015 15:02:34 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+
+> Unregister the NAND device from the NAND subsystem when removing a denali
+> NAND controller, otherwise the MTD attached to the NAND device is still
+> exposed by the MTD layer, and accesses to this device will likely crash
+> the system.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Fixes: 2a0a288ec258 ("mtd: denali: split the generic driver and PCI layer")
 
 > ---
+> Changes since v4:
+> - remove Cc stable and fixes tags
+> - calculate the dma buffer size before calling nand_release()
 > 
-> v5: use syscon to access scm register.
+>  drivers/mtd/nand/denali.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
->  Documentation/devicetree/bindings/spi/ti_qspi.txt | 17 +++++++++++++++++
->  arch/arm/boot/dts/dra7.dtsi                       |  6 ++++--
->  2 files changed, 21 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/ti_qspi.txt b/Documentation/devicetree/bindings/spi/ti_qspi.txt
-> index 601a360531a5..809c3f334316 100644
-> --- a/Documentation/devicetree/bindings/spi/ti_qspi.txt
-> +++ b/Documentation/devicetree/bindings/spi/ti_qspi.txt
-> @@ -15,6 +15,10 @@ Recommended properties:
->  - spi-max-frequency: Definition as per
->                       Documentation/devicetree/bindings/spi/spi-bus.txt
->  
-> +Optional properties:
-> +- syscon-chipselects: Handle to system control region contains QSPI
-> +		      chipselect register and offset of that register.
+> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+> index 67eb2be..fdfea05 100644
+> --- a/drivers/mtd/nand/denali.c
+> +++ b/drivers/mtd/nand/denali.c
+> @@ -1622,9 +1622,11 @@ EXPORT_SYMBOL(denali_init);
+>  /* driver exit point */
+>  void denali_remove(struct denali_nand_info *denali)
+>  {
+> +	int bufsize = denali->mtd.writesize + denali->mtd.oobsize;
 > +
->  Example:
->  
->  qspi: qspi@4b300000 {
-> @@ -26,3 +30,16 @@ qspi: qspi@4b300000 {
->  	spi-max-frequency = <25000000>;
->  	ti,hwmods = "qspi";
->  };
-> +
-> +For dra7xx:
-> +qspi: qspi@4b300000 {
-> +	compatible = "ti,dra7xxx-qspi";
-> +	reg = <0x4b300000 0x100>,
-> +	      <0x5c000000 0x4000000>,
-> +	reg-names = "qspi_base", "qspi_mmap";
-> +	syscon-chipselects = <&scm_conf 0x558>;
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	spi-max-frequency = <48000000>;
-> +	ti,hwmods = "qspi";
-> +};
-> diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
-> index fe99231cbde5..be91c7781c07 100644
-> --- a/arch/arm/boot/dts/dra7.dtsi
-> +++ b/arch/arm/boot/dts/dra7.dtsi
-> @@ -1153,8 +1153,10 @@
->  
->  		qspi: qspi@4b300000 {
->  			compatible = "ti,dra7xxx-qspi";
-> -			reg = <0x4b300000 0x100>;
-> -			reg-names = "qspi_base";
-> +			reg = <0x4b300000 0x100>,
-> +			      <0x5c000000 0x4000000>;
-> +			reg-names = "qspi_base", "qspi_mmap";
-> +			syscon-chipselects = <&scm_conf 0x558>;
->  			#address-cells = <1>;
->  			#size-cells = <0>;
->  			ti,hwmods = "qspi";
-> -- 
-> 2.6.3
-> 
+> +	nand_release(&denali->mtd);
+>  	denali_irq_cleanup(denali->irq, denali);
+> -	dma_unmap_single(denali->dev, denali->buf.dma_buf,
+> -			 denali->mtd.writesize + denali->mtd.oobsize,
+> +	dma_unmap_single(denali->dev, denali->buf.dma_buf, bufsize,
+>  			 DMA_BIDIRECTIONAL);
+>  }
+>  EXPORT_SYMBOL(denali_remove);
+
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
