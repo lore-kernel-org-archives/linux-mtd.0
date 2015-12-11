@@ -1,53 +1,24 @@
-MIME-Version: 1.0
-In-Reply-To: <20151211180855.47c95df2@bbrezillon>
-References: <1449734442-18672-2-git-send-email-boris.brezillon@free-electrons.com>
- <1449842554-29898-1-git-send-email-boris.brezillon@free-electrons.com>
- <20151211161008.056a0f47@bbrezillon>
- <CADhT+wcNFxD6Zv9w8W0sontVWa6zOkHjyK42Tw=Y_1X2XCTZfQ@mail.gmail.com>
- <20151211180855.47c95df2@bbrezillon>
-Date: Fri, 11 Dec 2015 11:21:55 -0600
-Message-ID: <CADhT+weU7cqqq1t_D_B7HZ8ZxZiyneC+t7Cr7nK5nWzoRFQToA@mail.gmail.com>
-Subject: Re: [PATCH v5 01/58] mtd: nand: denali: add missing nand_release()
- call in denali_remove()
-From: Dinh Nguyen <dinh.linux@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a7Vea-0000w7-FX
+ for linux-mtd@lists.infradead.org; Fri, 11 Dec 2015 21:55:05 +0000
+From: Simon Arlott <simon@fire.lp0.eu>
+Subject: [PATCH linux-next (v3) 1/3] MIPS: bcm963xx: Add Broadcom BCM963xx
+ board nvram data structure
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, Andrew Lunn <andrew@lunn.ch>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- Tony Lindgren <tony@atomide.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>, Stefan Agner <stefan@agner.ch>,
- linux-sunxi@googlegroups.com,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Alexander Clouter <alex@digriz.org.uk>,
- "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
- Jesper Nilsson <jesper.nilsson@axis.com>,
- linux-samsung-soc@vger.kernel.org, Maxim Levitsky <maximlevitsky@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>, Marek Vasut <marek.vasut@gmail.com>,
- Chen-Yu Tsai <wens@csie.org>, Kukjin Kim <kgene@kernel.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Dinh Nguyen <dinguyen@altera.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Jason Cooper <jason@lakedaemon.net>,
- Wan ZongShun <mcuos.com@gmail.com>, Steven Miao <realmz6@gmail.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Mikael Starvik <starvik@axis.com>,
- Krzysztof Halasa <khalasa@piap.pl>,
- Gregory CLEMENT <gregory.clement@free-electrons.com>,
- linux-omap@vger.kernel.org,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Ryan Mallon <rmallon@gmail.com>,
- linux-cris-kernel@axis.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Linux List <linux-kernel@vger.kernel.org>,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Dan Carpenter <dan.carpenter@oracle.com>,
- Sascha Hauer <kernel@pengutronix.de>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Imre Kaloz <kaloz@openwrt.org>, Shawn Guo <shawnguo@kernel.org>,
- Daniel Mack <daniel@zonque.org>
-Content-Type: text/plain; charset=UTF-8
+ Florian Fainelli <f.fainelli@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
+ Kevin Cernekee <cernekee@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Jonas Gorski <jogo@openwrt.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ MIPS Mailing List <linux-mips@linux-mips.org>, linux-api@vger.kernel.org
+Message-ID: <566B460F.1040603@simon.arlott.org.uk>
+Date: Fri, 11 Dec 2015 21:54:23 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -57,83 +28,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 11, 2015 at 11:08 AM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Hi Dinh,
->
-> On Fri, 11 Dec 2015 10:50:21 -0600
-> Dinh Nguyen <dinh.linux@gmail.com> wrote:
->
->> Hi Boris,
->>
->> On Fri, Dec 11, 2015 at 9:10 AM, Boris Brezillon
->> <boris.brezillon@free-electrons.com> wrote:
->> > + Dinh (who made commit 2a0a288ec258)
->> >
->> > Also added back the Fixes tag.
->> >
->> > On Fri, 11 Dec 2015 15:02:34 +0100
->> > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->> >
->> >> Unregister the NAND device from the NAND subsystem when removing a denali
->> >> NAND controller, otherwise the MTD attached to the NAND device is still
->> >> exposed by the MTD layer, and accesses to this device will likely crash
->> >> the system.
->> >>
->> >> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->> >
->> > Fixes: 2a0a288ec258 ("mtd: denali: split the generic driver and PCI layer")
->> >
->> >> ---
->> >> Changes since v4:
->> >> - remove Cc stable and fixes tags
->> >> - calculate the dma buffer size before calling nand_release()
->> >>
->> >>  drivers/mtd/nand/denali.c | 6 ++++--
->> >>  1 file changed, 4 insertions(+), 2 deletions(-)
->> >>
->> >> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
->> >> index 67eb2be..fdfea05 100644
->> >> --- a/drivers/mtd/nand/denali.c
->> >> +++ b/drivers/mtd/nand/denali.c
->> >> @@ -1622,9 +1622,11 @@ EXPORT_SYMBOL(denali_init);
->> >>  /* driver exit point */
->> >>  void denali_remove(struct denali_nand_info *denali)
->> >>  {
->> >> +     int bufsize = denali->mtd.writesize + denali->mtd.oobsize;
->> >> +
->> >> +     nand_release(&denali->mtd);
->> >>       denali_irq_cleanup(denali->irq, denali);
->> >> -     dma_unmap_single(denali->dev, denali->buf.dma_buf,
->> >> -                      denali->mtd.writesize + denali->mtd.oobsize,
->> >> +     dma_unmap_single(denali->dev, denali->buf.dma_buf, bufsize,
->> >>                        DMA_BIDIRECTIONAL);
->>
->> Not sure what is the need to add bufsize here, but the commit message
->> doesn't reflect the change.
->
-> You were not in Cc of the first version (my fault), but Brian pointed
-> that the mtd fields could be in an unknown state after the
-> nand_release() call (this is currently not the case, but it change in
-> the future). The idea is to pre-compute the DMA buffer size before
-> releasing the mtd/nand device to prevent any future issues.
->
-> I don't think it is worth mentioning this in the commit message,
-> because these are just implementation details, but I can add the
-> following comment before the bufsize declaration:
->
->         /*
->          * Pre-compute DMA buffer size to avoid any problems in case
->          * nand_release() ever changes in a way that mtd->writesize and
->          * mtd->oobsize are not reliable after this call.
->          */
->
-> What do you think?
->
+Broadcom BCM963xx boards have multiple nvram variants across different
+SoCs with additional checksum fields added whenever the size of the
+nvram was extended.
 
-Ah, perfect! With the updated comment,
+Add this structure as a header file so that multiple drivers and userspace
+can use it.
 
-Acked-by: Dinh Nguyen <dinguyen@opensource.altera.com>
+Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+---
+v3: Fix includes/type names, add comments explaining the nvram struct.
 
-Thanks,
-Dinh
+v2: Use external struct bcm963xx_nvram definition for bcm963268part.
+
+ MAINTAINERS                         |  1 +
+ include/uapi/linux/bcm963xx_nvram.h | 53 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+)
+ create mode 100644 include/uapi/linux/bcm963xx_nvram.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6b6d4e2e..abf18b4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2393,6 +2393,7 @@ F:	drivers/irqchip/irq-bcm63*
+ F:	drivers/irqchip/irq-bcm7*
+ F:	drivers/irqchip/irq-brcmstb*
+ F:	include/linux/bcm63xx_wdt.h
++F:	include/uapi/linux/bcm963xx_nvram.h
+ 
+ BROADCOM TG3 GIGABIT ETHERNET DRIVER
+ M:	Prashant Sreedharan <prashant@broadcom.com>
+diff --git a/include/uapi/linux/bcm963xx_nvram.h b/include/uapi/linux/bcm963xx_nvram.h
+new file mode 100644
+index 0000000..2dcb307
+--- /dev/null
++++ b/include/uapi/linux/bcm963xx_nvram.h
+@@ -0,0 +1,53 @@
++#ifndef _UAPI__LINUX_BCM963XX_NVRAM_H__
++#define _UAPI__LINUX_BCM963XX_NVRAM_H__
++
++#include <linux/types.h>
++#include <linux/if_ether.h>
++
++/*
++ * Broadcom BCM963xx SoC board nvram data structure.
++ *
++ * The nvram structure varies in size depending on the SoC board version. Use
++ * the appropriate minimum BCM963XX_NVRAM_*_SIZE define for the information
++ * you need instead of sizeof(struct bcm963xx_nvram) as this may change.
++ *
++ * The "version" field value maps directly to the size and checksum names, e.g.
++ * version 4 uses "checksum_v4" and the data is BCM963XX_NVRAM_V4_SIZE bytes.
++ *
++ * Do not use the __reserved fields, especially not as an offset for CRC
++ * calculations (use BCM963XX_NVRAM_*_SIZE instead). These may be removed or
++ * repositioned.
++ */
++
++#define BCM963XX_NVRAM_V4_SIZE		300
++#define BCM963XX_NVRAM_V5_SIZE		1024
++#define BCM963XX_NVRAM_V6_SIZE		BCM963XX_NVRAM_V5_SIZE
++#define BCM963XX_NVRAM_V7_SIZE		3072
++
++#define BCM963XX_NVRAM_NR_PARTS		5
++
++struct bcm963xx_nvram {
++	__u32	version;
++	char	bootline[256];
++	char	name[16];
++	__u32	main_tp_number;
++	__u32	psi_size;
++	__u32	mac_addr_count;
++	__u8	mac_addr_base[ETH_ALEN];
++	__u8	__reserved1[2];
++	__u32	checksum_v4;
++
++	__u8	__reserved2[292];
++	__u32	nand_part_offset[BCM963XX_NVRAM_NR_PARTS];
++	__u32	nand_part_size[BCM963XX_NVRAM_NR_PARTS];
++	__u8	__reserved3[388];
++	union {
++		__u32	checksum_v5;
++		__u32	checksum_v6;
++	};
++
++	__u8	__reserved4[2044];
++	__u32	checksum_v7;
++} __packed;
++
++#endif /* _UAPI__LINUX_BCM963XX_NVRAM_H__ */
+-- 
+2.1.4
+
+-- 
+Simon Arlott
