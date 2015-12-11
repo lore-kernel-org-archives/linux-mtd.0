@@ -1,22 +1,34 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a7J2x-0000KW-Hc
- for linux-mtd@lists.infradead.org; Fri, 11 Dec 2015 08:27:30 +0000
-From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter
- <adrian.hunter@intel.com>, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Boris
- Brezillon" <boris.brezillon@free-electrons.com>
-Subject: [PATCH 1/1] fs:ubifs:recovery:fixup UBIFS cannot recover master
- node issue
-Date: Fri, 11 Dec 2015 08:26:53 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF53F90@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ id 1a7JJz-0004zv-9W
+ for linux-mtd@lists.infradead.org; Fri, 11 Dec 2015 08:45:00 +0000
+Received: by mail-wm0-x229.google.com with SMTP id l68so2636362wml.0
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Dec 2015 00:44:38 -0800 (PST)
 MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20151210205449.GL144338@google.com>
+References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
+ <CAMuHMdUJXHs_OhT0da+kzc=D4MOFUT9BB3eJ+7a_p6DYx-PKBA@mail.gmail.com>
+ <20151210205449.GL144338@google.com>
+Date: Fri, 11 Dec 2015 09:44:37 +0100
+Message-ID: <CAMuHMdV-uethsChWVZGSx1JNcAofODmg14ppGYJP2ewfwhEv1Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] mtd: partitions: add of_match_table support
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Simon Arlott <simon@fire.lp0.eu>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Jonas Gorski <jogo@openwrt.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ devicetree-spec@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Arnd Bergmann <arnd@arndb.de>,
+ David Hendricks <dhendrix@chromium.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,83 +38,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rm9yIE1MQyBOQU5ELCBwYWlyZWQgcGFnZSBpc3N1ZSBpcyBub3cgYSBjb21tb24ga25vd24gaXNz
-dWUuDQpUaGlzIHBhdGNoIGlzIGp1c3QgZm9yIG1hc3RlciBub2RlIGNhbm5vdCBiZSByZWNvdmVy
-ZWQgd2hpbGUNCnRoZXJlIHdpbGwgdHdvIHBhZ2VzIGJlIGRhbWFnZWQgaW4gb25lIHNpbmdsZSBt
-YXN0ZXIgbm9kZSBibG9jay4NCkFzIGZvciB0aGlzIHBhdGNoLCBpZiB0aGVyZSBhcmUgbW9yZSB0
-aGFuIG9uZSBwYWdlIGRhdGEgaW4NCm1hc3RlciBub2RlIGJsb2NrIGJlaW5nIGRhbWFnZWQsIGFu
-ZCBhcyBsb25nIGFzIGV4aXN0IG9uZQ0KdW5jb3JydXB0ZWQgbWFzdGVyIG5vZGUgYmxvY2ssIG1h
-c3RlciBub2RlIHdpbGwgYmUgcmVjb3ZlcmVkLg0KDQpUaGlzIHBhdGNoIGhhcyBiZWVuIHRlc3Rl
-ZCBvbiBNaWNyb24gTUxDIE5BTkQgTVQyOUYzMkcwOENCQURBV1AuDQpJc3N1ZSBkZXNjcmlwdGVk
-Og0KaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDE1LU5v
-dmVtYmVyLzA2MzAxNi5odG1sDQoNClNpZ25lZC1vZmYtYnk6IEJlYW4gSHVvIDxiZWFuaHVvQG1p
-Y3Jvbi5jb20+DQotLS0NCiBmcy91Ymlmcy9yZWNvdmVyeS5jIHwgNzUgKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwg
-NDkgaW5zZXJ0aW9ucygrKSwgMjYgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9mcy91Ymlm
-cy9yZWNvdmVyeS5jIGIvZnMvdWJpZnMvcmVjb3ZlcnkuYw0KaW5kZXggNjk1ZmM3MS4uZTMxNTRl
-NiAxMDA2NDQNCi0tLSBhL2ZzL3ViaWZzL3JlY292ZXJ5LmMNCisrKyBiL2ZzL3ViaWZzL3JlY292
-ZXJ5LmMNCkBAIC0xMjgsNyArMTI4LDcgQEAgc3RhdGljIGludCBnZXRfbWFzdGVyX25vZGUoY29u
-c3Qgc3RydWN0IHViaWZzX2luZm8gKmMsIGludCBsbnVtLCB2b2lkICoqcGJ1ZiwNCiAJd2hpbGUg
-KG9mZnMgKyBVQklGU19NU1RfTk9ERV9TWiA8PSBjLT5sZWJfc2l6ZSkgew0KIAkJc3RydWN0IHVi
-aWZzX2NoICpjaCA9IGJ1ZjsNCiANCi0JCWlmIChsZTMyX3RvX2NwdShjaC0+bWFnaWMpICE9IFVC
-SUZTX05PREVfTUFHSUMpDQorCQlpZiAobGUzMl90b19jcHUoY2gtPm1hZ2ljKSA9PSAweEZGRkZG
-RkZGKQ0KIAkJCWJyZWFrOw0KIAkJb2ZmcyArPSBzejsNCiAJCWJ1ZiAgKz0gc3o7DQpAQCAtMTM3
-LDM3ICsxMzcsNDAgQEAgc3RhdGljIGludCBnZXRfbWFzdGVyX25vZGUoY29uc3Qgc3RydWN0IHVi
-aWZzX2luZm8gKmMsIGludCBsbnVtLCB2b2lkICoqcGJ1ZiwNCiAJLyogU2VlIGlmIHRoZXJlIHdh
-cyBhIHZhbGlkIG1hc3RlciBub2RlIGJlZm9yZSB0aGF0ICovDQogCWlmIChvZmZzKSB7DQogCQlp
-bnQgcmV0Ow0KLQ0KK3JldHJ5Og0KIAkJb2ZmcyAtPSBzejsNCiAJCWJ1ZiAgLT0gc3o7DQogCQls
-ZW4gICs9IHN6Ow0KIAkJcmV0ID0gdWJpZnNfc2Nhbl9hX25vZGUoYywgYnVmLCBsZW4sIGxudW0s
-IG9mZnMsIDEpOw0KLQkJaWYgKHJldCAhPSBTQ0FOTkVEX0FfTk9ERSAmJiBvZmZzKSB7DQotCQkJ
-LyogQ291bGQgaGF2ZSBiZWVuIGNvcnJ1cHRpb24gc28gY2hlY2sgb25lIHBsYWNlIGJhY2sgKi8N
-Ci0JCQlvZmZzIC09IHN6Ow0KLQkJCWJ1ZiAgLT0gc3o7DQotCQkJbGVuICArPSBzejsNCi0JCQly
-ZXQgPSB1Ymlmc19zY2FuX2Ffbm9kZShjLCBidWYsIGxlbiwgbG51bSwgb2ZmcywgMSk7DQotCQkJ
-aWYgKHJldCAhPSBTQ0FOTkVEX0FfTk9ERSkNCi0JCQkJLyoNCi0JCQkJICogV2UgYWNjZXB0IG9u
-bHkgb25lIGFyZWEgb2YgY29ycnVwdGlvbiBiZWNhdXNlDQotCQkJCSAqIHdlIGFyZSBhc3N1bWlu
-ZyB0aGF0IGl0IHdhcyBjYXVzZWQgd2hpbGUNCi0JCQkJICogdHJ5aW5nIHRvIHdyaXRlIGEgbWFz
-dGVyIG5vZGUuDQotCQkJCSAqLw0KLQkJCQlnb3RvIG91dF9lcnI7DQotCQl9DQotCQlpZiAocmV0
-ID09IFNDQU5ORURfQV9OT0RFKSB7DQotCQkJc3RydWN0IHViaWZzX2NoICpjaCA9IGJ1ZjsNCi0N
-Ci0JCQlpZiAoY2gtPm5vZGVfdHlwZSAhPSBVQklGU19NU1RfTk9ERSkNCisJCWlmIChyZXQgIT0g
-U0NBTk5FRF9BX05PREUpIHsNCisJCQkvKiBDb3VsZCBoYXZlIGJlZW4gY29ycnVwdGlvbiBzbyBj
-aGVjayBtb3JlDQorCQkJICogcGxhY2UgYmFjay4gV2UgYWNjZXB0IHR3byBhcmVhcyBvZiBjb3Jy
-dXB0aW9uDQorCQkJICogYmVjYXVzZSB3ZSBhcmUgYXNzdW1pbmcgdGhhdCBmb3IgTUxDIE5BTkQs
-aXQNCisJCQkgKiB3YXMgY2F1c2VkIHdoaWxlIHRyeWluZyB0byB3cml0ZSBhIGxvd2VyDQorCQkJ
-ICogcGFnZSwgdXBwZXIgcGFnZSBiZWluZyBkYW1hZ2VkLg0KKwkJCSAqLw0KKwkJCWlmIChvZmZz
-ID4gMCkNCisJCQkJZ290byByZXRyeTsNCisJCQllbHNlDQogCQkJCWdvdG8gb3V0X2VycjsNCisJ
-CQl9DQorCQkJaWYgKHJldCA9PSBTQ0FOTkVEX0FfTk9ERSkgew0KKwkJCQlzdHJ1Y3QgdWJpZnNf
-Y2ggKmNoID0gYnVmOw0KKw0KKwkJCQlpZiAoY2gtPm5vZGVfdHlwZSAhPSBVQklGU19NU1RfTk9E
-RSkgew0KKwkJCQkJaWYgKG9mZnMpDQorCQkJCQkJZ290byByZXRyeTsNCisJCQkJCWVsc2UNCisJ
-CQkJCQlnb3RvIG91dF9lcnI7DQorCQkJCX0NCiAJCQlkYmdfcmN2cnkoImZvdW5kIGEgbWFzdGVy
-IG5vZGUgYXQgJWQ6JWQiLCBsbnVtLCBvZmZzKTsNCiAJCQkqbXN0ID0gYnVmOw0KIAkJCW9mZnMg
-Kz0gc3o7DQogCQkJYnVmICArPSBzejsNCiAJCQlsZW4gIC09IHN6Ow0KLQkJfQ0KKwkJCX0NCiAJ
-fQ0KKw0KIAkvKiBDaGVjayBmb3IgY29ycnVwdGlvbiAqLw0KIAlpZiAob2ZmcyA8IGMtPmxlYl9z
-aXplKSB7DQogCQlpZiAoIWlzX2VtcHR5KGJ1ZiwgbWluX3QoaW50LCBsZW4sIHN6KSkpIHsNCkBA
-IC0xNzgsMTAgKzE4MSw2IEBAIHN0YXRpYyBpbnQgZ2V0X21hc3Rlcl9ub2RlKGNvbnN0IHN0cnVj
-dCB1Ymlmc19pbmZvICpjLCBpbnQgbG51bSwgdm9pZCAqKnBidWYsDQogCQlidWYgICs9IHN6Ow0K
-IAkJbGVuICAtPSBzejsNCiAJfQ0KLQkvKiBDaGVjayByZW1haW5pbmcgZW1wdHkgc3BhY2UgKi8N
-Ci0JaWYgKG9mZnMgPCBjLT5sZWJfc2l6ZSkNCi0JCWlmICghaXNfZW1wdHkoYnVmLCBsZW4pKQ0K
-LQkJCWdvdG8gb3V0X2VycjsNCiAJKnBidWYgPSBzYnVmOw0KIAlyZXR1cm4gMDsNCiANCkBAIC0y
-MzYsNyArMjM1LDcgQEAgb3V0Og0KIGludCB1Ymlmc19yZWNvdmVyX21hc3Rlcl9ub2RlKHN0cnVj
-dCB1Ymlmc19pbmZvICpjKQ0KIHsNCiAJdm9pZCAqYnVmMSA9IE5VTEwsICpidWYyID0gTlVMTCwg
-KmNvcjEgPSBOVUxMLCAqY29yMiA9IE5VTEw7DQotCXN0cnVjdCB1Ymlmc19tc3Rfbm9kZSAqbXN0
-MSA9IE5VTEwsICptc3QyID0gTlVMTCwgKm1zdDsNCisJc3RydWN0IHViaWZzX21zdF9ub2RlICpt
-c3QxID0gTlVMTCwgKm1zdDIgPSBOVUxMLCAqbXN0ID0gTlVMTDsNCiAJY29uc3QgaW50IHN6ID0g
-Yy0+bXN0X25vZGVfYWxzejsNCiAJaW50IGVyciwgb2ZmczEsIG9mZnMyOw0KIA0KQEAgLTI4MCw2
-ICsyNzksMjggQEAgaW50IHViaWZzX3JlY292ZXJfbWFzdGVyX25vZGUoc3RydWN0IHViaWZzX2lu
-Zm8gKmMpDQogCQkJCWlmIChjb3IxKQ0KIAkJCQkJZ290byBvdXRfZXJyOw0KIAkJCQltc3QgPSBt
-c3QxOw0KKwkJCX0gZWxzZSBpZiAob2ZmczIgKyBzeiAhPSBvZmZzMSkgew0KKwkJCQlpZiAobGUz
-Ml90b19jcHUobXN0MS0+Y2guc3FudW0pID4NCisJCQkJCWxlMzJfdG9fY3B1KG1zdDItPmNoLnNx
-bnVtKSkgew0KKwkJCQkJLyoNCisJCQkJCSAqIDFzdCBMRUIgd3JpdHRlbiwgb2NjdXJyZWQgcG93
-ZXINCisJCQkJCSAqIGxvc3Mgd2hpbGUgd3JpdGluZyAybmQgTEVCLg0KKwkJCQkJICovDQorCQkJ
-CQlpZiAoY29yMSkNCisJCQkJCQlnb3RvIG91dF9lcnI7DQorCQkJCQltc3QgPSBtc3QxOw0KKwkJ
-CQl9IGVsc2UgaWYgKGxlMzJfdG9fY3B1KG1zdDEtPmNoLnNxbnVtKSA8DQorCQkJCQlsZTMyX3Rv
-X2NwdShtc3QyLT5jaC5zcW51bSkpIHsNCisJCQkJLyogV2hpbGUgd3JpdGluZyAxc3QgTEVCLCBv
-Y2N1cnJlZCBwb3dlciBsb3NzICovDQorCQkJCQlpZiAoIWNvcjIpIHsNCisJCQkJCQlpZiAobXN0
-Mi0+ZmxhZ3MgJg0KKwkJCQkJCSAgIGNwdV90b19sZTMyKFVCSUZTX01TVF9ESVJUWSkpDQorCQkJ
-CQkJCW1zdCA9IG1zdDI7DQorCQkJCQkJZWxzZQ0KKwkJCQkJCQlnb3RvIG91dF9lcnI7DQorCQkJ
-CQl9IGVsc2UNCisJCQkJCWdvdG8gb3V0X2VycjsNCisJCQkJfQ0KIAkJCX0gZWxzZQ0KIAkJCQln
-b3RvIG91dF9lcnI7DQogCQl9IGVsc2Ugew0KQEAgLTMwNSw2ICszMjYsOCBAQCBpbnQgdWJpZnNf
-cmVjb3Zlcl9tYXN0ZXJfbm9kZShzdHJ1Y3QgdWJpZnNfaW5mbyAqYykNCiAJCW1zdCA9IG1zdDI7
-DQogCX0NCiANCisJaWYgKG1zdCA9PSBOVUxMKQ0KKwkJZ290byBvdXRfZXJyOw0KIAl1Ymlmc19t
-c2coYywgInJlY292ZXJlZCBtYXN0ZXIgbm9kZSBmcm9tIExFQiAlZCIsDQogCQkgIChtc3QgPT0g
-bXN0MSA/IFVCSUZTX01TVF9MTlVNIDogVUJJRlNfTVNUX0xOVU0gKyAxKSk7DQogDQotLSANCjEu
-OS4xDQo=
+Hi Brian,
+
+On Thu, Dec 10, 2015 at 9:54 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Sat, Dec 05, 2015 at 11:15:54AM +0100, Geert Uytterhoeven wrote:
+>> On Sat, Dec 5, 2015 at 6:19 AM, Brian Norris
+>> <computersforpeace@gmail.com> wrote:
+>> > There have been several discussions [1] about adding a device tree binding for
+>> > associating flash devices with the partition parser(s) that are used on the
+>> > flash. There are a few reasons:
+>> >
+>> >  (1) drivers shouldn't have to be encoding platform knowledge by listing what
+>> >      parsers might be used on a given system (this is the currently all that's
+>> >      supported)
+>> >  (2) we can't just scan for all supported parsers (like the block system does), since
+>> >      there is a wide diversity of "formats" (no standardization), and it is not
+>> >      always safe or efficient to attempt to do so, particularly since many of
+>> >      them allow their data structures to be placed anywhere on the flash, and
+>> >      so require scanning the entire flash device to find them.
+>>
+>> I read the second reason, but would it be useful to (partially) merge
+>> block/partitions/ and drivers/mtd/partitions/, so I can use e.g. msdos
+>> partitions
+>> on an mtd device??
+>
+> I kinda agree with Michal: is there a good use case?
+
+I don't have an immediate use case.
+Just looking at it from a high-level viewpoint.
+
+> Really, MTD partitioning is not a highly-scalable design. Particularly,
+> it's not typically that well-suited to large (read: unreliable) NAND
+> flash, where fixing partitions at the raw flash level mostly serves to
+> restrict UBI's ability to wear-level across the device. For that sort of
+> case, it's best if people are using UBI volumes on a (mostly?)
+> unpartitioned MTD, instead of using MTD partitions as the main
+> separation mechanism. Also, most partition designs (either MTD or block)
+> aren't very robust against bitflips, read disturb, etc.
+>
+> IOW, I wouldn't expect MBR or GPT to work well on large raw NAND flash,
+> and so I don't plan to do that sort of work myself. If you can provide
+> some better argument for it, and some nice maintainable code to go with
+> it, then of course it could be considered :)
+
+There's also NOR FLASH (e.g. SPI-NOR), which is what most boards I'm
+working on have.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
