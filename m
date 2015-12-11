@@ -1,21 +1,41 @@
-Subject: Re: [PATCH linux-next 4/5] Documentation: atmel-quadspi: add binding
- file for Atmel QSPI driver
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>,
- <marex@denx.de>
-References: <cover.1449494420.git.cyrille.pitchen@atmel.com>
- <caec561f882521b3896530404ecb2bbad9950435.1449494420.git.cyrille.pitchen@atmel.com>
-CC: <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
- <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Message-ID: <566A96B0.2010808@atmel.com>
-Date: Fri, 11 Dec 2015 10:26:08 +0100
+Date: Fri, 11 Dec 2015 14:53:20 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, Hartley
+ Sweeten <hsweeten@visionengravers.com>, Ryan Mallon <rmallon@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Imre
+ Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, Tony
+ Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, Alexander Clouter
+ <alex@digriz.org.uk>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
+ <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Marek
+ Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>,
+ adi-buildroot-devel@lists.sourceforge.net, Mikael Starvik
+ <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>,
+ linux-cris-kernel@axis.com, Josh Wu <josh.wu@atmel.com>, Wan ZongShun
+ <mcuos.com@gmail.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Maxim Levitsky
+ <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof
+ Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, linux-sunxi@googlegroups.com, Stefan Agner
+ <stefan@agner.ch>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ devel@driverdev.osuosl.org, stable@vger.kernel.org
+Subject: Re: [PATCH v4 01/58] mtd: nand: denali: add missing nand_release()
+ call in denali_remove()
+Message-ID: <20151211145320.1560fac3@bbrezillon>
+In-Reply-To: <20151211004008.GQ144338@google.com>
+References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1449734442-18672-2-git-send-email-boris.brezillon@free-electrons.com>
+ <20151211004008.GQ144338@google.com>
 MIME-Version: 1.0
-In-Reply-To: <caec561f882521b3896530404ecb2bbad9950435.1449494420.git.cyrille.pitchen@atmel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +45,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 07/12/2015 15:09, Cyrille Pitchen a écrit :
-> This patch documents the DT bindings for the driver of the Atmel QSPI
-> controller embedded inside sama5d2x SoCs.
+Hi Brian,
+
+On Thu, 10 Dec 2015 16:40:08 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> On Thu, Dec 10, 2015 at 08:59:45AM +0100, Boris Brezillon wrote:
+> > Unregister the NAND device from the NAND subsystem when removing a denali
+> > NAND controller, otherwise the MTD attached to the NAND device is still
+> > exposed by the MTD layer, and accesses to this device will likely crash
+> > the system.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Cc: <stable@vger.kernel.org> #3.8+
 > 
-> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-
-The change is very small from previous one and moreover accepted by Rob.
-So, for sure:
-
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-
-
-> ---
->  .../devicetree/bindings/mtd/atmel-quadspi.txt      | 32 ++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+> Does this follow these rules, from
+> Documentation/stable_kernel_rules.txt?
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
-> new file mode 100644
-> index 000000000000..e81f20f9faf1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
-> @@ -0,0 +1,32 @@
-> +* Atmel Quad Serial Peripheral Interface (QSPI)
-> +
-> +Required properties:
-> +- compatible:     Should be "atmel,sama5d2-qspi".
-> +- reg:            Should contain the locations and lengths of the base registers
-> +                  and the mapped memory.
-> +- reg-names:      Should contain the resource reg names:
-> +                  - qspi_base: configuration register address space
-> +                  - qspi_mmap: memory mapped address space
-> +- interrupts:     Should contain the interrupt for the device.
-> +- clocks:         The phandle of the clock needed by the QSPI controller.
-> +- #address-cells: Should be <1>.
-> +- #size-cells:    Should be <0>.
-> +
-> +Example:
-> +
-> +spi@f0020000 {
-> +	compatible = "atmel,sama5d2-qspi";
-> +	reg = <0xf0020000 0x100>, <0xd0000000 0x8000000>;
-> +	reg-names = "qpsi_base", "qspi_mmap";
-> +	interrupts = <52 IRQ_TYPE_LEVEL_HIGH 7>;
-> +	clocks = <&spi0_clk>;
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_spi0_default>;
-> +	status = "okay";
-> +
-> +	m25p80@0 {
-> +		...
-> +	};
-> +};
+>  - It must be obviously correct and tested.
 > 
+>  - It must fix a real bug that bothers people (not a, "This could be a
+>    problem..." type thing).
 
+As you wish, I'll remove those Cc and Fixes tags, or just drop the
+patch if you think it's useless...
+I just noticed the bug while reworking this series, and thought it
+would be useful to fix it, but I honestly don't care if it's applied
+or not (I don't use this platform).
+
+> 
+> > Fixes: 2a0a288ec258 ("mtd: denali: split the generic driver and PCI layer")
+> > ---
+> >  drivers/mtd/nand/denali.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+> > index 67eb2be..8feece3 100644
+> > --- a/drivers/mtd/nand/denali.c
+> > +++ b/drivers/mtd/nand/denali.c
+> > @@ -1622,6 +1622,7 @@ EXPORT_SYMBOL(denali_init);
+> >  /* driver exit point */
+> >  void denali_remove(struct denali_nand_info *denali)
+> >  {
+> > +	nand_release(&denali->mtd);
+> >  	denali_irq_cleanup(denali->irq, denali);
+> >  	dma_unmap_single(denali->dev, denali->buf.dma_buf,
+> >  			 denali->mtd.writesize + denali->mtd.oobsize,
+> 
+> It feels a bit odd to allow usage of MTD fields after it has been
+> unregistered. Maybe precompute this before the nand_release()?
+
+nand_realease() is not releasing the mtd instance or re-initialazing
+its field, so it should be safe, but I agree that pre-computing the DMA
+buffer size is more future-proof.
+
+I'll fix that, send a v5 and let you decide whether it's needed or not.
+
+Best Regards,
+
+Boris
 
 -- 
-Nicolas Ferre
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
