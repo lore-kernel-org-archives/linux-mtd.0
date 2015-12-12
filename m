@@ -1,7 +1,7 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a7fsO-00008L-OR
- for linux-mtd@lists.infradead.org; Sat, 12 Dec 2015 08:50:04 +0000
+ id 1a7fsO-000093-OK
+ for linux-mtd@lists.infradead.org; Sat, 12 Dec 2015 08:50:06 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <shengyong1@huawei.com>, <richard@nod.at>,
@@ -11,9 +11,9 @@ To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <colin.king@canonical.com>, <fabf@skynet.be>,
  <linux-mtd@lists.infradead.org>, <dmitry.torokhov@gmail.com>
 CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 6/7] mtd: mtd_raid: introduce raid1 implementation
-Date: Sat, 12 Dec 2015 16:41:06 +0800
-Message-ID: <1449909667-7759-7-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 4/7] mtd: mtd_raid: introduce raid single implementation
+Date: Sat, 12 Dec 2015 16:41:04 +0800
+Message-ID: <1449909667-7759-5-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1449909667-7759-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1449909667-7759-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -27,23 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is implementation of raid1, the main work of it
-is to mapping logical address to physical address and
-mapping physical address to logical address. That would
-be used when we meet an error in reading and want to find
-the mirror in raid1.
+This is impletion of raid-single, raid-single works
+similar with mtd_concat.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- drivers/mtd/mtd_raid/raid1.c | 156 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/mtd_raid/raid_single.c | 156 +++++++++++++++++++++++++++++++++++++
  1 file changed, 156 insertions(+)
- create mode 100644 drivers/mtd/mtd_raid/raid1.c
+ create mode 100644 drivers/mtd/mtd_raid/raid_single.c
 
-diff --git a/drivers/mtd/mtd_raid/raid1.c b/drivers/mtd/mtd_raid/raid1.c
+diff --git a/drivers/mtd/mtd_raid/raid_single.c b/drivers/mtd/mtd_raid/raid_single.c
 new file mode 100644
-index 0000000..198725c
+index 0000000..d72df5df
 --- /dev/null
-+++ b/drivers/mtd/mtd_raid/raid1.c
++++ b/drivers/mtd/mtd_raid/raid_single.c
 @@ -0,0 +1,156 @@
 +/*
 + * This file is part of MTD RAID.
@@ -66,9 +63,10 @@ index 0000000..198725c
 + * Authors: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 + */
 +
-+/**
-+ * This file implement raid1.
-+ * RAID1:
++/*
++ * This file implement single raild level.
++ *
++ * RAID_SINGLE:
 + *
 + * Flash A:
 + * 	------------------------------
@@ -83,71 +81,74 @@ index 0000000..198725c
 + * 	|  C1   |  C2   | ... |  Cn  |
 + * 	------------------------------
 + *
-+ * RAID1:
-+ * 	------------------------------
-+ * 	|  A1   |  A2   | ... |  An  |
-+ * 	------------------------------
-+ * 	------------------------------
-+ * 	|  B1   |  B2   | ... |  Bn  | Mirror
-+ * 	------------------------------
-+ * 	------------------------------
-+ * 	|  C1   |  C2   | ... |  Cn  | Mirror
-+ * 	------------------------------
++ * RAID_SINGLE:
++ * 	---------------------------------------------------------------------
++ * 	|  A1   |  A2  | ... |  An  |  B1  | ... |  Bn  |  C1  | ... |  Cn  |
++ * 	---------------------------------------------------------------------
 + *
-+ * C1 = B1 = A1. They store same data in three different flashes.
-+ *
-+ * Detail to see:
-+ * https://en.wikipedia.org/wiki/Standard_RAID_levels
++ * It works similarly with concat.
 + */
-+
-+#include <linux/slab.h>
 +#include <linux/kthread.h>
++#include <linux/slab.h>
 +
 +#include "mtd_raid.h"
 +
-+static int raid1_logical_to_physical(struct mtd_raid *raid, loff_t from, size_t len, int copy_num,
-+			      int *devid, loff_t *subdev_off, size_t *size)
-+{
-+	*devid = copy_num;
-+	*subdev_off = from;
-+	*size = len;
-+
-+	return 0;
-+}
-+
 +/**
-+ * This function will convert the physical address to logical address.
++ *
 + */
-+static int raid1_physical_to_logical(struct mtd_raid *raid, int devid, loff_t subdev_off, size_t size,
-+				     loff_t *from, size_t *len)
++static int raid_single_logical_to_physical(struct mtd_raid *raid, loff_t from, size_t len, int copy_num,
++					   int *devid, loff_t *subdev_off, size_t *size)
 +{
-+	*from = subdev_off;
-+	*len = size;
++	struct mtd_info *subdev = NULL;
++	int i = 0;
++
++	*subdev_off = from;
++	for (i = 0; i < raid->dev_count; i++) {
++		subdev = raid->devs[i].mtd;
++		if (from >= subdev->size) {
++			from -= subdev->size;
++			*subdev_off = 0;
++			*size = 0;
++			continue;
++		}
++
++		*subdev_off = from;
++		if (from + len > subdev->size)
++			*size = subdev->size - *subdev_off;
++		else
++			*size = len;
++
++		*devid = i;
++		break;
++	}
++
++	if (i == raid->dev_count)
++		return -EINVAL;
 +
 +	return 0;
 +}
 +
-+struct mtd_raid *mtd_raid1_create(int dev_count, size_t substripe_size)
++struct mtd_raid *mtd_raid_single_create(int dev_count, size_t substripe_size)
 +{
-+	struct mtd_raid1 *raid1 = NULL;
++	struct mtd_raid_single *raid_single = NULL;
 +	struct mtd_raid *raid = NULL;
 +
-+	raid1 = kzalloc(sizeof(struct mtd_raid1) + sizeof(struct mtd_raid_dev) * dev_count, GFP_KERNEL);
-+	if (!raid1)
++	raid_single = kzalloc(sizeof(struct mtd_raid_single) + sizeof(struct mtd_raid_dev) * dev_count, GFP_KERNEL);
++	if (!raid_single)
 +		goto out;
 +
-+	raid = &raid1->raid;
-+	raid->raid_level = MTD_RAID_LEVEL_RAID1;
-+	raid->ops = &mtd_raid1_ops;
-+	raid->ncopies = dev_count;
++	raid = &raid_single->raid;
++	raid->raid_level = MTD_RAID_LEVEL_SINGLE;
++	raid->ops = &mtd_raid_single_ops;
++	raid->ncopies = 1;
 +	raid->npebs_per_leb = 1;
 +
-+	return &raid1->raid;
++	return &raid_single->raid;
 +out:
 +	return NULL;
 +}
 +
-+static int raid1_init(struct mtd_raid *raid,
++static int raid_single_init(struct mtd_raid *raid,
 +			    int dev_count, size_t substripe_size)
 +{
 +	int ret = 0;
@@ -156,50 +157,46 @@ index 0000000..198725c
 +	struct mtd_info *mtd = &raid->mtd;
 +	struct mtd_info *subdev = raid->devs[0].mtd;
 +
-+	raid_id = mtd_raid_list_register(MTD_RAID_LEVEL_RAID1, raid);
-+	sprintf(raid->name, "mtd1-%d", raid_id);
++	raid_id = mtd_raid_list_register(MTD_RAID_LEVEL_SINGLE, raid);
++	sprintf(raid->name, "mtdsingle-%d", raid_id);
 +	mtd->name = raid->name;
 +
-+	/**
-+	 * size and erasesize are same with subdev.
-+	 */
-+	mtd->size = subdev->size;
++	/*
++	 * Same erasesize with subdevs
++	 **/
 +	mtd->erasesize = subdev->erasesize;
 +	for (i = 0; i < dev_count; i++) {
 +		subdev = raid->devs[i].mtd;
-+		if (mtd->size != subdev->size) {
-+			pr_err("Incompatible size on \"%s\"",
-+			       subdev->name);
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
 +		if (mtd->erasesize != subdev->erasesize) {
 +			pr_err("Incompatible erasesize on \"%s\"",
 +			       subdev->name);
 +			ret = -EINVAL;
-+			goto out;
++			goto err;
 +		}
++		/*
++		 * mtd->size is the sum of all subdevs
++		 **/
++		mtd->size += subdev->size;
 +	}
-+
-+out:
++	return ret;
++err:
++	mtd_raid_list_unregister(raid);
 +	return ret;
 +}
 +
 +
-+void raid1_destroy(struct mtd_raid *mtd_raid)
++static void raid_single_destroy(struct mtd_raid *mtd_raid)
 +{
-+	struct mtd_raid1 *raid1 = MTD_RAID_RAID1(mtd_raid);
++	struct mtd_raid_single *raid_single = MTD_RAID_SINGLE(mtd_raid);
 +
-+	mtd_raid_list_unregister(&raid1->raid);
-+	kfree(raid1);
++	mtd_raid_list_unregister(&raid_single->raid);
++	kfree(raid_single);
 +}
 +
-+const struct mtd_raid_operations mtd_raid1_ops = {
-+	.init    = raid1_init,
-+	.destroy = raid1_destroy,
-+	.logical_to_physical = raid1_logical_to_physical,
-+	.physical_to_logical = raid1_physical_to_logical,
++const struct mtd_raid_operations mtd_raid_single_ops = {
++	.init    = raid_single_init,
++	.destroy = raid_single_destroy,
++	.logical_to_physical  = raid_single_logical_to_physical,
 +};
 -- 
 1.8.4.2
