@@ -1,37 +1,21 @@
-Received: from ozlabs.org ([2401:3900:2:1::2])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a7fnY-0006rn-Rl
- for linux-mtd@lists.infradead.org; Sat, 12 Dec 2015 08:45:01 +0000
-Date: Sat, 12 Dec 2015 16:51:05 +1100
-From: David Gibson <david@gibson.dropbear.id.au>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Michal Suchanek <hramrach@gmail.com>, Jonas Gorski <jogo@openwrt.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- devicetree-spec@vger.kernel.org, Simon Arlott <simon@fire.lp0.eu>,
- Linus Walleij <linus.walleij@linaro.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Rob Herring <robh+dt@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>
-Subject: Re: [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format
- binding
-Message-ID: <20151212055105.GA17011@voom.fritz.box>
-References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
- <1449292763-129421-4-git-send-email-computersforpeace@gmail.com>
- <CAOiHx=nz2bdA_R610ozsQHhccdcrHVVCamTtne5ReHrA-FcaaQ@mail.gmail.com>
- <CAOMqctTbUNd0GtY07YJuxem9HkU1WZ-NtO556=Yg2QrsF49Xjw@mail.gmail.com>
- <20151207013628.GC20139@voom.fritz.box>
- <20151210204324.GK144338@google.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a7fry-00005N-3q
+ for linux-mtd@lists.infradead.org; Sat, 12 Dec 2015 08:49:38 +0000
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <shengyong1@huawei.com>, <richard@nod.at>,
+ <boris.brezillon@free-electrons.com>, <linux-cris-kernel@axis.com>,
+ <starvik@axis.com>, <jesper.nilsson@axis.com>, <jschultz@xes-inc.com>,
+ <ard.biesheuvel@linaro.org>, <asierra@xes-inc.com>,
+ <colin.king@canonical.com>, <fabf@skynet.be>,
+ <linux-mtd@lists.infradead.org>, <dmitry.torokhov@gmail.com>
+CC: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 0/7] MTD RAID layer
+Date: Sat, 12 Dec 2015 16:41:00 +0800
+Message-ID: <1449909667-7759-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
-Content-Disposition: inline
-In-Reply-To: <20151210204324.GK144338@google.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,111 +25,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi guys,
+	This is V2 for MTD RAID.
 
---/9DWx/yDrRhgMJTb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changelog:
+	- v1: http://lists.infradead.org/pipermail/linux-mtd/2015-December/063818.html
+		- refactored the mtd_raid_create() to make it to be easily
+		  used for multi-chips drivers.
+		- fix a performance problem in small operation size.
 
-On Thu, Dec 10, 2015 at 12:43:24PM -0800, Brian Norris wrote:
-> On Mon, Dec 07, 2015 at 12:36:28PM +1100, David Gibson wrote:
-> > On Sat, Dec 05, 2015 at 10:33:30PM +0100, Michal Suchanek wrote:
-> > > On 5 December 2015 at 12:39, Jonas Gorski <jogo@openwrt.org> wrote:
-> > > > On Sat, Dec 5, 2015 at 6:19 AM, Brian Norris
-> > > > <computersforpeace@gmail.com> wrote:
-> > >=20
-> > > >> +
-> > > >> +Examples:
-> > > >> +
-> > > >> +flash@0 {
-> > > >> +       partitions {
-> > > >> +               compatible =3D "google,fmap";
-> > > >> +       };
-> > > >> +};
-> > > >
-> > > > I wonder if this wouldn't be better served in a separate binding doc
-> > > > with its compatible name as the filename, like we do with
-> > > > driver^Whardware blocks, especially if we want to add more parsers.
-> > >=20
-> > >=20
-> > > I find that *very* counter productive for bindings that go to the same
-> > > node. You have a description of a node, and then suddenly there you
-> > > have another file with another description of the same node. Totally
-> > > awesome.
-> >=20
-> > I can't actually work out from that if you're agreeing with the
-> > original post or the first reply.
->=20
-> Perhaps I'm biased, but I think he was agreeing with the first reply.
-> (Particularly, "I find that *very* counter productive" uses the word
-> "that" to refer to "separate binding doc[s]".)
->=20
-> > > Also how do you plan to write partitioning schemes with parameters
-> > > like with non-zero offset of the partition table.
->=20
-> If you are directing this question at me: I don't have a specific plan
-> for it. MTD parsers don't currently take external input for this; many
-> scan the whole device, but some might also have conventions built into
-> the parser itself too, so this just gets hooked based on "compatible".
-> But if the need arose, I would hope we could work out a common binding.
->=20
-> > Presumably with properties in the patitions node.  Not seeing the
-> > problem here.
->=20
-> I believe Michal is bringing up the (important, IMO) point that if
-> distinct partition types are being described in the same node, then any
-> use of additional properties *must* be closely coordinated. We can't
-> have two parsers "foo" and "bar" defining conflicting uses of the same
-> property in the same node, like this:
->=20
-> 	partitions {
-> 		compatible =3D "foo", "bar";
-> 		property-baz =3D ...; // e.g., reg =3D <...>;
-> 	};
->=20
-> where if "foo" is not found, we fall back to "bar". But what if "foo"
-> and "bar" use "property-baz" differently?
+I found there are some drivers is using mtd_concat currently, I
+am here to suggest my mtd raid to you guys. Please give a try of
+it. I believe that probably provides some good choices to you.
 
-Ah.. that is an excellent point, and leads me to realise that using
-compatible in this way is wrong.  The whole point of compatible is
-that the node is, well, compatible with *all* the things in the list,
-and therefore the things in the list are compatible with each other.
+Code:
+	kernel:  https://github.com/yangdongsheng/linux  mtd_raid_v2
+	user  :  https://github.com/yangdongsheng/mtd-utils mtd_raid_v2
 
-Using it for a list of entirely different things to attempt in order
-is not correct.
+Design for MTD RAID:
+---------      -------------
+|  ubi  |      |  mtdchar  |
+---------      -------------
+   |                |
+   v                v
+----------------------------
+|        MTD RAID          |    <----- a new layer here (drivers/mtd/mtd_raid/*)
+----------------------------
+           |
+           v
+   ----------------
+   |   mtd driver |
+   ---------------- 
 
+Of course, that's optional.
 
-> Having everything in one doc would help ensure that the entire
-> "partitions" binding is considered as a whole when extending it, in my
-> (and an in my interpretation of Michal's) opinion.
->=20
-> Brian
+There are two ways to use mtd raid.
+(1). For multi-chips driver:
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+	   /dev/mtd0
+|--------------------------------|
+|  ----------------------------  |
+|  |        MTD RAID          |  |
+|  ----------------------------  |
+|      |             |           |
+|      v             v           |
+|  -----------   -----------     |
+|  | mtd_info|   | mtd_info|     |
+|  -----------   -----------     |
+|--------------------------------|
 
---/9DWx/yDrRhgMJTb
-Content-Type: application/pgp-signature; name="signature.asc"
+When a driver have multiple chips, we can use mtd raid framework to build
+them into a raid array and expose a mtd device. There are some drivers
+are using mtd_concat, we can do the same thing with mtd_single. At the same
+time, mtd raid provides more choices to them, such as raid0 or raid1.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+(2). For user:
 
-iQIcBAEBAgAGBQJWa7XJAAoJEGw4ysog2bOSBWoQALjYls+DpoYTVxJCSeQxE1Fk
-OKGQir1DdPa+/sufisuieOvw3vn5tPV96s13n82I+86G0V83Qi3PoYMpU+I8wOx7
-zR6UNI0VmyRWEDOrGKP62K+iCEqYEDTcyaf/lvGLP9XcDYLfar20DDTOmIrWt+7T
-5NcLx5EG93VxES99iyaYqKTODB85R4X0z9O9AewaE+qHQDjvrgL2yn74dmPMlE79
-CyUcEGEErPFOA5EgQOK69YDfUxdrPbL2uVFuyzuQSDapSgwxPSiVCdApxBZEp9wY
-Rvxn/7TIDAaua2tMKQvvhDk6Tt4figSFTV0199vKrPUqfy29w9JY0XdPR5mdM8zg
-bNjMuazbeTMzpIr7tdJWh+ipA/rTsdXTVmSbGnQIzkRlDFiRBg4M+T8ZbcWbDujz
-MNO91QoRYnzICNH+dN6+npPZJkoI52cxfUMi8qd/Lf3t6HmxS7cYe/ZOru49VS5c
-uWWFqJCGMaNMZ+xvrIYvlD/HGTFxus9SHaKgE804QaxSPc+W15+1x0sp1v95XW9o
-Y3oqUclqIX7i58iN2cYavbA4XwoLdENhLtvErMXNTjZ69UkBGU/ZNjT2NDZpanfv
-x27guz5PeF8tjHUJJuyD3+eIkhPEVIJOq/P8ShjmjM0nN714BnEH8auZGyF/O7D7
-RwlTJDiIb+g1cbekXl0D
-=YGRz
------END PGP SIGNATURE-----
+           /dev/mtd2
+|--------------------------------|
+|  ----------------------------  |
+|  |        MTD RAID          |  |
+|  ----------------------------  |
+|      |             |           |
+|      v             v           |
+|  -----------   -----------     |
+|  |/dev/mtd0|   |/dev/mtd1|     |
+|  -----------   -----------     |
+|--------------------------------|
 
---/9DWx/yDrRhgMJTb--
+we have a user tool for mtd raid, and user can use it to build raid array.
+
+Example:
+	# mtd_raid create --level=0 /dev/mtd0 /dev/mtd1 /dev/mtd2 /dev/mtd3
+	# mtdinfo /dev/mtd4
+	mtd4
+	Name:                           mtdraid0-1
+	Type:                           nand
+	Eraseblock size:                65536 bytes, 64.0 KiB
+	Amount of eraseblocks:          8192 (536870912 bytes, 512.0 MiB)
+	Minimum input/output unit size: 512 bytes
+	Sub-page size:                  256 bytes
+	OOB size:                       16 bytes
+	Character device major/minor:   90:8
+	Bad blocks are allowed:         true
+	Device is writable:             true
+
+There are 4 mtd devices simulated by nandsim, then we create a raid0 with
+them.
+---------------------------------------------------------------------------
+| device| size |  throughput (dd if=/dev/mtdX of=/dev/null bs=1M count=10)|
+|--------------------------------------------------------------------------
+| mtd0  | 128M |  14.0 MB/s						  |
+|--------------------------------------------------------------------------
+| mtd1  | 128M |  14.0 MB/s						  |
+|--------------------------------------------------------------------------
+| mtd2  | 128M |  14.0 MB/s						  |
+|--------------------------------------------------------------------------
+| mtd3  | 128M |  14.0 MB/s						  |
+|--------------------------------------------------------------------------
+| mtd4  | 512M |  51.1 MB/s						  |
+---------------------------------------------------------------------------
+
+Also we can use raid1 to get a mirror for robustness.
+
+TODO:
+	In this framework, we can implement more raid levels. The most useful
+one I think is raid5/6, which would do a parity and fixup work in reading. That's
+important for MLC or TLC. Raid-level is refered to:
+
+https://en.wikipedia.org/wiki/Standard_RAID_levels 
+
+Dongsheng Yang (7):
+  mtd: nandsim: remove the abuse of reference to globle variable.
+  mtd: nansim: add support of multi devices.
+  mtd: mtd_raid: Init a new layer of MTD RAID
+  mtd: mtd_raid: introduce raid single implementation
+  mtd: mtd_raid: introduce raid0 implementation
+  mtd: mtd_raid: introduce raid1 implementation
+  mtd: mtd_raid: implement ioctl for mtd raid
+
+ Documentation/ioctl/ioctl-number.txt |    1 +
+ drivers/mtd/Kconfig                  |    2 +
+ drivers/mtd/Makefile                 |    1 +
+ drivers/mtd/mtd_raid/Kconfig         |   12 +
+ drivers/mtd/mtd_raid/Makefile        |    3 +
+ drivers/mtd/mtd_raid/core.c          | 1103 ++++++++++++++++++++++++++++++++++
+ drivers/mtd/mtd_raid/ioctl.c         |  194 ++++++
+ drivers/mtd/mtd_raid/mtd_raid.h      |  273 +++++++++
+ drivers/mtd/mtd_raid/raid0.c         |  136 +++++
+ drivers/mtd/mtd_raid/raid1.c         |  156 +++++
+ drivers/mtd/mtd_raid/raid_io.c       |  449 ++++++++++++++
+ drivers/mtd/mtd_raid/raid_single.c   |  156 +++++
+ drivers/mtd/nand/nandsim.c           |  312 +++++-----
+ include/uapi/mtd/mtd-raid-user.h     |   33 +
+ 14 files changed, 2687 insertions(+), 144 deletions(-)
+ create mode 100644 drivers/mtd/mtd_raid/Kconfig
+ create mode 100644 drivers/mtd/mtd_raid/Makefile
+ create mode 100644 drivers/mtd/mtd_raid/core.c
+ create mode 100644 drivers/mtd/mtd_raid/ioctl.c
+ create mode 100644 drivers/mtd/mtd_raid/mtd_raid.h
+ create mode 100644 drivers/mtd/mtd_raid/raid0.c
+ create mode 100644 drivers/mtd/mtd_raid/raid1.c
+ create mode 100644 drivers/mtd/mtd_raid/raid_io.c
+ create mode 100644 drivers/mtd/mtd_raid/raid_single.c
+ create mode 100644 include/uapi/mtd/mtd-raid-user.h
+
+-- 
+1.8.4.2
