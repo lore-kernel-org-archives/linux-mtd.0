@@ -1,28 +1,37 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a7f5e-00057s-3i
- for linux-mtd@lists.infradead.org; Sat, 12 Dec 2015 07:59:38 +0000
-Date: Sat, 12 Dec 2015 08:59:00 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Received: from ozlabs.org ([2401:3900:2:1::2])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a7fnY-0006rn-Rl
+ for linux-mtd@lists.infradead.org; Sat, 12 Dec 2015 08:45:01 +0000
+Date: Sat, 12 Dec 2015 16:51:05 +1100
+From: David Gibson <david@gibson.dropbear.id.au>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: Helmut Schaa <helmut.schaa@googlemail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, David
- Woodhouse <David.Woodhouse@intel.com>, Artem Bityutskiy
- <artem.bityutskiy@linux.intel.com>, Pekon Gupta <pekon.gupta@gmail.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Zhou Wang
- <wangzhou1@hisilicon.com>
-Subject: Re: [PATCH] mtd: nand: Disable subpage writes for drivers without
- ecc->hwctl
-Message-ID: <20151212085900.2118eb2c@bbrezillon>
-In-Reply-To: <20151212004025.GA3047@localhost>
-References: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
- <20151209235823.GD144338@google.com>
- <CAGXE3d_v9hKCqNeTWfjpad_Uj=sKo1fn0B=Wz2s_t76JKUZhzQ@mail.gmail.com>
- <20151212004025.GA3047@localhost>
+Cc: Michal Suchanek <hramrach@gmail.com>, Jonas Gorski <jogo@openwrt.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ devicetree-spec@vger.kernel.org, Simon Arlott <simon@fire.lp0.eu>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: Re: [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format
+ binding
+Message-ID: <20151212055105.GA17011@voom.fritz.box>
+References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
+ <1449292763-129421-4-git-send-email-computersforpeace@gmail.com>
+ <CAOiHx=nz2bdA_R610ozsQHhccdcrHVVCamTtne5ReHrA-FcaaQ@mail.gmail.com>
+ <CAOMqctTbUNd0GtY07YJuxem9HkU1WZ-NtO556=Yg2QrsF49Xjw@mail.gmail.com>
+ <20151207013628.GC20139@voom.fritz.box>
+ <20151210204324.GK144338@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
+Content-Disposition: inline
+In-Reply-To: <20151210204324.GK144338@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,77 +41,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
 
-On Fri, 11 Dec 2015 16:40:25 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
+--/9DWx/yDrRhgMJTb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Thu, Dec 10, 2015 at 10:31:32AM +0100, Helmut Schaa wrote:
-> > On Thu, Dec 10, 2015 at 12:58 AM, Brian Norris
-> > <computersforpeace@gmail.com> wrote:
-> > > On Wed, Apr 09, 2014 at 11:13:24AM +0200, Helmut Schaa wrote:
-> > >> nand_write_subpage_hwecc causes a crash if the driver did not register
-> > >> ecc->hwctl or ecc->calculate. Fix this by disabling subpage writes if
-> > >> ecc->hwctl or ecc->calculate is not provided by the driver.
-> > >>
-> > >> This behavior was introduced in commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9
-> > >> "mtd: nand: subpage write support for hardware based ECC schemes".
-> > >>
-> > >> This fixes a crash with fsl_elbc_nand and maybe others:
-> > >>
-> > > [...]
-> > >>
-> > >> --- a/drivers/mtd/nand/nand_base.c
-> > >> +++ b/drivers/mtd/nand/nand_base.c
-> > >> @@ -3768,7 +3768,7 @@ int nand_scan_tail(struct mtd_info *mtd)
-> > >>                       ecc->write_oob = nand_write_oob_std;
-> > >>               if (!ecc->read_subpage)
-> > >>                       ecc->read_subpage = nand_read_subpage;
+On Thu, Dec 10, 2015 at 12:43:24PM -0800, Brian Norris wrote:
+> On Mon, Dec 07, 2015 at 12:36:28PM +1100, David Gibson wrote:
+> > On Sat, Dec 05, 2015 at 10:33:30PM +0100, Michal Suchanek wrote:
+> > > On 5 December 2015 at 12:39, Jonas Gorski <jogo@openwrt.org> wrote:
+> > > > On Sat, Dec 5, 2015 at 6:19 AM, Brian Norris
+> > > > <computersforpeace@gmail.com> wrote:
+> > >=20
+> > > >> +
+> > > >> +Examples:
+> > > >> +
+> > > >> +flash@0 {
+> > > >> +       partitions {
+> > > >> +               compatible =3D "google,fmap";
+> > > >> +       };
+> > > >> +};
+> > > >
+> > > > I wonder if this wouldn't be better served in a separate binding doc
+> > > > with its compatible name as the filename, like we do with
+> > > > driver^Whardware blocks, especially if we want to add more parsers.
+> > >=20
+> > >=20
+> > > I find that *very* counter productive for bindings that go to the same
+> > > node. You have a description of a node, and then suddenly there you
+> > > have another file with another description of the same node. Totally
+> > > awesome.
+> >=20
+> > I can't actually work out from that if you're agreeing with the
+> > original post or the first reply.
+>=20
+> Perhaps I'm biased, but I think he was agreeing with the first reply.
+> (Particularly, "I find that *very* counter productive" uses the word
+> "that" to refer to "separate binding doc[s]".)
+>=20
+> > > Also how do you plan to write partitioning schemes with parameters
+> > > like with non-zero offset of the partition table.
+>=20
+> If you are directing this question at me: I don't have a specific plan
+> for it. MTD parsers don't currently take external input for this; many
+> scan the whole device, but some might also have conventions built into
+> the parser itself too, so this just gets hooked based on "compatible".
+> But if the need arose, I would hope we could work out a common binding.
+>=20
+> > Presumably with properties in the patitions node.  Not seeing the
+> > problem here.
+>=20
+> I believe Michal is bringing up the (important, IMO) point that if
+> distinct partition types are being described in the same node, then any
+> use of additional properties *must* be closely coordinated. We can't
+> have two parsers "foo" and "bar" defining conflicting uses of the same
+> property in the same node, like this:
+>=20
+> 	partitions {
+> 		compatible =3D "foo", "bar";
+> 		property-baz =3D ...; // e.g., reg =3D <...>;
+> 	};
+>=20
+> where if "foo" is not found, we fall back to "bar". But what if "foo"
+> and "bar" use "property-baz" differently?
 
-Shouldn't we have the same kind of test for ->read_subpage.
+Ah.. that is an excellent point, and leads me to realise that using
+compatible in this way is wrong.  The whole point of compatible is
+that the node is, well, compatible with *all* the things in the list,
+and therefore the things in the list are compatible with each other.
 
-		if (!ecc->read_subpage && ecc->correct &&
-		    ecc->calculate)
-			ecc->read_subpage = nand_read_subpage;
+Using it for a list of entirely different things to attempt in order
+is not correct.
 
 
-> > >> -             if (!ecc->write_subpage)
-> > >> +             if (!ecc->write_subpage && ecc->hwctl && ecc->calculate)
-> > >>                       ecc->write_subpage = nand_write_subpage_hwecc;
-> > >>
-> > >>       case NAND_ECC_HW_SYNDROME:
-> > >
-> > > I realize we've merged a fix for fsl_elbc_nand long ago (commit
-> > > f034d87def51 "mtd: eLBC NAND: fix subpage write support"), but this
-> > > change still looks sane, applies, and could possibly fix some other
-> > > drivers that are lurking somewhere. Any reason I shouldn't apply it?
-> > 
-> > I'm not carrying this patch in my tree anymore and did not see any more
-> > crashes with the flash configuration I'm using. So, I think the original patch
-> > is kind of superfluous.
-> 
-> There could easily be other drivers that don't have hwctl() or
-> calculate() callbacks yet use NAND_ECC_HW. By inspection, I see that
-> maybe the new hisi504_nand.c is susceptible, as well as sh_flctl.c and
-> maybe even sunxi_nand.c (?). Some of these might not be hit if they
-> don't use NAND that support subpage writes.
+> Having everything in one doc would help ensure that the entire
+> "partitions" binding is considered as a whole when extending it, in my
+> (and an in my interpretation of Michal's) opinion.
+>=20
+> Brian
 
-Yep, sunxi platforms could be hit by this bug, but it seems nobody
-decided to design a board with an SLC NAND (and MLCs are not supporting
-subpage writes).
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
 
-> 
-> Anyway, I think this patch is helpful, because it prevents drivers from
-> having to fill in a 'subpage' write callback that looks just like their
-> write_page() callback.
+--/9DWx/yDrRhgMJTb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I agree.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-Best Regards,
+iQIcBAEBAgAGBQJWa7XJAAoJEGw4ysog2bOSBWoQALjYls+DpoYTVxJCSeQxE1Fk
+OKGQir1DdPa+/sufisuieOvw3vn5tPV96s13n82I+86G0V83Qi3PoYMpU+I8wOx7
+zR6UNI0VmyRWEDOrGKP62K+iCEqYEDTcyaf/lvGLP9XcDYLfar20DDTOmIrWt+7T
+5NcLx5EG93VxES99iyaYqKTODB85R4X0z9O9AewaE+qHQDjvrgL2yn74dmPMlE79
+CyUcEGEErPFOA5EgQOK69YDfUxdrPbL2uVFuyzuQSDapSgwxPSiVCdApxBZEp9wY
+Rvxn/7TIDAaua2tMKQvvhDk6Tt4figSFTV0199vKrPUqfy29w9JY0XdPR5mdM8zg
+bNjMuazbeTMzpIr7tdJWh+ipA/rTsdXTVmSbGnQIzkRlDFiRBg4M+T8ZbcWbDujz
+MNO91QoRYnzICNH+dN6+npPZJkoI52cxfUMi8qd/Lf3t6HmxS7cYe/ZOru49VS5c
+uWWFqJCGMaNMZ+xvrIYvlD/HGTFxus9SHaKgE804QaxSPc+W15+1x0sp1v95XW9o
+Y3oqUclqIX7i58iN2cYavbA4XwoLdENhLtvErMXNTjZ69UkBGU/ZNjT2NDZpanfv
+x27guz5PeF8tjHUJJuyD3+eIkhPEVIJOq/P8ShjmjM0nN714BnEH8auZGyF/O7D7
+RwlTJDiIb+g1cbekXl0D
+=YGRz
+-----END PGP SIGNATURE-----
 
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+--/9DWx/yDrRhgMJTb--
