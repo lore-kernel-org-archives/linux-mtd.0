@@ -1,17 +1,28 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Roger Quadros <rogerq@ti.com>, linux-kernel@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] mtd: omap_elm: print interrupt resource using %pr
-Date: Sat, 12 Dec 2015 15:41:31 +0100
-Message-ID: <1472979.NmboBT3Vms@wuerfel>
-In-Reply-To: <20151212011056.GA144873@google.com>
-References: <2101351.RbJOfbsbGX@wuerfel> <20151212011056.GA144873@google.com>
+Received: from proxima.lp0.eu ([2001:8b0:ffea:0:205:b4ff:fe12:530])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a8DF1-0007K8-JC
+ for linux-mtd@lists.infradead.org; Sun, 13 Dec 2015 20:27:36 +0000
+Subject: Re: [PATCH linux-next (v3) 3/3] mtd: part: Add BCM962368 CFE
+ partitioning support
+To: Jonas Gorski <jogo@openwrt.org>
+References: <566B460F.1040603@simon.arlott.org.uk>
+ <566B47D9.8020105@simon.arlott.org.uk>
+ <CAOiHx==GSwCxWmaQfmHHumGu_ye6waf-DA_5+m8_Ukc1hVeBYg@mail.gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
+ Kevin Cernekee <cernekee@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ MIPS Mailing List <linux-mips@linux-mips.org>, linux-api@vger.kernel.org
+From: Simon Arlott <simon@fire.lp0.eu>
+Message-ID: <566DD491.4030902@simon.arlott.org.uk>
+Date: Sun, 13 Dec 2015 20:26:57 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <CAOiHx==GSwCxWmaQfmHHumGu_ye6waf-DA_5+m8_Ukc1hVeBYg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +32,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 11 December 2015 17:10:56 Brian Norris wrote:
-> Hi Arnd,
+On 11/12/15 23:12, Jonas Gorski wrote:
+> On Fri, Dec 11, 2015 at 11:02 PM, Simon Arlott <simon@fire.lp0.eu> wrote:
+>> +#define BCM63XX_CFE_MAGIC_OFFSET       0x4e0
+>> +#define BCM963XX_CFE_VERSION_OFFSET    0x570
+>> +#define BCM963XX_NVRAM_OFFSET          0x580
 > 
-> On Tue, Dec 08, 2015 at 04:39:45PM +0100, Arnd Bergmann wrote:
-> > When CONFIG_LPAE is set on ARM, resource_size_t is 64-bit wide
-> > and we get a warning about an incorrect format string for printing
-> > the interrupt number in elm_probe:
-> > 
-> > drivers/mtd/nand/omap_elm.c: In function 'elm_probe':
-> > drivers/mtd/nand/omap_elm.c:417:23: warning: format '%i' expects argument of type 'int', but argument 3 has type 'resource_size_t {aka long long unsigned int}' [-Wformat=]
-> > 
-> > This patch avoids the type mismatch by printing the interrupt as
-> > a resource using the %pr format string.
-> > 
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >  drivers/mtd/nand/omap_elm.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/nand/omap_elm.c b/drivers/mtd/nand/omap_elm.c
-> > index 235ec7992b4c..11f174b07217 100644
-> > --- a/drivers/mtd/nand/omap_elm.c
-> > +++ b/drivers/mtd/nand/omap_elm.c
-> > @@ -414,7 +414,7 @@ static int elm_probe(struct platform_device *pdev)
-> >       ret = devm_request_irq(&pdev->dev, irq->start, elm_isr, 0,
-> >                       pdev->name, info);
-> >       if (ret) {
-> > -             dev_err(&pdev->dev, "failure requesting irq %i\n", irq->start);
-> > +             dev_err(&pdev->dev, "failure requesting %pr\n", &irq);
-> 
-> drivers/mtd/nand/omap_elm.c:417 elm_probe() error: '%pr' expects argument of type struct resource *, but argument 3 has type 'struct resource**' [smatch]
+> You should decide whether you want to call it BCM63XX (the SoC) or
+> BCM963XX (the Board using the SoC). Also probably better served in
+> bcm963xx_nvram.h
 
-Ah, good catch. Do you want to fix it up yourself, or should I send a new version?
+I'm going to name the CFE locations, nvram and anything that is a
+property of the flash layout BCM963XX_*, as a theoretical board using
+BCM63XX with no flash wouldn't use these. The parser is still called
+bcm63xxpart so that's currently an anomaly.
 
-	Arnd
+I'm working on making it support both NOR and NAND flash layouts.
+
+-- 
+Simon Arlott
