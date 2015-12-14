@@ -1,25 +1,17 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a8KFL-0006aB-Vg
- for linux-mtd@lists.infradead.org; Mon, 14 Dec 2015 03:56:25 +0000
-From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
- <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Brian Norris <computersforpeace@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Boris
- Brezillon" <boris.brezillon@free-electrons.com>
-Subject: RE: [PATCH 1/1] fs:ubifs:recovery:fixup UBIFS cannot recover master
- node issue
-Date: Mon, 14 Dec 2015 03:55:51 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF54200@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF53F90@NTXXIAMBX02.xacn.micron.com>
- <566A9378.4070900@nod.at>
-In-Reply-To: <566A9378.4070900@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ id 1a8PmI-0004KU-KT
+ for linux-mtd@lists.infradead.org; Mon, 14 Dec 2015 09:50:58 +0000
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+To: <kyungmin.park@samsung.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>
+Subject: [PATCH] mtd: onenand: omap2: Simplify the DMA setup for various paths
+Date: Mon, 14 Dec 2015 11:49:32 +0200
+Message-ID: <1450086572-15224-1-git-send-email-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,130 +21,201 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RGVhciBSaWNoYXJkDQoNCj4gQmVhbiwNCj4gDQo+IEFtIDExLjEyLjIwMTUgdW0gMDk6MjYgc2No
-cmllYiBCZWFuIEh1byC79LHzsfMgKGJlYW5odW8pOg0KPiA+IEZvciBNTEMgTkFORCwgcGFpcmVk
-IHBhZ2UgaXNzdWUgaXMgbm93IGEgY29tbW9uIGtub3duIGlzc3VlLg0KPiA+IFRoaXMgcGF0Y2gg
-aXMganVzdCBmb3IgbWFzdGVyIG5vZGUgY2Fubm90IGJlIHJlY292ZXJlZCB3aGlsZSB0aGVyZQ0K
-PiA+IHdpbGwgdHdvIHBhZ2VzIGJlIGRhbWFnZWQgaW4gb25lIHNpbmdsZSBtYXN0ZXIgbm9kZSBi
-bG9jay4NCj4gPiBBcyBmb3IgdGhpcyBwYXRjaCwgaWYgdGhlcmUgYXJlIG1vcmUgdGhhbiBvbmUg
-cGFnZSBkYXRhIGluIG1hc3RlciBub2RlDQo+ID4gYmxvY2sgYmVpbmcgZGFtYWdlZCwgYW5kIGFz
-IGxvbmcgYXMgZXhpc3Qgb25lIHVuY29ycnVwdGVkIG1hc3RlciBub2RlDQo+ID4gYmxvY2ssIG1h
-c3RlciBub2RlIHdpbGwgYmUgcmVjb3ZlcmVkLg0KPiANCj4gU28sIHRoaXMgcGF0Y2ggaXMgcGFy
-dCBpZiBhIGxhcmdlciBwYXRjaCBzZXJpZXMgdG8gbWFrZSBVQklGUyBNTEMgYXdhcmU/DQoNCk5v
-LCB0aGlzIGlzIG5vdCBvbmUgcGFydCBvZiBteSBwYXRoIHNlcmllcywganVzdCBhIHNpbmdsZSBh
-bmQgZGVkaWNhdGVkIHRvIA0KTWFzdGVyIG5vZGUuDQoNCj4gPiBUaGlzIHBhdGNoIGhhcyBiZWVu
-IHRlc3RlZCBvbiBNaWNyb24gTUxDIE5BTkQgTVQyOUYzMkcwOENCQURBV1AuDQo+ID4gSXNzdWUg
-ZGVzY3JpcHRlZDoNCg0KPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9s
-aW51eC1tdGQvMjAxNS1Ob3ZlbWJlci8wNjMwMTYuaHQNCj4gPiBtbA0KPiA+DQo+ID4gU2lnbmVk
-LW9mZi1ieTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gPiAtLS0NCj4gPiAgZnMv
-dWJpZnMvcmVjb3ZlcnkuYyB8IDc1DQo+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKy0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQ5IGluc2VydGlv
-bnMoKyksIDI2IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL3Jl
-Y292ZXJ5LmMgYi9mcy91Ymlmcy9yZWNvdmVyeS5jIGluZGV4DQo+ID4gNjk1ZmM3MS4uZTMxNTRl
-NiAxMDA2NDQNCj4gPiAtLS0gYS9mcy91Ymlmcy9yZWNvdmVyeS5jDQo+ID4gKysrIGIvZnMvdWJp
-ZnMvcmVjb3ZlcnkuYw0KPiA+IEBAIC0xMjgsNyArMTI4LDcgQEAgc3RhdGljIGludCBnZXRfbWFz
-dGVyX25vZGUoY29uc3Qgc3RydWN0IHViaWZzX2luZm8NCj4gKmMsIGludCBsbnVtLCB2b2lkICoq
-cGJ1ZiwNCj4gPiAgCXdoaWxlIChvZmZzICsgVUJJRlNfTVNUX05PREVfU1ogPD0gYy0+bGViX3Np
-emUpIHsNCj4gPiAgCQlzdHJ1Y3QgdWJpZnNfY2ggKmNoID0gYnVmOw0KPiA+DQo+ID4gLQkJaWYg
-KGxlMzJfdG9fY3B1KGNoLT5tYWdpYykgIT0gVUJJRlNfTk9ERV9NQUdJQykNCj4gPiArCQlpZiAo
-bGUzMl90b19jcHUoY2gtPm1hZ2ljKSA9PSAweEZGRkZGRkZGKQ0KPiANCj4gVGhlIHB1cnBvc2Ug
-b2YgdGhpcyBjaGVjayB3YXMgdG8gdHJpZ2dlciB1cG9uIGdhcmJhZ2UgZGF0YSAoaW5jbHVkaW5n
-IDB4RkYpLg0KPiBOb3cgeW91IG9ubHkgY2hlY2sgZm9yIDB4RkYgYnl0ZXMuDQo+IA0KRm9yIE1h
-c3RlciBub2RlIGJsb2NrLCBqdXN0IGxhc3QgcGFnZSBkYXRhIGlzIHZhbGlkLCBzbyBJIHRoaW5r
-KCBJIGFtIGxpbWl0ZWQgb24gVUJJRlMga25vd2xlZGdlLCBtYXliZSBJIGFtIHdyb25nKSwNClVC
-SUZTIHNob3VsZCBzZWFyY2ggZm9yIGxhc3QgcGFnZSB0aGF0IG5vdCBiZSBwcm9ncmFtZWQsIHRo
-ZW4gc2VhcmNoIGxhc3QgdmFsaWQgbWFzdGVyIG5vZGUgcGFnZS4NCkluIGNhc2Ugb2YgdGhlcmUg
-aXMgb25lIHJhbmRvbSBkYXRhIHBhZ2UsIGJ1dCBsYXN0IHBhZ2Ugb2YgbWFzdGVyIGJsb2NrIGlz
-IGEgdmFsaWQgbWFzdGVyIG5vZGUuDQp1bmxlc3Mgd2UgY2FuIG1ha2Ugc3VyZSB0aGF0IGRvbid0
-IGV4aXN0IHRoaXMgc2NlbmFyaW8uDQo+ID4gIAkJCWJyZWFrOw0KPiA+ICAJCW9mZnMgKz0gc3o7
-DQo+ID4gIAkJYnVmICArPSBzejsNCj4gPiBAQCAtMTM3LDM3ICsxMzcsNDAgQEAgc3RhdGljIGlu
-dCBnZXRfbWFzdGVyX25vZGUoY29uc3Qgc3RydWN0DQo+IHViaWZzX2luZm8gKmMsIGludCBsbnVt
-LCB2b2lkICoqcGJ1ZiwNCj4gPiAgCS8qIFNlZSBpZiB0aGVyZSB3YXMgYSB2YWxpZCBtYXN0ZXIg
-bm9kZSBiZWZvcmUgdGhhdCAqLw0KPiA+ICAJaWYgKG9mZnMpIHsNCj4gPiAgCQlpbnQgcmV0Ow0K
-PiA+IC0NCj4gPiArcmV0cnk6DQo+ID4gIAkJb2ZmcyAtPSBzejsNCj4gPiAgCQlidWYgIC09IHN6
-Ow0KPiA+ICAJCWxlbiAgKz0gc3o7DQo+ID4gIAkJcmV0ID0gdWJpZnNfc2Nhbl9hX25vZGUoYywg
-YnVmLCBsZW4sIGxudW0sIG9mZnMsIDEpOw0KPiA+IC0JCWlmIChyZXQgIT0gU0NBTk5FRF9BX05P
-REUgJiYgb2Zmcykgew0KPiA+IC0JCQkvKiBDb3VsZCBoYXZlIGJlZW4gY29ycnVwdGlvbiBzbyBj
-aGVjayBvbmUgcGxhY2UgYmFjayAqLw0KPiA+IC0JCQlvZmZzIC09IHN6Ow0KPiA+IC0JCQlidWYg
-IC09IHN6Ow0KPiA+IC0JCQlsZW4gICs9IHN6Ow0KPiA+IC0JCQlyZXQgPSB1Ymlmc19zY2FuX2Ff
-bm9kZShjLCBidWYsIGxlbiwgbG51bSwgb2ZmcywgMSk7DQo+ID4gLQkJCWlmIChyZXQgIT0gU0NB
-Tk5FRF9BX05PREUpDQo+ID4gLQkJCQkvKg0KPiA+IC0JCQkJICogV2UgYWNjZXB0IG9ubHkgb25l
-IGFyZWEgb2YgY29ycnVwdGlvbiBiZWNhdXNlDQo+ID4gLQkJCQkgKiB3ZSBhcmUgYXNzdW1pbmcg
-dGhhdCBpdCB3YXMgY2F1c2VkIHdoaWxlDQo+ID4gLQkJCQkgKiB0cnlpbmcgdG8gd3JpdGUgYSBt
-YXN0ZXIgbm9kZS4NCj4gPiAtCQkJCSAqLw0KPiA+IC0JCQkJZ290byBvdXRfZXJyOw0KPiA+IC0J
-CX0NCj4gPiAtCQlpZiAocmV0ID09IFNDQU5ORURfQV9OT0RFKSB7DQo+ID4gLQkJCXN0cnVjdCB1
-Ymlmc19jaCAqY2ggPSBidWY7DQo+ID4gLQ0KPiA+IC0JCQlpZiAoY2gtPm5vZGVfdHlwZSAhPSBV
-QklGU19NU1RfTk9ERSkNCj4gPiArCQlpZiAocmV0ICE9IFNDQU5ORURfQV9OT0RFKSB7DQo+ID4g
-KwkJCS8qIENvdWxkIGhhdmUgYmVlbiBjb3JydXB0aW9uIHNvIGNoZWNrIG1vcmUNCj4gPiArCQkJ
-ICogcGxhY2UgYmFjay4gV2UgYWNjZXB0IHR3byBhcmVhcyBvZiBjb3JydXB0aW9uDQo+ID4gKwkJ
-CSAqIGJlY2F1c2Ugd2UgYXJlIGFzc3VtaW5nIHRoYXQgZm9yIE1MQyBOQU5ELGl0DQo+ID4gKwkJ
-CSAqIHdhcyBjYXVzZWQgd2hpbGUgdHJ5aW5nIHRvIHdyaXRlIGEgbG93ZXINCj4gPiArCQkJICog
-cGFnZSwgdXBwZXIgcGFnZSBiZWluZyBkYW1hZ2VkLg0KPiA+ICsJCQkgKi8NCj4gPiArCQkJaWYg
-KG9mZnMgPiAwKQ0KPiA+ICsJCQkJZ290byByZXRyeTsNCj4gPiArCQkJZWxzZQ0KPiA+ICAJCQkJ
-Z290byBvdXRfZXJyOw0KPiA+ICsJCQl9DQo+ID4gKwkJCWlmIChyZXQgPT0gU0NBTk5FRF9BX05P
-REUpIHsNCj4gPiArCQkJCXN0cnVjdCB1Ymlmc19jaCAqY2ggPSBidWY7DQo+ID4gKw0KPiA+ICsJ
-CQkJaWYgKGNoLT5ub2RlX3R5cGUgIT0gVUJJRlNfTVNUX05PREUpIHsNCj4gPiArCQkJCQlpZiAo
-b2ZmcykNCj4gPiArCQkJCQkJZ290byByZXRyeTsNCj4gPiArCQkJCQllbHNlDQo+ID4gKwkJCQkJ
-CWdvdG8gb3V0X2VycjsNCj4gPiArCQkJCX0NCj4gDQo+IEhlcmUgeW91IGtpbGwgYW5vdGhlciBz
-YW5pdHkgY2hlY2suDQoNCkhlcmUgc2hvdWxkIGJlIHdoYXQgdHlwZSBvZiBjaGVjaz8gQ2FuIHlv
-dSBnaXZlIG1lIHNvbWUgc3VnZ2VzdGlvbnM/DQoNCg0KPiA+ICAJCQlkYmdfcmN2cnkoImZvdW5k
-IGEgbWFzdGVyIG5vZGUgYXQgJWQ6JWQiLCBsbnVtLCBvZmZzKTsNCj4gPiAgCQkJKm1zdCA9IGJ1
-ZjsNCj4gPiAgCQkJb2ZmcyArPSBzejsNCj4gPiAgCQkJYnVmICArPSBzejsNCj4gPiAgCQkJbGVu
-ICAtPSBzejsNCj4gPiAtCQl9DQo+ID4gKwkJCX0NCj4gPiAgCX0NCj4gPiArDQo+IA0KPiBVc2Vs
-ZXNzIGxpbmUgYnJlYWsuIDopDQpUaGlzIHdpbGwgYmUgaW1wcm92ZWQgaW4gbmV4dCB2ZXJzaW9u
-Lg0KDQo+ID4gIAkvKiBDaGVjayBmb3IgY29ycnVwdGlvbiAqLw0KPiA+ICAJaWYgKG9mZnMgPCBj
-LT5sZWJfc2l6ZSkgew0KPiA+ICAJCWlmICghaXNfZW1wdHkoYnVmLCBtaW5fdChpbnQsIGxlbiwg
-c3opKSkgeyBAQCAtMTc4LDEwICsxODEsNiBAQA0KPiA+IHN0YXRpYyBpbnQgZ2V0X21hc3Rlcl9u
-b2RlKGNvbnN0IHN0cnVjdCB1Ymlmc19pbmZvICpjLCBpbnQgbG51bSwgdm9pZCAqKnBidWYsDQo+
-ID4gIAkJYnVmICArPSBzejsNCj4gPiAgCQlsZW4gIC09IHN6Ow0KPiA+ICAJfQ0KPiA+IC0JLyog
-Q2hlY2sgcmVtYWluaW5nIGVtcHR5IHNwYWNlICovDQo+ID4gLQlpZiAob2ZmcyA8IGMtPmxlYl9z
-aXplKQ0KPiA+IC0JCWlmICghaXNfZW1wdHkoYnVmLCBsZW4pKQ0KPiA+IC0JCQlnb3RvIG91dF9l
-cnI7DQo+IA0KPiBBbm90aGVyIGNoZWNrIGdvbmUuIDooDQpZZXMsIHRoaXMgY2hlY2sgc2hvdWxk
-IGFkZCBhZ2FpbiwgdGhhdCBpcyBiZSBtb3JlIHJlYXNvbmFibGUuDQo+ID4gIAkqcGJ1ZiA9IHNi
-dWY7DQo+ID4gIAlyZXR1cm4gMDsNCj4gPg0KPiA+IEBAIC0yMzYsNyArMjM1LDcgQEAgb3V0Og0K
-PiA+ICBpbnQgdWJpZnNfcmVjb3Zlcl9tYXN0ZXJfbm9kZShzdHJ1Y3QgdWJpZnNfaW5mbyAqYykg
-IHsNCj4gPiAgCXZvaWQgKmJ1ZjEgPSBOVUxMLCAqYnVmMiA9IE5VTEwsICpjb3IxID0gTlVMTCwg
-KmNvcjIgPSBOVUxMOw0KPiA+IC0Jc3RydWN0IHViaWZzX21zdF9ub2RlICptc3QxID0gTlVMTCwg
-Km1zdDIgPSBOVUxMLCAqbXN0Ow0KPiA+ICsJc3RydWN0IHViaWZzX21zdF9ub2RlICptc3QxID0g
-TlVMTCwgKm1zdDIgPSBOVUxMLCAqbXN0ID0gTlVMTDsNCj4gPiAgCWNvbnN0IGludCBzeiA9IGMt
-Pm1zdF9ub2RlX2Fsc3o7DQo+ID4gIAlpbnQgZXJyLCBvZmZzMSwgb2ZmczI7DQo+ID4NCj4gPiBA
-QCAtMjgwLDYgKzI3OSwyOCBAQCBpbnQgdWJpZnNfcmVjb3Zlcl9tYXN0ZXJfbm9kZShzdHJ1Y3Qg
-dWJpZnNfaW5mbw0KPiAqYykNCj4gPiAgCQkJCWlmIChjb3IxKQ0KPiA+ICAJCQkJCWdvdG8gb3V0
-X2VycjsNCj4gPiAgCQkJCW1zdCA9IG1zdDE7DQo+ID4gKwkJCX0gZWxzZSBpZiAob2ZmczIgKyBz
-eiAhPSBvZmZzMSkgew0KPiA+ICsJCQkJaWYgKGxlMzJfdG9fY3B1KG1zdDEtPmNoLnNxbnVtKSA+
-DQo+ID4gKwkJCQkJbGUzMl90b19jcHUobXN0Mi0+Y2guc3FudW0pKSB7DQo+ID4gKwkJCQkJLyoN
-Cj4gPiArCQkJCQkgKiAxc3QgTEVCIHdyaXR0ZW4sIG9jY3VycmVkIHBvd2VyDQo+ID4gKwkJCQkJ
-ICogbG9zcyB3aGlsZSB3cml0aW5nIDJuZCBMRUIuDQo+ID4gKwkJCQkJICovDQo+ID4gKwkJCQkJ
-aWYgKGNvcjEpDQo+ID4gKwkJCQkJCWdvdG8gb3V0X2VycjsNCj4gPiArCQkJCQltc3QgPSBtc3Qx
-Ow0KPiA+ICsJCQkJfSBlbHNlIGlmIChsZTMyX3RvX2NwdShtc3QxLT5jaC5zcW51bSkgPA0KPiA+
-ICsJCQkJCWxlMzJfdG9fY3B1KG1zdDItPmNoLnNxbnVtKSkgew0KPiA+ICsJCQkJLyogV2hpbGUg
-d3JpdGluZyAxc3QgTEVCLCBvY2N1cnJlZCBwb3dlciBsb3NzICovDQo+ID4gKwkJCQkJaWYgKCFj
-b3IyKSB7DQo+ID4gKwkJCQkJCWlmIChtc3QyLT5mbGFncyAmDQo+ID4gKwkJCQkJCSAgIGNwdV90
-b19sZTMyKFVCSUZTX01TVF9ESVJUWSkpDQo+ID4gKwkJCQkJCQltc3QgPSBtc3QyOw0KPiA+ICsJ
-CQkJCQllbHNlDQo+ID4gKwkJCQkJCQlnb3RvIG91dF9lcnI7DQo+ID4gKwkJCQkJfSBlbHNlDQo+
-ID4gKwkJCQkJZ290byBvdXRfZXJyOw0KPiA+ICsJCQkJfQ0KPiA+ICAJCQl9IGVsc2UNCj4gPiAg
-CQkJCWdvdG8gb3V0X2VycjsNCj4gPiAgCQl9IGVsc2Ugew0KPiA+IEBAIC0zMDUsNiArMzI2LDgg
-QEAgaW50IHViaWZzX3JlY292ZXJfbWFzdGVyX25vZGUoc3RydWN0IHViaWZzX2luZm8gKmMpDQo+
-ID4gIAkJbXN0ID0gbXN0MjsNCj4gPiAgCX0NCj4gPg0KPiA+ICsJaWYgKG1zdCA9PSBOVUxMKQ0K
-PiA+ICsJCWdvdG8gb3V0X2VycjsNCj4gPiAgCXViaWZzX21zZyhjLCAicmVjb3ZlcmVkIG1hc3Rl
-ciBub2RlIGZyb20gTEVCICVkIiwNCj4gPiAgCQkgIChtc3QgPT0gbXN0MSA/IFVCSUZTX01TVF9M
-TlVNIDogVUJJRlNfTVNUX0xOVU0gKyAxKSk7DQo+IA0KPiBUaGF0IHNhaWQsIHBsZWFzZSBleHBs
-YWluIHlvdXIgcGF0Y2ggaW4gbW9yZSBkZXRhaWwuIGkuZS4gV2h5IGRvIHlvdSByZW1vdmUNCj4g
-dGhlc2UgY2hlY2tzPw0KPiBXaHkgaXMgdGhpcyBjb3JyZWN0IHRvIGRvIHNvPw0KPiBUbyBtZSBp
-dCBsb29rcyBsaWtlIGFuIGFkLWhvYyBzb2x1dGlvbiB0byBtYWtlIFVCSUZTIG5vdCBhYm9ydCBv
-biB5b3VyIE1MQw0KPiBieSByZW1vdmluZyB3ZWxsLWVzdGFibGlzaGVkIGNoZWNrcy4NCj4gSSBh
-Z3JlZSB0aGF0IFVCSUZTJ3MgbWFzdGVyIG5vZGUgY2hlY2tzIGFyZSB2ZXJ5IHBpY2t5IGJ1dCBm
-b3IgU0xDIHRoZXkgYXJlDQo+IGNvcnJlY3QgYW5kIG1ha2UgYSBsb3Qgb2Ygc2Vuc2UuDQo+IEFk
-ZGluZyBNTEMgc3VwcG9ydCBtdXN0IG5vdCBodXJ0IFVCSUZTJ3MgU0xDIHJvYnVzdG5lc3MuDQoN
-Cg0KQ3VycmVudGx5LCB3ZSBnZXQgbW9yZSBmZWVkYmFja3MgZnJvbSBvdXIgY3VzdG9tZXJzIHdo
-byBhcmUgdXNpbmcgTUxDIE5BTkQsDQpUaGV5IG1vcmUgbGlrZSBVQklGUyBtb3JlIHJlbGlhYmxl
-LCBFdmVuIGNhbiB0b2xlcmF0ZSB0byBkaXNjYXJkIHNvbWUgdXNlcg0KRGF0YSBhZnRlciBuZXh0
-IHBvd2VyIG9uLiBNZWFucyB0aGF0IHRoZXkgZG9uJ3Qgd2FudCB0byBVQklGUyBtb3VudCBmYWls
-ZWQganVzdA0KQmVjYXVzZSBvZiBwb3dlciBsb3NzLCBJZiB0byBkaXNjYXJkIHRoZSBkYXRhIGZv
-ciB0aGUgc3RhYmlsaXR5IG9mIHRoZSBzeXN0ZW0sIHRoZXkNCnByZWZlciB0byBjaG9vc2UgdGhl
-IGxhdHRlci4NCg0KRm9yIFVCSUZTIG1hc3RlciBub2RlIG9uIE1MQyBOQU5ELCBJIG9mdGVuIGZv
-dW5kIHRoYXQgb25lIG9mIG1hc3RlciBub2RlIGJsb2NrIGlzIE9LLA0KQnV0IGJlY2F1c2Ugb2Yg
-c2Vjb25kIG1hc3RlciBub2RlIGJsb2NrIGV4aXN0IHR3byBwYWdlcyBkYW1hZ2VkIGRhdGEsIHJl
-Y292ZXJ5IGFsd2F5cyANCkZhaWxzLiBOb3QgbWF0dGVyIFNMQyBvciBNTEMsIGFzIGxvbmcgYXMg
-dGhlcmUgaXMgYSBnb29kIG1hc3RlciBub2RlLCByZWNvdmVyeSBtdXN0IGJlIA0KU3VjY2Vzc2Z1
-bC4NCg0KDQo+IFRoYW5rcywNCj4gLy9yaWNoYXJkDQo=
+We have 4 functions containing almost identical DMA setup code. Create one
+function which can set up the DMA for both read and write and use this in
+place for the setup code in the driver.
+The new function will use wait_for_completion_timeout() and it will figure
+out the best data_type to be used for the transfer instead of hardwiring
+32 or 16 bit data.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ drivers/mtd/onenand/omap2.c | 106 ++++++++++++++++++--------------------------
+ 1 file changed, 42 insertions(+), 64 deletions(-)
+
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 0aacf125938b..58576c9babb0 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -291,6 +291,30 @@ static inline int omap2_onenand_bufferram_offset(struct mtd_info *mtd, int area)
+ 	return 0;
+ }
+ 
++static inline int omap2_onenand_dma_transfer(struct omap2_onenand *c,
++					     dma_addr_t src, dma_addr_t dst,
++					     size_t count)
++{
++	int data_type = __ffs((src | dst | count));
++
++	if (data_type > OMAP_DMA_DATA_TYPE_S32)
++		data_type = OMAP_DMA_DATA_TYPE_S32;
++
++	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
++				     count / BIT(data_type), 1, 0, 0, 0);
++	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
++				src, 0, 0);
++	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
++				 dst, 0, 0);
++
++	reinit_completion(&c->dma_done);
++	omap_start_dma(c->dma_channel);
++	if (wait_for_completion_timeout(&c->dma_done, msecs_to_jiffies(20)))
++		return -ETIMEDOUT;
++
++	return 0;
++}
++
+ #if defined(CONFIG_ARCH_OMAP3) || defined(MULTI_OMAP2)
+ 
+ static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
+@@ -301,10 +325,9 @@ static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
+ 	struct onenand_chip *this = mtd->priv;
+ 	dma_addr_t dma_src, dma_dst;
+ 	int bram_offset;
+-	unsigned long timeout;
+ 	void *buf = (void *)buffer;
+ 	size_t xtra;
+-	volatile unsigned *done;
++	int ret;
+ 
+ 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+ 	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+@@ -341,25 +364,10 @@ static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
+ 		goto out_copy;
+ 	}
+ 
+-	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
+-				     count >> 2, 1, 0, 0, 0);
+-	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+-				dma_src, 0, 0);
+-	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+-				 dma_dst, 0, 0);
+-
+-	reinit_completion(&c->dma_done);
+-	omap_start_dma(c->dma_channel);
+-
+-	timeout = jiffies + msecs_to_jiffies(20);
+-	done = &c->dma_done.done;
+-	while (time_before(jiffies, timeout))
+-		if (*done)
+-			break;
+-
++	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+ 	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
+ 
+-	if (!*done) {
++	if (ret) {
+ 		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
+ 		goto out_copy;
+ 	}
+@@ -379,9 +387,8 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
+ 	struct onenand_chip *this = mtd->priv;
+ 	dma_addr_t dma_src, dma_dst;
+ 	int bram_offset;
+-	unsigned long timeout;
+ 	void *buf = (void *)buffer;
+-	volatile unsigned *done;
++	int ret;
+ 
+ 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+ 	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+@@ -412,25 +419,10 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
+ 		return -1;
+ 	}
+ 
+-	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
+-				     count >> 2, 1, 0, 0, 0);
+-	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+-				dma_src, 0, 0);
+-	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+-				 dma_dst, 0, 0);
+-
+-	reinit_completion(&c->dma_done);
+-	omap_start_dma(c->dma_channel);
+-
+-	timeout = jiffies + msecs_to_jiffies(20);
+-	done = &c->dma_done.done;
+-	while (time_before(jiffies, timeout))
+-		if (*done)
+-			break;
+-
++	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+ 	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
+ 
+-	if (!*done) {
++	if (ret) {
+ 		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
+ 		goto out_copy;
+ 	}
+@@ -469,7 +461,7 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
+ 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+ 	struct onenand_chip *this = mtd->priv;
+ 	dma_addr_t dma_src, dma_dst;
+-	int bram_offset;
++	int bram_offset, ret;
+ 
+ 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+ 	/* DMA is not used.  Revisit PM requirements before enabling it. */
+@@ -491,20 +483,13 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
+ 		return -1;
+ 	}
+ 
+-	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
+-				     count / 4, 1, 0, 0, 0);
+-	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+-				dma_src, 0, 0);
+-	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+-				 dma_dst, 0, 0);
+-
+-	reinit_completion(&c->dma_done);
+-	omap_start_dma(c->dma_channel);
+-	wait_for_completion(&c->dma_done);
+-
++	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+ 	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
+ 
+-	return 0;
++	if (ret)
++		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
++
++	return ret;
+ }
+ 
+ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
+@@ -514,7 +499,7 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
+ 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+ 	struct onenand_chip *this = mtd->priv;
+ 	dma_addr_t dma_src, dma_dst;
+-	int bram_offset;
++	int bram_offset, ret;
+ 
+ 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+ 	/* DMA is not used.  Revisit PM requirements before enabling it. */
+@@ -536,20 +521,13 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
+ 		return -1;
+ 	}
+ 
+-	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S16,
+-				     count / 2, 1, 0, 0, 0);
+-	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+-				dma_src, 0, 0);
+-	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+-				 dma_dst, 0, 0);
+-
+-	reinit_completion(&c->dma_done);
+-	omap_start_dma(c->dma_channel);
+-	wait_for_completion(&c->dma_done);
+-
++	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+ 	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
+ 
+-	return 0;
++	if (ret)
++		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
++
++	return ret;
+ }
+ 
+ #else
+-- 
+2.6.4
