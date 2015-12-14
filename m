@@ -1,17 +1,36 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-oi0-x22f.google.com ([2607:f8b0:4003:c06::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a8PmI-0004KU-KT
- for linux-mtd@lists.infradead.org; Mon, 14 Dec 2015 09:50:58 +0000
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-To: <kyungmin.park@samsung.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-omap@vger.kernel.org>
-Subject: [PATCH] mtd: onenand: omap2: Simplify the DMA setup for various paths
-Date: Mon, 14 Dec 2015 11:49:32 +0200
-Message-ID: <1450086572-15224-1-git-send-email-peter.ujfalusi@ti.com>
+ id 1a8QAV-0002s8-G3
+ for linux-mtd@lists.infradead.org; Mon, 14 Dec 2015 10:15:52 +0000
+Received: by oihr132 with SMTP id r132so36564234oih.1
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Dec 2015 02:15:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20151212013349.GA86087@google.com>
+References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
+ <CAMuHMdUJXHs_OhT0da+kzc=D4MOFUT9BB3eJ+7a_p6DYx-PKBA@mail.gmail.com>
+ <20151210205449.GL144338@google.com>
+ <CAMuHMdV-uethsChWVZGSx1JNcAofODmg14ppGYJP2ewfwhEv1Q@mail.gmail.com>
+ <20151212013349.GA86087@google.com>
+Date: Mon, 14 Dec 2015 11:15:26 +0100
+Message-ID: <CAMuHMdWSSHCYXPj_8sXTdc84k6c2oD2XUKLRoJZF2WwHcgk8vQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] mtd: partitions: add of_match_table support
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Simon Arlott <simon@fire.lp0.eu>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Jonas Gorski <jogo@openwrt.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ devicetree-spec@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Arnd Bergmann <arnd@arndb.de>,
+ David Hendricks <dhendrix@chromium.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,201 +40,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We have 4 functions containing almost identical DMA setup code. Create one
-function which can set up the DMA for both read and write and use this in
-place for the setup code in the driver.
-The new function will use wait_for_completion_timeout() and it will figure
-out the best data_type to be used for the transfer instead of hardwiring
-32 or 16 bit data.
+Hi Brian,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/mtd/onenand/omap2.c | 106 ++++++++++++++++++--------------------------
- 1 file changed, 42 insertions(+), 64 deletions(-)
+On Sat, Dec 12, 2015 at 2:33 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Fri, Dec 11, 2015 at 09:44:37AM +0100, Geert Uytterhoeven wrote:
+>> On Thu, Dec 10, 2015 at 9:54 PM, Brian Norris
+>> <computersforpeace@gmail.com> wrote:
+>> > IOW, I wouldn't expect MBR or GPT to work well on large raw NAND flash,
+>> > and so I don't plan to do that sort of work myself. If you can provide
+>> > some better argument for it, and some nice maintainable code to go with
+>> > it, then of course it could be considered :)
+>>
+>> There's also NOR FLASH (e.g. SPI-NOR), which is what most boards I'm
+>> working on have.
+>
+> OK. But these flash are often used for the boot firmware, no? And then,
+> does the boot code have to be provided at one end of the flash (e.g.,
+> bottom)? If so, then something like MBR or GPT will likely not apply,
+> since they reserve the first (and sometimes last) blocks of the medium.
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index 0aacf125938b..58576c9babb0 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -291,6 +291,30 @@ static inline int omap2_onenand_bufferram_offset(struct mtd_info *mtd, int area)
- 	return 0;
- }
- 
-+static inline int omap2_onenand_dma_transfer(struct omap2_onenand *c,
-+					     dma_addr_t src, dma_addr_t dst,
-+					     size_t count)
-+{
-+	int data_type = __ffs((src | dst | count));
-+
-+	if (data_type > OMAP_DMA_DATA_TYPE_S32)
-+		data_type = OMAP_DMA_DATA_TYPE_S32;
-+
-+	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
-+				     count / BIT(data_type), 1, 0, 0, 0);
-+	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-+				src, 0, 0);
-+	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-+				 dst, 0, 0);
-+
-+	reinit_completion(&c->dma_done);
-+	omap_start_dma(c->dma_channel);
-+	if (wait_for_completion_timeout(&c->dma_done, msecs_to_jiffies(20)))
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
- #if defined(CONFIG_ARCH_OMAP3) || defined(MULTI_OMAP2)
- 
- static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
-@@ -301,10 +325,9 @@ static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
- 	struct onenand_chip *this = mtd->priv;
- 	dma_addr_t dma_src, dma_dst;
- 	int bram_offset;
--	unsigned long timeout;
- 	void *buf = (void *)buffer;
- 	size_t xtra;
--	volatile unsigned *done;
-+	int ret;
- 
- 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
- 	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
-@@ -341,25 +364,10 @@ static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
- 		goto out_copy;
- 	}
- 
--	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
--				     count >> 2, 1, 0, 0, 0);
--	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
--				dma_src, 0, 0);
--	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
--				 dma_dst, 0, 0);
--
--	reinit_completion(&c->dma_done);
--	omap_start_dma(c->dma_channel);
--
--	timeout = jiffies + msecs_to_jiffies(20);
--	done = &c->dma_done.done;
--	while (time_before(jiffies, timeout))
--		if (*done)
--			break;
--
-+	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
- 	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
- 
--	if (!*done) {
-+	if (ret) {
- 		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
- 		goto out_copy;
- 	}
-@@ -379,9 +387,8 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
- 	struct onenand_chip *this = mtd->priv;
- 	dma_addr_t dma_src, dma_dst;
- 	int bram_offset;
--	unsigned long timeout;
- 	void *buf = (void *)buffer;
--	volatile unsigned *done;
-+	int ret;
- 
- 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
- 	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
-@@ -412,25 +419,10 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
- 		return -1;
- 	}
- 
--	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
--				     count >> 2, 1, 0, 0, 0);
--	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
--				dma_src, 0, 0);
--	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
--				 dma_dst, 0, 0);
--
--	reinit_completion(&c->dma_done);
--	omap_start_dma(c->dma_channel);
--
--	timeout = jiffies + msecs_to_jiffies(20);
--	done = &c->dma_done.done;
--	while (time_before(jiffies, timeout))
--		if (*done)
--			break;
--
-+	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
- 	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
- 
--	if (!*done) {
-+	if (ret) {
- 		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
- 		goto out_copy;
- 	}
-@@ -469,7 +461,7 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
- 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
- 	struct onenand_chip *this = mtd->priv;
- 	dma_addr_t dma_src, dma_dst;
--	int bram_offset;
-+	int bram_offset, ret;
- 
- 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
- 	/* DMA is not used.  Revisit PM requirements before enabling it. */
-@@ -491,20 +483,13 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
- 		return -1;
- 	}
- 
--	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
--				     count / 4, 1, 0, 0, 0);
--	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
--				dma_src, 0, 0);
--	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
--				 dma_dst, 0, 0);
--
--	reinit_completion(&c->dma_done);
--	omap_start_dma(c->dma_channel);
--	wait_for_completion(&c->dma_done);
--
-+	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
- 	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
- 
--	return 0;
-+	if (ret)
-+		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
-+
-+	return ret;
- }
- 
- static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
-@@ -514,7 +499,7 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
- 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
- 	struct onenand_chip *this = mtd->priv;
- 	dma_addr_t dma_src, dma_dst;
--	int bram_offset;
-+	int bram_offset, ret;
- 
- 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
- 	/* DMA is not used.  Revisit PM requirements before enabling it. */
-@@ -536,20 +521,13 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
- 		return -1;
- 	}
- 
--	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S16,
--				     count / 2, 1, 0, 0, 0);
--	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
--				dma_src, 0, 0);
--	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
--				 dma_dst, 0, 0);
--
--	reinit_completion(&c->dma_done);
--	omap_start_dma(c->dma_channel);
--	wait_for_completion(&c->dma_done);
--
-+	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
- 	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
- 
--	return 0;
-+	if (ret)
-+		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
-+
-+	return ret;
- }
- 
- #else
--- 
-2.6.4
+If the boot firmware is in the first few blocks, Amiga RDB or BSD disklabel
+come to the rescue...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
