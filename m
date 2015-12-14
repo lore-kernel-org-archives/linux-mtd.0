@@ -1,26 +1,25 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pf0-x22c.google.com ([2607:f8b0:400e:c00::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a8XQQ-0006we-Hi
- for linux-mtd@lists.infradead.org; Mon, 14 Dec 2015 18:00:43 +0000
-Subject: Re: [PATCH 1/1] fs:ubifs:recovery:fixup UBIFS cannot recover master
- node issue
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF53F90@NTXXIAMBX02.xacn.micron.com>
- <566A9378.4070900@nod.at>
- <A765B125120D1346A63912DDE6D8B6310BF54200@NTXXIAMBX02.xacn.micron.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <566F03AC.90305@nod.at>
-Date: Mon, 14 Dec 2015 19:00:12 +0100
+ id 1a8XcI-0004fV-NB
+ for linux-mtd@lists.infradead.org; Mon, 14 Dec 2015 18:12:59 +0000
+Received: by pff63 with SMTP id 63so15062976pff.2
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Dec 2015 10:12:38 -0800 (PST)
+Date: Mon, 14 Dec 2015 10:12:35 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-wireless@vger.kernel.org
+Subject: Re: [PATCH] mtd: bcm47xxnflash: really unregister NAND on device
+ removal
+Message-ID: <20151214181235.GA10460@google.com>
+References: <1449623099-21634-1-git-send-email-computersforpeace@gmail.com>
+ <20151214184907.3460eb71@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF54200@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset=gbk
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20151214184907.3460eb71@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,47 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bean,
-
-Am 14.12.2015 um 04:55 schrieb Bean Huo ªÙ±Û±Û (beanhuo):
-> Dear Richard
+On Mon, Dec 14, 2015 at 06:49:07PM +0100, Boris Brezillon wrote:
+> On Tue,  8 Dec 2015 17:04:59 -0800
+> Brian Norris <computersforpeace@gmail.com> wrote:
 > 
->> Bean,
->>
->> Am 11.12.2015 um 09:26 schrieb Bean Huo ªÙ±Û±Û (beanhuo):
->>> For MLC NAND, paired page issue is now a common known issue.
->>> This patch is just for master node cannot be recovered while there
->>> will two pages be damaged in one single master node block.
->>> As for this patch, if there are more than one page data in master node
->>> block being damaged, and as long as exist one uncorrupted master node
->>> block, master node will be recovered.
->>
->> So, this patch is part if a larger patch series to make UBIFS MLC aware?
+> > The field bcma_nflash::mtd is never set to be non-zero anywhere, but we
+> > test for it in the removal path. So the MTD is never unregistered.
+> > 
+> > Also, we should use nand_release(), not mtd_device_unregister().
+> > 
+> > Finally, we don't need to use the 'platdata' for stashing/retrieving our
+> > *driver* data -- that's what *_{get,set}_drvdata() are for.
+> > 
+> > So, kill off bcm_nflash::mtd, and stash the struct bcm47xxnflash in
+> > drvdata instead. Also move the forward declaration of mtd_info up a bit,
+> > since struct bcma_sflash should be using it.
+> > 
+> > Caught while inspecting other changes being made to this driver. Compile
+> > tested only.
+> > 
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > Cc: "Rafa≈Ç Mi≈Çecki" <zajec5@gmail.com>
+> > Cc: linux-wireless@vger.kernel.org
 > 
-> No, this is not one part of my path series, just a single and dedicated to 
-> Master node.
+> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-[...]
-
-> Currently, we get more feedbacks from our customers who are using MLC NAND,
-> They more like UBIFS more reliable, Even can tolerate to discard some user
-> Data after next power on. Means that they don't want to UBIFS mount failed just
-> Because of power loss, If to discard the data for the stability of the system, they
-> prefer to choose the latter.
-
-MLC is currently simply not supported. If your hardware does not have a mechanism
-do temper power-loss the paired page issue will damage UBI and UBIFS.
-Please correct me if I'm wrong but this patch just papers over one symptom of that.
-
-> For UBIFS master node on MLC NAND, I often found that one of master node block is OK,
-> But because of second master node block exist two pages damaged data, recovery always 
-> Fails. Not matter SLC or MLC, as long as there is a good master node, recovery must be 
-> Successful.
-
-This needs a much more detailed explanation.
-In which scenarios on SLC NAND can you get such an unmountable UBIFS?
-Maybe UBIFS is too strict and NAND behaves differently than UBIFS expects
-but we need to understand it in depth.
-
-Thanks,
-//richard
+Applied to l2-mtd.git
