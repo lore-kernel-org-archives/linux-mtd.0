@@ -1,24 +1,17 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a8jSe-0001jX-5B
- for linux-mtd@lists.infradead.org; Tue, 15 Dec 2015 06:51:49 +0000
-Subject: Re: [PATCH for-4.4] mtd: fix cmdlinepart parser, early naming for
- auto-filled MTD
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1449878281-94986-1-git-send-email-computersforpeace@gmail.com>
- <566BA661.9000407@denx.de> <20151212053918.GA19361@brian-ubuntu>
- <20151214192402.GA124396@google.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Frans Klaver <fransklaver@gmail.com>
-Reply-To: hs@denx.de
-From: Heiko Schocher <hs@denx.de>
-Message-ID: <566FB860.4080900@denx.de>
-Date: Tue, 15 Dec 2015 07:51:12 +0100
+ id 1a8kBs-0005uz-9m
+ for linux-mtd@lists.infradead.org; Tue, 15 Dec 2015 07:38:33 +0000
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+To: <kyungmin.park@samsung.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>
+Subject: [PATCH] mtd: onenand: omap2: Convert to use dmaengine for memcpy
+Date: Tue, 15 Dec 2015 09:37:38 +0200
+Message-ID: <1450165058-2977-1-git-send-email-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20151214192402.GA124396@google.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,133 +21,208 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Brian,
+Do not use the legacy and deprecated omap-dma interface for setting up the
+memcpy.
 
-Am 14.12.2015 um 20:24 schrieb Brian Norris:
-> On Fri, Dec 11, 2015 at 09:39:18PM -0800, Brian Norris wrote:
->> On Sat, Dec 12, 2015 at 05:45:21AM +0100, Heiko Schocher wrote:
->>> Am 12.12.2015 um 00:58 schrieb Brian Norris:
->>>> Commit 807f16d4db95 ("mtd: core: set some defaults when dev.parent is
->>>> set") attempted to provide some default settings for MTDs that
->>>>   (a) assign the parent device and
->>>>   (b) don't provide their own name or owner
->>>>
->>>> However, this isn't a perfect drop-in replacement for the boilerplate
->>>> found in some drivers, because the MTD name is used by partition
->>>> parsers like cmdlinepart, but the name isn't set until add_mtd_device(),
->>>> after the parsing is completed. This means cmdlinepart sees a NULL name
->>>> and therefore will not work properly.
->>>>
->>>> Fix this by moving the default name and owner assignment to be first in
->>>> the MTD registration process.
->>>>
->>>> Fixes: 807f16d4db95 ("mtd: core: set some defaults when dev.parent is set")
->>>> Reported-by: Heiko Schocher <hs@denx.de>
->>>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->>>> Cc: Heiko Schocher <hs@denx.de>
->>>> Cc: Frans Klaver <fransklaver@gmail.com>
->>>> ---
->>>> Heiko, can you provide testing feedback (e.g., 'Tested-by: ...')?
->>>
->>> Sorry, does not work for me:
->>>
->>> Based on:
->>> pollux:linux hs [20151212] $ git describe master
->>> v4.4-rc4-135-gb9d8545
->>>
->>> and this patch, shows the same problem,
->>
->> [...]
->
-> BTW, can you please include the relevant log snippets when replying in
-> the future?
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
 
-Uh, Sorry for that, yes of course ...
+Hi,
 
->> Ugh, I see the problem. In nand_base.c, nand_get_flash_type():
->>
->> 	if (!mtd->name)
->> 		mtd->name = type->name;
->
-> Specifically, I think we could hack around this with something like the
-> following additional patch. Untested:
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index ece544efccc3..9f169566fba4 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3826,6 +3826,9 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
->   	if (!type)
->   		type = nand_flash_ids;
->
-> +	if (!mtd->name && mtd->dev.parent)
-> +		mtd->name = dev_name(mtd->dev.parent);
-> +
->   	for (; type->name != NULL; type++) {
->   		if (is_full_id_nand(type)) {
->   			if (find_full_id_nand(mtd, chip, type, id_data, &busw))
->
+this patch depends on the dma setup simplification patch:
+https://www.mail-archive.com/linux-omap@vger.kernel.org/msg122375.html
 
-Sorry, I had not yet the time to look into the issue deeper, Thanks for
-digging into it. I tried therefore your patch (automated with tbot see
-below [1]) on linux "v4.4-rc5" and
+We could try to enable the DMA memcpy without condition I believe, but I have
+decided to not do it since the code had comments regarding to PM (?) when using
+DMA.
 
-your patch works!
+Regards,
+Peter
 
-bye,
-Heiko
 
-[1] automated test with tbot [2]
-http://xeidos.ddns.net/buildbot/builders/mcx/builds/7/steps/shell/logs/tbotlog
+ drivers/mtd/onenand/omap2.c | 84 ++++++++++++++++++++++-----------------------
+ 1 file changed, 41 insertions(+), 43 deletions(-)
 
-as there is a lot of things done automatically, search for
-"Micron MT29F4G16ABADAWP"
-
-All you see in the log is done automatically with tbot. The mcx board
-is in munich, while I am doing the test from hungary. In my testsetup
-tbot is integrated into buildbot, which is used for the webserver
-and triggering builds.
-
-What is done:
-- get linux code (if it is not already checked out)
-- apply patches
-   (I have also a testcase, which download all patches from patchwork,
-    which are delegated to me (for u-boot), check them with checkpatch
-    and apply it ... very helpful, if this is done in a nightly build,
-    you have only to look in the morning, if all is green, and you know
-    that all patches are checkpatch clean, apply celan, compile clean
-    and do not break the boards you have in your nightly build ... also
-    there is a testcase which starts a git bisect test [3] ...)
-
-    As I did not mainlined the board yet, there are a bunch of checkpatch
-    errors, so I disabled that the testcase fails, if there are errors.
-
-- compile linux
-- copy files to tftpdir
-- boot them
-- execute testcases
-   for example check in dmesg some strings with:
-   https://github.com/hsdenx/tbot/blob/master/src/tc/tc_lx_dmesg_grep.py
-
-   So detected our current bug ;-)
-
-   check register settings with devmem2:
-   https://github.com/hsdenx/tbot/blob/master/src/tc/tc_lx_check_reg_file.py
-
-   Thats very nice, as you can check for example complete pinmux register.
-   see as an example [4]
-
-last but not least, tbot (and buildbot incl. webserver) is running on a
-raspberry pi at my home! So no expensive hw costs.
-
-[2] https://github.com/hsdenx/tbot
-[3] git bisect automated:
-     https://github.com/hsdenx/tbot/blob/master/src/tc/tc_board_git_bisect.py
-     log as an example for U-Boot:
-     http://xeidos.ddns.net/buildbot/builders/tqm5200s/builds/3/steps/shell/logs/tbotlog
-[4] register file
-     https://github.com/hsdenx/tbot/blob/master/src/files/ccu1_pinmux_scm.reg
-
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 58576c9babb0..b747217d5e73 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -32,6 +32,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/delay.h>
+ #include <linux/dma-mapping.h>
++#include <linux/dmaengine.h>
+ #include <linux/io.h>
+ #include <linux/slab.h>
+ #include <linux/regulator/consumer.h>
+@@ -40,8 +41,6 @@
+ #include <linux/platform_data/mtd-onenand-omap2.h>
+ #include <asm/gpio.h>
+ 
+-#include <linux/omap-dma.h>
+-
+ #define DRIVER_NAME "omap2-onenand"
+ 
+ #define ONENAND_BUFRAM_SIZE	(1024 * 5)
+@@ -56,18 +55,16 @@ struct omap2_onenand {
+ 	struct onenand_chip onenand;
+ 	struct completion irq_done;
+ 	struct completion dma_done;
+-	int dma_channel;
++	struct dma_chan *dma_chan;
+ 	int freq;
+ 	int (*setup)(void __iomem *base, int *freq_ptr);
+ 	struct regulator *regulator;
+ 	u8 flags;
+ };
+ 
+-static void omap2_onenand_dma_cb(int lch, u16 ch_status, void *data)
++static void omap2_onenand_dma_complete_func(void *completion)
+ {
+-	struct omap2_onenand *c = data;
+-
+-	complete(&c->dma_done);
++	complete(completion);
+ }
+ 
+ static irqreturn_t omap2_onenand_interrupt(int irq, void *dev_id)
+@@ -295,23 +292,33 @@ static inline int omap2_onenand_dma_transfer(struct omap2_onenand *c,
+ 					     dma_addr_t src, dma_addr_t dst,
+ 					     size_t count)
+ {
+-	int data_type = __ffs((src | dst | count));
++	struct dma_device *dma_dev = c->dma_chan->device;
++	struct dma_async_tx_descriptor *tx = NULL;
++	dma_cookie_t cookie;
+ 
+-	if (data_type > OMAP_DMA_DATA_TYPE_S32)
+-		data_type = OMAP_DMA_DATA_TYPE_S32;
+-
+-	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
+-				     count / BIT(data_type), 1, 0, 0, 0);
+-	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+-				src, 0, 0);
+-	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
+-				 dst, 0, 0);
++	tx = dma_dev->device_prep_dma_memcpy(c->dma_chan, dst, src, count, 0);
++	if (!tx) {
++		dev_err(&c->pdev->dev, "Failed to prepare DMA memcpy\n");
++		return -EIO;
++	}
+ 
+ 	reinit_completion(&c->dma_done);
+-	omap_start_dma(c->dma_channel);
++	tx->callback = omap2_onenand_dma_complete_func;
++	tx->callback_param = &c->dma_done;
++
++	cookie = tx->tx_submit(tx);
++	if (dma_submit_error(cookie)) {
++		dev_err(&c->pdev->dev, "Failed to do DMA tx_submit\n");
++		return -EIO;
++	}
++
++	dma_async_issue_pending(c->dma_chan);
++
+ 	if (wait_for_completion_timeout(&c->dma_done, msecs_to_jiffies(20)))
+ 		return -ETIMEDOUT;
+ 
++	dmaengine_terminate_all(c->dma_chan);
++
+ 	return 0;
+ }
+ 
+@@ -465,7 +472,7 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
+ 
+ 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+ 	/* DMA is not used.  Revisit PM requirements before enabling it. */
+-	if (1 || (c->dma_channel < 0) ||
++	if (1 || !c->dma_chan ||
+ 	    ((void *) buffer >= (void *) high_memory) || (bram_offset & 3) ||
+ 	    (((unsigned int) buffer) & 3) || (count < 1024) || (count & 3)) {
+ 		memcpy(buffer, (__force void *)(this->base + bram_offset),
+@@ -503,7 +510,7 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
+ 
+ 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+ 	/* DMA is not used.  Revisit PM requirements before enabling it. */
+-	if (1 || (c->dma_channel < 0) ||
++	if (1 || !c->dma_chan ||
+ 	    ((void *) buffer >= (void *) high_memory) || (bram_offset & 3) ||
+ 	    (((unsigned int) buffer) & 3) || (count < 1024) || (count & 3)) {
+ 		memcpy((__force void *)(this->base + bram_offset), buffer,
+@@ -608,8 +615,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+ 	c->flags = pdata->flags;
+ 	c->gpmc_cs = pdata->cs;
+ 	c->gpio_irq = pdata->gpio_irq;
+-	c->dma_channel = pdata->dma_channel;
+-	if (c->dma_channel < 0) {
++	if (pdata->dma_channel < 0) {
+ 		/* if -1, don't use DMA */
+ 		c->gpio_irq = 0;
+ 	}
+@@ -661,25 +667,17 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+ 		goto err_release_gpio;
+ 	}
+ 
+-	if (c->dma_channel >= 0) {
+-		r = omap_request_dma(0, pdev->dev.driver->name,
+-				     omap2_onenand_dma_cb, (void *) c,
+-				     &c->dma_channel);
+-		if (r == 0) {
+-			omap_set_dma_write_mode(c->dma_channel,
+-						OMAP_DMA_WRITE_NON_POSTED);
+-			omap_set_dma_src_data_pack(c->dma_channel, 1);
+-			omap_set_dma_src_burst_mode(c->dma_channel,
+-						    OMAP_DMA_DATA_BURST_8);
+-			omap_set_dma_dest_data_pack(c->dma_channel, 1);
+-			omap_set_dma_dest_burst_mode(c->dma_channel,
+-						     OMAP_DMA_DATA_BURST_8);
+-		} else {
++	if (pdata->dma_channel >= 0) {
++		dma_cap_mask_t mask;
++
++		dma_cap_zero(mask);
++		dma_cap_set(DMA_MEMCPY, mask);
++
++		c->dma_chan = dma_request_channel(mask, NULL, NULL);
++		if (!c->dma_chan)
+ 			dev_info(&pdev->dev,
+ 				 "failed to allocate DMA for OneNAND, "
+ 				 "using PIO instead\n");
+-			c->dma_channel = -1;
+-		}
+ 	}
+ 
+ 	dev_info(&pdev->dev, "initializing on CS%d, phys base 0x%08lx, virtual "
+@@ -693,7 +691,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+ 	mtd_set_of_node(&c->mtd, pdata->of_node);
+ 
+ 	this = &c->onenand;
+-	if (c->dma_channel >= 0) {
++	if (c->dma_chan) {
+ 		this->wait = omap2_onenand_wait;
+ 		if (c->flags & ONENAND_IN_OMAP34XX) {
+ 			this->read_bufferram = omap3_onenand_read_bufferram;
+@@ -735,8 +733,8 @@ err_release_onenand:
+ err_release_regulator:
+ 	regulator_put(c->regulator);
+ err_release_dma:
+-	if (c->dma_channel != -1)
+-		omap_free_dma(c->dma_channel);
++	if (c->dma_chan)
++		dma_release_channel(c->dma_chan);
+ 	if (c->gpio_irq)
+ 		free_irq(gpio_to_irq(c->gpio_irq), c);
+ err_release_gpio:
+@@ -758,8 +756,8 @@ static int omap2_onenand_remove(struct platform_device *pdev)
+ 
+ 	onenand_release(&c->mtd);
+ 	regulator_put(c->regulator);
+-	if (c->dma_channel != -1)
+-		omap_free_dma(c->dma_channel);
++	if (c->dma_chan)
++		dma_release_channel(c->dma_chan);
+ 	omap2_onenand_shutdown(pdev);
+ 	if (c->gpio_irq) {
+ 		free_irq(gpio_to_irq(c->gpio_irq), c);
 -- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+2.6.4
