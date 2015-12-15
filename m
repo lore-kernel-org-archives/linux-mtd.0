@@ -1,25 +1,21 @@
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a8ifP-0008Jc-1C
+ for linux-mtd@lists.infradead.org; Tue, 15 Dec 2015 06:00:55 +0000
+Received: by pfbo64 with SMTP id o64so5020077pfb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Dec 2015 22:00:33 -0800 (PST)
+From: Peter Pan <peterpansjtu@gmail.com>
+To: computersforpeace@gmail.com, dwmw2@infradead.org,
+ boris.brezillon@free-electrons.com, fransklaver@gmail.com
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ karlzhang@micron.com, beanhuo@micron.com,
+ Peter Pan <peterpandong@micron.com>
+Subject: [PATCH v2 00/12] mtd: nand_bbt: introduce independent nand BBT
+Date: Tue, 15 Dec 2015 05:59:26 +0000
+Message-Id: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
-In-Reply-To: <20151214214312.GA86857@google.com>
-References: <1450120304-2760-1-git-send-email-geert+renesas@glider.be>
- <20151214194613.GA126731@google.com>
- <CAMuHMdW=wJEoi-+EWAKBjRwb+QFvk=iFur1yFqR=q0f4zwzb2Q@mail.gmail.com>
- <20151214214312.GA86857@google.com>
-Date: Mon, 14 Dec 2015 13:45:07 -0800
-Message-ID: <CAN8TOE9O_egvFevRj3WaUcJd8GMFAAQcWLHMtKe1gwCR14zDPg@mail.gmail.com>
-Subject: Re: [PATCH/RFC 0/7] ARM: dts: Add compatible property to "partitions"
- node
-From: Brian Norris <computersforpeace@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
- Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Rob Herring <robh+dt@kernel.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +25,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ real linux-mtd mailing list
+Currently nand_bbt.c is tied with struct nand_chip, and it makes other
+NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
+onenand has own bbt(onenand_bbt.c).
 
-On Mon, Dec 14, 2015 at 1:43 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Mon, Dec 14, 2015 at 10:20:19PM +0100, Geert Uytterhoeven wrote:
->> On Mon, Dec 14, 2015 at 8:46 PM, Brian Norris
->> <computersforpeace@gmail.com> wrote:
->> > On Mon, Dec 14, 2015 at 08:11:37PM +0100, Geert Uytterhoeven wrote:
->> >> As of commit e488ca9f8d4f62c2 ("doc: dt: mtd: partitions: add compatible
->> >> property to "partitions" node"), the "partitions" subnode of an SPI
->> >> FLASH device node must have a compatible property. The partitions are no
->> >> longer detected if it is not present.
->> >
->> > For all patches:
->> >
->> > Acked-by: Brian Norris <computersforpeace@gmail.com>
->> >
->> >> I marked this series as "RFC", as the abovementioned commit is not yet
->> >> upstream. Ideally, the users should be fixed first, to avoid breakage.
->>
->> It breaks bisectability in mainline.
->
-> The files you are fixing are not converted in mainline yet, are they?
->
->> > I'd differ on the last sentence. It's more important to straighten out
->> > the release features for 4.4 than to make sure that linux-next has
->> > perfect DTS files. So I'll submit whenever ready :)
->>
->> If the DTS changes go in first, bisectability is preserved.
->
-> Are you asking me to delay fixing the DT binding until 4.5, just because
-> your for-next branches can't be fixed? IOW, you want me to release the
-> bad DT binding for a whole cycle?
->
-> Brian
+Separate struct nand_chip from BBT code can make current BBT shareable.
+We create struct nand_bbt to take place of nand_chip in nand_bbt.c.
+Struct nand_bbt contains all the information BBT needed from outside and
+it should be embedded into NAND family chip struct (such as struct nand_chip).
+NAND family driver should allocate, initialize and free struct nand_bbt.
+
+Below is mtd folder structure we want:
+	mtd
+	├── Kconfig
+	├── Makefile
+	├── ...
+	├── nand_bbt.c
+	├── nand
+	│   ├── Kconfig
+	│   ├── Makefile
+	│   ├── nand_base.c
+	│   ├── nand_ids.c
+	│   ├── ...
+	│   └── xway_nand.c
+	├── spi-nand
+	│   ├── Kconfig
+	│   ├── Makefile
+	│   ├── spi-nand-base.c
+	│   ├── ...
+	│   └── spi-nand-device.c
+	└── ...
+
+Most of the patch is borrowed from Brian Norris <computersforpeace@gmail.com>.
+http://git.infradead.org/users/norris/linux-mtd.git/shortlog/refs/heads/nand-bbt
+Based on Brian's suggestion, I make my previous BBT patch into 12 independent
+patches. Previous patch is http://patchwork.ozlabs.org/patch/492066/
+Beside the patch split, I also moved nand_bbt.c to mtd folder, which didn't in
+previous patch.
+
+Patch 3, 7, 8, 9, 10 and 11 are totally borrowed from Brian's git tree. I just
+test and split the code into independent patch. Patch 1, 2, 5 and 6 are partial
+borrowed. I make some changes from Brian's git tree and the changes are recorded
+in commit log. Patch 4 and 12 are written by me.
+
+The patch is tested on Zed board.
+
+v2 changes:
+	rebase patch series on master branch of l2-mtd.git
+
+Brian Norris (10):
+  mtd: nand_bbt: new header for nand family BBT
+  mtd: nand_bbt: introduce struct nand_bbt
+  mtd: nand_bbt: add new API definitions
+  mtd: nand: use new BBT API instead of old ones
+  mtd: nand_bbt: use erase() and is_bad_bbm() hook in BBT
+  mtd: nand: make nand_erase_nand() static
+  mtd: nand_bbt: remove struct nand_chip from nand_bbt.c
+  mtd: nand_bbt: remove old API definitions
+  mtd: nand_bbt: remove NAND_BBT_DYNAMICSTRUCT macro
+  mtd: nand: remove nand_chip.bbt
+
+Peter Pan (2):
+  mtd: nand_bbt: add nand_bbt_markbad_factory() interface
+  mtd: nand-bbt: move nand_bbt.c to mtd folder
+
+ drivers/mtd/Kconfig               |   7 +
+ drivers/mtd/Makefile              |   1 +
+ drivers/mtd/nand/Kconfig          |   2 +-
+ drivers/mtd/nand/Makefile         |   2 +-
+ drivers/mtd/nand/docg4.c          |   6 +-
+ drivers/mtd/nand/nand_base.c      | 145 +++++++++-
+ drivers/mtd/{nand => }/nand_bbt.c | 542 ++++++++++++++++----------------------
+ include/linux/mtd/bbm.h           |  96 +------
+ include/linux/mtd/nand.h          |  16 +-
+ include/linux/mtd/nand_bbt.h      | 177 +++++++++++++
+ 10 files changed, 562 insertions(+), 432 deletions(-)
+ rename drivers/mtd/{nand => }/nand_bbt.c (68%)
+ create mode 100644 include/linux/mtd/nand_bbt.h
+
+-- 
+1.9.1
