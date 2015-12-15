@@ -1,27 +1,12 @@
-Received: from ozlabs.org ([2401:3900:2:1::2])
+Received: from mail-oi0-x233.google.com ([2607:f8b0:4003:c06::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a8mGK-0005fu-Tk
- for linux-mtd@lists.infradead.org; Tue, 15 Dec 2015 09:51:19 +0000
-Date: Tue, 15 Dec 2015 17:00:56 +1100
-From: David Gibson <david@gibson.dropbear.id.au>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>, Jonas Gorski <jogo@openwrt.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- devicetree-spec@vger.kernel.org, Simon Arlott <simon@fire.lp0.eu>,
- Linus Walleij <linus.walleij@linaro.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Rob Herring <robh+dt@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>
-Subject: Re: [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format
- binding
-Message-ID: <20151215060056.GB3011@voom.redhat.com>
+ id 1a8mSo-0006TW-93
+ for linux-mtd@lists.infradead.org; Tue, 15 Dec 2015 10:04:10 +0000
+Received: by mail-oi0-x233.google.com with SMTP id i186so1975958oia.2
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Dec 2015 02:03:49 -0800 (PST)
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20151215060056.GB3011@voom.redhat.com>
 References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
  <1449292763-129421-4-git-send-email-computersforpeace@gmail.com>
  <CAOiHx=nz2bdA_R610ozsQHhccdcrHVVCamTtne5ReHrA-FcaaQ@mail.gmail.com>
@@ -30,11 +15,27 @@ References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
  <20151210204324.GK144338@google.com>
  <20151212055105.GA17011@voom.fritz.box>
  <CAMuHMdXA4-BZpvtCM8_9fYWLzoVsuCXDqvF3G4cVd50Cqsfv0g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="v9Ux+11Zm5mwPlX6"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXA4-BZpvtCM8_9fYWLzoVsuCXDqvF3G4cVd50Cqsfv0g@mail.gmail.com>
+ <20151215060056.GB3011@voom.redhat.com>
+Date: Tue, 15 Dec 2015 11:03:48 +0100
+Message-ID: <CAMuHMdVUMHEAGSwF=nvbncHEj6Co9f6CofeVqZbrWzhaprBvGQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format
+ binding
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: David Gibson <david@gibson.dropbear.id.au>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>, Jonas Gorski <jogo@openwrt.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert+renesas@glider.be>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ devicetree-spec@vger.kernel.org,
+ Simon Arlott <simon@fire.lp0.eu>, Linus Walleij <linus.walleij@linaro.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,137 +45,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi David,
 
---v9Ux+11Zm5mwPlX6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Dec 15, 2015 at 7:00 AM, David Gibson
+<david@gibson.dropbear.id.au> wrote:
+>> If the only property needed is the partition table offset, it can be encoded
+>> in the unit-address, and the "reg" property:
+>>
+>>         partitions {
+>>
+>>                 partition-table@xxxx {
+>>                         reg = <0xxxx ...>;
+>>                         ...
+>>                 };
+>>
+>>                 ...
+>>         };
+>
+> Urgh.. and that's abusing the unit address.
 
-On Mon, Dec 14, 2015 at 11:22:46AM +0100, Geert Uytterhoeven wrote:
-> On Sat, Dec 12, 2015 at 6:51 AM, David Gibson
-> <david@gibson.dropbear.id.au> wrote:
-> > On Thu, Dec 10, 2015 at 12:43:24PM -0800, Brian Norris wrote:
-> >> On Mon, Dec 07, 2015 at 12:36:28PM +1100, David Gibson wrote:
-> >> > On Sat, Dec 05, 2015 at 10:33:30PM +0100, Michal Suchanek wrote:
-> >> > > On 5 December 2015 at 12:39, Jonas Gorski <jogo@openwrt.org> wrote:
-> >> > > > On Sat, Dec 5, 2015 at 6:19 AM, Brian Norris
-> >> > > > <computersforpeace@gmail.com> wrote:
-> >> > >
-> >> > > >> +
-> >> > > >> +Examples:
-> >> > > >> +
-> >> > > >> +flash@0 {
-> >> > > >> +       partitions {
-> >> > > >> +               compatible =3D "google,fmap";
-> >> > > >> +       };
-> >> > > >> +};
-> >> > > >
-> >> > > > I wonder if this wouldn't be better served in a separate binding=
- doc
-> >> > > > with its compatible name as the filename, like we do with
-> >> > > > driver^Whardware blocks, especially if we want to add more parse=
-rs.
-> >> > >
-> >> > >
-> >> > > I find that *very* counter productive for bindings that go to the =
-same
-> >> > > node. You have a description of a node, and then suddenly there you
-> >> > > have another file with another description of the same node. Total=
-ly
-> >> > > awesome.
-> >> >
-> >> > I can't actually work out from that if you're agreeing with the
-> >> > original post or the first reply.
-> >>
-> >> Perhaps I'm biased, but I think he was agreeing with the first reply.
-> >> (Particularly, "I find that *very* counter productive" uses the word
-> >> "that" to refer to "separate binding doc[s]".)
-> >>
-> >> > > Also how do you plan to write partitioning schemes with parameters
-> >> > > like with non-zero offset of the partition table.
-> >>
-> >> If you are directing this question at me: I don't have a specific plan
-> >> for it. MTD parsers don't currently take external input for this; many
-> >> scan the whole device, but some might also have conventions built into
-> >> the parser itself too, so this just gets hooked based on "compatible".
-> >> But if the need arose, I would hope we could work out a common binding.
-> >>
-> >> > Presumably with properties in the patitions node.  Not seeing the
-> >> > problem here.
-> >>
-> >> I believe Michal is bringing up the (important, IMO) point that if
-> >> distinct partition types are being described in the same node, then any
-> >> use of additional properties *must* be closely coordinated. We can't
-> >> have two parsers "foo" and "bar" defining conflicting uses of the same
-> >> property in the same node, like this:
-> >>
-> >>       partitions {
-> >>               compatible =3D "foo", "bar";
-> >>               property-baz =3D ...; // e.g., reg =3D <...>;
-> >>       };
-> >>
-> >> where if "foo" is not found, we fall back to "bar". But what if "foo"
-> >> and "bar" use "property-baz" differently?
-> >
-> > Ah.. that is an excellent point, and leads me to realise that using
-> > compatible in this way is wrong.  The whole point of compatible is
-> > that the node is, well, compatible with *all* the things in the list,
-> > and therefore the things in the list are compatible with each other.
-> >
-> > Using it for a list of entirely different things to attempt in order
-> > is not correct.
->=20
-> Isn't the idea behind a partition table that all partition information is
-> stored on the device in a well-known format, so you don't need additional
-> properties?
+Why? The partition is part of the FLASH. In this respect, it doesn't differ
+from other hardcoded partitions using the same DT syntax.
+It would just have a compatible value indicating it's a partition table.
 
-I guess that's the idea, but I wouldn't like to count on it.
+Gr{oetje,eeting}s,
 
-And more importantly, it's still abusing the 'compatible' property.  A
-node is supposed to be compatible with *everything* in 'compatible',
-not just one of the things listed there.
+                        Geert
 
-> If the only property needed is the partition table offset, it can be enco=
-ded
-> in the unit-address, and the "reg" property:
->=20
->         partitions {
->=20
->                 partition-table@xxxx {
->                         reg =3D <0xxxx ...>;
->                         ...
->                 };
->=20
->                 ...
->         };
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Urgh.. and that's abusing the unit address.
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---v9Ux+11Zm5mwPlX6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJWb6yYAAoJEGw4ysog2bOShi4P/RcRwUSyoUc5z4HCUkRbGLXK
-iZQQraFXZhrxO/37VA4+Zk0xzkdgyLYOF4v3/tZV1rntW6lA2Ezqf3n3ad7pJqak
-0i/VbaFHcW+GdoJbWmZRmrW2kLqAAEdgzo73H1QklXoroCTFY0+FzqdLcRyi6Ukj
-6btJbkfzXxKqw4qGQ7glw4wP0TJ6/DurULMkW1uOhQDdGXA93JzK6F936DQxBoLk
-dFzIp1z1Q9LoRT0PqmPFFMTGSbRNRPjWDkbZQBnOiIhXY198s9/KOqD3iZpIAR/x
-A44UKIY/C+T0tabG+Et0HjoblfR/yCSRl4ANLckbYddhHAlcw0paV1oB3atEmCiK
-Mb2hiR5pE/KYPpTek8rgCIVWlrC7PFKFkXsru5+bIlZnUWlqCKgoYIBOPyZojXjG
-hcuYLC4jPXC5LKKWSDeGbSbYM2kpI1+XSPr1105mA1frrqKO3b6SD3U4x8GRAxxo
-idCZStMOAUIvmOjDEnRvR+tStXErPONph2ctc9UmcdFE6kd0GxW4mJayrpIt7EnU
-qoOk92OsONO4Ybh/ZGW7iUs5Ai+/BUsX6er58blI0ZaahYyqCfgUwYBOGx5N67jB
-91UYyoWc/T4zjAzfe76yJ/ZVLXFMSd2enSO+W3psIh5iFlnAgTZKl6wSaSnqZIZ6
-BWMU/9zqtOwjVKYB4DlS
-=Tuwi
------END PGP SIGNATURE-----
-
---v9Ux+11Zm5mwPlX6--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
