@@ -1,23 +1,21 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a8ifQ-0008Jj-2B
- for linux-mtd@lists.infradead.org; Tue, 15 Dec 2015 06:00:58 +0000
-Received: by pabur14 with SMTP id ur14so117259037pab.0
- for <linux-mtd@lists.infradead.org>; Mon, 14 Dec 2015 22:00:35 -0800 (PST)
+ id 1a8ifT-0008Jz-05
+ for linux-mtd@lists.infradead.org; Tue, 15 Dec 2015 06:01:00 +0000
+Received: by pfnn128 with SMTP id n128so3730500pfn.3
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Dec 2015 22:00:39 -0800 (PST)
 From: Peter Pan <peterpansjtu@gmail.com>
 To: computersforpeace@gmail.com, dwmw2@infradead.org,
  boris.brezillon@free-electrons.com, fransklaver@gmail.com
 Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  karlzhang@micron.com, beanhuo@micron.com,
  Peter Pan <peterpandong@micron.com>
-Subject: [PATCH v2 01/12] mtd: nand_bbt: new header for nand family BBT
-Date: Tue, 15 Dec 2015 05:59:27 +0000
-Message-Id: <1450159178-29895-2-git-send-email-peterpandong@micron.com>
+Subject: [PATCH v2 04/12] mtd: nand_bbt: add nand_bbt_markbad_factory()
+ interface
+Date: Tue, 15 Dec 2015 05:59:30 +0000
+Message-Id: <1450159178-29895-5-git-send-email-peterpandong@micron.com>
 In-Reply-To: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
 References: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,250 +25,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Brian Norris <computersforpeace@gmail.com>
+Some nand controller drivers(like docg4.c) mark factory bad block
+mark by accessing bbt buffer directly, so create this API to avoid
+breaking layer.
 
-Migrating existing BBT definitions from bbm.h to nand_bbt.h
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-[Peter: correct misspelling. s/neccecary/necessary/]
 Signed-off-by: Peter Pan <peterpandong@micron.com>
 ---
- include/linux/mtd/bbm.h      |  96 +----------------------------------
- include/linux/mtd/nand_bbt.h | 118 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 119 insertions(+), 95 deletions(-)
- create mode 100644 include/linux/mtd/nand_bbt.h
+ drivers/mtd/nand/nand_bbt.c  | 32 +++++++++++++++++++++++++++++---
+ include/linux/mtd/nand_bbt.h |  1 +
+ 2 files changed, 30 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
-index 36bb6a5..fb751d9 100644
---- a/include/linux/mtd/bbm.h
-+++ b/include/linux/mtd/bbm.h
-@@ -28,102 +28,8 @@
- #ifndef __LINUX_MTD_BBM_H
- #define __LINUX_MTD_BBM_H
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 72aed20..f256be1 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -1353,11 +1353,12 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
+ }
  
--/* The maximum number of NAND chips in an array */
--#define NAND_MAX_CHIPS		8
-+#include <linux/mtd/nand_bbt.h>
+ /**
+- * nand_markbad_bbt - [NAND Interface] Mark a block bad in the BBT
++ * nand_bbt_update_mark - update mark in the BBT
+  * @mtd: MTD device structure
+  * @offs: offset of the bad block
++ * @mark: block type mark
+  */
+-int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs)
++static int nand_bbt_update_mark(struct mtd_info *mtd, loff_t offs, uint8_t mark)
+ {
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+ 	int block, ret = 0;
+@@ -1365,7 +1366,7 @@ int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs)
+ 	block = (int)(offs >> this->bbt_erase_shift);
  
--/**
-- * struct nand_bbt_descr - bad block table descriptor
-- * @options:	options for this descriptor
-- * @pages:	the page(s) where we find the bbt, used with option BBT_ABSPAGE
-- *		when bbt is searched, then we store the found bbts pages here.
-- *		Its an array and supports up to 8 chips now
-- * @offs:	offset of the pattern in the oob area of the page
-- * @veroffs:	offset of the bbt version counter in the oob are of the page
-- * @version:	version read from the bbt page during scan
-- * @len:	length of the pattern, if 0 no pattern check is performed
-- * @maxblocks:	maximum number of blocks to search for a bbt. This number of
-- *		blocks is reserved at the end of the device where the tables are
-- *		written.
-- * @reserved_block_code: if non-0, this pattern denotes a reserved (rather than
-- *              bad) block in the stored bbt
-- * @pattern:	pattern to identify bad block table or factory marked good /
-- *		bad blocks, can be NULL, if len = 0
-- *
-- * Descriptor for the bad block table marker and the descriptor for the
-- * pattern which identifies good and bad blocks. The assumption is made
-- * that the pattern and the version count are always located in the oob area
-- * of the first block.
-- */
--struct nand_bbt_descr {
--	int options;
--	int pages[NAND_MAX_CHIPS];
--	int offs;
--	int veroffs;
--	uint8_t version[NAND_MAX_CHIPS];
--	int len;
--	int maxblocks;
--	int reserved_block_code;
--	uint8_t *pattern;
--};
--
--/* Options for the bad block table descriptors */
--
--/* The number of bits used per block in the bbt on the device */
--#define NAND_BBT_NRBITS_MSK	0x0000000F
--#define NAND_BBT_1BIT		0x00000001
--#define NAND_BBT_2BIT		0x00000002
--#define NAND_BBT_4BIT		0x00000004
--#define NAND_BBT_8BIT		0x00000008
--/* The bad block table is in the last good block of the device */
--#define NAND_BBT_LASTBLOCK	0x00000010
--/* The bbt is at the given page, else we must scan for the bbt */
--#define NAND_BBT_ABSPAGE	0x00000020
--/* bbt is stored per chip on multichip devices */
--#define NAND_BBT_PERCHIP	0x00000080
--/* bbt has a version counter at offset veroffs */
--#define NAND_BBT_VERSION	0x00000100
--/* Create a bbt if none exists */
--#define NAND_BBT_CREATE		0x00000200
--/*
-- * Create an empty BBT with no vendor information. Vendor's information may be
-- * unavailable, for example, if the NAND controller has a different data and OOB
-- * layout or if this information is already purged. Must be used in conjunction
-- * with NAND_BBT_CREATE.
-- */
--#define NAND_BBT_CREATE_EMPTY	0x00000400
--/* Write bbt if neccecary */
--#define NAND_BBT_WRITE		0x00002000
--/* Read and write back block contents when writing bbt */
--#define NAND_BBT_SAVECONTENT	0x00004000
--/* Search good / bad pattern on the first and the second page */
--#define NAND_BBT_SCAN2NDPAGE	0x00008000
--/* Search good / bad pattern on the last page of the eraseblock */
--#define NAND_BBT_SCANLASTPAGE	0x00010000
--/*
-- * Use a flash based bad block table. By default, OOB identifier is saved in
-- * OOB area. This option is passed to the default bad block table function.
-- */
--#define NAND_BBT_USE_FLASH	0x00020000
--/*
-- * Do not store flash based bad block table marker in the OOB area; store it
-- * in-band.
-- */
--#define NAND_BBT_NO_OOB		0x00040000
--/*
-- * Do not write new bad block markers to OOB; useful, e.g., when ECC covers
-- * entire spare area. Must be used with NAND_BBT_USE_FLASH.
-- */
--#define NAND_BBT_NO_OOB_BBM	0x00080000
--
--/*
-- * Flag set by nand_create_default_bbt_descr(), marking that the nand_bbt_descr
-- * was allocated dynamicaly and must be freed in nand_release(). Has no meaning
-- * in nand_chip.bbt_options.
-- */
--#define NAND_BBT_DYNAMICSTRUCT	0x80000000
--
--/* The maximum number of blocks to scan for a bbt */
--#define NAND_BBT_SCAN_MAXBLOCKS	4
+ 	/* Mark bad block in memory */
+-	bbt_mark_entry(this, block, BBT_BLOCK_WORN);
++	bbt_mark_entry(this, block, mark);
  
- /*
-  * Constants for oob configuration
-diff --git a/include/linux/mtd/nand_bbt.h b/include/linux/mtd/nand_bbt.h
-new file mode 100644
-index 0000000..5a65230
---- /dev/null
-+++ b/include/linux/mtd/nand_bbt.h
-@@ -0,0 +1,118 @@
-+/*
-+ *  NAND family Bad Block Table support
-+ *
-+ *  Copyright © 2015 Broadcom Corporation
-+ *  Brian Norris <computersforpeace@gmail.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
+ 	/* Update flash-based bad block table */
+ 	if (this->bbt_options & NAND_BBT_USE_FLASH)
+@@ -1374,6 +1375,15 @@ int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs)
+ 	return ret;
+ }
+ 
++/**
++ * nand_markbad_bbt - [NAND Interface] Mark a block bad in the BBT
++ * @mtd: MTD device structure
++ * @offs: offset of the bad block
 + */
-+#ifndef __LINUX_MTD_NAND_BBT_H
-+#define __LINUX_MTD_NAND_BBT_H
-+
-+/* The maximum number of NAND chips in an array */
-+#define NAND_MAX_CHIPS		8
++int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs)
++{
++	return nand_bbt_update_mark(mtd, offs, BBT_BLOCK_WORN);
++}
+ EXPORT_SYMBOL(nand_scan_bbt);
+ 
+ /**
+@@ -1446,3 +1456,19 @@ int nand_bbt_markbad(struct nand_bbt *bbt, loff_t offs)
+ 	return nand_markbad_bbt(bbt->mtd, offs);
+ }
+ EXPORT_SYMBOL(nand_bbt_markbad);
 +
 +/**
-+ * struct nand_bbt_descr - bad block table descriptor
-+ * @options:	options for this descriptor
-+ * @pages:	the page(s) where we find the bbt, used with option BBT_ABSPAGE
-+ *		when bbt is searched, then we store the found bbts pages here.
-+ *		Its an array and supports up to 8 chips now
-+ * @offs:	offset of the pattern in the oob area of the page
-+ * @veroffs:	offset of the bbt version counter in the oob are of the page
-+ * @version:	version read from the bbt page during scan
-+ * @len:	length of the pattern, if 0 no pattern check is performed
-+ * @maxblocks:	maximum number of blocks to search for a bbt. This number of
-+ *		blocks is reserved at the end of the device where the tables are
-+ *		written.
-+ * @reserved_block_code: if non-0, this pattern denotes a reserved (rather than
-+ *              bad) block in the stored bbt
-+ * @pattern:	pattern to identify bad block table or factory marked good /
-+ *		bad blocks, can be NULL, if len = 0
-+ *
-+ * Descriptor for the bad block table marker and the descriptor for the
-+ * pattern which identifies good and bad blocks. The assumption is made
-+ * that the pattern and the version count are always located in the oob area
-+ * of the first block.
++ * nand_bbt_markbad_factory - [NAND BBT Interface] Mark a block as factory bad
++ * in the BBT
++ * @bbt: NAND BBT structure
++ * @offs: offset of the bad block
 + */
-+struct nand_bbt_descr {
-+	int options;
-+	int pages[NAND_MAX_CHIPS];
-+	int offs;
-+	int veroffs;
-+	uint8_t version[NAND_MAX_CHIPS];
-+	int len;
-+	int maxblocks;
-+	int reserved_block_code;
-+	uint8_t *pattern;
-+};
-+
-+/* Options for the bad block table descriptors */
-+
-+/* The number of bits used per block in the bbt on the device */
-+#define NAND_BBT_NRBITS_MSK	0x0000000F
-+#define NAND_BBT_1BIT		0x00000001
-+#define NAND_BBT_2BIT		0x00000002
-+#define NAND_BBT_4BIT		0x00000004
-+#define NAND_BBT_8BIT		0x00000008
-+/* The bad block table is in the last good block of the device */
-+#define NAND_BBT_LASTBLOCK	0x00000010
-+/* The bbt is at the given page, else we must scan for the bbt */
-+#define NAND_BBT_ABSPAGE	0x00000020
-+/* bbt is stored per chip on multichip devices */
-+#define NAND_BBT_PERCHIP	0x00000080
-+/* bbt has a version counter at offset veroffs */
-+#define NAND_BBT_VERSION	0x00000100
-+/* Create a bbt if none exists */
-+#define NAND_BBT_CREATE		0x00000200
-+/*
-+ * Create an empty BBT with no vendor information. Vendor's information may be
-+ * unavailable, for example, if the NAND controller has a different data and OOB
-+ * layout or if this information is already purged. Must be used in conjunction
-+ * with NAND_BBT_CREATE.
-+ */
-+#define NAND_BBT_CREATE_EMPTY	0x00000400
-+/* Write bbt if necessary */
-+#define NAND_BBT_WRITE		0x00002000
-+/* Read and write back block contents when writing bbt */
-+#define NAND_BBT_SAVECONTENT	0x00004000
-+/* Search good / bad pattern on the first and the second page */
-+#define NAND_BBT_SCAN2NDPAGE	0x00008000
-+/* Search good / bad pattern on the last page of the eraseblock */
-+#define NAND_BBT_SCANLASTPAGE	0x00010000
-+/*
-+ * Use a flash based bad block table. By default, OOB identifier is saved in
-+ * OOB area. This option is passed to the default bad block table function.
-+ */
-+#define NAND_BBT_USE_FLASH	0x00020000
-+/*
-+ * Do not store flash based bad block table marker in the OOB area; store it
-+ * in-band.
-+ */
-+#define NAND_BBT_NO_OOB		0x00040000
-+/*
-+ * Do not write new bad block markers to OOB; useful, e.g., when ECC covers
-+ * entire spare area. Must be used with NAND_BBT_USE_FLASH.
-+ */
-+#define NAND_BBT_NO_OOB_BBM	0x00080000
-+
-+/*
-+ * Flag set by nand_create_default_bbt_descr(), marking that the nand_bbt_descr
-+ * was allocated dynamicaly and must be freed in nand_release(). Has no meaning
-+ * in nand_chip.bbt_options.
-+ */
-+#define NAND_BBT_DYNAMICSTRUCT	0x80000000
-+
-+/* The maximum number of blocks to scan for a bbt */
-+#define NAND_BBT_SCAN_MAXBLOCKS	4
-+
-+#endif	/* __LINUX_MTD_NAND_BBT_H */
++int nand_bbt_markbad_factory(struct nand_bbt *bbt, loff_t offs)
++{
++	/*
++	 * FIXME: For now, we call nand_markbad_bbt() directly. It will change
++	 * when we use struct nand_bbt instead of struct nand_chip.
++	 */
++	return nand_bbt_update_mark(bbt->mtd, offs, BBT_BLOCK_FACTORY_BAD);
++}
++EXPORT_SYMBOL(nand_bbt_markbad_factory);
+diff --git a/include/linux/mtd/nand_bbt.h b/include/linux/mtd/nand_bbt.h
+index 150c49a..48a0620 100644
+--- a/include/linux/mtd/nand_bbt.h
++++ b/include/linux/mtd/nand_bbt.h
+@@ -179,5 +179,6 @@ void nand_bbt_release(struct nand_bbt *bbt);
+ int nand_bbt_markbad(struct nand_bbt *bbt, loff_t offs);
+ int nand_bbt_isreserved(struct nand_bbt *bbt, loff_t offs);
+ int nand_bbt_isbad(struct nand_bbt *bbt, loff_t offs);
++int nand_bbt_markbad_factory(struct nand_bbt *bbt, loff_t offs);
+ 
+ #endif	/* __LINUX_MTD_NAND_BBT_H */
 -- 
 1.9.1
