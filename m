@@ -1,23 +1,20 @@
-Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a8ifS-0008Jr-1B
- for linux-mtd@lists.infradead.org; Tue, 15 Dec 2015 06:01:00 +0000
-Received: by pfee66 with SMTP id e66so2960225pfe.1
- for <linux-mtd@lists.infradead.org>; Mon, 14 Dec 2015 22:00:36 -0800 (PST)
+ id 1a8ifT-0008Jt-6q
+ for linux-mtd@lists.infradead.org; Tue, 15 Dec 2015 06:01:02 +0000
+Received: by pacwq6 with SMTP id wq6so12088270pac.0
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Dec 2015 22:00:38 -0800 (PST)
 From: Peter Pan <peterpansjtu@gmail.com>
 To: computersforpeace@gmail.com, dwmw2@infradead.org,
  boris.brezillon@free-electrons.com, fransklaver@gmail.com
 Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  karlzhang@micron.com, beanhuo@micron.com,
  Peter Pan <peterpandong@micron.com>
-Subject: [PATCH v2 02/12] mtd: nand_bbt: introduce struct nand_bbt
-Date: Tue, 15 Dec 2015 05:59:28 +0000
-Message-Id: <1450159178-29895-3-git-send-email-peterpandong@micron.com>
+Subject: [PATCH v2 03/12] mtd: nand_bbt: add new API definitions
+Date: Tue, 15 Dec 2015 05:59:29 +0000
+Message-Id: <1450159178-29895-4-git-send-email-peterpandong@micron.com>
 In-Reply-To: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
 References: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,131 +26,113 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Brian Norris <computersforpeace@gmail.com>
 
-Currently nand_bbt.c is tied with struct nand_chip, and it makes other
-NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
-onenand has own bbt(onenand_bbt.c).
-
-Separate struct nand_chip from BBT code can make current BBT shareable.
-We create struct nand_bbt to take place of nand_chip in nand_bbt.c
-
-Below is mtd folder structure we want:
-	mtd
-	├── Kconfig
-	├── Makefile
-	├── ...
-	├── nand_bbt.c
-	├── nand
-	│   ├── Kconfig
-	│   ├── Makefile
-	│   ├── nand_base.c
-	│   ├── nand_ids.c
-	│   ├── ...
-	│   └── xway_nand.c
-	├── spi-nand
-	│   ├── Kconfig
-	│   ├── Makefile
-	│   ├── spi-nand-base.c
-	│   ├── ...
-	│   └── spi-nand-device.c
-	└── ...
-
-We put every information nand_bbt.c needed from outside into struct
-nand_bbt, include:
-	@mtd:	pointer to MTD device structure
-	@is_bad_bbm:	check if a block is factory bad block
-	@mark_bad_bbm:	imitate a block as factory bad block
-	@erase:	erase block bypassing resvered checks
-	@bbt_options:	bad block specific options. All options used
-			here must come from nand_bbt.h.
-	@numchips:	number of physical chips, required for NAND_BBT_PERCHIP
-	@bbt_td:	bad block table descriptor for flash lookup.
-	@bbt_md:	bad block table mirror descriptor
-	@chipsize:	the size of one chip for multichip arrays
-	@chip_shift:	number of address bits in one chip
-	@bbt_erase_shift:	number of address bits in a bbt entry
-	@page_shift:	number of address bits in a page
-	@bbt:	bad block table pointer
+Add new API definitions for nand_bbt to replace old ones without
+any users. These API includes:
+	int nand_bbt_init(struct nand_bbt *bbt);
+	void nand_bbt_release(struct nand_bbt *bbt);
+	int nand_bbt_markbad(struct nand_bbt *bbt, loff_t offs);
+	int nand_bbt_isreserved(struct nand_bbt *bbt, loff_t offs);
+	int nand_bbt_isbad(struct nand_bbt *bbt, loff_t offs);
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-[Peter: correct comment style]
 Signed-off-by: Peter Pan <peterpandong@micron.com>
 ---
- include/linux/mtd/nand_bbt.h | 59 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+ drivers/mtd/nand/nand_bbt.c  | 71 ++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand_bbt.h |  6 ++++
+ 2 files changed, 77 insertions(+)
 
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 4b6a708..72aed20 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -1375,3 +1375,74 @@ int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs)
+ }
+ 
+ EXPORT_SYMBOL(nand_scan_bbt);
++
++/**
++ * nand_bbt_init - [NAND BBT Interface] Initialize and locate/create a bad block
++ * table
++ * @bbt: NAND BBT structure
++ *
++ * This function selects the default bad block table support for the device and
++ * scans for an existing table, or else creates one.
++ */
++int nand_bbt_init(struct nand_bbt *bbt)
++{
++	/*
++	 * FIXME: For now, we call nand_default_bbt() directly. It will change
++	 * when we use struct nand_bbt instead of struct nand_chip.
++	 */
++	return nand_default_bbt(bbt->mtd);
++}
++EXPORT_SYMBOL(nand_bbt_init);
++
++void nand_bbt_release(struct nand_bbt *bbt)
++{
++	kfree(bbt->bbt);
++}
++EXPORT_SYMBOL(nand_bbt_release);
++
++/**
++ * nand_bbt_isreserved - [NAND BBT Interface] Check if a block is reserved
++ * @bbt: NAND BBT structure
++ * @offs: offset in the device
++ */
++int nand_bbt_isreserved(struct nand_bbt *bbt, loff_t offs)
++{
++	/*
++	 * FIXME: For now, we call nand_isreserved_bbt() directly. It will
++	 * change when we use struct nand_bbt instead of struct nand_chip.
++	 */
++	return nand_isreserved_bbt(bbt->mtd, offs);
++}
++EXPORT_SYMBOL(nand_bbt_isreserved);
++
++/**
++ * nand_bbt_isbad - [NAND BBT Interface] Check if a block is bad
++ * @bbt: NAND BBT structure
++ * @offs: offset in the device
++ */
++int nand_bbt_isbad(struct nand_bbt *bbt, loff_t offs)
++{
++	/*
++	 * FIXME: For now, we call nand_isbad_bbt() directly. It will change
++	 * when we use struct nand_bbt instead of struct nand_chip.
++	 * Since we already have nand_bbt_isreserved(), we don't need to
++	 * check pass down allow_bbt.
++	 */
++	return nand_isbad_bbt(bbt->mtd, offs, 1);
++}
++EXPORT_SYMBOL(nand_bbt_isbad);
++
++/**
++ * nand_bbt_markbad - [NAND BBT Interface] Mark a block bad in the BBT
++ * @bbt: NAND BBT structure
++ * @offs: offset of the bad block
++ */
++int nand_bbt_markbad(struct nand_bbt *bbt, loff_t offs)
++{
++	/*
++	 * FIXME: For now, we call nand_markbad_bbt() directly. It will change
++	 * when we use struct nand_bbt instead of struct nand_chip.
++	 */
++	return nand_markbad_bbt(bbt->mtd, offs);
++}
++EXPORT_SYMBOL(nand_bbt_markbad);
 diff --git a/include/linux/mtd/nand_bbt.h b/include/linux/mtd/nand_bbt.h
-index 5a65230..e468571 100644
+index e468571..150c49a 100644
 --- a/include/linux/mtd/nand_bbt.h
 +++ b/include/linux/mtd/nand_bbt.h
-@@ -18,6 +18,8 @@
- #ifndef __LINUX_MTD_NAND_BBT_H
- #define __LINUX_MTD_NAND_BBT_H
+@@ -174,4 +174,10 @@ struct nand_bbt {
+ 	u8 *bbt;
+ };
  
-+struct mtd_info;
-+
- /* The maximum number of NAND chips in an array */
- #define NAND_MAX_CHIPS		8
- 
-@@ -115,4 +117,61 @@ struct nand_bbt_descr {
- /* The maximum number of blocks to scan for a bbt */
- #define NAND_BBT_SCAN_MAXBLOCKS	4
- 
-+/**
-+ * struct nand_bbt - bad block table structure
-+ * @mtd:	pointer to MTD device structure
-+ * @is_bad_bbm:	check if a block is factory bad block
-+ * @mark_bad_bbm:	imitate a block as factory bad block
-+ * @erase:	erase block bypassing resvered checks
-+ * @bbt_options:	bad block specific options. All options used
-+ *			here must come from nand_bbt.h.
-+ * @numchips:	number of physical chips, required for NAND_BBT_PERCHIP
-+ * @bbt_td:	bad block table descriptor for flash lookup.
-+ * @bbt_md:	bad block table mirror descriptor
-+ * @chipsize:	the size of one chip for multichip arrays
-+ * @chip_shift:	number of address bits in one chip
-+ * @bbt_erase_shift:	number of address bits in a bbt entry
-+ * @page_shift:	number of address bits in a page
-+ * @bbt:	bad block table pointer
-+ *
-+ */
-+struct nand_bbt {
-+	struct mtd_info *mtd;
-+
-+	/*
-+	 * This is important to abstract out of nand_bbt.c and provide
-+	 * separately in nand_base.c and spi-nand-base.c -- it's sort of
-+	 * duplicated in nand_block_bad() (nand_base) and
-+	 * scan_block_fast() (nand_bbt) right now
-+	 *
-+	 * Note that this also means nand_chip.badblock_pattern should
-+	 * be removed from nand_bbt.c
-+	 */
-+	int (*is_bad_bbm)(struct mtd_info *mtd, loff_t ofs);
-+
-+	/*
-+	 * Only required if the driver wants to attempt to program new
-+	 * bad block markers that imitate the factory-marked BBMs
-+	 */
-+	int (*mark_bad_bbm)(struct mtd_info *mtd, loff_t ofs);
-+
-+	/* Erase a block, bypassing reserved checks */
-+	int (*erase)(struct mtd_info *mtd, loff_t ofs);
-+
-+	unsigned int bbt_options;
-+	int numchips;
-+
-+	/*
-+	 * Discourage new custom usages here; suggest usage of the
-+	 * relevant NAND_BBT_* options instead
-+	 */
-+	struct nand_bbt_descr *bbt_td;
-+	struct nand_bbt_descr *bbt_md;
-+	u64 chipsize;
-+	int chip_shift;
-+	int bbt_erase_shift;
-+	int page_shift;
-+	u8 *bbt;
-+};
++int nand_bbt_init(struct nand_bbt *bbt);
++void nand_bbt_release(struct nand_bbt *bbt);
++int nand_bbt_markbad(struct nand_bbt *bbt, loff_t offs);
++int nand_bbt_isreserved(struct nand_bbt *bbt, loff_t offs);
++int nand_bbt_isbad(struct nand_bbt *bbt, loff_t offs);
 +
  #endif	/* __LINUX_MTD_NAND_BBT_H */
 -- 
