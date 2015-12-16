@@ -1,24 +1,26 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a9Aiq-0004b0-Jh
- for linux-mtd@lists.infradead.org; Wed, 16 Dec 2015 11:58:25 +0000
-Subject: Re: [PATCH v4 2/5] mtd: nand: Qualcomm NAND controller driver
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1438578498-32254-1-git-send-email-architt@codeaurora.org>
- <1439959746-25498-1-git-send-email-architt@codeaurora.org>
- <1439959746-25498-3-git-send-email-architt@codeaurora.org>
- <20151216101547.74c77bdd@bbrezillon>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1a9CvL-0007dX-7T
+ for linux-mtd@lists.infradead.org; Wed, 16 Dec 2015 14:19:26 +0000
+Date: Wed, 16 Dec 2015 15:18:56 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Archit Taneja <architt@codeaurora.org>
 Cc: dehrenberg@google.com, cernekee@gmail.com, sboyd@codeaurora.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-msm@vger.kernel.org, computersforpeace@gmail.com,
  agross@codeaurora.org
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <567151BC.7010508@codeaurora.org>
-Date: Wed, 16 Dec 2015 17:27:48 +0530
+Subject: Re: [PATCH v4 2/5] mtd: nand: Qualcomm NAND controller driver
+Message-ID: <20151216151856.0315214c@bbrezillon>
+In-Reply-To: <567151BC.7010508@codeaurora.org>
+References: <1438578498-32254-1-git-send-email-architt@codeaurora.org>
+ <1439959746-25498-1-git-send-email-architt@codeaurora.org>
+ <1439959746-25498-3-git-send-email-architt@codeaurora.org>
+ <20151216101547.74c77bdd@bbrezillon>
+ <567151BC.7010508@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20151216101547.74c77bdd@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,1411 +30,345 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Wed, 16 Dec 2015 17:27:48 +0530
+Archit Taneja <architt@codeaurora.org> wrote:
 
-On 12/16/2015 02:45 PM, Boris Brezillon wrote:
-> Hi Archit,
->
-> Again, sorry for the late review. It's probably not exhaustive but
-> points a few things that should be fixed.
+> >> +/*
+> >> + * NAND controller page layout info
+> >> + *
+> >> + * |-----------------------|	  |---------------------------------|
+> >> + * |		xx.......xx|	  |		*********xx.......xx|
+> >> + * |	DATA	xx..ECC..xx|	  |	DATA	**SPARE**xx..ECC..xx|
+> >> + * |   (516)	xx.......xx|	  |  (516-n*4)	**(n*4)**xx.......xx|
+> >> + * |		xx.......xx|	  |		*********xx.......xx|
+> >> + * |-----------------------|	  |---------------------------------|
+> >> + *     codeword 1,2..n-1			codeword n
+> >> + *  <---(528/532 Bytes)---->	   <-------(528/532 Bytes)---------->
+> >> + *
+> >> + * n =3D number of codewords in the page
+> >> + * . =3D ECC bytes
+> >> + * * =3D spare bytes
+> >> + * x =3D unused/reserved bytes
+> >> + *
+> >> + * 2K page: n =3D 4, spare =3D 16 bytes
+> >> + * 4K page: n =3D 8, spare =3D 32 bytes
+> >> + * 8K page: n =3D 16, spare =3D 64 bytes
+> >
+> > Is there a reason not to use the following layout?
+> >
+> > (
+> > n x (
+> > 	data =3D 512 bytes
+> > 	protected OOB data =3D 4 bytes
+> > 	ECC bytes =3D 12 or 16
+> > )
+> >
+> > +
+> >
+> > remaining unprotected OOB bytes
+> > )
+> >
+> > This way the ECC layout definition would be easier to define, and
+> > you'll have something that is closer to what a NAND chip expect (ECC
+> > block/step size of 512 or 1024).
+> >
+> > I know this is also dependent on the bootloader, hence my question.
+>=20
+> I tried to figure this out looking at documentation and the downstream
+> drivers. What I understood was that all the OOB was intentionally kept
+> in the last step, so that things are faster when we only want to access
+> OOB. In that case, the controller will need to write to only one
+> step/codeword.
 
-Thanks for the thorough review! Some comments below.
+Well, I don't think sending a column change command is that costly
+compared to a page retrieval command or ECC calculation.
 
->
->
-> On Wed, 19 Aug 2015 10:19:03 +0530
-> Archit Taneja <architt@codeaurora.org> wrote:
->
->> The Qualcomm NAND controller is found in SoCs like IPQ806x, MSM7xx,
->> MDM9x15 series.
->>
->> It exists as a sub block inside the IPs EBI2 (External Bus Interface 2)
->> and QPIC (Qualcomm Parallel Interface Controller). These IPs provide a
->> broader interface for external slow peripheral devices such as LCD and
->> NAND/NOR flash memory or SRAM like interfaces.
->>
->> We add support for the NAND controller found within EBI2. For the SoCs
->> of our interest, we only use the NAND controller within EBI2. Therefore,
->> it's safe for us to assume that the NAND controller is a standalone block
->> within the SoC.
->>
->> The controller supports 512B, 2kB, 4kB and 8kB page 8-bit and 16-bit NAND
->> flash devices. It contains a HW ECC block that supports BCH ECC (4, 8 and
->> 16 bit correction/step) and RS ECC(4 bit correction/step) that covers main
->> and spare data. The controller contains an internal 512 byte page buffer
->> to which we read/write via DMA. The EBI2 type NAND controller uses ADM DMA
->> for register read/write and data transfers. The controller performs page
->> reads and writes at a codeword/step level of 512 bytes. It can support up
->> to 2 external chips of different configurations.
->>
->> The driver prepares register read and write configuration descriptors for
->> each codeword, followed by data descriptors to read or write data from the
->> controller's internal buffer. It uses a single ADM DMA channel that we get
->> via dmaengine API. The controller requires 2 ADM CRCIs for command and
->> data flow control. These are passed via DT.
->>
->> The ecc layout used by the controller is syndrome like, but we can't use
->> the standard syndrome ecc ops because of several reasons. First, the amount
->> of data bytes covered by ecc isn't same in each step. Second, writing to
->> free oob space requires us writing to the entire step in which the oob
->> lies. This forces us to create our own ecc ops.
->>
->> One more difference is how the controller accesses the bad block marker.
->> The controller ignores reading the marker when ECC is enabled. ECC needs
->> to be explicity disabled to read or write to the bad block marker. For
->> this reason, we use the newly created flag NAND_BBT_ACCESS_BBM_RAW to
->> read the factory provided bad block markers.
->>
->> v4:
->> - Shrink submit_descs
->> - add desc list node at the end of dma_prep_desc
->> - Endianness and warning fixes
->>
->> Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
->>
->> v3:
->> - Refactor dma functions for maximum reuse
->> - Use dma_slave_confing on stack
->> - optimize and clean upempty_page_fixup using memchr_inv
->> - ensure portability with dma register reads using le32_* funcs
->> - use NAND_USE_BOUNCE_BUFFER instead of doing it ourselves
->> - fix handling of return values of dmaengine funcs
->> - constify wherever possible
->> - Remove dependency on ADM DMA in Kconfig
->> - Misc fixes and clean ups
->>
->> v2:
->> - Use new BBT flag that allows us to read BBM in raw mode
->> - reduce memcpy-s in the driver
->> - some refactor and clean ups because of above changes
->>
->> Reviewed-by: Andy Gross <agross@codeaurora.org>
->> Signed-off-by: Archit Taneja <architt@codeaurora.org>
->> ---
->>   drivers/mtd/nand/Kconfig      |    7 +
->>   drivers/mtd/nand/Makefile     |    1 +
->>   drivers/mtd/nand/qcom_nandc.c | 1910 +++++++++++++++++++++++++++++++++++++++++
->>   3 files changed, 1918 insertions(+)
->>   create mode 100644 drivers/mtd/nand/qcom_nandc.c
->>
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index 5b2806a..6085b8a 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -538,4 +538,11 @@ config MTD_NAND_HISI504
->>   	help
->>   	  Enables support for NAND controller on Hisilicon SoC Hip04.
->>
->> +config MTD_NAND_QCOM
->> +	tristate "Support for NAND on QCOM SoCs"
->> +	depends on ARCH_QCOM
->> +	help
->> +	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
->> +	  controller. This controller is found on IPQ806x SoC.
->> +
->>   endif # MTD_NAND
->> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
->> index 1f897ec..87b6a1d 100644
->> --- a/drivers/mtd/nand/Makefile
->> +++ b/drivers/mtd/nand/Makefile
->> @@ -53,5 +53,6 @@ obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
->>   obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
->>   obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
->>   obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
->> +obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
->>
->>   nand-objs := nand_base.o nand_bbt.o nand_timings.o
->> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
->> new file mode 100644
->> index 0000000..2337731
->> --- /dev/null
->> +++ b/drivers/mtd/nand/qcom_nandc.c
->> @@ -0,0 +1,1910 @@
->> +/*
->> + * Copyright (c) 2015, The Linux Foundation. All rights reserved.
->> + *
->> + * This software is licensed under the terms of the GNU General Public
->> + * License version 2, as published by the Free Software Foundation, and
->> + * may be copied, distributed, and modified under those terms.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + */
->> +
->> +#include <linux/clk.h>
->> +#include <linux/slab.h>
->> +#include <linux/bitops.h>
->> +#include <linux/dma-mapping.h>
->> +#include <linux/dmaengine.h>
->> +#include <linux/module.h>
->> +#include <linux/mtd/nand.h>
->> +#include <linux/mtd/partitions.h>
->> +#include <linux/of.h>
->> +#include <linux/of_device.h>
->> +#include <linux/of_mtd.h>
->> +#include <linux/delay.h>
->> +
->> +/* NANDc reg offsets */
->> +#define NAND_FLASH_CMD			0x00
->> +#define NAND_ADDR0			0x04
->> +#define NAND_ADDR1			0x08
->> +#define NAND_FLASH_CHIP_SELECT		0x0c
->> +#define NAND_EXEC_CMD			0x10
->> +#define NAND_FLASH_STATUS		0x14
->> +#define NAND_BUFFER_STATUS		0x18
->> +#define NAND_DEV0_CFG0			0x20
->> +#define NAND_DEV0_CFG1			0x24
->> +#define NAND_DEV0_ECC_CFG		0x28
->> +#define NAND_DEV1_ECC_CFG		0x2c
->> +#define NAND_DEV1_CFG0			0x30
->> +#define NAND_DEV1_CFG1			0x34
->> +#define NAND_READ_ID			0x40
->> +#define NAND_READ_STATUS		0x44
->> +#define NAND_DEV_CMD0			0xa0
->> +#define NAND_DEV_CMD1			0xa4
->> +#define NAND_DEV_CMD2			0xa8
->> +#define NAND_DEV_CMD_VLD		0xac
->> +#define SFLASHC_BURST_CFG		0xe0
->> +#define NAND_ERASED_CW_DETECT_CFG	0xe8
->> +#define NAND_ERASED_CW_DETECT_STATUS	0xec
->> +#define NAND_EBI2_ECC_BUF_CFG		0xf0
->> +#define FLASH_BUF_ACC			0x100
->> +
->> +#define NAND_CTRL			0xf00
->> +#define NAND_VERSION			0xf08
->> +#define NAND_READ_LOCATION_0		0xf20
->> +#define NAND_READ_LOCATION_1		0xf24
->> +
->> +/* dummy register offsets, used by write_reg_dma */
->> +#define NAND_DEV_CMD1_RESTORE		0xdead
->> +#define NAND_DEV_CMD_VLD_RESTORE	0xbeef
->> +
->> +/* NAND_FLASH_CMD bits */
->> +#define PAGE_ACC			BIT(4)
->> +#define LAST_PAGE			BIT(5)
->> +
->> +/* NAND_FLASH_CHIP_SELECT bits */
->> +#define NAND_DEV_SEL			0
->> +#define DM_EN				BIT(2)
->> +
->> +/* NAND_FLASH_STATUS bits */
->> +#define FS_OP_ERR			BIT(4)
->> +#define FS_READY_BSY_N			BIT(5)
->> +#define FS_MPU_ERR			BIT(8)
->> +#define FS_DEVICE_STS_ERR		BIT(16)
->> +#define FS_DEVICE_WP			BIT(23)
->> +
->> +/* NAND_BUFFER_STATUS bits */
->> +#define BS_UNCORRECTABLE_BIT		BIT(8)
->> +#define BS_CORRECTABLE_ERR_MSK		0x1f
->> +
->> +/* NAND_DEVn_CFG0 bits */
->> +#define DISABLE_STATUS_AFTER_WRITE	4
->> +#define CW_PER_PAGE			6
->> +#define UD_SIZE_BYTES			9
->> +#define ECC_PARITY_SIZE_BYTES_RS	19
->> +#define SPARE_SIZE_BYTES		23
->> +#define NUM_ADDR_CYCLES			27
->> +#define STATUS_BFR_READ			30
->> +#define SET_RD_MODE_AFTER_STATUS	31
->> +
->> +/* NAND_DEVn_CFG0 bits */
->> +#define DEV0_CFG1_ECC_DISABLE		0
->> +#define WIDE_FLASH			1
->> +#define NAND_RECOVERY_CYCLES		2
->> +#define CS_ACTIVE_BSY			5
->> +#define BAD_BLOCK_BYTE_NUM		6
->> +#define BAD_BLOCK_IN_SPARE_AREA		16
->> +#define WR_RD_BSY_GAP			17
->> +#define ENABLE_BCH_ECC			27
->> +
->> +/* NAND_DEV0_ECC_CFG bits */
->> +#define ECC_CFG_ECC_DISABLE		0
->> +#define ECC_SW_RESET			1
->> +#define ECC_MODE			4
->> +#define ECC_PARITY_SIZE_BYTES_BCH	8
->> +#define ECC_NUM_DATA_BYTES		16
->> +#define ECC_FORCE_CLK_OPEN		30
->> +
->> +/* NAND_DEV_CMD1 bits */
->> +#define READ_ADDR			0
->> +
->> +/* NAND_DEV_CMD_VLD bits */
->> +#define READ_START_VLD			0
->> +
->> +/* NAND_EBI2_ECC_BUF_CFG bits */
->> +#define NUM_STEPS			0
->> +
->> +/* NAND_ERASED_CW_DETECT_CFG bits */
->> +#define ERASED_CW_ECC_MASK		1
->> +#define AUTO_DETECT_RES			0
->> +#define MASK_ECC			(1 << ERASED_CW_ECC_MASK)
->> +#define RESET_ERASED_DET		(1 << AUTO_DETECT_RES)
->> +#define ACTIVE_ERASED_DET		(0 << AUTO_DETECT_RES)
->> +#define CLR_ERASED_PAGE_DET		(RESET_ERASED_DET | MASK_ECC)
->> +#define SET_ERASED_PAGE_DET		(ACTIVE_ERASED_DET | MASK_ECC)
->> +
->> +/* NAND_ERASED_CW_DETECT_STATUS bits */
->> +#define PAGE_ALL_ERASED			BIT(7)
->> +#define CODEWORD_ALL_ERASED		BIT(6)
->> +#define PAGE_ERASED			BIT(5)
->> +#define CODEWORD_ERASED			BIT(4)
->> +#define ERASED_PAGE			(PAGE_ALL_ERASED | PAGE_ERASED)
->> +#define ERASED_CW			(CODEWORD_ALL_ERASED | CODEWORD_ERASED)
->> +
->> +/* Version Mask */
->> +#define NAND_VERSION_MAJOR_MASK		0xf0000000
->> +#define NAND_VERSION_MAJOR_SHIFT	28
->> +#define NAND_VERSION_MINOR_MASK		0x0fff0000
->> +#define NAND_VERSION_MINOR_SHIFT	16
->> +
->> +/* NAND OP_CMDs */
->> +#define PAGE_READ			0x2
->> +#define PAGE_READ_WITH_ECC		0x3
->> +#define PAGE_READ_WITH_ECC_SPARE	0x4
->> +#define PROGRAM_PAGE			0x6
->> +#define PAGE_PROGRAM_WITH_ECC		0x7
->> +#define PROGRAM_PAGE_SPARE		0x9
->> +#define BLOCK_ERASE			0xa
->> +#define FETCH_ID			0xb
->> +#define RESET_DEVICE			0xd
->> +
->> +/*
->> + * the NAND controller performs reads/writes with ECC in 516 byte chunks.
->> + * the driver calls the chunks 'step' or 'codeword' interchangeably
->> + */
->> +#define NANDC_STEP_SIZE			512
->> +
->> +/*
->> + * the largest page size we support is 8K, this will have 16 steps/codewords
->> + * of 512 bytes each
->> + */
->> +#define	MAX_NUM_STEPS			(SZ_8K / NANDC_STEP_SIZE)
->> +
->> +/* we read at most 3 registers per codeword scan */
->> +#define MAX_REG_RD			(3 * MAX_NUM_STEPS)
->> +
->> +/* ECC modes */
->> +#define ECC_NONE	BIT(0)
->> +#define ECC_RS_4BIT	BIT(1)
->> +#define	ECC_BCH_4BIT	BIT(2)
->> +#define	ECC_BCH_8BIT	BIT(3)
->> +
->> +struct desc_info {
->> +	struct list_head list;
->> +
->> +	enum dma_data_direction dir;
->> +	struct scatterlist sgl;
->> +	struct dma_async_tx_descriptor *dma_desc;
->> +};
->> +
->> +/*
->> + * holds the current register values that we want to write. acts as a contiguous
->> + * chunk of memory which we use to write the controller registers through DMA.
->> + */
->> +struct nandc_regs {
->> +	__le32 cmd;
->> +	__le32 addr0;
->> +	__le32 addr1;
->> +	__le32 chip_sel;
->> +	__le32 exec;
->> +
->> +	__le32 cfg0;
->> +	__le32 cfg1;
->> +	__le32 ecc_bch_cfg;
->> +
->> +	__le32 clrflashstatus;
->> +	__le32 clrreadstatus;
->> +
->> +	__le32 cmd1;
->> +	__le32 vld;
->> +
->> +	__le32 orig_cmd1;
->> +	__le32 orig_vld;
->> +
->> +	__le32 ecc_buf_cfg;
->> +};
->> +
->> +/*
->> + * @cmd_crci:			ADM DMA CRCI for command flow control
->> + * @data_crci:			ADM DMA CRCI for data flow control
->> + * @list:			DMA descriptor list (list of desc_infos)
->> + * @data_buffer:		our local DMA buffer for page read/writes,
->> + *				used when we can't use the buffer provided
->> + *				by upper layers directly
->> + * @buf_size/count/start:	markers for chip->read_buf/write_buf functions
->> + * @reg_read_buf:		buffer for reading register data via DMA
->> + * @reg_read_pos:		marker for data read in reg_read_buf
->> + * @cfg0, cfg1, cfg0_raw..:	NANDc register configurations needed for
->> + *				ecc/non-ecc mode for the current nand flash
->> + *				device
->> + * @regs:			a contiguous chunk of memory for DMA register
->> + *				writes
->> + * @ecc_strength:		4 bit or 8 bit ecc, received via DT
->> + * @bus_width:			8 bit or 16 bit NAND bus width, received via DT
->> + * @ecc_modes:			supported ECC modes by the current controller,
->> + *				initialized via DT match data
->> + * @cw_size:			the number of bytes in a single step/codeword
->> + *				of a page, consisting of all data, ecc, spare
->> + *				and reserved bytes
->> + * @cw_data:			the number of bytes within a codeword protected
->> + *				by ECC
->> + * @bch_enabled:		flag to tell whether BCH or RS ECC mode is used
->> + * @status:			value to be returned if NAND_CMD_STATUS command
->> + *				is executed
->> + */
->> +struct qcom_nandc_data {
->> +	struct platform_device *pdev;
->> +	struct device *dev;
->> +
->> +	void __iomem *base;
->> +	struct resource *res;
->> +
->> +	struct clk *core_clk;
->> +	struct clk *aon_clk;
->> +
->> +	/* DMA stuff */
->> +	struct dma_chan *chan;
->> +	struct dma_slave_config	slave_conf;
->> +	unsigned int cmd_crci;
->> +	unsigned int data_crci;
->> +	struct list_head list;
->> +
->> +	/* MTD stuff */
->> +	struct nand_chip chip;
->> +	struct mtd_info mtd;
->
-> You can drop this field, since nand_chip now embeds its own mtd_info
-> instance (accessible through the nand_to_mtd() helper).
+>=20
+> The bootloaders also use the same layout.
 
-Ah, alright. I'd posted this patchset during the 4.3-rc cycle, this must
-have been in discussion then. I'll update accordingly.
+Ok, then I guess we'll have to live with that (but it complicates a lot
+the driver logic :-/)
 
->
->> +
->> +	/* local data buffer and markers */
->> +	u8		*data_buffer;
->> +	int		buf_size;
->> +	int		buf_count;
->> +	int		buf_start;
->> +
->> +	/* local buffer to read back registers */
->> +	__le32 *reg_read_buf;
->> +	int reg_read_pos;
->> +
->> +	/* required configs */
->> +	u32 cfg0, cfg1;
->> +	u32 cfg0_raw, cfg1_raw;
->> +	u32 ecc_buf_cfg;
->> +	u32 ecc_bch_cfg;
->> +	u32 clrflashstatus;
->> +	u32 clrreadstatus;
->> +	u32 sflashc_burst_cfg;
->> +	u32 cmd1, vld;
->> +
->> +	/* register state */
->> +	struct nandc_regs *regs;
->> +
->> +	/* things we get from DT */
->> +	int ecc_strength;
->> +	int bus_width;
->
-> Do you really need these fields? You can directly change the
-> ->chip.ecc.strength and ->chip.options field instead.
+>=20
+> >
+> >> + *
+> >> + * the qcom nand controller operates at a sub page/codeword level. ea=
+ch
+> >> + * codeword is 528 and 532 bytes for 4 bit and 8 bit ECC modes respec=
+tively.
+> >> + * the number of ECC bytes vary based on the ECC strength and the bus=
+ width.
+> >> + *
+> >> + * the first n - 1 codewords contains 516 bytes of user data, the rem=
+aining
+> >> + * 12/16 bytes consist of ECC and reserved data. The nth codeword con=
+tains
+> >> + * both user data and spare(oobavail) bytes that sum up to 516 bytes.
+> >> + *
+> >> + * the layout described above is used by the controller when the ECC =
+block is
+> >> + * enabled. When we read a page with ECC enabled, the unused/reserved=
+ bytes are
+> >> + * skipped and not copied to our internal buffer. therefore, the nand=
+_ecclayout
+> >> + * layouts defined below doesn't consider the positions occupied by t=
+he reserved
+> >> + * bytes
+> >
+> > You could just read this portion with the ECC engine disabled when
+> > you're asked for OOB data.
+>=20
+> Yes, but there are ecc ops (like ecc->read_page/ecc->write_page) that
+> have an argument called 'oob_required'. We need to have ECC enabled when
+> running these ops.
+>=20
+> In order to read this additional portion, I'll need to read/write each=20
+> step again with ECC disabled, which would really slow things down.
 
-Yes, these aren't required. I was forcibly reading these via
-custom DT properties. I will replace this such that these are
-populated via nand_dt_init().
+Nowadays, MTD FS are not using the OOB area, and oob_required is only
+passed if the MTD user asked for OOB data, so that can be an acceptable
+penalty. Anyway, that's not really important if we loose a few OOB
+bytes.
 
->
->> +
->> +	u32 ecc_modes;
->> +
->> +	/* misc params */
->> +	int cw_size;
->> +	int cw_data;
->> +	bool use_ecc;
->> +	bool bch_enabled;
->> +	u8 status;
->> +	int last_command;
->> +};
->
-> You're mixing controller and chip stuff in this structure. As said in
-> my answer to your DT bindings proposal, I think it would be clearer to
-> separate the controller and chip specific fields.
->
-> Note that a NAND chip can be attached to a NAND controller through its
-> ->controller field.
->
-> So here is how it would look like:
->
-> struct qcom_nandc_data {
-> 	struct nand_hw_control controller;
->
-> 	struct list_head chips;
-> 	/* controller specific fields */
-> };
->
-> struct qcom_nand_data {
-> 	struct list_head node;
-> 	struct nand_chip chip;
->
-> 	/* chip specific fields */
-> }
+>=20
+> >
+> >> + *
+> >> + * when the ECC block is disabled, one unused byte (or two for 16 bit=
+ bus width)
+> >> + * in the last codeword is the position of bad block marker. the bad =
+block
+> >> + * marker cannot be accessed when ECC is enabled.
+> >
+> > So, you're switching the BBM with the data at the BBM position
+> > (possibly some in-band data), right?
+>=20
+> Yes. When ECC isn't enabled, the BBM byte lies within the in-band data=20
+> of the last step. In fact, there are dummy BBM bytes in the previous=20
+> steps at the same offset.
+>=20
+> With ECC enabled, the controller just skips that position (and the
+> dummy BBM bytes in previous steps) altogether.
 
-Thanks for the explanation. I wasn't aware of this sort of
-structure split. I was probably referring to the sinlge chip
-nand controller drivers when I wrote it.
+Okay.
 
->
->
-> [...]
->
->> +
->> +/*
->> + * Implements chip->cmdfunc. It's  only used for a limited set of commands.
->> + * The rest of the commands wouldn't be called by upper layers. For example,
->> + * NAND_CMD_READOOB would never be called because we have our own versions
->> + * of read_oob ops for nand_ecc_ctrl.
->> + */
->> +static void qcom_nandc_command(struct mtd_info *mtd, unsigned int command,
->> +			 int column, int page_addr)
->> +{
->> +	struct nand_chip *chip = mtd->priv;
->
-> 	struct nand_chip *chip = mtd_to_nand(mtd);
->
->> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
->> +	struct qcom_nandc_data *this = chip->priv;
->> +	bool wait = false;
->> +	int r = 0;
->> +
->> +	pre_command(this, command);
->> +
->> +	switch (command) {
->> +	case NAND_CMD_RESET:
->> +		r = reset(this);
->> +		wait = true;
->> +		break;
->> +
->> +	case NAND_CMD_READID:
->> +		this->buf_count = 4;
->> +		r = read_id(this, column);
->> +		wait = true;
->> +		break;
->> +
->> +	case NAND_CMD_PARAM:
->> +		r = nandc_param(this);
->> +		wait = true;
->> +		break;
->> +
->> +	case NAND_CMD_ERASE1:
->> +		r = erase_block(this, page_addr);
->> +		wait = true;
->> +		break;
->> +
->> +	case NAND_CMD_READ0:
->> +		/* we read the entire page for now */
->> +		WARN_ON(column != 0);
->> +
->> +		this->use_ecc = true;
->> +		set_address(this, 0, page_addr);
->> +		update_rw_regs(this, ecc->steps, true);
->> +		break;
->> +
->> +	case NAND_CMD_SEQIN:
->> +		WARN_ON(column != 0);
->> +		set_address(this, 0, page_addr);
->> +		break;
->> +
->> +	case NAND_CMD_PAGEPROG:
->> +	case NAND_CMD_STATUS:
->> +	case NAND_CMD_NONE:
->> +	default:
->> +		break;
->> +	}
->> +
->> +	if (r) {
->> +		dev_err(this->dev, "failure executing command %d\n",
->> +			command);
->> +		free_descs(this);
->> +		return;
->> +	}
->> +
->> +	if (wait) {
->> +		r = submit_descs(this);
->> +		if (r)
->> +			dev_err(this->dev,
->> +				"failure submitting descs for command %d\n",
->> +				command);
->> +	}
->> +
->> +	free_descs(this);
->> +
->> +	post_command(this, command);
->> +}
->> +
->> +/*
->> + * when using RS ECC, the NAND controller flags an error when reading an
->> + * erased page. however, there are special characters at certain offsets when
->> + * we read the erased page. we check here if the page is really empty. if so,
->> + * we replace the magic characters with 0xffs
->> + */
->> +static bool empty_page_fixup(struct qcom_nandc_data *this, u8 *data_buf)
->> +{
->> +	struct mtd_info *mtd = &this->mtd;
->> +	struct nand_chip *chip = &this->chip;
->
-> 	struct nand_chip *chip = &this->chip;
-> 	struct mtd_info *mtd = nand_to_mtd(chip);
->
->> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
->> +	int cwperpage = ecc->steps;
->> +	u8 orig1[MAX_NUM_STEPS], orig2[MAX_NUM_STEPS];
->> +	int i, j;
->> +
->> +	/* if BCH is enabled, HW will take care of detecting erased pages */
->> +	if (this->bch_enabled || !this->use_ecc)
->> +		return false;
->> +
->> +	for (i = 0; i < cwperpage; i++) {
->> +		u8 *empty1, *empty2;
->> +		u32 flash_status = le32_to_cpu(this->reg_read_buf[3 * i]);
->> +
->> +		/*
->> +		 * an erased page flags an error in NAND_FLASH_STATUS, check if
->> +		 * the page is erased by looking for 0x54s at offsets 3 and 175
->> +		 * from the beginning of each codeword
->> +		 */
->> +		if (!(flash_status & FS_OP_ERR))
->> +			break;
->> +
->> +		empty1 = &data_buf[3 + i * this->cw_data];
->> +		empty2 = &data_buf[175 + i * this->cw_data];
->> +
->> +		/*
->> +		 * if the error wasn't because of an erased page, bail out and
->> +		 * and let someone else do the error checking
->> +		 */
->> +		if ((*empty1 == 0x54 && *empty2 == 0xff) ||
->> +				(*empty1 == 0xff && *empty2 == 0x54)) {
->> +			orig1[i] = *empty1;
->> +			orig2[i] = *empty2;
->> +
->> +			*empty1 = 0xff;
->> +			*empty2 = 0xff;
->> +		} else {
->> +			break;
->> +		}
->> +	}
->> +
->> +	if (i < cwperpage || memchr_inv(data_buf, 0xff, mtd->writesize))
->> +		goto not_empty;
->> +
->> +	/*
->> +	 * tell the caller that the page was empty and is fixed up, so that
->> +	 * parse_read_errors() doesn't think it's an error
->> +	 */
->> +	return true;
->> +
->> +not_empty:
->> +	/* restore original values if not empty*/
->> +	for (j = 0; j < i; j++) {
->> +		data_buf[3 + j * this->cw_data] = orig1[j];
->> +		data_buf[175 + j * this->cw_data] = orig2[j];
->> +	}
->> +
->> +	return false;
->> +}
->> +
->> +struct read_stats {
->> +	__le32 flash;
->> +	__le32 buffer;
->> +	__le32 erased_cw;
->> +};
->> +
->> +/*
->> + * reads back status registers set by the controller to notify page read
->> + * errors. this is equivalent to what 'ecc->correct()' would do.
->> + */
->> +static int parse_read_errors(struct qcom_nandc_data *this, bool erased_page)
->> +{
->> +	struct mtd_info *mtd = &this->mtd;
->> +	struct nand_chip *chip = &this->chip;
->
-> 	struct nand_chip *chip = &this->chip;
-> 	struct mtd_info *mtd = nand_to_mtd(chip);
->
->> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
->> +	int cwperpage = ecc->steps;
->> +	unsigned int max_bitflips = 0;
->> +	int i;
->> +	struct read_stats *buf;
->> +
->> +	buf = (struct read_stats *)this->reg_read_buf;
->> +	for (i = 0; i < cwperpage; i++, buf++) {
->> +		unsigned int stat;
->> +		u32 flash, buffer, erased_cw;
->> +
->> +		flash = le32_to_cpu(buf->flash);
->> +		buffer = le32_to_cpu(buf->buffer);
->> +		erased_cw = le32_to_cpu(buf->erased_cw);
->> +
->> +		if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
->> +
->> +			/* ignore erased codeword errors */
->> +			if (this->bch_enabled) {
->> +				if ((erased_cw & ERASED_CW) == ERASED_CW)
->> +					continue;
->> +			} else if (erased_page) {
->> +				continue;
->> +			}
->> +
->> +			if (buffer & BS_UNCORRECTABLE_BIT) {
->> +				mtd->ecc_stats.failed++;
->> +				continue;
->> +			}
->> +		}
->> +
->> +		stat = buffer & BS_CORRECTABLE_ERR_MSK;
->> +		mtd->ecc_stats.corrected += stat;
->> +
->> +		max_bitflips = max(max_bitflips, stat);
->> +	}
->> +
->> +	return max_bitflips;
->> +}
->> +
->
-> [...]
->
->> +
->> +/*
->> + * the three functions below implement chip->read_byte(), chip->read_buf()
->> + * and chip->write_buf() respectively. these aren't used for
->> + * reading/writing page data, they are used for smaller data like reading
->> + * id, status etc
->> + */
->> +static uint8_t qcom_nandc_read_byte(struct mtd_info *mtd)
->> +{
->> +	struct nand_chip *chip = mtd->priv;
->
-> 	struct nand_chip *chip = mtd_to_nand(mtd);
->
->> +	struct qcom_nandc_data *this = chip->priv;
->> +	uint8_t *buf = this->data_buffer;
->> +	uint8_t ret = 0x0;
->> +
->> +	if (this->last_command == NAND_CMD_STATUS) {
->> +		ret = this->status;
->> +
->> +		this->status = NAND_STATUS_READY | NAND_STATUS_WP;
->> +
->> +		return ret;
->> +	}
->> +
->> +	if (this->buf_start < this->buf_count)
->> +		ret = buf[this->buf_start++];
->> +
->> +	return ret;
->> +}
->> +
->> +static void qcom_nandc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
->> +{
->> +	struct nand_chip *chip = mtd->priv;
->
-> 	struct nand_chip *chip = mtd_to_nand(mtd);
->
->> +	struct qcom_nandc_data *this = chip->priv;
->> +	int real_len = min_t(size_t, len, this->buf_count - this->buf_start);
->> +
->> +	memcpy(buf, this->data_buffer + this->buf_start, real_len);
->> +	this->buf_start += real_len;
->> +}
->> +
->> +static void qcom_nandc_write_buf(struct mtd_info *mtd, const uint8_t *buf,
->> +		int len)
->> +{
->> +	struct nand_chip *chip = mtd->priv;
->
-> 	struct nand_chip *chip = mtd_to_nand(mtd);
->
->> +	struct qcom_nandc_data *this = chip->priv;
->> +	int real_len = min_t(size_t, len, this->buf_count - this->buf_start);
->> +
->> +	memcpy(this->data_buffer + this->buf_start, buf, real_len);
->> +
->> +	this->buf_start += real_len;
->> +}
->> +
->> +/* we support only one external chip for now */
->> +static void qcom_nandc_select_chip(struct mtd_info *mtd, int chipnr)
->> +{
->> +	struct nand_chip *chip = mtd->priv;
->
-> 	struct nand_chip *chip = mtd_to_nand(mtd);
->
->> +	struct qcom_nandc_data *this = chip->priv;
->> +
->> +	if (chipnr <= 0)
->> +		return;
->> +
->> +	dev_warn(this->dev, "invalid chip select\n");
->> +}
->> +
->> +/*
->> + * NAND controller page layout info
->> + *
->> + * |-----------------------|	  |---------------------------------|
->> + * |		xx.......xx|	  |		*********xx.......xx|
->> + * |	DATA	xx..ECC..xx|	  |	DATA	**SPARE**xx..ECC..xx|
->> + * |   (516)	xx.......xx|	  |  (516-n*4)	**(n*4)**xx.......xx|
->> + * |		xx.......xx|	  |		*********xx.......xx|
->> + * |-----------------------|	  |---------------------------------|
->> + *     codeword 1,2..n-1			codeword n
->> + *  <---(528/532 Bytes)---->	   <-------(528/532 Bytes)---------->
->> + *
->> + * n = number of codewords in the page
->> + * . = ECC bytes
->> + * * = spare bytes
->> + * x = unused/reserved bytes
->> + *
->> + * 2K page: n = 4, spare = 16 bytes
->> + * 4K page: n = 8, spare = 32 bytes
->> + * 8K page: n = 16, spare = 64 bytes
->
-> Is there a reason not to use the following layout?
->
-> (
-> n x (
-> 	data = 512 bytes
-> 	protected OOB data = 4 bytes
-> 	ECC bytes = 12 or 16
-> )
->
-> +
->
-> remaining unprotected OOB bytes
-> )
->
-> This way the ECC layout definition would be easier to define, and
-> you'll have something that is closer to what a NAND chip expect (ECC
-> block/step size of 512 or 1024).
->
-> I know this is also dependent on the bootloader, hence my question.
+>=20
+> >
+> >> + *
+> >> + */
+> >> +
+> >> +/*
+> >> + * Layouts for different page sizes and ecc modes. We skip the eccpos=
+ field
+> >> + * since it isn't needed for this driver
+> >> + */
+> >
+> > If you know where they are stored, please specify them, even if they
+> > are not used by the upper layers (this helps analyzing raw nand dumps).
+> >
+> >> +
+> >> +/* 2K page, 4 bit ECC */
+> >> +static struct nand_ecclayout layout_oob_64 =3D {
+> >> +	.eccbytes	=3D 40,
+> >> +	.oobfree	=3D {
+> >> +				{ 30, 16 },
+> >> +			  },
+> >> +};
+> >
+> > According to your description it should either be eccbytes =3D 48 (if
+> > you're considering reserved bytes as ECC bytes) or 32 (if you're not
+> > counting reserved bytes).
+>=20
+> Each step is 528 bytes in total. The first 3 steps contain 516 bytes
+> of data, 10 bytes of ECC and 2 bytes of resrved data. The last step
+> contains 500 bytes of data, 16 bytes of OOB, 10 bytes of ECC and 2
+> reserved bytes.
+>=20
+> If I don't count the reserved bytes as part of ECC, I get 40. If I
+> do count it as part of ECC, I get 48. In the way I described
+> layouts, I ignored the ECC parts. How did you get 32?
 
-I tried to figure this out looking at documentation and the downstream
-drivers. What I understood was that all the OOB was intentionally kept
-in the last step, so that things are faster when we only want to access
-OOB. In that case, the controller will need to write to only one
-step/codeword.
+=46rom the ecc.bytes value you're filling in qcom_nandc_pre_init(). Just
+multiplied it by 4 (the number of ECC steps).
 
-The bootloaders also use the same layout.
+And here is where weird things happen: you're setting ecc.size to 512
+and ecc.strength to 4. But in reality, what you have is 4bits/516bytes
+for the first 3 blocks, and 4bits/500bytes for the last one.
+You're not only fooling the MTD user when faking a 4bits/512byte
+strength, you're also sightly modifying the logic supposed to detect
+the maximum number of bitflips found in a page.
 
->
->> + *
->> + * the qcom nand controller operates at a sub page/codeword level. each
->> + * codeword is 528 and 532 bytes for 4 bit and 8 bit ECC modes respectively.
->> + * the number of ECC bytes vary based on the ECC strength and the bus width.
->> + *
->> + * the first n - 1 codewords contains 516 bytes of user data, the remaining
->> + * 12/16 bytes consist of ECC and reserved data. The nth codeword contains
->> + * both user data and spare(oobavail) bytes that sum up to 516 bytes.
->> + *
->> + * the layout described above is used by the controller when the ECC block is
->> + * enabled. When we read a page with ECC enabled, the unused/reserved bytes are
->> + * skipped and not copied to our internal buffer. therefore, the nand_ecclayout
->> + * layouts defined below doesn't consider the positions occupied by the reserved
->> + * bytes
->
-> You could just read this portion with the ECC engine disabled when
-> you're asked for OOB data.
+This being said, I understand your constraints, just trying to explain
+why we're trying to use the symmetric ECC block size.
 
-Yes, but there are ecc ops (like ecc->read_page/ecc->write_page) that
-have an argument called 'oob_required'. We need to have ECC enabled when
-running these ops.
+>=20
+> >
+> > BTW, is the oobfree portion really starting at offset 30?
+>=20
+> I thought the offsets mentioned here also had to incorporate positions
+> taken by ECC bytes? If I strip all the the in-band data (real data)
+> from each step, we get:
+>=20
+> ECC(10 bytes).ECC(10 bytes).ECC(10 bytes).OOB(16 bytes).ECC(10 bytes)
+>=20
+> Wouldn't this result in the offset as 30?
 
-In order to read this additional portion, I'll need to read/write each 
-step again with ECC disabled, which would really slow things down.
+Yep, as I said I thought it was 32 because of what you put in ecc.size.
+And, you're putting OOB bytes before the last chunk of ECC bytes,
+because they are protected, right?
 
->
->> + *
->> + * when the ECC block is disabled, one unused byte (or two for 16 bit bus width)
->> + * in the last codeword is the position of bad block marker. the bad block
->> + * marker cannot be accessed when ECC is enabled.
->
-> So, you're switching the BBM with the data at the BBM position
-> (possibly some in-band data), right?
+Note that you could put the oobfree area at the end of the OOB area,
+since this 10-10-10-16-10 representation is already a virtual
+representation of the OOB area (ECC bytes are actually interleaved with
+in-band data on the flash).
 
-Yes. When ECC isn't enabled, the BBM byte lies within the in-band data 
-of the last step. In fact, there are dummy BBM bytes in the previous 
-steps at the same offset.
+>=20
+> We are still only taking into account 56 bytes out of the 64 bytes
+> in the chip's OOB. This is because I'm discaring the 2 bytes from
+> each step (summing up to 8) which aren't accessible when ECC is
+> enabled.
 
-With ECC enabled, the controller just skips that position (and the
-dummy BBM bytes in previous steps) altogether.
+Okay. As said above, those two bytes could be exposed without two much
+overhead for most operations, but that's your call to make.
 
->
->> + *
->> + */
->> +
->> +/*
->> + * Layouts for different page sizes and ecc modes. We skip the eccpos field
->> + * since it isn't needed for this driver
->> + */
->
-> If you know where they are stored, please specify them, even if they
-> are not used by the upper layers (this helps analyzing raw nand dumps).
->
->> +
->> +/* 2K page, 4 bit ECC */
->> +static struct nand_ecclayout layout_oob_64 = {
->> +	.eccbytes	= 40,
->> +	.oobfree	= {
->> +				{ 30, 16 },
->> +			  },
->> +};
->
-> According to your description it should either be eccbytes = 48 (if
-> you're considering reserved bytes as ECC bytes) or 32 (if you're not
-> counting reserved bytes).
+>=20
+>=20
+> >I'd say that in the 2K page, 4 bit ECC you don't have any oobfree bytes
+> > (528 * 4 =3D=3D 2048 + 64).
+>=20
+> 528 contains both oob and in-band data. If you ignore the weird layout
+> and assume we have at an average 512 bytes for each step, we get:
+>=20
+> 512 * 4 =3D=3D 2048 bytes of data, and 64 bytes of OOB (16 bytes free, 40=
+=20
+> ECC, and 8 reserved/unused).
 
-Each step is 528 bytes in total. The first 3 steps contain 516 bytes
-of data, 10 bytes of ECC and 2 bytes of resrved data. The last step
-contains 500 bytes of data, 16 bytes of OOB, 10 bytes of ECC and 2
-reserved bytes.
+Okay. Still think the ECC block asymmetry is not a good idea, but I get
+your point ;-).
 
-If I don't count the reserved bytes as part of ECC, I get 40. If I
-do count it as part of ECC, I get 48. In the way I described
-layouts, I ignored the ECC parts. How did you get 32?
+>=20
+> >
+> >> +
+> >> +/* 4K page, 4 bit ECC, 8/16 bit bus width */
+> >> +static struct nand_ecclayout layout_oob_128 =3D {
+> >> +	.eccbytes	=3D 80,
+> >> +	.oobfree	=3D {
+> >> +				{ 70, 32 },
+> >> +			  },
+> >> +};
+> >> +
+> >> +/* 4K page, 8 bit ECC, 8 bit bus width */
+> >> +static struct nand_ecclayout layout_oob_224_x8 =3D {
+> >> +	.eccbytes	=3D 104,
+> >> +	.oobfree	=3D {
+> >> +				{ 91, 32 },
+> >> +			  },
+> >> +};
+> >> +
+> >> +/* 4K page, 8 bit ECC, 16 bit bus width */
+> >> +static struct nand_ecclayout layout_oob_224_x16 =3D {
+> >> +	.eccbytes	=3D 112,
+> >> +	.oobfree	=3D {
+> >> +				{ 98, 32 },
+> >> +			  },
+> >> +};
+> >> +
+> >> +/* 8K page, 4 bit ECC, 8/16 bit bus width */
+> >> +static struct nand_ecclayout layout_oob_256 =3D {
+> >> +	.eccbytes	=3D 160,
+> >> +	.oobfree	=3D {
+> >> +				{ 151, 64 },
+> >> +			  },
+> >> +};
+> >
+> > Those ECC layout definitions could probably be dynamically created
+> > based on the detected ECC strength, bus-width and page size, instead of
+> > defining a new one for each new combination.
+>=20
+> That's true. I can try that out.
 
->
-> BTW, is the oobfree portion really starting at offset 30?
+Cool.
 
-I thought the offsets mentioned here also had to incorporate positions
-taken by ECC bytes? If I strip all the the in-band data (real data)
-from each step, we get:
+>=20
+> >
+> >> +
+> >> +/*
+> >> + * this is called before scan_ident, we do some minimal configuration=
+s so
+> >> + * that reading ID and ONFI params work
+> >> + */
+> >> +static void qcom_nandc_pre_init(struct qcom_nandc_data *this)
+> >> +{
+> >> +	/* kill onenand */
+> >> +	nandc_write(this, SFLASHC_BURST_CFG, 0);
+> >> +
+> >> +	/* enable ADM DMA */
+> >> +	nandc_write(this, NAND_FLASH_CHIP_SELECT, DM_EN);
+> >> +
+> >> +	/* save the original values of these registers */
+> >> +	this->cmd1 =3D nandc_read(this, NAND_DEV_CMD1);
+> >> +	this->vld =3D nandc_read(this, NAND_DEV_CMD_VLD);
+> >> +
+> >> +	/* initial status value */
+> >> +	this->status =3D NAND_STATUS_READY | NAND_STATUS_WP;
+> >> +}
+> >> +
+> >> +static int qcom_nandc_ecc_init(struct qcom_nandc_data *this)
+> >> +{
+> >> +	struct mtd_info *mtd =3D &this->mtd;
+> >> +	struct nand_chip *chip =3D &this->chip;
+> >
+> > 	struct nand_chip *chip =3D &this->chip;
+> > 	struct mtd_info *mtd =3D nand_to_mtd(chip);
+> >
+> >> +	struct nand_ecc_ctrl *ecc =3D &chip->ecc;
+> >> +	int cwperpage;
+> >> +	bool wide_bus;
+> >> +
+> >> +	/* the nand controller fetches codewords/chunks of 512 bytes */
+> >> +	cwperpage =3D mtd->writesize >> 9;
+> >> +
+> >> +	ecc->strength =3D this->ecc_strength;
+> >> +
+> >> +	wide_bus =3D chip->options & NAND_BUSWIDTH_16 ? true : false;
+> >> +
+> >> +	if (ecc->strength >=3D 8) {
+> >> +		/* 8 bit ECC defaults to BCH ECC on all platforms */
+> >> +		ecc->bytes =3D wide_bus ? 14 : 13;
+> >
+> > Maybe you'd better consider that reserved bytes (after the ECC bytes)
+> > are actually ECC bytes. So, according to your description you would
+> > always have 16 here.
+>=20
+> The thing is that if I consider the reserved bytes as a part of the ECC
+> bytes, and if I use this bigger value when configuring the controller
+> and dma, I will get bad results; becase the hardware doesn't touch these
+> when ECC is enabled.
 
-ECC(10 bytes).ECC(10 bytes).ECC(10 bytes).OOB(16 bytes).ECC(10 bytes)
+You should at least be consistent with what you put in your ECC layout.
+Choose one solution and stick to it. Since reserved bytes are not
+accessible I would suggest to count them in the number of ECC bytes.
 
-Wouldn't this result in the offset as 30?
+>=20
+> I could set the ecc->bytes to '16' and still use the actual values when
+> configuring the controller. Do you think that will help in any way?
 
-We are still only taking into account 56 bytes out of the 64 bytes
-in the chip's OOB. This is because I'm discaring the 2 bytes from
-each step (summing up to 8) which aren't accessible when ECC is
-enabled.
+You can have you own private field(s) to store you controller config,
+if that helps, or create a function which would convert ecc.bytes into
+something appropriate.
 
+>=20
+> >
+> > That's all I got for now.
+>=20
+> Thanks again for taking the time for the review. Really appreciate it.
 
->I'd say that in the 2K page, 4 bit ECC you don't have any oobfree bytes
-> (528 * 4 == 2048 + 64).
+No problem.
 
-528 contains both oob and in-band data. If you ignore the weird layout
-and assume we have at an average 512 bytes for each step, we get:
+Best Regards,
 
-512 * 4 == 2048 bytes of data, and 64 bytes of OOB (16 bytes free, 40 
-ECC, and 8 reserved/unused).
+Boris
 
->
->> +
->> +/* 4K page, 4 bit ECC, 8/16 bit bus width */
->> +static struct nand_ecclayout layout_oob_128 = {
->> +	.eccbytes	= 80,
->> +	.oobfree	= {
->> +				{ 70, 32 },
->> +			  },
->> +};
->> +
->> +/* 4K page, 8 bit ECC, 8 bit bus width */
->> +static struct nand_ecclayout layout_oob_224_x8 = {
->> +	.eccbytes	= 104,
->> +	.oobfree	= {
->> +				{ 91, 32 },
->> +			  },
->> +};
->> +
->> +/* 4K page, 8 bit ECC, 16 bit bus width */
->> +static struct nand_ecclayout layout_oob_224_x16 = {
->> +	.eccbytes	= 112,
->> +	.oobfree	= {
->> +				{ 98, 32 },
->> +			  },
->> +};
->> +
->> +/* 8K page, 4 bit ECC, 8/16 bit bus width */
->> +static struct nand_ecclayout layout_oob_256 = {
->> +	.eccbytes	= 160,
->> +	.oobfree	= {
->> +				{ 151, 64 },
->> +			  },
->> +};
->
-> Those ECC layout definitions could probably be dynamically created
-> based on the detected ECC strength, bus-width and page size, instead of
-> defining a new one for each new combination.
-
-That's true. I can try that out.
-
->
->> +
->> +/*
->> + * this is called before scan_ident, we do some minimal configurations so
->> + * that reading ID and ONFI params work
->> + */
->> +static void qcom_nandc_pre_init(struct qcom_nandc_data *this)
->> +{
->> +	/* kill onenand */
->> +	nandc_write(this, SFLASHC_BURST_CFG, 0);
->> +
->> +	/* enable ADM DMA */
->> +	nandc_write(this, NAND_FLASH_CHIP_SELECT, DM_EN);
->> +
->> +	/* save the original values of these registers */
->> +	this->cmd1 = nandc_read(this, NAND_DEV_CMD1);
->> +	this->vld = nandc_read(this, NAND_DEV_CMD_VLD);
->> +
->> +	/* initial status value */
->> +	this->status = NAND_STATUS_READY | NAND_STATUS_WP;
->> +}
->> +
->> +static int qcom_nandc_ecc_init(struct qcom_nandc_data *this)
->> +{
->> +	struct mtd_info *mtd = &this->mtd;
->> +	struct nand_chip *chip = &this->chip;
->
-> 	struct nand_chip *chip = &this->chip;
-> 	struct mtd_info *mtd = nand_to_mtd(chip);
->
->> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
->> +	int cwperpage;
->> +	bool wide_bus;
->> +
->> +	/* the nand controller fetches codewords/chunks of 512 bytes */
->> +	cwperpage = mtd->writesize >> 9;
->> +
->> +	ecc->strength = this->ecc_strength;
->> +
->> +	wide_bus = chip->options & NAND_BUSWIDTH_16 ? true : false;
->> +
->> +	if (ecc->strength >= 8) {
->> +		/* 8 bit ECC defaults to BCH ECC on all platforms */
->> +		ecc->bytes = wide_bus ? 14 : 13;
->
-> Maybe you'd better consider that reserved bytes (after the ECC bytes)
-> are actually ECC bytes. So, according to your description you would
-> always have 16 here.
-
-The thing is that if I consider the reserved bytes as a part of the ECC
-bytes, and if I use this bigger value when configuring the controller
-and dma, I will get bad results; becase the hardware doesn't touch these
-when ECC is enabled.
-
-I could set the ecc->bytes to '16' and still use the actual values when
-configuring the controller. Do you think that will help in any way?
-
->
->> +	} else {
->> +		/*
->> +		 * if the controller supports BCH for 4 bit ECC, the controller
->> +		 * uses lesser bytes for ECC. If RS is used, the ECC bytes is
->> +		 * always 10 bytes
->> +		 */
->> +		if (this->ecc_modes & ECC_BCH_4BIT)
->> +			ecc->bytes = wide_bus ? 8 : 7;
->
-> Ditto, except it's 12 here.
->
->> +		else
->> +			ecc->bytes = 10;
->> +	}
->> +
->> +	/* each step consists of 512 bytes of data */
->> +	ecc->size = NANDC_STEP_SIZE;
->> +
->> +	ecc->read_page		= qcom_nandc_read_page;
->> +	ecc->read_oob		= qcom_nandc_read_oob;
->> +	ecc->write_page		= qcom_nandc_write_page;
->> +	ecc->write_oob		= qcom_nandc_write_oob;
->> +
->> +	/*
->> +	 * the bad block marker is readable only when we read the page with ECC
->> +	 * disabled. all the ops above run with ECC enabled. We need raw read
->> +	 * and write function for oob in order to access bad block marker.
->> +	 */
->> +	ecc->read_oob_raw	= qcom_nandc_read_oob_raw;
->> +	ecc->write_oob_raw	= qcom_nandc_write_oob_raw;
->> +
->> +	switch (mtd->oobsize) {
->> +	case 64:
->> +		ecc->layout = &layout_oob_64;
->> +		break;
->> +	case 128:
->> +		ecc->layout = &layout_oob_128;
->> +		break;
->> +	case 224:
->> +		if (wide_bus)
->> +			ecc->layout = &layout_oob_224_x16;
->> +		else
->> +			ecc->layout = &layout_oob_224_x8;
->> +		break;
->> +	case 256:
->> +		ecc->layout = &layout_oob_256;
->> +		break;
->> +	default:
->> +		dev_err(this->dev, "unsupported NAND device, oobsize %d\n",
->> +			mtd->oobsize);
->> +		return -ENODEV;
->> +	}
->> +
->> +	ecc->mode = NAND_ECC_HW;
->> +
->> +	/* enable ecc by default */
->> +	this->use_ecc = true;
->> +
->> +	return 0;
->> +}
->> +
->> +static void qcom_nandc_hw_post_init(struct qcom_nandc_data *this)
->> +{
->> +	struct mtd_info *mtd = &this->mtd;
->> +	struct nand_chip *chip = &this->chip;
->
-> 	struct nand_chip *chip = &this->chip;
-> 	struct mtd_info *mtd = nand_to_mtd(chip);
->
->> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
->> +	int cwperpage = mtd->writesize / ecc->size;
->> +	int spare_bytes, bad_block_byte;
->> +	bool wide_bus;
->> +	int ecc_mode = 0;
->> +
->> +	wide_bus = chip->options & NAND_BUSWIDTH_16 ? true : false;
->> +
->> +	if (ecc->strength >= 8) {
->> +		this->cw_size = 532;
->> +
->> +		spare_bytes = wide_bus ? 0 : 2;
->> +
->> +		this->bch_enabled = true;
->> +		ecc_mode = 1;
->> +	} else {
->> +		this->cw_size = 528;
->> +
->> +		if (this->ecc_modes & ECC_BCH_4BIT) {
->> +			spare_bytes = wide_bus ? 2 : 4;
->> +
->> +			this->bch_enabled = true;
->> +			ecc_mode = 0;
->> +		} else {
->> +			spare_bytes = wide_bus ? 0 : 1;
->> +		}
->> +	}
->> +
->> +	/*
->> +	 * DATA_UD_BYTES varies based on whether the read/write command protects
->> +	 * spare data with ECC too. We protect spare data by default, so we set
->> +	 * it to main + spare data, which are 512 and 4 bytes respectively.
->> +	 */
->> +	this->cw_data = 516;
->> +
->> +	bad_block_byte = mtd->writesize - this->cw_size * (cwperpage - 1) + 1;
->> +
->> +	this->cfg0 = (cwperpage - 1) << CW_PER_PAGE
->> +				| this->cw_data << UD_SIZE_BYTES
->> +				| 0 << DISABLE_STATUS_AFTER_WRITE
->> +				| 5 << NUM_ADDR_CYCLES
->> +				| ecc->bytes << ECC_PARITY_SIZE_BYTES_RS
->> +				| 0 << STATUS_BFR_READ
->> +				| 1 << SET_RD_MODE_AFTER_STATUS
->> +				| spare_bytes << SPARE_SIZE_BYTES;
->> +
->> +	this->cfg1 = 7 << NAND_RECOVERY_CYCLES
->> +				| 0 <<  CS_ACTIVE_BSY
->> +				| bad_block_byte << BAD_BLOCK_BYTE_NUM
->> +				| 0 << BAD_BLOCK_IN_SPARE_AREA
->> +				| 2 << WR_RD_BSY_GAP
->> +				| wide_bus << WIDE_FLASH
->> +				| this->bch_enabled << ENABLE_BCH_ECC;
->> +
->> +	this->cfg0_raw = (cwperpage - 1) << CW_PER_PAGE
->> +				| this->cw_size << UD_SIZE_BYTES
->> +				| 5 << NUM_ADDR_CYCLES
->> +				| 0 << SPARE_SIZE_BYTES;
->> +
->> +	this->cfg1_raw = 7 << NAND_RECOVERY_CYCLES
->> +				| 0 << CS_ACTIVE_BSY
->> +				| 17 << BAD_BLOCK_BYTE_NUM
->> +				| 1 << BAD_BLOCK_IN_SPARE_AREA
->> +				| 2 << WR_RD_BSY_GAP
->> +				| wide_bus << WIDE_FLASH
->> +				| 1 << DEV0_CFG1_ECC_DISABLE;
->> +
->> +	this->ecc_bch_cfg = this->bch_enabled << ECC_CFG_ECC_DISABLE
->> +				| 0 << ECC_SW_RESET
->> +				| this->cw_data << ECC_NUM_DATA_BYTES
->> +				| 1 << ECC_FORCE_CLK_OPEN
->> +				| ecc_mode << ECC_MODE
->> +				| ecc->bytes << ECC_PARITY_SIZE_BYTES_BCH;
->> +
->> +	this->ecc_buf_cfg = 0x203 << NUM_STEPS;
->> +
->> +	this->clrflashstatus = FS_READY_BSY_N;
->> +	this->clrreadstatus = 0xc0;
->> +
->> +	dev_dbg(this->dev,
->> +		"cfg0 %x cfg1 %x ecc_buf_cfg %x ecc_bch cfg %x cw_size %d cw_data %d strength %d parity_bytes %d steps %d\n",
->> +		this->cfg0, this->cfg1, this->ecc_buf_cfg,
->> +		this->ecc_bch_cfg, this->cw_size, this->cw_data,
->> +		ecc->strength, ecc->bytes, cwperpage);
->> +}
->> +
->> +static int qcom_nandc_alloc(struct qcom_nandc_data *this)
->> +{
->> +	int r;
->> +
->> +	r = dma_set_coherent_mask(this->dev, DMA_BIT_MASK(32));
->> +	if (r) {
->> +		dev_err(this->dev, "failed to set DMA mask\n");
->> +		return r;
->> +	}
->> +
->> +	/*
->> +	 * we use the internal buffer for reading ONFI params, reading small
->> +	 * data like ID and status, and preforming read-copy-write operations
->> +	 * when writing to a codeword partially. 532 is the maximum possible
->> +	 * size of a codeword for our nand controller
->> +	 */
->> +	this->buf_size = 532;
->> +
->> +	this->data_buffer = devm_kzalloc(this->dev, this->buf_size, GFP_KERNEL);
->> +	if (!this->data_buffer)
->> +		return -ENOMEM;
->> +
->> +	this->regs = devm_kzalloc(this->dev, sizeof(*this->regs), GFP_KERNEL);
->> +	if (!this->regs)
->> +		return -ENOMEM;
->> +
->> +	this->reg_read_buf = devm_kzalloc(this->dev,
->> +				MAX_REG_RD * sizeof(*this->reg_read_buf),
->> +				GFP_KERNEL);
->> +	if (!this->reg_read_buf)
->> +		return -ENOMEM;
->> +
->> +	INIT_LIST_HEAD(&this->list);
->> +
->> +	this->chan = dma_request_slave_channel(this->dev, "rxtx");
->> +	if (!this->chan) {
->> +		dev_err(this->dev, "failed to request slave channel\n");
->> +		return -ENODEV;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static void qcom_nandc_unalloc(struct qcom_nandc_data *this)
->> +{
->> +	dma_release_channel(this->chan);
->> +}
->> +
->> +static int qcom_nandc_init(struct qcom_nandc_data *this)
->> +{
->> +	struct mtd_info *mtd = &this->mtd;
->> +	struct nand_chip *chip = &this->chip;
->
-> 	struct nand_chip *chip = &this->chip;
-> 	struct mtd_info *mtd = nand_to_mtd(chip);
->
->> +	struct device_node *np = this->dev->of_node;
->> +	struct mtd_part_parser_data ppdata = { .of_node = np };
->
-> You don't need it anymore, because it's automatically extracted from
-> the ->flash_node field.
-> Just call, nand_set_flash_node() before calling nand_scan_ident().
-
-That's convinient. I'll remove this.
-
->
->> +	int r;
->> +
->> +	mtd->priv = chip;
->> +	mtd->name = "qcom-nandc";
->> +	mtd->owner = THIS_MODULE;
->> +
->> +	chip->priv = this;
->> +
->> +	chip->cmdfunc		= qcom_nandc_command;
->> +	chip->select_chip	= qcom_nandc_select_chip;
->> +	chip->read_byte		= qcom_nandc_read_byte;
->> +	chip->read_buf		= qcom_nandc_read_buf;
->> +	chip->write_buf		= qcom_nandc_write_buf;
->> +
->> +	chip->options |= NAND_NO_SUBPAGE_WRITE | NAND_USE_BOUNCE_BUFFER;
->> +	if (this->bus_width == 16)
->> +		chip->options |= NAND_BUSWIDTH_16;
->> +
->> +	chip->bbt_options = NAND_BBT_ACCESS_BBM_RAW;
->> +	if (of_get_nand_on_flash_bbt(np))
->> +		chip->bbt_options = NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
->
-> Ditto: rely on the work done by nand_dt_init() which is
-> called by nand_scan_ident().
-
-Yes, I'll remove this.
-
->
->> +
->> +	qcom_nandc_pre_init(this);
->> +
->> +	r = nand_scan_ident(mtd, 1, NULL);
->> +	if (r)
->> +		return r;
->> +
->> +	r = qcom_nandc_ecc_init(this);
->> +	if (r)
->> +		return r;
->> +
->> +	qcom_nandc_hw_post_init(this);
->> +
->> +	r = nand_scan_tail(mtd);
->> +	if (r)
->> +		return r;
->> +
->> +	return mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
->
-> 	return mtd_device_parse_register(mtd, NULL, NULL, NULL 0);
-
-Will fix.
-
->
->> +}
->> +
->> +static int qcom_nandc_parse_dt(struct platform_device *pdev)
->> +{
->> +	struct qcom_nandc_data *this = platform_get_drvdata(pdev);
->> +	struct device_node *np = this->dev->of_node;
->> +	int r;
->> +
->> +	this->ecc_strength = of_get_nand_ecc_strength(np);
->> +	if (this->ecc_strength < 0) {
->> +		dev_warn(this->dev,
->> +			"incorrect ecc strength, setting to 4 bits/step\n");
->> +		this->ecc_strength = 4;
->> +	}
->> +
->> +	this->bus_width = of_get_nand_bus_width(np);
->> +	if (this->bus_width < 0) {
->> +		dev_warn(this->dev, "incorrect bus width, setting to 8\n");
->> +		this->bus_width = 8;
->> +	}
->
-> Those two properties are extracted when calling nand_scan_ident() if
-> you've called nand_set_flash_node() before that.
-
-Yeah, I'll remove these.
-
->
->> +
->> +	r = of_property_read_u32(np, "qcom,cmd-crci", &this->cmd_crci);
->> +	if (r) {
->> +		dev_err(this->dev, "command CRCI unspecified\n");
->> +		return r;
->> +	}
->> +
->> +	r = of_property_read_u32(np, "qcom,data-crci", &this->data_crci);
->> +	if (r) {
->> +		dev_err(this->dev, "data CRCI unspecified\n");
->> +		return r;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int qcom_nandc_probe(struct platform_device *pdev)
->> +{
->> +	struct qcom_nandc_data *this;
->> +	const void *dev_data;
->> +	int r;
->> +
->> +	this = devm_kzalloc(&pdev->dev, sizeof(*this), GFP_KERNEL);
->> +	if (!this)
->> +		return -ENOMEM;
->> +
->> +	platform_set_drvdata(pdev, this);
->> +
->> +	this->pdev = pdev;
->> +	this->dev  = &pdev->dev;
->> +
->> +	dev_data = of_device_get_match_data(&pdev->dev);
->> +	if (!dev_data) {
->> +		dev_err(&pdev->dev, "failed to get device data\n");
->> +		return -ENODEV;
->> +	}
->> +
->> +	this->ecc_modes = (unsigned long)dev_data;
->> +
->> +	this->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	this->base = devm_ioremap_resource(&pdev->dev, this->res);
->> +	if (IS_ERR(this->base))
->> +		return PTR_ERR(this->base);
->> +
->> +	this->core_clk = devm_clk_get(&pdev->dev, "core");
->> +	if (IS_ERR(this->core_clk))
->> +		return PTR_ERR(this->core_clk);
->> +
->> +	this->aon_clk = devm_clk_get(&pdev->dev, "aon");
->> +	if (IS_ERR(this->aon_clk))
->> +		return PTR_ERR(this->aon_clk);
->> +
->> +	r = qcom_nandc_parse_dt(pdev);
->> +	if (r)
->> +		return r;
->> +
->> +	r = qcom_nandc_alloc(this);
->> +	if (r)
->> +		return r;
->> +
->> +	r = clk_prepare_enable(this->core_clk);
->> +	if (r)
->> +		goto err_core_clk;
->> +
->> +	r = clk_prepare_enable(this->aon_clk);
->> +	if (r)
->> +		goto err_aon_clk;
->> +
->> +	r = qcom_nandc_init(this);
->> +	if (r)
->> +		goto err_init;
->> +
->> +	return 0;
->> +
->> +err_init:
->> +	clk_disable_unprepare(this->aon_clk);
->> +err_aon_clk:
->> +	clk_disable_unprepare(this->core_clk);
->> +err_core_clk:
->> +	qcom_nandc_unalloc(this);
->> +
->> +	return r;
->> +}
->> +
->> +static int qcom_nandc_remove(struct platform_device *pdev)
->> +{
->> +	struct qcom_nandc_data *this = platform_get_drvdata(pdev);
->> +
->
-> You miss a call to nand_release() here, otherwise your device is still
-> registered to the MTD/NAND layer, even though you've released all the
-> resources attached to it.
-
-I'll fix this.
-
->
-> That's all I got for now.
-
-Thanks again for taking the time for the review. Really appreciate it.
-
-Archit
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum, hosted by The Linux Foundation
+--=20
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
