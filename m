@@ -1,33 +1,16 @@
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from conuserg011.nifty.com ([202.248.44.37]
+ helo=conuserg011-v.nifty.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a8zIe-00037H-6R
- for linux-mtd@lists.infradead.org; Tue, 15 Dec 2015 23:46:33 +0000
-Received: by mail-wm0-x230.google.com with SMTP id l126so16261012wml.0
- for <linux-mtd@lists.infradead.org>; Tue, 15 Dec 2015 15:46:11 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20151215202216.GA11742@chopperman.am.freescale.net>
-References: <cover.1449052427.git.hramrach@gmail.com>
- <2236d87ad516f118f58eb5df232d441f970c4499.1449052427.git.hramrach@gmail.com>
- <20151215202216.GA11742@chopperman.am.freescale.net>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Wed, 16 Dec 2015 00:45:30 +0100
-Message-ID: <CAOMqctS91RB1UoyhXwSEyikNh7=KJViOyLcGYyiAoO2-nqcjOg@mail.gmail.com>
-Subject: Re: [PATCH v6 06/10] mtd: spi-nor: simplify write loop
-To: Han Xu <han.xu@freescale.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Rafal Milecki <zajec5@gmail.com>,
- Jagan Teki <jteki@openedev.com>, "Andrew F. Davis" <afd@ti.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>,
- Bean Huo <beanhuo@micron.com>, Furquan Shaikh <furquan@google.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+ id 1a94CE-0005Tf-WA
+ for linux-mtd@lists.infradead.org; Wed, 16 Dec 2015 05:00:15 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: denali: make MTD_NAND_DENALI_DT dependent on OF
+Date: Wed, 16 Dec 2015 14:00:09 +0900
+Message-Id: <1450242009-24694-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,78 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15 December 2015 at 21:22, Han Xu <han.xu@freescale.com> wrote:
-> On Wed, Dec 02, 2015 at 10:38:20AM +0000, Michal Suchanek wrote:
->> The spi-nor write loop assumes that what is passed to the hardware
->> driver write() is what gets written.
->>
->> When write() writes less than page size at once data is dropped on the
->> floor. Check the amount of data writen and exit if it does not match
->> requested amount.
->>
->> Signed-off-by: Michal Suchanek <hramrach@gmail.com>
->>
->> ---
->>
->>  - add warning when writing incomplete pages
->>  - refuse to continue writing when full page was not written
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 58 +++++++++++++++++++------------------------
->>  1 file changed, 25 insertions(+), 33 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 3d02803..115c123 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -1005,8 +1005,8 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->>       size_t *retlen, const u_char *buf)
->>  {
->>       struct spi_nor *nor = mtd_to_spi_nor(mtd);
->> -     u32 page_offset, page_size, i;
->> -     int ret;
->> +     size_t page_offset, page_remain, i;
->> +     ssize_t ret;
->>
->>       dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
->>
->> @@ -1014,45 +1014,37 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->>       if (ret)
->>               return ret;
->>
->> -     write_enable(nor);
->> -
->> -     page_offset = to & (nor->page_size - 1);
->> +     for (i = 0; i < len; ) {
->> +             ssize_t written;
->>
->> -     /* do all the bytes fit onto one page? */
->> -     if (page_offset + len <= nor->page_size) {
->> -             ret = nor->write(nor, to, len, buf);
->> -             if (ret < 0)
->> -                     goto write_err;
->> -             *retlen += ret;
->> -     } else {
->> +             page_offset = to & (nor->page_size - 1);
->> +             WARN_ONCE(page_offset,
->> +                       "Writing at offset %zu into a NOR page. Writing partial pages may decrease reliability and increase wear of NOR flash.",
->> +                       page_offset);
->>               /* the size of data remaining on the first page */
->> -             page_size = nor->page_size - page_offset;
->> -             ret = nor->write(nor, to, page_size, buf);
->> +             page_remain = min_t(size_t,
->> +                                 nor->page_size - page_offset, len - i);
->> +
->> +             write_enable(nor);
->> +             ret = nor->write(nor, to + i, page_remain, buf + i);
->
-> Previous implementation was trying to write nor->page_size byte data in
-> each loop, except the first and last loop, if possible. But this change
-> may write only (nor->page_size - page_offset) in each loop, for the
-> worst case, if page_offset equals nor->page_size -1, it writes byte by
-> byte.
+The build passes even if CONFIG_OF is undefined, but it makes sense
+to let it depend on OF.
 
-Indeed, there should be to + i when determining page_offset.
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-Thanks
+ drivers/mtd/nand/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Michal
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 2896640..d803087 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -55,7 +55,7 @@ config MTD_NAND_DENALI_PCI
+ config MTD_NAND_DENALI_DT
+ 	tristate "Support Denali NAND controller as a DT device"
+ 	select MTD_NAND_DENALI
+-	depends on HAS_DMA && HAVE_CLK
++	depends on HAS_DMA && HAVE_CLK && OF
+ 	help
+ 	  Enable the driver for NAND flash on platforms using a Denali NAND
+ 	  controller as a DT device.
+-- 
+1.9.1
