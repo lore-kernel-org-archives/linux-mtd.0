@@ -1,8 +1,8 @@
-Received: from eu-smtp-delivery-143.mimecast.com ([146.101.78.143])
+Received: from eu-smtp-delivery-143.mimecast.com ([207.82.80.143])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a9Nz9-00022B-Pl
- for linux-mtd@lists.infradead.org; Thu, 17 Dec 2015 02:08:04 +0000
-Date: Thu, 17 Dec 2015 02:07:28 +0000
+ id 1a9O1m-0004A7-4K
+ for linux-mtd@lists.infradead.org; Thu, 17 Dec 2015 02:10:47 +0000
+Date: Thu, 17 Dec 2015 02:10:06 +0000
 From: Huang Shijie <shijie.huang@arm.com>
 To: Han Xu <b45815@freescale.com>
 CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
@@ -10,12 +10,13 @@ CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <hofrat@osadl.org>, <linux-mtd@lists.infradead.org>,
  <linux-kernel@vger.kernel.org>, <vinod.koul@intel.com>,
  <dan.j.williams@intel.com>, <dmaengine@vger.kernel.org>
-Subject: Re: [PATCH v8 7/7] mtd: nand: gpmi: support NAND on i.MX6UL
-Message-ID: <20151217020726.GA631@robwan01-pc.asiapac.arm.com>
+Subject: Re: [PATCH v8 4/7] mtd: nand: gpmi: may use minimum required ecc for
+ 744 oobsize NAND
+Message-ID: <20151217021005.GC631@robwan01-pc.asiapac.arm.com>
 References: <1449096466-18064-1-git-send-email-b45815@freescale.com>
- <1449096466-18064-8-git-send-email-b45815@freescale.com>
+ <1449096466-18064-5-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1449096466-18064-8-git-send-email-b45815@freescale.com>
+In-Reply-To: <1449096466-18064-5-git-send-email-b45815@freescale.com>
 Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
@@ -28,70 +29,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 02, 2015 at 04:47:46PM -0600, Han Xu wrote:
-> support GPMI NAND on i.MX6UL
+On Wed, Dec 02, 2015 at 04:47:43PM -0600, Han Xu wrote:
+> By default NAND driver will choose the highest ecc strength that oob
+> could contain, in this case, for some 8K+744 NAND flash, the ecc
+> strength will be up to 52bit, which beyonds the i.MX6QDL BCH capability
+> (40bit).
 >
-> Signed-off-by: Han Xu <han.xu@freescale.com>
+> This patch allows the NAND driver try to use minimum required ecc
+> strength if it failed to use the highest ecc, even without explicitly
+> claiming "fsl,use-minimum-ecc" in dts.
+>
+> Signed-off-by: Han Xu <b45815@freescale.com>
 > ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 9 +++++++++
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h | 4 +++-
->  2 files changed, 12 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 26 ++++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
 >
 > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gp=
 mi-nand/gpmi-nand.c
-> index 9dea56e..41d9012 100644
+> index ba5975f..298c1d1 100644
 > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -89,6 +89,12 @@ static const struct gpmi_devdata gpmi_devdata_imx7d =
-=3D {
->       .max_chain_delay =3D 12,
->  };
->
-> +static const struct gpmi_devdata gpmi_devdata_imx6ul =3D {
-> +     .type =3D IS_MX6UL,
-> +     .bch_max_ecc_strength =3D 40,
-> +     .max_chain_delay =3D 12,
-> +};
-> +
->  static irqreturn_t bch_irq(int irq, void *cookie)
+> @@ -136,7 +136,7 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_da=
+ta *this)
+>   *
+>   * We may have available oob space in this case.
+>   */
+> -static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+> +static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
 >  {
->       struct gpmi_nand_data *this =3D cookie;
-> @@ -2015,6 +2021,9 @@ static const struct of_device_id gpmi_nand_id_table=
-[] =3D {
->               .compatible =3D "fsl,imx6sx-gpmi-nand",
->               .data =3D &gpmi_devdata_imx6sx,
->       }, {
-> +             .compatible =3D "fsl,imx6ul-gpmi-nand",
-> +             .data =3D (void *)&gpmi_devdata_imx6ul,
-> +     }, {
->               .compatible =3D "fsl,imx7d-gpmi-nand",
->               .data =3D (void *)&gpmi_devdata_imx7d,
->       }, { /* sentinel */ }
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gp=
-mi-nand/gpmi-nand.h
-> index 149a442..331f98e 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> @@ -126,6 +126,7 @@ enum gpmi_type {
->       IS_MX6QP,
->       IS_MX6SX,
->       IS_MX7D,
-> +     IS_MX6UL,
->  };
+>       struct bch_geometry *geo =3D &this->bch_geometry;
+>       struct mtd_info *mtd =3D &this->mtd;
+> @@ -145,7 +145,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand=
+_data *this)
+>       unsigned int block_mark_bit_offset;
 >
->  struct gpmi_devdata {
-> @@ -310,8 +311,9 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
->  #define GPMI_IS_MX6QP(x)     ((x)->devdata->type =3D=3D IS_MX6QP)
->  #define GPMI_IS_MX6SX(x)     ((x)->devdata->type =3D=3D IS_MX6SX)
->  #define GPMI_IS_MX7D(x)              ((x)->devdata->type =3D=3D IS_MX7D)
-> +#define GPMI_IS_MX6UL(x)     ((x)->devdata->type =3D=3D IS_MX6UL)
+>       if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+> -             return false;
+> +             return -EINVAL;
 >
->  #define GPMI_IS_MX6(x)               (GPMI_IS_MX6Q(x) || GPMI_IS_MX6QP(x=
-)\
-> -        || GPMI_IS_MX6SX(x))
-> +        || GPMI_IS_MX6SX(x) || GPMI_IS_MX6UL(x))
->  #define GPMI_IS_MX7(x)               (GPMI_IS_MX7D(x))
->  #endif
+>       switch (chip->ecc_step_ds) {
+>       case SZ_512:
+> @@ -158,19 +158,19 @@ static bool set_geometry_by_ecc_info(struct gpmi_na=
+nd_data *this)
+>               dev_err(this->dev,
+>                       "unsupported nand chip. ecc bits : %d, ecc size : %=
+d\n",
+>                       chip->ecc_strength_ds, chip->ecc_step_ds);
+> -             return false;
+> +             return -EINVAL;
+>       }
+>       geo->ecc_chunk_size =3D chip->ecc_step_ds;
+>       geo->ecc_strength =3D round_up(chip->ecc_strength_ds, 2);
+>       if (!gpmi_check_ecc(this))
+> -             return false;
+> +             return -EINVAL;
+>
+>       /* Keep the C >=3D O */
+>       if (geo->ecc_chunk_size < mtd->oobsize) {
+>               dev_err(this->dev,
+>                       "unsupported nand chip. ecc size: %d, oob size : %d=
+\n",
+>                       chip->ecc_step_ds, mtd->oobsize);
+> -             return false;
+> +             return -EINVAL;
+>       }
+>
+>       /* The default value, see comment in the legacy_set_geometry(). */
+> @@ -242,7 +242,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand=
+_data *this)
+>                               + ALIGN(geo->ecc_chunk_count, 4);
+>
+>       if (!this->swap_block_mark)
+> -             return true;
+> +             return 0;
+>
+>       /* For bit swap. */
+>       block_mark_bit_offset =3D mtd->writesize * 8 -
+> @@ -251,7 +251,7 @@ static bool set_geometry_by_ecc_info(struct gpmi_nand=
+_data *this)
+>
+>       geo->block_mark_byte_offset =3D block_mark_bit_offset / 8;
+>       geo->block_mark_bit_offset  =3D block_mark_bit_offset % 8;
+> -     return true;
+> +     return 0;
+>  }
+>
+>  static int legacy_set_geometry(struct gpmi_nand_data *this)
+> @@ -285,7 +285,8 @@ static int legacy_set_geometry(struct gpmi_nand_data =
+*this)
+>       geo->ecc_strength =3D get_ecc_strength(this);
+>       if (!gpmi_check_ecc(this)) {
+>               dev_err(this->dev,
+> -                     "required ecc strength of the NAND chip: %d is not =
+supported by the GPMI controller (%d)\n",
+> +                     "ecc strength: %d cannot be supported by the contro=
+ller (%d)\n"
+> +                     "try to use minimum ecc strength that NAND chip req=
+uired\n",
+>                       geo->ecc_strength,
+>                       this->devdata->bch_max_ecc_strength);
+>               return -EINVAL;
+> @@ -366,10 +367,11 @@ static int legacy_set_geometry(struct gpmi_nand_dat=
+a *this)
+>
+>  int common_nfc_set_geometry(struct gpmi_nand_data *this)
+>  {
+> -     if (of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"=
+)
+> -             && set_geometry_by_ecc_info(this))
+> -             return 0;
+> -     return legacy_set_geometry(this);
+> +     if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc=
+"))
+> +                             || legacy_set_geometry(this))
+> +             return set_geometry_by_ecc_info(this);
+> +
+> +     return 0;
+>  }
+>
+>  struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
 > --
 > 1.9.1
 >
