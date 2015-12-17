@@ -1,22 +1,21 @@
-Received: from mail-ob0-x236.google.com ([2607:f8b0:4003:c01::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a9YVE-0002Rg-22
- for linux-mtd@lists.infradead.org; Thu, 17 Dec 2015 13:21:52 +0000
-Received: by mail-ob0-x236.google.com with SMTP id 18so56666676obc.2
- for <linux-mtd@lists.infradead.org>; Thu, 17 Dec 2015 05:21:31 -0800 (PST)
+Date: Thu, 17 Dec 2015 10:45:58 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Vignesh R <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, hramrach@gmail.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v5 4/5] ARM: dts: DRA7: add entry for qspi mmap region
+Message-ID: <20151217184557.GC23396@atomide.com>
+References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
+ <1449807000-6457-5-git-send-email-vigneshr@ti.com>
+ <20151211150935.GA15654@rob-hp-laptop>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvxmaU8oo2uSBTYUvmp_aEpZBb2fKVdSFTEZKC=AMnUQKg@mail.gmail.com>
-References: <2e8aa700cf3c4078a5d735dad29d1b1a@ServerDC.bittailors.com>
- <CAOMqctR=GGkb1bG3BXQQBn+5fF129-guGYOUDARDoNs2djJOWw@mail.gmail.com>
- <CAFLxGvxmaU8oo2uSBTYUvmp_aEpZBb2fKVdSFTEZKC=AMnUQKg@mail.gmail.com>
-Date: Thu, 17 Dec 2015 14:21:31 +0100
-Message-ID: <CAFLxGvzx1ee4vS5MgyOam8t230X0HM2oeom4t-K24UHUcxmdjw@mail.gmail.com>
-Subject: Re: UBI/UBIFS: md5sum of files go bad while running (no powercut)
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Michal Suchanek <hramrach@gmail.com>
-Cc: Ralph Erdmann <rerdmann@bittailors.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151211150935.GA15654@rob-hp-laptop>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 17, 2015 at 2:16 PM, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
-> On Thu, Dec 17, 2015 at 12:07 PM, Michal Suchanek <hramrach@gmail.com> wrote:
->> Hello,
->>
->> On 17 December 2015 at 11:03, Ralph Erdmann <rerdmann@bittailors.com> wrote:
->>> Dear all,
->>> we encounter the following problem on some of our embedded boards in the field:
->>> Some files "go bad" during runtime, which causes our application to crash.
->>> A reboot "heals" this error.
->>
->> Is it possible that these libraries being used all the time by the
->> application get cached in memory, get never evicted, and only the
->> cached in-memory copy is bitrotten?
->
-> I'd also go in that direction.
-> Maybe something is corrupting your memory.
-> Does writing 2 to vm.drop_caches help?
+* Rob Herring <robh@kernel.org> [151211 07:10]:
+> On Fri, Dec 11, 2015 at 09:39:59AM +0530, Vignesh R wrote:
+> > Add qspi memory mapped region entries for DRA7xx based SoCs. Also,
+> > update the binding documents for the controller to document this change.
+> > 
+> > Signed-off-by: Vignesh R <vigneshr@ti.com>
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Can you also compare good bad states?
-Maybe the corruption pattern can give you hint what happened.
+Vignes, are patches 4 and 5 safe to apply separately already or
+do things break if we do that?
 
--- 
-Thanks,
-//richard
+Regards,
+
+Tony
