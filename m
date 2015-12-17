@@ -1,27 +1,42 @@
-Received: from mail-pf0-x22e.google.com ([2607:f8b0:400e:c00::22e])
+Received: from ozlabs.org ([103.22.144.67])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a9HZY-0001q1-I1
- for linux-mtd@lists.infradead.org; Wed, 16 Dec 2015 19:17:13 +0000
-Received: by mail-pf0-x22e.google.com with SMTP id 68so16652182pfc.1
- for <linux-mtd@lists.infradead.org>; Wed, 16 Dec 2015 11:16:51 -0800 (PST)
-Date: Wed, 16 Dec 2015 11:16:48 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Archit Taneja <architt@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- dehrenberg@google.com, cernekee@gmail.com, sboyd@codeaurora.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, agross@codeaurora.org
-Subject: Re: [PATCH v4 2/5] mtd: nand: Qualcomm NAND controller driver
-Message-ID: <20151216191648.GA28424@google.com>
-References: <1438578498-32254-1-git-send-email-architt@codeaurora.org>
- <1439959746-25498-1-git-send-email-architt@codeaurora.org>
- <1439959746-25498-3-git-send-email-architt@codeaurora.org>
- <20151216101547.74c77bdd@bbrezillon>
- <567151BC.7010508@codeaurora.org>
+ id 1a9Mzz-0008N4-KV
+ for linux-mtd@lists.infradead.org; Thu, 17 Dec 2015 01:04:52 +0000
+Date: Thu, 17 Dec 2015 12:05:03 +1100
+From: David Gibson <david@gibson.dropbear.id.au>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>, Jonas Gorski <jogo@openwrt.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ devicetree-spec@vger.kernel.org, Simon Arlott <simon@fire.lp0.eu>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: Re: [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format
+ binding
+Message-ID: <20151217010503.GD3011@voom.redhat.com>
+References: <1449292763-129421-1-git-send-email-computersforpeace@gmail.com>
+ <1449292763-129421-4-git-send-email-computersforpeace@gmail.com>
+ <CAOiHx=nz2bdA_R610ozsQHhccdcrHVVCamTtne5ReHrA-FcaaQ@mail.gmail.com>
+ <CAOMqctTbUNd0GtY07YJuxem9HkU1WZ-NtO556=Yg2QrsF49Xjw@mail.gmail.com>
+ <20151207013628.GC20139@voom.fritz.box>
+ <20151210204324.GK144338@google.com>
+ <20151212055105.GA17011@voom.fritz.box>
+ <CAMuHMdXA4-BZpvtCM8_9fYWLzoVsuCXDqvF3G4cVd50Cqsfv0g@mail.gmail.com>
+ <20151215060056.GB3011@voom.redhat.com>
+ <CAMuHMdVUMHEAGSwF=nvbncHEj6Co9f6CofeVqZbrWzhaprBvGQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="Hf61M2y+wYpnELGG"
 Content-Disposition: inline
-In-Reply-To: <567151BC.7010508@codeaurora.org>
+In-Reply-To: <CAMuHMdVUMHEAGSwF=nvbncHEj6Co9f6CofeVqZbrWzhaprBvGQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,17 +46,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 16, 2015 at 05:27:48PM +0530, Archit Taneja wrote:
-> On 12/16/2015 02:45 PM, Boris Brezillon wrote:
-> >On Wed, 19 Aug 2015 10:19:03 +0530
-> >Archit Taneja <architt@codeaurora.org> wrote:
 
-> >>+	return mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
+--Hf61M2y+wYpnELGG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Dec 15, 2015 at 11:03:48AM +0100, Geert Uytterhoeven wrote:
+> Hi David,
+>=20
+> On Tue, Dec 15, 2015 at 7:00 AM, David Gibson
+> <david@gibson.dropbear.id.au> wrote:
+> >> If the only property needed is the partition table offset, it can be e=
+ncoded
+> >> in the unit-address, and the "reg" property:
+> >>
+> >>         partitions {
+> >>
+> >>                 partition-table@xxxx {
+> >>                         reg =3D <0xxxx ...>;
+> >>                         ...
+> >>                 };
+> >>
+> >>                 ...
+> >>         };
 > >
-> >	return mtd_device_parse_register(mtd, NULL, NULL, NULL 0);
-> 
-> Will fix.
+> > Urgh.. and that's abusing the unit address.
+>=20
+> Why? The partition is part of the FLASH. In this respect, it doesn't diff=
+er
+> from other hardcoded partitions using the same DT syntax.
+> It would just have a compatible value indicating it's a partition
+> table.
 
-Or just:
+Ah.. yes, fair enough.  I'd forgotten that the encoding of explicit
+partitions in the device tree already established the address space
+here as being the flash blocks.  So, no, it's not an abuse of unit
+address.
 
-	return mtd_device_register(mtd, NULL, 0);
+Doesn't help for partition table types which require scanning the
+device, of course.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--Hf61M2y+wYpnELGG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJWcgo/AAoJEGw4ysog2bOSatIQAKZqCg3MvfxT/vSzUw6SBeKx
+a4QKXJlmxFtsGzBfFBHog+/YkJx4ewLRE7fPn2JDhHBWYqG4V5/QxKKIgqZVVIl4
+yGvN4M3AEw4SHoKesRiL8rfR49/FHJZkTwV7eF4h2RfaT7/aDyqlrlMf5LOvGgN2
+GqInKWZqCSQafELz3BY0r2jjxWwxoo34A6hEqVkxUgQ1oC1oy34JsePeThMzYj7V
+nMsxelmtN0+q2xkXLQ/A8kjRMnn9A3wvbW4ysbtqU37BEZ65IOgOux2FMdE/+vqb
+FFaWDsyXxUOULEtpXRrLNYdwqtFD6lcH7s1KSYKNlz9gZ8A6xWgnKeFOlkWhNdiT
+Nk8HmkCkcn01v9Y+IovxJk1KqQzOfREYVVI+4okN3xUmSDvOkUpz2aWBVdl+hSao
+Tq6vYRlgK4+ZmEQzID0+DbeWN+hnjuY8J1syaBphWWUMeCfN/9OQ6XroDiR666Fg
+3SijBSJfRGQddV4eM97Y4QoQHrqV+gl5G0QKmySZBQFYrI03GcZydr4Zh/yDIHzT
+lsbyl46G5rByKIH2X0e7H9XnGZGIcqgdijYQ3Nr8yUgUr5rXntasV2UX7L1vpZ2W
+O1x33Lfb1PcVJ1GeXpd9hYXpB9af2Q3nQ8LPYY8chbjOg4pIGf8eIM4zv15dmGhv
+5CTFqkcI6XNO/vCo3c5I
+=wYqu
+-----END PGP SIGNATURE-----
+
+--Hf61M2y+wYpnELGG--
