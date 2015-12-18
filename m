@@ -1,20 +1,24 @@
-From: Bayi Cheng <bayi.cheng@mediatek.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>
-CC: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
- Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- Daniel Kurtz <djkurtz@chromium.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>, Bayi Cheng
- <bayi.cheng@mediatek.com>
-Subject: [RESEND PATCH] mtd: mtk-nor: adjust sequence of trigger function and
- assignment function
-Date: Fri, 18 Dec 2015 11:02:40 +0800
-Message-ID: <1450407760-30030-1-git-send-email-bayi.cheng@mediatek.com>
+Subject: Re: [PATCH v5 4/5] ARM: dts: DRA7: add entry for qspi mmap region
+To: Tony Lindgren <tony@atomide.com>, Rob Herring <robh@kernel.org>
+References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
+ <1449807000-6457-5-git-send-email-vigneshr@ti.com>
+ <20151211150935.GA15654@rob-hp-laptop> <20151217184557.GC23396@atomide.com>
+CC: Brian Norris <computersforpeace@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Russell King <linux@arm.linux.org.uk>,
+ "hramrach@gmail.com" <hramrach@gmail.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org"
+ <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <56739EB4.6040804@ti.com>
+Date: Fri, 18 Dec 2015 11:20:44 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20151217184557.GC23396@atomide.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move write data register before excute command to avoid
-missing first byte write to nor flash
 
-Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
----
-the previous patch didn't drop the Change-Id
 
----
- drivers/mtd/spi-nor/mtk-quadspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 12/18/2015 12:15 AM, Tony Lindgren wrote:
+> * Rob Herring <robh@kernel.org> [151211 07:10]:
+>> On Fri, Dec 11, 2015 at 09:39:59AM +0530, Vignesh R wrote:
+>>> Add qspi memory mapped region entries for DRA7xx based SoCs. Also,
+>>> update the binding documents for the controller to document this change.
+>>>
+>>> Signed-off-by: Vignesh R <vigneshr@ti.com>
+>>
+>> Acked-by: Rob Herring <robh@kernel.org>
+> 
+> Vignes, are patches 4 and 5 safe to apply separately already or
+> do things break if we do that?
 
-diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
-index dd269650..04da971 100644
---- a/drivers/mtd/spi-nor/mtk-quadspi.c
-+++ b/drivers/mtd/spi-nor/mtk-quadspi.c
-@@ -272,10 +272,10 @@ static int mt8173_nor_write_single_byte(struct mt8173_nor *mt8173_nor,
- 	mt8173_nor_set_addr(mt8173_nor, addr);
- 
- 	for (i = 0; i < length; i++) {
-+		writeb(*data++, mt8173_nor->base + MTK_NOR_WDATA_REG);
- 		ret = mt8173_nor_execute_cmd(mt8173_nor, MTK_NOR_PIO_WR_CMD);
- 		if (ret < 0)
- 			return ret;
--		writeb(*data++, mt8173_nor->base + MTK_NOR_WDATA_REG);
- 	}
- 	return 0;
- }
+Yes, 4 and 5 can be applied separately w/o driver changes.
+
 -- 
-1.8.1.1.dirty
+Regards
+Vignesh
