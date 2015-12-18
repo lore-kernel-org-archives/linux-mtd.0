@@ -1,19 +1,43 @@
-Received: from mail-ob0-x231.google.com ([2607:f8b0:4003:c01::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aA2uC-000792-Mo
- for linux-mtd@lists.infradead.org; Fri, 18 Dec 2015 21:49:41 +0000
-Received: by mail-ob0-x231.google.com with SMTP id iw8so88348921obc.1
- for <linux-mtd@lists.infradead.org>; Fri, 18 Dec 2015 13:49:19 -0800 (PST)
+Date: Fri, 18 Dec 2015 14:03:40 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Ryan Mallon <rmallon@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <kernel@pengutronix.de>,
+ Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
+ Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ Alexander Clouter <alex@digriz.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory CLEMENT <gregory.clement@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Marek Vasut <marek.vasut@gmail.com>, Steven Miao <realmz6@gmail.com>,
+ adi-buildroot-devel@lists.sourceforge.net,
+ Mikael Starvik <starvik@axis.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
+ linux-cris-kernel@axis.com, Josh Wu <josh.wu@atmel.com>,
+ Wan ZongShun <mcuos.com@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ linux-samsung-soc@vger.kernel.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Stefan Agner <stefan@agner.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
+Subject: Re: [PATCH v4 00/58] mtd: nand: refactor the NAND subsystem (part 1)
+Message-ID: <20151218220340.GP10460@google.com>
+References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHW51sUEt+3mxWE-pLdLvk_xmfuPdjSKTnGi2pBzbEK7CoUFRw@mail.gmail.com>
-References: <CAHW51sUEt+3mxWE-pLdLvk_xmfuPdjSKTnGi2pBzbEK7CoUFRw@mail.gmail.com>
-Date: Fri, 18 Dec 2015 22:49:19 +0100
-Message-ID: <CAFLxGvzNPJQsae-JW_5KabJyDCh2aRKOC3mCWeH5JAboji1gCA@mail.gmail.com>
-Subject: Re: Corrupt Empty Space Error at Runtime
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Adam <aps337@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,93 +47,172 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 18, 2015 at 5:38 PM, Adam <aps337@gmail.com> wrote:
-> Hello All,
->
-> I am working on a at91sama5d3x based system running linux 3.18.9. I
-> have been seeing an issue where during normal operation, I see the
-> following....
->
->    kern.warn kernel: [<c00cabf4>] (vfs_fsync) from [<c025e2ec>]
-> (loop_thread+0x420/0x740)
->    kern.warn kernel: [<c017cb64>] (ubifs_fsync) from [<c00cabf4>]
-> (vfs_fsync+0x34/0x44)
->    kern.warn kernel: [<c006b3b8>] (filemap_write_and_wait_range) from
-> [<c017cb64>] (ubifs_fsync+0x40/0xb4)
->    kern.warn kernel: [<c006b294>] (__filemap_fdatawrite_range) from
-> [<c006b3b8>] (filemap_write_and_wait_range+0x34/0x74)
->    kern.warn kernel: [<c0073150>] (generic_writepages) from
-> [<c006b294>] (__filemap_fdatawrite_range+0x4c/0x54)
->    kern.warn kernel: [<c0072f60>] (write_cache_pages) from
-> [<c0073150>] (generic_writepages+0x40/0x60)
->    kern.warn kernel: [<c00727b4>] (__writepage) from [<c0072f60>]
-> (write_cache_pages+0x1c4/0x374)
->    kern.warn kernel: [<c017c49c>] (do_writepage) from [<c00727b4>]
-> (__writepage+0x14/0x5c)
->    kern.warn kernel: [<c017a6ec>] (ubifs_jnl_write_data) from
-> [<c017c49c>] (do_writepage+0x94/0x1f4)
->    kern.warn kernel: [<c0179a54>] (make_reservation) from [<c017a6ec>]
-> (ubifs_jnl_write_data+0xec/0x274)
->    kern.warn kernel: [<c01918dc>] (ubifs_garbage_collect) from
-> [<c0179a54>] (make_reservation+0x108/0x46c)
->    kern.warn kernel: [<c00110b0>] (show_stack) from [<c01918dc>]
-> (ubifs_garbage_collect+0x1d4/0x3e0)
->    kern.warn kernel: [<c00133fc>] (unwind_backtrace) from [<c00110b0>]
-> (show_stack+0x10/0x14)
->    kern.warn kernel: CPU: 0 PID: 676 Comm: loop0 Not tainted 3.18.9 #1
->    kern.warn kernel: UBIFS warning (pid 676): ubifs_ro_mode: switched
-> to read-only mode, error -117
->    kern.err kernel:  UBIFS error (pid 676): ubifs_scan: LEB 846 scanning failed
->    kern.debug kernel: 00001fe0: ffffffff ffffffff ffffffff ffffffff
-> ffffffff ffffffff ffffffff ffffffff  ................................
->    kern.debug kernel: 00001fc0: ffffffff ffffffff ffffffff ffffffff
-> ffffffff ffffffff ffffffff ffffffff  ................................
->    kern.debug kernel: 00001fa0: ffffffff ffffffff ffffffff ffffffff
-> ffffffff ffffffff ffffffff ffffffff  ................................
->    kern.debug kernel: 00001f80: ffffffff ffffffff ffffffff ffffffff
-> ffffffff ffffffff ffffffff ffffffff  ................................
->    kern.debug kernel: 00001f60: ffffffff ffffffff ffffffff ffffffff
-> ffffffff ffffffff ffffffff ffffffff  ................................
->    kern.debug kernel: 00001f40: ffffffff ffffffff ffffffff ffffffff
-> ffffffff ffffffff ffffffff ffffffff  ................................
->    <snip>
->
->
-> In looking at source, appears that the failure scanning that LEB,
-> causes the filesystem to be changed to read only mode. Based on the
-> source, it also looks like I am losing a couple important debug error
-> messages due to issue with our logging infrastructure (unfortunately
-> serial console was not attached when failure occurred), but I think
-> that we're encountering a 'corrupt empty space' condition. Does this
-> seem right?
+Hi,
 
-Can be. But to be sure we need full logs.
+On Thu, Dec 10, 2015 at 08:59:44AM +0100, Boris Brezillon wrote:
+> Hello,
+> 
+> This huge series aims at clarifying the relationship between the mtd and
+> nand_chip structures and hiding NAND framework internals to NAND
+> controller drivers.
+> 
+> The first part of the series (patch 1 to 4) is a set of fixes/simple
+> reworks easing the migration to mtd_to_nand().
+> 
+> The second part of the series embeds the mtd structure into the nand_chip
+> one so that NAND controller drivers don't have to bother allocating the
+> MTD device and linking it with the NAND chip.
+> 
+> The last part of the series hides accesses to the chip->priv field behind
+> two helper functions.
+> 
+> This allows removal of some of the boilerplate code done in all NAND
+> controller drivers, but most importantly, it unifies a bit the way NAND
+> chip structures are instantiated (even though we still have two different
+> kinds of drivers: those embedding the nand_chip struct into their private
+> nand chip representation, and those allocating two different structures
+> and linking them together with the chip->priv field).
+> 
+> As said in the title, this refactoring is only the first step. I plan to
+> rework the NAND controller / NAND chip separation for pretty much the same
+> reasons: clarifying the separation between the two concepts, and getting
+> rid of more boilerplate code in NAND controller drivers.
+> 
+> Stay tuned ;-).
+> 
+> Best Regards,
+> 
+> Boris
 
-> In doing some research (mostly on archives of this mailing list), I
-> believe that LEB 846 is an empty space block and that there has been a
-> bit flip in it. Based on previous posts here and looking at atmel_nand
-> driver, it looks like the atmel_nand driver (and underlying hardware)
-> do not support ECC correction of bit flips in empty blocks and UBIFS
-> doesn't currently have a way to deal with this.
->
-> I see that some folks reported that they just hacked the ubifs_scan
-> routine to not consider it corruption if the corrupt block was an
-> empty block to workaround this issue. What is the disadvantage to
-> doing this? It seems sort of harmless to have errors in empty blocks..
-> no?
->
-> What are other options? People must have ways of working around this.
+Thanks a lot for all the work here! Nice cleanups. I think I've pushed
+everything correctly to l2-mtd.git. Please verify that things look sane
+to you, if possible. There were a few v5's thrown in after the fact, as
+well as other cleanups that required apply-conflicts.
 
-UBIFS assumes that reading from empty space works.
-It uses this for example at mount time to detect unclean mounts.
-e.g. power-cut while erasing or writing.
+I'll summarize below anything I remember that's changed since the cover
+letter, for posterity.
 
-Sadly some NAND flash controller's ECC functions do not work on empty
-space. i.e. CRC(0xff) is not 0xff.
+> Changes since v3:
+> - fix some bugs introduced when migrating to nand_to_mtd()
+> - split the huge commit switching all drivers to nand_to_mtd() into several
+>   commits (one per driver) to ease review and integration
+> - add a simple fixes/reworks at the beginning of the series (mainly to
+>   ease migration to nand_to_mtd())
+> - drop already applied patches.
+> 
+> Changes since v2:
+> - fix some build warnings/erros
+> 
+> Changes since v1:
+> - dropped already applied patches
+> - fixed some typos
+> - manually fixed some modifications omitted by the coccinelle scripts
+> - manually reworked modifactions done by coccinelle scripts to improve
+>   readability and fix coding style issues
+> 
+> *** BLURB HERE ***
 
-It is still undecided whether this should be addressed in MTD core or within
-the individual NAND drivers.
+Nice blurb :)
 
--- 
-Thanks,
-//richard
+> 
+> Boris Brezillon (58):
+>   mtd: nand: denali: add missing nand_release() call in denali_remove()
+
+You sent v5 of this, and I added in the comment that was
+written/requested afterward. That caused some small conflicts later.
+
+>   mtd: nand: fsmc: create and use mtd_to_fsmc()
+>   mtd: nand: nuc900: create and use mtd_to_nuc900()
+>   mtd: nand: omap2: create and use mtd_to_omap()
+>   mtd: nand: ams-delta: use the mtd instance embedded in struct
+>     nand_chip
+>   mtd: nand: atmel: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: au1550nd: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: bcm47xx: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: bf5xx: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: brcm: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: cafe: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: cmx270: use the mtd instance embedded in struct nand_chip
+
+^^ I dropped one comment in this one
+
+>   mtd: nand: cs553x: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: davinci: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: denali: use the mtd instance embedded in struct nand_chip
+
+You sent v5, but there were still trivial conflicts.
+
+>   mtd: nand: diskonchip: use the mtd instance embedded in struct
+>     nand_chip
+>   mtd: nand: docg4: use the mtd instance embedded in struct nand_chip
+
+I cleaned some things up after this one, causing more trivial conflicts
+later in the controller_data accessor patches.
+
+>   mtd: nand: fsl_elbc: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: fsl_ifc: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: fsl_upm: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: fsmc: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: gpio: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: gpmi: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: hisi504: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: jz4740: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: lpc32xx: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: mpc5121: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: mxc: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: nandsim: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: ndfc: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: nuc900: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: omap2: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: orion: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: pasemi: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: plat: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: pxa3xx: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: r852: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: s3c2410: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: sh_flctl: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: sharpsl: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: socrates: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: sunxi: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: tmio: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: txx9ndfmc: use the mtd instance embedded in struct
+>     nand_chip
+>   mtd: nand: vf610: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: update the documentation to reflect framework changes
+>   staging: mt29f_spinand: use the mtd instance embedded in struct
+>     nand_chip
+>   cris: nand: use the mtd instance embedded in struct nand_chip
+>   mtd: nand: update mtd_to_nand()
+>   mtd: nand: remove useless mtd->priv = chip assignments
+>   cris: nand: remove useless mtd->priv = chip assignments
+>   staging: mt29f_spinand: remove useless mtd->priv = chip assignment
+>   mtd: nand: simplify nand_dt_init() usage
+>   mtd: nand: kill the chip->flash_node field
+>   mtd: nand: add helpers to access ->priv
+
+I have some comments on this one, so I'm not pushing the last 4 patches
+for now.
+
+>   ARM: make use of nand_set/get_controller_data() helpers
+
+BTW, I see that plat_nand.c and arch/arm/mach-ixp4xx/ixdp425-setup.c are
+making conflicting use of the ->priv field. You've essentially fixed the
+conflict in:
+
+  [PATCH] mtd: nand: remove unused and buggy get_platform_nandchip() helper function
+  http://lists.infradead.org/pipermail/linux-mtd/2015-December/064409.html
+
+But really, that's a pretty big hack still... I don't care to fix it
+myself right now. Just whining :)
+
+>   mtd: nand: make use of nand_set/get_controller_data() helpers
+>   staging: mt29f_spinand: make use of nand_set/get_controller_data()
+>     helpers
+
+[...]
+
+So, this has passed all my build tests and LGTM. Pushed patches 1 - 54
+to l2-mtd.git!
+
+Much thanks,
+Brian
