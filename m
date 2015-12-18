@@ -1,23 +1,28 @@
-Received: from muru.com ([72.249.23.125])
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1a9zwr-000827-36
- for linux-mtd@lists.infradead.org; Fri, 18 Dec 2015 18:40:14 +0000
-Date: Fri, 18 Dec 2015 10:39:48 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, kyungmin.park@samsung.com,
- dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
- Aaro Koskinen <aaro.koskinen@iki.fi>
-Subject: Re: [PATCH] mtd: onenand: omap2: Simplify the DMA setup for various
- paths
-Message-ID: <20151218183948.GO23396@atomide.com>
-References: <1450086572-15224-1-git-send-email-peter.ujfalusi@ti.com>
- <20151218181111.GK10460@google.com>
+ id 1aA05M-0004VF-M3
+ for linux-mtd@lists.infradead.org; Fri, 18 Dec 2015 18:49:01 +0000
+Date: Fri, 18 Dec 2015 19:48:36 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Archit Taneja <architt@codeaurora.org>
+Cc: dehrenberg@google.com, cernekee@gmail.com, sboyd@codeaurora.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, computersforpeace@gmail.com,
+ agross@codeaurora.org
+Subject: Re: [PATCH v4 2/5] mtd: nand: Qualcomm NAND controller driver
+Message-ID: <20151218194836.6f04a6e6@bbrezillon>
+In-Reply-To: <567284FE.1000504@codeaurora.org>
+References: <1438578498-32254-1-git-send-email-architt@codeaurora.org>
+ <1439959746-25498-1-git-send-email-architt@codeaurora.org>
+ <1439959746-25498-3-git-send-email-architt@codeaurora.org>
+ <20151216101547.74c77bdd@bbrezillon>
+ <567151BC.7010508@codeaurora.org>
+ <20151216151856.0315214c@bbrezillon>
+ <567284FE.1000504@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151218181111.GK10460@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,237 +32,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Brian Norris <computersforpeace@gmail.com> [151218 10:11]:
-> On Mon, Dec 14, 2015 at 11:49:32AM +0200, Peter Ujfalusi wrote:
-> > We have 4 functions containing almost identical DMA setup code. Create one
-> > function which can set up the DMA for both read and write and use this in
-> > place for the setup code in the driver.
-> > The new function will use wait_for_completion_timeout() and it will figure
-> > out the best data_type to be used for the transfer instead of hardwiring
-> > 32 or 16 bit data.
-> > 
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Hi Archit,
+
+On Thu, 17 Dec 2015 15:18:46 +0530
+Archit Taneja <architt@codeaurora.org> wrote:
+
 > 
-> Does anyone use this driver? I've seen practically zero activity on the
-> entire OneNAND codebase in the last few years, and I presumed it was
-> essentially dead.
+> >
+> > Note that you could put the oobfree area at the end of the OOB area,
+> > since this 10-10-10-16-10 representation is already a virtual
+> > representation of the OOB area (ECC bytes are actually interleaved with
+> > in-band data on the flash).
 > 
-> If it's not dead, I'd like to know some contingency of people who are
-> willing to actually maintain (or at least review) this stuff.
+> But, when I read from the controller's internal buffer via DMA, I first
+> get the oobfree area, and only then the last step's ECC bytes. So, the 
+> content in chip->oob_poi is in the same order as mentioned
+> above (10-10-10-16-10).
 > 
-> Kyungmin, are you still out there? Or Tony, do you know of any users for
-> this?
+> If the upper layers uses MTD_OPS_AUTO_OOB, and if I have a different
+> layout as what it is in the oob_poi buffer, then it'll end up
+> reading/writing the wrong bytes in nand_transfer_oob/nand_fill_oob.
 > 
-> Peter, are you actually using this, or are you just refactoring for the
-> fun of it?
+> Are you suggesting that I modify the contents of oob_poi by hand such
+> that it has a cleaner 10-10-10-10-16 representation?
 
-It's used for n8x0 and n900, but mostly in read-only mode. I suggest we
-remove the DMA support for it completely because of the following:
+Hm, I thought you could just place the free oob bytes wherever you want
+since there's only one oobfree region. AFAICS, it's just a matter of
+passing ->oob_poi + 40 instead of passing ->oob_poi + 30 when preparing
+the DMA descriptor (30 and 40 are just numbers for this specific use
+case).
+Anyway, I won't complain if you address all comments but this one.
 
-1. The DMA support for this driver is not done correctly. The pin used
-   as GPIO should be used as external DMA request line.
+Best Regards,
 
-2. AFAIK the DMA for this driver is mostly disabld, probably largely
-   due to #1 above
-
-3. If we remove DMA support, we can then easily switch to use the
-   generic onenand driver.
-
-I'd like to hear Aaro's comments too before doing this tough.
-
-Regards,
-
-Tony
+Boris
 
 
-
-> >  drivers/mtd/onenand/omap2.c | 106 ++++++++++++++++++--------------------------
-> >  1 file changed, 42 insertions(+), 64 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> > index 0aacf125938b..58576c9babb0 100644
-> > --- a/drivers/mtd/onenand/omap2.c
-> > +++ b/drivers/mtd/onenand/omap2.c
-> > @@ -291,6 +291,30 @@ static inline int omap2_onenand_bufferram_offset(struct mtd_info *mtd, int area)
-> >  	return 0;
-> >  }
-> >  
-> > +static inline int omap2_onenand_dma_transfer(struct omap2_onenand *c,
-> > +					     dma_addr_t src, dma_addr_t dst,
-> > +					     size_t count)
-> > +{
-> > +	int data_type = __ffs((src | dst | count));
-> > +
-> > +	if (data_type > OMAP_DMA_DATA_TYPE_S32)
-> > +		data_type = OMAP_DMA_DATA_TYPE_S32;
-> > +
-> > +	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
-> > +				     count / BIT(data_type), 1, 0, 0, 0);
-> > +	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-> > +				src, 0, 0);
-> > +	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-> > +				 dst, 0, 0);
-> > +
-> > +	reinit_completion(&c->dma_done);
-> > +	omap_start_dma(c->dma_channel);
-> > +	if (wait_for_completion_timeout(&c->dma_done, msecs_to_jiffies(20)))
-> > +		return -ETIMEDOUT;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  #if defined(CONFIG_ARCH_OMAP3) || defined(MULTI_OMAP2)
-> >  
-> >  static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
-> > @@ -301,10 +325,9 @@ static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
-> >  	struct onenand_chip *this = mtd->priv;
-> >  	dma_addr_t dma_src, dma_dst;
-> >  	int bram_offset;
-> > -	unsigned long timeout;
-> >  	void *buf = (void *)buffer;
-> >  	size_t xtra;
-> > -	volatile unsigned *done;
-> > +	int ret;
-> >  
-> >  	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
-> >  	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
-> > @@ -341,25 +364,10 @@ static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
-> >  		goto out_copy;
-> >  	}
-> >  
-> > -	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
-> > -				     count >> 2, 1, 0, 0, 0);
-> > -	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-> > -				dma_src, 0, 0);
-> > -	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-> > -				 dma_dst, 0, 0);
-> > -
-> > -	reinit_completion(&c->dma_done);
-> > -	omap_start_dma(c->dma_channel);
-> > -
-> > -	timeout = jiffies + msecs_to_jiffies(20);
-> > -	done = &c->dma_done.done;
-> > -	while (time_before(jiffies, timeout))
-> > -		if (*done)
-> > -			break;
-> > -
-> > +	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
-> >  	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
-> >  
-> > -	if (!*done) {
-> > +	if (ret) {
-> >  		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
-> >  		goto out_copy;
-> >  	}
-> > @@ -379,9 +387,8 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
-> >  	struct onenand_chip *this = mtd->priv;
-> >  	dma_addr_t dma_src, dma_dst;
-> >  	int bram_offset;
-> > -	unsigned long timeout;
-> >  	void *buf = (void *)buffer;
-> > -	volatile unsigned *done;
-> > +	int ret;
-> >  
-> >  	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
-> >  	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
-> > @@ -412,25 +419,10 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
-> >  		return -1;
-> >  	}
-> >  
-> > -	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
-> > -				     count >> 2, 1, 0, 0, 0);
-> > -	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-> > -				dma_src, 0, 0);
-> > -	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-> > -				 dma_dst, 0, 0);
-> > -
-> > -	reinit_completion(&c->dma_done);
-> > -	omap_start_dma(c->dma_channel);
-> > -
-> > -	timeout = jiffies + msecs_to_jiffies(20);
-> > -	done = &c->dma_done.done;
-> > -	while (time_before(jiffies, timeout))
-> > -		if (*done)
-> > -			break;
-> > -
-> > +	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
-> >  	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
-> >  
-> > -	if (!*done) {
-> > +	if (ret) {
-> >  		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
-> >  		goto out_copy;
-> >  	}
-> > @@ -469,7 +461,7 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
-> >  	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
-> >  	struct onenand_chip *this = mtd->priv;
-> >  	dma_addr_t dma_src, dma_dst;
-> > -	int bram_offset;
-> > +	int bram_offset, ret;
-> >  
-> >  	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
-> >  	/* DMA is not used.  Revisit PM requirements before enabling it. */
-> > @@ -491,20 +483,13 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
-> >  		return -1;
-> >  	}
-> >  
-> > -	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S32,
-> > -				     count / 4, 1, 0, 0, 0);
-> > -	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-> > -				dma_src, 0, 0);
-> > -	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-> > -				 dma_dst, 0, 0);
-> > -
-> > -	reinit_completion(&c->dma_done);
-> > -	omap_start_dma(c->dma_channel);
-> > -	wait_for_completion(&c->dma_done);
-> > -
-> > +	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
-> >  	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
-> >  
-> > -	return 0;
-> > +	if (ret)
-> > +		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
-> > +
-> > +	return ret;
-> >  }
-> >  
-> >  static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
-> > @@ -514,7 +499,7 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
-> >  	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
-> >  	struct onenand_chip *this = mtd->priv;
-> >  	dma_addr_t dma_src, dma_dst;
-> > -	int bram_offset;
-> > +	int bram_offset, ret;
-> >  
-> >  	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
-> >  	/* DMA is not used.  Revisit PM requirements before enabling it. */
-> > @@ -536,20 +521,13 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
-> >  		return -1;
-> >  	}
-> >  
-> > -	omap_set_dma_transfer_params(c->dma_channel, OMAP_DMA_DATA_TYPE_S16,
-> > -				     count / 2, 1, 0, 0, 0);
-> > -	omap_set_dma_src_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-> > -				dma_src, 0, 0);
-> > -	omap_set_dma_dest_params(c->dma_channel, 0, OMAP_DMA_AMODE_POST_INC,
-> > -				 dma_dst, 0, 0);
-> > -
-> > -	reinit_completion(&c->dma_done);
-> > -	omap_start_dma(c->dma_channel);
-> > -	wait_for_completion(&c->dma_done);
-> > -
-> > +	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
-> >  	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
-> >  
-> > -	return 0;
-> > +	if (ret)
-> > +		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
-> > +
-> > +	return ret;
-> >  }
-> >  
-> >  #else
-> > -- 
-> > 2.6.4
-> > 
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
