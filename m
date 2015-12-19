@@ -1,21 +1,31 @@
-Received: from mail-pf0-x22b.google.com ([2607:f8b0:400e:c00::22b])
+Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aA6AY-0000VH-7f
- for linux-mtd@lists.infradead.org; Sat, 19 Dec 2015 01:18:47 +0000
-Received: by mail-pf0-x22b.google.com with SMTP id v86so56982881pfa.2
- for <linux-mtd@lists.infradead.org>; Fri, 18 Dec 2015 17:18:25 -0800 (PST)
-Date: Fri, 18 Dec 2015 17:18:22 -0800
+ id 1aA77w-0003mY-Oy
+ for linux-mtd@lists.infradead.org; Sat, 19 Dec 2015 02:20:10 +0000
+Received: by mail-pf0-x234.google.com with SMTP id u7so11049953pfb.1
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Dec 2015 18:19:47 -0800 (PST)
+Date: Fri, 18 Dec 2015 18:19:44 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Matt Kline <matthew.kline@flukenetworks.com>
-Cc: linux-mtd@lists.infradead.org, Dongsheng Yang <yangds.fnst@cn.fujitsu.com>,
- Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] Update UBIFS mounting instructions
-Message-ID: <20151219011822.GZ10460@google.com>
-References: <1427921758-10295-1-git-send-email-matthew.kline@flukenetworks.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Helmut Schaa <helmut.schaa@googlemail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Pekon Gupta <pekon.gupta@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Zhou Wang <wangzhou1@hisilicon.com>
+Subject: Re: [PATCH] mtd: nand: Disable subpage writes for drivers without
+ ecc->hwctl
+Message-ID: <20151219021944.GA109450@google.com>
+References: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
+ <20151209235823.GD144338@google.com>
+ <CAGXE3d_v9hKCqNeTWfjpad_Uj=sKo1fn0B=Wz2s_t76JKUZhzQ@mail.gmail.com>
+ <20151212004025.GA3047@localhost>
+ <20151212085900.2118eb2c@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1427921758-10295-1-git-send-email-matthew.kline@flukenetworks.com>
+In-Reply-To: <20151212085900.2118eb2c@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,172 +35,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Garbage collecting old patches...
+On Sat, Dec 12, 2015 at 08:59:00AM +0100, Boris Brezillon wrote:
+> On Fri, 11 Dec 2015 16:40:25 -0800
+> Brian Norris <computersforpeace@gmail.com> wrote:
+> 
+> > On Thu, Dec 10, 2015 at 10:31:32AM +0100, Helmut Schaa wrote:
+> > > On Thu, Dec 10, 2015 at 12:58 AM, Brian Norris
+> > > <computersforpeace@gmail.com> wrote:
+> > > > On Wed, Apr 09, 2014 at 11:13:24AM +0200, Helmut Schaa wrote:
+> > > >> nand_write_subpage_hwecc causes a crash if the driver did not register
+> > > >> ecc->hwctl or ecc->calculate. Fix this by disabling subpage writes if
+> > > >> ecc->hwctl or ecc->calculate is not provided by the driver.
+> > > >>
+> > > >> This behavior was introduced in commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9
+> > > >> "mtd: nand: subpage write support for hardware based ECC schemes".
+> > > >>
+> > > >> This fixes a crash with fsl_elbc_nand and maybe others:
+> > > >>
+> > > > [...]
+> > > >>
+> > > >> --- a/drivers/mtd/nand/nand_base.c
+> > > >> +++ b/drivers/mtd/nand/nand_base.c
+> > > >> @@ -3768,7 +3768,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+> > > >>                       ecc->write_oob = nand_write_oob_std;
+> > > >>               if (!ecc->read_subpage)
+> > > >>                       ecc->read_subpage = nand_read_subpage;
+> 
+> Shouldn't we have the same kind of test for ->read_subpage.
+> 
+> 		if (!ecc->read_subpage && ecc->correct &&
+> 		    ecc->calculate)
+> 			ecc->read_subpage = nand_read_subpage;
 
-On Wed, Apr 01, 2015 at 01:55:58PM -0700, Matt Kline wrote:
-> I recently spent several days attempting to mount a UBIFS image.
-> Efforts were hampered by seemingly outdated documentation,
-> the fact that much of the documentation was for UBI images,
-> not UBIFS ones, and the fact that the image was for NOR memory and
-> all documentation I found only referenced nandsim.
-> 
-> After some very kind help on IRC and from Artem Bityutskiy on the
-> mailing list, I was able to figure things out. I think it is only
-> fair that I contribute back and bring the web site up to date so
-> others don't face the same stumbling blocks.
-> 
-> This patch includes the following changes:
-> 
-> - Acknowledge that udev _does_ now create a block device
->   automatically for MTD.
-> 
-> - Provide instructions for mounting standalone UBIFS images as well
->   as UBI images.
-> 
-> - Mention mtdram and its usefulness in mounting UBIFS images made
->   for NOR memory.
-> 
-> Signed-off-by: Matt Kline <matthew.kline@flukenetworks.com>
+We could do that, though right now we have a little less danger for
+read_subpage() than we do with write_subpage(), because drivers have to
+opt in with the NAND_SUBPAGE_READ flag before this function will
+actually be used. Feel free to send a patch if you'd like.
 
-This looks pretty good to me (as in, it's a net positive). I know
-Dongsheng Yang (and Richard?) has been working on some kind of user
-space unpacker tools, so this might be out of date "soon". But when
-isn't documentation out of date? :)
+> > > >> -             if (!ecc->write_subpage)
+> > > >> +             if (!ecc->write_subpage && ecc->hwctl && ecc->calculate)
+> > > >>                       ecc->write_subpage = nand_write_subpage_hwecc;
+> > > >>
+> > > >>       case NAND_ECC_HW_SYNDROME:
+> > > >
+> > > > I realize we've merged a fix for fsl_elbc_nand long ago (commit
+> > > > f034d87def51 "mtd: eLBC NAND: fix subpage write support"), but this
+> > > > change still looks sane, applies, and could possibly fix some other
+> > > > drivers that are lurking somewhere. Any reason I shouldn't apply it?
+> > > 
+> > > I'm not carrying this patch in my tree anymore and did not see any more
+> > > crashes with the flash configuration I'm using. So, I think the original patch
+> > > is kind of superfluous.
+> > 
+> > There could easily be other drivers that don't have hwctl() or
+> > calculate() callbacks yet use NAND_ECC_HW. By inspection, I see that
+> > maybe the new hisi504_nand.c is susceptible, as well as sh_flctl.c and
+> > maybe even sunxi_nand.c (?). Some of these might not be hit if they
+> > don't use NAND that support subpage writes.
+> 
+> Yep, sunxi platforms could be hit by this bug, but it seems nobody
+> decided to design a board with an SLC NAND (and MLCs are not supporting
+> subpage writes).
+> 
+> > 
+> > Anyway, I think this patch is helpful, because it prevents drivers from
+> > having to fill in a 'subpage' write callback that looks just like their
+> > write_page() callback.
+> 
+> I agree.
 
-Anyway, pushed to mtd-www.git. Improvements are welcome from anyone
-doing updates to this though!
+OK. Applied to l2-mtd.git, with additional commentary about how the
+reported issue is already fixed, but there could be other drivers who
+run across this problem.
 
-Thanks,
 Brian
-
-> ---
->  faq/ubifs.xml | 81 +++++++++++++++++++++++++++++++++++++++--------------------
->  1 file changed, 54 insertions(+), 27 deletions(-)
-> 
-> diff --git a/faq/ubifs.xml b/faq/ubifs.xml
-> index 8b61fc7..2b724f3 100644
-> --- a/faq/ubifs.xml
-> +++ b/faq/ubifs.xml
-> @@ -894,10 +894,9 @@ embedded systems.</p>
->  modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa \
->                   third_id_byte=0x00 fourth_id_byte=0x15
->  
-> -# MTD is not LDM-enabled and udev does not create device
-> -# MTD device nodes automatically, so create /dev/mtd0
-> -# (we assume that you do not have other MTD devices)
-> -mknod /dev/mtd0 c 90 0
-> +# udev should create MTD device nodes automatically.
-> +# If it does not, we can create /dev/mtd0 manually with
-> +# mknod /dev/mtd0 c 90 0
->  
->  # Load UBI module and attach mtd0
->  modprobe ubi mtd=0
-> @@ -917,44 +916,65 @@ mount -t ubifs /dev/ubi0_0 /mnt/ubifs
->  <h2><a name="L_ubifs_extract">How do I extract files from an UBI/UBIFS image?</a></h2>
->  
->  <p>Unfortunately, at the moment there are no user-space tools which can
-> -unwrap UBI and UBIFS images. UBIFS cannot be loop-back mounted as well,
-> +unwrap UBI and UBIFS images. UBIFS cannot be loop-back mounted either,
->  because it does not work with block devices.</p>
->  
-> -<p>However, there is a hacky way to unwrap UBI/UBIFS images. But you have
-> -to make sure you have UBIFS support in your host machine. UBIFS is a relatively
-> -new file system and is not supported by all Linux distributions. But at least
-> -Fedora 11 does include it.</p>
-> +<p>However, kernel modules exist that allow you to create a virtual MTD
-> +onto which UBIFS can be mounted. You have two options:
-> +<ol>
-> +	<li><code>nandsim</code>, which can simulate various NAND devices.
-> +	You can find an incomplete list of those devices
-> +	<a href="../nand-data/nanddata.html">here</a>.
-> +	To emulate a given device, pass its ID bytes via the module parameters
-> +	<code>first_id_byte</code>, <code>second_id_byte</code>,
-> +	<code>third_id_byte</code>, and <code>fourth_id_byte</code>.</li>
-> +
-> +	<li><code>mtdram</code>, which simulates a generic MTD.
-> +	Use the module parameter <code>total_size</code> to specify the device size
-> +	in KiB and <code>erase_size</code> to specify the erase block size in KiB.
-> +	This module is useful for mounting UBIFS images made for NOR memory,
-> +	which usually have a minimum I/O unit of 1 byte, as opposed to NAND
-> +	devices which have a minimum unit of at least 512 bytes.
-> +	See more information <a href="../doc/ubi.html#L_min_io_unit">here</a>.
-> +	</li>
-> +</ol>
-> +These modules should be provided on most distributions released in the past
-> +few years.</p>
->  
-> -<p>Let's consider a simple example. Suppose you have an <code>ubi.img</code>
-> -file. This is an UBI image, which contains a single UBI volume, which in turn
-> -contains UBIFS file-system. In other words, this is an image which was
-> -created using the <code>mkfs.ubifs</code> and <code>ubinize</code> tools,
-> -just like it is described in <a href="ubifs.html#L_mkfubifs">this</a>
-> -section (the image is created for a 256MiB NAND flash with 2KiB NAND page
-> -size and which supports sub-pages). Here is what you can do:</p>
-> +<p>Consider a simple example. Suppose you have some <code>ubifs.img</code>
-> +file which contains a single UBIFS filesystem.
-> +In other words, this is an image which was created using <code>mkfs.ubifs</code>,
-> +as described in <a href="ubifs.html#L_mkfubifs">this</a> section. To mount it:</p>
->  
->  <pre>
-> -# Create an 256MiB emulated NAND flash with 2KiB NAND page size
-> -# (you should see the new MTD device in /proc/mtd)
-> +# Create a virtual MTD by bringing up one of the kernel modules mentioned above.
->  modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa \
->                   third_id_byte=0x00 fourth_id_byte=0x15
->  
-> -# MTD is not LDM-enabled and udev does not create device
-> -# MTD device nodes automatically, so create /dev/mtd0
-> -# (we assume that you do not have other MTD devices)
-> -mknod /dev/mtd0 c 90 0
-> +# udev should create MTD device nodes automatically.
-> +# If it does not, we can create /dev/mtd0 manually with
-> +# mknod /dev/mtd0 c 90 0
->  
-> -# Copy the contents of your image to the emulated MTD device
-> -dd if=ubi.img of=/dev/mtd0 bs=2048
-> +# Format the device. IOSIZE should be the minimum I/O unit size passed
-> +# via -s to mkfs.ubifs when the image was created.
-> +ubiformat /dev/mtd0 -s $IOSIZE
->  
->  # Load UBI module and attach mtd0
->  modprobe ubi mtd=0
->  
-> -# Mount UBIFS
-> -mount -t ubifs /dev/ubi0_0 /mnt/ubifs
-> +# Create a volume.
-> +# -N names the volume and -s sets its size, in bytes, kilobytes (KiB),
-> +# or megabytes (MiB). Make sure it is at least as large as the image.
-> +ubimkvol /dev/ubi0 -N "My UBIFS volume name" -s $VOLSIZE
-> +
-> +# Apply our image to that volume
-> +ubiupdatevol /dev/ubi0_0 ubifs.img
-> +
-> +# Mount it to any desired mount point
-> +mount /dev/ubi0_0 /mnt/ubifs
->  </pre>
->  
-> -<p>Now you have the file-system in <code>/mnt/ubifs</code>. Use
-> +<p>Now you have the filesystem in <code>/mnt/ubifs</code>. Use
->  the following to get rid of it:</p>
->  
->  <pre>
-> @@ -962,6 +982,13 @@ umount /mnt/ubifs
->  rmmod ubifs ubi nandsim
->  </pre>
->  
-> +If you have an entire UBI image made with <code>ubinize</code>,
-> +the process is simpler.
-> +Write the image to the MTD via <code>ubiformat -f ubi.img</code>
-> +(assuming that is the name of your image file).
-> +You should be able to skip the instructions above after
-> +<code>modprobe ubi mtd=0</code>, since
-> +the UBI image should take care of the volume(s) itself.
->  
->  
->  <h2><a name="L_smaller_jrn">I need more space - should I make UBIFS journal smaller?</a></h2>
-> -- 
-> 2.3.4
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
