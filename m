@@ -1,18 +1,27 @@
-Date: Sat, 19 Dec 2015 04:01:24 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aAGUJ-0002wQ-Vr
+ for linux-mtd@lists.infradead.org; Sat, 19 Dec 2015 12:19:52 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 55/58] mtd: nand: add helpers to access ->priv
-Message-ID: <20151219040124.7ffe4274@bbrezillon>
-In-Reply-To: <20151218221758.GQ10460@google.com>
-References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
- <1449734442-18672-56-git-send-email-boris.brezillon@free-electrons.com>
- <20151218221758.GQ10460@google.com>
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] mtd: nand: pxa3xx_nand: add register access debug
+References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
+ <20150818042426.GA27858@laptop> <874mjwa1w6.fsf@belgarion.home>
+ <87r3mt3jpw.fsf@belgarion.home>
+ <CAAEAJfD2NB+JkpwwcwRz6gWOfcNVEY2MqWGkCskf0a0WRNR9gQ@mail.gmail.com>
+ <20151219004845.GW10460@google.com>
+Date: Sat, 19 Dec 2015 13:19:26 +0100
+In-Reply-To: <20151219004845.GW10460@google.com> (Brian Norris's message of
+ "Fri, 18 Dec 2015 16:48:45 -0800")
+Message-ID: <87lh8qhbqp.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,71 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Brian Norris <computersforpeace@gmail.com> writes:
 
-On Fri, 18 Dec 2015 14:17:58 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
+> I don't have very strong opinions on this. It's kind of annoying to have
+> this sort of stuff duplicated for every driver, if it's really needed.
+> But I'll admit this kind of infrastructure is sometimes useful.
+>
+> Anecdote: I recently found the regmap trace event infrastructure pretty
+> nice for debugging some other drivers. This would only require you to
+> have tracing enabled, and then no recompiles are necessary at all. Just
+> cmdline changes.
+>
+> So, I could go with this patch, if Robert still desires it. Or you could
+> convert to using regmap for MMIO :)
+I'm as you, I don't feel strong opinion about it, I'd like to have a debug
+tracing tool, be that this patch or regmap MMIO.
 
-> Hi Boris,
-> 
-> On Thu, Dec 10, 2015 at 09:00:39AM +0100, Boris Brezillon wrote:
-> > Add two helpers to access the field reserved for private controller data.
-> > This makes it clearer what this field is reserved for and ease future
-> > refactoring.
-> 
-> I agree with the refactoring part, but I'm not sure about the name. Is
-> it really "controller" data? That sounds like something that has 1
-> instance per controller. But the way this is sometimes used, we get 1
-> instance per NAND chip, and there may be more than one NAND chip per
-> controller.
-> 
-> So at the moment, this is more like opaque "driver data", like
-> dev_{get,set}_drvdata(), which doesn't really have a prescribed use --
-> it's up to the driver.
-> 
-> Notably, we already have a (sort of) 1-per-controler-instance field:
-> struct nand_hw_control (I notice we have both the 'controller' and
-> 'hwcontrol' fields in nand_chip; that's pretty ugly too...).
+If we all agree on a path I could even make the final patch, whichever solution
+is chosen.
 
-Will be addressed soon ;-).
-
-> Those don't
-> have private data fields, but we could of course extend that if we
-> really want "controller" data.
-
-Actually the nand_{get,set}_controller_data() helpers are not about
-assigning NAND controller private data (as you pointed those can
-already be retrieved thanks to the ->controller field using the
-container_of() trick), but per-chip private data instantiated by the
-NAND controller and attached to a specific chip. For example, some
-controllers pre-compute some register values or a clk rate to set when
-a specific chip is selected. This is what per-chip controller data is
-meant for.
-
-Now, the reason I explicitly specified the data usage instead of using
-a generic name like nand_{get,set}_data() is because I plan to define
-other helpers to allow NAND manufacturer code to manipulate its own
-private data. This is required if we want to support read-retry on some
-chips who are requiring a read OTP area step to retrieve some register
-values which will later be used to change from one read-retry mode to
-another.
-The plan was to define the nand_{set,get}_manufacturer_data() helpers,
-and create or reuse an existing priv field (mtd->priv?) to store this
-private data.
-
-Also note that the spi framework provides the same kind of helpers [1].
-
-This being said, I'm perfectly fine changing the function names, but
-I'd like to replace it by something explicitly telling the user that
-this field should only be set by NAND controller drivers. 
-
-[1]http://lxr.free-electrons.com/source/include/linux/spi/spi.h#L189
-
-Best Regards,
-
-Boris
+Cheers.
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Robert
