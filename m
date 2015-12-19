@@ -1,20 +1,18 @@
-Date: Fri, 18 Dec 2015 18:27:37 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Frans Klaver <fransklaver@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org,
- Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] mtd: sh_flctl: pass FIFO as physical address
-Message-ID: <20151219022737.GC109450@google.com>
-References: <3152458.D3kElfhRW2@wuerfel>
+Date: Sat, 19 Dec 2015 04:01:24 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 55/58] mtd: nand: add helpers to access ->priv
+Message-ID: <20151219040124.7ffe4274@bbrezillon>
+In-Reply-To: <20151218221758.GQ10460@google.com>
+References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1449734442-18672-56-git-send-email-boris.brezillon@free-electrons.com>
+ <20151218221758.GQ10460@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3152458.D3kElfhRW2@wuerfel>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +22,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 08, 2015 at 04:38:12PM +0100, Arnd Bergmann wrote:
-> By convention, the FIFO address we pass using dmaengine_slave_config
-> is a physical address in the form that is understood by the DMA
-> engine, as a dma_addr_t, phys_addr_t or resource_size_t.
-> 
-> The sh_flctl driver however passes a virtual __iomem address that
-> gets cast to dma_addr_t in the slave driver. This happens to work
-> on shmobile because that platform sets up an identity mapping for
-> its MMIO regions, but such code is not portable to other platforms,
-> and prevents us from ever changing the platform mapping or reusing
-> the driver on other architectures like ARM64 that might not have the
-> mapping.
-> 
-> We also get a warning about a type mismatch for the case that
-> dma_addr_t is wider than a pointer, i.e. when CONFIG_LPAE is set:
-> 
-> drivers/mtd/nand/sh_flctl.c: In function 'flctl_setup_dma':
-> drivers/mtd/nand/sh_flctl.c:163:17: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
->   cfg.dst_addr = (dma_addr_t)FLDTFIFO(flctl);
-> 
-> This changes the driver to instead pass the physical address of
-> the FIFO that is extracted from the MMIO resource, making the
-> code more portable and avoiding the warning.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi Brian,
 
-Applied
+On Fri, 18 Dec 2015 14:17:58 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> Hi Boris,
+> 
+> On Thu, Dec 10, 2015 at 09:00:39AM +0100, Boris Brezillon wrote:
+> > Add two helpers to access the field reserved for private controller data.
+> > This makes it clearer what this field is reserved for and ease future
+> > refactoring.
+> 
+> I agree with the refactoring part, but I'm not sure about the name. Is
+> it really "controller" data? That sounds like something that has 1
+> instance per controller. But the way this is sometimes used, we get 1
+> instance per NAND chip, and there may be more than one NAND chip per
+> controller.
+> 
+> So at the moment, this is more like opaque "driver data", like
+> dev_{get,set}_drvdata(), which doesn't really have a prescribed use --
+> it's up to the driver.
+> 
+> Notably, we already have a (sort of) 1-per-controler-instance field:
+> struct nand_hw_control (I notice we have both the 'controller' and
+> 'hwcontrol' fields in nand_chip; that's pretty ugly too...).
+
+Will be addressed soon ;-).
+
+> Those don't
+> have private data fields, but we could of course extend that if we
+> really want "controller" data.
+
+Actually the nand_{get,set}_controller_data() helpers are not about
+assigning NAND controller private data (as you pointed those can
+already be retrieved thanks to the ->controller field using the
+container_of() trick), but per-chip private data instantiated by the
+NAND controller and attached to a specific chip. For example, some
+controllers pre-compute some register values or a clk rate to set when
+a specific chip is selected. This is what per-chip controller data is
+meant for.
+
+Now, the reason I explicitly specified the data usage instead of using
+a generic name like nand_{get,set}_data() is because I plan to define
+other helpers to allow NAND manufacturer code to manipulate its own
+private data. This is required if we want to support read-retry on some
+chips who are requiring a read OTP area step to retrieve some register
+values which will later be used to change from one read-retry mode to
+another.
+The plan was to define the nand_{set,get}_manufacturer_data() helpers,
+and create or reuse an existing priv field (mtd->priv?) to store this
+private data.
+
+Also note that the spi framework provides the same kind of helpers [1].
+
+This being said, I'm perfectly fine changing the function names, but
+I'd like to replace it by something explicitly telling the user that
+this field should only be set by NAND controller drivers. 
+
+[1]http://lxr.free-electrons.com/source/include/linux/spi/spi.h#L189
+
+Best Regards,
+
+Boris
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
