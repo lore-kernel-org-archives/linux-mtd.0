@@ -1,27 +1,25 @@
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
- helo=smtp.smtpout.orange.fr)
+Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAGUJ-0002wQ-Vr
- for linux-mtd@lists.infradead.org; Sat, 19 Dec 2015 12:19:52 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] mtd: nand: pxa3xx_nand: add register access debug
-References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
- <20150818042426.GA27858@laptop> <874mjwa1w6.fsf@belgarion.home>
- <87r3mt3jpw.fsf@belgarion.home>
- <CAAEAJfD2NB+JkpwwcwRz6gWOfcNVEY2MqWGkCskf0a0WRNR9gQ@mail.gmail.com>
- <20151219004845.GW10460@google.com>
-Date: Sat, 19 Dec 2015 13:19:26 +0100
-In-Reply-To: <20151219004845.GW10460@google.com> (Brian Norris's message of
- "Fri, 18 Dec 2015 16:48:45 -0800")
-Message-ID: <87lh8qhbqp.fsf@belgarion.home>
+ id 1aAHbQ-0005TN-26
+ for linux-mtd@lists.infradead.org; Sat, 19 Dec 2015 13:31:18 +0000
+Date: Sat, 19 Dec 2015 15:30:49 +0200
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+To: Tony Lindgren <tony@atomide.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, kyungmin.park@samsung.com,
+ dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+ Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH] mtd: onenand: omap2: Simplify the DMA setup for various
+ paths
+Message-ID: <20151219133049.GA1611@darkstar.musicnaut.iki.fi>
+References: <1450086572-15224-1-git-send-email-peter.ujfalusi@ti.com>
+ <20151218181111.GK10460@google.com>
+ <20151218183948.GO23396@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20151218183948.GO23396@atomide.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,26 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris <computersforpeace@gmail.com> writes:
+Hi,
 
-> I don't have very strong opinions on this. It's kind of annoying to have
-> this sort of stuff duplicated for every driver, if it's really needed.
-> But I'll admit this kind of infrastructure is sometimes useful.
->
-> Anecdote: I recently found the regmap trace event infrastructure pretty
-> nice for debugging some other drivers. This would only require you to
-> have tracing enabled, and then no recompiles are necessary at all. Just
-> cmdline changes.
->
-> So, I could go with this patch, if Robert still desires it. Or you could
-> convert to using regmap for MMIO :)
-I'm as you, I don't feel strong opinion about it, I'd like to have a debug
-tracing tool, be that this patch or regmap MMIO.
+On Fri, Dec 18, 2015 at 10:39:48AM -0800, Tony Lindgren wrote:
+> * Brian Norris <computersforpeace@gmail.com> [151218 10:11]:
+> > On Mon, Dec 14, 2015 at 11:49:32AM +0200, Peter Ujfalusi wrote:
+> > > We have 4 functions containing almost identical DMA setup code. Create one
+> > > function which can set up the DMA for both read and write and use this in
+> > > place for the setup code in the driver.
+> > > The new function will use wait_for_completion_timeout() and it will figure
+> > > out the best data_type to be used for the transfer instead of hardwiring
+> > > 32 or 16 bit data.
+> > > 
+> > > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> > 
+> > Does anyone use this driver? I've seen practically zero activity on the
+> > entire OneNAND codebase in the last few years, and I presumed it was
+> > essentially dead.
+> > 
+> > If it's not dead, I'd like to know some contingency of people who are
+> > willing to actually maintain (or at least review) this stuff.
+> > 
+> > Kyungmin, are you still out there? Or Tony, do you know of any users for
+> > this?
+> > 
+> > Peter, are you actually using this, or are you just refactoring for the
+> > fun of it?
+> 
+> It's used for n8x0 and n900, but mostly in read-only mode. I suggest we
 
-If we all agree on a path I could even make the final patch, whichever solution
-is chosen.
+It's also used on n9/n950 phones. Also write functionality is needed
+for mtdoops and kernel flashing.
 
-Cheers.
+> remove the DMA support for it completely because of the following:
+> 
+> 1. The DMA support for this driver is not done correctly. The pin used
+>    as GPIO should be used as external DMA request line.
+> 
+> 2. AFAIK the DMA for this driver is mostly disabld, probably largely
+>    due to #1 above
+> 
+> 3. If we remove DMA support, we can then easily switch to use the
+>    generic onenand driver.
+> 
+> I'd like to hear Aaro's comments too before doing this tough.
 
--- 
-Robert
+Probably DMA support is not that critical. Looks like with DT boot it's
+not even possible to enable it at the moment.
+
+A.
