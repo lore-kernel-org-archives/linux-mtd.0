@@ -1,27 +1,19 @@
-Received: from leibniz.telenet-ops.be ([2a02:1800:110:4::f00:d])
- by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAxnZ-0001D2-FI
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 10:34:38 +0000
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [195.130.137.89])
- by leibniz.telenet-ops.be (Postfix) with ESMTP id 3pPHGR1RdKzMqr98
- for <linux-mtd@lists.infradead.org>; Mon, 21 Dec 2015 11:34:07 +0100 (CET)
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>,
- Ralf Baechle <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
- linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 5/9] ARM: shmobile: koelsch dts: Add compatible property to
- "partitions" node
-Date: Mon, 21 Dec 2015 11:33:49 +0100
-Message-Id: <1450694033-27717-6-git-send-email-geert+renesas@glider.be>
-In-Reply-To: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
-References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aAyvc-00038T-Pa
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 11:47:01 +0000
+Message-ID: <1450698397.2276.3.camel@gmail.com>
+Subject: Re: [PATCH] UBIFS: add a comment in key.h for unused parameter
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, linux-mtd@lists.infradead.org
+Cc: richard@nod.at, david@sigma-star.at
+Date: Mon, 21 Dec 2015 13:46:37 +0200
+In-Reply-To: <1450581920-21780-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+References: <1450581920-21780-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,31 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As of commit e488ca9f8d4f62c2 ("doc: dt: mtd: partitions: add compatible
-property to "partitions" node"), the "partitions" subnode of an SPI
-FLASH device node must have a compatible property. The partitions are no
-longer detected if it is not present.
+On Sun, 2015-12-20 at 11:25 +0800, Dongsheng Yang wrote:
+> Add a comment in key.h to explain why we keep an unused
+> parameter in key helpers.
+> 
+> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+> ---
+>  fs/ubifs/key.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/fs/ubifs/key.h b/fs/ubifs/key.h
+> index 92a8491..dce72c4 100644
+> --- a/fs/ubifs/key.h
+> +++ b/fs/ubifs/key.h
+> @@ -34,6 +34,12 @@
+>   * node. We use "r5" hash borrowed from reiserfs.
+>   */
+>  
+> +/*
+> + * Lot's of the key helpers require a struct ubifs_info *c as the
+> first parameter.
+> + * But we are not using it at all currently. That's designed for
+> scalability for
+> + * different c->key_format. But right now, there is only one key
+> type, UBIFS_SIMPLE_KEY_FMT.
+> + */
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Brian Norris <computersforpeace@gmail.com>
----
-v2:
-  - Add Acked-by.
----
- arch/arm/boot/dts/r8a7791-koelsch.dts | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm/boot/dts/r8a7791-koelsch.dts b/arch/arm/boot/dts/r8a7791-koelsch.dts
-index d949853a48edc956..9ff5d2b29788dfc1 100644
---- a/arch/arm/boot/dts/r8a7791-koelsch.dts
-+++ b/arch/arm/boot/dts/r8a7791-koelsch.dts
-@@ -500,6 +500,7 @@
- 		m25p,fast-read;
- 
- 		partitions {
-+			compatible = "fixed-partitions";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 
--- 
-1.9.1
+I think word "scalability" is not a perfect fit here. Just say for
+future extensions, or something like this. Scalability is a bit
+confusing.
