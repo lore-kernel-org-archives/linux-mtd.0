@@ -1,15 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwAn-0000ke-JO
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:33 +0000
+ id 1aAwAp-0001wk-KY
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:37 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 11/38] ubifs: copy some important functions in key.h from
- kernel to ubifs-utils
-Date: Mon, 21 Dec 2015 16:41:34 +0800
-Message-ID: <1450687321-12381-12-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 04/38] ubifs: cut off the dependence from compr.o to mkfs.ubifs
+Date: Mon, 21 Dec 2015 16:41:27 +0800
+Message-ID: <1450687321-12381-5-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -23,111 +22,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We need some more functions in key.h, then copy it from kernel.
+remove the including of mkfs.ubifs.h in compr lib and
+drop the reference of globle variable info_ from compr to mkfs.ubifs.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/include/key.h | 76 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 75 insertions(+), 1 deletion(-)
+ ubifs-utils/mkfs.ubifs/compr.c      | 22 +++++++---------------
+ ubifs-utils/mkfs.ubifs/compr.h      |  3 +--
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c |  8 ++++++--
+ 3 files changed, 14 insertions(+), 19 deletions(-)
 
-diff --git a/ubifs-utils/include/key.h b/ubifs-utils/include/key.h
-index 39379fd..1b61928 100644
---- a/ubifs-utils/include/key.h
-+++ b/ubifs-utils/include/key.h
-@@ -37,6 +37,8 @@
- #ifndef __UBIFS_KEY_H__
- #define __UBIFS_KEY_H__
- 
-+#include "defs.h"
-+
- /**
-  * key_mask_hash - mask a valid hash value.
-  * @val: value to be masked
-@@ -107,7 +109,7 @@ static inline void ino_key_init(union ubifs_key *key, ino_t inum)
-  * @inum: parent inode number
-  * @nm: direntry name and length
+diff --git a/ubifs-utils/mkfs.ubifs/compr.c b/ubifs-utils/mkfs.ubifs/compr.c
+index 8eff186..54604d4 100644
+--- a/ubifs-utils/mkfs.ubifs/compr.c
++++ b/ubifs-utils/mkfs.ubifs/compr.c
+@@ -20,27 +20,19 @@
+  *          Zoltan Sogor
   */
--static inline void dent_key_init(const struct ubifs_info *c,
-+static inline void dent_key_init(const struct ubifs_info *c __attribute__((unused)),
- 				 union ubifs_key *key, ino_t inum,
- 				 const struct qstr *nm)
- {
-@@ -204,4 +206,76 @@ static inline int keys_cmp(const union ubifs_key *key1,
- 	return 0;
- }
  
-+/**
-+ * key_read - transform a key to in-memory format.
-+ * @c: UBIFS file-system description object
-+ * @from: the key to transform
-+ * @to: the key to store the result
-+ */
-+static inline void key_read(const struct ubifs_info *c __attribute__((unused)), const void *from,
-+			    union ubifs_key *to)
-+{
-+	const union ubifs_key *f = from;
-+
-+	to->u32[0] = le32_to_cpu(f->j32[0]);
-+	to->u32[1] = le32_to_cpu(f->j32[1]);
-+}
-+
-+/**
-+ * invalid_key_init - initialize invalid node key.
-+ * @c: UBIFS file-system description object
-+ * @key: key to initialize
-+ *
-+ * This is a helper function which marks a @key object as invalid.
-+ */
-+static inline void invalid_key_init(const struct ubifs_info *c __attribute__((unused)),
-+				    union ubifs_key *key)
-+{
-+	key->u32[0] = 0xDEADBEAF;
-+	key->u32[1] = UBIFS_INVALID_KEY;
-+}
-+/**
-+ * key_type - get key type.
-+ * @c: UBIFS file-system description object
-+ * @key: key to get type of
-+ */
-+static inline int key_type(const struct ubifs_info *c __attribute__((unused)),
-+			   const union ubifs_key *key)
-+{
-+	return key->u32[1] >> UBIFS_S_KEY_BLOCK_BITS;
-+}
-+
-+/*
-+ * key_hash - get directory entry hash.
-+ * @c: UBIFS file-system description object
-+ * @key: the key to get hash from
-+ */
-+static inline uint32_t key_hash(const struct ubifs_info *c __attribute__((unused)),
-+				const union ubifs_key *key)
-+{
-+	return key->u32[1] & UBIFS_S_KEY_HASH_MASK;
-+}
-+
-+/**
-+ * key_inum - fetch inode number from key.
-+ * @c: UBIFS file-system description object
-+ * @k: key to fetch inode number from
-+ */
-+static inline ino_t key_inum(const struct ubifs_info *c __attribute__((unused)), const void *k)
-+{
-+	const union ubifs_key *key = k;
-+
-+	return key->u32[0];
-+}
-+
-+/**
-+ * key_block - get data block number.
-+ * @c: UBIFS file-system description object
-+ * @key: the key to get the block number from
-+ */
-+static inline unsigned int key_block(const struct ubifs_info *c __attribute__((unused)),
-+				     const union ubifs_key *key)
-+{
-+	return key->u32[1] & UBIFS_S_KEY_BLOCK_MASK;
-+}
- #endif /* !__UBIFS_KEY_H__ */
+-#include <stdlib.h>
+-#include <stdio.h>
+-#include <stdint.h>
+-#include <string.h>
++#include "ubifs_common.h"
+ #ifndef WITHOUT_LZO
+ #include <lzo/lzo1x.h>
+ #endif
+-#include <linux/types.h>
+ 
+ #define crc32 __zlib_crc32
+ #include <zlib.h>
+ #undef crc32
+ 
+ #include "compr.h"
+-#include "mkfs.ubifs.h"
+ 
+ static void *lzo_mem;
+ static unsigned long long errcnt = 0;
+-#ifndef WITHOUT_LZO
+-static struct ubifs_info *c = &info_;
+-#endif
+ 
+ #define DEFLATE_DEF_LEVEL     Z_DEFAULT_COMPRESSION
+ #define DEFLATE_DEF_WINBITS   11
+@@ -121,7 +113,7 @@ static char *zlib_buf;
+ 
+ #ifndef WITHOUT_LZO
+ static int favor_lzo_compress(void *in_buf, size_t in_len, void *out_buf,
+-			       size_t *out_len, int *type)
++				size_t *out_len, int *type, int lzo_percent)
+ {
+ 	int lzo_ret, zlib_ret;
+ 	size_t lzo_len, zlib_len;
+@@ -143,7 +135,7 @@ static int favor_lzo_compress(void *in_buf, size_t in_len, void *out_buf,
+ 
+ 		percent = (double)zlib_len / (double)lzo_len;
+ 		percent *= 100;
+-		if (percent > 100 - c->favor_percent)
++		if (percent > 100 - lzo_percent)
+ 			goto select_lzo;
+ 		goto select_zlib;
+ 	}
+@@ -167,8 +159,8 @@ select_zlib:
+ }
+ #endif
+ 
+-int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
+-		  int type)
++int compress_data(void *in_buf, size_t in_len, void *out_buf,
++		size_t *out_len, int type, int lzo_percent)
+ {
+ 	int ret;
+ 
+@@ -181,8 +173,8 @@ int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
+ 	{
+ 		switch (type) {
+ #else
+-	if (c->favor_lzo)
+-		ret = favor_lzo_compress(in_buf, in_len, out_buf, out_len, &type);
++	if (lzo_percent)
++		ret = favor_lzo_compress(in_buf, in_len, out_buf, out_len, &type, lzo_percent);
+ 	else {
+ 		switch (type) {
+ 		case MKFS_UBIFS_COMPR_LZO:
+diff --git a/ubifs-utils/mkfs.ubifs/compr.h b/ubifs-utils/mkfs.ubifs/compr.h
+index e3dd95c..d44a2ba 100644
+--- a/ubifs-utils/mkfs.ubifs/compr.h
++++ b/ubifs-utils/mkfs.ubifs/compr.h
+@@ -38,8 +38,7 @@ enum compression_type
+ 	MKFS_UBIFS_COMPR_ZLIB,
+ };
+ 
+-int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
+-		  int type);
++int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len, int type, int lzo_percent);
+ int init_compression(void);
+ void destroy_compression(void);
+ 
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 47f4025..b2df5b1 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -1455,8 +1455,12 @@ static int add_file(const char *path_name, struct stat *st, ino_t inum,
+ #endif
+ 		else
+ 			use_compr = c->default_compr;
+-		compr_type = compress_data(buf, bytes_read, &dn->data,
+-					   &out_len, use_compr);
++		if (c->favor_lzo)
++			compr_type = compress_data(buf, bytes_read, &dn->data,
++					   &out_len, use_compr, c->favor_percent);
++		else
++			compr_type = compress_data(buf, bytes_read, &dn->data,
++					   &out_len, use_compr, 0);
+ 		dn->compr_type = cpu_to_le16(compr_type);
+ 		dn_len = UBIFS_DATA_NODE_SZ + out_len;
+ 		/* Add data node to file system */
 -- 
 1.8.4.2
