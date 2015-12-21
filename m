@@ -1,14 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwAp-0001wk-KY
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:37 +0000
+ id 1aAwAr-0000ke-Pk
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:38 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 04/38] ubifs: cut off the dependence from compr.o to mkfs.ubifs
-Date: Mon, 21 Dec 2015 16:41:27 +0800
-Message-ID: <1450687321-12381-5-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 10/38] ubifs: copy some important data in ubifs.h from kernel
+ to ubifs-utils
+Date: Mon, 21 Dec 2015 16:41:33 +0800
+Message-ID: <1450687321-12381-11-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,121 +23,183 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-remove the including of mkfs.ubifs.h in compr lib and
-drop the reference of globle variable info_ from compr to mkfs.ubifs.
+There are some definitions in ubifs.h in kernel we need but
+not in userspace currently. Then copy it here.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/mkfs.ubifs/compr.c      | 22 +++++++---------------
- ubifs-utils/mkfs.ubifs/compr.h      |  3 +--
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c |  8 ++++++--
- 3 files changed, 14 insertions(+), 19 deletions(-)
+ ubifs-utils/include/ubifs.h | 96 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 91 insertions(+), 5 deletions(-)
 
-diff --git a/ubifs-utils/mkfs.ubifs/compr.c b/ubifs-utils/mkfs.ubifs/compr.c
-index 8eff186..54604d4 100644
---- a/ubifs-utils/mkfs.ubifs/compr.c
-+++ b/ubifs-utils/mkfs.ubifs/compr.c
-@@ -20,27 +20,19 @@
-  *          Zoltan Sogor
+diff --git a/ubifs-utils/include/ubifs.h b/ubifs-utils/include/ubifs.h
+index 2f080a8..1678663 100644
+--- a/ubifs-utils/include/ubifs.h
++++ b/ubifs-utils/include/ubifs.h
+@@ -25,6 +25,10 @@
+ #ifndef __UBIFS_H__
+ #define __UBIFS_H__
+ 
++#include "defs.h"
++#include "list.h"
++#include "libubi.h"
++
+ /* Maximum logical eraseblock size in bytes */
+ #define UBIFS_MAX_LEB_SZ (2*1024*1024)
+ 
+@@ -34,6 +38,7 @@
+ /* Largest key size supported in this implementation */
+ #define CUR_MAX_KEY_LEN UBIFS_SK_LEN
+ 
++#define NONDATA_JHEADS_CNT 2
+ /*
+  * There is no notion of truncation key because truncation nodes do not exist
+  * in TNC. However, when replaying, it is handy to introduce fake "truncation"
+@@ -41,6 +46,7 @@
+  * %UBIFS_TRUN_KEY type.
   */
+ #define UBIFS_TRUN_KEY UBIFS_KEY_TYPES_CNT
++#define UBIFS_INVALID_KEY UBIFS_KEY_TYPES_CNT
  
--#include <stdlib.h>
--#include <stdio.h>
--#include <stdint.h>
--#include <string.h>
-+#include "ubifs_common.h"
- #ifndef WITHOUT_LZO
- #include <lzo/lzo1x.h>
- #endif
--#include <linux/types.h>
- 
- #define crc32 __zlib_crc32
- #include <zlib.h>
- #undef crc32
- 
- #include "compr.h"
--#include "mkfs.ubifs.h"
- 
- static void *lzo_mem;
- static unsigned long long errcnt = 0;
--#ifndef WITHOUT_LZO
--static struct ubifs_info *c = &info_;
--#endif
- 
- #define DEFLATE_DEF_LEVEL     Z_DEFAULT_COMPRESSION
- #define DEFLATE_DEF_WINBITS   11
-@@ -121,7 +113,7 @@ static char *zlib_buf;
- 
- #ifndef WITHOUT_LZO
- static int favor_lzo_compress(void *in_buf, size_t in_len, void *out_buf,
--			       size_t *out_len, int *type)
-+				size_t *out_len, int *type, int lzo_percent)
- {
- 	int lzo_ret, zlib_ret;
- 	size_t lzo_len, zlib_len;
-@@ -143,7 +135,7 @@ static int favor_lzo_compress(void *in_buf, size_t in_len, void *out_buf,
- 
- 		percent = (double)zlib_len / (double)lzo_len;
- 		percent *= 100;
--		if (percent > 100 - c->favor_percent)
-+		if (percent > 100 - lzo_percent)
- 			goto select_lzo;
- 		goto select_zlib;
- 	}
-@@ -167,8 +159,8 @@ select_zlib:
- }
- #endif
- 
--int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
--		  int type)
-+int compress_data(void *in_buf, size_t in_len, void *out_buf,
-+		size_t *out_len, int type, int lzo_percent)
- {
- 	int ret;
- 
-@@ -181,8 +173,8 @@ int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
- 	{
- 		switch (type) {
- #else
--	if (c->favor_lzo)
--		ret = favor_lzo_compress(in_buf, in_len, out_buf, out_len, &type);
-+	if (lzo_percent)
-+		ret = favor_lzo_compress(in_buf, in_len, out_buf, out_len, &type, lzo_percent);
- 	else {
- 		switch (type) {
- 		case MKFS_UBIFS_COMPR_LZO:
-diff --git a/ubifs-utils/mkfs.ubifs/compr.h b/ubifs-utils/mkfs.ubifs/compr.h
-index e3dd95c..d44a2ba 100644
---- a/ubifs-utils/mkfs.ubifs/compr.h
-+++ b/ubifs-utils/mkfs.ubifs/compr.h
-@@ -38,8 +38,7 @@ enum compression_type
- 	MKFS_UBIFS_COMPR_ZLIB,
+ /*
+  * How much a directory entry/extended attribute entry adds to the parent/host
+@@ -94,25 +100,34 @@ enum {
+  * @free: amount of free space in bytes
+  * @dirty: amount of dirty space in bytes
+  * @flags: LEB properties flags (see above)
++ * @lnum: LEB number
++ * @list: list of same-category lprops (for LPROPS_EMPTY and LPROPS_FREEABLE)
++ * @hpos: heap position in heap of same-category lprops (other categories)
+  */
+-struct ubifs_lprops
+-{
++struct ubifs_lprops {
+ 	int free;
+ 	int dirty;
+ 	int flags;
++	int lnum;
++	union {
++		struct list_head list;
++		int hpos;
++	};
  };
  
--int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len,
--		  int type);
-+int compress_data(void *in_buf, size_t in_len, void *out_buf, size_t *out_len, int type, int lzo_percent);
- int init_compression(void);
- void destroy_compression(void);
+ /**
+  * struct ubifs_lpt_lprops - LPT logical eraseblock properties.
+  * @free: amount of free space in bytes
+  * @dirty: amount of dirty space in bytes
++ * @tgc: trivial GC flag (1 => unmap after commit end)
++ * @cmt: commit flag (1 => reserved for commit)
+  */
+-struct ubifs_lpt_lprops
+-{
++struct ubifs_lpt_lprops {
+ 	int free;
+ 	int dirty;
++	unsigned tgc:1;
++	unsigned cmt:1;
+ };
+-
+ struct ubifs_nnode;
  
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index 47f4025..b2df5b1 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -1455,8 +1455,12 @@ static int add_file(const char *path_name, struct stat *st, ino_t inum,
- #endif
- 		else
- 			use_compr = c->default_compr;
--		compr_type = compress_data(buf, bytes_read, &dn->data,
--					   &out_len, use_compr);
-+		if (c->favor_lzo)
-+			compr_type = compress_data(buf, bytes_read, &dn->data,
-+					   &out_len, use_compr, c->favor_percent);
-+		else
-+			compr_type = compress_data(buf, bytes_read, &dn->data,
-+					   &out_len, use_compr, 0);
- 		dn->compr_type = cpu_to_le16(compr_type);
- 		dn_len = UBIFS_DATA_NODE_SZ + out_len;
- 		/* Add data node to file system */
+ /**
+@@ -263,6 +278,12 @@ struct ubifs_znode
+ 	struct ubifs_zbranch zbranch[];
+ };
+ 
++enum {
++	LPT_SCAN_CONTINUE = 0,
++	LPT_SCAN_ADD = 1,
++	LPT_SCAN_STOP = 2,
++};
++
+ /**
+  * struct ubifs_info - UBIFS file-system description data structure
+  * (per-superblock).
+@@ -401,6 +422,7 @@ struct ubifs_info
+ 	int pnode_cnt;
+ 	int nnode_cnt;
+ 	int lpt_hght;
++	void *lpt_nod_buf;
+ 
+ 	int lpt_lnum;
+ 	int lpt_offs;
+@@ -420,8 +442,68 @@ struct ubifs_info
+ 	int *lsave;
+ 	int lscan_lnum;
+ 
++	struct ubifs_nnode *nroot;
++	struct ubifs_cnode *lpt_cnext;
++
++	int min_idx_node_sz;
++	int max_idx_node_sz;
++
++	int max_znode_sz;
++};
++/**
++ * struct ubifs_scan_node - UBIFS scanned node information.
++ * @list: list of scanned nodes
++ * @key: key of node scanned (if it has one)
++ * @sqnum: sequence number
++ * @type: type of node scanned
++ * @offs: offset with LEB of node scanned
++ * @len: length of node scanned
++ * @node: raw node
++ */
++struct ubifs_scan_node {
++	struct list_head list;
++	union ubifs_key key;
++	unsigned long long sqnum;
++	int type;
++	int offs;
++	int len;
++	void *node;
++};
++
++/**
++ * struct ubifs_scan_leb - UBIFS scanned LEB information.
++ * @lnum: logical eraseblock number
++ * @nodes_cnt: number of nodes scanned
++ * @nodes: list of struct ubifs_scan_node
++ * @endpt: end point (and therefore the start of empty space)
++ * @buf: buffer containing entire LEB scanned
++ */
++struct ubifs_scan_leb {
++	int lnum;
++	int nodes_cnt;
++	struct list_head nodes;
++	int endpt;
++	void *buf;
+ };
+ 
++/*
++ * 'ubifs_scan_a_node()' return values.
++ *
++ * SCANNED_GARBAGE:  scanned garbage
++ * SCANNED_EMPTY_SPACE: scanned empty space
++ * SCANNED_A_NODE: scanned a valid node
++ * SCANNED_A_CORRUPT_NODE: scanned a corrupted node
++ * SCANNED_A_BAD_PAD_NODE: scanned a padding node with invalid pad length
++ *
++ * Greater than zero means: 'scanned that number of padding bytes'
++ */
++enum {
++	SCANNED_GARBAGE        = 0,
++	SCANNED_EMPTY_SPACE    = -1,
++	SCANNED_A_NODE         = -2,
++	SCANNED_A_CORRUPT_NODE = -3,
++	SCANNED_A_BAD_PAD_NODE = -4,
++};
+ /**
+  * ubifs_idx_node_sz - return index node size.
+  * @c: the UBIFS file-system description object
+@@ -447,4 +529,8 @@ struct ubifs_branch *ubifs_idx_branch(const struct ubifs_info *c,
+ 				       (UBIFS_BRANCH_SZ + c->key_len) * bnum);
+ }
+ 
++/* Callback used by the 'ubifs_lpt_scan_nolock()' function */
++typedef int (*ubifs_lpt_scan_callback)(struct ubifs_info *c,
++				       const struct ubifs_lprops *lprops,
++				       int in_tree, void *data);
+ #endif /* __UBIFS_H__ */
 -- 
 1.8.4.2
