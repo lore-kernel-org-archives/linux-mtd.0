@@ -1,14 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwAu-0001xO-Ok
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:43 +0000
+ id 1aAwAx-0000ke-1j
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:44 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 07/38] ubifs: move more functions into io lib
-Date: Mon, 21 Dec 2015 16:41:30 +0800
-Message-ID: <1450687321-12381-8-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 15/38] ubifs: ubifs_dump: dump super block
+Date: Mon, 21 Dec 2015 16:41:38 +0800
+Message-ID: <1450687321-12381-16-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,283 +22,249 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move some common functions in mkfs.ubifs.c to io.c
-to let others can use them.
+Read the super block from ubi volume and dump it out.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/include/io.h            |   4 ++
- ubifs-utils/lib/io.c                | 101 +++++++++++++++++++++++++++++++++++
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 102 +-----------------------------------
- 3 files changed, 107 insertions(+), 100 deletions(-)
+ ubifs-utils/include/lpt.h           |   1 +
+ ubifs-utils/lib/lpt.c               |  29 +++++++
+ ubifs-utils/ubifs_dump/ubifs_dump.c | 151 ++++++++++++++++++++++++++++++++++--
+ 3 files changed, 173 insertions(+), 8 deletions(-)
 
-diff --git a/ubifs-utils/include/io.h b/ubifs-utils/include/io.h
-index e24d0c6..920645d 100644
---- a/ubifs-utils/include/io.h
-+++ b/ubifs-utils/include/io.h
-@@ -10,6 +10,10 @@
- extern int out_fd;
- extern int out_ubi;
- extern libubi_t ubi;
-+extern char *output;
+diff --git a/ubifs-utils/include/lpt.h b/ubifs-utils/include/lpt.h
+index 4cde59d..e2f7348 100644
+--- a/ubifs-utils/include/lpt.h
++++ b/ubifs-utils/include/lpt.h
+@@ -24,5 +24,6 @@
  
- int write_leb(struct ubifs_info *c, int lnum, int len, void *buf);
-+int close_target(void);
-+int open_target(struct ubifs_info *c, int yes);
-+int open_ubi(struct ubifs_info *c, const char *node);
+ int calc_dflt_lpt_geom(struct ubifs_info *c, int *main_lebs, int *big_lpt);
+ int create_lpt(struct ubifs_info *c);
++int ubifs_calc_lpt_geom(struct ubifs_info *c);
+ 
  #endif
-diff --git a/ubifs-utils/lib/io.c b/ubifs-utils/lib/io.c
-index 7aba0a6..9817d2a 100644
---- a/ubifs-utils/lib/io.c
-+++ b/ubifs-utils/lib/io.c
-@@ -5,6 +5,107 @@
- int out_fd;
- int out_ubi;
- libubi_t ubi;
-+char *output;
-+
-+/**
-+ * check_volume_empty - check if the UBI volume is empty.
-+ *
-+ * This function checks if the UBI volume is empty by looking if its LEBs are
-+ * mapped or not.
-+ *
-+ * Returns %0 in case of success, %1 is the volume is not empty,
-+ * and a negative error code in case of failure.
-+ */
-+static int check_volume_empty(struct ubifs_info *c)
-+{
-+	int lnum, err;
-+
-+	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
-+		err = ubi_is_mapped(out_fd, lnum);
-+		if (err < 0)
-+			return err;
-+		if (err == 1)
-+			return 1;
-+	}
-+	return 0;
-+}
-+
-+/**
-+ * open_ubi - open the UBI volume.
-+ * @node: name of the UBI volume character device to fetch information about
-+ *
-+ * Returns %0 in case of success and %-1 in case of failure
-+ */
-+int open_ubi(struct ubifs_info *c, const char *node)
-+{
-+	struct stat st;
-+
-+	if (stat(node, &st) || !S_ISCHR(st.st_mode))
-+		return -1;
-+
-+	ubi = libubi_open();
-+	if (!ubi)
-+		return -1;
-+	if (ubi_get_vol_info(ubi, node, &c->vi))
-+		return -1;
-+	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di))
-+		return -1;
-+	return 0;
-+}
-+
-+/**
-+ * open_target - open the output target.
-+ * @yes: always ansure yes
-+ *
-+ * Open the output target. The target can be an UBI volume
-+ * or a file.
-+ *
-+ * Returns %0 in case of success and %-1 in case of failure.
-+ */
-+int open_target(struct ubifs_info *c, int yes)
-+{
-+	if (out_ubi) {
-+		out_fd = open(output, O_RDWR | O_EXCL);
-+
-+		if (out_fd == -1)
-+			return sys_err_msg("cannot open the UBI volume '%s'",
-+					   output);
-+		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1))
-+			return sys_err_msg("ubi_set_property failed");
-+
-+		if (!yes && check_volume_empty(c)) {
-+			if (!prompt("UBI volume is not empty.  Format anyways?", false))
-+				return err_msg("UBI volume is not empty");
-+		}
-+	} else {
-+		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
-+			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-+		if (out_fd == -1)
-+			return sys_err_msg("cannot create output file '%s'",
-+					   output);
-+	}
-+	return 0;
-+}
-+
-+/**
-+ * close_target - close the output target.
-+ *
-+ * Close the output target. If the target was an UBI
-+ * volume, also close libubi.
-+ *
-+ * Returns %0 in case of success and %-1 in case of failure.
-+ */
-+int close_target(void)
-+{
-+	if (ubi)
-+		libubi_close(ubi);
-+	if (out_fd >= 0 && close(out_fd) == -1)
-+		return sys_err_msg("cannot close the target '%s'", output);
-+	if (output)
-+		free(output);
-+	return 0;
-+}
-+
- 
- /**
-  * write_leb - copy the image of a LEB to the output target.
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index b2df5b1..8ac09f2 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -110,7 +110,6 @@ int yes;
- static char *root;
- static int root_len;
- static struct stat root_st;
--static char *output;
- static int squash_owner;
- static int do_create_inum_attr;
- 
-@@ -446,28 +445,6 @@ static long long get_bytes(const char *str)
- 
- 	return bytes;
+diff --git a/ubifs-utils/lib/lpt.c b/ubifs-utils/lib/lpt.c
+index 100d747..26fb4dd 100644
+--- a/ubifs-utils/lib/lpt.c
++++ b/ubifs-utils/lib/lpt.c
+@@ -585,3 +585,32 @@ out:
+ 	free(pnode);
+ 	return err;
  }
--/**
-- * open_ubi - open the UBI volume.
-- * @node: name of the UBI volume character device to fetch information about
-- *
-- * Returns %0 in case of success and %-1 in case of failure
-- */
--static int open_ubi(const char *node)
--{
--	struct stat st;
--
--	if (stat(node, &st) || !S_ISCHR(st.st_mode))
--		return -1;
--
--	ubi = libubi_open();
--	if (!ubi)
--		return -1;
--	if (ubi_get_vol_info(ubi, node, &c->vi))
--		return -1;
--	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di))
--		return -1;
--	return 0;
--}
++
++/**
++ * ubifs_calc_lpt_geom - calculate and check sizes for the LPT area.
++ * @c: the UBIFS file-system description object
++ *
++ * This function returns %0 on success and a negative error code on failure.
++ */
++int ubifs_calc_lpt_geom(struct ubifs_info *c)
++{
++	int lebs_needed;
++	long long sz;
++
++	do_calc_lpt_geom(c);
++
++	/* Verify that lpt_lebs is big enough */
++	sz = c->lpt_sz * 2; /* Must have at least 2 times the size */
++	lebs_needed = (sz + c->leb_size - 1) / c->leb_size;
++	if (lebs_needed > c->lpt_lebs) {
++		ubifs_err(c, "too few LPT LEBs, %d", lebs_needed);
++		return -EINVAL;
++	}
++
++	/* Verify that ltab fits in a single LEB (since ltab is a single node */
++	if (c->ltab_sz > c->leb_size) {
++		ubifs_err(c, "LPT ltab too big");
++		return -EINVAL;
++	}
++	return 0;
++}
+diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
+index a510aeb..9ddb0f7 100644
+--- a/ubifs-utils/ubifs_dump/ubifs_dump.c
++++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
+@@ -4,6 +4,7 @@
  
+ #include "io.h"
+ #include "key.h"
++#include "lpt.h"
+ 
+ #define DBG_KEY_BUF_LEN		48
+ 
+@@ -16,6 +17,13 @@ static const struct option longopts[] = {
+ struct ubifs_info info_;
+ static struct ubifs_info *c = &info_;
+ 
++/* Global buffers */
++static void *leb_buf;
++
++/* Global nodes*/
++struct ubifs_mst_node mst;
++struct ubifs_sb_node sup;
++
  static int get_options(int argc, char**argv)
  {
-@@ -643,7 +620,7 @@ static int get_options(int argc, char**argv)
- 	if (!output)
- 		return err_msg("not output device or file specified");
+ 	int opt, i;
+@@ -73,13 +81,6 @@ static const char *hash_type_to_str[] = {
+ 		"UBIFS_KEY_HASH_TEST"
+ };
  
--	out_ubi = !open_ubi(output);
-+	out_ubi = !open_ubi(c, output);
+-static const char *compr_type_to_str[] = {
+-		"UBIFS_COMPR_NONE",
+-		"UBIFS_COMPR_LZO",
+-		"UBIFS_COMPR_ZLIB",
+-		"UBIFS_COMPR_TYPES_CNT",
+-};
+-
+ static const char *key_fmt_to_str[] = {
+ 	"UBIFS_SIMPLE_KEY_FMT"
+ };
+@@ -375,11 +376,145 @@ void dump_node(const struct ubifs_info *c, const void *node)
+ 	printf("\n");
+ }
  
- 	if (out_ubi) {
- 		c->min_io_size = c->di.min_io_size;
-@@ -2248,81 +2225,6 @@ static int write_orphan_area(void)
+-static int dump()
++/**
++ * init - initialize things.
++ */
++static int init(void)
++{
++	leb_buf = malloc(c->leb_size);
++	if (!leb_buf)
++		return err_msg("out of memory");
++
++	return 0;
++}
++
++/**
++ * deinit - deinitialize things.
++ */
++static void deinit(void)
++{
++	free(leb_buf);
++}
++
++/*
++ * init_constants_sb - initialize UBIFS constants.
++ * @c: UBIFS file-system description object
++ *
++ * This is a helper function which initializes various UBIFS constants after
++ * the superblock has been read. It also checks various UBIFS parameters and
++ * makes sure they are all right. Returns zero in case of success and a
++ * negative error code in case of failure.
++ */
++static int init_constants_sb(struct ubifs_info *c)
+ {
++	int tmp, err;
++
++	tmp = ubifs_idx_node_sz(c, 1);
++	c->min_idx_node_sz = ALIGN(tmp, 8);
++
++	tmp = ubifs_idx_node_sz(c, c->fanout);
++	c->max_idx_node_sz = ALIGN(tmp, 8);
++
++	c->max_znode_sz = sizeof(struct ubifs_znode) +
++			c->fanout * sizeof(struct ubifs_zbranch);
++	/* Make sure LEB size is large enough to fit full commit */
++	tmp = UBIFS_CS_NODE_SZ + UBIFS_REF_NODE_SZ * c->jhead_cnt;
++	tmp = ALIGN(tmp, c->min_io_size);
++	if (tmp > c->leb_size) {
++		printf("too small LEB size %d, at least %d needed",
++			  c->leb_size, tmp);
++		return -EINVAL;
++	}
++
++	err = ubifs_calc_lpt_geom(c);
++	if (err)
++		return err;
++
  	return 0;
  }
  
--/**
-- * check_volume_empty - check if the UBI volume is empty.
-- *
-- * This function checks if the UBI volume is empty by looking if its LEBs are
-- * mapped or not.
-- *
-- * Returns %0 in case of success, %1 is the volume is not empty,
-- * and a negative error code in case of failure.
-- */
--static int check_volume_empty(void)
--{
--	int lnum, err;
--
--	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
--		err = ubi_is_mapped(out_fd, lnum);
--		if (err < 0)
--			return err;
--		if (err == 1)
--			return 1;
--	}
--	return 0;
--}
--
--/**
-- * open_target - open the output target.
-- *
-- * Open the output target. The target can be an UBI volume
-- * or a file.
-- *
-- * Returns %0 in case of success and %-1 in case of failure.
-- */
--static int open_target(void)
--{
--	if (out_ubi) {
--		out_fd = open(output, O_RDWR | O_EXCL);
--
--		if (out_fd == -1)
--			return sys_err_msg("cannot open the UBI volume '%s'",
--					   output);
--		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1))
--			return sys_err_msg("ubi_set_property failed");
--
--		if (!yes && check_volume_empty()) {
--			if (!prompt("UBI volume is not empty.  Format anyways?", false))
--				return err_msg("UBI volume is not empty");
--		}
--	} else {
--		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
--			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
--		if (out_fd == -1)
--			return sys_err_msg("cannot create output file '%s'",
--					   output);
--	}
--	return 0;
--}
--
--
--/**
-- * close_target - close the output target.
-- *
-- * Close the output target. If the target was an UBI
-- * volume, also close libubi.
-- *
-- * Returns %0 in case of success and %-1 in case of failure.
-- */
--static int close_target(void)
--{
--	if (ubi)
--		libubi_close(ubi);
--	if (out_fd >= 0 && close(out_fd) == -1)
--		return sys_err_msg("cannot close the target '%s'", output);
--	if (output)
--		free(output);
--	return 0;
--}
- 
- /**
-  * init - initialize things.
-@@ -2473,7 +2375,7 @@ int main(int argc, char *argv[])
- 	if (err)
- 		return err;
- 
--	err = open_target();
-+	err = open_target(c, yes);
- 	if (err)
- 		return err;
- 
++static int dump_super(void)
++{
++	int err = 0;
++	unsigned long sup_flags;
++
++	memset(&sup, 0, UBIFS_SB_NODE_SZ);
++	err = ubifs_read(0, UBIFS_SB_NODE_SZ, &sup);
++	if (err)
++		return err;
++
++	printf("SUPER BLOCK: \n");
++	dump_node(c, &sup);
++
++        switch (sup.key_hash) {
++        case UBIFS_KEY_HASH_R5:
++                c->key_hash = key_r5_hash;
++                c->key_hash_type = UBIFS_KEY_HASH_R5;
++                break;
++
++        case UBIFS_KEY_HASH_TEST:
++                c->key_hash = key_test_hash;
++                c->key_hash_type = UBIFS_KEY_HASH_TEST;
++                break;
++        };
++
++	c->key_fmt = sup.key_fmt;
++
++	switch (c->key_fmt) {
++	case UBIFS_SIMPLE_KEY_FMT:
++		c->key_len = UBIFS_SK_LEN;
++		break;
++	default:
++		printf("unsupported key format");
++		err = -EINVAL;
++		return err;
++	}
++
++	c->leb_size	 = le32_to_cpu(sup.leb_size);
++	c->min_io_size	 = le32_to_cpu(sup.min_io_size);
++	c->leb_cnt       = le32_to_cpu(sup.leb_cnt);
++	c->max_leb_cnt   = le32_to_cpu(sup.max_leb_cnt);
++	c->max_bud_bytes = le64_to_cpu(sup.max_bud_bytes);
++	c->log_lebs      = le32_to_cpu(sup.log_lebs);
++	c->lpt_lebs      = le32_to_cpu(sup.lpt_lebs);
++	c->orph_lebs     = le32_to_cpu(sup.orph_lebs);
++	c->jhead_cnt     = le32_to_cpu(sup.jhead_cnt) + NONDATA_JHEADS_CNT;
++	c->fanout        = le32_to_cpu(sup.fanout);
++	c->lsave_cnt     = le32_to_cpu(sup.lsave_cnt);
++	c->rp_size       = le64_to_cpu(sup.rp_size);
++	sup_flags        = le32_to_cpu(sup.flags);
++	c->default_compr = le16_to_cpu(sup.default_compr);
++
++	c->big_lpt = !!(sup_flags & UBIFS_FLG_BIGLPT);
++	c->space_fixup = !!(sup_flags & UBIFS_FLG_SPACE_FIXUP);
++
++	/* Automatically increase file system size to the maximum size */
++	c->lpt_first = UBIFS_LOG_LNUM + c->log_lebs;
++	c->lpt_last = c->lpt_first + c->lpt_lebs - 1;
++	c->main_lebs = c->leb_cnt - UBIFS_SB_LEBS - UBIFS_MST_LEBS;
++	c->main_lebs -= c->log_lebs + c->lpt_lebs + c->orph_lebs;
++	c->main_first = c->leb_cnt - c->main_lebs;
++
++	return init_constants_sb(c);
++}
++
++static int dump()
++{
++	int err = 0;
++
++	err = init();
++	if (err)
++		goto out;
++
++	err = dump_super();
++	if (err)
++		goto out;
++
++out:
++	deinit();
++	return err;
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	int err;
 -- 
 1.8.4.2
