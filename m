@@ -1,6 +1,6 @@
 Received: from baptiste.telenet-ops.be ([195.130.132.51])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAxnP-00019V-Kp
+ id 1aAxnP-00019S-Kh
  for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 10:34:30 +0000
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
@@ -13,10 +13,10 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
  linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 7/9] ARM: shmobile: gose dts: Add compatible property to
+Subject: [PATCH v2 6/9] ARM: shmobile: porter dts: Add compatible property to
  "partitions" node
-Date: Mon, 21 Dec 2015 11:33:51 +0100
-Message-Id: <1450694033-27717-8-git-send-email-geert+renesas@glider.be>
+Date: Mon, 21 Dec 2015 11:33:50 +0100
+Message-Id: <1450694033-27717-7-git-send-email-geert+renesas@glider.be>
 In-Reply-To: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -39,14 +39,14 @@ Acked-by: Brian Norris <computersforpeace@gmail.com>
 v2:
   - Add Acked-by.
 ---
- arch/arm/boot/dts/r8a7793-gose.dts | 1 +
+ arch/arm/boot/dts/r8a7791-porter.dts | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/r8a7793-gose.dts b/arch/arm/boot/dts/r8a7793-gose.dts
-index 077ab9423f5e17d6..3d4bd3c02c4fece0 100644
---- a/arch/arm/boot/dts/r8a7793-gose.dts
-+++ b/arch/arm/boot/dts/r8a7793-gose.dts
-@@ -128,6 +128,7 @@
+diff --git a/arch/arm/boot/dts/r8a7791-porter.dts b/arch/arm/boot/dts/r8a7791-porter.dts
+index b93016896378c350..f8d8e2e2169a9c40 100644
+--- a/arch/arm/boot/dts/r8a7791-porter.dts
++++ b/arch/arm/boot/dts/r8a7791-porter.dts
+@@ -213,6 +213,7 @@
  		m25p,fast-read;
  
  		partitions {
