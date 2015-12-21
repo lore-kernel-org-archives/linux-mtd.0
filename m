@@ -1,14 +1,13 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwB2-0001xO-DR
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:48 +0000
+ id 1aAwB4-0000mf-8k
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:52 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
-CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 18/38] ubifs: ubifs_dump: dump master node
-Date: Mon, 21 Dec 2015 16:41:41 +0800
-Message-ID: <1450687321-12381-19-git-send-email-yangds.fnst@cn.fujitsu.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 32/38] ubifs: remove ununsed ubifs context from key helpers
+Date: Mon, 21 Dec 2015 16:41:55 +0800
+Message-ID: <1450687321-12381-33-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,210 +21,228 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Search the master lebs and found the latest master node.
-Then dump it out.
+From: David Gstir <david@sigma-star.at>
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Various key helper functions in ubifs-utils/include/key.h require the
+ubifs_info context. Since this context is never used, so we can remove it.
+
+Signed-off-by: David Gstir <david@sigma-star.at>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- Makefile                            |   1 +
- ubifs-utils/ubifs_dump/ubifs_dump.c | 139 +++++++++++++++++++++++++++++-------
- 2 files changed, 115 insertions(+), 25 deletions(-)
+ ubifs-utils/include/key.h           | 24 ++++++------------------
+ ubifs-utils/lib/scan.c              | 10 ++++------
+ ubifs-utils/ubifs_dump/ubifs_dump.c | 22 +++++++++++-----------
+ 3 files changed, 21 insertions(+), 35 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index a1aaa6e..1d7e5f2 100644
---- a/Makefile
-+++ b/Makefile
-@@ -130,6 +130,7 @@ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-co
- $(foreach v,crc16.o lpt.o compr.o devtable.o io.o hashtable.o hashtable_itr.o,$(eval UBIFS_LIBS += ../lib/$(v)))
+diff --git a/ubifs-utils/include/key.h b/ubifs-utils/include/key.h
+index 1b61928..ebcf79c 100644
+--- a/ubifs-utils/include/key.h
++++ b/ubifs-utils/include/key.h
+@@ -92,7 +92,6 @@ static inline uint32_t key_test_hash(const char *str, int len)
  
- obj-ubifs_dump = $(UBIFS_LIBS)
-+obj-ubifs_dump += ../lib/scan.o
- LDFLAGS_ubifs_dump = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
- LDLIBS_ubifs_dump = -lz -llzo2 -lm -luuid
- $(call mkdep,ubifs-utils/ubifs_dump/,ubifs_dump,,ubi-utils/libubi.a)
+ /**
+  * ino_key_init - initialize inode key.
+- * @c: UBIFS file-system description object
+  * @key: key to initialize
+  * @inum: inode number
+  */
+@@ -208,12 +207,10 @@ static inline int keys_cmp(const union ubifs_key *key1,
+ 
+ /**
+  * key_read - transform a key to in-memory format.
+- * @c: UBIFS file-system description object
+  * @from: the key to transform
+  * @to: the key to store the result
+  */
+-static inline void key_read(const struct ubifs_info *c __attribute__((unused)), const void *from,
+-			    union ubifs_key *to)
++static inline void key_read(const void *from, union ubifs_key *to)
+ {
+ 	const union ubifs_key *f = from;
+ 
+@@ -223,45 +220,38 @@ static inline void key_read(const struct ubifs_info *c __attribute__((unused)),
+ 
+ /**
+  * invalid_key_init - initialize invalid node key.
+- * @c: UBIFS file-system description object
+  * @key: key to initialize
+  *
+  * This is a helper function which marks a @key object as invalid.
+  */
+-static inline void invalid_key_init(const struct ubifs_info *c __attribute__((unused)),
+-				    union ubifs_key *key)
++static inline void invalid_key_init(union ubifs_key *key)
+ {
+ 	key->u32[0] = 0xDEADBEAF;
+ 	key->u32[1] = UBIFS_INVALID_KEY;
+ }
+ /**
+  * key_type - get key type.
+- * @c: UBIFS file-system description object
+  * @key: key to get type of
+  */
+-static inline int key_type(const struct ubifs_info *c __attribute__((unused)),
+-			   const union ubifs_key *key)
++static inline int key_type(const union ubifs_key *key)
+ {
+ 	return key->u32[1] >> UBIFS_S_KEY_BLOCK_BITS;
+ }
+ 
+ /*
+  * key_hash - get directory entry hash.
+- * @c: UBIFS file-system description object
+  * @key: the key to get hash from
+  */
+-static inline uint32_t key_hash(const struct ubifs_info *c __attribute__((unused)),
+-				const union ubifs_key *key)
++static inline uint32_t key_hash(const union ubifs_key *key)
+ {
+ 	return key->u32[1] & UBIFS_S_KEY_HASH_MASK;
+ }
+ 
+ /**
+  * key_inum - fetch inode number from key.
+- * @c: UBIFS file-system description object
+  * @k: key to fetch inode number from
+  */
+-static inline ino_t key_inum(const struct ubifs_info *c __attribute__((unused)), const void *k)
++static inline ino_t key_inum(const void *k)
+ {
+ 	const union ubifs_key *key = k;
+ 
+@@ -270,11 +260,9 @@ static inline ino_t key_inum(const struct ubifs_info *c __attribute__((unused)),
+ 
+ /**
+  * key_block - get data block number.
+- * @c: UBIFS file-system description object
+  * @key: the key to get the block number from
+  */
+-static inline unsigned int key_block(const struct ubifs_info *c __attribute__((unused)),
+-				     const union ubifs_key *key)
++static inline unsigned int key_block(const union ubifs_key *key)
+ {
+ 	return key->u32[1] & UBIFS_S_KEY_BLOCK_MASK;
+ }
+diff --git a/ubifs-utils/lib/scan.c b/ubifs-utils/lib/scan.c
+index 69c84d1..3c5be2c 100644
+--- a/ubifs-utils/lib/scan.c
++++ b/ubifs-utils/lib/scan.c
+@@ -162,15 +162,13 @@ void ubifs_end_scan(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 
+ /**
+  * ubifs_add_snod - add a scanned node to LEB scanning information.
+- * @c: UBIFS file-system description object
+  * @sleb: scanning information
+  * @buf: buffer containing node
+  * @offs: offset of node on flash
+  *
+  * This function returns %0 on success and a negative error code on failure.
+  */
+-int ubifs_add_snod(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+-		   void *buf, int offs)
++int ubifs_add_snod(struct ubifs_scan_leb *sleb, void *buf, int offs)
+ {
+ 	struct ubifs_ch *ch = buf;
+ 	struct ubifs_ino_node *ino = buf;
+@@ -195,10 +193,10 @@ int ubifs_add_snod(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 		 * The key is in the same place in all keyed
+ 		 * nodes.
+ 		 */
+-		key_read(c, &ino->key, &snod->key);
++		key_read(&ino->key, &snod->key);
+ 		break;
+ 	default:
+-		invalid_key_init(c, &snod->key);
++		invalid_key_init(&snod->key);
+ 		break;
+ 	}
+ 	list_add_tail(&snod->list, &sleb->nodes);
+@@ -267,7 +265,7 @@ struct ubifs_scan_leb *ubifs_scan(const struct ubifs_info *c, int lnum,
+ 			goto error;
+ 		}
+ 
+-		err = ubifs_add_snod(c, sleb, buf, offs);
++		err = ubifs_add_snod(sleb, buf, offs);
+ 		if (err)
+ 			goto error;
+ 
 diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
-index 9ddb0f7..4f67621 100644
+index 47b0c89..fe2aaf4 100644
 --- a/ubifs-utils/ubifs_dump/ubifs_dump.c
 +++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
-@@ -2,9 +2,11 @@
- #define PROGRAM_NAME "ubifs-dump"
- #include "common.h"
- 
-+#include "ubifs.h"
- #include "io.h"
- #include "key.h"
- #include "lpt.h"
-+#include "scan.h"
- 
- #define DBG_KEY_BUF_LEN		48
- 
-@@ -17,7 +19,6 @@ static const struct option longopts[] = {
- struct ubifs_info info_;
- static struct ubifs_info *c = &info_;
- 
--/* Global buffers */
- static void *leb_buf;
- 
- /* Global nodes*/
-@@ -376,26 +377,6 @@ void dump_node(const struct ubifs_info *c, const void *node)
- 	printf("\n");
- }
- 
--/**
-- * init - initialize things.
-- */
--static int init(void)
--{
--	leb_buf = malloc(c->leb_size);
--	if (!leb_buf)
--		return err_msg("out of memory");
--
--	return 0;
--}
--
--/**
-- * deinit - deinitialize things.
-- */
--static void deinit(void)
--{
--	free(leb_buf);
--}
--
- /*
-  * init_constants_sb - initialize UBIFS constants.
-  * @c: UBIFS file-system description object
-@@ -498,20 +479,128 @@ static int dump_super(void)
- 	return init_constants_sb(c);
- }
- 
--static int dump()
-+/**
-+ * scan_for_master - search the valid master node.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function scans the master node LEBs and search for the latest master
-+ * node. Returns zero in case of success, %-EUCLEAN if there master area is
-+ * corrupted and requires recovery, and a negative error code in case of
-+ * failure.
-+ */
-+static int scan_for_master(struct ubifs_info *c, struct ubifs_mst_node *mst_node)
+@@ -91,30 +91,30 @@ const char *dbg_snprintf_key(const struct ubifs_info *c,
+ 			     const union ubifs_key *key, char *buffer, int len)
  {
-+	struct ubifs_scan_leb *sleb;
-+	struct ubifs_scan_node *snod;
-+	int lnum, offs = 0, nodes_cnt;
- 	int err = 0;
+ 	char *p = buffer;
+-	int type = key_type(c, key);
++	int type = key_type(key);
  
--	err = init();
--	if (err)
-+	lnum = UBIFS_MST_LNUM;
-+
-+	sleb = ubifs_scan(c, lnum, 0, leb_buf, 1);
-+	if (IS_ERR(sleb))
-+		return PTR_ERR(sleb);
-+	nodes_cnt = sleb->nodes_cnt;
-+	if (nodes_cnt > 0) {
-+		snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node,
-+				  list);
-+		if (snod->type != UBIFS_MST_NODE) {
-+			err = -EINVAL;
-+			goto out;
-+		}
-+		memcpy(mst_node, snod->node, snod->len);
-+		offs = snod->offs;
-+	}
-+	ubifs_scan_destroy(sleb);
-+
-+	lnum += 1;
-+
-+	sleb = ubifs_scan(c, lnum, 0, leb_buf, 1);
-+	if (IS_ERR(sleb)) {
-+		return PTR_ERR(sleb);
-+	}
-+	err = -EUCLEAN;
-+	if (sleb->nodes_cnt != nodes_cnt)
-+		goto out;
-+	if (!sleb->nodes_cnt)
-+		goto out;
-+	snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node, list);
-+	if (snod->type != UBIFS_MST_NODE) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+	if (snod->offs != offs)
-+		goto out;
-+	if (memcmp((void *)mst_node + UBIFS_CH_SZ,
-+		   (void *)snod->node + UBIFS_CH_SZ,
-+		   UBIFS_MST_NODE_SZ - UBIFS_CH_SZ))
- 		goto out;
-+	err = 0;
-+
-+out:
-+	ubifs_scan_destroy(sleb);
-+	return err;
-+}
-+
-+static int dump_master(void)
-+{
-+	int err = 0;
-+
-+	printf("MASTER: \n");
-+	err = scan_for_master(c, &mst);
-+	if (err)
-+		return err;
-+	dump_node(c, &mst);
-+	mst.flags &= cpu_to_le32(~UBIFS_MST_RCVRY);
-+
-+	c->max_sqnum       = le64_to_cpu(mst.ch.sqnum);
-+	c->highest_inum    = le64_to_cpu(mst.highest_inum);
-+	c->zroot.lnum      = le32_to_cpu(mst.root_lnum);
-+	c->zroot.offs      = le32_to_cpu(mst.root_offs);
-+	c->zroot.len       = le32_to_cpu(mst.root_len);
-+	c->gc_lnum         = le32_to_cpu(mst.gc_lnum);
-+	c->ihead_lnum      = le32_to_cpu(mst.ihead_lnum);
-+	c->ihead_offs      = le32_to_cpu(mst.ihead_offs);
-+	c->lpt_lnum        = le32_to_cpu(mst.lpt_lnum);
-+	c->lpt_offs        = le32_to_cpu(mst.lpt_offs);
-+	c->nhead_lnum      = le32_to_cpu(mst.nhead_lnum);
-+	c->nhead_offs      = le32_to_cpu(mst.nhead_offs);
-+	c->ltab_lnum       = le32_to_cpu(mst.ltab_lnum);
-+	c->ltab_offs       = le32_to_cpu(mst.ltab_offs);
-+	c->lsave_lnum      = le32_to_cpu(mst.lsave_lnum);
-+	c->lsave_offs      = le32_to_cpu(mst.lsave_offs);
-+	c->lscan_lnum      = le32_to_cpu(mst.lscan_lnum);
-+	c->lst.empty_lebs  = le32_to_cpu(mst.empty_lebs);
-+	c->lst.idx_lebs    = le32_to_cpu(mst.idx_lebs);
-+	c->lst.total_free  = le64_to_cpu(mst.total_free);
-+	c->lst.total_dirty = le64_to_cpu(mst.total_dirty);
-+	c->lst.total_used  = le64_to_cpu(mst.total_used);
-+	c->lst.total_dead  = le64_to_cpu(mst.total_dead);
-+	c->lst.total_dark  = le64_to_cpu(mst.total_dark);
-+
-+	return 0;
-+}
-+
-+static int dump()
-+{
-+	int err = 0;
+ 	if (c->key_fmt == UBIFS_SIMPLE_KEY_FMT) {
+ 		switch (type) {
  
- 	err = dump_super();
- 	if (err)
- 		goto out;
+ 		case UBIFS_INO_KEY:
+ 			len -= snprintf(p, len, "(%lu, %s)",
+-					(unsigned long)key_inum(c, key),
++					(unsigned long)key_inum(key),
+ 					get_key_type(type));
+ 			break;
+ 		case UBIFS_DENT_KEY:
+ 		case UBIFS_XENT_KEY:
+ 			len -= snprintf(p, len, "(%lu, %s, %#08x)",
+-					(unsigned long)key_inum(c, key),
+-					get_key_type(type), key_hash(c, key));
++					(unsigned long)key_inum(key),
++					get_key_type(type), key_hash(key));
+ 			break;
+ 		case UBIFS_DATA_KEY:
+ 			len -= snprintf(p, len, "(%lu, %s, %u)",
+-					(unsigned long)key_inum(c, key),
+-					get_key_type(type), key_block(c, key));
++					(unsigned long)key_inum(key),
++					get_key_type(type), key_block(key));
+ 			break;
+ 		case UBIFS_TRUN_KEY:
+ 			len -= snprintf(p, len, "(%lu, %s)",
+-					(unsigned long)key_inum(c, key),
++					(unsigned long)key_inum(key),
+ 					get_key_type(type));
+ 			break;
+ 		default:
+@@ -252,7 +252,7 @@ void dump_node(const struct ubifs_info *c, const void *node)
+ 	{
+ 		const struct ubifs_ino_node *ino = node;
  
-+	leb_buf = malloc(c->leb_size);
-+	if (!leb_buf) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	err = dump_master();
-+	if (err)
-+		goto free;
-+free:
-+	free(leb_buf);
- out:
--	deinit();
- 	return err;
- }
+-		key_read(c, &ino->key, &key);
++		key_read(&ino->key, &key);
+ 		printf("\t\tkey \t\t\t\t%s\n",
+ 		       dbg_snprintf_key(c, &key, key_buf, DBG_KEY_BUF_LEN));
+ 		printf("\t\tcreat_sqnum \t\t\t%llu\n",
+@@ -287,7 +287,7 @@ void dump_node(const struct ubifs_info *c, const void *node)
+ 		const struct ubifs_dent_node *dent = node;
+ 		int nlen = le16_to_cpu(dent->nlen);
  
+-		key_read(c, &dent->key, &key);
++		key_read(&dent->key, &key);
+ 		printf("\t\tkey \t\t\t\t%s\n",
+ 		       dbg_snprintf_key(c, &key, key_buf, DBG_KEY_BUF_LEN));
+ 		printf("\t\tinum \t\t\t\t%llu\n",
+@@ -311,7 +311,7 @@ void dump_node(const struct ubifs_info *c, const void *node)
+ 		const struct ubifs_data_node *dn = node;
+ 		int dlen = le32_to_cpu(ch->len) - UBIFS_DATA_NODE_SZ;
+ 
+-		key_read(c, &dn->key, &key);
++		key_read(&dn->key, &key);
+ 		printf("\t\tkey \t\t\t\t%s\n",
+ 		       dbg_snprintf_key(c, &key, key_buf, DBG_KEY_BUF_LEN));
+ 		printf("\t\tsize \t\t\t\t%u\n", le32_to_cpu(dn->size));
+@@ -347,7 +347,7 @@ void dump_node(const struct ubifs_info *c, const void *node)
+ 			const struct ubifs_branch *br;
+ 
+ 			br = ubifs_idx_branch(c, idx, i);
+-			key_read(c, &br->key, &key);
++			key_read(&br->key, &key);
+ 			printf("\t\t%d: LEB %d:%d len %d key %s\n",
+ 			       i, le32_to_cpu(br->lnum), le32_to_cpu(br->offs),
+ 			       le32_to_cpu(br->len),
 -- 
 1.8.4.2
