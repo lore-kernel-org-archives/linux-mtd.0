@@ -1,13 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwB4-0000mf-8k
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:52 +0000
+ id 1aAwB5-0001wk-J8
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:53 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
-CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 32/38] ubifs: remove ununsed ubifs context from key helpers
-Date: Mon, 21 Dec 2015 16:41:55 +0800
-Message-ID: <1450687321-12381-33-git-send-email-yangds.fnst@cn.fujitsu.com>
+CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
+ <yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 26/38] ubifs: ubifs_dump: dump data in hex format
+Date: Mon, 21 Dec 2015 16:41:49 +0800
+Message-ID: <1450687321-12381-27-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -21,228 +22,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Gstir <david@sigma-star.at>
+When we dump data node, we can dump the data in it
+in hex format.
 
-Various key helper functions in ubifs-utils/include/key.h require the
-ubifs_info context. Since this context is never used, so we can remove it.
-
-Signed-off-by: David Gstir <david@sigma-star.at>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/include/key.h           | 24 ++++++------------------
- ubifs-utils/lib/scan.c              | 10 ++++------
- ubifs-utils/ubifs_dump/ubifs_dump.c | 22 +++++++++++-----------
- 3 files changed, 21 insertions(+), 35 deletions(-)
+ Makefile                            |  2 +-
+ ubifs-utils/ubifs_dump/ubifs_dump.c | 42 ++++++++++++++++++++-----------------
+ 2 files changed, 24 insertions(+), 20 deletions(-)
 
-diff --git a/ubifs-utils/include/key.h b/ubifs-utils/include/key.h
-index 1b61928..ebcf79c 100644
---- a/ubifs-utils/include/key.h
-+++ b/ubifs-utils/include/key.h
-@@ -92,7 +92,6 @@ static inline uint32_t key_test_hash(const char *str, int len)
+diff --git a/Makefile b/Makefile
+index 0be4772..c9dbc58 100644
+--- a/Makefile
++++ b/Makefile
+@@ -130,7 +130,7 @@ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-co
+ $(foreach v,crc16.o lpt.o compr.o devtable.o io.o hashtable.o hashtable_itr.o,$(eval UBIFS_LIBS += ../lib/$(v)))
  
- /**
-  * ino_key_init - initialize inode key.
-- * @c: UBIFS file-system description object
-  * @key: key to initialize
-  * @inum: inode number
-  */
-@@ -208,12 +207,10 @@ static inline int keys_cmp(const union ubifs_key *key1,
- 
- /**
-  * key_read - transform a key to in-memory format.
-- * @c: UBIFS file-system description object
-  * @from: the key to transform
-  * @to: the key to store the result
-  */
--static inline void key_read(const struct ubifs_info *c __attribute__((unused)), const void *from,
--			    union ubifs_key *to)
-+static inline void key_read(const void *from, union ubifs_key *to)
- {
- 	const union ubifs_key *f = from;
- 
-@@ -223,45 +220,38 @@ static inline void key_read(const struct ubifs_info *c __attribute__((unused)),
- 
- /**
-  * invalid_key_init - initialize invalid node key.
-- * @c: UBIFS file-system description object
-  * @key: key to initialize
-  *
-  * This is a helper function which marks a @key object as invalid.
-  */
--static inline void invalid_key_init(const struct ubifs_info *c __attribute__((unused)),
--				    union ubifs_key *key)
-+static inline void invalid_key_init(union ubifs_key *key)
- {
- 	key->u32[0] = 0xDEADBEAF;
- 	key->u32[1] = UBIFS_INVALID_KEY;
- }
- /**
-  * key_type - get key type.
-- * @c: UBIFS file-system description object
-  * @key: key to get type of
-  */
--static inline int key_type(const struct ubifs_info *c __attribute__((unused)),
--			   const union ubifs_key *key)
-+static inline int key_type(const union ubifs_key *key)
- {
- 	return key->u32[1] >> UBIFS_S_KEY_BLOCK_BITS;
- }
- 
- /*
-  * key_hash - get directory entry hash.
-- * @c: UBIFS file-system description object
-  * @key: the key to get hash from
-  */
--static inline uint32_t key_hash(const struct ubifs_info *c __attribute__((unused)),
--				const union ubifs_key *key)
-+static inline uint32_t key_hash(const union ubifs_key *key)
- {
- 	return key->u32[1] & UBIFS_S_KEY_HASH_MASK;
- }
- 
- /**
-  * key_inum - fetch inode number from key.
-- * @c: UBIFS file-system description object
-  * @k: key to fetch inode number from
-  */
--static inline ino_t key_inum(const struct ubifs_info *c __attribute__((unused)), const void *k)
-+static inline ino_t key_inum(const void *k)
- {
- 	const union ubifs_key *key = k;
- 
-@@ -270,11 +260,9 @@ static inline ino_t key_inum(const struct ubifs_info *c __attribute__((unused)),
- 
- /**
-  * key_block - get data block number.
-- * @c: UBIFS file-system description object
-  * @key: the key to get the block number from
-  */
--static inline unsigned int key_block(const struct ubifs_info *c __attribute__((unused)),
--				     const union ubifs_key *key)
-+static inline unsigned int key_block(const union ubifs_key *key)
- {
- 	return key->u32[1] & UBIFS_S_KEY_BLOCK_MASK;
- }
-diff --git a/ubifs-utils/lib/scan.c b/ubifs-utils/lib/scan.c
-index 69c84d1..3c5be2c 100644
---- a/ubifs-utils/lib/scan.c
-+++ b/ubifs-utils/lib/scan.c
-@@ -162,15 +162,13 @@ void ubifs_end_scan(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 
- /**
-  * ubifs_add_snod - add a scanned node to LEB scanning information.
-- * @c: UBIFS file-system description object
-  * @sleb: scanning information
-  * @buf: buffer containing node
-  * @offs: offset of node on flash
-  *
-  * This function returns %0 on success and a negative error code on failure.
-  */
--int ubifs_add_snod(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
--		   void *buf, int offs)
-+int ubifs_add_snod(struct ubifs_scan_leb *sleb, void *buf, int offs)
- {
- 	struct ubifs_ch *ch = buf;
- 	struct ubifs_ino_node *ino = buf;
-@@ -195,10 +193,10 @@ int ubifs_add_snod(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 		 * The key is in the same place in all keyed
- 		 * nodes.
- 		 */
--		key_read(c, &ino->key, &snod->key);
-+		key_read(&ino->key, &snod->key);
- 		break;
- 	default:
--		invalid_key_init(c, &snod->key);
-+		invalid_key_init(&snod->key);
- 		break;
- 	}
- 	list_add_tail(&snod->list, &sleb->nodes);
-@@ -267,7 +265,7 @@ struct ubifs_scan_leb *ubifs_scan(const struct ubifs_info *c, int lnum,
- 			goto error;
- 		}
- 
--		err = ubifs_add_snod(c, sleb, buf, offs);
-+		err = ubifs_add_snod(sleb, buf, offs);
- 		if (err)
- 			goto error;
- 
+ obj-ubifs_dump = $(UBIFS_LIBS)
+-obj-ubifs_dump += ../lib/scan.o ../lib/lprops.o
++obj-ubifs_dump += ../lib/scan.o ../lib/lprops.o ../lib/hexdump.o
+ LDFLAGS_ubifs_dump = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
+ LDLIBS_ubifs_dump = -lz -llzo2 -lm -luuid
+ $(call mkdep,ubifs-utils/ubifs_dump/,ubifs_dump,,ubi-utils/libubi.a)
 diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
-index 47b0c89..fe2aaf4 100644
+index e72b8dd..47b0c89 100644
 --- a/ubifs-utils/ubifs_dump/ubifs_dump.c
 +++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
-@@ -91,30 +91,30 @@ const char *dbg_snprintf_key(const struct ubifs_info *c,
- 			     const union ubifs_key *key, char *buffer, int len)
- {
- 	char *p = buffer;
--	int type = key_type(c, key);
-+	int type = key_type(key);
+@@ -7,6 +7,7 @@
+ #include "key.h"
+ #include "lpt.h"
+ #include "scan.h"
++#include "hexdump.h"
  
- 	if (c->key_fmt == UBIFS_SIMPLE_KEY_FMT) {
- 		switch (type) {
+ #define DBG_KEY_BUF_LEN		48
  
- 		case UBIFS_INO_KEY:
- 			len -= snprintf(p, len, "(%lu, %s)",
--					(unsigned long)key_inum(c, key),
-+					(unsigned long)key_inum(key),
- 					get_key_type(type));
- 			break;
- 		case UBIFS_DENT_KEY:
- 		case UBIFS_XENT_KEY:
- 			len -= snprintf(p, len, "(%lu, %s, %#08x)",
--					(unsigned long)key_inum(c, key),
--					get_key_type(type), key_hash(c, key));
-+					(unsigned long)key_inum(key),
-+					get_key_type(type), key_hash(key));
- 			break;
- 		case UBIFS_DATA_KEY:
- 			len -= snprintf(p, len, "(%lu, %s, %u)",
--					(unsigned long)key_inum(c, key),
--					get_key_type(type), key_block(c, key));
-+					(unsigned long)key_inum(key),
-+					get_key_type(type), key_block(key));
- 			break;
- 		case UBIFS_TRUN_KEY:
- 			len -= snprintf(p, len, "(%lu, %s)",
--					(unsigned long)key_inum(c, key),
-+					(unsigned long)key_inum(key),
- 					get_key_type(type));
- 			break;
- 		default:
-@@ -252,7 +252,7 @@ void dump_node(const struct ubifs_info *c, const void *node)
- 	{
+@@ -252,26 +253,26 @@ void dump_node(const struct ubifs_info *c, const void *node)
  		const struct ubifs_ino_node *ino = node;
  
--		key_read(c, &ino->key, &key);
-+		key_read(&ino->key, &key);
- 		printf("\t\tkey \t\t\t\t%s\n",
+ 		key_read(c, &ino->key, &key);
+-		printf("\t\tkey \t\t\t%s\n",
++		printf("\t\tkey \t\t\t\t%s\n",
  		       dbg_snprintf_key(c, &key, key_buf, DBG_KEY_BUF_LEN));
  		printf("\t\tcreat_sqnum \t\t\t%llu\n",
-@@ -287,7 +287,7 @@ void dump_node(const struct ubifs_info *c, const void *node)
- 		const struct ubifs_dent_node *dent = node;
+ 		       (unsigned long long)le64_to_cpu(ino->creat_sqnum));
+-		printf("\t\tsize \t\t\t%llu\n",
++		printf("\t\tsize \t\t\t\t%llu\n",
+ 		       (unsigned long long)le64_to_cpu(ino->size));
+-		printf("\t\tnlink \t\t\t%u\n", le32_to_cpu(ino->nlink));
+-		printf("\t\tatime \t\t\t%lld.%u\n",
++		printf("\t\tnlink \t\t\t\t%u\n", le32_to_cpu(ino->nlink));
++		printf("\t\tatime \t\t\t\t%lld.%u\n",
+ 		       (long long)le64_to_cpu(ino->atime_sec),
+ 		       le32_to_cpu(ino->atime_nsec));
+-		printf("\t\tmtime \t\t\t%lld.%u\n",
++		printf("\t\tmtime \t\t\t\t%lld.%u\n",
+ 		       (long long)le64_to_cpu(ino->mtime_sec),
+ 		       le32_to_cpu(ino->mtime_nsec));
+-		printf("\t\tctime \t\t\t%lld.%u\n",
++		printf("\t\tctime \t\t\t\t%lld.%u\n",
+ 		       (long long)le64_to_cpu(ino->ctime_sec),
+ 		       le32_to_cpu(ino->ctime_nsec));
+-		printf("\t\tuid \t\t\t%u\n", le32_to_cpu(ino->uid));
+-		printf("\t\tgid \t\t\t%u\n", le32_to_cpu(ino->gid));
+-		printf("\t\tmode \t\t\t%u\n", le32_to_cpu(ino->mode));
+-		printf("\t\tflags \t\t\t%#x\n", le32_to_cpu(ino->flags));
++		printf("\t\tuid \t\t\t\t%u\n", le32_to_cpu(ino->uid));
++		printf("\t\tgid \t\t\t\t%u\n", le32_to_cpu(ino->gid));
++		printf("\t\tmode \t\t\t\t%u\n", le32_to_cpu(ino->mode));
++		printf("\t\tflags \t\t\t\t%#x\n", le32_to_cpu(ino->flags));
+ 		printf("\t\txattr_cnt \t\t\t%u\n", le32_to_cpu(ino->xattr_cnt));
+ 		printf("\t\txattr_size \t\t\t%u\n", le32_to_cpu(ino->xattr_size));
+ 		printf("\t\txattr_names \t\t\t%u\n", le32_to_cpu(ino->xattr_names));
+@@ -287,13 +288,13 @@ void dump_node(const struct ubifs_info *c, const void *node)
  		int nlen = le16_to_cpu(dent->nlen);
  
--		key_read(c, &dent->key, &key);
-+		key_read(&dent->key, &key);
- 		printf("\t\tkey \t\t\t\t%s\n",
+ 		key_read(c, &dent->key, &key);
+-		printf("\t\tkey \t\t\t%s\n",
++		printf("\t\tkey \t\t\t\t%s\n",
  		       dbg_snprintf_key(c, &key, key_buf, DBG_KEY_BUF_LEN));
- 		printf("\t\tinum \t\t\t\t%llu\n",
-@@ -311,7 +311,7 @@ void dump_node(const struct ubifs_info *c, const void *node)
- 		const struct ubifs_data_node *dn = node;
+-		printf("\t\tinum \t\t\t%llu\n",
++		printf("\t\tinum \t\t\t\t%llu\n",
+ 		       (unsigned long long)le64_to_cpu(dent->inum));
+-		printf("\t\ttype \t\t\t%d\n", (int)dent->type);
+-		printf("\t\tnlen \t\t\t%d\n", nlen);
+-		printf("\t\tname           ");
++		printf("\t\ttype \t\t\t\t%d\n", (int)dent->type);
++		printf("\t\tnlen \t\t\t\t%d\n", nlen);
++		printf("\t\tname \t\t\t\t");
+ 
+ 		if (nlen > UBIFS_MAX_NLEN)
+ 			printf("(bad name length, not printing, bad or corrupted node)");
+@@ -311,12 +312,15 @@ void dump_node(const struct ubifs_info *c, const void *node)
  		int dlen = le32_to_cpu(ch->len) - UBIFS_DATA_NODE_SZ;
  
--		key_read(c, &dn->key, &key);
-+		key_read(&dn->key, &key);
- 		printf("\t\tkey \t\t\t\t%s\n",
+ 		key_read(c, &dn->key, &key);
+-		printf("\t\tkey \t\t\t%s\n",
++		printf("\t\tkey \t\t\t\t%s\n",
  		       dbg_snprintf_key(c, &key, key_buf, DBG_KEY_BUF_LEN));
- 		printf("\t\tsize \t\t\t\t%u\n", le32_to_cpu(dn->size));
-@@ -347,7 +347,7 @@ void dump_node(const struct ubifs_info *c, const void *node)
- 			const struct ubifs_branch *br;
+-		printf("\t\tsize \t\t\t%u\n", le32_to_cpu(dn->size));
++		printf("\t\tsize \t\t\t\t%u\n", le32_to_cpu(dn->size));
+ 		printf("\t\tcompr_typ \t\t\t%d\n",
+ 		       (int)le16_to_cpu(dn->compr_type));
+ 		printf("\t\tdata size \t\t\t%d\n", dlen);
++		printf("\t\tdata:\n");
++		print_hex_dump("\t\t", DUMP_PREFIX_OFFSET, 32, 1,
++			       (void *)&dn->data, dlen, 0);
+ 		break;
+ 	}
+ 	case UBIFS_TRUN_NODE:
+@@ -335,8 +339,8 @@ void dump_node(const struct ubifs_info *c, const void *node)
+ 		const struct ubifs_idx_node *idx = node;
  
- 			br = ubifs_idx_branch(c, idx, i);
--			key_read(c, &br->key, &key);
-+			key_read(&br->key, &key);
- 			printf("\t\t%d: LEB %d:%d len %d key %s\n",
- 			       i, le32_to_cpu(br->lnum), le32_to_cpu(br->offs),
- 			       le32_to_cpu(br->len),
+ 		n = le16_to_cpu(idx->child_cnt);
+-		printf("\t\tchild_cnt \t\t%d\n", n);
+-		printf("\t\tlevel \t\t\t%d\n", (int)le16_to_cpu(idx->level));
++		printf("\t\tchild_cnt \t\t\t%d\n", n);
++		printf("\t\tlevel \t\t\t\t%d\n", (int)le16_to_cpu(idx->level));
+ 		printf("\t\tBranches:\n");
+ 
+ 		for (i = 0; i < n && i < c->fanout - 1; i++) {
 -- 
 1.8.4.2
