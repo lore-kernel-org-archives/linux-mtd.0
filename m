@@ -1,7 +1,7 @@
-Received: from andre.telenet-ops.be ([195.130.132.53])
+Received: from baptiste.telenet-ops.be ([195.130.132.51])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAxnP-00019Q-FJ
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 10:34:28 +0000
+ id 1aAxnP-00019V-Kp
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 10:34:30 +0000
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
  Gregory Clement <gregory.clement@free-electrons.com>,
@@ -13,10 +13,10 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
  linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 1/9] ARM: mvebu: ix4-300d: Add compatible property to
+Subject: [PATCH v2 7/9] ARM: shmobile: gose dts: Add compatible property to
  "partitions" node
-Date: Mon, 21 Dec 2015 11:33:45 +0100
-Message-Id: <1450694033-27717-2-git-send-email-geert+renesas@glider.be>
+Date: Mon, 21 Dec 2015 11:33:51 +0100
+Message-Id: <1450694033-27717-8-git-send-email-geert+renesas@glider.be>
 In-Reply-To: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -39,20 +39,20 @@ Acked-by: Brian Norris <computersforpeace@gmail.com>
 v2:
   - Add Acked-by.
 ---
- arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts | 1 +
+ arch/arm/boot/dts/r8a7793-gose.dts | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts b/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts
-index 13cf69a8d0fb392b..fb9e1bbf23385b85 100644
---- a/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts
-+++ b/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts
-@@ -152,6 +152,7 @@
- 				nand-on-flash-bbt;
+diff --git a/arch/arm/boot/dts/r8a7793-gose.dts b/arch/arm/boot/dts/r8a7793-gose.dts
+index 077ab9423f5e17d6..3d4bd3c02c4fece0 100644
+--- a/arch/arm/boot/dts/r8a7793-gose.dts
++++ b/arch/arm/boot/dts/r8a7793-gose.dts
+@@ -128,6 +128,7 @@
+ 		m25p,fast-read;
  
- 				partitions {
-+					compatible = "fixed-partitions";
- 					#address-cells = <1>;
- 					#size-cells = <1>;
+ 		partitions {
++			compatible = "fixed-partitions";
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
  
 -- 
 1.9.1
