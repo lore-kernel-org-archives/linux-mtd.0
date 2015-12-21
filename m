@@ -1,6 +1,6 @@
-Received: from albert.telenet-ops.be ([195.130.137.90])
+Received: from laurent.telenet-ops.be ([195.130.137.89])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAxnQ-00019b-QZ
+ id 1aAxnQ-00019h-QY
  for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 10:34:34 +0000
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
@@ -13,10 +13,10 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
  linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 4/9] ARM: shmobile: lager dts: Add compatible property to
+Subject: [PATCH v2 3/9] ARM: shmobile: bockw dts: Add compatible property to
  "partitions" node
-Date: Mon, 21 Dec 2015 11:33:48 +0100
-Message-Id: <1450694033-27717-5-git-send-email-geert+renesas@glider.be>
+Date: Mon, 21 Dec 2015 11:33:47 +0100
+Message-Id: <1450694033-27717-4-git-send-email-geert+renesas@glider.be>
 In-Reply-To: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -39,14 +39,14 @@ Acked-by: Brian Norris <computersforpeace@gmail.com>
 v2:
   - Add Acked-by.
 ---
- arch/arm/boot/dts/r8a7790-lager.dts | 1 +
+ arch/arm/boot/dts/r8a7778-bockw.dts | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/r8a7790-lager.dts b/arch/arm/boot/dts/r8a7790-lager.dts
-index 7773cb1f10317d85..cdc0414f5f0716dd 100644
---- a/arch/arm/boot/dts/r8a7790-lager.dts
-+++ b/arch/arm/boot/dts/r8a7790-lager.dts
-@@ -457,6 +457,7 @@
+diff --git a/arch/arm/boot/dts/r8a7778-bockw.dts b/arch/arm/boot/dts/r8a7778-bockw.dts
+index 482228b8a984656e..06ceefe3cb500dc7 100644
+--- a/arch/arm/boot/dts/r8a7778-bockw.dts
++++ b/arch/arm/boot/dts/r8a7778-bockw.dts
+@@ -212,6 +212,7 @@
  		m25p,fast-read;
  
  		partitions {
