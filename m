@@ -1,19 +1,19 @@
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAyvc-00038T-Pa
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 11:47:01 +0000
-Message-ID: <1450698397.2276.3.camel@gmail.com>
-Subject: Re: [PATCH] UBIFS: add a comment in key.h for unused parameter
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, linux-mtd@lists.infradead.org
-Cc: richard@nod.at, david@sigma-star.at
-Date: Mon, 21 Dec 2015 13:46:37 +0200
-In-Reply-To: <1450581920-21780-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-References: <1450581920-21780-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v5 0/5] Add memory mapped read support for ti-qspi
+To: Tony Lindgren <tony@atomide.com>, Brian Norris
+ <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>
+References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
+CC: Rob Herring <robh+dt@kernel.org>, Russell King <linux@arm.linux.org.uk>,
+ <hramrach@gmail.com>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <5677EA76.6000108@ti.com>
+Date: Mon, 21 Dec 2015 17:33:02 +0530
+MIME-Version: 1.0
+In-Reply-To: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +23,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2015-12-20 at 11:25 +0800, Dongsheng Yang wrote:
-> Add a comment in key.h to explain why we keep an unused
-> parameter in key helpers.
-> 
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> ---
->  fs/ubifs/key.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/fs/ubifs/key.h b/fs/ubifs/key.h
-> index 92a8491..dce72c4 100644
-> --- a/fs/ubifs/key.h
-> +++ b/fs/ubifs/key.h
-> @@ -34,6 +34,12 @@
->   * node. We use "r5" hash borrowed from reiserfs.
->   */
->  
-> +/*
-> + * Lot's of the key helpers require a struct ubifs_info *c as the
-> first parameter.
-> + * But we are not using it at all currently. That's designed for
-> scalability for
-> + * different c->key_format. But right now, there is only one key
-> type, UBIFS_SIMPLE_KEY_FMT.
-> + */
 
-I think word "scalability" is not a perfect fit here. Just say for
-future extensions, or something like this. Scalability is a bit
-confusing.
+
+On 12/11/2015 09:39 AM, Vignesh R wrote:
+> Changes since v4:
+> Use syscon to access system control module register in ti-qspi driver.
+> 
+> Changes since v3:
+> Rework to introduce spi_flash_read_message struct.
+> Support different opcode/addr/data formats as per Brian's suggestion
+> here: https://lkml.org/lkml/2015/11/11/454
+> 
+
+Gentle Ping on the series...
+
+
+> Changes since v2:
+> Remove mmap_lock_mutex.
+> Optimize enable/disable of mmap mode.
+> 
+> Changes since v1:
+> Introduce API in SPI core that MTD flash driver can call for mmap read
+> instead of directly calling spi-master driver callback. This API makes
+> sure that SPI core msg queue is locked during mmap transfers.
+> v1: https://lkml.org/lkml/2015/9/4/103
+> 
+> 
+> Cover letter:
+> 
+> This patch series adds support for memory mapped read port of ti-qspi.
+> ti-qspi has a special memory mapped port through which SPI flash
+> memories can be accessed directly via SoC specific memory region.
+> 
+> First patch adds a method to pass flash specific information like read
+> opcode, dummy bytes etc and to request mmap read. Second patch
+> implements mmap read method in ti-qspi driver. Patch 3 adapts m25p80 to
+> use mmap read method before trying normal SPI transfer. Patch 4 and 5
+> add memory map region DT entries for DRA7xx and AM43xx SoCs.
+> 
+> This patch series is based on the discussions here:
+> http://www.spinics.net/lists/linux-spi/msg04796.html
+> 
+> Tested on DRA74 EVM and AM437x-SK.
+> Read performance increases from ~100kB/s to ~2.5MB/s.
+> 
+> Vignesh R (5):
+>   spi: introduce accelerated read support for spi flash devices
+>   spi: spi-ti-qspi: add mmap mode read support
+>   mtd: devices: m25p80: add support for mmap read request
+>   ARM: dts: DRA7: add entry for qspi mmap region
+>   ARM: dts: AM4372: add entry for qspi mmap region
+> 
+>  Documentation/devicetree/bindings/spi/ti_qspi.txt |  22 +++-
+>  arch/arm/boot/dts/am4372.dtsi                     |   4 +-
+>  arch/arm/boot/dts/dra7.dtsi                       |   6 +-
+>  drivers/mtd/devices/m25p80.c                      |  20 ++++
+>  drivers/spi/spi-ti-qspi.c                         | 139 +++++++++++++++++-----
+>  drivers/spi/spi.c                                 |  45 +++++++
+>  include/linux/spi/spi.h                           |  41 +++++++
+>  7 files changed, 243 insertions(+), 34 deletions(-)
+> 
+
+-- 
+Regards
+Vignesh
