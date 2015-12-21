@@ -1,15 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwAa-0000ke-IA
+ id 1aAwAa-0000mL-MG
  for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:18 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 05/38] ubifs: cut off the dependence from devtable to
- mkfs.ubifs.h
-Date: Mon, 21 Dec 2015 16:41:28 +0800
-Message-ID: <1450687321-12381-6-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 01/38] ubifs: pick some common definitions into ubifs_common.h
+Date: Mon, 21 Dec 2015 16:41:24 +0800
+Message-ID: <1450687321-12381-2-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -23,161 +22,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Refactor the devtable related definitions in mkfs.ubifs.h
-to a new devtable.h
+Currently, lpt.c is including mkfs.ubifs.h. That make
+the lpt depend on mkfs.ubifs. It's not good if we want
+to introduce some more tools for ubifs, such as fsck.ubifs.
+
+This patch start to cut off the dependence from libs, such
+as lpt, devtable, to mkfs.ubifs.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/mkfs.ubifs/devtable.c   |  3 +-
- ubifs-utils/mkfs.ubifs/devtable.h   | 55 +++++++++++++++++++++++++++++++++++++
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.h | 54 +-----------------------------------
- 3 files changed, 58 insertions(+), 54 deletions(-)
- create mode 100644 ubifs-utils/mkfs.ubifs/devtable.h
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.h   | 46 +-------------------------------
+ ubifs-utils/mkfs.ubifs/ubifs_common.h | 50 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 51 insertions(+), 45 deletions(-)
+ create mode 100644 ubifs-utils/mkfs.ubifs/ubifs_common.h
 
-diff --git a/ubifs-utils/mkfs.ubifs/devtable.c b/ubifs-utils/mkfs.ubifs/devtable.c
-index dee035d..1fc0256 100644
---- a/ubifs-utils/mkfs.ubifs/devtable.c
-+++ b/ubifs-utils/mkfs.ubifs/devtable.c
-@@ -44,7 +44,8 @@
-  * for more information about what the device table is.
-  */
- 
--#include "mkfs.ubifs.h"
-+#include "ubifs_common.h"
-+#include "devtable.h"
- #include "hashtable/hashtable.h"
- #include "hashtable/hashtable_itr.h"
- 
-diff --git a/ubifs-utils/mkfs.ubifs/devtable.h b/ubifs-utils/mkfs.ubifs/devtable.h
-new file mode 100644
-index 0000000..987d4d4
---- /dev/null
-+++ b/ubifs-utils/mkfs.ubifs/devtable.h
-@@ -0,0 +1,55 @@
-+#include "ubifs_common.h"
-+
-+/**
-+ * struct path_htbl_element - an element of the path hash table.
-+ * @path: the UBIFS path the element describes (the key of the element)
-+ * @name_htbl: one more (nested) hash table containing names of all
-+ *             files/directories/device nodes which should be created at this
-+ *             path
-+ *
-+ * See device table handling for more information.
-+ */
-+struct path_htbl_element {
-+	const char *path;
-+	struct hashtable *name_htbl;
-+};
-+
-+/**
-+ * struct name_htbl_element - an element in the name hash table
-+ * @name: name of the file/directory/device node (the key of the element)
-+ * @mode: accsess rights and file type
-+ * @uid: user ID
-+ * @gid: group ID
-+ * @major: device node major number
-+ * @minor: device node minor number
-+ *
-+ * This is an element of the name hash table. Name hash table sits in the path
-+ * hash table elements and describes file names which should be created/changed
-+ * at this path.
-+ */
-+struct name_htbl_element {
-+	const char *name;
-+	unsigned int mode;
-+	unsigned int uid;
-+	unsigned int gid;
-+	dev_t dev;
-+};
-+
-+extern struct ubifs_info info_;
-+
-+struct hashtable_itr;
-+
-+int parse_devtable(const char *tbl_file);
-+struct path_htbl_element *devtbl_find_path(const char *path);
-+struct name_htbl_element *devtbl_find_name(struct path_htbl_element *ph_elt,
-+					   const char *name);
-+int override_attributes(struct stat *st, struct path_htbl_element *ph_elt,
-+			struct name_htbl_element *nh_elt);
-+struct name_htbl_element *
-+first_name_htbl_element(struct path_htbl_element *ph_elt,
-+			struct hashtable_itr **itr);
-+struct name_htbl_element *
-+next_name_htbl_element(struct path_htbl_element *ph_elt,
-+			struct hashtable_itr **itr);
-+void free_devtable_info(void);
-+
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
-index ba646a6..1963e12 100644
+index 944a159..d6d46a2 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.h
-@@ -34,6 +34,7 @@
- #include "key.h"
- #include "lpt.h"
- #include "compr.h"
-+#include "devtable.h"
- #include "io.h"
+@@ -23,37 +23,12 @@
+ #ifndef __MKFS_UBIFS_H__
+ #define __MKFS_UBIFS_H__
  
- /*
-@@ -50,57 +51,4 @@
+-#include <unistd.h>
+-#include <stdlib.h>
+-#include <stdio.h>
+-#include <limits.h>
+-#include <string.h>
+-#include <stdint.h>
+-#include <endian.h>
+-#include <byteswap.h>
+-#include <linux/types.h>
+-#include <linux/fs.h>
+-
+-#include <getopt.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/ioctl.h>
+-#include <fcntl.h>
+-#include <dirent.h>
+-#include <errno.h>
+-#include <libgen.h>
+-#include <ctype.h>
+-#include <uuid/uuid.h>
+-#include <sys/file.h>
+-
+-#include <mtd/ubifs-media.h>
++#include "ubifs_common.h"
+ 
+ /* common.h requires the PROGRAM_NAME macro */
+ #define PROGRAM_NAME "mkfs.ubifs"
+ #include "common.h"
+ 
+-#include "libubi.h"
+-#include "defs.h"
+ #include "crc16.h"
+ #include "ubifs.h"
+ #include "key.h"
+@@ -74,25 +49,6 @@
  #error MKFS_UBIFS_COMPR_ZLIB != UBIFS_COMPR_ZLIB
  #endif
  
--/**
-- * struct path_htbl_element - an element of the path hash table.
-- * @path: the UBIFS path the element describes (the key of the element)
-- * @name_htbl: one more (nested) hash table containing names of all
-- *             files/directories/device nodes which should be created at this
-- *             path
-- *
-- * See device table handling for more information.
-- */
--struct path_htbl_element {
--	const char *path;
--	struct hashtable *name_htbl;
--};
+-extern int verbose;
+-extern int debug_level;
 -
--/**
-- * struct name_htbl_element - an element in the name hash table
-- * @name: name of the file/directory/device node (the key of the element)
-- * @mode: accsess rights and file type
-- * @uid: user ID
-- * @gid: group ID
-- * @major: device node major number
-- * @minor: device node minor number
-- *
-- * This is an element of the name hash table. Name hash table sits in the path
-- * hash table elements and describes file names which should be created/changed
-- * at this path.
-- */
--struct name_htbl_element {
--	const char *name;
--	unsigned int mode;
--	unsigned int uid;
--	unsigned int gid;
--	dev_t dev;
--};
+-#define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
+-	printf("mkfs.ubifs: %s: " fmt "\n", __FUNCTION__, ##__VA_ARGS__); \
+-} while(0)
 -
--extern struct ubifs_info info_;
+-#define err_msg(fmt, ...) ({                                \
+-	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__); \
+-	-1;                                                 \
+-})
 -
--struct hashtable_itr;
+-#define sys_err_msg(fmt, ...) ({                                         \
+-	int err_ = errno;                                                \
+-	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__);              \
+-	fprintf(stderr, "       %s (error %d)\n", strerror(err_), err_); \
+-	-1;                                                              \
+-})
 -
--int parse_devtable(const char *tbl_file);
--struct path_htbl_element *devtbl_find_path(const char *path);
--struct name_htbl_element *devtbl_find_name(struct path_htbl_element *ph_elt,
--					   const char *name);
--int override_attributes(struct stat *st, struct path_htbl_element *ph_elt,
--			struct name_htbl_element *nh_elt);
--struct name_htbl_element *
--first_name_htbl_element(struct path_htbl_element *ph_elt,
--			struct hashtable_itr **itr);
--struct name_htbl_element *
--next_name_htbl_element(struct path_htbl_element *ph_elt,
--		       struct hashtable_itr **itr);
--void free_devtable_info(void);
--
- #endif
+ /**
+  * struct path_htbl_element - an element of the path hash table.
+  * @path: the UBIFS path the element describes (the key of the element)
+diff --git a/ubifs-utils/mkfs.ubifs/ubifs_common.h b/ubifs-utils/mkfs.ubifs/ubifs_common.h
+new file mode 100644
+index 0000000..958c20a
+--- /dev/null
++++ b/ubifs-utils/mkfs.ubifs/ubifs_common.h
+@@ -0,0 +1,50 @@
++#ifndef __UBIFS_COMMON_H__
++#define __UBIFS_COMMON_H__
++
++#include <unistd.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <limits.h>
++#include <string.h>
++#include <stdint.h>
++#include <endian.h>
++#include <byteswap.h>
++#include <linux/types.h>
++#include <linux/fs.h>
++
++#include <getopt.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/ioctl.h>
++#include <fcntl.h>
++#include <dirent.h>
++#include <errno.h>
++#include <libgen.h>
++#include <ctype.h>
++#include <uuid/uuid.h>
++#include <sys/file.h>
++
++#include <mtd/ubifs-media.h>
++
++#include "libubi.h"
++#include "defs.h"
++
++extern int verbose;
++extern int debug_level;
++
++#define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
++	printf("ubifs: %s: " fmt "\n", __FUNCTION__, ##__VA_ARGS__); \
++} while(0)
++
++#define err_msg(fmt, ...) ({                                \
++	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__); \
++	-1;                                                 \
++})
++
++#define sys_err_msg(fmt, ...) ({                                         \
++	int err_ = errno;                                                \
++	fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__);              \
++	fprintf(stderr, "       %s (error %d)\n", strerror(err_), err_); \
++	-1;                                                              \
++})
++#endif
 -- 
 1.8.4.2
