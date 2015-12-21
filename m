@@ -1,18 +1,24 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aB1GK-0006eJ-Ai
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 14:16:33 +0000
-From: Markus Pargmann <mpa@pengutronix.de>
-To: David Woodhouse <dwmw2@infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie.huang@intel.com>,
- Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
- Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH] gpmi-nand: Handle ECC Errors in erased pages
-Date: Mon, 21 Dec 2015 15:15:51 +0100
-Message-Id: <1450707351-9029-1-git-send-email-mpa@pengutronix.de>
+From: Gregory CLEMENT <gregory.clement@free-electrons.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>,
+ Ralf Baechle <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>,
+ Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-sh@vger.kernel.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/9] ARM: mvebu: ix4-300d: Add compatible property to
+ "partitions" node
+References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
+ <1450694033-27717-2-git-send-email-geert+renesas@glider.be>
+Date: Mon, 21 Dec 2015 17:48:48 +0100
+In-Reply-To: <1450694033-27717-2-git-send-email-geert+renesas@glider.be>
+ (Geert Uytterhoeven's message of "Mon, 21 Dec 2015 11:33:45 +0100")
+Message-ID: <87zix3rbm7.fsf@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,102 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ECC is only calculated for written pages. As erased pages are not
-actively written the ECC is always invalid. For this purpose the
-Hardware BCH unit is able to check for erased pages and does not raise
-an ECC error in this case. This behaviour can be influenced using the
-BCH_MODE register which sets the number of allowed bitflips in an erased
-page. Unfortunately the unit is not capable of fixing the bitflips in
-memory.
+Hi Geert,
+=20
+ On lun., d=C3=A9c. 21 2015, Geert Uytterhoeven <geert+renesas@glider.be> w=
+rote:
 
-To avoid complete software checks for erased pages, we can simply check
-buffers with uncorrectable ECC errors because we know that any erased
-page with errors is uncorrectable by the BCH unit.
+> As of commit e488ca9f8d4f62c2 ("doc: dt: mtd: partitions: add compatible
+> property to "partitions" node"), the "partitions" subnode of an SPI
+> FLASH device node must have a compatible property. The partitions are no
+> longer detected if it is not present.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-This patch adds the generic nand_check_erased_ecc_chunk() to gpmi-nand
-to correct erased pages. To have the valid data in the buffer before
-using them, this patch moves the read_page_swap_end() call before the
-ECC status checking for-loop.
+Applied on mvebu/dt (with the hope that it is still time to push it to
+arm-soc)
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 49 ++++++++++++++++++++++++++++++----
- 1 file changed, 44 insertions(+), 5 deletions(-)
+Thanks,
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 2064adac1d17..51ad1c500e9c 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1035,14 +1035,58 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	/* Loop over status bytes, accumulating ECC status. */
- 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
- 
-+	read_page_swap_end(this, buf, nfc_geo->payload_size,
-+			   this->payload_virt, this->payload_phys,
-+			   nfc_geo->payload_size,
-+			   payload_virt, payload_phys);
-+
- 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
- 		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
- 			continue;
- 
- 		if (*status == STATUS_UNCORRECTABLE) {
-+			int flips;
-+
-+			/*
-+			 * The ECC hardware has an uncorrectable ECC status
-+			 * code in case we have bitflips in an erased page. As
-+			 * nothing was written into this subpage the ECC is
-+			 * obviously wrong and we can not trust it. We assume
-+			 * at this point that we are reading an erased page and
-+			 * try to correct the bitflips in buffer up to
-+			 * ecc_strength bitflips. If this is a page with random
-+			 * data, we exceed this number of bitflips and have a
-+			 * ECC failure. Otherwise we use the corrected buffer.
-+			 */
-+			if (i == 0) {
-+				/* The first block includes metadata */
-+				flips = nand_check_erased_ecc_chunk(
-+						buf + i * nfc_geo->ecc_chunk_size,
-+						nfc_geo->ecc_chunk_size,
-+						NULL, 0,
-+						auxiliary_virt,
-+						nfc_geo->metadata_size,
-+						nfc_geo->ecc_strength);
-+			} else {
-+				flips = nand_check_erased_ecc_chunk(
-+						buf + i * nfc_geo->ecc_chunk_size,
-+						nfc_geo->ecc_chunk_size,
-+						NULL, 0,
-+						NULL, 0,
-+						nfc_geo->ecc_strength);
-+			}
-+
-+			if (flips > 0) {
-+				max_bitflips = max_t(unsigned int, max_bitflips,
-+						     flips);
-+				mtd->ecc_stats.corrected += flips;
-+				continue;
-+			}
-+
- 			mtd->ecc_stats.failed++;
- 			continue;
- 		}
-+
- 		mtd->ecc_stats.corrected += *status;
- 		max_bitflips = max_t(unsigned int, max_bitflips, *status);
- 	}
-@@ -1062,11 +1106,6 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 		chip->oob_poi[0] = ((uint8_t *) auxiliary_virt)[0];
- 	}
- 
--	read_page_swap_end(this, buf, nfc_geo->payload_size,
--			this->payload_virt, this->payload_phys,
--			nfc_geo->payload_size,
--			payload_virt, payload_phys);
--
- 	return max_bitflips;
- }
- 
--- 
-2.6.2
+Gregory
+
+> ---
+> v2:
+>   - Add Acked-by.
+> ---
+>  arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts b/arch/arm/b=
+oot/dts/armada-xp-lenovo-ix4-300d.dts
+> index 13cf69a8d0fb392b..fb9e1bbf23385b85 100644
+> --- a/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts
+> +++ b/arch/arm/boot/dts/armada-xp-lenovo-ix4-300d.dts
+> @@ -152,6 +152,7 @@
+>  				nand-on-flash-bbt;
+>=20=20
+>  				partitions {
+> +					compatible =3D "fixed-partitions";
+>  					#address-cells =3D <1>;
+>  					#size-cells =3D <1>;
+>=20=20
+> --=20
+> 1.9.1
+>
+
+--=20
+Gregory Clement, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
