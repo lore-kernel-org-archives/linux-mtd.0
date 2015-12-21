@@ -1,14 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwAw-0001wk-2D
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:41 +0000
+ id 1aAwAu-0001xO-Ok
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:43 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 19/38] ubifs: ubifs_dump: dump log area
-Date: Mon, 21 Dec 2015 16:41:42 +0800
-Message-ID: <1450687321-12381-20-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 07/38] ubifs: move more functions into io lib
+Date: Mon, 21 Dec 2015 16:41:30 +0800
+Message-ID: <1450687321-12381-8-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,170 +22,283 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-scan the log lebs and dump the log nodes out.
+Move some common functions in mkfs.ubifs.c to io.c
+to let others can use them.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/ubifs_dump/ubifs_dump.c | 140 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 140 insertions(+)
+ ubifs-utils/include/io.h            |   4 ++
+ ubifs-utils/lib/io.c                | 101 +++++++++++++++++++++++++++++++++++
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 102 +-----------------------------------
+ 3 files changed, 107 insertions(+), 100 deletions(-)
 
-diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
-index 4f67621..d7a2951 100644
---- a/ubifs-utils/ubifs_dump/ubifs_dump.c
-+++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
-@@ -581,6 +581,142 @@ static int dump_master(void)
+diff --git a/ubifs-utils/include/io.h b/ubifs-utils/include/io.h
+index e24d0c6..920645d 100644
+--- a/ubifs-utils/include/io.h
++++ b/ubifs-utils/include/io.h
+@@ -10,6 +10,10 @@
+ extern int out_fd;
+ extern int out_ubi;
+ extern libubi_t ubi;
++extern char *output;
+ 
+ int write_leb(struct ubifs_info *c, int lnum, int len, void *buf);
++int close_target(void);
++int open_target(struct ubifs_info *c, int yes);
++int open_ubi(struct ubifs_info *c, const char *node);
+ #endif
+diff --git a/ubifs-utils/lib/io.c b/ubifs-utils/lib/io.c
+index 7aba0a6..9817d2a 100644
+--- a/ubifs-utils/lib/io.c
++++ b/ubifs-utils/lib/io.c
+@@ -5,6 +5,107 @@
+ int out_fd;
+ int out_ubi;
+ libubi_t ubi;
++char *output;
++
++/**
++ * check_volume_empty - check if the UBI volume is empty.
++ *
++ * This function checks if the UBI volume is empty by looking if its LEBs are
++ * mapped or not.
++ *
++ * Returns %0 in case of success, %1 is the volume is not empty,
++ * and a negative error code in case of failure.
++ */
++static int check_volume_empty(struct ubifs_info *c)
++{
++	int lnum, err;
++
++	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
++		err = ubi_is_mapped(out_fd, lnum);
++		if (err < 0)
++			return err;
++		if (err == 1)
++			return 1;
++	}
++	return 0;
++}
++
++/**
++ * open_ubi - open the UBI volume.
++ * @node: name of the UBI volume character device to fetch information about
++ *
++ * Returns %0 in case of success and %-1 in case of failure
++ */
++int open_ubi(struct ubifs_info *c, const char *node)
++{
++	struct stat st;
++
++	if (stat(node, &st) || !S_ISCHR(st.st_mode))
++		return -1;
++
++	ubi = libubi_open();
++	if (!ubi)
++		return -1;
++	if (ubi_get_vol_info(ubi, node, &c->vi))
++		return -1;
++	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di))
++		return -1;
++	return 0;
++}
++
++/**
++ * open_target - open the output target.
++ * @yes: always ansure yes
++ *
++ * Open the output target. The target can be an UBI volume
++ * or a file.
++ *
++ * Returns %0 in case of success and %-1 in case of failure.
++ */
++int open_target(struct ubifs_info *c, int yes)
++{
++	if (out_ubi) {
++		out_fd = open(output, O_RDWR | O_EXCL);
++
++		if (out_fd == -1)
++			return sys_err_msg("cannot open the UBI volume '%s'",
++					   output);
++		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1))
++			return sys_err_msg("ubi_set_property failed");
++
++		if (!yes && check_volume_empty(c)) {
++			if (!prompt("UBI volume is not empty.  Format anyways?", false))
++				return err_msg("UBI volume is not empty");
++		}
++	} else {
++		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
++			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
++		if (out_fd == -1)
++			return sys_err_msg("cannot create output file '%s'",
++					   output);
++	}
++	return 0;
++}
++
++/**
++ * close_target - close the output target.
++ *
++ * Close the output target. If the target was an UBI
++ * volume, also close libubi.
++ *
++ * Returns %0 in case of success and %-1 in case of failure.
++ */
++int close_target(void)
++{
++	if (ubi)
++		libubi_close(ubi);
++	if (out_fd >= 0 && close(out_fd) == -1)
++		return sys_err_msg("cannot close the target '%s'", output);
++	if (output)
++		free(output);
++	return 0;
++}
++
+ 
+ /**
+  * write_leb - copy the image of a LEB to the output target.
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index b2df5b1..8ac09f2 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -110,7 +110,6 @@ int yes;
+ static char *root;
+ static int root_len;
+ static struct stat root_st;
+-static char *output;
+ static int squash_owner;
+ static int do_create_inum_attr;
+ 
+@@ -446,28 +445,6 @@ static long long get_bytes(const char *str)
+ 
+ 	return bytes;
+ }
+-/**
+- * open_ubi - open the UBI volume.
+- * @node: name of the UBI volume character device to fetch information about
+- *
+- * Returns %0 in case of success and %-1 in case of failure
+- */
+-static int open_ubi(const char *node)
+-{
+-	struct stat st;
+-
+-	if (stat(node, &st) || !S_ISCHR(st.st_mode))
+-		return -1;
+-
+-	ubi = libubi_open();
+-	if (!ubi)
+-		return -1;
+-	if (ubi_get_vol_info(ubi, node, &c->vi))
+-		return -1;
+-	if (ubi_get_dev_info1(ubi, c->vi.dev_num, &c->di))
+-		return -1;
+-	return 0;
+-}
+ 
+ static int get_options(int argc, char**argv)
+ {
+@@ -643,7 +620,7 @@ static int get_options(int argc, char**argv)
+ 	if (!output)
+ 		return err_msg("not output device or file specified");
+ 
+-	out_ubi = !open_ubi(output);
++	out_ubi = !open_ubi(c, output);
+ 
+ 	if (out_ubi) {
+ 		c->min_io_size = c->di.min_io_size;
+@@ -2248,81 +2225,6 @@ static int write_orphan_area(void)
  	return 0;
  }
  
-+static int __dump_log_leb(int leb_num)
-+{
-+	int err = 0;
-+	struct ubifs_scan_leb *sleb;
-+	struct ubifs_scan_node *snod;
-+	const struct ubifs_cs_node *node;
-+	static int cs_sqnum = 0;
-+	int lnum = leb_num;
-+	loff_t offs = 0;
-+	int node_num = 0;
-+
-+	sleb = ubifs_scan(c, lnum, offs, leb_buf, 0);
-+	if (IS_ERR(sleb)) {
-+		printf("Error in scaning log leb");
-+		return PTR_ERR(sleb);
-+	}
-+
-+	if (sleb->nodes_cnt == 0) {
-+		err = 1;
-+		goto out;
-+	}
-+
-+	node = sleb->buf;
-+	snod = list_entry(sleb->nodes.next, struct ubifs_scan_node, list);
-+	if (cs_sqnum == 0) {
-+		/*
-+		 * This is the first log LEB we are looking at, make sure that
-+		 * the first node is a commit start node. Also record its
-+		 * sequence number so that UBIFS can determine where the log
-+		 * ends, because all nodes which were have higher sequence
-+		 * numbers.
-+		 */
-+		if (snod->type != UBIFS_CS_NODE) {
-+			ubifs_err(c, "first log node at LEB %d:%lu is not CS node",
-+				  lnum, offs);
-+			goto out_dump;
-+		}
-+		if (le64_to_cpu(node->cmt_no) != mst.cmt_no) {
-+			ubifs_err(c, "first CS node at LEB %d:%lu has wrong commit number %llu expected %llu",
-+				  lnum, offs,
-+				  (unsigned long long)le64_to_cpu(node->cmt_no),
-+				  mst.cmt_no);
-+			goto out_dump;
-+		}
-+
-+		cs_sqnum = le64_to_cpu(node->ch.sqnum);
-+	}
-+
-+	if (snod->sqnum < cs_sqnum) {
-+		/*
-+		 * This means that we reached end of log and now
-+		 * look to the older log data, which was already
-+		 * committed but the eraseblock was not erased (UBIFS
-+		 * only un-maps it). So this basically means we have to
-+		 * exit with "end of log" code.
-+		 */
-+		err = 1;
-+		goto out;
-+	}
-+
-+	/* Make sure the first node sits at offset zero of the LEB */
-+	if (snod->offs != 0) {
-+		ubifs_err(c, "first node is not at zero offset");
-+		goto out_dump;
-+	}
-+
-+	printf("\tLOG LEB %d\n", lnum);
-+	list_for_each_entry(snod, &sleb->nodes, list) {
-+		if (snod->sqnum < cs_sqnum) {
-+			ubifs_err(c, "bad sqnum %llu, commit sqnum %d",
-+				  snod->sqnum, cs_sqnum);
-+			goto out_dump;
-+		}
-+
-+		printf("\tNODE %d", node_num++);
-+		switch (snod->type) {
-+		case UBIFS_CS_NODE:
-+			printf(" <START COMMIT>");
-+		case UBIFS_REF_NODE: {
-+			printf(":\n");
-+			dump_node(c, snod->node);
-+			break;
-+		}
-+		default:
-+			ubifs_err(c, "unexpected node in log");
-+			goto out_dump;
-+		}
-+	}
-+	err = !sleb->endpt;
-+out:
-+	ubifs_scan_destroy(sleb);
-+	return err;
-+
-+out_dump:
-+	ubifs_err(c, "log error detected while replaying the log at LEB %d:%lu",
-+		  lnum, offs + snod->offs);
-+	ubifs_scan_destroy(sleb);
-+	return -EINVAL;
-+
-+}
-+
-+static int dump_log(void)
-+{
-+	int err, lnum, ltail_lnum, log_last;
-+
-+	lnum = ltail_lnum = mst.log_lnum;
-+	log_last = UBIFS_LOG_LNUM + sup.log_lebs - 1;
-+	printf("LOG AREA:\n");
-+	while (lnum <= log_last) {
-+		err = __dump_log_leb(lnum);
-+		if (err == 1) {
-+			if (lnum != mst.log_lnum)
-+				/* We hit the end of the log */
-+				break;
-+
-+			/*
-+			 * The head of the log must always start with the
-+			 * "commit start" node on a properly formatted UBIFS.
-+			 * But we found no nodes at all, which means that
-+			 * someting went wrong and we cannot proceed mounting
-+			 * the file-system.
-+			 */
-+			ubifs_err(c, "no UBIFS nodes found at the log head LEB %d:%d, possibly corrupted",
-+				  lnum, 0);
-+			err = -EINVAL;
-+		}
-+		if (err)
-+			goto out;
-+		lnum++;
-+	}
-+
-+	err = 0;
-+out:
-+	return err;
-+}
-+
- static int dump()
- {
- 	int err = 0;
-@@ -598,6 +734,10 @@ static int dump()
- 	err = dump_master();
+-/**
+- * check_volume_empty - check if the UBI volume is empty.
+- *
+- * This function checks if the UBI volume is empty by looking if its LEBs are
+- * mapped or not.
+- *
+- * Returns %0 in case of success, %1 is the volume is not empty,
+- * and a negative error code in case of failure.
+- */
+-static int check_volume_empty(void)
+-{
+-	int lnum, err;
+-
+-	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
+-		err = ubi_is_mapped(out_fd, lnum);
+-		if (err < 0)
+-			return err;
+-		if (err == 1)
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+-/**
+- * open_target - open the output target.
+- *
+- * Open the output target. The target can be an UBI volume
+- * or a file.
+- *
+- * Returns %0 in case of success and %-1 in case of failure.
+- */
+-static int open_target(void)
+-{
+-	if (out_ubi) {
+-		out_fd = open(output, O_RDWR | O_EXCL);
+-
+-		if (out_fd == -1)
+-			return sys_err_msg("cannot open the UBI volume '%s'",
+-					   output);
+-		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1))
+-			return sys_err_msg("ubi_set_property failed");
+-
+-		if (!yes && check_volume_empty()) {
+-			if (!prompt("UBI volume is not empty.  Format anyways?", false))
+-				return err_msg("UBI volume is not empty");
+-		}
+-	} else {
+-		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
+-			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-		if (out_fd == -1)
+-			return sys_err_msg("cannot create output file '%s'",
+-					   output);
+-	}
+-	return 0;
+-}
+-
+-
+-/**
+- * close_target - close the output target.
+- *
+- * Close the output target. If the target was an UBI
+- * volume, also close libubi.
+- *
+- * Returns %0 in case of success and %-1 in case of failure.
+- */
+-static int close_target(void)
+-{
+-	if (ubi)
+-		libubi_close(ubi);
+-	if (out_fd >= 0 && close(out_fd) == -1)
+-		return sys_err_msg("cannot close the target '%s'", output);
+-	if (output)
+-		free(output);
+-	return 0;
+-}
+ 
+ /**
+  * init - initialize things.
+@@ -2473,7 +2375,7 @@ int main(int argc, char *argv[])
  	if (err)
- 		goto free;
-+
-+	err = dump_log();
-+	if (err)
-+		goto free;
- free:
- 	free(leb_buf);
- out:
+ 		return err;
+ 
+-	err = open_target();
++	err = open_target(c, yes);
+ 	if (err)
+ 		return err;
+ 
 -- 
 1.8.4.2
