@@ -1,14 +1,15 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwAk-0000ke-P3
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:28 +0000
+ id 1aAwAn-0000ke-JO
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:33 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 08/38] ubifs: introduce a new tool ubifs_dump
-Date: Mon, 21 Dec 2015 16:41:31 +0800
-Message-ID: <1450687321-12381-9-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 11/38] ubifs: copy some important functions in key.h from
+ kernel to ubifs-utils
+Date: Mon, 21 Dec 2015 16:41:34 +0800
+Message-ID: <1450687321-12381-12-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,114 +23,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Init a new tool named as ubifs_dump
+We need some more functions in key.h, then copy it from kernel.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- Makefile                            |  8 ++++-
- ubifs-utils/ubifs_dump/ubifs_dump.c | 68 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 75 insertions(+), 1 deletion(-)
- create mode 100644 ubifs-utils/ubifs_dump/ubifs_dump.c
+ ubifs-utils/include/key.h | 76 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 75 insertions(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index ad0526f..a1aaa6e 100644
---- a/Makefile
-+++ b/Makefile
-@@ -25,7 +25,8 @@ UBI_BINS = \
- 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
- 	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
- UBIFS_BINS = \
--	mkfs.ubifs/mkfs.ubifs
-+	mkfs.ubifs/mkfs.ubifs \
-+	ubifs_dump/ubifs_dump
- JFFSX_BINS = \
- 	mkfs.jffs2 sumtool jffs2reader jffs2dump
- NAND_BINS = \
-@@ -128,6 +129,11 @@ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-co
- #
- $(foreach v,crc16.o lpt.o compr.o devtable.o io.o hashtable.o hashtable_itr.o,$(eval UBIFS_LIBS += ../lib/$(v)))
+diff --git a/ubifs-utils/include/key.h b/ubifs-utils/include/key.h
+index 39379fd..1b61928 100644
+--- a/ubifs-utils/include/key.h
++++ b/ubifs-utils/include/key.h
+@@ -37,6 +37,8 @@
+ #ifndef __UBIFS_KEY_H__
+ #define __UBIFS_KEY_H__
  
-+obj-ubifs_dump = $(UBIFS_LIBS)
-+LDFLAGS_ubifs_dump = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
-+LDLIBS_ubifs_dump = -lz -llzo2 -lm -luuid
-+$(call mkdep,ubifs-utils/ubifs_dump/,ubifs_dump,,ubi-utils/libubi.a)
++#include "defs.h"
 +
- obj-mkfs.ubifs = $(UBIFS_LIBS)
- LDFLAGS_mkfs.ubifs = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
- LDLIBS_mkfs.ubifs = -lz $(LZOLDLIBS) -lm -luuid
-diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
-new file mode 100644
-index 0000000..bbe1269
---- /dev/null
-+++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
-@@ -0,0 +1,68 @@
-+#include "ubifs_common.h"
-+#define PROGRAM_NAME "ubifs-dump"
-+#include "common.h"
-+#include "io.h"
-+
-+static const char *optstring = "";
-+
-+static const struct option longopts[] = {
-+	{NULL, 0, NULL, 0}
-+};
-+
-+struct ubifs_info info_;
-+static struct ubifs_info *c = &info_;
-+
-+static int get_options(int argc, char**argv)
+ /**
+  * key_mask_hash - mask a valid hash value.
+  * @val: value to be masked
+@@ -107,7 +109,7 @@ static inline void ino_key_init(union ubifs_key *key, ino_t inum)
+  * @inum: parent inode number
+  * @nm: direntry name and length
+  */
+-static inline void dent_key_init(const struct ubifs_info *c,
++static inline void dent_key_init(const struct ubifs_info *c __attribute__((unused)),
+ 				 union ubifs_key *key, ino_t inum,
+ 				 const struct qstr *nm)
+ {
+@@ -204,4 +206,76 @@ static inline int keys_cmp(const union ubifs_key *key1,
+ 	return 0;
+ }
+ 
++/**
++ * key_read - transform a key to in-memory format.
++ * @c: UBIFS file-system description object
++ * @from: the key to transform
++ * @to: the key to store the result
++ */
++static inline void key_read(const struct ubifs_info *c __attribute__((unused)), const void *from,
++			    union ubifs_key *to)
 +{
-+	int opt, i;
++	const union ubifs_key *f = from;
 +
-+	while (1) {
-+		opt = getopt_long(argc, argv, optstring, longopts, &i);
-+		if (opt == -1)
-+			break;
-+		switch (opt) {
-+		default:
-+			break;
-+		}
-+	}
-+
-+	if (optind != argc && !output)
-+		output = xstrdup(argv[optind]);
-+
-+	if (!output)
-+		return err_msg("not output device or file specified");
-+
-+	if (open_ubi(c, output))
-+		return err_msg("open ubi (%s) failed.", output);
-+
-+	return 0;
++	to->u32[0] = le32_to_cpu(f->j32[0]);
++	to->u32[1] = le32_to_cpu(f->j32[1]);
 +}
 +
-+static int dump()
++/**
++ * invalid_key_init - initialize invalid node key.
++ * @c: UBIFS file-system description object
++ * @key: key to initialize
++ *
++ * This is a helper function which marks a @key object as invalid.
++ */
++static inline void invalid_key_init(const struct ubifs_info *c __attribute__((unused)),
++				    union ubifs_key *key)
 +{
-+	return 0;
++	key->u32[0] = 0xDEADBEAF;
++	key->u32[1] = UBIFS_INVALID_KEY;
++}
++/**
++ * key_type - get key type.
++ * @c: UBIFS file-system description object
++ * @key: key to get type of
++ */
++static inline int key_type(const struct ubifs_info *c __attribute__((unused)),
++			   const union ubifs_key *key)
++{
++	return key->u32[1] >> UBIFS_S_KEY_BLOCK_BITS;
 +}
 +
-+int main(int argc, char *argv[])
++/*
++ * key_hash - get directory entry hash.
++ * @c: UBIFS file-system description object
++ * @key: the key to get hash from
++ */
++static inline uint32_t key_hash(const struct ubifs_info *c __attribute__((unused)),
++				const union ubifs_key *key)
 +{
-+	int err;
-+
-+	err = get_options(argc, argv);
-+	if (err)
-+		return err;
-+	err = open_target(c, 1);
-+	if (err)
-+		return err;
-+
-+	err = dump();
-+	if (err) {
-+		close_target();
-+		return err;
-+	}
-+
-+	err = close_target();
-+	if (err)
-+		return err;
-+
-+	return 0;
++	return key->u32[1] & UBIFS_S_KEY_HASH_MASK;
 +}
++
++/**
++ * key_inum - fetch inode number from key.
++ * @c: UBIFS file-system description object
++ * @k: key to fetch inode number from
++ */
++static inline ino_t key_inum(const struct ubifs_info *c __attribute__((unused)), const void *k)
++{
++	const union ubifs_key *key = k;
++
++	return key->u32[0];
++}
++
++/**
++ * key_block - get data block number.
++ * @c: UBIFS file-system description object
++ * @key: the key to get the block number from
++ */
++static inline unsigned int key_block(const struct ubifs_info *c __attribute__((unused)),
++				     const union ubifs_key *key)
++{
++	return key->u32[1] & UBIFS_S_KEY_BLOCK_MASK;
++}
+ #endif /* !__UBIFS_KEY_H__ */
 -- 
 1.8.4.2
