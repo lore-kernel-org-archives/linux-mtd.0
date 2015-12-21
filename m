@@ -1,6 +1,6 @@
-Received: from albert.telenet-ops.be ([195.130.137.90])
+Received: from laurent.telenet-ops.be ([195.130.137.89])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAxnQ-00019j-Qo
+ id 1aAxnQ-00019k-QU
  for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 10:34:32 +0000
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
@@ -13,10 +13,10 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
  linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 2/9] ARM: mvebu: kirkwood: Add compatible property to
+Subject: [PATCH v2 8/9] ARM: shmobile: silk dts: Add compatible property to
  "partitions" node
-Date: Mon, 21 Dec 2015 11:33:46 +0100
-Message-Id: <1450694033-27717-3-git-send-email-geert+renesas@glider.be>
+Date: Mon, 21 Dec 2015 11:33:52 +0100
+Message-Id: <1450694033-27717-9-git-send-email-geert+renesas@glider.be>
 In-Reply-To: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,24 +34,25 @@ FLASH device node must have a compatible property. The partitions are no
 longer detected if it is not present.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
 v2:
-  - New.
+  - Add Acked-by.
 ---
- arch/arm/boot/dts/kirkwood-pogoplug-series-4.dts | 1 +
+ arch/arm/boot/dts/r8a7794-silk.dts | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/kirkwood-pogoplug-series-4.dts b/arch/arm/boot/dts/kirkwood-pogoplug-series-4.dts
-index 1db6f2c506cce320..8082d64266a37c33 100644
---- a/arch/arm/boot/dts/kirkwood-pogoplug-series-4.dts
-+++ b/arch/arm/boot/dts/kirkwood-pogoplug-series-4.dts
-@@ -131,6 +131,7 @@
- 	chip-delay = <40>;
- 	status = "okay";
- 	partitions {
-+		compatible = "fixed-partitions";
- 		#address-cells = <1>;
- 		#size-cells = <1>;
+diff --git a/arch/arm/boot/dts/r8a7794-silk.dts b/arch/arm/boot/dts/r8a7794-silk.dts
+index eb608283a24c070c..c0ae94979a71b04c 100644
+--- a/arch/arm/boot/dts/r8a7794-silk.dts
++++ b/arch/arm/boot/dts/r8a7794-silk.dts
+@@ -217,6 +217,7 @@
+ 		m25p,fast-read;
+ 
+ 		partitions {
++			compatible = "fixed-partitions";
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
  
 -- 
 1.9.1
