@@ -1,14 +1,13 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwB6-0001xO-Tj
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:54 +0000
+ id 1aAwBB-0001wk-R6
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:50:56 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
-CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
- <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 23/38] ubifs: ubifs_dump: dump index area
-Date: Mon, 21 Dec 2015 16:41:46 +0800
-Message-ID: <1450687321-12381-24-git-send-email-yangds.fnst@cn.fujitsu.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 33/38] ubifs: keep scan buffer in ubifs_info
+Date: Mon, 21 Dec 2015 16:41:56 +0800
+Message-ID: <1450687321-12381-34-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -22,125 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Scan the whole index tree and dump each index node.
+From: David Gstir <david@sigma-star.at>
 
-Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+Like in der kernel's UBIFS code, we keep a single scan buffer in the ubifs_info
+struct for all scan-related functions to use.
+
+Signed-off-by: David Gstir <david@sigma-star.at>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/ubifs_dump/ubifs_dump.c | 95 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
+ ubifs-utils/include/ubifs.h         | 2 ++
+ ubifs-utils/ubifs_dump/ubifs_dump.c | 1 +
+ 2 files changed, 3 insertions(+)
 
+diff --git a/ubifs-utils/include/ubifs.h b/ubifs-utils/include/ubifs.h
+index 1678663..4a3212f 100644
+--- a/ubifs-utils/include/ubifs.h
++++ b/ubifs-utils/include/ubifs.h
+@@ -329,6 +329,7 @@ enum {
+  * @vi: UBI volume information
+  *
+  * @gc_lnum: LEB number used for garbage collection
++ * @sbuf: a buffer of LEB size used by GC and replay for scanning
+  * @rp_size: reserved pool size
+  *
+  * @space_bits: number of bits needed to record free or dirty space
+@@ -407,6 +408,7 @@ struct ubifs_info
+ 	struct ubi_vol_info vi;
+ 
+ 	int gc_lnum;
++	void *sbuf;
+ 	long long rp_size;
+ 
+ 	int space_bits;
 diff --git a/ubifs-utils/ubifs_dump/ubifs_dump.c b/ubifs-utils/ubifs_dump/ubifs_dump.c
-index 4b255e3..e72b8dd 100644
+index fe2aaf4..4cbf755 100644
 --- a/ubifs-utils/ubifs_dump/ubifs_dump.c
 +++ b/ubifs-utils/ubifs_dump/ubifs_dump.c
-@@ -883,6 +883,97 @@ static int dump_lpt(void)
- 	return 0;
- }
+@@ -991,6 +991,7 @@ static int dump()
+ 		err = -ENOMEM;
+ 		goto out;
+ 	}
++	c->sbuf = leb_buf;
  
-+/**
-+ * ubifs_read_node - read node.
-+ * @c: UBIFS file-system description object
-+ * @buf: buffer to read to
-+ * @type: node type
-+ * @len: node length (not aligned)
-+ * @lnum: logical eraseblock number
-+ * @offs: offset within the logical eraseblock
-+ *
-+ * This function reads a node of known type and and length, checks it and
-+ * stores in @buf. Returns zero in case of success, %-EUCLEAN if CRC mismatched
-+ * and a negative error code in case of failure.
-+ */
-+int ubifs_read_node(const struct ubifs_info *c, void *buf, int len,
-+		    int lnum, loff_t offs)
-+{
-+	int err;
-+
-+	ubifs_assert(lnum >= 0 && lnum < c->leb_cnt && offs >= 0);
-+	ubifs_assert(len >= UBIFS_CH_SZ && offs + len <= c->leb_size);
-+	ubifs_assert(!(offs & 7) && offs < c->leb_size);
-+	ubifs_assert(type >= 0 && type < UBIFS_NODE_TYPES_CNT);
-+
-+	err = ubifs_read((loff_t)lnum * c->leb_size + offs, len, buf);
-+	if (err && err != -EBADMSG)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static int dump_zbr(struct ubifs_info *c, struct ubifs_zbranch *zbr)
-+{
-+	int i = 0;
-+	int err = 0;
-+	struct ubifs_idx_node *idx;
-+	void *buf;
-+
-+	buf = malloc(zbr->len);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	err = ubifs_read_node(c, buf, zbr->len, zbr->lnum, zbr->offs);
-+	if (err)
-+		goto out;
-+
-+	dump_node(c, buf);
-+
-+	if (((struct ubifs_ch *)buf)->node_type != UBIFS_IDX_NODE)
-+		goto out;
-+
-+	idx = ((struct ubifs_idx_node *)buf);
-+	for (i = 0; i < le16_to_cpu(idx->child_cnt); i++) {
-+		struct ubifs_branch *br;
-+		struct ubifs_zbranch child;
-+
-+		br = ubifs_idx_branch(c, idx, i);
-+		child.lnum = le32_to_cpu(br->lnum);
-+		child.offs = le32_to_cpu(br->offs);
-+		child.len = le32_to_cpu(br->len);
-+		err = dump_zbr(c, &child);
-+		if (err)
-+			goto out;
-+	}
-+
-+out:
-+	free(buf);
-+	return err;
-+}
-+
-+static int dump_index()
-+{
-+	int err = 0;
-+
-+	printf("\tINDEX AREA: \n");
-+	err = dump_zbr(c, &c->zroot);
-+	if (err)
-+		return err;
-+	return 0;
-+}
-+
-+static int dump_main()
-+{
-+	int err = 0;
-+	printf("MAIN AREA: \n");
-+	err = dump_index();
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
- static int dump()
- {
- 	int err = 0;
-@@ -908,6 +999,10 @@ static int dump()
- 	err = dump_lpt();
+ 	err = dump_master();
  	if (err)
- 		goto free;
-+
-+	err = dump_main();
-+	if (err)
-+		goto free;
- free:
- 	free(leb_buf);
- out:
 -- 
 1.8.4.2
