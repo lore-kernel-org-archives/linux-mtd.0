@@ -1,13 +1,14 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwBS-0000mf-8C
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:51:22 +0000
+ id 1aAwBV-0001wk-8a
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:51:25 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
-CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 28/38] ubifs: add complete version of list.h
-Date: Mon, 21 Dec 2015 16:41:51 +0800
-Message-ID: <1450687321-12381-29-git-send-email-yangds.fnst@cn.fujitsu.com>
+CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
+ <yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 37/38] ubifs: add emubi, a minimal UBI emulation layer
+Date: Mon, 21 Dec 2015 16:42:00 +0800
+Message-ID: <1450687321-12381-38-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
@@ -21,561 +22,606 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Richard Weinberger <richard@nod.at>
+From: David Gstir <david@sigma-star.at>
 
-See http://lists.infradead.org/pipermail/linux-mtd/2015-October/062421.html
+emubi enables processing of ubi images (e.g. created using nanddump) as input
+instead of using the ubi volume directly.
 
+Signed-off-by: David Gstir <david@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/include/list.h | 305 +++++++++++++++++++++++++++++++--------------
- 1 file changed, 213 insertions(+), 92 deletions(-)
+ Makefile                    |   2 +-
+ ubifs-utils/include/emubi.h |  81 ++++++++++
+ ubifs-utils/include/io.h    |   2 +
+ ubifs-utils/include/ubifs.h |   3 +
+ ubifs-utils/lib/emubi.c     | 351 ++++++++++++++++++++++++++++++++++++++++++++
+ ubifs-utils/lib/io.c        |  60 ++++++++
+ ubifs-utils/lib/scan.c      |   2 +-
+ 7 files changed, 499 insertions(+), 2 deletions(-)
+ create mode 100644 ubifs-utils/include/emubi.h
+ create mode 100644 ubifs-utils/lib/emubi.c
 
-diff --git a/ubifs-utils/include/list.h b/ubifs-utils/include/list.h
-index 0cffa33..080ea39 100644
---- a/ubifs-utils/include/list.h
-+++ b/ubifs-utils/include/list.h
-@@ -17,6 +17,10 @@
- #ifndef _LINUX_LIST_H
- #define _LINUX_LIST_H
+diff --git a/Makefile b/Makefile
+index c892787..1486791 100644
+--- a/Makefile
++++ b/Makefile
+@@ -127,7 +127,7 @@ $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-co
+ #
+ # Utils in ubifs-utils subdir
+ #
+-$(foreach v,crc16.o lpt.o compr.o devtable.o io.o hashtable.o hashtable_itr.o,$(eval UBIFS_LIBS += ../lib/$(v)))
++$(foreach v,crc16.o lpt.o compr.o devtable.o emubi.o io.o hashtable.o hashtable_itr.o,$(eval UBIFS_LIBS += ../lib/$(v)))
  
-+struct list_head {
-+	struct list_head *next, *prev;
+ obj-ubifs_dump = $(UBIFS_LIBS)
+ obj-ubifs_dump += ../lib/scan.o ../lib/master.o ../lib/lprops.o ../lib/hexdump.o
+diff --git a/ubifs-utils/include/emubi.h b/ubifs-utils/include/emubi.h
+new file mode 100644
+index 0000000..e06ba7d
+--- /dev/null
++++ b/ubifs-utils/include/emubi.h
+@@ -0,0 +1,81 @@
++/*
++ * Copyright (C) 2015 sigma star gmbh
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program; if not, write to the Free Software Foundation, Inc., 51
++ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++ *
++ * Authors: Richard Weinberger
++ *          David Gstir
++ */
++
++#ifndef __UBIFS_EMUBI_H__
++#define __UBIFS_EMUBI_H__
++
++#include <assert.h>
++#include "list.h"
++
++enum {
++	EMUBI_MODE_FILE,
++	EMUBI_MODE_MMAP
 +};
 +
- #define LIST_POISON1  ((struct list_head *) 0x00100100)
- #define LIST_POISON2  ((struct list_head *) 0x00200200)
++/*
++ * LEB to PEB mapping.
++ * @pnum: PEB number this LEB belongs to, (for mode EMUBI_MODE_FILE)
++ * @data: pointer to start of PEB data (for mode EMUBI_MODE_MMAP)
++ */
++union emubi_eba {
++	int pnum;
++	char *data;
++};
++
++/*
++ * embui context
++ * @peb_size: PEB size in bytes
++ * @page_size: min I/O size used for UBI data (this is not the sub-page size)
++ * @vol_id: volume id
++ * @flash_fd: file descriptor of input file
++ * @mode: emubi mode
++ * @flash_mmap: mmap-ed input file when mode is set to EMUBI_MODE_MMAP
++ * @flash_size: total flash size in bytes
++ * @peb_count: total number of PEBs
++ * @leb_start: offset where LEB data starts
++ * @ff_peb: empty PEB
++ * @eba: eraseblock association table
++ * @scan_lebs: list of scanned LEBs
++ */
++struct emubi_ctx {
++	int peb_size;
++	int page_size;
++	int vol_id;
++
++	int flash_fd;
++	int mode;
++	char *flash_mmap;
++	unsigned long flash_size;
++
++	unsigned int peb_count;
++	unsigned int leb_start;
++	char *ff_peb;
++	union emubi_eba *eba;
++
++	struct list_head scan_lebs;
++};
++
++void emubi_print(struct emubi_ctx *ctx);
++int emubi_scan(struct emubi_ctx *ctx);
++int emubi_open(struct emubi_ctx *ctx, char *file);
++int emubi_leb_read(struct emubi_ctx *ctx, unsigned int lnum, unsigned int offset,
++		   char *lbuf, size_t len);
++
++#endif
+diff --git a/ubifs-utils/include/io.h b/ubifs-utils/include/io.h
+index 11f568c..e5c3d6c 100644
+--- a/ubifs-utils/include/io.h
++++ b/ubifs-utils/include/io.h
+@@ -18,4 +18,6 @@ int open_target(struct ubifs_info *c, int yes);
+ int open_ubi(struct ubifs_info *c, const char *node);
  
-@@ -30,10 +34,6 @@
-  * using the generic single-entry routines.
-  */
- 
--struct list_head {
--	struct list_head *next, *prev;
--};
--
- #define LIST_HEAD_INIT(name) { &(name), &(name) }
- 
- #define LIST_HEAD(name) \
-@@ -52,17 +52,17 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
-  * the prev/next entries already!
-  */
- #ifndef CONFIG_DEBUG_LIST
--static inline void __list_add(struct list_head *xnew,
-+static inline void __list_add(struct list_head *new,
- 			      struct list_head *prev,
- 			      struct list_head *next)
- {
--	next->prev = xnew;
--	xnew->next = next;
--	xnew->prev = prev;
--	prev->next = xnew;
-+	next->prev = new;
-+	new->next = next;
-+	new->prev = prev;
-+	prev->next = new;
- }
- #else
--extern void __list_add(struct list_head *xnew,
-+extern void __list_add(struct list_head *new,
- 			      struct list_head *prev,
- 			      struct list_head *next);
+ int ubifs_read(loff_t offset, int len, void *buf);
++int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
++		   int len);
  #endif
-@@ -75,14 +75,10 @@ extern void __list_add(struct list_head *xnew,
-  * Insert a new entry after the specified head.
-  * This is good for implementing stacks.
+diff --git a/ubifs-utils/include/ubifs.h b/ubifs-utils/include/ubifs.h
+index 54ca865..f03601d 100644
+--- a/ubifs-utils/include/ubifs.h
++++ b/ubifs-utils/include/ubifs.h
+@@ -28,6 +28,7 @@
+ #include "defs.h"
+ #include "list.h"
+ #include "libubi.h"
++#include "emubi.h"
+ 
+ /* Maximum logical eraseblock size in bytes */
+ #define UBIFS_MAX_LEB_SZ (2*1024*1024)
+@@ -380,6 +381,7 @@ enum {
+  * @lsave_offs: offset of LPT's save table
+  * @lsave: LPT's save table
+  * @lscan_lnum: LEB number of last LPT scan
++ * @emubi: emubi context for working with image files
+  * @verbose: verbose mode enabled
   */
--#ifndef CONFIG_DEBUG_LIST
--static inline void list_add(struct list_head *xnew, struct list_head *head)
-+static inline void list_add(struct list_head *new, struct list_head *head)
- {
--	__list_add(xnew, head, head->next);
-+	__list_add(new, head, head->next);
- }
--#else
--extern void list_add(struct list_head *xnew, struct list_head *head);
--#endif
+ struct ubifs_info
+@@ -472,6 +474,7 @@ struct ubifs_info
+ 	int max_idx_node_sz;
  
- 
+ 	int max_znode_sz;
++	struct emubi_ctx *emubi;
+ 	int verbose;
+ };
  /**
-@@ -93,9 +89,9 @@ extern void list_add(struct list_head *xnew, struct list_head *head);
-  * Insert a new entry before the specified head.
-  * This is useful for implementing queues.
-  */
--static inline void list_add_tail(struct list_head *xnew, struct list_head *head)
-+static inline void list_add_tail(struct list_head *new, struct list_head *head)
- {
--	__list_add(xnew, head->prev, head);
-+	__list_add(new, head->prev, head);
- }
- 
- /*
-@@ -114,10 +110,15 @@ static inline void __list_del(struct list_head * prev, struct list_head * next)
- /**
-  * list_del - deletes entry from list.
-  * @entry: the element to delete from the list.
-- * Note: list_empty on entry does not return true after this, the entry is
-+ * Note: list_empty() on entry does not return true after this, the entry is
-  * in an undefined state.
-  */
- #ifndef CONFIG_DEBUG_LIST
-+static inline void __list_del_entry(struct list_head *entry)
+diff --git a/ubifs-utils/lib/emubi.c b/ubifs-utils/lib/emubi.c
+new file mode 100644
+index 0000000..1c88eea
+--- /dev/null
++++ b/ubifs-utils/lib/emubi.c
+@@ -0,0 +1,351 @@
++/*
++ * Copyright (C) 2015 sigma star gmbh
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program; if not, write to the Free Software Foundation, Inc., 51
++ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++ *
++ * Authors: Richard Weinberger
++ *          David Gstir
++ */
++
++#define PROGRAM_NAME "emubi"
++
++#include <sys/mman.h>
++
++#include "emubi.h"
++#include "common.h"
++#include "ubifs_common.h"
++#include "crc32.h"
++#include "xalloc.h"
++
++struct ubi_scan_leb {
++	struct list_head l;
++	int lnum;
++	int pnum;
++	unsigned long long sqnum;
++	unsigned int copy_flag:1;
++};
++
++static inline int get_peb(struct emubi_ctx *ctx, unsigned int pnum, char **pbuf,
++			  unsigned int offset, unsigned int len)
 +{
-+	__list_del(entry->prev, entry->next);
++	off_t pos;
++
++	if (pnum >= ctx->peb_count)
++		errmsg_die("Invalid PEB number %u", pnum);
++
++	if (offset >= ctx->peb_size)
++		errmsg_die("Invalid read offset %u (PEB size %u)", offset, ctx->peb_size);
++
++	if (len > ctx->peb_size - offset)
++		return errmsg("Invalid read outside of PEB (size %u, offset %u, read len %u)",
++			      ctx->peb_size, offset, len);
++
++	pos = (pnum * ctx->peb_size) + offset;
++	switch (ctx->mode) {
++	case EMUBI_MODE_MMAP:
++		*pbuf = ctx->flash_mmap + pos;
++		break;
++	case EMUBI_MODE_FILE:
++		if (!*pbuf)
++			errmsg_die("pbuf must not be null!");
++
++		if (lseek(ctx->flash_fd, pos, SEEK_SET) != pos)
++			return errmsg("Failed to lseek input file: %m");
++
++		if (read(ctx->flash_fd, *pbuf, len) != len)
++			return errmsg("Failed to read from input file: %m");
++
++		break;
++	default:
++		return errmsg("Invalid emubi mode %d", ctx->mode);
++	}
++
++	return 0;
 +}
 +
- static inline void list_del(struct list_head *entry)
- {
- 	__list_del(entry->prev, entry->next);
-@@ -125,6 +126,7 @@ static inline void list_del(struct list_head *entry)
- 	entry->prev = LIST_POISON2;
- }
- #else
-+extern void __list_del_entry(struct list_head *entry);
- extern void list_del(struct list_head *entry);
- #endif
- 
-@@ -132,30 +134,32 @@ extern void list_del(struct list_head *entry);
-  * list_replace - replace old entry by new one
-  * @old : the element to be replaced
-  * @new : the new element to insert
-- * Note: if 'old' was empty, it will be overwritten.
-+ *
-+ * If @old was empty, it will be overwritten.
-  */
- static inline void list_replace(struct list_head *old,
--				struct list_head *xnew)
-+				struct list_head *new)
- {
--	xnew->next = old->next;
--	xnew->next->prev = xnew;
--	xnew->prev = old->prev;
--	xnew->prev->next = xnew;
-+	new->next = old->next;
-+	new->next->prev = new;
-+	new->prev = old->prev;
-+	new->prev->next = new;
- }
- 
- static inline void list_replace_init(struct list_head *old,
--					struct list_head *xnew)
-+					struct list_head *new)
- {
--	list_replace(old, xnew);
-+	list_replace(old, new);
- 	INIT_LIST_HEAD(old);
- }
-+
- /**
-  * list_del_init - deletes entry from list and reinitialize it.
-  * @entry: the element to delete from the list.
-  */
- static inline void list_del_init(struct list_head *entry)
- {
--	__list_del(entry->prev, entry->next);
-+	__list_del_entry(entry);
- 	INIT_LIST_HEAD(entry);
- }
- 
-@@ -166,8 +170,8 @@ static inline void list_del_init(struct list_head *entry)
-  */
- static inline void list_move(struct list_head *list, struct list_head *head)
- {
--        __list_del(list->prev, list->next);
--        list_add(list, head);
-+	__list_del_entry(list);
-+	list_add(list, head);
- }
- 
- /**
-@@ -178,8 +182,8 @@ static inline void list_move(struct list_head *list, struct list_head *head)
- static inline void list_move_tail(struct list_head *list,
- 				  struct list_head *head)
- {
--        __list_del(list->prev, list->next);
--        list_add_tail(list, head);
-+	__list_del_entry(list);
-+	list_add_tail(list, head);
- }
- 
- /**
-@@ -221,6 +225,69 @@ static inline int list_empty_careful(const struct list_head *head)
- 	return (next == head) && (next == head->prev);
- }
- 
-+/**
-+ * list_rotate_left - rotate the list to the left
-+ * @head: the head of the list
-+ */
-+static inline void list_rotate_left(struct list_head *head)
++int emubi_leb_read(struct emubi_ctx *ctx, unsigned int lnum, unsigned int offset,
++		   char *lbuf, size_t len)
 +{
-+	struct list_head *first;
++	char *leb;
++	int err;
 +
-+	if (!list_empty(head)) {
-+		first = head->next;
-+		list_move_tail(first, head);
++	if (lnum >= ctx->peb_count)
++		return errmsg("LEB number invalid %u!", lnum);
++
++	switch (ctx->mode) {
++	case EMUBI_MODE_MMAP:
++		if (ctx->eba[lnum].data)
++			leb = ctx->eba[lnum].data;
++		else
++			leb = ctx->ff_peb;
++
++		memcpy(lbuf, leb + ctx->leb_start + offset, len);
++		break;
++	case EMUBI_MODE_FILE:
++		if (ctx->eba[lnum].pnum == -1) {
++			memset(lbuf, 0xFF, len);
++		} else {
++			err = get_peb(ctx, ctx->eba[lnum].pnum, &lbuf,
++				      ctx->leb_start + offset, len);
++			if (err)
++				return errmsg("LEB read failed: %m");
++		}
++
++		break;
++	default:
++		errmsg_die("Unknown emubi mode!");
++	}
++
++	return 0;
++}
++
++static struct ubi_scan_leb *scan_leb_new(int pnum, struct ubi_vid_hdr *vh)
++{
++	struct ubi_scan_leb *sl = xmalloc(sizeof(*sl));
++
++	sl->lnum = be32toh(vh->lnum);
++	sl->sqnum = be64toh(vh->sqnum);
++	sl->pnum = pnum;
++	sl->copy_flag = !!vh->copy_flag;
++
++	return sl;
++}
++
++static int scan_leb_crc_check(struct emubi_ctx *ctx, int pnum, struct ubi_vid_hdr *vh, char *pbuf)
++{
++	int data_len;
++	uint32_t data_crc, crc;
++
++	if (!vh->copy_flag)
++		return 0;
++
++	data_len = be32toh(vh->data_size);
++	if (!data_len)
++		return 0;
++
++	assert(data_len <= ctx->peb_size - ctx->leb_start);
++
++	data_crc = be32toh(vh->data_crc);
++	crc = mtd_crc32(UBI_CRC32_INIT, pbuf + ctx->leb_start, data_len);
++
++	if (crc != data_crc) {
++		errmsg("crc mismatch in peb %i", pnum);
++		return -1;
++	}
++
++	return 0;
++}
++
++static void scan_leb_apply(struct emubi_ctx *ctx, int pnum, struct ubi_vid_hdr *scan_vh, char *pbuf)
++{
++	struct ubi_scan_leb *tmp_sl, *sl, *dup_sl = NULL;
++	int lnum = be32toh(scan_vh->lnum);
++
++	if (scan_leb_crc_check(ctx, pnum, scan_vh, pbuf) < 0)
++		return;
++
++	list_for_each_entry(tmp_sl, &ctx->scan_lebs, l) {
++		if (tmp_sl->lnum == lnum) {
++			dup_sl = tmp_sl;
++			break;
++		}
++	}
++
++	sl = scan_leb_new(pnum, scan_vh);
++
++	if (sl->lnum >= ctx->peb_count) {
++		warnmsg("Found a LEB >= PEB count! Image truncated?");
++		return;
++	}
++
++	if (!dup_sl) {
++		list_add_tail(&sl->l, &ctx->scan_lebs);
++
++		return;
++	}
++
++	if (dup_sl->sqnum == sl->sqnum)
++		errmsg_die("Duplicate LEB with identical UBI sequence number!");
++
++	if (dup_sl->sqnum > sl->sqnum) {
++		free(sl);
++	} else {
++		list_del(&dup_sl->l);
++		free(dup_sl);
++		list_add_tail(&sl->l, &ctx->scan_lebs);
 +	}
 +}
 +
-+/**
-+ * list_is_singular - tests whether a list has just one entry.
-+ * @head: the list to test.
-+ */
-+static inline int list_is_singular(const struct list_head *head)
++static int eba_from_scan(struct emubi_ctx *ctx)
 +{
-+	return !list_empty(head) && (head->next == head->prev);
++	struct ubi_scan_leb *sl;
++
++	list_for_each_entry(sl, &ctx->scan_lebs, l) {
++		switch (ctx->mode) {
++		case EMUBI_MODE_MMAP:
++			ctx->eba[sl->lnum].data = ctx->flash_mmap + (sl->pnum * ctx->peb_size);
++			break;
++		case EMUBI_MODE_FILE:
++			ctx->eba[sl->lnum].pnum = sl->pnum;
++			break;
++		default:
++			return errmsg("Invalid emubi mode %d", ctx->mode);
++		}
++	}
++
++	return 0;
 +}
 +
-+static inline void __list_cut_position(struct list_head *list,
-+		struct list_head *head, struct list_head *entry)
++void emubi_print(struct emubi_ctx *ctx)
 +{
-+	struct list_head *new_first = entry->next;
-+	list->next = head->next;
-+	list->next->prev = list;
-+	list->prev = entry;
-+	entry->next = list;
-+	head->next = new_first;
-+	new_first->prev = head;
++	normsg("flash metadata:");
++	printf("\tPEB size: ");
++	print_bytes(ctx->peb_size, 0);
++	printf("\n\tmin. I/O unit size: ");
++	print_bytes(ctx->page_size, 0);
++	printf("\n\tvolume ID: %d", ctx->vol_id);
++
++	if (ctx->flash_mmap) {
++		printf("\n\tflash size: ");
++		print_bytes(ctx->flash_size, 0);
++		printf("\n\tPEB count: %u", ctx->peb_count);
++		printf("\n\tdata offset: %u", ctx->leb_start);
++	}
++	printf("\n\temubi mode: %s\n", (ctx->mode == EMUBI_MODE_MMAP) ? "mmap" : "file");
 +}
 +
-+/**
-+ * list_cut_position - cut a list into two
-+ * @list: a new list to add all removed entries
-+ * @head: a list with entries
-+ * @entry: an entry within head, could be the head itself
-+ *	and if so we won't cut the list
++static int is_empty(struct emubi_ctx *ctx, char *pbuf, size_t len)
++{
++	return memcmp(pbuf, ctx->ff_peb, len) == 0;
++}
++
++static inline void init_eba(struct emubi_ctx *ctx, int leb_start)
++{
++	int i;
++	//TODO: replace peb_count by correct value from vol table
++	ctx->eba = xcalloc(ctx->peb_count, sizeof(ctx->eba[0]));
++	ctx->leb_start = leb_start;
++
++	if (ctx->mode == EMUBI_MODE_FILE) {
++		for (i = 0; i < ctx->peb_count; i++) {
++			ctx->eba[i].pnum = -1;
++		}
++	}
++}
++
++int emubi_scan(struct emubi_ctx *ctx)
++{
++	int n, err;
++	char *pbuf = NULL;
++
++	INIT_LIST_HEAD(&ctx->scan_lebs);
++
++	if (ctx->mode == EMUBI_MODE_FILE)
++		pbuf = xmalloc(ctx->peb_size);
++
++	normsg("scanning for logical erase blocks...");
++	for (n = 0; n < ctx->peb_count; n++) {
++		err = get_peb(ctx, n, &pbuf, 0, ctx->peb_size);
++		if (err)
++			goto out;
++
++		struct ubi_ec_hdr *ec = (struct ubi_ec_hdr *)pbuf;
++		struct ubi_vid_hdr *vid;
++
++		if (be32toh(ec->magic) != UBI_EC_HDR_MAGIC) {
++			errmsg("PEB %u contains no valid EC header\n", n);
++			continue;
++		}
++
++		vid = (struct ubi_vid_hdr *)(pbuf + be32toh(ec->vid_hdr_offset));
++		if (be32toh(vid->magic) != UBI_VID_HDR_MAGIC) {
++			/* skip over pebs with empty vid header */
++			if (is_empty(ctx, (char *)vid, ctx->page_size))
++				continue;
++
++			errmsg("PEB %u contains invalid VID header\n", n);
++		}
++
++		if (!ctx->eba) {
++			init_eba(ctx, be32toh(ec->data_offset));
++		}
++
++		if (be32toh(vid->vol_id) == ctx->vol_id)
++			scan_leb_apply(ctx, n, vid, pbuf);
++	}
++
++	err = eba_from_scan(ctx);
++
++out:
++	if (ctx->mode == EMUBI_MODE_FILE)
++		free(pbuf);
++
++	return err;
++}
++
++int emubi_open(struct emubi_ctx *ctx, char *file)
++{
++	int err;
++	int fd;
++	struct stat stbuf;
++
++	normsg("opening UBI image file %s...", file);
++	fd = open(file, O_RDONLY);
++	if (fd < 0) {
++		errmsg("Unable to open %s: %m", file);
++		err = -1;
++		goto out;
++	}
++
++	memset(&stbuf, 0, sizeof(stbuf));
++	if (fstat(fd, &stbuf) != 0) {
++		errmsg("Unable to stat %s: %m", file);
++		close(fd);
++		err = -1;
++		goto out;
++	}
++	ctx->flash_size = stbuf.st_size;
++	if (ctx->flash_size % ctx->peb_size) {
++		errmsg("Image size is not a multiple of PEB size %u", ctx->peb_size);
++		close(fd);
++		err = -1;
++		goto out;
++	}
++
++	if (ctx->mode == EMUBI_MODE_MMAP) {
++		ctx->flash_mmap = mmap(NULL, ctx->flash_size, PROT_READ, MAP_PRIVATE, fd, 0);
++		if (ctx->flash_mmap == MAP_FAILED) {
++			errmsg("Unable to mmap %s: %m. Falling back to file mode", file);
++			ctx->flash_mmap = NULL;
++			ctx->mode = EMUBI_MODE_FILE;
++		} else {
++			/* we won't need that anymore */
++			close(fd);
++		}
++	}
++
++	if (ctx->mode == EMUBI_MODE_FILE) {
++		ctx->flash_mmap = NULL;
++		ctx->flash_fd = fd;
++	}
++
++	ctx->eba = NULL;
++	ctx->peb_count = ctx->flash_size / ctx->peb_size;
++	ctx->ff_peb = xmalloc(ctx->peb_size);
++	memset(ctx->ff_peb, 0xFF, ctx->peb_size);
++
++	err = 0;
++out:
++	return err;
++}
+diff --git a/ubifs-utils/lib/io.c b/ubifs-utils/lib/io.c
+index c2e0d63..778117f 100644
+--- a/ubifs-utils/lib/io.c
++++ b/ubifs-utils/lib/io.c
+@@ -1,3 +1,33 @@
++/*
++ * Copyright (C) 2008 Nokia Corporation.
++ * Copyright (C) 2008 University of Szeged, Hungary
 + *
-+ * This helper moves the initial part of @head, up to and
-+ * including @entry, from @head to @list. You should
-+ * pass on @entry an element you know is on @head. @list
-+ * should be an empty list or a list you do not care about
-+ * losing its data.
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
 + *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program; if not, write to the Free Software Foundation, Inc., 51
++ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++ *
++ * Authors: Adrian Hunter
++ *          Artem Bityutskiy
++ *          Zoltan Sogor
 + */
-+static inline void list_cut_position(struct list_head *list,
-+		struct list_head *head, struct list_head *entry)
-+{
-+	if (list_empty(head))
-+		return;
-+	if (list_is_singular(head) &&
-+		(head->next != entry && head != entry))
-+		return;
-+	if (entry == head)
-+		INIT_LIST_HEAD(list);
-+	else
-+		__list_cut_position(list, head, entry);
-+}
++/*
++ * Modifications for mtd-utils.
++ *
++ * Copyright (C) 2015 sigma star gmbh
++ *
++ * Authors: Richard Weinberger
++ *          David Gstir
++ */
 +
- static inline void __list_splice(const struct list_head *list,
- 				 struct list_head *prev,
- 				 struct list_head *next)
-@@ -236,11 +303,12 @@ static inline void __list_splice(const struct list_head *list,
+ #include "io.h"
+ #define PROGRAM_NAME "ubifs-io"
+ #include <common.h>
+@@ -150,3 +180,33 @@ int ubifs_read(loff_t offset, int len, void *buf)
+ 
+ 	return 0;
  }
- 
- /**
-- * list_splice - join two lists
-+ * list_splice - join two lists, this is designed for stacks
-  * @list: the new list to add.
-  * @head: the place to add it in the first list.
-  */
--static inline void list_splice(struct list_head *list, struct list_head *head)
-+static inline void list_splice(const struct list_head *list,
-+				struct list_head *head)
- {
- 	if (!list_empty(list))
- 		__list_splice(list, head, head->next);
-@@ -295,7 +363,7 @@ static inline void list_splice_tail_init(struct list_head *list,
-  * list_entry - get the struct for this entry
-  * @ptr:	the &struct list_head pointer.
-  * @type:	the type of the struct this is embedded in.
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  */
- #define list_entry(ptr, type, member) \
- 	container_of(ptr, type, member)
-@@ -304,7 +372,7 @@ static inline void list_splice_tail_init(struct list_head *list,
-  * list_first_entry - get the first element from a list
-  * @ptr:	the list head to take the element from.
-  * @type:	the type of the struct this is embedded in.
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  *
-  * Note, that list is expected to be not empty.
-  */
-@@ -312,35 +380,49 @@ static inline void list_splice_tail_init(struct list_head *list,
- 	list_entry((ptr)->next, type, member)
- 
- /**
-- * list_next_entry - get the next element from a list
-+ * list_last_entry - get the last element from a list
-  * @ptr:	the list head to take the element from.
-- * @member:	the name of the list_struct within the struct.
-+ * @type:	the type of the struct this is embedded in.
-+ * @member:	the name of the list_head within the struct.
-  *
-- * Note, that next is expected to be not null.
-+ * Note, that list is expected to be not empty.
-  */
--#define list_next_entry(ptr, member) \
--	list_entry((ptr)->member.next, typeof(*ptr), member)
-+#define list_last_entry(ptr, type, member) \
-+	list_entry((ptr)->prev, type, member)
- 
- /**
-- * list_for_each	-	iterate over a list
-- * @pos:	the &struct list_head to use as a loop cursor.
-- * @head:	the head for your list.
-+ * list_first_entry_or_null - get the first element from a list
-+ * @ptr:	the list head to take the element from.
-+ * @type:	the type of the struct this is embedded in.
-+ * @member:	the name of the list_head within the struct.
-+ *
-+ * Note that if the list is empty, it returns NULL.
-  */
--#define list_for_each(pos, head) \
--	for (pos = (head)->next; pos != (head); \
--        	pos = pos->next)
-+#define list_first_entry_or_null(ptr, type, member) \
-+	(!list_empty(ptr) ? list_first_entry(ptr, type, member) : NULL)
 +
-+/**
-+ * list_next_entry - get the next element in list
-+ * @pos:	the type * to cursor
-+ * @member:	the name of the list_head within the struct.
-+ */
-+#define list_next_entry(pos, member) \
-+	list_entry((pos)->member.next, typeof(*(pos)), member)
- 
- /**
-- * __list_for_each	-	iterate over a list
-+ * list_prev_entry - get the prev element in list
-+ * @pos:	the type * to cursor
-+ * @member:	the name of the list_head within the struct.
-+ */
-+#define list_prev_entry(pos, member) \
-+	list_entry((pos)->member.prev, typeof(*(pos)), member)
 +
-+/**
-+ * list_for_each	-	iterate over a list
-  * @pos:	the &struct list_head to use as a loop cursor.
-  * @head:	the head for your list.
-- *
-- * This variant differs from list_for_each() in that it's the
-- * simplest possible list iteration code, no prefetching is done.
-- * Use this for code that knows the list to be very short (empty
-- * or 1 entry) most of the time.
-  */
--#define __list_for_each(pos, head) \
-+#define list_for_each(pos, head) \
- 	for (pos = (head)->next; pos != (head); pos = pos->next)
- 
- /**
-@@ -349,8 +431,7 @@ static inline void list_splice_tail_init(struct list_head *list,
-  * @head:	the head for your list.
-  */
- #define list_for_each_prev(pos, head) \
--	for (pos = (head)->prev; pos != (head); \
--        	pos = pos->prev)
-+	for (pos = (head)->prev; pos != (head); pos = pos->prev)
- 
- /**
-  * list_for_each_safe - iterate over a list safe against removal of list entry
-@@ -363,34 +444,45 @@ static inline void list_splice_tail_init(struct list_head *list,
- 		pos = n, n = pos->next)
- 
- /**
-+ * list_for_each_prev_safe - iterate over a list backwards safe against removal of list entry
-+ * @pos:	the &struct list_head to use as a loop cursor.
-+ * @n:		another &struct list_head to use as temporary storage
-+ * @head:	the head for your list.
++/*
++ * ubifs_leb_read - read LEB data
++ * @c: ubifs context
++ * @lnum: LEB number
++ * @buf: output buffer
++ * @offs: offset in LEB
++ * @len: length of data to read
 + */
-+#define list_for_each_prev_safe(pos, n, head) \
-+	for (pos = (head)->prev, n = pos->prev; \
-+	     pos != (head); \
-+	     pos = n, n = pos->prev)
 +
-+/**
-  * list_for_each_entry	-	iterate over list of given type
-  * @pos:	the type * to use as a loop cursor.
-  * @head:	the head for your list.
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  */
- #define list_for_each_entry(pos, head, member)				\
--	for (pos = list_entry((head)->next, typeof(*pos), member);	\
--	     &pos->member != (head); 	\
--	     pos = list_entry(pos->member.next, typeof(*pos), member))
-+	for (pos = list_first_entry(head, typeof(*pos), member);	\
-+	     &pos->member != (head);					\
-+	     pos = list_next_entry(pos, member))
- 
- /**
-  * list_for_each_entry_reverse - iterate backwards over list of given type.
-  * @pos:	the type * to use as a loop cursor.
-  * @head:	the head for your list.
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  */
- #define list_for_each_entry_reverse(pos, head, member)			\
--	for (pos = list_entry((head)->prev, typeof(*pos), member);	\
--	     &pos->member != (head); 	\
--	     pos = list_entry(pos->member.prev, typeof(*pos), member))
-+	for (pos = list_last_entry(head, typeof(*pos), member);		\
-+	     &pos->member != (head); 					\
-+	     pos = list_prev_entry(pos, member))
- 
- /**
-- * list_prepare_entry - prepare a pos entry for use in list_for_each_entry_continue
-+ * list_prepare_entry - prepare a pos entry for use in list_for_each_entry_continue()
-  * @pos:	the type * to use as a start point
-  * @head:	the head of the list
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  *
-- * Prepares a pos entry for use as a start point in list_for_each_entry_continue.
-+ * Prepares a pos entry for use as a start point in list_for_each_entry_continue().
-  */
- #define list_prepare_entry(pos, head, member) \
- 	((pos) ? : list_entry(head, typeof(*pos), member))
-@@ -399,86 +491,115 @@ static inline void list_splice_tail_init(struct list_head *list,
-  * list_for_each_entry_continue - continue iteration over list of given type
-  * @pos:	the type * to use as a loop cursor.
-  * @head:	the head for your list.
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  *
-  * Continue to iterate over list of given type, continuing after
-  * the current position.
-  */
- #define list_for_each_entry_continue(pos, head, member) 		\
--	for (pos = list_entry(pos->member.next, typeof(*pos), member);	\
--	     &pos->member != (head);	\
--	     pos = list_entry(pos->member.next, typeof(*pos), member))
-+	for (pos = list_next_entry(pos, member);			\
-+	     &pos->member != (head);					\
-+	     pos = list_next_entry(pos, member))
++int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
++		   int len)
++{
++	int seek_offs;
 +
-+/**
-+ * list_for_each_entry_continue_reverse - iterate backwards from the given point
-+ * @pos:	the type * to use as a loop cursor.
-+ * @head:	the head for your list.
-+ * @member:	the name of the list_head within the struct.
-+ *
-+ * Start to iterate over list of given type backwards, continuing after
-+ * the current position.
-+ */
-+#define list_for_each_entry_continue_reverse(pos, head, member)		\
-+	for (pos = list_prev_entry(pos, member);			\
-+	     &pos->member != (head);					\
-+	     pos = list_prev_entry(pos, member))
- 
- /**
-  * list_for_each_entry_from - iterate over list of given type from the current point
-  * @pos:	the type * to use as a loop cursor.
-  * @head:	the head for your list.
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  *
-  * Iterate over list of given type, continuing from current position.
-  */
- #define list_for_each_entry_from(pos, head, member) 			\
--	for (; &pos->member != (head);	\
--	     pos = list_entry(pos->member.next, typeof(*pos), member))
-+	for (; &pos->member != (head);					\
-+	     pos = list_next_entry(pos, member))
- 
- /**
-  * list_for_each_entry_safe - iterate over list of given type safe against removal of list entry
-  * @pos:	the type * to use as a loop cursor.
-  * @n:		another type * to use as temporary storage
-  * @head:	the head for your list.
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  */
- #define list_for_each_entry_safe(pos, n, head, member)			\
--	for (pos = list_entry((head)->next, typeof(*pos), member),	\
--		n = list_entry(pos->member.next, typeof(*pos), member);	\
-+	for (pos = list_first_entry(head, typeof(*pos), member),	\
-+		n = list_next_entry(pos, member);			\
- 	     &pos->member != (head); 					\
--	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
-+	     pos = n, n = list_next_entry(n, member))
- 
- /**
-- * list_for_each_entry_safe_continue
-+ * list_for_each_entry_safe_continue - continue list iteration safe against removal
-  * @pos:	the type * to use as a loop cursor.
-  * @n:		another type * to use as temporary storage
-  * @head:	the head for your list.
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  *
-  * Iterate over list of given type, continuing after current point,
-  * safe against removal of list entry.
-  */
- #define list_for_each_entry_safe_continue(pos, n, head, member) 		\
--	for (pos = list_entry(pos->member.next, typeof(*pos), member), 		\
--		n = list_entry(pos->member.next, typeof(*pos), member);		\
-+	for (pos = list_next_entry(pos, member), 				\
-+		n = list_next_entry(pos, member);				\
- 	     &pos->member != (head);						\
--	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
-+	     pos = n, n = list_next_entry(n, member))
- 
- /**
-- * list_for_each_entry_safe_from
-+ * list_for_each_entry_safe_from - iterate over list from current point safe against removal
-  * @pos:	the type * to use as a loop cursor.
-  * @n:		another type * to use as temporary storage
-  * @head:	the head for your list.
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  *
-  * Iterate over list of given type from current point, safe against
-  * removal of list entry.
-  */
- #define list_for_each_entry_safe_from(pos, n, head, member) 			\
--	for (n = list_entry(pos->member.next, typeof(*pos), member);		\
-+	for (n = list_next_entry(pos, member);					\
- 	     &pos->member != (head);						\
--	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
-+	     pos = n, n = list_next_entry(n, member))
- 
- /**
-- * list_for_each_entry_safe_reverse
-+ * list_for_each_entry_safe_reverse - iterate backwards over list safe against removal
-  * @pos:	the type * to use as a loop cursor.
-  * @n:		another type * to use as temporary storage
-  * @head:	the head for your list.
-- * @member:	the name of the list_struct within the struct.
-+ * @member:	the name of the list_head within the struct.
-  *
-  * Iterate backwards over list of given type, safe against removal
-  * of list entry.
-  */
- #define list_for_each_entry_safe_reverse(pos, n, head, member)		\
--	for (pos = list_entry((head)->prev, typeof(*pos), member),	\
--		n = list_entry(pos->member.prev, typeof(*pos), member);	\
-+	for (pos = list_last_entry(head, typeof(*pos), member),		\
-+		n = list_prev_entry(pos, member);			\
- 	     &pos->member != (head); 					\
--	     pos = n, n = list_entry(n->member.prev, typeof(*n), member))
-+	     pos = n, n = list_prev_entry(n, member))
++	if (c->emubi) {
++		emubi_leb_read(c->emubi, lnum, offs, buf, len);
++	} else {
++		seek_offs = (lnum * c->leb_size) + offs;
++		if (lseek(out_fd, seek_offs, SEEK_SET) != seek_offs)
++			return sys_err_msg("lseek failed seeking %d", seek_offs);
 +
-+/**
-+ * list_safe_reset_next - reset a stale list_for_each_entry_safe loop
-+ * @pos:	the loop cursor used in the list_for_each_entry_safe loop
-+ * @n:		temporary storage used in list_for_each_entry_safe
-+ * @member:	the name of the list_head within the struct.
-+ *
-+ * list_safe_reset_next is not safe to use in general if the list may be
-+ * modified concurrently (eg. the lock is dropped in the loop body). An
-+ * exception to this is if the cursor element (pos) is pinned in the list,
-+ * and list_safe_reset_next is called after re-taking the lock and before
-+ * completing the current iteration of the loop body.
-+ */
-+#define list_safe_reset_next(pos, n, member)				\
-+	n = list_next_entry(pos, member)
++		if (read(out_fd, buf, len) != len)
++			return sys_err_msg("read failed reading %d bytes at pos %d",
++					   len, seek_offs);
++	}
++
++	return 0;
++}
+diff --git a/ubifs-utils/lib/scan.c b/ubifs-utils/lib/scan.c
+index 3c5be2c..87a9415 100644
+--- a/ubifs-utils/lib/scan.c
++++ b/ubifs-utils/lib/scan.c
+@@ -131,7 +131,7 @@ struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
+ 	INIT_LIST_HEAD(&sleb->nodes);
+ 	sleb->buf = sbuf;
  
- #endif
+-	err = ubifs_read(lnum * c->leb_size + offs, c->leb_size - offs, sbuf + offs);
++	err = ubifs_leb_read(c, lnum, sbuf + offs, offs, c->leb_size - offs);
+ 	if (err && err != -EBADMSG) {
+ 		kfree(sleb);
+ 		return ERR_PTR(err);
 -- 
 1.8.4.2
