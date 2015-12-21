@@ -1,19 +1,18 @@
-Subject: Re: [PATCH v5 0/5] Add memory mapped read support for ti-qspi
-To: Tony Lindgren <tony@atomide.com>, Brian Norris
- <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>
-References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
-CC: Rob Herring <robh+dt@kernel.org>, Russell King <linux@arm.linux.org.uk>,
- <hramrach@gmail.com>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <5677EA76.6000108@ti.com>
-Date: Mon, 21 Dec 2015 17:33:02 +0530
-MIME-Version: 1.0
-In-Reply-To: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aB1GK-0006eJ-Ai
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 14:16:33 +0000
+From: Markus Pargmann <mpa@pengutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Huang Shijie <shijie.huang@intel.com>,
+ Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
+ Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH] gpmi-nand: Handle ECC Errors in erased pages
+Date: Mon, 21 Dec 2015 15:15:51 +0100
+Message-Id: <1450707351-9029-1-git-send-email-mpa@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +22,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+ECC is only calculated for written pages. As erased pages are not
+actively written the ECC is always invalid. For this purpose the
+Hardware BCH unit is able to check for erased pages and does not raise
+an ECC error in this case. This behaviour can be influenced using the
+BCH_MODE register which sets the number of allowed bitflips in an erased
+page. Unfortunately the unit is not capable of fixing the bitflips in
+memory.
 
+To avoid complete software checks for erased pages, we can simply check
+buffers with uncorrectable ECC errors because we know that any erased
+page with errors is uncorrectable by the BCH unit.
 
-On 12/11/2015 09:39 AM, Vignesh R wrote:
-> Changes since v4:
-> Use syscon to access system control module register in ti-qspi driver.
-> 
-> Changes since v3:
-> Rework to introduce spi_flash_read_message struct.
-> Support different opcode/addr/data formats as per Brian's suggestion
-> here: https://lkml.org/lkml/2015/11/11/454
-> 
+This patch adds the generic nand_check_erased_ecc_chunk() to gpmi-nand
+to correct erased pages. To have the valid data in the buffer before
+using them, this patch moves the read_page_swap_end() call before the
+ECC status checking for-loop.
 
-Gentle Ping on the series...
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 49 ++++++++++++++++++++++++++++++----
+ 1 file changed, 44 insertions(+), 5 deletions(-)
 
-
-> Changes since v2:
-> Remove mmap_lock_mutex.
-> Optimize enable/disable of mmap mode.
-> 
-> Changes since v1:
-> Introduce API in SPI core that MTD flash driver can call for mmap read
-> instead of directly calling spi-master driver callback. This API makes
-> sure that SPI core msg queue is locked during mmap transfers.
-> v1: https://lkml.org/lkml/2015/9/4/103
-> 
-> 
-> Cover letter:
-> 
-> This patch series adds support for memory mapped read port of ti-qspi.
-> ti-qspi has a special memory mapped port through which SPI flash
-> memories can be accessed directly via SoC specific memory region.
-> 
-> First patch adds a method to pass flash specific information like read
-> opcode, dummy bytes etc and to request mmap read. Second patch
-> implements mmap read method in ti-qspi driver. Patch 3 adapts m25p80 to
-> use mmap read method before trying normal SPI transfer. Patch 4 and 5
-> add memory map region DT entries for DRA7xx and AM43xx SoCs.
-> 
-> This patch series is based on the discussions here:
-> http://www.spinics.net/lists/linux-spi/msg04796.html
-> 
-> Tested on DRA74 EVM and AM437x-SK.
-> Read performance increases from ~100kB/s to ~2.5MB/s.
-> 
-> Vignesh R (5):
->   spi: introduce accelerated read support for spi flash devices
->   spi: spi-ti-qspi: add mmap mode read support
->   mtd: devices: m25p80: add support for mmap read request
->   ARM: dts: DRA7: add entry for qspi mmap region
->   ARM: dts: AM4372: add entry for qspi mmap region
-> 
->  Documentation/devicetree/bindings/spi/ti_qspi.txt |  22 +++-
->  arch/arm/boot/dts/am4372.dtsi                     |   4 +-
->  arch/arm/boot/dts/dra7.dtsi                       |   6 +-
->  drivers/mtd/devices/m25p80.c                      |  20 ++++
->  drivers/spi/spi-ti-qspi.c                         | 139 +++++++++++++++++-----
->  drivers/spi/spi.c                                 |  45 +++++++
->  include/linux/spi/spi.h                           |  41 +++++++
->  7 files changed, 243 insertions(+), 34 deletions(-)
-> 
-
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 2064adac1d17..51ad1c500e9c 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1035,14 +1035,58 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	/* Loop over status bytes, accumulating ECC status. */
+ 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+ 
++	read_page_swap_end(this, buf, nfc_geo->payload_size,
++			   this->payload_virt, this->payload_phys,
++			   nfc_geo->payload_size,
++			   payload_virt, payload_phys);
++
+ 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+ 		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+ 			continue;
+ 
+ 		if (*status == STATUS_UNCORRECTABLE) {
++			int flips;
++
++			/*
++			 * The ECC hardware has an uncorrectable ECC status
++			 * code in case we have bitflips in an erased page. As
++			 * nothing was written into this subpage the ECC is
++			 * obviously wrong and we can not trust it. We assume
++			 * at this point that we are reading an erased page and
++			 * try to correct the bitflips in buffer up to
++			 * ecc_strength bitflips. If this is a page with random
++			 * data, we exceed this number of bitflips and have a
++			 * ECC failure. Otherwise we use the corrected buffer.
++			 */
++			if (i == 0) {
++				/* The first block includes metadata */
++				flips = nand_check_erased_ecc_chunk(
++						buf + i * nfc_geo->ecc_chunk_size,
++						nfc_geo->ecc_chunk_size,
++						NULL, 0,
++						auxiliary_virt,
++						nfc_geo->metadata_size,
++						nfc_geo->ecc_strength);
++			} else {
++				flips = nand_check_erased_ecc_chunk(
++						buf + i * nfc_geo->ecc_chunk_size,
++						nfc_geo->ecc_chunk_size,
++						NULL, 0,
++						NULL, 0,
++						nfc_geo->ecc_strength);
++			}
++
++			if (flips > 0) {
++				max_bitflips = max_t(unsigned int, max_bitflips,
++						     flips);
++				mtd->ecc_stats.corrected += flips;
++				continue;
++			}
++
+ 			mtd->ecc_stats.failed++;
+ 			continue;
+ 		}
++
+ 		mtd->ecc_stats.corrected += *status;
+ 		max_bitflips = max_t(unsigned int, max_bitflips, *status);
+ 	}
+@@ -1062,11 +1106,6 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->oob_poi[0] = ((uint8_t *) auxiliary_virt)[0];
+ 	}
+ 
+-	read_page_swap_end(this, buf, nfc_geo->payload_size,
+-			this->payload_virt, this->payload_phys,
+-			nfc_geo->payload_size,
+-			payload_virt, payload_phys);
+-
+ 	return max_bitflips;
+ }
+ 
 -- 
-Regards
-Vignesh
+2.6.2
