@@ -1,7 +1,7 @@
-Received: from laurent.telenet-ops.be ([195.130.137.89])
+Received: from albert.telenet-ops.be ([195.130.137.90])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAxnQ-00019k-QU
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 10:34:32 +0000
+ id 1aAxnQ-00019b-QZ
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 10:34:34 +0000
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
  Gregory Clement <gregory.clement@free-electrons.com>,
@@ -13,10 +13,10 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
  linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 8/9] ARM: shmobile: silk dts: Add compatible property to
+Subject: [PATCH v2 4/9] ARM: shmobile: lager dts: Add compatible property to
  "partitions" node
-Date: Mon, 21 Dec 2015 11:33:52 +0100
-Message-Id: <1450694033-27717-9-git-send-email-geert+renesas@glider.be>
+Date: Mon, 21 Dec 2015 11:33:48 +0100
+Message-Id: <1450694033-27717-5-git-send-email-geert+renesas@glider.be>
 In-Reply-To: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -39,14 +39,14 @@ Acked-by: Brian Norris <computersforpeace@gmail.com>
 v2:
   - Add Acked-by.
 ---
- arch/arm/boot/dts/r8a7794-silk.dts | 1 +
+ arch/arm/boot/dts/r8a7790-lager.dts | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/r8a7794-silk.dts b/arch/arm/boot/dts/r8a7794-silk.dts
-index eb608283a24c070c..c0ae94979a71b04c 100644
---- a/arch/arm/boot/dts/r8a7794-silk.dts
-+++ b/arch/arm/boot/dts/r8a7794-silk.dts
-@@ -217,6 +217,7 @@
+diff --git a/arch/arm/boot/dts/r8a7790-lager.dts b/arch/arm/boot/dts/r8a7790-lager.dts
+index 7773cb1f10317d85..cdc0414f5f0716dd 100644
+--- a/arch/arm/boot/dts/r8a7790-lager.dts
++++ b/arch/arm/boot/dts/r8a7790-lager.dts
+@@ -457,6 +457,7 @@
  		m25p,fast-read;
  
  		partitions {
