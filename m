@@ -1,7 +1,7 @@
-Received: from laurent.telenet-ops.be ([195.130.137.89])
+Received: from albert.telenet-ops.be ([195.130.137.90])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAxnQ-00019h-QY
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 10:34:34 +0000
+ id 1aAxnQ-00019m-R4
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 10:34:35 +0000
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
  Gregory Clement <gregory.clement@free-electrons.com>,
@@ -13,10 +13,10 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
  linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 3/9] ARM: shmobile: bockw dts: Add compatible property to
+Subject: [PATCH v2 9/9] MIPS: dts: jz4780/ci20: Add compatible property to
  "partitions" node
-Date: Mon, 21 Dec 2015 11:33:47 +0100
-Message-Id: <1450694033-27717-4-git-send-email-geert+renesas@glider.be>
+Date: Mon, 21 Dec 2015 11:33:53 +0100
+Message-Id: <1450694033-27717-10-git-send-email-geert+renesas@glider.be>
 In-Reply-To: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,25 +34,24 @@ FLASH device node must have a compatible property. The partitions are no
 longer detected if it is not present.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
 v2:
-  - Add Acked-by.
+  - New.
 ---
- arch/arm/boot/dts/r8a7778-bockw.dts | 1 +
+ arch/mips/boot/dts/ingenic/ci20.dts | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/r8a7778-bockw.dts b/arch/arm/boot/dts/r8a7778-bockw.dts
-index 482228b8a984656e..06ceefe3cb500dc7 100644
---- a/arch/arm/boot/dts/r8a7778-bockw.dts
-+++ b/arch/arm/boot/dts/r8a7778-bockw.dts
-@@ -212,6 +212,7 @@
- 		m25p,fast-read;
+diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
+index 782258c0e4fbba8e..1652d8d60b1e4b86 100644
+--- a/arch/mips/boot/dts/ingenic/ci20.dts
++++ b/arch/mips/boot/dts/ingenic/ci20.dts
+@@ -70,6 +70,7 @@
+ 			nand-on-flash-bbt;
  
- 		partitions {
-+			compatible = "fixed-partitions";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
+ 			partitions {
++				compatible = "fixed-partitions";
+ 				#address-cells = <2>;
+ 				#size-cells = <2>;
  
 -- 
 1.9.1
