@@ -1,18 +1,19 @@
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aAwBL-0000mf-O7
- for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:51:09 +0000
+ id 1aAwBP-0000ke-LA
+ for linux-mtd@lists.infradead.org; Mon, 21 Dec 2015 08:51:10 +0000
 From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 To: <computersforpeace@gmail.com>, <richard@nod.at>, <david@sigma-star.at>
 CC: <linux-mtd@lists.infradead.org>, Dongsheng Yang
  <yangds.fnst@cn.fujitsu.com>
-Subject: [PATCH 25/38] ubifs: introduce hexdump lib
-Date: Mon, 21 Dec 2015 16:41:48 +0800
-Message-ID: <1450687321-12381-26-git-send-email-yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH 20/38] ubifs: introduce lprops lib
+Date: Mon, 21 Dec 2015 16:41:43 +0800
+Message-ID: <1450687321-12381-21-git-send-email-yangds.fnst@cn.fujitsu.com>
 In-Reply-To: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 References: <1450687321-12381-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,248 +23,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Introduce a hexdump lib to allow us to dump data in hex format
+Copy lprops.c from kernel to ubifs-utils/.
 
 Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 ---
- ubifs-utils/include/hexdump.h |  21 +++++
- ubifs-utils/lib/hexdump.c     | 200 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 221 insertions(+)
- create mode 100644 ubifs-utils/include/hexdump.h
- create mode 100644 ubifs-utils/lib/hexdump.c
+ ubifs-utils/include/lprops.h |  6 ++++
+ ubifs-utils/lib/lprops.c     | 79 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 85 insertions(+)
+ create mode 100644 ubifs-utils/include/lprops.h
+ create mode 100644 ubifs-utils/lib/lprops.c
 
-diff --git a/ubifs-utils/include/hexdump.h b/ubifs-utils/include/hexdump.h
+diff --git a/ubifs-utils/include/lprops.h b/ubifs-utils/include/lprops.h
 new file mode 100644
-index 0000000..f5f2800
+index 0000000..5bf3108
 --- /dev/null
-+++ b/ubifs-utils/include/hexdump.h
-@@ -0,0 +1,21 @@
-+#ifndef __UBIFS_HEXDUMP_H__
-+#define __UBIFS_HEXDUMP_H__
++++ b/ubifs-utils/include/lprops.h
+@@ -0,0 +1,6 @@
++#ifndef __UBIFS_LPROPS_H__
++#define __UBIFS_LPROPS_H__
++
++int ubifs_categorize_lprops(const struct ubifs_info *c,
++			    const struct ubifs_lprops *lprops);
++#endif
+diff --git a/ubifs-utils/lib/lprops.c b/ubifs-utils/lib/lprops.c
+new file mode 100644
+index 0000000..818d220
+--- /dev/null
++++ b/ubifs-utils/lib/lprops.c
+@@ -0,0 +1,79 @@
++/*
++ * This file is part of UBIFS.
++ *
++ * Copyright (C) 2006-2008 Nokia Corporation.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program; if not, write to the Free Software Foundation, Inc., 51
++ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++ *
++ * Authors: Adrian Hunter
++ *          Artem Bityutskiy (Битюцкий Артём)
++ */
++
++/*
++ * This file implements the functions that access LEB properties and their
++ * categories. LEBs are categorized based on the needs of UBIFS, and the
++ * categories are stored as either heaps or lists to provide a fast way of
++ * finding a LEB in a particular category. For example, UBIFS may need to find
++ * an empty LEB for the journal, or a very dirty LEB for garbage collection.
++ */
 +
 +#include "ubifs_common.h"
 +
-+static const char hex_asc[] = "0123456789abcdef";
-+static const char hex_asc_upper[] = "0123456789ABCDEF";
-+
-+#define hex_asc_lo(x)	hex_asc[((x) & 0x0f)]
-+#define hex_asc_hi(x)	hex_asc[((x) & 0xf0) >> 4]
-+
-+enum {
-+	DUMP_PREFIX_NONE,
-+	DUMP_PREFIX_ADDRESS,
-+	DUMP_PREFIX_OFFSET
-+};
-+
-+void print_hex_dump(const char *prefix_str, int prefix_type,
-+		    int rowsize, int groupsize,
-+		    const void *buf, size_t len, int ascii);
-+#endif
-diff --git a/ubifs-utils/lib/hexdump.c b/ubifs-utils/lib/hexdump.c
-new file mode 100644
-index 0000000..c58f7cc
---- /dev/null
-+++ b/ubifs-utils/lib/hexdump.c
-@@ -0,0 +1,200 @@
-+/*
-+ * lib/hexdump.c
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation. See README and COPYING for
-+ * more details.
-+ */
-+#include "hexdump.h"
-+#define PROGRAM_NAME "hexdump"
++/* common.h requires the PROGRAM_NAME macro */
++#define PROGRAM_NAME "ubifs-lprops"
 +#include "common.h"
++
++#include "ubifs.h"
++
 +/**
-+ * hex_dump_to_buffer - convert a blob of data to "hex ASCII" in memory
-+ * @buf: data blob to dump
-+ * @len: number of bytes in the @buf
-+ * @rowsize: number of bytes to print per line; must be 16 or 32
-+ * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
-+ * @linebuf: where to put the converted data
-+ * @linebuflen: total size of @linebuf, including space for terminating NUL
-+ * @ascii: include ASCII after the hex output
++ * ubifs_categorize_lprops - categorize LEB properties.
++ * @c: UBIFS file-system description object
++ * @lprops: LEB properties to categorize
 + *
-+ * hex_dump_to_buffer() works on one "line" of output at a time, i.e.,
-+ * 16 or 32 bytes of input data converted to hex + ASCII output.
-+ *
-+ * Given a buffer of u8 data, hex_dump_to_buffer() converts the input data
-+ * to a hex + ASCII dump at the supplied memory location.
-+ * The converted output is always NUL-terminated.
-+ *
-+ * E.g.:
-+ *   hex_dump_to_buffer(frame->data, frame->len, 16, 1,
-+ *			linebuf, sizeof(linebuf), true);
-+ *
-+ * example output buffer:
-+ * 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
-+ *
-+ * Return:
-+ * The amount of bytes placed in the buffer without terminating NUL. If the
-+ * output was truncated, then the return value is the number of bytes
-+ * (excluding the terminating NUL) which would have been written to the final
-+ * string if enough space had been available.
++ * LEB properties are categorized to enable fast find operations. This function
++ * returns the LEB category to which the LEB properties belong. Note however
++ * that if the LEB category is stored as a heap and the heap is full, the
++ * LEB properties may have their category changed to %LPROPS_UNCAT.
 + */
-+int hex_dump_to_buffer(const void *buf, size_t len, int rowsize, int groupsize,
-+		       char *linebuf, size_t linebuflen, int ascii)
++int ubifs_categorize_lprops(const struct ubifs_info *c,
++			    const struct ubifs_lprops *lprops)
 +{
-+	const u8 *ptr = buf;
-+	int ngroups;
-+	u8 ch;
-+	int j, lx = 0;
-+	int ascii_column;
-+	int ret;
++	if (lprops->flags & LPROPS_TAKEN)
++		return LPROPS_UNCAT;
 +
-+	if (rowsize != 16 && rowsize != 32)
-+		rowsize = 16;
++	if (lprops->free == c->leb_size) {
++		ubifs_assert(!(lprops->flags & LPROPS_INDEX));
++		return LPROPS_EMPTY;
++	}
 +
-+	if (len > rowsize)		/* limit to one line at a time */
-+		len = rowsize;
-+	if (!is_power_of_2(groupsize) || groupsize > 8)
-+		groupsize = 1;
-+	if ((len % groupsize) != 0)	/* no mixed size output */
-+		groupsize = 1;
++	if (lprops->free + lprops->dirty == c->leb_size) {
++		if (lprops->flags & LPROPS_INDEX)
++			return LPROPS_FRDI_IDX;
++		else
++			return LPROPS_FREEABLE;
++	}
 +
-+	ngroups = len / groupsize;
-+	ascii_column = rowsize * 2 + rowsize / groupsize + 1;
-+
-+	if (!linebuflen)
-+		goto overflow1;
-+
-+	if (!len)
-+		goto nil;
-+
-+	if (groupsize == 8) {
-+		const u64 *ptr8 = buf;
-+
-+		for (j = 0; j < ngroups; j++) {
-+			ret = snprintf(linebuf + lx, linebuflen - lx,
-+				       "%s%16.16llx", j ? " " : "",
-+				       (unsigned long long)*(ptr8 + j));
-+			if (ret >= linebuflen - lx)
-+				goto overflow1;
-+			lx += ret;
-+		}
-+	} else if (groupsize == 4) {
-+		const u32 *ptr4 = buf;
-+
-+		for (j = 0; j < ngroups; j++) {
-+			ret = snprintf(linebuf + lx, linebuflen - lx,
-+				       "%s%8.8x", j ? " " : "",
-+				       *(ptr4 + j));
-+			if (ret >= linebuflen - lx)
-+				goto overflow1;
-+			lx += ret;
-+		}
-+	} else if (groupsize == 2) {
-+		const u16 *ptr2 = buf;
-+
-+		for (j = 0; j < ngroups; j++) {
-+			ret = snprintf(linebuf + lx, linebuflen - lx,
-+				       "%s%4.4x", j ? " " : "",
-+				       *(ptr2 + j));
-+			if (ret >= linebuflen - lx)
-+				goto overflow1;
-+			lx += ret;
-+		}
++	if (lprops->flags & LPROPS_INDEX) {
++		if (lprops->dirty + lprops->free >= c->min_idx_node_sz)
++			return LPROPS_DIRTY_IDX;
 +	} else {
-+		for (j = 0; j < len; j++) {
-+			if (linebuflen < lx + 3)
-+				goto overflow2;
-+			ch = ptr[j];
-+			linebuf[lx++] = hex_asc_hi(ch);
-+			linebuf[lx++] = hex_asc_lo(ch);
-+			linebuf[lx++] = ' ';
-+		}
-+		if (j)
-+			lx--;
++		if (lprops->dirty >= c->dead_wm &&
++		    lprops->dirty > lprops->free)
++			return LPROPS_DIRTY;
++		if (lprops->free > 0)
++			return LPROPS_FREE;
 +	}
-+	if (!ascii)
-+		goto nil;
 +
-+	while (lx < ascii_column) {
-+		if (linebuflen < lx + 2)
-+			goto overflow2;
-+		linebuf[lx++] = ' ';
-+	}
-+	for (j = 0; j < len; j++) {
-+		if (linebuflen < lx + 2)
-+			goto overflow2;
-+		ch = ptr[j];
-+		linebuf[lx++] = (isascii(ch) && isprint(ch)) ? ch : '.';
-+	}
-+nil:
-+	linebuf[lx] = '\0';
-+	return lx;
-+overflow2:
-+	linebuf[lx++] = '\0';
-+overflow1:
-+	return ascii ? ascii_column + len : (groupsize * 2 + 1) * ngroups - 1;
-+}
-+
-+/**
-+ * print_hex_dump - print a text hex dump to syslog for a binary blob of data
-+ * @prefix_str: string to prefix each line with;
-+ *  caller supplies trailing spaces for alignment if desired
-+ * @prefix_type: controls whether prefix of an offset, address, or none
-+ *  is printed (%DUMP_PREFIX_OFFSET, %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_NONE)
-+ * @rowsize: number of bytes to print per line; must be 16 or 32
-+ * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
-+ * @buf: data blob to dump
-+ * @len: number of bytes in the @buf
-+ * @ascii: include ASCII after the hex output
-+ *
-+ * Given a buffer of u8 data, print_hex_dump() prints a hex + ASCII dump
-+ * to the kernel log at the specified kernel log level, with an optional
-+ * leading prefix.
-+ *
-+ * print_hex_dump() works on one "line" of output at a time, i.e.,
-+ * 16 or 32 bytes of input data converted to hex + ASCII output.
-+ * print_hex_dump() iterates over the entire input @buf, breaking it into
-+ * "line size" chunks to format and print.
-+ *
-+ * E.g.:
-+ *   print_hex_dump(KERN_DEBUG, "raw data: ", DUMP_PREFIX_ADDRESS,
-+ *		    16, 1, frame->data, frame->len, true);
-+ *
-+ * Example output using %DUMP_PREFIX_OFFSET and 1-byte mode:
-+ * 0009ab42: 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
-+ * Example output using %DUMP_PREFIX_ADDRESS and 4-byte mode:
-+ * ffffffff88089af0: 73727170 77767574 7b7a7978 7f7e7d7c  pqrstuvwxyz{|}~.
-+ */
-+void print_hex_dump(const char *prefix_str, int prefix_type,
-+		    int rowsize, int groupsize,
-+		    const void *buf, size_t len, int ascii)
-+{
-+	const u8 *ptr = buf;
-+	int i, linelen, remaining = len;
-+	char linebuf[32 * 3 + 2 + 32 + 1];
-+
-+	if (rowsize != 16 && rowsize != 32)
-+		rowsize = 16;
-+
-+	for (i = 0; i < len; i += rowsize) {
-+		linelen = min(remaining, rowsize);
-+		remaining -= rowsize;
-+
-+		hex_dump_to_buffer(ptr + i, linelen, rowsize, groupsize,
-+				   linebuf, sizeof(linebuf), ascii);
-+
-+		switch (prefix_type) {
-+		case DUMP_PREFIX_ADDRESS:
-+			printf("%s%p: %s\n",
-+			       prefix_str, ptr + i, linebuf);
-+			break;
-+		case DUMP_PREFIX_OFFSET:
-+			printf("%s%.8x: %s\n", prefix_str, i, linebuf);
-+			break;
-+		default:
-+			printf("%s%s\n", prefix_str, linebuf);
-+			break;
-+		}
-+	}
++	return LPROPS_UNCAT;
 +}
 -- 
 1.8.4.2
