@@ -1,30 +1,16 @@
-Received: from localhost.localdomain ([127.0.0.1]:52144 "EHLO linux-mips.org"
- rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
- id S27014319AbbLVBQSynSa2 (ORCPT
- <rfc822;linux-mtd@lists.infradead.org> + 1 other);
- Tue, 22 Dec 2015 02:16:18 +0100
-Date: Tue, 22 Dec 2015 02:16:09 +0100
-From: Ralf Baechle <ralf@linux-mips.org>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>,
- Alex Smith <alex.smith@imgtec.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
- linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] MIPS: dts: jz4780/ci20: Add compatible property
- to "partitions" node
-Message-ID: <20151222011609.GA15881@linux-mips.org>
-References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
- <1450694033-27717-10-git-send-email-geert+renesas@glider.be>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aBBmI-0003gj-DH
+ for linux-mtd@lists.infradead.org; Tue, 22 Dec 2015 01:30:15 +0000
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+To: <linux-mtd@lists.infradead.org>, <dedekind1@gmail.com>
+CC: <richard@nod.at>, <david@sigma-star.at>, Dongsheng Yang
+ <yangds.fnst@cn.fujitsu.com>
+Subject: [PATCH v2] UBIFS: add a comment in key.h for unused parameter
+Date: Tue, 22 Dec 2015 09:22:01 +0800
+Message-ID: <1450747321-3246-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1450694033-27717-10-git-send-email-geert+renesas@glider.be>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,50 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 21, 2015 at 11:33:53AM +0100, Geert Uytterhoeven wrote:
-> Date:   Mon, 21 Dec 2015 11:33:53 +0100
-> From: Geert Uytterhoeven <geert+renesas@glider.be>
-> To: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>, Gregory Clement
->  <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
->  <sebastian.hesselbarth@gmail.com>, Simon Horman <horms@verge.net.au>,
->  Magnus Damm <magnus.damm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
->  Alex Smith <alex.smith@imgtec.com>
-> Cc: Brian Norris <computersforpeace@gmail.com>, Rob Herring
->  <robh+dt@kernel.org>, devicetree@vger.kernel.org,
->  linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
->  linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
->  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-> Subject: [PATCH v2 9/9] MIPS: dts: jz4780/ci20: Add compatible property to
->  "partitions" node
-> 
-> As of commit e488ca9f8d4f62c2 ("doc: dt: mtd: partitions: add compatible
-> property to "partitions" node"), the "partitions" subnode of an SPI
-> FLASH device node must have a compatible property. The partitions are no
-> longer detected if it is not present.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v2:
->   - New.
-> ---
->  arch/mips/boot/dts/ingenic/ci20.dts | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-> index 782258c0e4fbba8e..1652d8d60b1e4b86 100644
-> --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> @@ -70,6 +70,7 @@
->  			nand-on-flash-bbt;
->  
->  			partitions {
-> +				compatible = "fixed-partitions";
->  				#address-cells = <2>;
->  				#size-cells = <2>;
->  
-> -- 
-> 1.9.1
+Add a comment in key.h to explain why we keep an unused
+parameter in key helpers.
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+---
+ fs/ubifs/key.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-  Ralf
+diff --git a/fs/ubifs/key.h b/fs/ubifs/key.h
+index 92a8491..c0a95e3 100644
+--- a/fs/ubifs/key.h
++++ b/fs/ubifs/key.h
+@@ -34,6 +34,12 @@
+  * node. We use "r5" hash borrowed from reiserfs.
+  */
+ 
++/*
++ * Lot's of the key helpers require a struct ubifs_info *c as the first parameter.
++ * But we are not using it at all currently. That's designed for future extensions of
++ * different c->key_format. But right now, there is only one key type, UBIFS_SIMPLE_KEY_FMT.
++ */
++
+ #ifndef __UBIFS_KEY_H__
+ #define __UBIFS_KEY_H__
+ 
+-- 
+1.8.4.2
