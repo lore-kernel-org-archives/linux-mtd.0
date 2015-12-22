@@ -1,24 +1,19 @@
-From: Gregory CLEMENT <gregory.clement@free-electrons.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>,
- Ralf Baechle <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>,
- Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sh@vger.kernel.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/9] ARM: mvebu: kirkwood: Add compatible property to
- "partitions" node
-References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
- <1450694033-27717-3-git-send-email-geert+renesas@glider.be>
-Date: Mon, 21 Dec 2015 17:49:58 +0100
-In-Reply-To: <1450694033-27717-3-git-send-email-geert+renesas@glider.be>
- (Geert Uytterhoeven's message of "Mon, 21 Dec 2015 11:33:46 +0100")
-Message-ID: <87vb7rrbk9.fsf@free-electrons.com>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aBBSM-0004IK-1j
+ for linux-mtd@lists.infradead.org; Tue, 22 Dec 2015 01:09:38 +0000
+Message-ID: <5678A0E8.60503@cn.fujitsu.com>
+Date: Tue, 22 Dec 2015 09:01:28 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+To: <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <richard@nod.at>, <david@sigma-star.at>
+Subject: Re: [PATCH] UBIFS: add a comment in key.h for unused parameter
+References: <1450581920-21780-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ <1450698397.2276.3.camel@gmail.com>
+In-Reply-To: <1450698397.2276.3.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,50 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Geert,
-=20
- On lun., d=C3=A9c. 21 2015, Geert Uytterhoeven <geert+renesas@glider.be> w=
-rote:
-
-> As of commit e488ca9f8d4f62c2 ("doc: dt: mtd: partitions: add compatible
-> property to "partitions" node"), the "partitions" subnode of an SPI
-> FLASH device node must have a compatible property. The partitions are no
-> longer detected if it is not present.
+On 12/21/2015 07:46 PM, Artem Bityutskiy wrote:
+> On Sun, 2015-12-20 at 11:25 +0800, Dongsheng Yang wrote:
+>> Add a comment in key.h to explain why we keep an unused
+>> parameter in key helpers.
+>>
+>> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+>> ---
+>>   fs/ubifs/key.h | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/fs/ubifs/key.h b/fs/ubifs/key.h
+>> index 92a8491..dce72c4 100644
+>> --- a/fs/ubifs/key.h
+>> +++ b/fs/ubifs/key.h
+>> @@ -34,6 +34,12 @@
+>>    * node. We use "r5" hash borrowed from reiserfs.
+>>    */
+>>
+>> +/*
+>> + * Lot's of the key helpers require a struct ubifs_info *c as the
+>> first parameter.
+>> + * But we are not using it at all currently. That's designed for
+>> scalability for
+>> + * different c->key_format. But right now, there is only one key
+>> type, UBIFS_SIMPLE_KEY_FMT.
+>> + */
 >
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> I think word "scalability" is not a perfect fit here. Just say for
+> future extensions, or something like this. Scalability is a bit
+> confusing.
 
-Applied on mvebu/dt
+It makes sense. Okey, I would update it with
+"That's designed for future extensions of different c->key_format"
 
-Thanks,
-
-Gregory
-
-> ---
-> v2:
->   - New.
-> ---
->  arch/arm/boot/dts/kirkwood-pogoplug-series-4.dts | 1 +
->  1 file changed, 1 insertion(+)
+Thanx
+Yang
 >
-> diff --git a/arch/arm/boot/dts/kirkwood-pogoplug-series-4.dts b/arch/arm/=
-boot/dts/kirkwood-pogoplug-series-4.dts
-> index 1db6f2c506cce320..8082d64266a37c33 100644
-> --- a/arch/arm/boot/dts/kirkwood-pogoplug-series-4.dts
-> +++ b/arch/arm/boot/dts/kirkwood-pogoplug-series-4.dts
-> @@ -131,6 +131,7 @@
->  	chip-delay =3D <40>;
->  	status =3D "okay";
->  	partitions {
-> +		compatible =3D "fixed-partitions";
->  		#address-cells =3D <1>;
->  		#size-cells =3D <1>;
->=20=20
-> --=20
-> 1.9.1
 >
-
---=20
-Gregory Clement, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+>
