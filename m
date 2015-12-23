@@ -1,30 +1,18 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aBUPn-0008Dn-NG
- for linux-mtd@lists.infradead.org; Tue, 22 Dec 2015 21:24:23 +0000
-Received: by mail-pa0-x22e.google.com with SMTP id cy9so40345874pac.0
- for <linux-mtd@lists.infradead.org>; Tue, 22 Dec 2015 13:23:55 -0800 (PST)
-Date: Tue, 22 Dec 2015 13:23:50 -0800
-From: Olof Johansson <olof@lixom.net>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: arm@kernel.org, Andrew Lunn <andrew@lunn.ch>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>,
- Ralf Baechle <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
- linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/9] ARM: dts: Add compatible property to "partitions"
- node
-Message-ID: <20151222212350.GF30172@localhost>
-References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
+ id 1aBgmq-00069q-FQ
+ for linux-mtd@lists.infradead.org; Wed, 23 Dec 2015 10:36:53 +0000
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UBI fixes for 4.4-rc
+Message-ID: <567A7922.8030405@nod.at>
+Date: Wed, 23 Dec 2015 11:36:18 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="BtaMJBMqiJab6IsUcHTKb9fCnQNQA8V9q"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,33 +22,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--BtaMJBMqiJab6IsUcHTKb9fCnQNQA8V9q
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 21, 2015 at 11:33:44AM +0100, Geert Uytterhoeven wrote:
-> 	Hi,
-> 
-> As of commit e488ca9f8d4f62c2 ("doc: dt: mtd: partitions: add compatible
-> property to "partitions" node"), which is in v4.4-rc6, the "partitions"
-> subnode of an SPI FLASH device node must have a compatible property. The
-> partitions are no longer detected if it is not present.
-> 
-> However, several DTSes in -next have already been converted to the
-> "partitions" subnode without "compatible" property, introduced by
-> commits 5cfdedb7b9a0fe38 ("mtd: ofpart: move ofpart partitions to a
-> dedicated dt node") and fe2585e9c29a650a ("doc: dt: mtd: support
-> partitions in a special 'partitions' subnode"). Hence all of these are
-> now broken in -next, and will be broken in upstream during the merge
-> window.
+Linus,
 
-So, if I understand this correctly, the partitions format was added for v4.4,
-then this non-backwards compatible change was added in -rc6. But, there were
-also DT files that had the new-for-v4.4 partitions nodes in them that then
-stopped working in -rc6?
+the following changes since commit 9f9499ae8e6415cefc4fe0a96ad0e27864353c=
+89:
 
-That sounds like a regression, so this should be picked up as fixes for v4.4.
+  Linux 4.4-rc5 (2015-12-13 17:42:58 -0800)
 
-Please confirm that I've understood the setup correctly, and I'll apply the
-series directly to fixes.
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.4-rc7
+
+for you to fetch changes up to 6b238de189f69dc77d660d4cce62eed15547f4c3:
+
+  mtd: ubi: don't leak e if schedule_erase() fails (2015-12-16 22:59:03 +=
+0100)
+
+----------------------------------------------------------------
+This pull request contains four bug fixes for UBI.
+
+----------------------------------------------------------------
+Brian Norris (1):
+      UBI: fix use of "VID" vs. "EC" in header self-check
+
+Sebastian Siewior (2):
+      mtd: ubi: fixup error correction in do_sync_erase()
+      mtd: ubi: don't leak e if schedule_erase() fails
+
+Sudip Mukherjee (1):
+      UBI: fix return error code
+
+ drivers/mtd/ubi/debug.c |  2 +-
+ drivers/mtd/ubi/io.c    |  2 +-
+ drivers/mtd/ubi/wl.c    | 53 +++++++++++++++++++++++++++----------------=
+------
+ 3 files changed, 31 insertions(+), 26 deletions(-)
 
 
--Olof
+--BtaMJBMqiJab6IsUcHTKb9fCnQNQA8V9q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJWenkoAAoJEPmeIjfg4UaaaEQP/i3THOpKaLVKE5hpqjD2SYOk
+3IiAWeE8pppucs8qIe7XqdB/i54DPoaipaK1E81SHBU7Dr0NAZtakwzwCGLar4e7
+QkuUCqgCMPSYzYc3UQCu5xEvc8pxfGi3RCeOWRYdfxcPaz12N0FNrZAVvbNppulO
+GupPPvKejypaZbX1x0rS3DHxPC2lnIPuvpBWWkqpblWzyg2wsG1CsFpGu8SXE7Da
+nXLH3stagOQ3xvs3NqoS94rNawtH67oB75Sy9wPfqj1BQiGFm/my14msnuMrSvY6
+kcDm7nWZrDex1VrvuVtFqMaxWs9zTgCFxqOQMxfRH8y1KobPX/xvv4q3AunUF3Ci
+9RBm7GdlEiORH/CZ1p1lXkBXML/BfyD9jgriPib3bRZQ+k9zclqVyKfZZs0G5VWX
+RwKCEKRN8lsdU6/kl0Fs9hYy3V+DbDvkrzc48RdMxPMkNVGHCJG3V7vy3s+3Fc5k
+YLa/AXXjLwHxsxCg6Zrkd3nL4+dApoVMhcb7GDWdC+5vfdzjpTyn6kYKTwcpLEM4
+WA/W90ksZD4tfY8sp0Xx15HfJs75NOYwN2qoocDhjWWGnmD5GFLYSrrfcTqJEnWw
+xVy3TZ8ibd5PymPMYeWIjvHG1u8tzAllef7Ugg1JIhK8Ixkg+Z1Q9nKoA4WPn9IP
+P7YgZa7diIfR3wAiSmdS
+=X8OM
+-----END PGP SIGNATURE-----
+
+--BtaMJBMqiJab6IsUcHTKb9fCnQNQA8V9q--
