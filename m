@@ -1,30 +1,21 @@
+Received: from mail-oi0-x22c.google.com ([2607:f8b0:4003:c06::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aBs0i-0003eP-TM
+ for linux-mtd@lists.infradead.org; Wed, 23 Dec 2015 22:35:57 +0000
+Received: by mail-oi0-x22c.google.com with SMTP id y66so130714813oig.0
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Dec 2015 14:35:35 -0800 (PST)
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <87egedfmsm.fsf@free-electrons.com>
-References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
- <20151222212350.GF30172@localhost>
- <87egedfmsm.fsf@free-electrons.com>
-Date: Wed, 23 Dec 2015 15:21:29 +0100
-Message-ID: <CAMuHMdVJY6+vFvO44kQkzbPJGDkY8SfRz3Dwt4-_RVJL2o=pdw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/9] ARM: dts: Add compatible property to "partitions"
- node
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Olof Johansson <olof@lixom.net>,
- Gregory CLEMENT <gregory.clement@free-electrons.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
- "arm@kernel.org" <arm@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>,
- Ralf Baechle <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>,
- Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- Linux MIPS Mailing List <linux-mips@linux-mips.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
+In-Reply-To: <567A7922.8030405@nod.at>
+References: <567A7922.8030405@nod.at>
+Date: Wed, 23 Dec 2015 23:35:35 +0100
+Message-ID: <CAFLxGvx6HcnOVn6=_abtZPaSTwuLEOoh0G4L=0ZJpGocDcJYPg@mail.gmail.com>
+Subject: Re: [GIT PULL] UBI fixes for 4.4-rc
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,51 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Olof, Gregory,
-
-On Wed, Dec 23, 2015 at 12:04 PM, Gregory CLEMENT
-<gregory.clement@free-electrons.com> wrote:
->  On mar., d=C3=A9c. 22 2015, Olof Johansson <olof@lixom.net> wrote:
->> On Mon, Dec 21, 2015 at 11:33:44AM +0100, Geert Uytterhoeven wrote:
->>> As of commit e488ca9f8d4f62c2 ("doc: dt: mtd: partitions: add compatibl=
-e
->>> property to "partitions" node"), which is in v4.4-rc6, the "partitions"
->>> subnode of an SPI FLASH device node must have a compatible property. Th=
-e
->>> partitions are no longer detected if it is not present.
->>>
->>> However, several DTSes in -next have already been converted to the
->>> "partitions" subnode without "compatible" property, introduced by
->>> commits 5cfdedb7b9a0fe38 ("mtd: ofpart: move ofpart partitions to a
->>> dedicated dt node") and fe2585e9c29a650a ("doc: dt: mtd: support
->>> partitions in a special 'partitions' subnode"). Hence all of these are
->>> now broken in -next, and will be broken in upstream during the merge
->>> window.
->>
->> So, if I understand this correctly, the partitions format was added for =
-v4.4,
->> then this non-backwards compatible change was added in -rc6. But, there =
-were
->> also DT files that had the new-for-v4.4 partitions nodes in them that th=
-en
->> stopped working in -rc6?
+On Wed, Dec 23, 2015 at 11:36 AM, Richard Weinberger <richard@nod.at> wrote:
+> Linus,
 >
-> At least for the mvebu dts, the change was added for v4.5 not
-> v4.4. Currently it is only in the next branches (and also in your
-> arm-soc tree in next/dt).
+> the following changes since commit 9f9499ae8e6415cefc4fe0a96ad0e27864353c89:
+>
+>   Linux 4.4-rc5 (2015-12-13 17:42:58 -0800)
+>
+> are available in the git repository at:
+>
+>   git://git.infradead.org/linux-ubifs.git tags/upstream-4.4-rc7
+>
+> for you to fetch changes up to 6b238de189f69dc77d660d4cce62eed15547f4c3:
+>
+>   mtd: ubi: don't leak e if schedule_erase() fails (2015-12-16 22:59:03 +0100)
+>
+> ----------------------------------------------------------------
+> This pull request contains four bug fixes for UBI.
+>
+> ----------------------------------------------------------------
+> Brian Norris (1):
+>       UBI: fix use of "VID" vs. "EC" in header self-check
+>
+> Sebastian Siewior (2):
+>       mtd: ubi: fixup error correction in do_sync_erase()
+>       mtd: ubi: don't leak e if schedule_erase() fails
+>
+> Sudip Mukherjee (1):
+>       UBI: fix return error code
+>
+>  drivers/mtd/ubi/debug.c |  2 +-
+>  drivers/mtd/ubi/io.c    |  2 +-
+>  drivers/mtd/ubi/wl.c    | 53 +++++++++++++++++++++++++++----------------------
+>  3 files changed, 31 insertions(+), 26 deletions(-)
 
-The same is true for the shmobile changes: they are queued up for v4.5.
+Linus,
 
-Gr{oetje,eeting}s,
+I saw that you've pulled other requests from the same time spawn but
+not this one.
+Is something wrong with it?
+Just making sure that this one was not caught by the Google mail spam
+filter... :-)
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+Thanks,
+//richard
