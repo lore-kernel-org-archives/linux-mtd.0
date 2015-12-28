@@ -1,7 +1,7 @@
 Received: from conuserg012.nifty.com ([202.248.44.38]
  helo=conuserg012-v.nifty.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aDUlD-00050D-0c
+ id 1aDUlD-000500-0a
  for linux-mtd@lists.infradead.org; Mon, 28 Dec 2015 10:10:40 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
@@ -9,9 +9,9 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Stephen Boyd <sboyd@codeaurora.org>,
  Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 01/16] clk: remove unused first argument of __clk_init()
-Date: Mon, 28 Dec 2015 19:10:14 +0900
-Message-Id: <1451297429-21689-2-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 10/16] clk: move checking .git_parent to __clk_core_init()
+Date: Mon, 28 Dec 2015 19:10:23 +0900
+Message-Id: <1451297429-21689-11-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1451297429-21689-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1451297429-21689-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,43 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The "struct device *dev" is not used at all in this function.
+The .git_parent is mandatory for multi-parent clocks.  Move the check
+to __clk_core_init(), like other callback checkings.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v2: None
 
- drivers/clk/clk.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/clk/clk.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 3fba5ac..897e5ae 100644
+index e6e10f5..4ad0a36 100644
 --- a/drivers/clk/clk.c
 +++ b/drivers/clk/clk.c
-@@ -2286,13 +2286,12 @@ static inline void clk_debug_unregister(struct clk_core *core)
- 
- /**
-  * __clk_init - initialize the data structures in a struct clk
-- * @dev:	device initializing this clk, placeholder for now
-  * @clk:	clk being initialized
-  *
-  * Initializes the lists in struct clk_core, queries the hardware for the
-  * parent and rate and sets them both.
-  */
--static int __clk_init(struct device *dev, struct clk *clk_user)
-+static int __clk_init(struct clk *clk_user)
- {
- 	int i, ret = 0;
- 	struct clk_core *orphan;
-@@ -2575,7 +2574,7 @@ struct clk *clk_register(struct device *dev, struct clk_hw *hw)
- 		goto fail_parent_names_copy;
+@@ -1677,13 +1677,6 @@ static struct clk_core *__clk_init_parent(struct clk_core *core)
+ 		goto out;
  	}
  
--	ret = __clk_init(dev, hw->clk);
-+	ret = __clk_init(hw->clk);
- 	if (!ret)
- 		return hw->clk;
+-	if (!core->ops->get_parent) {
+-		WARN(!core->ops->get_parent,
+-			"%s: multi-parent clocks must implement .get_parent\n",
+-			__func__);
+-		goto out;
+-	}
+-
+ 	/*
+ 	 * Do our best to cache parent clocks in core->parents.  This prevents
+ 	 * unnecessary and expensive lookups.  We don't set core->parent here;
+@@ -2315,6 +2308,11 @@ static int __clk_core_init(struct clk_core *core)
+ 		goto out;
+ 	}
  
++	if (core->num_parents > 1 && !core->ops->get_parent) {
++		pr_err("%s: %s must implement .get_parent as it has multi parents\n",
++		       __func__, core->name);
++	}
++
+ 	if (core->ops->set_rate_and_parent &&
+ 			!(core->ops->set_parent && core->ops->set_rate)) {
+ 		pr_err("%s: %s must implement .set_parent & .set_rate\n",
 -- 
 1.9.1
