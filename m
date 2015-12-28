@@ -1,17 +1,18 @@
 Received: from conuserg012.nifty.com ([202.248.44.38]
  helo=conuserg012-v.nifty.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aDUlH-00050W-Ls
- for linux-mtd@lists.infradead.org; Mon, 28 Dec 2015 10:10:46 +0000
+ id 1aDUlH-00050Y-KP
+ for linux-mtd@lists.infradead.org; Mon, 28 Dec 2015 10:10:45 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Stephen Boyd <sboyd@codeaurora.org>,
  Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 12/16] clk: avoid circular clock topology
-Date: Mon, 28 Dec 2015 19:10:25 +0900
-Message-Id: <1451297429-21689-13-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 14/16] clk: make sure parent is not NULL in
+ clk_fetch_parent_index()
+Date: Mon, 28 Dec 2015 19:10:27 +0900
+Message-Id: <1451297429-21689-15-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1451297429-21689-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1451297429-21689-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,89 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, clk_register() never checks a circular parent looping,
-but clock providers could register such an insane clock topology.
-For example, "clk_a" could have "clk_b" as a parent, and vice versa.
-In this case, clk_core_reparent() creates a circular parent list
-and __clk_recalc_accuracies() calls itself recursively forever.
+If parent is given with NULL, clk_fetch_parent_index() could return
+a positive index value.
 
-The core infrastructure should be kind enough to bail out, showing
-an appropriate error message in such a case.  This helps to easily
-find a bug in clock providers.  (uh, I made such a silly mistake
-when I was implementing my clock providers first.  I was upset
-because the kernel did not respond, without any error message.)
-
-This commit adds a new helper function, __clk_is_ancestor().  It
-returns true if the second argument is a possible ancestor of the
-first one.  If a clock core is a possible ancestor of itself, it
-would make a loop when it were registered.  That should be detected
-as an error.
+Currently, parent is checked by the callers of this function, but
+it would be safer to do it in this function.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v2: None
+Changes in v2:
+  - Fix a bug.  Return -EINVAL when parent _is_ NULL.
 
- drivers/clk/clk.c | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ drivers/clk/clk.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 03b87d8..a4f66fe 100644
+index efd093a..151cbe8 100644
 --- a/drivers/clk/clk.c
 +++ b/drivers/clk/clk.c
-@@ -2235,6 +2235,38 @@ static inline void clk_debug_unregister(struct clk_core *core)
- #endif
+@@ -1066,6 +1066,9 @@ static int clk_fetch_parent_index(struct clk_core *core,
+ {
+ 	int i;
  
- /**
-+ * __clk_is_ancestor - check if a clk_core is a possible ancestor of another
-+ * @core: clock core
-+ * @ancestor: ancestor clock core
-+ *
-+ * Returns true if there is a possibility that @ancestor can be an ancestor
-+ * of @core, false otherwise.
-+ *
-+ * This function can be used against @core or @ancestor that has not been
-+ * registered yet.
-+ */
-+static bool __clk_is_ancestor(struct clk_core *core, struct clk_core *ancestor)
-+{
-+	struct clk_core *parent;
-+	int i;
++	if (!parent)
++		return -EINVAL;
 +
-+	for (i = 0; i < core->num_parents; i++) {
-+		parent = clk_core_get_parent_by_index(core, i);
-+		/*
-+		 * If ancestor has not been added to clk_{root,orphan}_list
-+		 * yet, clk_core_lookup() cannot find it.  If parent is NULL,
-+		 * compare the name strings, too.
-+		 */
-+		if ((parent && (parent == ancestor ||
-+				__clk_is_ancestor(parent, ancestor))) ||
-+		    (!parent && !strcmp(core->parent_names[i], ancestor->name)))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+/**
-  * __clk_core_init - initialize the data structures in a struct clk_core
-  * @core:	clk_core being initialized
-  *
-@@ -2297,6 +2329,14 @@ static int __clk_core_init(struct clk_core *core)
- 				"%s: invalid NULL in %s's .parent_names\n",
- 				__func__, core->name);
- 
-+	/* If core is an ancestor of itself, it would make a loop. */
-+	if (__clk_is_ancestor(core, core)) {
-+		pr_err("%s: %s would create circular parent\n", __func__,
-+		       core->name);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
- 	core->parent = __clk_init_parent(core);
- 
  	/*
+ 	 * find index of new parent clock using cached parent ptrs,
+ 	 * or if not yet cached, use string name comparison and cache
 -- 
 1.9.1
