@@ -1,17 +1,18 @@
-Received: from mx3.its.uni-kassel.de ([141.51.12.64])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aDg5x-0007Lt-1S
- for linux-mtd@lists.infradead.org; Mon, 28 Dec 2015 22:16:50 +0000
-Content-Type: text/plain; charset="utf-8"
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aDh6a-00079Z-Sk
+ for linux-mtd@lists.infradead.org; Mon, 28 Dec 2015 23:21:33 +0000
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann
+ <arnd@arndb.de>, Brian Norris <computersforpeace@gmail.com>
+From: Scott Branden <sbranden@broadcom.com>
+Subject: Adding OTP-only device to MTD or CHAR subsystem?
+Message-ID: <5681C3E4.4090506@broadcom.com>
+Date: Mon, 28 Dec 2015 15:21:08 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Charity Donation
-To: Me <verna.viajar@icdd.uni-kassel.de>
-From: "Jeff Skoll" <verna.viajar@icdd.uni-kassel.de>
-Date: Mon, 28 Dec 2015 16:13:37 -0500
-Reply-To: jeff.skoll@skollcharity.org
-Message-ID: <auto-000005206132@mailadmin.uni-kassel.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,19 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-My name is Jeffrey Skoll, a philanthropist and the founder of one of the la=
-rgest private foundations in the world. I believe strongly in =E2=80=98givi=
-ng while living.=E2=80=99 I had one idea that never changed in my mind =E2=
-=80=94 that you should use your wealth to help people and I have decided to=
- secretly give USD2.498 Million to a randomly selected individual. On recei=
-pt of this email, you should count yourself as the individual. Kindly get b=
-ack to me at your earliest convenience, so I know your email address is val=
-id.
+Greg/Brian/Arnd,
 
-Visit the web page to know more about me: http://www.theglobeandmail.com/ne=
-ws/national/meet-the-canadian-billionaire-whos-giving-it-all-away/article42=
-09888/ or you can read an article of me on Wikipedia.
+We have OTP device drivers for accessing OTP memory in our SoCs.
+
+I looking for the right place and model to place such OTP device drivers.
+
+1) Should we follow the bfin-otp model in drivers/char?  This doesn't 
+seem like the right place to put it although following the bfin example 
+is quite simple to implement.  We actually had a custom set of Ioctl's 
+that I changed to use the standard file access model used by the bfin 
+driver.  But a custom util is still needed to issue an OTPLOCK command. 
+  I'm guess mtd-utils has such abilities (or should).
+
+2) Instead, should we start adding OTP-only drivers into the MTD 
+subsystem?  Onenand and CFI based MTD devices already have OTP 
+programmable regions.  If we created a new OTP device type in the MTD 
+subsystem this looks like a good thing to do.  mtd-utils could/should be 
+used to access the OTP device then along with standard fileio operations.
+
+3) Or some other suggestion of where to place OTP device drivers?
 
 Regards,
-Jeffrey Skoll.
+  Scott
