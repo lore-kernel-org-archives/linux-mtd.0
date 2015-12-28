@@ -1,17 +1,18 @@
 Received: from conuserg012.nifty.com ([202.248.44.38]
  helo=conuserg012-v.nifty.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aDUlD-000500-0a
- for linux-mtd@lists.infradead.org; Mon, 28 Dec 2015 10:10:40 +0000
+ id 1aDUlD-000504-0Y
+ for linux-mtd@lists.infradead.org; Mon, 28 Dec 2015 10:10:41 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org
 Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  Stephen Boyd <sboyd@codeaurora.org>,
  Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/16] clk: move checking .git_parent to __clk_core_init()
-Date: Mon, 28 Dec 2015 19:10:23 +0900
-Message-Id: <1451297429-21689-11-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v2 08/16] clk: drop the initial core->parents look-ups from
+ __clk_core_init()
+Date: Mon, 28 Dec 2015 19:10:21 +0900
+Message-Id: <1451297429-21689-9-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1451297429-21689-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1451297429-21689-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,46 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The .git_parent is mandatory for multi-parent clocks.  Move the check
-to __clk_core_init(), like other callback checkings.
+The core->parents is a cache to save expensive clock parent look-ups.
+It will be filled as needed later.  We do not have to do it here.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
 Changes in v2: None
 
- drivers/clk/clk.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/clk/clk.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
 diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index e6e10f5..4ad0a36 100644
+index ca7849a..3215b2b 100644
 --- a/drivers/clk/clk.c
 +++ b/drivers/clk/clk.c
-@@ -1677,13 +1677,6 @@ static struct clk_core *__clk_init_parent(struct clk_core *core)
- 		goto out;
- 	}
+@@ -2329,17 +2329,6 @@ static int __clk_core_init(struct clk_core *core)
+ 				"%s: invalid NULL in %s's .parent_names\n",
+ 				__func__, core->name);
  
--	if (!core->ops->get_parent) {
--		WARN(!core->ops->get_parent,
--			"%s: multi-parent clocks must implement .get_parent\n",
--			__func__);
--		goto out;
--	}
+-	/*
+-	 * clk_core_lookup returns NULL for parents that have not been
+-	 * clk_init'd; thus any access to clk->parents[] must check
+-	 * for a NULL pointer.  We can always perform lazy lookups for
+-	 * missing parents later on.
+-	 */
+-	if (core->parents)
+-		for (i = 0; i < core->num_parents; i++)
+-			core->parents[i] =
+-				clk_core_lookup(core->parent_names[i]);
 -
- 	/*
- 	 * Do our best to cache parent clocks in core->parents.  This prevents
- 	 * unnecessary and expensive lookups.  We don't set core->parent here;
-@@ -2315,6 +2308,11 @@ static int __clk_core_init(struct clk_core *core)
- 		goto out;
- 	}
+ 	core->parent = __clk_init_parent(core);
  
-+	if (core->num_parents > 1 && !core->ops->get_parent) {
-+		pr_err("%s: %s must implement .get_parent as it has multi parents\n",
-+		       __func__, core->name);
-+	}
-+
- 	if (core->ops->set_rate_and_parent &&
- 			!(core->ops->set_parent && core->ops->set_rate)) {
- 		pr_err("%s: %s must implement .set_parent & .set_rate\n",
+ 	/*
 -- 
 1.9.1
