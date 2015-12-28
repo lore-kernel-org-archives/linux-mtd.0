@@ -1,25 +1,26 @@
-Received: from conssluserg001.nifty.com ([202.248.44.39]
- helo=conssluserg001-v.nifty.com)
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aDUzY-0007ZR-GH
- for linux-mtd@lists.infradead.org; Mon, 28 Dec 2015 10:25:29 +0000
-Received: from mail-yk0-f179.google.com (mail-yk0-f179.google.com
- [209.85.160.179]) (authenticated)
- by conssluserg001-v.nifty.com with ESMTP id tBSAOuNE011423
- for <linux-mtd@lists.infradead.org>; Mon, 28 Dec 2015 19:24:57 +0900
-Received: by mail-yk0-f179.google.com with SMTP id k129so77633297yke.0
- for <linux-mtd@lists.infradead.org>; Mon, 28 Dec 2015 02:24:57 -0800 (PST)
+ id 1aDedN-0003xH-MZ
+ for linux-mtd@lists.infradead.org; Mon, 28 Dec 2015 20:43:14 +0000
+Received: by mail-wm0-x236.google.com with SMTP id l126so273617764wml.0
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Dec 2015 12:42:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1451297429-21689-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1451297429-21689-1-git-send-email-yamada.masahiro@socionext.com>
-Date: Mon, 28 Dec 2015 19:24:56 +0900
-Message-ID: <CAK7LNATqLUZwzPSnPoh5m6Tkor+kV_Fo0G8a-Qafbucj4X0_tg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/16] clk: a collection of various clean-ups and
- improvements
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, linux-clk@vger.kernel.org
+In-Reply-To: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
+References: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
+Date: Mon, 28 Dec 2015 17:42:50 -0300
+Message-ID: <CAAEAJfC4YWVC=WWTBnKrnNZypC+CKR+D59+LY7j-haTch4yevA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] mtd: nand_bbt: introduce independent nand BBT
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Peter Pan <peterpansjtu@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, fransklaver@gmail.com,
+ Peter Pan <peterpandong@micron.com>, beanhuo@micron.com,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ karlzhang@micron.com
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I sent this series to linux-mtd by mistake.
+This is looking a lot better, thanks for the good work!
 
-This should have been sent to linux-clk, of course.
-
-Sorry for noise.
-
-
-2015-12-28 19:10 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:
-> Many refactoring, with detection of circular parent looping.
+On 15 December 2015 at 02:59, Peter Pan <peterpansjtu@gmail.com> wrote:
+> Currently nand_bbt.c is tied with struct nand_chip, and it makes other
+> NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
+> onenand has own bbt(onenand_bbt.c).
 >
+> Separate struct nand_chip from BBT code can make current BBT shareable.
+> We create struct nand_bbt to take place of nand_chip in nand_bbt.c.
+> Struct nand_bbt contains all the information BBT needed from outside and
+> it should be embedded into NAND family chip struct (such as struct nand_c=
+hip).
+> NAND family driver should allocate, initialize and free struct nand_bbt.
 >
-> Changes in v2:
->   - Fix a bug.  Return -EINVAL when parent _is_ NULL.
->
-> Masahiro Yamada (16):
->   clk: remove unused first argument of __clk_init()
->   clk: change the argument of __clk_init() into pointer to clk_core
->   clk: rename __clk_init() into __clk_core_init()
->   clk: remove unnecessary !core->parents conditional
->   clk: change sizeof(struct clk *) to sizeof(*core->parents)
->   clk: move core->parents allocation to clk_register()
->   clk: simplify clk_core_get_parent_by_index()
->   clk: drop the initial core->parents look-ups from __clk_core_init()
->   clk: replace pr_warn() with pr_err() for fatal cases
->   clk: move checking .git_parent to __clk_core_init()
->   clk: simplify __clk_init_parent()
->   clk: avoid circular clock topology
->   clk: walk the orphan clock list more simply
->   clk: make sure parent is not NULL in clk_fetch_parent_index()
->   clk: simplify clk_fetch_parent_index() function
->   clk: slightly optimize clk_core_set_parent()
+> Below is mtd folder structure we want:
+>         mtd
+>         =E2=94=9C=E2=94=80=E2=94=80 Kconfig
+>         =E2=94=9C=E2=94=80=E2=94=80 Makefile
+>         =E2=94=9C=E2=94=80=E2=94=80 ...
+>         =E2=94=9C=E2=94=80=E2=94=80 nand_bbt.c
 
+Hm.. I'm not sure about having nand_bbt.c in drivers/mtd.
+What's wrong with drivers/mtd/nand ?
 
+In fact, I  was thinking we could go further and clean up the directories a=
+ bit
+by separating core code, from controllers code, from SPI NAND code:
 
+drivers/mtd/nand/
+drivers/mtd/nand/controllers
+drivers/mtd/nand/spi
 
-
--- 
-Best Regards
-Masahiro Yamada
+Makes any sense?
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
