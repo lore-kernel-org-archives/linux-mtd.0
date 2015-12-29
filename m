@@ -1,7 +1,7 @@
 Received: from mx3.its.uni-kassel.de ([141.51.12.64])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aDlku-0001T2-OR
- for linux-mtd@lists.infradead.org; Tue, 29 Dec 2015 04:19:29 +0000
+ id 1aDn2p-0008BO-95
+ for linux-mtd@lists.infradead.org; Tue, 29 Dec 2015 05:42:04 +0000
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -9,9 +9,9 @@ Content-Description: Mail message body
 Subject: Donation/Charity
 To: Me <verna.viajar@icdd.uni-kassel.de>
 From: "Jeff Skoll" <verna.viajar@icdd.uni-kassel.de>
-Date: Mon, 28 Dec 2015 21:53:42 -0500
+Date: Mon, 28 Dec 2015 23:33:24 -0500
 Reply-To: jeff.skoll@skollcharity.org
-Message-ID: <auto-000005541423@mailadmin.uni-kassel.de>
+Message-ID: <auto-000005735447@mailadmin.uni-kassel.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
