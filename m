@@ -1,12 +1,17 @@
-Message-ID: <471c2eeb9dd637bb3189011857b1b52b.squirrel@oldwebmail.prtelecom.hu>
-Date: Tue, 29 Dec 2015 03:03:21 +0100
-Subject: Assalam o Alaikum
-From: "Zahra Robert" <jakonyvtar@pr.hu>
-To: jakonyvtar@pr.hu
-Reply-To: zahrarobert@yahoo.com
+Received: from mx3.its.uni-kassel.de ([141.51.12.64])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aDlCZ-0005JD-Gp
+ for linux-mtd@lists.infradead.org; Tue, 29 Dec 2015 03:44:00 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-2
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Donation/Charity
+To: Me <verna.viajar@icdd.uni-kassel.de>
+From: "Jeff Skoll" <verna.viajar@icdd.uni-kassel.de>
+Date: Mon, 28 Dec 2015 21:08:08 -0500
+Reply-To: jeff.skoll@skollcharity.org
+Message-ID: <auto-000005503578@mailadmin.uni-kassel.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,11 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
+My name is Jeffrey Skoll, a philanthropist and the founder of one of the la=
+rgest private foundations in the world. I believe strongly in =E2=80=98givi=
+ng while living.=E2=80=99 I had one idea that never changed in my mind =E2=
+=80=94 that you should use your wealth to help people and I have decided to=
+ secretly give USD2.498 Million to a randomly selected individual. On recei=
+pt of this email, you should count yourself as the individual. Kindly get b=
+ack to me at your earliest convenience, so I know your email address is val=
+id.
 
+Visit the web page to know more about me: http://www.theglobeandmail.com/ne=
+ws/national/meet-the-canadian-billionaire-whos-giving-it-all-away/article42=
+09888/ or you can read an article of me on Wikipedia.
 
-
-Cordial greeting message from Eva Zahra, I am seeking for your help,I will
-be very glad if you do assist me to relocate a sum of (US$4 Million
-Dollars)into your Bank account in your country for the benefit of both of
-us i want to use this money for investment. I will give you more details
-as you reply Yours Eva Zahra Robert
+Regards,
+Jeffrey Skoll.
