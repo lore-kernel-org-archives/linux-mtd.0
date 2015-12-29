@@ -1,27 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aDvwk-0001PO-3m
- for linux-mtd@lists.infradead.org; Tue, 29 Dec 2015 15:12:23 +0000
-Date: Tue, 29 Dec 2015 16:11:56 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Peter Pan <peterpansjtu@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Frans
- Klaver <fransklaver@gmail.com>, Peter Pan <peterpandong@micron.com>,
- beanhuo@micron.com, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, karlzhang@micron.com
-Subject: Re: [PATCH v2 00/12] mtd: nand_bbt: introduce independent nand BBT
-Message-ID: <20151229161156.77060900@bbrezillon>
-In-Reply-To: <CAAEAJfAV_Nfm81nSEpQRyx=hcW8R-dK6_SJdGDQ_JQK5zu1jpw@mail.gmail.com>
-References: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
- <CAAEAJfC4YWVC=WWTBnKrnNZypC+CKR+D59+LY7j-haTch4yevA@mail.gmail.com>
- <20151229103519.31ccaf5c@bbrezillon>
- <CAAEAJfAV_Nfm81nSEpQRyx=hcW8R-dK6_SJdGDQ_JQK5zu1jpw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-yk0-x244.google.com ([2607:f8b0:4002:c07::244])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aDzEK-0007YM-FU
+ for linux-mtd@lists.infradead.org; Tue, 29 Dec 2015 18:42:45 +0000
+Received: by mail-yk0-x244.google.com with SMTP id k129so12026292yke.3
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Dec 2015 10:42:23 -0800 (PST)
+From: Insu Yun <wuninsu@gmail.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: taesoo@gatech.edu, yeongjin.jang@gatech.edu, insu@gatech.edu,
+ changwoo@gatech.edu, Insu Yun <wuninsu@gmail.com>
+Subject: [PATCH] mtd: fixing memory leak and handling failed kmalloc
+Date: Tue, 29 Dec 2015 13:45:09 -0500
+Message-Id: <1451414709-8581-1-git-send-email-wuninsu@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,100 +21,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 29 Dec 2015 12:07:50 -0300
-Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+kmalloc needs to be handled when failing in memory pressure.
+Also, it has memory leak in error routine.
 
-> On 29 December 2015 at 06:35, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > Hi,
-> >
-> > On Mon, 28 Dec 2015 17:42:50 -0300
-> > Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
-> >
-> >> This is looking a lot better, thanks for the good work!
-> >>
-> >> On 15 December 2015 at 02:59, Peter Pan <peterpansjtu@gmail.com> wrote:
-> >> > Currently nand_bbt.c is tied with struct nand_chip, and it makes oth=
-er
-> >> > NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
-> >> > onenand has own bbt(onenand_bbt.c).
-> >> >
-> >> > Separate struct nand_chip from BBT code can make current BBT shareab=
-le.
-> >> > We create struct nand_bbt to take place of nand_chip in nand_bbt.c.
-> >> > Struct nand_bbt contains all the information BBT needed from outside=
- and
-> >> > it should be embedded into NAND family chip struct (such as struct n=
-and_chip).
-> >> > NAND family driver should allocate, initialize and free struct nand_=
-bbt.
-> >> >
-> >> > Below is mtd folder structure we want:
-> >> >         mtd
-> >> >         =E2=94=9C=E2=94=80=E2=94=80 Kconfig
-> >> >         =E2=94=9C=E2=94=80=E2=94=80 Makefile
-> >> >         =E2=94=9C=E2=94=80=E2=94=80 ...
-> >> >         =E2=94=9C=E2=94=80=E2=94=80 nand_bbt.c
-> >>
-> >> Hm.. I'm not sure about having nand_bbt.c in drivers/mtd.
-> >> What's wrong with drivers/mtd/nand ?
-> >
-> > I haven't reviewed the series yet, but I agree. If the BBT code is only
-> > meant to be used on NAND based devices, it should probably stay in
-> > drivers/mtd/nand.
-> >
-> >>
-> >> In fact, I  was thinking we could go further and clean up the director=
-ies a bit
-> >> by separating core code, from controllers code, from SPI NAND code:
-> >>
-> >> drivers/mtd/nand/
-> >> drivers/mtd/nand/controllers
-> >> drivers/mtd/nand/spi
-> >>
-> >> Makes any sense?
-> >
-> > Actually I had the secret plan of moving all (raw) NAND controller
-> > drivers into the drivers/mtd/nand/controllers directory, though this
-> > was for a different reason: I'd like to create another directory for
-> > manufacturer specific code in order to support some advanced features
-> > on NANDs that do not implement (or only partially implement) the ONFI
-> > standard.
-> >
-> > The separation you're talking about here is more related to the
-> > interface used to communicate with the NAND chip.
-> >
-> > How about using the following hierarchy?
-> >
-> > drivers/mtd/nand/<nand-core-code>
-> > drivers/mtd/nand/interfaces/raw/<raw-nand-core-code>
-> > drivers/mtd/nand/interfaces/raw/controllers/<raw-nand-controller-driver=
-s>
-> > drivers/mtd/nand/interfaces/spi/<spi-nand-code>
-> > drivers/mtd/nand/interfaces/onenand/<onenand-code>
-> > drivers/mtd/nand/chips/<manufacturer-spcific-code>
-> >
-> > What do you think?
-> >
->=20
-> I believe we are bikeshedding here, but what the heck.
->=20
-> That seems too involved. A simpler hierarchy could be clear enough,
-> and seems to follow what other subsystems do:
->=20
-> drivers/mtd/nand/<all-nand-core-code>
-> drivers/mtd/nand/raw/<raw-nand-controller-drivers>
+Signed-off-by: Insu Yun <wuninsu@gmail.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-And probably some common logic in there too.
-
-> drivers/mtd/nand/spi/<spi-nand-code>
-> drivers/mtd/nand/onenand/<onenand-code>
-> drivers/mtd/nand/chips/<manufacturer-spcific-code>
->=20
-
-I'm fine with this one too ;-).
-
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 286b97a..5e1b68c 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -596,7 +596,7 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
+ 	mtd->size = devsize * cfi->numchips;
+ 
+ 	mtd->numeraseregions = cfi->cfiq->NumEraseRegions * cfi->numchips;
+-	mtd->eraseregions = kmalloc(sizeof(struct mtd_erase_region_info)
++	mtd->eraseregions = kzalloc(sizeof(struct mtd_erase_region_info)
+ 			* mtd->numeraseregions, GFP_KERNEL);
+ 	if (!mtd->eraseregions)
+ 		goto setup_err;
+@@ -614,6 +614,8 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
+ 			mtd->eraseregions[(j*cfi->cfiq->NumEraseRegions)+i].erasesize = ersize;
+ 			mtd->eraseregions[(j*cfi->cfiq->NumEraseRegions)+i].numblocks = ernum;
+ 			mtd->eraseregions[(j*cfi->cfiq->NumEraseRegions)+i].lockmap = kmalloc(ernum / 8 + 1, GFP_KERNEL);
++			if (!mtd->eraseregions[(j*cfi->cfiq->NumEraseRegions)+i].lockmap)
++				goto setup_err;
+ 		}
+ 		offset += (ersize * ernum);
+ 	}
+@@ -650,6 +652,10 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
+ 	return mtd;
+ 
+  setup_err:
++	if (mtd->eraseregions)
++		for (i=0; i<cfi->cfiq->NumEraseRegions; i++)
++			for (j=0; j<cfi->numchips; j++)
++				kfree(mtd->eraseregions[(j*cfi->cfiq->NumEraseRegions)+i].lockmap);
+ 	kfree(mtd->eraseregions);
+ 	kfree(mtd);
+ 	kfree(cfi->cmdset_priv);
+-- 
+1.9.1
