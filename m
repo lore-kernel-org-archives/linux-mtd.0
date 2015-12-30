@@ -1,21 +1,18 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aEHhK-0007li-Bo
- for linux-mtd@lists.infradead.org; Wed, 30 Dec 2015 14:25:55 +0000
-From: "Franklin S Cooper Jr." <fcooper@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: <linux-kernel@vger.kernel.org>, <rogerq@ti.com>,
- <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <nsekhar@ti.com>,
- <dwmw2@infradead.org>, <tony@atomide.com>
-Subject: Re: [PATCH v2 0/5] mtd: nand: Fix support for NAND DMA prefetch
-References: <1444930648-19313-1-git-send-email-fcooper@ti.com>
- <20151218180434.GJ10460@google.com>
-Message-ID: <5683E93B.9050101@ti.com>
-Date: Wed, 30 Dec 2015 08:24:59 -0600
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aEHwF-000527-DS
+ for linux-mtd@lists.infradead.org; Wed, 30 Dec 2015 14:41:20 +0000
+Date: Wed, 30 Dec 2015 15:40:55 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: "Franklin S Cooper Jr." <fcooper@ti.com>
+Cc: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: Re: Testing generic empty page bit flips recovery
+Message-ID: <20151230154055.662b4df8@bbrezillon>
+In-Reply-To: <5683E5CC.6020008@ti.com>
+References: <5683E5CC.6020008@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20151218180434.GJ10460@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,57 +23,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Franklin,
 
+On Wed, 30 Dec 2015 08:10:20 -0600
+"Franklin S Cooper Jr." <fcooper@ti.com> wrote:
 
-On 12/18/2015 12:04 PM, Brian Norris wrote:
-> On Thu, Oct 15, 2015 at 12:37:23PM -0500, Franklin S Cooper Jr wrote:
->> NAND DMA prefetch has been broken for awhile and seems to have only
->> worked for SDMA based devices
->>
->> This patchset fixes DMA prefetch to work on both EDMA and SDMA devices
->>
->> Test on:
->> am335x gp evm
->> am437x gp evm
->> am37x gp evm
->>
->> This patchset depends on Roger Quadros recent v4 GPMC/NAND patchset
->> https://github.com/rogerq/linux.git
->> branch: for-v4.4/gpmc-v4
-> In what way does this depend on the other series? Can any of this be
-> taken without it? If not, then perhaps it'd be good if Roger can roll
-> this into his series? Just throwing out ideas. If you want to wait on
-> Roger's series, that's fine.
->
-> FWIW, the MTD stuff all looks OK to me:
->
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
+> I am trying to follow up on this discussion from this patch
+> set (https://patchwork.ozlabs.org/patch/539059/) which
+> suggested that Michael instead test the generic bitflips
+> recovery that is implemented by Boris "mtd: nand: properly
+> handle bitflips in erased pages" patchset
+> (http://lists.infradead.org/pipermail/linux-mtd/2015-September/061617.html).
+> I would like to test Boris patchset but first I need to
+> recreate the error that his patch is fixing.
+> 
+> The error that the patchset is attempting to fix isn't
+> something I have ever encountered before. Currently I am
+> trying to reproduce this issue on a TI K2E evm that uses the
+> davinci nand driver. I flashed the nand's file-system
+> partition with a ubi filesystem and the board is currently
+> set to boot using the file-system on the nand. After about
+> 60 secs I cut the power from the board and boot the board
+> again. What I would expect is that the board will eventually
+> fail to mount the ubi filesystem but currently the board has
+> ran for over 24 hours and powered on and off over 1400 times
+> and its still mounting the file-system perfectly fine.
+> 
+> Any suggestions on a test case that I can use to force the
+> empty page bit flips error?
+> 
+> 
 
-Patches 2 and 3 doesn't have any dependencies on Roger's
-patchset so they should be fine to pull in.
+The davinci driver seems to support raw accesses, so you can try to
+apply this patch [1] against the mtd-utils tree (not sure it still
+applies cleany, but it should work with mtd-utils-1.5.1), and use the
+nandflipbits tool:
 
-I'll leave it up to Roger if he would like to roll my
-patches into his patchset or I can submit the other 3
-patches again once he sends out his new patchset.
+# flash_erase /dev/mtdX <offset> 1
+# nandflipbits /dev/mtdX 1@<offset>
+# nanddump -f /tmp/dump -s <offset> -l <page-size> /dev/mtdX
 
->> Franklin S Cooper Jr (5):
->>   mtd: nand: omap2: Support parsing dma channel information from DT
->>   mtd: nand: omap2: Start dma request before enabling prefetch
->>   mtd: nand: omap2: Fix high memory dma prefetch transfer
->>   ARM: dts: am437x/am33xx/omap/dm816x: Add gpmc dma channel
->>   ARM: OMAP2+: Update GPMC and NAND DT binding documentation
->>
->>  .../bindings/memory-controllers/omap-gpmc.txt      |  7 +++++-
->>  .../devicetree/bindings/mtd/gpmc-nand.txt          |  2 ++
->>  arch/arm/boot/dts/am33xx.dtsi                      |  2 ++
->>  arch/arm/boot/dts/am4372.dtsi                      |  2 ++
->>  arch/arm/boot/dts/dm816x.dtsi                      |  2 ++
->>  arch/arm/boot/dts/omap3.dtsi                       |  2 ++
->>  arch/arm/boot/dts/omap4.dtsi                       |  2 ++
->>  arch/arm/boot/dts/omap5.dtsi                       |  2 ++
->>  drivers/mtd/nand/omap2.c                           | 27 +++++++++-------------
->>  9 files changed, 31 insertions(+), 17 deletions(-)
->>
->> -- 
->> 2.6.1
->>
+Without the patch, nanddump should complain about uncorrectable errors,
+and if you hexdump /dev/dump you should see the bitflip.
+If nanddump does not complain after applying my patch, then it means it
+fixes the "bitflips in erased pages" bug.
+
+Best Regards,
+
+Boris
+
+[1]http://lists.infradead.org/pipermail/linux-mtd/2014-November/056634.html
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
