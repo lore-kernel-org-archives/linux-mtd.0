@@ -1,14 +1,14 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aEJ6N-0005L1-Po
- for linux-mtd@lists.infradead.org; Wed, 30 Dec 2015 15:55:53 +0000
-Date: Wed, 30 Dec 2015 16:55:28 +0100
+ id 1aEJCn-00006G-CP
+ for linux-mtd@lists.infradead.org; Wed, 30 Dec 2015 16:02:30 +0000
+Date: Wed, 30 Dec 2015 17:02:07 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: "Franklin S Cooper Jr." <fcooper@ti.com>
 Cc: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 Subject: Re: Testing generic empty page bit flips recovery
-Message-ID: <20151230165528.2641de7b@bbrezillon>
+Message-ID: <20151230170207.45e7fb01@bbrezillon>
 In-Reply-To: <5683F960.90901@ti.com>
 References: <5683E5CC.6020008@ti.com> <20151230154055.662b4df8@bbrezillon>
  <5683F960.90901@ti.com>
@@ -98,10 +98,6 @@ On Wed, 30 Dec 2015 09:33:52 -0600
 > Erasing 128 Kibyte @ 0 -- 100 % complete
 > root@k2e-evm:~# ./nandflipbits /dev/mtd4 1@4096
 > root@k2e-evm:~# ./nanddump -f /tmp/dump -s 4096 -l 2048
-
-You should probably use a block aligned offset (in your case a block is
-128k), but that's not the problem here.
-
 > /dev/mtd4
 > ECC failed: 0
 > ECC corrected: 0
@@ -110,22 +106,23 @@ You should probably use a block aligned offset (in your case a block is
 > Block size 131072, page size 2048, OOB size 64
 > root@k2e-evm:~# hexdump /tmp/dump
 > 0000000 fffd ffff ffff ffff ffff ffff ffff ffff
-
-             ^
-The bitflip is here.
-
 > 0000010 ffff ffff ffff ffff ffff ffff ffff ffff
 > *
 > 0000800
 > 
 > Any thoughts on why I'm not seeing the expected error?
 > 
+Oh, actually this behavior is explained in the commit message:
 
-Is ecc4bit mode really selected (ti,davinci-ecc-bits = 4 in your DT
-node)?
-You can add a trace there [1] to check that.
+"Currently empty page bit flips are not corrected and report 0 errors."
 
-[1]http://lxr.free-electrons.com/source/drivers/mtd/nand/davinci_nand.c?v=4.1#L706
+Which explains why you're seeing the bitflip in the dump, but nothing
+reported by the MTD layer.
+
+After applying my patch, the bitflip should simply disappear. You can
+then try to generate more bitflips than the engine can actually fix
+(nandflipbits /dev/mtd4 1@0:5@0:49@0:98@0:132@0) and check that MTD
+reports an uncorrectable error.
 
 -- 
 Boris Brezillon, Free Electrons
