@@ -1,17 +1,16 @@
-Received: from smtpbg320.qq.com ([14.17.32.29])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aECr0-0003AL-BD
- for linux-mtd@lists.infradead.org; Wed, 30 Dec 2015 09:15:35 +0000
-From: "=?ISO-8859-1?B?ZnJlZWxpa2U=?=" <itzyx@qq.com>
-To: "=?ISO-8859-1?B?bGludXgtbXRk?=" <linux-mtd@lists.infradead.org>
-Subject: mx28: Winbond Nor flash see "Node header CRC failed" errors when
- kernel starts
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: base64
-Date: Wed, 30 Dec 2015 17:11:30 +0800
-Message-ID: <tencent_0E9D5E5B3C99DB62643658E0@qq.com>
+ id 1aEHSi-0001Db-Ge
+ for linux-mtd@lists.infradead.org; Wed, 30 Dec 2015 14:10:49 +0000
+To: <boris.brezillon@free-electrons.com>, <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+From: "Franklin S Cooper Jr." <fcooper@ti.com>
+Subject: Testing generic empty page bit flips recovery
+Message-ID: <5683E5CC.6020008@ti.com>
+Date: Wed, 30 Dec 2015 08:10:20 -0600
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgYWxsLAoKSSBoYXZlIGEgV2luYm9uZCBXMjVRMjU2RlZGRyBOT1IgRmxhc2ggb24gbXkg
-bXgyOCBib2FyZC4gQW5kIEkgaGF2ZSB0ZXN0IHRoZSBub3IgZmxhc2ggZHJpdmVyIHVuZGVy
-IGluaXRyYW1mcywgcmF3IGVyYXNlLCB3cml0ZSBhbmQgcmVhZCBpcyBub3JtYWwsIGFsc28g
-dGhlIGZsYXNoX2VyYXNlIC1qIC9kZXYvbXRkMSBhbmQgbW91bnQsIHVtb3VudCBteSByb290
-ZnMgaXMgb2suCkJ1dCB3aGVuIEkgdXNlIHRoZSBqZmZzMiBhcyBmaWxlIHN5c3RlbSBhbmQg
-Ym9vdCB0aGUga2VybmVsLCBJIGtlZXAgc2VlaW5nIGpmZnMyICJub2RlIGhlYWRlciBjcmMi
-IGVycm9ycy4KSSBoYXZlIHVzZSB0aGUgZmxhc2hfZXJhc2VhbGwgLWogY29tbWFuZCB0byBl
-cmFzZSB0aGUgcmVsYXRlZCBtdGQgcGFydGl0aW9uIGJlZm9yZSB3cml0aW5nIHRoZSByb290
-ZnMuIEVyYXNlIHNpemUgSSBjaG9vc2UgaXMgNjRLLiA0SyB3YXMgdGVzdGVkIGFsc28uCgpL
-ZXJuZWwgdmVyc2lvbiBpcyAyLjYuMzUuMwoKS2VybmVsIGNvbW1hbmQ6Cm5vaW5pdHJkIGNv
-bnNvbGU9dHR5QU0wLDExNTIwMCByb290PS9kZXYvbXRkYmxvY2sxIHJvb3Rmc3R5cGU9amZm
-czIgcncKCk1URCBwYXJ0aXRpb25zKGZyZWVzY2FsZSBib2FyZCBoYXZlIGl0cyBvd24gYm9v
-dGxldHMsIHNvIHRoZXJlJ3Mgbm8gdWJvb3QgcGFydGl0aW9uKToKQ3JlYXRpbmcgMiBNVEQg
-cGFydGl0aW9ucyBvbiAibXgyOF9ub3JfZmxhc2giOgoweDAwMDAwMDAwMDAwMC0weDAwMDAw
-MDQwMDAwMCA6ICJrZXJuZWwiICAgICAtLS0tdG90YWwgNE0KMHgwMDAwMDA0MDAwMDAtMHgw
-MDAwMDIwMDAwMDAgOiAicm9vdGZzIiAgICAgIC0tLS10b3RhbCAyOE0KCkZvbGxvd2luZyBp
-cyBwYXJ0cyBvZiB0aGUgY29uc29sZSBsb2c6CgpteHMtcnRjIG14cy1ydGMuMDogc2V0dGlu
-ZyBzeXN0ZW0gY2xvY2sgdG8gMTk3MC0wMS0wMSAwMDowMDozNCBVVEMgKDM0KQpWRlM6IE1v
-dW50ZWQgcm9vdCAoamZmczIgZmlsZXN5c3RlbSkgb24gZGV2aWNlIDMxOjEuCkZyZWVpbmcg
-aW5pdCBtZW1vcnk6IDE3NksKSkZGUzIgbm90aWNlOiAoMSkgcmVhZF9kbm9kZTogbm9kZSBD
-UkMgZmFpbGVkIG9uIGRub2RlIGF0IDB4MWZlMzhlYzogcmVhZCAweDAwYTFmZiwgY2FsY3Vs
-YXRlZCAweDFmYzY0YzhlCkpGRlMyIG5vdGljZTogKDk5NikgamZmczJfZ2V0X2lub2RlX25v
-ZGVzOiBOb2RlIGhlYWRlciBDUkMgZmFpbGVkIGF0IDB4MWZlMDA3Yy4gezY5NzYsZmZmZixl
-MDAyMTk4NSwwMDAwMDA0Yn0KTm9kZSB0b3RsZW4gb24gZmxhc2ggKDB4ZTAwMjE5ODUpICE9
-IHRvdGxlbiBmcm9tIG5vZGUgcmVmICgweDAwMDAwMDQ0KQpKRkZTMiB3YXJuaW5nOiAoOTk2
-KSBqZmZzMl9kb19yZWFkX2lub2RlX2ludGVybmFsOiBubyBkYXRhIG5vZGVzIGZvdW5kIGZv
-ciBpbm8gIzIKUmV0dXJuZWQgZXJyb3IgZm9yIGNyY2NoZWNrIG9mIGlubyAjMi4gRXhwZWN0
-IGJhZG5lc3MuLi4KSkZGUzIgbm90aWNlOiAoMSkgcmVhZF9kbm9kZTogbm9kZSBDUkMgZmFp
-bGVkIG9uIGRub2RlIGF0IDB4MWZjZjZmMDogcmVhZCAweGM4ZGMxZWQyLCBjYWxjdWxhdGVk
-IDB4ZjNiMzdmNGIKSkZGUzIgbm90aWNlOiAoOTk2KSBqZmZzMl9nZXRfaW5vZGVfbm9kZXM6
-IE5vZGUgaGVhZGVyIENSQyBmYWlsZWQgYXQgMHgxZmUwMWVjLiB7MDBmNSwwMDAwLDAwMDQ0
-MDAwLDAwMDAwOGM3fQpOb2RlIHRvdGxlbiBvbiBmbGFzaCAoMHhkNTU0NzA3ZCkgIT0gdG90
-bGVuIGZyb20gbm9kZSByZWYgKDB4MDAwMDAwNGMpCkpGRlMyIHdhcm5pbmc6ICg5OTYpIGpm
-ZnMyX2RvX3JlYWRfaW5vZGVfaW50ZXJuYWw6IG5vIGRhdGEgbm9kZXMgZm91bmQgZm9yIGlu
-byAjNApSZXR1cm5lZCBlcnJvciBmb3IgY3JjY2hlY2sgb2YgaW5vICM0LiBFeHBlY3QgYmFk
-bmVzcy4uLgpKRkZTMiBub3RpY2U6ICg5OTYpIGpmZnMyX2dldF9pbm9kZV9ub2RlczogTm9k
-ZSBoZWFkZXIgQ1JDIGZhaWxlZCBhdCAweDFmZTAyYjQuIHs1ZTc4LDU3NzQsNTcxYzZjNmIs
-YmJiMzNlMTV9Ck5vZGUgdG90bGVuIG9uIGZsYXNoICgweDU3MWM2YzVkKSAhPSB0b3RsZW4g
-ZnJvbSBub2RlIHJlZiAoMHgwMDAwMDA0YykKSkZGUzIgd2FybmluZzogKDk5NikgamZmczJf
-ZG9fcmVhZF9pbm9kZV9pbnRlcm5hbDogbm8gZGF0YSBub2RlcyBmb3VuZCBmb3IgaW5vICM1
-ClJldHVybmVkIGVycm9yIGZvciBjcmNjaGVjayBvZiBpbm8gIzUuIEV4cGVjdCBiYWRuZXNz
-Li4uCkpGRlMyIG5vdGljZTogKDk5NikgamZmczJfZ2V0X2lub2RlX25vZGVzOiBOb2RlIGhl
-YWRlciBDUkMgZmFpbGVkIGF0IDB4MWZlMDM3Yy4gezVlNzgsOTc4Yyw1NTkzNmMwYixkNzRm
-YzcxNH0KTm9kZSB0b3RsZW4gb24gZmxhc2ggKDB4ZGRkNjNjNzcpICE9IHRvdGxlbiBmcm9t
-IG5vZGUgcmVmICgweDAwMDAwMDRjKQpKRkZTMiB3YXJuaW5nOiAoOTk2KSBqZmZzMl9kb19y
-ZWFkX2lub2RlX2ludGVybmFsOiBubyBkYXRhIG5vZGVzIGZvdW5kIGZvciBpbm8gIzYKUmV0
-dXJuZWQgZXJyb3IgZm9yIGNyY2NoZWNrIG9mIGlubyAjNi4gRXhwZWN0IGJhZG5lc3MuLi4K
-SkZGUzIgbm90aWNlOiAoOTk2KSBqZmZzMl9nZXRfaW5vZGVfbm9kZXM6IE5vZGUgaGVhZGVy
-IENSQyBmYWlsZWQgYXQgMHgxZmUwNDQ4LiB7NWU3OCw1NzhjLGI3MWI2ZjZiLGZlZTdlNTEy
-fQpOb2RlIHRvdGxlbiBvbiBmbGFzaCAoMHg0MGQzNmMzZCkgIT0gdG90bGVuIGZyb20gbm9k
-ZSByZWYgKDB4MDAwMDAwNGMpCkpGRlMyIHdhcm5pbmc6ICg5OTYpIGpmZnMyX2RvX3JlYWRf
-aW5vZGVfaW50ZXJuYWw6IG5vIGRhdGEgbm9kZXMgZm91bmQgZm9yIGlubyAjNwpSZXR1cm5l
-ZCBlcnJvciBmb3IgY3JjY2hlY2sgb2YgaW5vICM3LiBFeHBlY3QgYmFkbmVzcy4uLgouLi4u
-Li4uCgpJIGdvb2dsZWQgdGhpcyBpc3N1ZSBmb3IgcXVpdGUgYSBsb25nIHRpbWUsIGRpZG4n
-dCBmaW5kIGFueSBzb2x1dGlvbnMgeWV0LiBDYW4gYW55Ym9keSBoZWxwIG1lPwpUaGFua3Mg
-aW4gYWR2YW5jZSE=
+I am trying to follow up on this discussion from this patch
+set (https://patchwork.ozlabs.org/patch/539059/) which
+suggested that Michael instead test the generic bitflips
+recovery that is implemented by Boris "mtd: nand: properly
+handle bitflips in erased pages" patchset
+(http://lists.infradead.org/pipermail/linux-mtd/2015-September/061617.html).
+I would like to test Boris patchset but first I need to
+recreate the error that his patch is fixing.
+
+The error that the patchset is attempting to fix isn't
+something I have ever encountered before. Currently I am
+trying to reproduce this issue on a TI K2E evm that uses the
+davinci nand driver. I flashed the nand's file-system
+partition with a ubi filesystem and the board is currently
+set to boot using the file-system on the nand. After about
+60 secs I cut the power from the board and boot the board
+again. What I would expect is that the board will eventually
+fail to mount the ubi filesystem but currently the board has
+ran for over 24 hours and powered on and off over 1400 times
+and its still mounting the file-system perfectly fine.
+
+Any suggestions on a test case that I can use to force the
+empty page bit flips error?
