@@ -1,15 +1,20 @@
-Received: from www.osadl.org ([62.245.132.105])
+Received: from mout.web.de ([212.227.17.11])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aEf6r-0001ZA-AB
- for linux-mtd@lists.infradead.org; Thu, 31 Dec 2015 15:25:50 +0000
-From: Nicholas Mc Guire <hofrat@osadl.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH] mtd: tests: consolidate kmalloc/memset 0 call to kzalloc
-Date: Thu, 31 Dec 2015 16:21:22 +0100
-Message-Id: <1451575282-27169-1-git-send-email-hofrat@osadl.org>
+ id 1aEjjG-0008Jx-Pr
+ for linux-mtd@lists.infradead.org; Thu, 31 Dec 2015 20:21:47 +0000
+Subject: [PATCH 0/3] mtd-rfd_ftl: Fine-tuning for two function implementations
+References: <566ABCD9.1060404@users.sourceforge.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+ Julia Lawall <julia.lawall@lip6.fr>
+To: linux-mtd@lists.infradead.org, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Message-ID: <56858E3A.7000706@users.sourceforge.net>
+Date: Thu, 31 Dec 2015 21:21:14 +0100
+MIME-Version: 1.0
+In-Reply-To: <566ABCD9.1060404@users.sourceforge.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,41 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an API consolidation only. The use of kmalloc + memset to 0
-is equivalent to kzalloc.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 31 Dec 2015 21:15:15 +0100
 
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
+A few update suggestions were taken into account
+from static source code analysis.
 
-Found by coccinelle script (relaxed version of
-scripts/coccinelle/api/alloc/kzalloc-simple.cocci)
+Markus Elfring (3):
+  Replace a variable initialisation by assignments
+  Refactoring for move_block_contents()
+  Refactoring for erase_block()
 
-Patch was compile tested with: nhk8815_defconfig
-(implies CONFIG_MTD_TESTS=m)
+ drivers/mtd/rfd_ftl.c | 38 +++++++++++++++++---------------------
+ 1 file changed, 17 insertions(+), 21 deletions(-)
 
-Patch is against linux-next (localversion-next is -next-20151231)
-
- drivers/mtd/tests/pagetest.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
-index ba1890d..ff1e056 100644
---- a/drivers/mtd/tests/pagetest.c
-+++ b/drivers/mtd/tests/pagetest.c
-@@ -127,13 +127,12 @@ static int crosstest(void)
- 	unsigned char *pp1, *pp2, *pp3, *pp4;
- 
- 	pr_info("crosstest\n");
--	pp1 = kmalloc(pgsize * 4, GFP_KERNEL);
-+	pp1 = kzalloc(pgsize * 4, GFP_KERNEL);
- 	if (!pp1)
- 		return -ENOMEM;
- 	pp2 = pp1 + pgsize;
- 	pp3 = pp2 + pgsize;
- 	pp4 = pp3 + pgsize;
--	memset(pp1, 0, pgsize * 4);
- 
- 	addr0 = 0;
- 	for (i = 0; i < ebcnt && bbt[i]; ++i)
 -- 
-2.1.4
+2.6.3
