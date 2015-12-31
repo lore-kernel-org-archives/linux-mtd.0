@@ -1,23 +1,15 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from www.osadl.org ([62.245.132.105])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aEQHd-0004lU-K5
- for linux-mtd@lists.infradead.org; Wed, 30 Dec 2015 23:35:58 +0000
-Subject: Re: [PATCH v4 0/5] mtd: nand: properly handle bitflips in erased pages
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>
-References: <1451503927-10831-1-git-send-email-boris.brezillon@free-electrons.com>
-CC: Maxim Levitsky <maximlevitsky@gmail.com>, Nicolas Ferre
- <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard
- <plagnioj@jcrosoft.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, <linux-kernel@vger.kernel.org>
-From: "Franklin S Cooper Jr." <fcooper@ti.com>
-Message-ID: <56846A23.2000802@ti.com>
-Date: Wed, 30 Dec 2015 17:34:59 -0600
-MIME-Version: 1.0
-In-Reply-To: <1451503927-10831-1-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+ id 1aEf6r-0001ZA-AB
+ for linux-mtd@lists.infradead.org; Thu, 31 Dec 2015 15:25:50 +0000
+From: Nicholas Mc Guire <hofrat@osadl.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>
+Subject: [PATCH] mtd: tests: consolidate kmalloc/memset 0 call to kzalloc
+Date: Thu, 31 Dec 2015 16:21:22 +0100
+Message-Id: <1451575282-27169-1-git-send-email-hofrat@osadl.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,117 +19,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This is an API consolidation only. The use of kmalloc + memset to 0
+is equivalent to kzalloc.
 
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+---
 
-On 12/30/2015 01:32 PM, Boris Brezillon wrote:
-> Hi,
->
-> This patch series aims at providing a common logic to check for bitflips
-> in erased pages.
->
-> Currently each driver is implementing its own logic to check for bitflips
-> in erased pages. Not only this create code duplication, but most of these
-> implementations are incorrect.
-> Here are a few aspects that are often left aside in those implementations:
-> 1/ they do not check OOB bytes when checking for the ff pattern, which
->    means they can consider a page as empty while the MTD user actually
->    wanted to write almost ff with a few bits to zero
-> 2/ they check for the ff pattern on the whole page, while ECC actually
->    works on smaller chunks (usually 512 or 1024 bytes chunks)
-> 3/ they use random bitflip thresholds to decide whether a page/chunk is
->    erased or not. IMO this threshold should be set to ECC strength (or
->    at least something correlated to this parameter)
->
-> The approach taken in this series is to provide two helper functions to
-> check for bitflips in erased pages. Each driver that needs to check for
-> such cases can then call the nand_check_erased_ecc_chunk() function, and
-> rely on the common logic to decide whether a page is erased or not.
->
-> While Brian suggested a few times to make this detection automatic for
-> all drivers that set a specific flag (NAND_CHECK_ERASED_BITFLIPS?), here
-> is a few reasons I think this is not such a good idea:
-> 1/ some (a lot of) drivers do not properly implement the raw access
->    functions, and since we need to check for raw data and OOB bytes this
->    makes the automatic detection unusable for most drivers unless they
->    decide to correctly implement those methods (which would be a good
->    thing BTW).
-> 2/ as a I said earlier, this check should be made at the ECC chunk level
->    and not at the page level. This spots two problems: some (a lot of)
->    drivers do not properly specify the ecc layout information, and even
->    if the ecc layout is correctly defined, there is no way to attach ECC
->    bytes to a specific ECC chunk.
-> 3/ the last aspect is the perf penalty incured by this test. Automatically
->    doing that at the NAND core level implies reading the whole page again
->    in raw mode, while with the helper function approach, drivers supporting
->    access at the ECC chunk level can read only the faulty chunk in raw
->    mode.
->
-> Regarding the bitflips threshold at which an erased pages is considered as
-> faulty, I have assigned it to ECC strength. As mentioned by Andrea, using
-> ECC strength might cause some trouble, because if you already have some
-> bitflips in an erased page, programming it might generate even more of
-> them.
-> In the other hand, shouldn't that be checked after (or before) programming
-> a page. I mean, UBI is already capable of detecting pages which are over
-> the configured bitflips_threshold and move data around when it detects
-> such pages.
-> If we check data after writing a page we wouldn't have to bother about
-> setting a weaker value for the "bitflips in erased page" case.
-> Another thing in favor of the ECC strength value for this "bitflips in
-> erased page" threshold value: if the ECC engine is generating 0xff ECC
-> bytes when the page is empty, then it will be able to fix ECC strength
-> bitflips without complaining, so why should we use different value when
-> we detect bitflips using the pattern match approach?
->
-> Best Regards,
->
-> Boris
->
-> Changes since v3:
-> - drop already applied patches
-> - make the generic "bitflips in erased pages" check as an opt-in flag
-> - split driver changes to ease review
-> - addressed Brian's comments
->
-> Changes since v2:
-> - improve nand_check_erased_buf() implementation
-> - keep nand_check_erased_buf() private to nand_base.c
-> - patch existing ecc.correct() implementations to return consistent error
->   codes
-> - make the 'erased check' optional
-> - remove some custom implementations of the 'erased check'
->
-> Changes since v1:
-> - fix the nand_check_erased_buf() function
-> - mark the bitflips > bitflips_threshold condition as unlikely
-> - add missing memsets in nand_check_erased_ecc_chunk()
->
->
-> Boris Brezillon (5):
->   mtd: nand: return consistent error codes in ecc.correct()
->     implementations
->   mtd: nand: use nand_check_erased_ecc_chunk in default ECC read
->     functions
->   mtd: nand: davinci: remove custom 'erased check' implementation
->   mtd: nand: diskonchip: remove custom 'erased check' implementation
->   mtd: nand: jz4740: remove custom 'erased check' implementation
->
->  drivers/mtd/nand/atmel_nand.c   |  2 +-
->  drivers/mtd/nand/bf5xx_nand.c   | 20 +++++++++++-----
->  drivers/mtd/nand/davinci_nand.c | 15 ++++--------
->  drivers/mtd/nand/diskonchip.c   | 37 ++--------------------------
->  drivers/mtd/nand/jz4740_nand.c  | 22 ++---------------
->  drivers/mtd/nand/mxc_nand.c     |  4 ++--
->  drivers/mtd/nand/nand_base.c    | 53 +++++++++++++++++++++++++++++++++++------
->  drivers/mtd/nand/nand_bch.c     |  2 +-
->  drivers/mtd/nand/nand_ecc.c     |  2 +-
->  drivers/mtd/nand/omap2.c        |  6 ++---
->  drivers/mtd/nand/r852.c         |  4 ++--
->  include/linux/mtd/nand.h        | 18 +++++++++++++-
->  include/linux/mtd/nand_bch.h    |  2 +-
->  13 files changed, 96 insertions(+), 91 deletions(-)
->
+Found by coccinelle script (relaxed version of
+scripts/coccinelle/api/alloc/kzalloc-simple.cocci)
 
-Validated this patchset on TI K2E evm.
+Patch was compile tested with: nhk8815_defconfig
+(implies CONFIG_MTD_TESTS=m)
 
-Tested-by: Franklin S Cooper Jr. <fcooper@ti.com>
+Patch is against linux-next (localversion-next is -next-20151231)
+
+ drivers/mtd/tests/pagetest.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
+index ba1890d..ff1e056 100644
+--- a/drivers/mtd/tests/pagetest.c
++++ b/drivers/mtd/tests/pagetest.c
+@@ -127,13 +127,12 @@ static int crosstest(void)
+ 	unsigned char *pp1, *pp2, *pp3, *pp4;
+ 
+ 	pr_info("crosstest\n");
+-	pp1 = kmalloc(pgsize * 4, GFP_KERNEL);
++	pp1 = kzalloc(pgsize * 4, GFP_KERNEL);
+ 	if (!pp1)
+ 		return -ENOMEM;
+ 	pp2 = pp1 + pgsize;
+ 	pp3 = pp2 + pgsize;
+ 	pp4 = pp3 + pgsize;
+-	memset(pp1, 0, pgsize * 4);
+ 
+ 	addr0 = 0;
+ 	for (i = 0; i < ebcnt && bbt[i]; ++i)
+-- 
+2.1.4
