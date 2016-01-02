@@ -1,21 +1,17 @@
-Received: from ns2.intercpanel.com.au ([101.234.130.227]
- helo=ns1.intercpanel.com.au)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aFCoY-00086W-VO
- for linux-mtd@lists.infradead.org; Sat, 02 Jan 2016 03:25:11 +0000
-Received: from [113.161.72.102] (port=34742 helo=bullmastiffs.com.au)
- by ns1.intercpanel.com.au with esmtpa (Exim 4.77)
- (envelope-from <s_j_newbury@bullmastiffs.com.au>) id 1aFBg3-0002Kb-Ky
- for linux-mtd@lists.infradead.org; Sat, 02 Jan 2016 12:42:22 +1030
-From: "Steven Newbury" <s_j_newbury@bullmastiffs.com.au>
-Content-Type: text/plain;
-	charset=us-ascii
+Received: from mx4.its.uni-kassel.de ([141.51.12.63])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aFRPb-0004q5-Md
+ for linux-mtd@lists.infradead.org; Sat, 02 Jan 2016 19:00:24 +0000
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (1.0)
-Subject: Hello linux
-Message-Id: <ADDA4763-F818-4C83-8047-1757A4C57382@bullmastiffs.com.au>
-Date: Sat, 2 Jan 2016 05:12:31 +0100
-To: "linux mtd" <linux-mtd@lists.infradead.org>
+Content-Description: Mail message body
+Subject: Charity Donation
+To: Me <s_w9gc9x@uni-kassel.de>
+From: "Jeff Skoll" <s_w9gc9x@uni-kassel.de>
+Date: Sat, 02 Jan 2016 13:59:48 -0500
+Reply-To: jeff.skoll@skollcharity.org
+Message-ID: <auto-000000328029@mailadmin.uni-kassel.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
+My name is Jeffrey Skoll, a philanthropist and the founder of one of the la=
+rgest private foundations in the world. I believe strongly in =E2=80=98givi=
+ng while living.=E2=80=99 I had one idea that never changed in my mind =E2=
+=80=94 that you should use your wealth to help people and I have decided to=
+ secretly give USD2.498 Million to a randomly selected individual. On recei=
+pt of this email, you should count yourself as the individual. Kindly get b=
+ack to me at your earliest convenience, so I know your email address is val=
+id.
 
-hi linux
+Visit the web page to know more about me: http://www.theglobeandmail.com/ne=
+ws/national/meet-the-canadian-billionaire-whos-giving-it-all-away/article42=
+09888/ or you can read an article of me on Wikipedia.
 
-
-
-http://dklass.by/involved.php?sign=3D1xhh15s00zny
-
-
-
-Steven Newbury
+Regards,
+Jeffrey Skoll.
