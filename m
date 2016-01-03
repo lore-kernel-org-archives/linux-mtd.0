@@ -1,17 +1,20 @@
-Received: from mx4.its.uni-kassel.de ([141.51.12.63])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aFgEB-00066e-0v
- for linux-mtd@lists.infradead.org; Sun, 03 Jan 2016 10:49:36 +0000
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Charity Donation
-To: Me <s_w9gc9x@uni-kassel.de>
-From: "Jeff Skoll" <s_w9gc9x@uni-kassel.de>
-Date: Sun, 03 Jan 2016 05:40:12 -0500
-Reply-To: jeff.skoll@skollcharity.org
-Message-ID: <auto-000000780698@mailadmin.uni-kassel.de>
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aFj4e-0007lI-6l
+ for linux-mtd@lists.infradead.org; Sun, 03 Jan 2016 13:51:57 +0000
+Message-ID: <1451829092.13942.4.camel@gmail.com>
+Subject: Re: [PATCH] ubifs: Fix error codes in ubifs_iget()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>
+Cc: adrian.hunter@intel.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Date: Sun, 03 Jan 2016 15:51:32 +0200
+In-Reply-To: <1451772666-2139-1-git-send-email-richard@nod.at>
+References: <1451772666-2139-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,19 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-My name is Jeffrey Skoll, a philanthropist and the founder of one of the la=
-rgest private foundations in the world. I believe strongly in =E2=80=98givi=
-ng while living.=E2=80=99 I had one idea that never changed in my mind =E2=
-=80=94 that you should use your wealth to help people and I have decided to=
- secretly give USD2.498 Million to a randomly selected individual. On recei=
-pt of this email, you should count yourself as the individual. Kindly get b=
-ack to me at your earliest convenience, so I know your email address is val=
-id.
+On Sat, 2016-01-02 at 23:11 +0100, Richard Weinberger wrote:
+> We cannot use positive error codes in ERR_PTR().
+> IS_ERR() won't catch them.
 
-Visit the web page to know more about me: http://www.theglobeandmail.com/ne=
-ws/national/meet-the-canadian-billionaire-whos-giving-it-all-away/article42=
-09888/ or you can read an article of me on Wikipedia.
+Right, but why there is a "err = -EINVAL;" when at 'out_invalid'.
 
-Regards,
-Jeffrey Skoll.
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+
+I do not see a bug, but I see a removal of a useful code which lets you
+understand what verification failed. Do I miss something?
