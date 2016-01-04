@@ -1,23 +1,18 @@
-Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGAJZ-0002Jz-O6
- for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 18:57:10 +0000
-Received: by mail-pf0-x234.google.com with SMTP id q63so170269681pfb.0
- for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 10:56:48 -0800 (PST)
-Date: Mon, 4 Jan 2016 10:56:46 -0800
+ id 1aGAY0-0002N3-NH
+ for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 19:12:05 +0000
+Received: by mail-pf0-x244.google.com with SMTP id 65so16405182pff.1
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 11:11:44 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
+To: <linux-mtd@lists.infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>, <linux-kernel@vger.kernel.org>,
  Heiko Schocher <hs@denx.de>, Frans Klaver <fransklaver@gmail.com>
-Subject: Re: [PATCH for-4.4] mtd: fix cmdlinepart parser, early naming for
- auto-filled MTD
-Message-ID: <20160104185646.GD109450@google.com>
-References: <1449878281-94986-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1449878281-94986-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH for-4.4] mtd: nand: assign reasonable default name for NAND
+ drivers
+Date: Mon,  4 Jan 2016 11:11:03 -0800
+Message-Id: <1451934663-68925-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +22,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 11, 2015 at 03:58:01PM -0800, Brian Norris wrote:
-> Commit 807f16d4db95 ("mtd: core: set some defaults when dev.parent is
-> set") attempted to provide some default settings for MTDs that
->  (a) assign the parent device and
->  (b) don't provide their own name or owner
-> 
-> However, this isn't a perfect drop-in replacement for the boilerplate
-> found in some drivers, because the MTD name is used by partition
-> parsers like cmdlinepart, but the name isn't set until add_mtd_device(),
-> after the parsing is completed. This means cmdlinepart sees a NULL name
-> and therefore will not work properly.
-> 
-> Fix this by moving the default name and owner assignment to be first in
-> the MTD registration process.
-> 
-> Fixes: 807f16d4db95 ("mtd: core: set some defaults when dev.parent is set")
-> Reported-by: Heiko Schocher <hs@denx.de>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Heiko Schocher <hs@denx.de>
-> Cc: Frans Klaver <fransklaver@gmail.com>
-> ---
-> Heiko, can you provide testing feedback (e.g., 'Tested-by: ...')?
+Commits such as commit 853f1c58c4b2 ("mtd: nand: omap2: show parent
+device structure in sysfs") attempt to rely on the core MTD code to set
+the MTD name based on the parent device. However, nand_base tries to set
+a different default name according to the flash name (e.g., extracted
+from the ONFI parameter page), which means NAND drivers will never make
+use of the MTD defaults. This is not the intention of commit
+853f1c58c4b2.
 
-Applied this patch to linux-mtd.git, even though it doesn't completely
-fix the reported problem -- it fixes many other MTD drivers, but
-drivers/mtd/nand/ has an additional issue. I'll resend the additional
-patch that fixes Heiko's problem completely in a bit.
+This results in problems when trying to use the cmdline partition
+parser, since the MTD name is different than expected. Let's fix this by
+providing a default NAND name, where possible.
 
-Brian
+Note that this is not really a great default name in the long run, since
+this means that if there are multiple MTDs attached to the same
+controller device, they will have the same name. But that is an existing
+issue and requires future work on a better controller vs. flash chip
+abstraction to fix properly.
+
+Reported-by: Heiko Schocher <hs@denx.de>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Heiko Schocher <hs@denx.de>
+Cc: Frans Klaver <fransklaver@gmail.com>
+---
+This patch is needed in additon to commit 472b444eef93 ("mtd: fix cmdlinepart
+parser, early naming for auto-filled MTD") to fix Heiko's reported problem. At
+this point, I'm not sure if this should be targeted toward late 4.4 or for 4.5.
+It's a 4.4 regresssion, but a very small one. And I'm not sure if this will
+have wide enough impact that it should be given a longer time to be reviewed
+and tested. We can always send it to -stable later, if it's really needed.
+
+ drivers/mtd/nand/nand_base.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ece544efccc3..9f169566fba4 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3826,6 +3826,9 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 	if (!type)
+ 		type = nand_flash_ids;
+ 
++	if (!mtd->name && mtd->dev.parent)
++		mtd->name = dev_name(mtd->dev.parent);
++
+ 	for (; type->name != NULL; type++) {
+ 		if (is_full_id_nand(type)) {
+ 			if (find_full_id_nand(mtd, chip, type, id_data, &busw))
+-- 
+2.6.0.rc2.230.g3dd15c0
