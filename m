@@ -1,21 +1,24 @@
-Subject: Re: [PATCH linux-next 1/5] mtd: spi-nor: properly detect the memory
- when it boots in Quad or Dual mode
-To: Brian Norris <computersforpeace@gmail.com>
-References: <cover.1449494420.git.cyrille.pitchen@atmel.com>
- <813edd1addf9a09b9f01031d3cb279c8cdfe97bb.1449494420.git.cyrille.pitchen@atmel.com>
- <20151218015544.GG10460@google.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: <linux-mtd@lists.infradead.org>, <nicolas.ferre@atmel.com>,
- <marex@denx.de>, <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
- <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>
-Message-ID: <568AA2D5.6080504@atmel.com>
-Date: Mon, 4 Jan 2016 17:50:29 +0100
-MIME-Version: 1.0
-In-Reply-To: <20151218015544.GG10460@google.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Received: from mail-io0-x22b.google.com ([2607:f8b0:4001:c06::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aG9Ud-0008Vf-6H
+ for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 18:04:40 +0000
+Received: by mail-io0-x22b.google.com with SMTP id 1so116151548ion.1
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 10:04:09 -0800 (PST)
+From: Seth Forshee <seth.forshee@canonical.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ fuse-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org,
+ selinux@tycho.nsa.gov
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
+ Seth Forshee <seth.forshee@canonical.com>
+Subject: [PATCH RESEND v2 00/19] Support fuse mounts in user namespaces
+Date: Mon,  4 Jan 2016 12:03:39 -0600
+Message-Id: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,118 +28,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+These patches implement support for mounting filesystems in user
+namespaces using fuse. They are based on the patches in the for-testing
+branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git,
+but I've rebased them onto 4.4-rc3. I've pushed all of this to:
 
-Le 18/12/2015 02:55, Brian Norris a écrit :
-> Hi Cyrille,
-> 
-> On Mon, Dec 07, 2015 at 03:09:10PM +0100, Cyrille Pitchen wrote:
-[...]
->> +
->> +			/* Set this protocol for all commands. */
->> +			nor->reg_proto = configs[i].proto;
->> +			nor->read_proto = configs[i].proto;
->> +			nor->write_proto = configs[i].proto;
->> +			nor->erase_proto = configs[i].proto;
-> 
-> Are these all fully independent? Do we really need 4 fields for this?
-> 
+ git://git.kernel.org/pub/scm/linux/kernel/git/sforshee/linux.git fuse-userns
 
-Currently, for sure reg_proto and read_proto are independent. Let's take
-Spansion memories as an example:
-- Fast Read Quad Data 0x6B uses SPI 1-1-4
-- register accesses (read/write) use SPI 1-1-1
+The patches are organized into three high-level groups.
 
-AFAIK, Quad IO write commands are not used yet but if one day they are, for
-instance with Macronix memories (QPI mode disabled):
-- 4x I/O Page Program 0x38 uses SPI 1-1-4
-- register accesses (read/write) uses SPI 1-1-1
-- Fast Read Quad I/O 0xEB uses SPI 1-4-4
-- Sector Erase 0x20 uses SPI 1-1-1
+Patches 1-6 are related to security, adding restrictions for
+unprivileged mounts and updating the LSMs as needed. Patches 1-2
+(checking inode permissions for block device mounts) may not be strictly
+necessary for fuseblk mounts since fuse doesn't do any IO on the block
+device in the kernel, but it still seems like a good idea to fail the
+mount if the user doesn't have the required permissions for the inode
+(though this is a bit misleading with fuse since the mounts are done via
+a suid-root helper).
 
-For now, I don't have any example where erase_proto is different from
-reg_proto but for clarity reasons I'd rather keep erase_proto and reg_proto
-distinct. Otherwise both field should be renamed as it looks odd to use
-reg_proto when implementing the nor->erase() hook, doesn't it?
+Patches 7-14 update most of the vfs to translate ids correctly and deal
+with inodes which may have invalid user/group ids. I've omitted patches
+for anything not used by fuse - quota, fs freezing, some helper
+functions, etc. - but if these are wanted for the sake of completeness I
+can include them.
 
-The names were chosen according to both the *_opcode and hooks from the
-struct spi_nor:
+Patches 15-18 update fuse to deal with mounts from non-init pid and user
+namespaces and enable mounting from user namespaces.
 
-hook           op code          protocol
-read_reg()     N/A              reg_proto
-write_reg()    N/A              reg_proto
-read()         read_opcode      read_proto
-write()        program_opcode   write_proto
-erase()        erase_opcode     erase_proto
+Changes since v1:
+ - Drop patch for FIBMAP.
+ - Use current_in_userns in fuse_allow_current_process.
+ - Remove checks for uid/gid validity in fuse. Intead, ids from the
+   backing store which do not map into s_user_ns will result in invalid
+   ids in the vfs inode. Checks in the vfs will prevent unmappable ids
+   from being passed in from above.
+ - Update a couple of commit messages to provide more detail about
+   changes.
 
-I admit following this logic 'program_opcode' should be renamed
-'write_opcode'.
+Thanks,
+Seth
 
+Andy Lutomirski (1):
+  fs: Treat foreign mounts as nosuid
 
+Seth Forshee (17):
+  block_dev: Support checking inode permissions in lookup_bdev()
+  block_dev: Check permissions towards block device inode when mounting
+  selinux: Add support for unprivileged mounts from user namespaces
+  userns: Replace in_userns with current_in_userns
+  Smack: Handle labels consistently in untrusted mounts
+  fs: Check for invalid i_uid in may_follow_link()
+  cred: Reject inodes with invalid ids in set_create_file_as()
+  fs: Refuse uid/gid changes which don't map into s_user_ns
+  fs: Update posix_acl support to handle user namespace mounts
+  fs: Ensure the mounter of a filesystem is privileged towards its
+    inodes
+  fs: Don't remove suid for CAP_FSETID in s_user_ns
+  fs: Allow superblock owner to access do_remount_sb()
+  capabilities: Allow privileged user in s_user_ns to set security.*
+    xattrs
+  fuse: Add support for pid namespaces
+  fuse: Support fuse filesystems outside of init_user_ns
+  fuse: Restrict allow_other to the superblock's namespace or a
+    descendant
+  fuse: Allow user namespace mounts
 
-[...]
->> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
->> index fac3f6f53981..c91986a99caf 100644
->> --- a/include/linux/mtd/spi-nor.h
->> +++ b/include/linux/mtd/spi-nor.h
->> @@ -75,8 +75,9 @@
->>  #define SPINOR_OP_BRWR		0x17	/* Bank register write */
->>  
->>  /* Used for Micron flashes only. */
->> -#define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
->> -#define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
->> +#define SPINOR_OP_MIO_RDID	0xaf	/* Multiple I/O Read JEDEC ID */
->> +#define SPINOR_OP_RD_EVCR	0x65    /* Read EVCR register */
->> +#define SPINOR_OP_WD_EVCR	0x61    /* Write EVCR register */
->>  
->>  /* Status Register bits. */
->>  #define SR_WIP			BIT(0)	/* Write in progress */
->> @@ -105,6 +106,16 @@ enum read_mode {
->>  	SPI_NOR_QUAD,
->>  };
->>  
->> +enum spi_protocol {
->> +	SPI_PROTO_1_1_1,	/* SPI */
->> +	SPI_PROTO_1_1_2,	/* Dual Output */
->> +	SPI_PROTO_1_1_4,	/* Quad Output */
->> +	SPI_PROTO_1_2_2,	/* Dual IO */
->> +	SPI_PROTO_1_4_4,	/* Quad IO */
->> +	SPI_PROTO_2_2_2,	/* Dual Command */
->> +	SPI_PROTO_4_4_4,	/* Quad Command */
-> 
-> Would it help at all to make this enum into something more like a
-> bitfield? So in some cases, rather than a bit switch block, we can just
-> extract the "number of lines" from the integer value? e.g.:
-> 
-> #define SNOR_PROTO(command, addr, data) \
-> 	(((command) << 0) | \
-> 	 ((addr) << 4) | \
-> 	 ((data) << 8)) // or some other kind of macro magic
-> 
-> enum spi_nor_protocol {
-> 	SNOR_PROTO_1_1_1		= SNOR_PROTO(1, 1, 1),
-> 	SNOR_PROTO_1_1_2		= SNOR_PROTO(1, 1, 2),
-> 	...
-> };
-> 
-> static inline int spi_nor_io_lines_command(enum spi_nor_protocol proto)
-> {
-> 	return proto & 0xf;
-> }
-> 
-> (Similar for addr and data phases. Also, my naming might suck. Feel free
-> to improve!)
-> 
-> I don't think we should stomp on the SPI namespace with the
-> "SPI_PROTO_*" definitions. That's why I chose SNOR_PROTO_ and spi_nor_
-> prefixes.
-> 
+ drivers/md/bcache/super.c       |  2 +-
+ drivers/md/dm-table.c           |  2 +-
+ drivers/mtd/mtdsuper.c          |  2 +-
+ fs/attr.c                       | 11 +++++++
+ fs/block_dev.c                  | 18 +++++++++--
+ fs/exec.c                       |  2 +-
+ fs/fuse/cuse.c                  |  3 +-
+ fs/fuse/dev.c                   | 26 ++++++++++++----
+ fs/fuse/dir.c                   | 16 +++++-----
+ fs/fuse/file.c                  | 22 +++++++++++---
+ fs/fuse/fuse_i.h                | 10 +++++-
+ fs/fuse/inode.c                 | 42 +++++++++++++++++---------
+ fs/inode.c                      |  6 +++-
+ fs/namei.c                      |  2 +-
+ fs/namespace.c                  | 17 +++++++++--
+ fs/posix_acl.c                  | 67 ++++++++++++++++++++++++++---------------
+ fs/quota/quota.c                |  2 +-
+ fs/xattr.c                      | 19 +++++++++---
+ include/linux/fs.h              |  2 +-
+ include/linux/mount.h           |  1 +
+ include/linux/posix_acl_xattr.h | 17 ++++++++---
+ include/linux/uidgid.h          | 10 ++++++
+ include/linux/user_namespace.h  |  6 ++--
+ kernel/capability.c             | 13 +++++---
+ kernel/cred.c                   |  2 ++
+ kernel/user_namespace.c         |  6 ++--
+ security/commoncap.c            | 16 ++++++----
+ security/selinux/hooks.c        | 25 ++++++++++++++-
+ security/smack/smack_lsm.c      | 29 ++++++++++++------
+ 29 files changed, 287 insertions(+), 109 deletions(-)
 
-It looks good to me so I'll change for that :)
-
-> Brian
-
-
-Best regards,
-
-Cyrille
+-- 
+1.9.1
