@@ -1,24 +1,25 @@
-Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
+Received: from mail-ig0-x22a.google.com ([2607:f8b0:4001:c05::22a])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aG9VM-00013B-9p
- for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 18:05:16 +0000
-Received: by mail-ig0-x22d.google.com with SMTP id ik10so195512igb.1
- for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 10:04:49 -0800 (PST)
+ id 1aG9Uy-00011I-AL
+ for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 18:04:52 +0000
+Received: by mail-ig0-x22a.google.com with SMTP id ik10so188520igb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 10:04:25 -0800 (PST)
 From: Seth Forshee <seth.forshee@canonical.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Miklos Szeredi <miklos@szeredi.hu>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
  Serge Hallyn <serge.hallyn@canonical.com>,
  Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>, linux-kernel@vger.kernel.org,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
  linux-bcache@vger.kernel.org, dm-devel@redhat.com,
  linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
  Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH RESEND v2 18/18] fuse: Allow user namespace mounts
-Date: Mon,  4 Jan 2016 12:03:57 -0600
-Message-Id: <1451930639-94331-19-git-send-email-seth.forshee@canonical.com>
+Subject: [PATCH RESEND v2 08/18] cred: Reject inodes with invalid ids in
+ set_create_file_as()
+Date: Mon,  4 Jan 2016 12:03:47 -0600
+Message-Id: <1451930639-94331-9-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
 References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,32 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
----
- fs/fuse/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Using INVALID_[UG]ID for the LSM file creation context doesn't
+make sense, so return an error if the inode passed to
+set_create_file_as() has an invalid id.
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index b7bdfdac3521..2fd338c199ce 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1201,7 +1201,7 @@ static void fuse_kill_sb_anon(struct super_block *sb)
- static struct file_system_type fuse_fs_type = {
- 	.owner		= THIS_MODULE,
- 	.name		= "fuse",
--	.fs_flags	= FS_HAS_SUBTYPE,
-+	.fs_flags	= FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
- 	.mount		= fuse_mount,
- 	.kill_sb	= fuse_kill_sb_anon,
- };
-@@ -1233,7 +1233,7 @@ static struct file_system_type fuseblk_fs_type = {
- 	.name		= "fuseblk",
- 	.mount		= fuse_mount_blk,
- 	.kill_sb	= fuse_kill_sb_blk,
--	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE,
-+	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
- };
- MODULE_ALIAS_FS("fuseblk");
- 
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
+---
+ kernel/cred.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/cred.c b/kernel/cred.c
+index 71179a09c1d6..ff8606f77d90 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -689,6 +689,8 @@ EXPORT_SYMBOL(set_security_override_from_ctx);
+  */
+ int set_create_files_as(struct cred *new, struct inode *inode)
+ {
++	if (!uid_valid(inode->i_uid) || !gid_valid(inode->i_gid))
++		return -EINVAL;
+ 	new->fsuid = inode->i_uid;
+ 	new->fsgid = inode->i_gid;
+ 	return security_kernel_create_files_as(new, inode);
 -- 
 1.9.1
