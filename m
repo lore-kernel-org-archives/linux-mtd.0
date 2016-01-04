@@ -1,24 +1,20 @@
-Date: Mon, 4 Jan 2016 13:25:15 -0800
+Received: from mail-pf0-x22f.google.com ([2607:f8b0:400e:c00::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aGEam-0006Zc-3t
+ for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 23:31:12 +0000
+Received: by mail-pf0-x22f.google.com with SMTP id 65so164419371pff.3
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 15:30:51 -0800 (PST)
+Date: Mon, 4 Jan 2016 15:30:49 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Simon Horman <horms@verge.net.au>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Magnus Damm <magnus.damm@gmail.com>,
- Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
- Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
- linux-mtd@lists.infradead.org,
- Javier Martinez Canillas <javier@osg.samsung.com>
-Subject: Re: [PATCH v2] ARM: shmobile: alt: Add QSPI device to DT
-Message-ID: <20160104212515.GA39910@google.com>
-References: <1451903819-19218-1-git-send-email-horms+renesas@verge.net.au>
- <CAMuHMdVFC1TEeTT5Gas8jz0Tvn2HB3EHBo7gp6pthsnOo6x5UQ@mail.gmail.com>
- <20160104203136.GB12748@verge.net.au>
- <CAMuHMdWbFHLKgkn9ShJkyyimpwJAbbL5TjqEp1E9GBteVKQmKg@mail.gmail.com>
+To: John Crispin <blogic@openwrt.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/6] MTD: lantiq: xway: various nand fixes
+Message-ID: <20160104233049.GA128501@google.com>
+References: <1451941501-42952-1-git-send-email-blogic@openwrt.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdWbFHLKgkn9ShJkyyimpwJAbbL5TjqEp1E9GBteVKQmKg@mail.gmail.com>
+In-Reply-To: <1451941501-42952-1-git-send-email-blogic@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 04, 2016 at 09:42:59PM +0100, Geert Uytterhoeven wrote:
-> On Mon, Jan 4, 2016 at 9:31 PM, Simon Horman <horms@verge.net.au> wrote:
-> > Should we document "spansion,s25fl512s" for the benefit of checkpatch.pl?
-> 
-> Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt used to point to
-> drivers/mtd/devices/m25p80.c for the list of supported chips.
-> 
-> That seems to have been changed lately. Now jedec,spi-nor.txt includes the
-> list, but lacks the manufacturers' names, so checkpatch.pl is still not happpy.
-> 
-> Brian: Shouldn't the manufacturers's names be added?
+On Mon, Jan 04, 2016 at 10:04:55PM +0100, John Crispin wrote:
+> This series adds various fixes for the nand driver used on Lantiq DSL SoC.
 
-We've had some of this discussion recently:
+Is there a good reason this driver uses plat_nand? That seems like an
+unnecessary abstraction layer. It'd be clearer to just refactor the
+driver to be a proper platform driver...
 
-http://lkml.kernel.org/g/20151118194340.GF140057@google.com
+Also, I see that there's no DT binding doc.
 
-I don't think we can reasonably determine a good list of complete
-strings, due to historical failures (IMO) in the SPI subsystem. We could
-add a separate list of possible manufacturers, so people can do the MxN
-pairing themselves.
+Can these things be cleaned up?
 
-checkpatch.pl has enough false positives that its author doesn't care to
-fix that I'm not personally worried about yet another class of them. But
-if you have good reasons and good patches for the documentation, I'm all
-ears.
-
-Regards,
 Brian
