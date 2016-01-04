@@ -1,14 +1,16 @@
-Received: from mail-io0-x232.google.com ([2607:f8b0:4001:c06::232])
+Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aG9Ut-0000Jp-Eq
- for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 18:05:12 +0000
-Received: by mail-io0-x232.google.com with SMTP id o67so442123847iof.3
- for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 10:04:26 -0800 (PST)
+ id 1aG9Ul-0000CG-6g
+ for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 18:05:13 +0000
+Received: by mail-ig0-x233.google.com with SMTP id mw1so109130899igb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 10:04:18 -0800 (PST)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ James Morris <james.l.morris@oracle.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
  Austin S Hemmelgarn <ahferroin7@gmail.com>,
  Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
  linux-bcache@vger.kernel.org, dm-devel@redhat.com,
@@ -16,10 +18,10 @@ Cc: Serge Hallyn <serge.hallyn@canonical.com>,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
  Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH RESEND v2 09/18] fs: Refuse uid/gid changes which don't map
- into s_user_ns
-Date: Mon,  4 Jan 2016 12:03:48 -0600
-Message-Id: <1451930639-94331-10-git-send-email-seth.forshee@canonical.com>
+Subject: [PATCH RESEND v2 05/18] userns: Replace in_userns with
+ current_in_userns
+Date: Mon,  4 Jan 2016 12:03:44 -0600
+Message-Id: <1451930639-94331-6-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
 References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,37 +33,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add checks to inode_change_ok to verify that uid and gid changes
-will map into the superblock's user namespace. If they do not
-fail with -EOVERFLOW. This cannot be overriden with ATTR_FORCE.
+All current callers of in_userns pass current_user_ns as the
+first argument. Simplify by replacing in_userns with
+current_in_userns which checks whether current_user_ns is in the
+namespace supplied as an argument.
 
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Acked-by: James Morris <james.l.morris@oracle.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 ---
- fs/attr.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ fs/namespace.c                 | 2 +-
+ include/linux/user_namespace.h | 6 ++----
+ kernel/user_namespace.c        | 6 +++---
+ security/commoncap.c           | 2 +-
+ 4 files changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/fs/attr.c b/fs/attr.c
-index 6530ced19697..55b46e3aa888 100644
---- a/fs/attr.c
-+++ b/fs/attr.c
-@@ -42,6 +42,17 @@ int inode_change_ok(const struct inode *inode, struct iattr *attr)
- 			return error;
- 	}
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 2101ce7b96ab..18fc58760aec 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -3286,7 +3286,7 @@ bool mnt_may_suid(struct vfsmount *mnt)
+ 	 * in other namespaces.
+ 	 */
+ 	return !(mnt->mnt_flags & MNT_NOSUID) && check_mnt(real_mount(mnt)) &&
+-	       in_userns(current_user_ns(), mnt->mnt_sb->s_user_ns);
++	       current_in_userns(mnt->mnt_sb->s_user_ns);
+ }
  
-+	/*
-+	 * Verify that uid/gid changes are valid in the target namespace
-+	 * of the superblock. This cannot be overriden using ATTR_FORCE.
-+	 */
-+	if (ia_valid & ATTR_UID &&
-+	    from_kuid(inode->i_sb->s_user_ns, attr->ia_uid) == (uid_t)-1)
-+		return -EOVERFLOW;
-+	if (ia_valid & ATTR_GID &&
-+	    from_kgid(inode->i_sb->s_user_ns, attr->ia_gid) == (gid_t)-1)
-+		return -EOVERFLOW;
-+
- 	/* If force is set do it anyway. */
- 	if (ia_valid & ATTR_FORCE)
+ static struct ns_common *mntns_get(struct task_struct *task)
+diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
+index a43faa727124..9217169c64cb 100644
+--- a/include/linux/user_namespace.h
++++ b/include/linux/user_namespace.h
+@@ -72,8 +72,7 @@ extern ssize_t proc_projid_map_write(struct file *, const char __user *, size_t,
+ extern ssize_t proc_setgroups_write(struct file *, const char __user *, size_t, loff_t *);
+ extern int proc_setgroups_show(struct seq_file *m, void *v);
+ extern bool userns_may_setgroups(const struct user_namespace *ns);
+-extern bool in_userns(const struct user_namespace *ns,
+-		      const struct user_namespace *target_ns);
++extern bool current_in_userns(const struct user_namespace *target_ns);
+ #else
+ 
+ static inline struct user_namespace *get_user_ns(struct user_namespace *ns)
+@@ -103,8 +102,7 @@ static inline bool userns_may_setgroups(const struct user_namespace *ns)
+ 	return true;
+ }
+ 
+-static inline bool in_userns(const struct user_namespace *ns,
+-			     const struct user_namespace *target_ns)
++static inline bool current_in_userns(const struct user_namespace *target_ns)
+ {
+ 	return true;
+ }
+diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+index 69fbc377357b..5960edc7e644 100644
+--- a/kernel/user_namespace.c
++++ b/kernel/user_namespace.c
+@@ -949,10 +949,10 @@ bool userns_may_setgroups(const struct user_namespace *ns)
+  * Returns true if @ns is the same namespace as or a descendant of
+  * @target_ns.
+  */
+-bool in_userns(const struct user_namespace *ns,
+-	       const struct user_namespace *target_ns)
++bool current_in_userns(const struct user_namespace *target_ns)
+ {
+-	for (; ns; ns = ns->parent) {
++	struct user_namespace *ns;
++	for (ns = current_user_ns(); ns; ns = ns->parent) {
+ 		if (ns == target_ns)
+ 			return true;
+ 	}
+diff --git a/security/commoncap.c b/security/commoncap.c
+index 6243aef5860e..2119421613f6 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -450,7 +450,7 @@ static int get_file_caps(struct linux_binprm *bprm, bool *effective, bool *has_c
+ 
+ 	if (!mnt_may_suid(bprm->file->f_path.mnt))
  		return 0;
+-	if (!in_userns(current_user_ns(), bprm->file->f_path.mnt->mnt_sb->s_user_ns))
++	if (!current_in_userns(bprm->file->f_path.mnt->mnt_sb->s_user_ns))
+ 		return 0;
+ 
+ 	rc = get_vfs_caps_from_disk(bprm->file->f_path.dentry, &vcaps);
 -- 
 1.9.1
