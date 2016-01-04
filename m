@@ -1,16 +1,23 @@
-Received: from mail-pf0-x22b.google.com ([2607:f8b0:400e:c00::22b])
+Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aG9wb-0007lz-6G
- for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 18:33:26 +0000
-Received: by mail-pf0-x22b.google.com with SMTP id q63so169989445pfb.0
- for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 10:33:04 -0800 (PST)
+ id 1aGAJZ-0002Jz-O6
+ for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 18:57:10 +0000
+Received: by mail-pf0-x234.google.com with SMTP id q63so170269681pfb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 10:56:48 -0800 (PST)
+Date: Mon, 4 Jan 2016 10:56:46 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] mtd: nand: fix for drop unnecessary partition parser data
-Date: Mon,  4 Jan 2016 10:32:54 -0800
-Message-Id: <1451932374-64214-1-git-send-email-computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Heiko Schocher <hs@denx.de>, Frans Klaver <fransklaver@gmail.com>
+Subject: Re: [PATCH for-4.4] mtd: fix cmdlinepart parser, early naming for
+ auto-filled MTD
+Message-ID: <20160104185646.GD109450@google.com>
+References: <1449878281-94986-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1449878281-94986-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
+On Fri, Dec 11, 2015 at 03:58:01PM -0800, Brian Norris wrote:
+> Commit 807f16d4db95 ("mtd: core: set some defaults when dev.parent is
+> set") attempted to provide some default settings for MTDs that
+>  (a) assign the parent device and
+>  (b) don't provide their own name or owner
+> 
+> However, this isn't a perfect drop-in replacement for the boilerplate
+> found in some drivers, because the MTD name is used by partition
+> parsers like cmdlinepart, but the name isn't set until add_mtd_device(),
+> after the parsing is completed. This means cmdlinepart sees a NULL name
+> and therefore will not work properly.
+> 
+> Fix this by moving the default name and owner assignment to be first in
+> the MTD registration process.
+> 
+> Fixes: 807f16d4db95 ("mtd: core: set some defaults when dev.parent is set")
+> Reported-by: Heiko Schocher <hs@denx.de>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Heiko Schocher <hs@denx.de>
+> Cc: Frans Klaver <fransklaver@gmail.com>
+> ---
+> Heiko, can you provide testing feedback (e.g., 'Tested-by: ...')?
 
->From Stephen:
+Applied this patch to linux-mtd.git, even though it doesn't completely
+fix the reported problem -- it fixes many other MTD drivers, but
+drivers/mtd/nand/ has an additional issue. I'll resend the additional
+patch that fixes Heiko's problem completely in a bit.
 
-    Hi Brian,
-
-    After merging the l2-mtd tree, today's linux-next build (powerpc
-    ppc44x_defconfig) failed like this:
-
-    drivers/mtd/nand/ndfc.c: In function 'ndfc_chip_init':
-    drivers/mtd/nand/ndfc.c:177:2: error: 'ppdata' undeclared (first use in this function)
-      ppdata.of_node = flash_np;
-      ^
-
-    Caused by commit
-
-      a61ae81a1907 ("mtd: nand: drop unnecessary partition parser data")
-
-The flash node is already correctly assigned using the new helper
-(nand_set_flash_node()) so the correct fix is indeed to simply drop this
-line.
-
-Fixes: a61ae81a1907 ("mtd: nand: drop unnecessary partition parser data")
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
-Resending Stephen's report from here:
-
-https://lkml.org/lkml/2015/12/21/6
-
-so that it gets a look on the MTD list. I've added just a tiny bit of
-commentary too.
-
-I don't plan to rebase my tree to fix the bisectability, since this is buried
-far enough under other things that should be kept stable.
-
-FWIW, I've now added this driver to my build tests.
-
- drivers/mtd/nand/ndfc.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-index 0709ea9dd8ed..7d72f4fe06a1 100644
---- a/drivers/mtd/nand/ndfc.c
-+++ b/drivers/mtd/nand/ndfc.c
-@@ -174,7 +174,6 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
- 		return -ENODEV;
- 	nand_set_flash_node(chip, flash_np);
- 
--	ppdata.of_node = flash_np;
- 	mtd->name = kasprintf(GFP_KERNEL, "%s.%s", dev_name(&ndfc->ofdev->dev),
- 			      flash_np->name);
- 	if (!mtd->name) {
--- 
-2.6.0.rc2.230.g3dd15c0
+Brian
