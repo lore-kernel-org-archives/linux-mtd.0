@@ -1,13 +1,14 @@
-Received: from mail-io0-x22f.google.com ([2607:f8b0:4001:c06::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aG9Uf-00006r-7i
- for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 18:04:43 +0000
-Received: by mail-io0-x22f.google.com with SMTP id 77so132119530ioc.2
- for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 10:04:12 -0800 (PST)
+Received: from mail-ig0-x22b.google.com ([2607:f8b0:4001:c05::22b])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aG9Ut-00011C-Fz
+ for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 18:04:48 +0000
+Received: by mail-ig0-x22b.google.com with SMTP id ik10so187171igb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 10:04:20 -0800 (PST)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Serge Hallyn <serge.hallyn@canonical.com>,
+ Casey Schaufler <casey@schaufler-ca.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
  Richard Weinberger <richard.weinberger@gmail.com>,
  Austin S Hemmelgarn <ahferroin7@gmail.com>,
  Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
@@ -15,11 +16,13 @@ Cc: Serge Hallyn <serge.hallyn@canonical.com>,
  linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH RESEND v2 02/18] block_dev: Check permissions towards block
- device inode when mounting
-Date: Mon,  4 Jan 2016 12:03:41 -0600
-Message-Id: <1451930639-94331-3-git-send-email-seth.forshee@canonical.com>
+ Seth Forshee <seth.forshee@canonical.com>,
+ James Morris <james.l.morris@oracle.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>
+Subject: [PATCH RESEND v2 06/18] Smack: Handle labels consistently in
+ untrusted mounts
+Date: Mon,  4 Jan 2016 12:03:45 -0600
+Message-Id: <1451930639-94331-7-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
 References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,38 +34,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Unprivileged users should not be able to mount block devices when
-they lack sufficient privileges towards the block device inode.
-Update blkdev_get_by_path() to validate that the user has the
-required access to the inode at the specified path. The check
-will be skipped for CAP_SYS_ADMIN, so privileged mounts will
-continue working as before.
+The SMACK64, SMACK64EXEC, and SMACK64MMAP labels are all handled
+differently in untrusted mounts. This is confusing and
+potentically problematic. Change this to handle them all the same
+way that SMACK64 is currently handled; that is, read the label
+from disk and check it at use time. For SMACK64 and SMACK64MMAP
+access is denied if the label does not match smk_root. To be
+consistent with suid, a SMACK64EXEC label which does not match
+smk_root will still allow execution of the file but will not run
+with the label supplied in the xattr.
 
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
+Acked-by: Casey Schaufler <casey@schaufler-ca.com>
 ---
- fs/block_dev.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ security/smack/smack_lsm.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 3ebbde85d898..4fdb6ab59816 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1424,9 +1424,14 @@ struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
- 					void *holder)
- {
- 	struct block_device *bdev;
-+	int perm = 0;
- 	int err;
+diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+index 16cac04214e2..0e555f64ded0 100644
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@ -921,6 +921,7 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
+ 	struct inode *inode = file_inode(bprm->file);
+ 	struct task_smack *bsp = bprm->cred->security;
+ 	struct inode_smack *isp;
++	struct superblock_smack *sbsp;
+ 	int rc;
  
--	bdev = lookup_bdev(path, 0);
-+	if (mode & FMODE_READ)
-+		perm |= MAY_READ;
-+	if (mode & FMODE_WRITE)
-+		perm |= MAY_WRITE;
-+	bdev = lookup_bdev(path, perm);
- 	if (IS_ERR(bdev))
- 		return bdev;
+ 	if (bprm->cred_prepared)
+@@ -930,6 +931,11 @@ static int smack_bprm_set_creds(struct linux_binprm *bprm)
+ 	if (isp->smk_task == NULL || isp->smk_task == bsp->smk_task)
+ 		return 0;
  
++	sbsp = inode->i_sb->s_security;
++	if ((sbsp->smk_flags & SMK_SB_UNTRUSTED) &&
++	    isp->smk_task != sbsp->smk_root)
++		return 0;
++
+ 	if (bprm->unsafe & (LSM_UNSAFE_PTRACE | LSM_UNSAFE_PTRACE_CAP)) {
+ 		struct task_struct *tracer;
+ 		rc = 0;
+@@ -1733,6 +1739,7 @@ static int smack_mmap_file(struct file *file,
+ 	struct task_smack *tsp;
+ 	struct smack_known *okp;
+ 	struct inode_smack *isp;
++	struct superblock_smack *sbsp;
+ 	int may;
+ 	int mmay;
+ 	int tmay;
+@@ -1744,6 +1751,10 @@ static int smack_mmap_file(struct file *file,
+ 	isp = file_inode(file)->i_security;
+ 	if (isp->smk_mmap == NULL)
+ 		return 0;
++	sbsp = file_inode(file)->i_sb->s_security;
++	if (sbsp->smk_flags & SMK_SB_UNTRUSTED &&
++	    isp->smk_mmap != sbsp->smk_root)
++		return -EACCES;
+ 	mkp = isp->smk_mmap;
+ 
+ 	tsp = current_security();
+@@ -3532,16 +3543,14 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
+ 			if (rc >= 0)
+ 				transflag = SMK_INODE_TRANSMUTE;
+ 		}
+-		if (!(sbsp->smk_flags & SMK_SB_UNTRUSTED)) {
+-			/*
+-			 * Don't let the exec or mmap label be "*" or "@".
+-			 */
+-			skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
+-			if (IS_ERR(skp) || skp == &smack_known_star ||
+-			    skp == &smack_known_web)
+-				skp = NULL;
+-			isp->smk_task = skp;
+-		}
++		/*
++		 * Don't let the exec or mmap label be "*" or "@".
++		 */
++		skp = smk_fetch(XATTR_NAME_SMACKEXEC, inode, dp);
++		if (IS_ERR(skp) || skp == &smack_known_star ||
++		    skp == &smack_known_web)
++			skp = NULL;
++		isp->smk_task = skp;
+ 
+ 		skp = smk_fetch(XATTR_NAME_SMACKMMAP, inode, dp);
+ 		if (IS_ERR(skp) || skp == &smack_known_star ||
 -- 
 1.9.1
