@@ -1,22 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aG4ME-0007Z2-2r
- for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 12:35:38 +0000
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-To: <linux-mtd@lists.infradead.org>, <boris.brezillon@free-electrons.com>,
- <computersforpeace@gmail.com>
-CC: <alex@alex-smith.me.uk>, Alex Smith <alex.smith@imgtec.com>, "Zubair
- Lutfullah Kakakhel" <Zubair.Kakakhel@imgtec.com>, David Woodhouse
- <dwmw2@infradead.org>, <linux-kernel@vger.kernel.org>, Harvey Hunt
- <harvey.hunt@imgtec.com>
-Subject: [PATCH v11 2/3] mtd: nand: jz4780: driver for NAND devices on JZ4780
- SoCs
-Date: Mon, 4 Jan 2016 12:34:43 +0000
-Message-ID: <1451910884-18710-3-git-send-email-harvey.hunt@imgtec.com>
-In-Reply-To: <1451910884-18710-1-git-send-email-harvey.hunt@imgtec.com>
-References: <1451910884-18710-1-git-send-email-harvey.hunt@imgtec.com>
+Subject: Re: [PATCH linux-next 2/5] mtd: spi-nor: fix Quad SPI mode support
+ for Spansion, Micron and Macronix
+To: Brian Norris <computersforpeace@gmail.com>
+References: <cover.1449494420.git.cyrille.pitchen@atmel.com>
+ <7f2a084da433f1936a1305dfa30327bc5abc802c.1449494420.git.cyrille.pitchen@atmel.com>
+ <20151218021857.GI10460@google.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: <linux-mtd@lists.infradead.org>, <nicolas.ferre@atmel.com>,
+ <marex@denx.de>, <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>
+Message-ID: <568A99DE.5010502@atmel.com>
+Date: Mon, 4 Jan 2016 17:12:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20151218021857.GI10460@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,993 +25,246 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Alex Smith <alex.smith@imgtec.com>
+Hi Brian,
 
-Add a driver for NAND devices connected to the NEMC on JZ4780 SoCs, as
-well as the hardware BCH controller. DMA is not currently implemented.
+Le 18/12/2015 03:18, Brian Norris a écrit :
+> On Mon, Dec 07, 2015 at 03:09:11PM +0100, Cyrille Pitchen wrote:
+>> This patch reworks the support of Quad and Dual SPI protocols for Micron,
+>> Spansion and Macronix Quad/Dual capable memories. Indeed, in the best
+>> case, only Spansion memories are correctly supported by the current
+>> spi-nor framework.
+> 
+> ^^ Ah, so this is what I was struggling with at first. I agree that
+> Micron looks broken. Quite possibly Macronix too. Unfortunately, I
+> haven't had great test hardware for some of the quad modes. Especially
+> not anything that supports generic SPI, and not completely on mainline.
+> 
 
-While older 47xx SoCs also have a BCH controller, they are incompatible
-with the one in the 4780 due to differing register/bit positions, which
-would make implementing a common driver for them quite messy.
+To explain the origin of this series of patches I would say that at first
+I was only supposed to write a driver for the Atmel QSPI controller. I was
+using (ans still use) a sama5d2 xplained board with a Micron n25q128a13
+memory. Hence, testing the driver, I found that the probe failed inside the
+old micron_quad_enable() function.
+Indeed nor->write_reg() was successfully called to clear the Quad Enable bit
+in the Enhanced Volatile Configuration Register but immediately after
+spi_nor_wait_till_ready() failed.
+The reason was that the Micron memory was switched to its Quad Mode and then
+expected all the following commands to use the SPI 4-4-4 protocol. However
+the Atmel QSPI controller driver was not aware of this protocol change and
+kept on using the SPI 1-1-1 protocol.
 
-Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
-v10 -> v11:
- - Reordered mutex unlocking.
- - Made jz4780_bch_get() private.
- - Removed extern prefix from function prototype definitions.
- - Removed a useless else.
- - Changed ECC strength print statement.
- - Implemented jz4780_nand_cleanup_chips().
- - Add a NAND chip to the NFC's list after it has been initialised.
- - Complain when NAND_ECC_HW_SYNDROME is selected.
- - Call jz4780_bch_release() from jz4780_nand_probe().
- - Added Boris Brezillon's Reviewed-By.
+So in the very first version of this series of patches, I inserted a call of
+spi_nor_set_protocol(), a new function simply calling an optional hook,
+between the nor->write_reg() and spi_nor_wait_till_ready() calls. This way
+the (Q)SPI controller driver was now notified about the protocol switch and
+can eventually adapt to this change.
 
-v9 -> v10:
- - Replace uint{8,32}_t with u{8,32}.
- - Only set IO_ADDR_{R,W} during chip init.
- - Check that ECC layout fits into OOB area.
- - Rebase onto l2-mtd/master and use its new functions.
- - Remove mtd field from jz4780_nand_chip.
- - Tidied up jz4780_nand_cmd_ctrl.
- - Corrected ECC mode print statement.
- - Refactor BCH code.
- - Implement of_jz4780_bch_get.
- - Update Authorship.
- - Use a mutex to protect accesses to BCH controller.
- - Update code documentation.
- - Checkpatch cleanup.
+After some discussions on the mailing list, it appeared that using such a
+hook to handle protocol changes would required to insert calls of the new
+spi_nor_set_protocol() function before all the calls of nor->read_reg(),
+nor->write_reg(), nor->read(), nor->write() and nor->erase().
+Indeed some manufacturers like Spansion use different numbers of I/O lines
+depending on the type of operation:
+- Fast Read: 1-1-4
+- register read/write: 1-1-1
 
-v8 -> v9:
- - No change.
+So the addition inside struct spi_nor of the new reg_proto, read_proto,
+write_proto and erase_proto fields was prefered to the first
+spi_nor_set_protocol() proposal. This fields are set once for all by
+spi_nor_scan(). SPI controller drivers have to worry about their values only
+if they claim to support Dual or Quad protocols through the 'mode' argument
+of spi_nor_scan().
 
-v7 -> v8:
- - Rebase to 4.4-rc3.
- - Add _US suffixes to time constants.
- - Add locking to BCH hardware accesses.
- - Don't print ECC info if ECC is not being used.
- - Default to No ECC.
- - Let the NAND core handle ECC layout in certain cases.
- - Use the gpio_desc consumer interface.
- - Removed gpio active low flags.
- - Check for the BCH controller before initialising a chip.
- - Add a jz4780_nand_controller struct.
- - Initialise chips by iterating over DT child nodes. 
+Then about the Micron case, I did test it and it didn't work without patching.
+To be cautious, I wondered whether it might have work with a
+different configuration/SPI controller because I don't want to break
+something working. I wondered about a mean for the SPI controller driver to
+detect the protocol change. Maybe parsing the SPI message and checking the
+command op code. However it looked a highly inefficient method and also it
+simply can not work since the very same op code, for instance 0x6B, is used
+by both the 1-1-4 and 4-4-4 protocols.
+So my conclusion was it could not have worked before: I don't have to worry
+about breaking the support of Quad protocols for Micron memories.
 
-v6 -> v7:
- - Add nand-ecc-mode to DT bindings.
- - Add nand-on-flash-bbt to DT bindings.
+I don't think there is a real need to revert Bean's commit since this series
+fixes the issue anyway. However if you feel it would be better to revert it to
+start from a cleaner base, I'm fine with it. Just let me know your choice so
+I can adapt my series before sending the next version.
 
-v5 -> v6:
- - No change.
 
-v4 -> v5:
- - Rename ingenic,bch-device to ingenic,bch-controller to fit with
-   existing convention.
+About the Macronix case, I still don't have any memory sample to test.
+However, reading some memory datasheet (again and again), my understanding
+has changed a little bit: setting the Quad Enable (QE) non-volatile bit in
+the Status Register doesn't mean enabling the Quad Peripheral Interface (QPI)
+as I thought.
+Two dedicated op codes are used when sending the required commands to
+enable/disable the QPI. Once the QPI enabled, the memory expects ALL commands
+to use the SPI 4-4-4 protocol. Enabling the QPI requires the QE bit to bit set
+first in the Status Register.
+However the QE bit is also required to use the SPI 1-1-4 protocol: QPI must be
+disabled in that case.
+Setting the QE bit only disables the Write Protect and Hold features: the two
+associated pins then become the IO2 and IO3 lines, needed by Quad SPI
+protocols.
 
-v3 -> v4:
- - No change
+Finally for the Winbond case, I don't have memory from this manufacturer
+yet so once again I refer only to some datasheets: it looks like Winbond
+memories use a pattern of behaviour very closed to Macronix' one.
+Indeed, some Quad Enable non volatile bit must be set inside the Status
+Register. Also two dedicated op codes are used to enable/disable the QPI mode.
+The QPI mode requires the QE bit to be set and, once enabled, all commands
+must use the SPI 4-4-4 protocol.
+However the two op codes to enter/leave the QPI mode are not the same as
+those of Macronix and both manufacturers use different offsets for their
+QE bits.
 
-v2 -> v3:
- - Rebase to 4.0-rc6
- - Changed ingenic,ecc-size to common nand-ecc-step-size
- - Changed ingenic,ecc-strength to common nand-ecc-strength
- - Changed ingenic,busy-gpio to common rb-gpios
- - Changed ingenic,wp-gpio to common wp-gpios
+What I've planned to do to support Macronix and Winbond memory is to sill
+use the spi_nor_read_id() function to guess the current protocol. If the
+caller of spi_nor_scan() asks for Quad SPI support through the 'mode'
+argument, I will use the SPI 4-4-4 protocol if the QPI mode is already
+enabled, the SPI 1-1-4 protocol otherwise: I won't change the state of the
+QPI mode. Indeed, if spi_nor_read_id() has succeeded in reading the JEDEC
+ID, the current state of QPI mode is supported whatever it is.
 
-v1 -> v2:
- - Rebase to 4.0-rc3
 
- drivers/mtd/nand/Kconfig       |   7 +
- drivers/mtd/nand/Makefile      |   1 +
- drivers/mtd/nand/jz4780_bch.c  | 380 +++++++++++++++++++++++++++++++++++++
- drivers/mtd/nand/jz4780_bch.h  |  43 +++++
- drivers/mtd/nand/jz4780_nand.c | 422 +++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 853 insertions(+)
- create mode 100644 drivers/mtd/nand/jz4780_bch.c
- create mode 100644 drivers/mtd/nand/jz4780_bch.h
- create mode 100644 drivers/mtd/nand/jz4780_nand.c
+>> 1 - Micron:
+>> When their Quad SPI mode is enabled, Micron spi-nor memories expect all
+>> commands to use the SPI 4-4-4 protocol. Also when the Dual SPI mode is
+>> enabled, all commands must use the SPI 2-2-2 protocol.
+>>
+>> Before this patch, the spi-nor framework used to always enable the Quad
+>> mode when the mode argument of spi_nor_scan() took the value SPI_NOR_QUAD.
+>> That was not suited with drivers only supporting SPI 1-x-4 protocols but
+>> not the 4-4-4 (e.g. the m25p80 driver). Also the SPI controller was not
+>> notified about which SPI protocol to use to transfert command. We cannot
+>> rely only on the op code: in Extended SPI mode the 0x6b command must use
+>> the SPI 1-1-4 protocol whereas in Quad SPi mode the SPI 4-4-4 protocol
+>> must be use instead.
+>>
+>> After this patch, the spi-nor framework uses the result of the
+>> spi_nor_read_id() function to choose the right SPI protocol to be used.
+>> If the reg_proto was set to SPI_PROTO_4_4_4, we already know that the Quad
+>> SPI mode is already enabled and that the SPI controller supports the SPI
+>> 4-4-4 protocol (otherwise it would have fail to read the JEDEC ID with the
+>> 0xaf op code). For the very same reason, if the reg_proto was set to
+>> SPI_PROTO_2_2_2, we already know that the Dual mode is already enabled and
+>> that the SPI controller supports the SPI 2-2-2 protocol.
+>> Otherwise we switch back to the Extended SPI protocol, which supports at
+>> least the Fast Read commands:
+>> - 1-1-1 (0x0b)
+>> - Dual Output 1-1-2 (0x3b)
+>> - Quad Output 1-1-4 (0x6b)
+>>
+>> We also safely set the number of dummy cycles to 8 for Fast Read commands
+>> through the Volatile Configuration Register (VCR): some drivers (m25p80)
+>> or SPI controllers only support a number of dummy cycles multiple of 8.
+>> This number may have previouly been set to an unsupported value by an
+>> early bootloader or at reset thanks to the Non-Volatile Configuration
+>> Register.
+> 
+> It's not clear to me how you're being safe with the dummy cycles at all.
+> It seems like you're introducing new values that may be incompatible
+> with drivers. That can be OK, but you have to give drivers a chance to
+> opt-out... Maybe some kind of "host capability" flags?
+> 
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 2896640..b742adc 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -519,6 +519,13 @@ config MTD_NAND_JZ4740
- 	help
- 		Enables support for NAND Flash on JZ4740 SoC based boards.
- 
-+config MTD_NAND_JZ4780
-+	tristate "Support for NAND on JZ4780 SoC"
-+	depends on MACH_JZ4780 && JZ4780_NEMC
-+	help
-+	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
-+	  based boards, using the BCH controller for hardware error correction.
-+
- config MTD_NAND_FSMC
- 	tristate "Support for NAND on ST Micros FSMC"
- 	depends on PLAT_SPEAR || ARCH_NOMADIK || ARCH_U8500 || MACH_U300
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 2c7f014..9e36233 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -49,6 +49,7 @@ obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
- obj-$(CONFIG_MTD_NAND_VF610_NFC)	+= vf610_nfc.o
- obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
- obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
-+obj-$(CONFIG_MTD_NAND_JZ4780)		+= jz4780_nand.o jz4780_bch.o
- obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
- obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
- obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
-diff --git a/drivers/mtd/nand/jz4780_bch.c b/drivers/mtd/nand/jz4780_bch.c
-new file mode 100644
-index 0000000..53b2c06
---- /dev/null
-+++ b/drivers/mtd/nand/jz4780_bch.c
-@@ -0,0 +1,380 @@
-+/*
-+ * JZ4780 BCH controller
-+ *
-+ * Copyright (c) 2015 Imagination Technologies
-+ * Author: Alex Smith <alex.smith@imgtec.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published
-+ * by the Free Software Foundation.
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/init.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/sched.h>
-+#include <linux/slab.h>
-+
-+#include "jz4780_bch.h"
-+
-+#define BCH_BHCR			0x0
-+#define BCH_BHCCR			0x8
-+#define BCH_BHCNT			0xc
-+#define BCH_BHDR			0x10
-+#define BCH_BHPAR0			0x14
-+#define BCH_BHERR0			0x84
-+#define BCH_BHINT			0x184
-+#define BCH_BHINTES			0x188
-+#define BCH_BHINTEC			0x18c
-+#define BCH_BHINTE			0x190
-+
-+#define BCH_BHCR_BSEL_SHIFT		4
-+#define BCH_BHCR_BSEL_MASK		(0x7f << BCH_BHCR_BSEL_SHIFT)
-+#define BCH_BHCR_ENCE			BIT(2)
-+#define BCH_BHCR_INIT			BIT(1)
-+#define BCH_BHCR_BCHE			BIT(0)
-+
-+#define BCH_BHCNT_PARITYSIZE_SHIFT	16
-+#define BCH_BHCNT_PARITYSIZE_MASK	(0x7f << BCH_BHCNT_PARITYSIZE_SHIFT)
-+#define BCH_BHCNT_BLOCKSIZE_SHIFT	0
-+#define BCH_BHCNT_BLOCKSIZE_MASK	(0x7ff << BCH_BHCNT_BLOCKSIZE_SHIFT)
-+
-+#define BCH_BHERR_MASK_SHIFT		16
-+#define BCH_BHERR_MASK_MASK		(0xffff << BCH_BHERR_MASK_SHIFT)
-+#define BCH_BHERR_INDEX_SHIFT		0
-+#define BCH_BHERR_INDEX_MASK		(0x7ff << BCH_BHERR_INDEX_SHIFT)
-+
-+#define BCH_BHINT_ERRC_SHIFT		24
-+#define BCH_BHINT_ERRC_MASK		(0x7f << BCH_BHINT_ERRC_SHIFT)
-+#define BCH_BHINT_TERRC_SHIFT		16
-+#define BCH_BHINT_TERRC_MASK		(0x7f << BCH_BHINT_TERRC_SHIFT)
-+#define BCH_BHINT_DECF			BIT(3)
-+#define BCH_BHINT_ENCF			BIT(2)
-+#define BCH_BHINT_UNCOR			BIT(1)
-+#define BCH_BHINT_ERR			BIT(0)
-+
-+#define BCH_CLK_RATE			(200 * 1000 * 1000)
-+
-+/* Timeout for BCH calculation/correction. */
-+#define BCH_TIMEOUT_US			100000
-+
-+struct jz4780_bch {
-+	struct device *dev;
-+	void __iomem *base;
-+	struct clk *clk;
-+	struct mutex lock;
-+};
-+
-+static void jz4780_bch_init(struct jz4780_bch *bch,
-+			    struct jz4780_bch_params *params, bool encode)
-+{
-+	u32 reg;
-+
-+	/* Clear interrupt status. */
-+	writel(readl(bch->base + BCH_BHINT), bch->base + BCH_BHINT);
-+
-+	/* Set up BCH count register. */
-+	reg = params->size << BCH_BHCNT_BLOCKSIZE_SHIFT;
-+	reg |= params->bytes << BCH_BHCNT_PARITYSIZE_SHIFT;
-+	writel(reg, bch->base + BCH_BHCNT);
-+
-+	/* Initialise and enable BCH. */
-+	reg = BCH_BHCR_BCHE | BCH_BHCR_INIT;
-+	reg |= params->strength << BCH_BHCR_BSEL_SHIFT;
-+	if (encode)
-+		reg |= BCH_BHCR_ENCE;
-+	writel(reg, bch->base + BCH_BHCR);
-+}
-+
-+static void jz4780_bch_disable(struct jz4780_bch *bch)
-+{
-+	writel(readl(bch->base + BCH_BHINT), bch->base + BCH_BHINT);
-+	writel(BCH_BHCR_BCHE, bch->base + BCH_BHCCR);
-+}
-+
-+static void jz4780_bch_write_data(struct jz4780_bch *bch, const void *buf,
-+				  size_t size)
-+{
-+	size_t size32 = size / sizeof(u32);
-+	size_t size8 = size % sizeof(u32);
-+	const u32 *src32;
-+	const u8 *src8;
-+
-+	src32 = (const u32 *)buf;
-+	while (size32--)
-+		writel(*src32++, bch->base + BCH_BHDR);
-+
-+	src8 = (const u8 *)src32;
-+	while (size8--)
-+		writeb(*src8++, bch->base + BCH_BHDR);
-+}
-+
-+static void jz4780_bch_read_parity(struct jz4780_bch *bch, void *buf,
-+				   size_t size)
-+{
-+	size_t size32 = size / sizeof(u32);
-+	size_t size8 = size % sizeof(u32);
-+	u32 *dest32;
-+	u8 *dest8;
-+	u32 val, offset = 0;
-+
-+	dest32 = (u32 *)buf;
-+	while (size32--) {
-+		*dest32++ = readl(bch->base + BCH_BHPAR0 + offset);
-+		offset += sizeof(u32);
-+	}
-+
-+	dest8 = (u8 *)dest32;
-+	val = readl(bch->base + BCH_BHPAR0 + offset);
-+	switch (size8) {
-+	case 3:
-+		dest8[2] = (val >> 16) & 0xff;
-+	case 2:
-+		dest8[1] = (val >> 8) & 0xff;
-+	case 1:
-+		dest8[0] = val & 0xff;
-+		break;
-+	}
-+}
-+
-+static bool jz4780_bch_wait_complete(struct jz4780_bch *bch, unsigned int irq,
-+				     u32 *status)
-+{
-+	u32 reg;
-+	int ret;
-+
-+	/*
-+	 * While we could use interrupts here and sleep until the operation
-+	 * completes, the controller works fairly quickly (usually a few
-+	 * microseconds) and so the overhead of sleeping until we get an
-+	 * interrupt quite noticeably decreases performance.
-+	 */
-+	ret = readl_poll_timeout(bch->base + BCH_BHINT, reg,
-+				 (reg & irq) == irq, 0, BCH_TIMEOUT_US);
-+	if (ret)
-+		return false;
-+
-+	if (status)
-+		*status = reg;
-+
-+	writel(reg, bch->base + BCH_BHINT);
-+	return true;
-+}
-+
-+/**
-+ * jz4780_bch_calculate() - calculate ECC for a data buffer
-+ * @bch: BCH device.
-+ * @params: BCH parameters.
-+ * @buf: input buffer with raw data.
-+ * @ecc_code: output buffer with ECC.
-+ *
-+ * Return: 0 on success, -ETIMEDOUT if timed out while waiting for BCH
-+ * controller.
-+ */
-+int jz4780_bch_calculate(struct jz4780_bch *bch, struct jz4780_bch_params *params,
-+			 const u8 *buf, u8 *ecc_code)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&bch->lock);
-+	jz4780_bch_init(bch, params, true);
-+	jz4780_bch_write_data(bch, buf, params->size);
-+
-+	if (jz4780_bch_wait_complete(bch, BCH_BHINT_ENCF, NULL)) {
-+		jz4780_bch_read_parity(bch, ecc_code, params->bytes);
-+	} else {
-+		dev_err(bch->dev, "timed out while calculating ECC\n");
-+		ret = -ETIMEDOUT;
-+	}
-+
-+	jz4780_bch_disable(bch);
-+	mutex_unlock(&bch->lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL(jz4780_bch_calculate);
-+
-+/**
-+ * jz4780_bch_correct() - detect and correct bit errors
-+ * @bch: BCH device.
-+ * @params: BCH parameters.
-+ * @buf: raw data read from the chip.
-+ * @ecc_code: ECC read from the chip.
-+ *
-+ * Given the raw data and the ECC read from the NAND device, detects and
-+ * corrects errors in the data.
-+ *
-+ * Return: the number of bit errors corrected, or -1 if there are too many
-+ * errors to correct or we timed out waiting for the controller.
-+ */
-+int jz4780_bch_correct(struct jz4780_bch *bch, struct jz4780_bch_params *params,
-+		       u8 *buf, u8 *ecc_code)
-+{
-+	u32 reg, mask, index;
-+	int i, ret, count;
-+
-+	mutex_lock(&bch->lock);
-+
-+	jz4780_bch_init(bch, params, false);
-+	jz4780_bch_write_data(bch, buf, params->size);
-+	jz4780_bch_write_data(bch, ecc_code, params->bytes);
-+
-+	if (!jz4780_bch_wait_complete(bch, BCH_BHINT_DECF, &reg)) {
-+		dev_err(bch->dev, "timed out while correcting data\n");
-+		ret = -1;
-+		goto out;
-+	}
-+
-+	if (reg & BCH_BHINT_UNCOR) {
-+		dev_warn(bch->dev, "uncorrectable ECC error\n");
-+		ret = -1;
-+		goto out;
-+	}
-+
-+	/* Correct any detected errors. */
-+	if (reg & BCH_BHINT_ERR) {
-+		count = (reg & BCH_BHINT_ERRC_MASK) >> BCH_BHINT_ERRC_SHIFT;
-+		ret = (reg & BCH_BHINT_TERRC_MASK) >> BCH_BHINT_TERRC_SHIFT;
-+
-+		for (i = 0; i < count; i++) {
-+			reg = readl(bch->base + BCH_BHERR0 + (i * 4));
-+			mask = (reg & BCH_BHERR_MASK_MASK) >>
-+						BCH_BHERR_MASK_SHIFT;
-+			index = (reg & BCH_BHERR_INDEX_MASK) >>
-+						BCH_BHERR_INDEX_SHIFT;
-+			buf[(index * 2) + 0] ^= mask;
-+			buf[(index * 2) + 1] ^= mask >> 8;
-+		}
-+	} else {
-+		ret = 0;
-+	}
-+
-+out:
-+	jz4780_bch_disable(bch);
-+	mutex_unlock(&bch->lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL(jz4780_bch_correct);
-+
-+/**
-+ * jz4780_bch_get() - get the BCH controller device
-+ * @np: BCH device tree node.
-+ *
-+ * Gets the BCH controller device from the specified device tree node. The
-+ * device must be released with jz4780_bch_release() when it is no longer being
-+ * used.
-+ *
-+ * Return: a pointer to jz4780_bch, errors are encoded into the pointer.
-+ * PTR_ERR(-EPROBE_DEFER) if the device hasn't been initialised yet.
-+ */
-+static struct jz4780_bch *jz4780_bch_get(struct device_node *np)
-+{
-+	struct platform_device *pdev;
-+	struct jz4780_bch *bch;
-+
-+	pdev = of_find_device_by_node(np);
-+	if (!pdev || !platform_get_drvdata(pdev))
-+		return ERR_PTR(-EPROBE_DEFER);
-+
-+	get_device(&pdev->dev);
-+
-+	bch = platform_get_drvdata(pdev);
-+	clk_prepare_enable(bch->clk);
-+
-+	bch->dev = &pdev->dev;
-+	return bch;
-+}
-+
-+/**
-+ * of_jz4780_bch_get() - get the BCH controller from a DT node
-+ * @of_node: the node that contains a bch-controller property.
-+ *
-+ * Get the bch-controller property from the given device tree
-+ * node and pass it to jz4780_bch_get to do the work.
-+ *
-+ * Return: a pointer to jz4780_bch, errors are encoded into the pointer.
-+ * PTR_ERR(-EPROBE_DEFER) if the device hasn't been initialised yet.
-+ */
-+struct jz4780_bch *of_jz4780_bch_get(struct device_node *of_node)
-+{
-+	struct jz4780_bch *bch = NULL;
-+	struct device_node *np;
-+
-+	np = of_parse_phandle(of_node, "ingenic,bch-controller", 0);
-+
-+	if (np) {
-+		bch = jz4780_bch_get(np);
-+		of_node_put(np);
-+	}
-+	return bch;
-+}
-+
-+/**
-+ * jz4780_bch_release() - release the BCH controller device
-+ * @bch: BCH device.
-+ */
-+void jz4780_bch_release(struct jz4780_bch *bch)
-+{
-+	clk_disable_unprepare(bch->clk);
-+	put_device(bch->dev);
-+}
-+EXPORT_SYMBOL(jz4780_bch_release);
-+
-+static int jz4780_bch_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct jz4780_bch *bch;
-+	struct resource *res;
-+
-+	bch = devm_kzalloc(dev, sizeof(*bch), GFP_KERNEL);
-+	if (!bch)
-+		return -ENOMEM;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	bch->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(bch->base))
-+		return PTR_ERR(bch->base);
-+
-+	jz4780_bch_disable(bch);
-+
-+	bch->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(bch->clk)) {
-+		dev_err(dev, "failed to get clock: %ld\n", PTR_ERR(bch->clk));
-+		return PTR_ERR(bch->clk);
-+	}
-+
-+	clk_set_rate(bch->clk, BCH_CLK_RATE);
-+
-+	mutex_init(&bch->lock);
-+
-+	bch->dev = dev;
-+	platform_set_drvdata(pdev, bch);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id jz4780_bch_dt_match[] = {
-+	{ .compatible = "ingenic,jz4780-bch" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, jz4780_bch_dt_match);
-+
-+static struct platform_driver jz4780_bch_driver = {
-+	.probe		= jz4780_bch_probe,
-+	.driver	= {
-+		.name	= "jz4780-bch",
-+		.of_match_table = of_match_ptr(jz4780_bch_dt_match),
-+	},
-+};
-+module_platform_driver(jz4780_bch_driver);
-+
-+MODULE_AUTHOR("Alex Smith <alex@alex-smith.me.uk>");
-+MODULE_AUTHOR("Harvey Hunt <harvey.hunt@imgtec.com>");
-+MODULE_DESCRIPTION("Ingenic JZ4780 BCH error correction driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/mtd/nand/jz4780_bch.h b/drivers/mtd/nand/jz4780_bch.h
-new file mode 100644
-index 0000000..bf471808
---- /dev/null
-+++ b/drivers/mtd/nand/jz4780_bch.h
-@@ -0,0 +1,43 @@
-+/*
-+ * JZ4780 BCH controller
-+ *
-+ * Copyright (c) 2015 Imagination Technologies
-+ * Author: Alex Smith <alex.smith@imgtec.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published
-+ * by the Free Software Foundation.
-+ */
-+
-+#ifndef __DRIVERS_MTD_NAND_JZ4780_BCH_H__
-+#define __DRIVERS_MTD_NAND_JZ4780_BCH_H__
-+
-+#include <linux/types.h>
-+
-+struct device;
-+struct device_node;
-+struct jz4780_bch;
-+
-+/**
-+ * struct jz4780_bch_params - BCH parameters
-+ * @size: data bytes per ECC step.
-+ * @bytes: ECC bytes per step.
-+ * @strength: number of correctable bits per ECC step.
-+ */
-+struct jz4780_bch_params {
-+	int size;
-+	int bytes;
-+	int strength;
-+};
-+
-+int jz4780_bch_calculate(struct jz4780_bch *bch,
-+				struct jz4780_bch_params *params,
-+				const u8 *buf, u8 *ecc_code);
-+int jz4780_bch_correct(struct jz4780_bch *bch,
-+			      struct jz4780_bch_params *params, u8 *buf,
-+			      u8 *ecc_code);
-+
-+void jz4780_bch_release(struct jz4780_bch *bch);
-+struct jz4780_bch *of_jz4780_bch_get(struct device_node *np);
-+
-+#endif /* __DRIVERS_MTD_NAND_JZ4780_BCH_H__ */
-diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
-new file mode 100644
-index 0000000..d8ea35e
---- /dev/null
-+++ b/drivers/mtd/nand/jz4780_nand.c
-@@ -0,0 +1,422 @@
-+/*
-+ * JZ4780 NAND driver
-+ *
-+ * Copyright (c) 2015 Imagination Technologies
-+ * Author: Alex Smith <alex.smith@imgtec.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published
-+ * by the Free Software Foundation.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/list.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/of_mtd.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/partitions.h>
-+
-+#include <linux/jz4780-nemc.h>
-+
-+#include "jz4780_bch.h"
-+
-+#define DRV_NAME	"jz4780-nand"
-+
-+#define OFFSET_DATA	0x00000000
-+#define OFFSET_CMD	0x00400000
-+#define OFFSET_ADDR	0x00800000
-+
-+/* Command delay when there is no R/B pin. */
-+#define RB_DELAY_US	100
-+
-+struct jz4780_nand_cs {
-+	unsigned int bank;
-+	void __iomem *base;
-+};
-+
-+struct jz4780_nand_controller {
-+	struct device *dev;
-+	struct jz4780_bch *bch;
-+	struct nand_hw_control controller;
-+	unsigned int num_banks;
-+	struct list_head chips;
-+	int selected;
-+	struct jz4780_nand_cs cs[];
-+};
-+
-+struct jz4780_nand_chip {
-+	struct nand_chip chip;
-+	struct list_head chip_list;
-+
-+	struct nand_ecclayout ecclayout;
-+
-+	struct gpio_desc *busy_gpio;
-+	struct gpio_desc *wp_gpio;
-+	unsigned int reading: 1;
-+};
-+
-+static inline struct jz4780_nand_chip *to_jz4780_nand_chip(struct mtd_info *mtd)
-+{
-+	return container_of(mtd_to_nand(mtd), struct jz4780_nand_chip, chip);
-+}
-+
-+static inline struct jz4780_nand_controller *to_jz4780_nand_controller(struct nand_hw_control *ctrl)
-+{
-+	return container_of(ctrl, struct jz4780_nand_controller, controller);
-+}
-+
-+static void jz4780_nand_select_chip(struct mtd_info *mtd, int chipnr)
-+{
-+	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(mtd);
-+	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
-+	struct jz4780_nand_cs *cs;
-+
-+	/* Ensure the currently selected chip is deasserted. */
-+	if (chipnr == -1 && nfc->selected >= 0) {
-+		cs = &nfc->cs[nfc->selected];
-+		jz4780_nemc_assert(nfc->dev, cs->bank, false);
-+	}
-+
-+	nfc->selected = chipnr;
-+}
-+
-+static void jz4780_nand_cmd_ctrl(struct mtd_info *mtd, int cmd,
-+				 unsigned int ctrl)
-+{
-+	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(mtd);
-+	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
-+	struct jz4780_nand_cs *cs;
-+
-+	if (WARN_ON(nfc->selected < 0))
-+		return;
-+
-+	cs = &nfc->cs[nfc->selected];
-+
-+	jz4780_nemc_assert(nfc->dev, cs->bank, ctrl & NAND_NCE);
-+
-+	if (cmd == NAND_CMD_NONE)
-+		return;
-+
-+	if (ctrl & NAND_ALE)
-+		writeb(cmd, cs->base + OFFSET_ADDR);
-+	else if (ctrl & NAND_CLE)
-+		writeb(cmd, cs->base + OFFSET_CMD);
-+}
-+
-+static int jz4780_nand_dev_ready(struct mtd_info *mtd)
-+{
-+	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(mtd);
-+
-+	return !gpiod_get_value_cansleep(nand->busy_gpio);
-+}
-+
-+static void jz4780_nand_ecc_hwctl(struct mtd_info *mtd, int mode)
-+{
-+	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(mtd);
-+
-+	nand->reading = (mode == NAND_ECC_READ);
-+}
-+
-+static int jz4780_nand_ecc_calculate(struct mtd_info *mtd, const u8 *dat,
-+				     u8 *ecc_code)
-+{
-+	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(mtd);
-+	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
-+	struct jz4780_bch_params params;
-+
-+	/*
-+	 * Don't need to generate the ECC when reading, BCH does it for us as
-+	 * part of decoding/correction.
-+	 */
-+	if (nand->reading)
-+		return 0;
-+
-+	params.size = nand->chip.ecc.size;
-+	params.bytes = nand->chip.ecc.bytes;
-+	params.strength = nand->chip.ecc.strength;
-+
-+	return jz4780_bch_calculate(nfc->bch, &params, dat, ecc_code);
-+}
-+
-+static int jz4780_nand_ecc_correct(struct mtd_info *mtd, u8 *dat,
-+				   u8 *read_ecc, u8 *calc_ecc)
-+{
-+	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(mtd);
-+	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
-+	struct jz4780_bch_params params;
-+
-+	params.size = nand->chip.ecc.size;
-+	params.bytes = nand->chip.ecc.bytes;
-+	params.strength = nand->chip.ecc.strength;
-+
-+	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
-+}
-+
-+static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *dev)
-+{
-+	struct nand_chip *chip = &nand->chip;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(chip->controller);
-+	struct nand_ecclayout *layout = &nand->ecclayout;
-+	u32 start, i;
-+
-+	chip->ecc.bytes = fls((1 + 8) * chip->ecc.size)	*
-+				(chip->ecc.strength / 8);
-+
-+	if (nfc->bch && chip->ecc.mode == NAND_ECC_HW) {
-+		chip->ecc.hwctl = jz4780_nand_ecc_hwctl;
-+		chip->ecc.calculate = jz4780_nand_ecc_calculate;
-+		chip->ecc.correct = jz4780_nand_ecc_correct;
-+	} else if (!nfc->bch && chip->ecc.mode == NAND_ECC_HW) {
-+		dev_err(dev, "HW BCH selected, but BCH controller not found\n");
-+		return -ENODEV;
-+	}
-+
-+	if (chip->ecc.mode == NAND_ECC_HW_SYNDROME) {
-+		dev_err(dev, "ECC HW syndrome not supported\n");
-+		return -EINVAL;
-+	}
-+
-+	if (chip->ecc.mode != NAND_ECC_NONE)
-+		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
-+			(nfc->bch) ? "hardware BCH" : "software ECC",
-+			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
-+	else
-+		dev_info(dev, "not using ECC\n");
-+
-+	/* The NAND core will generate the ECC layout. */
-+	if (chip->ecc.mode == NAND_ECC_SOFT || chip->ecc.mode == NAND_ECC_SOFT_BCH)
-+		return 0;
-+
-+	/* Generate ECC layout. ECC codes are right aligned in the OOB area. */
-+	layout->eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
-+
-+	if (layout->eccbytes > mtd->oobsize - 2) {
-+		dev_err(dev,
-+			"invalid ECC config: required %d ECC bytes, but only %d are available",
-+			layout->eccbytes, mtd->oobsize - 2);
-+		return -EINVAL;
-+	}
-+
-+	start = mtd->oobsize - layout->eccbytes;
-+	for (i = 0; i < layout->eccbytes; i++)
-+		layout->eccpos[i] = start + i;
-+
-+	layout->oobfree[0].offset = 2;
-+	layout->oobfree[0].length = mtd->oobsize - layout->eccbytes - 2;
-+
-+	chip->ecc.layout = layout;
-+	return 0;
-+}
-+
-+static int jz4780_nand_init_chip(struct platform_device *pdev,
-+				struct jz4780_nand_controller *nfc,
-+				struct device_node *np,
-+				unsigned int chipnr)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct jz4780_nand_chip *nand;
-+	struct jz4780_nand_cs *cs;
-+	struct resource *res;
-+	struct nand_chip *chip;
-+	struct mtd_info *mtd;
-+	const __be32 *reg;
-+	int ret = 0;
-+
-+	cs = &nfc->cs[chipnr];
-+
-+	reg = of_get_property(np, "reg", NULL);
-+	if (!reg)
-+		return -EINVAL;
-+
-+	cs->bank = be32_to_cpu(*reg);
-+
-+	jz4780_nemc_set_type(nfc->dev, cs->bank, JZ4780_NEMC_BANK_NAND);
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, chipnr);
-+	cs->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(cs->base))
-+		return PTR_ERR(cs->base);
-+
-+	nand = devm_kzalloc(dev, sizeof(*nand), GFP_KERNEL);
-+	if (!nand)
-+		return -ENOMEM;
-+
-+	nand->busy_gpio = devm_gpiod_get_optional(dev, "rb", GPIOD_IN);
-+
-+	if (IS_ERR(nand->busy_gpio)) {
-+		ret = PTR_ERR(nand->busy_gpio);
-+		dev_err(dev, "failed to request busy GPIO: %d\n", ret);
-+		return ret;
-+	} else if (nand->busy_gpio) {
-+		nand->chip.dev_ready = jz4780_nand_dev_ready;
-+	}
-+
-+	nand->wp_gpio = devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LOW);
-+
-+	if (IS_ERR(nand->wp_gpio)) {
-+		ret = PTR_ERR(nand->wp_gpio);
-+		dev_err(dev, "failed to request WP GPIO: %d\n", ret);
-+		return ret;
-+	}
-+
-+	chip = &nand->chip;
-+	mtd = nand_to_mtd(chip);
-+	mtd->priv = chip;
-+	mtd->owner = THIS_MODULE;
-+	mtd->name = DRV_NAME;
-+	mtd->dev.parent = dev;
-+
-+	chip->IO_ADDR_R = cs->base + OFFSET_DATA;
-+	chip->IO_ADDR_W = cs->base + OFFSET_DATA;
-+	chip->chip_delay = RB_DELAY_US;
-+	chip->options = NAND_NO_SUBPAGE_WRITE;
-+	chip->select_chip = jz4780_nand_select_chip;
-+	chip->cmd_ctrl = jz4780_nand_cmd_ctrl;
-+	chip->ecc.mode = NAND_ECC_HW;
-+	chip->controller = &nfc->controller;
-+	nand_set_flash_node(chip, np);
-+
-+	ret = nand_scan_ident(mtd, 1, NULL);
-+	if (ret)
-+		return ret;
-+
-+	ret = jz4780_nand_init_ecc(nand, dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = nand_scan_tail(mtd);
-+	if (ret)
-+		return ret;
-+
-+	ret = mtd_device_register(mtd, NULL, 0);
-+	if (ret) {
-+		nand_release(mtd);
-+		return ret;
-+	}
-+
-+	list_add_tail(&nand->chip_list, &nfc->chips);
-+
-+	return 0;
-+}
-+
-+static void jz4780_nand_cleanup_chips(struct jz4780_nand_controller *nfc)
-+{
-+	struct jz4780_nand_chip *chip;
-+
-+	while (!list_empty(&nfc->chips)) {
-+		chip = list_first_entry(&nfc->chips, struct jz4780_nand_chip, chip_list);
-+		nand_release(nand_to_mtd(&chip->chip));
-+		list_del(&chip->chip_list);
-+	}
-+}
-+
-+static int jz4780_nand_init_chips(struct jz4780_nand_controller *nfc,
-+				  struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np;
-+	int i = 0;
-+	int ret;
-+	int num_chips = of_get_child_count(dev->of_node);
-+
-+	if (num_chips > nfc->num_banks) {
-+		dev_err(dev, "found %d chips but only %d banks\n", num_chips, nfc->num_banks);
-+		return -EINVAL;
-+	}
-+
-+	for_each_child_of_node(dev->of_node, np) {
-+		ret = jz4780_nand_init_chip(pdev, nfc, np, i);
-+		if (ret) {
-+			jz4780_nand_cleanup_chips(nfc);
-+			return ret;
-+		}
-+
-+		i++;
-+	}
-+
-+	return 0;
-+}
-+
-+static int jz4780_nand_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	unsigned int num_banks;
-+	struct jz4780_nand_controller *nfc;
-+	int ret;
-+
-+	num_banks = jz4780_nemc_num_banks(dev);
-+	if (num_banks == 0) {
-+		dev_err(dev, "no banks found\n");
-+		return -ENODEV;
-+	}
-+
-+	nfc = devm_kzalloc(dev, sizeof(*nfc) + (sizeof(nfc->cs[0]) * num_banks), GFP_KERNEL);
-+	if (!nfc)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Check for BCH HW before we call nand_scan_ident, to prevent us from
-+	 * having to call it again if the BCH driver returns -EPROBE_DEFER.
-+	 */
-+	nfc->bch = of_jz4780_bch_get(dev->of_node);
-+	if (IS_ERR(nfc->bch))
-+		return PTR_ERR(nfc->bch);
-+
-+	nfc->dev = dev;
-+	nfc->num_banks = num_banks;
-+
-+	spin_lock_init(&nfc->controller.lock);
-+	INIT_LIST_HEAD(&nfc->chips);
-+	init_waitqueue_head(&nfc->controller.wq);
-+
-+	ret = jz4780_nand_init_chips(nfc, pdev);
-+	if (ret)
-+		if (nfc->bch)
-+			jz4780_bch_release(nfc->bch);
-+		return ret;
-+
-+	platform_set_drvdata(pdev, nfc);
-+	return 0;
-+}
-+
-+static int jz4780_nand_remove(struct platform_device *pdev)
-+{
-+	struct jz4780_nand_controller *nfc = platform_get_drvdata(pdev);
-+
-+	if (nfc->bch)
-+		jz4780_bch_release(nfc->bch);
-+
-+	jz4780_nand_cleanup_chips(nfc);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id jz4780_nand_dt_match[] = {
-+	{ .compatible = "ingenic,jz4780-nand" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, jz4780_nand_dt_match);
-+
-+static struct platform_driver jz4780_nand_driver = {
-+	.probe		= jz4780_nand_probe,
-+	.remove		= jz4780_nand_remove,
-+	.driver	= {
-+		.name	= DRV_NAME,
-+		.of_match_table = of_match_ptr(jz4780_nand_dt_match),
-+	},
-+};
-+module_platform_driver(jz4780_nand_driver);
-+
-+MODULE_AUTHOR("Alex Smith <alex@alex-smith.me.uk>");
-+MODULE_AUTHOR("Harvey Hunt <harvey.hunt@imgtec.com>");
-+MODULE_DESCRIPTION("Ingenic JZ4780 NAND driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.6.4
+Currently not all drivers support numbers of dummy cycles which are not
+multiple of 8 bits. Especially this is the case of the m25p80 driver.
+Other drivers, those supporting more numbers of dummy cycles still support
+multiple of 8 bits. So now the spi-nor framework always  sets to 8 the number
+of dummy cycles to be used by updating some Micron *volatile* register.
+All drivers can deal with a value of 8. This value is almost always the
+value used before. It is large enough to fit the highest SPI bus clock
+frequencies but still provides good performances.
+Actually, I'm pretty sure it was the only used value before.
+And since the driver updates a volatile register, the configuration will
+still be the same after reset for bootloaders.
+In fact it should not change what worked before, it only gives a chance to
+recover from bootloaders which would have used "strange" values of dummy
+cycle number.
+For instance, the romcode of the sama5d2 sets this number of dummy cycles to
+10 for all Micron memories to limit the risk of incompatibility with memory
+timing requirements. This romcode cannot be updated and tries to
+support as many QSPI memories as possible within a limited code size: we
+cannot afford using tables indexed by JEDEC ID but only by manufacturer ID.
+However a value of 10 is not such a kind of value as expected by Linux
+drivers. A value of 8 gives a chance to use the m25p80 driver to manufacturers
+who don't want/can't develop a driver dedicated to their QSPI controller.
+
+As a second thought, another solution is to only read the current value of dummy
+cycle number and simply set use this value to initialize nor->read_dummy.
+The assumption is now that is the value was fine for the QSPI controller during
+the bootloader phase it's still fine under Linux as long as a driver can handle
+this QSPI controller.
+
+Please let me know which strategy you prefer for my next series.
+
+
+>> Finally the XIP bit is always set in the VCR to disable the Continuous
+>> Read mode as we don't want to care about mode cycles.
+>>
+>> 2 - Macronix:
+>> When the QPI mode is enabled, all commands must use the SPI 4-4-4 protocol
+>> and only the 0xeb op code is supported for Fast Read commands.
+>> Before this patch, the spi-nor framework used to force the QPI mode but
+>> used the 0x6b op code for Fast Read commands when the SPI controller
+>> claims to support Quad SPI mode.
+>> This patch uses the result of spi_nor_read_id() to guess whether the QPI
+>> mode is both enable and supported by the SPI controller (otherwise it
+>> would have failed to read the JEDEC ID with the 0xaf op code).
+>> When the QPI mode is disabled, Macronix memories still support the
+>> following Fast Read commands:
+>> - 1-1-1 (0x0b)
+>> - Dual Output 1-1-2 (0x3b)
+>> - Quad Output 1-1-4 (0x6b)
+>> So if the QPI mode has not already been enabled, there is not need to
+>> enable it. We also avoid the 0xbb (Dual I/O 1-2-2) and 0xeb (Quad I/O
+>> 1-4-4) op codes on purpose as we don't want to care about the value to set
+>> in mode cycles not to enter the Continuous Read (Performance Enhance)
+>> mode.
+>>
+>> As for Micron memories, the spi-nor framework now safely sets the number
+>> of dummy cycles to 8 thanks to 2 volatile bits inside the Configuration
+>> Register.
+>>
+>> 3 - Spansion:
+>> As for Macronix, we avoid the 0xbb (Dual I/O 1-2-2) and 0xeb (Quad I/O
+>> 1-4-4) op codes on purpose as we don't want to care about the value to set
+>> in mode cycles not to enter in the Continuous Read mode.
+>>
+>> Besides, we only care about the Quad Enable bit inside the Configuration
+>> Register (CR) when using Quad operations. In such a case, we first check
+>> its state before trying to set it. Now we also notify the user about the
+>> update of this non-volatile bit.
+>>
+>> We also check the Latency Code (LC) in CR to know the exact number of
+>> dummy cycles to use when performing a Fast Read operation. Currently only
+>> the 0x0b, 0x3b and 0x6b op codes are used to perform Fast Read operation
+>> so the number of dummy cycles is always either 0 or 8. Hence no regression
+>> should be introduced.
+>>
+>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 783 +++++++++++++++++++++++++++++++++++++-----
+>>  include/linux/mtd/spi-nor.h   |  15 +-
+>>  2 files changed, 699 insertions(+), 99 deletions(-)
+> 
+> That's quite a lot to do in one patch, both in number of lines of code,
+> and in number of tasks outlined in the commit description. Can this be
+> broken down at all to be more modular and incremental?
+
+I've already tried to split the series a bit more. I had troubles making
+patches smaller without breaking functionnal dependencies but I'll try
+to split it again before sending the next series.
+
+> 
+> Snipped the rest of the patch for now.
+> 
+> Brian
+> 
+
+Happy new year, all! :)
+
+Best regards,
+
+Cyrille
