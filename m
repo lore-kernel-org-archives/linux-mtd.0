@@ -1,14 +1,13 @@
 Received: from arrakis.dune.hu ([78.24.191.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGCJv-0004vB-1d
- for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 21:05:40 +0000
+ id 1aGCKA-0004zC-1o
+ for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 21:05:57 +0000
 From: John Crispin <blogic@openwrt.org>
 To: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/6] MTD: lantiq: xway: add missing write_buf and read_buf to
- nand driver
-Date: Mon,  4 Jan 2016 22:04:59 +0100
-Message-Id: <1451941501-42952-5-git-send-email-blogic@openwrt.org>
+Subject: [PATCH 5/6] MTD: lantiq: xway: fix nand locking
+Date: Mon,  4 Jan 2016 22:05:00 +0100
+Message-Id: <1451941501-42952-6-git-send-email-blogic@openwrt.org>
 In-Reply-To: <1451941501-42952-1-git-send-email-blogic@openwrt.org>
 References: <1451941501-42952-1-git-send-email-blogic@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,56 +19,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+use a global lock in the cs function.
+
 Signed-off-by: John Crispin <blogic@openwrt.org>
 ---
- drivers/mtd/nand/xway_nand.c |   28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ drivers/mtd/nand/xway_nand.c |   15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index c75a2bc..ef7c7ce 100644
+index ef7c7ce..4127049 100644
 --- a/drivers/mtd/nand/xway_nand.c
 +++ b/drivers/mtd/nand/xway_nand.c
-@@ -136,6 +136,32 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
- 	return ret;
+@@ -80,13 +80,16 @@ static void xway_reset_chip(struct nand_chip *chip)
+ 
+ static void xway_select_chip(struct mtd_info *mtd, int chip)
+ {
++	static unsigned long csflags;
+ 
+ 	switch (chip) {
+ 	case -1:
+ 		ltq_ebu_w32_mask(NAND_CON_CE, 0, EBU_NAND_CON);
+ 		ltq_ebu_w32_mask(NAND_CON_NANDM, 0, EBU_NAND_CON);
++		spin_unlock_irqrestore(&ebu_lock, csflags);
+ 		break;
+ 	case 0:
++		spin_lock_irqsave(&ebu_lock, csflags);
+ 		ltq_ebu_w32_mask(0, NAND_CON_NANDM, EBU_NAND_CON);
+ 		ltq_ebu_w32_mask(0, NAND_CON_CE, EBU_NAND_CON);
+ 		break;
+@@ -99,7 +102,6 @@ static void xway_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ {
+ 	struct nand_chip *this = mtd->priv;
+ 	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
+-	unsigned long flags;
+ 
+ 	if (ctrl & NAND_CTRL_CHANGE) {
+ 		if (ctrl & NAND_CLE)
+@@ -109,11 +111,9 @@ static void xway_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ 	}
+ 
+ 	if (cmd != NAND_CMD_NONE) {
+-		spin_lock_irqsave(&ebu_lock, flags);
+ 		writeb(cmd, (void __iomem *) (nandaddr | xway_latchcmd));
+ 		while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
+ 			;
+-		spin_unlock_irqrestore(&ebu_lock, flags);
+ 	}
  }
  
-+static void xway_read_buf(struct mtd_info *mtd, u_char *buf, int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	unsigned long nandaddr = (unsigned long) this->IO_ADDR_R;
-+	unsigned long flags;
-+	int i;
-+
-+	spin_lock_irqsave(&ebu_lock, flags);
-+	for (i = 0; i < len; i++)
-+		buf[i] = ltq_r8((void __iomem *)(nandaddr | NAND_READ_DATA));
-+	spin_unlock_irqrestore(&ebu_lock, flags);
-+}
-+
-+static void xway_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
-+	unsigned long flags;
-+	int i;
-+
-+	spin_lock_irqsave(&ebu_lock, flags);
-+	for (i = 0; i < len; i++)
-+		ltq_w8(buf[i], (void __iomem *)(nandaddr | NAND_WRITE_DATA));
-+	spin_unlock_irqrestore(&ebu_lock, flags);
-+}
-+
- static int xway_nand_probe(struct platform_device *pdev)
+@@ -126,12 +126,9 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
  {
- 	struct nand_chip *this = platform_get_drvdata(pdev);
-@@ -177,6 +203,8 @@ static struct platform_nand_data xway_nand_data = {
- 		.dev_ready	= xway_dev_ready,
- 		.select_chip	= xway_select_chip,
- 		.read_byte	= xway_read_byte,
-+		.read_buf	= xway_read_buf,
-+		.write_buf	= xway_write_buf,
- 	}
- };
+ 	struct nand_chip *this = mtd->priv;
+ 	unsigned long nandaddr = (unsigned long) this->IO_ADDR_R;
+-	unsigned long flags;
+ 	int ret;
  
+-	spin_lock_irqsave(&ebu_lock, flags);
+ 	ret = ltq_r8((void __iomem *)(nandaddr | NAND_READ_DATA));
+-	spin_unlock_irqrestore(&ebu_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -140,26 +137,20 @@ static void xway_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+ {
+ 	struct nand_chip *this = mtd->priv;
+ 	unsigned long nandaddr = (unsigned long) this->IO_ADDR_R;
+-	unsigned long flags;
+ 	int i;
+ 
+-	spin_lock_irqsave(&ebu_lock, flags);
+ 	for (i = 0; i < len; i++)
+ 		buf[i] = ltq_r8((void __iomem *)(nandaddr | NAND_READ_DATA));
+-	spin_unlock_irqrestore(&ebu_lock, flags);
+ }
+ 
+ static void xway_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
+ {
+ 	struct nand_chip *this = mtd->priv;
+ 	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
+-	unsigned long flags;
+ 	int i;
+ 
+-	spin_lock_irqsave(&ebu_lock, flags);
+ 	for (i = 0; i < len; i++)
+ 		ltq_w8(buf[i], (void __iomem *)(nandaddr | NAND_WRITE_DATA));
+-	spin_unlock_irqrestore(&ebu_lock, flags);
+ }
+ 
+ static int xway_nand_probe(struct platform_device *pdev)
 -- 
 1.7.10.4
