@@ -1,19 +1,26 @@
-Received: from arrakis.dune.hu ([78.24.191.176])
+Received: from mail-bn1bon0133.outbound.protection.outlook.com
+ ([157.56.111.133] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGM8Z-0001M0-Hp
- for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 07:34:36 +0000
-Subject: Re: [PATCH 0/6] MTD: lantiq: xway: various nand fixes
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1451941501-42952-1-git-send-email-blogic@openwrt.org>
- <20160104233049.GA128501@google.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-From: John Crispin <blogic@openwrt.org>
-Message-ID: <568B71EC.2070309@openwrt.org>
-Date: Tue, 5 Jan 2016 08:34:04 +0100
+ id 1aGTXK-0004da-2j
+ for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 15:28:39 +0000
+From: =?utf-8?B?U8O4cmVuc2VuLCBTdGVmYW4=?= <Stefan.Sorensen@spectralink.com>
+To: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "hs@denx.de" <hs@denx.de>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "fransklaver@gmail.com"
+ <fransklaver@gmail.com>
+Subject: Re: [for-4.4] mtd: nand: assign reasonable default name for NAND
+ drivers
+Date: Tue, 5 Jan 2016 15:28:14 +0000
+Message-ID: <1452007693.18078.3.camel@spectralink.com>
+References: <1451934663-68925-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1451934663-68925-1-git-send-email-computersforpeace@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3C56F2AC362BA947895CAF5A253869E4@namprd07.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20160104233049.GA128501@google.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 05/01/2016 00:30, Brian Norris wrote:
-> On Mon, Jan 04, 2016 at 10:04:55PM +0100, John Crispin wrote:
->> This series adds various fixes for the nand driver used on Lantiq DSL SoC.
-> 
-> Is there a good reason this driver uses plat_nand? That seems like an
-> unnecessary abstraction layer. It'd be clearer to just refactor the
-> driver to be a proper platform driver...
-> 
-> Also, I see that there's no DT binding doc.
-> 
-> Can these things be cleaned up?
-> 
-> Brian
-> 
-
-
-grml, i was kinda hoping this would be a no brainer. the problem is that
-i don't even have the HW so refactoring / big changes are a no go or
-would require me to find users with the HW first.
-
-i'll try to get this resolved for v4.6.
-
-	John
+SGkgQnJpYW4sDQoNCk9uIE1vbiwgMjAxNi0wMS0wNCBhdCAxMToxMSAtMDgwMCwgQnJpYW4gTm9y
+cmlzIHdyb3RlOg0KPiBUaGlzIHBhdGNoIGlzIG5lZWRlZCBpbiBhZGRpdG9uIHRvIGNvbW1pdCA0
+NzJiNDQ0ZWVmOTMgKCJtdGQ6IGZpeCANCj4gY21kbGluZXBhcnQgcGFyc2VyLCBlYXJseSBuYW1p
+bmcgZm9yIGF1dG8tZmlsbGVkIE1URCIpIHRvIGZpeCBIZWlrbydzDQo+IHJlcG9ydGVkIHByb2Js
+ZW0uIEF0IHRoaXMgcG9pbnQsIEknbSBub3Qgc3VyZSBpZiB0aGlzIHNob3VsZCBiZQ0KPiB0YXJn
+ZXRlZCB0b3dhcmQgbGF0ZSA0LjQgb3IgZm9yIDQuNS4gSXQncyBhIDQuNCByZWdyZXNzc2lvbiwg
+YnV0IGENCj4gdmVyeSBzbWFsbCBvbmUuIEFuZCBJJ20gbm90IHN1cmUgaWYgdGhpcyB3aWxsIGhh
+dmUgd2lkZSBlbm91Z2gNCj4gaW1wYWN0wqB0aGF0IGl0IHNob3VsZCBiZSBnaXZlbiBhIGxvbmdl
+ciB0aW1lIHRvIGJlIHJldmlld2VkIGFuZA0KPiB0ZXN0ZWQuIFdlIGNhbiBhbHdheXMgc2VuZCBp
+dCB0byAtc3RhYmxlIGxhdGVyLCBpZiBpdCdzIHJlYWxseQ0KPiBuZWVkZWQuDQoNCkkgaGF2ZSBi
+b2FyZHMgdGhhdCB3aWxsIG5vdCBib290IDQuNCB3aXRob3V0IHRoZXNlIHR3byBwYXRjaGVzLCBz
+byBJDQpob3BlIHRvIHNlZSBpdCBnbyBpbiB0byA0LjQuMSAoSSBndWVzcyBpdCBpcyB0b28gbGF0
+ZSBmb3IgNC40KS4NCg0KUmVnYXJkcyzCoA0KwqBTdGVmYW4=
