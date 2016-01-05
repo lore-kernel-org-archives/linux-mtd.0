@@ -1,22 +1,21 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGWla-0001hS-7O
- for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 18:55:35 +0000
-Received: by mail-pa0-x22e.google.com with SMTP id do7so592808pab.2
- for <linux-mtd@lists.infradead.org>; Tue, 05 Jan 2016 10:55:13 -0800 (PST)
-Date: Tue, 5 Jan 2016 10:55:11 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/6] MTD: lantiq: xway: various nand fixes
-Message-ID: <20160105185511.GI109450@google.com>
-References: <1451941501-42952-1-git-send-email-blogic@openwrt.org>
- <20160104233049.GA128501@google.com> <568B71EC.2070309@openwrt.org>
- <20160105175333.GA46565@google.com> <568C0F0B.7000302@openwrt.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <568C0F0B.7000302@openwrt.org>
+ id 1aGYcJ-0000SV-KV
+ for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 20:54:08 +0000
+From: mchristi@redhat.com
+To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
+ philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+ linux-raid@vger.kernel.org, dm-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
+Subject: [PATCH 00/35 v2] separate operations from flags in the bio/request
+ structs
+Date: Tue,  5 Jan 2016 14:53:03 -0600
+Message-Id: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 05, 2016 at 07:44:27PM +0100, John Crispin wrote:
-> >> i'll try to get this resolved for v4.6.
-> 
-> would you take this stuff around rc2-3 or would that be too late ? i
-> already manage to track down one of the original authors and he agreed
-> to help testing.
+The following patches begin to cleanup the request->cmd_flags and
+bio->bi_rw mess. We currently use cmd_flags to specify the operation,
+attributes and state of the request. For bi_rw we use it for similar
+info and also the priority but then also have another bi_flags field
+for state. At some point, we abused them so much we just made cmd_flags
+64 bits, so we could add more.
 
-Fixes, probably. Refactoring and new features, probably not. If you
-prioritize the fixes first in the series, then that leaves me the most
-flexibility.
+The following patches seperate the operation (read, write discard,
+flush, etc) from cmd_flags/bi_rw.
 
-Regards,
-Brian
+This patchset was made against linux-next from today Jan 5 2016.
+(git tag next-20160105).
+
+v2.
+
+1. Dropped arguments from submit_bio, and had callers setup
+bio.
+2. Add REQ_OP_FLUSH for request_fn users and renamed REQ_FLUSH
+to REQ_PREFLUSH for make_request_fn users.
+3. Dropped bio/rq_data_dir functions, and added a op_is_write
+function instead.
