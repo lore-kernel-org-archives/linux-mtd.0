@@ -1,18 +1,20 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGK7o-0007ld-Bo
- for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 05:25:40 +0000
+ id 1aGK7t-0007tW-1W
+ for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 05:25:47 +0000
 From: Archit Taneja <architt@codeaurora.org>
 To: computersforpeace@gmail.com,
 	boris.brezillon@free-electrons.com
 Cc: linux-mtd@lists.infradead.org, cernekee@gmail.com, sboyd@codeaurora.org,
  andy.gross@linaro.org, dehrenberg@google.com,
  linux-arm-msm@vger.kernel.org, Archit Taneja <architt@codeaurora.org>
-Subject: [PATCH v5 0/3] mtd: Qualcomm NAND controller driver
-Date: Tue,  5 Jan 2016 10:54:58 +0530
-Message-Id: <1451971501-18160-1-git-send-email-architt@codeaurora.org>
-In-Reply-To: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
+Subject: [PATCH v5 1/3] mtd: nand: don't select chip in nand_chip's block_bad
+ op
+Date: Tue,  5 Jan 2016 10:54:59 +0530
+Message-Id: <1451971501-18160-2-git-send-email-architt@codeaurora.org>
+In-Reply-To: <1451971501-18160-1-git-send-email-architt@codeaurora.org>
 References: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
+ <1451971501-18160-1-git-send-email-architt@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,60 +24,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for the NAND controller driver for SoC's that contain EBI2.
-For now, the only SoC upstream that has EBI2 is IPQ806x.
+One of the arguments passed to struct nand_chip's block_bad op is
+'getchip', which, if true, is supposed to get and select the nand device,
+and later unselect and release the device.
 
-The previous version added a BBT flag that allowed BBMs to be accessed
-in raw mode. Adding a flag isn't the right way to fix it, and the
-proposed fix is to add badblockbits support, and make sure all drivers
-switch to accessing BBM in raw mode. For now, skip nand_bbt usage, and
-implement our own versions of chip->block_bad and chip->mark_bad.
+This op is intended to be replaceable by drivers. The drivers shouldn't
+be responsible for selecting/unselecting chip. Like other ops, the chip
+should already be selected before the block_bad op is called.
 
-The first patch in the series contains a nand_base clean up which the
-driver will utilize.
+Remove the getchip argument from the block_bad op and move the chip
+selection to nand_block_checkbad (the only user of chip->block_bad).
+Modify nand_block_bad (the default function for the op) such that
+it doesn't select the chip.
 
-Based over l2-mtd.git
+Signed-off-by: Archit Taneja <architt@codeaurora.org>
+---
+ drivers/mtd/nand/nand_base.c | 41 +++++++++++++++++++++++------------------
+ include/linux/mtd/nand.h     |  2 +-
+ 2 files changed, 24 insertions(+), 19 deletions(-)
 
-The patchset requires the v6 ADM dmaengine patches posted by Andy:
-
-https://lkml.org/lkml/2015/3/17/19
-
-v5:
-- Skip creation of BBT as in v1. Will bring this back after BBMs are
-  read/written in raw mode (using badblockbits support).
-- Incorporated misc fixes/suggestions by Boris.
-- Dropped the DT patches for now, since ADM DMA support isn't merged yet.
-
-v4:
-- Some more fixes. Mentioned in individual patch
-
-v3:
-- Various fixes and clean ups suggested by Stephen Boyd.
-
-v2:
-- Added a new BBT flag that allows us to read BBM in raw mode
-- reduce memcpy-s in the driver
-- some refactor and clean ups because of above changes
-
-v1:
-- original series:
-  https://lkml.org/lkml/2015/1/16/317
-
-Archit Taneja (3):
-  mtd: nand: don't select chip in nand_chip's block_bad op
-  mtd: nand: Qualcomm NAND controller driver
-  dt/bindings: qcom_nandc: Add DT bindings
-
- .../devicetree/bindings/mtd/qcom_nandc.txt         |   84 +
- drivers/mtd/nand/Kconfig                           |    7 +
- drivers/mtd/nand/Makefile                          |    1 +
- drivers/mtd/nand/nand_base.c                       |   41 +-
- drivers/mtd/nand/qcom_nandc.c                      | 1981 ++++++++++++++++++++
- include/linux/mtd/nand.h                           |    2 +-
- 6 files changed, 2097 insertions(+), 19 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
- create mode 100644 drivers/mtd/nand/qcom_nandc.c
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 928081b..42aa441 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -317,9 +317,9 @@ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
+  *
+  * Check, if the block is bad.
+  */
+-static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
++static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
+ {
+-	int page, chipnr, res = 0, i = 0;
++	int page, res = 0, i = 0;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	u16 bad;
+ 
+@@ -328,15 +328,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+ 
+ 	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+ 
+-	if (getchip) {
+-		chipnr = (int)(ofs >> chip->chip_shift);
+-
+-		nand_get_device(mtd, FL_READING);
+-
+-		/* Select the NAND device */
+-		chip->select_chip(mtd, chipnr);
+-	}
+-
+ 	do {
+ 		if (chip->options & NAND_BUSWIDTH_16) {
+ 			chip->cmdfunc(mtd, NAND_CMD_READOOB,
+@@ -361,11 +352,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+ 		i++;
+ 	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
+ 
+-	if (getchip) {
+-		chip->select_chip(mtd, -1);
+-		nand_release_device(mtd);
+-	}
+-
+ 	return res;
+ }
+ 
+@@ -514,8 +500,27 @@ static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 
+-	if (!chip->bbt)
+-		return chip->block_bad(mtd, ofs, getchip);
++	if (!chip->bbt) {
++		int ret;
++
++		if (getchip) {
++			int chipnr = (int)(ofs >> chip->chip_shift);
++
++			nand_get_device(mtd, FL_READING);
++
++			/* Select the NAND device */
++			chip->select_chip(mtd, chipnr);
++		}
++
++		ret = chip->block_bad(mtd, ofs);
++
++		if (getchip) {
++			chip->select_chip(mtd, -1);
++			nand_release_device(mtd);
++		}
++
++		return ret;
++	}
+ 
+ 	/* Return info from the table */
+ 	return nand_isbad_bbt(mtd, ofs, allowbbt);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 3e92be1..c15818e 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -650,7 +650,7 @@ struct nand_chip {
+ 	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
+ 	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
+ 	void (*select_chip)(struct mtd_info *mtd, int chip);
+-	int (*block_bad)(struct mtd_info *mtd, loff_t ofs, int getchip);
++	int (*block_bad)(struct mtd_info *mtd, loff_t ofs);
+ 	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
+ 	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
+ 	int (*dev_ready)(struct mtd_info *mtd);
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 hosted by The Linux Foundation
