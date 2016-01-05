@@ -1,27 +1,19 @@
-Received: from mail-pf0-x230.google.com ([2607:f8b0:400e:c00::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGHOQ-0006YU-Bs
- for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 02:30:40 +0000
-Received: by mail-pf0-x230.google.com with SMTP id 78so213905024pfw.2
- for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 18:30:18 -0800 (PST)
-Date: Mon, 4 Jan 2016 18:30:15 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Daniel Kurtz <djkurtz@chromium.org>,
- Marek Vasut <marex@denx.de>, Bayi Cheng <bayi.cheng@mediatek.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Felix Fietkau <nbd@openwrt.org>,
- Eddie Huang =?utf-8?B?KOm7g+aZuuWCkSk=?= <eddie.huang@mediatek.com>,
- Milton Chiang =?utf-8?B?KOaxn+aYjuaZjyk=?= <Milton.Chiang@mediatek.com>
-Subject: Re: [PATCH for-4.4 2/2] mtd: spi-nor: fix stm_is_locked_sr()
- parameters
-Message-ID: <20160105023015.GG109450@google.com>
-References: <1450205301-32207-1-git-send-email-computersforpeace@gmail.com>
- <1450205301-32207-2-git-send-email-computersforpeace@gmail.com>
+Subject: Re: [PATCH v5 0/5] Add memory mapped read support for ti-qspi
+To: Tony Lindgren <tony@atomide.com>, Brian Norris
+ <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>
+References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
+CC: Rob Herring <robh+dt@kernel.org>, Russell King <linux@arm.linux.org.uk>,
+ <hramrach@gmail.com>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <568B52AA.4070900@ti.com>
+Date: Tue, 5 Jan 2016 10:50:42 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1450205301-32207-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,17 +23,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 15, 2015 at 10:48:21AM -0800, Brian Norris wrote:
-> stm_is_locked_sr() takes the status register (SR) value as the last
-> parameter, not the second.
+Hi Brian,
+
+On 12/11/2015 09:39 AM, Vignesh R wrote:
+> Changes since v4:
+> Use syscon to access system control module register in ti-qspi driver.
 > 
-> Reported-by: Bayi Cheng <bayi.cheng@mediatek.com>
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Bayi Cheng <bayi.cheng@mediatek.com>
 
-Bayi,
+Gentle ping...
+Are you ok with MTD side changes of this patch series?
 
-Do you care to provide your Tested-by? I might get this into 4.4 as a
-fix.
+> Changes since v3:
+> Rework to introduce spi_flash_read_message struct.
+> Support different opcode/addr/data formats as per Brian's suggestion
+> here: https://lkml.org/lkml/2015/11/11/454
+> 
+> Changes since v2:
+> Remove mmap_lock_mutex.
+> Optimize enable/disable of mmap mode.
+> 
+> Changes since v1:
+> Introduce API in SPI core that MTD flash driver can call for mmap read
+> instead of directly calling spi-master driver callback. This API makes
+> sure that SPI core msg queue is locked during mmap transfers.
+> v1: https://lkml.org/lkml/2015/9/4/103
+> 
+> 
+> Cover letter:
+> 
+> This patch series adds support for memory mapped read port of ti-qspi.
+> ti-qspi has a special memory mapped port through which SPI flash
+> memories can be accessed directly via SoC specific memory region.
+> 
+> First patch adds a method to pass flash specific information like read
+> opcode, dummy bytes etc and to request mmap read. Second patch
+> implements mmap read method in ti-qspi driver. Patch 3 adapts m25p80 to
+> use mmap read method before trying normal SPI transfer. Patch 4 and 5
+> add memory map region DT entries for DRA7xx and AM43xx SoCs.
+> 
+> This patch series is based on the discussions here:
+> http://www.spinics.net/lists/linux-spi/msg04796.html
+> 
+> Tested on DRA74 EVM and AM437x-SK.
+> Read performance increases from ~100kB/s to ~2.5MB/s.
+> 
+> Vignesh R (5):
+>   spi: introduce accelerated read support for spi flash devices
+>   spi: spi-ti-qspi: add mmap mode read support
+>   mtd: devices: m25p80: add support for mmap read request
+>   ARM: dts: DRA7: add entry for qspi mmap region
+>   ARM: dts: AM4372: add entry for qspi mmap region
+> 
+>  Documentation/devicetree/bindings/spi/ti_qspi.txt |  22 +++-
+>  arch/arm/boot/dts/am4372.dtsi                     |   4 +-
+>  arch/arm/boot/dts/dra7.dtsi                       |   6 +-
+>  drivers/mtd/devices/m25p80.c                      |  20 ++++
+>  drivers/spi/spi-ti-qspi.c                         | 139 +++++++++++++++++-----
+>  drivers/spi/spi.c                                 |  45 +++++++
+>  include/linux/spi/spi.h                           |  41 +++++++
+>  7 files changed, 243 insertions(+), 34 deletions(-)
+> 
 
-Brian
+-- 
+Regards
+Vignesh
