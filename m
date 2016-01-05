@@ -1,24 +1,30 @@
-Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
+Received: from szxga01-in.huawei.com ([58.251.152.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGFFi-0001Z1-PX
- for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 00:13:31 +0000
-Received: by mail-pf0-x234.google.com with SMTP id 65so164928000pff.3
- for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 16:13:10 -0800 (PST)
-Date: Mon, 4 Jan 2016 16:13:07 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
- Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 0/3] mtd-rfd_ftl: Fine-tuning for two function
- implementations
-Message-ID: <20160105001307.GE109450@google.com>
-References: <566ABCD9.1060404@users.sourceforge.net>
- <56858E3A.7000706@users.sourceforge.net>
+ id 1aGGaY-0005dK-Uu
+ for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 01:39:09 +0000
+Subject: Re: [PATCH] mtd: spi-nor: add hisilicon spi-nor flash controller
+ driver
+To: Rob Herring <robh@kernel.org>
+References: <1451442371-17703-1-git-send-email-xuejiancheng@huawei.com>
+ <20151231222644.GA29027@rob-hp-laptop>
+CC: <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <shijie.huang@intel.com>, <pengbinquan@huawei.com>,
+ <han.xu@freescale.com>, <ezequiel@vanguardiasur.com.ar>,
+ <fabio.estevam@freescale.com>, <manabian@gmail.com>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <yanhaifeng@hisilicon.com>,
+ <yanghongwei@hisilicon.com>, <suwenping@hisilicon.com>,
+ <ml.yang@hisilicon.com>, <gaofei@hisilicon.com>,
+ <zhangzhenxing@hisilicon.com>, <xuejiancheng@hisilicon.com>
+From: xuejiancheng <xuejiancheng@huawei.com>
+Message-ID: <568B1DFC.9060901@huawei.com>
+Date: Tue, 5 Jan 2016 09:35:56 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56858E3A.7000706@users.sourceforge.net>
+In-Reply-To: <20151231222644.GA29027@rob-hp-laptop>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +34,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 31, 2015 at 09:21:14PM +0100, SF Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Thu, 31 Dec 2015 21:15:15 +0100
+Hi Rob,
+   Happy new year to you! Thank you for your patience.
+
+On 2016/1/1 6:26, Rob Herring wrote:
+> On Wed, Dec 30, 2015 at 10:26:11AM +0800, Jiancheng Xue wrote:
+>> add hisilicon spi-nor flash controller driver
+>>
+>> Signed-off-by: Binquan Peng <pengbinquan@huawei.com>
+>> Signed-off-by: Jiancheng Xue <xuejiancheng@huawei.com>
+>> ---
+>>  .../devicetree/bindings/spi/spi-hisi-sfc.txt       |  24 +
+>>  drivers/mtd/spi-nor/Kconfig                        |   7 +
+>>  drivers/mtd/spi-nor/Makefile                       |   1 +
+>>  drivers/mtd/spi-nor/hisi-sfc.c                     | 505 +++++++++++++++++++++
+>>  4 files changed, 537 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt
+>>  create mode 100644 drivers/mtd/spi-nor/hisi-sfc.c
+>>
+>> diff --git a/Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt b/Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt
+>> new file mode 100644
+>> index 0000000..170885a
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt
+>> @@ -0,0 +1,24 @@
+>> +HiSilicon SPI-NOR Flash Controller
+>> +
+>> +Required properties:
+>> +- compatible : Should be "hisilicon,hisi-sfc".
+>> +- address-cells: number of cells required to define a chip select
+>> +        address on the SPI bus. Should be set to 1. See spi-bus.txt.
+>> +- size-cells:Should be 0.
 > 
-> A few update suggestions were taken into account
-> from static source code analysis.
+> How about some consistency in the spacing around the ':'.
 
-Are you fixing anything? Have you tested your work?
+OK. I'll correct it in next version. Thank you.
 
-At the moment, I can't find any value in your patches.
+> 
+>> +- reg : Offset and length of the register set for the controller device.
+>> +- reg-names: Must include the following two entries:"control","memory".
+>                                                        ^         ^
+> Spaces needed.
 
-Brian
+OK
+
+> 
+>> +- clocks: handle to spi-nor flash controller clock.
+>> +
+>> +Example:
+>> +spi-nor-controller@14000000 {
+>> +	compatible = "hisilicon,hisi-sfc";
+>> +	#address-cells = <1>;
+>> +	#size-cells = <0>;
+>> +	reg = <0x10000000 0x1000>, <0x14000000 0x1000000>;
+>> +	reg-names = "control", "memory";
+>> +	clocks = <&clock HI3519_FMC_CLK>;
+>> +	spi-nor@0 {
+>> +		compatible = "jedec,spi-nor";
+>> +		reg = <0>;
+>> +	};
+>> +};
+>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+>> index 2fe2a7e..7fe1564 100644
+>> --- a/drivers/mtd/spi-nor/Kconfig
+>> +++ b/drivers/mtd/spi-nor/Kconfig
+>> @@ -30,6 +30,12 @@ config SPI_FSL_QUADSPI
+>>  	  This controller does not support generic SPI. It only supports
+>>  	  SPI NOR.
+>>  
+>> +config SPI_HISI_SFC
+>> +	tristate "Hisilicon SPI-NOR Flash Controller(SFC)"
+>> +	depends on ARCH_HISI
+>> +	help
+>> +	  This enables support for hisilicon SPI-NOR flash controller.
+>> +
+>>  config SPI_NXP_SPIFI
+>>  	tristate "NXP SPI Flash Interface (SPIFI)"
+>>  	depends on OF && (ARCH_LPC18XX || COMPILE_TEST)
+>> @@ -41,4 +47,5 @@ config SPI_NXP_SPIFI
+>>  	  Flash. Enable this option if you have a device with a SPIFI
+>>  	  controller and want to access the Flash as a mtd device.
+>>  
+>> +
+> 
+> Drop this spurious change.
+
+OK. Thank you. I'll pay more attention to this later.
+
+> 
+>>  endif # MTD_SPI_NOR
+>> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+>> index e53333e..8cea3c5 100644
+>> --- a/drivers/mtd/spi-nor/Makefile
+>> +++ b/drivers/mtd/spi-nor/Makefile
+>> @@ -1,3 +1,4 @@
+>>  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+>>  obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
+>> +obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
+>>  obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
+>> diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
+>> new file mode 100644
+>> index 0000000..fd9649a
+>> --- /dev/null
+>> +++ b/drivers/mtd/spi-nor/hisi-sfc.c
+>> @@ -0,0 +1,505 @@
+>> +/* HiSilicon SPI Nor Flash Controller Driver
+>> + *
+>> + * Copyright (c) 2015 HiSilicon Technologies Co., Ltd.
+>> + *
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + * GNU General Public License for more details.
+>> + *
+>> + * You should have received a copy of the GNU General Public License
+>> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
+>> + */
+>> +#include <linux/slab.h>
+>> +#include <linux/module.h>
+>> +#include <linux/clk.h>
+>> +#include <linux/dma-mapping.h>
+>> +#include <linux/mtd/mtd.h>
+>> +#include <linux/of_platform.h>
+>> +#include <linux/mtd/spi-nor.h>
+> 
+> Some say to alphabetize includes. I don't care so much, but at least 
+> group subdirectories.
+
+Sorry about that. I'll reorder them.
+
+> 
+> Rob
+> 
+> .
+> 
+
+Jiancheng
+
+.
