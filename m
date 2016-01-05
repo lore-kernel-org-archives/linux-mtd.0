@@ -1,23 +1,24 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGEok-0005ez-Ns
- for linux-mtd@lists.infradead.org; Mon, 04 Jan 2016 23:45:39 +0000
-Received: by mail-pa0-x22b.google.com with SMTP id uo6so184903211pac.1
- for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 15:45:18 -0800 (PST)
-Date: Mon, 4 Jan 2016 15:45:15 -0800
+ id 1aGFFi-0001Z1-PX
+ for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 00:13:31 +0000
+Received: by mail-pf0-x234.google.com with SMTP id 65so164928000pff.3
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Jan 2016 16:13:10 -0800 (PST)
+Date: Mon, 4 Jan 2016 16:13:07 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH 4/6] MTD: lantiq: xway: add missing write_buf and
- read_buf to nand driver
-Message-ID: <20160104234515.GG128501@google.com>
-References: <1451941501-42952-1-git-send-email-blogic@openwrt.org>
- <1451941501-42952-5-git-send-email-blogic@openwrt.org>
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+ Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [PATCH 0/3] mtd-rfd_ftl: Fine-tuning for two function
+ implementations
+Message-ID: <20160105001307.GE109450@google.com>
+References: <566ABCD9.1060404@users.sourceforge.net>
+ <56858E3A.7000706@users.sourceforge.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1451941501-42952-5-git-send-email-blogic@openwrt.org>
+In-Reply-To: <56858E3A.7000706@users.sourceforge.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,72 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 04, 2016 at 10:04:59PM +0100, John Crispin wrote:
-> Signed-off-by: John Crispin <blogic@openwrt.org>
-> ---
->  drivers/mtd/nand/xway_nand.c |   28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
+On Thu, Dec 31, 2015 at 09:21:14PM +0100, SF Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Thu, 31 Dec 2015 21:15:15 +0100
 > 
-> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-> index c75a2bc..ef7c7ce 100644
-> --- a/drivers/mtd/nand/xway_nand.c
-> +++ b/drivers/mtd/nand/xway_nand.c
-> @@ -136,6 +136,32 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
->  	return ret;
->  }
->  
-> +static void xway_read_buf(struct mtd_info *mtd, u_char *buf, int len)
-> +{
-> +	struct nand_chip *this = mtd->priv;
+> A few update suggestions were taken into account
+> from static source code analysis.
 
-This is no longer legal. Use mtd_to_nand().
+Are you fixing anything? Have you tested your work?
 
-And please rebase (and test) your entire series on l2-mtd.git. It
-doesn't apply:
+At the moment, I can't find any value in your patches.
 
-http://linux-mtd.infradead.org/source.html
-
-Thanks,
 Brian
-
-> +	unsigned long nandaddr = (unsigned long) this->IO_ADDR_R;
-> +	unsigned long flags;
-> +	int i;
-> +
-> +	spin_lock_irqsave(&ebu_lock, flags);
-> +	for (i = 0; i < len; i++)
-> +		buf[i] = ltq_r8((void __iomem *)(nandaddr | NAND_READ_DATA));
-> +	spin_unlock_irqrestore(&ebu_lock, flags);
-> +}
-> +
-> +static void xway_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
-> +{
-> +	struct nand_chip *this = mtd->priv;
-> +	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
-> +	unsigned long flags;
-> +	int i;
-> +
-> +	spin_lock_irqsave(&ebu_lock, flags);
-> +	for (i = 0; i < len; i++)
-> +		ltq_w8(buf[i], (void __iomem *)(nandaddr | NAND_WRITE_DATA));
-> +	spin_unlock_irqrestore(&ebu_lock, flags);
-> +}
-> +
->  static int xway_nand_probe(struct platform_device *pdev)
->  {
->  	struct nand_chip *this = platform_get_drvdata(pdev);
-> @@ -177,6 +203,8 @@ static struct platform_nand_data xway_nand_data = {
->  		.dev_ready	= xway_dev_ready,
->  		.select_chip	= xway_select_chip,
->  		.read_byte	= xway_read_byte,
-> +		.read_buf	= xway_read_buf,
-> +		.write_buf	= xway_write_buf,
->  	}
->  };
->  
-> -- 
-> 1.7.10.4
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
