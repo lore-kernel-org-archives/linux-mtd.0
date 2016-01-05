@@ -1,19 +1,18 @@
-Subject: Re: [PATCH v5 0/5] Add memory mapped read support for ti-qspi
-To: Tony Lindgren <tony@atomide.com>, Brian Norris
- <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>
-References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
-CC: Rob Herring <robh+dt@kernel.org>, Russell King <linux@arm.linux.org.uk>,
- <hramrach@gmail.com>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <568B52AA.4070900@ti.com>
-Date: Tue, 5 Jan 2016 10:50:42 +0530
-MIME-Version: 1.0
-In-Reply-To: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aGK7o-0007ld-Bo
+ for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 05:25:40 +0000
+From: Archit Taneja <architt@codeaurora.org>
+To: computersforpeace@gmail.com,
+	boris.brezillon@free-electrons.com
+Cc: linux-mtd@lists.infradead.org, cernekee@gmail.com, sboyd@codeaurora.org,
+ andy.gross@linaro.org, dehrenberg@google.com,
+ linux-arm-msm@vger.kernel.org, Archit Taneja <architt@codeaurora.org>
+Subject: [PATCH v5 0/3] mtd: Qualcomm NAND controller driver
+Date: Tue,  5 Jan 2016 10:54:58 +0530
+Message-Id: <1451971501-18160-1-git-send-email-architt@codeaurora.org>
+In-Reply-To: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
+References: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Add support for the NAND controller driver for SoC's that contain EBI2.
+For now, the only SoC upstream that has EBI2 is IPQ806x.
 
-On 12/11/2015 09:39 AM, Vignesh R wrote:
-> Changes since v4:
-> Use syscon to access system control module register in ti-qspi driver.
-> 
+The previous version added a BBT flag that allowed BBMs to be accessed
+in raw mode. Adding a flag isn't the right way to fix it, and the
+proposed fix is to add badblockbits support, and make sure all drivers
+switch to accessing BBM in raw mode. For now, skip nand_bbt usage, and
+implement our own versions of chip->block_bad and chip->mark_bad.
 
-Gentle ping...
-Are you ok with MTD side changes of this patch series?
+The first patch in the series contains a nand_base clean up which the
+driver will utilize.
 
-> Changes since v3:
-> Rework to introduce spi_flash_read_message struct.
-> Support different opcode/addr/data formats as per Brian's suggestion
-> here: https://lkml.org/lkml/2015/11/11/454
-> 
-> Changes since v2:
-> Remove mmap_lock_mutex.
-> Optimize enable/disable of mmap mode.
-> 
-> Changes since v1:
-> Introduce API in SPI core that MTD flash driver can call for mmap read
-> instead of directly calling spi-master driver callback. This API makes
-> sure that SPI core msg queue is locked during mmap transfers.
-> v1: https://lkml.org/lkml/2015/9/4/103
-> 
-> 
-> Cover letter:
-> 
-> This patch series adds support for memory mapped read port of ti-qspi.
-> ti-qspi has a special memory mapped port through which SPI flash
-> memories can be accessed directly via SoC specific memory region.
-> 
-> First patch adds a method to pass flash specific information like read
-> opcode, dummy bytes etc and to request mmap read. Second patch
-> implements mmap read method in ti-qspi driver. Patch 3 adapts m25p80 to
-> use mmap read method before trying normal SPI transfer. Patch 4 and 5
-> add memory map region DT entries for DRA7xx and AM43xx SoCs.
-> 
-> This patch series is based on the discussions here:
-> http://www.spinics.net/lists/linux-spi/msg04796.html
-> 
-> Tested on DRA74 EVM and AM437x-SK.
-> Read performance increases from ~100kB/s to ~2.5MB/s.
-> 
-> Vignesh R (5):
->   spi: introduce accelerated read support for spi flash devices
->   spi: spi-ti-qspi: add mmap mode read support
->   mtd: devices: m25p80: add support for mmap read request
->   ARM: dts: DRA7: add entry for qspi mmap region
->   ARM: dts: AM4372: add entry for qspi mmap region
-> 
->  Documentation/devicetree/bindings/spi/ti_qspi.txt |  22 +++-
->  arch/arm/boot/dts/am4372.dtsi                     |   4 +-
->  arch/arm/boot/dts/dra7.dtsi                       |   6 +-
->  drivers/mtd/devices/m25p80.c                      |  20 ++++
->  drivers/spi/spi-ti-qspi.c                         | 139 +++++++++++++++++-----
->  drivers/spi/spi.c                                 |  45 +++++++
->  include/linux/spi/spi.h                           |  41 +++++++
->  7 files changed, 243 insertions(+), 34 deletions(-)
-> 
+Based over l2-mtd.git
+
+The patchset requires the v6 ADM dmaengine patches posted by Andy:
+
+https://lkml.org/lkml/2015/3/17/19
+
+v5:
+- Skip creation of BBT as in v1. Will bring this back after BBMs are
+  read/written in raw mode (using badblockbits support).
+- Incorporated misc fixes/suggestions by Boris.
+- Dropped the DT patches for now, since ADM DMA support isn't merged yet.
+
+v4:
+- Some more fixes. Mentioned in individual patch
+
+v3:
+- Various fixes and clean ups suggested by Stephen Boyd.
+
+v2:
+- Added a new BBT flag that allows us to read BBM in raw mode
+- reduce memcpy-s in the driver
+- some refactor and clean ups because of above changes
+
+v1:
+- original series:
+  https://lkml.org/lkml/2015/1/16/317
+
+Archit Taneja (3):
+  mtd: nand: don't select chip in nand_chip's block_bad op
+  mtd: nand: Qualcomm NAND controller driver
+  dt/bindings: qcom_nandc: Add DT bindings
+
+ .../devicetree/bindings/mtd/qcom_nandc.txt         |   84 +
+ drivers/mtd/nand/Kconfig                           |    7 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/nand_base.c                       |   41 +-
+ drivers/mtd/nand/qcom_nandc.c                      | 1981 ++++++++++++++++++++
+ include/linux/mtd/nand.h                           |    2 +-
+ 6 files changed, 2097 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+ create mode 100644 drivers/mtd/nand/qcom_nandc.c
 
 -- 
-Regards
-Vignesh
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+hosted by The Linux Foundation
