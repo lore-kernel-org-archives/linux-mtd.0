@@ -1,21 +1,22 @@
-Received: from mail-pf0-x22e.google.com ([2607:f8b0:400e:c00::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGVnx-0004dL-8W
- for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 17:53:57 +0000
-Received: by mail-pf0-x22e.google.com with SMTP id 78so226336798pfw.2
- for <linux-mtd@lists.infradead.org>; Tue, 05 Jan 2016 09:53:36 -0800 (PST)
-Date: Tue, 5 Jan 2016 09:53:33 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/6] MTD: lantiq: xway: various nand fixes
-Message-ID: <20160105175333.GA46565@google.com>
-References: <1451941501-42952-1-git-send-email-blogic@openwrt.org>
- <20160104233049.GA128501@google.com> <568B71EC.2070309@openwrt.org>
+Date: Tue, 5 Jan 2016 18:19:20 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Vignesh R <vigneshr@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, hramrach@gmail.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Message-ID: <20160105181920.GK6588@sirena.org.uk>
+References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
+ <568B52AA.4070900@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="VJJoKLVEFXdmHQwR"
 Content-Disposition: inline
-In-Reply-To: <568B71EC.2070309@openwrt.org>
+In-Reply-To: <568B52AA.4070900@ti.com>
+Subject: Re: [PATCH v5 0/5] Add memory mapped read support for ti-qspi
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 05, 2016 at 08:34:04AM +0100, John Crispin wrote:
-> On 05/01/2016 00:30, Brian Norris wrote:
-> > Is there a good reason this driver uses plat_nand? That seems like an
-> > unnecessary abstraction layer. It'd be clearer to just refactor the
-> > driver to be a proper platform driver...
-> > 
-> > Also, I see that there's no DT binding doc.
-> > 
-> > Can these things be cleaned up?
-> 
-> grml, i was kinda hoping this would be a no brainer. the problem is that
-> i don't even have the HW so refactoring / big changes are a no go or
-> would require me to find users with the HW first.
 
-Well, I could be convinced to take patches that are a little better
-documented (i.e., have a little better commit descriptions), if they
-fix real issues. If you're going to add device tree properties, though,
-you need a DT binding doc. And the refactoring to a platform driver
-should be pretty trivial, but it's not an absolute blocking requirement,
-since the driver's already in mainline.
+--VJJoKLVEFXdmHQwR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-BTW, one issue with the current driver, if you're going to add a DT
-binding doc: you currently require the "gen_nand" string, like this, in
-your openwrt DTS(I) files:
+On Tue, Jan 05, 2016 at 10:50:42AM +0530, Vignesh R wrote:
+> Hi Brian,
+>=20
+> On 12/11/2015 09:39 AM, Vignesh R wrote:
+> > Changes since v4:
+> > Use syscon to access system control module register in ti-qspi driver.
+> >=20
+>=20
+> Gentle ping...
+> Are you ok with MTD side changes of this patch series?
 
-	nand-parts@0 {
-		compatible = "gen_nand", "lantiq,nand-xway";
-		...
-	};
+Please don't send content free pings and please allow a reasonable time
+for review (we've just had the Christmas vacation...).
 
-That's not an acceptable binding, and that's where refactoring the
-driver would help too.
+--VJJoKLVEFXdmHQwR
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> i'll try to get this resolved for v4.6.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Brian
+iQEcBAEBCAAGBQJWjAknAAoJECTWi3JdVIfQo1IH/2uM4umOoXDmbvAfvoo0HQiB
+co+aYq7vLt3RrOWDW8YmWvEI7qWN/bK2CKdq5cCOTRB4PRtwbnY+vHEhsWE/T2Nj
+pawmI3UGcqioxNiLJ3sxzeVSADCz0gnS/f3VkmJ4KJwYZUZYvJop/Wnp6GU9lBXj
+6Eso8dTaDKRfUWSJZ1kLoZ7Y8T7/c8cN1dWo8tove7PvseQY/HYzhv7QykmkLA8C
+5s5KxQoznHeScpkmbSCHYrFtnv4HLHd71drwjh5UfjRkn+xbllZQBhVtI4Ruc9e8
+JDv2DLWu8L/v+9cODDeYQAKi93fj9mUA8VPnRAPhr1RHh5oZOuEluFiZn5tPRX8=
+=cOKV
+-----END PGP SIGNATURE-----
+
+--VJJoKLVEFXdmHQwR--
