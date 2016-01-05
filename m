@@ -1,26 +1,21 @@
-Received: from mail-bn1bon0133.outbound.protection.outlook.com
- ([157.56.111.133] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-pf0-x22e.google.com ([2607:f8b0:400e:c00::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGTXK-0004da-2j
- for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 15:28:39 +0000
-From: =?utf-8?B?U8O4cmVuc2VuLCBTdGVmYW4=?= <Stefan.Sorensen@spectralink.com>
-To: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "hs@denx.de" <hs@denx.de>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "fransklaver@gmail.com"
- <fransklaver@gmail.com>
-Subject: Re: [for-4.4] mtd: nand: assign reasonable default name for NAND
- drivers
-Date: Tue, 5 Jan 2016 15:28:14 +0000
-Message-ID: <1452007693.18078.3.camel@spectralink.com>
-References: <1451934663-68925-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1451934663-68925-1-git-send-email-computersforpeace@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3C56F2AC362BA947895CAF5A253869E4@namprd07.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1aGVnx-0004dL-8W
+ for linux-mtd@lists.infradead.org; Tue, 05 Jan 2016 17:53:57 +0000
+Received: by mail-pf0-x22e.google.com with SMTP id 78so226336798pfw.2
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Jan 2016 09:53:36 -0800 (PST)
+Date: Tue, 5 Jan 2016 09:53:33 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: John Crispin <blogic@openwrt.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/6] MTD: lantiq: xway: various nand fixes
+Message-ID: <20160105175333.GA46565@google.com>
+References: <1451941501-42952-1-git-send-email-blogic@openwrt.org>
+ <20160104233049.GA128501@google.com> <568B71EC.2070309@openwrt.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <568B71EC.2070309@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,16 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQnJpYW4sDQoNCk9uIE1vbiwgMjAxNi0wMS0wNCBhdCAxMToxMSAtMDgwMCwgQnJpYW4gTm9y
-cmlzIHdyb3RlOg0KPiBUaGlzIHBhdGNoIGlzIG5lZWRlZCBpbiBhZGRpdG9uIHRvIGNvbW1pdCA0
-NzJiNDQ0ZWVmOTMgKCJtdGQ6IGZpeCANCj4gY21kbGluZXBhcnQgcGFyc2VyLCBlYXJseSBuYW1p
-bmcgZm9yIGF1dG8tZmlsbGVkIE1URCIpIHRvIGZpeCBIZWlrbydzDQo+IHJlcG9ydGVkIHByb2Js
-ZW0uIEF0IHRoaXMgcG9pbnQsIEknbSBub3Qgc3VyZSBpZiB0aGlzIHNob3VsZCBiZQ0KPiB0YXJn
-ZXRlZCB0b3dhcmQgbGF0ZSA0LjQgb3IgZm9yIDQuNS4gSXQncyBhIDQuNCByZWdyZXNzc2lvbiwg
-YnV0IGENCj4gdmVyeSBzbWFsbCBvbmUuIEFuZCBJJ20gbm90IHN1cmUgaWYgdGhpcyB3aWxsIGhh
-dmUgd2lkZSBlbm91Z2gNCj4gaW1wYWN0wqB0aGF0IGl0IHNob3VsZCBiZSBnaXZlbiBhIGxvbmdl
-ciB0aW1lIHRvIGJlIHJldmlld2VkIGFuZA0KPiB0ZXN0ZWQuIFdlIGNhbiBhbHdheXMgc2VuZCBp
-dCB0byAtc3RhYmxlIGxhdGVyLCBpZiBpdCdzIHJlYWxseQ0KPiBuZWVkZWQuDQoNCkkgaGF2ZSBi
-b2FyZHMgdGhhdCB3aWxsIG5vdCBib290IDQuNCB3aXRob3V0IHRoZXNlIHR3byBwYXRjaGVzLCBz
-byBJDQpob3BlIHRvIHNlZSBpdCBnbyBpbiB0byA0LjQuMSAoSSBndWVzcyBpdCBpcyB0b28gbGF0
-ZSBmb3IgNC40KS4NCg0KUmVnYXJkcyzCoA0KwqBTdGVmYW4=
+On Tue, Jan 05, 2016 at 08:34:04AM +0100, John Crispin wrote:
+> On 05/01/2016 00:30, Brian Norris wrote:
+> > Is there a good reason this driver uses plat_nand? That seems like an
+> > unnecessary abstraction layer. It'd be clearer to just refactor the
+> > driver to be a proper platform driver...
+> > 
+> > Also, I see that there's no DT binding doc.
+> > 
+> > Can these things be cleaned up?
+> 
+> grml, i was kinda hoping this would be a no brainer. the problem is that
+> i don't even have the HW so refactoring / big changes are a no go or
+> would require me to find users with the HW first.
+
+Well, I could be convinced to take patches that are a little better
+documented (i.e., have a little better commit descriptions), if they
+fix real issues. If you're going to add device tree properties, though,
+you need a DT binding doc. And the refactoring to a platform driver
+should be pretty trivial, but it's not an absolute blocking requirement,
+since the driver's already in mainline.
+
+BTW, one issue with the current driver, if you're going to add a DT
+binding doc: you currently require the "gen_nand" string, like this, in
+your openwrt DTS(I) files:
+
+	nand-parts@0 {
+		compatible = "gen_nand", "lantiq,nand-xway";
+		...
+	};
+
+That's not an acceptable binding, and that's where refactoring the
+driver would help too.
+
+> i'll try to get this resolved for v4.6.
+
+Brian
