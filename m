@@ -1,24 +1,19 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGx4F-0004ls-K3
- for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 23:00:37 +0000
-Received: by mail-pa0-x22f.google.com with SMTP id cy9so242086374pac.0
- for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 15:00:15 -0800 (PST)
-Date: Wed, 6 Jan 2016 15:00:10 -0800
+Date: Wed, 6 Jan 2016 15:13:23 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Yao Yuan <yao.yuan@nxp.com>
-Cc: Han Xu <han.xu@freescale.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v3 1/4] mtd: spi-nor: fsl-quadspi: add big-endian support
-Message-ID: <20160106230010.GL109450@google.com>
-References: <1450954821-7483-1-git-send-email-yao.yuan@freescale.com>
- <20160104205830.GA27554@chopperman.am.freescale.net>
- <AM2PR04MB0722319A9E6027EA76EAE81389F40@AM2PR04MB0722.eurprd04.prod.outlook.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 55/58] mtd: nand: add helpers to access ->priv
+Message-ID: <20160106231323.GM109450@google.com>
+References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1449734442-18672-56-git-send-email-boris.brezillon@free-electrons.com>
+ <20151218221758.GQ10460@google.com>
+ <20151219040124.7ffe4274@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <AM2PR04MB0722319A9E6027EA76EAE81389F40@AM2PR04MB0722.eurprd04.prod.outlook.com>
+In-Reply-To: <20151219040124.7ffe4274@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 06, 2016 at 07:52:31AM +0000, Yao Yuan wrote:
-> On Tue, Jan 05, 2015 at 04:58AM, Han Xu wrote:
-> > once again, please document the new property.
-> 
-> Thanks for your review.
-> I have already send the patch named "Documentation: fsl-quadspi: Add optional properties" to community on Dec 24.
-> Sorry for forget to send this patch to you.
+On Sat, Dec 19, 2015 at 04:01:24AM +0100, Boris Brezillon wrote:
+> Actually the nand_{get,set}_controller_data() helpers are not about
+> assigning NAND controller private data (as you pointed those can
+> already be retrieved thanks to the ->controller field using the
+> container_of() trick), but per-chip private data instantiated by the
+> NAND controller and attached to a specific chip. For example, some
+> controllers pre-compute some register values or a clk rate to set when
+> a specific chip is selected. This is what per-chip controller data is
+> meant for.
 
-You also forgot to send it to anyone who could apply it. Like me, and
-linux-mtd.
+Sure. Really, it's just anything the controller driver needs to store on
+a per-chip basis. All I'm suggesting is picking a name that doesn't
+imply it's a per-controller instance, when it's actually a
+per-flash-chip instance.
 
-Please resend your series with all parties CC'd, after rereading
-Documentation/devicetree/bindings/submitting-patches.txt.
+> Now, the reason I explicitly specified the data usage instead of using
+> a generic name like nand_{get,set}_data() is because I plan to define
+
+I never suggested just "_data"; I said "_drvdata".
+
+> other helpers to allow NAND manufacturer code to manipulate its own
+> private data. This is required if we want to support read-retry on some
+> chips who are requiring a read OTP area step to retrieve some register
+> values which will later be used to change from one read-retry mode to
+> another.
+> The plan was to define the nand_{set,get}_manufacturer_data() helpers,
+> and create or reuse an existing priv field (mtd->priv?) to store this
+> private data.
+
+That's interesting. Sounds like an OK idea. (Personally, I wouldn't
+try to use mtd->priv for this, but otherwise looks OK.)
+
+> Also note that the spi framework provides the same kind of helpers [1].
+
+Hmm, OK. FWIW, they have both "driver data" and "controller state". It's
+not perfectly clear to me why both exist.
+
+> This being said, I'm perfectly fine changing the function names, but
+> I'd like to replace it by something explicitly telling the user that
+> this field should only be set by NAND controller drivers. 
+
+Sure. I though a "driver data"-based name did this. But I'll leave it to
+you. I could even be OK with "controller data", if you still think this
+fits your overall controller refactoring plan, and communicates its
+purpose best.
+
+> [1]http://lxr.free-electrons.com/source/include/linux/spi/spi.h#L189
 
 Regards,
 Brian
