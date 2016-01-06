@@ -1,24 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mail.kernel.org ([198.145.29.136])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGpeW-0003IX-NB
- for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 15:05:33 +0000
-Date: Wed, 6 Jan 2016 16:05:09 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+ id 1aGpnp-0006k5-6z
+ for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 15:15:09 +0000
+Date: Wed, 6 Jan 2016 09:14:44 -0600
+From: Rob Herring <robh@kernel.org>
 To: Archit Taneja <architt@codeaurora.org>
-Cc: computersforpeace@gmail.com, devicetree@vger.kernel.org, Rob Herring
- <robh@kernel.org>, linux-arm-msm@vger.kernel.org, cernekee@gmail.com,
- sboyd@codeaurora.org, linux-mtd@lists.infradead.org, dehrenberg@google.com,
- andy.gross@linaro.org
+Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ linux-mtd@lists.infradead.org, cernekee@gmail.com,
+ sboyd@codeaurora.org, andy.gross@linaro.org, dehrenberg@google.com,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
 Subject: Re: [PATCH v5 3/3] dt/bindings: qcom_nandc: Add DT bindings
-Message-ID: <20160106160509.1fdc53bf@bbrezillon>
-In-Reply-To: <1451971501-18160-4-git-send-email-architt@codeaurora.org>
+Message-ID: <20160106151444.GA4131@rob-hp-laptop>
 References: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
  <1451971501-18160-1-git-send-email-architt@codeaurora.org>
  <1451971501-18160-4-git-send-email-architt@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451971501-18160-4-git-send-email-architt@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,11 +27,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Archit,
-
-On Tue,  5 Jan 2016 10:55:01 +0530
-Archit Taneja <architt@codeaurora.org> wrote:
-
+On Tue, Jan 05, 2016 at 10:55:01AM +0530, Archit Taneja wrote:
 > Add DT bindings document for the Qualcomm NAND controller driver.
 > 
 > Cc: devicetree@vger.kernel.org
@@ -61,6 +56,9 @@ Archit Taneja <architt@codeaurora.org> wrote:
 > +
 > +Required properties:
 > +- compatible:		should be "qcom,ebi2-nand" for IPQ806x
+
+More specific name please.
+
 > +- reg:			MMIO address range
 > +- clocks:		must contain core clock and always on clock
 > +- clock-names:		must contain "core" for the core clock and "aon" for the
@@ -97,69 +95,11 @@ Archit Taneja <architt@codeaurora.org> wrote:
 > +Optional properties:
 > +- nand-bus-width:	bus width. Must be 8 or 16. If not present, 8 is chosen
 > +			as default
-
-You should probably reference
-Documentation/devicetree/bindings/mtd/nand.txt which is documenting
-generic nand-xxx properties.
-
 > +
 > +Each nandcs device node may optionally contain sub-nodes describing the flash
 > +partition mapping. See partition.txt for more detail.
-> +
-> +Example:
-> +
-> +nand@1ac00000 {
-> +	compatible = "qcom,ebi2-nandc";
-> +	reg = <0x1ac00000 0x800>;
-> +
-> +	clocks = <&gcc EBI2_CLK>,
-> +		 <&gcc EBI2_AON_CLK>;
-> +	clock-names = "core", "aon";
-> +
-> +	dmas = <&adm_dma 3>;
-> +	dma-names = "rxtx";
-> +	qcom,cmd-crci = <15>;
-> +	qcom,data-crci = <3>;
-> +
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	nandcs@0 {
-> +		compatible = "qcom,nandcs";
-> +		reg = <0>;
-> +
-> +		nand-ecc-strength = <4>;
-> +		nand-ecc-step-size = <512>;
-> +		nand-bus-width = <8>;
-> +
 
-It's now recommended to define a 'partitions' subnode to store those
-partition nodes.
+Can't the partitioning span across chip selects? After all, interleaving 
+is how you get high performance.
 
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		partition@0 {
-> +			label = "boot-nand";
-> +			reg = <0 0x58a0000>;
-> +		};
-> +
-> +		partition@58a0000 {
-> +			label = "fs-nand";
-> +			reg = <0x58a0000 0x4000000>;
-> +		};
-> +	};
-> +};
-
-The rest looks good to me.
-
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-Best Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Rob
