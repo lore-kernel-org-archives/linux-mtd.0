@@ -1,19 +1,27 @@
-Date: Wed, 6 Jan 2016 15:13:23 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 55/58] mtd: nand: add helpers to access ->priv
-Message-ID: <20160106231323.GM109450@google.com>
-References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
- <1449734442-18672-56-git-send-email-boris.brezillon@free-electrons.com>
- <20151218221758.GQ10460@google.com>
- <20151219040124.7ffe4274@bbrezillon>
+Received: from userp1040.oracle.com ([156.151.31.81])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aGxKn-0003Fs-4G
+ for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 23:17:41 +0000
+To: mchristi@redhat.com
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
+ philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+ linux-raid@vger.kernel.org, dm-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH 02/35] block: add REQ_OP definitions and bi_op/op fields
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+References: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
+ <1452027218-32303-3-git-send-email-mchristi@redhat.com>
+Date: Wed, 06 Jan 2016 18:17:01 -0500
+In-Reply-To: <1452027218-32303-3-git-send-email-mchristi@redhat.com>
+ (mchristi@redhat.com's message of "Tue, 5 Jan 2016 14:53:05 -0600")
+Message-ID: <yq1d1tei9hu.fsf@sermon.lab.mkp.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20151219040124.7ffe4274@bbrezillon>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 19, 2015 at 04:01:24AM +0100, Boris Brezillon wrote:
-> Actually the nand_{get,set}_controller_data() helpers are not about
-> assigning NAND controller private data (as you pointed those can
-> already be retrieved thanks to the ->controller field using the
-> container_of() trick), but per-chip private data instantiated by the
-> NAND controller and attached to a specific chip. For example, some
-> controllers pre-compute some register values or a clk rate to set when
-> a specific chip is selected. This is what per-chip controller data is
-> meant for.
+>>>>> "Mike" == mchristi  <mchristi@redhat.com> writes:
 
-Sure. Really, it's just anything the controller driver needs to store on
-a per-chip basis. All I'm suggesting is picking a name that doesn't
-imply it's a per-controller instance, when it's actually a
-per-flash-chip instance.
++enum req_op {
++	REQ_OP_READ,
++	REQ_OP_WRITE		= REQ_WRITE,
++	REQ_OP_DISCARD		= REQ_DISCARD,
++	REQ_OP_WRITE_SAME	= REQ_WRITE_SAME,
++};
++
 
-> Now, the reason I explicitly specified the data usage instead of using
-> a generic name like nand_{get,set}_data() is because I plan to define
+I have been irked by the REQ_ prefix in bios since the flags were
+consolidated a while back. When I attempted to fix the READ/WRITE mess I
+used a BLK_ prefix as a result.
 
-I never suggested just "_data"; I said "_drvdata".
+Anyway. Just bikeshedding...
 
-> other helpers to allow NAND manufacturer code to manipulate its own
-> private data. This is required if we want to support read-retry on some
-> chips who are requiring a read OTP area step to retrieve some register
-> values which will later be used to change from one read-retry mode to
-> another.
-> The plan was to define the nand_{set,get}_manufacturer_data() helpers,
-> and create or reuse an existing priv field (mtd->priv?) to store this
-> private data.
-
-That's interesting. Sounds like an OK idea. (Personally, I wouldn't
-try to use mtd->priv for this, but otherwise looks OK.)
-
-> Also note that the spi framework provides the same kind of helpers [1].
-
-Hmm, OK. FWIW, they have both "driver data" and "controller state". It's
-not perfectly clear to me why both exist.
-
-> This being said, I'm perfectly fine changing the function names, but
-> I'd like to replace it by something explicitly telling the user that
-> this field should only be set by NAND controller drivers. 
-
-Sure. I though a "driver data"-based name did this. But I'll leave it to
-you. I could even be OK with "controller data", if you still think this
-fits your overall controller refactoring plan, and communicates its
-purpose best.
-
-> [1]http://lxr.free-electrons.com/source/include/linux/spi/spi.h#L189
-
-Regards,
-Brian
+-- 
+Martin K. Petersen	Oracle Linux Engineering
