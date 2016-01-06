@@ -1,26 +1,23 @@
-Received: from [210.61.82.183] (helo=mailgw01.mediatek.com)
+Received: from mail-db3on0078.outbound.protection.outlook.com ([157.55.234.78]
+ helo=emea01-db3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGdVa-0006Im-Bx
- for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 02:07:31 +0000
-Message-ID: <1452046022.23360.3.camel@mhfsdcap03>
-Subject: Re: [PATCH for-4.4 1/2] mtd: spi-nor: fix Spansion regressions
- (aliased with Winbond)
-From: bayi cheng <bayi.cheng@mediatek.com>
-To: Felix Fietkau <nbd@openwrt.org>
-CC: Brian Norris <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Daniel Kurtz
- <djkurtz@chromium.org>, Marek Vasut <marex@denx.de>,
- =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, Eddie Huang
- =?UTF-8?Q?=28=E9=BB=83=E6=99=BA=E5=82=91=29?= <eddie.huang@mediatek.com>,
- Milton Chiang =?UTF-8?Q?=28=E6=B1=9F=E6=98=8E=E6=99=8F=29?=
- <Milton.Chiang@mediatek.com>
-Date: Wed, 6 Jan 2016 10:07:02 +0800
-In-Reply-To: <568C59E3.3050005@openwrt.org>
-References: <1450205301-32207-1-git-send-email-computersforpeace@gmail.com>
- <20160105022928.GF109450@google.com> <20160106000210.GJ109450@google.com>
- <568C59E3.3050005@openwrt.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+ id 1aGitq-0003WT-1n
+ for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 07:52:56 +0000
+From: Yao Yuan <yao.yuan@nxp.com>
+To: Han Xu <han.xu@freescale.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v3 1/4] mtd: spi-nor: fsl-quadspi: add big-endian support
+Date: Wed, 6 Jan 2016 07:52:31 +0000
+Message-ID: <AM2PR04MB0722319A9E6027EA76EAE81389F40@AM2PR04MB0722.eurprd04.prod.outlook.com>
+References: <1450954821-7483-1-git-send-email-yao.yuan@freescale.com>,
+ <20160104205830.GA27554@chopperman.am.freescale.net>
+In-Reply-To: <20160104205830.GA27554@chopperman.am.freescale.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,43 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2016-01-06 at 01:03 +0100, Felix Fietkau wrote:
-> On 2016-01-06 01:02, Brian Norris wrote:
-> > On Mon, Jan 04, 2016 at 06:29:28PM -0800, Brian Norris wrote:
-> >> On Tue, Dec 15, 2015 at 10:48:20AM -0800, Brian Norris wrote:
-> >> > Spansion and Winbond have occasionally used the same manufacturer ID,
-> >> > and they don't support the same features. Particularly, writing SR=0
-> >> > seems to break read access for Spansion's s25fl064k. Unfortunately, we
-> >> > don't currently have a way to differentiate these Spansion and Winbond
-> >> > parts, so rather than regressing support for these Spansion flash, let's
-> >> > drop the new Winbond lock/unlock support for now. We can try to address
-> >> > Winbond support during the next release cycle.
-> >> > 
-> >> > Original discussion:
-> >> > 
-> >> > http://patchwork.ozlabs.org/patch/549173/
-> >> > http://patchwork.ozlabs.org/patch/553683/
-> >> > 
-> >> > Fixes: 357ca38d4751 ("mtd: spi-nor: support lock/unlock/is_locked for Winbond")
-> >> > Fixes: c6fc2171b249 ("mtd: spi-nor: disable protection for Winbond flash at startup")
-> >> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> >> > Reported-by: Felix Fietkau <nbd@openwrt.org>
-> >> > Cc: Felix Fietkau <nbd@openwrt.org>
-> >> 
-> >> Felix,
-> >> 
-> >> Can I get a Tested-by? I'm going to send this for 4.4 still, if
-> >> possible.
-> > 
-> > Despite the lack of response, pushed both to linux-mtd.git, as they are
-> > obvious responses to the reported regressions/bugs.
-> Sorry for the delay, I don't have time to test that at the moment. I'll
-> try to find the time for it soon.
-> 
-> - Felix
+On Tue, Jan 05, 2015 at 04:58AM, Han Xu wrote:
+> On Thu, Dec 24, 2015 at 07:00:18PM +0800, Yuan Yao wrote:
+> > Add R/W functions for big- or little-endian registers:
+> > The qSPI controller's endian is independent of the CPU core's endian.
+> > So far, the qSPI have two versions for big-endian and little-endian.
+> >
+> > Signed-off-by: Yuan Yao <yao.yuan@nxp.com>
+> > ---
+> > Changed in v3:
+> > Update my email to <yao.yuan@nxp.com>
+> >
+> > Changed in v2:
+> > Rebase to the lastest code.
+> > ---
+> >  drivers/mtd/spi-nor/fsl-quadspi.c | 157 +++++++++++++++++++++++-------=
+--------
+> >  1 file changed, 97 insertions(+), 60 deletions(-)
+> >
+> > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fs=
+l-quadspi.c
+> > index 54640f1..04e8a93 100644
+> > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> > @@ -275,6 +275,7 @@ struct fsl_qspi {
+> >       u32 clk_rate;
+> >       unsigned int chip_base_addr; /* We may support two chips. */
+> >       bool has_second_chip;
+> > +     bool big_endian;
+> >       struct mutex lock;
+> >       struct pm_qos_request pm_qos_req;
+> >  };
+> > @@ -300,6 +301,28 @@ static inline int needs_wakeup_wait_mode(struct fs=
+l_qspi *q)
+> >  }
+> >
+> >=20
+> > @@ -954,6 +990,7 @@ static int fsl_qspi_probe(struct platform_device *p=
+dev)
+> >       if (IS_ERR(q->iobase))
+> >               return PTR_ERR(q->iobase);
+> >
+> > +     q->big_endian =3D of_property_read_bool(np, "big-endian");
 
-Hi Brain, Sorry for later reply, I have tested these patches. it works
-ok on oak-rev4. Although it does not support WP operation for Winbond
-nor flash.
+> once again, please document the new property.
 
-Bayi
+Thanks for your review.
+I have already send the patch named "Documentation: fsl-quadspi: Add option=
+al properties" to community on Dec 24.
+Sorry for forget to send this patch to you.
