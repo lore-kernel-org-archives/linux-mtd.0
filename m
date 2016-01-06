@@ -1,20 +1,21 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGpEb-0007rB-66
- for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 14:38:45 +0000
-Date: Wed, 6 Jan 2016 15:38:22 +0100
+ id 1aGpeW-0003IX-NB
+ for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 15:05:33 +0000
+Date: Wed, 6 Jan 2016 16:05:09 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org, fransklaver@gmail.com,
- Peter Pan <peterpandong@micron.com>, beanhuo@micron.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- karlzhang@micron.com
-Subject: Re: [PATCH v2 05/12] mtd: nand: use new BBT API instead of old ones
-Message-ID: <20160106153822.0ebf2e50@bbrezillon>
-In-Reply-To: <1450159178-29895-6-git-send-email-peterpandong@micron.com>
-References: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
- <1450159178-29895-6-git-send-email-peterpandong@micron.com>
+To: Archit Taneja <architt@codeaurora.org>
+Cc: computersforpeace@gmail.com, devicetree@vger.kernel.org, Rob Herring
+ <robh@kernel.org>, linux-arm-msm@vger.kernel.org, cernekee@gmail.com,
+ sboyd@codeaurora.org, linux-mtd@lists.infradead.org, dehrenberg@google.com,
+ andy.gross@linaro.org
+Subject: Re: [PATCH v5 3/3] dt/bindings: qcom_nandc: Add DT bindings
+Message-ID: <20160106160509.1fdc53bf@bbrezillon>
+In-Reply-To: <1451971501-18160-4-git-send-email-architt@codeaurora.org>
+References: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
+ <1451971501-18160-1-git-send-email-architt@codeaurora.org>
+ <1451971501-18160-4-git-send-email-architt@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,74 +28,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 Dec 2015 05:59:31 +0000
-Peter Pan <peterpansjtu@gmail.com> wrote:
+Hi Archit,
 
-> From: Brian Norris <computersforpeace@gmail.com>
+On Tue,  5 Jan 2016 10:55:01 +0530
+Archit Taneja <architt@codeaurora.org> wrote:
+
+> Add DT bindings document for the Qualcomm NAND controller driver.
 > 
-> Use new BBT APIs (nand_bbt_*()) in NAND. Keep old APIs (nand_*_bbt())
-> exist temporarily.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> [Peter: 1. use nand_bbt_markbad_factory() in docg4.c and implement
->         2. nand_create_factory_badblock_pattern(), nand_is_bad_bbm() and
->         nand_default_bbt() in nand_base.c
->         3. add NAND_BADBLOCK_PATTERN_ALLOC macro]
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> Cc: devicetree@vger.kernel.org
+> Cc: Rob Herring <robh@kernel.org>
+> Signed-off-by: Archit Taneja <architt@codeaurora.org>
 > ---
->  drivers/mtd/nand/docg4.c     |   6 +-
->  drivers/mtd/nand/nand_base.c | 140 ++++++++++++++++++++++++++++++++++++++++---
->  include/linux/mtd/nand.h     |   9 ++-
->  3 files changed, 143 insertions(+), 12 deletions(-)
+> v5:
+> - Make changes to incorporate chip select sub nodes (brcmnand taken as
+>   reference)
 > 
+> v3:
+> - Don't use '0x' when specifying nand controller address space
+> - Add optional property for on-flash bbt usage
+> 
+>  .../devicetree/bindings/mtd/qcom_nandc.txt         | 84 ++++++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> new file mode 100644
+> index 0000000..b2cf2d9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> @@ -0,0 +1,84 @@
+> +* Qualcomm NAND controller
+> +
+> +Required properties:
+> +- compatible:		should be "qcom,ebi2-nand" for IPQ806x
+> +- reg:			MMIO address range
+> +- clocks:		must contain core clock and always on clock
+> +- clock-names:		must contain "core" for the core clock and "aon" for the
+> +			always on clock
+> +- dmas:			DMA specifier, consisting of a phandle to the ADM DMA
+> +			controller node and the channel number to be used for
+> +			NAND. Refer to dma.txt and qcom_adm.txt for more details
+> +- dma-names:		must be "rxtx"
+> +- qcom,cmd-crci:	must contain the ADM command type CRCI block instance
+> +			number specified for the NAND controller on the given
+> +			platform
+> +- qcom,data-crci:	must contain the ADM data type CRCI block instance
+> +			number specified for the NAND controller on the given
+> +			platform
+> +- #address-cells:	<1> - subnodes give the chip-select number
+> +- #size-cells:		<0>
+> +
+> +* NAND chip-select
+> +
+> +Each controller may contain one or more subnodes to represent enabled
+> +chip-selects which (may) contain NAND flash chips. Their properties are as
+> +follows.
+> +
+> +Required properties:
+> +- compatible:		should contain "qcom,nandcs"
+> +- reg:			a single integer representing the chip-select
+> +			number (e.g., 0, 1, 2, etc.)
+> +- #address-cells:	see partition.txt
+> +- #size-cells:		see partition.txt
+> +- nand-ecc-strength:	number of bits to correct per ECC step. Must be 4 or 8
+> +			bits.
+> +- nand-ecc-step-size:	bytes of data per ECC step. Must be 512.
+> +
+> +Optional properties:
+> +- nand-bus-width:	bus width. Must be 8 or 16. If not present, 8 is chosen
+> +			as default
 
-[...]
-
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 5aec154..28d7a58 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-
-[...]
+You should probably reference
+Documentation/devicetree/bindings/mtd/nand.txt which is documenting
+generic nand-xxx properties.
 
 > +
-> +static int nand_default_bbt(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct nand_bbt *bbt = kzalloc(sizeof(struct nand_bbt), GFP_KERNEL);
+> +Each nandcs device node may optionally contain sub-nodes describing the flash
+> +partition mapping. See partition.txt for more detail.
 > +
-> +	if (!bbt)
-> +		return -ENOMEM;
+> +Example:
 > +
-> +	bbt->bbt_options = chip->bbt_options;
-> +	bbt->mtd = mtd;
-> +	bbt->numchips = chip->numchips;
-> +	bbt->chipsize = chip->chipsize;
-> +	bbt->chip_shift = chip->chip_shift;
-> +	bbt->bbt_erase_shift = chip->phys_erase_shift;
-> +	bbt->page_shift = chip->page_shift;
-> +	bbt->bbt_td = chip->bbt_td;
-> +	bbt->bbt_md = chip->bbt_md;
-> +	bbt->is_bad_bbm = nand_is_bad_bbm;
-> +	bbt->erase = nand_bbt_erase_block;
-> +	chip->nand_bbt = bbt;
+> +nand@1ac00000 {
+> +	compatible = "qcom,ebi2-nandc";
+> +	reg = <0x1ac00000 0x800>;
 > +
-> +	if (!chip->badblock_pattern &&
-> +		nand_create_factory_badblock_pattern(chip))
-> +		return -ENOMEM;
+> +	clocks = <&gcc EBI2_CLK>,
+> +		 <&gcc EBI2_AON_CLK>;
+> +	clock-names = "core", "aon";
 > +
-> +	return nand_bbt_init(chip->nand_bbt);
+> +	dmas = <&adm_dma 3>;
+> +	dma-names = "rxtx";
+> +	qcom,cmd-crci = <15>;
+> +	qcom,data-crci = <3>;
+> +
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	nandcs@0 {
+> +		compatible = "qcom,nandcs";
+> +		reg = <0>;
+> +
+> +		nand-ecc-strength = <4>;
+> +		nand-ecc-step-size = <512>;
+> +		nand-bus-width = <8>;
+> +
 
-I'd prefer if we could have a nand_bbt_create() (and the associated
-nand_bbt_destroy()) function that would do both the allocation and
-initialization step, but given the number of fields to set in bbt it's
-not really doable.
-Note that creating the nand_chip_info and nand_bbt_ops would reduce the
-number of parameters to pass (bbt_options, mtd, nand_chip_info,
-bbt_td, bbt_md and bbt_ops).
-Alternatively, we could create a nand_bbt_info struct that would only
-be used to pass the config parameters to nand_bbt_create().
+It's now recommended to define a 'partitions' subnode to store those
+partition nodes.
 
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +
+> +		partition@0 {
+> +			label = "boot-nand";
+> +			reg = <0 0x58a0000>;
+> +		};
+> +
+> +		partition@58a0000 {
+> +			label = "fs-nand";
+> +			reg = <0x58a0000 0x4000000>;
+> +		};
+> +	};
+> +};
+
+The rest looks good to me.
+
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Best Regards,
+
+Boris
 
 -- 
 Boris Brezillon, Free Electrons
