@@ -1,21 +1,22 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGxKu-0003HY-4k
- for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 23:17:48 +0000
-Received: by mail-pa0-x236.google.com with SMTP id cy9so242405297pac.0
- for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 15:17:27 -0800 (PST)
-Date: Wed, 6 Jan 2016 15:17:24 -0800
+ id 1aGxM1-0003d1-Vq
+ for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 23:18:58 +0000
+Received: by mail-pa0-x233.google.com with SMTP id uo6so223838860pac.1
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 15:18:37 -0800 (PST)
+Date: Wed, 6 Jan 2016 15:18:34 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Geliang Tang <geliangtang@163.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] jffs2: use to_delayed_work
-Message-ID: <20160106231724.GN109450@google.com>
-References: <87ea17d237ec636e674f8be097a7e65cbce4d252.1451656900.git.geliangtang@163.com>
+Subject: Re: [PATCH] mtd: tests: consolidate kmalloc/memset 0 call to kzalloc
+Message-ID: <20160106231834.GO109450@google.com>
+References: <1451575282-27169-1-git-send-email-hofrat@osadl.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87ea17d237ec636e674f8be097a7e65cbce4d252.1451656900.git.geliangtang@163.com>
+In-Reply-To: <1451575282-27169-1-git-send-email-hofrat@osadl.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,9 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 01, 2016 at 10:06:27PM +0800, Geliang Tang wrote:
-> Use to_delayed_work() instead of open-coding it.
+On Thu, Dec 31, 2015 at 04:21:22PM +0100, Nicholas Mc Guire wrote:
+> This is an API consolidation only. The use of kmalloc + memset to 0
+> is equivalent to kzalloc.
 > 
-> Signed-off-by: Geliang Tang <geliangtang@163.com>
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 
 Applied to l2-mtd.git
