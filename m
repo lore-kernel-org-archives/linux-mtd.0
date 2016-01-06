@@ -1,23 +1,24 @@
-Received: from mail.kernel.org ([198.145.29.136])
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGpnp-0006k5-6z
- for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 15:15:09 +0000
-Date: Wed, 6 Jan 2016 09:14:44 -0600
-From: Rob Herring <robh@kernel.org>
-To: Archit Taneja <architt@codeaurora.org>
-Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- linux-mtd@lists.infradead.org, cernekee@gmail.com,
- sboyd@codeaurora.org, andy.gross@linaro.org, dehrenberg@google.com,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] dt/bindings: qcom_nandc: Add DT bindings
-Message-ID: <20160106151444.GA4131@rob-hp-laptop>
-References: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
- <1451971501-18160-1-git-send-email-architt@codeaurora.org>
- <1451971501-18160-4-git-send-email-architt@codeaurora.org>
+ id 1aGppa-0008GC-15
+ for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 15:16:59 +0000
+Date: Wed, 6 Jan 2016 16:16:35 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Peter Pan <peterpansjtu@gmail.com>
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org, fransklaver@gmail.com,
+ Peter Pan <peterpandong@micron.com>, beanhuo@micron.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ karlzhang@micron.com
+Subject: Re: [PATCH v2 08/12] mtd: nand_bbt: remove struct nand_chip from
+ nand_bbt.c
+Message-ID: <20160106161635.61b5400f@bbrezillon>
+In-Reply-To: <1450159178-29895-9-git-send-email-peterpandong@micron.com>
+References: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
+ <1450159178-29895-9-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451971501-18160-4-git-send-email-architt@codeaurora.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,79 +28,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 05, 2016 at 10:55:01AM +0530, Archit Taneja wrote:
-> Add DT bindings document for the Qualcomm NAND controller driver.
+On Tue, 15 Dec 2015 05:59:34 +0000
+Peter Pan <peterpansjtu@gmail.com> wrote:
+
+> From: Brian Norris <computersforpeace@gmail.com>
 > 
-> Cc: devicetree@vger.kernel.org
-> Cc: Rob Herring <robh@kernel.org>
-> Signed-off-by: Archit Taneja <architt@codeaurora.org>
+> This commit contains most of modification. But the job is quite
+> simple --- replace struct nand_chip with struct nand_bbt. There
+> is no algorithm change, just replacement.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
 > ---
-> v5:
-> - Make changes to incorporate chip select sub nodes (brcmnand taken as
->   reference)
+>  drivers/mtd/nand/nand_bbt.c | 391 ++++++++++++++++++++++----------------------
+>  1 file changed, 193 insertions(+), 198 deletions(-)
 > 
-> v3:
-> - Don't use '0x' when specifying nand controller address space
-> - Add optional property for on-flash bbt usage
-> 
->  .../devicetree/bindings/mtd/qcom_nandc.txt         | 84 ++++++++++++++++++++++
->  1 file changed, 84 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> new file mode 100644
-> index 0000000..b2cf2d9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> @@ -0,0 +1,84 @@
-> +* Qualcomm NAND controller
-> +
-> +Required properties:
-> +- compatible:		should be "qcom,ebi2-nand" for IPQ806x
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index a5c8ab5..b46b4ae 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
 
-More specific name please.
+[...]
 
-> +- reg:			MMIO address range
-> +- clocks:		must contain core clock and always on clock
-> +- clock-names:		must contain "core" for the core clock and "aon" for the
-> +			always on clock
-> +- dmas:			DMA specifier, consisting of a phandle to the ADM DMA
-> +			controller node and the channel number to be used for
-> +			NAND. Refer to dma.txt and qcom_adm.txt for more details
-> +- dma-names:		must be "rxtx"
-> +- qcom,cmd-crci:	must contain the ADM command type CRCI block instance
-> +			number specified for the NAND controller on the given
-> +			platform
-> +- qcom,data-crci:	must contain the ADM data type CRCI block instance
-> +			number specified for the NAND controller on the given
-> +			platform
-> +- #address-cells:	<1> - subnodes give the chip-select number
-> +- #size-cells:		<0>
-> +
-> +* NAND chip-select
-> +
-> +Each controller may contain one or more subnodes to represent enabled
-> +chip-selects which (may) contain NAND flash chips. Their properties are as
-> +follows.
-> +
-> +Required properties:
-> +- compatible:		should contain "qcom,nandcs"
-> +- reg:			a single integer representing the chip-select
-> +			number (e.g., 0, 1, 2, etc.)
-> +- #address-cells:	see partition.txt
-> +- #size-cells:		see partition.txt
-> +- nand-ecc-strength:	number of bits to correct per ECC step. Must be 4 or 8
-> +			bits.
-> +- nand-ecc-step-size:	bytes of data per ECC step. Must be 512.
-> +
-> +Optional properties:
-> +- nand-bus-width:	bus width. Must be 8 or 16. If not present, 8 is chosen
-> +			as default
-> +
-> +Each nandcs device node may optionally contain sub-nodes describing the flash
-> +partition mapping. See partition.txt for more detail.
+>  /**
+>   * nand_scan_bbt - [NAND Interface] scan, find, read and maybe create bad block table(s)
+> - * @mtd: MTD device structure
+> + * @bbt: NAND BBT structure
+>   *
+>   * The function checks, if a bad block table(s) is/are already available. If
+>   * not it scans the device for manufacturer marked good / bad blocks and writes
+> @@ -1000,21 +1000,21 @@ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+>   * The bad block table memory is allocated here. It must be freed by calling
+>   * the nand_free_bbt function.
+>   */
+> -static int nand_scan_bbt(struct mtd_info *mtd)
+> +static int nand_scan_bbt(struct nand_bbt *bbt)
+>  {
+> -	struct nand_chip *this = mtd_to_nand(mtd);
+> -	int len, res;
+> +	struct mtd_info *mtd = bbt->mtd;
+> +	int len, res = 0;
+>  	uint8_t *buf;
+> -	struct nand_bbt_descr *td = this->bbt_td;
+> -	struct nand_bbt_descr *md = this->bbt_md;
+> +	struct nand_bbt_descr *td = bbt->bbt_td;
+> +	struct nand_bbt_descr *md = bbt->bbt_md;
+>  
+>  	len = (mtd->size >> (this->bbt_erase_shift + 2)) ? : 1;
 
-Can't the partitioning span across chip selects? After all, interleaving 
-is how you get high performance.
+'this' is gone, which generates a compilation error.
 
-Rob
+	len = (mtd->size >> (bbt->bbt_erase_shift + 2)) ? : 1;
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
