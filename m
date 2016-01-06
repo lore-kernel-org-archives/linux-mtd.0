@@ -1,24 +1,29 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGqAC-0007vR-FT
- for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 15:38:17 +0000
-Date: Wed, 6 Jan 2016 16:37:53 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Archit Taneja <architt@codeaurora.org>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, cernekee@gmail.com, sboyd@codeaurora.org,
- andy.gross@linaro.org, dehrenberg@google.com,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] dt/bindings: qcom_nandc: Add DT bindings
-Message-ID: <20160106163753.68f93f67@bbrezillon>
-In-Reply-To: <20160106151444.GA4131@rob-hp-laptop>
-References: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
- <1451971501-18160-1-git-send-email-architt@codeaurora.org>
- <1451971501-18160-4-git-send-email-architt@codeaurora.org>
- <20160106151444.GA4131@rob-hp-laptop>
+Received: from mail-bl2on0065.outbound.protection.outlook.com ([65.55.169.65]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aGqVM-00020J-8J
+ for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 16:00:10 +0000
+Subject: Re: [dm-devel] [PATCH 01/35] block/fs/drivers: remove rw argument
+ from submit_bio
+To: device-mapper development <dm-devel@redhat.com>,
+ <linux-f2fs-devel@lists.sourceforge.net>, <linux-ext4@vger.kernel.org>,
+ <konrad.wilk@oracle.com>, <drbd-dev@lists.linbit.com>,
+ <philipp.reisner@linbit.com>, <lars.ellenberg@linbit.com>,
+ <linux-raid@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+ <linux-bcache@vger.kernel.org>, <linux-block@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <target-devel@vger.kernel.org>,
+ <linux-btrfs@vger.kernel.org>, <osd-dev@open-osd.org>, <xfs@oss.sgi.com>,
+ <ocfs2-devel@oss.oracle.com>
+References: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
+ <1452027218-32303-2-git-send-email-mchristi@redhat.com>
+CC: Mike Christie <mchristi@redhat.com>
+From: Bart Van Assche <bart.vanassche@sandisk.com>
+Message-ID: <568D39DE.2060709@sandisk.com>
+Date: Wed, 6 Jan 2016 16:59:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1452027218-32303-2-git-send-email-mchristi@redhat.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,99 +34,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 6 Jan 2016 09:14:44 -0600
-Rob Herring <robh@kernel.org> wrote:
+On 01/05/2016 09:53 PM, mchristi@redhat.com wrote:
+> From: Mike Christie <mchristi@redhat.com>
+>
+> This has callers of submit_bio/submit_bio_wait set the bio->bi_rw
+> instead of passing it in. This makes that use the same as
+> generic_make_request and how we set the other bio fields.
 
-> On Tue, Jan 05, 2016 at 10:55:01AM +0530, Archit Taneja wrote:
-> > Add DT bindings document for the Qualcomm NAND controller driver.
-> > 
-> > Cc: devicetree@vger.kernel.org
-> > Cc: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Archit Taneja <architt@codeaurora.org>
-> > ---
-> > v5:
-> > - Make changes to incorporate chip select sub nodes (brcmnand taken as
-> >   reference)
-> > 
-> > v3:
-> > - Don't use '0x' when specifying nand controller address space
-> > - Add optional property for on-flash bbt usage
-> > 
-> >  .../devicetree/bindings/mtd/qcom_nandc.txt         | 84 ++++++++++++++++++++++
-> >  1 file changed, 84 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> > new file mode 100644
-> > index 0000000..b2cf2d9
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> > @@ -0,0 +1,84 @@
-> > +* Qualcomm NAND controller
-> > +
-> > +Required properties:
-> > +- compatible:		should be "qcom,ebi2-nand" for IPQ806x
-> 
-> More specific name please.
-> 
-> > +- reg:			MMIO address range
-> > +- clocks:		must contain core clock and always on clock
-> > +- clock-names:		must contain "core" for the core clock and "aon" for the
-> > +			always on clock
-> > +- dmas:			DMA specifier, consisting of a phandle to the ADM DMA
-> > +			controller node and the channel number to be used for
-> > +			NAND. Refer to dma.txt and qcom_adm.txt for more details
-> > +- dma-names:		must be "rxtx"
-> > +- qcom,cmd-crci:	must contain the ADM command type CRCI block instance
-> > +			number specified for the NAND controller on the given
-> > +			platform
-> > +- qcom,data-crci:	must contain the ADM data type CRCI block instance
-> > +			number specified for the NAND controller on the given
-> > +			platform
-> > +- #address-cells:	<1> - subnodes give the chip-select number
-> > +- #size-cells:		<0>
-> > +
-> > +* NAND chip-select
-> > +
-> > +Each controller may contain one or more subnodes to represent enabled
-> > +chip-selects which (may) contain NAND flash chips. Their properties are as
-> > +follows.
-> > +
-> > +Required properties:
-> > +- compatible:		should contain "qcom,nandcs"
-> > +- reg:			a single integer representing the chip-select
-> > +			number (e.g., 0, 1, 2, etc.)
-> > +- #address-cells:	see partition.txt
-> > +- #size-cells:		see partition.txt
-> > +- nand-ecc-strength:	number of bits to correct per ECC step. Must be 4 or 8
-> > +			bits.
-> > +- nand-ecc-step-size:	bytes of data per ECC step. Must be 512.
-> > +
-> > +Optional properties:
-> > +- nand-bus-width:	bus width. Must be 8 or 16. If not present, 8 is chosen
-> > +			as default
-> > +
-> > +Each nandcs device node may optionally contain sub-nodes describing the flash
-> > +partition mapping. See partition.txt for more detail.
-> 
-> Can't the partitioning span across chip selects? After all, interleaving 
-> is how you get high performance.
-
-Hm, defining aggregated mtd devices in the DT is not supported, and
-since, as I've been told many times ;), DT is supposed to represent the
-HW not what we want to do with it, I'm not sure that's such a good idea.
-
-Note that the infrastructure to concatenate several MTD devices
-already exists, but it's not used by the NAND layer.
-
-Also note that some NAND chips embed several dies and expose multiple
-CS lines. The NAND framework already supports assigning different CS
-lines to a single NAND device, so you could abuse this feature and
-expose your different NAND devices as a single one (that will only work
-for a cluster of identical chips connected to the same controller), but
-I'd really like to avoid this kind of things.
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Reviewed-by: Bart Van Assche <bart.vanassche@sandisk.com>
