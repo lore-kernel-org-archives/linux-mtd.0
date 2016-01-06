@@ -1,24 +1,31 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGoT0-0003T6-RQ
- for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 13:49:35 +0000
-Date: Wed, 6 Jan 2016 14:49:12 +0100
+ id 1aGp5t-0004aF-9I
+ for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 14:29:46 +0000
+Date: Wed, 6 Jan 2016 15:29:22 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org, fransklaver@gmail.com,
- Peter Pan <peterpandong@micron.com>, beanhuo@micron.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- karlzhang@micron.com
-Subject: Re: [PATCH v2 06/12] mtd: nand_bbt: use erase() and is_bad_bbm()
- hook in BBT
-Message-ID: <20160106144912.3f7c5475@bbrezillon>
-In-Reply-To: <1450159178-29895-7-git-send-email-peterpandong@micron.com>
+To: =?UTF-8?B?5r2Y5qCL?= <peterpansjtu@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Peter Pan
+ <peterpandong@micron.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Ezequiel Garcia
+ <ezequiel@vanguardiasur.com.ar>, karlzhang@micron.com, Frans Klaver
+ <fransklaver@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ beanhuo@micron.com
+Subject: Re: [PATCH v2 00/12] mtd: nand_bbt: introduce independent nand BBT
+Message-ID: <20160106152922.0f08a94c@bbrezillon>
+In-Reply-To: <20151230093106.6b1ee118@bbrezillon>
 References: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
- <1450159178-29895-7-git-send-email-peterpandong@micron.com>
+ <CAAEAJfC4YWVC=WWTBnKrnNZypC+CKR+D59+LY7j-haTch4yevA@mail.gmail.com>
+ <20151229103519.31ccaf5c@bbrezillon>
+ <CAAEAJfAV_Nfm81nSEpQRyx=hcW8R-dK6_SJdGDQ_JQK5zu1jpw@mail.gmail.com>
+ <20151229161156.77060900@bbrezillon>
+ <CAAyFOR+J1VG9tZdahP=z=yth_om0O_58HH1BVScP3-rvsQj+VA@mail.gmail.com>
+ <20151230093106.6b1ee118@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,109 +35,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 Dec 2015 05:59:32 +0000
-Peter Pan <peterpansjtu@gmail.com> wrote:
+On Wed, 30 Dec 2015 09:31:06 +0100
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> From: Brian Norris <computersforpeace@gmail.com>
-> 
-> Since NAND already create its nand_bbt struct, we can use erase()
-> hook instead of call nand_erase_nand() directly. Also, we can use
-> is_bad_bbm() to avoid passing badblock_pattern to BBT.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> [Peter: remove @buf in create_bbt()]
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> ---
->  drivers/mtd/nand/nand_bbt.c | 138 ++++----------------------------------------
->  1 file changed, 12 insertions(+), 126 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-> index f256be1..a5c8ab5 100644
-> --- a/drivers/mtd/nand/nand_bbt.c
-> +++ b/drivers/mtd/nand/nand_bbt.c
-> @@ -122,23 +122,6 @@ static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_desc
->  }
+> Hi Peter,
+>=20
+> On Wed, 30 Dec 2015 15:18:39 +0800
+> =E6=BD=98=E6=A0=8B <peterpansjtu@gmail.com> wrote:
+>=20
+> > Hi Boris and Ezequiel,
+> >=20
+> > 2015-12-29 23:11 GMT+08:00 Boris Brezillon <boris.brezillon@free-electr=
+ons.com>:
+> > > On Tue, 29 Dec 2015 12:07:50 -0300
+> > > Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+> > >
+> > >> On 29 December 2015 at 06:35, Boris Brezillon
+> > >> <boris.brezillon@free-electrons.com> wrote:
+> > >> > Hi,
+> > >> >
+> > >> > On Mon, 28 Dec 2015 17:42:50 -0300
+> > >> > Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+> > >> >
+> > >> >> This is looking a lot better, thanks for the good work!
+> > >> >>
+> > >> >> On 15 December 2015 at 02:59, Peter Pan <peterpansjtu@gmail.com> =
+wrote:
+> > >> >> > Currently nand_bbt.c is tied with struct nand_chip, and it make=
+s other
+> > >> >> > NAND family chips hard to use nand_bbt.c. Maybe it's the reason=
+ why
+> > >> >> > onenand has own bbt(onenand_bbt.c).
+> > >> >> >
+> > >> >> > Separate struct nand_chip from BBT code can make current BBT sh=
+areable.
+> > >> >> > We create struct nand_bbt to take place of nand_chip in nand_bb=
+t.c.
+> > >> >> > Struct nand_bbt contains all the information BBT needed from ou=
+tside and
+> > >> >> > it should be embedded into NAND family chip struct (such as str=
+uct nand_chip).
+> > >> >> > NAND family driver should allocate, initialize and free struct =
+nand_bbt.
+> > >> >> >
+> > >> >> > Below is mtd folder structure we want:
+> > >> >> >         mtd
+> > >> >> >         =E2=94=9C=E2=94=80=E2=94=80 Kconfig
+> > >> >> >         =E2=94=9C=E2=94=80=E2=94=80 Makefile
+> > >> >> >         =E2=94=9C=E2=94=80=E2=94=80 ...
+> > >> >> >         =E2=94=9C=E2=94=80=E2=94=80 nand_bbt.c
+> > >> >>
+> > >> >> Hm.. I'm not sure about having nand_bbt.c in drivers/mtd.
+> > >> >> What's wrong with drivers/mtd/nand ?
+> > >> >
+> > >> > I haven't reviewed the series yet, but I agree. If the BBT code is=
+ only
+> > >> > meant to be used on NAND based devices, it should probably stay in
+> > >> > drivers/mtd/nand.
+> > >> >
+> > >> >>
+> > >> >> In fact, I  was thinking we could go further and clean up the dir=
+ectories a bit
+> > >> >> by separating core code, from controllers code, from SPI NAND cod=
+e:
+> > >> >>
+> > >> >> drivers/mtd/nand/
+> > >> >> drivers/mtd/nand/controllers
+> > >> >> drivers/mtd/nand/spi
+> > >> >>
+> > >> >> Makes any sense?
+> > >> >
+> > >> > Actually I had the secret plan of moving all (raw) NAND controller
+> > >> > drivers into the drivers/mtd/nand/controllers directory, though th=
+is
+> > >> > was for a different reason: I'd like to create another directory f=
+or
+> > >> > manufacturer specific code in order to support some advanced featu=
+res
+> > >> > on NANDs that do not implement (or only partially implement) the O=
+NFI
+> > >> > standard.
+> > >> >
+> > >> > The separation you're talking about here is more related to the
+> > >> > interface used to communicate with the NAND chip.
+> > >> >
+> > >> > How about using the following hierarchy?
+> > >> >
+> > >> > drivers/mtd/nand/<nand-core-code>
+> > >> > drivers/mtd/nand/interfaces/raw/<raw-nand-core-code>
+> > >> > drivers/mtd/nand/interfaces/raw/controllers/<raw-nand-controller-d=
+rivers>
+> > >> > drivers/mtd/nand/interfaces/spi/<spi-nand-code>
+> > >> > drivers/mtd/nand/interfaces/onenand/<onenand-code>
+> > >> > drivers/mtd/nand/chips/<manufacturer-spcific-code>
+> > >> >
+> > >> > What do you think?
+> > >> >
+> > >>
+> > >> I believe we are bikeshedding here, but what the heck.
+> > >>
+> > >> That seems too involved. A simpler hierarchy could be clear enough,
+> > >> and seems to follow what other subsystems do:
+> > >>
+> > >> drivers/mtd/nand/<all-nand-core-code>
+> > >> drivers/mtd/nand/raw/<raw-nand-controller-drivers>
+> > >
+> > > And probably some common logic in there too.
+> > >
+> > >> drivers/mtd/nand/spi/<spi-nand-code>
+> > >> drivers/mtd/nand/onenand/<onenand-code>
+> > >> drivers/mtd/nand/chips/<manufacturer-spcific-code>
+> > >>
+> > >
+> > > I'm fine with this one too ;-).
+> >=20
+> > I'm fine with this structure too. drivers/mtd/nand folder becomes top f=
+older for
+> > all NAND based devices. Because (raw)NAND, SPI-NAND and ONENAND have
+> > different command set and feature, each has its own core - nand_base.c
+> > spi-nand-base.c
+> > and onenand_base.c. So maybe it'll take a lot effort to abstract a
+> > all-nand-core-code
+> > (of course BBT should be one of them). What's your opinion?
+>=20
+> Absolutely, that was the idea: move everything into the
+> drivers/mtd/nand directory (with the structure described above), keep
+> some specific logic for each interface type, and see if we can factor
+> out some common code (I noticed that SPI NAND devices have a parameter
+> page which looks similar to the one exposed by ONFI compliant devices,
+> except this parameter page is retrieved using a different command, the
+> same goes for the ->{set,get}_features() functions).
+> But let's focus on the nand_bbt code for now.
+>=20
+> >=20
+> > Also, please review the BBT patch if you have time. I think it's
+> > helpful on the new NAND code
+> > hierarchy.
+>=20
+> I'll try to review it this week.
 
-[...]
-
->  /**
->   * create_bbt - [GENERIC] Create a bad block table by scanning the device
->   * @mtd: MTD device structure
-> - * @buf: temporary buffer
-> - * @bd: descriptor for the good/bad block search pattern
->   * @chip: create the table for a specific chip, -1 read all chips; applies only
->   *        if NAND_BBT_PERCHIP option is set
->   *
->   * Create a bad block table by scanning the device for the given good/bad block
->   * identify pattern.
->   */
-> -static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
-> -	struct nand_bbt_descr *bd, int chip)
-> +static int create_bbt(struct mtd_info *mtd, int chip)
->  {
->  	struct nand_chip *this = mtd_to_nand(mtd);
-> -	int i, numblocks, numpages;
-> -	int startblock;
-> +	int i, startblock, numblocks;
->  	loff_t from;
->  
->  	pr_info("Scanning device for bad blocks\n");
->  
-> -	if (bd->options & NAND_BBT_SCAN2NDPAGE)
-> -		numpages = 2;
-> -	else
-> -		numpages = 1;
-> -
->  	if (chip == -1) {
->  		numblocks = mtd->size >> this->bbt_erase_shift;
->  		startblock = 0;
-> @@ -482,15 +425,10 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
->  		from = (loff_t)startblock << this->bbt_erase_shift;
->  	}
->  
-> -	if (this->bbt_options & NAND_BBT_SCANLASTPAGE)
-> -		from += mtd->erasesize - (mtd->writesize * numpages);
-> -
->  	for (i = startblock; i < numblocks; i++) {
->  		int ret;
->  
-> -		BUG_ON(bd->options & NAND_BBT_NO_OOB);
-> -
-> -		ret = scan_block_fast(mtd, bd, from, buf, numpages);
-> +		ret = this->nand_bbt->is_bad_bbm(mtd, from);
-
-Same comment as for the previous patch: I think it would be safer to
-create a wrapper function to do that.
-
->  		if (ret < 0)
->  			return ret;
->  
-> @@ -619,7 +557,6 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
->  		     int chipsel)
->  {
->  	struct nand_chip *this = mtd_to_nand(mtd);
-> -	struct erase_info einfo;
->  	int i, res, chip = 0;
->  	int bits, startblock, dir, page, offs, numblocks, sft, sftmsk;
->  	int nrchips, pageoffs, ooboffs;
-> @@ -782,11 +719,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
->  			buf[offs + (i >> sft)] &= ~(msk[dat] << sftcnt);
->  		}
->  
-> -		memset(&einfo, 0, sizeof(einfo));
-> -		einfo.mtd = mtd;
-> -		einfo.addr = to;
-> -		einfo.len = 1 << this->bbt_erase_shift;
-> -		res = nand_erase_nand(mtd, &einfo, 1);
-> +		res = this->nand_bbt->erase(mtd, to);
-
-Ditto.
+I'm a bit late, but I think I've reviewed most of it now.
 
 
-
-
-
--- 
+--=20
 Boris Brezillon, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
