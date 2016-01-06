@@ -1,20 +1,22 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGpv4-0001pB-Ml
- for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 15:22:39 +0000
-Date: Wed, 6 Jan 2016 16:22:16 +0100
+ id 1aGqAC-0007vR-FT
+ for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 15:38:17 +0000
+Date: Wed, 6 Jan 2016 16:37:53 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org, fransklaver@gmail.com,
- Peter Pan <peterpandong@micron.com>, beanhuo@micron.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- karlzhang@micron.com
-Subject: Re: [PATCH v2 05/12] mtd: nand: use new BBT API instead of old ones
-Message-ID: <20160106162216.617f0811@bbrezillon>
-In-Reply-To: <1450159178-29895-6-git-send-email-peterpandong@micron.com>
-References: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
- <1450159178-29895-6-git-send-email-peterpandong@micron.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Archit Taneja <architt@codeaurora.org>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, cernekee@gmail.com, sboyd@codeaurora.org,
+ andy.gross@linaro.org, dehrenberg@google.com,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] dt/bindings: qcom_nandc: Add DT bindings
+Message-ID: <20160106163753.68f93f67@bbrezillon>
+In-Reply-To: <20160106151444.GA4131@rob-hp-laptop>
+References: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
+ <1451971501-18160-1-git-send-email-architt@codeaurora.org>
+ <1451971501-18160-4-git-send-email-architt@codeaurora.org>
+ <20160106151444.GA4131@rob-hp-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,159 +29,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 Dec 2015 05:59:31 +0000
-Peter Pan <peterpansjtu@gmail.com> wrote:
+On Wed, 6 Jan 2016 09:14:44 -0600
+Rob Herring <robh@kernel.org> wrote:
 
-> From: Brian Norris <computersforpeace@gmail.com>
+> On Tue, Jan 05, 2016 at 10:55:01AM +0530, Archit Taneja wrote:
+> > Add DT bindings document for the Qualcomm NAND controller driver.
+> > 
+> > Cc: devicetree@vger.kernel.org
+> > Cc: Rob Herring <robh@kernel.org>
+> > Signed-off-by: Archit Taneja <architt@codeaurora.org>
+> > ---
+> > v5:
+> > - Make changes to incorporate chip select sub nodes (brcmnand taken as
+> >   reference)
+> > 
+> > v3:
+> > - Don't use '0x' when specifying nand controller address space
+> > - Add optional property for on-flash bbt usage
+> > 
+> >  .../devicetree/bindings/mtd/qcom_nandc.txt         | 84 ++++++++++++++++++++++
+> >  1 file changed, 84 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> > new file mode 100644
+> > index 0000000..b2cf2d9
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> > @@ -0,0 +1,84 @@
+> > +* Qualcomm NAND controller
+> > +
+> > +Required properties:
+> > +- compatible:		should be "qcom,ebi2-nand" for IPQ806x
 > 
-> Use new BBT APIs (nand_bbt_*()) in NAND. Keep old APIs (nand_*_bbt())
-> exist temporarily.
+> More specific name please.
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> [Peter: 1. use nand_bbt_markbad_factory() in docg4.c and implement
->         2. nand_create_factory_badblock_pattern(), nand_is_bad_bbm() and
->         nand_default_bbt() in nand_base.c
->         3. add NAND_BADBLOCK_PATTERN_ALLOC macro]
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> ---
->  drivers/mtd/nand/docg4.c     |   6 +-
->  drivers/mtd/nand/nand_base.c | 140 ++++++++++++++++++++++++++++++++++++++++---
->  include/linux/mtd/nand.h     |   9 ++-
->  3 files changed, 143 insertions(+), 12 deletions(-)
+> > +- reg:			MMIO address range
+> > +- clocks:		must contain core clock and always on clock
+> > +- clock-names:		must contain "core" for the core clock and "aon" for the
+> > +			always on clock
+> > +- dmas:			DMA specifier, consisting of a phandle to the ADM DMA
+> > +			controller node and the channel number to be used for
+> > +			NAND. Refer to dma.txt and qcom_adm.txt for more details
+> > +- dma-names:		must be "rxtx"
+> > +- qcom,cmd-crci:	must contain the ADM command type CRCI block instance
+> > +			number specified for the NAND controller on the given
+> > +			platform
+> > +- qcom,data-crci:	must contain the ADM data type CRCI block instance
+> > +			number specified for the NAND controller on the given
+> > +			platform
+> > +- #address-cells:	<1> - subnodes give the chip-select number
+> > +- #size-cells:		<0>
+> > +
+> > +* NAND chip-select
+> > +
+> > +Each controller may contain one or more subnodes to represent enabled
+> > +chip-selects which (may) contain NAND flash chips. Their properties are as
+> > +follows.
+> > +
+> > +Required properties:
+> > +- compatible:		should contain "qcom,nandcs"
+> > +- reg:			a single integer representing the chip-select
+> > +			number (e.g., 0, 1, 2, etc.)
+> > +- #address-cells:	see partition.txt
+> > +- #size-cells:		see partition.txt
+> > +- nand-ecc-strength:	number of bits to correct per ECC step. Must be 4 or 8
+> > +			bits.
+> > +- nand-ecc-step-size:	bytes of data per ECC step. Must be 512.
+> > +
+> > +Optional properties:
+> > +- nand-bus-width:	bus width. Must be 8 or 16. If not present, 8 is chosen
+> > +			as default
+> > +
+> > +Each nandcs device node may optionally contain sub-nodes describing the flash
+> > +partition mapping. See partition.txt for more detail.
 > 
-> diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-> index da93d7f..1be7fa2 100644
-> --- a/drivers/mtd/nand/docg4.c
-> +++ b/drivers/mtd/nand/docg4.c
-> @@ -1037,7 +1037,7 @@ static int __init read_factory_bbt(struct mtd_info *mtd)
->  	 * operation after device power-up.  The above read ensures it never is.
->  	 * Ugly, I know.
->  	 */
-> -	if (nand->bbt == NULL)  /* no memory-based bbt */
-> +	if (nand->nand_bbt == NULL)  /* no memory-based bbt */
->  		goto exit;
->  
->  	if (mtd->ecc_stats.failed > eccfailed_stats) {
-> @@ -1064,8 +1064,8 @@ static int __init read_factory_bbt(struct mtd_info *mtd)
->  		unsigned long bits = ~buf[i];
->  		for_each_set_bit(bitnum, &bits, 8) {
->  			int badblock = block + 7 - bitnum;
-> -			nand->bbt[badblock / 4] |=
-> -				0x03 << ((badblock % 4) * 2);
-> +			nand_bbt_markbad_factory(nand->nand_bbt,
-> +					badblock << nand->bbt_erase_shift);
->  			mtd->ecc_stats.badblocks++;
->  			dev_notice(doc->dev, "factory-marked bad block: %d\n",
->  				   badblock);
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 5aec154..28d7a58 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
+> Can't the partitioning span across chip selects? After all, interleaving 
+> is how you get high performance.
 
-[...]
+Hm, defining aggregated mtd devices in the DT is not supported, and
+since, as I've been told many times ;), DT is supposed to represent the
+HW not what we want to do with it, I'm not sure that's such a good idea.
 
->  
-> +/* NAND BBT helper - erase a block, including reserved blocks */
-> +static int nand_bbt_erase_block(struct mtd_info *mtd, loff_t addr)
-> +{
-> +	struct erase_info einfo;
-> +	struct nand_chip *chip = mtd->priv;
+Note that the infrastructure to concatenate several MTD devices
+already exists, but it's not used by the NAND layer.
 
-nand_chip backpointer is no longer stored in mtd->priv (nand_chip now
-embeds its own mtd_info field and we use the container_of trick to
-retrieve the nand_chip pointer from the mtd_info pointer).
-
-	struct nand_chip *chip = mtd_to_nand(mtd);
-
-> +
-> +	memset(&einfo, 0, sizeof(einfo));
-> +	einfo.mtd = mtd;
-> +	einfo.addr = addr;
-> +	einfo.len = 1ULL << chip->phys_erase_shift;
-> +
-> +	return nand_erase_nand(mtd, &einfo, 1);
-> +}
-> +
-
-[...]
-
-> +static int nand_is_bad_bbm(struct mtd_info *mtd, loff_t addr)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-
-	struct nand_chip *chip = mtd_to_nand(mtd);
-
-> +	struct mtd_oob_ops ops;
-> +	struct nand_bbt_descr *bd = chip->badblock_pattern;
-> +	int j, ret;
-> +	int numpages;
-> +
-> +	if (bd->options & NAND_BBT_SCAN2NDPAGE)
-> +		numpages = 2;
-> +	else
-> +		numpages = 1;
-> +
-> +	if (bd->options & NAND_BBT_SCANLASTPAGE)
-> +		addr += mtd->erasesize - (mtd->writesize * numpages);
-> +
-> +	ops.ooblen = mtd->oobsize;
-> +	ops.oobbuf = chip->buffers->databuf;
-> +	ops.ooboffs = 0;
-> +	ops.datbuf = NULL;
-> +	ops.mode = MTD_OPS_PLACE_OOB;
-> +
-> +	for (j = 0; j < numpages; j++) {
-> +		/*
-> +		 * Read the full oob until read_oob is fixed to handle single
-> +		 * byte reads for 16 bit buswidth.
-> +		 */
-> +		ret = nand_do_read_oob(mtd, addr, &ops);
-> +		/* Ignore ECC errors when checking for BBM */
-> +		if (ret && !mtd_is_bitflip_or_eccerr(ret))
-> +			return ret;
-> +
-> +		if (memcmp(chip->buffers->databuf + bd->offs,
-> +				bd->pattern, bd->len))
-> +			return 1;
-> +
-> +		addr += mtd->writesize;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int nand_default_bbt(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-
-	struct nand_chip *chip = mtd_to_nand(mtd);
-
-> +	struct nand_bbt *bbt = kzalloc(sizeof(struct nand_bbt), GFP_KERNEL);
-> +
-> +	if (!bbt)
-> +		return -ENOMEM;
-> +
-> +	bbt->bbt_options = chip->bbt_options;
-> +	bbt->mtd = mtd;
-> +	bbt->numchips = chip->numchips;
-> +	bbt->chipsize = chip->chipsize;
-> +	bbt->chip_shift = chip->chip_shift;
-> +	bbt->bbt_erase_shift = chip->phys_erase_shift;
-> +	bbt->page_shift = chip->page_shift;
-> +	bbt->bbt_td = chip->bbt_td;
-> +	bbt->bbt_md = chip->bbt_md;
-> +	bbt->is_bad_bbm = nand_is_bad_bbm;
-> +	bbt->erase = nand_bbt_erase_block;
-> +	chip->nand_bbt = bbt;
-> +
-> +	if (!chip->badblock_pattern &&
-> +		nand_create_factory_badblock_pattern(chip))
-> +		return -ENOMEM;
-> +
-> +	return nand_bbt_init(chip->nand_bbt);
-> +}
-
-
+Also note that some NAND chips embed several dies and expose multiple
+CS lines. The NAND framework already supports assigning different CS
+lines to a single NAND device, so you could abuse this feature and
+expose your different NAND devices as a single one (that will only work
+for a cluster of identical chips connected to the same controller), but
+I'd really like to avoid this kind of things.
 
 -- 
 Boris Brezillon, Free Electrons
