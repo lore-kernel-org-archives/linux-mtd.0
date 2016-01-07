@@ -1,22 +1,16 @@
-Date: Thu, 7 Jan 2016 10:27:09 -0800
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aHFtz-0005jT-1Z
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 19:07:15 +0000
+Received: by mail-pa0-x22e.google.com with SMTP id yy13so172888037pab.3
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 11:06:54 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 55/58] mtd: nand: add helpers to access ->priv
-Message-ID: <20160107182709.GA79906@google.com>
-References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
- <1449734442-18672-56-git-send-email-boris.brezillon@free-electrons.com>
- <20151218221758.GQ10460@google.com>
- <20151219040124.7ffe4274@bbrezillon>
- <20160106231323.GM109450@google.com>
- <20160107155237.7271aa7e@bbrezillon>
- <20160107171700.GE109450@google.com>
- <20160107182140.02111dc1@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160107182140.02111dc1@bbrezillon>
+To: <linux-mtd@lists.infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: nandsim: use nand_get_controller_data()
+Date: Thu,  7 Jan 2016 11:06:46 -0800
+Message-Id: <1452193606-96031-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +20,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Re-constructing CC list)
+Commit d699ed250c07 ("mtd: nand: make use of
+nand_set/get_controller_data() helpers") overlooked some uses of
+nand_chip::priv.
 
-On Thu, Jan 07, 2016 at 06:21:40PM +0100, Boris Brezillon wrote:
-> On Thu, 7 Jan 2016 09:17:00 -0800
-> Brian Norris <computersforpeace@gmail.com> wrote:
-> > So are these last few patches still applicable as-is, or should I await
-> > a new submission?
-> 
-> It still applies correctly (I rebased it on l2-mtd/master).
-> You may want to adapt the jz4780 driver to make use of these helpers.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nandsim.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-OK. Fixed some small conflicts and pushed patches 55-58 to l2-mtd.git.
-Thanks!
-
-Brian
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index f57f461b5d72..1fd519503bb1 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -1908,7 +1908,8 @@ static void switch_state(struct nandsim *ns)
+ 
+ static u_char ns_nand_read_byte(struct mtd_info *mtd)
+ {
+-	struct nandsim *ns = mtd_to_nand(mtd)->priv;
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct nandsim *ns = nand_get_controller_data(chip);
+ 	u_char outb = 0x00;
+ 
+ 	/* Sanity and correctness checks */
+@@ -1969,7 +1970,8 @@ static u_char ns_nand_read_byte(struct mtd_info *mtd)
+ 
+ static void ns_nand_write_byte(struct mtd_info *mtd, u_char byte)
+ {
+-	struct nandsim *ns = mtd_to_nand(mtd)->priv;
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct nandsim *ns = nand_get_controller_data(chip);
+ 
+ 	/* Sanity and correctness checks */
+ 	if (!ns->lines.ce) {
+@@ -2123,7 +2125,8 @@ static void ns_nand_write_byte(struct mtd_info *mtd, u_char byte)
+ 
+ static void ns_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int bitmask)
+ {
+-	struct nandsim *ns = mtd_to_nand(mtd)->priv;
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct nandsim *ns = nand_get_controller_data(chip);
+ 
+ 	ns->lines.cle = bitmask & NAND_CLE ? 1 : 0;
+ 	ns->lines.ale = bitmask & NAND_ALE ? 1 : 0;
+@@ -2150,7 +2153,8 @@ static uint16_t ns_nand_read_word(struct mtd_info *mtd)
+ 
+ static void ns_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
+ {
+-	struct nandsim *ns = mtd_to_nand(mtd)->priv;
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct nandsim *ns = nand_get_controller_data(chip);
+ 
+ 	/* Check that chip is expecting data input */
+ 	if (!(ns->state & STATE_DATAIN_MASK)) {
+@@ -2177,7 +2181,8 @@ static void ns_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
+ 
+ static void ns_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+ {
+-	struct nandsim *ns = mtd_to_nand(mtd)->priv;
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct nandsim *ns = nand_get_controller_data(chip);
+ 
+ 	/* Sanity and correctness checks */
+ 	if (!ns->lines.ce) {
+@@ -2404,7 +2409,8 @@ module_init(ns_init_module);
+  */
+ static void __exit ns_cleanup_module(void)
+ {
+-	struct nandsim *ns = mtd_to_nand(nsmtd)->priv;
++	struct nand_chip *chip = mtd_to_nand(nsmtd);
++	struct nandsim *ns = nand_get_controller_data(chip);
+ 	int i;
+ 
+ 	nandsim_debugfs_remove(ns);
+-- 
+2.6.0.rc2.230.g3dd15c0
