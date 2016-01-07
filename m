@@ -1,26 +1,16 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHEW6-0003fb-Vo
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 17:38:45 +0000
-Received: by mail-pa0-x231.google.com with SMTP id uo6so245385989pac.1
- for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 09:38:09 -0800 (PST)
-Date: Thu, 7 Jan 2016 09:38:06 -0800
+ id 1aHEkn-0003el-4k
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 17:53:41 +0000
+Received: by mail-pa0-x22d.google.com with SMTP id ho8so3206967pac.2
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 09:53:20 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- alex@alex-smith.me.uk, Alex Smith <alex.smith@imgtec.com>,
- Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 2/3] mtd: nand: jz4780: driver for NAND devices on
- JZ4780 SoCs
-Message-ID: <20160107173806.GG109450@google.com>
-References: <1451910884-18710-1-git-send-email-harvey.hunt@imgtec.com>
- <1451910884-18710-3-git-send-email-harvey.hunt@imgtec.com>
- <20160107011546.GT109450@google.com> <568E338E.7000506@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <568E338E.7000506@imgtec.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Alex Smith <alex@alex-smith.me.uk>, Harvey Hunt <harvey.hunt@imgtec.com>
+Subject: [PATCH] mtd: jz4780_nand: replace if/else blocks with switch/case
+Date: Thu,  7 Jan 2016 09:53:08 -0800
+Message-Id: <1452189188-139318-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,36 +20,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 07, 2016 at 09:44:46AM +0000, Harvey Hunt wrote:
-> On 07/01/16 01:15, Brian Norris wrote:
-> >On Mon, Jan 04, 2016 at 12:34:43PM +0000, Harvey Hunt wrote:
-> >>From: Alex Smith <alex.smith@imgtec.com>
-> >>
-> >>Add a driver for NAND devices connected to the NEMC on JZ4780 SoCs, as
-> >>well as the hardware BCH controller. DMA is not currently implemented.
-> >>
-> >>While older 47xx SoCs also have a BCH controller, they are incompatible
-> >>with the one in the 4780 due to differing register/bit positions, which
-> >>would make implementing a common driver for them quite messy.
-> >>
-> >>Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-> >>Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-> >>Cc: David Woodhouse <dwmw2@infradead.org>
-> >>Cc: Brian Norris <computersforpeace@gmail.com>
-> >>Cc: linux-mtd@lists.infradead.org
-> >>Cc: linux-kernel@vger.kernel.org
-> >>Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-> >>Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> >>---
+Using switch/case helps make this logic more clear and more robust. With
+this structure:
 
-[...]
+ * it's clear that this driver only support ECC_{HW,SOFT,SOFT_BCH}; and
 
-> >I'd be OK taking this patch with the following appended diff squashed
-> >in. Thoughts?
-> 
-> It'd be great if you could do that.
+ * we can sanely handle new ECC unsupported modes (right now, this code
+   makes incorrect assumptions about the possible values in the
+   nand_ecc_modes_t enum; e.g., what happens with NAND_ECC_HW_OOB_FIRST?)
 
-OK, squashed and applied to l2-mtd.git
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Alex Smith <alex@alex-smith.me.uk>
+Cc: Harvey Hunt <harvey.hunt@imgtec.com>
+---
+Compile tested only
 
-Thanks,
-Brian
+ drivers/mtd/nand/jz4780_nand.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+index 17eb9f264187..aabee8f5627e 100644
+--- a/drivers/mtd/nand/jz4780_nand.c
++++ b/drivers/mtd/nand/jz4780_nand.c
+@@ -171,29 +171,33 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 	chip->ecc.bytes = fls((1 + 8) * chip->ecc.size)	*
+ 				(chip->ecc.strength / 8);
+ 
+-	if (nfc->bch && chip->ecc.mode == NAND_ECC_HW) {
++	switch (chip->ecc.mode) {
++	case NAND_ECC_HW:
++		if (!nfc->bch) {
++			dev_err(dev, "HW BCH selected, but BCH controller not found\n");
++			return -ENODEV;
++		}
++
+ 		chip->ecc.hwctl = jz4780_nand_ecc_hwctl;
+ 		chip->ecc.calculate = jz4780_nand_ecc_calculate;
+ 		chip->ecc.correct = jz4780_nand_ecc_correct;
+-	} else if (!nfc->bch && chip->ecc.mode == NAND_ECC_HW) {
+-		dev_err(dev, "HW BCH selected, but BCH controller not found\n");
+-		return -ENODEV;
+-	}
+-
+-	if (chip->ecc.mode == NAND_ECC_HW_SYNDROME) {
+-		dev_err(dev, "ECC HW syndrome not supported\n");
+-		return -EINVAL;
+-	}
+-
+-	if (chip->ecc.mode != NAND_ECC_NONE)
++		/* fall through */
++	case NAND_ECC_SOFT:
++	case NAND_ECC_SOFT_BCH:
+ 		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
+ 			(nfc->bch) ? "hardware BCH" : "software ECC",
+ 			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
+-	else
++		break;
++	case NAND_ECC_NONE:
+ 		dev_info(dev, "not using ECC\n");
++		break;
++	default:
++		dev_err(dev, "ECC mode %d not supported\n", chip->ecc.mode);
++		return -EINVAL;
++	}
+ 
+-	/* The NAND core will generate the ECC layout. */
+-	if (chip->ecc.mode == NAND_ECC_SOFT || chip->ecc.mode == NAND_ECC_SOFT_BCH)
++	/* The NAND core will generate the ECC layout for SW ECC */
++	if (chip->ecc.mode != NAND_ECC_HW)
+ 		return 0;
+ 
+ 	/* Generate ECC layout. ECC codes are right aligned in the OOB area. */
+-- 
+2.6.0.rc2.230.g3dd15c0
