@@ -1,16 +1,21 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHG8T-0007MY-0g
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 19:22:13 +0000
-Received: by mail-pa0-x232.google.com with SMTP id uo6so247440858pac.1
- for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 11:21:52 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: linuxppc-dev@lists.ozlabs.org, Brian Norris <computersforpeace@gmail.com>,
- Scott Wood <scottwood@freescale.com>
-Subject: [PATCH] mtd: nand: add FSL_SOC dependency to drivers using FSL_LBC
-Date: Thu,  7 Jan 2016 11:21:41 -0800
-Message-Id: <1452194501-115280-1-git-send-email-computersforpeace@gmail.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aHGJ6-0002rF-86
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 19:33:13 +0000
+Date: Thu, 7 Jan 2016 20:32:47 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: <linux-mtd@lists.infradead.org>, Harvey Hunt <harvey.hunt@imgtec.com>,
+ Alex Smith <alex@alex-smith.me.uk>
+Subject: Re: [PATCH] mtd: jz4780_nand: remove useless mtd->priv = chip
+ assignment
+Message-ID: <20160107203247.0a6fb5ed@bbrezillon>
+In-Reply-To: <1452189779-20001-1-git-send-email-computersforpeace@gmail.com>
+References: <1452189779-20001-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've managed to construct .config files (for ppc64) that come across
-this Kconfig warning:
+On Thu,  7 Jan 2016 10:02:59 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-  warning: (MPC836x_RDK && MTD_NAND_FSL_ELBC && MTD_NAND_FSL_UPM) selects FSL_LBC which has unmet direct dependencies (FSL_SOC)
+> As of commit 2d3b77bac34b ("mtd: nand: update mtd_to_nand()"), this
+> assignment isn't necessary, since struct mtd_info is embedded in struct
+> nand_chip.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Harvey Hunt <harvey.hunt@imgtec.com>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Alex Smith <alex@alex-smith.me.uk>
 
-Let's add the FSL_SOC dependency to the NAND drivers. AFAICT, they are
-only supported on PPC32 FSL SoCs anyway.
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Scott Wood <scottwood@freescale.com>
----
- drivers/mtd/nand/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+> ---
+>  drivers/mtd/nand/jz4780_nand.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+> index 17eb9f264187..6156c554e1c2 100644
+> --- a/drivers/mtd/nand/jz4780_nand.c
+> +++ b/drivers/mtd/nand/jz4780_nand.c
+> @@ -270,7 +270,6 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
+>  
+>  	chip = &nand->chip;
+>  	mtd = nand_to_mtd(chip);
+> -	mtd->priv = chip;
+>  	mtd->name = devm_kasprintf(dev, GFP_KERNEL, "%s.%d", dev_name(dev),
+>  				   cs->bank);
+>  	if (!mtd->name)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 289664089cf3..13bbceec6b5f 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -427,6 +427,7 @@ config MTD_NAND_ORION
- config MTD_NAND_FSL_ELBC
- 	tristate "NAND support for Freescale eLBC controllers"
- 	depends on PPC
-+	depends on FSL_SOC
- 	select FSL_LBC
- 	help
- 	  Various Freescale chips, including the 8313, include a NAND Flash
-@@ -448,6 +449,7 @@ config MTD_NAND_FSL_IFC
- config MTD_NAND_FSL_UPM
- 	tristate "Support for NAND on Freescale UPM"
- 	depends on PPC_83xx || PPC_85xx
-+	depends on FSL_SOC
- 	select FSL_LBC
- 	help
- 	  Enables support for NAND Flash chips wired onto Freescale PowerPC
+
+
 -- 
-2.6.0.rc2.230.g3dd15c0
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
