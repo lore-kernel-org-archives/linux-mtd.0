@@ -1,20 +1,28 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aH0XE-00039a-Vk
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 02:42:45 +0000
-Received: by mail-pa0-x235.google.com with SMTP id cy9so246315632pac.0
- for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 18:42:24 -0800 (PST)
-Date: Wed, 6 Jan 2016 18:42:21 -0800
+ id 1aH0ct-0004pt-Vt
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 02:48:36 +0000
+Received: by mail-pa0-x232.google.com with SMTP id do7so9045553pab.2
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 18:48:15 -0800 (PST)
+Date: Wed, 6 Jan 2016 18:48:12 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: [GIT PULL] Last MTD fixes for v4.4
-Message-ID: <20160107024221.GY109450@google.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ "Franklin S Cooper Jr." <fcooper@ti.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/5] mtd: nand: return consistent error codes in
+ ecc.correct() implementations
+Message-ID: <20160107024812.GZ109450@google.com>
+References: <1451503927-10831-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1451503927-10831-2-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1451503927-10831-2-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +32,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+On Wed, Dec 30, 2015 at 08:32:03PM +0100, Boris Brezillon wrote:
+> The error code returned by the ecc.correct() are not consistent over the
+> all implementations.
+> 
+> Document the expected behavior in include/linux/mtd/nand.h and fix
+> offending implementations.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/atmel_nand.c   |  2 +-
+>  drivers/mtd/nand/bf5xx_nand.c   | 20 ++++++++++++++------
+>  drivers/mtd/nand/davinci_nand.c |  6 +++---
+>  drivers/mtd/nand/jz4740_nand.c  |  4 ++--
+>  drivers/mtd/nand/mxc_nand.c     |  4 ++--
+>  drivers/mtd/nand/nand_bch.c     |  2 +-
+>  drivers/mtd/nand/nand_ecc.c     |  2 +-
+>  drivers/mtd/nand/omap2.c        |  6 +++---
+>  drivers/mtd/nand/r852.c         |  4 ++--
+>  include/linux/mtd/nand.h        |  8 +++++++-
+>  include/linux/mtd/nand_bch.h    |  2 +-
+>  11 files changed, 37 insertions(+), 23 deletions(-)
 
-The following changes since commit e488ca9f8d4f62c2dc36bfa5c32f68e7f05ab381:
+Pushed patch 1, with added commentary about the bf5xx_nand bugfix.
 
-  doc: dt: mtd: partitions: add compatible property to "partitions" node (2015-12-08 17:10:20 -0800)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20160106
-
-for you to fetch changes up to a32d5b726ff8cf32bf491522b0ac8ae2545a063e:
-
-  mtd: spi-nor: fix stm_is_locked_sr() parameters (2016-01-05 16:00:41 -0800)
-
-----------------------------------------------------------------
-Three last MTD fixes for v4.4. These are all fixes for regressions and bugs
-reported mid cycle. Unfortunately, some of them took a bit long to get proper
-testing and feedback.
-
- * Assign the default MTD name earlier in the registration process, so
-   partition parsers (like cmdlinepart) see the right name. Without this, some
-   systems may come up with unpartitioned flash. This was a v4.4-rc1
-   regression.
-
- * Revert some new Winbond SPI NOR flash unlocking/locking support; new code in
-   v4.4 caused regressions on some Spansion flash.
-
- * Fix mis-typed parameter ordering in SPI NOR unlock function; this bug was
-   introduced in v4.4-rc1.
-
-----------------------------------------------------------------
-Brian Norris (3):
-      mtd: fix cmdlinepart parser, early naming for auto-filled MTD
-      mtd: spi-nor: fix Spansion regressions (aliased with Winbond)
-      mtd: spi-nor: fix stm_is_locked_sr() parameters
-
- drivers/mtd/mtdcore.c         | 26 +++++++++++++++++---------
- drivers/mtd/spi-nor/spi-nor.c | 10 ++++------
- include/linux/mtd/spi-nor.h   |  2 +-
- 3 files changed, 22 insertions(+), 16 deletions(-)
+Brian
