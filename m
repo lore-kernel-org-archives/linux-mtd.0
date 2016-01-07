@@ -1,17 +1,16 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHFyQ-0000cf-Ps
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 19:11:51 +0000
-Received: by mail-pa0-x235.google.com with SMTP id yy13so172976119pab.3
- for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 11:11:29 -0800 (PST)
-From: tim.gardner@canonical.com
-To: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Tim Gardner <tim.gardner@canonical.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v4.4-rc8] jffs2: xattr: Silence frame size warning
-Date: Thu,  7 Jan 2016 12:11:08 -0700
-Message-Id: <1452193868-15816-1-git-send-email-tim.gardner@canonical.com>
+ id 1aHG8T-0007MY-0g
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 19:22:13 +0000
+Received: by mail-pa0-x232.google.com with SMTP id uo6so247440858pac.1
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 11:21:52 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: linuxppc-dev@lists.ozlabs.org, Brian Norris <computersforpeace@gmail.com>,
+ Scott Wood <scottwood@freescale.com>
+Subject: [PATCH] mtd: nand: add FSL_SOC dependency to drivers using FSL_LBC
+Date: Thu,  7 Jan 2016 11:21:41 -0800
+Message-Id: <1452194501-115280-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Tim Gardner <tim.gardner@canonical.com>
+I've managed to construct .config files (for ppc64) that come across
+this Kconfig warning:
 
-fs/jffs2/xattr.c: In function 'jffs2_build_xattr_subsystem':
-fs/jffs2/xattr.c:887:1: warning: the frame size of 1128 bytes is larger than 1024 bytes [-Wframe-larger-than=]
- }
+  warning: (MPC836x_RDK && MTD_NAND_FSL_ELBC && MTD_NAND_FSL_UPM) selects FSL_LBC which has unmet direct dependencies (FSL_SOC)
 
-gcc version 5.3.1 20151219 (Ubuntu 5.3.1-4ubuntu1)
+Let's add the FSL_SOC dependency to the NAND drivers. AFAICT, they are
+only supported on PPC32 FSL SoCs anyway.
 
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Scott Wood <scottwood@freescale.com>
 ---
- fs/jffs2/xattr.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-index 4c2c036..160ddcd 100644
---- a/fs/jffs2/xattr.c
-+++ b/fs/jffs2/xattr.c
-@@ -775,7 +775,7 @@ void jffs2_clear_xattr_subsystem(struct jffs2_sb_info *c)
- void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
- {
- 	struct jffs2_xattr_ref *ref, *_ref;
--	struct jffs2_xattr_ref *xref_tmphash[XREF_TMPHASH_SIZE];
-+	struct jffs2_xattr_ref **xref_tmphash;
- 	struct jffs2_xattr_datum *xd, *_xd;
- 	struct jffs2_inode_cache *ic;
- 	struct jffs2_raw_node_ref *raw;
-@@ -784,9 +784,14 @@ void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
- 
- 	BUG_ON(!(c->flags & JFFS2_SB_FLAG_BUILDING));
- 
-+	xref_tmphash = kcalloc(XREF_TMPHASH_SIZE, sizeof(*xref_tmphash),
-+		GFP_KERNEL);
-+	if (!xref_tmphash) {
-+		JFFS2_WARNING("kcalloc failure\n");
-+		return;
-+	}
-+
- 	/* Phase.1 : Merge same xref */
--	for (i=0; i < XREF_TMPHASH_SIZE; i++)
--		xref_tmphash[i] = NULL;
- 	for (ref=c->xref_temp; ref; ref=_ref) {
- 		struct jffs2_xattr_ref *tmp;
- 
-@@ -884,6 +889,7 @@ void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
- 		     "%u of xref (%u dead, %u orphan) found.\n",
- 		     xdatum_count, xdatum_unchecked_count, xdatum_orphan_count,
- 		     xref_count, xref_dead_count, xref_orphan_count);
-+	kfree(xref_tmphash);
- }
- 
- struct jffs2_xattr_datum *jffs2_setup_xattr_datum(struct jffs2_sb_info *c,
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 289664089cf3..13bbceec6b5f 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -427,6 +427,7 @@ config MTD_NAND_ORION
+ config MTD_NAND_FSL_ELBC
+ 	tristate "NAND support for Freescale eLBC controllers"
+ 	depends on PPC
++	depends on FSL_SOC
+ 	select FSL_LBC
+ 	help
+ 	  Various Freescale chips, including the 8313, include a NAND Flash
+@@ -448,6 +449,7 @@ config MTD_NAND_FSL_IFC
+ config MTD_NAND_FSL_UPM
+ 	tristate "Support for NAND on Freescale UPM"
+ 	depends on PPC_83xx || PPC_85xx
++	depends on FSL_SOC
+ 	select FSL_LBC
+ 	help
+ 	  Enables support for NAND Flash chips wired onto Freescale PowerPC
 -- 
-1.9.1
+2.6.0.rc2.230.g3dd15c0
