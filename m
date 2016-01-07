@@ -1,20 +1,28 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGxsu-0000LF-5M
- for linux-mtd@lists.infradead.org; Wed, 06 Jan 2016 23:52:56 +0000
-Received: by mail-pa0-x22b.google.com with SMTP id do7so5662442pab.2
- for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 15:52:34 -0800 (PST)
-Date: Wed, 6 Jan 2016 15:52:31 -0800
+ id 1aGy4A-0004DV-JU
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 00:04:35 +0000
+Received: by mail-pa0-x22f.google.com with SMTP id do7so5882488pab.2
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 16:04:13 -0800 (PST)
+Date: Wed, 6 Jan 2016 16:04:10 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Zhiqiang Hou <Zhiqiang.Hou@freescale.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Add SPI NOR layer PM support
-Message-ID: <20160106235231.GQ109450@google.com>
-References: <1451033707-44170-1-git-send-email-Zhiqiang.Hou@freescale.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] mtd: nand: pxa3xx_nand: add register access debug
+Message-ID: <20160107000410.GR109450@google.com>
+References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
+ <20150818042426.GA27858@laptop> <874mjwa1w6.fsf@belgarion.home>
+ <87r3mt3jpw.fsf@belgarion.home>
+ <CAAEAJfD2NB+JkpwwcwRz6gWOfcNVEY2MqWGkCskf0a0WRNR9gQ@mail.gmail.com>
+ <20151219004845.GW10460@google.com> <87lh8qhbqp.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1451033707-44170-1-git-send-email-Zhiqiang.Hou@freescale.com>
+In-Reply-To: <87lh8qhbqp.fsf@belgarion.home>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,110 +32,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 25, 2015 at 04:55:06PM +0800, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@freescale.com>
+On Sat, Dec 19, 2015 at 01:19:26PM +0100, Robert Jarzmik wrote:
+> Brian Norris <computersforpeace@gmail.com> writes:
 > 
-> Add the Power Management API in SPI NOR framework.
-> The Power Management system will turn off power supply to SPI flash
-> when system suspending, and then the SPI flash will be in the reset
-> state after system resuming. As a result, the status&configurations
-> of SPI flash driver will mismatch with its current hardware state.
-> So reinitialize SPI flash to make sure it is resumed to the correct
-> state.
-> And the SPI NOR layer just do common configuration depending on the
-> records in structure spi_nor.
-> 
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@freescale.com>
-> ---
-> V2:
->  - New patch
-> 
->  drivers/mtd/spi-nor/spi-nor.c | 44 +++++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/spi-nor.h   |  9 +++++++++
->  2 files changed, 53 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 4988390..4030d37c 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1365,6 +1365,50 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->  }
->  EXPORT_SYMBOL_GPL(spi_nor_scan);
->  
-> +#ifdef CONFIG_PM_SLEEP
-> +static int spi_nor_hw_reinit(struct spi_nor *nor)
-> +{
-> +	const struct flash_info *info = NULL;
-> +	struct device *dev = nor->dev;
-> +	int ret;
-> +
-> +	info = spi_nor_read_id(nor);
-> +	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
-> +	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
-> +	    JEDEC_MFR(info) == SNOR_MFR_SST ||
-> +	    JEDEC_MFR(info) == SNOR_MFR_WINBOND) {
-> +		write_enable(nor);
-> +		write_sr(nor, 0);
-> +	}
-> +
-> +	if (nor->flash_read == SPI_NOR_QUAD) {
-> +		ret = set_quad_mode(nor, info);
-> +		if (ret) {
-> +			dev_err(dev, "quad mode not supported\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	if (nor->addr_width == 4 && !info->addr_width &&
-> +			JEDEC_MFR(info) != SNOR_MFR_SPANSION)
-> +		set_4byte(nor, info, 1);
+> > I don't have very strong opinions on this. It's kind of annoying to have
+> > this sort of stuff duplicated for every driver, if it's really needed.
+> > But I'll admit this kind of infrastructure is sometimes useful.
+> >
+> > Anecdote: I recently found the regmap trace event infrastructure pretty
+> > nice for debugging some other drivers. This would only require you to
+> > have tracing enabled, and then no recompiles are necessary at all. Just
+> > cmdline changes.
+> >
+> > So, I could go with this patch, if Robert still desires it. Or you could
+> > convert to using regmap for MMIO :)
+> I'm as you, I don't feel strong opinion about it, I'd like to have a debug
+> tracing tool, be that this patch or regmap MMIO.
 
-You're duplicating a bunch of code from spi_nor_scan(). Please don't do
-that. Find a good way to share it.
+Regmap is probably overkill, and wouldn't do a lot to satisfy Ezequiel's
+concern, I expect.
 
-> +	return 0;
-> +}
-> +
-> +int spi_nor_suspend(struct spi_nor *nor)
-> +{
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(spi_nor_suspend);
-> +
-> +int spi_nor_resume(struct spi_nor *nor)
-> +{
-> +	return spi_nor_hw_reinit(nor);
-> +}
-> +EXPORT_SYMBOL_GPL(spi_nor_resume);
-> +#endif /* CONFIG_PM_SLEEP */
+> If we all agree on a path I could even make the final patch, whichever solution
+> is chosen.
 
-What happens if a driver wants this with !CONFIG_PM_SLEEP? I think it's
-best if you just unconditionally add spi_nor_{suspend,resume}().
+I'm OK with this one, which still applies OK for me. But I do have one
+comment, which I'll post at the top-level.
 
 Brian
-
-> +
->  static const struct flash_info *spi_nor_match_id(const char *name)
->  {
->  	const struct flash_info *id = spi_nor_ids;
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index c8723b6..d3a7888 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -201,4 +201,13 @@ struct spi_nor {
->   */
->  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode);
->  
-> +/**
-> + * spi_nor_suspend/resume() - the SPI NOR layer PM API
-> + * @nor:	the spi_nor structure
-> + *
-> + * Return: 0 for success, others for failure.
-> + */
-> +int spi_nor_suspend(struct spi_nor *nor);
-> +int spi_nor_resume(struct spi_nor *nor);
-> +
->  #endif
-> -- 
-> 2.1.0.27.g96db324
-> 
