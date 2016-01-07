@@ -1,29 +1,24 @@
-Received: from ipmail04.adl6.internode.on.net ([150.101.137.141])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aH11v-0006YW-U2
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 03:14:28 +0000
-Date: Thu, 7 Jan 2016 14:13:41 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: mchristi@redhat.com, linux-f2fs-devel@lists.sourceforge.net,
- linux-ext4@vger.kernel.org, konrad.wilk@oracle.com,
- drbd-dev@lists.linbit.com, philipp.reisner@linbit.com,
- lars.ellenberg@linbit.com, linux-raid@vger.kernel.org,
- dm-devel@redhat.com, linux-fsdevel@vger.kernel.org,
- linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-mtd@lists.infradead.org, target-devel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, osd-dev@open-osd.org, xfs@oss.sgi.com,
- ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH 00/35 v2] separate operations from flags in the
- bio/request structs
-Message-ID: <20160107031341.GC32200@dastard>
-References: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
- <yq14meqi2va.fsf@sermon.lab.mkp.net>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aH2B1-00072B-Ep
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 04:27:56 +0000
+Subject: Re: [PATCH v5 1/3] mtd: nand: don't select chip in nand_chip's
+ block_bad op
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
+ <1451971501-18160-1-git-send-email-architt@codeaurora.org>
+ <1451971501-18160-2-git-send-email-architt@codeaurora.org>
+ <20160106170532.12e48ce9@bbrezillon>
+Cc: linux-arm-msm@vger.kernel.org, cernekee@gmail.com, sboyd@codeaurora.org,
+ linux-mtd@lists.infradead.org, dehrenberg@google.com, andy.gross@linaro.org,
+ computersforpeace@gmail.com
+From: Archit Taneja <architt@codeaurora.org>
+Message-ID: <568DE92B.7040402@codeaurora.org>
+Date: Thu, 7 Jan 2016 09:57:23 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yq14meqi2va.fsf@sermon.lab.mkp.net>
+In-Reply-To: <20160106170532.12e48ce9@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,37 +28,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 06, 2016 at 08:40:09PM -0500, Martin K. Petersen wrote:
-> >>>>> "Mike" == mchristi  <mchristi@redhat.com> writes:
-> 
-> Mike> The following patches begin to cleanup the request->cmd_flags and
-> bio-> bi_rw mess. We currently use cmd_flags to specify the operation,
-> Mike> attributes and state of the request. For bi_rw we use it for
-> Mike> similar info and also the priority but then also have another
-> Mike> bi_flags field for state. At some point, we abused them so much we
-> Mike> just made cmd_flags 64 bits, so we could add more.
-> 
-> Mike> The following patches seperate the operation (read, write discard,
-> Mike> flush, etc) from cmd_flags/bi_rw.
-> 
-> Mike> This patchset was made against linux-next from today Jan 5 2016.
-> Mike> (git tag next-20160105).
-> 
-> Very nice work. Thanks for doing this!
-> 
-> I think it's a much needed cleanup. I focused mainly on the core block,
-> discard, write same and sd.c pieces and everything looks sensible to me.
-> 
-> I wonder what the best approach is to move a patch set with this many
-> stakeholders forward? Set a "speak now or forever hold your peace"
-> review deadline?
 
-I say just ask Linus to pull it immediately after the next merge
-window closes....
 
-Cheers,
+On 01/06/2016 09:35 PM, Boris Brezillon wrote:
+> On Tue,  5 Jan 2016 10:54:59 +0530
+> Archit Taneja <architt@codeaurora.org> wrote:
+>
+>> One of the arguments passed to struct nand_chip's block_bad op is
+>> 'getchip', which, if true, is supposed to get and select the nand device,
+>> and later unselect and release the device.
+>>
+>> This op is intended to be replaceable by drivers. The drivers shouldn't
+>> be responsible for selecting/unselecting chip. Like other ops, the chip
+>> should already be selected before the block_bad op is called.
+>>
+>> Remove the getchip argument from the block_bad op and move the chip
+>> selection to nand_block_checkbad (the only user of chip->block_bad).
+>> Modify nand_block_bad (the default function for the op) such that
+>> it doesn't select the chip.
+>
+> I would go even further and move the chip selection into
+> nand_block_isbad(), who is the only caller that requires this chip
+> selection.
 
-Dave.
+You're right. The only other place where nand_block_checkbad is used is
+nand_erase_nand, and that already selects the chip before.
+
+I'll update the patch.
+
+Thanks,
+Archit
+
+>
+>>
+>> Signed-off-by: Archit Taneja <architt@codeaurora.org>
+>> ---
+>>   drivers/mtd/nand/nand_base.c | 41 +++++++++++++++++++++++------------------
+>>   include/linux/mtd/nand.h     |  2 +-
+>>   2 files changed, 24 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index 928081b..42aa441 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -317,9 +317,9 @@ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
+>>    *
+>>    * Check, if the block is bad.
+>>    */
+>> -static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+>> +static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
+>>   {
+>> -	int page, chipnr, res = 0, i = 0;
+>> +	int page, res = 0, i = 0;
+>>   	struct nand_chip *chip = mtd_to_nand(mtd);
+>>   	u16 bad;
+>>
+>> @@ -328,15 +328,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+>>
+>>   	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+>>
+>> -	if (getchip) {
+>> -		chipnr = (int)(ofs >> chip->chip_shift);
+>> -
+>> -		nand_get_device(mtd, FL_READING);
+>> -
+>> -		/* Select the NAND device */
+>> -		chip->select_chip(mtd, chipnr);
+>> -	}
+>> -
+>>   	do {
+>>   		if (chip->options & NAND_BUSWIDTH_16) {
+>>   			chip->cmdfunc(mtd, NAND_CMD_READOOB,
+>> @@ -361,11 +352,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+>>   		i++;
+>>   	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
+>>
+>> -	if (getchip) {
+>> -		chip->select_chip(mtd, -1);
+>> -		nand_release_device(mtd);
+>> -	}
+>> -
+>>   	return res;
+>>   }
+>>
+>> @@ -514,8 +500,27 @@ static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
+>>   {
+>>   	struct nand_chip *chip = mtd_to_nand(mtd);
+>>
+>> -	if (!chip->bbt)
+>> -		return chip->block_bad(mtd, ofs, getchip);
+>> +	if (!chip->bbt) {
+>> +		int ret;
+>> +
+>> +		if (getchip) {
+>> +			int chipnr = (int)(ofs >> chip->chip_shift);
+>> +
+>> +			nand_get_device(mtd, FL_READING);
+>> +
+>> +			/* Select the NAND device */
+>> +			chip->select_chip(mtd, chipnr);
+>> +		}
+>> +
+>> +		ret = chip->block_bad(mtd, ofs);
+>> +
+>> +		if (getchip) {
+>> +			chip->select_chip(mtd, -1);
+>> +			nand_release_device(mtd);
+>> +		}
+>> +
+>> +		return ret;
+>> +	}
+>>
+>>   	/* Return info from the table */
+>>   	return nand_isbad_bbt(mtd, ofs, allowbbt);
+>> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+>> index 3e92be1..c15818e 100644
+>> --- a/include/linux/mtd/nand.h
+>> +++ b/include/linux/mtd/nand.h
+>> @@ -650,7 +650,7 @@ struct nand_chip {
+>>   	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
+>>   	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
+>>   	void (*select_chip)(struct mtd_info *mtd, int chip);
+>> -	int (*block_bad)(struct mtd_info *mtd, loff_t ofs, int getchip);
+>> +	int (*block_bad)(struct mtd_info *mtd, loff_t ofs);
+>>   	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
+>>   	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
+>>   	int (*dev_ready)(struct mtd_info *mtd);
+>
+>
+>
+
 -- 
-Dave Chinner
-david@fromorbit.com
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, hosted by The Linux Foundation
