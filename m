@@ -1,27 +1,20 @@
-Received: from userp1040.oracle.com ([156.151.31.81])
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGzZH-0004AT-AQ
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 01:40:47 +0000
-To: mchristi@redhat.com
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
- konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
- philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
- linux-raid@vger.kernel.org, dm-devel@redhat.com,
- linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
- target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH 00/35 v2] separate operations from flags in the
- bio/request structs
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-References: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
-Date: Wed, 06 Jan 2016 20:40:09 -0500
-In-Reply-To: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
- (mchristi@redhat.com's message of "Tue, 5 Jan 2016 14:53:03 -0600")
-Message-ID: <yq14meqi2va.fsf@sermon.lab.mkp.net>
+ id 1aH0XE-00039a-Vk
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 02:42:45 +0000
+Received: by mail-pa0-x235.google.com with SMTP id cy9so246315632pac.0
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 18:42:24 -0800 (PST)
+Date: Wed, 6 Jan 2016 18:42:21 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: [GIT PULL] Last MTD fixes for v4.4
+Message-ID: <20160107024221.GY109450@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Mike" == mchristi  <mchristi@redhat.com> writes:
+Hi Linus,
 
-Mike> The following patches begin to cleanup the request->cmd_flags and
-bio-> bi_rw mess. We currently use cmd_flags to specify the operation,
-Mike> attributes and state of the request. For bi_rw we use it for
-Mike> similar info and also the priority but then also have another
-Mike> bi_flags field for state. At some point, we abused them so much we
-Mike> just made cmd_flags 64 bits, so we could add more.
+The following changes since commit e488ca9f8d4f62c2dc36bfa5c32f68e7f05ab381:
 
-Mike> The following patches seperate the operation (read, write discard,
-Mike> flush, etc) from cmd_flags/bi_rw.
+  doc: dt: mtd: partitions: add compatible property to "partitions" node (2015-12-08 17:10:20 -0800)
 
-Mike> This patchset was made against linux-next from today Jan 5 2016.
-Mike> (git tag next-20160105).
+are available in the git repository at:
 
-Very nice work. Thanks for doing this!
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20160106
 
-I think it's a much needed cleanup. I focused mainly on the core block,
-discard, write same and sd.c pieces and everything looks sensible to me.
+for you to fetch changes up to a32d5b726ff8cf32bf491522b0ac8ae2545a063e:
 
-I wonder what the best approach is to move a patch set with this many
-stakeholders forward? Set a "speak now or forever hold your peace"
-review deadline?
+  mtd: spi-nor: fix stm_is_locked_sr() parameters (2016-01-05 16:00:41 -0800)
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+----------------------------------------------------------------
+Three last MTD fixes for v4.4. These are all fixes for regressions and bugs
+reported mid cycle. Unfortunately, some of them took a bit long to get proper
+testing and feedback.
+
+ * Assign the default MTD name earlier in the registration process, so
+   partition parsers (like cmdlinepart) see the right name. Without this, some
+   systems may come up with unpartitioned flash. This was a v4.4-rc1
+   regression.
+
+ * Revert some new Winbond SPI NOR flash unlocking/locking support; new code in
+   v4.4 caused regressions on some Spansion flash.
+
+ * Fix mis-typed parameter ordering in SPI NOR unlock function; this bug was
+   introduced in v4.4-rc1.
+
+----------------------------------------------------------------
+Brian Norris (3):
+      mtd: fix cmdlinepart parser, early naming for auto-filled MTD
+      mtd: spi-nor: fix Spansion regressions (aliased with Winbond)
+      mtd: spi-nor: fix stm_is_locked_sr() parameters
+
+ drivers/mtd/mtdcore.c         | 26 +++++++++++++++++---------
+ drivers/mtd/spi-nor/spi-nor.c | 10 ++++------
+ include/linux/mtd/spi-nor.h   |  2 +-
+ 3 files changed, 22 insertions(+), 16 deletions(-)
