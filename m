@@ -1,31 +1,26 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHERz-0007OE-7y
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 17:34:17 +0000
-Received: by mail-pa0-x229.google.com with SMTP id cy9so263627993pac.0
- for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 09:33:54 -0800 (PST)
-Date: Thu, 7 Jan 2016 09:33:50 -0800
+ id 1aHEW6-0003fb-Vo
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 17:38:45 +0000
+Received: by mail-pa0-x231.google.com with SMTP id uo6so245385989pac.1
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 09:38:09 -0800 (PST)
+Date: Thu, 7 Jan 2016 09:38:06 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Harvey Hunt <harvey.hunt@imgtec.com>,
-	Ralf Baechle <ralf@linux-mips.org>
+To: Harvey Hunt <harvey.hunt@imgtec.com>
 Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
  alex@alex-smith.me.uk, Alex Smith <alex.smith@imgtec.com>,
  Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Paul Burton <paul.burton@imgtec.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mips@linux-mips.org,
- robh@kernel.org, Ralf Baechle <ralf@linux-mips.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH v11 3/3] MIPS: dts: jz4780/ci20: Add NEMC, BCH and NAND
- device tree nodes
-Message-ID: <20160107173350.GF109450@google.com>
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 2/3] mtd: nand: jz4780: driver for NAND devices on
+ JZ4780 SoCs
+Message-ID: <20160107173806.GG109450@google.com>
 References: <1451910884-18710-1-git-send-email-harvey.hunt@imgtec.com>
- <1451910884-18710-4-git-send-email-harvey.hunt@imgtec.com>
- <20160107012903.GX109450@google.com> <568E327D.8040905@imgtec.com>
+ <1451910884-18710-3-git-send-email-harvey.hunt@imgtec.com>
+ <20160107011546.GT109450@google.com> <568E338E.7000506@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <568E327D.8040905@imgtec.com>
+In-Reply-To: <568E338E.7000506@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,105 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Harvey + Ralf,
+On Thu, Jan 07, 2016 at 09:44:46AM +0000, Harvey Hunt wrote:
+> On 07/01/16 01:15, Brian Norris wrote:
+> >On Mon, Jan 04, 2016 at 12:34:43PM +0000, Harvey Hunt wrote:
+> >>From: Alex Smith <alex.smith@imgtec.com>
+> >>
+> >>Add a driver for NAND devices connected to the NEMC on JZ4780 SoCs, as
+> >>well as the hardware BCH controller. DMA is not currently implemented.
+> >>
+> >>While older 47xx SoCs also have a BCH controller, they are incompatible
+> >>with the one in the 4780 due to differing register/bit positions, which
+> >>would make implementing a common driver for them quite messy.
+> >>
+> >>Signed-off-by: Alex Smith <alex.smith@imgtec.com>
+> >>Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+> >>Cc: David Woodhouse <dwmw2@infradead.org>
+> >>Cc: Brian Norris <computersforpeace@gmail.com>
+> >>Cc: linux-mtd@lists.infradead.org
+> >>Cc: linux-kernel@vger.kernel.org
+> >>Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
+> >>Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> >>---
 
-On Thu, Jan 07, 2016 at 09:40:13AM +0000, Harvey Hunt wrote:
-> On 07/01/16 01:29, Brian Norris wrote:
-> >On Mon, Jan 04, 2016 at 12:34:44PM +0000, Harvey Hunt wrote:
-> >>diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-> >>index 9fcb9e7..782258c 100644
-> >>--- a/arch/mips/boot/dts/ingenic/ci20.dts
-> >>+++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> >
-> >As I noted on patch 1, you need to send this to linux-mips + Ralf.
+[...]
+
+> >I'd be OK taking this patch with the following appended diff squashed
+> >in. Thoughts?
 > 
-> I forgot to CC Ralf on this version, but he took v9 (no change
-> between v9 and v11) through linux-mips as can be seen here:
-> http://patchwork.linux-mips.org/patch/11695/
+> It'd be great if you could do that.
 
-OK.
+OK, squashed and applied to l2-mtd.git
 
-> >>@@ -42,3 +42,66 @@
-> >>  &uart4 {
-> >>  	status = "okay";
-> >>  };
-> >>+
-> >>+&nemc {
-> >>+	status = "okay";
-> >>+
-> >>+	nandc: nand-controller@1 {
-> >>+		compatible = "ingenic,jz4780-nand";
-> >>+		reg = <1 0 0x1000000>;
-> >>+
-> >>+		#address-cells = <1>;
-> >>+		#size-cells = <0>;
-> >>+
-> >>+		ingenic,bch-controller = <&bch>;
-> >>+
-> >>+		ingenic,nemc-tAS = <10>;
-> >>+		ingenic,nemc-tAH = <5>;
-> >>+		ingenic,nemc-tBP = <10>;
-> >>+		ingenic,nemc-tAW = <15>;
-> >>+		ingenic,nemc-tSTRV = <100>;
-> >>+
-> >>+		nand@1 {
-> >>+			reg = <1>;
-> >>+
-> >>+			nand-ecc-step-size = <1024>;
-> >>+			nand-ecc-strength = <24>;
-> >>+			nand-ecc-mode = "hw";
-> >>+			nand-on-flash-bbt;
-> >>+
-> >>+			partitions {
-> >>+				#address-cells = <2>;
-> >>+				#size-cells = <2>;
-> >
-> >This binding was updated, so you need:
-> >
-> >				compatible = "fixed-partitions";
-> 
-> This has been fixed in mips-linux here:
-> http://patchwork.linux-mips.org/patch/11914/
-
-Ralf: it looks like you applied the DTS changes twice, essentially.
-Might want to fix that:
-
-[From arch/mips/boot/dts/ingenic/ci20.dts]
-...
-&nemc {
-	...
-	nandc: nand-controller@1 {
-		...
-		nand@1 {
-			...
-			partitions {
-				compatible = "fixed-partitions";
-				...
-			};
-		};
-	};
-};
-
-&bch {
-	status = "okay";
-};
-
-&nemc {
-	...
-	nandc: nand-controller@1 {
-		...
-		nand@1 {
-			...
-			partitions {
-				...
-			};
-		};
-	};
-};
-
-&bch {
-	status = "okay";
-};
-
-
+Thanks,
 Brian
