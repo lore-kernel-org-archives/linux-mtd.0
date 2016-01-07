@@ -1,24 +1,33 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aH2B1-00072B-Ep
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 04:27:56 +0000
-Subject: Re: [PATCH v5 1/3] mtd: nand: don't select chip in nand_chip's
- block_bad op
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
- <1451971501-18160-1-git-send-email-architt@codeaurora.org>
- <1451971501-18160-2-git-send-email-architt@codeaurora.org>
- <20160106170532.12e48ce9@bbrezillon>
-Cc: linux-arm-msm@vger.kernel.org, cernekee@gmail.com, sboyd@codeaurora.org,
- linux-mtd@lists.infradead.org, dehrenberg@google.com, andy.gross@linaro.org,
- computersforpeace@gmail.com
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <568DE92B.7040402@codeaurora.org>
-Date: Thu, 7 Jan 2016 09:57:23 +0530
+ id 1aH3Vj-0006CK-AL
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 05:53:24 +0000
+Received: by mail-lf0-x233.google.com with SMTP id z124so320864872lfa.3
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 21:53:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20160106170532.12e48ce9@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20160106152922.0f08a94c@bbrezillon>
+References: <1450159178-29895-1-git-send-email-peterpandong@micron.com>
+ <CAAEAJfC4YWVC=WWTBnKrnNZypC+CKR+D59+LY7j-haTch4yevA@mail.gmail.com>
+ <20151229103519.31ccaf5c@bbrezillon>
+ <CAAEAJfAV_Nfm81nSEpQRyx=hcW8R-dK6_SJdGDQ_JQK5zu1jpw@mail.gmail.com>
+ <20151229161156.77060900@bbrezillon>
+ <CAAyFOR+J1VG9tZdahP=z=yth_om0O_58HH1BVScP3-rvsQj+VA@mail.gmail.com>
+ <20151230093106.6b1ee118@bbrezillon>
+ <20160106152922.0f08a94c@bbrezillon>
+Date: Thu, 7 Jan 2016 13:53:00 +0800
+Message-ID: <CAAyFORLJktJKS47bR=a7KqkifVrvEEXWojo-W1J_KD_B447nnw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] mtd: nand_bbt: introduce independent nand BBT
+From: Peter Pan <peterpansjtu@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Peter Pan <peterpandong@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, karlzhang@micron.com,
+ Frans Klaver <fransklaver@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ beanhuo@micron.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,136 +37,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Boris,
 
-
-On 01/06/2016 09:35 PM, Boris Brezillon wrote:
-> On Tue,  5 Jan 2016 10:54:59 +0530
-> Archit Taneja <architt@codeaurora.org> wrote:
+On Wed, Jan 6, 2016 at 10:29 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Wed, 30 Dec 2015 09:31:06 +0100
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 >
->> One of the arguments passed to struct nand_chip's block_bad op is
->> 'getchip', which, if true, is supposed to get and select the nand device,
->> and later unselect and release the device.
+>> Hi Peter,
 >>
->> This op is intended to be replaceable by drivers. The drivers shouldn't
->> be responsible for selecting/unselecting chip. Like other ops, the chip
->> should already be selected before the block_bad op is called.
+>> On Wed, 30 Dec 2015 15:18:39 +0800
+>> =E6=BD=98=E6=A0=8B <peterpansjtu@gmail.com> wrote:
 >>
->> Remove the getchip argument from the block_bad op and move the chip
->> selection to nand_block_checkbad (the only user of chip->block_bad).
->> Modify nand_block_bad (the default function for the op) such that
->> it doesn't select the chip.
+>> > Hi Boris and Ezequiel,
+>> >
+>> > 2015-12-29 23:11 GMT+08:00 Boris Brezillon <boris.brezillon@free-elect=
+rons.com>:
+>> > > On Tue, 29 Dec 2015 12:07:50 -0300
+>> > > Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+>> > >
+>> > >> On 29 December 2015 at 06:35, Boris Brezillon
+>> > >> <boris.brezillon@free-electrons.com> wrote:
+>> > >> > Hi,
+>> > >> >
+>> > >> > On Mon, 28 Dec 2015 17:42:50 -0300
+>> > >> > Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+>> > >> >
+>> > >> >> This is looking a lot better, thanks for the good work!
+>> > >> >>
+>> > >> >> On 15 December 2015 at 02:59, Peter Pan <peterpansjtu@gmail.com>=
+ wrote:
+>> > >> >> > Currently nand_bbt.c is tied with struct nand_chip, and it mak=
+es other
+>> > >> >> > NAND family chips hard to use nand_bbt.c. Maybe it's the reaso=
+n why
+>> > >> >> > onenand has own bbt(onenand_bbt.c).
+>> > >> >> >
+>> > >> >> > Separate struct nand_chip from BBT code can make current BBT s=
+hareable.
+>> > >> >> > We create struct nand_bbt to take place of nand_chip in nand_b=
+bt.c.
+>> > >> >> > Struct nand_bbt contains all the information BBT needed from o=
+utside and
+>> > >> >> > it should be embedded into NAND family chip struct (such as st=
+ruct nand_chip).
+>> > >> >> > NAND family driver should allocate, initialize and free struct=
+ nand_bbt.
+>> > >> >> >
+>> > >> >> > Below is mtd folder structure we want:
+>> > >> >> >         mtd
+>> > >> >> >         =E2=94=9C=E2=94=80=E2=94=80 Kconfig
+>> > >> >> >         =E2=94=9C=E2=94=80=E2=94=80 Makefile
+>> > >> >> >         =E2=94=9C=E2=94=80=E2=94=80 ...
+>> > >> >> >         =E2=94=9C=E2=94=80=E2=94=80 nand_bbt.c
+>> > >> >>
+>> > >> >> Hm.. I'm not sure about having nand_bbt.c in drivers/mtd.
+>> > >> >> What's wrong with drivers/mtd/nand ?
+>> > >> >
+>> > >> > I haven't reviewed the series yet, but I agree. If the BBT code i=
+s only
+>> > >> > meant to be used on NAND based devices, it should probably stay i=
+n
+>> > >> > drivers/mtd/nand.
+>> > >> >
+>> > >> >>
+>> > >> >> In fact, I  was thinking we could go further and clean up the di=
+rectories a bit
+>> > >> >> by separating core code, from controllers code, from SPI NAND co=
+de:
+>> > >> >>
+>> > >> >> drivers/mtd/nand/
+>> > >> >> drivers/mtd/nand/controllers
+>> > >> >> drivers/mtd/nand/spi
+>> > >> >>
+>> > >> >> Makes any sense?
+>> > >> >
+>> > >> > Actually I had the secret plan of moving all (raw) NAND controlle=
+r
+>> > >> > drivers into the drivers/mtd/nand/controllers directory, though t=
+his
+>> > >> > was for a different reason: I'd like to create another directory =
+for
+>> > >> > manufacturer specific code in order to support some advanced feat=
+ures
+>> > >> > on NANDs that do not implement (or only partially implement) the =
+ONFI
+>> > >> > standard.
+>> > >> >
+>> > >> > The separation you're talking about here is more related to the
+>> > >> > interface used to communicate with the NAND chip.
+>> > >> >
+>> > >> > How about using the following hierarchy?
+>> > >> >
+>> > >> > drivers/mtd/nand/<nand-core-code>
+>> > >> > drivers/mtd/nand/interfaces/raw/<raw-nand-core-code>
+>> > >> > drivers/mtd/nand/interfaces/raw/controllers/<raw-nand-controller-=
+drivers>
+>> > >> > drivers/mtd/nand/interfaces/spi/<spi-nand-code>
+>> > >> > drivers/mtd/nand/interfaces/onenand/<onenand-code>
+>> > >> > drivers/mtd/nand/chips/<manufacturer-spcific-code>
+>> > >> >
+>> > >> > What do you think?
+>> > >> >
+>> > >>
+>> > >> I believe we are bikeshedding here, but what the heck.
+>> > >>
+>> > >> That seems too involved. A simpler hierarchy could be clear enough,
+>> > >> and seems to follow what other subsystems do:
+>> > >>
+>> > >> drivers/mtd/nand/<all-nand-core-code>
+>> > >> drivers/mtd/nand/raw/<raw-nand-controller-drivers>
+>> > >
+>> > > And probably some common logic in there too.
+>> > >
+>> > >> drivers/mtd/nand/spi/<spi-nand-code>
+>> > >> drivers/mtd/nand/onenand/<onenand-code>
+>> > >> drivers/mtd/nand/chips/<manufacturer-spcific-code>
+>> > >>
+>> > >
+>> > > I'm fine with this one too ;-).
+>> >
+>> > I'm fine with this structure too. drivers/mtd/nand folder becomes top =
+folder for
+>> > all NAND based devices. Because (raw)NAND, SPI-NAND and ONENAND have
+>> > different command set and feature, each has its own core - nand_base.c
+>> > spi-nand-base.c
+>> > and onenand_base.c. So maybe it'll take a lot effort to abstract a
+>> > all-nand-core-code
+>> > (of course BBT should be one of them). What's your opinion?
+>>
+>> Absolutely, that was the idea: move everything into the
+>> drivers/mtd/nand directory (with the structure described above), keep
+>> some specific logic for each interface type, and see if we can factor
+>> out some common code (I noticed that SPI NAND devices have a parameter
+>> page which looks similar to the one exposed by ONFI compliant devices,
+>> except this parameter page is retrieved using a different command, the
+>> same goes for the ->{set,get}_features() functions).
+>> But let's focus on the nand_bbt code for now.
+>>
+>> >
+>> > Also, please review the BBT patch if you have time. I think it's
+>> > helpful on the new NAND code
+>> > hierarchy.
+>>
+>> I'll try to review it this week.
 >
-> I would go even further and move the chip selection into
-> nand_block_isbad(), who is the only caller that requires this chip
-> selection.
+> I'm a bit late, but I think I've reviewed most of it now.
 
-You're right. The only other place where nand_block_checkbad is used is
-nand_erase_nand, and that already selects the chip before.
+I already go through your comments. They are very precious and
+instructive. Thank you
+a lot for taking time to do the review. I'll remake the patches and
+send the v3 out soon.
 
-I'll update the patch.
+>
+>
+> --
+> Boris Brezillon, Free Electrons
+> Embedded Linux and Kernel engineering
+> http://free-electrons.com
 
 Thanks,
-Archit
-
->
->>
->> Signed-off-by: Archit Taneja <architt@codeaurora.org>
->> ---
->>   drivers/mtd/nand/nand_base.c | 41 +++++++++++++++++++++++------------------
->>   include/linux/mtd/nand.h     |  2 +-
->>   2 files changed, 24 insertions(+), 19 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index 928081b..42aa441 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -317,9 +317,9 @@ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
->>    *
->>    * Check, if the block is bad.
->>    */
->> -static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
->> +static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
->>   {
->> -	int page, chipnr, res = 0, i = 0;
->> +	int page, res = 0, i = 0;
->>   	struct nand_chip *chip = mtd_to_nand(mtd);
->>   	u16 bad;
->>
->> @@ -328,15 +328,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
->>
->>   	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
->>
->> -	if (getchip) {
->> -		chipnr = (int)(ofs >> chip->chip_shift);
->> -
->> -		nand_get_device(mtd, FL_READING);
->> -
->> -		/* Select the NAND device */
->> -		chip->select_chip(mtd, chipnr);
->> -	}
->> -
->>   	do {
->>   		if (chip->options & NAND_BUSWIDTH_16) {
->>   			chip->cmdfunc(mtd, NAND_CMD_READOOB,
->> @@ -361,11 +352,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
->>   		i++;
->>   	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
->>
->> -	if (getchip) {
->> -		chip->select_chip(mtd, -1);
->> -		nand_release_device(mtd);
->> -	}
->> -
->>   	return res;
->>   }
->>
->> @@ -514,8 +500,27 @@ static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
->>   {
->>   	struct nand_chip *chip = mtd_to_nand(mtd);
->>
->> -	if (!chip->bbt)
->> -		return chip->block_bad(mtd, ofs, getchip);
->> +	if (!chip->bbt) {
->> +		int ret;
->> +
->> +		if (getchip) {
->> +			int chipnr = (int)(ofs >> chip->chip_shift);
->> +
->> +			nand_get_device(mtd, FL_READING);
->> +
->> +			/* Select the NAND device */
->> +			chip->select_chip(mtd, chipnr);
->> +		}
->> +
->> +		ret = chip->block_bad(mtd, ofs);
->> +
->> +		if (getchip) {
->> +			chip->select_chip(mtd, -1);
->> +			nand_release_device(mtd);
->> +		}
->> +
->> +		return ret;
->> +	}
->>
->>   	/* Return info from the table */
->>   	return nand_isbad_bbt(mtd, ofs, allowbbt);
->> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
->> index 3e92be1..c15818e 100644
->> --- a/include/linux/mtd/nand.h
->> +++ b/include/linux/mtd/nand.h
->> @@ -650,7 +650,7 @@ struct nand_chip {
->>   	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
->>   	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
->>   	void (*select_chip)(struct mtd_info *mtd, int chip);
->> -	int (*block_bad)(struct mtd_info *mtd, loff_t ofs, int getchip);
->> +	int (*block_bad)(struct mtd_info *mtd, loff_t ofs);
->>   	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
->>   	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
->>   	int (*dev_ready)(struct mtd_info *mtd);
->
->
->
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum, hosted by The Linux Foundation
+Peter Pan
