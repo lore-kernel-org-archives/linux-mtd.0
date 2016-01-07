@@ -1,16 +1,18 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHEkn-0003el-4k
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 17:53:41 +0000
-Received: by mail-pa0-x22d.google.com with SMTP id ho8so3206967pac.2
- for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 09:53:20 -0800 (PST)
+ id 1aHEuG-0000dX-Qt
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 18:03:29 +0000
+Received: by mail-pa0-x22f.google.com with SMTP id ho8so3400724pac.2
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 10:03:07 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>,
- Alex Smith <alex@alex-smith.me.uk>, Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: [PATCH] mtd: jz4780_nand: replace if/else blocks with switch/case
-Date: Thu,  7 Jan 2016 09:53:08 -0800
-Message-Id: <1452189188-139318-1-git-send-email-computersforpeace@gmail.com>
+ Harvey Hunt <harvey.hunt@imgtec.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Alex Smith <alex@alex-smith.me.uk>
+Subject: [PATCH] mtd: jz4780_nand: remove useless mtd->priv = chip assignment
+Date: Thu,  7 Jan 2016 10:02:59 -0800
+Message-Id: <1452189779-20001-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,76 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using switch/case helps make this logic more clear and more robust. With
-this structure:
-
- * it's clear that this driver only support ECC_{HW,SOFT,SOFT_BCH}; and
-
- * we can sanely handle new ECC unsupported modes (right now, this code
-   makes incorrect assumptions about the possible values in the
-   nand_ecc_modes_t enum; e.g., what happens with NAND_ECC_HW_OOB_FIRST?)
+As of commit 2d3b77bac34b ("mtd: nand: update mtd_to_nand()"), this
+assignment isn't necessary, since struct mtd_info is embedded in struct
+nand_chip.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Alex Smith <alex@alex-smith.me.uk>
 Cc: Harvey Hunt <harvey.hunt@imgtec.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Alex Smith <alex@alex-smith.me.uk>
 ---
-Compile tested only
-
- drivers/mtd/nand/jz4780_nand.c | 34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+ drivers/mtd/nand/jz4780_nand.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
-index 17eb9f264187..aabee8f5627e 100644
+index 17eb9f264187..6156c554e1c2 100644
 --- a/drivers/mtd/nand/jz4780_nand.c
 +++ b/drivers/mtd/nand/jz4780_nand.c
-@@ -171,29 +171,33 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
- 	chip->ecc.bytes = fls((1 + 8) * chip->ecc.size)	*
- 				(chip->ecc.strength / 8);
+@@ -270,7 +270,6 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
  
--	if (nfc->bch && chip->ecc.mode == NAND_ECC_HW) {
-+	switch (chip->ecc.mode) {
-+	case NAND_ECC_HW:
-+		if (!nfc->bch) {
-+			dev_err(dev, "HW BCH selected, but BCH controller not found\n");
-+			return -ENODEV;
-+		}
-+
- 		chip->ecc.hwctl = jz4780_nand_ecc_hwctl;
- 		chip->ecc.calculate = jz4780_nand_ecc_calculate;
- 		chip->ecc.correct = jz4780_nand_ecc_correct;
--	} else if (!nfc->bch && chip->ecc.mode == NAND_ECC_HW) {
--		dev_err(dev, "HW BCH selected, but BCH controller not found\n");
--		return -ENODEV;
--	}
--
--	if (chip->ecc.mode == NAND_ECC_HW_SYNDROME) {
--		dev_err(dev, "ECC HW syndrome not supported\n");
--		return -EINVAL;
--	}
--
--	if (chip->ecc.mode != NAND_ECC_NONE)
-+		/* fall through */
-+	case NAND_ECC_SOFT:
-+	case NAND_ECC_SOFT_BCH:
- 		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
- 			(nfc->bch) ? "hardware BCH" : "software ECC",
- 			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
--	else
-+		break;
-+	case NAND_ECC_NONE:
- 		dev_info(dev, "not using ECC\n");
-+		break;
-+	default:
-+		dev_err(dev, "ECC mode %d not supported\n", chip->ecc.mode);
-+		return -EINVAL;
-+	}
- 
--	/* The NAND core will generate the ECC layout. */
--	if (chip->ecc.mode == NAND_ECC_SOFT || chip->ecc.mode == NAND_ECC_SOFT_BCH)
-+	/* The NAND core will generate the ECC layout for SW ECC */
-+	if (chip->ecc.mode != NAND_ECC_HW)
- 		return 0;
- 
- 	/* Generate ECC layout. ECC codes are right aligned in the OOB area. */
+ 	chip = &nand->chip;
+ 	mtd = nand_to_mtd(chip);
+-	mtd->priv = chip;
+ 	mtd->name = devm_kasprintf(dev, GFP_KERNEL, "%s.%d", dev_name(dev),
+ 				   cs->bank);
+ 	if (!mtd->name)
 -- 
 2.6.0.rc2.230.g3dd15c0
