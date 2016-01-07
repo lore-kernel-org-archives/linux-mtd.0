@@ -1,10 +1,10 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aH0ct-0004pt-Vt
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 02:48:36 +0000
-Received: by mail-pa0-x232.google.com with SMTP id do7so9045553pab.2
- for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 18:48:15 -0800 (PST)
-Date: Wed, 6 Jan 2016 18:48:12 -0800
+ id 1aH0fV-0006Da-E1
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 02:51:18 +0000
+Received: by mail-pa0-x233.google.com with SMTP id cy9so246479424pac.0
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 18:50:57 -0800 (PST)
+Date: Wed, 6 Jan 2016 18:50:54 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
@@ -14,15 +14,15 @@ Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
  Alexandre Belloni <alexandre.belloni@free-electrons.com>,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] mtd: nand: return consistent error codes in
- ecc.correct() implementations
-Message-ID: <20160107024812.GZ109450@google.com>
+Subject: Re: [PATCH v4 2/5] mtd: nand: use nand_check_erased_ecc_chunk in
+ default ECC read functions
+Message-ID: <20160107025054.GA109450@google.com>
 References: <1451503927-10831-1-git-send-email-boris.brezillon@free-electrons.com>
- <1451503927-10831-2-git-send-email-boris.brezillon@free-electrons.com>
+ <1451503927-10831-3-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1451503927-10831-2-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1451503927-10831-3-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,28 +32,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 30, 2015 at 08:32:03PM +0100, Boris Brezillon wrote:
-> The error code returned by the ecc.correct() are not consistent over the
-> all implementations.
-> 
-> Document the expected behavior in include/linux/mtd/nand.h and fix
-> offending implementations.
+On Wed, Dec 30, 2015 at 08:32:04PM +0100, Boris Brezillon wrote:
+> The default NAND read functions are relying on the underlying controller
+> driver to correct bitflips, but some of those controllers cannot properly
+> fix bitflips in erased pages.
+> Check for bitflips in erased pages in default core functions if the driver
+> delegated the this check by setting the NAND_ECC_GENERIC_ERASED_CHECK flag.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/atmel_nand.c   |  2 +-
->  drivers/mtd/nand/bf5xx_nand.c   | 20 ++++++++++++++------
->  drivers/mtd/nand/davinci_nand.c |  6 +++---
->  drivers/mtd/nand/jz4740_nand.c  |  4 ++--
->  drivers/mtd/nand/mxc_nand.c     |  4 ++--
->  drivers/mtd/nand/nand_bch.c     |  2 +-
->  drivers/mtd/nand/nand_ecc.c     |  2 +-
->  drivers/mtd/nand/omap2.c        |  6 +++---
->  drivers/mtd/nand/r852.c         |  4 ++--
->  include/linux/mtd/nand.h        |  8 +++++++-
->  include/linux/mtd/nand_bch.h    |  2 +-
->  11 files changed, 37 insertions(+), 23 deletions(-)
 
-Pushed patch 1, with added commentary about the bf5xx_nand bugfix.
-
-Brian
+Pushed to l2-mtd.git
