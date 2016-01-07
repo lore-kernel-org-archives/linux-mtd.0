@@ -1,27 +1,27 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from userp1040.oracle.com ([156.151.31.81])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aGzOJ-00064C-0x
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 01:29:27 +0000
-Received: by mail-pa0-x229.google.com with SMTP id yy13so152349623pab.3
- for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2016 17:29:06 -0800 (PST)
-Date: Wed, 6 Jan 2016 17:29:03 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- alex@alex-smith.me.uk, Alex Smith <alex.smith@imgtec.com>,
- Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Paul Burton <paul.burton@imgtec.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, robh@kernel.org
-Subject: Re: [PATCH v11 3/3] MIPS: dts: jz4780/ci20: Add NEMC, BCH and NAND
- device tree nodes
-Message-ID: <20160107012903.GX109450@google.com>
-References: <1451910884-18710-1-git-send-email-harvey.hunt@imgtec.com>
- <1451910884-18710-4-git-send-email-harvey.hunt@imgtec.com>
+ id 1aGzZH-0004AT-AQ
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 01:40:47 +0000
+To: mchristi@redhat.com
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
+ philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+ linux-raid@vger.kernel.org, dm-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH 00/35 v2] separate operations from flags in the
+ bio/request structs
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+References: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
+Date: Wed, 06 Jan 2016 20:40:09 -0500
+In-Reply-To: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
+ (mchristi@redhat.com's message of "Tue, 5 Jan 2016 14:53:03 -0600")
+Message-ID: <yq14meqi2va.fsf@sermon.lab.mkp.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451910884-18710-4-git-send-email-harvey.hunt@imgtec.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,87 +31,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 04, 2016 at 12:34:44PM +0000, Harvey Hunt wrote:
-> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-> index 9fcb9e7..782258c 100644
-> --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+>>>>> "Mike" == mchristi  <mchristi@redhat.com> writes:
 
-As I noted on patch 1, you need to send this to linux-mips + Ralf.
+Mike> The following patches begin to cleanup the request->cmd_flags and
+bio-> bi_rw mess. We currently use cmd_flags to specify the operation,
+Mike> attributes and state of the request. For bi_rw we use it for
+Mike> similar info and also the priority but then also have another
+Mike> bi_flags field for state. At some point, we abused them so much we
+Mike> just made cmd_flags 64 bits, so we could add more.
 
-> @@ -42,3 +42,66 @@
->  &uart4 {
->  	status = "okay";
->  };
-> +
-> +&nemc {
-> +	status = "okay";
-> +
-> +	nandc: nand-controller@1 {
-> +		compatible = "ingenic,jz4780-nand";
-> +		reg = <1 0 0x1000000>;
-> +
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		ingenic,bch-controller = <&bch>;
-> +
-> +		ingenic,nemc-tAS = <10>;
-> +		ingenic,nemc-tAH = <5>;
-> +		ingenic,nemc-tBP = <10>;
-> +		ingenic,nemc-tAW = <15>;
-> +		ingenic,nemc-tSTRV = <100>;
-> +
-> +		nand@1 {
-> +			reg = <1>;
-> +
-> +			nand-ecc-step-size = <1024>;
-> +			nand-ecc-strength = <24>;
-> +			nand-ecc-mode = "hw";
-> +			nand-on-flash-bbt;
-> +
-> +			partitions {
-> +				#address-cells = <2>;
-> +				#size-cells = <2>;
+Mike> The following patches seperate the operation (read, write discard,
+Mike> flush, etc) from cmd_flags/bi_rw.
 
-This binding was updated, so you need:
+Mike> This patchset was made against linux-next from today Jan 5 2016.
+Mike> (git tag next-20160105).
 
-				compatible = "fixed-partitions";
+Very nice work. Thanks for doing this!
 
-Brian
+I think it's a much needed cleanup. I focused mainly on the core block,
+discard, write same and sd.c pieces and everything looks sensible to me.
 
-> +
-> +				partition@0 {
-> +					label = "u-boot-spl";
-> +					reg = <0x0 0x0 0x0 0x800000>;
-> +				};
-> +
-> +				partition@0x800000 {
-> +					label = "u-boot";
-> +					reg = <0x0 0x800000 0x0 0x200000>;
-> +				};
-> +
-> +				partition@0xa00000 {
-> +					label = "u-boot-env";
-> +					reg = <0x0 0xa00000 0x0 0x200000>;
-> +				};
-> +
-> +				partition@0xc00000 {
-> +					label = "boot";
-> +					reg = <0x0 0xc00000 0x0 0x4000000>;
-> +				};
-> +
-> +				partition@0x8c00000 {
-> +					label = "system";
-> +					reg = <0x0 0x4c00000 0x1 0xfb400000>;
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&bch {
-> +	status = "okay";
-> +};
+I wonder what the best approach is to move a patch set with this many
+stakeholders forward? Set a "speak now or forever hold your peace"
+review deadline?
 
-Brian
+-- 
+Martin K. Petersen	Oracle Linux Engineering
