@@ -1,16 +1,13 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHHm7-0006GX-Tr
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 21:07:17 +0000
-Received: from localhost.localdomain ([127.0.0.1]:38974 "EHLO localhost"
- rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
- id S27010434AbcAGVGuYmyBb (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Thu, 7 Jan 2016 22:06:50 +0100
-Date: Thu, 7 Jan 2016 21:06:50 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@linux-mips.org>
-To: Brian Norris <computersforpeace@gmail.com>
-cc: =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>,
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aHJcf-0005r7-E1
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 23:05:38 +0000
+Received: by mail-pa0-x235.google.com with SMTP id yy13so178214091pab.3
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 15:05:16 -0800 (PST)
+Date: Thu, 7 Jan 2016 15:05:13 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  Javier Martinez Canillas <javier@osg.samsung.com>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  Fengguang Wu <fengguang.wu@intel.com>,
@@ -19,14 +16,17 @@ cc: =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>,
  Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  David Woodhouse <dwmw2@infradead.org>, Cyril Bur <cyrilbur@gmail.com>
-Subject: Re: [PATCH] mtd: Make MTD_BCM47XXSFLASH to depend on MIPS
-In-Reply-To: <20151104185341.GN7274@google.com>
-Message-ID: <alpine.LFD.2.20.1601072006170.29879@eddie.linux-mips.org>
+Subject: [PATCH] mtd: bcm47xxsflash: use devm_ioremap_nocache() instead of
+ KSEG0ADDR()
+Message-ID: <20160107230513.GL109450@google.com>
 References: <1444813494-14985-1-git-send-email-javier@osg.samsung.com>
  <CACna6rwjMfTT4UgbyO=VmLaPic4xGcPxoMEL5yRmLW7hhvhXJQ@mail.gmail.com>
  <20151104185341.GN7274@google.com>
+ <alpine.LFD.2.20.1601072006170.29879@eddie.linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.20.1601072006170.29879@eddie.linux-mips.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,47 +36,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 4 Nov 2015, Brian Norris wrote:
+drivers/bcma/driver_chipcommon_sflash.c already nicely sets us up a
+struct resource for this window, but we just aren't using it. Use it
+now!
 
-> > > The bcm47xxsflash driver uses the KSEG0ADDR() function to map an address
-> > > to a certain kernel segment. But that is only defined if the MIPS config
-> > > symbol is enabled. The driver does not have an explicit dependency on it
-> > > and relies on a transitive dependency relation:
-> > >
-> > > MTD_BCM47XXSFLASH -> BCMA_SFLASH -> BCMA_DRIVER_MIPS -> BCMA && MIPS
-> > >
-> > > But BCMA_SFLASH and BCMA_DRIVER_MIPS have only runtime and not buildtime
-> > > dependency with MIPS so can be changed to be built test using the config
-> > > COMPILE_TEST symbol. But that would make MTD_BCM47XXSFLASH be built with
-> > > MIPS not enabled and cause the following build error:
-> > >
-> > > drivers/mtd/devices//bcm47xxsflash.c: In function 'bcm47xxsflash_read':
-> > > drivers/mtd/devices//bcm47xxsflash.c:112:2: error: implicit declaration of function 'KSEG0ADDR' [-Werror=implicit-function-declaration]
-> > >   memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(b47s->window + from),
-> > 
-> > I think we're not really supposed to use KSEG0ADDR anyway. What about
-> > replacing it with ioremap_nocache?
-> 
-> I'm not really a MIPS expert, but isn't KSEG0 actually *cached*? (And is
-> that correct, then?)
-> 
-> AIUI, ioremap_nocache() will actually get you a KSEG1 address here, I
-> think.
+This removes some (implicit) MIPS dependencies and makes the code more
+portable, whether we need it or not :)
 
- Depending on configuration `ioremap_nocache' may give you a KSEG1, an 
-XKPHYS or an uncached virtual (KSEG2) address.  Drivers are not supposed 
-to use KSEG0ADDR, etc. macros, these are only for low-level core platform 
-code.  Besides, KSEG0ADDR is not portable to 64-bit systems -- which may 
-not be an issue here, but still this means it shouldn't appear in a driver 
-as this causes a portability and maintenance issue.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+On Thu, Jan 07, 2016 at 09:06:50PM +0000, Maciej W. Rozycki wrote:
+> On Wed, 4 Nov 2015, Brian Norris wrote:
+> > > I think we're not really supposed to use KSEG0ADDR anyway. What about
+> > > replacing it with ioremap_nocache?
 
- Use plain `ioremap' instead for a cached MMIO mapping; of course you need 
-to place it elsewhere as at the very least you need to `iounmap' the area 
-mappad later on.  In most cases it makes sense to handle the mapping and 
-unmapping in device initialisation and shutdown respectively, and then 
-carry the pointer obtained through and use it throughout the use of the 
-device.
+OK, done! Compile tested only.
 
- HTH,
+ drivers/bcma/driver_chipcommon_sflash.c     |  1 -
+ drivers/mtd/devices/bcm47xxsflash.c         | 30 +++++++++++++++++++++++------
+ drivers/mtd/devices/bcm47xxsflash.h         |  3 ++-
+ include/linux/bcma/bcma_driver_chipcommon.h |  1 -
+ 4 files changed, 26 insertions(+), 9 deletions(-)
 
-  Maciej
+diff --git a/drivers/bcma/driver_chipcommon_sflash.c b/drivers/bcma/driver_chipcommon_sflash.c
+index 7e11ef4cb7db..5534cbcc222f 100644
+--- a/drivers/bcma/driver_chipcommon_sflash.c
++++ b/drivers/bcma/driver_chipcommon_sflash.c
+@@ -145,7 +145,6 @@ int bcma_sflash_init(struct bcma_drv_cc *cc)
+ 		return -ENOTSUPP;
+ 	}
+ 
+-	sflash->window = BCMA_SOC_FLASH2;
+ 	sflash->blocksize = e->blocksize;
+ 	sflash->numblocks = e->numblocks;
+ 	sflash->size = sflash->blocksize * sflash->numblocks;
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 347bb83db864..ce6b7e51569d 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -2,6 +2,7 @@
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/delay.h>
++#include <linux/ioport.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/platform_device.h>
+ #include <linux/bcma/bcma.h>
+@@ -109,8 +110,7 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if ((from + len) > mtd->size)
+ 		return -EINVAL;
+ 
+-	memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(b47s->window + from),
+-		      len);
++	memcpy_fromio(buf, b47s->window + from, len);
+ 	*retlen = len;
+ 
+ 	return len;
+@@ -275,15 +275,34 @@ static void bcm47xxsflash_bcma_cc_write(struct bcm47xxsflash *b47s, u16 offset,
+ 
+ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ {
+-	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
++	struct device *dev = &pdev->dev;
++	struct bcma_sflash *sflash = dev_get_platdata(dev);
+ 	struct bcm47xxsflash *b47s;
++	struct resource *res;
+ 	int err;
+ 
+-	b47s = devm_kzalloc(&pdev->dev, sizeof(*b47s), GFP_KERNEL);
++	b47s = devm_kzalloc(dev, sizeof(*b47s), GFP_KERNEL);
+ 	if (!b47s)
+ 		return -ENOMEM;
+ 	sflash->priv = b47s;
+ 
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(dev, "invalid resource\n");
++		return -EINVAL;
++	}
++	if (!devm_request_mem_region(dev, res->start, resource_size(res),
++				     res->name)) {
++		dev_err(dev, "can't request region for resource %pR\n", res);
++		return -EBUSY;
++	}
++	b47s->window = devm_ioremap_nocache(dev, res->start,
++					    resource_size(res));
++	if (!b47s->window) {
++		dev_err(dev, "ioremap failed for resource %pR\n", res);
++		return -ENOMEM;
++	}
++
+ 	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
+ 	b47s->cc_read = bcm47xxsflash_bcma_cc_read;
+ 	b47s->cc_write = bcm47xxsflash_bcma_cc_write;
+@@ -297,11 +316,10 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 		break;
+ 	}
+ 
+-	b47s->window = sflash->window;
+ 	b47s->blocksize = sflash->blocksize;
+ 	b47s->numblocks = sflash->numblocks;
+ 	b47s->size = sflash->size;
+-	bcm47xxsflash_fill_mtd(b47s, &pdev->dev);
++	bcm47xxsflash_fill_mtd(b47s, dev);
+ 
+ 	err = mtd_device_parse_register(&b47s->mtd, probes, NULL, NULL, 0);
+ 	if (err) {
+diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
+index fe93daf4f489..1564b62b412e 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.h
++++ b/drivers/mtd/devices/bcm47xxsflash.h
+@@ -65,7 +65,8 @@ struct bcm47xxsflash {
+ 
+ 	enum bcm47xxsflash_type type;
+ 
+-	u32 window;
++	void __iomem *window;
++
+ 	u32 blocksize;
+ 	u16 numblocks;
+ 	u32 size;
+diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
+index db51a6ffb7d6..03e6fea9e9ce 100644
+--- a/include/linux/bcma/bcma_driver_chipcommon.h
++++ b/include/linux/bcma/bcma_driver_chipcommon.h
+@@ -583,7 +583,6 @@ struct mtd_info;
+ 
+ struct bcma_sflash {
+ 	bool present;
+-	u32 window;
+ 	u32 blocksize;
+ 	u16 numblocks;
+ 	u32 size;
+-- 
+2.6.0.rc2.230.g3dd15c0
