@@ -1,19 +1,23 @@
-Received: from mail-bn1bon0114.outbound.protection.outlook.com
- ([157.56.111.114] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHGXV-0001ws-0y
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 19:48:05 +0000
-Message-ID: <1452196053.19133.23.camel@freescale.com>
-Subject: Re: [PATCH] mtd: nand: add FSL_SOC dependency to drivers using FSL_LBC
-From: Scott Wood <scottwood@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: <linuxppc-dev@lists.ozlabs.org>
-Date: Thu, 7 Jan 2016 13:47:33 -0600
-In-Reply-To: <1452194501-115280-1-git-send-email-computersforpeace@gmail.com>
-References: <1452194501-115280-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+ id 1aHH9a-00042A-Oc
+ for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 20:27:27 +0000
+Received: by mail-pa0-x233.google.com with SMTP id uo6so248676797pac.1
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 12:27:06 -0800 (PST)
+Date: Thu, 7 Jan 2016 12:27:03 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, Harvey Hunt <harvey.hunt@imgtec.com>,
+ Alex Smith <alex@alex-smith.me.uk>
+Subject: Re: [PATCH] mtd: jz4780_nand: remove useless mtd->priv = chip
+ assignment
+Message-ID: <20160107202703.GH109450@google.com>
+References: <1452189779-20001-1-git-send-email-computersforpeace@gmail.com>
+ <20160107203247.0a6fb5ed@bbrezillon>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160107203247.0a6fb5ed@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2016-01-07 at 11:21 -0800, Brian Norris wrote:
-> I've managed to construct .config files (for ppc64) that come across
-> this Kconfig warning:
+On Thu, Jan 07, 2016 at 08:32:47PM +0100, Boris Brezillon wrote:
+> On Thu,  7 Jan 2016 10:02:59 -0800
+> Brian Norris <computersforpeace@gmail.com> wrote:
 > 
->   warning: (MPC836x_RDK && MTD_NAND_FSL_ELBC && MTD_NAND_FSL_UPM) selects
-> FSL_LBC which has unmet direct dependencies (FSL_SOC)
+> > As of commit 2d3b77bac34b ("mtd: nand: update mtd_to_nand()"), this
+> > assignment isn't necessary, since struct mtd_info is embedded in struct
+> > nand_chip.
+> > 
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > Cc: Harvey Hunt <harvey.hunt@imgtec.com>
+> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Cc: Alex Smith <alex@alex-smith.me.uk>
 > 
-> Let's add the FSL_SOC dependency to the NAND drivers. AFAICT, they are
-> only supported on PPC32 FSL SoCs anyway.
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-There are other problems, if you can enable an 83xx board on ppc64.  PPC_83xx
-does select FSL_SOC so I don't know why it's unmet.
-
-FWIW, I think we should instead drop the FSL_SOC dependency from FSL_LBC.  It
-doesn't use anything that I can see from fsl_soc.c.  It's been commonly abused
-as a means for hiding the option on builds for other platforms, but that has
-to stop anyway now that many of these devices are also on ARM-based chips. 
- eLBC isn't, since it was obsoleted by IFC, but it shouldn't be unnecessarily
-different from IFC.  IFC currently depends on FSL_SOC but that needs to go
-away.
-
--Scott
+Thanks! Applied to l2-mtd.git
