@@ -1,25 +1,20 @@
-Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aH9uO-00055S-QO
- for linux-mtd@lists.infradead.org; Thu, 07 Jan 2016 12:43:17 +0000
-Received: by mail-wm0-x22c.google.com with SMTP id f206so95723425wmf.0
- for <linux-mtd@lists.infradead.org>; Thu, 07 Jan 2016 04:42:55 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20160107012036.GU109450@google.com>
-References: <1451336091-8210-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <20160107012036.GU109450@google.com>
-Date: Thu, 7 Jan 2016 09:42:54 -0300
-Message-ID: <CAAEAJfBCRD4QmkyUpH3iqXVd4wbXT=8EbOhnCBoAEk1d8HWtgQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: wait until lock/unlock operations are
- ready
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date: Thu, 7 Jan 2016 15:52:37 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Stas Sergeev <stsp@list.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 55/58] mtd: nand: add helpers to access ->priv
+Message-ID: <20160107155237.7271aa7e@bbrezillon>
+In-Reply-To: <20160106231323.GM109450@google.com>
+References: <1449734442-18672-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1449734442-18672-56-git-send-email-boris.brezillon@free-electrons.com>
+ <20151218221758.GQ10460@google.com>
+ <20151219040124.7ffe4274@bbrezillon>
+ <20160106231323.GM109450@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +24,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6 January 2016 at 22:20, Brian Norris <computersforpeace@gmail.com> wrot=
-e:
-> On Mon, Dec 28, 2015 at 05:54:51PM -0300, Ezequiel Garcia wrote:
->> On Micron and Numonyx devices, the status register write command
->> (WRSR), raises a work-in-progress bit (WIP) on the status register.
->> The datasheets for these devices specify that while the status
->> register write is in progress, the status register WIP bit can still
->> be read to check the end of the operation.
->>
->> This commit adds a wait_till_ready call on lock/unlock operations,
->> only for these manufacturers. This is needed to prevent applications
->
-> Edited the above sentence, since you're not doing this "only for these
-> manufacturers"; you're doing it for all that support lock/unlock.
+Hi Brian,
 
-Just to make sure we are on the same page here, this commit only
-changes stm_lock, stm_unlock. So the change currently affects devices that
-match JEDEC_MFR(info) =3D=3D SNOR_MFR_MICRON.
+On Wed, 6 Jan 2016 15:13:23 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+> On Sat, Dec 19, 2015 at 04:01:24AM +0100, Boris Brezillon wrote:
+> > Actually the nand_{get,set}_controller_data() helpers are not about
+> > assigning NAND controller private data (as you pointed those can
+> > already be retrieved thanks to the ->controller field using the
+> > container_of() trick), but per-chip private data instantiated by the
+> > NAND controller and attached to a specific chip. For example, some
+> > controllers pre-compute some register values or a clk rate to set when
+> > a specific chip is selected. This is what per-chip controller data is
+> > meant for.
+> 
+> Sure. Really, it's just anything the controller driver needs to store on
+> a per-chip basis. All I'm suggesting is picking a name that doesn't
+> imply it's a per-controller instance, when it's actually a
+> per-flash-chip instance.
+> 
+> > Now, the reason I explicitly specified the data usage instead of using
+> > a generic name like nand_{get,set}_data() is because I plan to define
+> 
+> I never suggested just "_data"; I said "_drvdata".
+
+Not sure it clarifies the per-chip aspect ;), and driver is, IMHO, too
+generic: I also consider manufacturer specific code as drivers (but in
+this case they are chip drivers, not controller drivers).
+
+How about nand_{get,set}_ctrldrvdata()?
+
+> 
+> > other helpers to allow NAND manufacturer code to manipulate its own
+> > private data. This is required if we want to support read-retry on some
+> > chips who are requiring a read OTP area step to retrieve some register
+> > values which will later be used to change from one read-retry mode to
+> > another.
+> > The plan was to define the nand_{set,get}_manufacturer_data() helpers,
+> > and create or reuse an existing priv field (mtd->priv?) to store this
+> > private data.
+> 
+> That's interesting. Sounds like an OK idea. (Personally, I wouldn't
+> try to use mtd->priv for this, but otherwise looks OK.)
+
+Yes, I don't like the idea of using mtd->priv to store that, but it's
+shame to have this unused field and create another one :p.
+
+> 
+> > Also note that the spi framework provides the same kind of helpers [1].
+> 
+> Hmm, OK. FWIW, they have both "driver data" and "controller state". It's
+> not perfectly clear to me why both exist.
+
+Well, "driver data" in this case is the data used by the i2c device
+driver (the driver communicating with the device on the i2c bus), while
+the "controller state" is the per-device controller specific data.
+If we do the analogy with the NAND framework, I'd consider the
+"SPI controller state" as what I call here the "NAND controller per-chip
+data", and the "SPI driver data" as the "manufacturer data".
+
+I know the names are not necessarily better in the SPI framework, but I
+think we should find names that describe as much as possible which
+data is used by which part of the code. 
+
+> 
+> > This being said, I'm perfectly fine changing the function names, but
+> > I'd like to replace it by something explicitly telling the user that
+> > this field should only be set by NAND controller drivers. 
+> 
+> Sure. I though a "driver data"-based name did this. But I'll leave it to
+> you. I could even be OK with "controller data", if you still think this
+> fits your overall controller refactoring plan, and communicates its
+> purpose best.
+
+If you're OK with that I'd like to keep a name containing the
+'controller' or 'ctrl' word in it:
+1/ nand_{get,set}_controller_data() (the names originally proposed)
+2/ nand_{get,set}_ctrldrv_data() or nand_{get,set}_ctrldrvdata()
+
+What do you prefer?
+
+Best Regards,
+
+Boris
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
