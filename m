@@ -1,23 +1,21 @@
-Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHb9Y-0002CC-7V
- for linux-mtd@lists.infradead.org; Fri, 08 Jan 2016 17:48:44 +0000
-Received: by mail-pa0-x242.google.com with SMTP id yy13so21797232pab.1
- for <linux-mtd@lists.infradead.org>; Fri, 08 Jan 2016 09:48:23 -0800 (PST)
-Date: Fri, 8 Jan 2016 09:48:20 -0800
+ id 1aHbAw-0002WP-7x
+ for linux-mtd@lists.infradead.org; Fri, 08 Jan 2016 17:50:10 +0000
+Received: by mail-pf0-x243.google.com with SMTP id 65so965571pff.2
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Jan 2016 09:49:49 -0800 (PST)
+Date: Fri, 8 Jan 2016 09:49:47 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Harvey Hunt <harvey.hunt@imgtec.com>, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, Alex Smith <alex@alex-smith.me.uk>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: jz4780: Update ecc correction error codes
-Message-ID: <20160108174820.GM109450@google.com>
-References: <1452271517-18993-1-git-send-email-harvey.hunt@imgtec.com>
- <20160108181422.4b94ffbd@bbrezillon>
+To: Harvey Hunt <harvey.hunt@imgtec.com>
+Cc: linux-mtd@lists.infradead.org, Alex Smith <alex@alex-smith.me.uk>
+Subject: Re: [PATCH] mtd: jz4780_nand: replace if/else blocks with switch/case
+Message-ID: <20160108174947.GN109450@google.com>
+References: <1452189188-139318-1-git-send-email-computersforpeace@gmail.com>
+ <568FE348.7070805@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160108181422.4b94ffbd@bbrezillon>
+In-Reply-To: <568FE348.7070805@imgtec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 08, 2016 at 06:14:22PM +0100, Boris Brezillon wrote:
-> On Fri, 8 Jan 2016 16:45:17 +0000
-> Harvey Hunt <harvey.hunt@imgtec.com> wrote:
+On Fri, Jan 08, 2016 at 04:26:48PM +0000, Harvey Hunt wrote:
+> Hi Brian,
 > 
-> > Update jz4780_bch_ecc_correct's return codes with appropriate values,
-> > as specified in /include/linux/mtd/nand.h.
+> On 07/01/16 17:53, Brian Norris wrote:
+> >Using switch/case helps make this logic more clear and more robust. With
+> >this structure:
+> >
+> >  * it's clear that this driver only support ECC_{HW,SOFT,SOFT_BCH}; and
+> >
+> >  * we can sanely handle new ECC unsupported modes (right now, this code
+> >    makes incorrect assumptions about the possible values in the
+> >    nand_ecc_modes_t enum; e.g., what happens with NAND_ECC_HW_OOB_FIRST?)
+> >
+> >Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> >Cc: Alex Smith <alex@alex-smith.me.uk>
+> >Cc: Harvey Hunt <harvey.hunt@imgtec.com>
 > 
-> Oh, nice catch.
+> I've just tested this on a Ci20 and all seems well.
+> 
+> Tested-by: Harvey Hunt <harvey.hunt@imgtec.com>
+> Acked-by: Harvey Hunt <harvey.hunt@imgtec.com>
 
-Agreed.
-
-> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-Applied, thanks
+Great, applied to l2-mtd.git
