@@ -1,21 +1,23 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-pa0-x244.google.com ([2607:f8b0:400e:c03::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHbAw-0002WP-7x
- for linux-mtd@lists.infradead.org; Fri, 08 Jan 2016 17:50:10 +0000
-Received: by mail-pf0-x243.google.com with SMTP id 65so965571pff.2
- for <linux-mtd@lists.infradead.org>; Fri, 08 Jan 2016 09:49:49 -0800 (PST)
-Date: Fri, 8 Jan 2016 09:49:47 -0800
+ id 1aHbIa-0007td-DM
+ for linux-mtd@lists.infradead.org; Fri, 08 Jan 2016 17:58:04 +0000
+Received: by mail-pa0-x244.google.com with SMTP id pv5so22821242pac.0
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Jan 2016 09:57:44 -0800 (PST)
+Date: Fri, 8 Jan 2016 09:57:41 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: linux-mtd@lists.infradead.org, Alex Smith <alex@alex-smith.me.uk>
-Subject: Re: [PATCH] mtd: jz4780_nand: replace if/else blocks with switch/case
-Message-ID: <20160108174947.GN109450@google.com>
-References: <1452189188-139318-1-git-send-email-computersforpeace@gmail.com>
- <568FE348.7070805@imgtec.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Daniel Walter <dwalter@sigma-star.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [RFC] [PATCH] mtd: add tracepoints for mtd_read and mtd_write
+Message-ID: <20160108175741.GO109450@google.com>
+References: <20151117191448.GA5367@dw-nb.local>
+ <20151117191801.GA864@dw-nb.local>
+ <CAFLxGvxPHN0JcEZShS_QV869U_E+Rdk=DYTCTeUHQ-eiH4_BfA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <568FE348.7070805@imgtec.com>
+In-Reply-To: <CAFLxGvxPHN0JcEZShS_QV869U_E+Rdk=DYTCTeUHQ-eiH4_BfA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 08, 2016 at 04:26:48PM +0000, Harvey Hunt wrote:
-> Hi Brian,
-> 
-> On 07/01/16 17:53, Brian Norris wrote:
-> >Using switch/case helps make this logic more clear and more robust. With
-> >this structure:
+On Fri, Jan 08, 2016 at 10:33:03AM +0100, Richard Weinberger wrote:
+> On Tue, Nov 17, 2015 at 8:18 PM, Daniel Walter <dwalter@sigma-star.at> wrote:
+> > Add tracepoints to mtd subsystem for read and write
+> > operations. This should allow us to identify applications
+> > which are generating too much reads/writes on a flash-device.
 > >
-> >  * it's clear that this driver only support ECC_{HW,SOFT,SOFT_BCH}; and
-> >
-> >  * we can sanely handle new ECC unsupported modes (right now, this code
-> >    makes incorrect assumptions about the possible values in the
-> >    nand_ecc_modes_t enum; e.g., what happens with NAND_ECC_HW_OOB_FIRST?)
-> >
-> >Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> >Cc: Alex Smith <alex@alex-smith.me.uk>
-> >Cc: Harvey Hunt <harvey.hunt@imgtec.com>
+> > Signed-off-by: Daniel Walter <dwalter@sigma-star.at>
 > 
-> I've just tested this on a Ci20 and all seems well.
-> 
-> Tested-by: Harvey Hunt <harvey.hunt@imgtec.com>
-> Acked-by: Harvey Hunt <harvey.hunt@imgtec.com>
+> Brian, any comments on this?
 
-Great, applied to l2-mtd.git
+Only a few. I'm not very familiar with writing trace events. I've only
+barely used them! And I haven't run this patch yet.
+
+But I thought Daniel reported having some difficulty here -- that it
+isn't actually that useful to get real "user" information, since most
+writing/erasing happens from background UBI tasks in practice. So is
+this still the best mechanism for tracking this information? (Even if
+there's better ways to get info directly out of UBI, I guess maybe it'd
+still be good to have this infrastructure.)
+
+Also, maybe I'm missing something, but it doesn't look like this
+attempts to record *which* MTD is being accessed, right? I'd think
+logging mtd->name could help?
+
+Brian
