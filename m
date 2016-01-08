@@ -1,24 +1,19 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHRzg-0004b3-VF
- for linux-mtd@lists.infradead.org; Fri, 08 Jan 2016 08:01:59 +0000
-Date: Fri, 8 Jan 2016 09:01:28 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Archit Taneja <architt@codeaurora.org>
-Cc: computersforpeace@gmail.com, linux-arm-msm@vger.kernel.org,
- cernekee@gmail.com, sboyd@codeaurora.org, linux-mtd@lists.infradead.org,
- dehrenberg@google.com, andy.gross@linaro.org
-Subject: Re: [PATCH v5 2/3] mtd: nand: Qualcomm NAND controller driver
-Message-ID: <20160108090128.701baa7a@bbrezillon>
-In-Reply-To: <568F5835.4090206@codeaurora.org>
-References: <1439959746-25498-1-git-send-email-architt@codeaurora.org>
- <1451971501-18160-1-git-send-email-architt@codeaurora.org>
- <1451971501-18160-3-git-send-email-architt@codeaurora.org>
- <20160106180544.281804eb@bbrezillon>
- <568F5835.4090206@codeaurora.org>
+ id 1aHTG0-0000i9-9D
+ for linux-mtd@lists.infradead.org; Fri, 08 Jan 2016 09:22:55 +0000
+Message-ID: <568F7DEE.50106@cn.fujitsu.com>
+Date: Fri, 8 Jan 2016 17:14:22 +0800
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+CC: <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] nand: add nandflipbits tool
+References: <1417094958-20360-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20151112210414.GF8456@google.com>
+In-Reply-To: <20151112210414.GF8456@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,332 +24,494 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 8 Jan 2016 12:03:25 +0530
-Archit Taneja <architt@codeaurora.org> wrote:
+On 11/13/2015 05:04 AM, Brian Norris wrote:
+> Hi Boris,
 
-> Hi,
-> 
-> On 1/6/2016 10:35 PM, Boris Brezillon wrote:
-> > Hi Archit,
-> >
-> > On Tue,  5 Jan 2016 10:55:00 +0530
-> > Archit Taneja <architt@codeaurora.org> wrote:
-> >
-> >> The Qualcomm NAND controller is found in SoCs like IPQ806x, MSM7xx,
-> >> MDM9x15 series.
-> >>
-> >> It exists as a sub block inside the IPs EBI2 (External Bus Interface 2)
-> >> and QPIC (Qualcomm Parallel Interface Controller). These IPs provide a
-> >> broader interface for external slow peripheral devices such as LCD and
-> >> NAND/NOR flash memory or SRAM like interfaces.
-> >>
-> >> We add support for the NAND controller found within EBI2. For the SoCs
-> >> of our interest, we only use the NAND controller within EBI2. Therefore,
-> >> it's safe for us to assume that the NAND controller is a standalone block
-> >> within the SoC.
-> >>
-> >> The controller supports 512B, 2kB, 4kB and 8kB page 8-bit and 16-bit NAND
-> >> flash devices. It contains a HW ECC block that supports BCH ECC (4, 8 and
-> >> 16 bit correction/step) and RS ECC(4 bit correction/step) that covers main
-> >> and spare data. The controller contains an internal 512 byte page buffer
-> >> to which we read/write via DMA. The EBI2 type NAND controller uses ADM DMA
-> >> for register read/write and data transfers. The controller performs page
-> >> reads and writes at a codeword/step level of 512 bytes. It can support up
-> >> to 2 external chips of different configurations.
-> >>
-> >> The driver prepares register read and write configuration descriptors for
-> >> each codeword, followed by data descriptors to read or write data from the
-> >> controller's internal buffer. It uses a single ADM DMA channel that we get
-> >> via dmaengine API. The controller requires 2 ADM CRCIs for command and
-> >> data flow control. These are passed via DT.
-> >>
-> >> The ecc layout used by the controller is syndrome like, but we can't use
-> >> the standard syndrome ecc ops because of several reasons. First, the amount
-> >> of data bytes covered by ecc isn't same in each step. Second, writing to
-> >> free oob space requires us writing to the entire step in which the oob
-> >> lies. This forces us to create our own ecc ops.
-> >>
-> >> One more difference is how the controller accesses the bad block marker.
-> >> The controller ignores reading the marker when ECC is enabled. ECC needs
-> >> to be explicity disabled to read or write to the bad block marker. The
-> >> nand_bbt helpers library hence can't access BBMs for the controller.
-> >> For now, we skip the creation of BBT and populate chip->block_bad and
-> >> chip->block_markbad helpers instead.
-> >>
-> >> Reviewed-by: Andy Gross <agross@codeaurora.org>
-> >> Reviewed-by: Stephen Boyd <sboyd@codeaurora.org>
-> >> Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
-> >> Signed-off-by: Archit Taneja <architt@codeaurora.org>
-> >> ---
-> >> v5:
-> >>    - split chip/controller structs
-> >>    - simplify layout by considering reserved bytes as part of ECC
-> >>    - create ecc layouts automatically
-> >>    - implement block_bad and block_markbad chip ops instead of
-> >>    - read_oob_raw/write_oob_raw ecc ops to access BBMs.
-> >>    - Add NAND_SKIP_BBTSCAN flag until we get badblockbits support.
-> >>    - misc clean ups
-> >>
-> >> v4:
-> >>    - Shrink submit_descs
-> >>    - add desc list node at the end of dma_prep_desc
-> >>    - Endianness and warning fixes
-> >>    - Add Stephen's Signed-off since he provided a patch to fix
-> >>      endianness problems
-> >>
-> >> v3:
-> >>    - Refactor dma functions for maximum reuse
-> >>    - Use dma_slave_confing on stack
-> >>    - optimize and clean upempty_page_fixup using memchr_inv
-> >>    - ensure portability with dma register reads using le32_* funcs
-> >>    - use NAND_USE_BOUNCE_BUFFER instead of doing it ourselves
-> >>    - fix handling of return values of dmaengine funcs
-> >>    - constify wherever possible
-> >>    - Remove dependency on ADM DMA in Kconfig
-> >>    - Misc fixes and clean ups
-> >>
-> >> v2:
-> >>    - Use new BBT flag that allows us to read BBM in raw mode
-> >>    - reduce memcpy-s in the driver
-> >>    - some refactor and clean ups because of above changes
-> >>
-> >>   drivers/mtd/nand/Kconfig      |    7 +
-> >>   drivers/mtd/nand/Makefile     |    1 +
-> >>   drivers/mtd/nand/qcom_nandc.c | 1981 +++++++++++++++++++++++++++++++++++++++++
-> >>   3 files changed, 1989 insertions(+)
-> >>   create mode 100644 drivers/mtd/nand/qcom_nandc.c
-> >>
-> >> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> >> index 95b8d2b..2fccdfb 100644
-> >> --- a/drivers/mtd/nand/Kconfig
-> >> +++ b/drivers/mtd/nand/Kconfig
-> >> @@ -546,4 +546,11 @@ config MTD_NAND_HISI504
-> >>   	help
-> >>   	  Enables support for NAND controller on Hisilicon SoC Hip04.
-> >>
-> >> +config MTD_NAND_QCOM
-> >> +	tristate "Support for NAND on QCOM SoCs"
-> >> +	depends on ARCH_QCOM
-> >> +	help
-> >> +	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
-> >> +	  controller. This controller is found on IPQ806x SoC.
-> >> +
-> >>   endif # MTD_NAND
-> >> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> >> index 2c7f014..9450cdc 100644
-> >> --- a/drivers/mtd/nand/Makefile
-> >> +++ b/drivers/mtd/nand/Makefile
-> >> @@ -55,5 +55,6 @@ obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
-> >>   obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
-> >>   obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
-> >>   obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
-> >> +obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
-> >>
-> >>   nand-objs := nand_base.o nand_bbt.o nand_timings.o
-> >> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> >> new file mode 100644
-> >> index 0000000..a4dd922
-> >> --- /dev/null
-> >> +++ b/drivers/mtd/nand/qcom_nandc.c
+Hi Boris,
+	do you have a time to update this patch, good
+tool to us for debugging.
 
-[...]
-
-> >
-> >> +
-> >> +/*
-> >> + * when using RS ECC, the NAND controller flags an error when reading an
-> >> + * erased page. however, there are special characters at certain offsets when
-> >> + * we read the erased page. we check here if the page is really empty. if so,
-> >> + * we replace the magic characters with 0xffs
-> >> + */
-> >> +static bool empty_page_fixup(struct qcom_nand_host *host, u8 *data_buf)
-> >> +{
-> >> +	struct qcom_nand_controller *nandc = host->nandc;
-> >> +	struct nand_chip *chip = &host->chip;
-> >> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> >> +	int cwperpage = chip->ecc.steps;
-> >> +	u8 orig1[MAX_NUM_STEPS], orig2[MAX_NUM_STEPS];
-> >> +	int i, j;
-> >> +
-> >> +	/* if BCH is enabled, HW will take care of detecting erased pages */
-> >> +	if (host->bch_enabled || !host->use_ecc)
-> >> +		return false;
-> >> +
-> >> +	for (i = 0; i < cwperpage; i++) {
-> >> +		u8 *empty1, *empty2;
-> >> +		u32 flash_status = le32_to_cpu(nandc->reg_read_buf[3 * i]);
-> >> +
-> >> +		/*
-> >> +		 * an erased page flags an error in NAND_FLASH_STATUS, check if
-> >> +		 * the page is erased by looking for 0x54s at offsets 3 and 175
-> >> +		 * from the beginning of each codeword
-> >> +		 */
-> >> +		if (!(flash_status & FS_OP_ERR))
-> >> +			break;
-> >> +
-> >> +		empty1 = &data_buf[3 + i * host->cw_data];
-> >> +		empty2 = &data_buf[175 + i * host->cw_data];
-> >> +
-> >> +		/*
-> >> +		 * if the error wasn't because of an erased page, bail out and
-> >> +		 * and let someone else do the error checking
-> >> +		 */
-> >> +		if ((*empty1 == 0x54 && *empty2 == 0xff) ||
-> >> +				(*empty1 == 0xff && *empty2 == 0x54)) {
-> >> +			orig1[i] = *empty1;
-> >> +			orig2[i] = *empty2;
-> >> +
-> >> +			*empty1 = 0xff;
-> >> +			*empty2 = 0xff;
-> >> +		} else {
-> >> +			break;
-> >> +		}
-> >> +	}
-> >> +
-> >> +	if (i < cwperpage || memchr_inv(data_buf, 0xff, mtd->writesize))
-> >> +		goto not_empty;
-> >> +
-> >> +	/*
-> >> +	 * tell the caller that the page was empty and is fixed up, so that
-> >> +	 * parse_read_errors() doesn't think it's an error
-> >> +	 */
-> >> +	return true;
-> >> +
-> >> +not_empty:
-> >> +	/* restore original values if not empty*/
-> >> +	for (j = 0; j < i; j++) {
-> >> +		data_buf[3 + j * host->cw_data] = orig1[j];
-> >> +		data_buf[175 + j * host->cw_data] = orig2[j];
-> >> +	}
-> >> +
-> >> +	return false;
-> >> +}
-> >
-> > This empty page detection seems a bit complicated to me. Could you
-> > consider using nand_check_erased_ecc_chunk() to check is the chunk is
-> > containing 0xff data instead of implementing your own logic?
-> 
-> We wouldn't be able to use nand_check_erased_ecc_chunk directly because
-> there are certain bytes in each chunk that are intentionally not 0xffs.
-> 
-> But I could make it a two step process, where I first override those
-> magic bytes with 0xffs, and then use nand_check_erased_ecc_chunk. That
-> may not reduce tons of code, but would atleast consider possibility
-> of bitflips in erased pages, which the driver currently doesn't do.
-
-Too bad your ECC engines decides to fix some bits even when it cannot
-fix all of them. Are you sure there's no flag to disable this behavior?
-Usually ECC engines just flag the data chunk as uncorrectable and leave
-its data untouched.
-
-Anyway, are you sure your heuristic to detect erased pages is 100%
-sure. What if you really have a lot of bitflips but the values @3 and
-@175 are still 0x54 and 0xff because those are the bitflips the engine
-decided to fix?
-
-Actually, I don't know if you have any other option but to re-read the
-page in raw mode and use nand_check_erased_ecc_chunk(). It adds a
-considerable overhead, but at least you're sure to detect real empty
-pages without any false positive.
-
-> 
-> >
-> >
-> > [...]
-> >
-> >> +
-> >> +static int qcom_nand_host_setup(struct qcom_nand_host *host)
-> >> +{
-> >> +	struct qcom_nand_controller *nandc = host->nandc;
-> >> +	struct nand_chip *chip = &host->chip;
-> >> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> >> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> >> +	int cwperpage, spare_bytes, bbm_size, bad_block_byte;
-> >> +	bool wide_bus;
-> >> +	int ecc_mode = 1;
-> >> +
-> >> +	/*
-> >> +	 * the controller requires each step consists of 512 bytes of data.
-> >> +	 * bail out if DT has populated a wrong step size.
-> >> +	 */
-> >> +	if (ecc->size != NANDC_STEP_SIZE) {
-> >> +		dev_err(nandc->dev, "invalid ecc size\n");
-> >> +		return -EINVAL;
-> >> +	}
-> >> +
-> >> +	wide_bus = chip->options & NAND_BUSWIDTH_16 ? true : false;
-> >> +
-> >> +	if (ecc->strength >= 8) {
-> >> +		/* 8 bit ECC defaults to BCH ECC on all platforms */
-> >> +		host->bch_enabled = true;
-> >> +		ecc_mode = 1;
-> >> +
-> >> +		if (wide_bus) {
-> >> +			host->ecc_bytes_hw = 14;
-> >> +			spare_bytes = 0;
-> >> +			bbm_size = 2;
-> >> +		} else {
-> >> +			host->ecc_bytes_hw = 13;
-> >> +			spare_bytes = 2;
-> >> +			bbm_size = 1;
-> >> +		}
-> >> +	} else {
-> >> +		/*
-> >> +		 * if the controller supports BCH for 4 bit ECC, the controller
-> >> +		 * uses lesser bytes for ECC. If RS is used, the ECC bytes is
-> >> +		 * always 10 bytes
-> >> +		 */
-> >> +		if (nandc->ecc_modes & ECC_BCH_4BIT) {
-> >> +			/* BCH */
-> >> +			host->bch_enabled = true;
-> >> +			ecc_mode = 0;
-> >> +
-> >> +			if (wide_bus) {
-> >> +				host->ecc_bytes_hw = 8;
-> >> +				spare_bytes = 2;
-> >> +				bbm_size = 2;
-> >> +			} else {
-> >> +				host->ecc_bytes_hw = 7;
-> >> +				spare_bytes = 4;
-> >> +				bbm_size = 1;
-> >> +			}
-> >> +		} else {
-> >> +			/* RS */
-> >> +			host->ecc_bytes_hw = 10;
-> >> +
-> >> +			if (wide_bus) {
-> >> +				spare_bytes = 0;
-> >> +				bbm_size = 2;
-> >> +			} else {
-> >> +				spare_bytes = 1;
-> >> +				bbm_size = 1;
-> >> +			}
-> >> +		}
-> >> +	}
-> >> +
-> >> +	/*
-> >> +	 * we consider ecc->bytes as the sum of all the non-data content in a
-> >> +	 * step. It gives us a clean representation of the oob area (even if
-> >> +	 * all the bytes aren't used for ECC).It is always 16 bytes for 8 bit
-> >> +	 * ECC and 12 bytes for 4 bit ECC
-> >> +	 */
-> >> +	ecc->bytes = host->ecc_bytes_hw + spare_bytes + bbm_size;
-> >
-> > You should add the following check:
-> >
-> > 	if (ecc->bytes * (mtd->writesize / ecc->size) < mtd->oobsize) {
-> > 		dev_err(nandc->dev, "ecc data do not fit in OOB
-> > 	area\n");
-> > 		return -EINVAL;
-> > 	}
-> 
-> Should that be a '>' in the check?
-> 
-
-Absolutely.
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Yang
+>
+> On Thu, Nov 27, 2014 at 02:29:18PM +0100, Boris Brezillon wrote:
+>
+> ^^ This patch hasn't quite reached its anniversary! Sorry :(
+>
+>> The nandflipbits tool is intended to be used when one need to flip one or
+>> several specific bits on a NAND media.
+>> It can be useful to manually recover from an unexpected bit flip on a flash
+>> device, though the main purpose of this tool is to provide a way to test
+>> ECC algorithms robustness.
+>>
+>> One typical example I used this tool for is testing HW ECC engines behavior
+>> when bitflips occur in an erased page: most HW engines do not correctly
+>> handle this case, because, most of the time, ECC bits generated for an
+>> empty page are not all 1s, and, empty page detection embedded in such
+>> engines is only validating that all bits are set to 1s (which is not true
+>> when a bit-flip has occurred).
+>>
+>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>> ---
+>>   Makefile       |   2 +-
+>>   nandflipbits.c | 332 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>
+> If you're going to resubmit this, please move it to nand-utils now. Or
+> would it be tests/?
+>
+>>   2 files changed, 333 insertions(+), 1 deletion(-)
+>>   create mode 100644 nandflipbits.c
+>>
+>> diff --git a/Makefile b/Makefile
+>> index eade234..55252f8 100644
+>> --- a/Makefile
+>> +++ b/Makefile
+>> @@ -20,7 +20,7 @@ MTD_BINS = \
+>>   	ftl_format flash_erase nanddump doc_loadbios \
+>>   	ftl_check mkfs.jffs2 flash_lock flash_unlock \
+>>   	flash_otp_info flash_otp_dump flash_otp_lock flash_otp_write \
+>> -	mtd_debug flashcp nandwrite nandtest \
+>> +	mtd_debug flashcp nandwrite nandtest nandflipbits \
+>>   	jffs2dump \
+>>   	nftldump nftl_format docfdisk \
+>>   	rfddump rfdformat \
+>> diff --git a/nandflipbits.c b/nandflipbits.c
+>> new file mode 100644
+>> index 0000000..9ec39cf
+>> --- /dev/null
+>> +++ b/nandflipbits.c
+>> @@ -0,0 +1,332 @@
+>> +/*
+>> + *  nandflipbits.c
+>> + *
+>> + *  Copyright (C) 2014 Free Electrons
+>> + *
+>> + *  Author: Boris Brezillon <boris.brezillon@free-electrons.com>
+>> + *
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License version 2 as
+>> + * published by the Free Software Foundation.
+>> + *
+>> + * Overview:
+>> + *   This utility manually flip specified bits in a NAND flash.
+>
+> s/flip/flips/
+>
+>> + *
+>> + */
+>> +
+>> +#define PROGRAM_NAME "nandwrite"
+>
+> s/nandwrite/nandflipbits/
+>
+>> +
+>> +#include <ctype.h>
+>> +#include <errno.h>
+>> +#include <fcntl.h>
+>> +#include <stdbool.h>
+>> +#include <stddef.h>
+>> +#include <stdint.h>
+>> +#include <stdio.h>
+>> +#include <stdlib.h>
+>> +#include <string.h>
+>> +#include <time.h>
+>
+> Don't need this header? I bet you copied this from nandwrite, which also
+> probably doesn't need it.
+>
+>> +#include <unistd.h>
+>> +#include <sys/stat.h>
+>> +#include <sys/ioctl.h>
+>> +#include <sys/types.h>
+>> +#include <getopt.h>
+>> +
+>> +#include <asm/types.h>
+>> +#include "mtd/mtd-user.h"
+>> +#include "common.h"
+>> +#include <libmtd.h>
+>> +
+>> +struct bit_flip {
+>> +	int block;
+>> +	off_t offset;
+>> +	int bit;
+>> +	bool done;
+>> +};
+>> +
+>> +static void display_help(int status)
+>> +{
+>> +	fprintf(status == EXIT_SUCCESS ? stdout : stderr,
+>> +"Usage: nandflipbits [OPTION] MTD_DEVICE <bit>@<address>[:<bit>@<address>]\n"
+>
+> Why is the ':' separation chosen? Couldn't we just take extra args
+> (i.e., separated by ' ')? That might make the parsing a bit simpler too,
+> since you could just use argc to determine how many 'bit_flip's to
+> allocate.
+>
+>> +"Writes to the specified MTD device.\n"
+>
+> I have a few more related comments later on, but it seems like this help
+> text deserves a bit more substance. The minimal comment at the top of
+> the file is already more helpful than this text :) e.g.:
+>
+>   1) What does this do? It does more than "write to the specified MTD
+>   device"...
+>   2) It requires RAW support, and not every driver implements this
+>   correctly
+>   3) It may not leave a block in a great state, if you're trying to flip
+>   bits in an erased block on a NOP=1 device, for testing purposes.
+>   4) What is it really *intended* for? e.g., testing the ECC engine to
+>   see if it matches the specified correction strength
+>
+> Random thought related to #4: perhaps a simple test or two could be
+> derived from this. e.g., this could begin to replace
+> drivers/mtd/tests/nandbiterrs.c, I think.
+>
+>> +"\n"
+>> +"  -o, --oob               Provided addresses take OOB area into account\n"
+>> +"  -q, --quiet             Don't display progress messages\n"
+>> +"  -h, --help              Display this help and exit\n"
+>> +"      --version           Output version information and exit\n"
+>> +	);
+>> +	exit(status);
+>> +}
+>> +
+>> +static void display_version(void)
+>> +{
+>> +	printf("%1$s " VERSION "\n"
+>> +			"\n"
+>> +			"Copyright (C) 2014 Free Electrons \n"
+>> +			"\n"
+>> +			"%1$s comes with NO WARRANTY\n"
+>> +			"to the extent permitted by law.\n"
+>> +			"\n"
+>> +			"You may redistribute copies of %1$s\n"
+>> +			"under the terms of the GNU General Public Licence.\n"
+>> +			"See the file `COPYING' for more information.\n",
+>> +			PROGRAM_NAME);
+>> +	exit(EXIT_SUCCESS);
+>> +}
+>> +
+>> +static const char	*mtd_device;
+>> +static bool		quiet = false;
+>> +static bool		oob_mode = false;
+>> +static struct bit_flip	*bits_to_flip;
+>> +static int		nbits_to_flip = 0;
+>> +
+>> +static void process_options(int argc, char * const argv[])
+>> +{
+>> +	char *bits_to_flip_iter;
+>> +	int bit_idx = 0;
+>> +	int error = 0;
+>> +
+>> +	for (;;) {
+>> +		int option_index = 0;
+>> +		static const char short_options[] = "hoq";
+>> +		static const struct option long_options[] = {
+>> +			/* Order of these args with val==0 matters; see option_index. */
+>> +			{"version", no_argument, 0, 0},
+>
+> I see you're borrowing this from nanddump/nandwrite, but it seems kinda
+> hacky to rely on this being the first entry. Maybe you can put 'v' in
+> the 4th field, so we can just have a 'case 'v':' below, even if we don't
+> want to give it a shortopt of -v?
+>
+>> +			{"help", no_argument, 0, 'h'},
+>> +			{"oob", no_argument, 0, 'o'},
+>> +			{"quiet", no_argument, 0, 'q'},
+>> +			{0, 0, 0, 0},
+>> +		};
+>> +
+>> +		int c = getopt_long(argc, argv, short_options,
+>> +				long_options, &option_index);
+>> +		if (c == EOF)
+>> +			break;
+>> +
+>> +		switch (c) {
+>> +		case 0:
+>
+> ^^ Then this could be a case 'v' instead.
+>
+>> +			if (!option_index) {
+>
+> Or if we don't do that, it might be clearer to say:
+>
+> 			if (option_index == 0)
+>
+> To show that the value '0' means something more than just "nothing" (as
+> in, NULL checking).
+>
+>> +				display_version();
+>> +				break;
+>> +			}
+>> +			break;
+>> +		case 'q':
+>> +			quiet = true;
+>> +			break;
+>> +		case 'o':
+>> +			oob_mode = true;
+>> +			break;
+>> +		case 'h':
+>> +			display_help(EXIT_SUCCESS);
+>> +			break;
+>> +		case '?':
+>
+> Maybe put 'default:' here too, just in case we get some of the options
+> flags wrong in the future? e.g., we add to short_options[] and/or
+> long_options[] but forget to handle it in the switch/case?
+>
+>> +			error++;
+>> +			break;
+>> +		}
+>> +	}
+>> +
+>> +	argc -= optind;
+>> +	argv += optind;
+>> +
+>> +	/*
+>> +	 * There must be at least the MTD device node path argument remaining
+>> +	 * and the 'bits-to-flip' description.
+>> +	 */
+>> +
+>> +	if (argc != 2 || error)
+>> +		display_help(EXIT_FAILURE);
+>> +
+>> +	mtd_device = argv[0];
+>> +	bits_to_flip_iter = argv[1];
+>> +	do {
+>> +		nbits_to_flip++;
+>> +		bits_to_flip_iter = strstr(bits_to_flip_iter, ":");
+>> +		if (bits_to_flip_iter)
+>> +			bits_to_flip_iter++;
+>> +	} while (bits_to_flip_iter);
+>
+> If you change the argument input to avoid the ':' separation, you don't
+> need this loop. You can just compute the following xmalloc() size using
+> argc.
+>
+>> +
+>> +	bits_to_flip = xmalloc(sizeof(*bits_to_flip) * nbits_to_flip);
+>> +	bits_to_flip_iter = argv[1];
+>> +
+>> +	do {
+>
+> And then this would be a for loop, not a do-while.
+>
+>> +		struct bit_flip	*bit_to_flip = &bits_to_flip[bit_idx++];
+>> +
+>> +		bit_to_flip->bit = strtol(bits_to_flip_iter,
+>> +					  &bits_to_flip_iter, 0);
+>> +		if (errno || bit_to_flip->bit > 7)
+>
+> Hmm, is it valid to check errno before checking the return value? That's
+> not how I read the man page at least.
+>
+> Once this is a loop over argv[], it should be pretty easy to use
+> strsep(arg, "@") and then simple_strtol() on each half. Makes the error
+> handling a bit simpler and more obvious, I think.
+>
+>> +			goto err_invalid_bit_desc;
+>> +
+>> +		if (!bits_to_flip_iter || *bits_to_flip_iter++ != '@')
+>> +			goto err_invalid_bit_desc;
+>> +
+>> +		bit_to_flip->offset = strtol(bits_to_flip_iter,
+>> +					     &bits_to_flip_iter, 0);
+>> +
+>> +		if (!bits_to_flip_iter || errno)
+>> +			goto err_invalid_bit_desc;
+>> +
+>> +		bits_to_flip_iter = strstr(bits_to_flip_iter, ":");
+>> +		if (bits_to_flip_iter)
+>> +			bits_to_flip_iter++;
+>> +	} while (bits_to_flip_iter);
+>> +
+>> +	return;
+>> +
+>> +err_invalid_bit_desc:
+>> +	fprintf(stderr, "Invalid bit description\n");
+>> +	exit(EXIT_FAILURE);
+>> +}
+>
+> Blank line here?
+>
+>> +int main(int argc, char **argv)
+>> +{
+>> +	libmtd_t mtd_desc;
+>> +	struct mtd_dev_info mtd;
+>> +	int pagelen;
+>> +	int pages_per_blk;
+>> +	size_t blklen;
+>> +	long long mtdlen;
+>> +	int fd;
+>> +	int ret;
+>> +	uint8_t *buffer;
+>> +	int i;
+>> +
+>> +	process_options(argc, argv);
+>> +
+>> +	/* Open the device */
+>> +	if ((fd = open(mtd_device, O_RDWR)) == -1)
+>> +		sys_errmsg_die("%s", mtd_device);
+>> +
+>> +	mtd_desc = libmtd_open();
+>> +	if (!mtd_desc)
+>> +		errmsg_die("can't initialize libmtd");
+>> +
+>> +	ret = ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_RAW);
+>> +	if (ret) {
+>> +		printf("Failed to set MTD in raw access mode\n");
+>> +		return -errno;
+>> +	}
+>> +
+>> +	/* Fill in MTD device capability structure */
+>> +	if (mtd_get_dev_info(mtd_desc, mtd_device, &mtd) < 0)
+>> +		errmsg_die("mtd_get_dev_info failed");
+>> +
+>> +	/* Select OOB write mode */
+>> +	ret = ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_RAW);
+>
+> Why do you need to do this twice?
+>
+> Also, would this be helpful to add this to libmtd? We could do the
+> following error handling in one place (to handle for
+> nanddump/nandwrite/nandflipbits).
+>
+>> +	if (ret) {
+>> +		switch (errno) {
+>> +		case ENOTTY:
+>> +			errmsg_die("ioctl MTDFILEMODE is missing");
+>> +		default:
+>> +			sys_errmsg_die("MTDFILEMODE");
+>> +		}
+>> +	}
+>> +
+>> +	pagelen = mtd.min_io_size + (oob_mode ? mtd.oob_size : 0);
+>> +	pages_per_blk = mtd.eb_size / mtd.min_io_size;
+>> +	blklen = pages_per_blk * pagelen;
+>> +	mtdlen = blklen * mtd.eb_cnt;
+>> +	buffer = xmalloc((mtd.min_io_size + mtd.oob_size) * pages_per_blk);
+>> +
+>> +	for (i = 0; i < nbits_to_flip; i++) {
+>> +		int page;
+>> +
+>> +		if (bits_to_flip[i].offset >= mtdlen)
+>> +			errmsg_die("Invalid bit offset");
+>> +
+>> +		bits_to_flip[i].block = bits_to_flip[i].offset / blklen;
+>> +		bits_to_flip[i].offset %= blklen;
+>> +		page = bits_to_flip[i].offset / pagelen;
+>> +		bits_to_flip[i].offset = (page *
+>> +					  (mtd.min_io_size + mtd.oob_size)) +
+>> +					 (bits_to_flip[i].offset % pagelen);
+>> +
+>> +	}
+>> +
+>> +	while (1) {
+>> +		struct bit_flip	*bit_to_flip = NULL;
+>> +		int blkoffs;
+>> +		int bufoffs;
+>> +
+>> +		for (i = 0; i < nbits_to_flip; i++) {
+>> +			if (bits_to_flip[i].done == false) {
+>> +				bit_to_flip = &bits_to_flip[i];
+>> +				break;
+>> +			}
+>> +		}
+>> +
+>> +		if (!bit_to_flip)
+>> +			break;
+>> +
+>> +		blkoffs = 0;
+>> +		bufoffs = 0;
+>> +		for (i = 0; i < pages_per_blk; i++) {
+>> +			ret = mtd_read(&mtd, fd, bit_to_flip->block, blkoffs,
+>> +				       buffer + bufoffs, mtd.min_io_size);
+>> +			if (ret) {
+>> +				sys_errmsg("%s: MTD Read failure", mtd_device);
+>> +				goto closeall;
+>> +			}
+>> +
+>> +			bufoffs += mtd.min_io_size;
+>> +
+>> +			ret = mtd_read_oob(mtd_desc, &mtd, fd, blkoffs,
+>> +					   mtd.oob_size, buffer + bufoffs);
+>> +			if (ret) {
+>> +				sys_errmsg("%s: MTD Read OOB failure", mtd_device);
+>> +				goto closeall;
+>> +			}
+>> +
+>> +			bufoffs += mtd.oob_size;
+>> +			blkoffs += mtd.min_io_size;
+>> +		}
+>> +
+>> +		for (i = 0; i < nbits_to_flip; i++) {
+>> +			unsigned char val, mask;
+>> +
+>> +			if (bits_to_flip[i].block != bit_to_flip->block)
+>> +				continue;
+>> +
+>> +			mask = 1 << bits_to_flip[i].bit;
+>> +			val = buffer[bits_to_flip[i].offset] & mask;
+>> +			if (val)
+>> +				buffer[bits_to_flip[i].offset] &= ~mask;
+>> +			else
+>> +				buffer[bits_to_flip[i].offset] |= mask;
+>> +		}
+>> +
+>> +		ret = mtd_erase(mtd_desc, &mtd, fd, bit_to_flip->block);
+>> +		if (ret) {
+>> +			sys_errmsg("%s: MTD Erase failure", mtd_device);
+>> +			goto closeall;
+>> +		}
+>> +
+>> +		blkoffs = 0;
+>> +		bufoffs = 0;
+>> +		for (i = 0; i < pages_per_blk; i++) {
+>> +			ret = mtd_write(mtd_desc, &mtd, fd, bit_to_flip->block,
+>> +					blkoffs, buffer + bufoffs, mtd.min_io_size,
+>> +					buffer + bufoffs + mtd.min_io_size,
+>> +					mtd.oob_size,
+>> +					MTD_OPS_RAW);
+>
+> How effective is this in practice? You're doing a read/modify/write on
+> the whole block, and that seems a bit error prone if you assume it can
+> still allow, e.g., further writes to an MLC/NOP=1 device when you're
+> flipping an erased block.
+>
+> Perhaps the caveats should be better documented in the help message.
+> Don't want people getting the wrong idea about this tool.
+>
+> Regards,
+> Brian
+>
+>> +			if (ret) {
+>> +				sys_errmsg("%s: MTD Write failure", mtd_device);
+>> +				goto closeall;
+>> +			}
+>> +
+>> +			blkoffs += mtd.min_io_size;
+>> +			bufoffs += mtd.min_io_size + mtd.oob_size;
+>> +		}
+>> +
+>> +		for (i = 0; i < nbits_to_flip; i++) {
+>> +			if (bits_to_flip[i].block == bit_to_flip->block)
+>> +				bits_to_flip[i].done = true;
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +
+>> +closeall:
+>> +	libmtd_close(mtd_desc);
+>> +	close(fd);
+>> +	free(buffer);
+>> +	exit(EXIT_FAILURE);
+>> +}
+>> --
+>> 1.9.1
+>>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> .
+>
