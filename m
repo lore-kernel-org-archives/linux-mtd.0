@@ -1,35 +1,17 @@
-Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHYw8-0001zy-Ba
- for linux-mtd@lists.infradead.org; Fri, 08 Jan 2016 15:26:45 +0000
-Received: by mail-ig0-x233.google.com with SMTP id h5so36512566igh.0
- for <linux-mtd@lists.infradead.org>; Fri, 08 Jan 2016 07:26:22 -0800 (PST)
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: [PATCH linux-next v2 00/14] mtd: spi-nor: add driver for Atmel QSPI
+ controller
+Date: Fri, 8 Jan 2016 17:02:12 +0100
+Message-ID: <cover.1452268345.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LFD.2.20.1601081358300.29879@eddie.linux-mips.org>
-References: <1444813494-14985-1-git-send-email-javier@osg.samsung.com>
- <CACna6rwjMfTT4UgbyO=VmLaPic4xGcPxoMEL5yRmLW7hhvhXJQ@mail.gmail.com>
- <20151104185341.GN7274@google.com>
- <alpine.LFD.2.20.1601072006170.29879@eddie.linux-mips.org>
- <20160107230513.GL109450@google.com>
- <CACna6rw6Q=zaSo91ZK26zgjQ+0j+7=b6C_fPYngaKhnw0OmWeQ@mail.gmail.com>
- <alpine.LFD.2.20.1601081358300.29879@eddie.linux-mips.org>
-Date: Fri, 8 Jan 2016 16:26:21 +0100
-Message-ID: <CACna6rxapx_hPR9qWtGx+gDOiXvCWNiGZ=y0BG0uyLBVmtBOvA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxsflash: use devm_ioremap_nocache() instead of
- KSEG0ADDR()
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Fengguang Wu <fengguang.wu@intel.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
- Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Cyril Bur <cyrilbur@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,35 +21,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8 January 2016 at 15:01, Maciej W. Rozycki <macro@linux-mips.org> wrote:
-> On Fri, 8 Jan 2016, Rafa=C5=82 Mi=C5=82ecki wrote:
->
->> > This removes some (implicit) MIPS dependencies and makes the code more
->> > portable, whether we need it or not :)
->>
->> So now we have following forwardtrace:
->> devm_ioremap_nocache
->> ioremap_nocache
->> __ioremap_mode
->> __ioremap
->> CKSEG1ADDR
->>
->> It results in different address than KSEG0ADDR:
->> [    1.339752] [bcm47xxsflash_bcma_probe] KSEG0ADDR(BCMA_SOC_FLASH2):9c0=
-00000
->> [    1.346848] [bcm47xxsflash_bcma_probe] devm_ioremap_nocache:bc000000
->>
->> But it still works as expected! :)
->> [    1.609426] 6 bcm47xxpart partitions found on MTD device bcm47xxsflas=
-h
->> [    1.616169] Creating 6 MTD partitions on "bcm47xxsflash":
->
->  It is a functional change though and I think the change from a cached to
-> uncached mapping (i.e. from `ioremap' to `ioremap_nocache') has to be a
-> separate patch, so that both changes can be reviewed independently.
+Hi all,
 
-We didn't switch from 'ioremap' but from KSEG0ADDR. What exactly
-should be a separated patch?
+This series of patches adds support to the Atmel QSPI controller available
+on sama5d2 SoCs. It was tested on a sama5d2 xplained ultra board with a 
+Micron n25q128a13 QSPI memory and a at25df321a SPI memory.
 
---=20
-Rafa=C5=82
+In order to use the Micron memory in its Quad SPI mode, the spi-nor
+framework needed to be patched to fix the support of Quad/Dual SPI
+protocols with some memory manufacturers such as Spansion, Micron and
+Macronix. There are many comments in the source code to explain the
+implementation choices based on the datasheets from memory manufacturers.
+
+
+This series was based and tested on linux-next
+
+1 - Atmel QSPI + Micron n25q128a13 (atmel-quadspi.c driver)
+
+SPI 1-1-1: This mode was tested replacing SPI_NOR_QUAD by SPI_NOR_FAST as
+           argument to spi_nor_scan() called from atmel_qspi_probe().
+
+SPI 1-1-4: Bootloaders (at91bootstrap/uboot) don't enable the Quad SPI
+           mode of the Micron memory. When probed from Linux, the memory
+           uses its Extended SPI mode and replies to the regular Read ID
+           (0x9f) command.
+
+SPI 4-4-4: The romcode enabled the Quad SPI mode the of Micron memory
+           before loading the at91bootstrap. When probed from Linux, the
+           memory uses its Quad SPI mode and no longer replies to the
+           regular Read ID (0x9f) command but instead to the Read ID
+           Multiple I/O (0xaf) command. The memory expects ALL commands
+           to use the SPI 4-4-4 protocol.
+
+2 - Atmel QSPI + Spansion s25fl512 (atmel-quadspi.c driver)
+
+SPI 1-1-4: default settings. Early developpements on a FPGA board.
+
+3 - Atmel SPI + at25df321a (m25p80.c driver)
+
+SPI 1-1-1: tested with the m25p80 driver for non regression purpose.
+
+
+Winbond and Macronix memories were NOT tested. The patches were written
+only based on the manufacturers' datasheets.
+
+
+Best regards,
+
+Cyrille
+
+
+ChangeLog:
+
+v1 -> v2:
+- I've totally reworked the whole series. Especially I have split the
+  former patch 2 to ease the code review. The Single/Dual/Quad SPI mode
+  support fixes are now done by manufacturer.
+- fix support and probing of Winbond memories.
+- m25p80: compute the number of dummy bytes from both the number of dummy
+  clock cycles and the number of I/O lines used to send them.
+- fix Kconfig dependencies for the Atmel QSPI controller driver (it should
+  fix the kbuild test robot warnings).
+- add more comments.
+
+
+Cyrille Pitchen (14):
+  mtd: spi-nor: remove micron_quad_enable()
+  mtd: spi-nor: properly detect the memory when it boots in Quad or Dual
+    mode
+  mtd: spi-nor: select op codes and SPI NOR protocols by manufacturer
+  mtd: spi-nor: fix support of Macronix memories
+  mtd: spi-nor: fix support of Winbond memories
+  mtd: spi-nor: fix support of Micron memories
+  mtd: spi-nor: fix support of Spansion memories
+  mtd: spi-nor: configure the number of dummy clock cycles by
+    manufacturer
+  mtd: spi-nor: configure the number of dummy clock cycles on Micron
+    memories
+  mtd: spi-nor: configure the number of dummy clock cycles on Macronix
+    memories
+  mtd: spi-nor: configure the number of dummy clock cycles on Spansion
+    memories
+  mtd: m25p80: add support of dual and quad spi protocols to all
+    commands
+  Documentation: atmel-quadspi: add binding file for Atmel QSPI driver
+  mtd: atmel-quadspi: add driver for Atmel QSPI controller
+
+ .../devicetree/bindings/mtd/atmel-quadspi.txt      |  32 +
+ drivers/mtd/devices/m25p80.c                       | 192 ++++-
+ drivers/mtd/spi-nor/Kconfig                        |   9 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/atmel-quadspi.c                | 877 +++++++++++++++++++
+ drivers/mtd/spi-nor/spi-nor.c                      | 928 +++++++++++++++++++--
+ include/linux/mtd/spi-nor.h                        |  71 +-
+ 7 files changed, 1985 insertions(+), 125 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+ create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
+
+-- 
+1.8.2.2
