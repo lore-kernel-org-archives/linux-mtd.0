@@ -1,39 +1,23 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHj0f-00073s-G1
- for linux-mtd@lists.infradead.org; Sat, 09 Jan 2016 02:12:06 +0000
-Received: from localhost.localdomain ([127.0.0.1]:58384 "EHLO localhost"
- rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
- id S27010668AbcAICMExqIXN (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Sat, 9 Jan 2016 03:12:04 +0100
-Date: Sat, 9 Jan 2016 02:12:04 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@linux-mips.org>
-To: =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>
-cc: Brian Norris <computersforpeace@gmail.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Fengguang Wu <fengguang.wu@intel.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
- Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Cyril Bur <cyrilbur@gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxsflash: use devm_ioremap_nocache() instead
- of KSEG0ADDR()
-In-Reply-To: <CACna6rxapx_hPR9qWtGx+gDOiXvCWNiGZ=y0BG0uyLBVmtBOvA@mail.gmail.com>
-Message-ID: <alpine.LFD.2.20.1601090135470.29879@eddie.linux-mips.org>
-References: <1444813494-14985-1-git-send-email-javier@osg.samsung.com>
- <CACna6rwjMfTT4UgbyO=VmLaPic4xGcPxoMEL5yRmLW7hhvhXJQ@mail.gmail.com>
- <20151104185341.GN7274@google.com>
- <alpine.LFD.2.20.1601072006170.29879@eddie.linux-mips.org>
- <20160107230513.GL109450@google.com>
- <CACna6rw6Q=zaSo91ZK26zgjQ+0j+7=b6C_fPYngaKhnw0OmWeQ@mail.gmail.com>
- <alpine.LFD.2.20.1601081358300.29879@eddie.linux-mips.org>
- <CACna6rxapx_hPR9qWtGx+gDOiXvCWNiGZ=y0BG0uyLBVmtBOvA@mail.gmail.com>
+Date: Sat, 9 Jan 2016 00:04:26 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: mchristi@redhat.com
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
+ philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+ linux-raid@vger.kernel.org, dm-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH 34/35] block: add QUEUE_FLAGs for flush and fua
+Message-ID: <20160109080426.GA6207@infradead.org>
+References: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
+ <1452027218-32303-35-git-send-email-mchristi@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1452027218-32303-35-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,39 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 8 Jan 2016, Rafa³ Mi³ecki wrote:
-
-> >> > This removes some (implicit) MIPS dependencies and makes the code more
-> >> > portable, whether we need it or not :)
-> >>
-> >> So now we have following forwardtrace:
-> >> devm_ioremap_nocache
-> >> ioremap_nocache
-> >> __ioremap_mode
-> >> __ioremap
-> >> CKSEG1ADDR
-> >>
-> >> It results in different address than KSEG0ADDR:
-> >> [    1.339752] [bcm47xxsflash_bcma_probe] KSEG0ADDR(BCMA_SOC_FLASH2):9c000000
-> >> [    1.346848] [bcm47xxsflash_bcma_probe] devm_ioremap_nocache:bc000000
-> >>
-> >> But it still works as expected! :)
-> >> [    1.609426] 6 bcm47xxpart partitions found on MTD device bcm47xxsflash
-> >> [    1.616169] Creating 6 MTD partitions on "bcm47xxsflash":
-> >
-> >  It is a functional change though and I think the change from a cached to
-> > uncached mapping (i.e. from `ioremap' to `ioremap_nocache') has to be a
-> > separate patch, so that both changes can be reviewed independently.
+On Tue, Jan 05, 2016 at 02:53:37PM -0600, mchristi@redhat.com wrote:
+> From: Mike Christie <mchristi@redhat.com>
 > 
-> We didn't switch from 'ioremap' but from KSEG0ADDR. What exactly
-> should be a separated patch?
+> The last patch added a REQ_OP_FLUSH for request_fn drivers
+> and the next patch renames REQ_FLUSH to REQ_PREFLUSH which
+> will be used by file systems and make_request_fn drivers.
+> 
+> This leaves REQ_FLUSH/REQ_FUA defined for drivers to tell
+> the block layer if flush/fua is supported. The names are
+> confusing and I bet will will accidentally be used by
+> people to request flushes. To avoid that, this patch adds
+> QUEUE_FLAGs for flush and fua which drivers will use to
+> indicate what they support.
+> 
+> Signed-off-by: Mike Christie <mchristi@redhat.com>
 
- See my other reply -- KSEG0ADDR (cached mapping) corresponds to 
-`ioremap_cache', whereas `ioremap_nocache' (or its generic `ioremap_uc' 
-alias) or plain `ioremap' correspond to KSEG1ADDR (uncached mapping).  
-Consequently a change that switches from KSEG0ADDR to `ioremap_nocache' or 
-`ioremap' includes a functional change along a build error (portability) 
-fix.  Therefore such a change has to be split into two, so that the 
-functional change can be reviewed separately from the portability fix.
+Yes, this was rather confusing before.  Looks great fix the fix for th
+kbuild complaint:
 
-  Maciej
+Reviewed-by: Christoph Hellwig <hch@lst.de>
