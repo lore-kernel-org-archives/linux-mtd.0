@@ -1,25 +1,23 @@
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHrSy-0004fj-Qi
- for linux-mtd@lists.infradead.org; Sat, 09 Jan 2016 11:13:54 +0000
-Received: by mail-wm0-x22d.google.com with SMTP id u188so164136743wmu.1
- for <linux-mtd@lists.infradead.org>; Sat, 09 Jan 2016 03:13:32 -0800 (PST)
-Message-ID: <5690EB4D.3080002@linaro.org>
-Date: Sat, 09 Jan 2016 11:13:17 +0000
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Sat, 9 Jan 2016 05:34:09 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: mchristi@redhat.com
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
+ philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+ linux-raid@vger.kernel.org, dm-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH 01/35] block/fs/drivers: remove rw argument from submit_bio
+Message-ID: <20160109133409.GA26660@infradead.org>
+References: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
+ <1452027218-32303-2-git-send-email-mchristi@redhat.com>
 MIME-Version: 1.0
-To: Scott Branden <sbranden@broadcom.com>, Arnd Bergmann <arnd@arndb.de>,
- Maxime Ripard <maxime.ripard@free-electrons.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Adding OTP-only device to MTD or CHAR subsystem?
-References: <5681C3E4.4090506@broadcom.com> <3668194.4jROlECW6L@wuerfel>
- <5681D4B0.3040804@broadcom.com>
-In-Reply-To: <5681D4B0.3040804@broadcom.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1452027218-32303-2-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,73 +27,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Scott,
+On Tue, Jan 05, 2016 at 02:53:04PM -0600, mchristi@redhat.com wrote:
+> From: Mike Christie <mchristi@redhat.com>
+> 
+> This has callers of submit_bio/submit_bio_wait set the bio->bi_rw
+> instead of passing it in. This makes that use the same as
+> generic_make_request and how we set the other bio fields.
+> 
+> Signed-off-by: Mike Christie <mchristi@redhat.com>
+> ---
+>  block/bio.c                         |  7 +++----
+>  block/blk-core.c                    | 11 ++++-------
+>  block/blk-flush.c                   |  3 ++-
+>  block/blk-lib.c                     |  9 ++++++---
+>  drivers/block/drbd/drbd_actlog.c    |  2 +-
+>  drivers/block/drbd/drbd_bitmap.c    |  4 ++--
+>  drivers/block/floppy.c              |  3 ++-
+>  drivers/block/xen-blkback/blkback.c |  4 +++-
+>  drivers/block/xen-blkfront.c        |  4 ++--
+>  drivers/md/bcache/debug.c           |  6 ++++--
+>  drivers/md/bcache/journal.c         |  2 +-
+>  drivers/md/bcache/super.c           |  4 ++--
+>  drivers/md/dm-bufio.c               |  3 ++-
+>  drivers/md/dm-io.c                  |  3 ++-
+>  drivers/md/dm-log-writes.c          |  9 ++++++---
+>  drivers/md/dm-thin.c                |  3 ++-
+>  drivers/md/md.c                     | 10 +++++++---
+>  drivers/md/raid1.c                  |  3 ++-
+>  drivers/md/raid10.c                 |  4 +++-
+>  drivers/md/raid5-cache.c            |  7 ++++---
+>  drivers/target/target_core_iblock.c | 24 +++++++++++++-----------
+>  fs/btrfs/check-integrity.c          | 18 ++++++++++--------
+>  fs/btrfs/check-integrity.h          |  4 ++--
+>  fs/btrfs/disk-io.c                  |  3 ++-
+>  fs/btrfs/extent_io.c                |  7 ++++---
+>  fs/btrfs/raid56.c                   | 16 +++++++++++-----
+>  fs/btrfs/scrub.c                    | 16 +++++++++++-----
+>  fs/btrfs/volumes.c                  | 14 +++++++-------
+>  fs/buffer.c                         |  3 ++-
+>  fs/direct-io.c                      |  3 ++-
+>  fs/ext4/crypto.c                    |  3 ++-
+>  fs/ext4/page-io.c                   |  3 ++-
+>  fs/ext4/readpage.c                  |  9 +++++----
+>  fs/f2fs/data.c                      | 13 ++++++++-----
+>  fs/f2fs/segment.c                   |  6 ++++--
+>  fs/gfs2/lops.c                      |  3 ++-
+>  fs/gfs2/meta_io.c                   |  3 ++-
+>  fs/gfs2/ops_fstype.c                |  3 ++-
+>  fs/hfsplus/wrapper.c                |  3 ++-
+>  fs/jfs/jfs_logmgr.c                 |  6 ++++--
+>  fs/jfs/jfs_metapage.c               | 10 ++++++----
+>  fs/logfs/dev_bdev.c                 | 15 ++++++++++-----
+>  fs/mpage.c                          |  3 ++-
+>  fs/nfs/blocklayout/blocklayout.c    | 22 ++++++++++++----------
+>  fs/nilfs2/segbuf.c                  |  3 ++-
+>  fs/ocfs2/cluster/heartbeat.c        | 12 +++++++-----
+>  fs/xfs/xfs_aops.c                   |  3 ++-
+>  fs/xfs/xfs_buf.c                    |  4 ++--
+>  include/linux/bio.h                 |  2 +-
+>  include/linux/fs.h                  |  2 +-
+>  kernel/power/swap.c                 |  5 +++--
+>  mm/page_io.c                        | 10 ++++++----
+>  52 files changed, 211 insertions(+), 141 deletions(-)
+> 
+> diff --git a/block/bio.c b/block/bio.c
+> index dbabd48..921112b 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -859,21 +859,20 @@ static void submit_bio_wait_endio(struct bio *bio)
+>  
+>  /**
+>   * submit_bio_wait - submit a bio, and wait until it completes
+> - * @rw: whether to %READ or %WRITE, or maybe to %READA (read ahead)
+>   * @bio: The &struct bio which describes the I/O
+>   *
+>   * Simple wrapper around submit_bio(). Returns 0 on success, or the error from
+>   * bio_endio() on failure.
+>   */
+> -int submit_bio_wait(int rw, struct bio *bio)
+> +int submit_bio_wait(struct bio *bio)
+>  {
+>  	struct submit_bio_ret ret;
+>  
+> -	rw |= REQ_SYNC;
+>  	init_completion(&ret.event);
+>  	bio->bi_private = &ret;
+>  	bio->bi_end_io = submit_bio_wait_endio;
+> -	submit_bio(rw, bio);
+> +	bio->bi_rw |= REQ_SYNC;
+> +	submit_bio(bio);
+>  	wait_for_completion(&ret.event);
+>  
+>  	return ret.error;
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index ab51685..9b887e3 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -2092,7 +2092,6 @@ EXPORT_SYMBOL(generic_make_request);
+>  
+>  /**
+>   * submit_bio - submit a bio to the block device layer for I/O
+> - * @rw: whether to %READ or %WRITE, or maybe to %READA (read ahead)
+>   * @bio: The &struct bio which describes the I/O
+>   *
+>   * submit_bio() is very similar in purpose to generic_make_request(), and
+> @@ -2100,10 +2099,8 @@ EXPORT_SYMBOL(generic_make_request);
+>   * interfaces; @bio must be presetup and ready for I/O.
+>   *
+>   */
+> -blk_qc_t submit_bio(int rw, struct bio *bio)
+> +blk_qc_t submit_bio(struct bio *bio)
+>  {
+> -	bio->bi_rw |= rw;
+> -
+>  	/*
+>  	 * If it's a regular read/write or a barrier with data attached,
+>  	 * go through the normal accounting stuff before submission.
+> @@ -2111,12 +2108,12 @@ blk_qc_t submit_bio(int rw, struct bio *bio)
+>  	if (bio_has_data(bio)) {
+>  		unsigned int count;
+>  
+> -		if (unlikely(rw & REQ_WRITE_SAME))
+> +		if (unlikely(bio->bi_rw & REQ_WRITE_SAME))
+>  			count = bdev_logical_block_size(bio->bi_bdev) >> 9;
+>  		else
+>  			count = bio_sectors(bio);
+>  
+> -		if (rw & WRITE) {
+> +		if (bio->bi_rw & WRITE) {
+>  			count_vm_events(PGPGOUT, count);
+>  		} else {
+>  			task_io_account_read(bio->bi_iter.bi_size);
+> @@ -2127,7 +2124,7 @@ blk_qc_t submit_bio(int rw, struct bio *bio)
+>  			char b[BDEVNAME_SIZE];
+>  			printk(KERN_DEBUG "%s(%d): %s block %Lu on %s (%u sectors)\n",
+>  			current->comm, task_pid_nr(current),
+> -				(rw & WRITE) ? "WRITE" : "READ",
+> +				(bio->bi_rw & WRITE) ? "WRITE" : "READ",
+>  				(unsigned long long)bio->bi_iter.bi_sector,
+>  				bdevname(bio->bi_bdev, b),
+>  				count);
+> diff --git a/block/blk-flush.c b/block/blk-flush.c
+> index 9c423e5..e092e13 100644
+> --- a/block/blk-flush.c
+> +++ b/block/blk-flush.c
+> @@ -484,8 +484,9 @@ int blkdev_issue_flush(struct block_device *bdev, gfp_t gfp_mask,
+>  
+>  	bio = bio_alloc(gfp_mask, 0);
+>  	bio->bi_bdev = bdev;
+> +	bio->bi_rw |= WRITE_FLUSH;
 
-Sorry for long delay in replying.. :-)
-On 29/12/15 00:32, Scott Branden wrote:
-> +Srinivas/Maxime
->
-> On 15-12-28 03:38 PM, Arnd Bergmann wrote:
->> On Monday 28 December 2015 15:21:08 Scott Branden wrote:
->>> Greg/Brian/Arnd,
->>>
->>> We have OTP device drivers for accessing OTP memory in our SoCs.
->>>
->>> I looking for the right place and model to place such OTP device
->>> drivers.
->>>
->>> 1) Should we follow the bfin-otp model in drivers/char?  This doesn't
->>> seem like the right place to put it although following the bfin example
->>> is quite simple to implement.  We actually had a custom set of Ioctl's
->>> that I changed to use the standard file access model used by the bfin
->>> driver.  But a custom util is still needed to issue an OTPLOCK command.
->>>    I'm guess mtd-utils has such abilities (or should).
->>>
->>> 2) Instead, should we start adding OTP-only drivers into the MTD
->>> subsystem?  Onenand and CFI based MTD devices already have OTP
->>> programmable regions.  If we created a new OTP device type in the MTD
->>> subsystem this looks like a good thing to do.  mtd-utils could/should be
->>> used to access the OTP device then along with standard fileio
->>> operations.
->>>
->>> 3) Or some other suggestion of where to place OTP device drivers?
->>
->> I think drivers/nvmem is now the right place for this.
-> Thanks for the pointer Arnd.  Too bad an extension wasn't added in MTD
-> but at least there is some sort of a model in place now.  The mtd-abi.h
-> would have been a good thing to use for OTPLOCK as well as the remainder
-> of the functionality in MTD OTP.  The mapping of nvmem to properties to
-> user settings seems like a useful feature though.
->
-> Hi Srinivas/Maxime,
-> The nvmem drivers don't seem to support row unlocking of OTP.  Having
-> raw write access to the OTP is not a desirable feature.  Are there plans
-> in place to add any additional functionality to the nvm driver model
-> right now?
-NVMEM was started to be simple interface based on regmap, As of today we 
-did not have any users which wanted lock feature, but Am open for more 
-discussion on this if we want to get this feature via nvmem.
+Shouldn't the |= be a = here and in many other places?
 
-Any ideas and patches are welcome.
-
-Few ideas from my side though,
- From Kernel side: introduce nvmem_lock()/nvmem_unlock() apis which 
-would set the ranges as required, and the providers can use regmap 
-callbacks writeable_reg()/readable_reg() in regmap configs to enforce 
-the lock range
-
- From userspace side, As of today nvmem only provides an binary file 
-interface, which we could probably extend to device based and provide 
-userspace abi.
-
-Lets continue discussion !!
-
---srini
-
-
-
->>
->>     Arnd
->>
-> Regards,
->   Scott
+Otherwise this loks fine to me.
