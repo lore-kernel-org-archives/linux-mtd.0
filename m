@@ -1,30 +1,39 @@
-Received: from mx1.redhat.com ([209.132.183.28])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aHg88-0005OP-0v
- for linux-mtd@lists.infradead.org; Fri, 08 Jan 2016 23:07:37 +0000
-Date: Fri, 8 Jan 2016 18:07:10 -0500
-From: Mike Snitzer <snitzer@redhat.com>
-To: Mike Christie <michaelc@cs.wisc.edu>
-Cc: Christoph Hellwig <hch@infradead.org>, mchristi@redhat.com,
- linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
- xfs@oss.sgi.com, linux-scsi@vger.kernel.org, konrad.wilk@oracle.com,
- linux-kernel@vger.kernel.org, philipp.reisner@linbit.com,
- linux-f2fs-devel@lists.sourceforge.net, linux-raid@vger.kernel.org,
- ocfs2-devel@oss.oracle.com, dm-devel@redhat.com,
- target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
- osd-dev@open-osd.org, linux-fsdevel@vger.kernel.org,
- lars.ellenberg@linbit.com, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, drbd-dev@lists.linbit.com
-Subject: Re: [PATCH 00/35 v2] separate operations from flags in the
- bio/request structs
-Message-ID: <20160108230709.GA15655@redhat.com>
-References: <1452027218-32303-1-git-send-email-mchristi@redhat.com>
- <20160108133237.GA7663@infradead.org>
- <56902132.8080008@cs.wisc.edu>
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aHizl-00073s-Km
+ for linux-mtd@lists.infradead.org; Sat, 09 Jan 2016 02:11:10 +0000
+Received: from localhost.localdomain ([127.0.0.1]:58364 "EHLO localhost"
+ rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+ id S27010472AbcAICKob585N (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Sat, 9 Jan 2016 03:10:44 +0100
+Date: Sat, 9 Jan 2016 02:10:44 +0000 (GMT)
+From: "Maciej W. Rozycki" <macro@linux-mips.org>
+To: Brian Norris <computersforpeace@gmail.com>,
+ Ralf Baechle <ralf@linux-mips.org>
+cc: =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Fengguang Wu <fengguang.wu@intel.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
+ Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Cyril Bur <cyrilbur@gmail.com>
+Subject: Re: [PATCH] mtd: bcm47xxsflash: use devm_ioremap_nocache() instead
+ of KSEG0ADDR()
+In-Reply-To: <20160108185120.GQ109450@google.com>
+Message-ID: <alpine.LFD.2.20.1601090058430.29879@eddie.linux-mips.org>
+References: <1444813494-14985-1-git-send-email-javier@osg.samsung.com>
+ <CACna6rwjMfTT4UgbyO=VmLaPic4xGcPxoMEL5yRmLW7hhvhXJQ@mail.gmail.com>
+ <20151104185341.GN7274@google.com>
+ <alpine.LFD.2.20.1601072006170.29879@eddie.linux-mips.org>
+ <20160107230513.GL109450@google.com>
+ <CACna6rw6Q=zaSo91ZK26zgjQ+0j+7=b6C_fPYngaKhnw0OmWeQ@mail.gmail.com>
+ <alpine.LFD.2.20.1601081358300.29879@eddie.linux-mips.org>
+ <20160108185120.GQ109450@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56902132.8080008@cs.wisc.edu>
+Content-Type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,86 +43,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 08 2016 at  3:50P -0500,
-Mike Christie <michaelc@cs.wisc.edu> wrote:
+On Fri, 8 Jan 2016, Brian Norris wrote:
 
-> On 01/08/2016 07:32 AM, Christoph Hellwig wrote:
-> > This looks good to me from a highlevel point of view.
-> > Do you also have a git tree to take a look at all the changes in a
-> > single big diff?
+> > > > This removes some (implicit) MIPS dependencies and makes the code more
+> > > > portable, whether we need it or not :)
+> > > 
+> > > So now we have following forwardtrace:
+> > > devm_ioremap_nocache
+> > > ioremap_nocache
+> > > __ioremap_mode
+> > > __ioremap
+> > > CKSEG1ADDR
 > 
-> I uploaded a git tree here:
+> I just noticed that ioremap() and ioremap_nocache() are the same on
+> MIPS. So I could just do devm_ioremap_resource() and save myself a few
+> lines...
+
+ My bad, I wrote from memory and didn't double check what the caching mode 
+for plain `ioremap' is.  You need to use `ioremap_cache' for a cached 
+mapping.  Unfortunately the MIPS port is missing this generic interface 
+and defines `ioremap_cachable' instead.  I've just posted an obvious fix 
+for this problem.
+
+ Ralf, can you pick this fix for 4.5?  It qualifies as obvious I believe, 
+similar to a recent `ioremap_uc' addition.
+
+> > > It results in different address than KSEG0ADDR:
+> > > [    1.339752] [bcm47xxsflash_bcma_probe] KSEG0ADDR(BCMA_SOC_FLASH2):9c000000
+> > > [    1.346848] [bcm47xxsflash_bcma_probe] devm_ioremap_nocache:bc000000
+> > > 
+> > > But it still works as expected! :)
+> > > [    1.609426] 6 bcm47xxpart partitions found on MTD device bcm47xxsflash
+> > > [    1.616169] Creating 6 MTD partitions on "bcm47xxsflash":
+> > 
+> >  It is a functional change though and I think the change from a cached to 
+> > uncached mapping (i.e. from `ioremap' to `ioremap_nocache') has to be a 
+> > separate patch, so that both changes can be reviewed independently.
 > 
-> https://github.com/mikechristie/linux-kernel.git
-> 
-> based off of linux-next today. The patches are just in the master branch.
+> As I noted before sending my patch, I don't think this driver should
+> have been using KSEG0 anyway; it should have been KSEG1, right? I can
+> note that in the patch description, but I don't really see why it needs
+> to be a separate patch.
 
-Hi Mike,
+ You did mention that, but didn't actually justify why an uncached mapping 
+is required here.
 
-I had a look at your DM changes.  That sucked (but things looked good).
-So much so that I want to thank you for tackling this task (and taking
-one for the team).
+ This code is in a function called `bcm47xxsflash_read' and reads from an 
+MMIO region, presumably flash memory which behaves like ordinary memory on 
+reads (i.e. no side effects).  Therefore using a cached mapping will in 
+most cases result in much better performance as the CPU will load 
+(prefetch) data in cacheline-sized quantities rather than hitting the 
+external bus every time with a word-sized quantity transferred only.
 
-I'll get this kernel built and tested (using the various DM testsuites:
-lvm2, cryptsetup, device-mapper-test-suite for dm-thinp and dm-cache).
+ Switching to an uncached mapping would invalidate this optimisation and 
+is independent from a build error fix.  Therefore it requires a separate 
+patch and review.  Perhaps `memremap' should be used instead (possibly 
+with the MEMREMAP_WT policy), but this is exactly why a separate review is 
+required for that part.
 
-But I did make some changes during my review that I'd appreciate if
-you'd fold in to wherever you think it appropriate in your series:
-
-diff --git a/drivers/md/dm-stats.c b/drivers/md/dm-stats.c
-index 96b5c1b..9e29dba 100644
---- a/drivers/md/dm-stats.c
-+++ b/drivers/md/dm-stats.c
-@@ -514,11 +514,10 @@ static void dm_stat_round(struct dm_stat *s, struct dm_stat_shared *shared,
- }
- 
- static void dm_stat_for_entry(struct dm_stat *s, size_t entry,
--			      unsigned long bi_rw, sector_t len,
-+			      int idx, sector_t len,
- 			      struct dm_stats_aux *stats_aux, bool end,
- 			      unsigned long duration_jiffies)
- {
--	unsigned long idx = bi_rw;
- 	struct dm_stat_shared *shared = &s->stat_shared[entry];
- 	struct dm_stat_percpu *p;
- 
-@@ -584,7 +583,7 @@ static void dm_stat_for_entry(struct dm_stat *s, size_t entry,
- #endif
- }
- 
--static void __dm_stat_bio(struct dm_stat *s, unsigned long bi_rw,
-+static void __dm_stat_bio(struct dm_stat *s, int bi_rw,
- 			  sector_t bi_sector, sector_t end_sector,
- 			  bool end, unsigned long duration_jiffies,
- 			  struct dm_stats_aux *stats_aux)
-@@ -622,7 +621,7 @@ static void __dm_stat_bio(struct dm_stat *s, unsigned long bi_rw,
- 	} while (unlikely(todo != 0));
- }
- 
--void dm_stats_account_io(struct dm_stats *stats, unsigned long bi_rw,
-+void dm_stats_account_io(struct dm_stats *stats, int bi_rw,
- 			 sector_t bi_sector, unsigned bi_sectors, bool end,
- 			 unsigned long duration_jiffies,
- 			 struct dm_stats_aux *stats_aux)
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 5e940f7..9a4b3cb 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -1326,7 +1326,7 @@ static int device_fua_capable(struct dm_target *ti, struct dm_dev *dev,
- }
- 
- static bool dm_table_supports_flush(struct dm_table *t,
--				    iterate_devices_callout_fn support_test)
-+				    iterate_devices_callout_fn callout_fn)
- {
- 	struct dm_target *ti;
- 	unsigned i = 0;
-@@ -1347,7 +1347,7 @@ static bool dm_table_supports_flush(struct dm_table *t,
- 			return true;
- 
- 		if (ti->type->iterate_devices &&
--		    ti->type->iterate_devices(ti, support_test, NULL))
-+		    ti->type->iterate_devices(ti, callout_fn, NULL))
- 			return true;
- 	}
- 
+  Maciej
