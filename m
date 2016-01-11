@@ -1,27 +1,21 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aIgZL-0001Gt-7Q
- for linux-mtd@lists.infradead.org; Mon, 11 Jan 2016 17:47:52 +0000
-From: Marek Vasut <marex@denx.de>
-To: Dinh Nguyen <dinguyen@opensource.altera.com>
-Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
-Date: Mon, 11 Jan 2016 18:27:04 +0100
-Cc: linux-mtd@lists.infradead.org,
- Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, "R, Vignesh" <vigneshr@ti.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- devicetree@vger.kernel.org
-References: <1452486886-8049-1-git-send-email-marex@denx.de>
- <201601111732.23954.marex@denx.de> <5693E079.3050301@opensource.altera.com>
-In-Reply-To: <5693E079.3050301@opensource.altera.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201601111827.04308.marex@denx.de>
+ id 1aIiyY-0002s4-O8
+ for linux-mtd@lists.infradead.org; Mon, 11 Jan 2016 20:22:03 +0000
+From: mchristi@redhat.com
+To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
+ philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+ linux-raid@vger.kernel.org, dm-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
+Subject: [PATCH 00/35 v3] eparate operations from flags in the bio/request
+ structs
+Date: Mon, 11 Jan 2016 14:20:58 -0600
+Message-Id: <1452543693-4440-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,50 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, January 11, 2016 at 06:03:53 PM, Dinh Nguyen wrote:
-> On 01/11/2016 10:32 AM, Marek Vasut wrote:
-> > On Monday, January 11, 2016 at 05:06:30 PM, Dinh Nguyen wrote:
-> >> Hi Marek,
-> > 
-> > Hi!
-> > 
-> >> On 01/10/2016 10:34 PM, Marek Vasut wrote:
-> >>> From: Graham Moore <grmoore@opensource.altera.com>
-> >>> 
-> >>> Add binding document for the Cadence QSPI controller.
-> >>> 
-> >>> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
-> >>> Signed-off-by: Marek Vasut <marex@denx.de>
-> >>> Cc: Alan Tull <atull@opensource.altera.com>
-> >>> Cc: Brian Norris <computersforpeace@gmail.com>
-> >>> Cc: David Woodhouse <dwmw2@infradead.org>
-> >>> Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
-> >>> Cc: Graham Moore <grmoore@opensource.altera.com>
-> >>> Cc: "R, Vignesh" <vigneshr@ti.com>
-> >>> Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
-> >>> Cc: devicetree@vger.kernel.org
-> >>> ---
-> >> 
-> >> I think you also need to CC the following people for proper review of
-> >> these bindings:
-> >> 
-> >> Rob Herring <robh+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED
-> >> DEVICE TREE BINDINGS)
-> >> Pawel Moll <pawel.moll@arm.com> (maintainer:OPEN FIRMWARE AND FLATTENED
-> >> DEVICE TREE BINDINGS)
-> >> Mark Rutland <mark.rutland@arm.com> (maintainer:OPEN FIRMWARE AND
-> >> FLATTENED DEVICE TREE BINDINGS)
-> >> Ian Campbell <ijc+devicetree@hellion.org.uk> (maintainer:OPEN FIRMWARE
-> >> AND FLATTENED DEVICE TREE BINDINGS)
-> >> Kumar Gala <galak@codeaurora.org> (maintainer:OPEN FIRMWARE AND
-> >> FLATTENED DEVICE TREE BINDINGS)
-> > 
-> > Isn't it enough to submit them to devicetree@vger ?
-> 
-> Not sure, but I always CC those names explicitly for DTS bindings since
-> they are listed in the MAINTAINERS file.
+The following patches begin to cleanup the request->cmd_flags and
+bio->bi_rw mess. We currently use cmd_flags to specify the operation,
+attributes and state of the request. For bi_rw we use it for similar
+info and also the priority but then also have another bi_flags field
+for state. At some point, we abused them so much we just made cmd_flags
+64 bits, so we could add more.
 
-OK, will do in the next revision (if needed). Thanks!
+The following patches seperate the operation (read, write discard,
+flush, etc) from cmd_flags/bi_rw.
 
-Best regards,
-Marek Vasut
+This patchset was made against linux-next from today Jan 11 2016.
+(git tag next-20160111).
+
+I put a git tree here:
+https://github.com/mikechristie/linux-kernel.git
+
+v3:
+
+1. Used "=" instead of "|="  to setup bio bi_rw.
+2. Removed __get_request cmd_flags compat code.
+3. Merged initial dm related changes requested by Mike Snitzer.
+4. Fixed ubd kbuild errors in flush related patches.
+5. Fix 80 char col issues in several patches.
+6. Fix issue with one of the btrfs patches where it looks like I reverted
+a patch when trying to fix a merge error.
+
+v2
+
+1. Dropped arguments from submit_bio, and had callers setup
+bio.
+2. Add REQ_OP_FLUSH for request_fn users and renamed REQ_FLUSH
+to REQ_PREFLUSH for make_request_fn users.
+3. Dropped bio/rq_data_dir functions, and added a op_is_write
+function instead.
