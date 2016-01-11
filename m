@@ -1,22 +1,30 @@
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]
- helo=smtp.smtpout.orange.fr)
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aIMhw-0001Jb-70
- for linux-mtd@lists.infradead.org; Sun, 10 Jan 2016 20:35:25 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mtd: nand: pxa3xx_nand: add register access debug
-References: <1439323034-8820-1-git-send-email-robert.jarzmik@free.fr>
- <20160107000626.GS109450@google.com>
-Date: Sun, 10 Jan 2016 21:34:58 +0100
-In-Reply-To: <20160107000626.GS109450@google.com> (Brian Norris's message of
- "Wed, 6 Jan 2016 16:06:26 -0800")
-Message-ID: <87egdpdvgt.fsf@belgarion.home>
+ id 1aIRCg-0003Zu-0v
+ for linux-mtd@lists.infradead.org; Mon, 11 Jan 2016 01:23:30 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: add hisilicon spi-nor flash controller
+ driver
+To: Rob Herring <robh@kernel.org>
+References: <1452216405-10826-1-git-send-email-xuejiancheng@huawei.com>
+ <20160109154249.GA28102@rob-hp-laptop>
+CC: <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <shijie.huang@intel.com>, <pengbinquan@huawei.com>,
+ <han.xu@freescale.com>, <ezequiel@vanguardiasur.com.ar>,
+ <fabio.estevam@freescale.com>, <manabian@gmail.com>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <yanhaifeng@hisilicon.com>,
+ <yanghongwei@hisilicon.com>, <suwenping@hisilicon.com>,
+ <ml.yang@hisilicon.com>, <gaofei@hisilicon.com>,
+ <zhangzhenxing@hisilicon.com>, <xuejiancheng@hisilicon.com>
+From: xuejiancheng <xuejiancheng@huawei.com>
+Message-ID: <56930369.1050000@huawei.com>
+Date: Mon, 11 Jan 2016 09:20:41 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20160109154249.GA28102@rob-hp-laptop>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +34,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris <computersforpeace@gmail.com> writes:
+Hi Rob,
 
-> On Tue, Aug 11, 2015 at 09:57:12PM +0200, Robert Jarzmik wrote:
->> @@ -127,11 +127,23 @@
->>  #define EXT_CMD_TYPE_MONO	0 /* Monolithic read/write */
->>  
->>  /* macros for registers read/write */
->> -#define nand_writel(info, off, val)	\
->> -	writel_relaxed((val), (info)->mmio_base + (off))
->> -
->> -#define nand_readl(info, off)		\
->> -	readl_relaxed((info)->mmio_base + (off))
->> +#define nand_writel(info, off, val)					\
->> +	do {								\
->> +		dev_vdbg(&info->pdev->dev,				\
->> +			 "%s():%d nand_writel(0x%x, %s)\n",		\
->> +			 __func__, __LINE__, (val), #off);		\
->
-> The stringification of 'off' works for now, but I think that'd be a bit
-> restrictive in the future, if we ever want to (e.g.) do arithmetic to
-> compute the offset, like:
->
-> 	nand_writel(info, SOME_REGISTER_MACRO + idx * 4, foo);
->
-> You might be better off just printing the hex value of the offset.
-Sure. I can always have a post-processing script to recreate the register names.
+On 2016/1/9 23:42, Rob Herring wrote:
+> On Fri, Jan 08, 2016 at 09:26:45AM +0800, Jiancheng Xue wrote:
+>> add hisilicon spi-nor flash controller driver
+>>
+>> Signed-off-by: Binquan Peng <pengbinquan@huawei.com>
+>> Signed-off-by: Jiancheng Xue <xuejiancheng@huawei.com>
+>> ---
+> 
+> Next time, please include changes in v2 here.
+> 
 
-I'll post a v2 soon.
+OK. I will remember it. Thank you.
 
-Cheers.
+In v2, I mainly fixed some compile warnings.
 
---
-Robert
+>>  .../devicetree/bindings/spi/spi-hisi-sfc.txt       |  24 +
+>>  drivers/mtd/spi-nor/Kconfig                        |   6 +
+>>  drivers/mtd/spi-nor/Makefile                       |   1 +
+>>  drivers/mtd/spi-nor/hisi-sfc.c                     | 498 +++++++++++++++++++++
+>>  4 files changed, 529 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt
+>>  create mode 100644 drivers/mtd/spi-nor/hisi-sfc.c
+>>
+>> diff --git a/Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt b/Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt
+>> new file mode 100644
+>> index 0000000..a0d1e04
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt
+>> @@ -0,0 +1,24 @@
+>> +HiSilicon SPI-NOR Flash Controller
+>> +
+>> +Required properties:
+>> +- compatible : Should be "hisilicon,hisi-sfc".
+> 
+> I missed this last time, but you also need a more specific compatible 
+> string with the SOC name in it.
+> 
+
+This IP block is used in many SOCs. Do I need to add a specific compatible
+string for every SOC? Thank you.
+
+>> +- address-cells : number of cells required to define a chip select
+>> +        address on the SPI bus. Should be set to 1. See spi-bus.txt.
+>> +- size-cells : Should be 0.
+>> +- reg : Offset and length of the register set for the controller device.
+>> +- reg-names : Must include the following two entries: "control", "memory".
+>> +- clocks : handle to spi-nor flash controller clock.
+>> +
+>> +Example:
+>> +spi-nor-controller@10000000 {
+>> +	compatible = "hisilicon,hisi-sfc";
+>> +	#address-cells = <1>;
+>> +	#size-cells = <0>;
+>> +	reg = <0x10000000 0x1000>, <0x14000000 0x1000000>;
+>> +	reg-names = "control", "memory";
+>> +	clocks = <&clock HI3519_FMC_CLK>;
+>> +	spi-nor@0 {
+>> +		compatible = "jedec,spi-nor";
+>> +		reg = <0>;
+>> +	};
+>> +};
+> 
+> .
+> 
