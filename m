@@ -1,31 +1,23 @@
-From: Gregory CLEMENT <gregory.clement@free-electrons.com>
-To: Olof Johansson <olof@lixom.net>
-Cc: Simon Horman <horms@verge.net.au>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "arm\@kernel.org" <arm@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Magnus Damm <magnus.damm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
- Alex Smith <alex.smith@imgtec.com>, Brian Norris <computersforpeace@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- "devicetree\@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-arm-kernel\@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Linux-sh list <linux-sh@vger.kernel.org>,
- Linux MIPS Mailing List <linux-mips@linux-mips.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/9] ARM: dts: Add compatible property to "partitions"
- node
-References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
- <20151228050147.GE1066@verge.net.au>
- <CAMuHMdXt36GSDuoFVGBebJVN9OHPh=ze8u8KvQ0B+RcvT6xTYQ@mail.gmail.com>
- <20160103213938.GD22806@verge.net.au>
-Date: Mon, 11 Jan 2016 17:07:58 +0100
-In-Reply-To: <20160103213938.GD22806@verge.net.au> (Simon Horman's message of
- "Mon, 4 Jan 2016 08:39:38 +1100")
-Message-ID: <87lh7wyu8x.fsf@free-electrons.com>
+Received: from mail-bn1on0072.outbound.protection.outlook.com ([157.56.110.72]
+ helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aIf6J-0004K7-K3
+ for linux-mtd@lists.infradead.org; Mon, 11 Jan 2016 16:13:49 +0000
+Message-ID: <5693D306.9070001@opensource.altera.com>
+Date: Mon, 11 Jan 2016 10:06:30 -0600
+From: Dinh Nguyen <dinguyen@opensource.altera.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: Marek Vasut <marex@denx.de>, <linux-mtd@lists.infradead.org>
+CC: Graham Moore <grmoore@opensource.altera.com>, Alan Tull
+ <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, "R, Vignesh" <vigneshr@ti.com>, "Yves
+ Vandervennet" <yvanderv@opensource.altera.com>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+In-Reply-To: <1452486886-8049-1-git-send-email-marex@denx.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,48 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Olof,
- 
- On dim., janv. 03 2016, Simon Horman <horms@verge.net.au> wrote:
+Hi Marek,
 
-> On Mon, Dec 28, 2015 at 11:15:30AM +0100, Geert Uytterhoeven wrote:
+On 01/10/2016 10:34 PM, Marek Vasut wrote:
+> From: Graham Moore <grmoore@opensource.altera.com>
+> 
+> Add binding document for the Cadence QSPI controller.
+> 
+> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> Cc: Alan Tull <atull@opensource.altera.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
+> Cc: Graham Moore <grmoore@opensource.altera.com>
+> Cc: "R, Vignesh" <vigneshr@ti.com>
+> Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
+> Cc: devicetree@vger.kernel.org
+> ---
 
->> >> Most of these are in arm-soc/for-next. Exceptions are kirkwood (in
->> >> mvebu/for-next), and ci20 (in mips/mips-for-linux-next).
->> >>
->> >> Given we're late in the v4.4-rc cycle, perhaps it's easiest if the
->> >> arm-soc maintainers take all applicable patches directly, bypassing the
->> >> mvebu and shmobile maintainers?
->> >>
->> >> Thanks for queuing for v4.5!
->> >>
->> >> Geert Uytterhoeven (9):
->> >>   ARM: mvebu: ix4-300d: Add compatible property to "partitions" node
->> >>   ARM: mvebu: kirkwood: Add compatible property to "partitions" node
->> >>   ARM: shmobile: bockw dts: Add compatible property to "partitions" node
->> >>   ARM: shmobile: lager dts: Add compatible property to "partitions" node
->> >>   ARM: shmobile: koelsch dts: Add compatible property to "partitions"
->> >>     node
->> >>   ARM: shmobile: porter dts: Add compatible property to "partitions"
->> >>     node
->> >>   ARM: shmobile: gose dts: Add compatible property to "partitions" node
->> >>   ARM: shmobile: silk dts: Add compatible property to "partitions" node
->> >
->> > Thanks, I have queued up the above "shmobile" patches for v4.6.
->> 
->> I'm afraid v4.6 is too late, leaving all SPI FLASHes broken in v4.5.
->
-> Thanks. I'll re-queue them up as fixes for v4.5.
+I think you also need to CC the following people for proper review of
+these bindings:
 
-I thought you planned to directly apply them for v4.5 but I did not see
-them in the for-next branch of arm-soc. So as Simon I will submit them
-as fix for 4.5.
+Rob Herring <robh+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED
+DEVICE TREE BINDINGS)
+Pawel Moll <pawel.moll@arm.com> (maintainer:OPEN FIRMWARE AND FLATTENED
+DEVICE TREE BINDINGS)
+Mark Rutland <mark.rutland@arm.com> (maintainer:OPEN FIRMWARE AND
+FLATTENED DEVICE TREE BINDINGS)
+Ian Campbell <ijc+devicetree@hellion.org.uk> (maintainer:OPEN FIRMWARE
+AND FLATTENED DEVICE TREE BINDINGS)
+Kumar Gala <galak@codeaurora.org> (maintainer:OPEN FIRMWARE AND
+FLATTENED DEVICE TREE BINDINGS)
 
-Gregory
-
-
--- 
-Gregory Clement, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+Dinh
