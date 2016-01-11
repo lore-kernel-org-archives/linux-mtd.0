@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aIiys-0002tc-Ap
- for linux-mtd@lists.infradead.org; Mon, 11 Jan 2016 20:22:29 +0000
+ id 1aIiyx-0002w9-B1
+ for linux-mtd@lists.infradead.org; Mon, 11 Jan 2016 20:22:30 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 09/35] btrfs: update __btrfs_map_block for bi_op transition
-Date: Mon, 11 Jan 2016 14:21:07 -0600
-Message-Id: <1452543693-4440-10-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 12/35] gfs2: set bi_op to REQ_OP
+Date: Mon, 11 Jan 2016 14:21:10 -0600
+Message-Id: <1452543693-4440-13-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1452543693-4440-1-git-send-email-mchristi@redhat.com>
 References: <1452543693-4440-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,250 +29,165 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-We no longer pass in a bitmap of rq_flag_bits bits
-to __btrfs_map_block. It will always be a REQ_OP,
-or the btrfs specific REQ_GET_READ_MIRRORS,
-so this drops the bit tests.
+This patch has gfs2 set the bio bi_op to a REQ_OP, and
+rq_flag_bits to bi_rw.
+
+This patch is compile tested only.
+
+v2:
+
+Bob, I did not add your signed off, because there was
+the gfs2_submit_bhs changes since last time you reviewed
+it.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 ---
- fs/btrfs/extent-tree.c |  2 +-
- fs/btrfs/inode.c       |  2 +-
- fs/btrfs/volumes.c     | 55 +++++++++++++++++++++++++++-----------------------
- fs/btrfs/volumes.h     |  4 ++--
- 4 files changed, 34 insertions(+), 29 deletions(-)
+ fs/gfs2/log.c        |  8 ++++----
+ fs/gfs2/lops.c       | 12 +++++++-----
+ fs/gfs2/lops.h       |  2 +-
+ fs/gfs2/meta_io.c    |  8 +++++---
+ fs/gfs2/ops_fstype.c |  1 +
+ 5 files changed, 18 insertions(+), 13 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index add4af6..4d503d0 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2043,7 +2043,7 @@ int btrfs_discard_extent(struct btrfs_root *root, u64 bytenr,
- 
- 
- 	/* Tell the block device(s) that the sectors can be discarded */
--	ret = btrfs_map_block(root->fs_info, REQ_DISCARD,
-+	ret = btrfs_map_block(root->fs_info, REQ_OP_DISCARD,
- 			      bytenr, &num_bytes, &bbio, 0);
- 	/* Error condition is -ENOMEM */
- 	if (!ret) {
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index dd435ee..32a9aa1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8206,7 +8206,7 @@ static int btrfs_submit_direct_hook(int rw, struct btrfs_dio_private *dip,
- 	int async_submit = 0;
- 
- 	map_length = orig_bio->bi_iter.bi_size;
--	ret = btrfs_map_block(root->fs_info, rw, start_sector << 9,
-+	ret = btrfs_map_block(root->fs_info, orig_bio->bi_op, start_sector << 9,
- 			      &map_length, NULL, 0);
- 	if (ret)
- 		return -EIO;
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 0da1d32..bf1e9af 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5218,7 +5218,7 @@ void btrfs_put_bbio(struct btrfs_bio *bbio)
- 		kfree(bbio);
- }
- 
--static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
-+static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int op,
- 			     u64 logical, u64 *length,
- 			     struct btrfs_bio **bbio_ret,
- 			     int mirror_num, int need_raid_map)
-@@ -5296,7 +5296,7 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 		raid56_full_stripe_start *= full_stripe_len;
+diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
+index 0ff028c..e58ccef0 100644
+--- a/fs/gfs2/log.c
++++ b/fs/gfs2/log.c
+@@ -657,7 +657,7 @@ static void log_write_header(struct gfs2_sbd *sdp, u32 flags)
+ 	struct gfs2_log_header *lh;
+ 	unsigned int tail;
+ 	u32 hash;
+-	int rw = WRITE_FLUSH_FUA | REQ_META;
++	int op_flags = WRITE_FLUSH_FUA | REQ_META;
+ 	struct page *page = mempool_alloc(gfs2_page_pool, GFP_NOIO);
+ 	enum gfs2_freeze_state state = atomic_read(&sdp->sd_freeze_state);
+ 	lh = page_address(page);
+@@ -682,12 +682,12 @@ static void log_write_header(struct gfs2_sbd *sdp, u32 flags)
+ 	if (test_bit(SDF_NOBARRIERS, &sdp->sd_flags)) {
+ 		gfs2_ordered_wait(sdp);
+ 		log_flush_wait(sdp);
+-		rw = WRITE_SYNC | REQ_META | REQ_PRIO;
++		op_flags = WRITE_SYNC | REQ_META | REQ_PRIO;
  	}
  
--	if (rw & REQ_DISCARD) {
-+	if (op == REQ_OP_DISCARD) {
- 		/* we don't discard raid56 yet */
- 		if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
- 			ret = -EOPNOTSUPP;
-@@ -5309,7 +5309,7 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 		   For other RAID types and for RAID[56] reads, just allow a single
- 		   stripe (on a single disk). */
- 		if ((map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
--		    (rw & REQ_WRITE)) {
-+		    (op == REQ_OP_WRITE)) {
- 			max_len = stripe_len * nr_data_stripes(map) -
- 				(offset - raid56_full_stripe_start);
- 		} else {
-@@ -5332,8 +5332,8 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 		btrfs_dev_replace_unlock(dev_replace);
+ 	sdp->sd_log_idle = (tail == sdp->sd_log_flush_head);
+ 	gfs2_log_write_page(sdp, page);
+-	gfs2_log_flush_bio(sdp, rw);
++	gfs2_log_flush_bio(sdp, REQ_OP_WRITE, op_flags);
+ 	log_flush_wait(sdp);
  
- 	if (dev_replace_is_ongoing && mirror_num == map->num_stripes + 1 &&
--	    !(rw & (REQ_WRITE | REQ_DISCARD | REQ_GET_READ_MIRRORS)) &&
--	    dev_replace->tgtdev != NULL) {
-+	    op != REQ_OP_WRITE && op != REQ_OP_DISCARD &&
-+	    op != REQ_GET_READ_MIRRORS && dev_replace->tgtdev != NULL) {
- 		/*
- 		 * in dev-replace case, for repair case (that's the only
- 		 * case where the mirror is selected explicitly when
-@@ -5422,15 +5422,17 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 			    (offset + *length);
+ 	if (sdp->sd_log_tail != tail)
+@@ -738,7 +738,7 @@ void gfs2_log_flush(struct gfs2_sbd *sdp, struct gfs2_glock *gl,
  
- 	if (map->type & BTRFS_BLOCK_GROUP_RAID0) {
--		if (rw & REQ_DISCARD)
-+		if (op == REQ_OP_DISCARD)
- 			num_stripes = min_t(u64, map->num_stripes,
- 					    stripe_nr_end - stripe_nr_orig);
- 		stripe_nr = div_u64_rem(stripe_nr, map->num_stripes,
- 				&stripe_index);
--		if (!(rw & (REQ_WRITE | REQ_DISCARD | REQ_GET_READ_MIRRORS)))
-+		if (op != REQ_OP_WRITE && op != REQ_OP_DISCARD &&
-+		    op != REQ_GET_READ_MIRRORS)
- 			mirror_num = 1;
- 	} else if (map->type & BTRFS_BLOCK_GROUP_RAID1) {
--		if (rw & (REQ_WRITE | REQ_DISCARD | REQ_GET_READ_MIRRORS))
-+		if (op == REQ_OP_WRITE || op == REQ_OP_DISCARD ||
-+		    op == REQ_GET_READ_MIRRORS)
- 			num_stripes = map->num_stripes;
- 		else if (mirror_num)
- 			stripe_index = mirror_num - 1;
-@@ -5443,7 +5445,8 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 		}
+ 	gfs2_ordered_write(sdp);
+ 	lops_before_commit(sdp, tr);
+-	gfs2_log_flush_bio(sdp, WRITE);
++	gfs2_log_flush_bio(sdp, REQ_OP_WRITE, 0);
  
- 	} else if (map->type & BTRFS_BLOCK_GROUP_DUP) {
--		if (rw & (REQ_WRITE | REQ_DISCARD | REQ_GET_READ_MIRRORS)) {
-+		if (op == REQ_OP_WRITE || REQ_OP_DISCARD ||
-+		    op == REQ_GET_READ_MIRRORS) {
- 			num_stripes = map->num_stripes;
- 		} else if (mirror_num) {
- 			stripe_index = mirror_num - 1;
-@@ -5457,9 +5460,9 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 		stripe_nr = div_u64_rem(stripe_nr, factor, &stripe_index);
- 		stripe_index *= map->sub_stripes;
+ 	if (sdp->sd_log_head != sdp->sd_log_flush_head) {
+ 		log_flush_wait(sdp);
+diff --git a/fs/gfs2/lops.c b/fs/gfs2/lops.c
+index ce28242..c1099b4 100644
+--- a/fs/gfs2/lops.c
++++ b/fs/gfs2/lops.c
+@@ -230,17 +230,19 @@ static void gfs2_end_log_write(struct bio *bio)
+ /**
+  * gfs2_log_flush_bio - Submit any pending log bio
+  * @sdp: The superblock
+- * @rw: The rw flags
++ * @op: REQ_OP
++ * @op_flags: rq_flag_bits
+  *
+  * Submit any pending part-built or full bio to the block device. If
+  * there is no pending bio, then this is a no-op.
+  */
  
--		if (rw & (REQ_WRITE | REQ_GET_READ_MIRRORS))
-+		if (op == REQ_OP_WRITE || op == REQ_GET_READ_MIRRORS)
- 			num_stripes = map->sub_stripes;
--		else if (rw & REQ_DISCARD)
-+		else if (op == REQ_OP_DISCARD)
- 			num_stripes = min_t(u64, map->sub_stripes *
- 					    (stripe_nr_end - stripe_nr_orig),
- 					    map->num_stripes);
-@@ -5477,7 +5480,7 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 
- 	} else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
- 		if (need_raid_map &&
--		    ((rw & (REQ_WRITE | REQ_GET_READ_MIRRORS)) ||
-+		    (op == REQ_OP_WRITE || op == REQ_GET_READ_MIRRORS ||
- 		     mirror_num > 1)) {
- 			/* push stripe_nr back to the start of the full stripe */
- 			stripe_nr = div_u64(raid56_full_stripe_start,
-@@ -5505,8 +5508,8 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 			/* We distribute the parity blocks across stripes */
- 			div_u64_rem(stripe_nr + stripe_index, map->num_stripes,
- 					&stripe_index);
--			if (!(rw & (REQ_WRITE | REQ_DISCARD |
--				    REQ_GET_READ_MIRRORS)) && mirror_num <= 1)
-+			if ((op != REQ_OP_WRITE && op != REQ_OP_DISCARD &&
-+			    op != REQ_GET_READ_MIRRORS) && mirror_num <= 1)
- 				mirror_num = 1;
- 		}
- 	} else {
-@@ -5523,9 +5526,9 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 
- 	num_alloc_stripes = num_stripes;
- 	if (dev_replace_is_ongoing) {
--		if (rw & (REQ_WRITE | REQ_DISCARD))
-+		if (op == REQ_OP_WRITE || op == REQ_OP_DISCARD)
- 			num_alloc_stripes <<= 1;
--		if (rw & REQ_GET_READ_MIRRORS)
-+		if (op == REQ_GET_READ_MIRRORS)
- 			num_alloc_stripes++;
- 		tgtdev_indexes = num_stripes;
- 	}
-@@ -5540,7 +5543,8 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 
- 	/* build raid_map */
- 	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK &&
--	    need_raid_map && ((rw & (REQ_WRITE | REQ_GET_READ_MIRRORS)) ||
-+	    need_raid_map &&
-+	    ((op == REQ_OP_WRITE || op == REQ_GET_READ_MIRRORS) ||
- 	    mirror_num > 1)) {
- 		u64 tmp;
- 		unsigned rot;
-@@ -5565,7 +5569,7 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 				RAID6_Q_STRIPE;
- 	}
- 
--	if (rw & REQ_DISCARD) {
-+	if (op == REQ_OP_DISCARD) {
- 		u32 factor = 0;
- 		u32 sub_stripes = 0;
- 		u64 stripes_per_dev = 0;
-@@ -5645,14 +5649,15 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 		}
- 	}
- 
--	if (rw & (REQ_WRITE | REQ_GET_READ_MIRRORS))
-+	if (op == REQ_OP_WRITE || op == REQ_GET_READ_MIRRORS)
- 		max_errors = btrfs_chunk_max_errors(map);
- 
- 	if (bbio->raid_map)
- 		sort_parity_stripes(bbio, num_stripes);
- 
- 	tgtdev_indexes = 0;
--	if (dev_replace_is_ongoing && (rw & (REQ_WRITE | REQ_DISCARD)) &&
-+	if (dev_replace_is_ongoing &&
-+	   (op == REQ_OP_WRITE || op == REQ_OP_DISCARD) &&
- 	    dev_replace->tgtdev != NULL) {
- 		int index_where_to_add;
- 		u64 srcdev_devid = dev_replace->srcdev->devid;
-@@ -5687,7 +5692,7 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
- 			}
- 		}
- 		num_stripes = index_where_to_add;
--	} else if (dev_replace_is_ongoing && (rw & REQ_GET_READ_MIRRORS) &&
-+	} else if (dev_replace_is_ongoing && (op == REQ_GET_READ_MIRRORS) &&
- 		   dev_replace->tgtdev != NULL) {
- 		u64 srcdev_devid = dev_replace->srcdev->devid;
- 		int index_srcdev = 0;
-@@ -5760,21 +5765,21 @@ out:
- 	return ret;
- }
- 
--int btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
-+int btrfs_map_block(struct btrfs_fs_info *fs_info, int op,
- 		      u64 logical, u64 *length,
- 		      struct btrfs_bio **bbio_ret, int mirror_num)
+-void gfs2_log_flush_bio(struct gfs2_sbd *sdp, int rw)
++void gfs2_log_flush_bio(struct gfs2_sbd *sdp, int op, int op_flags)
  {
--	return __btrfs_map_block(fs_info, rw, logical, length, bbio_ret,
-+	return __btrfs_map_block(fs_info, op, logical, length, bbio_ret,
- 				 mirror_num, 0);
- }
+ 	if (sdp->sd_log_bio) {
+ 		atomic_inc(&sdp->sd_log_in_flight);
+-		sdp->sd_log_bio->bi_rw = rw;
++		sdp->sd_log_bio->bi_op = op;
++		sdp->sd_log_bio->bi_rw = op_flags;
+ 		submit_bio(sdp->sd_log_bio);
+ 		sdp->sd_log_bio = NULL;
+ 	}
+@@ -300,7 +302,7 @@ static struct bio *gfs2_log_get_bio(struct gfs2_sbd *sdp, u64 blkno)
+ 		nblk >>= sdp->sd_fsb2bb_shift;
+ 		if (blkno == nblk)
+ 			return bio;
+-		gfs2_log_flush_bio(sdp, WRITE);
++		gfs2_log_flush_bio(sdp, REQ_OP_WRITE, 0);
+ 	}
  
- /* For Scrub/replace */
--int btrfs_map_sblock(struct btrfs_fs_info *fs_info, int rw,
-+int btrfs_map_sblock(struct btrfs_fs_info *fs_info, int op,
- 		     u64 logical, u64 *length,
- 		     struct btrfs_bio **bbio_ret, int mirror_num,
- 		     int need_raid_map)
+ 	return gfs2_log_alloc_bio(sdp, blkno);
+@@ -329,7 +331,7 @@ static void gfs2_log_write(struct gfs2_sbd *sdp, struct page *page,
+ 	bio = gfs2_log_get_bio(sdp, blkno);
+ 	ret = bio_add_page(bio, page, size, offset);
+ 	if (ret == 0) {
+-		gfs2_log_flush_bio(sdp, WRITE);
++		gfs2_log_flush_bio(sdp, REQ_OP_WRITE, 0);
+ 		bio = gfs2_log_alloc_bio(sdp, blkno);
+ 		ret = bio_add_page(bio, page, size, offset);
+ 		WARN_ON(ret == 0);
+diff --git a/fs/gfs2/lops.h b/fs/gfs2/lops.h
+index a65a7ba..e529f53 100644
+--- a/fs/gfs2/lops.h
++++ b/fs/gfs2/lops.h
+@@ -27,7 +27,7 @@ extern const struct gfs2_log_operations gfs2_databuf_lops;
+ 
+ extern const struct gfs2_log_operations *gfs2_log_ops[];
+ extern void gfs2_log_write_page(struct gfs2_sbd *sdp, struct page *page);
+-extern void gfs2_log_flush_bio(struct gfs2_sbd *sdp, int rw);
++extern void gfs2_log_flush_bio(struct gfs2_sbd *sdp, int op, int op_flags);
+ extern void gfs2_pin(struct gfs2_sbd *sdp, struct buffer_head *bh);
+ 
+ static inline unsigned int buf_limit(struct gfs2_sbd *sdp)
+diff --git a/fs/gfs2/meta_io.c b/fs/gfs2/meta_io.c
+index 96c8140..f790f38 100644
+--- a/fs/gfs2/meta_io.c
++++ b/fs/gfs2/meta_io.c
+@@ -213,7 +213,8 @@ static void gfs2_meta_read_endio(struct bio *bio)
+  * Submit several consecutive buffer head I/O requests as a single bio I/O
+  * request.  (See submit_bh_wbc.)
+  */
+-static void gfs2_submit_bhs(int rw, struct buffer_head *bhs[], int num)
++static void gfs2_submit_bhs(int op, int op_flags, struct buffer_head *bhs[],
++			    int num)
  {
--	return __btrfs_map_block(fs_info, rw, logical, length, bbio_ret,
-+	return __btrfs_map_block(fs_info, op, logical, length, bbio_ret,
- 				 mirror_num, need_raid_map);
+ 	struct buffer_head *bh = bhs[0];
+ 	struct bio *bio;
+@@ -230,7 +231,8 @@ static void gfs2_submit_bhs(int rw, struct buffer_head *bhs[], int num)
+ 		bio_add_page(bio, bh->b_page, bh->b_size, bh_offset(bh));
+ 	}
+ 	bio->bi_end_io = gfs2_meta_read_endio;
+-	bio->bi_rw = rw;
++	bio->bi_op = op;
++	bio->bi_rw = op_flags;
+ 	submit_bio(bio);
  }
  
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 6a4375a..8ef796a 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -421,10 +421,10 @@ int btrfs_account_dev_extents_size(struct btrfs_device *device, u64 start,
- 				   u64 end, u64 *length);
- void btrfs_get_bbio(struct btrfs_bio *bbio);
- void btrfs_put_bbio(struct btrfs_bio *bbio);
--int btrfs_map_block(struct btrfs_fs_info *fs_info, int rw,
-+int btrfs_map_block(struct btrfs_fs_info *fs_info, int op,
- 		    u64 logical, u64 *length,
- 		    struct btrfs_bio **bbio_ret, int mirror_num);
--int btrfs_map_sblock(struct btrfs_fs_info *fs_info, int rw,
-+int btrfs_map_sblock(struct btrfs_fs_info *fs_info, int op,
- 		     u64 logical, u64 *length,
- 		     struct btrfs_bio **bbio_ret, int mirror_num,
- 		     int need_raid_map);
+@@ -281,7 +283,7 @@ int gfs2_meta_read(struct gfs2_glock *gl, u64 blkno, int flags,
+ 		}
+ 	}
+ 
+-	gfs2_submit_bhs(READ_SYNC | REQ_META | REQ_PRIO, bhs, num);
++	gfs2_submit_bhs(REQ_OP_READ, READ_SYNC | REQ_META | REQ_PRIO, bhs, num);
+ 	if (!(flags & DIO_WAIT))
+ 		return 0;
+ 
+diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+index 4872a61..f3e1e0e 100644
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -246,6 +246,7 @@ static int gfs2_read_super(struct gfs2_sbd *sdp, sector_t sector, int silent)
+ 
+ 	bio->bi_end_io = end_bio_io_page;
+ 	bio->bi_private = page;
++	bio->bi_op = REQ_OP_READ;
+ 	bio->bi_rw = READ_SYNC | REQ_META;
+ 	submit_bio(bio);
+ 	wait_on_page_locked(page);
 -- 
 1.8.3.1
