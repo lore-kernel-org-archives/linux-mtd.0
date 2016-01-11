@@ -1,18 +1,31 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aIedv-0003GN-52
- for linux-mtd@lists.infradead.org; Mon, 11 Jan 2016 15:44:28 +0000
-Subject: Re: ubifs query
-To: pavi1729 <pavitra1729@gmail.com>, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard.weinberger@gmail.com>
-References: <CAMf7+LghhyuLVgbg1A3+CMG_tUri1-rFe3-D9L7zRduXdJRcpg@mail.gmail.com>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <5693CDC1.3030008@sigma-star.at>
-Date: Mon, 11 Jan 2016 16:44:01 +0100
+From: Gregory CLEMENT <gregory.clement@free-electrons.com>
+To: Olof Johansson <olof@lixom.net>
+Cc: Simon Horman <horms@verge.net.au>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ "arm\@kernel.org" <arm@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Magnus Damm <magnus.damm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
+ Alex Smith <alex.smith@imgtec.com>, Brian Norris <computersforpeace@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ "devicetree\@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-arm-kernel\@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/9] ARM: dts: Add compatible property to "partitions"
+ node
+References: <1450694033-27717-1-git-send-email-geert+renesas@glider.be>
+ <20151228050147.GE1066@verge.net.au>
+ <CAMuHMdXt36GSDuoFVGBebJVN9OHPh=ze8u8KvQ0B+RcvT6xTYQ@mail.gmail.com>
+ <20160103213938.GD22806@verge.net.au>
+Date: Mon, 11 Jan 2016 17:07:58 +0100
+In-Reply-To: <20160103213938.GD22806@verge.net.au> (Simon Horman's message of
+ "Mon, 4 Jan 2016 08:39:38 +1100")
+Message-ID: <87lh7wyu8x.fsf@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMf7+LghhyuLVgbg1A3+CMG_tUri1-rFe3-D9L7zRduXdJRcpg@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +35,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/11/2016 04:07 PM, pavi1729 wrote:
-> Hi,
->   I was looking at 'ubifs_lookup_level0' which is calling 'tnc_prev' function.
-> 
-> LINK: http://lxr.free-electrons.com/source/fs/ubifs/tnc.c?v=3.10#L1267
-> 
+Hi Olof,
+ 
+ On dim., janv. 03 2016, Simon Horman <horms@verge.net.au> wrote:
 
-The code you link to is _quite_ old (June 2013?). If you want to browse through the
-source you might want to look at the current state from the git repo.
+> On Mon, Dec 28, 2015 at 11:15:30AM +0100, Geert Uytterhoeven wrote:
 
-> FUNCTION: tnc_prev
-> 'tnc_prev' could return a negative 'n' if znode->iip is 0.
-> 
-> LINK: http://lxr.free-electrons.com/source/fs/ubifs/tnc.c?v=3.10#L670
-> 
-> nn = znode->iip - 1;
+>> >> Most of these are in arm-soc/for-next. Exceptions are kirkwood (in
+>> >> mvebu/for-next), and ci20 (in mips/mips-for-linux-next).
+>> >>
+>> >> Given we're late in the v4.4-rc cycle, perhaps it's easiest if the
+>> >> arm-soc maintainers take all applicable patches directly, bypassing the
+>> >> mvebu and shmobile maintainers?
+>> >>
+>> >> Thanks for queuing for v4.5!
+>> >>
+>> >> Geert Uytterhoeven (9):
+>> >>   ARM: mvebu: ix4-300d: Add compatible property to "partitions" node
+>> >>   ARM: mvebu: kirkwood: Add compatible property to "partitions" node
+>> >>   ARM: shmobile: bockw dts: Add compatible property to "partitions" node
+>> >>   ARM: shmobile: lager dts: Add compatible property to "partitions" node
+>> >>   ARM: shmobile: koelsch dts: Add compatible property to "partitions"
+>> >>     node
+>> >>   ARM: shmobile: porter dts: Add compatible property to "partitions"
+>> >>     node
+>> >>   ARM: shmobile: gose dts: Add compatible property to "partitions" node
+>> >>   ARM: shmobile: silk dts: Add compatible property to "partitions" node
+>> >
+>> > Thanks, I have queued up the above "shmobile" patches for v4.6.
+>> 
+>> I'm afraid v4.6 is too late, leaving all SPI FLASHes broken in v4.5.
+>
+> Thanks. I'll re-queue them up as fixes for v4.5.
 
-No. Neither in the current version nor in the version your refered to. If nn is set
-to a negative value, the branch below is skipped an the loop does not terminate, i.e.
-goes into the next iteration where a new value for nn is computed. Assuming nn will
-always come out negative, zp will eventually become NULL and the function returns -ENOENT.
+I thought you planned to directly apply them for v4.5 but I did not see
+them in the for-next branch of arm-soc. So as Simon I will submit them
+as fix for 4.5.
 
-At this point, ubifs_lookup_level0 detects an error, sets *n to -1 and returns 0.
-
-> If n is negative then below code will do a negative indexing since
-> this is the next line
-> 
-> if (keys_cmp(c, key, &znode->zbranch[*n].key)) {
-> 
-> LINK: http://lxr.free-electrons.com/source/fs/ubifs/tnc.c?v=3.10#L1275
-> 
-> 
-> Is this a possibility ?
-
-See above.
+Gregory
 
 
-Sincerely,
-
-David
+-- 
+Gregory Clement, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
