@@ -1,20 +1,20 @@
-Subject: Re: [PATCH linux-next v2 02/14] mtd: spi-nor: properly detect the
- memory when it boots in Quad or Dual mode
+Subject: Re: [PATCH linux-next v2 03/14] mtd: spi-nor: select op codes and SPI
+ NOR protocols by manufacturer
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 References: <cover.1452268345.git.cyrille.pitchen@atmel.com>
- <fd8f4e779b050a1634f197baf748683099ec2445.1452268345.git.cyrille.pitchen@atmel.com>
- <20160111110830.605b2d54@bbrezillon>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+ <fd5ca97795c35b3df5ffee95075e2e03a70c7e48.1452268345.git.cyrille.pitchen@atmel.com>
+ <20160111112421.5919b531@bbrezillon>
 CC: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>,
  <nicolas.ferre@atmel.com>, <marex@denx.de>, <vigneshr@ti.com>,
  <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
  <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
  <galak@codeaurora.org>
-Message-ID: <5693B47A.9050705@atmel.com>
-Date: Mon, 11 Jan 2016 14:56:10 +0100
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <5693BC88.6070907@atmel.com>
+Date: Mon, 11 Jan 2016 15:30:32 +0100
 MIME-Version: 1.0
-In-Reply-To: <20160111110830.605b2d54@bbrezillon>
+In-Reply-To: <20160111112421.5919b531@bbrezillon>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,304 +28,141 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-Le 11/01/2016 11:08, Boris Brezillon a écrit :
-> Hi Cyrille,
+Le 11/01/2016 11:24, Boris Brezillon a écrit :
+> Hi,
 > 
-> Sorry for this pretty useless review, but I think you know more about
-> SPI-NOR than I do. So, consider my comments as nitpicks, which shouldn't
-> prevent your series from being applied.
-> 
-> On Fri, 8 Jan 2016 17:02:14 +0100
+> On Fri, 8 Jan 2016 17:02:15 +0100
 > Cyrille Pitchen <cyrille.pitchen@atmel.com> wrote:
 > 
->> The quad (or dual) mode of a spi-nor memory may be enabled at boot time by
->> non-volatile bits in some setting register. Also such a mode may have
->> already been enabled at early stage by some boot loader.
+>> This is a transitional patch to prepare the split by Manufacturer of the
+>> support of Single/Dual/Quad SPI modes.
 >>
->> Hence, we should not guess the spi-nor memory is always configured for the
->> regular SPI 1-1-1 protocol.
+>> Indeed every QSPI NOR manufacturer (Spansion, Micron, Macronix, Winbond)
+>> supports Dual or Quad SPI modes on its way. Especially the Fast Read op
+>> code and the SPI NOR protocols to use are not quite the same depending on
+>> the manufacturer.
 >>
->> Micron and Macronix memories, once their Quad (or dual for Micron) mode
->> enabled, no longer process the regular JEDEC Read ID (0x9f) command but
->> instead reply to a new command: JEDEC Read ID Multiple I/O (0xaf).
->> Besides, in Quad mode both memory manufacturers expect ALL commands to
->> use the SPI 4-4-4 protocol. For Micron memories, enabling their Dual mode
->> implies to use the SPI 2-2-2 protocol for ALL commands.
+>> For instance Quad commands can use either the SPI 1-1-4, 1-4-4 or 4-4-4
+>> protocol.
 >>
->> Winbond memories, once their Quad mode enabled, expect ALL commands to use
->> the SPI 4-4-4 protocol. Unlike Micron and Macronix memories, they still
->> reply to the regular JEDEC Read ID (0x9f) command.
+>> This is why this patch will be completed by fixes for each manufacturer.
 >>
 >> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 >> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 83 ++++++++++++++++++++++++++++++++++++++++---
->>  include/linux/mtd/spi-nor.h   | 50 ++++++++++++++++++++++++--
->>  2 files changed, 127 insertions(+), 6 deletions(-)
+>>  drivers/mtd/spi-nor/spi-nor.c | 110 ++++++++++++++++++++++++++++++++----------
+>>  include/linux/mtd/spi-nor.h   |  12 +++--
+>>  2 files changed, 92 insertions(+), 30 deletions(-)
 >>
 >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 3028c06547c1..8967319ea7da 100644
+>> index 8967319ea7da..8793cebbe5a9 100644
 >> --- a/drivers/mtd/spi-nor/spi-nor.c
 >> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -73,6 +73,12 @@ struct flash_info {
->>  
->>  #define JEDEC_MFR(info)	((info)->id[0])
->>  
->> +struct read_id_config {
->> +	enum read_mode		mode;
->> +	enum spi_nor_protocol	proto;
->> +	u8			opcode;
->> +};
+>> @@ -1180,17 +1180,61 @@ static int set_quad_mode(struct spi_nor *nor, const struct flash_info *info)
+>>  			dev_err(nor->dev, "Macronix quad-read not enabled\n");
+>>  			return -EINVAL;
+>>  		}
+>> -		return status;
+>> +		/* Check whether Macronix QPI mode is enabled. */
+>> +		if (nor->read_proto != SNOR_PROTO_4_4_4)
+>> +			nor->read_proto = SNOR_PROTO_1_1_4;
+>> +		break;
 >> +
->>  static const struct flash_info *spi_nor_match_id(const char *name);
->>  
->>  /*
->> @@ -879,11 +885,22 @@ static const struct flash_info spi_nor_ids[] = {
->>  	{ },
->>  };
->>  
->> -static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->> +static const struct flash_info *spi_nor_read_id(struct spi_nor *nor,
->> +						enum read_mode mode)
->>  {
->> -	int			tmp;
->> +	int			i, tmp;
->>  	u8			id[SPI_NOR_MAX_ID_LEN];
->>  	const struct flash_info	*info;
->> +	static const struct read_id_config configs[] = {
->> +		/* Winbond QPI mode */
->> +		{SPI_NOR_QUAD, SNOR_PROTO_4_4_4, SPINOR_OP_RDID},
+>>  	case SNOR_MFR_MICRON:
+>> -		return 0;
+>> -	default:
+>> +		/* Check whether Micron Quad mode is enabled. */
+>> +		if (nor->read_proto != SNOR_PROTO_4_4_4)
+>> +			nor->read_proto = SNOR_PROTO_1_1_4;
+>> +		break;
 >> +
->> +		/* Micron Quad mode & Macronix QPI mode */
->> +		{SPI_NOR_QUAD, SNOR_PROTO_4_4_4, SPINOR_OP_MIO_RDID},
->> +
->> +		/* Micron Dual mode */
->> +		{SPI_NOR_DUAL, SNOR_PROTO_2_2_2, SPINOR_OP_MIO_RDID}
->> +	};
->>  
->>  	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
->>  	if (tmp < 0) {
->> @@ -891,6 +908,58 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->>  		return ERR_PTR(tmp);
->>  	}
->>  
->> +	/*
->> +	 * Check whether the SPI NOR memory has already been configured (at
->> +	 * reset or by some bootloader) to use a protocol other than SPI 1-1-1.
->> +	 */
->> +	for (i = 0; i < ARRAY_SIZE(configs); ++i) {
->> +		int len = SPI_NOR_MAX_ID_LEN;
->> +		bool is_multi = false;
->> +
->> +		/*
->> +		 * Check the latest read Manufacturer ID + Device ID (3 bytes):
->> +		 * if they are different from both 0x000000 and 0xffffff, we
->> +		 * assume that we succeeded in reading a valid JEDEC ID so we
->> +		 * don't need to try other SPI protocols.
->> +		 * Indeed when either the protocol or the op code are not valid,
->> +		 * the SPI NOR memory should not reply to the command. Hence the
->> +		 * SPI I/O lines remain in their default state: 1 when connected
->> +		 * to pull-up resistors or 0 with pull-down.
->> +		 */
->> +		if (!((id[0] == 0xff && id[1] == 0xff && id[2] == 0xff) ||
->> +		      (id[0] == 0x00 && id[1] == 0x00 && id[2] == 0x00)))
->> +			break;
+>> +	case SNOR_MFR_SPANSION:
 > 
-> Hopefully, you'll have all the pins configured with pull-up or
-> pull-down resistors, but what if one of them is configured differently?
+> The following comment is not only related to your changes, but after
+> looking at the spi_nor_scan() function and a few other functions in the
+> core, I see a lot of vendor specific initialization.
 > 
-> Shouldn't we try to find a valid chip definition by iterating over the
-> spi_nor_ids[] table after each mode change?
+> Would it make sense to somehow set a default configuration in
+> spi_nor_scan() and then overload this default config using a
+> per-manufacturer ->init() method. Something like that.
+> 
+> struct spi_nor_manufacturer {
+> 	int (*init)(struct spi_nor *nor, const struct flash_info *fi);
+> }
+> 
+> static const struct spi_nor_manufacturer manufacturers[] = {
+> 	[<manuf-id>] = {
+> 		.init = <manuf-init-callback>
+> 	},
+> };
+> 
+> Of course you could add other methods if you think this differentiation
+> is needed after the initialization step.
 > 
 
-Honestly I don't know and I didn't test what would happen if no resistors were
-used. So maybe you're right, it would be safer to look in the ID table up after
-every read attempt.
+It might be a good idea. I don't mind changing if needed. Brian, could you
+please comment on this point?
+
+>>  		status = spansion_quad_enable(nor);
+>>  		if (status) {
+>>  			dev_err(nor->dev, "Spansion quad-read not enabled\n");
+>>  			return -EINVAL;
+>>  		}
+>> -		return status;
+>> +		nor->read_proto = SNOR_PROTO_1_1_4;
+>> +		break;
 >> +
->> +		/* Only try protocols supported by the user. */
->> +		if (configs[i].mode != mode)
->> +			continue;
+>> +	default:
+>> +		return -EINVAL;
+>>  	}
 >> +
->> +		/* Set this protocol for all commands. */
->> +		nor->reg_proto = configs[i].proto;
->> +		nor->read_proto = configs[i].proto;
->> +		nor->write_proto = configs[i].proto;
->> +		nor->erase_proto = configs[i].proto;
+>> +	nor->read_opcode = SPINOR_OP_READ_1_1_4;
+>> +	return 0;
+>> +}
 >> +
->> +		/*
->> +		 * Multiple I/O Read ID only returns the Manufacturer ID
->> +		 * (1 byte) and the Device ID (2 bytes). So we reset the
->> +		 * remaining bytes.
->> +		 */
->> +		if (configs[i].opcode == SPINOR_OP_MIO_RDID) {
->> +			is_multi = true;
->> +			len = 3;
->> +			memset(id + len, 0, sizeof(id) - len);
->> +		}
+>> +static int set_dual_mode(struct spi_nor *nor, const struct flash_info *info)
+>> +{
+>> +	switch (JEDEC_MFR(info)) {
+>> +	case SNOR_MFR_MICRON:
+>> +		/* Check whether Micron Dual mode is enabled. */
+>> +		if (nor->read_proto != SNOR_PROTO_2_2_2)
+>> +			nor->read_proto = SNOR_PROTO_1_1_2;
+>> +		break;
 >> +
->> +		tmp = nor->read_reg(nor, configs[i].opcode, id, len);
->> +		if (tmp < 0) {
->> +			dev_dbg(nor->dev,
->> +				"error %d reading JEDEC ID%s\n",
->> +				tmp, (is_multi ? " Multi I/O" : ""));
->> +			return ERR_PTR(tmp);
->> +		}
+>> +	default:
+>> +		nor->read_proto = SNOR_PROTO_1_1_2;
+>> +		break;
 >> +	}
 >> +
->>  	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
->>  		info = &spi_nor_ids[tmp];
->>  		if (info->id_len) {
->> @@ -1148,11 +1217,17 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->>  	if (ret)
->>  		return ret;
->>  
->> +	/* Reset SPI protocol for all commands */
->> +	nor->erase_proto = SNOR_PROTO_1_1_1;
->> +	nor->read_proto = SNOR_PROTO_1_1_1;
->> +	nor->write_proto = SNOR_PROTO_1_1_1;
->> +	nor->reg_proto = SNOR_PROTO_1_1_1;
+>> +	nor->read_opcode = SPINOR_OP_READ_1_1_2;
+>> +	return 0;
+>> +}
 >> +
->>  	if (name)
->>  		info = spi_nor_match_id(name);
->>  	/* Try to auto-detect if chip name wasn't specified or not found */
->>  	if (!info)
->> -		info = spi_nor_read_id(nor);
->> +		info = spi_nor_read_id(nor, mode);
->>  	if (IS_ERR_OR_NULL(info))
->>  		return -ENOENT;
->>  
->> @@ -1163,7 +1238,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->>  	if (name && info->id_len) {
->>  		const struct flash_info *jinfo;
->>  
->> -		jinfo = spi_nor_read_id(nor);
->> +		jinfo = spi_nor_read_id(nor, mode);
->>  		if (IS_ERR(jinfo)) {
->>  			return PTR_ERR(jinfo);
->>  		} else if (jinfo != info) {
->> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
->> index 62356d50815b..53932c87bcf2 100644
->> --- a/include/linux/mtd/spi-nor.h
->> +++ b/include/linux/mtd/spi-nor.h
->> @@ -75,8 +75,9 @@
->>  #define SPINOR_OP_BRWR		0x17	/* Bank register write */
->>  
->>  /* Used for Micron flashes only. */
->> -#define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
->> -#define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
->> +#define SPINOR_OP_MIO_RDID	0xaf	/* Multiple I/O Read JEDEC ID */
->> +#define SPINOR_OP_RD_EVCR	0x65    /* Read EVCR register */
->> +#define SPINOR_OP_WD_EVCR	0x61    /* Write EVCR register */
->>  
->>  /* Status Register bits. */
->>  #define SR_WIP			BIT(0)	/* Write in progress */
->> @@ -105,6 +106,43 @@ enum read_mode {
->>  	SPI_NOR_QUAD,
->>  };
->>  
->> +
+>> +static int set_single_mode(struct spi_nor *nor, const struct flash_info *info)
+>> +{
+>> +	switch (JEDEC_MFR(info)) {
+>> +	default:
+>> +		nor->read_proto = SNOR_PROTO_1_1_1;
+>> +		break;
+>> +	}
 > 
-> Extra blank line here ^
+> You can just put
 > 
->> +#define SNOR_PROTO_CMD_OFF	8
->> +#define SNOR_PROTO_CMD_MASK	GENMASK(11, 8)
->> +#define SNOR_PROTO_CMD_TO_PROTO(cmd) \
->> +	(((cmd) << SNOR_PROTO_CMD_OFF) & SNOR_PROTO_CMD_MASK)
->> +#define SNOR_PROTO_CMD_FROM_PROTO(proto) \
->> +	((((u32)(proto)) & SNOR_PROTO_CMD_MASK) >> SNOR_PROTO_CMD_OFF)
->> +
->> +#define SNOR_PROTO_ADDR_OFF	4
->> +#define SNOR_PROTO_ADDR_MASK	GENMASK(7, 4)
->> +#define SNOR_PROTO_ADDR_TO_PROTO(addr) \
->> +	(((addr) << SNOR_PROTO_ADDR_OFF) & SNOR_PROTO_ADDR_MASK)
->> +#define SNOR_PROTO_ADDR_FROM_PROTO(proto) \
->> +	((((u32)(proto)) & SNOR_PROTO_ADDR_MASK) >> SNOR_PROTO_ADDR_OFF)
->> +
->> +#define SNOR_PROTO_DATA_OFF	0
->> +#define SNOR_PROTO_DATA_MASK	GENMASK(3, 0)
+> 	nor->read_proto = SNOR_PROTO_1_1_1;
 > 
-> Why not directly reserving 8 bits per cycle type. Your end result is
-> stored on a 32 bit integer anyway, and since you'll always have only 3
-> cycle types (ADDR, CMD and DATA). This way, you'll be ready for
-> SPI-8-8-8 :-).
-> 
+> until you have a manufacturer specific case.
+>
 
-I've reserved 4 bits per cycle type so the possible values range into [0 - 15].
-I thought it would be enough to anticipate future evolution like SPI 8-8-8.
-Also it leaves more bits available for future usage.
-Finally, I've chosen 4 bits and this order so when debugging and/or printing
-the value in hex format, you can easily decode the corresponding protocol:
+I did it on purpose: it is a transitional patch which was written only to ease
+the split of the QSPI support by manufacturer. So the diff producing the next
+patch of this series is a little bit more easy to review: it is just a new
+case in a switch statement instead of replacing a 'if' statement by a 'switch'
+one.
+Also it removes some (not all) constraints on the order the manufacturer
+specific patches should be applied, which makes it easier to remove some of
+them from the series if needed: the rebase job will be simplified.
+Ideally, all manufacturer patches should be totally independent.
 
-SPI 1-1-4 -> 0x00000114
-SPI 1-2-2 -> 0x00000122
-SPI 4-4-4 -> 0x00000444
-
-Anyway I don't mind using 8 bits instead if it is preferred.
-
->> +#define SNOR_PROTO_DATA_TO_PROTO(data) \
->> +	(((data) << SNOR_PROTO_DATA_OFF) & SNOR_PROTO_DATA_MASK)
->> +#define SNOR_PROTO_DATA_FROM_PROTO(proto) \
->> +	((((u32)(proto)) & SNOR_PROTO_DATA_MASK) >> SNOR_PROTO_DATA_OFF)
->> +
->> +#define SNOR_PROTO(cmd, addr, data)	  \
->> +	(SNOR_PROTO_CMD_TO_PROTO(cmd) |   \
->> +	 SNOR_PROTO_ADDR_TO_PROTO(addr) | \
->> +	 SNOR_PROTO_DATA_TO_PROTO(data))
->> +
->> +enum spi_nor_protocol {
->> +	SNOR_PROTO_1_1_1 = SNOR_PROTO(1, 1, 1),	/* SPI */
->> +	SNOR_PROTO_1_1_2 = SNOR_PROTO(1, 1, 2),	/* Dual Output */
->> +	SNOR_PROTO_1_1_4 = SNOR_PROTO(1, 1, 4),	/* Quad Output */
->> +	SNOR_PROTO_1_2_2 = SNOR_PROTO(1, 2, 2),	/* Dual IO */
->> +	SNOR_PROTO_1_4_4 = SNOR_PROTO(1, 4, 4),	/* Quad IO */
->> +	SNOR_PROTO_2_2_2 = SNOR_PROTO(2, 2, 2),	/* Dual Command */
->> +	SNOR_PROTO_4_4_4 = SNOR_PROTO(4, 4, 4),	/* Quad Command */
->> +};
-> 
-> Do you really need this enum definition? I mean, directly using
-> SNOR_PROTO(X, Y, Z) is just as easy as using the SNOR_PROTO_X_Y_Z enum
-> definitions, and you won't have to define new ones if spi-nor vendors
-> decide to support new combinations.
-> 
-
-This enum was created only for stronger type checking; Except for that, there
-is no strong reason to keep the enum. So I don't mind removing it if other
-people agree with you.
-
-
->> +
->>  #define SPI_NOR_MAX_CMD_SIZE	8
->>  enum spi_nor_ops {
->>  	SPI_NOR_OPS_READ = 0,
->> @@ -132,6 +170,10 @@ enum spi_nor_option_flags {
->>   * @flash_read:		the mode of the read
->>   * @sst_write_second:	used by the SST write operation
->>   * @flags:		flag options for the current SPI-NOR (SNOR_F_*)
->> + * @erase_proto:	the SPI protocol used by erase operations
->> + * @read_proto:		the SPI protocol used by read operations
->> + * @write_proto:	the SPI protocol used by write operations
->> + * @reg_proto		the SPI protocol used by read_reg/write_reg operations
->>   * @cmd_buf:		used by the write_reg
->>   * @prepare:		[OPTIONAL] do some preparations for the
->>   *			read/write/erase/lock/unlock operations
->> @@ -160,6 +202,10 @@ struct spi_nor {
->>  	u8			read_opcode;
->>  	u8			read_dummy;
->>  	u8			program_opcode;
->> +	enum spi_nor_protocol	erase_proto;
->> +	enum spi_nor_protocol	read_proto;
->> +	enum spi_nor_protocol	write_proto;
->> +	enum spi_nor_protocol	reg_proto;
-> 
-> Should be u32 fields if you decide to drop the enum definition.
-> 
->>  	enum read_mode		flash_read;
->>  	bool			sst_write_second;
->>  	u32			flags;
-> 
-> 
-> 
-
-Thanks for your review :)
+[...]
 
 Best regards,
 
