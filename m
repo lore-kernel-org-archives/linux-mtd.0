@@ -1,24 +1,17 @@
-Received: from mail-ob0-x22d.google.com ([2607:f8b0:4003:c01::22d])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJ2EW-0000E5-Vs
- for linux-mtd@lists.infradead.org; Tue, 12 Jan 2016 16:55:51 +0000
-Received: by mail-ob0-x22d.google.com with SMTP id py5so64195314obc.2
- for <linux-mtd@lists.infradead.org>; Tue, 12 Jan 2016 08:55:28 -0800 (PST)
+ id 1aJ5uE-00020G-2Y
+ for linux-mtd@lists.infradead.org; Tue, 12 Jan 2016 20:51:07 +0000
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UBI/UBIFS updates for 4.5
+Message-ID: <5695671D.1070306@nod.at>
+Date: Tue, 12 Jan 2016 21:50:37 +0100
 MIME-Version: 1.0
-Sender: romain.izard@mobile-devices.fr
-In-Reply-To: <56951F91.1090101@atmel.com>
-References: <1452609223-14790-1-git-send-email-romain.izard.pro@gmail.com>
- <56951F91.1090101@atmel.com>
-From: Romain Izard <romain.izard.pro@gmail.com>
-Date: Tue, 12 Jan 2016 17:55:08 +0100
-Message-ID: <CAGkQfmOmgiKwziQ+HuJTN1Qk1aHEXBWYcE1LT+XT2d-Xv7kxNw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] mtd: atmel_nand: Add support for NAND Flash on
- SAMA5D2
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- "Yang, Wenyou" <Wenyou.Yang@atmel.com>, rainyfeeling@outlook.com,
- Josh Wu <josh.wu@atmel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nicolas,
+Linus,
 
-2016-01-12 16:45 GMT+01:00 Nicolas Ferre <nicolas.ferre@atmel.com>:
->
-> The maintainers for this driver changed very recently, so you'll have to
-> includes these names to your CC list:
->
-> M:      Wenyou Yang <wenyou.yang@atmel.com>
-> M:      Josh Wu <rainyfeeling@outlook.com>
+the following changes since commit 168309855a7d1e16db751e9c647119fe2d2dc878:
 
-Ok. It might be a good idea to update the MAINTAINERS file, as Josh Wu's atmel
-address now bounces, and it is still referenced there.
+  Linux 4.4-rc8 (2016-01-03 15:15:37 -0800)
 
->
-> I also think that Wenyou did some work regarding this support. So you'll
-> have to coordinat together.
+are available in the git repository at:
 
-Is it possible to know what are the developments in progress regarding SAMA5D2
-drivers? The github repository does not expose any working trees, and only the
-current "stable" trees are visible.
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.5-rc1
 
-Best regards,
--- 
-Romain Izard
+for you to fetch changes up to 4fdd1d51ad5d059548c6539ac9d281f74d24bcbe:
+
+  ubifs: Use XATTR_*_PREFIX_LEN (2016-01-10 12:33:47 +0100)
+
+----------------------------------------------------------------
+This pull request contains three changes, two cleanups and one UBI
+wear leveling improvement by Sebastian Siewior.
+
+----------------------------------------------------------------
+Dongsheng Yang (1):
+      UBIFS: add a comment in key.h for unused parameter
+
+Richard Weinberger (1):
+      ubifs: Use XATTR_*_PREFIX_LEN
+
+Sebastian Siewior (1):
+      mtd: ubi: wl: avoid erasing a PEB which is empty
+
+ drivers/mtd/ubi/wl.c | 21 ++++++++++++++++++---
+ fs/ubifs/key.h       |  6 ++++++
+ fs/ubifs/xattr.c     |  4 ++--
+ 3 files changed, 26 insertions(+), 5 deletions(-)
