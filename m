@@ -1,33 +1,28 @@
-Received: from mail-am1on0054.outbound.protection.outlook.com ([157.56.112.54]
- helo=emea01-am1-obe.outbound.protection.outlook.com)
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aIsYS-0006P9-JX
- for linux-mtd@lists.infradead.org; Tue, 12 Jan 2016 06:35:47 +0000
-From: Zhiqiang Hou <zhiqiang.hou@nxp.com>
-To: Michal Suchanek <hramrach@gmail.com>
-CC: Andrew Murray <amurray@embedded-bits.co.uk>, Huang Shijie
- <shijie.huang@intel.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>, Rafa? Mi?ecki
- <zajec5@gmail.com>, Huang Shijie <b32955@freescale.com>, Ben Hutchings
- <ben@decadent.org.uk>, Marek Vasut <marex@denx.de>, Gabor Juhos
- <juhosg@openwrt.org>, =?gb2312?B?QmVhbiBIdW8gu/Sx87HzLA==?=
- <beanhuo@micron.com>, MTD Maling List <linux-mtd@lists.infradead.org>, LKML
- <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 7/7] mtd: spi-nor: add read loop
-Date: Tue, 12 Jan 2016 06:35:21 +0000
-Message-ID: <CY1PR0301MB078027133F88A76F2FE2E5FA8B060@CY1PR0301MB0780.namprd03.prod.outlook.com>
-References: <cover.1439543572.git.hramrach@gmail.com>
- <1592668a061137b33c9a6392dfccc67c69fc1fe6.1439543572.git.hramrach@gmail.com>
- <CAPcvp5HB7m47ZTqQ0fE7EV42kNWO=i1EQaysNtgXw6V+oWoUdA@mail.gmail.com>
- <CAOMqctQOU91hbt+2O0qQe3tjMn=3pSYE8E4xPpeS3iGG2A5h8w@mail.gmail.com>
- <CY1PR0301MB0780A9588AA9348DCEA4823F8B290@CY1PR0301MB0780.namprd03.prod.outlook.com>
- <CAOMqctRYGjhSeKtDQ3JuRV3Dvom3qW=tLxSOJmPF8r7gF93JiQ@mail.gmail.com>
-In-Reply-To: <CAOMqctRYGjhSeKtDQ3JuRV3Dvom3qW=tLxSOJmPF8r7gF93JiQ@mail.gmail.com>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="gb2312"
-Content-ID: <2B21577ED0205646B386D15AE7781A14@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1aIzM1-0007yi-QT
+ for linux-mtd@lists.infradead.org; Tue, 12 Jan 2016 13:51:23 +0000
+From: Marek Vasut <marex@denx.de>
+To: Vignesh R <vigneshr@ti.com>
+Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+Date: Tue, 12 Jan 2016 14:49:49 +0100
+Cc: Dinh Nguyen <dinguyen@opensource.altera.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <5693D3B4.2090304@opensource.altera.com> <569483DE.4070901@ti.com>
+In-Reply-To: <569483DE.4070901@ti.com>
 MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201601121449.49266.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,22 +32,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWljaGFsLA0KDQpUaGFua3MgZm9yIHlvdXIgaW5mbywgYW5kIEkgc2VlIHlvdSBoYXZlIHVw
-ZGF0ZWQgdGhlIHBhdGNoc2V0IG9uIERlYy4wMi4gSXMgaXQgdGhlIGNvbmNsdXNpb24sIHJpZ2h0
-Pw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pY2hhbCBTdWNoYW5l
-ayBbbWFpbHRvOmhyYW1yYWNoQGdtYWlsLmNvbV0NCj4gU2VudDogMjAxNcTqMTHUwjIxyNUgMzox
-OQ0KPiBUbzogSG91IFpoaXFpYW5nLUI0ODI4Ng0KPiBDYzogQW5kcmV3IE11cnJheTsgSHVhbmcg
-U2hpamllOyBEYXZpZCBXb29kaG91c2U7IEJyaWFuIE5vcnJpczsgWHUgSGFuLQ0KPiBCNDU4MTU7
-IFJhZmE/IE1pP2Vja2k7IEh1YW5nIFNoaWppZTsgQmVuIEh1dGNoaW5nczsgTWFyZWsgVmFzdXQ7
-IEdhYm9yDQo+IEp1aG9zOyBCZWFuIEh1byC79LHzsfMsOyBNVEQgTWFsaW5nIExpc3Q7IExLTUwN
-Cj4gU3ViamVjdDogUmU6IFtQQVRDSCB2NCA3LzddIG10ZDogc3BpLW5vcjogYWRkIHJlYWQgbG9v
-cA0KPiANCj4gSGVsbG8sDQo+IA0KPiBPbiA1IE5vdmVtYmVyIDIwMTUgYXQgMDQ6MzksIEhvdSBa
-aGlxaWFuZyA8QjQ4Mjg2QGZyZWVzY2FsZS5jb20+IHdyb3RlOg0KPiA+IEhpIE1pY2hhbCwNCj4g
-Pg0KPiA+IERvZXMgdGhpcyBoYXZlIGFueSB1cGRhdGVzPw0KPiANCj4gSSB3aWxsIHRyeSB0byB1
-cGRhdGUgdGhpcyBwYXRjaHNldCB3aGVuIGl0J3MgYWdyZWVkIGhvdyB0aGUgbGltaXQgb24NCj4g
-dHJhbnNmZXIgc2l6ZSBpcyBoYW5kbGVkLiBXcml0aW5nIGxlc3MgZGF0YSB0aGFuIHdhcyByZXF1
-ZXN0ZWQgaXMNCj4gYWNjZXB0YWJsZSBmb3Igc3BpLW5vciBidXQgbWlnaHQgZGlzcnVwdCBvdGhl
-ciBkcml2ZXJzIHNvIHBlcmhhcHMgc29tZQ0KPiBwcmVlbXB0aXZlIG1lY2hhbmlzbSB3aXRoIHRo
-ZSBTUEkgbWFzdGVyIHNheWluZyBob3cgbXVjaCBkYXRhIGl0IGNhbg0KPiB0cmFuc2ZlciBhbmQg
-dGhlIGRyaXZlcnMgbG9va2luZyBhdCB0aGF0IHZhbHVlIHdvdWxkIGJlIHByZWZlcnJlZC4NCj4g
-DQoNClRoYW5rcywNClpoaXFpYW5nDQo=
+On Tuesday, January 12, 2016 at 05:41:02 AM, Vignesh R wrote:
+> On 01/11/2016 09:39 PM, Dinh Nguyen wrote:
+> > On 01/10/2016 10:34 PM, Marek Vasut wrote:
+> >> From: Graham Moore <grmoore@opensource.altera.com>
+> >> 
+> >> Add support for the Cadence QSPI controller. This controller is
+> >> present in the Altera SoCFPGA SoCs and this driver has been tested
+> >> on the Cyclone V SoC.
+> 
+> [...]
+> 
+> >> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> >> index 43bafde..7e29050 100644
+> >> --- a/drivers/mtd/spi-nor/Kconfig
+> >> +++ b/drivers/mtd/spi-nor/Kconfig
+> >> @@ -50,4 +50,15 @@ config SPI_NXP_SPIFI
+> >> 
+> >>  	  Flash. Enable this option if you have a device with a SPIFI
+> >>  	  controller and want to access the Flash as a mtd device.
+> >> 
+> >> +config SPI_CADENCE_QUADSPI
+> >> +	tristate "Cadence Quad SPI controller"
+> >> +	depends on OF && (ARCH_SOCFPGA || COMPILE_TEST)
+> > 
+> > I think you can remove the ARCH_SOCFPGA dependency as this driver is
+> > used on a TI EVM as well.
+> 
+> I think above usage is correct. This will enable SPI_CADENCE_QUADSPI to
+> be selected when ARCH_SOCFPGA=y without having to enable COMPILE_TEST.
+> AFAIK, COMPILE_TEST is used usually to build test the driver w/o having
+> to enable ARCH specific configs (usually by maintainers).
+> For TI EVM, I would patch this file to add my architecture later(i.e
+> along with DT patch to my board).
+
+I changed this to OF && (ARM || COMPILE_TEST) , so that should be enough.
+
+Best regards,
+Marek Vasut
