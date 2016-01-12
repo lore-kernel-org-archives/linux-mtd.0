@@ -1,26 +1,27 @@
-Received: from mail-db3on0091.outbound.protection.outlook.com ([157.55.234.91]
- helo=emea01-db3-obe.outbound.protection.outlook.com)
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aIqGw-0002UY-2x
- for linux-mtd@lists.infradead.org; Tue, 12 Jan 2016 04:09:31 +0000
-From: Yao Yuan <yao.yuan@nxp.com>
-To: Han Xu <han.xu@freescale.com>, Yuan Yao <yao.yuan@freescale.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH v2 4/4] mtd: spi-nor: fsl-quadspi: extend support for some
- special requerment.
-Date: Tue, 12 Jan 2016 04:09:04 +0000
-Message-ID: <AM2PR04MB07229FADBBF527A93CC5410489CA0@AM2PR04MB0722.eurprd04.prod.outlook.com>
-References: <1450954821-7483-1-git-send-email-yao.yuan@freescale.com>
- <1450954821-7483-4-git-send-email-yao.yuan@freescale.com>
- <20160104210223.GB27554@chopperman.am.freescale.net>
-In-Reply-To: <20160104210223.GB27554@chopperman.am.freescale.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1aIqmQ-0008Ns-3y
+ for linux-mtd@lists.infradead.org; Tue, 12 Jan 2016 04:42:02 +0000
+Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+To: Marek Vasut <marex@denx.de>
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <1452486886-8049-2-git-send-email-marex@denx.de>
+ <5693D3B4.2090304@opensource.altera.com>
+CC: Dinh Nguyen <dinguyen@opensource.altera.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Yves Vandervennet <yvanderv@opensource.altera.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <569483DE.4070901@ti.com>
+Date: Tue, 12 Jan 2016 10:11:02 +0530
 MIME-Version: 1.0
+In-Reply-To: <5693D3B4.2090304@opensource.altera.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,68 +31,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 05, 2016 at 05:02:34AM +0800, Han Xu wrote:
-> On Thu, Dec 24, 2015 at 07:00:21PM +0800, Yuan Yao wrote:
-> > Add extra info in LUT table to support some special requerments.
-> > Spansion S25FS-S family flash need some special operations.
->=20
-> What's the special requirement, detail it.
 
-Ok, we will detail it in next version.
 
->=20
-> >
-> > Signed-off-by: Yuan Yao <yao.yuan@nxp.com>
-> > ---
-> > Changed in v2:
-> > Update my email to <yao.yuan@nxp.com>
-> > ---
-> >  drivers/mtd/spi-nor/fsl-quadspi.c | 41
-> +++++++++++++++++++++++++++++++++++++--
-> >  include/linux/mtd/spi-nor.h       |  4 ++++
-> >  2 files changed, 43 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c
-> > b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > index 9ab2b51..081ae85 100644
-> > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > @@ -205,6 +205,8 @@
-> > @@ -848,9 +881,13 @@ static int fsl_qspi_write_reg(struct spi_nor
-> > *nor, u8 opcode, u8 *buf, int len)  {
-> >  	struct fsl_qspi *q =3D nor->priv;
-> >  	int ret;
-> > +	u32 to =3D 0;
-> > +
-> > +	if (opcode =3D=3D SPINOR_OP_SPANSION_RDAR)
-> > +		memcpy(&to, nor->cmd_buf, 4);
->=20
-> RADR or WRAR? This is hacking code, why need these two commands?
-=20
-Sorry, it's should be WRAR.
-The command RADR is necessary for Spansion S25FS-S family flash. But the WR=
-AR we didn't use this command now. But it seems we should use it in the fut=
-ure. So we add this command.=20
+On 01/11/2016 09:39 PM, Dinh Nguyen wrote:
+> On 01/10/2016 10:34 PM, Marek Vasut wrote:
+>> From: Graham Moore <grmoore@opensource.altera.com>
+>>
+>> Add support for the Cadence QSPI controller. This controller is
+>> present in the Altera SoCFPGA SoCs and this driver has been tested
+>> on the Cyclone V SoC.
+>>
 
-Hi Xu Han, David Woodhouse, Brian Norris
+[...]
 
-By the way, there are some patches depend on this patch for QSPI Spansion S=
-25FS-S family flash support on ARMv8 platform.
-in order to the completeness of the patch sets. I want to just send the pat=
-ch set for QSPI LS1021A and LS1043A SOC support.
-Include: mtd-spi-nor-fsl-quadspi-add-big-endian-support.patch mtd-spi-nor-f=
-sl-quadspi-add-support-for-ls1021a.patch
-Those patches add the QSPI support on LS1021A and LS1043A SOC.
+>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+>> index 43bafde..7e29050 100644
+>> --- a/drivers/mtd/spi-nor/Kconfig
+>> +++ b/drivers/mtd/spi-nor/Kconfig
+>> @@ -50,4 +50,15 @@ config SPI_NXP_SPIFI
+>>  	  Flash. Enable this option if you have a device with a SPIFI
+>>  	  controller and want to access the Flash as a mtd device.
+>>  
+>> +config SPI_CADENCE_QUADSPI
+>> +	tristate "Cadence Quad SPI controller"
+>> +	depends on OF && (ARCH_SOCFPGA || COMPILE_TEST)
+> 
+> I think you can remove the ARCH_SOCFPGA dependency as this driver is
+> used on a TI EVM as well.
 
-And another patch set will send to support Spansion S25FS-S family flash.
-Include: mtd-spi-nor-fsl-quadspi-add-support-for-layerscape.patch mtd-spi-n=
-or-fsl-quadspi-extend-support-for-some-spec.patch
-And some other patches.
-Those patches will add the QSPI Spansion S25FS-S family flash support. This=
- is used for NXP LS2080A SOC.
+I think above usage is correct. This will enable SPI_CADENCE_QUADSPI to
+be selected when ARCH_SOCFPGA=y without having to enable COMPILE_TEST.
+AFAIK, COMPILE_TEST is used usually to build test the driver w/o having
+to enable ARCH specific configs (usually by maintainers).
+For TI EVM, I would patch this file to add my architecture later(i.e
+along with DT patch to my board).
 
-Is that OK?
-
-Thanks.
-Best Regards,
-Yuan Yao
+-- 
+Regards
+Vignesh
