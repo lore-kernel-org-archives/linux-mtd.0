@@ -1,21 +1,24 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
+Received: from mail-ob0-x22d.google.com ([2607:f8b0:4003:c01::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJ18g-0000Hp-Di
- for linux-mtd@lists.infradead.org; Tue, 12 Jan 2016 15:45:43 +0000
+ id 1aJ2EW-0000E5-Vs
+ for linux-mtd@lists.infradead.org; Tue, 12 Jan 2016 16:55:51 +0000
+Received: by mail-ob0-x22d.google.com with SMTP id py5so64195314obc.2
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Jan 2016 08:55:28 -0800 (PST)
+MIME-Version: 1.0
+Sender: romain.izard@mobile-devices.fr
+In-Reply-To: <56951F91.1090101@atmel.com>
+References: <1452609223-14790-1-git-send-email-romain.izard.pro@gmail.com>
+ <56951F91.1090101@atmel.com>
+From: Romain Izard <romain.izard.pro@gmail.com>
+Date: Tue, 12 Jan 2016 17:55:08 +0100
+Message-ID: <CAGkQfmOmgiKwziQ+HuJTN1Qk1aHEXBWYcE1LT+XT2d-Xv7kxNw@mail.gmail.com>
 Subject: Re: [RFC PATCH 0/4] mtd: atmel_nand: Add support for NAND Flash on
  SAMA5D2
-To: Romain Izard <romain.izard.pro@gmail.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>, "Yang, Wenyou"
- <Wenyou.Yang@atmel.com>, <rainyfeeling@outlook.com>
-References: <1452609223-14790-1-git-send-email-romain.izard.pro@gmail.com>
-CC: Josh Wu <josh.wu@atmel.com>
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Message-ID: <56951F91.1090101@atmel.com>
-Date: Tue, 12 Jan 2016 16:45:21 +0100
-MIME-Version: 1.0
-In-Reply-To: <1452609223-14790-1-git-send-email-romain.izard.pro@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ "Yang, Wenyou" <Wenyou.Yang@atmel.com>, rainyfeeling@outlook.com,
+ Josh Wu <josh.wu@atmel.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 12/01/2016 15:33, Romain Izard a écrit :
-> The NAND Flash controller for SAMA5D2 has small differences that make it
-> impossible to use the existing driver for SAMA5D3. This patchset uses the
-> device tree's compatible string to get those differences, and the code is
-> slightly modified to handle them.
-> 
-> Applies on the Atmel Linux 4.1 branch for now, but only the dtsi file
-> differs from the mainline.
-> 
-> Compile tested for all SAMA5 chips for now, and tested on SAMA5D3xek as
-> there is no existing SAMA5D2 board with NAND Flash memory (yet).
+Hi Nicolas,
 
-Hi Romain,
+2016-01-12 16:45 GMT+01:00 Nicolas Ferre <nicolas.ferre@atmel.com>:
+>
+> The maintainers for this driver changed very recently, so you'll have to
+> includes these names to your CC list:
+>
+> M:      Wenyou Yang <wenyou.yang@atmel.com>
+> M:      Josh Wu <rainyfeeling@outlook.com>
 
-The maintainers for this driver changed very recently, so you'll have to
-includes these names to your CC list:
+Ok. It might be a good idea to update the MAINTAINERS file, as Josh Wu's atmel
+address now bounces, and it is still referenced there.
 
-M:      Wenyou Yang <wenyou.yang@atmel.com>
-M:      Josh Wu <rainyfeeling@outlook.com>
+>
+> I also think that Wenyou did some work regarding this support. So you'll
+> have to coordinat together.
 
-I also think that Wenyou did some work regarding this support. So you'll
-have to coordinat together.
+Is it possible to know what are the developments in progress regarding SAMA5D2
+drivers? The github repository does not expose any working trees, and only the
+current "stable" trees are visible.
 
-Thanks, bye,
-
-> Romain Izard (4):
->   mtd: atmel_nand: Do not warn on bitflips
->   mtd: atmel_nand: Support variable RB_EDGE interrupts
->   mtd: atmel_nand: Support 32-bit ECC strength
->   ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-> 
->  .../devicetree/bindings/mtd/atmel-nand.txt         | 12 ++-
->  arch/arm/boot/dts/sama5d2.dtsi                     | 38 ++++++++++
->  drivers/mtd/nand/atmel_nand.c                      | 86 ++++++++++++++++++----
->  drivers/mtd/nand/atmel_nand_ecc.h                  |  9 ++-
->  drivers/mtd/nand/atmel_nand_nfc.h                  |  5 +-
->  5 files changed, 128 insertions(+), 22 deletions(-)
-> 
-
-
+Best regards,
 -- 
-Nicolas Ferre
+Romain Izard
