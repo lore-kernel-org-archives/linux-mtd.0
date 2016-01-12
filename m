@@ -1,25 +1,33 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-am1on0054.outbound.protection.outlook.com ([157.56.112.54]
+ helo=emea01-am1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aIr3t-0007my-Kn
- for linux-mtd@lists.infradead.org; Tue, 12 Jan 2016 05:00:06 +0000
-Subject: Re: [2/2] mtd: spi-nor: Add driver for Cadence Quad SPI Flash
- Controller.
-To: Marek Vasut <marex@denx.de>, Graham Moore <grmoore@opensource.altera.com>
-References: <1440148851-14621-2-git-send-email-marex@denx.de>
- <56932C19.6000509@ti.com> <201601110550.25422.marex@denx.de>
-CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>, Alan Tull
- <atull@opensource.altera.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>, Dinh Nguyen
- <dinguyen@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <5694881F.10707@ti.com>
-Date: Tue, 12 Jan 2016 10:29:11 +0530
+ id 1aIsYS-0006P9-JX
+ for linux-mtd@lists.infradead.org; Tue, 12 Jan 2016 06:35:47 +0000
+From: Zhiqiang Hou <zhiqiang.hou@nxp.com>
+To: Michal Suchanek <hramrach@gmail.com>
+CC: Andrew Murray <amurray@embedded-bits.co.uk>, Huang Shijie
+ <shijie.huang@intel.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Han Xu <han.xu@freescale.com>, Rafa? Mi?ecki
+ <zajec5@gmail.com>, Huang Shijie <b32955@freescale.com>, Ben Hutchings
+ <ben@decadent.org.uk>, Marek Vasut <marex@denx.de>, Gabor Juhos
+ <juhosg@openwrt.org>, =?gb2312?B?QmVhbiBIdW8gu/Sx87HzLA==?=
+ <beanhuo@micron.com>, MTD Maling List <linux-mtd@lists.infradead.org>, LKML
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 7/7] mtd: spi-nor: add read loop
+Date: Tue, 12 Jan 2016 06:35:21 +0000
+Message-ID: <CY1PR0301MB078027133F88A76F2FE2E5FA8B060@CY1PR0301MB0780.namprd03.prod.outlook.com>
+References: <cover.1439543572.git.hramrach@gmail.com>
+ <1592668a061137b33c9a6392dfccc67c69fc1fe6.1439543572.git.hramrach@gmail.com>
+ <CAPcvp5HB7m47ZTqQ0fE7EV42kNWO=i1EQaysNtgXw6V+oWoUdA@mail.gmail.com>
+ <CAOMqctQOU91hbt+2O0qQe3tjMn=3pSYE8E4xPpeS3iGG2A5h8w@mail.gmail.com>
+ <CY1PR0301MB0780A9588AA9348DCEA4823F8B290@CY1PR0301MB0780.namprd03.prod.outlook.com>
+ <CAOMqctRYGjhSeKtDQ3JuRV3Dvom3qW=tLxSOJmPF8r7gF93JiQ@mail.gmail.com>
+In-Reply-To: <CAOMqctRYGjhSeKtDQ3JuRV3Dvom3qW=tLxSOJmPF8r7gF93JiQ@mail.gmail.com>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="gb2312"
+Content-ID: <2B21577ED0205646B386D15AE7781A14@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <201601110550.25422.marex@denx.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,168 +37,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On 01/11/2016 10:20 AM, Marek Vasut wrote:
-> On Monday, January 11, 2016 at 05:14:17 AM, R, Vignesh wrote:
->> Hi Marek,
-> 
-> Hi!
-> 
->> On 08/21/2015 02:50 PM, Marek Vasut wrote:
->>> From: Graham Moore <grmoore@opensource.altera.com>
->>>
->>> Add support for the Cadence QSPI controller. This controller is
->>> present in the Altera SoCFPGA SoCs and this driver has been tested
->>> on the Cyclone V SoC.
->>
->> Thanks for the patch.
->> I have a TI EVM with Cadence QSPI controller connected to Spansion
->> flash(s25fl512s), and I gave this series a try. It worked with couple of
->> changes, please see comments inline.
-> 
-> I just posted the latest greatest version I have in tree, could you give it
-> a spin please ?
-> 
-
-Thanks, I will test it soon.
-
->>> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
->>> Signed-off-by: Marek Vasut <marex@denx.de>
->>> Cc: Alan Tull <atull@opensource.altera.com>
->>> Cc: Brian Norris <computersforpeace@gmail.com>
->>> Cc: David Woodhouse <dwmw2@infradead.org>
->>> Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
->>> Cc: Graham Moore <grmoore@opensource.altera.com>
->>> Cc: Vikas MANOCHA <vikas.manocha@st.com>
->>> Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
->>> Cc: devicetree@vger.kernel.org
-> 
-> [...]
-> 
->>> +static irqreturn_t cqspi_irq_handler(int this_irq, void *dev)
->>> +{
->>> +	struct cqspi_st *cqspi = dev;
->>> +	unsigned int irq_status;
->>> +
->>> +	/* Read interrupt status */
->>> +	irq_status = readl(cqspi->iobase + CQSPI_REG_IRQSTATUS);
->>> +
->>> +	/* Clear interrupt */
->>> +	writel(irq_status, cqspi->iobase + CQSPI_REG_IRQSTATUS);
->>> +
->>> +	irq_status &= CQSPI_IRQ_MASK_RD | CQSPI_IRQ_MASK_WR;
->>> +
->>> +	if (irq_status)
->>> +		complete(&cqspi->transfer_complete);
->>> +
->>
->> You seem to signal completion even if the interrupt is
->> CQSPI_REG_IRQ_IND_(WR|RD)_OVERFLOW. Doesn't this lead to data loss on
->> overflow?
-> 
-> That's a good question. The write routine, cqspi_indirect_write_execute(),
-> always writes a page and then waits for completion, so the overflow should
-> never happen.
-> 
-> What would you suggest to do about write overflow interrupt anyway ? :(
-> 
-
-My concern was signalling completion on CQSPI_REG_IRQ_IND_WR_OVERFLOW
-interrupt which meant data loss.
-But, I see you have disabled CQSPI_REG_IRQ_IND_WR_OVERFLOW in v10. This
-addresses my concern.
-
-
->>> +	return IRQ_HANDLED;
->>> +}
-> 
-> [...]
-> 
->>> +static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->>> +{
->>> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
->>> +	struct cqspi_st *cqspi = f_pdata->cqspi;
->>> +	const unsigned int sclk = f_pdata->clk_rate;
->>> +
->>> +	/* Switch chip select. */
->>> +	if (cqspi->current_cs != f_pdata->cs) {
->>> +		cqspi->current_cs = f_pdata->cs;
->>> +		cqspi_switch_cs(nor);
->>> +	}
->>> +
->>> +	/* Setup baudrate divisor and delays */
->>> +	if (cqspi->sclk != sclk) {
->>> +		cqspi->sclk = sclk;
->>> +		cqspi_controller_disable(cqspi);
->>> +		cqspi_config_baudrate_div(cqspi, sclk);
->>> +		cqspi_delay(nor, sclk);
->>> +		cqspi_readdata_capture(cqspi, 1, f_pdata->read_delay);
->>
->> I see bypass field value is being hard coded to 1. Atleast on TI SoC,
->> bypass=0 when SPI bus frequency is  >= 50MHz. Therefore, is it possible
->> to provide a way to configure bypass bit from DT?
->> Or if bypass=0 for >=50MHz on your SoC too then, its better to configure
->> bypass bit based on SPI bus frequency.
-> 
-> You can have multiple SPI peripherals attached to the QSPI block, each running 
-> at different bus speed, so I think the bypass should be configured based on the 
-> frequency of the active peripheral, not from OF.
-
-I agree, if the dependency is uniform across SoCs, then bypass should be
-configured based on the frequency of the active peripheral.
-
-> 
-> I don't know exactly what impact configuring this bit has, the socfpga datasheet 
-> is not very clear about the meaning of this bit, so it'd be better if someone 
-> from Altera answered this question.
-> 
-
-Have you tested the driver at SPI bus frequency >50MHz?
-
->>> +		cqspi_controller_enable(cqspi);
->>> +	}
->>> +	return 0;
->>> +}
-> 
-> [...]
-> 
-[...]
->>> +	ret = devm_request_irq(dev, irq, cqspi_irq_handler, 0,
->>> +			       pdev->name, cqspi);
->>> +	if (ret) {
->>> +		dev_err(dev, "Cannot request IRQ.\n");
->>> +		return ret;
->>> +	}
->>> +
->>
->> pm_runtime_enable(), pm_runtime_get_sync() might be needed here as QSPI
->> clocks may not be enabled by default on all platforms.
-> 
-> Can you whip up a bit of code and test it on your platform ? I dont think
-> socfpga has runtime PM yet. I'd like to add it into the driver or you can
-> send a small patch later, whichever way you prefer.
-> 
-
-Ok, I can send a patch once the driver is accepted.
-
->>> +	cqspi_wait_idle(cqspi);
->>> +	cqspi_controller_init(cqspi);
->>> +	cqspi->current_cs = -1;
->>> +	cqspi->sclk = 0;
->>> +
->>> +	ret = cqspi_setup_flash(cqspi, np);
->>> +	if (ret) {
->>> +		dev_err(dev, "Cadence QSPI NOR probe failed %d\n", ret);
->>> +		cqspi_controller_disable(cqspi);
->>> +	}
->>> +
->>> +	return ret;
->>> +}
-> 
-> Thanks!
-> 
-
--- 
-Regards
-Vignesh
+SGkgTWljaGFsLA0KDQpUaGFua3MgZm9yIHlvdXIgaW5mbywgYW5kIEkgc2VlIHlvdSBoYXZlIHVw
+ZGF0ZWQgdGhlIHBhdGNoc2V0IG9uIERlYy4wMi4gSXMgaXQgdGhlIGNvbmNsdXNpb24sIHJpZ2h0
+Pw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pY2hhbCBTdWNoYW5l
+ayBbbWFpbHRvOmhyYW1yYWNoQGdtYWlsLmNvbV0NCj4gU2VudDogMjAxNcTqMTHUwjIxyNUgMzox
+OQ0KPiBUbzogSG91IFpoaXFpYW5nLUI0ODI4Ng0KPiBDYzogQW5kcmV3IE11cnJheTsgSHVhbmcg
+U2hpamllOyBEYXZpZCBXb29kaG91c2U7IEJyaWFuIE5vcnJpczsgWHUgSGFuLQ0KPiBCNDU4MTU7
+IFJhZmE/IE1pP2Vja2k7IEh1YW5nIFNoaWppZTsgQmVuIEh1dGNoaW5nczsgTWFyZWsgVmFzdXQ7
+IEdhYm9yDQo+IEp1aG9zOyBCZWFuIEh1byC79LHzsfMsOyBNVEQgTWFsaW5nIExpc3Q7IExLTUwN
+Cj4gU3ViamVjdDogUmU6IFtQQVRDSCB2NCA3LzddIG10ZDogc3BpLW5vcjogYWRkIHJlYWQgbG9v
+cA0KPiANCj4gSGVsbG8sDQo+IA0KPiBPbiA1IE5vdmVtYmVyIDIwMTUgYXQgMDQ6MzksIEhvdSBa
+aGlxaWFuZyA8QjQ4Mjg2QGZyZWVzY2FsZS5jb20+IHdyb3RlOg0KPiA+IEhpIE1pY2hhbCwNCj4g
+Pg0KPiA+IERvZXMgdGhpcyBoYXZlIGFueSB1cGRhdGVzPw0KPiANCj4gSSB3aWxsIHRyeSB0byB1
+cGRhdGUgdGhpcyBwYXRjaHNldCB3aGVuIGl0J3MgYWdyZWVkIGhvdyB0aGUgbGltaXQgb24NCj4g
+dHJhbnNmZXIgc2l6ZSBpcyBoYW5kbGVkLiBXcml0aW5nIGxlc3MgZGF0YSB0aGFuIHdhcyByZXF1
+ZXN0ZWQgaXMNCj4gYWNjZXB0YWJsZSBmb3Igc3BpLW5vciBidXQgbWlnaHQgZGlzcnVwdCBvdGhl
+ciBkcml2ZXJzIHNvIHBlcmhhcHMgc29tZQ0KPiBwcmVlbXB0aXZlIG1lY2hhbmlzbSB3aXRoIHRo
+ZSBTUEkgbWFzdGVyIHNheWluZyBob3cgbXVjaCBkYXRhIGl0IGNhbg0KPiB0cmFuc2ZlciBhbmQg
+dGhlIGRyaXZlcnMgbG9va2luZyBhdCB0aGF0IHZhbHVlIHdvdWxkIGJlIHByZWZlcnJlZC4NCj4g
+DQoNClRoYW5rcywNClpoaXFpYW5nDQo=
