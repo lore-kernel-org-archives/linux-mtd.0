@@ -1,23 +1,26 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
+Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJKi3-00006N-3l
- for linux-mtd@lists.infradead.org; Wed, 13 Jan 2016 12:39:32 +0000
-From: "Yang, Wenyou" <Wenyou.Yang@atmel.com>
-To: romain izard <romain.izard@mobile-devices.fr>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Ferre, Nicolas"
- <Nicolas.FERRE@atmel.com>
-Subject: RE: [RFC PATCH 4/4] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-Date: Wed, 13 Jan 2016 12:39:06 +0000
-Message-ID: <B256D81BAE5131468A838E5D7A243641D63E9D62@penmbx01>
-References: <1452609223-14790-1-git-send-email-romain.izard.pro@gmail.com>
- <1452609223-14790-5-git-send-email-romain.izard.pro@gmail.com>
- <B256D81BAE5131468A838E5D7A243641D63E9755@penmbx01>
- <CAGkQfmN3Ko0Pbyued0AGMPskqVUWStxO44Nj=k8O-+iWYObXMg@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1aJKyq-0008MQ-8b
+ for linux-mtd@lists.infradead.org; Wed, 13 Jan 2016 12:56:53 +0000
+Received: by mail-oi0-x22a.google.com with SMTP id k206so93352030oia.1
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Jan 2016 04:56:31 -0800 (PST)
 MIME-Version: 1.0
+Sender: romain.izard@mobile-devices.fr
+In-Reply-To: <56963918.7040809@atmel.com>
+References: <1452609223-14790-1-git-send-email-romain.izard.pro@gmail.com>
+ <56951F91.1090101@atmel.com>
+ <CAGkQfmOmgiKwziQ+HuJTN1Qk1aHEXBWYcE1LT+XT2d-Xv7kxNw@mail.gmail.com>
+ <56963918.7040809@atmel.com>
+From: Romain Izard <romain.izard.pro@gmail.com>
+Date: Wed, 13 Jan 2016 13:56:11 +0100
+Message-ID: <CAGkQfmNDZmKDJYMuVizbb-+3nXX2DAqDCOf8qE0DNR-3Y2Etcg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/4] mtd: atmel_nand: Add support for NAND Flash on
+ SAMA5D2
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ "Yang, Wenyou" <Wenyou.Yang@atmel.com>, rainyfeeling@outlook.com,
+ Josh Wu <josh.wu@atmel.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,112 +30,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUm9tYWluLA0KDQpDb25maXJtZWQuIA0KDQpZb3UgYXJlIHJpZ2h0LiBUaGUgdGFibGVzIGFy
-ZSBhY2Nlc3NpYmxlLg0KDQpQbGVhc2UgaWdub3JlIG15IGNvbW1lbnRzLg0KDQoNCkJlc3QgUmVn
-YXJkcywNCldlbnlvdSBZYW5nDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJv
-bTogWWFuZywgV2VueW91DQo+IFNlbnQ6IDIwMTblubQx5pyIMTPml6UgMTk6MjkNCj4gVG86ICdy
-b21haW4gaXphcmQnIDxyb21haW4uaXphcmRAbW9iaWxlLWRldmljZXMuZnI+DQo+IENjOiBsaW51
-eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IEZl
-cnJlLCBOaWNvbGFzDQo+IDxOaWNvbGFzLkZFUlJFQGF0bWVsLmNvbT4NCj4gU3ViamVjdDogUkU6
-IFtSRkMgUEFUQ0ggNC80XSBBUk06IGF0OTEvZHQ6IHNhbWE1ZDI6IGFkZCBuYW5kMCBhbmQgbmZj
-MA0KPiBub2Rlcw0KPiANCj4gSGkgUm9tYWluLA0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3Nh
-Z2UtLS0tLQ0KPiA+IEZyb206IHJvbWFpbiBpemFyZCBbbWFpbHRvOnJvbWFpbi5pemFyZEBtb2Jp
-bGUtZGV2aWNlcy5mcl0NCj4gPiBTZW50OiAyMDE25bm0MeaciDEz5pelIDE3OjQxDQo+ID4gVG86
-IFlhbmcsIFdlbnlvdSA8V2VueW91LllhbmdAYXRtZWwuY29tPg0KPiA+IENjOiBsaW51eC1tdGRA
-bGlzdHMuaW5mcmFkZWFkLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IEZlcnJlLA0K
-PiA+IE5pY29sYXMgPE5pY29sYXMuRkVSUkVAYXRtZWwuY29tPg0KPiA+IFN1YmplY3Q6IFJlOiBb
-UkZDIFBBVENIIDQvNF0gQVJNOiBhdDkxL2R0OiBzYW1hNWQyOiBhZGQgbmFuZDAgYW5kIG5mYzAN
-Cj4gPiBub2Rlcw0KPiA+DQo+ID4gMjAxNi0wMS0xMyA3OjA2IEdNVCswMTowMCBZYW5nLCBXZW55
-b3UgPFdlbnlvdS5ZYW5nQGF0bWVsLmNvbT46DQo+ID4gPg0KPiA+ID4+IC0tLS0tT3JpZ2luYWwg
-TWVzc2FnZS0tLS0tDQo+ID4gPj4gRnJvbTogbGludXgtbXRkIFttYWlsdG86bGludXgtbXRkLWJv
-dW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZ10gT24NCj4gPiA+PiBCZWhhbGYgT2YgUm9tYWluIEl6
-YXJkDQo+ID4gPj4gU2VudDogMjAxNuW5tDHmnIgxMuaXpSAyMjozNA0KPiA+ID4+IFRvOiBsaW51
-eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcNCj4g
-PiA+PiBDYzogV3UsIEpvc2ggPEpvc2gud3VAYXRtZWwuY29tPjsgUm9tYWluIEl6YXJkDQo+ID4g
-Pj4gPHJvbWFpbi5pemFyZC5wcm9AZ21haWwuY29tPjsgRmVycmUsIE5pY29sYXMNCj4gPiA+PiA8
-Tmljb2xhcy5GRVJSRUBhdG1lbC5jb20+DQo+ID4gPj4gU3ViamVjdDogW1JGQyBQQVRDSCA0LzRd
-IEFSTTogYXQ5MS9kdDogc2FtYTVkMjogYWRkIG5hbmQwIGFuZCBuZmMwDQo+ID4gPj4gbm9kZXMN
-Cj4gPiA+Pg0KPiA+ID4+IEJvdGggbm9kZXMgYXJlIHJlcXVpcmVkIHRvIGFjY2VzcyBOQU5EIEZs
-YXNoIG1lbW9yeS4gQWRkaXRpb25hbA0KPiA+ID4+IHNldHRpbmdzIHdpbGwgYmUgbmVjZXNzYXJ5
-IGF0IHRoZSBib2FyZCBsZXZlbCB0byB1c2UgaXQuDQo+ID4gPj4NCj4gPiA+PiBTaWduZWQtb2Zm
-LWJ5OiBSb21haW4gSXphcmQgPHJvbWFpbi5pemFyZC5wcm9AZ21haWwuY29tPg0KPiA+ID4+IC0t
-LQ0KPiA+ID4+ICBhcmNoL2FybS9ib290L2R0cy9zYW1hNWQyLmR0c2kgfCAzOA0KPiA+ID4+ICsr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gPj4gIDEgZmlsZSBjaGFu
-Z2VkLCAzOCBpbnNlcnRpb25zKCspDQo+ID4gPj4NCj4gPiA+PiBkaWZmIC0tZ2l0IGEvYXJjaC9h
-cm0vYm9vdC9kdHMvc2FtYTVkMi5kdHNpDQo+ID4gPj4gYi9hcmNoL2FybS9ib290L2R0cy9zYW1h
-NWQyLmR0c2kgaW5kZXggYWVlNTcxNDQ4MzQyLi44MDQyMDE3N2VjMWENCj4gPiA+PiAxMDA2NDQN
-Cj4gPiA+PiAtLS0gYS9hcmNoL2FybS9ib290L2R0cy9zYW1hNWQyLmR0c2kNCj4gPiA+PiArKysg
-Yi9hcmNoL2FybS9ib290L2R0cy9zYW1hNWQyLmR0c2kNCj4gPiA+PiBAQCAtMjY1LDYgKzI2NSw0
-NCBAQA0KPiA+ID4+ICAgICAgICAgICAgICAgICAgICAgICBjYWNoZS1sZXZlbCA9IDwyPjsNCj4g
-PiA+PiAgICAgICAgICAgICAgIH07DQo+ID4gPj4NCj4gPiA+PiArICAgICAgICAgICAgIG5hbmQw
-OiBuYW5kQDgwMDAwMDAwIHsNCj4gPiA+PiArICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJs
-ZSA9ICJhdG1lbCxzYW1hNWQyLW5hbmQiOw0KPiA+ID4+ICsgICAgICAgICAgICAgICAgICAgICAj
-YWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gPiA+PiArICAgICAgICAgICAgICAgICAgICAgI3NpemUt
-Y2VsbHMgPSA8MT47DQo+ID4gPj4gKyAgICAgICAgICAgICAgICAgICAgIHJhbmdlczsNCj4gPiA+
-PiArICAgICAgICAgICAgICAgICAgICAgcmVnID0gPCAvKiBFQkkgQ1MzICovDQo+ID4gPj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgMHg4MDAwMDAwMCAweDA4MDAwMDAwDQo+ID4gPj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogU01DIFBNRUNDIHJlZ3MgKi8NCj4gPiA+
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAweGY4MDE0MDcwIDB4MDAwMDA0OTANCj4g
-PiA+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvKiBTTUMgUE1FQ0MgRXJyb3IgTG9j
-YXRpb24gcmVncyAqLw0KPiA+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDB4Zjgw
-MTQ1MDAgMHgwMDAwMDIwMA0KPiA+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8q
-IFJPTSBHYWxvaXMgdGFibGVzICovDQo+ID4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgMHgwMDA0MDAwMCAweDAwMDE4MDAwDQo+ID4gPg0KPiA+ID4gQXMgdGhlcmUgaXMgbm8gUE1F
-Q0MgbG9va3VwIHRhYmxlIGluIFJPTSBleHBvcnRlZCwgcmVtb3ZlIHRoaXMgbGluZS4NCj4gPiA+
-DQo+ID4NCj4gPiBGcm9tIHdoYXQgSSBzZWUgaW4gdGhlIFNBTUE1RDIgeHBsYWluZWQgYm9hcmQg
-b24gbXkgdGFibGUsIGl0IGlzIG5vdCB0aGUgY2FzZS4NCj4gPiBSZWFkaW5nIGF0IGFkZHJlc3Nl
-cyAweDQwMDAwIGFuZCAweDQ4MDAwIGZyb20gVS1Cb290LCBJIHNlZSBkYXRhIHRoYXQNCj4gPiBs
-b29rcyBpZGVudGljYWwgdG8gdGhlIEdhbG9pcyB0YWJsZXMgaW4gdGhlIEF0bWVsIGV4YW1wbGUg
-Y29kZS4NCj4gPg0KPiA+IFUtQm9vdD4gbWQudyAweDQwMDAwDQo+ID4gMDAwNDAwMDA6IGZmZmYg
-MDAwMCAwMDAxIDAzYTYgMDAwMiAwNzRjIDAzYTcgMThjMA0KPiA+IDAwMDQwMDEwOiAwMDAzIDFj
-NjYgMDc0ZCAwMWVhIDAzYTggMDA1ZCAxOGMxIDBhZjINCj4gPiAwMDA0MDAyMDogMDAwNCAwZTk4
-IDFjNjcgMTgzZSAwNzRlIDExODEgMDFlYiAwNDAzDQo+ID4gMDAwNDAwMzA6IDAzYTkgMTE5YyAw
-MDVlIDAwMGQgMThjMiAwNTkwIDBhZjMgMTg3Nw0KPiA+IDAwMDQwMDQwOiAwMDA1IDFjMWQgMGU5
-OSAxOTFkIDFjNjggMGQ2ZiAxODNmIDA5MzYNCj4gPiAwMDA0MDA1MDogMDc0ZiAxM2Q5IDExODIg
-MTU0MiAwMWVjIDAzYjMgMDQwNCAxMzk1DQo+ID4gMDAwNDAwNjA6IDAzYWEgMWFhYSAxMTlkIDEy
-M2UgMDA1ZiAxYmU0IDAwMGUgMGJkYQ0KPiA+IDAwMDQwMDcwOiAxOGMzIDA3YTkgMDU5MSAxZDM1
-IDBhZjQgMTlhZSAxODc4IDE1MjcNCj4gPg0KPiA+IFUtQm9vdD4gbWQudyAweDQ4MDAwDQo+ID4g
-MDAwNDgwMDA6IGZmZmYgMDAwMCAwMDAxIDA1NzIgMDAwMiAwYWU0IDA1NzMgMDE1Yg0KPiA+IDAw
-MDQ4MDEwOiAwMDAzIDA2Y2QgMGFlNSAxYWQ5IDA1NzQgMDEyZSAwMTVjIDEwNTYNCj4gPiAwMDA0
-ODAyMDogMDAwNCAxNWM4IDA2Y2UgMjg4ZCAwYWU2IDAyYjYgMWFkYSAwNmEwDQo+ID4gMDAwNDgw
-MzA6IDA1NzUgMmVkMiAwMTJmIDBjM2YgMDE1ZCAyMDRiIDEwNTcgMzgxMg0KPiA+IDAwMDQ4MDQw
-OiAwMDA1IDNkODQgMTVjOSAwMjg5IDA2Y2YgMzQ3ZCAyODhlIDI1YmQNCj4gPiAwMDA0ODA1MDog
-MGFlNyAxMGQxIDAyYjcgMzQ0NCAxYWRiIDExYjEgMDZhMSAxMDljDQo+ID4gMDAwNDgwNjA6IDA1
-NzYgMWMzNCAyZWQzIDFiM2EgMDEzMCAyZGZmIDBjNDAgMjIzOA0KPiA+IDAwMDQ4MDcwOiAwMTVl
-IDBjMTIgMjA0YyAzZDY3IDEwNTggM2Y0NyAzODEzIDA4MjgNCj4gPg0KPiA+DQo+ID4gVGhpcyBs
-b2NhdGlvbiBtYXRjaGVzIHRoZSBpbmZvcm1hdGlvbiBpbiB0aGUgU0FNQTVEMiBkYXRhc2hlZXQg
-ZnJvbQ0KPiA+IGNoYXB0ZXIgNiwgIk1lbW9yaWVzIiwgYnV0IG5vdCB0aGUgY29udHJhZGljdGlu
-ZyBpbmZvcm1hdGlvbiBmcm9tDQo+ID4gY2hhcHRlciAxNCwgIlN0YW5kYXJkIEJvb3QgU3RyYXRl
-Z2llcyIuDQo+IA0KPiBBcyBJIGtub3duLCB0aGUgR2Fsb2lzIEZpZWxkIFRhYmxlIHNob3VsZCBu
-b3QgZXhwb3J0ZWQgc2luY2UgU0FNQTVENCwgSSB3aWxsDQo+IGNoZWNrIHdpdGggdGhlIHN5c3Rl
-bSB0ZWFtLg0KPiANCj4gPg0KPiA+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgID47
-DQo+ID4gPj4gKyAgICAgICAgICAgICAgICAgICAgIGludGVycnVwdHMgPSA8MTcgSVJRX1RZUEVf
-TEVWRUxfSElHSCA2PjsNCj4gPiA+PiArICAgICAgICAgICAgICAgICAgICAgYXRtZWwsbmFuZC1h
-ZGRyLW9mZnNldCA9IDwyMT47DQo+ID4gPj4gKyAgICAgICAgICAgICAgICAgICAgIGF0bWVsLG5h
-bmQtY21kLW9mZnNldCA9IDwyMj47DQo+ID4gPj4gKyAgICAgICAgICAgICAgICAgICAgIGF0bWVs
-LG5hbmQtaGFzLWRtYTsNCj4gPiA+PiArICAgICAgICAgICAgICAgICAgICAgYXRtZWwsaGFzLXBt
-ZWNjOw0KPiA+ID4+ICsgICAgICAgICAgICAgICAgICAgICBhdG1lbCxwbWVjYy1sb29rdXAtdGFi
-bGUtb2Zmc2V0ID0gPDB4MA0KPiA+ID4+ICsgMHg4MDAwPjsNCj4gPiA+DQo+ID4gPiBEaXR0bywg
-cmVtb3ZlIHRoaXMgbGluZS4NCj4gPiA+DQo+ID4gPj4gKyAgICAgICAgICAgICAgICAgICAgIHN0
-YXR1cyA9ICJkaXNhYmxlZCI7DQo+ID4gPj4gKw0KPiA+ID4+ICsgICAgICAgICAgICAgICAgICAg
-ICBuZmNAOTAwMDAwMDAgew0KPiA+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNv
-bXBhdGlibGUgPSAiYXRtZWwsc2FtYTVkNC1uZmMiOw0KPiA+ID4+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiA+ID4+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICNzaXplLWNlbGxzID0gPDE+Ow0KPiA+ID4+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHJlZyA9IDwgLyogTkZDIENvbW1hbmQgUmVnaXN0ZXJzICovDQo+ID4g
-Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAweEMwMDAwMDAwIDB4MDgw
-MDAwMDANCj4gPiA+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8qIE5G
-QyBIU01DIHJlZ3MgKi8NCj4gPiA+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIDB4ZjgwMTQwMDAgMHgwMDAwMDA3MA0KPiA+ID4+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgLyogTkZDIFNSQU0gYmFua3MgKi8NCj4gPiA+PiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIDB4MDAxMDAwMDAgMHgwMDEwMDAwMA0KPiA+ID4+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPjsNCj4gPiA+PiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBjbG9ja3MgPSA8JmhzbWNfY2xrPjsNCj4gPiA+PiArICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBhdG1lbCx3cml0ZS1ieS1zcmFtOw0KPiA+ID4+ICsgICAg
-ICAgICAgICAgICAgICAgICB9Ow0KPiA+ID4+ICsgICAgICAgICAgICAgfTsNCj4gPiA+PiArDQo+
-ID4gPj4gICAgICAgICAgICAgICBzZG1tYzA6IHNkaW8taG9zdEBhMDAwMDAwMCB7DQo+ID4gPj4g
-ICAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAiYXRtZWwsc2FtYTVkMi1zZGhjaSI7
-DQo+ID4gPj4gICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDwweGEwMDAwMDAwIDB4MzAwPjsN
-Cj4gPiA+PiAtLQ0KPiA+ID4+IDIuNS4wDQo+ID4gPj4NCj4gPg0KPiA+DQo+ID4gQmVzdCByZWdh
-cmRzDQo+ID4gLS0NCj4gPiBSb21haW4gSXphcmQNCj4gDQo+IA0KPiBCZXN0IFJlZ2FyZHMsDQo+
-IFdlbnlvdSBZYW5nDQo=
+2016-01-13 12:46 GMT+01:00 Nicolas Ferre <nicolas.ferre@atmel.com>:
+>> Ok. It might be a good idea to update the MAINTAINERS file, as Josh Wu's
+>> atmel address now bounces, and it is still referenced there.
+>
+> It's already done and pushed to arm-soc. It's in linux-next:
+> http://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git/tree/MAINTAINERS#n2000
+>
+> It will appear in Linus' tree in a couple of days ;-)
+>
+Good. As I based my developments on the linux-4.1-at91 branch from the Linux4SAM
+github which does not contain the update, I missed it.
+
+>>> I also think that Wenyou did some work regarding this support. So you'll
+>>> have to coordinat together.
+>>
+>> Is it possible to know what are the developments in progress regarding
+>> SAMA5D2 drivers? The github repository does not expose any working trees,
+>> and only the
+>
+> Which github repository are you talking about?
+>
+> The Linux4SAM github contains all that is need to work with sama5d2
+> (linux-4.1-at91 branch):
+> https://github.com/linux4sam/linux-at91/tree/linux-4.1-at91
+
+That's the one. My point is that there is no hint in there that Wenyou worked
+on supporting the NAND controller for SAMA5D2. So I wondered if there were
+other repositories I missed with more recent information.
+
+> Developments in progress are listed in the Linux4SAM page:
+> http://www.at91.com/linux4sam/bin/view/Linux4SAM/Sama5d2XplainedMainPage
+>
+> I admit that it's not copleted, but you'll have an idea here as well:
+> http://www.at91.com/linux4sam/bin/view/Linux4SAM/Sama5d2XplainedMainPage
+>
+Both URLs are the same, are you sure it's the correct link? It's a very
+informative page and I often use it when I need information on the SAMA5D2.
+But I have a hard time finding something about work in progress in it.
+
+
+Best regards,
+-- 
+Romain Izard
