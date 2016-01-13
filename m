@@ -1,23 +1,14 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJPwF-0005lf-Vk
- for linux-mtd@lists.infradead.org; Wed, 13 Jan 2016 18:14:33 +0000
-Date: Wed, 13 Jan 2016 19:14:09 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Romain Izard <romain.izard.pro@gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Josh Wu
- <rainyfeeling@outlook.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Yang
- Wenyou <Wenyou.Yang@atmel.com>
-Subject: Re: [PATCH v1 2/5] mtd: atmel_nand: Support variable RB_EDGE
- interrupts
-Message-ID: <20160113191409.5cd0dc82@bbrezillon>
-In-Reply-To: <1452702857-2240-3-git-send-email-romain.izard.pro@gmail.com>
-References: <1452702857-2240-1-git-send-email-romain.izard.pro@gmail.com>
- <1452702857-2240-3-git-send-email-romain.izard.pro@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Wan ZongShun <mcuos.com@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: nuc900_nand: read correct SMISR register
+Date: Wed, 13 Jan 2016 22:38:08 +0100
+Message-ID: <9019174.GYajdpGP8V@wuerfel>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,208 +18,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Romain,
+The nuc900_nand driver has always passed an incorrect register
+address in its nuc900_check_rb() function, which cannot possibly
+work, and in some configurations gives us a build warning:
 
-On Wed, 13 Jan 2016 17:34:14 +0100
-Romain Izard <romain.izard.pro@gmail.com> wrote:
+drivers/mtd/nand/nuc900_nand.c: In function 'nuc900_check_rb':
+drivers/mtd/nand/nuc900_nand.c:27:23: warning: passing argument 1 of '__raw_readl' makes pointer from integer without a cast [-Wint-conversion]
+ #define REG_SMISR     0xac
+drivers/mtd/nand/nuc900_nand.c:118:20: note: in expansion of macro 'REG_SMISR'
+  val = __raw_readl(REG_SMISR);
 
-> The NFC controller used to accelerate the NAND transfers on SAMA5 chips
-> can use either RB_EDGE0 or RB_EDGE3 as its ready/busy interrupt bit.
-> 
-> Use the controller's compatible string to select the correct bit.
-> 
-> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
-> Reviewed-by: Wenyou Yang <Wenyou.yang@atmel.com>
-> ---
->  .../devicetree/bindings/mtd/atmel-nand.txt         |  2 +-
->  drivers/mtd/nand/atmel_nand.c                      | 39 +++++++++++++++++-----
->  drivers/mtd/nand/atmel_nand_nfc.h                  |  5 ++-
->  3 files changed, 36 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> index 7d4c8eb775a5..89b0db9801b0 100644
-> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> @@ -34,7 +34,7 @@ Optional properties:
->  - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
->  - Nand Flash Controller(NFC) is a slave driver under Atmel nand flash
->    - Required properties:
-> -    - compatible : "atmel,sama5d3-nfc".
-> +    - compatible : "atmel,sama5d3-nfc" or "atmel,sama5d4-nfc".
->      - reg : should specify the address and size used for NFC command registers,
->              NFC registers and NFC Sram. NFC Sram address and size can be absent
->              if don't want to use it.
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 9d71f9e6a8de..e5d7e7e63f49 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -67,6 +67,10 @@ struct atmel_nand_caps {
->  	bool pmecc_correct_erase_page;
->  };
->  
-> +struct atmel_nand_nfc_priv {
+This makes sure we actually read from the register rather than
+from (void *)0x000000ac in user space.
 
-Can you rename this struct into atmel_nfc_caps to be consistant with the
-atmel_nand_caps?
+I suspect nobody noticed this before because the nuc900_nand_devready()
+function never gets called, or nobody uses this driver on an upstream
+kernel. Possibly even both.
 
-> +	uint32_t rb_edge;
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Actually, AFAIU, it's not encoding the type of edges, but the available
-native R/B lines (by native I mean the R/B lines directly connected to
-the NFC IP).
-I suggest renaming this field avail_rb_lines, and making it a bitfield
-(one bit per possible R/B line).
-
-> +};
-> +
->  /* oob layout for large page size
->   * bad block info is on bytes 0 and 1
->   * the bytes have to be consecutives to avoid
-> @@ -111,6 +115,7 @@ struct atmel_nfc {
->  	/* Point to the sram bank which include readed data via NFC */
->  	void			*data_in_sram;
->  	bool			will_write_sram;
-> +	uint32_t		rb_edge;
-
-Replace this by
-	const struct atmel_nfc_caps *caps;
-
-so that next time you have a per-SoC particularity, you can just add it
-to your struct atmel_nfc_caps without adding new fields to atmel_nfc.
-
->  };
->  static struct atmel_nfc	nand_nfc;
->  
-> @@ -1675,9 +1680,9 @@ static irqreturn_t hsmc_interrupt(int irq, void *dev_id)
->  		nfc_writel(host->nfc->hsmc_regs, IDR, NFC_SR_XFR_DONE);
->  		ret = IRQ_HANDLED;
->  	}
-> -	if (pending & NFC_SR_RB_EDGE) {
-> +	if (pending & host->nfc->rb_edge) {
->  		complete(&host->nfc->comp_ready);
-> -		nfc_writel(host->nfc->hsmc_regs, IDR, NFC_SR_RB_EDGE);
-> +		nfc_writel(host->nfc->hsmc_regs, IDR, host->nfc->rb_edge);
-
-How about creating a macro that would generate the appropriate bitmask
-for you?
-
-Something like
-
-#define NFC_SR_RB_EDGE_MASK(x)	((x) << 24)
-
->  		ret = IRQ_HANDLED;
->  	}
->  	if (pending & NFC_SR_CMD_DONE) {
-> @@ -1695,7 +1700,7 @@ static void nfc_prepare_interrupt(struct atmel_nand_host *host, u32 flag)
->  	if (flag & NFC_SR_XFR_DONE)
->  		init_completion(&host->nfc->comp_xfer_done);
->  
-> -	if (flag & NFC_SR_RB_EDGE)
-> +	if (flag & host->nfc->rb_edge)
->  		init_completion(&host->nfc->comp_ready);
->  
->  	if (flag & NFC_SR_CMD_DONE)
-> @@ -1713,7 +1718,7 @@ static int nfc_wait_interrupt(struct atmel_nand_host *host, u32 flag)
->  	if (flag & NFC_SR_XFR_DONE)
->  		comp[index++] = &host->nfc->comp_xfer_done;
->  
-> -	if (flag & NFC_SR_RB_EDGE)
-> +	if (flag & host->nfc->rb_edge)
->  		comp[index++] = &host->nfc->comp_ready;
->  
->  	if (flag & NFC_SR_CMD_DONE)
-> @@ -1781,7 +1786,7 @@ static int nfc_device_ready(struct mtd_info *mtd)
->  		dev_err(host->dev, "Lost the interrupt flags: 0x%08x\n",
->  				mask & status);
->  
-> -	return status & NFC_SR_RB_EDGE;
-> +	return status & host->nfc->rb_edge;
->  }
->  
->  static void nfc_select_chip(struct mtd_info *mtd, int chip)
-> @@ -1954,8 +1959,8 @@ static void nfc_nand_command(struct mtd_info *mtd, unsigned int command,
->  		}
->  		/* fall through */
->  	default:
-> -		nfc_prepare_interrupt(host, NFC_SR_RB_EDGE);
-> -		nfc_wait_interrupt(host, NFC_SR_RB_EDGE);
-> +		nfc_prepare_interrupt(host, host->nfc->rb_edge);
-> +		nfc_wait_interrupt(host, host->nfc->rb_edge);
->  	}
->  }
->  
-> @@ -2318,9 +2323,12 @@ static const struct of_device_id atmel_nand_dt_ids[] = {
->  
->  MODULE_DEVICE_TABLE(of, atmel_nand_dt_ids);
->  
-> +static const struct of_device_id atmel_nand_nfc_match[];
-> +
->  static int atmel_nand_nfc_probe(struct platform_device *pdev)
->  {
->  	struct atmel_nfc *nfc = &nand_nfc;
-> +	const struct atmel_nand_nfc_priv *priv;
->  	struct resource *nfc_cmd_regs, *nfc_hsmc_regs, *nfc_sram;
->  	int ret;
->  
-> @@ -2352,6 +2360,12 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
->  		}
->  	}
->  
-> +	priv = of_match_device(atmel_nand_nfc_match, &pdev->dev)->data;
-> +	if (NULL == priv)
-> +		return -ENODEV;
-> +
-> +	nfc->rb_edge = priv->rb_edge;
-> +
->  	nfc_writel(nfc->hsmc_regs, IDR, 0xffffffff);
->  	nfc_readl(nfc->hsmc_regs, SR);	/* clear the NFC_SR */
->  
-> @@ -2380,8 +2394,17 @@ static int atmel_nand_nfc_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +static struct atmel_nand_nfc_priv sama5d3_nfc_priv = {
-> +	.rb_edge = NFC_SR_RB_EDGE0,
-> +};
-> +
-> +static struct atmel_nand_nfc_priv sama5d4_nfc_priv = {
-> +	.rb_edge = NFC_SR_RB_EDGE3,
-> +};
-> +
->  static const struct of_device_id atmel_nand_nfc_match[] = {
-> -	{ .compatible = "atmel,sama5d3-nfc" },
-> +	{ .compatible = "atmel,sama5d3-nfc", .data = &sama5d3_nfc_priv },
-> +	{ .compatible = "atmel,sama5d4-nfc", .data = &sama5d4_nfc_priv },
->  	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, atmel_nand_nfc_match);
-> diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
-> index 4d5d26221a7e..2cd9c57b1e53 100644
-> --- a/drivers/mtd/nand/atmel_nand_nfc.h
-> +++ b/drivers/mtd/nand/atmel_nand_nfc.h
-> @@ -42,7 +42,10 @@
->  #define		NFC_SR_UNDEF		(1 << 21)
->  #define		NFC_SR_AWB		(1 << 22)
->  #define		NFC_SR_ASE		(1 << 23)
-> -#define		NFC_SR_RB_EDGE		(1 << 24)
-> +#define		NFC_SR_RB_EDGE0		(1 << 24)
-> +#define		NFC_SR_RB_EDGE1		(1 << 25)
-> +#define		NFC_SR_RB_EDGE2		(1 << 26)
-> +#define		NFC_SR_RB_EDGE3		(1 << 27)
-
-Please replace those 4 definitions by:
-
-#define			NFC_SR_RB_EDGE(x)	BIT(x + 24)
-
->  
->  #define ATMEL_HSMC_NFC_IER	0x0c
->  #define ATMEL_HSMC_NFC_IDR	0x10
-
-Best Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/nuc900_nand.c
+index 220ddfcf29f5..dbc5b571c2bb 100644
+--- a/drivers/mtd/nand/nuc900_nand.c
++++ b/drivers/mtd/nand/nuc900_nand.c
+@@ -113,7 +113,7 @@ static int nuc900_check_rb(struct nuc900_nand *nand)
+ {
+ 	unsigned int val;
+ 	spin_lock(&nand->lock);
+-	val = __raw_readl(REG_SMISR);
++	val = __raw_readl(nand->reg + REG_SMISR);
+ 	val &= READYBUSY;
+ 	spin_unlock(&nand->lock);
+ 
