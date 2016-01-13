@@ -1,24 +1,18 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJMly-0007nh-9H
- for linux-mtd@lists.infradead.org; Wed, 13 Jan 2016 14:51:43 +0000
-Subject: Re: [RFC PATCH 4/4] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-To: "Yang, Wenyou" <Wenyou.Yang@atmel.com>, romain izard
- <romain.izard@mobile-devices.fr>
-References: <1452609223-14790-1-git-send-email-romain.izard.pro@gmail.com>
- <1452609223-14790-5-git-send-email-romain.izard.pro@gmail.com>
- <B256D81BAE5131468A838E5D7A243641D63E9755@penmbx01>
- <CAGkQfmN3Ko0Pbyued0AGMPskqVUWStxO44Nj=k8O-+iWYObXMg@mail.gmail.com>
- <B256D81BAE5131468A838E5D7A243641D63E9D62@penmbx01>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Message-ID: <56966467.2070704@atmel.com>
-Date: Wed, 13 Jan 2016 15:51:19 +0100
-MIME-Version: 1.0
-In-Reply-To: <B256D81BAE5131468A838E5D7A243641D63E9D62@penmbx01>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+ id 1aJOO8-0000IG-Li
+ for linux-mtd@lists.infradead.org; Wed, 13 Jan 2016 16:35:13 +0000
+Received: by mail-wm0-x242.google.com with SMTP id f206so37784789wmf.2
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Jan 2016 08:34:50 -0800 (PST)
+From: Romain Izard <romain.izard.pro@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org
+Cc: Yang Wenyou <Wenyou.Yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Romain Izard <romain.izard.pro@gmail.com>
+Subject: [PATCH v1 0/5] mtd: atmel_nand: Add support for NAND Flash on SAMA5D2
+Date: Wed, 13 Jan 2016 17:34:12 +0100
+Message-Id: <1452702857-2240-1-git-send-email-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,178 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 13/01/2016 13:39, Yang, Wenyou a écrit :
-> Hi Romain,
-> 
-> Confirmed. 
-> 
-> You are right. The tables are accessible.
+The NAND Flash controller for SAMA5D2 has small differences that make it
+impossible to use the existing driver for SAMA5D3. This patchset uses the
+device tree's compatible string to get those differences, and the code is
+slightly modified to handle them.
 
-Yes, confirmed by my colleague who wrote the ROMCode. It's different
-from the sama5d4.
+Applies on the Atmel Linux 4.1 branch for now, but only the dtsi file
+differs from the mainline.
 
-Gallois fields in ROM on sama5d2:
+Compile tested for all SAMA5 chips for now, and tested on SAMA5D3xek as
+there is no existing SAMA5D2 board with NAND Flash memory (yet).
 
-512 Bytes:  @ 0x40000 (32 KBytes)
-1024 Bytes: @ 0x48000 (96 KBytes)
+RFC -> V1:
+- Split the support of 32-bit ECC on SAMA5D2 in two commits
+- Fix the missing ECC strength configuration code
 
-even if the datasheet is not completely updated yet...
+Romain Izard (5):
+  mtd: atmel_nand: Do not warn on bitflips
+  mtd: atmel_nand: Support variable RB_EDGE interrupts
+  mtd: atmel_nand: Support PMECC on SAMA5D2
+  mtd: atmel_nand: Support 32-bit ECC strength
+  ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
 
-Bye,
-
-
-> Please ignore my comments.
-> 
-> 
-> Best Regards,
-> Wenyou Yang
-> 
->> -----Original Message-----
->> From: Yang, Wenyou
->> Sent: 2016年1月13日 19:29
->> To: 'romain izard' <romain.izard@mobile-devices.fr>
->> Cc: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org; Ferre, Nicolas
->> <Nicolas.FERRE@atmel.com>
->> Subject: RE: [RFC PATCH 4/4] ARM: at91/dt: sama5d2: add nand0 and nfc0
->> nodes
->>
->> Hi Romain,
->>
->>> -----Original Message-----
->>> From: romain izard [mailto:romain.izard@mobile-devices.fr]
->>> Sent: 2016年1月13日 17:41
->>> To: Yang, Wenyou <Wenyou.Yang@atmel.com>
->>> Cc: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org; Ferre,
->>> Nicolas <Nicolas.FERRE@atmel.com>
->>> Subject: Re: [RFC PATCH 4/4] ARM: at91/dt: sama5d2: add nand0 and nfc0
->>> nodes
->>>
->>> 2016-01-13 7:06 GMT+01:00 Yang, Wenyou <Wenyou.Yang@atmel.com>:
->>>>
->>>>> -----Original Message-----
->>>>> From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On
->>>>> Behalf Of Romain Izard
->>>>> Sent: 2016年1月12日 22:34
->>>>> To: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org
->>>>> Cc: Wu, Josh <Josh.wu@atmel.com>; Romain Izard
->>>>> <romain.izard.pro@gmail.com>; Ferre, Nicolas
->>>>> <Nicolas.FERRE@atmel.com>
->>>>> Subject: [RFC PATCH 4/4] ARM: at91/dt: sama5d2: add nand0 and nfc0
->>>>> nodes
->>>>>
->>>>> Both nodes are required to access NAND Flash memory. Additional
->>>>> settings will be necessary at the board level to use it.
->>>>>
->>>>> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
->>>>> ---
->>>>>  arch/arm/boot/dts/sama5d2.dtsi | 38
->>>>> ++++++++++++++++++++++++++++++++++++++
->>>>>  1 file changed, 38 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm/boot/dts/sama5d2.dtsi
->>>>> b/arch/arm/boot/dts/sama5d2.dtsi index aee571448342..80420177ec1a
->>>>> 100644
->>>>> --- a/arch/arm/boot/dts/sama5d2.dtsi
->>>>> +++ b/arch/arm/boot/dts/sama5d2.dtsi
->>>>> @@ -265,6 +265,44 @@
->>>>>                       cache-level = <2>;
->>>>>               };
->>>>>
->>>>> +             nand0: nand@80000000 {
->>>>> +                     compatible = "atmel,sama5d2-nand";
->>>>> +                     #address-cells = <1>;
->>>>> +                     #size-cells = <1>;
->>>>> +                     ranges;
->>>>> +                     reg = < /* EBI CS3 */
->>>>> +                             0x80000000 0x08000000
->>>>> +                             /* SMC PMECC regs */
->>>>> +                             0xf8014070 0x00000490
->>>>> +                             /* SMC PMECC Error Location regs */
->>>>> +                             0xf8014500 0x00000200
->>>>> +                             /* ROM Galois tables */
->>>>> +                             0x00040000 0x00018000
->>>>
->>>> As there is no PMECC lookup table in ROM exported, remove this line.
->>>>
->>>
->>> From what I see in the SAMA5D2 xplained board on my table, it is not the case.
->>> Reading at addresses 0x40000 and 0x48000 from U-Boot, I see data that
->>> looks identical to the Galois tables in the Atmel example code.
->>>
->>> U-Boot> md.w 0x40000
->>> 00040000: ffff 0000 0001 03a6 0002 074c 03a7 18c0
->>> 00040010: 0003 1c66 074d 01ea 03a8 005d 18c1 0af2
->>> 00040020: 0004 0e98 1c67 183e 074e 1181 01eb 0403
->>> 00040030: 03a9 119c 005e 000d 18c2 0590 0af3 1877
->>> 00040040: 0005 1c1d 0e99 191d 1c68 0d6f 183f 0936
->>> 00040050: 074f 13d9 1182 1542 01ec 03b3 0404 1395
->>> 00040060: 03aa 1aaa 119d 123e 005f 1be4 000e 0bda
->>> 00040070: 18c3 07a9 0591 1d35 0af4 19ae 1878 1527
->>>
->>> U-Boot> md.w 0x48000
->>> 00048000: ffff 0000 0001 0572 0002 0ae4 0573 015b
->>> 00048010: 0003 06cd 0ae5 1ad9 0574 012e 015c 1056
->>> 00048020: 0004 15c8 06ce 288d 0ae6 02b6 1ada 06a0
->>> 00048030: 0575 2ed2 012f 0c3f 015d 204b 1057 3812
->>> 00048040: 0005 3d84 15c9 0289 06cf 347d 288e 25bd
->>> 00048050: 0ae7 10d1 02b7 3444 1adb 11b1 06a1 109c
->>> 00048060: 0576 1c34 2ed3 1b3a 0130 2dff 0c40 2238
->>> 00048070: 015e 0c12 204c 3d67 1058 3f47 3813 0828
->>>
->>>
->>> This location matches the information in the SAMA5D2 datasheet from
->>> chapter 6, "Memories", but not the contradicting information from
->>> chapter 14, "Standard Boot Strategies".
->>
->> As I known, the Galois Field Table should not exported since SAMA5D4, I will
->> check with the system team.
->>
->>>
->>>>> +                             >;
->>>>> +                     interrupts = <17 IRQ_TYPE_LEVEL_HIGH 6>;
->>>>> +                     atmel,nand-addr-offset = <21>;
->>>>> +                     atmel,nand-cmd-offset = <22>;
->>>>> +                     atmel,nand-has-dma;
->>>>> +                     atmel,has-pmecc;
->>>>> +                     atmel,pmecc-lookup-table-offset = <0x0
->>>>> + 0x8000>;
->>>>
->>>> Ditto, remove this line.
->>>>
->>>>> +                     status = "disabled";
->>>>> +
->>>>> +                     nfc@90000000 {
->>>>> +                             compatible = "atmel,sama5d4-nfc";
->>>>> +                             #address-cells = <1>;
->>>>> +                             #size-cells = <1>;
->>>>> +                             reg = < /* NFC Command Registers */
->>>>> +                                     0xC0000000 0x08000000
->>>>> +                                     /* NFC HSMC regs */
->>>>> +                                     0xf8014000 0x00000070
->>>>> +                                     /* NFC SRAM banks */
->>>>> +                                     0x00100000 0x00100000
->>>>> +                                     >;
->>>>> +                             clocks = <&hsmc_clk>;
->>>>> +                             atmel,write-by-sram;
->>>>> +                     };
->>>>> +             };
->>>>> +
->>>>>               sdmmc0: sdio-host@a0000000 {
->>>>>                       compatible = "atmel,sama5d2-sdhci";
->>>>>                       reg = <0xa0000000 0x300>;
->>>>> --
->>>>> 2.5.0
->>>>>
->>>
->>>
->>> Best regards
->>> --
->>> Romain Izard
->>
->>
->> Best Regards,
->> Wenyou Yang
-
+ .../devicetree/bindings/mtd/atmel-nand.txt         | 12 ++-
+ arch/arm/boot/dts/sama5d2.dtsi                     | 38 +++++++++
+ drivers/mtd/nand/atmel_nand.c                      | 89 ++++++++++++++++++----
+ drivers/mtd/nand/atmel_nand_ecc.h                  |  9 ++-
+ drivers/mtd/nand/atmel_nand_nfc.h                  |  5 +-
+ 5 files changed, 131 insertions(+), 22 deletions(-)
 
 -- 
-Nicolas Ferre
+2.5.0
