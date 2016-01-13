@@ -1,24 +1,24 @@
-Received: from mail-oi0-x236.google.com ([2607:f8b0:4003:c06::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJHwP-0003I1-13
- for linux-mtd@lists.infradead.org; Wed, 13 Jan 2016 09:42:10 +0000
-Received: by mail-oi0-x236.google.com with SMTP id k206so90669961oia.1
- for <linux-mtd@lists.infradead.org>; Wed, 13 Jan 2016 01:41:48 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <B256D81BAE5131468A838E5D7A243641D63E9755@penmbx01>
+Received: from eusmtp01.atmel.com ([212.144.249.243])
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1aJJh6-0000FG-Eq
+ for linux-mtd@lists.infradead.org; Wed, 13 Jan 2016 11:34:29 +0000
+From: "Yang, Wenyou" <Wenyou.Yang@atmel.com>
+To: romain izard <romain.izard@mobile-devices.fr>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Ferre, Nicolas"
+ <Nicolas.FERRE@atmel.com>
+Subject: RE: [RFC PATCH 4/4] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
+Date: Wed, 13 Jan 2016 11:33:41 +0000
+Message-ID: <B256D81BAE5131468A838E5D7A243641D63E9CE1@penmbx01>
 References: <1452609223-14790-1-git-send-email-romain.izard.pro@gmail.com>
  <1452609223-14790-5-git-send-email-romain.izard.pro@gmail.com>
  <B256D81BAE5131468A838E5D7A243641D63E9755@penmbx01>
-From: romain izard <romain.izard@mobile-devices.fr>
-Date: Wed, 13 Jan 2016 10:41:28 +0100
-Message-ID: <CAGkQfmN3Ko0Pbyued0AGMPskqVUWStxO44Nj=k8O-+iWYObXMg@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/4] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-To: "Yang, Wenyou" <Wenyou.Yang@atmel.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Ferre,
- Nicolas" <Nicolas.FERRE@atmel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ <CAGkQfmN3Ko0Pbyued0AGMPskqVUWStxO44Nj=k8O-+iWYObXMg@mail.gmail.com>
+In-Reply-To: <CAGkQfmN3Ko0Pbyued0AGMPskqVUWStxO44Nj=k8O-+iWYObXMg@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,119 +28,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2016-01-13 7:06 GMT+01:00 Yang, Wenyou <Wenyou.Yang@atmel.com>:
->
->> -----Original Message-----
->> From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf=
- Of
->> Romain Izard
->> Sent: 2016=E5=B9=B41=E6=9C=8812=E6=97=A5 22:34
->> To: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org
->> Cc: Wu, Josh <Josh.wu@atmel.com>; Romain Izard
->> <romain.izard.pro@gmail.com>; Ferre, Nicolas <Nicolas.FERRE@atmel.com>
->> Subject: [RFC PATCH 4/4] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
->>
->> Both nodes are required to access NAND Flash memory. Additional settings=
- will
->> be necessary at the board level to use it.
->>
->> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
->> ---
->>  arch/arm/boot/dts/sama5d2.dtsi | 38
->> ++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 38 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.=
-dtsi index
->> aee571448342..80420177ec1a 100644
->> --- a/arch/arm/boot/dts/sama5d2.dtsi
->> +++ b/arch/arm/boot/dts/sama5d2.dtsi
->> @@ -265,6 +265,44 @@
->>                       cache-level =3D <2>;
->>               };
->>
->> +             nand0: nand@80000000 {
->> +                     compatible =3D "atmel,sama5d2-nand";
->> +                     #address-cells =3D <1>;
->> +                     #size-cells =3D <1>;
->> +                     ranges;
->> +                     reg =3D < /* EBI CS3 */
->> +                             0x80000000 0x08000000
->> +                             /* SMC PMECC regs */
->> +                             0xf8014070 0x00000490
->> +                             /* SMC PMECC Error Location regs */
->> +                             0xf8014500 0x00000200
->> +                             /* ROM Galois tables */
->> +                             0x00040000 0x00018000
->
-> As there is no PMECC lookup table in ROM exported, remove this line.
->
-
->From what I see in the SAMA5D2 xplained board on my table, it is not the
-case. Reading at addresses 0x40000 and 0x48000 from U-Boot, I see data
-that looks identical to the Galois tables in the Atmel example code.
-
-U-Boot> md.w 0x40000
-00040000: ffff 0000 0001 03a6 0002 074c 03a7 18c0
-00040010: 0003 1c66 074d 01ea 03a8 005d 18c1 0af2
-00040020: 0004 0e98 1c67 183e 074e 1181 01eb 0403
-00040030: 03a9 119c 005e 000d 18c2 0590 0af3 1877
-00040040: 0005 1c1d 0e99 191d 1c68 0d6f 183f 0936
-00040050: 074f 13d9 1182 1542 01ec 03b3 0404 1395
-00040060: 03aa 1aaa 119d 123e 005f 1be4 000e 0bda
-00040070: 18c3 07a9 0591 1d35 0af4 19ae 1878 1527
-
-U-Boot> md.w 0x48000
-00048000: ffff 0000 0001 0572 0002 0ae4 0573 015b
-00048010: 0003 06cd 0ae5 1ad9 0574 012e 015c 1056
-00048020: 0004 15c8 06ce 288d 0ae6 02b6 1ada 06a0
-00048030: 0575 2ed2 012f 0c3f 015d 204b 1057 3812
-00048040: 0005 3d84 15c9 0289 06cf 347d 288e 25bd
-00048050: 0ae7 10d1 02b7 3444 1adb 11b1 06a1 109c
-00048060: 0576 1c34 2ed3 1b3a 0130 2dff 0c40 2238
-00048070: 015e 0c12 204c 3d67 1058 3f47 3813 0828
-
-
-This location matches the information in the SAMA5D2 datasheet from
-chapter 6, "Memories", but not the contradicting information from chapter
-14, "Standard Boot Strategies".
-
->> +                             >;
->> +                     interrupts =3D <17 IRQ_TYPE_LEVEL_HIGH 6>;
->> +                     atmel,nand-addr-offset =3D <21>;
->> +                     atmel,nand-cmd-offset =3D <22>;
->> +                     atmel,nand-has-dma;
->> +                     atmel,has-pmecc;
->> +                     atmel,pmecc-lookup-table-offset =3D <0x0 0x8000>;
->
-> Ditto, remove this line.
->
->> +                     status =3D "disabled";
->> +
->> +                     nfc@90000000 {
->> +                             compatible =3D "atmel,sama5d4-nfc";
->> +                             #address-cells =3D <1>;
->> +                             #size-cells =3D <1>;
->> +                             reg =3D < /* NFC Command Registers */
->> +                                     0xC0000000 0x08000000
->> +                                     /* NFC HSMC regs */
->> +                                     0xf8014000 0x00000070
->> +                                     /* NFC SRAM banks */
->> +                                     0x00100000 0x00100000
->> +                                     >;
->> +                             clocks =3D <&hsmc_clk>;
->> +                             atmel,write-by-sram;
->> +                     };
->> +             };
->> +
->>               sdmmc0: sdio-host@a0000000 {
->>                       compatible =3D "atmel,sama5d2-sdhci";
->>                       reg =3D <0xa0000000 0x300>;
->> --
->> 2.5.0
->>
-
-
-Best regards
---=20
-Romain Izard
+SGkgUm9tYWluLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IHJvbWFp
+biBpemFyZCBbbWFpbHRvOnJvbWFpbi5pemFyZEBtb2JpbGUtZGV2aWNlcy5mcl0NCj4gU2VudDog
+MjAxNuW5tDHmnIgxM+aXpSAxNzo0MQ0KPiBUbzogWWFuZywgV2VueW91IDxXZW55b3UuWWFuZ0Bh
+dG1lbC5jb20+DQo+IENjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgZGV2aWNldHJl
+ZUB2Z2VyLmtlcm5lbC5vcmc7IEZlcnJlLCBOaWNvbGFzDQo+IDxOaWNvbGFzLkZFUlJFQGF0bWVs
+LmNvbT4NCj4gU3ViamVjdDogUmU6IFtSRkMgUEFUQ0ggNC80XSBBUk06IGF0OTEvZHQ6IHNhbWE1
+ZDI6IGFkZCBuYW5kMCBhbmQgbmZjMA0KPiBub2Rlcw0KPiANCj4gMjAxNi0wMS0xMyA3OjA2IEdN
+VCswMTowMCBZYW5nLCBXZW55b3UgPFdlbnlvdS5ZYW5nQGF0bWVsLmNvbT46DQo+ID4NCj4gPj4g
+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPj4gRnJvbTogbGludXgtbXRkIFttYWlsdG86
+bGludXgtbXRkLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZ10gT24NCj4gPj4gQmVoYWxmIE9m
+IFJvbWFpbiBJemFyZA0KPiA+PiBTZW50OiAyMDE25bm0MeaciDEy5pelIDIyOjM0DQo+ID4+IFRv
+OiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5v
+cmcNCj4gPj4gQ2M6IFd1LCBKb3NoIDxKb3NoLnd1QGF0bWVsLmNvbT47IFJvbWFpbiBJemFyZA0K
+PiA+PiA8cm9tYWluLml6YXJkLnByb0BnbWFpbC5jb20+OyBGZXJyZSwgTmljb2xhcw0KPiA+PiA8
+Tmljb2xhcy5GRVJSRUBhdG1lbC5jb20+DQo+ID4+IFN1YmplY3Q6IFtSRkMgUEFUQ0ggNC80XSBB
+Uk06IGF0OTEvZHQ6IHNhbWE1ZDI6IGFkZCBuYW5kMCBhbmQgbmZjMA0KPiA+PiBub2Rlcw0KPiA+
+Pg0KPiA+PiBCb3RoIG5vZGVzIGFyZSByZXF1aXJlZCB0byBhY2Nlc3MgTkFORCBGbGFzaCBtZW1v
+cnkuIEFkZGl0aW9uYWwNCj4gPj4gc2V0dGluZ3Mgd2lsbCBiZSBuZWNlc3NhcnkgYXQgdGhlIGJv
+YXJkIGxldmVsIHRvIHVzZSBpdC4NCj4gPj4NCj4gPj4gU2lnbmVkLW9mZi1ieTogUm9tYWluIEl6
+YXJkIDxyb21haW4uaXphcmQucHJvQGdtYWlsLmNvbT4NCj4gPj4gLS0tDQo+ID4+ICBhcmNoL2Fy
+bS9ib290L2R0cy9zYW1hNWQyLmR0c2kgfCAzOA0KPiA+PiArKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKw0KPiA+PiAgMSBmaWxlIGNoYW5nZWQsIDM4IGluc2VydGlvbnMoKykN
+Cj4gPj4NCj4gPj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL3NhbWE1ZDIuZHRzaQ0K
+PiA+PiBiL2FyY2gvYXJtL2Jvb3QvZHRzL3NhbWE1ZDIuZHRzaSBpbmRleCBhZWU1NzE0NDgzNDIu
+LjgwNDIwMTc3ZWMxYQ0KPiA+PiAxMDA2NDQNCj4gPj4gLS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMv
+c2FtYTVkMi5kdHNpDQo+ID4+ICsrKyBiL2FyY2gvYXJtL2Jvb3QvZHRzL3NhbWE1ZDIuZHRzaQ0K
+PiA+PiBAQCAtMjY1LDYgKzI2NSw0NCBAQA0KPiA+PiAgICAgICAgICAgICAgICAgICAgICAgY2Fj
+aGUtbGV2ZWwgPSA8Mj47DQo+ID4+ICAgICAgICAgICAgICAgfTsNCj4gPj4NCj4gPj4gKyAgICAg
+ICAgICAgICBuYW5kMDogbmFuZEA4MDAwMDAwMCB7DQo+ID4+ICsgICAgICAgICAgICAgICAgICAg
+ICBjb21wYXRpYmxlID0gImF0bWVsLHNhbWE1ZDItbmFuZCI7DQo+ID4+ICsgICAgICAgICAgICAg
+ICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gPj4gKyAgICAgICAgICAgICAgICAgICAg
+ICNzaXplLWNlbGxzID0gPDE+Ow0KPiA+PiArICAgICAgICAgICAgICAgICAgICAgcmFuZ2VzOw0K
+PiA+PiArICAgICAgICAgICAgICAgICAgICAgcmVnID0gPCAvKiBFQkkgQ1MzICovDQo+ID4+ICsg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIDB4ODAwMDAwMDAgMHgwODAwMDAwMA0KPiA+PiAr
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvKiBTTUMgUE1FQ0MgcmVncyAqLw0KPiA+PiAr
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAweGY4MDE0MDcwIDB4MDAwMDA0OTANCj4gPj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogU01DIFBNRUNDIEVycm9yIExvY2F0aW9u
+IHJlZ3MgKi8NCj4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMHhmODAxNDUwMCAw
+eDAwMDAwMjAwDQo+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8qIFJPTSBHYWxv
+aXMgdGFibGVzICovDQo+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDB4MDAwNDAw
+MDAgMHgwMDAxODAwMA0KPiA+DQo+ID4gQXMgdGhlcmUgaXMgbm8gUE1FQ0MgbG9va3VwIHRhYmxl
+IGluIFJPTSBleHBvcnRlZCwgcmVtb3ZlIHRoaXMgbGluZS4NCj4gPg0KPiANCj4gRnJvbSB3aGF0
+IEkgc2VlIGluIHRoZSBTQU1BNUQyIHhwbGFpbmVkIGJvYXJkIG9uIG15IHRhYmxlLCBpdCBpcyBu
+b3QgdGhlIGNhc2UuDQo+IFJlYWRpbmcgYXQgYWRkcmVzc2VzIDB4NDAwMDAgYW5kIDB4NDgwMDAg
+ZnJvbSBVLUJvb3QsIEkgc2VlIGRhdGEgdGhhdCBsb29rcw0KPiBpZGVudGljYWwgdG8gdGhlIEdh
+bG9pcyB0YWJsZXMgaW4gdGhlIEF0bWVsIGV4YW1wbGUgY29kZS4NCj4gDQo+IFUtQm9vdD4gbWQu
+dyAweDQwMDAwDQo+IDAwMDQwMDAwOiBmZmZmIDAwMDAgMDAwMSAwM2E2IDAwMDIgMDc0YyAwM2E3
+IDE4YzANCj4gMDAwNDAwMTA6IDAwMDMgMWM2NiAwNzRkIDAxZWEgMDNhOCAwMDVkIDE4YzEgMGFm
+Mg0KPiAwMDA0MDAyMDogMDAwNCAwZTk4IDFjNjcgMTgzZSAwNzRlIDExODEgMDFlYiAwNDAzDQo+
+IDAwMDQwMDMwOiAwM2E5IDExOWMgMDA1ZSAwMDBkIDE4YzIgMDU5MCAwYWYzIDE4NzcNCj4gMDAw
+NDAwNDA6IDAwMDUgMWMxZCAwZTk5IDE5MWQgMWM2OCAwZDZmIDE4M2YgMDkzNg0KPiAwMDA0MDA1
+MDogMDc0ZiAxM2Q5IDExODIgMTU0MiAwMWVjIDAzYjMgMDQwNCAxMzk1DQo+IDAwMDQwMDYwOiAw
+M2FhIDFhYWEgMTE5ZCAxMjNlIDAwNWYgMWJlNCAwMDBlIDBiZGENCj4gMDAwNDAwNzA6IDE4YzMg
+MDdhOSAwNTkxIDFkMzUgMGFmNCAxOWFlIDE4NzggMTUyNw0KPiANCj4gVS1Cb290PiBtZC53IDB4
+NDgwMDANCj4gMDAwNDgwMDA6IGZmZmYgMDAwMCAwMDAxIDA1NzIgMDAwMiAwYWU0IDA1NzMgMDE1
+Yg0KPiAwMDA0ODAxMDogMDAwMyAwNmNkIDBhZTUgMWFkOSAwNTc0IDAxMmUgMDE1YyAxMDU2DQo+
+IDAwMDQ4MDIwOiAwMDA0IDE1YzggMDZjZSAyODhkIDBhZTYgMDJiNiAxYWRhIDA2YTANCj4gMDAw
+NDgwMzA6IDA1NzUgMmVkMiAwMTJmIDBjM2YgMDE1ZCAyMDRiIDEwNTcgMzgxMg0KPiAwMDA0ODA0
+MDogMDAwNSAzZDg0IDE1YzkgMDI4OSAwNmNmIDM0N2QgMjg4ZSAyNWJkDQo+IDAwMDQ4MDUwOiAw
+YWU3IDEwZDEgMDJiNyAzNDQ0IDFhZGIgMTFiMSAwNmExIDEwOWMNCj4gMDAwNDgwNjA6IDA1NzYg
+MWMzNCAyZWQzIDFiM2EgMDEzMCAyZGZmIDBjNDAgMjIzOA0KPiAwMDA0ODA3MDogMDE1ZSAwYzEy
+IDIwNGMgM2Q2NyAxMDU4IDNmNDcgMzgxMyAwODI4DQo+IA0KPiANCj4gVGhpcyBsb2NhdGlvbiBt
+YXRjaGVzIHRoZSBpbmZvcm1hdGlvbiBpbiB0aGUgU0FNQTVEMiBkYXRhc2hlZXQgZnJvbSBjaGFw
+dGVyIDYsDQo+ICJNZW1vcmllcyIsIGJ1dCBub3QgdGhlIGNvbnRyYWRpY3RpbmcgaW5mb3JtYXRp
+b24gZnJvbSBjaGFwdGVyIDE0LCAiU3RhbmRhcmQgQm9vdA0KPiBTdHJhdGVnaWVzIi4NCg0KQXMg
+SSBrbm93biwgdGhlIEdhbG9pcyBGaWVsZCBUYWJsZSBzaG91bGQgbm90IGV4cG9ydGVkIHNpbmNl
+IFNBTUE1RDQsIEkgd2lsbCBjaGVjayB3aXRoIHRoZSBzeXN0ZW0gdGVhbS4NCg0KPiANCj4gPj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPjsNCj4gPj4gKyAgICAgICAgICAgICAgICAg
+ICAgIGludGVycnVwdHMgPSA8MTcgSVJRX1RZUEVfTEVWRUxfSElHSCA2PjsNCj4gPj4gKyAgICAg
+ICAgICAgICAgICAgICAgIGF0bWVsLG5hbmQtYWRkci1vZmZzZXQgPSA8MjE+Ow0KPiA+PiArICAg
+ICAgICAgICAgICAgICAgICAgYXRtZWwsbmFuZC1jbWQtb2Zmc2V0ID0gPDIyPjsNCj4gPj4gKyAg
+ICAgICAgICAgICAgICAgICAgIGF0bWVsLG5hbmQtaGFzLWRtYTsNCj4gPj4gKyAgICAgICAgICAg
+ICAgICAgICAgIGF0bWVsLGhhcy1wbWVjYzsNCj4gPj4gKyAgICAgICAgICAgICAgICAgICAgIGF0
+bWVsLHBtZWNjLWxvb2t1cC10YWJsZS1vZmZzZXQgPSA8MHgwIDB4ODAwMD47DQo+ID4NCj4gPiBE
+aXR0bywgcmVtb3ZlIHRoaXMgbGluZS4NCj4gPg0KPiA+PiArICAgICAgICAgICAgICAgICAgICAg
+c3RhdHVzID0gImRpc2FibGVkIjsNCj4gPj4gKw0KPiA+PiArICAgICAgICAgICAgICAgICAgICAg
+bmZjQDkwMDAwMDAwIHsNCj4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0
+aWJsZSA9ICJhdG1lbCxzYW1hNWQ0LW5mYyI7DQo+ID4+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiA+PiArICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAjc2l6ZS1jZWxscyA9IDwxPjsNCj4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgcmVnID0gPCAvKiBORkMgQ29tbWFuZCBSZWdpc3RlcnMgKi8NCj4gPj4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAweEMwMDAwMDAwIDB4MDgwMDAwMDANCj4gPj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvKiBORkMgSFNNQyByZWdzICov
+DQo+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMHhmODAxNDAwMCAw
+eDAwMDAwMDcwDQo+ID4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyog
+TkZDIFNSQU0gYmFua3MgKi8NCj4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAweDAwMTAwMDAwIDB4MDAxMDAwMDANCj4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICA+Ow0KPiA+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbG9j
+a3MgPSA8JmhzbWNfY2xrPjsNCj4gPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXRt
+ZWwsd3JpdGUtYnktc3JhbTsNCj4gPj4gKyAgICAgICAgICAgICAgICAgICAgIH07DQo+ID4+ICsg
+ICAgICAgICAgICAgfTsNCj4gPj4gKw0KPiA+PiAgICAgICAgICAgICAgIHNkbW1jMDogc2Rpby1o
+b3N0QGEwMDAwMDAwIHsNCj4gPj4gICAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAi
+YXRtZWwsc2FtYTVkMi1zZGhjaSI7DQo+ID4+ICAgICAgICAgICAgICAgICAgICAgICByZWcgPSA8
+MHhhMDAwMDAwMCAweDMwMD47DQo+ID4+IC0tDQo+ID4+IDIuNS4wDQo+ID4+DQo+IA0KPiANCj4g
+QmVzdCByZWdhcmRzDQo+IC0tDQo+IFJvbWFpbiBJemFyZA0KDQoNCkJlc3QgUmVnYXJkcywNCldl
+bnlvdSBZYW5nDQo=
