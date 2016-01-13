@@ -1,19 +1,22 @@
-Subject: Re: [PATCH v1 5/5] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-To: Romain Izard <romain.izard.pro@gmail.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>, Brian Norris
- <computersforpeace@gmail.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aJPd6-000440-0z
+ for linux-mtd@lists.infradead.org; Wed, 13 Jan 2016 17:54:44 +0000
+Date: Wed, 13 Jan 2016 18:54:21 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Romain Izard <romain.izard.pro@gmail.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Josh Wu
+ <rainyfeeling@outlook.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Yang
+ Wenyou <Wenyou.Yang@atmel.com>
+Subject: Re: [PATCH v1 1/5] mtd: atmel_nand: Do not warn on bitflips
+Message-ID: <20160113185421.22e1cb9c@bbrezillon>
+In-Reply-To: <1452702857-2240-2-git-send-email-romain.izard.pro@gmail.com>
 References: <1452702857-2240-1-git-send-email-romain.izard.pro@gmail.com>
- <1452702857-2240-6-git-send-email-romain.izard.pro@gmail.com>
-CC: Yang Wenyou <Wenyou.Yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Message-ID: <56968399.5070706@atmel.com>
-Date: Wed, 13 Jan 2016 18:04:25 +0100
+ <1452702857-2240-2-git-send-email-romain.izard.pro@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1452702857-2240-6-git-send-email-romain.izard.pro@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,83 +26,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 13/01/2016 17:34, Romain Izard a écrit :
-> Both nodes are required to access NAND Flash memory. Additional
-> settings will be necessary at the board level to use it.
+On Wed, 13 Jan 2016 17:34:13 +0100
+Romain Izard <romain.izard.pro@gmail.com> wrote:
+
+> When using multi-bit ECC, it is normal for the NAND Flash driver to
+> correct bit errors during the life of the product. Those errors will
+> only be cleared once a threshold has been reached, and corrections can
+> occur regularly before this.
+> 
+> Use only dev_dbg and not dev_info to report the bitflips, to keep the
+> system log clean when everything works correctly.
 > 
 > Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+> Acked-by:  Wenyou Yang <wenyou.yang@atmel.com>
+
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
 > ---
->  arch/arm/boot/dts/sama5d2.dtsi | 38 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
+>  drivers/mtd/nand/atmel_nand.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-> index aee571448342..80420177ec1a 100644
-> --- a/arch/arm/boot/dts/sama5d2.dtsi
-> +++ b/arch/arm/boot/dts/sama5d2.dtsi
-> @@ -265,6 +265,44 @@
->  			cache-level = <2>;
->  		};
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index 46010bd895b1..9d71f9e6a8de 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -824,7 +824,7 @@ static void pmecc_correct_data(struct mtd_info *mtd, uint8_t *buf, uint8_t *ecc,
+>  			*(buf + byte_pos) ^= (1 << bit_pos);
 >  
-> +		nand0: nand@80000000 {
-> +			compatible = "atmel,sama5d2-nand";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			ranges;
-> +			reg = < /* EBI CS3 */
-> +				0x80000000 0x08000000
-> +				/* SMC PMECC regs */
-> +				0xf8014070 0x00000490
-> +				/* SMC PMECC Error Location regs */
-> +				0xf8014500 0x00000200
-> +				/* ROM Galois tables */
-> +				0x00040000 0x00018000
-> +				>;
-> +			interrupts = <17 IRQ_TYPE_LEVEL_HIGH 6>;
-> +			atmel,nand-addr-offset = <21>;
-> +			atmel,nand-cmd-offset = <22>;
-> +			atmel,nand-has-dma;
-> +			atmel,has-pmecc;
-> +			atmel,pmecc-lookup-table-offset = <0x0 0x8000>;
-> +			status = "disabled";
-> +
-> +			nfc@90000000 {
+>  			pos = sector_num * host->pmecc_sector_size + byte_pos;
+> -			dev_info(host->dev, "Bit flip in data area, byte_pos: %d, bit_pos: %d, 0x%02x -> 0x%02x\n",
+> +			dev_dbg(host->dev, "Bit flip in data area, byte_pos: %d, bit_pos: %d, 0x%02x -> 0x%02x\n",
+>  				pos, bit_pos, err_byte, *(buf + byte_pos));
+>  		} else {
+>  			/* Bit flip in OOB area */
+> @@ -834,7 +834,7 @@ static void pmecc_correct_data(struct mtd_info *mtd, uint8_t *buf, uint8_t *ecc,
+>  			ecc[tmp] ^= (1 << bit_pos);
+>  
+>  			pos = tmp + nand_chip->ecc.layout->eccpos[0];
+> -			dev_info(host->dev, "Bit flip in OOB, oob_byte_pos: %d, bit_pos: %d, 0x%02x -> 0x%02x\n",
+> +			dev_dbg(host->dev, "Bit flip in OOB, oob_byte_pos: %d, bit_pos: %d, 0x%02x -> 0x%02x\n",
+>  				pos, bit_pos, err_byte, ecc[tmp]);
+>  		}
+>  
 
-It's nfc@c0000000
-
-> +				compatible = "atmel,sama5d4-nfc";
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +				reg = < /* NFC Command Registers */
-> +					0xC0000000 0x08000000
-
-Lower case please
-
-> +					/* NFC HSMC regs */
-> +					0xf8014000 0x00000070
-> +					/* NFC SRAM banks */
-> +					0x00100000 0x00100000
-> +					>;
-> +				clocks = <&hsmc_clk>;
-> +				atmel,write-by-sram;
-> +			};
-> +		};
-> +
-
-Otherwise, it seems okay. When corrected, you can add my:
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-
-Brian, Wenyou,
-I'm okay if this patch goes to Mainline with the mtd subsystem: there
-should be no conflict with arm-soc for the upcoming kernel revisions.
-
-Thanks, bye.
-
-
->  		sdmmc0: sdio-host@a0000000 {
->  			compatible = "atmel,sama5d2-sdhci";
->  			reg = <0xa0000000 0x300>;
-> 
 
 
 -- 
-Nicolas Ferre
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
