@@ -1,25 +1,18 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJfLP-0008Ak-3d
- for linux-mtd@lists.infradead.org; Thu, 14 Jan 2016 10:41:32 +0000
-Date: Thu, 14 Jan 2016 11:41:05 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Romain Izard <romain.izard.pro@gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Josh Wu
- <rainyfeeling@outlook.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Yang
- Wenyou <Wenyou.Yang@atmel.com>
-Subject: Re: [PATCH v1 2/5] mtd: atmel_nand: Support variable RB_EDGE
- interrupts
-Message-ID: <20160114114105.7f75ba1e@bbrezillon>
-In-Reply-To: <CAGkQfmMQTBVzOoE3BTyvg73NKjtGD_0veV_zb_jLutk-6bcqGw@mail.gmail.com>
-References: <1452702857-2240-1-git-send-email-romain.izard.pro@gmail.com>
- <1452702857-2240-3-git-send-email-romain.izard.pro@gmail.com>
- <20160113191409.5cd0dc82@bbrezillon>
- <CAGkQfmMQTBVzOoE3BTyvg73NKjtGD_0veV_zb_jLutk-6bcqGw@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Wan Zongshun <vw@iommu.org>, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Wan ZongShun <mcuos.com@gmail.com>, linux-kernel@vger.kernel.org,
+ Mike Thompson <mpthompson@gmail.com>
+Subject: Re: [PATCH] mtd: nuc900_nand: read correct SMISR register
+Date: Thu, 14 Jan 2016 13:08:18 +0100
+Message-ID: <4251392.DUmfQyrPag@wuerfel>
+In-Reply-To: <56976BA9.2040709@iommu.org>
+References: <9019174.GYajdpGP8V@wuerfel> <20160114002900.GA54220@google.com>
+ <56976BA9.2040709@iommu.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,136 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 14 Jan 2016 11:16:19 +0100
-Romain Izard <romain.izard.pro@gmail.com> wrote:
-
-> Hi Boris,
-> 
-> 2016-01-13 19:14 GMT+01:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
-> >> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> >> index 9d71f9e6a8de..e5d7e7e63f49 100644
-> >> --- a/drivers/mtd/nand/atmel_nand.c
-> >> +++ b/drivers/mtd/nand/atmel_nand.c
-> >> @@ -67,6 +67,10 @@ struct atmel_nand_caps {
-> >>       bool pmecc_correct_erase_page;
-> >>  };
+On Thursday 14 January 2016 17:34:33 Wan Zongshun wrote:
+> -------- Original Message --------
+> > On Wed, Jan 13, 2016 at 11:02:06PM +0100, Arnd Bergmann wrote:
+> >> On Wednesday 13 January 2016 13:50:13 Brian Norris wrote:
+> >>>
+> >>> Looks OK to me, though I kinda hate dragging on support for
+> >>> obviously-unused drivers...
 > >>
-> >> +struct atmel_nand_nfc_priv {
+> >> Should we mark that driver in Kconfig as obviously broken then?
 > >
-> > Can you rename this struct into atmel_nfc_caps to be consistant with the
-> > atmel_nand_caps?
+> > Well, it won't be obviously broken if I apply your patch... But if
+> > that's the right step toward removal, then I could be OK with that.
 > >
-> >> +     uint32_t rb_edge;
+> >> Let's wait for Wan ZongShun to reply first, it's possible that the
+> >> entire w90x900 platform has come to the point where we are better off
+> >> removing it than fixing ancient bugs.
 > >
-> > Actually, AFAIU, it's not encoding the type of edges, but the available
-> > native R/B lines (by native I mean the R/B lines directly connected to
-> > the NFC IP).
-> > I suggest renaming this field avail_rb_lines, and making it a bitfield
-> > (one bit per possible R/B line).
-> >
+> > Sounds good.
 > 
-> It's already a bitfield in the end: it's the mask for the interrupt status
-> register. It might have been better if it were called rb_edge_mask.
+> Actually, Nuvoton should still leverage this upstream w90x900 codes for 
+> their old and new arm chip BSP, but I am not sure their open source plan 
+> for the new chip now, I will check with Nuvoton for this topic, and give 
+> you feedback here, so please hold on its removal.
 
-Actually the naming chosen by atmel is a bit misleading, cause the
-R/B edge selection is done through the RB_RISE/FALL fields,
-and what they call RB_EDGEX is just the R/B line selection, hence the
-suggestion to name this field avail_rb_lines.
+Ok, sure. Thanks for the quick reply!
 
-> 
-> >> +};
-> >> +
-> >>  /* oob layout for large page size
-> >>   * bad block info is on bytes 0 and 1
-> >>   * the bytes have to be consecutives to avoid
-> >> @@ -111,6 +115,7 @@ struct atmel_nfc {
-> >>       /* Point to the sram bank which include readed data via NFC */
-> >>       void                    *data_in_sram;
-> >>       bool                    will_write_sram;
-> >> +     uint32_t                rb_edge;
-> >
-> > Replace this by
-> >         const struct atmel_nfc_caps *caps;
-> >
-> > so that next time you have a per-SoC particularity, you can just add it
-> > to your struct atmel_nfc_caps without adding new fields to atmel_nfc.
-> >
-> 
-> I'm reluctant about this, but I will do it. For me, we are exchanging
-> a single probe-time copy to indirections in each interrupt handler for some
-> unspecified future user. Let's hope the tradeoff is worth it.
+I've had a look around at the current produce lineup, and it seems that
+nuc900 (w90x900) is still marketed, and as you say is similar to the n329
+series.
 
-You raised a good point, maybe it's worth keeping this rb_edge field
-directly in the atmel_nfc struct. If you decide to do so, could you add
-a comment explaining why you're doing it?
+There has been one attempt to do a modern port for n329 in 2014 but
+it never got submitted. See http://comments.gmane.org/gmane.linux.kernel.kernelnewbies/49077
+and https://github.com/mpthompson/linux/tree/n329
 
-> 
-> >>  };
-> >>  static struct atmel_nfc      nand_nfc;
-> >>
-> >> @@ -1675,9 +1680,9 @@ static irqreturn_t hsmc_interrupt(int irq, void *dev_id)
-> >>               nfc_writel(host->nfc->hsmc_regs, IDR, NFC_SR_XFR_DONE);
-> >>               ret = IRQ_HANDLED;
-> >>       }
-> >> -     if (pending & NFC_SR_RB_EDGE) {
-> >> +     if (pending & host->nfc->rb_edge) {
+The code looks rather nice, so it's a pity that the effort stalled,
+but it should not be hard for anyone to start out with Mike's tree
+and forward-port it to 4.5.
 
-In the other hand, I see that we're already having a lot of
-indirections here, not sure adding one more will drastically impact the
-system.
-And if you really care about interrupt latencies in the system, you
-should probably register this handler as a threaded irq.
-
-> >>               complete(&host->nfc->comp_ready);
-> >> -             nfc_writel(host->nfc->hsmc_regs, IDR, NFC_SR_RB_EDGE);
-> >> +             nfc_writel(host->nfc->hsmc_regs, IDR, host->nfc->rb_edge);
-> >
-> > How about creating a macro that would generate the appropriate bitmask
-> > for you?
-> >
-> > Something like
-> >
-> > #define NFC_SR_RB_EDGE_MASK(x)  ((x) << 24)
-> >
-> 
-> It's already so verbose, it will make everything longer. Once the member name
-> contains the 'mask' part, all the information will be there.
-
-Makes sense, especially if you keep the pre-calculated nfc->rb_edge_mask
-field.
-
-> 
-> 
-> >> diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
-> >> index 4d5d26221a7e..2cd9c57b1e53 100644
-> >> --- a/drivers/mtd/nand/atmel_nand_nfc.h
-> >> +++ b/drivers/mtd/nand/atmel_nand_nfc.h
-> >> @@ -42,7 +42,10 @@
-> >>  #define              NFC_SR_UNDEF            (1 << 21)
-> >>  #define              NFC_SR_AWB              (1 << 22)
-> >>  #define              NFC_SR_ASE              (1 << 23)
-> >> -#define              NFC_SR_RB_EDGE          (1 << 24)
-> >> +#define              NFC_SR_RB_EDGE0         (1 << 24)
-> >> +#define              NFC_SR_RB_EDGE1         (1 << 25)
-> >> +#define              NFC_SR_RB_EDGE2         (1 << 26)
-> >> +#define              NFC_SR_RB_EDGE3         (1 << 27)
-> >
-> > Please replace those 4 definitions by:
-> >
-> > #define                 NFC_SR_RB_EDGE(x)       BIT(x + 24)
-> >
-> 
-> The whole file could be rewritten in this form, but I see this as a
-> zero-value proposition. I believe it is best to keep with local
-> consistency. In fact, I will rather remove RB_EDGE1 & RB_EDGE2, as
-> those are not mentioned in the datasheets.
-
-Hm, I keep thinking using the NFC_SR_RB_EDGE(x) is more future proof,
-but I'll let Atmel maintainers decide whether it's relevant or not to
-do so.
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+	Arnd
