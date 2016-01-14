@@ -1,21 +1,24 @@
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJWTU-00065B-6W
- for linux-mtd@lists.infradead.org; Thu, 14 Jan 2016 01:13:16 +0000
-Date: Wed, 13 Jan 2016 19:12:52 -0600
-From: Rob Herring <robh@kernel.org>
-To: Romain Izard <romain.izard.pro@gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- Yang Wenyou <Wenyou.Yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH v1 3/5] mtd: atmel_nand: Support PMECC on SAMA5D2
-Message-ID: <20160114011252.GA29778@rob-hp-laptop>
+Received: from nasmtp01.atmel.com ([192.199.1.246]
+ helo=DVREDG02.corp.atmel.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aJWY6-0008AM-4c
+ for linux-mtd@lists.infradead.org; Thu, 14 Jan 2016 01:18:03 +0000
+From: "Yang, Wenyou" <Wenyou.Yang@atmel.com>
+To: Rob Herring <robh@kernel.org>, Romain Izard <romain.izard.pro@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Josh Wu
+ <rainyfeeling@outlook.com>, "Ferre, Nicolas" <Nicolas.FERRE@atmel.com>
+Subject: RE: [PATCH v1 3/5] mtd: atmel_nand: Support PMECC on SAMA5D2
+Date: Thu, 14 Jan 2016 01:17:37 +0000
+Message-ID: <B256D81BAE5131468A838E5D7A243641D63EBC55@penmbx01>
 References: <1452702857-2240-1-git-send-email-romain.izard.pro@gmail.com>
  <1452702857-2240-4-git-send-email-romain.izard.pro@gmail.com>
+ <20160114011252.GA29778@rob-hp-laptop>
+In-Reply-To: <20160114011252.GA29778@rob-hp-laptop>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1452702857-2240-4-git-send-email-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 13, 2016 at 05:34:15PM +0100, Romain Izard wrote:
-> Starting with the SAMA5D2, there is a new revision of the Atmel PMECC
-> controller that can correct 32 bits in each sector. This controller is
-> not 100% compatible with the previous revision that corrected a maximum
-> of 24 bits by sector, as some register addresses overlap.
-> 
-> Using information from the device tree, we can configure the driver to
-> work with both versions.
-> 
-> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
-> ---
->  .../devicetree/bindings/mtd/atmel-nand.txt         |  7 +++++--
->  drivers/mtd/nand/atmel_nand.c                      | 23 +++++++++++++++++++++-
->  drivers/mtd/nand/atmel_nand_ecc.h                  |  8 ++++++--
->  3 files changed, 33 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> index 89b0db9801b0..90887b430f03 100644
-> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> @@ -1,7 +1,10 @@
->  Atmel NAND flash
->  
->  Required properties:
-> -- compatible : should be "atmel,at91rm9200-nand" or "atmel,sama5d4-nand".
-> +- compatible: The possible values are:
-> +	"atmel,at91rm9200-nand"
-> +	"atmel,sama5d2-nand"
-> +	"atmel,sama5d4-nand"
->  - reg : should specify localbus address and size used for the chip,
->  	and hardware ECC controller if available.
->  	If the hardware ECC is PMECC, it should contain address and size for
-> @@ -22,7 +25,7 @@ Optional properties:
->    Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
->    "soft_bch".
->  - atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware.
-> -  Only supported by at91sam9x5 or later sam9 product.
-> +  Supported by AT91SAM9x5 or later SAM9 chips, and SAMA5 chips.
-
-What compatible string would AT91SAM9x5 be?
-
->  - atmel,pmecc-cap : error correct capability for Programmable Multibit ECC
->    Controller. Supported values are: 2, 4, 8, 12, 24.
->  - atmel,pmecc-sector-size : sector size for ECC computation. Supported values
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUm9iIEhlcnJpbmcgW21h
+aWx0bzpyb2JoQGtlcm5lbC5vcmddDQo+IFNlbnQ6IDIwMTbE6jHUwjE0yNUgOToxMw0KPiBUbzog
+Um9tYWluIEl6YXJkIDxyb21haW4uaXphcmQucHJvQGdtYWlsLmNvbT4NCj4gQ2M6IGxpbnV4LW10
+ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgWWFuZywg
+V2VueW91DQo+IDxXZW55b3UuWWFuZ0BhdG1lbC5jb20+OyBKb3NoIFd1IDxyYWlueWZlZWxpbmdA
+b3V0bG9vay5jb20+OyBGZXJyZSwNCj4gTmljb2xhcyA8Tmljb2xhcy5GRVJSRUBhdG1lbC5jb20+
+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjEgMy81XSBtdGQ6IGF0bWVsX25hbmQ6IFN1cHBvcnQg
+UE1FQ0Mgb24gU0FNQTVEMg0KPiANCj4gT24gV2VkLCBKYW4gMTMsIDIwMTYgYXQgMDU6MzQ6MTVQ
+TSArMDEwMCwgUm9tYWluIEl6YXJkIHdyb3RlOg0KPiA+IFN0YXJ0aW5nIHdpdGggdGhlIFNBTUE1
+RDIsIHRoZXJlIGlzIGEgbmV3IHJldmlzaW9uIG9mIHRoZSBBdG1lbCBQTUVDQw0KPiA+IGNvbnRy
+b2xsZXIgdGhhdCBjYW4gY29ycmVjdCAzMiBiaXRzIGluIGVhY2ggc2VjdG9yLiBUaGlzIGNvbnRy
+b2xsZXIgaXMNCj4gPiBub3QgMTAwJSBjb21wYXRpYmxlIHdpdGggdGhlIHByZXZpb3VzIHJldmlz
+aW9uIHRoYXQgY29ycmVjdGVkIGENCj4gPiBtYXhpbXVtIG9mIDI0IGJpdHMgYnkgc2VjdG9yLCBh
+cyBzb21lIHJlZ2lzdGVyIGFkZHJlc3NlcyBvdmVybGFwLg0KPiA+DQo+ID4gVXNpbmcgaW5mb3Jt
+YXRpb24gZnJvbSB0aGUgZGV2aWNlIHRyZWUsIHdlIGNhbiBjb25maWd1cmUgdGhlIGRyaXZlciB0
+bw0KPiA+IHdvcmsgd2l0aCBib3RoIHZlcnNpb25zLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTog
+Um9tYWluIEl6YXJkIDxyb21haW4uaXphcmQucHJvQGdtYWlsLmNvbT4NCj4gPiAtLS0NCj4gPiAg
+Li4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2F0bWVsLW5hbmQudHh0ICAgICAgICAgfCAgNyAr
+KysrKy0tDQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvYXRtZWxfbmFuZC5jICAgICAgICAgICAgICAg
+ICAgICAgIHwgMjMgKysrKysrKysrKysrKysrKysrKysrLQ0KPiA+ICBkcml2ZXJzL210ZC9uYW5k
+L2F0bWVsX25hbmRfZWNjLmggICAgICAgICAgICAgICAgICB8ICA4ICsrKysrKy0tDQo+ID4gIDMg
+ZmlsZXMgY2hhbmdlZCwgMzMgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gPg0KPiA+
+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2F0bWVs
+LW5hbmQudHh0DQo+ID4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2F0
+bWVsLW5hbmQudHh0DQo+ID4gaW5kZXggODliMGRiOTgwMWIwLi45MDg4N2I0MzBmMDMgMTAwNjQ0
+DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9hdG1lbC1u
+YW5kLnR4dA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQv
+YXRtZWwtbmFuZC50eHQNCj4gPiBAQCAtMSw3ICsxLDEwIEBADQo+ID4gIEF0bWVsIE5BTkQgZmxh
+c2gNCj4gPg0KPiA+ICBSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPiA+IC0tIGNvbXBhdGlibGUgOiBz
+aG91bGQgYmUgImF0bWVsLGF0OTFybTkyMDAtbmFuZCIgb3IgImF0bWVsLHNhbWE1ZDQtbmFuZCIu
+DQo+ID4gKy0gY29tcGF0aWJsZTogVGhlIHBvc3NpYmxlIHZhbHVlcyBhcmU6DQo+ID4gKwkiYXRt
+ZWwsYXQ5MXJtOTIwMC1uYW5kIg0KPiA+ICsJImF0bWVsLHNhbWE1ZDItbmFuZCINCj4gPiArCSJh
+dG1lbCxzYW1hNWQ0LW5hbmQiDQo+ID4gIC0gcmVnIDogc2hvdWxkIHNwZWNpZnkgbG9jYWxidXMg
+YWRkcmVzcyBhbmQgc2l6ZSB1c2VkIGZvciB0aGUgY2hpcCwNCj4gPiAgCWFuZCBoYXJkd2FyZSBF
+Q0MgY29udHJvbGxlciBpZiBhdmFpbGFibGUuDQo+ID4gIAlJZiB0aGUgaGFyZHdhcmUgRUNDIGlz
+IFBNRUNDLCBpdCBzaG91bGQgY29udGFpbiBhZGRyZXNzIGFuZCBzaXplIGZvcg0KPiA+IEBAIC0y
+Miw3ICsyNSw3IEBAIE9wdGlvbmFsIHByb3BlcnRpZXM6DQo+ID4gICAgU3VwcG9ydGVkIHZhbHVl
+cyBhcmU6ICJub25lIiwgInNvZnQiLCAiaHciLCAiaHdfc3luZHJvbWUiLCAiaHdfb29iX2ZpcnN0
+IiwNCj4gPiAgICAic29mdF9iY2giLg0KPiA+ICAtIGF0bWVsLGhhcy1wbWVjYyA6IGJvb2xlYW4g
+dG8gZW5hYmxlIFByb2dyYW1tYWJsZSBNdWx0aWJpdCBFQ0MgaGFyZHdhcmUuDQo+ID4gLSAgT25s
+eSBzdXBwb3J0ZWQgYnkgYXQ5MXNhbTl4NSBvciBsYXRlciBzYW05IHByb2R1Y3QuDQo+ID4gKyAg
+U3VwcG9ydGVkIGJ5IEFUOTFTQU05eDUgb3IgbGF0ZXIgU0FNOSBjaGlwcywgYW5kIFNBTUE1IGNo
+aXBzLg0KPiANCj4gV2hhdCBjb21wYXRpYmxlIHN0cmluZyB3b3VsZCBBVDkxU0FNOXg1IGJlPw0K
+DQoiYXRtZWwsYXQ5MXJtOTIwMC1uYW5kIi4NCg0KPiANCj4gPiAgLSBhdG1lbCxwbWVjYy1jYXAg
+OiBlcnJvciBjb3JyZWN0IGNhcGFiaWxpdHkgZm9yIFByb2dyYW1tYWJsZSBNdWx0aWJpdCBFQ0MN
+Cj4gPiAgICBDb250cm9sbGVyLiBTdXBwb3J0ZWQgdmFsdWVzIGFyZTogMiwgNCwgOCwgMTIsIDI0
+Lg0KPiA+ICAtIGF0bWVsLHBtZWNjLXNlY3Rvci1zaXplIDogc2VjdG9yIHNpemUgZm9yIEVDQyBj
+b21wdXRhdGlvbi4NCj4gPiBTdXBwb3J0ZWQgdmFsdWVzDQoNCg0KQmVzdCBSZWdhcmRzLA0KV2Vu
+eW91IFlhbmcNCg==
