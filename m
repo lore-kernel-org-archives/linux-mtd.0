@@ -1,21 +1,16 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJeB7-0007fW-Bf
- for linux-mtd@lists.infradead.org; Thu, 14 Jan 2016 09:26:50 +0000
-Date: Thu, 14 Jan 2016 10:26:27 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Romain Izard <romain.izard.pro@gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Josh Wu
- <rainyfeeling@outlook.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Yang
- Wenyou <Wenyou.Yang@atmel.com>
-Subject: Re: [PATCH v1 4/5] mtd: atmel_nand: Support 32-bit ECC strength
-Message-ID: <20160114102627.003b815f@bbrezillon>
-In-Reply-To: <1452702857-2240-5-git-send-email-romain.izard.pro@gmail.com>
-References: <1452702857-2240-1-git-send-email-romain.izard.pro@gmail.com>
- <1452702857-2240-5-git-send-email-romain.izard.pro@gmail.com>
+Subject: Re: [PATCH] mtd: nuc900_nand: read correct SMISR register
+To: Brian Norris <computersforpeace@gmail.com>, Arnd Bergmann <arnd@arndb.de>
+References: <9019174.GYajdpGP8V@wuerfel> <20160113215013.GS109450@google.com>
+ <5830403.0pR8UVXPRZ@wuerfel> <20160114002900.GA54220@google.com>
+Cc: Wan ZongShun <mcuos.com@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Wan Zongshun <vw@iommu.org>
+Message-ID: <56976BA9.2040709@iommu.org>
+Date: Thu, 14 Jan 2016 17:34:33 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160114002900.GA54220@google.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,130 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 13 Jan 2016 17:34:16 +0100
-Romain Izard <romain.izard.pro@gmail.com> wrote:
-
-> As the SAMA5D2 controller supports the 32-bit ECC strength, accept it
-> as a valid setting when required by the device tree or the NAND
-> parameter page.
-> 
-> Then configure the controller to do use this new setting.
-> 
-> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
-
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-> ---
->  .../devicetree/bindings/mtd/atmel-nand.txt         |  3 ++-
->  drivers/mtd/nand/atmel_nand.c                      | 23 ++++++++++++++++++----
->  drivers/mtd/nand/atmel_nand_ecc.h                  |  1 +
->  3 files changed, 22 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> index 90887b430f03..ef0db8e2a0fd 100644
-> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> @@ -27,7 +27,8 @@ Optional properties:
->  - atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware.
->    Supported by AT91SAM9x5 or later SAM9 chips, and SAMA5 chips.
->  - atmel,pmecc-cap : error correct capability for Programmable Multibit ECC
-> -  Controller. Supported values are: 2, 4, 8, 12, 24.
-> +  Controller. Supported values are: 2, 4, 8, 12, 24. SAMA5D2 also supports
-> +  32.
->  - atmel,pmecc-sector-size : sector size for ECC computation. Supported values
->    are: 512, 1024.
->  - atmel,pmecc-lookup-table-offset : includes two offsets of lookup table in ROM
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 6fe50e2d291f..920a0a315a60 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -474,6 +474,7 @@ static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
->   *                8-bits                13-bytes                 14-bytes
->   *               12-bits                20-bytes                 21-bytes
->   *               24-bits                39-bytes                 42-bytes
-> + *               32-bits                52-bytes                 56-bytes
->   */
->  static int pmecc_get_ecc_bytes(int cap, int sector_size)
->  {
-> @@ -1022,6 +1023,9 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
->  	case 24:
->  		val = PMECC_CFG_BCH_ERR24;
->  		break;
-> +	case 32:
-> +		val = PMECC_CFG_BCH_ERR32;
-> +		break;
->  	}
->  
->  	if (host->pmecc_sector_size == 512)
-> @@ -1083,6 +1087,9 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
->  
->  	/* If device tree doesn't specify, use NAND's minimum ECC parameters */
->  	if (host->pmecc_corr_cap == 0) {
-> +		if (*cap > host->caps->pmecc_max_correction)
-> +			return -EINVAL;
-> +
->  		/* use the most fitable ecc bits (the near bigger one ) */
->  		if (*cap <= 2)
->  			host->pmecc_corr_cap = 2;
-> @@ -1094,6 +1101,8 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
->  			host->pmecc_corr_cap = 12;
->  		else if (*cap <= 24)
->  			host->pmecc_corr_cap = 24;
-> +		else if (*cap <= 32)
-> +			host->pmecc_corr_cap = 32;
->  		else
->  			return -EINVAL;
->  	}
-> @@ -1554,10 +1563,16 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
->  	 * them from NAND ONFI parameters.
->  	 */
->  	if (of_property_read_u32(np, "atmel,pmecc-cap", &val) == 0) {
-> -		if ((val != 2) && (val != 4) && (val != 8) && (val != 12) &&
-> -				(val != 24)) {
-> +		if (val > host->caps->pmecc_max_correction) {
-> +			dev_err(host->dev,
-> +				"Required ECC strength too high: %u max %u\n",
-> +				val, host->caps->pmecc_max_correction);
-> +			return -EINVAL;
-> +		}
-> +		if ((val != 2)  && (val != 4)  && (val != 8) &&
-> +		    (val != 12) && (val != 24) && (val != 32)) {
->  			dev_err(host->dev,
-> -				"Unsupported PMECC correction capability: %d; should be 2, 4, 8, 12 or 24\n",
-> +				"Required ECC strength not supported: %u\n",
->  				val);
->  			return -EINVAL;
->  		}
-> @@ -1567,7 +1582,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
->  	if (of_property_read_u32(np, "atmel,pmecc-sector-size", &val) == 0) {
->  		if ((val != 512) && (val != 1024)) {
->  			dev_err(host->dev,
-> -				"Unsupported PMECC sector size: %d; should be 512 or 1024 bytes\n",
-> +				"Required ECC sector size not supported: %u\n",
->  				val);
-
-I'm nitpicking, but this change has nothing to do with the addition
-of the 32bits strength. Maybe it should be part of another patch (along
-with the other log message rewording).
-
->  			return -EINVAL;
->  		}
-> diff --git a/drivers/mtd/nand/atmel_nand_ecc.h b/drivers/mtd/nand/atmel_nand_ecc.h
-> index ec964c43c932..834d694487bd 100644
-> --- a/drivers/mtd/nand/atmel_nand_ecc.h
-> +++ b/drivers/mtd/nand/atmel_nand_ecc.h
-> @@ -43,6 +43,7 @@
->  #define		PMECC_CFG_BCH_ERR8		(2 << 0)
->  #define		PMECC_CFG_BCH_ERR12		(3 << 0)
->  #define		PMECC_CFG_BCH_ERR24		(4 << 0)
-> +#define		PMECC_CFG_BCH_ERR32		(5 << 0)
->  
->  #define		PMECC_CFG_SECTOR512		(0 << 4)
->  #define		PMECC_CFG_SECTOR1024		(1 << 4)
 
 
+-------- Original Message --------
+> On Wed, Jan 13, 2016 at 11:02:06PM +0100, Arnd Bergmann wrote:
+>> On Wednesday 13 January 2016 13:50:13 Brian Norris wrote:
+>>>
+>>> Looks OK to me, though I kinda hate dragging on support for
+>>> obviously-unused drivers...
+>>
+>> Should we mark that driver in Kconfig as obviously broken then?
+>
+> Well, it won't be obviously broken if I apply your patch... But if
+> that's the right step toward removal, then I could be OK with that.
+>
+>> Let's wait for Wan ZongShun to reply first, it's possible that the
+>> entire w90x900 platform has come to the point where we are better off
+>> removing it than fixing ancient bugs.
+>
+> Sounds good.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Actually, Nuvoton should still leverage this upstream w90x900 codes for 
+their old and new arm chip BSP, but I am not sure their open source plan 
+for the new chip now, I will check with Nuvoton for this topic, and give 
+you feedback here, so please hold on its removal.
+
+>
+> Brian
+>
