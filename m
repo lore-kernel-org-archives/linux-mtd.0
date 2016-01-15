@@ -1,21 +1,18 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aK1jW-0004AZ-Ll
- for linux-mtd@lists.infradead.org; Fri, 15 Jan 2016 10:35:59 +0000
-Received: by mail-wm0-x241.google.com with SMTP id l65so2124906wmf.3
- for <linux-mtd@lists.infradead.org>; Fri, 15 Jan 2016 02:35:36 -0800 (PST)
-From: Romain Izard <romain.izard.pro@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org
-Cc: Josh Wu <rainyfeeling@outlook.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Yang Wenyou <Wenyou.Yang@atmel.com>,
- Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v2 6/8] mtd: atmel_nand: Support PMECC on SAMA5D2
-Date: Fri, 15 Jan 2016 11:35:00 +0100
-Message-Id: <1452854102-6125-7-git-send-email-romain.izard.pro@gmail.com>
-In-Reply-To: <1452854102-6125-1-git-send-email-romain.izard.pro@gmail.com>
-References: <1452854102-6125-1-git-send-email-romain.izard.pro@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+To: Wan Zongshun <vw@iommu.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Wan ZongShun <mcuos.com@gmail.com>,
+ linux-kernel@vger.kernel.org, Mike Thompson <mpthompson@gmail.com>
+Subject: Re: [PATCH] mtd: nuc900_nand: read correct SMISR register
+Date: Fri, 15 Jan 2016 12:03:43 +0100
+Message-ID: <11388611.tVUcx6RgHM@wuerfel>
+In-Reply-To: <5698A585.7060007@iommu.org>
+References: <9019174.GYajdpGP8V@wuerfel> <4251392.DUmfQyrPag@wuerfel>
+ <5698A585.7060007@iommu.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,137 +22,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Starting with the SAMA5D2, there is a new revision of the Atmel PMECC
-controller that can correct 32 bits in each sector. This controller is
-not 100% compatible with the previous revision that corrected a maximum
-of 24 bits by sector, as some register addresses overlap.
+On Friday 15 January 2016 15:53:41 Wan Zongshun wrote:
+> 
+> >>
+> >> Actually, Nuvoton should still leverage this upstream w90x900 codes for
+> >> their old and new arm chip BSP, but I am not sure their open source plan
+> >> for the new chip now, I will check with Nuvoton for this topic, and give
+> >> you feedback here, so please hold on its removal.
+> >
+> > Ok, sure. Thanks for the quick reply!
+> >
+> > I've had a look around at the current produce lineup, and it seems that
+> > nuc900 (w90x900) is still marketed, and as you say is similar to the n329
+> > series.
+> >
+> > There has been one attempt to do a modern port for n329 in 2014 but
+> > it never got submitted. See http://comments.gmane.org/gmane.linux.kernel.kernelnewbies/49077
+> > and https://github.com/mpthompson/linux/tree/n329
+> >
+> > The code looks rather nice, so it's a pity that the effort stalled,
+> > but it should not be hard for anyone to start out with Mike's tree
+> > and forward-port it to 4.5.
+> 
+> I will try to get this board you mentioned and try to cowork Mike to 
+> submit it into upstream.
+> 
+> After checking with Nuvoton people, and I will get another board and 
+> help them update the latest kernel BSP and also submit new nuc970 chip 
+> BSP into upstream.
+> 
+> spec:
+> http://www.nuvoton.com/hq/products/microprocessors/arm9-mpus/nuc900-series/?__locale=en
+> 
 
-Using information from the device tree, we can configure the driver to
-work with both versions.
+This sounds great, good to hear!
 
-Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
----
-v2: Split rewording of the binding into its own patch
+I see that your last feature contribution to mach-w90x900 was a little over
+5 years ago, before we started the current arm-soc process, after that
+we only had bug fixes and smaller cleanups.
 
- .../devicetree/bindings/mtd/atmel-nand.txt         |  5 ++++-
- drivers/mtd/nand/atmel_nand.c                      | 23 +++++++++++++++++++++-
- drivers/mtd/nand/atmel_nand_ecc.h                  |  8 ++++++--
- 3 files changed, 32 insertions(+), 4 deletions(-)
+I don't know to what degree you have been following what the other platforms
+have done in the meantime, so let me try to get you up to speed:
 
-diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-index e68ab404d912..e1887b7d7e53 100644
---- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-@@ -1,7 +1,10 @@
- Atmel NAND flash
- 
- Required properties:
--- compatible : should be "atmel,at91rm9200-nand" or "atmel,sama5d4-nand".
-+- compatible: The possible values are:
-+	"atmel,at91rm9200-nand"
-+	"atmel,sama5d2-nand"
-+	"atmel,sama5d4-nand"
- - reg : should specify localbus address and size used for the chip,
- 	and hardware ECC controller if available.
- 	If the hardware ECC is PMECC, it should contain address and size for
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 0599f3c5ad3b..f73037a3b51d 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -65,6 +65,7 @@ module_param(on_flash_bbt, int, 0);
- 
- struct atmel_nand_caps {
- 	bool pmecc_correct_erase_page;
-+	uint8_t pmecc_max_correction;
- };
- 
- struct atmel_nand_nfc_caps {
-@@ -146,6 +147,7 @@ struct atmel_nand_host {
- 	int			pmecc_cw_len;	/* Length of codeword */
- 
- 	void __iomem		*pmerrloc_base;
-+	void __iomem		*pmerrloc_el_base;
- 	void __iomem		*pmecc_rom_base;
- 
- 	/* lookup table for alpha_to and index_of */
-@@ -817,7 +819,7 @@ static void pmecc_correct_data(struct mtd_info *mtd, uint8_t *buf, uint8_t *ecc,
- 	sector_size = host->pmecc_sector_size;
- 
- 	while (err_nbr) {
--		tmp = pmerrloc_readl_el_relaxed(host->pmerrloc_base, i) - 1;
-+		tmp = pmerrloc_readl_el_relaxed(host->pmerrloc_el_base, i) - 1;
- 		byte_pos = tmp / 8;
- 		bit_pos  = tmp % 8;
- 
-@@ -1209,6 +1211,8 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		err_no = PTR_ERR(host->pmerrloc_base);
- 		goto err;
- 	}
-+	host->pmerrloc_el_base = host->pmerrloc_base + ATMEL_PMERRLOC_SIGMAx +
-+		(host->caps->pmecc_max_correction + 1) * 4;
- 
- 	if (!host->has_no_lookup_table) {
- 		regs_rom = platform_get_resource(pdev, IORESOURCE_MEM, 3);
-@@ -2307,17 +2311,34 @@ static int atmel_nand_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+/*
-+ * AT91RM9200 does not have PMECC or PMECC Errloc peripherals for
-+ * BCH ECC. Combined with the "atmel,has-pmecc", it is used to describe
-+ * devices from the SAM9 family that have those.
-+ */
- static struct atmel_nand_caps at91rm9200_caps = {
- 	.pmecc_correct_erase_page = false,
-+	.pmecc_max_correction = 24,
- };
- 
- static struct atmel_nand_caps sama5d4_caps = {
- 	.pmecc_correct_erase_page = true,
-+	.pmecc_max_correction = 24,
-+};
-+
-+/*
-+ * The PMECC Errloc controller starting in SAMA5D2 is not compatible,
-+ * as the increased correction strength requires more registers.
-+ */
-+static struct atmel_nand_caps sama5d2_caps = {
-+	.pmecc_correct_erase_page = true,
-+	.pmecc_max_correction = 32,
- };
- 
- static const struct of_device_id atmel_nand_dt_ids[] = {
- 	{ .compatible = "atmel,at91rm9200-nand", .data = &at91rm9200_caps },
- 	{ .compatible = "atmel,sama5d4-nand", .data = &sama5d4_caps },
-+	{ .compatible = "atmel,sama5d2-nand", .data = &sama5d2_caps },
- 	{ /* sentinel */ }
- };
- 
-diff --git a/drivers/mtd/nand/atmel_nand_ecc.h b/drivers/mtd/nand/atmel_nand_ecc.h
-index 668e7358f19b..ec964c43c932 100644
---- a/drivers/mtd/nand/atmel_nand_ecc.h
-+++ b/drivers/mtd/nand/atmel_nand_ecc.h
-@@ -108,7 +108,11 @@
- #define		PMERRLOC_ERR_NUM_MASK		(0x1f << 8)
- #define		PMERRLOC_CALC_DONE		(1 << 0)
- #define ATMEL_PMERRLOC_SIGMAx		0x028	/* Error location SIGMA x */
--#define ATMEL_PMERRLOC_ELx		0x08c	/* Error location x */
-+
-+/*
-+ * The ATMEL_PMERRLOC_ELx register location depends from the number of
-+ * bits corrected by the PMECC controller. Do not use it.
-+ */
- 
- /* Register access macros for PMECC */
- #define pmecc_readl_relaxed(addr, reg) \
-@@ -136,7 +140,7 @@
- 	readl_relaxed((addr) + ATMEL_PMERRLOC_SIGMAx + ((n) * 4))
- 
- #define pmerrloc_readl_el_relaxed(addr, n) \
--	readl_relaxed((addr) + ATMEL_PMERRLOC_ELx + ((n) * 4))
-+	readl_relaxed((addr) + ((n) * 4))
- 
- /* Galois field dimension */
- #define PMECC_GF_DIMENSION_13			13
--- 
-2.5.0
+* All patches from platform maintainers by default get merged through the
+  arm-soc tree at http://git.kernel.org/cgit/linux/kernel/git/arm/arm-soc.git
+  Please send patches "To: arm@kernel.org", Cc the relevant mailing lists,
+  and split them up to you submit bug fixes, cleanups, and new features
+  separately (they go into different branches)
+
+* All actively maintained platforms should use CONFIG_ARCH_MULTIPLATFORM.
+  This will take significant work for mach-w90x900, but you don't have to
+  do it all at once. As a rule of thumb, I'd expect that for any work
+  you do on new features in the platform, an at least equal amount of work
+  is spent on getting closer to multiplatform support until you are done.
+  This has worked well for most other platforms, and with the work that
+  Mike has done it is all complete.
+
+* We have basically stopped taking new board files and moved on to
+  using devicetree descriptions of the hardware. It's probably ok to
+  add one more board file for the nuc970 reference design here if you
+  also work on the cleanup and you don't expect to add multiple other
+  machines. Again, Mike's port seems already uses DT.
+
+* The multiplatform work does not require the dts conversion, but it
+  does require converting the clock.c file into a driver for drivers/clk/,
+  and it requires converting the interrupt handling to use an irqchip
+  driver with CONFIG_IRQ_DOMAIN and CONFIG_MULTI_IRQ_HANDLER. These
+  are usually not hard to do if you have the hardware for testing, but
+  it's not easy otherwise.
+
+* I've merged a patch that moves all mach/*.h headers out of the globally
+  visible directory to arch/arm/mach-w90x900/*.h directly unless they are
+  used by some driver outside of mach-w90x900. To complete the multiplatform
+  work, all remaining headers have to be moved as well, either into the
+  driver or into the platform directory.
+
+* I'd suggest you start by looking at n329 code from Mike before you
+  submit the nuc970 support. As I think it gets all of the above right
+  already, it may even be possible to support the nuc970 through the
+  new mach-n329 support, or to share a large portion of the code.
+
+	Arnd
