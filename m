@@ -1,18 +1,17 @@
-Subject: Re: [PATCH] mtd: nuc900_nand: read correct SMISR register
-To: Arnd Bergmann <arnd@arndb.de>
-References: <9019174.GYajdpGP8V@wuerfel> <4251392.DUmfQyrPag@wuerfel>
- <5698A585.7060007@iommu.org> <11388611.tVUcx6RgHM@wuerfel>
-Cc: linux-arm-kernel@lists.infradead.org,
+Received: from mail-lf0-x232.google.com ([2a00:1450:4010:c07::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aK7Bs-0001qZ-SA
+ for linux-mtd@lists.infradead.org; Fri, 15 Jan 2016 16:25:34 +0000
+Received: by mail-lf0-x232.google.com with SMTP id 17so83685010lfz.1
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Jan 2016 08:25:10 -0800 (PST)
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Wan ZongShun <mcuos.com@gmail.com>,
- linux-kernel@vger.kernel.org, Mike Thompson <mpthompson@gmail.com>
-From: Wan Zongshun <vw@iommu.org>
-Message-ID: <569909CD.1000901@iommu.org>
-Date: Fri, 15 Jan 2016 23:01:33 +0800
-MIME-Version: 1.0
-In-Reply-To: <11388611.tVUcx6RgHM@wuerfel>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+ linux-kernel@vger.kernel.org
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Subject: [PATCH] mtd: spi-nor: Add support for S3AN spi-nor devices
+Date: Fri, 15 Jan 2016 17:25:05 +0100
+Message-Id: <1452875105-16963-1-git-send-email-ricardo.ribalda@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,61 +21,252 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Xilinx Spartan-3AN contain an embedded spi device where they keep their
+configuration data and optionally some user data.
 
-> This sounds great, good to hear!
->
-> I see that your last feature contribution to mach-w90x900 was a little over
-> 5 years ago, before we started the current arm-soc process, after that
-> we only had bug fixes and smaller cleanups.
->
-> I don't know to what degree you have been following what the other platforms
-> have done in the meantime, so let me try to get you up to speed:
->
-> * All patches from platform maintainers by default get merged through the
->    arm-soc tree at http://git.kernel.org/cgit/linux/kernel/git/arm/arm-soc.git
->    Please send patches "To: arm@kernel.org", Cc the relevant mailing lists,
->    and split them up to you submit bug fixes, cleanups, and new features
->    separately (they go into different branches)
->
-> * All actively maintained platforms should use CONFIG_ARCH_MULTIPLATFORM.
->    This will take significant work for mach-w90x900, but you don't have to
->    do it all at once. As a rule of thumb, I'd expect that for any work
->    you do on new features in the platform, an at least equal amount of work
->    is spent on getting closer to multiplatform support until you are done.
->    This has worked well for most other platforms, and with the work that
->    Mike has done it is all complete.
->
-> * We have basically stopped taking new board files and moved on to
->    using devicetree descriptions of the hardware. It's probably ok to
->    add one more board file for the nuc970 reference design here if you
->    also work on the cleanup and you don't expect to add multiple other
->    machines. Again, Mike's port seems already uses DT.
->
-> * The multiplatform work does not require the dts conversion, but it
->    does require converting the clock.c file into a driver for drivers/clk/,
->    and it requires converting the interrupt handling to use an irqchip
->    driver with CONFIG_IRQ_DOMAIN and CONFIG_MULTI_IRQ_HANDLER. These
->    are usually not hard to do if you have the hardware for testing, but
->    it's not easy otherwise.
->
-> * I've merged a patch that moves all mach/*.h headers out of the globally
->    visible directory to arch/arm/mach-w90x900/*.h directly unless they are
->    used by some driver outside of mach-w90x900. To complete the multiplatform
->    work, all remaining headers have to be moved as well, either into the
->    driver or into the platform directory.
->
-> * I'd suggest you start by looking at n329 code from Mike before you
->    submit the nuc970 support. As I think it gets all of the above right
->    already, it may even be possible to support the nuc970 through the
->    new mach-n329 support, or to share a large portion of the code.
->
+The protocol of this flash follows most of the spi-nor standard. With
+the following differences:
 
-Arnd,
-I really appreciate your great nice help.
-I will fully consider your proposal and try my best to clean nuc900 plat 
-codes to keep up to date.
+- Page size might not be a power of two.
+- The address calculation.
+- The spi nor commands used.
 
-Wan Zongshun.
+Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+---
+ drivers/mtd/devices/m25p80.c  |  3 ++
+ drivers/mtd/spi-nor/spi-nor.c | 97 +++++++++++++++++++++++++++++++++++++++++--
+ include/linux/mtd/spi-nor.h   | 13 ++++++
+ 3 files changed, 110 insertions(+), 3 deletions(-)
 
-> 	Arnd
->
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index c9c3b7fa3051..869576735978 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -49,6 +49,9 @@ static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
+ 
+ static void m25p_addr2cmd(struct spi_nor *nor, unsigned int addr, u8 *cmd)
+ {
++	if (nor->addr_convert)
++		addr = nor->addr_convert(nor, addr);
++
+ 	/* opcode is in cmd[0] */
+ 	cmd[1] = addr >> (nor->addr_width * 8 -  8);
+ 	cmd[2] = addr >> (nor->addr_width * 8 - 16);
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index ed0c19c558b5..90215f053916 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -69,6 +69,7 @@ struct flash_info {
+ #define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
+ #define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
+ #define	USE_FSR			0x80	/* use flag status register */
++#define	SPI_S3AN		0x100	/* Xililnx S3AN Embedded SPI nor*/
+ };
+ 
+ #define JEDEC_MFR(info)	((info)->id[0])
+@@ -211,6 +212,21 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
+ 		return nor->write_reg(nor, SPINOR_OP_BRWR, nor->cmd_buf, 1);
+ 	}
+ }
++
++static inline int s3an_sr_ready(struct spi_nor *nor)
++{
++	int ret;
++	u8 val;
++
++	ret = nor->read_reg(nor, SPINOR_OP_XRDSR, &val, 1);
++	if (ret < 0) {
++		pr_err("error %d reading SR\n", (int) ret);
++		return ret;
++	}
++
++	return !!(val & XSR_RDY);
++}
++
+ static inline int spi_nor_sr_ready(struct spi_nor *nor)
+ {
+ 	int sr = read_sr(nor);
+@@ -232,7 +248,7 @@ static inline int spi_nor_fsr_ready(struct spi_nor *nor)
+ static int spi_nor_ready(struct spi_nor *nor)
+ {
+ 	int sr, fsr;
+-	sr = spi_nor_sr_ready(nor);
++	sr = nor->sr_ready(nor);
+ 	if (sr < 0)
+ 		return sr;
+ 	fsr = nor->flags & SNOR_F_USE_FSR ? spi_nor_fsr_ready(nor) : 1;
+@@ -328,6 +344,9 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+ 	 * Default implementation, if driver doesn't have a specialized HW
+ 	 * control
+ 	 */
++	if (nor->addr_convert)
++		addr = nor->addr_convert(nor, addr);
++
+ 	for (i = nor->addr_width - 1; i >= 0; i--) {
+ 		buf[i] = addr & 0xff;
+ 		addr >>= 8;
+@@ -362,7 +381,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		return ret;
+ 
+ 	/* whole-chip erase? */
+-	if (len == mtd->size) {
++	if (len == mtd->size && !(nor->flags & SNOR_NO_OP_CHIP_ERASE)) {
+ 		unsigned long timeout;
+ 
+ 		write_enable(nor);
+@@ -680,6 +699,19 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		.addr_width = (_addr_width),				\
+ 		.flags = (_flags),
+ 
++#define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
++		.id = {							\
++			((_jedec_id) >> 16) & 0xff,			\
++			((_jedec_id) >> 8) & 0xff,			\
++			(_jedec_id) & 0xff				\
++			},						\
++		.id_len = 3,						\
++		.sector_size = (8*_page_size),				\
++		.n_sectors = (_n_sectors),				\
++		.page_size = _page_size,				\
++		.addr_width = 3,					\
++		.flags = SPI_NOR_NO_FR | SPI_S3AN,
++
+ /* NOTE: double check command sets and memory organization when you add
+  * more nor chips.  This current list focusses on newer chips, which
+  * have been converging on command sets which including JEDEC ID.
+@@ -877,6 +909,14 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "cat25c17", CAT25_INFO( 256, 8, 32, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+ 	{ "cat25128", CAT25_INFO(2048, 8, 64, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+ 	{ },
++
++	/* Xilinx S3AN Internal Flash */
++	{ "3S50AN", S3AN_INFO(0x1f2200, 64, 264) },
++	{ "3S200AN", S3AN_INFO(0x1f2400, 256, 264) },
++	{ "3S400AN", S3AN_INFO(0x1f2400, 256, 264) },
++	{ "3S700AN", S3AN_INFO(0x1f2500, 512, 264) },
++	{ "3S1400AN", S3AN_INFO(0x1f2600, 512, 528) },
++	{ },
+ };
+ 
+ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+@@ -1007,7 +1047,13 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 	write_enable(nor);
+ 
+-	page_offset = to & (nor->page_size - 1);
++	if (hweight32(nor->page_size) == 1)
++		page_offset = to & (nor->page_size - 1);
++	else {
++		uint64_t aux = to;
++
++		page_offset = do_div(aux, nor->page_size);
++	}
+ 
+ 	/* do all the bytes fit onto one page? */
+ 	if (page_offset + len <= nor->page_size) {
+@@ -1179,6 +1225,43 @@ static int spi_nor_check(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
++static unsigned int s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
++{
++	if (nor->page_size == 264)
++		return (addr / 264) * 512 + (addr % 264);
++
++	return (addr / 528) * 1024 + (addr % 528);
++}
++
++static int s3an_nor_scan(const struct flash_info *info, struct spi_nor *nor)
++{
++	int ret;
++	u8 val;
++
++	ret = nor->read_reg(nor, SPINOR_OP_XRDSR, &val, 1);
++	if (ret < 0) {
++		pr_err("error %d reading SR\n", (int) ret);
++		return ret;
++	}
++
++	nor->erase_opcode = SPINOR_OP_XSE;
++	nor->program_opcode = SPINOR_OP_XPP;
++	nor->read_opcode = SPINOR_OP_READ;
++	nor->sr_ready = s3an_sr_ready;
++	nor->flags |= SNOR_NO_OP_CHIP_ERASE;
++
++	/*Flash in Power of 2 mode*/
++	if (val & XSR_PAGESIZE) {
++		nor->page_size = (nor->page_size == 264) ? 256 : 512;
++		nor->mtd.writebufsize = nor->page_size;
++		nor->mtd.size = 8 * nor->page_size * info->n_sectors;
++		nor->mtd.erasesize = 8 * nor->page_size;
++	} else
++		nor->addr_convert = s3an_addr_convert;
++
++	return 0;
++}
++
+ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ {
+ 	const struct flash_info *info = NULL;
+@@ -1339,6 +1422,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	}
+ 
+ 	nor->program_opcode = SPINOR_OP_PP;
++	nor->sr_ready = spi_nor_sr_ready;
+ 
+ 	if (info->addr_width)
+ 		nor->addr_width = info->addr_width;
+@@ -1379,6 +1463,13 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 
+ 	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
+ 
++	if (info->flags & SPI_S3AN) {
++		ret = s3an_nor_scan(info, nor);
++
++		if (ret)
++			return ret;
++	}
++
+ 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+ 			(long long)mtd->size >> 10);
+ 
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 62356d50815b..8946fa936b46 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -67,6 +67,15 @@
+ #define SPINOR_OP_WRDI		0x04	/* Write disable */
+ #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
+ 
++/* Used for S3AN flashes only */
++#define SPINOR_OP_XSE		0x50	/* Sector erase */
++#define SPINOR_OP_XPP		0x82	/* Page program */
++#define SPINOR_OP_XRDSR		0xd7	/* Read status register */
++
++#define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
++#define XSR_RDY			BIT(7)	/* Ready */
++
++
+ /* Used for Macronix and Winbond flashes. */
+ #define SPINOR_OP_EN4B		0xb7	/* Enter 4-byte mode */
+ #define SPINOR_OP_EX4B		0xe9	/* Exit 4-byte mode */
+@@ -116,6 +125,7 @@ enum spi_nor_ops {
+ 
+ enum spi_nor_option_flags {
+ 	SNOR_F_USE_FSR		= BIT(0),
++	SNOR_NO_OP_CHIP_ERASE	= BIT(1),
+ };
+ 
+ /**
+@@ -170,6 +180,9 @@ struct spi_nor {
+ 	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+ 	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+ 
++	int (*sr_ready)(struct spi_nor *nor);
++	unsigned int (*addr_convert)(struct spi_nor *nor, unsigned int addr);
++
+ 	int (*read)(struct spi_nor *nor, loff_t from,
+ 			size_t len, size_t *retlen, u_char *read_buf);
+ 	void (*write)(struct spi_nor *nor, loff_t to,
+-- 
+2.6.4
