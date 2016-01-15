@@ -1,9 +1,9 @@
 Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aK1jW-0004A8-Lo
- for linux-mtd@lists.infradead.org; Fri, 15 Jan 2016 10:35:56 +0000
-Received: by mail-wm0-x241.google.com with SMTP id f206so2144943wmf.2
- for <linux-mtd@lists.infradead.org>; Fri, 15 Jan 2016 02:35:35 -0800 (PST)
+ id 1aK1jW-0004As-Lm
+ for linux-mtd@lists.infradead.org; Fri, 15 Jan 2016 10:35:58 +0000
+Received: by mail-wm0-x241.google.com with SMTP id f206so2145143wmf.2
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Jan 2016 02:35:37 -0800 (PST)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	devicetree@vger.kernel.org
@@ -11,9 +11,9 @@ Cc: Josh Wu <rainyfeeling@outlook.com>,
  Nicolas Ferre <nicolas.ferre@atmel.com>,
  Yang Wenyou <Wenyou.Yang@atmel.com>,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v2 5/8] dt-bindings: atmel_nand: Reword the documenation
-Date: Fri, 15 Jan 2016 11:34:59 +0100
-Message-Id: <1452854102-6125-6-git-send-email-romain.izard.pro@gmail.com>
+Subject: [PATCH v2 7/8] mtd: atmel_nand: Support 32-bit ECC strength
+Date: Fri, 15 Jan 2016 11:35:01 +0100
+Message-Id: <1452854102-6125-8-git-send-email-romain.izard.pro@gmail.com>
 In-Reply-To: <1452854102-6125-1-git-send-email-romain.izard.pro@gmail.com>
 References: <1452854102-6125-1-git-send-email-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,59 +25,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Do not mention which chips supporting the PMECC controller, as it a
-duplicate of the information in the chips' device trees.
+As the SAMA5D2 controller supports the 32-bit ECC strength, accept it
+as a valid setting when required by the device tree or the NAND
+parameter page.
 
-Use common terms when describing the sub-node for the NAND Flash
-controller.
+Then configure the controller to use this new setting.
 
 Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
----
-v2: new
 
- .../devicetree/bindings/mtd/atmel-nand.txt         | 23 +++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+For the binding:
+Acked-by: Rob Herring <robh@kernel.org>
+---
+v2: Split message rewording and binding rewording into their own patches
+
+ Documentation/devicetree/bindings/mtd/atmel-nand.txt |  3 ++-
+ drivers/mtd/nand/atmel_nand.c                        | 19 +++++++++++++++++--
+ drivers/mtd/nand/atmel_nand_ecc.h                    |  1 +
+ 3 files changed, 20 insertions(+), 3 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-index 89b0db9801b0..e68ab404d912 100644
+index e1887b7d7e53..d53aba98fbc9 100644
 --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
 +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-@@ -21,8 +21,8 @@ Optional properties:
- - nand-ecc-mode : String, operation mode of the NAND ecc mode, soft by default.
-   Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-   "soft_bch".
--- atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware.
--  Only supported by at91sam9x5 or later sam9 product.
-+- atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware,
-+  capable of BCH encoding and decoding, on devices where it is present.
+@@ -27,7 +27,8 @@ Optional properties:
+ - atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware,
+   capable of BCH encoding and decoding, on devices where it is present.
  - atmel,pmecc-cap : error correct capability for Programmable Multibit ECC
-   Controller. Supported values are: 2, 4, 8, 12, 24.
+-  Controller. Supported values are: 2, 4, 8, 12, 24.
++  Controller. Supported values are: 2, 4, 8, 12, 24. If the compatible string
++  is "atmel,sama5d2-nand", 32 is also valid.
  - atmel,pmecc-sector-size : sector size for ECC computation. Supported values
-@@ -32,15 +32,16 @@ Optional properties:
-   sector size 1024. If not specified, driver will build the table in runtime.
- - nand-bus-width : 8 or 16 bus width if not present 8
- - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
--- Nand Flash Controller(NFC) is a slave driver under Atmel nand flash
--  - Required properties:
--    - compatible : "atmel,sama5d3-nfc" or "atmel,sama5d4-nfc".
--    - reg : should specify the address and size used for NFC command registers,
--            NFC registers and NFC Sram. NFC Sram address and size can be absent
--            if don't want to use it.
--    - clocks: phandle to the peripheral clock
--  - Optional properties:
--    - atmel,write-by-sram: boolean to enable NFC write by sram.
-+
-+Nand Flash Controller(NFC) is an optional sub-node
-+Required properties:
-+- compatible : "atmel,sama5d3-nfc" or "atmel,sama5d4-nfc".
-+- reg : should specify the address and size used for NFC command registers,
-+        NFC registers and NFC SRAM. NFC SRAM address and size can be absent
-+        if don't want to use it.
-+- clocks: phandle to the peripheral clock
-+Optional properties:
-+- atmel,write-by-sram: boolean to enable NFC write by SRAM.
+   are: 512, 1024.
+ - atmel,pmecc-lookup-table-offset : includes two offsets of lookup table in ROM
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index f73037a3b51d..3e580eea29a1 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -474,6 +474,7 @@ static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
+  *                8-bits                13-bytes                 14-bytes
+  *               12-bits                20-bytes                 21-bytes
+  *               24-bits                39-bytes                 42-bytes
++ *               32-bits                52-bytes                 56-bytes
+  */
+ static int pmecc_get_ecc_bytes(int cap, int sector_size)
+ {
+@@ -1023,6 +1024,9 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
+ 	case 24:
+ 		val = PMECC_CFG_BCH_ERR24;
+ 		break;
++	case 32:
++		val = PMECC_CFG_BCH_ERR32;
++		break;
+ 	}
  
- Examples:
- nand0: nand@40000000,0 {
+ 	if (host->pmecc_sector_size == 512)
+@@ -1084,6 +1088,9 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
+ 
+ 	/* If device tree doesn't specify, use NAND's minimum ECC parameters */
+ 	if (host->pmecc_corr_cap == 0) {
++		if (*cap > host->caps->pmecc_max_correction)
++			return -EINVAL;
++
+ 		/* use the most fitable ecc bits (the near bigger one ) */
+ 		if (*cap <= 2)
+ 			host->pmecc_corr_cap = 2;
+@@ -1095,6 +1102,8 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
+ 			host->pmecc_corr_cap = 12;
+ 		else if (*cap <= 24)
+ 			host->pmecc_corr_cap = 24;
++		else if (*cap <= 32)
++			host->pmecc_corr_cap = 32;
+ 		else
+ 			return -EINVAL;
+ 	}
+@@ -1553,8 +1562,14 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 	 * them from NAND ONFI parameters.
+ 	 */
+ 	if (of_property_read_u32(np, "atmel,pmecc-cap", &val) == 0) {
+-		if ((val != 2) && (val != 4) && (val != 8) && (val != 12) &&
+-				(val != 24)) {
++		if (val > host->caps->pmecc_max_correction) {
++			dev_err(host->dev,
++				"Required ECC strength too high: %u max %u\n",
++				val, host->caps->pmecc_max_correction);
++			return -EINVAL;
++		}
++		if ((val != 2)  && (val != 4)  && (val != 8) &&
++		    (val != 12) && (val != 24) && (val != 32)) {
+ 			dev_err(host->dev,
+ 				"Required ECC strength not supported: %u\n",
+ 				val);
+diff --git a/drivers/mtd/nand/atmel_nand_ecc.h b/drivers/mtd/nand/atmel_nand_ecc.h
+index ec964c43c932..834d694487bd 100644
+--- a/drivers/mtd/nand/atmel_nand_ecc.h
++++ b/drivers/mtd/nand/atmel_nand_ecc.h
+@@ -43,6 +43,7 @@
+ #define		PMECC_CFG_BCH_ERR8		(2 << 0)
+ #define		PMECC_CFG_BCH_ERR12		(3 << 0)
+ #define		PMECC_CFG_BCH_ERR24		(4 << 0)
++#define		PMECC_CFG_BCH_ERR32		(5 << 0)
+ 
+ #define		PMECC_CFG_SECTOR512		(0 << 4)
+ #define		PMECC_CFG_SECTOR1024		(1 << 4)
 -- 
 2.5.0
