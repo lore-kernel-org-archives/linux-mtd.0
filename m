@@ -1,16 +1,19 @@
-Date: Fri, 15 Jan 2016 10:03:29 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Wan ZongShun <mcuos.com@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nuc900_nand: read correct SMISR register
-Message-ID: <20160115180329.GU109450@google.com>
-References: <9019174.GYajdpGP8V@wuerfel>
+Received: from mail-ob0-x22a.google.com ([2607:f8b0:4003:c01::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aKAlt-0003CY-N8
+ for linux-mtd@lists.infradead.org; Fri, 15 Jan 2016 20:14:58 +0000
+Received: by mail-ob0-x22a.google.com with SMTP id vt7so119407682obb.1
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Jan 2016 12:14:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9019174.GYajdpGP8V@wuerfel>
+In-Reply-To: <CAO3V0Grneh8P053k=1eVucuSkW0oq5qf16-5k3mi6xAtcSY5bA@mail.gmail.com>
+References: <CAO3V0Grneh8P053k=1eVucuSkW0oq5qf16-5k3mi6xAtcSY5bA@mail.gmail.com>
+Date: Fri, 15 Jan 2016 21:14:35 +0100
+Message-ID: <CAFLxGvw7o+omS5qtsjP6SXvXyyg4MbX-paw7KX1=JZZJL0_bSA@mail.gmail.com>
+Subject: Re: UBIFS - read only file system
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Tiago Trota <tiagofgdt@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 13, 2016 at 10:38:08PM +0100, Arnd Bergmann wrote:
-> The nuc900_nand driver has always passed an incorrect register
-> address in its nuc900_check_rb() function, which cannot possibly
-> work, and in some configurations gives us a build warning:
-> 
-> drivers/mtd/nand/nuc900_nand.c: In function 'nuc900_check_rb':
-> drivers/mtd/nand/nuc900_nand.c:27:23: warning: passing argument 1 of '__raw_readl' makes pointer from integer without a cast [-Wint-conversion]
->  #define REG_SMISR     0xac
-> drivers/mtd/nand/nuc900_nand.c:118:20: note: in expansion of macro 'REG_SMISR'
->   val = __raw_readl(REG_SMISR);
-> 
-> This makes sure we actually read from the register rather than
-> from (void *)0x000000ac in user space.
-> 
-> I suspect nobody noticed this before because the nuc900_nand_devready()
-> function never gets called, or nobody uses this driver on an upstream
-> kernel. Possibly even both.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi!
 
-Pushed to l2-mtd.git. Thanks.
+On Fri, Jan 15, 2016 at 6:24 PM, Tiago Trota <tiagofgdt@gmail.com> wrote:
+> I have a system with ARM which is using a NAND flash to store kernel
+> and file system.
+> After a reboot  I get these errors and the UBIFS file system becomes
+> read-only. I can't revert this situation and it was the first time
+> this happened. Is there anyhing I can do to repair it?
+
+The more interesting question is, why could this happen?
+Did you see some other errors before that?
+Is this a recent kernel?
+
+> UBIFS error (pid 454): ubifs_iget: failed to read inode 41930, error -2
+> UBIFS error (pid 454): ubifs_lookup: dead directory entry 'snmpd.pid', error -2
+> UBIFS warning (pid 454): ubifs_ro_mode: switched to read-only mode, error -2
+
+This is:
+        inode = ubifs_iget(dir->i_sb, le64_to_cpu(dent->inum));
+        if (IS_ERR(inode)) {
+                /*
+                 * This should not happen. Probably the file-system needs
+                 * checking.
+                 */
+                err = PTR_ERR(inode);
+                ubifs_err(c, "dead directory entry '%pd', error %d",
+                          dentry, err);
+                ubifs_ro_mode(c, err);
+                goto out;
+        }
+
+Can you share the filesystem?
+
+-- 
+Thanks,
+//richard
