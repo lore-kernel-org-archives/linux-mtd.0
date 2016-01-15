@@ -1,9 +1,9 @@
 Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aK1jQ-00048J-J8
+ id 1aK1jQ-00049U-Ik
  for linux-mtd@lists.infradead.org; Fri, 15 Jan 2016 10:35:49 +0000
-Received: by mail-wm0-x243.google.com with SMTP id l65so2124383wmf.3
- for <linux-mtd@lists.infradead.org>; Fri, 15 Jan 2016 02:35:28 -0800 (PST)
+Received: by mail-wm0-x243.google.com with SMTP id l65so2124671wmf.3
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Jan 2016 02:35:32 -0800 (PST)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	devicetree@vger.kernel.org
@@ -11,9 +11,11 @@ Cc: Josh Wu <rainyfeeling@outlook.com>,
  Nicolas Ferre <nicolas.ferre@atmel.com>,
  Yang Wenyou <Wenyou.Yang@atmel.com>,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v2 0/8] mtd: atmel_nand: Add support for NAND Flash on SAMA5D2
-Date: Fri, 15 Jan 2016 11:34:54 +0100
-Message-Id: <1452854102-6125-1-git-send-email-romain.izard.pro@gmail.com>
+Subject: [PATCH v2 3/8] mtd: atmel_nand: Use of_device_get_match_data
+Date: Fri, 15 Jan 2016 11:34:57 +0100
+Message-Id: <1452854102-6125-4-git-send-email-romain.izard.pro@gmail.com>
+In-Reply-To: <1452854102-6125-1-git-send-email-romain.izard.pro@gmail.com>
+References: <1452854102-6125-1-git-send-email-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND Flash controller for SAMA5D2 has small differences that make it
-impossible to use the existing driver for SAMA5D3. This patchset uses the
-device tree's compatible string to get those differences, and the code is
-slightly modified to handle them.
+Remove the need for forward declaration and the risk for a null pointer
+when accessing the private part of the compatible match table, by using
+the newly introduced of_device_get_match_data function.
 
-Base on v4.4
+Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+---
+v2: new patch
 
-To apply on the Atmel Linux 4.1 branch, support for of_device_get_match_data
-needs to be backported, or the function itself open coded.
+ drivers/mtd/nand/atmel_nand.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Compile tested for sama5_defconfig, and tested on SAMA5D3xek as there is no
-existing SAMA5D2 board with NAND Flash memory (yet).
-
-V2 -> V1:
-- Rebase on v4.4
-- Use of_device_get_match_data
-- Split message cleanup
-- Reword a small part of the atmel_nand device tree binding
-- Use 'caps' for all private data structures
-
-RFC -> V1:
-- Split the support of 32-bit ECC on SAMA5D2 in two commits
-- Fix the missing ECC strength configuration code
-
-Romain Izard (8):
-  mtd: atmel_nand: Do not warn on bitflips
-  mtd: atmel_nand: Simplify error messages
-  mtd: atmel_nand: Use of_device_get_match_data
-  mtd: atmel_nand: Support variable RB_EDGE interrupts
-  dt-bindings: atmel_nand: Reword the documenation
-  mtd: atmel_nand: Support PMECC on SAMA5D2
-  mtd: atmel_nand: Support 32-bit ECC strength
-  ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-
- .../devicetree/bindings/mtd/atmel-nand.txt         | 31 ++++----
- arch/arm/boot/dts/sama5d2.dtsi                     | 38 +++++++++
- drivers/mtd/nand/atmel_nand.c                      | 89 +++++++++++++++++-----
- drivers/mtd/nand/atmel_nand_ecc.h                  |  9 ++-
- drivers/mtd/nand/atmel_nand_nfc.h                  |  3 +-
- 5 files changed, 136 insertions(+), 34 deletions(-)
-
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 6e548fc3ab7b..b5e2e62cd261 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1485,8 +1485,6 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
+ 		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
+ }
+ 
+-static const struct of_device_id atmel_nand_dt_ids[];
+-
+ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 			      struct device_node *np)
+ {
+@@ -1497,7 +1495,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 	enum of_gpio_flags flags = 0;
+ 
+ 	host->caps = (struct atmel_nand_caps *)
+-		of_match_device(atmel_nand_dt_ids, host->dev)->data;
++		of_device_get_match_data(host->dev);
+ 
+ 	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
+ 		if (val >= 32) {
 -- 
 2.5.0
