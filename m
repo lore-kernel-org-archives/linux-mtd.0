@@ -1,26 +1,18 @@
-Received: from nasmtp02.atmel.com ([204.2.163.16] helo=SJOEDG01.corp.atmel.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aJt1o-00034D-Qm
- for linux-mtd@lists.infradead.org; Fri, 15 Jan 2016 01:18:13 +0000
-From: "Yang, Wenyou" <Wenyou.Yang@atmel.com>
-To: Rob Herring <robh@kernel.org>
-CC: Romain Izard <romain.izard.pro@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, Josh Wu <rainyfeeling@outlook.com>, "Ferre,
- Nicolas" <Nicolas.FERRE@atmel.com>
-Subject: RE: [PATCH v1 3/5] mtd: atmel_nand: Support PMECC on SAMA5D2
-Date: Fri, 15 Jan 2016 01:17:28 +0000
-Message-ID: <B256D81BAE5131468A838E5D7A243641D63ECA5E@penmbx01>
-References: <1452702857-2240-1-git-send-email-romain.izard.pro@gmail.com>
- <1452702857-2240-4-git-send-email-romain.izard.pro@gmail.com>
- <20160114011252.GA29778@rob-hp-laptop>
- <B256D81BAE5131468A838E5D7A243641D63EBC55@penmbx01>
- <CAL_JsqL9kbNYrGYeqT7QCsbMneJbPgoXfaHhCvL8S=t97YaCbg@mail.gmail.com>
-In-Reply-To: <CAL_JsqL9kbNYrGYeqT7QCsbMneJbPgoXfaHhCvL8S=t97YaCbg@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Subject: Re: [PATCH] mtd: nuc900_nand: read correct SMISR register
+To: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
+References: <9019174.GYajdpGP8V@wuerfel> <20160114002900.GA54220@google.com>
+ <56976BA9.2040709@iommu.org> <4251392.DUmfQyrPag@wuerfel>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Wan ZongShun <mcuos.com@gmail.com>, linux-kernel@vger.kernel.org,
+ Mike Thompson <mpthompson@gmail.com>
+From: Wan Zongshun <vw@iommu.org>
+Message-ID: <5698A585.7060007@iommu.org>
+Date: Fri, 15 Jan 2016 15:53:41 +0800
 MIME-Version: 1.0
+In-Reply-To: <4251392.DUmfQyrPag@wuerfel>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,63 +22,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUm9iLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFJvYiBIZXJy
-aW5nIFttYWlsdG86cm9iaEBrZXJuZWwub3JnXQ0KPiBTZW50OiAyMDE25bm0MeaciDE05pelIDIx
-OjE1DQo+IFRvOiBZYW5nLCBXZW55b3UgPFdlbnlvdS5ZYW5nQGF0bWVsLmNvbT4NCj4gQ2M6IFJv
-bWFpbiBJemFyZCA8cm9tYWluLml6YXJkLnByb0BnbWFpbC5jb20+OyBsaW51eC1tdGRAbGlzdHMu
-aW5mcmFkZWFkLm9yZzsNCj4gZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IEpvc2ggV3UgPHJh
-aW55ZmVlbGluZ0BvdXRsb29rLmNvbT47IEZlcnJlLA0KPiBOaWNvbGFzIDxOaWNvbGFzLkZFUlJF
-QGF0bWVsLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MSAzLzVdIG10ZDogYXRtZWxfbmFu
-ZDogU3VwcG9ydCBQTUVDQyBvbiBTQU1BNUQyDQo+IA0KPiBPbiBXZWQsIEphbiAxMywgMjAxNiBh
-dCA3OjE3IFBNLCBZYW5nLCBXZW55b3UgPFdlbnlvdS5ZYW5nQGF0bWVsLmNvbT4NCj4gd3JvdGU6
-DQo+ID4NCj4gPg0KPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9tOiBS
-b2IgSGVycmluZyBbbWFpbHRvOnJvYmhAa2VybmVsLm9yZ10NCj4gPj4gU2VudDogMjAxNuW5tDHm
-nIgxNOaXpSA5OjEzDQo+ID4+IFRvOiBSb21haW4gSXphcmQgPHJvbWFpbi5pemFyZC5wcm9AZ21h
-aWwuY29tPg0KPiA+PiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRy
-ZWVAdmdlci5rZXJuZWwub3JnOyBZYW5nLA0KPiA+PiBXZW55b3UgPFdlbnlvdS5ZYW5nQGF0bWVs
-LmNvbT47IEpvc2ggV3UgPHJhaW55ZmVlbGluZ0BvdXRsb29rLmNvbT47DQo+ID4+IEZlcnJlLCBO
-aWNvbGFzIDxOaWNvbGFzLkZFUlJFQGF0bWVsLmNvbT4NCj4gPj4gU3ViamVjdDogUmU6IFtQQVRD
-SCB2MSAzLzVdIG10ZDogYXRtZWxfbmFuZDogU3VwcG9ydCBQTUVDQyBvbiBTQU1BNUQyDQo+ID4+
-DQo+ID4+IE9uIFdlZCwgSmFuIDEzLCAyMDE2IGF0IDA1OjM0OjE1UE0gKzAxMDAsIFJvbWFpbiBJ
-emFyZCB3cm90ZToNCj4gPj4gPiBTdGFydGluZyB3aXRoIHRoZSBTQU1BNUQyLCB0aGVyZSBpcyBh
-IG5ldyByZXZpc2lvbiBvZiB0aGUgQXRtZWwNCj4gPj4gPiBQTUVDQyBjb250cm9sbGVyIHRoYXQg
-Y2FuIGNvcnJlY3QgMzIgYml0cyBpbiBlYWNoIHNlY3Rvci4gVGhpcw0KPiA+PiA+IGNvbnRyb2xs
-ZXIgaXMgbm90IDEwMCUgY29tcGF0aWJsZSB3aXRoIHRoZSBwcmV2aW91cyByZXZpc2lvbiB0aGF0
-DQo+ID4+ID4gY29ycmVjdGVkIGEgbWF4aW11bSBvZiAyNCBiaXRzIGJ5IHNlY3RvciwgYXMgc29t
-ZSByZWdpc3RlciBhZGRyZXNzZXMNCj4gb3ZlcmxhcC4NCj4gPj4gPg0KPiA+PiA+IFVzaW5nIGlu
-Zm9ybWF0aW9uIGZyb20gdGhlIGRldmljZSB0cmVlLCB3ZSBjYW4gY29uZmlndXJlIHRoZSBkcml2
-ZXINCj4gPj4gPiB0byB3b3JrIHdpdGggYm90aCB2ZXJzaW9ucy4NCj4gPj4gPg0KPiA+PiA+IFNp
-Z25lZC1vZmYtYnk6IFJvbWFpbiBJemFyZCA8cm9tYWluLml6YXJkLnByb0BnbWFpbC5jb20+DQo+
-ID4+ID4gLS0tDQo+ID4+ID4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9hdG1lbC1uYW5k
-LnR4dCAgICAgICAgIHwgIDcgKysrKystLQ0KPiA+PiA+ICBkcml2ZXJzL210ZC9uYW5kL2F0bWVs
-X25hbmQuYyAgICAgICAgICAgICAgICAgICAgICB8IDIzDQo+ICsrKysrKysrKysrKysrKysrKysr
-Ky0NCj4gPj4gPiAgZHJpdmVycy9tdGQvbmFuZC9hdG1lbF9uYW5kX2VjYy5oICAgICAgICAgICAg
-ICAgICAgfCAgOCArKysrKystLQ0KPiA+PiA+ICAzIGZpbGVzIGNoYW5nZWQsIDMzIGluc2VydGlv
-bnMoKyksIDUgZGVsZXRpb25zKC0pDQo+ID4+ID4NCj4gPj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9hdG1lbC1uYW5kLnR4dA0KPiA+PiA+IGIv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9hdG1lbC1uYW5kLnR4dA0KPiA+
-PiA+IGluZGV4IDg5YjBkYjk4MDFiMC4uOTA4ODdiNDMwZjAzIDEwMDY0NA0KPiA+PiA+IC0tLSBh
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYXRtZWwtbmFuZC50eHQNCj4g
-Pj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2F0bWVsLW5h
-bmQudHh0DQo+ID4+ID4gQEAgLTEsNyArMSwxMCBAQA0KPiA+PiA+ICBBdG1lbCBOQU5EIGZsYXNo
-DQo+ID4+ID4NCj4gPj4gPiAgUmVxdWlyZWQgcHJvcGVydGllczoNCj4gPj4gPiAtLSBjb21wYXRp
-YmxlIDogc2hvdWxkIGJlICJhdG1lbCxhdDkxcm05MjAwLW5hbmQiIG9yICJhdG1lbCxzYW1hNWQ0
-LW5hbmQiLg0KPiA+PiA+ICstIGNvbXBhdGlibGU6IFRoZSBwb3NzaWJsZSB2YWx1ZXMgYXJlOg0K
-PiA+PiA+ICsgICAiYXRtZWwsYXQ5MXJtOTIwMC1uYW5kIg0KPiA+PiA+ICsgICAiYXRtZWwsc2Ft
-YTVkMi1uYW5kIg0KPiA+PiA+ICsgICAiYXRtZWwsc2FtYTVkNC1uYW5kIg0KPiA+PiA+ICAtIHJl
-ZyA6IHNob3VsZCBzcGVjaWZ5IGxvY2FsYnVzIGFkZHJlc3MgYW5kIHNpemUgdXNlZCBmb3IgdGhl
-IGNoaXAsDQo+ID4+ID4gICAgIGFuZCBoYXJkd2FyZSBFQ0MgY29udHJvbGxlciBpZiBhdmFpbGFi
-bGUuDQo+ID4+ID4gICAgIElmIHRoZSBoYXJkd2FyZSBFQ0MgaXMgUE1FQ0MsIGl0IHNob3VsZCBj
-b250YWluIGFkZHJlc3MgYW5kDQo+ID4+ID4gc2l6ZSBmb3IgQEAgLTIyLDcgKzI1LDcgQEAgT3B0
-aW9uYWwgcHJvcGVydGllczoNCj4gPj4gPiAgICBTdXBwb3J0ZWQgdmFsdWVzIGFyZTogIm5vbmUi
-LCAic29mdCIsICJodyIsICJod19zeW5kcm9tZSIsICJod19vb2JfZmlyc3QiLA0KPiA+PiA+ICAg
-ICJzb2Z0X2JjaCIuDQo+ID4+ID4gIC0gYXRtZWwsaGFzLXBtZWNjIDogYm9vbGVhbiB0byBlbmFi
-bGUgUHJvZ3JhbW1hYmxlIE11bHRpYml0IEVDQw0KPiBoYXJkd2FyZS4NCj4gPj4gPiAtICBPbmx5
-IHN1cHBvcnRlZCBieSBhdDkxc2FtOXg1IG9yIGxhdGVyIHNhbTkgcHJvZHVjdC4NCj4gPj4gPiAr
-ICBTdXBwb3J0ZWQgYnkgQVQ5MVNBTTl4NSBvciBsYXRlciBTQU05IGNoaXBzLCBhbmQgU0FNQTUg
-Y2hpcHMuDQo+ID4+DQo+ID4+IFdoYXQgY29tcGF0aWJsZSBzdHJpbmcgd291bGQgQVQ5MVNBTTl4
-NSBiZT8NCj4gPg0KPiA+ICJhdG1lbCxhdDkxcm05MjAwLW5hbmQiLg0KPiANCj4gQW5zd2VyIHRo
-ZSBxdWVzdGlvbiBpbiB0aGUgYmluZGluZyBkb2MgYnkgc2F5aW5nIHdoaWNoIGNvbXBhdGlibGUg
-c3RyaW5ncyBhDQo+IHByb3BlcnR5IGlzIHZhbGlkIGZvci4NCj4gDQoNClRoYW5rIHlvdSBmb3Ig
-eW91ciBhZHZpY2UuIEkgd2lsbCBrZWVwIGluIG1pbmQgbmV4dCB0aW1lLg0KDQoNCkJlc3QgUmVn
-YXJkcywNCldlbnlvdSBZYW5nDQo=
+
+>>
+>> Actually, Nuvoton should still leverage this upstream w90x900 codes for
+>> their old and new arm chip BSP, but I am not sure their open source plan
+>> for the new chip now, I will check with Nuvoton for this topic, and give
+>> you feedback here, so please hold on its removal.
+>
+> Ok, sure. Thanks for the quick reply!
+>
+> I've had a look around at the current produce lineup, and it seems that
+> nuc900 (w90x900) is still marketed, and as you say is similar to the n329
+> series.
+>
+> There has been one attempt to do a modern port for n329 in 2014 but
+> it never got submitted. See http://comments.gmane.org/gmane.linux.kernel.kernelnewbies/49077
+> and https://github.com/mpthompson/linux/tree/n329
+>
+> The code looks rather nice, so it's a pity that the effort stalled,
+> but it should not be hard for anyone to start out with Mike's tree
+> and forward-port it to 4.5.
+
+I will try to get this board you mentioned and try to cowork Mike to 
+submit it into upstream.
+
+After checking with Nuvoton people, and I will get another board and 
+help them update the latest kernel BSP and also submit new nuc970 chip 
+BSP into upstream.
+
+spec:
+http://www.nuvoton.com/hq/products/microprocessors/arm9-mpus/nuc900-series/?__locale=en
+
+>
+> 	Arnd
+>
