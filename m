@@ -1,29 +1,28 @@
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aKbAV-00040b-N0
- for linux-mtd@lists.infradead.org; Sun, 17 Jan 2016 00:26:08 +0000
-Date: Sat, 16 Jan 2016 18:25:42 -0600
-From: Rob Herring <robh@kernel.org>
-To: Jiancheng Xue <xuejiancheng@huawei.com>
-Cc: pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
- galak@codeaurora.org, dwmw2@infradead.org,
- computersforpeace@gmail.com, shijie.huang@intel.com,
- pengbinquan@huawei.com, han.xu@freescale.com,
- ezequiel@vanguardiasur.com.ar, fabio.estevam@freescale.com,
- manabian@gmail.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- yanhaifeng@hisilicon.com, yanghongwei@hisilicon.com,
- suwenping@hisilicon.com, ml.yang@hisilicon.com,
- gaofei@hisilicon.com, zhangzhenxing@hisilicon.com,
- xuejiancheng@hisilicon.com
-Subject: Re: [PATCH v3] mtd: spi-nor: add hisilicon spi-nor flash controller
- driver
-Message-ID: <20160117002542.GA14111@rob-hp-laptop>
-References: <1452849235-17334-1-git-send-email-xuejiancheng@huawei.com>
+Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aKbRR-0000px-86
+ for linux-mtd@lists.infradead.org; Sun, 17 Jan 2016 00:43:38 +0000
+Received: by mail-lb0-x236.google.com with SMTP id bc4so330535300lbc.2
+ for <linux-mtd@lists.infradead.org>; Sat, 16 Jan 2016 16:43:16 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: "Maciej W. Rozycki" <macro@linux-mips.org>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Fengguang Wu <fengguang.wu@intel.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
+ Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
+ David Woodhouse <dwmw2@infradead.org>, Cyril Bur <cyrilbur@gmail.com>,
+ Ralf Baechle <ralf@linux-mips.org>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Subject: [PATCH] mtd: bcm47xxsflash: use ioremap_cachable() instead of
+ KSEG0ADDR()
+Date: Sun, 17 Jan 2016 01:42:50 +0100
+Message-Id: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1452849235-17334-1-git-send-email-xuejiancheng@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,39 +32,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 15, 2016 at 05:13:55PM +0800, Jiancheng Xue wrote:
-> add hisilicon spi-nor flash controller driver
-> 
-> Signed-off-by: Binquan Peng <pengbinquan@huawei.com>
-> Signed-off-by: Jiancheng Xue <xuejiancheng@huawei.com>
-> ---
-> change log 
-> v3:
-> Added a compatible string "hisilicon,hi3519-sfc".
-> v2:
-> Fixed some compiling warings.  
-> 	
->  .../devicetree/bindings/spi/spi-hisi-sfc.txt       |  26 ++
->  drivers/mtd/spi-nor/Kconfig                        |   6 +
->  drivers/mtd/spi-nor/Makefile                       |   1 +
->  drivers/mtd/spi-nor/hisi-sfc.c                     | 499 +++++++++++++++++++++
->  4 files changed, 532 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt
->  create mode 100644 drivers/mtd/spi-nor/hisi-sfc.c
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt b/Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt
-> new file mode 100644
-> index 0000000..f7d6e22
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt
-> @@ -0,0 +1,26 @@
-> +HiSilicon SPI-NOR Flash Controller
-> +
-> +Required properties:
-> +- compatible : Should be one of
-> +		"hisilicon,hisi-sfc"
-> +		"hisilicon,hi3519-sfc"
+From: Brian Norris <computersforpeace@gmail.com>
 
-This should be both. One is generic and one is specific to an SOC.
+Using KSEG0ADDR makes code highly MIPS dependent and not portable.
+Ideally we should use ioremap_cache which is generic but right now MIPS
+doesn't define it which results in kernel using ioremap instead.
+Once MIPS gets ioremap_cache we will switch to it, it's going to be
+trivial with this patch applied first.
 
-Rob
+KSEG0ADDR was translating 0x1c000000 into 0x9c000000. With
+ioremap_cachable we use MIPS's __ioremap (and remap_area_pages). This
+results in different address (e.g. 0xc0080000) but it still should be
+cached as expected and it was successfully tested with BCM47186B0.
+
+Moreover drivers/bcma/driver_chipcommon_sflash.c nicely sets us up a
+struct resource for access window, but we just aren't using it. Use it
+now and drop duplicated info.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/bcma/driver_chipcommon_sflash.c     |  1 -
+ drivers/mtd/devices/bcm47xxsflash.c         | 28 +++++++++++++++++++++++-----
+ drivers/mtd/devices/bcm47xxsflash.h         |  3 ++-
+ include/linux/bcma/bcma_driver_chipcommon.h |  1 -
+ 4 files changed, 25 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/bcma/driver_chipcommon_sflash.c b/drivers/bcma/driver_chipcommon_sflash.c
+index 7e11ef4..5534cbc 100644
+--- a/drivers/bcma/driver_chipcommon_sflash.c
++++ b/drivers/bcma/driver_chipcommon_sflash.c
+@@ -145,7 +145,6 @@ int bcma_sflash_init(struct bcma_drv_cc *cc)
+ 		return -ENOTSUPP;
+ 	}
+ 
+-	sflash->window = BCMA_SOC_FLASH2;
+ 	sflash->blocksize = e->blocksize;
+ 	sflash->numblocks = e->numblocks;
+ 	sflash->size = sflash->blocksize * sflash->numblocks;
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 347bb83..84f8fae 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -2,6 +2,7 @@
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/delay.h>
++#include <linux/ioport.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/platform_device.h>
+ #include <linux/bcma/bcma.h>
+@@ -109,8 +110,7 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if ((from + len) > mtd->size)
+ 		return -EINVAL;
+ 
+-	memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(b47s->window + from),
+-		      len);
++	memcpy_fromio(buf, b47s->window + from, len);
+ 	*retlen = len;
+ 
+ 	return len;
+@@ -275,15 +275,33 @@ static void bcm47xxsflash_bcma_cc_write(struct bcm47xxsflash *b47s, u16 offset,
+ 
+ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ {
+-	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
++	struct device *dev = &pdev->dev;
++	struct bcma_sflash *sflash = dev_get_platdata(dev);
+ 	struct bcm47xxsflash *b47s;
++	struct resource *res;
+ 	int err;
+ 
+-	b47s = devm_kzalloc(&pdev->dev, sizeof(*b47s), GFP_KERNEL);
++	b47s = devm_kzalloc(dev, sizeof(*b47s), GFP_KERNEL);
+ 	if (!b47s)
+ 		return -ENOMEM;
+ 	sflash->priv = b47s;
+ 
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(dev, "invalid resource\n");
++		return -EINVAL;
++	}
++	if (!devm_request_mem_region(dev, res->start, resource_size(res),
++				     res->name)) {
++		dev_err(dev, "can't request region for resource %pR\n", res);
++		return -EBUSY;
++	}
++	b47s->window = ioremap_cachable(res->start, resource_size(res));
++	if (!b47s->window) {
++		dev_err(dev, "ioremap failed for resource %pR\n", res);
++		return -ENOMEM;
++	}
++
+ 	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
+ 	b47s->cc_read = bcm47xxsflash_bcma_cc_read;
+ 	b47s->cc_write = bcm47xxsflash_bcma_cc_write;
+@@ -297,7 +315,6 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 		break;
+ 	}
+ 
+-	b47s->window = sflash->window;
+ 	b47s->blocksize = sflash->blocksize;
+ 	b47s->numblocks = sflash->numblocks;
+ 	b47s->size = sflash->size;
+@@ -321,6 +338,7 @@ static int bcm47xxsflash_bcma_remove(struct platform_device *pdev)
+ 	struct bcm47xxsflash *b47s = sflash->priv;
+ 
+ 	mtd_device_unregister(&b47s->mtd);
++	iounmap(b47s->window);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
+index fe93daf..1564b62 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.h
++++ b/drivers/mtd/devices/bcm47xxsflash.h
+@@ -65,7 +65,8 @@ struct bcm47xxsflash {
+ 
+ 	enum bcm47xxsflash_type type;
+ 
+-	u32 window;
++	void __iomem *window;
++
+ 	u32 blocksize;
+ 	u16 numblocks;
+ 	u32 size;
+diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
+index db51a6f..03e6fea 100644
+--- a/include/linux/bcma/bcma_driver_chipcommon.h
++++ b/include/linux/bcma/bcma_driver_chipcommon.h
+@@ -583,7 +583,6 @@ struct mtd_info;
+ 
+ struct bcma_sflash {
+ 	bool present;
+-	u32 window;
+ 	u32 blocksize;
+ 	u16 numblocks;
+ 	u32 size;
+-- 
+1.8.4.5
