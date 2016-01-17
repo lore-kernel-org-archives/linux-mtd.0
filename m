@@ -1,28 +1,21 @@
-Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aKbRR-0000px-86
- for linux-mtd@lists.infradead.org; Sun, 17 Jan 2016 00:43:38 +0000
-Received: by mail-lb0-x236.google.com with SMTP id bc4so330535300lbc.2
- for <linux-mtd@lists.infradead.org>; Sat, 16 Jan 2016 16:43:16 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: "Maciej W. Rozycki" <macro@linux-mips.org>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Fengguang Wu <fengguang.wu@intel.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
- Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
- David Woodhouse <dwmw2@infradead.org>, Cyril Bur <cyrilbur@gmail.com>,
- Ralf Baechle <ralf@linux-mips.org>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-Subject: [PATCH] mtd: bcm47xxsflash: use ioremap_cachable() instead of
- KSEG0ADDR()
-Date: Sun, 17 Jan 2016 01:42:50 +0100
-Message-Id: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
+Received: from mail.kernel.org ([198.145.29.136])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aKeUh-0008Sk-Ja
+ for linux-mtd@lists.infradead.org; Sun, 17 Jan 2016 03:59:12 +0000
+Date: Sat, 16 Jan 2016 21:58:47 -0600
+From: Rob Herring <robh@kernel.org>
+To: Romain Izard <romain.izard.pro@gmail.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ Josh Wu <josh.wu@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [RFC PATCH 2/4] mtd: atmel_nand: Support variable RB_EDGE
+ interrupts
+Message-ID: <20160117035847.GA27889@rob-hp-laptop>
+References: <1452609223-14790-1-git-send-email-romain.izard.pro@gmail.com>
+ <1452609223-14790-3-git-send-email-romain.izard.pro@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1452609223-14790-3-git-send-email-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,143 +25,173 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Brian Norris <computersforpeace@gmail.com>
+On Tue, Jan 12, 2016 at 03:33:41PM +0100, Romain Izard wrote:
+> The NFC controller used to accelerate the NAND transfers on SAMA5 chips
+> can use either RB_EDGE0 or RB_EDGE3 as its ready/busy interrupt bit.
+> 
+> Use the controller's compatible string to select the correct bit.
+> 
+> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+> ---
+>  .../devicetree/bindings/mtd/atmel-nand.txt         |  2 +-
 
-Using KSEG0ADDR makes code highly MIPS dependent and not portable.
-Ideally we should use ioremap_cache which is generic but right now MIPS
-doesn't define it which results in kernel using ioremap instead.
-Once MIPS gets ioremap_cache we will switch to it, it's going to be
-trivial with this patch applied first.
+Acked-by: Rob Herring <robh@kernel.org>
 
-KSEG0ADDR was translating 0x1c000000 into 0x9c000000. With
-ioremap_cachable we use MIPS's __ioremap (and remap_area_pages). This
-results in different address (e.g. 0xc0080000) but it still should be
-cached as expected and it was successfully tested with BCM47186B0.
-
-Moreover drivers/bcma/driver_chipcommon_sflash.c nicely sets us up a
-struct resource for access window, but we just aren't using it. Use it
-now and drop duplicated info.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/bcma/driver_chipcommon_sflash.c     |  1 -
- drivers/mtd/devices/bcm47xxsflash.c         | 28 +++++++++++++++++++++++-----
- drivers/mtd/devices/bcm47xxsflash.h         |  3 ++-
- include/linux/bcma/bcma_driver_chipcommon.h |  1 -
- 4 files changed, 25 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/bcma/driver_chipcommon_sflash.c b/drivers/bcma/driver_chipcommon_sflash.c
-index 7e11ef4..5534cbc 100644
---- a/drivers/bcma/driver_chipcommon_sflash.c
-+++ b/drivers/bcma/driver_chipcommon_sflash.c
-@@ -145,7 +145,6 @@ int bcma_sflash_init(struct bcma_drv_cc *cc)
- 		return -ENOTSUPP;
- 	}
- 
--	sflash->window = BCMA_SOC_FLASH2;
- 	sflash->blocksize = e->blocksize;
- 	sflash->numblocks = e->numblocks;
- 	sflash->size = sflash->blocksize * sflash->numblocks;
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index 347bb83..84f8fae 100644
---- a/drivers/mtd/devices/bcm47xxsflash.c
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -2,6 +2,7 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/delay.h>
-+#include <linux/ioport.h>
- #include <linux/mtd/mtd.h>
- #include <linux/platform_device.h>
- #include <linux/bcma/bcma.h>
-@@ -109,8 +110,7 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if ((from + len) > mtd->size)
- 		return -EINVAL;
- 
--	memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(b47s->window + from),
--		      len);
-+	memcpy_fromio(buf, b47s->window + from, len);
- 	*retlen = len;
- 
- 	return len;
-@@ -275,15 +275,33 @@ static void bcm47xxsflash_bcma_cc_write(struct bcm47xxsflash *b47s, u16 offset,
- 
- static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
- {
--	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
-+	struct device *dev = &pdev->dev;
-+	struct bcma_sflash *sflash = dev_get_platdata(dev);
- 	struct bcm47xxsflash *b47s;
-+	struct resource *res;
- 	int err;
- 
--	b47s = devm_kzalloc(&pdev->dev, sizeof(*b47s), GFP_KERNEL);
-+	b47s = devm_kzalloc(dev, sizeof(*b47s), GFP_KERNEL);
- 	if (!b47s)
- 		return -ENOMEM;
- 	sflash->priv = b47s;
- 
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(dev, "invalid resource\n");
-+		return -EINVAL;
-+	}
-+	if (!devm_request_mem_region(dev, res->start, resource_size(res),
-+				     res->name)) {
-+		dev_err(dev, "can't request region for resource %pR\n", res);
-+		return -EBUSY;
-+	}
-+	b47s->window = ioremap_cachable(res->start, resource_size(res));
-+	if (!b47s->window) {
-+		dev_err(dev, "ioremap failed for resource %pR\n", res);
-+		return -ENOMEM;
-+	}
-+
- 	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
- 	b47s->cc_read = bcm47xxsflash_bcma_cc_read;
- 	b47s->cc_write = bcm47xxsflash_bcma_cc_write;
-@@ -297,7 +315,6 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
- 		break;
- 	}
- 
--	b47s->window = sflash->window;
- 	b47s->blocksize = sflash->blocksize;
- 	b47s->numblocks = sflash->numblocks;
- 	b47s->size = sflash->size;
-@@ -321,6 +338,7 @@ static int bcm47xxsflash_bcma_remove(struct platform_device *pdev)
- 	struct bcm47xxsflash *b47s = sflash->priv;
- 
- 	mtd_device_unregister(&b47s->mtd);
-+	iounmap(b47s->window);
- 
- 	return 0;
- }
-diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
-index fe93daf..1564b62 100644
---- a/drivers/mtd/devices/bcm47xxsflash.h
-+++ b/drivers/mtd/devices/bcm47xxsflash.h
-@@ -65,7 +65,8 @@ struct bcm47xxsflash {
- 
- 	enum bcm47xxsflash_type type;
- 
--	u32 window;
-+	void __iomem *window;
-+
- 	u32 blocksize;
- 	u16 numblocks;
- 	u32 size;
-diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
-index db51a6f..03e6fea 100644
---- a/include/linux/bcma/bcma_driver_chipcommon.h
-+++ b/include/linux/bcma/bcma_driver_chipcommon.h
-@@ -583,7 +583,6 @@ struct mtd_info;
- 
- struct bcma_sflash {
- 	bool present;
--	u32 window;
- 	u32 blocksize;
- 	u16 numblocks;
- 	u32 size;
--- 
-1.8.4.5
+>  drivers/mtd/nand/atmel_nand.c                      | 39 +++++++++++++++++-----
+>  drivers/mtd/nand/atmel_nand_nfc.h                  |  5 ++-
+>  3 files changed, 36 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> index 7d4c8eb775a5..89b0db9801b0 100644
+> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> @@ -34,7 +34,7 @@ Optional properties:
+>  - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+>  - Nand Flash Controller(NFC) is a slave driver under Atmel nand flash
+>    - Required properties:
+> -    - compatible : "atmel,sama5d3-nfc".
+> +    - compatible : "atmel,sama5d3-nfc" or "atmel,sama5d4-nfc".
+>      - reg : should specify the address and size used for NFC command registers,
+>              NFC registers and NFC Sram. NFC Sram address and size can be absent
+>              if don't want to use it.
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index 9d71f9e6a8de..e5d7e7e63f49 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -67,6 +67,10 @@ struct atmel_nand_caps {
+>  	bool pmecc_correct_erase_page;
+>  };
+>  
+> +struct atmel_nand_nfc_priv {
+> +	uint32_t rb_edge;
+> +};
+> +
+>  /* oob layout for large page size
+>   * bad block info is on bytes 0 and 1
+>   * the bytes have to be consecutives to avoid
+> @@ -111,6 +115,7 @@ struct atmel_nfc {
+>  	/* Point to the sram bank which include readed data via NFC */
+>  	void			*data_in_sram;
+>  	bool			will_write_sram;
+> +	uint32_t		rb_edge;
+>  };
+>  static struct atmel_nfc	nand_nfc;
+>  
+> @@ -1675,9 +1680,9 @@ static irqreturn_t hsmc_interrupt(int irq, void *dev_id)
+>  		nfc_writel(host->nfc->hsmc_regs, IDR, NFC_SR_XFR_DONE);
+>  		ret = IRQ_HANDLED;
+>  	}
+> -	if (pending & NFC_SR_RB_EDGE) {
+> +	if (pending & host->nfc->rb_edge) {
+>  		complete(&host->nfc->comp_ready);
+> -		nfc_writel(host->nfc->hsmc_regs, IDR, NFC_SR_RB_EDGE);
+> +		nfc_writel(host->nfc->hsmc_regs, IDR, host->nfc->rb_edge);
+>  		ret = IRQ_HANDLED;
+>  	}
+>  	if (pending & NFC_SR_CMD_DONE) {
+> @@ -1695,7 +1700,7 @@ static void nfc_prepare_interrupt(struct atmel_nand_host *host, u32 flag)
+>  	if (flag & NFC_SR_XFR_DONE)
+>  		init_completion(&host->nfc->comp_xfer_done);
+>  
+> -	if (flag & NFC_SR_RB_EDGE)
+> +	if (flag & host->nfc->rb_edge)
+>  		init_completion(&host->nfc->comp_ready);
+>  
+>  	if (flag & NFC_SR_CMD_DONE)
+> @@ -1713,7 +1718,7 @@ static int nfc_wait_interrupt(struct atmel_nand_host *host, u32 flag)
+>  	if (flag & NFC_SR_XFR_DONE)
+>  		comp[index++] = &host->nfc->comp_xfer_done;
+>  
+> -	if (flag & NFC_SR_RB_EDGE)
+> +	if (flag & host->nfc->rb_edge)
+>  		comp[index++] = &host->nfc->comp_ready;
+>  
+>  	if (flag & NFC_SR_CMD_DONE)
+> @@ -1781,7 +1786,7 @@ static int nfc_device_ready(struct mtd_info *mtd)
+>  		dev_err(host->dev, "Lost the interrupt flags: 0x%08x\n",
+>  				mask & status);
+>  
+> -	return status & NFC_SR_RB_EDGE;
+> +	return status & host->nfc->rb_edge;
+>  }
+>  
+>  static void nfc_select_chip(struct mtd_info *mtd, int chip)
+> @@ -1954,8 +1959,8 @@ static void nfc_nand_command(struct mtd_info *mtd, unsigned int command,
+>  		}
+>  		/* fall through */
+>  	default:
+> -		nfc_prepare_interrupt(host, NFC_SR_RB_EDGE);
+> -		nfc_wait_interrupt(host, NFC_SR_RB_EDGE);
+> +		nfc_prepare_interrupt(host, host->nfc->rb_edge);
+> +		nfc_wait_interrupt(host, host->nfc->rb_edge);
+>  	}
+>  }
+>  
+> @@ -2318,9 +2323,12 @@ static const struct of_device_id atmel_nand_dt_ids[] = {
+>  
+>  MODULE_DEVICE_TABLE(of, atmel_nand_dt_ids);
+>  
+> +static const struct of_device_id atmel_nand_nfc_match[];
+> +
+>  static int atmel_nand_nfc_probe(struct platform_device *pdev)
+>  {
+>  	struct atmel_nfc *nfc = &nand_nfc;
+> +	const struct atmel_nand_nfc_priv *priv;
+>  	struct resource *nfc_cmd_regs, *nfc_hsmc_regs, *nfc_sram;
+>  	int ret;
+>  
+> @@ -2352,6 +2360,12 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> +	priv = of_match_device(atmel_nand_nfc_match, &pdev->dev)->data;
+> +	if (NULL == priv)
+> +		return -ENODEV;
+> +
+> +	nfc->rb_edge = priv->rb_edge;
+> +
+>  	nfc_writel(nfc->hsmc_regs, IDR, 0xffffffff);
+>  	nfc_readl(nfc->hsmc_regs, SR);	/* clear the NFC_SR */
+>  
+> @@ -2380,8 +2394,17 @@ static int atmel_nand_nfc_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +static struct atmel_nand_nfc_priv sama5d3_nfc_priv = {
+> +	.rb_edge = NFC_SR_RB_EDGE0,
+> +};
+> +
+> +static struct atmel_nand_nfc_priv sama5d4_nfc_priv = {
+> +	.rb_edge = NFC_SR_RB_EDGE3,
+> +};
+> +
+>  static const struct of_device_id atmel_nand_nfc_match[] = {
+> -	{ .compatible = "atmel,sama5d3-nfc" },
+> +	{ .compatible = "atmel,sama5d3-nfc", .data = &sama5d3_nfc_priv },
+> +	{ .compatible = "atmel,sama5d4-nfc", .data = &sama5d4_nfc_priv },
+>  	{ /* sentinel */ }
+>  };
+>  MODULE_DEVICE_TABLE(of, atmel_nand_nfc_match);
+> diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
+> index 4d5d26221a7e..2cd9c57b1e53 100644
+> --- a/drivers/mtd/nand/atmel_nand_nfc.h
+> +++ b/drivers/mtd/nand/atmel_nand_nfc.h
+> @@ -42,7 +42,10 @@
+>  #define		NFC_SR_UNDEF		(1 << 21)
+>  #define		NFC_SR_AWB		(1 << 22)
+>  #define		NFC_SR_ASE		(1 << 23)
+> -#define		NFC_SR_RB_EDGE		(1 << 24)
+> +#define		NFC_SR_RB_EDGE0		(1 << 24)
+> +#define		NFC_SR_RB_EDGE1		(1 << 25)
+> +#define		NFC_SR_RB_EDGE2		(1 << 26)
+> +#define		NFC_SR_RB_EDGE3		(1 << 27)
+>  
+>  #define ATMEL_HSMC_NFC_IER	0x0c
+>  #define ATMEL_HSMC_NFC_IDR	0x10
+> -- 
+> 2.5.0
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
