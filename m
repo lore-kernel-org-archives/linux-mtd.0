@@ -1,17 +1,17 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aL6Sj-000420-Q1
- for linux-mtd@lists.infradead.org; Mon, 18 Jan 2016 09:51:02 +0000
+ id 1aL6St-00042L-3O
+ for linux-mtd@lists.infradead.org; Mon, 18 Jan 2016 09:51:12 +0000
 From: Archit Taneja <architt@codeaurora.org>
 To: computersforpeace@gmail.com,
 	boris.brezillon@free-electrons.com
 Cc: linux-mtd@lists.infradead.org, cernekee@gmail.com, sboyd@codeaurora.org,
  andy.gross@linaro.org, dehrenberg@google.com,
- linux-arm-msm@vger.kernel.org, Archit Taneja <architt@codeaurora.org>
-Subject: [PATCH v6 1/3] mtd: nand: don't select chip in nand_chip's block_bad
- op
-Date: Mon, 18 Jan 2016 15:20:32 +0530
-Message-Id: <1453110634-25995-2-git-send-email-architt@codeaurora.org>
+ linux-arm-msm@vger.kernel.org, Archit Taneja <architt@codeaurora.org>,
+ devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: [PATCH v6 3/3] dt/bindings: qcom_nandc: Add DT bindings
+Date: Mon, 18 Jan 2016 15:20:34 +0530
+Message-Id: <1453110634-25995-4-git-send-email-architt@codeaurora.org>
 In-Reply-To: <1453110634-25995-1-git-send-email-architt@codeaurora.org>
 References: <1451971501-18160-1-git-send-email-architt@codeaurora.org>
  <1453110634-25995-1-git-send-email-architt@codeaurora.org>
@@ -24,140 +24,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-One of the arguments passed to struct nand_chip's block_bad op is
-'getchip', which, if true, is supposed to get and select the nand device,
-and later unselect and release the device.
+Add DT bindings document for the Qualcomm NAND controller driver.
 
-This op is intended to be replaceable by drivers. The drivers shouldn't
-be responsible for selecting/unselecting chip. Like other ops, the chip
-should already be selected before the block_bad op is called.
+Cc: devicetree@vger.kernel.org
+Cc: Rob Herring <robh@kernel.org>
 
-Remove the getchip argument from the block_bad op and
-nand_block_checkbad. Move the chip selection to nand_block_isbad, since it
-is the only caller to nand_block_checkbad which requires chip selection.
-
-Modify nand_block_bad (the default function for the op) such that it
-doesn't select the chip.
-
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Archit Taneja <architt@codeaurora.org>
 ---
-v6: As suggested by Boris, remove getchip arg altogether and select the
-    chip in nand_block_isbad
+v6:
+  - Update compatible tring to something more specific
+  - Refer to nand.txt for standard properties
+  - In the example, use 'partitions' node to hold the partition subnodes
 
- drivers/mtd/nand/nand_base.c | 41 +++++++++++++++++++----------------------
- include/linux/mtd/nand.h     |  2 +-
- 2 files changed, 20 insertions(+), 23 deletions(-)
+v5:
+- Make changes to incorporate chip select sub nodes (brcmnand taken as
+  reference)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 928081b..1809c20 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -317,9 +317,9 @@ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
-  *
-  * Check, if the block is bad.
-  */
--static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-+static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
- {
--	int page, chipnr, res = 0, i = 0;
-+	int page, res = 0, i = 0;
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	u16 bad;
- 
-@@ -328,15 +328,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
- 
- 	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
- 
--	if (getchip) {
--		chipnr = (int)(ofs >> chip->chip_shift);
--
--		nand_get_device(mtd, FL_READING);
--
--		/* Select the NAND device */
--		chip->select_chip(mtd, chipnr);
--	}
--
- 	do {
- 		if (chip->options & NAND_BUSWIDTH_16) {
- 			chip->cmdfunc(mtd, NAND_CMD_READOOB,
-@@ -361,11 +352,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
- 		i++;
- 	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
- 
--	if (getchip) {
--		chip->select_chip(mtd, -1);
--		nand_release_device(mtd);
--	}
--
- 	return res;
- }
- 
-@@ -503,19 +489,17 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
-  * nand_block_checkbad - [GENERIC] Check if a block is marked bad
-  * @mtd: MTD device structure
-  * @ofs: offset from device start
-- * @getchip: 0, if the chip is already selected
-  * @allowbbt: 1, if its allowed to access the bbt area
-  *
-  * Check, if the block is bad. Either by reading the bad block table or
-  * calling of the scan function.
-  */
--static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
--			       int allowbbt)
-+static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int allowbbt)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 
- 	if (!chip->bbt)
--		return chip->block_bad(mtd, ofs, getchip);
-+		return chip->block_bad(mtd, ofs);
- 
- 	/* Return info from the table */
- 	return nand_isbad_bbt(mtd, ofs, allowbbt);
-@@ -2918,7 +2902,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 	while (len) {
- 		/* Check if we have a bad block, we do not erase bad blocks! */
- 		if (nand_block_checkbad(mtd, ((loff_t) page) <<
--					chip->page_shift, 0, allowbbt)) {
-+					chip->page_shift, allowbbt)) {
- 			pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
- 				    __func__, page);
- 			instr->state = MTD_ERASE_FAILED;
-@@ -3005,7 +2989,20 @@ static void nand_sync(struct mtd_info *mtd)
-  */
- static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
- {
--	return nand_block_checkbad(mtd, offs, 1, 0);
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	int chipnr = (int)(offs >> chip->chip_shift);
-+	int ret;
+v3:
+- Don't use '0x' when specifying nand controller address space
+- Add optional property for on-flash bbt usage
+
+ .../devicetree/bindings/mtd/qcom_nandc.txt         | 86 ++++++++++++++++++++++
+ 1 file changed, 86 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+
+diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+new file mode 100644
+index 0000000..70dd511
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+@@ -0,0 +1,86 @@
++* Qualcomm NAND controller
 +
-+	/* Select the NAND device */
-+	nand_get_device(mtd, FL_READING);
-+	chip->select_chip(mtd, chipnr);
++Required properties:
++- compatible:		should be "qcom,ipq806x-nand"
++- reg:			MMIO address range
++- clocks:		must contain core clock and always on clock
++- clock-names:		must contain "core" for the core clock and "aon" for the
++			always on clock
++- dmas:			DMA specifier, consisting of a phandle to the ADM DMA
++			controller node and the channel number to be used for
++			NAND. Refer to dma.txt and qcom_adm.txt for more details
++- dma-names:		must be "rxtx"
++- qcom,cmd-crci:	must contain the ADM command type CRCI block instance
++			number specified for the NAND controller on the given
++			platform
++- qcom,data-crci:	must contain the ADM data type CRCI block instance
++			number specified for the NAND controller on the given
++			platform
++- #address-cells:	<1> - subnodes give the chip-select number
++- #size-cells:		<0>
 +
-+	ret = nand_block_checkbad(mtd, offs, 0);
++* NAND chip-select
 +
-+	chip->select_chip(mtd, -1);
-+	nand_release_device(mtd);
++Each controller may contain one or more subnodes to represent enabled
++chip-selects which (may) contain NAND flash chips. Their properties are as
++follows.
 +
-+	return ret;
- }
- 
- /**
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 3e92be1..c15818e 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -650,7 +650,7 @@ struct nand_chip {
- 	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
- 	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
- 	void (*select_chip)(struct mtd_info *mtd, int chip);
--	int (*block_bad)(struct mtd_info *mtd, loff_t ofs, int getchip);
-+	int (*block_bad)(struct mtd_info *mtd, loff_t ofs);
- 	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
- 	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
- 	int (*dev_ready)(struct mtd_info *mtd);
++Required properties:
++- compatible:		should contain "qcom,nandcs"
++- reg:			a single integer representing the chip-select
++			number (e.g., 0, 1, 2, etc.)
++- #address-cells:	see partition.txt
++- #size-cells:		see partition.txt
++- nand-ecc-strength:	see nand.txt
++- nand-ecc-step-size:	must be 512. see nand.txt for more details.
++
++Optional properties:
++- nand-bus-width:	see nand.txt
++
++Each nandcs device node may optionally contain a 'partitions' sub-node, which
++further contains sub-nodes describing the flash partition mapping. See
++partition.txt for more detail.
++
++Example:
++
++nand@1ac00000 {
++	compatible = "qcom,ebi2-nandc";
++	reg = <0x1ac00000 0x800>;
++
++	clocks = <&gcc EBI2_CLK>,
++		 <&gcc EBI2_AON_CLK>;
++	clock-names = "core", "aon";
++
++	dmas = <&adm_dma 3>;
++	dma-names = "rxtx";
++	qcom,cmd-crci = <15>;
++	qcom,data-crci = <3>;
++
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	nandcs@0 {
++		compatible = "qcom,nandcs";
++		reg = <0>;
++
++		nand-ecc-strength = <4>;
++		nand-ecc-step-size = <512>;
++		nand-bus-width = <8>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "boot-nand";
++				reg = <0 0x58a0000>;
++			};
++
++			partition@58a0000 {
++				label = "fs-nand";
++				reg = <0x58a0000 0x4000000>;
++			};
++		};
++	};
++};
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 hosted by The Linux Foundation
