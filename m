@@ -1,22 +1,27 @@
-Received: from mail-yk0-x229.google.com ([2607:f8b0:4002:c07::229])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aLddA-0002Kd-Sd
- for linux-mtd@lists.infradead.org; Tue, 19 Jan 2016 21:16:01 +0000
-Received: by mail-yk0-x229.google.com with SMTP id v14so570185880ykd.3
- for <linux-mtd@lists.infradead.org>; Tue, 19 Jan 2016 13:15:40 -0800 (PST)
+ id 1aLeqt-00072T-Cp
+ for linux-mtd@lists.infradead.org; Tue, 19 Jan 2016 22:34:16 +0000
+From: Michael Wang <Michael.Wang@alliedtelesis.co.nz>
+To: Robert Jarzmik <robert.jarzmik@free.fr>, "ezequiel@vanguardiasur.com.ar"
+ <ezequiel@vanguardiasur.com.ar>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>
+Subject: Re: mtd: pxa3xx_nand: issue with command time out
+Date: Tue, 19 Jan 2016 22:33:46 +0000
+Message-ID: <569EB9CA.9080201@alliedtelesis.co.nz>
+References: <5695CEF0.1080100@alliedtelesis.co.nz>
+ <87a8o9ex9r.fsf@belgarion.home> <569827BC.10601@alliedtelesis.co.nz>
+ <874meddqu5.fsf@belgarion.home> <569C4ABD.6080803@alliedtelesis.co.nz>
+ <87wpr6d21b.fsf@belgarion.home>
+In-Reply-To: <87wpr6d21b.fsf@belgarion.home>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-ID: <A751F9391FBBB84A89CBD11916474815@atlnz.lc>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <569E8EEA.6060106@free.fr>
-References: <569E8EEA.6060106@free.fr>
-Date: Tue, 19 Jan 2016 13:15:39 -0800
-Message-ID: <CALupW3A8Wz72enL3Gqpx0=HdOQW0DqQtfVLUQmF=NeyoySn_aQ@mail.gmail.com>
-Subject: Re: Using a generic upstream driver with a custom NAND controller
-From: Steve deRosier <derosier@gmail.com>
-To: Mason <slash.tmp@free.fr>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Sebastian Frias <sf84@laposte.net>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +31,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mason,
-
-
-
-On Tue, Jan 19, 2016 at 11:30 AM, Mason <slash.tmp@free.fr> wrote:
-> Hello,
+On 01/19/2016 10:13 AM, Robert Jarzmik wrote:
+>  From this analysis I think you have something broken in your platform, a=
+ driver
+> taking a lock and blocking the scheduling or something like that. Your ti=
+meouts
+> seem to come from there.
 >
-> Is there some generic driver upstream that I could try to see if
-> it works with this controller?
->
-> Note: the SoC is using these chips:
-> nand: Micron NAND 512MiB 3,3V 8-bit
-> nand: 512MiB, SLC, page size: 2048, OOB size: 64
->
+> If you want to add 2 prinks to validate the theory (and remove my debug l=
+ogs
+> which change the realtime behavior) :
+>   - put one just before the "ret =3D IRQ_WAKE_THREAD";
+>   - put the other on the first line of pxa3xx_nand_irq_thread()
+>   - and calculate the difference.
+Hi Robert,
 
-That's a common chip configuration. Calling out the chip ID
-specifically might also be of some help. What you have to do is enable
-the driver for your NAND controller, the NAND chip isn't that
-relevant. Nearly every mainline SoC or processor would have a driver.
-If it's truly custom, then in my opinion, you're going to need to
-write a driver. Though it should be provided to you by your SoC
-vendor. Shame on them for not building the driver right and
-upstreaming it.
+Thank you very much for your help.
 
-Odds are they didn't create one from scratch however. That would be
-truly strange. Likely they took a stock one and made some custom
-changes. You might be able to ask what it was based on and make
-changes to the base driver.
+I have added the 2 printks, and I think you are right that there is=20
+something
+blocking the scheduling.
 
-While ONFI is a standard way for the flash chips to identify
-themselves to a controller and get it to auto-configure, my
-understanding is you'd still need a driver for the controller itself
-and there's no such thing as a generic controller. Then again I'm
-hardly an expert on flash controllers specifically, I usually only
-work with the Atmel chips which have a well-supported mainline driver.
+[  146.372745] pxa3xx_nand_irq:700 IRQ_WAKE_THREAD status=3D2
+[  146.378106] pxa3xx_nand_irq_thread:643
+[  146.411117] pxa3xx_nand_irq:700 IRQ_WAKE_THREAD status=3D2
+[  146.537124] pxa3xx_nand_irq_thread:643
+       =3D> irq thread was scheduled in 0.126 ms
+[  146.541245] pxa3xx_nand_irq:700 IRQ_WAKE_THREAD status=3D2
+[  146.546603] pxa3xx_nand_irq_thread:643
 
-Good luck!
-- Steve
+I will continue to investigate the cause of this delay.
+
+Thanks,
+Michael=
