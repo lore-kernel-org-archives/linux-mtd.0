@@ -1,25 +1,22 @@
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aLH7S-0000tq-AW
- for linux-mtd@lists.infradead.org; Mon, 18 Jan 2016 21:13:48 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Michael Wang <Michael.Wang@alliedtelesis.co.nz>,
- "ezequiel\@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
-Cc: "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel\@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "computersforpeace\@gmail.com" <computersforpeace@gmail.com>
-Subject: Re: mtd: pxa3xx_nand: issue with command time out
-References: <5695CEF0.1080100@alliedtelesis.co.nz>
- <87a8o9ex9r.fsf@belgarion.home> <569827BC.10601@alliedtelesis.co.nz>
- <874meddqu5.fsf@belgarion.home> <569C4ABD.6080803@alliedtelesis.co.nz>
-Date: Mon, 18 Jan 2016 22:13:20 +0100
-In-Reply-To: <569C4ABD.6080803@alliedtelesis.co.nz> (Michael Wang's message of
- "Mon, 18 Jan 2016 02:15:31 +0000")
-Message-ID: <87wpr6d21b.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: text/plain
+ id 1aLXnf-0000JO-Gb
+ for linux-mtd@lists.infradead.org; Tue, 19 Jan 2016 15:02:28 +0000
+Received: by mail-wm0-x233.google.com with SMTP id 123so95112278wmz.0
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Jan 2016 07:02:06 -0800 (PST)
+From: adamsomerville@gmail.com
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Gabor Juhos <juhosg@openwrt.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Jagan Teki <jteki@openedev.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Furquan Shaikh <furquan@google.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Adam Somerville <adamsomerville@gmail.com>
+Subject: [RFC] spi-nor: fix cross die reads on Micron multi-die devices
+Date: Tue, 19 Jan 2016 15:01:50 +0000
+Message-Id: <1453215710-10803-1-git-send-email-adamsomerville@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,100 +26,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Michael Wang <Michael.Wang@alliedtelesis.co.nz> writes:
+From: Adam Somerville <adamsomerville@gmail.com>
 
-> On 01/17/2016 12:53 PM, Robert Jarzmik wrote:
->> Might a ask another capture, but with :
->>   1) the timestamps this time
->>      (ie. CONFIG_PRINTK_TIME=y) ? This will give me the timing of your failure,
->>      in the dmesg you will provide me.
->>   2) on the first line of drain_fifo(), add a single :
->>      nand_readl(info, NDSR)
->>
->> This will enable me to see how your board behaves on the temporal aspect, as
->> today I only have this, which looks correct AFAICT
-> Hi Robert,
->
-> Thank you for your analysis.
->
-> The attachment file contains the complete debug output with the 
-> additional info you requested.
->
-> I just want to mention that I get slightly different results on my board 
-> with debugs enabled/disabled.
->
-> Without your debugs, the kernel will fail to boot up properly with 
-> command timing out and nand
-> controller in invalid state:
->  >pxa3xx-nand f10d0000.nand: Wait time out!!!
->  >pxa3xx-nand f10d0000.nand: handle_data_pio: invalid state 0
->
-> With your debugs, commands still time out a few times, but 
-> handle_data_pio() doesn't get into
-> invalid state and the kernel boots up fine.
+So as far as I can see there is a bug in the spi-nor driver when
+issuing die boundary crossing reads on Micron multi-die devices.
+Micron N25Q512A, N25Q00AA and probably any other Micron multi-die
+devices do not support a single read request that crosses a die
+boundary.
 
-Ok, I analysed with the timings, and now I'm pretty against the timeout change
-if the analysis below is correct.
+The current behaviour is that the address on the device wraps back
+to the start of the first die, with any data returned beyond the
+boundary being from the start of the first die.
 
-See in the log extract in [1], you have a contiguous sequence of one working
-read followed by one broken read :
- - in the working read, the irq thread is scheduled in 8ms, which is pretty
-   decent.
- - in the broken read, the irq thread is scheduled in 160ms, which is just
-   unbearable.
+To reproduce run:
+(assuming mtd0 is at offset 0 and spans across die boundary)
 
->From this analysis I think you have something broken in your platform, a driver
-taking a lock and blocking the scheduling or something like that. Your timeouts
-seem to come from there.
+mtd_debug read /dev/mtd0 0x1FFFFF0 32 bad
 
-If you want to add 2 prinks to validate the theory (and remove my debug logs
-which change the realtime behavior) :
- - put one just before the "ret = IRQ_WAKE_THREAD";
- - put the other on the first line of pxa3xx_nand_irq_thread()
- - and calculate the difference. 
+and compare to:
 
-Cheers.
+mtd_debug read /dev/mtd0 0x1FFFFF0 16 good1
+mtd_debug read /dev/mtd0 0x2000000 16 good2
 
---
-Robert
+Instead we should split the read request in to 1 read per die.
 
-[1] Extract of your log
-	=> RJK: begin of the working read
-[ 2172.409771] pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():445 nand_writel(0x1, NDECCCTRL)
-[ 2172.417844] pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():465 nand_writel(0xfff, NDSR)
-[ 2172.426084] pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():466 nand_writel(0x0, NDCR)
-[ 2172.434147] pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():467 nand_writel(0xd104b000, NDCR)
-[ 2172.442823] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():658 nand_readl(NDSR): 0x1
-[ 2172.450608] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():708 nand_writel(0x1, NDSR)
-[ 2172.458479] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():722 nand_writel(0x300d3000, NDCB0)
-[ 2172.466961] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():723 nand_writel(0x7fcb0000, NDCB0)
-[ 2172.475442] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():724 nand_writel(0x3, NDCB0)
-[ 2172.483312] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():728 nand_writel(0x820, NDCB0)
-[ 2172.491450] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():658 nand_readl(NDSR): 0x2
-[ 2172.499259] pxa3xx-nand f10d0000.nand: drain_fifo():509 nand_readl(NDSR): 0x2
-	=> RJK: here the irq thread was scheduled in 8ms
-[ 2172.506741] pxa3xx-nand f10d0000.nand: drain_fifo():509 nand_readl(NDSR): 0x2
-[ 2172.514106] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq_thread():638 nand_writel(0x6, NDSR)
-[ 2172.522606] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():658 nand_readl(NDSR): 0x500
-[ 2172.530565] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():708 nand_writel(0x500, NDSR)
-	=> RJK: begin of the broken read
-[ 2172.538671] pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():445 nand_writel(0x1, NDECCCTRL)
-[ 2172.546753] pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():465 nand_writel(0xfff, NDSR)
-[ 2172.554991] pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():466 nand_writel(0x0, NDCR)
-[ 2172.563050] pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():467 nand_writel(0xd104b000, NDCR)
-[ 2172.571722] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():658 nand_readl(NDSR): 0x1
-[ 2172.579508] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():708 nand_writel(0x1, NDSR)
-[ 2172.587379] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():722 nand_writel(0x100d3000, NDCB0)
-[ 2172.595860] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():723 nand_writel(0xfefd0000, NDCB0)
-[ 2172.604341] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():724 nand_writel(0x2, NDCB0)
-[ 2172.612212] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():728 nand_writel(0x820, NDCB0)
-[ 2172.620319] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():658 nand_readl(NDSR): 0x1800
-[ 2172.628367] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():708 nand_writel(0x1800, NDSR)
-[ 2172.636519] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():658 nand_readl(NDSR): 0x2
-[ 2172.798485] pxa3xx-nand f10d0000.nand: drain_fifo():509 nand_readl(NDSR): 0x2
-	=> RJK: here the irq thread was scheduled in 160ms
-[ 2172.805996] pxa3xx-nand f10d0000.nand: drain_fifo():509 nand_readl(NDSR): 0x2
-[ 2172.813379] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq_thread():638 nand_writel(0x6, NDSR)
-[ 2172.821017] pxa3xx-nand f10d0000.nand: Wait time out!!!
-[ 2172.821029] pxa3xx-nand f10d0000.nand: pxa3xx_nand_stop():476 nand_readl(NDCR): 0xc104b000
-[ 2172.821038] pxa3xx-nand f10d0000.nand: pxa3xx_nand_stop():487 nand_writel(0xfff, NDSR)
+Tested on Cyclone 5 SOC with cadence-qspi connected to Micron n25q512ax3
+
+Signed-off-by: Adam Somerville <adamsomerville@gmail.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c |   21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index ed0c19c..68dc20e 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -903,10 +903,19 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+ 	return ERR_PTR(-ENODEV);
+ }
+ 
++/*
++ * Micron multi-die devices do not support cross die boundary
++ * reads. Split the read request in to 1 read per die
++ */
++#define MIN_READ_BOUNDARY 0x2000000
++#define DIST_TO_BOUNDARY(x)	\
++		(MIN_READ_BOUNDARY - ((u32)x & (MIN_READ_BOUNDARY - 1)))
++
+ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 			size_t *retlen, u_char *buf)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	size_t read_len;
+ 	int ret;
+ 
+ 	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
+@@ -915,7 +924,17 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = nor->read(nor, from, len, retlen, buf);
++	do {
++		read_len = min(len, DIST_TO_BOUNDARY(from));
++
++		ret = nor->read(nor, from, read_len, retlen, buf);
++		if (ret)
++			break;
++
++		from += read_len;
++		buf += read_len;
++		len -= read_len;
++	} while (len > 0);
+ 
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
+ 	return ret;
+-- 
+1.7.9.5
