@@ -1,22 +1,18 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-by2on0128.outbound.protection.outlook.com
+ ([207.46.100.128] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aM9b1-0005Hq-WE
- for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 07:23:56 +0000
-Subject: Re: [PATCH v7 3/3] dt/bindings: qcom_nandc: Add DT bindings
-To: computersforpeace@gmail.com, boris.brezillon@free-electrons.com
-References: <1453110634-25995-1-git-send-email-architt@codeaurora.org>
- <1453360399-32029-1-git-send-email-architt@codeaurora.org>
- <1453360399-32029-4-git-send-email-architt@codeaurora.org>
-Cc: linux-mtd@lists.infradead.org, cernekee@gmail.com, sboyd@codeaurora.org,
- andy.gross@linaro.org, dehrenberg@google.com, linux-arm-msm@vger.kernel.org,
- Rob Herring <robh@kernel.org>
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <56A08771.6080603@codeaurora.org>
-Date: Thu, 21 Jan 2016 12:53:29 +0530
+ id 1aMACM-0006qg-SX
+ for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 08:02:31 +0000
+From: Yuan Yao <yao.yuan@freescale.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <han.xu@freescale.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <yao.yuan@nxp.com>
+Subject: mtd: spi-nor: fsl-quadspi: add support for ls1021a
+Date: Thu, 21 Jan 2016 15:53:53 +0800
+Message-ID: <1453362836-44377-1-git-send-email-yao.yuan@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1453360399-32029-4-git-send-email-architt@codeaurora.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,115 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch set is used for add the fsl-quadspi support for ls1021a and
+ls1043a, so remove the patch:
+mtd: spi-nor: fsl-quadspi: extend support for some special requerment.
 
+This patch will be send with anther patch set for add QSPI support on LS2080A.
 
-On 01/21/2016 12:43 PM, Archit Taneja wrote:
-> Add DT bindings document for the Qualcomm NAND controller driver.
+All the new property are document in anther patch set which is already
+send to linux-kernel@vger.kernel.org and devicetree@vger.kernel.org.
+Here is the patch name:
+0001-Documentation-fsl-quadspi-Add-fsl-ls2080a-dspi-compa.patch
+0002-Documentation-fsl-quadspi-Add-fsl-ls2080a-qspi-compa.patch
+0003-dts-ls2080a-update-the-DTS-for-QSPI-and-DSPI-support.patch
+0004-Documentation-fsl-quadspi-Add-optional-properties.patch
 
-Missed on inserting a "Reviewed-by" from Boris here.
+Any extra information you can find them on the patchwork:
+https://patchwork.kernel.org/patch/8078931/
+https://patchwork.kernel.org/patch/8078951/
+https://patchwork.kernel.org/patch/8079091/
+https://patchwork.kernel.org/patch/8078941/
 
->
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Archit Taneja <architt@codeaurora.org>
-> ---
->   .../devicetree/bindings/mtd/qcom_nandc.txt         | 86 ++++++++++++++++++++++
->   1 file changed, 86 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
->
-> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> new file mode 100644
-> index 0000000..70dd511
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-> @@ -0,0 +1,86 @@
-> +* Qualcomm NAND controller
-> +
-> +Required properties:
-> +- compatible:		should be "qcom,ipq806x-nand"
-> +- reg:			MMIO address range
-> +- clocks:		must contain core clock and always on clock
-> +- clock-names:		must contain "core" for the core clock and "aon" for the
-> +			always on clock
-> +- dmas:			DMA specifier, consisting of a phandle to the ADM DMA
-> +			controller node and the channel number to be used for
-> +			NAND. Refer to dma.txt and qcom_adm.txt for more details
-> +- dma-names:		must be "rxtx"
-> +- qcom,cmd-crci:	must contain the ADM command type CRCI block instance
-> +			number specified for the NAND controller on the given
-> +			platform
-> +- qcom,data-crci:	must contain the ADM data type CRCI block instance
-> +			number specified for the NAND controller on the given
-> +			platform
-> +- #address-cells:	<1> - subnodes give the chip-select number
-> +- #size-cells:		<0>
-> +
-> +* NAND chip-select
-> +
-> +Each controller may contain one or more subnodes to represent enabled
-> +chip-selects which (may) contain NAND flash chips. Their properties are as
-> +follows.
-> +
-> +Required properties:
-> +- compatible:		should contain "qcom,nandcs"
-> +- reg:			a single integer representing the chip-select
-> +			number (e.g., 0, 1, 2, etc.)
-> +- #address-cells:	see partition.txt
-> +- #size-cells:		see partition.txt
-> +- nand-ecc-strength:	see nand.txt
-> +- nand-ecc-step-size:	must be 512. see nand.txt for more details.
-> +
-> +Optional properties:
-> +- nand-bus-width:	see nand.txt
-> +
-> +Each nandcs device node may optionally contain a 'partitions' sub-node, which
-> +further contains sub-nodes describing the flash partition mapping. See
-> +partition.txt for more detail.
-> +
-> +Example:
-> +
-> +nand@1ac00000 {
-> +	compatible = "qcom,ebi2-nandc";
-> +	reg = <0x1ac00000 0x800>;
-> +
-> +	clocks = <&gcc EBI2_CLK>,
-> +		 <&gcc EBI2_AON_CLK>;
-> +	clock-names = "core", "aon";
-> +
-> +	dmas = <&adm_dma 3>;
-> +	dma-names = "rxtx";
-> +	qcom,cmd-crci = <15>;
-> +	qcom,data-crci = <3>;
-> +
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	nandcs@0 {
-> +		compatible = "qcom,nandcs";
-> +		reg = <0>;
-> +
-> +		nand-ecc-strength = <4>;
-> +		nand-ecc-step-size = <512>;
-> +		nand-bus-width = <8>;
-> +
-> +		partitions {
-> +			compatible = "fixed-partitions";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +
-> +			partition@0 {
-> +				label = "boot-nand";
-> +				reg = <0 0x58a0000>;
-> +			};
-> +
-> +			partition@58a0000 {
-> +				label = "fs-nand";
-> +				reg = <0x58a0000 0x4000000>;
-> +			};
-> +		};
-> +	};
-> +};
->
+Thanks.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum, hosted by The Linux Foundation
+Yuan Yao.
