@@ -1,20 +1,24 @@
-Received: from mail-bn1bon0115.outbound.protection.outlook.com
- ([157.56.111.115] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMACX-0006ra-TR
- for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 08:02:45 +0000
-From: Yuan Yao <yao.yuan@freescale.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <han.xu@freescale.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <yao.yuan@nxp.com>
-Subject: [PATCH v3 3/3] mtd: spi-nor: fsl-quadspi: add support for layerscape
-Date: Thu, 21 Jan 2016 15:53:56 +0800
-Message-ID: <1453362836-44377-4-git-send-email-yao.yuan@freescale.com>
-In-Reply-To: <1453362836-44377-1-git-send-email-yao.yuan@freescale.com>
-References: <1453362836-44377-1-git-send-email-yao.yuan@freescale.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aMAh4-0002nt-B4
+ for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 08:34:15 +0000
+Date: Thu, 21 Jan 2016 09:33:51 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Archit Taneja <architt@codeaurora.org>
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ cernekee@gmail.com, sboyd@codeaurora.org, andy.gross@linaro.org,
+ dehrenberg@google.com, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v7 1/3] mtd: nand: don't select chip in nand_chip's
+ block_bad op
+Message-ID: <20160121093351.3e80613a@bbrezillon>
+In-Reply-To: <1453360399-32029-2-git-send-email-architt@codeaurora.org>
+References: <1453110634-25995-1-git-send-email-architt@codeaurora.org>
+ <1453360399-32029-1-git-send-email-architt@codeaurora.org>
+ <1453360399-32029-2-git-send-email-architt@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +28,203 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-LS1043a and LS2080A in the Layerscape family also support Freescale Quad
-SPI, make Quad SPI selectable for these hardwares.
+On Thu, 21 Jan 2016 12:43:17 +0530
+Archit Taneja <architt@codeaurora.org> wrote:
 
-Signed-off-by: Yuan Yao <yao.yuan@nxp.com>
----
-Changed in v3:
-No changes.
+> One of the arguments passed to struct nand_chip's block_bad op is
+> 'getchip', which, if true, is supposed to get and select the nand device,
+> and later unselect and release the device.
+> 
+> This op is intended to be replaceable by drivers. The drivers shouldn't
+> be responsible for selecting/unselecting chip. Like other ops, the chip
+> should already be selected before the block_bad op is called.
+> 
+> Remove the getchip argument from the block_bad op and
+> nand_block_checkbad. Move the chip selection to nand_block_isbad, since it
+> is the only caller to nand_block_checkbad which requires chip selection.
+> 
+> Modify nand_block_bad (the default function for the op) such that it
+> doesn't select the chip.
+> 
+> Remove the getchip argument from the bad_block funcs in cafe_nand,
+> diskonchip and docg4 drivers.
+> 
+> Signed-off-by: Archit Taneja <architt@codeaurora.org>
 
-Changed in v2:
-Update my email to <yao.yuan@nxp.com>
----
- drivers/mtd/spi-nor/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks good to me
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index a28c278..6b53deb 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -30,7 +30,7 @@ config MTD_SPI_NOR_USE_4K_SECTORS
- 
- config SPI_FSL_QUADSPI
- 	tristate "Freescale Quad SPI controller"
--	depends on ARCH_MXC || SOC_LS1021A || COMPILE_TEST
-+	depends on ARCH_MXC || SOC_LS1021A || ARCH_LAYERSCAPE || COMPILE_TEST
- 	depends on HAS_IOMEM
- 	help
- 	  This enables support for the Quad SPI controller in master mode.
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Thanks,
+
+Boris
+
+> ---
+> v7: Updated cafe_nand, diskonchip and docg4 drivers.
+> 
+> v6: As suggested by Boris, remove getchip arg altogether and select the
+>     chip in nand_block_isbad
+> 
+>  drivers/mtd/nand/cafe_nand.c  |  2 +-
+>  drivers/mtd/nand/diskonchip.c |  2 +-
+>  drivers/mtd/nand/docg4.c      |  2 +-
+>  drivers/mtd/nand/nand_base.c  | 41 +++++++++++++++++++----------------------
+>  include/linux/mtd/nand.h      |  2 +-
+>  5 files changed, 23 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+> index 00c15e2..68c3048 100644
+> --- a/drivers/mtd/nand/cafe_nand.c
+> +++ b/drivers/mtd/nand/cafe_nand.c
+> @@ -537,7 +537,7 @@ static int cafe_nand_write_page_lowlevel(struct mtd_info *mtd,
+>  	return 0;
+>  }
+>  
+> -static int cafe_nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+> +static int cafe_nand_block_bad(struct mtd_info *mtd, loff_t ofs)
+>  {
+>  	return 0;
+>  }
+> diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+> index a5c0466..dfd6cd5 100644
+> --- a/drivers/mtd/nand/diskonchip.c
+> +++ b/drivers/mtd/nand/diskonchip.c
+> @@ -798,7 +798,7 @@ static int doc200x_dev_ready(struct mtd_info *mtd)
+>  	}
+>  }
+>  
+> -static int doc200x_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+> +static int doc200x_block_bad(struct mtd_info *mtd, loff_t ofs)
+>  {
+>  	/* This is our last resort if we couldn't find or create a BBT.  Just
+>  	   pretend all blocks are good. */
+> diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+> index 95cd139..33a1788 100644
+> --- a/drivers/mtd/nand/docg4.c
+> +++ b/drivers/mtd/nand/docg4.c
+> @@ -1121,7 +1121,7 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
+>  	return ret;
+>  }
+>  
+> -static int docg4_block_neverbad(struct mtd_info *mtd, loff_t ofs, int getchip)
+> +static int docg4_block_neverbad(struct mtd_info *mtd, loff_t ofs)
+>  {
+>  	/* only called when module_param ignore_badblocks is set */
+>  	return 0;
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 928081b..1809c20 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -317,9 +317,9 @@ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
+>   *
+>   * Check, if the block is bad.
+>   */
+> -static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+> +static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
+>  {
+> -	int page, chipnr, res = 0, i = 0;
+> +	int page, res = 0, i = 0;
+>  	struct nand_chip *chip = mtd_to_nand(mtd);
+>  	u16 bad;
+>  
+> @@ -328,15 +328,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+>  
+>  	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+>  
+> -	if (getchip) {
+> -		chipnr = (int)(ofs >> chip->chip_shift);
+> -
+> -		nand_get_device(mtd, FL_READING);
+> -
+> -		/* Select the NAND device */
+> -		chip->select_chip(mtd, chipnr);
+> -	}
+> -
+>  	do {
+>  		if (chip->options & NAND_BUSWIDTH_16) {
+>  			chip->cmdfunc(mtd, NAND_CMD_READOOB,
+> @@ -361,11 +352,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+>  		i++;
+>  	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
+>  
+> -	if (getchip) {
+> -		chip->select_chip(mtd, -1);
+> -		nand_release_device(mtd);
+> -	}
+> -
+>  	return res;
+>  }
+>  
+> @@ -503,19 +489,17 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+>   * nand_block_checkbad - [GENERIC] Check if a block is marked bad
+>   * @mtd: MTD device structure
+>   * @ofs: offset from device start
+> - * @getchip: 0, if the chip is already selected
+>   * @allowbbt: 1, if its allowed to access the bbt area
+>   *
+>   * Check, if the block is bad. Either by reading the bad block table or
+>   * calling of the scan function.
+>   */
+> -static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
+> -			       int allowbbt)
+> +static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int allowbbt)
+>  {
+>  	struct nand_chip *chip = mtd_to_nand(mtd);
+>  
+>  	if (!chip->bbt)
+> -		return chip->block_bad(mtd, ofs, getchip);
+> +		return chip->block_bad(mtd, ofs);
+>  
+>  	/* Return info from the table */
+>  	return nand_isbad_bbt(mtd, ofs, allowbbt);
+> @@ -2918,7 +2902,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+>  	while (len) {
+>  		/* Check if we have a bad block, we do not erase bad blocks! */
+>  		if (nand_block_checkbad(mtd, ((loff_t) page) <<
+> -					chip->page_shift, 0, allowbbt)) {
+> +					chip->page_shift, allowbbt)) {
+>  			pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
+>  				    __func__, page);
+>  			instr->state = MTD_ERASE_FAILED;
+> @@ -3005,7 +2989,20 @@ static void nand_sync(struct mtd_info *mtd)
+>   */
+>  static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
+>  {
+> -	return nand_block_checkbad(mtd, offs, 1, 0);
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	int chipnr = (int)(offs >> chip->chip_shift);
+> +	int ret;
+> +
+> +	/* Select the NAND device */
+> +	nand_get_device(mtd, FL_READING);
+> +	chip->select_chip(mtd, chipnr);
+> +
+> +	ret = nand_block_checkbad(mtd, offs, 0);
+> +
+> +	chip->select_chip(mtd, -1);
+> +	nand_release_device(mtd);
+> +
+> +	return ret;
+>  }
+>  
+>  /**
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 3e92be1..c15818e 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -650,7 +650,7 @@ struct nand_chip {
+>  	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
+>  	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
+>  	void (*select_chip)(struct mtd_info *mtd, int chip);
+> -	int (*block_bad)(struct mtd_info *mtd, loff_t ofs, int getchip);
+> +	int (*block_bad)(struct mtd_info *mtd, loff_t ofs);
+>  	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
+>  	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
+>  	int (*dev_ready)(struct mtd_info *mtd);
+
+
+
 -- 
-2.1.0.27.g96db324
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
