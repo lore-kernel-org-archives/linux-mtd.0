@@ -1,23 +1,28 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMAxw-0003Wk-2F
- for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 08:51:41 +0000
-Date: Thu, 21 Jan 2016 09:51:17 +0100
+ id 1aMB2y-00061P-7Q
+ for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 08:56:53 +0000
+Date: Thu, 21 Jan 2016 09:56:30 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Archit Taneja <architt@codeaurora.org>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- cernekee@gmail.com, sboyd@codeaurora.org, andy.gross@linaro.org,
- dehrenberg@google.com, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v7 2/3] mtd: nand: Qualcomm NAND controller driver
-Message-ID: <20160121095117.3ee2e741@bbrezillon>
-In-Reply-To: <1453360399-32029-3-git-send-email-architt@codeaurora.org>
-References: <1453110634-25995-1-git-send-email-architt@codeaurora.org>
- <1453360399-32029-1-git-send-email-architt@codeaurora.org>
- <1453360399-32029-3-git-send-email-architt@codeaurora.org>
+To: "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= (beanhuo)" <beanhuo@micron.com>
+Cc: Adam Somerville <adamsomerville@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "zajec5@gmail.com" <zajec5@gmail.com>, "jteki@openedev.com"
+ <jteki@openedev.com>, "mika.westerberg@linux.intel.com"
+ <mika.westerberg@linux.intel.com>, "furquan@google.com"
+ <furquan@google.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] spi-nor: fix cross die reads on Micron multi-die devices
+Message-ID: <20160121095630.4df558b3@bbrezillon>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF57B7B@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF57A20@NTXXIAMBX02.xacn.micron.com>
+ <CAJorgdvD9WCsHCoRt05tn-vh_1oqsCZiMehbVKQtynocxX_-wQ@mail.gmail.com>
+ <A765B125120D1346A63912DDE6D8B6310BF57B7B@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,284 +32,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Archit,
+Hi Bean,
 
-On Thu, 21 Jan 2016 12:43:18 +0530
-Archit Taneja <architt@codeaurora.org> wrote:
+On Thu, 21 Jan 2016 01:06:48 +0000
+Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (beanhuo) <beanhuo@micron.com> wrote:
 
-> The Qualcomm NAND controller is found in SoCs like IPQ806x, MSM7xx,
-> MDM9x15 series.
-> 
-> It exists as a sub block inside the IPs EBI2 (External Bus Interface 2)
-> and QPIC (Qualcomm Parallel Interface Controller). These IPs provide a
-> broader interface for external slow peripheral devices such as LCD and
-> NAND/NOR flash memory or SRAM like interfaces.
-> 
-> We add support for the NAND controller found within EBI2. For the SoCs
-> of our interest, we only use the NAND controller within EBI2. Therefore,
-> it's safe for us to assume that the NAND controller is a standalone block
-> within the SoC.
-> 
-> The controller supports 512B, 2kB, 4kB and 8kB page 8-bit and 16-bit NAND
-> flash devices. It contains a HW ECC block that supports BCH ECC (4, 8 and
-> 16 bit correction/step) and RS ECC(4 bit correction/step) that covers main
-> and spare data. The controller contains an internal 512 byte page buffer
-> to which we read/write via DMA. The EBI2 type NAND controller uses ADM DMA
-> for register read/write and data transfers. The controller performs page
-> reads and writes at a codeword/step level of 512 bytes. It can support up
-> to 2 external chips of different configurations.
-> 
-> The driver prepares register read and write configuration descriptors for
-> each codeword, followed by data descriptors to read or write data from the
-> controller's internal buffer. It uses a single ADM DMA channel that we get
-> via dmaengine API. The controller requires 2 ADM CRCIs for command and
-> data flow control. These are passed via DT.
-> 
-> The ecc layout used by the controller is syndrome like, but we can't use
-> the standard syndrome ecc ops because of several reasons. First, the amount
-> of data bytes covered by ecc isn't same in each step. Second, writing to
-> free oob space requires us writing to the entire step in which the oob
-> lies. This forces us to create our own ecc ops.
-> 
-> One more difference is how the controller accesses the bad block marker.
-> The controller ignores reading the marker when ECC is enabled. ECC needs
-> to be explicity disabled to read or write to the bad block marker. The
-> nand_bbt helpers library hence can't access BBMs for the controller.
-> For now, we skip the creation of BBT and populate chip->block_bad and
-> chip->block_markbad helpers instead.
-> 
-> Reviewed-by: Andy Gross <agross@codeaurora.org>
-> Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
-> Signed-off-by: Archit Taneja <architt@codeaurora.org>
+>  Hi, Adam and Boris
+>=20
+> For Micron MT25Q ,MT25T and MT35Q, they does not exist this action even t=
+hey are
+> Multi-die devices. So when the last byte of the die selected is read, the=
+ next byte output
+> is the first byte of next die(not the same die).=20
+> You can check this by extended address register chapter in our datasheet,=
+ there are detail
+> Information.
 
-Sorry, I noticed one more thing in your "bitflips in erased pages"
-handling. Once this is addressed (or explained) you can add my
-
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-> ---
-> v7:
->   - Incorporated missing/new comments by Boris
->   - Cleaned up some strict checkpatch warnings
-> 
-> v6:
->   - Fix up erased page parsing. Use nand_check_erased_ecc_chunk to
->     return corrected bitflips in an erased page.
->   - Fix whitespace issues
->   - Update compatible tring to something more specific
-> 
-> v5:
->   - split chip/controller structs
->   - simplify layout by considering reserved bytes as part of ECC
->   - create ecc layouts automatically
->   - implement block_bad and block_markbad chip ops instead of
->   - read_oob_raw/write_oob_raw ecc ops to access BBMs.
->   - Add NAND_SKIP_BBTSCAN flag until we get badblockbits support.
->   - misc clean ups
->     
-> v4:
->   - Shrink submit_descs
->   - add desc list node at the end of dma_prep_desc
->   - Endianness and warning fixes
->   - Add Stephen's Signed-off since he provided a patch to fix
->     endianness problems
->     
-> v3:
->   - Refactor dma functions for maximum reuse
->   - Use dma_slave_confing on stack
->   - optimize and clean upempty_page_fixup using memchr_inv
->   - ensure portability with dma register reads using le32_* funcs
->   - use NAND_USE_BOUNCE_BUFFER instead of doing it ourselves
->   - fix handling of return values of dmaengine funcs
->   - constify wherever possible
->   - Remove dependency on ADM DMA in Kconfig
->   - Misc fixes and clean ups
->     
-> v2:
->   - Use new BBT flag that allows us to read BBM in raw mode
->   - reduce memcpy-s in the driver
->   - some refactor and clean ups because of above changes
-> 
->  drivers/mtd/nand/Kconfig      |    7 +
->  drivers/mtd/nand/Makefile     |    1 +
->  drivers/mtd/nand/qcom_nandc.c | 2024 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 2032 insertions(+)
->  create mode 100644 drivers/mtd/nand/qcom_nandc.c
-> 
-
-[...]
-
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> new file mode 100644
-> index 0000000..269d388
-> --- /dev/null
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-
-[...]
-
-> +/*
-> + * when using BCH ECC, the HW flags an error in NAND_FLASH_STATUS if it read
-> + * an erased CW, and reports an erased CW in NAND_ERASED_CW_DETECT_STATUS.
-> + *
-> + * when using RS ECC, the HW reports the same erros when reading an erased CW,
-> + * but it notifies that it is an erased CW by placing special characters at
-> + * certain offsets in the buffer.
-> + *
-> + * verify if the page is erased or not, and fix up the page for RS ECC by
-> + * replacing the special characters with 0xff
-> + */
-> +static bool empty_page_fixup(struct qcom_nand_host *host, u8 *data_buf)
-> +{
-> +	struct nand_chip *chip = &host->chip;
-> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> +	struct read_stats *buf;
-> +	int i;
-> +
-> +	buf = (struct read_stats *)nandc->reg_read_buf;
-> +
-> +	for (i = 0; i < ecc->steps; i++, buf++) {
-> +		u32 flash, erased_cw;
-> +		u8 empty1, empty2;
-> +
-> +		flash = le32_to_cpu(buf->flash);
-> +		erased_cw = le32_to_cpu(buf->erased_cw);
-> +
-> +		/*
-> +		 * an erased page flags an error in NAND_FLASH_STATUS, if there
-> +		 * isn't any error, bail out early and report a non-erased
-> +		 * page
-> +		 */
-> +		if (!(flash & FS_OP_ERR))
-> +			break;
-> +
-> +		/*
-> +		 * if BCH is enabled, HW will take care of detecting erased
-> +		 * pages
-> +		 */
-> +		if (host->bch_enabled) {
-> +			/* bail out if we didn't detect an erased CW */
-> +			if ((erased_cw & ERASED_CW) != ERASED_CW)
-> +				break;
-> +		} else {
-> +			/*
-> +			 * if RS ECC is enabled, check if the CW is erased by
-> +			 * looking for 0x54s at offsets 3 and 175
-> +			 */
-> +			empty1 = data_buf[3 + i * host->cw_data];
-> +			empty2 = data_buf[175 + i * host->cw_data];
-> +
-> +			/* bail out if the CW isn't erased */
-> +			if (!(empty1 == 0x54 && empty2 == 0xff) &&
-> +			    !(empty1 == 0xff && empty2 == 0x54))
-> +				break;
-> +		}
-> +	}
-> +
-> +	if (i < ecc->steps)
-> +		return false;
-> +
-> +	if (!host->bch_enabled) {
-> +		/*
-> +		 * fix up the buffer by replacing the magic offsets with
-> +		 * 0xff
-> +		 */
-> +		for (i = 0; i < ecc->steps; i++) {
-> +			data_buf[3 + i * host->cw_data] = 0xff;
-> +			data_buf[175 + i * host->cw_data] = 0xff;
-> +		}
-> +	}
-> +
-> +	return true;
-> +}
-> +
-> +/*
-> + * reads back status registers set by the controller to notify page read
-> + * errors. this is equivalent to what 'ecc->correct()' would do.
-> + */
-> +static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
-> +			     u8 *oob_buf, bool erased_page)
-> +{
-> +	struct nand_chip *chip = &host->chip;
-> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> +	unsigned int max_bitflips = 0;
-> +	struct read_stats *buf;
-> +	int i;
-> +
-> +	buf = (struct read_stats *)nandc->reg_read_buf;
-> +
-> +	for (i = 0; i < ecc->steps; i++, buf++) {
-> +		u32 flash, buffer;
-> +		int data_len, oob_len;
-> +
-> +		if (i == (ecc->steps - 1)) {
-> +			data_len = ecc->size - ((ecc->steps - 1) << 2);
-> +			oob_len = ecc->steps << 2;
-> +		} else {
-> +			data_len = host->cw_data;
-> +			oob_len = 0;
-> +		}
-> +
-> +		flash = le32_to_cpu(buf->flash);
-> +		buffer = le32_to_cpu(buf->buffer);
-> +
-> +		if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
-> +			if (erased_page) {
-> +				int ret, ecclen, extraooblen;
-> +				void *eccbuf;
-> +
-> +				eccbuf = oob_buf ? oob_buf + oob_len : NULL;
-> +				ecclen = oob_buf ? host->ecc_bytes_hw : 0;
-> +				extraooblen = oob_buf ? oob_len : 0;
-> +
-> +				ret = nand_check_erased_ecc_chunk(data_buf,
-> +					data_len, eccbuf, ecclen, oob_buf,
-> +					extraooblen, ecc->strength);
-
-IIUC, the erased_page info is returned by empty_page_fixup() and is
-only set if the page is detected as empty (filled with ff).
-If that's the case, then you don't have to use
-nand_check_erased_ecc_chunk() to check it again...
-
-> +				if (ret < 0) {
-> +					mtd->ecc_stats.failed++;
-> +				} else {
-> +					mtd->ecc_stats.corrected += ret;
-> +					max_bitflips =
-> +						max_t(unsigned int, max_bitflips, ret);
-> +				}
-> +			} else {
-> +				if (buffer & BS_UNCORRECTABLE_BIT) {
-
-... here is where you should check if what was detected as
-uncorrectable errors is not in fact some bitflips in an erased page.
-
-> +					mtd->ecc_stats.failed++;
-> +				} else {
-> +					unsigned int stat;
-> +
-> +					stat = buffer & BS_CORRECTABLE_ERR_MSK;
-> +					mtd->ecc_stats.corrected += stat;
-> +					max_bitflips = max(max_bitflips, stat);
-> +				}
-> +			}
-> +		}
-> +
-> +		data_buf += data_len;
-> +		if (oob_buf)
-> +			oob_buf += oob_len + ecc->bytes;
-> +	}
-> +
-> +	return max_bitflips;
-> +}
+I never said you were wrong ;), I just asked if it was relevant to
+differentiate the two cases. IOW, would the implementation proposed by
+Adam work correctly on all chips? And what is the real performance
+penalty for MT25Q ,MT25T and MT35Q if we decide to split the read
+command in several reads to handle this cross die case?
 
 Best Regards,
 
 Boris
 
--- 
+--=20
 Boris Brezillon, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
