@@ -1,28 +1,33 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMB2y-00061P-7Q
- for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 08:56:53 +0000
-Date: Thu, 21 Jan 2016 09:56:30 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= (beanhuo)" <beanhuo@micron.com>
-Cc: Adam Somerville <adamsomerville@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aMBYY-0005nI-Gc
+ for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 09:29:31 +0000
+Subject: Re: Block device emulation on top of ubi volumes with read/write
+ support
+To: Charles Godson <cestgodson@gmail.com>
+References: <CADC-h+GSekez10TVYV3pJsiD=YPY=WawG5cN_ZrJJb0zP7Xu=g@mail.gmail.com>
+ <CAAEAJfAM9XEV2oU7PngdpPjryGttQw8Zj+uqhJ40mZEKvTX59A@mail.gmail.com>
+ <56A00CB2.3050505@nod.at>
+ <CADC-h+H=qwue4Ubr7kKOxjweH_0npTwepvnemcnEKAtb3sMPcA@mail.gmail.com>
+ <CAAK6Zt1UCYizAeGZ9E5wtzaEChRfAOVDdQyUzBu=gCx+2mvYaQ@mail.gmail.com>
+ <56A02274.3010705@nod.at>
+ <CAAK6Zt086TbjFbK70A6nvn=vf0=m3ev3+_2YYQ-c6CyW0oAhag@mail.gmail.com>
+ <56A024A1.3020201@nod.at>
+ <CADC-h+G0GGuUYBM771YfiEc6Vaucj0BUOAk=W9Uk_DLZRqtz-g@mail.gmail.com>
+ <56A027BF.8000804@nod.at>
+ <CADC-h+HHENRPJi=W4DyOMrmbPeCqu34Jsgux+X7jbHA+B51e_g@mail.gmail.com>
+Cc: Daniel Ehrenberg <dehrenberg@google.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "zajec5@gmail.com" <zajec5@gmail.com>, "jteki@openedev.com"
- <jteki@openedev.com>, "mika.westerberg@linux.intel.com"
- <mika.westerberg@linux.intel.com>, "furquan@google.com"
- <furquan@google.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] spi-nor: fix cross die reads on Micron multi-die devices
-Message-ID: <20160121095630.4df558b3@bbrezillon>
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF57B7B@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF57A20@NTXXIAMBX02.xacn.micron.com>
- <CAJorgdvD9WCsHCoRt05tn-vh_1oqsCZiMehbVKQtynocxX_-wQ@mail.gmail.com>
- <A765B125120D1346A63912DDE6D8B6310BF57B7B@NTXXIAMBX02.xacn.micron.com>
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Willy Tarreau <w@1wt.eu>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56A0A4DF.3020504@nod.at>
+Date: Thu, 21 Jan 2016 10:29:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CADC-h+HHENRPJi=W4DyOMrmbPeCqu34Jsgux+X7jbHA+B51e_g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,33 +37,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bean,
+Am 21.01.2016 um 01:51 schrieb Charles Godson:
+> On Wed, Jan 20, 2016 at 4:35 PM, Richard Weinberger <richard@nod.at> wrote:
+>>
+>> What is your fear?
+>> If your NAND is loosing random blocks you are in trouble anyways.
+>>
+>> Thanks,
+>> //richard
+> More along the lines of having software blow away first 2K (or
+> similar) of my mtd partition (sw bug). I think I would lose everything
+> in that case, right? When I have multiple mtd partitions, I would lose
+> only one of my file systems. However, all of this probably comes down
+> to having backup images, if high availability and reliability is
+> required.
 
-On Thu, 21 Jan 2016 01:06:48 +0000
-Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (beanhuo) <beanhuo@micron.com> wrote:
+If your software kills random blocks you're better with multiple
+partitions due to backups...But as the kernel is software too... ;)
 
->  Hi, Adam and Boris
->=20
-> For Micron MT25Q ,MT25T and MT35Q, they does not exist this action even t=
-hey are
-> Multi-die devices. So when the last byte of the die selected is read, the=
- next byte output
-> is the first byte of next die(not the same die).=20
-> You can check this by extended address register chapter in our datasheet,=
- there are detail
-> Information.
+Strictly speaking you'd not lose everything after say 2k are gone.
+But have to recover the data manually. :)
 
-I never said you were wrong ;), I just asked if it was relevant to
-differentiate the two cases. IOW, would the implementation proposed by
-Adam work correctly on all chips? And what is the real performance
-penalty for MT25Q ,MT25T and MT35Q if we decide to split the read
-command in several reads to handle this cross die case?
-
-Best Regards,
-
-Boris
-
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+//richard
