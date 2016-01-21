@@ -1,27 +1,18 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aM3iz-0002GI-B0
- for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 01:07:45 +0000
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Adam Somerville <adamsomerville@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "zajec5@gmail.com" <zajec5@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, "jteki@openedev.com"
- <jteki@openedev.com>, "mika.westerberg@linux.intel.com"
- <mika.westerberg@linux.intel.com>,
- "furquan@google.com" <furquan@google.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] spi-nor: fix cross die reads on Micron multi-die devices
-Date: Thu, 21 Jan 2016 01:06:48 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF57B7B@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF57A20@NTXXIAMBX02.xacn.micron.com>
- <CAJorgdvD9WCsHCoRt05tn-vh_1oqsCZiMehbVKQtynocxX_-wQ@mail.gmail.com>
-In-Reply-To: <CAJorgdvD9WCsHCoRt05tn-vh_1oqsCZiMehbVKQtynocxX_-wQ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ id 1aM9RD-0000nx-Br
+ for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 07:13:48 +0000
+From: Archit Taneja <architt@codeaurora.org>
+To: computersforpeace@gmail.com,
+	boris.brezillon@free-electrons.com
+Cc: linux-mtd@lists.infradead.org, cernekee@gmail.com, sboyd@codeaurora.org,
+ andy.gross@linaro.org, dehrenberg@google.com,
+ linux-arm-msm@vger.kernel.org, Archit Taneja <architt@codeaurora.org>
+Subject: [PATCH v7 0/3] mtd: Qualcomm NAND controller driver
+Date: Thu, 21 Jan 2016 12:43:16 +0530
+Message-Id: <1453360399-32029-1-git-send-email-architt@codeaurora.org>
+In-Reply-To: <1453110634-25995-1-git-send-email-architt@codeaurora.org>
+References: <1453110634-25995-1-git-send-email-architt@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,32 +22,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-IEhpLCBBZGFtIGFuZCBCb3Jpcw0KDQpGb3IgTWljcm9uIE1UMjVRICxNVDI1VCBhbmQgTVQzNVEs
-IHRoZXkgZG9lcyBub3QgZXhpc3QgdGhpcyBhY3Rpb24gZXZlbiB0aGV5IGFyZQ0KTXVsdGktZGll
-IGRldmljZXMuIFNvIHdoZW4gdGhlIGxhc3QgYnl0ZSBvZiB0aGUgZGllIHNlbGVjdGVkIGlzIHJl
-YWQsIHRoZSBuZXh0IGJ5dGUgb3V0cHV0DQppcyB0aGUgZmlyc3QgYnl0ZSBvZiBuZXh0IGRpZShu
-b3QgdGhlIHNhbWUgZGllKS4gDQpZb3UgY2FuIGNoZWNrIHRoaXMgYnkgZXh0ZW5kZWQgYWRkcmVz
-cyByZWdpc3RlciBjaGFwdGVyIGluIG91ciBkYXRhc2hlZXQsIHRoZXJlIGFyZSBkZXRhaWwNCklu
-Zm9ybWF0aW9uLg0KDQo+IEhpLA0KPiANCj4gVGhhbmtzIGZvciBsb29raW5nIGF0IHRoZSB0aGlz
-Lg0KPiANCj4gSSBjYW4gcmV3cml0ZSBzbyBpdCBvbmx5IGFmZmVjdHMgTjI1USBkZXZpY2VzLCBJ
-IGhvcGVkIGEgc2ltcGxlcg0KPiBpbXBsZW1lbnRhdGlvbiB3b3VsZCBvdXR3ZWlnaCB0aGUgc21h
-bGwgb3ZlcmhlYWQgaW5jdXJyZWQgb24gbm9uIGFmZmVjdGVkDQo+IGRldmljZXMuDQo+IA0KPiBE
-byB5b3Uga25vdyBpZiB0aGVyZSBhcmUgYW55IHBsYW5zIGZvciBNVDI1KiBiYXNlZCBtdWx0aS1k
-aWUgZGV2aWNlcyBhbmQgaWYNCj4gdGhleSB3b3VsZCBoYXZlIHRoZSBzYW1lIGlzc3VlPw0KPiAN
-Cj4gVGhhbmtzLA0KPiANCj4gQWRhbQ0KPiANCj4gT24gV2VkLCBKYW4gMjAsIDIwMTYgYXQgMjo0
-NSBBTSwgQmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ0KPiA8YmVhbmh1b0BtaWNyb24uY29t
-PiB3cm90ZToNCj4gPiBIaSwgQWRhbQ0KPiA+IFRoaXMgaXMgdHJ1ZSwgYnV0IHRoaXMgb25seSBl
-eGlzdCBpbiBNaWNyb24gNjVubSBzcGkgbm9yIE4yNVEuDQo+ID4gRm9yIG91ciA0NW5tIHNwaSBu
-b3IgTVQyNVEgLCBNVDI1VEwgYW5kIE1UMjVRLCBkb2VzIGV4aXN0IHRoaXMNCj4gcXVlc3Rpb24u
-DQo+ID4gU28gSSB0aGluaywgY2FuIHlvdSBkaWZmZXJlbnRpYXRlIGJldHdlZW4gdGhlc2UgaW4g
-eW91ciBwYXRjaD8NCj4gPg0KPiA+PiBGcm9tOiBBZGFtIFNvbWVydmlsbGUgPGFkYW1zb21lcnZp
-bGxlQGdtYWlsLmNvbT4NCj4gPj4NCj4gPj4gU28gYXMgZmFyIGFzIEkgY2FuIHNlZSB0aGVyZSBp
-cyBhIGJ1ZyBpbiB0aGUgc3BpLW5vciBkcml2ZXIgd2hlbg0KPiA+PiBpc3N1aW5nIGRpZSBib3Vu
-ZGFyeSBjcm9zc2luZyByZWFkcyBvbiBNaWNyb24gbXVsdGktZGllIGRldmljZXMuDQo+ID4+IE1p
-Y3JvbiBOMjVRNTEyQSwgTjI1UTAwQUEgYW5kIHByb2JhYmx5IGFueSBvdGhlciBNaWNyb24gbXVs
-dGktZGllDQo+ID4+IGRldmljZXMgZG8gbm90IHN1cHBvcnQgYSBzaW5nbGUgcmVhZCByZXF1ZXN0
-IHRoYXQgY3Jvc3NlcyBhIGRpZSBib3VuZGFyeS4NCj4gPj4NCj4gPj4gVGhlIGN1cnJlbnQgYmVo
-YXZpb3VyIGlzIHRoYXQgdGhlIGFkZHJlc3Mgb24gdGhlIGRldmljZSB3cmFwcyBiYWNrIHRvDQo+
-ID4+IHRoZSBzdGFydCBvZiB0aGUgZmlyc3QgZGllLCB3aXRoIGFueSBkYXRhIHJldHVybmVkIGJl
-eW9uZCB0aGUNCj4gPj4gYm91bmRhcnkgYmVpbmcgZnJvbSB0aGUgc3RhcnQgb2YgdGhlIGZpcnN0
-IGRpZS4NCj4gPj4NCg==
+Add support for the NAND controller driver for SoC's that contain EBI2.
+For now, the only SoC upstream that has EBI2 is IPQ806x.
+
+The previous version added a BBT flag that allowed BBMs to be accessed
+in raw mode. Adding a flag isn't the right way to fix it, and the
+proposed fix is to add badblockbits support, and make sure all drivers
+switch to accessing BBM in raw mode. For now, skip nand_bbt usage, and
+implement our own versions of chip->block_bad and chip->mark_bad.
+
+The first patch in the series contains a nand_base clean up which the
+driver will utilize.
+
+Based over l2-mtd.git
+
+The patchset requires the v6 ADM dmaengine patches posted by Andy:
+
+https://lkml.org/lkml/2015/3/17/19
+
+v7:
+- Incorporated missed suggestions from Boris.
+- Updated cafe_nand, docg4, diskonchip drivers
+- Some indentation fixes found by strict checkpatch checking
+
+v6:
+- Fix erased page parsing as suggested by Boris.
+- Change compatible string to something more legible.
+- Whitespace fixes.
+
+v5:
+- Skip creation of BBT as in v1. Will bring this back after BBMs are
+  read/written in raw mode (using badblockbits support).
+- Incorporated misc fixes/suggestions by Boris.
+- Dropped the DT patches for now, since ADM DMA support isn't merged yet.
+
+v4:
+- Some more fixes. Mentioned in individual patch
+
+v3:
+- Various fixes and clean ups suggested by Stephen Boyd.
+
+v2:
+- Added a new BBT flag that allows us to read BBM in raw mode
+- reduce memcpy-s in the driver
+- some refactor and clean ups because of above changes
+
+v1:
+- original series:
+  https://lkml.org/lkml/2015/1/16/317
+
+
+Archit Taneja (3):
+  mtd: nand: don't select chip in nand_chip's block_bad op
+  mtd: nand: Qualcomm NAND controller driver
+  dt/bindings: qcom_nandc: Add DT bindings
+
+ .../devicetree/bindings/mtd/qcom_nandc.txt         |   86 +
+ drivers/mtd/nand/Kconfig                           |    7 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/cafe_nand.c                       |    2 +-
+ drivers/mtd/nand/diskonchip.c                      |    2 +-
+ drivers/mtd/nand/docg4.c                           |    2 +-
+ drivers/mtd/nand/nand_base.c                       |   41 +-
+ drivers/mtd/nand/qcom_nandc.c                      | 2024 ++++++++++++++++++++
+ include/linux/mtd/nand.h                           |    2 +-
+ 9 files changed, 2141 insertions(+), 26 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+ create mode 100644 drivers/mtd/nand/qcom_nandc.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+hosted by The Linux Foundation
