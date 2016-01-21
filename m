@@ -1,16 +1,18 @@
-Received: from mail-by2on0128.outbound.protection.outlook.com
- ([207.46.100.128] helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-bn1bon0115.outbound.protection.outlook.com
+ ([157.56.111.115] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMACM-0006qg-SX
- for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 08:02:31 +0000
+ id 1aMACS-0006ra-8H
+ for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 08:02:41 +0000
 From: Yuan Yao <yao.yuan@freescale.com>
 To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <han.xu@freescale.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
  <yao.yuan@nxp.com>
-Subject: mtd: spi-nor: fsl-quadspi: add support for ls1021a
-Date: Thu, 21 Jan 2016 15:53:53 +0800
-Message-ID: <1453362836-44377-1-git-send-email-yao.yuan@freescale.com>
+Subject: [PATCH v3 2/3] mtd: spi-nor: fsl-quadspi: add support for ls1021a
+Date: Thu, 21 Jan 2016 15:53:55 +0800
+Message-ID: <1453362836-44377-3-git-send-email-yao.yuan@freescale.com>
+In-Reply-To: <1453362836-44377-1-git-send-email-yao.yuan@freescale.com>
+References: <1453362836-44377-1-git-send-email-yao.yuan@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,26 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch set is used for add the fsl-quadspi support for ls1021a and
-ls1043a, so remove the patch:
-mtd: spi-nor: fsl-quadspi: extend support for some special requerment.
+LS1021a also support Freescale Quad SPI controller.
+Add fsl-quadspi support for ls1021a chip and make SPI_FSL_QUADSPI
+selectable for LS1021A SOC hardwares.
 
-This patch will be send with anther patch set for add QSPI support on LS2080A.
+Signed-off-by: Yuan Yao <yao.yuan@nxp.com>
+Acked-by: Han xu <han.xu@freescale.com>
+---
+Changed in v3:
+No changes.
 
-All the new property are document in anther patch set which is already
-send to linux-kernel@vger.kernel.org and devicetree@vger.kernel.org.
-Here is the patch name:
-0001-Documentation-fsl-quadspi-Add-fsl-ls2080a-dspi-compa.patch
-0002-Documentation-fsl-quadspi-Add-fsl-ls2080a-qspi-compa.patch
-0003-dts-ls2080a-update-the-DTS-for-QSPI-and-DSPI-support.patch
-0004-Documentation-fsl-quadspi-Add-optional-properties.patch
+Changed in v2:
+Update my email to <yao.yuan@nxp.com>
+---
+ drivers/mtd/spi-nor/Kconfig       |  2 +-
+ drivers/mtd/spi-nor/fsl-quadspi.c | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-Any extra information you can find them on the patchwork:
-https://patchwork.kernel.org/patch/8078931/
-https://patchwork.kernel.org/patch/8078951/
-https://patchwork.kernel.org/patch/8079091/
-https://patchwork.kernel.org/patch/8078941/
-
-Thanks.
-
-Yuan Yao.
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 0dc9275..a28c278 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -30,7 +30,7 @@ config MTD_SPI_NOR_USE_4K_SECTORS
+ 
+ config SPI_FSL_QUADSPI
+ 	tristate "Freescale Quad SPI controller"
+-	depends on ARCH_MXC || COMPILE_TEST
++	depends on ARCH_MXC || SOC_LS1021A || COMPILE_TEST
+ 	depends on HAS_IOMEM
+ 	help
+ 	  This enables support for the Quad SPI controller in master mode.
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 04e8a93..9ab2b51 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -213,6 +213,7 @@ enum fsl_qspi_devtype {
+ 	FSL_QUADSPI_IMX6SX,
+ 	FSL_QUADSPI_IMX7D,
+ 	FSL_QUADSPI_IMX6UL,
++	FSL_QUADSPI_LS1021A,
+ };
+ 
+ struct fsl_qspi_devtype_data {
+@@ -258,6 +259,14 @@ static struct fsl_qspi_devtype_data imx6ul_data = {
+ 		       | QUADSPI_QUIRK_4X_INT_CLK,
+ };
+ 
++static struct fsl_qspi_devtype_data ls1021a_data = {
++	.devtype = FSL_QUADSPI_LS1021A,
++	.rxfifo = 128,
++	.txfifo = 64,
++	.ahb_buf_size = 1024,
++	.driver_data = 0,
++};
++
+ #define FSL_QSPI_MAX_CHIP	4
+ struct fsl_qspi {
+ 	struct spi_nor nor[FSL_QSPI_MAX_CHIP];
+@@ -812,6 +821,7 @@ static const struct of_device_id fsl_qspi_dt_ids[] = {
+ 	{ .compatible = "fsl,imx6sx-qspi", .data = (void *)&imx6sx_data, },
+ 	{ .compatible = "fsl,imx7d-qspi", .data = (void *)&imx7d_data, },
+ 	{ .compatible = "fsl,imx6ul-qspi", .data = (void *)&imx6ul_data, },
++	{ .compatible = "fsl,ls1021a-qspi", .data = (void *)&ls1021a_data, },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, fsl_qspi_dt_ids);
+-- 
+2.1.0.27.g96db324
