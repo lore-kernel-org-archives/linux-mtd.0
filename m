@@ -1,33 +1,27 @@
-Received: from mail-ig0-x242.google.com ([2607:f8b0:4001:c05::242])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aM3U0-0004HM-DX
- for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 00:52:17 +0000
-Received: by mail-ig0-x242.google.com with SMTP id ik10so2970155igb.1
- for <linux-mtd@lists.infradead.org>; Wed, 20 Jan 2016 16:51:56 -0800 (PST)
+ id 1aM3iz-0002GI-B0
+ for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 01:07:45 +0000
+From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Adam Somerville <adamsomerville@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "zajec5@gmail.com" <zajec5@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, "jteki@openedev.com"
+ <jteki@openedev.com>, "mika.westerberg@linux.intel.com"
+ <mika.westerberg@linux.intel.com>,
+ "furquan@google.com" <furquan@google.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC] spi-nor: fix cross die reads on Micron multi-die devices
+Date: Thu, 21 Jan 2016 01:06:48 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF57B7B@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF57A20@NTXXIAMBX02.xacn.micron.com>
+ <CAJorgdvD9WCsHCoRt05tn-vh_1oqsCZiMehbVKQtynocxX_-wQ@mail.gmail.com>
+In-Reply-To: <CAJorgdvD9WCsHCoRt05tn-vh_1oqsCZiMehbVKQtynocxX_-wQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <56A027BF.8000804@nod.at>
-References: <CADC-h+GSekez10TVYV3pJsiD=YPY=WawG5cN_ZrJJb0zP7Xu=g@mail.gmail.com>
- <CAAEAJfAM9XEV2oU7PngdpPjryGttQw8Zj+uqhJ40mZEKvTX59A@mail.gmail.com>
- <56A00CB2.3050505@nod.at>
- <CADC-h+H=qwue4Ubr7kKOxjweH_0npTwepvnemcnEKAtb3sMPcA@mail.gmail.com>
- <CAAK6Zt1UCYizAeGZ9E5wtzaEChRfAOVDdQyUzBu=gCx+2mvYaQ@mail.gmail.com>
- <56A02274.3010705@nod.at>
- <CAAK6Zt086TbjFbK70A6nvn=vf0=m3ev3+_2YYQ-c6CyW0oAhag@mail.gmail.com>
- <56A024A1.3020201@nod.at>
- <CADC-h+G0GGuUYBM771YfiEc6Vaucj0BUOAk=W9Uk_DLZRqtz-g@mail.gmail.com>
- <56A027BF.8000804@nod.at>
-Date: Wed, 20 Jan 2016 16:51:55 -0800
-Message-ID: <CADC-h+HHENRPJi=W4DyOMrmbPeCqu34Jsgux+X7jbHA+B51e_g@mail.gmail.com>
-Subject: Re: Block device emulation on top of ubi volumes with read/write
- support
-From: Charles Godson <cestgodson@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Daniel Ehrenberg <dehrenberg@google.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,19 +31,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 20, 2016 at 4:35 PM, Richard Weinberger <richard@nod.at> wrote:
->
-> What is your fear?
-> If your NAND is loosing random blocks you are in trouble anyways.
->
-> Thanks,
-> //richard
-More along the lines of having software blow away first 2K (or
-similar) of my mtd partition (sw bug). I think I would lose everything
-in that case, right? When I have multiple mtd partitions, I would lose
-only one of my file systems. However, all of this probably comes down
-to having backup images, if high availability and reliability is
-required.
-
-Cheers,
-Charles
+IEhpLCBBZGFtIGFuZCBCb3Jpcw0KDQpGb3IgTWljcm9uIE1UMjVRICxNVDI1VCBhbmQgTVQzNVEs
+IHRoZXkgZG9lcyBub3QgZXhpc3QgdGhpcyBhY3Rpb24gZXZlbiB0aGV5IGFyZQ0KTXVsdGktZGll
+IGRldmljZXMuIFNvIHdoZW4gdGhlIGxhc3QgYnl0ZSBvZiB0aGUgZGllIHNlbGVjdGVkIGlzIHJl
+YWQsIHRoZSBuZXh0IGJ5dGUgb3V0cHV0DQppcyB0aGUgZmlyc3QgYnl0ZSBvZiBuZXh0IGRpZShu
+b3QgdGhlIHNhbWUgZGllKS4gDQpZb3UgY2FuIGNoZWNrIHRoaXMgYnkgZXh0ZW5kZWQgYWRkcmVz
+cyByZWdpc3RlciBjaGFwdGVyIGluIG91ciBkYXRhc2hlZXQsIHRoZXJlIGFyZSBkZXRhaWwNCklu
+Zm9ybWF0aW9uLg0KDQo+IEhpLA0KPiANCj4gVGhhbmtzIGZvciBsb29raW5nIGF0IHRoZSB0aGlz
+Lg0KPiANCj4gSSBjYW4gcmV3cml0ZSBzbyBpdCBvbmx5IGFmZmVjdHMgTjI1USBkZXZpY2VzLCBJ
+IGhvcGVkIGEgc2ltcGxlcg0KPiBpbXBsZW1lbnRhdGlvbiB3b3VsZCBvdXR3ZWlnaCB0aGUgc21h
+bGwgb3ZlcmhlYWQgaW5jdXJyZWQgb24gbm9uIGFmZmVjdGVkDQo+IGRldmljZXMuDQo+IA0KPiBE
+byB5b3Uga25vdyBpZiB0aGVyZSBhcmUgYW55IHBsYW5zIGZvciBNVDI1KiBiYXNlZCBtdWx0aS1k
+aWUgZGV2aWNlcyBhbmQgaWYNCj4gdGhleSB3b3VsZCBoYXZlIHRoZSBzYW1lIGlzc3VlPw0KPiAN
+Cj4gVGhhbmtzLA0KPiANCj4gQWRhbQ0KPiANCj4gT24gV2VkLCBKYW4gMjAsIDIwMTYgYXQgMjo0
+NSBBTSwgQmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ0KPiA8YmVhbmh1b0BtaWNyb24uY29t
+PiB3cm90ZToNCj4gPiBIaSwgQWRhbQ0KPiA+IFRoaXMgaXMgdHJ1ZSwgYnV0IHRoaXMgb25seSBl
+eGlzdCBpbiBNaWNyb24gNjVubSBzcGkgbm9yIE4yNVEuDQo+ID4gRm9yIG91ciA0NW5tIHNwaSBu
+b3IgTVQyNVEgLCBNVDI1VEwgYW5kIE1UMjVRLCBkb2VzIGV4aXN0IHRoaXMNCj4gcXVlc3Rpb24u
+DQo+ID4gU28gSSB0aGluaywgY2FuIHlvdSBkaWZmZXJlbnRpYXRlIGJldHdlZW4gdGhlc2UgaW4g
+eW91ciBwYXRjaD8NCj4gPg0KPiA+PiBGcm9tOiBBZGFtIFNvbWVydmlsbGUgPGFkYW1zb21lcnZp
+bGxlQGdtYWlsLmNvbT4NCj4gPj4NCj4gPj4gU28gYXMgZmFyIGFzIEkgY2FuIHNlZSB0aGVyZSBp
+cyBhIGJ1ZyBpbiB0aGUgc3BpLW5vciBkcml2ZXIgd2hlbg0KPiA+PiBpc3N1aW5nIGRpZSBib3Vu
+ZGFyeSBjcm9zc2luZyByZWFkcyBvbiBNaWNyb24gbXVsdGktZGllIGRldmljZXMuDQo+ID4+IE1p
+Y3JvbiBOMjVRNTEyQSwgTjI1UTAwQUEgYW5kIHByb2JhYmx5IGFueSBvdGhlciBNaWNyb24gbXVs
+dGktZGllDQo+ID4+IGRldmljZXMgZG8gbm90IHN1cHBvcnQgYSBzaW5nbGUgcmVhZCByZXF1ZXN0
+IHRoYXQgY3Jvc3NlcyBhIGRpZSBib3VuZGFyeS4NCj4gPj4NCj4gPj4gVGhlIGN1cnJlbnQgYmVo
+YXZpb3VyIGlzIHRoYXQgdGhlIGFkZHJlc3Mgb24gdGhlIGRldmljZSB3cmFwcyBiYWNrIHRvDQo+
+ID4+IHRoZSBzdGFydCBvZiB0aGUgZmlyc3QgZGllLCB3aXRoIGFueSBkYXRhIHJldHVybmVkIGJl
+eW9uZCB0aGUNCj4gPj4gYm91bmRhcnkgYmVpbmcgZnJvbSB0aGUgc3RhcnQgb2YgdGhlIGZpcnN0
+IGRpZS4NCj4gPj4NCg==
