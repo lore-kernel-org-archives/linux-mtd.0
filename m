@@ -1,21 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMAh4-0002nt-B4
- for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 08:34:15 +0000
-Date: Thu, 21 Jan 2016 09:33:51 +0100
+ id 1aMAxw-0003Wk-2F
+ for linux-mtd@lists.infradead.org; Thu, 21 Jan 2016 08:51:41 +0000
+Date: Thu, 21 Jan 2016 09:51:17 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Archit Taneja <architt@codeaurora.org>
 Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
  cernekee@gmail.com, sboyd@codeaurora.org, andy.gross@linaro.org,
  dehrenberg@google.com, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v7 1/3] mtd: nand: don't select chip in nand_chip's
- block_bad op
-Message-ID: <20160121093351.3e80613a@bbrezillon>
-In-Reply-To: <1453360399-32029-2-git-send-email-architt@codeaurora.org>
+Subject: Re: [PATCH v7 2/3] mtd: nand: Qualcomm NAND controller driver
+Message-ID: <20160121095117.3ee2e741@bbrezillon>
+In-Reply-To: <1453360399-32029-3-git-send-email-architt@codeaurora.org>
 References: <1453110634-25995-1-git-send-email-architt@codeaurora.org>
  <1453360399-32029-1-git-send-email-architt@codeaurora.org>
- <1453360399-32029-2-git-send-email-architt@codeaurora.org>
+ <1453360399-32029-3-git-send-email-architt@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,201 +27,282 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 21 Jan 2016 12:43:17 +0530
+Hi Archit,
+
+On Thu, 21 Jan 2016 12:43:18 +0530
 Archit Taneja <architt@codeaurora.org> wrote:
 
-> One of the arguments passed to struct nand_chip's block_bad op is
-> 'getchip', which, if true, is supposed to get and select the nand device,
-> and later unselect and release the device.
+> The Qualcomm NAND controller is found in SoCs like IPQ806x, MSM7xx,
+> MDM9x15 series.
 > 
-> This op is intended to be replaceable by drivers. The drivers shouldn't
-> be responsible for selecting/unselecting chip. Like other ops, the chip
-> should already be selected before the block_bad op is called.
+> It exists as a sub block inside the IPs EBI2 (External Bus Interface 2)
+> and QPIC (Qualcomm Parallel Interface Controller). These IPs provide a
+> broader interface for external slow peripheral devices such as LCD and
+> NAND/NOR flash memory or SRAM like interfaces.
 > 
-> Remove the getchip argument from the block_bad op and
-> nand_block_checkbad. Move the chip selection to nand_block_isbad, since it
-> is the only caller to nand_block_checkbad which requires chip selection.
+> We add support for the NAND controller found within EBI2. For the SoCs
+> of our interest, we only use the NAND controller within EBI2. Therefore,
+> it's safe for us to assume that the NAND controller is a standalone block
+> within the SoC.
 > 
-> Modify nand_block_bad (the default function for the op) such that it
-> doesn't select the chip.
+> The controller supports 512B, 2kB, 4kB and 8kB page 8-bit and 16-bit NAND
+> flash devices. It contains a HW ECC block that supports BCH ECC (4, 8 and
+> 16 bit correction/step) and RS ECC(4 bit correction/step) that covers main
+> and spare data. The controller contains an internal 512 byte page buffer
+> to which we read/write via DMA. The EBI2 type NAND controller uses ADM DMA
+> for register read/write and data transfers. The controller performs page
+> reads and writes at a codeword/step level of 512 bytes. It can support up
+> to 2 external chips of different configurations.
 > 
-> Remove the getchip argument from the bad_block funcs in cafe_nand,
-> diskonchip and docg4 drivers.
+> The driver prepares register read and write configuration descriptors for
+> each codeword, followed by data descriptors to read or write data from the
+> controller's internal buffer. It uses a single ADM DMA channel that we get
+> via dmaengine API. The controller requires 2 ADM CRCIs for command and
+> data flow control. These are passed via DT.
 > 
+> The ecc layout used by the controller is syndrome like, but we can't use
+> the standard syndrome ecc ops because of several reasons. First, the amount
+> of data bytes covered by ecc isn't same in each step. Second, writing to
+> free oob space requires us writing to the entire step in which the oob
+> lies. This forces us to create our own ecc ops.
+> 
+> One more difference is how the controller accesses the bad block marker.
+> The controller ignores reading the marker when ECC is enabled. ECC needs
+> to be explicity disabled to read or write to the bad block marker. The
+> nand_bbt helpers library hence can't access BBMs for the controller.
+> For now, we skip the creation of BBT and populate chip->block_bad and
+> chip->block_markbad helpers instead.
+> 
+> Reviewed-by: Andy Gross <agross@codeaurora.org>
+> Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
 > Signed-off-by: Archit Taneja <architt@codeaurora.org>
 
-Looks good to me
+Sorry, I noticed one more thing in your "bitflips in erased pages"
+handling. Once this is addressed (or explained) you can add my
 
 Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Thanks,
+> ---
+> v7:
+>   - Incorporated missing/new comments by Boris
+>   - Cleaned up some strict checkpatch warnings
+> 
+> v6:
+>   - Fix up erased page parsing. Use nand_check_erased_ecc_chunk to
+>     return corrected bitflips in an erased page.
+>   - Fix whitespace issues
+>   - Update compatible tring to something more specific
+> 
+> v5:
+>   - split chip/controller structs
+>   - simplify layout by considering reserved bytes as part of ECC
+>   - create ecc layouts automatically
+>   - implement block_bad and block_markbad chip ops instead of
+>   - read_oob_raw/write_oob_raw ecc ops to access BBMs.
+>   - Add NAND_SKIP_BBTSCAN flag until we get badblockbits support.
+>   - misc clean ups
+>     
+> v4:
+>   - Shrink submit_descs
+>   - add desc list node at the end of dma_prep_desc
+>   - Endianness and warning fixes
+>   - Add Stephen's Signed-off since he provided a patch to fix
+>     endianness problems
+>     
+> v3:
+>   - Refactor dma functions for maximum reuse
+>   - Use dma_slave_confing on stack
+>   - optimize and clean upempty_page_fixup using memchr_inv
+>   - ensure portability with dma register reads using le32_* funcs
+>   - use NAND_USE_BOUNCE_BUFFER instead of doing it ourselves
+>   - fix handling of return values of dmaengine funcs
+>   - constify wherever possible
+>   - Remove dependency on ADM DMA in Kconfig
+>   - Misc fixes and clean ups
+>     
+> v2:
+>   - Use new BBT flag that allows us to read BBM in raw mode
+>   - reduce memcpy-s in the driver
+>   - some refactor and clean ups because of above changes
+> 
+>  drivers/mtd/nand/Kconfig      |    7 +
+>  drivers/mtd/nand/Makefile     |    1 +
+>  drivers/mtd/nand/qcom_nandc.c | 2024 +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 2032 insertions(+)
+>  create mode 100644 drivers/mtd/nand/qcom_nandc.c
+> 
+
+[...]
+
+> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+> new file mode 100644
+> index 0000000..269d388
+> --- /dev/null
+> +++ b/drivers/mtd/nand/qcom_nandc.c
+
+[...]
+
+> +/*
+> + * when using BCH ECC, the HW flags an error in NAND_FLASH_STATUS if it read
+> + * an erased CW, and reports an erased CW in NAND_ERASED_CW_DETECT_STATUS.
+> + *
+> + * when using RS ECC, the HW reports the same erros when reading an erased CW,
+> + * but it notifies that it is an erased CW by placing special characters at
+> + * certain offsets in the buffer.
+> + *
+> + * verify if the page is erased or not, and fix up the page for RS ECC by
+> + * replacing the special characters with 0xff
+> + */
+> +static bool empty_page_fixup(struct qcom_nand_host *host, u8 *data_buf)
+> +{
+> +	struct nand_chip *chip = &host->chip;
+> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	struct read_stats *buf;
+> +	int i;
+> +
+> +	buf = (struct read_stats *)nandc->reg_read_buf;
+> +
+> +	for (i = 0; i < ecc->steps; i++, buf++) {
+> +		u32 flash, erased_cw;
+> +		u8 empty1, empty2;
+> +
+> +		flash = le32_to_cpu(buf->flash);
+> +		erased_cw = le32_to_cpu(buf->erased_cw);
+> +
+> +		/*
+> +		 * an erased page flags an error in NAND_FLASH_STATUS, if there
+> +		 * isn't any error, bail out early and report a non-erased
+> +		 * page
+> +		 */
+> +		if (!(flash & FS_OP_ERR))
+> +			break;
+> +
+> +		/*
+> +		 * if BCH is enabled, HW will take care of detecting erased
+> +		 * pages
+> +		 */
+> +		if (host->bch_enabled) {
+> +			/* bail out if we didn't detect an erased CW */
+> +			if ((erased_cw & ERASED_CW) != ERASED_CW)
+> +				break;
+> +		} else {
+> +			/*
+> +			 * if RS ECC is enabled, check if the CW is erased by
+> +			 * looking for 0x54s at offsets 3 and 175
+> +			 */
+> +			empty1 = data_buf[3 + i * host->cw_data];
+> +			empty2 = data_buf[175 + i * host->cw_data];
+> +
+> +			/* bail out if the CW isn't erased */
+> +			if (!(empty1 == 0x54 && empty2 == 0xff) &&
+> +			    !(empty1 == 0xff && empty2 == 0x54))
+> +				break;
+> +		}
+> +	}
+> +
+> +	if (i < ecc->steps)
+> +		return false;
+> +
+> +	if (!host->bch_enabled) {
+> +		/*
+> +		 * fix up the buffer by replacing the magic offsets with
+> +		 * 0xff
+> +		 */
+> +		for (i = 0; i < ecc->steps; i++) {
+> +			data_buf[3 + i * host->cw_data] = 0xff;
+> +			data_buf[175 + i * host->cw_data] = 0xff;
+> +		}
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +/*
+> + * reads back status registers set by the controller to notify page read
+> + * errors. this is equivalent to what 'ecc->correct()' would do.
+> + */
+> +static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+> +			     u8 *oob_buf, bool erased_page)
+> +{
+> +	struct nand_chip *chip = &host->chip;
+> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	unsigned int max_bitflips = 0;
+> +	struct read_stats *buf;
+> +	int i;
+> +
+> +	buf = (struct read_stats *)nandc->reg_read_buf;
+> +
+> +	for (i = 0; i < ecc->steps; i++, buf++) {
+> +		u32 flash, buffer;
+> +		int data_len, oob_len;
+> +
+> +		if (i == (ecc->steps - 1)) {
+> +			data_len = ecc->size - ((ecc->steps - 1) << 2);
+> +			oob_len = ecc->steps << 2;
+> +		} else {
+> +			data_len = host->cw_data;
+> +			oob_len = 0;
+> +		}
+> +
+> +		flash = le32_to_cpu(buf->flash);
+> +		buffer = le32_to_cpu(buf->buffer);
+> +
+> +		if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
+> +			if (erased_page) {
+> +				int ret, ecclen, extraooblen;
+> +				void *eccbuf;
+> +
+> +				eccbuf = oob_buf ? oob_buf + oob_len : NULL;
+> +				ecclen = oob_buf ? host->ecc_bytes_hw : 0;
+> +				extraooblen = oob_buf ? oob_len : 0;
+> +
+> +				ret = nand_check_erased_ecc_chunk(data_buf,
+> +					data_len, eccbuf, ecclen, oob_buf,
+> +					extraooblen, ecc->strength);
+
+IIUC, the erased_page info is returned by empty_page_fixup() and is
+only set if the page is detected as empty (filled with ff).
+If that's the case, then you don't have to use
+nand_check_erased_ecc_chunk() to check it again...
+
+> +				if (ret < 0) {
+> +					mtd->ecc_stats.failed++;
+> +				} else {
+> +					mtd->ecc_stats.corrected += ret;
+> +					max_bitflips =
+> +						max_t(unsigned int, max_bitflips, ret);
+> +				}
+> +			} else {
+> +				if (buffer & BS_UNCORRECTABLE_BIT) {
+
+... here is where you should check if what was detected as
+uncorrectable errors is not in fact some bitflips in an erased page.
+
+> +					mtd->ecc_stats.failed++;
+> +				} else {
+> +					unsigned int stat;
+> +
+> +					stat = buffer & BS_CORRECTABLE_ERR_MSK;
+> +					mtd->ecc_stats.corrected += stat;
+> +					max_bitflips = max(max_bitflips, stat);
+> +				}
+> +			}
+> +		}
+> +
+> +		data_buf += data_len;
+> +		if (oob_buf)
+> +			oob_buf += oob_len + ecc->bytes;
+> +	}
+> +
+> +	return max_bitflips;
+> +}
+
+Best Regards,
 
 Boris
-
-> ---
-> v7: Updated cafe_nand, diskonchip and docg4 drivers.
-> 
-> v6: As suggested by Boris, remove getchip arg altogether and select the
->     chip in nand_block_isbad
-> 
->  drivers/mtd/nand/cafe_nand.c  |  2 +-
->  drivers/mtd/nand/diskonchip.c |  2 +-
->  drivers/mtd/nand/docg4.c      |  2 +-
->  drivers/mtd/nand/nand_base.c  | 41 +++++++++++++++++++----------------------
->  include/linux/mtd/nand.h      |  2 +-
->  5 files changed, 23 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-> index 00c15e2..68c3048 100644
-> --- a/drivers/mtd/nand/cafe_nand.c
-> +++ b/drivers/mtd/nand/cafe_nand.c
-> @@ -537,7 +537,7 @@ static int cafe_nand_write_page_lowlevel(struct mtd_info *mtd,
->  	return 0;
->  }
->  
-> -static int cafe_nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-> +static int cafe_nand_block_bad(struct mtd_info *mtd, loff_t ofs)
->  {
->  	return 0;
->  }
-> diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-> index a5c0466..dfd6cd5 100644
-> --- a/drivers/mtd/nand/diskonchip.c
-> +++ b/drivers/mtd/nand/diskonchip.c
-> @@ -798,7 +798,7 @@ static int doc200x_dev_ready(struct mtd_info *mtd)
->  	}
->  }
->  
-> -static int doc200x_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-> +static int doc200x_block_bad(struct mtd_info *mtd, loff_t ofs)
->  {
->  	/* This is our last resort if we couldn't find or create a BBT.  Just
->  	   pretend all blocks are good. */
-> diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-> index 95cd139..33a1788 100644
-> --- a/drivers/mtd/nand/docg4.c
-> +++ b/drivers/mtd/nand/docg4.c
-> @@ -1121,7 +1121,7 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
->  	return ret;
->  }
->  
-> -static int docg4_block_neverbad(struct mtd_info *mtd, loff_t ofs, int getchip)
-> +static int docg4_block_neverbad(struct mtd_info *mtd, loff_t ofs)
->  {
->  	/* only called when module_param ignore_badblocks is set */
->  	return 0;
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 928081b..1809c20 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -317,9 +317,9 @@ static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
->   *
->   * Check, if the block is bad.
->   */
-> -static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-> +static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
->  {
-> -	int page, chipnr, res = 0, i = 0;
-> +	int page, res = 0, i = 0;
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  	u16 bad;
->  
-> @@ -328,15 +328,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
->  
->  	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
->  
-> -	if (getchip) {
-> -		chipnr = (int)(ofs >> chip->chip_shift);
-> -
-> -		nand_get_device(mtd, FL_READING);
-> -
-> -		/* Select the NAND device */
-> -		chip->select_chip(mtd, chipnr);
-> -	}
-> -
->  	do {
->  		if (chip->options & NAND_BUSWIDTH_16) {
->  			chip->cmdfunc(mtd, NAND_CMD_READOOB,
-> @@ -361,11 +352,6 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
->  		i++;
->  	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
->  
-> -	if (getchip) {
-> -		chip->select_chip(mtd, -1);
-> -		nand_release_device(mtd);
-> -	}
-> -
->  	return res;
->  }
->  
-> @@ -503,19 +489,17 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
->   * nand_block_checkbad - [GENERIC] Check if a block is marked bad
->   * @mtd: MTD device structure
->   * @ofs: offset from device start
-> - * @getchip: 0, if the chip is already selected
->   * @allowbbt: 1, if its allowed to access the bbt area
->   *
->   * Check, if the block is bad. Either by reading the bad block table or
->   * calling of the scan function.
->   */
-> -static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
-> -			       int allowbbt)
-> +static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int allowbbt)
->  {
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  
->  	if (!chip->bbt)
-> -		return chip->block_bad(mtd, ofs, getchip);
-> +		return chip->block_bad(mtd, ofs);
->  
->  	/* Return info from the table */
->  	return nand_isbad_bbt(mtd, ofs, allowbbt);
-> @@ -2918,7 +2902,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
->  	while (len) {
->  		/* Check if we have a bad block, we do not erase bad blocks! */
->  		if (nand_block_checkbad(mtd, ((loff_t) page) <<
-> -					chip->page_shift, 0, allowbbt)) {
-> +					chip->page_shift, allowbbt)) {
->  			pr_warn("%s: attempt to erase a bad block at page 0x%08x\n",
->  				    __func__, page);
->  			instr->state = MTD_ERASE_FAILED;
-> @@ -3005,7 +2989,20 @@ static void nand_sync(struct mtd_info *mtd)
->   */
->  static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
->  {
-> -	return nand_block_checkbad(mtd, offs, 1, 0);
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	int chipnr = (int)(offs >> chip->chip_shift);
-> +	int ret;
-> +
-> +	/* Select the NAND device */
-> +	nand_get_device(mtd, FL_READING);
-> +	chip->select_chip(mtd, chipnr);
-> +
-> +	ret = nand_block_checkbad(mtd, offs, 0);
-> +
-> +	chip->select_chip(mtd, -1);
-> +	nand_release_device(mtd);
-> +
-> +	return ret;
->  }
->  
->  /**
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 3e92be1..c15818e 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -650,7 +650,7 @@ struct nand_chip {
->  	void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
->  	void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
->  	void (*select_chip)(struct mtd_info *mtd, int chip);
-> -	int (*block_bad)(struct mtd_info *mtd, loff_t ofs, int getchip);
-> +	int (*block_bad)(struct mtd_info *mtd, loff_t ofs);
->  	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
->  	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
->  	int (*dev_ready)(struct mtd_info *mtd);
-
-
 
 -- 
 Boris Brezillon, Free Electrons
