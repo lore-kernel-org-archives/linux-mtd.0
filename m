@@ -1,25 +1,20 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-db3on0079.outbound.protection.outlook.com ([157.55.234.79]
+ helo=emea01-db3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMVj6-0000oZ-3A
- for linux-mtd@lists.infradead.org; Fri, 22 Jan 2016 07:01:44 +0000
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Adam Somerville <adamsomerville@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ id 1aMXbK-0001n4-Ka
+ for linux-mtd@lists.infradead.org; Fri, 22 Jan 2016 09:01:53 +0000
+From: Yao Yuan <yao.yuan@nxp.com>
+To: Han Xu <xhnjupt@gmail.com>, Yuan Yao <yao.yuan@freescale.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "zajec5@gmail.com" <zajec5@gmail.com>, "jteki@openedev.com"
- <jteki@openedev.com>, "mika.westerberg@linux.intel.com"
- <mika.westerberg@linux.intel.com>,
- "furquan@google.com" <furquan@google.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] spi-nor: fix cross die reads on Micron multi-die devices
-Date: Fri, 22 Jan 2016 07:00:43 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF57E59@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF57A20@NTXXIAMBX02.xacn.micron.com>
- <CAJorgdvD9WCsHCoRt05tn-vh_1oqsCZiMehbVKQtynocxX_-wQ@mail.gmail.com>
- <A765B125120D1346A63912DDE6D8B6310BF57B7B@NTXXIAMBX02.xacn.micron.com>
- <20160121095630.4df558b3@bbrezillon>
-In-Reply-To: <20160121095630.4df558b3@bbrezillon>
+Subject: RE: mtd: spi-nor: fsl-quadspi: add support for ls1021a
+Date: Fri, 22 Jan 2016 09:01:26 +0000
+Message-ID: <AM2PR04MB072287A0E9C83F507FDF282389C40@AM2PR04MB0722.eurprd04.prod.outlook.com>
+References: <1453362836-44377-1-git-send-email-yao.yuan@freescale.com>
+ <CA+EcR20=OaZOOPMKVys-NDbTeXhEDCzre8L_vv53s+Ukv3XQLw@mail.gmail.com>
+In-Reply-To: <CA+EcR20=OaZOOPMKVys-NDbTeXhEDCzre8L_vv53s+Ukv3XQLw@mail.gmail.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
@@ -33,23 +28,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBIaSBCZWFuLA0KPiANCj4gT24gVGh1LCAyMSBKYW4gMjAxNiAwMTowNjo0OCArMDAwMA0KPiBC
-ZWFuIEh1byDpnI3mlozmlowgKGJlYW5odW8pIDxiZWFuaHVvQG1pY3Jvbi5jb20+IHdyb3RlOg0K
-PiANCj4gPiAgSGksIEFkYW0gYW5kIEJvcmlzDQo+ID4NCj4gPiBGb3IgTWljcm9uIE1UMjVRICxN
-VDI1VCBhbmQgTVQzNVEsIHRoZXkgZG9lcyBub3QgZXhpc3QgdGhpcyBhY3Rpb24NCj4gPiBldmVu
-IHRoZXkgYXJlIE11bHRpLWRpZSBkZXZpY2VzLiBTbyB3aGVuIHRoZSBsYXN0IGJ5dGUgb2YgdGhl
-IGRpZQ0KPiA+IHNlbGVjdGVkIGlzIHJlYWQsIHRoZSBuZXh0IGJ5dGUgb3V0cHV0IGlzIHRoZSBm
-aXJzdCBieXRlIG9mIG5leHQgZGllKG5vdCB0aGUNCj4gc2FtZSBkaWUpLg0KPiA+IFlvdSBjYW4g
-Y2hlY2sgdGhpcyBieSBleHRlbmRlZCBhZGRyZXNzIHJlZ2lzdGVyIGNoYXB0ZXIgaW4gb3VyDQo+
-ID4gZGF0YXNoZWV0LCB0aGVyZSBhcmUgZGV0YWlsIEluZm9ybWF0aW9uLg0KPiANCj4gSSBuZXZl
-ciBzYWlkIHlvdSB3ZXJlIHdyb25nIDspLCBJIGp1c3QgYXNrZWQgaWYgaXQgd2FzIHJlbGV2YW50
-IHRvIGRpZmZlcmVudGlhdGUNCj4gdGhlIHR3byBjYXNlcy4gSU9XLCB3b3VsZCB0aGUgaW1wbGVt
-ZW50YXRpb24gcHJvcG9zZWQgYnkgQWRhbSB3b3JrDQo+IGNvcnJlY3RseSBvbiBhbGwgY2hpcHM/
-IEFuZCB3aGF0IGlzIHRoZSByZWFsIHBlcmZvcm1hbmNlIHBlbmFsdHkgZm9yDQo+IE1UMjVRICxN
-VDI1VCBhbmQgTVQzNVEgaWYgd2UgZGVjaWRlIHRvIHNwbGl0IHRoZSByZWFkIGNvbW1hbmQgaW4g
-c2V2ZXJhbA0KPiByZWFkcyB0byBoYW5kbGUgdGhpcyBjcm9zcyBkaWUgY2FzZT8NCkZvciB0aGlz
-ICwgcGVyZm9ybWFuY2UgcGVuYWx0eSBpcyB0aW55LCBjYW4gaWdub3JlLiANClNQSSBOT1IgcmVh
-ZCBwZXJmb3JtYW5jZSBvbmx5IGRlcGVuZHMgb24gU1BJIEkvTyBjbG9jay4gTm90IHRoZSBzYW1l
-IGFzIE5BTkQuDQo+IEJlc3QgUmVnYXJkcywNCj4gDQo+IEJvcmlzDQo+IA0KPiAtLQ0KPiBCb3Jp
-cyBCcmV6aWxsb24sIEZyZWUgRWxlY3Ryb25zDQo+IEVtYmVkZGVkIExpbnV4IGFuZCBLZXJuZWwg
-ZW5naW5lZXJpbmcNCj4gaHR0cDovL2ZyZWUtZWxlY3Ryb25zLmNvbQ0K
+T24gVGh1LCBKYW4gMjEsIDIwMTYgYXQgMTE6NDIgUE0sIEhhbiBYdSA8IHhobmp1cHRAZ21haWwu
+Y29tID4gd3JvdGU6DQo+IE9uIFRodSwgSmFuIDIxLCAyMDE2IGF0IDE6NTMgQU0sIFl1YW4gWWFv
+IDx5YW8ueXVhbkBmcmVlc2NhbGUuY29tPiB3cm90ZToNCj4gPiBUaGlzIHBhdGNoIHNldCBpcyB1
+c2VkIGZvciBhZGQgdGhlIGZzbC1xdWFkc3BpIHN1cHBvcnQgZm9yIGxzMTAyMWEgYW5kDQo+ID4g
+bHMxMDQzYSwgc28gcmVtb3ZlIHRoZSBwYXRjaDoNCj4gPiBtdGQ6IHNwaS1ub3I6IGZzbC1xdWFk
+c3BpOiBleHRlbmQgc3VwcG9ydCBmb3Igc29tZSBzcGVjaWFsIHJlcXVlcm1lbnQuDQo+IA0KPiBQ
+bGVhc2UgdXNlIC0tY292ZXItbGV0dGVyIHRvIGdlbmVyYXRlIGNvdmVyIGxldHRlci4NCj4gDQo+
+ID4NCj4gPiBUaGlzIHBhdGNoIHdpbGwgYmUgc2VuZCB3aXRoIGFudGhlciBwYXRjaCBzZXQgZm9y
+IGFkZCBRU1BJIHN1cHBvcnQgb24gTFMyMDgwQS4NCj4gPg0KPiA+IEFsbCB0aGUgbmV3IHByb3Bl
+cnR5IGFyZSBkb2N1bWVudCBpbiBhbnRoZXIgcGF0Y2ggc2V0IHdoaWNoIGlzIGFscmVhZHkNCj4g
+PiBzZW5kIHRvIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcgYW5kIGRldmljZXRyZWVAdmdl
+ci5rZXJuZWwub3JnLg0KPiA+IEhlcmUgaXMgdGhlIHBhdGNoIG5hbWU6DQo+ID4gMDAwMS1Eb2N1
+bWVudGF0aW9uLWZzbC1xdWFkc3BpLUFkZC1mc2wtbHMyMDgwYS1kc3BpLWNvbXBhLnBhdGNoDQo+
+ID4gMDAwMi1Eb2N1bWVudGF0aW9uLWZzbC1xdWFkc3BpLUFkZC1mc2wtbHMyMDgwYS1xc3BpLWNv
+bXBhLnBhdGNoDQo+ID4gMDAwMy1kdHMtbHMyMDgwYS11cGRhdGUtdGhlLURUUy1mb3ItUVNQSS1h
+bmQtRFNQSS1zdXBwb3J0LnBhdGNoDQo+ID4gMDAwNC1Eb2N1bWVudGF0aW9uLWZzbC1xdWFkc3Bp
+LUFkZC1vcHRpb25hbC1wcm9wZXJ0aWVzLnBhdGNoDQo+ID4NCj4gPiBBbnkgZXh0cmEgaW5mb3Jt
+YXRpb24geW91IGNhbiBmaW5kIHRoZW0gb24gdGhlIHBhdGNod29yazoNCj4gPiBodHRwczovL3Bh
+dGNod29yay5rZXJuZWwub3JnL3BhdGNoLzgwNzg5MzEvDQo+ID4gaHR0cHM6Ly9wYXRjaHdvcmsu
+a2VybmVsLm9yZy9wYXRjaC84MDc4OTUxLw0KPiA+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5v
+cmcvcGF0Y2gvODA3OTA5MS8NCj4gPiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNo
+LzgwNzg5NDEvDQo+IA0KPiBQbGVhc2Ugc2VuZCBhbGwgcGF0Y2hlcyBpbiBvbmUgcGF0Y2ggc2V0
+LCB0aGlzIGlzIG5vdCBhY2NlcHRhYmxlLg0KPiANCg0KVGhhbmtzIGZvciB5b3VyIHJldmlldy4N
+CkJ1dCB0aG9zZSBwYXRjaGVzIGFyZSBkdHMgYmluZGluZyBwYXRjaC4gQW5kIHdpbGwgc2VuZCB0
+byAgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcgYW5kIHNvbWUgY29ycmVzcG9uZGluZyBtYWlu
+dGFpbmVyLg0KDQpUaG9zZSB0d28gcGF0Y2ggc2V0cyB3aWxsIHNlbmQgdG8gZGlmZmVyZW50IG1h
+aWwtbGlzdCBhbmQgbWFpbnRhaW5lcnMgc2VwYXJhdGVseS4NCg0KU28sIG1heWJlIGl0J3MgYmV0
+dGVyIHRvIHNlbmQgdGhlIHBhdGNoIHRvIHRoZSBtYWludGFpbmVyIGFjY29yZGluZ2x5IGFuZCB0
+aHVzIEkgdGhpbmsgY2FuIGFsc28gcmVkdWNlIHRoZSB3b3JrbG9hZCBvZiBtYWludGFpbmVyLg0K
+DQpIb3cgYWJvdXQgeW91ciB0aGluaz8NCg0KVGhhbmtzLg0KDQpZdWFuIFlhby4NCg==
