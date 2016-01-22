@@ -1,19 +1,22 @@
-Received: from mail-bl2on0105.outbound.protection.outlook.com ([65.55.169.105]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMXvv-0002Pa-EV
- for linux-mtd@lists.infradead.org; Fri, 22 Jan 2016 09:23:08 +0000
-From: Zhiqiang Hou <Zhiqiang.Hou@freescale.com>
-To: <linux-mtd@lists.infradead.org>, <computersforpeace@gmail.com>,
- <dwmw2@infradead.org>, <jteki@openedev.com>, <marex@denx.de>
-CC: <Mingkai.Hu@freescale.com>, Hou Zhiqiang <Zhiqiang.Hou@freescale.com>
-Subject: [PATCHv3 2/2] mtd: m25p80: Add Power Management support
-Date: Fri, 22 Jan 2016 17:14:27 +0800
-Message-ID: <1453454067-32534-2-git-send-email-Zhiqiang.Hou@freescale.com>
-In-Reply-To: <1453454067-32534-1-git-send-email-Zhiqiang.Hou@freescale.com>
-References: <1453454067-32534-1-git-send-email-Zhiqiang.Hou@freescale.com>
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aMY27-0005E0-Em
+ for linux-mtd@lists.infradead.org; Fri, 22 Jan 2016 09:29:32 +0000
+Date: Fri, 22 Jan 2016 10:29:05 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Mason <slash.tmp@free.fr>
+CC: Steve deRosier <derosier@gmail.com>, Sebastian Frias <sf84@laposte.net>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Using a generic upstream driver with a custom NAND controller
+In-Reply-To: <56A0E59F.4090602@free.fr>
+Message-ID: <alpine.DEB.2.02.1601221023220.4042@lnxricardw1.se.axis.com>
+References: <569E8EEA.6060106@free.fr>
+ <CALupW3A8Wz72enL3Gqpx0=HdOQW0DqQtfVLUQmF=NeyoySn_aQ@mail.gmail.com>
+ <56A0E59F.4090602@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hou Zhiqiang <Zhiqiang.Hou@freescale.com>
 
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@freescale.com>
----
-V3:
- - No change.
-V2:
- - Call spi_nor_suspend/resume instead of spi_nor_scan.
+On Thu, 21 Jan 2016, Mason wrote:
 
- drivers/mtd/devices/m25p80.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+> (Maybe you can help me find convincing arguments why upstreaming is 
+> good. The logic around here is "the hardware is custom, no one will 
+> benefit from having the driver, no point in sharing".)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index c9c3b7f..016fe94 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -224,6 +224,26 @@ static int m25p_remove(struct spi_device *spi)
- 	return mtd_device_unregister(&flash->spi_nor.mtd);
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int m25p_suspend(struct device *dev)
-+{
-+	struct m25p *flash = dev_get_drvdata(dev);
-+	struct spi_nor *nor = &flash->spi_nor;
-+
-+	return spi_nor_suspend(nor);
-+}
-+
-+static int m25p_resume(struct device *dev)
-+{
-+	struct m25p *flash = dev_get_drvdata(dev);
-+	struct spi_nor *nor = &flash->spi_nor;
-+
-+	return spi_nor_resume(nor);
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
-+
- /*
-  * Do NOT add to this array without reading the following:
-  *
-@@ -290,6 +310,7 @@ static struct spi_driver m25p80_driver = {
- 	.driver = {
- 		.name	= "m25p80",
- 		.of_match_table = m25p_of_table,
-+		.pm	= &m25p_pm_ops,
- 	},
- 	.id_table	= m25p_ids,
- 	.probe	= m25p_probe,
+One way to look at is in terms of maintenance. If you do a quick and dirty 
+hack, it must be maintained when new kernel versions are released, i.e. 
+someone has to spend company time to keep the quick and dirty hack 
+working in the next product, and the next and the next. Since it's a hack 
+to start with, it's hard to predict how much time is needed.
+
+If the driver is upstreamed and uses well-known API:s, oftentimes it can 
+be maintained in the ordinary course of kernel maintenence, and the impact 
+on company time is minimal, not to mention more predictable. True, some 
+changes in the framework might necessitate driver changes, but these will 
+mostly be much smaller than in the first case, and there will be other 
+drivers which have gone through the same change so you can get inspiration 
+from others.
+
+/Ricard
 -- 
-2.1.0.27.g96db324
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
