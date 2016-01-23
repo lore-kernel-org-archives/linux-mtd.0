@@ -1,21 +1,20 @@
-Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aMoh8-0002eR-Hx
- for linux-mtd@lists.infradead.org; Sat, 23 Jan 2016 03:16:59 +0000
-Received: by mail-pf0-x234.google.com with SMTP id e65so51918503pfe.0
- for <linux-mtd@lists.infradead.org>; Fri, 22 Jan 2016 19:16:38 -0800 (PST)
-Date: Fri, 22 Jan 2016 19:16:35 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Mason <slash.tmp@free.fr>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Sebastian Frias <sf84@laposte.net>
-Subject: Re: RFC on large number of hacks in mtd core files
-Message-ID: <20160123031635.GB90611@google.com>
-References: <56A24C22.2050607@free.fr>
+Date: Sat, 23 Jan 2016 09:18:44 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, linux-sunxi@googlegroups.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Richard
+ Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2 3/3] mtd: nand: sunxi: add randomizer support
+Message-ID: <20160123091844.4826ffe6@bbrezillon>
+In-Reply-To: <20160123025713.GA90611@google.com>
+References: <1449054067-16751-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1449054067-16751-4-git-send-email-boris.brezillon@free-electrons.com>
+ <20160123025713.GA90611@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56A24C22.2050607@free.fr>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,65 +24,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 22, 2016 at 04:34:58PM +0100, Mason wrote:
-> Hello everyone,
-> 
-> As I've mentioned in a previous thread, I'm supposed to port a NAND
-> controller driver from 3.4 to 4.4. But this is complicated by the
-> fact that several core files have been modified along the way.
-> 
-> Here's the full picture:
-> 
-> $ git diff --stat v3.4.39 custom-3.4 drivers/mtd
->  drivers/mtd/Kconfig                 |   15 +-
->  drivers/mtd/chips/cfi_cmdset_0002.c |  129 ++-
->  drivers/mtd/devices/Kconfig         |    6 +
->  drivers/mtd/devices/Makefile        |    3 +-
->  drivers/mtd/devices/m25p80.c        |  100 +-
->  drivers/mtd/devices/spiflash.c      | 2131 +++++++++++++++++++++++++++++++++++
->  drivers/mtd/maps/Kconfig            |   11 +-
->  drivers/mtd/maps/physmap.c          |  202 +++-
->  drivers/mtd/mtdchar.c               |   54 +
->  drivers/mtd/mtdcore.c               |   63 +-
->  drivers/mtd/mtdpart.c               |    9 +
->  drivers/mtd/nand/Kconfig            |   46 +-
->  drivers/mtd/nand/Makefile           |   11 +-
->  drivers/mtd/nand/monza_nand.c       |  614 ++++++++++
->  drivers/mtd/nand/nand_base.c        | 1226 +++++++++++++++++++-
->  drivers/mtd/nand/nand_bch_ecc.c     |  311 +++++
->  drivers/mtd/nand/nand_bch_ecc.h     |   11 +
->  drivers/mtd/nand/nand_ids.c         |  253 ++++-
->  drivers/mtd/nand/nandsim.c          |    2 +-
->  drivers/mtd/nand/smp8xxx_nand.c     | 2009 +++++++++++++++++++++++++++++++++
->  drivers/mtd/ubi/misc.c              |    7 +
->  21 files changed, 7164 insertions(+), 49 deletions(-)
+Hi Brian,
 
-^^ This doesn't make sense. You've changed over 7000 lines, but your
-entire email is less than 3000 lines. From that alone, I can see you
-haven't given us the whole diff...
+On Fri, 22 Jan 2016 18:57:13 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-And just looking at the diff stat, you might want to clear up a few
-things:
+> All three look good, so pushed to l2-mtd.git/next. One comment below:
 
-(1) Are you really just talking about supporting a *NAND* driver? If so,
-then you probably don't need your new drivers/mtd/devices/spiflash.c.
-You also probably don't need to touch most things outside of
-drivers/mtd/nand/, like drivers/mtd/chips/cfi_cmdset_0002.c,
-drivers/mtd/maps/physmap.c, drivers/mtd/devices/m25p80.c, etc.
-
-(2) How many NAND drivers do you actually have? I see two "new" NAND
-drivers: drivers/mtd/nand/smp8xxx_nand.c and
-drivers/mtd/nand/monza_nand.c.
+Thanks.
 
 > 
+> On Wed, Dec 02, 2015 at 12:01:07PM +0100, Boris Brezillon wrote:
 > 
-> Here's the actual diff, with non-core changes omitted.
+> ...
+> 
+> > +static u16 sunxi_nfc_randomizer_state(struct mtd_info *mtd, int page, bool ecc)
+> > +{
+> > +	const u16 *seeds = sunxi_nfc_randomizer_page_seeds;
+> > +	int mod = mtd->erasesize / mtd->writesize;
+> 
+> Richard suggested you use the mtd.h helper here. Patch below.
 
-Ah, I see why the diffstat vs diff discrepancy.
+Yep, I forgot to do this change.
 
-Others may feel more inclined to humor you, but by omitting the drivers
-themselves, it's hard to really get the whole picture.
+> 
+> > +
+> > +	if (mod > ARRAY_SIZE(sunxi_nfc_randomizer_page_seeds))
+> > +		mod = ARRAY_SIZE(sunxi_nfc_randomizer_page_seeds);
+> > +
+> > +	if (ecc) {
+> > +		if (mtd->ecc_step_size == 512)
+> > +			seeds = sunxi_nfc_randomizer_ecc512_seeds;
+> > +		else
+> > +			seeds = sunxi_nfc_randomizer_ecc1024_seeds;
+> > +	}
+> > +
+> > +	return seeds[page % mod];
+> > +}
+> 
+> From: Brian Norris <computersforpeace@gmail.com>
+> Date: Fri, 22 Jan 2016 18:54:02 -0800
+> Subject: [PATCH] mtd: nand: sunxi: use mtd_div_by_ws() helper
+> 
+> Suggested-by: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-[snip the rest]
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Brian
+> ---
+>  drivers/mtd/nand/sunxi_nand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index 5f700719d5c2..b5ea6b312df0 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -624,7 +624,7 @@ static u16 sunxi_nfc_randomizer_step(u16 state, int count)
+>  static u16 sunxi_nfc_randomizer_state(struct mtd_info *mtd, int page, bool ecc)
+>  {
+>  	const u16 *seeds = sunxi_nfc_randomizer_page_seeds;
+> -	int mod = mtd->erasesize / mtd->writesize;
+> +	int mod = mtd_div_by_ws(mtd->erasesize, mtd);
+
+Just a comment (which should not prevent you from applying this patch).
+Isn't it a bit overkill to cast the erasesize to a 64 bit value, and
+then do a do_div on it. Shouldn't happen often though, because
+->writesize_shift should be != 0 in most (all?) cases.
+
+Another related remark: with the MLC/paired pages stuff I'll have to
+retrieve this information (number of write units per erase block) quite
+often, so maybe we should have a field (and/or an helper) for that.
+
+Thanks,
+
+Boris
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
