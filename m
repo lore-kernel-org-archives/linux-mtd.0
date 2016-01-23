@@ -1,22 +1,27 @@
-Received: from mail-pf0-x231.google.com ([2607:f8b0:400e:c00::231])
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aN5Tj-0003Ne-8H
- for linux-mtd@lists.infradead.org; Sat, 23 Jan 2016 21:12:18 +0000
-Received: by mail-pf0-x231.google.com with SMTP id n128so60518190pfn.3
- for <linux-mtd@lists.infradead.org>; Sat, 23 Jan 2016 13:11:54 -0800 (PST)
-Date: Sat, 23 Jan 2016 13:11:52 -0800
+ id 1aN5Z5-0005AF-EW
+ for linux-mtd@lists.infradead.org; Sat, 23 Jan 2016 21:17:48 +0000
+Received: by mail-pa0-x235.google.com with SMTP id uo6so60962141pac.1
+ for <linux-mtd@lists.infradead.org>; Sat, 23 Jan 2016 13:17:27 -0800 (PST)
+Date: Sat, 23 Jan 2016 13:17:23 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Yuan Yao <yao.yuan@freescale.com>
-Cc: dwmw2@infradead.org, han.xu@freescale.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, yao.yuan@nxp.com
-Subject: Re: [PATCH v3 1/3] mtd: spi-nor: fsl-quadspi: add big-endian support
-Message-ID: <20160123211152.GD35559@google.com>
+To: Han Xu <xhnjupt@gmail.com>
+Cc: Yao Yuan <yao.yuan@nxp.com>, Yuan Yao <yao.yuan@freescale.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "han.xu@freescale.com" <han.xu@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: mtd: spi-nor: fsl-quadspi: add support for ls1021a
+Message-ID: <20160123211723.GA24744@localhost>
 References: <1453362836-44377-1-git-send-email-yao.yuan@freescale.com>
- <1453362836-44377-2-git-send-email-yao.yuan@freescale.com>
+ <CA+EcR20=OaZOOPMKVys-NDbTeXhEDCzre8L_vv53s+Ukv3XQLw@mail.gmail.com>
+ <AM2PR04MB072287A0E9C83F507FDF282389C40@AM2PR04MB0722.eurprd04.prod.outlook.com>
+ <CA+EcR2197eSd--Xt2ePXJc5kW1qhDa5_5DQh9R4s6HdFtDs_Qw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1453362836-44377-2-git-send-email-yao.yuan@freescale.com>
+In-Reply-To: <CA+EcR2197eSd--Xt2ePXJc5kW1qhDa5_5DQh9R4s6HdFtDs_Qw@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 21, 2016 at 03:53:54PM +0800, Yuan Yao wrote:
-> Add R/W functions for big- or little-endian registers:
-> The qSPI controller's endian is independent of the CPU core's endian.
-> So far, the qSPI have two versions for big-endian and little-endian.
+On Fri, Jan 22, 2016 at 11:30:55AM -0600, Han Xu wrote:
+> On Fri, Jan 22, 2016 at 3:01 AM, Yao Yuan <yao.yuan@nxp.com> wrote:
+> > On Thu, Jan 21, 2016 at 11:42 PM, Han Xu < xhnjupt@gmail.com > wrote:
+> >> On Thu, Jan 21, 2016 at 1:53 AM, Yuan Yao <yao.yuan@freescale.com> wrote:
+> >> > Any extra information you can find them on the patchwork:
+> >> > https://patchwork.kernel.org/patch/8078931/
+> >> > https://patchwork.kernel.org/patch/8078951/
+> >> > https://patchwork.kernel.org/patch/8079091/
+> >> > https://patchwork.kernel.org/patch/8078941/
+> >>
+> >> Please send all patches in one patch set, this is not acceptable.
+> >>
+> >
+> > Thanks for your review.
+> > But those patches are dts binding patch. And will send to  devicetree@vger.kernel.org and some corresponding maintainer.
+> >
+> > Those two patch sets will send to different mail-list and maintainers separately.
+> >
+> > So, maybe it's better to send the patch to the maintainer accordingly and thus I think can also reduce the workload of maintainer.
+> >
+> > How about your think?
 > 
-> Signed-off-by: Yuan Yao <yao.yuan@nxp.com>
-> Acked-by: Han xu <han.xu@freescale.com>
-> ---
+> Send the complete patch set to maintainer and cc all related
+> sub-module groups, so everybody could understand the whole story.
 
-...
+Agreed. You apparently did not read the suggested documentation from
+last time:
 
-> @@ -954,6 +990,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->  	if (IS_ERR(q->iobase))
->  		return PTR_ERR(q->iobase);
->  
-> +	q->big_endian = of_property_read_bool(np, "big-endian");
->  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
->  					"QuadSPI-memory");
->  	if (!devm_request_mem_region(dev, res->start, resource_size(res),
+  Documentation/devicetree/bindings/submitting-patches.txt
 
-Still no documentation for this property?? You're trying my patience.
-We've had the same request since November, and you haven't managed to
-satisfy it.
+Particularly, points 2 and 3.
+
+Subsystem maintainers merge binding patches, so please send them as part
+of the regular series.
+
+Brian
