@@ -1,10 +1,10 @@
-Received: from mail-pf0-x229.google.com ([2607:f8b0:400e:c00::229])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aN79A-0001Te-DX
- for linux-mtd@lists.infradead.org; Sat, 23 Jan 2016 22:59:08 +0000
-Received: by mail-pf0-x229.google.com with SMTP id 65so61368887pff.2
- for <linux-mtd@lists.infradead.org>; Sat, 23 Jan 2016 14:58:47 -0800 (PST)
-Date: Sat, 23 Jan 2016 14:58:42 -0800
+ id 1aN7CA-0003IT-JS
+ for linux-mtd@lists.infradead.org; Sat, 23 Jan 2016 23:02:15 +0000
+Received: by mail-pa0-x232.google.com with SMTP id cy9so60518388pac.0
+ for <linux-mtd@lists.infradead.org>; Sat, 23 Jan 2016 15:01:53 -0800 (PST)
+Date: Sat, 23 Jan 2016 15:01:47 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Han Xu <b45815@freescale.com>
 Cc: shijie.huang@arm.com, dwmw2@infradead.org,
@@ -12,15 +12,16 @@ Cc: shijie.huang@arm.com, dwmw2@infradead.org,
  hofrat@osadl.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, vinod.koul@intel.com,
  dan.j.williams@intel.com, dmaengine@vger.kernel.org,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v8 5/7] mtd: nand: gpmi: add GPMI NAND support for i.MX7D
-Message-ID: <20160123225842.GI24744@localhost>
+ Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH v8 6/7] mtd: nand: gpmi: correct bitflip for erased NAND
+ page
+Message-ID: <20160123230147.GJ24744@localhost>
 References: <1449096466-18064-1-git-send-email-b45815@freescale.com>
- <1449096466-18064-6-git-send-email-b45815@freescale.com>
+ <1449096466-18064-7-git-send-email-b45815@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1449096466-18064-6-git-send-email-b45815@freescale.com>
+In-Reply-To: <1449096466-18064-7-git-send-email-b45815@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,50 +31,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 02, 2015 at 04:47:44PM -0600, Han Xu wrote:
-> support GPMI NAND on i.MX7D
-> 
-> Signed-off-by: Han Xu <b45815@freescale.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/bch-regs.h  | 14 +++++++-------
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 10 ++++++----
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 27 ++++++++++++++++++++++-----
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  7 +++++--
->  4 files changed, 40 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> index 05bb91f..53e58bc 100644
-> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
++ Markus Pargmann
 
-...
+On Wed, Dec 02, 2015 at 04:47:45PM -0600, Han Xu wrote:
+> i.MX6QP and i.MX7D BCH module integrated a new feature to detect the
+> bitflip number for erased NAND page. So for these two platform, set the
+> erase threshold to ecc_strength and if bitflip detected, GPMI driver will
+> correct the data to all 0xFF.
 
-> @@ -575,6 +581,10 @@ static char *extra_clks_for_mx6q[GPMI_CLK_MAX] = {
->  	"gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
->  };
->  
-> +static char *extra_clks_for_mx7d[GPMI_CLK_MAX] = {
-> +	"gpmi_bch_apb",
-> +};
-> +
->  static int gpmi_get_clks(struct gpmi_nand_data *this)
->  {
->  	struct resources *r = &this->resources;
-> @@ -592,6 +602,8 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
->  	/* Get extra clocks */
->  	if (GPMI_IS_MX6(this))
->  		extra_clks = extra_clks_for_mx6q;
-> +	if (GPMI_IS_MX7(this))
-> +		extra_clks = extra_clks_for_mx7d;
->  	if (!extra_clks)
->  		return 0;
->  
+Looks like Marcus is also trying to add SW correction for the same
+issue:
 
-...
+http://patchwork.ozlabs.org/patch/559557/
 
-It looks like these clock names were never documented. Shouldn't this be
-part of Documentation/devicetree/bindings/mtd/gpmi-nand.txt?
-
-Otherwise, the patch looks good to me.
+How do those 2 interact (if at all)?
 
 Brian
+
+> Signed-off-by: Han Xu <b45815@freescale.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/bch-regs.h  | 10 ++++++++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  5 +++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 24 +++++++++++++++++++++++-
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  5 ++++-
+>  4 files changed, 42 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+> index 53e58bc..a84d72b 100644
+> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
+> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+> @@ -30,7 +30,13 @@
+>  #define BM_BCH_CTRL_COMPLETE_IRQ		(1 << 0)
+>  
+>  #define HW_BCH_STATUS0				0x00000010
+> +
+>  #define HW_BCH_MODE				0x00000020
+> +#define BP_BCH_MODE_ERASE_THRESHOLD		0
+> +#define BM_BCH_MODE_ERASE_THRESHOLD	(0xff << BP_BCH_MODE_ERASE_THRESHOLD)
+> +#define BF_BCH_MODE_ERASE_THRESHOLD(v)		\
+> +	(((v) << BP_BCH_MODE_ERASE_THRESHOLD) & BM_BCH_MODE_ERASE_THRESHOLD)
+> +
+>  #define HW_BCH_ENCODEPTR			0x00000030
+>  #define HW_BCH_DATAPTR				0x00000040
+>  #define HW_BCH_METAPTR				0x00000050
+> @@ -125,4 +131,8 @@
+>  	)
+>  
+>  #define HW_BCH_VERSION				0x00000160
+> +#define HW_BCH_DEBUG1				0x00000170
+> +#define BP_BCH_DEBUG1_ERASED_ZERO_COUNT	0
+> +#define BM_BCH_DEBUG1_ERASED_ZERO_COUNT		\
+> +		(0x1ff << BP_BCH_DEBUG1_ERASED_ZERO_COUNT)
+>  #endif
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> index 1f26a79..0548d84 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> @@ -298,6 +298,11 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>  			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
+>  			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
+>  
+> +	/* Set erase threshold to ecc_strength for mx6qp and mx7 */
+> +	if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
+> +		writel(BF_BCH_MODE_ERASE_THRESHOLD(ecc_strength),
+> +			r->bch_regs + HW_BCH_MODE);
+> +
+>  	/* Set *all* chip selects to use layout 0. */
+>  	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
+>  
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 9f67f0f..9dea56e 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -71,6 +71,12 @@ static const struct gpmi_devdata gpmi_devdata_imx6q = {
+>  	.max_chain_delay = 12,
+>  };
+>  
+> +static const struct gpmi_devdata gpmi_devdata_imx6qp = {
+> +	.type = IS_MX6QP,
+> +	.bch_max_ecc_strength = 40,
+> +	.max_chain_delay = 12,
+> +};
+> +
+>  static const struct gpmi_devdata gpmi_devdata_imx6sx = {
+>  	.type = IS_MX6SX,
+>  	.bch_max_ecc_strength = 62,
+> @@ -1010,6 +1016,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  {
+>  	struct gpmi_nand_data *this = chip->priv;
+>  	struct bch_geometry *nfc_geo = &this->bch_geometry;
+> +	void __iomem *bch_regs = this->resources.bch_regs;
+>  	void          *payload_virt;
+>  	dma_addr_t    payload_phys;
+>  	void          *auxiliary_virt;
+> @@ -1018,6 +1025,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	unsigned char *status;
+>  	unsigned int  max_bitflips = 0;
+>  	int           ret;
+> +	int flag = 0;
+>  
+>  	dev_dbg(this->dev, "page number is : %d\n", page);
+>  	ret = read_page_prepare(this, buf, nfc_geo->payload_size,
+> @@ -1050,9 +1058,16 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+>  
+>  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+> -		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+> +		if (*status == STATUS_GOOD)
+>  			continue;
+>  
+> +		if (*status == STATUS_ERASED) {
+> +			if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
+> +				if (readl(bch_regs + HW_BCH_DEBUG1))
+> +					flag = 1;
+> +			continue;
+> +		}
+> +
+>  		if (*status == STATUS_UNCORRECTABLE) {
+>  			mtd->ecc_stats.failed++;
+>  			continue;
+> @@ -1081,6 +1096,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  			nfc_geo->payload_size,
+>  			payload_virt, payload_phys);
+>  
+> +	/* if bitflip occurred in erased page, change data to all 0xff */
+> +	if (flag)
+> +		memset(buf, 0xff, nfc_geo->payload_size);
+> +
+>  	return max_bitflips;
+>  }
+>  
+> @@ -1990,6 +2009,9 @@ static const struct of_device_id gpmi_nand_id_table[] = {
+>  		.compatible = "fsl,imx6q-gpmi-nand",
+>  		.data = &gpmi_devdata_imx6q,
+>  	}, {
+> +		.compatible = "fsl,imx6qp-gpmi-nand",
+> +		.data = (void *)&gpmi_devdata_imx6qp,
+> +	}, {
+>  		.compatible = "fsl,imx6sx-gpmi-nand",
+>  		.data = &gpmi_devdata_imx6sx,
+>  	}, {
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> index 58b3d69..149a442 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> @@ -123,6 +123,7 @@ enum gpmi_type {
+>  	IS_MX23,
+>  	IS_MX28,
+>  	IS_MX6Q,
+> +	IS_MX6QP,
+>  	IS_MX6SX,
+>  	IS_MX7D,
+>  };
+> @@ -306,9 +307,11 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
+>  #define GPMI_IS_MX23(x)		((x)->devdata->type == IS_MX23)
+>  #define GPMI_IS_MX28(x)		((x)->devdata->type == IS_MX28)
+>  #define GPMI_IS_MX6Q(x)		((x)->devdata->type == IS_MX6Q)
+> +#define GPMI_IS_MX6QP(x)	((x)->devdata->type == IS_MX6QP)
+>  #define GPMI_IS_MX6SX(x)	((x)->devdata->type == IS_MX6SX)
+>  #define GPMI_IS_MX7D(x)		((x)->devdata->type == IS_MX7D)
+>  
+> -#define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
+> +#define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6QP(x)\
+> +	   || GPMI_IS_MX6SX(x))
+>  #define GPMI_IS_MX7(x)		(GPMI_IS_MX7D(x))
+>  #endif
+> -- 
+> 1.9.1
+> 
