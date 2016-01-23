@@ -1,24 +1,21 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aN538-0000Bn-AJ
- for linux-mtd@lists.infradead.org; Sat, 23 Jan 2016 20:44:46 +0000
-Received: by mail-pa0-x230.google.com with SMTP id ho8so59405575pac.2
- for <linux-mtd@lists.infradead.org>; Sat, 23 Jan 2016 12:44:25 -0800 (PST)
-Date: Sat, 23 Jan 2016 12:44:22 -0800
+Date: Sat, 23 Jan 2016 12:55:34 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Romain Izard <romain.izard.pro@gmail.com>, devicetree@vger.kernel.org,
- Yang Wenyou <Wenyou.Yang@atmel.com>, linux-mtd@lists.infradead.org,
- Nicolas Ferre <nicolas.ferre@atmel.com>, Josh Wu <rainyfeeling@outlook.com>
-Subject: Re: [PATCH v1 1/5] mtd: atmel_nand: Do not warn on bitflips
-Message-ID: <20160123204422.GA35559@google.com>
-References: <1452702857-2240-1-git-send-email-romain.izard.pro@gmail.com>
- <1452702857-2240-2-git-send-email-romain.izard.pro@gmail.com>
- <20160113185421.22e1cb9c@bbrezillon>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2 3/3] mtd: nand: sunxi: add randomizer support
+Message-ID: <20160123205534.GB35559@google.com>
+References: <1449054067-16751-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1449054067-16751-4-git-send-email-boris.brezillon@free-electrons.com>
+ <20160123025713.GA90611@google.com>
+ <20160123091844.4826ffe6@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160113185421.22e1cb9c@bbrezillon>
+In-Reply-To: <20160123091844.4826ffe6@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 13, 2016 at 06:54:21PM +0100, Boris Brezillon wrote:
-> On Wed, 13 Jan 2016 17:34:13 +0100
-> Romain Izard <romain.izard.pro@gmail.com> wrote:
-> 
-> > When using multi-bit ECC, it is normal for the NAND Flash driver to
-> > correct bit errors during the life of the product. Those errors will
-> > only be cleared once a threshold has been reached, and corrections can
-> > occur regularly before this.
+On Sat, Jan 23, 2016 at 09:18:44AM +0100, Boris Brezillon wrote:
+> On Fri, 22 Jan 2016 18:57:13 -0800
+> Brian Norris <computersforpeace@gmail.com> wrote:
 > > 
-> > Use only dev_dbg and not dev_info to report the bitflips, to keep the
-> > system log clean when everything works correctly.
+> > From: Brian Norris <computersforpeace@gmail.com>
+> > Date: Fri, 22 Jan 2016 18:54:02 -0800
+> > Subject: [PATCH] mtd: nand: sunxi: use mtd_div_by_ws() helper
 > > 
-> > Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
-> > Acked-by:  Wenyou Yang <wenyou.yang@atmel.com>
+> > Suggested-by: Richard Weinberger <richard@nod.at>
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > 
-> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Pushed patch 1 to l2-mtd.git/next
+Applied.
+
+> > ---
+> >  drivers/mtd/nand/sunxi_nand.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> > index 5f700719d5c2..b5ea6b312df0 100644
+> > --- a/drivers/mtd/nand/sunxi_nand.c
+> > +++ b/drivers/mtd/nand/sunxi_nand.c
+> > @@ -624,7 +624,7 @@ static u16 sunxi_nfc_randomizer_step(u16 state, int count)
+> >  static u16 sunxi_nfc_randomizer_state(struct mtd_info *mtd, int page, bool ecc)
+> >  {
+> >  	const u16 *seeds = sunxi_nfc_randomizer_page_seeds;
+> > -	int mod = mtd->erasesize / mtd->writesize;
+> > +	int mod = mtd_div_by_ws(mtd->erasesize, mtd);
+> 
+> Just a comment (which should not prevent you from applying this patch).
+> Isn't it a bit overkill to cast the erasesize to a 64 bit value, and
+> then do a do_div on it. Shouldn't happen often though, because
+> ->writesize_shift should be != 0 in most (all?) cases.
+
+drivers/mtd/nand/ assumes power-of-2 dimensions for many things, so
+probably.
+
+> Another related remark: with the MLC/paired pages stuff I'll have to
+> retrieve this information (number of write units per erase block) quite
+> often, so maybe we should have a field (and/or an helper) for that.
+
+Perhaps.
+
+Brian
