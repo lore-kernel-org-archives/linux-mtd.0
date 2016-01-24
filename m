@@ -1,41 +1,16 @@
-Received: from mail-ig0-x235.google.com ([2607:f8b0:4001:c05::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNHDf-0001y5-T1
- for linux-mtd@lists.infradead.org; Sun, 24 Jan 2016 09:44:28 +0000
-Received: by mail-ig0-x235.google.com with SMTP id z14so17451396igp.0
- for <linux-mtd@lists.infradead.org>; Sun, 24 Jan 2016 01:44:06 -0800 (PST)
+Received: from [2001:41d0:52:300::49b] (helo=vps142732.ovh.net)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aNKyT-00051p-55
+ for linux-mtd@lists.infradead.org; Sun, 24 Jan 2016 13:45:01 +0000
+To: linux-mtd@lists.infradead.org
+Subject: You have received fax, document 00000931897
+Date: Sun, 24 Jan 2016 14:37:56 +0100
+From: "Interfax Online" <incoming@interfax.net>
+Reply-To: "Interfax Online" <incoming@interfax.net>
+Message-ID: <9884bb505b2a3d71be87d6730a0434f8@interfax.net>
 MIME-Version: 1.0
-In-Reply-To: <20160123214918.GC24744@localhost>
-References: <1444813494-14985-1-git-send-email-javier@osg.samsung.com>
- <CACna6rwjMfTT4UgbyO=VmLaPic4xGcPxoMEL5yRmLW7hhvhXJQ@mail.gmail.com>
- <20151104185341.GN7274@google.com>
- <alpine.LFD.2.20.1601072006170.29879@eddie.linux-mips.org>
- <20160107230513.GL109450@google.com>
- <CACna6rw6Q=zaSo91ZK26zgjQ+0j+7=b6C_fPYngaKhnw0OmWeQ@mail.gmail.com>
- <alpine.LFD.2.20.1601081358300.29879@eddie.linux-mips.org>
- <20160108185120.GQ109450@google.com>
- <alpine.LFD.2.20.1601090058430.29879@eddie.linux-mips.org>
- <CACna6rwAfXQxX8o0+DxroB6vOGZax70VVdPOAjeoGGUsDjdNhA@mail.gmail.com>
- <20160123214918.GC24744@localhost>
-Date: Sun, 24 Jan 2016 10:44:06 +0100
-Message-ID: <CACna6rzd8q5ziy3FkN2F5j7DaV6tsM1s1z8jeLzEEurvnEQ_Ow@mail.gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxsflash: use devm_ioremap_nocache() instead of
- KSEG0ADDR()
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>
-Cc: "Maciej W. Rozycki" <macro@linux-mips.org>,
- Ralf Baechle <ralf@linux-mips.org>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Fengguang Wu <fengguang.wu@intel.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
- Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Cyril Bur <cyrilbur@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="b1_892e8f5b289abde2251b020148b2ccb4"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,47 +20,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 23 January 2016 at 22:49, Brian Norris <computersforpeace@gmail.com> wro=
-te:
-> On Sat, Jan 16, 2016 at 01:38:11AM +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
->> So I wanted to stick to the cached mapping, [...]
->
-> I mentioned this earlier on, but I don't feel like I've gotten a clear
-> answer. Is a cached mapping actually safe here? From the looks of it,
-> the memory mapping is a read-only memory-mapped flash, and flash writes
-> / erasures are done through a different bus (register writes vis BCMA
-> bus). So if we have a cached mapping of that memory, it doens't
-> naturally synchronize with any write/erase operations. Doesn't this mean
-> you might get stale data if you do a sequence of read / erase / read,
-> for instance, since the 2nd read will return cached data from the 1st
-> read?
->
-> IIUC, this could be solved by:
-> (a) using an uncached mapping or
-> (b) explicitly invalidating the relevant region after doing flash writes
-> or erasures
->
-> But I wonder why you haven't seen any problems if you've been using
-> KSEG0 (cached) this whole time. Maybe just luck? Or you don't actually
-> write to the flash that much?
+--b1_892e8f5b289abde2251b020148b2ccb4
+Content-Type: text/plain; charset=us-ascii
 
-Now you pointed this difference between reads and writes I sounds
-worrying indeed. I'm not aware of ever hitting this problem but maybe
-I just didn't use flash in a way triggering it?
+New incoming fax document.
 
-I'm looking for a way to test it. Using user space I could try doing
-something like:
-echo foo > a.txt
-cat a.txt
-echo bar > a.txt
-cat a.txt
+To view it please open the attachment.
 
-I guess even more reliable test would to be test in in kernel space. I
-guess I could modify bcm47xxsflash_write to read flash region that is
-going to be modified: before modification and after. Both reads using
-KSEG0ADDR. Then compare if the second read matches was was written.
+Processed in:         10 seconds
+Quality:              100 DPI
+Date:                 Sun, 24 Jan 2016 15:02:55 +0300
+Scanned by:           Erik Farmer
+Document name:        document_00000931897.doc
+Pages:                7
+Filesize:             293 Kb
 
-Does my idea for tests make sense?
+Thanks for using Interfax service!
 
---=20
-Rafa=C5=82
+
+--b1_892e8f5b289abde2251b020148b2ccb4
+Content-Type: application/zip; name="document_00000931897.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=document_00000931897.zip
+
+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
+AQBJAAAAdwUAAAAA
+
+
+--b1_892e8f5b289abde2251b020148b2ccb4--
