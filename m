@@ -1,16 +1,26 @@
-Received: from [2001:41d0:52:300::49b] (helo=vps142732.ovh.net)
+Received: from mailapp01.imgtec.com ([195.59.15.196])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNKyT-00051p-55
- for linux-mtd@lists.infradead.org; Sun, 24 Jan 2016 13:45:01 +0000
-To: linux-mtd@lists.infradead.org
-Subject: You have received fax, document 00000931897
-Date: Sun, 24 Jan 2016 14:37:56 +0100
-From: "Interfax Online" <incoming@interfax.net>
-Reply-To: "Interfax Online" <incoming@interfax.net>
-Message-ID: <9884bb505b2a3d71be87d6730a0434f8@interfax.net>
+ id 1aNR6J-0004AX-V5
+ for linux-mtd@lists.infradead.org; Sun, 24 Jan 2016 20:17:32 +0000
+Date: Sun, 24 Jan 2016 20:17:37 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+To: =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>
+CC: Brian Norris <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>, Javier Martinez Canillas
+ <javier@osg.samsung.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Fengguang Wu <fengguang.wu@intel.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Luis de Bethencourt
+ <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>, Neelesh Gupta
+ <neelegup@linux.vnet.ibm.com>, David Woodhouse <dwmw2@infradead.org>, Cyril
+ Bur <cyrilbur@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH] mtd: bcm47xxsflash: use ioremap_cachable() instead of
+ KSEG0ADDR()
+In-Reply-To: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
+Message-ID: <alpine.DEB.2.00.1601240345260.5958@tp.orcam.me.uk>
+References: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_892e8f5b289abde2251b020148b2ccb4"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="ISO-8859-2"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +30,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_892e8f5b289abde2251b020148b2ccb4
-Content-Type: text/plain; charset=us-ascii
+On Sun, 17 Jan 2016, Rafa³ Mi³ecki wrote:
 
-New incoming fax document.
+> Using KSEG0ADDR makes code highly MIPS dependent and not portable.
+> Ideally we should use ioremap_cache which is generic but right now MIPS
+> doesn't define it which results in kernel using ioremap instead.
+> Once MIPS gets ioremap_cache we will switch to it, it's going to be
+> trivial with this patch applied first.
 
-To view it please open the attachment.
+ Agreed, I think your proposal is a move in the right direction and does 
+not regress current code as we're using KSEG0ADDR anyway, which is 
+MIPS-specific.
 
-Processed in:         10 seconds
-Quality:              100 DPI
-Date:                 Sun, 24 Jan 2016 15:02:55 +0300
-Scanned by:           Erik Farmer
-Document name:        document_00000931897.doc
-Pages:                7
-Filesize:             293 Kb
+> KSEG0ADDR was translating 0x1c000000 into 0x9c000000. With
+> ioremap_cachable we use MIPS's __ioremap (and remap_area_pages). This
+> results in different address (e.g. 0xc0080000) but it still should be
+> cached as expected and it was successfully tested with BCM47186B0.
 
-Thanks for using Interfax service!
+ This is due to this piece:
 
+	/*
+	 * Map uncached objects in the low 512mb of address space using KSEG1,
+	 * otherwise map using page tables.
+	 */
+	if (IS_LOW512(phys_addr) && IS_LOW512(last_addr) &&
+	    flags == _CACHE_UNCACHED)
+		return (void __iomem *) CKSEG1ADDR(phys_addr);
 
---b1_892e8f5b289abde2251b020148b2ccb4
-Content-Type: application/zip; name="document_00000931897.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=document_00000931897.zip
+special-casing uncached mapping only (replicated in 2 places).  I think 
+there will really be no harm from returning a KSEG0 mapping for calls 
+requesting a caching mode equal to `_page_cachable_default', which -- 
+depending on the cache architecture -- will have been either hardwired or 
+prearranged via Config.K0.  I think there's really no need to put pressure 
+on the TLB, which may be small, in cases where a fixed mapping will do.
 
-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
-AQBJAAAAdwUAAAAA
+ We also seem to pessimise the `cpu_has_64bit_addresses' case and always 
+return a fixed uncached mapping, regardless of the mode requested, hmm...
 
+> Moreover drivers/bcma/driver_chipcommon_sflash.c nicely sets us up a
+> struct resource for access window, but we just aren't using it. Use it
+> now and drop duplicated info.
 
---b1_892e8f5b289abde2251b020148b2ccb4--
+ Agreed, again, except from one nit, as noted below.
+
+> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+> index 347bb83..84f8fae 100644
+> --- a/drivers/mtd/devices/bcm47xxsflash.c
+> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+> @@ -275,15 +275,33 @@ static void bcm47xxsflash_bcma_cc_write(struct bcm47xxsflash *b47s, u16 offset,
+>  
+>  static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+>  {
+> -	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
+> +	struct device *dev = &pdev->dev;
+> +	struct bcma_sflash *sflash = dev_get_platdata(dev);
+>  	struct bcm47xxsflash *b47s;
+> +	struct resource *res;
+>  	int err;
+>  
+> -	b47s = devm_kzalloc(&pdev->dev, sizeof(*b47s), GFP_KERNEL);
+> +	b47s = devm_kzalloc(dev, sizeof(*b47s), GFP_KERNEL);
+>  	if (!b47s)
+>  		return -ENOMEM;
+>  	sflash->priv = b47s;
+>  
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(dev, "invalid resource\n");
+> +		return -EINVAL;
+> +	}
+> +	if (!devm_request_mem_region(dev, res->start, resource_size(res),
+> +				     res->name)) {
+> +		dev_err(dev, "can't request region for resource %pR\n", res);
+> +		return -EBUSY;
+> +	}
+> +	b47s->window = ioremap_cachable(res->start, resource_size(res));
+> +	if (!b47s->window) {
+> +		dev_err(dev, "ioremap failed for resource %pR\n", res);
+
+ You need to call `devm_release_mem_region' in this case.
+
+> +		return -ENOMEM;
+> +	}
+> +
+>  	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
+>  	b47s->cc_read = bcm47xxsflash_bcma_cc_read;
+>  	b47s->cc_write = bcm47xxsflash_bcma_cc_write;
+
+ LGTM otherwise.
+
+  Maciej
