@@ -1,26 +1,35 @@
 Received: from mailapp01.imgtec.com ([195.59.15.196])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNR6J-0004AX-V5
- for linux-mtd@lists.infradead.org; Sun, 24 Jan 2016 20:17:32 +0000
-Date: Sun, 24 Jan 2016 20:17:37 +0000
+ id 1aNREe-000846-R6
+ for linux-mtd@lists.infradead.org; Sun, 24 Jan 2016 20:26:12 +0000
+Date: Sun, 24 Jan 2016 20:26:15 +0000
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-To: =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>
-CC: Brian Norris <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>, Javier Martinez Canillas
- <javier@osg.samsung.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Fengguang Wu <fengguang.wu@intel.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Luis de Bethencourt
- <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>, Neelesh Gupta
- <neelegup@linux.vnet.ibm.com>, David Woodhouse <dwmw2@infradead.org>, Cyril
- Bur <cyrilbur@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH] mtd: bcm47xxsflash: use ioremap_cachable() instead of
- KSEG0ADDR()
-In-Reply-To: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
-Message-ID: <alpine.DEB.2.00.1601240345260.5958@tp.orcam.me.uk>
-References: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>, Ralf Baechle
+ <ralf@linux-mips.org>, Javier Martinez Canillas <javier@osg.samsung.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Fengguang Wu
+ <fengguang.wu@intel.com>, Michael Ellerman <mpe@ellerman.id.au>, Luis de
+ Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>, Neelesh
+ Gupta <neelegup@linux.vnet.ibm.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>, Cyril
+ Bur <cyrilbur@gmail.com>, "Maciej W. Rozycki" <macro@linux-mips.org>
+Subject: Re: [PATCH] mtd: bcm47xxsflash: use devm_ioremap_nocache() instead
+ of KSEG0ADDR()
+In-Reply-To: <20160123214918.GC24744@localhost>
+Message-ID: <alpine.DEB.2.00.1601242020330.5958@tp.orcam.me.uk>
+References: <1444813494-14985-1-git-send-email-javier@osg.samsung.com>
+ <CACna6rwjMfTT4UgbyO=VmLaPic4xGcPxoMEL5yRmLW7hhvhXJQ@mail.gmail.com>
+ <20151104185341.GN7274@google.com>
+ <alpine.LFD.2.20.1601072006170.29879@eddie.linux-mips.org>
+ <20160107230513.GL109450@google.com>
+ <CACna6rw6Q=zaSo91ZK26zgjQ+0j+7=b6C_fPYngaKhnw0OmWeQ@mail.gmail.com>
+ <alpine.LFD.2.20.1601081358300.29879@eddie.linux-mips.org>
+ <20160108185120.GQ109450@google.com>
+ <alpine.LFD.2.20.1601090058430.29879@eddie.linux-mips.org>
+ <CACna6rwAfXQxX8o0+DxroB6vOGZax70VVdPOAjeoGGUsDjdNhA@mail.gmail.com>
+ <20160123214918.GC24744@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-2"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,93 +39,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 17 Jan 2016, Rafa³ Mi³ecki wrote:
+On Sat, 23 Jan 2016, Brian Norris wrote:
 
-> Using KSEG0ADDR makes code highly MIPS dependent and not portable.
-> Ideally we should use ioremap_cache which is generic but right now MIPS
-> doesn't define it which results in kernel using ioremap instead.
-> Once MIPS gets ioremap_cache we will switch to it, it's going to be
-> trivial with this patch applied first.
+> IIUC, this could be solved by:
+> (a) using an uncached mapping or
+> (b) explicitly invalidating the relevant region after doing flash writes
+> or erasures
 
- Agreed, I think your proposal is a move in the right direction and does 
-not regress current code as we're using KSEG0ADDR anyway, which is 
-MIPS-specific.
+ Flash writes are usually much, much less frequent than reads, so 
+optimising for reads is IMO the right direction.  So a cached mapping is a 
+good choice, however invalidation must then be done after a write.
 
-> KSEG0ADDR was translating 0x1c000000 into 0x9c000000. With
-> ioremap_cachable we use MIPS's __ioremap (and remap_area_pages). This
-> results in different address (e.g. 0xc0080000) but it still should be
-> cached as expected and it was successfully tested with BCM47186B0.
+> But I wonder why you haven't seen any problems if you've been using
+> KSEG0 (cached) this whole time. Maybe just luck? Or you don't actually
+> write to the flash that much?
 
- This is due to this piece:
-
-	/*
-	 * Map uncached objects in the low 512mb of address space using KSEG1,
-	 * otherwise map using page tables.
-	 */
-	if (IS_LOW512(phys_addr) && IS_LOW512(last_addr) &&
-	    flags == _CACHE_UNCACHED)
-		return (void __iomem *) CKSEG1ADDR(phys_addr);
-
-special-casing uncached mapping only (replicated in 2 places).  I think 
-there will really be no harm from returning a KSEG0 mapping for calls 
-requesting a caching mode equal to `_page_cachable_default', which -- 
-depending on the cache architecture -- will have been either hardwired or 
-prearranged via Config.K0.  I think there's really no need to put pressure 
-on the TLB, which may be small, in cases where a fixed mapping will do.
-
- We also seem to pessimise the `cpu_has_64bit_addresses' case and always 
-return a fixed uncached mapping, regardless of the mode requested, hmm...
-
-> Moreover drivers/bcma/driver_chipcommon_sflash.c nicely sets us up a
-> struct resource for access window, but we just aren't using it. Use it
-> now and drop duplicated info.
-
- Agreed, again, except from one nit, as noted below.
-
-> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-> index 347bb83..84f8fae 100644
-> --- a/drivers/mtd/devices/bcm47xxsflash.c
-> +++ b/drivers/mtd/devices/bcm47xxsflash.c
-> @@ -275,15 +275,33 @@ static void bcm47xxsflash_bcma_cc_write(struct bcm47xxsflash *b47s, u16 offset,
->  
->  static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
->  {
-> -	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
-> +	struct device *dev = &pdev->dev;
-> +	struct bcma_sflash *sflash = dev_get_platdata(dev);
->  	struct bcm47xxsflash *b47s;
-> +	struct resource *res;
->  	int err;
->  
-> -	b47s = devm_kzalloc(&pdev->dev, sizeof(*b47s), GFP_KERNEL);
-> +	b47s = devm_kzalloc(dev, sizeof(*b47s), GFP_KERNEL);
->  	if (!b47s)
->  		return -ENOMEM;
->  	sflash->priv = b47s;
->  
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(dev, "invalid resource\n");
-> +		return -EINVAL;
-> +	}
-> +	if (!devm_request_mem_region(dev, res->start, resource_size(res),
-> +				     res->name)) {
-> +		dev_err(dev, "can't request region for resource %pR\n", res);
-> +		return -EBUSY;
-> +	}
-> +	b47s->window = ioremap_cachable(res->start, resource_size(res));
-> +	if (!b47s->window) {
-> +		dev_err(dev, "ioremap failed for resource %pR\n", res);
-
- You need to call `devm_release_mem_region' in this case.
-
-> +		return -ENOMEM;
-> +	}
-> +
->  	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
->  	b47s->cc_read = bcm47xxsflash_bcma_cc_read;
->  	b47s->cc_write = bcm47xxsflash_bcma_cc_write;
-
- LGTM otherwise.
+ That depends on cache usage, any stale lines may well have usually gone 
+in the course of regular cache line replacement, making the issue remain 
+unnoticed.
 
   Maciej
