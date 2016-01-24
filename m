@@ -1,21 +1,39 @@
-Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
+Received: from mail-ig0-x235.google.com ([2607:f8b0:4001:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNH1t-00073t-LJ
- for linux-mtd@lists.infradead.org; Sun, 24 Jan 2016 09:32:18 +0000
-Received: by mail-ig0-x22e.google.com with SMTP id z14so17815383igp.1
- for <linux-mtd@lists.infradead.org>; Sun, 24 Jan 2016 01:31:56 -0800 (PST)
+ id 1aNHDf-0001y5-T1
+ for linux-mtd@lists.infradead.org; Sun, 24 Jan 2016 09:44:28 +0000
+Received: by mail-ig0-x235.google.com with SMTP id z14so17451396igp.0
+ for <linux-mtd@lists.infradead.org>; Sun, 24 Jan 2016 01:44:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20160123224509.GE24744@localhost>
-References: <1449277783-7369-1-git-send-email-zajec5@gmail.com>
- <20160123224509.GE24744@localhost>
-Date: Sun, 24 Jan 2016 10:31:56 +0100
-Message-ID: <CACna6rxuxE1y_LffMC-uhrKf8f_8S+g4JC=0jfLQHsnzv=4OEg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxpart: limit scanned flash area on BCM47XX
- (MIPS) only
+In-Reply-To: <20160123214918.GC24744@localhost>
+References: <1444813494-14985-1-git-send-email-javier@osg.samsung.com>
+ <CACna6rwjMfTT4UgbyO=VmLaPic4xGcPxoMEL5yRmLW7hhvhXJQ@mail.gmail.com>
+ <20151104185341.GN7274@google.com>
+ <alpine.LFD.2.20.1601072006170.29879@eddie.linux-mips.org>
+ <20160107230513.GL109450@google.com>
+ <CACna6rw6Q=zaSo91ZK26zgjQ+0j+7=b6C_fPYngaKhnw0OmWeQ@mail.gmail.com>
+ <alpine.LFD.2.20.1601081358300.29879@eddie.linux-mips.org>
+ <20160108185120.GQ109450@google.com>
+ <alpine.LFD.2.20.1601090058430.29879@eddie.linux-mips.org>
+ <CACna6rwAfXQxX8o0+DxroB6vOGZax70VVdPOAjeoGGUsDjdNhA@mail.gmail.com>
+ <20160123214918.GC24744@localhost>
+Date: Sun, 24 Jan 2016 10:44:06 +0100
+Message-ID: <CACna6rzd8q5ziy3FkN2F5j7DaV6tsM1s1z8jeLzEEurvnEQ_Ow@mail.gmail.com>
+Subject: Re: [PATCH] mtd: bcm47xxsflash: use devm_ioremap_nocache() instead of
+ KSEG0ADDR()
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+To: Brian Norris <computersforpeace@gmail.com>,
  Hauke Mehrtens <hauke@hauke-m.de>
+Cc: "Maciej W. Rozycki" <macro@linux-mips.org>,
+ Ralf Baechle <ralf@linux-mips.org>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Fengguang Wu <fengguang.wu@intel.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
+ Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Cyril Bur <cyrilbur@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,21 +45,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 23 January 2016 at 23:45, Brian Norris <computersforpeace@gmail.com> wro=
+On 23 January 2016 at 22:49, Brian Norris <computersforpeace@gmail.com> wro=
 te:
-> On Sat, Dec 05, 2015 at 02:09:43AM +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
->> We allowed using bcm47xxpart on BCM5301X arch with commit:
->> 9e3afa5f5c7 ("mtd: bcm47xxpart: allow enabling on ARCH_BCM_5301X")
->>
->> BCM5301X devices may contain some partitions in higher memory, e.g.
->> Netgear R8000 has board_data at 0x2600000. To detect them we should
->> use size limit on MIPS only.
+> On Sat, Jan 16, 2016 at 01:38:11AM +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> So I wanted to stick to the cached mapping, [...]
 >
-> Why was the siez limit imposed in the first place? Just to make the scan =
-more
-> efficient?
+> I mentioned this earlier on, but I don't feel like I've gotten a clear
+> answer. Is a cached mapping actually safe here? From the looks of it,
+> the memory mapping is a read-only memory-mapped flash, and flash writes
+> / erasures are done through a different bus (register writes vis BCMA
+> bus). So if we have a cached mapping of that memory, it doens't
+> naturally synchronize with any write/erase operations. Doesn't this mean
+> you might get stale data if you do a sequence of read / erase / read,
+> for instance, since the 2nd read will return cached data from the 1st
+> read?
+>
+> IIUC, this could be solved by:
+> (a) using an uncached mapping or
+> (b) explicitly invalidating the relevant region after doing flash writes
+> or erasures
+>
+> But I wonder why you haven't seen any problems if you've been using
+> KSEG0 (cached) this whole time. Maybe just luck? Or you don't actually
+> write to the flash that much?
 
-That's correct, just to save a minimal amount of time.
+Now you pointed this difference between reads and writes I sounds
+worrying indeed. I'm not aware of ever hitting this problem but maybe
+I just didn't use flash in a way triggering it?
+
+I'm looking for a way to test it. Using user space I could try doing
+something like:
+echo foo > a.txt
+cat a.txt
+echo bar > a.txt
+cat a.txt
+
+I guess even more reliable test would to be test in in kernel space. I
+guess I could modify bcm47xxsflash_write to read flash region that is
+going to be modified: before modification and after. Both reads using
+KSEG0ADDR. Then compare if the second read matches was was written.
+
+Does my idea for tests make sense?
 
 --=20
 Rafa=C5=82
