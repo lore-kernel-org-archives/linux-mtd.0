@@ -1,15 +1,15 @@
-Received: from mail-vk0-x231.google.com ([2607:f8b0:400c:c05::231])
+Received: from mail-vk0-x235.google.com ([2607:f8b0:400c:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNp18-0003FZ-1l
- for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 21:49:46 +0000
-Received: by mail-vk0-x231.google.com with SMTP id e64so82431683vkg.0
- for <linux-mtd@lists.infradead.org>; Mon, 25 Jan 2016 13:49:25 -0800 (PST)
+ id 1aNp4z-0005gg-67
+ for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 21:53:45 +0000
+Received: by mail-vk0-x235.google.com with SMTP id k1so81712381vkb.2
+ for <linux-mtd@lists.infradead.org>; Mon, 25 Jan 2016 13:53:24 -0800 (PST)
 MIME-Version: 1.0
-Date: Mon, 25 Jan 2016 15:49:24 -0600
-Message-ID: <CA+EcR21bhLHtHxn=bWk7wQ6XQ=-o2F=bN466LNUx8VGeEu3XDA@mail.gmail.com>
+Date: Mon, 25 Jan 2016 15:53:23 -0600
+Message-ID: <CA+EcR23FKstPBux-5_R8DDd9E9=XVPU76nU70uJQvSB=EUObKg@mail.gmail.com>
 Subject: mtd: gpmi: issue with raw access support
 From: Han Xu <xhnjupt@gmail.com>
-To: boris.brezillon@free-electrons.co,
+To: boris.brezillon@free-electrons.com,
  Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie.huang@arm.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
