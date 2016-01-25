@@ -1,20 +1,27 @@
-Date: Mon, 25 Jan 2016 10:30:22 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Michael Wang <Michael.Wang@alliedtelesis.co.nz>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "ezequiel@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
-Subject: Re: mtd: pxa3xx_nand: issue with command time out
-Message-ID: <20160125183022.GA41251@google.com>
-References: <5695CEF0.1080100@alliedtelesis.co.nz>
- <87a8o9ex9r.fsf@belgarion.home>
- <569827BC.10601@alliedtelesis.co.nz>
- <874meddqu5.fsf@belgarion.home>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aNmc1-0001UN-Ql
+ for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 19:15:42 +0000
+Date: Mon, 25 Jan 2016 19:15:49 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>,
+ <linux-mtd@lists.infradead.org>, Javier Martinez Canillas
+ <javier@osg.samsung.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Fengguang Wu <fengguang.wu@intel.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Luis de Bethencourt
+ <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>, Neelesh Gupta
+ <neelegup@linux.vnet.ibm.com>, David Woodhouse <dwmw2@infradead.org>, Cyril
+ Bur <cyrilbur@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH] mtd: bcm47xxsflash: use ioremap_cachable() instead of
+ KSEG0ADDR()
+In-Reply-To: <20160125040459.GA4386@localhost>
+Message-ID: <alpine.DEB.2.00.1601250414200.5958@tp.orcam.me.uk>
+References: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
+ <alpine.DEB.2.00.1601240345260.5958@tp.orcam.me.uk>
+ <20160125040459.GA4386@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874meddqu5.fsf@belgarion.home>
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,72 +31,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Robert,
+On Mon, 25 Jan 2016, Brian Norris wrote:
 
-On Sun, Jan 17, 2016 at 12:53:06AM +0100, Robert Jarzmik wrote:
-> Michael Wang <Michael.Wang@alliedtelesis.co.nz> writes:
+> > > +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > > +	if (!res) {
+> > > +		dev_err(dev, "invalid resource\n");
+> > > +		return -EINVAL;
+> > > +	}
+> > > +	if (!devm_request_mem_region(dev, res->start, resource_size(res),
+> > > +				     res->name)) {
+> > > +		dev_err(dev, "can't request region for resource %pR\n", res);
+> > > +		return -EBUSY;
+> > > +	}
+> > > +	b47s->window = ioremap_cachable(res->start, resource_size(res));
+> > > +	if (!b47s->window) {
+> > > +		dev_err(dev, "ioremap failed for resource %pR\n", res);
+> > 
+> >  You need to call `devm_release_mem_region' in this case.
 > 
-> > The complete output of debug traces and boot log from your debug patch
-> > is in the attachment.
-> 
-> Okay, thanks, that's great.
-> Might a ask another capture, but with :
->  1) the timestamps this time
->     (ie. CONFIG_PRINTK_TIME=y) ? This will give me the timing of your failure,
->     in the dmesg you will provide me.
->  2) on the first line of drain_fifo(), add a single :
->     nand_readl(info, NDSR)
-> 
-> This will enable me to see how your board behaves on the temporal aspect, as
-> today I only have this, which looks correct AFAICT:
-> 
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():445 nand_writel(0x1, NDECCCTRL)
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():465 nand_writel(0xfff, NDSR)
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():466 nand_writel(0x0, NDCR)
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_start():467 nand_writel(0xd104b000, NDCR)
-> 
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():656 nand_readl(NDSR): 0x1
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():706 nand_writel(0x1, NDSR)
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():720 nand_writel(0x100d3000, NDCB0)
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():721 nand_writel(0x4ff0000, NDCB0)
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():722 nand_writel(0x2, NDCB0)
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():726 nand_writel(0x820, NDCB0)
->   => RJK: here the read command is submitted
-> 
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():656 nand_readl(NDSR): 0x1800
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():706 nand_writel(0x1800, NDSR)
->   => RJK: here the read command is completed
-> 
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():656 nand_readl(NDSR): 0x2
-> pxa3xx-nand f10d0000.nand: Wait time out!!!
->   => RJK: here data is available in NAND controller, and yet it's too late
-> 
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_stop():476 nand_readl(0x0000): 0xd104b000
-> pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq_thread():636 nand_writel(0x6, 0x0014)
->   => RJK: here we finish the read data transfer operation, too late
+> No he doesn't. devm_* functions automatically release their resources
+> when either the device is removed, or the probe() fails. So the whole
+> point is that we don't have to explicitly manage the error case.
 
-I'm not extremely familiar with this driver, but you've caused me to
-take a second look at this commit:
+ Why does `devm_ioremap_resource' (in lib/devres.c) do that manually then?
 
-commit 24542257a3b987025d4b998ec2d15e556c98ad3f
-Author: Robert Jarzmik <robert.jarzmik@free.fr>
-Date:   Fri Feb 20 19:36:43 2015 +0100
+	dest_ptr = devm_ioremap(dev, res->start, size);
+	if (!dest_ptr) {
+		dev_err(dev, "ioremap failed for resource %pR\n", res);
+		devm_release_mem_region(dev, res->start, size);
+		dest_ptr = IOMEM_ERR_PTR(-ENOMEM);
+	}
 
-    mtd: pxa3xx-nand: handle PIO in threaded interrupt
+Is this an oversight or was it a deliberate design decision?
 
+> But...since he's not using a devm_* version of ioremap (there isn't one
+> for ioremap_cachable()), we actually need to add an iounmap() for the
+> case where mtd_device_parse_register() fails. If we fix that one, I can
+> apply this.
 
-And now I'm wondering: when does the completion get triggered? i.e.:
+ As from 4.5-rc1 we now have `ioremap_cache' available for MIPS as well 
+(thanks, Ralf, for a quick action on that!), so you can use that instead 
+to make your code generic.
 
-	complete(&info->cmd_complete);
+> Thanks for the review!
 
-?
+ You're welcome! :)
 
-It seems to me like you've short-circuited some of the IRQ handling
-code, so that the threaded handler is buggy. AIUI, if the completion
-event ever happens, it's actually happening *before* the full (threaded)
-handler is actually finished, since it occurs in pxa3xx_nand_irq(),
-before pxa3xx_nand_irq_thread() ever runs. Now, I'm not sure if that
-causes a real problem in practice, since you used IRQF_ONESHOT, but I
-would think that's also suspect.
-
-Brian
+  Maciej
