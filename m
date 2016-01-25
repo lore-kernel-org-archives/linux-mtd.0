@@ -1,30 +1,24 @@
-Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNntw-0001Qj-1j
- for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 20:38:16 +0000
-Received: by mail-ig0-x22e.google.com with SMTP id ik10so42925283igb.1
- for <linux-mtd@lists.infradead.org>; Mon, 25 Jan 2016 12:37:55 -0800 (PST)
-Date: Mon, 25 Jan 2016 14:36:56 -0600
-From: Seth Forshee <seth.forshee@canonical.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v2 00/19] Support fuse mounts in user namespaces
-Message-ID: <20160125203656.GB10638@ubuntu-hedt>
-References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
- <20160125194722.GA10638@ubuntu-hedt>
- <87mvrtqvhp.fsf@x220.int.ebiederm.org>
+ id 1aNo3n-0005B9-OB
+ for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 20:48:29 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Brian Norris <computersforpeace@gmail.com>,
+ "ezequiel\@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
+Cc: "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Michael Wang <Michael.Wang@alliedtelesis.co.nz>,
+ "linux-arm-kernel\@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: mtd: pxa3xx_nand: issue with command time out
+References: <5695CEF0.1080100@alliedtelesis.co.nz>
+ <87a8o9ex9r.fsf@belgarion.home> <569827BC.10601@alliedtelesis.co.nz>
+ <874meddqu5.fsf@belgarion.home> <20160125183022.GA41251@google.com>
+Date: Mon, 25 Jan 2016 21:48:02 +0100
+In-Reply-To: <20160125183022.GA41251@google.com> (Brian Norris's message of
+ "Mon, 25 Jan 2016 10:30:22 -0800")
+Message-ID: <87fuxl9yil.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mvrtqvhp.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,66 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 25, 2016 at 02:01:22PM -0600, Eric W. Biederman wrote:
-> Seth Forshee <seth.forshee@canonical.com> writes:
-> 
-> > On Mon, Jan 04, 2016 at 12:03:39PM -0600, Seth Forshee wrote:
-> >> These patches implement support for mounting filesystems in user
-> >> namespaces using fuse. They are based on the patches in the for-testing
-> >> branch of
-> >> git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git,
-> >> but I've rebased them onto 4.4-rc3. I've pushed all of this to:
-> >> 
-> >>  git://git.kernel.org/pub/scm/linux/kernel/git/sforshee/linux.git fuse-userns
-> >> 
-> >> The patches are organized into three high-level groups.
-> >> 
-> >> Patches 1-6 are related to security, adding restrictions for
-> >> unprivileged mounts and updating the LSMs as needed. Patches 1-2
-> >> (checking inode permissions for block device mounts) may not be strictly
-> >> necessary for fuseblk mounts since fuse doesn't do any IO on the block
-> >> device in the kernel, but it still seems like a good idea to fail the
-> >> mount if the user doesn't have the required permissions for the inode
-> >> (though this is a bit misleading with fuse since the mounts are done via
-> >> a suid-root helper).
-> >> 
-> >> Patches 7-14 update most of the vfs to translate ids correctly and deal
-> >> with inodes which may have invalid user/group ids. I've omitted patches
-> >> for anything not used by fuse - quota, fs freezing, some helper
-> >> functions, etc. - but if these are wanted for the sake of completeness I
-> >> can include them.
-> >> 
-> >> Patches 15-18 update fuse to deal with mounts from non-init pid and user
-> >> namespaces and enable mounting from user namespaces.
-> >> 
-> >> Changes since v1:
-> >>  - Drop patch for FIBMAP.
-> >>  - Use current_in_userns in fuse_allow_current_process.
-> >>  - Remove checks for uid/gid validity in fuse. Intead, ids from the
-> >>    backing store which do not map into s_user_ns will result in invalid
-> >>    ids in the vfs inode. Checks in the vfs will prevent unmappable ids
-> >>    from being passed in from above.
-> >>  - Update a couple of commit messages to provide more detail about
-> >>    changes.
-> >
-> > Now that the merge window is over, I'm wondering whether it might be
-> > possible to get some feedback on these patches this cycle?
-> 
-> Definitely.  Apologies for not giving you much feedback earlier.
-> 
-> I had been hoping this was the kind of thing I could just double check
-> to be certain you weren't doing anything silly and just apply.  After my
-> last round of looking at this I realized that for me to be comfortable
-> with these patches I will have to give them very close scrutiny, and
-> check every detail.
-> 
-> Unfortunatly last cycle I had failed to budget enough time to give these
-> patches the close scrutiny they need.
-> 
-> From a high level I am still very much in favor of this approach and
-> at least getting as far as safe unprivileged fuse mounts.
-> 
-> I have one or two little things to look at and then I hope to be going
-> through your patches one by one in detail.
+Brian Norris <computersforpeace@gmail.com> writes:
 
-Great. Thanks Eric.
+> Hi Robert,
+>
+> On Sun, Jan 17, 2016 at 12:53:06AM +0100, Robert Jarzmik wrote:
+> commit 24542257a3b987025d4b998ec2d15e556c98ad3f
+> Author: Robert Jarzmik <robert.jarzmik@free.fr>
+> Date:   Fri Feb 20 19:36:43 2015 +0100
+>
+>     mtd: pxa3xx-nand: handle PIO in threaded interrupt
+>
+>
+> And now I'm wondering: when does the completion get triggered? i.e.:
+>
+> 	complete(&info->cmd_complete);
+
+> It seems to me like you've short-circuited some of the IRQ handling
+> code, so that the threaded handler is buggy. AIUI, if the completion
+> event ever happens, it's actually happening *before* the full (threaded)
+> handler is actually finished, since it occurs in pxa3xx_nand_irq(),
+> before pxa3xx_nand_irq_thread() ever runs. Now, I'm not sure if that
+> causes a real problem in practice, since you used IRQF_ONESHOT, but I
+> would think that's also suspect.
+
+I think you're very right, this "goto NORMAL_IRQ_EXIT" creates a
+short-cirtcuit. That makes me think that I should :
+ - add
+static void pxa3xx_nand_data_finished(struct pxa3xx_nand_info *info)
+{
+	unsigned int done;
+
+ 	cmd_done = info->cs ? NDSR_CS1_CMDD : NDSR_CS0_CMDD;
+	nand_writel(info, NDSR, cmd_done);
+        complete(&inf0->cmd_complete);
+}
+
+ - in pxa3xx_nand_irq_thread(), I should add at the end:
+	pxa3xx_nand_data_finished(info);
+
+ - in pxa3xx_nand_data_dma_irq(), I should add at the end:
+	pxa3xx_nand_data_finished(info);
+
+Ezequiel, would you have a look at that code snippet and tell me if I'm missing
+something in the driver's structure ?
+
+Cheers.
+
+--
+Robert
