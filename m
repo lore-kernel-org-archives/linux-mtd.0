@@ -1,27 +1,17 @@
-Received: from out03.mta.xmission.com ([166.70.13.233])
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNnU3-0006jg-C5
- for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 20:11:33 +0000
-From: ebiederm@xmission.com (Eric W. Biederman)
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
- linux-kernel@vger.kernel.org
-References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
- <20160125194722.GA10638@ubuntu-hedt>
-Date: Mon, 25 Jan 2016 14:01:22 -0600
-In-Reply-To: <20160125194722.GA10638@ubuntu-hedt> (Seth Forshee's message of
- "Mon, 25 Jan 2016 13:47:22 -0600")
-Message-ID: <87mvrtqvhp.fsf@x220.int.ebiederm.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [PATCH RESEND v2 00/19] Support fuse mounts in user namespaces
+ id 1aNnmJ-0006ph-H0
+ for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 20:30:24 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH v2] mtd: nand: pxa3xx_nand: add register access debug
+Date: Mon, 25 Jan 2016 21:29:45 +0100
+Message-Id: <1453753785-9635-1-git-send-email-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,65 +21,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Seth Forshee <seth.forshee@canonical.com> writes:
+Add verbose debug for register accesses. This enables easier debugging
+by following where and how hardware is stimulated, and how it answers.
 
-> On Mon, Jan 04, 2016 at 12:03:39PM -0600, Seth Forshee wrote:
->> These patches implement support for mounting filesystems in user
->> namespaces using fuse. They are based on the patches in the for-testing
->> branch of
->> git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git,
->> but I've rebased them onto 4.4-rc3. I've pushed all of this to:
->> 
->>  git://git.kernel.org/pub/scm/linux/kernel/git/sforshee/linux.git fuse-userns
->> 
->> The patches are organized into three high-level groups.
->> 
->> Patches 1-6 are related to security, adding restrictions for
->> unprivileged mounts and updating the LSMs as needed. Patches 1-2
->> (checking inode permissions for block device mounts) may not be strictly
->> necessary for fuseblk mounts since fuse doesn't do any IO on the block
->> device in the kernel, but it still seems like a good idea to fail the
->> mount if the user doesn't have the required permissions for the inode
->> (though this is a bit misleading with fuse since the mounts are done via
->> a suid-root helper).
->> 
->> Patches 7-14 update most of the vfs to translate ids correctly and deal
->> with inodes which may have invalid user/group ids. I've omitted patches
->> for anything not used by fuse - quota, fs freezing, some helper
->> functions, etc. - but if these are wanted for the sake of completeness I
->> can include them.
->> 
->> Patches 15-18 update fuse to deal with mounts from non-init pid and user
->> namespaces and enable mounting from user namespaces.
->> 
->> Changes since v1:
->>  - Drop patch for FIBMAP.
->>  - Use current_in_userns in fuse_allow_current_process.
->>  - Remove checks for uid/gid validity in fuse. Intead, ids from the
->>    backing store which do not map into s_user_ns will result in invalid
->>    ids in the vfs inode. Checks in the vfs will prevent unmappable ids
->>    from being passed in from above.
->>  - Update a couple of commit messages to provide more detail about
->>    changes.
->
-> Now that the merge window is over, I'm wondering whether it might be
-> possible to get some feedback on these patches this cycle?
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-Definitely.  Apologies for not giving you much feedback earlier.
-
-I had been hoping this was the kind of thing I could just double check
-to be certain you weren't doing anything silly and just apply.  After my
-last round of looking at this I realized that for me to be comfortable
-with these patches I will have to give them very close scrutiny, and
-check every detail.
-
-Unfortunatly last cycle I had failed to budget enough time to give these
-patches the close scrutiny they need.
-
->From a high level I am still very much in favor of this approach and
-at least getting as far as safe unprivileged fuse mounts.
-
-I have one or two little things to look at and then I hope to be going
-through your patches one by one in detail.
-
-Eric
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index e453ae9a17fa..0845d09e14c1 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -136,11 +136,23 @@
+ #define READ_ID_BYTES		7
+ 
+ /* macros for registers read/write */
+-#define nand_writel(info, off, val)	\
+-	writel_relaxed((val), (info)->mmio_base + (off))
+-
+-#define nand_readl(info, off)		\
+-	readl_relaxed((info)->mmio_base + (off))
++#define nand_writel(info, off, val)					\
++	do {								\
++		dev_vdbg(&info->pdev->dev,				\
++			 "%s():%d nand_writel(0x%x, 0x%04x)\n",		\
++			 __func__, __LINE__, (val), (off));		\
++		writel_relaxed((val), (info)->mmio_base + (off));	\
++	} while (0)
++
++#define nand_readl(info, off)						\
++	({								\
++		unsigned int _v;					\
++		_v = readl_relaxed((info)->mmio_base + (off));		\
++		dev_vdbg(&info->pdev->dev,				\
++			 "%s():%d nand_readl(0x%04x): 0x%x\n",		\
++			 __func__, __LINE__, (off), _v);		\
++		_v;							\
++	})
+ 
+ /* error code and state */
+ enum {
+-- 
+2.1.4
