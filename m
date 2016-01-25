@@ -1,11 +1,20 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: avoid stack overflow in MTD CFI code
-Date: Mon, 25 Jan 2016 16:41:51 +0100
-Message-Id: <1453736525-1959191-3-git-send-email-arnd@arndb.de>
+Received: from mx.novero.com ([212.23.138.198])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aNjtg-00061z-95
+ for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 16:21:45 +0000
+Received: from ablexc01.internal.novero.com ([10.121.42.121]:53357)
+ by mx.novero.com with esmtps (TLSv1:DES-CBC3-SHA:168)
+ (Exim 4.82_1-5b7a7c0-XX) (envelope-from <Sven.Eisenberg@novero.com>)
+ id 1aNjtG-0003c5-2w
+ for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 17:21:18 +0100
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Sven Eisenberg <sven.eisenberg@novero.com>
+Subject: Migrating to UBI Volumes, keeping some data
+Message-ID: <56A64B94.7000808@novero.com>
+Date: Mon, 25 Jan 2016 17:21:40 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,71 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When map_word gets too large, we use a lot of kernel stack, and for
-MTD_MAP_BANK_WIDTH_32, this means we use more than the recommended
-1024 bytes in a number of functions:
+Hello all
 
-drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_write_buffers':
-drivers/mtd/chips/cfi_cmdset_0020.c:651:1: warning: the frame size of 1336 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_erase_varsize':
-drivers/mtd/chips/cfi_cmdset_0020.c:972:1: warning: the frame size of 1208 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-drivers/mtd/chips/cfi_cmdset_0001.c: In function 'do_write_buffer':
-drivers/mtd/chips/cfi_cmdset_0001.c:1835:1: warning: the frame size of 1240 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+I'm facing a common mistake with UBI, we have a system that has nand
+partitioning on the MTD layer.
 
-This can be avoided if all operations on the map word are done
-indirectly and the stack gets reused between the calls. We can
-mostly achieve this by selecting MTD_COMPLEX_MAPPINGS whenever
-MTD_MAP_BANK_WIDTH_32 is set, but for the case that no other
-bank width is enabled, we also need to use a non-constant
-map_bankwidth() to convince the compiler to use less stack.
+Partitions:
+mtd1: root
+mtd2: dynamic_data
+mtd3: other_data
+mtd4: static_data
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/mtd/chips/Kconfig |  1 +
- include/linux/mtd/map.h   | 19 +++++++------------
- 2 files changed, 8 insertions(+), 12 deletions(-)
+We have learned the lesson with reduced wear leveling and degraded bad
+block pools. Now i plan to migrate also systems in the field to a UBI
+volume partitioning concept.
 
-diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
-index 3b3dabce58de..b24be7d75c9c 100644
---- a/drivers/mtd/chips/Kconfig
-+++ b/drivers/mtd/chips/Kconfig
-@@ -115,6 +115,7 @@ config MTD_MAP_BANK_WIDTH_16
- 
- config MTD_MAP_BANK_WIDTH_32
- 	bool "Support 256-bit buswidth" if MTD_CFI_GEOMETRY
-+	select MTD_COMPLEX_MAPPINGS
- 	default n
- 	help
- 	  If you wish to support CFI devices on a physical bus which is
-diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-index 58f3ba709ade..e20fcf678155 100644
---- a/include/linux/mtd/map.h
-+++ b/include/linux/mtd/map.h
-@@ -122,18 +122,13 @@
- #endif
- 
- #ifdef CONFIG_MTD_MAP_BANK_WIDTH_32
--# ifdef map_bankwidth
--#  undef map_bankwidth
--#  define map_bankwidth(map) ((map)->bankwidth)
--#  undef map_bankwidth_is_large
--#  define map_bankwidth_is_large(map) (map_bankwidth(map) > BITS_PER_LONG/8)
--#  undef map_words
--#  define map_words(map) map_calc_words(map)
--# else
--#  define map_bankwidth(map) 32
--#  define map_bankwidth_is_large(map) (1)
--#  define map_words(map) map_calc_words(map)
--# endif
-+/* always use indirect access for 256-bit to preserve kernel stack */
-+# undef map_bankwidth
-+# define map_bankwidth(map) ((map)->bankwidth)
-+# undef map_bankwidth_is_large
-+# define map_bankwidth_is_large(map) (map_bankwidth(map) > BITS_PER_LONG/8)
-+# undef map_words
-+# define map_words(map) map_calc_words(map)
- #define map_bankwidth_is_32(map) (map_bankwidth(map) == 32)
- #undef MAX_MAP_BANKWIDTH
- #define MAX_MAP_BANKWIDTH 32
+The challenge for me is the data migration of the "static_data"
+partition, it is quite big and re-writing the data in the field is not
+an option.
+Erasing and re-writing the other partitions is not a problem in my
+situation. We run the kernel from NOR and have initial data to start from.
+
+After thinking about it i have the following theory of how a migration
+could work and I'd like to ask if you also think this is a possible way
+or if it is a stupid idea maybe:
+
+Target: migrate, but keep the volume in mtd4.
+The system is launched with the old mtd partitioning scheme, and does a
+flash_eraseall on mtd1, mtd2, mtd3 but not on mtd4.
+Then we reboot with only a single full size MTD configured in the kernel.
+Will the kernel UBI scan code be able to merge the erased blocks and the
+existing blocks from mtd4 into a consistent UBI device?
+The erased blocks should be initialized with the UBI headers, so we can
+define the remaining UBI volumes in the next step and initialize the
+system with data.
+
+I'm aware that by flash_eraseall the erase counters will be lost in mtd1-3.
+
+The kernel level is ~3.10.y.
+
+Thanks and regards,
+Sven Eisenberg
+
 -- 
-2.7.0
+Sven Eisenberg
+
+Novero gmbh | Meesmannstr. 103 | 44807 Bochum  | Germany
+
+Novero GmbH | Parsevalstr. 7a | 40468 Düsseldorf | Germany | Amtsgericht Düsseldorf | HRB 58283 | Umsatzsteueridentifikationsnummer: DE 814973142 | Geschäftsführer: Freddie Geier
