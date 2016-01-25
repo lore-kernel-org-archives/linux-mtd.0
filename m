@@ -1,18 +1,28 @@
-Received: from mail-vk0-x235.google.com ([2607:f8b0:400c:c05::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNp4z-0005gg-67
- for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 21:53:45 +0000
-Received: by mail-vk0-x235.google.com with SMTP id k1so81712381vkb.2
- for <linux-mtd@lists.infradead.org>; Mon, 25 Jan 2016 13:53:24 -0800 (PST)
-MIME-Version: 1.0
-Date: Mon, 25 Jan 2016 15:53:23 -0600
-Message-ID: <CA+EcR23FKstPBux-5_R8DDd9E9=XVPU76nU70uJQvSB=EUObKg@mail.gmail.com>
-Subject: mtd: gpmi: issue with raw access support
-From: Han Xu <xhnjupt@gmail.com>
-To: boris.brezillon@free-electrons.com,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie.huang@arm.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aNpZV-00033P-V0
+ for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 22:25:19 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-kernel@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>, Stefan Agner <stefan@agner.ch>,
+ Kevin Hao <haokexin@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Alex Smith <alex.smith@imgtec.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Zhou Wang <wangzhou1@hisilicon.com>, Anup Patel <anup.patel@broadcom.com>,
+ Han xu <han.xu@freescale.com>, Joachim Eastwood <manabian@gmail.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Bayi Cheng <bayi.cheng@mediatek.com>,
+ Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 11/22] mtd: Fix dependencies for !HAS_IOMEM archs
+Date: Mon, 25 Jan 2016 23:24:10 +0100
+Message-Id: <1453760661-1444-12-git-send-email-richard@nod.at>
+In-Reply-To: <1453760661-1444-1-git-send-email-richard@nod.at>
+References: <1453760661-1444-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +32,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Not every arch has io memory.
+So, unbreak the build by fixing the dependencies.
 
-There is an issue on Kernel 4.1 with your gpmi raw access support
-patch. I can understand with your implementation all data are stored
-in BCH layout, even without HW ECC. But for NAND boot function on i.MX
-family, it requires to write BOOT CONFIGURATION DATA at the beginning
-of NAND chip, so ROM code could understand how to configure BCH
-register to read data with proper ECC handling.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/nand/Kconfig    | 2 ++
+ drivers/mtd/spi-nor/Kconfig | 1 +
+ 2 files changed, 3 insertions(+)
 
-All these BOOT CONFIURATION DATA must be written with proper ROM
-defined format, including data layout, parity checking algorithm( NOT
-BCH ECC for some platforms). A user-space tool, named kobs-ng was
-provided to generate all necessary data, and it called the mtd raw
-functions to write the UNFORMATTED data to NAND chip.
-
-With the new patch, all NAND boot function on kernel 4.1 failed since
-ROM couldn't read the proper configuration. To solve the issue, I am
-planning to export a switch in debugfs to let the user applications to
-choose raw access mode, unformatted mode or BCH layout one, while I
-got stuck.
-
-The problem is how could I dynamically change the raw functions from
-the new ones you provided to the default ones in nand_base. It more or
-less a hacking either getting the pointer of functions
-nand_read_page_raw /nand_write_page_raw or copy-pasting the implement
-of these two functions to gpmi layer. So I was wondering if you have
-any better idea for this issue? Thanks.
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 20f01b3..545d82b 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -74,6 +74,7 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+ config MTD_NAND_GPIO
+ 	tristate "GPIO assisted NAND Flash driver"
+ 	depends on GPIOLIB || COMPILE_TEST
++	depends on HAS_IOMEM
+ 	help
+ 	  This enables a NAND flash driver where control signals are
+ 	  connected to GPIO pins, and commands and data are communicated
+@@ -463,6 +464,7 @@ config MTD_NAND_MPC5121_NFC
+ config MTD_NAND_VF610_NFC
+ 	tristate "Support for Freescale NFC for VF610/MPC5125"
+ 	depends on (SOC_VF610 || COMPILE_TEST)
++	depends on HAS_IOMEM
+ 	help
+ 	  Enables support for NAND Flash Controller on some Freescale
+ 	  processors like the VF610, MPC5125, MCF54418 or Kinetis K70.
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 0dc9275..83befab 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -9,6 +9,7 @@ if MTD_SPI_NOR
+ 
+ config MTD_MT81xx_NOR
+ 	tristate "Mediatek MT81xx SPI NOR flash controller"
++	depends on HAS_IOMEM
+ 	help
+ 	  This enables access to SPI NOR flash, using MT81xx SPI NOR flash
+ 	  controller. This controller does not support generic SPI BUS, it only
+-- 
+1.8.4.5
