@@ -1,24 +1,18 @@
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-vk0-x231.google.com ([2607:f8b0:400c:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNo3n-0005B9-OB
- for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 20:48:29 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Brian Norris <computersforpeace@gmail.com>,
- "ezequiel\@vanguardiasur.com.ar" <ezequiel@vanguardiasur.com.ar>
-Cc: "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Michael Wang <Michael.Wang@alliedtelesis.co.nz>,
- "linux-arm-kernel\@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: mtd: pxa3xx_nand: issue with command time out
-References: <5695CEF0.1080100@alliedtelesis.co.nz>
- <87a8o9ex9r.fsf@belgarion.home> <569827BC.10601@alliedtelesis.co.nz>
- <874meddqu5.fsf@belgarion.home> <20160125183022.GA41251@google.com>
-Date: Mon, 25 Jan 2016 21:48:02 +0100
-In-Reply-To: <20160125183022.GA41251@google.com> (Brian Norris's message of
- "Mon, 25 Jan 2016 10:30:22 -0800")
-Message-ID: <87fuxl9yil.fsf@belgarion.home>
+ id 1aNp18-0003FZ-1l
+ for linux-mtd@lists.infradead.org; Mon, 25 Jan 2016 21:49:46 +0000
+Received: by mail-vk0-x231.google.com with SMTP id e64so82431683vkg.0
+ for <linux-mtd@lists.infradead.org>; Mon, 25 Jan 2016 13:49:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+Date: Mon, 25 Jan 2016 15:49:24 -0600
+Message-ID: <CA+EcR21bhLHtHxn=bWk7wQ6XQ=-o2F=bN466LNUx8VGeEu3XDA@mail.gmail.com>
+Subject: mtd: gpmi: issue with raw access support
+From: Han Xu <xhnjupt@gmail.com>
+To: boris.brezillon@free-electrons.co,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie.huang@arm.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris <computersforpeace@gmail.com> writes:
+Hi Boris,
 
-> Hi Robert,
->
-> On Sun, Jan 17, 2016 at 12:53:06AM +0100, Robert Jarzmik wrote:
-> commit 24542257a3b987025d4b998ec2d15e556c98ad3f
-> Author: Robert Jarzmik <robert.jarzmik@free.fr>
-> Date:   Fri Feb 20 19:36:43 2015 +0100
->
->     mtd: pxa3xx-nand: handle PIO in threaded interrupt
->
->
-> And now I'm wondering: when does the completion get triggered? i.e.:
->
-> 	complete(&info->cmd_complete);
+There is an issue on Kernel 4.1 with your gpmi raw access support
+patch. I can understand with your implementation all data are stored
+in BCH layout, even without HW ECC. But for NAND boot function on i.MX
+family, it requires to write BOOT CONFIGURATION DATA at the beginning
+of NAND chip, so ROM code could understand how to configure BCH
+register to read data with proper ECC handling.
 
-> It seems to me like you've short-circuited some of the IRQ handling
-> code, so that the threaded handler is buggy. AIUI, if the completion
-> event ever happens, it's actually happening *before* the full (threaded)
-> handler is actually finished, since it occurs in pxa3xx_nand_irq(),
-> before pxa3xx_nand_irq_thread() ever runs. Now, I'm not sure if that
-> causes a real problem in practice, since you used IRQF_ONESHOT, but I
-> would think that's also suspect.
+All these BOOT CONFIURATION DATA must be written with proper ROM
+defined format, including data layout, parity checking algorithm( NOT
+BCH ECC for some platforms). A user-space tool, named kobs-ng was
+provided to generate all necessary data, and it called the mtd raw
+functions to write the UNFORMATTED data to NAND chip.
 
-I think you're very right, this "goto NORMAL_IRQ_EXIT" creates a
-short-cirtcuit. That makes me think that I should :
- - add
-static void pxa3xx_nand_data_finished(struct pxa3xx_nand_info *info)
-{
-	unsigned int done;
+With the new patch, all NAND boot function on kernel 4.1 failed since
+ROM couldn't read the proper configuration. To solve the issue, I am
+planning to export a switch in debugfs to let the user applications to
+choose raw access mode, unformatted mode or BCH layout one, while I
+got stuck.
 
- 	cmd_done = info->cs ? NDSR_CS1_CMDD : NDSR_CS0_CMDD;
-	nand_writel(info, NDSR, cmd_done);
-        complete(&inf0->cmd_complete);
-}
-
- - in pxa3xx_nand_irq_thread(), I should add at the end:
-	pxa3xx_nand_data_finished(info);
-
- - in pxa3xx_nand_data_dma_irq(), I should add at the end:
-	pxa3xx_nand_data_finished(info);
-
-Ezequiel, would you have a look at that code snippet and tell me if I'm missing
-something in the driver's structure ?
-
-Cheers.
-
---
-Robert
+The problem is how could I dynamically change the raw functions from
+the new ones you provided to the default ones in nand_base. It more or
+less a hacking either getting the pointer of functions
+nand_read_page_raw /nand_write_page_raw or copy-pasting the implement
+of these two functions to gpmi layer. So I was wondering if you have
+any better idea for this issue? Thanks.
