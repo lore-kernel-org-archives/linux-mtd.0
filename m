@@ -1,19 +1,17 @@
-Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
+Received: from mail-lf0-x231.google.com ([2a00:1450:4010:c07::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aO1YX-0002PJ-2Y
- for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 11:13:08 +0000
-Received: by mail-lb0-x22e.google.com with SMTP id oh2so89697998lbb.3
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jan 2016 03:12:44 -0800 (PST)
+ id 1aO1Yb-0002Qv-6e
+ for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 11:13:12 +0000
+Received: by mail-lf0-x231.google.com with SMTP id h129so103433666lfh.3
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Jan 2016 03:12:48 -0800 (PST)
 From: Linus Walleij <linus.walleij@linaro.org>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 Cc: linux-arm-kernel@lists.infradead.org,
- Linus Walleij <linus.walleij@linaro.org>,
- Grant Likely <grant.likely@linaro.org>, Rob Herring <robh@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 4/6] ARM: integrator: move flash registration to device tree
-Date: Tue, 26 Jan 2016 12:12:03 +0100
-Message-Id: <1453806725-4880-5-git-send-email-linus.walleij@linaro.org>
+ Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 5/6] ARM: realview: add flash devices to the PB1176 DTS
+Date: Tue, 26 Jan 2016 12:12:04 +0100
+Message-Id: <1453806725-4880-6-git-send-email-linus.walleij@linaro.org>
 In-Reply-To: <1453806725-4880-1-git-send-email-linus.walleij@linaro.org>
 References: <1453806725-4880-1-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,212 +23,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The flash on the Integrator was already defined by the device
-tree, but VPP control and flash protection was in the
-boardfiles. Simply add the compatible string
-"arm,versatile-flash" and the special add-on code for flash
-programming voltage and protection kicks in in the MTD
-layer.
+This adds the flash memories and ROM to the PB1175 DTS file.
+The secure flash is marked as "disabled" by default so as to
+protect the user from overwriting the boot monitor.
 
-Remove the board file code and augment the device tree in
-one go for seamless transition.
-
-Cc: Grant Likely <grant.likely@linaro.org>
-Cc: Rob Herring <robh@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- arch/arm/boot/dts/integrator.dtsi        |  3 +-
- arch/arm/mach-integrator/integrator_ap.c | 62 --------------------------------
- arch/arm/mach-integrator/integrator_cp.c | 51 --------------------------
- 3 files changed, 2 insertions(+), 114 deletions(-)
+ arch/arm/boot/dts/arm-realview-pb1176.dts | 32 +++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/arch/arm/boot/dts/integrator.dtsi b/arch/arm/boot/dts/integrator.dtsi
-index 3807d4f46ef7..adc4befea46d 100644
---- a/arch/arm/boot/dts/integrator.dtsi
-+++ b/arch/arm/boot/dts/integrator.dtsi
-@@ -52,8 +52,9 @@
+diff --git a/arch/arm/boot/dts/arm-realview-pb1176.dts b/arch/arm/boot/dts/arm-realview-pb1176.dts
+index 1bc64cda819e..b7d727ef1868 100644
+--- a/arch/arm/boot/dts/arm-realview-pb1176.dts
++++ b/arch/arm/boot/dts/arm-realview-pb1176.dts
+@@ -106,6 +106,31 @@
+ 		clock-frequency = <0>;
  	};
  
- 	flash@24000000 {
--		compatible = "cfi-flash";
++	flash@30000000 {
 +		compatible = "arm,versatile-flash", "cfi-flash";
- 		reg = <0x24000000 0x02000000>;
++		reg = <0x30000000 0x4000000>;
 +		bank-width = <4>;
++	};
++
++	fpga_flash@38000000 {
++		compatible = "arm,versatile-flash", "cfi-flash";
++		reg = <0x38000000 0x800000>;
++		bank-width = <4>;
++	};
++
++	/*
++	 * The "secure flash" contains things like the boot
++	 * monitor so we don't want people to accidentally
++	 * screw this up. Mark the device tree node disabled
++	 * by default.
++	 */
++	secflash@3c000000 {
++		compatible = "arm,versatile-flash", "cfi-flash";
++		reg = <0x3c000000 0x4000000>;
++		bank-width = <4>;
++		status = "disabled";
++	};
++
+ 	soc {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+@@ -297,6 +322,13 @@
+ 			clocks = <&uartclk>, <&pclk>;
+ 			clock-names = "uartclk", "apb_pclk";
+ 		};
++
++		/* Direct-mapped development chip ROM */
++		pb1176_rom@10200000 {
++			compatible = "direct-mapped";
++			reg = <0x10200000 0x4000>;
++			bank-width = <1>;
++		};
  	};
  
- 	fpga {
-diff --git a/arch/arm/mach-integrator/integrator_ap.c b/arch/arm/mach-integrator/integrator_ap.c
-index 5b0e363fe5ba..2b118f20c62c 100644
---- a/arch/arm/mach-integrator/integrator_ap.c
-+++ b/arch/arm/mach-integrator/integrator_ap.c
-@@ -29,7 +29,6 @@
- #include <linux/amba/kmi.h>
- #include <linux/io.h>
- #include <linux/irqchip.h>
--#include <linux/mtd/physmap.h>
- #include <linux/platform_data/clk-integrator.h>
- #include <linux/of_irq.h>
- #include <linux/of_address.h>
-@@ -147,65 +146,6 @@ static int __init irq_syscore_init(void)
- device_initcall(irq_syscore_init);
- 
- /*
-- * Flash handling.
-- */
--static int ap_flash_init(struct platform_device *dev)
--{
--	u32 tmp;
--
--	writel(INTEGRATOR_SC_CTRL_nFLVPPEN | INTEGRATOR_SC_CTRL_nFLWP,
--	       ap_syscon_base + INTEGRATOR_SC_CTRLC_OFFSET);
--
--	tmp = readl(ebi_base + INTEGRATOR_EBI_CSR1_OFFSET) |
--		INTEGRATOR_EBI_WRITE_ENABLE;
--	writel(tmp, ebi_base + INTEGRATOR_EBI_CSR1_OFFSET);
--
--	if (!(readl(ebi_base + INTEGRATOR_EBI_CSR1_OFFSET)
--	      & INTEGRATOR_EBI_WRITE_ENABLE)) {
--		writel(0xa05f, ebi_base + INTEGRATOR_EBI_LOCK_OFFSET);
--		writel(tmp, ebi_base + INTEGRATOR_EBI_CSR1_OFFSET);
--		writel(0, ebi_base + INTEGRATOR_EBI_LOCK_OFFSET);
--	}
--	return 0;
--}
--
--static void ap_flash_exit(struct platform_device *dev)
--{
--	u32 tmp;
--
--	writel(INTEGRATOR_SC_CTRL_nFLVPPEN | INTEGRATOR_SC_CTRL_nFLWP,
--	       ap_syscon_base + INTEGRATOR_SC_CTRLC_OFFSET);
--
--	tmp = readl(ebi_base + INTEGRATOR_EBI_CSR1_OFFSET) &
--		~INTEGRATOR_EBI_WRITE_ENABLE;
--	writel(tmp, ebi_base + INTEGRATOR_EBI_CSR1_OFFSET);
--
--	if (readl(ebi_base + INTEGRATOR_EBI_CSR1_OFFSET) &
--	    INTEGRATOR_EBI_WRITE_ENABLE) {
--		writel(0xa05f, ebi_base + INTEGRATOR_EBI_LOCK_OFFSET);
--		writel(tmp, ebi_base + INTEGRATOR_EBI_CSR1_OFFSET);
--		writel(0, ebi_base + INTEGRATOR_EBI_LOCK_OFFSET);
--	}
--}
--
--static void ap_flash_set_vpp(struct platform_device *pdev, int on)
--{
--	if (on)
--		writel(INTEGRATOR_SC_CTRL_nFLVPPEN,
--		       ap_syscon_base + INTEGRATOR_SC_CTRLS_OFFSET);
--	else
--		writel(INTEGRATOR_SC_CTRL_nFLVPPEN,
--		       ap_syscon_base + INTEGRATOR_SC_CTRLC_OFFSET);
--}
--
--static struct physmap_flash_data ap_flash_data = {
--	.width		= 4,
--	.init		= ap_flash_init,
--	.exit		= ap_flash_exit,
--	.set_vpp	= ap_flash_set_vpp,
--};
--
--/*
-  * For the PL010 found in the Integrator/AP some of the UART control is
-  * implemented in the system controller and accessed using a callback
-  * from the driver.
-@@ -266,8 +206,6 @@ static struct of_dev_auxdata ap_auxdata_lookup[] __initdata = {
- 		"kmi0", NULL),
- 	OF_DEV_AUXDATA("arm,primecell", KMI1_BASE,
- 		"kmi1", NULL),
--	OF_DEV_AUXDATA("cfi-flash", INTEGRATOR_FLASH_BASE,
--		"physmap-flash", &ap_flash_data),
- 	{ /* sentinel */ },
- };
- 
-diff --git a/arch/arm/mach-integrator/integrator_cp.c b/arch/arm/mach-integrator/integrator_cp.c
-index b5fb71a36ee6..6f6b051e81e0 100644
---- a/arch/arm/mach-integrator/integrator_cp.c
-+++ b/arch/arm/mach-integrator/integrator_cp.c
-@@ -23,7 +23,6 @@
- #include <linux/io.h>
- #include <linux/irqchip.h>
- #include <linux/gfp.h>
--#include <linux/mtd/physmap.h>
- #include <linux/of_irq.h>
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
-@@ -43,14 +42,8 @@
- /* Base address to the CP controller */
- static void __iomem *intcp_con_base;
- 
--#define INTCP_PA_FLASH_BASE		0x24000000
--
- #define INTCP_PA_CLCD_BASE		0xc0000000
- 
--#define INTCP_FLASHPROG			0x04
--#define CINTEGRATOR_FLASHPROG_FLVPPEN	(1 << 0)
--#define CINTEGRATOR_FLASHPROG_FLWREN	(1 << 1)
--
- /*
-  * Logical      Physical
-  * f1000000	10000000	Core module registers
-@@ -108,48 +101,6 @@ static void __init intcp_map_io(void)
- }
- 
- /*
-- * Flash handling.
-- */
--static int intcp_flash_init(struct platform_device *dev)
--{
--	u32 val;
--
--	val = readl(intcp_con_base + INTCP_FLASHPROG);
--	val |= CINTEGRATOR_FLASHPROG_FLWREN;
--	writel(val, intcp_con_base + INTCP_FLASHPROG);
--
--	return 0;
--}
--
--static void intcp_flash_exit(struct platform_device *dev)
--{
--	u32 val;
--
--	val = readl(intcp_con_base + INTCP_FLASHPROG);
--	val &= ~(CINTEGRATOR_FLASHPROG_FLVPPEN|CINTEGRATOR_FLASHPROG_FLWREN);
--	writel(val, intcp_con_base + INTCP_FLASHPROG);
--}
--
--static void intcp_flash_set_vpp(struct platform_device *pdev, int on)
--{
--	u32 val;
--
--	val = readl(intcp_con_base + INTCP_FLASHPROG);
--	if (on)
--		val |= CINTEGRATOR_FLASHPROG_FLVPPEN;
--	else
--		val &= ~CINTEGRATOR_FLASHPROG_FLVPPEN;
--	writel(val, intcp_con_base + INTCP_FLASHPROG);
--}
--
--static struct physmap_flash_data intcp_flash_data = {
--	.width		= 4,
--	.init		= intcp_flash_init,
--	.exit		= intcp_flash_exit,
--	.set_vpp	= intcp_flash_set_vpp,
--};
--
--/*
-  * It seems that the card insertion interrupt remains active after
-  * we've acknowledged it.  We therefore ignore the interrupt, and
-  * rely on reading it from the SIC.  This also means that we must
-@@ -260,8 +211,6 @@ static struct of_dev_auxdata intcp_auxdata_lookup[] __initdata = {
- 		"aaci", &mmc_data),
- 	OF_DEV_AUXDATA("arm,primecell", INTCP_PA_CLCD_BASE,
- 		"clcd", &clcd_data),
--	OF_DEV_AUXDATA("cfi-flash", INTCP_PA_FLASH_BASE,
--		"physmap-flash", &intcp_flash_data),
- 	{ /* sentinel */ },
- };
- 
+ 	/* These peripherals are inside the FPGA rather than the DevChip */
 -- 
 2.4.3
