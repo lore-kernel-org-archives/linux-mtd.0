@@ -1,16 +1,32 @@
-From: Yuan Yao <yao.yuan@freescale.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <han.xu@freescale.com>
-CC: <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <yao.yuan@nxp.com>
-Subject: [PATCH v4 7/7] Documentation: fsl-quadspi: Add optional properties
-Date: Tue, 26 Jan 2016 15:24:01 +0800
-Message-ID: <1453793041-35868-7-git-send-email-yao.yuan@freescale.com>
-In-Reply-To: <1453793041-35868-1-git-send-email-yao.yuan@freescale.com>
-References: <1453793041-35868-1-git-send-email-yao.yuan@freescale.com>
+Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aO1MK-000161-Bz
+ for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 11:00:30 +0000
+Received: by mail-io0-x242.google.com with SMTP id 77so15360969ioc.2
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Jan 2016 03:00:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1453760661-1444-22-git-send-email-richard@nod.at>
+References: <1453760661-1444-1-git-send-email-richard@nod.at>
+ <1453760661-1444-22-git-send-email-richard@nod.at>
+Date: Tue, 26 Jan 2016 12:00:07 +0100
+Message-ID: <CAMuHMdX_nH9U9gU4NH0KWPDVXBZmLbQDUp8MVXFpcciwKjmwuA@mail.gmail.com>
+Subject: Re: [PATCH 21/22] mtd: cs553x: Fix dependencies for !HAS_IOMEM archs
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ uml-devel <user-mode-linux-devel@lists.sourceforge.net>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>,
+ Stefan Agner <stefan@agner.ch>, Alex Smith <alex.smith@imgtec.com>,
+ Zhou Wang <wangzhou1@hisilicon.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Anup Patel <anup.patel@broadcom.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +36,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add optional properties for QSPI:
-big-endian
-if the register is big endian on this platform.
+Hi Richard,
 
-Signed-off-by: Yuan Yao <yao.yuan@nxp.com>
-Acked-by: Rob Herring <robh@kernel.org>
----
-Changed in v4:
-No changes.
+On Mon, Jan 25, 2016 at 11:24 PM, Richard Weinberger <richard@nod.at> wrote:
+> Not every arch has io memory nor can this driver ever work
+> on UML/i386.
+> So, unbreak the build by fixing the dependencies.
+>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  drivers/mtd/nand/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 545d82b..b253654 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -311,6 +311,7 @@ config MTD_NAND_CAFE
+>  config MTD_NAND_CS553X
+>         tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
+>         depends on X86_32
+> +       depends on !UML && HAS_IOMEM
 
-Changed in v3:
-No changes.
+I don't think there's a need for the !UML dependency?
+Hence just "depends on X86_32 && HAS_IOMEM"?
 
-Changed in v2:
-Update my email to <yao.yuan@nxp.com>
----
- Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 1 +
- 1 file changed, 1 insertion(+)
+Gr{oetje,eeting}s,
 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-index 0df2f3a..0333ec8 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-@@ -21,6 +21,7 @@ Optional properties:
- 			      But if there are two NOR flashes connected to the
- 			      bus, you should enable this property.
- 			      (Please check the board's schematic.)
-+  - big-endian : That means the IP register is big endian
- 
- Example:
- 
--- 
-2.1.0.27.g96db324
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
