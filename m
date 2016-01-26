@@ -1,27 +1,30 @@
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aO3IC-0002oh-Kf
- for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 13:04:22 +0000
-Received: by mail-wm0-x22d.google.com with SMTP id n5so129104304wmn.0
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jan 2016 05:03:59 -0800 (PST)
+ id 1aO48x-0001Dn-7B
+ for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 13:58:52 +0000
+Subject: Re: [PATCH 21/22] mtd: cs553x: Fix dependencies for !HAS_IOMEM archs
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+References: <1453760661-1444-1-git-send-email-richard@nod.at>
+ <1453760661-1444-22-git-send-email-richard@nod.at>
+ <CAMuHMdX_nH9U9gU4NH0KWPDVXBZmLbQDUp8MVXFpcciwKjmwuA@mail.gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ uml-devel <user-mode-linux-devel@lists.sourceforge.net>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>, Stefan Agner <stefan@agner.ch>,
+ Alex Smith <alex.smith@imgtec.com>, Zhou Wang <wangzhou1@hisilicon.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Anup Patel <anup.patel@broadcom.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56A77B7B.2000305@nod.at>
+Date: Tue, 26 Jan 2016 14:58:19 +0100
 MIME-Version: 1.0
-In-Reply-To: <87fuxl9yil.fsf@belgarion.home>
-References: <5695CEF0.1080100@alliedtelesis.co.nz>
- <87a8o9ex9r.fsf@belgarion.home>
- <569827BC.10601@alliedtelesis.co.nz>
- <874meddqu5.fsf@belgarion.home> <20160125183022.GA41251@google.com>
- <87fuxl9yil.fsf@belgarion.home>
-Date: Tue, 26 Jan 2016 10:03:57 -0300
-Message-ID: <CAAEAJfCNzh9+zRq_Yb=hFyLfP8RFoX+LUsDL4dVwUenVc_gVOA@mail.gmail.com>
-Subject: Re: mtd: pxa3xx_nand: issue with command time out
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Michael Wang <Michael.Wang@alliedtelesis.co.nz>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMuHMdX_nH9U9gU4NH0KWPDVXBZmLbQDUp8MVXFpcciwKjmwuA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,68 +34,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 25 January 2016 at 17:48, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> Brian Norris <computersforpeace@gmail.com> writes:
->
->> Hi Robert,
->>
->> On Sun, Jan 17, 2016 at 12:53:06AM +0100, Robert Jarzmik wrote:
->> commit 24542257a3b987025d4b998ec2d15e556c98ad3f
->> Author: Robert Jarzmik <robert.jarzmik@free.fr>
->> Date:   Fri Feb 20 19:36:43 2015 +0100
->>
->>     mtd: pxa3xx-nand: handle PIO in threaded interrupt
->>
->>
->> And now I'm wondering: when does the completion get triggered? i.e.:
->>
->>       complete(&info->cmd_complete);
->
->> It seems to me like you've short-circuited some of the IRQ handling
->> code, so that the threaded handler is buggy. AIUI, if the completion
->> event ever happens, it's actually happening *before* the full (threaded)
->> handler is actually finished, since it occurs in pxa3xx_nand_irq(),
->> before pxa3xx_nand_irq_thread() ever runs. Now, I'm not sure if that
->> causes a real problem in practice, since you used IRQF_ONESHOT, but I
->> would think that's also suspect.
->
-> I think you're very right, this "goto NORMAL_IRQ_EXIT" creates a
-> short-cirtcuit. That makes me think that I should :
->  - add
-> static void pxa3xx_nand_data_finished(struct pxa3xx_nand_info *info)
-> {
->         unsigned int done;
->
->         cmd_done =3D info->cs ? NDSR_CS1_CMDD : NDSR_CS0_CMDD;
->         nand_writel(info, NDSR, cmd_done);
->         complete(&inf0->cmd_complete);
-> }
->
->  - in pxa3xx_nand_irq_thread(), I should add at the end:
->         pxa3xx_nand_data_finished(info);
->
->  - in pxa3xx_nand_data_dma_irq(), I should add at the end:
->         pxa3xx_nand_data_finished(info);
->
-> Ezequiel, would you have a look at that code snippet and tell me if I'm m=
-issing
-> something in the driver's structure ?
->
+Geert,
 
-Although it seems Brian is right, I'm not so sure about it. As far as
-I can recall, the IRQ sequence is (please correct me if I'm wrong!):
+Am 26.01.2016 um 12:00 schrieb Geert Uytterhoeven:
+> Hi Richard,
+> 
+> On Mon, Jan 25, 2016 at 11:24 PM, Richard Weinberger <richard@nod.at> wrote:
+>> Not every arch has io memory nor can this driver ever work
+>> on UML/i386.
+>> So, unbreak the build by fixing the dependencies.
+>>
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>> ---
+>>  drivers/mtd/nand/Kconfig | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+>> index 545d82b..b253654 100644
+>> --- a/drivers/mtd/nand/Kconfig
+>> +++ b/drivers/mtd/nand/Kconfig
+>> @@ -311,6 +311,7 @@ config MTD_NAND_CAFE
+>>  config MTD_NAND_CS553X
+>>         tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
+>>         depends on X86_32
+>> +       depends on !UML && HAS_IOMEM
+> 
+> I don't think there's a need for the !UML dependency?
+> Hence just "depends on X86_32 && HAS_IOMEM"?
 
-1. Write command request (WRCMDREQ), the IRQ handler writes the command.
-2. Read/write data request (RDDREQ | WRDREQ). The IRQ handler fires
-the threaded handler, which does data transfer.
-3. Command done IRQ (CMDD), the IRQ handler completes the completion.
+Strictly speaking this would work as HAS_IOMEM implies !UML.
+The build error shows that it fails also because UML/i386 is x86_32
+but lacks some x86_32 stuff:
 
-I don't think data request and command done can be found
-simultaneously, so I don't think this is a real issue. Ideas?
+drivers/mtd/nand/cs553x_nand.c: In function ‘cs553x_init_one’:
+drivers/mtd/nand/cs553x_nand.c:212:2: error: implicit declaration of function ‘ioremap’ [-Werror=implicit-function-declaration]
+  this->IO_ADDR_R = this->IO_ADDR_W = ioremap(adr, 4096);
+  ^
+drivers/mtd/nand/cs553x_nand.c:212:36: warning: assignment makes pointer from integer without a cast [enabled by default]
+  this->IO_ADDR_R = this->IO_ADDR_W = ioremap(adr, 4096);
+                                    ^
+drivers/mtd/nand/cs553x_nand.c:256:2: error: implicit declaration of function ‘iounmap’ [-Werror=implicit-function-declaration]
+  iounmap(this->IO_ADDR_R);
+  ^
+drivers/mtd/nand/cs553x_nand.c: In function ‘is_geode’:
+drivers/mtd/nand/cs553x_nand.c:266:19: error: ‘struct cpuinfo_um’ has no member named ‘x86_vendor’
+  if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
+                   ^
+drivers/mtd/nand/cs553x_nand.c:266:34: error: ‘X86_VENDOR_AMD’ undeclared (first use in this function)
+  if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
+                                  ^
+drivers/mtd/nand/cs553x_nand.c:266:34: note: each undeclared identifier is reported only once for each function it appears in
+drivers/mtd/nand/cs553x_nand.c:267:19: error: ‘struct cpuinfo_um’ has no member named ‘x86’
+      boot_cpu_data.x86 == 5 &&
+                   ^
+drivers/mtd/nand/cs553x_nand.c:268:19: error: ‘struct cpuinfo_um’ has no member named ‘x86_model’
+      boot_cpu_data.x86_model == 10)
+                   ^
+drivers/mtd/nand/cs553x_nand.c:271:20: error: ‘struct cpuinfo_um’ has no member named ‘x86_vendor’
+  if ((boot_cpu_data.x86_vendor == X86_VENDOR_NSC ||
+                    ^
+drivers/mtd/nand/cs553x_nand.c:271:35: error: ‘X86_VENDOR_NSC’ undeclared (first use in this function)
+  if ((boot_cpu_data.x86_vendor == X86_VENDOR_NSC ||
+                                   ^
+drivers/mtd/nand/cs553x_nand.c:272:20: error: ‘struct cpuinfo_um’ has no member named ‘x86_vendor’
+       boot_cpu_data.x86_vendor == X86_VENDOR_CYRIX) &&
+                    ^
+drivers/mtd/nand/cs553x_nand.c:272:35: error: ‘X86_VENDOR_CYRIX’ undeclared (first use in this function)
+       boot_cpu_data.x86_vendor == X86_VENDOR_CYRIX) &&
+                                   ^
+drivers/mtd/nand/cs553x_nand.c:273:19: error: ‘struct cpuinfo_um’ has no member named ‘x86’
+      boot_cpu_data.x86 == 5 &&
+                   ^
+drivers/mtd/nand/cs553x_nand.c:274:19: error: ‘struct cpuinfo_um’ has no member named ‘x86_model’
+      boot_cpu_data.x86_model == 5)
 
-Regarding the fixed proposed up there, it seems wrong: the completion
-should be completed only after a command done IRQ is found, and not as
-the result of data transfer being finished.
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+Maybe a "depends on X86_32 && !UML" would make more sense. hmm?
+
+Thanks,
+//richard
