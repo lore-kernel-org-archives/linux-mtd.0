@@ -1,21 +1,27 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from relais.videotron.ca ([24.201.245.36])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aO5wK-0001MO-0O
- for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 15:53:56 +0000
-From: "Wilcox, Matthew R" <matthew.r.wilcox@intel.com>
-To: Jared Hulbert <jaredeh@gmail.com>, linux-mtd
- <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
- "ross.zwisler@linux.intel.com" <ross.zwisler@linux.intel.com>, Chris Brandt
- <Chris.Brandt@renesas.com>
+ id 1aO6Yv-0007ne-Gs
+ for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 16:33:50 +0000
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: text/plain; CHARSET=US-ASCII
+Received: from yoda.home ([96.23.157.65]) by VL-VM-MR003.ip.videotron.ca
+ (Oracle Communications Messaging Exchange Server 7u4-22.01 64bit (built Apr 21
+ 2011)) with ESMTP id <0O1K00K3CJBJ3A20@VL-VM-MR003.ip.videotron.ca> for
+ linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 11:33:19 -0500 (EST)
+Date: Tue, 26 Jan 2016 11:33:18 -0500 (EST)
+From: Nicolas Pitre <nico@fluxnic.net>
+To: "Wilcox, Matthew R" <matthew.r.wilcox@intel.com>
+Cc: Jared Hulbert <jaredeh@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "ross.zwisler@linux.intel.com" <ross.zwisler@linux.intel.com>,
+ Chris Brandt <Chris.Brandt@renesas.com>
 Subject: RE: PMEM, DAX, MTD, and the quest for the Theory of Everything
-Date: Tue, 26 Jan 2016 15:53:34 +0000
-Message-ID: <100D68C7BA14664A8938383216E40DE04217A0C1@FMSMSX114.amr.corp.intel.com>
+In-reply-to: <100D68C7BA14664A8938383216E40DE04217A0C1@FMSMSX114.amr.corp.intel.com>
+Message-id: <alpine.LFD.2.20.1601261129540.19789@knanqh.ubzr>
 References: <CA+ZsKJ53E33rWmwv-v=_b8OjHT_20UW7WqD9XhhHJ0aYxJc=cA@mail.gmail.com>
-In-Reply-To: <CA+ZsKJ53E33rWmwv-v=_b8OjHT_20UW7WqD9XhhHJ0aYxJc=cA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ <100D68C7BA14664A8938383216E40DE04217A0C1@FMSMSX114.amr.corp.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tm8sIHdlIGhhdmVuJ3QgYmVlbiBjb25zaWRlcmluZyB0aGUgTVREIGNvZGUgYXQgYWxsIHdpdGgg
-REFYLiAgV2UgbGVhcHQgb250byB0aGUgUy8zOTAgZmlsZW1hcF94aXAgY29kZSwgYW5kIHRvb2sg
-aXQgZm9yIGEgd2lsZCByaWRlLiAgSSBkaWQgbG9vayBhdCB0aGUgTVREIGNvZGUgYSBiaXQsIGJ1
-dCB0aGF0IHdhcyB0d28gb3IgbW9yZSB5ZWFycyBhZ28uICBJIHZhZ3VlbHkgcmVtZW1iZXIgdGhp
-bmtpbmcgdGhhdCBpdCBjb3VsZCBiZSBtYWRlIHRvIHN1cHBvcnQgREFYLCBidXQgaXQgcmVhbGx5
-IHdhc24ndCAoYW5kIGlzbid0KSBteSBmb2N1cy4NCg0KSSBkb24ndCB0aGluayBJJ2QgYmUgdGVy
-cmlibHkgdXBzZXQgYnkgdGhlIGFwcGVhcmFuY2Ugb2YgcGF0Y2hlcyB3aGljaCBtYWRlIERBWCBz
-aXQgb24gdG9wIG9mIGFuIE1URCBkZXZpY2UgaW5zdGVhZCBvZiBhIGJsb2NrIGRldmljZSwgYnV0
-IEkgZG9uJ3QgaGF2ZSBhIGdvb2QgZmVlbCBmb3Igd2hlcmUgZW1iZWRkZWQgc3lzdGVtcyBhcmUg
-dGhlc2UgZGF5cy4gIElzIGl0IHN0aWxsIHdvcnRoIGNvbmZpZ3VyaW5nIG91dCB0aGUgYmxvY2sg
-c3Vic3lzdGVtPw0KDQpJbiB5b3VyIGxhc3Qgc2VudGVuY2UgeW91IHRhbGsgYWJvdXQgJ0VYVDQg
-b24gUk9NL05PUiBkZXZpY2VzJyAtLSBoYXZlIHlvdSBkaXZvcmNlZCBleHQ0IGZyb20gdGhlIGJs
-b2NrIGxheWVyPyAgT3IgYXJlIHlvdSB0YWxraW5nIGFib3V0IGV4dDQgb24gbXRkYmxvY2s/DQoN
-Ci0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBKYXJlZCBIdWxiZXJ0IFttYWlsdG86
-amFyZWRlaEBnbWFpbC5jb21dIA0KU2VudDogTW9uZGF5LCBKYW51YXJ5IDI1LCAyMDE2IDU6MTAg
-UE0NClRvOiBsaW51eC1tdGQ7IERhdmlkIFdvb2Rob3VzZTsgV2lsY294LCBNYXR0aGV3IFI7IHJv
-c3Muendpc2xlckBsaW51eC5pbnRlbC5jb207IENocmlzIEJyYW5kdA0KU3ViamVjdDogUE1FTSwg
-REFYLCBNVEQsIGFuZCB0aGUgcXVlc3QgZm9yIHRoZSBUaGVvcnkgb2YgRXZlcnl0aGluZw0KDQpJ
-J20gbm90IHNlZWluZyBhbnkgdHJhZmZpYyBjb25uZWN0aW5nIE1URCwgUE1FTSwgYW5kIERBWC4g
-IEFueQ0KZGlzY3Vzc2lvbnMgSSBzaG91bGQgYmUgYXdhcmUgb2Y/DQoNCk1URCBkZXZpY2VzIGxp
-a2UgU1BJLU5PUiBhbmQgdGhlIGluZXZpdGFibGUgc3BpbGxvdmVyIGludG8gdGhlDQplbWJlZGRl
-ZCBtYXJrZXQgb2YgM0QgWHBvaW50IGFuZCBzaW1pbGFyIHRlY2hub2xvZ2llcyBhcmUgZXhjbHVk
-ZWQNCmZyb20gdGhlIERBWCBnYW1lLiAgQ29uc2lkZXJpbmcgYWxsIHRoZSB5ZWFycyB3ZSBzcGVu
-dCBwbGF5aW5nIHdpdGgNClhJUCBpbiBNVEQuLi4gICB3ZWxsIHRoYXQncyB3aGF0IGhhcHBlbnMg
-d2hlbiB5b3UgZGlzZW5nYWdlIGZvcg0Kc2V2ZXJhbCB5ZWFycy4NCg0KQSBmZXcgdGhvdWdodHMu
-Li4NCg0KIzEgLSBNVEQgcHJvdmlkZXMgdmFyaW91cyB3YXlzIHRvIHBhcnRpdGlvbiBtZW1vcnkg
-c2VtYW50aWMgZGV2aWNlcyBhcw0KcmVwcm9ncmFtYWJsZSBST01zIGZvciBzdG9yYWdlIG9mIGJv
-b3Rsb2FkZXJzLCBrZXJuZWwsIHJvb3RmcyBpbWFnZXMsDQpldGMuICBEb2VzIFBNRU0gaGF2ZSBh
-bnl0aGluZyB0byBsZWFybiBmcm9tIHRoaXM/ICBPciBkb2VzIHRoZSBNVEQNCmxheWVyIGhhdmUg
-YW4gb3Bwb3J0dW5pdHkgdG8gZ2FpbiBzb21ldGhpbmcgYnkgdXNpbmcgUE1FTSBzdGFuZGFyZHM/
-DQoNCiMyIC0gTVREIGhhcyBoYWQgYW4gQVBJIHRoYXQgYWxsb3dlZCBkaXJlY3QgYWNjZXNzIChz
-ZWUgcG9pbnQoKSBpbg0Kc3RydWN0IG10ZF9pbmZvKSBhbmQgYmxvY2staXNoIHNlbWFudGljIGFj
-Y2VzcyBvZiBwZXJzaXN0ZW50IG1lbW9yeQ0KZGV2aWNlcyBzaW5jZSwgSSBkdW5ubywgYmVmb3Jl
-IGJpdGtlZXBlcj8gIENhbiB3ZSBob29rIHRoaXMgdXAgd2l0aA0KREFYPyAgUmVhZCBPbmx5IHNo
-b3VsZCBiZSAidHJpdmlhbCIgZXNwZWNpYWxseSBpZiBzb21lb25lIGVsc2UgZG9lcw0KaXQuIDop
-DQoNCiMzIC0gVGhlcmUgaGFzIGxvbmcgYmVlbiBhIGRlc2lyZSB0byBtZXJnZSBNVEQgd2l0aCB0
-aGUgYmxvY2sNCnN1YnN5c3RlbSB3aXRoIHNvbWUgbWVtYmVycyBvZiB0aGUgTVREIGNvbW11bml0
-eS4gIFBNRU0gc2VlbXMgdG8NCmNyZWF0ZSBhIHByZWNlZGVudCBmb3IgYSBibG9jayBpbnRlcmZh
-Y2Ugb24gYSBkZXZpY2UgdGhhdCBpc24ndA0KZnVuZGFtZW50YWxseSBibG9jayBiYXNlZC4gIEFs
-c28gdGhlIGRpcmVjdF9hY2Nlc3MoKSBpbiBibG9jayBoYXMgYmVlbg0KbGVnaXRpbWl6ZWQgd2l0
-aCB0aGUgcmVjZW50IERBWCBzdHVmZi4gICBJcyBpdCB0aW1lIG5vdz8NCg0KTXkgdmlzaW9uIGhl
-cmUgaXMgdG8gZW5hYmxlIFJlYWQtT25seSBEQVggaW1hZ2VzIG9mIEVYVDQsIEFYRlMsIFBSQU1G
-Uw0Kb24gUk9NL05PUiBkZXZpY2VzIGluIGEgc3RhbmRhcmQgREFYIHdheS4NCg0KVGhvdWdodHM/
-DQo=
+On Tue, 26 Jan 2016, Wilcox, Matthew R wrote:
+
+> No, we haven't been considering the MTD code at all with DAX.  We leapt onto the S/390 filemap_xip code, and took it for a wild ride.  I did look at the MTD code a bit, but that was two or more years ago.  I vaguely remember thinking that it could be made to support DAX, but it really wasn't (and isn't) my focus.
+> 
+> I don't think I'd be terribly upset by the appearance of patches which 
+> made DAX sit on top of an MTD device instead of a block device, but I 
+> don't have a good feel for where embedded systems are these days.  Is 
+> it still worth configuring out the block subsystem?
+
+Where cost saving is the ultimate goal and consequently memory footprint 
+reduction is a requirement then yes configuring out the block layer is a 
+popular option.
+
+
+Nicolas
