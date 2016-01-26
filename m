@@ -1,19 +1,29 @@
-Received: from mail-wm0-x22d.google.com ([2a00:1450:400c:c09::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNs9a-0006Ap-3S
- for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 01:10:43 +0000
-Received: by mail-wm0-x22d.google.com with SMTP id r129so85866517wmr.0
- for <linux-mtd@lists.infradead.org>; Mon, 25 Jan 2016 17:10:20 -0800 (PST)
+Received: from mail.kernel.org ([198.145.29.136])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aNtf0-0005Vy-F7
+ for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 02:47:14 +0000
+Date: Mon, 25 Jan 2016 20:46:48 -0600
+From: Rob Herring <robh@kernel.org>
+To: Jiancheng Xue <xuejiancheng@huawei.com>
+Cc: pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
+ galak@codeaurora.org, dwmw2@infradead.org,
+ computersforpeace@gmail.com, shijie.huang@intel.com,
+ pengbinquan@huawei.com, han.xu@freescale.com,
+ ezequiel@vanguardiasur.com.ar, fabio.estevam@freescale.com,
+ manabian@gmail.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ yanhaifeng@hisilicon.com, yanghongwei@hisilicon.com,
+ suwenping@hisilicon.com, raojun@hisilicon.com,
+ ml.yang@hisilicon.com, gaofei@hisilicon.com,
+ zhangzhenxing@hisilicon.com, xuejiancheng@hisilicon.com
+Subject: Re: [PATCH v4] mtd: spi-nor: add hisilicon spi-nor flash controller
+ driver
+Message-ID: <20160126024648.GA26779@rob-hp-laptop>
+References: <1453704460-8956-1-git-send-email-xuejiancheng@huawei.com>
 MIME-Version: 1.0
-Date: Mon, 25 Jan 2016 17:10:19 -0800
-Message-ID: <CA+ZsKJ53E33rWmwv-v=_b8OjHT_20UW7WqD9XhhHJ0aYxJc=cA@mail.gmail.com>
-Subject: PMEM, DAX, MTD, and the quest for the Theory of Everything
-From: Jared Hulbert <jaredeh@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Matthew Wilcox <matthew.r.wilcox@intel.com>, ross.zwisler@linux.intel.com,
- Chris Brandt <Chris.Brandt@renesas.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1453704460-8956-1-git-send-email-xuejiancheng@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +33,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm not seeing any traffic connecting MTD, PMEM, and DAX.  Any
-discussions I should be aware of?
+On Mon, Jan 25, 2016 at 02:47:40PM +0800, Jiancheng Xue wrote:
+> add hisilicon spi-nor flash controller driver
+> 
+> Signed-off-by: Jiancheng Xue <xuejiancheng@huawei.com>
+> ---
+> change log
+> v4:
+> Rebased to v4.5-rc1
+> v3:
+> Added a compatible string "hisilicon,hi3519-sfc".
+> v2:
+> Fixed some compiling warings.
+>  .../devicetree/bindings/spi/spi-hisi-sfc.txt       |  25 ++
 
-MTD devices like SPI-NOR and the inevitable spillover into the
-embedded market of 3D Xpoint and similar technologies are excluded
-from the DAX game.  Considering all the years we spent playing with
-XIP in MTD...   well that's what happens when you disengage for
-several years.
+Acked-by: Rob Herring <robh@kernel.org>
 
-A few thoughts...
-
-#1 - MTD provides various ways to partition memory semantic devices as
-reprogramable ROMs for storage of bootloaders, kernel, rootfs images,
-etc.  Does PMEM have anything to learn from this?  Or does the MTD
-layer have an opportunity to gain something by using PMEM standards?
-
-#2 - MTD has had an API that allowed direct access (see point() in
-struct mtd_info) and block-ish semantic access of persistent memory
-devices since, I dunno, before bitkeeper?  Can we hook this up with
-DAX?  Read Only should be "trivial" especially if someone else does
-it. :)
-
-#3 - There has long been a desire to merge MTD with the block
-subsystem with some members of the MTD community.  PMEM seems to
-create a precedent for a block interface on a device that isn't
-fundamentally block based.  Also the direct_access() in block has been
-legitimized with the recent DAX stuff.   Is it time now?
-
-My vision here is to enable Read-Only DAX images of EXT4, AXFS, PRAMFS
-on ROM/NOR devices in a standard DAX way.
-
-Thoughts?
+>  drivers/mtd/spi-nor/Kconfig                        |   6 +
+>  drivers/mtd/spi-nor/Makefile                       |   1 +
+>  drivers/mtd/spi-nor/hisi-sfc.c                     | 499 +++++++++++++++++++++
+>  4 files changed, 531 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/spi-hisi-sfc.txt
+>  create mode 100644 drivers/mtd/spi-nor/hisi-sfc.c
