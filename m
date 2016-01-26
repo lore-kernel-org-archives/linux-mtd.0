@@ -1,20 +1,14 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aNxKs-00056Z-IH
- for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 06:42:43 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Han Xu <xhnjupt@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie.huang@arm.com>, linux-mtd@lists.infradead.org,
- Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: [PATCH] Adapt raw page accesses to match the new raw_read/write
- implementation
-Date: Tue, 26 Jan 2016 07:42:17 +0100
-Message-Id: <1453790537-20566-2-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1453790537-20566-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <CA+EcR23FKstPBux-5_R8DDd9E9=XVPU76nU70uJQvSB=EUObKg@mail.gmail.com>
- <1453790537-20566-1-git-send-email-boris.brezillon@free-electrons.com>
+From: Yuan Yao <yao.yuan@freescale.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <han.xu@freescale.com>
+CC: <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <yao.yuan@nxp.com>
+Subject: [PATCH v4 1/7] mtd: spi-nor: fsl-quadspi: add big-endian support
+Date: Tue, 26 Jan 2016 15:23:55 +0800
+Message-ID: <1453793041-35868-1-git-send-email-yao.yuan@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,173 +18,411 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Add R/W functions for big- or little-endian registers:
+The qSPI controller's endian is independent of the CPU core's endian.
+So far, the qSPI have two versions for big-endian and little-endian.
 
-The old raw access implementation (in GPMI driver) was considering that
-data and OOB data were separated in their respective regions (the data
-area and the OOB area of the page), which is not true.
-They are actually interleaved this way:
-
-METADATA + ((DATA + ECCBYTES) * N)
-
-The new raw access implementation (in the GPMI driver) is hiding this weird
-layout to MTD users by exposing a more common layout:
-
-DATA + METADATA + (N * ECCBYTES)
-
-Here METADATA + (N * ECCBYTES) are exposed as if they were stored in the
-OOB area.
-
-Unfortunately kobs-ng rely on this weird layout when accessing the NAND
-in raw mode.
-This patch take the new layout into account.
-
-Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Signed-off-by: Yuan Yao <yao.yuan@nxp.com>
+Acked-by: Han xu <han.xu@freescale.com>
 ---
- src/mtd.c | 97 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 92 insertions(+), 5 deletions(-)
+Changed in v4:
+No changes.
 
-diff --git a/src/mtd.c b/src/mtd.c
-index 02af33b..f6fa962 100644
---- a/src/mtd.c
-+++ b/src/mtd.c
-@@ -254,14 +254,26 @@ int mtd_read_page(struct mtd_data *md, int chip, loff_t ofs, int ecc)
+Changed in v3:
+Update my email to <yao.yuan@nxp.com>
+
+Changed in v2:
+Rebase to the lastest code.
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 157 +++++++++++++++++++++++---------------
+ 1 file changed, 97 insertions(+), 60 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 54640f1..04e8a93 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -275,6 +275,7 @@ struct fsl_qspi {
+ 	u32 clk_rate;
+ 	unsigned int chip_base_addr; /* We may support two chips. */
+ 	bool has_second_chip;
++	bool big_endian;
+ 	struct mutex lock;
+ 	struct pm_qos_request pm_qos_req;
+ };
+@@ -300,6 +301,28 @@ static inline int needs_wakeup_wait_mode(struct fsl_qspi *q)
+ }
  
- 	mtd_set_ecc_mode(md, ecc);
- 
--	data = md->buf;
-+	if (ecc) {
-+		data = md->buf;
-+	} else {
-+		data = malloc(mtd_writesize(md) + mtd_oobsize(md));
-+		if (!data) {
-+			fprintf(stderr, "mtd: %s failed to allocate buffer\n", __func__);
-+			return -1;
-+		}
-+	}
+ /*
++ * R/W functions for big- or little-endian registers:
++ * The qSPI controller's endian is independent of the CPU core's endian.
++ * So far, although the CPU core is little-endian but the qSPI have two
++ * versions for big-endian and little-endian.
++ */
++static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem *addr)
++{
++	if (q->big_endian)
++		iowrite32be(val, addr);
++	else
++		iowrite32(val, addr);
++}
 +
- 	oobdata = data + mtd_writesize(md);
- 
- 	/* make sure it's aligned to a page */
--	if ((ofs % mtd_writesize(md)) != 0)
-+	if ((ofs % mtd_writesize(md)) != 0) {
-+		if (!ecc)
-+			free(data);
- 		return -1;
-+	}
- 
--	memset(md->buf, 0, mtd_writesize(md) + mtd_oobsize(md));
-+	memset(data, 0, mtd_writesize(md) + mtd_oobsize(md));
- 
- 	size = mtd_writesize(md);
- 
-@@ -269,6 +281,33 @@ int mtd_read_page(struct mtd_data *md, int chip, loff_t ofs, int ecc)
- 		r = pread(md->part[chip].fd, data, size, ofs);
- 	} while (r == -1 && (errno == EAGAIN || errno == EBUSY));
- 
-+	if (!ecc) {
-+		int i;
-+		struct nfc_geometry *nfc_geo = &md->nfc_geometry;
-+		int eccbytes = ((nfc_geo->ecc_strength * nfc_geo->gf_len) + 7) / 8;
-+		int chunksize = nfc_geo->ecc_chunk_size_in_bytes;
-+		int dst_offset = 0;
++static u32 qspi_readl(struct fsl_qspi *q, void __iomem *addr)
++{
++	if (q->big_endian)
++		return ioread32be(addr);
++	else
++		return ioread32(addr);
++}
 +
-+		memcpy(md->buf, oobdata, nfc_geo->metadata_size_in_bytes);
-+		dst_offset += nfc_geo->metadata_size_in_bytes;
-+		for (i = 0; i < nfc_geo->ecc_chunk_count; i++) {
-+			memcpy(md->buf + dst_offset, data + (i * chunksize), chunksize);
-+			dst_offset += chunksize;
-+			memcpy(md->buf + dst_offset,
-+			       oobdata + nfc_geo->metadata_size_in_bytes + (i * eccbytes),
-+			       eccbytes);
-+			dst_offset += eccbytes;
-+		}
-+
-+		if (mtd_writesize(md) + mtd_oobsize(md) > dst_offset) {
-+			memcpy(md->buf + dst_offset,
-+			       oobdata + nfc_geo->metadata_size_in_bytes + (i * eccbytes),
-+			       mtd_writesize(md) + mtd_oobsize(md) - dst_offset);
-+		}
-+
-+		free(data);
-+	}
-+
- 	/* end of partition? */
- 	if (r == 0)
- 		return 0;
-@@ -329,23 +368,71 @@ int mtd_write_page(struct mtd_data *md, int chip, loff_t ofs, int ecc)
- 	int r;
- 	const void *data;
- 	const void *oobdata;
-+	struct mtd_write_req ops;
++/*
+  * An IC bug makes us to re-arrange the 32-bit data.
+  * The following chips, such as IMX6SLX, have fixed this bug.
+  */
+@@ -310,14 +333,14 @@ static inline u32 fsl_qspi_endian_xchg(struct fsl_qspi *q, u32 a)
  
- 	mtd_set_ecc_mode(md, ecc);
+ static inline void fsl_qspi_unlock_lut(struct fsl_qspi *q)
+ {
+-	writel(QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
+-	writel(QUADSPI_LCKER_UNLOCK, q->iobase + QUADSPI_LCKCR);
++	qspi_writel(q, QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
++	qspi_writel(q, QUADSPI_LCKER_UNLOCK, q->iobase + QUADSPI_LCKCR);
+ }
  
--	data = md->buf;
--	oobdata = data + mtd_oobsize(md);
-+	if (ecc) {
-+		data = md->buf;
-+		oobdata = data + mtd_writesize(md);
-+	} else {
-+		int i;
-+		struct nfc_geometry *nfc_geo = &md->nfc_geometry;
-+		int eccbytes = ((nfc_geo->ecc_strength * nfc_geo->gf_len) + 7) / 8;
-+		int chunksize = nfc_geo->ecc_chunk_size_in_bytes;
-+		int src_offset = 0;
-+
-+		data = malloc(mtd_writesize(md) + mtd_oobsize(md));
-+		if (!data) {
-+			fprintf(stderr, "mtd: %s failed to allocate buffer\n", __func__);
-+			return -1;
-+		}
-+		oobdata = data + mtd_writesize(md);
-+		memset(data, 0, mtd_writesize(md) + mtd_oobsize(md));
-+		memcpy(oobdata, md->buf, nfc_geo->metadata_size_in_bytes);
-+		src_offset += nfc_geo->metadata_size_in_bytes;
-+		for (i = 0; i < nfc_geo->ecc_chunk_count; i++) {
-+			memcpy(data + (i * chunksize), md->buf + src_offset, chunksize);
-+			src_offset += chunksize;
-+			memcpy(oobdata + nfc_geo->metadata_size_in_bytes + (i * eccbytes),
-+			       md->buf + src_offset, eccbytes);
-+			src_offset += eccbytes;
-+		}
-+
-+		if (mtd_writesize(md) + mtd_oobsize(md) > src_offset) {
-+			memcpy(oobdata + nfc_geo->metadata_size_in_bytes + (i * eccbytes),
-+			       md->buf + src_offset,
-+			       mtd_writesize(md) + mtd_oobsize(md) - src_offset);
-+		}
-+	}
+ static inline void fsl_qspi_lock_lut(struct fsl_qspi *q)
+ {
+-	writel(QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
+-	writel(QUADSPI_LCKER_LOCK, q->iobase + QUADSPI_LCKCR);
++	qspi_writel(q, QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
++	qspi_writel(q, QUADSPI_LCKER_LOCK, q->iobase + QUADSPI_LCKCR);
+ }
  
- 	/* make sure it's aligned to a page */
- 	if ((ofs % mtd_writesize(md)) != 0) {
- 		fprintf(stderr, "mtd: %s failed\n", __func__);
-+		if (!ecc)
-+			free(data);
- 		return -1;
+ static irqreturn_t fsl_qspi_irq_handler(int irq, void *dev_id)
+@@ -326,8 +349,8 @@ static irqreturn_t fsl_qspi_irq_handler(int irq, void *dev_id)
+ 	u32 reg;
+ 
+ 	/* clear interrupt */
+-	reg = readl(q->iobase + QUADSPI_FR);
+-	writel(reg, q->iobase + QUADSPI_FR);
++	reg = qspi_readl(q, q->iobase + QUADSPI_FR);
++	qspi_writel(q, reg, q->iobase + QUADSPI_FR);
+ 
+ 	if (reg & QUADSPI_FR_TFF_MASK)
+ 		complete(&q->c);
+@@ -348,7 +371,7 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 
+ 	/* Clear all the LUT table */
+ 	for (i = 0; i < QUADSPI_LUT_NUM; i++)
+-		writel(0, base + QUADSPI_LUT_BASE + i * 4);
++		qspi_writel(q, 0, base + QUADSPI_LUT_BASE + i * 4);
+ 
+ 	/* Quad Read */
+ 	lut_base = SEQID_QUAD_READ * 4;
+@@ -364,14 +387,15 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 		dummy = 8;
  	}
  
- 	size = mtd_writesize(md);
+-	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
++	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+ 			base + QUADSPI_LUT(lut_base));
+-	writel(LUT0(DUMMY, PAD1, dummy) | LUT1(FSL_READ, PAD4, rxfifo),
++	qspi_writel(q, LUT0(DUMMY, PAD1, dummy) | LUT1(FSL_READ, PAD4, rxfifo),
+ 			base + QUADSPI_LUT(lut_base + 1));
  
-+	ops.start = ofs;
-+	ops.len = size;
-+	ops.ooblen = ecc ? 0 : mtd_oobsize(md);
-+	ops.usr_oob = (uint64_t)(unsigned long)oobdata;
-+	ops.usr_data = (uint64_t)(unsigned long)data;
-+	ops.mode = ecc ? MTD_OPS_AUTO_OOB : MTD_OPS_RAW;
-+	r = ioctl(md->part[chip].fd, MEMWRITE, &ops);
-+	if (!r)
-+		r = size;
-+	/*
+ 	/* Write enable */
+ 	lut_base = SEQID_WREN * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_WREN), base + QUADSPI_LUT(lut_base));
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WREN),
++			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Page Program */
+ 	lut_base = SEQID_PP * 4;
+@@ -385,13 +409,15 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 		addrlen = ADDR32BIT;
+ 	}
+ 
+-	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
++	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+ 			base + QUADSPI_LUT(lut_base));
+-	writel(LUT0(FSL_WRITE, PAD1, 0), base + QUADSPI_LUT(lut_base + 1));
++	qspi_writel(q, LUT0(FSL_WRITE, PAD1, 0),
++			base + QUADSPI_LUT(lut_base + 1));
+ 
+ 	/* Read Status */
+ 	lut_base = SEQID_RDSR * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_RDSR) | LUT1(FSL_READ, PAD1, 0x1),
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDSR) |
++			LUT1(FSL_READ, PAD1, 0x1),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Erase a sector */
+@@ -400,40 +426,46 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 	cmd = q->nor[0].erase_opcode;
+ 	addrlen = q->nor_size <= SZ_16M ? ADDR24BIT : ADDR32BIT;
+ 
+-	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
++	qspi_writel(q, LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Erase the whole chip */
+ 	lut_base = SEQID_CHIP_ERASE * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_CHIP_ERASE),
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_CHIP_ERASE),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* READ ID */
+ 	lut_base = SEQID_RDID * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_RDID) | LUT1(FSL_READ, PAD1, 0x8),
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDID) |
++			LUT1(FSL_READ, PAD1, 0x8),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Write Register */
+ 	lut_base = SEQID_WRSR * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_WRSR) | LUT1(FSL_WRITE, PAD1, 0x2),
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WRSR) |
++			LUT1(FSL_WRITE, PAD1, 0x2),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Read Configuration Register */
+ 	lut_base = SEQID_RDCR * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_RDCR) | LUT1(FSL_READ, PAD1, 0x1),
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDCR) |
++			LUT1(FSL_READ, PAD1, 0x1),
+ 			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Write disable */
+ 	lut_base = SEQID_WRDI * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_WRDI), base + QUADSPI_LUT(lut_base));
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WRDI),
++			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Enter 4 Byte Mode (Micron) */
+ 	lut_base = SEQID_EN4B * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_EN4B), base + QUADSPI_LUT(lut_base));
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_EN4B),
++			base + QUADSPI_LUT(lut_base));
+ 
+ 	/* Enter 4 Byte Mode (Spansion) */
+ 	lut_base = SEQID_BRWR * 4;
+-	writel(LUT0(CMD, PAD1, SPINOR_OP_BRWR), base + QUADSPI_LUT(lut_base));
++	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_BRWR),
++			base + QUADSPI_LUT(lut_base));
+ 
+ 	fsl_qspi_lock_lut(q);
+ }
+@@ -488,15 +520,16 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
+ 			q->chip_base_addr, addr, len, cmd);
+ 
+ 	/* save the reg */
+-	reg = readl(base + QUADSPI_MCR);
++	reg = qspi_readl(q, base + QUADSPI_MCR);
+ 
+-	writel(q->memmap_phy + q->chip_base_addr + addr, base + QUADSPI_SFAR);
+-	writel(QUADSPI_RBCT_WMRK_MASK | QUADSPI_RBCT_RXBRD_USEIPS,
++	qspi_writel(q, q->memmap_phy + q->chip_base_addr + addr,
++			base + QUADSPI_SFAR);
++	qspi_writel(q, QUADSPI_RBCT_WMRK_MASK | QUADSPI_RBCT_RXBRD_USEIPS,
+ 			base + QUADSPI_RBCT);
+-	writel(reg | QUADSPI_MCR_CLR_RXF_MASK, base + QUADSPI_MCR);
++	qspi_writel(q, reg | QUADSPI_MCR_CLR_RXF_MASK, base + QUADSPI_MCR);
+ 
  	do {
- 		r = pwrite(md->part[chip].fd, data, size, ofs);
- 	} while (r == -1 && (errno == EAGAIN || errno == EBUSY));
-+	*/
-+
-+	if (!ecc)
-+		free(data);
+-		reg2 = readl(base + QUADSPI_SR);
++		reg2 = qspi_readl(q, base + QUADSPI_SR);
+ 		if (reg2 & (QUADSPI_SR_IP_ACC_MASK | QUADSPI_SR_AHB_ACC_MASK)) {
+ 			udelay(1);
+ 			dev_dbg(q->dev, "The controller is busy, 0x%x\n", reg2);
+@@ -507,21 +540,22 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
  
- 	/* end of partition? */
- 	if (r == 0) {
+ 	/* trigger the LUT now */
+ 	seqid = fsl_qspi_get_seqid(q, cmd);
+-	writel((seqid << QUADSPI_IPCR_SEQID_SHIFT) | len, base + QUADSPI_IPCR);
++	qspi_writel(q, (seqid << QUADSPI_IPCR_SEQID_SHIFT) | len,
++			base + QUADSPI_IPCR);
+ 
+ 	/* Wait for the interrupt. */
+ 	if (!wait_for_completion_timeout(&q->c, msecs_to_jiffies(1000))) {
+ 		dev_err(q->dev,
+ 			"cmd 0x%.2x timeout, addr@%.8x, FR:0x%.8x, SR:0x%.8x\n",
+-			cmd, addr, readl(base + QUADSPI_FR),
+-			readl(base + QUADSPI_SR));
++			cmd, addr, qspi_readl(q, base + QUADSPI_FR),
++			qspi_readl(q, base + QUADSPI_SR));
+ 		err = -ETIMEDOUT;
+ 	} else {
+ 		err = 0;
+ 	}
+ 
+ 	/* restore the MCR */
+-	writel(reg, base + QUADSPI_MCR);
++	qspi_writel(q, reg, base + QUADSPI_MCR);
+ 
+ 	return err;
+ }
+@@ -533,7 +567,7 @@ static void fsl_qspi_read_data(struct fsl_qspi *q, int len, u8 *rxbuf)
+ 	int i = 0;
+ 
+ 	while (len > 0) {
+-		tmp = readl(q->iobase + QUADSPI_RBDR + i * 4);
++		tmp = qspi_readl(q, q->iobase + QUADSPI_RBDR + i * 4);
+ 		tmp = fsl_qspi_endian_xchg(q, tmp);
+ 		dev_dbg(q->dev, "chip addr:0x%.8x, rcv:0x%.8x\n",
+ 				q->chip_base_addr, tmp);
+@@ -561,9 +595,9 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
+ {
+ 	u32 reg;
+ 
+-	reg = readl(q->iobase + QUADSPI_MCR);
++	reg = qspi_readl(q, q->iobase + QUADSPI_MCR);
+ 	reg |= QUADSPI_MCR_SWRSTHD_MASK | QUADSPI_MCR_SWRSTSD_MASK;
+-	writel(reg, q->iobase + QUADSPI_MCR);
++	qspi_writel(q, reg, q->iobase + QUADSPI_MCR);
+ 
+ 	/*
+ 	 * The minimum delay : 1 AHB + 2 SFCK clocks.
+@@ -572,7 +606,7 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
+ 	udelay(1);
+ 
+ 	reg &= ~(QUADSPI_MCR_SWRSTHD_MASK | QUADSPI_MCR_SWRSTSD_MASK);
+-	writel(reg, q->iobase + QUADSPI_MCR);
++	qspi_writel(q, reg, q->iobase + QUADSPI_MCR);
+ }
+ 
+ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+@@ -586,20 +620,20 @@ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+ 		q->chip_base_addr, to, count);
+ 
+ 	/* clear the TX FIFO. */
+-	tmp = readl(q->iobase + QUADSPI_MCR);
+-	writel(tmp | QUADSPI_MCR_CLR_TXF_MASK, q->iobase + QUADSPI_MCR);
++	tmp = qspi_readl(q, q->iobase + QUADSPI_MCR);
++	qspi_writel(q, tmp | QUADSPI_MCR_CLR_TXF_MASK, q->iobase + QUADSPI_MCR);
+ 
+ 	/* fill the TX data to the FIFO */
+ 	for (j = 0, i = ((count + 3) / 4); j < i; j++) {
+ 		tmp = fsl_qspi_endian_xchg(q, *txbuf);
+-		writel(tmp, q->iobase + QUADSPI_TBDR);
++		qspi_writel(q, tmp, q->iobase + QUADSPI_TBDR);
+ 		txbuf++;
+ 	}
+ 
+ 	/* fill the TXFIFO upto 16 bytes for i.MX7d */
+ 	if (needs_fill_txfifo(q))
+ 		for (; i < 4; i++)
+-			writel(tmp, q->iobase + QUADSPI_TBDR);
++			qspi_writel(q, tmp, q->iobase + QUADSPI_TBDR);
+ 
+ 	/* Trigger it */
+ 	ret = fsl_qspi_runcmd(q, opcode, to, count);
+@@ -615,10 +649,10 @@ static void fsl_qspi_set_map_addr(struct fsl_qspi *q)
+ 	int nor_size = q->nor_size;
+ 	void __iomem *base = q->iobase;
+ 
+-	writel(nor_size + q->memmap_phy, base + QUADSPI_SFA1AD);
+-	writel(nor_size * 2 + q->memmap_phy, base + QUADSPI_SFA2AD);
+-	writel(nor_size * 3 + q->memmap_phy, base + QUADSPI_SFB1AD);
+-	writel(nor_size * 4 + q->memmap_phy, base + QUADSPI_SFB2AD);
++	qspi_writel(q, nor_size + q->memmap_phy, base + QUADSPI_SFA1AD);
++	qspi_writel(q, nor_size * 2 + q->memmap_phy, base + QUADSPI_SFA2AD);
++	qspi_writel(q, nor_size * 3 + q->memmap_phy, base + QUADSPI_SFB1AD);
++	qspi_writel(q, nor_size * 4 + q->memmap_phy, base + QUADSPI_SFB2AD);
+ }
+ 
+ /*
+@@ -640,24 +674,26 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi *q)
+ 	int seqid;
+ 
+ 	/* AHB configuration for access buffer 0/1/2 .*/
+-	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF0CR);
+-	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF1CR);
+-	writel(QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF2CR);
++	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF0CR);
++	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF1CR);
++	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF2CR);
+ 	/*
+ 	 * Set ADATSZ with the maximum AHB buffer size to improve the
+ 	 * read performance.
+ 	 */
+-	writel(QUADSPI_BUF3CR_ALLMST_MASK | ((q->devtype_data->ahb_buf_size / 8)
+-			<< QUADSPI_BUF3CR_ADATSZ_SHIFT), base + QUADSPI_BUF3CR);
++	qspi_writel(q, QUADSPI_BUF3CR_ALLMST_MASK |
++			((q->devtype_data->ahb_buf_size / 8)
++			<< QUADSPI_BUF3CR_ADATSZ_SHIFT),
++			base + QUADSPI_BUF3CR);
+ 
+ 	/* We only use the buffer3 */
+-	writel(0, base + QUADSPI_BUF0IND);
+-	writel(0, base + QUADSPI_BUF1IND);
+-	writel(0, base + QUADSPI_BUF2IND);
++	qspi_writel(q, 0, base + QUADSPI_BUF0IND);
++	qspi_writel(q, 0, base + QUADSPI_BUF1IND);
++	qspi_writel(q, 0, base + QUADSPI_BUF2IND);
+ 
+ 	/* Set the default lut sequence for AHB Read. */
+ 	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
+-	writel(seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
++	qspi_writel(q, seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
+ 		q->iobase + QUADSPI_BFGENCR);
+ }
+ 
+@@ -713,7 +749,7 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
+ 		return ret;
+ 
+ 	/* Reset the module */
+-	writel(QUADSPI_MCR_SWRSTSD_MASK | QUADSPI_MCR_SWRSTHD_MASK,
++	qspi_writel(q, QUADSPI_MCR_SWRSTSD_MASK | QUADSPI_MCR_SWRSTHD_MASK,
+ 		base + QUADSPI_MCR);
+ 	udelay(1);
+ 
+@@ -721,24 +757,24 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
+ 	fsl_qspi_init_lut(q);
+ 
+ 	/* Disable the module */
+-	writel(QUADSPI_MCR_MDIS_MASK | QUADSPI_MCR_RESERVED_MASK,
++	qspi_writel(q, QUADSPI_MCR_MDIS_MASK | QUADSPI_MCR_RESERVED_MASK,
+ 			base + QUADSPI_MCR);
+ 
+-	reg = readl(base + QUADSPI_SMPR);
+-	writel(reg & ~(QUADSPI_SMPR_FSDLY_MASK
++	reg = qspi_readl(q, base + QUADSPI_SMPR);
++	qspi_writel(q, reg & ~(QUADSPI_SMPR_FSDLY_MASK
+ 			| QUADSPI_SMPR_FSPHS_MASK
+ 			| QUADSPI_SMPR_HSENA_MASK
+ 			| QUADSPI_SMPR_DDRSMP_MASK), base + QUADSPI_SMPR);
+ 
+ 	/* Enable the module */
+-	writel(QUADSPI_MCR_RESERVED_MASK | QUADSPI_MCR_END_CFG_MASK,
++	qspi_writel(q, QUADSPI_MCR_RESERVED_MASK | QUADSPI_MCR_END_CFG_MASK,
+ 			base + QUADSPI_MCR);
+ 
+ 	/* clear all interrupt status */
+-	writel(0xffffffff, q->iobase + QUADSPI_FR);
++	qspi_writel(q, 0xffffffff, q->iobase + QUADSPI_FR);
+ 
+ 	/* enable the interrupt */
+-	writel(QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
++	qspi_writel(q, QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
+ 
+ 	return 0;
+ }
+@@ -954,6 +990,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	if (IS_ERR(q->iobase))
+ 		return PTR_ERR(q->iobase);
+ 
++	q->big_endian = of_property_read_bool(np, "big-endian");
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+ 					"QuadSPI-memory");
+ 	if (!devm_request_mem_region(dev, res->start, resource_size(res),
+@@ -1101,8 +1138,8 @@ static int fsl_qspi_remove(struct platform_device *pdev)
+ 	}
+ 
+ 	/* disable the hardware */
+-	writel(QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
+-	writel(0x0, q->iobase + QUADSPI_RSER);
++	qspi_writel(q, QUADSPI_MCR_MDIS_MASK, q->iobase + QUADSPI_MCR);
++	qspi_writel(q, 0x0, q->iobase + QUADSPI_RSER);
+ 
+ 	mutex_destroy(&q->lock);
+ 
 -- 
-1.9.1
+2.1.0.27.g96db324
