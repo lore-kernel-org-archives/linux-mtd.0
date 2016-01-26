@@ -1,17 +1,19 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOBIk-00020U-4W
- for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 21:37:26 +0000
-Received: by mail-pa0-x22c.google.com with SMTP id ho8so103578399pac.2
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jan 2016 13:37:05 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: [mtd-utils PATCH] Makefile: install: don't look for scripts in
- BUILDDIR
-Date: Tue, 26 Jan 2016 13:36:56 -0800
-Message-Id: <1453844216-133634-1-git-send-email-computersforpeace@gmail.com>
+Date: Tue, 26 Jan 2016 16:02:55 -0600
+From: Rob Herring <robh@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, Grant Likely <grant.likely@linaro.org>,
+ Arnd Bergmann <arnd@arndb.de>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 1/6] mtd: augment the "arm,versatile-flash" bindings
+Message-ID: <20160126220255.GA13707@rob-hp-laptop>
+References: <1453806725-4880-1-git-send-email-linus.walleij@linaro.org>
+ <1453806725-4880-2-git-send-email-linus.walleij@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1453806725-4880-2-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Our ${SCRIPTS} (e.g., flash_eraseall) are not found in the build
-directory; they should be found in their original location.
+On Tue, Jan 26, 2016 at 12:12:00PM +0100, Linus Walleij wrote:
+> The bindings for the "arm,versatile-flash" device was merged in
+> commit 3ba7222ac992d24d09ccd0b55940b54849eef752
+> "arm/versatile: Add device tree support" but was never used
+> for anything.
+> 
+> Versatile flash chips are actually just standard CFI chips,
+> but they have one or two bits in a system controller to control
+> VPP and write protection. Let's use this compatible string in
+> conjunction with "cfi-flash" to indicate that we have a
+> normal CFI flash with some extra Versatile-specific protection.
+> 
+> Cc: devicetree@vger.kernel.org
+> Cc: Grant Likely <grant.likely@linaro.org>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  .../devicetree/bindings/mtd/arm-versatile.txt        | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
 
-This fixes a typo in the Makefile refactoring, which caused 'make
-install' to fail with messages like:
-
-  make: *** No rule to make target '[...my source-build directory...]/armv7a-cros-linux-gnueabi/misc-utils/flash_eraseall'. Stop.
-
-because the install target is looking in the wrong place for
-flash_eraseall.
-
-Fixes: 7d81790ced34 ("mtd-utils: Restructure the mtd-utils source.")
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
----
- Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Makefile b/Makefile
-index bd9504ae72f0..977c9c5056ed 100644
---- a/Makefile
-+++ b/Makefile
-@@ -67,7 +67,7 @@ endif
- 	rm -f $(BUILDDIR)/include/version.h
- 	$(MAKE) -C $(TESTS) clean
- 
--install:: $(addprefix $(BUILDDIR)/,${BINS} ${SCRIPTS})
-+install:: $(addprefix $(BUILDDIR)/,${BINS}) ${SCRIPTS}
- 	mkdir -p ${DESTDIR}/${SBINDIR}
- 	install -m 0755 $^ ${DESTDIR}/${SBINDIR}/
- 	mkdir -p ${DESTDIR}/${MANDIR}/man1
--- 
-2.7.0.rc3.207.g0ac5344
+Acked-by: Rob Herring <robh@kernel.org>
