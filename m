@@ -1,30 +1,21 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aO48x-0001Dn-7B
- for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 13:58:52 +0000
-Subject: Re: [PATCH 21/22] mtd: cs553x: Fix dependencies for !HAS_IOMEM archs
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-References: <1453760661-1444-1-git-send-email-richard@nod.at>
- <1453760661-1444-22-git-send-email-richard@nod.at>
- <CAMuHMdX_nH9U9gU4NH0KWPDVXBZmLbQDUp8MVXFpcciwKjmwuA@mail.gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- uml-devel <user-mode-linux-devel@lists.sourceforge.net>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Bill Pringlemeir <bpringlemeir@nbsps.com>, Stefan Agner <stefan@agner.ch>,
- Alex Smith <alex.smith@imgtec.com>, Zhou Wang <wangzhou1@hisilicon.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Anup Patel <anup.patel@broadcom.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56A77B7B.2000305@nod.at>
-Date: Tue, 26 Jan 2016 14:58:19 +0100
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aO5wK-0001MO-0O
+ for linux-mtd@lists.infradead.org; Tue, 26 Jan 2016 15:53:56 +0000
+From: "Wilcox, Matthew R" <matthew.r.wilcox@intel.com>
+To: Jared Hulbert <jaredeh@gmail.com>, linux-mtd
+ <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+ "ross.zwisler@linux.intel.com" <ross.zwisler@linux.intel.com>, Chris Brandt
+ <Chris.Brandt@renesas.com>
+Subject: RE: PMEM, DAX, MTD, and the quest for the Theory of Everything
+Date: Tue, 26 Jan 2016 15:53:34 +0000
+Message-ID: <100D68C7BA14664A8938383216E40DE04217A0C1@FMSMSX114.amr.corp.intel.com>
+References: <CA+ZsKJ53E33rWmwv-v=_b8OjHT_20UW7WqD9XhhHJ0aYxJc=cA@mail.gmail.com>
+In-Reply-To: <CA+ZsKJ53E33rWmwv-v=_b8OjHT_20UW7WqD9XhhHJ0aYxJc=cA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdX_nH9U9gU4NH0KWPDVXBZmLbQDUp8MVXFpcciwKjmwuA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,81 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Geert,
-
-Am 26.01.2016 um 12:00 schrieb Geert Uytterhoeven:
-> Hi Richard,
-> 
-> On Mon, Jan 25, 2016 at 11:24 PM, Richard Weinberger <richard@nod.at> wrote:
->> Not every arch has io memory nor can this driver ever work
->> on UML/i386.
->> So, unbreak the build by fixing the dependencies.
->>
->> Signed-off-by: Richard Weinberger <richard@nod.at>
->> ---
->>  drivers/mtd/nand/Kconfig | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index 545d82b..b253654 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -311,6 +311,7 @@ config MTD_NAND_CAFE
->>  config MTD_NAND_CS553X
->>         tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
->>         depends on X86_32
->> +       depends on !UML && HAS_IOMEM
-> 
-> I don't think there's a need for the !UML dependency?
-> Hence just "depends on X86_32 && HAS_IOMEM"?
-
-Strictly speaking this would work as HAS_IOMEM implies !UML.
-The build error shows that it fails also because UML/i386 is x86_32
-but lacks some x86_32 stuff:
-
-drivers/mtd/nand/cs553x_nand.c: In function ‘cs553x_init_one’:
-drivers/mtd/nand/cs553x_nand.c:212:2: error: implicit declaration of function ‘ioremap’ [-Werror=implicit-function-declaration]
-  this->IO_ADDR_R = this->IO_ADDR_W = ioremap(adr, 4096);
-  ^
-drivers/mtd/nand/cs553x_nand.c:212:36: warning: assignment makes pointer from integer without a cast [enabled by default]
-  this->IO_ADDR_R = this->IO_ADDR_W = ioremap(adr, 4096);
-                                    ^
-drivers/mtd/nand/cs553x_nand.c:256:2: error: implicit declaration of function ‘iounmap’ [-Werror=implicit-function-declaration]
-  iounmap(this->IO_ADDR_R);
-  ^
-drivers/mtd/nand/cs553x_nand.c: In function ‘is_geode’:
-drivers/mtd/nand/cs553x_nand.c:266:19: error: ‘struct cpuinfo_um’ has no member named ‘x86_vendor’
-  if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
-                   ^
-drivers/mtd/nand/cs553x_nand.c:266:34: error: ‘X86_VENDOR_AMD’ undeclared (first use in this function)
-  if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
-                                  ^
-drivers/mtd/nand/cs553x_nand.c:266:34: note: each undeclared identifier is reported only once for each function it appears in
-drivers/mtd/nand/cs553x_nand.c:267:19: error: ‘struct cpuinfo_um’ has no member named ‘x86’
-      boot_cpu_data.x86 == 5 &&
-                   ^
-drivers/mtd/nand/cs553x_nand.c:268:19: error: ‘struct cpuinfo_um’ has no member named ‘x86_model’
-      boot_cpu_data.x86_model == 10)
-                   ^
-drivers/mtd/nand/cs553x_nand.c:271:20: error: ‘struct cpuinfo_um’ has no member named ‘x86_vendor’
-  if ((boot_cpu_data.x86_vendor == X86_VENDOR_NSC ||
-                    ^
-drivers/mtd/nand/cs553x_nand.c:271:35: error: ‘X86_VENDOR_NSC’ undeclared (first use in this function)
-  if ((boot_cpu_data.x86_vendor == X86_VENDOR_NSC ||
-                                   ^
-drivers/mtd/nand/cs553x_nand.c:272:20: error: ‘struct cpuinfo_um’ has no member named ‘x86_vendor’
-       boot_cpu_data.x86_vendor == X86_VENDOR_CYRIX) &&
-                    ^
-drivers/mtd/nand/cs553x_nand.c:272:35: error: ‘X86_VENDOR_CYRIX’ undeclared (first use in this function)
-       boot_cpu_data.x86_vendor == X86_VENDOR_CYRIX) &&
-                                   ^
-drivers/mtd/nand/cs553x_nand.c:273:19: error: ‘struct cpuinfo_um’ has no member named ‘x86’
-      boot_cpu_data.x86 == 5 &&
-                   ^
-drivers/mtd/nand/cs553x_nand.c:274:19: error: ‘struct cpuinfo_um’ has no member named ‘x86_model’
-      boot_cpu_data.x86_model == 5)
-
-Maybe a "depends on X86_32 && !UML" would make more sense. hmm?
-
-Thanks,
-//richard
+Tm8sIHdlIGhhdmVuJ3QgYmVlbiBjb25zaWRlcmluZyB0aGUgTVREIGNvZGUgYXQgYWxsIHdpdGgg
+REFYLiAgV2UgbGVhcHQgb250byB0aGUgUy8zOTAgZmlsZW1hcF94aXAgY29kZSwgYW5kIHRvb2sg
+aXQgZm9yIGEgd2lsZCByaWRlLiAgSSBkaWQgbG9vayBhdCB0aGUgTVREIGNvZGUgYSBiaXQsIGJ1
+dCB0aGF0IHdhcyB0d28gb3IgbW9yZSB5ZWFycyBhZ28uICBJIHZhZ3VlbHkgcmVtZW1iZXIgdGhp
+bmtpbmcgdGhhdCBpdCBjb3VsZCBiZSBtYWRlIHRvIHN1cHBvcnQgREFYLCBidXQgaXQgcmVhbGx5
+IHdhc24ndCAoYW5kIGlzbid0KSBteSBmb2N1cy4NCg0KSSBkb24ndCB0aGluayBJJ2QgYmUgdGVy
+cmlibHkgdXBzZXQgYnkgdGhlIGFwcGVhcmFuY2Ugb2YgcGF0Y2hlcyB3aGljaCBtYWRlIERBWCBz
+aXQgb24gdG9wIG9mIGFuIE1URCBkZXZpY2UgaW5zdGVhZCBvZiBhIGJsb2NrIGRldmljZSwgYnV0
+IEkgZG9uJ3QgaGF2ZSBhIGdvb2QgZmVlbCBmb3Igd2hlcmUgZW1iZWRkZWQgc3lzdGVtcyBhcmUg
+dGhlc2UgZGF5cy4gIElzIGl0IHN0aWxsIHdvcnRoIGNvbmZpZ3VyaW5nIG91dCB0aGUgYmxvY2sg
+c3Vic3lzdGVtPw0KDQpJbiB5b3VyIGxhc3Qgc2VudGVuY2UgeW91IHRhbGsgYWJvdXQgJ0VYVDQg
+b24gUk9NL05PUiBkZXZpY2VzJyAtLSBoYXZlIHlvdSBkaXZvcmNlZCBleHQ0IGZyb20gdGhlIGJs
+b2NrIGxheWVyPyAgT3IgYXJlIHlvdSB0YWxraW5nIGFib3V0IGV4dDQgb24gbXRkYmxvY2s/DQoN
+Ci0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBKYXJlZCBIdWxiZXJ0IFttYWlsdG86
+amFyZWRlaEBnbWFpbC5jb21dIA0KU2VudDogTW9uZGF5LCBKYW51YXJ5IDI1LCAyMDE2IDU6MTAg
+UE0NClRvOiBsaW51eC1tdGQ7IERhdmlkIFdvb2Rob3VzZTsgV2lsY294LCBNYXR0aGV3IFI7IHJv
+c3Muendpc2xlckBsaW51eC5pbnRlbC5jb207IENocmlzIEJyYW5kdA0KU3ViamVjdDogUE1FTSwg
+REFYLCBNVEQsIGFuZCB0aGUgcXVlc3QgZm9yIHRoZSBUaGVvcnkgb2YgRXZlcnl0aGluZw0KDQpJ
+J20gbm90IHNlZWluZyBhbnkgdHJhZmZpYyBjb25uZWN0aW5nIE1URCwgUE1FTSwgYW5kIERBWC4g
+IEFueQ0KZGlzY3Vzc2lvbnMgSSBzaG91bGQgYmUgYXdhcmUgb2Y/DQoNCk1URCBkZXZpY2VzIGxp
+a2UgU1BJLU5PUiBhbmQgdGhlIGluZXZpdGFibGUgc3BpbGxvdmVyIGludG8gdGhlDQplbWJlZGRl
+ZCBtYXJrZXQgb2YgM0QgWHBvaW50IGFuZCBzaW1pbGFyIHRlY2hub2xvZ2llcyBhcmUgZXhjbHVk
+ZWQNCmZyb20gdGhlIERBWCBnYW1lLiAgQ29uc2lkZXJpbmcgYWxsIHRoZSB5ZWFycyB3ZSBzcGVu
+dCBwbGF5aW5nIHdpdGgNClhJUCBpbiBNVEQuLi4gICB3ZWxsIHRoYXQncyB3aGF0IGhhcHBlbnMg
+d2hlbiB5b3UgZGlzZW5nYWdlIGZvcg0Kc2V2ZXJhbCB5ZWFycy4NCg0KQSBmZXcgdGhvdWdodHMu
+Li4NCg0KIzEgLSBNVEQgcHJvdmlkZXMgdmFyaW91cyB3YXlzIHRvIHBhcnRpdGlvbiBtZW1vcnkg
+c2VtYW50aWMgZGV2aWNlcyBhcw0KcmVwcm9ncmFtYWJsZSBST01zIGZvciBzdG9yYWdlIG9mIGJv
+b3Rsb2FkZXJzLCBrZXJuZWwsIHJvb3RmcyBpbWFnZXMsDQpldGMuICBEb2VzIFBNRU0gaGF2ZSBh
+bnl0aGluZyB0byBsZWFybiBmcm9tIHRoaXM/ICBPciBkb2VzIHRoZSBNVEQNCmxheWVyIGhhdmUg
+YW4gb3Bwb3J0dW5pdHkgdG8gZ2FpbiBzb21ldGhpbmcgYnkgdXNpbmcgUE1FTSBzdGFuZGFyZHM/
+DQoNCiMyIC0gTVREIGhhcyBoYWQgYW4gQVBJIHRoYXQgYWxsb3dlZCBkaXJlY3QgYWNjZXNzIChz
+ZWUgcG9pbnQoKSBpbg0Kc3RydWN0IG10ZF9pbmZvKSBhbmQgYmxvY2staXNoIHNlbWFudGljIGFj
+Y2VzcyBvZiBwZXJzaXN0ZW50IG1lbW9yeQ0KZGV2aWNlcyBzaW5jZSwgSSBkdW5ubywgYmVmb3Jl
+IGJpdGtlZXBlcj8gIENhbiB3ZSBob29rIHRoaXMgdXAgd2l0aA0KREFYPyAgUmVhZCBPbmx5IHNo
+b3VsZCBiZSAidHJpdmlhbCIgZXNwZWNpYWxseSBpZiBzb21lb25lIGVsc2UgZG9lcw0KaXQuIDop
+DQoNCiMzIC0gVGhlcmUgaGFzIGxvbmcgYmVlbiBhIGRlc2lyZSB0byBtZXJnZSBNVEQgd2l0aCB0
+aGUgYmxvY2sNCnN1YnN5c3RlbSB3aXRoIHNvbWUgbWVtYmVycyBvZiB0aGUgTVREIGNvbW11bml0
+eS4gIFBNRU0gc2VlbXMgdG8NCmNyZWF0ZSBhIHByZWNlZGVudCBmb3IgYSBibG9jayBpbnRlcmZh
+Y2Ugb24gYSBkZXZpY2UgdGhhdCBpc24ndA0KZnVuZGFtZW50YWxseSBibG9jayBiYXNlZC4gIEFs
+c28gdGhlIGRpcmVjdF9hY2Nlc3MoKSBpbiBibG9jayBoYXMgYmVlbg0KbGVnaXRpbWl6ZWQgd2l0
+aCB0aGUgcmVjZW50IERBWCBzdHVmZi4gICBJcyBpdCB0aW1lIG5vdz8NCg0KTXkgdmlzaW9uIGhl
+cmUgaXMgdG8gZW5hYmxlIFJlYWQtT25seSBEQVggaW1hZ2VzIG9mIEVYVDQsIEFYRlMsIFBSQU1G
+Uw0Kb24gUk9NL05PUiBkZXZpY2VzIGluIGEgc3RhbmRhcmQgREFYIHdheS4NCg0KVGhvdWdodHM/
+DQo=
