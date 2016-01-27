@@ -1,21 +1,27 @@
-Received: from mail-bn1on0074.outbound.protection.outlook.com ([157.56.110.74]
- helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOScI-00005G-1j
- for linux-mtd@lists.infradead.org; Wed, 27 Jan 2016 16:06:49 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "sztomi89@gmail.com" <sztomi89@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2 deadlock
-Date: Wed, 27 Jan 2016 16:05:35 +0000
-Message-ID: <1453910781.20662.35.camel@infinera.com>
-References: <CAKatumo13ZM2o3dK9_ouxzta-sxeiB5E236Qh5dfbnEBc9CuMw@mail.gmail.com>
-In-Reply-To: <CAKatumo13ZM2o3dK9_ouxzta-sxeiB5E236Qh5dfbnEBc9CuMw@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-15"
-Content-ID: <51B51A68F09DFC4C9396A7561FD3B46C@infinera.com>
-Content-Transfer-Encoding: quoted-printable
+ id 1aOZCB-0003VT-CP
+ for linux-mtd@lists.infradead.org; Wed, 27 Jan 2016 23:08:16 +0000
+Received: by mail-pf0-x244.google.com with SMTP id 65so1063340pfd.1
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Jan 2016 15:07:54 -0800 (PST)
+Date: Wed, 27 Jan 2016 15:07:51 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Simon Arlott <simon@fire.lp0.eu>
+Cc: Ralf Baechle <ralf@linux-mips.org>, David Woodhouse <dwmw2@infradead.org>,
+ Kevin Cernekee <cernekee@gmail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Jonas Gorski <jogo@openwrt.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ MIPS Mailing List <linux-mips@linux-mips.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH linux-next v4 11/11] mtd: bcm63xxpart: Add NAND
+ partitioning support
+Message-ID: <20160127230751.GB19540@google.com>
+References: <566DF43B.5010400@simon.arlott.org.uk>
+ <566DF6D9.2070904@simon.arlott.org.uk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <566DF6D9.2070904@simon.arlott.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +31,326 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2016-01-27 at 16:36 +0100, Szab=F3 Tam=E1s wrote:
-> Hello all,
->=20
-> I work on an embedded system running Linux 3.10 and found a deadlock
-> situation between jffs2_readpage and jffs2_write.
-> The problem is present on the latest 4.4 kernel too and occurs when
-> two tasks want to access the same file, one reads and the other writes it=
-.
->=20
-> The kernel stack traces for writer and reader in deadlock:
->=20
-> __switch_to+0x4c/0x98
-> sleep_on_page+0x10/0x24
-> __lock_page+0x8c/0x9c
-> find_lock_page+0x7c/0x94
-> grab_cache_page_write_begin+0x64/0xd8
-> jffs2_write_begin+0x6c/0x2ec
-> generic_file_buffered_write+0x188/0x258
-> __generic_file_aio_write+0x1e0/0x484
-> generic_file_aio_write+0x70/0xfc
-> do_sync_write+0x7c/0xd4
-> vfs_write+0xc8/0x1b0
-> SyS_write+0x4c/0xa8
-> ret_from_syscall+0x0/0x38
->=20
-> __switch_to+0x4c/0x98
-> jffs2_readpage+0x28/0x5c
-> generic_file_aio_read+0x22c/0x7a0
-> do_sync_read+0x7c/0xd4
-> vfs_read+0xb0/0x170
-> SyS_read+0x4c/0xa8
-> ret_from_syscall+0x0/0x38
->=20
-> The root cause here is the locking order of f->sem mutex and pagelock.
-> jffs2_readpage function gets the page in locked state and then locks
-> the f->sem mutex, while jffs2_write_begin does it in reverse order.
->=20
-> I found a commit that brought in this bug.
-> That was a fix for another deadlock issue:
-> https://github.com/torvalds/linux/commit/5ffd3412ae5536a4c57469cb8ea31887=
-121dcb2e
->=20
-> According to this commit and my code inspections the lock orders may be
-> the following:
-> readpage: page lock, f->sem
-> writepage_begin: f->sem, page lock
-> writepage_end: page lock, f->sem
-> GC: f->sem, page lock
+Hi,
 
-I am not sure if this is the first time I hear this or if someone else has =
-reported
-a similar issue. Based on you observations above you could revert the refer=
-enced commit
-and fix the locking order in GC to be=A0page lock, f->sem. Does that seem d=
-oable?
+On Sun, Dec 13, 2015 at 10:53:13PM +0000, Simon Arlott wrote:
+> Add partitioning support for BCM963xx boards with NAND flash.
+> 
+> The following partitions are defined:
+>   "boot":           CFE and nvram data
+>   "rootfs":         Currently selected rootfs
+>   "data":           Configuration data
+>   "rootfs1_update": Container for the whole flash area used
+>                     for the first rootfs to allow it to be
+>                     updated
+>   "rootfs2_update": Container for the whole flash area used
+>                     for the second rootfs to allow it to be
+>                     updated
+>   "rootfs_other":   The other (not currently selected) rootfs
+> 
+> Example:
+> [    2.157094] nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xf1
+> [    2.163796] nand: Macronix NAND 128MiB 3,3V 8-bit
+> [    2.168648] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> [    2.176588] bcm6368_nand 10000200.nand: detected 128MiB total, 128KiB blocks, 2KiB pages, 16B OOB, 8-bit, Hamming ECC
+> [    2.189782] Bad block table found at page 65472, version 0x01
+> [    2.196910] Bad block table found at page 65408, version 0x01
+> [    2.204003] nand_read_bbt: bad block at 0x000007480000
+> [    2.225220] bcm63xxpart: rootfs1: CFE image tag found at 0x20000 with version 6, board type 963168VX
+> [    2.236188] bcm63xxpart: rootfs2: CFE image tag found at 0x4000000 with version 6, board type 963168VX
+> [    2.246165] bcm63xxpart: CFE bootline selected latest image rootfs1 (rootfs1_seq=2, rootfs2_seq=1)
+> [    2.255800] 6 bcm63xxpart partitions found on MTD device brcmnand.0
+> [    2.275360] Creating 6 MTD partitions on "brcmnand.0":
+> [    2.280804] 0x000000000000-0x000000020000 : "boot"
+> [    2.294609] 0x000000040000-0x000001120000 : "rootfs"
+> [    2.310078] 0x000007b00000-0x000007f00000 : "data"
+> [    2.324052] 0x000000020000-0x000003ac0000 : "rootfs1_update"
+> [    2.339190] 0x000004000000-0x000007ac0000 : "rootfs2_update"
+> [    2.354290] 0x000004020000-0x000005060000 : "rootfs_other"
+> 
+> The nvram contains the offset and size of the boot, rootfs1, rootfs2
+> and data partitions. The presence of CFE and nvram is already verified
+> by reading from the boot partition which is assumed to be at offset 0
+> and the NAND process aborts if the nvram read indicates that this is
+> not the case.
+> 
+> There is bcm_tag information at the start of each rootfs that is used
+> to determine which rootfs is newer and what its real offset/size is.
+> 
+> The CFE bootline is used to select a rootfs.
+> 
+> Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
 
-=A0Jocke
+Have we gotten any testing besides Simon? Or any Acked-by/Reviewed-by?
+
+> ---
+> v4: Reorganised functions based on earlier new patches in the series,
+>     no real logic changes other than having to check for nvram->version
+>     >= 6 within the nand function instead of the nvram read function.
+> 
+>     Renamed "curpart" to "i" because it allows the partition layout
+>     lines to be under 80 characters.
+> 
+> v3: Use COMPILE_TEST.
+> 
+>     Ensure that strings read from flash are null terminated and validate
+>     bcm_tag integer values (this also moves reporting of rootfs sequence
+>     numbers to later on).
+> 
+> v2: Use external struct bcm963xx_nvram definition for bcm963268part.
+> 
+>     Removed support for the nand partition number field, it's not a
+>     standard Broadcom field (was added by MitraStar Technology Corp.).
+> 
+>  drivers/mtd/bcm63xxpart.c | 196 ++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 190 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
+> index 26c38a1..4576b78 100644
+> --- a/drivers/mtd/bcm63xxpart.c
+> +++ b/drivers/mtd/bcm63xxpart.c
+> @@ -16,10 +16,9 @@
+>   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>   * GNU General Public License for more details.
+>   *
+> - * You should have received a copy of the GNU General Public License
+> - * along with this program; if not, write to the Free Software
+> - * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> - *
+> + * NAND flash layout derived from bcm963xx_4.12L.06B_consumer/bcmdrivers/opensource/char/board/bcm963xx/impl1/board.c,
+> + *	bcm963xx_4.12L.06B_consumer/shared/opensource/include/bcm963xx/bcm_hwdefs.h:
+> + * Copyright (c) 2002 Broadcom Corporation
+>   */
+>  
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> @@ -124,6 +123,25 @@ static int bcm63xx_read_image_tag(struct mtd_info *master, const char *name,
+>  	return 1;
+>  }
+>  
+> +static bool bcm63xx_boot_latest(struct bcm963xx_nvram *nvram)
+> +{
+> +	char *p;
+> +
+> +	STR_NULL_TERMINATE(nvram->bootline);
+> +
+> +	/* Find previous image parameter "p" */
+> +	if (!strncmp(nvram->bootline, "p=", 2))
+> +		p = nvram->bootline;
+> +	else
+> +		p = strstr(nvram->bootline, " p=");
+> +
+> +	if (p == NULL)
+> +		return true;
+> +
+> +	p += 2;
+> +	return *p != '0';
+> +}
+> +
+>  static int bcm63xx_parse_cfe_nor_partitions(struct mtd_info *master,
+>  	const struct mtd_partition **pparts, struct bcm963xx_nvram *nvram)
+>  {
+> @@ -283,6 +301,171 @@ out:
+>  	return nrparts;
+>  }
+>  
+> +static bool bcm63xx_parse_nand_image_tag(struct mtd_info *master,
+> +	const char *name, loff_t tag_offset, u64 *rootfs_offset,
+> +	u64 *rootfs_size, unsigned int *rootfs_sequence)
+> +{
+> +	struct bcm_tag *buf;
+> +	int ret;
+> +	bool rootfs_ok = false;
+> +
+> +	*rootfs_offset = 0;
+> +	*rootfs_size = 0;
+> +	*rootfs_sequence = 0;
+> +
+> +	buf = vmalloc(sizeof(struct bcm_tag));
+> +	if (!buf)
+> +		goto out;
+> +
+> +	ret = bcm63xx_read_image_tag(master, name, tag_offset, buf);
+> +	if (!ret) {
+> +		/* Get rootfs offset and size from tag data */
+> +		STR_NULL_TERMINATE(buf->flash_image_start);
+> +		if (kstrtou64(buf->flash_image_start, 10, rootfs_offset) ||
+> +				*rootfs_offset < BCM963XX_EXTENDED_SIZE) {
+> +			pr_err("%s: invalid rootfs offset: %*ph\n", name,
+> +				sizeof(buf->flash_image_start),
+> +				buf->flash_image_start);
+> +			goto out;
+> +		}
+> +
+> +		STR_NULL_TERMINATE(buf->root_length);
+> +		if (kstrtou64(buf->root_length, 10, rootfs_size) ||
+> +				rootfs_size == 0) {
+
+Sparse and Smatch have caught errors on this line:
+
+  drivers/mtd/bcm63xxpart.c:334:48: warning: Using plain integer as NULL pointer [sparse]
+  drivers/mtd/bcm63xxpart.c:334 bcm63xx_parse_nand_image_tag() warn: variable dereferenced before check 'rootfs_size' (see line 313) [smatch]
+
+
+I think you mean '*rootfs_size == 0', not 'rootfs_size == 0'.
+
+Brian
+
+> +			pr_err("%s: invalid rootfs size: %*ph\n", name,
+> +				sizeof(buf->root_length), buf->root_length);
+> +			goto out;
+> +		}
+> +
+> +		/* Adjust for flash offset */
+> +		*rootfs_offset -= BCM963XX_EXTENDED_SIZE;
+> +
+> +		/* Remove bcm_tag data from length */
+> +		*rootfs_size -= *rootfs_offset - tag_offset;
+> +
+> +		/* Get image sequence number to determine which one is newer */
+> +		STR_NULL_TERMINATE(buf->image_sequence);
+> +		if (kstrtouint(buf->image_sequence, 10, rootfs_sequence)) {
+> +			pr_err("%s: invalid rootfs sequence: %*ph\n", name,
+> +				sizeof(buf->image_sequence),
+> +				buf->image_sequence);
+> +			goto out;
+> +		}
+> +
+> +		rootfs_ok = true;
+> +	}
+> +
+> +out:
+> +	vfree(buf);
+> +	return rootfs_ok;
+> +}
+> +
+> +static int bcm63xx_parse_cfe_nand_partitions(struct mtd_info *master,
+> +	const struct mtd_partition **pparts,
+> +	struct bcm963xx_nvram *nvram)
+> +{
+> +	int nrparts, i;
+> +	struct mtd_partition *parts;
+> +	u64 rootfs1_off, rootfs1_size;
+> +	unsigned int rootfs1_seq;
+> +	u64 rootfs2_off, rootfs2_size;
+> +	unsigned int rootfs2_seq;
+> +	bool rootfs1, rootfs2;
+> +	bool use_first;
+> +
+> +	if (nvram->version < 6) {
+> +		pr_warn("nvram version %u not supported\n", nvram->version);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* We've just read the nvram from offset 0,
+> +	 * so it must be located there.
+> +	 */
+> +	if (BCM963XX_NVRAM_NAND_PART_OFFSET(nvram, BOOT) != 0)
+> +		return -EINVAL;
+> +
+> +	/* Get the rootfs partition locations */
+> +	rootfs1 = bcm63xx_parse_nand_image_tag(master, "rootfs1",
+> +		BCM963XX_NVRAM_NAND_PART_OFFSET(nvram, ROOTFS_1),
+> +		&rootfs1_off, &rootfs1_size, &rootfs1_seq);
+> +	rootfs2 = bcm63xx_parse_nand_image_tag(master, "rootfs2",
+> +		BCM963XX_NVRAM_NAND_PART_OFFSET(nvram, ROOTFS_2),
+> +		&rootfs2_off, &rootfs2_size, &rootfs2_seq);
+> +
+> +	/* Determine primary rootfs partition */
+> +	if (rootfs1 && rootfs2) {
+> +		bool use_latest = bcm63xx_boot_latest(nvram);
+> +
+> +		/* Compare sequence numbers */
+> +		if (use_latest)
+> +			use_first = rootfs1_seq > rootfs2_seq;
+> +		else
+> +			use_first = rootfs1_seq < rootfs2_seq;
+> +
+> +		pr_info("CFE bootline selected %s image rootfs%u (rootfs1_seq=%u, rootfs2_seq=%u)\n",
+> +			use_latest ? "latest" : "previous",
+> +			use_first ? 1 : 2,
+> +			rootfs1_seq, rootfs2_seq);
+> +	} else {
+> +		use_first = rootfs1;
+> +	}
+> +
+> +	/* Partitions:
+> +	 * 1 boot
+> +	 * 2 rootfs
+> +	 * 3 data
+> +	 * 4 rootfs1_update
+> +	 * 5 rootfs2_update
+> +	 * 6 rootfs_other
+> +	 */
+> +	nrparts = 6;
+> +	i = 0;
+> +
+> +	parts = kcalloc(nrparts, sizeof(*parts), GFP_KERNEL);
+> +	if (!parts)
+> +		return -ENOMEM;
+> +
+> +	parts[i].name = "boot";
+> +	parts[i].offset = BCM963XX_NVRAM_NAND_PART_OFFSET(nvram, BOOT);
+> +	parts[i].size = BCM963XX_NVRAM_NAND_PART_SIZE(nvram, BOOT);
+> +	i++;
+> +
+> +	/* Primary rootfs if either is available */
+> +	if (rootfs1 || rootfs2) {
+> +		parts[i].name = "rootfs";
+> +		parts[i].offset = use_first ? rootfs1_off : rootfs2_off;
+> +		parts[i].size = use_first ? rootfs1_size : rootfs2_size;
+> +		i++;
+> +	}
+> +
+> +	parts[i].name = "data";
+> +	parts[i].offset = BCM963XX_NVRAM_NAND_PART_OFFSET(nvram, DATA);
+> +	parts[i].size = BCM963XX_NVRAM_NAND_PART_SIZE(nvram, DATA);
+> +	i++;
+> +
+> +	/* Full rootfs partitions for updates */
+> +	parts[i].name = "rootfs1_update";
+> +	parts[i].offset = BCM963XX_NVRAM_NAND_PART_OFFSET(nvram, ROOTFS_1);
+> +	parts[i].size = BCM963XX_NVRAM_NAND_PART_SIZE(nvram, ROOTFS_1);
+> +	i++;
+> +
+> +	parts[i].name = "rootfs2_update";
+> +	parts[i].offset = BCM963XX_NVRAM_NAND_PART_OFFSET(nvram, ROOTFS_2);
+> +	parts[i].size = BCM963XX_NVRAM_NAND_PART_SIZE(nvram, ROOTFS_2);
+> +	i++;
+> +
+> +	/* Other rootfs if both are available */
+> +	if (rootfs1 && rootfs2) {
+> +		parts[i].name = "rootfs_other";
+> +		parts[i].offset = use_first ? rootfs2_off : rootfs1_off;
+> +		parts[i].size = use_first ? rootfs2_size : rootfs1_size;
+> +		i++;
+> +	}
+> +
+> +	*pparts = parts;
+> +	return nrparts;
+> +}
+> +
+>  static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
+>  					const struct mtd_partition **pparts,
+>  					struct mtd_part_parser_data *data)
+> @@ -304,7 +487,7 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
+>  	if (!mtd_type_is_nand(master))
+>  		ret = bcm63xx_parse_cfe_nor_partitions(master, pparts, nvram);
+>  	else
+> -		ret = -EINVAL;
+> +		ret = bcm63xx_parse_cfe_nand_partitions(master, pparts, nvram);
+>  
+>  out:
+>  	vfree(nvram);
+> @@ -321,5 +504,6 @@ MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Daniel Dickinson <openwrt@cshore.neomailbox.net>");
+>  MODULE_AUTHOR("Florian Fainelli <florian@openwrt.org>");
+>  MODULE_AUTHOR("Mike Albon <malbon@openwrt.org>");
+> -MODULE_AUTHOR("Jonas Gorski <jonas.gorski@gmail.com");
+> +MODULE_AUTHOR("Jonas Gorski <jonas.gorski@gmail.com>");
+> +MODULE_AUTHOR("Simon Arlott");
+>  MODULE_DESCRIPTION("MTD partitioning for BCM63XX CFE bootloaders");
+> -- 
+> 2.1.4
+> 
+> -- 
+> Simon Arlott
