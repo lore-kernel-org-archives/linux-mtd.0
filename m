@@ -1,26 +1,16 @@
-Received: from relmlor2.renesas.com ([210.160.252.172]
- helo=relmlie1.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aORJv-0005RX-KR
- for linux-mtd@lists.infradead.org; Wed, 27 Jan 2016 14:43:45 +0000
-From: Chris Brandt <Chris.Brandt@renesas.com>
-To: "Wilcox, Matthew R" <matthew.r.wilcox@intel.com>, Jared Hulbert
- <jaredeh@gmail.com>
-CC: linux-mtd <linux-mtd@lists.infradead.org>, David Woodhouse
- <dwmw2@infradead.org>, "ross.zwisler@linux.intel.com"
- <ross.zwisler@linux.intel.com>
-Subject: RE: PMEM, DAX, MTD, and the quest for the Theory of Everything
-Date: Wed, 27 Jan 2016 14:43:17 +0000
-Message-ID: <SG2PR06MB05725F248DDD8B8B37E78D0D8AD90@SG2PR06MB0572.apcprd06.prod.outlook.com>
-References: <CA+ZsKJ53E33rWmwv-v=_b8OjHT_20UW7WqD9XhhHJ0aYxJc=cA@mail.gmail.com>
- <100D68C7BA14664A8938383216E40DE04217A0C1@FMSMSX114.amr.corp.intel.com>,
- <CA+ZsKJ7Q8uBS6M4UV3Jvq19m-bowGCcqkp7AVtpJmnaOz+XfVg@mail.gmail.com>
- <100D68C7BA14664A8938383216E40DE04217BDF6@FMSMSX114.amr.corp.intel.com>
-In-Reply-To: <100D68C7BA14664A8938383216E40DE04217BDF6@FMSMSX114.amr.corp.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-lf0-x236.google.com ([2a00:1450:4010:c07::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aOSA2-000298-A9
+ for linux-mtd@lists.infradead.org; Wed, 27 Jan 2016 15:37:35 +0000
+Received: by mail-lf0-x236.google.com with SMTP id c192so8521253lfe.2
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Jan 2016 07:37:13 -0800 (PST)
 MIME-Version: 1.0
+From: =?UTF-8?B?U3phYsOzIFRhbcOhcw==?= <sztomi89@gmail.com>
+Date: Wed, 27 Jan 2016 16:36:32 +0100
+Message-ID: <CAKatumo13ZM2o3dK9_ouxzta-sxeiB5E236Qh5dfbnEBc9CuMw@mail.gmail.com>
+Subject: JFFS2 deadlock
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,34 +20,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> So I CC:ed Chris Brandt because he's been working on AXFS with me
-> lately on a very cool set of deep embedded applications where RAM
-> is scarce
+Hello all,
 
-As a point of reference in an embedded system, this is how I'm using it:
+I work on an embedded system running Linux 3.10 and found a deadlock
+situation between jffs2_readpage and jffs2_write.
+The problem is present on the latest 4.4 kernel too and occurs when
+two tasks want to access the same file, one reads and the other writes it.
+
+The kernel stack traces for writer and reader in deadlock:
+
+__switch_to+0x4c/0x98
+sleep_on_page+0x10/0x24
+__lock_page+0x8c/0x9c
+find_lock_page+0x7c/0x94
+grab_cache_page_write_begin+0x64/0xd8
+jffs2_write_begin+0x6c/0x2ec
+generic_file_buffered_write+0x188/0x258
+__generic_file_aio_write+0x1e0/0x484
+generic_file_aio_write+0x70/0xfc
+do_sync_write+0x7c/0xd4
+vfs_write+0xc8/0x1b0
+SyS_write+0x4c/0xa8
+ret_from_syscall+0x0/0x38
+
+__switch_to+0x4c/0x98
+jffs2_readpage+0x28/0x5c
+generic_file_aio_read+0x22c/0x7a0
+do_sync_read+0x7c/0xd4
+vfs_read+0xb0/0x170
+SyS_read+0x4c/0xa8
+ret_from_syscall+0x0/0x38
+
+The root cause here is the locking order of f->sem mutex and pagelock.
+jffs2_readpage function gets the page in locked state and then locks
+the f->sem mutex, while jffs2_write_begin does it in reverse order.
+
+I found a commit that brought in this bug.
+That was a fix for another deadlock issue:
+https://github.com/torvalds/linux/commit/5ffd3412ae5536a4c57469cb8ea31887121dcb2e
+
+According to this commit and my code inspections the lock orders may be
+the following:
+readpage: page lock, f->sem
+writepage_begin: f->sem, page lock
+writepage_end: page lock, f->sem
+GC: f->sem, page lock
 
 
-The Renesas RZ/A1 MPU (400MHz Cortex A9) comes with either 3MB,5MB or 10MB =
-internal RAM.
-The quad SPI controllers (2 QSPIs can be connected to 1 channel...hence 8 b=
-its of data per clock) on it will memory map QSPI devices into internal lin=
-ear address space (as in, looks like a parallel NOR flash) and will also al=
-low the CPU to XIP directly from the serial flash. These are not 'block' ac=
-cesses, they are direct (as far as the CPU is concerned).
+Reproducing:
+Besides the physical device I can reproduce the deadlock on a desktop debian8
+virtual machine too, with a JFFS2 filesystem created on top of nandsim device.
+I made it in the following way:
 
-What I found is that if you run an XIP_KERNEL (XIP from QSPI) and all your =
-application code (XIP from QSPI using AXFS), you can do a lot with only 3/5=
-/10MB of RAM. And from there, you just pick the size QSPI device you need d=
-epending on what applications to plan on running.
+modprobe nandsim first_id_byte=0x20 second_id_byte=0x55
+modprobe mtdblock
+mkdir /mnt/jffs2
+mount -t jffs2 /dev/mtdblock0 /mnt/jffs2/
+TEST_FILE="/mnt/jffs2/test"
+( while [ true ]; do date > $TEST_FILE; done ) &
+( while [ true ]; do cat $TEST_FILE >/dev/null; done ) &
 
-So..
- - read-only XIP/DAX of code pages are fine
- - block accesses not required
+In a short time the date and cat processes will stuck in uninterruptible
+sleep state.
 
+Is it a known issue? If not, is there anyone who is familiar with JFFS2
+internals and could help me how to correct it?
 
-Of course the upstream XIP_KERNEL code for ARMV7 has been broken for years,=
- and I haven't been able to successfully get the fixes back in....but that'=
-s a different topic.
-
-
-Chris
+Best regards,
+Tamas
