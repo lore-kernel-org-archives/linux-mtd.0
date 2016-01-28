@@ -1,30 +1,22 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from smtp4-g21.free.fr ([212.27.42.4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOsYt-0005FK-5x
- for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 19:48:59 +0000
-Received: by mail-pf0-x241.google.com with SMTP id 65so2557394pfd.1
- for <linux-mtd@lists.infradead.org>; Thu, 28 Jan 2016 11:48:38 -0800 (PST)
-Date: Thu, 28 Jan 2016 11:48:36 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Bayi Cheng <bayi.cheng@mediatek.com>, Marek Vasut <marex@denx.de>,
- Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH 4/8] mtd: spi-nor: disallow further writes to SR if WP#
- is low
-Message-ID: <20160128194836.GA63180@google.com>
-References: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
- <1453960307-10181-5-git-send-email-computersforpeace@gmail.com>
- <CAAEAJfC6HM6M0ZJuEqj-=QUUs9+kHJB0m5bt2t9a-VYuiMPx4Q@mail.gmail.com>
- <20160128175905.GA33340@google.com>
- <CAAEAJfDHRutp1R1nKxih-4CENBsjhmFaaTnqD7S6Vub+pqE05Q@mail.gmail.com>
+ id 1aOtlp-0002Pa-MX
+ for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 21:06:26 +0000
+Subject: Re: RFC on large number of hacks in mtd core files
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Sebastian Frias <sf84@laposte.net>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+References: <56A24C22.2050607@free.fr> <20160123031635.GB90611@google.com>
+ <56A35BA2.3040906@free.fr> <56A65CBA.9050705@free.fr>
+ <CAMuHMdVEVmf_kSknPSkYUBkaemfcXP6HXorkjEayC6zR5-s_yw@mail.gmail.com>
+From: Mason <slash.tmp@free.fr>
+Message-ID: <56AA82AD.2020808@free.fr>
+Date: Thu, 28 Jan 2016 22:05:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAEAJfDHRutp1R1nKxih-4CENBsjhmFaaTnqD7S6Vub+pqE05Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdVEVmf_kSknPSkYUBkaemfcXP6HXorkjEayC6zR5-s_yw@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,47 +26,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 28, 2016 at 04:24:50PM -0300, Ezequiel Garcia wrote:
-> On 28 January 2016 at 14:59, Brian Norris <computersforpeace@gmail.com> wrote:
-> > So, maybe we want to clear SR_SRWD only when we unlock the *entire*
-> > flash? What do you think?
+On 28/01/2016 19:05, Geert Uytterhoeven wrote:
 
-I'll paste in the relevant datasheet details from w25q32fw, to make sure
-we're on the same page here, noting that 'SRP0' is our 'SR_SRWD', and
-we're not touching SRP1 (i.e., SRP1=0):
-
- "SRP1=0, SRP0=0, /WP=X: Software Protection
-    /WP pin has no control. The Status register can be written to after
-    a Write Enable instruction, WEL=1. [Factory Default]
-  SRP1=0, SRP0=1, /WP=0: Hardware Protected
-    When /WP pin is low the Status Register locked [sic] and cannot be
-    written to.
-  SRP1=0, SRP0=1, /WP=1: Hardware Unprotected
-    When /WP pin is high the Status register is unlocked and can be
-    written to after a Write Enable instruction, WEL=1."
-
-> How about this:
+> On Mon, Jan 25, 2016 at 6:34 PM, Mason <slash.tmp@free.fr> wrote:
+>
+>> OK, here's my second attempt at presenting the information.
+>> I'm grateful if anyone has comments regarding the changes
+>> in core files, or even the driver itself.
 > 
-> 1) ioctl(MEMLOCK) the entire flash (SR_SRWD is set)
-> 2) ioctl(MEMUNLOCK) partially (SW_SRWD keeps set)
-> 3) ioctl(MEMLOCK) the entire flash again
+> One general comment: all these #ifdef CONFIG_TANGOX / #else / #endif
+> constructs do not cope well with multi-platform kernels.
+> The same is true for the CONFIG_MTD_NAND_BBM.
 
-I might be confused; are you making a suggestion of a new behavior, or
-are you just trying to clarify my proposal? Because this sounds like it
-matches my proposal.
+First of all, thanks for taking a look at the awful patch
+I sent. I just want to stress that I have no intention of
+submitting anything like this.
 
-> Not sure this use case make sense,
+Perhaps it would help if I asked specific questions.
 
-I suppose it could make sense, if you (e.g.) have some intermediate
-steps toward determining the locked regions during factory programming.
-Maybe a process would start by doing #1 and #2, then decide
-conditionally whether to do #3. And only after the whole process is done
-does something assert /WP=0 (in my case, a factory process would tie /WP
-low).
+About devices/m25p80.c : the header mentions
+"MTD SPI driver for ST M25Pxx (and similar) serial flash chips"
 
-> but would (3)  be allowed given
-> SW_SRWD is set?
+I don't know anything about SPI. Is SPI the bus connecting
+Flash chips to the Flash controller?
 
-Yes, if /WP=1 (high).
+If Brian's comment that I can ignore changes outside mtd/nand
+is correct, then I should only need to focus on
+mtd/nand/nand_base.c and mtd/nand/nand_ids.c
 
-Brian
+What about those NAND_MFR defines?
+
++#define NAND_MFR_ESMT		0x92
++#define NAND_MFR_MIRA		0xc8
+
+I see that include/linux/mtd/nand.h has
+
+#define NAND_MFR_EON            0x92
+
+ESMT apparently stands for
+Elite Semiconductor Memory Technology Inc
+Apparently ESMT bought Eon a few months ago.
+http://technews.co/2015/11/11/taiwans-elite-semiconductor-to-absorb-rival-eon-silicon/
+
+So I guess it's expected that these two manufacturers
+share the same ID?
+
+As for the MIRA ID... Looks like this patch is relevant:
+http://lists.infradead.org/pipermail/linux-mtd/2014-December/056765.html
++#define NAND_MFR_GIGADEVICE	0xc8
+
+
+BTW, did you guys see the awful bug in the nand_ids.c part?
+Several whitespace-only strings were added, with the intent
+of writing them at run-time! But I'll bet the compiler uses
+the same array for all of them.
+
+Regards.
