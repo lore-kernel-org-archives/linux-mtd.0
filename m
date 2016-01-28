@@ -1,9 +1,9 @@
-Received: from mail-pa0-x241.google.com ([2607:f8b0:400e:c03::241])
+Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOfVa-0004Co-4c
- for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 05:52:45 +0000
-Received: by mail-pa0-x241.google.com with SMTP id pv5so1442065pac.0
- for <linux-mtd@lists.infradead.org>; Wed, 27 Jan 2016 21:52:24 -0800 (PST)
+ id 1aOfVc-0004Ce-3v
+ for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 05:52:46 +0000
+Received: by mail-pa0-x243.google.com with SMTP id a20so1438176pag.3
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Jan 2016 21:52:23 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,9 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
  Marek Vasut <marex@denx.de>, djkurtz@chromium.org
-Subject: [PATCH 5/8] mtd: spi-nor: use BIT() for flash_info flags
-Date: Wed, 27 Jan 2016 21:51:44 -0800
-Message-Id: <1453960307-10181-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 4/8] mtd: spi-nor: disallow further writes to SR if WP# is low
+Date: Wed, 27 Jan 2016 21:51:43 -0800
+Message-Id: <1453960307-10181-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
 References: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,40 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's a little easier to read and make sure there are no collisions
-(IMO).
+Locking the flash is most useful if it provides real hardware security.
+Otherwise, it's little more than a software permission bit.
+
+A reasonable use case that provides real HW security might be like
+follows:
+
+(1) hardware WP# is deasserted
+(2) program flash
+(3) flash range is protected via status register
+(4) hardware WP# is asserted
+(5) flash protection range can no longer be changed, until WP# is
+    deasserted
+
+In this way, flash protection is co-owned by hardware and software.
+
+Now, one would expect to be able to perform step (3) with
+ioctl(MEMLOCK), except that the spi-nor driver does not set the Status
+Register Protect bit (a.k.a. Status Register Write Disable (SRWD)), so
+even though the range is now locked, it does not satisfy step (5) -- it
+can still be changed by a call to ioctl(MEMUNLOCK).
+
+So, let's enable status register protection after the first lock
+command.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 46da6bb706fa..ac930e902ee3 100644
+index 3a08aa53c171..46da6bb706fa 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -61,14 +61,14 @@ struct flash_info {
- 	u16		addr_width;
+@@ -518,6 +518,9 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
  
- 	u16		flags;
--#define	SECT_4K			0x01	/* SPINOR_OP_BE_4K works uniformly */
--#define	SPI_NOR_NO_ERASE	0x02	/* No erase command needed */
--#define	SST_WRITE		0x04	/* use SST byte programming */
--#define	SPI_NOR_NO_FR		0x08	/* Can't do fastread */
--#define	SECT_4K_PMC		0x10	/* SPINOR_OP_BE_4K_PMC works uniformly */
--#define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
--#define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
--#define	USE_FSR			0x80	/* use flag status register */
-+#define SECT_4K			BIT(0)	/* SPINOR_OP_BE_4K works uniformly */
-+#define SPI_NOR_NO_ERASE	BIT(1)	/* No erase command needed */
-+#define SST_WRITE		BIT(2)	/* use SST byte programming */
-+#define SPI_NOR_NO_FR		BIT(3)	/* Can't do fastread */
-+#define SECT_4K_PMC		BIT(4)	/* SPINOR_OP_BE_4K_PMC works uniformly */
-+#define SPI_NOR_DUAL_READ	BIT(5)	/* Flash supports Dual Read */
-+#define SPI_NOR_QUAD_READ	BIT(6)	/* Flash supports Quad Read */
-+#define USE_FSR			BIT(7)	/* use flag status register */
- };
+ 	status_new = (status_old & ~mask) | val;
  
- #define JEDEC_MFR(info)	((info)->id[0])
++	/* Disallow further writes if WP pin is asserted */
++	status_new |= SR_SRWD;
++
+ 	/* Don't bother if they're the same */
+ 	if (status_new == status_old)
+ 		return 0;
 -- 
 1.7.9.5
