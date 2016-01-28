@@ -1,31 +1,20 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOcY0-00021F-3V
- for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 02:43:01 +0000
-From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
- <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Brian Norris <computersforpeace@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Boris
- Brezillon" <boris.brezillon@free-electrons.com>,
- =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
- <peterpandong@micron.com>,
- =?gb2312?B?S2FybCBaaGFuZyDVxcurwuAgKGthcmx6aGFuZyk=?= <karlzhang@micron.com>,
- =?gb2312?B?SmFzb24gVGlhbiDM78/+x78gKGphc29udGlhbik=?= <jasontian@micron.com>
-Subject: RE: [PATCH 1/1] fs:ubifs:recovery:fixup UBIFS cannot recover master
- node issue
-Date: Thu, 28 Jan 2016 02:42:33 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF65A47@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF53F90@NTXXIAMBX02.xacn.micron.com>
- <566A9378.4070900@nod.at>
- <A765B125120D1346A63912DDE6D8B6310BF54200@NTXXIAMBX02.xacn.micron.com>
- <566F03AC.90305@nod.at>
-In-Reply-To: <566F03AC.90305@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ id 1aOfVW-00046n-9o
+ for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 05:52:39 +0000
+Received: by mail-pf0-x242.google.com with SMTP id n128so1497664pfn.3
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Jan 2016 21:52:17 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
+ Marek Vasut <marex@denx.de>, djkurtz@chromium.org
+Subject: [PATCH 0/8] mtd: spi-nor: locking fixes and updates
+Date: Wed, 27 Jan 2016 21:51:39 -0800
+Message-Id: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,47 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBCZWFuLA0KPiANCj4gQW0gMTQuMTIuMjAxNSB1bSAwNDo1NSBzY2hyaWViIEJlYW4gSHVvILv0
-sfOx8yAoYmVhbmh1byk6DQo+ID4gRGVhciBSaWNoYXJkDQo+ID4NCj4gPj4gQmVhbiwNCj4gPj4N
-Cj4gPj4gQW0gMTEuMTIuMjAxNSB1bSAwOToyNiBzY2hyaWViIEJlYW4gSHVvILv0sfOx8yAoYmVh
-bmh1byk6DQo+ID4+PiBGb3IgTUxDIE5BTkQsIHBhaXJlZCBwYWdlIGlzc3VlIGlzIG5vdyBhIGNv
-bW1vbiBrbm93biBpc3N1ZS4NCj4gPj4+IFRoaXMgcGF0Y2ggaXMganVzdCBmb3IgbWFzdGVyIG5v
-ZGUgY2Fubm90IGJlIHJlY292ZXJlZCB3aGlsZSB0aGVyZQ0KPiA+Pj4gd2lsbCB0d28gcGFnZXMg
-YmUgZGFtYWdlZCBpbiBvbmUgc2luZ2xlIG1hc3RlciBub2RlIGJsb2NrLg0KPiA+Pj4gQXMgZm9y
-IHRoaXMgcGF0Y2gsIGlmIHRoZXJlIGFyZSBtb3JlIHRoYW4gb25lIHBhZ2UgZGF0YSBpbiBtYXN0
-ZXINCj4gPj4+IG5vZGUgYmxvY2sgYmVpbmcgZGFtYWdlZCwgYW5kIGFzIGxvbmcgYXMgZXhpc3Qg
-b25lIHVuY29ycnVwdGVkDQo+ID4+PiBtYXN0ZXIgbm9kZSBibG9jaywgbWFzdGVyIG5vZGUgd2ls
-bCBiZSByZWNvdmVyZWQuDQo+ID4+DQo+ID4+IFNvLCB0aGlzIHBhdGNoIGlzIHBhcnQgaWYgYSBs
-YXJnZXIgcGF0Y2ggc2VyaWVzIHRvIG1ha2UgVUJJRlMgTUxDIGF3YXJlPw0KPiA+DQo+ID4gTm8s
-IHRoaXMgaXMgbm90IG9uZSBwYXJ0IG9mIG15IHBhdGggc2VyaWVzLCBqdXN0IGEgc2luZ2xlIGFu
-ZA0KPiA+IGRlZGljYXRlZCB0byBNYXN0ZXIgbm9kZS4NCj4gDQo+IFsuLi5dDQo+IA0KPiA+IEN1
-cnJlbnRseSwgd2UgZ2V0IG1vcmUgZmVlZGJhY2tzIGZyb20gb3VyIGN1c3RvbWVycyB3aG8gYXJl
-IHVzaW5nIE1MQw0KPiA+IE5BTkQsIFRoZXkgbW9yZSBsaWtlIFVCSUZTIG1vcmUgcmVsaWFibGUs
-IEV2ZW4gY2FuIHRvbGVyYXRlIHRvIGRpc2NhcmQNCj4gPiBzb21lIHVzZXIgRGF0YSBhZnRlciBu
-ZXh0IHBvd2VyIG9uLiBNZWFucyB0aGF0IHRoZXkgZG9uJ3Qgd2FudCB0bw0KPiA+IFVCSUZTIG1v
-dW50IGZhaWxlZCBqdXN0IEJlY2F1c2Ugb2YgcG93ZXIgbG9zcywgSWYgdG8gZGlzY2FyZCB0aGUg
-ZGF0YQ0KPiA+IGZvciB0aGUgc3RhYmlsaXR5IG9mIHRoZSBzeXN0ZW0sIHRoZXkgcHJlZmVyIHRv
-IGNob29zZSB0aGUgbGF0dGVyLg0KPiANCj4gTUxDIGlzIGN1cnJlbnRseSBzaW1wbHkgbm90IHN1
-cHBvcnRlZC4gSWYgeW91ciBoYXJkd2FyZSBkb2VzIG5vdCBoYXZlIGENCj4gbWVjaGFuaXNtIGRv
-IHRlbXBlciBwb3dlci1sb3NzIHRoZSBwYWlyZWQgcGFnZSBpc3N1ZSB3aWxsIGRhbWFnZSBVQkkg
-YW5kDQo+IFVCSUZTLg0KPiBQbGVhc2UgY29ycmVjdCBtZSBpZiBJJ20gd3JvbmcgYnV0IHRoaXMg
-cGF0Y2gganVzdCBwYXBlcnMgb3ZlciBvbmUgc3ltcHRvbQ0KPiBvZiB0aGF0Lg0KPiANCj4gPiBG
-b3IgVUJJRlMgbWFzdGVyIG5vZGUgb24gTUxDIE5BTkQsIEkgb2Z0ZW4gZm91bmQgdGhhdCBvbmUg
-b2YgbWFzdGVyDQo+ID4gbm9kZSBibG9jayBpcyBPSywgQnV0IGJlY2F1c2Ugb2Ygc2Vjb25kIG1h
-c3RlciBub2RlIGJsb2NrIGV4aXN0IHR3bw0KPiA+IHBhZ2VzIGRhbWFnZWQgZGF0YSwgcmVjb3Zl
-cnkgYWx3YXlzIEZhaWxzLiBOb3QgbWF0dGVyIFNMQyBvciBNTEMsIGFzDQo+ID4gbG9uZyBhcyB0
-aGVyZSBpcyBhIGdvb2QgbWFzdGVyIG5vZGUsIHJlY292ZXJ5IG11c3QgYmUgU3VjY2Vzc2Z1bC4N
-Cj4gDQo+IFRoaXMgbmVlZHMgYSBtdWNoIG1vcmUgZGV0YWlsZWQgZXhwbGFuYXRpb24uDQo+IElu
-IHdoaWNoIHNjZW5hcmlvcyBvbiBTTEMgTkFORCBjYW4geW91IGdldCBzdWNoIGFuIHVubW91bnRh
-YmxlIFVCSUZTPw0KDQoNCkl0IGlzIG15IG1pc3Rha2UgaW52b2x2ZWQgU0xDIE5BTkQuDQpEZWZp
-bml0ZWx5LCBTTEMgTkFORCBkb2VzIG5vdCBleGlzdCB0d28gcGFnZXMgYmVpbmcgZGFtYWdlZCB3
-aXRoaW4gb25lIGJsb2NrLg0KSSBtZWFuIHRoYXQgbWFzdGVyIHNob3VsZCBiZSByZWNvdmVyZWQg
-YXMgbG9uZyBhcyBvbmUgZ29vZCBtYXN0ZXIgYmxvY2sgZXhpc3RzLg0KSSB0aGluaywgYXQgbGVh
-c3QgdGhpcyBtZXRob2QgaXMgbW9yZSByZWFzb25hYmxlLg0KTXkgcXVlc3Rpb24gaXMgdGhhdCB3
-aHkgVUJJIGRvZXNuJ3QgcmVjb3ZlciBtYXN0ZXIgbm9kZSBmb3IgdGhpcyBzY2VuYXJpbz8NCg0K
-PiBNYXliZSBVQklGUyBpcyB0b28gc3RyaWN0IGFuZCBOQU5EIGJlaGF2ZXMgZGlmZmVyZW50bHkg
-dGhhbiBVQklGUyBleHBlY3RzDQo+IGJ1dCB3ZSBuZWVkIHRvIHVuZGVyc3RhbmQgaXQgaW4gZGVw
-dGguDQpGb3IgdGhpcywgSSB0aGluaywgbWF5YmUgTUxDIE5BTkQgaGFkIG5vdCBiZWVuIHJlbGVh
-c2VkIHlldCB3aGVuIFVCSSBpbml0aWFsIGRlc2lnbi4NCkkgd291bGQgbGlrZSB0byBzZW5kIG15
-IHZlcnNpb24gMiBwYXRjaCBiYXNlZCBvbiB5b3VyIHN1Z2dlc3Rpb24uDQoNCj4gVGhhbmtzLA0K
-PiAvL3JpY2hhcmQNCg==
+Hi,
+
+These are an assortment of fixes and updates to the SPI NOR lock/unlock
+feature. The biggest new features are:
+(a) Status Register protection; I don't see why this shouldn't be enabled by
+    default. See patch 4's description.
+(b) Bottom-block protection support (via TB status bit)
+(c) Lock/unlock support for a few Winbond flash
+
+Patch 7 (Top/Bottom protection support) is still an RFC, as I think it deserves
+a bit more work. But I'm just getting it out there, as it's been sitting on my
+plate for a while.
+
+Regards,
+Brian
+
+Brian Norris (8):
+  mtd: spi-nor: wait for SR_WIP to clear on initial unlock
+  mtd: spi-nor: guard against underflows in stm_is_locked_sr
+  mtd: spi-nor: silently drop lock/unlock for already locked/unlocked
+    region
+  mtd: spi-nor: disallow further writes to SR if WP# is low
+  mtd: spi-nor: use BIT() for flash_info flags
+  mtd: spi-nor: add SPI_NOR_HAS_LOCK flag
+  mtd: spi-nor: add TB (Top/Bottom) protect support
+  mtd: spi-nor: support lock/unlock for a few Winbond chips
+
+ drivers/mtd/spi-nor/spi-nor.c |  153 +++++++++++++++++++++++++++++++++--------
+ include/linux/mtd/spi-nor.h   |    2 +
+ 2 files changed, 128 insertions(+), 27 deletions(-)
+
+-- 
+1.7.9.5
