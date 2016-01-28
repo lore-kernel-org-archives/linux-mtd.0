@@ -1,33 +1,27 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOiwI-0007c0-20
- for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 09:32:31 +0000
-Subject: Re: [PATCH 1/1] fs:ubifs:recovery:fixup UBIFS cannot recover master
- node issue
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF53F90@NTXXIAMBX02.xacn.micron.com>
- <566A9378.4070900@nod.at>
- <A765B125120D1346A63912DDE6D8B6310BF54200@NTXXIAMBX02.xacn.micron.com>
- <566F03AC.90305@nod.at>
- <A765B125120D1346A63912DDE6D8B6310BF65A47@NTXXIAMBX02.xacn.micron.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>, =?UTF-8?B?S2FybCBaaGFuZyDlvKDlj4zplKMgKGthcmx6?=
- =?UTF-8?Q?hang=29?= <karlzhang@micron.com>,
- =?UTF-8?B?SmFzb24gVGlhbiDnlLDmmZPlvLogKGphc29udGlhbik=?=
- <jasontian@micron.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56A9E00E.1070706@nod.at>
-Date: Thu, 28 Jan 2016 10:31:58 +0100
+ id 1aOngZ-0002xF-Nk
+ for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 14:36:37 +0000
+Received: by mail-wm0-x230.google.com with SMTP id 128so13289926wmz.1
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Jan 2016 06:36:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF65A47@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1453960307-10181-5-git-send-email-computersforpeace@gmail.com>
+References: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
+ <1453960307-10181-5-git-send-email-computersforpeace@gmail.com>
+Date: Thu, 28 Jan 2016 11:36:13 -0300
+Message-ID: <CAAEAJfC6HM6M0ZJuEqj-=QUUs9+kHJB0m5bt2t9a-VYuiMPx4Q@mail.gmail.com>
+Subject: Re: [PATCH 4/8] mtd: spi-nor: disallow further writes to SR if WP# is
+ low
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Bayi Cheng <bayi.cheng@mediatek.com>,
+ Marek Vasut <marex@denx.de>, Daniel Kurtz <djkurtz@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,39 +31,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bean,
+On 28 January 2016 at 02:51, Brian Norris <computersforpeace@gmail.com> wro=
+te:
+> Locking the flash is most useful if it provides real hardware security.
+> Otherwise, it's little more than a software permission bit.
+>
+> A reasonable use case that provides real HW security might be like
+> follows:
+>
+> (1) hardware WP# is deasserted
+> (2) program flash
+> (3) flash range is protected via status register
+> (4) hardware WP# is asserted
+> (5) flash protection range can no longer be changed, until WP# is
+>     deasserted
+>
+> In this way, flash protection is co-owned by hardware and software.
+>
+> Now, one would expect to be able to perform step (3) with
+> ioctl(MEMLOCK), except that the spi-nor driver does not set the Status
+> Register Protect bit (a.k.a. Status Register Write Disable (SRWD)), so
+> even though the range is now locked, it does not satisfy step (5) -- it
+> can still be changed by a call to ioctl(MEMUNLOCK).
+>
+> So, let's enable status register protection after the first lock
+> command.
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c |    3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.=
+c
+> index 3a08aa53c171..46da6bb706fa 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -518,6 +518,9 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, =
+uint64_t len)
+>
+>         status_new =3D (status_old & ~mask) | val;
+>
+> +       /* Disallow further writes if WP pin is asserted */
+> +       status_new |=3D SR_SRWD;
+> +
 
-Am 28.01.2016 um 03:42 schrieb Bean Huo »ô±ó±ó (beanhuo):
->> This needs a much more detailed explanation.
->> In which scenarios on SLC NAND can you get such an unmountable UBIFS?
-> 
-> 
-> It is my mistake involved SLC NAND.
-> Definitely, SLC NAND does not exist two pages being damaged within one block.
-> I mean that master should be recovered as long as one good master block exists.
-> I think, at least this method is more reasonable.
-> My question is that why UBI doesn't recover master node for this scenario?
+No need to clear SR_SRWD in stm_unlock?
 
-UBIFS assumes that on SLC NAND already written pages must not
-corrupt. It can deal with the fact that pages can get damaged while writing them (think of a power cut).
-But if page X is written and UBIFS moves over to X + 1, X must never corrupt.
-
-If this happens, something very nasty happened and UBIFS cannot operate correctly.
-With your patch it may mount somehow but *will* die or lose data soon or later as the same assumptions
-apply to all other UBIFS operations. It is not just about master nodes.
-Master nodes are the messenger.
-
-UBIFS' strict checks turned out to be very valuable in the past to identify driver/MTD issues.
-This is why I like them so much.
-
->> Maybe UBIFS is too strict and NAND behaves differently than UBIFS expects
->> but we need to understand it in depth.
-> For this, I think, maybe MLC NAND had not been released yet when UBI initial design.
-> I would like to send my version 2 patch based on your suggestion.
-
-If you can explain in detail why UBIFS' assumptions are wrong and how such corruptions can happen
-on SLC we can talk.
-But I think then we'd have to redo a lot of UBI and UBIFS code.
-
-Thanks,
-//richard
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
