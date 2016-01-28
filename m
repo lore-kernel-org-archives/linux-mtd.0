@@ -1,9 +1,9 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from mail-pa0-x244.google.com ([2607:f8b0:400e:c03::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOfVW-00046n-9o
- for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 05:52:39 +0000
-Received: by mail-pf0-x242.google.com with SMTP id n128so1497664pfn.3
- for <linux-mtd@lists.infradead.org>; Wed, 27 Jan 2016 21:52:17 -0800 (PST)
+ id 1aOfVZ-00047b-9Z
+ for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 05:52:42 +0000
+Received: by mail-pa0-x244.google.com with SMTP id yy13so1429995pab.1
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Jan 2016 21:52:20 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -11,10 +11,13 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
- Marek Vasut <marex@denx.de>, djkurtz@chromium.org
-Subject: [PATCH 0/8] mtd: spi-nor: locking fixes and updates
-Date: Wed, 27 Jan 2016 21:51:39 -0800
-Message-Id: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
+ Marek Vasut <marex@denx.de>, djkurtz@chromium.org,
+ Stas Sergeev <stsp@users.sourceforge.net>
+Subject: [PATCH 1/8] mtd: spi-nor: wait for SR_WIP to clear on initial unlock
+Date: Wed, 27 Jan 2016 21:51:40 -0800
+Message-Id: <1453960307-10181-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
+References: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Fixup a piece leftover by commit 32321e950d8a ("mtd: spi-nor: wait until
+lock/unlock operations are ready"). That commit made us wait for the WIP
+bit to settle after lock/unlock operations, but it missed the open-coded
+"unlock" that happens at probe() time.
 
-These are an assortment of fixes and updates to the SPI NOR lock/unlock
-feature. The biggest new features are:
-(a) Status Register protection; I don't see why this shouldn't be enabled by
-    default. See patch 4's description.
-(b) Bottom-block protection support (via TB status bit)
-(c) Lock/unlock support for a few Winbond flash
+We should probably have this code utilize the unlock() routines in the
+future, to avoid duplication, but unfortunately, flash which need to be
+unlocked don't all have a proper ->flash_unlock() callback.
 
-Patch 7 (Top/Bottom protection support) is still an RFC, as I think it deserves
-a bit more work. But I'm just getting it out there, as it's been sitting on my
-plate for a while.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Stas Sergeev <stsp@users.sourceforge.net>
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+---
+ drivers/mtd/spi-nor/spi-nor.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Regards,
-Brian
-
-Brian Norris (8):
-  mtd: spi-nor: wait for SR_WIP to clear on initial unlock
-  mtd: spi-nor: guard against underflows in stm_is_locked_sr
-  mtd: spi-nor: silently drop lock/unlock for already locked/unlocked
-    region
-  mtd: spi-nor: disallow further writes to SR if WP# is low
-  mtd: spi-nor: use BIT() for flash_info flags
-  mtd: spi-nor: add SPI_NOR_HAS_LOCK flag
-  mtd: spi-nor: add TB (Top/Bottom) protect support
-  mtd: spi-nor: support lock/unlock for a few Winbond chips
-
- drivers/mtd/spi-nor/spi-nor.c |  153 +++++++++++++++++++++++++++++++++--------
- include/linux/mtd/spi-nor.h   |    2 +
- 2 files changed, 128 insertions(+), 27 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index ed0c19c558b5..ef89bed1e5ea 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1236,6 +1236,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	    JEDEC_MFR(info) == SNOR_MFR_SST) {
+ 		write_enable(nor);
+ 		write_sr(nor, 0);
++		spi_nor_wait_till_ready(nor);
+ 	}
+ 
+ 	if (!mtd->name)
 -- 
 1.7.9.5
