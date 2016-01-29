@@ -1,22 +1,25 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aOtlp-0002Pa-MX
- for linux-mtd@lists.infradead.org; Thu, 28 Jan 2016 21:06:26 +0000
-Subject: Re: RFC on large number of hacks in mtd core files
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Sebastian Frias <sf84@laposte.net>, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>
-References: <56A24C22.2050607@free.fr> <20160123031635.GB90611@google.com>
- <56A35BA2.3040906@free.fr> <56A65CBA.9050705@free.fr>
- <CAMuHMdVEVmf_kSknPSkYUBkaemfcXP6HXorkjEayC6zR5-s_yw@mail.gmail.com>
-From: Mason <slash.tmp@free.fr>
-Message-ID: <56AA82AD.2020808@free.fr>
-Date: Thu, 28 Jan 2016 22:05:49 +0100
+ id 1aOyvq-0005hf-0o
+ for linux-mtd@lists.infradead.org; Fri, 29 Jan 2016 02:37:07 +0000
+Received: by mail-pf0-x242.google.com with SMTP id x125so3014471pfb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Jan 2016 18:36:45 -0800 (PST)
+Date: Thu, 28 Jan 2016 18:36:42 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
+ Marek Vasut <marex@denx.de>, djkurtz@chromium.org
+Subject: Re: [RFC PATCH 7/8] mtd: spi-nor: add TB (Top/Bottom) protect support
+Message-ID: <20160129023642.GC19540@google.com>
+References: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
+ <1453960307-10181-8-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVEVmf_kSknPSkYUBkaemfcXP6HXorkjEayC6zR5-s_yw@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1453960307-10181-8-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,59 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28/01/2016 19:05, Geert Uytterhoeven wrote:
+On Wed, Jan 27, 2016 at 09:51:46PM -0800, Brian Norris wrote:
+> This one hasn't been exhaustively tested yet, so I labeled it 'RFC'. I hope to
+> have some sort of test scripts (possibly targeting mtd-utils) ready, to help
+> make sure the locking APIs behave as expected. (And "as expected" is a little
+> ill-defined, IMO.)
 
-> On Mon, Jan 25, 2016 at 6:34 PM, Mason <slash.tmp@free.fr> wrote:
->
->> OK, here's my second attempt at presenting the information.
->> I'm grateful if anyone has comments regarding the changes
->> in core files, or even the driver itself.
-> 
-> One general comment: all these #ifdef CONFIG_TANGOX / #else / #endif
-> constructs do not cope well with multi-platform kernels.
-> The same is true for the CONFIG_MTD_NAND_BBM.
+I've written up some ugly (but effective) tests locally and found a few
+edge case problems with this patch, so I'm going to refactor both this
+patch and patch 2. Stay tuned.
 
-First of all, thanks for taking a look at the awful patch
-I sent. I just want to stress that I have no intention of
-submitting anything like this.
-
-Perhaps it would help if I asked specific questions.
-
-About devices/m25p80.c : the header mentions
-"MTD SPI driver for ST M25Pxx (and similar) serial flash chips"
-
-I don't know anything about SPI. Is SPI the bus connecting
-Flash chips to the Flash controller?
-
-If Brian's comment that I can ignore changes outside mtd/nand
-is correct, then I should only need to focus on
-mtd/nand/nand_base.c and mtd/nand/nand_ids.c
-
-What about those NAND_MFR defines?
-
-+#define NAND_MFR_ESMT		0x92
-+#define NAND_MFR_MIRA		0xc8
-
-I see that include/linux/mtd/nand.h has
-
-#define NAND_MFR_EON            0x92
-
-ESMT apparently stands for
-Elite Semiconductor Memory Technology Inc
-Apparently ESMT bought Eon a few months ago.
-http://technews.co/2015/11/11/taiwans-elite-semiconductor-to-absorb-rival-eon-silicon/
-
-So I guess it's expected that these two manufacturers
-share the same ID?
-
-As for the MIRA ID... Looks like this patch is relevant:
-http://lists.infradead.org/pipermail/linux-mtd/2014-December/056765.html
-+#define NAND_MFR_GIGADEVICE	0xc8
-
-
-BTW, did you guys see the awful bug in the nand_ids.c part?
-Several whitespace-only strings were added, with the intent
-of writing them at run-time! But I'll bet the compiler uses
-the same array for all of them.
-
-Regards.
+Brian
