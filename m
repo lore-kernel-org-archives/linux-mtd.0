@@ -1,31 +1,20 @@
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aP90r-0004bo-4Y
- for linux-mtd@lists.infradead.org; Fri, 29 Jan 2016 13:23:00 +0000
-Received: by mail-wm0-x232.google.com with SMTP id p63so68337488wmp.1
- for <linux-mtd@lists.infradead.org>; Fri, 29 Jan 2016 05:22:35 -0800 (PST)
+Subject: Re: [PATCH linux-next v2 10/14] mtd: spi-nor: configure the number of
+ dummy clock cycles on Macronix memories
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+References: <cover.1452268345.git.cyrille.pitchen@atmel.com>
+ <caaf19555ae684e0a1ccdd79cd7326ee1fbf1197.1452268345.git.cyrille.pitchen@atmel.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>
+Message-ID: <56AB6952.90701@atmel.com>
+Date: Fri, 29 Jan 2016 14:29:54 +0100
 MIME-Version: 1.0
-In-Reply-To: <20160128194836.GA63180@google.com>
-References: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
- <1453960307-10181-5-git-send-email-computersforpeace@gmail.com>
- <CAAEAJfC6HM6M0ZJuEqj-=QUUs9+kHJB0m5bt2t9a-VYuiMPx4Q@mail.gmail.com>
- <20160128175905.GA33340@google.com>
- <CAAEAJfDHRutp1R1nKxih-4CENBsjhmFaaTnqD7S6Vub+pqE05Q@mail.gmail.com>
- <20160128194836.GA63180@google.com>
-Date: Fri, 29 Jan 2016 10:22:34 -0300
-Message-ID: <CAAEAJfAPbLX9_OOWoUEsVOdUh2DOD+k425u7JkAanjUQxm8MWA@mail.gmail.com>
-Subject: Re: [PATCH 4/8] mtd: spi-nor: disallow further writes to SR if WP# is
- low
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Bayi Cheng <bayi.cheng@mediatek.com>,
- Marek Vasut <marex@denx.de>, Daniel Kurtz <djkurtz@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <caaf19555ae684e0a1ccdd79cd7326ee1fbf1197.1452268345.git.cyrille.pitchen@atmel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,66 +24,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28 January 2016 at 16:48, Brian Norris <computersforpeace@gmail.com> wro=
-te:
-> On Thu, Jan 28, 2016 at 04:24:50PM -0300, Ezequiel Garcia wrote:
->> On 28 January 2016 at 14:59, Brian Norris <computersforpeace@gmail.com> =
-wrote:
->> > So, maybe we want to clear SR_SRWD only when we unlock the *entire*
->> > flash? What do you think?
->
-> I'll paste in the relevant datasheet details from w25q32fw, to make sure
-> we're on the same page here, noting that 'SRP0' is our 'SR_SRWD', and
-> we're not touching SRP1 (i.e., SRP1=3D0):
->
->  "SRP1=3D0, SRP0=3D0, /WP=3DX: Software Protection
->     /WP pin has no control. The Status register can be written to after
->     a Write Enable instruction, WEL=3D1. [Factory Default]
->   SRP1=3D0, SRP0=3D1, /WP=3D0: Hardware Protected
->     When /WP pin is low the Status Register locked [sic] and cannot be
->     written to.
->   SRP1=3D0, SRP0=3D1, /WP=3D1: Hardware Unprotected
->     When /WP pin is high the Status register is unlocked and can be
->     written to after a Write Enable instruction, WEL=3D1."
->
+Hi all,
 
-Yes, we are on the same page.
+I've found a small issue within this patch when I test with a Macronix
+mx25l51245g (JEDEC ID C2201A so reported as "mx66l51235l" by spi-nor.c).
+It deals with a wrong op code used when reading the Configuration Register.
+See below for more details.
 
->> How about this:
->>
->> 1) ioctl(MEMLOCK) the entire flash (SR_SRWD is set)
->> 2) ioctl(MEMUNLOCK) partially (SW_SRWD keeps set)
->> 3) ioctl(MEMLOCK) the entire flash again
->
-> I might be confused; are you making a suggestion of a new behavior, or
-> are you just trying to clarify my proposal? Because this sounds like it
-> matches my proposal.
->
+So I will send a new patch to fix this issue.
 
-I was trying to clarify how the SRWD would work in that case, but I
-forgot about /WP when I asked that!
+Otherwise, I tested on a sama5d2 xplained board and it works :)
 
->> Not sure this use case make sense,
->
-> I suppose it could make sense, if you (e.g.) have some intermediate
-> steps toward determining the locked regions during factory programming.
-> Maybe a process would start by doing #1 and #2, then decide
-> conditionally whether to do #3. And only after the whole process is done
-> does something assert /WP=3D0 (in my case, a factory process would tie /W=
-P
-> low).
->
->> but would (3)  be allowed given
->> SW_SRWD is set?
->
-> Yes, if /WP=3D1 (high).
->
 
-Right. So, after giving some more thought do this, I'd say it might
-make sense to clear SRWD only when unlocking the entire flash. If
-anything else, it would allow a path to disable hardware protection on
-the lock range?
+Le 08/01/2016 17:02, Cyrille Pitchen a écrit :
+> The spi-nor framework currently expects all Fast Read operations to use 8
+> dummy clock cycles. Especially some drivers like m25p80 can only support
+> multiple of 8 dummy clock cycles.
+> 
+> On Macronix memories, the number of dummy clock cycles to be used by Fast
+> Read commands can be safely set to 8 by updating the DC0 and DC1 volatile
+> bits inside the Configuration Register.
+> 
+> According to the mx66l1g45g datasheet from Macronix, using 8 dummy clock
+> cycles should be enough to set the SPI bus clock frequency up to:
+> - 133 MHz for Fast Read 1-1-1, 1-1-2, 1-1-4 and 1-2-2 commands in Single
+>   Transfer Rate (STR)
+> - 104 MHz for Fast Read 1-4-4 (or 4-4-4 in QPI mode) commands (STR)
+> 
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> ---
+[...]
+> +static int macronix_set_dummy_cycles(struct spi_nor *nor, u8 read_dummy)
+> +{
+> +	int ret, sr, cr, mask, val;
+> +	u16 sr_cr;
+> +	u8 dc;
+> +
+> +	/* Convert the number of dummy cycles into Macronix DC volatile bits */
+> +	ret = macronix_dummy2code(nor->read_opcode, read_dummy, &dc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mask = GENMASK(7, 6);
+> +	val = (dc << 6) & mask;
+> +
+> +	cr = read_cr(nor);
+Macronix memories use the 0x15 op code (not 0x35) to read the Configuration Register.
+The 0x35 op code is used to enter the QPI mode. So read_cr() cannot be used here.
 
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+> +	if (cr < 0) {
+> +		dev_err(nor->dev, "error while reading the config register\n");
+> +		return cr;
+> +	}
+> +
+> +	if ((cr & mask) == val) {
+> +		nor->read_dummy = read_dummy;
+> +		return 0;
+> +	}
+> +
+> +	sr = read_sr(nor);
+> +	if (sr < 0) {
+> +		dev_err(nor->dev, "error while reading the status register\n");
+> +		return sr;
+> +	}
+> +
+> +	cr = (cr & ~mask) | val;
+> +	sr_cr = (sr & 0xff) | ((cr & 0xff) << 8);
+> +	write_enable(nor);
+> +	ret = write_sr_cr(nor, sr_cr);
+> +	if (ret) {
+> +		dev_err(nor->dev,
+> +			"error while writing the SR and CR registers\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = spi_nor_wait_till_ready(nor);
+> +	if (ret)
+> +		return ret;
+> +
+> +	cr = read_cr(nor);
+Here again, we must use the 0x15 op code instead of 0x35.
+
+> +	if (cr < 0 || (cr & mask) != val) {
+> +		dev_err(nor->dev, "Macronix Dummy Cycle bits not updated\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Save the number of dummy cycles to use with Fast Read commands */
+> +	nor->read_dummy = read_dummy;
+> +	return 0;
+> +}
+> +
+
+Best regards,
+
+Cyrille
