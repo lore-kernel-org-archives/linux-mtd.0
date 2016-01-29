@@ -1,23 +1,17 @@
-Received: from mail-qk0-x22a.google.com ([2607:f8b0:400d:c09::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aPAKi-0007yZ-47
- for linux-mtd@lists.infradead.org; Fri, 29 Jan 2016 14:47:33 +0000
-Received: by mail-qk0-x22a.google.com with SMTP id o6so24982253qkc.2
- for <linux-mtd@lists.infradead.org>; Fri, 29 Jan 2016 06:47:11 -0800 (PST)
-Date: Fri, 29 Jan 2016 11:47:07 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx_nand: add register access debug
-Message-ID: <20160129144707.GB1437@laptop.cereza>
-References: <1453753785-9635-1-git-send-email-robert.jarzmik@free.fr>
+Subject: Re: [PATCH 3/3] mtd:spi-nor:fsl-quadspi:Add fast-read mode support
+To: Yunhui Cui <B56489@freescale.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <han.xu@freescale.com>
+References: <1454067669-35274-1-git-send-email-B56489@freescale.com>
+ <1454067669-35274-4-git-send-email-B56489@freescale.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <yao.yuan@nxp.com>
+Message-ID: <56AB7C6E.2050300@atmel.com>
+Date: Fri, 29 Jan 2016 15:51:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1453753785-9635-1-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <1454067669-35274-4-git-send-email-B56489@freescale.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,66 +21,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 25 Jan 09:29 PM, Robert Jarzmik wrote:
-> Add verbose debug for register accesses. This enables easier debugging
-> by following where and how hardware is stimulated, and how it answers.
+Hi Yunhui,
+
+Le 29/01/2016 12:41, Yunhui Cui a écrit :
+> The qspi driver add generic fast-read mode for different
+> flash venders, including Micron family. Also add some special
+> operations for Micron flash read/write in spi-nor.c.
 > 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Signed-off-by: Yunhui Cui <B56489@freescale.com>
 > ---
->  drivers/mtd/nand/pxa3xx_nand.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 27 +++++++++++++++++++++------
+>  drivers/mtd/spi-nor/spi-nor.c     |  6 +++++-
+>  2 files changed, 26 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index e453ae9a17fa..0845d09e14c1 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -136,11 +136,23 @@
->  #define READ_ID_BYTES		7
+[...]
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index ed0c19c..79a025c 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -763,7 +763,8 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
+> -	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
+> +	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_FAST |
+> +			SPI_NOR_QUAD_READ) },
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+This modification looks wrong.
+
+First SPI_NOR_FAST is part of enum read_mode (from spi-nor.h) and is not
+intended to be used as a flag, unlike SPI_NOR_QUAD_READ (defined in spi-nor.c
+just below the flags field of struct flash_info).
+
+Also, creating a new flag to choose between the Read and the Fast Read commands
+is not needed: see my last comment below.
+
+
+> @@ -1233,6 +1234,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
 >  
->  /* macros for registers read/write */
-> -#define nand_writel(info, off, val)	\
-> -	writel_relaxed((val), (info)->mmio_base + (off))
-> -
-> -#define nand_readl(info, off)		\
-> -	readl_relaxed((info)->mmio_base + (off))
-> +#define nand_writel(info, off, val)					\
-> +	do {								\
-> +		dev_vdbg(&info->pdev->dev,				\
-> +			 "%s():%d nand_writel(0x%x, 0x%04x)\n",		\
-> +			 __func__, __LINE__, (val), (off));		\
-> +		writel_relaxed((val), (info)->mmio_base + (off));	\
-> +	} while (0)
-> +
-> +#define nand_readl(info, off)						\
-> +	({								\
-> +		unsigned int _v;					\
-> +		_v = readl_relaxed((info)->mmio_base + (off));		\
-> +		dev_vdbg(&info->pdev->dev,				\
-> +			 "%s():%d nand_readl(0x%04x): 0x%x\n",		\
-> +			 __func__, __LINE__, (off), _v);		\
-> +		_v;							\
-> +	})
+>  	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
+>  	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
+> +	    JEDEC_MFR(info) == SNOR_MFR_MICRON ||
+>  	    JEDEC_MFR(info) == SNOR_MFR_SST) {
+>  		write_enable(nor);
+>  		write_sr(nor, 0);
+This update is not related with the support of fast-read mode, it deals with
+the write protection. Hence it should be moved into a dedicated patch.
+
+Also be careful as some bits of the Status Register are non-volatile on Micron
+memories. This modification may change their values but I guess you only want
+to clear the write enable/disable (7) bit.
+
+
+> @@ -1317,6 +1319,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  		nor->flash_read = SPI_NOR_QUAD;
+>  	} else if (mode == SPI_NOR_DUAL && info->flags & SPI_NOR_DUAL_READ) {
+>  		nor->flash_read = SPI_NOR_DUAL;
+> +	} else if (mode == SPI_NOR_FAST && info->flags & SPI_NOR_FAST) {
+> +		nor->flash_read = SPI_NOR_FAST;
+>  	}
 >  
+>  	/* Default commands */
+> 
+The spi-nor framework already checks the "m25p,fast-read" DT property to choose
+between the Read (0x03) and Fast Read (0x0b) command.
 
-With verbose debug enabled, it looks like this:
+So the fsl-quadspi.c driver should rely on this existing property to choose
+which of SPI_NOR_FAST or SPI_NOR_QUAD is used as the mode argument of
+spi_nor_scan(). As long as mode is neither SPI_NOR_QUAD nor SPI_NOR_DUAL, the
+choice of the read op code is done according to whether the "m25p,fast-read" DT
+property is set or not.
 
-[..]
-[   99.909883] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():793 nand_readl(0x0014): 0x1
-[   99.909896] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():843 nand_writel(0x1, 0x0014)
-[   99.909902] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():857 nand_writel(0x300d3000, 0x0048)
-[   99.909909] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():858 nand_writel(0x60000, 0x0048)
-[   99.909915] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():859 nand_writel(0x0, 0x0048)
-[   99.909921] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():863 nand_writel(0x820, 0x0048)
-[   99.910037] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():793 nand_readl(0x0014): 0x2
 
-Maybe it would look clearer with:
+Best regards,
 
-[   99.910037] pxa3xx-nand f10d0000.nand: pxa3xx_nand_irq():793 nand_readl(0x0014) = 0x2
-
-But if you feel it's just bikeshedding then:
-
-Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-
--- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+Cyrille
