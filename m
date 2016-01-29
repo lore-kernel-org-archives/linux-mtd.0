@@ -1,32 +1,23 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aPEeM-0003vp-Qv
- for linux-mtd@lists.infradead.org; Fri, 29 Jan 2016 19:24:07 +0000
-Received: by mail-pf0-x241.google.com with SMTP id x125so4212096pfb.0
- for <linux-mtd@lists.infradead.org>; Fri, 29 Jan 2016 11:23:45 -0800 (PST)
-Date: Fri, 29 Jan 2016 11:23:41 -0800
+ id 1aPEgf-0005bW-H3
+ for linux-mtd@lists.infradead.org; Fri, 29 Jan 2016 19:26:30 +0000
+Received: by mail-pa0-x243.google.com with SMTP id yy13so3962676pab.1
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Jan 2016 11:26:13 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+To: <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Bayi Cheng <bayi.cheng@mediatek.com>, Marek Vasut <marex@denx.de>,
- Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH 4/8] mtd: spi-nor: disallow further writes to SR if WP#
- is low
-Message-ID: <20160129192341.GD19540@google.com>
-References: <1453960307-10181-1-git-send-email-computersforpeace@gmail.com>
- <1453960307-10181-5-git-send-email-computersforpeace@gmail.com>
- <CAAEAJfC6HM6M0ZJuEqj-=QUUs9+kHJB0m5bt2t9a-VYuiMPx4Q@mail.gmail.com>
- <20160128175905.GA33340@google.com>
- <CAAEAJfDHRutp1R1nKxih-4CENBsjhmFaaTnqD7S6Vub+pqE05Q@mail.gmail.com>
- <20160128194836.GA63180@google.com>
- <CAAEAJfAPbLX9_OOWoUEsVOdUh2DOD+k425u7JkAanjUQxm8MWA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAEAJfAPbLX9_OOWoUEsVOdUh2DOD+k425u7JkAanjUQxm8MWA@mail.gmail.com>
+ linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
+ Marek Vasut <marex@denx.de>, djkurtz@chromium.org
+Subject: [PATCH v2 4/8] mtd: spi-nor: disallow further writes to SR if WP# is
+ low
+Date: Fri, 29 Jan 2016 11:25:33 -0800
+Message-Id: <1454095537-130536-5-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1454095537-130536-1-git-send-email-computersforpeace@gmail.com>
+References: <1454095537-130536-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,37 +27,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 29, 2016 at 10:22:34AM -0300, Ezequiel Garcia wrote:
-> On 28 January 2016 at 16:48, Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Thu, Jan 28, 2016 at 04:24:50PM -0300, Ezequiel Garcia wrote:
-> >> How about this:
-> >>
-> >> 1) ioctl(MEMLOCK) the entire flash (SR_SRWD is set)
-> >> 2) ioctl(MEMUNLOCK) partially (SW_SRWD keeps set)
-> >> 3) ioctl(MEMLOCK) the entire flash again
+Locking the flash is most useful if it provides real hardware security.
+Otherwise, it's little more than a software permission bit.
 
-...
+A reasonable use case that provides real HW security might be like
+follows:
 
-> >> but would (3)  be allowed given
-> >> SW_SRWD is set?
-> >
-> > Yes, if /WP=1 (high).
-> >
-> 
-> Right. So, after giving some more thought do this, I'd say it might
-> make sense to clear SRWD only when unlocking the entire flash. If
-> anything else, it would allow a path to disable hardware protection on
-> the lock range?
+(1) hardware WP# is deasserted
+(2) program flash
+(3) flash range is protected via status register
+(4) hardware WP# is asserted
+(5) flash protection range can no longer be changed, until WP# is
+    deasserted
 
-Yes, that sounds fine to me, as it does allow removal of the HW
-protection. So one could, for example, do:
+In this way, flash protection is co-owned by hardware and software.
 
-0. bring /WP=1 (high)
-1. unlock the whole flash
-2. bring /WP=0 (low) -- flash is still unlocked
-3. allow a one-time relocking of the flash via MEMLOCK
-4. no more locking changes
+Now, one would expect to be able to perform step (3) with
+ioctl(MEMLOCK), except that the spi-nor driver does not set the Status
+Register Protect bit (a.k.a. Status Register Write Disable (SRWD)), so
+even though the range is now locked, it does not satisfy step (5) -- it
+can still be changed by a call to ioctl(MEMUNLOCK).
 
-I'll send out v2.
+So, let's enable status register protection after the first lock
+command, and disable protection only when the flash is fully unlocked.
 
-Brian
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+v2:
+ * added clearing the SRWD bit when unlocking the entire flash
+
+ drivers/mtd/spi-nor/spi-nor.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 68133b949fe5..54eaf4b5bf05 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -540,6 +540,9 @@ static int stm_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 
+ 	status_new = (status_old & ~mask) | val;
+ 
++	/* Disallow further writes if WP pin is asserted */
++	status_new |= SR_SRWD;
++
+ 	/* Don't bother if they're the same */
+ 	if (status_new == status_old)
+ 		return 0;
+@@ -605,6 +608,10 @@ static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 
+ 	status_new = (status_old & ~mask) | val;
+ 
++	/* Don't protect status register if we're fully unlocked */
++	if (lock_len == mtd->size)
++		status_new &= ~SR_SRWD;
++
+ 	/* Don't bother if they're the same */
+ 	if (status_new == status_old)
+ 		return 0;
+-- 
+2.7.0.rc3.207.g0ac5344
