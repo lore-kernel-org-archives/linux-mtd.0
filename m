@@ -1,9 +1,9 @@
-Received: from mail-pa0-x241.google.com ([2607:f8b0:400e:c03::241])
+Received: from mail-pa0-x244.google.com ([2607:f8b0:400e:c03::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aPEgk-0005ba-6h
- for linux-mtd@lists.infradead.org; Fri, 29 Jan 2016 19:26:35 +0000
-Received: by mail-pa0-x241.google.com with SMTP id gi1so4003255pac.2
- for <linux-mtd@lists.infradead.org>; Fri, 29 Jan 2016 11:26:13 -0800 (PST)
+ id 1aPEgl-0005bz-9x
+ for linux-mtd@lists.infradead.org; Fri, 29 Jan 2016 19:26:37 +0000
+Received: by mail-pa0-x244.google.com with SMTP id pv5so3985019pac.0
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Jan 2016 11:26:16 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,10 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
  Marek Vasut <marex@denx.de>, djkurtz@chromium.org
-Subject: [PATCH v2 5/8] mtd: spi-nor: use BIT() for flash_info flags
-Date: Fri, 29 Jan 2016 11:25:34 -0800
-Message-Id: <1454095537-130536-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 8/8] mtd: spi-nor: support lock/unlock for a few Winbond
+ chips
+Date: Fri, 29 Jan 2016 11:25:37 -0800
+Message-Id: <1454095537-130536-9-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1454095537-130536-1-git-send-email-computersforpeace@gmail.com>
 References: <1454095537-130536-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,43 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's a little easier to read and make sure there are no collisions
-(IMO).
+These are recent Winbond models that are known to have lock/unlock
+support via writing the Status Register, and that also support the TB
+(Top/Bottom) protection bit.
+
+Tested on w25q32dw.
+
+[Note on style: these entries are getting pretty long lines, so I picked
+a style that seems reasonable for splitting up the flags separate from
+the other mostly-similar fields.]
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 ---
 v2: no change
 
- drivers/mtd/spi-nor/spi-nor.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 54eaf4b5bf05..9cd92f135fa2 100644
+index 00ebf0794ca6..3e6934c941aa 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -61,14 +61,14 @@ struct flash_info {
- 	u16		addr_width;
- 
- 	u16		flags;
--#define	SECT_4K			0x01	/* SPINOR_OP_BE_4K works uniformly */
--#define	SPI_NOR_NO_ERASE	0x02	/* No erase command needed */
--#define	SST_WRITE		0x04	/* use SST byte programming */
--#define	SPI_NOR_NO_FR		0x08	/* Can't do fastread */
--#define	SECT_4K_PMC		0x10	/* SPINOR_OP_BE_4K_PMC works uniformly */
--#define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
--#define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
--#define	USE_FSR			0x80	/* use flag status register */
-+#define SECT_4K			BIT(0)	/* SPINOR_OP_BE_4K works uniformly */
-+#define SPI_NOR_NO_ERASE	BIT(1)	/* No erase command needed */
-+#define SST_WRITE		BIT(2)	/* use SST byte programming */
-+#define SPI_NOR_NO_FR		BIT(3)	/* Can't do fastread */
-+#define SECT_4K_PMC		BIT(4)	/* SPINOR_OP_BE_4K_PMC works uniformly */
-+#define SPI_NOR_DUAL_READ	BIT(5)	/* Flash supports Dual Read */
-+#define SPI_NOR_QUAD_READ	BIT(6)	/* Flash supports Quad Read */
-+#define USE_FSR			BIT(7)	/* use flag status register */
- };
- 
- #define JEDEC_MFR(info)	((info)->id[0])
+@@ -962,11 +962,23 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
+ 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
+-	{ "w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{
++		"w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
+ 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
+-	{ "w25q64dw", INFO(0xef6017, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "w25q128fw", INFO(0xef6018, 0, 64 * 1024, 256, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{
++		"w25q64dw", INFO(0xef6017, 0, 64 * 1024, 128,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
++	{
++		"w25q128fw", INFO(0xef6018, 0, 64 * 1024, 256,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
+ 	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
 -- 
 2.7.0.rc3.207.g0ac5344
