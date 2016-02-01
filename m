@@ -1,18 +1,33 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQ8G7-0005dZ-Am
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 06:46:48 +0000
-From: Vignesh R <vigneshr@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>
-CC: Russell King <linux@arm.linux.org.uk>, <hramrach@gmail.com>, David
- Woodhouse <dwmw2@infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-spi@vger.kernel.org>, Vignesh R <vigneshr@ti.com>
-Subject: [RESEND][PATCH v5 0/3] Add memory mapped read support for ti-qspi
-Date: Mon, 1 Feb 2016 12:14:22 +0530
-Message-ID: <1454309065-11493-1-git-send-email-vigneshr@ti.com>
+ id 1aQ8kG-0000t9-SO
+ for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 07:17:57 +0000
+From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
+ <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ Brian Norris <computersforpeace@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Boris
+ Brezillon" <boris.brezillon@free-electrons.com>,
+ =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
+ <peterpandong@micron.com>,
+ =?gb2312?B?S2FybCBaaGFuZyDVxcurwuAgKGthcmx6aGFuZyk=?= <karlzhang@micron.com>,
+ =?gb2312?B?SmFzb24gVGlhbiDM78/+x78gKGphc29udGlhbik=?= <jasontian@micron.com>
+Subject: RE: [PATCH 1/1] fs:ubifs:recovery:fixup UBIFS cannot recover master
+ node issue
+Date: Mon, 1 Feb 2016 07:17:27 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF66E56@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF53F90@NTXXIAMBX02.xacn.micron.com>
+ <566A9378.4070900@nod.at>
+ <A765B125120D1346A63912DDE6D8B6310BF54200@NTXXIAMBX02.xacn.micron.com>
+ <566F03AC.90305@nod.at>
+ <A765B125120D1346A63912DDE6D8B6310BF65A47@NTXXIAMBX02.xacn.micron.com>
+ <56A9E00E.1070706@nod.at>
+In-Reply-To: <56A9E00E.1070706@nod.at>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +37,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Resend v5:
-Rebased on top of v4.5-rc1
-
-Changes since v4:
-Use syscon to access system control module register in ti-qspi driver.
-
-Changes since v3:
-Rework to introduce spi_flash_read_message struct.
-Support different opcode/addr/data formats as per Brian's suggestion
-here: https://lkml.org/lkml/2015/11/11/454
-
-Changes since v2:
-Remove mmap_lock_mutex.
-Optimize enable/disable of mmap mode.
-
-Changes since v1:
-Introduce API in SPI core that MTD flash driver can call for mmap read
-instead of directly calling spi-master driver callback. This API makes
-sure that SPI core msg queue is locked during mmap transfers.
-v1: https://lkml.org/lkml/2015/9/4/103
-
-
-Cover letter:
-
-This patch series adds support for memory mapped read port of ti-qspi.
-ti-qspi has a special memory mapped port through which SPI flash
-memories can be accessed directly via SoC specific memory region.
-
-First patch adds a method to pass flash specific information like read
-opcode, dummy bytes etc and to request mmap read. Second patch
-implements mmap read method in ti-qspi driver. Patch 3 adapts m25p80 to
-use mmap read method before trying normal SPI transfer. Patch 4 and 5
-add memory map region DT entries for DRA7xx and AM43xx SoCs.
-
-This patch series is based on the discussions here:
-http://www.spinics.net/lists/linux-spi/msg04796.html
-
-Tested on DRA74 EVM and AM437x-SK.
-Read performance increases from ~100kB/s to ~2.5MB/s.
-
-Vignesh R (3):
-  spi: introduce accelerated read support for spi flash devices
-  spi: spi-ti-qspi: add mmap mode read support
-  mtd: devices: m25p80: add support for mmap read request
-
- drivers/mtd/devices/m25p80.c |  20 +++++++
- drivers/spi/spi-ti-qspi.c    | 139 ++++++++++++++++++++++++++++++++++---------
- drivers/spi/spi.c            |  45 ++++++++++++++
- include/linux/spi/spi.h      |  41 +++++++++++++
- 4 files changed, 216 insertions(+), 29 deletions(-)
-
--- 
-2.7.0
+SGksIFJpY2hhcmQNCg0KPiBGcm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJk
+QG5vZC5hdF0NCj4gU2VudDogVGh1cnNkYXksIEphbnVhcnkgMjgsIDIwMTYgNTozMiBQTQ0KPiBU
+bzogQmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKTsgQXJ0ZW0gQml0eXV0c2tpeTsgQWRyaWFuIEh1
+bnRlcjsgQnJpYW4NCj4gTm9ycmlzDQo+IENjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9y
+ZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgQm9yaXMNCj4gQnJlemlsbG9uOyBQZXRl
+ciBQYW4gxcu2sCAocGV0ZXJwYW5kb25nKTsgS2FybCBaaGFuZyDVxcurwuAgKGthcmx6aGFuZyk7
+DQo+IEphc29uIFRpYW4gzO/P/se/IChqYXNvbnRpYW4pDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
+MS8xXSBmczp1YmlmczpyZWNvdmVyeTpmaXh1cCBVQklGUyBjYW5ub3QgcmVjb3ZlciBtYXN0ZXIN
+Cj4gbm9kZSBpc3N1ZQ0KPiANCj4gQmVhbiwNCj4gDQo+IEFtIDI4LjAxLjIwMTYgdW0gMDM6NDIg
+c2NocmllYiBCZWFuIEh1byC79LHzsfMgKGJlYW5odW8pOg0KPiA+PiBUaGlzIG5lZWRzIGEgbXVj
+aCBtb3JlIGRldGFpbGVkIGV4cGxhbmF0aW9uLg0KPiA+PiBJbiB3aGljaCBzY2VuYXJpb3Mgb24g
+U0xDIE5BTkQgY2FuIHlvdSBnZXQgc3VjaCBhbiB1bm1vdW50YWJsZSBVQklGUz8NCj4gPg0KPiA+
+DQo+ID4gSXQgaXMgbXkgbWlzdGFrZSBpbnZvbHZlZCBTTEMgTkFORC4NCj4gPiBEZWZpbml0ZWx5
+LCBTTEMgTkFORCBkb2VzIG5vdCBleGlzdCB0d28gcGFnZXMgYmVpbmcgZGFtYWdlZCB3aXRoaW4g
+b25lDQo+IGJsb2NrLg0KPiA+IEkgbWVhbiB0aGF0IG1hc3RlciBzaG91bGQgYmUgcmVjb3ZlcmVk
+IGFzIGxvbmcgYXMgb25lIGdvb2QgbWFzdGVyIGJsb2NrDQo+ID5leGlzdHMuDQo+ID4gSSB0aGlu
+aywgYXQgbGVhc3QgdGhpcyBtZXRob2QgaXMgbW9yZSByZWFzb25hYmxlLg0KPiA+IE15IHF1ZXN0
+aW9uIGlzIHRoYXQgd2h5IFVCSSBkb2Vzbid0IHJlY292ZXIgbWFzdGVyIG5vZGUgZm9yIHRoaXMg
+c2NlbmFyaW8/DQo+IA0KPiBVQklGUyBhc3N1bWVzIHRoYXQgb24gU0xDIE5BTkQgYWxyZWFkeSB3
+cml0dGVuIHBhZ2VzIG11c3Qgbm90IGNvcnJ1cHQuIEl0DQo+IGNhbiBkZWFsIHdpdGggdGhlIGZh
+Y3QgdGhhdCBwYWdlcyBjYW4gZ2V0IGRhbWFnZWQgd2hpbGUgd3JpdGluZyB0aGVtICh0aGluaw0K
+PiBvZiBhIHBvd2VyIGN1dCkuDQo+IEJ1dCBpZiBwYWdlIFggaXMgd3JpdHRlbiBhbmQgVUJJRlMg
+bW92ZXMgb3ZlciB0byBYICsgMSwgWCBtdXN0IG5ldmVyIGNvcnJ1cHQuDQo+IA0KPiBJZiB0aGlz
+IGhhcHBlbnMsIHNvbWV0aGluZyB2ZXJ5IG5hc3R5IGhhcHBlbmVkIGFuZCBVQklGUyBjYW5ub3Qg
+b3BlcmF0ZQ0KPiBjb3JyZWN0bHkuDQoNClJpZ2h0LCBmb3IgU0xDIE5BTkQsIFggd2lsbCBub3Qg
+YmUgZGFtYWdlZCwgYmVjYXVzZSBwb3dlciBsb3NzIGhhcHBlbmVkDQpXaGlsZSBwcm9ncmFtbWlu
+ZyBYICsxLg0KDQo+IFdpdGggeW91ciBwYXRjaCBpdCBtYXkgbW91bnQgc29tZWhvdyBidXQgKndp
+bGwqIGRpZSBvciBsb3NlIGRhdGEgc29vbiBvcg0KPiBsYXRlciBhcyB0aGUgc2FtZSBhc3N1bXB0
+aW9ucyBhcHBseSB0byBhbGwgb3RoZXIgVUJJRlMgb3BlcmF0aW9ucy4gSXQgaXMgbm90DQo+IGp1
+c3QgYWJvdXQgbWFzdGVyIG5vZGVzLg0KPiBNYXN0ZXIgbm9kZXMgYXJlIHRoZSBtZXNzZW5nZXIu
+DQo+DQo+IFVCSUZTJyBzdHJpY3QgY2hlY2tzIHR1cm5lZCBvdXQgdG8gYmUgdmVyeSB2YWx1YWJs
+ZSBpbiB0aGUgcGFzdCB0byBpZGVudGlmeQ0KPiBkcml2ZXIvTVREIGlzc3Vlcy4NCj4gVGhpcyBp
+cyB3aHkgSSBsaWtlIHRoZW0gc28gbXVjaC4NCg0KPiA+PiBNYXliZSBVQklGUyBpcyB0b28gc3Ry
+aWN0IGFuZCBOQU5EIGJlaGF2ZXMgZGlmZmVyZW50bHkgdGhhbiBVQklGUw0KPiA+PiBleHBlY3Rz
+IGJ1dCB3ZSBuZWVkIHRvIHVuZGVyc3RhbmQgaXQgaW4gZGVwdGguDQo+ID4gRm9yIHRoaXMsIEkg
+dGhpbmssIG1heWJlIE1MQyBOQU5EIGhhZCBub3QgYmVlbiByZWxlYXNlZCB5ZXQgd2hlbiBVQkkN
+Cj4gaW5pdGlhbCBkZXNpZ24uDQo+ID4gSSB3b3VsZCBsaWtlIHRvIHNlbmQgbXkgdmVyc2lvbiAy
+IHBhdGNoIGJhc2VkIG9uIHlvdXIgc3VnZ2VzdGlvbi4NCj4gDQo+IElmIHlvdSBjYW4gZXhwbGFp
+biBpbiBkZXRhaWwgd2h5IFVCSUZTJyBhc3N1bXB0aW9ucyBhcmUgd3JvbmcgYW5kIGhvdyBzdWNo
+DQo+IGNvcnJ1cHRpb25zIGNhbiBoYXBwZW4gb24gU0xDIHdlIGNhbiB0YWxrLg0KPiBCdXQgSSB0
+aGluayB0aGVuIHdlJ2QgaGF2ZSB0byByZWRvIGEgbG90IG9mIFVCSSBhbmQgVUJJRlMgY29kZS4N
+Cg0KSSB3aWxsIGhhY2sgbXkgcGF0Y2ggYWdhaW4sIGFuZCBkb3VibGUgY2hlY2sgdGhlc2Ugc3Ry
+aWN0IGNoZWNrcy4NCkJ1dCBJIHN0aWxsIGluc2lzdCBvbiBNYXN0ZXIgbm9kZSBzaG91bGQgYWx3
+YXlzIGJlIHJlY292ZXJlZCBieSBhbm90aGVyIGdvb2QgbWFzdGVyLA0KZXZlbiBpZiB0d28gY29y
+cnVwdGVkIHBhZ2VzIGV4aXN0IGluIG9uZSBibG9jay4gVGhpcyBpcyBtb3JlIHJlYXNvbmFibGUg
+YW5kIHJlbGlhYmxlLg0KT2YgY291cnNlLCBzbyBmYXIsIHdlIGRpZCBub3QgbWVldCB0aGlzIHNj
+ZW5hcmlvIG9uIFNMQyBOQU5ELg0KQ3VycmVudCBVQklGUyBtYXN0ZXIgbm9kZSByZWNvdmVyeSBt
+ZWNoYW5pc20gdG90YWxseSBjYW4gaGFuZGxlIHdpdGgNClBvd2VyIGxvc3Mgbm8gbWF0dGVyIE1M
+QyBvciBTTEMsIHdoeSBub3QgbGV0IFVCSUZTIG1vcmUgcmVsaWFibGU/IFR3byBtYXN0ZXIgbm9k
+ZSBibG9ja3MNCkp1c3QgZm9yIFNMQyBOQU5EPw0KPiBUaGFua3MsDQo+IC8vcmljaGFyZA0K
