@@ -1,28 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQLnZ-0002rB-Vd
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 21:14:15 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
-Date: Mon, 1 Feb 2016 22:13:46 +0100
-Cc: Rob Herring <robh@kernel.org>, linux-mtd@lists.infradead.org,
- Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- "R, Vignesh" <vigneshr@ti.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- devicetree@vger.kernel.org
-References: <1452486886-8049-1-git-send-email-marex@denx.de>
- <201601130339.17520.marex@denx.de> <20160201210335.GM19540@google.com>
-In-Reply-To: <20160201210335.GM19540@google.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201602012213.46740.marex@denx.de>
+ id 1aQMZ3-0007tn-0K
+ for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 22:03:18 +0000
+Received: by mail-lb0-x233.google.com with SMTP id dx2so83418230lbd.3
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 14:02:55 -0800 (PST)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Russell King <linux@arm.linux.org.uk>,
+ Paul Parsons <lost.distance@yahoo.com>
+Subject: [PATCH] mtd: map: fix .set_vpp() documentation
+Date: Mon,  1 Feb 2016 23:02:48 +0100
+Message-Id: <1454364168-1342-1-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,55 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, February 01, 2016 at 10:03:35 PM, Brian Norris wrote:
-> On Wed, Jan 13, 2016 at 03:39:17AM +0100, Marek Vasut wrote:
-> > On Wednesday, January 13, 2016 at 03:26:08 AM, Rob Herring wrote:
-> > > On Mon, Jan 11, 2016 at 05:34:45AM +0100, Marek Vasut wrote:
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
-> > > > @@ -0,0 +1,56 @@
-> > > > +* Cadence Quad SPI controller
-> > > > +
-> > > > +Required properties:
-> > > > +- compatible : Should be "cdns,qspi-nor".
-> > > 
-> > > Fine, but I expect to see SOCs using this block add their own
-> > > compatible strings. It wouldn't surprise me that we already have some
-> > > using this block.
-> > > 
-> > > Acked-by: Rob Herring <robh@kernel.org>
-> > 
-> > I finally got an Ack on this, I am so happy :-)
-> > 
-> > As for the SoCs, there is Altera SoCFPGA Gen 5 and Gen 10 which uses
-> > this. Then there is some TI SoC, but I don't know the model. Vignesh (on
-> > CC) would. Then there is some ST SoC, but I have no idea what that's all
-> > about, sorry.
-> > 
-> > All these SoCs should be capable of tweaking the block to fit their needs
-> > by just the DT properties. I believe they differ only in the FIFO depth
-> > and sometimes someone is greedy and uses 4:16 CS multiplexer, which is
-> > an external passive component, but that's all.
-> > 
-> > Would we need soc-specific compatible strings if this is the case?
-> 
-> It's nice when most things can be supported with a small set of DT
-> properties, as you've done. But IUIC, I think it's usually good practice
-> to define and use SoC-specific (or maybe SoC family) compatible strings
-> in the docs and DTS files, in addition to the generic one, in case there
-> are future quirks that need to be handled. Note that you don't actually
-> have to use these in the driver yet, but it's good to have a definition.
-> So you can, today, have:
-> 
-> 	foo@xxxx {
-> 		compatible = "ti,baz-12345", "cdns,qspi-nor";
-> 		...
-> 	};
-> 
-> And we have the option to pick up "ti,baz-12345" in the Linux driver *if
-> needed.*
+As of commit 876fe76d793d03077eb61ba3afab4a383f46c554
+"mtd: maps: physmap: Add reference counter to set_vpp()"
+the comment in the header file is incorrect and misleading.
+Fix it up.
 
-Ah, got it, thanks!
+Cc: Russell King <linux@arm.linux.org.uk>
+Cc: Paul Parsons <lost.distance@yahoo.com>
+Fixes: 876fe76d793d ("mtd: maps: physmap: Add reference counter to set_vpp()")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ include/linux/mtd/map.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Best regards,
-Marek Vasut
+diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+index 58f3ba709ade..5e0eb7ccabd4 100644
+--- a/include/linux/mtd/map.h
++++ b/include/linux/mtd/map.h
+@@ -240,8 +240,11 @@ struct map_info {
+ 	   If there is no cache to care about this can be set to NULL. */
+ 	void (*inval_cache)(struct map_info *, unsigned long, ssize_t);
+ 
+-	/* set_vpp() must handle being reentered -- enable, enable, disable
+-	   must leave it enabled. */
++	/* This will be called with 1 as parameter when the first map user
++	 * needs VPP, and called with 0 when the last user exits. The map
++	 * core maintains a reference counter, and assumes that VPP is a
++	 * global resource applying to all mapped flash chips on the system.
++	 */
+ 	void (*set_vpp)(struct map_info *, int);
+ 
+ 	unsigned long pfow_base;
+-- 
+2.4.3
