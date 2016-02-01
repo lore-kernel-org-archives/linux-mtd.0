@@ -1,6 +1,6 @@
 Received: from arroyo.ext.ti.com ([192.94.94.40])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQ8G4-0005d1-Q5
+ id 1aQ8G4-0005d7-GV
  for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 06:46:45 +0000
 From: Vignesh R <vigneshr@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>
@@ -8,10 +8,10 @@ CC: Russell King <linux@arm.linux.org.uk>, <hramrach@gmail.com>, David
  Woodhouse <dwmw2@infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
  <linux-spi@vger.kernel.org>, Vignesh R <vigneshr@ti.com>
-Subject: [RESEND][PATCH v5 3/3] mtd: devices: m25p80: add support for mmap
- read request
-Date: Mon, 1 Feb 2016 12:14:25 +0530
-Message-ID: <1454309065-11493-4-git-send-email-vigneshr@ti.com>
+Subject: [RESEND][PATCH v5 1/3] spi: introduce accelerated read support for
+ spi flash devices
+Date: Mon, 1 Feb 2016 12:14:23 +0530
+Message-ID: <1454309065-11493-2-git-send-email-vigneshr@ti.com>
 In-Reply-To: <1454309065-11493-1-git-send-email-vigneshr@ti.com>
 References: <1454309065-11493-1-git-send-email-vigneshr@ti.com>
 MIME-Version: 1.0
@@ -25,10 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Certain spi controllers may provide accelerated interface to read from
-m25p80 type flash devices. This interface provides better read
-performance than regular SPI interface.
-Call spi_flash_read(), if supported, to make use of such interface.
+In addition to providing direct access to SPI bus, some spi controller
+hardwares (like ti-qspi) provide special port (like memory mapped port)
+that are optimized to improve SPI flash read performance.
+This means the controller can automatically send the SPI signals
+required to read data from the SPI flash device.
+For this, SPI controller needs to know flash specific information like
+read command to use, dummy bytes and address width.
+
+Introduce spi_flash_read() interface to support accelerated read
+over SPI flash devices. SPI master drivers can implement this callback to
+support interfaces such as memory mapped read etc. m25p80 flash driver
+and other flash drivers can call this make use of such interfaces. The
+interface should only be used with SPI flashes and cannot be used with
+other SPI devices.
 
 Signed-off-by: Vignesh R <vigneshr@ti.com>
 ---
@@ -36,41 +46,171 @@ Signed-off-by: Vignesh R <vigneshr@ti.com>
 Resend v5:
 Rebased on top of v4.5-rc1
 
-v5: No changes
+v5: No changes.
 
- drivers/mtd/devices/m25p80.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index c9c3b7fa3051..7730e633d7d3 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -131,6 +131,26 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	/* convert the dummy cycles to the number of bytes */
- 	dummy /= 8;
+ drivers/spi/spi.c       | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/spi/spi.h | 41 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 86 insertions(+)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 47eff8012a77..dcc6f6e92668 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1152,6 +1152,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
+ 		}
+ 	}
  
-+	if (spi_flash_read_supported(spi)) {
-+		struct spi_flash_read_message msg;
-+		int ret;
++	mutex_lock(&master->bus_lock_mutex);
+ 	trace_spi_message_start(master->cur_msg);
+ 
+ 	if (master->prepare_message) {
+@@ -1161,6 +1162,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
+ 				"failed to prepare message: %d\n", ret);
+ 			master->cur_msg->status = ret;
+ 			spi_finalize_current_message(master);
++			mutex_unlock(&master->bus_lock_mutex);
+ 			return;
+ 		}
+ 		master->cur_msg_prepared = true;
+@@ -1170,6 +1172,7 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
+ 	if (ret) {
+ 		master->cur_msg->status = ret;
+ 		spi_finalize_current_message(master);
++		mutex_unlock(&master->bus_lock_mutex);
+ 		return;
+ 	}
+ 
+@@ -1177,8 +1180,10 @@ static void __spi_pump_messages(struct spi_master *master, bool in_kthread)
+ 	if (ret) {
+ 		dev_err(&master->dev,
+ 			"failed to transfer one message from queue\n");
++		mutex_unlock(&master->bus_lock_mutex);
+ 		return;
+ 	}
++	mutex_unlock(&master->bus_lock_mutex);
+ }
+ 
+ /**
+@@ -2351,6 +2356,46 @@ int spi_async_locked(struct spi_device *spi, struct spi_message *message)
+ EXPORT_SYMBOL_GPL(spi_async_locked);
+ 
+ 
++int spi_flash_read(struct spi_device *spi,
++		   struct spi_flash_read_message *msg)
 +
-+		msg.buf = buf;
-+		msg.from = from;
-+		msg.len = len;
-+		msg.read_opcode = nor->read_opcode;
-+		msg.addr_width = nor->addr_width;
-+		msg.dummy_bytes = dummy;
-+		/* TODO: Support other combinations */
-+		msg.opcode_nbits = SPI_NBITS_SINGLE;
-+		msg.addr_nbits = SPI_NBITS_SINGLE;
-+		msg.data_nbits = m25p80_rx_nbits(nor);
++{
++	struct spi_master *master = spi->master;
++	int ret;
 +
-+		ret = spi_flash_read(spi, &msg);
-+		*retlen = msg.retlen;
-+		return ret;
++	if ((msg->opcode_nbits == SPI_NBITS_DUAL ||
++	     msg->addr_nbits == SPI_NBITS_DUAL) &&
++	    !(spi->mode & (SPI_TX_DUAL | SPI_TX_QUAD)))
++		return -EINVAL;
++	if ((msg->opcode_nbits == SPI_NBITS_QUAD ||
++	     msg->addr_nbits == SPI_NBITS_QUAD) &&
++	    !(spi->mode & SPI_TX_QUAD))
++		return -EINVAL;
++	if (msg->data_nbits == SPI_NBITS_DUAL &&
++	    !(spi->mode & (SPI_RX_DUAL | SPI_RX_QUAD)))
++		return -EINVAL;
++	if (msg->data_nbits == SPI_NBITS_QUAD &&
++	    !(spi->mode &  SPI_RX_QUAD))
++		return -EINVAL;
++
++	if (master->auto_runtime_pm) {
++		ret = pm_runtime_get_sync(master->dev.parent);
++		if (ret < 0) {
++			dev_err(&master->dev, "Failed to power device: %d\n",
++				ret);
++			return ret;
++		}
 +	}
++	mutex_lock(&master->bus_lock_mutex);
++	ret = master->spi_flash_read(spi, msg);
++	mutex_unlock(&master->bus_lock_mutex);
++	if (master->auto_runtime_pm)
++		pm_runtime_put(master->dev.parent);
 +
- 	spi_message_init(&m);
- 	memset(t, 0, (sizeof t));
++	return ret;
++}
++EXPORT_SYMBOL_GPL(spi_flash_read);
++
+ /*-------------------------------------------------------------------------*/
  
+ /* Utility methods for SPI master protocol drivers, layered on
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 53be3a4c60cb..ba0dee9d05a3 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -25,6 +25,7 @@
+ struct dma_chan;
+ struct spi_master;
+ struct spi_transfer;
++struct spi_flash_read_message;
+ 
+ /*
+  * INTERFACES between SPI master-side drivers and SPI infrastructure.
+@@ -361,6 +362,8 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+  * @handle_err: the subsystem calls the driver to handle an error that occurs
+  *		in the generic implementation of transfer_one_message().
+  * @unprepare_message: undo any work done by prepare_message().
++ * @spi_flash_read: to support spi-controller hardwares that provide
++ *                  accelerated interface to read from flash devices.
+  * @cs_gpios: Array of GPIOs to use as chip select lines; one per CS
+  *	number. Any individual value may be -ENOENT for CS lines that
+  *	are not GPIOs (driven by the SPI controller itself).
+@@ -513,6 +516,8 @@ struct spi_master {
+ 			       struct spi_message *message);
+ 	int (*unprepare_message)(struct spi_master *master,
+ 				 struct spi_message *message);
++	int (*spi_flash_read)(struct  spi_device *spi,
++			      struct spi_flash_read_message *msg);
+ 
+ 	/*
+ 	 * These hooks are for drivers that use a generic implementation
+@@ -1019,6 +1024,42 @@ static inline ssize_t spi_w8r16be(struct spi_device *spi, u8 cmd)
+ 	return be16_to_cpu(result);
+ }
+ 
++/**
++ * struct spi_flash_read_message - flash specific information for
++ * spi-masters that provide accelerated flash read interfaces
++ * @buf: buffer to read data
++ * @from: offset within the flash from where data is to be read
++ * @len: length of data to be read
++ * @retlen: actual length of data read
++ * @read_opcode: read_opcode to be used to communicate with flash
++ * @addr_width: number of address bytes
++ * @dummy_bytes: number of dummy bytes
++ * @opcode_nbits: number of lines to send opcode
++ * @addr_nbits: number of lines to send address
++ * @data_nbits: number of lines for data
++ */
++struct spi_flash_read_message {
++	void *buf;
++	loff_t from;
++	size_t len;
++	size_t retlen;
++	u8 read_opcode;
++	u8 addr_width;
++	u8 dummy_bytes;
++	u8 opcode_nbits;
++	u8 addr_nbits;
++	u8 data_nbits;
++};
++
++/* SPI core interface for flash read support */
++static inline bool spi_flash_read_supported(struct spi_device *spi)
++{
++	return spi->master->spi_flash_read ? true : false;
++}
++
++int spi_flash_read(struct spi_device *spi,
++		   struct spi_flash_read_message *msg);
++
+ /*---------------------------------------------------------------------------*/
+ 
+ /*
 -- 
 2.7.0
