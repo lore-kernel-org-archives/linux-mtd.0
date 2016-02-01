@@ -1,9 +1,9 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQBh2-0003qk-AC
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 10:26:51 +0000
-Received: by mail-wm0-x241.google.com with SMTP id r129so8390925wmr.0
- for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 02:26:28 -0800 (PST)
+ id 1aQBh5-0003tC-Ja
+ for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 10:26:56 +0000
+Received: by mail-wm0-x242.google.com with SMTP id 128so8379315wmz.3
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 02:26:31 -0800 (PST)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	devicetree@vger.kernel.org
@@ -11,9 +11,9 @@ Cc: Josh Wu <rainyfeeling@outlook.com>,
  Nicolas Ferre <nicolas.ferre@atmel.com>,
  Yang Wenyou <Wenyou.Yang@atmel.com>,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v3 2/5] dt-bindings: atmel_nand: Reword the documenation
-Date: Mon,  1 Feb 2016 11:25:57 +0100
-Message-Id: <1454322360-8666-3-git-send-email-romain.izard.pro@gmail.com>
+Subject: [PATCH v3 5/5] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
+Date: Mon,  1 Feb 2016 11:26:00 +0100
+Message-Id: <1454322360-8666-6-git-send-email-romain.izard.pro@gmail.com>
 In-Reply-To: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
 References: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,61 +25,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Do not mention which chips supporting the PMECC controller, as it a
-duplicate of the information in the chips' device trees.
+Both nodes are required to access NAND Flash memory. Additional
+settings will be necessary at the board level to use it.
 
-Use common terms when describing the sub-node for the NAND Flash
-controller.
-
-Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
 ---
-v3: no change
-v2: new
+v3: No change
+v2: Fix device address, hexadecimal with minuscules
 
- .../devicetree/bindings/mtd/atmel-nand.txt         | 23 +++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ arch/arm/boot/dts/sama5d2.dtsi | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-index 89b0db9801b0..e68ab404d912 100644
---- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-@@ -21,8 +21,8 @@ Optional properties:
- - nand-ecc-mode : String, operation mode of the NAND ecc mode, soft by default.
-   Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-   "soft_bch".
--- atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware.
--  Only supported by at91sam9x5 or later sam9 product.
-+- atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware,
-+  capable of BCH encoding and decoding, on devices where it is present.
- - atmel,pmecc-cap : error correct capability for Programmable Multibit ECC
-   Controller. Supported values are: 2, 4, 8, 12, 24.
- - atmel,pmecc-sector-size : sector size for ECC computation. Supported values
-@@ -32,15 +32,16 @@ Optional properties:
-   sector size 1024. If not specified, driver will build the table in runtime.
- - nand-bus-width : 8 or 16 bus width if not present 8
- - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
--- Nand Flash Controller(NFC) is a slave driver under Atmel nand flash
--  - Required properties:
--    - compatible : "atmel,sama5d3-nfc" or "atmel,sama5d4-nfc".
--    - reg : should specify the address and size used for NFC command registers,
--            NFC registers and NFC Sram. NFC Sram address and size can be absent
--            if don't want to use it.
--    - clocks: phandle to the peripheral clock
--  - Optional properties:
--    - atmel,write-by-sram: boolean to enable NFC write by sram.
-+
-+Nand Flash Controller(NFC) is an optional sub-node
-+Required properties:
-+- compatible : "atmel,sama5d3-nfc" or "atmel,sama5d4-nfc".
-+- reg : should specify the address and size used for NFC command registers,
-+        NFC registers and NFC SRAM. NFC SRAM address and size can be absent
-+        if don't want to use it.
-+- clocks: phandle to the peripheral clock
-+Optional properties:
-+- atmel,write-by-sram: boolean to enable NFC write by SRAM.
+diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+index 3f750f6170f2..484bd8ea6602 100644
+--- a/arch/arm/boot/dts/sama5d2.dtsi
++++ b/arch/arm/boot/dts/sama5d2.dtsi
+@@ -263,6 +263,44 @@
+ 			cache-level = <2>;
+ 		};
  
- Examples:
- nand0: nand@40000000,0 {
++		nand0: nand@80000000 {
++			compatible = "atmel,sama5d2-nand";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges;
++			reg = < /* EBI CS3 */
++				0x80000000 0x08000000
++				/* SMC PMECC regs */
++				0xf8014070 0x00000490
++				/* SMC PMECC Error Location regs */
++				0xf8014500 0x00000200
++				/* ROM Galois tables */
++				0x00040000 0x00018000
++				>;
++			interrupts = <17 IRQ_TYPE_LEVEL_HIGH 6>;
++			atmel,nand-addr-offset = <21>;
++			atmel,nand-cmd-offset = <22>;
++			atmel,nand-has-dma;
++			atmel,has-pmecc;
++			atmel,pmecc-lookup-table-offset = <0x0 0x8000>;
++			status = "disabled";
++
++			nfc@c0000000 {
++				compatible = "atmel,sama5d4-nfc";
++				#address-cells = <1>;
++				#size-cells = <1>;
++				reg = < /* NFC Command Registers */
++					0xc0000000 0x08000000
++					/* NFC HSMC regs */
++					0xf8014000 0x00000070
++					/* NFC SRAM banks */
++					0x00100000 0x00100000
++					>;
++				clocks = <&hsmc_clk>;
++				atmel,write-by-sram;
++			};
++		};
++
+ 		sdmmc0: sdio-host@a0000000 {
+ 			compatible = "atmel,sama5d2-sdhci";
+ 			reg = <0xa0000000 0x300>;
 -- 
 2.5.0
