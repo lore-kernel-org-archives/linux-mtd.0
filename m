@@ -1,33 +1,35 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQ8kG-0000t9-SO
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 07:17:57 +0000
-From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
- <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Brian Norris <computersforpeace@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Boris
- Brezillon" <boris.brezillon@free-electrons.com>,
- =?gb2312?B?UGV0ZXIgUGFuIMXLtrAgKHBldGVycGFuZG9uZyk=?=
- <peterpandong@micron.com>,
- =?gb2312?B?S2FybCBaaGFuZyDVxcurwuAgKGthcmx6aGFuZyk=?= <karlzhang@micron.com>,
- =?gb2312?B?SmFzb24gVGlhbiDM78/+x78gKGphc29udGlhbik=?= <jasontian@micron.com>
-Subject: RE: [PATCH 1/1] fs:ubifs:recovery:fixup UBIFS cannot recover master
+ id 1aQ9rT-0001vp-9H
+ for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 08:29:29 +0000
+Subject: Re: [PATCH 1/1] fs:ubifs:recovery:fixup UBIFS cannot recover master
  node issue
-Date: Mon, 1 Feb 2016 07:17:27 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF66E56@NTXXIAMBX02.xacn.micron.com>
+To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Brian Norris <computersforpeace@gmail.com>
 References: <A765B125120D1346A63912DDE6D8B6310BF53F90@NTXXIAMBX02.xacn.micron.com>
  <566A9378.4070900@nod.at>
  <A765B125120D1346A63912DDE6D8B6310BF54200@NTXXIAMBX02.xacn.micron.com>
  <566F03AC.90305@nod.at>
  <A765B125120D1346A63912DDE6D8B6310BF65A47@NTXXIAMBX02.xacn.micron.com>
  <56A9E00E.1070706@nod.at>
-In-Reply-To: <56A9E00E.1070706@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ <A765B125120D1346A63912DDE6D8B6310BF66E56@NTXXIAMBX02.xacn.micron.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
+ <peterpandong@micron.com>, =?UTF-8?B?S2FybCBaaGFuZyDlvKDlj4zplKMgKGthcmx6?=
+ =?UTF-8?Q?hang=29?= <karlzhang@micron.com>,
+ =?UTF-8?B?SmFzb24gVGlhbiDnlLDmmZPlvLogKGphc29udGlhbik=?=
+ <jasontian@micron.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56AF1749.2010806@nod.at>
+Date: Mon, 1 Feb 2016 09:28:57 +0100
 MIME-Version: 1.0
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF66E56@NTXXIAMBX02.xacn.micron.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,53 +39,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksIFJpY2hhcmQNCg0KPiBGcm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgW21haWx0bzpyaWNoYXJk
-QG5vZC5hdF0NCj4gU2VudDogVGh1cnNkYXksIEphbnVhcnkgMjgsIDIwMTYgNTozMiBQTQ0KPiBU
-bzogQmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKTsgQXJ0ZW0gQml0eXV0c2tpeTsgQWRyaWFuIEh1
-bnRlcjsgQnJpYW4NCj4gTm9ycmlzDQo+IENjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9y
-ZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgQm9yaXMNCj4gQnJlemlsbG9uOyBQZXRl
-ciBQYW4gxcu2sCAocGV0ZXJwYW5kb25nKTsgS2FybCBaaGFuZyDVxcurwuAgKGthcmx6aGFuZyk7
-DQo+IEphc29uIFRpYW4gzO/P/se/IChqYXNvbnRpYW4pDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
-MS8xXSBmczp1YmlmczpyZWNvdmVyeTpmaXh1cCBVQklGUyBjYW5ub3QgcmVjb3ZlciBtYXN0ZXIN
-Cj4gbm9kZSBpc3N1ZQ0KPiANCj4gQmVhbiwNCj4gDQo+IEFtIDI4LjAxLjIwMTYgdW0gMDM6NDIg
-c2NocmllYiBCZWFuIEh1byC79LHzsfMgKGJlYW5odW8pOg0KPiA+PiBUaGlzIG5lZWRzIGEgbXVj
-aCBtb3JlIGRldGFpbGVkIGV4cGxhbmF0aW9uLg0KPiA+PiBJbiB3aGljaCBzY2VuYXJpb3Mgb24g
-U0xDIE5BTkQgY2FuIHlvdSBnZXQgc3VjaCBhbiB1bm1vdW50YWJsZSBVQklGUz8NCj4gPg0KPiA+
-DQo+ID4gSXQgaXMgbXkgbWlzdGFrZSBpbnZvbHZlZCBTTEMgTkFORC4NCj4gPiBEZWZpbml0ZWx5
-LCBTTEMgTkFORCBkb2VzIG5vdCBleGlzdCB0d28gcGFnZXMgYmVpbmcgZGFtYWdlZCB3aXRoaW4g
-b25lDQo+IGJsb2NrLg0KPiA+IEkgbWVhbiB0aGF0IG1hc3RlciBzaG91bGQgYmUgcmVjb3ZlcmVk
-IGFzIGxvbmcgYXMgb25lIGdvb2QgbWFzdGVyIGJsb2NrDQo+ID5leGlzdHMuDQo+ID4gSSB0aGlu
-aywgYXQgbGVhc3QgdGhpcyBtZXRob2QgaXMgbW9yZSByZWFzb25hYmxlLg0KPiA+IE15IHF1ZXN0
-aW9uIGlzIHRoYXQgd2h5IFVCSSBkb2Vzbid0IHJlY292ZXIgbWFzdGVyIG5vZGUgZm9yIHRoaXMg
-c2NlbmFyaW8/DQo+IA0KPiBVQklGUyBhc3N1bWVzIHRoYXQgb24gU0xDIE5BTkQgYWxyZWFkeSB3
-cml0dGVuIHBhZ2VzIG11c3Qgbm90IGNvcnJ1cHQuIEl0DQo+IGNhbiBkZWFsIHdpdGggdGhlIGZh
-Y3QgdGhhdCBwYWdlcyBjYW4gZ2V0IGRhbWFnZWQgd2hpbGUgd3JpdGluZyB0aGVtICh0aGluaw0K
-PiBvZiBhIHBvd2VyIGN1dCkuDQo+IEJ1dCBpZiBwYWdlIFggaXMgd3JpdHRlbiBhbmQgVUJJRlMg
-bW92ZXMgb3ZlciB0byBYICsgMSwgWCBtdXN0IG5ldmVyIGNvcnJ1cHQuDQo+IA0KPiBJZiB0aGlz
-IGhhcHBlbnMsIHNvbWV0aGluZyB2ZXJ5IG5hc3R5IGhhcHBlbmVkIGFuZCBVQklGUyBjYW5ub3Qg
-b3BlcmF0ZQ0KPiBjb3JyZWN0bHkuDQoNClJpZ2h0LCBmb3IgU0xDIE5BTkQsIFggd2lsbCBub3Qg
-YmUgZGFtYWdlZCwgYmVjYXVzZSBwb3dlciBsb3NzIGhhcHBlbmVkDQpXaGlsZSBwcm9ncmFtbWlu
-ZyBYICsxLg0KDQo+IFdpdGggeW91ciBwYXRjaCBpdCBtYXkgbW91bnQgc29tZWhvdyBidXQgKndp
-bGwqIGRpZSBvciBsb3NlIGRhdGEgc29vbiBvcg0KPiBsYXRlciBhcyB0aGUgc2FtZSBhc3N1bXB0
-aW9ucyBhcHBseSB0byBhbGwgb3RoZXIgVUJJRlMgb3BlcmF0aW9ucy4gSXQgaXMgbm90DQo+IGp1
-c3QgYWJvdXQgbWFzdGVyIG5vZGVzLg0KPiBNYXN0ZXIgbm9kZXMgYXJlIHRoZSBtZXNzZW5nZXIu
-DQo+DQo+IFVCSUZTJyBzdHJpY3QgY2hlY2tzIHR1cm5lZCBvdXQgdG8gYmUgdmVyeSB2YWx1YWJs
-ZSBpbiB0aGUgcGFzdCB0byBpZGVudGlmeQ0KPiBkcml2ZXIvTVREIGlzc3Vlcy4NCj4gVGhpcyBp
-cyB3aHkgSSBsaWtlIHRoZW0gc28gbXVjaC4NCg0KPiA+PiBNYXliZSBVQklGUyBpcyB0b28gc3Ry
-aWN0IGFuZCBOQU5EIGJlaGF2ZXMgZGlmZmVyZW50bHkgdGhhbiBVQklGUw0KPiA+PiBleHBlY3Rz
-IGJ1dCB3ZSBuZWVkIHRvIHVuZGVyc3RhbmQgaXQgaW4gZGVwdGguDQo+ID4gRm9yIHRoaXMsIEkg
-dGhpbmssIG1heWJlIE1MQyBOQU5EIGhhZCBub3QgYmVlbiByZWxlYXNlZCB5ZXQgd2hlbiBVQkkN
-Cj4gaW5pdGlhbCBkZXNpZ24uDQo+ID4gSSB3b3VsZCBsaWtlIHRvIHNlbmQgbXkgdmVyc2lvbiAy
-IHBhdGNoIGJhc2VkIG9uIHlvdXIgc3VnZ2VzdGlvbi4NCj4gDQo+IElmIHlvdSBjYW4gZXhwbGFp
-biBpbiBkZXRhaWwgd2h5IFVCSUZTJyBhc3N1bXB0aW9ucyBhcmUgd3JvbmcgYW5kIGhvdyBzdWNo
-DQo+IGNvcnJ1cHRpb25zIGNhbiBoYXBwZW4gb24gU0xDIHdlIGNhbiB0YWxrLg0KPiBCdXQgSSB0
-aGluayB0aGVuIHdlJ2QgaGF2ZSB0byByZWRvIGEgbG90IG9mIFVCSSBhbmQgVUJJRlMgY29kZS4N
-Cg0KSSB3aWxsIGhhY2sgbXkgcGF0Y2ggYWdhaW4sIGFuZCBkb3VibGUgY2hlY2sgdGhlc2Ugc3Ry
-aWN0IGNoZWNrcy4NCkJ1dCBJIHN0aWxsIGluc2lzdCBvbiBNYXN0ZXIgbm9kZSBzaG91bGQgYWx3
-YXlzIGJlIHJlY292ZXJlZCBieSBhbm90aGVyIGdvb2QgbWFzdGVyLA0KZXZlbiBpZiB0d28gY29y
-cnVwdGVkIHBhZ2VzIGV4aXN0IGluIG9uZSBibG9jay4gVGhpcyBpcyBtb3JlIHJlYXNvbmFibGUg
-YW5kIHJlbGlhYmxlLg0KT2YgY291cnNlLCBzbyBmYXIsIHdlIGRpZCBub3QgbWVldCB0aGlzIHNj
-ZW5hcmlvIG9uIFNMQyBOQU5ELg0KQ3VycmVudCBVQklGUyBtYXN0ZXIgbm9kZSByZWNvdmVyeSBt
-ZWNoYW5pc20gdG90YWxseSBjYW4gaGFuZGxlIHdpdGgNClBvd2VyIGxvc3Mgbm8gbWF0dGVyIE1M
-QyBvciBTTEMsIHdoeSBub3QgbGV0IFVCSUZTIG1vcmUgcmVsaWFibGU/IFR3byBtYXN0ZXIgbm9k
-ZSBibG9ja3MNCkp1c3QgZm9yIFNMQyBOQU5EPw0KPiBUaGFua3MsDQo+IC8vcmljaGFyZA0K
+Bean,
+
+Am 01.02.2016 um 08:17 schrieb Bean Huo »ô±ó±ó (beanhuo):
+>> If you can explain in detail why UBIFS' assumptions are wrong and how such
+>> corruptions can happen on SLC we can talk.
+>> But I think then we'd have to redo a lot of UBI and UBIFS code.
+> 
+> I will hack my patch again, and double check these strict checks.
+> But I still insist on Master node should always be recovered by another good master,
+> even if two corrupted pages exist in one block. This is more reasonable and reliable.
+> Of course, so far, we did not meet this scenario on SLC NAND.
+> Current UBIFS master node recovery mechanism totally can handle with
+> Power loss no matter MLC or SLC, why not let UBIFS more reliable? Two master node blocks
+> Just for SLC NAND?
+
+Of course, I'm all for improvements. But if you talk about "more reliable" you have to define
+first what the issue is.
+As I said, we have this strict checks for reasons and they did a very
+good service so far.
+I've seen a lot UBIFS corruptions where the master node was damaged but not a single time
+it was UBIFS' fault. It was always a subtle MTD driver issue.
+
+Thanks,
+//richard
