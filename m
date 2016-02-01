@@ -1,26 +1,30 @@
-Received: from mail-pf0-x22a.google.com ([2607:f8b0:400e:c00::22a])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQLPy-0000Uz-1y
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 20:49:50 +0000
-Received: by mail-pf0-x22a.google.com with SMTP id o185so84882733pfb.1
- for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 12:49:29 -0800 (PST)
-Date: Mon, 1 Feb 2016 12:49:26 -0800
+ id 1aQLdg-0005pB-3u
+ for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 21:04:00 +0000
+Received: by mail-pa0-x232.google.com with SMTP id yy13so87944907pab.3
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 13:03:38 -0800 (PST)
+Date: Mon, 1 Feb 2016 13:03:35 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org,
- bcm-kernel-feedback-list@broadcom.com, Hauke Mehrtens <hauke@hauke-m.de>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH] mtd: brcmnand: set initial ECC params based on info from
- HW
-Message-ID: <20160201204926.GL19540@google.com>
-References: <1453881500-11736-1-git-send-email-zajec5@gmail.com>
- <20160201175342.GF19540@google.com> <56AF9F58.4050103@gmail.com>
- <20160201190238.GJ19540@google.com> <56AFC102.5090000@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Cc: Rob Herring <robh@kernel.org>, linux-mtd@lists.infradead.org,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ "R, Vignesh" <vigneshr@ti.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ devicetree@vger.kernel.org
+Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+Message-ID: <20160201210335.GM19540@google.com>
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <20160113022608.GA17483@rob-hp-laptop>
+ <201601130339.17520.marex@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <56AFC102.5090000@gmail.com>
+In-Reply-To: <201601130339.17520.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,36 +34,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 01, 2016 at 12:33:06PM -0800, Florian Fainelli wrote:
-> On 01/02/16 11:02, Brian Norris wrote:
-> > On Mon, Feb 01, 2016 at 10:09:28AM -0800, Florian Fainelli wrote:
-> >> The Marvell PXA3XX NAND controller has a "marvell,nand-keep-config"
-> >> which seems to be in par with what Rafal is after here, maybe it would
-> >> be worth standardizing/mimicing that kind of property for the brcmnand
-> >> driver?
+On Wed, Jan 13, 2016 at 03:39:17AM +0100, Marek Vasut wrote:
+> On Wednesday, January 13, 2016 at 03:26:08 AM, Rob Herring wrote:
+> > On Mon, Jan 11, 2016 at 05:34:45AM +0100, Marek Vasut wrote:
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+> > > @@ -0,0 +1,56 @@
+> > > +* Cadence Quad SPI controller
+> > > +
+> > > +Required properties:
+> > > +- compatible : Should be "cdns,qspi-nor".
 > > 
-> > Maybe. Honestly, it's not that clear to me what the pxa3xx-nand binding
-> > means. But if we make that clear, that could be a possibility.
+> > Fine, but I expect to see SOCs using this block add their own compatible
+> > strings. It wouldn't surprise me that we already have some using this
+> > block.
+> > 
+> > Acked-by: Rob Herring <robh@kernel.org>
 > 
-> I would argue that if you were down the road of looking at the
-> bootloader defaults to figure out why things did not work, it's not that
-> much of a stretch to put the correct information in Device Tree, leading
-> to predictable results, so ...
+> I finally got an Ack on this, I am so happy :-)
+> 
+> As for the SoCs, there is Altera SoCFPGA Gen 5 and Gen 10 which uses this.
+> Then there is some TI SoC, but I don't know the model. Vignesh (on CC) would.
+> Then there is some ST SoC, but I have no idea what that's all about, sorry.
+> 
+> All these SoCs should be capable of tweaking the block to fit their needs
+> by just the DT properties. I believe they differ only in the FIFO depth and
+> sometimes someone is greedy and uses 4:16 CS multiplexer, which is an external
+> passive component, but that's all.
+> 
+> Would we need soc-specific compatible strings if this is the case?
 
-I wasn't suggesting trying to reintroduce any complex
-bootloader-matching logic. I think either we should stick with:
+It's nice when most things can be supported with a small set of DT
+properties, as you've done. But IUIC, I think it's usually good practice
+to define and use SoC-specific (or maybe SoC family) compatible strings
+in the docs and DTS files, in addition to the generic one, in case there
+are future quirks that need to be handled. Note that you don't actually
+have to use these in the driver yet, but it's good to have a definition.
+So you can, today, have:
 
-(a) all info (ECC step size + strength) goes in DT (as-is) or
-(b) we provide a DT option to say "keep the ECC settings configured by
-    the bootloader"
+	foo@xxxx {
+		compatible = "ti,baz-12345", "cdns,qspi-nor";
+		...
+	};
 
-If we go with (a), I'd still propose my original suggestion, if that
-helps Rafal's use case:
+And we have the option to pick up "ti,baz-12345" in the Linux driver *if
+needed.*
 
-> >>> What if we just print out the hardware defaults when we bail out due to
-> >>> missing ECC DT properties? Then developers can choose to set up their DT
-> >>> with these properties, if those are actually proven correct. Would that
-> >>> save you the hours of setup you mention?
-
-Regards,
 Brian
