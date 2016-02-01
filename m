@@ -1,16 +1,24 @@
-Message-ID: <1454336486.133285.293.camel@infradead.org>
-Subject: Re: [PATCH]jffs2:bugfix for should not appeared directory hard link
+Message-ID: <1454336914.133285.297.camel@infradead.org>
+Subject: Re: JFFS2 deadlock
 From: David Woodhouse <dwmw2@infradead.org>
-To: deng.chao1@zte.com.cn
-Cc: jiang.xuexin@zte.com.cn, linux-mtd@lists.infradead.org,
- liu.song11@zte.com.cn, cui.yunfeng@zte.com.cn
-Date: Mon, 01 Feb 2016 14:21:26 +0000
-In-Reply-To: <OF6F83B391.3EABE3CC-ON48257EEA.000ABC6F-48257EEA.0012425C@zte.com.cn>
-References: <OF2CCB8417.29770A56-ON48257EE5.0004DBEE-48257EE5.0004E5CC@LocalDomain>
- <OF6F83B391.3EABE3CC-ON48257EEA.000ABC6F-48257EEA.0012425C@zte.com.cn>
+To: Thomas.Betker@rohde-schwarz.com, computersforpeace@gmail.com
+Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>, Artem Bityutskiy
+ <dedekind1@gmail.com>, Thomas Betker <thomas.betker@freenet.de>,
+ linux-kernel@vger.kernel.org, Joakim Tjernlund
+ <Joakim.Tjernlund@infinera.com>,  "sztomi89@gmail.com"
+ <sztomi89@gmail.com>, wangzaiwei <wangzaiwei@top-vision.cn>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Alexander
+ Viro <viro@zeniv.linux.org.uk>,  Ming Liu <liu.ming50@gmail.com>,
+ linux-fsdevel@vger.kernel.org, Deng Chao <deng.chao1@zte.com.cn>
+Date: Mon, 01 Feb 2016 14:28:34 +0000
+In-Reply-To: <OF7C1394C5.2BBD0A26-ONC1257F48.002BF506-C1257F48.002D6C9C@rohde-schwarz.com>
+References: <CAKatumo13ZM2o3dK9_ouxzta-sxeiB5E236Qh5dfbnEBc9CuMw@mail.gmail.com>
+ <1453910781.20662.35.camel@infinera.com>
+ <20160128000559.GA14270@google.com>
+ <OF7C1394C5.2BBD0A26-ONC1257F48.002BF506-C1257F48.002D6C9C@rohde-schwarz.com>
 Content-Type: multipart/signed; micalg="sha-1";
  protocol="application/x-pkcs7-signature";
- boundary="=-hJxbk12uQX06kTeNNTXz"
+ boundary="=-ipUDn6a8buH5NGFubErP"
 Mime-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,284 +30,109 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-hJxbk12uQX06kTeNNTXz
+--=-ipUDn6a8buH5NGFubErP
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2015-10-26 at 11:19 +0800, deng.chao1@zte.com.cn wrote:
-> I have recently found a bug in this patch.
-> When we mount jffs2 file system, call function
-> jffs2_build_filesystem->jffs2_build_inode_pass1.
-...
-> In this function, when jffs2_get_ino_cache can't find child_ic for
-> child fd and return NULL, the processing loop will continue and leave
-> this child's fd->ic remains as fd->raw because they are union in
-> struct jffs2_full_dirent:
+On Thu, 2016-01-28 at 09:16 +0100, Thomas.Betker@rohde-schwarz.com wrote:
+>=20
+> Subject: [PATCH] Revert "jffs2: Fix lock acquisition order bug in=C2=A0
+> jffs2_write_begin"
+> http://article.gmane.org/gmane.linux.drivers.mtd/62951
+>=20
+> This is a patch revising my original patch, which I sent to linux-mtd on=
+=C2=A0
+> 10-Nov-2015. I didn't see a response yet, but it's one of the outstanding=
+=C2=A0
+> patches above.
 
-> Then following code in jffs2_build_filesystem:
-> static int jffs2_build_filesystem(struct jffs2_sb_info *c)
-> {
-> 	...
-> 	/* Finally, we can scan again and free the dirent structs */
-> 	for_each_inode(i, c, ic) {
-> 		while(ic->scan_dents) {
-> 			fd =3D ic->scan_dents;
-> 			ic->scan_dents =3D fd->next;
-> 			/* We do use the pino_nlink field to count nlink of
-> 			* directories during fs build, so set it to the
-> 			* parent ino# now. Now that there's hopefully only
-> 			* one. */
-> 			if (fd->type =3D=3D DT_DIR) {
-> 				if (dir_hardlinks && fd->ic->pino_nlink) {
-> 					JFFS2_ERROR("child dir \"%s\" (ino #%u) of dir ino #%u is also hard =
-linked from dir ino #%u\n",
-> 								=C2=A0=C2=A0=C2=A0=C2=A0fd->name, fd->ino, ic->ino, fd->ic->pino_=
-nlink);
-> 					/* Should we unlink it from its previous parent? */
-> 				}
-> 				fd->ic->pino_nlink =3D ic->ino;
-> 			}
-> 			jffs2_free_full_dirent(fd);
-> 		}
-> 		ic->scan_dents =3D NULL;
-> 		cond_resched();
-> 	}
-> 	...
-> }
-> The code here "fd->ic->pino_nlink =3D ic->ino;" will access wrong
-> pointer when fd->ic remains as fd->raw.
-> To solve this problem, we can let fd->ic and fd->raw do not share the
-> union, and make a mark by setting fd->ic=3D0 when jffs2_get_ino_cache
-> can't find child_ic for child fd in function jffs2_build_inode_pass1,
-> so that we can only do "fd->ic->pino_nlink =3D ic->ino" when fd->ic!=3D0.
+That looks necessary but not sufficient. I think we need this
+(untested) patch on top of it, to ensure that we *always* take the page
+lock before f->sem?
 
-Alternatively, we *do* continue to save memory by having that union,
-and we just ensure that we *do* clear fd->ic in the case where
-jffs2_get_ino_cache() fails. Then cope with it being NULL. New patch
-below.
-
-> And I have a question, what situation will cause jffs2_get_ino_cache
-> can't find child_ic for child fd in jffs2_build_inode_pass1? This
-> really happens.
-> I have thought it over, and not figure it out ;(
-
-It can happen if the parent directory has an entry indicating a child
-(either file or directory) which does't actually exist =E2=80=94 there are =
-no
-physical nodes on the medium which belong to that child inode.
-
-I suspect that this should only ever happen when the parent directory
-itself has been deleted but not yet completely obsoleted from the
-flash. Which is precisely the situation you originally described, isn't
-it?
+Please could you try what's in the tree at
+http://git.infradead.org/users/dwmw2/jffs2-fixes.git
 
 ----
 From: David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH] Fix directory hardlinks from deleted directories
+Subject: [PATCH] jffs2: Fix page lock / f->sem deadlock
 
-When a directory is deleted, we don't take too much care about killing off
-all the dirents that belong to it =E2=80=94 on the basis that on remount, t=
-he scan
-will conclude that the directory is dead anyway.
+With this fix, all code paths should now be obtaining the page lock before
+f->sem.
 
-This doesn't work though, when the deleted directory contained a child
-directory which was moved *out*. In the early stages of the fs build
-we can then end up with an apparent hard link, with the child directory
-appearing both in its true location, and as a child of the original
-directory which are this stage of the mount process we don't *yet* know
-is defunct.
-
-To resolve this, take out the early special-casing of the "directories
-shall not have hard links" rule in jffs2_build_inode_pass1(), and let the
-normal nlink processing happen for directories as well as other inodes.
-
-Then later in the build process we can set ic->pino_nlink to the parent
-inode#, as is required for directories during normal operaton, instead
-of the nlink. And complain only *then* about hard links which are still
-in evidence even after killing off all the unreachable paths.
-
-Reported-by: Liu Song <liu.song11@zte.com.cn>
+Reported-by: Szab=C3=B3 Tam=C3=A1s <sztomi89@gmail.com>
+Reported-by: Thomas Betker <thomas.betker@rohde-schwarz.com>
 Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+Cc: stable@vger.kernel.org
 ---
-=C2=A0fs/jffs2/build.c=C2=A0=C2=A0=C2=A0=C2=A0| 75 ++++++++++++++++++++++++=
-++++++++++++++++-------------
-=C2=A0fs/jffs2/nodelist.h |=C2=A0=C2=A06 ++++-
-=C2=A02 files changed, 62 insertions(+), 19 deletions(-)
+=C2=A0fs/jffs2/README.Locking |=C2=A0=C2=A05 +----
+=C2=A0fs/jffs2/gc.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0| 17 ++++++++++-------
+=C2=A02 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/fs/jffs2/build.c b/fs/jffs2/build.c
-index a3750f9..c1f0494 100644
---- a/fs/jffs2/build.c
-+++ b/fs/jffs2/build.c
-@@ -49,7 +49,8 @@ next_inode(int *i, struct jffs2_inode_cache *ic, struct j=
-ffs2_sb_info *c)
+diff --git a/fs/jffs2/README.Locking b/fs/jffs2/README.Locking
+index 3ea3655..8918ac9 100644
+--- a/fs/jffs2/README.Locking
++++ b/fs/jffs2/README.Locking
+@@ -2,10 +2,6 @@
+=C2=A0	JFFS2 LOCKING DOCUMENTATION
+=C2=A0	---------------------------
 =C2=A0
-=C2=A0
-=C2=A0static void jffs2_build_inode_pass1(struct jffs2_sb_info *c,
--				=C2=A0=C2=A0=C2=A0=C2=A0struct jffs2_inode_cache *ic)
-+				=C2=A0=C2=A0=C2=A0=C2=A0struct jffs2_inode_cache *ic,
-+				=C2=A0=C2=A0=C2=A0=C2=A0int *dir_hardlinks)
-=C2=A0{
-=C2=A0	struct jffs2_full_dirent *fd;
-=C2=A0
-@@ -68,19 +69,21 @@ static void jffs2_build_inode_pass1(struct jffs2_sb_inf=
-o *c,
-=C2=A0			dbg_fsbuild("child \"%s\" (ino #%u) of dir ino #%u doesn't exist!\=
-n",
-=C2=A0				=C2=A0=C2=A0fd->name, fd->ino, ic->ino);
-=C2=A0			jffs2_mark_node_obsolete(c, fd->raw);
-+			/* Clear the ic/raw union so it doesn't cause problems later. */
-+			fd->ic =3D NULL;
-=C2=A0			continue;
-=C2=A0		}
-=C2=A0
-+		/* From this point, fd->raw is no longer used so we can set fd->ic */
-+		fd->ic =3D child_ic;
-+		child_ic->pino_nlink++;
-+		/* If we appear (at this stage) to have hard-linked directories,
-+		=C2=A0* set a flag to trigger a scan later */
-=C2=A0		if (fd->type =3D=3D DT_DIR) {
--			if (child_ic->pino_nlink) {
--				JFFS2_ERROR("child dir \"%s\" (ino #%u) of dir ino #%u appears to be a=
- hard link\n",
--					=C2=A0=C2=A0=C2=A0=C2=A0fd->name, fd->ino, ic->ino);
--				/* TODO: What do we do about it? */
--			} else {
--				child_ic->pino_nlink =3D ic->ino;
--			}
--		} else
--			child_ic->pino_nlink++;
-+			child_ic->flags |=3D INO_FLAGS_IS_DIR;
-+			if (child_ic->pino_nlink > 1)
-+				*dir_hardlinks =3D 1;
-+		}
-=C2=A0
-=C2=A0		dbg_fsbuild("increased nlink for child \"%s\" (ino #%u)\n", fd->nam=
-e, fd->ino);
-=C2=A0		/* Can't free scan_dents so far. We might need them in pass 2 */
-@@ -94,8 +97,7 @@ static void jffs2_build_inode_pass1(struct jffs2_sb_info =
-*c,
-=C2=A0*/
-=C2=A0static int jffs2_build_filesystem(struct jffs2_sb_info *c)
-=C2=A0{
--	int ret;
--	int i;
-+	int ret, i, dir_hardlinks =3D 0;
-=C2=A0	struct jffs2_inode_cache *ic;
-=C2=A0	struct jffs2_full_dirent *fd;
-=C2=A0	struct jffs2_full_dirent *dead_fds =3D NULL;
-@@ -119,7 +121,7 @@ static int jffs2_build_filesystem(struct jffs2_sb_info =
-*c)
-=C2=A0	/* Now scan the directory tree, increasing nlink according to every =
-dirent found. */
-=C2=A0	for_each_inode(i, c, ic) {
-=C2=A0		if (ic->scan_dents) {
--			jffs2_build_inode_pass1(c, ic);
-+			jffs2_build_inode_pass1(c, ic, &dir_hardlinks);
-=C2=A0			cond_resched();
-=C2=A0		}
-=C2=A0	}
-@@ -155,6 +157,20 @@ static int jffs2_build_filesystem(struct jffs2_sb_info=
- *c)
-=C2=A0	}
-=C2=A0
-=C2=A0	dbg_fsbuild("pass 2a complete\n");
-+
-+	if (dir_hardlinks) {
-+		/* If we detected directory hardlinks earlier, *hopefully*
-+		=C2=A0* they are gone now because some of the links were from
-+		=C2=A0* dead directories which still had some old dirents lying
-+		=C2=A0* around and not yet garbage-collected, but which have
-+		=C2=A0* been discarded above. So clear the pino_nlink field
-+		=C2=A0* in each directory, so that the final scan below can
-+		=C2=A0* print appropriate warnings. */
-+		for_each_inode(i, c, ic) {
-+			if (ic->flags & INO_FLAGS_IS_DIR)
-+				ic->pino_nlink =3D 0;
-+		}
-+	}
-=C2=A0	dbg_fsbuild("freeing temporary data structures\n");
-=C2=A0
-=C2=A0	/* Finally, we can scan again and free the dirent structs */
-@@ -162,6 +178,33 @@ static int jffs2_build_filesystem(struct jffs2_sb_info=
- *c)
-=C2=A0		while(ic->scan_dents) {
-=C2=A0			fd =3D ic->scan_dents;
-=C2=A0			ic->scan_dents =3D fd->next;
-+			/* We do use the pino_nlink field to count nlink of
-+			=C2=A0* directories during fs build, so set it to the
-+			=C2=A0* parent ino# now. Now that there's hopefully only
-+			=C2=A0* one. */
-+			if (fd->type =3D=3D DT_DIR) {
-+				if (!fd->ic) {
-+					/* We'll have complained about it and marked the coresponding
-+					=C2=A0=C2=A0=C2=A0raw node obsolete already. Just skip it. */
-+					continue;
-+				}
-+
-+				/* We *have* to have set this in jffs2_build_inode_pass1() */
-+				BUG_ON(!(fd->ic->flags & INO_FLAGS_IS_DIR));
-+
-+				/* We clear ic->pino_nlink =E2=88=80 directories' ic *only* if dir_har=
-dlinks
-+				=C2=A0* is set. Otherwise, we know this should never trigger anyway, s=
-o
-+				=C2=A0* we don't do the check. And ic->pino_nlink still contains the n=
-link
-+				=C2=A0* value (which is 1). */
-+				if (dir_hardlinks && fd->ic->pino_nlink) {
-+					JFFS2_ERROR("child dir \"%s\" (ino #%u) of dir ino #%u is also hard l=
-inked from dir ino #%u\n",
-+						=C2=A0=C2=A0=C2=A0=C2=A0fd->name, fd->ino, ic->ino, fd->ic->pino_nli=
-nk);
-+					/* Should we unlink it from its previous parent? */
-+				}
-+
-+				/* For directories, ic->pino_nlink holds that parent inode # */
-+				fd->ic->pino_nlink =3D ic->ino;
-+			}
-=C2=A0			jffs2_free_full_dirent(fd);
-=C2=A0		}
-=C2=A0		ic->scan_dents =3D NULL;
-@@ -240,11 +283,7 @@ static void jffs2_build_remove_unlinked_inode(struct j=
-ffs2_sb_info *c,
-=C2=A0
-=C2=A0			/* Reduce nlink of the child. If it's now zero, stick it on the
-=C2=A0			=C2=A0=C2=A0=C2=A0dead_fds list to be cleaned up later. Else just =
-free the fd */
+-At least theoretically, JFFS2 does not require the Big Kernel Lock
+-(BKL), which was always helpfully obtained for it by Linux 2.4 VFS
+-code. It has its own locking, as described below.
 -
--			if (fd->type =3D=3D DT_DIR)
--				child_ic->pino_nlink =3D 0;
--			else
--				child_ic->pino_nlink--;
-+			child_ic->pino_nlink--;
+=C2=A0This document attempts to describe the existing locking rules for
+=C2=A0JFFS2. It is not expected to remain perfectly up to date, but ought t=
+o
+=C2=A0be fairly close.
+@@ -69,6 +65,7 @@ Ordering constraints:
+=C2=A0	=C2=A0=C2=A0=C2=A0any f->sem held.
+=C2=A0	2. Never attempt to lock two file mutexes in one thread.
+=C2=A0	=C2=A0=C2=A0=C2=A0No ordering rules have been made for doing so.
++	3. Never lock a page cache page with f->sem held.
 =C2=A0
-=C2=A0			if (!child_ic->pino_nlink) {
-=C2=A0				dbg_fsbuild("inode #%u (\"%s\") now has no links; adding to dead_=
-fds list.\n",
-diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
-index fa35ff7..0637271 100644
---- a/fs/jffs2/nodelist.h
-+++ b/fs/jffs2/nodelist.h
-@@ -194,6 +194,7 @@ struct jffs2_inode_cache {
-=C2=A0#define INO_STATE_CLEARING	6	/* In clear_inode() */
 =C2=A0
-=C2=A0#define INO_FLAGS_XATTR_CHECKED	0x01	/* has no duplicate xattr_ref */
-+#define INO_FLAGS_IS_DIR	0x02	/* is a directory */
+=C2=A0	erase_completion_lock spinlock
+diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+index 6fb0802..5919fef 100644
+--- a/fs/jffs2/gc.c
++++ b/fs/jffs2/gc.c
+@@ -1316,14 +1316,17 @@ static int jffs2_garbage_collect_dnode(struct jffs2=
+_sb_info *c, struct jffs2_era
+=C2=A0		BUG_ON(start > orig_start);
+=C2=A0	}
 =C2=A0
-=C2=A0#define RAWNODE_CLASS_INODE_CACHE	0
-=C2=A0#define RAWNODE_CLASS_XATTR_DATUM	1
-@@ -249,7 +250,10 @@ struct jffs2_readinode_info
+-	/* First, use readpage() to read the appropriate page into the page cache=
+ */
+-	/* Q: What happens if we actually try to GC the _same_ page for which com=
+mit_write()
+-	=C2=A0*=C2=A0=C2=A0=C2=A0=C2=A0triggered garbage collection in the first =
+place?
+-	=C2=A0* A: I _think_ it's OK. read_cache_page shouldn't deadlock, we'll w=
+rite out the
+-	=C2=A0*=C2=A0=C2=A0=C2=A0=C2=A0page OK. We'll actually write it out again=
+ in commit_write, which is a little
+-	=C2=A0*=C2=A0=C2=A0=C2=A0=C2=A0suboptimal, but at least we're correct.
+-	=C2=A0*/
++	/* The rules state that we must obtain the page lock *before* f->sem, so
++	=C2=A0* drop f->sem temporarily. Since we also hold c->alloc_sem, nothing=
+'s
++	=C2=A0* actually going to *change* so we're safe; we only allow reading.
++	=C2=A0*
++	=C2=A0* It is important to note that jffs2_write_begin() will ensure that=
+ its
++	=C2=A0* page is marked Uptodate before allocating space. That means that =
+if we
++	=C2=A0* end up here trying to GC the *same* page that jffs2_write_begin()=
+ is
++	=C2=A0* trying to write out, read_cache_page() will not deadlock. */
++	mutex_unlock(&f->sem);
+=C2=A0	pg_ptr =3D jffs2_gc_fetch_page(c, f, start, &pg);
++	mutex_lock(&f->sem);
 =C2=A0
-=C2=A0struct jffs2_full_dirent
-=C2=A0{
--	struct jffs2_raw_node_ref *raw;
-+	union {
-+		struct jffs2_raw_node_ref *raw;
-+		struct jffs2_inode_cache *ic; /* Just during part of build */
-+	};
-=C2=A0	struct jffs2_full_dirent *next;
-=C2=A0	uint32_t version;
-=C2=A0	uint32_t ino; /* =3D=3D zero for unlink */
+=C2=A0	if (IS_ERR(pg_ptr)) {
+=C2=A0		pr_warn("read_cache_page() returned error: %ld\n",
 --=C2=A0
 2.5.0
 
@@ -308,7 +141,7 @@ David Woodhouse                            Open Source Technology Centre
 David.Woodhouse@intel.com                              Intel Corporation
 
 
---=-hJxbk12uQX06kTeNNTXz
+--=-ipUDn6a8buH5NGFubErP
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -401,18 +234,18 @@ Qy7VFBkoLINszBrOUeIxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0
 YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcx
 ODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENB
 AgMN7zcwCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMTYwMjAxMTQyMTI2WjAjBgkqhkiG9w0BCQQxFgQUEeAUnrqUgzWNvk9EBaCKEH1me7Iw
+CQUxDxcNMTYwMjAxMTQyODM0WjAjBgkqhkiG9w0BCQQxFgQU4+3D1EYAgya2GDAkfSNxWVqPdYow
 gaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0
 ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMT
 L1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMN7zcwgacG
 CyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRk
 LjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
 U3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAw3vNzANBgkq
-hkiG9w0BAQEFAASCAQAmS1Uvq+eLI/6SKNQxhPTuEz9RBhBQShxsst2vB2UVuRI2GA2xny0BTIa2
-czNRZiXDThbRJiM0INY3GRHGxz8jVBXaM7faOo/aiMXnLyxv0p6L0ygeIPQiK7ltddtOnupeCoux
-7PKhzZRaCv46jFvEEBkYH+QUJfORh9pD+HH9F7hQzIiPO4js0fV4I4uJCw7ohvfHHmqrBDNKLFQw
-V49V+Y8IUOi1xIMdqfvySkBEYJvJfI+LcxzGwIxcoullGNRCRe2kfuFJ4gIB1OQyyZ8k/ps7+pGx
-zOIBDN4/6mL0/1ePupz0VpS3i+ER0I/51AnBdvLkcjZqCFj+n9h85/a1AAAAAAAA
+hkiG9w0BAQEFAASCAQBlpgiWboUV7AtWGltd3vwV2CL6pNJt4JFVu8Tsqk7Ft9g67dzJnOmdCc/9
+5FMhe4sVMvnfsZBC3b4a/MUOc2/S03P0Q5CgvlGZbczY0/cXfQATO421d84UGmT0O3SF0EEq+qk4
+m7+Tm3c/xzgpnKZBtaWnFHI6uuUFuavLmd5hdbcsA8JK+QpkfnpGNB4RTDPpT0Oioxagw/8dZKUE
+PaIJ7lVtEJ5zzW72UJVFz9FWVufJGZx6/GShBxrXPN8W9gMZlMzd9iQHI49LB6v4LUL+UuOHIkpH
+V77sRon2pbqZetT/R1Oa9ybNeGr0fUhDj577tJdHSsT+k9Eh2BRKDE6ZAAAAAAAA
 
 
---=-hJxbk12uQX06kTeNNTXz--
+--=-ipUDn6a8buH5NGFubErP--
