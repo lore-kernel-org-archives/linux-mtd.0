@@ -1,21 +1,26 @@
-Received: from mail-pf0-x229.google.com ([2607:f8b0:400e:c00::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQJU2-0005So-Ma
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 18:45:56 +0000
-Received: by mail-pf0-x229.google.com with SMTP id n128so87526030pfn.3
- for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 10:45:34 -0800 (PST)
-Date: Mon, 1 Feb 2016 10:45:31 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Raghav Dogra <raghav@freescale.com>
-Cc: linux-mtd@lists.infradead.org, scottwood@freescale.com,
- prabhakar@freescale.com
-Subject: Re: [PATCH 1/3] driver/memory: Removal of deprecated NO_IRQ
-Message-ID: <20160201184531.GI19540@google.com>
-References: <1450262491-5135-1-git-send-email-raghav@freescale.com>
+In-Reply-To: <1454336914.133285.297.camel@infradead.org>
+References: <CAKatumo13ZM2o3dK9_ouxzta-sxeiB5E236Qh5dfbnEBc9CuMw@mail.gmail.com>	
+ <1453910781.20662.35.camel@infinera.com>
+ <20160128000559.GA14270@google.com>	
+ <OF7C1394C5.2BBD0A26-ONC1257F48.002BF506-C1257F48.002D6C9C@rohde-schwarz.com>
+ <1454336914.133285.297.camel@infradead.org>
+To: dwmw2@infradead.org
+Cc: computersforpeace@gmail.com, Artem Bityutskiy <dedekind1@gmail.com>,
+ Deng Chao <deng.chao1@zte.com.cn>,
+ Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-mtd <linux-mtd-bounces@lists.infradead.org>,
+ Ming Liu <liu.ming50@gmail.com>, "sztomi89@gmail.com" <sztomi89@gmail.com>,
+ Thomas Betker <thomas.betker@freenet.de>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ wangzaiwei <wangzaiwei@top-vision.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1450262491-5135-1-git-send-email-raghav@freescale.com>
+Subject: Re: JFFS2 deadlock
+From: Thomas.Betker@rohde-schwarz.com
+Message-ID: <OF2969B332.8B296F0B-ONC1257F4C.006307EB-C1257F4C.0067DE60@rohde-schwarz.com>
+Date: Mon, 1 Feb 2016 19:54:29 +0100
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +30,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 16, 2015 at 04:11:31PM +0530, Raghav Dogra wrote:
-> Replacing the NO_IRQ macro with 0. If there is no interrupt,
-> returned value will be 0 regardless of what NO_IRQ is defined.
-> 
-> Signed-off-by: Raghav Dogra <raghav@freescale.com>
-> ---
->  drivers/memory/fsl_ifc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-> index e87459f..8436c59 100644
-> --- a/drivers/memory/fsl_ifc.c
-> +++ b/drivers/memory/fsl_ifc.c
-> @@ -259,7 +259,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
->  
->  	/* get the Controller level irq */
->  	fsl_ifc_ctrl_dev->irq = irq_of_parse_and_map(dev->dev.of_node, 0);
-> -	if (fsl_ifc_ctrl_dev->irq == NO_IRQ) {
-> +	if (fsl_ifc_ctrl_dev->irq == 0) {
->  		dev_err(&dev->dev, "failed to get irq resource "
->  							"for IFC\n");
->  		ret = -ENODEV;
+Hello David:
 
-Applied this one to l2-mtd.git, as it seems obvious.
+> > Subject: [PATCH] Revert "jffs2: Fix lock acquisition order bug in 
+> > jffs2_write_begin"
+> > http://article.gmane.org/gmane.linux.drivers.mtd/62951
+> > 
+> > This is a patch revising my original patch, which I sent to linux-mtd 
+on 
+> > 10-Nov-2015. I didn't see a response yet, but it's one of the 
+outstanding 
+> > patches above.
+> 
+> That looks necessary but not sufficient. I think we need this
+> (untested) patch on top of it, to ensure that we *always* take the page
+> lock before f->sem?
+> 
+> Please could you try what's in the tree at
+> http://git.infradead.org/users/dwmw2/jffs2-fixes.git
+
+I have been using a variant of Deng Chao's patch here for a long time, so 
+that one has been tested quite a bit: 
+http://lists.infradead.org/pipermail/linux-mtd/2013-August/048352.html. 
+The problem with that patch was that it modified mm/filemap.c and 
+include/linux/pagemap.h, which we were not too happy about.
+
+Your patch looks much simpler, and I will definitely test it. It may take 
+a few days, though, as I have to unearth the test scripts, and find a time 
+slot for testing.
+
+Best regards,
+Thomas Betker
