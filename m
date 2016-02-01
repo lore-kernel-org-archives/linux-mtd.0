@@ -1,24 +1,24 @@
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
- helo=smtp.smtpout.orange.fr)
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQKJw-00048m-Es
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 19:39:33 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx_nand: add register access debug
-References: <1453753785-9635-1-git-send-email-robert.jarzmik@free.fr>
- <20160129144707.GB1437@laptop.cereza>
- <20160201180003.GG19540@google.com>
-Date: Mon, 01 Feb 2016 20:39:03 +0100
-In-Reply-To: <20160201180003.GG19540@google.com> (Brian Norris's message of
- "Mon, 1 Feb 2016 10:00:03 -0800")
-Message-ID: <87y4b45ig8.fsf@belgarion.home>
+ id 1aQKMR-0006fh-IP
+ for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 19:42:08 +0000
+Received: by mail-wm0-x242.google.com with SMTP id l66so10585706wml.2
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 11:41:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+Sender: pku.leo@gmail.com
+In-Reply-To: <1454323598-5149-3-git-send-email-raghav@freescale.com>
+References: <1454323598-5149-1-git-send-email-raghav@freescale.com>
+ <1454323598-5149-3-git-send-email-raghav@freescale.com>
+Date: Mon, 1 Feb 2016 13:41:45 -0600
+Message-ID: <CADRPPNThvUNOtN=2PErWVfhKz_xqBmps+HyL8GTo8+D_-eKX4Q@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd/ifc: Segregate IFC fcm and runtime registers
+From: Li Yang <leoli@freescale.com>
+To: Raghav Dogra <raghav@freescale.com>
+Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, oss@buserror.net,
+ prabhakar.kushwaha@nxp.com, Jaiprakash Singh <b44839@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris <computersforpeace@gmail.com> writes:
+On Mon, Feb 1, 2016 at 4:46 AM, Raghav Dogra <raghav@freescale.com> wrote:
 
-> Seems reasonable. I made that change myself, and applied it to
-> l2-mtd.git.
+A general comment is that you should include the linux-mtd mailing
+list and it's maintainers for this set of patches.  Although the
+MAINTAINERS file doesn't specify a maintainer for drivers/memory
+directory, it should be most related to linux-mtd, IMO.
+
+> IFC has two set of registers viz FCM (Flash control machine)
+> aka global and run time registers. These set are defined in two
+> memory map PAGES. Upto IFC 1.4 PAGE size is 4 KB and from IFC2.0
+> PAGE size is 64KB
+
+So I guess this patch is the critical change to make the fsl_ifc
+driver work with the version 2.0 hardware block?  If so, it will be
+better to mention this in the patch title.
+
 >
->> But if you feel it's just bikeshedding then:
->
-> Maybe :)
-It's all right, that's perfectly fine by me, thanks for the inline change.
+> Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
+> Signed-off-by: Raghav Dogra <raghav@freescale.com>
+> ---
+>  drivers/memory/fsl_ifc.c        | 251 +++++++++++++++++++++-------------------
+>  drivers/mtd/nand/fsl_ifc_nand.c |  72 ++++++------
+>  include/linux/fsl_ifc.h         |  48 +++++---
+>  3 files changed, 203 insertions(+), 168 deletions(-)
 
-Cheers.
-
--- 
-Robert
+Regards,
+Leo
