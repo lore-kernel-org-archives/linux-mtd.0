@@ -1,21 +1,23 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQBh4-0003sQ-It
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 10:26:58 +0000
-Received: by mail-wm0-x243.google.com with SMTP id r129so8391026wmr.0
- for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 02:26:30 -0800 (PST)
-From: Romain Izard <romain.izard.pro@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org
-Cc: Josh Wu <rainyfeeling@outlook.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Yang Wenyou <Wenyou.Yang@atmel.com>,
- Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v3 4/5] mtd: atmel_nand: Support 32-bit ECC strength
-Date: Mon,  1 Feb 2016 11:25:59 +0100
-Message-Id: <1454322360-8666-5-git-send-email-romain.izard.pro@gmail.com>
-In-Reply-To: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
-References: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
+From: Yunhui Cui <yunhui.cui@nxp.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Yunhui Cui
+ <B56489@freescale.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "han.xu@freescale.com" <han.xu@freescale.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>
+Subject: RE: [PATCH 3/3] mtd:spi-nor:fsl-quadspi:Add fast-read mode support
+Date: Mon, 1 Feb 2016 11:23:16 +0000
+Message-ID: <AM3PR04MB14416F884013EEE1E889AEB994DE0@AM3PR04MB1441.eurprd04.prod.outlook.com>
+References: <1454067669-35274-1-git-send-email-B56489@freescale.com>
+ <1454067669-35274-4-git-send-email-B56489@freescale.com>
+ <56AB7C6E.2050300@atmel.com>
+In-Reply-To: <56AB7C6E.2050300@atmel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,108 +27,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As the SAMA5D2 controller supports the 32-bit ECC strength, accept it
-as a valid setting when required by the device tree or the NAND
-parameter page.
+Hi Cyrille,
 
-Then configure the controller to use this new setting.
+Thanks for your suggestions very much, I'll resend version 2 patch set.
 
-For the binding:
-Acked-by: Rob Herring <robh@kernel.org>
+Best Regards
+Yunhui
 
-Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
----
-v3: No change
-v2: Split message rewording and binding rewording into their own patches
+-----Original Message-----
+From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]=20
+Sent: Friday, January 29, 2016 10:51 PM
+To: Yunhui Cui; dwmw2@infradead.org; computersforpeace@gmail.com; han.xu@fr=
+eescale.com
+Cc: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; linux-arm-=
+kernel@lists.infradead.org; Yao Yuan
+Subject: Re: [PATCH 3/3] mtd:spi-nor:fsl-quadspi:Add fast-read mode support
 
- Documentation/devicetree/bindings/mtd/atmel-nand.txt |  3 ++-
- drivers/mtd/nand/atmel_nand.c                        | 19 +++++++++++++++++--
- drivers/mtd/nand/atmel_nand_ecc.h                    |  1 +
- 3 files changed, 20 insertions(+), 3 deletions(-)
+Hi Yunhui,
 
-diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-index e1887b7d7e53..d53aba98fbc9 100644
---- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-@@ -27,7 +27,8 @@ Optional properties:
- - atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware,
-   capable of BCH encoding and decoding, on devices where it is present.
- - atmel,pmecc-cap : error correct capability for Programmable Multibit ECC
--  Controller. Supported values are: 2, 4, 8, 12, 24.
-+  Controller. Supported values are: 2, 4, 8, 12, 24. If the compatible string
-+  is "atmel,sama5d2-nand", 32 is also valid.
- - atmel,pmecc-sector-size : sector size for ECC computation. Supported values
-   are: 512, 1024.
- - atmel,pmecc-lookup-table-offset : includes two offsets of lookup table in ROM
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 00fa71045805..aaad1b98dd0d 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -475,6 +475,7 @@ static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-  *                8-bits                13-bytes                 14-bytes
-  *               12-bits                20-bytes                 21-bytes
-  *               24-bits                39-bytes                 42-bytes
-+ *               32-bits                52-bytes                 56-bytes
-  */
- static int pmecc_get_ecc_bytes(int cap, int sector_size)
+Le 29/01/2016 12:41, Yunhui Cui a =E9crit :
+> The qspi driver add generic fast-read mode for different flash=20
+> venders, including Micron family. Also add some special operations for=20
+> Micron flash read/write in spi-nor.c.
+>=20
+> Signed-off-by: Yunhui Cui <B56489@freescale.com>
+> ---
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 27 +++++++++++++++++++++------
+>  drivers/mtd/spi-nor/spi-nor.c     |  6 +++++-
+>  2 files changed, 26 insertions(+), 7 deletions(-)
+>=20
+[...]
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c=20
+> b/drivers/mtd/spi-nor/spi-nor.c index ed0c19c..79a025c 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -763,7 +763,8 @@ static const struct flash_info spi_nor_ids[] =3D {
+>  	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_Q=
+UAD_READ) },
+>  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_Q=
+UAD_READ) },
+>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) =
+},
+> -	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) =
+},
+> +	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_FAST |
+> +			SPI_NOR_QUAD_READ) },
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_Q=
+UAD_READ) },
+>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR |=
+ SPI_NOR_QUAD_READ) },
+>  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K |=20
+> USE_FSR | SPI_NOR_QUAD_READ) },
+This modification looks wrong.
+
+First SPI_NOR_FAST is part of enum read_mode (from spi-nor.h) and is not in=
+tended to be used as a flag, unlike SPI_NOR_QUAD_READ (defined in spi-nor.c=
+ just below the flags field of struct flash_info).
+
+Also, creating a new flag to choose between the Read and the Fast Read comm=
+ands is not needed: see my last comment below.
+
+
+> @@ -1233,6 +1234,7 @@ int spi_nor_scan(struct spi_nor *nor, const char=20
+> *name, enum read_mode mode)
+> =20
+>  	if (JEDEC_MFR(info) =3D=3D SNOR_MFR_ATMEL ||
+>  	    JEDEC_MFR(info) =3D=3D SNOR_MFR_INTEL ||
+> +	    JEDEC_MFR(info) =3D=3D SNOR_MFR_MICRON ||
+>  	    JEDEC_MFR(info) =3D=3D SNOR_MFR_SST) {
+>  		write_enable(nor);
+>  		write_sr(nor, 0);
+This update is not related with the support of fast-read mode, it deals wit=
+h the write protection. Hence it should be moved into a dedicated patch.
+
+Also be careful as some bits of the Status Register are non-volatile on Mic=
+ron memories. This modification may change their values but I guess you onl=
+y want to clear the write enable/disable (7) bit.
+
+
+> @@ -1317,6 +1319,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *n=
+ame, enum read_mode mode)
+>  		nor->flash_read =3D SPI_NOR_QUAD;
+>  	} else if (mode =3D=3D SPI_NOR_DUAL && info->flags & SPI_NOR_DUAL_READ)=
  {
-@@ -1024,6 +1025,9 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
- 	case 24:
- 		val = PMECC_CFG_BCH_ERR24;
- 		break;
-+	case 32:
-+		val = PMECC_CFG_BCH_ERR32;
-+		break;
- 	}
- 
- 	if (host->pmecc_sector_size == 512)
-@@ -1085,6 +1089,9 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
- 
- 	/* If device tree doesn't specify, use NAND's minimum ECC parameters */
- 	if (host->pmecc_corr_cap == 0) {
-+		if (*cap > host->caps->pmecc_max_correction)
-+			return -EINVAL;
-+
- 		/* use the most fitable ecc bits (the near bigger one ) */
- 		if (*cap <= 2)
- 			host->pmecc_corr_cap = 2;
-@@ -1096,6 +1103,8 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
- 			host->pmecc_corr_cap = 12;
- 		else if (*cap <= 24)
- 			host->pmecc_corr_cap = 24;
-+		else if (*cap <= 32)
-+			host->pmecc_corr_cap = 32;
- 		else
- 			return -EINVAL;
- 	}
-@@ -1554,8 +1563,14 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
- 	 * them from NAND ONFI parameters.
- 	 */
- 	if (of_property_read_u32(np, "atmel,pmecc-cap", &val) == 0) {
--		if ((val != 2) && (val != 4) && (val != 8) && (val != 12) &&
--				(val != 24)) {
-+		if (val > host->caps->pmecc_max_correction) {
-+			dev_err(host->dev,
-+				"Required ECC strength too high: %u max %u\n",
-+				val, host->caps->pmecc_max_correction);
-+			return -EINVAL;
-+		}
-+		if ((val != 2)  && (val != 4)  && (val != 8) &&
-+		    (val != 12) && (val != 24) && (val != 32)) {
- 			dev_err(host->dev,
- 				"Required ECC strength not supported: %u\n",
- 				val);
-diff --git a/drivers/mtd/nand/atmel_nand_ecc.h b/drivers/mtd/nand/atmel_nand_ecc.h
-index ec964c43c932..834d694487bd 100644
---- a/drivers/mtd/nand/atmel_nand_ecc.h
-+++ b/drivers/mtd/nand/atmel_nand_ecc.h
-@@ -43,6 +43,7 @@
- #define		PMECC_CFG_BCH_ERR8		(2 << 0)
- #define		PMECC_CFG_BCH_ERR12		(3 << 0)
- #define		PMECC_CFG_BCH_ERR24		(4 << 0)
-+#define		PMECC_CFG_BCH_ERR32		(5 << 0)
- 
- #define		PMECC_CFG_SECTOR512		(0 << 4)
- #define		PMECC_CFG_SECTOR1024		(1 << 4)
--- 
-2.5.0
+>  		nor->flash_read =3D SPI_NOR_DUAL;
+> +	} else if (mode =3D=3D SPI_NOR_FAST && info->flags & SPI_NOR_FAST) {
+> +		nor->flash_read =3D SPI_NOR_FAST;
+>  	}
+> =20
+>  	/* Default commands */
+>=20
+The spi-nor framework already checks the "m25p,fast-read" DT property to ch=
+oose between the Read (0x03) and Fast Read (0x0b) command.
+
+So the fsl-quadspi.c driver should rely on this existing property to choose=
+ which of SPI_NOR_FAST or SPI_NOR_QUAD is used as the mode argument of spi_=
+nor_scan(). As long as mode is neither SPI_NOR_QUAD nor SPI_NOR_DUAL, the c=
+hoice of the read op code is done according to whether the "m25p,fast-read"=
+ DT property is set or not.
+
+
+Best regards,
+
+Cyrille
