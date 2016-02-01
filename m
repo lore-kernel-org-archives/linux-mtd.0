@@ -1,35 +1,19 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQ9rT-0001vp-9H
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 08:29:29 +0000
-Subject: Re: [PATCH 1/1] fs:ubifs:recovery:fixup UBIFS cannot recover master
- node issue
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Brian Norris <computersforpeace@gmail.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF53F90@NTXXIAMBX02.xacn.micron.com>
- <566A9378.4070900@nod.at>
- <A765B125120D1346A63912DDE6D8B6310BF54200@NTXXIAMBX02.xacn.micron.com>
- <566F03AC.90305@nod.at>
- <A765B125120D1346A63912DDE6D8B6310BF65A47@NTXXIAMBX02.xacn.micron.com>
- <56A9E00E.1070706@nod.at>
- <A765B125120D1346A63912DDE6D8B6310BF66E56@NTXXIAMBX02.xacn.micron.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- =?UTF-8?B?UGV0ZXIgUGFuIOa9mOagiyAocGV0ZXJwYW5kb25nKQ==?=
- <peterpandong@micron.com>, =?UTF-8?B?S2FybCBaaGFuZyDlvKDlj4zplKMgKGthcmx6?=
- =?UTF-8?Q?hang=29?= <karlzhang@micron.com>,
- =?UTF-8?B?SmFzb24gVGlhbiDnlLDmmZPlvLogKGphc29udGlhbik=?=
- <jasontian@micron.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56AF1749.2010806@nod.at>
-Date: Mon, 1 Feb 2016 09:28:57 +0100
-MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF66E56@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+ id 1aQBgs-0003k6-MP
+ for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 10:26:39 +0000
+Received: by mail-wm0-x244.google.com with SMTP id p63so8381514wmp.1
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 02:26:17 -0800 (PST)
+From: Romain Izard <romain.izard.pro@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org
+Cc: Josh Wu <rainyfeeling@outlook.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Yang Wenyou <Wenyou.Yang@atmel.com>,
+ Romain Izard <romain.izard.pro@gmail.com>
+Subject: [PATCH v3 0/5] mtd: atmel_nand: Add support for NAND Flash on SAMA5D2
+Date: Mon,  1 Feb 2016 11:25:55 +0100
+Message-Id: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,27 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bean,
+The NAND Flash controller for SAMA5D2 has small differences that make it
+impossible to use the existing driver for SAMA5D3. This patchset uses the
+device tree's compatible string to get those differences, and the code is
+slightly modified to handle them.
 
-Am 01.02.2016 um 08:17 schrieb Bean Huo »ô±ó±ó (beanhuo):
->> If you can explain in detail why UBIFS' assumptions are wrong and how such
->> corruptions can happen on SLC we can talk.
->> But I think then we'd have to redo a lot of UBI and UBIFS code.
-> 
-> I will hack my patch again, and double check these strict checks.
-> But I still insist on Master node should always be recovered by another good master,
-> even if two corrupted pages exist in one block. This is more reasonable and reliable.
-> Of course, so far, we did not meet this scenario on SLC NAND.
-> Current UBIFS master node recovery mechanism totally can handle with
-> Power loss no matter MLC or SLC, why not let UBIFS more reliable? Two master node blocks
-> Just for SLC NAND?
+Base on linux-mtd-next, commit 15c0be7bec002f9a529dd0966d0db96dde176fd0
 
-Of course, I'm all for improvements. But if you talk about "more reliable" you have to define
-first what the issue is.
-As I said, we have this strict checks for reasons and they did a very
-good service so far.
-I've seen a lot UBIFS corruptions where the master node was damaged but not a single time
-it was UBIFS' fault. It was always a subtle MTD driver issue.
+See previous revisions to apply on the Atmel Linux 4.1 branch.
 
-Thanks,
-//richard
+Compile tested for sama5_defconfig, and tested on SAMA5D3xek as there is no
+existing SAMA5D2 board with NAND Flash memory (yet).
+
+V3 -> V2:
+- Rebase on linux-mtd-next
+- Skip patches already in the tree
+
+V2 -> V1:
+- Rebase on v4.4
+- Use of_device_get_match_data
+- Split message cleanup
+- Reword a small part of the atmel_nand device tree binding
+- Use 'caps' for all private data structures
+
+RFC -> V1:
+- Split the support of 32-bit ECC on SAMA5D2 in two commits
+- Fix the missing ECC strength configuration code
+
+Romain Izard (5):
+  mtd: atmel_nand: Support variable RB_EDGE interrupts
+  dt-bindings: atmel_nand: Reword the documenation
+  mtd: atmel_nand: Support PMECC on SAMA5D2
+  mtd: atmel_nand: Support 32-bit ECC strength
+  ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
+
+ .../devicetree/bindings/mtd/atmel-nand.txt         | 31 +++++----
+ arch/arm/boot/dts/sama5d2.dtsi                     | 38 +++++++++++
+ drivers/mtd/nand/atmel_nand.c                      | 77 ++++++++++++++++++----
+ drivers/mtd/nand/atmel_nand_ecc.h                  |  9 ++-
+ drivers/mtd/nand/atmel_nand_nfc.h                  |  3 +-
+ 5 files changed, 131 insertions(+), 27 deletions(-)
+
+-- 
+2.5.0
