@@ -1,24 +1,14 @@
-Message-ID: <1454336914.133285.297.camel@infradead.org>
-Subject: Re: JFFS2 deadlock
+Message-ID: <1454338130.133285.305.camel@infradead.org>
+Subject: Re: [PATCH v4.4-rc8] jffs2: xattr: Silence frame size warning
 From: David Woodhouse <dwmw2@infradead.org>
-To: Thomas.Betker@rohde-schwarz.com, computersforpeace@gmail.com
-Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>, Artem Bityutskiy
- <dedekind1@gmail.com>, Thomas Betker <thomas.betker@freenet.de>,
- linux-kernel@vger.kernel.org, Joakim Tjernlund
- <Joakim.Tjernlund@infinera.com>,  "sztomi89@gmail.com"
- <sztomi89@gmail.com>, wangzaiwei <wangzaiwei@top-vision.cn>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Alexander
- Viro <viro@zeniv.linux.org.uk>,  Ming Liu <liu.ming50@gmail.com>,
- linux-fsdevel@vger.kernel.org, Deng Chao <deng.chao1@zte.com.cn>
-Date: Mon, 01 Feb 2016 14:28:34 +0000
-In-Reply-To: <OF7C1394C5.2BBD0A26-ONC1257F48.002BF506-C1257F48.002D6C9C@rohde-schwarz.com>
-References: <CAKatumo13ZM2o3dK9_ouxzta-sxeiB5E236Qh5dfbnEBc9CuMw@mail.gmail.com>
- <1453910781.20662.35.camel@infinera.com>
- <20160128000559.GA14270@google.com>
- <OF7C1394C5.2BBD0A26-ONC1257F48.002BF506-C1257F48.002D6C9C@rohde-schwarz.com>
+To: tim.gardner@canonical.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Date: Mon, 01 Feb 2016 14:48:50 +0000
+In-Reply-To: <1452193868-15816-1-git-send-email-tim.gardner@canonical.com>
+References: <1452193868-15816-1-git-send-email-tim.gardner@canonical.com>
 Content-Type: multipart/signed; micalg="sha-1";
  protocol="application/x-pkcs7-signature";
- boundary="=-ipUDn6a8buH5NGFubErP"
+ boundary="=-/jEwisIriKOE45C6mRi+"
 Mime-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,118 +20,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ipUDn6a8buH5NGFubErP
+--=-/jEwisIriKOE45C6mRi+
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2016-01-28 at 09:16 +0100, Thomas.Betker@rohde-schwarz.com wrote:
+On Thu, 2016-01-07 at 12:11 -0700, tim.gardner@canonical.com wrote:
+> From: Tim Gardner <tim.gardner@canonical.com>
 >=20
-> Subject: [PATCH] Revert "jffs2: Fix lock acquisition order bug in=C2=A0
-> jffs2_write_begin"
-> http://article.gmane.org/gmane.linux.drivers.mtd/62951
->=20
-> This is a patch revising my original patch, which I sent to linux-mtd on=
-=C2=A0
-> 10-Nov-2015. I didn't see a response yet, but it's one of the outstanding=
-=C2=A0
-> patches above.
+> fs/jffs2/xattr.c: In function 'jffs2_build_xattr_subsystem':
+> fs/jffs2/xattr.c:887:1: warning: the frame size of 1128 bytes is
+> larger than 1024 bytes [-Wframe-larger-than=3D]
+> =C2=A0}
 
-That looks necessary but not sufficient. I think we need this
-(untested) patch on top of it, to ensure that we *always* take the page
-lock before f->sem?
+At first glance, that looks like it's just bypassing the entire
+contents of that function if the allocation fails, leaving the various
+data structures in an inconsistent state and raw node refs unchecked,
+which will lead to lots of issues later once the mount has completed
+and GC can never get unstuck.
 
-Please could you try what's in the tree at
-http://git.infradead.org/users/dwmw2/jffs2-fixes.git
+So at the very least, your commit message is lacking the explanation of
+what the implications are, and *why* you have satisfied yourself that
+it's actually OK.
 
-----
-From: David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH] jffs2: Fix page lock / f->sem deadlock
-
-With this fix, all code paths should now be obtaining the page lock before
-f->sem.
-
-Reported-by: Szab=C3=B3 Tam=C3=A1s <sztomi89@gmail.com>
-Reported-by: Thomas Betker <thomas.betker@rohde-schwarz.com>
-Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
-Cc: stable@vger.kernel.org
----
-=C2=A0fs/jffs2/README.Locking |=C2=A0=C2=A05 +----
-=C2=A0fs/jffs2/gc.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0| 17 ++++++++++-------
-=C2=A02 files changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/fs/jffs2/README.Locking b/fs/jffs2/README.Locking
-index 3ea3655..8918ac9 100644
---- a/fs/jffs2/README.Locking
-+++ b/fs/jffs2/README.Locking
-@@ -2,10 +2,6 @@
-=C2=A0	JFFS2 LOCKING DOCUMENTATION
-=C2=A0	---------------------------
-=C2=A0
--At least theoretically, JFFS2 does not require the Big Kernel Lock
--(BKL), which was always helpfully obtained for it by Linux 2.4 VFS
--code. It has its own locking, as described below.
--
-=C2=A0This document attempts to describe the existing locking rules for
-=C2=A0JFFS2. It is not expected to remain perfectly up to date, but ought t=
-o
-=C2=A0be fairly close.
-@@ -69,6 +65,7 @@ Ordering constraints:
-=C2=A0	=C2=A0=C2=A0=C2=A0any f->sem held.
-=C2=A0	2. Never attempt to lock two file mutexes in one thread.
-=C2=A0	=C2=A0=C2=A0=C2=A0No ordering rules have been made for doing so.
-+	3. Never lock a page cache page with f->sem held.
-=C2=A0
-=C2=A0
-=C2=A0	erase_completion_lock spinlock
-diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-index 6fb0802..5919fef 100644
---- a/fs/jffs2/gc.c
-+++ b/fs/jffs2/gc.c
-@@ -1316,14 +1316,17 @@ static int jffs2_garbage_collect_dnode(struct jffs2=
-_sb_info *c, struct jffs2_era
-=C2=A0		BUG_ON(start > orig_start);
-=C2=A0	}
-=C2=A0
--	/* First, use readpage() to read the appropriate page into the page cache=
- */
--	/* Q: What happens if we actually try to GC the _same_ page for which com=
-mit_write()
--	=C2=A0*=C2=A0=C2=A0=C2=A0=C2=A0triggered garbage collection in the first =
-place?
--	=C2=A0* A: I _think_ it's OK. read_cache_page shouldn't deadlock, we'll w=
-rite out the
--	=C2=A0*=C2=A0=C2=A0=C2=A0=C2=A0page OK. We'll actually write it out again=
- in commit_write, which is a little
--	=C2=A0*=C2=A0=C2=A0=C2=A0=C2=A0suboptimal, but at least we're correct.
--	=C2=A0*/
-+	/* The rules state that we must obtain the page lock *before* f->sem, so
-+	=C2=A0* drop f->sem temporarily. Since we also hold c->alloc_sem, nothing=
-'s
-+	=C2=A0* actually going to *change* so we're safe; we only allow reading.
-+	=C2=A0*
-+	=C2=A0* It is important to note that jffs2_write_begin() will ensure that=
- its
-+	=C2=A0* page is marked Uptodate before allocating space. That means that =
-if we
-+	=C2=A0* end up here trying to GC the *same* page that jffs2_write_begin()=
- is
-+	=C2=A0* trying to write out, read_cache_page() will not deadlock. */
-+	mutex_unlock(&f->sem);
-=C2=A0	pg_ptr =3D jffs2_gc_fetch_page(c, f, start, &pg);
-+	mutex_lock(&f->sem);
-=C2=A0
-=C2=A0	if (IS_ERR(pg_ptr)) {
-=C2=A0		pr_warn("read_cache_page() returned error: %ld\n",
---=C2=A0
-2.5.0
+At worst, the patch is entirely broken.
 
 --=20
 David Woodhouse                            Open Source Technology Centre
 David.Woodhouse@intel.com                              Intel Corporation
 
 
---=-ipUDn6a8buH5NGFubErP
+--=-/jEwisIriKOE45C6mRi+
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -234,18 +142,18 @@ Qy7VFBkoLINszBrOUeIxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0
 YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcx
 ODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENB
 AgMN7zcwCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMTYwMjAxMTQyODM0WjAjBgkqhkiG9w0BCQQxFgQU4+3D1EYAgya2GDAkfSNxWVqPdYow
+CQUxDxcNMTYwMjAxMTQ0ODUwWjAjBgkqhkiG9w0BCQQxFgQU84M9MgRw/N1kQ39SBaUzGTzBZ6kw
 gaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0
 ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMT
 L1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMN7zcwgacG
 CyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRk
 LjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
 U3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAw3vNzANBgkq
-hkiG9w0BAQEFAASCAQBlpgiWboUV7AtWGltd3vwV2CL6pNJt4JFVu8Tsqk7Ft9g67dzJnOmdCc/9
-5FMhe4sVMvnfsZBC3b4a/MUOc2/S03P0Q5CgvlGZbczY0/cXfQATO421d84UGmT0O3SF0EEq+qk4
-m7+Tm3c/xzgpnKZBtaWnFHI6uuUFuavLmd5hdbcsA8JK+QpkfnpGNB4RTDPpT0Oioxagw/8dZKUE
-PaIJ7lVtEJ5zzW72UJVFz9FWVufJGZx6/GShBxrXPN8W9gMZlMzd9iQHI49LB6v4LUL+UuOHIkpH
-V77sRon2pbqZetT/R1Oa9ybNeGr0fUhDj577tJdHSsT+k9Eh2BRKDE6ZAAAAAAAA
+hkiG9w0BAQEFAASCAQCgYMwWlyYpvC3CnQSl47i+Nm58YMPYIu5NzwuWHf5xNJe7T3l6Ktq5Dp5j
+OWa5IBhFYxPbobJJPdsNqUgpfgJW3zpuKFYlJxQVGQ1yJ5V0/LIgYnytUfLBo7wheEWyiut/WKMG
+6nQsgDEDwotDei0mMAVGEC2Klvv7gZvKXwUWaSkMa+e3idXSpAVFvkGSui7gTp1hrt/Y+DE/qTfz
+tmHlj/rsAL6E3fdyFzUZL+xQr7SV4/flT2XCimMot3/nj1V9sY4NQS/zEnjfrUjHdTorJN8+UQjv
+0ekHIrN/kd3Imeo3PSrQx3msgfIui+PvKhO3Zn+m8YAPqPCBmQDCSgrxAAAAAAAA
 
 
---=-ipUDn6a8buH5NGFubErP--
+--=-/jEwisIriKOE45C6mRi+--
