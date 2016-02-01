@@ -1,9 +1,9 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQBh5-0003tC-Ja
- for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 10:26:56 +0000
-Received: by mail-wm0-x242.google.com with SMTP id 128so8379315wmz.3
- for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 02:26:31 -0800 (PST)
+ id 1aQBh2-0003rg-AE
+ for linux-mtd@lists.infradead.org; Mon, 01 Feb 2016 10:26:57 +0000
+Received: by mail-wm0-x241.google.com with SMTP id l66so8385541wml.2
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 02:26:29 -0800 (PST)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	devicetree@vger.kernel.org
@@ -11,9 +11,9 @@ Cc: Josh Wu <rainyfeeling@outlook.com>,
  Nicolas Ferre <nicolas.ferre@atmel.com>,
  Yang Wenyou <Wenyou.Yang@atmel.com>,
  Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v3 5/5] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-Date: Mon,  1 Feb 2016 11:26:00 +0100
-Message-Id: <1454322360-8666-6-git-send-email-romain.izard.pro@gmail.com>
+Subject: [PATCH v3 3/5] mtd: atmel_nand: Support PMECC on SAMA5D2
+Date: Mon,  1 Feb 2016 11:25:58 +0100
+Message-Id: <1454322360-8666-4-git-send-email-romain.izard.pro@gmail.com>
 In-Reply-To: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
 References: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,65 +25,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Both nodes are required to access NAND Flash memory. Additional
-settings will be necessary at the board level to use it.
+Starting with the SAMA5D2, there is a new revision of the Atmel PMECC
+controller that can correct 32 bits in each sector. This controller is
+not 100% compatible with the previous revision that corrected a maximum
+of 24 bits by sector, as some register addresses overlap.
+
+Using information from the device tree, we can configure the driver to
+work with both versions.
+
+For the binding:
+Acked-by: Rob Herring <robh@kernel.org>
 
 Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
 ---
-v3: No change
-v2: Fix device address, hexadecimal with minuscules
+v3: rebase on linux-mtd-next
+    constify the atmel_nand_caps structure
+v2: split rewording of the binding into its own patch
 
- arch/arm/boot/dts/sama5d2.dtsi | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ .../devicetree/bindings/mtd/atmel-nand.txt         |  5 ++++-
+ drivers/mtd/nand/atmel_nand.c                      | 23 +++++++++++++++++++++-
+ drivers/mtd/nand/atmel_nand_ecc.h                  |  8 ++++++--
+ 3 files changed, 32 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-index 3f750f6170f2..484bd8ea6602 100644
---- a/arch/arm/boot/dts/sama5d2.dtsi
-+++ b/arch/arm/boot/dts/sama5d2.dtsi
-@@ -263,6 +263,44 @@
- 			cache-level = <2>;
- 		};
+diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+index e68ab404d912..e1887b7d7e53 100644
+--- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+@@ -1,7 +1,10 @@
+ Atmel NAND flash
  
-+		nand0: nand@80000000 {
-+			compatible = "atmel,sama5d2-nand";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+			reg = < /* EBI CS3 */
-+				0x80000000 0x08000000
-+				/* SMC PMECC regs */
-+				0xf8014070 0x00000490
-+				/* SMC PMECC Error Location regs */
-+				0xf8014500 0x00000200
-+				/* ROM Galois tables */
-+				0x00040000 0x00018000
-+				>;
-+			interrupts = <17 IRQ_TYPE_LEVEL_HIGH 6>;
-+			atmel,nand-addr-offset = <21>;
-+			atmel,nand-cmd-offset = <22>;
-+			atmel,nand-has-dma;
-+			atmel,has-pmecc;
-+			atmel,pmecc-lookup-table-offset = <0x0 0x8000>;
-+			status = "disabled";
+ Required properties:
+-- compatible : should be "atmel,at91rm9200-nand" or "atmel,sama5d4-nand".
++- compatible: The possible values are:
++	"atmel,at91rm9200-nand"
++	"atmel,sama5d2-nand"
++	"atmel,sama5d4-nand"
+ - reg : should specify localbus address and size used for the chip,
+ 	and hardware ECC controller if available.
+ 	If the hardware ECC is PMECC, it should contain address and size for
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 600c77cb70ef..00fa71045805 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -65,6 +65,7 @@ module_param(on_flash_bbt, int, 0);
+ 
+ struct atmel_nand_caps {
+ 	bool pmecc_correct_erase_page;
++	uint8_t pmecc_max_correction;
+ };
+ 
+ struct atmel_nand_nfc_caps {
+@@ -145,6 +146,7 @@ struct atmel_nand_host {
+ 	int			pmecc_cw_len;	/* Length of codeword */
+ 
+ 	void __iomem		*pmerrloc_base;
++	void __iomem		*pmerrloc_el_base;
+ 	void __iomem		*pmecc_rom_base;
+ 
+ 	/* lookup table for alpha_to and index_of */
+@@ -818,7 +820,7 @@ static void pmecc_correct_data(struct mtd_info *mtd, uint8_t *buf, uint8_t *ecc,
+ 	sector_size = host->pmecc_sector_size;
+ 
+ 	while (err_nbr) {
+-		tmp = pmerrloc_readl_el_relaxed(host->pmerrloc_base, i) - 1;
++		tmp = pmerrloc_readl_el_relaxed(host->pmerrloc_el_base, i) - 1;
+ 		byte_pos = tmp / 8;
+ 		bit_pos  = tmp % 8;
+ 
+@@ -1210,6 +1212,8 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
+ 		err_no = PTR_ERR(host->pmerrloc_base);
+ 		goto err;
+ 	}
++	host->pmerrloc_el_base = host->pmerrloc_base + ATMEL_PMERRLOC_SIGMAx +
++		(host->caps->pmecc_max_correction + 1) * 4;
+ 
+ 	if (!host->has_no_lookup_table) {
+ 		regs_rom = platform_get_resource(pdev, IORESOURCE_MEM, 3);
+@@ -2307,17 +2311,34 @@ static int atmel_nand_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++/*
++ * AT91RM9200 does not have PMECC or PMECC Errloc peripherals for
++ * BCH ECC. Combined with the "atmel,has-pmecc", it is used to describe
++ * devices from the SAM9 family that have those.
++ */
+ static const struct atmel_nand_caps at91rm9200_caps = {
+ 	.pmecc_correct_erase_page = false,
++	.pmecc_max_correction = 24,
+ };
+ 
+ static const struct atmel_nand_caps sama5d4_caps = {
+ 	.pmecc_correct_erase_page = true,
++	.pmecc_max_correction = 24,
++};
 +
-+			nfc@c0000000 {
-+				compatible = "atmel,sama5d4-nfc";
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				reg = < /* NFC Command Registers */
-+					0xc0000000 0x08000000
-+					/* NFC HSMC regs */
-+					0xf8014000 0x00000070
-+					/* NFC SRAM banks */
-+					0x00100000 0x00100000
-+					>;
-+				clocks = <&hsmc_clk>;
-+				atmel,write-by-sram;
-+			};
-+		};
++/*
++ * The PMECC Errloc controller starting in SAMA5D2 is not compatible,
++ * as the increased correction strength requires more registers.
++ */
++static const struct atmel_nand_caps sama5d2_caps = {
++	.pmecc_correct_erase_page = true,
++	.pmecc_max_correction = 32,
+ };
+ 
+ static const struct of_device_id atmel_nand_dt_ids[] = {
+ 	{ .compatible = "atmel,at91rm9200-nand", .data = &at91rm9200_caps },
+ 	{ .compatible = "atmel,sama5d4-nand", .data = &sama5d4_caps },
++	{ .compatible = "atmel,sama5d2-nand", .data = &sama5d2_caps },
+ 	{ /* sentinel */ }
+ };
+ 
+diff --git a/drivers/mtd/nand/atmel_nand_ecc.h b/drivers/mtd/nand/atmel_nand_ecc.h
+index 668e7358f19b..ec964c43c932 100644
+--- a/drivers/mtd/nand/atmel_nand_ecc.h
++++ b/drivers/mtd/nand/atmel_nand_ecc.h
+@@ -108,7 +108,11 @@
+ #define		PMERRLOC_ERR_NUM_MASK		(0x1f << 8)
+ #define		PMERRLOC_CALC_DONE		(1 << 0)
+ #define ATMEL_PMERRLOC_SIGMAx		0x028	/* Error location SIGMA x */
+-#define ATMEL_PMERRLOC_ELx		0x08c	/* Error location x */
 +
- 		sdmmc0: sdio-host@a0000000 {
- 			compatible = "atmel,sama5d2-sdhci";
- 			reg = <0xa0000000 0x300>;
++/*
++ * The ATMEL_PMERRLOC_ELx register location depends from the number of
++ * bits corrected by the PMECC controller. Do not use it.
++ */
+ 
+ /* Register access macros for PMECC */
+ #define pmecc_readl_relaxed(addr, reg) \
+@@ -136,7 +140,7 @@
+ 	readl_relaxed((addr) + ATMEL_PMERRLOC_SIGMAx + ((n) * 4))
+ 
+ #define pmerrloc_readl_el_relaxed(addr, n) \
+-	readl_relaxed((addr) + ATMEL_PMERRLOC_ELx + ((n) * 4))
++	readl_relaxed((addr) + ((n) * 4))
+ 
+ /* Galois field dimension */
+ #define PMECC_GF_DIMENSION_13			13
 -- 
 2.5.0
