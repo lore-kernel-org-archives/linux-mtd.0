@@ -1,8 +1,8 @@
 Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQRHt-0003A9-Sp
- for linux-mtd@lists.infradead.org; Tue, 02 Feb 2016 03:05:54 +0000
-Date: Tue, 2 Feb 2016 11:04:34 +0800
+ id 1aQRJ9-0003fF-EQ
+ for linux-mtd@lists.infradead.org; Tue, 02 Feb 2016 03:07:12 +0000
+Date: Tue, 2 Feb 2016 11:05:12 +0800
 From: kbuild test robot <lkp@intel.com>
 To: Bean Huo <jackyard88@gmail.com>
 Cc: kbuild-all@01.org, richard@nod.at, dedekind1@gmail.com,
@@ -10,13 +10,13 @@ Cc: kbuild-all@01.org, richard@nod.at, dedekind1@gmail.com,
  boris.brezillon@free-electrons.com, beanhuo@micron.com,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  zszubbocsev@micron.com, peterpandong@micron.com
-Subject: Re: [PATCH v2 04/17] drivers:mtd:nand:enable dual plane page program
- function
-Message-ID: <201602021150.uR3RKzD5%fengguang.wu@intel.com>
+Subject: Re: [PATCH v2 06/17] drivers:mtd:ubi:add bakvol function define in
+ ubi layer
+Message-ID: <201602021128.U56kLyVj%fengguang.wu@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="EVF5PPMfhYS0aIcm"
+Content-Type: multipart/mixed; boundary="bg08WKrSYDhXBjb5"
 Content-Disposition: inline
-In-Reply-To: <1454380252-16170-5-git-send-email-jackyard88@gmail.com>
+In-Reply-To: <1454380252-16170-7-git-send-email-jackyard88@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---EVF5PPMfhYS0aIcm
+--bg08WKrSYDhXBjb5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -43,52 +43,96 @@ reproduce:
         # save the attached .config to linux build tree
         make ARCH=x86_64 
 
+Note: the linux-review/Bean-Huo/Add-a-bakvol-module-in-UBI-layer-for-MLC-paired-page-power-loss-issue/20160202-104450 HEAD 2078d3920abf1d89be7eaf087100b4482dd532dc builds fine.
+      It only hurts bisectibility.
+
 All errors (new ones prefixed by >>):
 
-   drivers/mtd/nand/nand_base.c: In function 'nand_write_plane_page':
->> drivers/mtd/nand/nand_base.c:2463:12: error: too few arguments to function 'chip->ecc.write_page_raw'
-      status = chip->ecc.write_page_raw(mtd, chip, buf,
-               ^
->> drivers/mtd/nand/nand_base.c:2466:12: error: too few arguments to function 'chip->ecc.write_subpage'
-      status = chip->ecc.write_subpage(mtd, chip, offset, data_len,
-               ^
->> drivers/mtd/nand/nand_base.c:2469:12: error: too few arguments to function 'chip->ecc.write_page'
-      status = chip->ecc.write_page(mtd, chip, buf, oob_required);
-               ^
-   drivers/mtd/nand/nand_base.c: At top level:
-   drivers/mtd/nand/nand_base.c:3228:12: warning: 'nand_dual_plane_write_oob' defined but not used [-Wunused-function]
-    static int nand_dual_plane_write_oob(struct mtd_info *mtd, loff_t to_plane0,
-               ^
+   drivers/mtd/ubi/eba.c: In function 'recover_peb':
+>> drivers/mtd/ubi/eba.c:607:8: error: too few arguments to function 'ubi_io_write_data'
+     err = ubi_io_write_data(ubi, ubi->peb_buf, new_pnum, 0, data_size);
+           ^
+   In file included from drivers/mtd/ubi/eba.c:47:0:
+   drivers/mtd/ubi/ubi.h:1073:19: note: declared here
+    static inline int ubi_io_write_data(struct ubi_device *ubi, const void *buf,
+                      ^
+   drivers/mtd/ubi/eba.c: In function 'ubi_eba_write_leb':
+   drivers/mtd/ubi/eba.c:678:9: error: too few arguments to function 'ubi_io_write_data'
+      err = ubi_io_write_data(ubi, buf, pnum, offset, len);
+            ^
+   In file included from drivers/mtd/ubi/eba.c:47:0:
+   drivers/mtd/ubi/ubi.h:1073:19: note: declared here
+    static inline int ubi_io_write_data(struct ubi_device *ubi, const void *buf,
+                      ^
+   drivers/mtd/ubi/eba.c:729:9: error: too few arguments to function 'ubi_io_write_data'
+      err = ubi_io_write_data(ubi, buf, pnum, offset, len);
+            ^
+   In file included from drivers/mtd/ubi/eba.c:47:0:
+   drivers/mtd/ubi/ubi.h:1073:19: note: declared here
+    static inline int ubi_io_write_data(struct ubi_device *ubi, const void *buf,
+                      ^
+   drivers/mtd/ubi/eba.c: In function 'ubi_eba_write_leb_st':
+   drivers/mtd/ubi/eba.c:851:8: error: too few arguments to function 'ubi_io_write_data'
+     err = ubi_io_write_data(ubi, buf, pnum, 0, len);
+           ^
+   In file included from drivers/mtd/ubi/eba.c:47:0:
+   drivers/mtd/ubi/ubi.h:1073:19: note: declared here
+    static inline int ubi_io_write_data(struct ubi_device *ubi, const void *buf,
+                      ^
+   drivers/mtd/ubi/eba.c: In function 'ubi_eba_atomic_leb_change':
+   drivers/mtd/ubi/eba.c:971:8: error: too few arguments to function 'ubi_io_write_data'
+     err = ubi_io_write_data(ubi, buf, pnum, 0, len);
+           ^
+   In file included from drivers/mtd/ubi/eba.c:47:0:
+   drivers/mtd/ubi/ubi.h:1073:19: note: declared here
+    static inline int ubi_io_write_data(struct ubi_device *ubi, const void *buf,
+                      ^
+   drivers/mtd/ubi/eba.c: In function 'ubi_eba_copy_leb':
+   drivers/mtd/ubi/eba.c:1197:9: error: too few arguments to function 'ubi_io_write_data'
+      err = ubi_io_write_data(ubi, ubi->peb_buf, to, 0, aldata_size);
+            ^
+   In file included from drivers/mtd/ubi/eba.c:47:0:
+   drivers/mtd/ubi/ubi.h:1073:19: note: declared here
+    static inline int ubi_io_write_data(struct ubi_device *ubi, const void *buf,
+                      ^
+--
+>> drivers/mtd/ubi/io.c:235:5: error: conflicting types for 'ubi_io_write'
+    int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+        ^
+   In file included from drivers/mtd/ubi/io.c:92:0:
+   drivers/mtd/ubi/ubi.h:883:5: note: previous declaration of 'ubi_io_write' was here
+    int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+        ^
 
-vim +2463 drivers/mtd/nand/nand_base.c
+vim +/ubi_io_write_data +607 drivers/mtd/ubi/eba.c
 
-  2457		else
-  2458			subpage = 0;
-  2459	
-  2460		chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
-  2461	
-  2462		if (unlikely(raw))
-> 2463			status = chip->ecc.write_page_raw(mtd, chip, buf,
-  2464								oob_required);
-  2465		else if (subpage)
-> 2466			status = chip->ecc.write_subpage(mtd, chip, offset, data_len,
-  2467								buf, oob_required);
-  2468		else
-> 2469			status = chip->ecc.write_page(mtd, chip, buf, oob_required);
-  2470	
-  2471		if (status < 0)
-  2472			return status;
+4df581f3 Artem Bityutskiy    2008-12-04  601  			goto out_unlock;
+801c135c Artem B. Bityutskiy 2006-06-27  602  		}
+8fb2a514 Richard Weinberger  2014-11-10  603  	}
+801c135c Artem B. Bityutskiy 2006-06-27  604  
+0ca39d74 Artem Bityutskiy    2012-03-08  605  	memcpy(ubi->peb_buf + offset, buf, len);
+801c135c Artem B. Bityutskiy 2006-06-27  606  
+0ca39d74 Artem Bityutskiy    2012-03-08 @607  	err = ubi_io_write_data(ubi, ubi->peb_buf, new_pnum, 0, data_size);
+4df581f3 Artem Bityutskiy    2008-12-04  608  	if (err) {
+4df581f3 Artem Bityutskiy    2008-12-04  609  		mutex_unlock(&ubi->buf_mutex);
+111ab0b2 Richard Weinberger  2014-11-10  610  		up_read(&ubi->fm_eba_sem);
+
+:::::: The code at line 607 was first introduced by commit
+:::::: 0ca39d74de8b269fb61eac11b75bd6c3fc887c28 UBI: rename peb_buf1 to peb_buf
+
+:::::: TO: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+:::::: CC: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---EVF5PPMfhYS0aIcm
+--bg08WKrSYDhXBjb5
 Content-Type: application/octet-stream
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICEwcsFYAAy5jb25maWcAjFzdd9u2kn/vX8GT7tlz70MaW3ESd/f4ASJBCRVBsAQoy37h
+H4sICLQbsFYAAy5jb25maWcAjFzdd9u2kn/vX8GT7tlz70MaW3ESd/f4ASJBCRVBsAQoy37h
 UW2l9alj51pyb7J//c4ApAiAQ932oa0wg+/5+M1g6B9/+DFhr4fnL9vDw9328fF78vvuafey
 Pezuk88Pj7v/TTKVlMokPBPmJ2AuHp5ev737dvmx/XiRXPz04aezty93s2S1e3naPSbp89Pn
 h99fof/D89MPP/6QqjIXC2CdC3P1vf+5sb2D38MPUWpTN6kRqmwznqqM1wOx4nXe8jUvjQZG
@@ -465,4 +509,4 @@ aXsoOxJRHWrLDBQcD4e1VetYeTYUv7UXVGIfFE0kRzW9Cb5ba7fv27QEsSXlm2DOYYMe5QOv
 fZB8cNuRG3JnyW5vdmXJwAaYyA4YzfJi3oCUU5TL1C5sibVCqsM0MNtObEVmxweyzL3gSlxh
 YIJyPeuudCxO+CfP3Gg4HkeqyL3EuclAI2NnRG863FhzQtYzSl5HKHebAPk/ltYHcec2AQA=
 
---EVF5PPMfhYS0aIcm--
+--bg08WKrSYDhXBjb5--
