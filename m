@@ -1,18 +1,18 @@
-Received: from mail-pa0-x241.google.com ([2607:f8b0:400e:c03::241])
+Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQQmA-0002Zc-Ry
- for linux-mtd@lists.infradead.org; Tue, 02 Feb 2016 02:33:09 +0000
-Received: by mail-pa0-x241.google.com with SMTP id gi1so7946753pac.2
- for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 18:32:50 -0800 (PST)
+ id 1aQQmC-0002Yq-DW
+ for linux-mtd@lists.infradead.org; Tue, 02 Feb 2016 02:33:11 +0000
+Received: by mail-pa0-x243.google.com with SMTP id pv5so7920814pac.0
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 18:32:48 -0800 (PST)
 From: Bean Huo <jackyard88@gmail.com>
 To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
  computersforpeace@gmail.com, boris.brezillon@free-electrons.com
 Cc: beanhuo@micron.com, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, zszubbocsev@micron.com,
  peterpandong@micron.com
-Subject: [PATCH v2 17/17] drivers:mtd:ubi: Kconfig Makefile
-Date: Tue,  2 Feb 2016 02:30:52 +0000
-Message-Id: <1454380252-16170-18-git-send-email-jackyard88@gmail.com>
+Subject: [PATCH v2 15/17] fs:ubifs:enable bakvol module and recover operation
+Date: Tue,  2 Feb 2016 02:30:50 +0000
+Message-Id: <1454380252-16170-16-git-send-email-jackyard88@gmail.com>
 In-Reply-To: <1454380252-16170-1-git-send-email-jackyard88@gmail.com>
 References: <1454380252-16170-1-git-send-email-jackyard88@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,49 +26,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bean Huo <beanhuo@micron.com>
 
+Before mounting, bakvol will do recovery operaion according to
+master node flag(clearly unmount or not). If corrupted page damaged by
+power loss exists, bakvol will reocover it through its backup page data.
+bakvol module will be enable after ubifs mount successfully.
+
 Signed-off-by: BeanHuo <beanhuo@micron.com>
 ---
- drivers/mtd/ubi/Kconfig  | 15 +++++++++++++++
- drivers/mtd/ubi/Makefile |  2 +-
- 2 files changed, 16 insertions(+), 1 deletion(-)
+ fs/ubifs/super.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index f0855ce..d9f01fa 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -77,6 +77,21 @@ config MTD_UBI_FASTMAP
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 9547a278..0aaeafa 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1270,6 +1270,11 @@ static int mount_ubifs(struct ubifs_info *c)
+ 		c->need_recovery = 1;
+ 	}
  
- 	   If in doubt, say "N".
++#ifdef CONFIG_MTD_UBI_MLC_NAND_BAKVOL
++	if (c->need_recovery)
++		ubi_corrupted_data_recovery(c->ubi);
++#endif
++
+ 	if (c->need_recovery && !c->ro_mount) {
+ 		err = ubifs_recover_inl_heads(c, c->sbuf);
+ 		if (err)
+@@ -1463,6 +1468,8 @@ static int mount_ubifs(struct ubifs_info *c)
+ 	dbg_gen("max. seq. number:    %llu", c->max_sqnum);
+ 	dbg_gen("commit number:       %llu", c->cmt_no);
  
-+config MTD_UBI_MLC_NAND_BAKVOL
-+	bool "UBI solution for NAND pair page (Experimental feature)"
-+	default n
-+	help
-+	   This used for MLC NAND paired page power-cut protection.
++	init_bakvol(c->ubi, 1);
 +
-+	   MLC NAND paired page power loss is a known issue so far.
-+	   Namely, MLC NAND pages are coupled in a sense that if you cut
-+	   power while writing to a page, you corrupt not only this page,
-+	   but also one of the previous pages which is paired with the current
-+	   one. More detail information,please refer to follwoing link:
-+	   http://www.linux-mtd.infradead.org/doc/ubifs.html
-+
-+	   If in doubt, say "N".
-+
- config MTD_UBI_GLUEBI
- 	tristate "MTD devices emulation driver (gluebi)"
- 	help
-diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
-index 4e3c3d7..6bd78aa 100644
---- a/drivers/mtd/ubi/Makefile
-+++ b/drivers/mtd/ubi/Makefile
-@@ -1,6 +1,6 @@
- obj-$(CONFIG_MTD_UBI) += ubi.o
+ 	return 0;
  
--ubi-y += vtbl.o vmt.o upd.o build.o cdev.o kapi.o eba.o io.o wl.o attach.o
-+ubi-y += vtbl.o vmt.o upd.o build.o cdev.o kapi.o eba.o io.o wl.o attach.o bakvol.o
- ubi-y += misc.o debug.o
- ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
- ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
+ out_infos:
+@@ -1774,6 +1781,10 @@ static void ubifs_put_super(struct super_block *sb)
+ 	 * the mutex is locked.
+ 	 */
+ 	mutex_lock(&c->umount_mutex);
++
++	/* Disable ubi MLC power loss backup function */
++	init_bakvol(c->ubi, 0);
++
+ 	if (!c->ro_mount) {
+ 		/*
+ 		 * First of all kill the background thread to make sure it does
 -- 
 1.9.1
