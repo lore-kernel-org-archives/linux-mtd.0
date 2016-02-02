@@ -1,20 +1,22 @@
-Received: from mail-pa0-x244.google.com ([2607:f8b0:400e:c03::244])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQQmD-0002ZB-AZ
- for linux-mtd@lists.infradead.org; Tue, 02 Feb 2016 02:33:19 +0000
-Received: by mail-pa0-x244.google.com with SMTP id pv5so7920829pac.0
- for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 18:32:49 -0800 (PST)
-From: Bean Huo <jackyard88@gmail.com>
-To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com
-Cc: beanhuo@micron.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, zszubbocsev@micron.com,
- peterpandong@micron.com
-Subject: [PATCH v2 16/17] driver:mtd:ubi:add new bakvol module in ubi layer
-Date: Tue,  2 Feb 2016 02:30:51 +0000
-Message-Id: <1454380252-16170-17-git-send-email-jackyard88@gmail.com>
-In-Reply-To: <1454380252-16170-1-git-send-email-jackyard88@gmail.com>
-References: <1454380252-16170-1-git-send-email-jackyard88@gmail.com>
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aQRDf-000126-HR
+ for linux-mtd@lists.infradead.org; Tue, 02 Feb 2016 03:01:32 +0000
+Date: Tue, 2 Feb 2016 11:00:28 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Bean Huo <jackyard88@gmail.com>
+Cc: kbuild-all@01.org, richard@nod.at, dedekind1@gmail.com,
+ adrian.hunter@intel.com, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, beanhuo@micron.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ zszubbocsev@micron.com, peterpandong@micron.com
+Subject: Re: [PATCH v2 03/17] drivers:mtd:add dual plane page program support
+ in partition layer
+Message-ID: <201602021036.DpWhbd0D%fengguang.wu@intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="cWoXeonUoKmBZSoM"
+Content-Disposition: inline
+In-Reply-To: <1454380252-16170-4-git-send-email-jackyard88@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,1318 +26,429 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Bean Huo <beanhuo@micron.com>
 
-Bakvol(bakckup volume) module is for MLC NAND paired page power loss issue.
-This patch file is to add new file in mtd/ubi folder.
+--cWoXeonUoKmBZSoM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: BeanHuo <beanhuo@micron.com>
+Hi Bean,
+
+[auto build test ERROR on v4.5-rc2]
+[also build test ERROR on next-20160201]
+[if your patch is applied to the wrong git tree, please drop us a note to help improving the system]
+
+url:    https://github.com/0day-ci/linux/commits/Bean-Huo/Add-a-bakvol-module-in-UBI-layer-for-MLC-paired-page-power-loss-issue/20160202-104450
+config: x86_64-randconfig-x012-201605 (attached as .config)
+reproduce:
+        # save the attached .config to linux build tree
+        make ARCH=x86_64 
+
+All error/warnings (new ones prefixed by >>):
+
+   drivers/mtd/mtdpart.c: In function 'part_write_dual_plane_oob':
+>> drivers/mtd/mtdpart.c:213:26: error: implicit declaration of function 'PART' [-Werror=implicit-function-declaration]
+     struct mtd_part *part = PART(mtd);
+                             ^
+>> drivers/mtd/mtdpart.c:213:26: warning: initialization makes pointer from integer without a cast [-Wint-conversion]
+   cc1: some warnings being treated as errors
+
+vim +/PART +213 drivers/mtd/mtdpart.c
+
+   207	}
+   208	
+   209	static int part_write_dual_plane_oob(struct mtd_info *mtd, loff_t to_plane0,
+   210				    struct mtd_oob_ops *ops_plane0, loff_t to_plane1,
+   211				    struct mtd_oob_ops *ops_plane1)
+   212	{
+ > 213		struct mtd_part *part = PART(mtd);
+   214	
+   215		if ((to_plane0 >= mtd->size) || ((to_plane1 >= mtd->size)))
+   216			return -EINVAL;
+
 ---
- drivers/mtd/ubi/bakvol.c | 1296 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 1296 insertions(+)
- create mode 100644 drivers/mtd/ubi/bakvol.c
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
-diff --git a/drivers/mtd/ubi/bakvol.c b/drivers/mtd/ubi/bakvol.c
-new file mode 100644
-index 0000000..a6b1a31
---- /dev/null
-+++ b/drivers/mtd/ubi/bakvol.c
-@@ -0,0 +1,1296 @@
-+/* This version ported to the Linux-UBI system by Micron
-+ *
-+ * Based on: Micorn APPARATUSES AND METHODS FOR MEMORY MANAGEMENT
-+ *
-+ */
-+
-+/*===========================================
-+  A UBI solution for MLC NAND powerloss
-+
-+  This driver implements backup lower page to an UBI internal bakvol volume.
-+
-+  The contents of this file are subject to the Mozilla Public
-+  License Version 1.1 (the "License"); You may obtain a copy of
-+  the License at http://www.mozilla.org/MPL/.But you can use this
-+  file, no matter in compliance with the License or not.
-+
-+  The initial developer of the original code is Beanhuo
-+  <beanhuo@micorn.com>. Portions created by Micorn.
-+
-+  Alternatively, the contents of this file may be used under the
-+  terms of the GNU General Public License version 2 (the "GPL"), in
-+  which case the provisions of the GPL are applicable instead of the
-+  above.  If you wish to allow the use of your version of this file
-+  only under the terms of the GPL and not to allow others to use
-+  your version of this file under the MPL, indicate your decision
-+  by deleting the provisions above and replace them with the notice
-+  and other provisions required by the GPL.  If you do not delete
-+  the provisions above, a recipient may use your version of this
-+  file under either the MPL or the GPL.
-+===========================================*/
-+#include <asm/div64.h>
-+
-+#include <linux/crc32.h>
-+#include <linux/err.h>
-+#include <linux/list.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+
-+#include "ubi.h"
-+
-+#ifdef CONFIG_MTD_UBI_MLC_NAND_BAKVOL
-+
-+/* Global point for dual plane programming operation */
-+struct mtd_oob_ops *oob_ops_bak, *oob_ops_src;
-+struct mtd_oob_ops *oob_ops; /* Global read/write ops point */
-+
-+int Recovery_done; /* 1: bakvol recovery already done. 0: need to do recovery */
-+
-+/* Temporary variables used during scanning PEB */
-+struct ubi_ec_hdr *ech;
-+struct ubi_vid_hdr *vidh;
-+
-+/* Which generation of Micron NAND device will be used */
-+#define MICRON_NAND_VERSION_L7X_CONFIG 0
-+#define MICRON_NAND_VERSION_L8X_CONFIG 1
-+
-+/**
-+ * is_lowerpage - check page belongs to lower or uppoer page.
-+ *		For the detail algorithm, please refer to Micron
-+ *		product datasheet "Shared Pages".
-+ * @page_num: physical page number within PEB
-+ *
-+ *  if paeg_num is lower page, return 1
-+ *  if page_num is upper page, return 0
-+ *  if page_num is SLC page, return -1
-+ */
-+static int is_lowerpage(int page_num)
-+{
-+	int ret;
-+#if MICRON_NAND_VERSION_L8X_CONFIG
-+	/* used for Micron L8x series parallel nand */
-+	switch (page_num) {
-+	case 2:
-+	case 3:
-+	case 248:
-+	case 249:
-+	case 252:
-+	case 253:
-+	case 254:
-+	case 255:
-+		ret = -1;/* This page belongs to SLC page. */
-+		break;
-+	default:
-+		if (page_num % 4 < 2) {
-+			/* If remainder is 2,3 ,this page belongs to lower page,
-+			 * else if 0,1, it belongs to upper page */
-+			ret = 1; /* Lower page */
-+		} else {
-+			ret = 0;
-+		}
-+		break;
-+	}
-+#elif MICRON_NAND_VERSION_L7X_CONFIG
-+	/* Used for Micron L7X series parallel NAND */
-+	switch (page_num) {
-+	case 0:
-+	case 1:
-+		ret = 1;
-+		break;
-+	case 4:
-+	case 5:
-+	case 254:
-+	case 255: /* 4,5,254, 255 is upper page */
-+		ret = 0;
-+		break;
-+	default:
-+		if (page_num % 4 > 1)
-+			/* 2 ,3 is lower page, 0,1 is upper page */
-+			ret = 1; /* Lower page */
-+		else
-+			ret = 0;
-+		break;
-+	}
-+#endif
-+	return ret;
-+}
-+
-+/**
-+ * get_next_lowerpage - return next lower page number.
-+ * @page: physical page number within PEB
-+ *
-+ * This function returns corresponding next lower page nubmer,
-+ * if exist lower page; return -1, if this page is already last
-+ * page or no lower  page after this page.
-+ * Note: For the detail algorithm, please refer to Micron product
-+ * datasheet "Shared Pages".
-+ */
-+static int get_next_lowerpage(int page)
-+{
-+	int ret = -1;
-+#if MICRON_NAND_VERSION_L8X_CONFIG
-+	if (page == 254)
-+		ret = -1;
-+	if (page >= 255)
-+		return -1;
-+	/* Used for L8x  Micron series NAND */
-+	if (page % 4 < 2) {
-+		if (page % 2 == 0)
-+			ret = page + 1;
-+		else {
-+			if ((page == 1) || (page == 3))
-+				ret = page + 1;
-+			else
-+				ret = page + 3;
-+		}
-+
-+	} else {
-+		if (page % 2 == 0)
-+			ret = page + 2;
-+		else
-+			ret = page + 1;
-+	}
-+
-+	/* Skip SLC page */
-+	switch (ret) {
-+	case 2:
-+	case 3:
-+		ret = 4;
-+		break;
-+	case 248:
-+	case 249:
-+	case 252:
-+	case 253:
-+	case 254:
-+	case 255:
-+		ret = -1;
-+		break;
-+	default:
-+		break;
-+	}
-+#elif MICRON_NAND_VERSION_L7X_CONFIG
-+	/* Used for Micron L7X series NAND */
-+	switch (page) {
-+	case 0:
-+	case 1:
-+	case 2:
-+		ret = page + 1;
-+		break;
-+	case 4:
-+	case 5:
-+		ret = page + 2;
-+		break;
-+	case 254:
-+	case 255:   /* 254, 255 is upper page */
-+		ret = -1;
-+		break;
-+	default:
-+		if (page % 4 > 1) {
-+			if (page % 2 == 0)
-+				ret = page + 1;
-+			else
-+				ret = page + 3;
-+		} else {
-+			if (page % 2 == 0)
-+				ret = page + 2;
-+			else
-+				ret = page + 1;
-+
-+		}
-+		break;
-+	}
-+#endif
-+	return ret;
-+}
-+
-+/**
-+ * get_oppo_plane_seq - return opposite plane number according to PEB number
-+ *
-+ *
-+ */
-+static int get_oppo_plane_seq(struct ubi_device *ubi, loff_t addr)
-+{
-+	int peb;
-+
-+	peb = (int)(addr >> ubi->mtd->erasesize_shift);
-+
-+	if (peb % 2)
-+		return 0; /* plane 0 */
-+	else
-+		return 1; /* plane 1 */
-+}
-+
-+/**
-+ * check_original_data - check original data whether being corrupted.
-+ * @ubi: UBI device description object
-+ * @bak_addr: address of backup page
-+ *		if source block not erased, user oob data
-+ *		should equal to bak_addr.
-+ * @src_addr: source page address
-+ * @datbuf: point of backup data
-+ */
-+static int check_original_data(struct ubi_device *ubi, loff_t bak_addr,
-+					loff_t src_addr, uint8_t *datbuf)
-+{
-+	int i;
-+	loff_t read_addr;
-+	struct bakvol_oob_info *oob_info;
-+	void *buf = datbuf;
-+	int ret = -1;
-+
-+	struct mtd_oob_ops *ops = kmalloc(sizeof(struct mtd_oob_ops),
-+						GFP_KERNEL);
-+
-+	if (!ops) {
-+		ubi_err(ubi, "[%d]Error,kmalloc error!\n", __LINE__);
-+		goto out;
-+	}
-+
-+	ops->datbuf = kmalloc(ubi->min_io_size, GFP_KERNEL);
-+	ops->oobbuf = kmalloc(ubi->mtd->oobsize, GFP_KERNEL);
-+	if (!ops->datbuf || !ops->oobbuf) {
-+		ubi_err(ubi, "[%d]Error,kmalloc error!\n", __LINE__);
-+		goto free;
-+	}
-+
-+	ops->mode = MTD_OPS_AUTO_OOB;
-+	ops->ooblen = UBI_BAKVOL_OOB_SIZE;
-+	ops->len = ubi->min_io_size;
-+	ops->ooboffs = 0;
-+	ops->retlen = 0;
-+	ops->oobretlen = 0;
-+
-+	dbg_gen("%s:Source page addr = 0x%llx\n", __func__, src_addr);
-+
-+	ret = ubi->mtd->_read_oob(ubi->mtd, src_addr, ops);
-+
-+	if (ret < 0) {
-+		/*
-+		 * Read error, means this page being corrupted,
-+		 * need to recover.
-+		 */
-+		ret = 1;
-+		goto free;
-+	}
-+
-+	oob_info = (struct bakvol_oob_info *)ops->oobbuf;
-+	read_addr = be64_to_cpu(oob_info->addr);
-+	if (read_addr != bak_addr) {
-+		/*
-+		 * source page oobbuf != bak_addr, means this PEB already
-+		 * being erased or re-programmed. what's more, exsit bitflips
-+		 * in user oob area, anyway, current backup page data
-+		 * already is not corresponding source page data.
-+		*/
-+		dbg_gen("[%d] backup page address not match.\n", __LINE__);
-+		ret = 0;
-+		goto free;
-+	}
-+
-+	for (i = 0; i < ubi->min_io_size; i += 4) {
-+		if (*(u32 *)ops->datbuf != *(u32 *)buf) {
-+			ret = 1;
-+			goto free;
-+		}
-+	}
-+	ret = 0;
-+	dbg_gen("Original data not being corrupted.\n");
-+
-+free:
-+	kfree(ops->oobbuf);
-+	kfree(ops->datbuf);
-+	kfree(ops);
-+out:
-+	return ret;
-+
-+}
-+/**
-+ * find_last_programmed_page - find last page being programmed.
-+ * @ubi: UBI device description object
-+ * @pnum: PEB number
-+ * @ret_page: return last programmed page number
-+ */
-+static int find_last_programmed_page(struct ubi_device *ubi,
-+					int pnum, int *ret_page)
-+{
-+	struct mtd_info *mtd = ubi->mtd;
-+	int page, start_page, err;
-+
-+	oob_ops->mode = MTD_OPS_AUTO_OOB;
-+	oob_ops->ooblen = UBI_BAKVOL_OOB_SIZE;
-+	oob_ops->len = ubi->min_io_size;
-+	oob_ops->ooboffs = 0;
-+	oob_ops->retlen = 0;
-+	oob_ops->oobretlen = 0;
-+
-+	page = (mtd->erasesize - 1) >> mtd->writesize_shift;
-+	start_page = ubi->leb_start >> mtd->writesize_shift;
-+	for (; page >= start_page; page--) {
-+		err = ubi->mtd->_read_oob(ubi->mtd,
-+				(pnum << mtd->erasesize_shift) |
-+				(page << mtd->writesize_shift), oob_ops);
-+
-+		if (err < 0 && err != -EUCLEAN) {
-+			*ret_page = page;
-+			return -1;
-+		}
-+
-+		if (!ubi_check_pattern(oob_ops->oobbuf, 0xFF,
-+						oob_ops->ooblen)) {
-+			*ret_page = page;
-+			return 1;
-+		}
-+	}
-+	return 0;
-+}
-+
-+/**
-+ * get_peb_from_bakvol - get a PEB that already being opened by bakvol.
-+ * @ubi: UBI device description object
-+ * @plane: indicates this PEB should belong to which plane
-+ * @page_num: indicates which page should not be programmed
-+ */
-+static struct ubi_bkblk_info *get_peb_from_bakvol(struct ubi_device *ubi,
-+						char plane, int page_num)
-+{
-+	struct ubi_bkblk_tbl *backup_info = ubi->bkblk_tbl;
-+	struct list_head *head = &backup_info->head;
-+	struct ubi_bkblk_info *bbi, *tempbbi = NULL;
-+	int page;
-+
-+	if (list_empty(head)) {
-+		dbg_gen("%s:bakvol no already opened PEB.\n", __func__);
-+		return NULL;
-+	}
-+
-+	list_for_each_entry(bbi, head, node) {
-+		if (bbi->plane == plane) {
-+			page = get_next_lowerpage(bbi->pgnum);
-+			if (page == -1)
-+				continue;
-+			if (page == page_num) {
-+				/*
-+				 * Perfecct match
-+				 */
-+				tempbbi = bbi;
-+				break;
-+			} else if (page < page_num) {
-+				/*
-+				 * Make sure this page not be programmed.
-+				 */
-+				if (tempbbi == NULL)
-+					tempbbi = bbi;
-+				else {
-+					if (tempbbi->pgnum > bbi->pgnum)
-+						/*
-+						 * As far as possible choose
-+						 * the PEB with smallest page
-+						 * number.
-+						 */
-+						tempbbi = bbi;
-+				}
-+			}
-+		}
-+	}
-+
-+	if (tempbbi)
-+		dbg_gen("Get bakvol PEB %d:%d for original lower page %d.\n",
-+				tempbbi->peb, tempbbi->pgnum, page_num);
-+	else
-+		dbg_gen("Cannot get free bakvol PEB for plane %d:page %d.\n",
-+					plane, page_num);
-+
-+	return tempbbi;
-+}
-+
-+static void prepare_bakvol_oob_info(loff_t *addr,
-+			struct bakvol_oob_info *bakvol_oob)
-+{
-+	uint32_t crc;
-+
-+	ubi_assert(addr != NULL &&  bakvol_oob != NULL);
-+
-+	bakvol_oob->addr = cpu_to_be64(*(loff_t *)addr);
-+	crc = crc32(UBI_CRC32_INIT, bakvol_oob, UBI_BAKVOL_OOB_SIZE_CRC);
-+	bakvol_oob->crc = cpu_to_be32(crc);
-+}
-+
-+/**
-+ * validate_bakvol_oob_info- validate bakvol oob user info.
-+ * @ubi: UBI device description object
-+ * @oob_info: bakvol oob info
-+ *
-+ * This function returns zero if bakvol oob user info is valid,
-+ * and return 1 if not.
-+ */
-+static int validate_bakvol_oob_info(struct ubi_device *ubi,
-+			const struct bakvol_oob_info *oob_info)
-+{
-+	uint32_t crc, read_crc;
-+	int ret = 0;
-+
-+	crc = crc32(UBI_CRC32_INIT, oob_info, UBI_BAKVOL_OOB_SIZE_CRC);
-+	read_crc = be32_to_cpu(oob_info->crc);
-+	if (read_crc != crc) {
-+		ubi_err(ubi, "OOB info CRC error,calculate 0x%x, read 0x%0x",
-+							crc, read_crc);
-+		ret = 1;
-+	}
-+
-+	return ret;
-+}
-+
-+static struct
-+ubi_bkblk_info *find_min_free_space_peb(struct ubi_bkblk_tbl *backup_info)
-+{
-+	struct list_head *head = &backup_info->head;
-+	struct ubi_bkblk_info *bbi, *retbbi;
-+
-+	retbbi = list_first_entry(head, struct ubi_bkblk_info, node);
-+
-+	list_for_each_entry(bbi, head, node) {
-+		if (bbi->pgnum > retbbi->pgnum)
-+			retbbi = bbi;
-+	}
-+
-+	return retbbi;
-+}
-+
-+static struct
-+ubi_bkblk_info *allo_new_block_for_bakvol(struct ubi_device *ubi, u8 plane)
-+{
-+
-+	struct ubi_vid_hdr *vid_hdr;
-+	struct ubi_volume *vol;
-+	struct ubi_bkblk_tbl *backup_info = ubi->bkblk_tbl;
-+	struct ubi_bkblk_info *bbin, *newbbin;
-+	int bc_plane0, bc_plane1;
-+	int pnum;
-+	int err;
-+	int tries = 1;
-+
-+	vol = ubi->volumes[vol_id2idx(ubi, UBI_BACKUP_VOLUME_ID)];
-+
-+	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
-+	if (!vid_hdr)
-+		return NULL;
-+
-+	newbbin = kmalloc(sizeof(*newbbin), GFP_ATOMIC);
-+	if (!newbbin) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	vid_hdr->vol_type = UBI_VID_DYNAMIC;
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
-+	vid_hdr->vol_id = cpu_to_be32(UBI_BACKUP_VOLUME_ID);
-+	vid_hdr->compat = UBI_BACKUP_VOLUME_COMPAT;
-+	vid_hdr->data_pad = cpu_to_be32(0);
-+	vid_hdr->data_size = vid_hdr->used_ebs = vid_hdr->data_pad;
-+
-+retry:
-+	pnum = ubi_wl_get_plane_peb(ubi, plane);
-+
-+	if (pnum < 0) {
-+		err = -ENOMEM;
-+		goto free_mem;
-+	}
-+
-+	if (pnum%2 != plane) {
-+		err = pnum;
-+		goto free_mem;
-+	}
-+
-+	bc_plane0 = backup_info->bcount_of_plane[0];
-+	bc_plane1 = backup_info->bcount_of_plane[1];
-+
-+	if (bc_plane0 + bc_plane1 >= vol->reserved_pebs) {
-+		/**
-+		 * we make sure bakvol opened PEBs cannot overflow
-+		 * bakvol reserved PEB.
-+		 */
-+		dbg_gen("bakvol opened PEB over reserved PEB.\n");
-+		dbg_gen("Will put PEB with minimum free space.\n");
-+		bbin = find_min_free_space_peb(backup_info);
-+
-+		if (vol->eba_tbl[bbin->leb] >= 0) {
-+			dbg_gen("bakvol put PEB %d.\n", bbin->peb);
-+			err = ubi_wl_put_peb(ubi, vol->vol_id, bbin->leb,
-+							bbin->peb, 0);
-+			if (err)
-+				goto free_mem;
-+		}
-+
-+		vol->eba_tbl[bbin->leb] = UBI_LEB_UNMAPPED;
-+		backup_info->bcount_of_plane[bbin->plane]--;
-+		newbbin->leb = bbin->leb;
-+
-+		list_del(&bbin->node);
-+
-+	} else {
-+		int i = 0;
-+
-+		for (i = 0; i < vol->reserved_pebs; i++)
-+			if (vol->eba_tbl[i] == UBI_LEB_UNMAPPED) {
-+				newbbin->leb = i;
-+				break;
-+			}
-+	}
-+
-+	vid_hdr->lnum = cpu_to_be32(newbbin->leb);
-+	if ((newbbin->leb > vol->reserved_pebs) || (newbbin->leb < 0)) {
-+		ubi_err(ubi, "BUG: logic block number [%d] error.\n", newbbin->leb);
-+		panic("BUG!");
-+	}
-+
-+	err = ubi_io_write_vid_hdr(ubi, pnum, vid_hdr);
-+	if (err) {
-+		ubi_err(ubi, "Failed to write VID header to PEB %d.\n", pnum);
-+		goto write_error;
-+	}
-+
-+	vol->eba_tbl[newbbin->leb] = pnum;
-+
-+	newbbin->peb = pnum;
-+	newbbin->plane = plane;
-+	newbbin->pgnum = get_next_lowerpage(1); /* Skip page0 and page1 */
-+
-+	/* Update bakvol variable */
-+	backup_info->bcount_of_plane[plane]++;
-+	list_add(&newbbin->node, &backup_info->head);
-+
-+out:
-+	ubi_free_vid_hdr(ubi, vid_hdr);
-+	return newbbin;
-+
-+write_error:
-+	/*
-+	 * Bad luck? This physical eraseblock is bad too?  Let's try to
-+	 * get another one.
-+	 */
-+	ubi_err(ubi, "Failed to write to PEB %d", pnum);
-+	ubi_wl_put_peb(ubi, vol->vol_id, newbbin->leb, newbbin->peb, 1);
-+	if (++tries > UBI_IO_RETRIES)
-+		goto free_mem;
-+
-+	ubi_err(ubi, "Try again");
-+	goto retry;
-+
-+free_mem:
-+	ubi_free_vid_hdr(ubi, vid_hdr);
-+	kfree(newbbin);
-+	ubi_err(ubi, "%s:%d %d times failed to alloc a new block!",
-+			__func__, __LINE__, tries);
-+	return NULL;
-+}
-+
-+/**
-+ * is_backup_need -check if this page date need to be backup.
-+ * @ubi: UBI device description object
-+ * @addr: page address
-+ *
-+ * return 0, this page data shouldn't  backup
-+ * return 1, this page data should  backup
-+ */
-+int is_backup_need(struct ubi_device *ubi, loff_t addr)
-+{
-+	int page_num, ret;
-+
-+	page_num = (addr & ubi->mtd->erasesize_mask) >>
-+						ubi->mtd->writesize_shift;
-+	if (page_num == 0 || page_num == 1)
-+		/* Currently,we don't backup EC head and VID head */
-+		return 0;
-+
-+	ret = is_lowerpage(page_num);
-+	if (ret != 1) {
-+		dbg_gen("Page %d is %s page.\n", page_num,
-+				(ret == -1 ? "SLC" : "upper"));
-+		ret = 0;
-+	} else
-+		dbg_gen("Page %d is lower page.\n", page_num);
-+
-+	return ret;
-+}
-+
-+/**
-+ * ubi_check_bakvol_module - check if bakvol has been buildup
-+ * @ubi: UBI device description object
-+ *
-+ * returns 1 in case of  backup volume have been built,
-+ * 0 in case of don't find
-+ */
-+int ubi_check_bakvol_module(struct ubi_device *ubi)
-+{
-+	return (ubi->bkblk_tbl->bakvol_flag & UBI_BAKVOL_ENABLE);
-+}
-+
-+/**
-+ * ubi_duplicate_data_to_bakvol - dual plane program data into bakvol area
-+ *			and main area respectively.
-+ * @ubi: UBI device description object
-+ * @addr: address will be programmed
-+ * @len: date length
-+ * @retlen: already programmed data length
-+ * @buf: data buffer, points to data that should be programmed
-+ */
-+int ubi_duplicate_data_to_bakvol(struct ubi_device *ubi, loff_t addr,
-+				size_t len, size_t *retlen, const void *buf)
-+{
-+	struct ubi_bkblk_tbl *backup_info = ubi->bkblk_tbl;
-+	struct mtd_info *mtd = ubi->mtd;
-+	int err = 0, nobak = 0;
-+	int pnum;
-+	u8 oppe_plane;
-+	loff_t lpage_addr; /* Lower page byte address */
-+	struct ubi_bkblk_info *pbk;
-+	int page_num;
-+	struct bakvol_oob_info *oob_bak = NULL, *oob_src = NULL;
-+
-+	if (len > ubi->min_io_size) {
-+		ubi_err(ubi, "%d: Write data len overflow [%d]\n",
-+							__LINE__, len);
-+		return -EROFS;
-+	}
-+
-+	if (!buf) {
-+		ubi_err(ubi, "%d: Write buf is NULL!\n", __LINE__);
-+		return -EROFS;
-+
-+	}
-+	oppe_plane = get_oppo_plane_seq(ubi, addr);
-+
-+	page_num = (int)(addr & ubi->mtd->erasesize_mask) >>
-+						ubi->mtd->writesize_shift;
-+	pnum = (int)(addr >> ubi->mtd->erasesize_shift);
-+
-+	oob_bak = kzalloc(UBI_BAKVOL_OOB_SIZE, GFP_KERNEL);
-+	if (!oob_bak) {
-+		err = -ENOMEM;
-+		ubi_err(ubi, "%s:%d: kzalloc error.\n",
-+						__func__, __LINE__);
-+		goto free;
-+	}
-+
-+	oob_src = kzalloc(UBI_BAKVOL_OOB_SIZE, GFP_KERNEL);
-+	if (!oob_src) {
-+		err = -ENOMEM;
-+		ubi_err(ubi, "%s:%d: kzalloc error.\n",
-+						__func__, __LINE__);
-+		goto free;
-+	}
-+
-+	if (backup_info->bcount_of_plane[oppe_plane] == 0)
-+		pbk = NULL;
-+	else
-+		pbk = get_peb_from_bakvol(ubi, oppe_plane, page_num);
-+
-+	if (pbk == NULL) {
-+		dbg_gen("Allocate new PEB for Bakvol.\n");
-+		pbk = allo_new_block_for_bakvol(ubi, oppe_plane);
-+		if (!pbk) {
-+			ubi_err(ubi, "Allocate new PEB failed.\n");
-+			nobak = 1;
-+			goto Only_source;
-+		}
-+	}
-+
-+	/*
-+	 * Here original page address stores in user oob area of bakvol page,
-+	 * and corresponding its backup page address stores in user oob area of
-+	 * main data area page.
-+	*/
-+	lpage_addr = (pbk->peb << mtd->erasesize_shift) |
-+				(page_num << mtd->writesize_shift);
-+
-+	/*
-+	 * organize bakvol page ops
-+	*/
-+	oob_ops_bak->datbuf = (uint8_t *)buf;
-+	oob_ops_bak->mode = MTD_OPS_AUTO_OOB;
-+	oob_ops_bak->ooblen = UBI_BAKVOL_OOB_SIZE;
-+	prepare_bakvol_oob_info(&addr, oob_bak);
-+	oob_ops_bak->oobbuf = (uint8_t *)oob_bak; /* Original page addr */
-+	oob_ops_bak->len = len;
-+	oob_ops_bak->ooboffs = 0;
-+	oob_ops_bak->retlen = 0;
-+	oob_ops_bak->oobretlen = 0;
-+
-+Only_source:
-+	/*
-+	 * Organize main data area page ops
-+	*/
-+	oob_ops_src->datbuf = (uint8_t *)buf;
-+	oob_ops_src->mode = MTD_OPS_AUTO_OOB;
-+	oob_ops_src->ooblen = UBI_BAKVOL_OOB_SIZE;
-+	prepare_bakvol_oob_info(&lpage_addr, oob_src);
-+	oob_ops_src->oobbuf = (uint8_t *)oob_src; /* backup page addr */
-+	oob_ops_src->len = len;
-+	oob_ops_src->ooboffs = 0;
-+	oob_ops_src->retlen = 0;
-+	oob_ops_src->oobretlen = 0;
-+
-+	if (!nobak)
-+		err = mtd_write_dual_plane_oob(ubi->mtd, lpage_addr,
-+						oob_ops_bak, addr, oob_ops_src);
-+
-+	if ((err == -EOPNOTSUPP) || (nobak == 1)) {
-+		/*
-+		 * If dual plane program function not enable, or get
-+		 * bakvol peb failed, we only program original data to
-+		 * main data area.
-+		*/
-+		ubi_err(ubi, "Only program source data.\n");
-+		err = mtd_write_oob(ubi->mtd, addr, oob_ops_src);
-+		goto out;
-+	}
-+
-+	pbk->pgnum = page_num; /* updata bakvol PEB programmed page info */
-+
-+out:
-+	if (err)
-+		*retlen = 0;
-+	else
-+		*retlen = len;
-+free:
-+	kfree(oob_bak);
-+	kfree(oob_src);
-+	return err;
-+}
-+
-+
-+int ubi_bakvol_module_init(struct ubi_device *ubi)
-+{
-+	int step;
-+
-+	if ((ubi->mtd->type != MTD_MLCNANDFLASH) ||
-+		(ubi->mtd->oobavail < UBI_BAKVOL_OOB_SIZE)) {
-+		ubi_err(ubi, "NAND cann't meet Bakvol module requirement.\n");
-+		step = 0;
-+		goto out_init;
-+	}
-+
-+	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
-+	if (!ech) {
-+		step = 1;
-+		goto out_init;
-+	}
-+
-+	vidh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
-+	if (!vidh) {
-+		step = 2;
-+		goto out_ech;
-+	}
-+
-+	ubi->bkblk_tbl = kzalloc(sizeof(struct ubi_bkblk_tbl), GFP_KERNEL);
-+	if (!ubi->bkblk_tbl) {
-+		step = 3;
-+		goto out_vidh;
-+	}
-+	ubi->bkblk_tbl->bcount_of_plane[0] = 0;
-+	ubi->bkblk_tbl->bcount_of_plane[1] = 0;
-+	INIT_LIST_HEAD(&ubi->bkblk_tbl->head);
-+
-+	oob_ops_bak = kzalloc(sizeof(struct mtd_oob_ops), GFP_KERNEL);
-+	if (!oob_ops_bak) {
-+		step = 4;
-+		goto out_backup_info;
-+	}
-+
-+	oob_ops_bak->oobbuf = kzalloc(ubi->mtd->oobsize, GFP_KERNEL);
-+	if (!oob_ops_bak->oobbuf) {
-+		step = 5;
-+		goto out_back_oob_ops;
-+	}
-+
-+	oob_ops_src = kzalloc(sizeof(struct mtd_oob_ops), GFP_KERNEL);
-+	if (!oob_ops_src) {
-+		step = 6;
-+		goto out_obs_src;
-+	}
-+
-+	oob_ops_src->oobbuf = kzalloc(ubi->mtd->oobsize, GFP_KERNEL);
-+	if (!oob_ops_src->oobbuf) {
-+		step = 7;
-+		goto out_oob_ops;
-+	}
-+
-+	oob_ops = kmalloc(sizeof(struct mtd_oob_ops), GFP_KERNEL);
-+	if (!oob_ops) {
-+		step = 8;
-+		goto out0;
-+	}
-+
-+	oob_ops->datbuf = kmalloc(ubi->min_io_size, GFP_KERNEL);
-+	if (!oob_ops->datbuf) {
-+		step = 9;
-+		goto out1;
-+	}
-+
-+	oob_ops->oobbuf = kmalloc(ubi->mtd->oobsize, GFP_KERNEL);
-+	if (!oob_ops->oobbuf) {
-+		step = 10;
-+		goto out2;
-+	}
-+
-+	ubi_free_vid_hdr(ubi, vidh);
-+	kfree(ech);
-+
-+	ubi->bkblk_tbl->bakvol_flag = UBI_BAKVOL_INIT_START;
-+	return 0;
-+
-+out2:
-+	kfree(oob_ops->datbuf);
-+out1:
-+	kfree(oob_ops);
-+out0:
-+	kfree(oob_ops_src->oobbuf);
-+out_oob_ops:
-+	kfree(oob_ops_src);
-+out_obs_src:
-+	kfree(oob_ops_bak->oobbuf);
-+out_back_oob_ops:
-+	kfree(oob_ops_bak);
-+out_backup_info:
-+	kfree(ubi->bkblk_tbl);
-+out_vidh:
-+	ubi_free_vid_hdr(ubi, vidh);
-+out_ech:
-+	kfree(ech);
-+out_init:
-+	ubi_err(ubi, "bakvol module init error,init step [%d].\n", step);
-+	ubi->bkblk_tbl->bakvol_flag = UBI_BAKVOL_REJECT;
-+	return -1;
-+}
-+
-+/**
-+ * ubi_bakvol_peb_scan - check VID header,see if this PEB
-+ *				belongs to bakvol
-+ *
-+ * This function returns 1 if this PEB not belongs to bakvol
-+ * return -1 in case of allocate resource error
-+ * return 0  if scan complete, and it belongs to bakvol
-+ */
-+int ubi_bakvol_peb_scan(struct ubi_device *ubi, struct ubi_vid_hdr *vidh,
-+								int pnum)
-+{
-+	int page;
-+	int vol_id;
-+	struct ubi_bkblk_info *bbi;
-+	int lnum;
-+	int ret;
-+
-+	page = 0;
-+
-+	vol_id = be32_to_cpu(vidh->vol_id);
-+	if (vol_id == UBI_BACKUP_VOLUME_ID) {
-+		/* Found bakvol PEB */
-+		lnum = be32_to_cpu(vidh->lnum);
-+		dbg_gen("%s:Found backup PEB,pnum is [%d],lnum is[%d].\n",
-+							__func__, pnum, lnum);
-+
-+		/* Unsupported internal volume */
-+		if (vidh->compat != UBI_COMPAT_REJECT) {
-+			ubi_err(ubi, "Backup volume compat != UBI_COMPAT_REJECT\n");
-+			return -1;
-+		}
-+	} else {
-+		return 1;
-+	}
-+
-+	ret = find_last_programmed_page(ubi, pnum, &page);
-+	dbg_gen("bakvol PEB %d last programmed page [%d]\n", pnum, page);
-+
-+	if (ret == 1) {
-+		bbi = kmalloc(sizeof(*bbi), GFP_ATOMIC);
-+		if (!bbi)
-+			goto out;
-+
-+		bbi->peb = pnum;
-+		bbi->leb = lnum;
-+		bbi->pgnum = page;
-+		bbi->plane = pnum % 2;
-+		bbi->plane ? (ubi->bkblk_tbl->bcount_of_plane[1]++) :
-+					(ubi->bkblk_tbl->bcount_of_plane[0]++);
-+		list_add(&bbi->node, &ubi->bkblk_tbl->head);
-+	} else if (ret == 0) {
-+		/* This backup PEB has not been programmed. */
-+		bbi = kmalloc(sizeof(*bbi), GFP_ATOMIC);
-+		if (!bbi)
-+			goto out;
-+		bbi->peb = pnum;
-+		bbi->leb = lnum;
-+		bbi->pgnum = get_next_lowerpage(1);
-+		bbi->plane = pnum % 2;
-+		bbi->plane ? (ubi->bkblk_tbl->bcount_of_plane[1]++) :
-+					(ubi->bkblk_tbl->bcount_of_plane[0]++);
-+		list_add(&bbi->node, &ubi->bkblk_tbl->head);
-+	} else {
-+		/* Backup block is corrupted,maybe power cut happened during
-+		 * programming lower page. so this backup block with corrupted
-+		 * page can be removed from bakvol volume.
-+		 */
-+		dbg_gen("PEB %d will be removed from backup volume later.\n",
-+									pnum);
-+
-+		bbi = kmalloc(sizeof(*bbi), GFP_ATOMIC);
-+		if (!bbi)
-+			goto out;
-+		bbi->peb = pnum;
-+		bbi->leb = lnum;
-+		bbi->pgnum = page;
-+		bbi->plane = pnum % 2;
-+		bbi->plane ? (ubi->bkblk_tbl->bcount_of_plane[1]++) :
-+				(ubi->bkblk_tbl->bcount_of_plane[0]++);
-+		list_add(&bbi->node, &ubi->bkblk_tbl->head);
-+	}
-+
-+	return 0;
-+out:
-+	return -1;
-+
-+}
-+
-+/**
-+ * ubi_bakvol_module_init_tail - init backup volume.
-+ * @ubi: UBI device description object
-+ * @si: scanning information
-+ *
-+ * This function init the backup volume
-+ * Returns zero in case of success and a negative
-+ * error code in case of failure
-+ */
-+int ubi_bakvol_module_init_tail(struct ubi_device *ubi,
-+					struct ubi_attach_info *si)
-+{
-+	int reserved_pebs = 0;
-+	struct ubi_volume *vol;
-+	struct ubi_bkblk_info *bbi;
-+
-+	if (ubi->bkblk_tbl->bakvol_flag & UBI_BAKVOL_REJECT)
-+		return 0;
-+
-+	if (!(ubi->bkblk_tbl->bakvol_flag & UBI_BAKVOL_INIT_DONE)) {
-+
-+		/* And add the layout volume */
-+		vol = kzalloc(sizeof(struct ubi_volume), GFP_KERNEL);
-+		if (!vol)
-+			return -ENOMEM;
-+
-+		vol->reserved_pebs = UBI_BACKUP_VOLUME_EBS;
-+		vol->alignment = 1;
-+		vol->vol_type = UBI_DYNAMIC_VOLUME;
-+		vol->name_len = sizeof(UBI_BACKUP_VOLUME_NAME) - 1;
-+		vol->data_pad = 0;
-+		memcpy(vol->name, UBI_BACKUP_VOLUME_NAME, vol->name_len + 1);
-+
-+		vol->usable_leb_size = ubi->leb_size;
-+		vol->used_ebs = vol->reserved_pebs;
-+		vol->last_eb_bytes = vol->reserved_pebs;
-+		vol->used_bytes =
-+		    (long long)vol->used_ebs * (ubi->leb_size - vol->data_pad);
-+		vol->vol_id = UBI_BACKUP_VOLUME_ID;
-+		vol->ref_count = UBI_BACKUP_VOLUME_EBS;
-+		ubi->volumes[vol_id2idx(ubi, vol->vol_id)] = vol;
-+		reserved_pebs += vol->reserved_pebs;
-+		ubi->vol_count += 1;
-+		vol->ubi = ubi;
-+		if (reserved_pebs > ubi->avail_pebs) {
-+			ubi_err(ubi, "No enough PEBs, required %d, available %d",
-+				reserved_pebs, ubi->avail_pebs);
-+			return -1;
-+		}
-+		ubi->rsvd_pebs += reserved_pebs;
-+		ubi->avail_pebs -= reserved_pebs;
-+
-+		ubi->bkblk_tbl->bakvol_flag = UBI_BAKVOL_INIT_DONE;
-+
-+		ubi_msg(ubi, "bakvol module opened PEB list:");
-+		list_for_each_entry(bbi, &(ubi->bkblk_tbl->head), node) {
-+			ubi_msg(ubi, "peb %d,pgnum %d,plane %d,;leb %d.",
-+				bbi->peb, bbi->pgnum, bbi->plane, bbi->leb);
-+		}
-+	}
-+	return 0;
-+}
-+
-+int ubi_corrupted_data_recovery(struct ubi_volume_desc *desc)
-+{
-+	u32 base_offset, buff_offset, pnum, offset, page;
-+	u32 correct, uncorrect_l, uncorrect_h;
-+	int ret, err;
-+	struct ubi_device *ubi = desc->vol->ubi;
-+	struct mtd_info *mtd = ubi->mtd;
-+	struct ubi_bkblk_info *bbi;
-+	unsigned char *buf = ubi->peb_buf;
-+	struct ubi_volume_desc volume_desc;
-+	int i, move;
-+	loff_t bakpage_addr;
-+	struct bakvol_oob_info *oob_info;
-+	off_t src_addr;
-+
-+	move = 0;
-+	correct = 0;
-+	uncorrect_h = 0;
-+	uncorrect_l = 0;
-+
-+	if ((ubi->bkblk_tbl->bakvol_flag & UBI_BAKVOL_RECOVERY) ||
-+		!(ubi->bkblk_tbl->bakvol_flag & UBI_BAKVOL_INIT_DONE))
-+		return 0;
-+
-+	vidh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
-+	if (!vidh)
-+		return -1;
-+
-+	oob_ops->mode = MTD_OPS_AUTO_OOB;
-+	oob_ops->ooblen = UBI_BAKVOL_OOB_SIZE;
-+	oob_ops->len = ubi->min_io_size;
-+
-+	list_for_each_entry(bbi, &(ubi->bkblk_tbl->head), node) {
-+		dbg_gen("Processing bakvol PEB %d,pgnum %d,plane %d.\n",
-+			bbi->peb, bbi->pgnum, bbi->plane);
-+		i = get_next_lowerpage(1);
-+
-+		for ( ; (i <= bbi->pgnum) && (i != -1);
-+				i = get_next_lowerpage(i)) {
-+			/*
-+			 * Read backup data from bakvol PEB with OOB.
-+			*/
-+			oob_ops->ooboffs = 0;
-+			oob_ops->retlen = 0;
-+			oob_ops->oobretlen = 0;
-+
-+			err = ubi->mtd->_read_oob(ubi->mtd,
-+					(bbi->peb << mtd->erasesize_shift) |
-+					(i << mtd->writesize_shift), oob_ops);
-+
-+			if (err < 0 && err != -EUCLEAN) {
-+				dbg_gen("Read bakvol PEB %d:%d error %d.\n",
-+						bbi->peb, i, err);
-+				move = 1;
-+				continue;
-+			}
-+
-+			if (ubi_check_pattern(oob_ops->oobbuf, 0xFF,
-+						oob_ops->ooblen)) {
-+				dbg_gen("Bakvol PEB %d ever skip lower page %d.\n",
-+						bbi->peb, i);
-+				continue;
-+			}
-+
-+			oob_info = (struct bakvol_oob_info *)oob_ops->oobbuf;
-+
-+			if (validate_bakvol_oob_info(ubi, oob_info)) {
-+				dbg_gen("Bakvol PEB %d page %d user oob area exist bitflips.\n",
-+						bbi->peb, i);
-+				continue;
-+			}
-+
-+		src_addr = be64_to_cpu(oob_info->addr);
-+
-+		/*
-+		 * Calculate backup page address, used for check if source block
-+		 * already being erased or re-mapped.
-+		*/
-+		bakpage_addr = (bbi->peb << mtd->erasesize_shift) |
-+					(i << mtd->writesize_shift);
-+
-+		ret = check_original_data(ubi, bakpage_addr,
-+						src_addr, oob_ops->datbuf);
-+		  if (ret == 1) {
-+			/* The original data isn't correct anymore,
-+			 * already being damaged, and oobbuf store original page
-+			 * address.
-+			 */
-+			pnum = src_addr >> mtd->erasesize_shift;
-+			offset = src_addr & mtd->erasesize_mask;
-+			buff_offset = 0;
-+
-+			/**
-+			 * Recover operation
-+			 */
-+
-+			for (base_offset = ubi->leb_start;
-+				base_offset < ubi->peb_size;
-+				base_offset += mtd->writesize) {
-+
-+				ret = ubi_io_read(ubi, buf + buff_offset, pnum,
-+						base_offset, mtd->writesize);
-+
-+			if (ret == -EBADMSG || ret == -EIO) {
-+				if (base_offset == offset) {
-+				    dbg_gen("Bakvol recover offset 0x%x.....\n",
-+						base_offset);
-+				    memcpy(buf + buff_offset, oob_ops->datbuf,
-+							mtd->writesize);
-+				    correct++;
-+				} else {
-+				    page = base_offset >> mtd->writesize_shift;
-+					if (is_lowerpage(page)) {
-+						/* More low-page also
-+						 * be corrupted */
-+						uncorrect_l++;
-+					ubi_err(ubi, "PEB %d unrecovery lower page %d\n",
-+								pnum, page);
-+					uncorrect_l++;
-+					} else {
-+					/**
-+					 * Unbackup upper page also
-+					 * be corruptted */
-+					ubi_err(ubi, "PEB %d unrecovery upper page %d.\n",
-+								pnum, page);
-+					uncorrect_h++;
-+					}
-+				}
-+			}
-+
-+			ret = ubi_check_pattern(buf + buff_offset, 0xFF,
-+							mtd->writesize);
-+			if (ret)
-+				/* This page is empty, so the last of pages
-+				 * also are empty, no need to read.*/
-+				break;
-+
-+			buff_offset += mtd->writesize;
-+			}
-+
-+		if ((correct == 0) || (uncorrect_h > 1) || (uncorrect_l > 0)) {
-+			/* Could not recover. We only accept two corrupted
-+			 * pages, they are paired-page. If there are two
-+			 * corrupted lower pages within one PEB, also give
-+			 * up recovery.
-+			 */
-+			dbg_gen("Can not be recoverred.\n");
-+			uncorrect_l = 0;
-+			uncorrect_h = 0;
-+			continue;
-+			}
-+
-+		ret = ubi_io_read_vid_hdr(ubi, pnum, vidh, 0);
-+
-+		volume_desc.vol = ubi->volumes[be32_to_cpu(vidh->vol_id)];
-+		volume_desc.mode = UBI_READWRITE;
-+		ret = ubi_leb_change(&volume_desc, be32_to_cpu(vidh->lnum),
-+							buf, buff_offset);
-+		correct = 0;
-+		uncorrect_h = 0;
-+
-+		if (ret) {
-+			ubi_err(ubi, "Changing %d bytes in LEB %d failed",
-+						buff_offset, vidh->lnum);
-+			ubi_err(ubi, "Ret error:%d.", ret);
-+			dump_stack();
-+		} else
-+			dbg_gen(".....Done\n");
-+
-+	  }
-+
-+	}
-+
-+		if (move == 1) {
-+		    bbi->pgnum = (ubi->mtd->erasesize - 1) >>
-+					ubi->mtd->writesize_shift;
-+		    move = 0;
-+		}
-+	}
-+	ubi->bkblk_tbl->bakvol_flag |= UBI_BAKVOL_RECOVERY;
-+	ubi_free_vid_hdr(ubi, vidh);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(ubi_corrupted_data_recovery);
-+
-+void clear_bakvol(struct ubi_device *ubi)
-+{
-+	kfree(oob_ops->datbuf);
-+	kfree(oob_ops);
-+	kfree(oob_ops_src->oobbuf);
-+	kfree(oob_ops_src);
-+	kfree(oob_ops_bak->oobbuf);
-+	kfree(oob_ops_bak);
-+	kfree(ubi->bkblk_tbl);
-+	ubi->bkblk_tbl->bakvol_flag = UBI_BAKVOL_INIT_START;
-+}
-+
-+void init_bakvol(struct ubi_volume_desc *desc, uint8_t choice)
-+{
-+	struct ubi_volume *vol = desc->vol;
-+	struct ubi_device *ubi = vol->ubi;
-+
-+	if (choice) {
-+		if (ubi->bkblk_tbl->bakvol_flag & UBI_BAKVOL_INIT_DONE ||
-+			ubi->bkblk_tbl->bakvol_flag & UBI_BAKVOL_DISABLE) {
-+			dbg_gen("[%s][%d] Enable bakvol module successfully!\n",
-+						__func__, __LINE__);
-+			ubi->bkblk_tbl->bakvol_flag &= ~UBI_BAKVOL_DISABLE;
-+			ubi->bkblk_tbl->bakvol_flag |= UBI_BAKVOL_ENABLE;
-+
-+		} else
-+			dbg_gen("[%s][%d] Enable bakvol module failed!\n",
-+					__func__, __LINE__);
-+
-+	} else {
-+		ubi->bkblk_tbl->bakvol_flag &= ~UBI_BAKVOL_ENABLE;
-+		ubi->bkblk_tbl->bakvol_flag |= UBI_BAKVOL_DISABLE;
-+		dbg_gen("[%s][%d] Disable bakvol module!\n",
-+						__func__, __LINE__);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(init_bakvol);
-+#else
-+int is_backup_need(struct ubi_device *ubi, loff_t addr)
-+{
-+	return 0;
-+}
-+
-+int ubi_check_bakvol_module(struct ubi_device *ubi)
-+{
-+
-+	return 0;
-+}
-+
-+int ubi_duplicate_data_to_bakvol(struct ubi_device *ubi, loff_t addr,
-+				size_t len, size_t *retlen, const void *buf)
-+{
-+	return 0;
-+}
-+int ubi_bakvol_module_init(struct ubi_device *ubi)
-+{
-+	return 0;
-+
-+}
-+
-+int ubi_bakvol_peb_scan(struct ubi_device *ubi, struct ubi_vid_hdr *vidh,
-+								int pnum)
-+{
-+	return 0;
-+}
-+
-+int ubi_bakvol_module_init_tail(struct ubi_device *ubi,
-+					struct ubi_attach_info *si)
-+{
-+	return 0;
-+}
-+
-+int ubi_corrupted_data_recovery(struct ubi_volume_desc *desc)
-+{
-+	return 0;
-+
-+}
-+EXPORT_SYMBOL_GPL(ubi_corrupted_data_recovery);
-+
-+
-+void clear_bakvol(struct ubi_device *ubi)
-+{
-+
-+}
-+
-+void init_bakvol(struct ubi_volume_desc *desc, uint8_t choice)
-+{
-+
-+}
-+EXPORT_SYMBOL_GPL(init_bakvol);
-+#endif
-+
-+MODULE_LICENSE("Dual MPL/GPL");
-+MODULE_AUTHOR("Bean Huo <beanhuo@micron.com>");
-+MODULE_DESCRIPTION("Support code for MLC NAND pair page powerloss protection");
--- 
-1.9.1
+--cWoXeonUoKmBZSoM
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--cWoXeonUoKmBZSoM--
