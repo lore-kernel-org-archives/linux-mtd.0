@@ -1,8 +1,8 @@
 Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aQQm1-0002YC-0R
+ id 1aQQm1-0002YA-0U
  for linux-mtd@lists.infradead.org; Tue, 02 Feb 2016 02:32:59 +0000
-Received: by mail-pf0-x242.google.com with SMTP id n128so8234153pfn.3
+Received: by mail-pf0-x242.google.com with SMTP id 66so7810467pfe.2
  for <linux-mtd@lists.infradead.org>; Mon, 01 Feb 2016 18:32:40 -0800 (PST)
 From: Bean Huo <jackyard88@gmail.com>
 To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
@@ -10,10 +10,10 @@ To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
 Cc: beanhuo@micron.com, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, zszubbocsev@micron.com,
  peterpandong@micron.com
-Subject: [PATCH v2 06/17] drivers:mtd:ubi:add bakvol function define in ubi
- layer
-Date: Tue,  2 Feb 2016 02:30:41 +0000
-Message-Id: <1454380252-16170-7-git-send-email-jackyard88@gmail.com>
+Subject: [PATCH v2 05/17] drivers:mtd:ubi:add bakvol on-flash and RAM data
+ structures
+Date: Tue,  2 Feb 2016 02:30:40 +0000
+Message-Id: <1454380252-16170-6-git-send-email-jackyard88@gmail.com>
 In-Reply-To: <1454380252-16170-1-git-send-email-jackyard88@gmail.com>
 References: <1454380252-16170-1-git-send-email-jackyard88@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,85 +27,113 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bean Huo <beanhuo@micron.com>
 
-This file patch is to add bakvol function define in ubi layer and
-add bakvol point in ubi_device structure. Add one new parameter for ubi layer write
-function, in order to indicate if this time programming data should be protected.
+This file is to add bakvol default configure and on-flash data structures.
+Here add three key structures:
+        ubi_bkblk_info: for backup block programming info.
+        bakvol_oob_info: for user oob area bakvol data structure.
+        ubi_bkblk_tbl: for bakvol module info.
 
 Signed-off-by: BeanHuo <beanhuo@micron.com>
 ---
- drivers/mtd/ubi/ubi.h | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+ drivers/mtd/ubi/ubi-media.h | 64 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 2974b67..4a80359 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -438,6 +438,7 @@ struct ubi_debug_info {
-  * @vtbl_slots: how many slots are available in the volume table
-  * @vtbl_size: size of the volume table in bytes
-  * @vtbl: in-RAM volume table copy
-+ * @bkblk_tbl: backup block table
-  * @device_mutex: protects on-flash volume table and serializes volume
-  *                creation, deletion, update, re-size, re-name and set
-  *                property
-@@ -547,6 +548,7 @@ struct ubi_device {
- 	int vtbl_slots;
- 	int vtbl_size;
- 	struct ubi_vtbl_record *vtbl;
-+	struct ubi_bkblk_tbl *bkblk_tbl;
- 	struct mutex device_mutex;
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index d0d072e..8981a39 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -31,6 +31,7 @@
+ #define __UBI_MEDIA_H__
  
- 	int max_ec;
-@@ -797,6 +799,20 @@ int ubi_vtbl_rename_volumes(struct ubi_device *ubi,
- 			    struct list_head *rename_list);
- int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_attach_info *ai);
+ #include <asm/byteorder.h>
++#include <linux/list.h>
  
-+/* bakvol.c*/
-+int ubi_check_bakvol_module(struct ubi_device *ubi);
-+int ubi_duplicate_data_to_bakvol(struct ubi_device *ubi, loff_t addr,
-+		size_t len, size_t *retlen, const void *buf);
-+int ubi_bakvol_module_init(struct ubi_device *ubi);
-+int ubi_bakvol_peb_scan(struct ubi_device *ubi,
-+			struct ubi_vid_hdr *vidh, int pnum);
-+int ubi_bakvol_module_init_tail(struct ubi_device *ubi,
-+				struct ubi_attach_info *si);
-+int ubi_corrupted_data_recovery(struct ubi_volume_desc *desc);
-+int is_backup_need(struct ubi_device *ubi, loff_t addr);
-+void init_bakvol(struct ubi_volume_desc *desc, uint8_t choice);
-+void clear_bakvol(struct ubi_device *ubi);
+ /* The version of UBI images supported by this implementation */
+ #define UBI_VERSION 1
+@@ -295,7 +296,11 @@ struct ubi_vid_hdr {
+ } __packed;
+ 
+ /* Internal UBI volumes count */
++#ifdef CONFIG_MTD_UBI_MLC_NAND_BAKVOL
++#define UBI_INT_VOL_COUNT 2
++#else
+ #define UBI_INT_VOL_COUNT 1
++#endif
+ 
+ /*
+  * Starting ID of internal volumes: 0x7fffefff.
+@@ -312,6 +317,15 @@ struct ubi_vid_hdr {
+ #define UBI_LAYOUT_VOLUME_NAME   "layout volume"
+ #define UBI_LAYOUT_VOLUME_COMPAT UBI_COMPAT_REJECT
+ 
++/* The backup log volume */
 +
- /* vmt.c */
- int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req);
- int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl);
-@@ -846,6 +862,7 @@ int self_check_eba(struct ubi_device *ubi, struct ubi_attach_info *ai_fastmap,
++#define UBI_BACKUP_VOLUME_ID     (UBI_INTERNAL_VOL_START + 1)
++#define UBI_BACKUP_VOLUME_TYPE   UBI_VID_DYNAMIC
++#define UBI_BACKUP_VOLUME_ALIGN  1
++#define UBI_BACKUP_VOLUME_EBS    20
++#define UBI_BACKUP_VOLUME_NAME   "bakvol"
++#define UBI_BACKUP_VOLUME_COMPAT UBI_COMPAT_REJECT
++
+ /* The maximum number of volumes per one UBI device */
+ #define UBI_MAX_VOLUMES 128
  
- /* wl.c */
- int ubi_wl_get_peb(struct ubi_device *ubi);
-+int ubi_wl_get_plane_peb(struct ubi_device *ubi, int plane);
- int ubi_wl_put_peb(struct ubi_device *ubi, int vol_id, int lnum,
- 		   int pnum, int torture);
- int ubi_wl_flush(struct ubi_device *ubi, int vol_id, int lnum);
-@@ -864,7 +881,7 @@ int ubi_ensure_anchor_pebs(struct ubi_device *ubi);
- int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
- 		int len);
- int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
--		 int len);
-+		 int len, int safeguard);
- int ubi_io_sync_erase(struct ubi_device *ubi, int pnum, int torture);
- int ubi_io_is_bad(const struct ubi_device *ubi, int pnum);
- int ubi_io_mark_bad(const struct ubi_device *ubi, int pnum);
-@@ -1054,10 +1071,10 @@ static inline int ubi_io_read_data(const struct ubi_device *ubi, void *buf,
-  * physical eraseblock.
-  */
- static inline int ubi_io_write_data(struct ubi_device *ubi, const void *buf,
--				    int pnum, int offset, int len)
-+				    int pnum, int offset, int len, int safeguard)
- {
- 	ubi_assert(offset >= 0);
--	return ubi_io_write(ubi, buf, pnum, offset + ubi->leb_start, len);
-+	return ubi_io_write(ubi, buf, pnum, offset + ubi->leb_start, len, safeguard);
- }
+@@ -325,6 +339,56 @@ struct ubi_vid_hdr {
+ #define UBI_VTBL_RECORD_SIZE_CRC (UBI_VTBL_RECORD_SIZE - sizeof(__be32))
  
  /**
++ * struct ubi_bkblk_info - the information for one backup block .
++ * @peb: physical block number
++ * @leb:  logic block number
++ * @plane: this block belongs to which plane
++ * @pgnum: the page number that already be programmed last time.
++ */
++struct ubi_bkblk_info {
++	__be32  peb;
++	__be32  leb;
++	__u8    plane;
++	__be32  pgnum;
++	struct  list_head node;
++}__packed;
++
++/**
++ * struct bakvol_oob_info - user oob area structure.
++ * @addr: address of source/backup page
++ * @crc: CRC-32 checksum of addr
++ *
++ */
++struct bakvol_oob_info {
++	loff_t addr;
++	__le32 crc;
++} __packed;
++
++/* Sizes of bakvol oob area */
++#define UBI_BAKVOL_OOB_SIZE sizeof(struct bakvol_oob_info)
++
++/* Sizes of bakvol oob area without the ending CRC */
++#define UBI_BAKVOL_OOB_SIZE_CRC (UBI_BAKVOL_OOB_SIZE - sizeof(__be32))
++
++/**
++ * struct ubi_bkblk_tbl - a table for backup blocks.
++ * @bakvol_flag: indicate if backup volume be initted
++ * @bcount_of_plane: block count that has bee applied for corresponding plane
++ * @head: the list of backup blocks.
++ */
++struct ubi_bkblk_tbl {
++	__u8    bakvol_flag;
++#define UBI_BAKVOL_INIT_START 0x01 /* init bakvol module start */
++#define UBI_BAKVOL_REJECT 0x02 /* reject bakvol module operations */
++#define UBI_BAKVOL_INIT_DONE 0x04 /* init bakvol module done */
++#define UBI_BAKVOL_ENABLE 0x08 /* enable bakvol module */
++#define UBI_BAKVOL_DISABLE 0x10 /* disable bakvol module */
++#define UBI_BAKVOL_RECOVERY 0x20 /* bakvol recovery already done */
++	__be32  bcount_of_plane[2];
++	struct  list_head head;
++}__packed;;
++
++/**
+  * struct ubi_vtbl_record - a record in the volume table.
+  * @reserved_pebs: how many physical eraseblocks are reserved for this volume
+  * @alignment: volume alignment
 -- 
 1.9.1
