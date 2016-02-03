@@ -1,26 +1,16 @@
-Subject: Re: [PATCH linux-next v2 01/14] mtd: spi-nor: remove
- micron_quad_enable()
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF57A75@NTXXIAMBX02.xacn.micron.com>
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Brian
- Norris" <computersforpeace@gmail.com>, "nicolas.ferre@atmel.com"
- <nicolas.ferre@atmel.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, "marex@denx.de" <marex@denx.de>,
- "vigneshr@ti.com" <vigneshr@ti.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk"
- <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org"
- <galak@codeaurora.org>
-Message-ID: <56B1E1A5.9060902@atmel.com>
-Date: Wed, 3 Feb 2016 12:16:53 +0100
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <vigneshr@ti.com>, <beanhuo@micron.com>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
+ <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
+ <galak@codeaurora.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH v3 00/14] mtd: spi-nor: add driver for Atmel QSPI controller
+Date: Wed, 3 Feb 2016 14:26:45 +0100
+Message-ID: <cover.1454505161.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF57A75@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,201 +20,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 20/01/2016 06:13, Bean Huo »ô±ó±ó (beanhuo) a ¨¦crit :
->> Message-ID:
->> 	<6177f7317fe11922e1d1b6dc4548afbaf0ccebdd.1452268345.git.cyrille.
->> pitchen@atmel.com>
->>
->> Content-Type: text/plain
->>
->> This patch remove the micron_quad_enable() function which force the Quad
->> SPI mode. However, once this mode is enabled, the Micron memory expect
->> ALL
->> commands to use the SPI 4-4-4 protocol. Hence a failure does occur when
->> calling spi_nor_wait_till_ready() right after the update of the Enhanced
->> Volatile Configuration Register (EVCR) in the micron_quad_enable() as
->> the SPI controller driver is not aware about the protocol change.
->> Since there is almost no performance increase using Fast Read 4-4-4
->> commands instead of Fast Read 1-1-4 commands, we rather keep on using
->> the
->> Extended SPI mode than enabling the Quad SPI mode.
->>
->> Let's take the example of the pretty standard use of 8 dummy cycles during
->> Fast Read operations on 64KB erase sectors:
->>
->> Fast Read 1-1-4 requires 8 cycles for the command, then 24 cycles for the
->> 3byte address followed by 8 dummy clock cycles and finally 65536*2 cycles
->> for the read data; so 131112 clock cycles.
->>
->> On the other hand the Fast Read 4-4-4 would require 2 cycles for the
->> command, then 6 cycles for the 3byte address followed by 8 dummy clock
->> cycles and finally 65536*2 cycles for the read data. So 131088 clock
->> cycles. The theorical bandwidth increase is 0.0%.
->>
->> Now using Fast Read operations on 512byte pages:
->> Fast Read 1-1-4 needs 8+24+8+(512*2) = 1064 clock cycles whereas Fast
->> Read 4-4-4 would requires 2+6+8+(512*2) = 1040 clock cycles. Hence the
->> theorical bandwidth increase is 2.3%.
->> Consecutive reads for non sequential pages is not a relevant use case so
->> The Quad SPI mode is not worth it.
->>
->> mtd_speedtest seems to confirm these figures.
->>
->> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->> Fixes: 548cd3ab54da ("mtd: spi-nor: Add quad I/O support for Micron SPI
->> NOR")
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 46 +------------------------------------------
->>  1 file changed, 1 insertion(+), 45 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index ed0c19c558b5..3028c06547c1 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -1100,45 +1100,6 @@ static int spansion_quad_enable(struct spi_nor
->> *nor)
->>  	return 0;
->>  }
->>
->> -static int micron_quad_enable(struct spi_nor *nor)
->> -{
->> -	int ret;
->> -	u8 val;
->> -
->> -	ret = nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
->> -	if (ret < 0) {
->> -		dev_err(nor->dev, "error %d reading EVCR\n", ret);
->> -		return ret;
->> -	}
->> -
->> -	write_enable(nor);
->> -
->> -	/* set EVCR, enable quad I/O */
->> -	nor->cmd_buf[0] = val & ~EVCR_QUAD_EN_MICRON;
->> -	ret = nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1);
->> -	if (ret < 0) {
->> -		dev_err(nor->dev, "error while writing EVCR register\n");
->> -		return ret;
->> -	}
->> -
->> -	ret = spi_nor_wait_till_ready(nor);
->> -	if (ret)
->> -		return ret;
->> -
->> -	/* read EVCR and check it */
->> -	ret = nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
->> -	if (ret < 0) {
->> -		dev_err(nor->dev, "error %d reading EVCR\n", ret);
->> -		return ret;
->> -	}
->> -	if (val & EVCR_QUAD_EN_MICRON) {
->> -		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
->> -		return -EINVAL;
->> -	}
->> -
->> -	return 0;
->> -}
->> -
->>  static int set_quad_mode(struct spi_nor *nor, const struct flash_info *info)
->>  {
->>  	int status;
->> @@ -1152,12 +1113,7 @@ static int set_quad_mode(struct spi_nor *nor,
->> const struct flash_info *info)
->>  		}
->>  		return status;
->>  	case SNOR_MFR_MICRON:
->> -		status = micron_quad_enable(nor);
->> -		if (status) {
->> -			dev_err(nor->dev, "Micron quad-read not enabled\n");
->> -			return -EINVAL;
->> -		}
->> -		return status;
->> +		return 0;
->>  	default:
->>  		status = spansion_quad_enable(nor);
->>  		if (status) {
->> --
->> 1.8.2.2
->>
->>
->>
->>
-> 
-> Hi, Cyrlle
-> Micron_quad_enable() function is just for how to enable Micron spi nor Quad mode,
-> does not force to use SPI nor quad mode. if does not need SPI NOR quad mode,
-> why spi-nor.c need set_quad_mode(), according to your patch, this function also need to
-> be removed?
-> Another question, if there is user want to enable SPI nor quad mode, how to do?
-> 
+Hi all,
 
-Hi Bean,
+This series of patches adds support to the Atmel QSPI controller available
+on sama5d2 SoCs. It was tested on a sama5d2 xplained ultra board with  
+Micron n25q128a13, Spansion s25fl512 and Macronix mx25l51245g QSPI
+memories and a at25df321a SPI memory.
 
-the set_quad_mode() function should not been removed from spi-nor.c as it is
-needed for both Macronix and Spansion memories.
-Indeed, what macronix_quad_enable() and spansion_quad_enable() do is to change
-a dedicated bit in some status/configuration register to enable Quad SPI
-operations. More precisely, this disables some features such as the Write
-Protection (Spansion & Macronix) or the Reset (Macronix) / Hold (Spansion) so
-the associated pins can be reassigned to IO2 and IO3 data lines... and that's
-all!
-What I mean is that once set_quad_mode() has been called, Macronix and Spansion
-memories still reply to commands such as Read Status Register in protocol
-SPI 1-1-1. Of course, they now also support Fast Read 1-1-4 (0x6b) or 1-4-4
-(0xeb).
-For Macronix memories, setting the Quad Enable bit in its Status Register is
-NOT the same as entering its QPI mode. In QPI mode, ALL commands are expected
-to use the SPI 4-4-4 protocol: this mode is not used by spi-nor.c
+The SPI protocol to be used by .read_reg(), .write_reg(), .read(), .write()
+and .erase() hooks should be read by these hooks from new *_proto fields in
+the struct spi_nor, the same way as the .read(), .write() and .erase()
+hooks already get the op code value from dedicated *_opcode fields in the
+very same struct spi_nor.
+Doing so, there is no need to modify the current prototypes of all these
+hooks.
 
-Then going back to the Micron case, micron_quad_enable() makes the memory
-enter its Quad mode where ALL commands must use the SPI 4-4-4 protocol. So
-it is definitely not the same thing as what either macronix_quad_enable() or
-spansion_quad_enable() do.
-
-Also the current code of micron_quad_enable() is broken:
-
-[...]
-Here, the memory still expects the SPI 1-1-1 to be used by write_reg() or
-read_reg().
-
-	/* set EVCR, enable quad I/O */
-	nor->cmd_buf[0] = val & ~EVCR_QUAD_EN_MICRON;
-	ret = nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1);
-	if (ret < 0) {
-		dev_err(nor->dev, "error while writing EVCR register\n");
-		return ret;
-	}
-
-However, once the Quad Enable bit has been cleared into the Enhanced Volatile
-Configuration Register, all commands must use the SPI 4-4-4 protocol.
-Especially, the later call of spi_nor_wait_till_ready(), which calls read_reg()
-to read the Status Register, will fail because the QSPI controller has to mean
-to know about the protocol switch hence keeps on sending the Read Status
-Register command with the wrong SPI 1-1-1 protocol.
-This is the issue I faced when using a Micron memory with the Atmel QSPI
-controller embedded in a sama5d2 SoC. Also for the same reason, users of the
-m25p80 driver won't be able to use Micron memories for QSPI operations too.
-
-	ret = spi_nor_wait_till_ready(nor);
-	if (ret)
-		return ret;
-[...]
-
-So in its current state, micron_quad_enable() prevents us from using Micron
-memories for Quad SPI operations. Some code is missing to make it work.
+Also, if some implementation is not interrested in supporting Dual or Quad
+SPI protocols, it can simply ignore the value of the new  *_proto fields,
+thus assuming the SPI 1-1-1 protocol is always used. Such an
+implementation would work exactly as it did before introducing the *_proto
+fields hence no regression should happen.
+Indeed SPI protocols other than SPI 1-1-1 are used only if the caller of
+spi_nor_scan() sets the value of the 'mode' argument to either
+SPI_NOR_DUAL or SPI_NOR_QUAD.
 
 
+This series was based and tested on linux-next
 
-As I said in the patch description, using the SPI 4-4-4 protocol is not
-relevant for MTD usage. It would be worth for XIP operations but this is not the
-purpose of the spi-nor driver.
-Also, the series of patches still support the Micron Quad SPI mode: the spi-nor
-driver no longer enables this mode itself but it still can adapt itself whether
-the Quad SPI mode had already been enabled by a previous bootloader or at
-reset. This is the purpose of the patch focusing on Read JEDEC ID commands:
-it is used to probe the current state of the memory and use the SPI 4-4-4 if
-needed.
+1 - Atmel QSPI controller + Micron n25q128a13 (atmel-quadspi.c driver)
+
+SPI 1-1-1: This mode was tested replacing SPI_NOR_QUAD by SPI_NOR_FAST as
+           argument to spi_nor_scan() called from atmel_qspi_probe().
+
+SPI 1-1-4: Bootloaders (at91bootstrap/uboot) don't enable the Quad SPI
+           mode of the Micron memory. When probed from Linux, the memory
+           uses its Extended SPI mode and replies to the regular Read ID
+           (0x9f) command.
+
+SPI 4-4-4: The romcode enabled the Quad SPI mode the of Micron memory
+           before loading the at91bootstrap. When probed from Linux, the
+           memory uses its Quad SPI mode and no longer replies to the
+           regular Read ID (0x9f) command but instead to the Read ID
+           Multiple I/O (0xaf) command. The memory expects ALL commands
+           to use the SPI 4-4-4 protocol.
+
+2 - Atmel QSPI controller + Macronix mx25l51245g (atmel-quadspi.c driver)
+
+SPI 1-1-4: the number of dummy cycles is set to 8 so drivers such as the
+           m25p80 one can work properly.
+
+3 - Atmel QSPI controller + Spansion s25fl512 (atmel-quadspi.c driver)
+
+SPI 1-1-4: default settings. Early developpements on a FPGA board.
+
+4 - Atmel SPI contoller + at25df321a (m25p80.c driver)
+
+SPI 1-1-1: tested with the m25p80 driver for non regression purpose.
+
+
+Winbond memories were NOT tested since I don't have any sample yet. The
+patches were written only based on the manufacturers' datasheets.
+
 
 Best regards,
 
 Cyrille
+
+
+ChangeLog:
+
+v2 > v3:
+- no longer check patterns such as FFFFFF or 000000 to detect a Read Jedec
+  ID failure: always look the read ID up in the spi_nor_ids[] table (patch 2).
+- fix patch 10 to configure the number of dummy cycles on Macronix memories:
+  these memories use op code 0x15 to read their Configuration Register. Op
+  code 0x35 is used to enter Macronix QPI mode, which was not intented.
+- add "Acked-by Nicolas Ferre <nicolas.ferre@atmel.com>" to patch 14:
+  driver for Atmel QSPI controller.
+
+v1 -> v2:
+- I've totally reworked the whole series. Especially I have split the
+  former patch 2 to ease the code review. The Single/Dual/Quad SPI mode
+  support fixes are now done by manufacturer.
+- fix support and probing of Winbond memories.
+- m25p80: compute the number of dummy bytes from both the number of dummy
+  clock cycles and the number of I/O lines used to send them.
+- fix Kconfig dependencies for the Atmel QSPI controller driver (it should
+  fix the kbuild test robot warnings).
+- add more comments.
+
+Cyrille Pitchen (14):
+  mtd: spi-nor: remove micron_quad_enable()
+  mtd: spi-nor: properly detect the memory when it boots in Quad or Dual
+    mode
+  mtd: spi-nor: select op codes and SPI NOR protocols by manufacturer
+  mtd: spi-nor: fix support of Macronix memories
+  mtd: spi-nor: fix support of Winbond memories
+  mtd: spi-nor: fix support of Micron memories
+  mtd: spi-nor: fix support of Spansion memories
+  mtd: spi-nor: configure the number of dummy clock cycles by
+    manufacturer
+  mtd: spi-nor: configure the number of dummy clock cycles on Micron
+    memories
+  mtd: spi-nor: configure the number of dummy clock cycles on Macronix
+    memories
+  mtd: spi-nor: configure the number of dummy clock cycles on Spansion
+    memories
+  mtd: m25p80: add support of dual and quad spi protocols to all
+    commands
+  Documentation: atmel-quadspi: add binding file for Atmel QSPI driver
+  mtd: atmel-quadspi: add driver for Atmel QSPI controller
+
+ .../devicetree/bindings/mtd/atmel-quadspi.txt      |  32 +
+ drivers/mtd/devices/m25p80.c                       | 192 ++++-
+ drivers/mtd/spi-nor/Kconfig                        |   9 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/atmel-quadspi.c                | 877 ++++++++++++++++++++
+ drivers/mtd/spi-nor/spi-nor.c                      | 921 +++++++++++++++++++--
+ include/linux/mtd/spi-nor.h                        |  74 +-
+ 7 files changed, 1971 insertions(+), 135 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+ create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
+
+-- 
+1.8.2.2
