@@ -1,19 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aRK3M-0000GJ-M5
- for linux-mtd@lists.infradead.org; Thu, 04 Feb 2016 13:34:33 +0000
-Date: Thu, 4 Feb 2016 14:33:40 +0100
+ id 1aRKyC-0008Jx-Nu
+ for linux-mtd@lists.infradead.org; Thu, 04 Feb 2016 14:33:46 +0000
+Date: Thu, 4 Feb 2016 15:20:19 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Romain Izard <romain.izard.pro@gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Josh Wu
- <rainyfeeling@outlook.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Yang
- Wenyou <Wenyou.Yang@atmel.com>
-Subject: Re: [PATCH v3 0/5] mtd: atmel_nand: Add support for NAND Flash on
- SAMA5D2
-Message-ID: <20160204143340.1ffa2292@bbrezillon>
-In-Reply-To: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
-References: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
+To: Lucas Stach <dev@lynxeye.de>
+Cc: Stephen Warren <swarren@wwwdotorg.org>, Thierry Reding
+ <thierry.reding@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-tegra@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v4 0/5] Tegra 2 NAND Flash Support
+Message-ID: <20160204152019.3995f5cc@bbrezillon>
+In-Reply-To: <1446496402-8142-1-git-send-email-dev@lynxeye.de>
+References: <1446496402-8142-1-git-send-email-dev@lynxeye.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,63 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Romain,
+Hi Lucas,
 
-Just a remark that is not directly related to your work: when people
-take the time to review your work, try to keep them in Cc of the
-following versions of your patchset.
+Sorry for the late reply, but in my defence, I was not in Cc of the
+different iterations of this series.
 
-On Mon,  1 Feb 2016 11:25:55 +0100
-Romain Izard <romain.izard.pro@gmail.com> wrote:
+On Mon,  2 Nov 2015 21:33:17 +0100
+Lucas Stach <dev@lynxeye.de> wrote:
 
-> The NAND Flash controller for SAMA5D2 has small differences that make it
-> impossible to use the existing driver for SAMA5D3. This patchset uses the
-> device tree's compatible string to get those differences, and the code is
-> slightly modified to handle them.
+> Hi all,
 > 
-> Base on linux-mtd-next, commit 15c0be7bec002f9a529dd0966d0db96dde176fd0
+> New and hopefully last round of the Tegra NAND controller driver.
+> I fixed some last bugs that people found during review and testing
+> and I think the driver is ready for merging.
 > 
-> See previous revisions to apply on the Atmel Linux 4.1 branch.
-> 
-> Compile tested for sama5_defconfig, and tested on SAMA5D3xek as there is no
-> existing SAMA5D2 board with NAND Flash memory (yet).
+> v4 fixes some minor errors in the ECC handling and makes timing
+> calculations a bit more conservative.
 
-Overall, it looks good to me (even if I don't fully agree on how you
-decided to define NFC_SR_RB_EDGEX values :-P, but that's just a
-nitpick).
+Some of the comments I made on your v1 were left unanswered (and were
+not addressed in your new versions). Can you address them or let me
+know why you can't?
 
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+For example, I still think your NAND controller should be represented
+with its own node in the DT, and all NAND devices as child nodes of the
+controller node.
+I also think you should create ECC layout dynamically instead of
+defining a new one for each new OOB size value.
 
-> 
-> V3 -> V2:
-> - Rebase on linux-mtd-next
-> - Skip patches already in the tree
-> 
-> V2 -> V1:
-> - Rebase on v4.4
-> - Use of_device_get_match_data
-> - Split message cleanup
-> - Reword a small part of the atmel_nand device tree binding
-> - Use 'caps' for all private data structures
-> 
-> RFC -> V1:
-> - Split the support of 32-bit ECC on SAMA5D2 in two commits
-> - Fix the missing ECC strength configuration code
-> 
-> Romain Izard (5):
->   mtd: atmel_nand: Support variable RB_EDGE interrupts
->   dt-bindings: atmel_nand: Reword the documenation
->   mtd: atmel_nand: Support PMECC on SAMA5D2
->   mtd: atmel_nand: Support 32-bit ECC strength
->   ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-> 
->  .../devicetree/bindings/mtd/atmel-nand.txt         | 31 +++++----
->  arch/arm/boot/dts/sama5d2.dtsi                     | 38 +++++++++++
->  drivers/mtd/nand/atmel_nand.c                      | 77 ++++++++++++++++++----
->  drivers/mtd/nand/atmel_nand_ecc.h                  |  9 ++-
->  drivers/mtd/nand/atmel_nand_nfc.h                  |  3 +-
->  5 files changed, 131 insertions(+), 27 deletions(-)
-> 
+Also, could you confirm that you driver supports raw accesses (I think
+it does, but I'd like to be sure)?
+
+Thanks,
+
+Boris
 
 
 
