@@ -1,20 +1,28 @@
-Received: from prod.axesswebsolutions.com ([67.43.0.108])
- by casper.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1aRNAG-0002W7-EO
- for linux-mtd@lists.infradead.org; Thu, 04 Feb 2016 16:53:53 +0000
-Received: from axessweb by prod.axesswebsolutions.com with local (Exim 4.86)
- (envelope-from <axessweb@prod.axesswebsolutions.com>)
- id 1aRN6F-0001DX-Mi
- for linux-mtd@lists.infradead.org; Thu, 04 Feb 2016 11:49:43 -0500
-To: linux-mtd@lists.infradead.org
-Subject: You have new fax, document 000145710
-Date: Thu, 4 Feb 2016 11:49:43 -0500
-From: "Interfax Online" <incoming@interfax.net>
-Reply-To: "Interfax Online" <incoming@interfax.net>
-Message-ID: <e2faa6355615ebcd54ce450a4be61106@interfax.net>
+Received: from mail-bl2on0062.outbound.protection.outlook.com ([65.55.169.62]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aRNRQ-0005ee-JB
+ for linux-mtd@lists.infradead.org; Thu, 04 Feb 2016 17:11:37 +0000
+Message-ID: <56B38488.2000502@opensource.altera.com>
+Date: Thu, 4 Feb 2016 11:04:08 -0600
+From: Dinh Nguyen <dinguyen@opensource.altera.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_291944397ea384cd66f249fd9fe27175"
-Content-Transfer-Encoding: 8bit
+To: Marek Vasut <marex@denx.de>, Vignesh R <vigneshr@ti.com>
+CC: Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Graham Moore
+ <grmoore@opensource.altera.com>, Alan Tull <atull@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <201602012213.46740.marex@denx.de> <56B30007.1010305@ti.com>
+ <201602041225.11679.marex@denx.de>
+In-Reply-To: <201602041225.11679.marex@denx.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +32,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_291944397ea384cd66f249fd9fe27175
-Content-Type: text/plain; charset=us-ascii
+On 02/04/2016 05:25 AM, Marek Vasut wrote:
+> On Thursday, February 04, 2016 at 08:38:47 AM, Vignesh R wrote:
+>> On 02/02/2016 02:43 AM, Marek Vasut wrote:
+>>> On Monday, February 01, 2016 at 10:03:35 PM, Brian Norris wrote:
+>>>> On Wed, Jan 13, 2016 at 03:39:17AM +0100, Marek Vasut wrote:
+>>>>> On Wednesday, January 13, 2016 at 03:26:08 AM, Rob Herring wrote:
+>>>>>> On Mon, Jan 11, 2016 at 05:34:45AM +0100, Marek Vasut wrote:
+>> [...]
+>>
+>>>>> All these SoCs should be capable of tweaking the block to fit their
+>>>>> needs by just the DT properties. I believe they differ only in the
+>>>>> FIFO depth and sometimes someone is greedy and uses 4:16 CS
+>>>>> multiplexer, which is an external passive component, but that's all.
+>>>>>
+>>>>> Would we need soc-specific compatible strings if this is the case?
+>>>>
+>>>> It's nice when most things can be supported with a small set of DT
+>>>> properties, as you've done. But IUIC, I think it's usually good practice
+>>>> to define and use SoC-specific (or maybe SoC family) compatible strings
+>>>> in the docs and DTS files, in addition to the generic one, in case there
+>>>> are future quirks that need to be handled. Note that you don't actually
+>>>> have to use these in the driver yet, but it's good to have a definition.
+>>>>
+>>>> So you can, today, have:
+>>>> 	foo@xxxx {
+>>>> 	
+>>>> 		compatible = "ti,baz-12345", "cdns,qspi-nor";
+>>>> 		...
+>>>> 	
+>>>> 	};
+>>>>
+>>>> And we have the option to pick up "ti,baz-12345" in the Linux driver *if
+>>>> needed.*
+>>
+>> The support for TI SoC that has this IP is not in upstream yet. I will
+>> add TI-specific compatible later. It will be:
+>>
+>> 	foo@xxxx {
+>> 		compatible = "ti,k2g-qspi", "cdns,qspi-nor";
+>>  		...
+>>  	};
+> 
+> Do you expect any specifics which cannot be handled by the current bindings btw?
+> In my socfpga case, the compatible strings will be probably:
+> 
+> "altr,socfpga-gen5-qspi"
+> 
+> Dinh, Graham, do you agree with this or should we use something else ?
+> 
 
-A new fax document for you.
+I agree.
 
-Please check your fax document in the attachment to this e-mail.
-
-Pages sent:      9
-Fax name:        scan.000145710.doc
-Processed in:    40 seconds
-Scanned:         Thu, 4 Feb 2016 14:09:08 +0300
-File size:       235 Kb
-Author:          Chad Adams
-Quality:         300 DPI
-
-Thanks for using Interfax service!
-
-
---b1_291944397ea384cd66f249fd9fe27175
-Content-Type: application/zip; name="scan.000145710.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=scan.000145710.zip
-
-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
-
-
---b1_291944397ea384cd66f249fd9fe27175--
+Dinh
