@@ -1,25 +1,25 @@
-Received: from mail-bl2on0062.outbound.protection.outlook.com ([65.55.169.62]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aRNRQ-0005ee-JB
- for linux-mtd@lists.infradead.org; Thu, 04 Feb 2016 17:11:37 +0000
-Message-ID: <56B38488.2000502@opensource.altera.com>
-Date: Thu, 4 Feb 2016 11:04:08 -0600
-From: Dinh Nguyen <dinguyen@opensource.altera.com>
-MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>, Vignesh R <vigneshr@ti.com>
-CC: Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Graham Moore
- <grmoore@opensource.altera.com>, Alan Tull <atull@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>, Yves Vandervennet
- <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
+ id 1aRNkb-0000eh-0T
+ for linux-mtd@lists.infradead.org; Thu, 04 Feb 2016 17:31:30 +0000
 Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
  Controller driver.
+To: Marek Vasut <marex@denx.de>
 References: <1452486886-8049-1-git-send-email-marex@denx.de>
  <201602012213.46740.marex@denx.de> <56B30007.1010305@ti.com>
  <201602041225.11679.marex@denx.de>
+CC: Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
+ <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+From: "R, Vignesh" <vigneshr@ti.com>
+Message-ID: <56B38AB3.3070801@ti.com>
+Date: Thu, 4 Feb 2016 23:00:27 +0530
+MIME-Version: 1.0
 In-Reply-To: <201602041225.11679.marex@denx.de>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
@@ -32,7 +32,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/04/2016 05:25 AM, Marek Vasut wrote:
+
+
+On 2/4/2016 4:55 PM, Marek Vasut wrote:
 > On Thursday, February 04, 2016 at 08:38:47 AM, Vignesh R wrote:
 >> On 02/02/2016 02:43 AM, Marek Vasut wrote:
 >>> On Monday, February 01, 2016 at 10:03:35 PM, Brian Norris wrote:
@@ -77,11 +79,8 @@ On 02/04/2016 05:25 AM, Marek Vasut wrote:
 > Do you expect any specifics which cannot be handled by the current bindings btw?
 > In my socfpga case, the compatible strings will be probably:
 > 
-> "altr,socfpga-gen5-qspi"
-> 
-> Dinh, Graham, do you agree with this or should we use something else ?
-> 
 
-I agree.
-
-Dinh
+Yeah, there is delay(of few ns) required between writing to
+INDIRECTWR_START bit and actually writing data to flash(i.e writesl()
+call). This is specific to TI K2G SoC and needs to be tied to the new
+binding.
