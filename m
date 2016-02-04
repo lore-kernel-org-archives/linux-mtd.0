@@ -1,28 +1,22 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aRINH-00019n-Cr
- for linux-mtd@lists.infradead.org; Thu, 04 Feb 2016 11:47:00 +0000
-From: Marek Vasut <marex@denx.de>
-To: Vignesh R <vigneshr@ti.com>
-Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
-Date: Thu, 4 Feb 2016 12:25:11 +0100
-Cc: Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <1452486886-8049-1-git-send-email-marex@denx.de>
- <201602012213.46740.marex@denx.de> <56B30007.1010305@ti.com>
-In-Reply-To: <56B30007.1010305@ti.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aRK3M-0000GJ-M5
+ for linux-mtd@lists.infradead.org; Thu, 04 Feb 2016 13:34:33 +0000
+Date: Thu, 4 Feb 2016 14:33:40 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Romain Izard <romain.izard.pro@gmail.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Josh Wu
+ <rainyfeeling@outlook.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Yang
+ Wenyou <Wenyou.Yang@atmel.com>
+Subject: Re: [PATCH v3 0/5] mtd: atmel_nand: Add support for NAND Flash on
+ SAMA5D2
+Message-ID: <20160204143340.1ffa2292@bbrezillon>
+In-Reply-To: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
+References: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <201602041225.11679.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,55 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, February 04, 2016 at 08:38:47 AM, Vignesh R wrote:
-> On 02/02/2016 02:43 AM, Marek Vasut wrote:
-> > On Monday, February 01, 2016 at 10:03:35 PM, Brian Norris wrote:
-> >> On Wed, Jan 13, 2016 at 03:39:17AM +0100, Marek Vasut wrote:
-> >>> On Wednesday, January 13, 2016 at 03:26:08 AM, Rob Herring wrote:
-> >>>> On Mon, Jan 11, 2016 at 05:34:45AM +0100, Marek Vasut wrote:
-> [...]
+Hi Romain,
+
+Just a remark that is not directly related to your work: when people
+take the time to review your work, try to keep them in Cc of the
+following versions of your patchset.
+
+On Mon,  1 Feb 2016 11:25:55 +0100
+Romain Izard <romain.izard.pro@gmail.com> wrote:
+
+> The NAND Flash controller for SAMA5D2 has small differences that make it
+> impossible to use the existing driver for SAMA5D3. This patchset uses the
+> device tree's compatible string to get those differences, and the code is
+> slightly modified to handle them.
 > 
-> >>> All these SoCs should be capable of tweaking the block to fit their
-> >>> needs by just the DT properties. I believe they differ only in the
-> >>> FIFO depth and sometimes someone is greedy and uses 4:16 CS
-> >>> multiplexer, which is an external passive component, but that's all.
-> >>> 
-> >>> Would we need soc-specific compatible strings if this is the case?
-> >> 
-> >> It's nice when most things can be supported with a small set of DT
-> >> properties, as you've done. But IUIC, I think it's usually good practice
-> >> to define and use SoC-specific (or maybe SoC family) compatible strings
-> >> in the docs and DTS files, in addition to the generic one, in case there
-> >> are future quirks that need to be handled. Note that you don't actually
-> >> have to use these in the driver yet, but it's good to have a definition.
-> >> 
-> >> So you can, today, have:
-> >> 	foo@xxxx {
-> >> 	
-> >> 		compatible = "ti,baz-12345", "cdns,qspi-nor";
-> >> 		...
-> >> 	
-> >> 	};
-> >> 
-> >> And we have the option to pick up "ti,baz-12345" in the Linux driver *if
-> >> needed.*
+> Base on linux-mtd-next, commit 15c0be7bec002f9a529dd0966d0db96dde176fd0
 > 
-> The support for TI SoC that has this IP is not in upstream yet. I will
-> add TI-specific compatible later. It will be:
+> See previous revisions to apply on the Atmel Linux 4.1 branch.
 > 
-> 	foo@xxxx {
-> 		compatible = "ti,k2g-qspi", "cdns,qspi-nor";
->  		...
->  	};
+> Compile tested for sama5_defconfig, and tested on SAMA5D3xek as there is no
+> existing SAMA5D2 board with NAND Flash memory (yet).
 
-Do you expect any specifics which cannot be handled by the current bindings btw?
-In my socfpga case, the compatible strings will be probably:
+Overall, it looks good to me (even if I don't fully agree on how you
+decided to define NFC_SR_RB_EDGEX values :-P, but that's just a
+nitpick).
 
-"altr,socfpga-gen5-qspi"
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Dinh, Graham, do you agree with this or should we use something else ?
+> 
+> V3 -> V2:
+> - Rebase on linux-mtd-next
+> - Skip patches already in the tree
+> 
+> V2 -> V1:
+> - Rebase on v4.4
+> - Use of_device_get_match_data
+> - Split message cleanup
+> - Reword a small part of the atmel_nand device tree binding
+> - Use 'caps' for all private data structures
+> 
+> RFC -> V1:
+> - Split the support of 32-bit ECC on SAMA5D2 in two commits
+> - Fix the missing ECC strength configuration code
+> 
+> Romain Izard (5):
+>   mtd: atmel_nand: Support variable RB_EDGE interrupts
+>   dt-bindings: atmel_nand: Reword the documenation
+>   mtd: atmel_nand: Support PMECC on SAMA5D2
+>   mtd: atmel_nand: Support 32-bit ECC strength
+>   ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
+> 
+>  .../devicetree/bindings/mtd/atmel-nand.txt         | 31 +++++----
+>  arch/arm/boot/dts/sama5d2.dtsi                     | 38 +++++++++++
+>  drivers/mtd/nand/atmel_nand.c                      | 77 ++++++++++++++++++----
+>  drivers/mtd/nand/atmel_nand_ecc.h                  |  9 ++-
+>  drivers/mtd/nand/atmel_nand_nfc.h                  |  3 +-
+>  5 files changed, 131 insertions(+), 27 deletions(-)
+> 
 
-Thanks!
 
-Best regards,
-Marek Vasut
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
