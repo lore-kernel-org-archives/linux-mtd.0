@@ -16,10 +16,10 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  punnaiah choudary kalluri <punnaia@xilinx.com>,
  Priit Laes <plaes@plaes.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v2 17/51] mtd: onenand: use mtd_set_ecclayout() where
- appropriate
-Date: Thu,  4 Feb 2016 11:06:40 +0100
-Message-Id: <1454580434-32078-18-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 09/51] mtd: nand: fsl_ifc: use mtd_ooblayout_xxx() helpers
+ where appropriate
+Date: Thu,  4 Feb 2016 11:06:32 +0100
+Message-Id: <1454580434-32078-10-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1454580434-32078-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1454580434-32078-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,26 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the mtd_set_ecclayout() helper instead of directly assigning the
-mtd->ecclayout field.
+The mtd_ooblayout_xxx() helper functions have been added to avoid direct
+accesses to the ecclayout field, and thus ease for future reworks.
+Use these helpers in all places where the oobfree[] and eccpos[] arrays
+where directly accessed.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/onenand/onenand_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/fsl_ifc_nand.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 6906c95..1d8406d 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -3994,7 +3994,7 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
- 	if (mtd->oobavail < 0)
- 		mtd->oobavail = 0;
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 43f5a3a..2e970ac 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -257,18 +257,22 @@ static int is_blank(struct mtd_info *mtd, unsigned int bufnum)
+ 	u8 __iomem *addr = priv->vbase + bufnum * (mtd->writesize * 2);
+ 	u32 __iomem *mainarea = (u32 __iomem *)addr;
+ 	u8 __iomem *oob = addr + mtd->writesize;
+-	int i;
++	struct mtd_oob_region oobregion = { };
++	int i, section = 0;
  
--	mtd->ecclayout = this->ecclayout;
-+	mtd_set_ecclayout(mtd, this->ecclayout);
- 	mtd->ecc_strength = 1;
+ 	for (i = 0; i < mtd->writesize / 4; i++) {
+ 		if (__raw_readl(&mainarea[i]) != 0xffffffff)
+ 			return 0;
+ 	}
  
- 	/* Fill in remaining MTD driver data */
+-	for (i = 0; i < chip->ecc.layout->eccbytes; i++) {
+-		int pos = chip->ecc.layout->eccpos[i];
++	mtd_ooblayout_ecc(mtd, section++, &oobregion);
++	while (oobregion.length) {
++		for (i = 0; i < oobregion.length; i++) {
++			if (__raw_readb(&oob[oobregion.offset + i]) != 0xff)
++				return 0;
++		}
+ 
+-		if (__raw_readb(&oob[pos]) != 0xff)
+-			return 0;
++		mtd_ooblayout_ecc(mtd, section++, &oobregion);
+ 	}
+ 
+ 	return 1;
 -- 
 2.1.4
