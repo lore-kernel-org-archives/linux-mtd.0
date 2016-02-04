@@ -16,10 +16,9 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  punnaiah choudary kalluri <punnaia@xilinx.com>,
  Priit Laes <plaes@plaes.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v2 10/51] mtd: nand: gpmi: use mtd_ooblayout_xxx() helpers
- where appropriate
-Date: Thu,  4 Feb 2016 11:06:33 +0100
-Message-Id: <1454580434-32078-11-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 38/51] mtd: nand: jz4780: switch to mtd_ooblayout_ops
+Date: Thu,  4 Feb 2016 11:07:01 +0100
+Message-Id: <1454580434-32078-39-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1454580434-32078-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1454580434-32078-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,43 +30,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The mtd_ooblayout_xxx() helper functions have been added to avoid direct
-accesses to the ecclayout field, and thus ease for future reworks.
-Use these helpers in all places where the oobfree[] and eccpos[] arrays
-where directly accessed.
+Implementing the mtd_ooblayout_ops interface is the new way of exposing
+ECC/OOB layout to MTD users.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/jz4780_nand.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 8122c69..3a29b65 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1327,18 +1327,19 @@ static int gpmi_ecc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
- static int
- gpmi_ecc_write_oob(struct mtd_info *mtd, struct nand_chip *chip, int page)
- {
--	struct nand_oobfree *of = mtd->ecclayout->oobfree;
-+	struct mtd_oob_region of = { };
- 	int status = 0;
+diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+index e1c016c..b86a579 100644
+--- a/drivers/mtd/nand/jz4780_nand.c
++++ b/drivers/mtd/nand/jz4780_nand.c
+@@ -56,8 +56,6 @@ struct jz4780_nand_chip {
+ 	struct nand_chip chip;
+ 	struct list_head chip_list;
  
- 	/* Do we have available oob area? */
--	if (!of->length)
-+	mtd_ooblayout_free(mtd, 0, &of);
-+	if (!of.length)
- 		return -EPERM;
+-	struct nand_ecclayout ecclayout;
+-
+ 	struct gpio_desc *busy_gpio;
+ 	struct gpio_desc *wp_gpio;
+ 	unsigned int reading: 1;
+@@ -165,8 +163,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 	struct nand_chip *chip = &nand->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(chip->controller);
+-	struct nand_ecclayout *layout = &nand->ecclayout;
+-	u32 start, i;
++	int eccbytes;
  
- 	if (!nand_is_slc(chip))
- 		return -EPERM;
+ 	chip->ecc.bytes = fls((1 + 8) * chip->ecc.size)	*
+ 				(chip->ecc.strength / 8);
+@@ -201,23 +198,17 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 		return 0;
  
--	chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize + of->offset, page);
--	chip->write_buf(mtd, chip->oob_poi + of->offset, of->length);
-+	chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize + of.offset, page);
-+	chip->write_buf(mtd, chip->oob_poi + of.offset, of.length);
- 	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+ 	/* Generate ECC layout. ECC codes are right aligned in the OOB area. */
+-	layout->eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
++	eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
  
- 	status = chip->waitfunc(mtd, chip);
+-	if (layout->eccbytes > mtd->oobsize - 2) {
++	if (eccbytes > mtd->oobsize - 2) {
+ 		dev_err(dev,
+ 			"invalid ECC config: required %d ECC bytes, but only %d are available",
+-			layout->eccbytes, mtd->oobsize - 2);
++			eccbytes, mtd->oobsize - 2);
+ 		return -EINVAL;
+ 	}
+ 
+-	start = mtd->oobsize - layout->eccbytes;
+-	for (i = 0; i < layout->eccbytes; i++)
+-		layout->eccpos[i] = start + i;
+-
+-	layout->oobfree[0].offset = 2;
+-	layout->oobfree[0].length = mtd->oobsize - layout->eccbytes - 2;
++	mtd->ooblayout = &nand_ooblayout_lp_ops;
+ 
+-	chip->ecc.layout = layout;
+ 	return 0;
+ }
+ 
 -- 
 2.1.4
