@@ -16,9 +16,9 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  punnaiah choudary kalluri <punnaia@xilinx.com>,
  Priit Laes <plaes@plaes.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v2 49/51] staging: mt29f_spinand: switch to mtd_ooblayout_ops
-Date: Thu,  4 Feb 2016 11:07:12 +0100
-Message-Id: <1454580434-32078-50-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 51/51] mtd: kill the nand_ecclayout struct
+Date: Thu,  4 Feb 2016 11:07:14 +0100
+Message-Id: <1454580434-32078-52-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1454580434-32078-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1454580434-32078-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,86 +30,229 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace the nand_ecclayout definition by the equivalent mtd_ooblayout_ops
-definition.
+Now that all MTD drivers have moved to the mtd_ooblayout_ops model we can
+safely remove the struct nand_ecclayout definition, and all the remaining
+places where it was still used.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/staging/mt29f_spinand/mt29f_spinand.c | 48 +++++++++++++++++----------
- 1 file changed, 30 insertions(+), 18 deletions(-)
+ drivers/mtd/mtdchar.c      |  12 ++---
+ drivers/mtd/mtdcore.c      | 120 ---------------------------------------------
+ include/linux/mtd/mtd.h    |  20 --------
+ include/uapi/mtd/mtd-abi.h |   2 +-
+ 4 files changed, 7 insertions(+), 147 deletions(-)
 
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index 6728376..04b711759 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -42,23 +42,33 @@ static inline struct spinand_state *mtd_to_state(struct mtd_info *mtd)
- static int enable_hw_ecc;
- static int enable_read_hw_ecc;
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 3fad2c7..2a47a3f 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -465,12 +465,12 @@ static int mtdchar_readoob(struct file *file, struct mtd_info *mtd,
+ }
  
--static struct nand_ecclayout spinand_oob_64 = {
--	.eccbytes = 24,
--	.eccpos = {
--		1, 2, 3, 4, 5, 6,
--		17, 18, 19, 20, 21, 22,
--		33, 34, 35, 36, 37, 38,
--		49, 50, 51, 52, 53, 54, },
--	.oobfree = {
--		{.offset = 8,
--			.length = 8},
--		{.offset = 24,
--			.length = 8},
--		{.offset = 40,
--			.length = 8},
--		{.offset = 56,
--			.length = 8},
+ /*
+- * Copies (and truncates, if necessary) data from the larger struct,
+- * nand_ecclayout, to the smaller, deprecated layout struct,
+- * nand_ecclayout_user. This is necessary only to support the deprecated
+- * API ioctl ECCGETLAYOUT while allowing all new functionality to use
+- * nand_ecclayout flexibly (i.e. the struct may change size in new
+- * releases without requiring major rewrites).
++ * Copies (and truncates, if necessary) OOB layout information to the
++ * deprecated layout struct, nand_ecclayout_user. This is necessary only to
++ * support the deprecated API ioctl ECCGETLAYOUT while allowing all new
++ * functionality to use mtd_ooblayout_ops flexibly (i.e. mtd_ooblayout_ops
++ * can describe any kind of OOB layout with almost zero overhead from a
++ * memory usage point of view).
+  */
+ static int shrink_ecclayout(struct mtd_info *mtd,
+ 			    struct nand_ecclayout_user *to)
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index dccd132..9c520a9 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1355,126 +1355,6 @@ int mtd_ooblayout_count_eccbytes(struct mtd_info *mtd)
+ }
+ EXPORT_SYMBOL_GPL(mtd_ooblayout_count_eccbytes);
+ 
+-/**
+- * mtd_ecclayout_ecc - Default ooblayout_ecc iterator implementation
+- * @mtd: MTD device structure
+- * @section: ECC section. Depending on the layout you may have all the ECC
+- *	     bytes stored in a single contiguous section, or one section
+- *	     per ECC chunk (and sometime several sections for a single ECC
+- *	     ECC chunk)
+- * @oobecc: OOB region struct filled with the appropriate ECC position
+- *	    information
+- *
+- * This function is just a wrapper around the mtd->ecclayout field and is
+- * here to ease the transition to the mtd_ooblayout_ops approach.
+- * All it does is convert the layout->eccpos information into proper oob
+- * region definitions.
+- *
+- * Returns zero on success, a negative error code otherwise.
+- */
+-static int mtd_ecclayout_ecc(struct mtd_info *mtd, int section,
+-			     struct mtd_oob_region *oobecc)
+-{
+-	int eccbyte = 0, cursection = 0, length = 0, eccpos = 0;
+-
+-	if (!mtd->ecclayout)
+-		return -ENOTSUPP;
+-
+-	if (mtd->ecclayout->eccbytes < 1)
+-		return -ERANGE;
+-
+-	/*
+-	 * This logic allows us to reuse the ->ecclayout information and
+-	 * expose them as ECC regions (as done for the OOB free regions).
+-	 *
+-	 * TODO: this should be dropped as soon as we get rid of the
+-	 * ->ecclayout field.
+-	 */
+-	for (eccbyte = 0; eccbyte < mtd->ecclayout->eccbytes; eccbyte++) {
+-		eccpos = mtd->ecclayout->eccpos[eccbyte];
+-
+-		if (eccbyte < mtd->ecclayout->eccbytes - 1) {
+-			int neccpos = mtd->ecclayout->eccpos[eccbyte + 1];
+-
+-			if (eccpos + 1 == neccpos) {
+-				length++;
+-				continue;
+-			}
+-		}
+-
+-		if (section == cursection)
+-			break;
+-
+-		length = 0;
+-		cursection++;
 -	}
-+static int spinand_ooblayout_64_ecc(struct mtd_info *mtd, int section,
-+				    struct mtd_oob_region *oobregion)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	oobregion->offset = (section * 16) + 1;
-+	oobregion->length = 6;
-+
-+	return 0;
-+}
-+
-+static int spinand_ooblayout_64_free(struct mtd_info *mtd, int section,
-+				     struct mtd_oob_region *oobregion)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	oobregion->offset = (section * 16) + 8;
-+	oobregion->length = 8;
-+
-+	return 0;
-+}
-+
-+const struct mtd_ooblayout_ops spinand_oob_64_ops = {
-+	.ecc = spinand_ooblayout_64_ecc,
-+	.free = spinand_ooblayout_64_free,
- };
- #endif
+-
+-	if (cursection != section)
+-		return -ERANGE;
+-
+-	oobecc->length = length + 1;
+-	oobecc->offset = eccpos - length;
+-
+-	return 0;
+-}
+-
+-/**
+- * mtd_ecclayout_ecc - Default ooblayout_free iterator implementation
+- * @mtd: MTD device structure
+- * @section: Free section. Depending on the layout you may have all the free
+- *	     bytes stored in a single contiguous section, or one section
+- *	     per ECC chunk (and sometime several sections for a single ECC
+- *	     ECC chunk)
+- * @oobfree: OOB region struct filled with the appropriate free position
+- *	     information
+- *
+- * This function is just a wrapper around the mtd->ecclayout field and is
+- * here to ease the transition to the mtd_ooblayout_ops approach.
+- * All it does is convert the layout->oobfree information into proper oob
+- * region definitions.
+- *
+- * Returns zero on success, a negative error code otherwise.
+- */
+-static int mtd_ecclayout_free(struct mtd_info *mtd, int section,
+-			      struct mtd_oob_region *oobfree)
+-{
+-	struct nand_ecclayout *layout = mtd->ecclayout;
+-
+-	if (!layout)
+-		return -ENOTSUPP;
+-
+-	if (section >= MTD_MAX_OOBFREE_ENTRIES_LARGE ||
+-	    !layout->oobfree[section].length)
+-		return -ERANGE;
+-
+-	oobfree->offset = layout->oobfree[section].offset;
+-	oobfree->length = layout->oobfree[section].length;
+-
+-	return 0;
+-}
+-
+-static const struct mtd_ooblayout_ops mtd_ecclayout_wrapper_ops = {
+-	.ecc = mtd_ecclayout_ecc,
+-	.free = mtd_ecclayout_free,
+-};
+-
+-/**
+- * mtd_set_ecclayout - Attach an ecclayout to an MTD device
+- * @mtd: MTD device structure
+- * @ecclayout: The ecclayout to attach to the device
+- *
+- * Returns zero on success, a negative error code otherwise.
+- */
+-void mtd_set_ecclayout(struct mtd_info *mtd, struct nand_ecclayout *ecclayout)
+-{
+-	if (!mtd || !ecclayout)
+-		return;
+-
+-	mtd->ecclayout = ecclayout;
+-	mtd_set_ooblayout(mtd, &mtd_ecclayout_wrapper_ops);
+-}
+-EXPORT_SYMBOL_GPL(mtd_set_ecclayout);
+-
+ /*
+  * Method to access the protection register area, present in some flash
+  * devices. The user data is one time programmable but the factory data is read
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index a38fe9a..df8c116 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -96,21 +96,6 @@ struct mtd_oob_ops {
  
-@@ -883,7 +893,6 @@ static int spinand_probe(struct spi_device *spi_nand)
+ #define MTD_MAX_OOBFREE_ENTRIES_LARGE	32
+ #define MTD_MAX_ECCPOS_ENTRIES_LARGE	640
+-/*
+- * Internal ECC layout control structure. For historical reasons, there is a
+- * similar, smaller struct nand_ecclayout_user (in mtd-abi.h) that is retained
+- * for export to user-space via the ECCGETLAYOUT ioctl.
+- * nand_ecclayout should be expandable in the future simply by the above macros.
+- *
+- * This structure is now deprecated, you should use struct nand_ecclayout_ops
+- * to describe your OOB layout.
+- */
+-struct nand_ecclayout {
+-	__u32 eccbytes;
+-	__u32 eccpos[MTD_MAX_ECCPOS_ENTRIES_LARGE];
+-	struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES_LARGE];
+-};
+-
+ /**
+  * struct mtd_oob_region - oob region definition
+  * @offset: region offset
+@@ -200,9 +185,6 @@ struct mtd_info {
+ 	const char *name;
+ 	int index;
  
- 	chip->ecc.strength = 1;
- 	chip->ecc.total	= chip->ecc.steps * chip->ecc.bytes;
--	chip->ecc.layout = &spinand_oob_64;
- 	chip->ecc.read_page = spinand_read_page_hwecc;
- 	chip->ecc.write_page = spinand_write_page_hwecc;
- #else
-@@ -908,6 +917,9 @@ static int spinand_probe(struct spi_device *spi_nand)
+-	/* [Deprecated] ECC layout structure pointer - read only! */
+-	struct nand_ecclayout *ecclayout;
+-
+ 	/* OOB layout description */
+ 	const struct mtd_ooblayout_ops *ooblayout;
  
- 	mtd->dev.parent = &spi_nand->dev;
- 	mtd->oobsize = 64;
-+#ifdef CONFIG_MTD_SPINAND_ONDIEECC
-+	mtd_set_ooblayout(mtd, &spinand_oob_64_ops);
-+#endif
+@@ -308,8 +290,6 @@ int mtd_ooblayout_set_databytes(struct mtd_info *mtd, const u8 *databuf,
+ int mtd_ooblayout_count_freebytes(struct mtd_info *mtd);
+ int mtd_ooblayout_count_eccbytes(struct mtd_info *mtd);
  
- 	if (nand_scan(mtd, 1))
- 		return -ENXIO;
+-void mtd_set_ecclayout(struct mtd_info *mtd, struct nand_ecclayout *ecclayout);
+-
+ static inline void mtd_set_ooblayout(struct mtd_info *mtd,
+ 				     const struct mtd_ooblayout_ops *ooblayout)
+ {
+diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+index 763bb69..0ec1da2 100644
+--- a/include/uapi/mtd/mtd-abi.h
++++ b/include/uapi/mtd/mtd-abi.h
+@@ -228,7 +228,7 @@ struct nand_oobfree {
+  * complete set of ECC information. The ioctl truncates the larger internal
+  * structure to retain binary compatibility with the static declaration of the
+  * ioctl. Note that the "MTD_MAX_..._ENTRIES" macros represent the max size of
+- * the user struct, not the MAX size of the internal struct nand_ecclayout.
++ * the user struct, not the MAX size of the internal OOB layout representation.
+  */
+ struct nand_ecclayout_user {
+ 	__u32 eccbytes;
 -- 
 2.1.4
