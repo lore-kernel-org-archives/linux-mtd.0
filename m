@@ -1,26 +1,32 @@
 Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aSASJ-00076u-Uc
- for linux-mtd@lists.infradead.org; Sat, 06 Feb 2016 21:31:49 +0000
+ id 1aSApM-0002T6-Rz
+ for linux-mtd@lists.infradead.org; Sat, 06 Feb 2016 21:55:38 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ Josh Wu <josh.wu@atmel.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- Nadav Haklai <nadavh@marvell.com>, linux-mtd@lists.infradead.org,
- Ofer Heifetz <oferh@marvell.com>
-Subject: Re: [PATCH] mtd: nand: pxa3xx_nand: add support for partial chunks
-References: <1453901520-4621-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <20160205230754.GB4329@laptop.cereza>
-Date: Sat, 06 Feb 2016 22:31:17 +0100
-In-Reply-To: <20160205230754.GB4329@laptop.cereza> (Ezequiel Garcia's message
- of "Fri, 5 Feb 2016 20:07:54 -0300")
-Message-ID: <87bn7t4jbu.fsf@belgarion.home>
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-sunxi@googlegroups.com, Stefan Agner <stefan@agner.ch>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
+ linux-kernel@vger.kernel.org, punnaiah choudary kalluri <punnaia@xilinx.com>,
+ Priit Laes <plaes@plaes.org>
+Subject: Re: [PATCH v2 18/51] mtd: docg3: use mtd_set_ecclayout() where
+ appropriate
+References: <1454580434-32078-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1454580434-32078-19-git-send-email-boris.brezillon@free-electrons.com>
+Date: Sat, 06 Feb 2016 22:55:05 +0100
+In-Reply-To: <1454580434-32078-19-git-send-email-boris.brezillon@free-electrons.com>
+ (Boris Brezillon's message of "Thu, 4 Feb 2016 11:06:41 +0100")
+Message-ID: <8737t54i86.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,18 +38,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
+Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-> Hi Thomas,
+> Use the mtd_set_ecclayout() helper instead of directly assigning the
+> mtd->ecclayout field.
 >
-> Thanks for working on this. Looks mostly good, just a couple minor
-> comments below.
->
-> Robert: Do you think you can take a look and test on PXA?
-I didn't review the patch, I'm a bit short of time.
-
-But I did the test, and you can add:
-Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
 Cheers.
 
