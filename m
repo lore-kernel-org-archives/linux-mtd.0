@@ -1,28 +1,28 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aRxY1-00080R-JA
+ id 1aRxY1-00080Q-Hd
  for linux-mtd@lists.infradead.org; Sat, 06 Feb 2016 07:44:50 +0000
 From: Marek Vasut <marex@denx.de>
-To: Dinh Nguyen <dinguyen@opensource.altera.com>
+To: "R, Vignesh" <vigneshr@ti.com>
 Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
  Controller driver.
-Date: Sat, 6 Feb 2016 08:42:07 +0100
-Cc: Vignesh R <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- Rob Herring <robh@kernel.org>,
+Date: Sat, 6 Feb 2016 08:42:38 +0100
+Cc: Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Graham Moore <grmoore@opensource.altera.com>,
  Alan Tull <atull@opensource.altera.com>,
  David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
  Yves Vandervennet <yvanderv@opensource.altera.com>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 References: <1452486886-8049-1-git-send-email-marex@denx.de>
- <201602041225.11679.marex@denx.de> <56B38488.2000502@opensource.altera.com>
-In-Reply-To: <56B38488.2000502@opensource.altera.com>
+ <201602041225.11679.marex@denx.de> <56B38AB3.3070801@ti.com>
+In-Reply-To: <56B38AB3.3070801@ti.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201602060842.07120.marex@denx.de>
+Message-Id: <201602060842.38290.marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,8 +32,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, February 04, 2016 at 06:04:08 PM, Dinh Nguyen wrote:
-> On 02/04/2016 05:25 AM, Marek Vasut wrote:
+On Thursday, February 04, 2016 at 06:30:27 PM, R, Vignesh wrote:
+> On 2/4/2016 4:55 PM, Marek Vasut wrote:
 > > On Thursday, February 04, 2016 at 08:38:47 AM, Vignesh R wrote:
 > >> On 02/02/2016 02:43 AM, Marek Vasut wrote:
 > >>> On Monday, February 01, 2016 at 10:03:35 PM, Brian Norris wrote:
@@ -80,16 +80,16 @@ On Thursday, February 04, 2016 at 06:04:08 PM, Dinh Nguyen wrote:
 > >>  	};
 > > 
 > > Do you expect any specifics which cannot be handled by the current
-> > bindings btw? In my socfpga case, the compatible strings will be
-> > probably:
-> > 
-> > "altr,socfpga-gen5-qspi"
-> > 
-> > Dinh, Graham, do you agree with this or should we use something else ?
+> > bindings btw?
 > 
-> I agree.
+> > In my socfpga case, the compatible strings will be probably:
+> Yeah, there is delay(of few ns) required between writing to
+> INDIRECTWR_START bit and actually writing data to flash(i.e writesl()
+> call). This is specific to TI K2G SoC and needs to be tied to the new
+> binding.
 
-Thanks
+Can't you somehow poll the hardware to check whether or not it's ready instead
+of adding some random delay ?
 
 Best regards,
 Marek Vasut
