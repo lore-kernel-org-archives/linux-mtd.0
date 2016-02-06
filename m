@@ -1,8 +1,8 @@
 Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aSApM-0002T6-Rz
- for linux-mtd@lists.infradead.org; Sat, 06 Feb 2016 21:55:38 +0000
+ id 1aSAri-0004AR-VN
+ for linux-mtd@lists.infradead.org; Sat, 06 Feb 2016 21:58:16 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -19,14 +19,13 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
  linux-kernel@vger.kernel.org, punnaiah choudary kalluri <punnaia@xilinx.com>,
  Priit Laes <plaes@plaes.org>
-Subject: Re: [PATCH v2 18/51] mtd: docg3: use mtd_set_ecclayout() where
- appropriate
+Subject: Re: [PATCH v2 20/51] mtd: docg3: switch to mtd_ooblayout_ops
 References: <1454580434-32078-1-git-send-email-boris.brezillon@free-electrons.com>
- <1454580434-32078-19-git-send-email-boris.brezillon@free-electrons.com>
-Date: Sat, 06 Feb 2016 22:55:05 +0100
-In-Reply-To: <1454580434-32078-19-git-send-email-boris.brezillon@free-electrons.com>
- (Boris Brezillon's message of "Thu, 4 Feb 2016 11:06:41 +0100")
-Message-ID: <8737t54i86.fsf@belgarion.home>
+ <1454580434-32078-21-git-send-email-boris.brezillon@free-electrons.com>
+Date: Sat, 06 Feb 2016 22:57:39 +0100
+In-Reply-To: <1454580434-32078-21-git-send-email-boris.brezillon@free-electrons.com>
+ (Boris Brezillon's message of "Thu, 4 Feb 2016 11:06:43 +0100")
+Message-ID: <87y4ax33jg.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -40,8 +39,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Boris Brezillon <boris.brezillon@free-electrons.com> writes:
 
-> Use the mtd_set_ecclayout() helper instead of directly assigning the
-> mtd->ecclayout field.
+> Replace the nand_ecclayout definition by the equivalent mtd_ooblayout_ops
+> definition.
 >
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
