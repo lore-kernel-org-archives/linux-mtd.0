@@ -1,24 +1,28 @@
-Received: from mail-ig0-x22b.google.com ([2607:f8b0:4001:c05::22b])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aSiWe-00025M-RH
- for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 09:54:33 +0000
-Received: by mail-ig0-x22b.google.com with SMTP id ik10so81754617igb.1
- for <linux-mtd@lists.infradead.org>; Mon, 08 Feb 2016 01:54:12 -0800 (PST)
+ id 1aSjri-00014s-MP
+ for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 11:20:25 +0000
+Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+To: Marek Vasut <marex@denx.de>
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <201602041225.11679.marex@denx.de> <56B38AB3.3070801@ti.com>
+ <201602060842.38290.marex@denx.de>
+CC: Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
+ <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <56B879BD.2070608@ti.com>
+Date: Mon, 8 Feb 2016 16:49:25 +0530
 MIME-Version: 1.0
-In-Reply-To: <CACna6rxZCkeCijReQDSr2Jc7m8q0J7qp=nhNgnkFFzk312wSdg@mail.gmail.com>
-References: <CACna6rxZCkeCijReQDSr2Jc7m8q0J7qp=nhNgnkFFzk312wSdg@mail.gmail.com>
-Date: Mon, 8 Feb 2016 10:54:11 +0100
-Message-ID: <CACna6rz9ppFXqhh6=m7cnmQ58y=4w4X8f_DM_8Y0ePZ71BoL3g@mail.gmail.com>
-Subject: Re: brcmnand (iproc): bitflips and ECC errors due to ignored ECC
- config
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <201602060842.38290.marex@denx.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +32,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 25 January 2016 at 13:59, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wro=
-te:
-> I've a D-Link DIR-885L router with following NAND:
-> nand: device found, Manufacturer ID: 0x01, Chip ID: 0xf1
-> nand: AMD/Spansion NAND 128MiB 3,3V 8-bit
-> nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
->
-> It uses ECC strength 1 with step size 512 so I created DT with:
-> nand-ecc-strength =3D <1>;
-> nand-ecc-step-size =3D <512>;
->
-> Unfortunately all I get from mtd_read are -EUCLEAN (6%) and -EBADMSG
-> (94%) errors. It's becase of the following code in brcmnand_setup_dev:
-> if (chip->ecc.strength =3D=3D 1) /* Hamming */
-> cfg->ecc_level =3D 15;
->
-> After removing this special handling of strength 1 I can use my NAND
-> as expected.
->
-> Is there a good reason for this hamming condition? Can we add some way
-> of using strength 1?
 
-Ping?
 
---=20
-Rafa=C5=82
+On 02/06/2016 01:12 PM, Marek Vasut wrote:
+> On Thursday, February 04, 2016 at 06:30:27 PM, R, Vignesh wrote:
+>> On 2/4/2016 4:55 PM, Marek Vasut wrote:
+
+[...]
+
+>> Yeah, there is delay(of few ns) required between writing to
+>> INDIRECTWR_START bit and actually writing data to flash(i.e writesl()
+>> call). This is specific to TI K2G SoC and needs to be tied to the new
+>> binding.
+> 
+> Can't you somehow poll the hardware to check whether or not it's ready instead
+> of adding some random delay ?
+
+There is no dedicated register to poll as such.
+
+According to TRM:
+"Wait for couple of cycles of QSPI_REF_CLK(functional clock of QSPI
+@384MHz) until CQSPI_REG_INDIRECTWR[0] bit is internally synchronized by
+the QSPI module before writing to flash".
+
+So, a few ns(~6ns @384MHz) delay is needed (or accessing a QSPI module
+register should be sufficient as it will take more than 2 clock cycles).
+I believe this delay is specific to TI K2G SoC and maybe needs to be
+tied to the binding.
+
+
+-- 
+Regards
+Vignesh
