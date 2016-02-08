@@ -1,30 +1,24 @@
-Received: from conssluserg002.nifty.com ([202.248.44.40]
- helo=conssluserg002-v.nifty.com)
+Received: from mail-ig0-x22b.google.com ([2607:f8b0:4001:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aShOc-0005BV-TD
- for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 08:42:11 +0000
-Received: from mail-yw0-f178.google.com (mail-yw0-f178.google.com
- [209.85.161.178]) (authenticated)
- by conssluserg002-v.nifty.com with ESMTP id u188fYmP000303
- for <linux-mtd@lists.infradead.org>; Mon, 8 Feb 2016 17:41:35 +0900
-Received: by mail-yw0-f178.google.com with SMTP id u200so18480874ywf.0
- for <linux-mtd@lists.infradead.org>; Mon, 08 Feb 2016 00:41:35 -0800 (PST)
+ id 1aSiWe-00025M-RH
+ for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 09:54:33 +0000
+Received: by mail-ig0-x22b.google.com with SMTP id ik10so81754617igb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 08 Feb 2016 01:54:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5298318.0qJ9fLYbSx@wuerfel>
-References: <1454916702-20982-1-git-send-email-yamada.masahiro@socionext.com>
- <5298318.0qJ9fLYbSx@wuerfel>
-Date: Mon, 8 Feb 2016 17:41:33 +0900
-Message-ID: <CAK7LNAS2r=_RL6dmj1xhCzGtvMP=emC=_bW4Ot5SMe6ij-WpBQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: denali: fix property name for Denali DT binding
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-mtd@lists.infradead.org, Dinh Nguyen <dinguyen@altera.com>,
- devicetree@vger.kernel.org, Kumar Gala <galak@codeaurora.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>
+In-Reply-To: <CACna6rxZCkeCijReQDSr2Jc7m8q0J7qp=nhNgnkFFzk312wSdg@mail.gmail.com>
+References: <CACna6rxZCkeCijReQDSr2Jc7m8q0J7qp=nhNgnkFFzk312wSdg@mail.gmail.com>
+Date: Mon, 8 Feb 2016 10:54:11 +0100
+Message-ID: <CACna6rz9ppFXqhh6=m7cnmQ58y=4w4X8f_DM_8Y0ePZ71BoL3g@mail.gmail.com>
+Subject: Re: brcmnand (iproc): bitflips and ECC errors due to ignored ECC
+ config
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,41 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
-
-
-2016-02-08 17:29 GMT+09:00 Arnd Bergmann <arnd@arndb.de>:
-> On Monday 08 February 2016 16:31:42 Masahiro Yamada wrote:
->> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
->> index b04d03a..785b825 100644
->> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
->> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
->> @@ -5,7 +5,7 @@ Required properties:
->>    - reg : should contain registers location and length for data and reg.
->>    - reg-names: Should contain the reg names "nand_data" and "denali_reg"
->>    - interrupts : The interrupt number.
->> -  - dm-mask : DMA bit mask
->> +  - dma-mask : DMA bit mask
->>
->>  The device tree may optionally contain sub-nodes describing partitions of the
->>  address space. See partition.txt for more detail.
->>
+On 25 January 2016 at 13:59, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wro=
+te:
+> I've a D-Link DIR-885L router with following NAND:
+> nand: device found, Manufacturer ID: 0x01, Chip ID: 0xf1
+> nand: AMD/Spansion NAND 128MiB 3,3V 8-bit
+> nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
 >
-> It looks like this binding is wrong in multiple ways, and it doesn't seem to
-> be used in any .dts files. Is this actually being shipped anywhere or
-> could we try to fix the binding properly?
+> It uses ECC strength 1 with step size 512 so I created DT with:
+> nand-ecc-strength =3D <1>;
+> nand-ecc-step-size =3D <512>;
 >
+> Unfortunately all I get from mtd_read are -EUCLEAN (6%) and -EBADMSG
+> (94%) errors. It's becase of the following code in brcmnand_setup_dev:
+> if (chip->ecc.strength =3D=3D 1) /* Hamming */
+> cfg->ecc_level =3D 15;
+>
+> After removing this special handling of strength 1 I can use my NAND
+> as expected.
+>
+> Is there a good reason for this hamming condition? Can we add some way
+> of using strength 1?
 
-Looks like it is locally used in Altera's Rocketboard tree now.
+Ping?
 
-See this:
-
-https://github.com/altera-opensource/linux-socfpga/blob/socfpga-4.3/arch/arm/boot/dts/socfpga.dtsi
-
-
-I hope Dinh can comment on the status.
-
-
--- 
-Best Regards
-Masahiro Yamada
+--=20
+Rafa=C5=82
