@@ -1,20 +1,19 @@
-Received: from nschwmtas02p.mx.bigpond.com ([61.9.189.140])
+Received: from conuserg011.nifty.com ([202.248.44.37]
+ helo=conuserg011-v.nifty.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aSVbS-0005wO-Jt
- for linux-mtd@lists.infradead.org; Sun, 07 Feb 2016 20:06:39 +0000
-Received: from nschwcmgw06p ([61.9.190.166]) by nschwmtas02p.mx.bigpond.com
- with ESMTP
- id <20160207200609.VOMW2381.nschwmtas02p.mx.bigpond.com@nschwcmgw06p>
- for <linux-mtd@lists.infradead.org>; Sun, 7 Feb 2016 20:06:09 +0000
-From: "Jeff Stevens" <jsteve17@bigpond.com>
-Content-Type: text/plain;
-	charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (1.0)
-Subject: hi Linux
-Message-Id: <A7DE8386-2BCA-4B10-E652-7A84D447273A@bigpond.com>
-Date: Sun, 7 Feb 2016 21:05:16 +0100
-To: "Linux MTD" <linux-mtd@lists.infradead.org>
+ id 1aSgIT-0006cM-Jt
+ for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 07:31:49 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Dinh Nguyen <dinguyen@altera.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ devicetree@vger.kernel.org, Kumar Gala <galak@codeaurora.org>,
+ linux-kernel@vger.kernel.org, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH] mtd: denali: fix property name for Denali DT binding
+Date: Mon,  8 Feb 2016 16:31:42 +0900
+Message-Id: <1454916702-20982-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,9 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linux
+The property "dma-mask" is used in the Examples section of this
+document as well as drivers/mtd/nand/denali_dt.c, so I assume the
+correct property name is "dma-mask", not "dm-mask"
 
-http://EngineeringLabSymposium.com/tip.php?guess=3D12hf1uar8f5s
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
+ Documentation/devicetree/bindings/mtd/denali-nand.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Jeff
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index b04d03a..785b825 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -5,7 +5,7 @@ Required properties:
+   - reg : should contain registers location and length for data and reg.
+   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
+   - interrupts : The interrupt number.
+-  - dm-mask : DMA bit mask
++  - dma-mask : DMA bit mask
+ 
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+-- 
+1.9.1
