@@ -1,26 +1,25 @@
-Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aSs40-0001Om-AX
- for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 20:05:37 +0000
-Received: by mail-wm0-x22b.google.com with SMTP id g62so147929778wme.0
- for <linux-mtd@lists.infradead.org>; Mon, 08 Feb 2016 12:05:15 -0800 (PST)
+Received: from mail.kernel.org ([198.145.29.136])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aStVm-0003oq-TY
+ for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 21:38:23 +0000
+Date: Mon, 8 Feb 2016 15:37:57 -0600
+From: Rob Herring <robh@kernel.org>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-mtd@lists.infradead.org,
+ Dinh Nguyen <dinguyen@altera.com>, devicetree@vger.kernel.org,
+ Kumar Gala <galak@codeaurora.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] mtd: denali: fix property name for Denali DT binding
+Message-ID: <20160208213757.GA3223@rob-hp-laptop>
+References: <1454916702-20982-1-git-send-email-yamada.masahiro@socionext.com>
+ <5298318.0qJ9fLYbSx@wuerfel>
+ <CAK7LNAS2r=_RL6dmj1xhCzGtvMP=emC=_bW4Ot5SMe6ij-WpBQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20160208192111.GA62607@google.com>
-References: <CACna6rxZCkeCijReQDSr2Jc7m8q0J7qp=nhNgnkFFzk312wSdg@mail.gmail.com>
- <CACna6rz9ppFXqhh6=m7cnmQ58y=4w4X8f_DM_8Y0ePZ71BoL3g@mail.gmail.com>
- <CAC=U0a1vj1020X8BjvYGSOi7GrJCAad3A8wCeosuEo+7i4Rk3A@mail.gmail.com>
- <20160208192111.GA62607@google.com>
-Date: Mon, 8 Feb 2016 15:05:14 -0500
-Message-ID: <CAC=U0a0VSUxDPDEi16A_RvbkE89KUDtQjOj3K+d9GTxrbJxULQ@mail.gmail.com>
-Subject: Re: brcmnand (iproc): bitflips and ECC errors due to ignored ECC
- config
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAS2r=_RL6dmj1xhCzGtvMP=emC=_bW4Ot5SMe6ij-WpBQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,45 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian,
+On Mon, Feb 08, 2016 at 05:41:33PM +0900, Masahiro Yamada wrote:
+> Hi Arnd,
+> 
+> 
+> 2016-02-08 17:29 GMT+09:00 Arnd Bergmann <arnd@arndb.de>:
+> > On Monday 08 February 2016 16:31:42 Masahiro Yamada wrote:
+> >> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+> >> index b04d03a..785b825 100644
+> >> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
+> >> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+> >> @@ -5,7 +5,7 @@ Required properties:
+> >>    - reg : should contain registers location and length for data and reg.
+> >>    - reg-names: Should contain the reg names "nand_data" and "denali_reg"
+> >>    - interrupts : The interrupt number.
+> >> -  - dm-mask : DMA bit mask
+> >> +  - dma-mask : DMA bit mask
+> >>
+> >>  The device tree may optionally contain sub-nodes describing partitions of the
+> >>  address space. See partition.txt for more detail.
+> >>
+> >
+> > It looks like this binding is wrong in multiple ways, and it doesn't seem to
+> > be used in any .dts files. Is this actually being shipped anywhere or
+> > could we try to fix the binding properly?
+> >
+> 
+> Looks like it is locally used in Altera's Rocketboard tree now.
+> 
+> See this:
+> 
+> https://github.com/altera-opensource/linux-socfpga/blob/socfpga-4.3/arch/arm/boot/dts/socfpga.dtsi
+> 
+> 
+> I hope Dinh can comment on the status.
 
-Current driver  defaults to using hamming when we see 1 bit ecc strength.
+>From the looks of it, this property should be dropped and the driver 
+should be updated to not touch dev->dma_mask. The core sets it up 
+correctly now.
 
-"It kinda sounds like Rafal is suggesting this product uses 1-bit BCH."
-
-That explains the read errors, if the image that is being read back
-was written with 1-bit BCH encoding.
-
-"Unfortunately, we don't really have a way to clearly differentiate 1-bit
-Hamming and 1-bit BCH in DT, do we?"
-
-Yes hamming is a special case in that sense. Adding an optional
-"ecc_algo"  field would help.
-If Rafal has the ability to  create an image with BCH-2 through BCH-8
-that can also work on this part. However the current issue needs to
-get fixed to have 1-bit hamming along side 1-bit BCH support. And
-maybe we default to using BCH, unless hamming is chosen for 1-bit.
-
-Kamal
-
-On Mon, Feb 8, 2016 at 2:21 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Mon, Feb 08, 2016 at 02:15:16PM -0500, Kamal Dasu wrote:
->> When SECTOR_SIZE = 512B, SPARE_AREA_SIZE  = 16, ECC_LEVEL = 15 enables
->> 1-bit Hamming ECC protection. So the ecc_level field is the SoC
->> internal representation for 1-bit hamming. If you mean by "removing
->> handling" you made strength=ecc_level=1, then you are now using 1-bit
->> BCH.
->
-> It kinda sounds like Rafal is suggesting this product uses 1-bit BCH.
-> I didn't even remember such a thing existed on this controller.
-> Unfortunately, we don't really have a way to clearly differentiate 1-bit
-> Hamming and 1-bit BCH in DT, do we? Both could equally well be described
-> by:
->
->         nand-ecc-strength = <1>;
->         nand-ecc-step-size = <512>;
->
-> Maybe we need a custom BRCM property?
->
-> Brian
+Rob
