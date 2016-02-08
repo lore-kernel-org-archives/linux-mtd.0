@@ -1,28 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aSnjw-000054-4l
- for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 15:28:40 +0000
-From: Marek Vasut <marex@denx.de>
-To: Vignesh R <vigneshr@ti.com>
-Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
- Controller driver.
-Date: Mon, 8 Feb 2016 16:27:57 +0100
-Cc: Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <1452486886-8049-1-git-send-email-marex@denx.de>
- <201602060842.38290.marex@denx.de> <56B879BD.2070608@ti.com>
-In-Reply-To: <56B879BD.2070608@ti.com>
+ id 1aSrHf-0008BU-1V
+ for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 19:15:39 +0000
+Received: by mail-wm0-x229.google.com with SMTP id p63so128245328wmp.1
+ for <linux-mtd@lists.infradead.org>; Mon, 08 Feb 2016 11:15:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201602081627.57666.marex@denx.de>
+In-Reply-To: <CACna6rz9ppFXqhh6=m7cnmQ58y=4w4X8f_DM_8Y0ePZ71BoL3g@mail.gmail.com>
+References: <CACna6rxZCkeCijReQDSr2Jc7m8q0J7qp=nhNgnkFFzk312wSdg@mail.gmail.com>
+ <CACna6rz9ppFXqhh6=m7cnmQ58y=4w4X8f_DM_8Y0ePZ71BoL3g@mail.gmail.com>
+Date: Mon, 8 Feb 2016 14:15:16 -0500
+Message-ID: <CAC=U0a1vj1020X8BjvYGSOi7GrJCAad3A8wCeosuEo+7i4Rk3A@mail.gmail.com>
+Subject: Re: brcmnand (iproc): bitflips and ECC errors due to ignored ECC
+ config
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,34 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, February 08, 2016 at 12:19:25 PM, Vignesh R wrote:
-> On 02/06/2016 01:12 PM, Marek Vasut wrote:
-> > On Thursday, February 04, 2016 at 06:30:27 PM, R, Vignesh wrote:
-> >> On 2/4/2016 4:55 PM, Marek Vasut wrote:
-> [...]
-> 
-> >> Yeah, there is delay(of few ns) required between writing to
-> >> INDIRECTWR_START bit and actually writing data to flash(i.e writesl()
-> >> call). This is specific to TI K2G SoC and needs to be tied to the new
-> >> binding.
-> > 
-> > Can't you somehow poll the hardware to check whether or not it's ready
-> > instead of adding some random delay ?
-> 
-> There is no dedicated register to poll as such.
-> 
-> According to TRM:
-> "Wait for couple of cycles of QSPI_REF_CLK(functional clock of QSPI
-> @384MHz) until CQSPI_REG_INDIRECTWR[0] bit is internally synchronized by
-> the QSPI module before writing to flash".
-> 
-> So, a few ns(~6ns @384MHz) delay is needed (or accessing a QSPI module
-> register should be sufficient as it will take more than 2 clock cycles).
-> I believe this delay is specific to TI K2G SoC and maybe needs to be
-> tied to the binding.
+When SECTOR_SIZE =3D 512B, SPARE_AREA_SIZE  =3D 16, ECC_LEVEL =3D 15 enable=
+s
+1-bit Hamming ECC protection. So the ecc_level field is the SoC
+internal representation for 1-bit hamming. If you mean by "removing
+handling" you made strength=3Decc_level=3D1, then you are now using 1-bit
+BCH.
 
-OK, got it. Dinh/Graham, can you check if this might be needed on SoCFPGA too 
-please?
+Kamal
 
-Best regards,
-Marek Vasut
+On Mon, Feb 8, 2016 at 4:54 AM, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> =
+wrote:
+> On 25 January 2016 at 13:59, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> w=
+rote:
+>> I've a D-Link DIR-885L router with following NAND:
+>> nand: device found, Manufacturer ID: 0x01, Chip ID: 0xf1
+>> nand: AMD/Spansion NAND 128MiB 3,3V 8-bit
+>> nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+>>
+>> It uses ECC strength 1 with step size 512 so I created DT with:
+>> nand-ecc-strength =3D <1>;
+>> nand-ecc-step-size =3D <512>;
+>>
+>> Unfortunately all I get from mtd_read are -EUCLEAN (6%) and -EBADMSG
+>> (94%) errors. It's becase of the following code in brcmnand_setup_dev:
+>> if (chip->ecc.strength =3D=3D 1) /* Hamming */
+>> cfg->ecc_level =3D 15;
+>>
+>> After removing this special handling of strength 1 I can use my NAND
+>> as expected.
+>>
+>> Is there a good reason for this hamming condition? Can we add some way
+>> of using strength 1?
+>
+> Ping?
+>
+> --
+> Rafa=C5=82
