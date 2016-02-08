@@ -1,25 +1,26 @@
-Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aSrHf-0008BU-1V
- for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 19:15:39 +0000
-Received: by mail-wm0-x229.google.com with SMTP id p63so128245328wmp.1
- for <linux-mtd@lists.infradead.org>; Mon, 08 Feb 2016 11:15:17 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CACna6rz9ppFXqhh6=m7cnmQ58y=4w4X8f_DM_8Y0ePZ71BoL3g@mail.gmail.com>
-References: <CACna6rxZCkeCijReQDSr2Jc7m8q0J7qp=nhNgnkFFzk312wSdg@mail.gmail.com>
- <CACna6rz9ppFXqhh6=m7cnmQ58y=4w4X8f_DM_8Y0ePZ71BoL3g@mail.gmail.com>
-Date: Mon, 8 Feb 2016 14:15:16 -0500
-Message-ID: <CAC=U0a1vj1020X8BjvYGSOi7GrJCAad3A8wCeosuEo+7i4Rk3A@mail.gmail.com>
-Subject: Re: brcmnand (iproc): bitflips and ECC errors due to ignored ECC
- config
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
+ id 1aSrNP-0001XP-5P
+ for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 19:21:35 +0000
+Received: by mail-pa0-x22b.google.com with SMTP id ho8so78050783pac.2
+ for <linux-mtd@lists.infradead.org>; Mon, 08 Feb 2016 11:21:14 -0800 (PST)
+Date: Mon, 8 Feb 2016 11:21:11 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Hauke Mehrtens <hauke@hauke-m.de>,
  bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: brcmnand (iproc): bitflips and ECC errors due to ignored ECC
+ config
+Message-ID: <20160208192111.GA62607@google.com>
+References: <CACna6rxZCkeCijReQDSr2Jc7m8q0J7qp=nhNgnkFFzk312wSdg@mail.gmail.com>
+ <CACna6rz9ppFXqhh6=m7cnmQ58y=4w4X8f_DM_8Y0ePZ71BoL3g@mail.gmail.com>
+ <CAC=U0a1vj1020X8BjvYGSOi7GrJCAad3A8wCeosuEo+7i4Rk3A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAC=U0a1vj1020X8BjvYGSOi7GrJCAad3A8wCeosuEo+7i4Rk3A@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When SECTOR_SIZE =3D 512B, SPARE_AREA_SIZE  =3D 16, ECC_LEVEL =3D 15 enable=
-s
-1-bit Hamming ECC protection. So the ecc_level field is the SoC
-internal representation for 1-bit hamming. If you mean by "removing
-handling" you made strength=3Decc_level=3D1, then you are now using 1-bit
-BCH.
+On Mon, Feb 08, 2016 at 02:15:16PM -0500, Kamal Dasu wrote:
+> When SECTOR_SIZE = 512B, SPARE_AREA_SIZE  = 16, ECC_LEVEL = 15 enables
+> 1-bit Hamming ECC protection. So the ecc_level field is the SoC
+> internal representation for 1-bit hamming. If you mean by "removing
+> handling" you made strength=ecc_level=1, then you are now using 1-bit
+> BCH.
 
-Kamal
+It kinda sounds like Rafal is suggesting this product uses 1-bit BCH.
+I didn't even remember such a thing existed on this controller.
+Unfortunately, we don't really have a way to clearly differentiate 1-bit
+Hamming and 1-bit BCH in DT, do we? Both could equally well be described
+by:
 
-On Mon, Feb 8, 2016 at 4:54 AM, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> =
-wrote:
-> On 25 January 2016 at 13:59, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> w=
-rote:
->> I've a D-Link DIR-885L router with following NAND:
->> nand: device found, Manufacturer ID: 0x01, Chip ID: 0xf1
->> nand: AMD/Spansion NAND 128MiB 3,3V 8-bit
->> nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
->>
->> It uses ECC strength 1 with step size 512 so I created DT with:
->> nand-ecc-strength =3D <1>;
->> nand-ecc-step-size =3D <512>;
->>
->> Unfortunately all I get from mtd_read are -EUCLEAN (6%) and -EBADMSG
->> (94%) errors. It's becase of the following code in brcmnand_setup_dev:
->> if (chip->ecc.strength =3D=3D 1) /* Hamming */
->> cfg->ecc_level =3D 15;
->>
->> After removing this special handling of strength 1 I can use my NAND
->> as expected.
->>
->> Is there a good reason for this hamming condition? Can we add some way
->> of using strength 1?
->
-> Ping?
->
-> --
-> Rafa=C5=82
+	nand-ecc-strength = <1>;
+	nand-ecc-step-size = <512>;
+
+Maybe we need a custom BRCM property?
+
+Brian
