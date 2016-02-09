@@ -1,25 +1,18 @@
-Received: from mail.kernel.org ([198.145.29.136])
+Received: from mx.radiofid.ru ([31.193.125.156])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aStVm-0003oq-TY
- for linux-mtd@lists.infradead.org; Mon, 08 Feb 2016 21:38:23 +0000
-Date: Mon, 8 Feb 2016 15:37:57 -0600
-From: Rob Herring <robh@kernel.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-mtd@lists.infradead.org,
- Dinh Nguyen <dinguyen@altera.com>, devicetree@vger.kernel.org,
- Kumar Gala <galak@codeaurora.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] mtd: denali: fix property name for Denali DT binding
-Message-ID: <20160208213757.GA3223@rob-hp-laptop>
-References: <1454916702-20982-1-git-send-email-yamada.masahiro@socionext.com>
- <5298318.0qJ9fLYbSx@wuerfel>
- <CAK7LNAS2r=_RL6dmj1xhCzGtvMP=emC=_bW4Ot5SMe6ij-WpBQ@mail.gmail.com>
+ id 1aTCnR-0004TP-TF
+ for linux-mtd@lists.infradead.org; Tue, 09 Feb 2016 18:14:14 +0000
+Received: from MAIL2.radiofid.local (mail2.radiofid.local [192.168.106.210])
+ by mail.radiofid.ru (Postfix) with ESMTP id 048F7170C6
+ for <linux-mtd@lists.infradead.org>; Tue,  9 Feb 2016 21:12:47 +0300 (MSK)
+From: Nikita Nazarenko <nnazarenko@radiofid.com>
+To: <linux-mtd@lists.infradead.org>
+CC: Nikita Nazarenko <nnazarenko@radiofid.com>
+Subject: [PATCH] mtd: spi-nor: Add support for ISSI is25lp128
+Date: Tue, 9 Feb 2016 21:12:43 +0300
+Message-ID: <1455041563-12483-1-git-send-email-nnazarenko@radiofid.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAS2r=_RL6dmj1xhCzGtvMP=emC=_bW4Ot5SMe6ij-WpBQ@mail.gmail.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,43 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 08, 2016 at 05:41:33PM +0900, Masahiro Yamada wrote:
-> Hi Arnd,
-> 
-> 
-> 2016-02-08 17:29 GMT+09:00 Arnd Bergmann <arnd@arndb.de>:
-> > On Monday 08 February 2016 16:31:42 Masahiro Yamada wrote:
-> >> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> >> index b04d03a..785b825 100644
-> >> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> >> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> >> @@ -5,7 +5,7 @@ Required properties:
-> >>    - reg : should contain registers location and length for data and reg.
-> >>    - reg-names: Should contain the reg names "nand_data" and "denali_reg"
-> >>    - interrupts : The interrupt number.
-> >> -  - dm-mask : DMA bit mask
-> >> +  - dma-mask : DMA bit mask
-> >>
-> >>  The device tree may optionally contain sub-nodes describing partitions of the
-> >>  address space. See partition.txt for more detail.
-> >>
-> >
-> > It looks like this binding is wrong in multiple ways, and it doesn't seem to
-> > be used in any .dts files. Is this actually being shipped anywhere or
-> > could we try to fix the binding properly?
-> >
-> 
-> Looks like it is locally used in Altera's Rocketboard tree now.
-> 
-> See this:
-> 
-> https://github.com/altera-opensource/linux-socfpga/blob/socfpga-4.3/arch/arm/boot/dts/socfpga.dtsi
-> 
-> 
-> I hope Dinh can comment on the status.
+Signed-off-by: Nikita Nazarenko <nnazarenko@radiofid.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->From the looks of it, this property should be dropped and the driver 
-should be updated to not touch dev->dma_mask. The core sets it up 
-correctly now.
-
-Rob
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index ed0c19c..e0bb151 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -739,6 +739,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 
+ 	/* ISSI */
+ 	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
++	{ "is25lp128", INFO(0x9d6018, 0, 32 * 1024,   512, SECT_4K) },
+ 
+ 	/* Macronix */
+ 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+-- 
+2.7.0
