@@ -1,9 +1,9 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aTRW5-0004N5-LD
- for linux-mtd@lists.infradead.org; Wed, 10 Feb 2016 09:57:01 +0000
-Received: by mail-wm0-x243.google.com with SMTP id g62so3083149wme.2
- for <linux-mtd@lists.infradead.org>; Wed, 10 Feb 2016 01:56:36 -0800 (PST)
+ id 1aTRW6-0004OD-Dy
+ for linux-mtd@lists.infradead.org; Wed, 10 Feb 2016 09:57:03 +0000
+Received: by mail-wm0-x244.google.com with SMTP id 128so3066106wmz.3
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Feb 2016 01:56:38 -0800 (PST)
 From: Romain Izard <romain.izard.pro@gmail.com>
 To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>
@@ -12,9 +12,11 @@ Cc: Josh Wu <rainyfeeling@outlook.com>,
  Yang Wenyou <Wenyou.Yang@atmel.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Rob Herring <robh@kernel.org>, Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v4 0/5] mtd: atmel_nand: Add support for NAND Flash on SAMA5D2
-Date: Wed, 10 Feb 2016 10:56:22 +0100
-Message-Id: <1455098187-9442-1-git-send-email-romain.izard.pro@gmail.com>
+Subject: [PATCH v4 2/5] dt-bindings: atmel_nand: Reword the documentation
+Date: Wed, 10 Feb 2016 10:56:24 +0100
+Message-Id: <1455098187-9442-3-git-send-email-romain.izard.pro@gmail.com>
+In-Reply-To: <1455098187-9442-1-git-send-email-romain.izard.pro@gmail.com>
+References: <1455098187-9442-1-git-send-email-romain.izard.pro@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +26,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND Flash controller for SAMA5D2 has small differences that make it
-impossible to use the existing driver for SAMA5D3. This patchset uses the
-device tree's compatible string to get those differences, and the code is
-slightly modified to handle them.
+Do not mention which chips supporting the PMECC controller, as it a
+duplicate of the information in the chips' device trees.
 
-Based on linux-mtd-next, commit ed4eeba7338bb123090f1c8b208f64d8184a896d
+Use common terms when describing the sub-node for the NAND Flash
+controller.
 
-See revision 2 to apply on the Atmel Linux 4.1 branch.
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+---
+v4: correct a typo in the title of the patch
+    collect tags
+v3: no change
+v2: new
 
-Compile tested for sama5_defconfig, and tested on SAMA5D3xek as there is no
-existing SAMA5D2 board with NAND Flash memory (yet).
+ .../devicetree/bindings/mtd/atmel-nand.txt         | 23 +++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-V4:
-- Collect Tested-by and Reviewed-By tags
-
-V3:
-- Rebase on linux-mtd-next
-- Skip patches already in the tree
-
-V2:
-- Rebase on v4.4
-- Use of_device_get_match_data
-- Split message cleanup
-- Reword a small part of the atmel_nand device tree binding
-- Use 'caps' for all private data structures
-
-V1:
-- Split the support of 32-bit ECC on SAMA5D2 in two commits
-- Fix the missing ECC strength configuration code
-
-RFC:
-- First version
-
-Romain Izard (5):
-  mtd: atmel_nand: Support variable RB_EDGE interrupts
-  dt-bindings: atmel_nand: Reword the documentation
-  mtd: atmel_nand: Support PMECC on SAMA5D2
-  mtd: atmel_nand: Support 32-bit ECC strength
-  ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-
- .../devicetree/bindings/mtd/atmel-nand.txt         | 31 +++++----
- arch/arm/boot/dts/sama5d2.dtsi                     | 38 +++++++++++
- drivers/mtd/nand/atmel_nand.c                      | 77 ++++++++++++++++++----
- drivers/mtd/nand/atmel_nand_ecc.h                  |  9 ++-
- drivers/mtd/nand/atmel_nand_nfc.h                  |  3 +-
- 5 files changed, 131 insertions(+), 27 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+index 89b0db9801b0..e68ab404d912 100644
+--- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+@@ -21,8 +21,8 @@ Optional properties:
+ - nand-ecc-mode : String, operation mode of the NAND ecc mode, soft by default.
+   Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
+   "soft_bch".
+-- atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware.
+-  Only supported by at91sam9x5 or later sam9 product.
++- atmel,has-pmecc : boolean to enable Programmable Multibit ECC hardware,
++  capable of BCH encoding and decoding, on devices where it is present.
+ - atmel,pmecc-cap : error correct capability for Programmable Multibit ECC
+   Controller. Supported values are: 2, 4, 8, 12, 24.
+ - atmel,pmecc-sector-size : sector size for ECC computation. Supported values
+@@ -32,15 +32,16 @@ Optional properties:
+   sector size 1024. If not specified, driver will build the table in runtime.
+ - nand-bus-width : 8 or 16 bus width if not present 8
+ - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+-- Nand Flash Controller(NFC) is a slave driver under Atmel nand flash
+-  - Required properties:
+-    - compatible : "atmel,sama5d3-nfc" or "atmel,sama5d4-nfc".
+-    - reg : should specify the address and size used for NFC command registers,
+-            NFC registers and NFC Sram. NFC Sram address and size can be absent
+-            if don't want to use it.
+-    - clocks: phandle to the peripheral clock
+-  - Optional properties:
+-    - atmel,write-by-sram: boolean to enable NFC write by sram.
++
++Nand Flash Controller(NFC) is an optional sub-node
++Required properties:
++- compatible : "atmel,sama5d3-nfc" or "atmel,sama5d4-nfc".
++- reg : should specify the address and size used for NFC command registers,
++        NFC registers and NFC SRAM. NFC SRAM address and size can be absent
++        if don't want to use it.
++- clocks: phandle to the peripheral clock
++Optional properties:
++- atmel,write-by-sram: boolean to enable NFC write by SRAM.
+ 
+ Examples:
+ nand0: nand@40000000,0 {
 -- 
 2.5.0
