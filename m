@@ -1,22 +1,23 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aTRWA-0004Pw-3c
- for linux-mtd@lists.infradead.org; Wed, 10 Feb 2016 09:57:05 +0000
-Received: by mail-wm0-x243.google.com with SMTP id p63so3081018wmp.1
- for <linux-mtd@lists.infradead.org>; Wed, 10 Feb 2016 01:56:41 -0800 (PST)
-From: Romain Izard <romain.izard.pro@gmail.com>
-To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>
-Cc: Josh Wu <rainyfeeling@outlook.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Yang Wenyou <Wenyou.Yang@atmel.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Rob Herring <robh@kernel.org>, Romain Izard <romain.izard.pro@gmail.com>
-Subject: [PATCH v4 5/5] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-Date: Wed, 10 Feb 2016 10:56:27 +0100
-Message-Id: <1455098187-9442-6-git-send-email-romain.izard.pro@gmail.com>
-In-Reply-To: <1455098187-9442-1-git-send-email-romain.izard.pro@gmail.com>
-References: <1455098187-9442-1-git-send-email-romain.izard.pro@gmail.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aTVES-000548-9v
+ for linux-mtd@lists.infradead.org; Wed, 10 Feb 2016 13:55:02 +0000
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Nadav Haklai <nadavh@marvell.com>, Lior Amsalem <alior@marvell.com>,
+ Ofer Heifetz <oferh@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: [PATCH v2] mtd: nand: pxa3xx_nand: add support for partial chunks
+Date: Wed, 10 Feb 2016 14:54:21 +0100
+Message-Id: <1455112461-20713-1-git-send-email-thomas.petazzoni@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,68 +27,438 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Both nodes are required to access NAND Flash memory. Additional
-settings will be necessary at the board level to use it.
+This commit is needed to properly support the 8-bits ECC configuration
+with 4KB pages.
 
-Tested-by: Wenyou Yang <wenyou.yang@atmel.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+When pages larger than 2 KB are used on platforms using the PXA3xx
+NAND controller, the reading/programming operations need to be split
+in chunks of 2 KBs or less because the controller FIFO is limited to
+about 2 KB (i.e a bit more than 2 KB to accomodate OOB data). Due to
+this requirement, the data layout on NAND is a bit strange, with ECC
+interleaved with data, at the end of each chunk.
+
+When a 4-bits ECC configuration is used with 4 KB pages, the physical
+data layout on the NAND looks like this:
+
+| 2048 data | 32 spare | 30 ECC | 2048 data | 32 spare | 30 ECC |
+
+So the data chunks have an equal size, 2080 bytes for each chunk,
+which the driver supports properly.
+
+When a 8-bits ECC configuration is used with 4KB pages, the physical
+data layout on the NAND looks like this:
+
+| 1024 data | 30 ECC | 1024 data | 30 ECC | 1024 data | 30 ECC | 1024 data | 30 ECC | 64 spare | 30 ECC |
+
+So, the spare area is stored in its own chunk, which has a different
+size than the other chunks. Since OOB is not used by UBIFS, the initial
+implementation of the driver has chosen to not support reading this
+additional "spare" chunk of data.
+
+Unfortunately, Marvell has chosen to store the BBT signature in the
+OOB area. Therefore, if the driver doesn't read this spare area, Linux
+has no way of finding the BBT. It thinks there is no BBT, and rewrites
+one, which U-Boot does not recognize, causing compability problem
+between the bootloader and the kernel in terms of NAND usage.
+
+To fix this, this commit implements the support for reading a partial
+last chunk. This support is currently only useful for the case of 8
+bits ECC with 4 KB pages, but it will be useful in the future to
+enable other configurations such as 12 bits and 16 bits ECC with 4 KB
+pages, or 8 bits ECC with 8 KB pages, etc. All those configurations
+have a "last" chunk that doesn't have the same size as the other
+chunks.
+
+In order to implement reading of the last chunk, this commit:
+
+ - Adds a number of new fields to the pxa3xx_nand_info to describe how
+   many full chunks and how many chunks we have, the size of full
+   chunks and partial chunks, both in terms of data area and spare
+   area.
+
+ - Fills in the step_chunk_size and step_spare_size variables to
+   describe how much data and spare should be read/written for the
+   current read/program step.
+
+ - Reworks the state machine to accommodate doing the additional read
+   or program step when a last partial chunk is used.
+
+This commit has been tested on a Marvell Armada 398 DB board, with a
+4KB page NAND, tested in both 4 bits ECC and 8 bits ECC
+configurations. Robert Jarzmik has tested on some PXA platforms.
+
+Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
-v4: collect Tested-by and Reviewed-by tags
-v3: no change
-v2: fix device address, hexadecimal with minuscules
+Changes since v1:
+ - Check that info->step_chunk_size is non-zero before reading/writing
+   step_chunk_size bytes in handle_pio_data(). Suggested by Ezequiel
+   Garcia.
+ - Fix minor typo new -> need reported by Ezequiel Garcia.
+ - Add Robert Jarzmik Tested-by tag.
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 157 ++++++++++++++++++++++++++---------------
+ 1 file changed, 101 insertions(+), 56 deletions(-)
 
- arch/arm/boot/dts/sama5d2.dtsi | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
-diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-index 3f750f6170f2..484bd8ea6602 100644
---- a/arch/arm/boot/dts/sama5d2.dtsi
-+++ b/arch/arm/boot/dts/sama5d2.dtsi
-@@ -263,6 +263,44 @@
- 			cache-level = <2>;
- 		};
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 86fc245..df97986 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -222,15 +222,44 @@ struct pxa3xx_nand_info {
+ 	int			use_spare;	/* use spare ? */
+ 	int			need_wait;
  
-+		nand0: nand@80000000 {
-+			compatible = "atmel,sama5d2-nand";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+			reg = < /* EBI CS3 */
-+				0x80000000 0x08000000
-+				/* SMC PMECC regs */
-+				0xf8014070 0x00000490
-+				/* SMC PMECC Error Location regs */
-+				0xf8014500 0x00000200
-+				/* ROM Galois tables */
-+				0x00040000 0x00018000
-+				>;
-+			interrupts = <17 IRQ_TYPE_LEVEL_HIGH 6>;
-+			atmel,nand-addr-offset = <21>;
-+			atmel,nand-cmd-offset = <22>;
-+			atmel,nand-has-dma;
-+			atmel,has-pmecc;
-+			atmel,pmecc-lookup-table-offset = <0x0 0x8000>;
-+			status = "disabled";
+-	unsigned int		data_size;	/* data to be read from FIFO */
+-	unsigned int		chunk_size;	/* split commands chunk size */
+-	unsigned int		oob_size;
++	/* Amount of real data per full chunk */
++	unsigned int		chunk_size;
 +
-+			nfc@c0000000 {
-+				compatible = "atmel,sama5d4-nfc";
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				reg = < /* NFC Command Registers */
-+					0xc0000000 0x08000000
-+					/* NFC HSMC regs */
-+					0xf8014000 0x00000070
-+					/* NFC SRAM banks */
-+					0x00100000 0x00100000
-+					>;
-+				clocks = <&hsmc_clk>;
-+				atmel,write-by-sram;
-+			};
-+		};
++	/* Amount of spare data per full chunk */
+ 	unsigned int		spare_size;
 +
- 		sdmmc0: sdio-host@a0000000 {
- 			compatible = "atmel,sama5d2-sdhci";
- 			reg = <0xa0000000 0x300>;
++	/* Number of full chunks (i.e chunk_size + spare_size) */
++	unsigned int            nfullchunks;
++
++	/*
++	 * Total number of chunks. If equal to nfullchunks, then there
++	 * are only full chunks. Otherwise, there is one last chunk of
++	 * size (last_chunk_size + last_spare_size)
++	 */
++	unsigned int            ntotalchunks;
++
++	/* Amount of real data in the last chunk */
++	unsigned int		last_chunk_size;
++
++	/* Amount of spare data in the last chunk */
++	unsigned int		last_spare_size;
++
+ 	unsigned int		ecc_size;
+ 	unsigned int		ecc_err_cnt;
+ 	unsigned int		max_bitflips;
+ 	int 			retcode;
+ 
++	/*
++	 * Variables only valid during command
++	 * execution. step_chunk_size and step_spare_size is the
++	 * amount of real data and spare data in the current
++	 * chunk. cur_chunk is the current chunk being
++	 * read/programmed.
++	 */
++	unsigned int		step_chunk_size;
++	unsigned int		step_spare_size;
++	unsigned int            cur_chunk;
++
+ 	/* cached register value */
+ 	uint32_t		reg_ndcr;
+ 	uint32_t		ndtr0cs0;
+@@ -526,25 +555,6 @@ static int pxa3xx_nand_init(struct pxa3xx_nand_host *host)
+ 	return 0;
+ }
+ 
+-/*
+- * Set the data and OOB size, depending on the selected
+- * spare and ECC configuration.
+- * Only applicable to READ0, READOOB and PAGEPROG commands.
+- */
+-static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info,
+-				struct mtd_info *mtd)
+-{
+-	int oob_enable = info->reg_ndcr & NDCR_SPARE_EN;
+-
+-	info->data_size = mtd->writesize;
+-	if (!oob_enable)
+-		return;
+-
+-	info->oob_size = info->spare_size;
+-	if (!info->use_ecc)
+-		info->oob_size += info->ecc_size;
+-}
+-
+ /**
+  * NOTE: it is a must to set ND_RUN firstly, then write
+  * command buffer, otherwise, it does not work.
+@@ -660,28 +670,28 @@ static void drain_fifo(struct pxa3xx_nand_info *info, void *data, int len)
+ 
+ static void handle_data_pio(struct pxa3xx_nand_info *info)
+ {
+-	unsigned int do_bytes = min(info->data_size, info->chunk_size);
+-
+ 	switch (info->state) {
+ 	case STATE_PIO_WRITING:
+-		writesl(info->mmio_base + NDDB,
+-			info->data_buff + info->data_buff_pos,
+-			DIV_ROUND_UP(do_bytes, 4));
++		if (info->step_chunk_size)
++			writesl(info->mmio_base + NDDB,
++				info->data_buff + info->data_buff_pos,
++				DIV_ROUND_UP(info->step_chunk_size, 4));
+ 
+-		if (info->oob_size > 0)
++		if (info->step_spare_size)
+ 			writesl(info->mmio_base + NDDB,
+ 				info->oob_buff + info->oob_buff_pos,
+-				DIV_ROUND_UP(info->oob_size, 4));
++				DIV_ROUND_UP(info->step_spare_size, 4));
+ 		break;
+ 	case STATE_PIO_READING:
+-		drain_fifo(info,
+-			   info->data_buff + info->data_buff_pos,
+-			   DIV_ROUND_UP(do_bytes, 4));
++		if (info->step_chunk_size)
++			drain_fifo(info,
++				   info->data_buff + info->data_buff_pos,
++				   DIV_ROUND_UP(info->step_chunk_size, 4));
+ 
+-		if (info->oob_size > 0)
++		if (info->step_spare_size)
+ 			drain_fifo(info,
+ 				   info->oob_buff + info->oob_buff_pos,
+-				   DIV_ROUND_UP(info->oob_size, 4));
++				   DIV_ROUND_UP(info->step_spare_size, 4));
+ 		break;
+ 	default:
+ 		dev_err(&info->pdev->dev, "%s: invalid state %d\n", __func__,
+@@ -690,9 +700,8 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
+ 	}
+ 
+ 	/* Update buffer pointers for multi-page read/write */
+-	info->data_buff_pos += do_bytes;
+-	info->oob_buff_pos += info->oob_size;
+-	info->data_size -= do_bytes;
++	info->data_buff_pos += info->step_chunk_size;
++	info->oob_buff_pos += info->step_spare_size;
+ }
+ 
+ static void pxa3xx_nand_data_dma_irq(void *data)
+@@ -733,8 +742,9 @@ static void start_data_dma(struct pxa3xx_nand_info *info)
+ 				info->state);
+ 		BUG();
+ 	}
+-	info->sg.length = info->data_size +
+-		(info->oob_size ? info->spare_size + info->ecc_size : 0);
++	info->sg.length = info->chunk_size;
++	if (info->use_spare)
++		info->sg.length += info->spare_size + info->ecc_size;
+ 	dma_map_sg(info->dma_chan->device->dev, &info->sg, 1, info->dma_dir);
+ 
+ 	tx = dmaengine_prep_slave_sg(info->dma_chan, &info->sg, 1, direction,
+@@ -895,9 +905,11 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
+ 	/* reset data and oob column point to handle data */
+ 	info->buf_start		= 0;
+ 	info->buf_count		= 0;
+-	info->oob_size		= 0;
+ 	info->data_buff_pos	= 0;
+ 	info->oob_buff_pos	= 0;
++	info->step_chunk_size   = 0;
++	info->step_spare_size   = 0;
++	info->cur_chunk         = 0;
+ 	info->use_ecc		= 0;
+ 	info->use_spare		= 1;
+ 	info->retcode		= ERR_NONE;
+@@ -909,8 +921,6 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
+ 	case NAND_CMD_READ0:
+ 	case NAND_CMD_PAGEPROG:
+ 		info->use_ecc = 1;
+-	case NAND_CMD_READOOB:
+-		pxa3xx_set_datasize(info, mtd);
+ 		break;
+ 	case NAND_CMD_PARAM:
+ 		info->use_spare = 0;
+@@ -969,6 +979,14 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 		if (command == NAND_CMD_READOOB)
+ 			info->buf_start += mtd->writesize;
+ 
++		if (info->cur_chunk < info->nfullchunks) {
++			info->step_chunk_size = info->chunk_size;
++			info->step_spare_size = info->spare_size;
++		} else {
++			info->step_chunk_size = info->last_chunk_size;
++			info->step_spare_size = info->last_spare_size;
++		}
++
+ 		/*
+ 		 * Multiple page read needs an 'extended command type' field,
+ 		 * which is either naked-read or last-read according to the
+@@ -980,8 +998,8 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 			info->ndcb0 |= NDCB0_DBC | (NAND_CMD_READSTART << 8)
+ 					| NDCB0_LEN_OVRD
+ 					| NDCB0_EXT_CMD_TYPE(ext_cmd_type);
+-			info->ndcb3 = info->chunk_size +
+-				      info->oob_size;
++			info->ndcb3 = info->step_chunk_size +
++				info->step_spare_size;
+ 		}
+ 
+ 		set_command_address(info, mtd->writesize, column, page_addr);
+@@ -1001,8 +1019,6 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 				| NDCB0_EXT_CMD_TYPE(ext_cmd_type)
+ 				| addr_cycle
+ 				| command;
+-			/* No data transfer in this case */
+-			info->data_size = 0;
+ 			exec_cmd = 1;
+ 		}
+ 		break;
+@@ -1014,6 +1030,14 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 			break;
+ 		}
+ 
++		if (info->cur_chunk < info->nfullchunks) {
++			info->step_chunk_size = info->chunk_size;
++			info->step_spare_size = info->spare_size;
++		} else {
++			info->step_chunk_size = info->last_chunk_size;
++			info->step_spare_size = info->last_spare_size;
++		}
++
+ 		/* Second command setting for large pages */
+ 		if (mtd->writesize > PAGE_CHUNK_SIZE) {
+ 			/*
+@@ -1024,14 +1048,14 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 			info->ndcb0 |= NDCB0_CMD_TYPE(0x1)
+ 					| NDCB0_LEN_OVRD
+ 					| NDCB0_EXT_CMD_TYPE(ext_cmd_type);
+-			info->ndcb3 = info->chunk_size +
+-				      info->oob_size;
++			info->ndcb3 = info->step_chunk_size +
++				      info->step_spare_size;
+ 
+ 			/*
+ 			 * This is the command dispatch that completes a chunked
+ 			 * page program operation.
+ 			 */
+-			if (info->data_size == 0) {
++			if (info->cur_chunk == info->ntotalchunks) {
+ 				info->ndcb0 = NDCB0_CMD_TYPE(0x1)
+ 					| NDCB0_EXT_CMD_TYPE(ext_cmd_type)
+ 					| command;
+@@ -1058,7 +1082,7 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 				| command;
+ 		info->ndcb1 = (column & 0xFF);
+ 		info->ndcb3 = INIT_BUFFER_SIZE;
+-		info->data_size = INIT_BUFFER_SIZE;
++		info->step_chunk_size = INIT_BUFFER_SIZE;
+ 		break;
+ 
+ 	case NAND_CMD_READID:
+@@ -1068,7 +1092,7 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 				| command;
+ 		info->ndcb1 = (column & 0xFF);
+ 
+-		info->data_size = 8;
++		info->step_chunk_size = 8;
+ 		break;
+ 	case NAND_CMD_STATUS:
+ 		info->buf_count = 1;
+@@ -1076,7 +1100,7 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 				| NDCB0_ADDR_CYC(1)
+ 				| command;
+ 
+-		info->data_size = 8;
++		info->step_chunk_size = 8;
+ 		break;
+ 
+ 	case NAND_CMD_ERASE1:
+@@ -1217,6 +1241,7 @@ static void nand_cmdfunc_extended(struct mtd_info *mtd,
+ 	init_completion(&info->dev_ready);
+ 	do {
+ 		info->state = STATE_PREPARED;
++
+ 		exec_cmd = prepare_set_command(info, command, ext_cmd_type,
+ 					       column, page_addr);
+ 		if (!exec_cmd) {
+@@ -1236,22 +1261,30 @@ static void nand_cmdfunc_extended(struct mtd_info *mtd,
+ 			break;
+ 		}
+ 
++		/* Only a few commands need several steps */
++		if (command != NAND_CMD_PAGEPROG &&
++		    command != NAND_CMD_READ0    &&
++		    command != NAND_CMD_READOOB)
++			break;
++
++		info->cur_chunk++;
++
+ 		/* Check if the sequence is complete */
+-		if (info->data_size == 0 && command != NAND_CMD_PAGEPROG)
++		if (info->cur_chunk == info->ntotalchunks && command != NAND_CMD_PAGEPROG)
+ 			break;
+ 
+ 		/*
+ 		 * After a splitted program command sequence has issued
+ 		 * the command dispatch, the command sequence is complete.
+ 		 */
+-		if (info->data_size == 0 &&
++		if (info->cur_chunk == (info->ntotalchunks + 1) &&
+ 		    command == NAND_CMD_PAGEPROG &&
+ 		    ext_cmd_type == EXT_CMD_TYPE_DISPATCH)
+ 			break;
+ 
+ 		if (command == NAND_CMD_READ0 || command == NAND_CMD_READOOB) {
+ 			/* Last read: issue a 'last naked read' */
+-			if (info->data_size == info->chunk_size)
++			if (info->cur_chunk == info->ntotalchunks - 1)
+ 				ext_cmd_type = EXT_CMD_TYPE_LAST_RW;
+ 			else
+ 				ext_cmd_type = EXT_CMD_TYPE_NAKED_RW;
+@@ -1261,7 +1294,7 @@ static void nand_cmdfunc_extended(struct mtd_info *mtd,
+ 		 * the command dispatch must be issued to complete.
+ 		 */
+ 		} else if (command == NAND_CMD_PAGEPROG &&
+-			   info->data_size == 0) {
++			   info->cur_chunk == info->ntotalchunks) {
+ 				ext_cmd_type = EXT_CMD_TYPE_DISPATCH;
+ 		}
+ 	} while (1);
+@@ -1506,6 +1539,8 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+ 			int strength, int ecc_stepsize, int page_size)
+ {
+ 	if (strength == 1 && ecc_stepsize == 512 && page_size == 2048) {
++		info->nfullchunks = 1;
++		info->ntotalchunks = 1;
+ 		info->chunk_size = 2048;
+ 		info->spare_size = 40;
+ 		info->ecc_size = 24;
+@@ -1514,6 +1549,8 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+ 		ecc->strength = 1;
+ 
+ 	} else if (strength == 1 && ecc_stepsize == 512 && page_size == 512) {
++		info->nfullchunks = 1;
++		info->ntotalchunks = 1;
+ 		info->chunk_size = 512;
+ 		info->spare_size = 8;
+ 		info->ecc_size = 8;
+@@ -1527,6 +1564,8 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+ 	 */
+ 	} else if (strength == 4 && ecc_stepsize == 512 && page_size == 2048) {
+ 		info->ecc_bch = 1;
++		info->nfullchunks = 1;
++		info->ntotalchunks = 1;
+ 		info->chunk_size = 2048;
+ 		info->spare_size = 32;
+ 		info->ecc_size = 32;
+@@ -1537,6 +1576,8 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+ 
+ 	} else if (strength == 4 && ecc_stepsize == 512 && page_size == 4096) {
+ 		info->ecc_bch = 1;
++		info->nfullchunks = 2;
++		info->ntotalchunks = 2;
+ 		info->chunk_size = 2048;
+ 		info->spare_size = 32;
+ 		info->ecc_size = 32;
+@@ -1551,8 +1592,12 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+ 	 */
+ 	} else if (strength == 8 && ecc_stepsize == 512 && page_size == 4096) {
+ 		info->ecc_bch = 1;
++		info->nfullchunks = 4;
++		info->ntotalchunks = 5;
+ 		info->chunk_size = 1024;
+ 		info->spare_size = 0;
++		info->last_chunk_size = 0;
++		info->last_spare_size = 64;
+ 		info->ecc_size = 32;
+ 		ecc->mode = NAND_ECC_HW;
+ 		ecc->size = info->chunk_size;
 -- 
-2.5.0
+2.6.4
