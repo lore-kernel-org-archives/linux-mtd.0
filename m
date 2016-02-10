@@ -1,30 +1,27 @@
-Received: from mail-qg0-x22e.google.com ([2607:f8b0:400d:c04::22e])
+Received: from mail-by2on0097.outbound.protection.outlook.com ([207.46.100.97]
+ helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aTVfg-0005lt-0E
- for linux-mtd@lists.infradead.org; Wed, 10 Feb 2016 14:23:11 +0000
-Received: by mail-qg0-x22e.google.com with SMTP id y9so14376729qgd.3
- for <linux-mtd@lists.infradead.org>; Wed, 10 Feb 2016 06:22:47 -0800 (PST)
-Date: Wed, 10 Feb 2016 11:22:42 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
- Jason Cooper <jason@lakedaemon.net>,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- Nadav Haklai <nadavh@marvell.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Ofer Heifetz <oferh@marvell.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx_nand: add support for partial chunks
-Message-ID: <20160210142242.GA1352@laptop.cereza>
-References: <1455112461-20713-1-git-send-email-thomas.petazzoni@free-electrons.com>
+ id 1aTXPz-0007ib-Lt
+ for linux-mtd@lists.infradead.org; Wed, 10 Feb 2016 16:15:04 +0000
+Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+To: Marek Vasut <marex@denx.de>, Vignesh R <vigneshr@ti.com>
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <201602060842.38290.marex@denx.de> <56B879BD.2070608@ti.com>
+ <201602081627.57666.marex@denx.de>
+CC: Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Alan Tull
+ <atull@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>, "Dinh
+ Nguyen" <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+From: Graham Moore <grmoore@opensource.altera.com>
+Message-ID: <56BB60F1.9070306@opensource.altera.com>
+Date: Wed, 10 Feb 2016 10:10:25 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1455112461-20713-1-git-send-email-thomas.petazzoni@free-electrons.com>
+In-Reply-To: <201602081627.57666.marex@denx.de>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,72 +31,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10 Feb 02:54 PM, Thomas Petazzoni wrote:
-> This commit is needed to properly support the 8-bits ECC configuration
-> with 4KB pages.
-> 
-> When pages larger than 2 KB are used on platforms using the PXA3xx
-> NAND controller, the reading/programming operations need to be split
-> in chunks of 2 KBs or less because the controller FIFO is limited to
-> about 2 KB (i.e a bit more than 2 KB to accomodate OOB data). Due to
-> this requirement, the data layout on NAND is a bit strange, with ECC
-> interleaved with data, at the end of each chunk.
-> 
-> When a 4-bits ECC configuration is used with 4 KB pages, the physical
-> data layout on the NAND looks like this:
-> 
-> | 2048 data | 32 spare | 30 ECC | 2048 data | 32 spare | 30 ECC |
-> 
-> So the data chunks have an equal size, 2080 bytes for each chunk,
-> which the driver supports properly.
-> 
-> When a 8-bits ECC configuration is used with 4KB pages, the physical
-> data layout on the NAND looks like this:
-> 
-> | 1024 data | 30 ECC | 1024 data | 30 ECC | 1024 data | 30 ECC | 1024 data | 30 ECC | 64 spare | 30 ECC |
-> 
-> So, the spare area is stored in its own chunk, which has a different
-> size than the other chunks. Since OOB is not used by UBIFS, the initial
-> implementation of the driver has chosen to not support reading this
-> additional "spare" chunk of data.
-> 
-> Unfortunately, Marvell has chosen to store the BBT signature in the
-> OOB area. Therefore, if the driver doesn't read this spare area, Linux
-> has no way of finding the BBT. It thinks there is no BBT, and rewrites
-> one, which U-Boot does not recognize, causing compability problem
-> between the bootloader and the kernel in terms of NAND usage.
-> 
-> To fix this, this commit implements the support for reading a partial
-> last chunk. This support is currently only useful for the case of 8
-> bits ECC with 4 KB pages, but it will be useful in the future to
-> enable other configurations such as 12 bits and 16 bits ECC with 4 KB
-> pages, or 8 bits ECC with 8 KB pages, etc. All those configurations
-> have a "last" chunk that doesn't have the same size as the other
-> chunks.
-> 
-> In order to implement reading of the last chunk, this commit:
-> 
->  - Adds a number of new fields to the pxa3xx_nand_info to describe how
->    many full chunks and how many chunks we have, the size of full
->    chunks and partial chunks, both in terms of data area and spare
->    area.
-> 
->  - Fills in the step_chunk_size and step_spare_size variables to
->    describe how much data and spare should be read/written for the
->    current read/program step.
-> 
->  - Reworks the state machine to accommodate doing the additional read
->    or program step when a last partial chunk is used.
-> 
-> This commit has been tested on a Marvell Armada 398 DB board, with a
-> 4KB page NAND, tested in both 4 bits ECC and 8 bits ECC
-> configurations. Robert Jarzmik has tested on some PXA platforms.
-> 
-> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-> Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
+On 02/08/2016 09:27 AM, Marek Vasut wrote:
+> On Monday, February 08, 2016 at 12:19:25 PM, Vignesh R wrote:
+>> On 02/06/2016 01:12 PM, Marek Vasut wrote:
+>>> On Thursday, February 04, 2016 at 06:30:27 PM, R, Vignesh wrote:
+>>>> On 2/4/2016 4:55 PM, Marek Vasut wrote:
+>> [...]
+>>
+>>>> Yeah, there is delay(of few ns) required between writing to
+>>>> INDIRECTWR_START bit and actually writing data to flash(i.e writesl()
+>>>> call). This is specific to TI K2G SoC and needs to be tied to the new
+>>>> binding.
+>>>
+>>> Can't you somehow poll the hardware to check whether or not it's ready
+>>> instead of adding some random delay ?
+>>
+>> There is no dedicated register to poll as such.
+>>
+>> According to TRM:
+>> "Wait for couple of cycles of QSPI_REF_CLK(functional clock of QSPI
+>> @384MHz) until CQSPI_REG_INDIRECTWR[0] bit is internally synchronized by
+>> the QSPI module before writing to flash".
+>>
+>> So, a few ns(~6ns @384MHz) delay is needed (or accessing a QSPI module
+>> register should be sufficient as it will take more than 2 clock cycles).
+>> I believe this delay is specific to TI K2G SoC and maybe needs to be
+>> tied to the binding.
+>
+> OK, got it. Dinh/Graham, can you check if this might be needed on SoCFPGA too
+> please?
+>
 
-Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+I don't see any such requirement in the data sheet.  It's working 
+without it.  So I think it's not needed on SoCFPGA
 
--- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+-Graham
