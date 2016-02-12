@@ -1,28 +1,21 @@
-Date: Fri, 12 Feb 2016 11:24:38 -0800
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aUJUa-0004Qx-Cj
+ for linux-mtd@lists.infradead.org; Fri, 12 Feb 2016 19:35:14 +0000
+Received: by mail-pf0-x241.google.com with SMTP id e127so4352588pfe.3
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Feb 2016 11:34:40 -0800 (PST)
+Date: Fri, 12 Feb 2016 11:34:37 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- "marex@denx.de" <marex@denx.de>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "pawel.moll@arm.com" <pawel.moll@arm.com>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "galak@codeaurora.org" <galak@codeaurora.org>
-Subject: Re: [PATCH linux-next v2 01/14] mtd: spi-nor: remove
- micron_quad_enable()
-Message-ID: <20160212192438.GD21465@google.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF57A75@NTXXIAMBX02.xacn.micron.com>
- <56B1E1A5.9060902@atmel.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for s25fl116k
+Message-ID: <20160212193437.GE21465@google.com>
+References: <1455187224-1650-1-git-send-email-s.hauer@pengutronix.de>
+ <1455188037-7695-1-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <56B1E1A5.9060902@atmel.com>
+In-Reply-To: <1455188037-7695-1-git-send-email-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,22 +25,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 03, 2016 at 12:16:53PM +0100, Cyrille Pitchen wrote:
+On Thu, Feb 11, 2016 at 11:53:57AM +0100, Sascha Hauer wrote:
+> The Spansion s25fl116k is a 16MBit NOR Flash supporting dual and
+> quad read operations.
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-> So in its current state, micron_quad_enable() prevents us from using Micron
-> memories for Quad SPI operations. Some code is missing to make it work.
-
-TL;DR: the original code adding micron_quad_enable() was broken and
-should never have been merged (sorry, my bad). Next time, please test
-your changes Bean.
-
-> As I said in the patch description, using the SPI 4-4-4 protocol is not
-> relevant for MTD usage. It would be worth for XIP operations but this is not the
-> purpose of the spi-nor driver.
-
-I'm not completely opposed to using it, if someone can support it well,
-test it, and prove it actually provides real benefits. But none of the
-above have been satisfied yet.
-
-Regards,
-Brian
+Applied to l2-mtd.git
