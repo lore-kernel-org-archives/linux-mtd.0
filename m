@@ -1,17 +1,24 @@
-Received: from smtp12.smtpout.orange.fr ([80.12.242.134]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aUMDW-00007D-SU
- for linux-mtd@lists.infradead.org; Fri, 12 Feb 2016 22:29:35 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH] mtd: nand: pxa3xx_nand: fix dmaengine initialization
-Date: Fri, 12 Feb 2016 23:29:04 +0100
-Message-Id: <1455316144-14464-1-git-send-email-robert.jarzmik@free.fr>
+Date: Fri, 12 Feb 2016 22:37:11 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Vignesh R <vigneshr@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, hramrach@gmail.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Message-ID: <20160212223711.GD18988@sirena.org.uk>
+References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
+ <1449807000-6457-4-git-send-email-vigneshr@ti.com>
+ <20160209193616.GN13270@sirena.org.uk> <56BC1D3E.5020203@ti.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="tNQTSEo8WG/FKZ8E"
+Content-Disposition: inline
+In-Reply-To: <56BC1D3E.5020203@ti.com>
+Subject: Re: [PATCH v5 3/5] mtd: devices: m25p80: add support for mmap read
+ request
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When the driver is initialized in a pure device-tree platform, the
-driver's probe fails allocating the dma channel :
-[  525.624435] pxa3xx-nand 43100000.nand: no resource defined for data DMA
-[  525.632088] pxa3xx-nand 43100000.nand: alloc nand resource failed
 
-The reason is that the DMA IO resource is not acquired through platform
-resources but by OF bindings.
+--tNQTSEo8WG/FKZ8E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fix this by ensuring that DMA IO resources are only queried in the non
-device-tree case.
+On Thu, Feb 11, 2016 at 11:03:50AM +0530, Vignesh R wrote:
+> On 02/10/2016 01:06 AM, Mark Brown wrote:
+> > On Fri, Dec 11, 2015 at 09:39:58AM +0530, Vignesh R wrote:
 
-Fixes: 8f5ba31aa565 ("mtd: nand: pxa3xx-nand: switch to dmaengine")
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
- drivers/mtd/nand/pxa3xx_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> >> +	if (spi_flash_read_supported(spi)) {
+> >> +		struct spi_flash_read_message msg;
+> >> +		int ret;
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index a168cbcc1086..afd487d4b67f 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1750,7 +1750,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
- 
--	if (use_dma) {
-+	if (!np && use_dma) {
- 		r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 		if (r == NULL) {
- 			dev_err(&pdev->dev,
--- 
-2.1.4
+> > Looking at this I can't help but think that spi_flash_read() ought to
+> > have the stub in rather than the caller.  But given that we're pretty
+> > much only ever expecting one user I'm not 100% sure it actually matters.
+
+> Well, my initial patch set passed long list of arguments to
+> spi_flash_read(), but Brian suggested to use struct[1] in order to avoid
+> unnecessary churn when things need changed in the API.
+
+I don't see what that has to do with my point?
+
+--tNQTSEo8WG/FKZ8E
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJWvl6UAAoJECTWi3JdVIfQblMH/RvNAztMXHLsEFRW0U1bdB63
+ImbcXa/jiHyGzMjlgdMzlJgYnVQ0KmX0PRVIDzbhHrIcLl0mqpNKENLU/IIgEDCw
+6uOKcEGGBRYqdT0GIHvHOwlf5Pmdm79FTz7Y/qcL7KwZfWtBAjk4OR/oMHgcMJYC
+fGLMpR+cpgdm7i/KCEXTZiFLahkQELonVKjyAE7vjxdjt7kUwA6r67LsOrNPbuEn
+aYxSgu2btiJzCXWsFRTv+9i/YzbzmTiVt2EB54gDgF8yMDW5pncbEZfm/iigUMRM
+jBngWvjoiVHatdGFtacqwXpU/Ad4ZutSaQ6+p64UIgzacVv1pTbkNmBo8+9eebo=
+=L0w+
+-----END PGP SIGNATURE-----
+
+--tNQTSEo8WG/FKZ8E--
