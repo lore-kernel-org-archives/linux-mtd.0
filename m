@@ -1,17 +1,31 @@
-Date: Fri, 12 Feb 2016 11:12:43 -0800
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aUJGN-0003kS-Jg
+ for linux-mtd@lists.infradead.org; Fri, 12 Feb 2016 19:20:22 +0000
+Received: by mail-pf0-x243.google.com with SMTP id w128so3756786pfb.2
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Feb 2016 11:19:59 -0800 (PST)
+Date: Fri, 12 Feb 2016 11:19:55 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org,
- Russell King <linux@arm.linux.org.uk>,
- Paul Parsons <lost.distance@yahoo.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: map: fix .set_vpp() documentation
-Message-ID: <20160212191243.GB21465@google.com>
-References: <1454364168-1342-1-git-send-email-linus.walleij@linaro.org>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Antoine Tenart <antoine.tenart@free-electrons.com>,
+ Nadav Haklai <nadavh@marvell.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Ofer Heifetz <oferh@marvell.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH v2] mtd: nand: pxa3xx_nand: add support for partial chunks
+Message-ID: <20160212191955.GC21465@google.com>
+References: <1455112461-20713-1-git-send-email-thomas.petazzoni@free-electrons.com>
+ <20160210142242.GA1352@laptop.cereza>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1454364168-1342-1-git-send-email-linus.walleij@linaro.org>
+In-Reply-To: <20160210142242.GA1352@laptop.cereza>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +35,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 01, 2016 at 11:02:48PM +0100, Linus Walleij wrote:
-> As of commit 876fe76d793d03077eb61ba3afab4a383f46c554
-> "mtd: maps: physmap: Add reference counter to set_vpp()"
-> the comment in the header file is incorrect and misleading.
-> Fix it up.
+On Wed, Feb 10, 2016 at 11:22:42AM -0300, Ezequiel Garcia wrote:
+> On 10 Feb 02:54 PM, Thomas Petazzoni wrote:
+> > This commit is needed to properly support the 8-bits ECC configuration
+> > with 4KB pages.
+> > 
+
+[...]
+
+> > 
+> > This commit has been tested on a Marvell Armada 398 DB board, with a
+> > 4KB page NAND, tested in both 4 bits ECC and 8 bits ECC
+> > configurations. Robert Jarzmik has tested on some PXA platforms.
+> > 
+> > Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+> > Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
 > 
-> Cc: Russell King <linux@arm.linux.org.uk>
-> Cc: Paul Parsons <lost.distance@yahoo.com>
-> Fixes: 876fe76d793d ("mtd: maps: physmap: Add reference counter to set_vpp()")
+> Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
-^^ Let's watch the non-gregkh stable maintainers pick up this patch just
-because of this (undocumented in Documentation/stable_kernel_rules.txt)
-tag :)
-
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  include/linux/mtd/map.h | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-> index 58f3ba709ade..5e0eb7ccabd4 100644
-> --- a/include/linux/mtd/map.h
-> +++ b/include/linux/mtd/map.h
-> @@ -240,8 +240,11 @@ struct map_info {
->  	   If there is no cache to care about this can be set to NULL. */
->  	void (*inval_cache)(struct map_info *, unsigned long, ssize_t);
->  
-> -	/* set_vpp() must handle being reentered -- enable, enable, disable
-> -	   must leave it enabled. */
-> +	/* This will be called with 1 as parameter when the first map user
-> +	 * needs VPP, and called with 0 when the last user exits. The map
-> +	 * core maintains a reference counter, and assumes that VPP is a
-> +	 * global resource applying to all mapped flash chips on the system.
-> +	 */
->  	void (*set_vpp)(struct map_info *, int);
->  
->  	unsigned long pfow_base;
-
-Looks good, thanks. Applied to l2-mtd.git
+Applied to l2-mtd.git
