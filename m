@@ -1,31 +1,28 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aUJGN-0003kS-Jg
- for linux-mtd@lists.infradead.org; Fri, 12 Feb 2016 19:20:22 +0000
-Received: by mail-pf0-x243.google.com with SMTP id w128so3756786pfb.2
- for <linux-mtd@lists.infradead.org>; Fri, 12 Feb 2016 11:19:59 -0800 (PST)
-Date: Fri, 12 Feb 2016 11:19:55 -0800
+Date: Fri, 12 Feb 2016 11:24:38 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
- Jason Cooper <jason@lakedaemon.net>,
- Antoine Tenart <antoine.tenart@free-electrons.com>,
- Nadav Haklai <nadavh@marvell.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Ofer Heifetz <oferh@marvell.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx_nand: add support for partial chunks
-Message-ID: <20160212191955.GC21465@google.com>
-References: <1455112461-20713-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <20160210142242.GA1352@laptop.cereza>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nicolas.ferre@atmel.com" <nicolas.ferre@atmel.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "marex@denx.de" <marex@denx.de>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "pawel.moll@arm.com" <pawel.moll@arm.com>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "galak@codeaurora.org" <galak@codeaurora.org>
+Subject: Re: [PATCH linux-next v2 01/14] mtd: spi-nor: remove
+ micron_quad_enable()
+Message-ID: <20160212192438.GD21465@google.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF57A75@NTXXIAMBX02.xacn.micron.com>
+ <56B1E1A5.9060902@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160210142242.GA1352@laptop.cereza>
+In-Reply-To: <56B1E1A5.9060902@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,22 +32,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 10, 2016 at 11:22:42AM -0300, Ezequiel Garcia wrote:
-> On 10 Feb 02:54 PM, Thomas Petazzoni wrote:
-> > This commit is needed to properly support the 8-bits ECC configuration
-> > with 4KB pages.
-> > 
+On Wed, Feb 03, 2016 at 12:16:53PM +0100, Cyrille Pitchen wrote:
 
-[...]
+> So in its current state, micron_quad_enable() prevents us from using Micron
+> memories for Quad SPI operations. Some code is missing to make it work.
 
-> > 
-> > This commit has been tested on a Marvell Armada 398 DB board, with a
-> > 4KB page NAND, tested in both 4 bits ECC and 8 bits ECC
-> > configurations. Robert Jarzmik has tested on some PXA platforms.
-> > 
-> > Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-> > Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> 
-> Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+TL;DR: the original code adding micron_quad_enable() was broken and
+should never have been merged (sorry, my bad). Next time, please test
+your changes Bean.
 
-Applied to l2-mtd.git
+> As I said in the patch description, using the SPI 4-4-4 protocol is not
+> relevant for MTD usage. It would be worth for XIP operations but this is not the
+> purpose of the spi-nor driver.
+
+I'm not completely opposed to using it, if someone can support it well,
+test it, and prove it actually provides real benefits. But none of the
+above have been satisfied yet.
+
+Regards,
+Brian
