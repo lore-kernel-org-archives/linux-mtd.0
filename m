@@ -1,27 +1,17 @@
-Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aUIr5-0006lI-QD
- for linux-mtd@lists.infradead.org; Fri, 12 Feb 2016 18:54:23 +0000
-Received: by mail-pa0-x242.google.com with SMTP id fl4so4129145pad.2
- for <linux-mtd@lists.infradead.org>; Fri, 12 Feb 2016 10:53:50 -0800 (PST)
-Date: Fri, 12 Feb 2016 10:53:47 -0800
+Date: Fri, 12 Feb 2016 11:12:43 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Simon Arlott <simon@fire.lp0.eu>, Ralf Baechle <ralf@linux-mips.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Kevin Cernekee <cernekee@gmail.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Jonas Gorski <jogo@openwrt.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- MIPS Mailing List <linux-mips@linux-mips.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>, sfr@canb.auug.org.au
-Subject: Re: [PATCH linux-next v4 07/11] MIPS: bcm63xx: nvram: Remove unused
- bcm63xx_nvram_get_psi_size() function
-Message-ID: <20160212185347.GA21465@google.com>
-References: <566DF43B.5010400@simon.arlott.org.uk>
- <566DF625.3060801@simon.arlott.org.uk>
- <20160126191607.GA111152@google.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org,
+ Russell King <linux@arm.linux.org.uk>,
+ Paul Parsons <lost.distance@yahoo.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: map: fix .set_vpp() documentation
+Message-ID: <20160212191243.GB21465@google.com>
+References: <1454364168-1342-1-git-send-email-linus.walleij@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160126191607.GA111152@google.com>
+In-Reply-To: <1454364168-1342-1-git-send-email-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,33 +21,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ralf,
-
-On Tue, Jan 26, 2016 at 11:16:07AM -0800, Brian Norris wrote:
-> On Sun, Dec 13, 2015 at 10:50:13PM +0000, Simon Arlott wrote:
-> > Remove bcm63xx_nvram_get_psi_size() as it now has no users.
-> > 
-> > Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
-> > ---
-> > v4: New patch.
+On Mon, Feb 01, 2016 at 11:02:48PM +0100, Linus Walleij wrote:
+> As of commit 876fe76d793d03077eb61ba3afab4a383f46c554
+> "mtd: maps: physmap: Add reference counter to set_vpp()"
+> the comment in the header file is incorrect and misleading.
+> Fix it up.
 > 
-> Ralf,
-> 
-> Please revert this and send it to Linus (or else, I can send it myself).
-> This is causing build failures, because I didn't take the rest of
-> Simon's series yet.
-> 
-> drivers/mtd/bcm63xxpart.c: In function 'bcm63xx_parse_cfe_partitions':
-> drivers/mtd/bcm63xxpart.c:93:2: error: implicit declaration of function 'bcm63xx_nvram_get_psi_size' [-Werror=implicit-function-declaration]
-> 
-> I will reply to the series if/when I accept any patches from it. I would
-> appreciate it if you would do the same.
+> Cc: Russell King <linux@arm.linux.org.uk>
+> Cc: Paul Parsons <lost.distance@yahoo.com>
+> Fixes: 876fe76d793d ("mtd: maps: physmap: Add reference counter to set_vpp()")
 
-I see that the revert made it to Linus. Thanks!
+^^ Let's watch the non-gregkh stable maintainers pick up this patch just
+because of this (undocumented in Documentation/stable_kernel_rules.txt)
+tag :)
 
-I've now pushed the dependent pieces to l2-mtd.git, and they should make
-it to v4.6-rc1. So I guess it's fair game to re-apply this patch?
-Although, if you don't merge in my MTD branch first, you'd still be
-breaking bisectability... Maybe it's a post-rc1 candidate?
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  include/linux/mtd/map.h | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+> index 58f3ba709ade..5e0eb7ccabd4 100644
+> --- a/include/linux/mtd/map.h
+> +++ b/include/linux/mtd/map.h
+> @@ -240,8 +240,11 @@ struct map_info {
+>  	   If there is no cache to care about this can be set to NULL. */
+>  	void (*inval_cache)(struct map_info *, unsigned long, ssize_t);
+>  
+> -	/* set_vpp() must handle being reentered -- enable, enable, disable
+> -	   must leave it enabled. */
+> +	/* This will be called with 1 as parameter when the first map user
+> +	 * needs VPP, and called with 0 when the last user exits. The map
+> +	 * core maintains a reference counter, and assumes that VPP is a
+> +	 * global resource applying to all mapped flash chips on the system.
+> +	 */
+>  	void (*set_vpp)(struct map_info *, int);
+>  
+>  	unsigned long pfow_base;
 
-Brian
+Looks good, thanks. Applied to l2-mtd.git
