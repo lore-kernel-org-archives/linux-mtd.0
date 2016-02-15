@@ -1,26 +1,23 @@
-Received: from mail-db3on0086.outbound.protection.outlook.com ([157.55.234.86]
- helo=emea01-db3-obe.outbound.protection.outlook.com)
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aVCUL-0008GH-VD
- for linux-mtd@lists.infradead.org; Mon, 15 Feb 2016 06:18:27 +0000
-From: Raghav Dogra <raghav.dogra@nxp.com>
-To: Brian Norris <computersforpeace@gmail.com>, Li Yang <leoli@freescale.com>
-CC: Raghav Dogra <raghav@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, linuxppc-dev
- <linuxppc-dev@lists.ozlabs.org>, "oss@buserror.net" <oss@buserror.net>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Jaiprakash Singh
- <b44839@freescale.com>
-Subject: RE: [PATCH] mtd/ifc: Add support for IFC controller version 2.0
-Date: Mon, 15 Feb 2016 06:18:02 +0000
-Message-ID: <DB4PR04MB3465D14DB9003BF000DFE9889AC0@DB4PR04MB346.eurprd04.prod.outlook.com>
-References: <1454481372-10288-1-git-send-email-raghav@freescale.com>
- <CADRPPNTKFA8rkynJR4wCNgAmqvmiwYwTi2Uk9hDUMB4+N7ST_Q@mail.gmail.com>
- <20160212194411.GF21465@google.com>
-In-Reply-To: <20160212194411.GF21465@google.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1aVIBO-0006S6-4y
+ for linux-mtd@lists.infradead.org; Mon, 15 Feb 2016 12:23:14 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0]
+ ident=Debian-exim)
+ by metis.ext.pengutronix.de with esmtps (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+ (Exim 4.80) (envelope-from <sha@pengutronix.de>) id 1aVIB2-0003FG-BB
+ for linux-mtd@lists.infradead.org; Mon, 15 Feb 2016 13:22:52 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.84)
+ (envelope-from <sha@pengutronix.de>) id 1aVIB2-00065F-22
+ for linux-mtd@lists.infradead.org; Mon, 15 Feb 2016 13:22:52 +0100
+Date: Mon, 15 Feb 2016 13:22:52 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: Multiple NANDs on non contiguous chip selects, how?
+Message-ID: <20160215122251.GE19372@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,61 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi all,
 
+I have a i.MX6 board here which has two NAND chips connected to CS0 and
+CS2 on the same controller. The current code in nand_scan_ident iterates
+over the chip selects and bails out when there's nothing found on a chip
+select. This means the current code never finds the chip on CS2 since it
+already bails out after probing the empty CS1.
 
-> -----Original Message-----
-> From: Brian Norris [mailto:computersforpeace@gmail.com]
-> Sent: Saturday, February 13, 2016 1:14 AM
-> To: Li Yang <leoli@freescale.com>
-> Cc: Raghav Dogra <raghav@freescale.com>; linux-mtd@lists.infradead.org;
-> linuxppc-dev <linuxppc-dev@lists.ozlabs.org>; oss@buserror.net; Prabhakar
-> Kushwaha <prabhakar.kushwaha@nxp.com>; Jaiprakash Singh
-> <b44839@freescale.com>
-> Subject: Re: [PATCH] mtd/ifc: Add support for IFC controller version 2.0
->=20
-> On Thu, Feb 04, 2016 at 05:07:16PM -0600, Li Yang wrote:
-> > On Wed, Feb 3, 2016 at 12:36 AM, Raghav Dogra <raghav@freescale.com>
-> wrote:
-> > > The new IFC controller version 2.0 has a different memory map page.
-> > > Upto IFC 1.4 PAGE size is 4 KB and from IFC2.0 PAGE size is 64KB.
-> > > This patch segregates the IFC global and runtime registers to
-> > > appropriate PAGE sizes.
-> >
-> > If the global registers and the runtime registers are so independent
-> > that they have to be on different page boundaries, it would make more
-> > sense for them to be defined as separate reg regions in the device
-> > tree at the very beginning.  Then we would only need to change the
-> > device tree now and it would be future proof for any page size.
->=20
-> To be clear: Scott, you were NACK'ing the DT binding change request, righ=
-t? I
-> though we had an Ack on the previous revision (that Raghav failed to carr=
-y).
->=20
-> > >
-> > > Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
-> > > Signed-off-by: Raghav Dogra <raghav@freescale.com>
-> >
-> > The patch cannot apply on latest 4.5-rc cleanly either.  Otherwise,
->=20
-> Yeah... neither this patch nor its (allegedly) dependent patch [1] apply
-> cleanly.
->=20
-> If you expect me to take this patch via MTD, please rebase to l2-mtd.git =
-as
-> stated here:
->=20
-> http://linux-mtd.infradead.org/source.html
->
-I expect Scott to pick this patch, and apply via linuxppc-dev. I will send =
-the patch on based on git://git.kernel.org/pub/scm/linux/kernel/git/torvald=
-s/linux.git
-Branch "master"
+Any preferences how this should be handled? I could implement a i.MX6
+specific mapping function, possibly initialized from the device tree, to
+map the real chip selects to contiguous chip selects for the NAND layer.
 
--Raghav
+Normally such a function should not be needed since we could autodetect
+if a chip select has a device connected or not, so the NAND layer could
+handle this without driver intervention, but is that what we want?
 
-> > Acked-by: Li Yang <leoyang.li@nxp.com>
->=20
-> Brian
->=20
-> [1] https://patchwork.ozlabs.org/patch/564785/
+Any ideas/opinions?
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
