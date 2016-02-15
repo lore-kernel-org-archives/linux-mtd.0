@@ -1,16 +1,16 @@
 Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aVQjI-0002LA-VN
- for linux-mtd@lists.infradead.org; Mon, 15 Feb 2016 21:30:49 +0000
-Received: by mail-wm0-x241.google.com with SMTP id b205so10297571wmb.1
- for <linux-mtd@lists.infradead.org>; Mon, 15 Feb 2016 13:30:28 -0800 (PST)
+ id 1aVQkK-0002hu-4q
+ for linux-mtd@lists.infradead.org; Mon, 15 Feb 2016 21:31:52 +0000
+Received: by mail-wm0-x241.google.com with SMTP id c200so17692964wme.0
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Feb 2016 13:31:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1455300685-27009-3-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1455300685-27009-2-git-send-email-zajec5@gmail.com>
 References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
- <1455300685-27009-3-git-send-email-zajec5@gmail.com>
-Date: Mon, 15 Feb 2016 16:30:27 -0500
-Message-ID: <CAC=U0a2ZeJrxHwCQZ5U3QvO7+W4Y9m4LRbULvOJGgMG9rutDng@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mtd: brcmnand: fix check for Hamming algorithm
+ <1455300685-27009-2-git-send-email-zajec5@gmail.com>
+Date: Mon, 15 Feb 2016 16:31:30 -0500
+Message-ID: <CAC=U0a0TybW0jHavZtuWk5-1AEX809rX_e-+qGwYwehk=+cpAw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mtd: nand: read (from DT) and store ECC algorithm
 From: Kamal Dasu <kdasu.kdev@gmail.com>
 To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
@@ -30,33 +30,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Fri, Feb 12, 2016 at 1:11 PM, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>=
  wrote:
-> So far we were treating ECC strength 1 as Hamming algorithm. It didn't
-> supporting some less common devices with BCH-1 (e.g. D-Link DIR-885L).
+>
+> This will allow drivers handle ECC properly.
 >
 > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
 
 Reviewed-by: Kamal Dasu <kdasu.kdev@gmail.com>
 
 Thanks Rafal
+>
 > ---
->  drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/nand/nand_base.c | 6 +++++-
+>  include/linux/mtd/nand.h     | 1 +
+>  2 files changed, 6 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcm=
-nand/brcmnand.c
-> index 844fc07..b8055da 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -1842,7 +1842,7 @@ static int brcmnand_setup_dev(struct brcmnand_host =
-*host)
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index f2c8ff3..ef977f3 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3979,7 +3979,7 @@ ident_done:
+>  static int nand_dt_init(struct nand_chip *chip)
+>  {
+>         struct device_node *dn =3D nand_get_flash_node(chip);
+> -       int ecc_mode, ecc_strength, ecc_step;
+> +       int ecc_mode, ecc_algo, ecc_strength, ecc_step;
 >
->         switch (chip->ecc.size) {
->         case 512:
-> -               if (chip->ecc.strength =3D=3D 1) /* Hamming */
-> +               if (chip->ecc.algo =3D=3D NAND_ECC_HAMMING)
->                         cfg->ecc_level =3D 15;
->                 else
->                         cfg->ecc_level =3D chip->ecc.strength;
+>         if (!dn)
+>                 return 0;
+> @@ -3991,6 +3991,7 @@ static int nand_dt_init(struct nand_chip *chip)
+>                 chip->bbt_options |=3D NAND_BBT_USE_FLASH;
+>
+>         ecc_mode =3D of_get_nand_ecc_mode(dn);
+> +       ecc_algo =3D of_get_nand_ecc_algo(dn);
+>         ecc_strength =3D of_get_nand_ecc_strength(dn);
+>         ecc_step =3D of_get_nand_ecc_step_size(dn);
+>
+> @@ -4003,6 +4004,9 @@ static int nand_dt_init(struct nand_chip *chip)
+>         if (ecc_mode >=3D 0)
+>                 chip->ecc.mode =3D ecc_mode;
+>
+> +       if (ecc_algo >=3D 0)
+> +               chip->ecc.algo =3D ecc_algo;
+> +
+>         if (ecc_strength >=3D 0)
+>                 chip->ecc.strength =3D ecc_strength;
+>
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 25854d2..8deca1b 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -513,6 +513,7 @@ struct nand_hw_control {
+>   */
+>  struct nand_ecc_ctrl {
+>         nand_ecc_modes_t mode;
+> +       enum nand_ecc_algo algo;
+>         int steps;
+>         int size;
+>         int bytes;
 > --
 > 1.8.4.5
 >
