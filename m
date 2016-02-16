@@ -1,28 +1,28 @@
-Received: from mail-am1on0084.outbound.protection.outlook.com ([157.56.112.84]
- helo=emea01-am1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aVZv7-0003bd-JG
- for linux-mtd@lists.infradead.org; Tue, 16 Feb 2016 07:19:39 +0000
-From: Raghav Dogra <raghav.dogra@nxp.com>
-To: Scott Wood <oss@buserror.net>, Brian Norris <computersforpeace@gmail.com>,
- Li Yang <leoli@freescale.com>
-CC: Raghav Dogra <raghav@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, linuxppc-dev
- <linuxppc-dev@lists.ozlabs.org>, Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>, Jaiprakash Singh <b44839@freescale.com>
-Subject: RE: [PATCH] mtd/ifc: Add support for IFC controller version 2.0
-Date: Tue, 16 Feb 2016 07:19:14 +0000
-Message-ID: <DB4PR04MB34625474D74B7295776205A89AD0@DB4PR04MB346.eurprd04.prod.outlook.com>
-References: <1454481372-10288-1-git-send-email-raghav@freescale.com>
- <CADRPPNTKFA8rkynJR4wCNgAmqvmiwYwTi2Uk9hDUMB4+N7ST_Q@mail.gmail.com>
- <20160212194411.GF21465@google.com>
- <DB4PR04MB3465D14DB9003BF000DFE9889AC0@DB4PR04MB346.eurprd04.prod.outlook.com>
- <1455583310.2463.37.camel@buserror.net>
-In-Reply-To: <1455583310.2463.37.camel@buserror.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Subject: Re: [PATCH v5 3/5] mtd: devices: m25p80: add support for mmap read
+ request
+To: Mark Brown <broonie@kernel.org>
+References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
+ <1449807000-6457-4-git-send-email-vigneshr@ti.com>
+ <20160209193616.GN13270@sirena.org.uk> <56BC1D3E.5020203@ti.com>
+ <20160212223711.GD18988@sirena.org.uk>
+CC: Tony Lindgren <tony@atomide.com>, Brian Norris
+ <computersforpeace@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Russell King <linux@arm.linux.org.uk>,
+ "hramrach@gmail.com" <hramrach@gmail.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <56C2D731.6050306@ti.com>
+Date: Tue, 16 Feb 2016 13:30:49 +0530
 MIME-Version: 1.0
+In-Reply-To: <20160212223711.GD18988@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,71 +32,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2NvdHQgV29vZCBbbWFp
-bHRvOm9zc0BidXNlcnJvci5uZXRdDQo+IFNlbnQ6IFR1ZXNkYXksIEZlYnJ1YXJ5IDE2LCAyMDE2
-IDY6MTIgQU0NCj4gVG86IFJhZ2hhdiBEb2dyYSA8cmFnaGF2LmRvZ3JhQG54cC5jb20+OyBCcmlh
-biBOb3JyaXMNCj4gPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT47IExpIFlhbmcgPGxlb2xp
-QGZyZWVzY2FsZS5jb20+DQo+IENjOiBSYWdoYXYgRG9ncmEgPHJhZ2hhdkBmcmVlc2NhbGUuY29t
-PjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7DQo+IGxpbnV4cHBjLWRldiA8bGludXhw
-cGMtZGV2QGxpc3RzLm96bGFicy5vcmc+OyBQcmFiaGFrYXIgS3VzaHdhaGENCj4gPHByYWJoYWth
-ci5rdXNod2FoYUBueHAuY29tPjsgSmFpcHJha2FzaCBTaW5naA0KPiA8YjQ0ODM5QGZyZWVzY2Fs
-ZS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIG10ZC9pZmM6IEFkZCBzdXBwb3J0IGZvciBJ
-RkMgY29udHJvbGxlciB2ZXJzaW9uIDIuMA0KPiANCj4gT24gTW9uLCAyMDE2LTAyLTE1IGF0IDA2
-OjE4ICswMDAwLCBSYWdoYXYgRG9ncmEgd3JvdGU6DQo+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwg
-TWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBCcmlhbiBOb3JyaXMgW21haWx0bzpjb21wdXRlcnNm
-b3JwZWFjZUBnbWFpbC5jb21dDQo+ID4gPiBTZW50OiBTYXR1cmRheSwgRmVicnVhcnkgMTMsIDIw
-MTYgMToxNCBBTQ0KPiA+ID4gVG86IExpIFlhbmcgPGxlb2xpQGZyZWVzY2FsZS5jb20+DQo+ID4g
-PiBDYzogUmFnaGF2IERvZ3JhIDxyYWdoYXZAZnJlZXNjYWxlLmNvbT47DQo+ID4gPiBsaW51eC1t
-dGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXhwcGMtZGV2DQo+ID4gPiA8bGludXhwcGMtZGV2
-QGxpc3RzLm96bGFicy5vcmc+OyBvc3NAYnVzZXJyb3IubmV0OyBQcmFiaGFrYXINCj4gPiA+IEt1
-c2h3YWhhIDxwcmFiaGFrYXIua3VzaHdhaGFAbnhwLmNvbT47IEphaXByYWthc2ggU2luZ2gNCj4g
-PiA+IDxiNDQ4MzlAZnJlZXNjYWxlLmNvbT4NCj4gPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIG10
-ZC9pZmM6IEFkZCBzdXBwb3J0IGZvciBJRkMgY29udHJvbGxlciB2ZXJzaW9uDQo+ID4gPiAyLjAN
-Cj4gPiA+DQo+ID4gPiBPbiBUaHUsIEZlYiAwNCwgMjAxNiBhdCAwNTowNzoxNlBNIC0wNjAwLCBM
-aSBZYW5nIHdyb3RlOg0KPiA+ID4gPiBPbiBXZWQsIEZlYiAzLCAyMDE2IGF0IDEyOjM2IEFNLCBS
-YWdoYXYgRG9ncmENCj4gPiA+ID4gPHJhZ2hhdkBmcmVlc2NhbGUuY29tPg0KPiA+ID4gd3JvdGU6
-DQo+ID4gPiA+ID4gVGhlIG5ldyBJRkMgY29udHJvbGxlciB2ZXJzaW9uIDIuMCBoYXMgYSBkaWZm
-ZXJlbnQgbWVtb3J5IG1hcCBwYWdlLg0KPiA+ID4gPiA+IFVwdG8gSUZDIDEuNCBQQUdFIHNpemUg
-aXMgNCBLQiBhbmQgZnJvbSBJRkMyLjAgUEFHRSBzaXplIGlzIDY0S0IuDQo+ID4gPiA+ID4gVGhp
-cyBwYXRjaCBzZWdyZWdhdGVzIHRoZSBJRkMgZ2xvYmFsIGFuZCBydW50aW1lIHJlZ2lzdGVycyB0
-bw0KPiA+ID4gPiA+IGFwcHJvcHJpYXRlIFBBR0Ugc2l6ZXMuDQo+ID4gPiA+DQo+ID4gPiA+IElm
-IHRoZSBnbG9iYWwgcmVnaXN0ZXJzIGFuZCB0aGUgcnVudGltZSByZWdpc3RlcnMgYXJlIHNvDQo+
-ID4gPiA+IGluZGVwZW5kZW50IHRoYXQgdGhleSBoYXZlIHRvIGJlIG9uIGRpZmZlcmVudCBwYWdl
-IGJvdW5kYXJpZXMsIGl0DQo+ID4gPiA+IHdvdWxkIG1ha2UgbW9yZSBzZW5zZSBmb3IgdGhlbSB0
-byBiZSBkZWZpbmVkIGFzIHNlcGFyYXRlIHJlZw0KPiA+ID4gPiByZWdpb25zIGluIHRoZSBkZXZp
-Y2UgdHJlZSBhdCB0aGUgdmVyeSBiZWdpbm5pbmcuICBUaGVuIHdlIHdvdWxkDQo+ID4gPiA+IG9u
-bHkgbmVlZCB0byBjaGFuZ2UgdGhlIGRldmljZSB0cmVlIG5vdyBhbmQgaXQgd291bGQgYmUgZnV0
-dXJlIHByb29mDQo+IGZvciBhbnkgcGFnZSBzaXplLg0KPiA+ID4NCj4gPiA+IFRvIGJlIGNsZWFy
-OiBTY290dCwgeW91IHdlcmUgTkFDSydpbmcgdGhlIERUIGJpbmRpbmcgY2hhbmdlIHJlcXVlc3Qs
-DQo+ID4gPiByaWdodD8gSSB0aG91Z2ggd2UgaGFkIGFuIEFjayBvbiB0aGUgcHJldmlvdXMgcmV2
-aXNpb24gKHRoYXQgUmFnaGF2DQo+ID4gPiBmYWlsZWQgdG8gY2FycnkpLg0KPiA+ID4NCj4gPiA+
-ID4gPg0KPiA+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEphaXByYWthc2ggU2luZ2ggPGI0NDgzOUBm
-cmVlc2NhbGUuY29tPg0KPiA+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFJhZ2hhdiBEb2dyYSA8cmFn
-aGF2QGZyZWVzY2FsZS5jb20+DQo+ID4gPiA+DQo+ID4gPiA+IFRoZSBwYXRjaCBjYW5ub3QgYXBw
-bHkgb24gbGF0ZXN0IDQuNS1yYyBjbGVhbmx5IGVpdGhlci4NCj4gPiA+ID4gT3RoZXJ3aXNlLA0K
-PiA+ID4NCj4gPiA+IFllYWguLi4gbmVpdGhlciB0aGlzIHBhdGNoIG5vciBpdHMgKGFsbGVnZWRs
-eSkgZGVwZW5kZW50IHBhdGNoIFsxXQ0KPiA+ID4gYXBwbHkgY2xlYW5seS4NCj4gPiA+DQo+ID4g
-PiBJZiB5b3UgZXhwZWN0IG1lIHRvIHRha2UgdGhpcyBwYXRjaCB2aWEgTVRELCBwbGVhc2UgcmVi
-YXNlIHRvDQo+ID4gPiBsMi1tdGQuZ2l0IGFzIHN0YXRlZCBoZXJlOg0KPiA+ID4NCj4gPiA+IGh0
-dHA6Ly9saW51eC1tdGQuaW5mcmFkZWFkLm9yZy9zb3VyY2UuaHRtbA0KPiA+ID4NCj4gPiBJIGV4
-cGVjdCBTY290dCB0byBwaWNrIHRoaXMgcGF0Y2gsIGFuZCBhcHBseSB2aWEgbGludXhwcGMtZGV2
-LiBJIHdpbGwNCj4gPiBzZW5kIHRoZSBwYXRjaCBvbiBiYXNlZCBvbg0KPiA+IGdpdDovL2dpdC5r
-ZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQNCj4g
-PiBCcmFuY2ggIm1hc3RlciINCj4gDQo+IFdoeSBhcmUgeW91IGV4cGVjdGluZyB0aGF0LCBmb3Ig
-YSBwYXRjaCB0aGF0IHRvdWNoZXMgYW4gTVREIGRyaXZlciBhbmQNCj4gZG9lc24ndCB0b3VjaCBh
-cmNoL3Bvd2VycGMsIGFuZCBmb3Igd2hpY2ggSSd2ZSBhbHJlYWR5IGdpdmVuIGFuIGFjayBmb3Ig
-aXQgdG8NCj4gZ28gdmlhIHRoZSBNVEQgdHJlZT8NCg0KSSB3YXMgZXhwZWN0aW5nIHRoYXQgYmVj
-YXVzZSB0aGlzIHBhdGNoIGlzIGRlcGVuZGVudCBvbiB0aGUNCiJkcml2ZXJzL21lbW9yeTogQWRk
-IGRlZXAgc2xlZXAgc3VwcG9ydCBmb3IgSUZDIiBwYXRjaCANCmh0dHBzOi8vcGF0Y2h3b3JrLm96
-bGFicy5vcmcvcGF0Y2gvNTgyNzYyLyBmb3Igd2hpY2ggYW4gQUNLIGlzIHN0aWxsIHBlbmRpbmcu
-DQpTbywgdGlsbCB5b3UgQUNLIHRoYXQgcGF0Y2gsIEJyaWFuIHdvbid0IGJlIGFibGUgdG8gcGlj
-ayB0aGF0IHBhdGNoLCBJIGd1ZXNzLg0KU28sIEkgdGhvdWdodCB5b3UgY2FuIHBpY2sgYm90aCB0
-aGUgcGF0Y2hlcyB3aGVuIGFuIEFDSyBpcyBnaXZlbiB0byB0aGUgZGVlcCBzbGVlcCBwYXRjaC4N
-Cg0KQW55aG93LCBJIGhhdmUgc2VudCB0aGUgbmV3ZXIgdmVyc2lvbiBvZiB0aGlzIHBhdGNoIHdo
-aWNoIGlzIGFwcGxpY2FibGUgb24gbDItbXRkLmdpdCANCkJ1dCBpdCBpcyBzdGlsbCBkZXBlbmRl
-bnQgb24gdGhlIGRlZXAgc2xlZXAgcGF0Y2ggKHdoaWNoIGlzIGFwcGxpY2FibGUgbm93IG9uIGwy
-LW10ZC5naXQgYXMgd2VsbCkNCg0KLVJhZ2hhdg0KPiANCj4gV2hhdCB0cmVlIGRpZCB5b3UgdXNl
-IHRvIGdlbmVyYXRlIHRoaXMgcGF0Y2g/ICBJZiB0aGVyZSdzIHN0dWZmIGluIHRoZSBNVEQNCj4g
-dHJlZSB0aGF0IGNvbmZsaWN0cywgdGhhdCdzIGFsbCB0aGUgbW9yZSByZWFzb24gdG8gc2VuZCBp
-dCB2aWEgdGhlIE1URCB0cmVlDQo+IChhZnRlciByZWJhc2luZyBvbnRvIGl0KS4NCj4gDQo+IC1T
-Y290dA0KDQo=
+
+
+On 02/13/2016 04:07 AM, Mark Brown wrote:
+> On Thu, Feb 11, 2016 at 11:03:50AM +0530, Vignesh R wrote:
+>> On 02/10/2016 01:06 AM, Mark Brown wrote:
+>>> On Fri, Dec 11, 2015 at 09:39:58AM +0530, Vignesh R wrote:
+> 
+>>>> +	if (spi_flash_read_supported(spi)) {
+>>>> +		struct spi_flash_read_message msg;
+>>>> +		int ret;
+> 
+>>> Looking at this I can't help but think that spi_flash_read() ought to
+>>> have the stub in rather than the caller.  But given that we're pretty
+>>> much only ever expecting one user I'm not 100% sure it actually matters.
+> 
+>> Well, my initial patch set passed long list of arguments to
+>> spi_flash_read(), but Brian suggested to use struct[1] in order to avoid
+>> unnecessary churn when things need changed in the API.
+> 
+> I don't see what that has to do with my point?
+> 
+
+AFAIU, your previous comment was to move initialization of
+spi_flash_read_message struct to spi_flash_read(). This would mean
+sending long list of arguments to spi_flash_read() which needs to be
+updated whenever an argument needs to be added/deleted (in future).
+Instead passing around a struct would be much easier in case of
+adding/removing parameters.
+Please correct me if I misunderstood your comment?
+
+-- 
+Regards
+Vignesh
