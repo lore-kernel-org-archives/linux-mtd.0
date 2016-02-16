@@ -1,25 +1,24 @@
-Received: from host.buserror.net ([209.198.135.123])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aVTij-0003UX-HV
- for linux-mtd@lists.infradead.org; Tue, 16 Feb 2016 00:42:26 +0000
-Message-ID: <1455583310.2463.37.camel@buserror.net>
-From: Scott Wood <oss@buserror.net>
-To: Raghav Dogra <raghav.dogra@nxp.com>, Brian Norris
- <computersforpeace@gmail.com>, Li Yang <leoli@freescale.com>
-Cc: Raghav Dogra <raghav@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, linuxppc-dev
- <linuxppc-dev@lists.ozlabs.org>,  Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>, Jaiprakash Singh <b44839@freescale.com>
-Date: Mon, 15 Feb 2016 18:41:50 -0600
-In-Reply-To: <DB4PR04MB3465D14DB9003BF000DFE9889AC0@DB4PR04MB346.eurprd04.prod.outlook.com>
-References: <1454481372-10288-1-git-send-email-raghav@freescale.com>
- <CADRPPNTKFA8rkynJR4wCNgAmqvmiwYwTi2Uk9hDUMB4+N7ST_Q@mail.gmail.com>
- <20160212194411.GF21465@google.com>
- <DB4PR04MB3465D14DB9003BF000DFE9889AC0@DB4PR04MB346.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+ id 1aVZT5-0007SK-7B
+ for linux-mtd@lists.infradead.org; Tue, 16 Feb 2016 06:50:40 +0000
+Subject: Re: [PATCH v8 2/3] mtd: nand: Qualcomm NAND controller driver
+References: <1453360399-32029-1-git-send-email-architt@codeaurora.org>
+ <1454489991-14717-1-git-send-email-architt@codeaurora.org>
+ <1454489991-14717-3-git-send-email-architt@codeaurora.org>
+ <20160204113938.1317095d@bbrezillon>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ dehrenberg@google.com, cernekee@gmail.com, sboyd@codeaurora.org,
+ linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ andy.gross@linaro.org
+To: computersforpeace@gmail.com
+From: Archit Taneja <architt@codeaurora.org>
+Message-ID: <56C2C6A2.8030200@codeaurora.org>
+Date: Tue, 16 Feb 2016 12:20:10 +0530
+MIME-Version: 1.0
+In-Reply-To: <20160204113938.1317095d@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] mtd/ifc: Add support for IFC controller version 2.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,63 +28,227 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2016-02-15 at 06:18 +0000, Raghav Dogra wrote:
-> 
-> > -----Original Message-----
-> > From: Brian Norris [mailto:computersforpeace@gmail.com]
-> > Sent: Saturday, February 13, 2016 1:14 AM
-> > To: Li Yang <leoli@freescale.com>
-> > Cc: Raghav Dogra <raghav@freescale.com>; linux-mtd@lists.infradead.org;
-> > linuxppc-dev <linuxppc-dev@lists.ozlabs.org>; oss@buserror.net; Prabhakar
-> > Kushwaha <prabhakar.kushwaha@nxp.com>; Jaiprakash Singh
-> > <b44839@freescale.com>
-> > Subject: Re: [PATCH] mtd/ifc: Add support for IFC controller version 2.0
-> > 
-> > On Thu, Feb 04, 2016 at 05:07:16PM -0600, Li Yang wrote:
-> > > On Wed, Feb 3, 2016 at 12:36 AM, Raghav Dogra <raghav@freescale.com>
-> > wrote:
-> > > > The new IFC controller version 2.0 has a different memory map page.
-> > > > Upto IFC 1.4 PAGE size is 4 KB and from IFC2.0 PAGE size is 64KB.
-> > > > This patch segregates the IFC global and runtime registers to
-> > > > appropriate PAGE sizes.
-> > > 
-> > > If the global registers and the runtime registers are so independent
-> > > that they have to be on different page boundaries, it would make more
-> > > sense for them to be defined as separate reg regions in the device
-> > > tree at the very beginning.  Then we would only need to change the
-> > > device tree now and it would be future proof for any page size.
-> > 
-> > To be clear: Scott, you were NACK'ing the DT binding change request,
-> > right? I
-> > though we had an Ack on the previous revision (that Raghav failed to
-> > carry).
-> > 
-> > > > 
-> > > > Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
-> > > > Signed-off-by: Raghav Dogra <raghav@freescale.com>
-> > > 
-> > > The patch cannot apply on latest 4.5-rc cleanly either.  Otherwise,
-> > 
-> > Yeah... neither this patch nor its (allegedly) dependent patch [1] apply
-> > cleanly.
-> > 
-> > If you expect me to take this patch via MTD, please rebase to l2-mtd.git
-> > as
-> > stated here:
-> > 
-> > http://linux-mtd.infradead.org/source.html
-> > 
-> I expect Scott to pick this patch, and apply via linuxppc-dev. I will send
-> the patch on based on
-> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> Branch "master"
+Hi Brian,
 
-Why are you expecting that, for a patch that touches an MTD driver and doesn't
-touch arch/powerpc, and for which I've already given an ack for it to go via
-the MTD tree?
+On 02/04/2016 04:09 PM, Boris Brezillon wrote:
+> Hi Archit,
+>
+> On Wed,  3 Feb 2016 14:29:50 +0530
+> Archit Taneja <architt@codeaurora.org> wrote:
+>
+>> The Qualcomm NAND controller is found in SoCs like IPQ806x, MSM7xx,
+>> MDM9x15 series.
+>>
+>> It exists as a sub block inside the IPs EBI2 (External Bus Interface 2)
+>> and QPIC (Qualcomm Parallel Interface Controller). These IPs provide a
+>> broader interface for external slow peripheral devices such as LCD and
+>> NAND/NOR flash memory or SRAM like interfaces.
+>>
+>> We add support for the NAND controller found within EBI2. For the SoCs
+>> of our interest, we only use the NAND controller within EBI2. Therefore,
+>> it's safe for us to assume that the NAND controller is a standalone block
+>> within the SoC.
+>>
+>> The controller supports 512B, 2kB, 4kB and 8kB page 8-bit and 16-bit NAND
+>> flash devices. It contains a HW ECC block that supports BCH ECC (4, 8 and
+>> 16 bit correction/step) and RS ECC(4 bit correction/step) that covers main
+>> and spare data. The controller contains an internal 512 byte page buffer
+>> to which we read/write via DMA. The EBI2 type NAND controller uses ADM DMA
+>> for register read/write and data transfers. The controller performs page
+>> reads and writes at a codeword/step level of 512 bytes. It can support up
+>> to 2 external chips of different configurations.
+>>
+>> The driver prepares register read and write configuration descriptors for
+>> each codeword, followed by data descriptors to read or write data from the
+>> controller's internal buffer. It uses a single ADM DMA channel that we get
+>> via dmaengine API. The controller requires 2 ADM CRCIs for command and
+>> data flow control. These are passed via DT.
+>>
+>> The ecc layout used by the controller is syndrome like, but we can't use
+>> the standard syndrome ecc ops because of several reasons. First, the amount
+>> of data bytes covered by ecc isn't same in each step. Second, writing to
+>> free oob space requires us writing to the entire step in which the oob
+>> lies. This forces us to create our own ecc ops.
+>>
+>> One more difference is how the controller accesses the bad block marker.
+>> The controller ignores reading the marker when ECC is enabled. ECC needs
+>> to be explicity disabled to read or write to the bad block marker. The
+>> nand_bbt helpers library hence can't access BBMs for the controller.
+>> For now, we skip the creation of BBT and populate chip->block_bad and
+>> chip->block_markbad helpers instead.
+>>
+>> Reviewed-by: Andy Gross <agross@codeaurora.org>
+>> Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
+>> Signed-off-by: Archit Taneja <architt@codeaurora.org>
+>> ---
+>> v8:
+>>    - Use nand_check_erased_ecc_chunk in the right manner as
+>>      suggested by Boris (place the check when we see uncorrectable
+>>      errors).
+>>    - Rewrite the empty_page_fixup code such that we check for a
+>>      codeword being erased rather than the entire page. This simplifies
+>>      the code and we can now place it in parse_read_errors().
+>>    - Introduce raw page access functions. This results in making some
+>>      modifications in the existing ECC page access ops too, since the
+>>      layout now also considers the real/dummy bad block markers. Explained
+>>      in comments.
+>>
+>> v7:
+>>    - Incorporated missing/new comments by Boris
+>>    - Cleaned up some strict checkpatch warnings
+>>
+>> v6:
+>>    - Fix up erased page parsing. Use nand_check_erased_ecc_chunk to
+>>      return corrected bitflips in an erased page.
+>>    - Fix whitespace issues
+>>    - Update compatible tring to something more specific
+>>
+>> v5:
+>>    - split chip/controller structs
+>>    - simplify layout by considering reserved bytes as part of ECC
+>>    - create ecc layouts automatically
+>>    - implement block_bad and block_markbad chip ops instead of
+>>    - read_oob_raw/write_oob_raw ecc ops to access BBMs.
+>>    - Add NAND_SKIP_BBTSCAN flag until we get badblockbits support.
+>>    - misc clean ups
+>>
+>> v4:
+>>    - Shrink submit_descs
+>>    - add desc list node at the end of dma_prep_desc
+>>    - Endianness and warning fixes
+>>    - Add Stephen's Signed-off since he provided a patch to fix
+>>      endianness problems
+>>
+>> v3:
+>>    - Refactor dma functions for maximum reuse
+>>    - Use dma_slave_confing on stack
+>>    - optimize and clean upempty_page_fixup using memchr_inv
+>>    - ensure portability with dma register reads using le32_* funcs
+>>    - use NAND_USE_BOUNCE_BUFFER instead of doing it ourselves
+>>    - fix handling of return values of dmaengine funcs
+>>    - constify wherever possible
+>>    - Remove dependency on ADM DMA in Kconfig
+>>    - Misc fixes and clean ups
+>>
+>> v2:
+>>    - Use new BBT flag that allows us to read BBM in raw mode
+>>    - reduce memcpy-s in the driver
+>>    - some refactor and clean ups because of above changes
+>>
+>>   drivers/mtd/nand/Kconfig      |    7 +
+>>   drivers/mtd/nand/Makefile     |    1 +
+>>   drivers/mtd/nand/qcom_nandc.c | 2224 +++++++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 2232 insertions(+)
+>>   create mode 100644 drivers/mtd/nand/qcom_nandc.c
+>>
+>
+> [...]
+>
+>> +static int qcom_nand_host_setup(struct qcom_nand_host *host)
+>> +{
+>> +	struct nand_chip *chip = &host->chip;
+>> +	struct mtd_info *mtd = nand_to_mtd(chip);
+>> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>> +	int cwperpage, bad_block_byte;
+>> +	bool wide_bus;
+>> +	int ecc_mode = 1;
+>> +
+>> +	/*
+>> +	 * the controller requires each step consists of 512 bytes of data.
+>> +	 * bail out if DT has populated a wrong step size.
+>> +	 */
+>> +	if (ecc->size != NANDC_STEP_SIZE) {
+>> +		dev_err(nandc->dev, "invalid ecc size\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	wide_bus = chip->options & NAND_BUSWIDTH_16 ? true : false;
+>> +
+>> +	if (ecc->strength >= 8) {
+>> +		/* 8 bit ECC defaults to BCH ECC on all platforms */
+>> +		host->bch_enabled = true;
+>> +		ecc_mode = 1;
+>> +
+>> +		if (wide_bus) {
+>> +			host->ecc_bytes_hw = 14;
+>> +			host->spare_bytes = 0;
+>> +			host->bbm_size = 2;
+>> +		} else {
+>> +			host->ecc_bytes_hw = 13;
+>> +			host->spare_bytes = 2;
+>> +			host->bbm_size = 1;
+>> +		}
+>> +	} else {
+>> +		/*
+>> +		 * if the controller supports BCH for 4 bit ECC, the controller
+>> +		 * uses lesser bytes for ECC. If RS is used, the ECC bytes is
+>> +		 * always 10 bytes
+>> +		 */
+>> +		if (nandc->ecc_modes & ECC_BCH_4BIT) {
+>> +			/* BCH */
+>> +			host->bch_enabled = true;
+>> +			ecc_mode = 0;
+>> +
+>> +			if (wide_bus) {
+>> +				host->ecc_bytes_hw = 8;
+>> +				host->spare_bytes = 2;
+>> +				host->bbm_size = 2;
+>> +			} else {
+>> +				host->ecc_bytes_hw = 7;
+>> +				host->spare_bytes = 4;
+>> +				host->bbm_size = 1;
+>> +			}
+>> +		} else {
+>> +			/* RS */
+>> +			host->ecc_bytes_hw = 10;
+>> +
+>> +			if (wide_bus) {
+>> +				host->spare_bytes = 0;
+>> +				host->bbm_size = 2;
+>> +			} else {
+>> +				host->spare_bytes = 1;
+>> +				host->bbm_size = 1;
+>> +			}
+>> +		}
+>> +	}
+>> +
+>> +	/*
+>> +	 * we consider ecc->bytes as the sum of all the non-data content in a
+>> +	 * step. It gives us a clean representation of the oob area (even if
+>> +	 * all the bytes aren't used for ECC).It is always 16 bytes for 8 bit
+>> +	 * ECC and 12 bytes for 4 bit ECC
+>> +	 */
+>> +	ecc->bytes = host->ecc_bytes_hw + host->spare_bytes + host->bbm_size;
+>> +
+>> +	ecc->read_page		= qcom_nandc_read_page;
+>> +	ecc->read_page_raw	= qcom_nandc_read_page_raw;
+>> +	ecc->read_oob		= qcom_nandc_read_oob;
+>> +	ecc->write_page		= qcom_nandc_write_page;
+>> +	ecc->write_page_raw	= qcom_nandc_write_page_raw;
+>> +	ecc->write_oob		= qcom_nandc_write_oob;
+>
+> You should probably also implement ->{read, write}_oob_raw(), otherwise
+> the core set them to ecc->{read, write}_oob(), which is not exactly the
+> same. Anyway, let's keep that as things that as future improvements.
+> The rest looks good to me.
+>
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-What tree did you use to generate this patch?  If there's stuff in the MTD
-tree that conflicts, that's all the more reason to send it via the MTD tree
-(after rebasing onto it).
+If the patchset looks okay to you, could you please take this for the
+4.6 merge window?
 
--Scott
+Thanks,
+Archit
+
+>
+> Thanks for your patience, and all the reworks you've done.
+>
+> Best Regards,
+>
+> Boris
+>
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, hosted by The Linux Foundation
