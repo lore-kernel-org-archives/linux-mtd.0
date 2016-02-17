@@ -1,28 +1,14 @@
-Date: Tue, 16 Feb 2016 12:38:54 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Russell King <linux@arm.linux.org.uk>,
- "hramrach@gmail.com" <hramrach@gmail.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Message-ID: <20160216123854.GJ18327@sirena.org.uk>
-References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
- <1449807000-6457-4-git-send-email-vigneshr@ti.com>
- <20160209193616.GN13270@sirena.org.uk> <56BC1D3E.5020203@ti.com>
- <20160212223711.GD18988@sirena.org.uk> <56C2D731.6050306@ti.com>
+From: Wenyou Yang <wenyou.yang@atmel.com>
+To: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Josh Wu <rainyfeeling@outlook.com>
+CC: Nicolas Ferre <nicolas.ferre@atmel.com>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ "Josh Wu" <josh.wu@atmel.com>, Wenyou Yang <wenyou.yang@atmel.com>
+Subject: [PATCH] mtd: atmel_nand: move the hsmc_clk from nfc node to nand node
+Date: Wed, 17 Feb 2016 13:40:24 +0800
+Message-ID: <1455687624-9488-1-git-send-email-wenyou.yang@atmel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="HSQ3hISbU3Um6hch"
-Content-Disposition: inline
-In-Reply-To: <56C2D731.6050306@ti.com>
-Subject: Re: [PATCH v5 3/5] mtd: devices: m25p80: add support for mmap read
- request
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,47 +18,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Josh Wu <josh.wu@atmel.com>
 
---HSQ3hISbU3Um6hch
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For sama5d3, sama5d4 chip, the pmecc becomes a part of HSMC, they
+need the HSMC clock to be enabled to work.
+The NFC is a sub feature for current nand driver, it can be disabled.
+But if HSMC clock is controlled by NFC, so disable NFC will also
+disable the HSMC clock. then, it will make the PMECC fail to work.
 
-On Tue, Feb 16, 2016 at 01:30:49PM +0530, Vignesh R wrote:
-> On 02/13/2016 04:07 AM, Mark Brown wrote:
-> > On Thu, Feb 11, 2016 at 11:03:50AM +0530, Vignesh R wrote:
-> >> On 02/10/2016 01:06 AM, Mark Brown wrote:
+So the solution is to move the HSMC clock out of NFC to nand node.
+When nand driver probed, it will check whether the chip has HSMC,
+if yes then it will require a HSMC clock.
 
-> >>> Looking at this I can't help but think that spi_flash_read() ought to
-> >>> have the stub in rather than the caller.  But given that we're pretty
-> >>> much only ever expecting one user I'm not 100% sure it actually matters.
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+Signed-off-by: Wenyou Yang <wenyou.yang@atmel.com>
+---
 
-> >> Well, my initial patch set passed long list of arguments to
-> >> spi_flash_read(), but Brian suggested to use struct[1] in order to avoid
-> >> unnecessary churn when things need changed in the API.
+ .../devicetree/bindings/mtd/atmel-nand.txt         |    4 +-
+ drivers/mtd/nand/atmel_nand.c                      |   43 +++++++++-----------
+ 2 files changed, 22 insertions(+), 25 deletions(-)
 
-> > I don't see what that has to do with my point?
-
-> AFAIU, your previous comment was to move initialization of
-> spi_flash_read_message struct to spi_flash_read(). This would mean
-
-No, not at all.  I'm talking about how we handle the case where we don't
-have hardware support for this and need to implement it in software -
-currently that's in a separate place to the place where we call the
-driver.
-
---HSQ3hISbU3Um6hch
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJWwxhUAAoJECTWi3JdVIfQVM0H/j64x3bLpAv0cTZC+2n0VAOm
-5oSygJJOfQqjzFBhmpPdJfd1BvVzJnSb7Lh42eGLlehbABTwyHc5upivQNti/D5H
-FYwmZDhCge7Ewj0YDB9Q2StXsUKw1X0QMFFlRXMZlB06TkBIKYMfp04jorAs9ZdI
-osCAbMdjt/bZ9EqMxEcR+Mief5y1BYEVZS3ridmPtBazefEhNBkQ43yvwXNIPdkw
-yRxBFlDLteJO1E1+bUbumGFj8cb1jC2DvuG6PjuQUJ14g+gZ+f02FHQ5XH+uuAGu
-0RPS4Jqm6YM0Nv00H8rRj8PWYglqqLwUcHT4gNcW6vOtgu/6AX04dcVuak0zY2w=
-=m7oA
------END PGP SIGNATURE-----
-
---HSQ3hISbU3Um6hch--
+diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+index d53aba9..29bee7c 100644
+--- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+@@ -15,6 +15,7 @@ Required properties:
+ - atmel,nand-cmd-offset : offset for the command latch.
+ - #address-cells, #size-cells : Must be present if the device has sub-nodes
+   representing partitions.
++- clocks: phandle to the peripheral clock
+ 
+ - gpios : specifies the gpio pins to control the NAND device. detect is an
+   optional gpio and may be set to 0 if not present.
+@@ -43,7 +44,6 @@ Required properties:
+ - reg : should specify the address and size used for NFC command registers,
+         NFC registers and NFC SRAM. NFC SRAM address and size can be absent
+         if don't want to use it.
+-- clocks: phandle to the peripheral clock
+ Optional properties:
+ - atmel,write-by-sram: boolean to enable NFC write by SRAM.
+ 
+@@ -100,13 +100,13 @@ nand0: nand@40000000 {
+ 	compatible = "atmel,at91rm9200-nand";
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
++	clocks = <&hsmc_clk>
+ 	ranges;
+         ...
+         nfc@70000000 {
+ 		compatible = "atmel,sama5d3-nfc";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-		clocks = <&hsmc_clk>
+ 		reg = <
+ 			0x70000000 0x10000000	/* NFC Command Registers */
+ 			0xffffc000 0x00000070	/* NFC HSMC regs */
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 20cbaab..a1f4ad2 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -66,6 +66,7 @@ module_param(on_flash_bbt, int, 0);
+ struct atmel_nand_caps {
+ 	bool pmecc_correct_erase_page;
+ 	uint8_t pmecc_max_correction;
++	bool has_hsmc_clk;
+ };
+ 
+ struct atmel_nand_nfc_caps {
+@@ -106,8 +107,6 @@ struct atmel_nfc {
+ 	bool			use_nfc_sram;
+ 	bool			write_by_sram;
+ 
+-	struct clk		*clk;
+-
+ 	bool			is_initialized;
+ 	struct completion	comp_ready;
+ 	struct completion	comp_cmd_done;
+@@ -132,6 +131,7 @@ struct atmel_nand_host {
+ 	struct dma_chan		*dma_chan;
+ 
+ 	struct atmel_nfc	*nfc;
++	struct clk		*clk;
+ 
+ 	const struct atmel_nand_caps	*caps;
+ 	bool			has_pmecc;
+@@ -2157,6 +2157,19 @@ static int atmel_nand_probe(struct platform_device *pdev)
+ 	nand_chip->IO_ADDR_R = host->io_base;
+ 	nand_chip->IO_ADDR_W = host->io_base;
+ 
++	if (host->caps->has_hsmc_clk) {
++		host->clk = devm_clk_get(&pdev->dev, NULL);
++		if (IS_ERR(host->clk)) {
++			dev_err(&pdev->dev, "HSMC clock is missing, update your Device Tree");
++			res = PTR_ERR(host->clk);
++			goto err_nand_ioremap;
++		}
++
++		res = clk_prepare_enable(host->clk);
++		if (res)
++			goto err_nand_ioremap;
++	}
++
+ 	if (nand_nfc.is_initialized) {
+ 		/* NFC driver is probed and initialized */
+ 		host->nfc = &nand_nfc;
+@@ -2321,6 +2334,9 @@ static int atmel_nand_remove(struct platform_device *pdev)
+ 	if (host->dma_chan)
+ 		dma_release_channel(host->dma_chan);
+ 
++	if (!IS_ERR(host->clk))
++		clk_disable_unprepare(host->clk);
++
+ 	platform_driver_unregister(&atmel_nand_nfc_driver);
+ 
+ 	return 0;
+@@ -2334,11 +2350,13 @@ static int atmel_nand_remove(struct platform_device *pdev)
+ static const struct atmel_nand_caps at91rm9200_caps = {
+ 	.pmecc_correct_erase_page = false,
+ 	.pmecc_max_correction = 24,
++	.has_hsmc_clk = false,
+ };
+ 
+ static const struct atmel_nand_caps sama5d4_caps = {
+ 	.pmecc_correct_erase_page = true,
+ 	.pmecc_max_correction = 24,
++	.has_hsmc_clk = true,
+ };
+ 
+ /*
+@@ -2363,7 +2381,6 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ {
+ 	struct atmel_nfc *nfc = &nand_nfc;
+ 	struct resource *nfc_cmd_regs, *nfc_hsmc_regs, *nfc_sram;
+-	int ret;
+ 
+ 	nfc_cmd_regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	nfc->base_cmd_regs = devm_ioremap_resource(&pdev->dev, nfc_cmd_regs);
+@@ -2401,31 +2418,12 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ 	nfc_writel(nfc->hsmc_regs, IDR, 0xffffffff);
+ 	nfc_readl(nfc->hsmc_regs, SR);	/* clear the NFC_SR */
+ 
+-	nfc->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (!IS_ERR(nfc->clk)) {
+-		ret = clk_prepare_enable(nfc->clk);
+-		if (ret)
+-			return ret;
+-	} else {
+-		dev_warn(&pdev->dev, "NFC clock missing, update your Device Tree");
+-	}
+-
+ 	nfc->is_initialized = true;
+ 	dev_info(&pdev->dev, "NFC is probed.\n");
+ 
+ 	return 0;
+ }
+ 
+-static int atmel_nand_nfc_remove(struct platform_device *pdev)
+-{
+-	struct atmel_nfc *nfc = &nand_nfc;
+-
+-	if (!IS_ERR(nfc->clk))
+-		clk_disable_unprepare(nfc->clk);
+-
+-	return 0;
+-}
+-
+ static const struct atmel_nand_nfc_caps sama5d3_nfc_caps = {
+ 	.rb_mask = NFC_SR_RB_EDGE0,
+ };
+@@ -2447,7 +2445,6 @@ static struct platform_driver atmel_nand_nfc_driver = {
+ 		.of_match_table = of_match_ptr(atmel_nand_nfc_match),
+ 	},
+ 	.probe = atmel_nand_nfc_probe,
+-	.remove = atmel_nand_nfc_remove,
+ };
+ 
+ static struct platform_driver atmel_nand_driver = {
+-- 
+1.7.9.5
