@@ -1,17 +1,21 @@
-Date: Thu, 18 Feb 2016 02:07:42 +0800
-From: Han Xu <xhnjupt@gmail.com>
-To: Yunhui Cui <B56489@freescale.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, han.xu@freescale.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, yao.yuan@nxp.com
-Subject: Re: [PATCH v2 3/4] mtd:spi-nor:fsl-quadspi:Add fast-read mode support
-Message-ID: <20160217180742.GB17485@shlinux2>
-References: <1454326208-4533-1-git-send-email-B56489@freescale.com>
- <1454326208-4533-3-git-send-email-B56489@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1454326208-4533-3-git-send-email-B56489@freescale.com>
+Received: from host.buserror.net ([209.198.135.123])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aW9ye-0006rY-1d
+ for linux-mtd@lists.infradead.org; Wed, 17 Feb 2016 21:49:40 +0000
+Message-ID: <1455745755.2463.86.camel@buserror.net>
+From: Scott Wood <oss@buserror.net>
+To: Raghav Dogra <raghav.dogra@nxp.com>, linux-mtd@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org
+Cc: computersforpeace@gmail.com, prabhakar.kushwaha@nxp.com,
+ leoli@freescale.com, Jaiprakash Singh <b44839@freescale.com>, Raghav Dogra
+ <raghav@freescale.com>
+Date: Wed, 17 Feb 2016 15:49:15 -0600
+In-Reply-To: <1455708258-3831-1-git-send-email-raghav.dogra@nxp.com>
+References: <1455708258-3831-1-git-send-email-raghav.dogra@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,83 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 01, 2016 at 07:30:07PM +0800, Yunhui Cui wrote:
-> The qspi driver add generic fast-read mode for different
-> flash venders. There are some different board flash work on
-> different mode, such fast-read, quad-mode.
-> So we have to modify the third entrace parameter of spi_nor_scan().
+On Wed, 2016-02-17 at 16:54 +0530, Raghav Dogra wrote:
+> The new IFC controller version 2.0 has a different memory map page.
+> Upto IFC 1.4 PAGE size is 4 KB and from IFC2.0 PAGE size is 64KB.
+> This patch segregates the IFC global and runtime registers to appropriate
+> PAGE sizes.
 > 
-> Signed-off-by: Yunhui Cui <B56489@freescale.com>
+> Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
+> Signed-off-by: Raghav Dogra <raghav@freescale.com>
+> Acked-by: Li Yang <leoyang.li@nxp.com>
+> Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
 > ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 27 +++++++++++++++++++++------
->  1 file changed, 21 insertions(+), 6 deletions(-)
+> Changes for v3: not dependent on 
+> "drivers/memory: Add deep sleep support for IFC" patch
 > 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 9861290..0a31cb1 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -389,11 +389,21 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
->  	/* Read */
->  	lut_base = SEQID_READ * 4;
->  
-> -	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
-> -			base + QUADSPI_LUT(lut_base));
-> -	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
-> -		    LUT1(FSL_READ, PAD4, rxfifo),
-> -			base + QUADSPI_LUT(lut_base + 1));
-> +	if (nor->flash_read == SPI_NOR_FAST) {
-> +		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
-> +			    LUT1(ADDR, PAD1, addrlen),
-> +				base + QUADSPI_LUT(lut_base));
-> +		qspi_writel(q,  LUT0(DUMMY, PAD1, read_dm) |
-> +			    LUT1(FSL_READ, PAD1, rxfifo),
-> +				base + QUADSPI_LUT(lut_base + 1));
-> +	} else if (nor->flash_read == SPI_NOR_QUAD) {
-> +		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
-> +			    LUT1(ADDR, PAD1, addrlen),
-> +				base + QUADSPI_LUT(lut_base));
-> +		qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
-> +			    LUT1(FSL_READ, PAD4, rxfifo),
-> +				base + QUADSPI_LUT(lut_base + 1));
-> +	}
->  
->  	/* Write enable */
->  	lut_base = SEQID_WREN * 4;
-> @@ -468,6 +478,7 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
->  {
->  	switch (cmd) {
->  	case SPINOR_OP_READ_1_1_4:
-> +	case SPINOR_OP_READ_FAST:
->  		return SEQID_READ;
->  	case SPINOR_OP_WREN:
->  		return SEQID_WREN;
-> @@ -963,6 +974,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->  	struct spi_nor *nor;
->  	struct mtd_info *mtd;
->  	int ret, i = 0;
-> +	enum read_mode mode = SPI_NOR_QUAD;
->  
->  	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
->  	if (!q)
-> @@ -1064,7 +1076,10 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->  		/* set the chip address for READID */
->  		fsl_qspi_set_base_addr(q, nor);
->  
-> -		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> +		ret = of_property_read_bool(np, "m25p,fast-read");
-> +		mode = (ret) ? SPI_NOR_FAST : SPI_NOR_QUAD;
-> +
-> +		ret = spi_nor_scan(nor, NULL, mode);
->  		if (ret)
->  			goto mutex_failed;
->  
-I understand you want to provide a more generic read mode, but this is a quad
-spi driver, I prefer to provide the options, either quad read/quad IO read,
-or just normal read.
-> -- 
-> 2.1.0.27.g96db324
+> Changes for v2: rebased to resolve conflicts
+> Applicable to git://git.infradead.org/l2-mtd.git
 > 
+> This patch is dependent on "drivers/memory: Add deep sleep support for IFC"
+> https://patchwork.ozlabs.org/patch/582762/
+> which is also applicable to git://git.infradead.org/l2-mtd.git
 > 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> This patch is the new version of following patch with changed title:
+> https://patchwork.ozlabs.org/patch/557391/
+> 
+>  drivers/memory/fsl_ifc.c        | 36 ++++++++++-----------
+>  drivers/mtd/nand/fsl_ifc_nand.c | 72 ++++++++++++++++++++++----------------
+> ---
+>  include/linux/fsl_ifc.h         | 45 +++++++++++++++++---------
+>  3 files changed, 87 insertions(+), 66 deletions(-)
+
+Acked-by: Scott Wood <oss@buserror.net>
+
+-Scott
