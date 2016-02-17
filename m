@@ -1,18 +1,17 @@
-Date: Thu, 18 Feb 2016 01:16:52 +0800
+Date: Thu, 18 Feb 2016 02:07:42 +0800
 From: Han Xu <xhnjupt@gmail.com>
-To: Yuan Yao <yao.yuan@freescale.com>
+To: Yunhui Cui <B56489@freescale.com>
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com, han.xu@freescale.com,
- robh@kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- yao.yuan@nxp.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 7/7] Documentation: fsl-quadspi: Add optional properties
-Message-ID: <20160217171652.GH16812@shlinux2>
-References: <1453793041-35868-1-git-send-email-yao.yuan@freescale.com>
- <1453793041-35868-7-git-send-email-yao.yuan@freescale.com>
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, yao.yuan@nxp.com
+Subject: Re: [PATCH v2 3/4] mtd:spi-nor:fsl-quadspi:Add fast-read mode support
+Message-ID: <20160217180742.GB17485@shlinux2>
+References: <1454326208-4533-1-git-send-email-B56489@freescale.com>
+ <1454326208-4533-3-git-send-email-B56489@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1453793041-35868-7-git-send-email-yao.yuan@freescale.com>
+In-Reply-To: <1454326208-4533-3-git-send-email-B56489@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +21,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 26, 2016 at 03:24:01PM +0800, Yuan Yao wrote:
-> Add optional properties for QSPI:
-> big-endian
-> if the register is big endian on this platform.
+On Mon, Feb 01, 2016 at 07:30:07PM +0800, Yunhui Cui wrote:
+> The qspi driver add generic fast-read mode for different
+> flash venders. There are some different board flash work on
+> different mode, such fast-read, quad-mode.
+> So we have to modify the third entrace parameter of spi_nor_scan().
 > 
-> Signed-off-by: Yuan Yao <yao.yuan@nxp.com>
-> Acked-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Yunhui Cui <B56489@freescale.com>
 > ---
-> Changed in v4:
-> No changes.
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 27 +++++++++++++++++++++------
+>  1 file changed, 21 insertions(+), 6 deletions(-)
 > 
-> Changed in v3:
-> No changes.
-> 
-> Changed in v2:
-> Update my email to <yao.yuan@nxp.com>
-> ---
->  Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-> index 0df2f3a..0333ec8 100644
-> --- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-> +++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-> @@ -21,6 +21,7 @@ Optional properties:
->  			      But if there are two NOR flashes connected to the
->  			      bus, you should enable this property.
->  			      (Please check the board's schematic.)
-> +  - big-endian : That means the IP register is big endian
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 9861290..0a31cb1 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -389,11 +389,21 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>  	/* Read */
+>  	lut_base = SEQID_READ * 4;
 >  
->  Example:
+> -	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
+> -			base + QUADSPI_LUT(lut_base));
+> -	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
+> -		    LUT1(FSL_READ, PAD4, rxfifo),
+> -			base + QUADSPI_LUT(lut_base + 1));
+> +	if (nor->flash_read == SPI_NOR_FAST) {
+> +		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
+> +			    LUT1(ADDR, PAD1, addrlen),
+> +				base + QUADSPI_LUT(lut_base));
+> +		qspi_writel(q,  LUT0(DUMMY, PAD1, read_dm) |
+> +			    LUT1(FSL_READ, PAD1, rxfifo),
+> +				base + QUADSPI_LUT(lut_base + 1));
+> +	} else if (nor->flash_read == SPI_NOR_QUAD) {
+> +		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
+> +			    LUT1(ADDR, PAD1, addrlen),
+> +				base + QUADSPI_LUT(lut_base));
+> +		qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
+> +			    LUT1(FSL_READ, PAD4, rxfifo),
+> +				base + QUADSPI_LUT(lut_base + 1));
+> +	}
 >  
+>  	/* Write enable */
+>  	lut_base = SEQID_WREN * 4;
+> @@ -468,6 +478,7 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
+>  {
+>  	switch (cmd) {
+>  	case SPINOR_OP_READ_1_1_4:
+> +	case SPINOR_OP_READ_FAST:
+>  		return SEQID_READ;
+>  	case SPINOR_OP_WREN:
+>  		return SEQID_WREN;
+> @@ -963,6 +974,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  	struct spi_nor *nor;
+>  	struct mtd_info *mtd;
+>  	int ret, i = 0;
+> +	enum read_mode mode = SPI_NOR_QUAD;
+>  
+>  	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
+>  	if (!q)
+> @@ -1064,7 +1076,10 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  		/* set the chip address for READID */
+>  		fsl_qspi_set_base_addr(q, nor);
+>  
+> -		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
+> +		ret = of_property_read_bool(np, "m25p,fast-read");
+> +		mode = (ret) ? SPI_NOR_FAST : SPI_NOR_QUAD;
+> +
+> +		ret = spi_nor_scan(nor, NULL, mode);
+>  		if (ret)
+>  			goto mutex_failed;
+>  
+I understand you want to provide a more generic read mode, but this is a quad
+spi driver, I prefer to provide the options, either quad read/quad IO read,
+or just normal read.
 > -- 
 > 2.1.0.27.g96db324
 > 
 > 
-Acked-by: Han xu <han.xu@nxp.com>
 > ______________________________________________________
 > Linux MTD discussion mailing list
 > http://lists.infradead.org/mailman/listinfo/linux-mtd/
