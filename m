@@ -1,16 +1,18 @@
-Received: from smtp01.autotrac.com.br ([200.252.236.233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aWNbu-0006b9-Fm
- for linux-mtd@lists.infradead.org; Thu, 18 Feb 2016 12:23:07 +0000
-From: Guilherme de Oliveira Costa <guilherme.oliveira@autotrac.com.br>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: NAND Bad Block Marking Policy
-Date: Thu, 18 Feb 2016 12:22:42 +0000
-Message-ID: <7F9DB42F7DDA544EA3EB31D694929A30EB03F3@PERU.autotrac.corp>
-Content-Language: pt-BR
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aWOBa-0001p2-Ov
+ for linux-mtd@lists.infradead.org; Thu, 18 Feb 2016 13:00:00 +0000
+Date: Thu, 18 Feb 2016 13:59:28 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Guilherme de Oliveira Costa <guilherme.oliveira@autotrac.com.br>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: NAND Bad Block Marking Policy
+In-Reply-To: <7F9DB42F7DDA544EA3EB31D694929A30EB03F3@PERU.autotrac.corp>
+Message-ID: <alpine.DEB.2.02.1602181353070.10339@lnxricardw1.se.axis.com>
+References: <7F9DB42F7DDA544EA3EB31D694929A30EB03F3@PERU.autotrac.corp>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,67 +22,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8sDQoNCknigJltIHVzaW5nIFUtQm9vdCAyMDEzLjAxLjAxLCBhbmQgSSBub3RpY2VkIGEg
-YmVoYXZpb3VyIHRoYXQgSSBjb3VsZCBub3QgY29tcHJlaGVuZA0KcmVnYXJkaW5nIGJhZCBibG9j
-ayBoYW5kbGluZyBieSBVLUJvb3Q6IGl0IG9ubHkgY2hlY2tzIHRoZSBmaXJzdCB0d28gcGFnZXMg
-b2YgYSBibG9jayB0byBzZWUgaWYNCnRoZSBibG9jayBpcyBiYWQuDQoNCkxldCdzIHNheSB3ZSBo
-YXZlIGEgbmFuZCB3aXRoIHRoZSBmb2xsb3dpbmcgZmVhdHVyZXM6DQogICBNZW1vcnkgU2l6ZSAx
-MjggTUINCiAgIFNlY3RvciBzaXplIDEyOCBLaUINCiAgIFBhZ2Ugc2l6ZSAgICAgIDIwNDggYg0K
-ICAgT09CIHNpemUgICAgICAgICA2NCBiDQogICBFcmFzZSBzaXplICAgMTMxMDcyIGINCg0KSWYg
-SSB0cnkgYW5kIG1hcmsgYSBibG9jayBhcyBiYWQgbWFudWFsbHkgKHZpYSBuYW5kIG1hcmtiYWQp
-LCB0aGUgZm9sbG93aW5nIGhhcHBlbnM6DQoNClUtQm9vdEBVQ0MzIyBuYW5kIG1hcmtiYWQgMHg0
-MjkwMDAwDQpibG9jayAweDA0MjkwMDAwIHN1Y2Nlc3NmdWxseSBtYXJrZWQgYXMgYmFkDQpVLUJv
-b3RAVUNDMyMgbmFuZCBiYWQNCg0KRGV2aWNlIDAgYmFkIGJsb2NrczoNCiAgMDQyODAwMDANCg0K
-RXZlcnl0aGluZyBzZWVtcyBmaW5lLiBIb3dldmVyLCBhZnRlciBhIHJlYm9vdCwgdGhlIHN5c3Rl
-bSBsb3NlcyB0aGUgaW5mb3JtYXRpb24uIFNpZnRpbmcNCnRocm91Z2ggdGhlIGNvZGUsIEkgZm91
-bmQgdGhlIGl0IGlzIG9ubHkgY2hlY2tpbmcgdGhlIGZpcnN0IHR3byBwYWdlcyBPT0IuIE5vdGUg
-aG93ZXZlciB0aGF0DQp0aGUgYmxvY2sgdGhhdCBnZXRzIG1hcmtlZCBhcyBiYWQgaXMgYmxvY2sg
-MHg0MjgwMDAwLCB3aGljaCBpcyBhbGlnbmVkIGluIG1lbW9yeSB3aXRoIHRoZQ0KZXJhc2VibG9j
-ayBzaXplICgxc3QgcGFnZSBpbiB0aGUgZXJhc2VibG9jaykuIEFsc28sIGlmIEkgZHVtcCB0aGUg
-T09CIGluZm8gZnJvbSAweDQyODAwMCwgaXQgaXMNCm5vdCBmbGFnZ2VkIGFzIGJhZCwgYnV0ICBp
-biAweDQyOTAwMCwgdGhlIGZpcnN0IGJ5dGUgaXMgc3RpbGwgMHgwMCwgaW5kaWNhdGluZyBpdCBh
-cyBiYWQuDQpJZiBJIG1hcmsgdGhlIDFzdCBvciAybmQgcGFnZSBpbiBhbiBlcmFzZSBibG9jayBh
-cyBiYWQsIHRoZW4gdGhlIGluZm9ybWF0aW9uIHBlcnNpc3RzIHRocm91Z2gNCmJvb3QgY3ljbGVz
-LiBBbHNvLCBJJ3ZlIHZlcmlmaWVkIHRoYXQgd2UgYXJlIG5vdCB1c2luZyBhIE5BTkQgYmFzZWQg
-QkJULg0KDQpNeSBtYWluIGNvbmNlcm4gaXMgdGhhdCwgYmVjYXVzZSB0aGlzIGNoZWNraW5nIHNo
-YXJlZCBiZXR3ZWVuIGZ1bmN0aW9uYWxpdGllcywgZXZlcnkgdGltZQ0Kd2UgZXJhc2UgYSBibG9j
-aywgd2Uga2VlcCBsb3NpbmcgYmFkIGJsb2NrIGluZm9ybWF0aW9uLCBiZWNhdXNlIGlubmVyIHBh
-Z2VzIChpLmUuIG5vdCB0aGUNCjFzdCBvciAybmQgaW4gYW4gZXJhc2VibG9jayksIGFyZSBmbGFn
-Z2VkIGFzIGdvb2QsIGFuZCBhcmUgbm90IHNraXBwZWQgYnkgbmFuZCBlcmFzZSAod2hpY2gsDQpp
-biBteSBwb2ludCBvZiB2aWV3LCAgaXMgYSBiYWQgdGhpbmcpLg0KDQpTbywgYSBmZXcgcXVlc3Rp
-b25zOg0KICAtIFdoeSBpcyB0aGlzIHRoZSBkZWZhdWx0IGJlaGF2aW91cj8gSXQgc2VlbXMgdG8g
-bWUgYSBiYWQgaWRlYSB0byBjaGVjayBvbmx5IHRoZSBmaXJzdCB0d28NCiAgICAgcGFnZXMsIHNp
-bmNlIGFueSBibG9jayBjb3VsZCBnbyBiYWQuIFVubGVzcyBhbnl0aW1lIGEgcGFnZSBnb2VzIGJh
-ZCwgd2Ugc2hvdWxkIG1hcmsgaXQgb24NCiAgICAgdGhlIGZpcnN0IHR3byAgIHBhZ2VzIGFuZCBv
-biB0aGUgcGFnZSBpdHNlbGYuDQogIC0gSWYgdGhpcyBpcyBpbmRlZWQgdGhlIGRlZmF1bHQgYmVo
-YXZpb3VyLCBpdCBzZWVtcyB0byBtZSB0aGF0IGl0IGlzIGR1ZSB0byBwZXJmb3JtYW5jZSByZWFz
-b25zLg0KICAgIFNvLCBpbiB0aGlzIGNhc2UsIHNob3VsZCB3ZSBtYXJrIHRoZSB3aG9sZSBlcmFz
-ZWJsb2NrIGFzIGJhZCAoYnkgd3JpdGluZyAweDAwIHRvIHRoZSAxc3Qgb3INCiAgICAybmQgcGFn
-ZXMpIGlmIHdlIGZpbmQgYSBzaW5nbGUgYmFkIHBhZ2U/IElzbid0IHRoaXMgYWxzbyBhIGJhZCBz
-b2x1dGlvbiwgc2luY2Ugd2Ugd2lsbCBiZSBtYXJraW5nDQogICAgMTI4a2lCIGFzIGJhZCBkdWUg
-dG8gYSBzaW5nbGUgcGFnZT8gU2hvdWxkbid0IHRoaXMgY29udHJvbCBiZSBtYWRlIGF0IGEgZmlu
-ZXIgbGV2ZWwgKGkuZS4gcGFnZSBsZXZlbCk/DQoNClJlZ2FyZHMsDQpHdWlsaGVybWUNCkVzdGEg
-bWVuc2FnZW0gZSBxdWFscXVlciBhbmV4byBhIGVsYSBzw6NvIGRvY3VtZW50b3MgY29uZmlkZW5j
-aWFpcyBlIGRpcmVjaW9uYWRvcyBleGNsdXNpdmFtZW50ZSBhbyhzKSBkZXN0aW5hdMOhcmlvKHMp
-LiBRdWFscXVlciB1c28sIGRlc3Zpbywgc29uZWdhw6fDo28sIHN1cHJlc3PDo28sIHJldmVsYcOn
-w6NvIG91IGRpdnVsZ2HDp8OjbyBuw6NvIGF1dG9yaXphZGEgw6kgcHJvaWJpZGEgZSBzdWplaXRh
-IMOgcyBzYW7Dp8O1ZXMgZS9vdSByZXBhcmHDp8O1ZXMgbGVnYWlzIHBvciBhdG8gaWzDrWNpdG8g
-KEPDs2RpZ28gUGVuYWwsIEFydGlnb3MgMTUxIGUgMTUyKS4gQ2FzbyBuw6NvIHNlamEgdW0gZG9z
-IGRlc3RpbmF0w6FyaW9zIGV4cHJlc3NhbWVudGUgaW5kaWNhZG9zLCBwb3IgZmF2b3IgZW50cmUg
-ZW0gY29udGF0byBjb20gbyByZW1ldGVudGUsIHJlc3BvbmRlbmRvIGVzdGUgZS1tYWlsIGUgZGVz
-dHJ1YSBxdWFpc3F1ZXIgY8OzcGlhcyBkYSBtZW5zYWdlbSBvcmlnaW5hbC4gUXVhbHF1ZXIgb3Bp
-bmnDo28sIGNyw610aWNhIG91IGFuw6FsaXNlIGRlc2NyaXRhIG5lc3RhIG1lbnNhZ2VtIMOpIGRl
-IHJlc3BvbnNhYmlsaWRhZGUgw7puaWNhIGRvIHJlbWV0ZW50ZSwgYSBtZW5vcyBxdWFuZG8gZXN0
-aXZlciBleHBsaWNpdGFtZW50ZSBleHByZXNzbyBxdWUgc2VqYSBkYSBlbXByZXNhIHJlbWV0ZW50
-ZS4NCg0KVGhpcyBtZXNzYWdlIGFuZCBhbnkgYXR0YWNobWVudCBhcmUgY29uZmlkZW50aWFsIGlu
-Zm9ybWF0aW9uIGZvciB0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVudHMuIEFu
-eSB1bmF1dGhvcml6ZWQgdXNlLCBkZXZpYXRpb24sIHdpdGhob2xkbWVudCwgc3VwcHJlc3Npb24s
-IGRpc2Nsb3N1cmUgb3IgZGlzdHJpYnV0aW9uIGlzIHByb2hpYml0ZWQgYW5kIGlzIHN1YmplY3Rl
-ZCB0byBsZWdhbCBzYW5jdGlvbnMgYW5kL29yIGNvbXBlbnNhdGlvbnMgcGVyIGlsbGljaXQgYWN0
-IChQZW5hbCBDb2RlLCBhcnRpY2xlcyAxNTEgYW5kIDE1MikuIElmIHlvdSBhcmUgbm90IG9uZSBv
-ZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50cywgcGxlYXNlIGNvbnRhY3QgdGhlIHNlbmRlciBieSBy
-ZXBseSBlLW1haWwgYW5kIGRlc3Ryb3kgYW55IGNvcHkgb2YgdGhlIG9yaWdpbmFsIG1lc3NhZ2Uu
-IEFueSB2aWV3LCBjb21tZW50IG9yIGFuYWx5c2lzIGV4cHJlc3NlZCBpbiB0aGlzIG1lc3NhZ2Ug
-aXMgc29sZSByZXNwb25zaWJpbGl0eSBmcm9tIHRoZSBzZW5kZXIsIGV4Y2VwdCB3aGVuIGl04oCZ
-cyBzcGVjaWZpY2FsbHkgZXhwcmVzc2VkIHRoYXQgaXTigJlzIHRoZSB2aWV3LCBjb21tZW50IG9y
-IGFuYWx5c2lzIG9mIHRoZSBjb21wYW55Lg0KDQo=
+
+On Thu, 18 Feb 2016, Guilherme de Oliveira Costa wrote:
+
+> I?m using U-Boot 2013.01.01, and I noticed a behaviour that I could not comprehend
+> regarding bad block handling by U-Boot: it only checks the first two pages of a block to see if
+> the block is bad.
+> 
+> Let's say we have a nand with the following features:
+>    Memory Size 128 MB
+>    Sector size 128 KiB
+>    Page size      2048 b
+>    OOB size         64 b
+>    Erase size   131072 b
+> 
+> If I try and mark a block as bad manually (via nand markbad), the following happens:
+> 
+> U-Boot@UCC3# nand markbad 0x4290000
+> block 0x04290000 successfully marked as bad
+> U-Boot@UCC3# nand bad
+> 
+> Device 0 bad blocks:
+>   04280000
+> 
+> Everything seems fine. However, after a reboot, the system loses the information. Sifting
+> through the code, I found the it is only checking the first two pages OOB. Note however that
+> the block that gets marked as bad is block 0x4280000, which is aligned in memory with the
+> eraseblock size (1st page in the eraseblock). Also, if I dump the OOB info from 0x428000, it is
+> not flagged as bad, but  in 0x429000, the first byte is still 0x00, indicating it as bad.
+> If I mark the 1st or 2nd page in an erase block as bad, then the information persists through
+> boot cycles. Also, I've verified that we are not using a NAND based BBT.
+> 
+> My main concern is that, because this checking shared between functionalities, every time
+> we erase a block, we keep losing bad block information, because inner pages (i.e. not the
+> 1st or 2nd in an eraseblock), are flagged as good, and are not skipped by nand erase (which,
+> in my point of view,  is a bad thing).
+> 
+> So, a few questions:
+>   - Why is this the default behaviour? It seems to me a bad idea to check only the first two
+>      pages, since any block could go bad. Unless anytime a page goes bad, we should mark it on
+>      the first two   pages and on the page itself.
+>   - If this is indeed the default behaviour, it seems to me that it is due to performance reasons.
+>     So, in this case, should we mark the whole eraseblock as bad (by writing 0x00 to the 1st or
+>     2nd pages) if we find a single bad page? Isn't this also a bad solution, since we will be marking
+>     128kiB as bad due to a single page? Shouldn't this control be made 
+>     at a finer level (i.e. page level)?
+
+I don't know if thie mailing list is really the right place to discuss 
+U-Boot, but I don't know much about U-Boot; it might derive its flash 
+device handling from Linux mtd so the discussion might be valid just the 
+same.
+
+But in general, if a block is considered bad, then it is the whole 128 
+kbyte (in this case) block that is bad, not individual pages. After all, 
+it's called a 'bad block', not a 'bad page'. Thus manufacturer-marked bad 
+blocks only need to have their first two pages marked, by convention (or 
+rather, according to the data sheets) that means that the whole block is 
+bad. And the same then goes for user-marked bad blocks.
+
+Thus, attempting to mark a block at 0x4290000 in a 128 kbyte eraseblock 
+flash is wrong to start with; apparently U-Boot doesn't check that though 
+and dutifully does what the user requests. The correct way would be to 
+mark 0x4280000 as bad.
+
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
