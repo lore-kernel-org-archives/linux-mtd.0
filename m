@@ -1,18 +1,22 @@
-Received: from bes.se.axis.com ([195.60.68.10])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aWOBa-0001p2-Ov
- for linux-mtd@lists.infradead.org; Thu, 18 Feb 2016 13:00:00 +0000
-Date: Thu, 18 Feb 2016 13:59:28 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Guilherme de Oliveira Costa <guilherme.oliveira@autotrac.com.br>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: NAND Bad Block Marking Policy
-In-Reply-To: <7F9DB42F7DDA544EA3EB31D694929A30EB03F3@PERU.autotrac.corp>
-Message-ID: <alpine.DEB.2.02.1602181353070.10339@lnxricardw1.se.axis.com>
-References: <7F9DB42F7DDA544EA3EB31D694929A30EB03F3@PERU.autotrac.corp>
+Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aWQRr-0005qP-NE
+ for linux-mtd@lists.infradead.org; Thu, 18 Feb 2016 15:24:56 +0000
+Received: by mail-ob0-x22c.google.com with SMTP id xk3so71884576obc.2
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Feb 2016 07:24:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <56C5AEED.30704@mlbassoc.com>
+References: <56C57F32.8080301@mlbassoc.com>
+ <CAFLxGvwzdcTs+hLoOCzc26VcxD08bke92EfHVVbmRgoqrooMpA@mail.gmail.com>
+ <56C5AEED.30704@mlbassoc.com>
+Date: Thu, 18 Feb 2016 09:24:32 -0600
+Message-ID: <CA+EcR21wB1aoY000YEQGVHhSukN98XoATaNuiRVDHceCjhtV5Q@mail.gmail.com>
+Subject: Re: NAND dump questions
+From: Han Xu <xhnjupt@gmail.com>
+To: Gary Thomas <gary@mlbassoc.com>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,71 +26,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Feb 18, 2016 at 5:45 AM, Gary Thomas <gary@mlbassoc.com> wrote:
+> On 2016-02-18 10:27, Richard Weinberger wrote:
+>>
+>> Hi!
+>>
+>> On Thu, Feb 18, 2016 at 9:22 AM, Gary Thomas <gary@mlbassoc.com> wrote:
+>>>
+>>> I'm trying to use 'nanddump' to help me duplicate a NAND device.
+>>> The idea is to provide a production lab with raw dumps, including
+>>> OOB data for every page.  They have a programming machine which can
+>>> take these dumps and program the device.  This process is interesting
+>>> because we need to make thousands of identical devices and programming
+>>> the NAND manually takes a lot of time & manpower.
+>>
+>>
+>> [...]
+>>
+>>> Any ideas what's going on here?  What else can I look at to diagnose the
+>>> issue?
+>>>
+>>> Note: I've actually done this process on another system which is
+>>> TI/OMAP Davinci based.  On that device (a different NAND chip and
+>>> a different production lab), the duplication worked perfectly.
+>>
+>>
+>> I read your mail and the first thing that alarmed me was, why OOB?
+>> Can you please retry without OOB and which read errors do you get?
+>> I bet uncorrectable ECC errors...
+>>
 
-On Thu, 18 Feb 2016, Guilherme de Oliveira Costa wrote:
+What kind of error?
 
-> I?m using U-Boot 2013.01.01, and I noticed a behaviour that I could not comprehend
-> regarding bad block handling by U-Boot: it only checks the first two pages of a block to see if
-> the block is bad.
-> 
-> Let's say we have a nand with the following features:
->    Memory Size 128 MB
->    Sector size 128 KiB
->    Page size      2048 b
->    OOB size         64 b
->    Erase size   131072 b
-> 
-> If I try and mark a block as bad manually (via nand markbad), the following happens:
-> 
-> U-Boot@UCC3# nand markbad 0x4290000
-> block 0x04290000 successfully marked as bad
-> U-Boot@UCC3# nand bad
-> 
-> Device 0 bad blocks:
->   04280000
-> 
-> Everything seems fine. However, after a reboot, the system loses the information. Sifting
-> through the code, I found the it is only checking the first two pages OOB. Note however that
-> the block that gets marked as bad is block 0x4280000, which is aligned in memory with the
-> eraseblock size (1st page in the eraseblock). Also, if I dump the OOB info from 0x428000, it is
-> not flagged as bad, but  in 0x429000, the first byte is still 0x00, indicating it as bad.
-> If I mark the 1st or 2nd page in an erase block as bad, then the information persists through
-> boot cycles. Also, I've verified that we are not using a NAND based BBT.
-> 
-> My main concern is that, because this checking shared between functionalities, every time
-> we erase a block, we keep losing bad block information, because inner pages (i.e. not the
-> 1st or 2nd in an eraseblock), are flagged as good, and are not skipped by nand erase (which,
-> in my point of view,  is a bad thing).
-> 
-> So, a few questions:
->   - Why is this the default behaviour? It seems to me a bad idea to check only the first two
->      pages, since any block could go bad. Unless anytime a page goes bad, we should mark it on
->      the first two   pages and on the page itself.
->   - If this is indeed the default behaviour, it seems to me that it is due to performance reasons.
->     So, in this case, should we mark the whole eraseblock as bad (by writing 0x00 to the 1st or
->     2nd pages) if we find a single bad page? Isn't this also a bad solution, since we will be marking
->     128kiB as bad due to a single page? Shouldn't this control be made 
->     at a finer level (i.e. page level)?
+>
+> The reason for the OOB is that the production lab doesn't have the
+> ability to generate that info itself - they only know how to push
+> raw bits (all of them) into the device.  Maybe there are better ways
+> to mass duplicate NAND devices - does anyone know?
+>
+> I think that the driver or device is not reporting the correct OOB data.
+> If I look at another i.MX6 board I have which is fitted with a different
+> NAND device, the OOB is vastly different.  Using U-Boot to dump some OOB
+>
+> On the failing board with this NAND device:
+>   nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x48
+>   nand: Micron MT29F16G08ABACAWP
+>   nand: 2048MiB, SLC, page size: 4096, OOB size: 224
+>
+> Page 00780000 dump:
+>
+> OOB:
+>         ff 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         00 00 00 00 00 00 00 00
+>         9b af dc 75 5f 24 d8 95
+>         ba 51 16 e5 f3 5d 8d a8
+>         37 66 08 44 f1 63 ac 5d
+>         e8 49 00 00 00 00 00 00
+>
+> On the other board with this NAND device
+>   nand: device found, Manufacturer ID: 0x01, Chip ID: 0xdc
+>   nand: AMD/Spansion S34ML04G2
+>   nand: 512MiB, SLC, page size: 2048, OOB size: 128
+>
+> Page 003e0000 dump:
+> OOB:
+>         ff 5b 4f 1b de 98 99 18
+>         8c 0e 59 99 5d 0f db 18
+>         19 cb 10 53 50 50 cb 95
+>         d5 51 10 4b 9a 59 8f d4
+>         91 90 0c 0d c8 d8 9b db
+>         dc 1b 5b 99 18 5b 98 db
+>         5a 0f 0c 88 5d 1a 59 d9
+>         5b 4f 1b de 98 99 58 8c
+>         ce 9b 99 19 88 5d 1a 59
+>         d9 5b 4f 1b de 98 99 98
+>         8c ce 9b 99 19 88 5d 1a
+>         59 d9 5b 4f 1b de 98 99
+>         d8 4c 07 03 98 ab 17 1c
+>         cc 1e fa 21 6f 43 d4 3b
+>         bc 8d 56 0b 20 77 0d de
+>         09 1a 2c ef 7b 82 a8 00
+>
+> Different NAND devices, same kernel rev & SOC (i.MX6).  Look how
+> different - how many non-zero bits are in the AMD device.  Is
+> this significant at all?
 
-I don't know if thie mailing list is really the right place to discuss 
-U-Boot, but I don't know much about U-Boot; it might derive its flash 
-device handling from Linux mtd so the discussion might be valid just the 
-same.
+I don't quite understand the meaning of this comparison. Why comparing
+OOB data in different pages of different NAND chips( 4K+224 vs
+2K+128)?
 
-But in general, if a block is considered bad, then it is the whole 128 
-kbyte (in this case) block that is bad, not individual pages. After all, 
-it's called a 'bad block', not a 'bad page'. Thus manufacturer-marked bad 
-blocks only need to have their first two pages marked, by convention (or 
-rather, according to the data sheets) that means that the whole block is 
-bad. And the same then goes for user-marked bad blocks.
+BTW, Freescale/NXP provides mfgtool for manufacturing purpose, please
+check if the tool helps.
 
-Thus, attempting to mark a block at 0x4290000 in a 128 kbyte eraseblock 
-flash is wrong to start with; apparently U-Boot doesn't check that though 
-and dutifully does what the user requests. The correct way would be to 
-mark 0x4280000 as bad.
-
-/Ricard
--- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+>
+> --
+> ------------------------------------------------------------
+> Gary Thomas                 |  Consulting for the
+> MLB Associates              |    Embedded world
+> ------------------------------------------------------------
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
