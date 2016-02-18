@@ -1,19 +1,16 @@
-Received: from mail.analogue-micro.com ([217.144.149.242])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aWN2E-0007QE-5l
- for linux-mtd@lists.infradead.org; Thu, 18 Feb 2016 11:46:16 +0000
-From: Gary Thomas <gary@mlbassoc.com>
-Subject: Re: NAND dump questions
-To: Richard Weinberger <richard.weinberger@gmail.com>
-References: <56C57F32.8080301@mlbassoc.com>
- <CAFLxGvwzdcTs+hLoOCzc26VcxD08bke92EfHVVbmRgoqrooMpA@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Message-ID: <56C5AEED.30704@mlbassoc.com>
-Date: Thu, 18 Feb 2016 12:45:49 +0100
+Received: from smtp01.autotrac.com.br ([200.252.236.233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aWNbu-0006b9-Fm
+ for linux-mtd@lists.infradead.org; Thu, 18 Feb 2016 12:23:07 +0000
+From: Guilherme de Oliveira Costa <guilherme.oliveira@autotrac.com.br>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: NAND Bad Block Marking Policy
+Date: Thu, 18 Feb 2016 12:22:42 +0000
+Message-ID: <7F9DB42F7DDA544EA3EB31D694929A30EB03F3@PERU.autotrac.corp>
+Content-Language: pt-BR
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvwzdcTs+hLoOCzc26VcxD08bke92EfHVVbmRgoqrooMpA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,106 +20,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2016-02-18 10:27, Richard Weinberger wrote:
-> Hi!
->
-> On Thu, Feb 18, 2016 at 9:22 AM, Gary Thomas <gary@mlbassoc.com> wrote:
->> I'm trying to use 'nanddump' to help me duplicate a NAND device.
->> The idea is to provide a production lab with raw dumps, including
->> OOB data for every page.  They have a programming machine which can
->> take these dumps and program the device.  This process is interesting
->> because we need to make thousands of identical devices and programming
->> the NAND manually takes a lot of time & manpower.
->
-> [...]
->
->> Any ideas what's going on here?  What else can I look at to diagnose the
->> issue?
->>
->> Note: I've actually done this process on another system which is
->> TI/OMAP Davinci based.  On that device (a different NAND chip and
->> a different production lab), the duplication worked perfectly.
->
-> I read your mail and the first thing that alarmed me was, why OOB?
-> Can you please retry without OOB and which read errors do you get?
-> I bet uncorrectable ECC errors...
->
-
-The reason for the OOB is that the production lab doesn't have the
-ability to generate that info itself - they only know how to push
-raw bits (all of them) into the device.  Maybe there are better ways
-to mass duplicate NAND devices - does anyone know?
-
-I think that the driver or device is not reporting the correct OOB data.
-If I look at another i.MX6 board I have which is fitted with a different
-NAND device, the OOB is vastly different.  Using U-Boot to dump some OOB
-
-On the failing board with this NAND device:
-   nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x48
-   nand: Micron MT29F16G08ABACAWP
-   nand: 2048MiB, SLC, page size: 4096, OOB size: 224
-
-Page 00780000 dump:
-OOB:
-         ff 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         00 00 00 00 00 00 00 00
-         9b af dc 75 5f 24 d8 95
-         ba 51 16 e5 f3 5d 8d a8
-         37 66 08 44 f1 63 ac 5d
-         e8 49 00 00 00 00 00 00
-
-On the other board with this NAND device
-   nand: device found, Manufacturer ID: 0x01, Chip ID: 0xdc
-   nand: AMD/Spansion S34ML04G2
-   nand: 512MiB, SLC, page size: 2048, OOB size: 128
-
-Page 003e0000 dump:
-OOB:
-         ff 5b 4f 1b de 98 99 18
-         8c 0e 59 99 5d 0f db 18
-         19 cb 10 53 50 50 cb 95
-         d5 51 10 4b 9a 59 8f d4
-         91 90 0c 0d c8 d8 9b db
-         dc 1b 5b 99 18 5b 98 db
-         5a 0f 0c 88 5d 1a 59 d9
-         5b 4f 1b de 98 99 58 8c
-         ce 9b 99 19 88 5d 1a 59
-         d9 5b 4f 1b de 98 99 98
-         8c ce 9b 99 19 88 5d 1a
-         59 d9 5b 4f 1b de 98 99
-         d8 4c 07 03 98 ab 17 1c
-         cc 1e fa 21 6f 43 d4 3b
-         bc 8d 56 0b 20 77 0d de
-         09 1a 2c ef 7b 82 a8 00
-
-Different NAND devices, same kernel rev & SOC (i.MX6).  Look how
-different - how many non-zero bits are in the AMD device.  Is
-this significant at all?
-
--- 
-------------------------------------------------------------
-Gary Thomas                 |  Consulting for the
-MLB Associates              |    Embedded world
-------------------------------------------------------------
+SGVsbG8sDQoNCknigJltIHVzaW5nIFUtQm9vdCAyMDEzLjAxLjAxLCBhbmQgSSBub3RpY2VkIGEg
+YmVoYXZpb3VyIHRoYXQgSSBjb3VsZCBub3QgY29tcHJlaGVuZA0KcmVnYXJkaW5nIGJhZCBibG9j
+ayBoYW5kbGluZyBieSBVLUJvb3Q6IGl0IG9ubHkgY2hlY2tzIHRoZSBmaXJzdCB0d28gcGFnZXMg
+b2YgYSBibG9jayB0byBzZWUgaWYNCnRoZSBibG9jayBpcyBiYWQuDQoNCkxldCdzIHNheSB3ZSBo
+YXZlIGEgbmFuZCB3aXRoIHRoZSBmb2xsb3dpbmcgZmVhdHVyZXM6DQogICBNZW1vcnkgU2l6ZSAx
+MjggTUINCiAgIFNlY3RvciBzaXplIDEyOCBLaUINCiAgIFBhZ2Ugc2l6ZSAgICAgIDIwNDggYg0K
+ICAgT09CIHNpemUgICAgICAgICA2NCBiDQogICBFcmFzZSBzaXplICAgMTMxMDcyIGINCg0KSWYg
+SSB0cnkgYW5kIG1hcmsgYSBibG9jayBhcyBiYWQgbWFudWFsbHkgKHZpYSBuYW5kIG1hcmtiYWQp
+LCB0aGUgZm9sbG93aW5nIGhhcHBlbnM6DQoNClUtQm9vdEBVQ0MzIyBuYW5kIG1hcmtiYWQgMHg0
+MjkwMDAwDQpibG9jayAweDA0MjkwMDAwIHN1Y2Nlc3NmdWxseSBtYXJrZWQgYXMgYmFkDQpVLUJv
+b3RAVUNDMyMgbmFuZCBiYWQNCg0KRGV2aWNlIDAgYmFkIGJsb2NrczoNCiAgMDQyODAwMDANCg0K
+RXZlcnl0aGluZyBzZWVtcyBmaW5lLiBIb3dldmVyLCBhZnRlciBhIHJlYm9vdCwgdGhlIHN5c3Rl
+bSBsb3NlcyB0aGUgaW5mb3JtYXRpb24uIFNpZnRpbmcNCnRocm91Z2ggdGhlIGNvZGUsIEkgZm91
+bmQgdGhlIGl0IGlzIG9ubHkgY2hlY2tpbmcgdGhlIGZpcnN0IHR3byBwYWdlcyBPT0IuIE5vdGUg
+aG93ZXZlciB0aGF0DQp0aGUgYmxvY2sgdGhhdCBnZXRzIG1hcmtlZCBhcyBiYWQgaXMgYmxvY2sg
+MHg0MjgwMDAwLCB3aGljaCBpcyBhbGlnbmVkIGluIG1lbW9yeSB3aXRoIHRoZQ0KZXJhc2VibG9j
+ayBzaXplICgxc3QgcGFnZSBpbiB0aGUgZXJhc2VibG9jaykuIEFsc28sIGlmIEkgZHVtcCB0aGUg
+T09CIGluZm8gZnJvbSAweDQyODAwMCwgaXQgaXMNCm5vdCBmbGFnZ2VkIGFzIGJhZCwgYnV0ICBp
+biAweDQyOTAwMCwgdGhlIGZpcnN0IGJ5dGUgaXMgc3RpbGwgMHgwMCwgaW5kaWNhdGluZyBpdCBh
+cyBiYWQuDQpJZiBJIG1hcmsgdGhlIDFzdCBvciAybmQgcGFnZSBpbiBhbiBlcmFzZSBibG9jayBh
+cyBiYWQsIHRoZW4gdGhlIGluZm9ybWF0aW9uIHBlcnNpc3RzIHRocm91Z2gNCmJvb3QgY3ljbGVz
+LiBBbHNvLCBJJ3ZlIHZlcmlmaWVkIHRoYXQgd2UgYXJlIG5vdCB1c2luZyBhIE5BTkQgYmFzZWQg
+QkJULg0KDQpNeSBtYWluIGNvbmNlcm4gaXMgdGhhdCwgYmVjYXVzZSB0aGlzIGNoZWNraW5nIHNo
+YXJlZCBiZXR3ZWVuIGZ1bmN0aW9uYWxpdGllcywgZXZlcnkgdGltZQ0Kd2UgZXJhc2UgYSBibG9j
+aywgd2Uga2VlcCBsb3NpbmcgYmFkIGJsb2NrIGluZm9ybWF0aW9uLCBiZWNhdXNlIGlubmVyIHBh
+Z2VzIChpLmUuIG5vdCB0aGUNCjFzdCBvciAybmQgaW4gYW4gZXJhc2VibG9jayksIGFyZSBmbGFn
+Z2VkIGFzIGdvb2QsIGFuZCBhcmUgbm90IHNraXBwZWQgYnkgbmFuZCBlcmFzZSAod2hpY2gsDQpp
+biBteSBwb2ludCBvZiB2aWV3LCAgaXMgYSBiYWQgdGhpbmcpLg0KDQpTbywgYSBmZXcgcXVlc3Rp
+b25zOg0KICAtIFdoeSBpcyB0aGlzIHRoZSBkZWZhdWx0IGJlaGF2aW91cj8gSXQgc2VlbXMgdG8g
+bWUgYSBiYWQgaWRlYSB0byBjaGVjayBvbmx5IHRoZSBmaXJzdCB0d28NCiAgICAgcGFnZXMsIHNp
+bmNlIGFueSBibG9jayBjb3VsZCBnbyBiYWQuIFVubGVzcyBhbnl0aW1lIGEgcGFnZSBnb2VzIGJh
+ZCwgd2Ugc2hvdWxkIG1hcmsgaXQgb24NCiAgICAgdGhlIGZpcnN0IHR3byAgIHBhZ2VzIGFuZCBv
+biB0aGUgcGFnZSBpdHNlbGYuDQogIC0gSWYgdGhpcyBpcyBpbmRlZWQgdGhlIGRlZmF1bHQgYmVo
+YXZpb3VyLCBpdCBzZWVtcyB0byBtZSB0aGF0IGl0IGlzIGR1ZSB0byBwZXJmb3JtYW5jZSByZWFz
+b25zLg0KICAgIFNvLCBpbiB0aGlzIGNhc2UsIHNob3VsZCB3ZSBtYXJrIHRoZSB3aG9sZSBlcmFz
+ZWJsb2NrIGFzIGJhZCAoYnkgd3JpdGluZyAweDAwIHRvIHRoZSAxc3Qgb3INCiAgICAybmQgcGFn
+ZXMpIGlmIHdlIGZpbmQgYSBzaW5nbGUgYmFkIHBhZ2U/IElzbid0IHRoaXMgYWxzbyBhIGJhZCBz
+b2x1dGlvbiwgc2luY2Ugd2Ugd2lsbCBiZSBtYXJraW5nDQogICAgMTI4a2lCIGFzIGJhZCBkdWUg
+dG8gYSBzaW5nbGUgcGFnZT8gU2hvdWxkbid0IHRoaXMgY29udHJvbCBiZSBtYWRlIGF0IGEgZmlu
+ZXIgbGV2ZWwgKGkuZS4gcGFnZSBsZXZlbCk/DQoNClJlZ2FyZHMsDQpHdWlsaGVybWUNCkVzdGEg
+bWVuc2FnZW0gZSBxdWFscXVlciBhbmV4byBhIGVsYSBzw6NvIGRvY3VtZW50b3MgY29uZmlkZW5j
+aWFpcyBlIGRpcmVjaW9uYWRvcyBleGNsdXNpdmFtZW50ZSBhbyhzKSBkZXN0aW5hdMOhcmlvKHMp
+LiBRdWFscXVlciB1c28sIGRlc3Zpbywgc29uZWdhw6fDo28sIHN1cHJlc3PDo28sIHJldmVsYcOn
+w6NvIG91IGRpdnVsZ2HDp8OjbyBuw6NvIGF1dG9yaXphZGEgw6kgcHJvaWJpZGEgZSBzdWplaXRh
+IMOgcyBzYW7Dp8O1ZXMgZS9vdSByZXBhcmHDp8O1ZXMgbGVnYWlzIHBvciBhdG8gaWzDrWNpdG8g
+KEPDs2RpZ28gUGVuYWwsIEFydGlnb3MgMTUxIGUgMTUyKS4gQ2FzbyBuw6NvIHNlamEgdW0gZG9z
+IGRlc3RpbmF0w6FyaW9zIGV4cHJlc3NhbWVudGUgaW5kaWNhZG9zLCBwb3IgZmF2b3IgZW50cmUg
+ZW0gY29udGF0byBjb20gbyByZW1ldGVudGUsIHJlc3BvbmRlbmRvIGVzdGUgZS1tYWlsIGUgZGVz
+dHJ1YSBxdWFpc3F1ZXIgY8OzcGlhcyBkYSBtZW5zYWdlbSBvcmlnaW5hbC4gUXVhbHF1ZXIgb3Bp
+bmnDo28sIGNyw610aWNhIG91IGFuw6FsaXNlIGRlc2NyaXRhIG5lc3RhIG1lbnNhZ2VtIMOpIGRl
+IHJlc3BvbnNhYmlsaWRhZGUgw7puaWNhIGRvIHJlbWV0ZW50ZSwgYSBtZW5vcyBxdWFuZG8gZXN0
+aXZlciBleHBsaWNpdGFtZW50ZSBleHByZXNzbyBxdWUgc2VqYSBkYSBlbXByZXNhIHJlbWV0ZW50
+ZS4NCg0KVGhpcyBtZXNzYWdlIGFuZCBhbnkgYXR0YWNobWVudCBhcmUgY29uZmlkZW50aWFsIGlu
+Zm9ybWF0aW9uIGZvciB0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVudHMuIEFu
+eSB1bmF1dGhvcml6ZWQgdXNlLCBkZXZpYXRpb24sIHdpdGhob2xkbWVudCwgc3VwcHJlc3Npb24s
+IGRpc2Nsb3N1cmUgb3IgZGlzdHJpYnV0aW9uIGlzIHByb2hpYml0ZWQgYW5kIGlzIHN1YmplY3Rl
+ZCB0byBsZWdhbCBzYW5jdGlvbnMgYW5kL29yIGNvbXBlbnNhdGlvbnMgcGVyIGlsbGljaXQgYWN0
+IChQZW5hbCBDb2RlLCBhcnRpY2xlcyAxNTEgYW5kIDE1MikuIElmIHlvdSBhcmUgbm90IG9uZSBv
+ZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50cywgcGxlYXNlIGNvbnRhY3QgdGhlIHNlbmRlciBieSBy
+ZXBseSBlLW1haWwgYW5kIGRlc3Ryb3kgYW55IGNvcHkgb2YgdGhlIG9yaWdpbmFsIG1lc3NhZ2Uu
+IEFueSB2aWV3LCBjb21tZW50IG9yIGFuYWx5c2lzIGV4cHJlc3NlZCBpbiB0aGlzIG1lc3NhZ2Ug
+aXMgc29sZSByZXNwb25zaWJpbGl0eSBmcm9tIHRoZSBzZW5kZXIsIGV4Y2VwdCB3aGVuIGl04oCZ
+cyBzcGVjaWZpY2FsbHkgZXhwcmVzc2VkIHRoYXQgaXTigJlzIHRoZSB2aWV3LCBjb21tZW50IG9y
+IGFuYWx5c2lzIG9mIHRoZSBjb21wYW55Lg0KDQo=
