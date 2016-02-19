@@ -1,7 +1,7 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aWsSD-0002Dz-9X
- for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 21:20:21 +0000
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by casper.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1aWsS8-0003Xo-9Q
+ for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 21:19:12 +0000
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>
 CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
@@ -12,9 +12,9 @@ CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
  <ilya@compulab.co.il>, Yegor Yefremov <yegorslists@googlemail.com>,
  Rostislav Lisovy <lisovy@gmail.com>,
  Enric Balletbo i Serra <eballetbo@iseebcn.com>
-Subject: [PATCH v5 22/26] ARM: dts: am335x: Fix NAND device nodes
-Date: Fri, 19 Feb 2016 23:15:44 +0200
-Message-ID: <1455916548-3441-23-git-send-email-rogerq@ti.com>
+Subject: [PATCH v5 23/26] ARM: dts: am335x: Provide NAND ready pin
+Date: Fri, 19 Feb 2016 23:15:45 +0200
+Message-ID: <1455916548-3441-24-git-send-email-rogerq@ti.com>
 In-Reply-To: <1455916548-3441-1-git-send-email-rogerq@ti.com>
 References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -28,14 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add compatible id, GPMC register resource and interrupt
-resource to NAND controller nodes.
+On these boards NAND ready pin status is avilable over
+GPMC_WAIT0 pin.
 
-The GPMC driver now implements gpiochip and irqchip so
-enable gpio-controller and interrupt-controller properties.
+For NAND we don't use GPMC wait pin monitoring but
+get the NAND Ready/Busy# status using GPIOlib.
+GPMC driver provides the WAIT0 pin status over GPIOlib.
 
-With this the interrupt parent of NAND node changes so fix it
-accordingly.
+Read speed increases from 7869 KiB/ to 8875 KiB/s
+and write speed was unchanged at 5100 KiB/s.
+
+Measured using mtd_speedtest.ko on am335x-evm.
 
 Cc: Teresa Remmet <t.remmet@phytec.de>
 Cc: Ilya Ledvich <ilya@compulab.co.il>
@@ -44,151 +47,164 @@ Cc: Rostislav Lisovy <lisovy@gmail.com>
 Cc: Enric Balletbo i Serra <eballetbo@iseebcn.com>
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/boot/dts/am335x-baltos-ir5221.dts | 6 +++++-
- arch/arm/boot/dts/am335x-chilisom.dtsi     | 5 +++++
- arch/arm/boot/dts/am335x-cm-t335.dts       | 6 +++++-
- arch/arm/boot/dts/am335x-evm.dts           | 4 ++++
- arch/arm/boot/dts/am335x-igep0033.dtsi     | 5 +++++
- arch/arm/boot/dts/am335x-phycore-som.dtsi  | 5 +++++
- arch/arm/boot/dts/am33xx.dtsi              | 4 ++++
- 7 files changed, 33 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/am335x-baltos-ir5221.dts | 4 +---
+ arch/arm/boot/dts/am335x-chilisom.dtsi     | 4 +---
+ arch/arm/boot/dts/am335x-cm-t335.dts       | 4 +---
+ arch/arm/boot/dts/am335x-evm.dts           | 4 +---
+ arch/arm/boot/dts/am335x-igep0033.dtsi     | 4 +---
+ arch/arm/boot/dts/am335x-phycore-som.dtsi  | 4 +---
+ 6 files changed, 6 insertions(+), 18 deletions(-)
 
 diff --git a/arch/arm/boot/dts/am335x-baltos-ir5221.dts b/arch/arm/boot/dts/am335x-baltos-ir5221.dts
-index ded1eb6..7b6bcb0 100644
+index 7b6bcb0..17e92e8 100644
 --- a/arch/arm/boot/dts/am335x-baltos-ir5221.dts
 +++ b/arch/arm/boot/dts/am335x-baltos-ir5221.dts
-@@ -236,7 +236,11 @@
- 	status = "okay";
- 
- 	nand@0,0 {
--		reg = <0 0 0>; /* CS0, offset 0 */
-+		compatible = "ti,omap2-nand";
-+		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&gpmc>;
-+		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-+			     <1 IRQ_TYPE_NONE>;	/* termcount */
+@@ -241,6 +241,7 @@
+ 		interrupt-parent = <&gpmc>;
+ 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+ 			     <1 IRQ_TYPE_NONE>;	/* termcount */
++		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
  		nand-bus-width = <8>;
  		ti,nand-ecc-opt = "bch8";
  		ti,nand-xfer-type = "polled";
+@@ -261,12 +262,9 @@
+ 		gpmc,access-ns = <64>;
+ 		gpmc,rd-cycle-ns = <82>;
+ 		gpmc,wr-cycle-ns = <82>;
+-		gpmc,wait-on-read = "true";
+-		gpmc,wait-on-write = "true";
+ 		gpmc,bus-turnaround-ns = <0>;
+ 		gpmc,cycle2cycle-delay-ns = <0>;
+ 		gpmc,clk-activation-ns = <0>;
+-		gpmc,wait-monitoring-ns = <0>;
+ 		gpmc,wr-access-ns = <40>;
+ 		gpmc,wr-data-mux-bus-ns = <0>;
+ 
 diff --git a/arch/arm/boot/dts/am335x-chilisom.dtsi b/arch/arm/boot/dts/am335x-chilisom.dtsi
-index fda457b..e8e7d9d 100644
+index e8e7d9d..6b8e70a 100644
 --- a/arch/arm/boot/dts/am335x-chilisom.dtsi
 +++ b/arch/arm/boot/dts/am335x-chilisom.dtsi
-@@ -7,6 +7,7 @@
-  * published by the Free Software Foundation.
-  */
- #include "am33xx.dtsi"
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	model = "Grinn AM335x ChiliSOM";
-@@ -218,7 +219,11 @@
- 	pinctrl-0 = <&nandflash_pins>;
- 	ranges = <0 0 0x08000000 0x01000000>; /* CS0 0 @addr 0x08000000, size 0x01000000 */
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>;	/* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&gpmc>;
-+		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-+			     <1 IRQ_TYPE_NONE>;	/* termcount */
+@@ -224,6 +224,7 @@
+ 		interrupt-parent = <&gpmc>;
+ 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+ 			     <1 IRQ_TYPE_NONE>;	/* termcount */
++		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
  		ti,nand-ecc-opt = "bch8";
  		ti,elm-id = <&elm>;
  		nand-bus-width = <8>;
+@@ -242,12 +243,9 @@
+ 		gpmc,access-ns = <64>;
+ 		gpmc,rd-cycle-ns = <82>;
+ 		gpmc,wr-cycle-ns = <82>;
+-		gpmc,wait-on-read = "true";
+-		gpmc,wait-on-write = "true";
+ 		gpmc,bus-turnaround-ns = <0>;
+ 		gpmc,cycle2cycle-delay-ns = <0>;
+ 		gpmc,clk-activation-ns = <0>;
+-		gpmc,wait-monitoring-ns = <0>;
+ 		gpmc,wr-access-ns = <40>;
+ 		gpmc,wr-data-mux-bus-ns = <0>;
+ 	};
 diff --git a/arch/arm/boot/dts/am335x-cm-t335.dts b/arch/arm/boot/dts/am335x-cm-t335.dts
-index 5d5fb62..53120b1 100644
+index 53120b1..817b1de 100644
 --- a/arch/arm/boot/dts/am335x-cm-t335.dts
 +++ b/arch/arm/boot/dts/am335x-cm-t335.dts
-@@ -406,7 +406,11 @@ status = "okay";
- 	pinctrl-0 = <&nandflash_pins>;
- 	ranges = <0 0 0x08000000 0x10000000>;	/* CS0: NAND */
- 	nand@0,0 {
--		reg = <0 0 0>; /* CS0, offset 0 */
-+		compatible = "ti,omap2-nand";
-+		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&gpmc>;
-+		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-+			     <1 IRQ_TYPE_NONE>;	/* termcount */
+@@ -411,6 +411,7 @@ status = "okay";
+ 		interrupt-parent = <&gpmc>;
+ 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+ 			     <1 IRQ_TYPE_NONE>;	/* termcount */
++		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
  		ti,nand-ecc-opt = "bch8";
  		ti,elm-id = <&elm>;
  		nand-bus-width = <8>;
+@@ -429,12 +430,9 @@ status = "okay";
+ 		gpmc,access-ns = <64>;
+ 		gpmc,rd-cycle-ns = <82>;
+ 		gpmc,wr-cycle-ns = <82>;
+-		gpmc,wait-on-read = "true";
+-		gpmc,wait-on-write = "true";
+ 		gpmc,bus-turnaround-ns = <0>;
+ 		gpmc,cycle2cycle-delay-ns = <0>;
+ 		gpmc,clk-activation-ns = <0>;
+-		gpmc,wait-monitoring-ns = <0>;
+ 		gpmc,wr-access-ns = <40>;
+ 		gpmc,wr-data-mux-bus-ns = <0>;
+ 		/* MTD partition table */
 diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-index 0d6a68c..4e7a53e6a 100644
+index 4e7a53e6a..516673b 100644
 --- a/arch/arm/boot/dts/am335x-evm.dts
 +++ b/arch/arm/boot/dts/am335x-evm.dts
-@@ -519,7 +519,11 @@
- 	pinctrl-0 = <&nandflash_pins_s0>;
- 	ranges = <0 0 0x08000000 0x1000000>;	/* CS0: 16MB for NAND */
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&gpmc>;
-+		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-+			     <1 IRQ_TYPE_NONE>;	/* termcount */
+@@ -524,6 +524,7 @@
+ 		interrupt-parent = <&gpmc>;
+ 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+ 			     <1 IRQ_TYPE_NONE>;	/* termcount */
++		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
  		ti,nand-ecc-opt = "bch8";
  		ti,elm-id = <&elm>;
  		nand-bus-width = <8>;
+@@ -542,12 +543,9 @@
+ 		gpmc,access-ns = <64>;
+ 		gpmc,rd-cycle-ns = <82>;
+ 		gpmc,wr-cycle-ns = <82>;
+-		gpmc,wait-on-read = "true";
+-		gpmc,wait-on-write = "true";
+ 		gpmc,bus-turnaround-ns = <0>;
+ 		gpmc,cycle2cycle-delay-ns = <0>;
+ 		gpmc,clk-activation-ns = <0>;
+-		gpmc,wait-monitoring-ns = <0>;
+ 		gpmc,wr-access-ns = <40>;
+ 		gpmc,wr-data-mux-bus-ns = <0>;
+ 		/* MTD partition table */
 diff --git a/arch/arm/boot/dts/am335x-igep0033.dtsi b/arch/arm/boot/dts/am335x-igep0033.dtsi
-index 54f1135..4cfe041 100644
+index 4cfe041..df63484 100644
 --- a/arch/arm/boot/dts/am335x-igep0033.dtsi
 +++ b/arch/arm/boot/dts/am335x-igep0033.dtsi
-@@ -11,6 +11,7 @@
- /dts-v1/;
- 
- #include "am33xx.dtsi"
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	cpus {
-@@ -129,7 +130,11 @@
- 	ranges = <0 0 0x08000000 0x1000000>;	/* CS0: 16MB for NAND */
- 
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&gpmc>;
-+		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-+			     <1 IRQ_TYPE_NONE>;	/* termcount */
+@@ -135,6 +135,7 @@
+ 		interrupt-parent = <&gpmc>;
+ 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+ 			     <1 IRQ_TYPE_NONE>;	/* termcount */
++		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
  		nand-bus-width = <8>;
  		ti,nand-ecc-opt = "bch8";
  		gpmc,device-width = <1>;
+@@ -152,12 +153,9 @@
+ 		gpmc,access-ns = <64>;
+ 		gpmc,rd-cycle-ns = <82>;
+ 		gpmc,wr-cycle-ns = <82>;
+-		gpmc,wait-on-read = "true";
+-		gpmc,wait-on-write = "true";
+ 		gpmc,bus-turnaround-ns = <0>;
+ 		gpmc,cycle2cycle-delay-ns = <0>;
+ 		gpmc,clk-activation-ns = <0>;
+-		gpmc,wait-monitoring-ns = <0>;
+ 		gpmc,wr-access-ns = <40>;
+ 		gpmc,wr-data-mux-bus-ns = <0>;
+ 
 diff --git a/arch/arm/boot/dts/am335x-phycore-som.dtsi b/arch/arm/boot/dts/am335x-phycore-som.dtsi
-index c20ae6c..80a5687 100644
+index 80a5687..86f7731 100644
 --- a/arch/arm/boot/dts/am335x-phycore-som.dtsi
 +++ b/arch/arm/boot/dts/am335x-phycore-som.dtsi
-@@ -8,6 +8,7 @@
-  */
- 
- #include "am33xx.dtsi"
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	model = "Phytec AM335x phyCORE";
-@@ -165,7 +166,11 @@
- 	pinctrl-0 = <&nandflash_pins>;
- 	ranges = <0 0 0x08000000 0x1000000>;   /* CS0: NAND */
- 	nandflash: nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&gpmc>;
-+		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-+			     <1 IRQ_TYPE_NONE>;	/* termcount */
+@@ -171,6 +171,7 @@
+ 		interrupt-parent = <&gpmc>;
+ 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+ 			     <1 IRQ_TYPE_NONE>;	/* termcount */
++		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
  		nand-bus-width = <8>;
  		ti,nand-ecc-opt = "bch8";
  		gpmc,device-nand = "true";
-diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-index 04885f9..5797c03 100644
---- a/arch/arm/boot/dts/am33xx.dtsi
-+++ b/arch/arm/boot/dts/am33xx.dtsi
-@@ -865,6 +865,10 @@
- 			gpmc,num-waitpins = <2>;
- 			#address-cells = <2>;
- 			#size-cells = <1>;
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
- 			status = "disabled";
- 		};
+@@ -189,13 +190,10 @@
+ 		gpmc,access-ns = <30>;
+ 		gpmc,rd-cycle-ns = <30>;
+ 		gpmc,wr-cycle-ns = <30>;
+-		gpmc,wait-on-read = "true";
+-		gpmc,wait-on-write = "true";
+ 		gpmc,bus-turnaround-ns = <0>;
+ 		gpmc,cycle2cycle-delay-ns = <50>;
+ 		gpmc,cycle2cycle-diffcsen;
+ 		gpmc,clk-activation-ns = <0>;
+-		gpmc,wait-monitoring-ns = <0>;
+ 		gpmc,wr-access-ns = <30>;
+ 		gpmc,wr-data-mux-bus-ns = <0>;
  
 -- 
 2.1.4
