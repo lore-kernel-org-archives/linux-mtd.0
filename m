@@ -1,24 +1,23 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by casper.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1aWsS8-0003Xo-9Q
- for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 21:19:12 +0000
-From: Roger Quadros <rogerq@ti.com>
-To: <tony@atomide.com>, <computersforpeace@gmail.com>
-CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
- <javier@dowhile0.org>, <fcooper@ti.com>, <nsekhar@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Roger Quadros
- <rogerq@ti.com>, Teresa Remmet <t.remmet@phytec.de>, Ilya Ledvich
- <ilya@compulab.co.il>, Yegor Yefremov <yegorslists@googlemail.com>,
- Rostislav Lisovy <lisovy@gmail.com>,
- Enric Balletbo i Serra <eballetbo@iseebcn.com>
-Subject: [PATCH v5 23/26] ARM: dts: am335x: Provide NAND ready pin
-Date: Fri, 19 Feb 2016 23:15:45 +0200
-Message-ID: <1455916548-3441-24-git-send-email-rogerq@ti.com>
-In-Reply-To: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aWtAi-0005rA-9g
+ for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 22:05:08 +0000
+Date: Fri, 19 Feb 2016 14:04:42 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
+ ezequiel@vanguardiasur.com.ar, javier@dowhile0.org, fcooper@ti.com,
+ nsekhar@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 00/26] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+Message-ID: <20160219220442.GR21202@atomide.com>
 References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1455916548-3441-1-git-send-email-rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,183 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On these boards NAND ready pin status is avilable over
-GPMC_WAIT0 pin.
+* Roger Quadros <rogerq@ti.com> [160219 13:27]:
+> Hi,
+> 
+> @Tony
+> Patches 15 and 24 are new and will need your review.
+> I've modified patch 22 to include the new am335x boards introduced since v4.4.
+> 
+> Patches are based on top of omap-for-v4.6/dt so that the DT changes apply cleanly.
 
-For NAND we don't use GPMC wait pin monitoring but
-get the NAND Ready/Busy# status using GPIOlib.
-GPMC driver provides the WAIT0 pin status over GPIOlib.
+Looks OK to me. Can we merge the dts changes separately? Otherwise
+we will easily end up with tons of conflicts..
 
-Read speed increases from 7869 KiB/ to 8875 KiB/s
-and write speed was unchanged at 5100 KiB/s.
+Regards,
 
-Measured using mtd_speedtest.ko on am335x-evm.
-
-Cc: Teresa Remmet <t.remmet@phytec.de>
-Cc: Ilya Ledvich <ilya@compulab.co.il>
-Cc: Yegor Yefremov <yegorslists@googlemail.com>
-Cc: Rostislav Lisovy <lisovy@gmail.com>
-Cc: Enric Balletbo i Serra <eballetbo@iseebcn.com>
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- arch/arm/boot/dts/am335x-baltos-ir5221.dts | 4 +---
- arch/arm/boot/dts/am335x-chilisom.dtsi     | 4 +---
- arch/arm/boot/dts/am335x-cm-t335.dts       | 4 +---
- arch/arm/boot/dts/am335x-evm.dts           | 4 +---
- arch/arm/boot/dts/am335x-igep0033.dtsi     | 4 +---
- arch/arm/boot/dts/am335x-phycore-som.dtsi  | 4 +---
- 6 files changed, 6 insertions(+), 18 deletions(-)
-
-diff --git a/arch/arm/boot/dts/am335x-baltos-ir5221.dts b/arch/arm/boot/dts/am335x-baltos-ir5221.dts
-index 7b6bcb0..17e92e8 100644
---- a/arch/arm/boot/dts/am335x-baltos-ir5221.dts
-+++ b/arch/arm/boot/dts/am335x-baltos-ir5221.dts
-@@ -241,6 +241,7 @@
- 		interrupt-parent = <&gpmc>;
- 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
- 			     <1 IRQ_TYPE_NONE>;	/* termcount */
-+		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
- 		nand-bus-width = <8>;
- 		ti,nand-ecc-opt = "bch8";
- 		ti,nand-xfer-type = "polled";
-@@ -261,12 +262,9 @@
- 		gpmc,access-ns = <64>;
- 		gpmc,rd-cycle-ns = <82>;
- 		gpmc,wr-cycle-ns = <82>;
--		gpmc,wait-on-read = "true";
--		gpmc,wait-on-write = "true";
- 		gpmc,bus-turnaround-ns = <0>;
- 		gpmc,cycle2cycle-delay-ns = <0>;
- 		gpmc,clk-activation-ns = <0>;
--		gpmc,wait-monitoring-ns = <0>;
- 		gpmc,wr-access-ns = <40>;
- 		gpmc,wr-data-mux-bus-ns = <0>;
- 
-diff --git a/arch/arm/boot/dts/am335x-chilisom.dtsi b/arch/arm/boot/dts/am335x-chilisom.dtsi
-index e8e7d9d..6b8e70a 100644
---- a/arch/arm/boot/dts/am335x-chilisom.dtsi
-+++ b/arch/arm/boot/dts/am335x-chilisom.dtsi
-@@ -224,6 +224,7 @@
- 		interrupt-parent = <&gpmc>;
- 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
- 			     <1 IRQ_TYPE_NONE>;	/* termcount */
-+		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
- 		ti,nand-ecc-opt = "bch8";
- 		ti,elm-id = <&elm>;
- 		nand-bus-width = <8>;
-@@ -242,12 +243,9 @@
- 		gpmc,access-ns = <64>;
- 		gpmc,rd-cycle-ns = <82>;
- 		gpmc,wr-cycle-ns = <82>;
--		gpmc,wait-on-read = "true";
--		gpmc,wait-on-write = "true";
- 		gpmc,bus-turnaround-ns = <0>;
- 		gpmc,cycle2cycle-delay-ns = <0>;
- 		gpmc,clk-activation-ns = <0>;
--		gpmc,wait-monitoring-ns = <0>;
- 		gpmc,wr-access-ns = <40>;
- 		gpmc,wr-data-mux-bus-ns = <0>;
- 	};
-diff --git a/arch/arm/boot/dts/am335x-cm-t335.dts b/arch/arm/boot/dts/am335x-cm-t335.dts
-index 53120b1..817b1de 100644
---- a/arch/arm/boot/dts/am335x-cm-t335.dts
-+++ b/arch/arm/boot/dts/am335x-cm-t335.dts
-@@ -411,6 +411,7 @@ status = "okay";
- 		interrupt-parent = <&gpmc>;
- 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
- 			     <1 IRQ_TYPE_NONE>;	/* termcount */
-+		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
- 		ti,nand-ecc-opt = "bch8";
- 		ti,elm-id = <&elm>;
- 		nand-bus-width = <8>;
-@@ -429,12 +430,9 @@ status = "okay";
- 		gpmc,access-ns = <64>;
- 		gpmc,rd-cycle-ns = <82>;
- 		gpmc,wr-cycle-ns = <82>;
--		gpmc,wait-on-read = "true";
--		gpmc,wait-on-write = "true";
- 		gpmc,bus-turnaround-ns = <0>;
- 		gpmc,cycle2cycle-delay-ns = <0>;
- 		gpmc,clk-activation-ns = <0>;
--		gpmc,wait-monitoring-ns = <0>;
- 		gpmc,wr-access-ns = <40>;
- 		gpmc,wr-data-mux-bus-ns = <0>;
- 		/* MTD partition table */
-diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-index 4e7a53e6a..516673b 100644
---- a/arch/arm/boot/dts/am335x-evm.dts
-+++ b/arch/arm/boot/dts/am335x-evm.dts
-@@ -524,6 +524,7 @@
- 		interrupt-parent = <&gpmc>;
- 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
- 			     <1 IRQ_TYPE_NONE>;	/* termcount */
-+		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
- 		ti,nand-ecc-opt = "bch8";
- 		ti,elm-id = <&elm>;
- 		nand-bus-width = <8>;
-@@ -542,12 +543,9 @@
- 		gpmc,access-ns = <64>;
- 		gpmc,rd-cycle-ns = <82>;
- 		gpmc,wr-cycle-ns = <82>;
--		gpmc,wait-on-read = "true";
--		gpmc,wait-on-write = "true";
- 		gpmc,bus-turnaround-ns = <0>;
- 		gpmc,cycle2cycle-delay-ns = <0>;
- 		gpmc,clk-activation-ns = <0>;
--		gpmc,wait-monitoring-ns = <0>;
- 		gpmc,wr-access-ns = <40>;
- 		gpmc,wr-data-mux-bus-ns = <0>;
- 		/* MTD partition table */
-diff --git a/arch/arm/boot/dts/am335x-igep0033.dtsi b/arch/arm/boot/dts/am335x-igep0033.dtsi
-index 4cfe041..df63484 100644
---- a/arch/arm/boot/dts/am335x-igep0033.dtsi
-+++ b/arch/arm/boot/dts/am335x-igep0033.dtsi
-@@ -135,6 +135,7 @@
- 		interrupt-parent = <&gpmc>;
- 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
- 			     <1 IRQ_TYPE_NONE>;	/* termcount */
-+		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
- 		nand-bus-width = <8>;
- 		ti,nand-ecc-opt = "bch8";
- 		gpmc,device-width = <1>;
-@@ -152,12 +153,9 @@
- 		gpmc,access-ns = <64>;
- 		gpmc,rd-cycle-ns = <82>;
- 		gpmc,wr-cycle-ns = <82>;
--		gpmc,wait-on-read = "true";
--		gpmc,wait-on-write = "true";
- 		gpmc,bus-turnaround-ns = <0>;
- 		gpmc,cycle2cycle-delay-ns = <0>;
- 		gpmc,clk-activation-ns = <0>;
--		gpmc,wait-monitoring-ns = <0>;
- 		gpmc,wr-access-ns = <40>;
- 		gpmc,wr-data-mux-bus-ns = <0>;
- 
-diff --git a/arch/arm/boot/dts/am335x-phycore-som.dtsi b/arch/arm/boot/dts/am335x-phycore-som.dtsi
-index 80a5687..86f7731 100644
---- a/arch/arm/boot/dts/am335x-phycore-som.dtsi
-+++ b/arch/arm/boot/dts/am335x-phycore-som.dtsi
-@@ -171,6 +171,7 @@
- 		interrupt-parent = <&gpmc>;
- 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
- 			     <1 IRQ_TYPE_NONE>;	/* termcount */
-+		rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
- 		nand-bus-width = <8>;
- 		ti,nand-ecc-opt = "bch8";
- 		gpmc,device-nand = "true";
-@@ -189,13 +190,10 @@
- 		gpmc,access-ns = <30>;
- 		gpmc,rd-cycle-ns = <30>;
- 		gpmc,wr-cycle-ns = <30>;
--		gpmc,wait-on-read = "true";
--		gpmc,wait-on-write = "true";
- 		gpmc,bus-turnaround-ns = <0>;
- 		gpmc,cycle2cycle-delay-ns = <50>;
- 		gpmc,cycle2cycle-diffcsen;
- 		gpmc,clk-activation-ns = <0>;
--		gpmc,wait-monitoring-ns = <0>;
- 		gpmc,wr-access-ns = <30>;
- 		gpmc,wr-data-mux-bus-ns = <0>;
- 
--- 
-2.1.4
+Tony
