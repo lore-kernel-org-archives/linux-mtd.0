@@ -1,7 +1,7 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aWsQn-0001JP-2o
- for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 21:17:43 +0000
+ id 1aWsQp-0001Ig-8t
+ for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 21:17:46 +0000
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>
 CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
@@ -9,10 +9,10 @@ CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
  <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Roger Quadros
  <rogerq@ti.com>
-Subject: [PATCH v5 16/26] memory: omap-gpmc: Prevent GPMC_STATUS from being
- accessed via gpmc_regs
-Date: Fri, 19 Feb 2016 23:15:38 +0200
-Message-ID: <1455916548-3441-17-git-send-email-rogerq@ti.com>
+Subject: [PATCH v5 14/26] memory: omap-gpmc: Reserve WAITPIN if needed for
+ WAIT monitoring
+Date: Fri, 19 Feb 2016 23:15:36 +0200
+Message-ID: <1455916548-3441-15-git-send-email-rogerq@ti.com>
 In-Reply-To: <1455916548-3441-1-git-send-email-rogerq@ti.com>
 References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -26,50 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-GPMC_STATUS register is private to the GPMC module and must not be
-accessed directly by NAND driver through the gpmc_regs.
-
-They must use gpmc_omap_get_nand_ops() instead.
+If the device attached to GPMC wants to use the WAIT pin
+for WAIT monitoring then we reserve it internally for
+exclusive use.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- drivers/memory/omap-gpmc.c                   | 2 +-
- include/linux/platform_data/mtd-nand-omap2.h | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/memory/omap-gpmc.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index d958fb6..76ce9fe 100644
+index f67e5695..af2d57f 100644
 --- a/drivers/memory/omap-gpmc.c
 +++ b/drivers/memory/omap-gpmc.c
-@@ -1061,7 +1061,7 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
- {
- 	int i;
+@@ -1881,6 +1881,8 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
+ 	const char *name;
+ 	int ret, cs;
+ 	u32 val;
++	struct gpio_desc *waitpin_desc = NULL;
++	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
  
--	reg->gpmc_status = gpmc_base + GPMC_STATUS;
-+	reg->gpmc_status = NULL;	/* deprecated */
- 	reg->gpmc_nand_command = gpmc_base + GPMC_CS0_OFFSET +
- 				GPMC_CS_NAND_COMMAND + GPMC_CS_SIZE * cs;
- 	reg->gpmc_nand_address = gpmc_base + GPMC_CS0_OFFSET +
-diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-index ff27e5a..7f6de53 100644
---- a/include/linux/platform_data/mtd-nand-omap2.h
-+++ b/include/linux/platform_data/mtd-nand-omap2.h
-@@ -45,7 +45,6 @@ enum omap_ecc {
- };
+ 	if (of_property_read_u32(child, "reg", &cs) < 0) {
+ 		dev_err(&pdev->dev, "%s has no 'reg' property\n",
+@@ -1990,16 +1992,30 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
+ 			goto err;
+ 	}
  
- struct gpmc_nand_regs {
--	void __iomem	*gpmc_status;
- 	void __iomem	*gpmc_nand_command;
- 	void __iomem	*gpmc_nand_address;
- 	void __iomem	*gpmc_nand_data;
-@@ -64,6 +63,8 @@ struct gpmc_nand_regs {
- 	void __iomem	*gpmc_bch_result4[GPMC_BCH_NUM_REMAINDER];
- 	void __iomem	*gpmc_bch_result5[GPMC_BCH_NUM_REMAINDER];
- 	void __iomem	*gpmc_bch_result6[GPMC_BCH_NUM_REMAINDER];
-+	/* Deprecated. Do not use */
-+	void __iomem	*gpmc_status;
- };
++	/* Reserve wait pin if it is required and valid */
++	if (gpmc_s.wait_on_read || gpmc_s.wait_on_write) {
++		unsigned wait_pin = gpmc_s.wait_pin;
++
++		waitpin_desc = gpiochip_request_own_desc(&gpmc->gpio_chip,
++							 wait_pin, "WAITPIN");
++		if (IS_ERR(waitpin_desc)) {
++			dev_err(&pdev->dev, "invalid wait-pin: %d\n", wait_pin);
++			ret = PTR_ERR(waitpin_desc);
++			goto err;
++		}
++	}
++
+ 	gpmc_cs_show_timings(cs, "before gpmc_cs_program_settings");
++
+ 	ret = gpmc_cs_program_settings(cs, &gpmc_s);
+ 	if (ret < 0)
+-		goto err;
++		goto err_cs;
  
- struct omap_nand_platform_data {
+ 	ret = gpmc_cs_set_timings(cs, &gpmc_t, &gpmc_s);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to set gpmc timings for: %s\n",
+ 			child->name);
+-		goto err;
++		goto err_cs;
+ 	}
+ 
+ 	/* Clear limited address i.e. enable A26-A11 */
+@@ -2030,6 +2046,10 @@ err_child_fail:
+ 	dev_err(&pdev->dev, "failed to create gpmc child %s\n", child->name);
+ 	ret = -ENODEV;
+ 
++err_cs:
++	if (waitpin_desc)
++		gpiochip_free_own_desc(waitpin_desc);
++
+ err:
+ 	gpmc_cs_free(cs);
+ 
 -- 
 2.1.4
