@@ -1,7 +1,7 @@
 Received: from comal.ext.ti.com ([198.47.26.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aWsR9-0001S1-Cn
- for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 21:18:12 +0000
+ id 1aWsRE-0001V7-Cw
+ for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 21:18:14 +0000
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>
 CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
@@ -9,9 +9,9 @@ CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
  <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Roger Quadros
  <rogerq@ti.com>
-Subject: [PATCH v5 20/26] ARM: dts: am437x: Fix NAND device nodes
-Date: Fri, 19 Feb 2016 23:15:42 +0200
-Message-ID: <1455916548-3441-21-git-send-email-rogerq@ti.com>
+Subject: [PATCH v5 18/26] ARM: dts: dra7: Fix NAND device nodes.
+Date: Fri, 19 Feb 2016 23:15:40 +0200
+Message-ID: <1455916548-3441-19-git-send-email-rogerq@ti.com>
 In-Reply-To: <1455916548-3441-1-git-send-email-rogerq@ti.com>
 References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -36,17 +36,35 @@ accordingly.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/boot/dts/am4372.dtsi        | 4 ++++
- arch/arm/boot/dts/am437x-cm-t43.dts  | 7 +++++--
- arch/arm/boot/dts/am437x-gp-evm.dts  | 6 +++++-
- arch/arm/boot/dts/am43x-epos-evm.dts | 6 +++++-
- 4 files changed, 19 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/dra7-evm.dts  | 6 +++++-
+ arch/arm/boot/dts/dra7.dtsi     | 4 ++++
+ arch/arm/boot/dts/dra72-evm.dts | 6 +++++-
+ 3 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
-index 38790a32..5b58679 100644
---- a/arch/arm/boot/dts/am4372.dtsi
-+++ b/arch/arm/boot/dts/am4372.dtsi
-@@ -893,6 +893,10 @@
+diff --git a/arch/arm/boot/dts/dra7-evm.dts b/arch/arm/boot/dts/dra7-evm.dts
+index cfc24e5..28ae95e 100644
+--- a/arch/arm/boot/dts/dra7-evm.dts
++++ b/arch/arm/boot/dts/dra7-evm.dts
+@@ -741,9 +741,13 @@
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&nand_flash_x16>;
+-	ranges = <0 0 0 0x01000000>;	/* minimum GPMC partition = 16MB */
++	ranges = <0 0 0x08000000 0x01000000>;	/* minimum GPMC partition = 16MB */
+ 	nand@0,0 {
++		compatible = "ti,omap2-nand";
+ 		reg = <0 0 4>;		/* device IO registers */
++		interrupt-parent = <&gpmc>;
++		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
++			     <1 IRQ_TYPE_NONE>; /* termcount */
+ 		ti,nand-ecc-opt = "bch8";
+ 		ti,elm-id = <&elm>;
+ 		nand-bus-width = <16>;
+diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
+index 8ea153a..1ac3ffdb 100644
+--- a/arch/arm/boot/dts/dra7.dtsi
++++ b/arch/arm/boot/dts/dra7.dtsi
+@@ -1402,6 +1402,10 @@
  			gpmc,num-waitpins = <2>;
  			#address-cells = <2>;
  			#size-cells = <1>;
@@ -57,63 +75,28 @@ index 38790a32..5b58679 100644
  			status = "disabled";
  		};
  
-diff --git a/arch/arm/boot/dts/am437x-cm-t43.dts b/arch/arm/boot/dts/am437x-cm-t43.dts
-index 8677f4c..1600cad 100644
---- a/arch/arm/boot/dts/am437x-cm-t43.dts
-+++ b/arch/arm/boot/dts/am437x-cm-t43.dts
-@@ -146,10 +146,13 @@
- 	pinctrl-0 = <&nand_flash_x8>;
- 	ranges = <0 0 0x08000000 0x1000000>;
- 	nand@0,0 {
--		reg = <0 0 0>;
-+		compatible = "ti,omap2-nand";
-+		reg = <0 0 4>;		/* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&gpmc>;
-+		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-+			     <1 IRQ_TYPE_NONE>;	/* termcount */
- 		ti,nand-ecc-opt = "bch8";
- 		ti,elm-id = <&elm>;
--
- 		nand-bus-width = <8>;
- 		gpmc,device-width = <1>;
- 		gpmc,sync-clk-ps = <0>;
-diff --git a/arch/arm/boot/dts/am437x-gp-evm.dts b/arch/arm/boot/dts/am437x-gp-evm.dts
-index 64d4332..7081b88 100644
---- a/arch/arm/boot/dts/am437x-gp-evm.dts
-+++ b/arch/arm/boot/dts/am437x-gp-evm.dts
-@@ -812,9 +812,13 @@
+diff --git a/arch/arm/boot/dts/dra72-evm.dts b/arch/arm/boot/dts/dra72-evm.dts
+index 00b1200..6cf211b 100644
+--- a/arch/arm/boot/dts/dra72-evm.dts
++++ b/arch/arm/boot/dts/dra72-evm.dts
+@@ -492,13 +492,17 @@
  	status = "okay";
  	pinctrl-names = "default";
- 	pinctrl-0 = <&nand_flash_x8>;
+ 	pinctrl-0 = <&nand_default>;
 -	ranges = <0 0 0 0x01000000>;	/* minimum GPMC partition = 16MB */
-+	ranges = <0 0 0x08000000 0x01000000>;	/* CS0 space. Min partition = 16MB */
++	ranges = <0 0 0x08000000 0x01000000>;	/* minimum GPMC partition = 16MB */
  	nand@0,0 {
+ 		/* To use NAND, DIP switch SW5 must be set like so:
+ 		 * SW5.1 (NAND_SELn) = ON (LOW)
+ 		 * SW5.9 (GPMC_WPN) = OFF (HIGH)
+ 		 */
 +		compatible = "ti,omap2-nand";
  		reg = <0 0 4>;		/* device IO registers */
 +		interrupt-parent = <&gpmc>;
 +		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
 +			     <1 IRQ_TYPE_NONE>;	/* termcount */
- 		ti,nand-ecc-opt = "bch16";
+ 		ti,nand-ecc-opt = "bch8";
  		ti,elm-id = <&elm>;
- 		nand-bus-width = <8>;
-diff --git a/arch/arm/boot/dts/am43x-epos-evm.dts b/arch/arm/boot/dts/am43x-epos-evm.dts
-index 746fd2b..12b08cf 100644
---- a/arch/arm/boot/dts/am43x-epos-evm.dts
-+++ b/arch/arm/boot/dts/am43x-epos-evm.dts
-@@ -561,9 +561,13 @@
- 	status = "okay";	/* Disable QSPI when enabling GPMC (NAND) */
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&nand_flash_x8>;
--	ranges = <0 0 0x08000000 0x1000000>;	/* CS0: 16MB for NAND */
-+	ranges = <0 0 0x08000000 0x01000000>;	/* CS0 space. Min partition = 16MB */
- 	nand@0,0 {
-+		compatible = "ti,omap2-nand";
- 		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		interrupt-parent = <&gpmc>;
-+		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-+			     <1 IRQ_TYPE_NONE>;	/* termcount */
- 		ti,nand-ecc-opt = "bch16";
- 		ti,elm-id = <&elm>;
- 		nand-bus-width = <8>;
+ 		nand-bus-width = <16>;
 -- 
 2.1.4
