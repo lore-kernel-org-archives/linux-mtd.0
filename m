@@ -1,7 +1,7 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aWsQG-00019v-1Z
- for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 21:17:09 +0000
+ id 1aWsQJ-0001AY-2d
+ for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 21:17:12 +0000
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>
 CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
@@ -9,10 +9,10 @@ CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
  <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Roger Quadros
  <rogerq@ti.com>
-Subject: [PATCH v5 05/26] memory: omap-gpmc: Add GPMC-NAND ops to get
- writebufferempty status
-Date: Fri, 19 Feb 2016 23:15:27 +0200
-Message-ID: <1455916548-3441-6-git-send-email-rogerq@ti.com>
+Subject: [PATCH v5 06/26] mtd: nand: omap2: Switch to using GPMC-NAND ops for
+ writebuffer empty check
+Date: Fri, 19 Feb 2016 23:15:28 +0200
+Message-ID: <1455916548-3441-7-git-send-email-rogerq@ti.com>
 In-Reply-To: <1455916548-3441-1-git-send-email-rogerq@ti.com>
 References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -26,45 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is needed by OMAP NAND driver to poll the empty status
-of the writebuffer.
+Instead of accessing the gpmc_status register directly start
+using the gpmc_nand_ops->nand_writebuffer_empty() helper
+to check write buffer empty status.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- drivers/memory/omap-gpmc.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/omap2.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index c2f7320..695be32 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -81,6 +81,8 @@
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index eb18c04..088ff62 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -291,14 +291,13 @@ static void omap_write_buf8(struct mtd_info *mtd, const u_char *buf, int len)
+ {
+ 	struct omap_nand_info *info = mtd_to_omap(mtd);
+ 	u_char *p = (u_char *)buf;
+-	u32	status = 0;
++	bool status;
  
- #define GPMC_CONFIG_LIMITEDADDRESS		BIT(1)
- 
-+#define GPMC_STATUS_EMPTYWRITEBUFFERSTATUS	BIT(0)
-+
- #define	GPMC_CONFIG2_CSEXTRADELAY		BIT(7)
- #define	GPMC_CONFIG3_ADVEXTRADELAY		BIT(7)
- #define	GPMC_CONFIG4_OEEXTRADELAY		BIT(7)
-@@ -1098,7 +1100,17 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
+ 	while (len--) {
+ 		iowrite8(*p++, info->nand.IO_ADDR_W);
+ 		/* wait until buffer is available for write */
+ 		do {
+-			status = readl(info->reg.gpmc_status) &
+-					STATUS_BUFF_EMPTY;
++			status = info->ops->nand_writebuffer_empty();
+ 		} while (!status);
  	}
  }
+@@ -326,7 +325,7 @@ static void omap_write_buf16(struct mtd_info *mtd, const u_char * buf, int len)
+ {
+ 	struct omap_nand_info *info = mtd_to_omap(mtd);
+ 	u16 *p = (u16 *) buf;
+-	u32	status = 0;
++	bool status;
+ 	/* FIXME try bursts of writesw() or DMA ... */
+ 	len >>= 1;
  
--static struct gpmc_nand_ops nand_ops;
-+static bool gpmc_nand_writebuffer_empty(void)
-+{
-+	if (gpmc_read_reg(GPMC_STATUS) & GPMC_STATUS_EMPTYWRITEBUFFERSTATUS)
-+		return true;
-+
-+	return false;
-+}
-+
-+static struct gpmc_nand_ops nand_ops = {
-+	.nand_writebuffer_empty = gpmc_nand_writebuffer_empty,
-+};
- 
- /**
-  * gpmc_omap_get_nand_ops - Get the GPMC NAND interface
+@@ -334,8 +333,7 @@ static void omap_write_buf16(struct mtd_info *mtd, const u_char * buf, int len)
+ 		iowrite16(*p++, info->nand.IO_ADDR_W);
+ 		/* wait until buffer is available for write */
+ 		do {
+-			status = readl(info->reg.gpmc_status) &
+-					STATUS_BUFF_EMPTY;
++			status = info->ops->nand_writebuffer_empty();
+ 		} while (!status);
+ 	}
+ }
 -- 
 2.1.4
