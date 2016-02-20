@@ -1,23 +1,15 @@
-Received: from muru.com ([72.249.23.125])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aWtAi-0005rA-9g
- for linux-mtd@lists.infradead.org; Fri, 19 Feb 2016 22:05:08 +0000
-Date: Fri, 19 Feb 2016 14:04:42 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- ezequiel@vanguardiasur.com.ar, javier@dowhile0.org, fcooper@ti.com,
- nsekhar@ti.com, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 00/26] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-Message-ID: <20160219220442.GR21202@atomide.com>
-References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aXBC7-0007b9-9T
+ for linux-mtd@lists.infradead.org; Sat, 20 Feb 2016 17:19:48 +0000
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: [PATCH] mtd: onenand: fix deadlock in onenand_block_markbad
+Date: Sat, 20 Feb 2016 19:19:09 +0200
+Message-Id: <1455988749-14563-1-git-send-email-aaro.koskinen@iki.fi>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +19,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [160219 13:27]:
-> Hi,
-> 
-> @Tony
-> Patches 15 and 24 are new and will need your review.
-> I've modified patch 22 to include the new am335x boards introduced since v4.4.
-> 
-> Patches are based on top of omap-for-v4.6/dt so that the DT changes apply cleanly.
+Commit 5942ddbc500d ("mtd: introduce mtd_block_markbad interface")
+incorrectly changed onenand_block_markbad() to call mtd_block_markbad
+instead of onenand_chip's block_markbad function. As a result the function
+will now recurse and deadlock. Fix by reverting the change.
 
-Looks OK to me. Can we merge the dts changes separately? Otherwise
-we will easily end up with tons of conflicts..
+Fixes: 5942ddbc500d ("mtd: introduce mtd_block_markbad interface")
+Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+---
+ drivers/mtd/onenand/onenand_base.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Regards,
-
-Tony
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 43b3392..5bd3da5 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -2599,6 +2599,7 @@ static int onenand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+  */
+ static int onenand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ {
++	struct onenand_chip *this = mtd->priv;
+ 	int ret;
+ 
+ 	ret = onenand_block_isbad(mtd, ofs);
+@@ -2610,7 +2611,7 @@ static int onenand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	}
+ 
+ 	onenand_get_device(mtd, FL_WRITING);
+-	ret = mtd_block_markbad(mtd, ofs);
++	this->block_markbad(mtd, ofs);
+ 	onenand_release_device(mtd);
+ 	return ret;
+ }
+-- 
+2.4.0
