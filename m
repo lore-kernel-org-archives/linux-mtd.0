@@ -1,19 +1,14 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXOZi-00084Y-E7
- for linux-mtd@lists.infradead.org; Sun, 21 Feb 2016 07:37:03 +0000
-Date: Sun, 21 Feb 2016 08:36:35 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: Multiple NANDs on non contiguous chip selects, how?
-Message-ID: <20160221083635.4660c3d0@bbrezillon>
-In-Reply-To: <20160215122251.GE19372@pengutronix.de>
-References: <20160215122251.GE19372@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ id 1aXQbq-0006J4-5P
+ for linux-mtd@lists.infradead.org; Sun, 21 Feb 2016 09:47:23 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: dedekind1@gmail.com, adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH] ubifs: Implement O_TMPFILE
+Date: Sun, 21 Feb 2016 10:46:44 +0100
+Message-Id: <1456048004-20365-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +18,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sacha,
+This patchs adds O_TMPFILE support to UBIFS.
 
-On Mon, 15 Feb 2016 13:22:52 +0100
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/dir.c | 71 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
-> Hi all,
-> 
-> I have a i.MX6 board here which has two NAND chips connected to CS0 and
-> CS2 on the same controller. The current code in nand_scan_ident iterates
-> over the chip selects and bails out when there's nothing found on a chip
-> select. This means the current code never finds the chip on CS2 since it
-> already bails out after probing the empty CS1.
-> 
-> Any preferences how this should be handled? I could implement a i.MX6
-> specific mapping function, possibly initialized from the device tree, to
-> map the real chip selects to contiguous chip selects for the NAND layer.
-> 
-> Normally such a function should not be needed since we could autodetect
-> if a chip select has a device connected or not, so the NAND layer could
-> handle this without driver intervention, but is that what we want?
-> 
-> Any ideas/opinions?
-
-This is a common mistake, caused by a poor documentation of what
-nand->numchips and the chip argument passed to ->select_chip() are
-representing. I'm not even sure I have the correct answer, but here is
-my understanding (and last time I discussed it with Brian he seemed to
-agree).
-
-'struct nand_chip' is representing a single NAND chip not the NAND
-controller, so, if you have 2 chips on your board, then your NAND
-controller driver should instantiate 2 nand chips. and register both of
-them to the NAND framework.
-The only case where you'll need to specify numchips > 1 is when you
-have a NAND chip stacking several dies, each of them accessible with
-its own CS line.
-In this case, the mapping between the controller CS line and the chip
-CS line should be done by the NAND controller driver.
-If you take your particular imx6 case, the mapping between the
-chip and controller CS lines should be defined somewhere in the DT.
-
-You can have a look at this binding [1] if you need an example, and if
-I extend it for the multi-die case, it gives something like that:
-
-nfc: nand@01c03000 {
-	compatible = "allwinner,sun4i-a10-nand";
-
-	/* ... */
-	#address-cells = <1>;
-	#size-cells = <0>;
-
-	nand@0 {
-		reg = <0 2>; /* CS0 and CS2 */
-		allwinner,rb = <0 2>; /* RB0 and RB2 */
-		/* ... */
-	};
-
-	nand@1 {
-		reg = <1>; /* CS1 */
-		allwinner,rb = <1>; /* RB0 and RB2 */
-		/* ... */
-	};
-};
-
-I hope this helps.
-
-Best Regards,
-
-Boris
-
-[1]http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
-
-
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 795992a..660eefe 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -301,6 +301,76 @@ out_budg:
+ 	return err;
+ }
+ 
++static int ubifs_tmpfile(struct inode *dir, struct dentry *dentry,
++			 umode_t mode)
++{
++	struct inode *inode;
++	struct ubifs_info *c = dir->i_sb->s_fs_info;
++	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1};
++	struct ubifs_budget_req ino_req = { .dirtied_ino = 1 };
++	struct ubifs_inode *ui, *dir_ui = ubifs_inode(dir);
++	int err, instantiated = 0;
++
++	/*
++	 * Budget request settings: new dirty inode, new direntry,
++	 * budget for dirtied inode will be released via ubifs_evict_inode().
++	 */
++
++	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
++		dentry, mode, dir->i_ino);
++
++	err = ubifs_budget_space(c, &req);
++	if (err)
++		return err;
++
++	err = ubifs_budget_space(c, &ino_req);
++	if (err) {
++		ubifs_release_budget(c, &req);
++		return err;
++	}
++
++	inode = ubifs_new_inode(c, dir, mode);
++	if (IS_ERR(inode)) {
++		err = PTR_ERR(inode);
++		goto out_budg;
++	}
++	ui = ubifs_inode(inode);
++
++	err = ubifs_init_security(dir, inode, &dentry->d_name);
++	if (err)
++		goto out_inode;
++
++	mutex_lock(&ui->ui_mutex);
++	insert_inode_hash(inode);
++	d_tmpfile(dentry, inode);
++	ubifs_assert(ui->dirty);
++	instantiated = 1;
++	mutex_unlock(&ui->ui_mutex);
++
++	mutex_lock(&dir_ui->ui_mutex);
++	err = ubifs_jnl_update(c, dir, &dentry->d_name, inode, 1, 0);
++	if (err)
++		goto out_cancel;
++	mutex_unlock(&dir_ui->ui_mutex);
++
++	ubifs_release_budget(c, &req);
++
++	return 0;
++
++out_cancel:
++	mutex_unlock(&dir_ui->ui_mutex);
++out_inode:
++	make_bad_inode(inode);
++	if (!instantiated)
++		iput(inode);
++out_budg:
++	ubifs_release_budget(c, &req);
++	if (!instantiated)
++		ubifs_release_budget(c, &ino_req);
++	ubifs_err(c, "cannot create temporary file, error %d", err);
++	return err;
++}
++
+ /**
+  * vfs_dent_type - get VFS directory entry type.
+  * @type: UBIFS directory entry type
+@@ -1189,6 +1259,7 @@ const struct inode_operations ubifs_dir_inode_operations = {
+ #ifdef CONFIG_UBIFS_ATIME_SUPPORT
+ 	.update_time = ubifs_update_time,
+ #endif
++	.tmpfile     = ubifs_tmpfile,
+ };
+ 
+ const struct file_operations ubifs_dir_operations = {
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.5.0
