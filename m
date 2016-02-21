@@ -1,15 +1,19 @@
-Received: from emh04.mail.saunalahti.fi ([62.142.5.110])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXE8W-0005H7-6x
- for linux-mtd@lists.infradead.org; Sat, 20 Feb 2016 20:28:18 +0000
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-Subject: [PATCH v2] mtd: onenand: fix deadlock in onenand_block_markbad
-Date: Sat, 20 Feb 2016 22:27:48 +0200
-Message-Id: <1456000068-8862-1-git-send-email-aaro.koskinen@iki.fi>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aXOZi-00084Y-E7
+ for linux-mtd@lists.infradead.org; Sun, 21 Feb 2016 07:37:03 +0000
+Date: Sun, 21 Feb 2016 08:36:35 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: Multiple NANDs on non contiguous chip selects, how?
+Message-ID: <20160221083635.4660c3d0@bbrezillon>
+In-Reply-To: <20160215122251.GE19372@pengutronix.de>
+References: <20160215122251.GE19372@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 5942ddbc500d ("mtd: introduce mtd_block_markbad interface")
-incorrectly changed onenand_block_markbad() to call mtd_block_markbad
-instead of onenand_chip's block_markbad function. As a result the function
-will now recurse and deadlock. Fix by reverting the change.
+Hi Sacha,
 
-Fixes: 5942ddbc500d ("mtd: introduce mtd_block_markbad interface")
-Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
----
+On Mon, 15 Feb 2016 13:22:52 +0100
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-	v2: Don't ignore the return value.
+> Hi all,
+> 
+> I have a i.MX6 board here which has two NAND chips connected to CS0 and
+> CS2 on the same controller. The current code in nand_scan_ident iterates
+> over the chip selects and bails out when there's nothing found on a chip
+> select. This means the current code never finds the chip on CS2 since it
+> already bails out after probing the empty CS1.
+> 
+> Any preferences how this should be handled? I could implement a i.MX6
+> specific mapping function, possibly initialized from the device tree, to
+> map the real chip selects to contiguous chip selects for the NAND layer.
+> 
+> Normally such a function should not be needed since we could autodetect
+> if a chip select has a device connected or not, so the NAND layer could
+> handle this without driver intervention, but is that what we want?
+> 
+> Any ideas/opinions?
 
-	v1: http://lists.infradead.org/pipermail/linux-mtd/2016-February/065582.html
+This is a common mistake, caused by a poor documentation of what
+nand->numchips and the chip argument passed to ->select_chip() are
+representing. I'm not even sure I have the correct answer, but here is
+my understanding (and last time I discussed it with Brian he seemed to
+agree).
 
- drivers/mtd/onenand/onenand_base.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+'struct nand_chip' is representing a single NAND chip not the NAND
+controller, so, if you have 2 chips on your board, then your NAND
+controller driver should instantiate 2 nand chips. and register both of
+them to the NAND framework.
+The only case where you'll need to specify numchips > 1 is when you
+have a NAND chip stacking several dies, each of them accessible with
+its own CS line.
+In this case, the mapping between the controller CS line and the chip
+CS line should be done by the NAND controller driver.
+If you take your particular imx6 case, the mapping between the
+chip and controller CS lines should be defined somewhere in the DT.
 
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 43b3392..652d018 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -2599,6 +2599,7 @@ static int onenand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
-  */
- static int onenand_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
-+	struct onenand_chip *this = mtd->priv;
- 	int ret;
- 
- 	ret = onenand_block_isbad(mtd, ofs);
-@@ -2610,7 +2611,7 @@ static int onenand_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	}
- 
- 	onenand_get_device(mtd, FL_WRITING);
--	ret = mtd_block_markbad(mtd, ofs);
-+	ret = this->block_markbad(mtd, ofs);
- 	onenand_release_device(mtd);
- 	return ret;
- }
+You can have a look at this binding [1] if you need an example, and if
+I extend it for the multi-die case, it gives something like that:
+
+nfc: nand@01c03000 {
+	compatible = "allwinner,sun4i-a10-nand";
+
+	/* ... */
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	nand@0 {
+		reg = <0 2>; /* CS0 and CS2 */
+		allwinner,rb = <0 2>; /* RB0 and RB2 */
+		/* ... */
+	};
+
+	nand@1 {
+		reg = <1>; /* CS1 */
+		allwinner,rb = <1>; /* RB0 and RB2 */
+		/* ... */
+	};
+};
+
+I hope this helps.
+
+Best Regards,
+
+Boris
+
+[1]http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+
+
 -- 
-2.4.0
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
