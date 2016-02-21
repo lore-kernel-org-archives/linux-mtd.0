@@ -1,18 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXTVN-0005mk-0r
- for linux-mtd@lists.infradead.org; Sun, 21 Feb 2016 12:52:54 +0000
-From: Markus Pargmann <mpa@pengutronix.de>
-To: Han Xu <han.xu@nxp.com>, David Woodhouse <dwmw2@infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie.huang@intel.com>,
- Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
- Markus Pargmann <mpa@pengutronix.de>
-Subject: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-Date: Sun, 21 Feb 2016 13:52:06 +0100
-Message-Id: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
+ id 1aXUz6-0000K2-0y
+ for linux-mtd@lists.infradead.org; Sun, 21 Feb 2016 14:27:41 +0000
+Received: by mail-ob0-x22c.google.com with SMTP id gc3so144204124obb.3
+ for <linux-mtd@lists.infradead.org>; Sun, 21 Feb 2016 06:27:19 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CAD1M0635nyHDL6vo+KUWy-FJKU=VSHPpeWyj_aMA06wQNw1t0w@mail.gmail.com>
+References: <CAD1M0635nyHDL6vo+KUWy-FJKU=VSHPpeWyj_aMA06wQNw1t0w@mail.gmail.com>
+Date: Sun, 21 Feb 2016 15:27:18 +0100
+Message-ID: <CAFLxGvx3Xe3pYPd=4sQR-_3_x=J9RsF7uhYpVK8EtbrcuV0kZA@mail.gmail.com>
+Subject: Re: ubifs+overlayfs
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Pushpal Sidhu <psidhu@gateworks.com>
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,102 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ECC is only calculated for written pages. As erased pages are not
-actively written the ECC is always invalid. For this purpose the
-Hardware BCH unit is able to check for erased pages and does not raise
-an ECC error in this case. This behaviour can be influenced using the
-BCH_MODE register which sets the number of allowed bitflips in an erased
-page. Unfortunately the unit is not capable of fixing the bitflips in
-memory.
+Cc'ing linux-mtd.
 
-To avoid complete software checks for erased pages, we can simply check
-buffers with uncorrectable ECC errors because we know that any erased
-page with errors is uncorrectable by the BCH unit.
+On Sat, Feb 20, 2016 at 1:02 AM, Pushpal Sidhu <psidhu@gateworks.com> wrote:
+> It seems that overlayfs requires RENAME_WHITEOUT and RENAME_EXCHANGE.
+> However, these two flags aren't currently supported in ubifs (or
+> anything other than ext4, f2fs, and xfs). This causes any atomic
+> renames to fail (e.g. using 'mv' command).
 
-This patch adds the generic nand_check_erased_ecc_chunk() to gpmi-nand
-to correct erased pages. To have the valid data in the buffer before
-using them, this patch moves the read_page_swap_end() call before the
-ECC status checking for-loop.
+Hmm, right. I always thought overlayfs does checks at mount time.
+But apparently I was wrong.
+Thanks for pointing this out.
 
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 49 ++++++++++++++++++++++++++++++----
- 1 file changed, 44 insertions(+), 5 deletions(-)
+> I'm currently trying to implement these flags, but I'm having some
+> issues as I'm pretty vanilla when it comes to implementation details
+> on ubifs. I'm taking inspiration from patches [1] and [2], but I'm
+> kind of coming up short. Is there anyone currently working on this? If
+> not, I would certainly appreciate any advice for implementing these
+> features.
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 235ddcb58f39..ce5a21252102 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1035,14 +1035,58 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	/* Loop over status bytes, accumulating ECC status. */
- 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
- 
-+	read_page_swap_end(this, buf, nfc_geo->payload_size,
-+			   this->payload_virt, this->payload_phys,
-+			   nfc_geo->payload_size,
-+			   payload_virt, payload_phys);
-+
- 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
- 		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
- 			continue;
- 
- 		if (*status == STATUS_UNCORRECTABLE) {
-+			int flips;
-+
-+			/*
-+			 * The ECC hardware has an uncorrectable ECC status
-+			 * code in case we have bitflips in an erased page. As
-+			 * nothing was written into this subpage the ECC is
-+			 * obviously wrong and we can not trust it. We assume
-+			 * at this point that we are reading an erased page and
-+			 * try to correct the bitflips in buffer up to
-+			 * ecc_strength bitflips. If this is a page with random
-+			 * data, we exceed this number of bitflips and have a
-+			 * ECC failure. Otherwise we use the corrected buffer.
-+			 */
-+			if (i == 0) {
-+				/* The first block includes metadata */
-+				flips = nand_check_erased_ecc_chunk(
-+						buf + i * nfc_geo->ecc_chunk_size,
-+						nfc_geo->ecc_chunk_size,
-+						NULL, 0,
-+						auxiliary_virt,
-+						nfc_geo->metadata_size,
-+						nfc_geo->ecc_strength);
-+			} else {
-+				flips = nand_check_erased_ecc_chunk(
-+						buf + i * nfc_geo->ecc_chunk_size,
-+						nfc_geo->ecc_chunk_size,
-+						NULL, 0,
-+						NULL, 0,
-+						nfc_geo->ecc_strength);
-+			}
-+
-+			if (flips > 0) {
-+				max_bitflips = max_t(unsigned int, max_bitflips,
-+						     flips);
-+				mtd->ecc_stats.corrected += flips;
-+				continue;
-+			}
-+
- 			mtd->ecc_stats.failed++;
- 			continue;
- 		}
-+
- 		mtd->ecc_stats.corrected += *status;
- 		max_bitflips = max_t(unsigned int, max_bitflips, *status);
- 	}
-@@ -1062,11 +1106,6 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 		chip->oob_poi[0] = ((uint8_t *) auxiliary_virt)[0];
- 	}
- 
--	read_page_swap_end(this, buf, nfc_geo->payload_size,
--			this->payload_virt, this->payload_phys,
--			nfc_geo->payload_size,
--			payload_virt, payload_phys);
--
- 	return max_bitflips;
- }
- 
+Not to my knowledge. But you can use my O_TMPFILE patch as start.
+See linux-mtd mailinglist.
+If you have questions, just ask.
+As using overlayfs is common on embedded stuff we definitely need that on UBIFS.
+Just in case I'm putting that also on my todo list.
+
+> What I'm doing: I'm attempting to create a 'whiteout' object from
+> within the ubifs_rename function. However, I noticed that it calls
+> ubifs_jnl_rename, which is where I believe I should try to implement
+> this. I haven't touched RENAME_EXCHANGE yet.
+>
+> [1] https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-4.4/110-jffs2-use-.rename2-and-add-RENAME_WHITEOUT-support.patch
+> [2] https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-4.4/111-jffs2-add-RENAME_EXCHANGE-support.patch
+
+Hmm, these patches seem wrong to me.
+Unless I'm very mistaken it looks like every whiteout creates an busy
+orphaned inode.
+
 -- 
-2.7.0
+Thanks,
+//richard
