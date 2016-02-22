@@ -1,14 +1,16 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXquh-0001PD-3J
- for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 13:52:45 +0000
+ id 1aXquk-0001WH-Bh
+ for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 13:52:46 +0000
 From: David Gstir <david@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: richard@nod.at,
 	David Gstir <david@sigma-star.at>
-Subject: [PATCH 1/3] ubi: tests: Replace variable-length array with malloc()
-Date: Mon, 22 Feb 2016 14:52:03 +0100
-Message-Id: <1456149125-24067-1-git-send-email-david@sigma-star.at>
+Subject: [PATCH 3/3] ubi: tests: Speedup io_paral by using rand_r()
+Date: Mon, 22 Feb 2016 14:52:05 +0100
+Message-Id: <1456149125-24067-3-git-send-email-david@sigma-star.at>
+In-Reply-To: <1456149125-24067-1-git-send-email-david@sigma-star.at>
+References: <1456149125-24067-1-git-send-email-david@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,242 +20,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-io_read and io_update of mtd-utils use variable-length arrays for test data.
-Since this could result in allocating many megabytes using alloca(), switch
-to malloc().
+From: Richard Weinberger <richard@nod.at>
 
+rand() is not thread safe, but glibc seems to use a shared state which is
+protected by a mutex. io_paral spawns a few threads and they call rand()
+more or less in parallel, which causes heavy lock contention. That
+makes the test extremely slow on some setups.
+
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: David Gstir <david@sigma-star.at>
 ---
- tests/ubi-tests/io_read.c   | 26 ++++++++++++++++++++------
- tests/ubi-tests/io_update.c | 28 +++++++++++++++++++++-------
- tests/ubi-tests/rsvol.c     | 33 ++++++++++++++++++++-------------
- 3 files changed, 61 insertions(+), 26 deletions(-)
+ tests/ubi-tests/io_paral.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/tests/ubi-tests/io_read.c b/tests/ubi-tests/io_read.c
-index 673624f..386291e 100644
---- a/tests/ubi-tests/io_read.c
-+++ b/tests/ubi-tests/io_read.c
-@@ -161,8 +161,18 @@ remove:
- static int test_read3(const struct ubi_vol_info *vol_info, int len, off_t off)
- {
- 	int i, len1;
--	unsigned char ck_buf[len], buf[len];
-+	unsigned char *ck_buf = NULL;
-+	unsigned char *buf = NULL;
- 	off_t new_off;
-+	int ret = -1;
-+
-+	ck_buf = malloc(len);
-+	buf = malloc(len);
-+
-+	if (!ck_buf || !buf) {
-+		failed("malloc");
-+		goto out;
-+	}
- 
- 	if (off + len > vol_info->data_bytes)
- 		len1 = vol_info->data_bytes - off;
-@@ -172,12 +182,12 @@ static int test_read3(const struct ubi_vol_info *vol_info, int len, off_t off)
- 	if (lseek(fd, off, SEEK_SET) != off) {
- 		failed("seek");
- 		errorm("len = %d", len);
--		return -1;
-+		goto out;
- 	}
- 	if (read(fd, buf, len) != len1) {
- 		failed("read");
- 		errorm("len = %d", len);
--		return -1;
-+		goto out;
- 	}
- 
- 	new_off = lseek(fd, 0, SEEK_CUR);
-@@ -187,7 +197,7 @@ static int test_read3(const struct ubi_vol_info *vol_info, int len, off_t off)
- 		else
- 			errorm("read %d bytes from %lld, but resulting "
- 			       "offset is %lld", len1, (long long) off, (long long) new_off);
--		return -1;
-+		goto out;
- 	}
- 
- 	for (i = 0; i < len1; i++)
-@@ -197,10 +207,14 @@ static int test_read3(const struct ubi_vol_info *vol_info, int len, off_t off)
- 		errorm("incorrect data read from offset %lld",
- 		       (long long)off);
- 		errorm("len = %d", len);
--		return -1;
-+		goto out;
- 	}
- 
--	return 0;
-+	ret = 0;
-+out:
-+	free(buf);
-+	free(ck_buf);
-+	return ret;
- }
- 
- /*
-diff --git a/tests/ubi-tests/io_update.c b/tests/ubi-tests/io_update.c
-index 28b5570..2e9969e 100644
---- a/tests/ubi-tests/io_update.c
-+++ b/tests/ubi-tests/io_update.c
-@@ -76,8 +76,22 @@ static int test_update1(struct ubi_vol_info *vol_info, int leb_change)
- 					     leb_change ? dev_info.min_io_size * 2
- 					     		: vol_info->leb_size);
- 	char vol_node[strlen(UBI_VOLUME_PATTERN) + 100];
--	unsigned char buf[total_len];
-+	unsigned char *buf = NULL;
-+	unsigned char *buf1 = NULL;
- 	int fd, i, j;
-+	int ret1 = -1;
-+
-+	buf = malloc(total_len);
-+	if (!buf) {
-+		failed("malloc");
-+		goto out;
-+	}
-+
-+	buf1 = malloc(total_len);
-+	if (!buf1) {
-+		failed("malloc");
-+		goto out;
-+	}
- 
- 	sprintf(vol_node, UBI_VOLUME_PATTERN, dev_info.dev_num,
- 		vol_info->vol_id);
-@@ -86,14 +100,13 @@ static int test_update1(struct ubi_vol_info *vol_info, int leb_change)
- 	if (fd == -1) {
- 		failed("open");
- 		errorm("cannot open \"%s\"\n", node);
--		return -1;
-+		goto out;
- 	}
- 
- 	for (i = 0; i < SEQ_SZ; i++) {
- 		int ret, stop = 0, len = 0;
- 		off_t off = 0;
- 		long long test_len;
--		unsigned char buf1[total_len];
- 
- 		/*
- 		 * test_len is LEB size (if we test atomic LEB change) or
-@@ -189,12 +202,13 @@ static int test_update1(struct ubi_vol_info *vol_info, int leb_change)
- 		}
- 	}
- 
--	close(fd);
--	return 0;
--
-+	ret1 = 0;
- close:
- 	close(fd);
--	return -1;
-+out:
-+	free(buf);
-+	free(buf1);
-+	return ret1;
- }
- 
- /**
-diff --git a/tests/ubi-tests/rsvol.c b/tests/ubi-tests/rsvol.c
-index 732bcaa..6bfade9 100644
---- a/tests/ubi-tests/rsvol.c
-+++ b/tests/ubi-tests/rsvol.c
-@@ -107,32 +107,39 @@ static int test_rsvol1(struct ubi_vol_info *vol_info)
- 	long long bytes;
- 	struct ubi_vol_info vol_info1;
- 	char vol_node[strlen(UBI_VOLUME_PATTERN) + 100];
--	unsigned char buf[vol_info->rsvd_bytes];
-+	unsigned char *buf;
- 	int fd, i, ret;
-+	int ret1 = -1;
-+
-+	buf = malloc(vol_info->rsvd_bytes);
-+	if (!buf) {
-+		failed("malloc");
-+		goto out;
-+	}
- 
- 	/* Make the volume smaller and check basic volume I/O */
- 	bytes = vol_info->rsvd_bytes - vol_info->leb_size;
- 	if (ubi_rsvol(libubi, node, vol_info->vol_id, bytes - 1)) {
- 		failed("ubi_rsvol");
--		return -1;
-+		goto out;
- 	}
- 
- 	if (ubi_get_vol_info1(libubi, vol_info->dev_num, vol_info->vol_id,
- 			     &vol_info1)) {
- 		failed("ubi_get_vol_info");
--		return -1;
-+		goto out;
- 	}
- 
- 	if (vol_info1.rsvd_bytes != bytes) {
- 		errorm("rsvd_bytes %lld, must be %lld",
- 		       vol_info1.rsvd_bytes, bytes);
--		return -1;
-+		goto out;
- 	}
- 
- 	if (vol_info1.rsvd_lebs != vol_info->rsvd_lebs - 1) {
- 		errorm("rsvd_lebs %d, must be %d",
- 		       vol_info1.rsvd_lebs, vol_info->rsvd_lebs - 1);
--		return -1;
-+		goto out;
- 	}
- 
- 	/* Write data to the volume */
-@@ -143,7 +150,7 @@ static int test_rsvol1(struct ubi_vol_info *vol_info)
- 	if (fd == -1) {
- 		failed("open");
- 		errorm("cannot open \"%s\"\n", vol_node);
--		return -1;
-+		goto out;
- 	}
- 
- 	bytes = vol_info->rsvd_bytes - vol_info->leb_size - 1;
-@@ -165,20 +172,20 @@ static int test_rsvol1(struct ubi_vol_info *vol_info)
- 
- 	if (ubi_rsvol(libubi, node, vol_info->vol_id, bytes)) {
- 		failed("ubi_rsvol");
--		return -1;
-+		goto out;
- 	}
- 
- 	if (ubi_rsvol(libubi, node, vol_info->vol_id,
- 		      (long long)vol_info->leb_size * dev_info.avail_lebs)) {
- 		failed("ubi_rsvol");
--		return -1;
-+		goto out;
- 	}
+diff --git a/tests/ubi-tests/io_paral.c b/tests/ubi-tests/io_paral.c
+index becbb52..b2b462e 100644
+--- a/tests/ubi-tests/io_paral.c
++++ b/tests/ubi-tests/io_paral.c
+@@ -55,6 +55,7 @@ static int update_volume(int vol_id, int bytes)
+ 	char *vol_node = vol_nodes[vol_id];
+ 	unsigned char *wbuf = wbufs[vol_id];
+ 	unsigned char *rbuf = rbufs[vol_id];
++	unsigned int seed = seed_random_generator();
  
  	fd = open(vol_node, O_RDWR);
  	if (fd == -1) {
- 		failed("open");
- 		errorm("cannot open \"%s\"\n", vol_node);
--		return -1;
-+		goto out;
+@@ -64,7 +65,7 @@ static int update_volume(int vol_id, int bytes)
  	}
  
- 	/* Read data back */
-@@ -200,12 +207,12 @@ static int test_rsvol1(struct ubi_vol_info *vol_info)
+ 	for (i = 0; i < bytes; i++)
+-		wbuf[i] = rand() % 255;
++		wbuf[i] = rand_r(&seed) % 255;
+ 	memset(rbuf, '\0', bytes);
+ 
+ 	ret = ubi_update_start(libubi, fd, bytes);
+@@ -75,7 +76,7 @@ static int update_volume(int vol_id, int bytes)
+ 	}
+ 
+ 	while (written < bytes) {
+-		int to_write = rand() % (bytes - written);
++		int to_write = rand_r(&seed) % (bytes - written);
+ 
+ 		if (to_write == 0)
+ 			to_write = 1;
+@@ -104,7 +105,7 @@ static int update_volume(int vol_id, int bytes)
+ 
+ 	/* read data back and check */
+ 	while (rd < bytes) {
+-		int to_read = rand() % (bytes - rd);
++		int to_read = rand_r(&seed) % (bytes - rd);
+ 
+ 		if (to_read == 0)
+ 			to_read = 1;
+@@ -136,10 +137,11 @@ err_close:
+ static void *update_thread(void *ptr)
+ {
+ 	int vol_id = (long)ptr, i;
++	unsigned int seed = seed_random_generator();
+ 
+ 	for (i = 0; i < ITERATIONS; i++) {
+-		int ret, bytes = (rand() % (vol_size - 1)) + 1;
+-		int remove = !(rand() % 16);
++		int ret, bytes = (rand_r(&seed) % (vol_size - 1)) + 1;
++		int remove = !(rand_r(&seed) % 16);
+ 
+ 		/* From time to time remove the volume */
+ 		if (remove) {
+@@ -171,6 +173,7 @@ static void *write_thread(void *ptr)
+ 	char *vol_node = vol_nodes[vol_id];
+ 	unsigned char *wbuf = wbufs[vol_id];
+ 	unsigned char *rbuf = rbufs[vol_id];
++	unsigned int seed = seed_random_generator();
+ 
+ 	fd = open(vol_node, O_RDWR);
+ 	if (fd == -1) {
+@@ -186,7 +189,7 @@ static void *write_thread(void *ptr)
+ 	}
+ 
+ 	for (i = 0; i < ITERATIONS * VOL_LEBS; i++) {
+-		int j, leb = rand() % VOL_LEBS;
++		int j, leb = rand_r(&seed) % VOL_LEBS;
+ 		off_t offs = dev_info.leb_size * leb;
+ 
+ 		ret = ubi_leb_unmap(fd, leb);
+@@ -197,7 +200,7 @@ static void *write_thread(void *ptr)
  		}
- 	}
  
--	close(fd);
--	return 0;
--
-+	ret1 = 0;
- close:
- 	close(fd);
--	return -1;
-+out:
-+	free(buf);
-+	return ret1;
- }
+ 		for (j = 0; j < dev_info.leb_size; j++)
+-			wbuf[j] = rand() % 255;
++			wbuf[j] = rand_r(&seed) % 255;
+ 		memset(rbuf, '\0', dev_info.leb_size);
  
- /**
+ 		ret = pwrite(fd, wbuf, dev_info.leb_size, offs);
+@@ -233,7 +236,6 @@ int main(int argc, char * const argv[])
+ 	int i, ret;
+ 	pthread_t threads[THREADS_NUM];
+ 
+-	seed_random_generator();
+ 	if (initial_check(argc, argv))
+ 		return 1;
+ 
 -- 
 2.1.4
