@@ -1,21 +1,22 @@
-Received: from ipmail07.adl2.internode.on.net ([150.101.137.131])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXbQ5-0007IG-RS
- for linux-mtd@lists.infradead.org; Sun, 21 Feb 2016 21:19:58 +0000
-Date: Mon, 22 Feb 2016 08:19:21 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: Pushpal Sidhu <psidhu@gateworks.com>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: ubifs+overlayfs
-Message-ID: <20160221211921.GA25832@dastard>
-References: <CAD1M0635nyHDL6vo+KUWy-FJKU=VSHPpeWyj_aMA06wQNw1t0w@mail.gmail.com>
- <CAFLxGvx3Xe3pYPd=4sQR-_3_x=J9RsF7uhYpVK8EtbrcuV0kZA@mail.gmail.com>
+Received: from mail.kernel.org ([198.145.29.136])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aXge8-0004kj-6l
+ for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 02:54:49 +0000
+Date: Sun, 21 Feb 2016 20:54:27 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
+ Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/3] of: mtd: add helper reading "nand-ecc-algo" from DT
+Message-ID: <20160222025427.GK15973@rob-hp-laptop>
+References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAFLxGvx3Xe3pYPd=4sQR-_3_x=J9RsF7uhYpVK8EtbrcuV0kZA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Feb 21, 2016 at 03:27:18PM +0100, Richard Weinberger wrote:
-> Cc'ing linux-mtd.
+On Fri, Feb 12, 2016 at 07:11:23PM +0100, Rafał Miłecki wrote:
+> This allows specifying algorithm used for NAND ECC. There are two
+> available values: "bch" and "hamming". It's important as having just
+> ECC parameters (step, strength) isn't enough to determine algorithm,
+> e.g. you can't distinct BCH-1 and Hamming.
 > 
-> On Sat, Feb 20, 2016 at 1:02 AM, Pushpal Sidhu <psidhu@gateworks.com> wrote:
-> > It seems that overlayfs requires RENAME_WHITEOUT and RENAME_EXCHANGE.
-> > However, these two flags aren't currently supported in ubifs (or
-> > anything other than ext4, f2fs, and xfs). This causes any atomic
-> > renames to fail (e.g. using 'mv' command).
-> 
-> Hmm, right. I always thought overlayfs does checks at mount time.
-> But apparently I was wrong.
-> Thanks for pointing this out.
+> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand.txt |  3 +++
 
-It doesn't check any of the requirements it has from the underlying
-filesystem. e.g. overlay requires DT_CHR for detecting whiteouts,
-but it doesn't check if the upper filesystem actually supports
-DT_CHR or not, and hence will fail to detect whiteouts correctly on
-such filesystems. I've been pushing people to fix this, so maybe
-patches will appear in the not too distant future...
+Acked-by: Rob Herring <robh@kernel.org>
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>  drivers/of/of_mtd.c                            | 33 ++++++++++++++++++++++++++
+>  include/linux/mtd/nand.h                       |  5 ++++
+>  include/linux/of_mtd.h                         |  6 +++++
+>  4 files changed, 47 insertions(+)
