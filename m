@@ -1,26 +1,21 @@
-Received: from mail-ig0-x22b.google.com ([2607:f8b0:4001:c05::22b])
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXwr5-0006X8-HN
- for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 20:13:16 +0000
-Received: by mail-ig0-x22b.google.com with SMTP id 5so90286953igt.0
- for <linux-mtd@lists.infradead.org>; Mon, 22 Feb 2016 12:12:54 -0800 (PST)
-Subject: Re: [PATCH v5 00/26] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-To: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>
-References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
- <20160219220442.GR21202@atomide.com> <56CADFD5.2040205@ti.com>
- <20160222164234.GD13417@atomide.com> <56CB69F4.8040306@ti.com>
-Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, nsekhar@ti.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- ezequiel@vanguardiasur.com.ar, javier@dowhile0.org,
- computersforpeace@gmail.com, dwmw2@infradead.org, fcooper@ti.com
-From: nick <xerofoify@gmail.com>
-Message-ID: <56CB6BC4.7060806@gmail.com>
-Date: Mon, 22 Feb 2016 15:12:52 -0500
+ id 1aXxLs-0004s5-1U
+ for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 20:45:05 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id g62so173940761wme.0
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Feb 2016 12:44:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <56CB69F4.8040306@ti.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAFLxGvx3Xe3pYPd=4sQR-_3_x=J9RsF7uhYpVK8EtbrcuV0kZA@mail.gmail.com>
+References: <CAD1M0635nyHDL6vo+KUWy-FJKU=VSHPpeWyj_aMA06wQNw1t0w@mail.gmail.com>
+ <CAFLxGvx3Xe3pYPd=4sQR-_3_x=J9RsF7uhYpVK8EtbrcuV0kZA@mail.gmail.com>
+From: Pushpal Sidhu <psidhu@gateworks.com>
+Date: Mon, 22 Feb 2016 12:44:12 -0800
+Message-ID: <CAD1M063+aiBQd0fMkySw=TbiK5vRvFY6qXstKSR6KuyVe6jadA@mail.gmail.com>
+Subject: Re: ubifs+overlayfs
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,51 +25,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
+On Sun, Feb 21, 2016 at 6:27 AM, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> Cc'ing linux-mtd.
+>
+> On Sat, Feb 20, 2016 at 1:02 AM, Pushpal Sidhu <psidhu@gateworks.com> wrote:
+>> It seems that overlayfs requires RENAME_WHITEOUT and RENAME_EXCHANGE.
+>> However, these two flags aren't currently supported in ubifs (or
+>> anything other than ext4, f2fs, and xfs). This causes any atomic
+>> renames to fail (e.g. using 'mv' command).
+>
+> Hmm, right. I always thought overlayfs does checks at mount time.
+> But apparently I was wrong.
+> Thanks for pointing this out.
 
-On 2016-02-22 03:05 PM, Roger Quadros wrote:
-> On 22/02/16 18:42, Tony Lindgren wrote:
->> * Roger Quadros <rogerq@ti.com> [160222 02:16]:
->>> On 20/02/16 00:04, Tony Lindgren wrote:
->>>> * Roger Quadros <rogerq@ti.com> [160219 13:27]:
->>>>> Hi,
->>>>>
->>>>> @Tony
->>>>> Patches 15 and 24 are new and will need your review.
->>>>> I've modified patch 22 to include the new am335x boards introduced since v4.4.
->>>>>
->>>>> Patches are based on top of omap-for-v4.6/dt so that the DT changes apply cleanly.
->>>>
->>>> Looks OK to me. Can we merge the dts changes separately? Otherwise
->>>> we will easily end up with tons of conflicts..
->>>
->>> I agree. But we just need to keep in mind that NAND functionality will be
->>> broken till all the patches in this series are merged. We don't maintain
->>> backward compatibility with the old DT implementation.
+No problem.
+
+>> I'm currently trying to implement these flags, but I'm having some
+>> issues as I'm pretty vanilla when it comes to implementation details
+>> on ubifs. I'm taking inspiration from patches [1] and [2], but I'm
+>> kind of coming up short. Is there anyone currently working on this? If
+>> not, I would certainly appreciate any advice for implementing these
+>> features.
+>
+> Not to my knowledge. But you can use my O_TMPFILE patch as start.
+> See linux-mtd mailinglist.
+> If you have questions, just ask.
+> As using overlayfs is common on embedded stuff we definitely need that on UBIFS.
+> Just in case I'm putting that also on my todo list.
+
+Great, that patch looks like it would help. If I can't totally figure
+out a solution on my own, I'll let you know since you can probably
+type out the implementation to these flags much faster than I am
+currently able to.
+
+>> What I'm doing: I'm attempting to create a 'whiteout' object from
+>> within the ubifs_rename function. However, I noticed that it calls
+>> ubifs_jnl_rename, which is where I believe I should try to implement
+>> this. I haven't touched RENAME_EXCHANGE yet.
 >>
->> Please let's not do that! That breaks booting and git bisect.
->> It's better to have a minimal branch where each patch boots fine.
-> 
-> Understood. I'll send out a patch set with only the minimal DT changes
-> that doesn't break anything. This should be a preparatory step for
-> the DT clean up.
-> 
-Would you mind and try testing this on a few boards as even miminal DT
-changes can break things and thus I would like to see you test it if
-possible on the boards affected by the DT change.
->>
->> Also, I think you should at least print a warning for the old
->> binding. Otherwise people with out of tree boards will have
->> hard time updating their patches to send to mainline tree.
-> 
-Second that I agree with Tony on this it's just the reality.
-Nick
-> OK. I'll add this warning mechanism to the omap-gpmc driver.
-> 
-> cheers,
-> -roger
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+>> [1] https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-4.4/110-jffs2-use-.rename2-and-add-RENAME_WHITEOUT-support.patch
+>> [2] https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-4.4/111-jffs2-add-RENAME_EXCHANGE-support.patch
+>
+> Hmm, these patches seem wrong to me.
+> Unless I'm very mistaken it looks like every whiteout creates an busy
+> orphaned inode.
+
+Great, I will only look at implementations currently in the kernel then.
+
+Thanks,
+- Pushpal
+
+> --
+> Thanks,
+> //richard
