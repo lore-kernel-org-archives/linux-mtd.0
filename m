@@ -1,22 +1,19 @@
-Received: from mail.kernel.org ([198.145.29.136])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXge8-0004kj-6l
- for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 02:54:49 +0000
-Date: Sun, 21 Feb 2016 20:54:27 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
- Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/3] of: mtd: add helper reading "nand-ecc-algo" from DT
-Message-ID: <20160222025427.GK15973@rob-hp-laptop>
-References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1439705605-9127-1-git-send-email-zajec5@gmail.com>
+References: <1439705605-9127-1-git-send-email-zajec5@gmail.com>
+Date: Mon, 22 Feb 2016 07:20:37 +0100
+Message-ID: <CACna6rzi2NJW2JL0X4eLJOXDsLyvcsj+piBEbP6LWOUvOfctRw@mail.gmail.com>
+Subject: Re: [PATCH] ARM: tegra: add "jedec,spi-nor" flash compatible binding
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Alexandre Courbot <gnurou@gmail.com>, linux-tegra@vger.kernel.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 12, 2016 at 07:11:23PM +0100, Rafał Miłecki wrote:
-> This allows specifying algorithm used for NAND ECC. There are two
-> available values: "bch" and "hamming". It's important as having just
-> ECC parameters (step, strength) isn't enough to determine algorithm,
-> e.g. you can't distinct BCH-1 and Hamming.
-> 
-> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
-> ---
->  Documentation/devicetree/bindings/mtd/nand.txt |  3 +++
+On 16 August 2015 at 08:13, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrot=
+e:
+> Starting with commit 8947e396a829 ("Documentation: dt: mtd: replace
+> "nor-jedec" binding with "jedec, spi-nor"") we have "jedec,spi-nor"
+> binding indicating support for JEDEC identification.
+>
+> Use it for all flashes that are supposed to support READ ID op according
+> to the datasheets.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Hi, for some reason it seems this patch wasn't applied. I didn't get
+any comment and it was sent to all e-mails listed in MAINTAINERS in
+TEGRA ARCHITECTURE SUPPORT
+which I hope it enough.
 
->  drivers/of/of_mtd.c                            | 33 ++++++++++++++++++++++++++
->  include/linux/mtd/nand.h                       |  5 ++++
->  include/linux/of_mtd.h                         |  6 +++++
->  4 files changed, 47 insertions(+)
+Could someone pick it, please? FWIW you can find it in the patchwork:
+http://patchwork.ozlabs.org/patch/507676/
