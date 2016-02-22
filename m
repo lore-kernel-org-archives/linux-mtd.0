@@ -1,28 +1,16 @@
-Received: from mail-ob0-x236.google.com ([2607:f8b0:4003:c01::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXqFa-0001ny-BV
- for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 13:10:07 +0000
-Received: by mail-ob0-x236.google.com with SMTP id xk3so166010076obc.2
- for <linux-mtd@lists.infradead.org>; Mon, 22 Feb 2016 05:09:46 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CACRpkdY4fNfQWaKAZcak0yzJ2B17hbrqdU=Q4=NiwiWRNv_0yQ@mail.gmail.com>
-References: <1453806725-4880-1-git-send-email-linus.walleij@linaro.org>
- <1453806725-4880-3-git-send-email-linus.walleij@linaro.org>
- <CACRpkdY4fNfQWaKAZcak0yzJ2B17hbrqdU=Q4=NiwiWRNv_0yQ@mail.gmail.com>
-Date: Mon, 22 Feb 2016 14:09:45 +0100
-Message-ID: <CACRpkdZusueSh99D2JQj5=JQqHAeedTS=X2vm48U58PLbhamcQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] mtd: physmap_of: add a hook for Versatile write
- protection
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Cc: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Grant Likely <grant.likely@linaro.org>,
- Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset=UTF-8
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aXquk-0001TQ-Bg
+ for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 13:52:44 +0000
+From: David Gstir <david@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Cc: richard@nod.at,
+	David Gstir <david@sigma-star.at>
+Subject: [PATCH 2/3] ubi: tests: Support up to 65k NAND page size
+Date: Mon, 22 Feb 2016 14:52:04 +0100
+Message-Id: <1456149125-24067-2-git-send-email-david@sigma-star.at>
+In-Reply-To: <1456149125-24067-1-git-send-email-david@sigma-star.at>
+References: <1456149125-24067-1-git-send-email-david@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,49 +20,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Feb 13, 2016 at 2:19 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Tue, Jan 26, 2016 at 12:12 PM, Linus Walleij
-> <linus.walleij@linaro.org> wrote:
->
->> In order to support device tree probing of Versatile NOR flash
->> chips, there must be a way to add the VPP (write protection)
->> enable/disable callback. The register in question is in the
->> system controllers of these machines. Apart from this quirk,
->> the ARM flash chips are standard CFI flash chips from various
->> vendors.
->>
->> Additionally, the Integrator/AP require you to set up the external
->> bus interface (EBI) to allow writes to the chip select where the
->> flash memory is connected.
->>
->> Solve this by looking for the arm,versatile-flash compatible
->> string in the flash device tree node. In the driver,
->> add a special hook to check for the various Versatile syscons and
->> register a callback for .set_vpp() if this compatible is present.
->>
->> Provide a special Kconfig entry for the addon hook so it will
->> not be compiled in if the Versatile boards are not supported.
->> Stubs in the header file make sure the impact will be zero on
->> other platforms. (Compilers optimze this out.)
->>
->> With this patch, a large slew of ARM board file code can be
->> removed.
->>
->> Cc: Grant Likely <grant.likely@linaro.org>
->> Cc: Rob Herring <robh@kernel.org>
->> Cc: Arnd Bergmann <arnd@arndb.de>
->> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Do you think my reply to this about reference counting and
-> subsequent (accepted) patch to update the documentation
-> to reflect 876fe76d793d03077
-> "mtd: maps: physmap: Add reference counter to set_vpp()"
-> is enough to warrant merging of this?
->
-> If you want the code developed in any special direction
-> just tell me.
+From: Richard Weinberger <richard@nod.at>
 
-Ping.
+io_read and io_update of mtd-utils support NAND with 4k page size only.
+Increase that to support up to 65k page size.
 
-Yours,
-Linus Walleij
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: David Gstir <david@sigma-star.at>
+---
+ tests/ubi-tests/helpers.h   |  2 +-
+ tests/ubi-tests/io_read.c   |  6 +++---
+ tests/ubi-tests/io_update.c | 22 +++++++++++-----------
+ 3 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/tests/ubi-tests/helpers.h b/tests/ubi-tests/helpers.h
+index d7d6d9c..4533f4b 100644
+--- a/tests/ubi-tests/helpers.h
++++ b/tests/ubi-tests/helpers.h
+@@ -32,7 +32,7 @@ extern "C" {
+ 
+ #define UBI_VOLUME_PATTERN "/dev/ubi%d_%d"
+ #define MIN_AVAIL_EBS 5
+-#define PAGE_SIZE 4096
++#define MAX_NAND_PAGE_SIZE 65536
+ 
+ #define errorm(fmt, ...) ({                                                    \
+ 	__errorm(PROGRAM_NAME, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__);    \
+diff --git a/tests/ubi-tests/io_read.c b/tests/ubi-tests/io_read.c
+index 386291e..f48db67 100644
+--- a/tests/ubi-tests/io_read.c
++++ b/tests/ubi-tests/io_read.c
+@@ -41,7 +41,7 @@ static int fd;
+ /* Data lengthes to test, @io - minimal I/O unit size, @s - eraseblock size */
+ #define LENGTHES(io, s)                                                        \
+ 	{1, (io), (io)+1, 2*(io), 3*(io)-1, 3*(io),                            \
+-	 PAGE_SIZE-1, PAGE_SIZE-(io), 2*PAGE_SIZE, 2*PAGE_SIZE-(io),           \
++	 MAX_NAND_PAGE_SIZE-1, MAX_NAND_PAGE_SIZE-(io), 2*MAX_NAND_PAGE_SIZE, 2*MAX_NAND_PAGE_SIZE-(io),           \
+ 	 (s)/2-1, (s)/2, (s)/2+1, (s)-1, (s), (s)+1, 2*(s)-(io), 2*(s),        \
+ 	 2*(s)+(io), 3*(s), 3*(s)+(io)};
+ 
+@@ -51,9 +51,9 @@ static int fd;
+  */
+ #define OFFSETS(io, s, sz)                                                     \
+ 	{0, (io)-1, (io), (io)+1, 2*(io)-1, 2*(io), 3*(io)-1, 3*(io),          \
+-	 PAGE_SIZE-1, PAGE_SIZE-(io), 2*PAGE_SIZE, 2*PAGE_SIZE-(io),           \
++	 MAX_NAND_PAGE_SIZE-1, MAX_NAND_PAGE_SIZE-(io), 2*MAX_NAND_PAGE_SIZE, 2*MAX_NAND_PAGE_SIZE-(io),           \
+ 	 (s)/2-1, (s)/2, (s)/2+1, (s)-1, (s), (s)+1, 2*(s)-(io), 2*(s),        \
+-	 2*(s)+(io), 3*(s), (sz)-(s)-1, (sz)-(io)-1, (sz)-PAGE_SIZE-1};
++	 2*(s)+(io), 3*(s), (sz)-(s)-1, (sz)-(io)-1, (sz)-MAX_NAND_PAGE_SIZE-1};
+ 
+ /**
+  * test_static - test static volume-specific features.
+diff --git a/tests/ubi-tests/io_update.c b/tests/ubi-tests/io_update.c
+index 2e9969e..7040e6a 100644
+--- a/tests/ubi-tests/io_update.c
++++ b/tests/ubi-tests/io_update.c
+@@ -44,22 +44,22 @@ const char *node;
+ 	{512},                       \
+ 	{666},                       \
+ 	{2048},                      \
+-	{(io), (io), PAGE_SIZE},     \
+-	{(io)+1, (io)+1, PAGE_SIZE}, \
+-	{PAGE_SIZE},                 \
+-	{PAGE_SIZE-1},               \
+-	{PAGE_SIZE+(io)},            \
++	{(io), (io), MAX_NAND_PAGE_SIZE},     \
++	{(io)+1, (io)+1, MAX_NAND_PAGE_SIZE}, \
++	{MAX_NAND_PAGE_SIZE},                 \
++	{MAX_NAND_PAGE_SIZE-1},               \
++	{MAX_NAND_PAGE_SIZE+(io)},            \
+ 	{(s)},                       \
+ 	{(s)-1},                     \
+ 	{(s)+1},                     \
+ 	{(io), (s)+1},               \
+-	{(s)+(io), PAGE_SIZE},       \
+-	{2*(s), PAGE_SIZE},          \
+-	{PAGE_SIZE, 2*(s), 1},       \
+-	{PAGE_SIZE, 2*(s)},          \
++	{(s)+(io), MAX_NAND_PAGE_SIZE},       \
++	{2*(s), MAX_NAND_PAGE_SIZE},          \
++	{MAX_NAND_PAGE_SIZE, 2*(s), 1},       \
++	{MAX_NAND_PAGE_SIZE, 2*(s)},          \
+ 	{2*(s)-1, 2*(s)-1},          \
+-	{3*(s), PAGE_SIZE + 1},      \
+-	{1, PAGE_SIZE},              \
++	{3*(s), MAX_NAND_PAGE_SIZE + 1},      \
++	{1, MAX_NAND_PAGE_SIZE},              \
+ 	{(io), (s)}                  \
+ }
+ 
+-- 
+2.1.4
