@@ -1,16 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXquk-0001TQ-Bg
- for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 13:52:44 +0000
+ id 1aXquh-0001PD-3J
+ for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 13:52:45 +0000
 From: David Gstir <david@sigma-star.at>
 To: linux-mtd@lists.infradead.org
 Cc: richard@nod.at,
 	David Gstir <david@sigma-star.at>
-Subject: [PATCH 2/3] ubi: tests: Support up to 65k NAND page size
-Date: Mon, 22 Feb 2016 14:52:04 +0100
-Message-Id: <1456149125-24067-2-git-send-email-david@sigma-star.at>
-In-Reply-To: <1456149125-24067-1-git-send-email-david@sigma-star.at>
-References: <1456149125-24067-1-git-send-email-david@sigma-star.at>
+Subject: [PATCH 1/3] ubi: tests: Replace variable-length array with malloc()
+Date: Mon, 22 Feb 2016 14:52:03 +0100
+Message-Id: <1456149125-24067-1-git-send-email-david@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,94 +18,242 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Richard Weinberger <richard@nod.at>
+io_read and io_update of mtd-utils use variable-length arrays for test data.
+Since this could result in allocating many megabytes using alloca(), switch
+to malloc().
 
-io_read and io_update of mtd-utils support NAND with 4k page size only.
-Increase that to support up to 65k page size.
-
-Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: David Gstir <david@sigma-star.at>
 ---
- tests/ubi-tests/helpers.h   |  2 +-
- tests/ubi-tests/io_read.c   |  6 +++---
- tests/ubi-tests/io_update.c | 22 +++++++++++-----------
- 3 files changed, 15 insertions(+), 15 deletions(-)
+ tests/ubi-tests/io_read.c   | 26 ++++++++++++++++++++------
+ tests/ubi-tests/io_update.c | 28 +++++++++++++++++++++-------
+ tests/ubi-tests/rsvol.c     | 33 ++++++++++++++++++++-------------
+ 3 files changed, 61 insertions(+), 26 deletions(-)
 
-diff --git a/tests/ubi-tests/helpers.h b/tests/ubi-tests/helpers.h
-index d7d6d9c..4533f4b 100644
---- a/tests/ubi-tests/helpers.h
-+++ b/tests/ubi-tests/helpers.h
-@@ -32,7 +32,7 @@ extern "C" {
- 
- #define UBI_VOLUME_PATTERN "/dev/ubi%d_%d"
- #define MIN_AVAIL_EBS 5
--#define PAGE_SIZE 4096
-+#define MAX_NAND_PAGE_SIZE 65536
- 
- #define errorm(fmt, ...) ({                                                    \
- 	__errorm(PROGRAM_NAME, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__);    \
 diff --git a/tests/ubi-tests/io_read.c b/tests/ubi-tests/io_read.c
-index 386291e..f48db67 100644
+index 673624f..386291e 100644
 --- a/tests/ubi-tests/io_read.c
 +++ b/tests/ubi-tests/io_read.c
-@@ -41,7 +41,7 @@ static int fd;
- /* Data lengthes to test, @io - minimal I/O unit size, @s - eraseblock size */
- #define LENGTHES(io, s)                                                        \
- 	{1, (io), (io)+1, 2*(io), 3*(io)-1, 3*(io),                            \
--	 PAGE_SIZE-1, PAGE_SIZE-(io), 2*PAGE_SIZE, 2*PAGE_SIZE-(io),           \
-+	 MAX_NAND_PAGE_SIZE-1, MAX_NAND_PAGE_SIZE-(io), 2*MAX_NAND_PAGE_SIZE, 2*MAX_NAND_PAGE_SIZE-(io),           \
- 	 (s)/2-1, (s)/2, (s)/2+1, (s)-1, (s), (s)+1, 2*(s)-(io), 2*(s),        \
- 	 2*(s)+(io), 3*(s), 3*(s)+(io)};
+@@ -161,8 +161,18 @@ remove:
+ static int test_read3(const struct ubi_vol_info *vol_info, int len, off_t off)
+ {
+ 	int i, len1;
+-	unsigned char ck_buf[len], buf[len];
++	unsigned char *ck_buf = NULL;
++	unsigned char *buf = NULL;
+ 	off_t new_off;
++	int ret = -1;
++
++	ck_buf = malloc(len);
++	buf = malloc(len);
++
++	if (!ck_buf || !buf) {
++		failed("malloc");
++		goto out;
++	}
  
-@@ -51,9 +51,9 @@ static int fd;
-  */
- #define OFFSETS(io, s, sz)                                                     \
- 	{0, (io)-1, (io), (io)+1, 2*(io)-1, 2*(io), 3*(io)-1, 3*(io),          \
--	 PAGE_SIZE-1, PAGE_SIZE-(io), 2*PAGE_SIZE, 2*PAGE_SIZE-(io),           \
-+	 MAX_NAND_PAGE_SIZE-1, MAX_NAND_PAGE_SIZE-(io), 2*MAX_NAND_PAGE_SIZE, 2*MAX_NAND_PAGE_SIZE-(io),           \
- 	 (s)/2-1, (s)/2, (s)/2+1, (s)-1, (s), (s)+1, 2*(s)-(io), 2*(s),        \
--	 2*(s)+(io), 3*(s), (sz)-(s)-1, (sz)-(io)-1, (sz)-PAGE_SIZE-1};
-+	 2*(s)+(io), 3*(s), (sz)-(s)-1, (sz)-(io)-1, (sz)-MAX_NAND_PAGE_SIZE-1};
+ 	if (off + len > vol_info->data_bytes)
+ 		len1 = vol_info->data_bytes - off;
+@@ -172,12 +182,12 @@ static int test_read3(const struct ubi_vol_info *vol_info, int len, off_t off)
+ 	if (lseek(fd, off, SEEK_SET) != off) {
+ 		failed("seek");
+ 		errorm("len = %d", len);
+-		return -1;
++		goto out;
+ 	}
+ 	if (read(fd, buf, len) != len1) {
+ 		failed("read");
+ 		errorm("len = %d", len);
+-		return -1;
++		goto out;
+ 	}
  
- /**
-  * test_static - test static volume-specific features.
-diff --git a/tests/ubi-tests/io_update.c b/tests/ubi-tests/io_update.c
-index 2e9969e..7040e6a 100644
---- a/tests/ubi-tests/io_update.c
-+++ b/tests/ubi-tests/io_update.c
-@@ -44,22 +44,22 @@ const char *node;
- 	{512},                       \
- 	{666},                       \
- 	{2048},                      \
--	{(io), (io), PAGE_SIZE},     \
--	{(io)+1, (io)+1, PAGE_SIZE}, \
--	{PAGE_SIZE},                 \
--	{PAGE_SIZE-1},               \
--	{PAGE_SIZE+(io)},            \
-+	{(io), (io), MAX_NAND_PAGE_SIZE},     \
-+	{(io)+1, (io)+1, MAX_NAND_PAGE_SIZE}, \
-+	{MAX_NAND_PAGE_SIZE},                 \
-+	{MAX_NAND_PAGE_SIZE-1},               \
-+	{MAX_NAND_PAGE_SIZE+(io)},            \
- 	{(s)},                       \
- 	{(s)-1},                     \
- 	{(s)+1},                     \
- 	{(io), (s)+1},               \
--	{(s)+(io), PAGE_SIZE},       \
--	{2*(s), PAGE_SIZE},          \
--	{PAGE_SIZE, 2*(s), 1},       \
--	{PAGE_SIZE, 2*(s)},          \
-+	{(s)+(io), MAX_NAND_PAGE_SIZE},       \
-+	{2*(s), MAX_NAND_PAGE_SIZE},          \
-+	{MAX_NAND_PAGE_SIZE, 2*(s), 1},       \
-+	{MAX_NAND_PAGE_SIZE, 2*(s)},          \
- 	{2*(s)-1, 2*(s)-1},          \
--	{3*(s), PAGE_SIZE + 1},      \
--	{1, PAGE_SIZE},              \
-+	{3*(s), MAX_NAND_PAGE_SIZE + 1},      \
-+	{1, MAX_NAND_PAGE_SIZE},              \
- 	{(io), (s)}                  \
+ 	new_off = lseek(fd, 0, SEEK_CUR);
+@@ -187,7 +197,7 @@ static int test_read3(const struct ubi_vol_info *vol_info, int len, off_t off)
+ 		else
+ 			errorm("read %d bytes from %lld, but resulting "
+ 			       "offset is %lld", len1, (long long) off, (long long) new_off);
+-		return -1;
++		goto out;
+ 	}
+ 
+ 	for (i = 0; i < len1; i++)
+@@ -197,10 +207,14 @@ static int test_read3(const struct ubi_vol_info *vol_info, int len, off_t off)
+ 		errorm("incorrect data read from offset %lld",
+ 		       (long long)off);
+ 		errorm("len = %d", len);
+-		return -1;
++		goto out;
+ 	}
+ 
+-	return 0;
++	ret = 0;
++out:
++	free(buf);
++	free(ck_buf);
++	return ret;
  }
  
+ /*
+diff --git a/tests/ubi-tests/io_update.c b/tests/ubi-tests/io_update.c
+index 28b5570..2e9969e 100644
+--- a/tests/ubi-tests/io_update.c
++++ b/tests/ubi-tests/io_update.c
+@@ -76,8 +76,22 @@ static int test_update1(struct ubi_vol_info *vol_info, int leb_change)
+ 					     leb_change ? dev_info.min_io_size * 2
+ 					     		: vol_info->leb_size);
+ 	char vol_node[strlen(UBI_VOLUME_PATTERN) + 100];
+-	unsigned char buf[total_len];
++	unsigned char *buf = NULL;
++	unsigned char *buf1 = NULL;
+ 	int fd, i, j;
++	int ret1 = -1;
++
++	buf = malloc(total_len);
++	if (!buf) {
++		failed("malloc");
++		goto out;
++	}
++
++	buf1 = malloc(total_len);
++	if (!buf1) {
++		failed("malloc");
++		goto out;
++	}
+ 
+ 	sprintf(vol_node, UBI_VOLUME_PATTERN, dev_info.dev_num,
+ 		vol_info->vol_id);
+@@ -86,14 +100,13 @@ static int test_update1(struct ubi_vol_info *vol_info, int leb_change)
+ 	if (fd == -1) {
+ 		failed("open");
+ 		errorm("cannot open \"%s\"\n", node);
+-		return -1;
++		goto out;
+ 	}
+ 
+ 	for (i = 0; i < SEQ_SZ; i++) {
+ 		int ret, stop = 0, len = 0;
+ 		off_t off = 0;
+ 		long long test_len;
+-		unsigned char buf1[total_len];
+ 
+ 		/*
+ 		 * test_len is LEB size (if we test atomic LEB change) or
+@@ -189,12 +202,13 @@ static int test_update1(struct ubi_vol_info *vol_info, int leb_change)
+ 		}
+ 	}
+ 
+-	close(fd);
+-	return 0;
+-
++	ret1 = 0;
+ close:
+ 	close(fd);
+-	return -1;
++out:
++	free(buf);
++	free(buf1);
++	return ret1;
+ }
+ 
+ /**
+diff --git a/tests/ubi-tests/rsvol.c b/tests/ubi-tests/rsvol.c
+index 732bcaa..6bfade9 100644
+--- a/tests/ubi-tests/rsvol.c
++++ b/tests/ubi-tests/rsvol.c
+@@ -107,32 +107,39 @@ static int test_rsvol1(struct ubi_vol_info *vol_info)
+ 	long long bytes;
+ 	struct ubi_vol_info vol_info1;
+ 	char vol_node[strlen(UBI_VOLUME_PATTERN) + 100];
+-	unsigned char buf[vol_info->rsvd_bytes];
++	unsigned char *buf;
+ 	int fd, i, ret;
++	int ret1 = -1;
++
++	buf = malloc(vol_info->rsvd_bytes);
++	if (!buf) {
++		failed("malloc");
++		goto out;
++	}
+ 
+ 	/* Make the volume smaller and check basic volume I/O */
+ 	bytes = vol_info->rsvd_bytes - vol_info->leb_size;
+ 	if (ubi_rsvol(libubi, node, vol_info->vol_id, bytes - 1)) {
+ 		failed("ubi_rsvol");
+-		return -1;
++		goto out;
+ 	}
+ 
+ 	if (ubi_get_vol_info1(libubi, vol_info->dev_num, vol_info->vol_id,
+ 			     &vol_info1)) {
+ 		failed("ubi_get_vol_info");
+-		return -1;
++		goto out;
+ 	}
+ 
+ 	if (vol_info1.rsvd_bytes != bytes) {
+ 		errorm("rsvd_bytes %lld, must be %lld",
+ 		       vol_info1.rsvd_bytes, bytes);
+-		return -1;
++		goto out;
+ 	}
+ 
+ 	if (vol_info1.rsvd_lebs != vol_info->rsvd_lebs - 1) {
+ 		errorm("rsvd_lebs %d, must be %d",
+ 		       vol_info1.rsvd_lebs, vol_info->rsvd_lebs - 1);
+-		return -1;
++		goto out;
+ 	}
+ 
+ 	/* Write data to the volume */
+@@ -143,7 +150,7 @@ static int test_rsvol1(struct ubi_vol_info *vol_info)
+ 	if (fd == -1) {
+ 		failed("open");
+ 		errorm("cannot open \"%s\"\n", vol_node);
+-		return -1;
++		goto out;
+ 	}
+ 
+ 	bytes = vol_info->rsvd_bytes - vol_info->leb_size - 1;
+@@ -165,20 +172,20 @@ static int test_rsvol1(struct ubi_vol_info *vol_info)
+ 
+ 	if (ubi_rsvol(libubi, node, vol_info->vol_id, bytes)) {
+ 		failed("ubi_rsvol");
+-		return -1;
++		goto out;
+ 	}
+ 
+ 	if (ubi_rsvol(libubi, node, vol_info->vol_id,
+ 		      (long long)vol_info->leb_size * dev_info.avail_lebs)) {
+ 		failed("ubi_rsvol");
+-		return -1;
++		goto out;
+ 	}
+ 
+ 	fd = open(vol_node, O_RDWR);
+ 	if (fd == -1) {
+ 		failed("open");
+ 		errorm("cannot open \"%s\"\n", vol_node);
+-		return -1;
++		goto out;
+ 	}
+ 
+ 	/* Read data back */
+@@ -200,12 +207,12 @@ static int test_rsvol1(struct ubi_vol_info *vol_info)
+ 		}
+ 	}
+ 
+-	close(fd);
+-	return 0;
+-
++	ret1 = 0;
+ close:
+ 	close(fd);
+-	return -1;
++out:
++	free(buf);
++	return ret1;
+ }
+ 
+ /**
 -- 
 2.1.4
