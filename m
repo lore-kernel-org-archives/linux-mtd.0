@@ -1,24 +1,19 @@
-Received: from muru.com ([72.249.23.125])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXtZa-0005Qg-7V
- for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 16:42:58 +0000
-Date: Mon, 22 Feb 2016 08:42:35 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- ezequiel@vanguardiasur.com.ar, javier@dowhile0.org, fcooper@ti.com,
- nsekhar@ti.com, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 00/26] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-Message-ID: <20160222164234.GD13417@atomide.com>
-References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
- <20160219220442.GR21202@atomide.com> <56CADFD5.2040205@ti.com>
+Date: Mon, 22 Feb 2016 10:04:01 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Alexandre Courbot <gnurou@gmail.com>, linux-tegra@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] ARM: tegra: add "jedec,spi-nor" flash compatible binding
+Message-ID: <20160222180401.GA115735@google.com>
+References: <1439705605-9127-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <56CADFD5.2040205@ti.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1439705605-9127-1-git-send-email-zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,37 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [160222 02:16]:
-> On 20/02/16 00:04, Tony Lindgren wrote:
-> > * Roger Quadros <rogerq@ti.com> [160219 13:27]:
-> >> Hi,
-> >>
-> >> @Tony
-> >> Patches 15 and 24 are new and will need your review.
-> >> I've modified patch 22 to include the new am335x boards introduced since v4.4.
-> >>
-> >> Patches are based on top of omap-for-v4.6/dt so that the DT changes apply cleanly.
-> > 
-> > Looks OK to me. Can we merge the dts changes separately? Otherwise
-> > we will easily end up with tons of conflicts..
+On Sun, Aug 16, 2015 at 08:13:25AM +0200, Rafał Miłecki wrote:
+> Starting with commit 8947e396a829 ("Documentation: dt: mtd: replace
+> "nor-jedec" binding with "jedec, spi-nor"") we have "jedec,spi-nor"
+> binding indicating support for JEDEC identification.
 > 
-> I agree. But we just need to keep in mind that NAND functionality will be
-> broken till all the patches in this series are merged. We don't maintain
-> backward compatibility with the old DT implementation.
+> Use it for all flashes that are supposed to support READ ID op according
+> to the datasheets.
+> 
+> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+> ---
+>  arch/arm/boot/dts/tegra114-dalmore.dts    | 2 +-
+>  arch/arm/boot/dts/tegra124-jetson-tk1.dts | 2 +-
+>  arch/arm/boot/dts/tegra124-nyan.dtsi      | 2 +-
+>  arch/arm/boot/dts/tegra124-venice2.dts    | 2 +-
+>  arch/arm/boot/dts/tegra20-trimslice.dts   | 2 +-
+>  arch/arm/boot/dts/tegra30-beaver.dts      | 2 +-
+>  arch/arm/boot/dts/tegra30-cardhu.dtsi     | 2 +-
+>  7 files changed, 7 insertions(+), 7 deletions(-)
 
-Please let's not do that! That breaks booting and git bisect.
-It's better to have a minimal branch where each patch boots fine.
+FWIW:
 
-Also, I think you should at least print a warning for the old
-binding. Otherwise people with out of tree boards will have
-hard time updating their patches to send to mainline tree.
-
-> Do you want me to send you the DT patches separately or you can
-> pick up patches 18 to 26?
-
-Sounds like some things need to be rearranged a bit first
-though :)
-
-Regards,
-
-Tony
+Acked-by: Brian Norris <computersforpeace@gmail.com>
