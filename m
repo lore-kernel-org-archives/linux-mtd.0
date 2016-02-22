@@ -1,19 +1,18 @@
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aXkx4-0005Cj-2d
+ for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 07:30:39 +0000
+Date: Mon, 22 Feb 2016 08:30:07 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Guilherme de Oliveira Costa <guilherme.oliveira@autotrac.com.br>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: NAND Bad Block Marking Policy
+In-Reply-To: <7F9DB42F7DDA544EA3EB31D694929A30EB0506@PERU.autotrac.corp>
+Message-ID: <alpine.DEB.2.02.1602220828340.21201@lnxricardw1.se.axis.com>
+References: <7F9DB42F7DDA544EA3EB31D694929A30EB0506@PERU.autotrac.corp>
 MIME-Version: 1.0
-In-Reply-To: <1439705605-9127-1-git-send-email-zajec5@gmail.com>
-References: <1439705605-9127-1-git-send-email-zajec5@gmail.com>
-Date: Mon, 22 Feb 2016 07:20:37 +0100
-Message-ID: <CACna6rzi2NJW2JL0X4eLJOXDsLyvcsj+piBEbP6LWOUvOfctRw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: tegra: add "jedec,spi-nor" flash compatible binding
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- Alexandre Courbot <gnurou@gmail.com>, linux-tegra@vger.kernel.org
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 16 August 2015 at 08:13, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrot=
-e:
-> Starting with commit 8947e396a829 ("Documentation: dt: mtd: replace
-> "nor-jedec" binding with "jedec, spi-nor"") we have "jedec,spi-nor"
-> binding indicating support for JEDEC identification.
->
-> Use it for all flashes that are supposed to support READ ID op according
-> to the datasheets.
 
-Hi, for some reason it seems this patch wasn't applied. I didn't get
-any comment and it was sent to all e-mails listed in MAINTAINERS in
-TEGRA ARCHITECTURE SUPPORT
-which I hope it enough.
+On Fri, 19 Feb 2016, Guilherme de Oliveira Costa wrote:
 
-Could someone pick it, please? FWIW you can find it in the patchwork:
-http://patchwork.ozlabs.org/patch/507676/
+> This started due to some weird problems we had that out of
+> nowhere our rootfs stopped booting, among other things.
+> We are using a cramfs image as our rootfs, but I've found
+> some ancient threads stating that cramfs is not recommended
+> for NAND memories.
+> 
+> Does this still hold true?
+
+The problem with cramfs is that it can only work if there is a continguous 
+block of flash memory for it to reside in. This means that it cannot 
+reside in a partition if there are bad blocks present, which is why it is 
+not recommended for NAND flash. Apart from that (severe) constraint, it 
+wouldn't be a problem.
+
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
