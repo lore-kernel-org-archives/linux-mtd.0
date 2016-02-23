@@ -1,14 +1,22 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aXyKV-0003WB-AB
- for linux-mtd@lists.infradead.org; Mon, 22 Feb 2016 21:47:44 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>
-Subject: [PATCH] ubi: Fix early logging
-Date: Mon, 22 Feb 2016 22:47:11 +0100
-Message-Id: <1456177631-12667-1-git-send-email-richard@nod.at>
+From: "Yang, Wenyou" <Wenyou.Yang@atmel.com>
+To: "Ferre, Nicolas" <Nicolas.FERRE@atmel.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Josh Wu
+ <rainyfeeling@outlook.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "Wu, Josh" <Josh.wu@atmel.com>
+Subject: RE: [PATCH] mtd: atmel_nand: move the hsmc_clk from nfc node to
+ nand node
+Date: Tue, 23 Feb 2016 05:59:30 +0000
+Message-ID: <B256D81BAE5131468A838E5D7A243641D6428357@penmbx01>
+References: <1455687624-9488-1-git-send-email-wenyou.yang@atmel.com>
+ <56CB05A6.100@atmel.com>
+In-Reply-To: <56CB05A6.100@atmel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,143 +26,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We must not use ubi_* log functions before the ubi_device
-struct is initialized.
-And while we are here, define a sane pr_fmt and add new lines to
-existing pr_* calls.
-
-Fixes: 32608703 ("UBI: Extend UBI layer debug/messaging capabilities")
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/build.c | 24 ++++++++++++------------
- drivers/mtd/ubi/ubi.h   |  3 +++
- 2 files changed, 15 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 59e1384..4945db4 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -876,7 +876,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
- 	for (i = 0; i < UBI_MAX_DEVICES; i++) {
- 		ubi = ubi_devices[i];
- 		if (ubi && mtd->index == ubi->mtd->index) {
--			ubi_err(ubi, "mtd%d is already attached to ubi%d",
-+			pr_err("mtd%d is already attached to ubi%d\n",
- 				mtd->index, i);
- 			return -EEXIST;
- 		}
-@@ -891,7 +891,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
- 	 * no sense to attach emulated MTD devices, so we prohibit this.
- 	 */
- 	if (mtd->type == MTD_UBIVOLUME) {
--		ubi_err(ubi, "refuse attaching mtd%d - it is already emulated on top of UBI",
-+		pr_err("refuse attaching mtd%d - it is already emulated on top of UBI\n",
- 			mtd->index);
- 		return -EINVAL;
- 	}
-@@ -902,7 +902,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
- 			if (!ubi_devices[ubi_num])
- 				break;
- 		if (ubi_num == UBI_MAX_DEVICES) {
--			ubi_err(ubi, "only %d UBI devices may be created",
-+			pr_err("only %d UBI devices may be created\n",
- 				UBI_MAX_DEVICES);
- 			return -ENFILE;
- 		}
-@@ -912,7 +912,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
- 
- 		/* Make sure ubi_num is not busy */
- 		if (ubi_devices[ubi_num]) {
--			ubi_err(ubi, "already exists");
-+			pr_err("already exists\n");
- 			return -EEXIST;
- 		}
- 	}
-@@ -1220,7 +1220,7 @@ static int __init ubi_init(void)
- 	BUILD_BUG_ON(sizeof(struct ubi_vid_hdr) != 64);
- 
- 	if (mtd_devs > UBI_MAX_DEVICES) {
--		pr_err("UBI error: too many MTD devices, maximum is %d",
-+		pr_err("UBI error: too many MTD devices, maximum is %d\n",
- 		       UBI_MAX_DEVICES);
- 		return -EINVAL;
- 	}
-@@ -1232,7 +1232,7 @@ static int __init ubi_init(void)
- 
- 	err = misc_register(&ubi_ctrl_cdev);
- 	if (err) {
--		pr_err("UBI error: cannot register device");
-+		pr_err("UBI error: cannot register device\n");
- 		goto out;
- 	}
- 
-@@ -1259,7 +1259,7 @@ static int __init ubi_init(void)
- 		mtd = open_mtd_device(p->name);
- 		if (IS_ERR(mtd)) {
- 			err = PTR_ERR(mtd);
--			pr_err("UBI error: cannot open mtd %s, error %d",
-+			pr_err("UBI error: cannot open mtd %s, error %d\n",
- 			       p->name, err);
- 			/* See comment below re-ubi_is_module(). */
- 			if (ubi_is_module())
-@@ -1272,7 +1272,7 @@ static int __init ubi_init(void)
- 					 p->vid_hdr_offs, p->max_beb_per1024);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0) {
--			pr_err("UBI error: cannot attach mtd%d",
-+			pr_err("UBI error: cannot attach mtd%d\n",
- 			       mtd->index);
- 			put_mtd_device(mtd);
- 
-@@ -1296,7 +1296,7 @@ static int __init ubi_init(void)
- 
- 	err = ubiblock_init();
- 	if (err) {
--		pr_err("UBI error: block: cannot initialize, error %d", err);
-+		pr_err("UBI error: block: cannot initialize, error %d\n", err);
- 
- 		/* See comment above re-ubi_is_module(). */
- 		if (ubi_is_module())
-@@ -1319,7 +1319,7 @@ out_dev_unreg:
- 	misc_deregister(&ubi_ctrl_cdev);
- out:
- 	class_unregister(&ubi_class);
--	pr_err("UBI error: cannot initialize UBI, error %d", err);
-+	pr_err("UBI error: cannot initialize UBI, error %d\n", err);
- 	return err;
- }
- late_initcall(ubi_init);
-@@ -1447,7 +1447,7 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
- 		int err = kstrtoint(token, 10, &p->max_beb_per1024);
- 
- 		if (err) {
--			pr_err("UBI error: bad value for max_beb_per1024 parameter: %s",
-+			pr_err("UBI error: bad value for max_beb_per1024 parameter: %s\n",
- 			       token);
- 			return -EINVAL;
- 		}
-@@ -1458,7 +1458,7 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
- 		int err = kstrtoint(token, 10, &p->ubi_num);
- 
- 		if (err) {
--			pr_err("UBI error: bad value for ubi_num parameter: %s",
-+			pr_err("UBI error: bad value for ubi_num parameter: %s\n",
- 			       token);
- 			return -EINVAL;
- 		}
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 915e4dd..93872d4 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -22,6 +22,9 @@
- #ifndef __UBI_UBI_H__
- #define __UBI_UBI_H__
- 
-+#undef pr_fmt
-+#define pr_fmt(fmt) "%s: " fmt, __func__
-+
- #include <linux/types.h>
- #include <linux/list.h>
- #include <linux/rbtree.h>
--- 
-1.8.4.5
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRmVycmUsIE5pY29sYXMN
+Cj4gU2VudDogMjAxNsTqMtTCMjLI1SAyMDo1Nw0KPiBUbzogWWFuZywgV2VueW91IDxXZW55b3Uu
+WWFuZ0BhdG1lbC5jb20+OyBCcmlhbiBOb3JyaXMNCj4gPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWls
+LmNvbT47IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz47DQo+IEpvc2ggV3Ug
+PHJhaW55ZmVlbGluZ0BvdXRsb29rLmNvbT4NCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRl
+YWQub3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LQ0KPiBr
+ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBXdSwgSm9zaCA8Sm9zaC53dUBhdG1lbC5jb20+DQo+IFN1
+YmplY3Q6IFJlOiBbUEFUQ0hdIG10ZDogYXRtZWxfbmFuZDogbW92ZSB0aGUgaHNtY19jbGsgZnJv
+bSBuZmMgbm9kZSB0byBuYW5kDQo+IG5vZGUNCj4gDQo+IExlIDE3LzAyLzIwMTYgMDY6NDAsIFdl
+bnlvdSBZYW5nIGEgqKZjcml0IDoNCj4gPiBGcm9tOiBKb3NoIFd1IDxqb3NoLnd1QGF0bWVsLmNv
+bT4NCj4gPg0KPiA+IEZvciBzYW1hNWQzLCBzYW1hNWQ0IGNoaXAsIHRoZSBwbWVjYyBiZWNvbWVz
+IGEgcGFydCBvZiBIU01DLCB0aGV5IG5lZWQNCj4gPiB0aGUgSFNNQyBjbG9jayB0byBiZSBlbmFi
+bGVkIHRvIHdvcmsuDQo+ID4gVGhlIE5GQyBpcyBhIHN1YiBmZWF0dXJlIGZvciBjdXJyZW50IG5h
+bmQgZHJpdmVyLCBpdCBjYW4gYmUgZGlzYWJsZWQuDQo+ID4gQnV0IGlmIEhTTUMgY2xvY2sgaXMg
+Y29udHJvbGxlZCBieSBORkMsIHNvIGRpc2FibGUgTkZDIHdpbGwgYWxzbw0KPiA+IGRpc2FibGUg
+dGhlIEhTTUMgY2xvY2suIHRoZW4sIGl0IHdpbGwgbWFrZSB0aGUgUE1FQ0MgZmFpbCB0byB3b3Jr
+Lg0KPiA+DQo+ID4gU28gdGhlIHNvbHV0aW9uIGlzIHRvIG1vdmUgdGhlIEhTTUMgY2xvY2sgb3V0
+IG9mIE5GQyB0byBuYW5kIG5vZGUuDQo+ID4gV2hlbiBuYW5kIGRyaXZlciBwcm9iZWQsIGl0IHdp
+bGwgY2hlY2sgd2hldGhlciB0aGUgY2hpcCBoYXMgSFNNQywgaWYNCj4gPiB5ZXMgdGhlbiBpdCB3
+aWxsIHJlcXVpcmUgYSBIU01DIGNsb2NrLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogSm9zaCBX
+dSA8am9zaC53dUBhdG1lbC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogV2VueW91IFlhbmcgPHdl
+bnlvdS55YW5nQGF0bWVsLmNvbT4NCj4gPiAtLS0NCj4gPg0KPiA+ICAuLi4vZGV2aWNldHJlZS9i
+aW5kaW5ncy9tdGQvYXRtZWwtbmFuZC50eHQgICAgICAgICB8ICAgIDQgKy0NCj4gPiAgZHJpdmVy
+cy9tdGQvbmFuZC9hdG1lbF9uYW5kLmMgICAgICAgICAgICAgICAgICAgICAgfCAgIDQzICsrKysr
+KysrKy0tLS0tLS0tLS0tDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKSwg
+MjUgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL210ZC9hdG1lbC1uYW5kLnR4dA0KPiA+IGIvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9hdG1lbC1uYW5kLnR4dA0KPiA+IGluZGV4IGQ1M2FiYTku
+LjI5YmVlN2MgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL210ZC9hdG1lbC1uYW5kLnR4dA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9tdGQvYXRtZWwtbmFuZC50eHQNCj4gPiBAQCAtMTUsNiArMTUsNyBAQCBSZXF1
+aXJlZCBwcm9wZXJ0aWVzOg0KPiA+ICAtIGF0bWVsLG5hbmQtY21kLW9mZnNldCA6IG9mZnNldCBm
+b3IgdGhlIGNvbW1hbmQgbGF0Y2guDQo+ID4gIC0gI2FkZHJlc3MtY2VsbHMsICNzaXplLWNlbGxz
+IDogTXVzdCBiZSBwcmVzZW50IGlmIHRoZSBkZXZpY2UgaGFzIHN1Yi1ub2Rlcw0KPiA+ICAgIHJl
+cHJlc2VudGluZyBwYXJ0aXRpb25zLg0KPiA+ICstIGNsb2NrczogcGhhbmRsZSB0byB0aGUgcGVy
+aXBoZXJhbCBjbG9jaw0KPiA+DQo+ID4gIC0gZ3Bpb3MgOiBzcGVjaWZpZXMgdGhlIGdwaW8gcGlu
+cyB0byBjb250cm9sIHRoZSBOQU5EIGRldmljZS4gZGV0ZWN0IGlzIGFuDQo+ID4gICAgb3B0aW9u
+YWwgZ3BpbyBhbmQgbWF5IGJlIHNldCB0byAwIGlmIG5vdCBwcmVzZW50Lg0KPiA+IEBAIC00Myw3
+ICs0NCw2IEBAIFJlcXVpcmVkIHByb3BlcnRpZXM6DQo+ID4gIC0gcmVnIDogc2hvdWxkIHNwZWNp
+ZnkgdGhlIGFkZHJlc3MgYW5kIHNpemUgdXNlZCBmb3IgTkZDIGNvbW1hbmQgcmVnaXN0ZXJzLA0K
+PiA+ICAgICAgICAgIE5GQyByZWdpc3RlcnMgYW5kIE5GQyBTUkFNLiBORkMgU1JBTSBhZGRyZXNz
+IGFuZCBzaXplIGNhbiBiZQ0KPiBhYnNlbnQNCj4gPiAgICAgICAgICBpZiBkb24ndCB3YW50IHRv
+IHVzZSBpdC4NCj4gPiAtLSBjbG9ja3M6IHBoYW5kbGUgdG8gdGhlIHBlcmlwaGVyYWwgY2xvY2sg
+IE9wdGlvbmFsIHByb3BlcnRpZXM6DQo+ID4gIC0gYXRtZWwsd3JpdGUtYnktc3JhbTogYm9vbGVh
+biB0byBlbmFibGUgTkZDIHdyaXRlIGJ5IFNSQU0uDQo+ID4NCj4gPiBAQCAtMTAwLDEzICsxMDAs
+MTMgQEAgbmFuZDA6IG5hbmRANDAwMDAwMDAgew0KPiA+ICAJY29tcGF0aWJsZSA9ICJhdG1lbCxh
+dDkxcm05MjAwLW5hbmQiOw0KPiA+ICAJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+ID4gIAkjc2l6
+ZS1jZWxscyA9IDwxPjsNCj4gPiArCWNsb2NrcyA9IDwmaHNtY19jbGs+DQo+ID4gIAlyYW5nZXM7
+DQo+ID4gICAgICAgICAgLi4uDQo+ID4gICAgICAgICAgbmZjQDcwMDAwMDAwIHsNCj4gPiAgCQlj
+b21wYXRpYmxlID0gImF0bWVsLHNhbWE1ZDMtbmZjIjsNCj4gPiAgCQkjYWRkcmVzcy1jZWxscyA9
+IDwxPjsNCj4gPiAgCQkjc2l6ZS1jZWxscyA9IDwxPjsNCj4gPiAtCQljbG9ja3MgPSA8JmhzbWNf
+Y2xrPg0KPiA+ICAJCXJlZyA9IDwNCj4gPiAgCQkJMHg3MDAwMDAwMCAweDEwMDAwMDAwCS8qIE5G
+QyBDb21tYW5kDQo+IFJlZ2lzdGVycyAqLw0KPiA+ICAJCQkweGZmZmZjMDAwIDB4MDAwMDAwNzAJ
+LyogTkZDIEhTTUMgcmVncyAqLw0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL2F0
+bWVsX25hbmQuYw0KPiA+IGIvZHJpdmVycy9tdGQvbmFuZC9hdG1lbF9uYW5kLmMgaW5kZXggMjBj
+YmFhYi4uYTFmNGFkMiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL2F0bWVsX25h
+bmQuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvYXRtZWxfbmFuZC5jDQo+ID4gQEAgLTY2
+LDYgKzY2LDcgQEAgbW9kdWxlX3BhcmFtKG9uX2ZsYXNoX2JidCwgaW50LCAwKTsgIHN0cnVjdA0K
+PiA+IGF0bWVsX25hbmRfY2FwcyB7DQo+ID4gIAlib29sIHBtZWNjX2NvcnJlY3RfZXJhc2VfcGFn
+ZTsNCj4gPiAgCXVpbnQ4X3QgcG1lY2NfbWF4X2NvcnJlY3Rpb247DQo+ID4gKwlib29sIGhhc19o
+c21jX2NsazsNCj4gPiAgfTsNCj4gPg0KPiA+ICBzdHJ1Y3QgYXRtZWxfbmFuZF9uZmNfY2FwcyB7
+DQo+ID4gQEAgLTEwNiw4ICsxMDcsNiBAQCBzdHJ1Y3QgYXRtZWxfbmZjIHsNCj4gPiAgCWJvb2wJ
+CQl1c2VfbmZjX3NyYW07DQo+ID4gIAlib29sCQkJd3JpdGVfYnlfc3JhbTsNCj4gPg0KPiA+IC0J
+c3RydWN0IGNsawkJKmNsazsNCj4gPiAtDQo+ID4gIAlib29sCQkJaXNfaW5pdGlhbGl6ZWQ7DQo+
+ID4gIAlzdHJ1Y3QgY29tcGxldGlvbgljb21wX3JlYWR5Ow0KPiA+ICAJc3RydWN0IGNvbXBsZXRp
+b24JY29tcF9jbWRfZG9uZTsNCj4gPiBAQCAtMTMyLDYgKzEzMSw3IEBAIHN0cnVjdCBhdG1lbF9u
+YW5kX2hvc3Qgew0KPiA+ICAJc3RydWN0IGRtYV9jaGFuCQkqZG1hX2NoYW47DQo+ID4NCj4gPiAg
+CXN0cnVjdCBhdG1lbF9uZmMJKm5mYzsNCj4gPiArCXN0cnVjdCBjbGsJCSpjbGs7DQo+ID4NCj4g
+PiAgCWNvbnN0IHN0cnVjdCBhdG1lbF9uYW5kX2NhcHMJKmNhcHM7DQo+ID4gIAlib29sCQkJaGFz
+X3BtZWNjOw0KPiA+IEBAIC0yMTU3LDYgKzIxNTcsMTkgQEAgc3RhdGljIGludCBhdG1lbF9uYW5k
+X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gKnBkZXYpDQo+ID4gIAluYW5kX2NoaXAt
+PklPX0FERFJfUiA9IGhvc3QtPmlvX2Jhc2U7DQo+ID4gIAluYW5kX2NoaXAtPklPX0FERFJfVyA9
+IGhvc3QtPmlvX2Jhc2U7DQo+ID4NCj4gPiArCWlmIChob3N0LT5jYXBzLT5oYXNfaHNtY19jbGsp
+IHsNCj4gPiArCQlob3N0LT5jbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgTlVMTCk7DQo+
+ID4gKwkJaWYgKElTX0VSUihob3N0LT5jbGspKSB7DQo+ID4gKwkJCWRldl9lcnIoJnBkZXYtPmRl
+diwgIkhTTUMgY2xvY2sgaXMgbWlzc2luZywgdXBkYXRlDQo+IHlvdXIgRGV2aWNlIFRyZWUiKTsN
+Cj4gPiArCQkJcmVzID0gUFRSX0VSUihob3N0LT5jbGspOw0KPiA+ICsJCQlnb3RvIGVycl9uYW5k
+X2lvcmVtYXA7DQo+ID4gKwkJfQ0KPiA+ICsNCj4gPiArCQlyZXMgPSBjbGtfcHJlcGFyZV9lbmFi
+bGUoaG9zdC0+Y2xrKTsNCj4gPiArCQlpZiAocmVzKQ0KPiA+ICsJCQlnb3RvIGVycl9uYW5kX2lv
+cmVtYXA7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICAJaWYgKG5hbmRfbmZjLmlzX2luaXRpYWxpemVk
+KSB7DQo+ID4gIAkJLyogTkZDIGRyaXZlciBpcyBwcm9iZWQgYW5kIGluaXRpYWxpemVkICovDQo+
+ID4gIAkJaG9zdC0+bmZjID0gJm5hbmRfbmZjOw0KPiA+IEBAIC0yMzIxLDYgKzIzMzQsOSBAQCBz
+dGF0aWMgaW50IGF0bWVsX25hbmRfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gKnBk
+ZXYpDQo+ID4gIAlpZiAoaG9zdC0+ZG1hX2NoYW4pDQo+ID4gIAkJZG1hX3JlbGVhc2VfY2hhbm5l
+bChob3N0LT5kbWFfY2hhbik7DQo+ID4NCj4gPiArCWlmICghSVNfRVJSKGhvc3QtPmNsaykpDQo+
+ID4gKwkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGhvc3QtPmNsayk7DQo+ID4gKw0KPiA+ICAJcGxh
+dGZvcm1fZHJpdmVyX3VucmVnaXN0ZXIoJmF0bWVsX25hbmRfbmZjX2RyaXZlcik7DQo+ID4NCj4g
+PiAgCXJldHVybiAwOw0KPiA+IEBAIC0yMzM0LDExICsyMzUwLDEzIEBAIHN0YXRpYyBpbnQgYXRt
+ZWxfbmFuZF9yZW1vdmUoc3RydWN0DQo+ID4gcGxhdGZvcm1fZGV2aWNlICpwZGV2KSAgc3RhdGlj
+IGNvbnN0IHN0cnVjdCBhdG1lbF9uYW5kX2NhcHMgYXQ5MXJtOTIwMF9jYXBzDQo+ID0gew0KPiA+
+ICAJLnBtZWNjX2NvcnJlY3RfZXJhc2VfcGFnZSA9IGZhbHNlLA0KPiA+ICAJLnBtZWNjX21heF9j
+b3JyZWN0aW9uID0gMjQsDQo+ID4gKwkuaGFzX2hzbWNfY2xrID0gZmFsc2UsDQo+ID4gIH07DQo+
+ID4NCj4gPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBhdG1lbF9uYW5kX2NhcHMgc2FtYTVkNF9jYXBz
+ID0gew0KPiA+ICAJLnBtZWNjX2NvcnJlY3RfZXJhc2VfcGFnZSA9IHRydWUsDQo+ID4gIAkucG1l
+Y2NfbWF4X2NvcnJlY3Rpb24gPSAyNCwNCj4gPiArCS5oYXNfaHNtY19jbGsgPSB0cnVlLA0KPiAN
+Cj4gQXMgdGhpcyBjYXBhYmlsaXR5IGlzIG5vdCBzaGFyZWQgd2l0aCBTQU1BNUQzLCBJIGRpZG4n
+dCBzZWUgaG93IHlvdSBjb3VsZCBtYWtlDQo+IHRoZSBoc21jIGNsb2NrIHByb2JlZCBvbiBTQU1B
+NUQzOiByZW1lbWJlciwgaXRzIGNvbnRyb2xsZXIgY29tcGF0aWJpbGl0eSBzdHJpbmcNCj4gaXMg
+ImF0bWVsLGF0OTFybTkyMDAtbmFuZCIgd2l0aCB0aGUgZGVzY3JpcHRpb24ganVzdCBhYm92ZS4N
+Cg0KU29ycnkuDQpJdCBpcyBteSBjYXJlbGVzc25lc3MsIG1pc3NpbmcgdGhlICIgYXRtZWwsc2Ft
+YTVkMy1uYW5kIiBjb21wYXRpYmxlIHN0cmluZyBwYXJ0LiBJIHdpbGwgYWRkIGl0Lg0KDQo+IA0K
+PiBCeWUsDQo+IA0KPiANCj4gPiAgfTsNCj4gPg0KPiA+ICAvKg0KPiA+IEBAIC0yMzYzLDcgKzIz
+ODEsNiBAQCBzdGF0aWMgaW50IGF0bWVsX25hbmRfbmZjX3Byb2JlKHN0cnVjdA0KPiA+IHBsYXRm
+b3JtX2RldmljZSAqcGRldikgIHsNCj4gPiAgCXN0cnVjdCBhdG1lbF9uZmMgKm5mYyA9ICZuYW5k
+X25mYzsNCj4gPiAgCXN0cnVjdCByZXNvdXJjZSAqbmZjX2NtZF9yZWdzLCAqbmZjX2hzbWNfcmVn
+cywgKm5mY19zcmFtOw0KPiA+IC0JaW50IHJldDsNCj4gPg0KPiA+ICAJbmZjX2NtZF9yZWdzID0g
+cGxhdGZvcm1fZ2V0X3Jlc291cmNlKHBkZXYsIElPUkVTT1VSQ0VfTUVNLCAwKTsNCj4gPiAgCW5m
+Yy0+YmFzZV9jbWRfcmVncyA9IGRldm1faW9yZW1hcF9yZXNvdXJjZSgmcGRldi0+ZGV2LA0KPiA+
+IG5mY19jbWRfcmVncyk7IEBAIC0yNDAxLDMxICsyNDE4LDEyIEBAIHN0YXRpYyBpbnQNCj4gYXRt
+ZWxfbmFuZF9uZmNfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAgCW5m
+Y193cml0ZWwobmZjLT5oc21jX3JlZ3MsIElEUiwgMHhmZmZmZmZmZik7DQo+ID4gIAluZmNfcmVh
+ZGwobmZjLT5oc21jX3JlZ3MsIFNSKTsJLyogY2xlYXIgdGhlIE5GQ19TUiAqLw0KPiA+DQo+ID4g
+LQluZmMtPmNsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCBOVUxMKTsNCj4gPiAtCWlmICgh
+SVNfRVJSKG5mYy0+Y2xrKSkgew0KPiA+IC0JCXJldCA9IGNsa19wcmVwYXJlX2VuYWJsZShuZmMt
+PmNsayk7DQo+ID4gLQkJaWYgKHJldCkNCj4gPiAtCQkJcmV0dXJuIHJldDsNCj4gPiAtCX0gZWxz
+ZSB7DQo+ID4gLQkJZGV2X3dhcm4oJnBkZXYtPmRldiwgIk5GQyBjbG9jayBtaXNzaW5nLCB1cGRh
+dGUgeW91ciBEZXZpY2UNCj4gVHJlZSIpOw0KPiA+IC0JfQ0KPiA+IC0NCj4gPiAgCW5mYy0+aXNf
+aW5pdGlhbGl6ZWQgPSB0cnVlOw0KPiA+ICAJZGV2X2luZm8oJnBkZXYtPmRldiwgIk5GQyBpcyBw
+cm9iZWQuXG4iKTsNCj4gPg0KPiA+ICAJcmV0dXJuIDA7DQo+ID4gIH0NCj4gPg0KPiA+IC1zdGF0
+aWMgaW50IGF0bWVsX25hbmRfbmZjX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2
+KSAtew0KPiA+IC0Jc3RydWN0IGF0bWVsX25mYyAqbmZjID0gJm5hbmRfbmZjOw0KPiA+IC0NCj4g
+PiAtCWlmICghSVNfRVJSKG5mYy0+Y2xrKSkNCj4gPiAtCQljbGtfZGlzYWJsZV91bnByZXBhcmUo
+bmZjLT5jbGspOw0KPiA+IC0NCj4gPiAtCXJldHVybiAwOw0KPiA+IC19DQo+ID4gLQ0KPiA+ICBz
+dGF0aWMgY29uc3Qgc3RydWN0IGF0bWVsX25hbmRfbmZjX2NhcHMgc2FtYTVkM19uZmNfY2FwcyA9
+IHsNCj4gPiAgCS5yYl9tYXNrID0gTkZDX1NSX1JCX0VER0UwLA0KPiA+ICB9Ow0KPiA+IEBAIC0y
+NDQ3LDcgKzI0NDUsNiBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBhdG1lbF9uYW5k
+X25mY19kcml2ZXIgPQ0KPiB7DQo+ID4gIAkJLm9mX21hdGNoX3RhYmxlID0gb2ZfbWF0Y2hfcHRy
+KGF0bWVsX25hbmRfbmZjX21hdGNoKSwNCj4gPiAgCX0sDQo+ID4gIAkucHJvYmUgPSBhdG1lbF9u
+YW5kX25mY19wcm9iZSwNCj4gPiAtCS5yZW1vdmUgPSBhdG1lbF9uYW5kX25mY19yZW1vdmUsDQo+
+ID4gIH07DQo+ID4NCj4gPiAgc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgYXRtZWxfbmFu
+ZF9kcml2ZXIgPSB7DQo+ID4NCj4gDQo+IA0KPiAtLQ0KPiBOaWNvbGFzIEZlcnJlDQoNCg0KQmVz
+dCBSZWdhcmRzLA0KV2VueW91IFlhbmcNCg==
