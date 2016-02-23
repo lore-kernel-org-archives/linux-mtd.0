@@ -1,29 +1,17 @@
-Received: from mail.kernel.org ([198.145.29.136])
+Received: from smtprelay0087.hostedemail.com ([216.40.44.87]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYIx4-0006xP-LD
- for linux-mtd@lists.infradead.org; Tue, 23 Feb 2016 19:48:55 +0000
-Date: Tue, 23 Feb 2016 13:48:29 -0600
-From: Rob Herring <robh@kernel.org>
-To: Sergei Ianovich <ynvich@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Jeremy Kerr <jk@ozlabs.org>,
- Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Cyril Bur <cyrilbur@gmail.com>, Joel Stanley <joel@jms.id.au>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- "open list:MEMORY TECHNOLOGY DEVICES [MTD]" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v6] mtd: support BB SRAM on ICP DAS LP-8x4x
-Message-ID: <20160223194829.GA20334@rob-hp-laptop>
-References: <1450205941-15593-1-git-send-email-ynvich@gmail.com>
- <1456253890-30825-1-git-send-email-ynvich@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1456253890-30825-1-git-send-email-ynvich@gmail.com>
+ id 1aYJT8-0006Vt-UN
+ for linux-mtd@lists.infradead.org; Tue, 23 Feb 2016 20:22:04 +0000
+From: Joe Perches <joe@perches.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH V2] ubifs: Add logging functions for ubifs_msg,
+ ubifs_err and ubifs_warn
+Date: Tue, 23 Feb 2016 12:21:35 -0800
+Message-Id: <6f81fc68890afcdf53defe70df9b182be9f26df8.1456258476.git.joe@perches.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,58 +21,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 23, 2016 at 09:58:01PM +0300, Sergei Ianovich wrote:
-> This provides an MTD device driver for 512kB of battery backed up SRAM
-> on ICPDAS LP-8X4X programmable automation controllers.
-> 
-> SRAM chip is connected via FPGA and is not accessible without a driver,
-> unlike flash memory which is wired to CPU MMU.
-> 
-> This SRAM becomes an excellent persisent storage of volatile process
-> data like counter values and sensor statuses. Storing those data in
-> flash or mmc card is not a viable solution.
-> 
-> Signed-off-by: Sergei Ianovich <ynvich@gmail.com>
-> Reviewed-by: Brian Norris <computersforpeace@gmail.com>
-> CC: Rob Herring <robh@kernel.org>
-> 
->    v5..v6
->    * replace wildcards in compatible and module name
->    * drop obsolete mtd_part_parser_data.of_node
-> 
->    v4..v5
->    * remove .owner from struct platform_driver
->    * constify struct of_device_id
->     for further Brian Norris comments:
->    * drop unused property from doc file
->    * move defconfig update to a different file
->    * drop extra match w/ of_match_device()
-> 
->    v3..v4 for Brian Norris 'Reviewed-by'
->    * add doc file for DT binding
->    * move DTS binding to a different patch (8/21)
->    * drop unused include directive
->    * drop safely unused callback
->    * drop non-default partion probe types
->    * drop duplicate error checks
->    * drop duplicate error reporting
->    * fixed error message on MTD registeration
->    * fixed module removal routine
-> 
->    v2..v3
->    * no changes (except number 08/16 -> 10/21)
-> 
->    v0..v2
->    * use device tree
->    * use devm helpers where possible
-> ---
->  .../devicetree/bindings/mtd/icpdas-lp8841-sram.txt |  23 +++
+The existing logging macros are fairly large and converting the
+macros to functions make the object code smaller.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Use %pV and __builtin_return_address(0) as appropriate.
 
->  drivers/mtd/devices/Kconfig                        |  14 ++
->  drivers/mtd/devices/Makefile                       |   1 +
->  drivers/mtd/devices/sram_lp8841.c                  | 198 +++++++++++++++++++++
->  4 files changed, 236 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/icpdas-lp8841-sram.txt
->  create mode 100644 drivers/mtd/devices/sram_lp8841.c
+Fix typo of sytem to system.
+
+$ size fs/ubifs/built-in.o*
+   text	   data	    bss	    dec	    hex	filename
+ 575831	 309688	 161312	1046831	  ff92f	fs/ubifs/built-in.o.allyesconfig.new
+ 622457	 312872	 161120	1096449	 10bb01	fs/ubifs/built-in.o.allyesconfig.old
+ 223785	    640	    644	 225069	  36f2d	fs/ubifs/built-in.o.defconfig.new
+ 251873	    640	    644	 253157	  3dce5	fs/ubifs/built-in.o.defconfig.old
+
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+
+V2:	It seems I should use checkpatch after all.
+	o Remove unnecessary line continuations leftover from macros
+	o Fix sytem typo
+
+ fs/ubifs/Makefile |  1 +
+ fs/ubifs/misc.c   | 57 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/ubifs.h  | 41 +++++++++++++++++----------------------
+ 3 files changed, 75 insertions(+), 24 deletions(-)
+ create mode 100644 fs/ubifs/misc.c
+
+diff --git a/fs/ubifs/Makefile b/fs/ubifs/Makefile
+index 2c6f0cb..c54a243 100644
+--- a/fs/ubifs/Makefile
++++ b/fs/ubifs/Makefile
+@@ -4,3 +4,4 @@ ubifs-y += shrinker.o journal.o file.o dir.o super.o sb.o io.o
+ ubifs-y += tnc.o master.o scan.o replay.o log.o commit.o gc.o orphan.o
+ ubifs-y += budget.o find.o tnc_commit.o compress.o lpt.o lprops.o
+ ubifs-y += recovery.o ioctl.o lpt_commit.o tnc_misc.o xattr.o debug.o
++ubifs-y += misc.o
+diff --git a/fs/ubifs/misc.c b/fs/ubifs/misc.c
+new file mode 100644
+index 0000000..621e77c
+--- /dev/null
++++ b/fs/ubifs/misc.c
+@@ -0,0 +1,57 @@
++#include <linux/kernel.h>
++#include "ubifs.h"
++
++/* Normal UBIFS messages */
++void ubifs_msg(const struct ubifs_info *c, const char *fmt, ...)
++{
++	struct va_format vaf;
++	va_list args;
++
++	va_start(args, fmt);
++
++	vaf.fmt = fmt;
++	vaf.va = &args;
++
++	pr_notice("UBIFS (ubi%d:%d): %pV\n",
++		  c->vi.ubi_num, c->vi.vol_id, &vaf);
++
++	va_end(args);
++}
++
++/* UBIFS error messages */
++void ubifs_err(const struct ubifs_info *c, const char *fmt, ...)
++{
++	struct va_format vaf;
++	va_list args;
++
++	va_start(args, fmt);
++
++	vaf.fmt = fmt;
++	vaf.va = &args;
++
++	pr_err("UBIFS error (ubi%d:%d pid %d): %ps: %pV\n",
++	       c->vi.ubi_num, c->vi.vol_id, current->pid,
++	       __builtin_return_address(0),
++	       &vaf);
++
++	va_end(args);
++}
++
++/* UBIFS warning messages */
++void ubifs_warn(const struct ubifs_info *c, const char *fmt, ...)
++{
++	struct va_format vaf;
++	va_list args;
++
++	va_start(args, fmt);
++
++	vaf.fmt = fmt;
++	vaf.va = &args;
++
++	pr_warn("UBIFS warning (ubi%d:%d pid %d): %ps: %pV\n",
++		c->vi.ubi_num, c->vi.vol_id, current->pid,
++		__builtin_return_address(0),
++		&vaf);
++
++	va_end(args);
++}
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index a5697de..0e946c8 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -42,30 +42,6 @@
+ /* Version of this UBIFS implementation */
+ #define UBIFS_VERSION 1
+ 
+-/* Normal UBIFS messages */
+-#define ubifs_msg(c, fmt, ...)                                      \
+-	pr_notice("UBIFS (ubi%d:%d): " fmt "\n",                    \
+-		  (c)->vi.ubi_num, (c)->vi.vol_id, ##__VA_ARGS__)
+-/* UBIFS error messages */
+-#define ubifs_err(c, fmt, ...)                                      \
+-	pr_err("UBIFS error (ubi%d:%d pid %d): %s: " fmt "\n",      \
+-	       (c)->vi.ubi_num, (c)->vi.vol_id, current->pid,       \
+-	       __func__, ##__VA_ARGS__)
+-/* UBIFS warning messages */
+-#define ubifs_warn(c, fmt, ...)                                     \
+-	pr_warn("UBIFS warning (ubi%d:%d pid %d): %s: " fmt "\n",   \
+-		(c)->vi.ubi_num, (c)->vi.vol_id, current->pid,      \
+-		__func__, ##__VA_ARGS__)
+-/*
+- * A variant of 'ubifs_err()' which takes the UBIFS file-sytem description
+- * object as an argument.
+- */
+-#define ubifs_errc(c, fmt, ...)                                     \
+-	do {                                                        \
+-		if (!(c)->probing)                                  \
+-			ubifs_err(c, fmt, ##__VA_ARGS__);           \
+-	} while (0)
+-
+ /* UBIFS file system VFS magic number */
+ #define UBIFS_SUPER_MAGIC 0x24051905
+ 
+@@ -1802,4 +1778,21 @@ int ubifs_decompress(const struct ubifs_info *c, const void *buf, int len,
+ #include "misc.h"
+ #include "key.h"
+ 
++/* Normal UBIFS messages */
++__printf(2, 3)
++void ubifs_msg(const struct ubifs_info *c, const char *fmt, ...);
++__printf(2, 3)
++void ubifs_err(const struct ubifs_info *c, const char *fmt, ...);
++__printf(2, 3)
++void ubifs_warn(const struct ubifs_info *c, const char *fmt, ...);
++/*
++ * A variant of 'ubifs_err()' which takes the UBIFS file-system description
++ * object as an argument.
++ */
++#define ubifs_errc(c, fmt, ...)						\
++do {									\
++	if (!(c)->probing)						\
++		ubifs_err(c, fmt, ##__VA_ARGS__);			\
++} while (0)
++
+ #endif /* !__UBIFS_H__ */
+-- 
+2.6.3.368.gf34be46
