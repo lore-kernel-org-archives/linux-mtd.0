@@ -1,20 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-he1eur01on061c.outbound.protection.outlook.com
+ ([2a01:111:f400:fe1e::61c]
+ helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYKJ5-00069E-HK
- for linux-mtd@lists.infradead.org; Tue, 23 Feb 2016 21:15:44 +0000
-Subject: Re: [PATCH] ubifs: Implement O_TMPFILE
-To: Pavel Machek <pavel@ucw.cz>
-References: <1456048004-20365-1-git-send-email-richard@nod.at>
- <20160223204510.GA16961@amd>
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com,
- adrian.hunter@intel.com, linux-kernel@vger.kernel.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56CCCBE4.1040809@nod.at>
-Date: Tue, 23 Feb 2016 22:15:16 +0100
+ id 1aYMGL-0004gx-8w
+ for linux-mtd@lists.infradead.org; Tue, 23 Feb 2016 23:21:03 +0000
+From: Han Xu <han.xu@nxp.com>
+To: <shijie.huang@arm.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <han.xu@nxp.com>, <standby24x7@gmail.com>,
+ <jkosina@suse.cz>, <boris.brezillon@free-electrons.com>,
+ <fabio.estevam@freescale.com>, <fransklaver@gmail.com>, <hofrat@osadl.org>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/5] support gpmi on i.MX6UL/7D and HW bitflip on i.MX6QP/7D
+Date: Tue, 23 Feb 2016 17:04:48 -0600
+Message-ID: <1456268693-8630-1-git-send-email-han.xu@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20160223204510.GA16961@amd>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 23.02.2016 um 21:45 schrieb Pavel Machek:
-> Hi!
-> 
->> +	ui = ubifs_inode(inode);
->> +
->> +	err = ubifs_init_security(dir, inode, &dentry->d_name);
->> +	if (err)
->> +		goto out_inode;
->> +
->> +	mutex_lock(&ui->ui_mutex);
->> +	insert_inode_hash(inode);
->> +	d_tmpfile(dentry, inode);
->> +	ubifs_assert(ui->dirty);
->> +	instantiated = 1;
->> +	mutex_unlock(&ui->ui_mutex);
->> +
->> +	mutex_lock(&dir_ui->ui_mutex);
->> +	err = ubifs_jnl_update(c, dir, &dentry->d_name, inode, 1, 0);
->> +	if (err)
->> +		goto out_cancel;
->> +	mutex_unlock(&dir_ui->ui_mutex);
-> 
-> Move the if () below unlock, and make it goto out_inode?
+add support for gpmi nand on i.MX6UL and i.MX7D, document the related
+properties in DT and add the HW bitflip detection and correction for
+i.MX6QP and i.MX7D.
 
-Yes. That's better. :)
+The two document related patch are new and other three patches have no code
+change.
 
-Thanks,
-//richard
+Han Xu (5):
+  mtd: nand: gpmi: add GPMI NAND support for i.MX7D
+  mtd: nand: gpmi: document the clocks and clock-names in DT property
+  mtd: nand: gpmi: correct bitflip for erased NAND page
+  mtd: nand: gpmi: support NAND on i.MX6UL
+  mtd: nand: gpmi: document the new supported chip in DT
+
+ .../devicetree/bindings/mtd/gpmi-nand.txt          | 12 ++++-
+ drivers/mtd/nand/gpmi-nand/bch-regs.h              | 24 ++++++---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c              | 15 ++++--
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 60 +++++++++++++++++++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h             | 14 +++--
+ 5 files changed, 104 insertions(+), 21 deletions(-)
+
+-- 
+1.9.1
