@@ -1,29 +1,23 @@
-Subject: Re: [PATCH v5 3/5] mtd: devices: m25p80: add support for mmap read
- request
-To: Mark Brown <broonie@kernel.org>
-References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
- <1449807000-6457-4-git-send-email-vigneshr@ti.com>
- <20160209193616.GN13270@sirena.org.uk> <56BC1D3E.5020203@ti.com>
- <20160212223711.GD18988@sirena.org.uk> <56C2D731.6050306@ti.com>
- <20160216123854.GJ18327@sirena.org.uk> <56C49B9E.8060506@ti.com>
-CC: Tony Lindgren <tony@atomide.com>, Brian Norris
- <computersforpeace@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Russell King <linux@arm.linux.org.uk>,
- "hramrach@gmail.com" <hramrach@gmail.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <56CDA034.7050607@ti.com>
-Date: Wed, 24 Feb 2016 17:51:08 +0530
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aYZmw-0004Sj-78
+ for linux-mtd@lists.infradead.org; Wed, 24 Feb 2016 13:47:39 +0000
+Date: Wed, 24 Feb 2016 14:46:52 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, Rob Herring
+ <robh+dt@kernel.org>, Grant Likely <grant.likely@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>
+Subject: Re: [PATCH 1/3] of: mtd: add helper reading "nand-ecc-algo" from DT
+Message-ID: <20160224144652.14068468@bbrezillon>
+In-Reply-To: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
+References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <56C49B9E.8060506@ti.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,44 +27,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Rafal,
 
+On Fri, 12 Feb 2016 19:11:23 +0100
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-On 02/17/2016 09:41 PM, R, Vignesh wrote:
-> 
-> 
-> On 02/16/2016 06:08 PM, Mark Brown wrote:
->> On Tue, Feb 16, 2016 at 01:30:49PM +0530, Vignesh R wrote:
->>> On 02/13/2016 04:07 AM, Mark Brown wrote:
->>>> On Thu, Feb 11, 2016 at 11:03:50AM +0530, Vignesh R wrote:
->>>>> On 02/10/2016 01:06 AM, Mark Brown wrote:
->>
->>>>>> Looking at this I can't help but think that spi_flash_read() ought to
->>>>>> have the stub in rather than the caller.  But given that we're pretty
->>>>>> much only ever expecting one user I'm not 100% sure it actually matters.
->>
->>>>> Well, my initial patch set passed long list of arguments to
->>>>> spi_flash_read(), but Brian suggested to use struct[1] in order to avoid
->>>>> unnecessary churn when things need changed in the API.
->>
->>>> I don't see what that has to do with my point?
->>
->>> AFAIU, your previous comment was to move initialization of
->>> spi_flash_read_message struct to spi_flash_read(). This would mean
->>
->> No, not at all.  I'm talking about how we handle the case where we don't
->> have hardware support for this and need to implement it in software -
->> currently that's in a separate place to the place where we call the
->> driver.
->>
-> 
-> Yeah, but AFAIK, hardware accelerated read support is applicable for
-> m25p80 flashes only, I doubt whether spi_flash_read() will be used by
-> other types. I felt keeping the software implementation in m25p80_read()
-> will be consistent with m25p80_write().
+> This allows specifying algorithm used for NAND ECC. There are two
+> available values: "bch" and "hamming". It's important as having just
+> ECC parameters (step, strength) isn't enough to determine algorithm,
+> e.g. you can't distinct BCH-1 and Hamming.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand.txt |  3 +++
+>  drivers/of/of_mtd.c                            | 33 ++++++++++++++++++++=
+++++++
+>  include/linux/mtd/nand.h                       |  5 ++++
+>  include/linux/of_mtd.h                         |  6 +++++
+>  4 files changed, 47 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentati=
+on/devicetree/bindings/mtd/nand.txt
+> index b53f92e..a2c2df5 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> @@ -3,6 +3,9 @@
+>  - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+>    Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_fir=
+st",
+>    "soft_bch".
+> +- nand-ecc-algo : string, algorithm of NAND ecc.
+> +		  Supported values are: "bch", "hamming". The default one is
+> +		  "bch".
 
-Is there any further work required on the patch? If not, what's the plan
-to merge this patch?
+I like the idea of specifying which ECC algorithm should be used, and
+this is IMO clearer than putting the information directly in
+nand-ecc-mode (as is already done for the "soft" and "soft_bch" modes,
+which are respectively encoding software hamming and software bch
+implementations).
 
--- 
-Regards
-Vignesh
+But shouldn't we take this even further and add new DT properties
+to encode the ECC layout (syndrome, oob_first), and another one to
+specify the implementation type (software or hardware)?
+
+nand-ecc-layout =3D "nornal", "syndrome" or "oob_first"
+nand-ecc-engine =3D "none", "soft" or "hw" ("on-die" ?)
+
+Note that it's not something I ask you to do right now, I just want to
+bring the topic on the table.
+
+Best Regards,
+
+Boris
+
+--=20
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
