@@ -1,20 +1,29 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYY7A-0003pI-SF
- for linux-mtd@lists.infradead.org; Wed, 24 Feb 2016 12:00:22 +0000
-Message-ID: <1456315196.4719.4.camel@linux.intel.com>
-Subject: Re: [PATCH v2] mtd: onenand: fix deadlock in onenand_block_markbad
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Reply-To: artem.bityutskiy@linux.intel.com
-To: Aaro Koskinen <aaro.koskinen@iki.fi>, Kyungmin Park
- <kyungmin.park@samsung.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org
-Date: Wed, 24 Feb 2016 13:59:56 +0200
-In-Reply-To: <1456000068-8862-1-git-send-email-aaro.koskinen@iki.fi>
-References: <1456000068-8862-1-git-send-email-aaro.koskinen@iki.fi>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v5 3/5] mtd: devices: m25p80: add support for mmap read
+ request
+To: Mark Brown <broonie@kernel.org>
+References: <1449807000-6457-1-git-send-email-vigneshr@ti.com>
+ <1449807000-6457-4-git-send-email-vigneshr@ti.com>
+ <20160209193616.GN13270@sirena.org.uk> <56BC1D3E.5020203@ti.com>
+ <20160212223711.GD18988@sirena.org.uk> <56C2D731.6050306@ti.com>
+ <20160216123854.GJ18327@sirena.org.uk> <56C49B9E.8060506@ti.com>
+CC: Tony Lindgren <tony@atomide.com>, Brian Norris
+ <computersforpeace@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Russell King <linux@arm.linux.org.uk>,
+ "hramrach@gmail.com" <hramrach@gmail.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <56CDA034.7050607@ti.com>
+Date: Wed, 24 Feb 2016 17:51:08 +0530
+MIME-Version: 1.0
+In-Reply-To: <56C49B9E.8060506@ti.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +33,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Looks good, thanks!
 
-Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-On Sat, 2016-02-20 at 22:27 +0200, Aaro Koskinen wrote:
-> Commit 5942ddbc500d ("mtd: introduce mtd_block_markbad interface")
-> incorrectly changed onenand_block_markbad() to call mtd_block_markbad
-> instead of onenand_chip's block_markbad function. As a result the
-> function
-> will now recurse and deadlock. Fix by reverting the change.
+On 02/17/2016 09:41 PM, R, Vignesh wrote:
 > 
-> Fixes: 5942ddbc500d ("mtd: introduce mtd_block_markbad interface")
-> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
-> ---
 > 
-> 	v2: Don't ignore the return value.
+> On 02/16/2016 06:08 PM, Mark Brown wrote:
+>> On Tue, Feb 16, 2016 at 01:30:49PM +0530, Vignesh R wrote:
+>>> On 02/13/2016 04:07 AM, Mark Brown wrote:
+>>>> On Thu, Feb 11, 2016 at 11:03:50AM +0530, Vignesh R wrote:
+>>>>> On 02/10/2016 01:06 AM, Mark Brown wrote:
+>>
+>>>>>> Looking at this I can't help but think that spi_flash_read() ought to
+>>>>>> have the stub in rather than the caller.  But given that we're pretty
+>>>>>> much only ever expecting one user I'm not 100% sure it actually matters.
+>>
+>>>>> Well, my initial patch set passed long list of arguments to
+>>>>> spi_flash_read(), but Brian suggested to use struct[1] in order to avoid
+>>>>> unnecessary churn when things need changed in the API.
+>>
+>>>> I don't see what that has to do with my point?
+>>
+>>> AFAIU, your previous comment was to move initialization of
+>>> spi_flash_read_message struct to spi_flash_read(). This would mean
+>>
+>> No, not at all.  I'm talking about how we handle the case where we don't
+>> have hardware support for this and need to implement it in software -
+>> currently that's in a separate place to the place where we call the
+>> driver.
+>>
 > 
-> 	v1: http://lists.infradead.org/pipermail/linux-mtd/2016-Februar
-> y/065582.html
-> 
->  drivers/mtd/onenand/onenand_base.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/onenand/onenand_base.c
-> b/drivers/mtd/onenand/onenand_base.c
-> index 43b3392..652d018 100644
-> --- a/drivers/mtd/onenand/onenand_base.c
-> +++ b/drivers/mtd/onenand/onenand_base.c
-> @@ -2599,6 +2599,7 @@ static int onenand_default_block_markbad(struct
-> mtd_info *mtd, loff_t ofs)
->   */
->  static int onenand_block_markbad(struct mtd_info *mtd, loff_t ofs)
->  {
-> +	struct onenand_chip *this = mtd->priv;
->  	int ret;
->  
->  	ret = onenand_block_isbad(mtd, ofs);
-> @@ -2610,7 +2611,7 @@ static int onenand_block_markbad(struct
-> mtd_info *mtd, loff_t ofs)
->  	}
->  
->  	onenand_get_device(mtd, FL_WRITING);
-> -	ret = mtd_block_markbad(mtd, ofs);
-> +	ret = this->block_markbad(mtd, ofs);
->  	onenand_release_device(mtd);
->  	return ret;
->  }
+> Yeah, but AFAIK, hardware accelerated read support is applicable for
+> m25p80 flashes only, I doubt whether spi_flash_read() will be used by
+> other types. I felt keeping the software implementation in m25p80_read()
+> will be consistent with m25p80_write().
+
+Is there any further work required on the patch? If not, what's the plan
+to merge this patch?
+
 -- 
-Best Regards,
-Artem Bityutskiy
+Regards
+Vignesh
