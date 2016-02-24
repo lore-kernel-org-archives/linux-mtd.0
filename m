@@ -1,23 +1,17 @@
-Received: from mx1.redhat.com ([209.132.183.28])
- by casper.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1aYfRW-0003l9-IE
- for linux-mtd@lists.infradead.org; Wed, 24 Feb 2016 19:49:51 +0000
-From: mchristi@redhat.com
-To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
- konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
- philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
- linux-raid@vger.kernel.org, dm-devel@redhat.com,
- linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
- target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
-Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 24/35] xen: set bi_op to REQ_OP
-Date: Wed, 24 Feb 2016 13:48:01 -0600
-Message-Id: <1456343292-14535-25-git-send-email-mchristi@redhat.com>
-In-Reply-To: <1456343292-14535-1-git-send-email-mchristi@redhat.com>
-References: <1456343292-14535-1-git-send-email-mchristi@redhat.com>
+Received: from smtp03.autotrac.com.br ([187.6.64.114]
+ helo=smtp01.autotrac.com.br)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aYfjr-0001xo-EI
+ for linux-mtd@lists.infradead.org; Wed, 24 Feb 2016 20:08:50 +0000
+From: Guilherme de Oliveira Costa <guilherme.oliveira@autotrac.com.br>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Filesystems over UBI can't handle badblocks
+Date: Wed, 24 Feb 2016 20:08:20 +0000
+Message-ID: <7F9DB42F7DDA544EA3EB31D694929A30EB84DA@PERU.autotrac.corp>
+Content-Language: pt-BR
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,129 +21,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Mike Christie <mchristi@redhat.com>
-
-This patch has xen set the bio bi_op to a REQ_OP, and rq_flag_bits
-to bi_rw.
-
-This patch is compile tested only.
-
-Signed-off-by: Mike Christie <mchristi@redhat.com>
----
- drivers/block/xen-blkback/blkback.c | 29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/block/xen-blkback/blkback.c b/drivers/block/xen-blkback/blkback.c
-index 79fe493..854ecca 100644
---- a/drivers/block/xen-blkback/blkback.c
-+++ b/drivers/block/xen-blkback/blkback.c
-@@ -501,7 +501,7 @@ static int xen_vbd_translate(struct phys_req *req, struct xen_blkif *blkif,
- 	struct xen_vbd *vbd = &blkif->vbd;
- 	int rc = -EACCES;
- 
--	if ((operation != READ) && vbd->readonly)
-+	if ((operation != REQ_OP_READ) && vbd->readonly)
- 		goto out;
- 
- 	if (likely(req->nr_sects)) {
-@@ -1014,7 +1014,7 @@ static int dispatch_discard_io(struct xen_blkif_ring *ring,
- 	preq.sector_number = req->u.discard.sector_number;
- 	preq.nr_sects      = req->u.discard.nr_sectors;
- 
--	err = xen_vbd_translate(&preq, blkif, WRITE);
-+	err = xen_vbd_translate(&preq, blkif, REQ_OP_WRITE);
- 	if (err) {
- 		pr_warn("access denied: DISCARD [%llu->%llu] on dev=%04x\n",
- 			preq.sector_number,
-@@ -1229,6 +1229,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 	struct bio **biolist = pending_req->biolist;
- 	int i, nbio = 0;
- 	int operation;
-+	int operation_flags = 0;
- 	struct blk_plug plug;
- 	bool drain = false;
- 	struct grant_page **pages = pending_req->segments;
-@@ -1247,17 +1248,19 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 	switch (req_operation) {
- 	case BLKIF_OP_READ:
- 		ring->st_rd_req++;
--		operation = READ;
-+		operation = REQ_OP_READ;
- 		break;
- 	case BLKIF_OP_WRITE:
- 		ring->st_wr_req++;
--		operation = WRITE_ODIRECT;
-+		operation = REQ_OP_WRITE;
-+		operation_flags = WRITE_ODIRECT;
- 		break;
- 	case BLKIF_OP_WRITE_BARRIER:
- 		drain = true;
- 	case BLKIF_OP_FLUSH_DISKCACHE:
- 		ring->st_f_req++;
--		operation = WRITE_FLUSH;
-+		operation = REQ_OP_WRITE;
-+		operation_flags = WRITE_FLUSH;
- 		break;
- 	default:
- 		operation = 0; /* make gcc happy */
-@@ -1269,7 +1272,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 	nseg = req->operation == BLKIF_OP_INDIRECT ?
- 	       req->u.indirect.nr_segments : req->u.rw.nr_segments;
- 
--	if (unlikely(nseg == 0 && operation != WRITE_FLUSH) ||
-+	if (unlikely(nseg == 0 && operation_flags != WRITE_FLUSH) ||
- 	    unlikely((req->operation != BLKIF_OP_INDIRECT) &&
- 		     (nseg > BLKIF_MAX_SEGMENTS_PER_REQUEST)) ||
- 	    unlikely((req->operation == BLKIF_OP_INDIRECT) &&
-@@ -1310,7 +1313,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 
- 	if (xen_vbd_translate(&preq, ring->blkif, operation) != 0) {
- 		pr_debug("access denied: %s of [%llu,%llu] on dev=%04x\n",
--			 operation == READ ? "read" : "write",
-+			 operation == REQ_OP_READ ? "read" : "write",
- 			 preq.sector_number,
- 			 preq.sector_number + preq.nr_sects,
- 			 ring->blkif->vbd.pdevice);
-@@ -1369,7 +1372,8 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 			bio->bi_private = pending_req;
- 			bio->bi_end_io  = end_block_io_op;
- 			bio->bi_iter.bi_sector  = preq.sector_number;
--			bio->bi_rw	= operation;
-+			bio->bi_op	= operation;
-+			bio->bi_rw	= operation_flags;
- 		}
- 
- 		preq.sector_number += seg[i].nsec;
-@@ -1377,7 +1381,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 
- 	/* This will be hit if the operation was a flush or discard. */
- 	if (!bio) {
--		BUG_ON(operation != WRITE_FLUSH);
-+		BUG_ON(operation_flags != WRITE_FLUSH);
- 
- 		bio = bio_alloc(GFP_KERNEL, 0);
- 		if (unlikely(bio == NULL))
-@@ -1387,7 +1391,8 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 		bio->bi_bdev    = preq.bdev;
- 		bio->bi_private = pending_req;
- 		bio->bi_end_io  = end_block_io_op;
--		bio->bi_rw	= operation;
-+		bio->bi_op	= operation;
-+		bio->bi_rw	= operation_flags;
- 	}
- 
- 	atomic_set(&pending_req->pendcnt, nbio);
-@@ -1399,9 +1404,9 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 	/* Let the I/Os go.. */
- 	blk_finish_plug(&plug);
- 
--	if (operation == READ)
-+	if (operation == REQ_OP_READ)
- 		ring->st_rd_sect += preq.nr_sects;
--	else if (operation & WRITE)
-+	else if (operation == REQ_OP_WRITE)
- 		ring->st_wr_sect += preq.nr_sects;
- 
- 	return 0;
--- 
-1.8.3.1
+SGVsbG8sDQoNCkknbSB1c2luZyB1YmlibGsgdG8gcnVuIGNyYW1mcyBvdmVyIFVCSSAodGhlIGNy
+YW1mcyBwYXJ0aXRpb24gY29udGFpbnMgbXkgcm9vdGZzKSwgYnV0IEknbSBzdGlsbCBoYXZpbmcg
+dHJvdWJsZSBoYW5kbGluZyBiYWQgYmxvY2tzLg0KDQpJJ20gdXNpbmcgYSAxMjhNQiBOQU5ELCB3
+aXRoIGEgMTI4IGtCIGJsb2NrIHNpemUsIDIwNDggQiBwYWdlIHNpemUuDQoNClRoaXMgaXMgbXkg
+dWJpbml6ZSBjb25maWcgZmlsZToNCg0KW2ZzLXZvbHVtZV0NCm1vZGU9dWJpDQppbWFnZT1jcmFt
+ZnMuaW1nDQp2b2xfaWQ9MQ0Kdm9sX3NpemU9MjBNaUINCnZvbF90eXBlPWR5bmFtaWMNCnZvbF9u
+YW1lPWZzDQp2b2xfZmxhZ3M9YXV0b3Jlc2l6ZQ0KDQpBbmQgSSBnZW5lcmF0ZSB0aGUgaW1hZ2Vz
+IGFzIHN1Y2g6DQpta2ZzLmNyYW1mcyBmc19kaXIgY3JhbWZzLmltZw0KdWJpbml6ZSAtbyBmc19v
+bl91YmkuaW1nIC1tIDIwNDggLXAgMTI4S2lCIC1PIDIwNDggdWJpbml6ZS5jZmcNCg0KSWYgSSBm
+bGFzaCB0aGVzZSBpbnRvIG15IHN5c3RlbSB2aWEgdS1ib290LCBpdCB3b3JrcyB3aXRob3V0IGEg
+cHJvYmxlbS4gVGhlIGlzc3VlIHN0YXJ0cyB3aGVuIG1hcmtpbmcgYSBibG9jayBhcyBiYWQgKHZp
+YSBuYW5kIG1hcmtiYWQpOiBpZiBJIG1hcmsgdGhlIGZpcnN0IHR3byBibG9ja3MgYXMgYmFkLCB0
+aGUgc3lzdGVtIGJvb3RzIG5vcm1hbGx5LCBJZiBJIG1hcmsgYW55IGJsb2NrIGZyb20gdGhlIHRo
+aXJkIG9ud2FyZHMsIHRoZSBzeXN0ZW0gaXMgYWJsZSB0byBtb3VudCByb290ZnMsIGJ5IGZhaWxz
+IHNvb24gYWZ0ZXIgd2l0aCBhICJFcnJvciB3aGlsZSBkZWNvbXByZXNzaW5nIiBtZXNzYWdlLiBI
+ZXJlIGlzIGFuIGV4Y2VycHQgZnJvbSBteSBib290IGxvZzoNCg0KU2tpcCB0byB0aGUgaW1wb3J0
+YW50IHN0dWZmDQpbICAgIDAuNzEwODIwXSBVQkk6IGF0dGFjaGluZyBtdGQzIHRvIHViaTANClsg
+ICAgMC43MTQ4NjldIFVCSTogcGh5c2ljYWwgZXJhc2VibG9jayBzaXplOiAgIDEzMTA3MiBieXRl
+cyAoMTI4IEtpQikNClsgICAgMC43MjE2MTRdIFVCSTogbG9naWNhbCBlcmFzZWJsb2NrIHNpemU6
+ICAgIDEyNjk3NiBieXRlcw0KWyAgICAwLjcyNzMzOV0gVUJJOiBzbWFsbGVzdCBmbGFzaCBJL08g
+dW5pdDogICAgMjA0OA0KWyAgICAwLjczMjI5Ml0gVUJJOiBWSUQgaGVhZGVyIG9mZnNldDogICAg
+ICAgICAgMjA0OCAoYWxpZ25lZCAyMDQ4KQ0KWyAgICAwLjczODY0MV0gVUJJOiBkYXRhIG9mZnNl
+dDogICAgICAgICAgICAgICAgNDA5Ng0KWyAgICAwLjg0MDM5Ml0gVUJJOiBtYXguIHNlcXVlbmNl
+IG51bWJlcjogICAgICAgMg0KWyAgICAwLjg1MTg4M10gVUJJOiBhdHRhY2hlZCBtdGQzIHRvIHVi
+aTANClsgICAgMC44NTU5MzNdIFVCSTogTVREIGRldmljZSBuYW1lOiAgICAgICAgICAgICJmcyIN
+ClsgICAgMC44NjA4ODZdIFVCSTogTVREIGRldmljZSBzaXplOiAgICAgICAgICAgIDI1IE1pQg0K
+WyAgICAwLjg2NjA0OF0gVUJJOiBudW1iZXIgb2YgZ29vZCBQRUJzOiAgICAgICAgMTk5DQpbICAg
+IDAuODcwOTA3XSBVQkk6IG51bWJlciBvZiBiYWQgUEVCczogICAgICAgICAxDQpbICAgIDAuODc1
+NjA0XSBVQkk6IG51bWJlciBvZiBjb3JydXB0ZWQgUEVCczogICAwDQpbICAgIDAuODgwMjgwXSBV
+Qkk6IG1heC4gYWxsb3dlZCB2b2x1bWVzOiAgICAgICAxMjgNClsgICAgMC44ODUxMzldIFVCSTog
+d2Vhci1sZXZlbGluZyB0aHJlc2hvbGQ6ICAgIDQwOTYNClsgICAgMC44OTAxMDFdIFVCSTogbnVt
+YmVyIG9mIGludGVybmFsIHZvbHVtZXM6IDENClsgICAgMC44OTQ3NzZdIFVCSTogbnVtYmVyIG9m
+IHVzZXIgdm9sdW1lczogICAgIDENClsgICAgMC44OTk0NjJdIFVCSTogYXZhaWxhYmxlIFBFQnM6
+ICAgICAgICAgICAgIDQNClsgICAgMC45MDQxMzddIFVCSTogdG90YWwgbnVtYmVyIG9mIHJlc2Vy
+dmVkIFBFQnM6IDE5NQ0KWyAgICAwLjkwOTI4MF0gVUJJOiBudW1iZXIgb2YgUEVCcyByZXNlcnZl
+ZCBmb3IgYmFkIFBFQiBoYW5kbGluZzogNQ0KWyAgICAwLjkxNTYxNF0gVUJJOiBtYXgvbWVhbiBl
+cmFzZSBjb3VudGVyOiAxLzANClsgICAgMC45MjAxMDddIFVCSTogaW1hZ2Ugc2VxdWVuY2UgbnVt
+YmVyOiAgNDQxMDA3MjAwDQpbICAgIDAuOTI1MTU5XSBVQkk6IGJhY2tncm91bmQgdGhyZWFkICJ1
+YmlfYmd0MGQiIHN0YXJ0ZWQsIFBJRCAyNTUNClsgICAgMC45MzE0MThdIFVCSUJMSyBzdGFydGlu
+Zw0KWyAgICAwLjkzNDM2MF0gVUJJQkxLOiBkZXZpY2UncyBtYWpvcjogMjU0DQpbICAgIDAuOTM4
+NDM0XSBHb3Qgdm9sdW1lIGZzOiBkZXZpY2UgMC92b2x1bWUgMSBvZiBzaXplIDE4Ng0KWyAgICAw
+Ljk0NTgxM10gT01BUCBXYXRjaGRvZyBUaW1lciBSZXYgMHgwMTogaW5pdGlhbCB0aW1lb3V0IDYw
+IHNlYw0KWyAgICAwLjk1MjQwMV0gVENQIGN1YmljIHJlZ2lzdGVyZWQNClsgICAgMC45NTU4ODNd
+IE5FVDogUmVnaXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkgMTcNClsgICAgMC45NjA2MDFdIFZGUCBz
+dXBwb3J0IHYwLjM6IGltcGxlbWVudG9yIDQxIGFyY2hpdGVjdHVyZSAzIHBhcnQgMzAgdmFyaWFu
+dCBjIHJldiAzDQpbICAgIDAuOTY4NzEzXSBUaHVtYkVFIENQVSBleHRlbnNpb24gc3VwcG9ydGVk
+Lg0KWyAgICAwLjk3NDIwNF0gY2xvY2s6IGRpc2FibGluZyB1bnVzZWQgY2xvY2tzIHRvIHNhdmUg
+cG93ZXINClsgICAgMC45ODI5NjRdIFZGUzogTW91bnRlZCByb290IChjcmFtZnMgZmlsZXN5c3Rl
+bSkgcmVhZG9ubHkgb24gZGV2aWNlIDI1NDoxLg0KWyAgICAwLjk5MDY5M10gRnJlZWluZyBpbml0
+IG1lbW9yeTogMTIwSw0KSU5JVDogdmVyc2lvbiAyLjg4IGJvb3RpbmcNClsgICAgMS4zMTE5OTBd
+IEVycm9yIC0zIHdoaWxlIGRlY29tcHJlc3NpbmchDQpbICAgIDEuMzE2Mjg0XSBjMDMzMjA4NCgy
+NTE2KS0+YzNlOWUwMDAoNDA5NikNClsgICAgMS4zMjA2MDBdIEVycm9yIC0zIHdoaWxlIGRlY29t
+cHJlc3NpbmchDQpbICAgIDEuMzI0ODIwXSBjMDMzMmE1OCgyNjE1KS0+YzNlOWYwMDAoNDA5NikN
+Ci4uLiBTYW1lIG1lc3NhZ2UgZnJvbSBoZXJlIG9uIG9ud2FyZHMNCg0KQXMgeW91IGNhbiBzZWUs
+IFVCSSBzdGFydHMganVzdCBmaW5lLCBhbmQgSSdtIGFibGUgdG8gaW5pdGlhbGl6ZSB1YmlibGsg
+YW5kIGF0IGxlYXN0IG1vdW50IHRoZSBmaWxlc3lzdGVtLiBJIHRob3VnaHQgVUJJIHdhcyBzdXBw
+b3NlZCB0byBtYWtlIGFueSBiYWRibG9ja3MgdHJhbnNwYXJlbnQgdG8gdGhlIHVwcGVyIGxheWVy
+cy4uLiBJcyB0aGVyZSBhIHByb2JsZW0gd2l0aCB0aGF0IHRvdWdodCwgb3IgZGlkIG15IG1hbnVh
+bCB0YW1wZXJpbmcgKHdpdGggbmFuZCBtYXJrYmFkKSBnb3QgaW4gdGhlIHdheSBvZiBVQkkncyBi
+YWQgYmxvY2sgbWFuYWdlbWVudCBjYXBhYmlsaXRpZXM/DQoNCkkgYWxzbyB0cmllZCBzd2l0Y2hp
+bmcgdG8gc3F1YXNoZnMsIGJ1dCBJIHJhbiBpbnRvIGEgc2ltaWxhciBwcm9ibGVtLiAuIEkgZGVj
+aWRlZCB0byB1c2UgY3JhbWZzIG92ZXIgVUJJIGJlY2F1c2Ugd2UgaGFkIHJ1biBpbnRvIHRoaXMg
+cHJvYmxlbSBiZWZvcmUsIGFuZCBhZnRlciBzb21lIHJlc2VhcmNoIGl0IHNlZW1lZCB0aGF0IGlz
+IHdhcyBkdWUgdG8gY3JhbWZzJyBpbmFiaWxpdHkgdG8gaGFuZGxlIGJhZCBibG9ja3MsIHNvIEkg
+ZGVjaWRlZCB0byBnaXZlIFVCSSBhIHRyeSwgaG9waW5nIGl0IHdvdWxkIHNvbHZlIG15IHByb2Js
+ZW0uLi4NCg0KUmVnYXJkcywNCi0tDQpHdWlsaGVybWUgZGUgT2xpdmVpcmEgQ29zdGENCkZpcm13
+YXJlIEVuZ2luZWVyIC0gQXV0b3RyYWMgQ29tZXJjaW8gVGVsZWNvbXVuaWNhY29lcw0Kd3d3LmF1
+dG90cmFjLmNvbS5icg0KZ3VpbGhlcm1lLm9saXZlaXJhKGF0KWF1dG90cmFjLmNvbS5icg0KUGhv
+bmU6ICs1NSA2MSAzMzA3IDI2NjYNCg0KRXN0YSBtZW5zYWdlbSBlIHF1YWxxdWVyIGFuZXhvIGEg
+ZWxhIHPDo28gZG9jdW1lbnRvcyBjb25maWRlbmNpYWlzIGUgZGlyZWNpb25hZG9zIGV4Y2x1c2l2
+YW1lbnRlIGFvKHMpIGRlc3RpbmF0w6FyaW8ocykuIFF1YWxxdWVyIHVzbywgZGVzdmlvLCBzb25l
+Z2HDp8Ojbywgc3VwcmVzc8OjbywgcmV2ZWxhw6fDo28gb3UgZGl2dWxnYcOnw6NvIG7Do28gYXV0
+b3JpemFkYSDDqSBwcm9pYmlkYSBlIHN1amVpdGEgw6BzIHNhbsOnw7VlcyBlL291IHJlcGFyYcOn
+w7VlcyBsZWdhaXMgcG9yIGF0byBpbMOtY2l0byAoQ8OzZGlnbyBQZW5hbCwgQXJ0aWdvcyAxNTEg
+ZSAxNTIpLiBDYXNvIG7Do28gc2VqYSB1bSBkb3MgZGVzdGluYXTDoXJpb3MgZXhwcmVzc2FtZW50
+ZSBpbmRpY2Fkb3MsIHBvciBmYXZvciBlbnRyZSBlbSBjb250YXRvIGNvbSBvIHJlbWV0ZW50ZSwg
+cmVzcG9uZGVuZG8gZXN0ZSBlLW1haWwgZSBkZXN0cnVhIHF1YWlzcXVlciBjw7NwaWFzIGRhIG1l
+bnNhZ2VtIG9yaWdpbmFsLiBRdWFscXVlciBvcGluacOjbywgY3LDrXRpY2Egb3UgYW7DoWxpc2Ug
+ZGVzY3JpdGEgbmVzdGEgbWVuc2FnZW0gw6kgZGUgcmVzcG9uc2FiaWxpZGFkZSDDum5pY2EgZG8g
+cmVtZXRlbnRlLCBhIG1lbm9zIHF1YW5kbyBlc3RpdmVyIGV4cGxpY2l0YW1lbnRlIGV4cHJlc3Nv
+IHF1ZSBzZWphIGRhIGVtcHJlc2EgcmVtZXRlbnRlLg0KDQpUaGlzIG1lc3NhZ2UgYW5kIGFueSBh
+dHRhY2htZW50IGFyZSBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gZm9yIHRoZSBzb2xlIHVzZSBv
+ZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50cy4gQW55IHVuYXV0aG9yaXplZCB1c2UsIGRldmlhdGlv
+biwgd2l0aGhvbGRtZW50LCBzdXBwcmVzc2lvbiwgZGlzY2xvc3VyZSBvciBkaXN0cmlidXRpb24g
+aXMgcHJvaGliaXRlZCBhbmQgaXMgc3ViamVjdGVkIHRvIGxlZ2FsIHNhbmN0aW9ucyBhbmQvb3Ig
+Y29tcGVuc2F0aW9ucyBwZXIgaWxsaWNpdCBhY3QgKFBlbmFsIENvZGUsIGFydGljbGVzIDE1MSBh
+bmQgMTUyKS4gSWYgeW91IGFyZSBub3Qgb25lIG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnRzLCBw
+bGVhc2UgY29udGFjdCB0aGUgc2VuZGVyIGJ5IHJlcGx5IGUtbWFpbCBhbmQgZGVzdHJveSBhbnkg
+Y29weSBvZiB0aGUgb3JpZ2luYWwgbWVzc2FnZS4gQW55IHZpZXcsIGNvbW1lbnQgb3IgYW5hbHlz
+aXMgZXhwcmVzc2VkIGluIHRoaXMgbWVzc2FnZSBpcyBzb2xlIHJlc3BvbnNpYmlsaXR5IGZyb20g
+dGhlIHNlbmRlciwgZXhjZXB0IHdoZW4gaXTigJlzIHNwZWNpZmljYWxseSBleHByZXNzZWQgdGhh
+dCBpdOKAmXMgdGhlIHZpZXcsIGNvbW1lbnQgb3IgYW5hbHlzaXMgb2YgdGhlIGNvbXBhbnkuDQoN
+Cg==
