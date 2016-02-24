@@ -1,22 +1,25 @@
-Received: from mail-he1eur01on061c.outbound.protection.outlook.com
- ([2a01:111:f400:fe1e::61c]
- helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from comal.ext.ti.com ([198.47.26.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYMGY-0004gx-At
- for linux-mtd@lists.infradead.org; Tue, 23 Feb 2016 23:21:15 +0000
-From: Han Xu <han.xu@nxp.com>
-To: <shijie.huang@arm.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <han.xu@nxp.com>, <standby24x7@gmail.com>,
- <jkosina@suse.cz>, <boris.brezillon@free-electrons.com>,
- <fabio.estevam@freescale.com>, <fransklaver@gmail.com>, <hofrat@osadl.org>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 5/5] mtd: nand: gpmi: document the new supported chip in DT
-Date: Tue, 23 Feb 2016 17:04:53 -0600
-Message-ID: <1456268693-8630-6-git-send-email-han.xu@nxp.com>
-In-Reply-To: <1456268693-8630-1-git-send-email-han.xu@nxp.com>
-References: <1456268693-8630-1-git-send-email-han.xu@nxp.com>
+ id 1aYW7N-0004P5-NQ
+ for linux-mtd@lists.infradead.org; Wed, 24 Feb 2016 09:52:26 +0000
+Subject: Re: [PATCH v5 12/26] memory: omap-gpmc: Move device tree binding to
+ correct location
+To: Rob Herring <robh@kernel.org>
+References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+ <1455916548-3441-13-git-send-email-rogerq@ti.com>
+ <20160223205012.GA24158@rob-hp-laptop>
+CC: <tony@atomide.com>, <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
+ <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
+ <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <56CD7D1B.5010007@ti.com>
+Date: Wed, 24 Feb 2016 11:51:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20160223205012.GA24158@rob-hp-laptop>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-listed all supported chips in DT.
+On 23/02/16 22:50, Rob Herring wrote:
+> On Fri, Feb 19, 2016 at 11:15:34PM +0200, Roger Quadros wrote:
+>> omap-gpmc.c is a memory controller so move the binding to the
+>> right place.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>> ---
+>>  Documentation/devicetree/bindings/bus/ti-gpmc.txt  | 130 ---------------------
+>>  .../bindings/memory-controllers/omap-gpmc.txt      | 130 +++++++++++++++++++++
+> 
+> am335x is not an OMAP, so wasn't ti-gpmc a better name?
 
-Signed-off-by: Han Xu <han.xu@nxp.com>
----
- Documentation/devicetree/bindings/mtd/gpmi-nand.txt | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+The driver is named drivers/memory/omap-gpmc.c.
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-index c8d0e2f..ed48f69 100644
---- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-@@ -4,7 +4,8 @@ The GPMI nand controller provides an interface to control the
- NAND flash chips.
- 
- Required properties:
--  - compatible : should be "fsl,<chip>-gpmi-nand"
-+  - compatible : should be "fsl,<chip>-gpmi-nand", the chip should be imx23,
-+    imx28, imx6q, imx6qp, imx6sx, imx6ul or imx7d.
-   - reg : should contain registers location and length for gpmi and bch.
-   - reg-names: Should contain the reg names "gpmi-nand" and "bch"
-   - interrupts : BCH interrupt number.
--- 
-1.9.1
+> 
+>>  2 files changed, 130 insertions(+), 130 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/bus/ti-gpmc.txt
+>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+> 
+> Next time, use the git format-patch -M option.
+
+Indeed.
+
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
+> 
+
+Thanks.
+
+cheers,
+-roger
