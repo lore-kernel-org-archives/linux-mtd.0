@@ -1,23 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aYZmw-0004Sj-78
- for linux-mtd@lists.infradead.org; Wed, 24 Feb 2016 13:47:39 +0000
-Date: Wed, 24 Feb 2016 14:46:52 +0100
+Date: Wed, 24 Feb 2016 14:57:50 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Kamal Dasu
- <kdasu.kdev@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, Rob Herring
- <robh+dt@kernel.org>, Grant Likely <grant.likely@linaro.org>, Frank Rowand
- <frowand.list@gmail.com>
-Subject: Re: [PATCH 1/3] of: mtd: add helper reading "nand-ecc-algo" from DT
-Message-ID: <20160224144652.14068468@bbrezillon>
-In-Reply-To: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
-References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Han Xu <han.xu@nxp.com>, David Woodhouse <dwmw2@infradead.org>, Fabio
+ Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, Huang Shijie <shijie.huang@intel.com>, Brian Norris
+ <computersforpeace@gmail.com>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
+Message-ID: <20160224145750.21050def@bbrezillon>
+In-Reply-To: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
+References: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,60 +21,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rafal,
+Hi Markus,
 
-On Fri, 12 Feb 2016 19:11:23 +0100
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+On Sun, 21 Feb 2016 13:52:06 +0100
+Markus Pargmann <mpa@pengutronix.de> wrote:
 
-> This allows specifying algorithm used for NAND ECC. There are two
-> available values: "bch" and "hamming". It's important as having just
-> ECC parameters (step, strength) isn't enough to determine algorithm,
-> e.g. you can't distinct BCH-1 and Hamming.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> ECC is only calculated for written pages. As erased pages are not
+> actively written the ECC is always invalid. For this purpose the
+> Hardware BCH unit is able to check for erased pages and does not raise
+> an ECC error in this case. This behaviour can be influenced using the
+> BCH_MODE register which sets the number of allowed bitflips in an erased
+> page. Unfortunately the unit is not capable of fixing the bitflips in
+> memory.
+> 
+> To avoid complete software checks for erased pages, we can simply check
+> buffers with uncorrectable ECC errors because we know that any erased
+> page with errors is uncorrectable by the BCH unit.
+> 
+> This patch adds the generic nand_check_erased_ecc_chunk() to gpmi-nand
+> to correct erased pages. To have the valid data in the buffer before
+> using them, this patch moves the read_page_swap_end() call before the
+> ECC status checking for-loop.
+> 
+> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 > ---
->  Documentation/devicetree/bindings/mtd/nand.txt |  3 +++
->  drivers/of/of_mtd.c                            | 33 ++++++++++++++++++++=
-++++++
->  include/linux/mtd/nand.h                       |  5 ++++
->  include/linux/of_mtd.h                         |  6 +++++
->  4 files changed, 47 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentati=
-on/devicetree/bindings/mtd/nand.txt
-> index b53f92e..a2c2df5 100644
-> --- a/Documentation/devicetree/bindings/mtd/nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
-> @@ -3,6 +3,9 @@
->  - nand-ecc-mode : String, operation mode of the NAND ecc mode.
->    Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_fir=
-st",
->    "soft_bch".
-> +- nand-ecc-algo : string, algorithm of NAND ecc.
-> +		  Supported values are: "bch", "hamming". The default one is
-> +		  "bch".
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 49 ++++++++++++++++++++++++++++++----
+>  1 file changed, 44 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 235ddcb58f39..ce5a21252102 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1035,14 +1035,58 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	/* Loop over status bytes, accumulating ECC status. */
+>  	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+>  
+> +	read_page_swap_end(this, buf, nfc_geo->payload_size,
+> +			   this->payload_virt, this->payload_phys,
+> +			   nfc_geo->payload_size,
+> +			   payload_virt, payload_phys);
+> +
+>  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+>  		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+>  			continue;
+>  
+>  		if (*status == STATUS_UNCORRECTABLE) {
+> +			int flips;
+> +
+> +			/*
+> +			 * The ECC hardware has an uncorrectable ECC status
+> +			 * code in case we have bitflips in an erased page. As
+> +			 * nothing was written into this subpage the ECC is
+> +			 * obviously wrong and we can not trust it. We assume
+> +			 * at this point that we are reading an erased page and
+> +			 * try to correct the bitflips in buffer up to
+> +			 * ecc_strength bitflips. If this is a page with random
+> +			 * data, we exceed this number of bitflips and have a
+> +			 * ECC failure. Otherwise we use the corrected buffer.
+> +			 */
+> +			if (i == 0) {
+> +				/* The first block includes metadata */
+> +				flips = nand_check_erased_ecc_chunk(
+> +						buf + i * nfc_geo->ecc_chunk_size,
+> +						nfc_geo->ecc_chunk_size,
+> +						NULL, 0,
+> +						auxiliary_virt,
+> +						nfc_geo->metadata_size,
+> +						nfc_geo->ecc_strength);
+> +			} else {
+> +				flips = nand_check_erased_ecc_chunk(
+> +						buf + i * nfc_geo->ecc_chunk_size,
+> +						nfc_geo->ecc_chunk_size,
+> +						NULL, 0,
+> +						NULL, 0,
+> +						nfc_geo->ecc_strength);
+> +			}
 
-I like the idea of specifying which ECC algorithm should be used, and
-this is IMO clearer than putting the information directly in
-nand-ecc-mode (as is already done for the "soft" and "soft_bch" modes,
-which are respectively encoding software hamming and software bch
-implementations).
+You're not checking ECC bytes. I know it's a bit more complicated to
+implement, but as Brian stated several times, you should always check
+ECC bytes along with data bytes when testing for an erased chunk.
 
-But shouldn't we take this even further and add new DT properties
-to encode the ECC layout (syndrome, oob_first), and another one to
-specify the implementation type (software or hardware)?
-
-nand-ecc-layout =3D "nornal", "syndrome" or "oob_first"
-nand-ecc-engine =3D "none", "soft" or "hw" ("on-die" ?)
-
-Note that it's not something I ask you to do right now, I just want to
-bring the topic on the table.
+Indeed, it might appear that the user really programmed ff on the page,
+and in this case you don't want to consider the page as erased.
+In this case, the ECC bytes will be different from ff, and you'll
+be able to identify it by checking those ECC bytes.
 
 Best Regards,
 
 Boris
 
---=20
+-- 
 Boris Brezillon, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
