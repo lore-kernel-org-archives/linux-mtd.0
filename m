@@ -1,14 +1,17 @@
-Date: Wed, 24 Feb 2016 14:57:50 +0100
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aYa2c-0006ll-FX
+ for linux-mtd@lists.infradead.org; Wed, 24 Feb 2016 14:04:19 +0000
+Date: Wed, 24 Feb 2016 15:03:14 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Han Xu <han.xu@nxp.com>, David Woodhouse <dwmw2@infradead.org>, Fabio
- Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, Huang Shijie <shijie.huang@intel.com>, Brian Norris
- <computersforpeace@gmail.com>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-Message-ID: <20160224145750.21050def@bbrezillon>
-In-Reply-To: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
-References: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, dedekind1@gmail.com
+Subject: Re: [PATCH] ubi: Fix out of bounds write in volume update code
+Message-ID: <20160224150314.3a35bdba@bbrezillon>
+In-Reply-To: <1456048383-27344-1-git-send-email-richard@nod.at>
+References: <1456048383-27344-1-git-send-email-richard@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -21,94 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Markus,
+On Sun, 21 Feb 2016 10:53:03 +0100
+Richard Weinberger <richard@nod.at> wrote:
 
-On Sun, 21 Feb 2016 13:52:06 +0100
-Markus Pargmann <mpa@pengutronix.de> wrote:
+> ubi_start_leb_change() alloctes too few bytes.
+> ubi_more_leb_change_data() will write up to req->upd_bytes +
+> ubi->min_io_size bytes.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-> ECC is only calculated for written pages. As erased pages are not
-> actively written the ECC is always invalid. For this purpose the
-> Hardware BCH unit is able to check for erased pages and does not raise
-> an ECC error in this case. This behaviour can be influenced using the
-> BCH_MODE register which sets the number of allowed bitflips in an erased
-> page. Unfortunately the unit is not capable of fixing the bitflips in
-> memory.
-> 
-> To avoid complete software checks for erased pages, we can simply check
-> buffers with uncorrectable ECC errors because we know that any erased
-> page with errors is uncorrectable by the BCH unit.
-> 
-> This patch adds the generic nand_check_erased_ecc_chunk() to gpmi-nand
-> to correct erased pages. To have the valid data in the buffer before
-> using them, this patch moves the read_page_swap_end() call before the
-> ECC status checking for-loop.
-> 
-> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
 > ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 49 ++++++++++++++++++++++++++++++----
->  1 file changed, 44 insertions(+), 5 deletions(-)
+>  drivers/mtd/ubi/upd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 235ddcb58f39..ce5a21252102 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1035,14 +1035,58 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  	/* Loop over status bytes, accumulating ECC status. */
->  	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+> diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
+> index cfeaf0f..b7901ce 100644
+> --- a/drivers/mtd/ubi/upd.c
+> +++ b/drivers/mtd/ubi/upd.c
+> @@ -193,7 +193,7 @@ int ubi_start_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
+>  	vol->changing_leb = 1;
+>  	vol->ch_lnum = req->lnum;
 >  
-> +	read_page_swap_end(this, buf, nfc_geo->payload_size,
-> +			   this->payload_virt, this->payload_phys,
-> +			   nfc_geo->payload_size,
-> +			   payload_virt, payload_phys);
-> +
->  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
->  		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
->  			continue;
+> -	vol->upd_buf = vmalloc(req->bytes);
+> +	vol->upd_buf = vmalloc(ALIGN((int)req->bytes, ubi->min_io_size));
+>  	if (!vol->upd_buf)
+>  		return -ENOMEM;
 >  
->  		if (*status == STATUS_UNCORRECTABLE) {
-> +			int flips;
-> +
-> +			/*
-> +			 * The ECC hardware has an uncorrectable ECC status
-> +			 * code in case we have bitflips in an erased page. As
-> +			 * nothing was written into this subpage the ECC is
-> +			 * obviously wrong and we can not trust it. We assume
-> +			 * at this point that we are reading an erased page and
-> +			 * try to correct the bitflips in buffer up to
-> +			 * ecc_strength bitflips. If this is a page with random
-> +			 * data, we exceed this number of bitflips and have a
-> +			 * ECC failure. Otherwise we use the corrected buffer.
-> +			 */
-> +			if (i == 0) {
-> +				/* The first block includes metadata */
-> +				flips = nand_check_erased_ecc_chunk(
-> +						buf + i * nfc_geo->ecc_chunk_size,
-> +						nfc_geo->ecc_chunk_size,
-> +						NULL, 0,
-> +						auxiliary_virt,
-> +						nfc_geo->metadata_size,
-> +						nfc_geo->ecc_strength);
-> +			} else {
-> +				flips = nand_check_erased_ecc_chunk(
-> +						buf + i * nfc_geo->ecc_chunk_size,
-> +						nfc_geo->ecc_chunk_size,
-> +						NULL, 0,
-> +						NULL, 0,
-> +						nfc_geo->ecc_strength);
-> +			}
 
-You're not checking ECC bytes. I know it's a bit more complicated to
-implement, but as Brian stated several times, you should always check
-ECC bytes along with data bytes when testing for an erased chunk.
 
-Indeed, it might appear that the user really programmed ff on the page,
-and in this case you don't want to consider the page as erased.
-In this case, the ECC bytes will be different from ff, and you'll
-be able to identify it by checking those ECC bytes.
-
-Best Regards,
-
-Boris
 
 -- 
 Boris Brezillon, Free Electrons
