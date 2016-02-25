@@ -1,20 +1,24 @@
-Received: from mail02.rohde-schwarz.com ([80.246.32.97])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aZ02W-0004rt-2q
- for linux-mtd@lists.infradead.org; Thu, 25 Feb 2016 17:49:25 +0000
-In-Reply-To: <1456400154.4666.30.camel@infradead.org>
-References: <1447273666-2679-1-git-send-email-thomas.betker@freenet.de>
- <1456400154.4666.30.camel@infradead.org>
-To: dwmw2@infradead.org
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Thomas Betker <thomas.betker@freenet.de>
+ id 1aZ03u-0006E9-Dn
+ for linux-mtd@lists.infradead.org; Thu, 25 Feb 2016 17:50:50 +0000
+Received: by mail-pa0-x230.google.com with SMTP id fl4so35737035pad.0
+ for <linux-mtd@lists.infradead.org>; Thu, 25 Feb 2016 09:50:29 -0800 (PST)
+Date: Thu, 25 Feb 2016 09:50:27 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "open list:BROADCOM STB NAND FLASH DRIVER"
+ <bcm-kernel-feedback-list@broadcom.com>,
+ open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: brcmnand: Fix v7.1 register offsets
+Message-ID: <20160225175027.GJ21465@google.com>
+References: <1456358843-16347-1-git-send-email-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] jffs2: Don't add summary entry when MTD write fails
-From: Thomas.Betker@rohde-schwarz.com
-Message-ID: <OFE18455CD.1A74662E-ONC1257F64.005F2536-C1257F64.0061DD82@rohde-schwarz.com>
-Date: Thu, 25 Feb 2016 18:48:56 +0100
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1456358843-16347-1-git-send-email-f.fainelli@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gRGF2aWQ6DQoNCj4gPiArICAgICAgIGludCByZXQ7DQo+ID4gKw0KPiA+ICsgICAgICAg
-cmV0ID0gbXRkX3dyaXRldihjLT5tdGQsIHZlY3MsIGNvdW50LCB0bywgcmV0bGVuKTsNCj4gPiAr
-DQo+ID4gICAgICAgICBpZiAoIWpmZnMyX2lzX3dyaXRlYnVmZmVyZWQoYykpIHsNCj4gPiAgICAg
-ICAgICAgICAgICAgaWYgKGpmZnMyX3N1bV9hY3RpdmUoKSkgew0KPiA+ICAgICAgICAgICAgICAg
-ICAgICAgICAgIGludCByZXM7DQo+ID4gKw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGlm
-IChyZXQgfHwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgKnJldGxlbiAhPSBpb3Zf
-bGVuZ3RoKChzdHJ1Y3QgaW92ZWMgKikNCj4gdmVjcywgY291bnQpKQ0KPiA+ICsgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHJldDsNCj4gPiArDQo+ID4gICAgICAgICAgICAg
-ICAgICAgICAgICAgcmVzID0gamZmczJfc3VtX2FkZF9rdmVjKGMsIHZlY3MsIGNvdW50LCANCj4g
-KHVpbnQzMl90KSB0byk7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgaWYgKHJlcykgew0K
-PiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHJlczsNCj4gDQo+IE9L
-Li4uIGJ1dCBwZXJoYXBzIHdlIGNhbiBkaXNwZW5zZSB3aXRoIHRoZSBzZXBhcmF0ZSAncmV0JyBh
-bmQgJ3JlcycNCj4gdmFyaWFibGVzIGFuZCB0aGUgcmF0cyBuZXN0IG9mIGNvbmRpdGlvbnMsIGFu
-ZCBkbyBzb21ldGhpbmcgbGlrZToNCj4gDQo+ICAgIGludCByZXQ7DQo+IA0KPiAgICByZXQgPSBt
-dGRfd3JpdGV2KOKApik7DQo+IA0KPiAgICBpZiAoIXJldCAmJiAqcmV0bGVuID09IGlvdl9sZW5n
-dGgo4oCmKSAmJg0KPiAgICAgICAgIWpmZnMyX2lzX3dyaXRlYnVmZmVyZWQoYykgJiYgamZmczJf
-c3VtX2FjdGl2ZSgpKSANCj4gICAgICAgICAgIHJldCA9IGpmZnMyX3N1bV9hZGRfa3ZlYyjigKYp
-Ow0KPiAgICANCj4gICAgcmV0dXJuIHJldDsNCg0KV2hpbGUgdGhlIGxvZ2ljIGlzIHRoZSBzYW1l
-LCB3aWxsIHRoZSBjb21waWxlciBnZW5lcmF0ZSB0aGUgc2FtZSBjb2RlPyANCldoZW4gQ09ORklH
-X0pGRlMyX1NVTU1BUlkgaXMgbm90IHNldCwgImlmIChqZmZzMl9zdW1fYWN0aXZlKCkpIiBtZWFu
-cyAiaWYgDQooMCkiLCBhbmQgSSB3b3VsZCBhc3N1bWUgdGhhdCB0aGUgY29tcGlsZXIgcmVtb3Zl
-cyB0aGUgd2hvbGUgY2xhdXNlLCAiaWYiIA0KYW5kIGFsbC4gSG93ZXZlciwgSSBhbSBub3Qgc3Vy
-ZSB3aGF0IGhhcHBlbnMgd2l0aCAiaWYgKCFyZXQgJiYgd2hhdGV2ZXIgJiYgDQowKSIuDQoNClRo
-YXQncyB3aHkgSSB3YXMgdGFraW5nIHBhaW5zIHRvIGtlZXAgdGhlIG9yaWdpbmFsIGNvbnRyb2wg
-ZmxvdyBpbnRhY3QsIA0KZXZlbiBpZiBpdCdzIGEgcmF0J3MgbmVzdCAoaXQgaXMpLiBJZiBJIHJl
-bWVtYmVyIGNvcnJlY3RseSwgDQpqZmZzMl9mbGFzaF9kaXJlY3Rfd3JpdGV2KCkgaXMgY2FsbGVk
-IHF1aXRlIG9mdGVuLCBhbmQgSSBkaWRuJ3Qgd2FudCANCnBlcmZvcm1hbmNlIHRvIHN1ZmZlci4g
-SSBtYXkgYmUgY29tcGxldGVseSB3cm9uZyBoZXJlLCBvZiBjb3Vyc2UsIGJ1dCB0aGVuIA0Kd2h5
-IHdhc24ndCB0aGUgb3JpZ2luYWwgc291cmNlIGNvZGUgImlmICghamZmczJfaXNfd3JpdGVidWZm
-ZXJlZChjKSAmJiANCmpmZnMyX3N1bV9hY3RpdmUoKSkiPw0KDQpCZXN0IHJlZ2FyZHMsDQpUaG9t
-YXMNCg0K
+On Wed, Feb 24, 2016 at 04:07:23PM -0800, Florian Fainelli wrote:
+> The BRCMNAND controller revision 7.1 is almost 100% compatible with the
+> previous v6.0 register offset layout, except for the Correctable Error
+> Reporting Threshold registers. Fix this by adding another table with the
+> correct offsets for CORR_THRESHOLD and CORR_THRESHOLD_EXT.
+
+Wow. That sucks, but I guess I can't say I'm surprised.
+
+> Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+
+Applied to l2-mtd.git.
