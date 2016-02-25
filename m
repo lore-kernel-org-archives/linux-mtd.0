@@ -1,32 +1,19 @@
-In-Reply-To: <1456386428.3632.2.camel@infinera.com>
-References: <CAKatumo13ZM2o3dK9_ouxzta-sxeiB5E236Qh5dfbnEBc9CuMw@mail.gmail.com>	
- <1453910781.20662.35.camel@infinera.com>
- <20160128000559.GA14270@google.com>	
- <OF7C1394C5.2BBD0A26-ONC1257F48.002BF506-C1257F48.002D6C9C@rohde-schwarz.com>
- <1454336914.133285.297.camel@infradead.org>	
- <OF2969B332.8B296F0B-ONC1257F4C.006307EB-C1257F4C.0067DE44@LocalDomain>
- <OF19585295.84AA7860-ONC1257F5D.0031E02A-C1257F5D.0036B10E@rohde-schwarz.com>
- <1456386428.3632.2.camel@infinera.com>
-To: Joakim.Tjernlund@infinera.com
-Cc: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "deng.chao1@zte.com.cn" <deng.chao1@zte.com.cn>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-mtd-bounces@lists.infradead.org"
- <linux-mtd-bounces@lists.infradead.org>,
- "liu.ming50@gmail.com" <liu.ming50@gmail.com>,
- "sztomi89@gmail.com" <sztomi89@gmail.com>,
- "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
- "wangzaiwei@top-vision.cn" <wangzaiwei@top-vision.cn>
-MIME-Version: 1.0
-Subject: Re: JFFS2 deadlock
-From: Thomas.Betker@rohde-schwarz.com
-Message-ID: <OF5573B33B.57B4C4FF-ONC1257F64.0036346C-C1257F64.0036BD81@rohde-schwarz.com>
-Date: Thu, 25 Feb 2016 10:57:53 +0100
-Content-Type: text/plain; charset="US-ASCII"
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aYtUs-0005NF-TU
+ for linux-mtd@lists.infradead.org; Thu, 25 Feb 2016 10:50:15 +0000
+Message-ID: <1456397391.4719.30.camel@gmail.com>
+Subject: Re: Filesystems over UBI can't handle badblocks
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Guilherme de Oliveira Costa <guilherme.oliveira@autotrac.com.br>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Thu, 25 Feb 2016 12:49:51 +0200
+In-Reply-To: <7F9DB42F7DDA544EA3EB31D694929A30EB84DA@PERU.autotrac.corp>
+References: <7F9DB42F7DDA544EA3EB31D694929A30EB84DA@PERU.autotrac.corp>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,14 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Joakim:
+On Wed, 2016-02-24 at 20:08 +0000, Guilherme de Oliveira Costa wrote:
+> As you can see, UBI starts just fine, and I'm able to initialize
+> ubiblk and at least mount the filesystem. I thought UBI was supposed
+> to make any badblocks transparent to the upper layers... Is there a
+> problem with that tought, or did my manual tampering (with nand
+> markbad) got in the way of UBI's bad block management capabilities?
 
-> Can we get this upstream before next release? I don't think there 
-> will much more
-> testing at this point.
+It is right that UBI makes things transparent to upper layers. However,
+this is true only if you follow a set of reasonable rules, like you do
+not go and change the MTD partition directly, all the changes go via
+UBI.
 
-I would second this. Actually, I did some additional stress testing, but 
-didn't see any problems.
+Marking an eraseblock as bad is a change, and it should be done via
+UBI, not directly via MTD.
 
-Best regards,
-Thomas
+Now, how to do it via UBI? I think this is not supported, but it can be
+implemented, I believe.
