@@ -1,31 +1,15 @@
-Message-ID: <1456399332.4666.26.camel@infradead.org>
-Subject: Re: JFFS2 deadlock
+Message-ID: <1456400154.4666.30.camel@infradead.org>
+Subject: Re: [PATCH] jffs2: Don't add summary entry when MTD write fails
 From: David Woodhouse <dwmw2@infradead.org>
-To: Thomas.Betker@rohde-schwarz.com, Joakim.Tjernlund@infinera.com
-Cc: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>, "deng.chao1@zte.com.cn"
- <deng.chao1@zte.com.cn>,  "linux-fsdevel@vger.kernel.org"
- <linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-mtd-bounces@lists.infradead.org"
- <linux-mtd-bounces@lists.infradead.org>, "liu.ming50@gmail.com"
- <liu.ming50@gmail.com>, "sztomi89@gmail.com" <sztomi89@gmail.com>,
- "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
- "wangzaiwei@top-vision.cn" <wangzaiwei@top-vision.cn>
-Date: Thu, 25 Feb 2016 11:22:12 +0000
-In-Reply-To: <OF5573B33B.57B4C4FF-ONC1257F64.0036346C-C1257F64.0036BD81@rohde-schwarz.com>
-References: <CAKatumo13ZM2o3dK9_ouxzta-sxeiB5E236Qh5dfbnEBc9CuMw@mail.gmail.com>
- <1453910781.20662.35.camel@infinera.com>
- <20160128000559.GA14270@google.com>
- <OF7C1394C5.2BBD0A26-ONC1257F48.002BF506-C1257F48.002D6C9C@rohde-schwarz.com>
- <1454336914.133285.297.camel@infradead.org>
- <OF2969B332.8B296F0B-ONC1257F4C.006307EB-C1257F4C.0067DE44@LocalDomain>
- <OF19585295.84AA7860-ONC1257F5D.0031E02A-C1257F5D.0036B10E@rohde-schwarz.com>
- <1456386428.3632.2.camel@infinera.com>
- <OF5573B33B.57B4C4FF-ONC1257F64.0036346C-C1257F64.0036BD81@rohde-schwarz.com>
+To: Thomas Betker <thomas.betker@freenet.de>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Thomas Betker
+ <thomas.betker@rohde-schwarz.com>
+Date: Thu, 25 Feb 2016 11:35:54 +0000
+In-Reply-To: <1447273666-2679-1-git-send-email-thomas.betker@freenet.de>
+References: <1447273666-2679-1-git-send-email-thomas.betker@freenet.de>
 Content-Type: multipart/signed; micalg="sha-1";
  protocol="application/x-pkcs7-signature";
- boundary="=-XbFCu1DFLk2X3wkguWyQ"
+ boundary="=-iZ3ZTL0jOG70LEIeECtm"
 Mime-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,36 +21,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-XbFCu1DFLk2X3wkguWyQ
+--=-iZ3ZTL0jOG70LEIeECtm
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 
-On Thu, 2016-02-25 at 10:57 +0100, Thomas.Betker@rohde-schwarz.com wrote:
-> Hello Joakim:
->=20
-> > Can we get this upstream before next release? I don't think there=C2=A0
-> > will much more
-> > testing at this point.
->=20
-> I would second this. Actually, I did some additional stress testing, but=
-=C2=A0
-> didn't see any problems.
+T24gV2VkLCAyMDE1LTExLTExIGF0IDIxOjI3ICswMTAwLCBUaG9tYXMgQmV0a2VyIHdyb3RlOgo+
+IAo+IMKgaW50IGpmZnMyX2ZsYXNoX2RpcmVjdF93cml0ZXYoc3RydWN0IGpmZnMyX3NiX2luZm8g
+KmMsIGNvbnN0IHN0cnVjdCBrdmVjICp2ZWNzLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdW5zaWduZWQgbG9uZyBjb3VudCwgbG9m
+Zl90IHRvLCBzaXplX3QgKnJldGxlbikKPiDCoHsKPiArwqDCoMKgwqDCoMKgwqBpbnQgcmV0Owo+
+ICsKPiArwqDCoMKgwqDCoMKgwqByZXQgPSBtdGRfd3JpdGV2KGMtPm10ZCwgdmVjcywgY291bnQs
+IHRvLCByZXRsZW4pOwo+ICsKPiDCoMKgwqDCoMKgwqDCoMKgaWYgKCFqZmZzMl9pc193cml0ZWJ1
+ZmZlcmVkKGMpKSB7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoamZmczJf
+c3VtX2FjdGl2ZSgpKSB7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgaW50IHJlczsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBpZiAocmV0IHx8Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKnJldGxlbiAhPSBpb3ZfbGVuZ3RoKChzdHJ1Y3QgaW92
+ZWMgKikgdmVjcywgY291bnQpKQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiByZXQ7Cj4gKwo+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJlcyA9IGpmZnMyX3N1bV9hZGRf
+a3ZlYyhjLCB2ZWNzLCBjb3VudCwgKHVpbnQzMl90KSB0byk7Cj4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHJlcykgewo+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4g
+cmVzOwoKT0suLi4gYnV0IHBlcmhhcHMgd2UgY2FuIGRpc3BlbnNlIHdpdGggdGhlIHNlcGFyYXRl
+ICdyZXQnIGFuZCAncmVzJwp2YXJpYWJsZXMgYW5kIHRoZSByYXRzIG5lc3Qgb2YgY29uZGl0aW9u
+cywgYW5kIGRvIHNvbWV0aGluZyBsaWtlOgoKwqAgwqBpbnQgcmV0OwoKwqAgwqByZXQgPSBtdGRf
+d3JpdGV2KOKApik7CgrCoCDCoGlmICghcmV0ICYmICpyZXRsZW4gPT0gaW92X2xlbmd0aCjigKYp
+ICYmCsKgIMKgIMKgIMKgIWpmZnMyX2lzX3dyaXRlYnVmZmVyZWQoYykgJiYgamZmczJfc3VtX2Fj
+dGl2ZSgpKcKgCsKgIMKgIMKgIMKgIMKgIHJldCA9IGpmZnMyX3N1bV9hZGRfa3ZlYyjigKYpOwrC
+oCDCoArCoCDCoHJldHVybiByZXQ7CgotLSAKRGF2aWQgV29vZGhvdXNlICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2VudHJlCkRhdmlkLldvb2Rob3Vz
+ZUBpbnRlbC5jb20gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBJbnRlbCBDb3Jwb3JhdGlv
+bgoK
 
-OK, of the four fixes I had in my branch, three are Cc:stable and I
-have pushed them to linux-mtd.git. I'll give them a day or two in
-linux-next and then send a pull request.
 
-The fourth, which is just a mount speedup, I've put in l2-mtd.git.
-
-Brian, was that the right way to do it? I feel like an impostor pushing
-to my own repositories now :)
-
---=20
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
-
-
---=-XbFCu1DFLk2X3wkguWyQ
+--=-iZ3ZTL0jOG70LEIeECtm
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -159,18 +148,18 @@ Qy7VFBkoLINszBrOUeIxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0
 YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcx
 ODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENB
 AgMN7zcwCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMTYwMjI1MTEyMjEyWjAjBgkqhkiG9w0BCQQxFgQUFMJC1ZLdqilGAFbpc9FM8xnQhnQw
+CQUxDxcNMTYwMjI1MTEzNTU0WjAjBgkqhkiG9w0BCQQxFgQUlh0bFgbRdO1IOTPaDhCIlRon58ww
 gaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0
 ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMT
 L1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMN7zcwgacG
 CyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRk
 LjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMv
 U3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAw3vNzANBgkq
-hkiG9w0BAQEFAASCAQCr+VBc5JK8N6hOZSV9C2ZL6Wiko+QziHIh9arvj028Zsu+UaKDQXVFdJBU
-NRpOQK+MUqi2z1ldR2z6m6BX1sAszyAPpEtkxs6m4kRyxdppwdsiqjUcv5a0kfdDaGZ+Z9ZGZyNI
-njDlhhWoC1NPImLPPsJq8rvF6Qq1QtgY3bKs0DkHvwEunIlbtArRa7QaYlCUZLB6AGoCobGQW9be
-jdWZPB8FvRzlY/smWhJjYRU+b3vh67kaWG3YwpbhMhovjjObO+q49bRTAUrqcOvy6nFKp1kfYYac
-McI3uFXCvW4Ymljh2iDtP69sDaGeKVT+AZzN2R0rHQsXqk8R6koQkeSNAAAAAAAA
+hkiG9w0BAQEFAASCAQAMQ+g4hc6UfiNBZo3KN8S/MRsDemzJbuzczPqgIDme2JgczSwDTjeyNQqR
+SQTHawgClS7NX03PALc03CaxXqPrIbN5GlVySTn2v5oh0csK0l9iYl/+kAX8c0jSNrgTfqFstSP2
+ZcBLtVYx7rt+8cvJM7twm8gwox2aw6YR9QdJtjzPTwQiYdaG416EsvhO94lMfGuzPRxC+5tpl8Xp
+aItcebtZ9BcE7Lo6Sbdu7DQ14l83eUZS5oqBUNuFA1xWkgCV6pjX+dzIbYhxhDJZtYA/OkNdrf4E
+kPJ3pfd+A4iASzaM0esy1cj+WBckQqzwHvyJf4+FTQH2wrl37FGyEHbtAAAAAAAA
 
 
---=-XbFCu1DFLk2X3wkguWyQ--
+--=-iZ3ZTL0jOG70LEIeECtm--
