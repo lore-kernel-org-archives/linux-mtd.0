@@ -1,30 +1,21 @@
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "Thomas.Betker@rohde-schwarz.com" <Thomas.Betker@rohde-schwarz.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+From: Yunhui Cui <yunhui.cui@nxp.com>
+To: Han Xu <xhnjupt@gmail.com>, Yunhui Cui <B56489@freescale.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>,
+ "han.xu@freescale.com" <han.xu@freescale.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "sztomi89@gmail.com" <sztomi89@gmail.com>, "wangzaiwei@top-vision.cn"
- <wangzaiwei@top-vision.cn>, "deng.chao1@zte.com.cn" <deng.chao1@zte.com.cn>,
- "liu.ming50@gmail.com" <liu.ming50@gmail.com>, "dedekind1@gmail.com"
- <dedekind1@gmail.com>, "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
- "linux-mtd-bounces@lists.infradead.org"
- <linux-mtd-bounces@lists.infradead.org>, "linux-fsdevel@vger.kernel.org"
- <linux-fsdevel@vger.kernel.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>
-Subject: Re: JFFS2 deadlock
-Date: Thu, 25 Feb 2016 07:46:20 +0000
-Message-ID: <1456386428.3632.2.camel@infinera.com>
-References: <CAKatumo13ZM2o3dK9_ouxzta-sxeiB5E236Qh5dfbnEBc9CuMw@mail.gmail.com>
- <1453910781.20662.35.camel@infinera.com>
- <20160128000559.GA14270@google.com>
- <OF7C1394C5.2BBD0A26-ONC1257F48.002BF506-C1257F48.002D6C9C@rohde-schwarz.com>
- <1454336914.133285.297.camel@infradead.org>
- <OF2969B332.8B296F0B-ONC1257F4C.006307EB-C1257F4C.0067DE44@LocalDomain>
- <OF19585295.84AA7860-ONC1257F5D.0031E02A-C1257F5D.0036B10E@rohde-schwarz.com>
-In-Reply-To: <OF19585295.84AA7860-ONC1257F5D.0031E02A-C1257F5D.0036B10E@rohde-schwarz.com>
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>
+Subject: RE: [PATCH v2 3/4] mtd:spi-nor:fsl-quadspi:Add fast-read mode support
+Date: Thu, 25 Feb 2016 08:07:22 +0000
+Message-ID: <DB5PR0401MB1912C9D041FF2B408652F4CD94A60@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+References: <1454326208-4533-1-git-send-email-B56489@freescale.com>
+ <1454326208-4533-3-git-send-email-B56489@freescale.com>
+ <20160217180742.GB17485@shlinux2>
+In-Reply-To: <20160217180742.GB17485@shlinux2>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-15"
-Content-ID: <6FA7532076B97A4A9F819518844EF5A5@infinera.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,47 +27,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2016-02-18 at 10:57 +0100, Thomas.Betker@rohde-schwarz.com wrote:
-> Hello David:
->=20
-> >=20
-> > >=20
-> > > Please could you try what's in the tree at
-> > > http://git.infradead.org/users/dwmw2/jffs2-fixes.git
-> >=20
-> > Your patch looks much simpler, and I will definitely test it. It may
-> > take a few days, though, as I have to unearth the test scripts, and=A0
-> > find a time slot for testing.
-> Here is what I did (sorry for the wait, things were piling up):
->=20
-> 1) Removed Deng Chao's patch from my kernel, added your patch "jffs2: Fix=
-=A0
-> page lock / f->sem deadlock". I am still on linux-3.14, but jffs2 hasn't=
-=A0
-> changed much since then, so this shouldn't make a difference. Added a=A0
-> printk() before mutex_unlock(&f->sem) to check if the prospective page wa=
-s=A0
-> locked, i.e. if the deadlock situation actually occurs.
->=20
-> 2) On my target system, started wangzaiwei's test (with some fixes), plus=
-=A0
-> a loop copying a large file over and over (to get GC rolling, which=A0
-> increases the chance of a deadlock).
->=20
-> 3) After 24 hours, the system was still alive, and the printk() had been=
-=A0
-> hit 32 times.
->=20
-> So yes, I am confident that your patch avoids the deadlock, and if that's=
-=A0
-> good enough for you, please add my Tested-by:. However, I am going to run=
-=A0
-> some more stress tests here just to check that there weren't any=A0
-> unexpected side effects. (Don't get me wrong -- I am sure the patch is=A0
-> fine, but for me it's a case of "once bitten, twice shy" ...)
+Hi Han,
 
-Can we get this upstream before next release? I don't think there will much=
- more
-testing at this point.
+I have provided the options " m25p,fast-read ", because there are probable =
+some flashes can't support quad mode.
+So we should support fast-read mode in our driver. Moreover,  There is a op=
+tion to select fast-read mode in spi_nor.c :
+               /* If we were instantiated by DT, use it */
+                 if (of_property_read_bool(np, "m25p,fast-read"))
+                         nor->flash_read =3D SPI_NOR_FAST;
 
-=A0Jocke=
+Thanks
+Yunhui
+
+-----Original Message-----
+From: Han Xu [mailto:xhnjupt@gmail.com]=20
+Sent: Thursday, February 18, 2016 2:08 AM
+To: Yunhui Cui
+Cc: dwmw2@infradead.org; computersforpeace@gmail.com; han.xu@freescale.com;=
+ linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; linux-arm-ker=
+nel@lists.infradead.org; Yao Yuan
+Subject: Re: [PATCH v2 3/4] mtd:spi-nor:fsl-quadspi:Add fast-read mode supp=
+ort
+
+On Mon, Feb 01, 2016 at 07:30:07PM +0800, Yunhui Cui wrote:
+> The qspi driver add generic fast-read mode for different flash=20
+> venders. There are some different board flash work on different mode,=20
+> such fast-read, quad-mode.
+> So we have to modify the third entrace parameter of spi_nor_scan().
+>=20
+> Signed-off-by: Yunhui Cui <B56489@freescale.com>
+> ---
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 27 +++++++++++++++++++++------
+>  1 file changed, 21 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c=20
+> b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 9861290..0a31cb1 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -389,11 +389,21 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+>  	/* Read */
+>  	lut_base =3D SEQID_READ * 4;
+> =20
+> -	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
+> -			base + QUADSPI_LUT(lut_base));
+> -	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
+> -		    LUT1(FSL_READ, PAD4, rxfifo),
+> -			base + QUADSPI_LUT(lut_base + 1));
+> +	if (nor->flash_read =3D=3D SPI_NOR_FAST) {
+> +		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
+> +			    LUT1(ADDR, PAD1, addrlen),
+> +				base + QUADSPI_LUT(lut_base));
+> +		qspi_writel(q,  LUT0(DUMMY, PAD1, read_dm) |
+> +			    LUT1(FSL_READ, PAD1, rxfifo),
+> +				base + QUADSPI_LUT(lut_base + 1));
+> +	} else if (nor->flash_read =3D=3D SPI_NOR_QUAD) {
+> +		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
+> +			    LUT1(ADDR, PAD1, addrlen),
+> +				base + QUADSPI_LUT(lut_base));
+> +		qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
+> +			    LUT1(FSL_READ, PAD4, rxfifo),
+> +				base + QUADSPI_LUT(lut_base + 1));
+> +	}
+> =20
+>  	/* Write enable */
+>  	lut_base =3D SEQID_WREN * 4;
+> @@ -468,6 +478,7 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q,=20
+> u8 cmd)  {
+>  	switch (cmd) {
+>  	case SPINOR_OP_READ_1_1_4:
+> +	case SPINOR_OP_READ_FAST:
+>  		return SEQID_READ;
+>  	case SPINOR_OP_WREN:
+>  		return SEQID_WREN;
+> @@ -963,6 +974,7 @@ static int fsl_qspi_probe(struct platform_device *pde=
+v)
+>  	struct spi_nor *nor;
+>  	struct mtd_info *mtd;
+>  	int ret, i =3D 0;
+> +	enum read_mode mode =3D SPI_NOR_QUAD;
+> =20
+>  	q =3D devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
+>  	if (!q)
+> @@ -1064,7 +1076,10 @@ static int fsl_qspi_probe(struct platform_device *=
+pdev)
+>  		/* set the chip address for READID */
+>  		fsl_qspi_set_base_addr(q, nor);
+> =20
+> -		ret =3D spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
+> +		ret =3D of_property_read_bool(np, "m25p,fast-read");
+> +		mode =3D (ret) ? SPI_NOR_FAST : SPI_NOR_QUAD;
+> +
+> +		ret =3D spi_nor_scan(nor, NULL, mode);
+>  		if (ret)
+>  			goto mutex_failed;
+> =20
+I understand you want to provide a more generic read mode, but this is a qu=
+ad spi driver, I prefer to provide the options, either quad read/quad IO re=
+ad, or just normal read.
+> --
+> 2.1.0.27.g96db324
+>=20
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
