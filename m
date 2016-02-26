@@ -20,9 +20,10 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Priit Laes <plaes@plaes.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
  bcm-kernel-feedback-list@broadcom.com, linux-api@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v3 16/52] mtd: nand: use mtd_set_ecclayout() where appropriate
-Date: Fri, 26 Feb 2016 01:57:24 +0100
-Message-Id: <1456448280-27788-17-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 17/52] mtd: onenand: use mtd_set_ecclayout() where
+ appropriate
+Date: Fri, 26 Feb 2016 01:57:25 +0100
+Message-Id: <1456448280-27788-18-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1456448280-27788-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1456448280-27788-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -39,21 +40,21 @@ mtd->ecclayout field.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_base.c | 2 +-
+ drivers/mtd/onenand/onenand_base.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 17504f2..5093a3c 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4288,7 +4288,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		ecc->write_oob_raw = ecc->write_oob;
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 20fdf8c..d0fa505 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -3997,7 +3997,7 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
  
- 	/* propagate ecc info to mtd_info */
--	mtd->ecclayout = ecc->layout;
-+	mtd_set_ecclayout(mtd, ecc->layout);
- 	mtd->ecc_strength = ecc->strength;
- 	mtd->ecc_step_size = ecc->size;
+ 	mtd->oobavail = ret;
  
+-	mtd->ecclayout = this->ecclayout;
++	mtd_set_ecclayout(mtd, this->ecclayout);
+ 	mtd->ecc_strength = 1;
+ 
+ 	/* Fill in remaining MTD driver data */
 -- 
 2.1.4
