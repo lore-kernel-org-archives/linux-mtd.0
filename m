@@ -1,24 +1,28 @@
-Date: Sat, 27 Feb 2016 00:31:45 +0800
-From: Han Xu <xhnjupt@gmail.com>
-To: Yunhui Cui <yunhui.cui@nxp.com>
-Cc: Yunhui Cui <B56489@freescale.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "han.xu@freescale.com" <han.xu@freescale.com>,
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aZLlj-0005kJ-6c
+ for linux-mtd@lists.infradead.org; Fri, 26 Feb 2016 17:01:32 +0000
+Date: Fri, 26 Feb 2016 17:55:06 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Yao Yuan <yao.yuan@nxp.com>
-Subject: Re: [PATCH v2 3/4] mtd:spi-nor:fsl-quadspi:Add fast-read mode support
-Message-ID: <20160226163145.GA2182@shlinux2.ap.freescale.net>
-References: <1454326208-4533-1-git-send-email-B56489@freescale.com>
- <1454326208-4533-3-git-send-email-B56489@freescale.com>
- <20160217180742.GB17485@shlinux2>
- <DB5PR0401MB1912C9D041FF2B408652F4CD94A60@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, Rob Herring
+ <robh+dt@kernel.org>, Grant Likely <grant.likely@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>
+Subject: Re: [PATCH 1/3] of: mtd: add helper reading "nand-ecc-algo" from DT
+Message-ID: <20160226175506.75d6c7b0@bbrezillon>
+In-Reply-To: <CACna6ryVuqSLv8WdzzGUQzpA-F35JxXoHoa2jcLzZeHaXtoexA@mail.gmail.com>
+References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
+ <20160224144652.14068468@bbrezillon>
+ <CACna6rxemvBOu9fy9KP0327TsqonO7dFY5EsQjf1k9Ln6hX8cw@mail.gmail.com>
+ <20160225210946.6c842f4b@bbrezillon>
+ <CACna6ryVuqSLv8WdzzGUQzpA-F35JxXoHoa2jcLzZeHaXtoexA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB5PR0401MB1912C9D041FF2B408652F4CD94A60@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,112 +32,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 25, 2016 at 08:07:22AM +0000, Yunhui Cui wrote:
-> Hi Han,
-> 
-> I have provided the options " m25p,fast-read ", because there are probable some flashes can't support quad mode.
-> So we should support fast-read mode in our driver. Moreover,  There is a option to select fast-read mode in spi_nor.c :
->                /* If we were instantiated by DT, use it */
->                  if (of_property_read_bool(np, "m25p,fast-read"))
->                          nor->flash_read = SPI_NOR_FAST;
+On Fri, 26 Feb 2016 17:30:47 +0100
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-Did you have some REAL cases using SPI NOR that only supports upto fast-read
-with Quad SPI driver? Neither fast-read or normal-read, which is actually more
-general, supported in the driver, just because I didn't see any REAL cases till
-now.
+> On 25 February 2016 at 21:09, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+> > On Thu, 25 Feb 2016 20:56:36 +0100
+> > Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+> >
+> >> On 24 February 2016 at 14:46, Boris Brezillon
+> >> <boris.brezillon@free-electrons.com> wrote:
+> >> > On Fri, 12 Feb 2016 19:11:23 +0100
+> >> > Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+> >> >
+> >> >> This allows specifying algorithm used for NAND ECC. There are two
+> >> >> available values: "bch" and "hamming". It's important as having just
+> >> >> ECC parameters (step, strength) isn't enough to determine algorithm,
+> >> >> e.g. you can't distinct BCH-1 and Hamming.
+> >> >>
+> >> >> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> >> >> ---
+> >> >>  Documentation/devicetree/bindings/mtd/nand.txt |  3 +++
+> >> >>  drivers/of/of_mtd.c                            | 33 ++++++++++++++=
+++++++++++++
+> >> >>  include/linux/mtd/nand.h                       |  5 ++++
+> >> >>  include/linux/of_mtd.h                         |  6 +++++
+> >> >>  4 files changed, 47 insertions(+)
+> >> >>
+> >> >> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Docum=
+entation/devicetree/bindings/mtd/nand.txt
+> >> >> index b53f92e..a2c2df5 100644
+> >> >> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+> >> >> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> >> >> @@ -3,6 +3,9 @@
+> >> >>  - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+> >> >>    Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_o=
+ob_first",
+> >> >>    "soft_bch".
+> >> >> +- nand-ecc-algo : string, algorithm of NAND ecc.
+> >> >> +               Supported values are: "bch", "hamming". The default=
+ one is
+> >> >> +               "bch".
+> >> >
+> >> > I like the idea of specifying which ECC algorithm should be used, and
+> >> > this is IMO clearer than putting the information directly in
+> >> > nand-ecc-mode (as is already done for the "soft" and "soft_bch" mode=
+s,
+> >> > which are respectively encoding software hamming and software bch
+> >> > implementations).
+> >> >
+> >> > But shouldn't we take this even further and add new DT properties
+> >> > to encode the ECC layout (syndrome, oob_first), and another one to
+> >> > specify the implementation type (software or hardware)?
+> >> >
+> >> > nand-ecc-layout =3D "nornal", "syndrome" or "oob_first"
+> >> > nand-ecc-engine =3D "none", "soft" or "hw" ("on-die" ?)
+> >> >
+> >> > Note that it's not something I ask you to do right now, I just want =
+to
+> >> > bring the topic on the table.
+> >>
+> >> So far I was fine with whatever drvier/NAND core picked, didn't have
+> >> any issue with it. If at some point we'll see a real need of
+> >> specifying it manually as well, I guess we should do as you suggested.
+> >>
+> >
+> > My point is that it's kind of weird to have the same information
+> > duplicated in two different properties with possibly some conflicting
+> > configurations, like:
+> >
+> >         nand-ecc-mode =3D "soft_bch"; /* software BCH implementation...=
+ */
+> >         nand-ecc-algo =3D "hamming"; /* ... and here you choose Hamming=
+ */
+> >
+> > Of course this won't be a real problem until NAND core starts using
+> > this property to decide which soft implementation should be used, but
+> > providing a consistent binding is important IMO.
+>=20
+> Sorry, I didn't pay enough attention to NAND properties and missed
+> your point. I was a bit surprised to see NAND_ECC_SOFT_BCH value and
+> "soft_bch" as mapping. This is indeed a bit confusing.
+>=20
+> So I'm trying to find a proper way to split nand-ecc-mode. What you
+> suggested isn't exactly clear to me. AFAIR both enums: SYNDROME and
+> OOB_FIRST specify they way ECC info has to be accessed. For example
+> when using NAND_ECC_HW_OOB_FIRST you have to read OOB and after that
+> read data. I don't see how it's really related to the ECC layout (you
+> suggested "oob_first" as possible value of nand-ecc-layout).
 
-I didn't run against the patch, although IMO it's not that necessary. But I
-don't think QuadSPI driver need to check the m25p,fast-read property again
-since spi-nor layer has already done that. Adding the property in flash node
-should work in the same way.
- 
-> 
-> Thanks
-> Yunhui
-> 
-> -----Original Message-----
-> From: Han Xu [mailto:xhnjupt@gmail.com] 
-> Sent: Thursday, February 18, 2016 2:08 AM
-> To: Yunhui Cui
-> Cc: dwmw2@infradead.org; computersforpeace@gmail.com; han.xu@freescale.com; linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Yao Yuan
-> Subject: Re: [PATCH v2 3/4] mtd:spi-nor:fsl-quadspi:Add fast-read mode support
-> 
-> On Mon, Feb 01, 2016 at 07:30:07PM +0800, Yunhui Cui wrote:
-> > The qspi driver add generic fast-read mode for different flash 
-> > venders. There are some different board flash work on different mode, 
-> > such fast-read, quad-mode.
-> > So we have to modify the third entrace parameter of spi_nor_scan().
-> > 
-> > Signed-off-by: Yunhui Cui <B56489@freescale.com>
-> > ---
-> >  drivers/mtd/spi-nor/fsl-quadspi.c | 27 +++++++++++++++++++++------
-> >  1 file changed, 21 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c 
-> > b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > index 9861290..0a31cb1 100644
-> > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > @@ -389,11 +389,21 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
-> >  	/* Read */
-> >  	lut_base = SEQID_READ * 4;
-> >  
-> > -	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
-> > -			base + QUADSPI_LUT(lut_base));
-> > -	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
-> > -		    LUT1(FSL_READ, PAD4, rxfifo),
-> > -			base + QUADSPI_LUT(lut_base + 1));
-> > +	if (nor->flash_read == SPI_NOR_FAST) {
-> > +		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
-> > +			    LUT1(ADDR, PAD1, addrlen),
-> > +				base + QUADSPI_LUT(lut_base));
-> > +		qspi_writel(q,  LUT0(DUMMY, PAD1, read_dm) |
-> > +			    LUT1(FSL_READ, PAD1, rxfifo),
-> > +				base + QUADSPI_LUT(lut_base + 1));
-> > +	} else if (nor->flash_read == SPI_NOR_QUAD) {
-> > +		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
-> > +			    LUT1(ADDR, PAD1, addrlen),
-> > +				base + QUADSPI_LUT(lut_base));
-> > +		qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
-> > +			    LUT1(FSL_READ, PAD4, rxfifo),
-> > +				base + QUADSPI_LUT(lut_base + 1));
-> > +	}
-> >  
-> >  	/* Write enable */
-> >  	lut_base = SEQID_WREN * 4;
-> > @@ -468,6 +478,7 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, 
-> > u8 cmd)  {
-> >  	switch (cmd) {
-> >  	case SPINOR_OP_READ_1_1_4:
-> > +	case SPINOR_OP_READ_FAST:
-> >  		return SEQID_READ;
-> >  	case SPINOR_OP_WREN:
-> >  		return SEQID_WREN;
-> > @@ -963,6 +974,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
-> >  	struct spi_nor *nor;
-> >  	struct mtd_info *mtd;
-> >  	int ret, i = 0;
-> > +	enum read_mode mode = SPI_NOR_QUAD;
-> >  
-> >  	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
-> >  	if (!q)
-> > @@ -1064,7 +1076,10 @@ static int fsl_qspi_probe(struct platform_device *pdev)
-> >  		/* set the chip address for READID */
-> >  		fsl_qspi_set_base_addr(q, nor);
-> >  
-> > -		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> > +		ret = of_property_read_bool(np, "m25p,fast-read");
-> > +		mode = (ret) ? SPI_NOR_FAST : SPI_NOR_QUAD;
-> > +
-> > +		ret = spi_nor_scan(nor, NULL, mode);
-> >  		if (ret)
-> >  			goto mutex_failed;
-> >  
-> I understand you want to provide a more generic read mode, but this is a quad spi driver, I prefer to provide the options, either quad read/quad IO read, or just normal read.
-> > --
-> > 2.1.0.27.g96db324
-> > 
-> > 
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Because it's encoding where the ECC bytes are stored in a NAND page.
+Maybe ecc-layout is not the correct name (how about nand-page-layout),
+but neither ecc-mode is ;-).
+
+>=20
+> What about:
+> 1) Adding new nand-ecc-algo as this patch does
+> 2) Deprecating "soft_bch" value from nand-ecc-mode property
+>=20
+
+Sounds good to me.
+
+--=20
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
