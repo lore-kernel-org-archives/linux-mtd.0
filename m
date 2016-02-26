@@ -1,19 +1,37 @@
-Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aZMHs-0007Zn-30
- for linux-mtd@lists.infradead.org; Fri, 26 Feb 2016 17:34:47 +0000
-Received: by mail-wm0-x234.google.com with SMTP id g62so81529370wme.0
- for <linux-mtd@lists.infradead.org>; Fri, 26 Feb 2016 09:34:23 -0800 (PST)
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- dan.j.williams@intel.com, linux@arm.linux.org.uk
-Cc: robert.jarzmik@free.fr, Ard Biesheuvel <ard.biesheuvel@linaro.org>,
- Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH v2 3/3] ARM: memremap: implement arch_memremap_wb()
-Date: Fri, 26 Feb 2016 18:34:13 +0100
-Message-Id: <1456508053-15015-4-git-send-email-ard.biesheuvel@linaro.org>
-In-Reply-To: <1456508053-15015-1-git-send-email-ard.biesheuvel@linaro.org>
-References: <1456508053-15015-1-git-send-email-ard.biesheuvel@linaro.org>
+Date: Fri, 26 Feb 2016 19:33:25 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Harvey Hunt <harvey.hunt@imgtec.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>, Daniel Mack
+ <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, "Robert
+ Jarzmik" <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
+ "Krzysztof Kozlowski" <k.kozlowski@samsung.com>,
+ <linux-samsung-soc@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, Ralf Baechle <ralf@linux-mips.org>,
+ <linux-mips@linux-mips.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Wenyou Yang
+ <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Ezequiel
+ Garcia <ezequiel.garcia@free-electrons.com>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ <linux-sunxi@googlegroups.com>, Stefan Agner <stefan@agner.ch>, Kyungmin
+ Park <kyungmin.park@samsung.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, <devel@driverdev.osuosl.org>,
+ <linux-kernel@vger.kernel.org>, "punnaiah choudary kalluri"
+ <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>, "Kamal Dasu"
+ <kdasu.kdev@gmail.com>, <bcm-kernel-feedback-list@broadcom.com>,
+ <linux-api@vger.kernel.org>
+Subject: Re: [PATCH v3 07/52] mtd: nand: core: use mtd_ooblayout_xxx()
+ helpers where appropriate
+Message-ID: <20160226193325.2d84a8c8@bbrezillon>
+In-Reply-To: <56D06C88.9080608@imgtec.com>
+References: <1456448280-27788-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1456448280-27788-8-git-send-email-boris.brezillon@free-electrons.com>
+ <56D0629C.9080805@imgtec.com> <20160226161054.3477cd4b@bbrezillon>
+ <56D06C88.9080608@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,66 +41,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The generic memremap() falls back to using ioremap_cache() to create
-MEMREMAP_WB mappings if the requested region is not already covered
-by the linear mapping, unless the architecture provides an implementation
-of arch_memremap_wb().
+Hi Harvey,
 
-Since ioremap_cache() is not appropriate on ARM to map memory with the
-same attributes used for the linear mapping, implement arch_memremap_wb()
-which does exactly that. Also, relax the WARN() check to allow MT_MEMORY_RW
-mappings of pfn_valid() pages.
+On Fri, 26 Feb 2016 15:17:28 +0000
+Harvey Hunt <harvey.hunt@imgtec.com> wrote:
 
-Cc: Russell King <rmk+kernel@arm.linux.org.uk>
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
----
- arch/arm/include/asm/io.h |  3 +++
- arch/arm/mm/ioremap.c     | 11 +++++++++--
- 2 files changed, 12 insertions(+), 2 deletions(-)
+> Hi Boris,
+> 
+> On 26/02/16 15:10, Boris Brezillon wrote:
+> > Hi Harvey,
+> >
+> > On Fri, 26 Feb 2016 14:35:08 +0000
+> > Harvey Hunt <harvey.hunt@imgtec.com> wrote:
+> >
+> >> [...]
+> >> I'll look into this more later today, but wanted to run it by you in
+> >> case you have any thoughts.
+> >
+> > Can you apply this patch [1], and let me know if you see the additional
+> > trace?
+> 
+> I applied the patch, the following is the (unchanged) output:
+> 
+> [    0.256375] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x88
+> [    0.262887] nand: Micron MT29F64G08CBAAAWP
+> [    0.266995] nand: 8192 MiB, MLC, erase size: 2048 KiB, page size: 
+> 8192, OOB size: 448
+> [    0.274881] jz4780-nand 1b000000.nand-controller: using hardware BCH 
+> (strength 24, size 1024, bytes 42)
+> [    0.289046] Bad block table not found for chip 0
+> [    0.297769] Bad block table not found for chip 0
+> [    0.302425] Scanning device for bad blocks
+> [    0.320239] Bad eraseblock 90 at 0x00000b400000
+> [    0.324934] Bad eraseblock 91 at 0x00000b600000
+> [    0.931054] Bad eraseblock 4092 at 0x0001ff800000
+> [    0.935917] Bad eraseblock 4093 at 0x0001ffa00000
+> [    0.944660] nand_bbt: error while writing bad block table -34
+> [    0.950448] jz4780-nand: probe of 1b000000.nand-controller failed 
+> with error -34
+> [    0.958079] UBI error: cannot open mtd 3, error -19
+> [    0.962788] UBI error: cannot open mtd 4, error -19[    0.970229] 
+> clk: Not disabling unused clocks
+> 
 
-diff --git a/arch/arm/include/asm/io.h b/arch/arm/include/asm/io.h
-index 485982084fe9..7456638e6b3a 100644
---- a/arch/arm/include/asm/io.h
-+++ b/arch/arm/include/asm/io.h
-@@ -402,6 +402,9 @@ void __iomem *ioremap_wc(resource_size_t res_cookie, size_t size);
- void iounmap(volatile void __iomem *iomem_cookie);
- #define iounmap iounmap
- 
-+void *arch_memremap_wb(phys_addr_t phys_addr, size_t size);
-+#define arch_memremap_wb arch_memremap_wb
-+
- /*
-  * io{read,write}{16,32}be() macros
-  */
-diff --git a/arch/arm/mm/ioremap.c b/arch/arm/mm/ioremap.c
-index 66a978d05958..d3a2b028c614 100644
---- a/arch/arm/mm/ioremap.c
-+++ b/arch/arm/mm/ioremap.c
-@@ -297,9 +297,10 @@ static void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
- 	}
- 
- 	/*
--	 * Don't allow RAM to be mapped - this causes problems with ARMv6+
-+	 * Don't allow RAM to be mapped with mismatched attributes - this
-+	 * causes problems with ARMv6+
- 	 */
--	if (WARN_ON(pfn_valid(pfn)))
-+	if (WARN_ON(pfn_valid(pfn) && mtype != MT_MEMORY_RW))
- 		return NULL;
- 
- 	area = get_vm_area_caller(size, VM_IOREMAP, caller);
-@@ -414,6 +415,12 @@ __arm_ioremap_exec(phys_addr_t phys_addr, size_t size, bool cached)
- 			__builtin_return_address(0));
- }
- 
-+void *arch_memremap_wb(phys_addr_t phys_addr, size_t size)
-+{
-+	return __arm_ioremap_caller(phys_addr, size, MT_MEMORY_RW,
-+			__builtin_return_address(0));
-+}
-+
- void __iounmap(volatile void __iomem *io_addr)
- {
- 	void *addr = (void *)(PAGE_MASK & (unsigned long)io_addr);
+Can you test with this one [1]?
+
+[1]http://code.bulix.org/36oytz-91960
+
+
 -- 
-2.5.0
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
