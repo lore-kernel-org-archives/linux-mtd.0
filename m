@@ -1,28 +1,28 @@
 Received: from mailapp01.imgtec.com ([195.59.15.196])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aZIiM-00085r-Gx
- for linux-mtd@lists.infradead.org; Fri, 26 Feb 2016 13:45:52 +0000
-Subject: Re: [PATCH v7] mtd: nand: increase ready wait timeout and report
- timeouts
-To: Richard Weinberger <richard@nod.at>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Brian Norris
- <computersforpeace@gmail.com>
-References: <1444139527-14087-1-git-send-email-harvey.hunt@imgtec.com>
- <CAFLxGvxvWSGt3Z8p0yTPMh6v7LnjLKGtSeGdPkqauCYOXVnTzg@mail.gmail.com>
- <20160225231432.GN21465@google.com> <20160226002302.2f56f1a9@bbrezillon>
- <56CF8DCA.7010606@nod.at>
-CC: Alex Smith <alex.smith@imgtec.com>, Alex Smith <alex@alex-smith.me.uk>,
- Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, David Woodhouse
- <dwmw2@infradead.org>, Niklas Cassel <niklas.cassel@axis.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, LKML
- <linux-kernel@vger.kernel.org>
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Message-ID: <56D056F5.8040302@imgtec.com>
-Date: Fri, 26 Feb 2016 13:45:25 +0000
+ id 1aZJU2-0002xP-Te
+ for linux-mtd@lists.infradead.org; Fri, 26 Feb 2016 14:35:08 +0000
+Date: Fri, 26 Feb 2016 14:18:39 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+To: =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>
+CC: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Javier
+ Martinez Canillas <javier@osg.samsung.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Fengguang Wu <fengguang.wu@intel.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Luis de Bethencourt
+ <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>, Neelesh Gupta
+ <neelegup@linux.vnet.ibm.com>, David Woodhouse <dwmw2@infradead.org>, Cyril
+ Bur <cyrilbur@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH] mtd: bcm47xxsflash: use ioremap_cachable() instead of
+ KSEG0ADDR()
+In-Reply-To: <CACna6rzBTKXE6=ej-PY7V3facAR9kJ-Tq2LDc2EwszaTCK+2YA@mail.gmail.com>
+Message-ID: <alpine.DEB.2.00.1602261411591.15885@tp.orcam.me.uk>
+References: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
+ <alpine.DEB.2.00.1601240345260.5958@tp.orcam.me.uk>
+ <CACna6rzBTKXE6=ej-PY7V3facAR9kJ-Tq2LDc2EwszaTCK+2YA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <56CF8DCA.7010606@nod.at>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,50 +32,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 26 Feb 2016, Rafał Miłecki wrote:
 
-On 25/02/16 23:27, Richard Weinberger wrote:
-> Am 26.02.2016 um 00:23 schrieb Boris Brezillon:
->>> Regardless, this timeout loop is wrong. Shouldn't it have something like
->>> the following?
->>>
->>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->>> index f2c8ff398d6c..596a9b0503da 100644
->>> --- a/drivers/mtd/nand/nand_base.c
->>> +++ b/drivers/mtd/nand/nand_base.c
->>> @@ -566,8 +566,8 @@ void nand_wait_ready(struct mtd_info *mtd)
->>>   		cond_resched();
->>>   	} while (time_before(jiffies, timeo));
->>>
->>> -	pr_warn_ratelimited(
->>> -		"timeout while waiting for chip to become ready\n");
->>> +	if (!chip->dev_ready(mtd))
->>> +		pr_warn_ratelimited("timeout while waiting for chip to become ready\n");
->>>   out:
->>>   	led_trigger_event(nand_led_trigger, LED_OFF);
->>>   }
->>
->> Looks good to me.
->>
->> If you post the patch, you can add
->>
->> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->
-> Same here.
->
-> Reviewed-by: Richard Weinberger <richard@nod.at>
->
-> Thanks,
-> //richard
->
+> >> KSEG0ADDR was translating 0x1c000000 into 0x9c000000. With
+> >> ioremap_cachable we use MIPS's __ioremap (and remap_area_pages). This
+> >> results in different address (e.g. 0xc0080000) but it still should be
+> >> cached as expected and it was successfully tested with BCM47186B0.
+> >
+> >  This is due to this piece:
+> >
+> >         /*
+> >          * Map uncached objects in the low 512mb of address space using KSEG1,
+> >          * otherwise map using page tables.
+> >          */
+> >         if (IS_LOW512(phys_addr) && IS_LOW512(last_addr) &&
+> >             flags == _CACHE_UNCACHED)
+> >                 return (void __iomem *) CKSEG1ADDR(phys_addr);
+> >
+> > special-casing uncached mapping only (replicated in 2 places).  I think
+> > there will really be no harm from returning a KSEG0 mapping for calls
+> > requesting a caching mode equal to `_page_cachable_default', which --
+> > depending on the cache architecture -- will have been either hardwired or
+> > prearranged via Config.K0.  I think there's really no need to put pressure
+> > on the TLB, which may be small, in cases where a fixed mapping will do.
+> 
+> No, it isn't hitting condition you pointed. We call ioremap_cachable
+> which uses _page_cachable_default as a flag. This flag
+> (_page_cachable_default) isn't equal to the _CACHE_UNCACHED.
 
--cc IMG list (I left it in my gitconfig when I originally sent this 
-patch...).
+ That's exactly what I wrote: code I quoted is "special-casing uncached 
+mapping only" -- which as you have correctly observed does not apply after 
+your change anymore.  Which is why previously you got an address in the 
+unmapped KSEG1 segment and now you get an address in the mapped KSEG2 
+rather than the unmapped KSEG0 segment.
 
-Thanks for debugging and fixing this - proposed patch looks good to me:
+> Moreover code you pointed uses CKSEG1ADDR which would result in
+> setting bit KSEG1 (0xa0000000). As I pointed in the commit message
+> address it ORed with KSEG2 (0xc0000000).
 
-Reviewed-by: Harvey Hunt <harvey.hunt@imgtec.com>
+ It's not merely ORed, it's actually mapped via the TLB.
 
-Thanks,
+ I hope this makes things clear.
 
-Harvey
+  Maciej
