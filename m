@@ -20,10 +20,10 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Priit Laes <plaes@plaes.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
  bcm-kernel-feedback-list@broadcom.com, linux-api@vger.kernel.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v3 11/52] mtd: nand: lpc32xx: use mtd_ooblayout_xxx() helpers
- where appropriate
-Date: Fri, 26 Feb 2016 01:57:19 +0100
-Message-Id: <1456448280-27788-12-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 13/52] mtd: onenand: use mtd_ooblayout_xxx() helpers where
+ appropriate
+Date: Fri, 26 Feb 2016 01:57:21 +0100
+Message-Id: <1456448280-27788-14-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1456448280-27788-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1456448280-27788-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,57 +42,108 @@ where directly accessed.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/lpc32xx_slc.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ drivers/mtd/onenand/onenand_base.c | 75 ++++++++------------------------------
+ 1 file changed, 15 insertions(+), 60 deletions(-)
 
-diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-index 3b8f373..10cf8e62 100644
---- a/drivers/mtd/nand/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/lpc32xx_slc.c
-@@ -604,7 +604,8 @@ static int lpc32xx_nand_read_page_syndrome(struct mtd_info *mtd,
- 					   int oob_required, int page)
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index af28bb3..20fdf8c 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1024,34 +1024,15 @@ static int onenand_transfer_auto_oob(struct mtd_info *mtd, uint8_t *buf, int col
+ 				int thislen)
  {
- 	struct lpc32xx_nand_host *host = nand_get_controller_data(chip);
--	int stat, i, status;
-+	struct mtd_oob_region oobregion = { };
-+	int stat, i, status, error;
- 	uint8_t *oobecc, tmpecc[LPC32XX_ECC_SAVE_SIZE];
- 
- 	/* Issue read command */
-@@ -620,7 +621,11 @@ static int lpc32xx_nand_read_page_syndrome(struct mtd_info *mtd,
- 	lpc32xx_slc_ecc_copy(tmpecc, (uint32_t *) host->ecc_buf, chip->ecc.steps);
- 
- 	/* Pointer to ECC data retrieved from NAND spare area */
--	oobecc = chip->oob_poi + chip->ecc.layout->eccpos[0];
-+	error = mtd_ooblayout_ecc(mtd, 0, &oobregion);
-+	if (error)
-+		return error;
+ 	struct onenand_chip *this = mtd->priv;
+-	struct nand_oobfree *free;
+-	int readcol = column;
+-	int readend = column + thislen;
+-	int lastgap = 0;
+-	unsigned int i;
+-	uint8_t *oob_buf = this->oob_buf;
+-
+-	free = this->ecclayout->oobfree;
+-	for (i = 0; i < MTD_MAX_OOBFREE_ENTRIES && free->length; i++, free++) {
+-		if (readcol >= lastgap)
+-			readcol += free->offset - lastgap;
+-		if (readend >= lastgap)
+-			readend += free->offset - lastgap;
+-		lastgap = free->offset + free->length;
+-	}
+-	this->read_bufferram(mtd, ONENAND_SPARERAM, oob_buf, 0, mtd->oobsize);
+-	free = this->ecclayout->oobfree;
+-	for (i = 0; i < MTD_MAX_OOBFREE_ENTRIES && free->length; i++, free++) {
+-		int free_end = free->offset + free->length;
+-		if (free->offset < readend && free_end > readcol) {
+-			int st = max_t(int,free->offset,readcol);
+-			int ed = min_t(int,free_end,readend);
+-			int n = ed - st;
+-			memcpy(buf, oob_buf + st, n);
+-			buf += n;
+-		} else if (column == 0)
+-			break;
+-	}
++	int ret;
 +
-+	oobecc = chip->oob_poi + oobregion.offset;
++	this->read_bufferram(mtd, ONENAND_SPARERAM, this->oob_buf, 0,
++			     mtd->oobsize);
++	ret = mtd_ooblayout_get_databytes(mtd, buf, this->oob_buf,
++					  column, thislen);
++	if (ret)
++		return ret;
++
+ 	return 0;
+ }
  
- 	for (i = 0; i < chip->ecc.steps; i++) {
- 		stat = chip->ecc.correct(mtd, buf, oobecc,
-@@ -666,7 +671,8 @@ static int lpc32xx_nand_write_page_syndrome(struct mtd_info *mtd,
- 					    int oob_required, int page)
+@@ -1808,34 +1789,7 @@ static int onenand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+ static int onenand_fill_auto_oob(struct mtd_info *mtd, u_char *oob_buf,
+ 				  const u_char *buf, int column, int thislen)
  {
- 	struct lpc32xx_nand_host *host = nand_get_controller_data(chip);
--	uint8_t *pb = chip->oob_poi + chip->ecc.layout->eccpos[0];
-+	struct mtd_oob_region oobregion = { };
-+	uint8_t *pb;
- 	int error;
+-	struct onenand_chip *this = mtd->priv;
+-	struct nand_oobfree *free;
+-	int writecol = column;
+-	int writeend = column + thislen;
+-	int lastgap = 0;
+-	unsigned int i;
+-
+-	free = this->ecclayout->oobfree;
+-	for (i = 0; i < MTD_MAX_OOBFREE_ENTRIES && free->length; i++, free++) {
+-		if (writecol >= lastgap)
+-			writecol += free->offset - lastgap;
+-		if (writeend >= lastgap)
+-			writeend += free->offset - lastgap;
+-		lastgap = free->offset + free->length;
+-	}
+-	free = this->ecclayout->oobfree;
+-	for (i = 0; i < MTD_MAX_OOBFREE_ENTRIES && free->length; i++, free++) {
+-		int free_end = free->offset + free->length;
+-		if (free->offset < writeend && free_end > writecol) {
+-			int st = max_t(int,free->offset,writecol);
+-			int ed = min_t(int,free_end,writeend);
+-			int n = ed - st;
+-			memcpy(oob_buf + st, buf, n);
+-			buf += n;
+-		} else if (column == 0)
+-			break;
+-	}
+-	return 0;
++	return mtd_ooblayout_set_databytes(mtd, buf, oob_buf, column, thislen);
+ }
  
- 	/* Write data, calculate ECC on outbound data */
-@@ -678,6 +684,11 @@ static int lpc32xx_nand_write_page_syndrome(struct mtd_info *mtd,
- 	 * The calculated ECC needs some manual work done to it before
- 	 * committing it to NAND. Process the calculated ECC and place
- 	 * the resultant values directly into the OOB buffer. */
-+	error = mtd_ooblayout_ecc(mtd, 0, &oobregion);
-+	if (error)
-+		return error;
+ /**
+@@ -4037,10 +3991,11 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
+ 	 * The number of bytes available for a client to place data into
+ 	 * the out of band area
+ 	 */
+-	mtd->oobavail = 0;
+-	for (i = 0; i < MTD_MAX_OOBFREE_ENTRIES &&
+-	    this->ecclayout->oobfree[i].length; i++)
+-		mtd->oobavail += this->ecclayout->oobfree[i].length;
++	ret = mtd_ooblayout_count_freebytes(mtd);
++	if (ret < 0)
++		ret = 0;
 +
-+	pb = chip->oob_poi + oobregion.offset;
- 	lpc32xx_slc_ecc_copy(pb, (uint32_t *)host->ecc_buf, chip->ecc.steps);
++	mtd->oobavail = ret;
  
- 	/* Write ECC data to device */
+ 	mtd->ecclayout = this->ecclayout;
+ 	mtd->ecc_strength = 1;
 -- 
 2.1.4
