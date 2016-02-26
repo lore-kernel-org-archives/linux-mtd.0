@@ -1,28 +1,34 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aZJU2-0002xP-Te
- for linux-mtd@lists.infradead.org; Fri, 26 Feb 2016 14:35:08 +0000
-Date: Fri, 26 Feb 2016 14:18:39 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-To: =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>
-CC: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Javier
- Martinez Canillas <javier@osg.samsung.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Fengguang Wu <fengguang.wu@intel.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Luis de Bethencourt
- <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>, Neelesh Gupta
- <neelegup@linux.vnet.ibm.com>, David Woodhouse <dwmw2@infradead.org>, Cyril
- Bur <cyrilbur@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH] mtd: bcm47xxsflash: use ioremap_cachable() instead of
- KSEG0ADDR()
-In-Reply-To: <CACna6rzBTKXE6=ej-PY7V3facAR9kJ-Tq2LDc2EwszaTCK+2YA@mail.gmail.com>
-Message-ID: <alpine.DEB.2.00.1602261411591.15885@tp.orcam.me.uk>
-References: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
- <alpine.DEB.2.00.1601240345260.5958@tp.orcam.me.uk>
- <CACna6rzBTKXE6=ej-PY7V3facAR9kJ-Tq2LDc2EwszaTCK+2YA@mail.gmail.com>
+Subject: Re: [PATCH v3 07/52] mtd: nand: core: use mtd_ooblayout_xxx() helpers
+ where appropriate
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+References: <1456448280-27788-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1456448280-27788-8-git-send-email-boris.brezillon@free-electrons.com>
+CC: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, "Kukjin
+ Kim" <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ <linux-samsung-soc@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ Ralf Baechle <ralf@linux-mips.org>, <linux-mips@linux-mips.org>, "Nicolas
+ Ferre" <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard
+ <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ <linux-sunxi@googlegroups.com>, Stefan Agner <stefan@agner.ch>, Kyungmin Park
+ <kyungmin.park@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>, "punnaiah
+ choudary kalluri" <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>, "Kamal
+ Dasu" <kdasu.kdev@gmail.com>, <bcm-kernel-feedback-list@broadcom.com>,
+ <linux-api@vger.kernel.org>
+From: Harvey Hunt <harvey.hunt@imgtec.com>
+Message-ID: <56D0629C.9080805@imgtec.com>
+Date: Fri, 26 Feb 2016 14:35:08 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1456448280-27788-8-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,46 +38,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 26 Feb 2016, Rafał Miłecki wrote:
+Hi Boris,
 
-> >> KSEG0ADDR was translating 0x1c000000 into 0x9c000000. With
-> >> ioremap_cachable we use MIPS's __ioremap (and remap_area_pages). This
-> >> results in different address (e.g. 0xc0080000) but it still should be
-> >> cached as expected and it was successfully tested with BCM47186B0.
-> >
-> >  This is due to this piece:
-> >
-> >         /*
-> >          * Map uncached objects in the low 512mb of address space using KSEG1,
-> >          * otherwise map using page tables.
-> >          */
-> >         if (IS_LOW512(phys_addr) && IS_LOW512(last_addr) &&
-> >             flags == _CACHE_UNCACHED)
-> >                 return (void __iomem *) CKSEG1ADDR(phys_addr);
-> >
-> > special-casing uncached mapping only (replicated in 2 places).  I think
-> > there will really be no harm from returning a KSEG0 mapping for calls
-> > requesting a caching mode equal to `_page_cachable_default', which --
-> > depending on the cache architecture -- will have been either hardwired or
-> > prearranged via Config.K0.  I think there's really no need to put pressure
-> > on the TLB, which may be small, in cases where a fixed mapping will do.
-> 
-> No, it isn't hitting condition you pointed. We call ioremap_cachable
-> which uses _page_cachable_default as a flag. This flag
-> (_page_cachable_default) isn't equal to the _CACHE_UNCACHED.
+On 26/02/16 00:57, Boris Brezillon wrote:
+> The mtd_ooblayout_xxx() helper functions have been added to avoid direct
+> accesses to the ecclayout field, and thus ease for future reworks.
+> Use these helpers in all places where the oobfree[] and eccpos[] arrays
+> where directly accessed.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>   drivers/mtd/nand/nand_base.c | 183 +++++++++++++++++++------------------------
+>   drivers/mtd/nand/nand_bch.c  |   3 +-
+>   2 files changed, 82 insertions(+), 104 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 91672bf..17504f2 100644
+[...]
 
- That's exactly what I wrote: code I quoted is "special-casing uncached 
-mapping only" -- which as you have correctly observed does not apply after 
-your change anymore.  Which is why previously you got an address in the 
-unmapped KSEG1 segment and now you get an address in the mapped KSEG2 
-rather than the unmapped KSEG0 segment.
+I just pulled your nand/ecclayout branch from github and tested out your 
+latest patchset "mtd: rework ECC layout definition" on a Ci20 
+(jz4780_{nand,bch}) and noticed that my board was failing to boot.
 
-> Moreover code you pointed uses CKSEG1ADDR which would result in
-> setting bit KSEG1 (0xa0000000). As I pointed in the commit message
-> address it ORed with KSEG2 (0xc0000000).
+I bisected to this patch, here is the kernel's output during boot:
 
- It's not merely ORed, it's actually mapped via the TLB.
+479556d ("mtd: nand: core: use mtd_ooblayout_xxx() helpers where 
+appropriate"):
 
- I hope this makes things clear.
+[ 0.256349] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x88
+[ 0.262860] nand: Micron MT29F64G08CBAAAWP
+[ 0.266970] nand: 8192 MiB, MLC, erase size: 2048 KiB, page size: 8192, 
+OOB size: 448
+[ 0.274856] jz4780-nand 1b000000.nand-controller: using hardware BCH 
+(strength 24, size 1024, bytes 42)
+[ 0.288982] Bad block table not found for chip 0
+[ 0.297673] Bad block table not found for chip 0
+[ 0.302328] Scanning device for bad blocks
+[ 0.320135] Bad eraseblock 90 at 0x00000b400000
+[ 0.324829] Bad eraseblock 91 at 0x00000b600000
+[ 0.931085] Bad eraseblock 4092 at 0x0001ff800000
+[ 0.935947] Bad eraseblock 4093 at 0x0001ffa00000
+[ 0.944878] nand_bbt: error while writing bad block table -34
+[ 0.950666] jz4780-nand: probe of 1b000000.nand-controller failed with 
+error -34
+[ 0.958302] UBI error: cannot open mtd 3, error -19
+[ 0.963002] UBI error: cannot open mtd 4, error -19[ 0.970419] clk: Not 
+disabling unused clocks
+[ 0.975011] UBIFS error (pid: 1): cannot open "ubi1:root", error -19VFS: 
+Cannot open root device "ubi1:root" or unknown-block(0,0): error -19
+[ 0.987810] Please append a correct "root=" boot option; here are the 
+available partitions:
+[ 0.996210] Kernel panic - not syncing: VFS: Unable to mount root fs on 
+unknown-block(0,0)
+[ 1.004498] Rebooting in 10 seconds..
 
-  Maciej
+6625d32 ("mtd: use mtd_ooblayout_xxx() helpers where appropriate"):
+
+[ 0.256232] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0x88
+[ 0.262745] nand: Micron MT29F64G08CBAAAWP
+[ 0.266854] nand: 8192 MiB, MLC, erase size: 2048 KiB, page size: 8192, 
+OOB size: 448
+[ 0.274739] jz4780-nand 1b000000.nand-controller: using hardware BCH 
+(strength 24, size 1024, bytes 42)
+[ 0.285993] Bad block table found at page 1048320, version 0x01
+[ 0.294353] Bad block table found at page 1048064, version 0x01
+[ 0.301523] nand_read_bbt: bad block at 0x00000b400000
+[ 0.306677] nand_read_bbt: bad block at 0x00000b600000
+[ 0.312289] 5 ofpart partitions found on MTD device 
+1b000000.nand-controller.1
+[ 0.319553] Creating 5 MTD partitions on "1b000000.nand-controller.1":
+[ 0.326098] 0x000000000000-0x000000800000 : "u-boot-spl"
+[ 0.331757] 0x000000800000-0x000000a00000 : "u-boot"
+[ 0.337185] 0x000000a00000-0x000000c00000 : "u-boot-env"
+[ 0.342903] 0x000000c00000-0x000004c00000 : "boot"
+[ 0.348109] 0x000004c00000-0x000200000000 : "system"
+[ 0.354284] ubi0 error: ubi_attach_mtd_dev: More than 64 PEBs are needed 
+for fastmap, sorry.
+[...]
+
+I'll look into this more later today, but wanted to run it by you in 
+case you have any thoughts.
+
+Thanks,
+
+Harvey
