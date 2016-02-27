@@ -1,24 +1,18 @@
-Received: from mail-io0-x234.google.com ([2607:f8b0:4001:c06::234])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aZd0I-0003eY-QW
- for linux-mtd@lists.infradead.org; Sat, 27 Feb 2016 11:25:44 +0000
-Received: by mail-io0-x234.google.com with SMTP id z135so146803875iof.0
- for <linux-mtd@lists.infradead.org>; Sat, 27 Feb 2016 03:25:22 -0800 (PST)
+ id 1aZnhI-0004HM-UW
+ for linux-mtd@lists.infradead.org; Sat, 27 Feb 2016 22:50:50 +0000
+Received: by mail-wm0-x243.google.com with SMTP id p65so4104716wmp.1
+ for <linux-mtd@lists.infradead.org>; Sat, 27 Feb 2016 14:50:27 -0800 (PST)
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+Message-ID: <56D22823.7090005@gmail.com>
+Date: Sat, 27 Feb 2016 23:50:11 +0100
 MIME-Version: 1.0
-In-Reply-To: <1456538836-27449-1-git-send-email-ezequiel@vanguardiasur.com.ar>
-References: <1456538836-27449-1-git-send-email-ezequiel@vanguardiasur.com.ar>
-Date: Sat, 27 Feb 2016 12:25:21 +0100
-Message-ID: <CACna6rzvikqy1kaL6P9GRP6ibvnoY=gAdFhFmutyQaTW+NnH1g@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: update flags for n25q128a
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Gregory Clement <gregory.clement@free-electrons.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +22,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 27 February 2016 at 03:07, Ezequiel Garcia
-<ezequiel@vanguardiasur.com.ar> wrote:
-> @@ -864,8 +864,12 @@ static const struct flash_info spi_nor_ids[] =3D {
->         { "n25q032a",    INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_=
-READ) },
->         { "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI=
-_NOR_QUAD_READ) },
->         { "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI=
-_NOR_QUAD_READ) },
-> -       { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_=
-READ) },
-> -       { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_QUAD_=
-READ) },
-> +       { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256,
-> +                SECT_4K | SPI_NOR_QUAD_READ |
-> +                SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-> +       { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256,
-> +                SECT_4K | SPI_NOR_QUAD_READ |
-> +                SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+Some controllers have transfer size limits. To allow to deal with this
+max_transfer_size was introduced in the SPI core recently.
+Use this new feature to read in chunks if needed.
 
-We use one line per chip, so please keep stick to this formatting. I
-can guess you wanted to follow kernel's coding style, but this adds
-inconsistency. Also kernel's coding style allows lines over 80 chars
-for better readibility. If we are ever going to change it, it should
-be a separated patch affecting all entries.
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+ drivers/mtd/devices/m25p80.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
---=20
-Rafa=C5=82
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index c2d1f65..69f3acf 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -119,7 +119,7 @@ static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+  * Read an address range from the nor chip.  The address range
+  * may be any size provided it is within the physical boundaries.
+  */
+-static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
++static int _m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 			size_t *retlen, u_char *buf)
+ {
+ 	struct m25p *flash = nor->priv;
+@@ -153,6 +153,34 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	return ret;
+ }
+ 
++/* Read in max_read_len chunks if len > max_read_len */
++static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
++		       size_t *retlen, u_char *buf)
++{
++	struct m25p *flash = nor->priv;
++	/*
++	 * The controller transfer size limit refers to the overall transfer
++	 * including read command + actually read data. Therefore subtract
++	 * the command size when calculating the max read length.
++	 */
++	size_t max_read_len = spi_max_transfer_size(flash->spi) -
++			      (m25p_cmdsz(nor) + nor->read_dummy / 8);
++	size_t read_len;
++	int ret;
++
++	while (len > 0) {
++		read_len = min(len, max_read_len);
++		ret = _m25p80_read(nor, from, read_len, retlen, buf);
++		if (ret)
++			return ret;
++		from += read_len;
++		buf += read_len;
++		len -= read_len;
++	}
++
++	return 0;
++}
++
+ /*
+  * board specific setup should have ensured the SPI clock used here
+  * matches what the READ command supports, at least until this driver
+-- 
+2.7.1
