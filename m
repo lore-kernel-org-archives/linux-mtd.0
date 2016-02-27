@@ -1,28 +1,22 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aZPxe-0005iP-4d
- for linux-mtd@lists.infradead.org; Fri, 26 Feb 2016 21:30:10 +0000
-Date: Fri, 26 Feb 2016 22:28:51 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, Rob Herring
- <robh+dt@kernel.org>, Grant Likely <grant.likely@linaro.org>, Frank Rowand
- <frowand.list@gmail.com>
-Subject: Re: [PATCH 1/3] of: mtd: add helper reading "nand-ecc-algo" from DT
-Message-ID: <20160226222851.7821d371@bbrezillon>
-In-Reply-To: <CACna6rzRROfYwagsBGo5b8d_bydUBrJ=9RvGZSt1G85xP=gKaw@mail.gmail.com>
-References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
- <20160224144652.14068468@bbrezillon>
- <CACna6rxemvBOu9fy9KP0327TsqonO7dFY5EsQjf1k9Ln6hX8cw@mail.gmail.com>
- <20160225210946.6c842f4b@bbrezillon>
- <CACna6ryVuqSLv8WdzzGUQzpA-F35JxXoHoa2jcLzZeHaXtoexA@mail.gmail.com>
- <20160226175506.75d6c7b0@bbrezillon>
- <CACna6rzRROfYwagsBGo5b8d_bydUBrJ=9RvGZSt1G85xP=gKaw@mail.gmail.com>
+Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aZU2h-0000HI-9j
+ for linux-mtd@lists.infradead.org; Sat, 27 Feb 2016 01:51:36 +0000
+Received: by mail-wm0-x232.google.com with SMTP id g62so92912546wme.0
+ for <linux-mtd@lists.infradead.org>; Fri, 26 Feb 2016 17:51:14 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <1455316144-14464-1-git-send-email-robert.jarzmik@free.fr>
+References: <1455316144-14464-1-git-send-email-robert.jarzmik@free.fr>
+Date: Fri, 26 Feb 2016 22:51:13 -0300
+Message-ID: <CAAEAJfCmL4qcKMiTOoM7ixJ_NCTTObUV1v=jE19aWS=18-vqTw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: pxa3xx_nand: fix dmaengine initialization
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,33 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 26 Feb 2016 22:24:21 +0100
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+On 12 February 2016 at 19:29, Robert Jarzmik <robert.jarzmik@free.fr> wrote=
+:
+> When the driver is initialized in a pure device-tree platform, the
+> driver's probe fails allocating the dma channel :
+> [  525.624435] pxa3xx-nand 43100000.nand: no resource defined for data DM=
+A
+> [  525.632088] pxa3xx-nand 43100000.nand: alloc nand resource failed
+>
+> The reason is that the DMA IO resource is not acquired through platform
+> resources but by OF bindings.
+>
+> Fix this by ensuring that DMA IO resources are only queried in the non
+> device-tree case.
+>
+> Fixes: 8f5ba31aa565 ("mtd: nand: pxa3xx-nand: switch to dmaengine")
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
+d.c
+> index a168cbcc1086..afd487d4b67f 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -1750,7 +1750,7 @@ static int alloc_nand_resource(struct platform_devi=
+ce *pdev)
+>         if (ret < 0)
+>                 return ret;
+>
+> -       if (use_dma) {
+> +       if (!np && use_dma) {
+>                 r =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
+>                 if (r =3D=3D NULL) {
+>                         dev_err(&pdev->dev,
 
-> On 26 February 2016 at 17:55, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > On Fri, 26 Feb 2016 17:30:47 +0100
-> > Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
-> >> What about:
-> >> 1) Adding new nand-ecc-algo as this patch does
-> >> 2) Deprecating "soft_bch" value from nand-ecc-mode property
-> >>
-> >
-> > Sounds good to me.
->=20
-> I have problems understanding "soft" values which maps to the
-> NAND_ECC_SOFT. What exactly algorithm is that? It uses functions from
-> drivers/mtd/nand/nand_ecc.c but this file isn't really helpful. I was
-> only able to find "3-byte ECC" phase. Kconfig config MTD_NAND_ECC also
-> doesn't have any description. I also tried looking at
-> Documentation/mtd/nand_ecc.txt but still no luck.
->=20
-> Does this algorithm has any name?
->=20
+Looking through the kernel tree, this change seems to be correct.
 
-AFAIR, nand_ecc.c is implementing Hamming ECC.
-
+However, I'm still wondering how DMA resources are obtained in the
+device-tree case. Can you explain it to me?
 --=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
