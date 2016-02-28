@@ -1,19 +1,27 @@
-Received: from mail-qk0-x22e.google.com ([2607:f8b0:400d:c09::22e])
+Received: from mail-qk0-x229.google.com ([2607:f8b0:400d:c09::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aa6j3-0007yb-DK
- for linux-mtd@lists.infradead.org; Sun, 28 Feb 2016 19:09:53 +0000
-Received: by mail-qk0-x22e.google.com with SMTP id x1so49565341qkc.1
- for <linux-mtd@lists.infradead.org>; Sun, 28 Feb 2016 11:09:32 -0800 (PST)
+ id 1aa6oV-0002TA-QN
+ for linux-mtd@lists.infradead.org; Sun, 28 Feb 2016 19:15:32 +0000
+Received: by mail-qk0-x229.google.com with SMTP id s68so49453696qkh.3
+ for <linux-mtd@lists.infradead.org>; Sun, 28 Feb 2016 11:15:11 -0800 (PST)
+Date: Sun, 28 Feb 2016 16:15:06 -0300
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>, zajec5@gmail.com,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: [PATCH v2] mtd: spi-nor: add subsector flag to n25q128a
-Date: Sun, 28 Feb 2016 16:09:18 -0300
-Message-Id: <1456686558-1839-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: nand: pxa3xx_nand: fix dmaengine initialization
+Message-ID: <20160228191506.GA1907@laptop.cereza>
+References: <1455316144-14464-1-git-send-email-robert.jarzmik@free.fr>
+ <CAAEAJfCmL4qcKMiTOoM7ixJ_NCTTObUV1v=jE19aWS=18-vqTw@mail.gmail.com>
+ <87r3fytosc.fsf@belgarion.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87r3fytosc.fsf@belgarion.home>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +31,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Micron n25q128axx support subsector (4K) erase so let's update the flags.
-Tested on n25q128a13.
+On 27 February 2016 at 07:45, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> writes:
+>
+>> On 12 February 2016 at 19:29, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+>>> When the driver is initialized in a pure device-tree platform, the
+>>> driver's probe fails allocating the dma channel :
+>>> [  525.624435] pxa3xx-nand 43100000.nand: no resource defined for data DMA
+>>> [  525.632088] pxa3xx-nand 43100000.nand: alloc nand resource failed
+>>>
+>>> The reason is that the DMA IO resource is not acquired through platform
+>>> resources but by OF bindings.
+>>>
+>>> Fix this by ensuring that DMA IO resources are only queried in the non
+>>> device-tree case.
+>>>
+>>> Fixes: 8f5ba31aa565 ("mtd: nand: pxa3xx-nand: switch to dmaengine")
+>>> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+>>> ---
+>>>  drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+>>> index a168cbcc1086..afd487d4b67f 100644
+>>> --- a/drivers/mtd/nand/pxa3xx_nand.c
+>>> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+>>> @@ -1750,7 +1750,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+>>>         if (ret < 0)
+>>>                 return ret;
+>>>
+>>> -       if (use_dma) {
+>>> +       if (!np && use_dma) {
+>>>                 r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+>>>                 if (r == NULL) {
+>>>                         dev_err(&pdev->dev,
+>>
+>> Looking through the kernel tree, this change seems to be correct.
+>>
+>> However, I'm still wondering how DMA resources are obtained in the
+>> device-tree case. Can you explain it to me?
+>
+> In the pxa case, look at my extract in [1].
+> The lines to consider are :
+>                         dmas = <&pdma 97 3>;
+>                         dma-names = "data";
+>
+> Now have a look at the function pxad_dma_xlate() in drivers/dma/pxa_dma.c.
+> You'll see that the "97" ends up in the chanel drcmr, and the "3" in the
+> channel's prio, when the chanel is requested in the nand driver by calling
+> dma_request_slave_channel_compat(). In the latter case, pxad_filter_fn() is not
+> used, it's the pxad_dma_xlate() which is used instead.
+>
+> Is this what you were looking for ?
+>
 
-Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
- drivers/mtd/spi-nor/spi-nor.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I see. That's exactly what I was missing.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 1348a3247472..157841dc3e99 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -864,8 +864,8 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
- 	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
--	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
--	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
-+	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
-+	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
- 	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+
+Thanks,
 -- 
-2.7.0
+Ezequiel García, VanguardiaSur
+www.vanguardiasur.com.ar
