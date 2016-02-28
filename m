@@ -1,19 +1,25 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aZnhI-0004HD-V6
- for linux-mtd@lists.infradead.org; Sat, 27 Feb 2016 22:50:50 +0000
-Received: by mail-wm0-x244.google.com with SMTP id w11so361927wmd.2
- for <linux-mtd@lists.infradead.org>; Sat, 27 Feb 2016 14:50:26 -0800 (PST)
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH 1/2] mtd: m25p80: fix retlen usage in m25p80_read and
- propagate errors
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
-Message-ID: <56D227B7.5010902@gmail.com>
-Date: Sat, 27 Feb 2016 23:48:23 +0100
+ id 1aa6ff-0007hN-GU
+ for linux-mtd@lists.infradead.org; Sun, 28 Feb 2016 19:06:24 +0000
+Received: by mail-wm0-x230.google.com with SMTP id n186so21611567wmn.1
+ for <linux-mtd@lists.infradead.org>; Sun, 28 Feb 2016 11:06:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CACna6rzvikqy1kaL6P9GRP6ibvnoY=gAdFhFmutyQaTW+NnH1g@mail.gmail.com>
+References: <1456538836-27449-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <CACna6rzvikqy1kaL6P9GRP6ibvnoY=gAdFhFmutyQaTW+NnH1g@mail.gmail.com>
+Date: Sun, 28 Feb 2016 16:06:00 -0300
+Message-ID: <CAAEAJfC4rA7W3FgB1mFObN=+_wE+arg=kLHni-=Wo3GzALcZVg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: update flags for n25q128a
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-So far retlen usage in m25p80_read is different from retlen usage in other
-places on the mtd subsystem. Usually bytes read are added to the current
-value of *retlen, here the current value is ignored.
-As a prerequisite for using m25p80_read in a loop if the transfer size is
-limited we have to fix this.
-Also propagate the return code of spi_sync.
+On 27 February 2016 at 08:25, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wr=
+ote:
+> On 27 February 2016 at 03:07, Ezequiel Garcia
+> <ezequiel@vanguardiasur.com.ar> wrote:
+>> @@ -864,8 +864,12 @@ static const struct flash_info spi_nor_ids[] =3D {
+>>         { "n25q032a",    INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD=
+_READ) },
+>>         { "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SP=
+I_NOR_QUAD_READ) },
+>>         { "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SP=
+I_NOR_QUAD_READ) },
+>> -       { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD=
+_READ) },
+>> -       { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_QUAD=
+_READ) },
+>> +       { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256,
+>> +                SECT_4K | SPI_NOR_QUAD_READ |
+>> +                SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+>> +       { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256,
+>> +                SECT_4K | SPI_NOR_QUAD_READ |
+>> +                SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+>
+> We use one line per chip, so please keep stick to this formatting. I
+> can guess you wanted to follow kernel's coding style, but this adds
+> inconsistency. Also kernel's coding style allows lines over 80 chars
+> for better readibility. If we are ever going to change it, it should
+> be a separated patch affecting all entries.
+>
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
----
- drivers/mtd/devices/m25p80.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+Sure, I can do that.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index c9c3b7f..c2d1f65 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -126,10 +126,9 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	struct spi_device *spi = flash->spi;
- 	struct spi_transfer t[2];
- 	struct spi_message m;
--	unsigned int dummy = nor->read_dummy;
--
- 	/* convert the dummy cycles to the number of bytes */
--	dummy /= 8;
-+	unsigned int cmdlen = m25p_cmdsz(nor) + nor->read_dummy / 8;
-+	int ret;
- 
- 	spi_message_init(&m);
- 	memset(t, 0, (sizeof t));
-@@ -138,7 +137,7 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	m25p_addr2cmd(nor, from, flash->command);
- 
- 	t[0].tx_buf = flash->command;
--	t[0].len = m25p_cmdsz(nor) + dummy;
-+	t[0].len = cmdlen;
- 	spi_message_add_tail(&t[0], &m);
- 
- 	t[1].rx_buf = buf;
-@@ -146,10 +145,12 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
- 
--	spi_sync(spi, &m);
-+	ret = spi_sync(spi, &m);
- 
--	*retlen = m.actual_length - m25p_cmdsz(nor) - dummy;
--	return 0;
-+	if (m.actual_length > cmdlen)
-+		*retlen += m.actual_length - cmdlen;
-+
-+	return ret;
- }
- 
- /*
--- 
-2.7.1
+Also, I'll drop the HAS_LOCK and HAS_TB flags for now. These devices
+need more work
+for protection to work properly.
+
+The protection is handled with TB, BP3-BP0 and currently we only
+support TB,BP2-BP0.
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
