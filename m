@@ -1,27 +1,19 @@
-Received: from mail-qg0-x22c.google.com ([2607:f8b0:400d:c04::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aaUXO-0001HN-S8
- for linux-mtd@lists.infradead.org; Mon, 29 Feb 2016 20:35:28 +0000
-Received: by mail-qg0-x22c.google.com with SMTP id b67so125674249qgb.1
- for <linux-mtd@lists.infradead.org>; Mon, 29 Feb 2016 12:35:06 -0800 (PST)
-Date: Mon, 29 Feb 2016 17:35:02 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Bayi Cheng <bayi.cheng@mediatek.com>, Marek Vasut <marex@denx.de>,
- Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH v2 7/8] mtd: spi-nor: add TB (Top/Bottom) protect support
-Message-ID: <20160229203502.GA13477@laptop.cereza>
-References: <1454095537-130536-1-git-send-email-computersforpeace@gmail.com>
- <1454095537-130536-8-git-send-email-computersforpeace@gmail.com>
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aaWLW-0000Ti-V6
+ for linux-mtd@lists.infradead.org; Mon, 29 Feb 2016 22:31:19 +0000
+From: "Woodhouse, David" <david.woodhouse@intel.com>
+To: "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: jffs2: Improve post-mount CRC scan efficiency
+Date: Mon, 29 Feb 2016 22:30:54 +0000
+Message-ID: <1456785050.4666.445.camel@intel.com>
+References: <20160229221715.GA5672@mwanda>
+In-Reply-To: <20160229221715.GA5672@mwanda>
+Content-Language: en-US
+Content-Type: multipart/signed; micalg=sha-1;
+ protocol="application/x-pkcs7-signature"; boundary="=-RDyxVUfAhAwtD18Pj0Ru"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1454095537-130536-8-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,60 +23,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+--=-RDyxVUfAhAwtD18Pj0Ru
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 29 January 2016 at 16:25, Brian Norris <computersforpeace@gmail.com> wrote:
-> Some flash support a bit in the status register that inverts protection
-> so that it applies to the bottom of the flash, not the top. This yields
-> additions to the protection range table, as noted in the comments.
->
-> Because this feature is not universal to all flash that support
-> lock/unlock, control it via a new flag.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
-> v2:
->  * Rewrite the bounds checking for top/bottom support, since there were some
->    bad corner cases. Now lock/unlock are more symmetric.
->
->  drivers/mtd/spi-nor/spi-nor.c | 70 ++++++++++++++++++++++++++++++++++++++-----
->  include/linux/mtd/spi-nor.h   |  2 ++
->  2 files changed, 65 insertions(+), 7 deletions(-)
->
-[..]
-> @@ -476,12 +484,14 @@ static int stm_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
->
->  /*
->   * Lock a region of the flash. Compatible with ST Micro and similar flash.
-> - * Supports only the block protection bits BP{0,1,2} in the status register
-> + * Supports the block protection bits BP{0,1,2} in the status register
->   * (SR). Does not support these features found in newer SR bitfields:
-> - *   - TB: top/bottom protect - only handle TB=0 (top protect)
->   *   - SEC: sector/block protect - only handle SEC=0 (block protect)
+On Tue, 2016-03-01 at 01:17 +0300, Dan Carpenter wrote:
+> Hello David Woodhouse,
+>=20
+> The patch d5e1e1d07f80: "jffs2: Improve post-mount CRC scan
+> efficiency" from Feb 1, 2016, leads to the following static checker
+> warning:
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0fs/jffs2/gc.c:177 jffs2_g=
+arbage_collect_pass()
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0error: double lock 'spin_=
+lock:&c->inocache_lock'
 
-While reviewing and testing this patchset, I realised that *no* Micron device
-define BIT(6) as SEC (sector/block) bit. Instead, it's used as BP3, to extend
-the region defined by BP0-BP2.
+Er, yeah. We're supposed to *unlock* it when we're finished, not lock
+it harder. Thanks :)
 
-I've checked the following:
+--=20
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
 
-  N25Q256A
-  N25Q128A
-  N25Q064A
-  N25Q032A
-  N25Q016A
-  M25Pxx
 
-So I believe we need to separate stm_{lock,unlock), from
-winbond_{lock,unlock}. We might want to explicitly mark devices that
-currently support locking with the new _HAS_LOCK flag.
+--=-RDyxVUfAhAwtD18Pj0Ru
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-Also, I wonder if we can really separate based on vendor, or if we'll need
-more flags to distinguish the lock implementation per device.
+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
+kiW8/Nj6KITQvHqz7x/Es0IRJCc9/zBES7yMeD+fgJKHAEv/uTcFfGM9HIWxPQIDAQABo4IC6jCC
+AuYwHQYDVR0OBBYEFGK1Mey+kPYGHowHJ0YXtQU4NmbSMB8GA1UdIwQYMBaAFB5pKrTcKP5HGE4h
+Cz+8rBEv8Jj1MIHJBgNVHR8EgcEwgb4wgbuggbiggbWGVGh0dHA6Ly93d3cuaW50ZWwuY29tL3Jl
+cG9zaXRvcnkvQ1JML0ludGVsJTIwRXh0ZXJuYWwlMjBCYXNpYyUyMElzc3VpbmclMjBDQSUyMDRB
+LmNybIZdaHR0cDovL2NlcnRpZmljYXRlcy5pbnRlbC5jb20vcmVwb3NpdG9yeS9DUkwvSW50ZWwl
+MjBFeHRlcm5hbCUyMEJhc2ljJTIwSXNzdWluZyUyMENBJTIwNEEuY3JsMIHvBggrBgEFBQcBAQSB
+4jCB3zBpBggrBgEFBQcwAoZdaHR0cDovL3d3dy5pbnRlbC5jb20vcmVwb3NpdG9yeS9jZXJ0aWZp
+Y2F0ZXMvSW50ZWwlMjBFeHRlcm5hbCUyMEJhc2ljJTIwSXNzdWluZyUyMENBJTIwNEEuY3J0MHIG
+CCsGAQUFBzAChmZodHRwOi8vY2VydGlmaWNhdGVzLmludGVsLmNvbS9yZXBvc2l0b3J5L2NlcnRp
+ZmljYXRlcy9JbnRlbCUyMEV4dGVybmFsJTIwQmFzaWMlMjBJc3N1aW5nJTIwQ0ElMjA0QS5jcnQw
+CwYDVR0PBAQDAgeAMDwGCSsGAQQBgjcVBwQvMC0GJSsGAQQBgjcVCIbDjHWEmeVRg/2BKIWOn1OC
+kcAJZ4HevTmV8EMCAWQCAQgwHwYDVR0lBBgwFgYIKwYBBQUHAwQGCisGAQQBgjcKAwwwKQYJKwYB
+BAGCNxUKBBwwGjAKBggrBgEFBQcDBDAMBgorBgEEAYI3CgMMME8GA1UdEQRIMEagKQYKKwYBBAGC
+NxQCA6AbDBlkYXZpZC53b29kaG91c2VAaW50ZWwuY29tgRlkYXZpZC53b29kaG91c2VAaW50ZWwu
+Y29tMA0GCSqGSIb3DQEBBQUAA4IBAQBCQ4UH3yybC+PzPo7W4PQJQwIDkKfD2i20i/DosQ7+Yeof
+KF7qDASe9eoJGXbINBx1u648uOnaMBsxgUUamJo7pdt1ZnsetRtCQrJIsrsJA3Q2MOsrv7xHkzqn
+DF99KHEbO2yKvyjJVDznHUWh8M1OFmdoziyWE/VPdqTwXwS/UKO81XaTtWUDGO716HHVlfT9yPle
+Ukg2MTcIhhNWmlS8gDUayhteIAlPci71f/oXzXxBiGiO6FVZUEx+rZBQB84Ey0S0Tfm7hiGzoegg
+ra0hfiiMOKMio+n0r4NUn03Z+VRUTbdjHIA6Lkozwpadvs9/uK8dIGqfcgxYgk9qdjFPMYICDjCC
+AgoCAQEwgYcweTELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRQwEgYDVQQHEwtTYW50YSBDbGFy
+YTEaMBgGA1UEChMRSW50ZWwgQ29ycG9yYXRpb24xKzApBgNVBAMTIkludGVsIEV4dGVybmFsIEJh
+c2ljIElzc3VpbmcgQ0EgNEECCmJiMmoAAAAATKAwCQYFKw4DAhoFAKBdMBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE2MDIyOTIyMzA1MFowIwYJKoZIhvcNAQkEMRYE
+FPhqXwXPhwpyAXuyGpdEPtgAPfhbMA0GCSqGSIb3DQEBAQUABIIBAIbbiMM/b9AgnP6VtLqrvHa6
+73P3F+WRMCfq6TfUfZUAFpIliEVfCKYHElKla14PFLZxQ8AGiYPVPu+ff73F4Mr66fL4b3e2Zwmu
+kqqVIQbVYmL7qaQ3Tu10K2DhjwJhsJ6CCzzoe/Jb/ioFm9cfTcrribm8VjPXrbaKQWijtib7Uegj
+j2HAn0oJjtnq+xzfeY4X6BfWuyrQFY8IE4cRadEomWI0xcn/VjdZBydrQidibA2QXfL7LQKxowHb
+yJw8ZvaF4nkaEzLDC+l2jwOfs0fWaeSs/tUoTFfnjxsAo8FfJg465Z16OG/UOkogiNK4y84VFGqd
+QLTsSu5paVioqkUAAAAAAAA=
 
-Of course, all the devices that define a BP3 are broken with respect to flash
-locking. I can try to cook some patches for this, once we are decided on how
-to do it.
--- 
-Ezequiel García, VanguardiaSur
-www.vanguardiasur.com.ar
+
+--=-RDyxVUfAhAwtD18Pj0Ru--
