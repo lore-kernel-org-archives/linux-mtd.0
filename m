@@ -1,11 +1,22 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtd: avoid stack overflow in MTD CFI code
-Date: Mon, 29 Feb 2016 13:20:28 +0100
-Message-Id: <1456748436-522413-1-git-send-email-arnd@arndb.de>
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aaQe9-0003QY-CP
+ for linux-mtd@lists.infradead.org; Mon, 29 Feb 2016 16:26:10 +0000
+Subject: Re: [PATCH v5 00/26] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+To: <computersforpeace@gmail.com>
+References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+CC: <tony@atomide.com>, <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <javier@dowhile0.org>, <fcooper@ti.com>, <nsekhar@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <56D470E8.4070106@ti.com>
+Date: Mon, 29 Feb 2016 18:25:12 +0200
+MIME-Version: 1.0
+In-Reply-To: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,76 +26,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When map_word gets too large, we use a lot of kernel stack, and for
-MTD_MAP_BANK_WIDTH_32, this means we use more than the recommended
-1024 bytes in a number of functions:
+Brian,
 
-drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_write_buffers':
-drivers/mtd/chips/cfi_cmdset_0020.c:651:1: warning: the frame size of 1336 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_erase_varsize':
-drivers/mtd/chips/cfi_cmdset_0020.c:972:1: warning: the frame size of 1208 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-drivers/mtd/chips/cfi_cmdset_0001.c: In function 'do_write_buffer':
-drivers/mtd/chips/cfi_cmdset_0001.c:1835:1: warning: the frame size of 1240 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+On 19/02/16 23:15, Roger Quadros wrote:
+> Hi,
+> 
+> @Tony
+> Patches 15 and 24 are new and will need your review.
+> I've modified patch 22 to include the new am335x boards introduced since v4.4.
+> 
+> Patches are based on top of omap-for-v4.6/dt so that the DT changes apply cleanly.
+> 
+> @Brian
+> If you can Ack the MTD related changes we can push the series (excluding DT patches)
+> to an immutable branch and you can then pull it into l2-mtd.git
 
-This can be avoided if all operations on the map word are done
-indirectly and the stack gets reused between the calls. We can
-mostly achieve this by selecting MTD_COMPLEX_MAPPINGS whenever
-MTD_MAP_BANK_WIDTH_32 is set, but for the case that no other
-bank width is enabled, we also need to use a non-constant
-map_bankwidth() to convince the compiler to use less stack.
+Gentle ping on this. Thanks.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: added 'if HAS_IOMEM' to avoid a Kconfig warning on user-mode-linux.
+cheers,
+-roger
 
-Originally sent out on Jan 1, sorry for taking my time to follow
-up with a new version.
-
- drivers/mtd/chips/Kconfig |  1 +
- include/linux/mtd/map.h   | 19 +++++++------------
- 2 files changed, 8 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
-index 741ec69e0b46..cd162cbc3746 100644
---- a/drivers/mtd/chips/Kconfig
-+++ b/drivers/mtd/chips/Kconfig
-@@ -117,6 +117,7 @@ config MTD_MAP_BANK_WIDTH_16
- 
- config MTD_MAP_BANK_WIDTH_32
- 	bool "Support 256-bit buswidth" if MTD_CFI_GEOMETRY
-+	select MTD_COMPLEX_MAPPINGS if HAS_IOMEM
- 	default n
- 	help
- 	  If you wish to support CFI devices on a physical bus which is
-diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-index 5e0eb7ccabd4..3aa56e3104bb 100644
---- a/include/linux/mtd/map.h
-+++ b/include/linux/mtd/map.h
-@@ -122,18 +122,13 @@
- #endif
- 
- #ifdef CONFIG_MTD_MAP_BANK_WIDTH_32
--# ifdef map_bankwidth
--#  undef map_bankwidth
--#  define map_bankwidth(map) ((map)->bankwidth)
--#  undef map_bankwidth_is_large
--#  define map_bankwidth_is_large(map) (map_bankwidth(map) > BITS_PER_LONG/8)
--#  undef map_words
--#  define map_words(map) map_calc_words(map)
--# else
--#  define map_bankwidth(map) 32
--#  define map_bankwidth_is_large(map) (1)
--#  define map_words(map) map_calc_words(map)
--# endif
-+/* always use indirect access for 256-bit to preserve kernel stack */
-+# undef map_bankwidth
-+# define map_bankwidth(map) ((map)->bankwidth)
-+# undef map_bankwidth_is_large
-+# define map_bankwidth_is_large(map) (map_bankwidth(map) > BITS_PER_LONG/8)
-+# undef map_words
-+# define map_words(map) map_calc_words(map)
- #define map_bankwidth_is_32(map) (map_bankwidth(map) == 32)
- #undef MAX_MAP_BANKWIDTH
- #define MAX_MAP_BANKWIDTH 32
--- 
-2.7.0
+> 
+> Patches tested on:
+> dra-evm, am437x-gp-evm, beagleboard-c4, beagleboard-c4-legacyboot
+> 
+> Changelog:
+> v5:
+> -changed ready/busy# GPIO DT binding from "ready-gpio" to "rb-gpios".
+> -use irqdomain for gpmc NAND interrupts: fifoevent and termcount
+> 
+> v4:
+> -Warn if using older incompatible DT i.e. compatible property not present
+> in nand node.
+> -Applied Tony's patch to fix broken ethernet on torpedo.
+> 
+> v3:
+> -Fixed and tested NAND using legacy boot on omap3-beagle.
+> -Support rising and falling edge interrupts on WAITpins.
+> -Update DT node of all gpmc users.
+> 
+> Patches summary:
+> 
+> We do a couple of things in this series which result in
+> cleaner device tree implementation, faster perfomance and
+> multi-platform support. As an added bonus we get to use the GPMC_WAIT
+> pins as GPI/Interrupts.
+> 
+> - Establish a custom interface between NAND and GPMC driver. This is
+> needed because all of the NAND registers sit in the GPMC register space.
+> 
+> - Clean up device tree support so that omap-gpmc IP and the omap2 NAND
+> driver can be used on non-OMAP platforms. e.g. Keystone.
+> 
+> - Implement GPIOCHIP for the GPMC WAITPINS. SoCs can contain
+> 2 to 4 of these and most of them would be unused otherwise. It also
+> allows a cleaner implementation of NAND Ready pin status for the NAND driver.
+> 
+> - Implement GPMC IRQ domain to proivde the 2 NAND events and
+> GPMC WAITPIN edge interrupts.
+> 
+> - Implement GPIOlib based NAND ready pin checking for OMAP NAND driver.
+> On dra7-evm, Read speed increases from 13768 KiB/ to 17246 KiB/s.
+> Write speed was unchanged at 7123 KiB/s.
+> 
+> This series is available at
+> git@github.com:rogerq/linux.git
+> in branch
+> for-v4.6/gpmc-v5
+> 
+> --
+> cheers,
+> -roger
+> 
+> Roger Quadros (26):
+>   ARM: OMAP2+: gpmc: Add platform data
+>   ARM: OMAP2+: gpmc: Add gpmc timings and settings to platform data
+>   memory: omap-gpmc: Introduce GPMC to NAND interface
+>   mtd: nand: omap2: Use gpmc_omap_get_nand_ops() to get NAND registers
+>   memory: omap-gpmc: Add GPMC-NAND ops to get writebufferempty status
+>   mtd: nand: omap2: Switch to using GPMC-NAND ops for writebuffer empty
+>     check
+>   memory: omap-gpmc: Implement IRQ domain for NAND IRQs
+>   mtd: nand: omap: Copy platform data parameters to omap_nand_info data
+>   mtd: nand: omap: Clean up device tree support
+>   mtd: nand: omap: Update DT binding documentation
+>   memory: omap-gpmc: Prevent mapping into 1st 16MB
+>   memory: omap-gpmc: Move device tree binding to correct location
+>   memory: omap-gpmc: Support general purpose input for WAITPINs
+>   memory: omap-gpmc: Reserve WAITPIN if needed for WAIT monitoring
+>   memory: omap-gpmc: Support WAIT pin edge interrupts
+>   memory: omap-gpmc: Prevent GPMC_STATUS from being accessed via
+>     gpmc_regs
+>   mtd: nand: omap2: Implement NAND ready using gpiolib
+>   ARM: dts: dra7: Fix NAND device nodes.
+>   ARM: dts: dra7x-evm: Provide NAND ready pin
+>   ARM: dts: am437x: Fix NAND device nodes
+>   ARM: dts: am437x: Provide NAND ready pin
+>   ARM: dts: am335x: Fix NAND device nodes
+>   ARM: dts: am335x: Provide NAND ready pin
+>   ARM: dts: dm814x: Fix gpmc and NAND node
+>   ARM: dts: dm816x: Fix gpmc and NAND node
+>   ARM: dts: omap3: Fix gpmc and NAND nodes
+> 
+>  Documentation/devicetree/bindings/bus/ti-gpmc.txt  | 130 ----
+>  .../bindings/memory-controllers/omap-gpmc.txt      | 141 +++++
+>  .../devicetree/bindings/mtd/gpmc-nand.txt          |  19 +-
+>  arch/arm/boot/dts/am335x-baltos-ir5221.dts         |  10 +-
+>  arch/arm/boot/dts/am335x-chilisom.dtsi             |   9 +-
+>  arch/arm/boot/dts/am335x-cm-t335.dts               |  10 +-
+>  arch/arm/boot/dts/am335x-evm.dts                   |   8 +-
+>  arch/arm/boot/dts/am335x-igep0033.dtsi             |   9 +-
+>  arch/arm/boot/dts/am335x-phycore-som.dtsi          |   9 +-
+>  arch/arm/boot/dts/am33xx.dtsi                      |   4 +
+>  arch/arm/boot/dts/am4372.dtsi                      |   4 +
+>  arch/arm/boot/dts/am437x-cm-t43.dts                |   7 +-
+>  arch/arm/boot/dts/am437x-gp-evm.dts                |   9 +-
+>  arch/arm/boot/dts/am43x-epos-evm.dts               |   9 +-
+>  arch/arm/boot/dts/dm8148-evm.dts                   |   8 +-
+>  arch/arm/boot/dts/dm814x.dtsi                      |   4 +
+>  arch/arm/boot/dts/dm8168-evm.dts                   |   8 +-
+>  arch/arm/boot/dts/dm816x.dtsi                      |   4 +
+>  arch/arm/boot/dts/dra62x-j5eco-evm.dts             |   8 +-
+>  arch/arm/boot/dts/dra7-evm.dts                     |   7 +-
+>  arch/arm/boot/dts/dra7.dtsi                        |   4 +
+>  arch/arm/boot/dts/dra72-evm.dts                    |   7 +-
+>  arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts  |   3 +-
+>  arch/arm/boot/dts/logicpd-torpedo-som.dtsi         |   8 +-
+>  arch/arm/boot/dts/omap3-beagle.dts                 |   5 +-
+>  arch/arm/boot/dts/omap3-cm-t3x.dtsi                |   6 +-
+>  arch/arm/boot/dts/omap3-devkit8000-common.dtsi     |   4 +
+>  arch/arm/boot/dts/omap3-evm-37xx.dts               |   8 +-
+>  arch/arm/boot/dts/omap3-gta04.dtsi                 |   4 +
+>  arch/arm/boot/dts/omap3-igep.dtsi                  |   6 +-
+>  arch/arm/boot/dts/omap3-igep0020-common.dtsi       |   4 +-
+>  arch/arm/boot/dts/omap3-igep0030-common.dtsi       |   4 +
+>  arch/arm/boot/dts/omap3-ldp.dts                    |  10 +-
+>  arch/arm/boot/dts/omap3-lilly-a83x.dtsi            |   6 +-
+>  arch/arm/boot/dts/omap3-overo-base.dtsi            |   6 +-
+>  arch/arm/boot/dts/omap3-pandora-common.dtsi        |   4 +
+>  arch/arm/boot/dts/omap3-tao3530.dtsi               |   6 +-
+>  arch/arm/boot/dts/omap3.dtsi                       |   4 +
+>  arch/arm/boot/dts/omap3430-sdp.dts                 |   6 +-
+>  arch/arm/mach-omap2/gpmc-nand.c                    |   7 +-
+>  drivers/memory/Kconfig                             |   1 +
+>  drivers/memory/omap-gpmc.c                         | 653 +++++++++++++--------
+>  drivers/mtd/nand/omap2.c                           | 193 ++++--
+>  include/linux/omap-gpmc.h                          | 177 ++----
+>  include/linux/platform_data/gpmc-omap.h            | 167 ++++++
+>  include/linux/platform_data/mtd-nand-omap2.h       |  12 +-
+>  46 files changed, 1121 insertions(+), 611 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/bus/ti-gpmc.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>  create mode 100644 include/linux/platform_data/gpmc-omap.h
+> 
