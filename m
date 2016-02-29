@@ -1,27 +1,18 @@
-Received: from sabe.cs.wisc.edu ([128.105.6.20])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aaRfE-0002Hi-DH
- for linux-mtd@lists.infradead.org; Mon, 29 Feb 2016 17:31:24 +0000
-Subject: Re: [PATCH 00/35 v4] separate operations from flags in the
- bio/request structs
-To: Christoph Hellwig <hch@infradead.org>, mchristi@redhat.com
-References: <1456343292-14535-1-git-send-email-mchristi@redhat.com>
- <20160229171339.GA17755@infradead.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
- konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
- philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
- linux-raid@vger.kernel.org, dm-devel@redhat.com,
- linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
- target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
-From: Mike Christie <michaelc@cs.wisc.edu>
-Message-ID: <56D4802E.3090507@cs.wisc.edu>
-Date: Mon, 29 Feb 2016 11:30:22 -0600
+ id 1aaT9x-0000AX-6S
+ for linux-mtd@lists.infradead.org; Mon, 29 Feb 2016 19:07:10 +0000
+Subject: Re: Filesystems over UBI can't handle badblocks
+To: Guilherme de Oliveira Costa <guilherme.oliveira@autotrac.com.br>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
+References: <7F9DB42F7DDA544EA3EB31D694929A30EB9762@PERU.autotrac.corp>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56D496BE.9020908@nod.at>
+Date: Mon, 29 Feb 2016 20:06:38 +0100
 MIME-Version: 1.0
-In-Reply-To: <20160229171339.GA17755@infradead.org>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <7F9DB42F7DDA544EA3EB31D694929A30EB9762@PERU.autotrac.corp>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,9 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/29/2016 11:13 AM, Christoph Hellwig wrote:
-> Any reason you've dropped my ACK for the previous version?
+Am 29.02.2016 um 18:53 schrieb Guilherme de Oliveira Costa:
+>> I guess the reporter would come up with a good justification.
+>>
+>> I can imagine one, but it is not very strong: you have a development
+>> device, you mess with bad blocks by marking/unmarking them for some
+>> research reasons. You put UBI image there, then remember that some
+>> of the blocks were bad and want to mark them as bad without re-
+>> flashing UBI. Kind of a developer convenience.
+> 
+> Indeed. Originally, we were using cramfs over mtdblock, but were running on all sorts of problems during testing due to random corruptions. I wanted to mess with the partition blocks to check how cramfs over UBI would handle badblocks and bit-errors.
 
-Sorry. I think I accidentally dropped it when I rebased back over to
-linux-next. It looks like it only got stuck on the first patch. I will
-fix that up on the resend for those kbuild errors.
+What you can do is mounting debugfs and set /sys/kernel/debug/ubi/ubi<NUM>/tst_emulate_bitflips to 1.
+
+Thanks,
+//richard
