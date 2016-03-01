@@ -1,23 +1,18 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aajOz-0005Jg-Qj
- for linux-mtd@lists.infradead.org; Tue, 01 Mar 2016 12:27:46 +0000
-Subject: Re: [PATCH v3 0/5] mtd: atmel_nand: Add support for NAND Flash on
- SAMA5D2
-To: Romain Izard <romain.izard.pro@gmail.com>
-References: <1454322360-8666-1-git-send-email-romain.izard.pro@gmail.com>
- <56D56E95.4030204@atmel.com>
- <CAGkQfmP5p3ezZwEub2RDW-y--aeJHDBN_oT9K4Wga=YYfBCLqA@mail.gmail.com>
-CC: <linux-mtd@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris BREZILLON
- <boris.brezillon@free-electrons.com>, <devicetree@vger.kernel.org>, Josh Wu
- <rainyfeeling@outlook.com>, Yang Wenyou <Wenyou.Yang@atmel.com>
+Subject: Re: [PATCH v4 5/5] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
+To: Romain Izard <romain.izard.pro@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>, Brian Norris
+ <computersforpeace@gmail.com>
+References: <1455098187-9442-1-git-send-email-romain.izard.pro@gmail.com>
+ <1455098187-9442-6-git-send-email-romain.izard.pro@gmail.com>
+CC: Josh Wu <rainyfeeling@outlook.com>, Yang Wenyou <Wenyou.Yang@atmel.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Rob Herring
+ <robh@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Message-ID: <56D58AB7.4000305@atmel.com>
-Date: Tue, 1 Mar 2016 13:27:35 +0100
+Message-ID: <56D58B04.3050106@atmel.com>
+Date: Tue, 1 Mar 2016 13:28:52 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAGkQfmP5p3ezZwEub2RDW-y--aeJHDBN_oT9K4Wga=YYfBCLqA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1455098187-9442-6-git-send-email-romain.izard.pro@gmail.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,46 +23,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 01/03/2016 12:29, Romain Izard a écrit :
-> Hi Nicolas,
+Le 10/02/2016 10:56, Romain Izard a �crit :
+> Both nodes are required to access NAND Flash memory. Additional
+> settings will be necessary at the board level to use it.
 > 
-> 2016-03-01 11:27 GMT+01:00 Nicolas Ferre <nicolas.ferre@atmel.com>:
->> Le 01/02/2016 11:25, Romain Izard a écrit :
->>> The NAND Flash controller for SAMA5D2 has small differences that make
->>> it impossible to use the existing driver for SAMA5D3. This patchset
->>> uses the device tree's compatible string to get those differences,
->>> and the code is slightly modified to handle them.
->>>
->>> Base on linux-mtd-next, commit
->>> 15c0be7bec002f9a529dd0966d0db96dde176fd0
->>>
->>> See previous revisions to apply on the Atmel Linux 4.1 branch.
->>>
->>> Compile tested for sama5_defconfig, and tested on SAMA5D3xek as there
->>> is no existing SAMA5D2 board with NAND Flash memory (yet).
->>
->> Brian,
->>
->> Hi, do we need to resend this series with all the tags collected (aka
->> ping ;-)) ?
->>
+> Tested-by: Wenyou Yang <wenyou.yang@atmel.com>
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+
+I add it in our at91-4.6-dt branch.
+
+Thanks, bye.
+
+> ---
+> v4: collect Tested-by and Reviewed-by tags
+> v3: no change
+> v2: fix device address, hexadecimal with minuscules
 > 
-> A v4 has already been sent, and Brian has picked patches 1-4, as seen
-> in: http://article.gmane.org/gmane.linux.drivers.devicetree/155864/
+>  arch/arm/boot/dts/sama5d2.dtsi | 38 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+> index 3f750f6170f2..484bd8ea6602 100644
+> --- a/arch/arm/boot/dts/sama5d2.dtsi
+> +++ b/arch/arm/boot/dts/sama5d2.dtsi
+> @@ -263,6 +263,44 @@
+>  			cache-level = <2>;
+>  		};
+>  
+> +		nand0: nand@80000000 {
+> +			compatible = "atmel,sama5d2-nand";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges;
+> +			reg = < /* EBI CS3 */
+> +				0x80000000 0x08000000
+> +				/* SMC PMECC regs */
+> +				0xf8014070 0x00000490
+> +				/* SMC PMECC Error Location regs */
+> +				0xf8014500 0x00000200
+> +				/* ROM Galois tables */
+> +				0x00040000 0x00018000
+> +				>;
+> +			interrupts = <17 IRQ_TYPE_LEVEL_HIGH 6>;
+> +			atmel,nand-addr-offset = <21>;
+> +			atmel,nand-cmd-offset = <22>;
+> +			atmel,nand-has-dma;
+> +			atmel,has-pmecc;
+> +			atmel,pmecc-lookup-table-offset = <0x0 0x8000>;
+> +			status = "disabled";
+> +
+> +			nfc@c0000000 {
+> +				compatible = "atmel,sama5d4-nfc";
+> +				#address-cells = <1>;
+> +				#size-cells = <1>;
+> +				reg = < /* NFC Command Registers */
+> +					0xc0000000 0x08000000
+> +					/* NFC HSMC regs */
+> +					0xf8014000 0x00000070
+> +					/* NFC SRAM banks */
+> +					0x00100000 0x00100000
+> +					>;
+> +				clocks = <&hsmc_clk>;
+> +				atmel,write-by-sram;
+> +			};
+> +		};
+> +
+>  		sdmmc0: sdio-host@a0000000 {
+>  			compatible = "atmel,sama5d2-sdhci";
+>  			reg = <0xa0000000 0x300>;
+> 
 
-Ok, I forget it and it was in another mailbox on my side: sorry for the
-noise...
 
-> For patch #5, it is the update for the sama5d2.dtsi to describe the
-> NAND controller. Perhaps you can take it on your tree for 4.6, it
-> won't change anything until a board needs it, either Atmel's SAMA5D2 PTC
-> or another one.
-
-Absolutely. As I am collecting this material, it makes perfect sense to
-add it to our at91-4.6-dt branch.
-
-Thanks for the help Romain!
-
-Bye,
 -- 
 Nicolas Ferre
