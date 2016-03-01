@@ -1,19 +1,21 @@
-Subject: Re: [PATCH v4 5/5] ARM: at91/dt: sama5d2: add nand0 and nfc0 nodes
-To: Romain Izard <romain.izard.pro@gmail.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>, Brian Norris
- <computersforpeace@gmail.com>
-References: <1455098187-9442-1-git-send-email-romain.izard.pro@gmail.com>
- <1455098187-9442-6-git-send-email-romain.izard.pro@gmail.com>
-CC: Josh Wu <rainyfeeling@outlook.com>, Yang Wenyou <Wenyou.Yang@atmel.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Rob Herring
- <robh@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Message-ID: <56D58B04.3050106@atmel.com>
-Date: Tue, 1 Mar 2016 13:28:52 +0100
-MIME-Version: 1.0
-In-Reply-To: <1455098187-9442-6-git-send-email-romain.izard.pro@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aak64-0004tw-MI
+ for linux-mtd@lists.infradead.org; Tue, 01 Mar 2016 13:12:17 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Herve Codina <herve.CODINA@celad.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH] mtd: nand: atmel: correct bitflips in erased pages for
+ pre-sama5d4 SoCs
+Date: Tue,  1 Mar 2016 14:11:52 +0100
+Message-Id: <1456837912-2577-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,79 +25,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 10/02/2016 10:56, Romain Izard a écrit :
-> Both nodes are required to access NAND Flash memory. Additional
-> settings will be necessary at the board level to use it.
-> 
-> Tested-by: Wenyou Yang <wenyou.yang@atmel.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Romain Izard <romain.izard.pro@gmail.com>
+New atmel SoCs are able to fix bitflips in erased pages, but old ones
+are still impacted by this problem. Use nand_check_erased_ecc_chunk() to
+handle this case.
 
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Reported-by: Herve Codina <herve.CODINA@celad.com>
+---
+ drivers/mtd/nand/atmel_nand.c | 37 ++++++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
-I add it in our at91-4.6-dt branch.
-
-Thanks, bye.
-
-> ---
-> v4: collect Tested-by and Reviewed-by tags
-> v3: no change
-> v2: fix device address, hexadecimal with minuscules
-> 
->  arch/arm/boot/dts/sama5d2.dtsi | 38 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-> index 3f750f6170f2..484bd8ea6602 100644
-> --- a/arch/arm/boot/dts/sama5d2.dtsi
-> +++ b/arch/arm/boot/dts/sama5d2.dtsi
-> @@ -263,6 +263,44 @@
->  			cache-level = <2>;
->  		};
->  
-> +		nand0: nand@80000000 {
-> +			compatible = "atmel,sama5d2-nand";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			ranges;
-> +			reg = < /* EBI CS3 */
-> +				0x80000000 0x08000000
-> +				/* SMC PMECC regs */
-> +				0xf8014070 0x00000490
-> +				/* SMC PMECC Error Location regs */
-> +				0xf8014500 0x00000200
-> +				/* ROM Galois tables */
-> +				0x00040000 0x00018000
-> +				>;
-> +			interrupts = <17 IRQ_TYPE_LEVEL_HIGH 6>;
-> +			atmel,nand-addr-offset = <21>;
-> +			atmel,nand-cmd-offset = <22>;
-> +			atmel,nand-has-dma;
-> +			atmel,has-pmecc;
-> +			atmel,pmecc-lookup-table-offset = <0x0 0x8000>;
-> +			status = "disabled";
-> +
-> +			nfc@c0000000 {
-> +				compatible = "atmel,sama5d4-nfc";
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +				reg = < /* NFC Command Registers */
-> +					0xc0000000 0x08000000
-> +					/* NFC HSMC regs */
-> +					0xf8014000 0x00000070
-> +					/* NFC SRAM banks */
-> +					0x00100000 0x00100000
-> +					>;
-> +				clocks = <&hsmc_clk>;
-> +				atmel,write-by-sram;
-> +			};
-> +		};
-> +
->  		sdmmc0: sdio-host@a0000000 {
->  			compatible = "atmel,sama5d2-sdhci";
->  			reg = <0xa0000000 0x300>;
-> 
-
-
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 20cbaab..0b5da72 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -863,17 +863,6 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
+ 	uint8_t *buf_pos;
+ 	int max_bitflips = 0;
+ 
+-	/* If can correct bitfilps from erased page, do the normal check */
+-	if (host->caps->pmecc_correct_erase_page)
+-		goto normal_check;
+-
+-	for (i = 0; i < nand_chip->ecc.total; i++)
+-		if (ecc[i] != 0xff)
+-			goto normal_check;
+-	/* Erased page, return OK */
+-	return 0;
+-
+-normal_check:
+ 	for (i = 0; i < nand_chip->ecc.steps; i++) {
+ 		err_nbr = 0;
+ 		if (pmecc_stat & 0x1) {
+@@ -884,16 +873,30 @@ normal_check:
+ 			pmecc_get_sigma(mtd);
+ 
+ 			err_nbr = pmecc_err_location(mtd);
+-			if (err_nbr == -1) {
++			if (err_nbr >= 0) {
++				pmecc_correct_data(mtd, buf_pos, ecc, i,
++						   nand_chip->ecc.bytes,
++						   err_nbr);
++			} else if (!host->caps->pmecc_correct_erase_page) {
++				u8 *ecc_pos = ecc + (i * nand_chip->ecc.bytes);
++
++				/* Try to detect erased pages */
++				err_nbr = nand_check_erased_ecc_chunk(buf_pos,
++							host->pmecc_sector_size,
++							ecc_pos,
++							nand_chip->ecc.bytes,
++							NULL, 0,
++							nand_chip->ecc.strength);
++			}
++
++			if (err_nbr < 0) {
+ 				dev_err(host->dev, "PMECC: Too many errors\n");
+ 				mtd->ecc_stats.failed++;
+ 				return -EIO;
+-			} else {
+-				pmecc_correct_data(mtd, buf_pos, ecc, i,
+-					nand_chip->ecc.bytes, err_nbr);
+-				mtd->ecc_stats.corrected += err_nbr;
+-				max_bitflips = max_t(int, max_bitflips, err_nbr);
+ 			}
++
++			mtd->ecc_stats.corrected += err_nbr;
++			max_bitflips = max_t(int, max_bitflips, err_nbr);
+ 		}
+ 		pmecc_stat >>= 1;
+ 	}
 -- 
-Nicolas Ferre
+2.1.4
