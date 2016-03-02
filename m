@@ -1,15 +1,21 @@
-Received: from webbox1416.server-home.net ([77.236.96.61])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ab6Ui-0005aD-Ui
- for linux-mtd@lists.infradead.org; Wed, 02 Mar 2016 13:07:13 +0000
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH v2 1/1] mtd: mtdram: Add parameter for setting writebuf size
-Date: Wed,  2 Mar 2016 14:06:41 +0100
-Message-Id: <1456924001-1000-1-git-send-email-alexander.stein@systec-electronic.com>
+ id 1ab7q4-0001Kx-JP
+ for linux-mtd@lists.infradead.org; Wed, 02 Mar 2016 14:33:21 +0000
+Message-ID: <1456929164.2169.21.camel@gmail.com>
+Subject: Re: [PATCH v2 1/1] mtd: mtdram: Add parameter for setting writebuf
+ size
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Alexander Stein <alexander.stein@systec-electronic.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Date: Wed, 02 Mar 2016 16:32:44 +0200
+In-Reply-To: <1456924001-1000-1-git-send-email-alexander.stein@systec-electronic.com>
+References: <1456924001-1000-1-git-send-email-alexander.stein@systec-electronic.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,74 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubifs uses the write buffer size in recovery algorithm. When inspecting
-an unclean ubifs recovery fails with writebuf size 64 in mtdram while
-recovery on actual mtd device with writebuf size of 1024 succeeds.
-So add a parameter for setting this property.
+On Wed, 2016-03-02 at 14:06 +0100, Alexander Stein wrote:
+> +config MTDRAM_WRITEBUF_SIZE
+> +       int "MTDRAM write buf size in Bytes"
+> +       depends on MTD_MTDRAM
+> +       default "64"
+> +       help
+> +         This allows you to configure the write buffer size in the
+> device
+> +         emulated by the MTDRAM driver.  If the MTDRAM driver is
+> built
+> +         as a module, it is also possible to specify this as a
+> parameter when
+> +         loading the module. E.g. ubifs relies this in the recovery
+> algorithm.
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
-Reviewed-by: Richard Weinberger <richard@nod.at>
----
-Changes in v2:
-* Added Reviewed-by: Richard Weinberger <richard@nod.at>
-* Removed outdated comment about CFI NOR flash write buffer sizes
-
- drivers/mtd/devices/Kconfig  | 10 ++++++++++
- drivers/mtd/devices/mtdram.c |  6 +++++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index f73c416..5431d75 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -171,6 +171,16 @@ config MTDRAM_ERASE_SIZE
- 	  as a module, it is also possible to specify this as a parameter when
- 	  loading the module.
- 
-+config MTDRAM_WRITEBUF_SIZE
-+	int "MTDRAM write buf size in Bytes"
-+	depends on MTD_MTDRAM
-+	default "64"
-+	help
-+	  This allows you to configure the write buffer size in the device
-+	  emulated by the MTDRAM driver.  If the MTDRAM driver is built
-+	  as a module, it is also possible to specify this as a parameter when
-+	  loading the module. E.g. ubifs relies this in the recovery algorithm.
-+
- #If not a module (I don't want to test it as a module)
- config MTDRAM_ABS_POS
- 	hex "SRAM Hexadecimal Absolute position or 0"
-diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
-index 627a9bc..6977a66 100644
---- a/drivers/mtd/devices/mtdram.c
-+++ b/drivers/mtd/devices/mtdram.c
-@@ -19,14 +19,18 @@
- 
- static unsigned long total_size = CONFIG_MTDRAM_TOTAL_SIZE;
- static unsigned long erase_size = CONFIG_MTDRAM_ERASE_SIZE;
-+static unsigned long writebuf_size = CONFIG_MTDRAM_WRITEBUF_SIZE;
- #define MTDRAM_TOTAL_SIZE (total_size * 1024)
- #define MTDRAM_ERASE_SIZE (erase_size * 1024)
-+#define MTDRAM_WRITEBUF_SIZE (writebuf_size)
- 
- #ifdef MODULE
- module_param(total_size, ulong, 0);
- MODULE_PARM_DESC(total_size, "Total device size in KiB");
- module_param(erase_size, ulong, 0);
- MODULE_PARM_DESC(erase_size, "Device erase block size in KiB");
-+module_param(writebuf_size, ulong, 0);
-+MODULE_PARM_DESC(writebuf_size, "Device write buf size in Bytes");
- #endif
- 
- // We could store these in the mtd structure, but we only support 1 device..
-@@ -123,7 +127,7 @@ int mtdram_init_device(struct mtd_info *mtd, void *mapped_address,
- 	mtd->flags = MTD_CAP_RAM;
- 	mtd->size = size;
- 	mtd->writesize = 1;
--	mtd->writebufsize = 64; /* Mimic CFI NOR flashes */
-+	mtd->writebufsize = MTDRAM_WRITEBUF_SIZE;
- 	mtd->erasesize = MTDRAM_ERASE_SIZE;
- 	mtd->priv = mapped_address;
- 
--- 
-2.4.10
+Why another Kconfig option (compile-time) instead of just a module
+parameter (run-time), which would be more flexible?
