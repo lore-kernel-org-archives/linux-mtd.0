@@ -1,15 +1,22 @@
-Received: from webbox1416.server-home.net ([77.236.96.61])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ab8gU-0005qN-8s
- for linux-mtd@lists.infradead.org; Wed, 02 Mar 2016 15:27:41 +0000
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: Alexander Stein <alexander.stein@systec-electronic.com>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH v3 1/1] mtd: mtdram: Add parameter for setting writebuf size
-Date: Wed,  2 Mar 2016 16:26:59 +0100
-Message-Id: <1456932419-14614-1-git-send-email-alexander.stein@systec-electronic.com>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ab935-0004vn-Qd
+ for linux-mtd@lists.infradead.org; Wed, 02 Mar 2016 15:50:53 +0000
+From: "Franklin S Cooper Jr." <fcooper@ti.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>,
+ <daniel.thompson@linaro.org>, <xiaolei.li@mediatek.com>,
+ Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+Subject: Re: [PATCH] mtd: nand: tests: fix regression introduced in
+ mtd_nandectest
+References: <1456866240-26119-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <20160301221755.093f5223@bbrezillon>
+Message-ID: <56D70BBB.1020004@ti.com>
+Date: Wed, 2 Mar 2016 09:50:19 -0600
+MIME-Version: 1.0
+In-Reply-To: <20160301221755.093f5223@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,53 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubifs uses the write buffer size in recovery algorithm. When inspecting
-an unclean ubifs recovery fails with writebuf size 64 in mtdram while
-recovery on actual mtd device with writebuf size of 1024 succeeds.
-So add a parameter for setting this property.
 
-Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
-Reviewed-by: Richard Weinberger <richard@nod.at>
----
-Changes in v3:
-* Removed Kconfig option
 
-Changes in v2:
-* Added Reviewed-by: Richard Weinberger <richard@nod.at>
-* Removed outdated comment about CFI NOR flash write buffer sizes
+On 03/01/2016 03:17 PM, Boris Brezillon wrote:
+> Hi Jorge,
+>
+> On Tue,  1 Mar 2016 16:04:00 -0500
+> Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
+>
+>> Offending Commit: 6e94119 "mtd: nand: return consistent error codes in
+>> ecc.correct() implementations"
+>>
+>> The new error code was not being handled properly in double bit error
+>> detection.
+>>
+>> Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>
+> Thanks,
+>
+> Boris
 
- drivers/mtd/devices/mtdram.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
-index 627a9bc..cbd8547 100644
---- a/drivers/mtd/devices/mtdram.c
-+++ b/drivers/mtd/devices/mtdram.c
-@@ -19,6 +19,7 @@
- 
- static unsigned long total_size = CONFIG_MTDRAM_TOTAL_SIZE;
- static unsigned long erase_size = CONFIG_MTDRAM_ERASE_SIZE;
-+static unsigned long writebuf_size = 64;
- #define MTDRAM_TOTAL_SIZE (total_size * 1024)
- #define MTDRAM_ERASE_SIZE (erase_size * 1024)
- 
-@@ -27,6 +28,8 @@ module_param(total_size, ulong, 0);
- MODULE_PARM_DESC(total_size, "Total device size in KiB");
- module_param(erase_size, ulong, 0);
- MODULE_PARM_DESC(erase_size, "Device erase block size in KiB");
-+module_param(writebuf_size, ulong, 0);
-+MODULE_PARM_DESC(writebuf_size, "Device write buf size in Bytes (Default: 64)");
- #endif
- 
- // We could store these in the mtd structure, but we only support 1 device..
-@@ -123,7 +126,7 @@ int mtdram_init_device(struct mtd_info *mtd, void *mapped_address,
- 	mtd->flags = MTD_CAP_RAM;
- 	mtd->size = size;
- 	mtd->writesize = 1;
--	mtd->writebufsize = 64; /* Mimic CFI NOR flashes */
-+	mtd->writebufsize = writebuf_size;
- 	mtd->erasesize = MTDRAM_ERASE_SIZE;
- 	mtd->priv = mapped_address;
- 
--- 
-2.4.10
+We just encountered this problem and this patch fixed it.
+Tested-by: Franklin S Cooper Jr <fcooper@ti.com>
+>> ---
+>>  drivers/mtd/tests/mtd_nandecctest.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
+>> index 7931615..88b6c81 100644
+>> --- a/drivers/mtd/tests/mtd_nandecctest.c
+>> +++ b/drivers/mtd/tests/mtd_nandecctest.c
+>> @@ -187,7 +187,7 @@ static int double_bit_error_detect(void *error_data, void *error_ecc,
+>>  	__nand_calculate_ecc(error_data, size, calc_ecc);
+>>  	ret = __nand_correct_data(error_data, error_ecc, calc_ecc, size);
+>>  
+>> -	return (ret == -1) ? 0 : -EINVAL;
+>> +	return (ret == -EBADMSG) ? 0 : -EINVAL;
+>>  }
+>>  
+>>  static const struct nand_ecc_test nand_ecc_test[] = {
+>
+>
