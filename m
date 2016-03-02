@@ -1,27 +1,26 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aascI-0007SM-3e
- for linux-mtd@lists.infradead.org; Tue, 01 Mar 2016 22:18:08 +0000
-From: Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Robert Jarzmik
- <robert.jarzmik@free.fr>
-CC: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Michael Wang
- <Michael.Wang@alliedtelesis.co.nz>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Re: mtd: pxa3xx_nand: issue with command time out
-Date: Tue, 1 Mar 2016 22:17:38 +0000
-Message-ID: <56D61502.1090007@alliedtelesis.co.nz>
-References: <5695CEF0.1080100@alliedtelesis.co.nz>
- <87a8o9ex9r.fsf@belgarion.home> <569827BC.10601@alliedtelesis.co.nz>
- <874meddqu5.fsf@belgarion.home> <20160125183022.GA41251@google.com>
- <87fuxl9yil.fsf@belgarion.home>
- <CAAEAJfCNzh9+zRq_Yb=hFyLfP8RFoX+LUsDL4dVwUenVc_gVOA@mail.gmail.com>
-In-Reply-To: <CAAEAJfCNzh9+zRq_Yb=hFyLfP8RFoX+LUsDL4dVwUenVc_gVOA@mail.gmail.com>
+From: Yunhui Cui <yunhui.cui@nxp.com>
+To: Han Xu <xhnjupt@gmail.com>
+CC: Yunhui Cui <B56489@freescale.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>
+Subject: RE: [PATCH v2 3/4] mtd:spi-nor:fsl-quadspi:Add fast-read mode support
+Date: Wed, 2 Mar 2016 01:50:15 +0000
+Message-ID: <DB5PR0401MB191277E0B76D656565C1AC6294BC0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+References: <1454326208-4533-1-git-send-email-B56489@freescale.com>
+ <1454326208-4533-3-git-send-email-B56489@freescale.com>
+ <20160217180742.GB17485@shlinux2>
+ <DB5PR0401MB1912C9D041FF2B408652F4CD94A60@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+ <20160226163145.GA2182@shlinux2.ap.freescale.net>
+ <DB5PR0401MB1912E33280B6EB755144995D94BA0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+ <20160229201714.GA18909@shlinux2.ap.freescale.net>
+In-Reply-To: <20160229201714.GA18909@shlinux2.ap.freescale.net>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A0CCF47C5600C6468F4AFB0F74C1F6A2@atlnz.lc>
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,91 +31,191 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUm9iZXJ0LCBFemVxdWllbCwgYW5kIEJyaWFuLA0KDQpJIGhhdmUgYmVlbiB3b3JraW5nIHdp
-dGggTWljaGFlbCBXYW5nIG9uIHRoaXMgaXNzdWUgYW5kIHdhbnRlZCB0byB1cGRhdGUgDQp5b3Ug
-b24gb3VyIHJlc3VsdHMgYXMgd2UgdGhpbmsgdGhlcmUgaXMgYSB3aWRlciBpc3N1ZSB0byByZXNv
-bHZlIGhlcmUuDQoNCkkgYmVsaWV2ZSBFemVxdWllbCdzIGFuYWx5c2lzIG9mIHRoZSBJUlEgc2Vx
-dWVuY2UgaXMgY29ycmVjdC4gVGhlIA0KcHJvcG9zZWQgcGF0Y2ggZnJvbSBCcmlhbiBpcyBub3Qg
-bmVlZGVkLCBub3QgZG9lcyBpdCByZXNvbHZlIG91ciBpc3N1ZS4NCg0KRnVydGhlciwgd2UgaGF2
-ZSBkZWJ1Z2dlZCBpbiBtb3JlIGRldGFpbCB3aXRoIGtlcm5lbCB0cmFjaW5nIGFuZCBzZWUgDQp0
-aGF0IHRoZSBwcm9ibGVtIG9jY3VycyBiZWNhdXNlIG5vdGhpbmcgY2FsbHMgJ3NjaGVkdWxlKCkn
-IGluIHRoZSBrZXJuZWwgDQp3aXRoaW4gdGhlIHRpbWVvdXQgcGVyaW9kICgyMDBtcykgdG8gYWN0
-dWFsbHkgYWxsb3cgdGhlIElSUSBib3R0b20taGFsZiANCnRocmVhZCAoKHB4YTN4eF9uYW5kX2ly
-cV90aHJlYWQoKSkgdG8gcnVuLg0KDQpXaXRoIHRoZSB0cmFjZSBlbmFibGVkIHdlIHdlcmUgYWJs
-ZSB0byBzZWUgbG9uZyBkZWxheXMgYmV0d2VlbiB0aGUgSVJRIA0KdGhyZWFkIGJlaW5nIHF1ZXVl
-ZCBmb3IgcnVuIGFzIGEgcmVzdWx0IG9mIHRoZSByZXR1cm4gd2l0aCANCklSUV9XQUtFX1RIUkVB
-RCBpbiBweGEzeHhfbmFuZF9pcnEoKSwgYW5kIGEgY2FsbCB0byBzY2hlZHVsZSgpIGFjdHVhbGx5
-IA0Kc2VsZWN0aW5nIHRoZSB0aHJlYWQgZm9yIGV4ZWN1dGlvbi4gVGhpcyBkZWxheSB3YXMgdGll
-ZCB0byB3aGF0ZXZlciBlbHNlIA0Kd2FzIGhhcHBlbmluZyBpbiBvdXIgc3lzdGVtIGR1cmluZyB0
-aGUgYm9vdCB1cCB3aGVuIHRoaXMgaXNzdWUgb2NjdXJzLiANCkZvciBpbnN0YW5jZSwgaWYgYSBt
-dXRleCBnb3QgdW5sb2NrZWQgdGhpcyB3b3VsZCB1bHRpbWF0ZWx5IGxlYWQgdG8gYSANCmNhbGwg
-dG8gc2NoZWR1bGUoKSBhbmQgb3VyIHRocmVhZCAocHhhM3h4X25hbmRfaXJxX3RocmVhZCgpKSB3
-b3VsZCBydW4uIA0KSWYgc29tZSBmaWxlIHN5c3RlbSBvcHMgaGFwcGVuZWQgc2NoZWR1bGUoKSB3
-b3VsZCBnZXQgY2FsbGVkLiBUaGVzZSANCnVucmVsYXRlZCBhY3Rpdml0aWVzIHdlcmUgcmVxdWly
-ZWQgc28gdGhhdCBzY2hlZHVsZSgpIGdvdCBjYWxsZWQgYW5kIHRoZSANCnNjaGVkdWxlciB3b3Vs
-ZCBsZXQgdGhlIGJvdHRvbS1oYWxmIGV4ZWN1dGUuDQpJbiBvdXIgdHJhY2luZyB3ZSBzYXcgdGhl
-IGlzc3VlIG9jY3VyIHdoZW5ldmVyIHRoZSBjYWxsIHRvIHNjaGVkdWxlKCkgDQpkaWRuJ3Qgb2Nj
-dXIgYmVmb3JlIHRoZSB0aW1lb3V0IGV4cGlyZWQuIEluIHNob3J0LCBpZiB3ZSBnb3QgbHVja3kg
-YW5kIA0Kc29tZXRoaW5nIGNvbXBsZXRlbHkgdW5yZWxhdGVkIGhhcHBlbmVkIHRoYXQgbGVkIHRv
-IGEgY2FsbCB0byANCidzY2hlZHVsZSgpJywgdGhlbiB0aGUgaXNzdWUgZGlkbid0IG9jY3VyLiBJ
-ZiB3ZSBnb3QgdW5sdWNreSBhbmQgbm90aGluZyANCmNhbGxlZCBzY2hlZHVsZSgpLCB0aGUgaXNz
-dWUgd2FzIG9ic2VydmVkLg0KDQpXZSBoYXZlIGVuYWJsZWQgQ09ORklHX1BSRUVNUFQgaW4gb3Vy
-IHN5c3RlbSB0byByZXNvbHZlIHRoaXMuIFRoaXMgaGFzIA0KdGhlIGVmZmVjdCBvZiBsZWFkaW5n
-IHRvIGEgdHJpZ2dlcmluZyBvZiAnc2NoZWR1bGUoKScgYXQgdGhlIGVuZCBvZiANCnByb2Nlc3Np
-bmcgaW50ZXJydXB0cy4gVGhpcyBtZWFucyB0aGF0IHdlIG5vdyBzZWUgYSBuaWNlIHRpZ2h0IGV4
-ZWN1dGlvbiANCm9mIHB4YTN4eF9uYW5kIHRocmVhZGVkIElSUSBzdWNoIHRoYXQgd2Ugc2VlIGFs
-bCBvcHMgY29tcGxldGluZyB3aXRoIA0KbGVzcyB0aGF0IDIwbXMgZGVsYXkuDQoNCkkgd2FudGVk
-IHRvIGhpZ2hsaWdodCB0aGlzIHRvIHlvdSBiZWNhdXNlIEkgdGhpbmsgaXQgc2hvd3MgdGhhdCB0
-aGUgDQpjaGFuZ2UgdG8gYSB0aHJlYWRlZCBJUlEgaXMgcHJvYmFibHkgb25seSBzYWZlIGlmIHdl
-IGNhbiBndWFyYW50ZWUgDQpzY2hlZHVsaW5nIG9mIHRoZSBib3R0b20taGFsZiB0aHJlYWQgd2l0
-aGluIHRoZSB0aW1lIG91dCBwZXJpb2QgKDIwMG1zKS4gDQpJIHRoaW5rIHRoaXMgaXMgbm90IHNh
-ZmUgZm9yIHN5c3RlbXMgd2l0aCBDT05GSUdfUFJFRU1QVCBub3QgY29uZmlndXJlZC4gDQpPciBw
-ZXJoYXBzIHRoZXJlIGlzIGEgYmV0dGVyIHdheSB0byByZXNvbHZlIHRoaXMuIElzIHRoaXMgYSBk
-ZWZpY2llbmN5IA0KaW4gdGhlIEFybWFkYSBYUCBjb2RlPw0KDQpXaGF0IGRvIHlvdSB0aGluaz8N
-Cg0KVGhhbmtzLA0KSGFtaXNoIE1hcnRpbg0KDQoNCk9uIDAxLzI3LzIwMTYgMDI6MDMgQU0sIEV6
-ZXF1aWVsIEdhcmNpYSB3cm90ZToNCj4gT24gMjUgSmFudWFyeSAyMDE2IGF0IDE3OjQ4LCBSb2Jl
-cnQgSmFyem1payA8cm9iZXJ0LmphcnptaWtAZnJlZS5mcj4gd3JvdGU6DQo+PiBCcmlhbiBOb3Jy
-aXMgPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT4gd3JpdGVzOg0KPj4NCj4+PiBIaSBSb2Jl
-cnQsDQo+Pj4NCj4+PiBPbiBTdW4sIEphbiAxNywgMjAxNiBhdCAxMjo1MzowNkFNICswMTAwLCBS
-b2JlcnQgSmFyem1payB3cm90ZToNCj4+PiBjb21taXQgMjQ1NDIyNTdhM2I5ODcwMjVkNGI5OThl
-YzJkMTVlNTU2Yzk4YWQzZg0KPj4+IEF1dGhvcjogUm9iZXJ0IEphcnptaWsgPHJvYmVydC5qYXJ6
-bWlrQGZyZWUuZnI+DQo+Pj4gRGF0ZTogICBGcmkgRmViIDIwIDE5OjM2OjQzIDIwMTUgKzAxMDAN
-Cj4+Pg0KPj4+ICAgICAgbXRkOiBweGEzeHgtbmFuZDogaGFuZGxlIFBJTyBpbiB0aHJlYWRlZCBp
-bnRlcnJ1cHQNCj4+Pg0KPj4+DQo+Pj4gQW5kIG5vdyBJJ20gd29uZGVyaW5nOiB3aGVuIGRvZXMg
-dGhlIGNvbXBsZXRpb24gZ2V0IHRyaWdnZXJlZD8gaS5lLjoNCj4+Pg0KPj4+ICAgICAgICBjb21w
-bGV0ZSgmaW5mby0+Y21kX2NvbXBsZXRlKTsNCj4+PiBJdCBzZWVtcyB0byBtZSBsaWtlIHlvdSd2
-ZSBzaG9ydC1jaXJjdWl0ZWQgc29tZSBvZiB0aGUgSVJRIGhhbmRsaW5nDQo+Pj4gY29kZSwgc28g
-dGhhdCB0aGUgdGhyZWFkZWQgaGFuZGxlciBpcyBidWdneS4gQUlVSSwgaWYgdGhlIGNvbXBsZXRp
-b24NCj4+PiBldmVudCBldmVyIGhhcHBlbnMsIGl0J3MgYWN0dWFsbHkgaGFwcGVuaW5nICpiZWZv
-cmUqIHRoZSBmdWxsICh0aHJlYWRlZCkNCj4+PiBoYW5kbGVyIGlzIGFjdHVhbGx5IGZpbmlzaGVk
-LCBzaW5jZSBpdCBvY2N1cnMgaW4gcHhhM3h4X25hbmRfaXJxKCksDQo+Pj4gYmVmb3JlIHB4YTN4
-eF9uYW5kX2lycV90aHJlYWQoKSBldmVyIHJ1bnMuIE5vdywgSSdtIG5vdCBzdXJlIGlmIHRoYXQN
-Cj4+PiBjYXVzZXMgYSByZWFsIHByb2JsZW0gaW4gcHJhY3RpY2UsIHNpbmNlIHlvdSB1c2VkIElS
-UUZfT05FU0hPVCwgYnV0IEkNCj4+PiB3b3VsZCB0aGluayB0aGF0J3MgYWxzbyBzdXNwZWN0Lg0K
-Pj4gSSB0aGluayB5b3UncmUgdmVyeSByaWdodCwgdGhpcyAiZ290byBOT1JNQUxfSVJRX0VYSVQi
-IGNyZWF0ZXMgYQ0KPj4gc2hvcnQtY2lydGN1aXQuIFRoYXQgbWFrZXMgbWUgdGhpbmsgdGhhdCBJ
-IHNob3VsZCA6DQo+PiAgIC0gYWRkDQo+PiBzdGF0aWMgdm9pZCBweGEzeHhfbmFuZF9kYXRhX2Zp
-bmlzaGVkKHN0cnVjdCBweGEzeHhfbmFuZF9pbmZvICppbmZvKQ0KPj4gew0KPj4gICAgICAgICAg
-dW5zaWduZWQgaW50IGRvbmU7DQo+Pg0KPj4gICAgICAgICAgY21kX2RvbmUgPW5mby0+Y3MgPyBO
-RFNSX0NTMV9DTUREIDogTkRTUl9DUzBfQ01ERDsNCj4+ICAgICAgICAgIG5hbmRfd3JpdGVsKGlu
-Zm8sIE5EU1IsIGNtZF9kb25lKTsNCj4+ICAgICAgICAgIGNvbXBsZXRlKCZpbmYwLT5jbWRfY29t
-cGxldGUpOw0KPj4gfQ0KPj4NCj4+ICAgLSBpbiBweGEzeHhfbmFuZF9pcnFfdGhyZWFkKCksIEkg
-c2hvdWxkIGFkZCBhdCB0aGUgZW5kOg0KPj4gICAgICAgICAgcHhhM3h4X25hbmRfZGF0YV9maW5p
-c2hlZChpbmZvKTsNCj4+DQo+PiAgIC0gaW4gcHhhM3h4X25hbmRfZGF0YV9kbWFfaXJxKCksIEkg
-c2hvdWxkIGFkZCBhdCB0aGUgZW5kOg0KPj4gICAgICAgICAgcHhhM3h4X25hbmRfZGF0YV9maW5p
-c2hlZChpbmZvKTsNCj4+DQo+PiBFemVxdWllbCwgd291bGQgeW91IGhhdmUgYSBsb29rIGF0IHRo
-YXQgY29kZSBzbmlwcGV0IGFuZCB0ZWxsIG1lIGlmIEknbSBtaXNzaW5nDQo+PiBzb21ldGhpbmcg
-aW4gdGhlIGRyaXZlcidzIHN0cnVjdHVyZSA/DQo+Pg0KPiBBbHRob3VnaCBpdCBzZWVtcyBCcmlh
-biBpcyByaWdodCwgSSdtIG5vdCBzbyBzdXJlIGFib3V0IGl0LiBBcyBmYXIgYXMNCj4gSSBjYW4g
-cmVjYWxsLCB0aGUgSVJRIHNlcXVlbmNlIGlzIChwbGVhc2UgY29ycmVjdCBtZSBpZiBJJ20gd3Jv
-bmchKToNCj4NCj4gMS4gV3JpdGUgY29tbWFuZCByZXF1ZXN0IChXUkNNRFJFUSksIHRoZSBJUlEg
-aGFuZGxlciB3cml0ZXMgdGhlIGNvbW1hbmQuDQo+IDIuIFJlYWQvd3JpdGUgZGF0YSByZXF1ZXN0
-IChSRERSRVEgfCBXUkRSRVEpLiBUaGUgSVJRIGhhbmRsZXIgZmlyZXMNCj4gdGhlIHRocmVhZGVk
-IGhhbmRsZXIsIHdoaWNoIGRvZXMgZGF0YSB0cmFuc2Zlci4NCj4gMy4gQ29tbWFuZCBkb25lIElS
-USAoQ01ERCksIHRoZSBJUlEgaGFuZGxlciBjb21wbGV0ZXMgdGhlIGNvbXBsZXRpb24uDQo+DQo+
-IEkgZG9uJ3QgdGhpbmsgZGF0YSByZXF1ZXN0IGFuZCBjb21tYW5kIGRvbmUgY2FuIGJlIGZvdW5k
-DQo+IHNpbXVsdGFuZW91c2x5LCBzbyBJIGRvbid0IHRoaW5rIHRoaXMgaXMgYSByZWFsIGlzc3Vl
-LiBJZGVhcz8NCj4NCj4gUmVnYXJkaW5nIHRoZSBmaXhlZCBwcm9wb3NlZCB1cCB0aGVyZSwgaXQg
-c2VlbXMgd3Jvbmc6IHRoZSBjb21wbGV0aW9uDQo+IHNob3VsZCBiZSBjb21wbGV0ZWQgb25seSBh
-ZnRlciBhIGNvbW1hbmQgZG9uZSBJUlEgaXMgZm91bmQsIGFuZCBub3QgYXMNCj4gdGhlIHJlc3Vs
-dCBvZiBkYXRhIHRyYW5zZmVyIGJlaW5nIGZpbmlzaGVkLg0K
+Hi Han,
+
+Thanks for your suggestions about this patch. I will update it in driver ne=
+xt version patch set.=20
+
+Do you have some other comments for the patch set except for removing  "+ r=
+et =3D of_property_read_bool(np, "m25p,fast-read");" in driver ?
+
+
+Thanks
+Yunhui
+-----Original Message-----
+From: Han Xu [mailto:xhnjupt@gmail.com]=20
+Sent: Tuesday, March 01, 2016 4:17 AM
+To: Yunhui Cui
+Cc: Yunhui Cui; dwmw2@infradead.org; computersforpeace@gmail.com; han.xu@fr=
+eescale.com; linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; l=
+inux-arm-kernel@lists.infradead.org; Yao Yuan
+Subject: Re: [PATCH v2 3/4] mtd:spi-nor:fsl-quadspi:Add fast-read mode supp=
+ort
+
+On Mon, Feb 29, 2016 at 03:43:36AM +0000, Yunhui Cui wrote:
+> Hi Han,
+>=20
+> But I don't think QuadSPI driver need to check the m25p,fast-read propert=
+y again since spi-nor layer has already done that. Adding the property in f=
+lash node should work in the same way.
+>=20
+> [Yunhui]: There are three modes in fsl-quadspi driver , fast mode, quad m=
+ode, ddr quad read. The last parameter mode of spi_nor_scan() I have to spe=
+cify . Otherwise, flash is still set to quad mode.
+
+If the Nor chip behaves as you said only support fasst-read, the (info->fla=
+gs &
+SPI_NOR_QUAD_READ) can only take false path.
+
+> spi-nor.c:=20
+>=20
+> 1419         if (mode =3D=3D SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_R=
+EAD) {
+> 1420                 ret =3D set_quad_mode(nor, info);
+> 1421                 if (ret) {
+> 1422                         dev_err(dev, "quad mode not supported\n");
+> 1423                         return ret;
+> 1424                 }
+> 1425                 nor->flash_read =3D SPI_NOR_QUAD;
+> 1426         } else if (mode =3D=3D SPI_NOR_DUAL && info->flags & SPI_NOR=
+_DUAL_READ) {
+> 1427                 nor->flash_read =3D SPI_NOR_DUAL;
+> 1428         }
+>=20
+>=20
+> Thanks
+> Yunhui
+> -----Original Message-----
+> From: Han Xu [mailto:xhnjupt@gmail.com]
+> Sent: Saturday, February 27, 2016 12:32 AM
+> To: Yunhui Cui
+> Cc: Yunhui Cui; dwmw2@infradead.org; computersforpeace@gmail.com;=20
+> han.xu@freescale.com; linux-mtd@lists.infradead.org;=20
+> linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org;=20
+> Yao Yuan
+> Subject: Re: [PATCH v2 3/4] mtd:spi-nor:fsl-quadspi:Add fast-read mode=20
+> support
+>=20
+> On Thu, Feb 25, 2016 at 08:07:22AM +0000, Yunhui Cui wrote:
+> > Hi Han,
+> >=20
+> > I have provided the options " m25p,fast-read ", because there are proba=
+ble some flashes can't support quad mode.
+> > So we should support fast-read mode in our driver. Moreover,  There is =
+a option to select fast-read mode in spi_nor.c :
+> >                /* If we were instantiated by DT, use it */
+> >                  if (of_property_read_bool(np, "m25p,fast-read"))
+> >                          nor->flash_read =3D SPI_NOR_FAST;
+>=20
+> Did you have some REAL cases using SPI NOR that only supports upto fast-r=
+ead with Quad SPI driver? Neither fast-read or normal-read, which is actual=
+ly more general, supported in the driver, just because I didn't see any REA=
+L cases till now.
+>=20
+> I didn't run against the patch, although IMO it's not that necessary. But=
+ I don't think QuadSPI driver need to check the m25p,fast-read property aga=
+in since spi-nor layer has already done that. Adding the property in flash =
+node should work in the same way.
+> =20
+> >=20
+> > Thanks
+> > Yunhui
+> >=20
+> > -----Original Message-----
+> > From: Han Xu [mailto:xhnjupt@gmail.com]
+> > Sent: Thursday, February 18, 2016 2:08 AM
+> > To: Yunhui Cui
+> > Cc: dwmw2@infradead.org; computersforpeace@gmail.com;=20
+> > han.xu@freescale.com; linux-mtd@lists.infradead.org;=20
+> > linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+> > Yao Yuan
+> > Subject: Re: [PATCH v2 3/4] mtd:spi-nor:fsl-quadspi:Add fast-read=20
+> > mode support
+> >=20
+> > On Mon, Feb 01, 2016 at 07:30:07PM +0800, Yunhui Cui wrote:
+> > > The qspi driver add generic fast-read mode for different flash=20
+> > > venders. There are some different board flash work on different=20
+> > > mode, such fast-read, quad-mode.
+> > > So we have to modify the third entrace parameter of spi_nor_scan().
+> > >=20
+> > > Signed-off-by: Yunhui Cui <B56489@freescale.com>
+> > > ---
+> > >  drivers/mtd/spi-nor/fsl-quadspi.c | 27=20
+> > > +++++++++++++++++++++------
+> > >  1 file changed, 21 insertions(+), 6 deletions(-)
+> > >=20
+> > > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c
+> > > b/drivers/mtd/spi-nor/fsl-quadspi.c
+> > > index 9861290..0a31cb1 100644
+> > > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> > > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> > > @@ -389,11 +389,21 @@ static void fsl_qspi_init_lut(struct fsl_qspi *=
+q)
+> > >  	/* Read */
+> > >  	lut_base =3D SEQID_READ * 4;
+> > > =20
+> > > -	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen)=
+,
+> > > -			base + QUADSPI_LUT(lut_base));
+> > > -	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
+> > > -		    LUT1(FSL_READ, PAD4, rxfifo),
+> > > -			base + QUADSPI_LUT(lut_base + 1));
+> > > +	if (nor->flash_read =3D=3D SPI_NOR_FAST) {
+> > > +		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
+> > > +			    LUT1(ADDR, PAD1, addrlen),
+> > > +				base + QUADSPI_LUT(lut_base));
+> > > +		qspi_writel(q,  LUT0(DUMMY, PAD1, read_dm) |
+> > > +			    LUT1(FSL_READ, PAD1, rxfifo),
+> > > +				base + QUADSPI_LUT(lut_base + 1));
+> > > +	} else if (nor->flash_read =3D=3D SPI_NOR_QUAD) {
+> > > +		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
+> > > +			    LUT1(ADDR, PAD1, addrlen),
+> > > +				base + QUADSPI_LUT(lut_base));
+> > > +		qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
+> > > +			    LUT1(FSL_READ, PAD4, rxfifo),
+> > > +				base + QUADSPI_LUT(lut_base + 1));
+> > > +	}
+> > > =20
+> > >  	/* Write enable */
+> > >  	lut_base =3D SEQID_WREN * 4;
+> > > @@ -468,6 +478,7 @@ static int fsl_qspi_get_seqid(struct fsl_qspi=20
+> > > *q,
+> > > u8 cmd)  {
+> > >  	switch (cmd) {
+> > >  	case SPINOR_OP_READ_1_1_4:
+> > > +	case SPINOR_OP_READ_FAST:
+> > >  		return SEQID_READ;
+> > >  	case SPINOR_OP_WREN:
+> > >  		return SEQID_WREN;
+> > > @@ -963,6 +974,7 @@ static int fsl_qspi_probe(struct platform_device =
+*pdev)
+> > >  	struct spi_nor *nor;
+> > >  	struct mtd_info *mtd;
+> > >  	int ret, i =3D 0;
+> > > +	enum read_mode mode =3D SPI_NOR_QUAD;
+> > > =20
+> > >  	q =3D devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
+> > >  	if (!q)
+> > > @@ -1064,7 +1076,10 @@ static int fsl_qspi_probe(struct platform_devi=
+ce *pdev)
+> > >  		/* set the chip address for READID */
+> > >  		fsl_qspi_set_base_addr(q, nor);
+> > > =20
+> > > -		ret =3D spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
+> > > +		ret =3D of_property_read_bool(np, "m25p,fast-read");
+> > > +		mode =3D (ret) ? SPI_NOR_FAST : SPI_NOR_QUAD;
+> > > +
+> > > +		ret =3D spi_nor_scan(nor, NULL, mode);
+> > >  		if (ret)
+> > >  			goto mutex_failed;
+> > > =20
+> > I understand you want to provide a more generic read mode, but this is =
+a quad spi driver, I prefer to provide the options, either quad read/quad I=
+O read, or just normal read.
+> > > --
+> > > 2.1.0.27.g96db324
+> > >=20
+> > >=20
+> > > ______________________________________________________
+> > > Linux MTD discussion mailing list
+> > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
