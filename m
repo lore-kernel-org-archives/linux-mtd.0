@@ -1,22 +1,27 @@
-Received: from webbox1416.server-home.net ([77.236.96.61])
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ab84n-00007q-QL
- for linux-mtd@lists.infradead.org; Wed, 02 Mar 2016 14:48:35 +0000
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Cc: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1ab8Aw-0002lA-21
+ for linux-mtd@lists.infradead.org; Wed, 02 Mar 2016 14:54:54 +0000
+From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+To: "alexander.stein@systec-electronic.com"
+ <alexander.stein@systec-electronic.com>
+CC: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
 Subject: Re: [PATCH v2 1/1] mtd: mtdram: Add parameter for setting writebuf
  size
-Date: Wed, 02 Mar 2016 15:48:02 +0100
-Message-ID: <38372465.103Wx4k7xg@ws-stein>
-In-Reply-To: <1456929355.2169.24.camel@intel.com>
+Date: Wed, 2 Mar 2016 14:54:30 +0000
+Message-ID: <1456930470.2169.26.camel@intel.com>
 References: <1456924001-1000-1-git-send-email-alexander.stein@systec-electronic.com>
  <1456929164.2169.21.camel@gmail.com> <1456929355.2169.24.camel@intel.com>
+ <38372465.103Wx4k7xg@ws-stein>
+In-Reply-To: <38372465.103Wx4k7xg@ws-stein>
+Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <934D99D2BB8F1243A7FC3DCA75F68960@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,52 +31,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 02 March 2016 14:35:55, Bityutskiy, Artem wrote:
-> On Wed, 2016-03-02 at 16:32 +0200, Artem Bityutskiy wrote:
-> > On Wed, 2016-03-02 at 14:06 +0100, Alexander Stein wrote:
-> > > 
-> > > +config MTDRAM_WRITEBUF_SIZE
-> > > +       int "MTDRAM write buf size in Bytes"
-> > > +       depends on MTD_MTDRAM
-> > > +       default "64"
-> > > +       help
-> > > +         This allows you to configure the write buffer size in the
-> > > device
-> > > +         emulated by the MTDRAM driver.  If the MTDRAM driver is
-> > > built
-> > > +         as a module, it is also possible to specify this as a
-> > > parameter when
-> > > +         loading the module. E.g. ubifs relies this in the
-> > > recovery
-> > > algorithm.
-> > Why another Kconfig option (compile-time) instead of just a module
-> > parameter (run-time), which would be more flexible?
-> 
-> Oh, pardon, you are adding both. I never found the Kconfig options very
-> useful. Quite the opposite, I always thought MTD has too many of those
-> little Kconfig options and the config menu is too large. I'd suggest to
-> only add the runtime option, unless you really need the Kconfig option
-> too (why?).
-
-I don't need it. Setting using modprobe is enough for me and a lot more flexible. I just kept it the same way as the other 2 parameters. Even those are rather useless in Kconfig, IMHO. Or do you prefer removing the existing Kconfig options all together and just rely on module parameters?
-
-Best regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
-SYS TEC electronic GmbH
-alexander.stein@systec-electronic.com
-
-Legal and Commercial Address:
-Am Windrad 2
-08468 Heinsdorfergrund
-Germany
-
-Office: +49 (0) 3765 38600-0
-Fax:    +49 (0) 3765 38600-4100
- 
-Managing Directors:
-	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
-	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
-Commercial Registry:
-	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
+T24gV2VkLCAyMDE2LTAzLTAyIGF0IDE1OjQ4ICswMTAwLCBBbGV4YW5kZXIgU3RlaW4gd3JvdGU6
+DQo+IEkgZG9uJ3QgbmVlZCBpdC4gU2V0dGluZyB1c2luZyBtb2Rwcm9iZSBpcyBlbm91Z2ggZm9y
+IG1lIGFuZCBhIGxvdA0KPiBtb3JlIGZsZXhpYmxlLiBJIGp1c3Qga2VwdCBpdCB0aGUgc2FtZSB3
+YXkgYXMgdGhlIG90aGVyIDIgcGFyYW1ldGVycy4NCj4gRXZlbiB0aG9zZSBhcmUgcmF0aGVyIHVz
+ZWxlc3MgaW4gS2NvbmZpZywgSU1ITy4gT3IgZG8geW91IHByZWZlcg0KPiByZW1vdmluZyB0aGUg
+ZXhpc3RpbmcgS2NvbmZpZyBvcHRpb25zIGFsbCB0b2dldGhlciBhbmQganVzdCByZWx5IG9uDQo+
+IG1vZHVsZSBwYXJhbWV0ZXJzPw0KDQpJJ2QgcmVjb21tZW5kIHRvIGF2b2lkIGV4cGFuZGluZyB0
+aGUgS2NvbmZpZywgd2hpY2ggaXMgYWxyZWFkeSBjb21wbGV4DQphbmQgcXVpdGUgY29uZnVzaW5n
+IGZvciBzb21lb25lIHdobyBpcyBub3QgYW4gTVREIGV4cGVydCBidXQganVzdCB0cmllcw0KdG8g
+Y29tZSB1cCB3aXRoIGEgcmVhc29uYWJsZSBkZWZhdWx0IEtjb25maWcgKGUuZy4sIGFuZCBkaXN0
+cm8NCmJ1aWxkZXIpLg0KDQotLSANCkJlc3QgUmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkNCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQpJbnRlbCBGaW5sYW5kIE95ClJlZ2lzdGVyZWQgQWRkcmVzczogUEwgMjgxLCAw
+MDE4MSBIZWxzaW5raSAKQnVzaW5lc3MgSWRlbnRpdHkgQ29kZTogMDM1NzYwNiAtIDQgCkRvbWlj
+aWxlZCBpbiBIZWxzaW5raSAKClRoaXMgZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNv
+bnRhaW4gY29uZmlkZW50aWFsIG1hdGVyaWFsIGZvcgp0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVu
+ZGVkIHJlY2lwaWVudChzKS4gQW55IHJldmlldyBvciBkaXN0cmlidXRpb24KYnkgb3RoZXJzIGlz
+IHN0cmljdGx5IHByb2hpYml0ZWQuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZApyZWNpcGll
+bnQsIHBsZWFzZSBjb250YWN0IHRoZSBzZW5kZXIgYW5kIGRlbGV0ZSBhbGwgY29waWVzLgo=
