@@ -1,21 +1,15 @@
 Received: from webbox1416.server-home.net ([77.236.96.61])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ab6Q1-0003J9-Hi
- for linux-mtd@lists.infradead.org; Wed, 02 Mar 2016 13:02:22 +0000
+ id 1ab6Ui-0005aD-Ui
+ for linux-mtd@lists.infradead.org; Wed, 02 Mar 2016 13:07:13 +0000
 From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 1/1] mtd: mtdram: Add parameter for setting writebuf size
-Date: Wed, 02 Mar 2016 14:01:50 +0100
-Message-ID: <6654580.lx3DHdo0Ov@ws-stein>
-In-Reply-To: <56D6E0F6.8070905@nod.at>
-References: <1456911954-12929-1-git-send-email-alexander.stein@systec-electronic.com>
- <2781096.oJXdWOB4df@ws-stein> <56D6E0F6.8070905@nod.at>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: Alexander Stein <alexander.stein@systec-electronic.com>,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH v2 1/1] mtd: mtdram: Add parameter for setting writebuf size
+Date: Wed,  2 Mar 2016 14:06:41 +0100
+Message-Id: <1456924001-1000-1-git-send-email-alexander.stein@systec-electronic.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +19,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 02 March 2016 13:47:50, Richard Weinberger wrote:
-> Am 02.03.2016 um 11:41 schrieb Alexander Stein:
-> > On Wednesday 02 March 2016 11:23:59, Richard Weinberger wrote:
-> >> On Wed, Mar 2, 2016 at 10:45 AM, Alexander Stein
-> >> <alexander.stein@systec-electronic.com> wrote:
-> >>> ubifs uses the write buffer size in recovery algorithm. When inspecting
-> >>> an unclean ubifs recovery fails with writebuf size 64 in mtdram while
-> >>> recovery on actual mtd device with writebuf size of 1024 succeeds.
-> >>> So add a parameter for setting this property.
-> >>
-> >> Can it be that you've tested an NAND image on mtdram?
-> > 
-> > Nope. We copied that image within barebox from device /dev/nor0 (the whole 128MiB NOR flash) and used that in mtdram.
-> > Unfortunately mounting that "broken" ubifs in barebox suffers from essentially the same problem: using a different writebuf size for recovery results in failure. But that's another issue.
-> > The apparently important changes in linux are the commits:
-> > 428ff9d2e37d3a82af0f56b476f70c244cf550d1 ("UBIFS: remove dead code")
-> > 2765df7da540687c4d57ca840182122f074c5b9c ("UBIFS: use max_write_size during recovery")
-> > With those two the writebuf size gets used by ubifs.
-> 
-> Makes sense to me!
-> One minor nitpick, the comment "Mimic CFI NOR flashes" is no longer valid then.
-> Maybe you can note in Kconfig that the default value 64 mimics CFI NOR...
+ubifs uses the write buffer size in recovery algorithm. When inspecting
+an unclean ubifs recovery fails with writebuf size 64 in mtdram while
+recovery on actual mtd device with writebuf size of 1024 succeeds.
+So add a parameter for setting this property.
 
-Well, I stumbled also on that because we actually do use a CFI NOR flash. The commit message introducing that states: "Set the 'mtd->writebufsize' field to 64 to mimic modern CFI flashes." I guess 64 Bytes was modern at that time. I'll remove it all together in v2.
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+Reviewed-by: Richard Weinberger <richard@nod.at>
+---
+Changes in v2:
+* Added Reviewed-by: Richard Weinberger <richard@nod.at>
+* Removed outdated comment about CFI NOR flash write buffer sizes
 
-> Beside of that:
-> Reviewed-by: Richard Weinberger <richard@nod.at>
+ drivers/mtd/devices/Kconfig  | 10 ++++++++++
+ drivers/mtd/devices/mtdram.c |  6 +++++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-Thanks, best regards,
-Alexander
--- 
-Dipl.-Inf. Alexander Stein
-SYS TEC electronic GmbH
-alexander.stein@systec-electronic.com
-
-Legal and Commercial Address:
-Am Windrad 2
-08468 Heinsdorfergrund
-Germany
-
-Office: +49 (0) 3765 38600-0
-Fax:    +49 (0) 3765 38600-4100
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index f73c416..5431d75 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -171,6 +171,16 @@ config MTDRAM_ERASE_SIZE
+ 	  as a module, it is also possible to specify this as a parameter when
+ 	  loading the module.
  
-Managing Directors:
-	Director Technology/CEO: Dipl.-Phys. Siegmar Schmidt;
-	Director Commercial Affairs/COO: Dipl. Ing. (FH) Armin von Collrepp
-Commercial Registry:
-	Amtsgericht Chemnitz, HRB 28082; USt.-Id Nr. DE150534010
++config MTDRAM_WRITEBUF_SIZE
++	int "MTDRAM write buf size in Bytes"
++	depends on MTD_MTDRAM
++	default "64"
++	help
++	  This allows you to configure the write buffer size in the device
++	  emulated by the MTDRAM driver.  If the MTDRAM driver is built
++	  as a module, it is also possible to specify this as a parameter when
++	  loading the module. E.g. ubifs relies this in the recovery algorithm.
++
+ #If not a module (I don't want to test it as a module)
+ config MTDRAM_ABS_POS
+ 	hex "SRAM Hexadecimal Absolute position or 0"
+diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
+index 627a9bc..6977a66 100644
+--- a/drivers/mtd/devices/mtdram.c
++++ b/drivers/mtd/devices/mtdram.c
+@@ -19,14 +19,18 @@
+ 
+ static unsigned long total_size = CONFIG_MTDRAM_TOTAL_SIZE;
+ static unsigned long erase_size = CONFIG_MTDRAM_ERASE_SIZE;
++static unsigned long writebuf_size = CONFIG_MTDRAM_WRITEBUF_SIZE;
+ #define MTDRAM_TOTAL_SIZE (total_size * 1024)
+ #define MTDRAM_ERASE_SIZE (erase_size * 1024)
++#define MTDRAM_WRITEBUF_SIZE (writebuf_size)
+ 
+ #ifdef MODULE
+ module_param(total_size, ulong, 0);
+ MODULE_PARM_DESC(total_size, "Total device size in KiB");
+ module_param(erase_size, ulong, 0);
+ MODULE_PARM_DESC(erase_size, "Device erase block size in KiB");
++module_param(writebuf_size, ulong, 0);
++MODULE_PARM_DESC(writebuf_size, "Device write buf size in Bytes");
+ #endif
+ 
+ // We could store these in the mtd structure, but we only support 1 device..
+@@ -123,7 +127,7 @@ int mtdram_init_device(struct mtd_info *mtd, void *mapped_address,
+ 	mtd->flags = MTD_CAP_RAM;
+ 	mtd->size = size;
+ 	mtd->writesize = 1;
+-	mtd->writebufsize = 64; /* Mimic CFI NOR flashes */
++	mtd->writebufsize = MTDRAM_WRITEBUF_SIZE;
+ 	mtd->erasesize = MTDRAM_ERASE_SIZE;
+ 	mtd->priv = mapped_address;
+ 
+-- 
+2.4.10
