@@ -1,22 +1,21 @@
-Received: from smtprelay0051.hostedemail.com ([216.40.44.51]
+Received: from smtprelay0044.hostedemail.com ([216.40.44.44]
  helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abBN8-0004Y7-Gt
- for linux-mtd@lists.infradead.org; Wed, 02 Mar 2016 18:19:43 +0000
-Message-ID: <1456942752.4044.22.camel@perches.com>
+ id 1abBzH-0008CZ-K5
+ for linux-mtd@lists.infradead.org; Wed, 02 Mar 2016 18:59:08 +0000
+Message-ID: <1456945122.4044.35.camel@perches.com>
 Subject: Re: [PATCH V2] ubifs: Add logging functions for ubifs_msg,
  ubifs_err and ubifs_warn
 From: Joe Perches <joe@perches.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter
- <adrian.hunter@intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Richard
- Weinberger <richard@nod.at>
-Date: Wed, 02 Mar 2016 10:19:12 -0800
-In-Reply-To: <6f81fc68890afcdf53defe70df9b182be9f26df8.1456258476.git.joe@perches.com>
-References: <6f81fc68890afcdf53defe70df9b182be9f26df8.1456258476.git.joe@perches.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Adrian
+ Hunter <adrian.hunter@intel.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Date: Wed, 02 Mar 2016 10:58:42 -0800
+In-Reply-To: <1456944509.4044.27.camel@nod.at>
+References: <1456944509.4044.27.camel@nod.at>
 Content-Type: text/plain; charset="ISO-8859-1"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2016-02-23 at 12:21 -0800, Joe Perches wrote:
-> The existing logging macros are fairly large and converting the
-> macros to functions make the object code smaller.
+On Wed, 2016-03-02 at 19:46 +0100, Richard Weinberger wrote:
+> Am 02.03.2016 7:19 nachm. schrieb Joe Perches <joe@perches.com>:
+> > On Tue, 2016-02-23 at 12:21 -0800, Joe Perches wrote:
+> > > The existing logging macros are fairly large and converting the 
+> > > macros to functions make the object code smaller. 
+> > Artem and Adrian are the nominal maintainers for ubifs. 
+> > 
+> > Artem last had a sign-off on a ubifs patch 6 months ago and 
+> > Adrian's last one was over 3 years ago. 
+> > 
+> > Is there an expected ack/nack/applied handling time for a 
+> > ubifs patch like this? 
+> > 
+> > Should this patch go to someone else? 
+> > 
+> > Should the MAINTAINERS entry for ubifs be changed to orphan? 
+> No need to panic. I take care of the patch. :)
 
-Artem and Adrian are the nominal maintainers for ubifs.
+No worries, I'm calm.  But if you're taking care of the patch
+and not the nominal maintainers, likely the MAINTAINERS entry
+should be updated.
 
-Artem last had a sign-off on a ubifs patch 6 months ago and
-Adrian's
-last one was over 3 years ago.
+Presumably the equivalent ubi patch will be handled in the
+same fashion,
 
-Is there an expected ack/nack/applied handling time for a
-ubifs patch like this?
+For drivers/mtd/ubi, Artem is also a nominal maintainer, but
+last signed a patch in 2014.
 
-Should this patch go to someone else?
+Likely the MAINTAINERS entry for UBI should be updated too.
 
-Should the MAINTAINERS entry for ubifs be changed to orphan?
+Maybe something like:
+---
+ MAINTAINERS | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 81302e4..927557c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11266,8 +11266,7 @@ S:	Maintained
+ F:	drivers/scsi/u14-34f.c
+ 
+ UBI FILE SYSTEM (UBIFS)
+-M:	Artem Bityutskiy <dedekind1@gmail.com>
+-M:	Adrian Hunter <adrian.hunter@intel.com>
++M:	Richard Weinberger <richard@nod.at>
+ L:	linux-mtd@lists.infradead.org
+ T:	git git://git.infradead.org/ubifs-2.6.git
+ W:	http://www.linux-mtd.infradead.org/doc/ubifs.html
+@@ -11350,7 +11349,6 @@ F:	Documentation/scsi/ufs.txt
+ F:	drivers/scsi/ufs/
+ 
+ UNSORTED BLOCK IMAGES (UBI)
+-M:	Artem Bityutskiy <dedekind1@gmail.com>
+ M:	Richard Weinberger <richard@nod.at>
+ W:	http://www.linux-mtd.infradead.org/
+ L:	linux-mtd@lists.infradead.org
