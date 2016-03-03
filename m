@@ -1,14 +1,14 @@
 Received: from mail-oi0-x22c.google.com ([2607:f8b0:4003:c06::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abPS6-0001PZ-RS
- for linux-mtd@lists.infradead.org; Thu, 03 Mar 2016 09:21:47 +0000
-Received: by mail-oi0-x22c.google.com with SMTP id m82so11163534oif.1
- for <linux-mtd@lists.infradead.org>; Thu, 03 Mar 2016 01:21:26 -0800 (PST)
+ id 1abQ07-00075q-Le
+ for linux-mtd@lists.infradead.org; Thu, 03 Mar 2016 09:56:56 +0000
+Received: by mail-oi0-x22c.google.com with SMTP id r187so11562561oih.3
+ for <linux-mtd@lists.infradead.org>; Thu, 03 Mar 2016 01:56:34 -0800 (PST)
 MIME-Version: 1.0
 In-Reply-To: <959619813.9882304.1456995893128.JavaMail.zimbra@fideltronik.com.pl>
 References: <959619813.9882304.1456995893128.JavaMail.zimbra@fideltronik.com.pl>
-Date: Thu, 3 Mar 2016 10:21:25 +0100
-Message-ID: <CAFLxGvzHfOgN5T0yZByOqzq0=K5+PdvDMgNTxJVRrsB6WdT3rA@mail.gmail.com>
+Date: Thu, 3 Mar 2016 10:56:33 +0100
+Message-ID: <CAFLxGvwVE0V2eL2cvbcv7kGxvu_1ZBg+GL95D+b_gVs8Qw4Znw@mail.gmail.com>
 Subject: Re: Subject=Re:%20Re%3A%20UBI%20leb_write_unlock%20NULL%20pointer%20Oops%20%28continuation%29&In-Reply-To=%3C20140205201223.GA25295%40gmail.com%3E
 From: Richard Weinberger <richard.weinberger@gmail.com>
 To: Tomasz Lach <tomasz.lach@fideltronik.com>
@@ -29,9 +29,6 @@ On Thu, Mar 3, 2016 at 10:04 AM, Tomasz Lach
 > Hello everybody!
 >
 > I have the same error (OOPS in leb_write_unlock).
-
-Which "same"? I also cannot parse the mail subject.
-
 > I run kernel 3.6.9 on Atmel SAMA5D31 cpu, compiled with buildroot gcc 4.6.3
 >
 > I can reproduce error quite easy - writing lot of inserts into sqllite table from tcl.
@@ -40,7 +37,12 @@ Which "same"? I also cannot parse the mail subject.
 > When I turn on mutex debugging - error disappears...
 > I can't find when .next is NULL...
 
-Can you share the kernel trace?
+I think your kernel misses this stable patch:
+commit 2928f0d0c5ebd6c9605c0d98207a44376387c298
+Author: Adam Thomas <adamthomas1111@gmail.com>
+Date:   Sat Feb 2 22:32:31 2013 +0000
+
+    UBIFS: fix use of freed ubifs_orphan objects
 
 -- 
 Thanks,
