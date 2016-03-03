@@ -1,31 +1,33 @@
-Received: from mail-io0-x22b.google.com ([2607:f8b0:4001:c06::22b])
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abZ8l-0006zt-Gf
- for linux-mtd@lists.infradead.org; Thu, 03 Mar 2016 19:42:28 +0000
-Received: by mail-io0-x22b.google.com with SMTP id m184so39135533iof.1
- for <linux-mtd@lists.infradead.org>; Thu, 03 Mar 2016 11:42:07 -0800 (PST)
+ id 1abZfj-0008JU-GC
+ for linux-mtd@lists.infradead.org; Thu, 03 Mar 2016 20:16:33 +0000
+From: Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+CC: Robert Jarzmik <robert.jarzmik@free.fr>, Brian Norris
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Michael Wang
+ <Michael.Wang@alliedtelesis.co.nz>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Chris Packham
+ <Chris.Packham@alliedtelesis.co.nz>
+Subject: Re: mtd: pxa3xx_nand: issue with command time out
+Date: Thu, 3 Mar 2016 20:16:05 +0000
+Message-ID: <56D89B85.3090109@alliedtelesis.co.nz>
+References: <5695CEF0.1080100@alliedtelesis.co.nz>
+ <87a8o9ex9r.fsf@belgarion.home> <569827BC.10601@alliedtelesis.co.nz>
+ <874meddqu5.fsf@belgarion.home> <20160125183022.GA41251@google.com>
+ <87fuxl9yil.fsf@belgarion.home>
+ <CAAEAJfCNzh9+zRq_Yb=hFyLfP8RFoX+LUsDL4dVwUenVc_gVOA@mail.gmail.com>
+ <56D61502.1090007@alliedtelesis.co.nz>
+ <CAAEAJfAd2qkcJby3AaKOaxL2LZC=PMNfu7dy5yMcZ1eHhOF7oA@mail.gmail.com>
+In-Reply-To: <CAAEAJfAd2qkcJby3AaKOaxL2LZC=PMNfu7dy5yMcZ1eHhOF7oA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <12FFAC14DCC6DC429596D37FAF9262CA@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20160303193625.GZ19428@n2100.arm.linux.org.uk>
-References: <20160303171347.GY19428@n2100.arm.linux.org.uk>
- <CAKv+Gu_5vmxsigsCfsvcjFa-hhOP6vxnMavsQ45oKgMeYzgUSg@mail.gmail.com>
- <CAPcyv4ijokZMTNPsxVOafMUCT_CHyScTkCGbR94mcYOhQOKNqA@mail.gmail.com>
- <CAKv+Gu80AJ+UDGLWpr=1sYT57J+6X8-KZ5HCYSEz9JpgWaTQxA@mail.gmail.com>
- <CAPcyv4j-Pz8uMTnz+OJZGguQqS1jOG4U+JkpsO7cBRFvs=-Ehg@mail.gmail.com>
- <CAKv+Gu_z0B9rK4NJgrZFXLXWhgi+LVj6E9555vx60LSEoRy9tg@mail.gmail.com>
- <CAPcyv4h8ez_nNUNVcOdHzjYB-Fh-VrB24p5aepN_GZ2g3jSxMQ@mail.gmail.com>
- <CAKv+Gu8U+3r-H0Oyru0J9RoS744kzbJDjYkm=_FVSRFjzR5pxQ@mail.gmail.com>
- <CAPcyv4iDMGsksCh4cHU3xooodn1e2tfSc70xTo-B_C2Ppnwsrw@mail.gmail.com>
- <CAKv+Gu8uGiy85vC=2sMuMCCP0J7e0qwnAxACR25bePC0zHw=8w@mail.gmail.com>
- <20160303193625.GZ19428@n2100.arm.linux.org.uk>
-Date: Thu, 3 Mar 2016 20:42:06 +0100
-Message-ID: <CAKv+Gu-UCLeeCU57s3K4-RqXX2h0HxowqUOkrof6XYu3vypOdQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] fix memremap on ARM
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Dan Williams <dan.j.williams@intel.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- linux-mtd@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>
-Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,22 +37,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3 March 2016 at 20:36, Russell King - ARM Linux
-<linux@arm.linux.org.uk> wrote:
-> On Thu, Mar 03, 2016 at 07:07:05PM +0100, Ard Biesheuvel wrote:
->> OK. But I'd still like Russell to indicate whether he agrees with all
->> of this, i.e., wire up memremap() to perform MT_MEMORY_RW mappings in
->> the vmalloc area of memory regions that may be potentially be covered
->> by highmem as well.
->
-> I'm happy to go that way: go back to ioremap_cached() for pxa2xx-flash
-> and switch memremap() to MT_MEMORY_RW - I think that makes total sense.
->
-> I think it is worth putting a comment against ioremap_cached() saying
-> that it's for pxa2xx-flash.c though, and deprecated for new uses.
->
-
-OK, I will respin the series, and replace patch #1 with two patches that
-
-a) reintroduce ioremap_cached() (with the comment, as you say)
-b) move pxa2xx-flash from memremap to ioremap_cached()
+SGkgRXplcXVpZWwsDQoNCkknbSBnbGFkIG15IGFuYWx5c2lzIHdhcyBjb3JyZWN0IGFuZCB3ZSBt
+b3JlIGZ1bGx5IHVuZGVyc3RhbmQgdGhlIA0KcHJvYmxlbSBub3cuIENPTkZJR19QUkVFTVBUIHNl
+ZW1zIHRvIHdvcmsgZm9yIHVzIG5vdywgYnV0IGl0IGRvZXMgc2VlbSANCmxpa2UgdGhlIHdyb25n
+IGZpeCwgYW5kIGlmIHlvdSBndXlzIHRoaW5rIGl0IHdpbGwgbm90IGd1YXJhbnRlZSANCnByZXZl
+bnRpbmcgdGhlIGlzc3VlIHRoZW4gd2UnZCByYXRoZXIgYmFjayB0aGF0IGNoYW5nZSBvdXQuDQoN
+CkkgaGFkIGNvbnRlbXBsYXRlZCB1c2luZyB3YWl0X2Zvcl9jb21wbGV0aW9uX2ludGVycnVwdGli
+bGUoKSBidXQgd2FzIGEgDQpiaXQgdW5zdXJlIGlmIGl0IHdhcyBzYWZlLiBEbyB5b3UgaGF2ZSBh
+IHByb3Bvc2VkIHBhdGNoPyBXZSB3b3VsZCBiZSANCmhhcHB5IHRvIGFwcGx5IGl0IHRvIG91ciBz
+eXN0ZW0sIHR1cm4gb2ZmIENPTkZJR19QUkVFTVBULCBhbmQgc2VlIGhvdyBpdCANCmdvZXMuIE91
+dCBpc3N1ZSBpcyBoaWdobHkgcmVwcm9kdWNpYmxlIHNvIEkgdGhpbmsgaXQgd291bGQgYmUgYSBn
+b29kIA0KZmlyc3QgdGVzdCBmb3IgYSBjaGFuZ2U/DQoNClRoYW5rcywNCkhhbWlzaCBNLg0KDQpP
+biAwMy8wNC8yMDE2IDA4OjI0IEFNLCBFemVxdWllbCBHYXJjaWEgd3JvdGU6DQo+ICtSaWNoYXJk
+LCBCb3JpcyBhbmQgVGhvbWFzDQo+DQo+IE9uIDEgTWFyY2ggMjAxNiBhdCAxOToxNywgSGFtaXNo
+IE1hcnRpbg0KPiA8SGFtaXNoLk1hcnRpbkBhbGxpZWR0ZWxlc2lzLmNvLm56PiB3cm90ZToNCj4+
+IEhpIFJvYmVydCwgRXplcXVpZWwsIGFuZCBCcmlhbiwNCj4+DQo+PiBJIGhhdmUgYmVlbiB3b3Jr
+aW5nIHdpdGggTWljaGFlbCBXYW5nIG9uIHRoaXMgaXNzdWUgYW5kIHdhbnRlZCB0byB1cGRhdGUN
+Cj4+IHlvdSBvbiBvdXIgcmVzdWx0cyBhcyB3ZSB0aGluayB0aGVyZSBpcyBhIHdpZGVyIGlzc3Vl
+IHRvIHJlc29sdmUgaGVyZS4NCj4+DQo+PiBJIGJlbGlldmUgRXplcXVpZWwncyBhbmFseXNpcyBv
+ZiB0aGUgSVJRIHNlcXVlbmNlIGlzIGNvcnJlY3QuIFRoZQ0KPj4gcHJvcG9zZWQgcGF0Y2ggZnJv
+bSBCcmlhbiBpcyBub3QgbmVlZGVkLCBub3QgZG9lcyBpdCByZXNvbHZlIG91ciBpc3N1ZS4NCj4+
+DQo+PiBGdXJ0aGVyLCB3ZSBoYXZlIGRlYnVnZ2VkIGluIG1vcmUgZGV0YWlsIHdpdGgga2VybmVs
+IHRyYWNpbmcgYW5kIHNlZQ0KPj4gdGhhdCB0aGUgcHJvYmxlbSBvY2N1cnMgYmVjYXVzZSBub3Ro
+aW5nIGNhbGxzICdzY2hlZHVsZSgpJyBpbiB0aGUga2VybmVsDQo+PiB3aXRoaW4gdGhlIHRpbWVv
+dXQgcGVyaW9kICgyMDBtcykgdG8gYWN0dWFsbHkgYWxsb3cgdGhlIElSUSBib3R0b20taGFsZg0K
+Pj4gdGhyZWFkICgocHhhM3h4X25hbmRfaXJxX3RocmVhZCgpKSB0byBydW4uDQo+Pg0KPj4gV2l0
+aCB0aGUgdHJhY2UgZW5hYmxlZCB3ZSB3ZXJlIGFibGUgdG8gc2VlIGxvbmcgZGVsYXlzIGJldHdl
+ZW4gdGhlIElSUQ0KPj4gdGhyZWFkIGJlaW5nIHF1ZXVlZCBmb3IgcnVuIGFzIGEgcmVzdWx0IG9m
+IHRoZSByZXR1cm4gd2l0aA0KPj4gSVJRX1dBS0VfVEhSRUFEIGluIHB4YTN4eF9uYW5kX2lycSgp
+LCBhbmQgYSBjYWxsIHRvIHNjaGVkdWxlKCkgYWN0dWFsbHkNCj4+IHNlbGVjdGluZyB0aGUgdGhy
+ZWFkIGZvciBleGVjdXRpb24uIFRoaXMgZGVsYXkgd2FzIHRpZWQgdG8gd2hhdGV2ZXIgZWxzZQ0K
+Pj4gd2FzIGhhcHBlbmluZyBpbiBvdXIgc3lzdGVtIGR1cmluZyB0aGUgYm9vdCB1cCB3aGVuIHRo
+aXMgaXNzdWUgb2NjdXJzLg0KPj4gRm9yIGluc3RhbmNlLCBpZiBhIG11dGV4IGdvdCB1bmxvY2tl
+ZCB0aGlzIHdvdWxkIHVsdGltYXRlbHkgbGVhZCB0byBhDQo+PiBjYWxsIHRvIHNjaGVkdWxlKCkg
+YW5kIG91ciB0aHJlYWQgKHB4YTN4eF9uYW5kX2lycV90aHJlYWQoKSkgd291bGQgcnVuLg0KPj4g
+SWYgc29tZSBmaWxlIHN5c3RlbSBvcHMgaGFwcGVuZWQgc2NoZWR1bGUoKSB3b3VsZCBnZXQgY2Fs
+bGVkLiBUaGVzZQ0KPj4gdW5yZWxhdGVkIGFjdGl2aXRpZXMgd2VyZSByZXF1aXJlZCBzbyB0aGF0
+IHNjaGVkdWxlKCkgZ290IGNhbGxlZCBhbmQgdGhlDQo+PiBzY2hlZHVsZXIgd291bGQgbGV0IHRo
+ZSBib3R0b20taGFsZiBleGVjdXRlLg0KPj4gSW4gb3VyIHRyYWNpbmcgd2Ugc2F3IHRoZSBpc3N1
+ZSBvY2N1ciB3aGVuZXZlciB0aGUgY2FsbCB0byBzY2hlZHVsZSgpDQo+PiBkaWRuJ3Qgb2NjdXIg
+YmVmb3JlIHRoZSB0aW1lb3V0IGV4cGlyZWQuIEluIHNob3J0LCBpZiB3ZSBnb3QgbHVja3kgYW5k
+DQo+PiBzb21ldGhpbmcgY29tcGxldGVseSB1bnJlbGF0ZWQgaGFwcGVuZWQgdGhhdCBsZWQgdG8g
+YSBjYWxsIHRvDQo+PiAnc2NoZWR1bGUoKScsIHRoZW4gdGhlIGlzc3VlIGRpZG4ndCBvY2N1ci4g
+SWYgd2UgZ290IHVubHVja3kgYW5kIG5vdGhpbmcNCj4+IGNhbGxlZCBzY2hlZHVsZSgpLCB0aGUg
+aXNzdWUgd2FzIG9ic2VydmVkLg0KPj4NCj4+IFdlIGhhdmUgZW5hYmxlZCBDT05GSUdfUFJFRU1Q
+VCBpbiBvdXIgc3lzdGVtIHRvIHJlc29sdmUgdGhpcy4gVGhpcyBoYXMNCj4+IHRoZSBlZmZlY3Qg
+b2YgbGVhZGluZyB0byBhIHRyaWdnZXJpbmcgb2YgJ3NjaGVkdWxlKCknIGF0IHRoZSBlbmQgb2YN
+Cj4+IHByb2Nlc3NpbmcgaW50ZXJydXB0cy4gVGhpcyBtZWFucyB0aGF0IHdlIG5vdyBzZWUgYSBu
+aWNlIHRpZ2h0IGV4ZWN1dGlvbg0KPj4gb2YgcHhhM3h4X25hbmQgdGhyZWFkZWQgSVJRIHN1Y2gg
+dGhhdCB3ZSBzZWUgYWxsIG9wcyBjb21wbGV0aW5nIHdpdGgNCj4+IGxlc3MgdGhhdCAyMG1zIGRl
+bGF5Lg0KPj4NCj4+IEkgd2FudGVkIHRvIGhpZ2hsaWdodCB0aGlzIHRvIHlvdSBiZWNhdXNlIEkg
+dGhpbmsgaXQgc2hvd3MgdGhhdCB0aGUNCj4+IGNoYW5nZSB0byBhIHRocmVhZGVkIElSUSBpcyBw
+cm9iYWJseSBvbmx5IHNhZmUgaWYgd2UgY2FuIGd1YXJhbnRlZQ0KPj4gc2NoZWR1bGluZyBvZiB0
+aGUgYm90dG9tLWhhbGYgdGhyZWFkIHdpdGhpbiB0aGUgdGltZSBvdXQgcGVyaW9kICgyMDBtcyku
+DQo+PiBJIHRoaW5rIHRoaXMgaXMgbm90IHNhZmUgZm9yIHN5c3RlbXMgd2l0aCBDT05GSUdfUFJF
+RU1QVCBub3QgY29uZmlndXJlZC4NCj4+IE9yIHBlcmhhcHMgdGhlcmUgaXMgYSBiZXR0ZXIgd2F5
+IHRvIHJlc29sdmUgdGhpcy4gSXMgdGhpcyBhIGRlZmljaWVuY3kNCj4+IGluIHRoZSBBcm1hZGEg
+WFAgY29kZT8NCj4+DQo+PiBXaGF0IGRvIHlvdSB0aGluaz8NCj4+DQo+IFRoYW5rcyBhIGxvdCBm
+b3IgdXBkYXRpbmcgdXMuIFJpY2hhcmQsIEJvcmlzIGFuZCBJIGhhdmUNCj4gZGlzY3Vzc2VkIGFi
+b3V0IHRoaXMgb24gSVJDLg0KPg0KPiBXZSBjYW1lIHRvIHRoZSBmb2xsb3dpbmcgY29uY2x1c2lv
+bnM6DQo+DQo+IDEuIFRoZXJlJ3Mgbm8gd2F5IHRvIGd1YXJhbnRlZSB0aGF0IHRoZSB0aHJlYWQg
+d2lsbCBiZSBzY2hlZHVsZWQNCj4gc29vbiBlbm91Z2ggdG8gYWx3YXlzIGRvIHRoZSBkYXRhIHRy
+YW5zZmVyIGluIHRpbWUuDQo+DQo+IFVzaW5nIENPTkZJR19QUkVFTVBUIGNvdWxkIHByZXZlbnQg
+YSB0aW1lb3V0IGluIG1hbnkgKG1vc3Q/KQ0KPiBjYXNlcywgYnV0IGl0J3Mgbm90IGd1YXJhbnRl
+ZWQgdG8gd29yay4NCj4NCj4gMi4gVGhlIHB4YTN4eC1uYW5kIGRyaXZlciBpcyBwb29ybHkgZGVz
+aWduZWQsIGFuZCBpdCBzaG91bGRuJ3QNCj4gZG8gYW55IGRhdGEgdHJhbnNmZXIgaW4gdGhlIElS
+USAodGhyZWFkZWQgb3Igbm90KSBoYW5kbGVyLg0KPg0KPiBJbnN0ZWFkLCB0aGlzIHNob3VsZCBi
+ZSBkb25lIGluIHtyZWFkLHdyaXRlfV9idWYsIGkuZS4gaW4gdGhlDQo+IGNvbnRleHQgb2YgdGhl
+IGNhbGxpbmcgcHJvY2VzcyB0aGF0IGFza3MgZGF0YSB0byBiZSByZWFkL3dyaXRlLg0KPiBUaGlz
+IGlzIHBvdGVudGlhbGx5IGEgYmlnIHJld29yay4NCj4NCj4gMy4gUmljaGFyZCBwcm9wb3NlZCB0
+byBnZXQgcmlkIG9mIHRoZSB0aW1lb3V0DQo+ICh1c2luZyB3YWl0X2Zvcl9jb21wbGV0aW9uX2lu
+dGVycnVwdGlibGUgaW5zdGVhZD8pLg0KPg0KPiBJJ20gd29uZGVyaW5nIGlmIHRoYXQgY291bGQg
+YXZvaWQgdGhlc2Uga2luZCBvZiBpc3N1ZXMgKGZhbHNlDQo+IHRpbWVvdXRzKSwgYXMgYSBsZXNz
+IGludmFzaXZlIHNvbHV0aW9uLCB1bnRpbCBzb21lb25lIHN0ZXBzDQo+IHVwIHRvIHJld29yayB0
+aGUgZHJpdmVyLg0KPg0KPiBIb3cgZG9lcyBpdCBzb3VuZD8NCg==
