@@ -1,17 +1,18 @@
-Received: from mail-ob0-x231.google.com ([2607:f8b0:4003:c01::231])
+Received: from mail-io0-x232.google.com ([2607:f8b0:4001:c06::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abuYQ-0000ci-NE
- for linux-mtd@lists.infradead.org; Fri, 04 Mar 2016 18:34:23 +0000
-Received: by mail-ob0-x231.google.com with SMTP id rt7so57425068obb.3
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 10:34:02 -0800 (PST)
+ id 1abvDx-0000sz-Df
+ for linux-mtd@lists.infradead.org; Fri, 04 Mar 2016 19:17:18 +0000
+Received: by mail-io0-x232.google.com with SMTP id n190so72667555iof.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 11:16:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1457084928-21179-1-git-send-email-ard.biesheuvel@linaro.org>
+In-Reply-To: <CAPcyv4gmgE1=REbvWfv8Q61pLOJp9Vjf_qxbX5GQ82o=7aVtGA@mail.gmail.com>
 References: <1457084928-21179-1-git-send-email-ard.biesheuvel@linaro.org>
-Date: Fri, 4 Mar 2016 10:34:01 -0800
-Message-ID: <CAPcyv4gmgE1=REbvWfv8Q61pLOJp9Vjf_qxbX5GQ82o=7aVtGA@mail.gmail.com>
+ <CAPcyv4gmgE1=REbvWfv8Q61pLOJp9Vjf_qxbX5GQ82o=7aVtGA@mail.gmail.com>
+Date: Fri, 4 Mar 2016 20:16:56 +0100
+Message-ID: <CAKv+Gu_SFO81PniDNYjfz6OqbBXdmi0Z3GWO=OBAc0p1v4_JBQ@mail.gmail.com>
 Subject: Re: [PATCH v3 0/4] fix memremap on ARM
-From: Dan Williams <dan.j.williams@intel.com>
-To: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+To: Dan Williams <dan.j.williams@intel.com>
 Cc: "linux-arm-kernel@lists.infradead.org"
  <linux-arm-kernel@lists.infradead.org>, linux-mtd@lists.infradead.org,
  Russell King - ARM Linux <linux@arm.linux.org.uk>,
@@ -28,57 +29,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 4, 2016 at 1:48 AM, Ard Biesheuvel
-<ard.biesheuvel@linaro.org> wrote:
-> This is something I ran into while working on support for the UEFI
-> memory attributes and ESRT tables. In both cases, these tables are
-> passed to the kernel in memory which is guaranteed to be below 4 GB,
-> but may be outside of the kernel direct mapping. (UEFI typically
-> attempts to allocate from the top down, which means such tables are
-> highly likely to be in highmem for any system with more than 760 MB
-> of system RAM)
+On 4 March 2016 at 19:34, Dan Williams <dan.j.williams@intel.com> wrote:
+> On Fri, Mar 4, 2016 at 1:48 AM, Ard Biesheuvel
+> <ard.biesheuvel@linaro.org> wrote:
+>> This is something I ran into while working on support for the UEFI
+>> memory attributes and ESRT tables. In both cases, these tables are
+>> passed to the kernel in memory which is guaranteed to be below 4 GB,
+>> but may be outside of the kernel direct mapping. (UEFI typically
+>> attempts to allocate from the top down, which means such tables are
+>> highly likely to be in highmem for any system with more than 760 MB
+>> of system RAM)
+>>
+>> The recently introduced memremap() is a very useful abstraction for
+>> accessing such tables, because it is generic, and already attempts to
+>> do the right thing with respect to regions that may already have been
+>> mapped directly. However, it falls back to ioremap_cache() for mapping
+>> high memory, which is not allowed on ARM for system RAM, and also results
+>> in the region to be mapped with different attributes depending on whether
+>> it is covered by lowmem or not.
+>>
+>> So instead, create an arch specific hook 'arch_memremap_wb(), and
+>> implement it for ARM using the same memory attributes used for the
+>> linear mapping. Note that memremap will only call this hook for regions
+>> that are not already mapped permanently.
+>>
+>> Since this change results in memremap() to use attributes different from
+>> the ones used by ioremap_cache(), revert the change to pxa2xx-flash that
+>> moved it to memremap.
+>>
+>> Changes since v2:
+>> - add patch to bring back ioremap_cached() on ARM
+>> - switch pxa2xx-flash back to ioremap_cached() not ioremap_cache()
+>> - use arch_ioremap_caller not __arm_ioremap_caller() in patch #4
+>> - deal with __iomem annotation of arch_ioremap_caller (patch #4)
+>>
+>> Changes since v1/rfc:
+>> - new patch #1 that reverts the ioremap_cache->memremap conversion for the
+>>   pxa2xx-flash driver
+>> - added Dan's ack to patch #2
+>>
+>> Ard Biesheuvel (4):
+>>   ARM: reintroduce ioremap_cached() for creating cached I/O mappings
+>>   mtd: pxa2xx-flash: switch back from memremap to ioremap_cached
+>>   memremap: add arch specific hook for MEMREMAP_WB mappings
+>>   ARM: memremap: implement arch_memremap_wb()
+>>
+>>  arch/arm/include/asm/io.h       | 12 ++++++++++++
+>>  arch/arm/mm/ioremap.c           | 16 ++++++++++++++--
+>>  drivers/mtd/maps/pxa2xx-flash.c |  6 +++---
+>>  kernel/memremap.c               | 11 ++++++++---
+>>  4 files changed, 37 insertions(+), 8 deletions(-)
+>>
 >
-> The recently introduced memremap() is a very useful abstraction for
-> accessing such tables, because it is generic, and already attempts to
-> do the right thing with respect to regions that may already have been
-> mapped directly. However, it falls back to ioremap_cache() for mapping
-> high memory, which is not allowed on ARM for system RAM, and also results
-> in the region to be mapped with different attributes depending on whether
-> it is covered by lowmem or not.
+> For the series:
 >
-> So instead, create an arch specific hook 'arch_memremap_wb(), and
-> implement it for ARM using the same memory attributes used for the
-> linear mapping. Note that memremap will only call this hook for regions
-> that are not already mapped permanently.
->
-> Since this change results in memremap() to use attributes different from
-> the ones used by ioremap_cache(), revert the change to pxa2xx-flash that
-> moved it to memremap.
->
-> Changes since v2:
-> - add patch to bring back ioremap_cached() on ARM
-> - switch pxa2xx-flash back to ioremap_cached() not ioremap_cache()
-> - use arch_ioremap_caller not __arm_ioremap_caller() in patch #4
-> - deal with __iomem annotation of arch_ioremap_caller (patch #4)
->
-> Changes since v1/rfc:
-> - new patch #1 that reverts the ioremap_cache->memremap conversion for the
->   pxa2xx-flash driver
-> - added Dan's ack to patch #2
->
-> Ard Biesheuvel (4):
->   ARM: reintroduce ioremap_cached() for creating cached I/O mappings
->   mtd: pxa2xx-flash: switch back from memremap to ioremap_cached
->   memremap: add arch specific hook for MEMREMAP_WB mappings
->   ARM: memremap: implement arch_memremap_wb()
->
->  arch/arm/include/asm/io.h       | 12 ++++++++++++
->  arch/arm/mm/ioremap.c           | 16 ++++++++++++++--
->  drivers/mtd/maps/pxa2xx-flash.c |  6 +++---
->  kernel/memremap.c               | 11 ++++++++---
->  4 files changed, 37 insertions(+), 8 deletions(-)
->
+> Acked-by: Dan Williams <dan.j.williams@intel.com>
 
-For the series:
+Thanks Dan,
 
-Acked-by: Dan Williams <dan.j.williams@intel.com>
+With the added patch #1, I think it now makes the most sense for
+Russell to take the whole series via the ARM tree.
+
+@Brian, David: any objections?
+
+Thanks,
+Ard.
