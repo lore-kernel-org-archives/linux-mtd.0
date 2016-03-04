@@ -1,16 +1,28 @@
-Date: Fri, 4 Mar 2016 13:21:59 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: avoid stack overflow in MTD CFI code
-Message-ID: <20160304212159.GA55664@google.com>
-References: <1456748436-522413-1-git-send-email-arnd@arndb.de>
+Received: from out02.mta.xmission.com ([166.70.13.232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1abyba-000591-Ct
+ for linux-mtd@lists.infradead.org; Fri, 04 Mar 2016 22:53:55 +0000
+From: ebiederm@xmission.com (Eric W. Biederman)
+To: Seth Forshee <seth.forshee@canonical.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
+References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
+ <1451930639-94331-12-git-send-email-seth.forshee@canonical.com>
+ <20160303170201.GA30224@ubuntu-hedt>
+Date: Fri, 04 Mar 2016 16:43:06 -0600
+In-Reply-To: <20160303170201.GA30224@ubuntu-hedt> (Seth Forshee's message of
+ "Thu, 3 Mar 2016 11:02:01 -0600")
+Message-ID: <87twkl50g5.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1456748436-522413-1-git-send-email-arnd@arndb.de>
+Content-Type: text/plain
+Subject: Re: [PATCH RESEND v2 11/18] fs: Ensure the mounter of a filesystem is
+ privileged towards its inodes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,84 +32,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 29, 2016 at 01:20:28PM +0100, Arnd Bergmann wrote:
-> When map_word gets too large, we use a lot of kernel stack, and for
-> MTD_MAP_BANK_WIDTH_32, this means we use more than the recommended
-> 1024 bytes in a number of functions:
-> 
-> drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_write_buffers':
-> drivers/mtd/chips/cfi_cmdset_0020.c:651:1: warning: the frame size of 1336 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> drivers/mtd/chips/cfi_cmdset_0020.c: In function 'cfi_staa_erase_varsize':
-> drivers/mtd/chips/cfi_cmdset_0020.c:972:1: warning: the frame size of 1208 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> drivers/mtd/chips/cfi_cmdset_0001.c: In function 'do_write_buffer':
-> drivers/mtd/chips/cfi_cmdset_0001.c:1835:1: warning: the frame size of 1240 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> 
-> This can be avoided if all operations on the map word are done
-> indirectly and the stack gets reused between the calls. We can
-> mostly achieve this by selecting MTD_COMPLEX_MAPPINGS whenever
-> MTD_MAP_BANK_WIDTH_32 is set, but for the case that no other
-> bank width is enabled, we also need to use a non-constant
-> map_bankwidth() to convince the compiler to use less stack.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> v2: added 'if HAS_IOMEM' to avoid a Kconfig warning on user-mode-linux.
-> 
-> Originally sent out on Jan 1, sorry for taking my time to follow
-> up with a new version.
-> 
->  drivers/mtd/chips/Kconfig |  1 +
->  include/linux/mtd/map.h   | 19 +++++++------------
->  2 files changed, 8 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
-> index 741ec69e0b46..cd162cbc3746 100644
-> --- a/drivers/mtd/chips/Kconfig
-> +++ b/drivers/mtd/chips/Kconfig
-> @@ -117,6 +117,7 @@ config MTD_MAP_BANK_WIDTH_16
->  
->  config MTD_MAP_BANK_WIDTH_32
->  	bool "Support 256-bit buswidth" if MTD_CFI_GEOMETRY
-> +	select MTD_COMPLEX_MAPPINGS if HAS_IOMEM
->  	default n
->  	help
->  	  If you wish to support CFI devices on a physical bus which is
-> diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-> index 5e0eb7ccabd4..3aa56e3104bb 100644
-> --- a/include/linux/mtd/map.h
-> +++ b/include/linux/mtd/map.h
-> @@ -122,18 +122,13 @@
->  #endif
->  
->  #ifdef CONFIG_MTD_MAP_BANK_WIDTH_32
-> -# ifdef map_bankwidth
-> -#  undef map_bankwidth
-> -#  define map_bankwidth(map) ((map)->bankwidth)
-> -#  undef map_bankwidth_is_large
-> -#  define map_bankwidth_is_large(map) (map_bankwidth(map) > BITS_PER_LONG/8)
-> -#  undef map_words
-> -#  define map_words(map) map_calc_words(map)
-> -# else
-> -#  define map_bankwidth(map) 32
-> -#  define map_bankwidth_is_large(map) (1)
-> -#  define map_words(map) map_calc_words(map)
-> -# endif
-> +/* always use indirect access for 256-bit to preserve kernel stack */
-> +# undef map_bankwidth
-> +# define map_bankwidth(map) ((map)->bankwidth)
-> +# undef map_bankwidth_is_large
-> +# define map_bankwidth_is_large(map) (map_bankwidth(map) > BITS_PER_LONG/8)
-> +# undef map_words
-> +# define map_words(map) map_calc_words(map)
->  #define map_bankwidth_is_32(map) (map_bankwidth(map) == 32)
->  #undef MAX_MAP_BANKWIDTH
->  #define MAX_MAP_BANKWIDTH 32
+Seth Forshee <seth.forshee@canonical.com> writes:
 
-Looking a little closer at this... why do we need the changes to
-include/linux/mtd/map.h again? It should be fine to leave these
-definitions as-is, right? They don't contribute to the large stack
-usage, do they?
+> On Mon, Jan 04, 2016 at 12:03:50PM -0600, Seth Forshee wrote:
+>> The mounter of a filesystem should be privileged towards the
+>> inodes of that filesystem. Extend the checks in
+>> inode_owner_or_capable() and capable_wrt_inode_uidgid() to
+>> permit access by users priviliged in the user namespace of the
+>> inode's superblock.
+>
+> Eric - I've discovered a problem related to this patch. The patches
+> you've already applied to your testing branch make it so that s_user_ns
+> can be an unprivileged user for proc and kernfs-based mounts. In some
+> cases DAC is the only thing protecting files in these mounts (ignoring
+> MAC), and with this patch an unprivileged user could bypass DAC.
+>
+> There's a simple solution - always set s_user_ns to &init_user_ns for
+> those filesystems. I think this is the right thing to do, since the
+> backing store behind these filesystems are really kernel objects.  But
+> this would break the assumption behind your patch "userns: Simpilify
+> MNT_NODEV handling" and cause a regression in mounting behavior.
+>
+> I've come up with several possible solutions for this conflict.
+>
+>  1. Drop this patch and keep on setting s_user_ns to unprivilged users.
+>     This would be unfortunate because I think this patch does make sense
+>     for most filesystems.
+>  2. Restrict this patch so that a user privileged towards s_user_ns is
+>     only privileged towards the super blocks inodes if s_user_ns has a
+>     mapping for both i_uid and i_gid. This is better than (1) but still
+>     not ideal in my mind.
+>  3. Drop your patch and maintain the current MNT_NODEV behavior.
+>  4. Add a new s_iflags flag to indicate a super block is from an
+>     unprivileged mount, and use this in your patch instead of s_user_ns.
+>
+> Any preference, or any other ideas?
 
-Maybe I'm just missing something obvious, so please do enlighten :)
+In general this is only an issue if uids and gids on the filesystem
+do not map into the user namespace.
 
-Brian
+Therefore the general fix is to limit the logic of checking for
+capabilities in s_user_ns if we are dealing with INVALID_UID and
+INVALID_GID.  For proc and kernfs that should never be the case
+so the problem becomes a non-issue.
+
+Further I would look at limiting that relaxation to just
+inode_change_ok.  So that we can easily wrap that check per filesystem
+and deny the relaxation for proc and kernfs.  proc and kernfs already
+have wrappers for .setattr so denying changes when !uid_vaid and
+!gid_valid would be a trivial addition, and ensure calamity does
+not ensure.
+
+Furthmore by limiting any additional to inode_change_ok we keep
+the work of the additional tests off of the fast paths.
+
+Eric
