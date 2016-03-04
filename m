@@ -1,19 +1,18 @@
-Received: from mail-wm0-x234.google.com ([2a00:1450:400c:c09::234])
+Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abmMI-0001ZW-6i
- for linux-mtd@lists.infradead.org; Fri, 04 Mar 2016 09:49:20 +0000
-Received: by mail-wm0-x234.google.com with SMTP id l68so22439496wml.1
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 01:48:57 -0800 (PST)
+ id 1abmMK-0001Zt-PA
+ for linux-mtd@lists.infradead.org; Fri, 04 Mar 2016 09:49:23 +0000
+Received: by mail-wm0-x233.google.com with SMTP id l68so22442043wml.1
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 01:49:03 -0800 (PST)
 From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
  linux@arm.linux.org.uk, dan.j.williams@intel.com
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com, robert.jarzmik@free.fr,
- Ard Biesheuvel <ard.biesheuvel@linaro.org>,
- Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH v3 1/4] ARM: reintroduce ioremap_cached() for creating cached
- I/O mappings
-Date: Fri,  4 Mar 2016 10:48:45 +0100
-Message-Id: <1457084928-21179-2-git-send-email-ard.biesheuvel@linaro.org>
+ Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Subject: [PATCH v3 3/4] memremap: add arch specific hook for MEMREMAP_WB
+ mappings
+Date: Fri,  4 Mar 2016 10:48:47 +0100
+Message-Id: <1457084928-21179-4-git-send-email-ard.biesheuvel@linaro.org>
 In-Reply-To: <1457084928-21179-1-git-send-email-ard.biesheuvel@linaro.org>
 References: <1457084928-21179-1-git-send-email-ard.biesheuvel@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,63 +24,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The original ARM-only ioremap flavor 'ioremap_cached' has been renamed
-to 'ioremap_cache' to align with other architectures, and subsequently
-abused in generic code to map things like firmware tables in memory.
-For that reason, there is currently an effort underway to deprecate
-ioremap_cache, whose semantics are poorly defined, and which is typed
-with an __iomem annotation that is inappropriate for mappings of ordinary
-memory.
+Currently, the memremap code serves MEMREMAP_WB mappings directly from
+the kernel direct mapping, unless the region is in high memory, in which
+case it falls back to using ioremap_cache(). However, the semantics of
+ioremap_cache() are not unambiguously defined, and on ARM, it will
+actually result in a mapping type that differs from the attributes used
+for the linear mapping, and for this reason, the ioremap_cache() call
+fails if the region is part of the memory managed by the kernel.
 
-However, original users of ioremap_cached() used it in a context where
-the I/O connotation is appropriate, and replacing those instances with
-memremap() does not make sense. So let's revive ioremap_cached(), so
-that we can change back those original users before we drop ioremap_cache
-entirely in favor of memremap.
+So instead, implement an optional hook 'arch_memremap_wb' whose default
+implementation calls ioremap_cache() as before, but which can be
+overridden by the architecture to do what is appropriate for it.
 
-Cc: Russell King <rmk+kernel@arm.linux.org.uk>
+Acked-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 ---
- arch/arm/include/asm/io.h | 6 ++++++
- arch/arm/mm/ioremap.c     | 4 ++++
- 2 files changed, 10 insertions(+)
+ kernel/memremap.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/include/asm/io.h b/arch/arm/include/asm/io.h
-index 485982084fe9..fb94de290edd 100644
---- a/arch/arm/include/asm/io.h
-+++ b/arch/arm/include/asm/io.h
-@@ -395,6 +395,12 @@ void __iomem *ioremap(resource_size_t res_cookie, size_t size);
- void __iomem *ioremap_cache(resource_size_t res_cookie, size_t size);
- #define ioremap_cache ioremap_cache
- 
-+/*
-+ * Do not use ioremap_cached in new code. Provided for the benefit of
-+ * the pxa2xx-flash MTD driver only.
-+ */
-+void __iomem *ioremap_cached(resource_size_t res_cookie, size_t size);
-+
- void __iomem *ioremap_wc(resource_size_t res_cookie, size_t size);
- #define ioremap_wc ioremap_wc
- #define ioremap_wt ioremap_wc
-diff --git a/arch/arm/mm/ioremap.c b/arch/arm/mm/ioremap.c
-index 66a978d05958..d5350f6af089 100644
---- a/arch/arm/mm/ioremap.c
-+++ b/arch/arm/mm/ioremap.c
-@@ -380,11 +380,15 @@ void __iomem *ioremap(resource_size_t res_cookie, size_t size)
- EXPORT_SYMBOL(ioremap);
- 
- void __iomem *ioremap_cache(resource_size_t res_cookie, size_t size)
-+	__alias(ioremap_cached);
-+
-+void __iomem *ioremap_cached(resource_size_t res_cookie, size_t size)
- {
- 	return arch_ioremap_caller(res_cookie, size, MT_DEVICE_CACHED,
- 				   __builtin_return_address(0));
+diff --git a/kernel/memremap.c b/kernel/memremap.c
+index 7a1b5c3ef14e..77c41648ba16 100644
+--- a/kernel/memremap.c
++++ b/kernel/memremap.c
+@@ -27,6 +27,13 @@ __weak void __iomem *ioremap_cache(resource_size_t offset, unsigned long size)
  }
- EXPORT_SYMBOL(ioremap_cache);
-+EXPORT_SYMBOL(ioremap_cached);
+ #endif
  
- void __iomem *ioremap_wc(resource_size_t res_cookie, size_t size)
++#ifndef arch_memremap_wb
++static void *arch_memremap_wb(resource_size_t offset, unsigned long size)
++{
++	return (__force void *)ioremap_cache(offset, size);
++}
++#endif
++
+ static void *try_ram_remap(resource_size_t offset, size_t size)
  {
+ 	struct page *page = pfn_to_page(offset >> PAGE_SHIFT);
+@@ -34,7 +41,7 @@ static void *try_ram_remap(resource_size_t offset, size_t size)
+ 	/* In the simple case just return the existing linear address */
+ 	if (!PageHighMem(page))
+ 		return __va(offset);
+-	return NULL; /* fallback to ioremap_cache */
++	return arch_memremap_wb(offset, size);
+ }
+ 
+ /**
+@@ -80,8 +87,6 @@ void *memremap(resource_size_t offset, size_t size, unsigned long flags)
+ 		 */
+ 		if (is_ram == REGION_INTERSECTS)
+ 			addr = try_ram_remap(offset, size);
+-		if (!addr)
+-			addr = ioremap_cache(offset, size);
+ 	}
+ 
+ 	/*
 -- 
 2.5.0
