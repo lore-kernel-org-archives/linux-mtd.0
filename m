@@ -1,25 +1,18 @@
-Received: from mail-io0-x232.google.com ([2607:f8b0:4001:c06::232])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abvDx-0000sz-Df
- for linux-mtd@lists.infradead.org; Fri, 04 Mar 2016 19:17:18 +0000
-Received: by mail-io0-x232.google.com with SMTP id n190so72667555iof.0
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 11:16:56 -0800 (PST)
+ id 1abvHD-00038z-Oe
+ for linux-mtd@lists.infradead.org; Fri, 04 Mar 2016 19:20:40 +0000
+Subject: Re: UBIFS Dump Stack on Android
+To: Han Xu <xhnjupt@gmail.com>
+References: <CA+EcR23cFb_cY=CAHGcpaq9P9KU2mTDXbTh-OiuK3Oq_o3idDA@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56D9DFEE.7040106@nod.at>
+Date: Fri, 4 Mar 2016 20:20:14 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4gmgE1=REbvWfv8Q61pLOJp9Vjf_qxbX5GQ82o=7aVtGA@mail.gmail.com>
-References: <1457084928-21179-1-git-send-email-ard.biesheuvel@linaro.org>
- <CAPcyv4gmgE1=REbvWfv8Q61pLOJp9Vjf_qxbX5GQ82o=7aVtGA@mail.gmail.com>
-Date: Fri, 4 Mar 2016 20:16:56 +0100
-Message-ID: <CAKv+Gu_SFO81PniDNYjfz6OqbBXdmi0Z3GWO=OBAc0p1v4_JBQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] fix memremap on ARM
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, linux-mtd@lists.infradead.org,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CA+EcR23cFb_cY=CAHGcpaq9P9KU2mTDXbTh-OiuK3Oq_o3idDA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,68 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4 March 2016 at 19:34, Dan Williams <dan.j.williams@intel.com> wrote:
-> On Fri, Mar 4, 2016 at 1:48 AM, Ard Biesheuvel
-> <ard.biesheuvel@linaro.org> wrote:
->> This is something I ran into while working on support for the UEFI
->> memory attributes and ESRT tables. In both cases, these tables are
->> passed to the kernel in memory which is guaranteed to be below 4 GB,
->> but may be outside of the kernel direct mapping. (UEFI typically
->> attempts to allocate from the top down, which means such tables are
->> highly likely to be in highmem for any system with more than 760 MB
->> of system RAM)
->>
->> The recently introduced memremap() is a very useful abstraction for
->> accessing such tables, because it is generic, and already attempts to
->> do the right thing with respect to regions that may already have been
->> mapped directly. However, it falls back to ioremap_cache() for mapping
->> high memory, which is not allowed on ARM for system RAM, and also results
->> in the region to be mapped with different attributes depending on whether
->> it is covered by lowmem or not.
->>
->> So instead, create an arch specific hook 'arch_memremap_wb(), and
->> implement it for ARM using the same memory attributes used for the
->> linear mapping. Note that memremap will only call this hook for regions
->> that are not already mapped permanently.
->>
->> Since this change results in memremap() to use attributes different from
->> the ones used by ioremap_cache(), revert the change to pxa2xx-flash that
->> moved it to memremap.
->>
->> Changes since v2:
->> - add patch to bring back ioremap_cached() on ARM
->> - switch pxa2xx-flash back to ioremap_cached() not ioremap_cache()
->> - use arch_ioremap_caller not __arm_ioremap_caller() in patch #4
->> - deal with __iomem annotation of arch_ioremap_caller (patch #4)
->>
->> Changes since v1/rfc:
->> - new patch #1 that reverts the ioremap_cache->memremap conversion for the
->>   pxa2xx-flash driver
->> - added Dan's ack to patch #2
->>
->> Ard Biesheuvel (4):
->>   ARM: reintroduce ioremap_cached() for creating cached I/O mappings
->>   mtd: pxa2xx-flash: switch back from memremap to ioremap_cached
->>   memremap: add arch specific hook for MEMREMAP_WB mappings
->>   ARM: memremap: implement arch_memremap_wb()
->>
->>  arch/arm/include/asm/io.h       | 12 ++++++++++++
->>  arch/arm/mm/ioremap.c           | 16 ++++++++++++++--
->>  drivers/mtd/maps/pxa2xx-flash.c |  6 +++---
->>  kernel/memremap.c               | 11 ++++++++---
->>  4 files changed, 37 insertions(+), 8 deletions(-)
->>
->
-> For the series:
->
-> Acked-by: Dan Williams <dan.j.williams@intel.com>
+Han,
 
-Thanks Dan,
+Am 04.03.2016 um 03:21 schrieb Han Xu:
+> Hi Richard,
+> 
+> We found an issue on Kernel 4.1 when running Android on UBIFS. Android
+> required to enable SELINUX and exposed the issue, one ubifs_assert()
+> function failed and caused dump stack.
+> 
+> --- a/fs/ubifs/xattr.c
+> +++ b/fs/ubifs/xattr.c
+> @@ -309,7 +309,6 @@ static int setxattr(struct inode *host, const char
+> *name, const void *value,
+>         union ubifs_key key;
+>         int err, type;
+> 
+>         ubifs_assert(mutex_is_locked(&host->i_mutex));
+> 
+> It may related to your recent code change
+> UBIFS: Kill unneeded locking in ubifs_init_security
+> 
+> We also noticed Google maintained Kernel 4.1 AOSP didn't cherry-pick
+> the patch either. Could you please help to check this issue, Thanks.
+> 
 
-With the added patch #1, I think it now makes the most sense for
-Russell to take the whole series via the ARM tree.
-
-@Brian, David: any objections?
+Well, does reverting my patch make the issue go away?
+How to do you trigger it?
 
 Thanks,
-Ard.
+//richard
