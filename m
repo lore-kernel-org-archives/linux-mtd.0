@@ -1,32 +1,36 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1abcWO-0006rd-6a
- for linux-mtd@lists.infradead.org; Thu, 03 Mar 2016 23:19:06 +0000
-Subject: Re: mtd: pxa3xx_nand: issue with command time out
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
+ id 1abdDj-0004so-Pb
+ for linux-mtd@lists.infradead.org; Fri, 04 Mar 2016 00:03:52 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id l68so56898158wml.0
+ for <linux-mtd@lists.infradead.org>; Thu, 03 Mar 2016 16:03:31 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <56D89B85.3090109@alliedtelesis.co.nz>
 References: <5695CEF0.1080100@alliedtelesis.co.nz>
- <87a8o9ex9r.fsf@belgarion.home> <569827BC.10601@alliedtelesis.co.nz>
+ <87a8o9ex9r.fsf@belgarion.home>
+ <569827BC.10601@alliedtelesis.co.nz>
  <874meddqu5.fsf@belgarion.home> <20160125183022.GA41251@google.com>
  <87fuxl9yil.fsf@belgarion.home>
  <CAAEAJfCNzh9+zRq_Yb=hFyLfP8RFoX+LUsDL4dVwUenVc_gVOA@mail.gmail.com>
  <56D61502.1090007@alliedtelesis.co.nz>
  <CAAEAJfAd2qkcJby3AaKOaxL2LZC=PMNfu7dy5yMcZ1eHhOF7oA@mail.gmail.com>
+ <56D89B85.3090109@alliedtelesis.co.nz>
+Date: Thu, 3 Mar 2016 21:03:30 -0300
+Message-ID: <CAAEAJfDyZELBkwNOkjPzGpg_gv-sDOkOSQV76c3WniCuEhveFw@mail.gmail.com>
+Subject: Re: mtd: pxa3xx_nand: issue with command time out
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
  Brian Norris <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Michael Wang <Michael.Wang@alliedtelesis.co.nz>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56D8C64C.1000004@nod.at>
-Date: Fri, 4 Mar 2016 00:18:36 +0100
-MIME-Version: 1.0
-In-Reply-To: <CAAEAJfAd2qkcJby3AaKOaxL2LZC=PMNfu7dy5yMcZ1eHhOF7oA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+ Richard Weinberger <richard@nod.at>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,81 +40,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 03.03.2016 um 20:24 schrieb Ezequiel Garcia:
-> +Richard, Boris and Thomas
-> 
-> On 1 March 2016 at 19:17, Hamish Martin
-> <Hamish.Martin@alliedtelesis.co.nz> wrote:
->> Hi Robert, Ezequiel, and Brian,
->>
->> I have been working with Michael Wang on this issue and wanted to update
->> you on our results as we think there is a wider issue to resolve here.
->>
->> I believe Ezequiel's analysis of the IRQ sequence is correct. The
->> proposed patch from Brian is not needed, not does it resolve our issue.
->>
->> Further, we have debugged in more detail with kernel tracing and see
->> that the problem occurs because nothing calls 'schedule()' in the kernel
->> within the timeout period (200ms) to actually allow the IRQ bottom-half
->> thread ((pxa3xx_nand_irq_thread()) to run.
->>
->> With the trace enabled we were able to see long delays between the IRQ
->> thread being queued for run as a result of the return with
->> IRQ_WAKE_THREAD in pxa3xx_nand_irq(), and a call to schedule() actually
->> selecting the thread for execution. This delay was tied to whatever else
->> was happening in our system during the boot up when this issue occurs.
->> For instance, if a mutex got unlocked this would ultimately lead to a
->> call to schedule() and our thread (pxa3xx_nand_irq_thread()) would run.
->> If some file system ops happened schedule() would get called. These
->> unrelated activities were required so that schedule() got called and the
->> scheduler would let the bottom-half execute.
->> In our tracing we saw the issue occur whenever the call to schedule()
->> didn't occur before the timeout expired. In short, if we got lucky and
->> something completely unrelated happened that led to a call to
->> 'schedule()', then the issue didn't occur. If we got unlucky and nothing
->> called schedule(), the issue was observed.
->>
->> We have enabled CONFIG_PREEMPT in our system to resolve this. This has
->> the effect of leading to a triggering of 'schedule()' at the end of
->> processing interrupts. This means that we now see a nice tight execution
->> of pxa3xx_nand threaded IRQ such that we see all ops completing with
->> less that 20ms delay.
->>
->> I wanted to highlight this to you because I think it shows that the
->> change to a threaded IRQ is probably only safe if we can guarantee
->> scheduling of the bottom-half thread within the time out period (200ms).
->> I think this is not safe for systems with CONFIG_PREEMPT not configured.
->> Or perhaps there is a better way to resolve this. Is this a deficiency
->> in the Armada XP code?
->>
->> What do you think?
->>
-> 
-> Thanks a lot for updating us. Richard, Boris and I have
-> discussed about this on IRC.
-> 
-> We came to the following conclusions:
-> 
-> 1. There's no way to guarantee that the thread will be scheduled
-> soon enough to always do the data transfer in time.
-> 
-> Using CONFIG_PREEMPT could prevent a timeout in many (most?)
-> cases, but it's not guaranteed to work.
-> 
-> 2. The pxa3xx-nand driver is poorly designed, and it shouldn't
-> do any data transfer in the IRQ (threaded or not) handler.
-> 
-> Instead, this should be done in {read,write}_buf, i.e. in the
-> context of the calling process that asks data to be read/write.
-> This is potentially a big rework.
-> 
-> 3. Richard proposed to get rid of the timeout
-> (using wait_for_completion_interruptible instead?).
+On 3 March 2016 at 17:16, Hamish Martin
+<Hamish.Martin@alliedtelesis.co.nz> wrote:
+> Hi Ezequiel,
+>
+> I'm glad my analysis was correct and we more fully understand the
+> problem now. CONFIG_PREEMPT seems to work for us now, but it does seem
+> like the wrong fix, and if you guys think it will not guarantee
+> preventing the issue then we'd rather back that change out.
+>
 
-Getting rid of the timeout can work but definitely needs more
-clarification.
-Before commit 24542257a3b987025d4b998ec2d15e556c98ad3f it made sense
-but now the thread can be delayed for unknown time.
+Do you have any good reason for NOT enabling CONFIG_PREEMPT?
 
-Thanks,
-//richard
+I've had very bad experiences on embedded systems when not
+using CONFIG_PREEMPT, and came to the conclusion that
+enable full preemption, unless there's a good reason not to.
+
+Enabling CONFIG_PREEMPT would result in slightly lower throughput,
+but maximum latency will be greatly reduced.
+
+For instance, in a kernel without preemption, a UBI static volume check
+(which happens on the first UBI static volume open call), can take
+several seconds.
+
+> I had contemplated using wait_for_completion_interruptible() but was a
+> bit unsure if it was safe. Do you have a proposed patch? We would be
+> happy to apply it to our system, turn off CONFIG_PREEMPT, and see how it
+> goes. Out issue is highly reproducible so I think it would be a good
+> first test for a change?
+>
+
+Sure, I can try to cook a patch for you.
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
