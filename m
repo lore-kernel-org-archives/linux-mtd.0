@@ -1,17 +1,26 @@
-Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ac2eP-0004EQ-Ps
- for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 03:13:06 +0000
-Received: by mail-pf0-x234.google.com with SMTP id x188so21763761pfb.2
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 19:12:45 -0800 (PST)
+ id 1ac2lP-0007KA-My
+ for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 03:20:20 +0000
+Received: by mail-pa0-x230.google.com with SMTP id fy10so44800900pac.1
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 19:19:58 -0800 (PST)
+Date: Fri, 4 Mar 2016 19:19:56 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH] mtd: nand: pxa3xx_nand: kill unused field 'drcmr_cmd'
-Date: Fri,  4 Mar 2016 19:12:33 -0800
-Message-Id: <1457147553-71596-1-git-send-email-computersforpeace@gmail.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>
+Subject: Re: [PATCH] mtd: spi-nor: update flags for n25q128a
+Message-ID: <20160305031956.GR55664@google.com>
+References: <1456538836-27449-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <CACna6rzvikqy1kaL6P9GRP6ibvnoY=gAdFhFmutyQaTW+NnH1g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACna6rzvikqy1kaL6P9GRP6ibvnoY=gAdFhFmutyQaTW+NnH1g@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/pxa3xx_nand.c | 2 --
- 1 file changed, 2 deletions(-)
+On Sat, Feb 27, 2016 at 12:25:21PM +0100, Rafał Miłecki wrote:
+> On 27 February 2016 at 03:07, Ezequiel Garcia
+> <ezequiel@vanguardiasur.com.ar> wrote:
+> > @@ -864,8 +864,12 @@ static const struct flash_info spi_nor_ids[] = {
+> >         { "n25q032a",    INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+> >         { "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+> >         { "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+> > -       { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
+> > -       { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SPI_NOR_QUAD_READ) },
+> > +       { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256,
+> > +                SECT_4K | SPI_NOR_QUAD_READ |
+> > +                SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+> > +       { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256,
+> > +                SECT_4K | SPI_NOR_QUAD_READ |
+> > +                SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+> 
+> We use one line per chip, so please keep stick to this formatting. I
+> can guess you wanted to follow kernel's coding style, but this adds
+> inconsistency. Also kernel's coding style allows lines over 80 chars
+> for better readibility. If we are ever going to change it, it should
+> be a separated patch affecting all entries.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index f100c4da0423..a60c413c8d7f 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -211,7 +211,6 @@ struct pxa3xx_nand_info {
- 	struct dma_chan		*dma_chan;
- 	dma_cookie_t		dma_cookie;
- 	int			drcmr_dat;
--	int			drcmr_cmd;
- 
- 	unsigned char		*data_buff;
- 	unsigned char		*oob_buff;
-@@ -1812,7 +1811,6 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 			ret = -ENXIO;
- 			goto fail_disable_clk;
- 		}
--		info->drcmr_cmd = r->start;
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--- 
-2.7.0.rc3.207.g0ac5344
+He may have been taking the hint from my patch:
+
+http://lists.infradead.org/pipermail/linux-mtd/2016-January/065252.html
+
+I didn't feel like we needed to change all entries, personally, but I
+think if we're going to start having 5+ flags, we have to have *some*
+cutoff point. The lines in my patch were going to be 144 characters
+long. That's more than half my (too) large monitor, so IMO that's not
+really "better readability."
+
+If you have a good suggestion that doesn't make my above patch too wide,
+then I can try to go with that.
+
+Brian
