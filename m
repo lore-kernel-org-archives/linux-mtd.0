@@ -1,21 +1,22 @@
-Date: Fri, 4 Mar 2016 16:15:25 -0800
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1abzvi-0004gy-3P
+ for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 00:18:46 +0000
+Received: by mail-pa0-x22b.google.com with SMTP id fy10so42907137pac.1
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 16:18:25 -0800 (PST)
+Date: Fri, 4 Mar 2016 16:18:22 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc: Dan Williams <dan.j.williams@intel.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- linux-mtd@lists.infradead.org,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- David Woodhouse <dwmw2@infradead.org>,
- Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v3 0/4] fix memremap on ARM
-Message-ID: <20160305001525.GD55664@google.com>
-References: <1457084928-21179-1-git-send-email-ard.biesheuvel@linaro.org>
- <CAPcyv4gmgE1=REbvWfv8Q61pLOJp9Vjf_qxbX5GQ82o=7aVtGA@mail.gmail.com>
- <CAKv+Gu_SFO81PniDNYjfz6OqbBXdmi0Z3GWO=OBAc0p1v4_JBQ@mail.gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH] mtd: nand: sunxi: remove direct mtd->priv accesses
+Message-ID: <20160305001822.GE55664@google.com>
+References: <1457133680-18419-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKv+Gu_SFO81PniDNYjfz6OqbBXdmi0Z3GWO=OBAc0p1v4_JBQ@mail.gmail.com>
+In-Reply-To: <1457133680-18419-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,73 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 04, 2016 at 08:16:56PM +0100, Ard Biesheuvel wrote:
-> On 4 March 2016 at 19:34, Dan Williams <dan.j.williams@intel.com> wrote:
-> > On Fri, Mar 4, 2016 at 1:48 AM, Ard Biesheuvel
-> > <ard.biesheuvel@linaro.org> wrote:
-> >> This is something I ran into while working on support for the UEFI
-> >> memory attributes and ESRT tables. In both cases, these tables are
-> >> passed to the kernel in memory which is guaranteed to be below 4 GB,
-> >> but may be outside of the kernel direct mapping. (UEFI typically
-> >> attempts to allocate from the top down, which means such tables are
-> >> highly likely to be in highmem for any system with more than 760 MB
-> >> of system RAM)
-> >>
-> >> The recently introduced memremap() is a very useful abstraction for
-> >> accessing such tables, because it is generic, and already attempts to
-> >> do the right thing with respect to regions that may already have been
-> >> mapped directly. However, it falls back to ioremap_cache() for mapping
-> >> high memory, which is not allowed on ARM for system RAM, and also results
-> >> in the region to be mapped with different attributes depending on whether
-> >> it is covered by lowmem or not.
-> >>
-> >> So instead, create an arch specific hook 'arch_memremap_wb(), and
-> >> implement it for ARM using the same memory attributes used for the
-> >> linear mapping. Note that memremap will only call this hook for regions
-> >> that are not already mapped permanently.
-> >>
-> >> Since this change results in memremap() to use attributes different from
-> >> the ones used by ioremap_cache(), revert the change to pxa2xx-flash that
-> >> moved it to memremap.
-> >>
-> >> Changes since v2:
-> >> - add patch to bring back ioremap_cached() on ARM
-> >> - switch pxa2xx-flash back to ioremap_cached() not ioremap_cache()
-> >> - use arch_ioremap_caller not __arm_ioremap_caller() in patch #4
-> >> - deal with __iomem annotation of arch_ioremap_caller (patch #4)
-> >>
-> >> Changes since v1/rfc:
-> >> - new patch #1 that reverts the ioremap_cache->memremap conversion for the
-> >>   pxa2xx-flash driver
-> >> - added Dan's ack to patch #2
-> >>
-> >> Ard Biesheuvel (4):
-> >>   ARM: reintroduce ioremap_cached() for creating cached I/O mappings
-> >>   mtd: pxa2xx-flash: switch back from memremap to ioremap_cached
-> >>   memremap: add arch specific hook for MEMREMAP_WB mappings
-> >>   ARM: memremap: implement arch_memremap_wb()
-> >>
-> >>  arch/arm/include/asm/io.h       | 12 ++++++++++++
-> >>  arch/arm/mm/ioremap.c           | 16 ++++++++++++++--
-> >>  drivers/mtd/maps/pxa2xx-flash.c |  6 +++---
-> >>  kernel/memremap.c               | 11 ++++++++---
-> >>  4 files changed, 37 insertions(+), 8 deletions(-)
-> >>
-> >
-> > For the series:
-> >
-> > Acked-by: Dan Williams <dan.j.williams@intel.com>
+On Sat, Mar 05, 2016 at 12:21:20AM +0100, Boris Brezillon wrote:
+> mtd->priv is no longer pointing to the struct nand_chip it is attached to.
+> Replace those accesses by mtd_to_nand() calls.
 > 
-> Thanks Dan,
-> 
-> With the added patch #1, I think it now makes the most sense for
-> Russell to take the whole series via the ARM tree.
-> 
-> @Brian, David: any objections?
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Fixes: 4be4e03efc7f ("mtd: nand: sunxi: add randomizer support")
+> ---
 
-Nope. For the MTD part:
+Applied, thanks!
 
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+> Sorry for the inconvenience, but apparently I was not expecting
+> the mtd_to_nand() rework to be taken before the randomizer patch,
+> and I forgot to repost a version replacing mtd->priv by mtd_to_nand().
 
-Regards,
+Eh, probably not entirely your fault. I can be erratic with my
+review/acceptance times.
+
 Brian
