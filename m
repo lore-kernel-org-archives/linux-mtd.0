@@ -1,24 +1,34 @@
-Received: from mail-pf0-x22d.google.com ([2607:f8b0:400e:c00::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ac1gI-0004vv-Hm
- for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 02:10:59 +0000
-Received: by mail-pf0-x22d.google.com with SMTP id 63so44703710pfe.3
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 18:10:38 -0800 (PST)
-Date: Fri, 4 Mar 2016 18:10:35 -0800
+Date: Fri, 4 Mar 2016 18:26:21 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: tony@atomide.com, dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
- javier@dowhile0.org, fcooper@ti.com, nsekhar@ti.com,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 09/26] mtd: nand: omap: Clean up device tree support
-Message-ID: <20160305021035.GM55664@google.com>
-References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
- <1455916548-3441-10-git-send-email-rogerq@ti.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Stefan Agner <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+ punnaiah choudary kalluri <punnaia@xilinx.com>,
+ Priit Laes <plaes@plaes.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ bcm-kernel-feedback-list@broadcom.com, linux-api@vger.kernel.org
+Subject: Re: [PATCH v3 16/52] mtd: nand: use mtd_set_ecclayout() where
+ appropriate
+Message-ID: <20160305022621.GN55664@google.com>
+References: <1456448280-27788-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1456448280-27788-17-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1455916548-3441-10-git-send-email-rogerq@ti.com>
+In-Reply-To: <1456448280-27788-17-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,82 +38,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A couple of sparse warnings.
-
-On Fri, Feb 19, 2016 at 11:15:31PM +0200, Roger Quadros wrote:
-> Move NAND specific device tree parsing to NAND driver.
+On Fri, Feb 26, 2016 at 01:57:24AM +0100, Boris Brezillon wrote:
+> Use the mtd_set_ecclayout() helper instead of directly assigning the
+> mtd->ecclayout field.
 > 
-> The NAND controller node must have a compatible id, register space
-> resource and interrupt resource.
-> 
-> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > ---
->  arch/arm/mach-omap2/gpmc-nand.c              |   5 +-
->  drivers/memory/omap-gpmc.c                   | 143 +++++++--------------------
->  drivers/mtd/nand/omap2.c                     | 133 +++++++++++++++++++++----
->  include/linux/platform_data/mtd-nand-omap2.h |   3 +-
->  4 files changed, 152 insertions(+), 132 deletions(-)
+>  drivers/mtd/nand/nand_base.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
-> index 04e6998..f6ac027 100644
-> --- a/arch/arm/mach-omap2/gpmc-nand.c
-> +++ b/arch/arm/mach-omap2/gpmc-nand.c
-
-[...]
-
-> @@ -2039,9 +1939,42 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
->  		goto err;
->  	}
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 17504f2..5093a3c 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4288,7 +4288,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  		ecc->write_oob_raw = ecc->write_oob;
 >  
-> -	ret = of_property_read_u32(child, "bank-width", &gpmc_s.device_width);
-> -	if (ret < 0)
-> -		goto err;
-> +	if (of_node_cmp(child->name, "nand") == 0) {
-> +		/* NAND specific setup */
-> +		u32 val;
+>  	/* propagate ecc info to mtd_info */
+> -	mtd->ecclayout = ecc->layout;
+> +	mtd_set_ecclayout(mtd, ecc->layout);
 
-drivers/memory/omap-gpmc.c:1952:13: originally declared here [sparse]
-drivers/memory/omap-gpmc.c:2029:21: warning: symbol 'val' shadows an earlier one [sparse]
+I'm having trouble applying this one. For the life of me, I can't figure
+out where you got this context from. This block only appears much later
+in nand_scan_tail()...
 
-> +
-> +		/* Warn about older DT blobs with no compatible property */
-> +		if (!of_property_read_bool(child, "compatible")) {
-> +			dev_warn(&pdev->dev,
-> +				 "Incompatible NAND node: missing compatible");
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
-> +
+Do you think you could post a git tree with your intended changes? I may
+just try to pull something in like that instead.
 
-[...]
+BTW, I'm not sure the OMAP refactorings are going to come in time, but I
+was planning to pull those directly from the TI folks (i.e., they won't
+be rebased on l2-mtd.git), since there's some intermingling of platform
+changes there. I think I can fix the conflicts fine, but FYI.
 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 9e99199..0a637c4 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
+Brian
 
-[...]
-
-> +static int omap_get_dt_info(struct device *dev, struct omap_nand_info *info)
-> +{
-> +	struct device_node *child = dev->of_node;
-> +	int i;
-> +	const char *s;
-> +
-> +	/* In old bindings, CS num is embedded in reg property */
-> +	if (of_property_read_u32(child, "reg", &info->gpmc_cs) < 0) {
-
-Sparse doesn't like this one:
-
-drivers/mtd/nand/omap2.c:1660:49: warning: incorrect type in argument 3 (different signedness) [sparse]
-drivers/mtd/nand/omap2.c:1660:49:    expected unsigned int [usertype] *out_value [sparse]
-drivers/mtd/nand/omap2.c:1660:49:    got int *<noident> [sparse]
-
-> +		dev_err(dev, "reg not found in DT\n");
-> +		return -EINVAL;
-> +	}
-> +
-
-[...]
-
-Brian 
+>  	mtd->ecc_strength = ecc->strength;
+>  	mtd->ecc_step_size = ecc->size;
+>  
+> -- 
+> 2.1.4
+> 
