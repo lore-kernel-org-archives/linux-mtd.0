@@ -1,25 +1,24 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pf0-x22d.google.com ([2607:f8b0:400e:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ac1aP-00023v-NI
- for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 02:04:54 +0000
-Received: by mail-pa0-x22b.google.com with SMTP id fl4so44129935pad.0
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 18:04:33 -0800 (PST)
-Date: Fri, 4 Mar 2016 18:04:30 -0800
+ id 1ac1gI-0004vv-Hm
+ for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 02:10:59 +0000
+Received: by mail-pf0-x22d.google.com with SMTP id 63so44703710pfe.3
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 18:10:38 -0800 (PST)
+Date: Fri, 4 Mar 2016 18:10:35 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Roger Quadros <rogerq@ti.com>
 Cc: tony@atomide.com, dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
  javier@dowhile0.org, fcooper@ti.com, nsekhar@ti.com,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v5 10/26] mtd: nand: omap: Update DT binding documentation
-Message-ID: <20160305020430.GL55664@google.com>
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 09/26] mtd: nand: omap: Clean up device tree support
+Message-ID: <20160305021035.GM55664@google.com>
 References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
- <1455916548-3441-11-git-send-email-rogerq@ti.com>
+ <1455916548-3441-10-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1455916548-3441-11-git-send-email-rogerq@ti.com>
+In-Reply-To: <1455916548-3441-10-git-send-email-rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +28,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 19, 2016 at 11:15:32PM +0200, Roger Quadros wrote:
-> Add compatible id and interrupts. The NAND interrupts are
-> provided by the GPMC controller node.
+A couple of sparse warnings.
+
+On Fri, Feb 19, 2016 at 11:15:31PM +0200, Roger Quadros wrote:
+> Move NAND specific device tree parsing to NAND driver.
+> 
+> The NAND controller node must have a compatible id, register space
+> resource and interrupt resource.
 > 
 > Signed-off-by: Roger Quadros <rogerq@ti.com>
 > ---
->  Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
+>  arch/arm/mach-omap2/gpmc-nand.c              |   5 +-
+>  drivers/memory/omap-gpmc.c                   | 143 +++++++--------------------
+>  drivers/mtd/nand/omap2.c                     | 133 +++++++++++++++++++++----
+>  include/linux/platform_data/mtd-nand-omap2.h |   3 +-
+>  4 files changed, 152 insertions(+), 132 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> index fb733c4..810b87b 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> @@ -13,7 +13,11 @@ Documentation/devicetree/bindings/mtd/nand.txt
->  
->  Required properties:
->  
-> - - reg:		The CS line the peripheral is connected to
-> + - compatible:	"ti,omap2-nand"
-> + - reg:		range id (CS number), base offset and length of the
-> +		NAND I/O space
+> diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
+> index 04e6998..f6ac027 100644
+> --- a/arch/arm/mach-omap2/gpmc-nand.c
+> +++ b/arch/arm/mach-omap2/gpmc-nand.c
 
-Is it normal to mix types of addressing in a single 'reg' property? Is
-your code working for anything besides CS==0?
+[...]
 
-Brian
+> @@ -2039,9 +1939,42 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
+>  		goto err;
+>  	}
+>  
+> -	ret = of_property_read_u32(child, "bank-width", &gpmc_s.device_width);
+> -	if (ret < 0)
+> -		goto err;
+> +	if (of_node_cmp(child->name, "nand") == 0) {
+> +		/* NAND specific setup */
+> +		u32 val;
 
-> + - interrupt-parent: must point to gpmc node
-> + - interrupts:	Two interrupt specifiers, one for fifoevent, one for termcount.
->  
->  Optional properties:
->  
-> @@ -55,20 +59,25 @@ Example for an AM33xx board:
->  	gpmc: gpmc@50000000 {
->  		compatible = "ti,am3352-gpmc";
->  		ti,hwmods = "gpmc";
-> -		reg = <0x50000000 0x1000000>;
-> +		reg = <0x50000000 0x36c>;
->  		interrupts = <100>;
->  		gpmc,num-cs = <8>;
->  		gpmc,num-waitpins = <2>;
->  		#address-cells = <2>;
->  		#size-cells = <1>;
-> -		ranges = <0 0 0x08000000 0x2000>;	/* CS0: NAND */
-> +		ranges = <0 0 0x08000000 0x1000000>;	/* CS0 space, 16MB */
->  		elm_id = <&elm>;
->  
->  		nand@0,0 {
-> -			reg = <0 0 0>; /* CS0, offset 0 */
-> +			compatible = "ti,omap2-nand";
-> +			reg = <0 0 4>;		/* CS0, offset 0, NAND I/O window 4 */
-> +			interrupt-parent = <&gpmc>;
-> +			interrupts = <0 IRQ_TYPE_NONE>, <1 IRQ_TYPE NONE>;
->  			nand-bus-width = <16>;
->  			ti,nand-ecc-opt = "bch8";
->  			ti,nand-xfer-type = "polled";
-> +			interrupt-parent = <&gpmc>;
-> +			interrupts = <0>, <1>;
->  
->  			gpmc,sync-clk-ps = <0>;
->  			gpmc,cs-on-ns = <0>;
-> -- 
-> 2.1.4
-> 
+drivers/memory/omap-gpmc.c:1952:13: originally declared here [sparse]
+drivers/memory/omap-gpmc.c:2029:21: warning: symbol 'val' shadows an earlier one [sparse]
+
+> +
+> +		/* Warn about older DT blobs with no compatible property */
+> +		if (!of_property_read_bool(child, "compatible")) {
+> +			dev_warn(&pdev->dev,
+> +				 "Incompatible NAND node: missing compatible");
+> +			ret = -EINVAL;
+> +			goto err;
+> +		}
+> +
+
+[...]
+
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 9e99199..0a637c4 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+
+[...]
+
+> +static int omap_get_dt_info(struct device *dev, struct omap_nand_info *info)
+> +{
+> +	struct device_node *child = dev->of_node;
+> +	int i;
+> +	const char *s;
+> +
+> +	/* In old bindings, CS num is embedded in reg property */
+> +	if (of_property_read_u32(child, "reg", &info->gpmc_cs) < 0) {
+
+Sparse doesn't like this one:
+
+drivers/mtd/nand/omap2.c:1660:49: warning: incorrect type in argument 3 (different signedness) [sparse]
+drivers/mtd/nand/omap2.c:1660:49:    expected unsigned int [usertype] *out_value [sparse]
+drivers/mtd/nand/omap2.c:1660:49:    got int *<noident> [sparse]
+
+> +		dev_err(dev, "reg not found in DT\n");
+> +		return -EINVAL;
+> +	}
+> +
+
+[...]
+
+Brian 
