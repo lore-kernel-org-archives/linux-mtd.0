@@ -1,34 +1,24 @@
-Date: Fri, 4 Mar 2016 18:26:21 -0800
+Received: from mail-pf0-x231.google.com ([2607:f8b0:400e:c00::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ac1xX-0003QX-DY
+ for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 02:28:48 +0000
+Received: by mail-pf0-x231.google.com with SMTP id x188so21307627pfb.2
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 18:28:26 -0800 (PST)
+Date: Fri, 4 Mar 2016 18:28:23 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Stefan Agner <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
- punnaiah choudary kalluri <punnaia@xilinx.com>,
- Priit Laes <plaes@plaes.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, linux-api@vger.kernel.org
-Subject: Re: [PATCH v3 16/52] mtd: nand: use mtd_set_ecclayout() where
- appropriate
-Message-ID: <20160305022621.GN55664@google.com>
-References: <1456448280-27788-1-git-send-email-boris.brezillon@free-electrons.com>
- <1456448280-27788-17-git-send-email-boris.brezillon@free-electrons.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: tony@atomide.com, dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
+ javier@dowhile0.org, fcooper@ti.com, nsekhar@ti.com,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 09/26] mtd: nand: omap: Clean up device tree support
+Message-ID: <20160305022823.GO55664@google.com>
+References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+ <1455916548-3441-10-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1456448280-27788-17-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1455916548-3441-10-git-send-email-rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,43 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 26, 2016 at 01:57:24AM +0100, Boris Brezillon wrote:
-> Use the mtd_set_ecclayout() helper instead of directly assigning the
-> mtd->ecclayout field.
+Sorry, another small thing I noticed.
+
+On Fri, Feb 19, 2016 at 11:15:31PM +0200, Roger Quadros wrote:
+> Move NAND specific device tree parsing to NAND driver.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> The NAND controller node must have a compatible id, register space
+> resource and interrupt resource.
+> 
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
 > ---
->  drivers/mtd/nand/nand_base.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 17504f2..5093a3c 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4288,7 +4288,7 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		ecc->write_oob_raw = ecc->write_oob;
+[...]
+
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 9e99199..0a637c4 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> +#include <linux/of_mtd.h>
 >  
->  	/* propagate ecc info to mtd_info */
-> -	mtd->ecclayout = ecc->layout;
-> +	mtd_set_ecclayout(mtd, ecc->layout);
+>  #include <linux/mtd/nand_bch.h>
+>  #include <linux/platform_data/elm.h>
+> @@ -177,10 +178,11 @@ struct omap_nand_info {
+>  	struct gpmc_nand_regs		reg;
+>  	struct gpmc_nand_ops		*ops;
+>  	/* generated at runtime depending on ECC algorithm and layout selected */
 
-I'm having trouble applying this one. For the life of me, I can't figure
-out where you got this context from. This block only appears much later
-in nand_scan_tail()...
+^^^ I don't think that comment describes the following line. You
+probably meant to delete this one?
 
-Do you think you could post a git tree with your intended changes? I may
-just try to pull something in like that instead.
+> +	bool				flash_bbt;
+> +	/* generated at runtime depending on ECC algorithm and layout */
+>  	struct nand_ecclayout		oobinfo;
+>  	/* fields specific for BCHx_HW ECC scheme */
+>  	struct device			*elm_dev;
+> -	struct device_node		*of_node;
+>  };
+>  
+>  static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
 
-BTW, I'm not sure the OMAP refactorings are going to come in time, but I
-was planning to pull those directly from the TI folks (i.e., they won't
-be rebased on l2-mtd.git), since there's some intermingling of platform
-changes there. I think I can fix the conflicts fine, but FYI.
+[...]
 
 Brian
-
->  	mtd->ecc_strength = ecc->strength;
->  	mtd->ecc_step_size = ecc->size;
->  
-> -- 
-> 2.1.4
-> 
