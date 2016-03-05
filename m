@@ -1,25 +1,25 @@
 Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ac1It-0003YC-L7
- for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 01:46:49 +0000
-Received: by mail-pa0-x22b.google.com with SMTP id fi3so41923462pac.3
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 17:46:27 -0800 (PST)
-Date: Fri, 4 Mar 2016 17:46:24 -0800
+ id 1ac1aP-00023v-NI
+ for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 02:04:54 +0000
+Received: by mail-pa0-x22b.google.com with SMTP id fl4so44129935pad.0
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 18:04:33 -0800 (PST)
+Date: Fri, 4 Mar 2016 18:04:30 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Roger Quadros <rogerq@ti.com>
 Cc: tony@atomide.com, dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
  javier@dowhile0.org, fcooper@ti.com, nsekhar@ti.com,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 17/26] mtd: nand: omap2: Implement NAND ready using
- gpiolib
-Message-ID: <20160305014624.GK55664@google.com>
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v5 10/26] mtd: nand: omap: Update DT binding documentation
+Message-ID: <20160305020430.GL55664@google.com>
 References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
- <1455916548-3441-18-git-send-email-rogerq@ti.com>
+ <1455916548-3441-11-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1455916548-3441-18-git-send-email-rogerq@ti.com>
+In-Reply-To: <1455916548-3441-11-git-send-email-rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,145 +29,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Boris
-
-On Fri, Feb 19, 2016 at 11:15:39PM +0200, Roger Quadros wrote:
-> The GPMC WAIT pin status are now available over gpiolib.
-> Update the omap_dev_ready() function to use gpio instead of
-> directly accessing GPMC register space.
+On Fri, Feb 19, 2016 at 11:15:32PM +0200, Roger Quadros wrote:
+> Add compatible id and interrupts. The NAND interrupts are
+> provided by the GPMC controller node.
 > 
 > Signed-off-by: Roger Quadros <rogerq@ti.com>
 > ---
->  .../devicetree/bindings/mtd/gpmc-nand.txt          |  2 ++
->  drivers/mtd/nand/omap2.c                           | 29 ++++++++++++++--------
->  include/linux/platform_data/mtd-nand-omap2.h       |  2 +-
->  3 files changed, 21 insertions(+), 12 deletions(-)
+>  Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
 > 
 > diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> index 810b87b..256bb86 100644
+> index fb733c4..810b87b 100644
 > --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
 > +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> @@ -48,6 +48,7 @@ Optional properties:
->  		locating ECC errors for BCHx algorithms. SoC devices which have
->  		ELM hardware engines should specify this device node in .dtsi
->  		Using ELM for ECC error correction frees some CPU cycles.
-> + - rb-gpios:	GPIO specifier for the ready/busy# pin.
+> @@ -13,7 +13,11 @@ Documentation/devicetree/bindings/mtd/nand.txt
+>  
+>  Required properties:
+>  
+> - - reg:		The CS line the peripheral is connected to
+> + - compatible:	"ti,omap2-nand"
+> + - reg:		range id (CS number), base offset and length of the
+> +		NAND I/O space
 
-^^ Looks better, I think.
+Is it normal to mix types of addressing in a single 'reg' property? Is
+your code working for anything besides CS==0?
 
 Brian
 
+> + - interrupt-parent: must point to gpmc node
+> + - interrupts:	Two interrupt specifiers, one for fifoevent, one for termcount.
 >  
->  For inline partition table parsing (optional):
+>  Optional properties:
 >  
-> @@ -78,6 +79,7 @@ Example for an AM33xx board:
+> @@ -55,20 +59,25 @@ Example for an AM33xx board:
+>  	gpmc: gpmc@50000000 {
+>  		compatible = "ti,am3352-gpmc";
+>  		ti,hwmods = "gpmc";
+> -		reg = <0x50000000 0x1000000>;
+> +		reg = <0x50000000 0x36c>;
+>  		interrupts = <100>;
+>  		gpmc,num-cs = <8>;
+>  		gpmc,num-waitpins = <2>;
+>  		#address-cells = <2>;
+>  		#size-cells = <1>;
+> -		ranges = <0 0 0x08000000 0x2000>;	/* CS0: NAND */
+> +		ranges = <0 0 0x08000000 0x1000000>;	/* CS0 space, 16MB */
+>  		elm_id = <&elm>;
+>  
+>  		nand@0,0 {
+> -			reg = <0 0 0>; /* CS0, offset 0 */
+> +			compatible = "ti,omap2-nand";
+> +			reg = <0 0 4>;		/* CS0, offset 0, NAND I/O window 4 */
+> +			interrupt-parent = <&gpmc>;
+> +			interrupts = <0 IRQ_TYPE_NONE>, <1 IRQ_TYPE NONE>;
+>  			nand-bus-width = <16>;
+>  			ti,nand-ecc-opt = "bch8";
 >  			ti,nand-xfer-type = "polled";
->  			interrupt-parent = <&gpmc>;
->  			interrupts = <0>, <1>;
-> +			rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
+> +			interrupt-parent = <&gpmc>;
+> +			interrupts = <0>, <1>;
 >  
 >  			gpmc,sync-clk-ps = <0>;
 >  			gpmc,cs-on-ns = <0>;
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 0a637c4..e7939f1 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -12,6 +12,7 @@
->  #include <linux/dmaengine.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/module.h>
->  #include <linux/interrupt.h>
->  #include <linux/jiffies.h>
-> @@ -183,6 +184,8 @@ struct omap_nand_info {
->  	struct nand_ecclayout		oobinfo;
->  	/* fields specific for BCHx_HW ECC scheme */
->  	struct device			*elm_dev;
-> +	/* NAND ready gpio */
-> +	struct gpio_desc		*ready_gpiod;
->  };
->  
->  static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
-> @@ -1024,21 +1027,16 @@ static int omap_wait(struct mtd_info *mtd, struct nand_chip *chip)
->  }
->  
->  /**
-> - * omap_dev_ready - calls the platform specific dev_ready function
-> + * omap_dev_ready - checks the NAND Ready GPIO line
->   * @mtd: MTD device structure
-> + *
-> + * Returns true if ready and false if busy.
->   */
->  static int omap_dev_ready(struct mtd_info *mtd)
->  {
-> -	unsigned int val = 0;
->  	struct omap_nand_info *info = mtd_to_omap(mtd);
->  
-> -	val = readl(info->reg.gpmc_status);
-> -
-> -	if ((val & 0x100) == 0x100) {
-> -		return 1;
-> -	} else {
-> -		return 0;
-> -	}
-> +	return gpiod_get_value(info->ready_gpiod);
->  }
->  
->  /**
-> @@ -1754,7 +1752,9 @@ static int omap_nand_probe(struct platform_device *pdev)
->  		info->gpmc_cs = pdata->cs;
->  		info->reg = pdata->reg;
->  		info->ecc_opt = pdata->ecc_opt;
-> -		info->dev_ready	= pdata->dev_ready;
-> +		if (pdata->dev_ready)
-> +			dev_info(&pdev->dev, "pdata->dev_ready is deprecated\n");
-> +
->  		info->xfer_type = pdata->xfer_type;
->  		info->devsize = pdata->devsize;
->  		info->elm_of_node = pdata->elm_of_node;
-> @@ -1786,6 +1786,13 @@ static int omap_nand_probe(struct platform_device *pdev)
->  	nand_chip->IO_ADDR_W = nand_chip->IO_ADDR_R;
->  	nand_chip->cmd_ctrl  = omap_hwcontrol;
->  
-> +	info->ready_gpiod = devm_gpiod_get_optional(&pdev->dev, "rb",
-> +						    GPIOD_IN);
-> +	if (IS_ERR(info->ready_gpiod)) {
-> +		dev_err(dev, "failed to get ready gpio\n");
-> +		return PTR_ERR(info->ready_gpiod);
-> +	}
-> +
->  	/*
->  	 * If RDY/BSY line is connected to OMAP then use the omap ready
->  	 * function and the generic nand_wait function which reads the status
-> @@ -1793,7 +1800,7 @@ static int omap_nand_probe(struct platform_device *pdev)
->  	 * chip delay which is slightly more than tR (AC Timing) of the NAND
->  	 * device and read status register until you get a failure or success
->  	 */
-> -	if (info->dev_ready) {
-> +	if (info->ready_gpiod) {
->  		nand_chip->dev_ready = omap_dev_ready;
->  		nand_chip->chip_delay = 0;
->  	} else {
-> diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-> index 7f6de53..17d57a1 100644
-> --- a/include/linux/platform_data/mtd-nand-omap2.h
-> +++ b/include/linux/platform_data/mtd-nand-omap2.h
-> @@ -71,7 +71,6 @@ struct omap_nand_platform_data {
->  	int			cs;
->  	struct mtd_partition	*parts;
->  	int			nr_parts;
-> -	bool			dev_ready;
->  	bool			flash_bbt;
->  	enum nand_io		xfer_type;
->  	int			devsize;
-> @@ -82,5 +81,6 @@ struct omap_nand_platform_data {
->  	/* deprecated */
->  	struct gpmc_nand_regs	reg;
->  	struct device_node	*of_node;
-> +	bool			dev_ready;
->  };
->  #endif
 > -- 
 > 2.1.4
 > 
