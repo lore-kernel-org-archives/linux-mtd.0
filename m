@@ -1,25 +1,19 @@
-Received: from mail-pf0-x22c.google.com ([2607:f8b0:400e:c00::22c])
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ac0c8-0003GS-SB
- for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 01:02:37 +0000
-Received: by mail-pf0-x22c.google.com with SMTP id x188so20385028pfb.2
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 17:02:16 -0800 (PST)
-Date: Fri, 4 Mar 2016 17:02:13 -0800
+ id 1ac0tF-0001gQ-22
+ for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 01:20:18 +0000
+Received: by mail-pa0-x236.google.com with SMTP id fi3so41646018pac.3
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 17:19:56 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: "Franklin S Cooper Jr." <fcooper@ti.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-mtd@lists.infradead.org, daniel.thompson@linaro.org,
- xiaolei.li@mediatek.com,
- Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Subject: Re: [PATCH] mtd: nand: tests: fix regression introduced in
- mtd_nandectest
-Message-ID: <20160305010213.GI55664@google.com>
-References: <1456866240-26119-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160301221755.093f5223@bbrezillon> <56D70BBB.1020004@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56D70BBB.1020004@ti.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Harvey Hunt <harvey.hunt@imgtec.com>,
+ Alex Smith <alex.smith@imgtec.com>, Niklas Cassel <niklas.cassel@axis.com>,
+ Alex Smith <alex@alex-smith.me.uk>
+Subject: [PATCH] mtd: nand: check status before reporting timeout
+Date: Fri,  4 Mar 2016 17:19:23 -0800
+Message-Id: <1457140763-67571-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 02, 2016 at 09:50:19AM -0600, Franklin S Cooper Jr. wrote:
-> On 03/01/2016 03:17 PM, Boris Brezillon wrote:
-> > On Tue,  1 Mar 2016 16:04:00 -0500
-> > Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
-> >
-> >> Offending Commit: 6e94119 "mtd: nand: return consistent error codes in
-> >> ecc.correct() implementations"
-> >>
-> >> The new error code was not being handled properly in double bit error
-> >> detection.
-> >>
-> >> Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-> > Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> >
-> > Thanks,
-> >
-> > Boris
-> 
-> We just encountered this problem and this patch fixed it.
-> Tested-by: Franklin S Cooper Jr <fcooper@ti.com>
+In commit b70af9bef49b ("mtd: nand: increase ready wait timeout and
+report timeouts"), we increased the likelihood of scheduling during
+nand_wait(). This makes us more likely to hit the time_before(...)
+condition, since a lot of time may pass before we get scheduled again.
 
-Thanks! Pushed to linux-mtd.git. I'll see about sending this to Linus
-for v4.5 still, since the regression is in v4.5-rc1.
+Now, the loop was already buggy, since we don't check if the NAND is
+ready after exiting the loop; we simply print out a timeout warning. Fix
+this by doing a final status check before printing a timeout message.
 
-Regards,
-Brian
+This isn't actually a critical bug, since the only effect is a false
+warning print. But too many prints never hurt anyone, did they? :)
+
+Side note: perhaps I'm not smart enough, but I'm not sure what the best
+policy is for this kind of loop; do we busy loop (i.e., no
+cond_resched()) to keep the lowest I/O latency (it's not great if the
+resched is delaying Richard's system ~400ms)? Or do we allow
+rescheduling, to play nice with the rest of the system (since some
+operations can take quite a while)?
+
+Reported-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Reviewed-by: Richard Weinberger <richard@nod.at>
+Reviewed-by: Harvey Hunt <harvey.hunt@imgtec.com>
+---
+ drivers/mtd/nand/nand_base.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index f2c8ff398d6c..596a9b0503da 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -566,8 +566,8 @@ void nand_wait_ready(struct mtd_info *mtd)
+ 		cond_resched();
+ 	} while (time_before(jiffies, timeo));
+ 
+-	pr_warn_ratelimited(
+-		"timeout while waiting for chip to become ready\n");
++	if (!chip->dev_ready(mtd))
++		pr_warn_ratelimited("timeout while waiting for chip to become ready\n");
+ out:
+ 	led_trigger_event(nand_led_trigger, LED_OFF);
+ }
+-- 
+2.7.0.rc3.207.g0ac5344
