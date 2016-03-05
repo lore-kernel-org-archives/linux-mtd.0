@@ -1,25 +1,35 @@
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ac7qN-00044K-9T
- for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 08:45:48 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
- linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH] mtd: only use __xipram annotation when XIP_KERNEL is set
-References: <1453736525-1959191-2-git-send-email-arnd@arndb.de>
- <20160305000225.GB55664@google.com>
- <20160305001057.GC55664@google.com> <3582240.H8v1IXn8EB@wuerfel>
-Date: Sat, 05 Mar 2016 09:45:21 +0100
-In-Reply-To: <3582240.H8v1IXn8EB@wuerfel> (Arnd Bergmann's message of "Sat, 05
- Mar 2016 01:24:36 +0100")
-Message-ID: <8737s5wbxa.fsf@belgarion.home>
+Date: Sat, 5 Mar 2016 09:53:37 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Nicolas
+ Ferre <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard
+ <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Wenyou Yang
+ <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Ezequiel
+ Garcia <ezequiel.garcia@free-electrons.com>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-sunxi@googlegroups.com, Stefan Agner <stefan@agner.ch>, Kyungmin Park
+ <kyungmin.park@samsung.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
+ linux-kernel@vger.kernel.org, punnaiah choudary kalluri
+ <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
+ linux-api@vger.kernel.org
+Subject: Re: [PATCH v3 16/52] mtd: nand: use mtd_set_ecclayout() where
+ appropriate
+Message-ID: <20160305095337.4a9e50fe@bbrezillon>
+In-Reply-To: <20160305022621.GN55664@google.com>
+References: <1456448280-27788-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1456448280-27788-17-git-send-email-boris.brezillon@free-electrons.com>
+ <20160305022621.GN55664@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,20 +39,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Arnd Bergmann <arnd@arndb.de> writes:
+Hi Brian,
 
-> I guess we can bring back the macros for the case that MTD_XIP and XIP_KERNEL
-> are both enabled.
->
-> 	Arnd
-I wouldn't have ICMR and ICIP exposed to drivers, Eric's original move looks
-corect to me.
+On Fri, 4 Mar 2016 18:26:21 -0800
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-On the other hand, I'm wondering if xip_irqpending(), xip_currtime() and
-xip_cpu_idle() should be declared as functions in mtd-xip.h, and be part of
-something like arch/arm/mach-pxa/xip.c ...
+> On Fri, Feb 26, 2016 at 01:57:24AM +0100, Boris Brezillon wrote:
+> > Use the mtd_set_ecclayout() helper instead of directly assigning the
+> > mtd->ecclayout field.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/nand_base.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index 17504f2..5093a3c 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -4288,7 +4288,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+> >  		ecc->write_oob_raw = ecc->write_oob;
+> >  
+> >  	/* propagate ecc info to mtd_info */
+> > -	mtd->ecclayout = ecc->layout;
+> > +	mtd_set_ecclayout(mtd, ecc->layout);
+> 
+> I'm having trouble applying this one. For the life of me, I can't figure
+> out where you got this context from. This block only appears much later
+> in nand_scan_tail()...
+> 
 
-Cheers.
+Patch 7 has moved this section upper in the function to avoid problems
+when calculating the number of available/free OOB bytes.
+
+> Do you think you could post a git tree with your intended changes? I may
+> just try to pull something in like that instead.
+
+Yep, it's there [1]. Note that this branch contains the two fixes I
+talked about with Harvey and Stephan. I also made a few changes to use
+ecc->total instead of calculating (ecc->steps * ecc->bytes).
+
+> 
+> BTW, I'm not sure the OMAP refactorings are going to come in time, but I
+> was planning to pull those directly from the TI folks (i.e., they won't
+> be rebased on l2-mtd.git), since there's some intermingling of platform
+> changes there. I think I can fix the conflicts fine, but FYI.
+
+Okay, then I'll let you deal with those conflicts. I can check your
+conflict resolution if you're unsure.
+
+Thanks,
+
+Boris
+
 
 -- 
-Robert
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
