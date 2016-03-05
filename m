@@ -1,19 +1,25 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ac0tF-0001gQ-22
- for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 01:20:18 +0000
-Received: by mail-pa0-x236.google.com with SMTP id fi3so41646018pac.3
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 17:19:56 -0800 (PST)
+ id 1ac18P-0000BL-RI
+ for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 01:35:58 +0000
+Received: by mail-pa0-x229.google.com with SMTP id fy10so43734291pac.1
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 17:35:37 -0800 (PST)
+Date: Fri, 4 Mar 2016 17:35:34 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: <linux-kernel@vger.kernel.org>, Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Harvey Hunt <harvey.hunt@imgtec.com>,
- Alex Smith <alex.smith@imgtec.com>, Niklas Cassel <niklas.cassel@axis.com>,
- Alex Smith <alex@alex-smith.me.uk>
-Subject: [PATCH] mtd: nand: check status before reporting timeout
-Date: Fri,  4 Mar 2016 17:19:23 -0800
-Message-Id: <1457140763-67571-1-git-send-email-computersforpeace@gmail.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: tony@atomide.com, dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
+ javier@dowhile0.org, fcooper@ti.com, nsekhar@ti.com,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 03/26] memory: omap-gpmc: Introduce GPMC to NAND
+ interface
+Message-ID: <20160305013534.GJ55664@google.com>
+References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+ <1455916548-3441-4-git-send-email-rogerq@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1455916548-3441-4-git-send-email-rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +29,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In commit b70af9bef49b ("mtd: nand: increase ready wait timeout and
-report timeouts"), we increased the likelihood of scheduling during
-nand_wait(). This makes us more likely to hit the time_before(...)
-condition, since a lot of time may pass before we get scheduled again.
+Hi Roger,
 
-Now, the loop was already buggy, since we don't check if the NAND is
-ready after exiting the loop; we simply print out a timeout warning. Fix
-this by doing a final status check before printing a timeout message.
+On Fri, Feb 19, 2016 at 11:15:25PM +0200, Roger Quadros wrote:
+> The OMAP GPMC module has certain registers dedicated for NAND
+> access and some NAND bits mixed with other GPMC functionality.
+> 
+> For the NAND dedicated registers we have the struct gpmc_nand_regs.
+> 
+> The NAND driver needs to access NAND specific bits from the
+> following non-dedicated registers
+> 1) FIFOEVENT and TERMCOUNT from GPMC_IRQENABLE and GPMC_IRQSTATUS
+> 2) EMPTYWRITEBUFFERSTATUS from GPMC_STATUS
+> 
+> For accessing these bits we introduce the struct gpmc_nand_ops.
+> 
+> Rename the gpmc_update_nand_reg() API to gpmc_omap_get_nand_ops()
+> and make it return the gpmc_nand_ops along with updating the
+> gpmc_nand_regs. This API will be called by the OMAP NAND driver
+> to access the necessary bits in GPMC register space.
+> 
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> ---
+>  drivers/memory/omap-gpmc.c | 21 ++++++++++++++++++++
+>  include/linux/omap-gpmc.h  | 49 ++++++++++++++++++++++++++++++++++++++++++++--
+>  2 files changed, 68 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+> index 6515dfc..c2f7320 100644
+> --- a/drivers/memory/omap-gpmc.c
+> +++ b/drivers/memory/omap-gpmc.c
+> @@ -1098,6 +1098,27 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
+>  	}
+>  }
+>  
+> +static struct gpmc_nand_ops nand_ops;
+> +
+> +/**
+> + * gpmc_omap_get_nand_ops - Get the GPMC NAND interface
+> + * @regs: the GPMC NAND register map exclusive for NAND use.
+> + * @cs: GPMC chip select number on which the NAND sits. The
+> + *      register map returned will be specific to this chip select.
+> + *
+> + * Returns NULL on error e.g. invalid cs.
+> + */
+> +struct gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *reg, int cs)
+> +{
+> +	if (cs >= gpmc_cs_num)
+> +		return NULL;
+> +
+> +	gpmc_update_nand_reg(reg, cs);
+> +
+> +	return &nand_ops;
+> +}
+> +EXPORT_SYMBOL_GPL(gpmc_omap_get_nand_ops);
+> +
+>  int gpmc_get_client_irq(unsigned irq_config)
+>  {
+>  	int i;
+> diff --git a/include/linux/omap-gpmc.h b/include/linux/omap-gpmc.h
+> index 2dcef1c..7de9f9b 100644
+> --- a/include/linux/omap-gpmc.h
+> +++ b/include/linux/omap-gpmc.h
+> @@ -14,14 +14,59 @@
+>  #define GPMC_IRQ_FIFOEVENTENABLE	0x01
+>  #define GPMC_IRQ_COUNT_EVENT		0x02
+>  
+> +enum gpmc_nand_irq {
+> +	GPMC_NAND_IRQ_FIFOEVENT = 0,
+> +	GPMC_NAND_IRQ_TERMCOUNT,
+> +};
+> +
+> +/**
+> + * gpmc_nand_ops - Interface between NAND and GPMC
+> + * @nand_irq_enable: enable the requested GPMC NAND interrupt event.
+> + * @nand_irq_disable: disable the requested GPMC NAND interrupt event.
+> + * @nand_irq_clear: clears the GPMC NAND interrupt event status.
+> + * @nand_irq_status: get the NAND interrupt event status.
+> + * @nand_write_buffer_empty: get the NAND write buffer empty status.
+> + */
+> +struct gpmc_nand_ops {
+> +	int (*nand_irq_enable)(enum gpmc_nand_irq irq);
+> +	int (*nand_irq_disable)(enum gpmc_nand_irq irq);
+> +	void (*nand_irq_clear)(enum gpmc_nand_irq irq);
+> +	u32 (*nand_irq_status)(void);
 
-This isn't actually a critical bug, since the only effect is a false
-warning print. But too many prints never hurt anyone, did they? :)
+^^ These 4 aren't being used in this revision?
 
-Side note: perhaps I'm not smart enough, but I'm not sure what the best
-policy is for this kind of loop; do we busy loop (i.e., no
-cond_resched()) to keep the lowest I/O latency (it's not great if the
-resched is delaying Richard's system ~400ms)? Or do we allow
-rescheduling, to play nice with the rest of the system (since some
-operations can take quite a while)?
+> +	bool (*nand_writebuffer_empty)(void);
+> +};
+> +
+> +struct gpmc_nand_regs;
+> +
+> +#if IS_ENABLED(CONFIG_OMAP_GPMC)
+> +struct gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *regs,
+> +					     int cs);
+> +#else
+> +static inline gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *regs,
+> +						    int cs)
+> +{
+> +	return NULL;
+> +}
+> +#endif /* CONFIG_OMAP_GPMC */
+> +
+> +/*--------------------------------*/
+> +
+> +/* deprecated APIs */
+> +#if IS_ENABLED(CONFIG_OMAP_GPMC)
+> +void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs);
+> +#else
+> +static inline void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
+> +{
+> +	reg = NULL;
 
-Reported-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Reviewed-by: Richard Weinberger <richard@nod.at>
-Reviewed-by: Harvey Hunt <harvey.hunt@imgtec.com>
----
- drivers/mtd/nand/nand_base.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+What are you trying to do here? 'reg' is local, so the assignment is
+pointless.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index f2c8ff398d6c..596a9b0503da 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -566,8 +566,8 @@ void nand_wait_ready(struct mtd_info *mtd)
- 		cond_resched();
- 	} while (time_before(jiffies, timeo));
- 
--	pr_warn_ratelimited(
--		"timeout while waiting for chip to become ready\n");
-+	if (!chip->dev_ready(mtd))
-+		pr_warn_ratelimited("timeout while waiting for chip to become ready\n");
- out:
- 	led_trigger_event(nand_led_trigger, LED_OFF);
- }
--- 
-2.7.0.rc3.207.g0ac5344
+> +}
+> +#endif /* CONFIG_OMAP_GPMC */
+
+Brian
