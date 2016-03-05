@@ -1,34 +1,25 @@
-Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
+Received: from mail-pf0-x22c.google.com ([2607:f8b0:400e:c00::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ac0V8-00088V-Lm
- for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 00:55:23 +0000
-Received: by mail-pf0-x234.google.com with SMTP id x188so20292866pfb.2
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 16:55:02 -0800 (PST)
-Date: Fri, 4 Mar 2016 16:54:59 -0800
+ id 1ac0c8-0003GS-SB
+ for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 01:02:37 +0000
+Received: by mail-pf0-x22c.google.com with SMTP id x188so20385028pfb.2
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2016 17:02:16 -0800 (PST)
+Date: Fri, 4 Mar 2016 17:02:13 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, "Maciej W. Rozycki" <macro@linux-mips.org>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Fengguang Wu <fengguang.wu@intel.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
- Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Cyril Bur <cyrilbur@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
- Hauke Mehrtens <hauke@hauke-m.de>,
- Ard Biesheuvel <ard.biesheuvel@linaro.org>,
- Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH V2] mtd: bcm47xxsflash: use ioremap_cache() instead of
- KSEG0ADDR()
-Message-ID: <20160305005459.GH55664@google.com>
-References: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
- <1456483828-5583-1-git-send-email-zajec5@gmail.com>
+To: "Franklin S Cooper Jr." <fcooper@ti.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org, daniel.thompson@linaro.org,
+ xiaolei.li@mediatek.com,
+ Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+Subject: Re: [PATCH] mtd: nand: tests: fix regression introduced in
+ mtd_nandectest
+Message-ID: <20160305010213.GI55664@google.com>
+References: <1456866240-26119-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <20160301221755.093f5223@bbrezillon> <56D70BBB.1020004@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1456483828-5583-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <56D70BBB.1020004@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,170 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ others
-
-On Fri, Feb 26, 2016 at 11:50:28AM +0100, Rafał Miłecki wrote:
-> From: Brian Norris <computersforpeace@gmail.com>
+On Wed, Mar 02, 2016 at 09:50:19AM -0600, Franklin S Cooper Jr. wrote:
+> On 03/01/2016 03:17 PM, Boris Brezillon wrote:
+> > On Tue,  1 Mar 2016 16:04:00 -0500
+> > Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
+> >
+> >> Offending Commit: 6e94119 "mtd: nand: return consistent error codes in
+> >> ecc.correct() implementations"
+> >>
+> >> The new error code was not being handled properly in double bit error
+> >> detection.
+> >>
+> >> Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+> > Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> >
+> > Thanks,
+> >
+> > Boris
 > 
-> Using KSEG0ADDR makes code highly MIPS dependent and not portable.
-> Thanks to the fix a68f376 ("MIPS: io.h: Define `ioremap_cache'") we can
-> use ioremap_cache which is generic and supported on MIPS as well now.
-> 
-> KSEG0ADDR was translating 0x1c000000 into 0x9c000000. With ioremap_cache
-> we use MIPS's __ioremap (and then remap_area_pages). This results in
-> different address (e.g. 0xc0080000) but it still should be cached as
-> expected and it was successfully tested with BCM47186B0.
-> 
-> Other than that drivers/bcma/driver_chipcommon_sflash.c nicely setups a
-> struct resource for access window, but we wren't using it. Use it now
-> and drop duplicated info.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
-> ---
-> V2:
-> 1) Use ioremap_cache as we already have commit a68f376 in l2-mtd
-> 2) Add iounmap to the error path
-> 3) Update commit message
+> We just encountered this problem and this patch fixed it.
+> Tested-by: Franklin S Cooper Jr <fcooper@ti.com>
 
-Hmm, I'm a bit out of the loop on some things here, but it looks like
-ioremap_cache() is going away. See kernel/memremap.c:
+Thanks! Pushed to linux-mtd.git. I'll see about sending this to Linus
+for v4.5 still, since the regression is in v4.5-rc1.
 
-/* temporary while we convert existing ioremap_cache users to memremap */
-__weak void __iomem *ioremap_cache(resource_size_t offset, unsigned long size)
-
-Are we supposed to move to using memremap() here? (If so,
-devm_memremap() can help us.)
-
+Regards,
 Brian
-
-
->  drivers/bcma/driver_chipcommon_sflash.c     |  1 -
->  drivers/mtd/devices/bcm47xxsflash.c         | 29 ++++++++++++++++++++++++-----
->  drivers/mtd/devices/bcm47xxsflash.h         |  3 ++-
->  include/linux/bcma/bcma_driver_chipcommon.h |  1 -
->  4 files changed, 26 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/bcma/driver_chipcommon_sflash.c b/drivers/bcma/driver_chipcommon_sflash.c
-> index 7e11ef4..5534cbc 100644
-> --- a/drivers/bcma/driver_chipcommon_sflash.c
-> +++ b/drivers/bcma/driver_chipcommon_sflash.c
-> @@ -145,7 +145,6 @@ int bcma_sflash_init(struct bcma_drv_cc *cc)
->  		return -ENOTSUPP;
->  	}
->  
-> -	sflash->window = BCMA_SOC_FLASH2;
->  	sflash->blocksize = e->blocksize;
->  	sflash->numblocks = e->numblocks;
->  	sflash->size = sflash->blocksize * sflash->numblocks;
-> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-> index 347bb83..1c65c15 100644
-> --- a/drivers/mtd/devices/bcm47xxsflash.c
-> +++ b/drivers/mtd/devices/bcm47xxsflash.c
-> @@ -2,6 +2,7 @@
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  #include <linux/delay.h>
-> +#include <linux/ioport.h>
->  #include <linux/mtd/mtd.h>
->  #include <linux/platform_device.h>
->  #include <linux/bcma/bcma.h>
-> @@ -109,8 +110,7 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
->  	if ((from + len) > mtd->size)
->  		return -EINVAL;
->  
-> -	memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(b47s->window + from),
-> -		      len);
-> +	memcpy_fromio(buf, b47s->window + from, len);
->  	*retlen = len;
->  
->  	return len;
-> @@ -275,15 +275,33 @@ static void bcm47xxsflash_bcma_cc_write(struct bcm47xxsflash *b47s, u16 offset,
->  
->  static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
->  {
-> -	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
-> +	struct device *dev = &pdev->dev;
-> +	struct bcma_sflash *sflash = dev_get_platdata(dev);
->  	struct bcm47xxsflash *b47s;
-> +	struct resource *res;
->  	int err;
->  
-> -	b47s = devm_kzalloc(&pdev->dev, sizeof(*b47s), GFP_KERNEL);
-> +	b47s = devm_kzalloc(dev, sizeof(*b47s), GFP_KERNEL);
->  	if (!b47s)
->  		return -ENOMEM;
->  	sflash->priv = b47s;
->  
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(dev, "invalid resource\n");
-> +		return -EINVAL;
-> +	}
-> +	if (!devm_request_mem_region(dev, res->start, resource_size(res),
-> +				     res->name)) {
-> +		dev_err(dev, "can't request region for resource %pR\n", res);
-> +		return -EBUSY;
-> +	}
-> +	b47s->window = ioremap_cache(res->start, resource_size(res));
-> +	if (!b47s->window) {
-> +		dev_err(dev, "ioremap failed for resource %pR\n", res);
-> +		return -ENOMEM;
-> +	}
-> +
->  	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
->  	b47s->cc_read = bcm47xxsflash_bcma_cc_read;
->  	b47s->cc_write = bcm47xxsflash_bcma_cc_write;
-> @@ -297,7 +315,6 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
->  		break;
->  	}
->  
-> -	b47s->window = sflash->window;
->  	b47s->blocksize = sflash->blocksize;
->  	b47s->numblocks = sflash->numblocks;
->  	b47s->size = sflash->size;
-> @@ -306,6 +323,7 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
->  	err = mtd_device_parse_register(&b47s->mtd, probes, NULL, NULL, 0);
->  	if (err) {
->  		pr_err("Failed to register MTD device: %d\n", err);
-> +		iounmap(b47s->window);
->  		return err;
->  	}
->  
-> @@ -321,6 +339,7 @@ static int bcm47xxsflash_bcma_remove(struct platform_device *pdev)
->  	struct bcm47xxsflash *b47s = sflash->priv;
->  
->  	mtd_device_unregister(&b47s->mtd);
-> +	iounmap(b47s->window);
->  
->  	return 0;
->  }
-> diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
-> index fe93daf..1564b62 100644
-> --- a/drivers/mtd/devices/bcm47xxsflash.h
-> +++ b/drivers/mtd/devices/bcm47xxsflash.h
-> @@ -65,7 +65,8 @@ struct bcm47xxsflash {
->  
->  	enum bcm47xxsflash_type type;
->  
-> -	u32 window;
-> +	void __iomem *window;
-> +
->  	u32 blocksize;
->  	u16 numblocks;
->  	u32 size;
-> diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
-> index db51a6f..03e6fea 100644
-> --- a/include/linux/bcma/bcma_driver_chipcommon.h
-> +++ b/include/linux/bcma/bcma_driver_chipcommon.h
-> @@ -583,7 +583,6 @@ struct mtd_info;
->  
->  struct bcma_sflash {
->  	bool present;
-> -	u32 window;
->  	u32 blocksize;
->  	u16 numblocks;
->  	u32 size;
-> -- 
-> 1.8.4.5
-> 
