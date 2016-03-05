@@ -1,29 +1,17 @@
-Received: from mail-ob0-x231.google.com ([2607:f8b0:4003:c01::231])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1acFiU-0004Ge-R9
- for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 17:10:11 +0000
-Received: by mail-ob0-x231.google.com with SMTP id fz5so75404344obc.0
- for <linux-mtd@lists.infradead.org>; Sat, 05 Mar 2016 09:09:50 -0800 (PST)
+ id 1acJp8-00062B-QR
+ for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 21:33:19 +0000
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UBI fixes for 4.5-rc7
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <56DB5084.60500@nod.at>
+Date: Sat, 5 Mar 2016 22:32:52 +0100
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZusueSh99D2JQj5=JQqHAeedTS=X2vm48U58PLbhamcQ@mail.gmail.com>
-References: <1453806725-4880-1-git-send-email-linus.walleij@linaro.org>
- <1453806725-4880-3-git-send-email-linus.walleij@linaro.org>
- <CACRpkdY4fNfQWaKAZcak0yzJ2B17hbrqdU=Q4=NiwiWRNv_0yQ@mail.gmail.com>
- <CACRpkdZusueSh99D2JQj5=JQqHAeedTS=X2vm48U58PLbhamcQ@mail.gmail.com>
-Date: Sun, 6 Mar 2016 00:09:49 +0700
-Message-ID: <CACRpkdZYTAyEejiVivhP44cEhxHMG6sL1VbrJjx=jGe-znyn7A@mail.gmail.com>
-Subject: Re: [PATCH 2/6] mtd: physmap_of: add a hook for Versatile write
- protection
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Cc: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Grant Likely <grant.likely@linaro.org>,
- Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,52 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 22, 2016 at 8:09 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Sat, Feb 13, 2016 at 2:19 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
->> On Tue, Jan 26, 2016 at 12:12 PM, Linus Walleij
->> <linus.walleij@linaro.org> wrote:
->>
->>> In order to support device tree probing of Versatile NOR flash
->>> chips, there must be a way to add the VPP (write protection)
->>> enable/disable callback. The register in question is in the
->>> system controllers of these machines. Apart from this quirk,
->>> the ARM flash chips are standard CFI flash chips from various
->>> vendors.
->>>
->>> Additionally, the Integrator/AP require you to set up the external
->>> bus interface (EBI) to allow writes to the chip select where the
->>> flash memory is connected.
->>>
->>> Solve this by looking for the arm,versatile-flash compatible
->>> string in the flash device tree node. In the driver,
->>> add a special hook to check for the various Versatile syscons and
->>> register a callback for .set_vpp() if this compatible is present.
->>>
->>> Provide a special Kconfig entry for the addon hook so it will
->>> not be compiled in if the Versatile boards are not supported.
->>> Stubs in the header file make sure the impact will be zero on
->>> other platforms. (Compilers optimze this out.)
->>>
->>> With this patch, a large slew of ARM board file code can be
->>> removed.
->>>
->>> Cc: Grant Likely <grant.likely@linaro.org>
->>> Cc: Rob Herring <robh@kernel.org>
->>> Cc: Arnd Bergmann <arnd@arndb.de>
->>> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
->>
->> Do you think my reply to this about reference counting and
->> subsequent (accepted) patch to update the documentation
->> to reflect 876fe76d793d03077
->> "mtd: maps: physmap: Add reference counter to set_vpp()"
->> is enough to warrant merging of this?
->>
->> If you want the code developed in any special direction
->> just tell me.
->
-> Ping.
+Linus,
 
-Ping.
+The following changes since commit fc77dbd34c5c99bce46d40a2491937c3bcbd10af:
 
-Yours,
-Linus Walleij
+  Linux 4.5-rc6 (2016-02-28 08:41:20 -0800)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.5-rc7
+
+for you to fetch changes up to e4f6daac20332448529b11f09388f1d55ef2084c:
+
+  ubi: Fix out of bounds write in volume update code (2016-03-05 21:56:23 +0100)
+
+----------------------------------------------------------------
+This pull request contains a single bug fix for UBI.
+
+----------------------------------------------------------------
+Richard Weinberger (1):
+      ubi: Fix out of bounds write in volume update code
+
+ drivers/mtd/ubi/upd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
