@@ -1,18 +1,23 @@
 Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ac7fd-0007BD-Md
- for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 08:34:42 +0000
+ id 1ac7qN-00044K-9T
+ for linux-mtd@lists.infradead.org; Sat, 05 Mar 2016 08:45:48 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH] mtd: nand: pxa3xx_nand: kill unused field 'drcmr_cmd'
-References: <1457147553-71596-1-git-send-email-computersforpeace@gmail.com>
-Date: Sat, 05 Mar 2016 09:34:14 +0100
-In-Reply-To: <1457147553-71596-1-git-send-email-computersforpeace@gmail.com>
- (Brian Norris's message of "Fri, 4 Mar 2016 19:12:33 -0800")
-Message-ID: <877fhhwcft.fsf@belgarion.home>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
+ linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH] mtd: only use __xipram annotation when XIP_KERNEL is set
+References: <1453736525-1959191-2-git-send-email-arnd@arndb.de>
+ <20160305000225.GB55664@google.com>
+ <20160305001057.GC55664@google.com> <3582240.H8v1IXn8EB@wuerfel>
+Date: Sat, 05 Mar 2016 09:45:21 +0100
+In-Reply-To: <3582240.H8v1IXn8EB@wuerfel> (Arnd Bergmann's message of "Sat, 05
+ Mar 2016 01:24:36 +0100")
+Message-ID: <8737s5wbxa.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,25 +29,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris <computersforpeace@gmail.com> writes:
+Arnd Bergmann <arnd@arndb.de> writes:
 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Hi Brian,
+> I guess we can bring back the macros for the case that MTD_XIP and XIP_KERNEL
+> are both enabled.
+>
+> 	Arnd
+I wouldn't have ICMR and ICIP exposed to drivers, Eric's original move looks
+corect to me.
 
-> @@ -1812,7 +1811,6 @@ static int alloc_nand_resource(struct platform_device *pdev)
->  			ret = -ENXIO;
->  			goto fail_disable_clk;
->  		}
-> -		info->drcmr_cmd = r->start;
->  	}
-If you kill this field, why not kill also this block just above ?
-		r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-		if (r == NULL) {
-			dev_err(&pdev->dev,
-				"no resource defined for cmd DMA\n");
-			ret = -ENXIO;
-			goto fail_disable_clk;
-		}
+On the other hand, I'm wondering if xip_irqpending(), xip_currtime() and
+xip_cpu_idle() should be declared as functions in mtd-xip.h, and be part of
+something like arch/arm/mach-pxa/xip.c ...
 
 Cheers.
 
