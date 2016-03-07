@@ -1,22 +1,25 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by casper.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1acsT1-0007Cu-2Q
- for linux-mtd@lists.infradead.org; Mon, 07 Mar 2016 10:32:47 +0000
-Subject: [PATCH v6 10/26] mtd: nand: omap: Update DT binding documentation
-To: <tony@atomide.com>, <computersforpeace@gmail.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.85 #2 (Red Hat Linux))
+ id 1acsRe-0003iC-Dm
+ for linux-mtd@lists.infradead.org; Mon, 07 Mar 2016 10:31:22 +0000
+Date: Mon, 7 Mar 2016 11:31:00 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: <tony@atomide.com>, <computersforpeace@gmail.com>,
+ <devicetree@vger.kernel.org>, <nsekhar@ti.com>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
+ <linux-omap@vger.kernel.org>, <dwmw2@infradead.org>, <fcooper@ti.com>
+Subject: Re: [PATCH v5 13/26] memory: omap-gpmc: Support general purpose
+ input for WAITPINs
+Message-ID: <20160307113100.2fb12bf4@bbrezillon>
+In-Reply-To: <56DD519A.3070403@ti.com>
 References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
- <1455916548-3441-11-git-send-email-rogerq@ti.com>
-CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
- <javier@dowhile0.org>, <fcooper@ti.com>, <nsekhar@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <rogerq@ti.com>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <56DD58AF.4090404@ti.com>
-Date: Mon, 7 Mar 2016 12:32:15 +0200
+ <1455916548-3441-14-git-send-email-rogerq@ti.com>
+ <20160307103440.4b9d7a55@bbrezillon> <56DD519A.3070403@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1455916548-3441-11-git-send-email-rogerq@ti.com>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,56 +30,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add compatible id and interrupts. The NAND interrupts are
-provided by the GPMC controller node.
+On Mon, 7 Mar 2016 12:02:02 +0200
+Roger Quadros <rogerq@ti.com> wrote:
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+> Hi Boris,
+> 
+> On 07/03/16 11:34, Boris Brezillon wrote:
+> > Hi Roger,
+> > 
+> > On Fri, 19 Feb 2016 23:15:35 +0200
+> > Roger Quadros <rogerq@ti.com> wrote:
+> > 
+> >> OMAPs can have 2 to 4 WAITPINs that can be used as general purpose
+> >> input if not used for memory wait state insertion.
+> >>
+> >> The first user will be the OMAP NAND chip to get the NAND
+> >> read/busy status using gpiolib.
+> > 
+> > Just a comment on this approach. Why do you need to exposed native R/B
+> > pins as GPIOs? I mean, other NAND controllers are supporting R/B
+> > detection using dedicated logic, and they do not exposed those pins a
+> > plain GPIOs. Have you considered adding another property (rb-native ?)
+> > to deal with this case instead of emulating a GPIO controller?
+> > Side note: I added an rb-gpios property in my sunxi-nand DT binding
+> > because in some cases, the board design forces us to use a plain GPIO.
+> 
+> OMAPs can have more than one WAITpins which can be used in multiple ways
+> - wait state insertion
+> - general purpose input
+> - edge detect interrupt
+> 
+> It is not automatically tied to NAND read/busy# mechanism and needs software
+> to get the read/busy# state.
+> The register to get WAIT pin status is not situated in the NAND controller
+> register space but in the parent GPMC controller space.
+> 
+> So we've modelled the WAIT pins as irqchip and gpiochip and users can
+> use them as they want.
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index fb733c4..ff3215d2 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -13,7 +13,11 @@ Documentation/devicetree/bindings/mtd/nand.txt
- 
- Required properties:
- 
-- - reg:		The CS line the peripheral is connected to
-+ - compatible:	"ti,omap2-nand"
-+ - reg:		range id (CS number), base offset and length of the
-+		NAND I/O space
-+ - interrupt-parent: must point to gpmc node
-+ - interrupts:	Two interrupt specifiers, one for fifoevent, one for termcount.
- 
- Optional properties:
- 
-@@ -55,17 +59,22 @@ Example for an AM33xx board:
- 	gpmc: gpmc@50000000 {
- 		compatible = "ti,am3352-gpmc";
- 		ti,hwmods = "gpmc";
--		reg = <0x50000000 0x1000000>;
-+		reg = <0x50000000 0x36c>;
- 		interrupts = <100>;
- 		gpmc,num-cs = <8>;
- 		gpmc,num-waitpins = <2>;
- 		#address-cells = <2>;
- 		#size-cells = <1>;
--		ranges = <0 0 0x08000000 0x2000>;	/* CS0: NAND */
-+		ranges = <0 0 0x08000000 0x1000000>;	/* CS0 space, 16MB */
- 		elm_id = <&elm>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
- 
- 		nand@0,0 {
--			reg = <0 0 0>; /* CS0, offset 0 */
-+			compatible = "ti,omap2-nand";
-+			reg = <0 0 4>;		/* CS0, offset 0, NAND I/O window 4 */
-+			interrupt-parent = <&gpmc>;
-+			interrupts = <0 IRQ_TYPE_NONE>, <1 IRQ_TYPE NONE>;
- 			nand-bus-width = <16>;
- 			ti,nand-ecc-opt = "bch8";
- 			ti,nand-xfer-type = "polled";
+Okay. Thanks for the detailed explanation.
+
 -- 
-2.5.0
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
