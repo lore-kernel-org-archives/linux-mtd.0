@@ -21,9 +21,9 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  bcm-kernel-feedback-list@broadcom.com, linux-api@vger.kernel.org,
  Harvey Hunt <harvey.hunt@imgtec.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 15/52] mtd: use mtd_set_ecclayout() where appropriate
-Date: Mon,  7 Mar 2016 10:47:05 +0100
-Message-Id: <1457344062-11633-16-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v4 50/52] staging: mt29f_spinand: switch to mtd_ooblayout_ops
+Date: Mon,  7 Mar 2016 10:47:40 +0100
+Message-Id: <1457344062-11633-51-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1457344062-11633-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1457344062-11633-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,40 +35,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the mtd_set_ecclayout() helper instead of directly assigning the
-mtd->ecclayout field.
+Replace the nand_ecclayout definition by the equivalent mtd_ooblayout_ops
+definition.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/mtdconcat.c | 2 +-
- drivers/mtd/mtdpart.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/mt29f_spinand/mt29f_spinand.c | 48 +++++++++++++++++----------
+ 1 file changed, 30 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 239a8c8..481565e 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -777,7 +777,7 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+index 6728376..b9f9347 100644
+--- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
++++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+@@ -42,23 +42,33 @@ static inline struct spinand_state *mtd_to_state(struct mtd_info *mtd)
+ static int enable_hw_ecc;
+ static int enable_read_hw_ecc;
  
- 	}
+-static struct nand_ecclayout spinand_oob_64 = {
+-	.eccbytes = 24,
+-	.eccpos = {
+-		1, 2, 3, 4, 5, 6,
+-		17, 18, 19, 20, 21, 22,
+-		33, 34, 35, 36, 37, 38,
+-		49, 50, 51, 52, 53, 54, },
+-	.oobfree = {
+-		{.offset = 8,
+-			.length = 8},
+-		{.offset = 24,
+-			.length = 8},
+-		{.offset = 40,
+-			.length = 8},
+-		{.offset = 56,
+-			.length = 8},
+-	}
++static int spinand_ooblayout_64_ecc(struct mtd_info *mtd, int section,
++				    struct mtd_oob_region *oobregion)
++{
++	if (section > 3)
++		return -ERANGE;
++
++	oobregion->offset = (section * 16) + 1;
++	oobregion->length = 6;
++
++	return 0;
++}
++
++static int spinand_ooblayout_64_free(struct mtd_info *mtd, int section,
++				     struct mtd_oob_region *oobregion)
++{
++	if (section > 3)
++		return -ERANGE;
++
++	oobregion->offset = (section * 16) + 8;
++	oobregion->length = 8;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops spinand_oob_64_ops = {
++	.ecc = spinand_ooblayout_64_ecc,
++	.free = spinand_ooblayout_64_free,
+ };
+ #endif
  
--	concat->mtd.ecclayout = subdev[0]->ecclayout;
-+	mtd_set_ecclayout(&concat->mtd, subdev[0]->ecclayout);
+@@ -883,7 +893,6 @@ static int spinand_probe(struct spi_device *spi_nand)
  
- 	concat->num_subdev = num_devs;
- 	concat->mtd.name = name;
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 08de4b2..f53d9d7 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -533,7 +533,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 			part->name);
- 	}
+ 	chip->ecc.strength = 1;
+ 	chip->ecc.total	= chip->ecc.steps * chip->ecc.bytes;
+-	chip->ecc.layout = &spinand_oob_64;
+ 	chip->ecc.read_page = spinand_read_page_hwecc;
+ 	chip->ecc.write_page = spinand_write_page_hwecc;
+ #else
+@@ -908,6 +917,9 @@ static int spinand_probe(struct spi_device *spi_nand)
  
--	slave->mtd.ecclayout = master->ecclayout;
-+	mtd_set_ecclayout(&slave->mtd, master->ecclayout);
- 	slave->mtd.ecc_step_size = master->ecc_step_size;
- 	slave->mtd.ecc_strength = master->ecc_strength;
- 	slave->mtd.bitflip_threshold = master->bitflip_threshold;
+ 	mtd->dev.parent = &spi_nand->dev;
+ 	mtd->oobsize = 64;
++#ifdef CONFIG_MTD_SPINAND_ONDIEECC
++	mtd_set_ooblayout(mtd, &spinand_oob_64_ops);
++#endif
+ 
+ 	if (nand_scan(mtd, 1))
+ 		return -ENXIO;
 -- 
 2.1.4
