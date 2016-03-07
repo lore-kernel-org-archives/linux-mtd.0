@@ -1,30 +1,24 @@
-Received: from out01.mta.xmission.com ([166.70.13.231])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ach0M-0008LE-Qw
- for linux-mtd@lists.infradead.org; Sun, 06 Mar 2016 22:18:27 +0000
-From: ebiederm@xmission.com (Eric W. Biederman)
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
- linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
-References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
- <1451930639-94331-12-git-send-email-seth.forshee@canonical.com>
- <20160303170201.GA30224@ubuntu-hedt>
- <87twkl50g5.fsf@x220.int.ebiederm.org>
- <20160306154832.GA13631@ubuntu-xps13>
-Date: Sun, 06 Mar 2016 16:07:49 -0600
-In-Reply-To: <20160306154832.GA13631@ubuntu-xps13> (Seth Forshee's message of
- "Sun, 6 Mar 2016 09:48:33 -0600")
-Message-ID: <8737s32rbe.fsf@x220.int.ebiederm.org>
+ id 1acqxu-0001hA-Rz
+ for linux-mtd@lists.infradead.org; Mon, 07 Mar 2016 08:56:35 +0000
+Subject: Re: [PATCH v5 03/26] memory: omap-gpmc: Introduce GPMC to NAND
+ interface
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+ <1455916548-3441-4-git-send-email-rogerq@ti.com>
+ <20160305013534.GJ55664@google.com>
+CC: <tony@atomide.com>, <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <javier@dowhile0.org>, <fcooper@ti.com>, <nsekhar@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <56DD4208.8030604@ti.com>
+Date: Mon, 7 Mar 2016 10:55:36 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [PATCH RESEND v2 11/18] fs: Ensure the mounter of a filesystem is
- privileged towards its inodes
+In-Reply-To: <20160305013534.GJ55664@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,80 +28,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Seth Forshee <seth.forshee@canonical.com> writes:
+Hi Brian,
 
-> On Fri, Mar 04, 2016 at 04:43:06PM -0600, Eric W. Biederman wrote:
->> Seth Forshee <seth.forshee@canonical.com> writes:
->> 
->> > On Mon, Jan 04, 2016 at 12:03:50PM -0600, Seth Forshee wrote:
->> >> The mounter of a filesystem should be privileged towards the
->> >> inodes of that filesystem. Extend the checks in
->> >> inode_owner_or_capable() and capable_wrt_inode_uidgid() to
->> >> permit access by users priviliged in the user namespace of the
->> >> inode's superblock.
->> >
->> > Eric - I've discovered a problem related to this patch. The patches
->> > you've already applied to your testing branch make it so that s_user_ns
->> > can be an unprivileged user for proc and kernfs-based mounts. In some
->> > cases DAC is the only thing protecting files in these mounts (ignoring
->> > MAC), and with this patch an unprivileged user could bypass DAC.
->> >
->> > There's a simple solution - always set s_user_ns to &init_user_ns for
->> > those filesystems. I think this is the right thing to do, since the
->> > backing store behind these filesystems are really kernel objects.  But
->> > this would break the assumption behind your patch "userns: Simpilify
->> > MNT_NODEV handling" and cause a regression in mounting behavior.
->> >
->> > I've come up with several possible solutions for this conflict.
->> >
->> >  1. Drop this patch and keep on setting s_user_ns to unprivilged users.
->> >     This would be unfortunate because I think this patch does make sense
->> >     for most filesystems.
->> >  2. Restrict this patch so that a user privileged towards s_user_ns is
->> >     only privileged towards the super blocks inodes if s_user_ns has a
->> >     mapping for both i_uid and i_gid. This is better than (1) but still
->> >     not ideal in my mind.
->> >  3. Drop your patch and maintain the current MNT_NODEV behavior.
->> >  4. Add a new s_iflags flag to indicate a super block is from an
->> >     unprivileged mount, and use this in your patch instead of s_user_ns.
->> >
->> > Any preference, or any other ideas?
->> 
->> In general this is only an issue if uids and gids on the filesystem
->> do not map into the user namespace.
->
-> Yes, both capable_wrt_inode_uidgid and inode_owner_or_capable will
-> return true for a privileged user in the current namespace if the ids
-> map into that namespace.
->
->> Therefore the general fix is to limit the logic of checking for
->> capabilities in s_user_ns if we are dealing with INVALID_UID and
->> INVALID_GID.  For proc and kernfs that should never be the case
->> so the problem becomes a non-issue.
->> 
->> Further I would look at limiting that relaxation to just
->> inode_change_ok.  So that we can easily wrap that check per filesystem
->> and deny the relaxation for proc and kernfs.  proc and kernfs already
->> have wrappers for .setattr so denying changes when !uid_vaid and
->> !gid_valid would be a trivial addition, and ensure calamity does
->> not ensure.
->> 
->> Furthmore by limiting any additional to inode_change_ok we keep
->> the work of the additional tests off of the fast paths.
->
-> So then the inode would need to be chowned before a privileged user in a
-> non-init namespace would be capable towards it. That seems workable. It
-> looks like INVALID_UID and INVALID_GID do map into init_user_ns (which
-> seems a bit odd) so real root remains capable towards those indoes.
->
-> That seems okay to me then.
+On 05/03/16 03:35, Brian Norris wrote:
+> Hi Roger,
+> 
+> On Fri, Feb 19, 2016 at 11:15:25PM +0200, Roger Quadros wrote:
+>> The OMAP GPMC module has certain registers dedicated for NAND
+>> access and some NAND bits mixed with other GPMC functionality.
+>>
+>> For the NAND dedicated registers we have the struct gpmc_nand_regs.
+>>
+>> The NAND driver needs to access NAND specific bits from the
+>> following non-dedicated registers
+>> 1) FIFOEVENT and TERMCOUNT from GPMC_IRQENABLE and GPMC_IRQSTATUS
+>> 2) EMPTYWRITEBUFFERSTATUS from GPMC_STATUS
+>>
+>> For accessing these bits we introduce the struct gpmc_nand_ops.
+>>
+>> Rename the gpmc_update_nand_reg() API to gpmc_omap_get_nand_ops()
+>> and make it return the gpmc_nand_ops along with updating the
+>> gpmc_nand_regs. This API will be called by the OMAP NAND driver
+>> to access the necessary bits in GPMC register space.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>> ---
+>>  drivers/memory/omap-gpmc.c | 21 ++++++++++++++++++++
+>>  include/linux/omap-gpmc.h  | 49 ++++++++++++++++++++++++++++++++++++++++++++--
+>>  2 files changed, 68 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+>> index 6515dfc..c2f7320 100644
+>> --- a/drivers/memory/omap-gpmc.c
+>> +++ b/drivers/memory/omap-gpmc.c
+>> @@ -1098,6 +1098,27 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
+>>  	}
+>>  }
+>>  
+>> +static struct gpmc_nand_ops nand_ops;
+>> +
+>> +/**
+>> + * gpmc_omap_get_nand_ops - Get the GPMC NAND interface
+>> + * @regs: the GPMC NAND register map exclusive for NAND use.
+>> + * @cs: GPMC chip select number on which the NAND sits. The
+>> + *      register map returned will be specific to this chip select.
+>> + *
+>> + * Returns NULL on error e.g. invalid cs.
+>> + */
+>> +struct gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *reg, int cs)
+>> +{
+>> +	if (cs >= gpmc_cs_num)
+>> +		return NULL;
+>> +
+>> +	gpmc_update_nand_reg(reg, cs);
+>> +
+>> +	return &nand_ops;
+>> +}
+>> +EXPORT_SYMBOL_GPL(gpmc_omap_get_nand_ops);
+>> +
+>>  int gpmc_get_client_irq(unsigned irq_config)
+>>  {
+>>  	int i;
+>> diff --git a/include/linux/omap-gpmc.h b/include/linux/omap-gpmc.h
+>> index 2dcef1c..7de9f9b 100644
+>> --- a/include/linux/omap-gpmc.h
+>> +++ b/include/linux/omap-gpmc.h
+>> @@ -14,14 +14,59 @@
+>>  #define GPMC_IRQ_FIFOEVENTENABLE	0x01
+>>  #define GPMC_IRQ_COUNT_EVENT		0x02
+>>  
+>> +enum gpmc_nand_irq {
+>> +	GPMC_NAND_IRQ_FIFOEVENT = 0,
+>> +	GPMC_NAND_IRQ_TERMCOUNT,
+>> +};
+>> +
+>> +/**
+>> + * gpmc_nand_ops - Interface between NAND and GPMC
+>> + * @nand_irq_enable: enable the requested GPMC NAND interrupt event.
+>> + * @nand_irq_disable: disable the requested GPMC NAND interrupt event.
+>> + * @nand_irq_clear: clears the GPMC NAND interrupt event status.
+>> + * @nand_irq_status: get the NAND interrupt event status.
+>> + * @nand_write_buffer_empty: get the NAND write buffer empty status.
+>> + */
+>> +struct gpmc_nand_ops {
+>> +	int (*nand_irq_enable)(enum gpmc_nand_irq irq);
+>> +	int (*nand_irq_disable)(enum gpmc_nand_irq irq);
+>> +	void (*nand_irq_clear)(enum gpmc_nand_irq irq);
+>> +	u32 (*nand_irq_status)(void);
+> 
+> ^^ These 4 aren't being used in this revision?
 
-If I was not clear I was suggesting that we allow a sufficiently
-privileged user in the filesysteme's s_user_ns to allow chowning files
-with INVALID_UID and INVALID_GID.
+Right. I'll remove them.
+> 
+>> +	bool (*nand_writebuffer_empty)(void);
+>> +};
+>> +
+>> +struct gpmc_nand_regs;
+>> +
+>> +#if IS_ENABLED(CONFIG_OMAP_GPMC)
+>> +struct gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *regs,
+>> +					     int cs);
+>> +#else
+>> +static inline gpmc_nand_ops *gpmc_omap_get_nand_ops(struct gpmc_nand_regs *regs,
+>> +						    int cs)
+>> +{
+>> +	return NULL;
+>> +}
+>> +#endif /* CONFIG_OMAP_GPMC */
+>> +
+>> +/*--------------------------------*/
+>> +
+>> +/* deprecated APIs */
+>> +#if IS_ENABLED(CONFIG_OMAP_GPMC)
+>> +void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs);
+>> +#else
+>> +static inline void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
+>> +{
+>> +	reg = NULL;
+> 
+> What are you trying to do here? 'reg' is local, so the assignment is
+> pointless.
 
-The global root user would always be able to do that because unless
-capabilities are dropped it is sufficiently privileged in ever user
-namespace.
+Indeed this is pointless. I'll remove this line.
+I'll also add a patch in the end to get rid of this API as there are no more
+users to it.
+> 
+>> +}
+>> +#endif /* CONFIG_OMAP_GPMC */
+> 
 
-Eric
+cheers,
+-roger
