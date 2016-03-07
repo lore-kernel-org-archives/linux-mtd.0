@@ -1,25 +1,31 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1acs0E-00063J-Ef
- for linux-mtd@lists.infradead.org; Mon, 07 Mar 2016 10:04:16 +0000
-Subject: Re: [PATCH v5 13/26] memory: omap-gpmc: Support general purpose input
- for WAITPINs
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
- <1455916548-3441-14-git-send-email-rogerq@ti.com>
- <20160307103440.4b9d7a55@bbrezillon>
-CC: <tony@atomide.com>, <computersforpeace@gmail.com>,
- <devicetree@vger.kernel.org>, <nsekhar@ti.com>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
- <linux-omap@vger.kernel.org>, <dwmw2@infradead.org>, <fcooper@ti.com>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <56DD519A.3070403@ti.com>
-Date: Mon, 7 Mar 2016 12:02:02 +0200
-MIME-Version: 1.0
-In-Reply-To: <20160307103440.4b9d7a55@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Stefan Agner <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+ punnaiah choudary kalluri <punnaia@xilinx.com>,
+ Priit Laes <plaes@plaes.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ bcm-kernel-feedback-list@broadcom.com, linux-api@vger.kernel.org,
+ Harvey Hunt <harvey.hunt@imgtec.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH v4 30/52] mtd: nand: denali: switch to mtd_ooblayout_ops
+Date: Mon,  7 Mar 2016 10:47:20 +0100
+Message-Id: <1457344062-11633-31-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1457344062-11633-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1457344062-11633-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,284 +35,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Implementing the mtd_ooblayout_ops interface is the new way of exposing
+ECC/OOB layout to MTD users.
 
-On 07/03/16 11:34, Boris Brezillon wrote:
-> Hi Roger,
-> 
-> On Fri, 19 Feb 2016 23:15:35 +0200
-> Roger Quadros <rogerq@ti.com> wrote:
-> 
->> OMAPs can have 2 to 4 WAITPINs that can be used as general purpose
->> input if not used for memory wait state insertion.
->>
->> The first user will be the OMAP NAND chip to get the NAND
->> read/busy status using gpiolib.
-> 
-> Just a comment on this approach. Why do you need to exposed native R/B
-> pins as GPIOs? I mean, other NAND controllers are supporting R/B
-> detection using dedicated logic, and they do not exposed those pins a
-> plain GPIOs. Have you considered adding another property (rb-native ?)
-> to deal with this case instead of emulating a GPIO controller?
-> Side note: I added an rb-gpios property in my sunxi-nand DT binding
-> because in some cases, the board design forces us to use a plain GPIO.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/denali.c | 50 +++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 35 insertions(+), 15 deletions(-)
 
-OMAPs can have more than one WAITpins which can be used in multiple ways
-- wait state insertion
-- general purpose input
-- edge detect interrupt
-
-It is not automatically tied to NAND read/busy# mechanism and needs software
-to get the read/busy# state.
-The register to get WAIT pin status is not situated in the NAND controller
-register space but in the parent GPMC controller space.
-
-So we've modelled the WAIT pins as irqchip and gpiochip and users can
-use them as they want.
-
-cheers,
--roger
-
-> 
-> Anyway, I realize I'm quite late to review this, and I don't want to
-> delay even more the inclusion of those patches, so I leave the decision
-> to the MTD and TI maintainers.
-> 
-> Best Regards,
-> 
-> Boris
-> 
->>
->> Signed-off-by: Roger Quadros <rogerq@ti.com>
->> ---
->>  .../bindings/memory-controllers/omap-gpmc.txt      |   3 +
->>  drivers/memory/Kconfig                             |   1 +
->>  drivers/memory/omap-gpmc.c                         | 115 ++++++++++++++++++---
->>  3 files changed, 107 insertions(+), 12 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> index 704be93..8113a52 100644
->> --- a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> +++ b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> @@ -32,6 +32,9 @@ Required properties:
->>  			bootloader) are used for the physical address decoding.
->>  			As this will change in the future, filling correct
->>  			values here is a requirement.
->> + - gpio-controller:	The GPMC driver implements a GPIO controller for the
->> +			GPMC WAIT pins that can be used as general purpose inputs.
->> +			0 maps to GPMC_WAIT0 pin.
->>  
->>  Timing properties for child nodes. All are optional and default to 0.
->>  
->> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
->> index 6f31546..bca24c6 100644
->> --- a/drivers/memory/Kconfig
->> +++ b/drivers/memory/Kconfig
->> @@ -51,6 +51,7 @@ config TI_EMIF
->>  
->>  config OMAP_GPMC
->>  	bool
->> +	select GPIOLIB
->>  	help
->>  	  This driver is for the General Purpose Memory Controller (GPMC)
->>  	  present on Texas Instruments SoCs (e.g. OMAP2+). GPMC allows
->> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
->> index 6c8d85e..f67e5695 100644
->> --- a/drivers/memory/omap-gpmc.c
->> +++ b/drivers/memory/omap-gpmc.c
->> @@ -21,6 +21,7 @@
->>  #include <linux/spinlock.h>
->>  #include <linux/io.h>
->>  #include <linux/module.h>
->> +#include <linux/gpio/driver.h>
->>  #include <linux/interrupt.h>
->>  #include <linux/irqdomain.h>
->>  #include <linux/platform_device.h>
->> @@ -237,6 +238,7 @@ struct gpmc_device {
->>  	struct device *dev;
->>  	int irq;
->>  	struct irq_chip irq_chip;
->> +	struct gpio_chip gpio_chip;
->>  };
->>  
->>  static struct irq_domain *gpmc_irq_domain;
->> @@ -2034,10 +2036,69 @@ err:
->>  	return ret;
->>  }
->>  
->> +static int gpmc_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
->> +{
->> +	return 1;	/* we're input only */
->> +}
->> +
->> +static int gpmc_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
->> +{
->> +	return 0;	/* we're input only */
->> +}
->> +
->> +static int gpmc_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
->> +				      int value)
->> +{
->> +	return -EINVAL;	/* we're input only */
->> +}
->> +
->> +static void gpmc_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
->> +{
->> +}
->> +
->> +static int gpmc_gpio_get(struct gpio_chip *chip, unsigned offset)
->> +{
->> +	u32 reg;
->> +
->> +	offset += 8;
->> +
->> +	reg = gpmc_read_reg(GPMC_STATUS) & BIT(offset);
->> +
->> +	return !!reg;
->> +}
->> +
->> +static int gpmc_gpio_init(struct gpmc_device *gpmc)
->> +{
->> +	int ret;
->> +
->> +	gpmc->gpio_chip.parent = gpmc->dev;
->> +	gpmc->gpio_chip.owner = THIS_MODULE;
->> +	gpmc->gpio_chip.label = DEVICE_NAME;
->> +	gpmc->gpio_chip.ngpio = gpmc_nr_waitpins;
->> +	gpmc->gpio_chip.get_direction = gpmc_gpio_get_direction;
->> +	gpmc->gpio_chip.direction_input = gpmc_gpio_direction_input;
->> +	gpmc->gpio_chip.direction_output = gpmc_gpio_direction_output;
->> +	gpmc->gpio_chip.set = gpmc_gpio_set;
->> +	gpmc->gpio_chip.get = gpmc_gpio_get;
->> +	gpmc->gpio_chip.base = -1;
->> +
->> +	ret = gpiochip_add(&gpmc->gpio_chip);
->> +	if (ret < 0) {
->> +		dev_err(gpmc->dev, "could not register gpio chip: %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static void gpmc_gpio_exit(struct gpmc_device *gpmc)
->> +{
->> +	gpiochip_remove(&gpmc->gpio_chip);
->> +}
->> +
->>  static int gpmc_probe_dt(struct platform_device *pdev)
->>  {
->>  	int ret;
->> -	struct device_node *child;
->>  	const struct of_device_id *of_id =
->>  		of_match_device(gpmc_dt_ids, &pdev->dev);
->>  
->> @@ -2065,6 +2126,14 @@ static int gpmc_probe_dt(struct platform_device *pdev)
->>  		return ret;
->>  	}
->>  
->> +	return 0;
->> +}
->> +
->> +static int gpmc_probe_dt_children(struct platform_device *pdev)
->> +{
->> +	int ret;
->> +	struct device_node *child;
->> +
->>  	for_each_available_child_of_node(pdev->dev.of_node, child) {
->>  
->>  		if (!child->name)
->> @@ -2074,6 +2143,9 @@ static int gpmc_probe_dt(struct platform_device *pdev)
->>  			ret = gpmc_probe_onenand_child(pdev, child);
->>  		else
->>  			ret = gpmc_probe_generic_child(pdev, child);
->> +
->> +		if (ret)
->> +			return ret;
->>  	}
->>  
->>  	return 0;
->> @@ -2083,6 +2155,11 @@ static int gpmc_probe_dt(struct platform_device *pdev)
->>  {
->>  	return 0;
->>  }
->> +
->> +static int gpmc_probe_dt_children(struct platform_device *pdev)
->> +{
->> +	return 0;
->> +}
->>  #endif
->>  
->>  static int gpmc_probe(struct platform_device *pdev)
->> @@ -2129,6 +2206,15 @@ static int gpmc_probe(struct platform_device *pdev)
->>  		return -EINVAL;
->>  	}
->>  
->> +	if (pdev->dev.of_node) {
->> +		rc = gpmc_probe_dt(pdev);
->> +		if (rc)
->> +			return rc;
->> +	} else {
->> +		gpmc_cs_num = GPMC_CS_NUM;
->> +		gpmc_nr_waitpins = GPMC_NR_WAITPINS;
->> +	}
->> +
->>  	pm_runtime_enable(&pdev->dev);
->>  	pm_runtime_get_sync(&pdev->dev);
->>  
->> @@ -2154,29 +2240,33 @@ static int gpmc_probe(struct platform_device *pdev)
->>  		 GPMC_REVISION_MINOR(l));
->>  
->>  	gpmc_mem_init();
->> +	rc = gpmc_gpio_init(gpmc);
->> +	if (rc)
->> +		goto gpio_init_failed;
->>  
->>  	rc = gpmc_setup_irq(gpmc);
->>  	if (rc) {
->>  		dev_err(gpmc->dev, "gpmc_setup_irq failed\n");
->> -		goto fail;
->> +		goto setup_irq_failed;
->>  	}
->>  
->> -	if (!pdev->dev.of_node) {
->> -		gpmc_cs_num	 = GPMC_CS_NUM;
->> -		gpmc_nr_waitpins = GPMC_NR_WAITPINS;
->> -	}
->> -
->> -	rc = gpmc_probe_dt(pdev);
->> +	rc = gpmc_probe_dt_children(pdev);
->>  	if (rc < 0) {
->> -		dev_err(gpmc->dev, "failed to probe DT parameters\n");
->> -		gpmc_free_irq(gpmc);
->> -		goto fail;
->> +		dev_err(gpmc->dev, "failed to probe DT children\n");
->> +		goto dt_children_failed;
->>  	}
->>  
->>  	return 0;
->>  
->> -fail:
->> +dt_children_failed:
->> +	gpmc_free_irq(gpmc);
->> +setup_irq_failed:
->> +	gpmc_gpio_exit(gpmc);
->> +gpio_init_failed:
->> +	gpmc_mem_exit();
->>  	pm_runtime_put_sync(&pdev->dev);
->> +	pm_runtime_disable(&pdev->dev);
->> +
->>  	return rc;
->>  }
->>  
->> @@ -2185,6 +2275,7 @@ static int gpmc_remove(struct platform_device *pdev)
->>  	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
->>  
->>  	gpmc_free_irq(gpmc);
->> +	gpmc_gpio_exit(gpmc);
->>  	gpmc_mem_exit();
->>  	pm_runtime_put_sync(&pdev->dev);
->>  	pm_runtime_disable(&pdev->dev);
-> 
-> 
-> 
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 30bf5f6..0476ae8 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1374,13 +1374,41 @@ static void denali_hw_init(struct denali_nand_info *denali)
+  * correction
+  */
+ #define ECC_8BITS	14
+-static struct nand_ecclayout nand_8bit_oob = {
+-	.eccbytes = 14,
+-};
+-
+ #define ECC_15BITS	26
+-static struct nand_ecclayout nand_15bit_oob = {
+-	.eccbytes = 26,
++
++static int denali_ooblayout_ecc(struct mtd_info *mtd, int section,
++				struct mtd_oob_region *oobregion)
++{
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++	struct nand_chip *chip = mtd_to_nand(mtd);
++
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = denali->bbtskipbytes;
++	oobregion->length = chip->ecc.total;
++
++	return 0;
++}
++
++static int denali_ooblayout_free(struct mtd_info *mtd, int section,
++				 struct mtd_oob_region *oobregion)
++{
++	struct denali_nand_info *denali = mtd_to_denali(mtd);
++	struct nand_chip *chip = mtd_to_nand(mtd);
++
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = chip->ecc.total + denali->bbtskipbytes;
++	oobregion->length = mtd->oobsize - oobregion->offset;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops denali_ooblayout_ops = {
++	.ecc = denali_ooblayout_ecc,
++	.free = denali_ooblayout_free,
+ };
+ 
+ static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
+@@ -1561,7 +1589,6 @@ int denali_init(struct denali_nand_info *denali)
+ 			ECC_SECTOR_SIZE)))) {
+ 		/* if MLC OOB size is large enough, use 15bit ECC*/
+ 		denali->nand.ecc.strength = 15;
+-		denali->nand.ecc.layout = &nand_15bit_oob;
+ 		denali->nand.ecc.bytes = ECC_15BITS;
+ 		iowrite32(15, denali->flash_reg + ECC_CORRECTION);
+ 	} else if (mtd->oobsize < (denali->bbtskipbytes +
+@@ -1571,20 +1598,13 @@ int denali_init(struct denali_nand_info *denali)
+ 		goto failed_req_irq;
+ 	} else {
+ 		denali->nand.ecc.strength = 8;
+-		denali->nand.ecc.layout = &nand_8bit_oob;
+ 		denali->nand.ecc.bytes = ECC_8BITS;
+ 		iowrite32(8, denali->flash_reg + ECC_CORRECTION);
+ 	}
+ 
++	mtd_set_ooblayout(mtd, &denali_ooblayout_ops);
+ 	denali->nand.ecc.bytes *= denali->devnum;
+ 	denali->nand.ecc.strength *= denali->devnum;
+-	denali->nand.ecc.layout->eccbytes *=
+-		mtd->writesize / ECC_SECTOR_SIZE;
+-	denali->nand.ecc.layout->oobfree[0].offset =
+-		denali->bbtskipbytes + denali->nand.ecc.layout->eccbytes;
+-	denali->nand.ecc.layout->oobfree[0].length =
+-		mtd->oobsize - denali->nand.ecc.layout->eccbytes -
+-		denali->bbtskipbytes;
+ 
+ 	/*
+ 	 * Let driver know the total blocks number and how many blocks
+-- 
+2.1.4
