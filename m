@@ -1,16 +1,19 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH 15/16] mtd: nand: sunxi: make use of readl_poll_timeout()
-Date: Mon,  7 Mar 2016 17:21:34 +0100
-Message-Id: <1457367695-26420-6-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1457367695-26420-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1457367513-26069-1-git-send-email-boris.brezillon@free-electrons.com>
- <1457367695-26420-1-git-send-email-boris.brezillon@free-electrons.com>
+Date: Mon, 7 Mar 2016 08:43:57 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: only use __xipram annotation when XIP_KERNEL is set
+Message-ID: <20160307164356.GB9329@atomide.com>
+References: <1453736525-1959191-2-git-send-email-arnd@arndb.de>
+ <5158260.vK2YuWzYIn@wuerfel> <20160305002203.GF55664@google.com>
+ <3185882.WT2d08mtAT@wuerfel>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3185882.WT2d08mtAT@wuerfel>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,75 +23,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace open coded polling loops by readl_poll_timeout() calls.
+* Arnd Bergmann <arnd@arndb.de> [160304 16:34]:
+> On Friday 04 March 2016 16:22:03 Brian Norris wrote:
+> > Hi Arnd,
+> > 
+> > On Sat, Mar 05, 2016 at 01:19:21AM +0100, Arnd Bergmann wrote:
+> > > On Friday 04 March 2016 16:02:25 Brian Norris wrote:
+> > > > On Mon, Jan 25, 2016 at 04:41:50PM +0100, Arnd Bergmann wrote:
+> > > > > When XIP_KERNEL is enabled, some functions are defined in the .data
+> > > > > ELF section because we require them to be in RAM whenever we communicate
+> > > > > with the flash chip. However this causes problems when FTRACE is
+> > > > > enabled and gcc emits calls to __gnu_mcount_nc in the function
+> > > > > prolog:
+> > > > > 
+> > > > > drivers/built-in.o: In function `cfi_chip_setup':
+> > > > > :(.data+0x272fc): relocation truncated to fit: R_ARM_CALL against symbol `__gnu_mcount_nc' defined in .text section in arch/arm/kernel/built-in.o
+> > > > > drivers/built-in.o: In function `cfi_probe_chip':
+> > > > > :(.data+0x27de8): relocation truncated to fit: R_ARM_CALL against symbol `__gnu_mcount_nc' defined in .text section in arch/arm/kernel/built-in.o
+> > > > > /tmp/ccY172rP.s: Assembler messages:
+> > > > > /tmp/ccY172rP.s:70: Warning: ignoring changed section attributes for .data
+> > > > > /tmp/ccY172rP.s: Error: 1 warning, treating warnings as errors
+> > > > > make[5]: *** [drivers/mtd/chips/cfi_probe.o] Error 1
+> > > > > /tmp/ccK4rjeO.s: Assembler messages:
+> > > > > /tmp/ccK4rjeO.s:421: Warning: ignoring changed section attributes for .data
+> > > > > /tmp/ccK4rjeO.s: Error: 1 warning, treating warnings as errors
+> > > > > make[5]: *** [drivers/mtd/chips/cfi_util.o] Error 1
+> > > > > /tmp/ccUvhCYR.s: Assembler messages:
+> > > > > /tmp/ccUvhCYR.s:1895: Warning: ignoring changed section attributes for .data
+> > > > > /tmp/ccUvhCYR.s: Error: 1 warning, treating warnings as errors
+> > > > 
+> > > > Can you provide a sample .config that DOES build correctly with
+> > > > XIP_KERNEL enabled + this patch? My first attempt yields some other
+> > > > failures I don't care to fixup right now...
+> > > > 
+> > > > Anyway, I don't doubt you have a good fix here, so I can probably take
+> > > > it. Any review from others would be welcome though.
+> > > 
+> > > I found the config in the attachment in my logs.
+> > 
+> > Thanks...
+> > 
+> > > To get this config working, I also needed this hunk from my set of
+> > > old unsubmitted patches:
+> > 
+> > ...but, does anyone care about XIP / MTD_XIP then, if the first two
+> > examples we have both have long-standing build issues?
+> > 
+> 
+> Probably not. I just checked the third user (omap1), and it seems that one
+> has been broken since 2009 with 941132606c76 ("OMAP: Remove OMAP_IO_ADDRESS,
+> use OMAP1_IO_ADDRESS and OMAP2_IO_ADDRESS instead"), when Tony replaced
+> the inline omap_readl() with an extern function, thus breaking the
+> implementation of xip_irqpending() that must be inlined.
+> 
+> The other two have apparently been broken since 2011, by other patches
+> that also broke compilation.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/sunxi_nand.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+For omaps, I don't recall anybody working on xip for probably close to
+10 years.
 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 79c90fd..002194b 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -39,7 +39,7 @@
- #include <linux/dmaengine.h>
- #include <linux/gpio.h>
- #include <linux/interrupt.h>
--#include <linux/io.h>
-+#include <linux/iopoll.h>
- 
- #define NFC_REG_CTL		0x0000
- #define NFC_REG_ST		0x0004
-@@ -323,33 +323,33 @@ static int sunxi_nfc_wait_int(struct sunxi_nfc *nfc, u32 flags,
- 
- static int sunxi_nfc_wait_cmd_fifo_empty(struct sunxi_nfc *nfc)
- {
--	unsigned long timeout = jiffies +
--				msecs_to_jiffies(NFC_DEFAULT_TIMEOUT_MS);
-+	u32 status;
-+	int ret;
- 
--	do {
--		if (!(readl(nfc->regs + NFC_REG_ST) & NFC_CMD_FIFO_STATUS))
--			return 0;
--	} while (time_before(jiffies, timeout));
-+	ret = readl_poll_timeout(nfc->regs + NFC_REG_ST, status,
-+				 !(status & NFC_CMD_FIFO_STATUS), 1,
-+				 NFC_DEFAULT_TIMEOUT_MS * 1000);
-+	if (ret)
-+		dev_err(nfc->dev, "wait for empty cmd FIFO timedout\n");
- 
--	dev_err(nfc->dev, "wait for empty cmd FIFO timedout\n");
--	return -ETIMEDOUT;
-+	return ret;
- }
- 
- static int sunxi_nfc_rst(struct sunxi_nfc *nfc)
- {
--	unsigned long timeout = jiffies +
--				msecs_to_jiffies(NFC_DEFAULT_TIMEOUT_MS);
-+	u32 ctl;
-+	int ret;
- 
- 	writel(0, nfc->regs + NFC_REG_ECC_CTL);
- 	writel(NFC_RESET, nfc->regs + NFC_REG_CTL);
- 
--	do {
--		if (!(readl(nfc->regs + NFC_REG_CTL) & NFC_RESET))
--			return 0;
--	} while (time_before(jiffies, timeout));
-+	ret = readl_poll_timeout(nfc->regs + NFC_REG_CTL, ctl,
-+				 !(ctl & NFC_RESET), 1,
-+				 NFC_DEFAULT_TIMEOUT_MS * 1000);
-+	if (ret)
-+		dev_err(nfc->dev, "wait for NAND controller reset timedout\n");
- 
--	dev_err(nfc->dev, "wait for NAND controller reset timedout\n");
--	return -ETIMEDOUT;
-+	return ret;
- }
- 
- static int sunxi_nfc_dev_ready(struct mtd_info *mtd)
--- 
-2.1.4
+Regards,
+
+Tony
