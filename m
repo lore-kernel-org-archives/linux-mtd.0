@@ -1,31 +1,23 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Stefan Agner <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
- punnaiah choudary kalluri <punnaia@xilinx.com>,
- Priit Laes <plaes@plaes.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, linux-api@vger.kernel.org,
- Harvey Hunt <harvey.hunt@imgtec.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 23/52] mtd: nand: sharpsl: switch to mtd_ooblayout_ops
-Date: Mon,  7 Mar 2016 10:47:13 +0100
-Message-Id: <1457344062-11633-24-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1457344062-11633-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1457344062-11633-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by casper.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1acsT1-0007Cu-2Q
+ for linux-mtd@lists.infradead.org; Mon, 07 Mar 2016 10:32:47 +0000
+Subject: [PATCH v6 10/26] mtd: nand: omap: Update DT binding documentation
+To: <tony@atomide.com>, <computersforpeace@gmail.com>
+References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+ <1455916548-3441-11-git-send-email-rogerq@ti.com>
+CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <javier@dowhile0.org>, <fcooper@ti.com>, <nsekhar@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <rogerq@ti.com>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <56DD58AF.4090404@ti.com>
+Date: Mon, 7 Mar 2016 12:32:15 +0200
+MIME-Version: 1.0
+In-Reply-To: <1455916548-3441-11-git-send-email-rogerq@ti.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,124 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Implementing the mtd_ooblayout_ops interface is the new way of exposing
-ECC/OOB layout to MTD users.
+Add compatible id and interrupts. The NAND interrupts are
+provided by the GPMC controller node.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/mach-pxa/spitz.c   | 55 ++++++++++++++++++++++++++++++++++++---------
- drivers/mtd/nand/sharpsl.c  |  2 +-
- include/linux/mtd/sharpsl.h |  2 +-
- 3 files changed, 47 insertions(+), 12 deletions(-)
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index 825f903..165a8db 100644
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -763,14 +763,49 @@ static struct nand_bbt_descr spitz_nand_bbt = {
- 	.pattern	= scan_ff_pattern
- };
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+index fb733c4..ff3215d2 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+@@ -13,7 +13,11 @@ Documentation/devicetree/bindings/mtd/nand.txt
  
--static struct nand_ecclayout akita_oobinfo = {
--	.oobfree	= { {0x08, 0x09} },
--	.eccbytes	= 24,
--	.eccpos		= {
--			0x05, 0x01, 0x02, 0x03, 0x06, 0x07, 0x15, 0x11,
--			0x12, 0x13, 0x16, 0x17, 0x25, 0x21, 0x22, 0x23,
--			0x26, 0x27, 0x35, 0x31, 0x32, 0x33, 0x36, 0x37,
--	},
-+static int akita_ooblayout_ecc(struct mtd_info *mtd, int section,
-+			       struct mtd_oob_region *oobregion)
-+{
-+	if (section > 12)
-+		return -ERANGE;
-+
-+	switch (section % 3) {
-+	case 0:
-+		oobregion->offset = 5;
-+		oobregion->length = 1;
-+		break;
-+
-+	case 1:
-+		oobregion->offset = 1;
-+		oobregion->length = 3;
-+		break;
-+
-+	case 2:
-+		oobregion->offset = 6;
-+		oobregion->length = 2;
-+		break;
-+	}
-+
-+	oobregion->offset += (section / 3) * 0x10;
-+
-+	return 0;
-+}
-+
-+static int akita_ooblayout_free(struct mtd_info *mtd, int section,
-+				struct mtd_oob_region *oobregion)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	oobregion->offset = 8;
-+	oobregion->length = 9;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops akita_ooblayout_ops = {
-+	.ecc = akita_ooblayout_ecc,
-+	.free = akita_ooblayout_free,
- };
+ Required properties:
  
- static struct sharpsl_nand_platform_data spitz_nand_pdata = {
-@@ -804,11 +839,11 @@ static void __init spitz_nand_init(void)
- 	} else if (machine_is_akita()) {
- 		spitz_nand_partitions[1].size = 58 * 1024 * 1024;
- 		spitz_nand_bbt.len = 1;
--		spitz_nand_pdata.ecc_layout = &akita_oobinfo;
-+		spitz_nand_pdata.ecc_layout = &akita_ooblayout_ops;
- 	} else if (machine_is_borzoi()) {
- 		spitz_nand_partitions[1].size = 32 * 1024 * 1024;
- 		spitz_nand_bbt.len = 1;
--		spitz_nand_pdata.ecc_layout = &akita_oobinfo;
-+		spitz_nand_pdata.ecc_layout = &akita_ooblayout_ops;
- 	}
+- - reg:		The CS line the peripheral is connected to
++ - compatible:	"ti,omap2-nand"
++ - reg:		range id (CS number), base offset and length of the
++		NAND I/O space
++ - interrupt-parent: must point to gpmc node
++ - interrupts:	Two interrupt specifiers, one for fifoevent, one for termcount.
  
- 	platform_device_register(&spitz_nand_device);
-diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
-index b7d1b55..064ca17 100644
---- a/drivers/mtd/nand/sharpsl.c
-+++ b/drivers/mtd/nand/sharpsl.c
-@@ -148,6 +148,7 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
- 	/* Link the private data with the MTD structure */
- 	mtd = nand_to_mtd(this);
- 	mtd->dev.parent = &pdev->dev;
-+	mtd_set_ooblayout(mtd, data->ecc_layout);
+ Optional properties:
  
- 	platform_set_drvdata(pdev, sharpsl);
+@@ -55,17 +59,22 @@ Example for an AM33xx board:
+ 	gpmc: gpmc@50000000 {
+ 		compatible = "ti,am3352-gpmc";
+ 		ti,hwmods = "gpmc";
+-		reg = <0x50000000 0x1000000>;
++		reg = <0x50000000 0x36c>;
+ 		interrupts = <100>;
+ 		gpmc,num-cs = <8>;
+ 		gpmc,num-waitpins = <2>;
+ 		#address-cells = <2>;
+ 		#size-cells = <1>;
+-		ranges = <0 0 0x08000000 0x2000>;	/* CS0: NAND */
++		ranges = <0 0 0x08000000 0x1000000>;	/* CS0 space, 16MB */
+ 		elm_id = <&elm>;
++		interrupt-controller;
++		#interrupt-cells = <2>;
  
-@@ -170,7 +171,6 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
- 	this->ecc.bytes = 3;
- 	this->ecc.strength = 1;
- 	this->badblock_pattern = data->badblock_pattern;
--	this->ecc.layout = data->ecc_layout;
- 	this->ecc.hwctl = sharpsl_nand_enable_hwecc;
- 	this->ecc.calculate = sharpsl_nand_calculate_ecc;
- 	this->ecc.correct = nand_correct_data;
-diff --git a/include/linux/mtd/sharpsl.h b/include/linux/mtd/sharpsl.h
-index 25f4d2a..65e91d0 100644
---- a/include/linux/mtd/sharpsl.h
-+++ b/include/linux/mtd/sharpsl.h
-@@ -14,7 +14,7 @@
- 
- struct sharpsl_nand_platform_data {
- 	struct nand_bbt_descr	*badblock_pattern;
--	struct nand_ecclayout	*ecc_layout;
-+	const struct mtd_ooblayout_ops *ecc_layout;
- 	struct mtd_partition	*partitions;
- 	unsigned int		nr_partitions;
- };
+ 		nand@0,0 {
+-			reg = <0 0 0>; /* CS0, offset 0 */
++			compatible = "ti,omap2-nand";
++			reg = <0 0 4>;		/* CS0, offset 0, NAND I/O window 4 */
++			interrupt-parent = <&gpmc>;
++			interrupts = <0 IRQ_TYPE_NONE>, <1 IRQ_TYPE NONE>;
+ 			nand-bus-width = <16>;
+ 			ti,nand-ecc-opt = "bch8";
+ 			ti,nand-xfer-type = "polled";
 -- 
-2.1.4
+2.5.0
