@@ -1,31 +1,25 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Stefan Agner <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
- punnaiah choudary kalluri <punnaia@xilinx.com>,
- Priit Laes <plaes@plaes.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com, linux-api@vger.kernel.org,
- Harvey Hunt <harvey.hunt@imgtec.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [PATCH v4 52/52] mtd: kill the nand_ecclayout struct
-Date: Mon,  7 Mar 2016 10:47:42 +0100
-Message-Id: <1457344062-11633-53-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1457344062-11633-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1457344062-11633-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1acs0E-00063J-Ef
+ for linux-mtd@lists.infradead.org; Mon, 07 Mar 2016 10:04:16 +0000
+Subject: Re: [PATCH v5 13/26] memory: omap-gpmc: Support general purpose input
+ for WAITPINs
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+ <1455916548-3441-14-git-send-email-rogerq@ti.com>
+ <20160307103440.4b9d7a55@bbrezillon>
+CC: <tony@atomide.com>, <computersforpeace@gmail.com>,
+ <devicetree@vger.kernel.org>, <nsekhar@ti.com>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
+ <linux-omap@vger.kernel.org>, <dwmw2@infradead.org>, <fcooper@ti.com>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <56DD519A.3070403@ti.com>
+Date: Mon, 7 Mar 2016 12:02:02 +0200
+MIME-Version: 1.0
+In-Reply-To: <20160307103440.4b9d7a55@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,226 +29,284 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that all MTD drivers have moved to the mtd_ooblayout_ops model we can
-safely remove the struct nand_ecclayout definition, and all the remaining
-places where it was still used.
+Hi Boris,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/mtdchar.c      |  12 ++---
- drivers/mtd/mtdcore.c      | 117 ---------------------------------------------
- include/linux/mtd/mtd.h    |  20 --------
- include/uapi/mtd/mtd-abi.h |   2 +-
- 4 files changed, 7 insertions(+), 144 deletions(-)
+On 07/03/16 11:34, Boris Brezillon wrote:
+> Hi Roger,
+> 
+> On Fri, 19 Feb 2016 23:15:35 +0200
+> Roger Quadros <rogerq@ti.com> wrote:
+> 
+>> OMAPs can have 2 to 4 WAITPINs that can be used as general purpose
+>> input if not used for memory wait state insertion.
+>>
+>> The first user will be the OMAP NAND chip to get the NAND
+>> read/busy status using gpiolib.
+> 
+> Just a comment on this approach. Why do you need to exposed native R/B
+> pins as GPIOs? I mean, other NAND controllers are supporting R/B
+> detection using dedicated logic, and they do not exposed those pins a
+> plain GPIOs. Have you considered adding another property (rb-native ?)
+> to deal with this case instead of emulating a GPIO controller?
+> Side note: I added an rb-gpios property in my sunxi-nand DT binding
+> because in some cases, the board design forces us to use a plain GPIO.
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 3fad2c7..2a47a3f 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -465,12 +465,12 @@ static int mtdchar_readoob(struct file *file, struct mtd_info *mtd,
- }
- 
- /*
-- * Copies (and truncates, if necessary) data from the larger struct,
-- * nand_ecclayout, to the smaller, deprecated layout struct,
-- * nand_ecclayout_user. This is necessary only to support the deprecated
-- * API ioctl ECCGETLAYOUT while allowing all new functionality to use
-- * nand_ecclayout flexibly (i.e. the struct may change size in new
-- * releases without requiring major rewrites).
-+ * Copies (and truncates, if necessary) OOB layout information to the
-+ * deprecated layout struct, nand_ecclayout_user. This is necessary only to
-+ * support the deprecated API ioctl ECCGETLAYOUT while allowing all new
-+ * functionality to use mtd_ooblayout_ops flexibly (i.e. mtd_ooblayout_ops
-+ * can describe any kind of OOB layout with almost zero overhead from a
-+ * memory usage point of view).
-  */
- static int shrink_ecclayout(struct mtd_info *mtd,
- 			    struct nand_ecclayout_user *to)
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index bebca51..cbfa5ad 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1357,123 +1357,6 @@ int mtd_ooblayout_count_eccbytes(struct mtd_info *mtd)
- }
- EXPORT_SYMBOL_GPL(mtd_ooblayout_count_eccbytes);
- 
--/**
-- * mtd_ecclayout_ecc - Default ooblayout_ecc iterator implementation
-- * @mtd: MTD device structure
-- * @section: ECC section. Depending on the layout you may have all the ECC
-- *	     bytes stored in a single contiguous section, or one section
-- *	     per ECC chunk (and sometime several sections for a single ECC
-- *	     ECC chunk)
-- * @oobecc: OOB region struct filled with the appropriate ECC position
-- *	    information
-- *
-- * This function is just a wrapper around the mtd->ecclayout field and is
-- * here to ease the transition to the mtd_ooblayout_ops approach.
-- * All it does is convert the layout->eccpos information into proper oob
-- * region definitions.
-- *
-- * Returns zero on success, a negative error code otherwise.
-- */
--static int mtd_ecclayout_ecc(struct mtd_info *mtd, int section,
--			     struct mtd_oob_region *oobecc)
--{
--	int eccbyte = 0, cursection = 0, length = 0, eccpos = 0;
--
--	if (!mtd->ecclayout)
--		return -ENOTSUPP;
--
--	/*
--	 * This logic allows us to reuse the ->ecclayout information and
--	 * expose them as ECC regions (as done for the OOB free regions).
--	 *
--	 * TODO: this should be dropped as soon as we get rid of the
--	 * ->ecclayout field.
--	 */
--	for (eccbyte = 0; eccbyte < mtd->ecclayout->eccbytes; eccbyte++) {
--		eccpos = mtd->ecclayout->eccpos[eccbyte];
--
--		if (eccbyte < mtd->ecclayout->eccbytes - 1) {
--			int neccpos = mtd->ecclayout->eccpos[eccbyte + 1];
--
--			if (eccpos + 1 == neccpos) {
--				length++;
--				continue;
--			}
--		}
--
--		if (section == cursection)
--			break;
--
--		length = 0;
--		cursection++;
--	}
--
--	if (cursection != section || eccbyte >= mtd->ecclayout->eccbytes)
--		return -ERANGE;
--
--	oobecc->length = length + 1;
--	oobecc->offset = eccpos - length;
--
--	return 0;
--}
--
--/**
-- * mtd_ecclayout_ecc - Default ooblayout_free iterator implementation
-- * @mtd: MTD device structure
-- * @section: Free section. Depending on the layout you may have all the free
-- *	     bytes stored in a single contiguous section, or one section
-- *	     per ECC chunk (and sometime several sections for a single ECC
-- *	     ECC chunk)
-- * @oobfree: OOB region struct filled with the appropriate free position
-- *	     information
-- *
-- * This function is just a wrapper around the mtd->ecclayout field and is
-- * here to ease the transition to the mtd_ooblayout_ops approach.
-- * All it does is convert the layout->oobfree information into proper oob
-- * region definitions.
-- *
-- * Returns zero on success, a negative error code otherwise.
-- */
--static int mtd_ecclayout_free(struct mtd_info *mtd, int section,
--			      struct mtd_oob_region *oobfree)
--{
--	struct nand_ecclayout *layout = mtd->ecclayout;
--
--	if (!layout)
--		return -ENOTSUPP;
--
--	if (section >= MTD_MAX_OOBFREE_ENTRIES_LARGE ||
--	    !layout->oobfree[section].length)
--		return -ERANGE;
--
--	oobfree->offset = layout->oobfree[section].offset;
--	oobfree->length = layout->oobfree[section].length;
--
--	return 0;
--}
--
--static const struct mtd_ooblayout_ops mtd_ecclayout_wrapper_ops = {
--	.ecc = mtd_ecclayout_ecc,
--	.free = mtd_ecclayout_free,
--};
--
--/**
-- * mtd_set_ecclayout - Attach an ecclayout to an MTD device
-- * @mtd: MTD device structure
-- * @ecclayout: The ecclayout to attach to the device
-- *
-- * Returns zero on success, a negative error code otherwise.
-- */
--void mtd_set_ecclayout(struct mtd_info *mtd, struct nand_ecclayout *ecclayout)
--{
--	if (!mtd || !ecclayout)
--		return;
--
--	mtd->ecclayout = ecclayout;
--	mtd_set_ooblayout(mtd, &mtd_ecclayout_wrapper_ops);
--}
--EXPORT_SYMBOL_GPL(mtd_set_ecclayout);
--
- /*
-  * Method to access the protection register area, present in some flash
-  * devices. The user data is one time programmable but the factory data is read
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index a38fe9a..df8c116 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -96,21 +96,6 @@ struct mtd_oob_ops {
- 
- #define MTD_MAX_OOBFREE_ENTRIES_LARGE	32
- #define MTD_MAX_ECCPOS_ENTRIES_LARGE	640
--/*
-- * Internal ECC layout control structure. For historical reasons, there is a
-- * similar, smaller struct nand_ecclayout_user (in mtd-abi.h) that is retained
-- * for export to user-space via the ECCGETLAYOUT ioctl.
-- * nand_ecclayout should be expandable in the future simply by the above macros.
-- *
-- * This structure is now deprecated, you should use struct nand_ecclayout_ops
-- * to describe your OOB layout.
-- */
--struct nand_ecclayout {
--	__u32 eccbytes;
--	__u32 eccpos[MTD_MAX_ECCPOS_ENTRIES_LARGE];
--	struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES_LARGE];
--};
--
- /**
-  * struct mtd_oob_region - oob region definition
-  * @offset: region offset
-@@ -200,9 +185,6 @@ struct mtd_info {
- 	const char *name;
- 	int index;
- 
--	/* [Deprecated] ECC layout structure pointer - read only! */
--	struct nand_ecclayout *ecclayout;
--
- 	/* OOB layout description */
- 	const struct mtd_ooblayout_ops *ooblayout;
- 
-@@ -308,8 +290,6 @@ int mtd_ooblayout_set_databytes(struct mtd_info *mtd, const u8 *databuf,
- int mtd_ooblayout_count_freebytes(struct mtd_info *mtd);
- int mtd_ooblayout_count_eccbytes(struct mtd_info *mtd);
- 
--void mtd_set_ecclayout(struct mtd_info *mtd, struct nand_ecclayout *ecclayout);
--
- static inline void mtd_set_ooblayout(struct mtd_info *mtd,
- 				     const struct mtd_ooblayout_ops *ooblayout)
- {
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index 763bb69..0ec1da2 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -228,7 +228,7 @@ struct nand_oobfree {
-  * complete set of ECC information. The ioctl truncates the larger internal
-  * structure to retain binary compatibility with the static declaration of the
-  * ioctl. Note that the "MTD_MAX_..._ENTRIES" macros represent the max size of
-- * the user struct, not the MAX size of the internal struct nand_ecclayout.
-+ * the user struct, not the MAX size of the internal OOB layout representation.
-  */
- struct nand_ecclayout_user {
- 	__u32 eccbytes;
--- 
-2.1.4
+OMAPs can have more than one WAITpins which can be used in multiple ways
+- wait state insertion
+- general purpose input
+- edge detect interrupt
+
+It is not automatically tied to NAND read/busy# mechanism and needs software
+to get the read/busy# state.
+The register to get WAIT pin status is not situated in the NAND controller
+register space but in the parent GPMC controller space.
+
+So we've modelled the WAIT pins as irqchip and gpiochip and users can
+use them as they want.
+
+cheers,
+-roger
+
+> 
+> Anyway, I realize I'm quite late to review this, and I don't want to
+> delay even more the inclusion of those patches, so I leave the decision
+> to the MTD and TI maintainers.
+> 
+> Best Regards,
+> 
+> Boris
+> 
+>>
+>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>> ---
+>>  .../bindings/memory-controllers/omap-gpmc.txt      |   3 +
+>>  drivers/memory/Kconfig                             |   1 +
+>>  drivers/memory/omap-gpmc.c                         | 115 ++++++++++++++++++---
+>>  3 files changed, 107 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>> index 704be93..8113a52 100644
+>> --- a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>> +++ b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>> @@ -32,6 +32,9 @@ Required properties:
+>>  			bootloader) are used for the physical address decoding.
+>>  			As this will change in the future, filling correct
+>>  			values here is a requirement.
+>> + - gpio-controller:	The GPMC driver implements a GPIO controller for the
+>> +			GPMC WAIT pins that can be used as general purpose inputs.
+>> +			0 maps to GPMC_WAIT0 pin.
+>>  
+>>  Timing properties for child nodes. All are optional and default to 0.
+>>  
+>> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+>> index 6f31546..bca24c6 100644
+>> --- a/drivers/memory/Kconfig
+>> +++ b/drivers/memory/Kconfig
+>> @@ -51,6 +51,7 @@ config TI_EMIF
+>>  
+>>  config OMAP_GPMC
+>>  	bool
+>> +	select GPIOLIB
+>>  	help
+>>  	  This driver is for the General Purpose Memory Controller (GPMC)
+>>  	  present on Texas Instruments SoCs (e.g. OMAP2+). GPMC allows
+>> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+>> index 6c8d85e..f67e5695 100644
+>> --- a/drivers/memory/omap-gpmc.c
+>> +++ b/drivers/memory/omap-gpmc.c
+>> @@ -21,6 +21,7 @@
+>>  #include <linux/spinlock.h>
+>>  #include <linux/io.h>
+>>  #include <linux/module.h>
+>> +#include <linux/gpio/driver.h>
+>>  #include <linux/interrupt.h>
+>>  #include <linux/irqdomain.h>
+>>  #include <linux/platform_device.h>
+>> @@ -237,6 +238,7 @@ struct gpmc_device {
+>>  	struct device *dev;
+>>  	int irq;
+>>  	struct irq_chip irq_chip;
+>> +	struct gpio_chip gpio_chip;
+>>  };
+>>  
+>>  static struct irq_domain *gpmc_irq_domain;
+>> @@ -2034,10 +2036,69 @@ err:
+>>  	return ret;
+>>  }
+>>  
+>> +static int gpmc_gpio_get_direction(struct gpio_chip *chip, unsigned offset)
+>> +{
+>> +	return 1;	/* we're input only */
+>> +}
+>> +
+>> +static int gpmc_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
+>> +{
+>> +	return 0;	/* we're input only */
+>> +}
+>> +
+>> +static int gpmc_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
+>> +				      int value)
+>> +{
+>> +	return -EINVAL;	/* we're input only */
+>> +}
+>> +
+>> +static void gpmc_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+>> +{
+>> +}
+>> +
+>> +static int gpmc_gpio_get(struct gpio_chip *chip, unsigned offset)
+>> +{
+>> +	u32 reg;
+>> +
+>> +	offset += 8;
+>> +
+>> +	reg = gpmc_read_reg(GPMC_STATUS) & BIT(offset);
+>> +
+>> +	return !!reg;
+>> +}
+>> +
+>> +static int gpmc_gpio_init(struct gpmc_device *gpmc)
+>> +{
+>> +	int ret;
+>> +
+>> +	gpmc->gpio_chip.parent = gpmc->dev;
+>> +	gpmc->gpio_chip.owner = THIS_MODULE;
+>> +	gpmc->gpio_chip.label = DEVICE_NAME;
+>> +	gpmc->gpio_chip.ngpio = gpmc_nr_waitpins;
+>> +	gpmc->gpio_chip.get_direction = gpmc_gpio_get_direction;
+>> +	gpmc->gpio_chip.direction_input = gpmc_gpio_direction_input;
+>> +	gpmc->gpio_chip.direction_output = gpmc_gpio_direction_output;
+>> +	gpmc->gpio_chip.set = gpmc_gpio_set;
+>> +	gpmc->gpio_chip.get = gpmc_gpio_get;
+>> +	gpmc->gpio_chip.base = -1;
+>> +
+>> +	ret = gpiochip_add(&gpmc->gpio_chip);
+>> +	if (ret < 0) {
+>> +		dev_err(gpmc->dev, "could not register gpio chip: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void gpmc_gpio_exit(struct gpmc_device *gpmc)
+>> +{
+>> +	gpiochip_remove(&gpmc->gpio_chip);
+>> +}
+>> +
+>>  static int gpmc_probe_dt(struct platform_device *pdev)
+>>  {
+>>  	int ret;
+>> -	struct device_node *child;
+>>  	const struct of_device_id *of_id =
+>>  		of_match_device(gpmc_dt_ids, &pdev->dev);
+>>  
+>> @@ -2065,6 +2126,14 @@ static int gpmc_probe_dt(struct platform_device *pdev)
+>>  		return ret;
+>>  	}
+>>  
+>> +	return 0;
+>> +}
+>> +
+>> +static int gpmc_probe_dt_children(struct platform_device *pdev)
+>> +{
+>> +	int ret;
+>> +	struct device_node *child;
+>> +
+>>  	for_each_available_child_of_node(pdev->dev.of_node, child) {
+>>  
+>>  		if (!child->name)
+>> @@ -2074,6 +2143,9 @@ static int gpmc_probe_dt(struct platform_device *pdev)
+>>  			ret = gpmc_probe_onenand_child(pdev, child);
+>>  		else
+>>  			ret = gpmc_probe_generic_child(pdev, child);
+>> +
+>> +		if (ret)
+>> +			return ret;
+>>  	}
+>>  
+>>  	return 0;
+>> @@ -2083,6 +2155,11 @@ static int gpmc_probe_dt(struct platform_device *pdev)
+>>  {
+>>  	return 0;
+>>  }
+>> +
+>> +static int gpmc_probe_dt_children(struct platform_device *pdev)
+>> +{
+>> +	return 0;
+>> +}
+>>  #endif
+>>  
+>>  static int gpmc_probe(struct platform_device *pdev)
+>> @@ -2129,6 +2206,15 @@ static int gpmc_probe(struct platform_device *pdev)
+>>  		return -EINVAL;
+>>  	}
+>>  
+>> +	if (pdev->dev.of_node) {
+>> +		rc = gpmc_probe_dt(pdev);
+>> +		if (rc)
+>> +			return rc;
+>> +	} else {
+>> +		gpmc_cs_num = GPMC_CS_NUM;
+>> +		gpmc_nr_waitpins = GPMC_NR_WAITPINS;
+>> +	}
+>> +
+>>  	pm_runtime_enable(&pdev->dev);
+>>  	pm_runtime_get_sync(&pdev->dev);
+>>  
+>> @@ -2154,29 +2240,33 @@ static int gpmc_probe(struct platform_device *pdev)
+>>  		 GPMC_REVISION_MINOR(l));
+>>  
+>>  	gpmc_mem_init();
+>> +	rc = gpmc_gpio_init(gpmc);
+>> +	if (rc)
+>> +		goto gpio_init_failed;
+>>  
+>>  	rc = gpmc_setup_irq(gpmc);
+>>  	if (rc) {
+>>  		dev_err(gpmc->dev, "gpmc_setup_irq failed\n");
+>> -		goto fail;
+>> +		goto setup_irq_failed;
+>>  	}
+>>  
+>> -	if (!pdev->dev.of_node) {
+>> -		gpmc_cs_num	 = GPMC_CS_NUM;
+>> -		gpmc_nr_waitpins = GPMC_NR_WAITPINS;
+>> -	}
+>> -
+>> -	rc = gpmc_probe_dt(pdev);
+>> +	rc = gpmc_probe_dt_children(pdev);
+>>  	if (rc < 0) {
+>> -		dev_err(gpmc->dev, "failed to probe DT parameters\n");
+>> -		gpmc_free_irq(gpmc);
+>> -		goto fail;
+>> +		dev_err(gpmc->dev, "failed to probe DT children\n");
+>> +		goto dt_children_failed;
+>>  	}
+>>  
+>>  	return 0;
+>>  
+>> -fail:
+>> +dt_children_failed:
+>> +	gpmc_free_irq(gpmc);
+>> +setup_irq_failed:
+>> +	gpmc_gpio_exit(gpmc);
+>> +gpio_init_failed:
+>> +	gpmc_mem_exit();
+>>  	pm_runtime_put_sync(&pdev->dev);
+>> +	pm_runtime_disable(&pdev->dev);
+>> +
+>>  	return rc;
+>>  }
+>>  
+>> @@ -2185,6 +2275,7 @@ static int gpmc_remove(struct platform_device *pdev)
+>>  	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
+>>  
+>>  	gpmc_free_irq(gpmc);
+>> +	gpmc_gpio_exit(gpmc);
+>>  	gpmc_mem_exit();
+>>  	pm_runtime_put_sync(&pdev->dev);
+>>  	pm_runtime_disable(&pdev->dev);
+> 
+> 
+> 
