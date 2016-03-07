@@ -1,19 +1,32 @@
-Date: Mon, 7 Mar 2016 08:43:57 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: only use __xipram annotation when XIP_KERNEL is set
-Message-ID: <20160307164356.GB9329@atomide.com>
-References: <1453736525-1959191-2-git-send-email-arnd@arndb.de>
- <5158260.vK2YuWzYIn@wuerfel> <20160305002203.GF55664@google.com>
- <3185882.WT2d08mtAT@wuerfel>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3185882.WT2d08mtAT@wuerfel>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Mon, 07 Mar 2016 10:04:36 -0800
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Daniel Mack
+ <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert
+ Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>, Krzysztof
+ Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>,
+ linux-mips@linux-mips.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-sunxi@googlegroups.com, Kyungmin Park <kyungmin.park@samsung.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
+ linux-kernel@vger.kernel.org, punnaiah choudary kalluri
+ <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
+ linux-api@vger.kernel.org, Harvey Hunt <harvey.hunt@imgtec.com>
+Subject: Re: [PATCH v4 48/52] mtd: nand: vf610: switch to mtd_ooblayout_ops
+In-Reply-To: <1457344062-11633-49-git-send-email-boris.brezillon@free-electrons.com>
+References: <1457344062-11633-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1457344062-11633-49-git-send-email-boris.brezillon@free-electrons.com>
+Message-ID: <73e28b049f14566167c1b6cd3c329099@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,65 +36,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Arnd Bergmann <arnd@arndb.de> [160304 16:34]:
-> On Friday 04 March 2016 16:22:03 Brian Norris wrote:
-> > Hi Arnd,
-> > 
-> > On Sat, Mar 05, 2016 at 01:19:21AM +0100, Arnd Bergmann wrote:
-> > > On Friday 04 March 2016 16:02:25 Brian Norris wrote:
-> > > > On Mon, Jan 25, 2016 at 04:41:50PM +0100, Arnd Bergmann wrote:
-> > > > > When XIP_KERNEL is enabled, some functions are defined in the .data
-> > > > > ELF section because we require them to be in RAM whenever we communicate
-> > > > > with the flash chip. However this causes problems when FTRACE is
-> > > > > enabled and gcc emits calls to __gnu_mcount_nc in the function
-> > > > > prolog:
-> > > > > 
-> > > > > drivers/built-in.o: In function `cfi_chip_setup':
-> > > > > :(.data+0x272fc): relocation truncated to fit: R_ARM_CALL against symbol `__gnu_mcount_nc' defined in .text section in arch/arm/kernel/built-in.o
-> > > > > drivers/built-in.o: In function `cfi_probe_chip':
-> > > > > :(.data+0x27de8): relocation truncated to fit: R_ARM_CALL against symbol `__gnu_mcount_nc' defined in .text section in arch/arm/kernel/built-in.o
-> > > > > /tmp/ccY172rP.s: Assembler messages:
-> > > > > /tmp/ccY172rP.s:70: Warning: ignoring changed section attributes for .data
-> > > > > /tmp/ccY172rP.s: Error: 1 warning, treating warnings as errors
-> > > > > make[5]: *** [drivers/mtd/chips/cfi_probe.o] Error 1
-> > > > > /tmp/ccK4rjeO.s: Assembler messages:
-> > > > > /tmp/ccK4rjeO.s:421: Warning: ignoring changed section attributes for .data
-> > > > > /tmp/ccK4rjeO.s: Error: 1 warning, treating warnings as errors
-> > > > > make[5]: *** [drivers/mtd/chips/cfi_util.o] Error 1
-> > > > > /tmp/ccUvhCYR.s: Assembler messages:
-> > > > > /tmp/ccUvhCYR.s:1895: Warning: ignoring changed section attributes for .data
-> > > > > /tmp/ccUvhCYR.s: Error: 1 warning, treating warnings as errors
-> > > > 
-> > > > Can you provide a sample .config that DOES build correctly with
-> > > > XIP_KERNEL enabled + this patch? My first attempt yields some other
-> > > > failures I don't care to fixup right now...
-> > > > 
-> > > > Anyway, I don't doubt you have a good fix here, so I can probably take
-> > > > it. Any review from others would be welcome though.
-> > > 
-> > > I found the config in the attachment in my logs.
-> > 
-> > Thanks...
-> > 
-> > > To get this config working, I also needed this hunk from my set of
-> > > old unsubmitted patches:
-> > 
-> > ...but, does anyone care about XIP / MTD_XIP then, if the first two
-> > examples we have both have long-standing build issues?
-> > 
+On 2016-03-07 01:47, Boris Brezillon wrote:
+> Implementing the mtd_ooblayout_ops interface is the new way of exposing
+> ECC/OOB layout to MTD users.
+
+Hi Boris,
+
+Tested this revision, works out of the box now!
+
+Thanks!
+
+Tested-by: Stefan Agner <stefan@agner.ch>
+Acked-by: Stefan Agner <stefan@agner.ch>
+
+--
+Stefan
+
 > 
-> Probably not. I just checked the third user (omap1), and it seems that one
-> has been broken since 2009 with 941132606c76 ("OMAP: Remove OMAP_IO_ADDRESS,
-> use OMAP1_IO_ADDRESS and OMAP2_IO_ADDRESS instead"), when Tony replaced
-> the inline omap_readl() with an extern function, thus breaking the
-> implementation of xip_irqpending() that must be inlined.
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/vf610_nfc.c | 34 ++++------------------------------
+>  1 file changed, 4 insertions(+), 30 deletions(-)
 > 
-> The other two have apparently been broken since 2011, by other patches
-> that also broke compilation.
-
-For omaps, I don't recall anybody working on xip for probably close to
-10 years.
-
-Regards,
-
-Tony
+> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+> index 293feb1..da34de1 100644
+> --- a/drivers/mtd/nand/vf610_nfc.c
+> +++ b/drivers/mtd/nand/vf610_nfc.c
+> @@ -175,34 +175,6 @@ static inline struct vf610_nfc *mtd_to_nfc(struct
+> mtd_info *mtd)
+>  	return container_of(mtd_to_nand(mtd), struct vf610_nfc, chip);
+>  }
+>  
+> -static struct nand_ecclayout vf610_nfc_ecc45 = {
+> -	.eccbytes = 45,
+> -	.eccpos = {19, 20, 21, 22, 23,
+> -		   24, 25, 26, 27, 28, 29, 30, 31,
+> -		   32, 33, 34, 35, 36, 37, 38, 39,
+> -		   40, 41, 42, 43, 44, 45, 46, 47,
+> -		   48, 49, 50, 51, 52, 53, 54, 55,
+> -		   56, 57, 58, 59, 60, 61, 62, 63},
+> -	.oobfree = {
+> -		{.offset = 2,
+> -		 .length = 17} }
+> -};
+> -
+> -static struct nand_ecclayout vf610_nfc_ecc60 = {
+> -	.eccbytes = 60,
+> -	.eccpos = { 4,  5,  6,  7,  8,  9, 10, 11,
+> -		   12, 13, 14, 15, 16, 17, 18, 19,
+> -		   20, 21, 22, 23, 24, 25, 26, 27,
+> -		   28, 29, 30, 31, 32, 33, 34, 35,
+> -		   36, 37, 38, 39, 40, 41, 42, 43,
+> -		   44, 45, 46, 47, 48, 49, 50, 51,
+> -		   52, 53, 54, 55, 56, 57, 58, 59,
+> -		   60, 61, 62, 63 },
+> -	.oobfree = {
+> -		{.offset = 2,
+> -		 .length = 2} }
+> -};
+> -
+>  static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
+>  {
+>  	return readl(nfc->regs + reg);
+> @@ -781,14 +753,16 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  		if (mtd->oobsize > 64)
+>  			mtd->oobsize = 64;
+>  
+> +		/*
+> +		 * mtd->ecclayout is not specified here because we're using the
+> +		 * default large page ECC layout defined in NAND core.
+> +		 */
+>  		if (chip->ecc.strength == 32) {
+>  			nfc->ecc_mode = ECC_60_BYTE;
+>  			chip->ecc.bytes = 60;
+> -			chip->ecc.layout = &vf610_nfc_ecc60;
+>  		} else if (chip->ecc.strength == 24) {
+>  			nfc->ecc_mode = ECC_45_BYTE;
+>  			chip->ecc.bytes = 45;
+> -			chip->ecc.layout = &vf610_nfc_ecc45;
+>  		} else {
+>  			dev_err(nfc->dev, "Unsupported ECC strength\n");
+>  			err = -ENXIO;
