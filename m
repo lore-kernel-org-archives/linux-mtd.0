@@ -1,22 +1,26 @@
-Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
+Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ad02U-0006pv-D2
- for linux-mtd@lists.infradead.org; Mon, 07 Mar 2016 18:37:55 +0000
-Received: by mail-pa0-x243.google.com with SMTP id hj7so8174808pac.1
- for <linux-mtd@lists.infradead.org>; Mon, 07 Mar 2016 10:37:33 -0800 (PST)
-Date: Mon, 7 Mar 2016 10:37:30 -0800
+ id 1ad0MP-0008UW-Ee
+ for linux-mtd@lists.infradead.org; Mon, 07 Mar 2016 18:58:32 +0000
+Received: by mail-pa0-x242.google.com with SMTP id hj7so8199116pac.1
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Mar 2016 10:58:08 -0800 (PST)
+Date: Mon, 7 Mar 2016 10:58:05 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: [PATCH v2] mtd: nand: pxa3xx_nand: kill unused field 'drcmr_cmd'
-Message-ID: <20160307183730.GU55664@google.com>
-References: <1457147553-71596-1-git-send-email-computersforpeace@gmail.com>
- <877fhhwcft.fsf@belgarion.home>
+To: Roger Quadros <rogerq@ti.com>
+Cc: tony@atomide.com, dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
+ javier@dowhile0.org, fcooper@ti.com, nsekhar@ti.com,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v5 10/26] mtd: nand: omap: Update DT binding documentation
+Message-ID: <20160307185805.GV55664@google.com>
+References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+ <1455916548-3441-11-git-send-email-rogerq@ti.com>
+ <20160305020430.GL55664@google.com> <56DD4DF0.4020500@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <877fhhwcft.fsf@belgarion.home>
+In-Reply-To: <56DD4DF0.4020500@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +30,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With this removal, we don't need to 'get' the second DMA resource
-either, as it's also unused.
+On Mon, Mar 07, 2016 at 11:46:24AM +0200, Roger Quadros wrote:
+> On 05/03/16 04:04, Brian Norris wrote:
+> > Is it normal to mix types of addressing in a single 'reg' property? Is
+> > your code working for anything besides CS==0?
+> 
+> Yes we're using non zero CS on different omap platforms.
+> I haven't changed the behaviour of the reg property in this series. Just updated the documentation.
+> 
+> I didn't understand what you meant by mixing type of addressing.
+> 
+> This usage is exactly as mentioned here
+> http://devicetree.org/Device_Tree_Usage#Ranges_.28Address_Translation.29
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
-On Sat, Mar 05, 2016 at 09:34:14AM +0100, Robert Jarzmik wrote:
-> Brian Norris <computersforpeace@gmail.com> writes:
-> > @@ -1812,7 +1811,6 @@ static int alloc_nand_resource(struct platform_device *pdev)
-> >  			ret = -ENXIO;
-> >  			goto fail_disable_clk;
-> >  		}
-> > -		info->drcmr_cmd = r->start;
-> >  	}
-> If you kill this field, why not kill also this block just above ?
-> 		r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-> 		if (r == NULL) {
-> 			dev_err(&pdev->dev,
-> 				"no resource defined for cmd DMA\n");
-> 			ret = -ENXIO;
-> 			goto fail_disable_clk;
-> 		}
+I think I was just misunderstanding the use of the reg, *-cells, and
+ranges properties here. Thanks for the pointer.
 
-Indeed, why not.
-
- drivers/mtd/nand/pxa3xx_nand.c | 10 ----------
- 1 file changed, 10 deletions(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index f100c4da0423..d6508856da99 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -211,7 +211,6 @@ struct pxa3xx_nand_info {
- 	struct dma_chan		*dma_chan;
- 	dma_cookie_t		dma_cookie;
- 	int			drcmr_dat;
--	int			drcmr_cmd;
- 
- 	unsigned char		*data_buff;
- 	unsigned char		*oob_buff;
-@@ -1804,15 +1803,6 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 			goto fail_disable_clk;
- 		}
- 		info->drcmr_dat = r->start;
--
--		r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--		if (r == NULL) {
--			dev_err(&pdev->dev,
--				"no resource defined for cmd DMA\n");
--			ret = -ENXIO;
--			goto fail_disable_clk;
--		}
--		info->drcmr_cmd = r->start;
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--- 
-2.7.0.rc3.207.g0ac5344
+Brian
