@@ -1,32 +1,22 @@
+Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ad02U-0006pv-D2
+ for linux-mtd@lists.infradead.org; Mon, 07 Mar 2016 18:37:55 +0000
+Received: by mail-pa0-x243.google.com with SMTP id hj7so8174808pac.1
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Mar 2016 10:37:33 -0800 (PST)
+Date: Mon, 7 Mar 2016 10:37:30 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH v2] mtd: nand: pxa3xx_nand: kill unused field 'drcmr_cmd'
+Message-ID: <20160307183730.GU55664@google.com>
+References: <1457147553-71596-1-git-send-email-computersforpeace@gmail.com>
+ <877fhhwcft.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Mon, 07 Mar 2016 10:04:36 -0800
-From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Daniel Mack
- <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert
- Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>, Krzysztof
- Kozlowski <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>,
- linux-mips@linux-mips.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Wenyou Yang <wenyou.yang@atmel.com>,
- Josh Wu <rainyfeeling@outlook.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Kyungmin Park <kyungmin.park@samsung.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
- linux-kernel@vger.kernel.org, punnaiah choudary kalluri
- <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>, Kamal Dasu
- <kdasu.kdev@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
- linux-api@vger.kernel.org, Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: Re: [PATCH v4 48/52] mtd: nand: vf610: switch to mtd_ooblayout_ops
-In-Reply-To: <1457344062-11633-49-git-send-email-boris.brezillon@free-electrons.com>
-References: <1457344062-11633-1-git-send-email-boris.brezillon@free-electrons.com>
- <1457344062-11633-49-git-send-email-boris.brezillon@free-electrons.com>
-Message-ID: <73e28b049f14566167c1b6cd3c329099@agner.ch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877fhhwcft.fsf@belgarion.home>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,84 +26,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2016-03-07 01:47, Boris Brezillon wrote:
-> Implementing the mtd_ooblayout_ops interface is the new way of exposing
-> ECC/OOB layout to MTD users.
+With this removal, we don't need to 'get' the second DMA resource
+either, as it's also unused.
 
-Hi Boris,
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+On Sat, Mar 05, 2016 at 09:34:14AM +0100, Robert Jarzmik wrote:
+> Brian Norris <computersforpeace@gmail.com> writes:
+> > @@ -1812,7 +1811,6 @@ static int alloc_nand_resource(struct platform_device *pdev)
+> >  			ret = -ENXIO;
+> >  			goto fail_disable_clk;
+> >  		}
+> > -		info->drcmr_cmd = r->start;
+> >  	}
+> If you kill this field, why not kill also this block just above ?
+> 		r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+> 		if (r == NULL) {
+> 			dev_err(&pdev->dev,
+> 				"no resource defined for cmd DMA\n");
+> 			ret = -ENXIO;
+> 			goto fail_disable_clk;
+> 		}
 
-Tested this revision, works out of the box now!
+Indeed, why not.
 
-Thanks!
+ drivers/mtd/nand/pxa3xx_nand.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-Tested-by: Stefan Agner <stefan@agner.ch>
-Acked-by: Stefan Agner <stefan@agner.ch>
-
---
-Stefan
-
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/vf610_nfc.c | 34 ++++------------------------------
->  1 file changed, 4 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-> index 293feb1..da34de1 100644
-> --- a/drivers/mtd/nand/vf610_nfc.c
-> +++ b/drivers/mtd/nand/vf610_nfc.c
-> @@ -175,34 +175,6 @@ static inline struct vf610_nfc *mtd_to_nfc(struct
-> mtd_info *mtd)
->  	return container_of(mtd_to_nand(mtd), struct vf610_nfc, chip);
->  }
->  
-> -static struct nand_ecclayout vf610_nfc_ecc45 = {
-> -	.eccbytes = 45,
-> -	.eccpos = {19, 20, 21, 22, 23,
-> -		   24, 25, 26, 27, 28, 29, 30, 31,
-> -		   32, 33, 34, 35, 36, 37, 38, 39,
-> -		   40, 41, 42, 43, 44, 45, 46, 47,
-> -		   48, 49, 50, 51, 52, 53, 54, 55,
-> -		   56, 57, 58, 59, 60, 61, 62, 63},
-> -	.oobfree = {
-> -		{.offset = 2,
-> -		 .length = 17} }
-> -};
-> -
-> -static struct nand_ecclayout vf610_nfc_ecc60 = {
-> -	.eccbytes = 60,
-> -	.eccpos = { 4,  5,  6,  7,  8,  9, 10, 11,
-> -		   12, 13, 14, 15, 16, 17, 18, 19,
-> -		   20, 21, 22, 23, 24, 25, 26, 27,
-> -		   28, 29, 30, 31, 32, 33, 34, 35,
-> -		   36, 37, 38, 39, 40, 41, 42, 43,
-> -		   44, 45, 46, 47, 48, 49, 50, 51,
-> -		   52, 53, 54, 55, 56, 57, 58, 59,
-> -		   60, 61, 62, 63 },
-> -	.oobfree = {
-> -		{.offset = 2,
-> -		 .length = 2} }
-> -};
-> -
->  static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
->  {
->  	return readl(nfc->regs + reg);
-> @@ -781,14 +753,16 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->  		if (mtd->oobsize > 64)
->  			mtd->oobsize = 64;
->  
-> +		/*
-> +		 * mtd->ecclayout is not specified here because we're using the
-> +		 * default large page ECC layout defined in NAND core.
-> +		 */
->  		if (chip->ecc.strength == 32) {
->  			nfc->ecc_mode = ECC_60_BYTE;
->  			chip->ecc.bytes = 60;
-> -			chip->ecc.layout = &vf610_nfc_ecc60;
->  		} else if (chip->ecc.strength == 24) {
->  			nfc->ecc_mode = ECC_45_BYTE;
->  			chip->ecc.bytes = 45;
-> -			chip->ecc.layout = &vf610_nfc_ecc45;
->  		} else {
->  			dev_err(nfc->dev, "Unsupported ECC strength\n");
->  			err = -ENXIO;
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index f100c4da0423..d6508856da99 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -211,7 +211,6 @@ struct pxa3xx_nand_info {
+ 	struct dma_chan		*dma_chan;
+ 	dma_cookie_t		dma_cookie;
+ 	int			drcmr_dat;
+-	int			drcmr_cmd;
+ 
+ 	unsigned char		*data_buff;
+ 	unsigned char		*oob_buff;
+@@ -1804,15 +1803,6 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 			goto fail_disable_clk;
+ 		}
+ 		info->drcmr_dat = r->start;
+-
+-		r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+-		if (r == NULL) {
+-			dev_err(&pdev->dev,
+-				"no resource defined for cmd DMA\n");
+-			ret = -ENXIO;
+-			goto fail_disable_clk;
+-		}
+-		info->drcmr_cmd = r->start;
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-- 
+2.7.0.rc3.207.g0ac5344
