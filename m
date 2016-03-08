@@ -1,26 +1,16 @@
-Date: Tue, 8 Mar 2016 15:46:20 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Dave Gordon
- <david.s.gordon@intel.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Mark
- Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Maxime
- Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Dan Williams <dan.j.williams@intel.com>,
- dmaengine@vger.kernel.org, Mauro Carvalho Chehab <m.chehab@samsung.com>,
- Hans Verkuil <hans.verkuil@cisco.com>, Laurent Pinchart
- <laurent.pinchart@ideasonboard.com>, linux-media@vger.kernel.org, Rob
- Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
- Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 5/7] mtd: provide helper to prepare buffers for DMA
- operations
-Message-ID: <20160308154620.3d64d02b@bbrezillon>
-In-Reply-To: <20160308141853.GQ11154@localhost>
-References: <1457435715-24740-1-git-send-email-boris.brezillon@free-electrons.com>
- <1457435715-24740-6-git-send-email-boris.brezillon@free-electrons.com>
- <20160308141853.GQ11154@localhost>
+Date: Tue, 8 Mar 2016 15:58:03 +0100
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Chen-Yu Tsai
+ <wens@csie.org>, linux-kernel@vger.kernel.org,
+ linux-sunxi@googlegroups.com, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 02/16] mtd: nand: sunxi: fix clk rate calculation
+Message-ID: <20160308155803.1b0263eb@free-electrons.com>
+In-Reply-To: <1457367513-26069-3-git-send-email-boris.brezillon@free-electrons.com>
+References: <1457367513-26069-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1457367513-26069-3-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,22 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 8 Mar 2016 19:48:53 +0530
-Vinod Koul <vinod.koul@intel.com> wrote:
+Boris,
 
-> On Tue, Mar 08, 2016 at 12:15:13PM +0100, Boris Brezillon wrote:
-> >  
-> > +#ifdef CONFIG_HAS_DMA
+On Mon,  7 Mar 2016 17:18:19 +0100, Boris Brezillon wrote:
+> Unlike what is specified in the Allwinner datasheets, the NAND clock rate
+> is not equal to 2/T but 1/T. Fix the clock rate selection accordingly.
 > 
-> Shouldn't this be CONFIG_DMA_ENGINE as you are preparing these descriptors
-> for DMA transfer?
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/sunxi_nand.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 > 
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index 4d01e65..ab66d8d 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -1208,13 +1208,7 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+>  	/* Convert min_clk_period from picoseconds to nanoseconds */
+>  	min_clk_period = DIV_ROUND_UP(min_clk_period, 1000);
+>  
+> -	/*
+> -	 * Convert min_clk_period into a clk frequency, then get the
+> -	 * appropriate rate for the NAND controller IP given this formula
+> -	 * (specified in the datasheet):
+> -	 * nand clk_rate = 2 * min_clk_rate
+> -	 */
 
-Nope, scatterlist users are not necessarily using a dmaengine, some IPs
-are directly embedding a dedicated DMA engine, which has no driver in
-drivers/dma/.
+When some HW works in a way that is *NOT* the one specified in the
+datasheet, I think you should rather add *more* comments about this
+aspect, rather than removing existing comments.
 
+Thomas
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
 http://free-electrons.com
