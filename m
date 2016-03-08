@@ -1,32 +1,23 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ad5NH-00058k-8t
- for linux-mtd@lists.infradead.org; Tue, 08 Mar 2016 00:19:44 +0000
-Received: by mail-pf0-x241.google.com with SMTP id x188so6853621pfb.2
- for <linux-mtd@lists.infradead.org>; Mon, 07 Mar 2016 16:19:22 -0800 (PST)
-Date: Mon, 7 Mar 2016 16:19:19 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Sergei Ianovich <ynvich@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- David Woodhouse <dwmw2@infradead.org>, Jeremy Kerr <jk@ozlabs.org>,
- Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Cyril Bur <cyrilbur@gmail.com>, Joel Stanley <joel@jms.id.au>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- "open list:MEMORY TECHNOLOGY DEVICES [MTD]" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v6] mtd: support BB SRAM on ICP DAS LP-8x4x
-Message-ID: <20160308001919.GE55664@google.com>
-References: <1450205941-15593-1-git-send-email-ynvich@gmail.com>
- <1456253890-30825-1-git-send-email-ynvich@gmail.com>
+From: Yao Yuan <yao.yuan@nxp.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "han.xu@freescale.com"
+ <han.xu@freescale.com>, "robh@kernel.org" <robh@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH v4 4/7] Documentation: fsl-quadspi: Add fsl,ls2080a-dspi
+ compatible string
+Date: Tue, 8 Mar 2016 02:03:21 +0000
+Message-ID: <AM2PR04MB0722F2CC1847AA5E9FDD96F289B20@AM2PR04MB0722.eurprd04.prod.outlook.com>
+References: <1453793041-35868-1-git-send-email-yao.yuan@freescale.com>
+ <1453793041-35868-4-git-send-email-yao.yuan@freescale.com>
+ <20160307203200.GW55664@google.com>
+In-Reply-To: <20160307203200.GW55664@google.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1456253890-30825-1-git-send-email-ynvich@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,346 +27,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sergei,
+On Tue, Mar 08, 2016 at 4:32AM, Brian Norris wrote:
+> On Tue, Jan 26, 2016 at 03:23:58PM +0800, Yuan Yao wrote:
+> > new compatible string: "fsl,ls2080a-qspi".
+>=20
+> ^^ This line doesn't match the subject or the content of the patch.
+>=20
+> > Signed-off-by: Yuan Yao <yao.yuan@nxp.com>
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > ---
+> > Changed in v4:
+> > No changes.
+> >
+> > Changed in v3:
+> > Add the modifier for new compatible string like:
+> > "fsl,ls2080a-dspi" followed by "fsl,ls2085a-dspi"
+> >
+> > Changed in v2:
+> > Update my email to <yao.yuan@nxp.com>
+> > ---
+> >  Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt | 5 ++++-
+>=20
+> ^^ What is this change doing in this series anyway? You're touching MTD s=
+tuff,
+> not SPI stuff, and this string doesn't get used in any driver. Is this co=
+ntroller
+> somehow related, or is it a separate IP block that happens to be on some =
+of the
+> same SoCs?
+>=20
 
-A few more issues...
+Sorry for the wrong subject, this patch is used for add the SPI(DSPI) bingi=
+ng document.
+It should be some mistake that I make the wrong subject and the commit mess=
+age.
 
-On Tue, Feb 23, 2016 at 09:58:01PM +0300, Sergei Ianovich wrote:
-> This provides an MTD device driver for 512kB of battery backed up SRAM
-> on ICPDAS LP-8X4X programmable automation controllers.
-> 
-> SRAM chip is connected via FPGA and is not accessible without a driver,
-> unlike flash memory which is wired to CPU MMU.
-> 
-> This SRAM becomes an excellent persisent storage of volatile process
-> data like counter values and sensor statuses. Storing those data in
-> flash or mmc card is not a viable solution.
-> 
-> Signed-off-by: Sergei Ianovich <ynvich@gmail.com>
-> Reviewed-by: Brian Norris <computersforpeace@gmail.com>
-> CC: Rob Herring <robh@kernel.org>
-> 
->    v5..v6
->    * replace wildcards in compatible and module name
->    * drop obsolete mtd_part_parser_data.of_node
-> 
->    v4..v5
->    * remove .owner from struct platform_driver
->    * constify struct of_device_id
->     for further Brian Norris comments:
->    * drop unused property from doc file
->    * move defconfig update to a different file
->    * drop extra match w/ of_match_device()
-> 
->    v3..v4 for Brian Norris 'Reviewed-by'
->    * add doc file for DT binding
->    * move DTS binding to a different patch (8/21)
->    * drop unused include directive
->    * drop safely unused callback
->    * drop non-default partion probe types
->    * drop duplicate error checks
->    * drop duplicate error reporting
->    * fixed error message on MTD registeration
->    * fixed module removal routine
-> 
->    v2..v3
->    * no changes (except number 08/16 -> 10/21)
-> 
->    v0..v2
->    * use device tree
->    * use devm helpers where possible
-> ---
->  .../devicetree/bindings/mtd/icpdas-lp8841-sram.txt |  23 +++
->  drivers/mtd/devices/Kconfig                        |  14 ++
->  drivers/mtd/devices/Makefile                       |   1 +
->  drivers/mtd/devices/sram_lp8841.c                  | 198 +++++++++++++++++++++
->  4 files changed, 236 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/icpdas-lp8841-sram.txt
->  create mode 100644 drivers/mtd/devices/sram_lp8841.c
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/icpdas-lp8841-sram.txt b/Documentation/devicetree/bindings/mtd/icpdas-lp8841-sram.txt
-> new file mode 100644
-> index 0000000..3c1007a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/icpdas-lp8841-sram.txt
-> @@ -0,0 +1,23 @@
-> +512kB battery backed up SRAM on ICP DAS LP-8841 industrial computers
-> +
-> +LP-8441, LP-8141, and LP-8041 differ from LP-8841 only in expansion
-> +slot count.
-> +
-> +Required properties:
-> +- compatible : should be "icpdas,lp8841-sram"
-> +
-> +- reg: physical base addresses and region lengths of
-> +       * IO memory range
-> +       * SRAM page selector
-> +
-> +SRAM chip is connected via FPGA and is not accessible without a driver,
-> +unlike flash memory which is wired to CPU MMU. Driver is essentially
-> +an address translation routine.
-> +
-> +Example:
-> +
-> +	sram@a000 {
-> +		compatible = "icpdas,lp8841-sram";
-> +		reg = <0xa000 0x1000
-> +		       0x901e 0x1>;
-> +	};
-> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-> index f73c416..ecf5733 100644
-> --- a/drivers/mtd/devices/Kconfig
-> +++ b/drivers/mtd/devices/Kconfig
-> @@ -233,4 +233,18 @@ config BCH_CONST_T
->  	default 4
->  endif
->  
-> +config MTD_SRAM_LP8841
-> +	tristate "SRAM on ICP DAS LP-8841"
-> +	depends on OF && ARCH_PXA
-> +       ---help---
-> +	 This provides an MTD device driver for 512kiB of battery backed up SRAM
-> +	 on ICPDAS LP-8X41 programmable automation controllers.
-> +
-> +	 SRAM chip is connected via FPGA and is not accessible without a driver,
-> +	 unlike flash memory which is wired to CPU MMU.
-> +
-> +	 Say N, unless you plan to run this kernel on LP-8X41.
-> +
-> +	 If you say M, the module will be called sram_lp8841.
-> +
->  endmenu
-> diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
-> index 7912d3a..46df5d6 100644
-> --- a/drivers/mtd/devices/Makefile
-> +++ b/drivers/mtd/devices/Makefile
-> @@ -17,6 +17,7 @@ obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
->  obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
->  obj-$(CONFIG_MTD_ST_SPI_FSM)    += st_spi_fsm.o
->  obj-$(CONFIG_MTD_POWERNV_FLASH)	+= powernv_flash.o
-> +obj-$(CONFIG_MTD_SRAM_LP8841)	+= sram_lp8841.o
->  
->  
->  CFLAGS_docg3.o			+= -I$(src)
-> diff --git a/drivers/mtd/devices/sram_lp8841.c b/drivers/mtd/devices/sram_lp8841.c
-> new file mode 100644
-> index 0000000..5d5d942
-> --- /dev/null
-> +++ b/drivers/mtd/devices/sram_lp8841.c
-> @@ -0,0 +1,198 @@
-> +/*
-> + *  linux/drivers/mtd/devices/sram_lp8841.c
-> + *
-> + *  MTD Driver for SRAM on ICP DAS LP-8841
-> + *  Copyright (C) 2013 Sergei Ianovich <ynvich@gmail.com>
-> + *
-> + *  This program is free software; you can redistribute it and/or modify
-> + *  it under the terms of the GNU General Public License version 2 as
-> + *  published by the Free Software Foundation or any later version.
-> + */
-> +
-> +#include <linux/init.h>
-> +#include <linux/io.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mtd/map.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/of_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/string_helpers.h>
-> +#include <linux/types.h>
-> +
-> +struct lp8841_sram_info {
-> +	void __iomem	*bank;
-> +	void __iomem	*virt;
-> +	struct mutex	lock;
-> +	unsigned	active_bank;
-> +	struct mtd_info	mtd;
-> +};
-> +
-> +static int
-> +lp8841_sram_erase(struct mtd_info *mtd, struct erase_info *instr)
-> +{
-> +	struct lp8841_sram_info *info = mtd->priv;
-> +	unsigned bank = instr->addr >> 11;
-> +	unsigned offset = (instr->addr & 0x7ff) << 1;
-> +	loff_t i;
-> +
-> +	mutex_lock(&info->lock);
-> +	if (unlikely(bank != info->active_bank)) {
-> +		info->active_bank = bank;
-> +		iowrite8(bank, info->bank);
-> +	}
-> +	for (i = 0; i < instr->len; i++) {
-> +		iowrite8(0xff, info->virt + offset);
-> +		offset += 2;
-> +		if (unlikely(offset == 0)) {
-> +			info->active_bank++;
-> +			iowrite8(info->active_bank, info->bank);
-> +		}
-> +	}
-> +	mutex_unlock(&info->lock);
-> +	instr->state = MTD_ERASE_DONE;
-> +	mtd_erase_callback(instr);
-> +
-> +	return 0;
-> +}
-> +
-> +static int
-> +lp8841_sram_write(struct mtd_info *mtd, loff_t to, size_t len,
-> +		size_t *retlen, const u_char *b)
-> +{
-> +	struct lp8841_sram_info *info = mtd->priv;
-> +	unsigned bank = to >> 11;
-> +	unsigned offset = (to & 0x7ff) << 1;
-> +	loff_t i;
-> +
-> +	mutex_lock(&info->lock);
-> +	if (unlikely(bank != info->active_bank)) {
-> +		info->active_bank = bank;
-> +		iowrite8(bank, info->bank);
-> +	}
-> +	for (i = 0; i < len; i++) {
-> +		iowrite8(b[i], info->virt + offset);
-> +		offset += 2;
-> +		if (unlikely(offset == 0)) {
-> +			info->active_bank++;
-> +			iowrite8(info->active_bank, info->bank);
-> +		}
-> +	}
-> +	mutex_unlock(&info->lock);
-> +	*retlen = len;
-> +	return 0;
-> +}
-> +
-> +static int
-> +lp8841_sram_read(struct mtd_info *mtd, loff_t from, size_t len,
-> +		size_t *retlen, u_char *b)
-> +{
-> +	struct lp8841_sram_info *info = mtd->priv;
-> +	unsigned bank = from >> 11;
-> +	unsigned offset = (from & 0x7ff) << 1;
-> +	loff_t i;
-> +
-> +	mutex_lock(&info->lock);
-> +	if (unlikely(bank != info->active_bank)) {
-> +		info->active_bank = bank;
-> +		iowrite8(bank, info->bank);
-> +	}
-> +	for (i = 0; i < len; i++) {
-> +		b[i] = ioread8(info->virt + offset);
-> +		offset += 2;
-> +		if (unlikely(offset == 0)) {
-> +			info->active_bank++;
-> +			iowrite8(info->active_bank, info->bank);
-> +		}
-> +	}
-> +	mutex_unlock(&info->lock);
-> +	*retlen = len;
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id of_flash_match[] = {
-> +	{
-> +		.compatible	= "icpdas,lp8841-sram",
-> +	},
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, of_flash_match);
-> +
-> +static int
-> +lp8841_sram_probe(struct platform_device *pdev)
-> +{
-> +	struct lp8841_sram_info *info;
-> +	struct resource *res_virt, *res_bank;
-> +	char sz_str[16];
-> +	struct mtd_part_parser_data ppdata;
+> Anyway, you should send this kind of stuff to the SPI list, not the MTD o=
+ne.
 
-You don't need this struct any more.
+I will resend it to SPI list, thanks for your review.
 
-> +	int err = 0;
-> +
-> +	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
-> +	if (!info)
-> +		return -ENOMEM;
-> +
-> +	res_virt = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	info->virt =  devm_ioremap_resource(&pdev->dev, res_virt);
-> +	if (IS_ERR(info->virt))
-> +		return PTR_ERR(info->virt);
-> +
-> +	res_bank = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> +	info->bank = devm_ioremap_resource(&pdev->dev, res_bank);
-> +	if (IS_ERR(info->bank))
-> +		return PTR_ERR(info->bank);
-> +
-> +	info->mtd.priv = info;
-> +	info->mtd.name = "SRAM";
-> +	info->mtd.type = MTD_RAM;
-> +	info->mtd.flags = MTD_CAP_RAM;
-> +	info->mtd.size = resource_size(res_virt) << 7;
-> +	info->mtd.erasesize = 512;
-> +	info->mtd.writesize = 4;
-
-Can you please set mtd.writebufsize to an appropriate value too? Maybe
-it's just the same as writesize.
-
-> +	info->mtd._erase = lp8841_sram_erase;
-> +	info->mtd._write = lp8841_sram_write;
-> +	info->mtd._read = lp8841_sram_read;
-> +	info->mtd.owner = THIS_MODULE;
-
-If you set info->mtd.dev.parent (please do), you don't need the above
-line.
-
-> +
-> +	mutex_init(&info->lock);
-> +	iowrite8(info->active_bank, info->bank);
-> +	platform_set_drvdata(pdev, info);
-> +
-> +	err = mtd_device_parse_register(&info->mtd, NULL, &ppdata,
-> +			NULL, 0);
-
-This can just be:
-
-	err = mtd_device_register(&info->mtd, NULL, 0);
-
-> +
-> +	if (err < 0) {
-> +		dev_err(&pdev->dev, "failed to register MTD\n");
-> +		return err;
-> +	}
-> +
-> +	string_get_size(info->mtd.size, 1, STRING_UNITS_2, sz_str,
-> +			sizeof(sz_str));
-> +	dev_info(&pdev->dev, "using %s SRAM on LP-8X4X as %s\n", sz_str,
-> +			dev_name(&info->mtd.dev));
-> +	return 0;
-> +}
-> +
-> +static int
-> +lp8841_sram_remove(struct platform_device *dev)
-> +{
-> +	struct lp8841_sram_info *info = platform_get_drvdata(dev);
-> +
-> +	return mtd_device_unregister(&info->mtd);
-> +}
-> +
-> +static struct platform_driver lp8841_sram_driver = {
-> +	.driver = {
-> +		.name		= "sram-lp8841",
-> +		.of_match_table = of_flash_match,
-> +	},
-> +	.probe		= lp8841_sram_probe,
-> +	.remove		= lp8841_sram_remove,
-> +};
-> +
-> +module_platform_driver(lp8841_sram_driver);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Sergei Ianovich");
-> +MODULE_DESCRIPTION("MTD driver for SRAM on ICPDAS LP-8841");
-
-Brian
+> Regards,
+> Brian
+>=20
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
+> > b/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
+> > index fa77f87..1ad0fe3 100644
+> > --- a/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
+> > +++ b/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
+> > @@ -1,7 +1,10 @@
+> >  ARM Freescale DSPI controller
+> >
+> >  Required properties:
+> > -- compatible : "fsl,vf610-dspi", "fsl,ls1021a-v1.0-dspi", "fsl,ls2085a=
+-dspi"
+> > +- compatible : "fsl,vf610-dspi", "fsl,ls1021a-v1.0-dspi",
+> > +		"fsl,ls2085a-dspi"
+> > +		or
+> > +		"fsl,ls2080a-dspi" followed by "fsl,ls2085a-dspi"
+> >  - reg : Offset and length of the register set for the device
+> >  - interrupts : Should contain SPI controller interrupt
+> >  - clocks: from common clock binding: handle to dspi clock.
+> > --
+> > 2.1.0.27.g96db324
+> >
