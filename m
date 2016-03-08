@@ -1,23 +1,25 @@
-Received: from mail-pf0-x235.google.com ([2607:f8b0:400e:c00::235])
+Received: from mail-pf0-x230.google.com ([2607:f8b0:400e:c00::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adM5q-0002Dy-I2
- for linux-mtd@lists.infradead.org; Tue, 08 Mar 2016 18:10:51 +0000
-Received: by mail-pf0-x235.google.com with SMTP id 124so18268209pfg.0
- for <linux-mtd@lists.infradead.org>; Tue, 08 Mar 2016 10:10:30 -0800 (PST)
-Date: Tue, 8 Mar 2016 10:10:27 -0800
+ id 1adMCR-00060H-Dq
+ for linux-mtd@lists.infradead.org; Tue, 08 Mar 2016 18:17:40 +0000
+Received: by mail-pf0-x230.google.com with SMTP id 129so18329620pfw.1
+ for <linux-mtd@lists.infradead.org>; Tue, 08 Mar 2016 10:17:18 -0800 (PST)
+Date: Tue, 8 Mar 2016 10:17:15 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Gabor Juhos <juhosg@openwrt.org>
-Cc: Nikita Nazarenko <nnazarenko@radiofid.com>,
- linux-mtd@lists.infradead.org, Marek Vasut <marex@denx.de>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: Add support for ISSI is25lp128
-Message-ID: <20160308181027.GI55664@google.com>
-References: <1455041563-12483-1-git-send-email-nnazarenko@radiofid.com>
- <20160307213202.GA52131@google.com> <56DF0B51.6040401@openwrt.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+ dwmw2@infradead.org, matthias.bgg@gmail.com, robh@kernel.org,
+ daniel.thompson@linaro.org, xiaolei.li@mediatek.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/3] mtd: mediatek: driver for MTK Smart Device Gen1 NAND
+Message-ID: <20160308181715.GJ55664@google.com>
+References: <1456938013-8819-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <1456938013-8819-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <20160308172437.6eccce05@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <56DF0B51.6040401@openwrt.org>
+In-Reply-To: <20160308172437.6eccce05@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,78 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Gabor,
-
-On Tue, Mar 08, 2016 at 06:26:41PM +0100, Gabor Juhos wrote:
-> > On Tue, Feb 09, 2016 at 09:12:43PM +0300, Nikita Nazarenko wrote:
-> >> Signed-off-by: Nikita Nazarenko <nnazarenko@radiofid.com>
-> >> ---
-> >>  drivers/mtd/spi-nor/spi-nor.c | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> >> index ed0c19c..e0bb151 100644
-> >> --- a/drivers/mtd/spi-nor/spi-nor.c
-> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> >> @@ -739,6 +739,7 @@ static const struct flash_info spi_nor_ids[] = {
-> >>  
-> >>  	/* ISSI */
-> > 
-> > Both of these ISSI entries look wrong.
-> > 
-> >>  	{ "is25cd512", INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
-> > 
-> > Looking at the datasheet for this part [1], shouldn't the ID be
-> > 0x9d7f20 (i.e., the MFR ID is 0x9d, not 0x7f)? That would match the
-> > existing CFI definition for "PMC". And IIUC, PMC got bought by ISSI? Or
-> > some kind of merger, I don't follow these things.
+On Tue, Mar 08, 2016 at 05:24:37PM +0100, Boris Brezillon wrote:
+> On Wed,  2 Mar 2016 12:00:12 -0500
+> Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
+> > +static void mtk_nfc_hw_reset(struct mtk_nfc_host *host)
+> > +{
+> > +	unsigned long timeout = MTK_RESET_TIMEOUT;
+> > +	struct device *dev = host->dev;
+> > +	u32 val;
+> > +
+> > +	/* reset the state machine, data fifo and fdm data */
+> > +	mtk_nfi_writel(host, CON_FIFO_FLUSH | CON_NFI_RST, MTKSDG1_NFI_CON);
+> > +	timeout += jiffies;
+> > +	do {
+> > +		val = mtk_nfi_readl(host, MTKSDG1_NFI_MASTER_STA);
+> > +		val &= MASTER_STA_MASK;
+> > +		if (!val)
+> > +			return;
+> > +		usleep_range(50, 100);
+> > +
+> > +	} while (time_before(jiffies, timeout));
 > 
-> The ID is definitely 0x7d9d20, the m28p80 driver detects the device correctly
-> with that:
-> 
->   m25p80 spi0.0: found is25cd512, expected m25p80
->   m25p80 spi0.0: is25cd512 (64 Kbytes)
->   Creating 4 MTD partitions on "spi0.0":
->   0x000000000000-0x00000000c000 : "routerboot"
->   0x00000000c000-0x00000000d000 : "hard_config"
->   0x00000000d000-0x00000000e000 : "bios"
->   0x00000000e000-0x00000000f000 : "soft_config"
-> 
-> The first byte of the manufacturer ID is indeed 0x9d, but the device returns
-> that as the second byte throught the JEDEC ID READ command. Even though it is a
-> weird behaviour, it is described on page 11 of the datasheet.
+> You may want to use readl_relaxed_poll_timeout() (even though there's
+> no way to specify a range).
+> This comment applies to all the places where you're implementing this
+> kind of loop.
 
-What a stupid implementation. And they changed it to the sane
-implementation for is25lp128 it seems?
+What's more, this timeout loop (and probably many of the others) is
+wrong. You need to do one last status check before declaring a timeout,
+since the device may become ready while you're sleeping. It's the same
+problem as we've resolved here:
 
-> >> +	{ "is25lp128", INFO(0x9d6018, 0, 32 * 1024,   512, SECT_4K) },
-> > 
-> > This datasheet [1] says that for SPI mode (not QPI mode), 4K erase is
-> > done with opcode 0xD7 (i.e., SPINOR_OP_BE_4K_PMC) not 0x20
-> > (SPINOR_OP_BE_4K). So we would need the SECT_4K_PMC, not the SECT_4K
-> > flag.
-> 
-> I don't have a board with such flash device, but Table 8.1 "Instruction Set" is
-> misleading a bit. In my understanding, erasing 4K sectors should work with both
-> commands. Look at Clause 8.10 "SECTOR ERASE OPERATION (SER, D7h/20h)" on page 33
-> in the datasheet. Both Figure 8.12 "Sector Erase Sequence" and Figure 8.13
-> "Sector Erase Sequence (QPI) " says 'D7h/20h'.
+http://git.infradead.org/l2-mtd.git/commitdiff/9ebfdf5b18493f338237ef9861a555c2f79b0c17
+Subject: "mtd: nand: check status before reporting timeout"
 
-Ah, I could see how the table could be read either way. I expect that
-the submitter (Nikita) should be able to confirm this through testing.
+readl_relaxed_poll_timeout() gets this right, of course.
 
-> > Also, the datasheet for this device says it supports 64K sectors, and
-> > the 32K sectors require a different erase command (SPINOR_OP_BE_32K; not
-> > currently supported in this driver). Did you test erase to be sure it
-> > worked as expected? Or are one or more datasheets wrong?
-> 
-> It seems that you are correct about this.
+> > +
+> > +	dev_warn(dev, "nfi master active after in reset [0x%x] = 0x%x\n",
+> > +		MTKSDG1_NFI_MASTER_STA, val);
+> > +};
 
-To be clear, it looks like your submission (is25cd512) does use D8h for
-32K erase blocks, since it's such a tiny device. But Nikita's device
-appears to use 64K erase blocks.
+While we're at it: you have a stray semicolon after your function
+definition.
 
-I expect Nikita can test and resubmit a revised entry here.
-
-Regards,
 Brian
