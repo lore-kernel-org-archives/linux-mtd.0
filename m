@@ -1,23 +1,27 @@
-From: Yao Yuan <yao.yuan@nxp.com>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "han.xu@freescale.com"
- <han.xu@freescale.com>, "robh@kernel.org" <robh@kernel.org>,
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ad78R-0000DR-CY
+ for linux-mtd@lists.infradead.org; Tue, 08 Mar 2016 02:12:32 +0000
+Received: by mail-pf0-x244.google.com with SMTP id 184so182223pff.1
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Mar 2016 18:12:10 -0800 (PST)
+Date: Mon, 7 Mar 2016 18:12:07 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH v4 4/7] Documentation: fsl-quadspi: Add fsl,ls2080a-dspi
- compatible string
-Date: Tue, 8 Mar 2016 02:03:21 +0000
-Message-ID: <AM2PR04MB0722F2CC1847AA5E9FDD96F289B20@AM2PR04MB0722.eurprd04.prod.outlook.com>
-References: <1453793041-35868-1-git-send-email-yao.yuan@freescale.com>
- <1453793041-35868-4-git-send-email-yao.yuan@freescale.com>
- <20160307203200.GW55664@google.com>
-In-Reply-To: <20160307203200.GW55664@google.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ Bayi Cheng <bayi.cheng@mediatek.com>, Marek Vasut <marex@denx.de>,
+ Daniel Kurtz <djkurtz@chromium.org>
+Subject: Re: [PATCH v2 7/8] mtd: spi-nor: add TB (Top/Bottom) protect support
+Message-ID: <20160308021207.GF55664@google.com>
+References: <1454095537-130536-1-git-send-email-computersforpeace@gmail.com>
+ <1454095537-130536-8-git-send-email-computersforpeace@gmail.com>
+ <20160229203502.GA13477@laptop.cereza>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160229203502.GA13477@laptop.cereza>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,69 +31,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 08, 2016 at 4:32AM, Brian Norris wrote:
-> On Tue, Jan 26, 2016 at 03:23:58PM +0800, Yuan Yao wrote:
-> > new compatible string: "fsl,ls2080a-qspi".
->=20
-> ^^ This line doesn't match the subject or the content of the patch.
->=20
-> > Signed-off-by: Yuan Yao <yao.yuan@nxp.com>
-> > Acked-by: Rob Herring <robh@kernel.org>
+On Mon, Feb 29, 2016 at 05:35:02PM -0300, Ezequiel Garcia wrote:
+> On 29 January 2016 at 16:25, Brian Norris <computersforpeace@gmail.com> wrote:
+> > Some flash support a bit in the status register that inverts protection
+> > so that it applies to the bottom of the flash, not the top. This yields
+> > additions to the protection range table, as noted in the comments.
+> >
+> > Because this feature is not universal to all flash that support
+> > lock/unlock, control it via a new flag.
+> >
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > > ---
-> > Changed in v4:
-> > No changes.
+> > v2:
+> >  * Rewrite the bounds checking for top/bottom support, since there were some
+> >    bad corner cases. Now lock/unlock are more symmetric.
 > >
-> > Changed in v3:
-> > Add the modifier for new compatible string like:
-> > "fsl,ls2080a-dspi" followed by "fsl,ls2085a-dspi"
+> >  drivers/mtd/spi-nor/spi-nor.c | 70 ++++++++++++++++++++++++++++++++++++++-----
+> >  include/linux/mtd/spi-nor.h   |  2 ++
+> >  2 files changed, 65 insertions(+), 7 deletions(-)
 > >
-> > Changed in v2:
-> > Update my email to <yao.yuan@nxp.com>
-> > ---
-> >  Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt | 5 ++++-
->=20
-> ^^ What is this change doing in this series anyway? You're touching MTD s=
-tuff,
-> not SPI stuff, and this string doesn't get used in any driver. Is this co=
-ntroller
-> somehow related, or is it a separate IP block that happens to be on some =
-of the
-> same SoCs?
->=20
+> [..]
+> > @@ -476,12 +484,14 @@ static int stm_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+> >
+> >  /*
+> >   * Lock a region of the flash. Compatible with ST Micro and similar flash.
+> > - * Supports only the block protection bits BP{0,1,2} in the status register
+> > + * Supports the block protection bits BP{0,1,2} in the status register
+> >   * (SR). Does not support these features found in newer SR bitfields:
+> > - *   - TB: top/bottom protect - only handle TB=0 (top protect)
+> >   *   - SEC: sector/block protect - only handle SEC=0 (block protect)
+> 
+> While reviewing and testing this patchset, I realised that *no* Micron device
+> define BIT(6) as SEC (sector/block) bit. Instead, it's used as BP3, to extend
+> the region defined by BP0-BP2.
 
-Sorry for the wrong subject, this patch is used for add the SPI(DSPI) bingi=
-ng document.
-It should be some mistake that I make the wrong subject and the commit mess=
-age.
+Hmm, OK. Maybe it's worth a note, if it's not going to get fixed
+immediately.
 
-> Anyway, you should send this kind of stuff to the SPI list, not the MTD o=
-ne.
+> I've checked the following:
+> 
+>   N25Q256A
+>   N25Q128A
+>   N25Q064A
+>   N25Q032A
+>   N25Q016A
+>   M25Pxx
+> 
+> So I believe we need to separate stm_{lock,unlock), from
+> winbond_{lock,unlock}.
 
-I will resend it to SPI list, thanks for your review.
+I'm not yet confident that we need separate functions. We would just
+make SEC and BP3 support mutually exclusive, and then we can see whether
+separate functions or a dual-purpose (single) implementation makes more
+sense. I'd think the latter, actually, since adding an extra bit to the
+'mask' should be pretty simple.
 
-> Regards,
-> Brian
->=20
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-> > b/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-> > index fa77f87..1ad0fe3 100644
-> > --- a/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-> > +++ b/Documentation/devicetree/bindings/spi/spi-fsl-dspi.txt
-> > @@ -1,7 +1,10 @@
-> >  ARM Freescale DSPI controller
-> >
-> >  Required properties:
-> > -- compatible : "fsl,vf610-dspi", "fsl,ls1021a-v1.0-dspi", "fsl,ls2085a=
--dspi"
-> > +- compatible : "fsl,vf610-dspi", "fsl,ls1021a-v1.0-dspi",
-> > +		"fsl,ls2085a-dspi"
-> > +		or
-> > +		"fsl,ls2080a-dspi" followed by "fsl,ls2085a-dspi"
-> >  - reg : Offset and length of the register set for the device
-> >  - interrupts : Should contain SPI controller interrupt
-> >  - clocks: from common clock binding: handle to dspi clock.
-> > --
-> > 2.1.0.27.g96db324
-> >
+> We might want to explicitly mark devices that
+> currently support locking with the new _HAS_LOCK flag.
+
+Yeah, I think there are enough problems that we at least need a
+_HAS_LOCK flag to opt in, rather than assuming every device by a certain
+vendor works. It's really not clear which devices we claimed ever used
+to work with lock/unlock, and some will change over time -- possibly
+even in incompatible ways. You never know how wrong vendors can make
+things.
+
+> Also, I wonder if we can really separate based on vendor, or if we'll need
+> more flags to distinguish the lock implementation per device.
+
+For now, I'd like it if we can transition to using SPI_NOR_HAS_LOCK for
+every flash that supports it, instead of auto-opting in all
+Micron/STMicro flash. I think a new flag for SPI_NOR_HAS_BP3 would also
+be in order.
+
+> Of course, all the devices that define a BP3 are broken with respect to flash
+> locking. I can try to cook some patches for this, once we are decided on how
+> to do it.
+
+Brian
