@@ -1,20 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adJMy-0003yW-MD
- for linux-mtd@lists.infradead.org; Tue, 08 Mar 2016 15:16:21 +0000
-Date: Tue, 8 Mar 2016 16:15:45 +0100
+Date: Tue, 8 Mar 2016 16:20:40 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- matthias.bgg@gmail.com, robh@kernel.org, daniel.thompson@linaro.org,
- linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com
-Subject: Re: [PATCH 1/3] mtd: mediatek: device tree docs for MTK Smart
- Device Gen1 NAND
-Message-ID: <20160308161545.4f7cb13f@bbrezillon>
-In-Reply-To: <1456938013-8819-2-git-send-email-jorge.ramirez-ortiz@linaro.org>
-References: <1456938013-8819-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <1456938013-8819-2-git-send-email-jorge.ramirez-ortiz@linaro.org>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Chen-Yu Tsai
+ <wens@csie.org>, linux-kernel@vger.kernel.org,
+ linux-sunxi@googlegroups.com, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 02/16] mtd: nand: sunxi: fix clk rate calculation
+Message-ID: <20160308162040.7b659486@bbrezillon>
+In-Reply-To: <20160308155803.1b0263eb@free-electrons.com>
+References: <1457367513-26069-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1457367513-26069-3-git-send-email-boris.brezillon@free-electrons.com>
+ <20160308155803.1b0263eb@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,42 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  2 Mar 2016 12:00:11 -0500
-Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
+On Tue, 8 Mar 2016 15:58:03 +0100
+Thomas Petazzoni <thomas.petazzoni@free-electrons.com> wrote:
 
-> This patch adds documentation support for Smart Device Gen1 type of
-> NAND controllers.
+> Boris,
 > 
-> Mediatek's SoC 2701 is one of the SoCs that implements this controller.
+> On Mon,  7 Mar 2016 17:18:19 +0100, Boris Brezillon wrote:
+> > Unlike what is specified in the Allwinner datasheets, the NAND clock rate
+> > is not equal to 2/T but 1/T. Fix the clock rate selection accordingly.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/sunxi_nand.c | 8 +-------
+> >  1 file changed, 1 insertion(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> > index 4d01e65..ab66d8d 100644
+> > --- a/drivers/mtd/nand/sunxi_nand.c
+> > +++ b/drivers/mtd/nand/sunxi_nand.c
+> > @@ -1208,13 +1208,7 @@ static int sunxi_nand_chip_set_timings(struct sunxi_nand_chip *chip,
+> >  	/* Convert min_clk_period from picoseconds to nanoseconds */
+> >  	min_clk_period = DIV_ROUND_UP(min_clk_period, 1000);
+> >  
+> > -	/*
+> > -	 * Convert min_clk_period into a clk frequency, then get the
+> > -	 * appropriate rate for the NAND controller IP given this formula
+> > -	 * (specified in the datasheet):
+> > -	 * nand clk_rate = 2 * min_clk_rate
+> > -	 */
 > 
-> Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-> ---
->  .../devicetree/bindings/mtd/mtksdg1-nand.txt       | 38 ++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/mtksdg1-nand.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtksdg1-nand.txt b/Documentation/devicetree/bindings/mtd/mtksdg1-nand.txt
-> new file mode 100644
-> index 0000000..129d17b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/mtksdg1-nand.txt
-> @@ -0,0 +1,38 @@
-> +MTK Smart Device SoCs NAND controller DT binding
-> +
-> +Required properties:
-> +- compatible:          Should be "mediatek,mt2701-nfc".
-> +- reg:                 The first contains base physical address and size of
-> +                       NAND controller's registers. The second contains base
-> +                       physical address and size of NAND ECC engine.
+> When some HW works in a way that is *NOT* the one specified in the
+> datasheet, I think you should rather add *more* comments about this
+> aspect, rather than removing existing comments.
 
-Hm, I'd prefer if you split the ECC engine and NAND controller in two
-different NANDs, and then link the NAND controller to the ECC engine
-using a phandle.
-That's the approach taken by the jz4780 driver [1], and I find it
-cleaner than having 2 entries in the reg property.
+Fair enough (but you know how much I like documenting my code ;)). I'll
+add a comment explaining why it differs from the datasheet
+description :P.
 
-
-[1]https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git/tree/Documentation/devicetree/bindings/mtd/ingenic,jz4780-nand.txt?id=refs/tags/next-20160308
 
 -- 
 Boris Brezillon, Free Electrons
