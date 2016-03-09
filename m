@@ -1,36 +1,35 @@
-Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
+Received: from mail-pf0-x22e.google.com ([2607:f8b0:400e:c00::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adhaW-00065n-0m
- for linux-mtd@lists.infradead.org; Wed, 09 Mar 2016 17:07:57 +0000
-Received: by mail-oi0-x234.google.com with SMTP id c203so40416961oia.2
- for <linux-mtd@lists.infradead.org>; Wed, 09 Mar 2016 09:07:35 -0800 (PST)
-Date: Wed, 9 Mar 2016 11:07:26 -0600
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
- fuse-devel <fuse-devel@lists.sourceforge.net>,
- LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov
-Subject: Re: [PATCH RESEND v2 16/18] fuse: Support fuse filesystems outside
- of init_user_ns
-Message-ID: <20160309170726.GB28779@ubuntu-hedt>
-References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
- <1451930639-94331-17-git-send-email-seth.forshee@canonical.com>
- <20160309112923.GF8655@tucsk> <20160309141840.GC23399@ubuntu-xps13>
- <CAJfpegv5JmB15yHpjYxVeOYdWWkoLMftr9-e_iS93Y_7m=t4Zw@mail.gmail.com>
- <20160309152505.GA28779@ubuntu-hedt>
- <CAJfpegv5KR_Hi-79a8oyb+R+tv9W3RYqy5pngUKSyauVNk2ScQ@mail.gmail.com>
+ id 1adjC4-0004EX-DP
+ for linux-mtd@lists.infradead.org; Wed, 09 Mar 2016 18:50:48 +0000
+Received: by mail-pf0-x22e.google.com with SMTP id 129so47619308pfw.1
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Mar 2016 10:50:27 -0800 (PST)
+Date: Wed, 9 Mar 2016 10:50:24 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Jiancheng Xue <xuejiancheng@huawei.com>
+Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com,
+ ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ dwmw2@infradead.org, zajec5@gmail.com,
+ boris.brezillon@free-electrons.com, jteki@openedev.com,
+ ezequiel@vanguardiasur.com.ar, juhosg@openwrt.org,
+ shijie.huang@intel.com, mika.westerberg@linux.intel.com,
+ furquan@google.com, han.xu@freescale.com,
+ fabio.estevam@freescale.com, manabian@gmail.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, yanhaifeng@hisilicon.com,
+ yanghongwei@hisilicon.com, suwenping@hisilicon.com,
+ raojun@hisilicon.com, ml.yang@hisilicon.com, gaofei@hisilicon.com,
+ zhangzhenxing@hisilicon.com, xuejiancheng@hisilicon.com,
+ Binquan Peng <pengbinquan@huawei.com>
+Subject: Re: [RESEND PATCH v7] mtd: spi-nor: add hisilicon spi-nor flash
+ controller driver
+Message-ID: <20160309185024.GN55664@google.com>
+References: <1456474316-24473-1-git-send-email-xuejiancheng@huawei.com>
+ <20160307225229.GC55664@google.com> <56DE9A79.30704@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJfpegv5KR_Hi-79a8oyb+R+tv9W3RYqy5pngUKSyauVNk2ScQ@mail.gmail.com>
+In-Reply-To: <56DE9A79.30704@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,56 +39,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 09, 2016 at 04:51:42PM +0100, Miklos Szeredi wrote:
-> On Wed, Mar 9, 2016 at 4:25 PM, Seth Forshee <seth.forshee@canonical.com> wrote:
-> > On Wed, Mar 09, 2016 at 03:48:22PM +0100, Miklos Szeredi wrote:
-> 
-> >> Can't we use current_cred()->uid/gid? Or fsuid/fsgid maybe?
-> >
-> > That would be a departure from the current behavior in the !allow_other
-> > case for unprivileged users. Since those mounts are done by an suid
-> > helper all of those ids would be root in the userns, wouldn't they?
-> 
-> Well, actually this is what the helper does:
-> 
->     sprintf(d, "fd=%i,rootmode=%o,user_id=%u,group_id=%u",
->         fd, rootmode, getuid(), getgid());
+On Tue, Mar 08, 2016 at 05:25:13PM +0800, Jiancheng Xue wrote:
+> On 2016/3/8 6:52, Brian Norris wrote:
+> [...]
+> >> +static void hisi_spi_nor_dma_transfer(struct spi_nor *nor, u32 start_off,
+> >> +		u32 dma_buf, u32 len, u8 op_type)
+> > 
+> > Does this controller support 64-bit addresses? What if you see LPAE, or
+> > an ARM64 CPU? It'd be nice if you don't truncate potentially 64-bit
+> > dma_buf down to u32.
+> > 
+> > Brian
+> > 
+> No, this controller just supports 32-bit addresses. So I think I have to truncate 64-bit dma_buf. :(
 
-Sorry, I was thinking of euid. So this may not be a problem.
+Then you should handle this proactively. Either some kind of WARN_ON and
+error condition, or I think dma_set_mask_and_coherent(dev,
+DMA_BIT_MASK(32)) should be able to ensure you get addresses in the
+appropriate range?
 
-> So it just uses the current uid/gid.  Apparently no reason to do this
-> in userland, we could just as well set these in the kernel.  Except
-> for possible backward compatibility problems for things not using the
-> helper.
-> 
-> BUT if the mount is unprivileged or it's a userns mount, or anything
-> previously not possible, then we are not constrained by the backward
-> compatibility issues, and can go with the saner solution.
-> 
-> Does that not make sense?
-
-But we generally do want backwards compatibility, and we want userspace
-software to be able to expect the same behavior whether or not it's
-running in a user namespaced container. Obviously we can't always have
-things 100% identical, but we shouldn't break things unless we really
-need to.
-
-However it may be that this isn't actually going to break assumptions of
-existing software like I had feared. My preference is still to not
-change any userspace-visible behaviors since we never know what software
-might have made assumptions based on those behaviors. But if you're
-confident that it won't break anything I'm willing to give it a try.
-
-> >> When we have true unprivileged mounts, the user_id/group_id options
-> >> become redundant anyway and we can just use the current credentials.
-> >
-> > True, but we don't yet have that.
-> 
-> What's missing?
-
-A user must still be privileged to mount, even if only towards their own
-user and mount namespaces. Maybe that's what you meant though and I just
-misunderstood.
-
-Thanks,
-Seth
+Brian
