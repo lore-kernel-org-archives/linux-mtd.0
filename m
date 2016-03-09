@@ -1,23 +1,20 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adkxp-0001PJ-Gf
- for linux-mtd@lists.infradead.org; Wed, 09 Mar 2016 20:44:15 +0000
-Date: Wed, 9 Mar 2016 21:43:48 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- matthias.bgg@gmail.com, robh@kernel.org, daniel.thompson@linaro.org,
- xiaolei.li@mediatek.com, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/3] mtd: mediatek: driver for MTK Smart Device Gen1 NAND
-Message-ID: <20160309214348.5aa78af5@bbrezillon>
-In-Reply-To: <56E08112.7040201@linaro.org>
-References: <1456938013-8819-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <1456938013-8819-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160308172437.6eccce05@bbrezillon> <56E08112.7040201@linaro.org>
+Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1adl5z-0004tj-F0
+ for linux-mtd@lists.infradead.org; Wed, 09 Mar 2016 20:52:40 +0000
+Received: by mail-lb0-x229.google.com with SMTP id k15so84516040lbg.0
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Mar 2016 12:52:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAFLxGvzL7ujU6+OHnYGbk3pWOxSjw_Voo2=7iOYfvb+cbGvTEQ@mail.gmail.com>
+References: <CAKmQUfY0tU1H_e0kYk5r4gREL55R8uHtgXrbEMuS4pSJ6cf94g@mail.gmail.com>
+ <CAFLxGvzL7ujU6+OHnYGbk3pWOxSjw_Voo2=7iOYfvb+cbGvTEQ@mail.gmail.com>
+Date: Wed, 9 Mar 2016 21:52:17 +0100
+Message-ID: <CAKmQUfZT+S5--mQntpUrZWR4gk4YcoXChN5254hixYtrT5JFYw@mail.gmail.com>
+Subject: Re: Is ubiattach alone somehow damaging a partition?
+From: john smith <wempwer@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 9 Mar 2016 15:01:22 -0500
-Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
+On 3/9/16, Richard Weinberger <richard.weinberger@gmail.com> wrote:
+> Are both mtd1 and mtd2 supposed to carry UBI?
+> I'm not rally sure what you are trying to do...
 
-> On 03/08/2016 11:24 AM, Boris Brezillon wrote:
-> >> +	switch (mtd->writesize) {
-> >> > +	case KB(2):
-> >> > +		fmt = PAGEFMT_512_2K;
-> >> > +		chip->ecc.layout = &nand_2k_64;
-> >> > +		break;
-> >> > +	case KB(4):
-> >> > +		fmt = PAGEFMT_2K_4K;
-> >> > +		chip->ecc.layout = &nand_4k_128;
-> >> > +		break;
-> >> > +	case KB(8):
-> >> > +		fmt = PAGEFMT_4K_8K;
-> >> > +		break;
-> >> > +	default:
-> >> > +		dev_err(dev, "invalid page size: %d\n", mtd->writesize);
-> >> > +		return -EINVAL;
-> >> > +	}
-> > ecclayout info should be exposed through mtd_ooblayout_ops now.
-> >
-> 
-> do you have an approximate date for when this interface will be merged in
-> git://git.infradead.org/l2-mtd.git?
-> 
+Hmm... probably not as kernel booting command does not contain
+anything similar to this:
 
-Should be ready for 4.7, in the meantime you can base your work on my
-branch [1] (which is based on l2-mtd/master).
+root=ubi:rootfs rootfstype=ubifs ubi.mtd=flash1.rootfs0
 
-[1]https://github.com/bbrezillon/linux-0day/tree/nand/ecclayout
+However, I just thought that I can use ubiattach to be able to mount
+any given mtd device.  I was looking for a way to get access to a
+currently not used mtd device.  If ubiattach is suitable for this,
+then what may be?
 
+> If you ask UBI to attach to an mtd it will write to it.
 
+Where exactly?  In do_attach() there is only open(), ioctl() and
+close() called.  Where will writing take place?
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+<wempwer@gmail.com>
