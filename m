@@ -1,20 +1,16 @@
-Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adl5z-0004tj-F0
- for linux-mtd@lists.infradead.org; Wed, 09 Mar 2016 20:52:40 +0000
-Received: by mail-lb0-x229.google.com with SMTP id k15so84516040lbg.0
- for <linux-mtd@lists.infradead.org>; Wed, 09 Mar 2016 12:52:19 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CAFLxGvzL7ujU6+OHnYGbk3pWOxSjw_Voo2=7iOYfvb+cbGvTEQ@mail.gmail.com>
-References: <CAKmQUfY0tU1H_e0kYk5r4gREL55R8uHtgXrbEMuS4pSJ6cf94g@mail.gmail.com>
- <CAFLxGvzL7ujU6+OHnYGbk3pWOxSjw_Voo2=7iOYfvb+cbGvTEQ@mail.gmail.com>
-Date: Wed, 9 Mar 2016 21:52:17 +0100
-Message-ID: <CAKmQUfZT+S5--mQntpUrZWR4gk4YcoXChN5254hixYtrT5JFYw@mail.gmail.com>
-Subject: Re: Is ubiattach alone somehow damaging a partition?
-From: john smith <wempwer@gmail.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1adlAx-0007gg-FT
+ for linux-mtd@lists.infradead.org; Wed, 09 Mar 2016 20:57:48 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH v2] MAINTAINERS: add a maintainer for the NAND subsystem
+Date: Wed,  9 Mar 2016 21:57:24 +0100
+Message-Id: <1457557044-7029-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/9/16, Richard Weinberger <richard.weinberger@gmail.com> wrote:
-> Are both mtd1 and mtd2 supposed to carry UBI?
-> I'm not rally sure what you are trying to do...
+Add myself as the maintainer of the NAND subsystem.
 
-Hmm... probably not as kernel booting command does not contain
-anything similar to this:
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+Changes since v1:
+- rename the MAINTAINERS entry to NAND FLASH SUBSYSTEM
+- add Richard as a reviewer
+- add a git tree
+---
+ MAINTAINERS | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-root=ubi:rootfs rootfstype=ubifs ubi.mtd=flash1.rootfs0
-
-However, I just thought that I can use ubiattach to be able to mount
-any given mtd device.  I was looking for a way to get access to a
-currently not used mtd device.  If ubiattach is suitable for this,
-then what may be?
-
-> If you ask UBI to attach to an mtd it will write to it.
-
-Where exactly?  In do_attach() there is only open(), ioctl() and
-close() called.  Where will writing take place?
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 30aca4a..4afa65f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7393,6 +7393,17 @@ W:	https://www.myricom.com/support/downloads/myri10ge.html
+ S:	Supported
+ F:	drivers/net/ethernet/myricom/myri10ge/
+ 
++NAND FLASH SUBSYSTEM
++M:	Boris Brezillon <boris.brezillon@free-electrons.com>
++R:	Richard Weinberger <richard@nod.at>
++L:	linux-mtd@lists.infradead.org
++W:	http://www.linux-mtd.infradead.org/
++Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
++T:	git git://github.com/linux-nand/linux.git
++S:	Maintained
++F:	drivers/mtd/nand/
++F:	include/linux/mtd/nand*.h
++
+ NATSEMI ETHERNET DRIVER (DP8381x)
+ S:	Orphan
+ F:	drivers/net/ethernet/natsemi/natsemi.c
 -- 
-<wempwer@gmail.com>
+2.1.4
