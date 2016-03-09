@@ -1,22 +1,36 @@
-Received: from mx.dave-tech.it ([2.229.21.40])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adh7K-00015l-D9
- for linux-mtd@lists.infradead.org; Wed, 09 Mar 2016 16:37:47 +0000
-Subject: Re: [PATCH 1/2] mtd: nand: use a lower value for badblockbits when
- working with MLC NAND
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-References: <A765B125120D1346A63912DDE6D8B6310BF69672@NTXXIAMBX02.xacn.micron.com>
- <20160309152638.0b5e9250@bbrezillon>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-From: Andrea Scian <rnd4@dave-tech.it>
-Message-ID: <56E0513D.5000508@dave-tech.it>
-Date: Wed, 9 Mar 2016 17:37:17 +0100
+Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1adhaW-00065n-0m
+ for linux-mtd@lists.infradead.org; Wed, 09 Mar 2016 17:07:57 +0000
+Received: by mail-oi0-x234.google.com with SMTP id c203so40416961oia.2
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Mar 2016 09:07:35 -0800 (PST)
+Date: Wed, 9 Mar 2016 11:07:26 -0600
+From: Seth Forshee <seth.forshee@canonical.com>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+ fuse-devel <fuse-devel@lists.sourceforge.net>,
+ LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov
+Subject: Re: [PATCH RESEND v2 16/18] fuse: Support fuse filesystems outside
+ of init_user_ns
+Message-ID: <20160309170726.GB28779@ubuntu-hedt>
+References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
+ <1451930639-94331-17-git-send-email-seth.forshee@canonical.com>
+ <20160309112923.GF8655@tucsk> <20160309141840.GC23399@ubuntu-xps13>
+ <CAJfpegv5JmB15yHpjYxVeOYdWWkoLMftr9-e_iS93Y_7m=t4Zw@mail.gmail.com>
+ <20160309152505.GA28779@ubuntu-hedt>
+ <CAJfpegv5KR_Hi-79a8oyb+R+tv9W3RYqy5pngUKSyauVNk2ScQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20160309152638.0b5e9250@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpegv5KR_Hi-79a8oyb+R+tv9W3RYqy5pngUKSyauVNk2ScQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +40,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Il 09/03/2016 15:26, Boris Brezillon ha scritto:
-> On Tue, 1 Mar 2016 14:47:21 +0000
-> Bean Huo 霍斌斌 (beanhuo) <beanhuo@micron.com> wrote:
->
->> Hi, Andrea and Boris
->> This is a historical subject, and talked before.
->>  From our field issues, 8 bits of bad block mark for MLC NAND is not reasonable.
->> Because of bitflip on bad block mark, regard one good block as a bad block is common
->> Issue. Especially first time boot after reflow. The solution is modified this value to 4 for MLC
->> NAND by hand, and the factory BB mark is “0x00”.
->> I think, 4 bits for MLC NAND make sense.
->
->
-> I'm tempted to say "let's start with this value and see what happens in
-> real world". If we want to be a bit more conservative we could decide
-> to chose 2, which should address most problems too (during my tests, I
-> never seen such a huge concentration of bitflips in the same byte).
->
-> Brian, Andrea, what do you think?
->
+On Wed, Mar 09, 2016 at 04:51:42PM +0100, Miklos Szeredi wrote:
+> On Wed, Mar 9, 2016 at 4:25 PM, Seth Forshee <seth.forshee@canonical.com> wrote:
+> > On Wed, Mar 09, 2016 at 03:48:22PM +0100, Miklos Szeredi wrote:
+> 
+> >> Can't we use current_cred()->uid/gid? Or fsuid/fsgid maybe?
+> >
+> > That would be a departure from the current behavior in the !allow_other
+> > case for unprivileged users. Since those mounts are done by an suid
+> > helper all of those ids would be root in the userns, wouldn't they?
+> 
+> Well, actually this is what the helper does:
+> 
+>     sprintf(d, "fd=%i,rootmode=%o,user_id=%u,group_id=%u",
+>         fd, rootmode, getuid(), getgid());
 
-I'm currently using 4 on my custom kernel.
-On all datasheet I've seen factory bad block marker is 0x00 and the same 
-is (AFAIK) used by MTD to mark bad blocks.
+Sorry, I was thinking of euid. So this may not be a problem.
 
-Kind Regards,
+> So it just uses the current uid/gid.  Apparently no reason to do this
+> in userland, we could just as well set these in the kernel.  Except
+> for possible backward compatibility problems for things not using the
+> helper.
+> 
+> BUT if the mount is unprivileged or it's a userns mount, or anything
+> previously not possible, then we are not constrained by the backward
+> compatibility issues, and can go with the saner solution.
+> 
+> Does that not make sense?
 
--- 
+But we generally do want backwards compatibility, and we want userspace
+software to be able to expect the same behavior whether or not it's
+running in a user namespaced container. Obviously we can't always have
+things 100% identical, but we shouldn't break things unless we really
+need to.
 
-Andrea SCIAN
+However it may be that this isn't actually going to break assumptions of
+existing software like I had feared. My preference is still to not
+change any userspace-visible behaviors since we never know what software
+might have made assumptions based on those behaviors. But if you're
+confident that it won't break anything I'm willing to give it a try.
 
-DAVE Embedded Systems
+> >> When we have true unprivileged mounts, the user_id/group_id options
+> >> become redundant anyway and we can just use the current credentials.
+> >
+> > True, but we don't yet have that.
+> 
+> What's missing?
+
+A user must still be privileged to mount, even if only towards their own
+user and mount namespaces. Maybe that's what you meant though and I just
+misunderstood.
+
+Thanks,
+Seth
