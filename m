@@ -1,12 +1,12 @@
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1addqR-0005rZ-7f
- for linux-mtd@lists.infradead.org; Wed, 09 Mar 2016 13:08:07 +0000
-Received: by mail-wm0-x230.google.com with SMTP id l68so70117788wml.1
- for <linux-mtd@lists.infradead.org>; Wed, 09 Mar 2016 05:07:46 -0800 (PST)
-Date: Wed, 9 Mar 2016 14:08:55 +0100
-From: Miklos Szeredi <miklos@szeredi.hu>
-To: Seth Forshee <seth.forshee@canonical.com>
+ id 1adew8-00045T-FS
+ for linux-mtd@lists.infradead.org; Wed, 09 Mar 2016 14:18:05 +0000
+Received: by mail-oi0-x234.google.com with SMTP id m82so36089282oif.1
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Mar 2016 06:17:43 -0800 (PST)
+Date: Wed, 9 Mar 2016 08:17:41 -0600
+From: Seth Forshee <seth.forshee@canonical.com>
+To: Miklos Szeredi <miklos@szeredi.hu>
 Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
  Alexander Viro <viro@zeniv.linux.org.uk>,
  Serge Hallyn <serge.hallyn@canonical.com>,
@@ -16,15 +16,17 @@ Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
  dm-devel@redhat.com, linux-raid@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
  fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
-Subject: Re: [PATCH RESEND v2 18/18] fuse: Allow user namespace mounts
-Message-ID: <20160309130855.GH8655@tucsk>
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
+ Miklos Szeredi <mszeredi@suse.cz>
+Subject: Re: [PATCH RESEND v2 15/18] fuse: Add support for pid namespaces
+Message-ID: <20160309141741.GB23399@ubuntu-xps13>
 References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
- <1451930639-94331-19-git-send-email-seth.forshee@canonical.com>
+ <1451930639-94331-16-git-send-email-seth.forshee@canonical.com>
+ <20160309105317.GE8655@tucsk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1451930639-94331-19-git-send-email-seth.forshee@canonical.com>
+In-Reply-To: <20160309105317.GE8655@tucsk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,37 +36,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 04, 2016 at 12:03:57PM -0600, Seth Forshee wrote:
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-
-Acked-by: Miklos Szeredi <mszeredi@redhat.com>
-
-> ---
->  fs/fuse/inode.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+On Wed, Mar 09, 2016 at 11:53:17AM +0100, Miklos Szeredi wrote:
+> On Mon, Jan 04, 2016 at 12:03:54PM -0600, Seth Forshee wrote:
+> > If the userspace process servicing fuse requests is running in
+> > a pid namespace then pids passed via the fuse fd need to be
+> > translated relative to that namespace. Capture the pid namespace
+> > in use when the filesystem is mounted and use this for pid
+> > translation.
+> > 
+> > Since no use case currently exists for changing namespaces all
+> > translations are done relative to the pid namespace in use when
+> > /dev/fuse is opened.
 > 
-> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> index b7bdfdac3521..2fd338c199ce 100644
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@ -1201,7 +1201,7 @@ static void fuse_kill_sb_anon(struct super_block *sb)
->  static struct file_system_type fuse_fs_type = {
->  	.owner		= THIS_MODULE,
->  	.name		= "fuse",
-> -	.fs_flags	= FS_HAS_SUBTYPE,
-> +	.fs_flags	= FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
->  	.mount		= fuse_mount,
->  	.kill_sb	= fuse_kill_sb_anon,
->  };
-> @@ -1233,7 +1233,7 @@ static struct file_system_type fuseblk_fs_type = {
->  	.name		= "fuseblk",
->  	.mount		= fuse_mount_blk,
->  	.kill_sb	= fuse_kill_sb_blk,
-> -	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE,
-> +	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
->  };
->  MODULE_ALIAS_FS("fuseblk");
->  
-> -- 
-> 1.9.1
+> The above doesn't match what the patch does.
 > 
+>  - FUSE captures namespace at mount time
+> 
+>  - CUSE captures namespace at /dev/cuse open
+
+Possibly an earlier version of the patch worked that way and I forgot to
+update the description after it change. Anyway, I'll fix it.
+
+> >  Mounting or /dev/fuse IO from another
+> > namespace will return errors.
+> > 
+> > Requests from processes whose pid cannot be translated into the
+> > target namespace are not permitted, except for requests
+> > allocated via fuse_get_req_nofail_nopages. For no-fail requests
+> > in.h.pid will be 0 if the pid translation fails.
+> > 
+> > File locking changes based on previous work done by Eric
+> > Biederman.
+> > 
+> > Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+> > Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+> 
+> Not sure how my SOB got on this patch, use this instead:
+> 
+> Acked-by: Miklos Szeredi <mszeredi@redhat.com>
+
+My memory is that you had sent a patch as a proposed alternative to one
+of my earlier patches, and I squashed the two together and added your
+SOB at that point. I'll change it.
+
+Thanks,
+Seth
