@@ -1,21 +1,18 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-pf0-x22f.google.com ([2607:f8b0:400e:c00::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ae5gD-0007os-Rs
- for linux-mtd@lists.infradead.org; Thu, 10 Mar 2016 18:51:26 +0000
-Received: by mail-pa0-x22e.google.com with SMTP id tt10so73466840pab.3
- for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2016 10:51:02 -0800 (PST)
-Date: Thu, 10 Mar 2016 10:50:59 -0800
+ id 1ae5pG-00039k-Jj
+ for linux-mtd@lists.infradead.org; Thu, 10 Mar 2016 19:00:48 +0000
+Received: by mail-pf0-x22f.google.com with SMTP id 124so75717974pfg.0
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2016 11:00:26 -0800 (PST)
+Date: Thu, 10 Mar 2016 11:00:23 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v2] MAINTAINERS: add a maintainer for the NAND subsystem
-Message-ID: <20160310185059.GA2545@google.com>
-References: <1457557044-7029-1-git-send-email-boris.brezillon@free-electrons.com>
+To: Joe Perches <joe@perches.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: checkpatch.pl false positive: FSF mailing address
+Message-ID: <20160310190023.GB2545@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1457557044-7029-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 09, 2016 at 09:57:24PM +0100, Boris Brezillon wrote:
-> Add myself as the maintainer of the NAND subsystem.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
-> Changes since v1:
-> - rename the MAINTAINERS entry to NAND FLASH SUBSYSTEM
-> - add Richard as a reviewer
-> - add a git tree
+Hi Joe,
 
-Pushed to linux-mtd.git.
+I found this false positive amusing:
 
-I'll take any last NAND inclusions for this upcoming merge window
-directly, but I'll generally defer to you to queue them up in your tree
-first from then on.
+$ curl http://patchwork.ozlabs.org/patch/577786/mbox/ | scripts/checkpatch.pl -
+[...]
+ERROR: Do not include the paragraph about writing to the Free Software
+Foundation's mailing address from the sample GPL notice. The FSF has
+changed addresses in the past, and may do so again. Linux already
+includes a copy of the GPL.
+#1489: FILE: drivers/mtd/nand/qcom_nandc.c:1335:
++^I^I * write to the free oob area.$
+[...]
+
+The patch is:
+  http://patchwork.ozlabs.org/patch/577786/
+  [PATCH v8,2/3] mtd: nand: Qualcomm NAND controller driver
+
+and the comment text is:
+
+  "For the last codeword, we skip the bbm positions and write to the
+  free oob area."
+
+which matches on this:
+
+# Check for FSF mailing addresses.
+                if ($rawline =~ /\bwrite to the Free/i ||
+
+I'm just writing as recommended by the closing text of your tool.
 
 Regards,
 Brian
