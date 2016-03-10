@@ -1,25 +1,18 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-oi0-f68.google.com ([209.85.218.68])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aeA7t-0004r1-S6
- for linux-mtd@lists.infradead.org; Thu, 10 Mar 2016 23:36:18 +0000
-Received: by mail-pa0-x234.google.com with SMTP id td3so51362128pab.2
- for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2016 15:35:56 -0800 (PST)
-From: Florian Fainelli <f.fainelli@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Simon Arlott <simon@fire.lp0.eu>,
- devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
- BINDINGS), linux-kernel@vger.kernel.org (open list),
- bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM STB NAND FLASH
- DRIVER)
-Subject: [PATCH] mtd: brcmnand: Add support for v6.2 controllers
-Date: Thu, 10 Mar 2016 15:34:16 -0800
-Message-Id: <1457652859-767-1-git-send-email-f.fainelli@gmail.com>
+ id 1aeAS7-00058m-AE
+ for linux-mtd@lists.infradead.org; Thu, 10 Mar 2016 23:57:12 +0000
+Received: by mail-oi0-f68.google.com with SMTP id c203so5827869oia.0
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2016 15:56:50 -0800 (PST)
+From: Franklin S Cooper Jr <fcooper@ti.com>
+To: nsekhar@ti.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ rogerq@ti.com, tony@atomide.com, devicetree@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: Franklin S Cooper Jr <fcooper@ti.com>
+Subject: [PATCH v4 0/7] mtd: nand: Fix support for NAND DMA prefetch
+Date: Thu, 10 Mar 2016 17:56:36 -0600
+Message-Id: <1457654203-20856-1-git-send-email-fcooper@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,50 +22,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Document and match the brcm,brcmnand-v6.2 compatible string, the controller has
-a register layout identical to the v6.0 version and supports prefetch. Update the
-command shift logic to account for v6.2 controller which are the first ones to
-use a shift of 0 (6.1 used a shift of 24).
+NAND DMA prefetch has been broken for awhile and seems to have only
+worked for SDMA based devices
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt | 1 +
- drivers/mtd/nand/brcmnand/brcmnand.c                    | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+This patchset fixes DMA prefetch to work on both EDMA and SDMA devices
 
-diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-index c2546ced9c02..deb24cbdda82 100644
---- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-+++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-@@ -24,6 +24,7 @@ Required properties:
-                          brcm,brcmnand-v5.0
-                          brcm,brcmnand-v6.0
-                          brcm,brcmnand-v6.1
-+                         brcm,brcmnand-v6.2
-                          brcm,brcmnand-v7.0
-                          brcm,brcmnand-v7.1
-                          brcm,brcmnand
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index e0528397306a..0b7a698cc233 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -601,7 +601,7 @@ static void brcmnand_wr_corr_thresh(struct brcmnand_host *host, u8 val)
- 
- static inline int brcmnand_cmd_shift(struct brcmnand_controller *ctrl)
- {
--	if (ctrl->nand_version < 0x0700)
-+	if (ctrl->nand_version < 0x0602)
- 		return 24;
- 	return 0;
- }
-@@ -2115,6 +2115,7 @@ static const struct of_device_id brcmnand_of_match[] = {
- 	{ .compatible = "brcm,brcmnand-v5.0" },
- 	{ .compatible = "brcm,brcmnand-v6.0" },
- 	{ .compatible = "brcm,brcmnand-v6.1" },
-+	{ .compatible = "brcm,brcmnand-v6.2" },
- 	{ .compatible = "brcm,brcmnand-v7.0" },
- 	{ .compatible = "brcm,brcmnand-v7.1" },
- 	{},
+Test on:
+am335x gp evm
+am437x gp evm
+am37x gp evm
+
+This rev is pretty much the same as v2 which was blocked due to
+dependencies to Roger's update GPMC/NAND rework.
+
+This updated rev removes this dependency.
+
+Also it fixes an issue that was introduced when the eDMA driver was
+recently updated.
+
+Links to rev 3 patchset:
+https://patchwork.ozlabs.org/patch/595631/
+https://patchwork.ozlabs.org/patch/595626/
+https://patchwork.ozlabs.org/patch/595628/
+https://patchwork.ozlabs.org/patch/595630/
+https://patchwork.ozlabs.org/patch/595627/
+https://patchwork.ozlabs.org/patch/595629/
+
+Links to rev 2 patchset:
+https://patchwork.kernel.org/patch/7408691/
+https://patchwork.kernel.org/patch/7408681/
+https://patchwork.kernel.org/patch/7408661/
+https://patchwork.kernel.org/patch/7408641/
+https://patchwork.kernel.org/patch/7408621/
+
+Franklin S Cooper Jr (7):
+  ARM: OMAP2+: gpmc-nand: Set omap2-nand's parent dev to GPMC dev
+  ARM: dts: am33xx: Fix GPMC dma properties
+  ARM: dts: am437x: Fix GPMC dma properties
+  mtd: nand: omap2: Support parsing dma channel information from DT
+  mtd: nand: omap2: Start dma request before enabling prefetch
+  mtd: nand: omap2: Fix high memory dma prefetch transfer
+  ARM: OMAP2+: Update GPMC and NAND DT binding documentation
+
+ Documentation/devicetree/bindings/bus/ti-gpmc.txt  |  7 +++++-
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |  2 +-
+ arch/arm/boot/dts/am33xx.dtsi                      |  2 +-
+ arch/arm/boot/dts/am4372.dtsi                      |  2 +-
+ arch/arm/mach-omap2/gpmc-nand.c                    | 16 ++++++++++++-
+ drivers/mtd/nand/omap2.c                           | 27 +++++++++-------------
+ 6 files changed, 35 insertions(+), 21 deletions(-)
+
 -- 
-2.1.0
+2.7.0
