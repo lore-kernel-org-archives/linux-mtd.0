@@ -1,18 +1,18 @@
 Received: from mail-oi0-f68.google.com ([209.85.218.68])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adrtV-0001cd-So
+ id 1adrtV-0001d1-Sn
  for linux-mtd@lists.infradead.org; Thu, 10 Mar 2016 04:08:14 +0000
-Received: by mail-oi0-f68.google.com with SMTP id m82so4056256oif.1
- for <linux-mtd@lists.infradead.org>; Wed, 09 Mar 2016 20:07:53 -0800 (PST)
+Received: by mail-oi0-f68.google.com with SMTP id m82so4056465oif.1
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Mar 2016 20:07:56 -0800 (PST)
 From: Franklin S Cooper Jr <fcooper@ti.com>
 To: nsekhar@ti.com, dwmw2@infradead.org, computersforpeace@gmail.com,
  rogerq@ti.com, tony@atomide.com, devicetree@vger.kernel.org,
  linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 Cc: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: [PATCH v3 1/6] memory: omap-gpmc: Store handle to GPMC dev
-Date: Wed,  9 Mar 2016 22:07:36 -0600
-Message-Id: <1457582861-20619-2-git-send-email-fcooper@ti.com>
+Subject: [PATCH v3 5/6] mtd: nand: omap2: Fix high memory dma prefetch transfer
+Date: Wed,  9 Mar 2016 22:07:40 -0600
+Message-Id: <1457582861-20619-6-git-send-email-fcooper@ti.com>
 In-Reply-To: <1457582861-20619-1-git-send-email-fcooper@ti.com>
 References: <1457582861-20619-1-git-send-email-fcooper@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,40 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The dma channel information is located within the GPMC node. The NAND
-driver requires a handle to the GPMC's dev to properly parse the DMA
-properties. Therefore, store a handle to the dev so it can be referenced
-within the NAND driver.
+Based on DMA documentation and testing using high memory buffer when
+doing dma transfers can lead to various issues including kernel
+panics.
+
+To workaround this simply use cpu copy. The amount of high memory
+buffers used are very uncommon so no noticeable performance hit should
+be seen.
 
 Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
 ---
- drivers/memory/omap-gpmc.c                   | 1 +
- include/linux/platform_data/mtd-nand-omap2.h | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/mtd/nand/omap2.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index 6515dfc..2932d13 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -1796,6 +1796,7 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index f7110d1..a174376 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -467,17 +467,8 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
+ 	int ret;
+ 	u32 val;
  
- 	gpmc_nand_data->cs = val;
- 	gpmc_nand_data->of_node = child;
-+	gpmc_nand_data->gpmc_dev = &pdev->dev;
+-	if (addr >= high_memory) {
+-		struct page *p1;
+-
+-		if (((size_t)addr & PAGE_MASK) !=
+-			((size_t)(addr + len - 1) & PAGE_MASK))
+-			goto out_copy;
+-		p1 = vmalloc_to_page(addr);
+-		if (!p1)
+-			goto out_copy;
+-		addr = page_address(p1) + ((size_t)addr & ~PAGE_MASK);
+-	}
++	if (addr >= high_memory)
++		goto out_copy;
  
- 	/* Detect availability of ELM module */
- 	gpmc_nand_data->elm_of_node = of_parse_phandle(child, "ti,elm-id", 0);
-diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-index 090bbab..534b984 100644
---- a/include/linux/platform_data/mtd-nand-omap2.h
-+++ b/include/linux/platform_data/mtd-nand-omap2.h
-@@ -80,5 +80,7 @@ struct omap_nand_platform_data {
- 	/* for passing the partitions */
- 	struct device_node	*of_node;
- 	struct device_node	*elm_of_node;
+ 	sg_init_one(&sg, addr, len);
+ 	n = dma_map_sg(info->dma->device->dev, &sg, 1, dir);
+@@ -534,6 +525,7 @@ out_copy:
+ 	else
+ 		is_write == 0 ? omap_read_buf8(mtd, (u_char *) addr, len)
+ 			: omap_write_buf8(mtd, (u_char *) addr, len);
 +
-+	struct device		*gpmc_dev;
- };
- #endif
+ 	return 0;
+ }
+ 
 -- 
 2.7.0
