@@ -1,21 +1,22 @@
-Received: from mail-oi0-f66.google.com ([209.85.218.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1adrtZ-0001d7-Ul
- for linux-mtd@lists.infradead.org; Thu, 10 Mar 2016 04:08:19 +0000
-Received: by mail-oi0-f66.google.com with SMTP id c203so4056876oia.0
- for <linux-mtd@lists.infradead.org>; Wed, 09 Mar 2016 20:07:57 -0800 (PST)
-From: Franklin S Cooper Jr <fcooper@ti.com>
-To: nsekhar@ti.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- rogerq@ti.com, tony@atomide.com, devicetree@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: [PATCH v3 6/6] ARM: OMAP2+: Update GPMC and NAND DT binding
- documentation
-Date: Wed,  9 Mar 2016 22:07:41 -0600
-Message-Id: <1457582861-20619-7-git-send-email-fcooper@ti.com>
-In-Reply-To: <1457582861-20619-1-git-send-email-fcooper@ti.com>
-References: <1457582861-20619-1-git-send-email-fcooper@ti.com>
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1adwL5-0006Ug-NK
+ for linux-mtd@lists.infradead.org; Thu, 10 Mar 2016 08:53:00 +0000
+Message-ID: <1457599955.22708.5.camel@gmail.com>
+Subject: Re: [PATCH v2] MAINTAINERS: add a maintainer for the NAND subsystem
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Date: Thu, 10 Mar 2016 10:52:35 +0200
+In-Reply-To: <20160309214855.GA30131@google.com>
+References: <1457557044-7029-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20160309214855.GA30131@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add additional details to the GPMC NAND documentation to clarify
-what is needed to enable NAND DMA prefetch.
+On Wed, 2016-03-09 at 13:48 -0800, Brian Norris wrote:
+> On Wed, Mar 09, 2016 at 09:57:24PM +0100, Boris Brezillon wrote:
+> > 
+> > Add myself as the maintainer of the NAND subsystem.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> > Changes since v1:
+> > - rename the MAINTAINERS entry to NAND FLASH SUBSYSTEM
+> > - add Richard as a reviewer
+> > - add a git tree
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
----
-Version 3 changes:
-Slight tweaks to the wording
-
- Documentation/devicetree/bindings/bus/ti-gpmc.txt   | 7 ++++++-
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
- 2 files changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/bus/ti-gpmc.txt b/Documentation/devicetree/bindings/bus/ti-gpmc.txt
-index 704be93..ae6388a 100644
---- a/Documentation/devicetree/bindings/bus/ti-gpmc.txt
-+++ b/Documentation/devicetree/bindings/bus/ti-gpmc.txt
-@@ -33,6 +33,10 @@ Required properties:
- 			As this will change in the future, filling correct
- 			values here is a requirement.
- 
-+Required properties when using NAND prefetch dma:
-+ - dmas			GPMC NAND prefetch dma channel
-+ - dma-names		Must be set to "rxtx"
-+
- Timing properties for child nodes. All are optional and default to 0.
- 
-  - gpmc,sync-clk-ps:	Minimum clock period for synchronous mode, in picoseconds
-@@ -119,7 +123,8 @@ Example for an AM33xx board:
- 		ti,hwmods = "gpmc";
- 		reg = <0x50000000 0x2000>;
- 		interrupts = <100>;
--
-+		dmas = <&edma 52 0>;
-+		dma-names = "rxtx";
- 		gpmc,num-cs = <8>;
- 		gpmc,num-waitpins = <2>;
- 		#address-cells = <2>;
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index fb733c4..7cb9dc56 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -35,7 +35,7 @@ Optional properties:
- 
- 		"prefetch-polled"	Prefetch polled mode (default)
- 		"polled"		Polled mode, without prefetch
--		"prefetch-dma"		Prefetch enabled sDMA mode
-+		"prefetch-dma"		Prefetch enabled DMA mode
- 		"prefetch-irq"		Prefetch enabled irq mode
- 
-  - elm_id:	<deprecated> use "ti,elm-id" instead
--- 
-2.7.0
+Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
