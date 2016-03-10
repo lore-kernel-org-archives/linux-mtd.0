@@ -1,18 +1,19 @@
 Received: from mail-ob0-f196.google.com ([209.85.214.196])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aeAS8-00058p-Vn
+ id 1aeAS8-00058t-Vf
  for linux-mtd@lists.infradead.org; Thu, 10 Mar 2016 23:57:14 +0000
-Received: by mail-ob0-f196.google.com with SMTP id e7so7584368obv.2
- for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2016 15:56:52 -0800 (PST)
+Received: by mail-ob0-f196.google.com with SMTP id hc1so7596008obb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2016 15:56:54 -0800 (PST)
 From: Franklin S Cooper Jr <fcooper@ti.com>
 To: nsekhar@ti.com, dwmw2@infradead.org, computersforpeace@gmail.com,
  rogerq@ti.com, tony@atomide.com, devicetree@vger.kernel.org,
  linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 Cc: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: [PATCH v4 2/7] ARM: dts: am33xx: Fix GPMC dma properties
-Date: Thu, 10 Mar 2016 17:56:38 -0600
-Message-Id: <1457654203-20856-3-git-send-email-fcooper@ti.com>
+Subject: [PATCH v4 5/7] mtd: nand: omap2: Start dma request before enabling
+ prefetch
+Date: Thu, 10 Mar 2016 17:56:41 -0600
+Message-Id: <1457654203-20856-6-git-send-email-fcooper@ti.com>
 In-Reply-To: <1457654203-20856-1-git-send-email-fcooper@ti.com>
 References: <1457654203-20856-1-git-send-email-fcooper@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,31 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch updates the GPMC's DT DMA property to reflect the updated eDMA
-bindings.
+The prefetch engine sends a dma request once a FIFO threshold has
+been met. No other requests are received until the previous request
+is handled.
 
-Fixes: b5e509066074 ("ARM: DTS: am33xx: Use the new DT bindings for the eDMA3")
+Starting an edma transfer (dma_async_issue_pending) results in any
+previous event for the dma channel to be cleared. Therefore, starting
+the prefetch engine before initiating the dma transfer may result in
+the prefetch triggering a dma request but instead of it being handled
+it can end up being cleared. This will result in a hang since the code
+will continue to wait for the dma request to complete.
+
+By initiating the dma request before enabling the prefetch engine this
+race condition is avoided and no dma request are missed/cleared.
 
 Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
 ---
-Version 4 changes:
-Split in its own commit. Uses correct syntax for Fixes
+ drivers/mtd/nand/omap2.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
- arch/arm/boot/dts/am33xx.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-index 1fafaad..97471d6 100644
---- a/arch/arm/boot/dts/am33xx.dtsi
-+++ b/arch/arm/boot/dts/am33xx.dtsi
-@@ -860,7 +860,7 @@
- 			ti,no-idle-on-init;
- 			reg = <0x50000000 0x2000>;
- 			interrupts = <100>;
--			dmas = <&edma 52>;
-+			dmas = <&edma 52 0>;
- 			dma-names = "rxtx";
- 			gpmc,num-cs = <7>;
- 			gpmc,num-waitpins = <2>;
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 95bc636..0863a83 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -497,6 +497,11 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
+ 	tx->callback_param = &info->comp;
+ 	dmaengine_submit(tx);
+ 
++	init_completion(&info->comp);
++
++	/* setup and start DMA using dma_addr */
++	dma_async_issue_pending(info->dma);
++
+ 	/*  configure and start prefetch transfer */
+ 	ret = omap_prefetch_enable(info->gpmc_cs,
+ 		PREFETCH_FIFOTHRESHOLD_MAX, 0x1, len, is_write, info);
+@@ -504,10 +509,6 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
+ 		/* PFPW engine is busy, use cpu copy method */
+ 		goto out_copy_unmap;
+ 
+-	init_completion(&info->comp);
+-	dma_async_issue_pending(info->dma);
+-
+-	/* setup and start DMA using dma_addr */
+ 	wait_for_completion(&info->comp);
+ 	tim = 0;
+ 	limit = (loops_per_jiffy * msecs_to_jiffies(OMAP_NAND_TIMEOUT_MS));
 -- 
 2.7.0
