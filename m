@@ -1,23 +1,21 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ae2T3-0000K8-D0
- for linux-mtd@lists.infradead.org; Thu, 10 Mar 2016 15:25:38 +0000
-From: "Franklin S Cooper Jr." <fcooper@ti.com>
-To: Roger Quadros <rogerq@ti.com>
-CC: <nsekhar@ti.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <tony@atomide.com>, <devicetree@vger.kernel.org>,
- <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/6] memory: omap-gpmc: Store handle to GPMC dev
-References: <1457582861-20619-1-git-send-email-fcooper@ti.com>
- <1457582861-20619-2-git-send-email-fcooper@ti.com> <56E16B20.5070001@ti.com>
- <56E17932.6090304@ti.com> <56E19148.9060207@ti.com>
-Message-ID: <56E191BC.4070705@ti.com>
-Date: Thu, 10 Mar 2016 09:24:44 -0600
+ id 1ae5gD-0007os-Rs
+ for linux-mtd@lists.infradead.org; Thu, 10 Mar 2016 18:51:26 +0000
+Received: by mail-pa0-x22e.google.com with SMTP id tt10so73466840pab.3
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2016 10:51:02 -0800 (PST)
+Date: Thu, 10 Mar 2016 10:50:59 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2] MAINTAINERS: add a maintainer for the NAND subsystem
+Message-ID: <20160310185059.GA2545@google.com>
+References: <1457557044-7029-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <56E19148.9060207@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1457557044-7029-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,72 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Mar 09, 2016 at 09:57:24PM +0100, Boris Brezillon wrote:
+> Add myself as the maintainer of the NAND subsystem.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+> Changes since v1:
+> - rename the MAINTAINERS entry to NAND FLASH SUBSYSTEM
+> - add Richard as a reviewer
+> - add a git tree
 
+Pushed to linux-mtd.git.
 
-On 03/10/2016 09:22 AM, Roger Quadros wrote:
-> Franklin,
->
-> On 10/03/16 15:40, Franklin S Cooper Jr. wrote:
->>
->> On 03/10/2016 06:40 AM, Roger Quadros wrote:
->>> Franklin,
->>>
->>> On 10/03/16 06:07, Franklin S Cooper Jr wrote:
->>>> The dma channel information is located within the GPMC node. The NAND
->>>> driver requires a handle to the GPMC's dev to properly parse the DMA
->>>> properties. Therefore, store a handle to the dev so it can be referenced
->>>> within the NAND driver.
->>>>
->>>> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
->>>> ---
->>>>  drivers/memory/omap-gpmc.c                   | 1 +
->>>>  include/linux/platform_data/mtd-nand-omap2.h | 2 ++
->>>>  2 files changed, 3 insertions(+)
->>>>
->>>> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
->>>> index 6515dfc..2932d13 100644
->>>> --- a/drivers/memory/omap-gpmc.c
->>>> +++ b/drivers/memory/omap-gpmc.c
->>>> @@ -1796,6 +1796,7 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
->>>>  
->>>>  	gpmc_nand_data->cs = val;
->>>>  	gpmc_nand_data->of_node = child;
->>>> +	gpmc_nand_data->gpmc_dev = &pdev->dev;
->>>>  
->>>>  	/* Detect availability of ELM module */
->>>>  	gpmc_nand_data->elm_of_node = of_parse_phandle(child, "ti,elm-id", 0);
->>>> diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
->>>> index 090bbab..534b984 100644
->>>> --- a/include/linux/platform_data/mtd-nand-omap2.h
->>>> +++ b/include/linux/platform_data/mtd-nand-omap2.h
->>>> @@ -80,5 +80,7 @@ struct omap_nand_platform_data {
->>>>  	/* for passing the partitions */
->>>>  	struct device_node	*of_node;
->>>>  	struct device_node	*elm_of_node;
->>>> +
->>>> +	struct device		*gpmc_dev;
->>>>  };
->>>>  #endif
->>>>
->>> Why do you need this? Can't we just use dev->parent in the omap2-nand driver?
->> The omap2-nand platform_device is created by
->> platform_device_alloc. The created platform_device dev
->> parent isn't by default set to the GPMC dev. I didn't think
->> this was the right approach to manually set the parent
->> property. However, taking a look at other usages of
->> platform_device_alloc it seems this is actually pretty
->> common. If your ok with this then I can go that route.
-> After my DT cleanup we no longer use platform_dev_alloc for DT cases.
-> As Nand node is child of GPMC node, omap2 nand's parent is guaranteed to be the
-> GPMC device.
->
-> But for legacy boot we still use gpmc_nand_init() which calls platform_device_add()
-> without setting pdev->parent and so it will set the parent to platform bus.
->
-> Maybe we could patch gpmc_nand_init() to set NAND's parent to GPMC device?
+I'll take any last NAND inclusions for this upcoming merge window
+directly, but I'll generally defer to you to queue them up in your tree
+first from then on.
 
-Yup that was my plan. I'll send a rev 4 with this change and
-also your comments on PATCH 2.
->
-> cheers,
-> -roger
+Regards,
+Brian
