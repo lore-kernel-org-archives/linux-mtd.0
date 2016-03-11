@@ -1,20 +1,19 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aeNde-0006zY-6C
- for linux-mtd@lists.infradead.org; Fri, 11 Mar 2016 14:02:00 +0000
-Subject: Re: [PATCH v4 2/7] ARM: dts: am33xx: Fix GPMC dma properties
+ id 1aeNev-0007RD-KN
+ for linux-mtd@lists.infradead.org; Fri, 11 Mar 2016 14:03:19 +0000
+Subject: Re: [PATCH v4 0/7] mtd: nand: Fix support for NAND DMA prefetch
 To: Franklin S Cooper Jr <fcooper@ti.com>, <nsekhar@ti.com>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <rogerq@ti.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
  <tony@atomide.com>, <devicetree@vger.kernel.org>,
  <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
  <linux-kernel@vger.kernel.org>
 References: <1457654203-20856-1-git-send-email-fcooper@ti.com>
- <1457654203-20856-3-git-send-email-fcooper@ti.com>
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <56E2CF04.4020806@ti.com>
-Date: Fri, 11 Mar 2016 15:58:28 +0200
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <56E2CFF3.3030009@ti.com>
+Date: Fri, 11 Mar 2016 16:02:27 +0200
 MIME-Version: 1.0
-In-Reply-To: <1457654203-20856-3-git-send-email-fcooper@ti.com>
+In-Reply-To: <1457654203-20856-1-git-send-email-fcooper@ti.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,41 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/11/2016 01:56 AM, Franklin S Cooper Jr wrote:
-> This patch updates the GPMC's DT DMA property to reflect the updated eDMA
-> bindings.
-> 
-> Fixes: b5e509066074 ("ARM: DTS: am33xx: Use the new DT bindings for the eDMA3")
+Franklin,
 
-I have double checked the switch over to the new eDMA bindings when I sent it
-and there were no gpmc node existed back then afaik.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
+On 11/03/16 01:56, Franklin S Cooper Jr wrote:
+> NAND DMA prefetch has been broken for awhile and seems to have only
+> worked for SDMA based devices
 > 
-> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
-> ---
-> Version 4 changes:
-> Split in its own commit. Uses correct syntax for Fixes
+> This patchset fixes DMA prefetch to work on both EDMA and SDMA devices
 > 
->  arch/arm/boot/dts/am33xx.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Test on:
+> am335x gp evm
+> am437x gp evm
+> am37x gp evm
 > 
-> diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-> index 1fafaad..97471d6 100644
-> --- a/arch/arm/boot/dts/am33xx.dtsi
-> +++ b/arch/arm/boot/dts/am33xx.dtsi
-> @@ -860,7 +860,7 @@
->  			ti,no-idle-on-init;
->  			reg = <0x50000000 0x2000>;
->  			interrupts = <100>;
-> -			dmas = <&edma 52>;
-> +			dmas = <&edma 52 0>;
->  			dma-names = "rxtx";
->  			gpmc,num-cs = <7>;
->  			gpmc,num-waitpins = <2>;
+> This rev is pretty much the same as v2 which was blocked due to
+> dependencies to Roger's update GPMC/NAND rework.
 > 
+> This updated rev removes this dependency.
+> 
+> Also it fixes an issue that was introduced when the eDMA driver was
+> recently updated.
+> 
+> Links to rev 3 patchset:
+> https://patchwork.ozlabs.org/patch/595631/
+> https://patchwork.ozlabs.org/patch/595626/
+> https://patchwork.ozlabs.org/patch/595628/
+> https://patchwork.ozlabs.org/patch/595630/
+> https://patchwork.ozlabs.org/patch/595627/
+> https://patchwork.ozlabs.org/patch/595629/
+> 
+> Links to rev 2 patchset:
+> https://patchwork.kernel.org/patch/7408691/
+> https://patchwork.kernel.org/patch/7408681/
+> https://patchwork.kernel.org/patch/7408661/
+> https://patchwork.kernel.org/patch/7408641/
+> https://patchwork.kernel.org/patch/7408621/
+> 
+> Franklin S Cooper Jr (7):
+>   ARM: OMAP2+: gpmc-nand: Set omap2-nand's parent dev to GPMC dev
+>   ARM: dts: am33xx: Fix GPMC dma properties
+>   ARM: dts: am437x: Fix GPMC dma properties
+
+Can you please fix the gpmc nodes in dm816x.dtsi and dm814x.dtsi as well?
+You can use linux-next tree or [1] to see the latest changes to these files
+that will end up in v4.6 and base your changes on that.
+
+[1] Tony's omap-for-v4.6/dt
+https://git.kernel.org/cgit/linux/kernel/git/tmlind/linux-omap.git/log/?h=omap-for-v4.6/dt
 
 
--- 
-Péter
+>   mtd: nand: omap2: Support parsing dma channel information from DT
+>   mtd: nand: omap2: Start dma request before enabling prefetch
+>   mtd: nand: omap2: Fix high memory dma prefetch transfer
+>   ARM: OMAP2+: Update GPMC and NAND DT binding documentation
+> 
+>  Documentation/devicetree/bindings/bus/ti-gpmc.txt  |  7 +++++-
+>  .../devicetree/bindings/mtd/gpmc-nand.txt          |  2 +-
+>  arch/arm/boot/dts/am33xx.dtsi                      |  2 +-
+>  arch/arm/boot/dts/am4372.dtsi                      |  2 +-
+>  arch/arm/mach-omap2/gpmc-nand.c                    | 16 ++++++++++++-
+>  drivers/mtd/nand/omap2.c                           | 27 +++++++++-------------
+>  6 files changed, 35 insertions(+), 21 deletions(-)
+> 
+
+cheers,
+-roger
