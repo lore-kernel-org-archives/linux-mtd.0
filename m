@@ -1,20 +1,22 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aeJq9-0002wq-GL
- for linux-mtd@lists.infradead.org; Fri, 11 Mar 2016 09:58:38 +0000
-Date: Fri, 11 Mar 2016 10:58:05 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v2] MAINTAINERS: add a maintainer for the NAND subsystem
-Message-ID: <20160311105805.2bbdff2f@bbrezillon>
-In-Reply-To: <20160310185059.GA2545@google.com>
-References: <1457557044-7029-1-git-send-email-boris.brezillon@free-electrons.com>
- <20160310185059.GA2545@google.com>
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aeNVm-00029K-By
+ for linux-mtd@lists.infradead.org; Fri, 11 Mar 2016 13:53:51 +0000
+Subject: Re: [PATCH v4 1/7] ARM: OMAP2+: gpmc-nand: Set omap2-nand's parent
+ dev to GPMC dev
+To: Franklin S Cooper Jr <fcooper@ti.com>, <nsekhar@ti.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <tony@atomide.com>, <devicetree@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+References: <1457654203-20856-1-git-send-email-fcooper@ti.com>
+ <1457654203-20856-2-git-send-email-fcooper@ti.com>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <56E2CDB7.2080306@ti.com>
+Date: Fri, 11 Mar 2016 15:52:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1457654203-20856-2-git-send-email-fcooper@ti.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,32 +27,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 10 Mar 2016 10:50:59 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
+Franklin,
 
-> On Wed, Mar 09, 2016 at 09:57:24PM +0100, Boris Brezillon wrote:
-> > Add myself as the maintainer of the NAND subsystem.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> > Changes since v1:
-> > - rename the MAINTAINERS entry to NAND FLASH SUBSYSTEM
-> > - add Richard as a reviewer
-> > - add a git tree
+On 11/03/16 01:56, Franklin S Cooper Jr wrote:
+> The dma channel information is located within the GPMC node which is the
+> NAND's parent node. The NAND driver requires a handle to the GPMC's dev
+> to properly parse the DMA properties. Therefore, set the NAND's parent dev
+> to the GPMC's dev so it can be referenced within the driver.
 > 
-> Pushed to linux-mtd.git.
+> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+> ---
+> Version 4 changes:
+> Instead of storing the GPMC dev in a new property simply grab a reference
+> to it and set omap2-nand's dev.parent to it.
 > 
-> I'll take any last NAND inclusions for this upcoming merge window
-> directly, but I'll generally defer to you to queue them up in your tree
-> first from then on.
+>  arch/arm/mach-omap2/gpmc-nand.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
+> index 72918c4..77e453c 100644
+> --- a/arch/arm/mach-omap2/gpmc-nand.c
+> +++ b/arch/arm/mach-omap2/gpmc-nand.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/omap-gpmc.h>
+>  #include <linux/mtd/nand.h>
+>  #include <linux/platform_data/mtd-nand-omap2.h>
+> +#include <linux/of_platform.h>
+>  
+>  #include <asm/mach/flash.h>
+>  
+> @@ -77,6 +78,9 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
+>  	int err	= 0;
+>  	struct gpmc_settings s;
+>  	struct platform_device *pdev;
+> +	struct platform_device *gpmc_dev;
+> +	struct device_node *gpmc_node;
+> +
+>  	struct resource gpmc_nand_res[] = {
+>  		{ .flags = IORESOURCE_MEM, },
+>  		{ .flags = IORESOURCE_IRQ, },
+> @@ -134,8 +138,18 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
+>  	if (pdev) {
+>  		err = platform_device_add_resources(pdev, gpmc_nand_res,
+>  						    ARRAY_SIZE(gpmc_nand_res));
+> -		if (!err)
+> +		if (!err) {
+>  			pdev->dev.platform_data = gpmc_nand_data;
+> +
+> +			gpmc_node = of_get_parent(gpmc_nand_data->of_node);
 
-Okay.
+I'm afraid that we can't use this method as we want to restrict
+gpmc_nand_init() to non-DT boots.
 
-Thanks,
+> +
+> +			if (gpmc_node) {
+> +				gpmc_dev = of_find_device_by_node(gpmc_node);
+> +
+> +				if (gpmc_dev)
+> +					pdev->dev.parent = &gpmc_dev->dev;
+> +			}
+> +		}
+>  	} else {
+>  		err = -ENOMEM;
+>  	}
+> 
 
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+cheers,
+-roger
