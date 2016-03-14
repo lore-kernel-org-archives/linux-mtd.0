@@ -1,36 +1,29 @@
-Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1afZZx-0005gn-Om
- for linux-mtd@lists.infradead.org; Mon, 14 Mar 2016 20:59:07 +0000
-Received: by mail-oi0-x241.google.com with SMTP id m82so11848525oif.1
- for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2016 13:58:44 -0700 (PDT)
+ id 1afdHl-0005dL-DT
+ for linux-mtd@lists.infradead.org; Tue, 15 Mar 2016 00:56:34 +0000
+Message-ID: <56E73F7B.2010408@denx.de>
+Date: Mon, 14 Mar 2016 23:47:23 +0100
+From: Marek Vasut <marex@denx.de>
 MIME-Version: 1.0
-In-Reply-To: <20160309170726.GB28779@ubuntu-hedt>
-References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
- <1451930639-94331-17-git-send-email-seth.forshee@canonical.com>
- <20160309112923.GF8655@tucsk> <20160309141840.GC23399@ubuntu-xps13>
- <CAJfpegv5JmB15yHpjYxVeOYdWWkoLMftr9-e_iS93Y_7m=t4Zw@mail.gmail.com>
- <20160309152505.GA28779@ubuntu-hedt>
- <CAJfpegv5KR_Hi-79a8oyb+R+tv9W3RYqy5pngUKSyauVNk2ScQ@mail.gmail.com>
- <20160309170726.GB28779@ubuntu-hedt>
-Date: Mon, 14 Mar 2016 21:58:43 +0100
-Message-ID: <CAJfpegvTuR-LZAVxeJAmojs=gcrM-t5dd-QyZM-bOYMYLRL6Dg@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2 16/18] fuse: Support fuse filesystems outside of
- init_user_ns
-From: Miklos Szeredi <miklos@szeredi.hu>
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-bcache@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-mtd@lists.infradead.org, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
- fuse-devel <fuse-devel@lists.sourceforge.net>,
- LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov
-Content-Type: text/plain; charset=UTF-8
+To: Graham Moore <grmoore@opensource.altera.com>, Vignesh R <vigneshr@ti.com>
+CC: Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Alan Tull <atull@opensource.altera.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <201602060842.38290.marex@denx.de> <56B879BD.2070608@ti.com>
+ <201602081627.57666.marex@denx.de> <56BB60F1.9070306@opensource.altera.com>
+ <56BB629D.2040209@denx.de> <56E1DF45.901@opensource.altera.com>
+ <56E1E2C8.8030405@denx.de> <56E70024.3080205@opensource.altera.com>
+In-Reply-To: <56E70024.3080205@opensource.altera.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,48 +33,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 9, 2016 at 6:07 PM, Seth Forshee <seth.forshee@canonical.com> wrote:
-> On Wed, Mar 09, 2016 at 04:51:42PM +0100, Miklos Szeredi wrote:
->> On Wed, Mar 9, 2016 at 4:25 PM, Seth Forshee <seth.forshee@canonical.com> wrote:
->> > On Wed, Mar 09, 2016 at 03:48:22PM +0100, Miklos Szeredi wrote:
+On 03/14/2016 07:17 PM, Graham Moore wrote:
+> On 03/10/2016 03:10 PM, Marek Vasut wrote:
+>> On 03/10/2016 09:55 PM, Graham Moore wrote:
+>>> On 02/10/2016 10:17 AM, Marek Vasut wrote:
+>>>
+>>> [...]
+>>>
+>>>> All right, so we will just add a special property or compat string for
+>>>> the TI SoC. But we need to get this driver mainlined first :)
+>>>>
+>>>
+>>> Hi Marek,
 >>
->> >> Can't we use current_cred()->uid/gid? Or fsuid/fsgid maybe?
->> >
->> > That would be a departure from the current behavior in the !allow_other
->> > case for unprivileged users. Since those mounts are done by an suid
->> > helper all of those ids would be root in the userns, wouldn't they?
+>> Hi Graham,
 >>
->> Well, actually this is what the helper does:
+>>> How's that mainlining going?  You probably noticed this patch needed
+>>> some refactoring for 4.4.  In the course of testing, we realized this
+>>> driver needs to enable its clock.
+>>>
+>>> Do you have a 4.4 or later version in your tree?  I'd like to add the
+>>> clock enabling.
 >>
->>     sprintf(d, "fd=%i,rootmode=%o,user_id=%u,group_id=%u",
->>         fd, rootmode, getuid(), getgid());
->
-> Sorry, I was thinking of euid. So this may not be a problem.
->
->> So it just uses the current uid/gid.  Apparently no reason to do this
->> in userland, we could just as well set these in the kernel.  Except
->> for possible backward compatibility problems for things not using the
->> helper.
+>> Still waiting for the patches from Cyrille to go in, so this patch is
+>> stuck. I just checked next and some of them made it, but there are more
+>> which didn't. I have a V10 of this patch , it is in the ML already [1],
+>> so try playing around with that.
 >>
->> BUT if the mount is unprivileged or it's a userns mount, or anything
->> previously not possible, then we are not constrained by the backward
->> compatibility issues, and can go with the saner solution.
+>> I have linux 4.4 branch with all the necessary patches backported and/or
+>> applied if you'd be interested in that, but I do my development on
+>> linux-next .
 >>
->> Does that not make sense?
->
-> But we generally do want backwards compatibility, and we want userspace
-> software to be able to expect the same behavior whether or not it's
-> running in a user namespaced container. Obviously we can't always have
-> things 100% identical, but we shouldn't break things unless we really
-> need to.
->
-> However it may be that this isn't actually going to break assumptions of
-> existing software like I had feared. My preference is still to not
-> change any userspace-visible behaviors since we never know what software
-> might have made assumptions based on those behaviors. But if you're
-> confident that it won't break anything I'm willing to give it a try.
+>> What sort of clock patch are you missing ?
+>>
+> 
+> The clock needs to be enabled, after the devm_clk_get().  I've added a
+> clk_prepare_enable() there, and also clk_disable_unprepare() in the
+> remove function.
 
-I'm quite confident it won't make a difference.
+Yeah, please send me a patch and I will add it into the driver, add your
+SoB line and repost.
 
-Thanks,
-Miklos
+> That ML patch won't apply to any tree I have, 4.4, 4.5, linux-next, etc.
+>  Maybe I'll just wait until it's in linux-next.
+
+I'll send you the backport to 4.4 off-list, so I don't bother people here.
+
+> -Graham
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
