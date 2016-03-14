@@ -1,20 +1,28 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-bn1bon0098.outbound.protection.outlook.com
+ ([157.56.111.98] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1afTKg-0004vL-Eb
- for linux-mtd@lists.infradead.org; Mon, 14 Mar 2016 14:18:55 +0000
-Subject: Re: [PATCH v4 0/7] mtd: nand: Fix support for NAND DMA prefetch
-To: Roger Quadros <rogerq@ti.com>, <nsekhar@ti.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <tony@atomide.com>,
- <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <1457654203-20856-1-git-send-email-fcooper@ti.com>
- <56E2CFF3.3030009@ti.com>
-From: "Franklin S Cooper Jr." <fcooper@ti.com>
-Message-ID: <56E6C7EF.3030501@ti.com>
-Date: Mon, 14 Mar 2016 09:17:19 -0500
+ id 1afX7j-0005P6-Kk
+ for linux-mtd@lists.infradead.org; Mon, 14 Mar 2016 18:21:49 +0000
+Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver.
+To: Marek Vasut <marex@denx.de>, Vignesh R <vigneshr@ti.com>
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <201602060842.38290.marex@denx.de> <56B879BD.2070608@ti.com>
+ <201602081627.57666.marex@denx.de> <56BB60F1.9070306@opensource.altera.com>
+ <56BB629D.2040209@denx.de> <56E1DF45.901@opensource.altera.com>
+ <56E1E2C8.8030405@denx.de>
+CC: Brian Norris <computersforpeace@gmail.com>, Rob Herring <robh@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Alan Tull
+ <atull@opensource.altera.com>, David Woodhouse <dwmw2@infradead.org>, "Dinh
+ Nguyen" <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+From: Graham Moore <grmoore@opensource.altera.com>
+Message-ID: <56E70024.3080205@opensource.altera.com>
+Date: Mon, 14 Mar 2016 13:17:08 -0500
 MIME-Version: 1.0
-In-Reply-To: <56E2CFF3.3030009@ti.com>
-Content-Type: text/plain; charset="windows-1252"
+In-Reply-To: <56E1E2C8.8030405@denx.de>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,72 +33,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 03/11/2016 08:02 AM, Roger Quadros wrote:
-> Franklin,
+On 03/10/2016 03:10 PM, Marek Vasut wrote:
+> On 03/10/2016 09:55 PM, Graham Moore wrote:
+>> On 02/10/2016 10:17 AM, Marek Vasut wrote:
+>>
+>> [...]
+>>
+>>> All right, so we will just add a special property or compat string for
+>>> the TI SoC. But we need to get this driver mainlined first :)
+>>>
+>>
+>> Hi Marek,
 >
-> On 11/03/16 01:56, Franklin S Cooper Jr wrote:
->> NAND DMA prefetch has been broken for awhile and seems to have only
->> worked for SDMA based devices
->>
->> This patchset fixes DMA prefetch to work on both EDMA and SDMA devices
->>
->> Test on:
->> am335x gp evm
->> am437x gp evm
->> am37x gp evm
->>
->> This rev is pretty much the same as v2 which was blocked due to
->> dependencies to Roger's update GPMC/NAND rework.
->>
->> This updated rev removes this dependency.
->>
->> Also it fixes an issue that was introduced when the eDMA driver was
->> recently updated.
->>
->> Links to rev 3 patchset:
->> https://patchwork.ozlabs.org/patch/595631/
->> https://patchwork.ozlabs.org/patch/595626/
->> https://patchwork.ozlabs.org/patch/595628/
->> https://patchwork.ozlabs.org/patch/595630/
->> https://patchwork.ozlabs.org/patch/595627/
->> https://patchwork.ozlabs.org/patch/595629/
->>
->> Links to rev 2 patchset:
->> https://patchwork.kernel.org/patch/7408691/
->> https://patchwork.kernel.org/patch/7408681/
->> https://patchwork.kernel.org/patch/7408661/
->> https://patchwork.kernel.org/patch/7408641/
->> https://patchwork.kernel.org/patch/7408621/
->>
->> Franklin S Cooper Jr (7):
->>   ARM: OMAP2+: gpmc-nand: Set omap2-nand's parent dev to GPMC dev
->>   ARM: dts: am33xx: Fix GPMC dma properties
->>   ARM: dts: am437x: Fix GPMC dma properties
-> Can you please fix the gpmc nodes in dm816x.dtsi and dm814x.dtsi as well?
-> You can use linux-next tree or [1] to see the latest changes to these files
-> that will end up in v4.6 and base your changes on that.
+> Hi Graham,
 >
-> [1] Tony's omap-for-v4.6/dt
-> https://git.kernel.org/cgit/linux/kernel/git/tmlind/linux-omap.git/log/?h=omap-for-v4.6/dt
+>> How's that mainlining going?  You probably noticed this patch needed
+>> some refactoring for 4.4.  In the course of testing, we realized this
+>> driver needs to enable its clock.
+>>
+>> Do you have a 4.4 or later version in your tree?  I'd like to add the
+>> clock enabling.
+>
+> Still waiting for the patches from Cyrille to go in, so this patch is
+> stuck. I just checked next and some of them made it, but there are more
+> which didn't. I have a V10 of this patch , it is in the ML already [1],
+> so try playing around with that.
+>
+> I have linux 4.4 branch with all the necessary patches backported and/or
+> applied if you'd be interested in that, but I do my development on
+> linux-next .
+>
+> What sort of clock patch are you missing ?
+>
 
-Sorry I didn't bother looking at dm816 and dm814 dtsi files
-since I assumed it didn't use edma since the recent edma
-updates didn't make updates for those devices. My mistake.
-I'll update those dtsi files.
->>   mtd: nand: omap2: Support parsing dma channel information from DT
->>   mtd: nand: omap2: Start dma request before enabling prefetch
->>   mtd: nand: omap2: Fix high memory dma prefetch transfer
->>   ARM: OMAP2+: Update GPMC and NAND DT binding documentation
->>
->>  Documentation/devicetree/bindings/bus/ti-gpmc.txt  |  7 +++++-
->>  .../devicetree/bindings/mtd/gpmc-nand.txt          |  2 +-
->>  arch/arm/boot/dts/am33xx.dtsi                      |  2 +-
->>  arch/arm/boot/dts/am4372.dtsi                      |  2 +-
->>  arch/arm/mach-omap2/gpmc-nand.c                    | 16 ++++++++++++-
->>  drivers/mtd/nand/omap2.c                           | 27 +++++++++-------------
->>  6 files changed, 35 insertions(+), 21 deletions(-)
->>
-> cheers,
-> -roger
+The clock needs to be enabled, after the devm_clk_get().  I've added a 
+clk_prepare_enable() there, and also clk_disable_unprepare() in the 
+remove function.
+
+That ML patch won't apply to any tree I have, 4.4, 4.5, linux-next, etc. 
+  Maybe I'll just wait until it's in linux-next.
+
+-Graham
