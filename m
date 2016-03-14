@@ -1,18 +1,18 @@
-Received: from mail-pa0-x244.google.com ([2607:f8b0:400e:c03::244])
+Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1afIb7-0004o4-AM
- for linux-mtd@lists.infradead.org; Mon, 14 Mar 2016 02:51:11 +0000
-Received: by mail-pa0-x244.google.com with SMTP id hj7so13598667pac.1
- for <linux-mtd@lists.infradead.org>; Sun, 13 Mar 2016 19:50:49 -0700 (PDT)
+ id 1afIb8-0004o5-U0
+ for linux-mtd@lists.infradead.org; Mon, 14 Mar 2016 02:51:13 +0000
+Received: by mail-pa0-x242.google.com with SMTP id q6so13621738pav.0
+ for <linux-mtd@lists.infradead.org>; Sun, 13 Mar 2016 19:50:50 -0700 (PDT)
 From: Peter Pan <peterpansjtu@gmail.com>
 To: computersforpeace@gmail.com, dwmw2@infradead.org,
  boris.brezillon@free-electrons.com
 Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  karlzhang@micron.com, beanhuo@micron.com, xuejiancheng@huawei.com,
  Peter Pan <peterpandong@micron.com>
-Subject: [PATCH 05/11] mtd: nand: use new BBT API instead of old ones
-Date: Mon, 14 Mar 2016 02:47:58 +0000
-Message-Id: <1457923684-13505-6-git-send-email-peterpandong@micron.com>
+Subject: [PATCH 06/11] mtd: nand_bbt: use struct nand_bbt_ops in BBT
+Date: Mon, 14 Mar 2016 02:47:59 +0000
+Message-Id: <1457923684-13505-7-git-send-email-peterpandong@micron.com>
 In-Reply-To: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
 References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,317 +24,310 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use new BBT APIs (nand_bbt_*()) in NAND. Keep old APIs (nand_*_bbt())
-exist temporarily.
+From: Brian Norris <computersforpeace@gmail.com>
+
+Since NAND already create its nand_bbt struct, we can use erase()
+hook instead of call nand_erase_nand() directly. Also, we can use
+is_bad_bbm() to avoid passing badblock_pattern to BBT.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+[Peter: remove @buf in create_bbt()
+	introduce struct nand_bbt_ops]
 Signed-off-by: Peter Pan <peterpandong@micron.com>
 ---
- drivers/mtd/nand/docg4.c     |   7 +-
- drivers/mtd/nand/nand_base.c | 151 ++++++++++++++++++++++++++++++++++++++++---
- include/linux/mtd/nand.h     |  15 ++++-
- 3 files changed, 160 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/nand_bbt.c | 140 +++++---------------------------------------
+ 1 file changed, 14 insertions(+), 126 deletions(-)
 
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index d86a60e..6fce881 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -1021,6 +1021,7 @@ static int __init read_factory_bbt(struct mtd_info *mtd)
- 	uint8_t *buf;
- 	int i, block;
- 	__u32 eccfailed_stats = mtd->ecc_stats.failed;
-+	struct nand_bbt *nand_bbt = nand_get_bbt(nand);
- 
- 	buf = kzalloc(DOCG4_PAGE_SIZE, GFP_KERNEL);
- 	if (buf == NULL)
-@@ -1036,7 +1037,7 @@ static int __init read_factory_bbt(struct mtd_info *mtd)
- 	 * operation after device power-up.  The above read ensures it never is.
- 	 * Ugly, I know.
- 	 */
--	if (nand->bbt == NULL)  /* no memory-based bbt */
-+	if (nand_bbt == NULL)  /* no memory-based bbt */
- 		goto exit;
- 
- 	if (mtd->ecc_stats.failed > eccfailed_stats) {
-@@ -1063,8 +1064,8 @@ static int __init read_factory_bbt(struct mtd_info *mtd)
- 		unsigned long bits = ~buf[i];
- 		for_each_set_bit(bitnum, &bits, 8) {
- 			int badblock = block + 7 - bitnum;
--			nand->bbt[badblock / 4] |=
--				0x03 << ((badblock % 4) * 2);
-+			nand_bbt_markbad_factory(nand_bbt,
-+					badblock << nand->bbt_erase_shift);
- 			mtd->ecc_stats.badblocks++;
- 			dev_notice(doc->dev, "factory-marked bad block: %d\n",
- 				   badblock);
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index b6facac..6f0e3b9 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -417,6 +417,7 @@ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	int res, ret = 0;
-+	struct nand_bbt *nand_bbt = nand_get_bbt(chip);
- 
- 	if (!(chip->bbt_options & NAND_BBT_NO_OOB_BBM)) {
- 		struct erase_info einfo;
-@@ -435,8 +436,8 @@ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
- 	}
- 
- 	/* Mark block bad in BBT */
--	if (chip->bbt) {
--		res = nand_markbad_bbt(mtd, ofs);
-+	if (nand_bbt) {
-+		res = nand_bbt_markbad(nand_bbt, ofs);
- 		if (!ret)
- 			ret = res;
- 	}
-@@ -477,11 +478,12 @@ static int nand_check_wp(struct mtd_info *mtd)
- static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_bbt *nand_bbt = nand_get_bbt(chip);
- 
--	if (!chip->bbt)
-+	if (!nand_bbt)
- 		return 0;
- 	/* Return info from the table */
--	return nand_isreserved_bbt(mtd, ofs);
-+	return nand_bbt_isreserved(nand_bbt, ofs);
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 2ac90a1..d319822 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -122,23 +122,6 @@ static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_desc
  }
  
  /**
-@@ -496,12 +498,18 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
- static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int allowbbt)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_bbt *nand_bbt = nand_get_bbt(chip);
- 
--	if (!chip->bbt)
-+	if (!nand_bbt)
- 		return chip->block_bad(mtd, ofs);
- 
- 	/* Return info from the table */
--	return nand_isbad_bbt(mtd, ofs, allowbbt);
-+	if (nand_bbt_isbad(nand_bbt, ofs))
-+		return 1;
-+	else if (allowbbt)
-+		return 0;
-+	else
-+		return nand_bbt_isreserved(nand_bbt, ofs);
- }
- 
- /**
-@@ -2996,6 +3004,129 @@ erase_exit:
- 	return ret;
- }
- 
-+/* NAND BBT helper - erase a block, including reserved blocks */
-+static int nand_bbt_erase_block(struct mtd_info *mtd, loff_t addr)
-+{
-+	struct erase_info einfo;
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+
-+	memset(&einfo, 0, sizeof(einfo));
-+	einfo.mtd = mtd;
-+	einfo.addr = addr;
-+	einfo.len = 1ULL << chip->phys_erase_shift;
-+
-+	return nand_erase_nand(mtd, &einfo, 1);
-+}
-+
-+static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
-+#define BADBLOCK_SCAN_MASK (~NAND_BBT_NO_OOB)
-+/**
-+ * nand_create_factory_badblock_pattern - [INTERN] Creates a BBT descriptor
-+ * structure for factory bad block marker
-+ * @chip: NAND chip to create descriptor for
-+ *
-+ * This function allocates and initializes a badblock_pattern for factory bad
-+ * block marker based on the properties of @chip when chip.badblock_pattern
-+ * is NULL.
-+ */
-+static int nand_create_factory_badblock_pattern(struct nand_chip *chip)
-+{
-+	struct nand_bbt_descr *bd;
-+
-+	if (chip->badblock_pattern) {
-+		pr_warn("Bad block pattern already allocated; not replacing\n");
-+		return -EINVAL;
-+	}
-+	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
-+	if (!bd)
-+		return -ENOMEM;
-+	bd->options = chip->bbt_options & BADBLOCK_SCAN_MASK;
-+	bd->offs = chip->badblockpos;
-+	bd->len = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
-+	bd->pattern = scan_ff_pattern;
-+	bd->options |= NAND_BADBLOCK_PATTERN_ALLOC;
-+	chip->badblock_pattern = bd;
-+
-+	return 0;
-+}
-+
-+static int nand_is_bad_bbm(struct mtd_info *mtd, loff_t addr)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct mtd_oob_ops ops;
-+	struct nand_bbt_descr *bd = chip->badblock_pattern;
-+	int j, ret;
-+	int numpages;
-+
-+	if (bd->options & NAND_BBT_SCAN2NDPAGE)
-+		numpages = 2;
-+	else
-+		numpages = 1;
-+
-+	if (bd->options & NAND_BBT_SCANLASTPAGE)
-+		addr += mtd->erasesize - (mtd->writesize * numpages);
-+
-+	ops.ooblen = mtd->oobsize;
-+	ops.oobbuf = chip->buffers->databuf;
-+	ops.ooboffs = 0;
-+	ops.datbuf = NULL;
-+	ops.mode = MTD_OPS_PLACE_OOB;
-+
-+	for (j = 0; j < numpages; j++) {
-+		/*
-+		 * Read the full oob until read_oob is fixed to handle single
-+		 * byte reads for 16 bit buswidth.
-+		 */
-+		ret = nand_do_read_oob(mtd, addr, &ops);
-+		/* Ignore ECC errors when checking for BBM */
-+		if (ret && !mtd_is_bitflip_or_eccerr(ret))
-+			return ret;
-+
-+		if (memcmp(chip->buffers->databuf + bd->offs,
-+				bd->pattern, bd->len))
-+			return 1;
-+
-+		addr += mtd->writesize;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct nand_bbt_ops default_bbt_ops = {
-+	.erase = nand_bbt_erase_block,
-+	.is_bad_bbm = nand_is_bad_bbm,
-+};
-+
-+static int nand_default_bbt(struct mtd_info *mtd)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_bbt *nand_bbt = NULL;
-+	struct nand_chip_layout_info *info =
-+		kzalloc(sizeof(struct nand_chip_layout_info), GFP_KERNEL);
-+
-+	if (!info)
-+		return -ENOMEM;
-+
-+	info->numchips = chip->numchips;
-+	info->chipsize = chip->chipsize;
-+	info->chip_shift = chip->chip_shift;
-+	info->bbt_erase_shift = chip->phys_erase_shift;
-+	info->page_shift = chip->page_shift;
-+
-+	if (!chip->badblock_pattern &&
-+		nand_create_factory_badblock_pattern(chip))
-+		return -ENOMEM;
-+
-+	nand_bbt = nand_bbt_create(mtd, &default_bbt_ops,
-+				info, chip->bbt_options,
-+				chip->bbt_td, chip->bbt_md);
-+	if (IS_ERR(nand_bbt))
-+		return PTR_ERR(nand_bbt);
-+	chip->nand_bbt = nand_bbt;
-+
-+	return 0;
-+}
-+
- /**
-  * nand_sync - [MTD Interface] sync
-  * @mtd: MTD device structure
-@@ -4456,20 +4587,22 @@ EXPORT_SYMBOL(nand_scan);
- void nand_release(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_bbt *nand_bbt = nand_get_bbt(chip);
- 
- 	if (chip->ecc.mode == NAND_ECC_SOFT_BCH)
- 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
- 
- 	mtd_device_unregister(mtd);
- 
--	/* Free bad block table memory */
--	kfree(chip->bbt);
-+	/* Destroy bad block table */
-+	if (nand_bbt)
-+		nand_bbt_destroy(nand_bbt);
- 	if (!(chip->options & NAND_OWN_BUFFERS))
- 		kfree(chip->buffers);
- 
- 	/* Free bad block descriptor memory */
- 	if (chip->badblock_pattern && chip->badblock_pattern->options
--			& NAND_BBT_DYNAMICSTRUCT)
-+			& NAND_BADBLOCK_PATTERN_ALLOC)
- 		kfree(chip->badblock_pattern);
- }
- EXPORT_SYMBOL_GPL(nand_release);
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 56574ba..5072041 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -204,6 +204,12 @@ typedef enum {
-  */
- #define NAND_USE_BOUNCE_BUFFER	0x00100000
- 
-+/*
-+ * Flag to mark that the badblock_pattern is allocated dynamicaly and must
-+ * be freed in nand_release().
-+ */
-+#define NAND_BADBLOCK_PATTERN_ALLOC	0x08000000
-+
- /* Options set by nand scan */
- /* Nand scan has allocated controller struct */
- #define NAND_CONTROLLER_ALLOC	0x80000000
-@@ -646,6 +652,8 @@ struct nand_buffers {
-  * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
-  * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
-  * @bbt:		[INTERN] bad block table pointer
-+ * @nand_bbt:		[INTERN] pointer to bad block table structure, which
-+ *			includes all information needed by Bad Block Management
-  * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
-  *			lookup.
-  * @bbt_md:		[REPLACEABLE] bad block table mirror descriptor
-@@ -732,6 +740,7 @@ struct nand_chip {
- 	struct nand_hw_control hwcontrol;
- 
- 	uint8_t *bbt;
-+	struct nand_bbt *nand_bbt;
- 	struct nand_bbt_descr *bbt_td;
- 	struct nand_bbt_descr *bbt_md;
- 
-@@ -884,7 +893,6 @@ struct nand_manufacturers {
- extern struct nand_flash_dev nand_flash_ids[];
- extern struct nand_manufacturers nand_manuf_ids[];
- 
--extern int nand_default_bbt(struct mtd_info *mtd);
- extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
- extern int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
- extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
-@@ -1014,6 +1022,11 @@ static inline int jedec_feature(struct nand_chip *chip)
- 		: 0;
- }
- 
-+static inline struct nand_bbt *nand_get_bbt(struct nand_chip *chip)
-+{
-+	return chip->nand_bbt;
-+}
-+
- /*
-  * struct nand_sdr_timings - SDR NAND chip timings
+- * check_short_pattern - [GENERIC] check if a pattern is in the buffer
+- * @buf: the buffer to search
+- * @td:	search pattern descriptor
+- *
+- * Check for a pattern at the given place. Used to search bad block tables and
+- * good / bad block identifiers. Same as check_pattern, but no optional empty
+- * check.
+- */
+-static int check_short_pattern(uint8_t *buf, struct nand_bbt_descr *td)
+-{
+-	/* Compare the pattern */
+-	if (memcmp(buf + td->offs, td->pattern, td->len))
+-		return -1;
+-	return 0;
+-}
+-
+-/**
+  * add_marker_len - compute the length of the marker in data area
+  * @td: BBT descriptor used for computation
   *
+@@ -409,63 +392,24 @@ static void read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
+ 	}
+ }
+ 
+-/* Scan a given block partially */
+-static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+-			   loff_t offs, uint8_t *buf, int numpages)
+-{
+-	struct mtd_oob_ops ops;
+-	int j, ret;
+-
+-	ops.ooblen = mtd->oobsize;
+-	ops.oobbuf = buf;
+-	ops.ooboffs = 0;
+-	ops.datbuf = NULL;
+-	ops.mode = MTD_OPS_PLACE_OOB;
+-
+-	for (j = 0; j < numpages; j++) {
+-		/*
+-		 * Read the full oob until read_oob is fixed to handle single
+-		 * byte reads for 16 bit buswidth.
+-		 */
+-		ret = mtd_read_oob(mtd, offs, &ops);
+-		/* Ignore ECC errors when checking for BBM */
+-		if (ret && !mtd_is_bitflip_or_eccerr(ret))
+-			return ret;
+-
+-		if (check_short_pattern(buf, bd))
+-			return 1;
+-
+-		offs += mtd->writesize;
+-	}
+-	return 0;
+-}
+-
+ /**
+  * create_bbt - [GENERIC] Create a bad block table by scanning the device
+  * @mtd: MTD device structure
+- * @buf: temporary buffer
+- * @bd: descriptor for the good/bad block search pattern
+  * @chip: create the table for a specific chip, -1 read all chips; applies only
+  *        if NAND_BBT_PERCHIP option is set
+  *
+  * Create a bad block table by scanning the device for the given good/bad block
+  * identify pattern.
+  */
+-static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+-	struct nand_bbt_descr *bd, int chip)
++static int create_bbt(struct mtd_info *mtd, int chip)
+ {
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+-	int i, numblocks, numpages;
+-	int startblock;
++	int i, numblocks, startblock;
+ 	loff_t from;
++	struct nand_bbt *nand_bbt = nand_get_bbt(this);
+ 
+ 	pr_info("Scanning device for bad blocks\n");
+ 
+-	if (bd->options & NAND_BBT_SCAN2NDPAGE)
+-		numpages = 2;
+-	else
+-		numpages = 1;
+-
+ 	if (chip == -1) {
+ 		numblocks = mtd->size >> this->bbt_erase_shift;
+ 		startblock = 0;
+@@ -482,15 +426,10 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		from = (loff_t)startblock << this->bbt_erase_shift;
+ 	}
+ 
+-	if (this->bbt_options & NAND_BBT_SCANLASTPAGE)
+-		from += mtd->erasesize - (mtd->writesize * numpages);
+-
+ 	for (i = startblock; i < numblocks; i++) {
+ 		int ret;
+ 
+-		BUG_ON(bd->options & NAND_BBT_NO_OOB);
+-
+-		ret = scan_block_fast(mtd, bd, from, buf, numpages);
++		ret = nand_bbt->bbt_ops->is_bad_bbm(mtd, from);
+ 		if (ret < 0)
+ 			return ret;
+ 
+@@ -619,7 +558,6 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		     int chipsel)
+ {
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+-	struct erase_info einfo;
+ 	int i, res, chip = 0;
+ 	int bits, startblock, dir, page, offs, numblocks, sft, sftmsk;
+ 	int nrchips, pageoffs, ooboffs;
+@@ -628,6 +566,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 	size_t retlen, len = 0;
+ 	loff_t to;
+ 	struct mtd_oob_ops ops;
++	struct nand_bbt *nand_bbt = nand_get_bbt(this);
+ 
+ 	ops.ooblen = mtd->oobsize;
+ 	ops.ooboffs = 0;
+@@ -782,11 +721,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			buf[offs + (i >> sft)] &= ~(msk[dat] << sftcnt);
+ 		}
+ 
+-		memset(&einfo, 0, sizeof(einfo));
+-		einfo.mtd = mtd;
+-		einfo.addr = to;
+-		einfo.len = 1 << this->bbt_erase_shift;
+-		res = nand_erase_nand(mtd, &einfo, 1);
++		res = nand_bbt->bbt_ops->erase(mtd, to);
+ 		if (res < 0)
+ 			goto outerr;
+ 
+@@ -812,30 +747,26 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ /**
+  * nand_memory_bbt - [GENERIC] create a memory based bad block table
+  * @mtd: MTD device structure
+- * @bd: descriptor for the good/bad block search pattern
+  *
+  * The function creates a memory based bbt by scanning the device for
+  * manufacturer / software marked good / bad blocks.
+  */
+-static inline int nand_memory_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
++static inline int nand_memory_bbt(struct mtd_info *mtd)
+ {
+-	struct nand_chip *this = mtd_to_nand(mtd);
+-
+-	return create_bbt(mtd, this->buffers->databuf, bd, -1);
++	return create_bbt(mtd, -1);
+ }
+ 
+ /**
+  * check_create - [GENERIC] create and write bbt(s) if necessary
+  * @mtd: MTD device structure
+  * @buf: temporary buffer
+- * @bd: descriptor for the good/bad block search pattern
+  *
+  * The function checks the results of the previous call to read_bbt and creates
+  * / updates the bbt(s) if necessary. Creation is necessary if no bbt was found
+  * for the chip/device. Update is necessary if one of the tables is missing or
+  * the version nr. of one table is less than the other.
+  */
+-static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr *bd)
++static int check_create(struct mtd_info *mtd, uint8_t *buf)
+ {
+ 	int i, chips, writeops, create, chipsel, res, res2;
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+@@ -895,7 +826,7 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
+ 
+ 			/* Create the table in memory by scanning the chip(s) */
+ 			if (!(this->bbt_options & NAND_BBT_CREATE_EMPTY))
+-				create_bbt(mtd, buf, bd, chipsel);
++				create_bbt(mtd, chipsel);
+ 
+ 			td->version[i] = 1;
+ 			if (md)
+@@ -1063,7 +994,6 @@ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ /**
+  * nand_scan_bbt - [NAND Interface] scan, find, read and maybe create bad block table(s)
+  * @mtd: MTD device structure
+- * @bd: descriptor for the good/bad block search pattern
+  *
+  * The function checks, if a bad block table(s) is/are already available. If
+  * not it scans the device for manufacturer marked good / bad blocks and writes
+@@ -1072,7 +1002,7 @@ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+  * The bad block table memory is allocated here. It must be freed by calling
+  * the nand_free_bbt function.
+  */
+-static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
++static int nand_scan_bbt(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+ 	int len, res;
+@@ -1094,7 +1024,7 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	 * memory based bad block table.
+ 	 */
+ 	if (!td) {
+-		if ((res = nand_memory_bbt(mtd, bd))) {
++		if ((res = nand_memory_bbt(mtd))) {
+ 			pr_err("nand_bbt: can't scan flash and build the RAM-based BBT\n");
+ 			goto err;
+ 		}
+@@ -1120,7 +1050,7 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 		search_read_bbts(mtd, buf, td, md);
+ 	}
+ 
+-	res = check_create(mtd, buf, bd);
++	res = check_create(mtd, buf);
+ 	if (res)
+ 		goto err;
+ 
+@@ -1193,12 +1123,6 @@ static int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+ 	return res;
+ }
+ 
+-/*
+- * Define some generic bad / good block scan pattern which are used
+- * while scanning a device for factory marked good / bad blocks.
+- */
+-static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
+-
+ /* Generic flash bbt descriptors */
+ static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
+ static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
+@@ -1243,35 +1167,6 @@ static struct nand_bbt_descr bbt_mirror_no_oob_descr = {
+ 	.pattern = mirror_pattern
+ };
+ 
+-#define BADBLOCK_SCAN_MASK (~NAND_BBT_NO_OOB)
+-/**
+- * nand_create_badblock_pattern - [INTERN] Creates a BBT descriptor structure
+- * @this: NAND chip to create descriptor for
+- *
+- * This function allocates and initializes a nand_bbt_descr for BBM detection
+- * based on the properties of @this. The new descriptor is stored in
+- * this->badblock_pattern. Thus, this->badblock_pattern should be NULL when
+- * passed to this function.
+- */
+-static int nand_create_badblock_pattern(struct nand_chip *this)
+-{
+-	struct nand_bbt_descr *bd;
+-	if (this->badblock_pattern) {
+-		pr_warn("Bad block pattern already allocated; not replacing\n");
+-		return -EINVAL;
+-	}
+-	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
+-	if (!bd)
+-		return -ENOMEM;
+-	bd->options = this->bbt_options & BADBLOCK_SCAN_MASK;
+-	bd->offs = this->badblockpos;
+-	bd->len = (this->options & NAND_BUSWIDTH_16) ? 2 : 1;
+-	bd->pattern = scan_ff_pattern;
+-	bd->options |= NAND_BBT_DYNAMICSTRUCT;
+-	this->badblock_pattern = bd;
+-	return 0;
+-}
+-
+ /**
+  * nand_default_bbt - [NAND Interface] Select a default bad block table for the device
+  * @mtd: MTD device structure
+@@ -1282,7 +1177,6 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
+ int nand_default_bbt(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+-	int ret;
+ 
+ 	/* Is a flash based bad block table requested? */
+ 	if (this->bbt_options & NAND_BBT_USE_FLASH) {
+@@ -1301,13 +1195,7 @@ int nand_default_bbt(struct mtd_info *mtd)
+ 		this->bbt_md = NULL;
+ 	}
+ 
+-	if (!this->badblock_pattern) {
+-		ret = nand_create_badblock_pattern(this);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	return nand_scan_bbt(mtd, this->badblock_pattern);
++	return nand_scan_bbt(mtd);
+ }
+ 
+ /**
 -- 
 1.9.1
