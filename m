@@ -1,24 +1,21 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1afOcH-0006Si-CE
- for linux-mtd@lists.infradead.org; Mon, 14 Mar 2016 09:16:46 +0000
-Subject: Re: [PATCH v4 1/7] ARM: OMAP2+: gpmc-nand: Set omap2-nand's parent
- dev to GPMC dev
-To: "Franklin S Cooper Jr." <fcooper@ti.com>, <nsekhar@ti.com>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <tony@atomide.com>, <devicetree@vger.kernel.org>,
- <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
+ id 1afTKg-0004vL-Eb
+ for linux-mtd@lists.infradead.org; Mon, 14 Mar 2016 14:18:55 +0000
+Subject: Re: [PATCH v4 0/7] mtd: nand: Fix support for NAND DMA prefetch
+To: Roger Quadros <rogerq@ti.com>, <nsekhar@ti.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <tony@atomide.com>,
+ <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 References: <1457654203-20856-1-git-send-email-fcooper@ti.com>
- <1457654203-20856-2-git-send-email-fcooper@ti.com> <56E2CDB7.2080306@ti.com>
- <56E2E6B0.5050507@ti.com>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <56E68143.9040903@ti.com>
-Date: Mon, 14 Mar 2016 11:15:47 +0200
+ <56E2CFF3.3030009@ti.com>
+From: "Franklin S Cooper Jr." <fcooper@ti.com>
+Message-ID: <56E6C7EF.3030501@ti.com>
+Date: Mon, 14 Mar 2016 09:17:19 -0500
 MIME-Version: 1.0
-In-Reply-To: <56E2E6B0.5050507@ti.com>
+In-Reply-To: <56E2CFF3.3030009@ti.com>
 Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,90 +25,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Franklin, Tony,
 
-On 11/03/16 17:39, Franklin S Cooper Jr. wrote:
-> 
-> 
-> On 03/11/2016 07:52 AM, Roger Quadros wrote:
->> Franklin,
+
+On 03/11/2016 08:02 AM, Roger Quadros wrote:
+> Franklin,
+>
+> On 11/03/16 01:56, Franklin S Cooper Jr wrote:
+>> NAND DMA prefetch has been broken for awhile and seems to have only
+>> worked for SDMA based devices
 >>
->> On 11/03/16 01:56, Franklin S Cooper Jr wrote:
->>> The dma channel information is located within the GPMC node which is the
->>> NAND's parent node. The NAND driver requires a handle to the GPMC's dev
->>> to properly parse the DMA properties. Therefore, set the NAND's parent dev
->>> to the GPMC's dev so it can be referenced within the driver.
->>>
->>> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
->>> ---
->>> Version 4 changes:
->>> Instead of storing the GPMC dev in a new property simply grab a reference
->>> to it and set omap2-nand's dev.parent to it.
->>>
->>>  arch/arm/mach-omap2/gpmc-nand.c | 16 +++++++++++++++-
->>>  1 file changed, 15 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
->>> index 72918c4..77e453c 100644
->>> --- a/arch/arm/mach-omap2/gpmc-nand.c
->>> +++ b/arch/arm/mach-omap2/gpmc-nand.c
->>> @@ -15,6 +15,7 @@
->>>  #include <linux/omap-gpmc.h>
->>>  #include <linux/mtd/nand.h>
->>>  #include <linux/platform_data/mtd-nand-omap2.h>
->>> +#include <linux/of_platform.h>
->>>  
->>>  #include <asm/mach/flash.h>
->>>  
->>> @@ -77,6 +78,9 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
->>>  	int err	= 0;
->>>  	struct gpmc_settings s;
->>>  	struct platform_device *pdev;
->>> +	struct platform_device *gpmc_dev;
->>> +	struct device_node *gpmc_node;
->>> +
->>>  	struct resource gpmc_nand_res[] = {
->>>  		{ .flags = IORESOURCE_MEM, },
->>>  		{ .flags = IORESOURCE_IRQ, },
->>> @@ -134,8 +138,18 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
->>>  	if (pdev) {
->>>  		err = platform_device_add_resources(pdev, gpmc_nand_res,
->>>  						    ARRAY_SIZE(gpmc_nand_res));
->>> -		if (!err)
->>> +		if (!err) {
->>>  			pdev->dev.platform_data = gpmc_nand_data;
->>> +
->>> +			gpmc_node = of_get_parent(gpmc_nand_data->of_node);
->> I'm afraid that we can't use this method as we want to restrict
->> gpmc_nand_init() to non-DT boots.
-> 
-> The only users of the parent GPMC driver are already using
-> DT. The gpmc_probe_nand_child function in the GPMC driver
-> which calls gpmc_nand_init is already DT only.
-> 
-> The only other caller to gpmc_nand_init is board-flash.c.
-> The driver doesn't utilize xfer_type to even switch to any
-> other modes including DMA prefetch mode.  Looking at it
-> closer there isn't a dev from some kind of parent for me to
-> pass along. Board_nand_init which calls gpmc_nand_init just
-> takes raw NAND values with no relation to its parent.
-> 
-> 
-> With that being said are you ok with leaving it as is?
+>> This patchset fixes DMA prefetch to work on both EDMA and SDMA devices
+>>
+>> Test on:
+>> am335x gp evm
+>> am437x gp evm
+>> am37x gp evm
+>>
+>> This rev is pretty much the same as v2 which was blocked due to
+>> dependencies to Roger's update GPMC/NAND rework.
+>>
+>> This updated rev removes this dependency.
+>>
+>> Also it fixes an issue that was introduced when the eDMA driver was
+>> recently updated.
+>>
+>> Links to rev 3 patchset:
+>> https://patchwork.ozlabs.org/patch/595631/
+>> https://patchwork.ozlabs.org/patch/595626/
+>> https://patchwork.ozlabs.org/patch/595628/
+>> https://patchwork.ozlabs.org/patch/595630/
+>> https://patchwork.ozlabs.org/patch/595627/
+>> https://patchwork.ozlabs.org/patch/595629/
+>>
+>> Links to rev 2 patchset:
+>> https://patchwork.kernel.org/patch/7408691/
+>> https://patchwork.kernel.org/patch/7408681/
+>> https://patchwork.kernel.org/patch/7408661/
+>> https://patchwork.kernel.org/patch/7408641/
+>> https://patchwork.kernel.org/patch/7408621/
+>>
+>> Franklin S Cooper Jr (7):
+>>   ARM: OMAP2+: gpmc-nand: Set omap2-nand's parent dev to GPMC dev
+>>   ARM: dts: am33xx: Fix GPMC dma properties
+>>   ARM: dts: am437x: Fix GPMC dma properties
+> Can you please fix the gpmc nodes in dm816x.dtsi and dm814x.dtsi as well?
+> You can use linux-next tree or [1] to see the latest changes to these files
+> that will end up in v4.6 and base your changes on that.
+>
+> [1] Tony's omap-for-v4.6/dt
+> https://git.kernel.org/cgit/linux/kernel/git/tmlind/linux-omap.git/log/?h=omap-for-v4.6/dt
 
-I think it is OK to assume that NAND DMA won't work with legacy boot.
-Tony any objections? I see that board-ldp.c is the only legacy user
-of NAND. When can we drop support for it?
-
-I want to keep gpmc_nand_init() as it is and don't want to add any
-device tree specific calls here.
-
-So I think it is still best if you rebase your series on top of [1]
-so that you are assured NAND controller's parent is the GPMC device
-in the DT case without requiring the $subject patch.
-
-[1] https://lkml.org/lkml/2016/2/19/599
-The series has been Acked by all maintainers and will go in v4.6
-
-cheers,
--roger
+Sorry I didn't bother looking at dm816 and dm814 dtsi files
+since I assumed it didn't use edma since the recent edma
+updates didn't make updates for those devices. My mistake.
+I'll update those dtsi files.
+>>   mtd: nand: omap2: Support parsing dma channel information from DT
+>>   mtd: nand: omap2: Start dma request before enabling prefetch
+>>   mtd: nand: omap2: Fix high memory dma prefetch transfer
+>>   ARM: OMAP2+: Update GPMC and NAND DT binding documentation
+>>
+>>  Documentation/devicetree/bindings/bus/ti-gpmc.txt  |  7 +++++-
+>>  .../devicetree/bindings/mtd/gpmc-nand.txt          |  2 +-
+>>  arch/arm/boot/dts/am33xx.dtsi                      |  2 +-
+>>  arch/arm/boot/dts/am4372.dtsi                      |  2 +-
+>>  arch/arm/mach-omap2/gpmc-nand.c                    | 16 ++++++++++++-
+>>  drivers/mtd/nand/omap2.c                           | 27 +++++++++-------------
+>>  6 files changed, 35 insertions(+), 21 deletions(-)
+>>
+> cheers,
+> -roger
