@@ -1,7 +1,7 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1afqrP-0005GV-MY
- for linux-mtd@lists.infradead.org; Tue, 15 Mar 2016 15:26:16 +0000
+ id 1afqxz-0007u9-7F
+ for linux-mtd@lists.infradead.org; Tue, 15 Mar 2016 15:33:04 +0000
 Subject: Re: Page migration issue with UBIFS
 To: "Kirill A. Shutemov" <kirill@shutemov.name>
 References: <56E8192B.5030008@nod.at>
@@ -17,8 +17,8 @@ Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
  "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
  Alexander Kaplan <alex@nextthing.co>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <56E8297E.80708@nod.at>
-Date: Tue, 15 Mar 2016 16:25:50 +0100
+Message-ID: <56E82B18.9040807@nod.at>
+Date: Tue, 15 Mar 2016 16:32:40 +0100
 MIME-Version: 1.0
 In-Reply-To: <20160315151727.GA16462@node.shutemov.name>
 Content-Type: text/plain; charset=windows-1252
@@ -31,8 +31,6 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-
-Kirill,
 
 Am 15.03.2016 um 16:17 schrieb Kirill A. Shutemov:
 > On Tue, Mar 15, 2016 at 03:16:11PM +0100, Richard Weinberger wrote:
@@ -53,13 +51,7 @@ Am 15.03.2016 um 16:17 schrieb Kirill A. Shutemov:
 > 
 > Or if ->page_mkwrite() was called, why the page is not dirty?
 
-Thanks for your quick response!
-
-I also don't think that the root cause is CMA or migration but it seems
-to be the messenger.
-
-Can you confirm that UBIFS's assumptions are valid?
-I'm trying to rule out possible issues and hunt down the root cause...
+BTW: UBIFS does not implement ->migratepage(), could this be a problem?
 
 Thanks,
 //richard
