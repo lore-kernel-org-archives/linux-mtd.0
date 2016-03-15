@@ -1,25 +1,24 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1afpQ9-0001Ok-Vx
- for linux-mtd@lists.infradead.org; Tue, 15 Mar 2016 13:54:02 +0000
-Date: Tue, 15 Mar 2016 14:53:39 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
- computersforpeace@gmail.com
-Cc: dwmw2@infradead.org, matthias.bgg@gmail.com, robh@kernel.org,
- daniel.thompson@linaro.org, xiaolei.li@mediatek.com,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/3] mtd: mediatek: driver for MTK Smart Device Gen1 NAND
-Message-ID: <20160315145339.28d50175@bbrezillon>
-In-Reply-To: <56E80C5F.2020406@linaro.org>
-References: <1456938013-8819-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <1456938013-8819-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160308172437.6eccce05@bbrezillon> <56E7FFF5.4000803@linaro.org>
- <20160315135936.1c924789@bbrezillon> <56E80C5F.2020406@linaro.org>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1afpm3-000798-Sc
+ for linux-mtd@lists.infradead.org; Tue, 15 Mar 2016 14:16:42 +0000
+To: linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Gstir <david@sigma-star.at>, Dave Chinner <david@fromorbit.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Alexander Kaplan <alex@nextthing.co>
+From: Richard Weinberger <richard@nod.at>
+Subject: Page migration issue with UBIFS
+Message-ID: <56E8192B.5030008@nod.at>
+Date: Tue, 15 Mar 2016 15:16:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,70 +28,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 Mar 2016 09:21:35 -0400
-Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
+Hi!
 
-> On 03/15/2016 08:59 AM, Boris Brezillon wrote:
-> > On Tue, 15 Mar 2016 08:28:37 -0400
-> > Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
-> >
-> >> On 03/08/2016 11:24 AM, Boris Brezillon wrote:
-> >>>> +static int mtk_nfc_write_page(struct mtd_info *mtd,
-> >>>>> +			struct nand_chip *chip, const uint8_t *buf,
-> >>>>> +			int oob_on, int page, int raw)
-> >>>>> +{
-> >>>>> +
-> >>>>> +	struct mtk_nfc_host *host = nand_get_controller_data(chip);
-> >>>>> +	struct completion *nfi = &host->nfi.complete;
-> >>>>> +	struct device *dev = host->dev;
-> >>>>> +	const bool use_ecc = !raw;
-> >>>>> +	void *q = (void *) buf;
-> >>>>> +	dma_addr_t dma_addr;
-> >>>>> +	size_t dmasize;
-> >>>>> +	u32 reg;
-> >>>>> +	int ret;
-> >>>>> +
-> >>>>> +	dmasize = mtd->writesize + (raw ? mtd->oobsize : 0);
-> >>>>> +
-> >>>>> +	dma_addr = dma_map_single(dev, q, dmasize, DMA_TO_DEVICE);
-> >>> buf is not guaranteed to be physically contiguous, so you can't just
-> >>> use it with DMA without doing a few more verifications.
-> >>>
-> >>> In case you're interested in using a generic approach to do this
-> >>> verification, you can have a look at this series [2].
-> >>>
-> >> unfortunately the internal dma controller does not support scatter gather
-> >> operations (we need to DMA in/out of memory in a single shot)
-> >> If we enable NAND_USE_BOUNCE_BUFFER, I think this guarantees that the buffer
-> >> will be contiguous (since they are allocated with kmalloc)
-> >> ...although maybe I should have the bounce buffers in the driver and allocate
-> >> them with devm_get_free_pages instead
-> >>
-> >> would either of this would be acceptable?
-> > Or you could test if the buffer is contiguous, and fallback to using
-> > a bounce buffer (either an internal one or the generic one) if that's
-> > not the case. Note that the proposed API can be improved to reject
-> > non-contiguous buffers...
-> 
-> wouldn't that check be the same than the one done in the nand interface when
-> NAND_USE_BOUNCE_BUFFER is enabled?
-> IIRC virt_addr_valid() guarantees that the buffer is contiguous.
+We're facing this issue from 2014 on UBIFS:
+http://www.spinics.net/lists/linux-fsdevel/msg79941.html
 
-Correct, I forgot we had that test, and thought we were always using
-the bounce buffer when NAND_USE_BOUNCE_BUFFER was set.
-Still, in some cases, you might have vmallocated buffers that are
-physically contiguous (say you have NAND page < PAGE_SIZE).
+So sum up:
+UBIFS does not allow pages directly marked as dirty. It want's everyone to do it via UBIFS's
+->wirte_end() and ->page_mkwirte() functions.
+This assumption *seems* to be violated by CMA which migrates pages.
+UBIFS enforces this because it has to account free space on the flash,
+in UBIFS speak "budget", for details please see fs/ubifs/file.c.
 
-Anyway, I guess setting NAND_USE_BOUNCE_BUFFER and assuming the buf
-passed to ->read/write_page() is always pointing to a physically
-contiguous region is an acceptable option until we have this
-mtd_map_buf() API ready.
+As in the report from 2014 the page is writable but not dirty.
+The kernel has this debug patch applied:
+http://www.spinics.net/lists/linux-fsdevel/msg80471.html
+But our kernel is based on v4.4 and does *not* use proprietary modules.
 
-Best Regards,
+[  213.450000] page:debe03c0 count:3 mapcount:1 mapping:dce4b5fc index:0x2f
+[  213.460000] flags: 0x9(locked|uptodate)
+[  213.460000] page dumped because: try_to_unmap_one
+[  213.470000] pte_write: 1
+[  213.480000] UBIFS assert failed in ubifs_set_page_dirty at 1451 (pid 436)
+[  213.490000] CPU: 0 PID: 436 Comm: drm-stress-test Not tainted 4.4.4-00176-geaa802524636-dirty #1008
+[  213.490000] Hardware name: Allwinner sun4i/sun5i Families
+[  213.490000] [<c0015e70>] (unwind_backtrace) from [<c0012cdc>] (show_stack+0x10/0x14)
+[  213.490000] [<c0012cdc>] (show_stack) from [<c02ad834>] (dump_stack+0x8c/0xa0)
+[  213.490000] [<c02ad834>] (dump_stack) from [<c0236ee8>] (ubifs_set_page_dirty+0x44/0x50)
+[  213.490000] [<c0236ee8>] (ubifs_set_page_dirty) from [<c00fa0bc>] (try_to_unmap_one+0x10c/0x3a8)
+[  213.490000] [<c00fa0bc>] (try_to_unmap_one) from [<c00fadb4>] (rmap_walk+0xb4/0x290)
+[  213.490000] [<c00fadb4>] (rmap_walk) from [<c00fb1bc>] (try_to_unmap+0x64/0x80)
+[  213.490000] [<c00fb1bc>] (try_to_unmap) from [<c010dc28>] (migrate_pages+0x328/0x7a0)
+[  213.490000] [<c010dc28>] (migrate_pages) from [<c00d0cb0>] (alloc_contig_range+0x168/0x2f4)
+[  213.490000] [<c00d0cb0>] (alloc_contig_range) from [<c010ec00>] (cma_alloc+0x170/0x2c0)
+[  213.490000] [<c010ec00>] (cma_alloc) from [<c001a958>] (__alloc_from_contiguous+0x38/0xd8)
+[  213.490000] [<c001a958>] (__alloc_from_contiguous) from [<c001ad44>] (__dma_alloc+0x23c/0x274)
+[  213.490000] [<c001ad44>] (__dma_alloc) from [<c001ae08>] (arm_dma_alloc+0x54/0x5c)
+[  213.490000] [<c001ae08>] (arm_dma_alloc) from [<c035cecc>] (drm_gem_cma_create+0xb8/0xf0)
+[  213.490000] [<c035cecc>] (drm_gem_cma_create) from [<c035cf20>] (drm_gem_cma_create_with_handle+0x1c/0xe8)
+[  213.490000] [<c035cf20>] (drm_gem_cma_create_with_handle) from [<c035d088>] (drm_gem_cma_dumb_create+0x3c/0x48)
+[  213.490000] [<c035d088>] (drm_gem_cma_dumb_create) from [<c0341ed8>] (drm_ioctl+0x12c/0x444)
+[  213.490000] [<c0341ed8>] (drm_ioctl) from [<c0121adc>] (do_vfs_ioctl+0x3f4/0x614)
+[  213.490000] [<c0121adc>] (do_vfs_ioctl) from [<c0121d30>] (SyS_ioctl+0x34/0x5c)
+[  213.490000] [<c0121d30>] (SyS_ioctl) from [<c000f2c0>] (ret_fast_syscall+0x0/0x34)
 
-Boris
+The full kernellog can be found here:
+http://code.bulix.org/ysuo9x-93716?raw
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+So, let me repeat Artem's question from 2014:
+> Now the question is: is it UBIFS which has incorrect assumptions, or this is the
+> Linux MM which is not doing the right thing? I do not know the answer, let's see
+> if the MM list may give us a clue.
+
+Thanks,
+//richard
