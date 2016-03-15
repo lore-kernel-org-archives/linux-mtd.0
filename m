@@ -1,4 +1,4 @@
-Date: Tue, 15 Mar 2016 08:35:15 -0700
+Date: Tue, 15 Mar 2016 08:37:44 -0700
 From: Christoph Hellwig <hch@infradead.org>
 To: Richard Weinberger <richard@nod.at>
 Cc: "Kirill A. Shutemov" <kirill@shutemov.name>,
@@ -13,13 +13,14 @@ Cc: "Kirill A. Shutemov" <kirill@shutemov.name>,
  "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
  Alexander Kaplan <alex@nextthing.co>
 Subject: Re: Page migration issue with UBIFS
-Message-ID: <20160315153515.GA28522@infradead.org>
+Message-ID: <20160315153744.GB28522@infradead.org>
 References: <56E8192B.5030008@nod.at>
- <20160315151727.GA16462@node.shutemov.name> <56E8297E.80708@nod.at>
+ <20160315151727.GA16462@node.shutemov.name>
+ <56E82B18.9040807@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <56E8297E.80708@nod.at>
+In-Reply-To: <56E82B18.9040807@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,19 +30,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 15, 2016 at 04:25:50PM +0100, Richard Weinberger wrote:
-> Thanks for your quick response!
+On Tue, Mar 15, 2016 at 04:32:40PM +0100, Richard Weinberger wrote:
+> > Or if ->page_mkwrite() was called, why the page is not dirty?
 > 
-> I also don't think that the root cause is CMA or migration but it seems
-> to be the messenger.
-> 
-> Can you confirm that UBIFS's assumptions are valid?
-> I'm trying to rule out possible issues and hunt down the root cause...
+> BTW: UBIFS does not implement ->migratepage(), could this be a problem?
 
-FYI, XFS would blow up unless either ->write_begin or ->page_mkwrite
-were called before dirtying a page.  We do an assert that the page has
-buffers as the first thing in writepage, and those are the only
-two places that should create buffers.
+This might be the reason.  I can't reall make sense of
+buffer_migrate_page, but it seems to migrate buffer_head state to
+the new page.
 
-So either no one is using CMA with XFS, or there is another weird
-interaction involved.
+I'd love to know why CMA even tries to migrate pages that don't have a
+->migratepage method, this seems incredibly dangerous to me.
