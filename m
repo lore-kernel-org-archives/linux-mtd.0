@@ -1,16 +1,23 @@
-Received: from mail-lf0-x234.google.com ([2a00:1450:4010:c07::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ag8AR-0001Jd-4w
- for linux-mtd@lists.infradead.org; Wed, 16 Mar 2016 09:55:03 +0000
-Received: by mail-lf0-x234.google.com with SMTP id e138so14441296lfe.1
- for <linux-mtd@lists.infradead.org>; Wed, 16 Mar 2016 02:54:42 -0700 (PDT)
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1agB13-0004ZV-1Q
+ for linux-mtd@lists.infradead.org; Wed, 16 Mar 2016 12:57:33 +0000
+Date: Wed, 16 Mar 2016 13:57:00 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Peter Pan <peterpansjtu@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, karlzhang@micron.com, beanhuo@micron.com,
+ xuejiancheng@huawei.com, Peter Pan <peterpandong@micron.com>
+Subject: Re: [PATCH 00/11] mtd: nand_bbt: introduce independent nand BBT
+Message-ID: <20160316135700.5e9593c7@bbrezillon>
+In-Reply-To: <CAAyFOR+=xRiL+uJXmsLxGuhayn15-gP1HGZ24SEMqQjTqZdAKA@mail.gmail.com>
+References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
+ <CAAyFOR+=xRiL+uJXmsLxGuhayn15-gP1HGZ24SEMqQjTqZdAKA@mail.gmail.com>
 MIME-Version: 1.0
-Date: Wed, 16 Mar 2016 09:54:41 +0000
-Message-ID: <CABatt_y2rOZAvuamVoOxWSzkkGXNFFGvSQ5di4gb4EBFGYV7oQ@mail.gmail.com>
-Subject: UBIFS question
-From: Martin Townsend <mtownsend1973@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +27,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Peter,
 
-I have an board with a 512MB Raw NAND flash memory device and 4GB
-Managed eMMC flash memory device.  I would like to take advantage of
-this and maintain a root filesystem on each and keep them in sync so
-upgrades will upgrade each filesystem.  I can then use one of them as
-a redundant image that can be used to correct the primary one or fail
-over on device failure.  I have UBIFS on the raw NAND flash and ext3
-on the eMMC flash.  My first thought was can I create a mirror using
-raid but after researching it looks like the linux SW raid, although
-very flexible, only supports block devices which rules out UBIFS.  I
-could see some mails about a block device layer for UBI but I seem to
-remember that this was read only or had certain restrictions.
+On Mon, 14 Mar 2016 10:57:49 +0800
+Peter Pan <peterpansjtu@gmail.com> wrote:
 
-Next I thought about maybe using Docker so I could switch between the
-2 filesystems but saw a mail that UBIFS doesn't support WHITEOUT
-feature that docker would require from the underlying filesystem as it
-uses union/overlay filesystems.
+> Sorry I forgot to add subject prefix. Should I re-send it ?
 
-Just wanted to check that these assumptions are correct and I haven't
-missed something and also if anyone knows of another method I would be
-very interested in hearing it.
+No that should be fine. Thanks for reworking this series as suggested.
+I'll try to review it soon.
 
-Thanks in Advance,
-Martin.
+> 
+> On Mon, Mar 14, 2016 at 10:47 AM, Peter Pan <peterpansjtu@gmail.com> wrote:
+> > Sorry for send the v3 out late. I went through a busy time in the past
+> > two month.
+> >
+> > Currently nand_bbt.c is tied with struct nand_chip, and it makes other
+> > NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
+> > onenand has own bbt(onenand_bbt.c).
+> >
+> > Separate struct nand_chip from BBT code can make current BBT shareable.
+> > We create struct nand_bbt to take place of nand_chip in nand_bbt.c.
+> > Struct nand_bbt contains all the information BBT needed from outside and
+> > it should be embedded into NAND family chip struct (such as struct nand_chip).
+> >
+> > Below is mtd folder structure we want:
+> >         drivers/mtd/nand/<all-nand-core-code>
+> >         drivers/mtd/nand/raw/<raw-nand-controller-drivers>
+> >         drivers/mtd/nand/spi/<spi-nand-code>
+> >         drivers/mtd/nand/onenand/<onenand-code>
+> >         drivers/mtd/nand/chips/<manufacturer-spcific-code>
+> >
+> > Most of the patch is borrowed from Brian Norris <computersforpeace@gmail.com>.
+> > http://git.infradead.org/users/norris/linux-mtd.git/shortlog/refs/heads/nand-bbt
+> > I decided the authorship of each patch by contribution. Please let me know if
+> > there is something unproper.
+> > Based on Brian's suggestion and Boris's comments, I make 11 independent
+> > patches. Previous patch is http://patchwork.ozlabs.org/patch/492066/
+> > After discussion with Boris and Ezequiel, I realized above structure is better,
+> > so I drop the patch to move nand_bbt.c to mtd folder.
+> >
+> > The patch is tested on Zed board.
+> >
+> > v3 changes:
+> >         introduce struct nand_bbt_ops
+> >         introduce struct nand_chip_layout_info
+> >         add nand_bbt_create/destroy() API
+> >         use mtd_to_nand instead mtd->priv directly
+> >         remove mark_bad_bbm() due to no user yet
+> >         keep nand_bbt.c in mtd/nand folder
+> >         add nand_get_bbt() helper function
+> >         rebase patch series on 4.5.0-rc1
+> > v2 changes:
+> >         rebase patch series on master branch of l2-mtd.git
+> >
+> >
+> > Brian Norris (7):
+> >   mtd: nand_bbt: new header for nand family BBT
+> >   mtd: nand_bbt: introduce BBT related data structure
+> >   mtd: nand_bbt: use struct nand_bbt_ops in BBT
+> >   mtd: nand: make nand_erase_nand() static
+> >   mtd: nand_bbt: remove struct nand_chip from nand_bbt.c
+> >   mtd: nand_bbt: remove NAND_BBT_DYNAMICSTRUCT macro
+> >   mtd: nand: remove nand_chip.bbt
+> >
+> > Peter Pan (4):
+> >   mtd: nand_bbt: add new API definitions
+> >   mtd: nand_bbt: add nand_bbt_markbad_factory() interface
+> >   mtd: nand: use new BBT API instead of old ones
+> >   mtd: nand_bbt: remove old API definitions
+> >
+> >  drivers/mtd/nand/docg4.c     |   7 +-
+> >  drivers/mtd/nand/nand_base.c | 156 ++++++++++-
+> >  drivers/mtd/nand/nand_bbt.c  | 604 +++++++++++++++++++++----------------------
+> >  include/linux/mtd/bbm.h      |  96 +------
+> >  include/linux/mtd/nand.h     |  22 +-
+> >  include/linux/mtd/nand_bbt.h | 190 ++++++++++++++
+> >  6 files changed, 644 insertions(+), 431 deletions(-)
+> >  create mode 100644 include/linux/mtd/nand_bbt.h
+> >
+> > --
+> > 1.9.1
+> >
+
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
