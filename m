@@ -1,18 +1,29 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arch@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: only use __xipram annotation when XIP_KERNEL is set
-Date: Thu, 17 Mar 2016 16:56:33 +0100
-Message-ID: <4420020.GISMAEPJsq@wuerfel>
-In-Reply-To: <20160305004336.GG55664@google.com>
-References: <1453736525-1959191-2-git-send-email-arnd@arndb.de>
- <1457137718.43867.266.camel@infradead.org>
- <20160305004336.GG55664@google.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1agaKj-0000aM-Ut
+ for linux-mtd@lists.infradead.org; Thu, 17 Mar 2016 15:59:36 +0000
+Subject: Re: UBIFS question
+To: Martin Townsend <mtownsend1973@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <CABatt_y2rOZAvuamVoOxWSzkkGXNFFGvSQ5di4gb4EBFGYV7oQ@mail.gmail.com>
+ <CAFLxGvwwQgKNT6=cL_hc05ZODtWyonA8MWyRWQJN_pXVf9SZOQ@mail.gmail.com>
+ <CABatt_w_hXqUA45-MzU3_DRox0P9CwraTCY_TYPthdA3O0N-eQ@mail.gmail.com>
+ <56EA7148.7050008@nod.at>
+ <CABatt_xRMWwByY2nE8cpcjOL2jgt4yMhH9Gm4cWkxG_uhO7T5A@mail.gmail.com>
+ <56EA943C.4000505@nod.at>
+ <alpine.DEB.2.02.1603171240030.29358@lnxricardw1.se.axis.com>
+ <CABatt_zxp-6s++zLeWfijdTT4fevgTPk97sue-3GGj_6wGgF0w@mail.gmail.com>
+ <20160317155544.3b43bbb9@bbrezillon>
+ <CABatt_woB8fGT0xK_UkvE73XwX=z5sqX3dwR7j2U4R6-350OGg@mail.gmail.com>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56EAD44B.3000908@nod.at>
+Date: Thu, 17 Mar 2016 16:59:07 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <CABatt_woB8fGT0xK_UkvE73XwX=z5sqX3dwR7j2U4R6-350OGg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +33,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 04 March 2016 16:43:36 Brian Norris wrote:
-> On Sat, Mar 05, 2016 at 12:28:38AM +0000, David Woodhouse wrote:
-> > On Fri, 2016-03-04 at 16:22 -0800, Brian Norris wrote:
-> > > 
-> > > ...but, does anyone care about XIP / MTD_XIP then, if the first two
-> > > examples we have both have long-standing build issues?
-> > 
-> > I think there are people trying to make it work on other platforms,
-> > yes.
+Am 17.03.2016 um 16:39 schrieb Martin Townsend:
+>> I guess you're more worried about bitflips than blocks becoming bad
+>> (which, AFAIK, can only happen when writing or erasing a block, not
+>> when reading it).
+>> If bitflips detection/prevention is what your looking for, I guess
+>> ubihealthd (developed by Richard) could help.
+>>
+>> [1]https://lwn.net/Articles/663751/
+>> [2]https://lkml.org/lkml/2015/3/29/31
+>>
+>>
 > 
-> OK... can we kill the broken platforms though? I'm not confident that my
-> and Arnd's workaround attempts will yield anything more than a pat on
-> our own backs to say "yay, it compiles!" And given the number of
-> practically unused things we're already maintaining in MTD, I'm always
-> happy for an excuse to kill off some of it.
+> Looks very promising, thank you for the links.  Bitflip detection is
+> definitely something I am looking for.  If I could get some metrics on
+> bitflips detected even better :) I will take a closer look.
 
-Sorry for the late reply.
+To clarify, UBI does already bitflip detection and then
+"tortures" a block to figure whether it is good or not.
+But only upon read. So, if you very seldom read from a
+page read disturb may hit you.
+This is why I did the ubi-healthd, it allows you to trigger
+read of all data (UBI meta and payload) to detect read disturb
+soonish.
 
-As the three platforms that use this have all been broken for around
-ten years, it seems reasonable to assume nobody is going to miss the
-current implementation, but I'd leave it up to the individual platform
-maintainers.
-
-If we remove all three, that would also give us more flexibility
-regarding the interface definition for any future users of the feature.
-I think the most likely to use it is the Renesas RZ/A1H platform
-with its 10MB of on-chip SRAM, and this one doesn't work with the
-current method anyway.
-
-	Arnd
+Thanks,
+//richard
