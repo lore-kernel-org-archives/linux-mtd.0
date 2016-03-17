@@ -1,27 +1,32 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1agZoa-00057F-1l
- for linux-mtd@lists.infradead.org; Thu, 17 Mar 2016 15:26:21 +0000
-Date: Thu, 17 Mar 2016 16:25:57 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, David Gstir <david@sigma-star.at>, Dave
- Chinner <david@fromorbit.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Alexander Kaplan
- <alex@nextthing.co>, Nicolas Ferre <nicolas.ferre@atmel.com>, Alexandre
- Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: Page migration issue with UBIFS
-Message-ID: <20160317162557.55662d23@bbrezillon>
-In-Reply-To: <56E8192B.5030008@nod.at>
-References: <56E8192B.5030008@nod.at>
+Date: Thu, 17 Mar 2016 10:28:14 -0500
+From: Rob Herring <robh@kernel.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Dave Gordon <david.s.gordon@intel.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Vinod Koul <vinod.koul@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ linux-media@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 7/7] mtd: nand: sunxi: update DT bindings
+Message-ID: <20160317152814.GA9047@rob-hp-laptop>
+References: <1457435715-24740-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1457435715-24740-8-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1457435715-24740-8-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,75 +36,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Tue, 15 Mar 2016 15:16:11 +0100
-Richard Weinberger <richard@nod.at> wrote:
-
-> Hi!
+On Tue, Mar 08, 2016 at 12:15:15PM +0100, Boris Brezillon wrote:
+> Document dmas and dma-names properties.
 > 
-> We're facing this issue from 2014 on UBIFS:
-> http://www.spinics.net/lists/linux-fsdevel/msg79941.html
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/sunxi-nand.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Just to let you know I was able to reproduce the exact same bug on a
-sama5d3 with UBIFS + CMA enabled (CMA allocation through the
-generic DRM/CMA code), so I think we can exclude a platform specific
-bug.
-
-> 
-> So sum up:
-> UBIFS does not allow pages directly marked as dirty. It want's everyone to do it via UBIFS's
-> ->wirte_end() and ->page_mkwirte() functions.
-> This assumption *seems* to be violated by CMA which migrates pages.
-> UBIFS enforces this because it has to account free space on the flash,
-> in UBIFS speak "budget", for details please see fs/ubifs/file.c.
-> 
-> As in the report from 2014 the page is writable but not dirty.
-> The kernel has this debug patch applied:
-> http://www.spinics.net/lists/linux-fsdevel/msg80471.html
-> But our kernel is based on v4.4 and does *not* use proprietary modules.
-> 
-> [  213.450000] page:debe03c0 count:3 mapcount:1 mapping:dce4b5fc index:0x2f
-> [  213.460000] flags: 0x9(locked|uptodate)
-> [  213.460000] page dumped because: try_to_unmap_one
-> [  213.470000] pte_write: 1
-> [  213.480000] UBIFS assert failed in ubifs_set_page_dirty at 1451 (pid 436)
-> [  213.490000] CPU: 0 PID: 436 Comm: drm-stress-test Not tainted 4.4.4-00176-geaa802524636-dirty #1008
-> [  213.490000] Hardware name: Allwinner sun4i/sun5i Families
-> [  213.490000] [<c0015e70>] (unwind_backtrace) from [<c0012cdc>] (show_stack+0x10/0x14)
-> [  213.490000] [<c0012cdc>] (show_stack) from [<c02ad834>] (dump_stack+0x8c/0xa0)
-> [  213.490000] [<c02ad834>] (dump_stack) from [<c0236ee8>] (ubifs_set_page_dirty+0x44/0x50)
-> [  213.490000] [<c0236ee8>] (ubifs_set_page_dirty) from [<c00fa0bc>] (try_to_unmap_one+0x10c/0x3a8)
-> [  213.490000] [<c00fa0bc>] (try_to_unmap_one) from [<c00fadb4>] (rmap_walk+0xb4/0x290)
-> [  213.490000] [<c00fadb4>] (rmap_walk) from [<c00fb1bc>] (try_to_unmap+0x64/0x80)
-> [  213.490000] [<c00fb1bc>] (try_to_unmap) from [<c010dc28>] (migrate_pages+0x328/0x7a0)
-> [  213.490000] [<c010dc28>] (migrate_pages) from [<c00d0cb0>] (alloc_contig_range+0x168/0x2f4)
-> [  213.490000] [<c00d0cb0>] (alloc_contig_range) from [<c010ec00>] (cma_alloc+0x170/0x2c0)
-> [  213.490000] [<c010ec00>] (cma_alloc) from [<c001a958>] (__alloc_from_contiguous+0x38/0xd8)
-> [  213.490000] [<c001a958>] (__alloc_from_contiguous) from [<c001ad44>] (__dma_alloc+0x23c/0x274)
-> [  213.490000] [<c001ad44>] (__dma_alloc) from [<c001ae08>] (arm_dma_alloc+0x54/0x5c)
-> [  213.490000] [<c001ae08>] (arm_dma_alloc) from [<c035cecc>] (drm_gem_cma_create+0xb8/0xf0)
-> [  213.490000] [<c035cecc>] (drm_gem_cma_create) from [<c035cf20>] (drm_gem_cma_create_with_handle+0x1c/0xe8)
-> [  213.490000] [<c035cf20>] (drm_gem_cma_create_with_handle) from [<c035d088>] (drm_gem_cma_dumb_create+0x3c/0x48)
-> [  213.490000] [<c035d088>] (drm_gem_cma_dumb_create) from [<c0341ed8>] (drm_ioctl+0x12c/0x444)
-> [  213.490000] [<c0341ed8>] (drm_ioctl) from [<c0121adc>] (do_vfs_ioctl+0x3f4/0x614)
-> [  213.490000] [<c0121adc>] (do_vfs_ioctl) from [<c0121d30>] (SyS_ioctl+0x34/0x5c)
-> [  213.490000] [<c0121d30>] (SyS_ioctl) from [<c000f2c0>] (ret_fast_syscall+0x0/0x34)
-> 
-> The full kernellog can be found here:
-> http://code.bulix.org/ysuo9x-93716?raw
-> 
-> So, let me repeat Artem's question from 2014:
-> > Now the question is: is it UBIFS which has incorrect assumptions, or this is the
-> > Linux MM which is not doing the right thing? I do not know the answer, let's see
-> > if the MM list may give us a clue.
-> 
-> Thanks,
-> //richard
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Acked-by: Rob Herring <robh@kernel.org>
