@@ -1,28 +1,24 @@
-Date: Thu, 17 Mar 2016 15:06:19 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Dave Gordon
- <david.s.gordon@intel.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Maxime
- Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Vinod Koul <vinod.koul@intel.com>, Dan
- Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org, Mauro
- Carvalho Chehab <m.chehab@samsung.com>, Hans Verkuil
- <hans.verkuil@cisco.com>, Laurent Pinchart
- <laurent.pinchart@ideasonboard.com>, linux-media@vger.kernel.org, Rob
- Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
- Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 6/7] mtd: nand: sunxi: add support for DMA assisted
- operations
-Message-ID: <20160317150619.7d6b5f37@bbrezillon>
-In-Reply-To: <1457435715-24740-7-git-send-email-boris.brezillon@free-electrons.com>
-References: <1457435715-24740-1-git-send-email-boris.brezillon@free-electrons.com>
- <1457435715-24740-7-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail.kernel.org ([198.145.29.136])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1agZEd-0007eG-GA
+ for linux-mtd@lists.infradead.org; Thu, 17 Mar 2016 14:49:12 +0000
+Date: Thu, 17 Mar 2016 09:48:46 -0500
+From: Rob Herring <robh@kernel.org>
+To: Roger Quadros <rogerq@ti.com>
+Cc: tony@atomide.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ ezequiel@vanguardiasur.com.ar, javier@dowhile0.org, fcooper@ti.com,
+ nsekhar@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 10/26] mtd: nand: omap: Update DT binding documentation
+Message-ID: <20160317144846.GA16906@rob-hp-laptop>
+References: <1455916548-3441-1-git-send-email-rogerq@ti.com>
+ <1455916548-3441-11-git-send-email-rogerq@ti.com>
+ <56DD58AF.4090404@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56DD58AF.4090404@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,95 +28,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  8 Mar 2016 12:15:14 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> The sunxi NAND controller is able to pipeline ECC operations only when
-> operated in DMA mode, which improves a lot NAND throughput while keeping
-> CPU usage low.
+On Mon, Mar 07, 2016 at 12:32:15PM +0200, Roger Quadros wrote:
+> Add compatible id and interrupts. The NAND interrupts are
+> provided by the GPMC controller node.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
 > ---
->  drivers/mtd/nand/sunxi_nand.c | 301 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 297 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index 07c3af7..7ba285e 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
+>  Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
 
-[...]
-
-> +static int sunxi_nfc_hw_ecc_write_page_dma(struct mtd_info *mtd,
-> +					   struct nand_chip *chip,
-> +					   const u8 *buf,
-> +					   int oob_required,
-> +					   int page)
-> +{
-> +	struct nand_chip *nand = mtd_to_nand(mtd);
-> +	struct sunxi_nfc *nfc = to_sunxi_nfc(nand->controller);
-> +	struct nand_ecc_ctrl *ecc = &nand->ecc;
-> +	struct sg_table sgt;
-> +	int ret, i;
-> +
-> +	ret = sunxi_nfc_wait_cmd_fifo_empty(nfc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = sunxi_nfc_dma_op_prepare(mtd, buf, ecc->size, ecc->steps,
-> +				       DMA_TO_DEVICE, &sgt);
-> +	if (ret)
-> +		goto pio_fallback;
-> +
-> +	for (i = 0; i < ecc->steps; i++) {
-> +		const u8 *oob = nand->oob_poi + (i * (ecc->bytes + 4));
-> +
-> +		sunxi_nfc_hw_ecc_set_prot_oob_bytes(mtd, oob, i, !i, page);
-> +	}
-> +
-> +	sunxi_nfc_hw_ecc_enable(mtd);
-> +	sunxi_nfc_randomizer_config(mtd, page, false);
-> +	sunxi_nfc_randomizer_enable(mtd);
-> +
-> +	writel((NAND_CMD_RNDIN << 8) | NAND_CMD_PAGEPROG,
-> +	       nfc->regs + NFC_REG_RCMD_SET);
-> +
-> +	dma_async_issue_pending(nfc->dmac);
-> +
-> +	writel(NFC_PAGE_OP | NFC_DATA_SWAP_METHOD |
-> +	       NFC_DATA_TRANS | NFC_ACCESS_DIR,
-> +	       nfc->regs + NFC_REG_CMD);
-> +
-> +	ret = sunxi_nfc_wait_events(nfc, NFC_CMD_INT_FLAG, true, 0);
-> +	if (ret)
-> +		dmaengine_terminate_all(nfc->dmac);
-> +
-> +	sunxi_nfc_randomizer_disable(mtd);
-> +	sunxi_nfc_hw_ecc_disable(mtd);
-> +
-> +	sunxi_nfc_dma_op_cleanup(mtd, DMA_FROM_DEVICE, &sgt);
-
-		Should be DMA_TO_DEVICE here ^
-
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (oob_required || (chip->options & NAND_NEED_SCRAMBLING))
-> +		/* TODO: use DMA to transfer extra OOB bytes ? */
-> +		sunxi_nfc_hw_ecc_write_extra_oob(mtd, chip->oob_poi,
-> +						 NULL, page);
-> +
-> +	return 0;
-> +
-> +pio_fallback:
-> +	return sunxi_nfc_hw_ecc_write_page(mtd, chip, buf, oob_required, page);
-> +}
-
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Acked-by: Rob Herring <robh@kernel.org>
