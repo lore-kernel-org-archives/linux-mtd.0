@@ -1,23 +1,36 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1agT0i-0006gO-Hx
- for linux-mtd@lists.infradead.org; Thu, 17 Mar 2016 08:10:26 +0000
-Subject: Re: [PATCH] UBIFS: Implement ->migratepage()
-To: kbuild test robot <lkp@intel.com>
-References: <201603171228.iwNVzwZx%fengguang.wu@intel.com>
-Cc: kbuild-all@01.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com,
- maxime.ripard@free-electrons.com, david@sigma-star.at, david@fromorbit.com,
- dedekind1@gmail.com, alex@nextthing.co, akpm@linux-foundation.org,
- sasha.levin@oracle.com, iamjoonsoo.kim@lge.com, rvaswani@codeaurora.org,
- tony.luck@intel.com, shailendra.capricorn@gmail.com,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+ id 1agT46-0000Im-7r
+ for linux-mtd@lists.infradead.org; Thu, 17 Mar 2016 08:13:55 +0000
+Subject: Re: Page migration issue with UBIFS
+To: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <56E8192B.5030008@nod.at>
+ <20160315151727.GA16462@node.shutemov.name> <56E82B18.9040807@nod.at>
+ <20160315153744.GB28522@infradead.org> <56E8985A.1020509@nod.at>
+ <20160316142156.GA23595@node.shutemov.name>
+ <20160316142729.GA125481@black.fi.intel.com> <56E9C658.1020903@nod.at>
+ <20160317071155.GB10315@js1304-P5Q-DELUXE>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ "Kirill A. Shutemov" <kirill@shutemov.name>,
+ Christoph Hellwig <hch@infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Gstir <david@sigma-star.at>, Dave Chinner <david@fromorbit.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Alexander Kaplan
+ <alex@nextthing.co>, "akpm@linux-foundation.org"
+ <akpm@linux-foundation.org>, Sasha Levin <sasha.levin@oracle.com>,
+ rvaswani@codeaurora.org, "Luck, Tony" <tony.luck@intel.com>,
+ Shailendra Verma <shailendra.capricorn@gmail.com>,
+ s.strogin@partner.samsung.com
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <56EA6653.6050504@nod.at>
-Date: Thu, 17 Mar 2016 09:09:55 +0100
+Message-ID: <56EA672A.7070007@nod.at>
+Date: Thu, 17 Mar 2016 09:13:30 +0100
 MIME-Version: 1.0
-In-Reply-To: <201603171228.iwNVzwZx%fengguang.wu@intel.com>
+In-Reply-To: <20160317071155.GB10315@js1304-P5Q-DELUXE>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,27 +42,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 17.03.2016 um 05:39 schrieb kbuild test robot:
-> Hi Kirill,
+Am 17.03.2016 um 08:11 schrieb Joonsoo Kim:
+>> It is still not clear why UBIFS has to provide a >migratepage() and what the expected semantics
+>> are.
+>> What we know so far is that the fall back migration function is broken. I'm sure not only on UBIFS.
+>>
+>> Can CMA folks please clarify? :-)
 > 
-> [auto build test ERROR on v4.5-rc7]
-> [also build test ERROR on next-20160316]
-> [if your patch is applied to the wrong git tree, please drop us a note to help improving the system]
+> Hello,
 > 
-> url:    https://github.com/0day-ci/linux/commits/Richard-Weinberger/UBIFS-Implement-migratepage/20160317-065742
-> config: x86_64-allmodconfig (attached as .config)
-> reproduce:
->         # save the attached .config to linux build tree
->         make ARCH=x86_64 
+> As you mentioned earlier, this issue would not be directly related
+> to CMA. It looks like it is more general issue related to interaction
+> between MM and FS. Your first error log shows that error happens when
+> ubifs_set_page_dirty() is called in try_to_unmap_one() which also
+> can be called by reclaimer (kswapd or direct reclaim). Quick search shows
+> that problem also happens on reclaim. Is that fixed?
 > 
-> All errors (new ones prefixed by >>):
-> 
->>> ERROR: "migrate_page_move_mapping" [fs/ubifs/ubifs.ko] undefined!
->>> ERROR: "migrate_page_copy" [fs/ubifs/ubifs.ko] undefined!
+> http://www.spinics.net/lists/linux-fsdevel/msg79531.html
 
-Meh. Just noticted that these functions are not exported and therefore not
-usable in modules.
-So, this patch is not really the solution although it makes the problem go away.
+Well, this problem happened only on a tainted kernel and never popped up again.
+So, I really don't know. :-)
+
+> I think that you need to CC other people who understand interaction
+> between MM and FS perfectly.
+
+Who is missing on the CC list?
 
 Thanks,
 //richard
