@@ -1,36 +1,22 @@
-Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1agpBx-0003h2-TA
- for linux-mtd@lists.infradead.org; Fri, 18 Mar 2016 07:51:30 +0000
-Received: by mail-lb0-x231.google.com with SMTP id k12so83029379lbb.1
- for <linux-mtd@lists.infradead.org>; Fri, 18 Mar 2016 00:51:09 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1458285741-20821-1-git-send-email-xuejiancheng@huawei.com>
-References: <1458285741-20821-1-git-send-email-xuejiancheng@huawei.com>
-Date: Fri, 18 Mar 2016 13:21:07 +0530
-Message-ID: <CAD6G_RQp0neR8VcPXJ8Xd7E44ZE1wfpP+JwWykEAnr=8WwMx2w@mail.gmail.com>
-Subject: Re: [PATCH v9] mtd: spi-nor: add hisilicon spi-nor flash controller
- driver
-From: Jagan Teki <jagannadh.teki@gmail.com>
-To: Jiancheng Xue <xuejiancheng@huawei.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, zajec5@gmail.com,
- boris.brezillon@free-electrons.com, ezequiel@vanguardiasur.com.ar,
- juhosg@openwrt.org, shijie.huang@intel.com,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Furquan Shaikh <furquan@google.com>,
- Han Xu <han.xu@freescale.com>, Fabio Estevam <fabio.estevam@freescale.com>,
- manabian@gmail.com, devicetree@vger.kernel.org,
+From: Yunhui Cui <yunhui.cui@nxp.com>
+To: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
+ Yunhui Cui <B56489@freescale.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- yanhaifeng@hisilicon.com,
- yanghongwei@hisilicon.com, suwenping@hisilicon.com, raojun@hisilicon.com,
- ml.yang@hisilicon.com, gaofei@hisilicon.com, zhangzhenxing@hisilicon.com,
- xuejiancheng@hisilicon.com
-Content-Type: text/plain; charset=UTF-8
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>
+Subject: RE: [PATCH v3 4/4] mtd: spi-nor: Disable Micron flash HW protection
+Date: Fri, 18 Mar 2016 10:08:58 +0000
+Message-ID: <DB5PR0401MB1912D5517CD6394B7EEE136A948C0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF699D2@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF699D2@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,16 +26,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18 March 2016 at 12:52, Jiancheng Xue <xuejiancheng@huawei.com> wrote:
-> Add hisilicon spi-nor flash controller driver
->
-> Signed-off-by: Binquan Peng <pengbinquan@huawei.com>
-> Signed-off-by: Jiancheng Xue <xuejiancheng@huawei.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> ---
-
-Reviewed-by: Jagan Teki <jteki@openedev.com>
-
--- 
-Jagan.
+SGkgQmVhbiwNCg0KVGhhbmtzIGZvciB5b3VyIHN1Z2dlc3Rpb25zIHZlcnkgbXVjaC4NClllcywg
+dGhlIGZsYXNoIE4yNVExMjhBIHN0YXR1cyByZWdpc3RlciB3cml0ZSBlbmFibGUvZGlzYWJsZSBi
+aXQgaXMgZGlzYWJsZSBpbiBpbml0aWFsIHN0YXRlLg0KQnV0LCBUaGlzIHBhdGNoIGFpbXMgdG8g
+Y2xlYXIgc3RhdHVzIHJlZ2lzdGVyIGJpdFs3XSh3cml0ZSBlbmFibGUvZGlzYWJsZSBiaXQpIHRv
+IDAsIHdoaWNoIGVuYWJsZXMgdGhlIGJpdC4NCkZyYW5rbHkgc3BlYWtpbmcsIEkgYWxzbyBkb24n
+dCB3YW50IHRvIGFkZCB0aGlzIHBhdGNoLg0KVGhlIHJlYXNvbiBmb3IgdGhpcyBpcyB0aGF0IGNs
+ZWFyIHN0YXR1cyByZWdpc3RlciBiaXRbN10gdG8gMCBpcyBhIG11c3QgdG8gc2V0IHF1YWQgbW9k
+ZSB0byBFbmhhbmNlZCBWb2xhdGlsZSBDb25maWd1cmF0aW9uIFJlZ2lzdGVyIHVzaW5nIGNvbW1h
+bmQgU1BJTk9SX09QX1dEX0VWQ1IuIE90aGVyd2lzZSBpdCB3aWxsIG91dHB1dCAiTWljcm9uIEVW
+Q1IgUXVhZCBiaXQgbm90IGNsZWFyIiBpbiBzcGktbm9yLmMNCkkgbG9va2VkIHVwIHRoZSBkYXRh
+c2hlZXQsIGJ1dCBJIHJlYWxseSBkb24ndCBmaW5kIG91dCBhbnkgY29ubmVjdGlvbiBiZXR3ZWVu
+IHN0YXR1cyByZWdpc3RlciBiaXRbN10od3JpdGUgZW5hYmxlL2Rpc2FibGUgYml0KSBlcXVhbHMg
+MCBhbmQgc2V0aW5nIHF1YWQgbW9kZSB0byBFbmhhbmNlZCBWb2xhdGlsZSBDb25maWd1cmF0aW9u
+IFJlZ2lzdGVyLg0KDQpKdXN0IGFzIEkgd2FudCB0byBzZW5kIHRoZSBpc3N1ZSB0byBNaWNyb24g
+dGVhbSAsIGNvdWxkIHlvdSBnaXZlIG1lIHNvbWUgc29sdXRpb25zID8NCg0KDQpUaGFua3MgDQpZ
+dW5odWkNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEJlYW4gSHVvILv0sfOx
+8yAoYmVhbmh1bykgW21haWx0bzpiZWFuaHVvQG1pY3Jvbi5jb21dIA0KU2VudDogVGh1cnNkYXks
+IE1hcmNoIDAzLCAyMDE2IDk6MzkgUE0NClRvOiBZdW5odWkgQ3VpDQpDYzogbGludXgtbXRkQGxp
+c3RzLmluZnJhZGVhZC5vcmc7IGR3bXcyQGluZnJhZGVhZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNl
+QGdtYWlsLmNvbTsgaGFuLnh1QGZyZWVzY2FsZS5jb207IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
+bC5vcmc7IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1hcm0ta2VybmVsQGxp
+c3RzLmluZnJhZGVhZC5vcmc7IFlhbyBZdWFuOyBZdW5odWkgQ3VpDQpTdWJqZWN0OiBSZTogW1BB
+VENIIHYzIDQvNF0gbXRkOiBzcGktbm9yOiBEaXNhYmxlIE1pY3JvbiBmbGFzaCBIVyBwcm90ZWN0
+aW9uDQoNCj4gRnJvbTogWXVuaHVpIEN1aSA8QjU2NDg5QGZyZWVzY2FsZS5jb20+DQo+IFRvOiA8
+ZHdtdzJAaW5mcmFkZWFkLm9yZz4sIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+LA0KPiAJ
+PGhhbi54dUBmcmVlc2NhbGUuY29tPg0KPiBDYzogPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmc+LCA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc+LA0KPiAJPGxpbnV4LWFybS1rZXJu
+ZWxAbGlzdHMuaW5mcmFkZWFkLm9yZz4sIDx5YW8ueXVhbkBueHAuY29tPiwgWXVuaHVpIA0KPiBD
+dWkNCj4gCTx5dW5odWkuY3VpQG54cC5jb20+DQo+IFN1YmplY3Q6IFtQQVRDSCB2MyA0LzRdIG10
+ZDogc3BpLW5vcjogRGlzYWJsZSBNaWNyb24gZmxhc2ggSFcNCj4gCXByb3RlY3Rpb24NCj4gTWVz
+c2FnZS1JRDogPDE0NTY5ODgwNDQtMzcwNjEtNC1naXQtc2VuZC1lbWFpbC1CNTY0ODlAZnJlZXNj
+YWxlLmNvbT4NCj4gQ29udGVudC1UeXBlOiB0ZXh0L3BsYWluDQo+IA0KPiBGcm9tOiBZdW5odWkg
+Q3VpIDx5dW5odWkuY3VpQG54cC5jb20+DQo+IA0KPiBGb3IgTWljcm9uIGZhbWlseSAsVGhlIHN0
+YXR1cyByZWdpc3RlciB3cml0ZSBlbmFibGUvZGlzYWJsZSBiaXQsIA0KPiBwcm92aWRlcyBoYXJk
+d2FyZSBkYXRhIHByb3RlY3Rpb24gZm9yIHRoZSBkZXZpY2UuDQo+IFdoZW4gdGhlIGVuYWJsZS9k
+aXNhYmxlIGJpdCBpcyBzZXQgdG8gMSwgdGhlIHN0YXR1cyByZWdpc3RlciANCj4gbm9udm9sYXRp
+bGUgYml0cyBiZWNvbWUgcmVhZC1vbmx5IGFuZCB0aGUgV1JJVEUgU1RBVFVTIFJFR0lTVEVSIA0K
+PiBvcGVyYXRpb24gd2lsbCBub3QgZXhlY3V0ZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFl1bmh1
+aSBDdWkgPHl1bmh1aS5jdWlAbnhwLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9zcGktbm9y
+L3NwaS1ub3IuYyB8IDkgKysrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25z
+KCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgDQo+
+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgaW5kZXggZWQwYzE5Yy4uOTE3ZjgxNCAx
+MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gKysrIGIvZHJp
+dmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gQEAgLTM5LDYgKzM5LDcgQEANCj4gDQo+ICAj
+ZGVmaW5lIFNQSV9OT1JfTUFYX0lEX0xFTgk2DQo+ICAjZGVmaW5lIFNQSV9OT1JfTUFYX0FERFJf
+V0lEVEgJNA0KPiArI2RlZmluZSBTUElfTk9SX01JQ1JPTl9XUklURV9FTkFCTEUJMHg3Zg0KPiAN
+Cj4gIHN0cnVjdCBmbGFzaF9pbmZvIHsNCj4gIAljaGFyCQkqbmFtZTsNCj4gQEAgLTEyMzgsNiAr
+MTIzOSwxNCBAQCBpbnQgc3BpX25vcl9zY2FuKHN0cnVjdCBzcGlfbm9yICpub3IsIGNvbnN0IA0K
+PiBjaGFyICpuYW1lLCBlbnVtIHJlYWRfbW9kZSBtb2RlKQ0KPiAgCQl3cml0ZV9zcihub3IsIDAp
+Ow0KPiAgCX0NCj4gDQo+ICsJaWYgKEpFREVDX01GUihpbmZvKSA9PSBTTk9SX01GUl9NSUNST04p
+IHsNCj4gKwkJcmV0ID0gcmVhZF9zcihub3IpOw0KPiArCQlyZXQgJj0gU1BJX05PUl9NSUNST05f
+V1JJVEVfRU5BQkxFOw0KPiArDQpGb3IgTWljcm9uIHRoZSBzdGF0dXMgcmVnaXN0ZXIgd3JpdGUg
+ZW5hYmxlL2Rpc2FibGUgYml0LCBpdHMgZGVmYXVsdC9mYWN0b3J5IHZhbHVlIGlzIGRpc2FibGUu
+DQpDYW4gaGVyZSBmaXJzdCBjaGVjayAsdGhlbiBwcm9ncmFtPw0KPiArCQl3cml0ZV9lbmFibGUo
+bm9yKTsNCj4gKwkJd3JpdGVfc3Iobm9yLCByZXQpOw0KPiArCX0NCj4gKw0KPiAgCWlmICghbXRk
+LT5uYW1lKQ0KPiAgCQltdGQtPm5hbWUgPSBkZXZfbmFtZShkZXYpOw0KPiAgCW10ZC0+cHJpdiA9
+IG5vcjsNCg==
