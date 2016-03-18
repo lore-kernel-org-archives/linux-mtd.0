@@ -1,17 +1,23 @@
-Date: Fri, 18 Mar 2016 10:44:19 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+Received: from mail.kernel.org ([198.145.29.136])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1agzq9-00068c-FO
+ for linux-mtd@lists.infradead.org; Fri, 18 Mar 2016 19:13:41 +0000
+Date: Fri, 18 Mar 2016 14:13:15 -0500
+From: Rob Herring <robh@kernel.org>
+To: Franklin S Cooper Jr <fcooper@ti.com>
+Cc: nsekhar@ti.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ rogerq@ti.com, tony@atomide.com, devicetree@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: avoid stack overflow in MTD CFI code
-Message-ID: <20160318174419.GA70362@google.com>
-References: <1456748436-522413-1-git-send-email-arnd@arndb.de>
- <20160304212159.GA55664@google.com> <2259988.Lj3BC6sPv6@wuerfel>
+Subject: Re: [PATCH v4 7/7] ARM: OMAP2+: Update GPMC and NAND DT binding
+ documentation
+Message-ID: <20160318191315.GA20951@rob-hp-laptop>
+References: <1457654203-20856-1-git-send-email-fcooper@ti.com>
+ <1457654203-20856-8-git-send-email-fcooper@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2259988.Lj3BC6sPv6@wuerfel>
+In-Reply-To: <1457654203-20856-8-git-send-email-fcooper@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Mar 05, 2016 at 12:25:24AM +0100, Arnd Bergmann wrote:
-> On Friday 04 March 2016 13:21:59 Brian Norris wrote:
-> > 
-> > Looking a little closer at this... why do we need the changes to
-> > include/linux/mtd/map.h again? It should be fine to leave these
-> > definitions as-is, right? They don't contribute to the large stack
-> > usage, do they?
-> > 
-> > Maybe I'm just missing something obvious, so please do enlighten 
-> > 
+On Thu, Mar 10, 2016 at 05:56:43PM -0600, Franklin S Cooper Jr wrote:
+> Add additional details to the GPMC NAND documentation to clarify
+> what is needed to enable NAND DMA prefetch.
 > 
-> It's been a while since I created the patch, and the originally
-> failing configuration currently doesn't produce this (probably
-> because something else changed). I remember that it was something
-> rather subtle, but don't exactly remember what happened.
-> 
-> I've reverted the patch now, trying to reproduce it on my
-> randconfig setup, but I might not be able to get back to you
-> in the next week while I'm traveling.
+> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+> ---
+>  Documentation/devicetree/bindings/bus/ti-gpmc.txt   | 7 ++++++-
+>  Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
+>  2 files changed, 7 insertions(+), 2 deletions(-)
 
-FWIW, I took a little look at this, and I can reproduce this myself. I
-can get a large frame size on at least 2 of the 3 functions you report.
-I think most of the gain you get with this patch is due to the Kconfig
-change (MTD_COMPLEX_MAPPINGS) because it forces an extra level of
-indirection. The other changes seem to give a modest decrease in size,
-though it's less clear why exactly.
-
-Anyway, I think the problem isn't primarily with anything you're
-touching here exactly, but with the fact that we're putting several
-copies of the 'map_word' typedef on the stack, and doing assignment to
-it as if it's a typical variable. But with MAP_WIDTH_32, this is a
-32-byte object, and I assume that these (too) long functions are
-introducing enough complexity that the compiler has to have several
-copies of them. To properly fix all this, it seems like the code could
-use some more attention, and not just the superficial changes here.
-
-Anyway, I'm interested if you have any more thoughts on this. If you
-still think this is worthwhile, I can probably just take it. (It looks
-OK, despite the above comments.)
-
-Brian
+Acked-by: Rob Herring <robh@kernel.org>
