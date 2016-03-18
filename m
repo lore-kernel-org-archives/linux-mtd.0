@@ -1,23 +1,14 @@
-Received: from mail.kernel.org ([198.145.29.136])
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1agzq9-00068c-FO
- for linux-mtd@lists.infradead.org; Fri, 18 Mar 2016 19:13:41 +0000
-Date: Fri, 18 Mar 2016 14:13:15 -0500
-From: Rob Herring <robh@kernel.org>
-To: Franklin S Cooper Jr <fcooper@ti.com>
-Cc: nsekhar@ti.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- rogerq@ti.com, tony@atomide.com, devicetree@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 7/7] ARM: OMAP2+: Update GPMC and NAND DT binding
- documentation
-Message-ID: <20160318191315.GA20951@rob-hp-laptop>
-References: <1457654203-20856-1-git-send-email-fcooper@ti.com>
- <1457654203-20856-8-git-send-email-fcooper@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1457654203-20856-8-git-send-email-fcooper@ti.com>
+ id 1ah3m2-0005uY-8c
+ for linux-mtd@lists.infradead.org; Fri, 18 Mar 2016 23:25:45 +0000
+From: Andreas Gruenbacher <agruenba@redhat.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: [PATCH] ubifs: Remove unused header
+Date: Sat, 19 Mar 2016 00:25:11 +0100
+Message-Id: <1458343511-11538-1-git-send-email-agruenba@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +18,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 10, 2016 at 05:56:43PM -0600, Franklin S Cooper Jr wrote:
-> Add additional details to the GPMC NAND documentation to clarify
-> what is needed to enable NAND DMA prefetch.
-> 
-> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
-> ---
->  Documentation/devicetree/bindings/bus/ti-gpmc.txt   | 7 ++++++-
->  Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
->  2 files changed, 7 insertions(+), 2 deletions(-)
+UBIFS does not support POSIX ACLs, so there is no need for including any
+POSIX ACL hesders.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+---
+ fs/ubifs/xattr.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index c7f4d434..b043e04 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -59,7 +59,6 @@
+ #include <linux/fs.h>
+ #include <linux/slab.h>
+ #include <linux/xattr.h>
+-#include <linux/posix_acl_xattr.h>
+ 
+ /*
+  * Limit the number of extended attributes per inode so that the total size
+-- 
+2.4.3
