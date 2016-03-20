@@ -1,19 +1,21 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-ob0-x22d.google.com ([2607:f8b0:4003:c01::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ahkR4-0008VY-7D
- for linux-mtd@lists.infradead.org; Sun, 20 Mar 2016 20:58:55 +0000
-Subject: Re: [PATCH] MAINTAINERS: Update UBIFS entry
-To: dedekind1@gmail.com, linux-mtd@lists.infradead.org
-References: <1457011334-20386-1-git-send-email-richard@nod.at>
- <1458298838.25312.0.camel@gmail.com>
-Cc: linux-kernel@vger.kernel.org, joe@perches.com, adrian.hunter@intel.com
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56EF0EEF.1000105@nod.at>
-Date: Sun, 20 Mar 2016 21:58:23 +0100
+ id 1ahkRm-00017K-Bt
+ for linux-mtd@lists.infradead.org; Sun, 20 Mar 2016 20:59:39 +0000
+Received: by mail-ob0-x22d.google.com with SMTP id fp4so160720025obb.2
+ for <linux-mtd@lists.infradead.org>; Sun, 20 Mar 2016 13:59:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1458298838.25312.0.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1458343511-11538-1-git-send-email-agruenba@redhat.com>
+References: <1458343511-11538-1-git-send-email-agruenba@redhat.com>
+Date: Sun, 20 Mar 2016 21:59:17 +0100
+Message-ID: <CAFLxGvzuteirzq_jWQNCVxZZJ+qPDwaXWJPkh-V=hZbXCtWSBg@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: Remove unused header
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Andreas Gruenbacher <agruenba@redhat.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 18.03.2016 um 12:00 schrieb Artem Bityutskiy:
-> On Thu, 2016-03-03 at 14:22 +0100, Richard Weinberger wrote:
->> ...to represent the status quo.
->>
->> Signed-off-by: Richard Weinberger <richard@nod.at>
->> ---
->>  MAINTAINERS | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> 
-> Thanks Richard!
+On Sat, Mar 19, 2016 at 12:25 AM, Andreas Gruenbacher
+<agruenba@redhat.com> wrote:
+> UBIFS does not support POSIX ACLs, so there is no need for including any
+> POSIX ACL hesders.
+>
+> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> ---
+>  fs/ubifs/xattr.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+> index c7f4d434..b043e04 100644
+> --- a/fs/ubifs/xattr.c
+> +++ b/fs/ubifs/xattr.c
+> @@ -59,7 +59,6 @@
+>  #include <linux/fs.h>
+>  #include <linux/slab.h>
+>  #include <linux/xattr.h>
+> -#include <linux/posix_acl_xattr.h>
+>
+>  /*
+>   * Limit the number of extended attributes per inode so that the total size
+> --
+> 2.4.3
 
 Applied.
 
+-- 
 Thanks,
 //richard
