@@ -1,27 +1,23 @@
-Date: Mon, 21 Mar 2016 16:46:15 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Dave Gordon
- <david.s.gordon@intel.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Maxime
- Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Vinod Koul <vinod.koul@intel.com>, Dan
- Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org, Mauro
- Carvalho Chehab <m.chehab@samsung.com>, Hans Verkuil
- <hans.verkuil@cisco.com>, Laurent Pinchart
- <laurent.pinchart@ideasonboard.com>, linux-media@vger.kernel.org, Rob
- Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
- Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 4/7] scatterlist: add sg_alloc_table_from_buf() helper
-Message-ID: <20160321164615.37453ed8@bbrezillon>
-In-Reply-To: <1457435715-24740-5-git-send-email-boris.brezillon@free-electrons.com>
-References: <1457435715-24740-1-git-send-email-boris.brezillon@free-electrons.com>
- <1457435715-24740-5-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ai3Cu-0002mv-V5
+ for linux-mtd@lists.infradead.org; Mon, 21 Mar 2016 17:01:36 +0000
+Received: by mail-pf0-x243.google.com with SMTP id x3so30917603pfb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Mar 2016 10:01:11 -0700 (PDT)
+Date: Mon, 21 Mar 2016 10:01:07 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: linux-mtd@lists.infradead.org, nicolas.ferre@atmel.com,
+ boris.brezillon@free-electrons.com, marex@denx.de,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] mtd: spi-nor: add an alternative method to support
+ memory >16MiB
+Message-ID: <20160321170107.GG2545@google.com>
+References: <1458556429-11741-1-git-send-email-cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1458556429-11741-1-git-send-email-cyrille.pitchen@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,236 +27,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  8 Mar 2016 12:15:12 +0100
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> sg_alloc_table_from_buf() provides an easy solution to create an sg_table
-> from a virtual address pointer. This function takes care of dealing with
-> vmallocated buffers, buffer alignment, or DMA engine limitations (maximum
-> DMA transfer size).
+On Mon, Mar 21, 2016 at 11:33:49AM +0100, Cyrille Pitchen wrote:
+> This patch provides an alternative mean to support memory above 16MiB
+> (128Mib) by replacing 3byte address op codes by their associated 4byte
+> address versions.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Using the dedicated 4byte address op codes doesn't change the internal
+> state of the SPI NOR memory as opposed to using other means such as
+> updating a Base Address Register (BAR) and sending command to enter/leave
+> the 4byte mode.
+> 
+> Hence when a CPU reset occurs, early bootloaders don't need to be aware
+> of BAR value or 4byte mode being enabled: they can still access the first
+> 16MiB of the SPI NOR memory using the regular 3byte address op codes.
+> 
+> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+
+I understand this reasoning, and that's all well and good. I'd like to
+see this happen for all flash that support it, since the stateful 4-byte
+modes just seem to break things a lot. But one question below.
+
 > ---
->  include/linux/scatterlist.h |  24 ++++++++
->  lib/scatterlist.c           | 142 ++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 166 insertions(+)
 > 
-> diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-> index 556ec1e..4a75362 100644
-> --- a/include/linux/scatterlist.h
-> +++ b/include/linux/scatterlist.h
-> @@ -41,6 +41,27 @@ struct sg_table {
->  	unsigned int orig_nents;	/* original size of list */
->  };
+> Hi all,
+> 
+> This patch was tested on a sama5d2 xplained board + Macronix mx25l25635e.
+> 
+> Best regards,
+> 
+> Cyrille
+> 
+>  drivers/mtd/spi-nor/Kconfig   |  12 +++++
+>  drivers/mtd/spi-nor/spi-nor.c | 105 +++++++++++++++++++++++++++++++++---------
+>  include/linux/mtd/spi-nor.h   |  23 ++++++---
+>  3 files changed, 113 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> index d42c98e1f581..7fae36fc8526 100644
+> --- a/drivers/mtd/spi-nor/Kconfig
+> +++ b/drivers/mtd/spi-nor/Kconfig
+> @@ -29,6 +29,18 @@ config MTD_SPI_NOR_USE_4K_SECTORS
+>  	  Please note that some tools/drivers/filesystems may not work with
+>  	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
 >  
-> +/**
-> + * struct sg_constraints - SG constraints structure
-> + *
-> + * @max_chunk_len: maximum chunk buffer length. Each SG entry has to be smaller
-> + *		   than this value. Zero means no constraint.
-> + * @required_alignment: minimum alignment. Is used for both size and pointer
-> + *			alignment. If this constraint is not met, the function
-> + *			should return -EINVAL.
-> + * @preferred_alignment: preferred alignment. Mainly used to optimize
-> + *			 throughput when the DMA engine performs better when
-> + *			 doing aligned accesses.
-> + *
-> + * This structure is here to help sg_alloc_table_from_buf() create the optimal
-> + * SG list based on DMA engine constraints.
-> + */
-> +struct sg_constraints {
-> +	size_t max_chunk_len;
-> +	size_t required_alignment;
-> +	size_t preferred_alignment;
-> +};
+> +config MTD_SPI_NOR_USE_4B_OPCODES
+> +	bool "Use 4-byte address op codes"
+> +	default n
+> +	help
+> +	  This is an alternative to the "Enter/Exit 4-byte mode" commands and
+> +	  Base Address Register (BAR) updates to support flash size above 16MiB.
+> +	  Using dedicated 4-byte address op codes for (Fast) Read, Page Program
+> +	  and Sector Erase operations avoids changing the internal state of the
+> +	  SPI NOR memory. Hence if a CPU reset occurs, early bootloaders can
+> +	  still use regular 3-byte address op codes and read from the very first
+> +	  16MiB of the flash memory.
 > +
 
-Hm, we seem to have another case in NAND controller drivers. Some
-drivers do not support scattergather accesses and have to provide a
-single physically contiguous memory region to transfer the whole
-NAND page.
+Why does this need to be a Kconfig option? Can't it just as well be
+supported by keeping entries in the ID table, to show which flash
+support these opcodes and which don't? Kconfig is really a bad mechanism
+for trying to configure your flash.
 
-Could we add a ->max_entries field to the sg_contraints struct to allow
-those drivers to use the generic mtd_map_buf() function, and fallback
-to a bounce buffer approach (or PIO access approach) when
-sg_alloc_table_from_buf() fails to fulfill this constraint.
+>  config SPI_FSL_QUADSPI
+>  	tristate "Freescale Quad SPI controller"
+>  	depends on ARCH_MXC || SOC_LS1021A || ARCH_LAYERSCAPE || COMPILE_TEST
 
-We could also define another 'non-sg' function to do the 'physically
-contiguous' check, but in any case, I'd like to avoid letting each
-driver code its own checking function.
+[snip the rest for now, since I don't think it's relevant]
 
-What do you think?
-
->  /*
->   * Notes on SG table design.
->   *
-> @@ -265,6 +286,9 @@ int sg_alloc_table_from_pages(struct sg_table *sgt,
->  	struct page **pages, unsigned int n_pages,
->  	unsigned long offset, unsigned long size,
->  	gfp_t gfp_mask);
-> +int sg_alloc_table_from_buf(struct sg_table *sgt, const void *buf, size_t len,
-> +			    const struct sg_constraints *constraints,
-> +			    gfp_t gfp_mask);
->  
->  size_t sg_copy_buffer(struct scatterlist *sgl, unsigned int nents, void *buf,
->  		      size_t buflen, off_t skip, bool to_buffer);
-> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-> index bafa993..706b583 100644
-> --- a/lib/scatterlist.c
-> +++ b/lib/scatterlist.c
-> @@ -433,6 +433,148 @@ int sg_alloc_table_from_pages(struct sg_table *sgt,
->  }
->  EXPORT_SYMBOL(sg_alloc_table_from_pages);
->  
-> +static size_t sg_buf_chunk_len(const void *buf, size_t len,
-> +			       const struct sg_constraints *cons)
-> +{
-> +	size_t chunk_len = len;
-> +
-> +	if (cons->max_chunk_len)
-> +		chunk_len = min_t(size_t, chunk_len, cons->max_chunk_len);
-> +
-> +	if (is_vmalloc_addr(buf))
-> +		chunk_len = min_t(size_t, chunk_len,
-> +				  PAGE_SIZE - offset_in_page(buf));
-> +
-> +	if (!IS_ALIGNED((unsigned long)buf, cons->preferred_alignment)) {
-> +		const void *aligned_buf = PTR_ALIGN(buf,
-> +						    cons->preferred_alignment);
-> +		size_t unaligned_len = (unsigned long)(aligned_buf - buf);
-> +
-> +		chunk_len = min_t(size_t, chunk_len, unaligned_len);
-> +	} else if (chunk_len > cons->preferred_alignment) {
-> +		chunk_len &= ~(cons->preferred_alignment - 1);
-> +	}
-> +
-> +	return chunk_len;
-> +}
-> +
-> +#define sg_for_each_chunk_in_buf(buf, len, chunk_len, constraints)	\
-> +	for (chunk_len = sg_buf_chunk_len(buf, len, constraints);	\
-> +	     len;							\
-> +	     len -= chunk_len, buf += chunk_len,			\
-> +	     chunk_len = sg_buf_chunk_len(buf, len, constraints))
-> +
-> +static int sg_check_constraints(struct sg_constraints *cons,
-> +				const void *buf, size_t len)
-> +{
-> +	if (!cons->required_alignment)
-> +		cons->required_alignment = 1;
-> +
-> +	if (!cons->preferred_alignment)
-> +		cons->preferred_alignment = cons->required_alignment;
-> +
-> +	/* Test if buf and len are properly aligned. */
-> +	if (!IS_ALIGNED((unsigned long)buf, cons->required_alignment) ||
-> +	    !IS_ALIGNED(len, cons->required_alignment))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * if the buffer has been vmallocated and required_alignment is
-> +	 * more than PAGE_SIZE we cannot guarantee it.
-> +	 */
-> +	if (is_vmalloc_addr(buf) && cons->required_alignment > PAGE_SIZE)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * max_chunk_len has to be aligned to required_alignment to
-> +	 * guarantee that all buffer chunks are aligned correctly.
-> +	 */
-> +	if (!IS_ALIGNED(cons->max_chunk_len, cons->required_alignment))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * preferred_alignment has to be aligned to required_alignment
-> +	 * to avoid misalignment of buffer chunks.
-> +	 */
-> +	if (!IS_ALIGNED(cons->preferred_alignment, cons->required_alignment))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * sg_alloc_table_from_buf - create an SG table from a buffer
-> + *
-> + * @sgt: SG table
-> + * @buf: buffer you want to create this SG table from
-> + * @len: length of buf
-> + * @constraints: optional constraints to take into account when creating
-> + *		 the SG table. Can be NULL if no specific constraints are
-> + *		 required.
-> + * @gfp_mask: type of allocation to use when creating the table
-> + *
-> + * This function creates an SG table from a buffer, its length and some
-> + * SG constraints.
-> + *
-> + * Note: This function supports vmallocated buffers.
-> + */
-> +int sg_alloc_table_from_buf(struct sg_table *sgt, const void *buf, size_t len,
-> +			    const struct sg_constraints *constraints,
-> +			    gfp_t gfp_mask)
-> +{
-> +	struct sg_constraints cons = { };
-> +	size_t remaining, chunk_len;
-> +	const void *sg_buf;
-> +	int i, ret;
-> +
-> +	if (constraints)
-> +		cons = *constraints;
-> +
-> +	ret = sg_check_constraints(&cons, buf, len);
-> +	if (ret)
-> +		return ret;
-> +
-> +	sg_buf = buf;
-> +	remaining = len;
-> +	i = 0;
-> +	sg_for_each_chunk_in_buf(sg_buf, remaining, chunk_len, &cons)
-> +		i++;
-> +
-> +	ret = sg_alloc_table(sgt, i, gfp_mask);
-> +	if (ret)
-> +		return ret;
-> +
-> +	sg_buf = buf;
-> +	remaining = len;
-> +	i = 0;
-> +	sg_for_each_chunk_in_buf(sg_buf, remaining, chunk_len, &cons) {
-> +		if (is_vmalloc_addr(sg_buf)) {
-> +			struct page *vm_page;
-> +
-> +			vm_page = vmalloc_to_page(sg_buf);
-> +			if (!vm_page) {
-> +				ret = -ENOMEM;
-> +				goto err_free_table;
-> +			}
-> +
-> +			sg_set_page(&sgt->sgl[i], vm_page, chunk_len,
-> +				    offset_in_page(sg_buf));
-> +		} else {
-> +			sg_set_buf(&sgt->sgl[i], sg_buf, chunk_len);
-> +		}
-> +
-> +		i++;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_free_table:
-> +	sg_free_table(sgt);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(sg_alloc_table_from_buf);
-> +
->  void __sg_page_iter_start(struct sg_page_iter *piter,
->  			  struct scatterlist *sglist, unsigned int nents,
->  			  unsigned long pgoffset)
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Brian
