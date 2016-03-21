@@ -1,16 +1,23 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: avoid stack overflow in MTD CFI code
-Date: Fri, 18 Mar 2016 21:25:23 +0100
-Message-ID: <10357051.EVa2c1MaZl@wuerfel>
-In-Reply-To: <20160318174419.GA70362@google.com>
-References: <1456748436-522413-1-git-send-email-arnd@arndb.de>
- <2259988.Lj3BC6sPv6@wuerfel> <20160318174419.GA70362@google.com>
+From: P L Sai Krishna <lakshmi.sai.krishna.potthuri@xilinx.com>
+To: Michal Simek <michal.simek@xilinx.com>, Soren Brinkmann
+ <soren.brinkmann@xilinx.com>, David Woodhouse <dwmw2@infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>,
+ "Javier Martinez Canillas" <javier@osg.samsung.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Stephen Warren <swarren@nvidia.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, "Andrew F. Davis" <afd@ti.com>,
+ Marek Vasut <marex@denx.de>, Jagan Teki <jteki@openedev.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>, "Harini
+ Katakam" <harinik@xilinx.com>, Punnaiah Choudary Kalluri
+ <punnaia@xilinx.com>, Anirudha Sarangi <anirudh@xilinx.com>, P L Sai Krishna
+ <lakshmis@xilinx.com>
+Subject: [LINUX PATCH 1/2] mtd: Added dummy entry in the spi_transfer
+ structure.
+Date: Mon, 21 Mar 2016 17:50:08 +0530
+Message-ID: <1458562809-36114-1-git-send-email-lakshmis@xilinx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 18 March 2016 10:44:19 Brian Norris wrote:
-> On Sat, Mar 05, 2016 at 12:25:24AM +0100, Arnd Bergmann wrote:
-> > On Friday 04 March 2016 13:21:59 Brian Norris wrote:
-> > > 
-> > > Looking a little closer at this... why do we need the changes to
-> > > include/linux/mtd/map.h again? It should be fine to leave these
-> > > definitions as-is, right? They don't contribute to the large stack
-> > > usage, do they?
-> > > 
-> > > Maybe I'm just missing something obvious, so please do enlighten 
-> > > 
-> > 
-> > It's been a while since I created the patch, and the originally
-> > failing configuration currently doesn't produce this (probably
-> > because something else changed). I remember that it was something
-> > rather subtle, but don't exactly remember what happened.
-> > 
-> > I've reverted the patch now, trying to reproduce it on my
-> > randconfig setup, but I might not be able to get back to you
-> > in the next week while I'm traveling.
-> 
-> FWIW, I took a little look at this, and I can reproduce this myself. I
-> can get a large frame size on at least 2 of the 3 functions you report.
-> I think most of the gain you get with this patch is due to the Kconfig
-> change (MTD_COMPLEX_MAPPINGS) because it forces an extra level of
-> indirection. The other changes seem to give a modest decrease in size,
-> though it's less clear why exactly.
-> 
-> Anyway, I think the problem isn't primarily with anything you're
-> touching here exactly, but with the fact that we're putting several
-> copies of the 'map_word' typedef on the stack, and doing assignment to
-> it as if it's a typical variable. But with MAP_WIDTH_32, this is a
-> 32-byte object, and I assume that these (too) long functions are
-> introducing enough complexity that the compiler has to have several
-> copies of them. To properly fix all this, it seems like the code could
-> use some more attention, and not just the superficial changes here.
-> 
-> Anyway, I'm interested if you have any more thoughts on this. If you
-> still think this is worthwhile, I can probably just take it. (It looks
-> OK, despite the above comments.)
+This patch does following things.
+1. Added dummy entry in the spi_transfer structure.
+2. Assigned dummy cycles to dummy member in the transfer
+structure during read operation.
 
-I'd like to get this fixed in one way or another, but I'm not
-particularly attached to my specific workaround.
+Signed-off-by: P L Sai Krishna <lakshmis@xilinx.com>
+---
+ drivers/mtd/devices/m25p80.c | 1 +
+ include/linux/spi/spi.h      | 2 ++
+ 2 files changed, 3 insertions(+)
 
-If you don't think anyone will be able to reduce the number of
-map_word instances on the stack, please add my patch so at least
-we get rid of the warning and make it less likely to hit the bug.
-
-An alternative might be to optionally move the map_word_and/clr/or/...
-operations out of line for large sizes of map_word, so we don't
-have all instances on the stack at once.
-
-	Arnd
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index c9c3b7f..7c9fac9 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -139,6 +139,7 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 
+ 	t[0].tx_buf = flash->command;
+ 	t[0].len = m25p_cmdsz(nor) + dummy;
++	t[0].dummy = nor->read_dummy;
+ 	spi_message_add_tail(&t[0], &m);
+ 
+ 	t[1].rx_buf = buf;
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 857a9a1..3f93526 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -664,6 +664,7 @@ extern void spi_res_release(struct spi_master *master,
+  * @len: size of rx and tx buffers (in bytes)
+  * @speed_hz: Select a speed other than the device default for this
+  *      transfer. If 0 the default (from @spi_device) is used.
++ * @dummy: number of dummy cycles.
+  * @bits_per_word: select a bits_per_word other than the device default
+  *      for this transfer. If 0 the default (from @spi_device) is used.
+  * @cs_change: affects chipselect after this transfer completes
+@@ -752,6 +753,7 @@ struct spi_transfer {
+ 	u8		bits_per_word;
+ 	u16		delay_usecs;
+ 	u32		speed_hz;
++	u32		dummy;
+ 
+ 	struct list_head transfer_list;
+ };
+-- 
+2.1.2
