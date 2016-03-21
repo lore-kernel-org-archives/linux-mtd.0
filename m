@@ -1,24 +1,28 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ai1OQ-0000pw-Px
- for linux-mtd@lists.infradead.org; Mon, 21 Mar 2016 15:05:19 +0000
-Date: Mon, 21 Mar 2016 16:04:43 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Franklin S Cooper Jr <fcooper@ti.com>
-Cc: nsekhar@ti.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- rogerq@ti.com, tony@atomide.com, devicetree@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 6/7] mtd: nand: omap2: Fix high memory dma prefetch
- transfer
-Message-ID: <20160321160443.0a4165d1@bbrezillon>
-In-Reply-To: <1457654203-20856-7-git-send-email-fcooper@ti.com>
-References: <1457654203-20856-1-git-send-email-fcooper@ti.com>
- <1457654203-20856-7-git-send-email-fcooper@ti.com>
+Date: Mon, 21 Mar 2016 08:28:45 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Richard Weinberger <richard@nod.at>, Christoph Hellwig <hch@infradead.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Gstir <david@sigma-star.at>, Dave Chinner <david@fromorbit.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Alexander Kaplan <alex@nextthing.co>
+Subject: Re: Page migration issue with UBIFS
+Message-ID: <20160321152845.GA17864@infradead.org>
+References: <56E8192B.5030008@nod.at>
+ <20160315151727.GA16462@node.shutemov.name>
+ <56E82B18.9040807@nod.at> <20160315153744.GB28522@infradead.org>
+ <56E8985A.1020509@nod.at>
+ <20160316142156.GA23595@node.shutemov.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160316142156.GA23595@node.shutemov.name>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +32,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Franklin,
-
-On Thu, 10 Mar 2016 17:56:42 -0600
-Franklin S Cooper Jr <fcooper@ti.com> wrote:
-
-> Based on DMA documentation and testing using high memory buffer when
-> doing dma transfers can lead to various issues including kernel
-> panics.
-
-I guess it all comes from the vmalloced buffer case, which are not
-guaranteed to be physically contiguous (one of the DMA requirement,
-unless you have an iommu).
-
+On Wed, Mar 16, 2016 at 05:21:56PM +0300, Kirill A. Shutemov wrote:
+> > FYI, with a dummy ->migratepage() which returns only -EINVAL UBIFS does no
+> > longer explode upon page migration.
+> > Tomorrow I'll do more tests to make sure.
 > 
-> To workaround this simply use cpu copy. The amount of high memory
-> buffers used are very uncommon so no noticeable performance hit should
-> be seen.
+> Could you check if something like this would fix the issue.
+> Completely untested.
 
-Hm, that's not necessarily true. UBI and UBIFS allocate their buffers
-using vmalloc (vmalloced buffers fall in the high_memory region), and
-those are likely to be dis-contiguous if you have NANDs with pages > 4k.
-
-I recently posted patches to ease sg_table creation from any kind of
-virtual address [1][2]. Can you try them and let me know if it fixes
-your problem?
-
-Thanks,
-
-Boris
-
-[1]https://lkml.org/lkml/2016/3/8/276
-[2]https://lkml.org/lkml/2016/3/8/277
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+We really need to make the default safe for file systems that don't
+have a migratepage method.
