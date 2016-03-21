@@ -1,25 +1,23 @@
-Received: from mail-ob0-x241.google.com ([2607:f8b0:4003:c01::241])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ahkTp-0004WQ-M1
- for linux-mtd@lists.infradead.org; Sun, 20 Mar 2016 21:01:46 +0000
-Received: by mail-ob0-x241.google.com with SMTP id wz1so13249829obc.1
- for <linux-mtd@lists.infradead.org>; Sun, 20 Mar 2016 14:01:25 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <ec7627e3d80e0ad99557d308b39744886b4b0f40.1456421022.git.joe@perches.com>
-References: <56CF115C.6010001@nod.at>
- <ec7627e3d80e0ad99557d308b39744886b4b0f40.1456421022.git.joe@perches.com>
-Date: Sun, 20 Mar 2016 22:01:24 +0100
-Message-ID: <CAFLxGvyWj4aZ82C=9aVUUqpYwatdC35VH_nCqC2OwhsROfHw8Q@mail.gmail.com>
-Subject: Re: [PATCH] mtd: ubi: Add logging functions ubi_msg,
- ubi_warn and ubi_err
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Joe Perches <joe@perches.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+From: =?gb2312?B?QmVhbiBIdW8gu/Sx87HzIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Yunhui Cui <yunhui.cui@nxp.com>, Yunhui Cui <B56489@freescale.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>,
+ "han.xu@freescale.com" <han.xu@freescale.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>
+Subject: RE: [PATCH v3 4/4] mtd: spi-nor: Disable Micron flash HW protection
+Date: Mon, 21 Mar 2016 02:55:56 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF6B498@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6310BF699D2@NTXXIAMBX02.xacn.micron.com>
+ <DB5PR0401MB1912D5517CD6394B7EEE136A948C0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+In-Reply-To: <DB5PR0401MB1912D5517CD6394B7EEE136A948C0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,20 +27,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 25, 2016 at 6:25 PM, Joe Perches <joe@perches.com> wrote:
-> Using logging functions instead of macros can reduce overall object size.
->
-> $ size drivers/mtd/ubi/built-in.o*
->    text    data     bss     dec     hex filename
->  271620  163364   73696  508680   7c308 drivers/mtd/ubi/built-in.o.allyesconfig.new
->  287638  165380   73504  526522   808ba drivers/mtd/ubi/built-in.o.allyesconfig.old
->   87728    3780     504   92012   1676c drivers/mtd/ubi/built-in.o.defconfig.new
->   97084    3780     504  101368   18bf8 drivers/mtd/ubi/built-in.o.defconfig.old
->
-> Signed-off-by: Joe Perches <joe@perches.com>
-
-Applied.
-
--- 
-Thanks,
-//richard
+SGksIFl1bmhhaQ0KWW91IG1lYW4gdGhhdCBFVkNSLmJpdDcgY2Fubm90IGNsZWFyKGVuYWJsZSBx
+dWFkIG1vZGUpIGlmIG5vdCB3cml0ZSBTUi5iaXQ3IHRvIDA/DQpUaGV5IGRvbid0IGhhdmUgYW55
+IGNvbm5lY3Rpb24gZWFjaCBvdGhlci4NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
+PiBGcm9tOiBZdW5odWkgQ3VpIFttYWlsdG86eXVuaHVpLmN1aUBueHAuY29tXQ0KPiBTZW50OiBG
+cmlkYXksIE1hcmNoIDE4LCAyMDE2IDY6MDkgUE0NCj4gVG86IEJlYW4gSHVvILv0sfOx8yAoYmVh
+bmh1byk7IFl1bmh1aSBDdWkNCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBk
+d213MkBpbmZyYWRlYWQub3JnOw0KPiBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207IGhhbi54
+dUBmcmVlc2NhbGUuY29tOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1t
+dGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRl
+YWQub3JnOyBZYW8gWXVhbg0KPiBTdWJqZWN0OiBSRTogW1BBVENIIHYzIDQvNF0gbXRkOiBzcGkt
+bm9yOiBEaXNhYmxlIE1pY3JvbiBmbGFzaCBIVyBwcm90ZWN0aW9uDQo+IA0KPiBIaSBCZWFuLA0K
+PiANCj4gVGhhbmtzIGZvciB5b3VyIHN1Z2dlc3Rpb25zIHZlcnkgbXVjaC4NCj4gWWVzLCB0aGUg
+Zmxhc2ggTjI1UTEyOEEgc3RhdHVzIHJlZ2lzdGVyIHdyaXRlIGVuYWJsZS9kaXNhYmxlIGJpdCBp
+cyBkaXNhYmxlIGluDQo+IGluaXRpYWwgc3RhdGUuDQo+IEJ1dCwgVGhpcyBwYXRjaCBhaW1zIHRv
+IGNsZWFyIHN0YXR1cyByZWdpc3RlclYgYml0WzddKHdyaXRlIGVuYWJsZS9kaXNhYmxlIGJpdCkg
+dG8NCj4gMCwgd2hpY2ggZW5hYmxlcyB0aGUgYml0Lg0KPiBGcmFua2x5IHNwZWFraW5nLCBJIGFs
+c28gZG9uJ3Qgd2FudCB0byBhZGQgdGhpcyBwYXRjaC4NCj4gVGhlIHJlYXNvbiBmb3IgdGhpcyBp
+cyB0aGF0IGNsZWFyIHN0YXR1cyByZWdpc3RlciBiaXRbN10gdG8gMCBpcyBhIG11c3QgdG8gc2V0
+IHF1YWQNCj4gbW9kZSB0byBFbmhhbmNlZCBWb2xhdGlsZSBDb25maWd1cmF0aW9uIFJlZ2lzdGVy
+IHVzaW5nIGNvbW1hbmQNCj4gU1BJTk9SX09QX1dEX0VWQ1IuIE90aGVyd2lzZSBpdCB3aWxsIG91
+dHB1dCAiTWljcm9uIEVWQ1IgUXVhZCBiaXQgbm90DQo+IGNsZWFyIiBpbiBzcGktbm9yLmMgSSBs
+b29rZWQgdXAgdGhlIGRhdGFzaGVldCwgYnV0IEkgcmVhbGx5IGRvbid0IGZpbmQgb3V0IGFueQ0K
+PiBjb25uZWN0aW9uIGJldHdlZW4gc3RhdHVzIHJlZ2lzdGVyIGJpdFs3XSh3cml0ZSBlbmFibGUv
+ZGlzYWJsZSBiaXQpIGVxdWFscyAwDQo+IGFuZCBzZXRpbmcgcXVhZCBtb2RlIHRvIEVuaGFuY2Vk
+IFZvbGF0aWxlIENvbmZpZ3VyYXRpb24gUmVnaXN0ZXIuDQo+IA0KPiBKdXN0IGFzIEkgd2FudCB0
+byBzZW5kIHRoZSBpc3N1ZSB0byBNaWNyb24gdGVhbSAsIGNvdWxkIHlvdSBnaXZlIG1lIHNvbWUN
+Cj4gc29sdXRpb25zID8NCj4gDQo+IA0KPiBUaGFua3MNCj4gWXVuaHVpDQo+IA0KPiAtLS0tLU9y
+aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCZWFuIEh1byC79LHzsfMgKGJlYW5odW8pIFtt
+YWlsdG86YmVhbmh1b0BtaWNyb24uY29tXQ0KPiBTZW50OiBUaHVyc2RheSwgTWFyY2ggMDMsIDIw
+MTYgOTozOSBQTQ0KPiBUbzogWXVuaHVpIEN1aQ0KPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJh
+ZGVhZC5vcmc7IGR3bXcyQGluZnJhZGVhZC5vcmc7DQo+IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWls
+LmNvbTsgaGFuLnh1QGZyZWVzY2FsZS5jb207DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmc7IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPiBsaW51eC1hcm0ta2VybmVsQGxp
+c3RzLmluZnJhZGVhZC5vcmc7IFlhbyBZdWFuOyBZdW5odWkgQ3VpDQo+IFN1YmplY3Q6IFJlOiBb
+UEFUQ0ggdjMgNC80XSBtdGQ6IHNwaS1ub3I6IERpc2FibGUgTWljcm9uIGZsYXNoIEhXIHByb3Rl
+Y3Rpb24NCj4gDQo+ID4gRnJvbTogWXVuaHVpIEN1aSA8QjU2NDg5QGZyZWVzY2FsZS5jb20+DQo+
+ID4gVG86IDxkd213MkBpbmZyYWRlYWQub3JnPiwgPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNv
+bT4sDQo+ID4gCTxoYW4ueHVAZnJlZXNjYWxlLmNvbT4NCj4gPiBDYzogPGxpbnV4LWtlcm5lbEB2
+Z2VyLmtlcm5lbC5vcmc+LCA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc+LA0KPiA+IAk8
+bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnPiwgPHlhby55dWFuQG54cC5jb20+
+LCBZdW5odWkNCj4gPiBDdWkNCj4gPiAJPHl1bmh1aS5jdWlAbnhwLmNvbT4NCj4gPiBTdWJqZWN0
+OiBbUEFUQ0ggdjMgNC80XSBtdGQ6IHNwaS1ub3I6IERpc2FibGUgTWljcm9uIGZsYXNoIEhXDQo+
+ID4gCXByb3RlY3Rpb24NCj4gPiBNZXNzYWdlLUlEOg0KPiA8MTQ1Njk4ODA0NC0zNzA2MS00LWdp
+dC1zZW5kLWVtYWlsLUI1NjQ4OUBmcmVlc2NhbGUuY29tPg0KPiA+IENvbnRlbnQtVHlwZTogdGV4
+dC9wbGFpbg0KPiA+DQo+ID4gRnJvbTogWXVuaHVpIEN1aSA8eXVuaHVpLmN1aUBueHAuY29tPg0K
+PiA+DQo+ID4gRm9yIE1pY3JvbiBmYW1pbHkgLFRoZSBzdGF0dXMgcmVnaXN0ZXIgd3JpdGUgZW5h
+YmxlL2Rpc2FibGUgYml0LA0KPiA+IHByb3ZpZGVzIGhhcmR3YXJlIGRhdGEgcHJvdGVjdGlvbiBm
+b3IgdGhlIGRldmljZS4NCj4gPiBXaGVuIHRoZSBlbmFibGUvZGlzYWJsZSBiaXQgaXMgc2V0IHRv
+IDEsIHRoZSBzdGF0dXMgcmVnaXN0ZXINCj4gPiBub252b2xhdGlsZSBiaXRzIGJlY29tZSByZWFk
+LW9ubHkgYW5kIHRoZSBXUklURSBTVEFUVVMgUkVHSVNURVINCj4gPiBvcGVyYXRpb24gd2lsbCBu
+b3QgZXhlY3V0ZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFl1bmh1aSBDdWkgPHl1bmh1aS5j
+dWlAbnhwLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMg
+fCA5ICsrKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspDQo+ID4N
+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPiBiL2Ry
+aXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIGluZGV4IGVkMGMxOWMuLjkxN2Y4MTQgMTAwNjQ0
+DQo+ID4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gPiArKysgYi9kcml2
+ZXJzL210ZC9zcGktbm9yL3NwaS1ub3IuYw0KPiA+IEBAIC0zOSw2ICszOSw3IEBADQo+ID4NCj4g
+PiAgI2RlZmluZSBTUElfTk9SX01BWF9JRF9MRU4JNg0KPiA+ICAjZGVmaW5lIFNQSV9OT1JfTUFY
+X0FERFJfV0lEVEgJNA0KPiA+ICsjZGVmaW5lIFNQSV9OT1JfTUlDUk9OX1dSSVRFX0VOQUJMRQkw
+eDdmDQo+ID4NCj4gPiAgc3RydWN0IGZsYXNoX2luZm8gew0KPiA+ICAJY2hhcgkJKm5hbWU7DQo+
+ID4gQEAgLTEyMzgsNiArMTIzOSwxNCBAQCBpbnQgc3BpX25vcl9zY2FuKHN0cnVjdCBzcGlfbm9y
+ICpub3IsIGNvbnN0DQo+ID4gY2hhciAqbmFtZSwgZW51bSByZWFkX21vZGUgbW9kZSkNCj4gPiAg
+CQl3cml0ZV9zcihub3IsIDApOw0KPiA+ICAJfQ0KPiA+DQo+ID4gKwlpZiAoSkVERUNfTUZSKGlu
+Zm8pID09IFNOT1JfTUZSX01JQ1JPTikgew0KPiA+ICsJCXJldCA9IHJlYWRfc3Iobm9yKTsNCj4g
+PiArCQlyZXQgJj0gU1BJX05PUl9NSUNST05fV1JJVEVfRU5BQkxFOw0KPiA+ICsNCj4gRm9yIE1p
+Y3JvbiB0aGUgc3RhdHVzIHJlZ2lzdGVyIHdyaXRlIGVuYWJsZS9kaXNhYmxlIGJpdCwgaXRzIGRl
+ZmF1bHQvZmFjdG9yeQ0KPiB2YWx1ZSBpcyBkaXNhYmxlLg0KPiBDYW4gaGVyZSBmaXJzdCBjaGVj
+ayAsdGhlbiBwcm9ncmFtPw0KPiA+ICsJCXdyaXRlX2VuYWJsZShub3IpOw0KPiA+ICsJCXdyaXRl
+X3NyKG5vciwgcmV0KTsNCj4gPiArCX0NCj4gPiArDQo+ID4gIAlpZiAoIW10ZC0+bmFtZSkNCj4g
+PiAgCQltdGQtPm5hbWUgPSBkZXZfbmFtZShkZXYpOw0KPiA+ICAJbXRkLT5wcml2ID0gbm9yOw0K
