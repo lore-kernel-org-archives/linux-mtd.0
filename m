@@ -1,16 +1,16 @@
-Received: from mail-lf0-x22d.google.com ([2a00:1450:4010:c07::22d])
+Received: from mail-lf0-x234.google.com ([2a00:1450:4010:c07::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiVCd-00028L-21
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 22:55:08 +0000
-Received: by mail-lf0-x22d.google.com with SMTP id d82so75497712lfe.3
- for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2016 15:54:46 -0700 (PDT)
+ id 1aiVCe-00028U-JH
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 22:55:09 +0000
+Received: by mail-lf0-x234.google.com with SMTP id d82so75498006lfe.3
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2016 15:54:48 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-Subject: [PATCH 1/3] mtd: nand: add new enum for storing ECC algorithm
-Date: Tue, 22 Mar 2016 23:54:12 +0100
-Message-Id: <1458687254-26181-2-git-send-email-zajec5@gmail.com>
+Subject: [PATCH 2/3] mtd: nand: set ECC algorithm in nand_dt_init
+Date: Tue, 22 Mar 2016 23:54:13 +0100
+Message-Id: <1458687254-26181-3-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1458687254-26181-1-git-send-email-zajec5@gmail.com>
 References: <1458687254-26181-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
@@ -25,45 +25,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Our nand_ecc_modes_t is already a bit abused by value NAND_ECC_SOFT_BCH.
-This enum should store ECC mode only and putting algorithm details there
-is a bit idea. It would result in too many values impossible to support
-in a sane way.
-
-To solve this problem let's add a new enum. We'll have to modify all
-drivers to set it properly but once it's done it'll be possible to drop
-NAND_ECC_SOFT_BCH. That will result in a cleaner design and more
-possibilities like setting ECC algorithm for hardware ECC mode.
+Right now we set it based on "nand-ecc-mode" property value. At some
+point we will most likely want a new property, but we'll need to keep
+backward compatibility, so such code will be needed anyway.
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- include/linux/mtd/nand.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mtd/nand/nand_base.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 7604f4b..b818eb3 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -119,6 +119,12 @@ typedef enum {
- 	NAND_ECC_SOFT_BCH,
- } nand_ecc_modes_t;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index f2c8ff3..75c5564 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3979,7 +3979,7 @@ ident_done:
+ static int nand_dt_init(struct nand_chip *chip)
+ {
+ 	struct device_node *dn = nand_get_flash_node(chip);
+-	int ecc_mode, ecc_strength, ecc_step;
++	int ecc_mode, ecc_algo, ecc_strength, ecc_step;
  
-+enum nand_ecc_algo {
-+	NAND_ECC_UNKNOWN,
-+	NAND_ECC_HAMMING,
-+	NAND_ECC_BCH,
-+};
+ 	if (!dn)
+ 		return 0;
+@@ -3991,6 +3991,16 @@ static int nand_dt_init(struct nand_chip *chip)
+ 		chip->bbt_options |= NAND_BBT_USE_FLASH;
+ 
+ 	ecc_mode = of_get_nand_ecc_mode(dn);
++	switch (ecc_mode) {
++	case NAND_ECC_SOFT:
++		ecc_algo = NAND_ECC_HAMMING;
++		break;
++	case NAND_ECC_SOFT_BCH:
++		ecc_algo = NAND_ECC_BCH;
++		break;
++	default:
++		ecc_algo = -1;
++	}
+ 	ecc_strength = of_get_nand_ecc_strength(dn);
+ 	ecc_step = of_get_nand_ecc_step_size(dn);
+ 
+@@ -4003,6 +4013,9 @@ static int nand_dt_init(struct nand_chip *chip)
+ 	if (ecc_mode >= 0)
+ 		chip->ecc.mode = ecc_mode;
+ 
++	if (ecc_algo >= 0)
++		chip->ecc.algo = ecc_algo;
 +
- /*
-  * Constants for Hardware ECC
-  */
-@@ -508,6 +514,7 @@ struct nand_hw_control {
-  */
- struct nand_ecc_ctrl {
- 	nand_ecc_modes_t mode;
-+	enum nand_ecc_algo algo;
- 	int steps;
- 	int size;
- 	int bytes;
+ 	if (ecc_strength >= 0)
+ 		chip->ecc.strength = ecc_strength;
+ 
 -- 
 1.8.4.5
