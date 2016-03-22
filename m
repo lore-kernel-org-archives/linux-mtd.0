@@ -1,27 +1,26 @@
-Received: from tundra.namei.org ([65.99.196.166] helo=namei.org)
+Received: from mail-qk0-x22f.google.com ([2607:f8b0:400d:c09::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiVb3-0000Er-NT
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 23:20:22 +0000
-Date: Wed, 23 Mar 2016 10:19:47 +1100 (AEDT)
-From: James Morris <jmorris@namei.org>
-To: Seth Forshee <seth.forshee@canonical.com>
-cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
- Andy Lutomirski <luto@amacapital.net>,
- "Eric W. Biederman" <ebiederm@xmission.com>, devel@openvz.org,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- linux-security-module@vger.kernel.org, linux-mtd@lists.infradead.org,
- selinux@tycho.nsa.gov, linux-fsdevel@vger.kernel.org,
- Konstantin Khorenko <khorenko@virtuozzo.com>,
- Pavel Emelyanov <xemul@virtuozzo.com>
-Subject: Re: [PATCH] fs: remove excess check for in_userns
-In-Reply-To: <20160315134545.GB27754@ubuntu-xps13>
-Message-ID: <alpine.LRH.2.20.1603231019350.24906@namei.org>
-References: <1451930639-94331-4-git-send-email-seth.forshee@canonical.com>
- <1458043740-14229-1-git-send-email-ptikhomirov@virtuozzo.com>
- <20160315134545.GB27754@ubuntu-xps13>
+ id 1aiVxZ-0000nS-AT
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 23:43:38 +0000
+Received: by mail-qk0-x22f.google.com with SMTP id s5so98918415qkd.0
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2016 16:43:17 -0700 (PDT)
+Subject: Re: [RFCv2: PATCH 2/2] mtd: mediatek: driver for MTK Smart Device
+ Gen1 NAND
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1458653560-2679-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <1458653560-2679-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <20160322175850.2722c389@bbrezillon>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, matthias.bgg@gmail.com,
+ robh@kernel.org, linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com,
+ daniel.thompson@linaro.org, erin.lo@mediatek.com,
+ linux-mediatek@lists.infradead.org
+From: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+Message-ID: <56F1D891.8010603@linaro.org>
+Date: Tue, 22 Mar 2016 19:43:13 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160322175850.2722c389@bbrezillon>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,21 +30,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 Mar 2016, Seth Forshee wrote:
+On 03/22/2016 12:58 PM, Boris Brezillon wrote:
+>> +typedef void (*release)(struct sdg1_ecc_if *);
+>> > +typedef int (*decode)(struct sdg1_ecc_if *);
+>> > +typedef void (*init) (struct sdg1_ecc_if *);
+>> > +
+>> > +struct sdg1_ecc_if {
+>> > +	release	release;
+>> > +	control control;
+>> > +	config config;
+>> > +	encode encode;
+>> > +	decode decode;
+>> > +	check check;
+>> > +	init init;
+>> > +};
+>> > +
+>> > +struct sdg1_ecc_if *of_sdg1_ecc_get(struct device_node *);
+> I think you should directly return a pointer to the sdg1_ecc instance
+> here.
+> AFAICS, the "interface" appraoch is useless, all you need is a set of
+> exported functions, which all takes the sdg1_ecc pointer as a first
+> argument and a set of extra arguments depending on the function.
+> See what's done in the jz4780_bch.c driver.
+>
 
-> On Tue, Mar 15, 2016 at 03:09:00PM +0300, Pavel Tikhomirov wrote:
-> > If in_userns returns false mnt_may_suid also returns false, and we
-> > will reach second(removed) if-check only in case it does not trigger,
-> > so remove it.
-> 
-> We had a somewhat lengthy discussion previously where one of the
-> conclusions was that we'd have that check in both places even though
-> it's redundant. Iirc the reason was that though they're doing the same
-> test they're doing so to answer different questions, so we should have
-> the test in both places (or something along those lines).
+yes I am of the contrary opinion (why export a number of functions when you can
+just export an interface and keep a clear encapsulation).
+as a matter of fact the interface exposes the dependency with the engine while a
+random number of function calls does not (with the interface approach eventually
+we might be able to have a common ecc interface some day, maybe)
 
-A comment in the code might be useful here.
-
--- 
-James Morris
-<jmorris@namei.org>
+anyway, working on v3 now. thanks for the detailed review as always (and sorry
+for the clear fuck ups like the size 0 array in the wrong place...argh!)
