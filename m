@@ -1,18 +1,20 @@
-Received: from dub004-omc3s23.hotmail.com ([157.55.2.32])
+Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiNcf-0005bo-P2
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 14:49:36 +0000
-Message-ID: <DUB128-W1B9618CEFDEE4D2DDF6C89C800@phx.gbl>
-From: David Binderman <dcb314@hotmail.com>
-To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: linux-next/include/linux/mtd/pfow.h: possible poor sequence of
- conditionals ?
-Date: Tue, 22 Mar 2016 14:49:06 +0000
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1aiO02-0005Vy-SC
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 15:13:39 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
+ <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
+ <galak@codeaurora.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH v2 0/2] mtd: spi-nor: add an alternative method to support
+ memory >16MiB
+Date: Tue, 22 Mar 2016 16:13:54 +0100
+Message-ID: <cover.1458657802.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +24,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello there=2C=0A=
-=0A=
-> [linux-next/include/linux/mtd/pfow.h:133]: (style) Expression is always f=
-alse because 'else if' condition matches previous condition at line 130.=0A=
-> [linux-next/include/linux/mtd/pfow.h:136]: (style) Expression is always f=
-alse because 'else if' condition matches previous condition at line 130.=0A=
-=0A=
-Source code is=0A=
-=0A=
-=A0=A0=A0 if (prog_status & 0x03)=0A=
-=A0=A0=A0=A0=A0=A0=A0 printk(KERN_NOTICE"DSR.9=2C8: (11) Attempt to program=
- invalid "=0A=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "half=
- with 41h command\n")=3B=0A=
-=A0=A0=A0 else if (prog_status & 0x02)=0A=
-=A0=A0=A0=A0=A0=A0=A0 printk(KERN_NOTICE"DSR.9=2C8: (10) Object Mode Progra=
-m attempt "=0A=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "in region with C=
-ontrol Mode data\n")=3B=0A=
-=A0=A0=A0 else if (prog_status &=A0 0x01)=0A=
-=A0=A0=A0=A0=A0=A0=A0 printk(KERN_NOTICE"DSR.9=2C8: (01) Program attempt in=
- region "=0A=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "with=
- Object Mode data\n")=3B=0A=
-=0A=
-Maybe something like=0A=
-=0A=
-=A0=A0=A0 switch (prog_status & 0x03)=0A=
-=A0=A0=A0 {=0A=
-=A0=A0=A0=A0=A0=A0=A0 case 0x03:=0A=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 printk()=3B break=3B=0A=
-=A0=A0=A0=A0=A0=A0=A0 case 0x02:=0A=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 printk()=3B break=3B=0A=
-=A0=A0=A0=A0=A0=A0=A0 case 0x01:=0A=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 printk()=3B break=3B=0A=
-=A0=A0=A0 }=0A=
-=0A=
-might be better code.=0A=
-=0A=
-=0A=
-Regards=0A=
-=0A=
-David Binderman=0A=
-=0A=
- 		 	   		  =
+Hi all,
+
+This patch was tested on a sama5d2 xplained board + Macronix mx25l25673g.
+
+It provides us with an alternative method to support SPI NOR memory above
+16MiB (128Mib). Indeed the previous method (still default) makes the
+memory enter it's 4byte-address method. However this mode has some
+annoying side effects for early bootloarders: it changes the internal
+state of the memory hence when using regular (Fast) Read op codes
+(0x03, 0x0b, 0x6b, ...) the memory now expects 4byte addresses whereas
+some bootloaders still use these op codes with 3byte addresses.
+
+The new method translates the 3byte address op codes into their 4byte
+address version:
+0x03 -> 0x13  Read
+0x0b -> 0x0c  Fast Read
+0x6b -> 0x6c  Fast Read 1-1-4
+0x02 -> 0x12  Page Program
+0xd8 -> 0xdc  Sector Erase
+...
+
+The internal state of the SPI NOR memory is left unchanged.
+
+However the 4byte address op codes are not supported by all memories.
+For instance Macronix mx25l25635e and mx25l25673g share the very same
+JEDEC ID (C22019) with no additional ext_id bytes to differentiate them.
+The 35e doesn't support the 4byte address op codes whereas the 73g does.
+So there is no mean for the software to discover at runtime whether the
+hardware supports these op codes. Hence this patch checks a new DT
+property, "m25p,4byte-opcoes", to select the proper method to deal with
+a >16MiB SPI NOR memory.
+
+
+Best regards,
+
+Cyrille
+
+
+ChangeLog:
+
+v1 -> v2:
+- remove the Kconfig option and use the new "m25p,4byte-opcodes" DT
+  property instead.
+
+Cyrille Pitchen (2):
+  mtd: spi-nor: add an alternative method to support memory >16MiB
+  doc: dt: mtd: add a DT property to enable the use of 4byte-address op
+    codes
+
+ .../devicetree/bindings/mtd/jedec,spi-nor.txt      |  11 +++
+ drivers/mtd/spi-nor/spi-nor.c                      | 100 ++++++++++++++++-----
+ include/linux/mtd/spi-nor.h                        |  23 +++--
+ 3 files changed, 107 insertions(+), 27 deletions(-)
+
+-- 
+1.8.2.2
