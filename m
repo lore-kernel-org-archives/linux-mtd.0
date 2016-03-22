@@ -1,24 +1,19 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-qg0-x235.google.com ([2607:f8b0:400d:c04::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiM5b-0007lC-Sg
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 13:11:16 +0000
-Subject: Re: [PATCH v8 2/3] mtd: nand: Qualcomm NAND controller driver
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1453360399-32029-1-git-send-email-architt@codeaurora.org>
- <1454489991-14717-1-git-send-email-architt@codeaurora.org>
- <1454489991-14717-3-git-send-email-architt@codeaurora.org>
- <20160318164904.45a77338@bbrezillon> <20160318174817.0f47ac20@bbrezillon>
- <56ED269B.5020102@codeaurora.org> <20160319113413.1f0f3e5f@bbrezillon>
-Cc: linux-arm-msm@vger.kernel.org, cernekee@gmail.com, sboyd@codeaurora.org,
- linux-mtd@lists.infradead.org, dehrenberg@google.com, andy.gross@linaro.org,
- computersforpeace@gmail.com
-From: Archit Taneja <architt@codeaurora.org>
-Message-ID: <56F14457.4010606@codeaurora.org>
-Date: Tue, 22 Mar 2016 18:40:47 +0530
-MIME-Version: 1.0
-In-Reply-To: <20160319113413.1f0f3e5f@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+ id 1aiMQl-0001kg-SR
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 13:33:09 +0000
+Received: by mail-qg0-x235.google.com with SMTP id w104so178031730qge.1
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2016 06:32:46 -0700 (PDT)
+From: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+To: jorge.ramirez-ortiz@linaro.org, dwmw2@infradead.org,
+ computersforpeace@gmail.com, matthias.bgg@gmail.com, robh@kernel.org,
+ boris.brezillon@free-electrons.com
+Cc: linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com,
+ daniel.thompson@linaro.org, erin.lo@mediatek.com,
+ linux-mediatek@lists.infradead.org
+Subject: [RFCv2 0/2] MTK Smart Device Gen1 NAND Driver
+Date: Tue, 22 Mar 2016 09:32:38 -0400
+Message-Id: <1458653560-2679-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,215 +23,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Fixes/Changes on v2 relative to: 
+--------------------------------
 
-On 03/19/2016 04:04 PM, Boris Brezillon wrote:
-> On Sat, 19 Mar 2016 15:44:51 +0530
-> Archit Taneja <architt@codeaurora.org> wrote:
->
->>
->>
->> On 03/18/2016 10:18 PM, Boris Brezillon wrote:
->>> On Fri, 18 Mar 2016 16:49:04 +0100
->>> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->>>
->>>> Hi Archit,
->>>>
->>>> On Wed,  3 Feb 2016 14:29:50 +0530
->>>> Archit Taneja <architt@codeaurora.org> wrote:
->>>>
->>>>> +/*
->>>>> + * NAND controller page layout info
->>>>> + *
->>>>> + * Layout with ECC enabled:
->>>>> + *
->>>>> + * |----------------------|  |---------------------------------|
->>>>> + * |           xx.......yy|  |             *********xx.......yy|
->>>>> + * |    DATA   xx..ECC..yy|  |    DATA     **SPARE**xx..ECC..yy|
->>>>> + * |   (516)   xx.......yy|  |  (516-n*4)  **(n*4)**xx.......yy|
->>>>> + * |           xx.......yy|  |             *********xx.......yy|
->>>>> + * |----------------------|  |---------------------------------|
->>>>> + *     codeword 1,2..n-1                  codeword n
->>>>> + *  <---(528/532 Bytes)-->    <-------(528/532 Bytes)--------->
->>>>> + *
->>>>> + * n = Number of codewords in the page
->>>>> + * . = ECC bytes
->>>>> + * * = Spare/free bytes
->>>>> + * x = Unused byte(s)
->>>>> + * y = Reserved byte(s)
->>>>> + *
->>>>> + * 2K page: n = 4, spare = 16 bytes
->>>>> + * 4K page: n = 8, spare = 32 bytes
->>>>> + * 8K page: n = 16, spare = 64 bytes
->>>>> + *
->>>>> + * the qcom nand controller operates at a sub page/codeword level. each
->>>>> + * codeword is 528 and 532 bytes for 4 bit and 8 bit ECC modes respectively.
->>>>> + * the number of ECC bytes vary based on the ECC strength and the bus width.
->>>>> + *
->>>>> + * the first n - 1 codewords contains 516 bytes of user data, the remaining
->>>>> + * 12/16 bytes consist of ECC and reserved data. The nth codeword contains
->>>>> + * both user data and spare(oobavail) bytes that sum up to 516 bytes.
->>>>> + *
->>>>> + * When we access a page with ECC enabled, the reserved bytes(s) are not
->>>>> + * accessible at all. When reading, we fill up these unreadable positions
->>>>> + * with 0xffs. When writing, the controller skips writing the inaccessible
->>>>> + * bytes.
->>>>> + *
->>>>> + * Layout with ECC disabled:
->>>>> + *
->>>>> + * |------------------------------|  |---------------------------------------|
->>>>> + * |         yy          xx.......|  |         bb          *********xx.......|
->>>>> + * |  DATA1  yy  DATA2   xx..ECC..|  |  DATA1  bb  DATA2   **SPARE**xx..ECC..|
->>>>> + * | (size1) yy (size2)  xx.......|  | (size1) bb (size2)  **(n*4)**xx.......|
->>>>> + * |         yy          xx.......|  |         bb          *********xx.......|
->>>>> + * |------------------------------|  |---------------------------------------|
->>>>> + *         codeword 1,2..n-1                        codeword n
->>>>> + *  <-------(528/532 Bytes)------>    <-----------(528/532 Bytes)----------->
->>>>> + *
->>>>> + * n = Number of codewords in the page
->>>>> + * . = ECC bytes
->>>>> + * * = Spare/free bytes
->>>>> + * x = Unused byte(s)
->>>>> + * y = Dummy Bad Bock byte(s)
->>>>> + * b = Real Bad Block byte(s)
->>>>> + * size1/size2 = function of codeword size and 'n'
->>>>> + *
->>>>> + * when the ECC block is disabled, one reserved byte (or two for 16 bit bus
->>>>> + * width) is now accessible. For the first n - 1 codewords, these are dummy Bad
->>>>> + * Block Markers. In the last codeword, this position contains the real BBM
->>>>> + *
->>>>> + * In order to have a consistent layout between RAW and ECC modes, we assume
->>>>> + * the following OOB layout arrangement:
->>>>> + *
->>>>> + * |-----------|  |--------------------|
->>>>> + * |yyxx.......|  |bb*********xx.......|
->>>>> + * |yyxx..ECC..|  |bb*FREEOOB*xx..ECC..|
->>>>> + * |yyxx.......|  |bb*********xx.......|
->>>>> + * |yyxx.......|  |bb*********xx.......|
->>>>> + * |-----------|  |--------------------|
->>>>> + *  first n - 1       nth OOB region
->>>>> + *  OOB regions
->>>>> + *
->>>>> + * n = Number of codewords in the page
->>>>> + * . = ECC bytes
->>>>> + * * = FREE OOB bytes
->>>>> + * y = Dummy bad block byte(s) (inaccessible when ECC enabled)
->>>>> + * x = Unused byte(s)
->>>>> + * b = Real bad block byte(s) (inaccessible when ECC enabled)
->>>>> + *
->>>>> + * This layout is read as is when ECC is disabled. When ECC is enabled, the
->>>>> + * inaccessible Bad Block byte(s) are ignored when we write to a page/oob,
->>>>> + * and assumed as 0xffs when we read a page/oob. The ECC, unused and
->>>>> + * dummy/real bad block bytes are grouped as ecc bytes in nand_ecclayout (i.e,
->>>>> + * ecc->bytes is the sum of the three).
->>>>> + */
->>>>> +
->>>>> +static struct nand_ecclayout *
->>>>> +qcom_nand_create_layout(struct qcom_nand_host *host)
->>>>> +{
->>>>> +	struct nand_chip *chip = &host->chip;
->>>>> +	struct mtd_info *mtd = nand_to_mtd(chip);
->>>>> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->>>>> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
->>>>> +	struct nand_ecclayout *layout;
->>>>> +	int i, j, steps, pos = 0, shift = 0;
->>>>> +
->>>>> +	layout = devm_kzalloc(nandc->dev, sizeof(*layout), GFP_KERNEL);
->>>>> +	if (!layout)
->>>>> +		return NULL;
->>>>> +
->>>>> +	steps = mtd->writesize / ecc->size;
->>>>> +	layout->eccbytes = steps * ecc->bytes;
->>>>> +
->>>>> +	layout->oobfree[0].offset = (steps - 1) * ecc->bytes + host->bbm_size;
->>>>> +	layout->oobfree[0].length = steps << 2;
->>>>> +	layout->oobavail = steps << 2;
->>>>> +
->>>>> +	/*
->>>>> +	 * the oob bytes in the first n - 1 codewords are all grouped together
->>>>> +	 * in the format:
->>>>> +	 * DUMMY_BBM + UNUSED + ECC
->>>>> +	 */
->>>>> +	for (i = 0; i < steps - 1; i++) {
->>>>> +		for (j = 0; j < ecc->bytes; j++)
->>>>> +			layout->eccpos[pos++] = i * ecc->bytes + j;
->>>>> +	}
->>>>> +
->>>>> +	/*
->>>>> +	 * the oob bytes in the last codeword are grouped in the format:
->>>>> +	 * BBM + FREE OOB + UNUSED + ECC
->>>>> +	 */
->>>>> +
->>>>> +	/* fill up the bbm positions */
->>>>> +	for (j = 0; j < host->bbm_size; j++)
->>>>> +		layout->eccpos[pos++] = i * ecc->bytes + j;
->>>>> +
->>>>> +	/*
->>>>> +	 * fill up the ecc and reserved positions, their indices are offseted
->>>>> +	 * by the free oob region
->>>>> +	 */
->>>>> +	shift = layout->oobfree[0].length + host->bbm_size;
->>>>> +
->>>>> +	for (j = 0; j < (host->ecc_bytes_hw + host->spare_bytes); j++)
->>>>> +		layout->eccpos[pos++] = i * ecc->bytes + shift + j;
->>>>> +
->>>>> +	return layout;
->>>>> +}
->>>>
->>>> I'm trying to move this layout definition to the mtd_ooblayout_ops
->>>> approach, and I wonder why you decided to take such a complicated
->>>> representation.
->>>> AFAIU, in each ECC step you have 512 bytes of data, X ECC+reserved
->>>> bytes (you decided to consider all of them as ECC bytes, which is fine
->>>> by me) and 4 usable/free bytes. Am I correct?
->>>>
->>>> If that's the case, then why not exposing the following layout.
->>>>
->>>> eccregion[i] = {
->>>> 	.offset = i * (ecc->bytes + 4);
->>>> 	.length = ecc->bytes;
->>>> }
->>>>
->>>> oobfreeregion[i] = {
->>>> 	.offset = (i * (ecc->bytes + 4)) + ecc->bytes;
->>>> 	.length = 4;
->>>> }
->>>>
->>>> Are there any userspace tools relying on the ooblayout you're currently
->>>> exposing (remember that the exposed OOB layout is not necessarily
->>>> what you see on the media)?
->>>
->>> Okay, I think we already had this discussion :).
->>> I'm still not happy with the exposed layout (it would be much easier to
->>> reserve 4 free bytes per chunk, and declare each chunk as containing 512
->>> data bytes + 4 oob bytes + X ECC/reserved bytes), but IIRC, your ROM
->>> code (and/or bootloader) is already using this layout :-(.
->>
->> Sadly, yeah. The reason given for this was that if a filesystem only
->> wanted to read the 16 oob bytes off the page, it could just read the
->> last subpage instead of going through all pages. The optimization
->> clearly doesn't seem worth the software overhead.
->>
->> Is this something that's blocking your mtd_ooblayout_ops work?
->
-> Nope, I think I got it right, but maybe you can check/test it.
-> Here is my branch containing the whole rework [1], and here are
-> the qcom relate patches[2][3].
+  tree		: https://github.com/bbrezillon/linux-0day
+  branch	: nand/ecclayout
+  commit	:
+ 		commit eafabf3b93f5ba796081d1beab3b9ed0dea40a9a
+		Author: Boris Brezillon <boris.brezillon@free-electrons.com>
+		Date:	Thu Feb 4 10:16:18 2016 +0100
 
-They look good to me. I tried out your branch and I see correct
-behavior. Thanks for the patches.
+		mtd: kill the nand_ecclayout struct
 
-Tested-by: Archit Taneja <architt@codeaurora.org>
+  RFC v2:
+  -------
+ 
+  mtd: mediatek: device tree docs for MTK Smart Device Gen1 NAND
+	- split nand flash interface and ecc engine
 
->
-> Thanks,
->
-> Boris
->
-> [1]https://github.com/bbrezillon/linux-0day/commits/nand/ecclayout
-> [2]https://github.com/bbrezillon/linux-0day/commit/85fba29f4177fbbe8e43cabf433848947bd1c311
-> [3]https://github.com/bbrezillon/linux-0day/commit/2ebab1c79d275e32a049f293aac2d5e918ef37ab
->
+  mtd: mediatek: driver for MTK Smart Device Gen1 NAND
+	- split host and ecc in two separate drivers.
+	- expose ecc layout through mtd_ooblayout_ops.
+	- fix wait loops.
+	- use device tree to describe ecc strength and ecc size.
+	- use device tree to describe CS.
+	- replace cmdfunc with cmd_ctrl.
+	- fix read byte interface.
+
+  dont enable controller in mt2701.dtsi
+	- requires additional device tree changes. This will be done in
+	  the near future.
+
+Overview:
+=========
+
+The following patch-set adds support for Mediatek's Smart Device
+Gen1 NAND controller.
+
+The MTK controller generates ECC parity data for both the sector data
+and the 8B FDM data associated to that sector.
+
+
+* Controller expected layout:
+-----------------------------
+
+The controller expects the OOB information relevant to each sector
+within the page to follow immediately the data field.
+
+For example for a 4KiB page with 1KiB sectors and 128B of OOB information,
+the controller would expect the following layout.
+
+-----------------------------------------------------
+| 1KiB | 32B | 1KiB | 32B | 1KiB | 32B | 1KiB | 32B |
+-----------------------------------------------------
+
+This implies that the following actions are required:
+
+- raw writes:
+  to match the controller expected layout, the driver uses the CPU and
+  a private bounce buffer to reassemble the page before the actual
+  writes.
+  
+- non raw writes:
+  ecc is hardware generated and data DMA'd in a single transfer.
+  
+  the driver uses the CPU to copy the OOB information for each sector
+  to its associated FDM register (4B FDM_L, 4B FDM_H) before
+  initiating the DMA.
+
+
+* Bad block mark position:
+--------------------------
+
+The bad block mark position is generated at some offset within the
+sector data area. To work around this, the driver includes the
+function mtk_nfc_switch_oob so it can initialize the BBT during probe.
+
+Similarly, when marking a block as bad, the driver will fill the whole
+page with 0x00 (it would be meaningless for this controller to write
+the watermark to the OOB area).
+
+
+Controller limitations:
+=======================
+
+ * dma chaning not supported:
+
+	To guarantee that the pages corresponding to the buffers are contiguous
+	in memory we enabled NAND_USE_BOUNCE_BUFFER.
+
+Tests:
+======
+
+* UBIFS support has been validated on 512MiB device (iozone, dd)
+* All drivers/mtd/tests/* pass clean.
+* Speed tests:
+
+	- eraseblock write speed		: 7451 KiB/s
+	- eraseblock read speed 		: 10817 KiB/s
+	- page write speed 			: 7250 KiB/s
+	- page read speed 			: 10792 KiB/s
+	- 2 page write speed 			: 7350 KiB/s
+	- 2 page read speed			: 10802 KiB/s
+	- erase speed				: 105215 KiB/s
+	- 2x multi-block erase speed 		: 354728 KiB/s
+	- 4x multi-block erase speed		: 356658 KiB/s
+	- 8x multi-block erase speed		: 357631 KiB/s
+	- 16x multi-block erase speed		: 358365 KiB/s
+	- 32x multi-block erase speed		: 358365 KiB/s
+	- 64x multi-block erase speed		: 358610 KiB/s
+
+Jorge Ramirez-Ortiz (2):
+  mtd: mediatek: device tree docs for MTK Smart Device Gen1 NAND
+  mtd: mediatek: driver for MTK Smart Device Gen1 NAND
+
+ .../devicetree/bindings/mtd/mtksdg1-nand.txt       |  143 +++
+ drivers/mtd/nand/Kconfig                           |    7 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/mtksdg1_ecc.c                     |  446 +++++++
+ drivers/mtd/nand/mtksdg1_ecc.h                     |   62 +
+ drivers/mtd/nand/mtksdg1_ecc_regs.h                |   76 ++
+ drivers/mtd/nand/mtksdg1_nand.c                    | 1225 ++++++++++++++++++++
+ drivers/mtd/nand/mtksdg1_nfi_regs.h                |  121 ++
+ 8 files changed, 2081 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/mtksdg1-nand.txt
+ create mode 100644 drivers/mtd/nand/mtksdg1_ecc.c
+ create mode 100644 drivers/mtd/nand/mtksdg1_ecc.h
+ create mode 100644 drivers/mtd/nand/mtksdg1_ecc_regs.h
+ create mode 100644 drivers/mtd/nand/mtksdg1_nand.c
+ create mode 100644 drivers/mtd/nand/mtksdg1_nfi_regs.h
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum, hosted by The Linux Foundation
+2.5.0
