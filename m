@@ -1,24 +1,18 @@
-Received: from mail-qg0-x233.google.com ([2607:f8b0:400d:c04::233])
+Received: from dub004-omc3s23.hotmail.com ([157.55.2.32])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiMyu-0001iw-B0
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 14:08:25 +0000
-Received: by mail-qg0-x233.google.com with SMTP id y89so179669780qge.2
- for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2016 07:08:03 -0700 (PDT)
-Subject: Re: [RFCv2 0/2] MTK Smart Device Gen1 NAND Driver
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1458653560-2679-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160322144728.0a1d8ecf@bbrezillon>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, matthias.bgg@gmail.com,
- robh@kernel.org, linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com,
- daniel.thompson@linaro.org, erin.lo@mediatek.com,
- linux-mediatek@lists.infradead.org
-From: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Message-ID: <56F151C0.4090601@linaro.org>
-Date: Tue, 22 Mar 2016 10:08:00 -0400
+ id 1aiNcf-0005bo-P2
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 14:49:36 +0000
+Message-ID: <DUB128-W1B9618CEFDEE4D2DDF6C89C800@phx.gbl>
+From: David Binderman <dcb314@hotmail.com>
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: linux-next/include/linux/mtd/pfow.h: possible poor sequence of
+ conditionals ?
+Date: Tue, 22 Mar 2016 14:49:06 +0000
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20160322144728.0a1d8ecf@bbrezillon>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,11 +22,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/22/2016 09:47 AM, Boris Brezillon wrote:
-> You can drop the RFC prefix for your next version (the driver does not
-> look bad, and it's definitely not an RFC ;)). Just prefix your patches
-> with "PATCH vX".
-
-sure, sounds good to me. and thanks for the quick response!.
-we will incorporate any changes into v3 (unless there are just a few of them
-will probably do v3 after ELC - I'll be at your talk btw) 
+Hello there=2C=0A=
+=0A=
+> [linux-next/include/linux/mtd/pfow.h:133]: (style) Expression is always f=
+alse because 'else if' condition matches previous condition at line 130.=0A=
+> [linux-next/include/linux/mtd/pfow.h:136]: (style) Expression is always f=
+alse because 'else if' condition matches previous condition at line 130.=0A=
+=0A=
+Source code is=0A=
+=0A=
+=A0=A0=A0 if (prog_status & 0x03)=0A=
+=A0=A0=A0=A0=A0=A0=A0 printk(KERN_NOTICE"DSR.9=2C8: (11) Attempt to program=
+ invalid "=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "half=
+ with 41h command\n")=3B=0A=
+=A0=A0=A0 else if (prog_status & 0x02)=0A=
+=A0=A0=A0=A0=A0=A0=A0 printk(KERN_NOTICE"DSR.9=2C8: (10) Object Mode Progra=
+m attempt "=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "in region with C=
+ontrol Mode data\n")=3B=0A=
+=A0=A0=A0 else if (prog_status &=A0 0x01)=0A=
+=A0=A0=A0=A0=A0=A0=A0 printk(KERN_NOTICE"DSR.9=2C8: (01) Program attempt in=
+ region "=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "with=
+ Object Mode data\n")=3B=0A=
+=0A=
+Maybe something like=0A=
+=0A=
+=A0=A0=A0 switch (prog_status & 0x03)=0A=
+=A0=A0=A0 {=0A=
+=A0=A0=A0=A0=A0=A0=A0 case 0x03:=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 printk()=3B break=3B=0A=
+=A0=A0=A0=A0=A0=A0=A0 case 0x02:=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 printk()=3B break=3B=0A=
+=A0=A0=A0=A0=A0=A0=A0 case 0x01:=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 printk()=3B break=3B=0A=
+=A0=A0=A0 }=0A=
+=0A=
+might be better code.=0A=
+=0A=
+=0A=
+Regards=0A=
+=0A=
+David Binderman=0A=
+=0A=
+ 		 	   		  =
