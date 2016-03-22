@@ -1,27 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiMwZ-00014V-Re
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 14:06:00 +0000
-Date: Tue, 22 Mar 2016 15:05:37 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Archit Taneja <architt@codeaurora.org>
-Cc: linux-arm-msm@vger.kernel.org, cernekee@gmail.com, sboyd@codeaurora.org,
- linux-mtd@lists.infradead.org, dehrenberg@google.com,
- andy.gross@linaro.org, computersforpeace@gmail.com
-Subject: Re: [PATCH v8 2/3] mtd: nand: Qualcomm NAND controller driver
-Message-ID: <20160322150537.7cc394ca@bbrezillon>
-In-Reply-To: <56F14457.4010606@codeaurora.org>
-References: <1453360399-32029-1-git-send-email-architt@codeaurora.org>
- <1454489991-14717-1-git-send-email-architt@codeaurora.org>
- <1454489991-14717-3-git-send-email-architt@codeaurora.org>
- <20160318164904.45a77338@bbrezillon>
- <20160318174817.0f47ac20@bbrezillon>
- <56ED269B.5020102@codeaurora.org>
- <20160319113413.1f0f3e5f@bbrezillon>
- <56F14457.4010606@codeaurora.org>
+Received: from mail-qg0-x233.google.com ([2607:f8b0:400d:c04::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aiMyu-0001iw-B0
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 14:08:25 +0000
+Received: by mail-qg0-x233.google.com with SMTP id y89so179669780qge.2
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2016 07:08:03 -0700 (PDT)
+Subject: Re: [RFCv2 0/2] MTK Smart Device Gen1 NAND Driver
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1458653560-2679-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <20160322144728.0a1d8ecf@bbrezillon>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, matthias.bgg@gmail.com,
+ robh@kernel.org, linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com,
+ daniel.thompson@linaro.org, erin.lo@mediatek.com,
+ linux-mediatek@lists.infradead.org
+From: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+Message-ID: <56F151C0.4090601@linaro.org>
+Date: Tue, 22 Mar 2016 10:08:00 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160322144728.0a1d8ecf@bbrezillon>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,24 +28,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 22 Mar 2016 18:40:47 +0530
-Archit Taneja <architt@codeaurora.org> wrote:
-> >> Is this something that's blocking your mtd_ooblayout_ops work?
-> >
-> > Nope, I think I got it right, but maybe you can check/test it.
-> > Here is my branch containing the whole rework [1], and here are
-> > the qcom relate patches[2][3].
-> 
-> They look good to me. I tried out your branch and I see correct
-> behavior. Thanks for the patches.
-> 
-> Tested-by: Archit Taneja <architt@codeaurora.org>
+On 03/22/2016 09:47 AM, Boris Brezillon wrote:
+> You can drop the RFC prefix for your next version (the driver does not
+> look bad, and it's definitely not an RFC ;)). Just prefix your patches
+> with "PATCH vX".
 
-Thanks for testing.
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+sure, sounds good to me. and thanks for the quick response!.
+we will incorporate any changes into v3 (unless there are just a few of them
+will probably do v3 after ELC - I'll be at your talk btw) 
