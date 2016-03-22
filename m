@@ -1,34 +1,26 @@
-Date: Tue, 22 Mar 2016 10:06:15 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Cc: Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Stephen Warren <swarren@nvidia.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "Andrew F. Davis" <afd@ti.com>, Marek Vasut <marex@denx.de>,
- Jagan Teki <jteki@openedev.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Harini Katakam <harinik@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
- Anirudha Sarangi <anirudh@xilinx.com>
-Message-ID: <20160322100615.GA2566@sirena.org.uk>
-References: <1458562809-36114-1-git-send-email-lakshmis@xilinx.com>
- <20160321130734.GS2566@sirena.org.uk>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C6D34C@XAP-PVEXMBX02.xlnx.xilinx.com>
+Received: from eusmtp01.atmel.com ([212.144.249.243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aiKTe-0006CP-6k
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 11:28:01 +0000
+Subject: Re: [PATCH 1/1] mtd: spi-nor: add an alternative method to support
+ memory >16MiB
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1458556429-11741-1-git-send-email-cyrille.pitchen@atmel.com>
+ <20160321170107.GG2545@google.com> <56F02C70.6050106@atmel.com>
+ <20160321175537.GH2545@google.com>
+CC: <linux-mtd@lists.infradead.org>, <nicolas.ferre@atmel.com>,
+ <boris.brezillon@free-electrons.com>, <marex@denx.de>,
+ <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll
+ <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <56F12C24.6040206@atmel.com>
+Date: Tue, 22 Mar 2016 12:27:32 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="Wkv87tf6M42+4Jbu"
-Content-Disposition: inline
-In-Reply-To: <4FF8F58FAA9D5D4193D4E554E4352C5902C6D34C@XAP-PVEXMBX02.xlnx.xilinx.com>
-Subject: Re: [LINUX PATCH 1/2] mtd: Added dummy entry in the spi_transfer
- structure.
+In-Reply-To: <20160321175537.GH2545@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,58 +30,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Le 21/03/2016 18:55, Brian Norris a écrit :
+> On Mon, Mar 21, 2016 at 06:16:32PM +0100, Cyrille Pitchen wrote:
+>> Le 21/03/2016 18:01, Brian Norris a écrit :
+>>> On Mon, Mar 21, 2016 at 11:33:49AM +0100, Cyrille Pitchen wrote:
+>>>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+>>>> index d42c98e1f581..7fae36fc8526 100644
+>>>> --- a/drivers/mtd/spi-nor/Kconfig
+>>>> +++ b/drivers/mtd/spi-nor/Kconfig
+>>>> @@ -29,6 +29,18 @@ config MTD_SPI_NOR_USE_4K_SECTORS
+>>>>  	  Please note that some tools/drivers/filesystems may not work with
+>>>>  	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
+>>>>  
+>>>> +config MTD_SPI_NOR_USE_4B_OPCODES
+>>>> +	bool "Use 4-byte address op codes"
+>>>> +	default n
+>>>> +	help
+>>>> +	  This is an alternative to the "Enter/Exit 4-byte mode" commands and
+>>>> +	  Base Address Register (BAR) updates to support flash size above 16MiB.
+>>>> +	  Using dedicated 4-byte address op codes for (Fast) Read, Page Program
+>>>> +	  and Sector Erase operations avoids changing the internal state of the
+>>>> +	  SPI NOR memory. Hence if a CPU reset occurs, early bootloaders can
+>>>> +	  still use regular 3-byte address op codes and read from the very first
+>>>> +	  16MiB of the flash memory.
+>>>> +
+>>>
+>>> Why does this need to be a Kconfig option? Can't it just as well be
+>>> supported by keeping entries in the ID table, to show which flash
+>>> support these opcodes and which don't? Kconfig is really a bad mechanism
+>>> for trying to configure your flash.
+>>
+>> Well, the only reason why I've chosen a Kconfig option is to be as safe as
+>> possible, if for some reason someone still wants to use the former
+>> implementation. Honestly I don't know why one would do so but I'm cautious
+>> so I also set "default n". This way no regression is introduced.
+> 
+> I think the main reason is that some manufacturers did not initially
+> support both methods. So we couldn't just say "all Micron" or "all
+> Macronix" should use these opcodes. Spansion was the only one to support
+> them consistently. See [1] for reference.
+> 
+> And actually, your Kconfig option is not "cautious", because you have no
+> guarantee that people will make intelligent choices here. So you're
+> making a Kconfig that if someone accidentally turns it on, their flash
+> might not work any more. That's much less safe than properly labelling
+> which flash supports which feature.
+> 
+>> If you think it's better to use a dedicated flag like SECT_4K or
+>> SPI_NOR_QUAD_READ in the spi_nor_ids[] table, I'm perfectly fine with it as
+>> well.
+> 
+> I think that would be better. (Really, an opt-out would be the least
+> work in the long-run I think, since IIRC there were only a few
+> early-generation flash that were both large enough to need 4 byte
+> addressing and didn't support the dedicated opcodes. But it'll be hard
+> to track those down now I think, so opt-in probably is most practical.)
+> 
+>> Just let me know your choice then I'll update my patch accordingly if needed.
+> 
+> Brian
+> 
+> [1]
+> commit 87c9511fba2bd069a35e1312587a29e112fc0cd6
+> Author: Brian Norris <computersforpeace@gmail.com>
+> Date:   Thu Apr 11 01:34:57 2013 -0700
+> 
+>     mtd: m25p80: utilize dedicated 4-byte addressing commands
+> 
 
---Wkv87tf6M42+4Jbu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Indeed, your commit message is very interesting since it points out some issue
+I already face: for my test I'm currently using a Macronix MX25L25673G
+(JEDEC ID C22019). This memory *does* support the dedicated 4byte address op
+codes.
 
-On Tue, Mar 22, 2016 at 06:39:51AM +0000, Lakshmi Sai Krishna Potthuri wrote:
+Then if I look at the datasheet for the Macronix MX25L25635E, this older memory
+shares the exact same JEDEC ID, C22019 but *doesn't* support the 4byte address
+op codes.
 
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.  Please also avoid reflowing other text
-into longer lengths, this makes things worse.
+None of these two memory types use ext id: the JEDEC ID is only 3byte long.
+Anyway, in QPI mode, the QPIID command (0xAF), which replaces the regular
+Read ID command (0x9f) only sends 3 bytes too.
 
-> >This isn't enough to add the feature - a client driver trying to make use of this
-> >needs to be able to tell if the cycles are actually going to be inserted.  I'd
-> >expect to see a capability flag that can be checked and some error checking so
-> >that if we try to do a transfer with dummy cycles and can't support it we don't
-> >silently ignore the dummy cycles, ideally also something that'll handle
-> >multiples of 8 bits with SPI controllers that don't otherwise support this
-> >feature.
+The memory table inside the spi-nor framework is indexed by JEDEC ID (+ ext id)
+but we've just pointed out a case where it is not possible to create two
+different entries in this table, one for the 35E without the "4byte" flag, the
+other for 73G with the "4byte" flag.
 
-> Currently, all fast reads use 8 cycles or 1 byte of dummy. This generally works.
-> But it can be vary based on the flash and the type of read command.
-> Dummy bytes are taken care of in m25p80.c by adjusting the len field:
-> Length = size of (command + address + dummy byte)
+So there is no mean for the software to discover at runtime what are the actual
+capabilities of the memory. Hence I think we should introduce a DT property
+which would clearly tell the spi-nor framework that we want to use the
+dedicated 4byte address op codes instead of entering the 4byte address mode
+(still the default behaviour since older memories only support this mode).
 
-> There might be controllers (like ZynqMP GQSPI) that would be able to use
-> the information that dummy byte(s) were added and the precise number
-> of dummy cycles. This patch does not disturb the existing implementation
-> of adjusting length (as described above). It adds an additional optional feature.
-> So there is no harm to controllers that can't support it - they can ignore it and
-> still work with the existing "length adjustment" implementation.
-> If you think there value in adding a capability flag, please let me know.
+So what about a new DT named "m25p,4byte-opcodes" so the naming is consistent
+with the existing "m25p,fast-read"?
 
-This is really not what I'd expect to happen, I'd expect that these
-dummy cycles would be in addition to the actual data (see my request for
-better documentation...).  If they overlap with the data then what is
-the point in specifying this?  It's more work for the host, what benefit
-do we get from doing it over just handing it like a normal byte?
+For DT guys, I just sum the initial issue up: entering the 4byte address mode
+as currently done changes the internal state of the SPI memory. If a SoC reset
+occurs, some early bootloaders not supporting this 4byte address mode expect
+to use only 3byte addresses for (Fast) Read operations => the boot is broken.
+Then using the dedicated 4byte address op codes fixes the issue as they don't
+change the internal memory state so early bootloader can still use 3byte
+address op codes.
 
---Wkv87tf6M42+4Jbu
-Content-Type: application/pgp-signature; name="signature.asc"
+Best regards,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW8RkVAAoJECTWi3JdVIfQ9GoH/3Jas4s88xTpk1aqYIJuu9AJ
-gQa8TtCN+IDg5aI+CKHOOzbxRc2STOecnpj3R5nQDj5pnZYM1v9FaJtfaOWm9u2G
-PKcdAb+yzpGY7zEvSe1oKRPmSLsp7cvi6GBkRLWgGtMdpGbPE4Te/25eKGMv1soX
-QnkSgbFL07yJEH+6twJMb1EWyZOZXDGBT1cyD04JHxHyPbv/2xow21yQ3F2jtEmY
-sFMDrN80qlBPIWiGgfZrOd+RBEz9hVtztOFWJIMBffq1oIFpfwTjCjZbAaZi7W6c
-4UpvQETxw8bwxGNdysHaYgd0Ca1SX4LgcyACa6u1QOr2MCFT+DlqBvKhCnaPty4=
-=NF3t
------END PGP SIGNATURE-----
-
---Wkv87tf6M42+4Jbu--
+Cyrille
