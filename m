@@ -1,26 +1,24 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiKTe-0006CP-6k
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 11:28:01 +0000
-Subject: Re: [PATCH 1/1] mtd: spi-nor: add an alternative method to support
- memory >16MiB
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1458556429-11741-1-git-send-email-cyrille.pitchen@atmel.com>
- <20160321170107.GG2545@google.com> <56F02C70.6050106@atmel.com>
- <20160321175537.GH2545@google.com>
-CC: <linux-mtd@lists.infradead.org>, <nicolas.ferre@atmel.com>,
- <boris.brezillon@free-electrons.com>, <marex@denx.de>,
- <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll
- <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <56F12C24.6040206@atmel.com>
-Date: Tue, 22 Mar 2016 12:27:32 +0100
+ id 1aiM5b-0007lC-Sg
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 13:11:16 +0000
+Subject: Re: [PATCH v8 2/3] mtd: nand: Qualcomm NAND controller driver
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1453360399-32029-1-git-send-email-architt@codeaurora.org>
+ <1454489991-14717-1-git-send-email-architt@codeaurora.org>
+ <1454489991-14717-3-git-send-email-architt@codeaurora.org>
+ <20160318164904.45a77338@bbrezillon> <20160318174817.0f47ac20@bbrezillon>
+ <56ED269B.5020102@codeaurora.org> <20160319113413.1f0f3e5f@bbrezillon>
+Cc: linux-arm-msm@vger.kernel.org, cernekee@gmail.com, sboyd@codeaurora.org,
+ linux-mtd@lists.infradead.org, dehrenberg@google.com, andy.gross@linaro.org,
+ computersforpeace@gmail.com
+From: Archit Taneja <architt@codeaurora.org>
+Message-ID: <56F14457.4010606@codeaurora.org>
+Date: Tue, 22 Mar 2016 18:40:47 +0530
 MIME-Version: 1.0
-In-Reply-To: <20160321175537.GH2545@google.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20160319113413.1f0f3e5f@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,109 +28,215 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 21/03/2016 18:55, Brian Norris a écrit :
-> On Mon, Mar 21, 2016 at 06:16:32PM +0100, Cyrille Pitchen wrote:
->> Le 21/03/2016 18:01, Brian Norris a écrit :
->>> On Mon, Mar 21, 2016 at 11:33:49AM +0100, Cyrille Pitchen wrote:
->>>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
->>>> index d42c98e1f581..7fae36fc8526 100644
->>>> --- a/drivers/mtd/spi-nor/Kconfig
->>>> +++ b/drivers/mtd/spi-nor/Kconfig
->>>> @@ -29,6 +29,18 @@ config MTD_SPI_NOR_USE_4K_SECTORS
->>>>  	  Please note that some tools/drivers/filesystems may not work with
->>>>  	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
->>>>  
->>>> +config MTD_SPI_NOR_USE_4B_OPCODES
->>>> +	bool "Use 4-byte address op codes"
->>>> +	default n
->>>> +	help
->>>> +	  This is an alternative to the "Enter/Exit 4-byte mode" commands and
->>>> +	  Base Address Register (BAR) updates to support flash size above 16MiB.
->>>> +	  Using dedicated 4-byte address op codes for (Fast) Read, Page Program
->>>> +	  and Sector Erase operations avoids changing the internal state of the
->>>> +	  SPI NOR memory. Hence if a CPU reset occurs, early bootloaders can
->>>> +	  still use regular 3-byte address op codes and read from the very first
->>>> +	  16MiB of the flash memory.
->>>> +
->>>
->>> Why does this need to be a Kconfig option? Can't it just as well be
->>> supported by keeping entries in the ID table, to show which flash
->>> support these opcodes and which don't? Kconfig is really a bad mechanism
->>> for trying to configure your flash.
+
+On 03/19/2016 04:04 PM, Boris Brezillon wrote:
+> On Sat, 19 Mar 2016 15:44:51 +0530
+> Archit Taneja <architt@codeaurora.org> wrote:
+>
 >>
->> Well, the only reason why I've chosen a Kconfig option is to be as safe as
->> possible, if for some reason someone still wants to use the former
->> implementation. Honestly I don't know why one would do so but I'm cautious
->> so I also set "default n". This way no regression is introduced.
-> 
-> I think the main reason is that some manufacturers did not initially
-> support both methods. So we couldn't just say "all Micron" or "all
-> Macronix" should use these opcodes. Spansion was the only one to support
-> them consistently. See [1] for reference.
-> 
-> And actually, your Kconfig option is not "cautious", because you have no
-> guarantee that people will make intelligent choices here. So you're
-> making a Kconfig that if someone accidentally turns it on, their flash
-> might not work any more. That's much less safe than properly labelling
-> which flash supports which feature.
-> 
->> If you think it's better to use a dedicated flag like SECT_4K or
->> SPI_NOR_QUAD_READ in the spi_nor_ids[] table, I'm perfectly fine with it as
->> well.
-> 
-> I think that would be better. (Really, an opt-out would be the least
-> work in the long-run I think, since IIRC there were only a few
-> early-generation flash that were both large enough to need 4 byte
-> addressing and didn't support the dedicated opcodes. But it'll be hard
-> to track those down now I think, so opt-in probably is most practical.)
-> 
->> Just let me know your choice then I'll update my patch accordingly if needed.
-> 
-> Brian
-> 
-> [1]
-> commit 87c9511fba2bd069a35e1312587a29e112fc0cd6
-> Author: Brian Norris <computersforpeace@gmail.com>
-> Date:   Thu Apr 11 01:34:57 2013 -0700
-> 
->     mtd: m25p80: utilize dedicated 4-byte addressing commands
-> 
+>>
+>> On 03/18/2016 10:18 PM, Boris Brezillon wrote:
+>>> On Fri, 18 Mar 2016 16:49:04 +0100
+>>> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+>>>
+>>>> Hi Archit,
+>>>>
+>>>> On Wed,  3 Feb 2016 14:29:50 +0530
+>>>> Archit Taneja <architt@codeaurora.org> wrote:
+>>>>
+>>>>> +/*
+>>>>> + * NAND controller page layout info
+>>>>> + *
+>>>>> + * Layout with ECC enabled:
+>>>>> + *
+>>>>> + * |----------------------|  |---------------------------------|
+>>>>> + * |           xx.......yy|  |             *********xx.......yy|
+>>>>> + * |    DATA   xx..ECC..yy|  |    DATA     **SPARE**xx..ECC..yy|
+>>>>> + * |   (516)   xx.......yy|  |  (516-n*4)  **(n*4)**xx.......yy|
+>>>>> + * |           xx.......yy|  |             *********xx.......yy|
+>>>>> + * |----------------------|  |---------------------------------|
+>>>>> + *     codeword 1,2..n-1                  codeword n
+>>>>> + *  <---(528/532 Bytes)-->    <-------(528/532 Bytes)--------->
+>>>>> + *
+>>>>> + * n = Number of codewords in the page
+>>>>> + * . = ECC bytes
+>>>>> + * * = Spare/free bytes
+>>>>> + * x = Unused byte(s)
+>>>>> + * y = Reserved byte(s)
+>>>>> + *
+>>>>> + * 2K page: n = 4, spare = 16 bytes
+>>>>> + * 4K page: n = 8, spare = 32 bytes
+>>>>> + * 8K page: n = 16, spare = 64 bytes
+>>>>> + *
+>>>>> + * the qcom nand controller operates at a sub page/codeword level. each
+>>>>> + * codeword is 528 and 532 bytes for 4 bit and 8 bit ECC modes respectively.
+>>>>> + * the number of ECC bytes vary based on the ECC strength and the bus width.
+>>>>> + *
+>>>>> + * the first n - 1 codewords contains 516 bytes of user data, the remaining
+>>>>> + * 12/16 bytes consist of ECC and reserved data. The nth codeword contains
+>>>>> + * both user data and spare(oobavail) bytes that sum up to 516 bytes.
+>>>>> + *
+>>>>> + * When we access a page with ECC enabled, the reserved bytes(s) are not
+>>>>> + * accessible at all. When reading, we fill up these unreadable positions
+>>>>> + * with 0xffs. When writing, the controller skips writing the inaccessible
+>>>>> + * bytes.
+>>>>> + *
+>>>>> + * Layout with ECC disabled:
+>>>>> + *
+>>>>> + * |------------------------------|  |---------------------------------------|
+>>>>> + * |         yy          xx.......|  |         bb          *********xx.......|
+>>>>> + * |  DATA1  yy  DATA2   xx..ECC..|  |  DATA1  bb  DATA2   **SPARE**xx..ECC..|
+>>>>> + * | (size1) yy (size2)  xx.......|  | (size1) bb (size2)  **(n*4)**xx.......|
+>>>>> + * |         yy          xx.......|  |         bb          *********xx.......|
+>>>>> + * |------------------------------|  |---------------------------------------|
+>>>>> + *         codeword 1,2..n-1                        codeword n
+>>>>> + *  <-------(528/532 Bytes)------>    <-----------(528/532 Bytes)----------->
+>>>>> + *
+>>>>> + * n = Number of codewords in the page
+>>>>> + * . = ECC bytes
+>>>>> + * * = Spare/free bytes
+>>>>> + * x = Unused byte(s)
+>>>>> + * y = Dummy Bad Bock byte(s)
+>>>>> + * b = Real Bad Block byte(s)
+>>>>> + * size1/size2 = function of codeword size and 'n'
+>>>>> + *
+>>>>> + * when the ECC block is disabled, one reserved byte (or two for 16 bit bus
+>>>>> + * width) is now accessible. For the first n - 1 codewords, these are dummy Bad
+>>>>> + * Block Markers. In the last codeword, this position contains the real BBM
+>>>>> + *
+>>>>> + * In order to have a consistent layout between RAW and ECC modes, we assume
+>>>>> + * the following OOB layout arrangement:
+>>>>> + *
+>>>>> + * |-----------|  |--------------------|
+>>>>> + * |yyxx.......|  |bb*********xx.......|
+>>>>> + * |yyxx..ECC..|  |bb*FREEOOB*xx..ECC..|
+>>>>> + * |yyxx.......|  |bb*********xx.......|
+>>>>> + * |yyxx.......|  |bb*********xx.......|
+>>>>> + * |-----------|  |--------------------|
+>>>>> + *  first n - 1       nth OOB region
+>>>>> + *  OOB regions
+>>>>> + *
+>>>>> + * n = Number of codewords in the page
+>>>>> + * . = ECC bytes
+>>>>> + * * = FREE OOB bytes
+>>>>> + * y = Dummy bad block byte(s) (inaccessible when ECC enabled)
+>>>>> + * x = Unused byte(s)
+>>>>> + * b = Real bad block byte(s) (inaccessible when ECC enabled)
+>>>>> + *
+>>>>> + * This layout is read as is when ECC is disabled. When ECC is enabled, the
+>>>>> + * inaccessible Bad Block byte(s) are ignored when we write to a page/oob,
+>>>>> + * and assumed as 0xffs when we read a page/oob. The ECC, unused and
+>>>>> + * dummy/real bad block bytes are grouped as ecc bytes in nand_ecclayout (i.e,
+>>>>> + * ecc->bytes is the sum of the three).
+>>>>> + */
+>>>>> +
+>>>>> +static struct nand_ecclayout *
+>>>>> +qcom_nand_create_layout(struct qcom_nand_host *host)
+>>>>> +{
+>>>>> +	struct nand_chip *chip = &host->chip;
+>>>>> +	struct mtd_info *mtd = nand_to_mtd(chip);
+>>>>> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>>>>> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>>>>> +	struct nand_ecclayout *layout;
+>>>>> +	int i, j, steps, pos = 0, shift = 0;
+>>>>> +
+>>>>> +	layout = devm_kzalloc(nandc->dev, sizeof(*layout), GFP_KERNEL);
+>>>>> +	if (!layout)
+>>>>> +		return NULL;
+>>>>> +
+>>>>> +	steps = mtd->writesize / ecc->size;
+>>>>> +	layout->eccbytes = steps * ecc->bytes;
+>>>>> +
+>>>>> +	layout->oobfree[0].offset = (steps - 1) * ecc->bytes + host->bbm_size;
+>>>>> +	layout->oobfree[0].length = steps << 2;
+>>>>> +	layout->oobavail = steps << 2;
+>>>>> +
+>>>>> +	/*
+>>>>> +	 * the oob bytes in the first n - 1 codewords are all grouped together
+>>>>> +	 * in the format:
+>>>>> +	 * DUMMY_BBM + UNUSED + ECC
+>>>>> +	 */
+>>>>> +	for (i = 0; i < steps - 1; i++) {
+>>>>> +		for (j = 0; j < ecc->bytes; j++)
+>>>>> +			layout->eccpos[pos++] = i * ecc->bytes + j;
+>>>>> +	}
+>>>>> +
+>>>>> +	/*
+>>>>> +	 * the oob bytes in the last codeword are grouped in the format:
+>>>>> +	 * BBM + FREE OOB + UNUSED + ECC
+>>>>> +	 */
+>>>>> +
+>>>>> +	/* fill up the bbm positions */
+>>>>> +	for (j = 0; j < host->bbm_size; j++)
+>>>>> +		layout->eccpos[pos++] = i * ecc->bytes + j;
+>>>>> +
+>>>>> +	/*
+>>>>> +	 * fill up the ecc and reserved positions, their indices are offseted
+>>>>> +	 * by the free oob region
+>>>>> +	 */
+>>>>> +	shift = layout->oobfree[0].length + host->bbm_size;
+>>>>> +
+>>>>> +	for (j = 0; j < (host->ecc_bytes_hw + host->spare_bytes); j++)
+>>>>> +		layout->eccpos[pos++] = i * ecc->bytes + shift + j;
+>>>>> +
+>>>>> +	return layout;
+>>>>> +}
+>>>>
+>>>> I'm trying to move this layout definition to the mtd_ooblayout_ops
+>>>> approach, and I wonder why you decided to take such a complicated
+>>>> representation.
+>>>> AFAIU, in each ECC step you have 512 bytes of data, X ECC+reserved
+>>>> bytes (you decided to consider all of them as ECC bytes, which is fine
+>>>> by me) and 4 usable/free bytes. Am I correct?
+>>>>
+>>>> If that's the case, then why not exposing the following layout.
+>>>>
+>>>> eccregion[i] = {
+>>>> 	.offset = i * (ecc->bytes + 4);
+>>>> 	.length = ecc->bytes;
+>>>> }
+>>>>
+>>>> oobfreeregion[i] = {
+>>>> 	.offset = (i * (ecc->bytes + 4)) + ecc->bytes;
+>>>> 	.length = 4;
+>>>> }
+>>>>
+>>>> Are there any userspace tools relying on the ooblayout you're currently
+>>>> exposing (remember that the exposed OOB layout is not necessarily
+>>>> what you see on the media)?
+>>>
+>>> Okay, I think we already had this discussion :).
+>>> I'm still not happy with the exposed layout (it would be much easier to
+>>> reserve 4 free bytes per chunk, and declare each chunk as containing 512
+>>> data bytes + 4 oob bytes + X ECC/reserved bytes), but IIRC, your ROM
+>>> code (and/or bootloader) is already using this layout :-(.
+>>
+>> Sadly, yeah. The reason given for this was that if a filesystem only
+>> wanted to read the 16 oob bytes off the page, it could just read the
+>> last subpage instead of going through all pages. The optimization
+>> clearly doesn't seem worth the software overhead.
+>>
+>> Is this something that's blocking your mtd_ooblayout_ops work?
+>
+> Nope, I think I got it right, but maybe you can check/test it.
+> Here is my branch containing the whole rework [1], and here are
+> the qcom relate patches[2][3].
 
-Indeed, your commit message is very interesting since it points out some issue
-I already face: for my test I'm currently using a Macronix MX25L25673G
-(JEDEC ID C22019). This memory *does* support the dedicated 4byte address op
-codes.
+They look good to me. I tried out your branch and I see correct
+behavior. Thanks for the patches.
 
-Then if I look at the datasheet for the Macronix MX25L25635E, this older memory
-shares the exact same JEDEC ID, C22019 but *doesn't* support the 4byte address
-op codes.
+Tested-by: Archit Taneja <architt@codeaurora.org>
 
-None of these two memory types use ext id: the JEDEC ID is only 3byte long.
-Anyway, in QPI mode, the QPIID command (0xAF), which replaces the regular
-Read ID command (0x9f) only sends 3 bytes too.
+>
+> Thanks,
+>
+> Boris
+>
+> [1]https://github.com/bbrezillon/linux-0day/commits/nand/ecclayout
+> [2]https://github.com/bbrezillon/linux-0day/commit/85fba29f4177fbbe8e43cabf433848947bd1c311
+> [3]https://github.com/bbrezillon/linux-0day/commit/2ebab1c79d275e32a049f293aac2d5e918ef37ab
+>
 
-The memory table inside the spi-nor framework is indexed by JEDEC ID (+ ext id)
-but we've just pointed out a case where it is not possible to create two
-different entries in this table, one for the 35E without the "4byte" flag, the
-other for 73G with the "4byte" flag.
-
-So there is no mean for the software to discover at runtime what are the actual
-capabilities of the memory. Hence I think we should introduce a DT property
-which would clearly tell the spi-nor framework that we want to use the
-dedicated 4byte address op codes instead of entering the 4byte address mode
-(still the default behaviour since older memories only support this mode).
-
-So what about a new DT named "m25p,4byte-opcodes" so the naming is consistent
-with the existing "m25p,fast-read"?
-
-For DT guys, I just sum the initial issue up: entering the 4byte address mode
-as currently done changes the internal state of the SPI memory. If a SoC reset
-occurs, some early bootloaders not supporting this 4byte address mode expect
-to use only 3byte addresses for (Fast) Read operations => the boot is broken.
-Then using the dedicated 4byte address op codes fixes the issue as they don't
-change the internal memory state so early bootloader can still use 3byte
-address op codes.
-
-Best regards,
-
-Cyrille
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum, hosted by The Linux Foundation
