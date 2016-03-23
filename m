@@ -1,17 +1,20 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiefS-00029g-Qr
- for linux-mtd@lists.infradead.org; Wed, 23 Mar 2016 09:01:34 +0000
-Date: Wed, 23 Mar 2016 10:00:59 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/3] mtd: nand: add enum nand_ecc_algo
-Message-ID: <20160323100059.64ad9bb3@bbrezillon>
-In-Reply-To: <1458687254-26181-1-git-send-email-zajec5@gmail.com>
-References: <1458687254-26181-1-git-send-email-zajec5@gmail.com>
+Received: from mail-yw0-x229.google.com ([2607:f8b0:4002:c05::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aieoZ-0000jf-0U
+ for linux-mtd@lists.infradead.org; Wed, 23 Mar 2016 09:10:55 +0000
+Received: by mail-yw0-x229.google.com with SMTP id g3so10851026ywa.3
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2016 02:10:34 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20160323100059.64ad9bb3@bbrezillon>
+References: <1458687254-26181-1-git-send-email-zajec5@gmail.com>
+ <20160323100059.64ad9bb3@bbrezillon>
+Date: Wed, 23 Mar 2016 10:10:33 +0100
+Message-ID: <CACna6rywp2ONxNQ3a+rw-2tujQAqZePq=Z6grDDqCX1dNjm+5A@mail.gmail.com>
+Subject: Re: [PATCH 0/3] mtd: nand: add enum nand_ecc_algo
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,73 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rafal,
+On 23 March 2016 at 10:00, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Tue, 22 Mar 2016 23:54:11 +0100
+> Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+>
+>> Some time ago I started working on a new "nand-ecc-algo" property to all=
+ow
+>> specifying ECC algorithm for hardware ECC mode as well.
+>> Boris pointed out it's becoming a bit messy that way as we already have =
+value
+>> NAND_ECC_SOFT_BCH.
+>> I suggested deprecating "soft_bch" value from nand-ecc-mode property and=
+ got
+>> Boris agreed and no objections from others. So there is how I want to im=
+plement
+>> this.
+>> If you agree on this way & apply my patches, I'll start modifying NAND d=
+rivers
+>> (similarly to the nandsim) and then will try to drop NAND_ECC_SOFT_BCH e=
+xcept
+>> for handling backward compatibility.
+>> Then finally we should be able to add "nand-ecc-algo" property support p=
+roperly.
+>
+> I agree with patch 1 and 3, but I think we should create an
+> of_get_nand_ecc_algo() helper right now instead of relying on the
+> ecc->mode value to set ecc->algo (I'm referring to patch 2).
 
-On Tue, 22 Mar 2016 23:54:11 +0100
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+Thanks for the review!
 
-> Some time ago I started working on a new "nand-ecc-algo" property to allow
-> specifying ECC algorithm for hardware ECC mode as well.
-> Boris pointed out it's becoming a bit messy that way as we already have v=
-alue
-> NAND_ECC_SOFT_BCH.
-> I suggested deprecating "soft_bch" value from nand-ecc-mode property and =
-got
-> Boris agreed and no objections from others. So there is how I want to imp=
-lement
-> this.
-> If you agree on this way & apply my patches, I'll start modifying NAND dr=
-ivers
-> (similarly to the nandsim) and then will try to drop NAND_ECC_SOFT_BCH ex=
-cept
-> for handling backward compatibility.
-> Then finally we should be able to add "nand-ecc-algo" property support pr=
-operly.
+I wanted to avoid adding support for "nand-ecc-algo" at this point.
+This would result with setting ecc.algo which isn't used yet, so this
+could be confusing.
+However I agree with your point that adding this magic code to
+nand_dt_init, just to replace it with of_get_nand_ecc_algo in the
+future isn't too clever.
 
-I agree with patch 1 and 3, but I think we should create an
-of_get_nand_ecc_algo() helper right now instead of relying on the
-ecc->mode value to set ecc->algo (I'm referring to patch 2).
+I'll send V2 soon, let's see if will agree on its implementation.
 
-int of_get_nand_ecc_algo(struct device_node *np)
-{
-	const char *pm;
-	int err, i;
 
-	err =3D of_property_read_string(np, "nand-ecc-algo", &pm);
-	if (err < 0) {
-		if (!of_property_read_string(np, "nand-ecc-mode", &pm)){
-			if (!strcasecmp(pm, "soft"))
-				err =3D NAND_ECC_HAMMING;
-			else if (!strcasecmp(pm, "soft_bch"))
-				err =3D NAND_ECC_BCH;
-		}
+> This way you'll be able to completely drop NAND_ECC_SOFT_BCH value when
+> all drivers have been patched.
+> BTW, even if we deprecate the DT property, we still have to support the
+> old format, so this extra "nand-ecc-mode" parsing will remain anyway.
 
-		return err;
-	}
+This is what I mainly meant in "then will try to drop
+NAND_ECC_SOFT_BCH except for handling backward compatibility" :)
 
-	for (i =3D 0; i < ARRAY_SIZE(nand_ecc_algos); i++)
-		if (!strcasecmp(pm, nand_ecc_algos[i]))
-			return i;
 
-	return -EINVAL;
-}
-EXPORT_SYMBOL_GPL(of_get_nand_ecc_algo);
+> And has already said ealier, I think we should also move the ecc layout
+> info somewhere else, and only leave ECC_NONE, ECC_HW and ECC_SOFT in
+> nand_ecc_modes_t enum. I'm not asking you to do that though, just
+> clarifying the separation I'd like to see ;).
 
-This way you'll be able to completely drop NAND_ECC_SOFT_BCH value when
-all drivers have been patched.
-BTW, even if we deprecate the DT property, we still have to support the
-old format, so this extra "nand-ecc-mode" parsing will remain anyway.
-
-And has already said ealier, I think we should also move the ecc layout
-info somewhere else, and only leave ECC_NONE, ECC_HW and ECC_SOFT in
-nand_ecc_modes_t enum. I'm not asking you to do that though, just
-clarifying the separation I'd like to see ;).
-
-Best Regards,
-
-Boris
+Ack, hopefully I'll find time for this later.
 
 --=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Rafa=C5=82
