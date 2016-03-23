@@ -1,29 +1,26 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
+Received: from mail-wm0-x229.google.com ([2a00:1450:400c:c09::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aikPR-0007hm-M8
- for linux-mtd@lists.infradead.org; Wed, 23 Mar 2016 15:09:23 +0000
-Subject: Re: [PATCH v2 2/2] doc: dt: mtd: add a DT property to enable the use
- of 4byte-address op codes
-To: Rob Herring <robh+dt@kernel.org>, Brian Norris
- <computersforpeace@gmail.com>
-References: <cover.1458657802.git.cyrille.pitchen@atmel.com>
- <b6dff3f629497025be74207227b94807b64e0e9c.1458657802.git.cyrille.pitchen@atmel.com>
- <CAL_JsqKUMhPwxrhz50D8+UAaVPT_+=xJLm6A6fVy6RgpyOnq8w@mail.gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Nicolas
- Ferre" <nicolas.ferre@atmel.com>, boris brezillon
- <boris.brezillon@free-electrons.com>, =?UTF-8?Q?Marek_Va=c5=a1ut?=
- <marex@denx.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Kumar
- Gala" <galak@codeaurora.org>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Message-ID: <56F2B18A.3020107@atmel.com>
-Date: Wed, 23 Mar 2016 16:08:58 +0100
+ id 1aipqQ-0000LA-UI
+ for linux-mtd@lists.infradead.org; Wed, 23 Mar 2016 20:57:36 +0000
+Received: by mail-wm0-x229.google.com with SMTP id l68so40210581wml.1
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2016 13:57:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKUMhPwxrhz50D8+UAaVPT_+=xJLm6A6fVy6RgpyOnq8w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
+References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
+Date: Wed, 23 Mar 2016 17:57:12 -0300
+Message-ID: <CAAEAJfCtjSrSgqDFs_F67Kqm6=7TOZ-p3x1gYRL5_hRdTsDfZg@mail.gmail.com>
+Subject: Re: [PATCH 00/11] mtd: nand_bbt: introduce independent nand BBT
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Peter Pan <peterpansjtu@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Jiancheng Xue <xuejiancheng@huawei.com>,
+ beanhuo@micron.com, karlzhang@micron.com, Peter Pan <peterpandong@micron.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,65 +30,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rob,
+Hello,
 
-sorry I've sent v3 at the same time as you answered to v2.
-I'll take your comments into account for v4.
+On 13 March 2016 at 23:47, Peter Pan <peterpansjtu@gmail.com> wrote:
+> Sorry for send the v3 out late. I went through a busy time in the past
+> two month.
+>
+> Currently nand_bbt.c is tied with struct nand_chip, and it makes other
+> NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
+> onenand has own bbt(onenand_bbt.c).
+>
+> Separate struct nand_chip from BBT code can make current BBT shareable.
+> We create struct nand_bbt to take place of nand_chip in nand_bbt.c.
+> Struct nand_bbt contains all the information BBT needed from outside and
+> it should be embedded into NAND family chip struct (such as struct nand_c=
+hip).
+>
+> Below is mtd folder structure we want:
+>         drivers/mtd/nand/<all-nand-core-code>
+>         drivers/mtd/nand/raw/<raw-nand-controller-drivers>
+>         drivers/mtd/nand/spi/<spi-nand-code>
+>         drivers/mtd/nand/onenand/<onenand-code>
+>         drivers/mtd/nand/chips/<manufacturer-spcific-code>
+>
 
-Brian, any preference between 4byte-opcodes or m25p-4byte-opcodes?
+You mention this structure, but nothing in the current patchset is actually
+enforcing it. This is more the future direction we are going.
 
-Best regards,
+> Most of the patch is borrowed from Brian Norris <computersforpeace@gmail.=
+com>.
+> http://git.infradead.org/users/norris/linux-mtd.git/shortlog/refs/heads/n=
+and-bbt
+> I decided the authorship of each patch by contribution. Please let me kno=
+w if
+> there is something unproper.
+> Based on Brian's suggestion and Boris's comments, I make 11 independent
+> patches. Previous patch is http://patchwork.ozlabs.org/patch/492066/
+> After discussion with Boris and Ezequiel, I realized above structure is b=
+etter,
+> so I drop the patch to move nand_bbt.c to mtd folder.
+>
 
-Cyrille
+I have reviewed this patchset, and it looks mostly good to me. I can
+spot trivial style comments, or comments related to the commit logs, or the
+way commits are splitted.
 
-Le 23/03/2016 13:49, Rob Herring a écrit :
-> On Tue, Mar 22, 2016 at 10:13 AM, Cyrille Pitchen
-> <cyrille.pitchen@atmel.com> wrote:
->> This patch adds a new optional DT property which enables an alternative
->> way of supporting memory size above 16MiB (128Mib). This new mechanism
->> translates the regular 3byte-address op codes into their 4byte-address
->> version whereas the old/default mecanism makes the SPI memory enter its
->> 4byte-address mode, which has annoying side effects for early bootloaders.
->>
->> We cannot discover at run time whether the SPI NOR memory supports the
->> 4byte-address op codes. For instance both Macronix MX25L25635E and
->> MX25L25673G share the same JEDEC ID (C22019 without any extension byte).
->> However the first one doesn't support 4byte-address op codes whereas the
->> second one does.
->>
->> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->> ---
->>  Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 11 +++++++++++
->>  1 file changed, 11 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
->> index 2c91c03e7eb0..8be610482089 100644
->> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
->> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
->> @@ -66,6 +66,17 @@ Optional properties:
->>                     Refer to your chips' datasheet to check if this is supported
->>                     by your chip.
->>
->> +- m25p,4byte-opcodes: For memory size above 16MiB (128Mib), use the dedicated
-> 
-> m25p is not a vendor. So drop it or m25p-4byte-opcodes.
-> 
->> +                      4byte-address opcodes instead of entering the 4byte
->> +                      address mode. This mode changes the internal state of the
->> +                      chip so may conflict with some early boot loaders, which
->> +                      expect to use the regular (Fast) Read opcodes with 3byte
->> +                      address.
->> +                      However 4byte-address opcodes are not supported by all
->> +                      chips and support for them can not be detected at runtime.
-> 
-> s/can not/cannot/
-> 
->> +                      Refer to you chip's datasheet to check if this is
->> +                      supported by your chip.
->> +
->>  Example:
->>
->>         flash: m25p80@0 {
->> --
->> 1.8.2.2
->>
+Boris will probably have more insightful comments to make.
+
+However, before starting my silly bikeshedding I'd like to know if we all
+agree with the patchset's overall scheme.
+
+It would be good to finally move forward with this, to take mt29f out
+of staging and also support other SPI NAND vendors.
+
+Thanks!
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
