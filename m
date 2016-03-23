@@ -1,24 +1,22 @@
-Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiftE-0004zj-Ah
- for linux-mtd@lists.infradead.org; Wed, 23 Mar 2016 10:19:55 +0000
-Received: by mail-lb0-x22a.google.com with SMTP id oe12so6750941lbc.0
- for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2016 03:19:31 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>,
- Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-Subject: [PATCH V2 4/4] mtd: nand: nandsim: set ECC algorithm explicitly
-Date: Wed, 23 Mar 2016 11:19:03 +0100
-Message-Id: <1458728343-1234-5-git-send-email-zajec5@gmail.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aigH8-0004k6-GB
+ for linux-mtd@lists.infradead.org; Wed, 23 Mar 2016 10:44:31 +0000
+Date: Wed, 23 Mar 2016 11:43:57 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>, Rob
+ Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Grant
+ Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH V2 0/4] mtd: nand: add enum nand_ecc_algo
+Message-ID: <20160323114357.377d82fc@bbrezillon>
 In-Reply-To: <1458728343-1234-1-git-send-email-zajec5@gmail.com>
 References: <1458728343-1234-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This follows recent work on switching to enum nand_ecc_algo and
-deprecating NAND_ECC_SOFT_BCH.
+On Wed, 23 Mar 2016 11:18:59 +0100
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/nand/nandsim.c | 2 ++
- 1 file changed, 2 insertions(+)
+> Some time ago I started working on a new "nand-ecc-algo" property to allow
+> specifying ECC algorithm for hardware ECC mode as well.
+> Boris pointed out it's becoming a bit messy that way as we already have v=
+alue
+> NAND_ECC_SOFT_BCH.
+> I suggested deprecating "soft_bch" value from nand-ecc-mode property and =
+got
+> Boris agreed and no objections from others. So there is how I want to imp=
+lement
+> this.
+> If you agree on this way & apply my patches, I'll start modifying NAND dr=
+ivers
+> (similarly to the nandsim) and then will try to drop NAND_ECC_SOFT_BCH ex=
+cept
+> for handling backward compatibility.
+> Then finally we should be able to add "nand-ecc-algo" property support pr=
+operly.
+>=20
+> V2: Add of_get_nand_ecc_algo helper (in 2/4) instead of this slightly hac=
+ky code
+>     in nand_dt_init that would be replaced anyway.
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 1fd5195..6ff1d8d 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -2261,6 +2261,7 @@ static int __init ns_init_module(void)
- 	chip->read_buf   = ns_nand_read_buf;
- 	chip->read_word  = ns_nand_read_word;
- 	chip->ecc.mode   = NAND_ECC_SOFT;
-+	chip->ecc.algo   = NAND_ECC_HAMMING;
- 	/* The NAND_SKIP_BBTSCAN option is necessary for 'overridesize' */
- 	/* and 'badblocks' parameters to work */
- 	chip->options   |= NAND_SKIP_BBTSCAN;
-@@ -2339,6 +2340,7 @@ static int __init ns_init_module(void)
- 			goto error;
- 		}
- 		chip->ecc.mode = NAND_ECC_SOFT_BCH;
-+		chip->ecc.algo = NAND_ECC_BCH;
- 		chip->ecc.size = 512;
- 		chip->ecc.strength = bch;
- 		chip->ecc.bytes = eccbytes;
--- 
-1.8.4.5
+This version looks good to me. If nobody disagree, I'll apply
+those patches on my future nand/next branch.
+
+Thanks,
+
+Boris
+
+>=20
+> Rafa=C5=82 Mi=C5=82ecki (4):
+>   mtd: nand: add new enum for storing ECC algorithm
+>   of: mtd: prepare helper reading NAND ECC algo from DT
+>   mtd: nand: set ECC algorithm in nand_dt_init
+>   mtd: nand: nandsim: set ECC algorithm explicitly
+>=20
+>  drivers/mtd/nand/nand_base.c |  6 +++++-
+>  drivers/mtd/nand/nandsim.c   |  2 ++
+>  drivers/of/of_mtd.c          | 36 ++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/nand.h     |  7 +++++++
+>  include/linux/of_mtd.h       |  6 ++++++
+>  5 files changed, 56 insertions(+), 1 deletion(-)
+>=20
+
+
+
+--=20
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
