@@ -1,9 +1,9 @@
-Received: from mail-qk0-x22f.google.com ([2607:f8b0:400d:c09::22f])
+Received: from mail-qg0-x22c.google.com ([2607:f8b0:400d:c04::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiVxZ-0000nS-AT
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2016 23:43:38 +0000
-Received: by mail-qk0-x22f.google.com with SMTP id s5so98918415qkd.0
- for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2016 16:43:17 -0700 (PDT)
+ id 1aiWgY-0003T1-Vz
+ for linux-mtd@lists.infradead.org; Wed, 23 Mar 2016 00:30:08 +0000
+Received: by mail-qg0-x22c.google.com with SMTP id u110so232301qge.3
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2016 17:29:46 -0700 (PDT)
 Subject: Re: [RFCv2: PATCH 2/2] mtd: mediatek: driver for MTK Smart Device
  Gen1 NAND
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
@@ -15,8 +15,8 @@ Cc: dwmw2@infradead.org, computersforpeace@gmail.com, matthias.bgg@gmail.com,
  daniel.thompson@linaro.org, erin.lo@mediatek.com,
  linux-mediatek@lists.infradead.org
 From: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Message-ID: <56F1D891.8010603@linaro.org>
-Date: Tue, 22 Mar 2016 19:43:13 -0400
+Message-ID: <56F1E378.3000107@linaro.org>
+Date: Tue, 22 Mar 2016 20:29:44 -0400
 MIME-Version: 1.0
 In-Reply-To: <20160322175850.2722c389@bbrezillon>
 Content-Type: text/plain; charset=utf-8
@@ -31,34 +31,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 03/22/2016 12:58 PM, Boris Brezillon wrote:
->> +typedef void (*release)(struct sdg1_ecc_if *);
->> > +typedef int (*decode)(struct sdg1_ecc_if *);
->> > +typedef void (*init) (struct sdg1_ecc_if *);
+>> +
+>> > +static struct sdg1_ecc_if *sdg1_ecc_get(struct device_node *np)
+>> > +{
+>> > +	struct platform_device *pdev;
+>> > +	struct sdg1_ecc *ecc;
 >> > +
->> > +struct sdg1_ecc_if {
->> > +	release	release;
->> > +	control control;
->> > +	config config;
->> > +	encode encode;
->> > +	decode decode;
->> > +	check check;
->> > +	init init;
->> > +};
+>> > +	pdev = of_find_device_by_node(np);
+>> > +	if (!pdev || !platform_get_drvdata(pdev))
+>> > +		return ERR_PTR(-EPROBE_DEFER);
 >> > +
->> > +struct sdg1_ecc_if *of_sdg1_ecc_get(struct device_node *);
-> I think you should directly return a pointer to the sdg1_ecc instance
-> here.
-> AFAICS, the "interface" appraoch is useless, all you need is a set of
-> exported functions, which all takes the sdg1_ecc pointer as a first
-> argument and a set of extra arguments depending on the function.
-> See what's done in the jz4780_bch.c driver.
+>> > +	get_device(&pdev->dev);
+>> > +	ecc = platform_get_drvdata(pdev);
+>> > +
+>> > +	clk_prepare_enable(ecc->clk);
+>> > +	ecc->dev = &pdev->dev;
+> ecc->dev should be assigned in ->probe().
 >
 
-yes I am of the contrary opinion (why export a number of functions when you can
-just export an interface and keep a clear encapsulation).
-as a matter of fact the interface exposes the dependency with the engine while a
-random number of function calls does not (with the interface approach eventually
-we might be able to have a common ecc interface some day, maybe)
+fyi this was just copied verbatim from
 
-anyway, working on v3 now. thanks for the detailed review as always (and sorry
-for the clear fuck ups like the size 0 array in the wrong place...argh!)
+static struct jz4780_bch *jz4780_bch_get(struct device_node *np)
+{
+    struct platform_device *pdev;
+    struct jz4780_bch *bch;
+
+    pdev = of_find_device_by_node(np);
+    if (!pdev || !platform_get_drvdata(pdev))
+        return ERR_PTR(-EPROBE_DEFER);
+
+    get_device(&pdev->dev);
+
+    bch = platform_get_drvdata(pdev);
+    clk_prepare_enable(bch->clk);
+
+    bch->dev = &pdev->dev;
+    return bch;
+}
