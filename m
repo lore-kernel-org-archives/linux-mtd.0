@@ -1,27 +1,20 @@
-Received: from mail-qg0-x22a.google.com ([2607:f8b0:400d:c04::22a])
+Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiiAs-0001zt-4q
- for linux-mtd@lists.infradead.org; Wed, 23 Mar 2016 12:46:12 +0000
-Received: by mail-qg0-x22a.google.com with SMTP id j35so10392857qge.0
- for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2016 05:45:48 -0700 (PDT)
-Subject: Re: [RFCv2: PATCH 2/2] mtd: mediatek: driver for MTK Smart Device
- Gen1 NAND
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1458653560-2679-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <1458653560-2679-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160322175850.2722c389@bbrezillon> <56F1D891.8010603@linaro.org>
- <20160323094119.13c5ae19@bbrezillon>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, matthias.bgg@gmail.com,
- robh@kernel.org, linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com,
- daniel.thompson@linaro.org, erin.lo@mediatek.com,
- linux-mediatek@lists.infradead.org
-From: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Message-ID: <56F28FB5.5010204@linaro.org>
-Date: Wed, 23 Mar 2016 08:44:37 -0400
+ id 1aiiDb-0004DN-3L
+ for linux-mtd@lists.infradead.org; Wed, 23 Mar 2016 12:48:59 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
+ <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
+ <galak@codeaurora.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH v3 0/2] mtd: spi-nor: add an alternative method to support
+ memory >16MiB
+Date: Wed, 23 Mar 2016 13:49:09 +0100
+Message-ID: <cover.1458736784.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <20160323094119.13c5ae19@bbrezillon>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,132 +24,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/23/2016 04:41 AM, Boris Brezillon wrote:
-> Hi Jorge,
->
-> On Tue, 22 Mar 2016 19:43:13 -0400
-> Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
->
->> On 03/22/2016 12:58 PM, Boris Brezillon wrote:
->>>> +typedef void (*release)(struct sdg1_ecc_if *);
->>>>> +typedef int (*decode)(struct sdg1_ecc_if *);
->>>>> +typedef void (*init) (struct sdg1_ecc_if *);
->>>>> +
->>>>> +struct sdg1_ecc_if {
->>>>> +	release	release;
->>>>> +	control control;
->>>>> +	config config;
->>>>> +	encode encode;
->>>>> +	decode decode;
->>>>> +	check check;
->>>>> +	init init;
->>>>> +};
->>>>> +
->>>>> +struct sdg1_ecc_if *of_sdg1_ecc_get(struct device_node *);
->>> I think you should directly return a pointer to the sdg1_ecc instance
->>> here.
->>> AFAICS, the "interface" appraoch is useless, all you need is a set of
->>> exported functions, which all takes the sdg1_ecc pointer as a first
->>> argument and a set of extra arguments depending on the function.
->>> See what's done in the jz4780_bch.c driver.
->>>
->> yes I am of the contrary opinion (why export a number of functions when you can
->> just export an interface and keep a clear encapsulation).
->> as a matter of fact the interface exposes the dependency with the engine while a
->> random number of function calls does not (with the interface approach eventually
->> we might be able to have a common ecc interface some day, maybe)
-> Actually, an interface is supposed to be generic and is meant to be
-> implemented by different drivers. None of this is met here: your
-> interface is completely specific to the sdg1_ecc driver, and you only
-> have a single implementation (which, AFAICT, is not likely to change,
-> unless you know you'll have slightly different version of the engine,
-> requiring different implementations).
+Hi all,
 
-sure I understand (I did write the interface to my specifications thinking that
-once enough interfaces are in place we could extract some commonalities).
-but it can be done the other way around (once we have enough nand/ecc pairs then
-define the interface and reorganize). It is probably a better choice.
+This patch was tested on a sama5d2 xplained board + Macronix mx25l25673g.
 
->
-> In any case, even if you were about to use this 'interface approach',
-> you should definitely pass the ECC engine instance (and not the iface
-> object) as the first argument of all functions (this is how we emulate
-> OOP in C).
+It provides us with an alternative method to support SPI NOR memory above
+16MiB (128Mib). Indeed the previous method (still default) makes the
+memory enter it's 4byte-address method. However this mode has some
+annoying side effects for early bootloarders: it changes the internal
+state of the memory hence when using regular (Fast) Read op codes
+(0x03, 0x0b, 0x6b, ...) the memory now expects 4byte addresses whereas
+some bootloaders still use these op codes with 3byte addresses.
+
+The new method translates the 3byte address op codes into their 4byte
+address version:
+0x03 -> 0x13  Read
+0x0b -> 0x0c  Fast Read
+0x6b -> 0x6c  Fast Read 1-1-4
+0x02 -> 0x12  Page Program
+0xd8 -> 0xdc  Sector Erase
+...
+
+The internal state of the SPI NOR memory is left unchanged.
+
+However the 4byte address op codes are not supported by all memories.
+For instance Macronix mx25l25635e and mx25l25673g share the very same
+JEDEC ID (C22019) with no additional ext_id bytes to differentiate them.
+The 35e doesn't support the 4byte address op codes whereas the 73g does.
+So there is no mean for the software to discover at runtime whether the
+hardware supports these op codes. Hence this patch checks a new DT
+property, "m25p,4byte-opcoes", to select the proper method to deal with
+a >16MiB SPI NOR memory.
 
 
-> And the last thing is that the interface implementation should be
-> referenced with a pointer and not directly embedded in your ECC engine
-> object (so that it can be reused by all instances of the same object
-> type).
+Best regards,
 
-isnt inheritance vs composition a design decision when there is only one
-instance of the object anyway?
-but sure, composition is often favored for the reason you stated below. I just
-didnt think it matter in this case.
-
->
-> Something like:
->
-> struct sdg1_ecc {
-> 	/* ... */
-> 	const struct sdg1_ecc_if *iface;
-> };
->
-> And then
->
-> static const struct sdg1_ecc_if my_iface = {
-> 	.xxx = yyyy,
-> 	/* */
-> }
->
-> static int xxx_probe()
-> {
-> 	struct sdg1_ecc *ecc;
->
-> 	/* ... */
->
-> 	ecc->iface = &my_iface;
-> }
->
-> This being said, I agree with one of your statement: we should create a
-> generic ECC layer at some point, and make the jz4780, mtk and probably
-> also the atmel driver implement this interface.
-
-ok.
-
-> The thing is, I'm not sure yet what the interface should look like.
-> Some ECC engine are leaving a lot of control to the software (this is
-> the case for the jz4780 engine), others are directly placed in the NAND
-> controller pipeline, thus only allowing one to enable/disable the
-> engine. And, correct me if I'm wrong, but yours seems to be in the
-> middle.
-
-true. this ecc engine is not completely decoupled from the operation which is a
-pain.
+Cyrille
 
 
->
-> Anyway, any proposal for such a generic ECC engine layer is welcome.
+ChangeLog:
 
-I think once we have enough ecc drivers we should be able to extract those
-commonalities (I wish I had the clarity to think this ahead but I dont :))
-Ok so for simplicity and to make it more readable to future driver developers I
-will just remove the interface and use the symbols so it aligns with what the
-other driver (jz4780bch) does.
+v2 -> v3:
+- fix errors reported by kbuild test robot: replace SPINOR_OP_READ4.* op
+  codes by SPINOR_OP_READ.*_4B in st_spi_fsm.c
+- rename QUAD_PP into PP_1_1_4 and QUAD_PP_MX into PP_1_4_4
 
-I suppose this could be revisited if there is enough momentum.
+v1 -> v2:
+- remove the Kconfig option and use the new "m25p,4byte-opcodes" DT
+  property instead.
 
+Cyrille Pitchen (2):
+  mtd: spi-nor: add an alternative method to support memory >16MiB
+  doc: dt: mtd: add a DT property to enable the use of 4byte-address op
+    codes
 
->> anyway, working on v3 now. thanks for the detailed review as always (and sorry
->> for the clear fuck ups like the size 0 array in the wrong place...argh!)
->>
-> No problem.
+ .../devicetree/bindings/mtd/jedec,spi-nor.txt      | 11 +++
+ drivers/mtd/devices/serial_flash_cmds.h            |  7 --
+ drivers/mtd/devices/st_spi_fsm.c                   | 28 +++---
+ drivers/mtd/spi-nor/spi-nor.c                      | 99 +++++++++++++++++-----
+ include/linux/mtd/spi-nor.h                        | 21 +++--
+ 5 files changed, 118 insertions(+), 48 deletions(-)
 
-thanks a lot
-
->
-> Thanks,
->
-> Boris
->
->
+-- 
+1.8.2.2
