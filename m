@@ -1,17 +1,25 @@
-Received: from mail-qk0-x229.google.com ([2607:f8b0:400d:c09::229])
+Received: from conuserg011.nifty.com ([202.248.44.37]
+ helo=conuserg011-v.nifty.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aiuTE-0006iH-EC
- for linux-mtd@lists.infradead.org; Thu, 24 Mar 2016 01:53:57 +0000
-Received: by mail-qk0-x229.google.com with SMTP id s68so14603347qkh.3
- for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2016 18:53:34 -0700 (PDT)
-From: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-To: jorge.ramirez-ortiz@linaro.org, boris.brezillon@free-electrons.com,
- alex@alex-smith.me.uk, harvey.hunt@imgtec.com
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: jz4780: fixup, device structure assigned  at probe
-Date: Wed, 23 Mar 2016 21:53:27 -0400
-Message-Id: <1458784407-12908-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ id 1aj4Jl-0000cv-HY
+ for linux-mtd@lists.infradead.org; Thu, 24 Mar 2016 12:24:50 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Graham Moore <grmoore@opensource.altera.com>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, Kumar Gala <galak@codeaurora.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH] mtd: nand: denali: allow to override max_banks from DT
+ property
+Date: Thu, 24 Mar 2016 21:24:37 +0900
+Message-Id: <1458822277-31428-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,22 +29,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
----
- drivers/mtd/nand/jz4780_bch.c | 1 -
- 1 file changed, 1 deletion(-)
+Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
+changed in revision 5.1") supported the new encoding of the "n_banks"
+bits of the "features" register, but there is an unfortunate case
+that is not covered by that commit.
 
-diff --git a/drivers/mtd/nand/jz4780_bch.c b/drivers/mtd/nand/jz4780_bch.c
-index 755499c..d74f4ba 100644
---- a/drivers/mtd/nand/jz4780_bch.c
-+++ b/drivers/mtd/nand/jz4780_bch.c
-@@ -287,7 +287,6 @@ static struct jz4780_bch *jz4780_bch_get(struct device_node *np)
- 	bch = platform_get_drvdata(pdev);
- 	clk_prepare_enable(bch->clk);
+Panasonic (its System LSI division is now Socionext) bought several
+versions of this IP.  The IP released for Panasonic around Feb. 2012
+is revision 5 and uses the old encoding for n_banks (2 << n_banks).
+While the one released around Nov. 2012 is also revision 5, but it
+uses the new encoding (1 << n_banks).
+
+The revision register cannot distinguish these two incompatible
+hardware.  I guess this IP series is not well-organized.  I could not
+find any alternative but giving max_banks from DT property.
+
+This commit works around the problem by allowing DT to set the
+max_banks forcibly.  Of course, this DT property can be optional if
+the auto detection based on the hardware registers works well.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+ Documentation/devicetree/bindings/mtd/denali-nand.txt | 4 ++++
+ drivers/mtd/nand/denali.c                             | 3 ++-
+ drivers/mtd/nand/denali_dt.c                          | 3 +++
+ 3 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index 785b825..78c250d 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -7,6 +7,10 @@ Required properties:
+   - interrupts : The interrupt number.
+   - dma-mask : DMA bit mask
  
--	bch->dev = &pdev->dev;
- 	return bch;
- }
++Optional properties:
++  - max-banks : Maximum number of banks supported by hardware.  If not
++    specified, it is determined based on the "features" register of hardware.
++
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
  
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 30bf5f6..e18b569 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1353,7 +1353,8 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	 */
+ 	denali->bbtskipbytes = ioread32(denali->flash_reg +
+ 						SPARE_AREA_SKIP_BYTES);
+-	detect_max_banks(denali);
++	if (!denali->max_banks)
++		detect_max_banks(denali);
+ 	denali_nand_reset(denali);
+ 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
+ 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index 0cb1e8d..be55db8 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -85,6 +85,9 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 		denali->dev->dma_mask = NULL;
+ 	}
+ 
++	of_property_read_u32(ofdev->dev.of_node, "max-banks",
++			     &denali->max_banks);
++
+ 	dt->clk = devm_clk_get(&ofdev->dev, NULL);
+ 	if (IS_ERR(dt->clk)) {
+ 		dev_err(&ofdev->dev, "no clk available\n");
 -- 
-2.5.0
+1.9.1
