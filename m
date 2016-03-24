@@ -1,25 +1,20 @@
-Received: from conuserg011.nifty.com ([202.248.44.37]
- helo=conuserg011-v.nifty.com)
+Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aj4Jl-0000cv-HY
- for linux-mtd@lists.infradead.org; Thu, 24 Mar 2016 12:24:50 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Graham Moore <grmoore@opensource.altera.com>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Kumar Gala <galak@codeaurora.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Brian Norris <computersforpeace@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH] mtd: nand: denali: allow to override max_banks from DT
- property
-Date: Thu, 24 Mar 2016 21:24:37 +0900
-Message-Id: <1458822277-31428-1-git-send-email-yamada.masahiro@socionext.com>
+ id 1aj6Bb-00014p-G9
+ for linux-mtd@lists.infradead.org; Thu, 24 Mar 2016 14:24:37 +0000
+Received: by mail-wm0-x22a.google.com with SMTP id p65so276626983wmp.1
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Mar 2016 07:24:04 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CABJ+KKu2RJuHXE3LpmzSYtE0i57sHDUHWOxPxufCP94RTa=eBA@mail.gmail.com>
+References: <CABJ+KKu2RJuHXE3LpmzSYtE0i57sHDUHWOxPxufCP94RTa=eBA@mail.gmail.com>
+Date: Thu, 24 Mar 2016 11:23:26 -0300
+Message-ID: <CAAEAJfB42GY9kGDBvacpKNgtAt3Kp1bE6rfprm_A_WiwR_cXGg@mail.gmail.com>
+Subject: Re: ubiblock RW
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Benson Young <benson6877@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,75 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
-changed in revision 5.1") supported the new encoding of the "n_banks"
-bits of the "features" register, but there is an unfortunate case
-that is not covered by that commit.
++MTD
 
-Panasonic (its System LSI division is now Socionext) bought several
-versions of this IP.  The IP released for Panasonic around Feb. 2012
-is revision 5 and uses the old encoding for n_banks (2 << n_banks).
-While the one released around Nov. 2012 is also revision 5, but it
-uses the new encoding (1 << n_banks).
+On 23 March 2016 at 14:40, Benson Young <benson6877@gmail.com> wrote:
+> Hello Ezequiel,
+>
+> I came upon the discussion about block device emulation over UBI.
+> http://linux-mtd.infradead.narkive.com/YF0XOFxY/block-device-emulation-on=
+-top-of-ubi-volumes-with-read-write-support
+>
+> I understand the most recent implementation is read-only emulation for
+> mounting squashfs based file system.
+> However, I would really like to see the write option be brought back. If
+> not, can you please help me about enabling the write option in my build?
+> I have used the patch listed in the following link
+> https://lwn.net/Articles/525957/
+> but i couldn't find any accompanying util that allows me to create the ub=
+i
+> block volume.
+>
 
-The revision register cannot distinguish these two incompatible
-hardware.  I guess this IP series is not well-organized.  I could not
-find any alternative but giving max_banks from DT property.
+You should be able to use mtd-utils' ubiblock tool (maybe you'll need to do
+some modifications).
 
-This commit works around the problem by allowing DT to set the
-max_banks forcibly.  Of course, this DT property can be optional if
-the auto detection based on the hardware registers works well.
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+> Reason for this request is that I am looking into root file system
+> encryption over un-managed NAND flash. Now the mainline method of disk
+> encryption in Linux revolves around
+> dm-crypt module which requires a block device. i am under the impression
+> that using mtdblock works to an extent until the partition you try to
+> map/encrypt has bad blocks in it.
+> I have seen discussion about using UBIFS, and I have seen a paper discuss=
+ing
+> it, where the author embeds the encryption engine within UBI layer, so ea=
+ch
+> write and read is encrypted. However, its a path I would take when I have=
+ no
+> choice. Right now dm-crypt is my first choice basically because of the
+> availability of support/discussion/information.
+>
+> I also saw you mentioned that you don't have NAND flash for testing, this=
+ is
+> something that I can help with. I have an abundance of NAND flash devices=
+.
 
- Documentation/devicetree/bindings/mtd/denali-nand.txt | 4 ++++
- drivers/mtd/nand/denali.c                             | 3 ++-
- drivers/mtd/nand/denali_dt.c                          | 3 +++
- 3 files changed, 9 insertions(+), 1 deletion(-)
+I have some devices with SLC NANDs now, but thanks for the offer.
 
-diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-index 785b825..78c250d 100644
---- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-@@ -7,6 +7,10 @@ Required properties:
-   - interrupts : The interrupt number.
-   - dma-mask : DMA bit mask
- 
-+Optional properties:
-+  - max-banks : Maximum number of banks supported by hardware.  If not
-+    specified, it is determined based on the "features" register of hardware.
-+
- The device tree may optionally contain sub-nodes describing partitions of the
- address space. See partition.txt for more detail.
- 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 30bf5f6..e18b569 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1353,7 +1353,8 @@ static void denali_hw_init(struct denali_nand_info *denali)
- 	 */
- 	denali->bbtskipbytes = ioread32(denali->flash_reg +
- 						SPARE_AREA_SKIP_BYTES);
--	detect_max_banks(denali);
-+	if (!denali->max_banks)
-+		detect_max_banks(denali);
- 	denali_nand_reset(denali);
- 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
- 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 0cb1e8d..be55db8 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -85,6 +85,9 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 		denali->dev->dma_mask = NULL;
- 	}
- 
-+	of_property_read_u32(ofdev->dev.of_node, "max-banks",
-+			     &denali->max_banks);
-+
- 	dt->clk = devm_clk_get(&ofdev->dev, NULL);
- 	if (IS_ERR(dt->clk)) {
- 		dev_err(&ofdev->dev, "no clk available\n");
--- 
-1.9.1
+> For simplicity sake, I work with SLC because of better endurance compared=
+ to
+> MLC. I am also curious about flash endurance with EXT4 over UBI. Destruct=
+ive
+> erase/write will definitely on my to-do list.
+>
+
+So, like I said here:
+
+http://linux-mtd.infradead.narkive.com/YF0XOFxY/block-device-emulation-on-t=
+op-of-ubi-volumes-with-read-write-support
+
+We can definitely implement write support if we have a good use case for it=
+.
+Encryption might be one.
+
+Richard, what do you think?
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
