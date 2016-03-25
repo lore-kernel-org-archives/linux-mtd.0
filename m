@@ -1,15 +1,15 @@
 Received: from cmccmta1.chinamobile.com ([221.176.66.79])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajHi0-00023d-0H
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 02:42:47 +0000
+ id 1ajHi3-00023Y-75
+ for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 02:42:48 +0000
 From: Yaowei Bai <baiyaowei@cmss.chinamobile.com>
 To: dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
  boris.brezillon@free-electrons.com
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  baiyaowei@cmss.chinamobile.com
-Subject: [PATCH 5/5] drivers/mtd/nand: nand_opcode_8bits can be boolean
-Date: Fri, 25 Mar 2016 10:41:55 +0800
-Message-Id: <1458873715-3670-6-git-send-email-baiyaowei@cmss.chinamobile.com>
+Subject: [PATCH 4/5] drivers/mtd: mtd_nand_has_bch can be boolean
+Date: Fri, 25 Mar 2016 10:41:54 +0800
+Message-Id: <1458873715-3670-5-git-send-email-baiyaowei@cmss.chinamobile.com>
 In-Reply-To: <1458873715-3670-1-git-send-email-baiyaowei@cmss.chinamobile.com>
 References: <1458873715-3670-1-git-send-email-baiyaowei@cmss.chinamobile.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,42 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes nand_opcode_8bits return bool due to this
-particular function only using either one or zero as its return
+This patch makes mtd_nand_has_bch return bool to improve readability
+due to this particular function only using either one or zero as its return
 value.
 
 No functional change.
 
 Signed-off-by: Yaowei Bai <baiyaowei@cmss.chinamobile.com>
 ---
- include/linux/mtd/nand.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/mtd/nand_bch.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index bdd68e2..dd79eae 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -989,18 +989,18 @@ static inline bool nand_is_slc(struct nand_chip *chip)
-  * Check if the opcode's address should be sent only on the lower 8 bits
-  * @command: opcode to check
-  */
--static inline int nand_opcode_8bits(unsigned int command)
-+static inline bool nand_opcode_8bits(unsigned int command)
- {
- 	switch (command) {
- 	case NAND_CMD_READID:
- 	case NAND_CMD_PARAM:
- 	case NAND_CMD_GET_FEATURES:
- 	case NAND_CMD_SET_FEATURES:
--		return 1;
-+		return true;
- 	default:
- 		break;
- 	}
--	return 0;
-+	return false;
- }
+diff --git a/include/linux/mtd/nand_bch.h b/include/linux/mtd/nand_bch.h
+index fb0bc34..8778c79 100644
+--- a/include/linux/mtd/nand_bch.h
++++ b/include/linux/mtd/nand_bch.h
+@@ -16,7 +16,7 @@ struct nand_bch_control;
  
- /* return the supported JEDEC features. */
+ #if defined(CONFIG_MTD_NAND_ECC_BCH)
+ 
+-static inline int mtd_nand_has_bch(void) { return 1; }
++static inline bool mtd_nand_has_bch(void) { return true; }
+ 
+ /*
+  * Calculate BCH ecc code
+@@ -42,7 +42,7 @@ void nand_bch_free(struct nand_bch_control *nbc);
+ 
+ #else /* !CONFIG_MTD_NAND_ECC_BCH */
+ 
+-static inline int mtd_nand_has_bch(void) { return 0; }
++static inline bool mtd_nand_has_bch(void) { return false; }
+ 
+ static inline int
+ nand_bch_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
 -- 
 1.9.1
