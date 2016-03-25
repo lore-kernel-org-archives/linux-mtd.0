@@ -1,24 +1,38 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-oi0-x236.google.com ([2607:f8b0:4003:c06::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajYMG-0004Qe-Ry
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 20:29:26 +0000
-Subject: Re: ubiblock RW
-To: Willy Tarreau <w@1wt.eu>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-References: <CABJ+KKu2RJuHXE3LpmzSYtE0i57sHDUHWOxPxufCP94RTa=eBA@mail.gmail.com>
- <CAAEAJfB42GY9kGDBvacpKNgtAt3Kp1bE6rfprm_A_WiwR_cXGg@mail.gmail.com>
- <56F4502D.3030902@nod.at>
- <CAAEAJfDXB34SWoCMXBiqEFSRMWAxZpGmMR9tPdsN=mokO8fkhw@mail.gmail.com>
- <20160324213950.GA8300@1wt.eu>
-Cc: Benson Young <benson6877@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Gstir <david@sigma-star.at>, Artem Bityutskiy <dedekind1@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56F59F89.1030705@nod.at>
-Date: Fri, 25 Mar 2016 21:28:57 +0100
+ id 1ajYOw-0007EH-Rs
+ for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 20:32:11 +0000
+Received: by mail-oi0-x236.google.com with SMTP id n80so13404861oig.1
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Mar 2016 13:31:50 -0700 (PDT)
+Date: Fri, 25 Mar 2016 15:31:48 -0500
+From: Seth Forshee <seth.forshee@canonical.com>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+ fuse-devel <fuse-devel@lists.sourceforge.net>,
+ LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov
+Subject: Re: [PATCH RESEND v2 16/18] fuse: Support fuse filesystems outside
+ of init_user_ns
+Message-ID: <20160325203148.GA4055@ubuntu-xps13>
+References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
+ <1451930639-94331-17-git-send-email-seth.forshee@canonical.com>
+ <20160309112923.GF8655@tucsk> <20160309141840.GC23399@ubuntu-xps13>
+ <CAJfpegv5JmB15yHpjYxVeOYdWWkoLMftr9-e_iS93Y_7m=t4Zw@mail.gmail.com>
+ <20160309152505.GA28779@ubuntu-hedt>
+ <CAJfpegv5KR_Hi-79a8oyb+R+tv9W3RYqy5pngUKSyauVNk2ScQ@mail.gmail.com>
+ <20160309170726.GB28779@ubuntu-hedt>
+ <CAJfpegvTuR-LZAVxeJAmojs=gcrM-t5dd-QyZM-bOYMYLRL6Dg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20160324213950.GA8300@1wt.eu>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpegvTuR-LZAVxeJAmojs=gcrM-t5dd-QyZM-bOYMYLRL6Dg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,89 +42,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 24.03.2016 um 22:39 schrieb Willy Tarreau:
-> On Thu, Mar 24, 2016 at 06:26:44PM -0300, Ezequiel Garcia wrote:
->> On 24 March 2016 at 17:38, Richard Weinberger <richard@nod.at> wrote:
->>> Hi!
->>>
->>> Am 24.03.2016 um 15:23 schrieb Ezequiel Garcia:
->>>> +MTD
->>>>
->>>> On 23 March 2016 at 14:40, Benson Young <benson6877@gmail.com> wrote:
->>>>> Hello Ezequiel,
->>>>>
->>>>> I came upon the discussion about block device emulation over UBI.
->>>>> http://linux-mtd.infradead.narkive.com/YF0XOFxY/block-device-emulation-on-top-of-ubi-volumes-with-read-write-support
->>>>>
->>>>> I understand the most recent implementation is read-only emulation for
->>>>> mounting squashfs based file system.
->>>>> However, I would really like to see the write option be brought back. If
->>>>> not, can you please help me about enabling the write option in my build?
->>>>> I have used the patch listed in the following link
->>>>> https://lwn.net/Articles/525957/
->>>>> but i couldn't find any accompanying util that allows me to create the ubi
->>>>> block volume.
->>>>>
->>>>
->>>> You should be able to use mtd-utils' ubiblock tool (maybe you'll need to do
->>>> some modifications).
->>>>
->>>> http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
->>>>
->>>>> Reason for this request is that I am looking into root file system
->>>>> encryption over un-managed NAND flash. Now the mainline method of disk
->>>>> encryption in Linux revolves around
->>>>> dm-crypt module which requires a block device. i am under the impression
->>>>> that using mtdblock works to an extent until the partition you try to
->>>>> map/encrypt has bad blocks in it.
->>>>> I have seen discussion about using UBIFS, and I have seen a paper discussing
->>>>> it, where the author embeds the encryption engine within UBI layer, so each
->>>>> write and read is encrypted. However, its a path I would take when I have no
->>>>> choice. Right now dm-crypt is my first choice basically because of the
->>>>> availability of support/discussion/information.
->>>>>
->>>>> I also saw you mentioned that you don't have NAND flash for testing, this is
->>>>> something that I can help with. I have an abundance of NAND flash devices.
->>>>
->>>> I have some devices with SLC NANDs now, but thanks for the offer.
->>>>
->>>>> For simplicity sake, I work with SLC because of better endurance compared to
->>>>> MLC. I am also curious about flash endurance with EXT4 over UBI. Destructive
->>>>> erase/write will definitely on my to-do list.
->>>>>
->>>>
->>>> So, like I said here:
->>>>
->>>> http://linux-mtd.infradead.narkive.com/YF0XOFxY/block-device-emulation-on-top-of-ubi-volumes-with-read-write-support
->>>>
->>>> We can definitely implement write support if we have a good use case for it.
->>>> Encryption might be one.
->>>>
->>>> Richard, what do you think?
->>>
->>> I'm definitely not fond of adding write support to ubiblock without turning it into a proper FTL.
->>> Otherwise it will be abused and will cause serious damage.
->>>
->>
->> I'm not sure this statement makes much sense without actual numbers.
->>
->> Of course, eraseblocks will be erased much more often with a regular
->> block-oriented
->> filesystem. But a user could agressively control write access and prevent this.
->>
->> Would it be that bad to add write support and add some big warning to
->> prevent users about potential damage?
+On Mon, Mar 14, 2016 at 09:58:43PM +0100, Miklos Szeredi wrote:
+> On Wed, Mar 9, 2016 at 6:07 PM, Seth Forshee <seth.forshee@canonical.com> wrote:
+> > On Wed, Mar 09, 2016 at 04:51:42PM +0100, Miklos Szeredi wrote:
+> >> On Wed, Mar 9, 2016 at 4:25 PM, Seth Forshee <seth.forshee@canonical.com> wrote:
+> >> > On Wed, Mar 09, 2016 at 03:48:22PM +0100, Miklos Szeredi wrote:
+> >>
+> >> >> Can't we use current_cred()->uid/gid? Or fsuid/fsgid maybe?
+> >> >
+> >> > That would be a departure from the current behavior in the !allow_other
+> >> > case for unprivileged users. Since those mounts are done by an suid
+> >> > helper all of those ids would be root in the userns, wouldn't they?
+> >>
+> >> Well, actually this is what the helper does:
+> >>
+> >>     sprintf(d, "fd=%i,rootmode=%o,user_id=%u,group_id=%u",
+> >>         fd, rootmode, getuid(), getgid());
+> >
+> > Sorry, I was thinking of euid. So this may not be a problem.
+> >
+> >> So it just uses the current uid/gid.  Apparently no reason to do this
+> >> in userland, we could just as well set these in the kernel.  Except
+> >> for possible backward compatibility problems for things not using the
+> >> helper.
+> >>
+> >> BUT if the mount is unprivileged or it's a userns mount, or anything
+> >> previously not possible, then we are not constrained by the backward
+> >> compatibility issues, and can go with the saner solution.
+> >>
+> >> Does that not make sense?
+> >
+> > But we generally do want backwards compatibility, and we want userspace
+> > software to be able to expect the same behavior whether or not it's
+> > running in a user namespaced container. Obviously we can't always have
+> > things 100% identical, but we shouldn't break things unless we really
+> > need to.
+> >
+> > However it may be that this isn't actually going to break assumptions of
+> > existing software like I had feared. My preference is still to not
+> > change any userspace-visible behaviors since we never know what software
+> > might have made assumptions based on those behaviors. But if you're
+> > confident that it won't break anything I'm willing to give it a try.
 > 
-> +1, we're on linux, we're supposed to let the user shoot himself in the foot
-> if he really *wants* to do so. But we must warn him so that it's not an
-> accident. There are many other ways to destroy a flash anyway, I guess that
-> running flash_erase in loops will achieve the same result, so we're not
-> protecting much against stupid actions by removing useful features and we're
-> only inciting users to work around them by employing possibly even uglier
-> solutions (FS directly on mtdblock maybe ?).
+> I'm quite confident it won't make a difference.
 
-Okay, that's a good point.
-A parameter for the ubiblock tool a la "--enable-rw-i-know-what-im-doing" should be fine.
+I was just about to go make these changes and discovered that the
+user_id and group_id options are already mandatory, due to this check at
+the bottom of parse_fuse_opt():
+
+        if (!d->fd_present || !d->rootmode_present ||
+            !d->user_id_present || !d->group_id_present)
+                return 0;
+
+So I'll simply drop those two lines which supply default values for
+these options.
 
 Thanks,
-//richard
+Seth
