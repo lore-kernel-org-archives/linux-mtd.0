@@ -1,36 +1,24 @@
-Date: Fri, 25 Mar 2016 15:01:09 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Cc: Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Stephen Warren <swarren@nvidia.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "Andrew F. Davis" <afd@ti.com>, Marek Vasut <marex@denx.de>,
- Jagan Teki <jteki@openedev.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ajYMG-0004Qe-Ry
+ for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 20:29:26 +0000
+Subject: Re: ubiblock RW
+To: Willy Tarreau <w@1wt.eu>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+References: <CABJ+KKu2RJuHXE3LpmzSYtE0i57sHDUHWOxPxufCP94RTa=eBA@mail.gmail.com>
+ <CAAEAJfB42GY9kGDBvacpKNgtAt3Kp1bE6rfprm_A_WiwR_cXGg@mail.gmail.com>
+ <56F4502D.3030902@nod.at>
+ <CAAEAJfDXB34SWoCMXBiqEFSRMWAxZpGmMR9tPdsN=mokO8fkhw@mail.gmail.com>
+ <20160324213950.GA8300@1wt.eu>
+Cc: Benson Young <benson6877@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Harini Katakam <harinik@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
- Anirudha Sarangi <anirudh@xilinx.com>
-Message-ID: <20160325150109.GF2566@sirena.org.uk>
-References: <1458562809-36114-1-git-send-email-lakshmis@xilinx.com>
- <20160321130734.GS2566@sirena.org.uk>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C6D34C@XAP-PVEXMBX02.xlnx.xilinx.com>
- <20160322100615.GA2566@sirena.org.uk>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C6DB59@XAP-PVEXMBX02.xlnx.xilinx.com>
+ David Gstir <david@sigma-star.at>, Artem Bityutskiy <dedekind1@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56F59F89.1030705@nod.at>
+Date: Fri, 25 Mar 2016 21:28:57 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="K4TeRK2lnUi9hBXL"
-Content-Disposition: inline
-In-Reply-To: <4FF8F58FAA9D5D4193D4E554E4352C5902C6DB59@XAP-PVEXMBX02.xlnx.xilinx.com>
-Subject: Re: [LINUX PATCH 1/2] mtd: Added dummy entry in the spi_transfer
- structure.
+In-Reply-To: <20160324213950.GA8300@1wt.eu>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,49 +28,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Am 24.03.2016 um 22:39 schrieb Willy Tarreau:
+> On Thu, Mar 24, 2016 at 06:26:44PM -0300, Ezequiel Garcia wrote:
+>> On 24 March 2016 at 17:38, Richard Weinberger <richard@nod.at> wrote:
+>>> Hi!
+>>>
+>>> Am 24.03.2016 um 15:23 schrieb Ezequiel Garcia:
+>>>> +MTD
+>>>>
+>>>> On 23 March 2016 at 14:40, Benson Young <benson6877@gmail.com> wrote:
+>>>>> Hello Ezequiel,
+>>>>>
+>>>>> I came upon the discussion about block device emulation over UBI.
+>>>>> http://linux-mtd.infradead.narkive.com/YF0XOFxY/block-device-emulation-on-top-of-ubi-volumes-with-read-write-support
+>>>>>
+>>>>> I understand the most recent implementation is read-only emulation for
+>>>>> mounting squashfs based file system.
+>>>>> However, I would really like to see the write option be brought back. If
+>>>>> not, can you please help me about enabling the write option in my build?
+>>>>> I have used the patch listed in the following link
+>>>>> https://lwn.net/Articles/525957/
+>>>>> but i couldn't find any accompanying util that allows me to create the ubi
+>>>>> block volume.
+>>>>>
+>>>>
+>>>> You should be able to use mtd-utils' ubiblock tool (maybe you'll need to do
+>>>> some modifications).
+>>>>
+>>>> http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
+>>>>
+>>>>> Reason for this request is that I am looking into root file system
+>>>>> encryption over un-managed NAND flash. Now the mainline method of disk
+>>>>> encryption in Linux revolves around
+>>>>> dm-crypt module which requires a block device. i am under the impression
+>>>>> that using mtdblock works to an extent until the partition you try to
+>>>>> map/encrypt has bad blocks in it.
+>>>>> I have seen discussion about using UBIFS, and I have seen a paper discussing
+>>>>> it, where the author embeds the encryption engine within UBI layer, so each
+>>>>> write and read is encrypted. However, its a path I would take when I have no
+>>>>> choice. Right now dm-crypt is my first choice basically because of the
+>>>>> availability of support/discussion/information.
+>>>>>
+>>>>> I also saw you mentioned that you don't have NAND flash for testing, this is
+>>>>> something that I can help with. I have an abundance of NAND flash devices.
+>>>>
+>>>> I have some devices with SLC NANDs now, but thanks for the offer.
+>>>>
+>>>>> For simplicity sake, I work with SLC because of better endurance compared to
+>>>>> MLC. I am also curious about flash endurance with EXT4 over UBI. Destructive
+>>>>> erase/write will definitely on my to-do list.
+>>>>>
+>>>>
+>>>> So, like I said here:
+>>>>
+>>>> http://linux-mtd.infradead.narkive.com/YF0XOFxY/block-device-emulation-on-top-of-ubi-volumes-with-read-write-support
+>>>>
+>>>> We can definitely implement write support if we have a good use case for it.
+>>>> Encryption might be one.
+>>>>
+>>>> Richard, what do you think?
+>>>
+>>> I'm definitely not fond of adding write support to ubiblock without turning it into a proper FTL.
+>>> Otherwise it will be abused and will cause serious damage.
+>>>
+>>
+>> I'm not sure this statement makes much sense without actual numbers.
+>>
+>> Of course, eraseblocks will be erased much more often with a regular
+>> block-oriented
+>> filesystem. But a user could agressively control write access and prevent this.
+>>
+>> Would it be that bad to add write support and add some big warning to
+>> prevent users about potential damage?
+> 
+> +1, we're on linux, we're supposed to let the user shoot himself in the foot
+> if he really *wants* to do so. But we must warn him so that it's not an
+> accident. There are many other ways to destroy a flash anyway, I guess that
+> running flash_erase in loops will achieve the same result, so we're not
+> protecting much against stupid actions by removing useful features and we're
+> only inciting users to work around them by employing possibly even uglier
+> solutions (FS directly on mtdblock maybe ?).
 
---K4TeRK2lnUi9hBXL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Okay, that's a good point.
+A parameter for the ubiblock tool a la "--enable-rw-i-know-what-im-doing" should be fine.
 
-On Fri, Mar 25, 2016 at 01:41:16PM +0000, Lakshmi Sai Krishna Potthuri wrote:
-
-As I'm fairly sure I've said before please fix your mail client to word
-wrap within paragraphs at something substantially less than 80 columns.
-Doing this makes your messages much easier to read and reply to.
-
-> >This is really not what I'd expect to happen, I'd expect that these dummy
-> >cycles would be in addition to the actual data (see my request for better
-> >documentation...).  If they overlap with the data then what is the point in
-> >specifying this?  It's more work for the host, what benefit do we get from
-> >doing it over just handing it like a normal byte?
-
-> len field in the transfer structure contains dummy bytes along with actual data
-> bytes, controllers which requires dummy bytes use len field and simply Ignore
-> the dummy field (contains only no of cycles)added in this patch. Controllers
-> (like ZynqMP GQSPI) expects dummy in cycles won't work directly by using
-> len field because host driver doesn't know that len field of a particular transfer
-> includes dummy bytes or not (and also number of dummy bytes included in len
-> field). In such cases driver use this dummy field to identify the number of dummy
-> cycles and based on that it will send the required number of dummy cycles (which
-> i did in the second patch).
-
-This doesn't make any sense at all to me.  Why does the controller care
-what the bytes being sent to and from the device mean?
-
---K4TeRK2lnUi9hBXL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW9VKzAAoJECTWi3JdVIfQ+MIH/1+HkvEE6Ni1KnJoU+HCfSgl
-aXmOYcM7VHQ2AKBsnlXNFxkc0sPdxUsdB3pihdNK/RSzxjsUy0apliTeCal4Nr11
-jUfGPFc5CYoWGgta6JZFEzQ9pOarVNyrQrc+z7IrutwehLqV9rGnf9Q9kZBJ10ii
-bpCN/GT/Nlq8J6CY6SkDFuhjuqZfiueRx2xGDQfXY1Cs+L1YmLoY4Czm2eg4mPbd
-H7vFjrTvcsiNb4H5OTUqvpFs4YVXMxoW37ta9TvOWKVZUiidCfzL8G4JzrIFpGwV
-bnIWeqSV3vgroCWvIdXKGxy/Fau1A/JT/lf7kayH1LGR+CzkGzYg0bJ93z0HX6g=
-=bEvJ
------END PGP SIGNATURE-----
-
---K4TeRK2lnUi9hBXL--
+Thanks,
+//richard
