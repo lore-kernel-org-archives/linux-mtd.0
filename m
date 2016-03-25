@@ -1,23 +1,23 @@
-Received: from cmccmta2.chinamobile.com ([221.176.66.80])
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajNKe-0002gx-Im
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 08:43:08 +0000
-Date: Fri, 25 Mar 2016 16:42:16 +0800
-From: Yaowei Bai <baiyaowei@cmss.chinamobile.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Dongsheng Yang <dongsheng.yang@easystack.cn>, dwmw2@infradead.org,
- computersforpeace@gmail.com, richard@nod.at,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] drivers/mtd: make several functions return bool
-Message-ID: <20160325084216.GB4526@yaowei-K42JY>
-References: <1458873715-3670-1-git-send-email-baiyaowei@cmss.chinamobile.com>
- <56F4A87B.5090100@easystack.cn>
- <20160325063153.GA3319@yaowei-K42JY>
- <20160325085155.7b4bea32@bbrezillon>
+ id 1ajNRa-0006Lk-9y
+ for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 08:50:10 +0000
+Date: Fri, 25 Mar 2016 09:49:48 +0100
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Peter Pan <peterpansjtu@gmail.com>
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ karlzhang@micron.com, beanhuo@micron.com, xuejiancheng@huawei.com, Peter
+ Pan <peterpandong@micron.com>
+Subject: Re: [PATCH 03/11] mtd: nand_bbt: add new API definitions
+Message-ID: <20160325094948.136c4501@bbrezillon>
+In-Reply-To: <1457923684-13505-4-git-send-email-peterpandong@micron.com>
+References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
+ <1457923684-13505-4-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160325085155.7b4bea32@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 25, 2016 at 08:51:55AM +0100, Boris Brezillon wrote:
-> Hi Yao,
-> 
-> On Fri, 25 Mar 2016 14:31:53 +0800
-> Yaowei Bai <baiyaowei@cmss.chinamobile.com> wrote:
-> 
-> > On Fri, Mar 25, 2016 at 10:54:51AM +0800, Dongsheng Yang wrote:
-> > > ccing: Brian and Richard
-> > > 
-> > > Hi Yao,
-> > >     Is that really necessary? I am not sure how much benefit we can
-> > > achieve from this change.
-> > > Could you explain more?
-> > 
-> > Yes, according to these functions' name, a boolean return value is more
-> > suitable and matchable.
-> > 
-> > Also personally think this change maybe benfit function's return value 
-> > storage in the stack when called on certain architectures.
-> 
-> At least be honest, and say this is for your patchcount statistics :P.
-> I'm fine taking the NAND related ones, but please, next time find
-> something more useful to submit.
+On Mon, 14 Mar 2016 02:47:56 +0000
+Peter Pan <peterpansjtu@gmail.com> wrote:
 
-That's very nice of you, thanks.
+> Add new API definitions for nand_bbt to replace old ones without
+> any users. These API includes:
+> 	struct nand_bbt_create(struct mtd_info *mtd);
+> 	struct nand_bbt *nand_bbt_create(struct mtd_info *mtd,
+> 				const struct nand_bbt_ops *ops,
+> 				struct nand_chip_layout_info *info,
+> 				unsigned int options,
+> 				struct nand_bbt_descr *bbt_td,
+> 				struct nand_bbt_descr *bbt_md);
+> 	void nand_bbt_destroy(struct nand_bbt *bbt);
+> 	int nand_bbt_markbad(struct nand_bbt *bbt, loff_t offs);
+> 	int nand_bbt_isreserved(struct nand_bbt *bbt, loff_t offs);
+> 	int nand_bbt_isbad(struct nand_bbt *bbt, loff_t offs);
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> ---
+>  drivers/mtd/nand/nand_bbt.c  | 113 +++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/nand_bbt.h |  11 +++++
+>  2 files changed, 124 insertions(+)
+> 
 
-> 
-> Best Regards,
-> 
-> Boris
-> 
-> > 
-> > > 
-> > > Yang
-> > > 
-> > > On 03/25/2016 10:41 AM, Yaowei Bai wrote:
-> > > >This series only make several funcitons return bool to improve
-> > > >readability, no other funcitonal changes.
-> > > >
-> > > >Yaowei Bai (5):
-> > > >   drivers/mtd: mtd_is_partition can be boolean
-> > > >   drivers/mtd: cfi_interleave_supported can be boolean
-> > > >   drivers/mtd: map_bankwidth_supported can be boolean
-> > > >   drivers/mtd: mtd_nand_has_bch can be boolean
-> > > >   drivers/mtd/nand: nand_opcode_8bits can be boolean
-> > > >
-> > > >  drivers/mtd/mtdpart.c          | 6 +++---
-> > > >  include/linux/mtd/cfi.h        | 6 +++---
-> > > >  include/linux/mtd/map.h        | 6 +++---
-> > > >  include/linux/mtd/nand.h       | 6 +++---
-> > > >  include/linux/mtd/nand_bch.h   | 4 ++--
-> > > >  include/linux/mtd/partitions.h | 2 +-
-> > > >  6 files changed, 15 insertions(+), 15 deletions(-)
-> > > >
-> > > 
-> > 
-> > 
-> 
-> 
-> 
-> -- 
-> Boris Brezillon, Free Electrons
-> Embedded Linux and Kernel engineering
-> http://free-electrons.com
+>  
+> +struct nand_bbt *nand_bbt_create(struct mtd_info *mtd,
+> +		const struct nand_bbt_ops *ops,
+> +		struct nand_chip_layout_info *info,
+
+Should be const struct nand_chip_layout_info *.
+
+
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
