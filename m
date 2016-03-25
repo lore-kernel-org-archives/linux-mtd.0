@@ -1,23 +1,22 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from cmccmta1.chinamobile.com ([221.176.66.79])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajNDZ-000061-I6
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 08:35:42 +0000
-Date: Fri, 25 Mar 2016 09:35:19 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- karlzhang@micron.com, beanhuo@micron.com, xuejiancheng@huawei.com, Peter
- Pan <peterpandong@micron.com>
-Subject: Re: [PATCH 02/11] mtd: nand_bbt: introduce BBT related data structure
-Message-ID: <20160325093519.34c3f7fa@bbrezillon>
-In-Reply-To: <1457923684-13505-3-git-send-email-peterpandong@micron.com>
-References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
- <1457923684-13505-3-git-send-email-peterpandong@micron.com>
+ id 1ajNJb-0002SR-GO
+ for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 08:42:02 +0000
+Date: Fri, 25 Mar 2016 16:41:07 +0800
+From: Yaowei Bai <baiyaowei@cmss.chinamobile.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Dongsheng Yang <dongsheng.yang@easystack.cn>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] drivers/mtd: make several functions return bool
+Message-ID: <20160325084107.GA4526@yaowei-K42JY>
+References: <1458873715-3670-1-git-send-email-baiyaowei@cmss.chinamobile.com>
+ <56F4A87B.5090100@easystack.cn>
+ <20160325063153.GA3319@yaowei-K42JY> <56F4EF87.4000003@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56F4EF87.4000003@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,209 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Peter,
-
-On Mon, 14 Mar 2016 02:47:55 +0000
-Peter Pan <peterpansjtu@gmail.com> wrote:
-
-> From: Brian Norris <computersforpeace@gmail.com>
+On Fri, Mar 25, 2016 at 08:57:59AM +0100, Richard Weinberger wrote:
+> Am 25.03.2016 um 07:31 schrieb Yaowei Bai:
+> > On Fri, Mar 25, 2016 at 10:54:51AM +0800, Dongsheng Yang wrote:
+> >> ccing: Brian and Richard
+> >>
+> >> Hi Yao,
+> >>     Is that really necessary? I am not sure how much benefit we can
+> >> achieve from this change.
+> >> Could you explain more?
+> > 
+> > Yes, according to these functions' name, a boolean return value is more
+> > suitable and matchable.
+> > 
+> > Also personally think this change maybe benfit function's return value 
+> > storage in the stack when called on certain architectures.
 > 
-> Currently nand_bbt.c is tied with struct nand_chip, and it makes other
-> NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
-> onenand has own bbt(onenand_bbt.c).
+> On which archs? And what exactly is the benefit?
+> I agree that bool might be a better choice for new functions
+> but here you're touching existing and working(!) code.
+> The only outcome is git history pollution that makes git blame
+> less efficient.
+
+Working code doesn't mean perfect code. :-)
+
+I still think this's a helpful change even though it's small, but
+you make the decision to merge or drop it.
+
 > 
-> Separate struct nand_chip from BBT code can make current BBT shareable.
-> We create struct nand_bbt to take place of nand_chip in nand_bbt.c
+> Thanks,
+> //richard
 > 
-> Below is mtd folder structure we want:
-> 	drivers/mtd/nand/<all-nand-core-code>
-> 	drivers/mtd/nand/raw/<raw-nand-controller-drivers>
-> 	drivers/mtd/nand/spi/<spi-nand-code>
-> 	drivers/mtd/nand/onenand/<onenand-code>
-> 	drivers/mtd/nand/chips/<manufacturer-spcific-code>
-> 
-> Of course, nand_bbt.c should be part of <all-nand-core-code>.
-> 
-> We put every chip layout related information BBT needed into struct
-> nand_chip_layout_info.
-> 	@numchips:	number of physical chips, required for NAND_BBT_PERCHIP
-> 	@chipsize:	the size of one chip for multichip arrays
-> 	@chip_shift:	number of address bits in one chip
-> 	@bbt_erase_shift:	number of address bits in a bbt entry
-> 	@page_shift:	number of address bits in a page
-> 
-> We defined a struct nand_bbt_ops for BBT ops. Struct
-> 	@is_bad_bbm:	check if a block is factory bad block
-> 	@erase:	erase block bypassing resvered checks
-> 
-> Struct nand_bbt includes all BBT information:
-> 	@mtd:	pointer to MTD device structure
-> 	@bbt_options:	bad block specific options. All options used
-> 			here must come from nand_bbt.h.
-> 	@bbt_ops:	struct nand_bbt_ops pointer.
-> 	@info:		struct nand_chip_layout_info pointer.
-> 	@bbt_td:	bad block table descriptor for flash lookup.
-> 	@bbt_md:	bad block table mirror descriptor
-> 	@bbt:		bad block table pointer
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> [Peter: 1. correct comment style
-> 	2. introduce struct nand_bbt_ops and nand_chip_layout_info]
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> ---
->  include/linux/mtd/nand_bbt.h | 67 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 67 insertions(+)
-> 
-> diff --git a/include/linux/mtd/nand_bbt.h b/include/linux/mtd/nand_bbt.h
-> index 5a65230..cfb22c8 100644
-> --- a/include/linux/mtd/nand_bbt.h
-> +++ b/include/linux/mtd/nand_bbt.h
-> @@ -18,6 +18,8 @@
->  #ifndef __LINUX_MTD_NAND_BBT_H
->  #define __LINUX_MTD_NAND_BBT_H
->  
-> +struct mtd_info;
-> +
->  /* The maximum number of NAND chips in an array */
->  #define NAND_MAX_CHIPS		8
->  
-> @@ -115,4 +117,69 @@ struct nand_bbt_descr {
->  /* The maximum number of blocks to scan for a bbt */
->  #define NAND_BBT_SCAN_MAXBLOCKS	4
->  
-> +struct nand_bbt;
-> +
-> +/**
-> + * struct nand_bbt_ops - bad block table operations
-> + * @is_bad_bbm:	check if a block is factory bad block
-> + * @erase:	erase block bypassing resvered checks
-> + */
-> +struct nand_bbt_ops {
-> +	/*
-> +	 * This is important to abstract out of nand_bbt.c and provide
-> +	 * separately in nand_base.c and spi-nand-base.c -- it's sort of
-> +	 * duplicated in nand_block_bad() (nand_base) and
-> +	 * scan_block_fast() (nand_bbt) right now
-> +	 *
-> +	 * Note that this also means nand_chip.badblock_pattern should
-> +	 * be removed from nand_bbt.c
-> +	 */
-> +	int (*is_bad_bbm)(struct mtd_info *mtd, loff_t ofs);
-> +
-> +	/* Erase a block, bypassing reserved checks */
-> +	int (*erase)(struct mtd_info *mtd, loff_t ofs);
-> +};
-> +
-> +/**
-> + * struct nand_chip_layout_info - strucure contains all chip layout
-> + * information that BBT needed.
-> + * @numchips:	number of physical chips, required for NAND_BBT_PERCHIP
-> + * @chipsize:	the size of one chip for multichip arrays
-> + * @chip_shift:	number of address bits in one chip
-> + * @bbt_erase_shift:	number of address bits in a bbt entry
-> + * @page_shift:	number of address bits in a page
-> + */
-> +struct nand_chip_layout_info {
-
-I know I'm the one who suggested this name, but NAND datasheet seems to
-call it "memory organization", so maybe we should rename this struct
-nand_memory_organization.
-
-> +	int numchips;
-
-I would rename it numdies, or ndies. numchips implies you're having
-several chips, which is not the case.
-
-> +	u64 chipsize;
-
-Ditto, s/chipsize/diesize/
-
-> +	int chip_shift;
-
-Ditto.
-
-> +	int bbt_erase_shift;
-
-Hm, this is not related to the memory organization. I'd prefer moving
-this one directly in 
-
-> +	int page_shift;
-> +};
-
-The structure should probably contain other info like (oob size, pages
-per block, blocks per die, ...)
-I know some of those information are redundant with mtd_info content,
-but it would be clearer to have everything in a common place.
-
-Also, I'd recommend using helpers to access memory organization info.
-For example nand_get_die_size(mtd), nand_get_page_size(mtd), ...
-
-On a more general note, as already said, I'd like to see more
-generalization across NAND based devices, no matter the interface
-they're using.
-Doing that implies forcing all NAND based devices to inherit from a
-common class. Something like
-
-struct nand_device {
-	struct mtd_info mtd;
-	struct nand_memory_organization memorg;
-	/* ... */
-};
-
-/* rawnand_device <-> nand_chip */
-struct rawnand_device {
-	struct nand_device base;
-	/* raw NAND specific fields */
-}
-
-struct spinand_device {
-	struct nand_device base;
-	/* SPI NAND specific fields */
-};
-
-struct onenand_device {
-	struct nand_device base;
-	/* OneNAND specific fields */
-};
-
-With this design, nand_bbt and nand_bbt_ops could use the generic
-nand_device instead of directly using the mtd instance.
-
-Anyway, that's just a long term goal, and I wanted to share my
-ideas. I guess your plan is to add support for SPI nand devices, so
-keep this in mind ;-).
-
-> +
-> +/**
-> + * struct nand_bbt - bad block table structure
-> + * @mtd:	pointer to MTD device structure
-> + * @bbt_options:	bad block specific options. All options used
-> + *			here must come from nand_bbt.h.
-> + * @bbt_ops:	struct nand_bbt_ops pointer.
-> + * @info:	struct nand_chip_layout_info pointer.
-> + * @bbt_td:	bad block table descriptor for flash lookup.
-> + * @bbt_md:	bad block table mirror descriptor
-> + * @bbt:	bad block table pointer
-> + */
-> +struct nand_bbt {
-> +	struct mtd_info *mtd;
-> +	unsigned int bbt_options;
-> +	const struct nand_bbt_ops *bbt_ops;
-> +	struct nand_chip_layout_info *info;
-> +	/*
-> +	 * Discourage new custom usages here; suggest usage of the
-> +	 * relevant NAND_BBT_* options instead
-> +	 */
-> +	struct nand_bbt_descr *bbt_td;
-> +	struct nand_bbt_descr *bbt_md;
-> +	u8 *bbt;
-> +};
-> +
->  #endif	/* __LINUX_MTD_NAND_BBT_H */
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
