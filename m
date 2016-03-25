@@ -1,19 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajNS1-0007Wb-FD
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 08:50:37 +0000
-Date: Fri, 25 Mar 2016 09:50:15 +0100
+ id 1ajNT4-0007ii-DK
+ for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 08:51:43 +0000
+Date: Fri, 25 Mar 2016 09:51:20 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Peter Pan <peterpansjtu@gmail.com>
 Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  karlzhang@micron.com, beanhuo@micron.com, xuejiancheng@huawei.com, Peter
  Pan <peterpandong@micron.com>
-Subject: Re: [PATCH 00/11] mtd: nand_bbt: introduce independent nand BBT
-Message-ID: <20160325095015.341a11eb@bbrezillon>
-In-Reply-To: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
+Subject: Re: [PATCH 05/11] mtd: nand: use new BBT API instead of old ones
+Message-ID: <20160325095120.640afc2c@bbrezillon>
+In-Reply-To: <1457923684-13505-6-git-send-email-peterpandong@micron.com>
 References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
+ <1457923684-13505-6-git-send-email-peterpandong@micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,31 +27,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 14 Mar 2016 02:47:53 +0000
+On Mon, 14 Mar 2016 02:47:58 +0000
 Peter Pan <peterpansjtu@gmail.com> wrote:
 
-> Sorry for send the v3 out late. I went through a busy time in the past
-> two month.
+> Use new BBT APIs (nand_bbt_*()) in NAND. Keep old APIs (nand_*_bbt())
+> exist temporarily.
 > 
-> Currently nand_bbt.c is tied with struct nand_chip, and it makes other
-> NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
-> onenand has own bbt(onenand_bbt.c).
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> ---
+>  drivers/mtd/nand/docg4.c     |   7 +-
+>  drivers/mtd/nand/nand_base.c | 151 ++++++++++++++++++++++++++++++++++++++++---
+>  include/linux/mtd/nand.h     |  15 ++++-
+>  3 files changed, 160 insertions(+), 13 deletions(-)
 > 
-> Separate struct nand_chip from BBT code can make current BBT shareable.
-> We create struct nand_bbt to take place of nand_chip in nand_bbt.c.
-> Struct nand_bbt contains all the information BBT needed from outside and
-> it should be embedded into NAND family chip struct (such as struct nand_chip).
-> 
-> Below is mtd folder structure we want:
-> 	drivers/mtd/nand/<all-nand-core-code>
-> 	drivers/mtd/nand/raw/<raw-nand-controller-drivers>
-> 	drivers/mtd/nand/spi/<spi-nand-code>
-> 	drivers/mtd/nand/onenand/<onenand-code>
-> 	drivers/mtd/nand/chips/<manufacturer-spcific-code>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index b6facac..6f0e3b9 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
 
-Hm, we should have a chips directory under each interface type, because
-vendor specific handling is dependent on the NAND interface.
-Otherwise, yes, that's the idea.
+[...]
+
+> +static int nand_default_bbt(struct mtd_info *mtd)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct nand_bbt *nand_bbt = NULL;
+> +	struct nand_chip_layout_info *info =
+> +		kzalloc(sizeof(struct nand_chip_layout_info), GFP_KERNEL);
+
+No, this should be directly embedded in nand_chip, and should replace
+the numchips/chipsize/... fields declared in there.
+
+> +
+> +	if (!info)
+> +		return -ENOMEM;
+> +
+> +	info->numchips = chip->numchips;
+> +	info->chipsize = chip->chipsize;
+> +	info->chip_shift = chip->chip_shift;
+> +	info->bbt_erase_shift = chip->phys_erase_shift;
+> +	info->page_shift = chip->page_shift;
+> +
+> +	if (!chip->badblock_pattern &&
+> +		nand_create_factory_badblock_pattern(chip))
+> +		return -ENOMEM;
+> +
+> +	nand_bbt = nand_bbt_create(mtd, &default_bbt_ops,
+> +				info, chip->bbt_options,
+> +				chip->bbt_td, chip->bbt_md);
+> +	if (IS_ERR(nand_bbt))
+> +		return PTR_ERR(nand_bbt);
+> +	chip->nand_bbt = nand_bbt;
+> +
+> +	return 0;
+> +}
+
 
 
 -- 
