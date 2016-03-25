@@ -1,27 +1,36 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajSzf-0006lk-6g
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 14:45:44 +0000
-Date: Fri, 25 Mar 2016 15:45:20 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Graham Moore
- <grmoore@opensource.altera.com>, Dinh Nguyen
- <dinguyen@opensource.altera.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Kumar
- Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Brian Norris <computersforpeace@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, David Woodhouse <dwmw2@infradead.org>, Pawel Moll
- <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] mtd: nand: denali: allow to override max_banks from DT
- property
-Message-ID: <20160325154520.199b0863@bbrezillon>
-In-Reply-To: <1458822277-31428-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1458822277-31428-1-git-send-email-yamada.masahiro@socionext.com>
+Date: Fri, 25 Mar 2016 15:01:09 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Cc: Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Stephen Warren <swarren@nvidia.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ "Andrew F. Davis" <afd@ti.com>, Marek Vasut <marex@denx.de>,
+ Jagan Teki <jteki@openedev.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Harini Katakam <harinik@xilinx.com>,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
+ Anirudha Sarangi <anirudh@xilinx.com>
+Message-ID: <20160325150109.GF2566@sirena.org.uk>
+References: <1458562809-36114-1-git-send-email-lakshmis@xilinx.com>
+ <20160321130734.GS2566@sirena.org.uk>
+ <4FF8F58FAA9D5D4193D4E554E4352C5902C6D34C@XAP-PVEXMBX02.xlnx.xilinx.com>
+ <20160322100615.GA2566@sirena.org.uk>
+ <4FF8F58FAA9D5D4193D4E554E4352C5902C6DB59@XAP-PVEXMBX02.xlnx.xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="K4TeRK2lnUi9hBXL"
+Content-Disposition: inline
+In-Reply-To: <4FF8F58FAA9D5D4193D4E554E4352C5902C6DB59@XAP-PVEXMBX02.xlnx.xilinx.com>
+Subject: Re: [LINUX PATCH 1/2] mtd: Added dummy entry in the spi_transfer
+ structure.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,90 +40,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 24 Mar 2016 21:24:37 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
-> changed in revision 5.1") supported the new encoding of the "n_banks"
-> bits of the "features" register, but there is an unfortunate case
-> that is not covered by that commit.
-> 
-> Panasonic (its System LSI division is now Socionext) bought several
-> versions of this IP.  The IP released for Panasonic around Feb. 2012
-> is revision 5 and uses the old encoding for n_banks (2 << n_banks).
-> While the one released around Nov. 2012 is also revision 5, but it
-> uses the new encoding (1 << n_banks).
-> 
-> The revision register cannot distinguish these two incompatible
-> hardware.  I guess this IP series is not well-organized.  I could not
-> find any alternative but giving max_banks from DT property.
+--K4TeRK2lnUi9hBXL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hm, shouldn't that be addressed with a new compatible instead of adding
-a extra property?
+On Fri, Mar 25, 2016 at 01:41:16PM +0000, Lakshmi Sai Krishna Potthuri wrote:
 
-> 
-> This commit works around the problem by allowing DT to set the
-> max_banks forcibly.  Of course, this DT property can be optional if
-> the auto detection based on the hardware registers works well.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
-> 
->  Documentation/devicetree/bindings/mtd/denali-nand.txt | 4 ++++
->  drivers/mtd/nand/denali.c                             | 3 ++-
->  drivers/mtd/nand/denali_dt.c                          | 3 +++
->  3 files changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> index 785b825..78c250d 100644
-> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-> @@ -7,6 +7,10 @@ Required properties:
->    - interrupts : The interrupt number.
->    - dma-mask : DMA bit mask
->  
-> +Optional properties:
-> +  - max-banks : Maximum number of banks supported by hardware.  If not
-> +    specified, it is determined based on the "features" register of hardware.
-> +
+As I'm fairly sure I've said before please fix your mail client to word
+wrap within paragraphs at something substantially less than 80 columns.
+Doing this makes your messages much easier to read and reply to.
 
-You might want to prefix that with "denali,".
+> >This is really not what I'd expect to happen, I'd expect that these dummy
+> >cycles would be in addition to the actual data (see my request for better
+> >documentation...).  If they overlap with the data then what is the point in
+> >specifying this?  It's more work for the host, what benefit do we get from
+> >doing it over just handing it like a normal byte?
 
->  The device tree may optionally contain sub-nodes describing partitions of the
->  address space. See partition.txt for more detail.
->  
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 30bf5f6..e18b569 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -1353,7 +1353,8 @@ static void denali_hw_init(struct denali_nand_info *denali)
->  	 */
->  	denali->bbtskipbytes = ioread32(denali->flash_reg +
->  						SPARE_AREA_SKIP_BYTES);
-> -	detect_max_banks(denali);
-> +	if (!denali->max_banks)
-> +		detect_max_banks(denali);
->  	denali_nand_reset(denali);
->  	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
->  	iowrite32(CHIP_EN_DONT_CARE__FLAG,
-> diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-> index 0cb1e8d..be55db8 100644
-> --- a/drivers/mtd/nand/denali_dt.c
-> +++ b/drivers/mtd/nand/denali_dt.c
-> @@ -85,6 +85,9 @@ static int denali_dt_probe(struct platform_device *ofdev)
->  		denali->dev->dma_mask = NULL;
->  	}
->  
-> +	of_property_read_u32(ofdev->dev.of_node, "max-banks",
-> +			     &denali->max_banks);
-> +
->  	dt->clk = devm_clk_get(&ofdev->dev, NULL);
->  	if (IS_ERR(dt->clk)) {
->  		dev_err(&ofdev->dev, "no clk available\n");
+> len field in the transfer structure contains dummy bytes along with actual data
+> bytes, controllers which requires dummy bytes use len field and simply Ignore
+> the dummy field (contains only no of cycles)added in this patch. Controllers
+> (like ZynqMP GQSPI) expects dummy in cycles won't work directly by using
+> len field because host driver doesn't know that len field of a particular transfer
+> includes dummy bytes or not (and also number of dummy bytes included in len
+> field). In such cases driver use this dummy field to identify the number of dummy
+> cycles and based on that it will send the required number of dummy cycles (which
+> i did in the second patch).
 
+This doesn't make any sense at all to me.  Why does the controller care
+what the bytes being sent to and from the device mean?
 
+--K4TeRK2lnUi9hBXL
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW9VKzAAoJECTWi3JdVIfQ+MIH/1+HkvEE6Ni1KnJoU+HCfSgl
+aXmOYcM7VHQ2AKBsnlXNFxkc0sPdxUsdB3pihdNK/RSzxjsUy0apliTeCal4Nr11
+jUfGPFc5CYoWGgta6JZFEzQ9pOarVNyrQrc+z7IrutwehLqV9rGnf9Q9kZBJ10ii
+bpCN/GT/Nlq8J6CY6SkDFuhjuqZfiueRx2xGDQfXY1Cs+L1YmLoY4Czm2eg4mPbd
+H7vFjrTvcsiNb4H5OTUqvpFs4YVXMxoW37ta9TvOWKVZUiidCfzL8G4JzrIFpGwV
+bnIWeqSV3vgroCWvIdXKGxy/Fau1A/JT/lf7kayH1LGR+CzkGzYg0bJ93z0HX6g=
+=bEvJ
+-----END PGP SIGNATURE-----
+
+--K4TeRK2lnUi9hBXL--
