@@ -1,20 +1,21 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajNT4-0007ii-DK
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 08:51:43 +0000
-Date: Fri, 25 Mar 2016 09:51:20 +0100
+ id 1ajNZr-0001Ky-Fr
+ for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 08:58:44 +0000
+Date: Fri, 25 Mar 2016 09:58:21 +0100
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- karlzhang@micron.com, beanhuo@micron.com, xuejiancheng@huawei.com, Peter
- Pan <peterpandong@micron.com>
-Subject: Re: [PATCH 05/11] mtd: nand: use new BBT API instead of old ones
-Message-ID: <20160325095120.640afc2c@bbrezillon>
-In-Reply-To: <1457923684-13505-6-git-send-email-peterpandong@micron.com>
-References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
- <1457923684-13505-6-git-send-email-peterpandong@micron.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Yaowei Bai <baiyaowei@cmss.chinamobile.com>, Dongsheng Yang
+ <dongsheng.yang@easystack.cn>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] drivers/mtd: make several functions return bool
+Message-ID: <20160325095821.59cdc391@bbrezillon>
+In-Reply-To: <56F4EF87.4000003@nod.at>
+References: <1458873715-3670-1-git-send-email-baiyaowei@cmss.chinamobile.com>
+ <56F4A87B.5090100@easystack.cn>
+ <20160325063153.GA3319@yaowei-K42JY> <56F4EF87.4000003@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,62 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 14 Mar 2016 02:47:58 +0000
-Peter Pan <peterpansjtu@gmail.com> wrote:
+On Fri, 25 Mar 2016 08:57:59 +0100
+Richard Weinberger <richard@nod.at> wrote:
 
-> Use new BBT APIs (nand_bbt_*()) in NAND. Keep old APIs (nand_*_bbt())
-> exist temporarily.
+> Am 25.03.2016 um 07:31 schrieb Yaowei Bai:
+> > On Fri, Mar 25, 2016 at 10:54:51AM +0800, Dongsheng Yang wrote:
+> >> ccing: Brian and Richard
+> >>
+> >> Hi Yao,
+> >>     Is that really necessary? I am not sure how much benefit we can
+> >> achieve from this change.
+> >> Could you explain more?
+> > 
+> > Yes, according to these functions' name, a boolean return value is more
+> > suitable and matchable.
+> > 
+> > Also personally think this change maybe benfit function's return value 
+> > storage in the stack when called on certain architectures.
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> ---
->  drivers/mtd/nand/docg4.c     |   7 +-
->  drivers/mtd/nand/nand_base.c | 151 ++++++++++++++++++++++++++++++++++++++++---
->  include/linux/mtd/nand.h     |  15 ++++-
->  3 files changed, 160 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index b6facac..6f0e3b9 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
+> On which archs? And what exactly is the benefit?
+> I agree that bool might be a better choice for new functions
+> but here you're touching existing and working(!) code.
+> The only outcome is git history pollution that makes git blame
+> less efficient.
 
-[...]
+Indeed, you raised a good point. Having useless changes pollute git
+blame output may be problematic. Not sure I want to apply those patches
+anymore :-/.
 
-> +static int nand_default_bbt(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct nand_bbt *nand_bbt = NULL;
-> +	struct nand_chip_layout_info *info =
-> +		kzalloc(sizeof(struct nand_chip_layout_info), GFP_KERNEL);
-
-No, this should be directly embedded in nand_chip, and should replace
-the numchips/chipsize/... fields declared in there.
-
-> +
-> +	if (!info)
-> +		return -ENOMEM;
-> +
-> +	info->numchips = chip->numchips;
-> +	info->chipsize = chip->chipsize;
-> +	info->chip_shift = chip->chip_shift;
-> +	info->bbt_erase_shift = chip->phys_erase_shift;
-> +	info->page_shift = chip->page_shift;
-> +
-> +	if (!chip->badblock_pattern &&
-> +		nand_create_factory_badblock_pattern(chip))
-> +		return -ENOMEM;
-> +
-> +	nand_bbt = nand_bbt_create(mtd, &default_bbt_ops,
-> +				info, chip->bbt_options,
-> +				chip->bbt_td, chip->bbt_md);
-> +	if (IS_ERR(nand_bbt))
-> +		return PTR_ERR(nand_bbt);
-> +	chip->nand_bbt = nand_bbt;
-> +
-> +	return 0;
-> +}
-
-
+Anyway, Yao, I'm sure you can find other usefull things to contribute.
 
 -- 
 Boris Brezillon, Free Electrons
