@@ -1,28 +1,30 @@
-Received: from mail.kernel.org ([198.145.29.136])
+Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajSsa-0002pd-EN
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 14:38:25 +0000
-Date: Fri, 25 Mar 2016 09:37:59 -0500
-From: Rob Herring <robh@kernel.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org,
- Graham Moore <grmoore@opensource.altera.com>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Kumar Gala <galak@codeaurora.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] mtd: nand: denali: allow to override max_banks from DT
- property
-Message-ID: <20160325143759.GA24596@rob-hp-laptop>
-References: <1458822277-31428-1-git-send-email-yamada.masahiro@socionext.com>
+ id 1ajSyv-0005Rx-Tp
+ for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 14:44:58 +0000
+Subject: Re: [PATCH v2 2/2] doc: dt: mtd: add a DT property to enable the use
+ of 4byte-address op codes
+To: Rob Herring <robh+dt@kernel.org>, Brian Norris
+ <computersforpeace@gmail.com>
+References: <cover.1458657802.git.cyrille.pitchen@atmel.com>
+ <b6dff3f629497025be74207227b94807b64e0e9c.1458657802.git.cyrille.pitchen@atmel.com>
+ <CAL_JsqKUMhPwxrhz50D8+UAaVPT_+=xJLm6A6fVy6RgpyOnq8w@mail.gmail.com>
+ <56F2B18A.3020107@atmel.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Nicolas
+ Ferre" <nicolas.ferre@atmel.com>, boris brezillon
+ <boris.brezillon@free-electrons.com>, =?UTF-8?Q?Marek_Va=c5=a1ut?=
+ <marex@denx.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
+ <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Kumar
+ Gala" <galak@codeaurora.org>
+Message-ID: <56F54ED2.3030609@atmel.com>
+Date: Fri, 25 Mar 2016 15:44:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1458822277-31428-1-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <56F2B18A.3020107@atmel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,33 +34,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 24, 2016 at 09:24:37PM +0900, Masahiro Yamada wrote:
-> Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
-> changed in revision 5.1") supported the new encoding of the "n_banks"
-> bits of the "features" register, but there is an unfortunate case
-> that is not covered by that commit.
-> 
-> Panasonic (its System LSI division is now Socionext) bought several
-> versions of this IP.  The IP released for Panasonic around Feb. 2012
-> is revision 5 and uses the old encoding for n_banks (2 << n_banks).
-> While the one released around Nov. 2012 is also revision 5, but it
-> uses the new encoding (1 << n_banks).
-> 
-> The revision register cannot distinguish these two incompatible
-> hardware.  I guess this IP series is not well-organized.  I could not
-> find any alternative but giving max_banks from DT property.
-> 
-> This commit works around the problem by allowing DT to set the
-> max_banks forcibly.  Of course, this DT property can be optional if
-> the auto detection based on the hardware registers works well.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
-> 
->  Documentation/devicetree/bindings/mtd/denali-nand.txt | 4 ++++
+Hi all,
 
-Acked-by: Rob Herring <robh@kernel.org>
+Since the framework is named spi-nor, what about spi-nor-4byte-opcodes?
+Is it okay for everyone?
 
->  drivers/mtd/nand/denali.c                             | 3 ++-
->  drivers/mtd/nand/denali_dt.c                          | 3 +++
->  3 files changed, 9 insertions(+), 1 deletion(-)
+It would follow the same pattern as spi-max-frequency which applies to all SPI
+devices.
+
+Best regards,
+
+Cyrille
+
+Le 23/03/2016 16:08, Cyrille Pitchen a écrit :
+> Hi Rob,
+> 
+> sorry I've sent v3 at the same time as you answered to v2.
+> I'll take your comments into account for v4.
+> 
+> Brian, any preference between 4byte-opcodes or m25p-4byte-opcodes?
+> 
+> Best regards,
+> 
+> Cyrille
+> 
+> Le 23/03/2016 13:49, Rob Herring a écrit :
+>> On Tue, Mar 22, 2016 at 10:13 AM, Cyrille Pitchen
+>> <cyrille.pitchen@atmel.com> wrote:
+>>> This patch adds a new optional DT property which enables an alternative
+>>> way of supporting memory size above 16MiB (128Mib). This new mechanism
+>>> translates the regular 3byte-address op codes into their 4byte-address
+>>> version whereas the old/default mecanism makes the SPI memory enter its
+>>> 4byte-address mode, which has annoying side effects for early bootloaders.
+>>>
+>>> We cannot discover at run time whether the SPI NOR memory supports the
+>>> 4byte-address op codes. For instance both Macronix MX25L25635E and
+>>> MX25L25673G share the same JEDEC ID (C22019 without any extension byte).
+>>> However the first one doesn't support 4byte-address op codes whereas the
+>>> second one does.
+>>>
+>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 11 +++++++++++
+>>>  1 file changed, 11 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+>>> index 2c91c03e7eb0..8be610482089 100644
+>>> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+>>> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+>>> @@ -66,6 +66,17 @@ Optional properties:
+>>>                     Refer to your chips' datasheet to check if this is supported
+>>>                     by your chip.
+>>>
+>>> +- m25p,4byte-opcodes: For memory size above 16MiB (128Mib), use the dedicated
+>>
+>> m25p is not a vendor. So drop it or m25p-4byte-opcodes.
+>>
+>>> +                      4byte-address opcodes instead of entering the 4byte
+>>> +                      address mode. This mode changes the internal state of the
+>>> +                      chip so may conflict with some early boot loaders, which
+>>> +                      expect to use the regular (Fast) Read opcodes with 3byte
+>>> +                      address.
+>>> +                      However 4byte-address opcodes are not supported by all
+>>> +                      chips and support for them can not be detected at runtime.
+>>
+>> s/can not/cannot/
+>>
+>>> +                      Refer to you chip's datasheet to check if this is
+>>> +                      supported by your chip.
+>>> +
+>>>  Example:
+>>>
+>>>         flash: m25p80@0 {
+>>> --
+>>> 1.8.2.2
+>>>
+> 
