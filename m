@@ -1,38 +1,26 @@
-Received: from mail-oi0-x236.google.com ([2607:f8b0:4003:c06::236])
+Received: from mail-qk0-x22c.google.com ([2607:f8b0:400d:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajYOw-0007EH-Rs
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 20:32:11 +0000
-Received: by mail-oi0-x236.google.com with SMTP id n80so13404861oig.1
- for <linux-mtd@lists.infradead.org>; Fri, 25 Mar 2016 13:31:50 -0700 (PDT)
-Date: Fri, 25 Mar 2016 15:31:48 -0500
-From: Seth Forshee <seth.forshee@canonical.com>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
- fuse-devel <fuse-devel@lists.sourceforge.net>,
- LSM <linux-security-module@vger.kernel.org>, selinux@tycho.nsa.gov
-Subject: Re: [PATCH RESEND v2 16/18] fuse: Support fuse filesystems outside
- of init_user_ns
-Message-ID: <20160325203148.GA4055@ubuntu-xps13>
-References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
- <1451930639-94331-17-git-send-email-seth.forshee@canonical.com>
- <20160309112923.GF8655@tucsk> <20160309141840.GC23399@ubuntu-xps13>
- <CAJfpegv5JmB15yHpjYxVeOYdWWkoLMftr9-e_iS93Y_7m=t4Zw@mail.gmail.com>
- <20160309152505.GA28779@ubuntu-hedt>
- <CAJfpegv5KR_Hi-79a8oyb+R+tv9W3RYqy5pngUKSyauVNk2ScQ@mail.gmail.com>
- <20160309170726.GB28779@ubuntu-hedt>
- <CAJfpegvTuR-LZAVxeJAmojs=gcrM-t5dd-QyZM-bOYMYLRL6Dg@mail.gmail.com>
+ id 1ajYgn-00062f-0o
+ for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 20:50:37 +0000
+Received: by mail-qk0-x22c.google.com with SMTP id i4so950000qkc.3
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Mar 2016 13:50:16 -0700 (PDT)
+Date: Fri, 25 Mar 2016 17:50:11 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Benson Young <benson6877@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Gstir <david@sigma-star.at>, Willy Tarreau <w@1wt.eu>
+Subject: Re: ubiblock RW
+Message-ID: <20160325205011.GA1106@laptop.cereza>
+References: <CABJ+KKu2RJuHXE3LpmzSYtE0i57sHDUHWOxPxufCP94RTa=eBA@mail.gmail.com>
+ <CAAEAJfB42GY9kGDBvacpKNgtAt3Kp1bE6rfprm_A_WiwR_cXGg@mail.gmail.com>
+ <56F4502D.3030902@nod.at>
+ <CAAEAJfDXB34SWoCMXBiqEFSRMWAxZpGmMR9tPdsN=mokO8fkhw@mail.gmail.com>
+ <1458906697.615.20.camel@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJfpegvTuR-LZAVxeJAmojs=gcrM-t5dd-QyZM-bOYMYLRL6Dg@mail.gmail.com>
+In-Reply-To: <1458906697.615.20.camel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,60 +30,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 14, 2016 at 09:58:43PM +0100, Miklos Szeredi wrote:
-> On Wed, Mar 9, 2016 at 6:07 PM, Seth Forshee <seth.forshee@canonical.com> wrote:
-> > On Wed, Mar 09, 2016 at 04:51:42PM +0100, Miklos Szeredi wrote:
-> >> On Wed, Mar 9, 2016 at 4:25 PM, Seth Forshee <seth.forshee@canonical.com> wrote:
-> >> > On Wed, Mar 09, 2016 at 03:48:22PM +0100, Miklos Szeredi wrote:
-> >>
-> >> >> Can't we use current_cred()->uid/gid? Or fsuid/fsgid maybe?
-> >> >
-> >> > That would be a departure from the current behavior in the !allow_other
-> >> > case for unprivileged users. Since those mounts are done by an suid
-> >> > helper all of those ids would be root in the userns, wouldn't they?
-> >>
-> >> Well, actually this is what the helper does:
-> >>
-> >>     sprintf(d, "fd=%i,rootmode=%o,user_id=%u,group_id=%u",
-> >>         fd, rootmode, getuid(), getgid());
-> >
-> > Sorry, I was thinking of euid. So this may not be a problem.
-> >
-> >> So it just uses the current uid/gid.  Apparently no reason to do this
-> >> in userland, we could just as well set these in the kernel.  Except
-> >> for possible backward compatibility problems for things not using the
-> >> helper.
-> >>
-> >> BUT if the mount is unprivileged or it's a userns mount, or anything
-> >> previously not possible, then we are not constrained by the backward
-> >> compatibility issues, and can go with the saner solution.
-> >>
-> >> Does that not make sense?
-> >
-> > But we generally do want backwards compatibility, and we want userspace
-> > software to be able to expect the same behavior whether or not it's
-> > running in a user namespaced container. Obviously we can't always have
-> > things 100% identical, but we shouldn't break things unless we really
-> > need to.
-> >
-> > However it may be that this isn't actually going to break assumptions of
-> > existing software like I had feared. My preference is still to not
-> > change any userspace-visible behaviors since we never know what software
-> > might have made assumptions based on those behaviors. But if you're
-> > confident that it won't break anything I'm willing to give it a try.
+On 25 Mar 01:51 PM, Artem Bityutskiy wrote:
+> On Thu, 2016-03-24 at 18:26 -0300, Ezequiel Garcia wrote:
+> > > > Richard, what do you think?
+> > > I'm definitely not fond of adding write support to ubiblock without
+> > > turning it into a proper FTL.
+> > > Otherwise it will be abused and will cause serious damage.
+> > > 
+> > I'm not sure this statement makes much sense without actual numbers.
 > 
-> I'm quite confident it won't make a difference.
+> Ezequel,
+> 
+> could you re-summarize how the write support would be implemented? Read
+> entire LEB, modify data block (512 bytes), atomically write the LEB?
+> This would not perform well, but would probably work.
+> 
 
-I was just about to go make these changes and discovered that the
-user_id and group_id options are already mandatory, due to this check at
-the bottom of parse_fuse_opt():
+Yes, I was thinking in using atomic LEB change. The old write-support
+was implemented with a 1-LEB cache vmalloced at open, and freed at release.
 
-        if (!d->fd_present || !d->rootmode_present ||
-            !d->user_id_present || !d->group_id_present)
-                return 0;
+The flash device is written when the write cache is flushed on:
+  * block device release (detach)
+  * a different than cached leb is accessed (either through read or write)
+  * io-barrier is received through a REQ_FLUSH request
 
-So I'll simply drop those two lines which supply default values for
-these options.
+It was expected that the block I/O scheduler would help mitigate
+the effects of a regular block oriented filesystem on flash sector
+erasecount.
 
-Thanks,
-Seth
+However, most likely UBIFS will do a far better job at preserving
+flash wear than any block oriented filesystem.
+
+> Or you want to avoid atomic LEB change and just erase the LEB and write
+> the entire LEB with the updated contents? This would probably be a bit
+> faster, but not power-cut safe.
+> 
+
+Not sure dropping power-cut safeness a realistic option. I'd say
+most -if not all- users will want to be power-cut safe at all costs.
+
+Let me quote a mail here from Willy [1]:
+
+""
+[..] I've been using ext2 on x86-based hardware and compact flash for
+something like 10 years with a great success (easy to mount, easy to
+fix, easy to save, easy to occasionally add a backup copy or an extra
+data file, etc).
+
+I contemplated ubifs on NAND devices as an alternative
+when starting to play with ARM-based devices, and lost the reliability
+and ability to fix. Switching back to the proven ext2 completely solved
+the issues in the end.
+
+Ubifs is nice when you need a real read/write FS,
+but most small devices do not need wear leveling or any of such nice
+features. When you just write 1-10 times a year, other solutions are
+fine enough. Using mtdblock directly is not reliable because of bad
+blocks which come from time to time. If your FS happens to be located
+on one of them, you're screwed. UBI solves such issues and ubiblock
+provides a nice interface for this.
+""
+
+I guess we could have some UBI parameter to enable this support,
+and print a very noisy message to warn users about potential
+device wear out -- naively assuming users read messages...
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
