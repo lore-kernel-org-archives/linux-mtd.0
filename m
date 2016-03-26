@@ -1,26 +1,35 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from conssluserg001.nifty.com ([202.248.44.39]
+ helo=conssluserg001-v.nifty.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ajacR-0002GH-Lu
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2016 22:54:17 +0000
-Subject: Re: [PATCH] UBIFS: Implement ->migratepage()
-To: Vlastimil Babka <vbabka@suse.cz>, linux-mtd@lists.infradead.org
-References: <56E9C658.1020903@nod.at>
- <1458168919-11597-1-git-send-email-richard@nod.at> <56EA7F95.4090703@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com,
- maxime.ripard@free-electrons.com, david@sigma-star.at, david@fromorbit.com,
- dedekind1@gmail.com, alex@nextthing.co, akpm@linux-foundation.org,
- sasha.levin@oracle.com, iamjoonsoo.kim@lge.com, rvaswani@codeaurora.org,
- tony.luck@intel.com, shailendra.capricorn@gmail.com,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Hugh Dickins <hughd@google.com>, Mel Gorman <mgorman@techsingularity.net>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56F5C17A.2080707@nod.at>
-Date: Fri, 25 Mar 2016 23:53:46 +0100
+ id 1ajfpl-0003JA-UR
+ for linux-mtd@lists.infradead.org; Sat, 26 Mar 2016 04:28:23 +0000
+Received: from mail-qk0-f175.google.com (mail-qk0-f175.google.com
+ [209.85.220.175]) (authenticated)
+ by conssluserg001-v.nifty.com with ESMTP id u2Q4RpMr000725
+ for <linux-mtd@lists.infradead.org>; Sat, 26 Mar 2016 13:27:52 +0900
+Received: by mail-qk0-f175.google.com with SMTP id i4so9716088qkc.3
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Mar 2016 21:27:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <56EA7F95.4090703@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20160325154520.199b0863@bbrezillon>
+References: <1458822277-31428-1-git-send-email-yamada.masahiro@socionext.com>
+ <20160325154520.199b0863@bbrezillon>
+Date: Sat, 26 Mar 2016 13:27:50 +0900
+Message-ID: <CAK7LNATqVEMRwa+Ss4V9sBXYZwqKX=CpB_3Oox8bM6Yow0mkXA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: denali: allow to override max_banks from DT
+ property
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>, devicetree@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>, Kumar Gala <galak@codeaurora.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,47 +39,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 17.03.2016 um 10:57 schrieb Vlastimil Babka:
-> +CC Hugh, Mel
-> 
-> On 03/16/2016 11:55 PM, Richard Weinberger wrote:
->> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+2016-03-25 23:45 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> On Thu, 24 Mar 2016 21:24:37 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
+>> changed in revision 5.1") supported the new encoding of the "n_banks"
+>> bits of the "features" register, but there is an unfortunate case
+>> that is not covered by that commit.
 >>
->> When using CMA during page migrations UBIFS might get confused
-> 
-> It shouldn't be CMA specific, the same code runs from compaction, autonuma balancing...
-> 
->> and the following assert triggers:
->> UBIFS assert failed in ubifs_set_page_dirty at 1451 (pid 436)
+>> Panasonic (its System LSI division is now Socionext) bought several
+>> versions of this IP.  The IP released for Panasonic around Feb. 2012
+>> is revision 5 and uses the old encoding for n_banks (2 << n_banks).
+>> While the one released around Nov. 2012 is also revision 5, but it
+>> uses the new encoding (1 << n_banks).
 >>
->> UBIFS is using PagePrivate() which can have different meanings across
->> filesystems. Therefore the generic page migration code cannot handle this
->> case correctly.
->> We have to implement our own migration function which basically does a
->> plain copy but also duplicates the page private flag.
-> 
-> Lack of PagePrivate() migration is surely a bug, but at a glance of how UBIFS uses the flag, it's more about accounting, it shouldn't prevent a page from being marked PageDirty()?
-> I suspect your initial bug (which is IIUC the fact that there's a dirty pte, but PageDirty(page) is false) comes from the generic fallback_migrate_page() which does:
-> 
->         if (PageDirty(page)) {
->                 /* Only writeback pages in full synchronous migration */
->                 if (mode != MIGRATE_SYNC)
->                         return -EBUSY;
->                 return writeout(mapping, page);
->         }
-> 
-> And writeout() seems to Clear PageDirty() through clear_page_dirty_for_io() but I'm not so sure about the pte (or pte's in all rmaps). But this comment in the latter function:
-> 
->                  * Yes, Virginia, this is indeed insane.
-> 
-> scared me enough to not investigate further. Hopefully the people I CC'd understand more about page migration than me. I'm just an user :)
-> 
-> In any case, this patch would solve both lack of PageDirty() transfer, and avoid the path leading from fallback_migrate_page() to writeout(). But I'm not confident enough here to
-> ack it.
+>> The revision register cannot distinguish these two incompatible
+>> hardware.  I guess this IP series is not well-organized.  I could not
+>> find any alternative but giving max_banks from DT property.
+>
+> Hm, shouldn't that be addressed with a new compatible instead of adding
+> a extra property?
+>
+>>
+>> This commit works around the problem by allowing DT to set the
+>> max_banks forcibly.  Of course, this DT property can be optional if
+>> the auto detection based on the hardware registers works well.
+>>
+>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>> ---
+>>
+>>  Documentation/devicetree/bindings/mtd/denali-nand.txt | 4 ++++
+>>  drivers/mtd/nand/denali.c                             | 3 ++-
+>>  drivers/mtd/nand/denali_dt.c                          | 3 +++
+>>  3 files changed, 9 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+>> index 785b825..78c250d 100644
+>> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
+>> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+>> @@ -7,6 +7,10 @@ Required properties:
+>>    - interrupts : The interrupt number.
+>>    - dma-mask : DMA bit mask
+>>
+>> +Optional properties:
+>> +  - max-banks : Maximum number of banks supported by hardware.  If not
+>> +    specified, it is determined based on the "features" register of hardware.
+>> +
+>
+> You might want to prefix that with "denali,".
+>
+>>  The device tree may optionally contain sub-nodes describing partitions of the
+>>  address space. See partition.txt for more detail.
 
-Hugh? Mel? Anyone? :-)
 
-It is still not clear to me whether this needs fixing in MM or UBIFS.
+In which case, do we have to add a vendor prefix to DT properties?
 
-Thanks,
-//richard
+I do not know a clear rule about this.
+
+
+-- 
+Best Regards
+Masahiro Yamada
