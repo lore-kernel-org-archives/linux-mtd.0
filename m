@@ -1,21 +1,18 @@
-Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
+Received: from mail.windriver.com ([147.11.1.11])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ak5DC-0001VE-Sv
- for linux-mtd@lists.infradead.org; Sun, 27 Mar 2016 07:34:15 +0000
-Received: by mail-pa0-x242.google.com with SMTP id hj7so11423847pac.1
- for <linux-mtd@lists.infradead.org>; Sun, 27 Mar 2016 00:33:54 -0700 (PDT)
-Subject: [PATCH 24/31] mtd: use parity16 in sm_ftl.c
-References: <1458788612-4367-1-git-send-email-zhaoxiu.zeng@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-From: "zhaoxiu.zeng" <zhaoxiu.zeng@gmail.com>
-Message-ID: <56F78CC5.9010503@gmail.com>
-Date: Sun, 27 Mar 2016 15:33:26 +0800
+ id 1akDMc-00070X-UP
+ for linux-mtd@lists.infradead.org; Sun, 27 Mar 2016 16:16:32 +0000
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+To: <linux-kernel@vger.kernel.org>
+CC: Paul Gortmaker <paul.gortmaker@windriver.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Greg
+ Ungerer <gerg@snapgear.com>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] drivers/mtd: make maps/uclinux.c driver more explicitly
+ non-modular
+Date: Sun, 27 Mar 2016 12:13:54 -0400
+Message-ID: <1459095234-20386-1-git-send-email-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <1458788612-4367-1-git-send-email-zhaoxiu.zeng@gmail.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +22,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
+The Kconfig for this support is currently declared with:
 
-Signed-off-by: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
+config MTD_UCLINUX
+        bool "Generic uClinux RAM/ROM filesystem support"
+
+...meaning that it currently is not being built as a module by anyone.
+Lets remove as much of the modular evidence that we can, so that when
+reading the driver there is less doubt it is builtin-only.
+
+Since module_init translates to device_initcall in the non-modular
+case, the init ordering remains unchanged with this commit.
+
+We also replace module.h with moduleparam.h since the file does use
+a module_param,  and leaving it as such is currently the easiest way
+to remain compatible with existing boot arg use cases.
+
+We also delete the MODULE_LICENSE tag etc. since all that information
+was (or is now) contained at the top of the file in the comments.
+
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Greg Ungerer <gerg@snapgear.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 ---
- drivers/mtd/sm_ftl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/maps/uclinux.c | 27 ++++-----------------------
+ 1 file changed, 4 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-index b096f8b..2244588 100644
---- a/drivers/mtd/sm_ftl.c
-+++ b/drivers/mtd/sm_ftl.c
-@@ -136,7 +136,7 @@ static int sm_get_lba(uint8_t *lba)
- 		return -2;
+diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
+index c1af83db5202..00a8190797ec 100644
+--- a/drivers/mtd/maps/uclinux.c
++++ b/drivers/mtd/maps/uclinux.c
+@@ -4,11 +4,13 @@
+  *	uclinux.c -- generic memory mapped MTD driver for uclinux
+  *
+  *	(C) Copyright 2002, Greg Ungerer (gerg@snapgear.com)
++ *
++ *      License: GPL
+  */
  
- 	/* check parity - endianness doesn't matter */
--	if (hweight16(*(uint16_t *)lba) & 1)
-+	if (parity16(*(uint16_t *)lba))
- 		return -2;
+ /****************************************************************************/
  
- 	return (lba[1] >> 1) | ((lba[0] & 0x07) << 7);
-@@ -183,7 +183,7 @@ static void sm_write_lba(struct sm_oob *oob, uint16_t lba)
- 	tmp[0] = 0x10 | ((lba >> 7) & 0x07);
- 	tmp[1] = (lba << 1) & 0xFF;
+-#include <linux/module.h>
++#include <linux/moduleparam.h>
+ #include <linux/types.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+@@ -117,27 +119,6 @@ static int __init uclinux_mtd_init(void)
  
--	if (hweight16(*(uint16_t *)tmp) & 0x01)
-+	if (parity16(*(uint16_t *)tmp))
- 		tmp[1] |= 1;
+ 	return(0);
+ }
+-
+-/****************************************************************************/
+-
+-static void __exit uclinux_mtd_cleanup(void)
+-{
+-	if (uclinux_ram_mtdinfo) {
+-		mtd_device_unregister(uclinux_ram_mtdinfo);
+-		map_destroy(uclinux_ram_mtdinfo);
+-		uclinux_ram_mtdinfo = NULL;
+-	}
+-	if (uclinux_ram_map.virt)
+-		uclinux_ram_map.virt = 0;
+-}
+-
+-/****************************************************************************/
+-
+-module_init(uclinux_mtd_init);
+-module_exit(uclinux_mtd_cleanup);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Greg Ungerer <gerg@snapgear.com>");
+-MODULE_DESCRIPTION("Generic MTD for uClinux");
++device_initcall(uclinux_mtd_init);
  
- 	oob->lba_copy1[0] = oob->lba_copy2[0] = tmp[0];
+ /****************************************************************************/
 -- 
-2.5.5
+2.6.1
