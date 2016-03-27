@@ -1,17 +1,17 @@
-Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ak55o-00076J-7d
- for linux-mtd@lists.infradead.org; Sun, 27 Mar 2016 07:26:37 +0000
-Received: by mail-pa0-x242.google.com with SMTP id q6so11485544pav.0
- for <linux-mtd@lists.infradead.org>; Sun, 27 Mar 2016 00:26:15 -0700 (PDT)
-Subject: [PATCH 21/31] mtd: use parity16 in ssfdc.c
-References: <1458788612-4367-1-git-send-email-zhaoxiu.zeng@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+ id 1ak57T-0007Dr-99
+ for linux-mtd@lists.infradead.org; Sun, 27 Mar 2016 07:28:19 +0000
+Received: by mail-pf0-x241.google.com with SMTP id u190so16664412pfb.2
+ for <linux-mtd@lists.infradead.org>; Sun, 27 Mar 2016 00:27:58 -0700 (PDT)
+Subject: [PATCH 22/31] mtd: use parity functions in inftlcore.c
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>
+References: <1458788612-4367-1-git-send-email-zhaoxiu.zeng@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 From: "zhaoxiu.zeng" <zhaoxiu.zeng@gmail.com>
-Message-ID: <56F78ACB.1010402@gmail.com>
-Date: Sun, 27 Mar 2016 15:24:59 +0800
+Message-ID: <56F78B63.3050805@gmail.com>
+Date: Sun, 27 Mar 2016 15:27:31 +0800
 MIME-Version: 1.0
 In-Reply-To: <1458788612-4367-1-git-send-email-zhaoxiu.zeng@gmail.com>
 Content-Type: text/plain; charset=gbk
@@ -29,51 +29,43 @@ From: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
 
 Signed-off-by: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
 ---
- drivers/mtd/ssfdc.c | 20 ++------------------
- 1 file changed, 2 insertions(+), 18 deletions(-)
+ drivers/mtd/inftlcore.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-index daf82ba..b4d9144 100644
---- a/drivers/mtd/ssfdc.c
-+++ b/drivers/mtd/ssfdc.c
-@@ -182,24 +182,10 @@ static int read_raw_oob(struct mtd_info *mtd, loff_t offs, uint8_t *buf)
- 	return 0;
+diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
+index b66b541..29567bb 100644
+--- a/drivers/mtd/inftlcore.c
++++ b/drivers/mtd/inftlcore.c
+@@ -457,15 +457,6 @@ static u16 INFTL_makefreeblock(struct INFTLrecord *inftl, unsigned pendingblock)
+ 	return INFTL_foldchain(inftl, LongestChain, pendingblock);
  }
  
--/* Parity calculator on a word of n bit size */
--static int get_parity(int number, int size)
+-static int nrbits(unsigned int val, int bitcount)
 -{
-- 	int k;
--	int parity;
+-	int i, total = 0;
 -
--	parity = 1;
--	for (k = 0; k < size; k++) {
--		parity += (number >> k);
--		parity &= 1;
--	}
--	return parity;
+-	for (i = 0; (i < bitcount); i++)
+-		total += (((0x1 << i) & val) ? 1 : 0);
+-	return total;
 -}
 -
- /* Read and validate the logical block address field stored in the OOB */
- static int get_logical_address(uint8_t *oob_buf)
- {
--	int block_address, parity;
-+	int block_address;
- 	int offset[2] = {6, 11}; /* offset of the 2 address fields within OOB */
- 	int j;
- 	int ok = 0;
-@@ -215,11 +201,9 @@ static int get_logical_address(uint8_t *oob_buf)
+ /*
+  * INFTL_findwriteunit: Return the unit number into which we can write
+  *                      for this block. Make it available if it isn't already.
+@@ -593,10 +584,10 @@ hitused:
+ 		if (prev_block < inftl->nb_blocks)
+ 			prev_block -= inftl->firstEUN;
  
- 		/* Check for the signature bits in the address field (MSBits) */
- 		if ((block_address & ~0x7FF) == 0x1000) {
--			parity = block_address & 0x01;
- 			block_address &= 0x7FF;
--			block_address >>= 1;
+-		parity = (nrbits(thisVUC, 16) & 0x1) ? 0x1 : 0;
+-		parity |= (nrbits(prev_block, 16) & 0x1) ? 0x2 : 0;
+-		parity |= (nrbits(anac, 8) & 0x1) ? 0x4 : 0;
+-		parity |= (nrbits(nacs, 8) & 0x1) ? 0x8 : 0;
++		parity = parity16(thisVUC);
++		parity |= parity16(prev_block) << 1;
++		parity |= parity8(anac) << 2;
++		parity |= parity8(nacs) << 3;
  
--			if (get_parity(block_address, 10) != parity) {
-+			if (!parity16(block_address)) {
- 				pr_debug("SSFDC_RO: logical address field%d"
- 					"parity error(0x%04X)\n", j+1,
- 					block_address);
+ 		oob.u.a.virtualUnitNo = cpu_to_le16(thisVUC);
+ 		oob.u.a.prevUnitNo = cpu_to_le16(prev_block);
 -- 
 2.5.5
