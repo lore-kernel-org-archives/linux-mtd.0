@@ -1,18 +1,26 @@
-Received: from mail.windriver.com ([147.11.1.11])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akDMc-00070X-UP
- for linux-mtd@lists.infradead.org; Sun, 27 Mar 2016 16:16:32 +0000
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-To: <linux-kernel@vger.kernel.org>
-CC: Paul Gortmaker <paul.gortmaker@windriver.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Greg
- Ungerer <gerg@snapgear.com>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH] drivers/mtd: make maps/uclinux.c driver more explicitly
- non-modular
-Date: Sun, 27 Mar 2016 12:13:54 -0400
-Message-ID: <1459095234-20386-1-git-send-email-paul.gortmaker@windriver.com>
+ id 1akIlJ-0007KL-8R
+ for linux-mtd@lists.infradead.org; Sun, 27 Mar 2016 22:02:22 +0000
+Subject: Re: ubiblock RW
+To: Willy Tarreau <w@1wt.eu>
+References: <CABJ+KKu2RJuHXE3LpmzSYtE0i57sHDUHWOxPxufCP94RTa=eBA@mail.gmail.com>
+ <CAAEAJfB42GY9kGDBvacpKNgtAt3Kp1bE6rfprm_A_WiwR_cXGg@mail.gmail.com>
+ <56F4502D.3030902@nod.at>
+ <CAAEAJfDXB34SWoCMXBiqEFSRMWAxZpGmMR9tPdsN=mokO8fkhw@mail.gmail.com>
+ <1458906697.615.20.camel@gmail.com> <20160325205011.GA1106@laptop.cereza>
+ <56F5ACBD.8070201@nod.at> <20160326060137.GA9296@1wt.eu>
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Benson Young <benson6877@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Gstir <david@sigma-star.at>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56F85851.5020508@nod.at>
+Date: Mon, 28 Mar 2016 00:01:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20160326060137.GA9296@1wt.eu>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,81 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Kconfig for this support is currently declared with:
+Am 26.03.2016 um 07:01 schrieb Willy Tarreau:
+> On Fri, Mar 25, 2016 at 10:25:17PM +0100, Richard Weinberger wrote:
+>> Am 25.03.2016 um 21:50 schrieb Ezequiel Garcia:
+>>> I guess we could have some UBI parameter to enable this support,
+>>> and print a very noisy message to warn users about potential
+>>> device wear out -- naively assuming users read messages...
+>>
+>> As I wrote in my previous mail, I think a new parameter for the ubiblock
+>> tool would do the job.
+>> I'd default ubiblock to RO and via the ubiblock tool you can enable RW mode.
+>> ...which would also trigger a warning.
+>>
+>> What I'd like to avoid is a kernel command line or a Kconfig option to make
+>> RW default. If someone *really* wants RW she has to run ubiblock --enable-rw....
+>> in userspace. This should even work for block filesystems on top of UBI
+>> as root fs as you can remount them later RW.
+>>
+>> Sounds like a plan?
+> 
+> I would see something a little bit better (from a user perspective), though
+> I don't know if it's possible. It would be nice to mark the UBI image RO/RW
+> when it is created via ubiformat. That would be a bit stored on the ubiblock
+> itself. That way the decision is taken at creation time and is not changed
+> later (or only using a specific tool). Note that it is very possible I'm
+> missing something important, but you get the idea.
 
-config MTD_UCLINUX
-        bool "Generic uClinux RAM/ROM filesystem support"
+ubiblock is just a layer above an UBI volumes.
+We could add a new UBI volume flag for RW ubiblock.
 
-...meaning that it currently is not being built as a module by anyone.
-Lets remove as much of the modular evidence that we can, so that when
-reading the driver there is less doubt it is builtin-only.
+Artem? Ezequiel?
 
-Since module_init translates to device_initcall in the non-modular
-case, the init ordering remains unchanged with this commit.
-
-We also replace module.h with moduleparam.h since the file does use
-a module_param,  and leaving it as such is currently the easiest way
-to remain compatible with existing boot arg use cases.
-
-We also delete the MODULE_LICENSE tag etc. since all that information
-was (or is now) contained at the top of the file in the comments.
-
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Greg Ungerer <gerg@snapgear.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
- drivers/mtd/maps/uclinux.c | 27 ++++-----------------------
- 1 file changed, 4 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-index c1af83db5202..00a8190797ec 100644
---- a/drivers/mtd/maps/uclinux.c
-+++ b/drivers/mtd/maps/uclinux.c
-@@ -4,11 +4,13 @@
-  *	uclinux.c -- generic memory mapped MTD driver for uclinux
-  *
-  *	(C) Copyright 2002, Greg Ungerer (gerg@snapgear.com)
-+ *
-+ *      License: GPL
-  */
- 
- /****************************************************************************/
- 
--#include <linux/module.h>
-+#include <linux/moduleparam.h>
- #include <linux/types.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
-@@ -117,27 +119,6 @@ static int __init uclinux_mtd_init(void)
- 
- 	return(0);
- }
--
--/****************************************************************************/
--
--static void __exit uclinux_mtd_cleanup(void)
--{
--	if (uclinux_ram_mtdinfo) {
--		mtd_device_unregister(uclinux_ram_mtdinfo);
--		map_destroy(uclinux_ram_mtdinfo);
--		uclinux_ram_mtdinfo = NULL;
--	}
--	if (uclinux_ram_map.virt)
--		uclinux_ram_map.virt = 0;
--}
--
--/****************************************************************************/
--
--module_init(uclinux_mtd_init);
--module_exit(uclinux_mtd_cleanup);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Greg Ungerer <gerg@snapgear.com>");
--MODULE_DESCRIPTION("Generic MTD for uClinux");
-+device_initcall(uclinux_mtd_init);
- 
- /****************************************************************************/
--- 
-2.6.1
+Thanks,
+//richard
