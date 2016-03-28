@@ -1,17 +1,16 @@
-Received: from mail-lb0-x242.google.com ([2a00:1450:4010:c04::242])
+Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akS2N-0005BZ-Uf
- for linux-mtd@lists.infradead.org; Mon, 28 Mar 2016 07:56:37 +0000
-Received: by mail-lb0-x242.google.com with SMTP id oa3so8966590lbb.2
- for <linux-mtd@lists.infradead.org>; Mon, 28 Mar 2016 00:56:12 -0700 (PDT)
+ id 1akS34-0005PG-D6
+ for linux-mtd@lists.infradead.org; Mon, 28 Mar 2016 07:57:19 +0000
+Received: by mail-lf0-x243.google.com with SMTP id i75so10379722lfb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Mar 2016 00:56:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20160325094948.136c4501@bbrezillon>
+In-Reply-To: <20160325095015.341a11eb@bbrezillon>
 References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
- <1457923684-13505-4-git-send-email-peterpandong@micron.com>
- <20160325094948.136c4501@bbrezillon>
-Date: Mon, 28 Mar 2016 15:56:11 +0800
-Message-ID: <CAAyFORK4tBB0qAoB7zTktByF3Hwb0v+=RiAw2Zg0u561u_6c5Q@mail.gmail.com>
-Subject: Re: [PATCH 03/11] mtd: nand_bbt: add new API definitions
+ <20160325095015.341a11eb@bbrezillon>
+Date: Mon, 28 Mar 2016 15:56:56 +0800
+Message-ID: <CAAyFORJE9ceR_Jv_+E4ujBdCH-ogbQe1B++FJVL8HMfD9TszYg@mail.gmail.com>
+Subject: Re: [PATCH 00/11] mtd: nand_bbt: introduce independent nand BBT
 From: Peter Pan <peterpansjtu@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -29,41 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 25, 2016 at 4:49 PM, Boris Brezillon
+On Fri, Mar 25, 2016 at 4:50 PM, Boris Brezillon
 <boris.brezillon@free-electrons.com> wrote:
-> On Mon, 14 Mar 2016 02:47:56 +0000
+> On Mon, 14 Mar 2016 02:47:53 +0000
 > Peter Pan <peterpansjtu@gmail.com> wrote:
 >
->> Add new API definitions for nand_bbt to replace old ones without
->> any users. These API includes:
->>       struct nand_bbt_create(struct mtd_info *mtd);
->>       struct nand_bbt *nand_bbt_create(struct mtd_info *mtd,
->>                               const struct nand_bbt_ops *ops,
->>                               struct nand_chip_layout_info *info,
->>                               unsigned int options,
->>                               struct nand_bbt_descr *bbt_td,
->>                               struct nand_bbt_descr *bbt_md);
->>       void nand_bbt_destroy(struct nand_bbt *bbt);
->>       int nand_bbt_markbad(struct nand_bbt *bbt, loff_t offs);
->>       int nand_bbt_isreserved(struct nand_bbt *bbt, loff_t offs);
->>       int nand_bbt_isbad(struct nand_bbt *bbt, loff_t offs);
+>> Sorry for send the v3 out late. I went through a busy time in the past
+>> two month.
 >>
->> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->> Signed-off-by: Peter Pan <peterpandong@micron.com>
->> ---
->>  drivers/mtd/nand/nand_bbt.c  | 113 +++++++++++++++++++++++++++++++++++++++++++
->>  include/linux/mtd/nand_bbt.h |  11 +++++
->>  2 files changed, 124 insertions(+)
+>> Currently nand_bbt.c is tied with struct nand_chip, and it makes other
+>> NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
+>> onenand has own bbt(onenand_bbt.c).
 >>
+>> Separate struct nand_chip from BBT code can make current BBT shareable.
+>> We create struct nand_bbt to take place of nand_chip in nand_bbt.c.
+>> Struct nand_bbt contains all the information BBT needed from outside and
+>> it should be embedded into NAND family chip struct (such as struct nand_chip).
+>>
+>> Below is mtd folder structure we want:
+>>       drivers/mtd/nand/<all-nand-core-code>
+>>       drivers/mtd/nand/raw/<raw-nand-controller-drivers>
+>>       drivers/mtd/nand/spi/<spi-nand-code>
+>>       drivers/mtd/nand/onenand/<onenand-code>
+>>       drivers/mtd/nand/chips/<manufacturer-spcific-code>
 >
->>
->> +struct nand_bbt *nand_bbt_create(struct mtd_info *mtd,
->> +             const struct nand_bbt_ops *ops,
->> +             struct nand_chip_layout_info *info,
->
-> Should be const struct nand_chip_layout_info *.
+> Hm, we should have a chips directory under each interface type, because
+> vendor specific handling is dependent on the NAND interface.
+> Otherwise, yes, that's the idea.
 
-Fix this in v4
+Update this in v4
 
 Thanks,
 Peter Pan
