@@ -1,25 +1,29 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akSHn-0002qA-Cj
- for linux-mtd@lists.infradead.org; Mon, 28 Mar 2016 08:12:32 +0000
-Received: by mail-lf0-x242.google.com with SMTP id y184so3422777lfd.3
- for <linux-mtd@lists.infradead.org>; Mon, 28 Mar 2016 01:12:10 -0700 (PDT)
+Received: from wtarreau.pck.nerim.net ([62.212.114.60] helo=1wt.eu)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1akSNP-0005LP-UQ
+ for linux-mtd@lists.infradead.org; Mon, 28 Mar 2016 08:18:21 +0000
+Date: Mon, 28 Mar 2016 10:17:55 +0200
+From: Willy Tarreau <w@1wt.eu>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Benson Young <benson6877@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Gstir <david@sigma-star.at>
+Subject: Re: ubiblock RW
+Message-ID: <20160328081755.GA17870@1wt.eu>
+References: <CABJ+KKu2RJuHXE3LpmzSYtE0i57sHDUHWOxPxufCP94RTa=eBA@mail.gmail.com>
+ <CAAEAJfB42GY9kGDBvacpKNgtAt3Kp1bE6rfprm_A_WiwR_cXGg@mail.gmail.com>
+ <56F4502D.3030902@nod.at>
+ <CAAEAJfDXB34SWoCMXBiqEFSRMWAxZpGmMR9tPdsN=mokO8fkhw@mail.gmail.com>
+ <1458906697.615.20.camel@gmail.com>
+ <20160325205011.GA1106@laptop.cereza> <56F5ACBD.8070201@nod.at>
+ <20160326060137.GA9296@1wt.eu> <56F85851.5020508@nod.at>
+ <1459148213.19765.14.camel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20160325095120.640afc2c@bbrezillon>
-References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
- <1457923684-13505-6-git-send-email-peterpandong@micron.com>
- <20160325095120.640afc2c@bbrezillon>
-Date: Mon, 28 Mar 2016 16:12:08 +0800
-Message-ID: <CAAyFORL_=y3Ea2j0YTFGmoMrFfcC+DkQ94XnBHwnkryREGSZvA@mail.gmail.com>
-Subject: Re: [PATCH 05/11] mtd: nand: use new BBT API instead of old ones
-From: Peter Pan <peterpansjtu@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- karlzhang@micron.com, beanhuo@micron.com, xuejiancheng@huawei.com,
- Peter Pan <peterpandong@micron.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1459148213.19765.14.camel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +33,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 25, 2016 at 4:51 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> On Mon, 14 Mar 2016 02:47:58 +0000
-> Peter Pan <peterpansjtu@gmail.com> wrote:
->
->> Use new BBT APIs (nand_bbt_*()) in NAND. Keep old APIs (nand_*_bbt())
->> exist temporarily.
->>
->> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->> Signed-off-by: Peter Pan <peterpandong@micron.com>
->> ---
->>  drivers/mtd/nand/docg4.c     |   7 +-
->>  drivers/mtd/nand/nand_base.c | 151 ++++++++++++++++++++++++++++++++++++++++---
->>  include/linux/mtd/nand.h     |  15 ++++-
->>  3 files changed, 160 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index b6facac..6f0e3b9 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->
-> [...]
->
->> +static int nand_default_bbt(struct mtd_info *mtd)
->> +{
->> +     struct nand_chip *chip = mtd_to_nand(mtd);
->> +     struct nand_bbt *nand_bbt = NULL;
->> +     struct nand_chip_layout_info *info =
->> +             kzalloc(sizeof(struct nand_chip_layout_info), GFP_KERNEL);
->
-> No, this should be directly embedded in nand_chip, and should replace
-> the numchips/chipsize/... fields declared in there.
+On Mon, Mar 28, 2016 at 09:56:53AM +0300, Artem Bityutskiy wrote:
+> You can add a per-volume R/O flag if needed, yes. Expose it to user-
+> space. This may be a useful thing irrespectively. I am not sure how it
+> helps with ubiblock though.
+> 
+> Ideally, the ubiblock R/W enabled flag should be stored in ubiblock,
+> not in UBI, not in MTD, because you want ubiblock to have full control
+> over it. You do not want a user go and change the flag via the UBI
+> interface whenever the user feels like, right?
+> 
+> To have this kind of flag in ubiblock, it needs an on-flash superblock
+> or something. If you are not going to introduce it, which I believe is
+> the case, then the only option left in my opinion is a ubiblock module
+> parameter.
+> 
+> If I am a ubiblock user who needs the write support, and this naive
+> write support is good enough for me, I want it enabled by default on my
+> product. A module parameter with a sound name like 'dangerous-write-
+> support' or something would work fine for me.
 
-As I said in patch 2, I keep it like this temporarily. Will embedded it in
-struct nand_chip later.
+Thanks Artem for the explanation. I think it all makes sense indeed.
 
-Thanks,
-Peter Pan
+Willy
