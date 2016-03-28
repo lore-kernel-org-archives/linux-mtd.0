@@ -1,27 +1,32 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from mail-ob0-x22a.google.com ([2607:f8b0:4003:c01::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akTJV-0001FM-2P
- for linux-mtd@lists.infradead.org; Mon, 28 Mar 2016 09:18:23 +0000
-Subject: Re: [RESEND PATCH v9] mtd: spi-nor: add hisilicon spi-nor flash
- controller driver
-To: Marek Vasut <marek.vasut@gmail.com>, <linux-mtd@lists.infradead.org>
-References: <1458979861-3619-1-git-send-email-xuejiancheng@huawei.com>
- <56F73BC9.5000300@gmail.com>
-CC: <robh+dt@kernel.org>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <boris.brezillon@free-electrons.com>, <juhosg@openwrt.org>,
- <furquan@google.com>, <suwenping@hisilicon.com>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <yanhaifeng@hisilicon.com>, <raojun@hisilicon.com>,
- <xuejiancheng@hisilicon.com>, <ml.yang@hisilicon.com>,
- <gaofei@hisilicon.com>, <yanghongwei@hisilicon.com>,
- <zhangzhenxing@hisilicon.com>
-From: Jiancheng Xue <xuejiancheng@huawei.com>
-Message-ID: <56F8F630.5050008@huawei.com>
-Date: Mon, 28 Mar 2016 17:15:28 +0800
+ id 1akaXC-0007BN-Np
+ for linux-mtd@lists.infradead.org; Mon, 28 Mar 2016 17:00:59 +0000
+Received: by mail-ob0-x22a.google.com with SMTP id kf9so99034713obc.1
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Mar 2016 10:00:16 -0700 (PDT)
+Date: Mon, 28 Mar 2016 11:59:36 -0500
+From: Seth Forshee <seth.forshee@canonical.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
+Subject: Re: [PATCH RESEND v2 11/18] fs: Ensure the mounter of a filesystem
+ is privileged towards its inodes
+Message-ID: <20160328165936.GC137406@ubuntu-hedt>
+References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
+ <1451930639-94331-12-git-send-email-seth.forshee@canonical.com>
+ <20160303170201.GA30224@ubuntu-hedt>
+ <87twkl50g5.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-In-Reply-To: <56F73BC9.5000300@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87twkl50g5.fsf@x220.int.ebiederm.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,445 +36,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
-    Firstly, thank you very much for your comments.
+On Fri, Mar 04, 2016 at 04:43:06PM -0600, Eric W. Biederman wrote:
+> In general this is only an issue if uids and gids on the filesystem
+> do not map into the user namespace.
+> 
+> Therefore the general fix is to limit the logic of checking for
+> capabilities in s_user_ns if we are dealing with INVALID_UID and
+> INVALID_GID.  For proc and kernfs that should never be the case
+> so the problem becomes a non-issue.
+> 
+> Further I would look at limiting that relaxation to just
+> inode_change_ok. 
 
-On 2016/3/27 9:47, Marek Vasut wrote:
-> On 03/26/2016 09:11 AM, Jiancheng Xue wrote:
->> Add hisilicon spi-nor flash controller driver
->>
->> Signed-off-by: Binquan Peng <pengbinquan@huawei.com>
->> Signed-off-by: Jiancheng Xue <xuejiancheng@huawei.com>
->> Acked-by: Rob Herring <robh@kernel.org>
->> Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
->> Reviewed-by: Jagan Teki <jteki@openedev.com>
->> ---
->> change log
->> v9:
->> Fixed issues pointed by Jagan Teki.
-> 
-> It'd be really great if you could list which exact issues you fixed.
-> 
+Finally got around to implementing this today; is the patch below what
+you had in mind?
 
-OK. I'll describe the history log more detailed in next version.
+> So that we can easily wrap that check per filesystem
+> and deny the relaxation for proc and kernfs.  proc and kernfs already
+> have wrappers for .setattr so denying changes when !uid_vaid and
+> !gid_valid would be a trivial addition, and ensure calamity does
+> not ensure.
 
->> v8:
->> Fixed issues pointed by Ezequiel Garcia and Brian Norris.
->> Moved dts binding file to mtd directory.
->> Changed the compatible string more specific.
-> 
-> [...]
-> 
->> +/* Hardware register offsets and field definitions */
->> +#define FMC_CFG				0x00
->> +#define SPI_NOR_ADDR_MODE		BIT(10)
->> +#define FMC_GLOBAL_CFG			0x04
->> +#define FMC_GLOBAL_CFG_WP_ENABLE	BIT(6)
->> +#define FMC_SPI_TIMING_CFG		0x08
->> +#define TIMING_CFG_TCSH(nr)		(((nr) & 0xf) << 8)
->> +#define TIMING_CFG_TCSS(nr)		(((nr) & 0xf) << 4)
->> +#define TIMING_CFG_TSHSL(nr)		((nr) & 0xf)
->> +#define CS_HOLD_TIME			0x6
->> +#define CS_SETUP_TIME			0x6
->> +#define CS_DESELECT_TIME		0xf
->> +#define FMC_INT				0x18
->> +#define FMC_INT_OP_DONE			BIT(0)
->> +#define FMC_INT_CLR			0x20
->> +#define FMC_CMD				0x24
->> +#define FMC_CMD_CMD1(_cmd)		((_cmd) & 0xff)
-> 
-> Drop the underscores in the argument names.
-> 
-OK.
->> +#define FMC_ADDRL			0x2c
->> +#define FMC_OP_CFG			0x30
->> +#define OP_CFG_FM_CS(_cs)		((_cs) << 11)
->> +#define OP_CFG_MEM_IF_TYPE(_type)	(((_type) & 0x7) << 7)
->> +#define OP_CFG_ADDR_NUM(_addr)		(((_addr) & 0x7) << 4)
->> +#define OP_CFG_DUMMY_NUM(_dummy)	((_dummy) & 0xf)
->> +#define FMC_DATA_NUM			0x38
->> +#define FMC_DATA_NUM_CNT(_n)		((_n) & 0x3fff)
->> +#define FMC_OP				0x3c
->> +#define FMC_OP_DUMMY_EN			BIT(8)
->> +#define FMC_OP_CMD1_EN			BIT(7)
->> +#define FMC_OP_ADDR_EN			BIT(6)
->> +#define FMC_OP_WRITE_DATA_EN		BIT(5)
->> +#define FMC_OP_READ_DATA_EN		BIT(2)
->> +#define FMC_OP_READ_STATUS_EN		BIT(1)
->> +#define FMC_OP_REG_OP_START		BIT(0)
-> 
-> [...]
-> 
->> +enum hifmc_iftype {
->> +	IF_TYPE_STD,
->> +	IF_TYPE_DUAL,
->> +	IF_TYPE_DIO,
->> +	IF_TYPE_QUAD,
->> +	IF_TYPE_QIO,
->> +};
->> +
->> +struct hifmc_priv {
->> +	int chipselect;
-> 
-> Can chipselect be set to < 0 values ?
-> 
-The type will be changed to u32.
+I'm confused about this part though. As you say above, proc and kernfs
+will never have inodes with invalid ids, so it's not an issue. Do you
+just mean this to be extra insurance against problems?
 
->> +	u32 clkrate;
->> +	struct hifmc_host *host;
->> +};
->> +
->> +#define HIFMC_MAX_CHIP_NUM		2
-> 
-> This does not scale very well, use dynamic allocation.
-> 
-OK. Dynamic allocation will be used in next version.
->> +struct hifmc_host {
->> +	struct device *dev;
->> +	struct mutex lock;
->> +
->> +	void __iomem *regbase;
->> +	void __iomem *iobase;
->> +	struct clk *clk;
->> +	void *buffer;
->> +	dma_addr_t dma_buffer;
->> +
->> +	struct spi_nor	nor[HIFMC_MAX_CHIP_NUM];
->> +	struct hifmc_priv priv[HIFMC_MAX_CHIP_NUM];
->> +	int num_chip;
->> +};
->> +
->> +static inline int wait_op_finish(struct hifmc_host *host)
->> +{
->> +	unsigned int reg;
->> +
->> +	return readl_poll_timeout(host->regbase + FMC_INT, reg,
->> +		(reg & FMC_INT_OP_DONE), 0, FMC_WAIT_TIMEOUT);
->> +}
->> +
->> +static int get_if_type(enum read_mode flash_read)
->> +{
->> +	enum hifmc_iftype if_type;
->> +
->> +	switch (flash_read) {
->> +	case SPI_NOR_DUAL:
->> +		if_type = IF_TYPE_DUAL;
->> +		break;
->> +	case SPI_NOR_QUAD:
->> +		if_type = IF_TYPE_QUAD;
->> +		break;
->> +	case SPI_NOR_NORMAL:
->> +	case SPI_NOR_FAST:
->> +	default:
->> +		if_type = IF_TYPE_STD;
->> +		break;
->> +	}
->> +
->> +	return if_type;
->> +}
->> +
->> +static void hisi_spi_nor_init(struct hifmc_host *host)
->> +{
->> +	unsigned int reg;
-> 
-> Should be u32 here.
-> 
-OK.
->> +	reg = TIMING_CFG_TCSH(CS_HOLD_TIME)
->> +		| TIMING_CFG_TCSS(CS_SETUP_TIME)
->> +		| TIMING_CFG_TSHSL(CS_DESELECT_TIME);
->> +	writel(reg, host->regbase + FMC_SPI_TIMING_CFG);
->> +}
->> +
->> +static int hisi_spi_nor_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->> +{
->> +	struct hifmc_priv *priv = nor->priv;
->> +	struct hifmc_host *host = priv->host;
->> +	int ret;
->> +
->> +	mutex_lock(&host->lock);
-> 
-> Why do you need the mutex lock here ? Let me guess -- SPI NOR framework
-> locks a mutex in struct spi_nor , but that's not enough if you have
-> multiple SPI NORs on the same bus, because concurrent access to multiple
-> SPI NOR flashes needs locking on the controller level, right ?
-> 
-Yes, you are quite right. The controller can connect with two SPI NOR flashes
-on one board. This lock is used on the controller level.
+Thanks,
+Seth
 
->> +	ret = clk_set_rate(host->clk, priv->clkrate);
->> +	if (ret)
->> +		goto out;
->> +
->> +	ret = clk_prepare_enable(host->clk);
->> +	if (ret)
->> +		goto out;
->> +
->> +	return 0;
->> +
->> +out:
->> +	mutex_unlock(&host->lock);
->> +	return ret;
->> +}
->> +
->> +static void hisi_spi_nor_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
->> +{
->> +	struct hifmc_priv *priv = nor->priv;
->> +	struct hifmc_host *host = priv->host;
->> +
->> +	clk_disable_unprepare(host->clk);
->> +	mutex_unlock(&host->lock);
->> +}
->> +
->> +static void hisi_spi_nor_cmd_prepare(struct hifmc_host *host, u8 cmd,
->> +		u32 *opcfg)
->> +{
->> +	u32 reg;
->> +
->> +	*opcfg |= FMC_OP_CMD1_EN;
->> +	switch (cmd) {
->> +	case SPINOR_OP_RDID:
->> +	case SPINOR_OP_RDSR:
->> +	case SPINOR_OP_RDCR:
->> +		*opcfg |= FMC_OP_READ_DATA_EN;
->> +		break;
->> +	case SPINOR_OP_WREN:
->> +		reg = readl(host->regbase + FMC_GLOBAL_CFG);
->> +		if (reg & FMC_GLOBAL_CFG_WP_ENABLE) {
->> +			reg &= ~FMC_GLOBAL_CFG_WP_ENABLE;
->> +			writel(reg, host->regbase + FMC_GLOBAL_CFG);
->> +		}
->> +		break;
->> +	case SPINOR_OP_WRSR:
->> +		*opcfg |= FMC_OP_WRITE_DATA_EN;
->> +		break;
->> +	case SPINOR_OP_BE_4K:
->> +	case SPINOR_OP_BE_4K_PMC:
->> +	case SPINOR_OP_SE_4B:
->> +	case SPINOR_OP_SE:
->> +		*opcfg |= FMC_OP_ADDR_EN;
->> +		break;
->> +	case SPINOR_OP_EN4B:
->> +		reg = readl(host->regbase + FMC_CFG);
->> +		reg |= SPI_NOR_ADDR_MODE;
->> +		writel(reg, host->regbase + FMC_CFG);
->> +		break;
->> +	case SPINOR_OP_EX4B:
->> +		reg = readl(host->regbase + FMC_CFG);
->> +		reg &= ~SPI_NOR_ADDR_MODE;
->> +		writel(reg, host->regbase + FMC_CFG);
->> +		break;
->> +	case SPINOR_OP_CHIP_ERASE:
->> +	default:
->> +		break;
->> +	}
-> 
-> Won't the driver fail if we add new instructions into the SPI NOR core
-> which are not handled by this huge switch statement ?
-> 
-Only some of commands are needed to process in this stage for the controller.
-Others have no needs. So this function won't return failure.
+---
 
-I'll combine SPINOR_OP_CHIP_ERASE into the default case in next version.
-
->> +}
-> 
-> [...]
-> 
->> +static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
->> +			size_t len, size_t *retlen, const u_char *write_buf)
->> +{
->> +	struct hifmc_priv *priv = nor->priv;
->> +	struct hifmc_host *host = priv->host;
->> +	const unsigned char *ptr = write_buf;
->> +	size_t actual_len;
->> +
->> +	*retlen = 0;
->> +	while (len > 0) {
->> +		if (to & HIFMC_DMA_MASK)
->> +			actual_len = (HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK))
->> +				>= len	? len
->> +				: (HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK));
-> 
-> Rewrite this as something like the following snippet, for the sake of
-> readability:
-> 
-> actual_len = HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK);
-> if (actual_len >= len)
->    actual_len = len;
-> 
-OK. Thank you.
->> +		else
->> +			actual_len = (len >= HIFMC_DMA_MAX_LEN)
->> +				? HIFMC_DMA_MAX_LEN : len;
->> +		memcpy(host->buffer, ptr, actual_len);
->> +		hisi_spi_nor_dma_transfer(nor, to, host->dma_buffer, actual_len,
->> +				FMC_OP_WRITE);
->> +		to += actual_len;
->> +		ptr += actual_len;
->> +		len -= actual_len;
->> +		*retlen += actual_len;
->> +	}
->> +}
->> +
->> +static int hisi_spi_nor_erase(struct spi_nor *nor, loff_t offs)
->> +{
->> +	struct hifmc_priv *priv = nor->priv;
->> +	struct hifmc_host *host = priv->host;
->> +
->> +	writel(offs, host->regbase + FMC_ADDRL);
->> +
->> +	return hisi_spi_nor_send_cmd(nor, nor->erase_opcode, 0);
->> +}
->> +
->> +static int hisi_spi_nor_probe(struct platform_device *pdev)
->> +{
->> +	struct device *dev = &pdev->dev;
->> +	struct resource *res;
->> +	struct hifmc_host *host;
->> +	struct device_node *np;
->> +	int ret, i = 0;
->> +
->> +	host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
->> +	if (!host)
->> +		return -ENOMEM;
->> +
->> +	platform_set_drvdata(pdev, host);
->> +	host->dev = dev;
->> +
->> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "control");
->> +	host->regbase = devm_ioremap_resource(dev, res);
->> +	if (IS_ERR(host->regbase))
->> +		return PTR_ERR(host->regbase);
->> +
->> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "memory");
->> +	host->iobase = devm_ioremap_resource(dev, res);
->> +	if (IS_ERR(host->iobase))
->> +		return PTR_ERR(host->iobase);
->> +
->> +	host->clk = devm_clk_get(dev, NULL);
->> +	if (IS_ERR(host->clk))
->> +		return PTR_ERR(host->clk);
->> +
->> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
->> +	if (ret) {
->> +		dev_warn(dev, "Unable to set dma mask\n");
->> +		return ret;
->> +	}
->> +
->> +	host->buffer = dmam_alloc_coherent(dev, HIFMC_DMA_MAX_LEN,
->> +			&host->dma_buffer, GFP_KERNEL);
->> +	if (!host->buffer)
->> +		return -ENOMEM;
->> +
->> +	mutex_init(&host->lock);
->> +	clk_prepare_enable(host->clk);
->> +	hisi_spi_nor_init(host);
->> +
->> +	for_each_available_child_of_node(dev->of_node, np) {
->> +		struct spi_nor *nor = &host->nor[i];
->> +		struct hifmc_priv *priv = &host->priv[i];
->> +		struct mtd_info *mtd = &nor->mtd;
->> +
->> +		mtd->name = np->name;
->> +		nor->dev = dev;
->> +		spi_nor_set_flash_node(nor, np);
->> +		ret = of_property_read_u32(np, "reg", &priv->chipselect);
->> +		if (ret)
->> +			goto fail;
->> +		ret = of_property_read_u32(np, "spi-max-frequency",
->> +				&priv->clkrate);
->> +		if (ret)
->> +			goto fail;
->> +		priv->host = host;
->> +		nor->priv = priv;
->> +
->> +		nor->prepare = hisi_spi_nor_prep;
->> +		nor->unprepare = hisi_spi_nor_unprep;
->> +		nor->read_reg = hisi_spi_nor_read_reg;
->> +		nor->write_reg = hisi_spi_nor_write_reg;
->> +		nor->read = hisi_spi_nor_read;
->> +		nor->write = hisi_spi_nor_write;
->> +		nor->erase = hisi_spi_nor_erase;
->> +		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
->> +		if (ret)
->> +			goto fail;
->> +
->> +		ret = mtd_device_register(mtd, NULL, 0);
->> +		if (ret)
->> +			goto fail;
->> +
->> +		i++;
->> +		host->num_chip++;
->> +		if (i == HIFMC_MAX_CHIP_NUM) {
->> +			dev_warn(dev, "Flash device number exceeds the maximum chipselect number\n");
->> +			break;
->> +		}
-> 
-> Please factor this loop out into a separate function, so we can easily
-> locate the developing boilerplate.
-> 
-OK. I'll do it in next version.
-
->> +	}
->> +
->> +	clk_disable_unprepare(host->clk);
->> +	return 0;
->> +
->> +fail:
->> +	for (i = 0; i < host->num_chip; i++)
->> +		mtd_device_unregister(&host->nor[i].mtd);
-> 
-> Did you ever exercise this fail path ? I think if you call this without
-> registering all of the MTD devices, it will crash, but I might be wrong
-> on this one.
-> 
-Yes. Actually the host->num_chip means the number of successfully registered mtd devices.
-I'll change the name to host->actual_chip_num to make it more readable.
-
->> +	clk_disable_unprepare(host->clk);
->> +	mutex_destroy(&host->lock);
->> +
->> +	return ret;
->> +}
->> +
->> +static int hisi_spi_nor_remove(struct platform_device *pdev)
->> +{
->> +	struct hifmc_host *host = platform_get_drvdata(pdev);
->> +	int i;
->> +
->> +	for (i = 0; i < host->num_chip; i++)
->> +		mtd_device_unregister(&host->nor[i].mtd);
->> +
->> +	clk_disable_unprepare(host->clk);
->> +	mutex_destroy(&host->lock);
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct of_device_id hisi_spi_nor_dt_ids[] = {
->> +	{ .compatible = "hisilicon,fmc-spi-nor"},
->> +	{ /* sentinel */ }
->> +};
->> +MODULE_DEVICE_TABLE(of, hisi_spi_nor_dt_ids);
->> +
->> +static struct platform_driver hisi_spi_nor_driver = {
->> +	.driver = {
->> +		.name	= "hisi-sfc",
->> +		.of_match_table = hisi_spi_nor_dt_ids,
->> +	},
->> +	.probe	= hisi_spi_nor_probe,
->> +	.remove	= hisi_spi_nor_remove,
->> +};
->> +module_platform_driver(hisi_spi_nor_driver);
->> +
->> +MODULE_LICENSE("GPL v2");
->> +MODULE_DESCRIPTION("HiSilicon SPI Nor Flash Controller Driver");
->>
-> 
-> btw I also trimmed down the crazy CC list.
-> 
-Sorry about that and thank you again!
-
-Regards,
-Jiancheng
+diff --git a/fs/attr.c b/fs/attr.c
+index 3cfaaac4a18e..f2bcd3f7dfbb 100644
+--- a/fs/attr.c
++++ b/fs/attr.c
+@@ -16,6 +16,31 @@
+ #include <linux/evm.h>
+ #include <linux/ima.h>
+ 
++static bool chown_ok(const struct inode *inode, kuid_t uid)
++{
++	if (uid_eq(current_fsuid(), inode->i_uid) && uid_eq(uid, inode->i_uid))
++		return true;
++	if (capable_wrt_inode_uidgid(inode, CAP_CHOWN))
++		return true;
++	if (!uid_valid(inode->i_uid) &&
++	    ns_capable(inode->i_sb->s_user_ns, CAP_CHOWN))
++		return true;
++	return false;
++}
++
++static bool chgrp_ok(const struct inode *inode, kgid_t gid)
++{
++	if (uid_eq(current_fsuid(), inode->i_uid) &&
++	    (in_group_p(gid) || gid_eq(gid, inode->i_gid)))
++		return true;
++	if (capable_wrt_inode_uidgid(inode, CAP_CHOWN))
++		return true;
++	if (!gid_valid(inode->i_gid) &&
++	    ns_capable(inode->i_sb->s_user_ns, CAP_CHOWN))
++		return true;
++	return false;
++}
++
+ /**
+  * inode_change_ok - check if attribute changes to an inode are allowed
+  * @inode:	inode to check
+@@ -58,17 +83,11 @@ int inode_change_ok(const struct inode *inode, struct iattr *attr)
+ 		return 0;
+ 
+ 	/* Make sure a caller can chown. */
+-	if ((ia_valid & ATTR_UID) &&
+-	    (!uid_eq(current_fsuid(), inode->i_uid) ||
+-	     !uid_eq(attr->ia_uid, inode->i_uid)) &&
+-	    !capable_wrt_inode_uidgid(inode, CAP_CHOWN))
++	if ((ia_valid & ATTR_UID) && !chown_ok(inode, attr->ia_uid))
+ 		return -EPERM;
+ 
+ 	/* Make sure caller can chgrp. */
+-	if ((ia_valid & ATTR_GID) &&
+-	    (!uid_eq(current_fsuid(), inode->i_uid) ||
+-	    (!in_group_p(attr->ia_gid) && !gid_eq(attr->ia_gid, inode->i_gid))) &&
+-	    !capable_wrt_inode_uidgid(inode, CAP_CHOWN))
++	if ((ia_valid & ATTR_GID) && !chgrp_ok(inode, attr->ia_gid))
+ 		return -EPERM;
+ 
+ 	/* Make sure a caller can chmod. */
