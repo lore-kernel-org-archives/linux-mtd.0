@@ -1,29 +1,26 @@
-Received: from wtarreau.pck.nerim.net ([62.212.114.60] helo=1wt.eu)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akSNP-0005LP-UQ
- for linux-mtd@lists.infradead.org; Mon, 28 Mar 2016 08:18:21 +0000
-Date: Mon, 28 Mar 2016 10:17:55 +0200
-From: Willy Tarreau <w@1wt.eu>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Benson Young <benson6877@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Gstir <david@sigma-star.at>
-Subject: Re: ubiblock RW
-Message-ID: <20160328081755.GA17870@1wt.eu>
-References: <CABJ+KKu2RJuHXE3LpmzSYtE0i57sHDUHWOxPxufCP94RTa=eBA@mail.gmail.com>
- <CAAEAJfB42GY9kGDBvacpKNgtAt3Kp1bE6rfprm_A_WiwR_cXGg@mail.gmail.com>
- <56F4502D.3030902@nod.at>
- <CAAEAJfDXB34SWoCMXBiqEFSRMWAxZpGmMR9tPdsN=mokO8fkhw@mail.gmail.com>
- <1458906697.615.20.camel@gmail.com>
- <20160325205011.GA1106@laptop.cereza> <56F5ACBD.8070201@nod.at>
- <20160326060137.GA9296@1wt.eu> <56F85851.5020508@nod.at>
- <1459148213.19765.14.camel@gmail.com>
+Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1akSPh-0007Aa-9T
+ for linux-mtd@lists.infradead.org; Mon, 28 Mar 2016 08:20:42 +0000
+Received: by mail-lf0-x241.google.com with SMTP id y184so3437583lfd.3
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Mar 2016 01:20:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1459148213.19765.14.camel@gmail.com>
+In-Reply-To: <CAAEAJfCtjSrSgqDFs_F67Kqm6=7TOZ-p3x1gYRL5_hRdTsDfZg@mail.gmail.com>
+References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
+ <CAAEAJfCtjSrSgqDFs_F67Kqm6=7TOZ-p3x1gYRL5_hRdTsDfZg@mail.gmail.com>
+Date: Mon, 28 Mar 2016 16:20:19 +0800
+Message-ID: <CAAyFORLNTtv=CdLBEE7y-4xhtAzSUO4XsYGeVgV7-nZiRQjb=w@mail.gmail.com>
+Subject: Re: [PATCH 00/11] mtd: nand_bbt: introduce independent nand BBT
+From: Peter Pan <peterpansjtu@gmail.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Jiancheng Xue <xuejiancheng@huawei.com>,
+ beanhuo@micron.com, karlzhang@micron.com, Peter Pan <peterpandong@micron.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,26 +30,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 28, 2016 at 09:56:53AM +0300, Artem Bityutskiy wrote:
-> You can add a per-volume R/O flag if needed, yes. Expose it to user-
-> space. This may be a useful thing irrespectively. I am not sure how it
-> helps with ubiblock though.
-> 
-> Ideally, the ubiblock R/W enabled flag should be stored in ubiblock,
-> not in UBI, not in MTD, because you want ubiblock to have full control
-> over it. You do not want a user go and change the flag via the UBI
-> interface whenever the user feels like, right?
-> 
-> To have this kind of flag in ubiblock, it needs an on-flash superblock
-> or something. If you are not going to introduce it, which I believe is
-> the case, then the only option left in my opinion is a ubiblock module
-> parameter.
-> 
-> If I am a ubiblock user who needs the write support, and this naive
-> write support is good enough for me, I want it enabled by default on my
-> product. A module parameter with a sound name like 'dangerous-write-
-> support' or something would work fine for me.
+Hi Ezequiel,
 
-Thanks Artem for the explanation. I think it all makes sense indeed.
+Sorry for reply your mail late. And thaks a lot for reviewing it.
 
-Willy
+On Thu, Mar 24, 2016 at 4:57 AM, Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
+> Hello,
+>
+> On 13 March 2016 at 23:47, Peter Pan <peterpansjtu@gmail.com> wrote:
+>> Sorry for send the v3 out late. I went through a busy time in the past
+>> two month.
+>>
+>> Currently nand_bbt.c is tied with struct nand_chip, and it makes other
+>> NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
+>> onenand has own bbt(onenand_bbt.c).
+>>
+>> Separate struct nand_chip from BBT code can make current BBT shareable.
+>> We create struct nand_bbt to take place of nand_chip in nand_bbt.c.
+>> Struct nand_bbt contains all the information BBT needed from outside and
+>> it should be embedded into NAND family chip struct (such as struct nand_chip).
+>>
+>> Below is mtd folder structure we want:
+>>         drivers/mtd/nand/<all-nand-core-code>
+>>         drivers/mtd/nand/raw/<raw-nand-controller-drivers>
+>>         drivers/mtd/nand/spi/<spi-nand-code>
+>>         drivers/mtd/nand/onenand/<onenand-code>
+>>         drivers/mtd/nand/chips/<manufacturer-spcific-code>
+>>
+>
+> You mention this structure, but nothing in the current patchset is actually
+> enforcing it. This is more the future direction we are going.
+
+Yes, this is what we want.
+>
+>> Most of the patch is borrowed from Brian Norris <computersforpeace@gmail.com>.
+>> http://git.infradead.org/users/norris/linux-mtd.git/shortlog/refs/heads/nand-bbt
+>> I decided the authorship of each patch by contribution. Please let me know if
+>> there is something unproper.
+>> Based on Brian's suggestion and Boris's comments, I make 11 independent
+>> patches. Previous patch is http://patchwork.ozlabs.org/patch/492066/
+>> After discussion with Boris and Ezequiel, I realized above structure is better,
+>> so I drop the patch to move nand_bbt.c to mtd folder.
+>>
+>
+> I have reviewed this patchset, and it looks mostly good to me. I can
+> spot trivial style comments, or comments related to the commit logs, or the
+> way commits are splitted.
+>
+> Boris will probably have more insightful comments to make.
+>
+> However, before starting my silly bikeshedding I'd like to know if we all
+> agree with the patchset's overall scheme.
+>
+> It would be good to finally move forward with this, to take mt29f out
+> of staging and also support other SPI NAND vendors.
+
+Yes. We plan to move mt29f_spi_nand out from staging. But because mt29f_spi_nand
+is under raw/parallel NAND framework, it mismatch the stucture we
+want. Rewite it
+under SPI NAND framework may be a better choice, right? Actually I'm
+working on this
+now.
+
+Thanks,
+Peter Pan
