@@ -1,22 +1,20 @@
-Received: from mail.arrisi.com ([216.234.147.109] helo=mail.arris.com)
+Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akpsM-0006dv-AY
- for linux-mtd@lists.infradead.org; Tue, 29 Mar 2016 09:23:53 +0000
-Received: from ATLOWA1.ARRS.ARRISI.com (atlowa1.arrs.arrisi.com [10.2.131.252])
- by mail2.arrisi.com (8.15.0.59/8.15.0.59) with ESMTPS id u2T9NThR014000
- (version=TLSv1 cipher=ECDHE-RSA-AES256-SHA bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Tue, 29 Mar 2016 05:23:29 -0400
-From: "Bussery, Francois" <Francois.Bussery@arris.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Deadlock issue in jffs2 (related to reverted patch "jffs2: Fix lock
- acquisition order bug in jffs2_write_begin")
-Date: Tue, 29 Mar 2016 09:23:28 +0000
-Message-ID: <AD0D0F08-0871-4B7B-AEDA-DF969E0675D3@arris.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B19E145CE537B643A596A9CCF0E6DA0D@arris.com>
-Content-Transfer-Encoding: base64
+ id 1aksgj-0008Cj-98
+ for linux-mtd@lists.infradead.org; Tue, 29 Mar 2016 12:24:02 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
+ <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
+ <galak@codeaurora.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: [PATCH v4 0/2] mtd: spi-nor: add an alternative method to support
+ memory > 16MiB
+Date: Tue, 29 Mar 2016 14:24:11 +0200
+Message-ID: <cover.1459251929.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +24,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCkkgZW5jb3VudGVyZWQgc2FtZSBhcyB0aGUgb25lIHRoYXQgZHJpdmUgeW91IHRvIHJl
-bW92ZSB0aGlzIHBhdGNoIChodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVs
-L2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0L2ZzL2pmZnMyP2lkPTE1NzA3OGY2NGI4YTlj
-ZDcwMTFiNmI5MDBiMmYyNDk4ZGY4NTA3NDgpDQpVbmZvcnR1bmF0ZWx5LCB0aGlzIHBhdGNoIHNv
-bHZlZCBzb21lIGJpZyBkZWFkbG9jayBpc3N1ZXMgaW4gamZmczIuIFNvLCBteSBjb25jZXJuIGlz
-IHRoYXQgd2UgcmV0dXJuIGJhY2sgdG8gb3VyIGluaXRpYWwgaXNzdWUuDQoNClNvLCBkbyB5b3Ug
-aGF2ZSBhbnkgdXBkYXRlIGZvciB0aGlzIGlzc3VlPyBNYXkgYmUgdGhlIDIwMTUgcGF0Y2ggd2Fz
-IGp1c3Qgbm90IHN1ZmZpc2FudC4gDQpXaGF0IEkgaGF2ZSBub3RpY2VkIHdpdGggdGhpcyBwYXRj
-aCBpcyB0aGF0IHRoZXJlIGlzIGEgZGVhZGxvY2sgYmV0d2VlbiB0aGUgd3JpdGUgY29tbWFuZCBh
-bmQgdGhlIHN5bmMgY29tbWFuZC4NCg0KaGVyZSB0aGUgc3RhY2s6DQoNCndyaXRlIGNvbW1hbmQ6
-DQoNCkNhbGwgVHJhY2U6DQpbPDgwNTVkNTEwPl0gX19zY2hlZHVsZSsweDMzOC8weDdkOA0KWzw4
-MDU1YmQ1Yz5dIF9fbXV0ZXhfbG9ja19zbG93cGF0aCsweDE3MC8weDJhMA0KWzw4MDU1YmYxYz5d
-IG11dGV4X2xvY2srMHg5MC8weDk4DQpbPDgwMWZiNDI4Pl0gamZmczJfcmVzZXJ2ZV9zcGFjZSsw
-eDVjLzB4MzFjDQpbPDgwMWZlNDYwPl0gamZmczJfd3JpdGVfaW5vZGVfcmFuZ2UrMHg4NC8weDM2
-NA0KWzw4MDFmODNiYz5dIGpmZnMyX3dyaXRlX2VuZCsweDE2Yy8weDNiNA0KWzw4MDBhYzUzMD5d
-IGdlbmVyaWNfZmlsZV9idWZmZXJlZF93cml0ZSsweDE4OC8weDJjMA0KWzw4MDBhZWNkMD5dIF9f
-Z2VuZXJpY19maWxlX2Fpb193cml0ZSsweDI4MC8weDVlYw0KWzw4MDBhZjBjND5dIGdlbmVyaWNf
-ZmlsZV9haW9fd3JpdGUrMHg4OC8weDE1Yw0KWzw4MDBmNzM4Yz5dIGRvX3N5bmNfd3JpdGUrMHhj
-NC8weDEzYw0KWzw4MDBmODEyYz5dIHZmc193cml0ZSsweGM0LzB4MTZjDQpbPDgwMGY4NDNjPl0g
-c3lzX3dyaXRlKzB4NGMvMHhiNA0KWzw4MDAxMGU1Yz5dIHN0YWNrX2RvbmUrMHgyMC8weDQwDQpb
-MF1tb3JlPg0KDQoNCmZzeW5jIGlvY3RsOg0KWzw4MDU1ZDUxMD5dIF9fc2NoZWR1bGUrMHgzMzgv
-MHg3ZDgNCls8ODA1NWRiNTA+XSBpb19zY2hlZHVsZSsweDk0LzB4MTM4DQpbPDgwMGFkMjU0Pl0g
-c2xlZXBfb25fcGFnZSsweDEwLzB4MjANCls8ODA1NWI3YTg+XSBfX3dhaXRfb25fYml0X2xvY2sr
-MHhlMC8weDE5NA0KWzw4MDBhZDIzOD5dIF9fbG9ja19wYWdlKzB4OTAvMHg5Yw0KWzw4MDBhZGM4
-OD5dIGRvX3JlYWRfY2FjaGVfcGFnZSsweDIxMC8weDIzYw0KWzw4MDBhZGQwND5dIHJlYWRfY2Fj
-aGVfcGFnZV9hc3luYysweDIwLzB4MmMNCls8ODAyMDUwYjA+XSBqZmZzMl9nY19mZXRjaF9wYWdl
-KzB4MmMvMHg4MA0KWzw4MDIwMTMxYz5dIGpmZnMyX2dhcmJhZ2VfY29sbGVjdF9saXZlKzB4NTVj
-LzB4ZjhjDQpbPDgwMjAyMWIwPl0gamZmczJfZ2FyYmFnZV9jb2xsZWN0X3Bhc3MrMHg0NjQvMHg4
-OTQNCls8ODAyMDZlNzQ+XSBqZmZzMl9mbHVzaF93YnVmX2djKzB4OTgvMHgxNzQNCls8ODAxZjhi
-NjA+XSBqZmZzMl9mc3luYysweDYwLzB4ODgNCls8ODAxMjgwYTg+XSB2ZnNfZnN5bmMrMHg1MC8w
-eDVjDQoNCg0KVGhlIHBiIGlzIHRoYXQgdGhlIG11dGV4IGlzIHRha2VuIGJ5IHRoZSBmc3luYyBj
-bWTigKYgYW5kIGxvY2sgcGFnZSBieSB3cml0ZSBjbWTigKYuDQpJ4oCZbSB3b25kZXJpbmcgaWYg
-d2UgY291bGQgbG9jayB0aGUgcGFnZSBpbiBzeW5jIGJlZm9yZSBsb2NraW5nIHRoZSBtdXRleCBh
-cGk/DQoNCg==
+Hi all,
+
+This patch was tested on a sama5d2 xplained board + Macronix mx25l25673g.
+
+It provides us with an alternative method to support SPI NOR memory above
+16MiB (128Mib). Indeed the previous method (still default) makes the
+memory enter it's 4byte-address method. However this mode has some
+annoying side effects for early bootloarders: it changes the internal
+state of the memory hence when using regular (Fast) Read op codes
+(0x03, 0x0b, 0x6b, ...) the memory now expects 4byte addresses whereas
+some bootloaders still use these op codes with 3byte addresses.
+
+The new method translates the 3byte address op codes into their 4byte
+address version:
+0x03 -> 0x13  Read
+0x0b -> 0x0c  Fast Read
+0x6b -> 0x6c  Fast Read 1-1-4
+0x02 -> 0x12  Page Program
+0xd8 -> 0xdc  Sector Erase
+...
+
+The internal state of the SPI NOR memory is left unchanged.
+
+However the 4byte address op codes are not supported by all memories.
+For instance Macronix mx25l25635e and mx25l25673g share the very same
+JEDEC ID (C22019) with no additional ext_id bytes to differentiate them.
+The 35e doesn't support the 4byte address op codes whereas the 73g does.
+So there is no mean for the software to discover at runtime whether the
+hardware supports these op codes. Hence this patch checks a new DT
+property, "m25p,4byte-opcoes", to select the proper method to deal with
+a >16MiB SPI NOR memory.
+
+
+Best regards,
+
+Cyrille
+
+
+ChangeLog:
+
+v3 -> v4:
+- rename "m25p,4byte-opcodes" DT property into "spi-nor-4byte-opcodes".
+- replace "can not" by "cannot" in DT binding documentation.
+
+v2 -> v3:
+- fix errors reported by kbuild test robot: replace SPINOR_OP_READ4.* op
+  codes by SPINOR_OP_READ.*_4B in st_spi_fsm.c
+- rename QUAD_PP into PP_1_1_4 and QUAD_PP_MX into PP_1_4_4
+
+v1 -> v2:
+- remove the Kconfig option and use the new "m25p,4byte-opcodes" DT
+  property instead.
+
+
+Cyrille Pitchen (2):
+  mtd: spi-nor: add an alternative method to support memory >16MiB
+  doc: dt: mtd: add a DT property to enable the use of 4byte-address op
+    codes
+
+ .../devicetree/bindings/mtd/jedec,spi-nor.txt      |  11 +++
+ drivers/mtd/devices/serial_flash_cmds.h            |   7 --
+ drivers/mtd/devices/st_spi_fsm.c                   |  28 +++---
+ drivers/mtd/spi-nor/spi-nor.c                      | 100 ++++++++++++++++-----
+ include/linux/mtd/spi-nor.h                        |  21 +++--
+ 5 files changed, 119 insertions(+), 48 deletions(-)
+
+-- 
+1.8.2.2
