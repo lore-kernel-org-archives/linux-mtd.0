@@ -1,25 +1,17 @@
-Received: from conuserg009.nifty.com ([202.248.44.35]
- helo=conuserg009-v.nifty.com)
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akjSf-0003oM-R7
- for linux-mtd@lists.infradead.org; Tue, 29 Mar 2016 02:32:54 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org
-Cc: Graham Moore <grmoore@opensource.altera.com>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Kumar Gala <galak@codeaurora.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Brian Norris <computersforpeace@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v2] mtd: nand: denali: allow to override max_banks from DT
- property
-Date: Tue, 29 Mar 2016 11:33:07 +0900
-Message-Id: <1459218787-15197-1-git-send-email-yamada.masahiro@socionext.com>
+ id 1akmUv-0001ym-ID
+ for linux-mtd@lists.infradead.org; Tue, 29 Mar 2016 05:47:26 +0000
+From: Vignesh R <vigneshr@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Vignesh R <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [RESEND][PATCH] mtd: devices: m25p80: add support for mmap read
+ request
+Date: Tue, 29 Mar 2016 11:16:17 +0530
+Message-ID: <1459230377-26847-1-git-send-email-vigneshr@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,81 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
-changed in revision 5.1") supported the new encoding of the "n_banks"
-bits of the "features" register, but there is an unfortunate case
-not covered by that commit.
+Certain SPI controllers may provide accelerated hardware interface to
+read from m25p80 type flash devices in order to provide better read
+performance. SPI core supports such devices with spi_flash_read() API.
+Call spi_flash_read(), if supported, to make use of such interface.
 
-Panasonic (its System LSI Business Division is now Socionext) bought
-a couple of versions of this IP.  The IP released for Panasonic
-around Feb. 2012 is revision 5 and uses the old encoding for n_banks
-(2 << n_banks).  While the one released around Nov. 2012 is also
-revision 5, but it uses the new encoding (1 << n_banks).
-
-The revision register cannot distinguish these two incompatible
-hardware.  I guess this IP series is not well-organized.  I could not
-find any solution but giving max_banks from DT property.
-
-This commit works around the problem by allowing DT to set the
-max_banks forcibly.  Of course, this DT property can be optional if
-the auto detection based on the hardware registers works well.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Vignesh R <vigneshr@ti.com>
 ---
 
-Changes in v2:
-  - rebase on v4.6-rc1
-  - add Rob's Acked-by
-  - Rephrase git-log slightly
+Resend v5:
+Rebased on top of v4.6-rc1
+v5: http://www.spinics.net/lists/devicetree/msg106696.html
 
- Documentation/devicetree/bindings/mtd/denali-nand.txt | 4 ++++
- drivers/mtd/nand/denali.c                             | 3 ++-
- drivers/mtd/nand/denali_dt.c                          | 3 +++
- 3 files changed, 9 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/m25p80.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-index b04d03a..6154c77 100644
---- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-@@ -7,6 +7,10 @@ Required properties:
-   - interrupts : The interrupt number.
-   - dm-mask : DMA bit mask
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index c9c3b7fa3051..7730e633d7d3 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -131,6 +131,26 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	/* convert the dummy cycles to the number of bytes */
+ 	dummy /= 8;
  
-+Optional properties:
-+  - max-banks : Maximum number of banks supported by hardware.  If not
-+    specified, it is determined based on the "features" register of hardware.
++	if (spi_flash_read_supported(spi)) {
++		struct spi_flash_read_message msg;
++		int ret;
 +
- The device tree may optionally contain sub-nodes describing partitions of the
- address space. See partition.txt for more detail.
- 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 30bf5f6..e18b569 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1353,7 +1353,8 @@ static void denali_hw_init(struct denali_nand_info *denali)
- 	 */
- 	denali->bbtskipbytes = ioread32(denali->flash_reg +
- 						SPARE_AREA_SKIP_BYTES);
--	detect_max_banks(denali);
-+	if (!denali->max_banks)
-+		detect_max_banks(denali);
- 	denali_nand_reset(denali);
- 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
- 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 0cb1e8d..be55db8 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -85,6 +85,9 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 		denali->dev->dma_mask = NULL;
- 	}
- 
-+	of_property_read_u32(ofdev->dev.of_node, "max-banks",
-+			     &denali->max_banks);
++		msg.buf = buf;
++		msg.from = from;
++		msg.len = len;
++		msg.read_opcode = nor->read_opcode;
++		msg.addr_width = nor->addr_width;
++		msg.dummy_bytes = dummy;
++		/* TODO: Support other combinations */
++		msg.opcode_nbits = SPI_NBITS_SINGLE;
++		msg.addr_nbits = SPI_NBITS_SINGLE;
++		msg.data_nbits = m25p80_rx_nbits(nor);
 +
- 	dt->clk = devm_clk_get(&ofdev->dev, NULL);
- 	if (IS_ERR(dt->clk)) {
- 		dev_err(&ofdev->dev, "no clk available\n");
++		ret = spi_flash_read(spi, &msg);
++		*retlen = msg.retlen;
++		return ret;
++	}
++
+ 	spi_message_init(&m);
+ 	memset(t, 0, (sizeof t));
+ 
 -- 
-1.9.1
+2.7.4
