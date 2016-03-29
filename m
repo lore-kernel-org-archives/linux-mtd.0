@@ -1,30 +1,25 @@
-Received: from mail-pf0-x232.google.com ([2607:f8b0:400e:c00::232])
+Received: from conuserg009.nifty.com ([202.248.44.35]
+ helo=conuserg009-v.nifty.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akeDv-0003r1-7L
- for linux-mtd@lists.infradead.org; Mon, 28 Mar 2016 20:57:20 +0000
-Received: by mail-pf0-x232.google.com with SMTP id 4so146200082pfd.0
- for <linux-mtd@lists.infradead.org>; Mon, 28 Mar 2016 13:56:58 -0700 (PDT)
-Date: Mon, 28 Mar 2016 13:56:54 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Matthias Schiffer <mschiffer@universe-factory.net>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Daniel Kurtz <djkurtz@chromium.org>, Marek Vasut <marex@denx.de>,
- Bayi Cheng <bayi.cheng@mediatek.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Felix Fietkau <nbd@openwrt.org>,
- Eddie Huang =?utf-8?B?KOm7g+aZuuWCkSk=?= <eddie.huang@mediatek.com>,
- Milton Chiang =?utf-8?B?KOaxn+aYjuaZjyk=?= <Milton.Chiang@mediatek.com>,
- Gernot Hoyler <Gernot.Hoyler@spansion.com>
-Subject: Re: [PATCH for-4.4 1/2] mtd: spi-nor: fix Spansion regressions
- (aliased with Winbond)
-Message-ID: <20160328205654.GJ2545@google.com>
-References: <1450205301-32207-1-git-send-email-computersforpeace@gmail.com>
- <56F6DB9C.5010305@universe-factory.net>
- <56F86443.4050901@universe-factory.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56F86443.4050901@universe-factory.net>
+ id 1akjSf-0003oM-R7
+ for linux-mtd@lists.infradead.org; Tue, 29 Mar 2016 02:32:54 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org
+Cc: Graham Moore <grmoore@opensource.altera.com>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, Kumar Gala <galak@codeaurora.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v2] mtd: nand: denali: allow to override max_banks from DT
+ property
+Date: Tue, 29 Mar 2016 11:33:07 +0900
+Message-Id: <1459218787-15197-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,69 +29,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 28, 2016 at 12:52:51AM +0200, Matthias Schiffer wrote:
-> On 03/26/2016 07:57 PM, Matthias Schiffer wrote:
-> > On 12/15/2015 07:48 PM, Brian Norris wrote:
-> >> Spansion and Winbond have occasionally used the same manufacturer ID,
-> >> and they don't support the same features. Particularly, writing SR=0
-> >> seems to break read access for Spansion's s25fl064k. Unfortunately, we
-> >> don't currently have a way to differentiate these Spansion and Winbond
-> >> parts, so rather than regressing support for these Spansion flash, let's
-> >> drop the new Winbond lock/unlock support for now. We can try to address
-> >> Winbond support during the next release cycle.
-> >>
-> >> Original discussion:
-> >>
-> >> http://patchwork.ozlabs.org/patch/549173/
-> >> http://patchwork.ozlabs.org/patch/553683/
-> >>
-> > 
-> > I have a few devices with a s25fl064k lying around, and I was not able to
-> > reproduce this issue. I've re-applied "mtd: spi-nor: disable protection for
-> > Winbond flash at startup" and the flash is readable just fine.
-> > 
-> > On the contrary, I've come across a board with a s25fl064k that comes up
-> > locked, so removing the protection bits would be necessary. (I was not yet
-> > able to check if the patch actually fixes writing to the flash on this
-> > board, as I don't have access to the device myself, but I hope to get a
-> > response on that soon.)
-> > 
-> > Regards,
-> > Matthias
-> > 
-> 
-> I made the mistake of trusting the kernel log and OpenWrt Wiki when making
-> my previous tests.
-> 
-> All of the boards I was talking about in my last mail actually have a
-> Winbond w25q64, not a s25fl064k (two board I tested the patch on, and the
-> board that was reported to come up locked). The kernel detects the w25q64
-> as s25fl064k, as these two flash chips have the same JEDEC ID 0xef4017.
+Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
+changed in revision 5.1") supported the new encoding of the "n_banks"
+bits of the "features" register, but there is an unfortunate case
+not covered by that commit.
 
-That's interesting; I didn't notice we had duplicate entries for the
-same ID. But apparently, the committers did:
+Panasonic (its System LSI Business Division is now Socionext) bought
+a couple of versions of this IP.  The IP released for Panasonic
+around Feb. 2012 is revision 5 and uses the old encoding for n_banks
+(2 << n_banks).  While the one released around Nov. 2012 is also
+revision 5, but it uses the new encoding (1 << n_banks).
 
-  commit f2df1ae3fe8d ("mtd: m25p80: Add support for two new Spansion
-  SPI devices (S25FL-K)")
-  ...
-  "Note that both parts exhibit a Winbond manufacturer ID so they might
-  also be added to that section."
+The revision register cannot distinguish these two incompatible
+hardware.  I guess this IP series is not well-organized.  I could not
+find any solution but giving max_banks from DT property.
 
-But this is interesting: I see the latest datasheet for Spansion
-s25fl064k says it supports the Block Protect bits in the Status
-Register, so presumably *some* version of s25fl064k should support
-write_sr(nor, 0) to unlock it at boot...
+This commit works around the problem by allowing DT to set the
+max_banks forcibly.  Of course, this DT property can be optional if
+the auto detection based on the hardware registers works well.
 
-If Felix's initial report is indeed correct, then I think we have:
-(1) Spansion s25fl064k without Block Protect support (that breaks if you
-    try to write SR=0)
-(2) Spansion s25fl064k with Block Protect support (that requires you to
-    unlock at boot by writing SR=0 (?))
-(3) Winbond w25q64 with Block Protect support (that requires you to
-    unlock at boot by writing SR=0)
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
 
-And (1)-(3) all report the same ID, and (1) is incompatible with (2) and
-(3). Am I right? Are flash vendors really this insane? Should we all
-just give up and go home?
+Changes in v2:
+  - rebase on v4.6-rc1
+  - add Rob's Acked-by
+  - Rephrase git-log slightly
 
-Brian
+ Documentation/devicetree/bindings/mtd/denali-nand.txt | 4 ++++
+ drivers/mtd/nand/denali.c                             | 3 ++-
+ drivers/mtd/nand/denali_dt.c                          | 3 +++
+ 3 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+index b04d03a..6154c77 100644
+--- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+@@ -7,6 +7,10 @@ Required properties:
+   - interrupts : The interrupt number.
+   - dm-mask : DMA bit mask
+ 
++Optional properties:
++  - max-banks : Maximum number of banks supported by hardware.  If not
++    specified, it is determined based on the "features" register of hardware.
++
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+ 
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 30bf5f6..e18b569 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1353,7 +1353,8 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	 */
+ 	denali->bbtskipbytes = ioread32(denali->flash_reg +
+ 						SPARE_AREA_SKIP_BYTES);
+-	detect_max_banks(denali);
++	if (!denali->max_banks)
++		detect_max_banks(denali);
+ 	denali_nand_reset(denali);
+ 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
+ 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index 0cb1e8d..be55db8 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -85,6 +85,9 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 		denali->dev->dma_mask = NULL;
+ 	}
+ 
++	of_property_read_u32(ofdev->dev.of_node, "max-banks",
++			     &denali->max_banks);
++
+ 	dt->clk = devm_clk_get(&ofdev->dev, NULL);
+ 	if (IS_ERR(dt->clk)) {
+ 		dev_err(&ofdev->dev, "no clk available\n");
+-- 
+1.9.1
