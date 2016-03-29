@@ -1,22 +1,19 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
+Received: from mail02.rohde-schwarz.com ([80.246.32.97])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akshB-0008FK-NW
- for linux-mtd@lists.infradead.org; Tue, 29 Mar 2016 12:24:30 +0000
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
- <marex@denx.de>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <pawel.moll@arm.com>,
- <mark.rutland@arm.com>, <ijc+devicetree@hellion.org.uk>,
- <galak@codeaurora.org>, Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v4 2/2] doc: dt: mtd: add a DT property to enable the use of
- 4byte-address op codes
-Date: Tue, 29 Mar 2016 14:24:13 +0200
-Message-ID: <320899457d15b85eb0b71edd566cae035d7e1f55.1459251929.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <cover.1459251929.git.cyrille.pitchen@atmel.com>
-References: <cover.1459251929.git.cyrille.pitchen@atmel.com>
+ id 1akspP-0005rG-M8
+ for linux-mtd@lists.infradead.org; Tue, 29 Mar 2016 12:33:00 +0000
+In-Reply-To: <AD0D0F08-0871-4B7B-AEDA-DF969E0675D3@arris.com>
+References: <AD0D0F08-0871-4B7B-AEDA-DF969E0675D3@arris.com>
+To: Francois.Bussery@arris.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Subject: Re: Deadlock issue in jffs2 (related to reverted patch "jffs2: Fix
+ lock acquisition order bug in jffs2_write_begin")
+From: Thomas.Betker@rohde-schwarz.com
+Message-ID: <OFE6A9E412.54AAF9F2-ONC1257F85.00415EE4-C1257F85.0042B468@rohde-schwarz.com>
+Date: Tue, 29 Mar 2016 14:08:35 +0200
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds a new optional DT property which enables an alternative
-way of supporting memory size above 16MiB (128Mib). This new mechanism
-translates the regular 3byte-address op codes into their 4byte-address
-version whereas the old/default mecanism makes the SPI memory enter its
-4byte-address mode, which has annoying side effects for early bootloaders.
+Hello Francois:
 
-We cannot discover at run time whether the SPI NOR memory supports the
-4byte-address op codes. For instance both Macronix MX25L25635E and
-MX25L25673G share the same JEDEC ID (C22019 without any extension byte).
-However the first one doesn't support 4byte-address op codes whereas the
-second one does.
+> I encountered same as the one that drive you to remove this patch (
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/
+> commit/fs/jffs2?id=157078f64b8a9cd7011b6b900b2f2498df850748)
+> Unfortunately, this patch solved some big deadlock issues in jffs2. 
+> So, my concern is that we return back to our initial issue.
+> 
+> So, do you have any update for this issue? May be the 2015 patch was
+> just not suffisant. 
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
----
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+David Woodhouse has provided a patch "jffs2: Fix page lock / f->sem 
+deadlock" which was added to linux-4.5 (alternatively, you can get the 
+patch here: http://git.infradead.org/users/dwmw2/jffs2-fixes.git).
 
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-index 2c91c03e7eb0..3cf1b3cdafe8 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
-@@ -66,6 +66,17 @@ Optional properties:
-                    Refer to your chips' datasheet to check if this is supported
-                    by your chip.
- 
-+- spi-nor-4byte-opcodes: For memory size above 16MiB (128Mib), use the dedicated
-+                         4byte-address opcodes instead of entering the 4byte
-+                         address mode. This mode changes the internal state of
-+                         the chip so may conflict with some early boot loaders,
-+                         which expect to use the regular (Fast) Read opcodes
-+                         with 3byte address.
-+                         However 4byte-address opcodes are not supported by all
-+                         chips and support for them cannot be detected at
-+                         runtime. Refer to you chip's datasheet to check if this
-+                         is supported by your chip.
-+
- Example:
- 
- 	flash: m25p80@0 {
--- 
-1.8.2.2
+Hope this helps,
+Thomas
