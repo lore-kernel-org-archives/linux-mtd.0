@@ -1,25 +1,22 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akopT-0003HB-19
- for linux-mtd@lists.infradead.org; Tue, 29 Mar 2016 08:16:48 +0000
-Date: Tue, 29 Mar 2016 10:16:25 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, karlzhang@micron.com, beanhuo@micron.com,
- xuejiancheng@huawei.com, Peter Pan <peterpandong@micron.com>
-Subject: Re: [PATCH 02/11] mtd: nand_bbt: introduce BBT related data structure
-Message-ID: <20160329101625.3b9acced@bbrezillon>
-In-Reply-To: <CAAyFORK68Ur6ST_HbfCEXO5bM1x80szsCQeVDq_YbRNT8nuyvQ@mail.gmail.com>
-References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
- <1457923684-13505-3-git-send-email-peterpandong@micron.com>
- <20160325093519.34c3f7fa@bbrezillon>
- <CAAyFORK68Ur6ST_HbfCEXO5bM1x80szsCQeVDq_YbRNT8nuyvQ@mail.gmail.com>
+Received: from mail.arrisi.com ([216.234.147.109] helo=mail.arris.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1akpsM-0006dv-AY
+ for linux-mtd@lists.infradead.org; Tue, 29 Mar 2016 09:23:53 +0000
+Received: from ATLOWA1.ARRS.ARRISI.com (atlowa1.arrs.arrisi.com [10.2.131.252])
+ by mail2.arrisi.com (8.15.0.59/8.15.0.59) with ESMTPS id u2T9NThR014000
+ (version=TLSv1 cipher=ECDHE-RSA-AES256-SHA bits=256 verify=NOT)
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Mar 2016 05:23:29 -0400
+From: "Bussery, Francois" <Francois.Bussery@arris.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Deadlock issue in jffs2 (related to reverted patch "jffs2: Fix lock
+ acquisition order bug in jffs2_write_begin")
+Date: Tue, 29 Mar 2016 09:23:28 +0000
+Message-ID: <AD0D0F08-0871-4B7B-AEDA-DF969E0675D3@arris.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B19E145CE537B643A596A9CCF0E6DA0D@arris.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,221 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 28 Mar 2016 16:09:44 +0800
-Peter Pan <peterpansjtu@gmail.com> wrote:
-
-> Hi Boris,
-> 
-> Firstly, thanks a lot for taking time to review my patches.
-> 
-> On Fri, Mar 25, 2016 at 4:35 PM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > Hi Peter,
-> >
-> > On Mon, 14 Mar 2016 02:47:55 +0000
-> > Peter Pan <peterpansjtu@gmail.com> wrote:
-> >
-> >> From: Brian Norris <computersforpeace@gmail.com>
-> >>
-> >> Currently nand_bbt.c is tied with struct nand_chip, and it makes other
-> >> NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
-> >> onenand has own bbt(onenand_bbt.c).
-> >>
-> >> Separate struct nand_chip from BBT code can make current BBT shareable.
-> >> We create struct nand_bbt to take place of nand_chip in nand_bbt.c
-> >>
-> >> Below is mtd folder structure we want:
-> >>       drivers/mtd/nand/<all-nand-core-code>
-> >>       drivers/mtd/nand/raw/<raw-nand-controller-drivers>
-> >>       drivers/mtd/nand/spi/<spi-nand-code>
-> >>       drivers/mtd/nand/onenand/<onenand-code>
-> >>       drivers/mtd/nand/chips/<manufacturer-spcific-code>
-> >>
-> >> Of course, nand_bbt.c should be part of <all-nand-core-code>.
-> >>
-> >> We put every chip layout related information BBT needed into struct
-> >> nand_chip_layout_info.
-> >>       @numchips:      number of physical chips, required for NAND_BBT_PERCHIP
-> >>       @chipsize:      the size of one chip for multichip arrays
-> >>       @chip_shift:    number of address bits in one chip
-> >>       @bbt_erase_shift:       number of address bits in a bbt entry
-> >>       @page_shift:    number of address bits in a page
-> >>
-> >> We defined a struct nand_bbt_ops for BBT ops. Struct
-> >>       @is_bad_bbm:    check if a block is factory bad block
-> >>       @erase: erase block bypassing resvered checks
-> >>
-> >> Struct nand_bbt includes all BBT information:
-> >>       @mtd:   pointer to MTD device structure
-> >>       @bbt_options:   bad block specific options. All options used
-> >>                       here must come from nand_bbt.h.
-> >>       @bbt_ops:       struct nand_bbt_ops pointer.
-> >>       @info:          struct nand_chip_layout_info pointer.
-> >>       @bbt_td:        bad block table descriptor for flash lookup.
-> >>       @bbt_md:        bad block table mirror descriptor
-> >>       @bbt:           bad block table pointer
-> >>
-> >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> >> [Peter: 1. correct comment style
-> >>       2. introduce struct nand_bbt_ops and nand_chip_layout_info]
-> >> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> >> ---
-> >>  include/linux/mtd/nand_bbt.h | 67 ++++++++++++++++++++++++++++++++++++++++++++
-> >>  1 file changed, 67 insertions(+)
-> >>
-> >> diff --git a/include/linux/mtd/nand_bbt.h b/include/linux/mtd/nand_bbt.h
-> >> index 5a65230..cfb22c8 100644
-> >> --- a/include/linux/mtd/nand_bbt.h
-> >> +++ b/include/linux/mtd/nand_bbt.h
-> >> @@ -18,6 +18,8 @@
-> >>  #ifndef __LINUX_MTD_NAND_BBT_H
-> >>  #define __LINUX_MTD_NAND_BBT_H
-> >>
-> >> +struct mtd_info;
-> >> +
-> >>  /* The maximum number of NAND chips in an array */
-> >>  #define NAND_MAX_CHIPS               8
-> >>
-> >> @@ -115,4 +117,69 @@ struct nand_bbt_descr {
-> >>  /* The maximum number of blocks to scan for a bbt */
-> >>  #define NAND_BBT_SCAN_MAXBLOCKS      4
-> >>
-> >> +struct nand_bbt;
-> >> +
-> >> +/**
-> >> + * struct nand_bbt_ops - bad block table operations
-> >> + * @is_bad_bbm:      check if a block is factory bad block
-> >> + * @erase:   erase block bypassing resvered checks
-> >> + */
-> >> +struct nand_bbt_ops {
-> >> +     /*
-> >> +      * This is important to abstract out of nand_bbt.c and provide
-> >> +      * separately in nand_base.c and spi-nand-base.c -- it's sort of
-> >> +      * duplicated in nand_block_bad() (nand_base) and
-> >> +      * scan_block_fast() (nand_bbt) right now
-> >> +      *
-> >> +      * Note that this also means nand_chip.badblock_pattern should
-> >> +      * be removed from nand_bbt.c
-> >> +      */
-> >> +     int (*is_bad_bbm)(struct mtd_info *mtd, loff_t ofs);
-> >> +
-> >> +     /* Erase a block, bypassing reserved checks */
-> >> +     int (*erase)(struct mtd_info *mtd, loff_t ofs);
-> >> +};
-> >> +
-> >> +/**
-> >> + * struct nand_chip_layout_info - strucure contains all chip layout
-> >> + * information that BBT needed.
-> >> + * @numchips:        number of physical chips, required for NAND_BBT_PERCHIP
-> >> + * @chipsize:        the size of one chip for multichip arrays
-> >> + * @chip_shift:      number of address bits in one chip
-> >> + * @bbt_erase_shift: number of address bits in a bbt entry
-> >> + * @page_shift:      number of address bits in a page
-> >> + */
-> >> +struct nand_chip_layout_info {
-> >
-> > I know I'm the one who suggested this name, but NAND datasheet seems to
-> > call it "memory organization", so maybe we should rename this struct
-> > nand_memory_organization.
-> 
-> Fix this in v4
-> >
-> >> +     int numchips;
-> >
-> > I would rename it numdies, or ndies. numchips implies you're having
-> > several chips, which is not the case.
-> 
-> Fix this in v4
-> >
-> >> +     u64 chipsize;
-> >
-> > Ditto, s/chipsize/diesize/
-> 
-> Fix this in v4
-> >
-> >> +     int chip_shift;
-> >
-> > Ditto.
-> 
-> Fix this in v4
-> >
-> >> +     int bbt_erase_shift;
-> >
-> > Hm, this is not related to the memory organization. I'd prefer moving
-> > this one directly in
-> 
-> Yes, I also realize bbt_erase_shift is not proper. How about just rename it
-> to erase_block_shift or block_shift ?
-
-eraseblock_shift sounds good as long as
-bbt_erase_shift == eraseblock_shift is always true.
-
-> 
-> >
-> >> +     int page_shift;
-> >> +};
-> >
-> > The structure should probably contain other info like (oob size, pages
-> > per block, blocks per die, ...)
-> > I know some of those information are redundant with mtd_info content,
-> > but it would be clearer to have everything in a common place.
-> >
-> > Also, I'd recommend using helpers to access memory organization info.
-> > For example nand_get_die_size(mtd), nand_get_page_size(mtd), ...
-> >
-> > On a more general note, as already said, I'd like to see more
-> > generalization across NAND based devices, no matter the interface
-> > they're using.
-> > Doing that implies forcing all NAND based devices to inherit from a
-> > common class. Something like
-> >
-> > struct nand_device {
-> >         struct mtd_info mtd;
-> >         struct nand_memory_organization memorg;
-> >         /* ... */
-> > };
-> >
-> > /* rawnand_device <-> nand_chip */
-> > struct rawnand_device {
-> >         struct nand_device base;
-> >         /* raw NAND specific fields */
-> > }
-> >
-> > struct spinand_device {
-> >         struct nand_device base;
-> >         /* SPI NAND specific fields */
-> > };
-> >
-> > struct onenand_device {
-> >         struct nand_device base;
-> >         /* OneNAND specific fields */
-> > };
-> >
-> > With this design, nand_bbt and nand_bbt_ops could use the generic
-> > nand_device instead of directly using the mtd instance.
-> >
-> > Anyway, that's just a long term goal, and I wanted to share my
-> > ideas. I guess your plan is to add support for SPI nand devices, so
-> > keep this in mind ;-).
-> 
-> Acctually your idea is quite good. Actually, struct nand_chip_layout_info
-> shouldn't be in nand_bbt.h. It should be in nand.h or nand_base.h and embedded
-> in struct nand_chip (or struct nand_deivce as your said).
-
-Yes, I didn't comment on that since I don't want to create a
-nand_base.h header file. The idea is to rename nand.h into rawnand.h
-and then create a nand.h file containing all interface-independent
-stuff (like memory organization info).
-
-> The reason I did't do this is I feel it will be too involved. I need
-> to change almost
-> all files under mtd/nand/, which generates a larger patch set.
-
-Yes, I know, that's why I'm not asking that right now. But that would
-be great if we could prepare things for this move...
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+SGksDQoNCkkgZW5jb3VudGVyZWQgc2FtZSBhcyB0aGUgb25lIHRoYXQgZHJpdmUgeW91IHRvIHJl
+bW92ZSB0aGlzIHBhdGNoIChodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVs
+L2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0L2ZzL2pmZnMyP2lkPTE1NzA3OGY2NGI4YTlj
+ZDcwMTFiNmI5MDBiMmYyNDk4ZGY4NTA3NDgpDQpVbmZvcnR1bmF0ZWx5LCB0aGlzIHBhdGNoIHNv
+bHZlZCBzb21lIGJpZyBkZWFkbG9jayBpc3N1ZXMgaW4gamZmczIuIFNvLCBteSBjb25jZXJuIGlz
+IHRoYXQgd2UgcmV0dXJuIGJhY2sgdG8gb3VyIGluaXRpYWwgaXNzdWUuDQoNClNvLCBkbyB5b3Ug
+aGF2ZSBhbnkgdXBkYXRlIGZvciB0aGlzIGlzc3VlPyBNYXkgYmUgdGhlIDIwMTUgcGF0Y2ggd2Fz
+IGp1c3Qgbm90IHN1ZmZpc2FudC4gDQpXaGF0IEkgaGF2ZSBub3RpY2VkIHdpdGggdGhpcyBwYXRj
+aCBpcyB0aGF0IHRoZXJlIGlzIGEgZGVhZGxvY2sgYmV0d2VlbiB0aGUgd3JpdGUgY29tbWFuZCBh
+bmQgdGhlIHN5bmMgY29tbWFuZC4NCg0KaGVyZSB0aGUgc3RhY2s6DQoNCndyaXRlIGNvbW1hbmQ6
+DQoNCkNhbGwgVHJhY2U6DQpbPDgwNTVkNTEwPl0gX19zY2hlZHVsZSsweDMzOC8weDdkOA0KWzw4
+MDU1YmQ1Yz5dIF9fbXV0ZXhfbG9ja19zbG93cGF0aCsweDE3MC8weDJhMA0KWzw4MDU1YmYxYz5d
+IG11dGV4X2xvY2srMHg5MC8weDk4DQpbPDgwMWZiNDI4Pl0gamZmczJfcmVzZXJ2ZV9zcGFjZSsw
+eDVjLzB4MzFjDQpbPDgwMWZlNDYwPl0gamZmczJfd3JpdGVfaW5vZGVfcmFuZ2UrMHg4NC8weDM2
+NA0KWzw4MDFmODNiYz5dIGpmZnMyX3dyaXRlX2VuZCsweDE2Yy8weDNiNA0KWzw4MDBhYzUzMD5d
+IGdlbmVyaWNfZmlsZV9idWZmZXJlZF93cml0ZSsweDE4OC8weDJjMA0KWzw4MDBhZWNkMD5dIF9f
+Z2VuZXJpY19maWxlX2Fpb193cml0ZSsweDI4MC8weDVlYw0KWzw4MDBhZjBjND5dIGdlbmVyaWNf
+ZmlsZV9haW9fd3JpdGUrMHg4OC8weDE1Yw0KWzw4MDBmNzM4Yz5dIGRvX3N5bmNfd3JpdGUrMHhj
+NC8weDEzYw0KWzw4MDBmODEyYz5dIHZmc193cml0ZSsweGM0LzB4MTZjDQpbPDgwMGY4NDNjPl0g
+c3lzX3dyaXRlKzB4NGMvMHhiNA0KWzw4MDAxMGU1Yz5dIHN0YWNrX2RvbmUrMHgyMC8weDQwDQpb
+MF1tb3JlPg0KDQoNCmZzeW5jIGlvY3RsOg0KWzw4MDU1ZDUxMD5dIF9fc2NoZWR1bGUrMHgzMzgv
+MHg3ZDgNCls8ODA1NWRiNTA+XSBpb19zY2hlZHVsZSsweDk0LzB4MTM4DQpbPDgwMGFkMjU0Pl0g
+c2xlZXBfb25fcGFnZSsweDEwLzB4MjANCls8ODA1NWI3YTg+XSBfX3dhaXRfb25fYml0X2xvY2sr
+MHhlMC8weDE5NA0KWzw4MDBhZDIzOD5dIF9fbG9ja19wYWdlKzB4OTAvMHg5Yw0KWzw4MDBhZGM4
+OD5dIGRvX3JlYWRfY2FjaGVfcGFnZSsweDIxMC8weDIzYw0KWzw4MDBhZGQwND5dIHJlYWRfY2Fj
+aGVfcGFnZV9hc3luYysweDIwLzB4MmMNCls8ODAyMDUwYjA+XSBqZmZzMl9nY19mZXRjaF9wYWdl
+KzB4MmMvMHg4MA0KWzw4MDIwMTMxYz5dIGpmZnMyX2dhcmJhZ2VfY29sbGVjdF9saXZlKzB4NTVj
+LzB4ZjhjDQpbPDgwMjAyMWIwPl0gamZmczJfZ2FyYmFnZV9jb2xsZWN0X3Bhc3MrMHg0NjQvMHg4
+OTQNCls8ODAyMDZlNzQ+XSBqZmZzMl9mbHVzaF93YnVmX2djKzB4OTgvMHgxNzQNCls8ODAxZjhi
+NjA+XSBqZmZzMl9mc3luYysweDYwLzB4ODgNCls8ODAxMjgwYTg+XSB2ZnNfZnN5bmMrMHg1MC8w
+eDVjDQoNCg0KVGhlIHBiIGlzIHRoYXQgdGhlIG11dGV4IGlzIHRha2VuIGJ5IHRoZSBmc3luYyBj
+bWTigKYgYW5kIGxvY2sgcGFnZSBieSB3cml0ZSBjbWTigKYuDQpJ4oCZbSB3b25kZXJpbmcgaWYg
+d2UgY291bGQgbG9jayB0aGUgcGFnZSBpbiBzeW5jIGJlZm9yZSBsb2NraW5nIHRoZSBtdXRleCBh
+cGk/DQoNCg==
