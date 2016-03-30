@@ -24,9 +24,9 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Harvey Hunt <harvey.hunt@imgtec.com>,
  Archit Taneja <architt@codeaurora.org>, Han Xu <b45815@freescale.com>,
  Huang Shijie <shijie.huang@arm.com>
-Subject: [PATCH v5 49/50] mtd: nand: kill the ecc->layout field
-Date: Wed, 30 Mar 2016 18:15:04 +0200
-Message-Id: <1459354505-32551-50-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v5 29/50] mtd: nand: docg4: switch to mtd_ooblayout_ops
+Date: Wed, 30 Mar 2016 18:14:44 +0200
+Message-Id: <1459354505-32551-30-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -38,73 +38,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that all NAND drivers have switch to mtd_ooblayout_ops, we can kill
-the ecc->layout field.
+Implementing the mtd_ooblayout_ops interface is the new way of exposing
+ECC/OOB layout to MTD users.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_base.c | 7 -------
- drivers/mtd/nand/nand_bch.c  | 9 ---------
- include/linux/mtd/nand.h     | 2 --
- 3 files changed, 18 deletions(-)
+ drivers/mtd/nand/docg4.c | 33 ++++++++++++++++++++++++++++-----
+ 1 file changed, 28 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 3d6985e..cf0c3180 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4162,13 +4162,6 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	chip->oob_poi = chip->buffers->databuf + mtd->writesize;
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index d86a60e..4731699 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -222,10 +222,33 @@ struct docg4_priv {
+  * Bytes 8 - 14 are hw-generated ecc covering entire page + oob bytes 0 - 14.
+  * Byte 15 (the last) is used by the driver as a "page written" flag.
+  */
+-static struct nand_ecclayout docg4_oobinfo = {
+-	.eccbytes = 9,
+-	.eccpos = {7, 8, 9, 10, 11, 12, 13, 14, 15},
+-	.oobfree = { {.offset = 2, .length = 5} }
++static int docg4_ooblayout_ecc(struct mtd_info *mtd, int section,
++			       struct mtd_oob_region *oobregion)
++{
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = 7;
++	oobregion->length = 9;
++
++	return 0;
++}
++
++static int docg4_ooblayout_free(struct mtd_info *mtd, int section,
++				struct mtd_oob_region *oobregion)
++{
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = 2;
++	oobregion->length = 5;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops docg4_ooblayout_ops = {
++	.ecc = docg4_ooblayout_ecc,
++	.free = docg4_ooblayout_free,
+ };
  
- 	/*
--	 * Set the provided ECC layout. If ecc->layout is NULL, the MTD core
--	 * will just leave mtd->ooblayout to NULL, if it's not NULL, it will
--	 * set ->ooblayout to the default ecclayout wrapper.
--	 */
--	mtd_set_ecclayout(mtd, ecc->layout);
--
--	/*
- 	 * If no default placement scheme is given, select an appropriate one.
- 	 */
- 	if (!mtd->ooblayout && (ecc->mode != NAND_ECC_SOFT_BCH)) {
-diff --git a/drivers/mtd/nand/nand_bch.c b/drivers/mtd/nand/nand_bch.c
-index e29e75f..ca9b2a4 100644
---- a/drivers/mtd/nand/nand_bch.c
-+++ b/drivers/mtd/nand/nand_bch.c
-@@ -158,15 +158,6 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
- 
- 	eccsteps = mtd->writesize/eccsize;
- 
--	/*
--	 * Rely on the default ecclayout to ooblayout wrapper provided by MTD
--	 * core if ecc.layout is not NULL.
--	 * FIXME: this should be removed when all callers have moved to the
--	 * mtd_ooblayout_ops approach.
--	 */
--	if (nand->ecc.layout)
--		mtd_set_ecclayout(mtd, nand->ecc.layout);
--
- 	/* if no ecc placement scheme was provided, build one */
- 	if (!mtd->ooblayout) {
- 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index a9796ba..d766c12 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -473,7 +473,6 @@ struct nand_hw_control {
-  * @prepad:	padding information for syndrome based ECC generators
-  * @postpad:	padding information for syndrome based ECC generators
-  * @options:	ECC specific options (see NAND_ECC_XXX flags defined above)
-- * @layout:	ECC layout control struct pointer
-  * @priv:	pointer to private ECC control data
-  * @hwctl:	function to control hardware ECC generator. Must only
-  *		be provided if an hardware ECC is available
-@@ -524,7 +523,6 @@ struct nand_ecc_ctrl {
- 	int prepad;
- 	int postpad;
- 	unsigned int options;
--	struct nand_ecclayout	*layout;
- 	void *priv;
- 	void (*hwctl)(struct mtd_info *mtd, int mode);
- 	int (*calculate)(struct mtd_info *mtd, const uint8_t *dat,
+ /*
+@@ -1209,6 +1232,7 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
+ 	mtd->writesize = DOCG4_PAGE_SIZE;
+ 	mtd->erasesize = DOCG4_BLOCK_SIZE;
+ 	mtd->oobsize = DOCG4_OOB_SIZE;
++	mtd_set_ooblayout(mtd, &docg4_ooblayout_ops);
+ 	nand->chipsize = DOCG4_CHIP_SIZE;
+ 	nand->chip_shift = DOCG4_CHIP_SHIFT;
+ 	nand->bbt_erase_shift = nand->phys_erase_shift = DOCG4_ERASE_SHIFT;
+@@ -1217,7 +1241,6 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
+ 	nand->pagemask = 0x3ffff;
+ 	nand->badblockpos = NAND_LARGE_BADBLOCK_POS;
+ 	nand->badblockbits = 8;
+-	nand->ecc.layout = &docg4_oobinfo;
+ 	nand->ecc.mode = NAND_ECC_HW_SYNDROME;
+ 	nand->ecc.size = DOCG4_PAGE_SIZE;
+ 	nand->ecc.prepad = 8;
 -- 
 2.5.0
