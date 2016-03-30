@@ -1,26 +1,21 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from ozlabs.org ([103.22.144.67])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alMyA-0004Lk-E8
- for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 20:44:04 +0000
-Received: by mail-wm0-x244.google.com with SMTP id p65so18204821wmp.1
- for <linux-mtd@lists.infradead.org>; Wed, 30 Mar 2016 13:43:41 -0700 (PDT)
+ id 1alOaM-0002MT-2o
+ for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 22:27:35 +0000
+Date: Thu, 31 Mar 2016 09:24:32 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>
+Subject: Re: Adding the nand/next branch to linux-next
+Message-ID: <20160331092432.111d2edf@canb.auug.org.au>
+In-Reply-To: <20160330161538.1cfb928d@bbrezillon>
+References: <20160330161538.1cfb928d@bbrezillon>
 MIME-Version: 1.0
-Sender: pku.leo@gmail.com
-In-Reply-To: <1455840434.2463.97.camel@buserror.net>
-References: <1455708258-3831-1-git-send-email-raghav.dogra@nxp.com>
- <CADRPPNS1i1XgtpyiT_=rDuDXBDn=ehNY32=RKTC9hdKXhWWq8A@mail.gmail.com>
- <1455840434.2463.97.camel@buserror.net>
-Date: Wed, 30 Mar 2016 15:43:40 -0500
-Message-ID: <CADRPPNTauz=T9oWCeZy8G8s0vo9fmieRhn=Gd3jVqqJJEHV_ag@mail.gmail.com>
-Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
-From: Li Yang <leoli@freescale.com>
-To: Scott Wood <oss@buserror.net>
-Cc: Raghav Dogra <raghav.dogra@nxp.com>, linux-mtd@lists.infradead.org,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Raghav Dogra <raghav@freescale.com>, Jaiprakash Singh <b44839@freescale.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,53 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Hi Boris,
 
-Could you help to review and pull in this patch and the Kconfig update
-after this patch(https://patchwork.ozlabs.org/patch/557389/)?  It
-stated a dependency in the notes, but actually it should be applied
-cleanly without that patch.  These patches are critical to make NAND
-mtd feature work for our new chips.
-
-Regards,
-Leo
-
-On Thu, Feb 18, 2016 at 6:07 PM, Scott Wood <oss@buserror.net> wrote:
-> On Thu, 2016-02-18 at 15:18 -0600, Leo Li wrote:
->> On Wed, Feb 17, 2016 at 5:24 AM, Raghav Dogra <raghav.dogra@nxp.com> wrote:
->> > The new IFC controller version 2.0 has a different memory map page.
->> > Upto IFC 1.4 PAGE size is 4 KB and from IFC2.0 PAGE size is 64KB.
->> > This patch segregates the IFC global and runtime registers to appropriate
->> > PAGE sizes.
->> >
->> > Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
->> > Signed-off-by: Raghav Dogra <raghav@freescale.com>
->> > Acked-by: Li Yang <leoyang.li@nxp.com>
->> > Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
->> > ---
->> > Changes for v3: not dependent on
->> > "drivers/memory: Add deep sleep support for IFC" patch
->> >
->> > Changes for v2: rebased to resolve conflicts
->> > Applicable to git://git.infradead.org/l2-mtd.git
->> >
->> > This patch is dependent on "drivers/memory: Add deep sleep support for
->> > IFC"
->> > https://patchwork.ozlabs.org/patch/582762/
->> > which is also applicable to git://git.infradead.org/l2-mtd.git
->>
->> This patch seems to be in good shape, but the dependency is still
->> having quite some feedback to be addressed.  Depending on it will
->> greatly delay the time that this critical patch for LS2 to be merged.
->> Could you remove the dependency like Scott already suggested?
+On Wed, 30 Mar 2016 16:15:38 +0200 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 >
-> According to the changelog the dependency has been removed (it would have been
-> clearer to remove this comment as well...).
->
-> -Scott
->
+> I recently became maintainer of the NAND flash subsystem, and, if you
+> don't mind, I'd like to add my nand/next branch [1] to linux-next.
+> 
+> [1]git://github.com/linux-nand/linux.git nand/next
 
+Added from today.
 
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgment of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window. 
+
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and 
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
 
 -- 
-- Leo
+Cheers,
+Stephen Rothwell 
+sfr@canb.auug.org.au
