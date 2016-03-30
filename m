@@ -1,34 +1,37 @@
-Date: Wed, 30 Mar 2016 11:34:39 -0700
-From: Mark Brown <broonie@kernel.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+Subject: Re: [PATCH v5 21/50] mtd: nand: jz4740: switch to mtd_ooblayout_ops
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Dave Gordon <david.s.gordon@intel.com>, linux-spi@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>
+References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459354505-32551-22-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski
+ <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>,
+ linux-mips@linux-mips.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
  Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Vinod Koul <vinod.koul@intel.com>,
- Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
- Mauro Carvalho Chehab <m.chehab@samsung.com>,
- Hans Verkuil <hans.verkuil@cisco.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- linux-media@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>
-Message-ID: <20160330183439.GS2350@sirena.org.uk>
-References: <1459352394-22810-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459352394-22810-5-git-send-email-boris.brezillon@free-electrons.com>
- <20160330165143.GI2350@sirena.org.uk>
- <20160330201831.38e1d6bd@bbrezillon>
+ Stefan Agner <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
+ linux-kernel@vger.kernel.org, punnaiah choudary kalluri
+ <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
+ linux-api@vger.kernel.org, Harvey Hunt <harvey.hunt@imgtec.com>,
+ Archit Taneja <architt@codeaurora.org>, Han Xu <b45815@freescale.com>,
+ Huang Shijie <shijie.huang@arm.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <56FC265D.8070500@metafoo.de>
+Date: Wed, 30 Mar 2016 21:17:49 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="hrnpeiJmytOBrElT"
-Content-Disposition: inline
-In-Reply-To: <20160330201831.38e1d6bd@bbrezillon>
-Subject: Re: [PATCH v2 4/7] scatterlist: add sg_alloc_table_from_buf() helper
+In-Reply-To: <1459354505-32551-22-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,30 +41,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---hrnpeiJmytOBrElT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Mar 30, 2016 at 08:18:31PM +0200, Boris Brezillon wrote:
-
-> BTW, do you see other things that should be added in sg_constraints?
-
-It looked to do everything SPI does which is everything I know about.
-
---hrnpeiJmytOBrElT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW/Bw8AAoJECTWi3JdVIfQl3EH/15ijZIt2W6NXfjF6Bj/TzuD
-wIKY7hkWCM164li50lCiJDa1fvF2dzo+TrwBAK1WOs36W0yiJmSwM25aDJjFJYGw
-/xWLjBsjVl57ng+hDVxFw7xfHUt/Z24k8YWEViZUa8dBwgSat2rKdYrPfJoCg3mq
-ktaqy8xcvOXzfqf6nU9t5tSHzE70OEaG6XG7iS+RCL9bF3B2FAxMJm5wf+6Sg8mL
-t1ulSVczwgTtUJ0YI97H+KPFKxPJIfX8OLC4MGcqamuahFMs12qSVz8NtW1rg8Vr
-vKekQEF+YwB3E070ZepBde9CRaTTxkY6shf51A6lW2kXP/b7c7pgIklyVEWSxyE=
-=uI64
------END PGP SIGNATURE-----
-
---hrnpeiJmytOBrElT--
+On 03/30/2016 06:14 PM, Boris Brezillon wrote:
+> Implementing the mtd_ooblayout_ops interface is the new way of exposing
+> ECC/OOB layout to MTD users.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
