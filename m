@@ -24,10 +24,9 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Harvey Hunt <harvey.hunt@imgtec.com>,
  Archit Taneja <architt@codeaurora.org>, Han Xu <b45815@freescale.com>,
  Huang Shijie <shijie.huang@arm.com>
-Subject: [PATCH v5 16/50] mtd: create an mtd_ooblayout_ops struct to ease ECC
- layout definition
-Date: Wed, 30 Mar 2016 18:14:31 +0200
-Message-Id: <1459354505-32551-17-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v5 31/50] mtd: nand: fsl_ifc: switch to mtd_ooblayout_ops
+Date: Wed, 30 Mar 2016 18:14:46 +0200
+Message-Id: <1459354505-32551-32-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -39,371 +38,307 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ECC layout definitions are currently exposed using the nand_ecclayout
-struct which embeds oobfree and eccpos arrays with predefined size.
-This approach was acceptable when NAND chips were providing relatively
-small OOB regions, but MLC and TLC now provide OOB regions of several
-hundreds of bytes, which implies a non negligible overhead for everybody
-even those who only need to support legacy NANDs.
-
-Create an mtd_ooblayout_ops interface providing the same functionality
-(expose the ECC and oobfree layout) without the need for this huge
-structure.
-
-The mtd->ecclayout is now deprecated and should be replaced by the
-equivalent mtd_ooblayout_ops. In the meantime we provide a wrapper around
-the ->ecclayout field to ease migration to this new model.
+Implementing the mtd_ooblayout_ops interface is the new way of exposing
+ECC/OOB layout to MTD users.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/mtdchar.c   |   4 +-
- drivers/mtd/mtdconcat.c |   2 +-
- drivers/mtd/mtdcore.c   | 165 +++++++++++++++++++++++++++++++++++-------------
- drivers/mtd/mtdpart.c   |  23 ++++++-
- include/linux/mtd/mtd.h |  32 ++++++++--
- 5 files changed, 174 insertions(+), 52 deletions(-)
+ drivers/mtd/nand/fsl_ifc_nand.c | 230 ++++++++++++----------------------------
+ 1 file changed, 66 insertions(+), 164 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index cd64ab7..3fad2c7 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -888,7 +888,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	{
- 		struct nand_oobinfo oi;
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 2e970ac..5532c38 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -67,136 +67,6 @@ struct fsl_ifc_nand_ctrl {
  
--		if (!mtd->ecclayout)
-+		if (!mtd->ooblayout)
- 			return -EOPNOTSUPP;
+ static struct fsl_ifc_nand_ctrl *ifc_nand_ctrl;
  
- 		ret = get_oobinfo(mtd, &oi);
-@@ -982,7 +982,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	{
- 		struct nand_ecclayout_user *usrlay;
- 
--		if (!mtd->ecclayout)
-+		if (!mtd->ooblayout)
- 			return -EOPNOTSUPP;
- 
- 		usrlay = kmalloc(sizeof(*usrlay), GFP_KERNEL);
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 481565e..d573606 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -777,7 +777,7 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 
- 	}
- 
--	mtd_set_ecclayout(&concat->mtd, subdev[0]->ecclayout);
-+	mtd_set_ooblayout(&concat->mtd, subdev[0]->ooblayout);
- 
- 	concat->num_subdev = num_devs;
- 	concat->mtd.name = name;
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 9fc278a..bebca51 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1016,49 +1016,15 @@ EXPORT_SYMBOL_GPL(mtd_read_oob);
- int mtd_ooblayout_ecc(struct mtd_info *mtd, int section,
- 		      struct mtd_oob_region *oobecc)
- {
--	int eccbyte = 0, cursection = 0, length = 0, eccpos = 0;
+-/* 512-byte page with 4-bit ECC, 8-bit */
+-static struct nand_ecclayout oob_512_8bit_ecc4 = {
+-	.eccbytes = 8,
+-	.eccpos = {8, 9, 10, 11, 12, 13, 14, 15},
+-	.oobfree = { {0, 5}, {6, 2} },
+-};
 -
- 	memset(oobecc, 0, sizeof(*oobecc));
- 
- 	if (!mtd || section < 0)
- 		return -EINVAL;
- 
--	if (!mtd->ecclayout)
-+	if (!mtd->ooblayout || !mtd->ooblayout->ecc)
- 		return -ENOTSUPP;
- 
--	/*
--	 * This logic allows us to reuse the ->ecclayout information and
--	 * expose them as ECC regions (as done for the OOB free regions).
--	 *
--	 * TODO: this should be dropped as soon as we get rid of the
--	 * ->ecclayout field.
--	 */
--	for (eccbyte = 0; eccbyte < mtd->ecclayout->eccbytes; eccbyte++) {
--		eccpos = mtd->ecclayout->eccpos[eccbyte];
+-/* 512-byte page with 4-bit ECC, 16-bit */
+-static struct nand_ecclayout oob_512_16bit_ecc4 = {
+-	.eccbytes = 8,
+-	.eccpos = {8, 9, 10, 11, 12, 13, 14, 15},
+-	.oobfree = { {2, 6}, },
+-};
 -
--		if (eccbyte < mtd->ecclayout->eccbytes - 1) {
--			int neccpos = mtd->ecclayout->eccpos[eccbyte + 1];
+-/* 2048-byte page size with 4-bit ECC */
+-static struct nand_ecclayout oob_2048_ecc4 = {
+-	.eccbytes = 32,
+-	.eccpos = {
+-		8, 9, 10, 11, 12, 13, 14, 15,
+-		16, 17, 18, 19, 20, 21, 22, 23,
+-		24, 25, 26, 27, 28, 29, 30, 31,
+-		32, 33, 34, 35, 36, 37, 38, 39,
+-	},
+-	.oobfree = { {2, 6}, {40, 24} },
+-};
 -
--			if (eccpos + 1 == neccpos) {
--				length++;
--				continue;
--			}
--		}
+-/* 4096-byte page size with 4-bit ECC */
+-static struct nand_ecclayout oob_4096_ecc4 = {
+-	.eccbytes = 64,
+-	.eccpos = {
+-		8, 9, 10, 11, 12, 13, 14, 15,
+-		16, 17, 18, 19, 20, 21, 22, 23,
+-		24, 25, 26, 27, 28, 29, 30, 31,
+-		32, 33, 34, 35, 36, 37, 38, 39,
+-		40, 41, 42, 43, 44, 45, 46, 47,
+-		48, 49, 50, 51, 52, 53, 54, 55,
+-		56, 57, 58, 59, 60, 61, 62, 63,
+-		64, 65, 66, 67, 68, 69, 70, 71,
+-	},
+-	.oobfree = { {2, 6}, {72, 56} },
+-};
 -
--		if (section == cursection)
--			break;
+-/* 4096-byte page size with 8-bit ECC -- requires 218-byte OOB */
+-static struct nand_ecclayout oob_4096_ecc8 = {
+-	.eccbytes = 128,
+-	.eccpos = {
+-		8, 9, 10, 11, 12, 13, 14, 15,
+-		16, 17, 18, 19, 20, 21, 22, 23,
+-		24, 25, 26, 27, 28, 29, 30, 31,
+-		32, 33, 34, 35, 36, 37, 38, 39,
+-		40, 41, 42, 43, 44, 45, 46, 47,
+-		48, 49, 50, 51, 52, 53, 54, 55,
+-		56, 57, 58, 59, 60, 61, 62, 63,
+-		64, 65, 66, 67, 68, 69, 70, 71,
+-		72, 73, 74, 75, 76, 77, 78, 79,
+-		80, 81, 82, 83, 84, 85, 86, 87,
+-		88, 89, 90, 91, 92, 93, 94, 95,
+-		96, 97, 98, 99, 100, 101, 102, 103,
+-		104, 105, 106, 107, 108, 109, 110, 111,
+-		112, 113, 114, 115, 116, 117, 118, 119,
+-		120, 121, 122, 123, 124, 125, 126, 127,
+-		128, 129, 130, 131, 132, 133, 134, 135,
+-	},
+-	.oobfree = { {2, 6}, {136, 82} },
+-};
 -
--		length = 0;
--		cursection++;
--	}
+-/* 8192-byte page size with 4-bit ECC */
+-static struct nand_ecclayout oob_8192_ecc4 = {
+-	.eccbytes = 128,
+-	.eccpos = {
+-		8, 9, 10, 11, 12, 13, 14, 15,
+-		16, 17, 18, 19, 20, 21, 22, 23,
+-		24, 25, 26, 27, 28, 29, 30, 31,
+-		32, 33, 34, 35, 36, 37, 38, 39,
+-		40, 41, 42, 43, 44, 45, 46, 47,
+-		48, 49, 50, 51, 52, 53, 54, 55,
+-		56, 57, 58, 59, 60, 61, 62, 63,
+-		64, 65, 66, 67, 68, 69, 70, 71,
+-		72, 73, 74, 75, 76, 77, 78, 79,
+-		80, 81, 82, 83, 84, 85, 86, 87,
+-		88, 89, 90, 91, 92, 93, 94, 95,
+-		96, 97, 98, 99, 100, 101, 102, 103,
+-		104, 105, 106, 107, 108, 109, 110, 111,
+-		112, 113, 114, 115, 116, 117, 118, 119,
+-		120, 121, 122, 123, 124, 125, 126, 127,
+-		128, 129, 130, 131, 132, 133, 134, 135,
+-	},
+-	.oobfree = { {2, 6}, {136, 208} },
+-};
 -
--	if (cursection != section || eccbyte >= mtd->ecclayout->eccbytes)
--		return -ERANGE;
+-/* 8192-byte page size with 8-bit ECC -- requires 218-byte OOB */
+-static struct nand_ecclayout oob_8192_ecc8 = {
+-	.eccbytes = 256,
+-	.eccpos = {
+-		8, 9, 10, 11, 12, 13, 14, 15,
+-		16, 17, 18, 19, 20, 21, 22, 23,
+-		24, 25, 26, 27, 28, 29, 30, 31,
+-		32, 33, 34, 35, 36, 37, 38, 39,
+-		40, 41, 42, 43, 44, 45, 46, 47,
+-		48, 49, 50, 51, 52, 53, 54, 55,
+-		56, 57, 58, 59, 60, 61, 62, 63,
+-		64, 65, 66, 67, 68, 69, 70, 71,
+-		72, 73, 74, 75, 76, 77, 78, 79,
+-		80, 81, 82, 83, 84, 85, 86, 87,
+-		88, 89, 90, 91, 92, 93, 94, 95,
+-		96, 97, 98, 99, 100, 101, 102, 103,
+-		104, 105, 106, 107, 108, 109, 110, 111,
+-		112, 113, 114, 115, 116, 117, 118, 119,
+-		120, 121, 122, 123, 124, 125, 126, 127,
+-		128, 129, 130, 131, 132, 133, 134, 135,
+-		136, 137, 138, 139, 140, 141, 142, 143,
+-		144, 145, 146, 147, 148, 149, 150, 151,
+-		152, 153, 154, 155, 156, 157, 158, 159,
+-		160, 161, 162, 163, 164, 165, 166, 167,
+-		168, 169, 170, 171, 172, 173, 174, 175,
+-		176, 177, 178, 179, 180, 181, 182, 183,
+-		184, 185, 186, 187, 188, 189, 190, 191,
+-		192, 193, 194, 195, 196, 197, 198, 199,
+-		200, 201, 202, 203, 204, 205, 206, 207,
+-		208, 209, 210, 211, 212, 213, 214, 215,
+-		216, 217, 218, 219, 220, 221, 222, 223,
+-		224, 225, 226, 227, 228, 229, 230, 231,
+-		232, 233, 234, 235, 236, 237, 238, 239,
+-		240, 241, 242, 243, 244, 245, 246, 247,
+-		248, 249, 250, 251, 252, 253, 254, 255,
+-		256, 257, 258, 259, 260, 261, 262, 263,
+-	},
+-	.oobfree = { {2, 6}, {264, 80} },
+-};
 -
--	oobecc->length = length + 1;
--	oobecc->offset = eccpos - length;
--
--	return 0;
-+	return mtd->ooblayout->ecc(mtd, section, oobecc);
- }
- EXPORT_SYMBOL_GPL(mtd_ooblayout_ecc);
- 
-@@ -1087,16 +1053,10 @@ int mtd_ooblayout_free(struct mtd_info *mtd, int section,
- 	if (!mtd || section < 0)
- 		return -EINVAL;
- 
--	if (!mtd->ecclayout)
-+	if (!mtd->ooblayout || !mtd->ooblayout->free)
- 		return -ENOTSUPP;
- 
--	if (section >= MTD_MAX_OOBFREE_ENTRIES_LARGE)
--		return -ERANGE;
--
--	oobfree->offset = mtd->ecclayout->oobfree[section].offset;
--	oobfree->length = mtd->ecclayout->oobfree[section].length;
--
--	return 0;
-+	return mtd->ooblayout->free(mtd, section, oobfree);
- }
- EXPORT_SYMBOL_GPL(mtd_ooblayout_free);
- 
-@@ -1397,6 +1357,123 @@ int mtd_ooblayout_count_eccbytes(struct mtd_info *mtd)
- }
- EXPORT_SYMBOL_GPL(mtd_ooblayout_count_eccbytes);
- 
-+/**
-+ * mtd_ecclayout_ecc - Default ooblayout_ecc iterator implementation
-+ * @mtd: MTD device structure
-+ * @section: ECC section. Depending on the layout you may have all the ECC
-+ *	     bytes stored in a single contiguous section, or one section
-+ *	     per ECC chunk (and sometime several sections for a single ECC
-+ *	     ECC chunk)
-+ * @oobecc: OOB region struct filled with the appropriate ECC position
-+ *	    information
-+ *
-+ * This function is just a wrapper around the mtd->ecclayout field and is
-+ * here to ease the transition to the mtd_ooblayout_ops approach.
-+ * All it does is convert the layout->eccpos information into proper oob
-+ * region definitions.
-+ *
-+ * Returns zero on success, a negative error code otherwise.
-+ */
-+static int mtd_ecclayout_ecc(struct mtd_info *mtd, int section,
-+			     struct mtd_oob_region *oobecc)
-+{
-+	int eccbyte = 0, cursection = 0, length = 0, eccpos = 0;
-+
-+	if (!mtd->ecclayout)
-+		return -ENOTSUPP;
-+
-+	/*
-+	 * This logic allows us to reuse the ->ecclayout information and
-+	 * expose them as ECC regions (as done for the OOB free regions).
-+	 *
-+	 * TODO: this should be dropped as soon as we get rid of the
-+	 * ->ecclayout field.
-+	 */
-+	for (eccbyte = 0; eccbyte < mtd->ecclayout->eccbytes; eccbyte++) {
-+		eccpos = mtd->ecclayout->eccpos[eccbyte];
-+
-+		if (eccbyte < mtd->ecclayout->eccbytes - 1) {
-+			int neccpos = mtd->ecclayout->eccpos[eccbyte + 1];
-+
-+			if (eccpos + 1 == neccpos) {
-+				length++;
-+				continue;
-+			}
-+		}
-+
-+		if (section == cursection)
-+			break;
-+
-+		length = 0;
-+		cursection++;
-+	}
-+
-+	if (cursection != section || eccbyte >= mtd->ecclayout->eccbytes)
-+		return -ERANGE;
-+
-+	oobecc->length = length + 1;
-+	oobecc->offset = eccpos - length;
-+
-+	return 0;
-+}
-+
-+/**
-+ * mtd_ecclayout_ecc - Default ooblayout_free iterator implementation
-+ * @mtd: MTD device structure
-+ * @section: Free section. Depending on the layout you may have all the free
-+ *	     bytes stored in a single contiguous section, or one section
-+ *	     per ECC chunk (and sometime several sections for a single ECC
-+ *	     ECC chunk)
-+ * @oobfree: OOB region struct filled with the appropriate free position
-+ *	     information
-+ *
-+ * This function is just a wrapper around the mtd->ecclayout field and is
-+ * here to ease the transition to the mtd_ooblayout_ops approach.
-+ * All it does is convert the layout->oobfree information into proper oob
-+ * region definitions.
-+ *
-+ * Returns zero on success, a negative error code otherwise.
-+ */
-+static int mtd_ecclayout_free(struct mtd_info *mtd, int section,
-+			      struct mtd_oob_region *oobfree)
-+{
-+	struct nand_ecclayout *layout = mtd->ecclayout;
-+
-+	if (!layout)
-+		return -ENOTSUPP;
-+
-+	if (section >= MTD_MAX_OOBFREE_ENTRIES_LARGE ||
-+	    !layout->oobfree[section].length)
-+		return -ERANGE;
-+
-+	oobfree->offset = layout->oobfree[section].offset;
-+	oobfree->length = layout->oobfree[section].length;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops mtd_ecclayout_wrapper_ops = {
-+	.ecc = mtd_ecclayout_ecc,
-+	.free = mtd_ecclayout_free,
-+};
-+
-+/**
-+ * mtd_set_ecclayout - Attach an ecclayout to an MTD device
-+ * @mtd: MTD device structure
-+ * @ecclayout: The ecclayout to attach to the device
-+ *
-+ * Returns zero on success, a negative error code otherwise.
-+ */
-+void mtd_set_ecclayout(struct mtd_info *mtd, struct nand_ecclayout *ecclayout)
-+{
-+	if (!mtd || !ecclayout)
-+		return;
-+
-+	mtd->ecclayout = ecclayout;
-+	mtd_set_ooblayout(mtd, &mtd_ecclayout_wrapper_ops);
-+}
-+EXPORT_SYMBOL_GPL(mtd_set_ecclayout);
-+
  /*
-  * Method to access the protection register area, present in some flash
-  * devices. The user data is one time programmable but the factory data is read
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index f53d9d7..1f13e32 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -317,6 +317,27 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	return res;
- }
- 
-+static int part_ooblayout_ecc(struct mtd_info *mtd, int section,
-+			      struct mtd_oob_region *oobregion)
-+{
-+	struct mtd_part *part = mtd_to_part(mtd);
-+
-+	return mtd_ooblayout_ecc(part->master, section, oobregion);
-+}
-+
-+static int part_ooblayout_free(struct mtd_info *mtd, int section,
-+			       struct mtd_oob_region *oobregion)
-+{
-+	struct mtd_part *part = mtd_to_part(mtd);
-+
-+	return mtd_ooblayout_free(part->master, section, oobregion);
-+}
-+
-+static const struct mtd_ooblayout_ops part_ooblayout_ops = {
-+	.ecc = part_ooblayout_ecc,
-+	.free = part_ooblayout_free,
-+};
-+
- static inline void free_partition(struct mtd_part *p)
- {
- 	kfree(p->mtd.name);
-@@ -533,7 +554,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 			part->name);
- 	}
- 
--	mtd_set_ecclayout(&slave->mtd, master->ecclayout);
-+	mtd_set_ooblayout(&slave->mtd, &part_ooblayout_ops);
- 	slave->mtd.ecc_step_size = master->ecc_step_size;
- 	slave->mtd.ecc_strength = master->ecc_strength;
- 	slave->mtd.bitflip_threshold = master->bitflip_threshold;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 6250dd8..a38fe9a 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -101,6 +101,9 @@ struct mtd_oob_ops {
-  * similar, smaller struct nand_ecclayout_user (in mtd-abi.h) that is retained
-  * for export to user-space via the ECCGETLAYOUT ioctl.
-  * nand_ecclayout should be expandable in the future simply by the above macros.
-+ *
-+ * This structure is now deprecated, you should use struct nand_ecclayout_ops
-+ * to describe your OOB layout.
+  * Generic flash bbt descriptors
   */
- struct nand_ecclayout {
- 	__u32 eccbytes;
-@@ -123,6 +126,22 @@ struct mtd_oob_region {
- 	u32 length;
+@@ -223,6 +93,57 @@ static struct nand_bbt_descr bbt_mirror_descr = {
+ 	.pattern = mirror_pattern,
  };
  
-+/*
-+ * struct mtd_ooblayout_ops - NAND OOB layout operations
-+ * @ecc: function returning an ECC region in the OOB area.
-+ *	 Should return -ERANGE if %section exceeds the total number of
-+ *	 ECC sections.
-+ * @free: function returning a free region in the OOB area.
-+ *	  Should return -ERANGE if %section exceeds the total number of
-+ *	  free sections.
-+ */
-+struct mtd_ooblayout_ops {
-+	int (*ecc)(struct mtd_info *mtd, int section,
-+		   struct mtd_oob_region *oobecc);
-+	int (*free)(struct mtd_info *mtd, int section,
-+		    struct mtd_oob_region *oobfree);
++static int fsl_ifc_ooblayout_ecc(struct mtd_info *mtd, int section,
++				 struct mtd_oob_region *oobregion)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = 8;
++	oobregion->length = chip->ecc.total;
++
++	return 0;
++}
++
++static int fsl_ifc_ooblayout_free(struct mtd_info *mtd, int section,
++				  struct mtd_oob_region *oobregion)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++
++	if (section > 1)
++		return -ERANGE;
++
++	if (mtd->writesize == 512 &&
++	    !(chip->options & NAND_BUSWIDTH_16)) {
++		if (!section) {
++			oobregion->offset = 0;
++			oobregion->length = 5;
++		} else {
++			oobregion->offset = 6;
++			oobregion->length = 2;
++		}
++
++		return 0;
++	}
++
++	if (!section) {
++		oobregion->offset = 2;
++		oobregion->length = 6;
++	} else {
++		oobregion->offset = chip->ecc.total + 8;
++		oobregion->length = mtd->oobsize - oobregion->offset;
++	}
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops fsl_ifc_ooblayout_ops = {
++	.ecc = fsl_ifc_ooblayout_ecc,
++	.free = fsl_ifc_ooblayout_free,
 +};
 +
- struct module;	/* only needed for owner field in mtd_info */
+ /*
+  * Set up the IFC hardware block and page address fields, and the ifc nand
+  * structure addr field to point to the correct IFC buffer in memory
+@@ -812,8 +733,8 @@ static int fsl_ifc_chip_init_tail(struct mtd_info *mtd)
+ 							chip->ecc.bytes);
+ 	dev_dbg(priv->dev, "%s: nand->ecc.total = %d\n", __func__,
+ 							chip->ecc.total);
+-	dev_dbg(priv->dev, "%s: nand->ecc.layout = %p\n", __func__,
+-							chip->ecc.layout);
++	dev_dbg(priv->dev, "%s: mtd->ooblayout = %p\n", __func__,
++							mtd->ooblayout);
+ 	dev_dbg(priv->dev, "%s: mtd->flags = %08x\n", __func__, mtd->flags);
+ 	dev_dbg(priv->dev, "%s: mtd->size = %lld\n", __func__, mtd->size);
+ 	dev_dbg(priv->dev, "%s: mtd->erasesize = %d\n", __func__,
+@@ -881,7 +802,6 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 	struct fsl_ifc_regs __iomem *ifc = ctrl->regs;
+ 	struct nand_chip *chip = &priv->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(&priv->chip);
+-	struct nand_ecclayout *layout;
+ 	u32 csor;
  
- struct mtd_info {
-@@ -181,9 +200,12 @@ struct mtd_info {
- 	const char *name;
- 	int index;
+ 	/* Fill in fsl_ifc_mtd structure */
+@@ -925,18 +845,9 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
  
--	/* ECC layout structure pointer - read only! */
-+	/* [Deprecated] ECC layout structure pointer - read only! */
- 	struct nand_ecclayout *ecclayout;
+ 	csor = ifc_in32(&ifc->csor_cs[priv->bank].csor);
  
-+	/* OOB layout description */
-+	const struct mtd_ooblayout_ops *ooblayout;
+-	/* Hardware generates ECC per 512 Bytes */
+-	chip->ecc.size = 512;
+-	chip->ecc.bytes = 8;
+-	chip->ecc.strength = 4;
+-
+ 	switch (csor & CSOR_NAND_PGS_MASK) {
+ 	case CSOR_NAND_PGS_512:
+-		if (chip->options & NAND_BUSWIDTH_16) {
+-			layout = &oob_512_16bit_ecc4;
+-		} else {
+-			layout = &oob_512_8bit_ecc4;
+-
++		if (!(chip->options & NAND_BUSWIDTH_16)) {
+ 			/* Avoid conflict with bad block marker */
+ 			bbt_main_descr.offs = 0;
+ 			bbt_mirror_descr.offs = 0;
+@@ -946,35 +857,16 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 		break;
+ 
+ 	case CSOR_NAND_PGS_2K:
+-		layout = &oob_2048_ecc4;
+ 		priv->bufnum_mask = 3;
+ 		break;
+ 
+ 	case CSOR_NAND_PGS_4K:
+-		if ((csor & CSOR_NAND_ECC_MODE_MASK) ==
+-		    CSOR_NAND_ECC_MODE_4) {
+-			layout = &oob_4096_ecc4;
+-		} else {
+-			layout = &oob_4096_ecc8;
+-			chip->ecc.bytes = 16;
+-			chip->ecc.strength = 8;
+-		}
+-
+ 		priv->bufnum_mask = 1;
+ 		break;
+ 
+ 	case CSOR_NAND_PGS_8K:
+-		if ((csor & CSOR_NAND_ECC_MODE_MASK) ==
+-		    CSOR_NAND_ECC_MODE_4) {
+-			layout = &oob_8192_ecc4;
+-		} else {
+-			layout = &oob_8192_ecc8;
+-			chip->ecc.bytes = 16;
+-			chip->ecc.strength = 8;
+-		}
+-
+ 		priv->bufnum_mask = 0;
+-	break;
++		break;
+ 
+ 	default:
+ 		dev_err(priv->dev, "bad csor %#x: bad page size\n", csor);
+@@ -984,7 +876,17 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 	/* Must also set CSOR_NAND_ECC_ENC_EN if DEC_EN set */
+ 	if (csor & CSOR_NAND_ECC_DEC_EN) {
+ 		chip->ecc.mode = NAND_ECC_HW;
+-		chip->ecc.layout = layout;
++		mtd_set_ooblayout(mtd, &fsl_ifc_ooblayout_ops);
 +
- 	/* the ecc step size. */
- 	unsigned int ecc_step_size;
- 
-@@ -286,10 +308,12 @@ int mtd_ooblayout_set_databytes(struct mtd_info *mtd, const u8 *databuf,
- int mtd_ooblayout_count_freebytes(struct mtd_info *mtd);
- int mtd_ooblayout_count_eccbytes(struct mtd_info *mtd);
- 
--static inline void mtd_set_ecclayout(struct mtd_info *mtd,
--				     struct nand_ecclayout *ecclayout)
-+void mtd_set_ecclayout(struct mtd_info *mtd, struct nand_ecclayout *ecclayout);
-+
-+static inline void mtd_set_ooblayout(struct mtd_info *mtd,
-+				     const struct mtd_ooblayout_ops *ooblayout)
- {
--	mtd->ecclayout = ecclayout;
-+	mtd->ooblayout = ooblayout;
- }
- 
- static inline void mtd_set_of_node(struct mtd_info *mtd,
++		/* Hardware generates ECC per 512 Bytes */
++		chip->ecc.size = 512;
++		if ((csor & CSOR_NAND_ECC_MODE_MASK) == CSOR_NAND_ECC_MODE_4) {
++			chip->ecc.bytes = 8;
++			chip->ecc.strength = 4;
++		} else {
++			chip->ecc.bytes = 16;
++			chip->ecc.strength = 8;
++		}
+ 	} else {
+ 		chip->ecc.mode = NAND_ECC_SOFT;
+ 	}
 -- 
 2.5.0
