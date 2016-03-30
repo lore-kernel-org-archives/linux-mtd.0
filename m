@@ -1,37 +1,32 @@
-Subject: Re: [PATCH v5 21/50] mtd: nand: jz4740: switch to mtd_ooblayout_ops
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>
-References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459354505-32551-22-git-send-email-boris.brezillon@free-electrons.com>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski
- <k.kozlowski@samsung.com>, linux-samsung-soc@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>,
- linux-mips@linux-mips.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Stefan Agner <stefan@agner.ch>, Kyungmin Park <kyungmin.park@samsung.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
- linux-kernel@vger.kernel.org, punnaiah choudary kalluri
- <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>,
- Kamal Dasu <kdasu.kdev@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
- linux-api@vger.kernel.org, Harvey Hunt <harvey.hunt@imgtec.com>,
- Archit Taneja <architt@codeaurora.org>, Han Xu <b45815@freescale.com>,
- Huang Shijie <shijie.huang@arm.com>
-From: Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <56FC265D.8070500@metafoo.de>
-Date: Wed, 30 Mar 2016 21:17:49 +0200
+Received: from out03.mta.xmission.com ([166.70.13.233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1alMjv-0005fm-Ki
+ for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 20:29:27 +0000
+From: ebiederm@xmission.com (Eric W. Biederman)
+To: Seth Forshee <seth.forshee@canonical.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
+References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
+ <1451930639-94331-12-git-send-email-seth.forshee@canonical.com>
+ <20160303170201.GA30224@ubuntu-hedt>
+ <87twkl50g5.fsf@x220.int.ebiederm.org>
+ <20160328165936.GC137406@ubuntu-hedt>
+ <87twjoiw6u.fsf@x220.int.ebiederm.org>
+ <20160330145820.GA41461@ubuntu-hedt>
+Date: Wed, 30 Mar 2016 15:18:28 -0500
+In-Reply-To: <20160330145820.GA41461@ubuntu-hedt> (Seth Forshee's message of
+ "Wed, 30 Mar 2016 09:58:20 -0500")
+Message-ID: <87oa9viusr.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-In-Reply-To: <1459354505-32551-22-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Subject: Re: [PATCH RESEND v2 11/18] fs: Ensure the mounter of a filesystem is
+ privileged towards its inodes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,9 +36,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/30/2016 06:14 PM, Boris Brezillon wrote:
-> Implementing the mtd_ooblayout_ops interface is the new way of exposing
-> ECC/OOB layout to MTD users.
+Seth Forshee <seth.forshee@canonical.com> writes:
+
+> On Tue, Mar 29, 2016 at 08:36:09PM -0500, Eric W. Biederman wrote:
+>> Seth Forshee <seth.forshee@canonical.com> writes:
+>> 
+>> > On Fri, Mar 04, 2016 at 04:43:06PM -0600, Eric W. Biederman wrote:
+>> >> In general this is only an issue if uids and gids on the filesystem
+>> >> do not map into the user namespace.
+>> >> 
+>> >> Therefore the general fix is to limit the logic of checking for
+>> >> capabilities in s_user_ns if we are dealing with INVALID_UID and
+>> >> INVALID_GID.  For proc and kernfs that should never be the case
+>> >> so the problem becomes a non-issue.
+>> >> 
+>> >> Further I would look at limiting that relaxation to just
+>> >> inode_change_ok. 
+>> >
+>> > Finally got around to implementing this today; is the patch below what
+>> > you had in mind?
+>> 
+>> Pretty much.
+>> 
+>> For the same reason that capble_wrt_inode_uidgid(inode) had to look
+>> at both inode->i_uid and inode->i_gid I think we need to look at
+>> both inode->i_uid and inode->i_gid in those case.
+>> 
+>> I am worried about chgrp_ok in cases such as inode->i_uid is valid
+>> but unmapped.  I have a similiar worry about chown_ok where
+>> inode->i_gid is valid but unmapped (although that worry is less
+>> serious).
 >
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+> That makes sense.
+>
+> So then what is wanted is to check that the other id is either invalid,
+> or else it maps into s_user_ns. So for chown_ok() something like this:
+>
+>     if (!uid_valid(inode->i_uid) &&
+>         (!gid_valid(inode->i_gid) || kgid_has_mapping(inode->i_sb->s_user_ns, inode->i_gid)) &&
+>         ns_capable(inode->i_sb->s_user_ns, CAP_CHOWN))
+>             return true;
+>
+> and likewise for chgrp_ok(). Does that satisfy your concerns?
+
+Yes it does.
+
+Eric
