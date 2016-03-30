@@ -1,32 +1,26 @@
-Received: from out03.mta.xmission.com ([166.70.13.233])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alMjv-0005fm-Ki
- for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 20:29:27 +0000
-From: ebiederm@xmission.com (Eric W. Biederman)
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
- linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
-References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
- <1451930639-94331-12-git-send-email-seth.forshee@canonical.com>
- <20160303170201.GA30224@ubuntu-hedt>
- <87twkl50g5.fsf@x220.int.ebiederm.org>
- <20160328165936.GC137406@ubuntu-hedt>
- <87twjoiw6u.fsf@x220.int.ebiederm.org>
- <20160330145820.GA41461@ubuntu-hedt>
-Date: Wed, 30 Mar 2016 15:18:28 -0500
-In-Reply-To: <20160330145820.GA41461@ubuntu-hedt> (Seth Forshee's message of
- "Wed, 30 Mar 2016 09:58:20 -0500")
-Message-ID: <87oa9viusr.fsf@x220.int.ebiederm.org>
+ id 1alMyA-0004Lk-E8
+ for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 20:44:04 +0000
+Received: by mail-wm0-x244.google.com with SMTP id p65so18204821wmp.1
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Mar 2016 13:43:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [PATCH RESEND v2 11/18] fs: Ensure the mounter of a filesystem is
- privileged towards its inodes
+Sender: pku.leo@gmail.com
+In-Reply-To: <1455840434.2463.97.camel@buserror.net>
+References: <1455708258-3831-1-git-send-email-raghav.dogra@nxp.com>
+ <CADRPPNS1i1XgtpyiT_=rDuDXBDn=ehNY32=RKTC9hdKXhWWq8A@mail.gmail.com>
+ <1455840434.2463.97.camel@buserror.net>
+Date: Wed, 30 Mar 2016 15:43:40 -0500
+Message-ID: <CADRPPNTauz=T9oWCeZy8G8s0vo9fmieRhn=Gd3jVqqJJEHV_ag@mail.gmail.com>
+Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
+From: Li Yang <leoli@freescale.com>
+To: Scott Wood <oss@buserror.net>
+Cc: Raghav Dogra <raghav.dogra@nxp.com>, linux-mtd@lists.infradead.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Raghav Dogra <raghav@freescale.com>, Jaiprakash Singh <b44839@freescale.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,49 +30,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Seth Forshee <seth.forshee@canonical.com> writes:
+Hi Brian,
 
-> On Tue, Mar 29, 2016 at 08:36:09PM -0500, Eric W. Biederman wrote:
->> Seth Forshee <seth.forshee@canonical.com> writes:
->> 
->> > On Fri, Mar 04, 2016 at 04:43:06PM -0600, Eric W. Biederman wrote:
->> >> In general this is only an issue if uids and gids on the filesystem
->> >> do not map into the user namespace.
->> >> 
->> >> Therefore the general fix is to limit the logic of checking for
->> >> capabilities in s_user_ns if we are dealing with INVALID_UID and
->> >> INVALID_GID.  For proc and kernfs that should never be the case
->> >> so the problem becomes a non-issue.
->> >> 
->> >> Further I would look at limiting that relaxation to just
->> >> inode_change_ok. 
+Could you help to review and pull in this patch and the Kconfig update
+after this patch(https://patchwork.ozlabs.org/patch/557389/)?  It
+stated a dependency in the notes, but actually it should be applied
+cleanly without that patch.  These patches are critical to make NAND
+mtd feature work for our new chips.
+
+Regards,
+Leo
+
+On Thu, Feb 18, 2016 at 6:07 PM, Scott Wood <oss@buserror.net> wrote:
+> On Thu, 2016-02-18 at 15:18 -0600, Leo Li wrote:
+>> On Wed, Feb 17, 2016 at 5:24 AM, Raghav Dogra <raghav.dogra@nxp.com> wrote:
+>> > The new IFC controller version 2.0 has a different memory map page.
+>> > Upto IFC 1.4 PAGE size is 4 KB and from IFC2.0 PAGE size is 64KB.
+>> > This patch segregates the IFC global and runtime registers to appropriate
+>> > PAGE sizes.
 >> >
->> > Finally got around to implementing this today; is the patch below what
->> > you had in mind?
->> 
->> Pretty much.
->> 
->> For the same reason that capble_wrt_inode_uidgid(inode) had to look
->> at both inode->i_uid and inode->i_gid I think we need to look at
->> both inode->i_uid and inode->i_gid in those case.
->> 
->> I am worried about chgrp_ok in cases such as inode->i_uid is valid
->> but unmapped.  I have a similiar worry about chown_ok where
->> inode->i_gid is valid but unmapped (although that worry is less
->> serious).
+>> > Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
+>> > Signed-off-by: Raghav Dogra <raghav@freescale.com>
+>> > Acked-by: Li Yang <leoyang.li@nxp.com>
+>> > Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
+>> > ---
+>> > Changes for v3: not dependent on
+>> > "drivers/memory: Add deep sleep support for IFC" patch
+>> >
+>> > Changes for v2: rebased to resolve conflicts
+>> > Applicable to git://git.infradead.org/l2-mtd.git
+>> >
+>> > This patch is dependent on "drivers/memory: Add deep sleep support for
+>> > IFC"
+>> > https://patchwork.ozlabs.org/patch/582762/
+>> > which is also applicable to git://git.infradead.org/l2-mtd.git
+>>
+>> This patch seems to be in good shape, but the dependency is still
+>> having quite some feedback to be addressed.  Depending on it will
+>> greatly delay the time that this critical patch for LS2 to be merged.
+>> Could you remove the dependency like Scott already suggested?
 >
-> That makes sense.
+> According to the changelog the dependency has been removed (it would have been
+> clearer to remove this comment as well...).
 >
-> So then what is wanted is to check that the other id is either invalid,
-> or else it maps into s_user_ns. So for chown_ok() something like this:
+> -Scott
 >
->     if (!uid_valid(inode->i_uid) &&
->         (!gid_valid(inode->i_gid) || kgid_has_mapping(inode->i_sb->s_user_ns, inode->i_gid)) &&
->         ns_capable(inode->i_sb->s_user_ns, CAP_CHOWN))
->             return true;
->
-> and likewise for chgrp_ok(). Does that satisfy your concerns?
 
-Yes it does.
 
-Eric
+
+-- 
+- Leo
