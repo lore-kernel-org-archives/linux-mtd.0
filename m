@@ -1,9 +1,9 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alG9u-0003Wa-6M
- for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 13:27:43 +0000
-Date: Wed, 30 Mar 2016 15:27:10 +0200
+ id 1alGdk-00052F-9s
+ for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 13:58:32 +0000
+Date: Wed, 30 Mar 2016 15:58:10 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -11,7 +11,7 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>, Grant Likely
  <grant.likely@linaro.org>, Frank Rowand <frowand.list@gmail.com>
 Subject: Re: [PATCH V2 0/4] mtd: nand: add enum nand_ecc_algo
-Message-ID: <20160330152710.0b33d28d@bbrezillon>
+Message-ID: <20160330155810.328f2a1e@bbrezillon>
 In-Reply-To: <1458728343-1234-1-git-send-email-zajec5@gmail.com>
 References: <1458728343-1234-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
@@ -48,33 +48,21 @@ cept
 > for handling backward compatibility.
 > Then finally we should be able to add "nand-ecc-algo" property support pr=
 operly.
+>=20
+> V2: Add of_get_nand_ecc_algo helper (in 2/4) instead of this slightly hac=
+ky code
+>     in nand_dt_init that would be replaced anyway.
 
-Can you configure git-send-email to not encode your messages in base64?
+Whole series applied to nand/next [1]. I just added a comment for the
+ecc->algo field in patch 1.
+You can continue your rework (patch existing NAND_ECC_SOFT_BCH and
+NAND_ECC_SOFT users to use ecc->algo).
 
 Thanks,
 
 Boris
 
->=20
-> V2: Add of_get_nand_ecc_algo helper (in 2/4) instead of this slightly hac=
-ky code
->     in nand_dt_init that would be replaced anyway.
->=20
-> Rafa=C5=82 Mi=C5=82ecki (4):
->   mtd: nand: add new enum for storing ECC algorithm
->   of: mtd: prepare helper reading NAND ECC algo from DT
->   mtd: nand: set ECC algorithm in nand_dt_init
->   mtd: nand: nandsim: set ECC algorithm explicitly
->=20
->  drivers/mtd/nand/nand_base.c |  6 +++++-
->  drivers/mtd/nand/nandsim.c   |  2 ++
->  drivers/of/of_mtd.c          | 36 ++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/nand.h     |  7 +++++++
->  include/linux/of_mtd.h       |  6 ++++++
->  5 files changed, 56 insertions(+), 1 deletion(-)
->=20
-
-
+[1]https://github.com/linux-nand/linux/tree/nand/next
 
 --=20
 Boris Brezillon, Free Electrons
