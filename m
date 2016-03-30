@@ -24,9 +24,10 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Harvey Hunt <harvey.hunt@imgtec.com>,
  Archit Taneja <architt@codeaurora.org>, Han Xu <b45815@freescale.com>,
  Huang Shijie <shijie.huang@arm.com>
-Subject: [PATCH v5 19/50] mtd: nand: bch: switch to mtd_ooblayout_ops
-Date: Wed, 30 Mar 2016 18:14:34 +0200
-Message-Id: <1459354505-32551-20-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v5 07/50] mtd: nand: lpc32xx: use mtd_ooblayout_xxx() helpers
+ where appropriate
+Date: Wed, 30 Mar 2016 18:14:22 +0200
+Message-Id: <1459354505-32551-8-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -38,84 +39,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace the nand_ecclayout definition by the equivalent mtd_ooblayout_ops
-definition.
+The mtd_ooblayout_xxx() helper functions have been added to avoid direct
+accesses to the ecclayout field, and thus ease for future reworks.
+Use these helpers in all places where the oobfree[] and eccpos[] arrays
+where directly accessed.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_bch.c | 33 +++++++++++----------------------
- 1 file changed, 11 insertions(+), 22 deletions(-)
+ drivers/mtd/nand/lpc32xx_slc.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_bch.c b/drivers/mtd/nand/nand_bch.c
-index b3039de..e29e75f 100644
---- a/drivers/mtd/nand/nand_bch.c
-+++ b/drivers/mtd/nand/nand_bch.c
-@@ -32,13 +32,11 @@
- /**
-  * struct nand_bch_control - private NAND BCH control structure
-  * @bch:       BCH control structure
-- * @ecclayout: private ecc layout for this BCH configuration
-  * @errloc:    error location array
-  * @eccmask:   XOR ecc mask, allows erased pages to be decoded as valid
-  */
- struct nand_bch_control {
- 	struct bch_control   *bch;
--	struct nand_ecclayout ecclayout;
- 	unsigned int         *errloc;
- 	unsigned char        *eccmask;
- };
-@@ -124,7 +122,6 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+index 3b8f373..10cf8e62 100644
+--- a/drivers/mtd/nand/lpc32xx_slc.c
++++ b/drivers/mtd/nand/lpc32xx_slc.c
+@@ -604,7 +604,8 @@ static int lpc32xx_nand_read_page_syndrome(struct mtd_info *mtd,
+ 					   int oob_required, int page)
  {
- 	struct nand_chip *nand = mtd_to_nand(mtd);
- 	unsigned int m, t, eccsteps, i;
--	struct nand_ecclayout *layout = nand->ecc.layout;
- 	struct nand_bch_control *nbc = NULL;
- 	unsigned char *erased_page;
- 	unsigned int eccsize = nand->ecc.size;
-@@ -161,8 +158,17 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+ 	struct lpc32xx_nand_host *host = nand_get_controller_data(chip);
+-	int stat, i, status;
++	struct mtd_oob_region oobregion = { };
++	int stat, i, status, error;
+ 	uint8_t *oobecc, tmpecc[LPC32XX_ECC_SAVE_SIZE];
  
- 	eccsteps = mtd->writesize/eccsize;
+ 	/* Issue read command */
+@@ -620,7 +621,11 @@ static int lpc32xx_nand_read_page_syndrome(struct mtd_info *mtd,
+ 	lpc32xx_slc_ecc_copy(tmpecc, (uint32_t *) host->ecc_buf, chip->ecc.steps);
  
-+	/*
-+	 * Rely on the default ecclayout to ooblayout wrapper provided by MTD
-+	 * core if ecc.layout is not NULL.
-+	 * FIXME: this should be removed when all callers have moved to the
-+	 * mtd_ooblayout_ops approach.
-+	 */
-+	if (nand->ecc.layout)
-+		mtd_set_ecclayout(mtd, nand->ecc.layout);
+ 	/* Pointer to ECC data retrieved from NAND spare area */
+-	oobecc = chip->oob_poi + chip->ecc.layout->eccpos[0];
++	error = mtd_ooblayout_ecc(mtd, 0, &oobregion);
++	if (error)
++		return error;
 +
- 	/* if no ecc placement scheme was provided, build one */
--	if (!layout) {
-+	if (!mtd->ooblayout) {
++	oobecc = chip->oob_poi + oobregion.offset;
  
- 		/* handle large page devices only */
- 		if (mtd->oobsize < 64) {
-@@ -171,24 +177,7 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
- 			goto fail;
- 		}
+ 	for (i = 0; i < chip->ecc.steps; i++) {
+ 		stat = chip->ecc.correct(mtd, buf, oobecc,
+@@ -666,7 +671,8 @@ static int lpc32xx_nand_write_page_syndrome(struct mtd_info *mtd,
+ 					    int oob_required, int page)
+ {
+ 	struct lpc32xx_nand_host *host = nand_get_controller_data(chip);
+-	uint8_t *pb = chip->oob_poi + chip->ecc.layout->eccpos[0];
++	struct mtd_oob_region oobregion = { };
++	uint8_t *pb;
+ 	int error;
  
--		layout = &nbc->ecclayout;
--		layout->eccbytes = eccsteps*eccbytes;
--
--		/* reserve 2 bytes for bad block marker */
--		if (layout->eccbytes+2 > mtd->oobsize) {
--			printk(KERN_WARNING "no suitable oob scheme available "
--			       "for oobsize %d eccbytes %u\n", mtd->oobsize,
--			       eccbytes);
--			goto fail;
--		}
--		/* put ecc bytes at oob tail */
--		for (i = 0; i < layout->eccbytes; i++)
--			layout->eccpos[i] = mtd->oobsize-layout->eccbytes+i;
--
--		layout->oobfree[0].offset = 2;
--		layout->oobfree[0].length = mtd->oobsize-2-layout->eccbytes;
--
--		nand->ecc.layout = layout;
-+		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
- 	}
+ 	/* Write data, calculate ECC on outbound data */
+@@ -678,6 +684,11 @@ static int lpc32xx_nand_write_page_syndrome(struct mtd_info *mtd,
+ 	 * The calculated ECC needs some manual work done to it before
+ 	 * committing it to NAND. Process the calculated ECC and place
+ 	 * the resultant values directly into the OOB buffer. */
++	error = mtd_ooblayout_ecc(mtd, 0, &oobregion);
++	if (error)
++		return error;
++
++	pb = chip->oob_poi + oobregion.offset;
+ 	lpc32xx_slc_ecc_copy(pb, (uint32_t *)host->ecc_buf, chip->ecc.steps);
  
- 	/* sanity checks */
+ 	/* Write ECC data to device */
 -- 
 2.5.0
