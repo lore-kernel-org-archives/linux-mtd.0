@@ -1,28 +1,30 @@
-Received: from chaos.universe-factory.net ([37.72.148.22])
+Received: from out03.mta.xmission.com ([166.70.13.233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1akz6R-0002Ym-Tw
- for linux-mtd@lists.infradead.org; Tue, 29 Mar 2016 19:15:01 +0000
-Subject: Re: [PATCH for-4.4 1/2] mtd: spi-nor: fix Spansion regressions
- (aliased with Winbond)
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1450205301-32207-1-git-send-email-computersforpeace@gmail.com>
- <56F6DB9C.5010305@universe-factory.net>
- <56F86443.4050901@universe-factory.net> <20160328205654.GJ2545@google.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Daniel Kurtz <djkurtz@chromium.org>, Marek Vasut <marex@denx.de>,
- Bayi Cheng <bayi.cheng@mediatek.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Felix Fietkau <nbd@openwrt.org>,
- =?UTF-8?B?RWRkaWUgSHVhbmcgKOm7g+aZuuWCkSk=?= <eddie.huang@mediatek.com>,
- =?UTF-8?B?TWlsdG9uIENoaWFuZyAo5rGf5piO5pmPKQ==?=
- <Milton.Chiang@mediatek.com>, Gernot Hoyler <Gernot.Hoyler@spansion.com>
-From: Matthias Schiffer <mschiffer@universe-factory.net>
-Message-ID: <56FAD419.4030506@universe-factory.net>
-Date: Tue, 29 Mar 2016 21:14:33 +0200
+ id 1al5E5-00014S-Py
+ for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 01:47:19 +0000
+From: ebiederm@xmission.com (Eric W. Biederman)
+To: Seth Forshee <seth.forshee@canonical.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
+References: <1451930639-94331-1-git-send-email-seth.forshee@canonical.com>
+ <1451930639-94331-12-git-send-email-seth.forshee@canonical.com>
+ <20160303170201.GA30224@ubuntu-hedt>
+ <87twkl50g5.fsf@x220.int.ebiederm.org>
+ <20160328165936.GC137406@ubuntu-hedt>
+Date: Tue, 29 Mar 2016 20:36:09 -0500
+In-Reply-To: <20160328165936.GC137406@ubuntu-hedt> (Seth Forshee's message of
+ "Mon, 28 Mar 2016 11:59:36 -0500")
+Message-ID: <87twjoiw6u.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-In-Reply-To: <20160328205654.GJ2545@google.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="RoPP4FjeLtKcmlL67CAqOULCxst8mILOI"
+Content-Type: text/plain
+Subject: Re: [PATCH RESEND v2 11/18] fs: Ensure the mounter of a filesystem is
+ privileged towards its inodes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,179 +34,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---RoPP4FjeLtKcmlL67CAqOULCxst8mILOI
-Content-Type: multipart/mixed; boundary="N3kJRb1gLtQlt9TOKPjgREbEFr4GIJ8bA"
-From: Matthias Schiffer <mschiffer@universe-factory.net>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Daniel Kurtz <djkurtz@chromium.org>, Marek Vasut <marex@denx.de>,
- Bayi Cheng <bayi.cheng@mediatek.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Felix Fietkau <nbd@openwrt.org>,
- =?UTF-8?B?RWRkaWUgSHVhbmcgKOm7g+aZuuWCkSk=?= <eddie.huang@mediatek.com>,
- =?UTF-8?B?TWlsdG9uIENoaWFuZyAo5rGf5piO5pmPKQ==?=
- <Milton.Chiang@mediatek.com>, Gernot Hoyler <Gernot.Hoyler@spansion.com>
-Message-ID: <56FAD419.4030506@universe-factory.net>
-Subject: Re: [PATCH for-4.4 1/2] mtd: spi-nor: fix Spansion regressions
- (aliased with Winbond)
-References: <1450205301-32207-1-git-send-email-computersforpeace@gmail.com>
- <56F6DB9C.5010305@universe-factory.net>
- <56F86443.4050901@universe-factory.net> <20160328205654.GJ2545@google.com>
-In-Reply-To: <20160328205654.GJ2545@google.com>
+Seth Forshee <seth.forshee@canonical.com> writes:
 
---N3kJRb1gLtQlt9TOKPjgREbEFr4GIJ8bA
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+> On Fri, Mar 04, 2016 at 04:43:06PM -0600, Eric W. Biederman wrote:
+>> In general this is only an issue if uids and gids on the filesystem
+>> do not map into the user namespace.
+>> 
+>> Therefore the general fix is to limit the logic of checking for
+>> capabilities in s_user_ns if we are dealing with INVALID_UID and
+>> INVALID_GID.  For proc and kernfs that should never be the case
+>> so the problem becomes a non-issue.
+>> 
+>> Further I would look at limiting that relaxation to just
+>> inode_change_ok. 
+>
+> Finally got around to implementing this today; is the patch below what
+> you had in mind?
 
-On 03/28/2016 10:56 PM, Brian Norris wrote:
-> On Mon, Mar 28, 2016 at 12:52:51AM +0200, Matthias Schiffer wrote:
->> On 03/26/2016 07:57 PM, Matthias Schiffer wrote:
->>> On 12/15/2015 07:48 PM, Brian Norris wrote:
->>>> Spansion and Winbond have occasionally used the same manufacturer ID=
-,
->>>> and they don't support the same features. Particularly, writing SR=3D=
-0
->>>> seems to break read access for Spansion's s25fl064k. Unfortunately, =
-we
->>>> don't currently have a way to differentiate these Spansion and Winbo=
-nd
->>>> parts, so rather than regressing support for these Spansion flash, l=
-et's
->>>> drop the new Winbond lock/unlock support for now. We can try to addr=
-ess
->>>> Winbond support during the next release cycle.
->>>>
->>>> Original discussion:
->>>>
->>>> http://patchwork.ozlabs.org/patch/549173/
->>>> http://patchwork.ozlabs.org/patch/553683/
->>>>
->>>
->>> I have a few devices with a s25fl064k lying around, and I was not abl=
-e to
->>> reproduce this issue. I've re-applied "mtd: spi-nor: disable protecti=
-on for
->>> Winbond flash at startup" and the flash is readable just fine.
->>>
->>> On the contrary, I've come across a board with a s25fl064k that comes=
- up
->>> locked, so removing the protection bits would be necessary. (I was no=
-t yet
->>> able to check if the patch actually fixes writing to the flash on thi=
-s
->>> board, as I don't have access to the device myself, but I hope to get=
- a
->>> response on that soon.)
->>>
->>> Regards,
->>> Matthias
->>>
->>
->> I made the mistake of trusting the kernel log and OpenWrt Wiki when ma=
-king
->> my previous tests.
->>
->> All of the boards I was talking about in my last mail actually have a
->> Winbond w25q64, not a s25fl064k (two board I tested the patch on, and =
-the
->> board that was reported to come up locked). The kernel detects the w25=
-q64
->> as s25fl064k, as these two flash chips have the same JEDEC ID 0xef4017=
-=2E
->=20
-> That's interesting; I didn't notice we had duplicate entries for the
-> same ID. But apparently, the committers did:
->=20
->   commit f2df1ae3fe8d ("mtd: m25p80: Add support for two new Spansion
->   SPI devices (S25FL-K)")
->   ...
->   "Note that both parts exhibit a Winbond manufacturer ID so they might=
+Pretty much.
 
->   also be added to that section."
->=20
-> But this is interesting: I see the latest datasheet for Spansion
-> s25fl064k says it supports the Block Protect bits in the Status
-> Register, so presumably *some* version of s25fl064k should support
-> write_sr(nor, 0) to unlock it at boot...
->=20
-> If Felix's initial report is indeed correct, then I think we have:
-> (1) Spansion s25fl064k without Block Protect support (that breaks if yo=
-u
->     try to write SR=3D0)
-> (2) Spansion s25fl064k with Block Protect support (that requires you to=
+For the same reason that capble_wrt_inode_uidgid(inode) had to look
+at both inode->i_uid and inode->i_gid I think we need to look at
+both inode->i_uid and inode->i_gid in those case.
 
->     unlock at boot by writing SR=3D0 (?))
-> (3) Winbond w25q64 with Block Protect support (that requires you to
->     unlock at boot by writing SR=3D0)
->=20
-> And (1)-(3) all report the same ID, and (1) is incompatible with (2) an=
-d
-> (3). Am I right? Are flash vendors really this insane? Should we all
-> just give up and go home?
->=20
-> Brian
->=20
+I am worried about chgrp_ok in cases such as inode->i_uid is valid
+but unmapped.  I have a similiar worry about chown_ok where
+inode->i_gid is valid but unmapped (although that worry is less
+serious).
 
-After some more tests, I believe the situation isn't actually that bad. I=
+>> So that we can easily wrap that check per filesystem
+>> and deny the relaxation for proc and kernfs.  proc and kernfs already
+>> have wrappers for .setattr so denying changes when !uid_vaid and
+>> !gid_valid would be a trivial addition, and ensure calamity does
+>> not ensure.
+>
+> I'm confused about this part though. As you say above, proc and kernfs
+> will never have inodes with invalid ids, so it's not an issue. Do you
+> just mean this to be extra insurance against problems?
 
-don't think there are two fundamentally different revisions of the
-s25fl064k, and the s25fl064k and w25q64 are actually compatible - with on=
-e
-caveat: I think Spansion chips really don't like it when you don't wait
-until WIP is reset after writing the status register.
+I meant two things.
+1) As filesystems explicitly have to call inode_change_ok they can
+   over ride the default if it is possible.
 
-As "mtd: spi-nor: wait for SR_WIP to clear on initial unlock" has fixed
-that, I think we can just unconditionally unlock all flash with
-SNOR_MFR_WINBOND again without breaking Spansion flash.
+2) Because being paranoid about backward compatibility matters, it
+   almost certainly workth add adding a check:
+   "if (!uid_valid(inode->i_uid) ||!gid_valid(inode->i_gid)) return -EPERM"
+   To proc and sysfs just before they call inode_change_ok just so we
+   don't need to analyze them and confirm that they don't use
+   INVALID_UID.
 
-As I don't have a s25fl064k board at hand, this assessment is based on a
-test with a different Spansion flash (the s25fl064p). The s25fl064p
-exhibits the same behaviour: when I change the code to perform the initia=
-l
-unlock on the chip as well, reading the flash fails. But when I also appl=
-y
-"mtd: spi-nor: wait for SR_WIP to clear on initial unlock", everything is=
+   That just makes the patch more robust.
 
-fine again.
+   The we could leave removing that code for a follow on patch where
+   someone takes the time to read through and audit all of the proc and
+   sysfs code to ensure that the case does not arise, instead of just
+   implicitily assuming it.
+
+   That is the usual pattern when pushing down changes.  Do something
+   that is easily guaranteed to work, and leave the careful looking for
+   a patch all of it's own.
+
+Eric
 
 
-One more, completely unrelated note: Two Spansion flashs have a typo in
-their identification string, the s25sl032p and s25sl064p are actually
-called s25fl032p and s25fl064p (pretty much everything found on Google fo=
-r
-the wrong string refers to Linux kernel code or logs). Can these just be
-fixed, or is something relying on these strings not to change (devicetree=
-s
-or something)? If we can't change them, we should at least add a comment.=
-
-
-Regards,
-Matthias
-
-
---N3kJRb1gLtQlt9TOKPjgREbEFr4GIJ8bA--
-
---RoPP4FjeLtKcmlL67CAqOULCxst8mILOI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCgAGBQJW+tQZAAoJEBbvP2TLIB2ceqoQAOfz+cCWVZdOw4L2xZWDkiQv
-oeuCKlHoGRVr9nBJCuID7KlwkAZeOH3ii0hqPB1lCMTgQeetFyZqSoQODO/KFIrR
-as/tWu4svel+Xl7JzTFY43LNlz7ZiWQysQp4gEU3SC7APpYCkKxpGqbLE7rSgT6e
-ljmfb5PI1v4sKNJI1toi3XYT16ASRUdd3+bq8Gj8ImPiqedeVlJxWTdO2pTf63F4
-vgeszzeLQ/Vw0BWzdzrwcdtAFgXRE/bFtjIlVUQkOHKLUhQODu/D99Deo13BArj3
-qVogiZGN8eBlUQZnflIMJuTgL+PafYLdbrkksMCcnVikO++hSBgXjBNd0ORjrwCF
-3Tkzoe3KqcGhKsBru0e79UnCnLdtoPbkCG3QNgJZpK5970tjCR/AXQgERMmasrYl
-oXF9yOO/CJS+6yCDOdB74vioOrGQYzUE3C9zqu0GB3sD7eJCx7mbP5usth2IFCaV
-d8jiDTDuJf47IhlPlIP42+KKXfcpcpfgnVTCtI229jBWyDMSgSUv+HORseM6XzE6
-/UUEUgHSDYoeygaBRUB9CR/u2pqBNLONr2uaOctRVu6iFDL6MFZTdZwv82hulZTK
-wfVJ1PFO62CU8bRkF2kN1/xzowqWvBmRleCArQowAZe9WWSWK+G6212AFmj2IQ6z
-1J9W9UnAOdbiU39livN4
-=ZGfG
------END PGP SIGNATURE-----
-
---RoPP4FjeLtKcmlL67CAqOULCxst8mILOI--
+> Thanks,
+> Seth
+>
+> ---
+>
+> diff --git a/fs/attr.c b/fs/attr.c
+> index 3cfaaac4a18e..f2bcd3f7dfbb 100644
+> --- a/fs/attr.c
+> +++ b/fs/attr.c
+> @@ -16,6 +16,31 @@
+>  #include <linux/evm.h>
+>  #include <linux/ima.h>
+>  
+> +static bool chown_ok(const struct inode *inode, kuid_t uid)
+> +{
+> +	if (uid_eq(current_fsuid(), inode->i_uid) && uid_eq(uid, inode->i_uid))
+> +		return true;
+> +	if (capable_wrt_inode_uidgid(inode, CAP_CHOWN))
+> +		return true;
+> +	if (!uid_valid(inode->i_uid) &&
+> +	    ns_capable(inode->i_sb->s_user_ns, CAP_CHOWN))
+> +		return true;
+> +	return false;
+> +}
+> +
+> +static bool chgrp_ok(const struct inode *inode, kgid_t gid)
+> +{
+> +	if (uid_eq(current_fsuid(), inode->i_uid) &&
+> +	    (in_group_p(gid) || gid_eq(gid, inode->i_gid)))
+> +		return true;
+> +	if (capable_wrt_inode_uidgid(inode, CAP_CHOWN))
+> +		return true;
+> +	if (!gid_valid(inode->i_gid) &&
+> +	    ns_capable(inode->i_sb->s_user_ns, CAP_CHOWN))
+> +		return true;
+> +	return false;
+> +}
+> +
+>  /**
+>   * inode_change_ok - check if attribute changes to an inode are allowed
+>   * @inode:	inode to check
+> @@ -58,17 +83,11 @@ int inode_change_ok(const struct inode *inode, struct iattr *attr)
+>  		return 0;
+>  
+>  	/* Make sure a caller can chown. */
+> -	if ((ia_valid & ATTR_UID) &&
+> -	    (!uid_eq(current_fsuid(), inode->i_uid) ||
+> -	     !uid_eq(attr->ia_uid, inode->i_uid)) &&
+> -	    !capable_wrt_inode_uidgid(inode, CAP_CHOWN))
+> +	if ((ia_valid & ATTR_UID) && !chown_ok(inode, attr->ia_uid))
+>  		return -EPERM;
+>  
+>  	/* Make sure caller can chgrp. */
+> -	if ((ia_valid & ATTR_GID) &&
+> -	    (!uid_eq(current_fsuid(), inode->i_uid) ||
+> -	    (!in_group_p(attr->ia_gid) && !gid_eq(attr->ia_gid, inode->i_gid))) &&
+> -	    !capable_wrt_inode_uidgid(inode, CAP_CHOWN))
+> +	if ((ia_valid & ATTR_GID) && !chgrp_ok(inode, attr->ia_gid))
+>  		return -EPERM;
+>  
+>  	/* Make sure a caller can chmod. */
