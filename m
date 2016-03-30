@@ -24,9 +24,9 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Harvey Hunt <harvey.hunt@imgtec.com>,
  Archit Taneja <architt@codeaurora.org>, Han Xu <b45815@freescale.com>,
  Huang Shijie <shijie.huang@arm.com>
-Subject: [PATCH v5 15/50] mtd: docg3: use mtd_set_ecclayout() where appropriate
-Date: Wed, 30 Mar 2016 18:14:30 +0200
-Message-Id: <1459354505-32551-16-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v5 11/50] mtd: add mtd_set_ecclayout() helper function
+Date: Wed, 30 Mar 2016 18:14:26 +0200
+Message-Id: <1459354505-32551-12-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -38,27 +38,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the mtd_set_ecclayout() helper instead of directly assigning the
-mtd->ecclayout field.
+Add an mtd_set_ecclayout() helper function to avoid direct accesses to the
+mtd->ecclayout field. This will ease future reworks of ECC layout
+definition.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- drivers/mtd/devices/docg3.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mtd/mtd.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index e7b2e43..6b516e1 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -1857,7 +1857,7 @@ static int __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
- 	mtd->_read_oob = doc_read_oob;
- 	mtd->_write_oob = doc_write_oob;
- 	mtd->_block_isbad = doc_block_isbad;
--	mtd->ecclayout = &docg3_oobinfo;
-+	mtd_set_ecclayout(mtd, &docg3_oobinfo);
- 	mtd->oobavail = 8;
- 	mtd->ecc_strength = DOC_ECC_BCH_T;
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index b141f26..6250dd8 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -286,6 +286,12 @@ int mtd_ooblayout_set_databytes(struct mtd_info *mtd, const u8 *databuf,
+ int mtd_ooblayout_count_freebytes(struct mtd_info *mtd);
+ int mtd_ooblayout_count_eccbytes(struct mtd_info *mtd);
  
++static inline void mtd_set_ecclayout(struct mtd_info *mtd,
++				     struct nand_ecclayout *ecclayout)
++{
++	mtd->ecclayout = ecclayout;
++}
++
+ static inline void mtd_set_of_node(struct mtd_info *mtd,
+ 				   struct device_node *np)
+ {
 -- 
 2.5.0
