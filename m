@@ -1,24 +1,28 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alHdT-0002mb-3c
- for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 15:02:22 +0000
-Date: Wed, 30 Mar 2016 17:01:56 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
- <alex@alex-smith.me.uk>, <linux-mtd@lists.infradead.org>,
- <computersforpeace@gmail.com>, <dwmw2@infradead.org>, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH] mtd: nand: jz4780: fixup, device structure assigned at
- probe
-Message-ID: <20160330170156.612f0acd@bbrezillon>
-In-Reply-To: <56FBE483.2010407@imgtec.com>
-References: <1458784407-12908-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160330163432.29c3864c@bbrezillon> <56FBE483.2010407@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Gordon <david.s.gordon@intel.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+ dmaengine@vger.kernel.org, Mauro Carvalho Chehab <m.chehab@samsung.com>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ linux-media@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH v2 3/7] mtd: nand: sunxi: make cur_off parameter optional in
+ extra oob helpers
+Date: Wed, 30 Mar 2016 17:39:50 +0200
+Message-Id: <1459352394-22810-4-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1459352394-22810-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1459352394-22810-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +32,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 30 Mar 2016 15:36:51 +0100
-Harvey Hunt <harvey.hunt@imgtec.com> wrote:
+Allow for NULL cur_offs values when the caller does not know where the
+NAND page register pointer point to.
 
-> Hi,
-> 
-> On 30/03/16 15:34, Boris Brezillon wrote:
-> > On Wed, 23 Mar 2016 21:53:27 -0400
-> > Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
-> >
-> > How about adding the following message:
-> >
-> > "
-> > bch->dev is already assigned to &pdev->dev in the probe function.
-> > Remove the duplicate assignment done in jz4780_bch_get().
-> > "
-> >
-> > If you agree I'll add this commit message while applying (no need to
-> > resend).
-> 
-> That sounds good to me. Congrats on the maintainership btw. :-)
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/sunxi_nand.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Thanks.
-
-> 
-> >
-> > Harvey, can I have your ack on this patch?
-> 
-> Acked-by: Harvey Hunt <harvey.hunt@imgtec.com>
-
-Applied to nand/next.
-
-Thanks,
-
-Boris
-
-
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index 3e7b919..6d6b166 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -956,7 +956,7 @@ static void sunxi_nfc_hw_ecc_read_extra_oob(struct mtd_info *mtd,
+ 	if (len <= 0)
+ 		return;
+ 
+-	if (*cur_off != offset)
++	if (!cur_off || *cur_off != offset)
+ 		nand->cmdfunc(mtd, NAND_CMD_RNDOUT,
+ 			      offset + mtd->writesize, -1);
+ 
+@@ -966,7 +966,8 @@ static void sunxi_nfc_hw_ecc_read_extra_oob(struct mtd_info *mtd,
+ 		sunxi_nfc_randomizer_read_buf(mtd, oob + offset, len,
+ 					      false, page);
+ 
+-	*cur_off = mtd->oobsize + mtd->writesize;
++	if (cur_off)
++		*cur_off = mtd->oobsize + mtd->writesize;
+ }
+ 
+ static int sunxi_nfc_hw_ecc_write_chunk(struct mtd_info *mtd,
+@@ -1021,13 +1022,14 @@ static void sunxi_nfc_hw_ecc_write_extra_oob(struct mtd_info *mtd,
+ 	if (len <= 0)
+ 		return;
+ 
+-	if (*cur_off != offset)
++	if (!cur_off || *cur_off != offset)
+ 		nand->cmdfunc(mtd, NAND_CMD_RNDIN,
+ 			      offset + mtd->writesize, -1);
+ 
+ 	sunxi_nfc_randomizer_write_buf(mtd, oob + offset, len, false, page);
+ 
+-	*cur_off = mtd->oobsize + mtd->writesize;
++	if (cur_off)
++		*cur_off = mtd->oobsize + mtd->writesize;
+ }
+ 
+ static int sunxi_nfc_hw_ecc_read_page(struct mtd_info *mtd,
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.5.0
