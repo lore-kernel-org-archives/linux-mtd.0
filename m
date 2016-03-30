@@ -24,9 +24,9 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Harvey Hunt <harvey.hunt@imgtec.com>,
  Archit Taneja <architt@codeaurora.org>, Han Xu <b45815@freescale.com>,
  Huang Shijie <shijie.huang@arm.com>
-Subject: [PATCH v5 17/50] mtd: docg3: switch to mtd_ooblayout_ops
-Date: Wed, 30 Mar 2016 18:14:32 +0200
-Message-Id: <1459354505-32551-18-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v5 21/50] mtd: nand: jz4740: switch to mtd_ooblayout_ops
+Date: Wed, 30 Mar 2016 18:14:36 +0200
+Message-Id: <1459354505-32551-22-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -38,78 +38,163 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace the nand_ecclayout definition by the equivalent mtd_ooblayout_ops
-definition.
+Implementing the mtd_ooblayout_ops interface is the new way of exposing
+ECC/OOB layout to MTD users.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- drivers/mtd/devices/docg3.c | 46 ++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 35 insertions(+), 11 deletions(-)
+ arch/mips/include/asm/mach-jz4740/jz4740_nand.h |  2 +-
+ arch/mips/jz4740/board-qi_lb60.c                | 87 +++++++++++++++----------
+ drivers/mtd/nand/jz4740_nand.c                  |  2 +-
+ 3 files changed, 53 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 6b516e1..b833e6c 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -67,16 +67,40 @@ module_param(reliable_mode, uint, 0);
- MODULE_PARM_DESC(reliable_mode, "Set the docg3 mode (0=normal MLC, 1=fast, "
- 		 "2=reliable) : MLC normal operations are in normal mode");
+diff --git a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h b/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
+index 398733e..7f7b0fc 100644
+--- a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
++++ b/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
+@@ -27,7 +27,7 @@ struct jz_nand_platform_data {
  
--/**
-- * struct docg3_oobinfo - DiskOnChip G3 OOB layout
-- * @eccbytes: 8 bytes are used (1 for Hamming ECC, 7 for BCH ECC)
-- * @eccpos: ecc positions (byte 7 is Hamming ECC, byte 8-14 are BCH ECC)
-- * @oobfree: free pageinfo bytes (byte 0 until byte 6, byte 15
-- */
--static struct nand_ecclayout docg3_oobinfo = {
--	.eccbytes = 8,
--	.eccpos = {7, 8, 9, 10, 11, 12, 13, 14},
--	.oobfree = {{0, 7}, {15, 1} },
-+static int docg3_ooblayout_ecc(struct mtd_info *mtd, int section,
-+			       struct mtd_oob_region *oobregion)
+ 	unsigned char banks[JZ_NAND_NUM_BANKS];
+ 
+-	void (*ident_callback)(struct platform_device *, struct nand_chip *,
++	void (*ident_callback)(struct platform_device *, struct mtd_info *,
+ 				struct mtd_partition **, int *num_partitions);
+ };
+ 
+diff --git a/arch/mips/jz4740/board-qi_lb60.c b/arch/mips/jz4740/board-qi_lb60.c
+index 934b15b..a1c1afb 100644
+--- a/arch/mips/jz4740/board-qi_lb60.c
++++ b/arch/mips/jz4740/board-qi_lb60.c
+@@ -50,20 +50,6 @@ static bool is_avt2;
+ #define QI_LB60_GPIO_KEYIN8		JZ_GPIO_PORTD(26)
+ 
+ /* NAND */
+-static struct nand_ecclayout qi_lb60_ecclayout_1gb = {
+-	.eccbytes = 36,
+-	.eccpos = {
+-		6,  7,	8,  9,	10, 11, 12, 13,
+-		14, 15, 16, 17, 18, 19, 20, 21,
+-		22, 23, 24, 25, 26, 27, 28, 29,
+-		30, 31, 32, 33, 34, 35, 36, 37,
+-		38, 39, 40, 41
+-	},
+-	.oobfree = {
+-		{ .offset = 2, .length = 4 },
+-		{ .offset = 42, .length = 22 }
+-	},
+-};
+ 
+ /* Early prototypes of the QI LB60 had only 1GB of NAND.
+  * In order to support these devices as well the partition and ecc layout is
+@@ -86,25 +72,6 @@ static struct mtd_partition qi_lb60_partitions_1gb[] = {
+ 	},
+ };
+ 
+-static struct nand_ecclayout qi_lb60_ecclayout_2gb = {
+-	.eccbytes = 72,
+-	.eccpos = {
+-		12, 13, 14, 15, 16, 17, 18, 19,
+-		20, 21, 22, 23, 24, 25, 26, 27,
+-		28, 29, 30, 31, 32, 33, 34, 35,
+-		36, 37, 38, 39, 40, 41, 42, 43,
+-		44, 45, 46, 47, 48, 49, 50, 51,
+-		52, 53, 54, 55, 56, 57, 58, 59,
+-		60, 61, 62, 63, 64, 65, 66, 67,
+-		68, 69, 70, 71, 72, 73, 74, 75,
+-		76, 77, 78, 79, 80, 81, 82, 83
+-	},
+-	.oobfree = {
+-		{ .offset = 2, .length = 10 },
+-		{ .offset = 84, .length = 44 },
+-	},
+-};
+-
+ static struct mtd_partition qi_lb60_partitions_2gb[] = {
+ 	{
+ 		.name = "NAND BOOT partition",
+@@ -123,19 +90,67 @@ static struct mtd_partition qi_lb60_partitions_2gb[] = {
+ 	},
+ };
+ 
++static int qi_lb60_ooblayout_ecc(struct mtd_info *mtd, int section,
++				 struct mtd_oob_region *oobregion)
 +{
 +	if (section)
 +		return -ERANGE;
 +
-+	/* byte 7 is Hamming ECC, byte 8-14 are BCH ECC */
-+	oobregion->offset = 7;
-+	oobregion->length = 8;
++	oobregion->length = 36;
++	oobregion->offset = 6;
 +
-+	return 0;
-+}
-+
-+static int docg3_ooblayout_free(struct mtd_info *mtd, int section,
-+				struct mtd_oob_region *oobregion)
-+{
-+	if (section > 1)
-+		return -ERANGE;
-+
-+	/* free bytes: byte 0 until byte 6, byte 15 */
-+	if (!section) {
-+		oobregion->offset = 0;
-+		oobregion->length = 7;
-+	} else {
-+		oobregion->offset = 15;
-+		oobregion->length = 1;
++	if (mtd->oobsize == 128) {
++		oobregion->length *= 2;
++		oobregion->offset *= 2;
 +	}
 +
 +	return 0;
 +}
 +
-+static const struct mtd_ooblayout_ops nand_ooblayout_docg3_ops = {
-+	.ecc = docg3_ooblayout_ecc,
-+	.free = docg3_ooblayout_free,
- };
++static int qi_lb60_ooblayout_free(struct mtd_info *mtd, int section,
++				  struct mtd_oob_region *oobregion)
++{
++	int eccbytes = 36, eccoff = 6;
++
++	if (section > 1)
++		return -ERANGE;
++
++	if (mtd->oobsize == 128) {
++		eccbytes *= 2;
++		eccoff *= 2;
++	}
++
++	if (!section) {
++		oobregion->offset = 2;
++		oobregion->length = eccoff - 2;
++	} else {
++		oobregion->offset = eccoff + eccbytes;
++		oobregion->length = mtd->oobsize - oobregion->offset;
++	}
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops qi_lb60_ooblayout_ops = {
++	.ecc = qi_lb60_ooblayout_ecc,
++	.free = qi_lb60_ooblayout_free,
++};
++
+ static void qi_lb60_nand_ident(struct platform_device *pdev,
+-		struct nand_chip *chip, struct mtd_partition **partitions,
++		struct mtd_info *mtd, struct mtd_partition **partitions,
+ 		int *num_partitions)
+ {
++	struct nand_chip *chip = mtd_to_nand(mtd);
++
+ 	if (chip->page_shift == 12) {
+-		chip->ecc.layout = &qi_lb60_ecclayout_2gb;
+ 		*partitions = qi_lb60_partitions_2gb;
+ 		*num_partitions = ARRAY_SIZE(qi_lb60_partitions_2gb);
+ 	} else {
+-		chip->ecc.layout = &qi_lb60_ecclayout_1gb;
+ 		*partitions = qi_lb60_partitions_1gb;
+ 		*num_partitions = ARRAY_SIZE(qi_lb60_partitions_1gb);
+ 	}
++
++	mtd_set_ooblayout(mtd, &qi_lb60_ooblayout_ops);
+ }
  
- static inline u8 doc_readb(struct docg3 *docg3, u16 reg)
-@@ -1857,7 +1881,7 @@ static int __init doc_set_driver_info(int chip_id, struct mtd_info *mtd)
- 	mtd->_read_oob = doc_read_oob;
- 	mtd->_write_oob = doc_write_oob;
- 	mtd->_block_isbad = doc_block_isbad;
--	mtd_set_ecclayout(mtd, &docg3_oobinfo);
-+	mtd_set_ooblayout(mtd, &nand_ooblayout_docg3_ops);
- 	mtd->oobavail = 8;
- 	mtd->ecc_strength = DOC_ECC_BCH_T;
+ static struct jz_nand_platform_data qi_lb60_nand_pdata = {
+diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
+index 673ceb2..df74408 100644
+--- a/drivers/mtd/nand/jz4740_nand.c
++++ b/drivers/mtd/nand/jz4740_nand.c
+@@ -476,7 +476,7 @@ static int jz_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (pdata && pdata->ident_callback) {
+-		pdata->ident_callback(pdev, chip, &pdata->partitions,
++		pdata->ident_callback(pdev, mtd, &pdata->partitions,
+ 					&pdata->num_partitions);
+ 	}
  
 -- 
 2.5.0
