@@ -1,28 +1,21 @@
-Received: from eusmtp01.atmel.com ([212.144.249.243])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alFXi-0004au-Lk
- for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 12:48:15 +0000
-Subject: Re: [PATCH for-4.4 1/2] mtd: spi-nor: fix Spansion regressions
- (aliased with Winbond)
-To: Brian Norris <computersforpeace@gmail.com>, Matthias Schiffer
- <mschiffer@universe-factory.net>
-References: <1450205301-32207-1-git-send-email-computersforpeace@gmail.com>
- <56F6DB9C.5010305@universe-factory.net>
- <56F86443.4050901@universe-factory.net> <20160328205654.GJ2545@google.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: Marek Vasut <marex@denx.de>, Gernot Hoyler <Gernot.Hoyler@spansion.com>,
- Felix Fietkau <nbd@openwrt.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, =?UTF-8?B?TWlsdG9uIENoaWFuZyAo5rGf5piO5pmPKQ==?=
- <Milton.Chiang@mediatek.com>, <linux-kernel@vger.kernel.org>, Bayi Cheng
- <bayi.cheng@mediatek.com>, <linux-mtd@lists.infradead.org>, Daniel Kurtz
- <djkurtz@chromium.org>, =?UTF-8?B?RWRkaWUgSHVhbmcgKOm7g+aZuuWCkSk=?=
- <eddie.huang@mediatek.com>, "Nicolas.FERRE@atmel.com"
- <Nicolas.FERRE@atmel.com>
-Message-ID: <56FBCAF4.5060801@atmel.com>
-Date: Wed, 30 Mar 2016 14:47:48 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1alFx1-0003wc-N2
+ for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 13:14:25 +0000
+Date: Wed, 30 Mar 2016 15:13:51 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Kyle Roeschley <kyle.roeschley@ni.com>
+Cc: richard@nod.at, nathan.sullivan@ni.com, xander.huff@ni.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, beanhuo@micron.com
+Subject: Re: [PATCH v3] mtd: nand_bbt: scan for next free bbt block if
+ writing bbt fails
+Message-ID: <20160330151351.323a5333@bbrezillon>
+In-Reply-To: <1458945076-18305-1-git-send-email-kyle.roeschley@ni.com>
+References: <1458945076-18305-1-git-send-email-kyle.roeschley@ni.com>
 MIME-Version: 1.0
-In-Reply-To: <20160328205654.GJ2545@google.com>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,69 +26,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi Kyle,
 
-[...] 
-> But this is interesting: I see the latest datasheet for Spansion
-> s25fl064k says it supports the Block Protect bits in the Status
-> Register, so presumably *some* version of s25fl064k should support
-> write_sr(nor, 0) to unlock it at boot...
+On Fri, 25 Mar 2016 17:31:16 -0500
+Kyle Roeschley <kyle.roeschley@ni.com> wrote:
+
+> If erasing or writing the BBT fails, we should mark the current BBT
+> block as bad and use the BBT descriptor to scan for the next available
+> unused block in the BBT. We should only return a failure if there isn't
+> any space left.
 > 
-> If Felix's initial report is indeed correct, then I think we have:
-> (1) Spansion s25fl064k without Block Protect support (that breaks if you
->     try to write SR=0)
-> (2) Spansion s25fl064k with Block Protect support (that requires you to
->     unlock at boot by writing SR=0 (?))
-> (3) Winbond w25q64 with Block Protect support (that requires you to
->     unlock at boot by writing SR=0)
+> Based on original code implemented by Jeff Westfahl
+> <jeff.westfahl@ni.com>.
 > 
-> And (1)-(3) all report the same ID, and (1) is incompatible with (2) and
-> (3). Am I right? Are flash vendors really this insane? Should we all
-> just give up and go home?
+> Signed-off-by: Kyle Roeschley <kyle.roeschley@ni.com>
+> Suggested-by: Jeff Westfahl <jeff.westfahl@ni.com>
+> ---
+> This v3 is in response to comments from Brian Norris and Bean Ho on 8/26/15:
+> http://lists.infradead.org/pipermail/linux-mtd/2015-August/061411.html
 > 
+> v3: Don't overload mtd->priv
+>     Keep nand_erase_nand from erroring on protected BBT blocks
+> 
+> v2: Mark OOB area in each block as well as BBT
+>     Avoid marking read-only, bad address, or known bad blocks as bad
+> ---
+>  drivers/mtd/nand/nand_base.c |  4 ++--
+>  drivers/mtd/nand/nand_bbt.c  | 37 +++++++++++++++++++++++++++++++++++--
+>  2 files changed, 37 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index b6facac..9ad8a86 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2916,8 +2916,8 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+>  	/* Select the NAND device */
+>  	chip->select_chip(mtd, chipnr);
+>  
+> -	/* Check, if it is write protected */
+> -	if (nand_check_wp(mtd)) {
+> +	/* Check if it is write protected, unless we're erasing BBT */
+> +	if (nand_check_wp(mtd) && !allowbbt) {
 
-Just a general remark: maybe reading the JEDEC ID is not a so reliable mean to
-discover SPI flash hardware capabilities at runtime.
+Hm, will this really work. Can a write-protected device accept erase
+commands?
 
-Two weeks ago some Macronix people came to Atmel to present us next evolutions
-of SPI flashes. We took this opportunity to ask them some questions and one of
-them was about memories with different hardware capabilities sharing the very
-same JEDEC ID. One example is Macronix MX25L25635E vs MX25L25673G.
+>  		pr_debug("%s: device is write protected!\n",
+>  				__func__);
+>  		instr->state = MTD_ERASE_FAILED;
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index 2fbb523..01526e5 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -662,6 +662,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+>  			page = td->pages[chip];
+>  			goto write;
+>  		}
+> +	next:
 
-They explained to us that for Macronix memories, the 2byte product ID is to be
-split into a 1byte code for the memory type and a second byte for the memory
-denstity. For instance:
-C2: Manufacturer ID, Macronix
-20: Memory Type, SPI NOR flash
-19: Memory density, 256Mib
+Please put this label at the beginning of the line and fix all the other
+issues reported by checkpatch (I know we already have a 'write' label
+which does not follow this rule, but let's try to avoid adding new
+ones).
 
-Hence the JEDEC ID only provides information about the memory size and all
-SPI NOR memories of a given size actually share the same JEDEC ID.
+>  
+>  		/*
+>  		 * Automatic placement of the bad block table. Search direction
+> @@ -787,14 +788,46 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+>  		einfo.addr = to;
+>  		einfo.len = 1 << this->bbt_erase_shift;
+>  		res = nand_erase_nand(mtd, &einfo, 1);
+> -		if (res < 0)
+> +		if (res == -EIO) {
+> +			/* This block is bad. Mark it as such and see if
+> +			 * there's another block available in the BBT area. */
+> +			int block = page >>
+> +				(this->bbt_erase_shift - this->page_shift);
+> +			pr_info("nand_bbt: failed to erase block %d when writing BBT\n",
+> +				block);
+> +			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
+> +
+> +			res = this->block_markbad(mtd, block);
 
-Similar cases can also be found with other manufacturers: Micron, Winbond,
-Spansion... 
+Not sure we should mark the block bad until we managed to write a new
+BBT. ITOH, if we do so and the new BBT write is interrupted, it
+will trigger a full BBM scan, which should be harmless on most
+platforms (except those overwriting BBM with real data :-/)
 
-Also the Macronix engineers asked us how software applications drive the (Q)SPI
-memories. I answered them that Linux or u-boot use a static table indexed by
-the JEDEC ID, which provides the hardware capabilities. I guess they didn't
-expect software developers to use the JEDEC ID for this purpose.
-Well, it's just a feeling.
+> +			if (res)
+> +				pr_warn("nand_bbt: error %d while marking block %d bad\n",
+> +					res, block);
+> +			td->pages[chip] = -1;
+> +			goto next;
+> +		} else if (res < 0) {
+>  			goto outerr;
+> +		}
+>  
+>  		res = scan_write_bbt(mtd, to, len, buf,
+>  				td->options & NAND_BBT_NO_OOB ? NULL :
+>  				&buf[len]);
+> -		if (res < 0)
+> +		if (res == -EIO) {
+> +			/* This block is bad. Mark it as such and see if
+> +			 * there's another block available in the BBT area. */
+> +			int block = page >>
+> +				(this->bbt_erase_shift - this->page_shift);
+> +			pr_info("nand_bbt: failed to write block %d when writing BBT\n",
+> +				block);
+> +			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
+> +
+> +			res = this->block_markbad(mtd, block);
+> +			if (res)
+> +				pr_warn("nand_bbt: error %d while marking block %d bad\n",
+> +					res, block);
+> +			td->pages[chip] = -1;
+> +			goto next;
+> +		} else if (res < 0) {
+>  			goto outerr;
+> +		}
+>  
+>  		pr_info("Bad block table written to 0x%012llx, version 0x%02X\n",
+>  			 (unsigned long long)to, td->version[chip]);
 
-Then the Macronix engineers proposed to use the Serial Flash Discoverable
-Parameter (SFDP) tables to make the difference between memories sharing the
-same JEDEC ID. This might help us in some cases.
-However we should be cautious when using this standard: last year, I've tried
-to discover hardware parameters through these tables when I was working with
-Spansion and Micron memories. I found out the Parameter Table Pointers inside
-the SFDP Header were expressed as byte offset with one memory and as dword
-offset with the other.
-So I gave up using these tables since some memories diverged from the standard,
-which was "work in progress" at that time.
+Bean, Brian, can you comment on this new version. I haven't followed
+the previous iterations, and would like to have your feedback before
+taking a decision.
 
-Anyway if we cannot completely rely on the SFDP tables we could still use
-DT properties but we should no longer expect to guess all hardware parameters
-from the JEDEC ID alone.
+Thanks,
 
-Best regards,
+Boris
 
-Cyrille
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
