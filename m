@@ -1,23 +1,36 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ald6P-0004X1-Cg
- for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 13:57:38 +0000
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
+Received: from pandora.arm.linux.org.uk
+ ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aldNI-0004L5-Le
+ for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 14:15:08 +0000
+Date: Thu, 31 Mar 2016 15:14:13 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Cc: linux-kernel@vger.kernel.org,
- Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Subject: [PATCH] mtd: nand: document the NAND controller/NAND chip DT
- representation
-Date: Thu, 31 Mar 2016 15:57:13 +0200
-Message-Id: <1459432633-23162-1-git-send-email-boris.brezillon@free-electrons.com>
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Gordon <david.s.gordon@intel.com>, linux-crypto@vger.kernel.org,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Vinod Koul <vinod.koul@intel.com>,
+ Richard Weinberger <richard@nod.at>, Joerg Roedel <joro@8bytes.org>,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ Vignesh R <vigneshr@ti.com>, linux-mm@kvack.org,
+ iommu@lists.linux-foundation.org, Mark Brown <broonie@kernel.org>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+ linux-media@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ linux-arm-kernel@lists.infradead.org,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>
+Subject: Re: [PATCH 2/4] scatterlist: add sg_alloc_table_from_buf() helper
+Message-ID: <20160331141412.GK19428@n2100.arm.linux.org.uk>
+References: <1459427384-21374-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459427384-21374-3-git-send-email-boris.brezillon@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1459427384-21374-3-git-send-email-boris.brezillon@free-electrons.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +40,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Standardize the NAND controller/NAND chip DT representation. Now, all new
-NAND controller drivers should comply with this representation, even if
-they are only supporting a single NAND chip.
+On Thu, Mar 31, 2016 at 02:29:42PM +0200, Boris Brezillon wrote:
+> sg_alloc_table_from_buf() provides an easy solution to create an sg_table
+> from a virtual address pointer. This function takes care of dealing with
+> vmallocated buffers, buffer alignment, or DMA engine limitations (maximum
+> DMA transfer size).
 
-Existing drivers can keep support for the old representation (where only
-the NAND chip was described), but are encouraged to also support the new
-one.
+Please note that the DMA API does not take account of coherency of memory
+regions other than non-high/lowmem - there are specific extensions to
+deal with this.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- Documentation/devicetree/bindings/mtd/nand.txt | 37 +++++++++++++++++++++++++-
- 1 file changed, 36 insertions(+), 1 deletion(-)
+What this means is that having an API that takes any virtual address
+pointer, converts it to a scatterlist which is then DMA mapped, is
+unsafe.
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
-index b53f92e..fbf5677 100644
---- a/Documentation/devicetree/bindings/mtd/nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/nand.txt
-@@ -1,4 +1,23 @@
--* MTD generic binding
-+* NAND chip and NAND controller generic binding
-+
-+NAND controller/NAND chip representation:
-+
-+The NAND controller should be represented with it's own DT node, and all
-+NAND chips attached to this controller should be defined as children nodes
-+of the NAND controller. This representation should be enforced even for
-+simple controllers supporting only one chip.
-+
-+Mandatory NAND controller properties:
-+- #address-cells: depends on your controller. Should at least be 1 to
-+		  encode the CS line id.
-+- #size-cells: depends on your controller. Put zero unless you need a
-+	       mapping between CS lines and dedicated memory regions
-+
-+Optional NAND controller properties
-+- ranges: only needed if you need to define a mapping between CS lines and
-+	  memory regions
-+
-+Optional NAND chip properties:
- 
- - nand-ecc-mode : String, operation mode of the NAND ecc mode.
-   Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-@@ -19,3 +38,19 @@ errors per {size} bytes".
- The interpretation of these parameters is implementation-defined, so not all
- implementations must support all possible combinations. However, implementations
- are encouraged to further specify the value(s) they support.
-+
-+Example:
-+
-+	nand-controller {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* controller specific properties */
-+
-+		nand@0 {
-+			reg = <0>;
-+			nand-ecc-mode = "soft_bch";
-+
-+			/* controller specific properties */
-+		};
-+	};
+It'll be okay for PIPT and non-aliasing VIPT cache architectures, but
+for other cache architectures this will hide this problem and make
+review harder.
+
 -- 
-2.5.0
+RMK's Patch system: http://www.arm.linux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
