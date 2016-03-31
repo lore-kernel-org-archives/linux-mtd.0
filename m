@@ -1,38 +1,24 @@
-Received: from pandora.arm.linux.org.uk
- ([2001:4d48:ad52:3201:214:fdff:fe10:1be6])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aleET-0007UU-2G
- for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 15:10:05 +0000
-Date: Thu, 31 Mar 2016 16:09:23 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Dave Gordon <david.s.gordon@intel.com>, linux-crypto@vger.kernel.org,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Vinod Koul <vinod.koul@intel.com>,
- Richard Weinberger <richard@nod.at>, Joerg Roedel <joro@8bytes.org>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- Vignesh R <vigneshr@ti.com>, linux-mm@kvack.org,
- iommu@lists.linux-foundation.org, Mark Brown <broonie@kernel.org>,
- Hans Verkuil <hans.verkuil@cisco.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
- linux-media@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- linux-arm-kernel@lists.infradead.org,
- Mauro Carvalho Chehab <m.chehab@samsung.com>
-Subject: Re: [PATCH 2/4] scatterlist: add sg_alloc_table_from_buf() helper
-Message-ID: <20160331150923.GL19428@n2100.arm.linux.org.uk>
-References: <1459427384-21374-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459427384-21374-3-git-send-email-boris.brezillon@free-electrons.com>
- <20160331141412.GK19428@n2100.arm.linux.org.uk>
- <20160331164557.544ed780@bbrezillon>
+Received: from mailapp01.imgtec.com ([195.59.15.196])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aleK4-0006QD-MQ
+ for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 15:15:52 +0000
+Subject: Re: [PATCH] mtd: nand: document the NAND controller/NAND chip DT
+ representation
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>
+References: <1459432633-23162-1-git-send-email-boris.brezillon@free-electrons.com>
+CC: Mark Rutland <mark.rutland@arm.com>, <devicetree@vger.kernel.org>, Pawel
+ Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Kumar Gala
+ <galak@codeaurora.org>, Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+From: Harvey Hunt <harvey.hunt@imgtec.com>
+Message-ID: <56FD3F0E.9080306@imgtec.com>
+Date: Thu, 31 Mar 2016 16:15:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160331164557.544ed780@bbrezillon>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+In-Reply-To: <1459432633-23162-1-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,102 +28,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 31, 2016 at 04:45:57PM +0200, Boris Brezillon wrote:
-> Hi Russell,
-> 
-> On Thu, 31 Mar 2016 15:14:13 +0100
-> Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
-> 
-> > On Thu, Mar 31, 2016 at 02:29:42PM +0200, Boris Brezillon wrote:
-> > > sg_alloc_table_from_buf() provides an easy solution to create an sg_table
-> > > from a virtual address pointer. This function takes care of dealing with
-> > > vmallocated buffers, buffer alignment, or DMA engine limitations (maximum
-> > > DMA transfer size).
-> > 
-> > Please note that the DMA API does not take account of coherency of memory
-> > regions other than non-high/lowmem - there are specific extensions to
-> > deal with this.
-> 
-> Ok, you said 'non-high/lowmem', this means vmalloced and kmapped buffers
-> already fall in this case, right?
-> 
-> Could you tell me more about those specific extensions?
+Hi Boris,
 
-I was slightly confused - the extensions I was thinking of are those
-listed at the bottom of Documentation/cachetlb.txt, which have nothing
-to do with DMA.
+On 31/03/16 14:57, Boris Brezillon wrote:
+> Standardize the NAND controller/NAND chip DT representation. Now, all new
+> NAND controller drivers should comply with this representation, even if
+> they are only supporting a single NAND chip.
+>
+> Existing drivers can keep support for the old representation (where only
+> the NAND chip was described), but are encouraged to also support the new
+> one.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>   Documentation/devicetree/bindings/mtd/nand.txt | 37 +++++++++++++++++++++++++-
+>   1 file changed, 36 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+> index b53f92e..fbf5677 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> @@ -1,4 +1,23 @@
+> -* MTD generic binding
+> +* NAND chip and NAND controller generic binding
+> +
+> +NAND controller/NAND chip representation:
+> +
+> +The NAND controller should be represented with it's own DT node, and all
 
-However, it's probably worth reading Documentation/DMA-API-HOWTO.txt
-to read up on what kinds of memory are considered to be DMA-able in
-the kernel.
+s/it's/its/
 
-> > What this means is that having an API that takes any virtual address
-> > pointer, converts it to a scatterlist which is then DMA mapped, is
-> > unsafe.
-> 
-> Which means some implementations already get this wrong (see
-> spi_map_buf(), and I'm pretty sure it's not the only one).
+> +NAND chips attached to this controller should be defined as children nodes
+> +of the NAND controller. This representation should be enforced even for
+> +simple controllers supporting only one chip.
+> +
+> +Mandatory NAND controller properties:
+> +- #address-cells: depends on your controller. Should at least be 1 to
+> +		  encode the CS line id.
+> +- #size-cells: depends on your controller. Put zero unless you need a
+> +	       mapping between CS lines and dedicated memory regions
+> +
+> +Optional NAND controller properties
+> +- ranges: only needed if you need to define a mapping between CS lines and
+> +	  memory regions
+> +
+> +Optional NAND chip properties:
+>
+>   - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+>     Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
+> @@ -19,3 +38,19 @@ errors per {size} bytes".
+>   The interpretation of these parameters is implementation-defined, so not all
+>   implementations must support all possible combinations. However, implementations
+>   are encouraged to further specify the value(s) they support.
+> +
+> +Example:
+> +
+> +	nand-controller {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		/* controller specific properties */
+> +
+> +		nand@0 {
+> +			reg = <0>;
+> +			nand-ecc-mode = "soft_bch";
+> +
+> +			/* controller specific properties */
 
-Quite possible, but that is driver stuff, and driver stuff gets things
-wrong all the time. :)
+Did you mean "chip specific properties"?
 
-> > It'll be okay for PIPT and non-aliasing VIPT cache architectures, but
-> > for other cache architectures this will hide this problem and make
-> > review harder.
-> > 
-> 
-> Ok, you lost me. I'll have to do my homework and try to understand what
-> this means :).
+> +		};
+> +	};
+>
 
-P = physical address
-V = virtual address
-I = indexed
-T = tag
+Thanks,
 
-The tag is held in each cache line.  When a location is looked up in the
-cache, an index is used to locate a set of cache lines and the tag is
-compared to check which cache line in the set is the correct one (or
-whether the address even exists in the cache.)
-
-How the index and tag are derived varies between cache architectures.
-
-PIPT = indexed by physical address, tagged with physical address.  Never
-aliases with itself in the presence of multiple virtual mappings.
-
-VIPT = indexed by virtual address, tagged with physical address.  If the
-bits from the virtual address do not overlap the MMU page size, it is
-also alias free, otherwise aliases can exist, but can be eliminated by
-"cache colouring" - ensuring that a physical address is always mapped
-with the same overlapping bits.
-
-VIVT = indexed by virtual address, tagged with virtual address.  The
-worst kind of cache, since every different mapping of the same physical
-address is guaranteed by design to alias with other mappings.
-
-There is little cache colouring between different kernel mappings (eg,
-between lowmem and vmalloc space.)
-
-What this means is that, while the DMA API takes care of DMA aliases
-in the lowmem mappings, an alias-prone VIPT cache will remain incoherent
-with DMA if it is remapped into vmalloc space, and the mapping happens
-to have a different cache colour.  In other words, this is a data
-corruption issue.
-
-Hence, taking a range of vmalloc() addresses, converting them into a
-scatterlist, then using the DMA API on the scatterlist _only_ guarantees
-that the lowmem (and kmap'd highmem mappings) are coherent with DMA.
-There is no way for the DMA API to know that other mappings exist, and
-obviously flushing every possible cache line just because a mapping might
-exist multiplies the expense of the DMA API: not only in terms of time
-spent running through all the possibilities, which doubles for every
-aliasing bit of VIPT, but also TLB pressure since you'd have to create
-a mapping for each alias and tear it back down.
-
-VIVT is even worse, since there is no other virtual mapping which is
-coherent, would need to be known, and each mapping would need to be
-individually flushed.
-
--- 
-RMK's Patch system: http://www.arm.linux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+Harvey
