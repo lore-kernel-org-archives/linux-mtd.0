@@ -1,20 +1,27 @@
-Received: from ozlabs.org ([103.22.144.67])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alOaM-0002MT-2o
- for linux-mtd@lists.infradead.org; Wed, 30 Mar 2016 22:27:35 +0000
-Date: Thu, 31 Mar 2016 09:24:32 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>
-Subject: Re: Adding the nand/next branch to linux-next
-Message-ID: <20160331092432.111d2edf@canb.auug.org.au>
-In-Reply-To: <20160330161538.1cfb928d@bbrezillon>
-References: <20160330161538.1cfb928d@bbrezillon>
+Subject: Re: [v2,4/7] scatterlist: add sg_alloc_table_from_buf() helper
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Dave Gordon <david.s.gordon@intel.com>
+References: <1459352394-22810-5-git-send-email-boris.brezillon@free-electrons.com>
+CC: Mark Rutland <mark.rutland@arm.com>, <devicetree@vger.kernel.org>, Pawel
+ Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Vinod Koul <vinod.koul@intel.com>, Chen-Yu Tsai <wens@csie.org>,
+ Rob Herring <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>, <linux-sunxi@googlegroups.com>,
+ Mark Brown <broonie@kernel.org>, Hans Verkuil <hans.verkuil@cisco.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Kumar Gala <galak@codeaurora.org>, <dmaengine@vger.kernel.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ <linux-media@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>,
+ <linux-arm-kernel@lists.infradead.org>,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <56FCAE1B.90206@ti.com>
+Date: Thu, 31 Mar 2016 10:26:59 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1459352394-22810-5-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,35 +32,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi,
 
-On Wed, 30 Mar 2016 16:15:38 +0200 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->
-> I recently became maintainer of the NAND flash subsystem, and, if you
-> don't mind, I'd like to add my nand/next branch [1] to linux-next.
-> 
-> [1]git://github.com/linux-nand/linux.git nand/next
+On 03/30/2016 09:09 PM, Boris BREZILLON wrote:
 
-Added from today.
+[...]
 
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgment of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window. 
+> +int sg_alloc_table_from_buf(struct sg_table *sgt, const void *buf, size_t len,
+> +			    const struct sg_constraints *constraints,
+> +			    gfp_t gfp_mask)
+> +{
+> +	struct sg_constraints cons = { };
+> +	size_t remaining, chunk_len;
+> +	const void *sg_buf;
+> +	int i, ret;
+> +
+> +	if (constraints)
+> +		cons = *constraints;
+> +
+> +	ret = sg_check_constraints(&cons, buf, len);
+> +	if (ret)
+> +		return ret;
+> +
+> +	sg_buf = buf;
+> +	remaining = len;
+> +	i = 0;
+> +	sg_for_each_chunk_in_buf(sg_buf, remaining, chunk_len, &cons)
+> +		i++;
+> +
+> +	ret = sg_alloc_table(sgt, i, gfp_mask);
+> +	if (ret)
+> +		return ret;
+> +
+> +	sg_buf = buf;
+> +	remaining = len;
+> +	i = 0;
+> +	sg_for_each_chunk_in_buf(sg_buf, remaining, chunk_len, &cons) {
+> +		if (is_vmalloc_addr(sg_buf)) {
+> +			struct page *vm_page;
+> +
+> +			vm_page = vmalloc_to_page(sg_buf);
+> +			if (!vm_page) {
+> +				ret = -ENOMEM;
+> +				goto err_free_table;
+> +			}
+> +
+> +			sg_set_page(&sgt->sgl[i], vm_page, chunk_len,
+> +				    offset_in_page(sg_buf));
+> +		} else {
+> +			sg_set_buf(&sgt->sgl[i], sg_buf, chunk_len);
+> +		}
+> +
 
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-        Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and 
-     * destined for the current or next Linux merge window.
+If the buf address is in PKMAP_BASE - PAGE_OFFSET-1 region (I have
+observed that JFFS2 FS provides buffers in above region to MTD layer),
+if CONFIG_DEBUG_SG is set then sg_set_buf() will throw a BUG_ON() as
+virt_addr_is_valid() will return false. Is there a sane way to handle
+buffers of PKMAP_BASE region with sg_*  APIs?
+Or, is the function sg_alloc_table_from_buf() not to be used with such
+buffers?
 
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
 
 -- 
-Cheers,
-Stephen Rothwell 
-sfr@canb.auug.org.au
+Regards
+Vignesh
