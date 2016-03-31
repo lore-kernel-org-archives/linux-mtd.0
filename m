@@ -1,30 +1,20 @@
-Date: Thu, 31 Mar 2016 10:23:53 -0700
-From: Mark Brown <broonie@kernel.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Dave Gordon <david.s.gordon@intel.com>, linux-spi@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Vinod Koul <vinod.koul@intel.com>,
- Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
- Mauro Carvalho Chehab <m.chehab@samsung.com>,
- Hans Verkuil <hans.verkuil@cisco.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- linux-media@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>,
- linux-crypto@vger.kernel.org, Vignesh R <vigneshr@ti.com>,
- linux-mm@kvack.org, Joerg Roedel <joro@8bytes.org>,
- iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Message-ID: <20160331172353.GJ2350@sirena.org.uk>
-References: <1459427384-21374-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459427384-21374-4-git-send-email-boris.brezillon@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="HHj6mHPeUinss9N+"
-Content-Disposition: inline
-In-Reply-To: <1459427384-21374-4-git-send-email-boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH 3/4] spi: use sg_alloc_table_from_buf()
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1alkcP-0006XU-0X
+ for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 21:59:11 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com,
+ maxime.ripard@free-electrons.com, david@sigma-star.at, david@fromorbit.com,
+ dedekind1@gmail.com, alex@nextthing.co, akpm@linux-foundation.org,
+ sasha.levin@oracle.com, iamjoonsoo.kim@lge.com, rvaswani@codeaurora.org,
+ tony.luck@intel.com, shailendra.capricorn@gmail.com,
+ kirill.shutemov@linux.intel.com, hch@infradead.org, hughd@google.com,
+ mgorman@techsingularity.net, vbabka@suse.cz
+Subject: UBIFS and page migration (take 2)
+Date: Thu, 31 Mar 2016 23:58:31 +0200
+Message-Id: <1459461513-31765-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,30 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+During page migrations UBIFS gets confused. We triggered this by using CMA
+on two different targets.
+It turned out that fallback_migrate_page() is not suitable for UBIFS as it
+does not copy the PagePrivate flag.
+UBIFS is using this flag among with PageChecked to account free space.
+One possible solution is implementing a ->migratepage() function in UBIFS
+which does more or less the same as fallback_migrate_page() but also
+copies PagePrivate. I'm not at all sure whether this is they way to go.
+IMHO either page migration should not happen if ->migratepage() is not implement
+or fallback_migrate_page() has to work for all filesystems.
 
---HHj6mHPeUinss9N+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Comments? Flames? :-)
 
-On Thu, Mar 31, 2016 at 02:29:43PM +0200, Boris Brezillon wrote:
-> Replace custom implementation of sg_alloc_table_from_buf() by a call to
-> sg_alloc_table_from_buf().
+Thanks,
+//richard
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---HHj6mHPeUinss9N+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJW/V0aAAoJECTWi3JdVIfQuGEH+wdaKEhHxJuIIwseLFy64w88
-sFhI2BJSaVk6ppdvYIdf67ku24WUoLyYEApHSGXfhntu00xAlzBh8YZjvg6F41Yg
-7Ql/wnd5YumDVMT72a9Cv1OlJ+dsUdBJuQl7/A952W53l4IR2AcBDrJ/zBWQDtOc
-bbohxZsXJP+Qou2Q9x8OebYsFr3p2Hw3XjteAVB6jwA9gINwDDLj05HgRCKbotHe
-5bMQ3pj2I1ruS4wN44SWj7YOMvLzR3nE4xVOdHV+iaFhcVTkaYn7fuWi1fdSRChk
-tCB1auoxNjAIsfnsvj6nnzAOcW/kPwKzOKIgz58DZPFkgiRKDM9wuDnN2AlMPBI=
-=uMgt
------END PGP SIGNATURE-----
-
---HHj6mHPeUinss9N+--
+[PATCH 1/2] mm: Export migrate_page_move_mapping and
+[PATCH 2/2] UBIFS: Implement ->migratepage()
