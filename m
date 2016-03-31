@@ -1,27 +1,23 @@
-Received: from mail-qg0-x236.google.com ([2607:f8b0:400d:c04::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1albv2-0000l5-9Z
- for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 12:41:52 +0000
-Received: by mail-qg0-x236.google.com with SMTP id y89so63510818qge.2
- for <linux-mtd@lists.infradead.org>; Thu, 31 Mar 2016 05:41:27 -0700 (PDT)
-Subject: Re: [RFCv2: PATCH 1/2] mtd: mediatek: device tree docs for MTK Smart
- Device Gen1 NAND
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1458653560-2679-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <1458653560-2679-2-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160322145258.44945c64@bbrezillon> <56F6D727.8070001@linaro.org>
- <20160329095847.0ff4a400@bbrezillon>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, matthias.bgg@gmail.com,
- robh@kernel.org, linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com,
- daniel.thompson@linaro.org, erin.lo@mediatek.com,
- linux-mediatek@lists.infradead.org
-From: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Message-ID: <56FD1AF5.1000505@linaro.org>
-Date: Thu, 31 Mar 2016 08:41:25 -0400
-MIME-Version: 1.0
-In-Reply-To: <20160329095847.0ff4a400@bbrezillon>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ald6P-0004X1-Cg
+ for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 13:57:38 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: linux-kernel@vger.kernel.org,
+ Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
+Subject: [PATCH] mtd: nand: document the NAND controller/NAND chip DT
+ representation
+Date: Thu, 31 Mar 2016 15:57:13 +0200
+Message-Id: <1459432633-23162-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,45 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/29/2016 03:58 AM, Boris Brezillon wrote:
-> On Sat, 26 Mar 2016 14:38:31 -0400
-> Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
->
->> On 03/22/2016 09:52 AM, Boris Brezillon wrote:
->>>>> +		compatible = "mediatek,mt2701-nfc";
->>>>> +		reg = <0 0x1100d000 0 0x1000>;
->>>>> +		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_LOW>;
->>>>> +		clocks = <&pericfg CLK_PERI_NFI>,
->>>>> +			 <&pericfg CLK_PERI_NFI_PAD>;
->>>>> +		clock-names = "nfi_clk", "pad_clk";
->>>>> +		nand-on-flash-bbt;
->>>>> +		status = "disabled";
->>>>> +		mediatek,ecc-controller = <&bch>;
->>> Now that 2 different drivers use the same way to link the ECC engine
->>> and the NAND controller we can think about defining a generic property
->>> (ecc-engine ?), and provide a generic framework.
->>>
->>> The generic framework part is not something I'm asking right now, but I
->>> think we should start using a generic property here.
->>>
->> we have done all the changes required for v3 except this one.
->> so please let me check my understanding before going ahead: are you suggesting
->> that we replace "mediatek,ecc-controller" for "ecc-engine" (even though this
->> generic property doesn't exist yet)?
->>
->> and then afterwards, generate another patch-set set to define and document
->> "ecc-engine"?
-> Yes, that's the idea, though the NAND controller aspect is not yet
-> documented in Documentation/devicetree/bindings/mtd/nand.txt, and
-> ecc-engine is supposed to be attached to the NAND controller node.
->
-> I'll send a patch to further document the NAND chip, NAND controller
-> description concepts in this generic NAND DT bindings doc (as suggested
-> by Brian), and let you document this ecc-engine property.
->
+Standardize the NAND controller/NAND chip DT representation. Now, all new
+NAND controller drivers should comply with this representation, even if
+they are only supporting a single NAND chip.
 
-ok I'll hold v3 -we have it ready already- until we have done this bit
-(hopefully it wont take long).
+Existing drivers can keep support for the old representation (where only
+the NAND chip was described), but are encouraged to also support the new
+one.
 
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ Documentation/devicetree/bindings/mtd/nand.txt | 37 +++++++++++++++++++++++++-
+ 1 file changed, 36 insertions(+), 1 deletion(-)
 
->
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+index b53f92e..fbf5677 100644
+--- a/Documentation/devicetree/bindings/mtd/nand.txt
++++ b/Documentation/devicetree/bindings/mtd/nand.txt
+@@ -1,4 +1,23 @@
+-* MTD generic binding
++* NAND chip and NAND controller generic binding
++
++NAND controller/NAND chip representation:
++
++The NAND controller should be represented with it's own DT node, and all
++NAND chips attached to this controller should be defined as children nodes
++of the NAND controller. This representation should be enforced even for
++simple controllers supporting only one chip.
++
++Mandatory NAND controller properties:
++- #address-cells: depends on your controller. Should at least be 1 to
++		  encode the CS line id.
++- #size-cells: depends on your controller. Put zero unless you need a
++	       mapping between CS lines and dedicated memory regions
++
++Optional NAND controller properties
++- ranges: only needed if you need to define a mapping between CS lines and
++	  memory regions
++
++Optional NAND chip properties:
+ 
+ - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+   Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
+@@ -19,3 +38,19 @@ errors per {size} bytes".
+ The interpretation of these parameters is implementation-defined, so not all
+ implementations must support all possible combinations. However, implementations
+ are encouraged to further specify the value(s) they support.
++
++Example:
++
++	nand-controller {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		/* controller specific properties */
++
++		nand@0 {
++			reg = <0>;
++			nand-ecc-mode = "soft_bch";
++
++			/* controller specific properties */
++		};
++	};
+-- 
+2.5.0
