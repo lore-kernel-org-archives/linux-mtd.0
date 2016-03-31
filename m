@@ -1,26 +1,25 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mailapp01.imgtec.com ([195.59.15.196])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aleOM-00005U-CC
- for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 15:20:15 +0000
-Date: Thu, 31 Mar 2016 17:19:42 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ id 1aleQR-0002m2-DL
+ for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 15:22:26 +0000
+Subject: Re: [PATCH] mtd: nand: document the NAND controller/NAND chip DT
+ representation
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1459432633-23162-1-git-send-email-boris.brezillon@free-electrons.com>
+ <56FD3F0E.9080306@imgtec.com> <20160331171942.622d03aa@bbrezillon>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>, Richard
  Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
  <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, <linux-kernel@vger.kernel.org>, Rob
- Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Jorge
- Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Subject: Re: [PATCH] mtd: nand: document the NAND controller/NAND chip DT
- representation
-Message-ID: <20160331171942.622d03aa@bbrezillon>
-In-Reply-To: <56FD3F0E.9080306@imgtec.com>
-References: <1459432633-23162-1-git-send-email-boris.brezillon@free-electrons.com>
- <56FD3F0E.9080306@imgtec.com>
+ <ijc+devicetree@hellion.org.uk>, <linux-kernel@vger.kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Jorge Ramirez-Ortiz
+ <jorge.ramirez-ortiz@linaro.org>
+From: Harvey Hunt <harvey.hunt@imgtec.com>
+Message-ID: <56FD4099.5040804@imgtec.com>
+Date: Thu, 31 Mar 2016 16:22:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160331171942.622d03aa@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,88 +30,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 31 Mar 2016 16:15:26 +0100
-Harvey Hunt <harvey.hunt@imgtec.com> wrote:
+Hi,
 
-> Hi Boris,
-> 
-> On 31/03/16 14:57, Boris Brezillon wrote:
-> > Standardize the NAND controller/NAND chip DT representation. Now, all new
-> > NAND controller drivers should comply with this representation, even if
-> > they are only supporting a single NAND chip.
-> >
-> > Existing drivers can keep support for the old representation (where only
-> > the NAND chip was described), but are encouraged to also support the new
-> > one.
-> >
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---
-> >   Documentation/devicetree/bindings/mtd/nand.txt | 37 +++++++++++++++++++++++++-
-> >   1 file changed, 36 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
-> > index b53f92e..fbf5677 100644
-> > --- a/Documentation/devicetree/bindings/mtd/nand.txt
-> > +++ b/Documentation/devicetree/bindings/mtd/nand.txt
-> > @@ -1,4 +1,23 @@
-> > -* MTD generic binding
-> > +* NAND chip and NAND controller generic binding
-> > +
-> > +NAND controller/NAND chip representation:
-> > +
-> > +The NAND controller should be represented with it's own DT node, and all
-> 
-> s/it's/its/
+On 31/03/16 16:19, Boris Brezillon wrote:
+> On Thu, 31 Mar 2016 16:15:26 +0100
+> Harvey Hunt <harvey.hunt@imgtec.com> wrote:
+>
+>> Hi Boris,
+>>
+>> On 31/03/16 14:57, Boris Brezillon wrote:
+>>> Standardize the NAND controller/NAND chip DT representation. Now, all new
+>>> NAND controller drivers should comply with this representation, even if
+>>> they are only supporting a single NAND chip.
+>>>
+>>> Existing drivers can keep support for the old representation (where only
+>>> the NAND chip was described), but are encouraged to also support the new
+>>> one.
+>>>
+>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>>> ---
+>>>    Documentation/devicetree/bindings/mtd/nand.txt | 37 +++++++++++++++++++++++++-
+>>>    1 file changed, 36 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+>>> index b53f92e..fbf5677 100644
+>>> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+>>> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+>>> @@ -1,4 +1,23 @@
+>>> -* MTD generic binding
+>>> +* NAND chip and NAND controller generic binding
+>>> +
+>>> +NAND controller/NAND chip representation:
+>>> +
+>>> +The NAND controller should be represented with it's own DT node, and all
+>>
+>> s/it's/its/
+>
+> Yep, I'll fix that.
+>
+>>
+>>> +NAND chips attached to this controller should be defined as children nodes
+>>> +of the NAND controller. This representation should be enforced even for
+>>> +simple controllers supporting only one chip.
+>>> +
+>>> +Mandatory NAND controller properties:
+>>> +- #address-cells: depends on your controller. Should at least be 1 to
+>>> +		  encode the CS line id.
+>>> +- #size-cells: depends on your controller. Put zero unless you need a
+>>> +	       mapping between CS lines and dedicated memory regions
+>>> +
+>>> +Optional NAND controller properties
+>>> +- ranges: only needed if you need to define a mapping between CS lines and
+>>> +	  memory regions
+>>> +
+>>> +Optional NAND chip properties:
+>>>
+>>>    - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+>>>      Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
+>>> @@ -19,3 +38,19 @@ errors per {size} bytes".
+>>>    The interpretation of these parameters is implementation-defined, so not all
+>>>    implementations must support all possible combinations. However, implementations
+>>>    are encouraged to further specify the value(s) they support.
+>>> +
+>>> +Example:
+>>> +
+>>> +	nand-controller {
+>>> +		#address-cells = <1>;
+>>> +		#size-cells = <0>;
+>>> +
+>>> +		/* controller specific properties */
+>>> +
+>>> +		nand@0 {
+>>> +			reg = <0>;
+>>> +			nand-ecc-mode = "soft_bch";
+>>> +
+>>> +			/* controller specific properties */
+>>
+>> Did you mean "chip specific properties"?
+>
+> No, it's really "controller specific properties". Those are properties
+> prefixed by the controller vendor name (like 'allwinner,rb' which is
+> encoding the native ready/busy pin to be attached to this chip).
+>
 
-Yep, I'll fix that.
+Okay, I see - I was somewhat confused by it being in the nand chip node, 
+but I understand what you mean now.
 
-> 
-> > +NAND chips attached to this controller should be defined as children nodes
-> > +of the NAND controller. This representation should be enforced even for
-> > +simple controllers supporting only one chip.
-> > +
-> > +Mandatory NAND controller properties:
-> > +- #address-cells: depends on your controller. Should at least be 1 to
-> > +		  encode the CS line id.
-> > +- #size-cells: depends on your controller. Put zero unless you need a
-> > +	       mapping between CS lines and dedicated memory regions
-> > +
-> > +Optional NAND controller properties
-> > +- ranges: only needed if you need to define a mapping between CS lines and
-> > +	  memory regions
-> > +
-> > +Optional NAND chip properties:
-> >
-> >   - nand-ecc-mode : String, operation mode of the NAND ecc mode.
-> >     Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-> > @@ -19,3 +38,19 @@ errors per {size} bytes".
-> >   The interpretation of these parameters is implementation-defined, so not all
-> >   implementations must support all possible combinations. However, implementations
-> >   are encouraged to further specify the value(s) they support.
-> > +
-> > +Example:
-> > +
-> > +	nand-controller {
-> > +		#address-cells = <1>;
-> > +		#size-cells = <0>;
-> > +
-> > +		/* controller specific properties */
-> > +
-> > +		nand@0 {
-> > +			reg = <0>;
-> > +			nand-ecc-mode = "soft_bch";
-> > +
-> > +			/* controller specific properties */
-> 
-> Did you mean "chip specific properties"?
+Thanks,
 
-No, it's really "controller specific properties". Those are properties
-prefixed by the controller vendor name (like 'allwinner,rb' which is
-encoding the native ready/busy pin to be attached to this chip).
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Harvey
