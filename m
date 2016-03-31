@@ -1,29 +1,36 @@
-Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alXnH-0008QI-Ux
- for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 08:17:33 +0000
-Received: by mail-oi0-x234.google.com with SMTP id r187so50485827oih.3
- for <linux-mtd@lists.infradead.org>; Thu, 31 Mar 2016 01:17:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZYTAyEejiVivhP44cEhxHMG6sL1VbrJjx=jGe-znyn7A@mail.gmail.com>
-References: <1453806725-4880-1-git-send-email-linus.walleij@linaro.org>
- <1453806725-4880-3-git-send-email-linus.walleij@linaro.org>
- <CACRpkdY4fNfQWaKAZcak0yzJ2B17hbrqdU=Q4=NiwiWRNv_0yQ@mail.gmail.com>
- <CACRpkdZusueSh99D2JQj5=JQqHAeedTS=X2vm48U58PLbhamcQ@mail.gmail.com>
- <CACRpkdZYTAyEejiVivhP44cEhxHMG6sL1VbrJjx=jGe-znyn7A@mail.gmail.com>
-Date: Thu, 31 Mar 2016 10:17:10 +0200
-Message-ID: <CACRpkdaxXqEhWV5xxF1H-ZYTZfqNdJh9xKTv+22YNYs68zwnRw@mail.gmail.com>
-Subject: Re: [PATCH 2/6] mtd: physmap_of: add a hook for Versatile write
- protection
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <4FF8F58FAA9D5D4193D4E554E4352C5902C6E92A@XAP-PVEXMBX02.xlnx.xilinx.com>
+References: <1458562809-36114-1-git-send-email-lakshmis@xilinx.com>
+ <20160321130734.GS2566@sirena.org.uk>
+ <4FF8F58FAA9D5D4193D4E554E4352C5902C6D34C@XAP-PVEXMBX02.xlnx.xilinx.com>
+ <20160322100615.GA2566@sirena.org.uk>
+ <4FF8F58FAA9D5D4193D4E554E4352C5902C6DB59@XAP-PVEXMBX02.xlnx.xilinx.com>
+ <20160325150109.GF2566@sirena.org.uk>
+ <4FF8F58FAA9D5D4193D4E554E4352C5902C6E92A@XAP-PVEXMBX02.xlnx.xilinx.com>
+Date: Thu, 31 Mar 2016 10:28:09 +0200
+Message-ID: <CAMuHMdV0B8Qka57nMv009aLdQ-fdBpAYr3wONQ7xaMfKXrORvQ@mail.gmail.com>
+Subject: Re: [LINUX PATCH 1/2] mtd: Added dummy entry in the spi_transfer
+ structure.
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Cc: Mark Brown <broonie@kernel.org>, Michal Simek <michals@xilinx.com>,
+ Soren Brinkmann <sorenb@xilinx.com>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Cc: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Grant Likely <grant.likely@linaro.org>,
- Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Stephen Warren <swarren@nvidia.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, "Andrew F. Davis" <afd@ti.com>,
+ Marek Vasut <marex@denx.de>, Jagan Teki <jteki@openedev.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Harini Katakam <harinik@xilinx.com>,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
+ Anirudha Sarangi <anirudh@xilinx.com>,
+ "saikrishna12468@gmail.com" <saikrishna12468@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,55 +41,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Mar 5, 2016 at 6:09 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Mon, Feb 22, 2016 at 8:09 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
->> On Sat, Feb 13, 2016 at 2:19 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
->>> On Tue, Jan 26, 2016 at 12:12 PM, Linus Walleij
->>> <linus.walleij@linaro.org> wrote:
->>>
->>>> In order to support device tree probing of Versatile NOR flash
->>>> chips, there must be a way to add the VPP (write protection)
->>>> enable/disable callback. The register in question is in the
->>>> system controllers of these machines. Apart from this quirk,
->>>> the ARM flash chips are standard CFI flash chips from various
->>>> vendors.
->>>>
->>>> Additionally, the Integrator/AP require you to set up the external
->>>> bus interface (EBI) to allow writes to the chip select where the
->>>> flash memory is connected.
->>>>
->>>> Solve this by looking for the arm,versatile-flash compatible
->>>> string in the flash device tree node. In the driver,
->>>> add a special hook to check for the various Versatile syscons and
->>>> register a callback for .set_vpp() if this compatible is present.
->>>>
->>>> Provide a special Kconfig entry for the addon hook so it will
->>>> not be compiled in if the Versatile boards are not supported.
->>>> Stubs in the header file make sure the impact will be zero on
->>>> other platforms. (Compilers optimze this out.)
->>>>
->>>> With this patch, a large slew of ARM board file code can be
->>>> removed.
->>>>
->>>> Cc: Grant Likely <grant.likely@linaro.org>
->>>> Cc: Rob Herring <robh@kernel.org>
->>>> Cc: Arnd Bergmann <arnd@arndb.de>
->>>> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
->>>
->>> Do you think my reply to this about reference counting and
->>> subsequent (accepted) patch to update the documentation
->>> to reflect 876fe76d793d03077
->>> "mtd: maps: physmap: Add reference counter to set_vpp()"
->>> is enough to warrant merging of this?
->>>
->>> If you want the code developed in any special direction
->>> just tell me.
+On Thu, Mar 31, 2016 at 8:14 AM, Lakshmi Sai Krishna Potthuri
+<lakshmi.sai.krishna.potthuri@xilinx.com> wrote:
+>>> >This is really not what I'd expect to happen, I'd expect that these dummy
+>>> >cycles would be in addition to the actual data (see my request for better
+>>> >documentation...).  If they overlap with the data then what is the point in
+>>> >specifying this?  It's more work for the host, what benefit do we get from
+>>> >doing it over just handing it like a normal byte?
 >>
->> Ping.
+>>> len field in the transfer structure contains dummy bytes along with actual
+>>data
+>>> bytes, controllers which requires dummy bytes use len field and simply
+>>Ignore
+>>> the dummy field (contains only no of cycles)added in this patch. Controllers
+>>> (like ZynqMP GQSPI) expects dummy in cycles won't work directly by using
+>>> len field because host driver doesn't know that len field of a particular
+>>transfer
+>>> includes dummy bytes or not (and also number of dummy bytes included in
+>>len
+>>> field). In such cases driver use this dummy field to identify the number of
+>>dummy
+>>> cycles and based on that it will send the required number of dummy cycles
+>>(which
+>>> i did in the second patch).
+>>
+>>This doesn't make any sense at all to me.  Why does the controller care
+>>what the bytes being sent to and from the device mean?
 >
-> Ping.
+> From the flash point of view, it expects the controller to send the dummy
+> on 1/2/4 lines based on the command. For Quad commands, flash expects
+> 4 lines to be active during dummy phase. Similarly, 2 lines for dual
+> Commands and 1 line for normal/fast commands.
+> Since len field contains total number of cmd+addr+dummy bytes,
+> host driver should take care of sending these bytes on their respective
+> bus widths. Knowing when the dummy is being sent also helps in
+> the correct switching of IO pads (since the data lines are bidirectional)
+> ZynqMP GQSPI is a generic controller, majorly interfaced to flash devices.
+> It seems reasonable for it to know the above information from
+> the flash layer. Adding "dummy" cycles entry should be useful to any
+> controller that cares about it without affecting other spi/qspi controllers.
 
-Ping.
+The m25p80 driver already uses dummy cycles, using real spi_transfer
+structs, which have tx_nbits/rx_nbits fields to indicate how many data lines
+to use.
 
-Yours,
-Linus Walleij
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
