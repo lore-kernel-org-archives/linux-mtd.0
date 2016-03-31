@@ -1,35 +1,15 @@
-From: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-To: Mark Brown <broonie@kernel.org>
-CC: Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Javier Martinez Canillas
- <javier@osg.samsung.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Stephen Warren <swarren@nvidia.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, "Andrew F. Davis" <afd@ti.com>,
- Marek Vasut <marex@denx.de>, Jagan Teki <jteki@openedev.com>,
- =?iso-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Harini Katakam <harinik@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>, Anirudha Sarangi
- <anirudh@xilinx.com>, "saikrishna12468@gmail.com" <saikrishna12468@gmail.com>
-Subject: RE: [LINUX PATCH 1/2] mtd: Added dummy entry in the spi_transfer
- structure.
-Date: Thu, 31 Mar 2016 06:14:24 +0000
-Message-ID: <4FF8F58FAA9D5D4193D4E554E4352C5902C6E92A@XAP-PVEXMBX02.xlnx.xilinx.com>
-References: <1458562809-36114-1-git-send-email-lakshmis@xilinx.com>
- <20160321130734.GS2566@sirena.org.uk>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C6D34C@XAP-PVEXMBX02.xlnx.xilinx.com>
- <20160322100615.GA2566@sirena.org.uk>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C6DB59@XAP-PVEXMBX02.xlnx.xilinx.com>
- <20160325150109.GF2566@sirena.org.uk>
-In-Reply-To: <20160325150109.GF2566@sirena.org.uk>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1alW44-00036Q-AA
+ for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 06:26:47 +0000
+To: <linux-mtd@lists.infradead.org>, <richard@nod.at>, <dedekind1@gmail.com>
+From: Wang Fangpeng <wangfangpeng1@huawei.com>
+Subject: Question: background GC on UBIFS
+Message-ID: <56FCC2E6.5020206@huawei.com>
+Date: Thu, 31 Mar 2016 14:25:42 +0800
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,92 +19,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi, folks,
 
+We did some performance test of writing data to a ubifs volume by dd. The block
+size of dd is 1MB.
 
->-----Original Message-----
->From: Mark Brown [mailto:broonie@kernel.org]
->Sent: Friday, March 25, 2016 8:31 PM
->To: Lakshmi Sai Krishna Potthuri <lakshmis@xilinx.com>
->Cc: Michal Simek <michals@xilinx.com>; Soren Brinkmann
-><sorenb@xilinx.com>; David Woodhouse <dwmw2@infradead.org>; Brian
->Norris <computersforpeace@gmail.com>; Javier Martinez Canillas
-><javier@osg.samsung.com>; Boris Brezillon <boris.brezillon@free-
->electrons.com>; Stephen Warren <swarren@nvidia.com>; Geert
->Uytterhoeven <geert+renesas@glider.be>; Andrew F. Davis <afd@ti.com>;
->Marek Vasut <marex@denx.de>; Jagan Teki <jteki@openedev.com>; Rafa=B3
->Mi=B3ecki <zajec5@gmail.com>; linux-mtd@lists.infradead.org; linux-
->kernel@vger.kernel.org; linux-spi@vger.kernel.org; linux-arm-
->kernel@lists.infradead.org; Harini Katakam <harinik@xilinx.com>; Punnaiah
->Choudary Kalluri <punnaia@xilinx.com>; Anirudha Sarangi
-><anirudh@xilinx.com>
->Subject: Re: [LINUX PATCH 1/2] mtd: Added dummy entry in the spi_transfer
->structure.
->
->On Fri, Mar 25, 2016 at 01:41:16PM +0000, Lakshmi Sai Krishna Potthuri wro=
-te:
->
->As I'm fairly sure I've said before please fix your mail client to word
->wrap within paragraphs at something substantially less than 80 columns.
->Doing this makes your messages much easier to read and reply to.
->
+When the volume has more than 20% free space, the speed of writing is about
+1.4MB/s ~ 1.2MB/s.
 
-Sorry, there was some issue with my mail client, now I corrected it.
+However, when the free space is less and less, the speed decreases to about
+83KB/s. We think the overhead is caused by GC, since GC tries to find a free
+space and move valid data to another place to get a free block.
 
->> >This is really not what I'd expect to happen, I'd expect that these dum=
-my
->> >cycles would be in addition to the actual data (see my request for bett=
-er
->> >documentation...).  If they overlap with the data then what is the poin=
-t in
->> >specifying this?  It's more work for the host, what benefit do we get f=
-rom
->> >doing it over just handing it like a normal byte?
->
->> len field in the transfer structure contains dummy bytes along with actu=
-al
->data
->> bytes, controllers which requires dummy bytes use len field and simply
->Ignore
->> the dummy field (contains only no of cycles)added in this patch. Control=
-lers
->> (like ZynqMP GQSPI) expects dummy in cycles won't work directly by using
->> len field because host driver doesn't know that len field of a particula=
-r
->transfer
->> includes dummy bytes or not (and also number of dummy bytes included in
->len
->> field). In such cases driver use this dummy field to identify the number=
- of
->dummy
->> cycles and based on that it will send the required number of dummy cycle=
-s
->(which
->> i did in the second patch).
->
->This doesn't make any sense at all to me.  Why does the controller care
->what the bytes being sent to and from the device mean?
+Although we already have a kthread to collect freeable blocks, it doesn't
+touch blocks which have both valid and invalid nodes. My question is why don't
+we do such consolidation/defragmentation periodicly, so that the overhead
+could be decreased when there is not enough free space?
 
->From the flash point of view, it expects the controller to send the dummy
-on 1/2/4 lines based on the command. For Quad commands, flash expects
-4 lines to be active during dummy phase. Similarly, 2 lines for dual
-Commands and 1 line for normal/fast commands.
-Since len field contains total number of cmd+addr+dummy bytes,
-host driver should take care of sending these bytes on their respective
-bus widths. Knowing when the dummy is being sent also helps in
-the correct switching of IO pads (since the data lines are bidirectional)
-ZynqMP GQSPI is a generic controller, majorly interfaced to flash devices.
-It seems reasonable for it to know the above information from
-the flash layer. Adding "dummy" cycles entry should be useful to any
-controller that cares about it without affecting other spi/qspi controllers=
-.
-
-Regards
-Sai Krishna
-
-
-
-This email and any attachments are intended for the sole use of the named r=
-ecipient(s) and contain(s) confidential information that may be proprietary=
-, privileged or copyrighted under applicable law. If you are not the intend=
-ed recipient, do not read, copy, or forward this email message or any attac=
-hments. Delete this email message and any attachments immediately.
+thanks.
