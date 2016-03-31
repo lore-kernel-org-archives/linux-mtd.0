@@ -1,37 +1,27 @@
-From: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-CC: Mark Brown <broonie@kernel.org>, Michal Simek <michals@xilinx.com>, "Soren
- Brinkmann" <sorenb@xilinx.com>, David Woodhouse <dwmw2@infradead.org>,
- "Brian Norris" <computersforpeace@gmail.com>, Javier Martinez Canillas
- <javier@osg.samsung.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Stephen Warren <swarren@nvidia.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, "Andrew F. Davis" <afd@ti.com>,
- Marek Vasut <marex@denx.de>, Jagan Teki <jteki@openedev.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Harini Katakam <harinik@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>, Anirudha Sarangi
- <anirudh@xilinx.com>, "saikrishna12468@gmail.com" <saikrishna12468@gmail.com>
-Subject: RE: [LINUX PATCH 1/2] mtd: Added dummy entry in the spi_transfer
- structure.
-Date: Thu, 31 Mar 2016 11:12:17 +0000
-Message-ID: <4FF8F58FAA9D5D4193D4E554E4352C5902C6EA12@XAP-PVEXMBX02.xlnx.xilinx.com>
-References: <1458562809-36114-1-git-send-email-lakshmis@xilinx.com>
- <20160321130734.GS2566@sirena.org.uk>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C6D34C@XAP-PVEXMBX02.xlnx.xilinx.com>
- <20160322100615.GA2566@sirena.org.uk>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C6DB59@XAP-PVEXMBX02.xlnx.xilinx.com>
- <20160325150109.GF2566@sirena.org.uk>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C6E92A@XAP-PVEXMBX02.xlnx.xilinx.com>
- <CAMuHMdV0B8Qka57nMv009aLdQ-fdBpAYr3wONQ7xaMfKXrORvQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdV0B8Qka57nMv009aLdQ-fdBpAYr3wONQ7xaMfKXrORvQ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Gordon <david.s.gordon@intel.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Vinod Koul <vinod.koul@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ linux-media@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
+ Vignesh R <vigneshr@ti.com>, linux-mm@kvack.org,
+ Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] mm: add is_highmem_addr() helper
+Date: Thu, 31 Mar 2016 14:29:41 +0200
+Message-Id: <1459427384-21374-2-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1459427384-21374-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1459427384-21374-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,78 +31,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IGdlZXJ0LnV5dHRlcmhv
-ZXZlbkBnbWFpbC5jb20NCj5bbWFpbHRvOmdlZXJ0LnV5dHRlcmhvZXZlbkBnbWFpbC5jb21dIE9u
-IEJlaGFsZiBPZiBHZWVydCBVeXR0ZXJob2V2ZW4NCj5TZW50OiBUaHVyc2RheSwgTWFyY2ggMzEs
-IDIwMTYgMTo1OCBQTQ0KPlRvOiBMYWtzaG1pIFNhaSBLcmlzaG5hIFBvdHRodXJpIDxsYWtzaG1p
-c0B4aWxpbnguY29tPg0KPkNjOiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+OyBNaWNo
-YWwgU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT47DQo+U29yZW4gQnJpbmttYW5uIDxzb3JlbmJA
-eGlsaW54LmNvbT47IERhdmlkIFdvb2Rob3VzZQ0KPjxkd213MkBpbmZyYWRlYWQub3JnPjsgQnJp
-YW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+Ow0KPkphdmllciBNYXJ0aW5l
-eiBDYW5pbGxhcyA8amF2aWVyQG9zZy5zYW1zdW5nLmNvbT47IEJvcmlzIEJyZXppbGxvbg0KPjxi
-b3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tPjsgU3RlcGhlbiBXYXJyZW4NCj48c3dh
-cnJlbkBudmlkaWEuY29tPjsgR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydCtyZW5lc2FzQGdsaWRl
-ci5iZT47DQo+QW5kcmV3IEYuIERhdmlzIDxhZmRAdGkuY29tPjsgTWFyZWsgVmFzdXQgPG1hcmV4
-QGRlbnguZGU+OyBKYWdhbiBUZWtpDQo+PGp0ZWtpQG9wZW5lZGV2LmNvbT47IFJhZmHFgiBNacWC
-ZWNraSA8emFqZWM1QGdtYWlsLmNvbT47IGxpbnV4LQ0KPm10ZEBsaXN0cy5pbmZyYWRlYWQub3Jn
-OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC0NCj5zcGlAdmdlci5rZXJuZWwu
-b3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IEhhcmluaSBLYXRha2Ft
-DQo+PGhhcmluaWtAeGlsaW54LmNvbT47IFB1bm5haWFoIENob3VkYXJ5IEthbGx1cmkgPHB1bm5h
-aWFAeGlsaW54LmNvbT47DQo+QW5pcnVkaGEgU2FyYW5naSA8YW5pcnVkaEB4aWxpbnguY29tPjsg
-c2Fpa3Jpc2huYTEyNDY4QGdtYWlsLmNvbQ0KPlN1YmplY3Q6IFJlOiBbTElOVVggUEFUQ0ggMS8y
-XSBtdGQ6IEFkZGVkIGR1bW15IGVudHJ5IGluIHRoZSBzcGlfdHJhbnNmZXINCj5zdHJ1Y3R1cmUu
-DQo+DQo+T24gVGh1LCBNYXIgMzEsIDIwMTYgYXQgODoxNCBBTSwgTGFrc2htaSBTYWkgS3Jpc2hu
-YSBQb3R0aHVyaQ0KPjxsYWtzaG1pLnNhaS5rcmlzaG5hLnBvdHRodXJpQHhpbGlueC5jb20+IHdy
-b3RlOg0KPj4+PiA+VGhpcyBpcyByZWFsbHkgbm90IHdoYXQgSSdkIGV4cGVjdCB0byBoYXBwZW4s
-IEknZCBleHBlY3QgdGhhdCB0aGVzZQ0KPmR1bW15DQo+Pj4+ID5jeWNsZXMgd291bGQgYmUgaW4g
-YWRkaXRpb24gdG8gdGhlIGFjdHVhbCBkYXRhIChzZWUgbXkgcmVxdWVzdCBmb3IgYmV0dGVyDQo+
-Pj4+ID5kb2N1bWVudGF0aW9uLi4uKS4gIElmIHRoZXkgb3ZlcmxhcCB3aXRoIHRoZSBkYXRhIHRo
-ZW4gd2hhdCBpcyB0aGUgcG9pbnQNCj5pbg0KPj4+PiA+c3BlY2lmeWluZyB0aGlzPyAgSXQncyBt
-b3JlIHdvcmsgZm9yIHRoZSBob3N0LCB3aGF0IGJlbmVmaXQgZG8gd2UgZ2V0DQo+ZnJvbQ0KPj4+
-PiA+ZG9pbmcgaXQgb3ZlciBqdXN0IGhhbmRpbmcgaXQgbGlrZSBhIG5vcm1hbCBieXRlPw0KPj4+
-DQo+Pj4+IGxlbiBmaWVsZCBpbiB0aGUgdHJhbnNmZXIgc3RydWN0dXJlIGNvbnRhaW5zIGR1bW15
-IGJ5dGVzIGFsb25nIHdpdGggYWN0dWFsDQo+Pj5kYXRhDQo+Pj4+IGJ5dGVzLCBjb250cm9sbGVy
-cyB3aGljaCByZXF1aXJlcyBkdW1teSBieXRlcyB1c2UgbGVuIGZpZWxkIGFuZCBzaW1wbHkNCj4+
-Pklnbm9yZQ0KPj4+PiB0aGUgZHVtbXkgZmllbGQgKGNvbnRhaW5zIG9ubHkgbm8gb2YgY3ljbGVz
-KWFkZGVkIGluIHRoaXMgcGF0Y2guDQo+Q29udHJvbGxlcnMNCj4+Pj4gKGxpa2UgWnlucU1QIEdR
-U1BJKSBleHBlY3RzIGR1bW15IGluIGN5Y2xlcyB3b24ndCB3b3JrIGRpcmVjdGx5IGJ5DQo+dXNp
-bmcNCj4+Pj4gbGVuIGZpZWxkIGJlY2F1c2UgaG9zdCBkcml2ZXIgZG9lc24ndCBrbm93IHRoYXQg
-bGVuIGZpZWxkIG9mIGEgcGFydGljdWxhcg0KPj4+dHJhbnNmZXINCj4+Pj4gaW5jbHVkZXMgZHVt
-bXkgYnl0ZXMgb3Igbm90IChhbmQgYWxzbyBudW1iZXIgb2YgZHVtbXkgYnl0ZXMgaW5jbHVkZWQN
-Cj5pbg0KPj4+bGVuDQo+Pj4+IGZpZWxkKS4gSW4gc3VjaCBjYXNlcyBkcml2ZXIgdXNlIHRoaXMg
-ZHVtbXkgZmllbGQgdG8gaWRlbnRpZnkgdGhlIG51bWJlciBvZg0KPj4+ZHVtbXkNCj4+Pj4gY3lj
-bGVzIGFuZCBiYXNlZCBvbiB0aGF0IGl0IHdpbGwgc2VuZCB0aGUgcmVxdWlyZWQgbnVtYmVyIG9m
-IGR1bW15DQo+Y3ljbGVzDQo+Pj4od2hpY2gNCj4+Pj4gaSBkaWQgaW4gdGhlIHNlY29uZCBwYXRj
-aCkuDQo+Pj4NCj4+PlRoaXMgZG9lc24ndCBtYWtlIGFueSBzZW5zZSBhdCBhbGwgdG8gbWUuICBX
-aHkgZG9lcyB0aGUgY29udHJvbGxlciBjYXJlDQo+Pj53aGF0IHRoZSBieXRlcyBiZWluZyBzZW50
-IHRvIGFuZCBmcm9tIHRoZSBkZXZpY2UgbWVhbj8NCj4+DQo+PiBGcm9tIHRoZSBmbGFzaCBwb2lu
-dCBvZiB2aWV3LCBpdCBleHBlY3RzIHRoZSBjb250cm9sbGVyIHRvIHNlbmQgdGhlIGR1bW15DQo+
-PiBvbiAxLzIvNCBsaW5lcyBiYXNlZCBvbiB0aGUgY29tbWFuZC4gRm9yIFF1YWQgY29tbWFuZHMs
-IGZsYXNoIGV4cGVjdHMNCj4+IDQgbGluZXMgdG8gYmUgYWN0aXZlIGR1cmluZyBkdW1teSBwaGFz
-ZS4gU2ltaWxhcmx5LCAyIGxpbmVzIGZvciBkdWFsDQo+PiBDb21tYW5kcyBhbmQgMSBsaW5lIGZv
-ciBub3JtYWwvZmFzdCBjb21tYW5kcy4NCj4+IFNpbmNlIGxlbiBmaWVsZCBjb250YWlucyB0b3Rh
-bCBudW1iZXIgb2YgY21kK2FkZHIrZHVtbXkgYnl0ZXMsDQo+PiBob3N0IGRyaXZlciBzaG91bGQg
-dGFrZSBjYXJlIG9mIHNlbmRpbmcgdGhlc2UgYnl0ZXMgb24gdGhlaXIgcmVzcGVjdGl2ZQ0KPj4g
-YnVzIHdpZHRocy4gS25vd2luZyB3aGVuIHRoZSBkdW1teSBpcyBiZWluZyBzZW50IGFsc28gaGVs
-cHMgaW4NCj4+IHRoZSBjb3JyZWN0IHN3aXRjaGluZyBvZiBJTyBwYWRzIChzaW5jZSB0aGUgZGF0
-YSBsaW5lcyBhcmUgYmlkaXJlY3Rpb25hbCkNCj4+IFp5bnFNUCBHUVNQSSBpcyBhIGdlbmVyaWMg
-Y29udHJvbGxlciwgbWFqb3JseSBpbnRlcmZhY2VkIHRvIGZsYXNoIGRldmljZXMuDQo+PiBJdCBz
-ZWVtcyByZWFzb25hYmxlIGZvciBpdCB0byBrbm93IHRoZSBhYm92ZSBpbmZvcm1hdGlvbiBmcm9t
-DQo+PiB0aGUgZmxhc2ggbGF5ZXIuIEFkZGluZyAiZHVtbXkiIGN5Y2xlcyBlbnRyeSBzaG91bGQg
-YmUgdXNlZnVsIHRvIGFueQ0KPj4gY29udHJvbGxlciB0aGF0IGNhcmVzIGFib3V0IGl0IHdpdGhv
-dXQgYWZmZWN0aW5nIG90aGVyIHNwaS9xc3BpIGNvbnRyb2xsZXJzLg0KPg0KPlRoZSBtMjVwODAg
-ZHJpdmVyIGFscmVhZHkgdXNlcyBkdW1teSBjeWNsZXMsIHVzaW5nIHJlYWwgc3BpX3RyYW5zZmVy
-DQo+c3RydWN0cywgd2hpY2ggaGF2ZSB0eF9uYml0cy9yeF9uYml0cyBmaWVsZHMgdG8gaW5kaWNh
-dGUgaG93IG1hbnkgZGF0YSBsaW5lcw0KPnRvIHVzZS4NCg0KbTI1cDgwIGltcGxlbWVudGF0aW9u
-IGp1c3Qgc2VuZCBjb21tYW5kLCBhZGRyZXNzIGFuZCBkdW1teSB0b2dldGhlcg0Kd2l0aCB0eF9u
-Yml0IGZpZWxkIGFzIDEgYW5kIGhvc3QgZHJpdmVyIGNhbid0IGRpZmZlcmVudGlhdGUgYmV0d2Vl
-biB0aGVtLg0KQ29tbWFuZCBhbmQgYWRkcmVzcyBnbyBvbiBvbmUgbGluZSBhbmQgZHVtbXkgc2hv
-dWxkIHNlbmQgYmFzZWQNCm9uIHRoZSBjb21tYW5kIGFzIGV4cGxhaW5lZCBteSBwcmV2aW91cyBt
-YWlsLg0KDQpSZWdhcmRzDQpTYWkgS3Jpc2huYQ0KDQoNClRoaXMgZW1haWwgYW5kIGFueSBhdHRh
-Y2htZW50cyBhcmUgaW50ZW5kZWQgZm9yIHRoZSBzb2xlIHVzZSBvZiB0aGUgbmFtZWQgcmVjaXBp
-ZW50KHMpIGFuZCBjb250YWluKHMpIGNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbiB0aGF0IG1heSBi
-ZSBwcm9wcmlldGFyeSwgcHJpdmlsZWdlZCBvciBjb3B5cmlnaHRlZCB1bmRlciBhcHBsaWNhYmxl
-IGxhdy4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgZG8gbm90IHJlYWQs
-IGNvcHksIG9yIGZvcndhcmQgdGhpcyBlbWFpbCBtZXNzYWdlIG9yIGFueSBhdHRhY2htZW50cy4g
-RGVsZXRlIHRoaXMgZW1haWwgbWVzc2FnZSBhbmQgYW55IGF0dGFjaG1lbnRzIGltbWVkaWF0ZWx5
-Lg0KDQo=
+Add an helper to check if a virtual address is in the highmem region.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ include/linux/highmem.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index bb3f329..13dff37 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -41,6 +41,14 @@ void kmap_flush_unused(void);
+ 
+ struct page *kmap_to_page(void *addr);
+ 
++static inline bool is_highmem_addr(const void *x)
++{
++	unsigned long vaddr = (unsigned long)x;
++
++	return vaddr >=  PKMAP_BASE &&
++	       vaddr < ((PKMAP_BASE + LAST_PKMAP) * PAGE_SIZE);
++}
++
+ #else /* CONFIG_HIGHMEM */
+ 
+ static inline unsigned int nr_free_highpages(void) { return 0; }
+@@ -50,6 +58,11 @@ static inline struct page *kmap_to_page(void *addr)
+ 	return virt_to_page(addr);
+ }
+ 
++static inline bool is_highmem_addr(const void *x)
++{
++	return false;
++}
++
+ #define totalhigh_pages 0UL
+ 
+ #ifndef ARCH_HAS_KMAP
+-- 
+2.5.0
