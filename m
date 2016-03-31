@@ -1,28 +1,26 @@
-Date: Thu, 31 Mar 2016 09:26:04 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>, Andrew
- Morton <akpm@linux-foundation.org>, Dave Gordon <david.s.gordon@intel.com>,
- Mark Rutland <mark.rutland@arm.com>, <devicetree@vger.kernel.org>, Pawel
- Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Vinod Koul <vinod.koul@intel.com>, Chen-Yu Tsai <wens@csie.org>, Rob
- Herring <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>, Richard
- Weinberger <richard@nod.at>, <linux-sunxi@googlegroups.com>, Mark Brown
- <broonie@kernel.org>, Hans Verkuil <hans.verkuil@cisco.com>, Laurent
- Pinchart <laurent.pinchart@ideasonboard.com>, Kumar Gala
- <galak@codeaurora.org>, <dmaengine@vger.kernel.org>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, <linux-media@vger.kernel.org>, Dan
- Williams <dan.j.williams@intel.com>,
- <linux-arm-kernel@lists.infradead.org>, Mauro Carvalho Chehab
- <m.chehab@samsung.com>
-Subject: Re: [v2,4/7] scatterlist: add sg_alloc_table_from_buf() helper
-Message-ID: <20160331092604.219cf104@bbrezillon>
-In-Reply-To: <56FCAE1B.90206@ti.com>
-References: <1459352394-22810-5-git-send-email-boris.brezillon@free-electrons.com>
- <56FCAE1B.90206@ti.com>
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1alX1z-0003eI-1U
+ for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 07:28:41 +0000
+Subject: Re: [RESEND PATCH v9] mtd: spi-nor: add hisilicon spi-nor flash
+ controller driver
+To: <robh+dt@kernel.org>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <boris.brezillon@free-electrons.com>, <jteki@openedev.com>,
+ <ezequiel@vanguardiasur.com.ar>, <juhosg@openwrt.org>,
+ <furquan@google.com>, <marek.vasut@gmail.com>
+References: <1458979861-3619-1-git-send-email-xuejiancheng@huawei.com>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <yanhaifeng@hisilicon.com>,
+ <yanghongwei@hisilicon.com>, <suwenping@hisilicon.com>,
+ <raojun@hisilicon.com>, <ml.yang@hisilicon.com>,
+ <gaofei@hisilicon.com>, <zhangzhenxing@hisilicon.com>,
+ <xuejiancheng@hisilicon.com>
+From: Jiancheng Xue <xuejiancheng@huawei.com>
+Message-ID: <56FCD0BD.4010505@huawei.com>
+Date: Thu, 31 Mar 2016 15:24:45 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1458979861-3619-1-git-send-email-xuejiancheng@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,81 +31,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vignesh,
+Hi all,
+    I'll highly appreciated any of your comments.
 
-On Thu, 31 Mar 2016 10:26:59 +0530
-Vignesh R <vigneshr@ti.com> wrote:
-
-> Hi,
+On 2016/3/26 16:11, Jiancheng Xue wrote:
+> Add hisilicon spi-nor flash controller driver
 > 
-> On 03/30/2016 09:09 PM, Boris BREZILLON wrote:
-> 
-> [...]
-> 
-> > +int sg_alloc_table_from_buf(struct sg_table *sgt, const void *buf, size_t len,
-> > +			    const struct sg_constraints *constraints,
-> > +			    gfp_t gfp_mask)
-> > +{
-> > +	struct sg_constraints cons = { };
-> > +	size_t remaining, chunk_len;
-> > +	const void *sg_buf;
-> > +	int i, ret;
-> > +
-> > +	if (constraints)
-> > +		cons = *constraints;
-> > +
-> > +	ret = sg_check_constraints(&cons, buf, len);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	sg_buf = buf;
-> > +	remaining = len;
-> > +	i = 0;
-> > +	sg_for_each_chunk_in_buf(sg_buf, remaining, chunk_len, &cons)
-> > +		i++;
-> > +
-> > +	ret = sg_alloc_table(sgt, i, gfp_mask);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	sg_buf = buf;
-> > +	remaining = len;
-> > +	i = 0;
-> > +	sg_for_each_chunk_in_buf(sg_buf, remaining, chunk_len, &cons) {
-> > +		if (is_vmalloc_addr(sg_buf)) {
-> > +			struct page *vm_page;
-> > +
-> > +			vm_page = vmalloc_to_page(sg_buf);
-> > +			if (!vm_page) {
-> > +				ret = -ENOMEM;
-> > +				goto err_free_table;
-> > +			}
-> > +
-> > +			sg_set_page(&sgt->sgl[i], vm_page, chunk_len,
-> > +				    offset_in_page(sg_buf));
-> > +		} else {
-> > +			sg_set_buf(&sgt->sgl[i], sg_buf, chunk_len);
-> > +		}
-> > +
-> 
-> If the buf address is in PKMAP_BASE - PAGE_OFFSET-1 region (I have
-> observed that JFFS2 FS provides buffers in above region to MTD layer),
-> if CONFIG_DEBUG_SG is set then sg_set_buf() will throw a BUG_ON() as
-> virt_addr_is_valid() will return false. Is there a sane way to handle
-> buffers of PKMAP_BASE region with sg_*  APIs?
-> Or, is the function sg_alloc_table_from_buf() not to be used with such
-> buffers?
+[...]
+> +static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
+> +		size_t *retlen, u_char *read_buf)
+> +{
+> +	struct hifmc_priv *priv = nor->priv;
+> +	struct hifmc_host *host = priv->host;
+> +	unsigned char *ptr = read_buf;
+> +	size_t actual_len;
+> +
+> +	*retlen = 0;
+> +	while (len > 0) {
+> +		actual_len = (len >= HIFMC_DMA_MAX_LEN)
+> +			? HIFMC_DMA_MAX_LEN : len;
+> +		hisi_spi_nor_dma_transfer(nor, from, host->dma_buffer,
+> +				actual_len, FMC_OP_READ);
+> +		memcpy(ptr, host->buffer, actual_len);
+> +		ptr += actual_len;
+> +		from += actual_len;
+> +		len -= actual_len;
+> +		*retlen += actual_len;
+> +	}
+> +
+> +	return 0;
+> +}
+For easy understanding, the read function will be changed like below:
 
-It should be usable with kmapped buffers too: I'll provide a new version
-to support that.
-That makes me realize I'm not checking the virtual address consistency
-in sg_check_constraints().
+static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
+		size_t *retlen, u_char *read_buf)
+{
+	struct hifmc_priv *priv = nor->priv;
+	struct hifmc_host *host = priv->host;
+	int i;
 
-Thanks,
+	/* read all bytes in only one time */
+	if (len <= HIFMC_DMA_MAX_LEN) {
+		hisi_spi_nor_dma_transfer(nor, from, host->dma_buffer,
+				len, FMC_OP_READ);
+		memcpy(read_buf, host->buffer, len);
+	} else {
+		/* read HIFMC_DMA_MAX_LEN bytes at a time */
+		for (i = 0; i < len; i += HIFMC_DMA_MAX_LEN) {
+			hisi_spi_nor_dma_transfer(nor, from + i, host->dma_buffer,
+				HIFMC_DMA_MAX_LEN, FMC_OP_READ);
+			memcpy(read_buf + i, host->buffer, HIFMC_DMA_MAX_LEN);
+		}
+		/* read remaining bytes */
+		i -= HIFMC_DMA_MAX_LEN;
+		hisi_spi_nor_dma_transfer(nor, from + i, host->dma_buffer,
+				len - i, FMC_OP_READ);
+		memcpy(read_buf + i, host->buffer, len - i);
+	}
+	*retlen = len;
 
-Boris
+	return 0;
+}
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> +static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
+> +			size_t len, size_t *retlen, const u_char *write_buf)
+> +{
+> +	struct hifmc_priv *priv = nor->priv;
+> +	struct hifmc_host *host = priv->host;
+> +	const unsigned char *ptr = write_buf;
+> +	size_t actual_len;
+> +
+> +	*retlen = 0;
+> +	while (len > 0) {
+> +		if (to & HIFMC_DMA_MASK)
+> +			actual_len = (HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK))
+> +				>= len	? len
+> +				: (HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK));
+> +		else
+> +			actual_len = (len >= HIFMC_DMA_MAX_LEN)
+> +				? HIFMC_DMA_MAX_LEN : len;
+> +		memcpy(host->buffer, ptr, actual_len);
+> +		hisi_spi_nor_dma_transfer(nor, to, host->dma_buffer, actual_len,
+> +				FMC_OP_WRITE);
+> +		to += actual_len;
+> +		ptr += actual_len;
+> +		len -= actual_len;
+> +		*retlen += actual_len;
+> +	}
+> +}
+> +
+Because "len" passed from spi_nor_write is smaller than nor->page_size, and nor->page_size
+is smaller than the length of host->dma_buffer. We can transfer "len" bytes data by
+hisi_spi_nor_dma_transfer at one time. hisi_spi_nor_write can be simplified like below:
+
+static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
+			size_t len, size_t *retlen, const u_char *write_buf)
+{
+	struct hifmc_priv *priv = nor->priv;
+	struct hifmc_host *host = priv->host;
+
+	/* len is smaller than dma buffer length*/
+	memcpy(host->buffer, write_buf, len);
+	hisi_spi_nor_dma_transfer(nor, to, host->dma_buffer, len,
+					FMC_OP_WRITE);
+
+	*retlen = len;
+}
+
+Regards,
+Jiancheng
