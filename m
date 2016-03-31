@@ -1,26 +1,30 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aleQR-0002m2-DL
- for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 15:22:26 +0000
-Subject: Re: [PATCH] mtd: nand: document the NAND controller/NAND chip DT
- representation
+Date: Thu, 31 Mar 2016 10:23:53 -0700
+From: Mark Brown <broonie@kernel.org>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1459432633-23162-1-git-send-email-boris.brezillon@free-electrons.com>
- <56FD3F0E.9080306@imgtec.com> <20160331171942.622d03aa@bbrezillon>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>, Richard
- Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
- <devicetree@vger.kernel.org>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, <linux-kernel@vger.kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Jorge Ramirez-Ortiz
- <jorge.ramirez-ortiz@linaro.org>
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Message-ID: <56FD4099.5040804@imgtec.com>
-Date: Thu, 31 Mar 2016 16:22:01 +0100
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Gordon <david.s.gordon@intel.com>, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Vinod Koul <vinod.koul@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>,
+ Hans Verkuil <hans.verkuil@cisco.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ linux-media@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>,
+ linux-crypto@vger.kernel.org, Vignesh R <vigneshr@ti.com>,
+ linux-mm@kvack.org, Joerg Roedel <joro@8bytes.org>,
+ iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Message-ID: <20160331172353.GJ2350@sirena.org.uk>
+References: <1459427384-21374-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459427384-21374-4-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <20160331171942.622d03aa@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="HHj6mHPeUinss9N+"
+Content-Disposition: inline
+In-Reply-To: <1459427384-21374-4-git-send-email-boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH 3/4] spi: use sg_alloc_table_from_buf()
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,92 +34,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-On 31/03/16 16:19, Boris Brezillon wrote:
-> On Thu, 31 Mar 2016 16:15:26 +0100
-> Harvey Hunt <harvey.hunt@imgtec.com> wrote:
->
->> Hi Boris,
->>
->> On 31/03/16 14:57, Boris Brezillon wrote:
->>> Standardize the NAND controller/NAND chip DT representation. Now, all new
->>> NAND controller drivers should comply with this representation, even if
->>> they are only supporting a single NAND chip.
->>>
->>> Existing drivers can keep support for the old representation (where only
->>> the NAND chip was described), but are encouraged to also support the new
->>> one.
->>>
->>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->>> ---
->>>    Documentation/devicetree/bindings/mtd/nand.txt | 37 +++++++++++++++++++++++++-
->>>    1 file changed, 36 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
->>> index b53f92e..fbf5677 100644
->>> --- a/Documentation/devicetree/bindings/mtd/nand.txt
->>> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
->>> @@ -1,4 +1,23 @@
->>> -* MTD generic binding
->>> +* NAND chip and NAND controller generic binding
->>> +
->>> +NAND controller/NAND chip representation:
->>> +
->>> +The NAND controller should be represented with it's own DT node, and all
->>
->> s/it's/its/
->
-> Yep, I'll fix that.
->
->>
->>> +NAND chips attached to this controller should be defined as children nodes
->>> +of the NAND controller. This representation should be enforced even for
->>> +simple controllers supporting only one chip.
->>> +
->>> +Mandatory NAND controller properties:
->>> +- #address-cells: depends on your controller. Should at least be 1 to
->>> +		  encode the CS line id.
->>> +- #size-cells: depends on your controller. Put zero unless you need a
->>> +	       mapping between CS lines and dedicated memory regions
->>> +
->>> +Optional NAND controller properties
->>> +- ranges: only needed if you need to define a mapping between CS lines and
->>> +	  memory regions
->>> +
->>> +Optional NAND chip properties:
->>>
->>>    - nand-ecc-mode : String, operation mode of the NAND ecc mode.
->>>      Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
->>> @@ -19,3 +38,19 @@ errors per {size} bytes".
->>>    The interpretation of these parameters is implementation-defined, so not all
->>>    implementations must support all possible combinations. However, implementations
->>>    are encouraged to further specify the value(s) they support.
->>> +
->>> +Example:
->>> +
->>> +	nand-controller {
->>> +		#address-cells = <1>;
->>> +		#size-cells = <0>;
->>> +
->>> +		/* controller specific properties */
->>> +
->>> +		nand@0 {
->>> +			reg = <0>;
->>> +			nand-ecc-mode = "soft_bch";
->>> +
->>> +			/* controller specific properties */
->>
->> Did you mean "chip specific properties"?
->
-> No, it's really "controller specific properties". Those are properties
-> prefixed by the controller vendor name (like 'allwinner,rb' which is
-> encoding the native ready/busy pin to be attached to this chip).
->
+--HHj6mHPeUinss9N+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Okay, I see - I was somewhat confused by it being in the nand chip node, 
-but I understand what you mean now.
+On Thu, Mar 31, 2016 at 02:29:43PM +0200, Boris Brezillon wrote:
+> Replace custom implementation of sg_alloc_table_from_buf() by a call to
+> sg_alloc_table_from_buf().
 
-Thanks,
+Acked-by: Mark Brown <broonie@kernel.org>
 
-Harvey
+--HHj6mHPeUinss9N+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJW/V0aAAoJECTWi3JdVIfQuGEH+wdaKEhHxJuIIwseLFy64w88
+sFhI2BJSaVk6ppdvYIdf67ku24WUoLyYEApHSGXfhntu00xAlzBh8YZjvg6F41Yg
+7Ql/wnd5YumDVMT72a9Cv1OlJ+dsUdBJuQl7/A952W53l4IR2AcBDrJ/zBWQDtOc
+bbohxZsXJP+Qou2Q9x8OebYsFr3p2Hw3XjteAVB6jwA9gINwDDLj05HgRCKbotHe
+5bMQ3pj2I1ruS4wN44SWj7YOMvLzR3nE4xVOdHV+iaFhcVTkaYn7fuWi1fdSRChk
+tCB1auoxNjAIsfnsvj6nnzAOcW/kPwKzOKIgz58DZPFkgiRKDM9wuDnN2AlMPBI=
+=uMgt
+-----END PGP SIGNATURE-----
+
+--HHj6mHPeUinss9N+--
