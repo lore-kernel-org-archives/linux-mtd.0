@@ -1,27 +1,30 @@
-Received: from szxga01-in.huawei.com ([58.251.152.64])
+Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alX1z-0003eI-1U
- for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 07:28:41 +0000
-Subject: Re: [RESEND PATCH v9] mtd: spi-nor: add hisilicon spi-nor flash
- controller driver
-To: <robh+dt@kernel.org>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <boris.brezillon@free-electrons.com>, <jteki@openedev.com>,
- <ezequiel@vanguardiasur.com.ar>, <juhosg@openwrt.org>,
- <furquan@google.com>, <marek.vasut@gmail.com>
-References: <1458979861-3619-1-git-send-email-xuejiancheng@huawei.com>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <yanhaifeng@hisilicon.com>,
- <yanghongwei@hisilicon.com>, <suwenping@hisilicon.com>,
- <raojun@hisilicon.com>, <ml.yang@hisilicon.com>,
- <gaofei@hisilicon.com>, <zhangzhenxing@hisilicon.com>,
- <xuejiancheng@hisilicon.com>
-From: Jiancheng Xue <xuejiancheng@huawei.com>
-Message-ID: <56FCD0BD.4010505@huawei.com>
-Date: Thu, 31 Mar 2016 15:24:45 +0800
+ id 1alXnH-0008QI-Ux
+ for linux-mtd@lists.infradead.org; Thu, 31 Mar 2016 08:17:33 +0000
+Received: by mail-oi0-x234.google.com with SMTP id r187so50485827oih.3
+ for <linux-mtd@lists.infradead.org>; Thu, 31 Mar 2016 01:17:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1458979861-3619-1-git-send-email-xuejiancheng@huawei.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CACRpkdZYTAyEejiVivhP44cEhxHMG6sL1VbrJjx=jGe-znyn7A@mail.gmail.com>
+References: <1453806725-4880-1-git-send-email-linus.walleij@linaro.org>
+ <1453806725-4880-3-git-send-email-linus.walleij@linaro.org>
+ <CACRpkdY4fNfQWaKAZcak0yzJ2B17hbrqdU=Q4=NiwiWRNv_0yQ@mail.gmail.com>
+ <CACRpkdZusueSh99D2JQj5=JQqHAeedTS=X2vm48U58PLbhamcQ@mail.gmail.com>
+ <CACRpkdZYTAyEejiVivhP44cEhxHMG6sL1VbrJjx=jGe-znyn7A@mail.gmail.com>
+Date: Thu, 31 Mar 2016 10:17:10 +0200
+Message-ID: <CACRpkdaxXqEhWV5xxF1H-ZYTZfqNdJh9xKTv+22YNYs68zwnRw@mail.gmail.com>
+Subject: Re: [PATCH 2/6] mtd: physmap_of: add a hook for Versatile write
+ protection
+From: Linus Walleij <linus.walleij@linaro.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Grant Likely <grant.likely@linaro.org>,
+ Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,112 +34,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-    I'll highly appreciated any of your comments.
+On Sat, Mar 5, 2016 at 6:09 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Mon, Feb 22, 2016 at 8:09 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
+>> On Sat, Feb 13, 2016 at 2:19 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
+>>> On Tue, Jan 26, 2016 at 12:12 PM, Linus Walleij
+>>> <linus.walleij@linaro.org> wrote:
+>>>
+>>>> In order to support device tree probing of Versatile NOR flash
+>>>> chips, there must be a way to add the VPP (write protection)
+>>>> enable/disable callback. The register in question is in the
+>>>> system controllers of these machines. Apart from this quirk,
+>>>> the ARM flash chips are standard CFI flash chips from various
+>>>> vendors.
+>>>>
+>>>> Additionally, the Integrator/AP require you to set up the external
+>>>> bus interface (EBI) to allow writes to the chip select where the
+>>>> flash memory is connected.
+>>>>
+>>>> Solve this by looking for the arm,versatile-flash compatible
+>>>> string in the flash device tree node. In the driver,
+>>>> add a special hook to check for the various Versatile syscons and
+>>>> register a callback for .set_vpp() if this compatible is present.
+>>>>
+>>>> Provide a special Kconfig entry for the addon hook so it will
+>>>> not be compiled in if the Versatile boards are not supported.
+>>>> Stubs in the header file make sure the impact will be zero on
+>>>> other platforms. (Compilers optimze this out.)
+>>>>
+>>>> With this patch, a large slew of ARM board file code can be
+>>>> removed.
+>>>>
+>>>> Cc: Grant Likely <grant.likely@linaro.org>
+>>>> Cc: Rob Herring <robh@kernel.org>
+>>>> Cc: Arnd Bergmann <arnd@arndb.de>
+>>>> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+>>>
+>>> Do you think my reply to this about reference counting and
+>>> subsequent (accepted) patch to update the documentation
+>>> to reflect 876fe76d793d03077
+>>> "mtd: maps: physmap: Add reference counter to set_vpp()"
+>>> is enough to warrant merging of this?
+>>>
+>>> If you want the code developed in any special direction
+>>> just tell me.
+>>
+>> Ping.
+>
+> Ping.
 
-On 2016/3/26 16:11, Jiancheng Xue wrote:
-> Add hisilicon spi-nor flash controller driver
-> 
-[...]
-> +static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
-> +		size_t *retlen, u_char *read_buf)
-> +{
-> +	struct hifmc_priv *priv = nor->priv;
-> +	struct hifmc_host *host = priv->host;
-> +	unsigned char *ptr = read_buf;
-> +	size_t actual_len;
-> +
-> +	*retlen = 0;
-> +	while (len > 0) {
-> +		actual_len = (len >= HIFMC_DMA_MAX_LEN)
-> +			? HIFMC_DMA_MAX_LEN : len;
-> +		hisi_spi_nor_dma_transfer(nor, from, host->dma_buffer,
-> +				actual_len, FMC_OP_READ);
-> +		memcpy(ptr, host->buffer, actual_len);
-> +		ptr += actual_len;
-> +		from += actual_len;
-> +		len -= actual_len;
-> +		*retlen += actual_len;
-> +	}
-> +
-> +	return 0;
-> +}
-For easy understanding, the read function will be changed like below:
+Ping.
 
-static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
-		size_t *retlen, u_char *read_buf)
-{
-	struct hifmc_priv *priv = nor->priv;
-	struct hifmc_host *host = priv->host;
-	int i;
-
-	/* read all bytes in only one time */
-	if (len <= HIFMC_DMA_MAX_LEN) {
-		hisi_spi_nor_dma_transfer(nor, from, host->dma_buffer,
-				len, FMC_OP_READ);
-		memcpy(read_buf, host->buffer, len);
-	} else {
-		/* read HIFMC_DMA_MAX_LEN bytes at a time */
-		for (i = 0; i < len; i += HIFMC_DMA_MAX_LEN) {
-			hisi_spi_nor_dma_transfer(nor, from + i, host->dma_buffer,
-				HIFMC_DMA_MAX_LEN, FMC_OP_READ);
-			memcpy(read_buf + i, host->buffer, HIFMC_DMA_MAX_LEN);
-		}
-		/* read remaining bytes */
-		i -= HIFMC_DMA_MAX_LEN;
-		hisi_spi_nor_dma_transfer(nor, from + i, host->dma_buffer,
-				len - i, FMC_OP_READ);
-		memcpy(read_buf + i, host->buffer, len - i);
-	}
-	*retlen = len;
-
-	return 0;
-}
-
-> +static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
-> +			size_t len, size_t *retlen, const u_char *write_buf)
-> +{
-> +	struct hifmc_priv *priv = nor->priv;
-> +	struct hifmc_host *host = priv->host;
-> +	const unsigned char *ptr = write_buf;
-> +	size_t actual_len;
-> +
-> +	*retlen = 0;
-> +	while (len > 0) {
-> +		if (to & HIFMC_DMA_MASK)
-> +			actual_len = (HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK))
-> +				>= len	? len
-> +				: (HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK));
-> +		else
-> +			actual_len = (len >= HIFMC_DMA_MAX_LEN)
-> +				? HIFMC_DMA_MAX_LEN : len;
-> +		memcpy(host->buffer, ptr, actual_len);
-> +		hisi_spi_nor_dma_transfer(nor, to, host->dma_buffer, actual_len,
-> +				FMC_OP_WRITE);
-> +		to += actual_len;
-> +		ptr += actual_len;
-> +		len -= actual_len;
-> +		*retlen += actual_len;
-> +	}
-> +}
-> +
-Because "len" passed from spi_nor_write is smaller than nor->page_size, and nor->page_size
-is smaller than the length of host->dma_buffer. We can transfer "len" bytes data by
-hisi_spi_nor_dma_transfer at one time. hisi_spi_nor_write can be simplified like below:
-
-static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
-			size_t len, size_t *retlen, const u_char *write_buf)
-{
-	struct hifmc_priv *priv = nor->priv;
-	struct hifmc_host *host = priv->host;
-
-	/* len is smaller than dma buffer length*/
-	memcpy(host->buffer, write_buf, len);
-	hisi_spi_nor_dma_transfer(nor, to, host->dma_buffer, len,
-					FMC_OP_WRITE);
-
-	*retlen = len;
-}
-
-Regards,
-Jiancheng
+Yours,
+Linus Walleij
