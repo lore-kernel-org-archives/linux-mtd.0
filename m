@@ -1,35 +1,26 @@
+Received: from mail-ig0-x232.google.com ([2607:f8b0:4001:c05::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1am4oY-0003tx-6n
+ for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 19:33:02 +0000
+Received: by mail-ig0-x232.google.com with SMTP id sy18so3999256igc.1
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 12:32:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Fri, 01 Apr 2016 09:38:04 -0700
-From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Richard
- Weinberger <richard@nod.at>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin
- Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Nicolas Ferre
- <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard
- <plagnioj@jcrosoft.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Wenyou Yang <wenyou.yang@atmel.com>,
- Josh Wu <rainyfeeling@outlook.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Kyungmin Park <kyungmin.park@samsung.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
- linux-kernel@vger.kernel.org, punnaiah choudary kalluri
- <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>, Kamal Dasu
- <kdasu.kdev@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
- linux-api@vger.kernel.org, Harvey Hunt <harvey.hunt@imgtec.com>, Archit
- Taneja <architt@codeaurora.org>, Han Xu <b45815@freescale.com>, Huang Shijie
- <shijie.huang@arm.com>
-Subject: Re: [PATCH v5 45/50] mtd: nand: vf610: switch to mtd_ooblayout_ops
-In-Reply-To: <1459354505-32551-46-git-send-email-boris.brezillon@free-electrons.com>
-References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459354505-32551-46-git-send-email-boris.brezillon@free-electrons.com>
-Message-ID: <93c11b0392cdbcd64c3760e8fe7f6549@agner.ch>
+In-Reply-To: <20160401160722.GC117117@google.com>
+References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
+ <1455300685-27009-2-git-send-email-zajec5@gmail.com>
+ <20160401160722.GC117117@google.com>
+Date: Fri, 1 Apr 2016 21:32:40 +0200
+Message-ID: <CACna6rz6mYSxAr1oSjcLc__sSKM1XdUf-cGOFanGvuij0nNC5Q@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mtd: nand: read (from DT) and store ECC algorithm
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Grant Likely <grant.likely@linaro.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,80 +30,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2016-03-30 09:15, Boris Brezillon wrote:
-> Implementing the mtd_ooblayout_ops interface is the new way of exposing
-> ECC/OOB layout to MTD users.
+On 1 April 2016 at 18:07, Brian Norris <computersforpeace@gmail.com> wrote:
+> On Fri, Feb 12, 2016 at 07:11:24PM +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> This will allow drivers handle ECC properly.
+>>
+>> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+>> ---
+>>  drivers/mtd/nand/nand_base.c | 6 +++++-
+>>  include/linux/mtd/nand.h     | 1 +
+>>  2 files changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index f2c8ff3..ef977f3 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -3979,7 +3979,7 @@ ident_done:
+>>  static int nand_dt_init(struct nand_chip *chip)
+>>  {
+>>       struct device_node *dn =3D nand_get_flash_node(chip);
+>> -     int ecc_mode, ecc_strength, ecc_step;
+>> +     int ecc_mode, ecc_algo, ecc_strength, ecc_step;
+>>
+>>       if (!dn)
+>>               return 0;
+>> @@ -3991,6 +3991,7 @@ static int nand_dt_init(struct nand_chip *chip)
+>>               chip->bbt_options |=3D NAND_BBT_USE_FLASH;
+>>
+>>       ecc_mode =3D of_get_nand_ecc_mode(dn);
+>> +     ecc_algo =3D of_get_nand_ecc_algo(dn);
+>>       ecc_strength =3D of_get_nand_ecc_strength(dn);
+>>       ecc_step =3D of_get_nand_ecc_step_size(dn);
+>>
+>> @@ -4003,6 +4004,9 @@ static int nand_dt_init(struct nand_chip *chip)
+>>       if (ecc_mode >=3D 0)
+>>               chip->ecc.mode =3D ecc_mode;
+>>
+>> +     if (ecc_algo >=3D 0)
+>> +             chip->ecc.algo =3D ecc_algo;
+>> +
+>
+> While this might appear to handle the absence of the nand-ecc-algo
+> property correctly, this isn't safe. This means that any existing DT
+> without the property will get treated as Hamming ECC. Perhaps we need
+> the enum to have a 0 value of 'NAND_ECC_ALGO_UNKNOWN' or something like
+> that?
 
-I think I sent this already in the last revision:
-
-Tested-by: Stefan Agner <stefan@agner.ch>
-Acked-by: Stefan Agner <stefan@agner.ch>
-
---
-Stefan
-
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/vf610_nfc.c | 34 ++++------------------------------
->  1 file changed, 4 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-> index 293feb1..da34de1 100644
-> --- a/drivers/mtd/nand/vf610_nfc.c
-> +++ b/drivers/mtd/nand/vf610_nfc.c
-> @@ -175,34 +175,6 @@ static inline struct vf610_nfc *mtd_to_nfc(struct
-> mtd_info *mtd)
->  	return container_of(mtd_to_nand(mtd), struct vf610_nfc, chip);
->  }
->  
-> -static struct nand_ecclayout vf610_nfc_ecc45 = {
-> -	.eccbytes = 45,
-> -	.eccpos = {19, 20, 21, 22, 23,
-> -		   24, 25, 26, 27, 28, 29, 30, 31,
-> -		   32, 33, 34, 35, 36, 37, 38, 39,
-> -		   40, 41, 42, 43, 44, 45, 46, 47,
-> -		   48, 49, 50, 51, 52, 53, 54, 55,
-> -		   56, 57, 58, 59, 60, 61, 62, 63},
-> -	.oobfree = {
-> -		{.offset = 2,
-> -		 .length = 17} }
-> -};
-> -
-> -static struct nand_ecclayout vf610_nfc_ecc60 = {
-> -	.eccbytes = 60,
-> -	.eccpos = { 4,  5,  6,  7,  8,  9, 10, 11,
-> -		   12, 13, 14, 15, 16, 17, 18, 19,
-> -		   20, 21, 22, 23, 24, 25, 26, 27,
-> -		   28, 29, 30, 31, 32, 33, 34, 35,
-> -		   36, 37, 38, 39, 40, 41, 42, 43,
-> -		   44, 45, 46, 47, 48, 49, 50, 51,
-> -		   52, 53, 54, 55, 56, 57, 58, 59,
-> -		   60, 61, 62, 63 },
-> -	.oobfree = {
-> -		{.offset = 2,
-> -		 .length = 2} }
-> -};
-> -
->  static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
->  {
->  	return readl(nfc->regs + reg);
-> @@ -781,14 +753,16 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->  		if (mtd->oobsize > 64)
->  			mtd->oobsize = 64;
->  
-> +		/*
-> +		 * mtd->ecclayout is not specified here because we're using the
-> +		 * default large page ECC layout defined in NAND core.
-> +		 */
->  		if (chip->ecc.strength == 32) {
->  			nfc->ecc_mode = ECC_60_BYTE;
->  			chip->ecc.bytes = 60;
-> -			chip->ecc.layout = &vf610_nfc_ecc60;
->  		} else if (chip->ecc.strength == 24) {
->  			nfc->ecc_mode = ECC_45_BYTE;
->  			chip->ecc.bytes = 45;
-> -			chip->ecc.layout = &vf610_nfc_ecc45;
->  		} else {
->  			dev_err(nfc->dev, "Unsupported ECC strength\n");
->  			err = -ENXIO;
+You're commenting on an old series. If you take a look at:
+https://patchwork.ozlabs.org/patch/601180/
+that also got applied to the:
+https://github.com/linux-nand/linux/commits/nand/next
+repo, you'll see we have NAND_ECC_UNKNOWN there.
