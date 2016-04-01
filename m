@@ -1,32 +1,31 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-pf0-x229.google.com ([2607:f8b0:400e:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1am5fB-0004E0-Fh
- for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 20:27:26 +0000
-Received: by mail-pa0-x234.google.com with SMTP id zm5so98854827pac.0
- for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 13:27:04 -0700 (PDT)
-Date: Fri, 1 Apr 2016 13:27:01 -0700
+ id 1am5qe-00010w-8A
+ for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 20:39:17 +0000
+Received: by mail-pf0-x229.google.com with SMTP id e128so77268136pfe.3
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 13:38:55 -0700 (PDT)
+Date: Fri, 1 Apr 2016 13:38:52 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Matthias Schiffer <mschiffer@universe-factory.net>,
- Marek Vasut <marex@denx.de>, Gernot Hoyler <Gernot.Hoyler@spansion.com>,
- Felix Fietkau <nbd@openwrt.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Milton Chiang =?utf-8?B?KOaxn+aYjuaZjyk=?= <Milton.Chiang@mediatek.com>,
- linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
- linux-mtd@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>,
- Eddie Huang =?utf-8?B?KOm7g+aZuuWCkSk=?= <eddie.huang@mediatek.com>,
- "Nicolas.FERRE@atmel.com" <Nicolas.FERRE@atmel.com>
-Subject: Re: [PATCH for-4.4 1/2] mtd: spi-nor: fix Spansion regressions
- (aliased with Winbond)
-Message-ID: <20160401202701.GC3645@localhost>
-References: <1450205301-32207-1-git-send-email-computersforpeace@gmail.com>
- <56F6DB9C.5010305@universe-factory.net>
- <56F86443.4050901@universe-factory.net>
- <20160328205654.GJ2545@google.com> <56FBCAF4.5060801@atmel.com>
+Cc: linux-mtd@lists.infradead.org, nicolas.ferre@atmel.com,
+ boris.brezillon@free-electrons.com, marex@denx.de,
+ linux-kernel@vger.kernel.org,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>
+Subject: Re: [PATCH 1/1] mtd: spi-nor: add an alternative method to support
+ memory >16MiB
+Message-ID: <20160401203852.GD3645@localhost>
+References: <1458556429-11741-1-git-send-email-cyrille.pitchen@atmel.com>
+ <20160321170107.GG2545@google.com> <56F02C70.6050106@atmel.com>
+ <20160321175537.GH2545@google.com> <56F12C24.6040206@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <56FBCAF4.5060801@atmel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <56F12C24.6040206@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,97 +35,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 30, 2016 at 02:47:48PM +0200, Cyrille Pitchen wrote:
-> Hi all,
-> 
-> [...] 
-> > But this is interesting: I see the latest datasheet for Spansion
-> > s25fl064k says it supports the Block Protect bits in the Status
-> > Register, so presumably *some* version of s25fl064k should support
-> > write_sr(nor, 0) to unlock it at boot...
+On Tue, Mar 22, 2016 at 12:27:32PM +0100, Cyrille Pitchen wrote:
+> Le 21/03/2016 18:55, Brian Norris a écrit :
+> > On Mon, Mar 21, 2016 at 06:16:32PM +0100, Cyrille Pitchen wrote:
+> >> Le 21/03/2016 18:01, Brian Norris a écrit :
+> >>> On Mon, Mar 21, 2016 at 11:33:49AM +0100, Cyrille Pitchen wrote:
+> >>>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> >>>> index d42c98e1f581..7fae36fc8526 100644
+> >>>> --- a/drivers/mtd/spi-nor/Kconfig
+> >>>> +++ b/drivers/mtd/spi-nor/Kconfig
+> >>>> @@ -29,6 +29,18 @@ config MTD_SPI_NOR_USE_4K_SECTORS
+> >>>>  	  Please note that some tools/drivers/filesystems may not work with
+> >>>>  	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
+> >>>>  
+> >>>> +config MTD_SPI_NOR_USE_4B_OPCODES
+> >>>> +	bool "Use 4-byte address op codes"
+> >>>> +	default n
+> >>>> +	help
+> >>>> +	  This is an alternative to the "Enter/Exit 4-byte mode" commands and
+> >>>> +	  Base Address Register (BAR) updates to support flash size above 16MiB.
+> >>>> +	  Using dedicated 4-byte address op codes for (Fast) Read, Page Program
+> >>>> +	  and Sector Erase operations avoids changing the internal state of the
+> >>>> +	  SPI NOR memory. Hence if a CPU reset occurs, early bootloaders can
+> >>>> +	  still use regular 3-byte address op codes and read from the very first
+> >>>> +	  16MiB of the flash memory.
+> >>>> +
+> >>>
+> >>> Why does this need to be a Kconfig option? Can't it just as well be
+> >>> supported by keeping entries in the ID table, to show which flash
+> >>> support these opcodes and which don't? Kconfig is really a bad mechanism
+> >>> for trying to configure your flash.
+> >>
+> >> Well, the only reason why I've chosen a Kconfig option is to be as safe as
+> >> possible, if for some reason someone still wants to use the former
+> >> implementation. Honestly I don't know why one would do so but I'm cautious
+> >> so I also set "default n". This way no regression is introduced.
 > > 
-> > If Felix's initial report is indeed correct, then I think we have:
-> > (1) Spansion s25fl064k without Block Protect support (that breaks if you
-> >     try to write SR=0)
-> > (2) Spansion s25fl064k with Block Protect support (that requires you to
-> >     unlock at boot by writing SR=0 (?))
-> > (3) Winbond w25q64 with Block Protect support (that requires you to
-> >     unlock at boot by writing SR=0)
+> > I think the main reason is that some manufacturers did not initially
+> > support both methods. So we couldn't just say "all Micron" or "all
+> > Macronix" should use these opcodes. Spansion was the only one to support
+> > them consistently. See [1] for reference.
 > > 
-> > And (1)-(3) all report the same ID, and (1) is incompatible with (2) and
-> > (3). Am I right? Are flash vendors really this insane? Should we all
-> > just give up and go home?
+> > And actually, your Kconfig option is not "cautious", because you have no
+> > guarantee that people will make intelligent choices here. So you're
+> > making a Kconfig that if someone accidentally turns it on, their flash
+> > might not work any more. That's much less safe than properly labelling
+> > which flash supports which feature.
+> > 
+> >> If you think it's better to use a dedicated flag like SECT_4K or
+> >> SPI_NOR_QUAD_READ in the spi_nor_ids[] table, I'm perfectly fine with it as
+> >> well.
+> > 
+> > I think that would be better. (Really, an opt-out would be the least
+> > work in the long-run I think, since IIRC there were only a few
+> > early-generation flash that were both large enough to need 4 byte
+> > addressing and didn't support the dedicated opcodes. But it'll be hard
+> > to track those down now I think, so opt-in probably is most practical.)
+> > 
+> >> Just let me know your choice then I'll update my patch accordingly if needed.
+> > 
+> > Brian
+> > 
+> > [1]
+> > commit 87c9511fba2bd069a35e1312587a29e112fc0cd6
+> > Author: Brian Norris <computersforpeace@gmail.com>
+> > Date:   Thu Apr 11 01:34:57 2013 -0700
+> > 
+> >     mtd: m25p80: utilize dedicated 4-byte addressing commands
 > > 
 > 
-> Just a general remark: maybe reading the JEDEC ID is not a so reliable mean to
-> discover SPI flash hardware capabilities at runtime.
+> Indeed, your commit message is very interesting since it points out some issue
+> I already face: for my test I'm currently using a Macronix MX25L25673G
+> (JEDEC ID C22019). This memory *does* support the dedicated 4byte address op
+> codes.
 > 
-> Two weeks ago some Macronix people came to Atmel to present us next evolutions
-> of SPI flashes. We took this opportunity to ask them some questions and one of
-> them was about memories with different hardware capabilities sharing the very
-> same JEDEC ID. One example is Macronix MX25L25635E vs MX25L25673G.
+> Then if I look at the datasheet for the Macronix MX25L25635E, this older memory
+> shares the exact same JEDEC ID, C22019 but *doesn't* support the 4byte address
+> op codes.
 > 
-> They explained to us that for Macronix memories, the 2byte product ID is to be
-> split into a 1byte code for the memory type and a second byte for the memory
-> denstity. For instance:
-> C2: Manufacturer ID, Macronix
-> 20: Memory Type, SPI NOR flash
-> 19: Memory density, 256Mib
+> None of these two memory types use ext id: the JEDEC ID is only 3byte long.
+> Anyway, in QPI mode, the QPIID command (0xAF), which replaces the regular
+> Read ID command (0x9f) only sends 3 bytes too.
 > 
-> Hence the JEDEC ID only provides information about the memory size and all
-> SPI NOR memories of a given size actually share the same JEDEC ID.
-
-That doesn't seem to be true though. There are flash entries for
-Macronix with different ID's, but the same density. So maybe they mean
-that *some* SPI NOR memories of a given size share the same JEDEC ID?
-
-Anyway, even if they keep this pattern for the first 3 bytes, isn't it
-possible for them to include extra bytes to differentiate? Or, you know,
-support a standard like SFPD properly. But there are understood (but not
-insurmountable) problems with that. (And anyway, SFDP doesn't tell us
-all the things we need.)
-
-> Similar cases can also be found with other manufacturers: Micron, Winbond,
-> Spansion... 
+> The memory table inside the spi-nor framework is indexed by JEDEC ID (+ ext id)
+> but we've just pointed out a case where it is not possible to create two
+> different entries in this table, one for the 35E without the "4byte" flag, the
+> other for 73G with the "4byte" flag.
 > 
-> Also the Macronix engineers asked us how software applications drive the (Q)SPI
-> memories. I answered them that Linux or u-boot use a static table indexed by
-> the JEDEC ID, which provides the hardware capabilities. I guess they didn't
-> expect software developers to use the JEDEC ID for this purpose.
-> Well, it's just a feeling.
-> 
-> Then the Macronix engineers proposed to use the Serial Flash Discoverable
-> Parameter (SFDP) tables to make the difference between memories sharing the
-> same JEDEC ID. This might help us in some cases.
-> However we should be cautious when using this standard: last year, I've tried
-> to discover hardware parameters through these tables when I was working with
-> Spansion and Micron memories. I found out the Parameter Table Pointers inside
-> the SFDP Header were expressed as byte offset with one memory and as dword
-> offset with the other.
+> So there is no mean for the software to discover at runtime what are the actual
+> capabilities of the memory. Hence I think we should introduce a DT property
+> which would clearly tell the spi-nor framework that we want to use the
+> dedicated 4byte address op codes instead of entering the 4byte address mode
+> (still the default behaviour since older memories only support this mode).
 
-Yeah, I noticed this. And I think one or more of them noticed their
-error and fixed it in later revs, so you can't depend on a manufacturer
-always having the same broken interpretation consistently.
+We don't absolutely need a new property. You could just support
+"mxic,mx25l25673g" in the compatible property, and make sure that name
+matching will override the ID matching. (Although, maybe this won't work
+so well, since plenty of DT's erroneously have used "m25p80" even though
+they are not "m25p80" flash...)
 
-> So I gave up using these tables since some memories diverged from the standard,
-> which was "work in progress" at that time.
-> 
-> Anyway if we cannot completely rely on the SFDP tables we could still use
-> DT properties but we should no longer expect to guess all hardware parameters
-> from the JEDEC ID alone.
+> So what about a new DT named "m25p,4byte-opcodes" so the naming is consistent
+> with the existing "m25p,fast-read"?
 
-In your conversations, did the vendors actually suggest a practical
-method to differentiate flash? Since they've all screwed up SFDP, that's
-not going to fly, unless we (e.g.) blacklist certain flash. Anyway, I'd
-love to have some basic support for SFDP, even if we have to be
-conservative at first. For one, I think it'd be fair to add another
-compatible property "jedec,sfdp-vXXX", and then we only use that on
-flash that support the actual spec.
+(I never liked the fast-read property, FWIW. It wasn't necessary.)
 
-Also rather than adding a ton of new DT properties, I think it might
-make more sense to just add more DT compatible matches for the actual
-part number (they're not going to start re-using part numbers are
-they??). That way we don't rely on the DT writer to get every little
-detail right, when the driver *should* be able to hold this info.
+If we're choosing new properties, let's not make them "m25p", since
+that's neither a vendor prefix, nor does it reflect its driver use case.
+(We would support it for non-m25p80-based drivers.)
+
+"spi-nor," might be a better prefix.
+
+> For DT guys, I just sum the initial issue up: entering the 4byte address mode
+> as currently done changes the internal state of the SPI memory. If a SoC reset
+> occurs, some early bootloaders not supporting this 4byte address mode expect
+> to use only 3byte addresses for (Fast) Read operations => the boot is broken.
+> Then using the dedicated 4byte address op codes fixes the issue as they don't
+> change the internal memory state so early bootloader can still use 3byte
+> address op codes.
 
 Brian
