@@ -1,23 +1,35 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1alyAJ-0003ol-C6
- for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 12:27:04 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+To: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Harvey Hunt <harvey.hunt@imgtec.com>,
- Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Subject: [PATCH v2] mtd: nand: document the NAND controller/NAND chip DT
- representation
-Date: Fri,  1 Apr 2016 14:26:35 +0200
-Message-Id: <1459513595-14308-1-git-send-email-boris.brezillon@free-electrons.com>
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stefan Agner <stefan@agner.ch>
+Cc: linux-omap@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory CLEMENT <gregory.clement@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ bcm-kernel-feedback-list@broadcom.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Zhou Wang <wangzhou1@hisilicon.com>, Alex Smith <alex.smith@imgtec.com>,
+ Harvey Hunt <harvey.hunt@imgtec.com>
+Subject: [PATCH 04/12] mtd: nand: brcm: rely on generic DT parsing done in
+ nand_scan_ident()
+Date: Fri,  1 Apr 2016 14:54:24 +0200
+Message-Id: <1459515272-31011-5-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,70 +39,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Standardize the NAND controller/NAND chip DT representation. Now, all new
-NAND controller drivers should comply with this representation, even if
-they are only supporting a single NAND chip.
-
-Existing drivers can keep support for the old representation (where only
-the NAND chip was described), but are encouraged to also support the new
-one.
+The core now takes care of parsing generic DT properties in
+nand_scan_ident() when nand_set_flash_node() has been called.
+Rely on this initialization instead of calling of_get_nand_xxx()
+manually.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
-Changes since v1:
-- fix typo
----
- Documentation/devicetree/bindings/mtd/nand.txt | 37 +++++++++++++++++++++++++-
- 1 file changed, 36 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/brcmnand/brcmnand.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
-index b53f92e..a17662b 100644
---- a/Documentation/devicetree/bindings/mtd/nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/nand.txt
-@@ -1,4 +1,23 @@
--* MTD generic binding
-+* NAND chip and NAND controller generic binding
-+
-+NAND controller/NAND chip representation:
-+
-+The NAND controller should be represented with its own DT node, and all
-+NAND chips attached to this controller should be defined as children nodes
-+of the NAND controller. This representation should be enforced even for
-+simple controllers supporting only one chip.
-+
-+Mandatory NAND controller properties:
-+- #address-cells: depends on your controller. Should at least be 1 to
-+		  encode the CS line id.
-+- #size-cells: depends on your controller. Put zero unless you need a
-+	       mapping between CS lines and dedicated memory regions
-+
-+Optional NAND controller properties
-+- ranges: only needed if you need to define a mapping between CS lines and
-+	  memory regions
-+
-+Optional NAND chip properties:
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index e052839..6e2a52d 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -32,7 +32,6 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/of.h>
+-#include <linux/of_mtd.h>
+ #include <linux/of_platform.h>
+ #include <linux/slab.h>
+ #include <linux/list.h>
+@@ -2001,8 +2000,8 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
+ 	 */
+ 	chip->options |= NAND_USE_BOUNCE_BUFFER;
  
- - nand-ecc-mode : String, operation mode of the NAND ecc mode.
-   Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-@@ -19,3 +38,19 @@ errors per {size} bytes".
- The interpretation of these parameters is implementation-defined, so not all
- implementations must support all possible combinations. However, implementations
- are encouraged to further specify the value(s) they support.
-+
-+Example:
-+
-+	nand-controller {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* controller specific properties */
-+
-+		nand@0 {
-+			reg = <0>;
-+			nand-ecc-mode = "soft_bch";
-+
-+			/* controller specific properties */
-+		};
-+	};
+-	if (of_get_nand_on_flash_bbt(dn))
+-		chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
++	if (chip->bbt_options & NAND_BBT_USE_FLASH)
++		chip->bbt_options |= NAND_BBT_NO_OOB;
+ 
+ 	if (brcmnand_setup_dev(host))
+ 		return -ENXIO;
 -- 
 2.5.0
