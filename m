@@ -1,29 +1,32 @@
-Received: from mail-pf0-x235.google.com ([2607:f8b0:400e:c00::235])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1am5MG-0004y8-UU
- for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 20:07:54 +0000
-Received: by mail-pf0-x235.google.com with SMTP id e128so76833584pfe.3
- for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 13:07:32 -0700 (PDT)
-Date: Fri, 1 Apr 2016 13:07:28 -0700
+ id 1am5fB-0004E0-Fh
+ for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 20:27:26 +0000
+Received: by mail-pa0-x234.google.com with SMTP id zm5so98854827pac.0
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 13:27:04 -0700 (PDT)
+Date: Fri, 1 Apr 2016 13:27:01 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>,
- Grant Likely <grant.likely@linaro.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 2/3] mtd: nand: read (from DT) and store ECC algorithm
-Message-ID: <20160401200728.GA3645@localhost>
-References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
- <1455300685-27009-2-git-send-email-zajec5@gmail.com>
- <20160401160722.GC117117@google.com>
- <CACna6rz6mYSxAr1oSjcLc__sSKM1XdUf-cGOFanGvuij0nNC5Q@mail.gmail.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Cc: Matthias Schiffer <mschiffer@universe-factory.net>,
+ Marek Vasut <marex@denx.de>, Gernot Hoyler <Gernot.Hoyler@spansion.com>,
+ Felix Fietkau <nbd@openwrt.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Milton Chiang =?utf-8?B?KOaxn+aYjuaZjyk=?= <Milton.Chiang@mediatek.com>,
+ linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
+ linux-mtd@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>,
+ Eddie Huang =?utf-8?B?KOm7g+aZuuWCkSk=?= <eddie.huang@mediatek.com>,
+ "Nicolas.FERRE@atmel.com" <Nicolas.FERRE@atmel.com>
+Subject: Re: [PATCH for-4.4 1/2] mtd: spi-nor: fix Spansion regressions
+ (aliased with Winbond)
+Message-ID: <20160401202701.GC3645@localhost>
+References: <1450205301-32207-1-git-send-email-computersforpeace@gmail.com>
+ <56F6DB9C.5010305@universe-factory.net>
+ <56F86443.4050901@universe-factory.net>
+ <20160328205654.GJ2545@google.com> <56FBCAF4.5060801@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rz6mYSxAr1oSjcLc__sSKM1XdUf-cGOFanGvuij0nNC5Q@mail.gmail.com>
+In-Reply-To: <56FBCAF4.5060801@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,60 +36,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 01, 2016 at 09:32:40PM +0200, Rafał Miłecki wrote:
-> On 1 April 2016 at 18:07, Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Fri, Feb 12, 2016 at 07:11:24PM +0100, Rafał Miłecki wrote:
-> >> This will allow drivers handle ECC properly.
-> >>
-> >> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
-> >> ---
-> >>  drivers/mtd/nand/nand_base.c | 6 +++++-
-> >>  include/linux/mtd/nand.h     | 1 +
-> >>  2 files changed, 6 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> >> index f2c8ff3..ef977f3 100644
-> >> --- a/drivers/mtd/nand/nand_base.c
-> >> +++ b/drivers/mtd/nand/nand_base.c
-> >> @@ -3979,7 +3979,7 @@ ident_done:
-> >>  static int nand_dt_init(struct nand_chip *chip)
-> >>  {
-> >>       struct device_node *dn = nand_get_flash_node(chip);
-> >> -     int ecc_mode, ecc_strength, ecc_step;
-> >> +     int ecc_mode, ecc_algo, ecc_strength, ecc_step;
-> >>
-> >>       if (!dn)
-> >>               return 0;
-> >> @@ -3991,6 +3991,7 @@ static int nand_dt_init(struct nand_chip *chip)
-> >>               chip->bbt_options |= NAND_BBT_USE_FLASH;
-> >>
-> >>       ecc_mode = of_get_nand_ecc_mode(dn);
-> >> +     ecc_algo = of_get_nand_ecc_algo(dn);
-> >>       ecc_strength = of_get_nand_ecc_strength(dn);
-> >>       ecc_step = of_get_nand_ecc_step_size(dn);
-> >>
-> >> @@ -4003,6 +4004,9 @@ static int nand_dt_init(struct nand_chip *chip)
-> >>       if (ecc_mode >= 0)
-> >>               chip->ecc.mode = ecc_mode;
-> >>
-> >> +     if (ecc_algo >= 0)
-> >> +             chip->ecc.algo = ecc_algo;
-> >> +
-> >
-> > While this might appear to handle the absence of the nand-ecc-algo
-> > property correctly, this isn't safe. This means that any existing DT
-> > without the property will get treated as Hamming ECC. Perhaps we need
-> > the enum to have a 0 value of 'NAND_ECC_ALGO_UNKNOWN' or something like
-> > that?
+On Wed, Mar 30, 2016 at 02:47:48PM +0200, Cyrille Pitchen wrote:
+> Hi all,
 > 
-> You're commenting on an old series. If you take a look at:
-> https://patchwork.ozlabs.org/patch/601180/
-> that also got applied to the:
-> https://github.com/linux-nand/linux/commits/nand/next
-> repo, you'll see we have NAND_ECC_UNKNOWN there.
+> [...] 
+> > But this is interesting: I see the latest datasheet for Spansion
+> > s25fl064k says it supports the Block Protect bits in the Status
+> > Register, so presumably *some* version of s25fl064k should support
+> > write_sr(nor, 0) to unlock it at boot...
+> > 
+> > If Felix's initial report is indeed correct, then I think we have:
+> > (1) Spansion s25fl064k without Block Protect support (that breaks if you
+> >     try to write SR=0)
+> > (2) Spansion s25fl064k with Block Protect support (that requires you to
+> >     unlock at boot by writing SR=0 (?))
+> > (3) Winbond w25q64 with Block Protect support (that requires you to
+> >     unlock at boot by writing SR=0)
+> > 
+> > And (1)-(3) all report the same ID, and (1) is incompatible with (2) and
+> > (3). Am I right? Are flash vendors really this insane? Should we all
+> > just give up and go home?
+> > 
+> 
+> Just a general remark: maybe reading the JEDEC ID is not a so reliable mean to
+> discover SPI flash hardware capabilities at runtime.
+> 
+> Two weeks ago some Macronix people came to Atmel to present us next evolutions
+> of SPI flashes. We took this opportunity to ask them some questions and one of
+> them was about memories with different hardware capabilities sharing the very
+> same JEDEC ID. One example is Macronix MX25L25635E vs MX25L25673G.
+> 
+> They explained to us that for Macronix memories, the 2byte product ID is to be
+> split into a 1byte code for the memory type and a second byte for the memory
+> denstity. For instance:
+> C2: Manufacturer ID, Macronix
+> 20: Memory Type, SPI NOR flash
+> 19: Memory density, 256Mib
+> 
+> Hence the JEDEC ID only provides information about the memory size and all
+> SPI NOR memories of a given size actually share the same JEDEC ID.
 
-Ah, I guess I missed that because I was searching for the patch to
-brcmnand (i.e., fixing the original problem you saw). AFAICT, this v2
-series doesn't actually resolve your issue with brcmnand, no?
+That doesn't seem to be true though. There are flash entries for
+Macronix with different ID's, but the same density. So maybe they mean
+that *some* SPI NOR memories of a given size share the same JEDEC ID?
+
+Anyway, even if they keep this pattern for the first 3 bytes, isn't it
+possible for them to include extra bytes to differentiate? Or, you know,
+support a standard like SFPD properly. But there are understood (but not
+insurmountable) problems with that. (And anyway, SFDP doesn't tell us
+all the things we need.)
+
+> Similar cases can also be found with other manufacturers: Micron, Winbond,
+> Spansion... 
+> 
+> Also the Macronix engineers asked us how software applications drive the (Q)SPI
+> memories. I answered them that Linux or u-boot use a static table indexed by
+> the JEDEC ID, which provides the hardware capabilities. I guess they didn't
+> expect software developers to use the JEDEC ID for this purpose.
+> Well, it's just a feeling.
+> 
+> Then the Macronix engineers proposed to use the Serial Flash Discoverable
+> Parameter (SFDP) tables to make the difference between memories sharing the
+> same JEDEC ID. This might help us in some cases.
+> However we should be cautious when using this standard: last year, I've tried
+> to discover hardware parameters through these tables when I was working with
+> Spansion and Micron memories. I found out the Parameter Table Pointers inside
+> the SFDP Header were expressed as byte offset with one memory and as dword
+> offset with the other.
+
+Yeah, I noticed this. And I think one or more of them noticed their
+error and fixed it in later revs, so you can't depend on a manufacturer
+always having the same broken interpretation consistently.
+
+> So I gave up using these tables since some memories diverged from the standard,
+> which was "work in progress" at that time.
+> 
+> Anyway if we cannot completely rely on the SFDP tables we could still use
+> DT properties but we should no longer expect to guess all hardware parameters
+> from the JEDEC ID alone.
+
+In your conversations, did the vendors actually suggest a practical
+method to differentiate flash? Since they've all screwed up SFDP, that's
+not going to fly, unless we (e.g.) blacklist certain flash. Anyway, I'd
+love to have some basic support for SFDP, even if we have to be
+conservative at first. For one, I think it'd be fair to add another
+compatible property "jedec,sfdp-vXXX", and then we only use that on
+flash that support the actual spec.
+
+Also rather than adding a ton of new DT properties, I think it might
+make more sense to just add more DT compatible matches for the actual
+part number (they're not going to start re-using part numbers are
+they??). That way we don't rely on the DT writer to get every little
+detail right, when the driver *should* be able to hold this info.
 
 Brian
