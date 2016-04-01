@@ -1,23 +1,22 @@
-Received: from mail-pf0-x22a.google.com ([2607:f8b0:400e:c00::22a])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1am7X6-0000BY-V4
- for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 22:27:14 +0000
-Received: by mail-pf0-x22a.google.com with SMTP id n5so99965409pfn.2
- for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 15:26:52 -0700 (PDT)
-Date: Fri, 1 Apr 2016 15:26:49 -0700
+ id 1am8oV-0007dz-5v
+ for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 23:49:15 +0000
+Received: by mail-pa0-x22a.google.com with SMTP id fe3so101523336pab.1
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 16:48:53 -0700 (PDT)
+Date: Fri, 1 Apr 2016 16:48:50 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/2] mtd: nand: Drop mtd.owner requirement in nand_scan
-Message-ID: <20160401222649.GK2545@google.com>
-References: <1459546164-6269-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1459546164-6269-2-git-send-email-ezequiel@vanguardiasur.com.ar>
+To: "zhaoxiu.zeng" <zhaoxiu.zeng@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 21/31] mtd: use parity16 in ssfdc.c
+Message-ID: <20160401234850.GM2545@google.com>
+References: <1458788612-4367-1-git-send-email-zhaoxiu.zeng@gmail.com>
+ <56F78ACB.1010402@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1459546164-6269-2-git-send-email-ezequiel@vanguardiasur.com.ar>
+In-Reply-To: <56F78ACB.1010402@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,66 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 01, 2016 at 06:29:23PM -0300, Ezequiel Garcia wrote:
-> Since commit 807f16d4db95 ("mtd: core: set some defaults
-> when dev.parent is set"), it's now legal for drivers
-> to call nand_scan and nand_scan_ident without setting
-> mtd.owner.
+On Sun, Mar 27, 2016 at 03:24:59PM +0800, zhaoxiu.zeng wrote:
+> From: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
 > 
-> Drop the check and while at it remove the BUG() abuse.
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> ---
->  drivers/mtd/nand/nand_base.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index c3733a10a6e7..befa04ef4a04 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4013,7 +4013,6 @@ static int nand_dt_init(struct nand_chip *chip)
->   * This is the first phase of the normal nand_scan() function. It reads the
->   * flash ID and sets up MTD fields accordingly.
->   *
-> - * The mtd->owner field must be set to the module of the caller.
->   */
->  int nand_scan_ident(struct mtd_info *mtd, int maxchips,
->  		    struct nand_flash_dev *table)
-> @@ -4433,19 +4432,12 @@ EXPORT_SYMBOL(nand_scan_tail);
->   *
->   * This fills out all the uninitialized function pointers with the defaults.
->   * The flash ID is read and the mtd/chip structures are filled with the
-> - * appropriate values. The mtd->owner field must be set to the module of the
-> - * caller.
-> + * appropriate values.
->   */
->  int nand_scan(struct mtd_info *mtd, int maxchips)
->  {
->  	int ret;
->  
-> -	/* Many callers got this wrong, so check for it for a while... */
-> -	if (!mtd->owner && caller_is_module()) {
-> -		pr_crit("%s called with NULL mtd->owner!\n", __func__);
-> -		BUG();
-> -	}
+> Signed-off-by: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
 
-Ooh, yikes! Forgot this was there. I guess no one noticed, because fewer
-drivers are using plain nand_scan() these days (instead of splitting up
-nand_scan_ident() and nand_scan_tail()), and also, many NAND users don't
-run their drivers as modules.
-
-Anyway, this is probably worth -stable, right? (i.e., "Fixes:
-807f16d4db95 ..." and "Cc: <stable@vger.kernel.org>")
-
-I can take this directly, or Boris, if you feel like there will be other
-for-v4.5 NAND material, you can queue this up instead.
+I'm not CC'd on the rest of this series, where you defined parity16().
+And I doubt you've tested this. So I'm not applying.
 
 Brian
 
+>  drivers/mtd/ssfdc.c | 20 ++------------------
+>  1 file changed, 2 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
+> index daf82ba..b4d9144 100644
+> --- a/drivers/mtd/ssfdc.c
+> +++ b/drivers/mtd/ssfdc.c
+> @@ -182,24 +182,10 @@ static int read_raw_oob(struct mtd_info *mtd, loff_t offs, uint8_t *buf)
+>  	return 0;
+>  }
+>  
+> -/* Parity calculator on a word of n bit size */
+> -static int get_parity(int number, int size)
+> -{
+> - 	int k;
+> -	int parity;
 > -
->  	ret = nand_scan_ident(mtd, maxchips, NULL);
->  	if (!ret)
->  		ret = nand_scan_tail(mtd);
+> -	parity = 1;
+> -	for (k = 0; k < size; k++) {
+> -		parity += (number >> k);
+> -		parity &= 1;
+> -	}
+> -	return parity;
+> -}
+> -
+>  /* Read and validate the logical block address field stored in the OOB */
+>  static int get_logical_address(uint8_t *oob_buf)
+>  {
+> -	int block_address, parity;
+> +	int block_address;
+>  	int offset[2] = {6, 11}; /* offset of the 2 address fields within OOB */
+>  	int j;
+>  	int ok = 0;
+> @@ -215,11 +201,9 @@ static int get_logical_address(uint8_t *oob_buf)
+>  
+>  		/* Check for the signature bits in the address field (MSBits) */
+>  		if ((block_address & ~0x7FF) == 0x1000) {
+> -			parity = block_address & 0x01;
+>  			block_address &= 0x7FF;
+> -			block_address >>= 1;
+>  
+> -			if (get_parity(block_address, 10) != parity) {
+> +			if (!parity16(block_address)) {
+>  				pr_debug("SSFDC_RO: logical address field%d"
+>  					"parity error(0x%04X)\n", j+1,
+>  					block_address);
 > -- 
-> 2.7.0
+> 2.5.5
 > 
