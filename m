@@ -1,35 +1,33 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stefan Agner <stefan@agner.ch>
-Cc: linux-omap@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Gregory CLEMENT <gregory.clement@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- bcm-kernel-feedback-list@broadcom.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
- Zhou Wang <wangzhou1@hisilicon.com>, Alex Smith <alex.smith@imgtec.com>,
- Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: [PATCH 12/12] mtd: nand: move of_get_nand_xxx() helpers into
- nand_base.c
-Date: Fri,  1 Apr 2016 14:54:32 +0200
-Message-Id: <1459515272-31011-13-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH 01/12] mtd: nand: remove unneeded of_mtd.h inclusions
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Roger Quadros
+ <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou Yang
+ <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Richard
+ Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Stefan Agner <stefan@agner.ch>
 References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459515272-31011-2-git-send-email-boris.brezillon@free-electrons.com>
+CC: <linux-omap@vger.kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
+ <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ <bcm-kernel-feedback-list@broadcom.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, <linux-sunxi@googlegroups.com>, Zhou Wang
+ <wangzhou1@hisilicon.com>, Alex Smith <alex.smith@imgtec.com>
+From: Harvey Hunt <harvey.hunt@imgtec.com>
+Message-ID: <56FE7307.6040903@imgtec.com>
+Date: Fri, 1 Apr 2016 14:09:27 +0100
+MIME-Version: 1.0
+In-Reply-To: <1459515272-31011-2-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,371 +37,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that all drivers go through nand_set_flash_node() to parse the generic
-NAND properties, we can move all of_get_nand_xxx() helpers in to
-nand_base.c, make them static and remove of_mtd.c and of_mtd.h.
+Hi Boris,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/nand_base.c |  99 ++++++++++++++++++++++++++-
- drivers/of/Makefile          |   1 -
- drivers/of/of_mtd.c          | 155 -------------------------------------------
- include/linux/of_mtd.h       |  56 ----------------
- 4 files changed, 98 insertions(+), 213 deletions(-)
- delete mode 100644 drivers/of/of_mtd.c
- delete mode 100644 include/linux/of_mtd.h
+On 01/04/16 13:54, Boris Brezillon wrote:
+> Some drivers are including linux/of_mtd.h even if they don't use any of
+> the of_get_nand_xxx() helpers.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>   drivers/mtd/nand/jz4780_nand.c | 1 -
+>   drivers/mtd/nand/lpc32xx_mlc.c | 1 -
+>   drivers/mtd/nand/qcom_nandc.c  | 1 -
+>   drivers/mtd/nand/sunxi_nand.c  | 1 -
+>   drivers/mtd/nand/vf610_nfc.c   | 1 -
+>   5 files changed, 5 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+> index e1c016c..23a1999 100644
+> --- a/drivers/mtd/nand/jz4780_nand.c
+> +++ b/drivers/mtd/nand/jz4780_nand.c
+> @@ -17,7 +17,6 @@
+>   #include <linux/of.h>
+>   #include <linux/of_address.h>
+>   #include <linux/gpio/consumer.h>
+> -#include <linux/of_mtd.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/slab.h>
+>   #include <linux/mtd/mtd.h>
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index c3733a1..21f43e3 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -46,7 +46,7 @@
- #include <linux/leds.h>
- #include <linux/io.h>
- #include <linux/mtd/partitions.h>
--#include <linux/of_mtd.h>
-+#include <linux/of.h>
- 
- /* Define default oob placement schemes for large and small page devices */
- static struct nand_ecclayout nand_oob_8 = {
-@@ -3964,6 +3964,103 @@ ident_done:
- 	return type;
- }
- 
-+/**
-+ * It maps 'enum nand_ecc_modes_t' found in include/linux/mtd/nand.h
-+ * into the device tree binding of 'nand-ecc', so that MTD
-+ * device driver can get nand ecc from device tree.
-+ */
-+static const char * const nand_ecc_modes[] = {
-+	[NAND_ECC_NONE]		= "none",
-+	[NAND_ECC_SOFT]		= "soft",
-+	[NAND_ECC_HW]		= "hw",
-+	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
-+	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
-+	[NAND_ECC_SOFT_BCH]	= "soft_bch",
-+};
-+
-+static int of_get_nand_ecc_mode(struct device_node *np)
-+{
-+	const char *pm;
-+	int err, i;
-+
-+	err = of_property_read_string(np, "nand-ecc-mode", &pm);
-+	if (err < 0)
-+		return err;
-+
-+	for (i = 0; i < ARRAY_SIZE(nand_ecc_modes); i++)
-+		if (!strcasecmp(pm, nand_ecc_modes[i]))
-+			return i;
-+
-+	return -ENODEV;
-+}
-+
-+static int of_get_nand_ecc_algo(struct device_node *np)
-+{
-+	const char *pm;
-+	int err;
-+
-+	/*
-+	 * TODO: Read ECC algo OF property and map it to enum nand_ecc_algo.
-+	 * It's not implemented yet as currently NAND subsystem ignores
-+	 * algorithm explicitly set this way. Once it's handled we should
-+	 * document & support new property.
-+	 */
-+
-+	/*
-+	 * For backward compatibility we also read "nand-ecc-mode" checking
-+	 * for some obsoleted values that were specifying ECC algorithm.
-+	 */
-+	err = of_property_read_string(np, "nand-ecc-mode", &pm);
-+	if (err < 0)
-+		return err;
-+
-+	if (!strcasecmp(pm, "soft"))
-+		return NAND_ECC_HAMMING;
-+	else if (!strcasecmp(pm, "soft_bch"))
-+		return NAND_ECC_BCH;
-+
-+	return -ENODEV;
-+}
-+
-+static int of_get_nand_ecc_step_size(struct device_node *np)
-+{
-+	int ret;
-+	u32 val;
-+
-+	ret = of_property_read_u32(np, "nand-ecc-step-size", &val);
-+	return ret ? ret : val;
-+}
-+
-+static int of_get_nand_ecc_strength(struct device_node *np)
-+{
-+	int ret;
-+	u32 val;
-+
-+	ret = of_property_read_u32(np, "nand-ecc-strength", &val);
-+	return ret ? ret : val;
-+}
-+
-+static int of_get_nand_bus_width(struct device_node *np)
-+{
-+	u32 val;
-+
-+	if (of_property_read_u32(np, "nand-bus-width", &val))
-+		return 8;
-+
-+	switch (val) {
-+	case 8:
-+	case 16:
-+		return val;
-+	default:
-+		return -EIO;
-+	}
-+}
-+
-+static bool of_get_nand_on_flash_bbt(struct device_node *np)
-+{
-+	return of_property_read_bool(np, "nand-on-flash-bbt");
-+}
-+
- static int nand_dt_init(struct nand_chip *chip)
- {
- 	struct device_node *dn = nand_get_flash_node(chip);
-diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-index 156c072..e31bdc1 100644
---- a/drivers/of/Makefile
-+++ b/drivers/of/Makefile
-@@ -10,7 +10,6 @@ obj-$(CONFIG_OF_UNITTEST) += unittest.o
- obj-$(CONFIG_OF_MDIO)	+= of_mdio.o
- obj-$(CONFIG_OF_PCI)	+= of_pci.o
- obj-$(CONFIG_OF_PCI_IRQ)  += of_pci_irq.o
--obj-$(CONFIG_OF_MTD)	+= of_mtd.o
- obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
- obj-$(CONFIG_OF_RESOLVE)  += resolver.o
- obj-$(CONFIG_OF_OVERLAY) += overlay.o
-diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
-deleted file mode 100644
-index 15d056e..0000000
---- a/drivers/of/of_mtd.c
-+++ /dev/null
-@@ -1,155 +0,0 @@
--/*
-- * Copyright 2012 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-- *
-- * OF helpers for mtd.
-- *
-- * This file is released under the GPLv2
-- *
-- */
--#include <linux/kernel.h>
--#include <linux/of_mtd.h>
--#include <linux/mtd/nand.h>
--#include <linux/export.h>
--
--/**
-- * It maps 'enum nand_ecc_modes_t' found in include/linux/mtd/nand.h
-- * into the device tree binding of 'nand-ecc', so that MTD
-- * device driver can get nand ecc from device tree.
-- */
--static const char *nand_ecc_modes[] = {
--	[NAND_ECC_NONE]		= "none",
--	[NAND_ECC_SOFT]		= "soft",
--	[NAND_ECC_HW]		= "hw",
--	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
--	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
--	[NAND_ECC_SOFT_BCH]	= "soft_bch",
--};
--
--/**
-- * of_get_nand_ecc_mode - Get nand ecc mode for given device_node
-- * @np:	Pointer to the given device_node
-- *
-- * The function gets ecc mode string from property 'nand-ecc-mode',
-- * and return its index in nand_ecc_modes table, or errno in error case.
-- */
--int of_get_nand_ecc_mode(struct device_node *np)
--{
--	const char *pm;
--	int err, i;
--
--	err = of_property_read_string(np, "nand-ecc-mode", &pm);
--	if (err < 0)
--		return err;
--
--	for (i = 0; i < ARRAY_SIZE(nand_ecc_modes); i++)
--		if (!strcasecmp(pm, nand_ecc_modes[i]))
--			return i;
--
--	return -ENODEV;
--}
--EXPORT_SYMBOL_GPL(of_get_nand_ecc_mode);
--
--/**
-- * of_get_nand_ecc_algo - Get nand ecc algorithm for given device_node
-- * @np:	Pointer to the given device_node
-- *
-- * The function gets ecc algorithm and returns its enum value, or errno in error
-- * case.
-- */
--int of_get_nand_ecc_algo(struct device_node *np)
--{
--	const char *pm;
--	int err;
--
--	/*
--	 * TODO: Read ECC algo OF property and map it to enum nand_ecc_algo.
--	 * It's not implemented yet as currently NAND subsystem ignores
--	 * algorithm explicitly set this way. Once it's handled we should
--	 * document & support new property.
--	 */
--
--	/*
--	 * For backward compatibility we also read "nand-ecc-mode" checking
--	 * for some obsoleted values that were specifying ECC algorithm.
--	 */
--	err = of_property_read_string(np, "nand-ecc-mode", &pm);
--	if (err < 0)
--		return err;
--
--	if (!strcasecmp(pm, "soft"))
--		return NAND_ECC_HAMMING;
--	else if (!strcasecmp(pm, "soft_bch"))
--		return NAND_ECC_BCH;
--
--	return -ENODEV;
--}
--EXPORT_SYMBOL_GPL(of_get_nand_ecc_algo);
--
--/**
-- * of_get_nand_ecc_step_size - Get ECC step size associated to
-- * the required ECC strength (see below).
-- * @np:	Pointer to the given device_node
-- *
-- * return the ECC step size, or errno in error case.
-- */
--int of_get_nand_ecc_step_size(struct device_node *np)
--{
--	int ret;
--	u32 val;
--
--	ret = of_property_read_u32(np, "nand-ecc-step-size", &val);
--	return ret ? ret : val;
--}
--EXPORT_SYMBOL_GPL(of_get_nand_ecc_step_size);
--
--/**
-- * of_get_nand_ecc_strength - Get required ECC strength over the
-- * correspnding step size as defined by 'nand-ecc-size'
-- * @np:	Pointer to the given device_node
-- *
-- * return the ECC strength, or errno in error case.
-- */
--int of_get_nand_ecc_strength(struct device_node *np)
--{
--	int ret;
--	u32 val;
--
--	ret = of_property_read_u32(np, "nand-ecc-strength", &val);
--	return ret ? ret : val;
--}
--EXPORT_SYMBOL_GPL(of_get_nand_ecc_strength);
--
--/**
-- * of_get_nand_bus_width - Get nand bus witdh for given device_node
-- * @np:	Pointer to the given device_node
-- *
-- * return bus width option, or errno in error case.
-- */
--int of_get_nand_bus_width(struct device_node *np)
--{
--	u32 val;
--
--	if (of_property_read_u32(np, "nand-bus-width", &val))
--		return 8;
--
--	switch(val) {
--	case 8:
--	case 16:
--		return val;
--	default:
--		return -EIO;
--	}
--}
--EXPORT_SYMBOL_GPL(of_get_nand_bus_width);
--
--/**
-- * of_get_nand_on_flash_bbt - Get nand on flash bbt for given device_node
-- * @np:	Pointer to the given device_node
-- *
-- * return true if present false other wise
-- */
--bool of_get_nand_on_flash_bbt(struct device_node *np)
--{
--	return of_property_read_bool(np, "nand-on-flash-bbt");
--}
--EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
-diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
-deleted file mode 100644
-index 0f6aca5..0000000
---- a/include/linux/of_mtd.h
-+++ /dev/null
-@@ -1,56 +0,0 @@
--/*
-- * Copyright 2012 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-- *
-- * OF helpers for mtd.
-- *
-- * This file is released under the GPLv2
-- */
--
--#ifndef __LINUX_OF_MTD_H
--#define __LINUX_OF_MTD_H
--
--#ifdef CONFIG_OF_MTD
--
--#include <linux/of.h>
--int of_get_nand_ecc_mode(struct device_node *np);
--int of_get_nand_ecc_algo(struct device_node *np);
--int of_get_nand_ecc_step_size(struct device_node *np);
--int of_get_nand_ecc_strength(struct device_node *np);
--int of_get_nand_bus_width(struct device_node *np);
--bool of_get_nand_on_flash_bbt(struct device_node *np);
--
--#else /* CONFIG_OF_MTD */
--
--static inline int of_get_nand_ecc_mode(struct device_node *np)
--{
--	return -ENOSYS;
--}
--
--static inline int of_get_nand_ecc_algo(struct device_node *np)
--{
--	return -ENOSYS;
--}
--
--static inline int of_get_nand_ecc_step_size(struct device_node *np)
--{
--	return -ENOSYS;
--}
--
--static inline int of_get_nand_ecc_strength(struct device_node *np)
--{
--	return -ENOSYS;
--}
--
--static inline int of_get_nand_bus_width(struct device_node *np)
--{
--	return -ENOSYS;
--}
--
--static inline bool of_get_nand_on_flash_bbt(struct device_node *np)
--{
--	return false;
--}
--
--#endif /* CONFIG_OF_MTD */
--
--#endif /* __LINUX_OF_MTD_H */
--- 
-2.5.0
+Looks good to me.
+
+Acked-by: Harvey Hunt <harvey.hunt@imgtec.com>
+
+Thanks,
+
+Harvey
