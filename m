@@ -1,19 +1,25 @@
-From: "Bussery, Francois" <Francois.Bussery@arris.com>
-To: "Thomas.Betker@rohde-schwarz.com" <Thomas.Betker@rohde-schwarz.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, linux-mtd
- <linux-mtd-bounces@lists.infradead.org>
-Subject: Re: Deadlock issue in jffs2 (related to reverted patch "jffs2: Fix
- lock acquisition order bug in jffs2_write_begin")
-Date: Fri, 1 Apr 2016 08:52:14 +0000
-Message-ID: <F5C71A5F-621E-4ACE-B840-FED2DCE10399@arris.com>
-References: <AD0D0F08-0871-4B7B-AEDA-DF969E0675D3@arris.com>
- <OFE6A9E412.54AAF9F2-ONC1257F85.00415EE4-C1257F85.0042B468@rohde-schwarz.com>
-In-Reply-To: <OFE6A9E412.54AAF9F2-ONC1257F85.00415EE4-C1257F85.0042B468@rohde-schwarz.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <579DA19AA0E8644B860E20DEB9AACED4@arris.com>
-Content-Transfer-Encoding: quoted-printable
+Received: from mx2.suse.de ([195.135.220.15])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1alw5a-0003ds-P8
+ for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 10:14:03 +0000
+Subject: Re: UBIFS and page migration (take 2)
+To: Richard Weinberger <richard@nod.at>, linux-fsdevel@vger.kernel.org
+References: <1459461513-31765-1-git-send-email-richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com,
+ maxime.ripard@free-electrons.com, david@sigma-star.at, david@fromorbit.com,
+ dedekind1@gmail.com, alex@nextthing.co, akpm@linux-foundation.org,
+ sasha.levin@oracle.com, iamjoonsoo.kim@lge.com, rvaswani@codeaurora.org,
+ tony.luck@intel.com, shailendra.capricorn@gmail.com,
+ kirill.shutemov@linux.intel.com, hch@infradead.org, hughd@google.com,
+ mgorman@techsingularity.net
+From: Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <56FE49CD.1000302@suse.cz>
+Date: Fri, 1 Apr 2016 12:13:33 +0200
 MIME-Version: 1.0
+In-Reply-To: <1459461513-31765-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-After 3 days testings, I confirm that the patch works.
-Thanks a lot
-> On 29 Mar 2016, at 14:08, Thomas.Betker@rohde-schwarz.com wrote:
->=20
-> Hello Francois:
->=20
->> I encountered same as the one that drive you to remove this patch (
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/
->> commit/fs/jffs2?id=3D157078f64b8a9cd7011b6b900b2f2498df850748)
->> Unfortunately, this patch solved some big deadlock issues in jffs2.=20
->> So, my concern is that we return back to our initial issue.
->>=20
->> So, do you have any update for this issue? May be the 2015 patch was
->> just not suffisant.=20
->=20
-> David Woodhouse has provided a patch "jffs2: Fix page lock / f->sem=20
-> deadlock" which was added to linux-4.5 (alternatively, you can get the=20
-> patch here: http://git.infradead.org/users/dwmw2/jffs2-fixes.git).
->=20
-> Hope this helps,
-> Thomas
+On 03/31/2016 11:58 PM, Richard Weinberger wrote:
+> During page migrations UBIFS gets confused. We triggered this by using CMA
+> on two different targets.
+> It turned out that fallback_migrate_page() is not suitable for UBIFS as it
+> does not copy the PagePrivate flag.
+> UBIFS is using this flag among with PageChecked to account free space.
+> One possible solution is implementing a ->migratepage() function in UBIFS
+> which does more or less the same as fallback_migrate_page() but also
+> copies PagePrivate. I'm not at all sure whether this is they way to go.
+> IMHO either page migration should not happen if ->migratepage() is not implement
+> or fallback_migrate_page() has to work for all filesystems.
+
+Yes, we could document more thoroughly the expectations of 
+fallback_migrate_page() and audit the existing users, but still relying on every 
+new address_space_operations instance to verify them isn't without risk. And I 
+doubt there can be a default fallback that's guaranteed safe for all filesystems.
+
+> Comments? Flames? :-)
+>
+> Thanks,
+> //richard
+>
+> [PATCH 1/2] mm: Export migrate_page_move_mapping and
+> [PATCH 2/2] UBIFS: Implement ->migratepage()
+>
