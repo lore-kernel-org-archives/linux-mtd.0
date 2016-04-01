@@ -1,28 +1,18 @@
-Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
+Received: from mail-qg0-x22c.google.com ([2607:f8b0:400d:c04::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1am6YD-0006Pk-1s
- for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 21:24:18 +0000
-Received: by mail-ig0-x22d.google.com with SMTP id sy18so6220310igc.1
- for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 14:23:55 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20160401200728.GA3645@localhost>
-References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
- <1455300685-27009-2-git-send-email-zajec5@gmail.com>
- <20160401160722.GC117117@google.com>
- <CACna6rz6mYSxAr1oSjcLc__sSKM1XdUf-cGOFanGvuij0nNC5Q@mail.gmail.com>
- <20160401200728.GA3645@localhost>
-Date: Fri, 1 Apr 2016 23:23:55 +0200
-Message-ID: <CACna6rxZv4MEzmT4Ec3viFzdE7Ohf3iEqjLSaVGUgdX3zpO2Lw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mtd: nand: read (from DT) and store ECC algorithm
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Grant Likely <grant.likely@linaro.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ id 1am6di-0000GV-EJ
+ for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 21:29:59 +0000
+Received: by mail-qg0-x22c.google.com with SMTP id f52so10720762qga.3
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 14:29:37 -0700 (PDT)
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH 0/2] nand: Remove BUG abuse
+Date: Fri,  1 Apr 2016 18:29:22 -0300
+Message-Id: <1459546164-6269-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,69 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 1 April 2016 at 22:07, Brian Norris <computersforpeace@gmail.com> wrote:
-> On Fri, Apr 01, 2016 at 09:32:40PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
->> On 1 April 2016 at 18:07, Brian Norris <computersforpeace@gmail.com> wro=
-te:
->> > On Fri, Feb 12, 2016 at 07:11:24PM +0100, Rafa=C5=82 Mi=C5=82ecki wrot=
-e:
->> >> This will allow drivers handle ECC properly.
->> >>
->> >> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
->> >> ---
->> >>  drivers/mtd/nand/nand_base.c | 6 +++++-
->> >>  include/linux/mtd/nand.h     | 1 +
->> >>  2 files changed, 6 insertions(+), 1 deletion(-)
->> >>
->> >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_bas=
-e.c
->> >> index f2c8ff3..ef977f3 100644
->> >> --- a/drivers/mtd/nand/nand_base.c
->> >> +++ b/drivers/mtd/nand/nand_base.c
->> >> @@ -3979,7 +3979,7 @@ ident_done:
->> >>  static int nand_dt_init(struct nand_chip *chip)
->> >>  {
->> >>       struct device_node *dn =3D nand_get_flash_node(chip);
->> >> -     int ecc_mode, ecc_strength, ecc_step;
->> >> +     int ecc_mode, ecc_algo, ecc_strength, ecc_step;
->> >>
->> >>       if (!dn)
->> >>               return 0;
->> >> @@ -3991,6 +3991,7 @@ static int nand_dt_init(struct nand_chip *chip)
->> >>               chip->bbt_options |=3D NAND_BBT_USE_FLASH;
->> >>
->> >>       ecc_mode =3D of_get_nand_ecc_mode(dn);
->> >> +     ecc_algo =3D of_get_nand_ecc_algo(dn);
->> >>       ecc_strength =3D of_get_nand_ecc_strength(dn);
->> >>       ecc_step =3D of_get_nand_ecc_step_size(dn);
->> >>
->> >> @@ -4003,6 +4004,9 @@ static int nand_dt_init(struct nand_chip *chip)
->> >>       if (ecc_mode >=3D 0)
->> >>               chip->ecc.mode =3D ecc_mode;
->> >>
->> >> +     if (ecc_algo >=3D 0)
->> >> +             chip->ecc.algo =3D ecc_algo;
->> >> +
->> >
->> > While this might appear to handle the absence of the nand-ecc-algo
->> > property correctly, this isn't safe. This means that any existing DT
->> > without the property will get treated as Hamming ECC. Perhaps we need
->> > the enum to have a 0 value of 'NAND_ECC_ALGO_UNKNOWN' or something lik=
-e
->> > that?
->>
->> You're commenting on an old series. If you take a look at:
->> https://patchwork.ozlabs.org/patch/601180/
->> that also got applied to the:
->> https://github.com/linux-nand/linux/commits/nand/next
->> repo, you'll see we have NAND_ECC_UNKNOWN there.
->
-> Ah, I guess I missed that because I was searching for the patch to
-> brcmnand (i.e., fixing the original problem you saw). AFAICT, this v2
-> series doesn't actually resolve your issue with brcmnand, no?
+Hi,
 
-That's correct. I'm planning to clean NAND subsystem first, then patch brcm=
-nand.
+While using nandsim to debug an issue with an UBI image,
+I hit a BUG() when passing some crazy ID values to nandsim.
 
---=20
-Rafa=C5=82
+I've always felt that nand_base.c is sort of abusing the 
+BUG() macro, so decided to fix it.
+
+There are other BUG() uses, but they aren't in the nand_scan
+path, so I'm not touching them.
+
+Patches apply cleanly on v4.6-rc1.
+
+Ezequiel Garcia (2):
+  mtd: nand: Drop mtd.owner requirement in nand_scan
+  mtd: nand: Remove BUG() abuse in nand_scan_tail
+
+ drivers/mtd/nand/nand_base.c | 62 ++++++++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 28 deletions(-)
+
+-- 
+2.7.0
