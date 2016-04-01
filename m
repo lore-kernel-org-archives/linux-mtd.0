@@ -1,17 +1,28 @@
-Received: from smtp03.autotrac.com.br ([187.6.64.114]
- helo=smtp01.autotrac.com.br)
+Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1am6Dj-000652-0k
- for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 21:03:08 +0000
-From: Guilherme de Oliveira Costa <guilherme.oliveira@autotrac.com.br>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: JFFS2 cleanmarker size requirements
-Date: Fri, 1 Apr 2016 21:02:33 +0000
-Message-ID: <7F9DB42F7DDA544EA3EB31D694929A30EBB4B0@PERU.autotrac.corp>
-Content-Language: pt-BR
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1am6YD-0006Pk-1s
+ for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 21:24:18 +0000
+Received: by mail-ig0-x22d.google.com with SMTP id sy18so6220310igc.1
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 14:23:55 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20160401200728.GA3645@localhost>
+References: <1455300685-27009-1-git-send-email-zajec5@gmail.com>
+ <1455300685-27009-2-git-send-email-zajec5@gmail.com>
+ <20160401160722.GC117117@google.com>
+ <CACna6rz6mYSxAr1oSjcLc__sSKM1XdUf-cGOFanGvuij0nNC5Q@mail.gmail.com>
+ <20160401200728.GA3645@localhost>
+Date: Fri, 1 Apr 2016 23:23:55 +0200
+Message-ID: <CACna6rxZv4MEzmT4Ec3viFzdE7Ohf3iEqjLSaVGUgdX3zpO2Lw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mtd: nand: read (from DT) and store ECC algorithm
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Grant Likely <grant.likely@linaro.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +32,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8sDQoNCkkgd2FzIGludGVyZXN0ZWQgaW4gdXNpbmcgYSBzbWFsbGVyIEpGRlMyIGNsZWFu
-bWFya2VyIHNpemUgdG8gY2lyY3VtdmVudCBhIHJlc3RyaWN0aW9uIG9uIG9uZSBvZiBvdXIgU0xD
-IE5BTkRzLCBhbmQgd291bGQgbGlrZSB0byBrbm93IGV4YWN0bHkgd2hhdCBhcmUgdGhlIHJlcXVp
-cmVtZW50cyBmb3IgY2xlYW5tYXJrZXIgYml0cy4gSSBjaGVja2VkIHRoZSBKRkZTIGRlc2lnbiBt
-YW51YWwgKGF2YWlsYWJsZSBvbiB0aGUgbGludXgtbXRkIHdlYnNpdGUpLCBidXQgZGlkIG5vdCBm
-aW5kIGFueSBsaW1pdGF0aW9uIGZvciAgYSBjbGVhbm1hcmtlcidzIHNpemUuDQoNCkkgYXNrIHRo
-aXMgYmVjYXVzZSBJIHRyaWVkIHRvIGdlbmVyYXRlIGEgSkZGUzIgaW1hZ2Ugd2l0aCBhIDYgYnl0
-ZXMgbG9uZyBjbGVhbm1hcmtlciwgYnV0IHRoZSBta2ZzLmpmZnMyIHRvb2wgZmFpbGVkLCBzYXlp
-bmcgdGhhdCB0aGUgbWluaW11bSBhbGxvd2VkIGNsZWFubWFya2VyIHNpemUgaXMgMTIgYnl0ZXMu
-IEkgYWxzbyBmb3VuZCBhIFRJIHdpa2kgcGFnZSB0aGF0IHNheXMgdGhhdCBhIEpGRlMyIGNsZWFu
-bWFya2VyIGlzIDggYnl0ZXMgbG9uZy4gU28sIHdoYXQncyB0aGUgcmF0aW9uYWxlIGJlaGluZCB0
-aGVzZSBudW1iZXJzPw0KDQpXZSBhcmUgdXNpbmcgYSBNVDJGMUcwOEFCQkRBSCBOQU5ELCB3aXRo
-IDJrIHBhZ2VzIGFuZCA2NCBieXRlcyBPT0IuIEJ5IHVzaW5nIHRoZSBCQ0g4IEVDQywgd2UgdXNl
-IDU2IGJ5dGVzIG9mIHRoZSBPT0IsIHdpdGggYW5vdGhlciAyIGJ5dGVzIHVzZWQgZm9yIGJhZCBi
-bG9jayBtYXJraW5nLiBMZWF2aW5nIHVzIHdpdGggd2l0aCA2IHVudXNlZCBieXRlcywgd2hpY2gg
-SSB3b3VsZCBsaWtlIHRvIHVzZSBhcyBjbGVhbm1hcmtlciBieXRlcy4gV2UndmUgY29tZSBhY3Jv
-c3MgZGlmZmVyaW5nIGluZm9ybWF0aW9uIHJlZ2FyZGluZyB0aGUgbmVlZCBmb3IgY2xlYW5tYXJr
-ZXJzIG9uIE5BTkQgY2hpcHM6IG9uZSBvZiBNaWNyb24ncyBUZWNobmljYWwgTm90ZXMgaW5kaWNh
-dGVzIHRoYXQgY2xlYW5tYXJrZXJzIGFyZSB1c2VkIG9uIE5PUiBjaGlwcywgYW5kIE5BTkQgY2hp
-cHMgZG8gbm90IHJlcXVpcmUgdGhpcy4gSG93ZXZlciwgd2UndmUgc2VlbiB0aGUgdW5zdGFibGUg
-Yml0cyBpc3N1ZSBiZWluZyBkZXNjcmliZWQgb24gdGhlIE1URCB3ZWJzaXRlLCBhcyB3ZWxsIGFz
-IEFydGVtIEJpdHl1dHNraXkgbWVudGlvbmluZyB0aGlzIGlzc3VlIGFzIGEgbW9yZSByZWNlbnQg
-ZGV2ZWxvcG1lbnQsIGFuZCB0aGF0IHByZXZpb3VzbHkgTkFORCBjaGlwcyBkaWQgbm90IGhhdmUg
-dGhlIHVuc3RhYmxlIGJpdHMgaXNzdWUuDQoNClRoZSBkZWNpc2lvbiB0byB1c2UgSkZGUzIgaW5z
-dGVhZCBvZiBVQklGUyBpcyBkdWUgdG8gb3VyIHJlcXVpcmVtZW50cyBmb3IgYSByb2J1c3Qgc3lz
-dGVtIG9uIHBvd2VyIGZhaWx1cmVzLCBhbmQgd2l0aCB0aGUgdW5zdGFibGUgYml0cyBpc3N1ZSBv
-biBVQklGUywgd2UndmUgZGVjaWRlZCB0aGF0IEpGRlMyIHdpdGggY2xlYW5tYXJrZXIgc3VwcG9y
-dCB3b3VsZCBiZSB0aGUgc2FmZXN0IGJldC4gSXMgdGhpcyBsaW5lIG9mIHRob3VnaHQgY29ycmVj
-dD8NCg0KQmVzdCByZWdhcmRzLA0KLS0NCkd1aWxoZXJtZSBkZSBPbGl2ZWlyYSBDb3N0YQ0KRmly
-bXdhcmUgRW5naW5lZXIgLSBBdXRvdHJhYyBDb21lcmNpbyBUZWxlY29tdW5pY2Fjb2VzDQp3d3cu
-YXV0b3RyYWMuY29tLmJyDQpndWlsaGVybWUub2xpdmVpcmEoYXQpYXV0b3RyYWMuY29tLmJyDQpQ
-aG9uZTogKzU1IDYxIDMzMDcgNzAwMCBleHQuIDI2NjYNCg0KDQpFc3RhIG1lbnNhZ2VtIGUgcXVh
-bHF1ZXIgYW5leG8gYSBlbGEgc8OjbyBkb2N1bWVudG9zIGNvbmZpZGVuY2lhaXMgZSBkaXJlY2lv
-bmFkb3MgZXhjbHVzaXZhbWVudGUgYW8ocykgZGVzdGluYXTDoXJpbyhzKS4gUXVhbHF1ZXIgdXNv
-LCBkZXN2aW8sIHNvbmVnYcOnw6NvLCBzdXByZXNzw6NvLCByZXZlbGHDp8OjbyBvdSBkaXZ1bGdh
-w6fDo28gbsOjbyBhdXRvcml6YWRhIMOpIHByb2liaWRhIGUgc3VqZWl0YSDDoHMgc2Fuw6fDtWVz
-IGUvb3UgcmVwYXJhw6fDtWVzIGxlZ2FpcyBwb3IgYXRvIGlsw61jaXRvIChDw7NkaWdvIFBlbmFs
-LCBBcnRpZ29zIDE1MSBlIDE1MikuIENhc28gbsOjbyBzZWphIHVtIGRvcyBkZXN0aW5hdMOhcmlv
-cyBleHByZXNzYW1lbnRlIGluZGljYWRvcywgcG9yIGZhdm9yIGVudHJlIGVtIGNvbnRhdG8gY29t
-IG8gcmVtZXRlbnRlLCByZXNwb25kZW5kbyBlc3RlIGUtbWFpbCBlIGRlc3RydWEgcXVhaXNxdWVy
-IGPDs3BpYXMgZGEgbWVuc2FnZW0gb3JpZ2luYWwuIFF1YWxxdWVyIG9waW5pw6NvLCBjcsOtdGlj
-YSBvdSBhbsOhbGlzZSBkZXNjcml0YSBuZXN0YSBtZW5zYWdlbSDDqSBkZSByZXNwb25zYWJpbGlk
-YWRlIMO6bmljYSBkbyByZW1ldGVudGUsIGEgbWVub3MgcXVhbmRvIGVzdGl2ZXIgZXhwbGljaXRh
-bWVudGUgZXhwcmVzc28gcXVlIHNlamEgZGEgZW1wcmVzYSByZW1ldGVudGUuDQoNClRoaXMgbWVz
-c2FnZSBhbmQgYW55IGF0dGFjaG1lbnQgYXJlIGNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbiBmb3Ig
-dGhlIHNvbGUgdXNlIG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnRzLiBBbnkgdW5hdXRob3JpemVk
-IHVzZSwgZGV2aWF0aW9uLCB3aXRoaG9sZG1lbnQsIHN1cHByZXNzaW9uLCBkaXNjbG9zdXJlIG9y
-IGRpc3RyaWJ1dGlvbiBpcyBwcm9oaWJpdGVkIGFuZCBpcyBzdWJqZWN0ZWQgdG8gbGVnYWwgc2Fu
-Y3Rpb25zIGFuZC9vciBjb21wZW5zYXRpb25zIHBlciBpbGxpY2l0IGFjdCAoUGVuYWwgQ29kZSwg
-YXJ0aWNsZXMgMTUxIGFuZCAxNTIpLiBJZiB5b3UgYXJlIG5vdCBvbmUgb2YgdGhlIGludGVuZGVk
-IHJlY2lwaWVudHMsIHBsZWFzZSBjb250YWN0IHRoZSBzZW5kZXIgYnkgcmVwbHkgZS1tYWlsIGFu
-ZCBkZXN0cm95IGFueSBjb3B5IG9mIHRoZSBvcmlnaW5hbCBtZXNzYWdlLiBBbnkgdmlldywgY29t
-bWVudCBvciBhbmFseXNpcyBleHByZXNzZWQgaW4gdGhpcyBtZXNzYWdlIGlzIHNvbGUgcmVzcG9u
-c2liaWxpdHkgZnJvbSB0aGUgc2VuZGVyLCBleGNlcHQgd2hlbiBpdOKAmXMgc3BlY2lmaWNhbGx5
-IGV4cHJlc3NlZCB0aGF0IGl04oCZcyB0aGUgdmlldywgY29tbWVudCBvciBhbmFseXNpcyBvZiB0
-aGUgY29tcGFueS4NCg0K
+On 1 April 2016 at 22:07, Brian Norris <computersforpeace@gmail.com> wrote:
+> On Fri, Apr 01, 2016 at 09:32:40PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> On 1 April 2016 at 18:07, Brian Norris <computersforpeace@gmail.com> wro=
+te:
+>> > On Fri, Feb 12, 2016 at 07:11:24PM +0100, Rafa=C5=82 Mi=C5=82ecki wrot=
+e:
+>> >> This will allow drivers handle ECC properly.
+>> >>
+>> >> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+>> >> ---
+>> >>  drivers/mtd/nand/nand_base.c | 6 +++++-
+>> >>  include/linux/mtd/nand.h     | 1 +
+>> >>  2 files changed, 6 insertions(+), 1 deletion(-)
+>> >>
+>> >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_bas=
+e.c
+>> >> index f2c8ff3..ef977f3 100644
+>> >> --- a/drivers/mtd/nand/nand_base.c
+>> >> +++ b/drivers/mtd/nand/nand_base.c
+>> >> @@ -3979,7 +3979,7 @@ ident_done:
+>> >>  static int nand_dt_init(struct nand_chip *chip)
+>> >>  {
+>> >>       struct device_node *dn =3D nand_get_flash_node(chip);
+>> >> -     int ecc_mode, ecc_strength, ecc_step;
+>> >> +     int ecc_mode, ecc_algo, ecc_strength, ecc_step;
+>> >>
+>> >>       if (!dn)
+>> >>               return 0;
+>> >> @@ -3991,6 +3991,7 @@ static int nand_dt_init(struct nand_chip *chip)
+>> >>               chip->bbt_options |=3D NAND_BBT_USE_FLASH;
+>> >>
+>> >>       ecc_mode =3D of_get_nand_ecc_mode(dn);
+>> >> +     ecc_algo =3D of_get_nand_ecc_algo(dn);
+>> >>       ecc_strength =3D of_get_nand_ecc_strength(dn);
+>> >>       ecc_step =3D of_get_nand_ecc_step_size(dn);
+>> >>
+>> >> @@ -4003,6 +4004,9 @@ static int nand_dt_init(struct nand_chip *chip)
+>> >>       if (ecc_mode >=3D 0)
+>> >>               chip->ecc.mode =3D ecc_mode;
+>> >>
+>> >> +     if (ecc_algo >=3D 0)
+>> >> +             chip->ecc.algo =3D ecc_algo;
+>> >> +
+>> >
+>> > While this might appear to handle the absence of the nand-ecc-algo
+>> > property correctly, this isn't safe. This means that any existing DT
+>> > without the property will get treated as Hamming ECC. Perhaps we need
+>> > the enum to have a 0 value of 'NAND_ECC_ALGO_UNKNOWN' or something lik=
+e
+>> > that?
+>>
+>> You're commenting on an old series. If you take a look at:
+>> https://patchwork.ozlabs.org/patch/601180/
+>> that also got applied to the:
+>> https://github.com/linux-nand/linux/commits/nand/next
+>> repo, you'll see we have NAND_ECC_UNKNOWN there.
+>
+> Ah, I guess I missed that because I was searching for the patch to
+> brcmnand (i.e., fixing the original problem you saw). AFAICT, this v2
+> series doesn't actually resolve your issue with brcmnand, no?
+
+That's correct. I'm planning to clean NAND subsystem first, then patch brcm=
+nand.
+
+--=20
+Rafa=C5=82
