@@ -1,22 +1,36 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+Received: from conssluserg-03.nifty.com ([210.131.2.82])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1am8oV-0007dz-5v
- for linux-mtd@lists.infradead.org; Fri, 01 Apr 2016 23:49:15 +0000
-Received: by mail-pa0-x22a.google.com with SMTP id fe3so101523336pab.1
- for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 16:48:53 -0700 (PDT)
-Date: Fri, 1 Apr 2016 16:48:50 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: "zhaoxiu.zeng" <zhaoxiu.zeng@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 21/31] mtd: use parity16 in ssfdc.c
-Message-ID: <20160401234850.GM2545@google.com>
-References: <1458788612-4367-1-git-send-email-zhaoxiu.zeng@gmail.com>
- <56F78ACB.1010402@gmail.com>
+ id 1amDu5-0004Sv-WE
+ for linux-mtd@lists.infradead.org; Sat, 02 Apr 2016 05:15:23 +0000
+Received: from mail-yw0-f172.google.com (mail-yw0-f172.google.com
+ [209.85.161.172]) (authenticated)
+ by conssluserg-03.nifty.com with ESMTP id u325EeTl032521
+ for <linux-mtd@lists.infradead.org>; Sat, 2 Apr 2016 14:14:41 +0900
+Received: by mail-yw0-f172.google.com with SMTP id t10so9394914ywa.0
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Apr 2016 22:14:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56F78ACB.1010402@gmail.com>
+In-Reply-To: <20160329095305.46229ad5@bbrezillon>
+References: <1458822277-31428-1-git-send-email-yamada.masahiro@socionext.com>
+ <20160325154520.199b0863@bbrezillon>
+ <CAK7LNATqVEMRwa+Ss4V9sBXYZwqKX=CpB_3Oox8bM6Yow0mkXA@mail.gmail.com>
+ <20160329095305.46229ad5@bbrezillon>
+Date: Sat, 2 Apr 2016 14:14:39 +0900
+Message-ID: <CAK7LNATWSm6NtAarrZYv4ZtJG9TwieUadT3A02+0DQGTKxnA2Q@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: denali: allow to override max_banks from DT
+ property
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>, devicetree@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>, Kumar Gala <galak@codeaurora.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +40,174 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Mar 27, 2016 at 03:24:59PM +0800, zhaoxiu.zeng wrote:
-> From: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
-> 
-> Signed-off-by: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
+Hi Boris,
 
-I'm not CC'd on the rest of this series, where you defined parity16().
-And I doubt you've tested this. So I'm not applying.
 
-Brian
+2016-03-29 16:53 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+> Hi,
+>
+> I'm answering to this one, but I already saw your v2.
+>
+> On Sat, 26 Mar 2016 13:27:50 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> 2016-03-25 23:45 GMT+09:00 Boris Brezillon <boris.brezillon@free-electrons.com>:
+>> > On Thu, 24 Mar 2016 21:24:37 +0900
+>> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>> >
+>> >> Commit 271707b1d817 ("mtd: nand: denali: max_banks calculation
+>> >> changed in revision 5.1") supported the new encoding of the "n_banks"
+>> >> bits of the "features" register, but there is an unfortunate case
+>> >> that is not covered by that commit.
+>> >>
+>> >> Panasonic (its System LSI division is now Socionext) bought several
+>> >> versions of this IP.  The IP released for Panasonic around Feb. 2012
+>> >> is revision 5 and uses the old encoding for n_banks (2 << n_banks).
+>> >> While the one released around Nov. 2012 is also revision 5, but it
+>> >> uses the new encoding (1 << n_banks).
+>> >>
+>> >> The revision register cannot distinguish these two incompatible
+>> >> hardware.  I guess this IP series is not well-organized.  I could not
+>> >> find any alternative but giving max_banks from DT property.
+>> >
+>> > Hm, shouldn't that be addressed with a new compatible instead of adding
+>> > a extra property?
+>
+> You didn't answer to this suggestion. I see several advantages in this
+> approach:
+>
+> 1/ You'll only break the DT once (to add your new compatible) even if
+> you got your logic wrong. All you'll have to do in this case is patch
+> your driver to change the compatible <-> capabilities association
+>
+> 2/ This may not be the only difference between the 2 revisions, and
+> in this case, putting the compatible <-> capabilities association
+> directly in your driver will allow you to easily tweak capabilities
+> per-revision
+>
+>> >
+>> >>
+>> >> This commit works around the problem by allowing DT to set the
+>> >> max_banks forcibly.  Of course, this DT property can be optional if
+>> >> the auto detection based on the hardware registers works well.
+>> >>
+>> >> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>> >> ---
+>> >>
+>> >>  Documentation/devicetree/bindings/mtd/denali-nand.txt | 4 ++++
+>> >>  drivers/mtd/nand/denali.c                             | 3 ++-
+>> >>  drivers/mtd/nand/denali_dt.c                          | 3 +++
+>> >>  3 files changed, 9 insertions(+), 1 deletion(-)
+>> >>
+>> >> diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+>> >> index 785b825..78c250d 100644
+>> >> --- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
+>> >> +++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
+>> >> @@ -7,6 +7,10 @@ Required properties:
+>> >>    - interrupts : The interrupt number.
+>> >>    - dma-mask : DMA bit mask
+>> >>
+>> >> +Optional properties:
+>> >> +  - max-banks : Maximum number of banks supported by hardware.  If not
+>> >> +    specified, it is determined based on the "features" register of hardware.
+>> >> +
+>> >
+>> > You might want to prefix that with "denali,".
+>> >
+>> >>  The device tree may optionally contain sub-nodes describing partitions of the
+>> >>  address space. See partition.txt for more detail.
+>>
+>>
+>> In which case, do we have to add a vendor prefix to DT properties?
+>>
+>> I do not know a clear rule about this.
+>
+> Usually you add a vendor prefix when the property only applies to a
+> specific controller/IP. In the NAND specific case, most NAND
+> controllers have a fixed number of banks which can be deduced from the
+> IP revision/version. I'd like to keep it like that and avoid seeing
+> other drivers use this max-banks property to deduce the number of
+> available banks, hence my suggestion to, at least, prefix your property
+> with "denali,". But I'd still prefer to see the max-banks value be
+> associated to a new compatible.
+>
+> Thanks,
+>
+> Boris
 
->  drivers/mtd/ssfdc.c | 20 ++------------------
->  1 file changed, 2 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-> index daf82ba..b4d9144 100644
-> --- a/drivers/mtd/ssfdc.c
-> +++ b/drivers/mtd/ssfdc.c
-> @@ -182,24 +182,10 @@ static int read_raw_oob(struct mtd_info *mtd, loff_t offs, uint8_t *buf)
->  	return 0;
->  }
->  
-> -/* Parity calculator on a word of n bit size */
-> -static int get_parity(int number, int size)
-> -{
-> - 	int k;
-> -	int parity;
-> -
-> -	parity = 1;
-> -	for (k = 0; k < size; k++) {
-> -		parity += (number >> k);
-> -		parity &= 1;
-> -	}
-> -	return parity;
-> -}
-> -
->  /* Read and validate the logical block address field stored in the OOB */
->  static int get_logical_address(uint8_t *oob_buf)
->  {
-> -	int block_address, parity;
-> +	int block_address;
->  	int offset[2] = {6, 11}; /* offset of the 2 address fields within OOB */
->  	int j;
->  	int ok = 0;
-> @@ -215,11 +201,9 @@ static int get_logical_address(uint8_t *oob_buf)
->  
->  		/* Check for the signature bits in the address field (MSBits) */
->  		if ((block_address & ~0x7FF) == 0x1000) {
-> -			parity = block_address & 0x01;
->  			block_address &= 0x7FF;
-> -			block_address >>= 1;
->  
-> -			if (get_parity(block_address, 10) != parity) {
-> +			if (!parity16(block_address)) {
->  				pr_debug("SSFDC_RO: logical address field%d"
->  					"parity error(0x%04X)\n", j+1,
->  					block_address);
-> -- 
-> 2.5.5
-> 
+I want to use this driver for ARM-based UniPhier SoCs.
+Their DT files are located as follows:
+
+arch/arm/boot/dts/uniphier-*
+arch/arm64/boot/dts/socionext/uniphier-*
+
+
+If we decided to add new DT compatible strings rather than DT property,
+which string would you suggest?
+Should it include "denali" or just SoC name "uniphier-*"?
+How about the vendor prefix?  "denali," or "socionext," ?
+
+
+like this?  I am not sure...
+
+
+nand: nand@68000000 {
+        compatible = "socionext,uniphier-pro5-nand", "denali,denali-nand-dt";
+        reg-names = "nand_data", "denali_reg";
+        reg = <0x68000000 0x20>, <0x68100000 0x1000>;
+        interrupts = <0 65 4>;
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_nand>;
+        clocks = <&nandclk>;
+};
+
+
+At least, I need two DT compatible strings,
+for old/new "n_banks" encoding.
+
+The following part is also a problem for me because
+platform-specific ECC bit is hard-coded in the driver.
+
+The comment claims that Intel MRST supports 8bit and 15bit for ecc.strenth,
+while the Denali IP on UniPhier SoCs supports 8bit, 16bit, and 24bit ECC.
+
+I need to do something with it to proceed, but the code is crappy.
+
+
+        /*
+         * Denali Controller only support 15bit and 8bit ECC in MRST,
+         * so just let controller do 15bit ECC for MLC and 8bit ECC for
+         * SLC if possible.
+         * */
+        if (!nand_is_slc(&denali->nand) &&
+                        (mtd->oobsize > (denali->bbtskipbytes +
+                        ECC_15BITS * (mtd->writesize /
+                        ECC_SECTOR_SIZE)))) {
+                /* if MLC OOB size is large enough, use 15bit ECC*/
+                denali->nand.ecc.strength = 15;
+                denali->nand.ecc.layout = &nand_15bit_oob;
+                denali->nand.ecc.bytes = ECC_15BITS;
+                iowrite32(15, denali->flash_reg + ECC_CORRECTION);
+        } else if (mtd->oobsize < (denali->bbtskipbytes +
+                        ECC_8BITS * (mtd->writesize /
+                        ECC_SECTOR_SIZE))) {
+                pr_err("Your NAND chip OOB is not large enough to
+contain 8bit ECC correction codes");
+                goto failed_req_irq;
+        } else {
+                denali->nand.ecc.strength = 8;
+                denali->nand.ecc.layout = &nand_8bit_oob;
+                denali->nand.ecc.bytes = ECC_8BITS;
+                iowrite32(8, denali->flash_reg + ECC_CORRECTION);
+        }
+
+
+
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
