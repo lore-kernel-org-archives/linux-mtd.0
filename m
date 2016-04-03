@@ -1,25 +1,23 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pf0-x231.google.com ([2607:f8b0:400e:c00::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ambJ7-0002Cj-UF
- for linux-mtd@lists.infradead.org; Sun, 03 Apr 2016 06:14:47 +0000
-Received: by mail-pa0-x22b.google.com with SMTP id tt10so121032452pab.3
- for <linux-mtd@lists.infradead.org>; Sat, 02 Apr 2016 23:14:25 -0700 (PDT)
-Date: Sat, 2 Apr 2016 23:14:16 -0700
+ id 1ambW0-0000GI-3l
+ for linux-mtd@lists.infradead.org; Sun, 03 Apr 2016 06:28:04 +0000
+Received: by mail-pf0-x231.google.com with SMTP id n1so16295003pfn.2
+ for <linux-mtd@lists.infradead.org>; Sat, 02 Apr 2016 23:27:43 -0700 (PDT)
+Date: Sat, 2 Apr 2016 23:27:40 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/2] mtd: nand: Drop mtd.owner requirement in nand_scan
-Message-ID: <20160403061416.GB13995@localhost>
-References: <1459546164-6269-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1459546164-6269-2-git-send-email-ezequiel@vanguardiasur.com.ar>
- <20160401222649.GK2545@google.com>
- <20160402155216.48866776@bbrezillon>
+To: David Binderman <dcb314@hotmail.com>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: linux-next/include/linux/mtd/pfow.h: possible poor sequence of
+ conditionals ?
+Message-ID: <20160403062740.GA21749@localhost>
+References: <DUB128-W1B9618CEFDEE4D2DDF6C89C800@phx.gbl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20160402155216.48866776@bbrezillon>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DUB128-W1B9618CEFDEE4D2DDF6C89C800@phx.gbl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,48 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Apr 02, 2016 at 03:52:16PM +0200, Boris Brezillon wrote:
-> On Fri, 1 Apr 2016 15:26:49 -0700
-> Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Fri, Apr 01, 2016 at 06:29:23PM -0300, Ezequiel Garcia wrote:
-> > > Since commit 807f16d4db95 ("mtd: core: set some defaults
-> > > when dev.parent is set"), it's now legal for drivers
-> > > to call nand_scan and nand_scan_ident without setting
-> > > mtd.owner.
-> > > 
-> > > Drop the check and while at it remove the BUG() abuse.
-> > > 
-> > > Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+On Tue, Mar 22, 2016 at 02:49:06PM +0000, David Binderman wrote:
+> Hello there,
 > 
-> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > [linux-next/include/linux/mtd/pfow.h:133]: (style) Expression is always false because 'else if' condition matches previous condition at line 130.
+> > [linux-next/include/linux/mtd/pfow.h:136]: (style) Expression is always false because 'else if' condition matches previous condition at line 130.
 > 
-[...]
-
-> > 
-> > Ooh, yikes! Forgot this was there. I guess no one noticed, because fewer
-> > drivers are using plain nand_scan() these days (instead of splitting up
-> > nand_scan_ident() and nand_scan_tail()), and also, many NAND users don't
-> > run their drivers as modules.
-> > 
-> > Anyway, this is probably worth -stable, right? (i.e., "Fixes:
-> > 807f16d4db95 ..." and "Cc: <stable@vger.kernel.org>")
-> > 
-> > I can take this directly, or Boris, if you feel like there will be other
-> > for-v4.5 NAND material, you can queue this up instead.
+> Source code is
 > 
-> No, take it directly.
-
-Applied patch 1 to linux-mtd.git. Thanks!
-
-> On a more general note, not sure creating a nand/fixes branch and
-> sending you PRs after each -rc (if fixes are available of course) is
-> really efficient. Maybe I'm wrong, but I don't expect to see more than a
-> couple of fixes per release, and it's probably better if you keep
-> taking them directly (with my acks).
+>     if (prog_status & 0x03)
+>         printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
+>                         "half with 41h command\n");
+>     else if (prog_status & 0x02)
+>         printk(KERN_NOTICE"DSR.9,8: (10) Object Mode Program attempt "
+>                     "in region with Control Mode data\n");
+>     else if (prog_status &  0x01)
+>         printk(KERN_NOTICE"DSR.9,8: (01) Program attempt in region "
+>                         "with Object Mode data\n");
 > 
-> What do you think?
+> Maybe something like
+> 
+>     switch (prog_status & 0x03)
+>     {
+>         case 0x03:
+>             printk(); break;
+>         case 0x02:
+>             printk(); break;
+>         case 0x01:
+>             printk(); break;
+>     }
+> 
+> might be better code.
 
-That's probably fine. I'll still keep my eyes open for fixes like this,
-but ping me if you think I've missed anything.
+I'm not sure if you're aware of this... but this isn't really a style
+issue; it's a correctness issue. I believe the original code is wrong.
 
+Feel free to send a patch, especially if you can test it.
+
+Regards,
 Brian
