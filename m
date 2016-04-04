@@ -1,18 +1,31 @@
-Date: Sun, 3 Apr 2016 23:51:34 -0700
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1amyOv-0003Jl-5M
+ for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 06:54:17 +0000
+Received: by mail-pa0-x234.google.com with SMTP id tt10so137701666pab.3
+ for <linux-mtd@lists.infradead.org>; Sun, 03 Apr 2016 23:53:56 -0700 (PDT)
+Date: Sun, 3 Apr 2016 23:53:53 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: avoid stack overflow in MTD CFI code
-Message-ID: <20160404065134.GD13995@localhost>
-References: <1456748436-522413-1-git-send-email-arnd@arndb.de>
- <2259988.Lj3BC6sPv6@wuerfel> <20160318174419.GA70362@google.com>
- <10357051.EVa2c1MaZl@wuerfel>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
+ Simon Arlott <simon@fire.lp0.eu>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ "open list:BROADCOM STB NAND FLASH DRIVER"
+ <bcm-kernel-feedback-list@broadcom.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd: brcmnand: Add support for v6.2 controllers
+Message-ID: <20160404065353.GE13995@localhost>
+References: <1457652859-767-1-git-send-email-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <10357051.EVa2c1MaZl@wuerfel>
+In-Reply-To: <1457652859-767-1-git-send-email-f.fainelli@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +35,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 18, 2016 at 09:25:23PM +0100, Arnd Bergmann wrote:
-> On Friday 18 March 2016 10:44:19 Brian Norris wrote:
-> > FWIW, I took a little look at this, and I can reproduce this myself. I
-> > can get a large frame size on at least 2 of the 3 functions you report.
-> > I think most of the gain you get with this patch is due to the Kconfig
-> > change (MTD_COMPLEX_MAPPINGS) because it forces an extra level of
-> > indirection. The other changes seem to give a modest decrease in size,
-> > though it's less clear why exactly.
-> > 
-> > Anyway, I think the problem isn't primarily with anything you're
-> > touching here exactly, but with the fact that we're putting several
-> > copies of the 'map_word' typedef on the stack, and doing assignment to
-> > it as if it's a typical variable. But with MAP_WIDTH_32, this is a
-> > 32-byte object, and I assume that these (too) long functions are
-> > introducing enough complexity that the compiler has to have several
-> > copies of them. To properly fix all this, it seems like the code could
-> > use some more attention, and not just the superficial changes here.
-> > 
-> > Anyway, I'm interested if you have any more thoughts on this. If you
-> > still think this is worthwhile, I can probably just take it. (It looks
-> > OK, despite the above comments.)
++ Boris, Richard
+
+On Thu, Mar 10, 2016 at 03:34:16PM -0800, Florian Fainelli wrote:
+> Document and match the brcm,brcmnand-v6.2 compatible string, the controller has
+> a register layout identical to the v6.0 version and supports prefetch. Update the
+> command shift logic to account for v6.2 controller which are the first ones to
+> use a shift of 0 (6.1 used a shift of 24).
+
+Ah yes, another blip in the ever-shifting register layout of this
+controller. Fun!
+
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+
+> ---
+>  Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt | 1 +
+>  drivers/mtd/nand/brcmnand/brcmnand.c                    | 3 ++-
+>  2 files changed, 3 insertions(+), 1 deletion(-)
 > 
-> I'd like to get this fixed in one way or another, but I'm not
-> particularly attached to my specific workaround.
+> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> index c2546ced9c02..deb24cbdda82 100644
+> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> @@ -24,6 +24,7 @@ Required properties:
+>                           brcm,brcmnand-v5.0
+>                           brcm,brcmnand-v6.0
+>                           brcm,brcmnand-v6.1
+> +                         brcm,brcmnand-v6.2
+>                           brcm,brcmnand-v7.0
+>                           brcm,brcmnand-v7.1
+>                           brcm,brcmnand
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index e0528397306a..0b7a698cc233 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -601,7 +601,7 @@ static void brcmnand_wr_corr_thresh(struct brcmnand_host *host, u8 val)
+>  
+>  static inline int brcmnand_cmd_shift(struct brcmnand_controller *ctrl)
+>  {
+> -	if (ctrl->nand_version < 0x0700)
+> +	if (ctrl->nand_version < 0x0602)
+>  		return 24;
+>  	return 0;
+>  }
+> @@ -2115,6 +2115,7 @@ static const struct of_device_id brcmnand_of_match[] = {
+>  	{ .compatible = "brcm,brcmnand-v5.0" },
+>  	{ .compatible = "brcm,brcmnand-v6.0" },
+>  	{ .compatible = "brcm,brcmnand-v6.1" },
+> +	{ .compatible = "brcm,brcmnand-v6.2" },
+>  	{ .compatible = "brcm,brcmnand-v7.0" },
+>  	{ .compatible = "brcm,brcmnand-v7.1" },
+>  	{},
+> -- 
+> 2.1.0
 > 
-> If you don't think anyone will be able to reduce the number of
-> map_word instances on the stack, please add my patch so at least
-> we get rid of the warning and make it less likely to hit the bug.
-
-OK, pushed to l2-mtd.git.
-
-> An alternative might be to optionally move the map_word_and/clr/or/...
-> operations out of line for large sizes of map_word, so we don't
-> have all instances on the stack at once.
-
-Hmm, I guess given the right amount of macro magic, it might be possible
-to do this while still remaining optimal for small word sizes. But I'm
-not sure anyone is really tackling these sorts of things on these
-ancient drivers.
-
-Brian
