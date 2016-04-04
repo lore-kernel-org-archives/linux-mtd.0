@@ -1,29 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anCNG-0006Y1-8s
- for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 21:49:31 +0000
-Date: Mon, 4 Apr 2016 23:48:53 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>, linux-mtd@lists.infradead.org,
- Kamal Dasu <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>, Pawel
- Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian
- Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala
- <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>, Simon Arlott
- <simon@fire.lp0.eu>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
- BINDINGS" <devicetree@vger.kernel.org>, open list
- <linux-kernel@vger.kernel.org>, "open list:BROADCOM STB NAND FLASH DRIVER"
- <bcm-kernel-feedback-list@broadcom.com>, Richard Weinberger
- <richard@nod.at>
-Subject: Re: [PATCH] mtd: brcmnand: Add support for v6.2 controllers
-Message-ID: <20160404234853.2a3d58a1@bbrezillon>
-In-Reply-To: <20160404065353.GE13995@localhost>
-References: <1457652859-767-1-git-send-email-f.fainelli@gmail.com>
- <20160404065353.GE13995@localhost>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1anCoe-00046f-Cs
+ for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 22:17:49 +0000
+From: Richard Weinberger <richard@nod.at>
+Subject: Reconsidering exportable UBIFS
+To: linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig <hch@infradead.org>
+Message-ID: <5702E7F5.1050807@nod.at>
+Date: Tue, 5 Apr 2016 00:17:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,77 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 3 Apr 2016 23:53:53 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+Hi!
 
-> + Boris, Richard
-> 
-> On Thu, Mar 10, 2016 at 03:34:16PM -0800, Florian Fainelli wrote:
-> > Document and match the brcm,brcmnand-v6.2 compatible string, the controller has
-> > a register layout identical to the v6.0 version and supports prefetch. Update the
-> > command shift logic to account for v6.2 controller which are the first ones to
-> > use a shift of 0 (6.1 used a shift of 24).
-> 
-> Ah yes, another blip in the ever-shifting register layout of this
-> controller. Fun!
-> 
-> > Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> 
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
+Currently UBIFS is not exportable.
+I'm not sure whether it is completely impossible or if I just miss a detail.
+So I've some questions.
 
-Applied.
+Documentation/filesystems/nfs/Exporting states that the only required function
+is fh_to_dentry().
+This function should on UBIFS be implementable using generic_fh_to_dentry().
+While UBIFS reuses in theory inode numbers we can ignore i_generation as
+the flash chip is long dead before we start reusing inodes. Same as for JFFS2.
+But the same document states also that fh_to_parent() and get_parent() are optional
+but strongly recommended.
+What does this mean? Will NFS work but puppies die and turn into zombies?
+
+Implementing get_parent() is a little unpleasant.
+UBIFS's on-flash layout does not support querying the parent.
+We could change UBIFS's struct ubifs_ino_node, but I'd change the
+on-flash layout only as last resort.
+
+The biggest problem I see is that UBIFS does not really support telldir()
+and seekdir().
+Directory offsets in UBIFS are plain hash values, so telldir()/seekdir() won't
+correctly work if UBIFS faces hash collisions.
+Currently UBIFS implements a hack which stores the UBIFS dent object into
+file->private_data such that consecutive readdir()s are guaranteed to work.
+A comment on UBIFS's readdir states:
+ * This means that UBIFS cannot support NFS which requires full
+ * 'seekdir()'/'telldir()' support.
+
+Is this still true? Maybe we can have NFS even if it is not perfect in
+terms of performance.
+
+Artem, did I miss another show stopper? :-)
 
 Thanks,
-
-Boris
-
-> 
-> > ---
-> >  Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt | 1 +
-> >  drivers/mtd/nand/brcmnand/brcmnand.c                    | 3 ++-
-> >  2 files changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> > index c2546ced9c02..deb24cbdda82 100644
-> > --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> > +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> > @@ -24,6 +24,7 @@ Required properties:
-> >                           brcm,brcmnand-v5.0
-> >                           brcm,brcmnand-v6.0
-> >                           brcm,brcmnand-v6.1
-> > +                         brcm,brcmnand-v6.2
-> >                           brcm,brcmnand-v7.0
-> >                           brcm,brcmnand-v7.1
-> >                           brcm,brcmnand
-> > diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> > index e0528397306a..0b7a698cc233 100644
-> > --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> > +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> > @@ -601,7 +601,7 @@ static void brcmnand_wr_corr_thresh(struct brcmnand_host *host, u8 val)
-> >  
-> >  static inline int brcmnand_cmd_shift(struct brcmnand_controller *ctrl)
-> >  {
-> > -	if (ctrl->nand_version < 0x0700)
-> > +	if (ctrl->nand_version < 0x0602)
-> >  		return 24;
-> >  	return 0;
-> >  }
-> > @@ -2115,6 +2115,7 @@ static const struct of_device_id brcmnand_of_match[] = {
-> >  	{ .compatible = "brcm,brcmnand-v5.0" },
-> >  	{ .compatible = "brcm,brcmnand-v6.0" },
-> >  	{ .compatible = "brcm,brcmnand-v6.1" },
-> > +	{ .compatible = "brcm,brcmnand-v6.2" },
-> >  	{ .compatible = "brcm,brcmnand-v7.0" },
-> >  	{ .compatible = "brcm,brcmnand-v7.1" },
-> >  	{},
-> > -- 
-> > 2.1.0
-> > 
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+//richard
