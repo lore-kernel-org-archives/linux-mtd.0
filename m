@@ -1,35 +1,37 @@
-Received: from mail-pf0-x22a.google.com ([2607:f8b0:400e:c00::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1amyeW-0002EZ-Tb
- for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 07:10:25 +0000
-Received: by mail-pf0-x22a.google.com with SMTP id 184so38261328pff.0
- for <linux-mtd@lists.infradead.org>; Mon, 04 Apr 2016 00:10:02 -0700 (PDT)
-Date: Mon, 4 Apr 2016 00:09:58 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-mtd@lists.infradead.org, "Maciej W. Rozycki" <macro@linux-mips.org>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Fengguang Wu <fengguang.wu@intel.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
- Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Cyril Bur <cyrilbur@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
- Hauke Mehrtens <hauke@hauke-m.de>, Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH V2] mtd: bcm47xxsflash: use ioremap_cache() instead of
- KSEG0ADDR()
-Message-ID: <20160404070958.GF13995@localhost>
-References: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
- <1456483828-5583-1-git-send-email-zajec5@gmail.com>
- <20160305005459.GH55664@google.com>
- <CAKv+Gu8UAugShB0jR_D_2kqwbPsG6KTSaha9auUTC_QgfCry3Q@mail.gmail.com>
+Subject: Re: [PATCH 03/12] mtd: nand: omap2: rely on generic DT parsing done
+ in nand_scan_ident()
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Tony Lindgren
+ <tony@atomide.com>, Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu
+ <rainyfeeling@outlook.com>,
+ Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stefan Agner <stefan@agner.ch>
+References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459515272-31011-4-git-send-email-boris.brezillon@free-electrons.com>
+CC: <linux-omap@vger.kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
+ <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ <bcm-kernel-feedback-list@broadcom.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, <linux-sunxi@googlegroups.com>, Zhou Wang
+ <wangzhou1@hisilicon.com>, Alex Smith <alex.smith@imgtec.com>, Harvey Hunt
+ <harvey.hunt@imgtec.com>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <57021658.5060901@ti.com>
+Date: Mon, 4 Apr 2016 10:23:04 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKv+Gu8UAugShB0jR_D_2kqwbPsG6KTSaha9auUTC_QgfCry3Q@mail.gmail.com>
+In-Reply-To: <1459515272-31011-4-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,55 +41,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 18, 2016 at 12:22:05PM +0100, Ard Biesheuvel wrote:
-> On 5 March 2016 at 01:54, Brian Norris <computersforpeace@gmail.com> wrote:
-> > + others
-> >
-> > On Fri, Feb 26, 2016 at 11:50:28AM +0100, Rafał Miłecki wrote:
-> >> From: Brian Norris <computersforpeace@gmail.com>
-> >>
-> >> Using KSEG0ADDR makes code highly MIPS dependent and not portable.
-> >> Thanks to the fix a68f376 ("MIPS: io.h: Define `ioremap_cache'") we can
-> >> use ioremap_cache which is generic and supported on MIPS as well now.
-> >>
-> >> KSEG0ADDR was translating 0x1c000000 into 0x9c000000. With ioremap_cache
-> >> we use MIPS's __ioremap (and then remap_area_pages). This results in
-> >> different address (e.g. 0xc0080000) but it still should be cached as
-> >> expected and it was successfully tested with BCM47186B0.
-> >>
-> >> Other than that drivers/bcma/driver_chipcommon_sflash.c nicely setups a
-> >> struct resource for access window, but we wren't using it. Use it now
-> >> and drop duplicated info.
-> >>
-> >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> >> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
-> >> ---
-> >> V2:
-> >> 1) Use ioremap_cache as we already have commit a68f376 in l2-mtd
-> >> 2) Add iounmap to the error path
-> >> 3) Update commit message
-> >
-> > Hmm, I'm a bit out of the loop on some things here, but it looks like
-> > ioremap_cache() is going away. See kernel/memremap.c:
-> >
-> > /* temporary while we convert existing ioremap_cache users to memremap */
-> > __weak void __iomem *ioremap_cache(resource_size_t offset, unsigned long size)
-> >
-> > Are we supposed to move to using memremap() here? (If so,
-> > devm_memremap() can help us.)
-> >
+On 01/04/16 15:54, Boris Brezillon wrote:
+> The core now takes care of parsing generic DT properties in
+> nand_scan_ident() when nand_set_flash_node() has been called.
+> Rely on this initialization instead of calling of_get_nand_xxx()
+> manually.
 > 
-> I don't think that ioremap_cache() necessarily has to go away, but
-> what we do need to address is its abuse to map things like firmware
-> tables that reside in normal memory that may not be owned/tracked by
-> the kernel. So for that case, we now have memremap() which should just
-> give you a mapping of the requested region, either via the linear
-> mapping if it happens to be mapped already, or via the vmalloc region
-> if it is highmem or otherwise unavailable directly.
-> 
-> However, memory mapped NOR flash remains a special case, since the
-> __iomem annotation may or may not be appropriate depending on context
-> (i.e., reads and writes may both have either memory or strongly
-> ordered semantics)
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-OK, pushed to l2-mtd.git.
+Acked-by: Roger Quadros <rogerq@ti.com>
+
+cheers,
+-roger
+
+> ---
+>  drivers/memory/omap-gpmc.c | 7 -------
+>  drivers/mtd/nand/omap2.c   | 9 ++++++---
+>  2 files changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+> index 21825dd..85aa85e 100644
+> --- a/drivers/memory/omap-gpmc.c
+> +++ b/drivers/memory/omap-gpmc.c
+> @@ -25,7 +25,6 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+> -#include <linux/of_mtd.h>
+>  #include <linux/of_device.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/omap-gpmc.h>
+> @@ -1876,12 +1875,6 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
+>  				break;
+>  			}
+>  
+> -	gpmc_nand_data->flash_bbt = of_get_nand_on_flash_bbt(child);
+> -
+> -	val = of_get_nand_bus_width(child);
+> -	if (val == 16)
+> -		gpmc_nand_data->devsize = NAND_BUSWIDTH_16;
+> -
+>  	gpmc_read_timings_dt(child, &gpmc_t);
+>  	gpmc_nand_init(gpmc_nand_data, &gpmc_t);
+>  
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 0749ca1..8921283 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1704,9 +1704,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	if (pdata->flash_bbt)
+> -		nand_chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+> -	else
+> -		nand_chip->options |= NAND_SKIP_BBTSCAN;
+> +		nand_chip->bbt_options |= NAND_BBT_USE_FLASH;
+>  
+>  	/* scan NAND device connected to chip controller */
+>  	nand_chip->options |= pdata->devsize & NAND_BUSWIDTH_16;
+> @@ -1716,6 +1714,11 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  		goto return_error;
+>  	}
+>  
+> +	if (nand_chip->bbt_options & NAND_BBT_USE_FLASH)
+> +		nand_chip->bbt_options |= NAND_BBT_NO_OOB;
+> +	else
+> +		nand_chip->options |= NAND_SKIP_BBTSCAN;
+> +
+>  	/* re-populate low-level callbacks based on xfer modes */
+>  	switch (pdata->xfer_type) {
+>  	case NAND_OMAP_PREFETCH_POLLED:
+> 
