@@ -1,18 +1,24 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1an95b-0001OV-So
- for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 18:19:04 +0000
-Subject: Re: [PATCH] mtd: gpmi: fix raw_buffer pointer double free issue
-To: Han Xu <han.xu@nxp.com>, boris.brezillon@free-electrons.com,
- dwmw2@infradead.org, computersforpeace@gmail.com
-References: <1459790710-25747-1-git-send-email-han.xu@nxp.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5702AFFF.1010700@nod.at>
-Date: Mon, 4 Apr 2016 20:18:39 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1an9HU-00072m-FJ
+ for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 18:31:22 +0000
+Date: Mon, 4 Apr 2016 20:30:54 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 2/2] mtd: nand: Remove BUG() abuse in nand_scan_tail
+Message-ID: <20160404203054.6da8f60a@bbrezillon>
+In-Reply-To: <CAAEAJfCuqAB_io_XG1wjH7ce-de+yixh5A81RFk--Vbaw_DVmQ@mail.gmail.com>
+References: <1459546164-6269-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <1459546164-6269-3-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <20160402155524.55e34fe4@bbrezillon>
+ <20160404172048.6a76b472@bbrezillon> <570288A2.2010401@nod.at>
+ <CAAEAJfCuqAB_io_XG1wjH7ce-de+yixh5A81RFk--Vbaw_DVmQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1459790710-25747-1-git-send-email-han.xu@nxp.com>
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,30 +29,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 04.04.2016 um 19:25 schrieb Han Xu:
-> fix the raw_buffer pointer double free issue found by coverify.
+On Mon, 4 Apr 2016 12:34:00 -0300
+Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
 
-Can you please include the coverity message in you changelog?
-
-> Signed-off-by: Han Xu <han.xu@nxp.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 1 +
->  1 file changed, 1 insertion(+)
+> On 4 April 2016 at 12:30, Richard Weinberger <richard@nod.at> wrote:
+> > Am 04.04.2016 um 17:20 schrieb Boris Brezillon:
+> >> On Sat, 2 Apr 2016 15:55:24 +0200
+> >> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> >>
+> >>> On Fri,  1 Apr 2016 18:29:24 -0300
+> >>> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+> >>>
+> >>>> There's no reason to BUG() when parameters are being
+> >>>> validated. Drivers can get things wrong, and it's much nicer
+> >>>> to just throw a noisy warn and fail gracefully, than calling
+> >>>> BUG() and throwing the whole system down the drain.
+> >>>
+> >>> I'm fine with this change as long as all callers are checking
+> >>> nand_scan_tail() return value.
+> >>
+> >> Actually, the s3c2410 driver is not checking nand_scan_tail() return
+> >> value. Could you send a v2 addressing that?
+> >
+> > And maybe add __must_check to nand_scan_tail() such that we catch issues like
+> > these.
+> >
 > 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 8122c69..dcb60b0 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -797,6 +797,7 @@ static void gpmi_free_dma_buffer(struct gpmi_nand_data *this)
->  
->  	this->cmd_buffer	= NULL;
->  	this->data_buffer_dma	= NULL;
-> +	this->raw_buffer	= NULL;
->  	this->page_buffer_virt	= NULL;
->  	this->page_buffer_size	=  0;
+> In fact, why not adding must_check to all the functions that can fail
+> in the kernel?
+> 
+> That'll help catch even more issues ;-)
 
-So, gpmi_free_dma_buffer() is called twice and therefore we need to NULL all
-these pointers?
+I'll take your patch and patch the s3c2410 driver myself. Still think
+that keeping the BUG() calls until all callers have been patched to
+check nand_scan_tail() return code would be safer, but I don't care
+enough to spend more time arguing on this :P.
 
 Thanks,
-//richard
+
+Boris
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
