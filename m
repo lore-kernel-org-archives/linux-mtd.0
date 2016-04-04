@@ -1,31 +1,35 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-pf0-x22a.google.com ([2607:f8b0:400e:c00::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1amyOv-0003Jl-5M
- for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 06:54:17 +0000
-Received: by mail-pa0-x234.google.com with SMTP id tt10so137701666pab.3
- for <linux-mtd@lists.infradead.org>; Sun, 03 Apr 2016 23:53:56 -0700 (PDT)
-Date: Sun, 3 Apr 2016 23:53:53 -0700
+ id 1amyeW-0002EZ-Tb
+ for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 07:10:25 +0000
+Received: by mail-pf0-x22a.google.com with SMTP id 184so38261328pff.0
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Apr 2016 00:10:02 -0700 (PDT)
+Date: Mon, 4 Apr 2016 00:09:58 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, David Woodhouse <dwmw2@infradead.org>,
- Simon Arlott <simon@fire.lp0.eu>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- "open list:BROADCOM STB NAND FLASH DRIVER"
- <bcm-kernel-feedback-list@broadcom.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] mtd: brcmnand: Add support for v6.2 controllers
-Message-ID: <20160404065353.GE13995@localhost>
-References: <1457652859-767-1-git-send-email-f.fainelli@gmail.com>
+To: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-mtd@lists.infradead.org, "Maciej W. Rozycki" <macro@linux-mips.org>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Fengguang Wu <fengguang.wu@intel.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Luis de Bethencourt <luisbg@osg.samsung.com>, Jeremy Kerr <jk@ozlabs.org>,
+ Neelesh Gupta <neelegup@linux.vnet.ibm.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Cyril Bur <cyrilbur@gmail.com>, Ralf Baechle <ralf@linux-mips.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH V2] mtd: bcm47xxsflash: use ioremap_cache() instead of
+ KSEG0ADDR()
+Message-ID: <20160404070958.GF13995@localhost>
+References: <1452991370-20121-1-git-send-email-zajec5@gmail.com>
+ <1456483828-5583-1-git-send-email-zajec5@gmail.com>
+ <20160305005459.GH55664@google.com>
+ <CAKv+Gu8UAugShB0jR_D_2kqwbPsG6KTSaha9auUTC_QgfCry3Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1457652859-767-1-git-send-email-f.fainelli@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKv+Gu8UAugShB0jR_D_2kqwbPsG6KTSaha9auUTC_QgfCry3Q@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,60 +39,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Boris, Richard
-
-On Thu, Mar 10, 2016 at 03:34:16PM -0800, Florian Fainelli wrote:
-> Document and match the brcm,brcmnand-v6.2 compatible string, the controller has
-> a register layout identical to the v6.0 version and supports prefetch. Update the
-> command shift logic to account for v6.2 controller which are the first ones to
-> use a shift of 0 (6.1 used a shift of 24).
-
-Ah yes, another blip in the ever-shifting register layout of this
-controller. Fun!
-
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-
-Acked-by: Brian Norris <computersforpeace@gmail.com>
-
-> ---
->  Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt | 1 +
->  drivers/mtd/nand/brcmnand/brcmnand.c                    | 3 ++-
->  2 files changed, 3 insertions(+), 1 deletion(-)
+On Fri, Mar 18, 2016 at 12:22:05PM +0100, Ard Biesheuvel wrote:
+> On 5 March 2016 at 01:54, Brian Norris <computersforpeace@gmail.com> wrote:
+> > + others
+> >
+> > On Fri, Feb 26, 2016 at 11:50:28AM +0100, Rafał Miłecki wrote:
+> >> From: Brian Norris <computersforpeace@gmail.com>
+> >>
+> >> Using KSEG0ADDR makes code highly MIPS dependent and not portable.
+> >> Thanks to the fix a68f376 ("MIPS: io.h: Define `ioremap_cache'") we can
+> >> use ioremap_cache which is generic and supported on MIPS as well now.
+> >>
+> >> KSEG0ADDR was translating 0x1c000000 into 0x9c000000. With ioremap_cache
+> >> we use MIPS's __ioremap (and then remap_area_pages). This results in
+> >> different address (e.g. 0xc0080000) but it still should be cached as
+> >> expected and it was successfully tested with BCM47186B0.
+> >>
+> >> Other than that drivers/bcma/driver_chipcommon_sflash.c nicely setups a
+> >> struct resource for access window, but we wren't using it. Use it now
+> >> and drop duplicated info.
+> >>
+> >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> >> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+> >> ---
+> >> V2:
+> >> 1) Use ioremap_cache as we already have commit a68f376 in l2-mtd
+> >> 2) Add iounmap to the error path
+> >> 3) Update commit message
+> >
+> > Hmm, I'm a bit out of the loop on some things here, but it looks like
+> > ioremap_cache() is going away. See kernel/memremap.c:
+> >
+> > /* temporary while we convert existing ioremap_cache users to memremap */
+> > __weak void __iomem *ioremap_cache(resource_size_t offset, unsigned long size)
+> >
+> > Are we supposed to move to using memremap() here? (If so,
+> > devm_memremap() can help us.)
+> >
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> index c2546ced9c02..deb24cbdda82 100644
-> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-> @@ -24,6 +24,7 @@ Required properties:
->                           brcm,brcmnand-v5.0
->                           brcm,brcmnand-v6.0
->                           brcm,brcmnand-v6.1
-> +                         brcm,brcmnand-v6.2
->                           brcm,brcmnand-v7.0
->                           brcm,brcmnand-v7.1
->                           brcm,brcmnand
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index e0528397306a..0b7a698cc233 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -601,7 +601,7 @@ static void brcmnand_wr_corr_thresh(struct brcmnand_host *host, u8 val)
->  
->  static inline int brcmnand_cmd_shift(struct brcmnand_controller *ctrl)
->  {
-> -	if (ctrl->nand_version < 0x0700)
-> +	if (ctrl->nand_version < 0x0602)
->  		return 24;
->  	return 0;
->  }
-> @@ -2115,6 +2115,7 @@ static const struct of_device_id brcmnand_of_match[] = {
->  	{ .compatible = "brcm,brcmnand-v5.0" },
->  	{ .compatible = "brcm,brcmnand-v6.0" },
->  	{ .compatible = "brcm,brcmnand-v6.1" },
-> +	{ .compatible = "brcm,brcmnand-v6.2" },
->  	{ .compatible = "brcm,brcmnand-v7.0" },
->  	{ .compatible = "brcm,brcmnand-v7.1" },
->  	{},
-> -- 
-> 2.1.0
+> I don't think that ioremap_cache() necessarily has to go away, but
+> what we do need to address is its abuse to map things like firmware
+> tables that reside in normal memory that may not be owned/tracked by
+> the kernel. So for that case, we now have memremap() which should just
+> give you a mapping of the requested region, either via the linear
+> mapping if it happens to be mapped already, or via the vmalloc region
+> if it is highmem or otherwise unavailable directly.
 > 
+> However, memory mapped NOR flash remains a special case, since the
+> __iomem annotation may or may not be appropriate depending on context
+> (i.e., reads and writes may both have either memory or strongly
+> ordered semantics)
+
+OK, pushed to l2-mtd.git.
