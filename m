@@ -1,27 +1,17 @@
-Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1an6bW-0006A5-TU
- for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 15:39:52 +0000
-Received: by mail-lb0-x22f.google.com with SMTP id u8so166688222lbk.0
- for <linux-mtd@lists.infradead.org>; Mon, 04 Apr 2016 08:39:30 -0700 (PDT)
+Date: Mon, 4 Apr 2016 09:36:26 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: "arm@kernel.org" <arm@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [GIT PULL] move Versatile flash protection to the device tree
+Message-ID: <20160404163626.GA30894@localhost>
+References: <CACRpkdZxrhkL7a6DG3frKeR+=xF6X4nczepAbqj1PGDs3VsmMQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20160404173347.40a1b563@bbrezillon>
-References: <1459546164-6269-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1459546164-6269-3-git-send-email-ezequiel@vanguardiasur.com.ar>
- <20160402155524.55e34fe4@bbrezillon>
- <20160404172048.6a76b472@bbrezillon>
- <CAAEAJfA2wYAR+ZO0CL1dAy=OPi4gEUBf1zoT1JHO076UyvZmQQ@mail.gmail.com>
- <20160404173347.40a1b563@bbrezillon>
-Date: Mon, 4 Apr 2016 12:39:28 -0300
-Message-ID: <CAAEAJfDp+ApBsgwiUk9p8N=hStbBQyox_TS9ZvaKjuoww5h-3w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] nand: Remove BUG abuse
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZxrhkL7a6DG3frKeR+=xF6X4nczepAbqj1PGDs3VsmMQ@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,55 +21,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4 April 2016 at 12:33, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> On Sat, 2 Apr 2016 12:37:06 -0300
-> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
->
->> On 4 April 2016 at 12:20, Boris Brezillon
->> <boris.brezillon@free-electrons.com> wrote:
->> > On Sat, 2 Apr 2016 15:55:24 +0200
->> > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
->> >
->> >> On Fri,  1 Apr 2016 18:29:24 -0300
->> >> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
->> >>
->> >> > There's no reason to BUG() when parameters are being
->> >> > validated. Drivers can get things wrong, and it's much nicer
->> >> > to just throw a noisy warn and fail gracefully, than calling
->> >> > BUG() and throwing the whole system down the drain.
->> >>
->> >> I'm fine with this change as long as all callers are checking
->> >> nand_scan_tail() return value.
->> >
->> > Actually, the s3c2410 driver is not checking nand_scan_tail() return
->> > value. Could you send a v2 addressing that?
->> >
->>
->> Hmm, I don't see how that relates to this patch.
->> As far as I can see, it's two completely independent issues.
->>
->> Or am I missing something here?
->
-> Well, you're removing BUG() calls and are returning an error instead, so
-> if existing nand_scan_tail() callers don't check the return status you
-> may hide an existing bug...
->
+Hi Linus,
 
-Yes, I am removing a BUG() - thus replacing an oops (potentially a panic),
-with an error return.
+On Mon, Apr 04, 2016 at 10:45:48AM +0200, Linus Walleij wrote:
+> Hi ARM SoC folks,
+> 
+> now I'm tired of waiting for the MTD maintainers' word on this patch
+> series. I sent a question about this approach on february 13:
+> http://marc.info/?l=linux-arm-kernel&m=145537026603174&w=2
+> 
+> With subsequent pings on feb 22, mar 5, mar 31, and the cleanup
+> missing the merge window.
+> 
+> As you can see the flash protection patch also caters for the
+> RealView flash protection bits.
+> 
+> Please pull this into the ARM SoC tree for testing in linux-next
+> for the v4.7 series. If the MTD people appear again and have issues
+> you can always drop the branch.
+> 
+> Yours,
+> Linus Walleij
+> 
+> The following changes since commit 9735a22799b9214d17d3c231fe377fc852f042e9:
+> 
+>   Linux 4.6-rc2 (2016-04-03 09:09:40 -0500)
+> 
+> are available in the git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-integrator.git
+> tags/versatile-flash-for-arm-soc
+> 
+> for you to fetch changes up to 91011a7605822cd9c16eabcd1cc11ae31d604bfd:
+> 
+>   ARM: integrator: move flash registration to device tree (2016-04-04
+> 10:33:16 +0200)
+> 
+> ----------------------------------------------------------------
+> This is a set of patches removing the board file code
+> for Versatile flash handling and instead moving it over
+> to the device tree and a special add-on file.
+> 
+> ----------------------------------------------------------------
+> Linus Walleij (4):
+>       mtd: physmap_of: add a hook for Versatile write protection
+>       mtd: augment the "arm,versatile-flash" bindings
 
-However, nand_scan_tail can already fail and return an error
-for several other reasons.
+I don't know that much about this hardware, but it's not clear whether
+you properly addressed Russell's comment about the sharing of the VPP
+control. The reference counting is done on a per-flash basis, so it
+doesn't actually handle multiple flash correctly AFAICT. I also don't
+know if (like Russell mentioned) this is practically important to
+anything besides just phymap/NOR flash, or if there are other flash
+types used in practice (if so, then this series is insufficient).
 
-> I know it's unlikely to happen, but I'd still prefer to have all
-> nand_scan_tail() callers to check the return value before removing
-> those calls to BUG().
->
+Regarding your prior questions about this driver: I don't really have
+much direction for the driver, as I simply inherited it and have barely
+touched it. As your series still looks like a reasonable restructuring,
+and it isn't a regression from any existing support:
 
-It's not about unlikeliness, but about correlation and bisectability.
-IMO, the fact that some drivers don't check the return of nand_scan_tail
-is a bug on its own, and has nothing to do with this patch.
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+
+I don't personally care where the PULL goes.
+
+Brian
+
+>       ARM: versatile: move flash registration to the device tree
+>       ARM: integrator: move flash registration to device tree
+> 
+>  .../devicetree/bindings/mtd/arm-versatile.txt      |  20 +-
+>  arch/arm/boot/dts/integrator.dtsi                  |   3 +-
+>  arch/arm/boot/dts/versatile-ab.dts                 |   5 +-
+>  arch/arm/mach-integrator/integrator_ap.c           |  62 -----
+>  arch/arm/mach-integrator/integrator_cp.c           |  51 -----
+>  arch/arm/mach-versatile/versatile_dt.c             |  47 ----
+>  drivers/mtd/maps/Kconfig                           |  10 +
+>  drivers/mtd/maps/Makefile                          |   1 +
+>  drivers/mtd/maps/physmap_of.c                      |   6 +
+>  drivers/mtd/maps/physmap_of_versatile.c            | 253 +++++++++++++++++++++
+>  drivers/mtd/maps/physmap_of_versatile.h            |  16 ++
+>  11 files changed, 310 insertions(+), 164 deletions(-)
+>  create mode 100644 drivers/mtd/maps/physmap_of_versatile.c
+>  create mode 100644 drivers/mtd/maps/physmap_of_versatile.h
