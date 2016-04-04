@@ -1,18 +1,27 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anC62-0000aa-HB
- for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 21:31:44 +0000
-Subject: Re: [PATCH] mtd: gpmi: fix raw_buffer pointer double free issue
-To: Han Xu <han.xu@nxp.com>, boris.brezillon@free-electrons.com,
- dwmw2@infradead.org, computersforpeace@gmail.com
-References: <1459802489-30382-1-git-send-email-han.xu@nxp.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5702DD24.3040003@nod.at>
-Date: Mon, 4 Apr 2016 23:31:16 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1anCMp-0006VS-79
+ for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 21:49:04 +0000
+Date: Mon, 4 Apr 2016 23:48:26 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>
+Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Harvey Hunt
+ <harvey.hunt@imgtec.com>, Jorge Ramirez-Ortiz
+ <jorge.ramirez-ortiz@linaro.org>
+Subject: Re: [PATCH v2] mtd: nand: document the NAND controller/NAND chip DT
+ representation
+Message-ID: <20160404234826.767b582f@bbrezillon>
+In-Reply-To: <1459513595-14308-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1459513595-14308-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <1459802489-30382-1-git-send-email-han.xu@nxp.com>
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,38 +32,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 04.04.2016 um 22:41 schrieb Han Xu:
-> fix the raw_buffer pointer double free issue found by coverify.
+On Fri,  1 Apr 2016 14:26:35 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+
+> Standardize the NAND controller/NAND chip DT representation. Now, all new
+> NAND controller drivers should comply with this representation, even if
+> they are only supporting a single NAND chip.
 > 
-> CID 18344 (#2 of 2): Double free (USE_AFTER_FREE)
-> 3. double_free: Calling gpmi_alloc_dma_buffer frees pointer
-> this->raw_buffer which has already been freed
+> Existing drivers can keep support for the old representation (where only
+> the NAND chip was described), but are encouraged to also support the new
+> one.
 > 
-> Signed-off-by: Han Xu <han.xu@nxp.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Applied.
+
 > ---
-> 
-> changes in v2:
->  - add coverity check log
+> Changes since v1:
+> - fix typo
 > ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 1 +
->  1 file changed, 1 insertion(+)
+>  Documentation/devicetree/bindings/mtd/nand.txt | 37 +++++++++++++++++++++++++-
+>  1 file changed, 36 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 8122c69..dcb60b0 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -797,6 +797,7 @@ static void gpmi_free_dma_buffer(struct gpmi_nand_data *this)
+> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+> index b53f92e..a17662b 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> @@ -1,4 +1,23 @@
+> -* MTD generic binding
+> +* NAND chip and NAND controller generic binding
+> +
+> +NAND controller/NAND chip representation:
+> +
+> +The NAND controller should be represented with its own DT node, and all
+> +NAND chips attached to this controller should be defined as children nodes
+> +of the NAND controller. This representation should be enforced even for
+> +simple controllers supporting only one chip.
+> +
+> +Mandatory NAND controller properties:
+> +- #address-cells: depends on your controller. Should at least be 1 to
+> +		  encode the CS line id.
+> +- #size-cells: depends on your controller. Put zero unless you need a
+> +	       mapping between CS lines and dedicated memory regions
+> +
+> +Optional NAND controller properties
+> +- ranges: only needed if you need to define a mapping between CS lines and
+> +	  memory regions
+> +
+> +Optional NAND chip properties:
 >  
->  	this->cmd_buffer	= NULL;
->  	this->data_buffer_dma	= NULL;
-> +	this->raw_buffer	= NULL;
->  	this->page_buffer_virt	= NULL;
->  	this->page_buffer_size	=  0;
+>  - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+>    Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
+> @@ -19,3 +38,19 @@ errors per {size} bytes".
+>  The interpretation of these parameters is implementation-defined, so not all
+>  implementations must support all possible combinations. However, implementations
+>  are encouraged to further specify the value(s) they support.
+> +
+> +Example:
+> +
+> +	nand-controller {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		/* controller specific properties */
+> +
+> +		nand@0 {
+> +			reg = <0>;
+> +			nand-ecc-mode = "soft_bch";
+> +
+> +			/* controller specific properties */
+> +		};
+> +	};
 
-Reviewed-by: Richard Weinberger <richard@nod.at>
 
-Aside of that, the driver should IMHO be fixed to not call
-gpmi_free_dma_buffer() multiple times on the same buffer...
 
-Thanks,
-//richard
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
