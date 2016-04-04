@@ -1,25 +1,17 @@
-Received: from mail-qg0-x22e.google.com ([2607:f8b0:400d:c04::22e])
+Received: from mail-db5eur01on0088.outbound.protection.outlook.com
+ ([104.47.2.88] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1an7bR-0001f3-Dy
- for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 16:43:50 +0000
-Received: by mail-qg0-x22e.google.com with SMTP id c6so28079180qga.1
- for <linux-mtd@lists.infradead.org>; Mon, 04 Apr 2016 09:43:28 -0700 (PDT)
-Date: Mon, 4 Apr 2016 09:43:19 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 2/2] mtd: nand: Remove BUG() abuse in nand_scan_tail
-Message-ID: <20160404164319.GG13995@localhost>
-References: <1459546164-6269-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1459546164-6269-3-git-send-email-ezequiel@vanguardiasur.com.ar>
- <20160402155524.55e34fe4@bbrezillon>
- <20160404172048.6a76b472@bbrezillon>
+ id 1an8WN-0004Uf-6N
+ for linux-mtd@lists.infradead.org; Mon, 04 Apr 2016 17:42:41 +0000
+From: Han Xu <han.xu@nxp.com>
+To: <han.xu@nxp.com>, <boris.brezillon@free-electrons.com>, <richard@nod.at>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mtd: gpmi: fix raw_buffer pointer double free issue
+Date: Mon, 4 Apr 2016 12:25:10 -0500
+Message-ID: <1459790710-25747-1-git-send-email-han.xu@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160404172048.6a76b472@bbrezillon>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 04, 2016 at 05:20:48PM +0200, Boris Brezillon wrote:
-> On Sat, 2 Apr 2016 15:55:24 +0200
-> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> 
-> > On Fri,  1 Apr 2016 18:29:24 -0300
-> > Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
-> > 
-> > > There's no reason to BUG() when parameters are being
-> > > validated. Drivers can get things wrong, and it's much nicer
-> > > to just throw a noisy warn and fail gracefully, than calling
-> > > BUG() and throwing the whole system down the drain.
-> > 
-> > I'm fine with this change as long as all callers are checking
-> > nand_scan_tail() return value.
-> 
-> Actually, the s3c2410 driver is not checking nand_scan_tail() return
-> value. Could you send a v2 addressing that?
+fix the raw_buffer pointer double free issue found by coverify.
 
-One could argue that we as a kernel community don't care about those
-systems which are currently configured to hit 100%-reproducible BUG()
-statements at boot time, and so this wouldn't really be a regression.
-Also, there are already error cases in nand_scan_tail() that might
-return non-zero, so such drivers are already broken.
+Signed-off-by: Han Xu <han.xu@nxp.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Of course, it'd be nice to fix these drivers anyway.
-
-Brian
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 8122c69..dcb60b0 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -797,6 +797,7 @@ static void gpmi_free_dma_buffer(struct gpmi_nand_data *this)
+ 
+ 	this->cmd_buffer	= NULL;
+ 	this->data_buffer_dma	= NULL;
++	this->raw_buffer	= NULL;
+ 	this->page_buffer_virt	= NULL;
+ 	this->page_buffer_size	=  0;
+ }
+-- 
+1.9.1
