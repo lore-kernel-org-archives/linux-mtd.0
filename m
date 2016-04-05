@@ -1,22 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anUJH-0001tn-Hk
- for linux-mtd@lists.infradead.org; Tue, 05 Apr 2016 16:58:36 +0000
-Date: Tue, 5 Apr 2016 18:58:08 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: <linux-mtd@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 2/2] mtd: nand: Remove BUG() abuse in nand_scan_tail
-Message-ID: <20160405185808.4693768d@bbrezillon>
-In-Reply-To: <1459546164-6269-3-git-send-email-ezequiel@vanguardiasur.com.ar>
-References: <1459546164-6269-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1459546164-6269-3-git-send-email-ezequiel@vanguardiasur.com.ar>
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1anVVD-0005qF-Oo
+ for linux-mtd@lists.infradead.org; Tue, 05 Apr 2016 18:15:00 +0000
+Received: by mail-pa0-x236.google.com with SMTP id td3so15283998pab.2
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Apr 2016 11:14:38 -0700 (PDT)
+Date: Tue, 5 Apr 2016 11:14:27 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Vignesh R <vigneshr@ti.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [RESEND][PATCH] mtd: devices: m25p80: add support for mmap read
+ request
+Message-ID: <20160405181427.GA5561@localhost>
+References: <1459230377-26847-1-git-send-email-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1459230377-26847-1-git-send-email-vigneshr@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,158 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  1 Apr 2016 18:29:24 -0300
-Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
++ Mark, Cyrille
 
-> There's no reason to BUG() when parameters are being
-> validated. Drivers can get things wrong, and it's much nicer
-> to just throw a noisy warn and fail gracefully, than calling
-> BUG() and throwing the whole system down the drain.
+On Tue, Mar 29, 2016 at 11:16:17AM +0530, Vignesh R wrote:
+> Certain SPI controllers may provide accelerated hardware interface to
+> read from m25p80 type flash devices in order to provide better read
+> performance. SPI core supports such devices with spi_flash_read() API.
+> Call spi_flash_read(), if supported, to make use of such interface.
 > 
-> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-
-Applied.
-
-Thanks,
-
-Boris
-
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
 > ---
->  drivers/mtd/nand/nand_base.c | 52 ++++++++++++++++++++++++++++----------------
->  1 file changed, 33 insertions(+), 19 deletions(-)
+
+Applied, with a small diff.
+
+> Resend v5:
+> Rebased on top of v4.6-rc1
+> v5: http://www.spinics.net/lists/devicetree/msg106696.html
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index befa04ef4a04..0fe644ebe264 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4119,10 +4119,12 @@ int nand_scan_tail(struct mtd_info *mtd)
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  	struct nand_ecc_ctrl *ecc = &chip->ecc;
->  	struct nand_buffers *nbuf;
-> +	int ret;
+>  drivers/mtd/devices/m25p80.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index c9c3b7fa3051..7730e633d7d3 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -131,6 +131,26 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  	/* convert the dummy cycles to the number of bytes */
+>  	dummy /= 8;
 >  
->  	/* New bad blocks should be marked in OOB, flash-based BBT, or both */
-> -	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
-> -			!(chip->bbt_options & NAND_BBT_USE_FLASH));
-> +	if (WARN_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
-> +		   !(chip->bbt_options & NAND_BBT_USE_FLASH)))
-> +		return -EINVAL;
->  
->  	if (!(chip->options & NAND_OWN_BUFFERS)) {
->  		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
-> @@ -4160,9 +4162,10 @@ int nand_scan_tail(struct mtd_info *mtd)
->  			ecc->layout = &nand_oob_128;
->  			break;
->  		default:
-> -			pr_warn("No oob scheme defined for oobsize %d\n",
-> -				   mtd->oobsize);
-> -			BUG();
-> +			WARN(1, "No oob scheme defined for oobsize %d\n",
-> +				mtd->oobsize);
-> +			ret = -EINVAL;
-> +			goto err_free;
->  		}
->  	}
->  
-> @@ -4178,8 +4181,9 @@ int nand_scan_tail(struct mtd_info *mtd)
->  	case NAND_ECC_HW_OOB_FIRST:
->  		/* Similar to NAND_ECC_HW, but a separate read_page handle */
->  		if (!ecc->calculate || !ecc->correct || !ecc->hwctl) {
-> -			pr_warn("No ECC functions supplied; hardware ECC not possible\n");
-> -			BUG();
-> +			WARN(1, "No ECC functions supplied; hardware ECC not possible\n");
-> +			ret = -EINVAL;
-> +			goto err_free;
->  		}
->  		if (!ecc->read_page)
->  			ecc->read_page = nand_read_page_hwecc_oob_first;
-> @@ -4209,8 +4213,9 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		     ecc->read_page == nand_read_page_hwecc ||
->  		     !ecc->write_page ||
->  		     ecc->write_page == nand_write_page_hwecc)) {
-> -			pr_warn("No ECC functions supplied; hardware ECC not possible\n");
-> -			BUG();
-> +			WARN(1, "No ECC functions supplied; hardware ECC not possible\n");
-> +			ret = -EINVAL;
-> +			goto err_free;
->  		}
->  		/* Use standard syndrome read/write page function? */
->  		if (!ecc->read_page)
-> @@ -4228,8 +4233,9 @@ int nand_scan_tail(struct mtd_info *mtd)
->  
->  		if (mtd->writesize >= ecc->size) {
->  			if (!ecc->strength) {
-> -				pr_warn("Driver must set ecc.strength when using hardware ECC\n");
-> -				BUG();
-> +				WARN(1, "Driver must set ecc.strength when using hardware ECC\n");
-> +				ret = -EINVAL;
-> +				goto err_free;
->  			}
->  			break;
->  		}
-> @@ -4255,8 +4261,9 @@ int nand_scan_tail(struct mtd_info *mtd)
->  
->  	case NAND_ECC_SOFT_BCH:
->  		if (!mtd_nand_has_bch()) {
-> -			pr_warn("CONFIG_MTD_NAND_ECC_BCH not enabled\n");
-> -			BUG();
-> +			WARN(1, "CONFIG_MTD_NAND_ECC_BCH not enabled\n");
-> +			ret = -EINVAL;
-> +			goto err_free;
->  		}
->  		ecc->calculate = nand_bch_calculate_ecc;
->  		ecc->correct = nand_bch_correct_data;
-> @@ -4281,8 +4288,9 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		ecc->bytes = 0;
->  		ecc->priv = nand_bch_init(mtd);
->  		if (!ecc->priv) {
-> -			pr_warn("BCH ECC initialization failed!\n");
-> -			BUG();
-> +			WARN(1, "BCH ECC initialization failed!\n");
-> +			ret = -EINVAL;
-> +			goto err_free;
->  		}
->  		break;
->  
-> @@ -4300,8 +4308,9 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		break;
->  
->  	default:
-> -		pr_warn("Invalid NAND_ECC_MODE %d\n", ecc->mode);
-> -		BUG();
-> +		WARN(1, "Invalid NAND_ECC_MODE %d\n", ecc->mode);
-> +		ret = -EINVAL;
-> +		goto err_free;
->  	}
->  
->  	/* For many systems, the standard OOB write also works for raw */
-> @@ -4331,8 +4340,9 @@ int nand_scan_tail(struct mtd_info *mtd)
->  	 */
->  	ecc->steps = mtd->writesize / ecc->size;
->  	if (ecc->steps * ecc->size != mtd->writesize) {
-> -		pr_warn("Invalid ECC parameters\n");
-> -		BUG();
-> +		WARN(1, "Invalid ECC parameters\n");
-> +		ret = -EINVAL;
-> +		goto err_free;
->  	}
->  	ecc->total = ecc->steps * ecc->bytes;
->  
-> @@ -4410,6 +4420,10 @@ int nand_scan_tail(struct mtd_info *mtd)
->  
->  	/* Build bad block table */
->  	return chip->scan_bbt(mtd);
-> +err_free:
-> +	if (!(chip->options & NAND_OWN_BUFFERS))
-> +		kfree(chip->buffers);
-> +	return ret;
->  }
->  EXPORT_SYMBOL(nand_scan_tail);
+> +	if (spi_flash_read_supported(spi)) {
+> +		struct spi_flash_read_message msg;
+> +		int ret;
+> +
+
+I added a memset(&msg, 0, sizeof(msg)), since spi_flash_read() doesn't
+guarantee msg.retlen is zeroed for failures. Do we want a
+spi_flash_read_message_init() function, to mirror spi_message_init()?
+
+> +		msg.buf = buf;
+> +		msg.from = from;
+> +		msg.len = len;
+> +		msg.read_opcode = nor->read_opcode;
+> +		msg.addr_width = nor->addr_width;
+> +		msg.dummy_bytes = dummy;
+> +		/* TODO: Support other combinations */
+
+Speaking of "other combinations": does the TI QSPI controller support
+MMAP'ed read modes other than 1/1/{1,2,4}? It doesn't seem to implement
+support, and the SPI core doesn't handle this. So if we merge any of
+Cyrille's work on other modes, then this is going to break quickly.
+
+> +		msg.opcode_nbits = SPI_NBITS_SINGLE;
+> +		msg.addr_nbits = SPI_NBITS_SINGLE;
+> +		msg.data_nbits = m25p80_rx_nbits(nor);
+> +
+> +		ret = spi_flash_read(spi, &msg);
+> +		*retlen = msg.retlen;
+> +		return ret;
+> +	}
+> +
+>  	spi_message_init(&m);
+>  	memset(t, 0, (sizeof t));
 >  
 
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Brian
