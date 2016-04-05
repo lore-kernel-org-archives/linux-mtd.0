@@ -1,23 +1,22 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anVVD-0005qF-Oo
- for linux-mtd@lists.infradead.org; Tue, 05 Apr 2016 18:15:00 +0000
-Received: by mail-pa0-x236.google.com with SMTP id td3so15283998pab.2
- for <linux-mtd@lists.infradead.org>; Tue, 05 Apr 2016 11:14:38 -0700 (PDT)
-Date: Tue, 5 Apr 2016 11:14:27 -0700
+ id 1anWpl-0000vj-Kh
+ for linux-mtd@lists.infradead.org; Tue, 05 Apr 2016 19:40:18 +0000
+Received: by mail-pa0-x233.google.com with SMTP id td3so16673563pab.2
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Apr 2016 12:39:57 -0700 (PDT)
+Date: Tue, 5 Apr 2016 12:39:52 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [RESEND][PATCH] mtd: devices: m25p80: add support for mmap read
- request
-Message-ID: <20160405181427.GA5561@localhost>
-References: <1459230377-26847-1-git-send-email-vigneshr@ti.com>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Michal Suchanek <hramrach@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
+Message-ID: <20160405193952.GA5243@localhost>
+References: <56D22823.7090005@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1459230377-26847-1-git-send-email-vigneshr@ti.com>
+In-Reply-To: <56D22823.7090005@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +26,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Mark, Cyrille
++ others
 
-On Tue, Mar 29, 2016 at 11:16:17AM +0530, Vignesh R wrote:
-> Certain SPI controllers may provide accelerated hardware interface to
-> read from m25p80 type flash devices in order to provide better read
-> performance. SPI core supports such devices with spi_flash_read() API.
-> Call spi_flash_read(), if supported, to make use of such interface.
+Hi Heiner,
+
+On Sat, Feb 27, 2016 at 11:50:11PM +0100, Heiner Kallweit wrote:
+> Some controllers have transfer size limits. To allow to deal with this
+> max_transfer_size was introduced in the SPI core recently.
+> Use this new feature to read in chunks if needed.
 > 
-> Signed-off-by: Vignesh R <vigneshr@ti.com>
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+
+Michal has been working on a similar series, with some differences (I'll
+comment below). I think his latest work is here:
+
+http://lists.infradead.org/pipermail/linux-mtd/2015-December/063865.html
+
+Is there a particular reason you've continued on your series instead of
+reviewing/fixing his?
+
 > ---
-
-Applied, with a small diff.
-
-> Resend v5:
-> Rebased on top of v4.6-rc1
-> v5: http://www.spinics.net/lists/devicetree/msg106696.html
-> 
->  drivers/mtd/devices/m25p80.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+>  drivers/mtd/devices/m25p80.c | 30 +++++++++++++++++++++++++++++-
+>  1 file changed, 29 insertions(+), 1 deletion(-)
 > 
 > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index c9c3b7fa3051..7730e633d7d3 100644
+> index c2d1f65..69f3acf 100644
 > --- a/drivers/mtd/devices/m25p80.c
 > +++ b/drivers/mtd/devices/m25p80.c
-> @@ -131,6 +131,26 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->  	/* convert the dummy cycles to the number of bytes */
->  	dummy /= 8;
+> @@ -119,7 +119,7 @@ static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+>   * Read an address range from the nor chip.  The address range
+>   * may be any size provided it is within the physical boundaries.
+>   */
+> -static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+> +static int _m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  			size_t *retlen, u_char *buf)
+>  {
+>  	struct m25p *flash = nor->priv;
+> @@ -153,6 +153,34 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  	return ret;
+>  }
 >  
-> +	if (spi_flash_read_supported(spi)) {
-> +		struct spi_flash_read_message msg;
-> +		int ret;
+> +/* Read in max_read_len chunks if len > max_read_len */
+> +static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+> +		       size_t *retlen, u_char *buf)
+> +{
+> +	struct m25p *flash = nor->priv;
+> +	/*
+> +	 * The controller transfer size limit refers to the overall transfer
+> +	 * including read command + actually read data. Therefore subtract
+> +	 * the command size when calculating the max read length.
+> +	 */
+> +	size_t max_read_len = spi_max_transfer_size(flash->spi) -
+> +			      (m25p_cmdsz(nor) + nor->read_dummy / 8);
+> +	size_t read_len;
+> +	int ret;
 > +
+> +	while (len > 0) {
 
-I added a memset(&msg, 0, sizeof(msg)), since spi_flash_read() doesn't
-guarantee msg.retlen is zeroed for failures. Do we want a
-spi_flash_read_message_init() function, to mirror spi_message_init()?
+^^ I really don't want this loop to be in m25p80.c. This should be in
+the core spi-nor.c, and then the driver (like m25p80.c, but also
+possibly other non-SPI drivers that also use spi-nor.c) can simply
+pass its limitation up the spi-nor.c. (See Michal's patch 10.)
 
-> +		msg.buf = buf;
-> +		msg.from = from;
-> +		msg.len = len;
-> +		msg.read_opcode = nor->read_opcode;
-> +		msg.addr_width = nor->addr_width;
-> +		msg.dummy_bytes = dummy;
-> +		/* TODO: Support other combinations */
-
-Speaking of "other combinations": does the TI QSPI controller support
-MMAP'ed read modes other than 1/1/{1,2,4}? It doesn't seem to implement
-support, and the SPI core doesn't handle this. So if we merge any of
-Cyrille's work on other modes, then this is going to break quickly.
-
-> +		msg.opcode_nbits = SPI_NBITS_SINGLE;
-> +		msg.addr_nbits = SPI_NBITS_SINGLE;
-> +		msg.data_nbits = m25p80_rx_nbits(nor);
-> +
-> +		ret = spi_flash_read(spi, &msg);
-> +		*retlen = msg.retlen;
-> +		return ret;
-> +	}
-> +
->  	spi_message_init(&m);
->  	memset(t, 0, (sizeof t));
->  
+So I plan to take some form of Michal's and not yours. This will require
+a bit of rebasing.
 
 Brian
+
+> +		read_len = min(len, max_read_len);
+> +		ret = _m25p80_read(nor, from, read_len, retlen, buf);
+> +		if (ret)
+> +			return ret;
+> +		from += read_len;
+> +		buf += read_len;
+> +		len -= read_len;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * board specific setup should have ensured the SPI clock used here
+>   * matches what the READ command supports, at least until this driver
+> -- 
+> 2.7.1
+> 
