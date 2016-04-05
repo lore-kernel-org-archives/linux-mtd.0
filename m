@@ -1,24 +1,20 @@
-Received: from mail-he1eur01on0076.outbound.protection.outlook.com
- ([104.47.0.76] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anNbX-0003Tc-3I
- for linux-mtd@lists.infradead.org; Tue, 05 Apr 2016 09:49:01 +0000
-From: Fugang Duan <fugang.duan@nxp.com>
-To: "b38611@freescale.com" <b38611@freescale.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>, Han Xu
- <han.xu@nxp.com>, "richard@nod.at" <richard@nod.at>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH] mtd: nand: gpmi: remove duplicate 'nand-on-flash-bbt'
- property parse
-Date: Tue, 5 Apr 2016 09:48:34 +0000
-Message-ID: <VI1PR0401MB18554DD0E04B75746A9D30AAFF9E0@VI1PR0401MB1855.eurprd04.prod.outlook.com>
-References: <1459831722-2623-1-git-send-email-b38611@freescale.com>
-In-Reply-To: <1459831722-2623-1-git-send-email-b38611@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1anT9H-00017L-6P
+ for linux-mtd@lists.infradead.org; Tue, 05 Apr 2016 15:44:11 +0000
+Date: Tue, 5 Apr 2016 17:43:41 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Han Xu <han.xu@nxp.com>
+Cc: <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: gpmi: fix raw_buffer pointer double free issue
+Message-ID: <20160405174341.673e1141@bbrezillon>
+In-Reply-To: <1459802489-30382-1-git-send-email-han.xu@nxp.com>
+References: <1459802489-30382-1-git-send-email-han.xu@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,71 +24,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pls drop review below patch, I see Boris.brezillon had sent the patch.
-Thanks.
+On Mon, 4 Apr 2016 15:41:29 -0500
+Han Xu <han.xu@nxp.com> wrote:
 
-From: Fugang Duan <b38611@freescale.com> Sent: Tuesday, April 05, 2016 12:4=
-9 PM
-> To: computersforpeace@gmail.com; Han Xu <han.xu@nxp.com>;
-> richard@nod.at
-> Cc: dwmw2@infradead.org; linux-mtd@lists.infradead.org; Fugang Duan
-> <fugang.duan@nxp.com>
-> Subject: [PATCH] mtd: nand: gpmi: remove duplicate 'nand-on-flash-bbt'
-> property parse
->=20
-> Remove duplicate 'nand-on-flash-bbt' property parse in driver. In fact, n=
-and
-> base driver has the common dts node parse in .nand_dt_init() like
-> nand_scan_ident()->nand_dt_init()->of_get_nand_on_flash_bbt().
->=20
-> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+> fix the raw_buffer pointer double free issue found by coverify.
+> 
+> CID 18344 (#2 of 2): Double free (USE_AFTER_FREE)
+> 3. double_free: Calling gpmi_alloc_dma_buffer frees pointer
+> this->raw_buffer which has already been freed
+> 
+> Signed-off-by: Han Xu <han.xu@nxp.com>
+
+Applied.
+
+Thanks,
+
+Boris
+
 > ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gp=
-mi-
-> nand/gpmi-nand.c
-> index 8122c69..0486bf2 100644
+> 
+> changes in v2:
+>  - add coverity check log
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 8122c69..dcb60b0 100644
 > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1914,16 +1914,6 @@ static int gpmi_nand_init(struct gpmi_nand_data
-> *this)
->  	/* Set up swap_block_mark, must be set before the
-> gpmi_set_geometry() */
->  	this->swap_block_mark =3D !GPMI_IS_MX23(this);
->=20
-> -	if (of_get_nand_on_flash_bbt(this->dev->of_node)) {
-> -		chip->bbt_options |=3D NAND_BBT_USE_FLASH |
-> NAND_BBT_NO_OOB;
-> -
-> -		if (of_property_read_bool(this->dev->of_node,
-> -						"fsl,no-blockmark-swap"))
-> -			this->swap_block_mark =3D false;
-> -	}
-> -	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
-> -		this->swap_block_mark ? "en" : "dis");
-> -
->  	/*
->  	 * Allocate a temporary DMA buffer for reading ID in the
->  	 * nand_scan_ident().
-> @@ -1938,6 +1928,16 @@ static int gpmi_nand_init(struct gpmi_nand_data
-> *this)
->  	if (ret)
->  		goto err_out;
->=20
-> +	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
-> +		chip->bbt_options |=3D NAND_BBT_NO_OOB;
-> +
-> +		if (of_property_read_bool(this->dev->of_node,
-> +						"fsl,no-blockmark-swap"))
-> +			this->swap_block_mark =3D false;
-> +	}
-> +	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
-> +		this->swap_block_mark ? "en" : "dis");
-> +
->  	ret =3D gpmi_init_last(this);
->  	if (ret)
->  		goto err_out;
-> --
-> 1.9.1
+> @@ -797,6 +797,7 @@ static void gpmi_free_dma_buffer(struct gpmi_nand_data *this)
+>  
+>  	this->cmd_buffer	= NULL;
+>  	this->data_buffer_dma	= NULL;
+> +	this->raw_buffer	= NULL;
+>  	this->page_buffer_virt	= NULL;
+>  	this->page_buffer_size	=  0;
+>  }
+
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
