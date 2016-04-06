@@ -1,15 +1,15 @@
-Received: from m50-134.163.com ([123.125.50.134])
+Received: from m50-135.163.com ([123.125.50.135])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ank9a-0004HV-PO
- for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 09:53:40 +0000
+ id 1ankAk-0004j9-PW
+ for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 09:54:51 +0000
 From: zengzhaoxiu@163.com
 To: dwmw2@infradead.org,
 	computersforpeace@gmail.com
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
-Subject: [PATCH v2 20/30] mtd: use parity16 in ssfdc
-Date: Wed,  6 Apr 2016 17:52:24 +0800
-Message-Id: <1459936344-7947-1-git-send-email-zengzhaoxiu@163.com>
+Subject: [PATCH v2 21/30] mtd: use parity functions in inftlcore
+Date: Wed,  6 Apr 2016 17:53:54 +0800
+Message-Id: <1459936434-8006-1-git-send-email-zengzhaoxiu@163.com>
 In-Reply-To: <57031D9D.801@gmail.com>
 References: <57031D9D.801@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,71 +23,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
 
-The original get_parity return even parity of the input number. So
-hweight of "block_address & 0x7ff" must be odd if block_address is valid.
-
-This patch use parity16, and rearrange the code.
-
 Signed-off-by: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
 ---
- drivers/mtd/ssfdc.c | 31 ++++++++-----------------------
- 1 file changed, 8 insertions(+), 23 deletions(-)
+ drivers/mtd/inftlcore.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-index daf82ba..1d55f15 100644
---- a/drivers/mtd/ssfdc.c
-+++ b/drivers/mtd/ssfdc.c
-@@ -182,24 +182,10 @@ static int read_raw_oob(struct mtd_info *mtd, loff_t offs, uint8_t *buf)
- 	return 0;
+diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
+index b66b541..8c9457b 100644
+--- a/drivers/mtd/inftlcore.c
++++ b/drivers/mtd/inftlcore.c
+@@ -457,15 +457,6 @@ static u16 INFTL_makefreeblock(struct INFTLrecord *inftl, unsigned pendingblock)
+ 	return INFTL_foldchain(inftl, LongestChain, pendingblock);
  }
  
--/* Parity calculator on a word of n bit size */
--static int get_parity(int number, int size)
+-static int nrbits(unsigned int val, int bitcount)
 -{
-- 	int k;
--	int parity;
+-	int i, total = 0;
 -
--	parity = 1;
--	for (k = 0; k < size; k++) {
--		parity += (number >> k);
--		parity &= 1;
--	}
--	return parity;
+-	for (i = 0; (i < bitcount); i++)
+-		total += (((0x1 << i) & val) ? 1 : 0);
+-	return total;
 -}
 -
- /* Read and validate the logical block address field stored in the OOB */
- static int get_logical_address(uint8_t *oob_buf)
- {
--	int block_address, parity;
-+	int block_address;
- 	int offset[2] = {6, 11}; /* offset of the 2 address fields within OOB */
- 	int j;
- 	int ok = 0;
-@@ -215,18 +201,17 @@ static int get_logical_address(uint8_t *oob_buf)
+ /*
+  * INFTL_findwriteunit: Return the unit number into which we can write
+  *                      for this block. Make it available if it isn't already.
+@@ -593,10 +584,10 @@ hitused:
+ 		if (prev_block < inftl->nb_blocks)
+ 			prev_block -= inftl->firstEUN;
  
- 		/* Check for the signature bits in the address field (MSBits) */
- 		if ((block_address & ~0x7FF) == 0x1000) {
--			parity = block_address & 0x01;
- 			block_address &= 0x7FF;
--			block_address >>= 1;
+-		parity = (nrbits(thisVUC, 16) & 0x1) ? 0x1 : 0;
+-		parity |= (nrbits(prev_block, 16) & 0x1) ? 0x2 : 0;
+-		parity |= (nrbits(anac, 8) & 0x1) ? 0x4 : 0;
+-		parity |= (nrbits(nacs, 8) & 0x1) ? 0x8 : 0;
++		parity  = parity16(thisVUC);
++		parity |= parity16(prev_block) << 1;
++		parity |= parity8(anac) << 2;
++		parity |= parity8(nacs) << 3;
  
--			if (get_parity(block_address, 10) != parity) {
--				pr_debug("SSFDC_RO: logical address field%d"
--					"parity error(0x%04X)\n", j+1,
--					block_address);
--			} else {
--				ok = 1;
-+			ok = parity16(block_address);
-+			if (ok) {
-+				block_address >>= 1;
- 				break;
- 			}
-+
-+			pr_debug("SSFDC_RO: logical address field%d"
-+				"parity error(0x%04X)\n", j+1,
-+				block_address);
- 		}
- 	}
- 
+ 		oob.u.a.virtualUnitNo = cpu_to_le16(thisVUC);
+ 		oob.u.a.prevUnitNo = cpu_to_le16(prev_block);
 -- 
 2.5.0
