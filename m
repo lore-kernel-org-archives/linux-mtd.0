@@ -1,24 +1,23 @@
-Received: from mail-pf0-x22c.google.com ([2607:f8b0:400e:c00::22c])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anYCW-000792-Eo
- for linux-mtd@lists.infradead.org; Tue, 05 Apr 2016 21:07:53 +0000
-Received: by mail-pf0-x22c.google.com with SMTP id n1so18227761pfn.2
- for <linux-mtd@lists.infradead.org>; Tue, 05 Apr 2016 14:07:32 -0700 (PDT)
-Date: Tue, 5 Apr 2016 14:07:27 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- Michal Suchanek <hramrach@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marex@denx.de>, Han Xu <han.xu@nxp.com>
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
-Message-ID: <20160405210727.GB5243@localhost>
-References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
- <57041B43.2000109@gmail.com>
+ id 1anfsO-0001Js-LQ
+ for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 05:20:23 +0000
+Subject: Re: [RESEND][PATCH] mtd: devices: m25p80: add support for mmap read
+ request
+To: Brian Norris <computersforpeace@gmail.com>
+References: <1459230377-26847-1-git-send-email-vigneshr@ti.com>
+ <20160405181427.GA5561@localhost>
+CC: David Woodhouse <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Cyrille
+ Pitchen <cyrille.pitchen@atmel.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <57049C31.7090505@ti.com>
+Date: Wed, 6 Apr 2016 10:48:41 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57041B43.2000109@gmail.com>
+In-Reply-To: <20160405181427.GA5561@localhost>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +27,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 05, 2016 at 10:08:35PM +0200, Heiner Kallweit wrote:
-> Am 05.04.2016 um 21:39 schrieb Brian Norris:
-> > On Sat, Feb 27, 2016 at 11:50:11PM +0100, Heiner Kallweit wrote:
-> >> Some controllers have transfer size limits. To allow to deal with this
-> >> max_transfer_size was introduced in the SPI core recently.
-> >> Use this new feature to read in chunks if needed.
-> >>
-> >> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> > 
-> > Michal has been working on a similar series, with some differences (I'll
-> > comment below). I think his latest work is here:
-> > 
-> > http://lists.infradead.org/pipermail/linux-mtd/2015-December/063865.html
-> > 
-> > Is there a particular reason you've continued on your series instead of
-> > reviewing/fixing his?
-> > 
-> Latest version of Michal's patch set was sent beginning of December and has
-> received no comment since then, so I assumed it's dead.
-> If that's not the case, totally fine with me and I'll have a further look at it.
+Hi,
 
-There was a comment about the loop bounds changing away from page
-alignment. I think otherwise it's about ready to go.
+On 04/05/2016 11:44 PM, Brian Norris wrote:
+> + Mark, Cyrille
+> 
+> On Tue, Mar 29, 2016 at 11:16:17AM +0530, Vignesh R wrote:
+>> Certain SPI controllers may provide accelerated hardware interface to
+>> read from m25p80 type flash devices in order to provide better read
+>> performance. SPI core supports such devices with spi_flash_read() API.
+>> Call spi_flash_read(), if supported, to make use of such interface.
+>>
+>> Signed-off-by: Vignesh R <vigneshr@ti.com>
+>> ---
+> 
+> Applied, with a small diff.
+> 
+>> Resend v5:
+>> Rebased on top of v4.6-rc1
+>> v5: http://www.spinics.net/lists/devicetree/msg106696.html
+>>
+>>  drivers/mtd/devices/m25p80.c | 20 ++++++++++++++++++++
+>>  1 file changed, 20 insertions(+)
+>>
+>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>> index c9c3b7fa3051..7730e633d7d3 100644
+>> --- a/drivers/mtd/devices/m25p80.c
+>> +++ b/drivers/mtd/devices/m25p80.c
+>> @@ -131,6 +131,26 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>>  	/* convert the dummy cycles to the number of bytes */
+>>  	dummy /= 8;
+>>  
+>> +	if (spi_flash_read_supported(spi)) {
+>> +		struct spi_flash_read_message msg;
+>> +		int ret;
+>> +
+> 
+> I added a memset(&msg, 0, sizeof(msg)), since spi_flash_read() doesn't
+> guarantee msg.retlen is zeroed for failures. 
 
-If you or Michal don't take a look at it, I'll rebase and resubmit it.
+Thanks!
 
-Brian
+> Do we want a
+> spi_flash_read_message_init() function, to mirror spi_message_init()?
+> 
+
+Not sure, there is nothing much to initialize (apart from memset msg to
+zero), all fields are expected to explicitly populated by MTD flash driver.
+
+>> +		msg.buf = buf;
+>> +		msg.from = from;
+>> +		msg.len = len;
+>> +		msg.read_opcode = nor->read_opcode;
+>> +		msg.addr_width = nor->addr_width;
+>> +		msg.dummy_bytes = dummy;
+>> +		/* TODO: Support other combinations */
+> 
+> Speaking of "other combinations": does the TI QSPI controller support
+> MMAP'ed read modes other than 1/1/{1,2,4}? It doesn't seem to implement
+> support, and the SPI core doesn't handle this. So if we merge any of
+> Cyrille's work on other modes, then this is going to break quickly.
+> 
+
+No, TI QSPI only supports 1/1/{1,2,4} mode in MMAP'ed mode or in normal
+SPI mode. This is specified in DT as:
+			spi-tx-bus-width = <1>;
+inside m25p80 slave node. This indicates that cmd,addr are always on D0
+line only.
+AFAIK, Cyrille's series starts using 4-4-4/2-2-2/ etc only if the flash
+ was  initially configured to be in that mode by bootloader/ROM code. If
+flash's bit to enter 4-4-4 is not set, then there will be no change and
+m25p80 continues to use 1-1-4 format for QUAD read. Therefore I don't
+think those patches will break TI QSPI. I will try and test that series
+on top of this patch sometime soon.
+
+-- 
+Regards
+Vignesh
