@@ -1,15 +1,15 @@
-Received: from m50-135.163.com ([123.125.50.135])
+Received: from m50-134.163.com ([123.125.50.134])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ankAk-0004j9-PW
- for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 09:54:51 +0000
+ id 1ankMJ-0004kb-NH
+ for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 10:06:49 +0000
 From: zengzhaoxiu@163.com
 To: dwmw2@infradead.org,
 	computersforpeace@gmail.com
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
-Subject: [PATCH v2 21/30] mtd: use parity functions in inftlcore
-Date: Wed,  6 Apr 2016 17:53:54 +0800
-Message-Id: <1459936434-8006-1-git-send-email-zengzhaoxiu@163.com>
+Subject: [PATCH v2 23/30] mtd: use parity16 in sm_ftl
+Date: Wed,  6 Apr 2016 18:05:47 +0800
+Message-Id: <1459937147-8173-1-git-send-email-zengzhaoxiu@163.com>
 In-Reply-To: <57031D9D.801@gmail.com>
 References: <57031D9D.801@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,43 +25,31 @@ From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
 
 Signed-off-by: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
 ---
- drivers/mtd/inftlcore.c | 17 ++++-------------
- 1 file changed, 4 insertions(+), 13 deletions(-)
+ drivers/mtd/sm_ftl.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
-index b66b541..8c9457b 100644
---- a/drivers/mtd/inftlcore.c
-+++ b/drivers/mtd/inftlcore.c
-@@ -457,15 +457,6 @@ static u16 INFTL_makefreeblock(struct INFTLrecord *inftl, unsigned pendingblock)
- 	return INFTL_foldchain(inftl, LongestChain, pendingblock);
- }
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index b096f8b..345ff1a 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -136,7 +136,7 @@ static int sm_get_lba(uint8_t *lba)
+ 		return -2;
  
--static int nrbits(unsigned int val, int bitcount)
--{
--	int i, total = 0;
--
--	for (i = 0; (i < bitcount); i++)
--		total += (((0x1 << i) & val) ? 1 : 0);
--	return total;
--}
--
- /*
-  * INFTL_findwriteunit: Return the unit number into which we can write
-  *                      for this block. Make it available if it isn't already.
-@@ -593,10 +584,10 @@ hitused:
- 		if (prev_block < inftl->nb_blocks)
- 			prev_block -= inftl->firstEUN;
+ 	/* check parity - endianness doesn't matter */
+-	if (hweight16(*(uint16_t *)lba) & 1)
++	if (parity16(*(uint16_t *)lba))
+ 		return -2;
  
--		parity = (nrbits(thisVUC, 16) & 0x1) ? 0x1 : 0;
--		parity |= (nrbits(prev_block, 16) & 0x1) ? 0x2 : 0;
--		parity |= (nrbits(anac, 8) & 0x1) ? 0x4 : 0;
--		parity |= (nrbits(nacs, 8) & 0x1) ? 0x8 : 0;
-+		parity  = parity16(thisVUC);
-+		parity |= parity16(prev_block) << 1;
-+		parity |= parity8(anac) << 2;
-+		parity |= parity8(nacs) << 3;
+ 	return (lba[1] >> 1) | ((lba[0] & 0x07) << 7);
+@@ -183,8 +183,7 @@ static void sm_write_lba(struct sm_oob *oob, uint16_t lba)
+ 	tmp[0] = 0x10 | ((lba >> 7) & 0x07);
+ 	tmp[1] = (lba << 1) & 0xFF;
  
- 		oob.u.a.virtualUnitNo = cpu_to_le16(thisVUC);
- 		oob.u.a.prevUnitNo = cpu_to_le16(prev_block);
+-	if (hweight16(*(uint16_t *)tmp) & 0x01)
+-		tmp[1] |= 1;
++	tmp[1] |= parity16(*(uint16_t *)tmp);
+ 
+ 	oob->lba_copy1[0] = oob->lba_copy2[0] = tmp[0];
+ 	oob->lba_copy1[1] = oob->lba_copy2[1] = tmp[1];
 -- 
 2.5.0
