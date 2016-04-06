@@ -1,23 +1,17 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anfsO-0001Js-LQ
- for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 05:20:23 +0000
-Subject: Re: [RESEND][PATCH] mtd: devices: m25p80: add support for mmap read
- request
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1459230377-26847-1-git-send-email-vigneshr@ti.com>
- <20160405181427.GA5561@localhost>
-CC: David Woodhouse <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Cyrille
- Pitchen <cyrille.pitchen@atmel.com>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <57049C31.7090505@ti.com>
-Date: Wed, 6 Apr 2016 10:48:41 +0530
-MIME-Version: 1.0
-In-Reply-To: <20160405181427.GA5561@localhost>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Received: from m50-134.163.com ([123.125.50.134])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ank9a-0004HV-PO
+ for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 09:53:40 +0000
+From: zengzhaoxiu@163.com
+To: dwmw2@infradead.org,
+	computersforpeace@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+Subject: [PATCH v2 20/30] mtd: use parity16 in ssfdc
+Date: Wed,  6 Apr 2016 17:52:24 +0800
+Message-Id: <1459936344-7947-1-git-send-email-zengzhaoxiu@163.com>
+In-Reply-To: <57031D9D.801@gmail.com>
+References: <57031D9D.801@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,80 +21,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
 
-On 04/05/2016 11:44 PM, Brian Norris wrote:
-> + Mark, Cyrille
-> 
-> On Tue, Mar 29, 2016 at 11:16:17AM +0530, Vignesh R wrote:
->> Certain SPI controllers may provide accelerated hardware interface to
->> read from m25p80 type flash devices in order to provide better read
->> performance. SPI core supports such devices with spi_flash_read() API.
->> Call spi_flash_read(), if supported, to make use of such interface.
->>
->> Signed-off-by: Vignesh R <vigneshr@ti.com>
->> ---
-> 
-> Applied, with a small diff.
-> 
->> Resend v5:
->> Rebased on top of v4.6-rc1
->> v5: http://www.spinics.net/lists/devicetree/msg106696.html
->>
->>  drivers/mtd/devices/m25p80.c | 20 ++++++++++++++++++++
->>  1 file changed, 20 insertions(+)
->>
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->> index c9c3b7fa3051..7730e633d7d3 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -131,6 +131,26 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->>  	/* convert the dummy cycles to the number of bytes */
->>  	dummy /= 8;
->>  
->> +	if (spi_flash_read_supported(spi)) {
->> +		struct spi_flash_read_message msg;
->> +		int ret;
->> +
-> 
-> I added a memset(&msg, 0, sizeof(msg)), since spi_flash_read() doesn't
-> guarantee msg.retlen is zeroed for failures. 
+The original get_parity return even parity of the input number. So
+hweight of "block_address & 0x7ff" must be odd if block_address is valid.
 
-Thanks!
+This patch use parity16, and rearrange the code.
 
-> Do we want a
-> spi_flash_read_message_init() function, to mirror spi_message_init()?
-> 
+Signed-off-by: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+---
+ drivers/mtd/ssfdc.c | 31 ++++++++-----------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
-Not sure, there is nothing much to initialize (apart from memset msg to
-zero), all fields are expected to explicitly populated by MTD flash driver.
-
->> +		msg.buf = buf;
->> +		msg.from = from;
->> +		msg.len = len;
->> +		msg.read_opcode = nor->read_opcode;
->> +		msg.addr_width = nor->addr_width;
->> +		msg.dummy_bytes = dummy;
->> +		/* TODO: Support other combinations */
-> 
-> Speaking of "other combinations": does the TI QSPI controller support
-> MMAP'ed read modes other than 1/1/{1,2,4}? It doesn't seem to implement
-> support, and the SPI core doesn't handle this. So if we merge any of
-> Cyrille's work on other modes, then this is going to break quickly.
-> 
-
-No, TI QSPI only supports 1/1/{1,2,4} mode in MMAP'ed mode or in normal
-SPI mode. This is specified in DT as:
-			spi-tx-bus-width = <1>;
-inside m25p80 slave node. This indicates that cmd,addr are always on D0
-line only.
-AFAIK, Cyrille's series starts using 4-4-4/2-2-2/ etc only if the flash
- was  initially configured to be in that mode by bootloader/ROM code. If
-flash's bit to enter 4-4-4 is not set, then there will be no change and
-m25p80 continues to use 1-1-4 format for QUAD read. Therefore I don't
-think those patches will break TI QSPI. I will try and test that series
-on top of this patch sometime soon.
-
+diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
+index daf82ba..1d55f15 100644
+--- a/drivers/mtd/ssfdc.c
++++ b/drivers/mtd/ssfdc.c
+@@ -182,24 +182,10 @@ static int read_raw_oob(struct mtd_info *mtd, loff_t offs, uint8_t *buf)
+ 	return 0;
+ }
+ 
+-/* Parity calculator on a word of n bit size */
+-static int get_parity(int number, int size)
+-{
+- 	int k;
+-	int parity;
+-
+-	parity = 1;
+-	for (k = 0; k < size; k++) {
+-		parity += (number >> k);
+-		parity &= 1;
+-	}
+-	return parity;
+-}
+-
+ /* Read and validate the logical block address field stored in the OOB */
+ static int get_logical_address(uint8_t *oob_buf)
+ {
+-	int block_address, parity;
++	int block_address;
+ 	int offset[2] = {6, 11}; /* offset of the 2 address fields within OOB */
+ 	int j;
+ 	int ok = 0;
+@@ -215,18 +201,17 @@ static int get_logical_address(uint8_t *oob_buf)
+ 
+ 		/* Check for the signature bits in the address field (MSBits) */
+ 		if ((block_address & ~0x7FF) == 0x1000) {
+-			parity = block_address & 0x01;
+ 			block_address &= 0x7FF;
+-			block_address >>= 1;
+ 
+-			if (get_parity(block_address, 10) != parity) {
+-				pr_debug("SSFDC_RO: logical address field%d"
+-					"parity error(0x%04X)\n", j+1,
+-					block_address);
+-			} else {
+-				ok = 1;
++			ok = parity16(block_address);
++			if (ok) {
++				block_address >>= 1;
+ 				break;
+ 			}
++
++			pr_debug("SSFDC_RO: logical address field%d"
++				"parity error(0x%04X)\n", j+1,
++				block_address);
+ 		}
+ 	}
+ 
 -- 
-Regards
-Vignesh
+2.5.0
