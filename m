@@ -1,33 +1,24 @@
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anoQN-00026M-KI
- for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 14:27:16 +0000
-Date: Wed, 6 Apr 2016 07:26:53 -0700
-From: Vinod Koul <vinod.koul@intel.com>
-To: Keguang Zhang <keguang.zhang@gmail.com>
-Cc: linux-mips@linux-mips.org, linux-clk@vger.kernel.org,
- linux-pm@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@codeaurora.org>,
- "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Dan Williams <dan.j.williams@intel.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Courbot <gnurou@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH V1 3/7] dmaengine: Loongson1: add Loongson1 dmaengine
- driver
-Message-ID: <20160406142652.GC27292@vkoul-mobl.iind.intel.com>
-References: <1459946095-7637-1-git-send-email-keguang.zhang@gmail.com>
- <1459946095-7637-4-git-send-email-keguang.zhang@gmail.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1anqkl-0003i6-4U
+ for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 16:56:27 +0000
+Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+To: Marek Vasut <marex@denx.de>, <linux-mtd@lists.infradead.org>
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <1452486886-8049-2-git-send-email-marex@denx.de>
+CC: Graham Moore <grmoore@opensource.altera.com>, Alan Tull
+ <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
+ <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, <devicetree@vger.kernel.org>
+From: "R, Vignesh" <vigneshr@ti.com>
+Message-ID: <57053F81.70204@ti.com>
+Date: Wed, 6 Apr 2016 22:25:29 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1459946095-7637-4-git-send-email-keguang.zhang@gmail.com>
+In-Reply-To: <1452486886-8049-2-git-send-email-marex@denx.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,50 +28,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 06, 2016 at 08:34:51PM +0800, Keguang Zhang wrote:
-> @@ -527,6 +527,15 @@ config ZX_DMA
->  	help
->  	  Support the DMA engine for ZTE ZX296702 platform devices.
->  
-> +config DMA_LOONGSON1
+Hi Marek,
 
-The kconfig and makefile is sorted alphabetically, pls arrage these entries
-accordingly
+I encountered a issue with this driver while testing.
 
-> +
-> +		/*memorize the physical address of descriptor */
-
-bad comment style
+On 1/11/2016 10:04 AM, Marek Vasut wrote:
+> From: Graham Moore <grmoore@opensource.altera.com>
+> 
+> Add support for the Cadence QSPI controller. This controller is
+> present in the Altera SoCFPGA SoCs and this driver has been tested
+> on the Cyclone V SoC.
 
 
-> +	/*allocate DMA descriptors */
-
-here and other places too :(
-
-> +static enum dma_status ls1x_dma_tx_status(struct dma_chan *chan,
-> +					  dma_cookie_t cookie,
-> +					  struct dma_tx_state *txstate)
+> +static void cqspi_switch_cs(struct spi_nor *nor)
 > +{
-> +	struct ls1x_dma_chan *dma_chan = to_ls1x_dma_chan(chan);
-> +	struct ls1x_dma_desc *dma_desc = dma_chan->dma_desc;
-> +	struct virt_dma_desc *vdesc;
-> +	enum dma_status status;
-> +	unsigned int residue = 0;
-> +	unsigned long flags;
+> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
+> +	struct cqspi_st *cqspi = f_pdata->cqspi;
+> +	void __iomem *iobase = cqspi->iobase;
+> +	unsigned int reg;
 > +
-> +	status = dma_cookie_status(chan, cookie, txstate);
-> +	if ((status == DMA_COMPLETE) || !txstate)
-> +		return status;
+> +	cqspi_controller_enable(cqspi, 0);
 > +
-> +	spin_lock_irqsave(&dma_chan->vchan.lock, flags);
+> +	/* configure page size and block size. */
+> +	reg = readl(iobase + CQSPI_REG_SIZE);
+> +	reg &= ~(CQSPI_REG_SIZE_PAGE_MASK << CQSPI_REG_SIZE_PAGE_LSB);
+> +	reg &= ~(CQSPI_REG_SIZE_BLOCK_MASK << CQSPI_REG_SIZE_BLOCK_LSB);
+> +	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
+> +	reg |= (nor->page_size << CQSPI_REG_SIZE_PAGE_LSB);
+> +	reg |= (ilog2(nor->mtd.erasesize) << CQSPI_REG_SIZE_BLOCK_LSB);
+> +	reg |= (nor->addr_width - 1);
+> +	writel(reg, iobase + CQSPI_REG_SIZE);
 > +
-> +	vdesc = vchan_find_desc(&dma_chan->vchan, cookie);
-> +	if (vdesc)
-> +		/* not yet processed */
-> +		residue = ls1x_dma_desc_residue(to_ls1x_dma_desc(vdesc), 0);
 
-If your usage queries reside repeatedly, then it might make sense to store
-the size which is residue here
+Page size and block size are configured here...
 
--- 
-~Vinod
+> +	/* configure the chip select */
+> +	cqspi_chipselect(nor);
+> +
+> +	cqspi_controller_enable(cqspi, 1);
+> +}
+> +
+> +static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
+> +{
+> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
+> +	struct cqspi_st *cqspi = f_pdata->cqspi;
+> +	const unsigned int sclk = f_pdata->clk_rate;
+> +
+> +	/* Switch chip select. */
+> +	if (cqspi->current_cs != f_pdata->cs) {
+> +		cqspi->current_cs = f_pdata->cs;
+> +		cqspi_switch_cs(nor);
+
+cqspi_switch_cs(nor) is called from cqspi_prep(). And is called only
+once for a given slave (assuming only one slave on the QSPI bus)
+
+> +	}
+> +
+> +	/* Setup baudrate divisor and delays */
+> +	if (cqspi->sclk != sclk) {
+> +		cqspi->sclk = sclk;
+> +		cqspi_controller_enable(cqspi, 0);
+> +		cqspi_config_baudrate_div(cqspi, sclk);
+> +		cqspi_delay(nor, sclk);
+> +		cqspi_readdata_capture(cqspi, 1, f_pdata->read_delay);
+> +		cqspi_controller_enable(cqspi, 1);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+> +{
+> +	int ret;
+> +
+> +	ret = cqspi_set_protocol(nor, nor->reg_proto);
+> +	if (ret)
+> +		return ret;
+> +
+> +	cqspi_prep(nor, SPI_NOR_OPS_READ);
+
+cqspi_read_reg() is first called to read JEDEC ID, this calls
+cqspi_prep() for first time. But nor->page_size, nor->mtd.erasesize are
+not yet populated. Therefore cqspi_switch_cs() will not populate
+CQSPI_REG_SIZE with correct values.
+I think its better to configure this register each time during
+read/write ops.
+
+Regards
+Vignesh
