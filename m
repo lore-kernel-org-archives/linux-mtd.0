@@ -1,25 +1,34 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1antqe-0001vm-TM
- for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 20:14:46 +0000
-Message-ID: <570563D3.9080704@denx.de>
-Date: Wed, 06 Apr 2016 21:30:27 +0200
-From: Marek Vasut <marex@denx.de>
-MIME-Version: 1.0
-To: "R, Vignesh" <vigneshr@ti.com>, linux-mtd@lists.infradead.org
-CC: Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
+Subject: Re: [PATCH 00/12] mtd: get rid of of_mtd.{c,h} and of_get_nand_xx()
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Roger Quadros
+ <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou Yang
+ <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Richard
+ Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
  David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-References: <1452486886-8049-1-git-send-email-marex@denx.de>
- <1452486886-8049-2-git-send-email-marex@denx.de> <57053F81.70204@ti.com>
-In-Reply-To: <57053F81.70204@ti.com>
-Content-Type: multipart/mixed; boundary="------------080709050400060109030307"
+ Brian Norris <computersforpeace@gmail.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Stefan Agner <stefan@agner.ch>
+References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+CC: <linux-omap@vger.kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
+ <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ <bcm-kernel-feedback-list@broadcom.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, <linux-sunxi@googlegroups.com>, Zhou Wang
+ <wangzhou1@hisilicon.com>, Alex Smith <alex.smith@imgtec.com>, Harvey Hunt
+ <harvey.hunt@imgtec.com>
+From: "Franklin S Cooper Jr." <fcooper@ti.com>
+Message-ID: <57059CAF.3030002@ti.com>
+Date: Wed, 6 Apr 2016 18:33:03 -0500
+MIME-Version: 1.0
+In-Reply-To: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,365 +38,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------080709050400060109030307
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
 
-On 04/06/2016 06:55 PM, R, Vignesh wrote:
-> Hi Marek,
 
-Hi!
-
-> I encountered a issue with this driver while testing.
-
-Try with the attached patches, I am planning to use them for V11
-submission. I think you're hitting the problem with missing buslock.
-
-> On 1/11/2016 10:04 AM, Marek Vasut wrote:
->> From: Graham Moore <grmoore@opensource.altera.com>
->>
->> Add support for the Cadence QSPI controller. This controller is
->> present in the Altera SoCFPGA SoCs and this driver has been tested
->> on the Cyclone V SoC.
+On 04/01/2016 07:54 AM, Boris Brezillon wrote:
+> Hello,
 > 
+> of_mtd.{h,c} are providing the of_get_nand_xxx() helpers to help NAND
+> controller drivers parse some generic NAND DT properties.
+> An infrastructure has recently been added to NAND core to automatically
+> parse those properties when nand_scan_ident() is called, thus removing
+> the need for NAND controller drivers to manually parse them.
 > 
->> +static void cqspi_switch_cs(struct spi_nor *nor)
->> +{
->> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
->> +	struct cqspi_st *cqspi = f_pdata->cqspi;
->> +	void __iomem *iobase = cqspi->iobase;
->> +	unsigned int reg;
->> +
->> +	cqspi_controller_enable(cqspi, 0);
->> +
->> +	/* configure page size and block size. */
->> +	reg = readl(iobase + CQSPI_REG_SIZE);
->> +	reg &= ~(CQSPI_REG_SIZE_PAGE_MASK << CQSPI_REG_SIZE_PAGE_LSB);
->> +	reg &= ~(CQSPI_REG_SIZE_BLOCK_MASK << CQSPI_REG_SIZE_BLOCK_LSB);
->> +	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
->> +	reg |= (nor->page_size << CQSPI_REG_SIZE_PAGE_LSB);
->> +	reg |= (ilog2(nor->mtd.erasesize) << CQSPI_REG_SIZE_BLOCK_LSB);
->> +	reg |= (nor->addr_width - 1);
->> +	writel(reg, iobase + CQSPI_REG_SIZE);
->> +
-> 
-> Page size and block size are configured here...
-> 
->> +	/* configure the chip select */
->> +	cqspi_chipselect(nor);
->> +
->> +	cqspi_controller_enable(cqspi, 1);
->> +}
->> +
->> +static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->> +{
->> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
->> +	struct cqspi_st *cqspi = f_pdata->cqspi;
->> +	const unsigned int sclk = f_pdata->clk_rate;
->> +
->> +	/* Switch chip select. */
->> +	if (cqspi->current_cs != f_pdata->cs) {
->> +		cqspi->current_cs = f_pdata->cs;
->> +		cqspi_switch_cs(nor);
-> 
-> cqspi_switch_cs(nor) is called from cqspi_prep(). And is called only
-> once for a given slave (assuming only one slave on the QSPI bus)
-> 
->> +	}
->> +
->> +	/* Setup baudrate divisor and delays */
->> +	if (cqspi->sclk != sclk) {
->> +		cqspi->sclk = sclk;
->> +		cqspi_controller_enable(cqspi, 0);
->> +		cqspi_config_baudrate_div(cqspi, sclk);
->> +		cqspi_delay(nor, sclk);
->> +		cqspi_readdata_capture(cqspi, 1, f_pdata->read_delay);
->> +		cqspi_controller_enable(cqspi, 1);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
->> +{
->> +	int ret;
->> +
->> +	ret = cqspi_set_protocol(nor, nor->reg_proto);
->> +	if (ret)
->> +		return ret;
->> +
->> +	cqspi_prep(nor, SPI_NOR_OPS_READ);
-> 
-> cqspi_read_reg() is first called to read JEDEC ID, this calls
-> cqspi_prep() for first time. But nor->page_size, nor->mtd.erasesize are
-> not yet populated. Therefore cqspi_switch_cs() will not populate
-> CQSPI_REG_SIZE with correct values.
-> I think its better to configure this register each time during
-> read/write ops.
-> 
-> Regards
-> Vignesh
+> This series modifies drivers still making use of those helpers to rely
+> on NAND core initialization, and get rid of the of_mtd.{c,h} files by
+> moving the of_get_nand_xx() helpers into nand_base.c.
 > 
 
+Nothing broke when I ran some NAND tests on my AM335x GP EVM (OMAP SOC).
+Tested-by: Franklin S Cooper Jr. <fcooper@ti.com>
 
--- 
-Best regards,
-Marek Vasut
-
---------------080709050400060109030307
-Content-Type: text/x-patch;
- name="0001-mtd-spi-nor-cqspi-Reinit-completion-during-indirect-.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-mtd-spi-nor-cqspi-Reinit-completion-during-indirect-.pa";
- filename*1="tch"
-
->From 6a649c8263149b06d29a3acc91b63fb0c1728deb Mon Sep 17 00:00:00 2001
-From: Marek Vasut <marex@denx.de>
-Date: Wed, 23 Mar 2016 08:26:46 +0100
-Subject: [PATCH 1/3] mtd: spi-nor: cqspi: Reinit completion during indirect
- read and write
-
-Reinit the completion structures when performing indirect I/O. This
-does not manifest as a bug, but is necessary to make the code fully
-correct.
-
-Signed-off-by: Marek Vasut <marex@denx.de>
----
- drivers/mtd/spi-nor/cadence-quadspi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index d9a7a67..a4d246c 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -527,6 +527,9 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor,
- 			remaining -= bytes_to_read;
- 			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
- 		}
-+
-+		if (remaining > 0)
-+			reinit_completion(&cqspi->transfer_complete);
- 	}
- 
- 	/* Check indirect done status */
-@@ -616,6 +619,9 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor,
- 
- 		txbuf += write_bytes;
- 		remaining -= write_bytes;
-+
-+		if (remaining > 0)
-+			reinit_completion(&cqspi->transfer_complete);
- 	}
- 
- 	/* Check indirect done status */
--- 
-2.7.0
-
-
---------------080709050400060109030307
-Content-Type: text/x-patch;
- name="0002-mtd-spi-nor-cqspi-Optimize-the-control-reconfigurati.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0002-mtd-spi-nor-cqspi-Optimize-the-control-reconfigurati.pa";
- filename*1="tch"
-
->From 30391427f34193d9229e70bf62794cbcb733b047 Mon Sep 17 00:00:00 2001
-From: Marek Vasut <marex@denx.de>
-Date: Wed, 23 Mar 2016 08:27:50 +0100
-Subject: [PATCH 2/3] mtd: spi-nor: cqspi: Optimize the control reconfiguration
-
-Always disable and re-enable the controller only once when switching
-the chipselect and bus speed instead of doing so twice.
-
-Signed-off-by: Marek Vasut <marex@denx.de>
----
- drivers/mtd/spi-nor/cadence-quadspi.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index a4d246c..ee309cb 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -905,8 +905,6 @@ static void cqspi_switch_cs(struct spi_nor *nor)
- 	void __iomem *iobase = cqspi->iobase;
- 	unsigned int reg;
- 
--	cqspi_controller_enable(cqspi, 0);
--
- 	/* configure page size and block size. */
- 	reg = readl(iobase + CQSPI_REG_SIZE);
- 	reg &= ~(CQSPI_REG_SIZE_PAGE_MASK << CQSPI_REG_SIZE_PAGE_LSB);
-@@ -919,8 +917,6 @@ static void cqspi_switch_cs(struct spi_nor *nor)
- 
- 	/* configure the chip select */
- 	cqspi_chipselect(nor);
--
--	cqspi_controller_enable(cqspi, 1);
- }
- 
- static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-@@ -928,23 +924,29 @@ static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
- 	struct cqspi_flash_pdata *f_pdata = nor->priv;
- 	struct cqspi_st *cqspi = f_pdata->cqspi;
- 	const unsigned int sclk = f_pdata->clk_rate;
-+	const int switch_cs = (cqspi->current_cs != f_pdata->cs);
-+	const int switch_ck = (cqspi->sclk != sclk);
-+
-+	if (switch_cs || switch_ck)
-+		cqspi_controller_enable(cqspi, 0);
- 
- 	/* Switch chip select. */
--	if (cqspi->current_cs != f_pdata->cs) {
-+	if (switch_cs) {
- 		cqspi->current_cs = f_pdata->cs;
- 		cqspi_switch_cs(nor);
- 	}
- 
- 	/* Setup baudrate divisor and delays */
--	if (cqspi->sclk != sclk) {
-+	if (switch_ck) {
- 		cqspi->sclk = sclk;
--		cqspi_controller_enable(cqspi, 0);
- 		cqspi_config_baudrate_div(cqspi, sclk);
- 		cqspi_delay(nor, sclk);
- 		cqspi_readdata_capture(cqspi, 1, f_pdata->read_delay);
--		cqspi_controller_enable(cqspi, 1);
- 	}
- 
-+	if (switch_cs || switch_ck)
-+		cqspi_controller_enable(cqspi, 1);
-+
- 	return 0;
- }
- 
--- 
-2.7.0
-
-
---------------080709050400060109030307
-Content-Type: text/x-patch;
- name="0003-mtd-spi-nor-cqspi-Add-bus-lock.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0003-mtd-spi-nor-cqspi-Add-bus-lock.patch"
-
->From e680fa497cf0e2f41fe1b56c7d6b868596d8e420 Mon Sep 17 00:00:00 2001
-From: Marek Vasut <marex@denx.de>
-Date: Wed, 23 Mar 2016 08:30:47 +0100
-Subject: [PATCH 3/3] mtd: spi-nor: cqspi: Add bus lock
-
-Lock the whole bus in .prepare callback and unlock the whole bus
-in the .unprepare callback. This is necessary to prevent a race
-condition when accessing two flashes, each of which has it's own
-instance of struct spi_nor, in parallel. The SPI NOR framework
-only locks the mutex in struct spi_nor and therefore the locking
-happens with per-flash granularity, which is not enough to prevent
-concurrent access to the SPI NOR controller registers.
-
-Signed-off-by: Marek Vasut <marex@denx.de>
----
- drivers/mtd/spi-nor/cadence-quadspi.c | 35 +++++++++++++++++++++++++++++------
- 1 file changed, 29 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index ee309cb..b086609 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -63,6 +63,7 @@ struct cqspi_st {
- 	void __iomem		*iobase;
- 	void __iomem		*ahb_base;
- 	struct completion	transfer_complete;
-+	struct mutex		bus_mutex;
- 
- 	int			current_cs;
- 	unsigned long		master_ref_clk_hz;
-@@ -919,7 +920,7 @@ static void cqspi_switch_cs(struct spi_nor *nor)
- 	cqspi_chipselect(nor);
- }
- 
--static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-+static int cqspi_prep_unlocked(struct spi_nor *nor, enum spi_nor_ops ops)
- {
- 	struct cqspi_flash_pdata *f_pdata = nor->priv;
- 	struct cqspi_st *cqspi = f_pdata->cqspi;
-@@ -950,31 +951,51 @@ static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
- 	return 0;
- }
- 
-+static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-+{
-+	struct cqspi_flash_pdata *f_pdata = nor->priv;
-+	struct cqspi_st *cqspi = f_pdata->cqspi;
-+
-+	mutex_lock(&cqspi->bus_mutex);
-+
-+	return cqspi_prep_unlocked(nor, ops);
-+}
-+
-+static void cqspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
-+{
-+	struct cqspi_flash_pdata *f_pdata = nor->priv;
-+	struct cqspi_st *cqspi = f_pdata->cqspi;
-+
-+	mutex_unlock(&cqspi->bus_mutex);
-+}
-+
- static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- {
- 	int ret;
- 
- 	ret = cqspi_set_protocol(nor, nor->reg_proto);
- 	if (ret)
--		return ret;
-+		goto exit;
- 
--	cqspi_prep(nor, SPI_NOR_OPS_READ);
-+	cqspi_prep_unlocked(nor, SPI_NOR_OPS_READ);
- 
- 	ret = cqspi_command_read(nor, &opcode, 1, buf, len);
-+exit:
- 	return ret;
- }
- 
- static int cqspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- {
--	int ret = 0;
-+	int ret;
- 
- 	ret = cqspi_set_protocol(nor, nor->reg_proto);
- 	if (ret)
--		return ret;
-+		goto exit;
- 
--	cqspi_prep(nor, SPI_NOR_OPS_WRITE);
-+	cqspi_prep_unlocked(nor, SPI_NOR_OPS_WRITE);
- 
- 	ret = cqspi_command_write(nor, opcode, buf, len);
-+exit:
- 	return ret;
- }
- 
-@@ -1113,6 +1134,7 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
- 		nor->write = cqspi_write;
- 		nor->erase = cqspi_erase;
- 		nor->prepare = cqspi_prep;
-+		nor->unprepare = cqspi_unprep;
- 
- 		mtd->name = kasprintf(GFP_KERNEL, "%s.%d", dev_name(dev), cs);
- 		if (!mtd->name) {
-@@ -1154,6 +1176,7 @@ static int cqspi_probe(struct platform_device *pdev)
- 	if (!cqspi)
- 		return -ENOMEM;
- 
-+	mutex_init(&cqspi->bus_mutex);
- 	cqspi->pdev = pdev;
- 	platform_set_drvdata(pdev, cqspi);
- 
--- 
-2.7.0
-
-
---------------080709050400060109030307--
+> Best Regards,
+> 
+> Boris
+> 
+> Boris Brezillon (12):
+>   mtd: nand: remove unneeded of_mtd.h inclusions
+>   mtd: nand: atmel: rely on generic DT parsing done in nand_scan_ident()
+>   mtd: nand: omap2: rely on generic DT parsing done in nand_scan_ident()
+>   mtd: nand: brcm: rely on generic DT parsing done in nand_scan_ident()
+>   mtd: nand: davinci: rely on generic DT parsing done in
+>     nand_scan_ident()
+>   mtd: nand: gpmi: rely on generic DT parsing done in nand_scan_ident()
+>   mtd: nand: hisi504: rely on generic DT parsing done in
+>     nand_scan_ident()
+>   mtd: nand: lpc32xx: rely on generic DT parsing done in
+>     nand_scan_ident()
+>   mtd: nand: mxc: rely on generic DT parsing done in nand_scan_ident()
+>   mtd: nand: pxa3xx: rely on generic DT parsing done in
+>     nand_scan_ident()
+>   mtd: nand: sh_flctl: rely on generic DT parsing done in
+>     nand_scan_ident()
+>   mtd: nand: move of_get_nand_xxx() helpers into nand_base.c
+> 
+>  drivers/memory/omap-gpmc.c             |   7 --
+>  drivers/mtd/nand/atmel_nand.c          | 133 +++++++++++++++-------------
+>  drivers/mtd/nand/brcmnand/brcmnand.c   |   5 +-
+>  drivers/mtd/nand/davinci_nand.c        |  85 +++++++++---------
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  21 +++--
+>  drivers/mtd/nand/hisi504_nand.c        |  14 +--
+>  drivers/mtd/nand/jz4780_nand.c         |   1 -
+>  drivers/mtd/nand/lpc32xx_mlc.c         |   1 -
+>  drivers/mtd/nand/lpc32xx_slc.c         |  24 ++---
+>  drivers/mtd/nand/mxc_nand.c            |  50 +++++------
+>  drivers/mtd/nand/nand_base.c           |  99 ++++++++++++++++++++-
+>  drivers/mtd/nand/omap2.c               |   9 +-
+>  drivers/mtd/nand/pxa3xx_nand.c         |  28 +++---
+>  drivers/mtd/nand/qcom_nandc.c          |   1 -
+>  drivers/mtd/nand/sh_flctl.c            |  31 +++----
+>  drivers/mtd/nand/sunxi_nand.c          |   1 -
+>  drivers/mtd/nand/vf610_nfc.c           |   1 -
+>  drivers/of/Makefile                    |   1 -
+>  drivers/of/of_mtd.c                    | 155 ---------------------------------
+>  include/linux/of_mtd.h                 |  56 ------------
+>  20 files changed, 291 insertions(+), 432 deletions(-)
+>  delete mode 100644 drivers/of/of_mtd.c
+>  delete mode 100644 include/linux/of_mtd.h
+> 
