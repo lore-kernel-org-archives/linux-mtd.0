@@ -1,17 +1,29 @@
-Received: from m50-134.163.com ([123.125.50.134])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ankMJ-0004kb-NH
- for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 10:06:49 +0000
-From: zengzhaoxiu@163.com
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
-Subject: [PATCH v2 23/30] mtd: use parity16 in sm_ftl
-Date: Wed,  6 Apr 2016 18:05:47 +0800
-Message-Id: <1459937147-8173-1-git-send-email-zengzhaoxiu@163.com>
-In-Reply-To: <57031D9D.801@gmail.com>
-References: <57031D9D.801@gmail.com>
+Received: from mail-pa0-x242.google.com ([2607:f8b0:400e:c03::242])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1anmIu-0007fL-SA
+ for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 12:11:25 +0000
+Received: by mail-pa0-x242.google.com with SMTP id zy2so3914584pac.2
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Apr 2016 05:11:03 -0700 (PDT)
+From: Keguang Zhang <keguang.zhang@gmail.com>
+To: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org,
+ linux-clk@vger.kernel.org, linux-pm@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Cc: Ralf Baechle <ralf@linux-mips.org>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@codeaurora.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Viresh Kumar <viresh.kumar@linaro.org>, Vinod Koul <vinod.koul@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Kelvin Cheung <keguang.zhang@gmail.com>
+Subject: [PATCH 0/7] MIPS: Loongson1B: add NAND, DMA and GPIO support
+Date: Wed,  6 Apr 2016 20:09:30 +0800
+Message-Id: <1459944577-6423-1-git-send-email-keguang.zhang@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +33,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+From: Kelvin Cheung <keguang.zhang@gmail.com>
 
-Signed-off-by: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
----
- drivers/mtd/sm_ftl.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+This patchset is to add NAND, DMA and GPIO support for Loongson1B,
+and moreover, include some updates/fixes.
 
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-index b096f8b..345ff1a 100644
---- a/drivers/mtd/sm_ftl.c
-+++ b/drivers/mtd/sm_ftl.c
-@@ -136,7 +136,7 @@ static int sm_get_lba(uint8_t *lba)
- 		return -2;
- 
- 	/* check parity - endianness doesn't matter */
--	if (hweight16(*(uint16_t *)lba) & 1)
-+	if (parity16(*(uint16_t *)lba))
- 		return -2;
- 
- 	return (lba[1] >> 1) | ((lba[0] & 0x07) << 7);
-@@ -183,8 +183,7 @@ static void sm_write_lba(struct sm_oob *oob, uint16_t lba)
- 	tmp[0] = 0x10 | ((lba >> 7) & 0x07);
- 	tmp[1] = (lba << 1) & 0xFF;
- 
--	if (hweight16(*(uint16_t *)tmp) & 0x01)
--		tmp[1] |= 1;
-+	tmp[1] |= parity16(*(uint16_t *)tmp);
- 
- 	oob->lba_copy1[0] = oob->lba_copy2[0] = tmp[0];
- 	oob->lba_copy1[1] = oob->lba_copy2[1] = tmp[1];
+This applies on top of mips-for-linux-next.
+
+Thanks!
+
+Kelvin Cheung (7):
+  clk: Loongson1: Update clocks of Loongson1B
+  cpufreq: Loongson1: Update cpufreq of Loongson1B
+  dmaengine: Loongson1: add Loongson1 dmaengine driver
+  mtd: nand: add Loongson1 NAND driver
+  gpio: Loongson1: add Loongson1 GPIO driver
+  MIPS: Loongson1B: Some updates/fixes for LS1B
+  MAINTAINERS: add Loongson1 architecture entry
+
+ MAINTAINERS                                       |   9 +
+ arch/mips/Kconfig                                 |   2 +
+ arch/mips/configs/loongson1b_defconfig            | 125 +++++
+ arch/mips/configs/ls1b_defconfig                  | 110 -----
+ arch/mips/include/asm/mach-loongson32/cpufreq.h   |   1 -
+ arch/mips/include/asm/mach-loongson32/dma.h       |  25 +
+ arch/mips/include/asm/mach-loongson32/irq.h       |   1 -
+ arch/mips/include/asm/mach-loongson32/loongson1.h |   4 +-
+ arch/mips/include/asm/mach-loongson32/nand.h      |  30 ++
+ arch/mips/include/asm/mach-loongson32/platform.h  |  14 +-
+ arch/mips/include/asm/mach-loongson32/regs-clk.h  |  24 +-
+ arch/mips/include/asm/mach-loongson32/regs-mux.h  |  84 ++--
+ arch/mips/include/asm/mach-loongson32/regs-pwm.h  |  12 +-
+ arch/mips/loongson32/common/platform.c            | 105 ++++-
+ arch/mips/loongson32/common/reset.c               |  13 +-
+ arch/mips/loongson32/common/time.c                |  27 +-
+ arch/mips/loongson32/ls1b/board.c                 |  67 ++-
+ drivers/clk/Makefile                              |   2 +-
+ drivers/clk/clk-loongson1.c                       | 163 +++++++
+ drivers/clk/clk-ls1x.c                            | 162 -------
+ drivers/cpufreq/Makefile                          |   2 +-
+ drivers/cpufreq/loongson1-cpufreq.c               | 230 +++++++++
+ drivers/cpufreq/ls1x-cpufreq.c                    | 222 ---------
+ drivers/dma/Kconfig                               |   9 +
+ drivers/dma/Makefile                              |   1 +
+ drivers/dma/loongson1-dma.c                       | 546 ++++++++++++++++++++++
+ drivers/gpio/Kconfig                              |   7 +
+ drivers/gpio/Makefile                             |   1 +
+ drivers/gpio/gpio-loongson1.c                     | 102 ++++
+ drivers/mtd/nand/Kconfig                          |   8 +
+ drivers/mtd/nand/Makefile                         |   1 +
+ drivers/mtd/nand/loongson1_nand.c                 | 522 +++++++++++++++++++++
+ 32 files changed, 2041 insertions(+), 590 deletions(-)
+ create mode 100644 arch/mips/configs/loongson1b_defconfig
+ delete mode 100644 arch/mips/configs/ls1b_defconfig
+ create mode 100644 arch/mips/include/asm/mach-loongson32/dma.h
+ create mode 100644 arch/mips/include/asm/mach-loongson32/nand.h
+ create mode 100644 drivers/clk/clk-loongson1.c
+ delete mode 100644 drivers/clk/clk-ls1x.c
+ create mode 100644 drivers/cpufreq/loongson1-cpufreq.c
+ delete mode 100644 drivers/cpufreq/ls1x-cpufreq.c
+ create mode 100644 drivers/dma/loongson1-dma.c
+ create mode 100644 drivers/gpio/gpio-loongson1.c
+ create mode 100644 drivers/mtd/nand/loongson1_nand.c
+
 -- 
-2.5.0
+1.9.1
