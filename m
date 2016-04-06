@@ -1,24 +1,29 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-pf0-x236.google.com ([2607:f8b0:400e:c00::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anqkl-0003i6-4U
- for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 16:56:27 +0000
-Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-To: Marek Vasut <marex@denx.de>, <linux-mtd@lists.infradead.org>
-References: <1452486886-8049-1-git-send-email-marex@denx.de>
- <1452486886-8049-2-git-send-email-marex@denx.de>
-CC: Graham Moore <grmoore@opensource.altera.com>, Alan Tull
- <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
- <dinguyen@opensource.altera.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>, <devicetree@vger.kernel.org>
-From: "R, Vignesh" <vigneshr@ti.com>
-Message-ID: <57053F81.70204@ti.com>
-Date: Wed, 6 Apr 2016 22:25:29 +0530
+ id 1anrdr-0008M4-Pf
+ for linux-mtd@lists.infradead.org; Wed, 06 Apr 2016 17:53:24 +0000
+Received: by mail-pf0-x236.google.com with SMTP id n1so38090373pfn.2
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Apr 2016 10:53:03 -0700 (PDT)
+Date: Wed, 6 Apr 2016 10:52:54 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Li Yang <leoli@freescale.com>
+Cc: Scott Wood <oss@buserror.net>, Raghav Dogra <raghav.dogra@nxp.com>,
+ linux-mtd@lists.infradead.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ Raghav Dogra <raghav@freescale.com>,
+ Jaiprakash Singh <b44839@freescale.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
+Message-ID: <20160406175254.GC5243@localhost>
+References: <1455708258-3831-1-git-send-email-raghav.dogra@nxp.com>
+ <CADRPPNS1i1XgtpyiT_=rDuDXBDn=ehNY32=RKTC9hdKXhWWq8A@mail.gmail.com>
+ <1455840434.2463.97.camel@buserror.net>
+ <CADRPPNTauz=T9oWCeZy8G8s0vo9fmieRhn=Gd3jVqqJJEHV_ag@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1452486886-8049-2-git-send-email-marex@denx.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADRPPNTauz=T9oWCeZy8G8s0vo9fmieRhn=Gd3jVqqJJEHV_ag@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,91 +33,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
+Hi,
 
-I encountered a issue with this driver while testing.
-
-On 1/11/2016 10:04 AM, Marek Vasut wrote:
-> From: Graham Moore <grmoore@opensource.altera.com>
+On Wed, Mar 30, 2016 at 03:43:40PM -0500, Li Yang wrote:
+> Hi Brian,
 > 
-> Add support for the Cadence QSPI controller. This controller is
-> present in the Altera SoCFPGA SoCs and this driver has been tested
-> on the Cyclone V SoC.
+> Could you help to review and pull in this patch and the Kconfig update
+> after this patch(https://patchwork.ozlabs.org/patch/557389/)?  It
 
+It's probably best for Boris to apply this now.
 
-> +static void cqspi_switch_cs(struct spi_nor *nor)
-> +{
-> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
-> +	struct cqspi_st *cqspi = f_pdata->cqspi;
-> +	void __iomem *iobase = cqspi->iobase;
-> +	unsigned int reg;
-> +
-> +	cqspi_controller_enable(cqspi, 0);
-> +
-> +	/* configure page size and block size. */
-> +	reg = readl(iobase + CQSPI_REG_SIZE);
-> +	reg &= ~(CQSPI_REG_SIZE_PAGE_MASK << CQSPI_REG_SIZE_PAGE_LSB);
-> +	reg &= ~(CQSPI_REG_SIZE_BLOCK_MASK << CQSPI_REG_SIZE_BLOCK_LSB);
-> +	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
-> +	reg |= (nor->page_size << CQSPI_REG_SIZE_PAGE_LSB);
-> +	reg |= (ilog2(nor->mtd.erasesize) << CQSPI_REG_SIZE_BLOCK_LSB);
-> +	reg |= (nor->addr_width - 1);
-> +	writel(reg, iobase + CQSPI_REG_SIZE);
-> +
+> stated a dependency in the notes, but actually it should be applied
+> cleanly without that patch.  These patches are critical to make NAND
+> mtd feature work for our new chips.
+> 
+> Regards,
+> Leo
+> 
+> On Thu, Feb 18, 2016 at 6:07 PM, Scott Wood <oss@buserror.net> wrote:
+> > On Thu, 2016-02-18 at 15:18 -0600, Leo Li wrote:
+> >> On Wed, Feb 17, 2016 at 5:24 AM, Raghav Dogra <raghav.dogra@nxp.com> wrote:
+> >> > The new IFC controller version 2.0 has a different memory map page.
+> >> > Upto IFC 1.4 PAGE size is 4 KB and from IFC2.0 PAGE size is 64KB.
+> >> > This patch segregates the IFC global and runtime registers to appropriate
+> >> > PAGE sizes.
+> >> >
+> >> > Signed-off-by: Jaiprakash Singh <b44839@freescale.com>
+> >> > Signed-off-by: Raghav Dogra <raghav@freescale.com>
+> >> > Acked-by: Li Yang <leoyang.li@nxp.com>
+> >> > Signed-off-by: Raghav Dogra <raghav.dogra@nxp.com>
+> >> > ---
+> >> > Changes for v3: not dependent on
+> >> > "drivers/memory: Add deep sleep support for IFC" patch
+> >> >
+> >> > Changes for v2: rebased to resolve conflicts
+> >> > Applicable to git://git.infradead.org/l2-mtd.git
+> >> >
+> >> > This patch is dependent on "drivers/memory: Add deep sleep support for
+> >> > IFC"
+> >> > https://patchwork.ozlabs.org/patch/582762/
+> >> > which is also applicable to git://git.infradead.org/l2-mtd.git
 
-Page size and block size are configured here...
+For the patch:
 
-> +	/* configure the chip select */
-> +	cqspi_chipselect(nor);
-> +
-> +	cqspi_controller_enable(cqspi, 1);
-> +}
-> +
-> +static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-> +{
-> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
-> +	struct cqspi_st *cqspi = f_pdata->cqspi;
-> +	const unsigned int sclk = f_pdata->clk_rate;
-> +
-> +	/* Switch chip select. */
-> +	if (cqspi->current_cs != f_pdata->cs) {
-> +		cqspi->current_cs = f_pdata->cs;
-> +		cqspi_switch_cs(nor);
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-cqspi_switch_cs(nor) is called from cqspi_prep(). And is called only
-once for a given slave (assuming only one slave on the QSPI bus)
-
-> +	}
-> +
-> +	/* Setup baudrate divisor and delays */
-> +	if (cqspi->sclk != sclk) {
-> +		cqspi->sclk = sclk;
-> +		cqspi_controller_enable(cqspi, 0);
-> +		cqspi_config_baudrate_div(cqspi, sclk);
-> +		cqspi_delay(nor, sclk);
-> +		cqspi_readdata_capture(cqspi, 1, f_pdata->read_delay);
-> +		cqspi_controller_enable(cqspi, 1);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
-> +{
-> +	int ret;
-> +
-> +	ret = cqspi_set_protocol(nor, nor->reg_proto);
-> +	if (ret)
-> +		return ret;
-> +
-> +	cqspi_prep(nor, SPI_NOR_OPS_READ);
-
-cqspi_read_reg() is first called to read JEDEC ID, this calls
-cqspi_prep() for first time. But nor->page_size, nor->mtd.erasesize are
-not yet populated. Therefore cqspi_switch_cs() will not populate
-CQSPI_REG_SIZE with correct values.
-I think its better to configure this register each time during
-read/write ops.
-
-Regards
-Vignesh
+> >> This patch seems to be in good shape, but the dependency is still
+> >> having quite some feedback to be addressed.  Depending on it will
+> >> greatly delay the time that this critical patch for LS2 to be merged.
+> >> Could you remove the dependency like Scott already suggested?
+> >
+> > According to the changelog the dependency has been removed (it would have been
+> > clearer to remove this comment as well...).
+> >
+> > -Scott
+> >
+> 
+> 
+> 
+> -- 
+> - Leo
