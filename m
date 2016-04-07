@@ -1,6 +1,6 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ao6sw-00023I-Bh
+ id 1ao6sw-00023s-Pm
  for linux-mtd@lists.infradead.org; Thu, 07 Apr 2016 10:10:01 +0000
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>,
@@ -10,9 +10,10 @@ CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
  <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Roger Quadros
  <rogerq@ti.com>
-Subject: [PATCH v6 01/17] ARM: OMAP2+: gpmc: Add platform data
-Date: Thu, 7 Apr 2016 13:08:19 +0300
-Message-ID: <1460023715-19332-2-git-send-email-rogerq@ti.com>
+Subject: [PATCH v6 04/17] memory: omap-gpmc: Add GPMC-NAND ops to get
+ writebufferempty status
+Date: Thu, 7 Apr 2016 13:08:22 +0300
+Message-ID: <1460023715-19332-5-git-send-email-rogerq@ti.com>
 In-Reply-To: <1460023715-19332-1-git-send-email-rogerq@ti.com>
 References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -26,66 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a platform data structure for GPMC. It contains all the necessary
-platform information that needs to be passed from platform init code
-to GPMC driver.
+This is needed by OMAP NAND driver to poll the empty status
+of the writebuffer.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- include/linux/omap-gpmc.h               |  3 +--
- include/linux/platform_data/gpmc-omap.h | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+), 2 deletions(-)
- create mode 100644 include/linux/platform_data/gpmc-omap.h
+ drivers/memory/omap-gpmc.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/omap-gpmc.h b/include/linux/omap-gpmc.h
-index d833eb4..45d9075 100644
---- a/include/linux/omap-gpmc.h
-+++ b/include/linux/omap-gpmc.h
-@@ -7,8 +7,7 @@
-  *  option) any later version.
-  */
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index 0b62afd..90dfba5 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -81,6 +81,8 @@
  
--/* Maximum Number of Chip Selects */
--#define GPMC_CS_NUM		8
-+#include <linux/platform_data/gpmc-omap.h>
+ #define GPMC_CONFIG_LIMITEDADDRESS		BIT(1)
  
- #define GPMC_CONFIG_WP		0x00000005
++#define GPMC_STATUS_EMPTYWRITEBUFFERSTATUS	BIT(0)
++
+ #define	GPMC_CONFIG2_CSEXTRADELAY		BIT(7)
+ #define	GPMC_CONFIG3_ADVEXTRADELAY		BIT(7)
+ #define	GPMC_CONFIG4_OEEXTRADELAY		BIT(7)
+@@ -1118,7 +1120,17 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
+ 	}
+ }
  
-diff --git a/include/linux/platform_data/gpmc-omap.h b/include/linux/platform_data/gpmc-omap.h
-new file mode 100644
-index 0000000..6804a8b
---- /dev/null
-+++ b/include/linux/platform_data/gpmc-omap.h
-@@ -0,0 +1,30 @@
-+/*
-+ * OMAP GPMC Platform data
-+ *
-+ * Copyright (C) 2014 Texas Instruments, Inc. - http://www.ti.com
-+ *	Roger Quadros <rogerq@ti.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms and conditions of the GNU General Public License,
-+ * version 2, as published by the Free Software Foundation.
-+ */
+-static struct gpmc_nand_ops nand_ops;
++static bool gpmc_nand_writebuffer_empty(void)
++{
++	if (gpmc_read_reg(GPMC_STATUS) & GPMC_STATUS_EMPTYWRITEBUFFERSTATUS)
++		return true;
 +
-+#ifndef _GPMC_OMAP_H_
-+#define _GPMC_OMAP_H_
++	return false;
++}
 +
-+/* Maximum Number of Chip Selects */
-+#define GPMC_CS_NUM		8
-+
-+/* Data for each chip select */
-+struct gpmc_omap_cs_data {
-+	bool valid;			/* data is valid */
-+	bool is_nand;			/* device within this CS is NAND */
-+	struct platform_device *pdev;	/* device within this CS region */
-+	unsigned int pdata_size;
++static struct gpmc_nand_ops nand_ops = {
++	.nand_writebuffer_empty = gpmc_nand_writebuffer_empty,
 +};
-+
-+struct gpmc_omap_platform_data {
-+	struct gpmc_omap_cs_data cs[GPMC_CS_NUM];
-+};
-+
-+#endif /* _GPMC_OMAP_H */
+ 
+ /**
+  * gpmc_omap_get_nand_ops - Get the GPMC NAND interface
 -- 
 2.5.0
