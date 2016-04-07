@@ -1,7 +1,7 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ao6tK-0002VE-5e
- for linux-mtd@lists.infradead.org; Thu, 07 Apr 2016 10:10:29 +0000
+ id 1ao6tK-0002KK-Qf
+ for linux-mtd@lists.infradead.org; Thu, 07 Apr 2016 10:10:31 +0000
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>,
  <boris.brezillon@free-electrons.com>
@@ -10,9 +10,9 @@ CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
  <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Roger Quadros
  <rogerq@ti.com>
-Subject: [PATCH v6 11/17] memory: omap-gpmc: Prevent mapping into 1st 16MB
-Date: Thu, 7 Apr 2016 13:08:29 +0300
-Message-ID: <1460023715-19332-12-git-send-email-rogerq@ti.com>
+Subject: [PATCH v6 10/17] mtd: nand: omap: Update DT binding documentation
+Date: Thu, 7 Apr 2016 13:08:28 +0300
+Message-ID: <1460023715-19332-11-git-send-email-rogerq@ti.com>
 In-Reply-To: <1460023715-19332-1-git-send-email-rogerq@ti.com>
 References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -26,67 +26,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We have been preventing mapping GPMC children in the
-first 1MB but really it has to be the first 16MB as
-the minimum GPMC partition size is 16MB.
-
-Also print an error message if CS mapping fails
-due to DT requesting address outside the GPMC
-map.
+Add compatible id and interrupts. The NAND interrupts are
+provided by the GPMC controller node.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/memory/omap-gpmc.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index 8dc6e3b..bfe4e87 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -94,6 +94,14 @@
- #define GPMC_CS_SIZE		0x30
- #define	GPMC_BCH_SIZE		0x10
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+index fb733c4..ff3215d2 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+@@ -13,7 +13,11 @@ Documentation/devicetree/bindings/mtd/nand.txt
  
-+/*
-+ * The first 1MB of GPMC address space is typically mapped to
-+ * the internal ROM. Never allocate the first page, to
-+ * facilitate bug detection; even if we didn't boot from ROM.
-+ * As GPMC minimum partition size is 16MB we can only start from
-+ * there.
-+ */
-+#define GPMC_MEM_START		0x1000000
- #define GPMC_MEM_END		0x3FFFFFFF
+ Required properties:
  
- #define GPMC_CHUNK_SHIFT	24		/* 16 MB */
-@@ -1297,12 +1305,7 @@ static void gpmc_mem_init(void)
- {
- 	int cs;
+- - reg:		The CS line the peripheral is connected to
++ - compatible:	"ti,omap2-nand"
++ - reg:		range id (CS number), base offset and length of the
++		NAND I/O space
++ - interrupt-parent: must point to gpmc node
++ - interrupts:	Two interrupt specifiers, one for fifoevent, one for termcount.
  
--	/*
--	 * The first 1MB of GPMC address space is typically mapped to
--	 * the internal ROM. Never allocate the first page, to
--	 * facilitate bug detection; even if we didn't boot from ROM.
--	 */
--	gpmc_mem_root.start = SZ_1M;
-+	gpmc_mem_root.start = GPMC_MEM_START;
- 	gpmc_mem_root.end = GPMC_MEM_END;
+ Optional properties:
  
- 	/* Reserve all regions that has been set up by bootloader */
-@@ -1966,6 +1969,15 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "cannot remap GPMC CS %d to %pa\n",
- 			cs, &res.start);
-+		if (res.start < GPMC_MEM_START) {
-+			dev_info(&pdev->dev,
-+				 "GPMC CS %d start cannot be lesser than 0x%x\n",
-+				 cs, GPMC_MEM_START);
-+		} else if (res.end > GPMC_MEM_END) {
-+			dev_info(&pdev->dev,
-+				 "GPMC CS %d end cannot be greater than 0x%x\n",
-+				 cs, GPMC_MEM_END);
-+		}
- 		goto err;
- 	}
+@@ -55,17 +59,22 @@ Example for an AM33xx board:
+ 	gpmc: gpmc@50000000 {
+ 		compatible = "ti,am3352-gpmc";
+ 		ti,hwmods = "gpmc";
+-		reg = <0x50000000 0x1000000>;
++		reg = <0x50000000 0x36c>;
+ 		interrupts = <100>;
+ 		gpmc,num-cs = <8>;
+ 		gpmc,num-waitpins = <2>;
+ 		#address-cells = <2>;
+ 		#size-cells = <1>;
+-		ranges = <0 0 0x08000000 0x2000>;	/* CS0: NAND */
++		ranges = <0 0 0x08000000 0x1000000>;	/* CS0 space, 16MB */
+ 		elm_id = <&elm>;
++		interrupt-controller;
++		#interrupt-cells = <2>;
  
+ 		nand@0,0 {
+-			reg = <0 0 0>; /* CS0, offset 0 */
++			compatible = "ti,omap2-nand";
++			reg = <0 0 4>;		/* CS0, offset 0, NAND I/O window 4 */
++			interrupt-parent = <&gpmc>;
++			interrupts = <0 IRQ_TYPE_NONE>, <1 IRQ_TYPE NONE>;
+ 			nand-bus-width = <16>;
+ 			ti,nand-ecc-opt = "bch8";
+ 			ti,nand-xfer-type = "polled";
 -- 
 2.5.0
