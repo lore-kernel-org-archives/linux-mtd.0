@@ -1,27 +1,26 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1anzh6-0008P3-T1
- for linux-mtd@lists.infradead.org; Thu, 07 Apr 2016 02:29:19 +0000
-Message-ID: <5705C5E2.6070206@denx.de>
-Date: Thu, 07 Apr 2016 04:28:50 +0200
-From: Marek Vasut <marex@denx.de>
+ id 1ao1zt-0002xw-UI
+ for linux-mtd@lists.infradead.org; Thu, 07 Apr 2016 04:56:50 +0000
+Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+To: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <1452486886-8049-2-git-send-email-marex@denx.de> <57053F81.70204@ti.com>
+ <570563D3.9080704@denx.de>
+CC: Graham Moore <grmoore@opensource.altera.com>, Alan Tull
+ <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
+ <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <5705E858.3050700@ti.com>
+Date: Thu, 7 Apr 2016 10:25:52 +0530
 MIME-Version: 1.0
-To: Jiancheng Xue <xuejiancheng@huawei.com>,
- Brian Norris <computersforpeace@gmail.com>
-CC: linux-mtd@lists.infradead.org, robh+dt@kernel.org,
- dwmw2@infradead.org, boris.brezillon@free-electrons.com,
- juhosg@openwrt.org, furquan@google.com, suwenping@hisilicon.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- yanhaifeng@hisilicon.com, raojun@hisilicon.com,
- xuejiancheng@hisilicon.com, ml.yang@hisilicon.com, gaofei@hisilicon.com,
- yanghongwei@hisilicon.com, zhangzhenxing@hisilicon.com
-Subject: Re: [RESEND PATCH v9] mtd: spi-nor: add hisilicon spi-nor flash
- controller driver
-References: <1458979861-3619-1-git-send-email-xuejiancheng@huawei.com>
- <56F73BC9.5000300@gmail.com> <56F8F630.5050008@huawei.com>
- <20160404064418.GC13995@localhost> <5705C17F.9030904@huawei.com>
-In-Reply-To: <5705C17F.9030904@huawei.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <570563D3.9080704@denx.de>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,431 +31,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/07/2016 04:10 AM, Jiancheng Xue wrote:
-> Hi Brian,
->    Thank you very much for your comments. I'll fix these issues in next version.
-> In addition, for easy understanding I'd like to rewrite hisi_spi_nor_write and
-> hisi_spi_nor_read. Your comments on these modifications will be highly appreciated.
 
-Would you please stop top-posting ? It rubs some people the wrong way.
 
-> static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
-> 		size_t *retlen, u_char *read_buf)
-> {
-> 	struct hifmc_priv *priv = nor->priv;
-> 	struct hifmc_host *host = priv->host;
-> 	int i;
+On 04/07/2016 01:00 AM, Marek Vasut wrote:
+> On 04/06/2016 06:55 PM, R, Vignesh wrote:
+>> Hi Marek,
 > 
-> 	/* read all bytes in only one time */
-> 	if (len <= HIFMC_DMA_MAX_LEN) {
-> 		hisi_spi_nor_dma_transfer(nor, from, host->dma_buffer,
-> 				len, FMC_OP_READ);
-> 		memcpy(read_buf, host->buffer, len);
+> Hi!
+> 
+>> I encountered a issue with this driver while testing.
+> 
+> Try with the attached patches, I am planning to use them for V11
+> submission. I think you're hitting the problem with missing buslock.
+> 
 
-Is all the ad-hoc memcpying necessary? I think you can use
-dma_map_single() and co to obtain DMAble memory for your
-controller's use and then you can probably get rid of most
-of this stuff.
+Thanks for the patches.
+But I am pretty sure that's not the problem at my end, because I have
+only one flash device on QSPI bus.
 
-> 	} else {
-> 		/* read HIFMC_DMA_MAX_LEN bytes at a time */
-> 		for (i = 0; i < len; i += HIFMC_DMA_MAX_LEN) {
-> 			hisi_spi_nor_dma_transfer(nor, from + i, host->dma_buffer,
-> 				HIFMC_DMA_MAX_LEN, FMC_OP_READ);
-> 			memcpy(read_buf + i, host->buffer, HIFMC_DMA_MAX_LEN);
-> 		}
-> 		/* read remaining bytes */
-> 		i -= HIFMC_DMA_MAX_LEN;
-> 		hisi_spi_nor_dma_transfer(nor, from + i, host->dma_buffer,
-> 				len - i, FMC_OP_READ);
-> 		memcpy(read_buf + i, host->buffer, len - i);
-> 	}
-> 	*retlen = len;
-> 
-> 	return 0;
-> }
-> 
-> Because "len" passed from spi_nor_write is smaller than nor->page_size, and nor->page_size
-> is smaller than the length of host->dma_buffer. We can transfer "len" bytes data by
-> hisi_spi_nor_dma_transfer at one time. hisi_spi_nor_write can be simplified like below:
-> 
-> static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
-> 			size_t len, size_t *retlen, const u_char *write_buf)
-> {
-> 	struct hifmc_priv *priv = nor->priv;
-> 	struct hifmc_host *host = priv->host;
-> 
-> 	/* len is smaller than dma buffer length*/
-> 	memcpy(host->buffer, write_buf, len);
-> 	hisi_spi_nor_dma_transfer(nor, to, host->dma_buffer, len,
-> 					FMC_OP_WRITE);
-> 
-> 	*retlen = len;
-> }
-> 
-> Regards,
-> Jiancheng
-> 
-> On 2016/4/4 14:44, Brian Norris wrote:
->> Hi Jiancheng,
->>
->> Looking good. In addition to Marek's comments, I have just a few small
->> comments. I'll post a small diff at the end, and a few inline comments.
->>
->> On Mon, Mar 28, 2016 at 05:15:28PM +0800, Jiancheng Xue wrote:
->>> Hi Marek,
->>>     Firstly, thank you very much for your comments.
->>>
->>> On 2016/3/27 9:47, Marek Vasut wrote:
->>>> On 03/26/2016 09:11 AM, Jiancheng Xue wrote:
->>>>> Add hisilicon spi-nor flash controller driver
->>>>>
->>>>> Signed-off-by: Binquan Peng <pengbinquan@huawei.com>
->>>>> Signed-off-by: Jiancheng Xue <xuejiancheng@huawei.com>
->>>>> Acked-by: Rob Herring <robh@kernel.org>
->>>>> Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
->>>>> Reviewed-by: Jagan Teki <jteki@openedev.com>
->>>>> ---
->>>>> change log
->>>>> v9:
->>>>> Fixed issues pointed by Jagan Teki.
->>>>
->>>> It'd be really great if you could list which exact issues you fixed.
->>>>
->>>
->>> OK. I'll describe the history log more detailed in next version.
->>>
->>>>> v8:
->>>>> Fixed issues pointed by Ezequiel Garcia and Brian Norris.
->>>>> Moved dts binding file to mtd directory.
->>>>> Changed the compatible string more specific.
->>>>
->>>> [...]
->>
->> ^^ You were using <linux/of_device.h> in here, even though you don't
->> need any of its contents. You just wanted <linux/of.h> and
->> <linux/platform_device.h>.
->>
->>>>
->>>>> +/* Hardware register offsets and field definitions */
->>>>> +#define FMC_CFG				0x00
->>>>> +#define SPI_NOR_ADDR_MODE		BIT(10)
->>>>> +#define FMC_GLOBAL_CFG			0x04
->>>>> +#define FMC_GLOBAL_CFG_WP_ENABLE	BIT(6)
->>>>> +#define FMC_SPI_TIMING_CFG		0x08
->>>>> +#define TIMING_CFG_TCSH(nr)		(((nr) & 0xf) << 8)
->>>>> +#define TIMING_CFG_TCSS(nr)		(((nr) & 0xf) << 4)
->>>>> +#define TIMING_CFG_TSHSL(nr)		((nr) & 0xf)
->>>>> +#define CS_HOLD_TIME			0x6
->>>>> +#define CS_SETUP_TIME			0x6
->>>>> +#define CS_DESELECT_TIME		0xf
->>>>> +#define FMC_INT				0x18
->>>>> +#define FMC_INT_OP_DONE			BIT(0)
->>>>> +#define FMC_INT_CLR			0x20
->>>>> +#define FMC_CMD				0x24
->>>>> +#define FMC_CMD_CMD1(_cmd)		((_cmd) & 0xff)
->>>>
->>>> Drop the underscores in the argument names.
->>>>
->>> OK.
->>>>> +#define FMC_ADDRL			0x2c
->>>>> +#define FMC_OP_CFG			0x30
->>>>> +#define OP_CFG_FM_CS(_cs)		((_cs) << 11)
->>>>> +#define OP_CFG_MEM_IF_TYPE(_type)	(((_type) & 0x7) << 7)
->>>>> +#define OP_CFG_ADDR_NUM(_addr)		(((_addr) & 0x7) << 4)
->>>>> +#define OP_CFG_DUMMY_NUM(_dummy)	((_dummy) & 0xf)
->>>>> +#define FMC_DATA_NUM			0x38
->>>>> +#define FMC_DATA_NUM_CNT(_n)		((_n) & 0x3fff)
->>>>> +#define FMC_OP				0x3c
->>>>> +#define FMC_OP_DUMMY_EN			BIT(8)
->>>>> +#define FMC_OP_CMD1_EN			BIT(7)
->>>>> +#define FMC_OP_ADDR_EN			BIT(6)
->>>>> +#define FMC_OP_WRITE_DATA_EN		BIT(5)
->>>>> +#define FMC_OP_READ_DATA_EN		BIT(2)
->>>>> +#define FMC_OP_READ_STATUS_EN		BIT(1)
->>>>> +#define FMC_OP_REG_OP_START		BIT(0)
->>>>
->>>> [...]
->>>>
->>>>> +enum hifmc_iftype {
->>>>> +	IF_TYPE_STD,
->>>>> +	IF_TYPE_DUAL,
->>>>> +	IF_TYPE_DIO,
->>>>> +	IF_TYPE_QUAD,
->>>>> +	IF_TYPE_QIO,
->>>>> +};
->>>>> +
->>>>> +struct hifmc_priv {
->>>>> +	int chipselect;
->>>>
->>>> Can chipselect be set to < 0 values ?
->>>>
->>> The type will be changed to u32.
->>>
->>>>> +	u32 clkrate;
->>>>> +	struct hifmc_host *host;
->>>>> +};
->>>>> +
->>>>> +#define HIFMC_MAX_CHIP_NUM		2
->>>>
->>>> This does not scale very well, use dynamic allocation.
->>>>
->>> OK. Dynamic allocation will be used in next version.
->>>>> +struct hifmc_host {
->>>>> +	struct device *dev;
->>>>> +	struct mutex lock;
->>>>> +
->>>>> +	void __iomem *regbase;
->>>>> +	void __iomem *iobase;
->>>>> +	struct clk *clk;
->>>>> +	void *buffer;
->>>>> +	dma_addr_t dma_buffer;
->>>>> +
->>>>> +	struct spi_nor	nor[HIFMC_MAX_CHIP_NUM];
->>>>> +	struct hifmc_priv priv[HIFMC_MAX_CHIP_NUM];
->>>>> +	int num_chip;
->>>>> +};
->>>>> +
->>>>> +static inline int wait_op_finish(struct hifmc_host *host)
->>>>> +{
->>>>> +	unsigned int reg;
->>>>> +
->>>>> +	return readl_poll_timeout(host->regbase + FMC_INT, reg,
->>>>> +		(reg & FMC_INT_OP_DONE), 0, FMC_WAIT_TIMEOUT);
->>>>> +}
->>>>> +
->>>>> +static int get_if_type(enum read_mode flash_read)
->>>>> +{
->>>>> +	enum hifmc_iftype if_type;
->>>>> +
->>>>> +	switch (flash_read) {
->>>>> +	case SPI_NOR_DUAL:
->>>>> +		if_type = IF_TYPE_DUAL;
->>>>> +		break;
->>>>> +	case SPI_NOR_QUAD:
->>>>> +		if_type = IF_TYPE_QUAD;
->>>>> +		break;
->>>>> +	case SPI_NOR_NORMAL:
->>>>> +	case SPI_NOR_FAST:
->>>>> +	default:
->>>>> +		if_type = IF_TYPE_STD;
->>>>> +		break;
->>>>> +	}
->>>>> +
->>>>> +	return if_type;
->>>>> +}
->>>>> +
->>>>> +static void hisi_spi_nor_init(struct hifmc_host *host)
->>>>> +{
->>>>> +	unsigned int reg;
->>>>
->>>> Should be u32 here.
->>>>
->>> OK.
->>>>> +	reg = TIMING_CFG_TCSH(CS_HOLD_TIME)
->>>>> +		| TIMING_CFG_TCSS(CS_SETUP_TIME)
->>>>> +		| TIMING_CFG_TSHSL(CS_DESELECT_TIME);
->>>>> +	writel(reg, host->regbase + FMC_SPI_TIMING_CFG);
->>>>> +}
->>>>> +
->>>>> +static int hisi_spi_nor_prep(struct spi_nor *nor, enum spi_nor_ops ops)
->>>>> +{
->>>>> +	struct hifmc_priv *priv = nor->priv;
->>>>> +	struct hifmc_host *host = priv->host;
->>>>> +	int ret;
->>>>> +
->>>>> +	mutex_lock(&host->lock);
->>>>
->>>> Why do you need the mutex lock here ? Let me guess -- SPI NOR framework
->>>> locks a mutex in struct spi_nor , but that's not enough if you have
->>>> multiple SPI NORs on the same bus, because concurrent access to multiple
->>>> SPI NOR flashes needs locking on the controller level, right ?
->>>>
->>> Yes, you are quite right. The controller can connect with two SPI NOR flashes
->>> on one board. This lock is used on the controller level.
->>
->> Yeah... we should probably implement some common controller logic in the
->> core eventually. But the mutex is necessary for now.
->>
->>>>> +	ret = clk_set_rate(host->clk, priv->clkrate);
->>>>> +	if (ret)
->>>>> +		goto out;
->>>>> +
->>>>> +	ret = clk_prepare_enable(host->clk);
->>>>> +	if (ret)
->>>>> +		goto out;
->>>>> +
->>>>> +	return 0;
->>>>> +
->>>>> +out:
->>>>> +	mutex_unlock(&host->lock);
->>>>> +	return ret;
->>>>> +}
->>>>> +
->>>>> +static void hisi_spi_nor_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
->>>>> +{
->>>>> +	struct hifmc_priv *priv = nor->priv;
->>>>> +	struct hifmc_host *host = priv->host;
->>>>> +
->>>>> +	clk_disable_unprepare(host->clk);
->>>>> +	mutex_unlock(&host->lock);
->>>>> +}
->>>>> +
->>>>> +static void hisi_spi_nor_cmd_prepare(struct hifmc_host *host, u8 cmd,
->>>>> +		u32 *opcfg)
->>>>> +{
->>>>> +	u32 reg;
->>>>> +
->>>>> +	*opcfg |= FMC_OP_CMD1_EN;
->>>>> +	switch (cmd) {
->>>>> +	case SPINOR_OP_RDID:
->>>>> +	case SPINOR_OP_RDSR:
->>>>> +	case SPINOR_OP_RDCR:
->>>>> +		*opcfg |= FMC_OP_READ_DATA_EN;
->>>>> +		break;
->>>>> +	case SPINOR_OP_WREN:
->>>>> +		reg = readl(host->regbase + FMC_GLOBAL_CFG);
->>>>> +		if (reg & FMC_GLOBAL_CFG_WP_ENABLE) {
->>>>> +			reg &= ~FMC_GLOBAL_CFG_WP_ENABLE;
->>>>> +			writel(reg, host->regbase + FMC_GLOBAL_CFG);
->>>>> +		}
->>>>> +		break;
->>>>> +	case SPINOR_OP_WRSR:
->>>>> +		*opcfg |= FMC_OP_WRITE_DATA_EN;
->>>>> +		break;
->>>>> +	case SPINOR_OP_BE_4K:
->>>>> +	case SPINOR_OP_BE_4K_PMC:
->>>>> +	case SPINOR_OP_SE_4B:
->>>>> +	case SPINOR_OP_SE:
->>>>> +		*opcfg |= FMC_OP_ADDR_EN;
->>>>> +		break;
->>>>> +	case SPINOR_OP_EN4B:
->>>>> +		reg = readl(host->regbase + FMC_CFG);
->>>>> +		reg |= SPI_NOR_ADDR_MODE;
->>>>> +		writel(reg, host->regbase + FMC_CFG);
->>>>> +		break;
->>>>> +	case SPINOR_OP_EX4B:
->>>>> +		reg = readl(host->regbase + FMC_CFG);
->>>>> +		reg &= ~SPI_NOR_ADDR_MODE;
->>>>> +		writel(reg, host->regbase + FMC_CFG);
->>>>> +		break;
->>>>> +	case SPINOR_OP_CHIP_ERASE:
->>>>> +	default:
->>>>> +		break;
->>>>> +	}
->>>>
->>>> Won't the driver fail if we add new instructions into the SPI NOR core
->>>> which are not handled by this huge switch statement ?
->>>>
->>> Only some of commands are needed to process in this stage for the controller.
->>> Others have no needs. So this function won't return failure.
->>
->> It's not ideal to have this sort of function if we can avoid it (since
->> it's hard to figure out how to extend this for new opcodes). But it
->> looks necessary for now.
->>
->>> I'll combine SPINOR_OP_CHIP_ERASE into the default case in next version.
->>>
->>>>> +}
->>>>
->>>> [...]
->>>>
->>>>> +static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
->>>>> +			size_t len, size_t *retlen, const u_char *write_buf)
->>>>> +{
->>>>> +	struct hifmc_priv *priv = nor->priv;
->>>>> +	struct hifmc_host *host = priv->host;
->>>>> +	const unsigned char *ptr = write_buf;
->>>>> +	size_t actual_len;
->>>>> +
->>>>> +	*retlen = 0;
->>>>> +	while (len > 0) {
->>>>> +		if (to & HIFMC_DMA_MASK)
->>>>> +			actual_len = (HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK))
->>>>> +				>= len	? len
->>>>> +				: (HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK));
->>>>
->>>> Rewrite this as something like the following snippet, for the sake of
->>>> readability:
->>>>
->>>> actual_len = HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK);
->>>> if (actual_len >= len)
->>>>    actual_len = len;
->>>>
->>> OK. Thank you.
->>>>> +		else
->>>>> +			actual_len = (len >= HIFMC_DMA_MAX_LEN)
->>>>> +				? HIFMC_DMA_MAX_LEN : len;
->>
->> Wait, why do you need the else case? Isn't this just equivalent to the
->> first case? I'd suggest consolidating these two blocks, and dropping the
->> ?: entirely, since (like Marek said) it's hurting readability. So:
->>
->> 		/* Don't cross HIFMC_DMA_MAX_LEN alignment boundaries */
->> 		if ((HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK)) >= len)
->> 			actual_len = len;
->> 		else
->> 			actual_len = HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK);
->>
->>>>> +		memcpy(host->buffer, ptr, actual_len);
->>>>> +		hisi_spi_nor_dma_transfer(nor, to, host->dma_buffer, actual_len,
->>>>> +				FMC_OP_WRITE);
->>>>> +		to += actual_len;
->>>>> +		ptr += actual_len;
->>>>> +		len -= actual_len;
->>>>> +		*retlen += actual_len;
->>>>> +	}
->>>>> +}
->>
->> [...]
->>
->> Here's my diff:
->>
->> diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
->> index e974c92a0a25..0c58fd3b8790 100644
->> --- a/drivers/mtd/spi-nor/hisi-sfc.c
->> +++ b/drivers/mtd/spi-nor/hisi-sfc.c
->> @@ -16,13 +16,15 @@
->>   * You should have received a copy of the GNU General Public License
->>   * along with this program. If not, see <http://www.gnu.org/licenses/>.
->>   */
->> +
->>  #include <linux/clk.h>
->>  #include <linux/dma-mapping.h>
->>  #include <linux/iopoll.h>
->>  #include <linux/module.h>
->>  #include <linux/mtd/mtd.h>
->>  #include <linux/mtd/spi-nor.h>
->> -#include <linux/of_platform.h>
->> +#include <linux/of.h>
->> +#include <linux/platform_device.h>
->>  #include <linux/slab.h>
->>  
->>  /* Hardware register offsets and field definitions */
->> @@ -343,13 +345,11 @@ static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
->>  
->>  	*retlen = 0;
->>  	while (len > 0) {
->> -		if (to & HIFMC_DMA_MASK)
->> -			actual_len = (HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK))
->> -				>= len	? len
->> -				: (HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK));
->> +		/* Don't cross HIFMC_DMA_MAX_LEN alignment boundaries */
->> +		if ((HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK)) >= len)
->> +			actual_len = len;
->>  		else
->> -			actual_len = (len >= HIFMC_DMA_MAX_LEN)
->> -				? HIFMC_DMA_MAX_LEN : len;
->> +			actual_len = HIFMC_DMA_MAX_LEN - (to & HIFMC_DMA_MASK);
->>  		memcpy(host->buffer, ptr, actual_len);
->>  		hisi_spi_nor_dma_transfer(nor, to, host->dma_buffer, actual_len,
->>  				FMC_OP_WRITE);
->>
->> .
->>
-> 
+The problem is cqspi_switch_cs() is called only once ie when JEDEC ID is
+being read(during autodetect of chip), but at that instance,
+nor->page_size and nor->mtd.erasesize are not yet initialized (They are
+initialized only after JEDEC ID is looked up in the table and page_size
+and erasesize are known).
+Therefore if nor->page_size is printed during cqspi_switch_cs() then its
+zero. But nor->page_size reports 256 when printed in cqspi_flash_setup()
+after spi_nor_scan(). Therefore CQSPI_REG_SIZE register has to be
+configured only after spi_nor struct is fully populated (i.e after
+spi_nor_scan() has recognized the slave after JEDEC ID read).
 
 
 -- 
-Best regards,
-Marek Vasut
+Regards
+Vignesh
