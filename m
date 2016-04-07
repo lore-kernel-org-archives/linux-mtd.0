@@ -1,27 +1,33 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-pf0-x233.google.com ([2607:f8b0:400e:c00::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ao1zt-0002xw-UI
- for linux-mtd@lists.infradead.org; Thu, 07 Apr 2016 04:56:50 +0000
-Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-To: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-References: <1452486886-8049-1-git-send-email-marex@denx.de>
- <1452486886-8049-2-git-send-email-marex@denx.de> <57053F81.70204@ti.com>
- <570563D3.9080704@denx.de>
-CC: Graham Moore <grmoore@opensource.altera.com>, Alan Tull
- <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
- <dinguyen@opensource.altera.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <5705E858.3050700@ti.com>
-Date: Thu, 7 Apr 2016 10:25:52 +0530
+ id 1ao3sW-0008N2-9N
+ for linux-mtd@lists.infradead.org; Thu, 07 Apr 2016 06:57:20 +0000
+Received: by mail-pf0-x233.google.com with SMTP id n1so50019901pfn.2
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Apr 2016 23:56:58 -0700 (PDT)
+Date: Thu, 7 Apr 2016 12:26:55 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Keguang Zhang <keguang.zhang@gmail.com>
+Cc: linux-mips@linux-mips.org, linux-clk@vger.kernel.org,
+ linux-pm@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ralf Baechle <ralf@linux-mips.org>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@codeaurora.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>, Vinod Koul <vinod.koul@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH V1 2/7] cpufreq: Loongson1: Update cpufreq of Loongson1B
+Message-ID: <20160407065655.GH14903@vireshk-i7>
+References: <1459946095-7637-1-git-send-email-keguang.zhang@gmail.com>
+ <1459946095-7637-3-git-send-email-keguang.zhang@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <570563D3.9080704@denx.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1459946095-7637-3-git-send-email-keguang.zhang@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,36 +37,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 04/07/2016 01:00 AM, Marek Vasut wrote:
-> On 04/06/2016 06:55 PM, R, Vignesh wrote:
->> Hi Marek,
+On 06-04-16, 20:34, Keguang Zhang wrote:
+> From: Kelvin Cheung <keguang.zhang@gmail.com>
 > 
-> Hi!
+> - Rename the file to loongson1-cpufreq.c
+> - Use kcalloc() instead of kzalloc()
+> - Use devm_kzalloc() instead of global structure
+> - Use dev_get_platdata() to access the platform_data field
+>   instead of referencing it directly
+> - Remove superfluous error messages
 > 
->> I encountered a issue with this driver while testing.
-> 
-> Try with the attached patches, I am planning to use them for V11
-> submission. I think you're hitting the problem with missing buslock.
-> 
+> Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
+> ---
+>  drivers/cpufreq/Makefile            |   2 +-
+>  drivers/cpufreq/loongson1-cpufreq.c | 230 ++++++++++++++++++++++++++++++++++++
+>  drivers/cpufreq/ls1x-cpufreq.c      | 222 ----------------------------------
+>  3 files changed, 231 insertions(+), 223 deletions(-)
+>  create mode 100644 drivers/cpufreq/loongson1-cpufreq.c
+>  delete mode 100644 drivers/cpufreq/ls1x-cpufreq.c
 
-Thanks for the patches.
-But I am pretty sure that's not the problem at my end, because I have
-only one flash device on QSPI bus.
+This can't be reviewed. I am not going to compare them line by line to
+see what you might have changed in between.
 
-The problem is cqspi_switch_cs() is called only once ie when JEDEC ID is
-being read(during autodetect of chip), but at that instance,
-nor->page_size and nor->mtd.erasesize are not yet initialized (They are
-initialized only after JEDEC ID is looked up in the table and page_size
-and erasesize are known).
-Therefore if nor->page_size is printed during cqspi_switch_cs() then its
-zero. But nor->page_size reports 256 when printed in cqspi_flash_setup()
-after spi_nor_scan(). Therefore CQSPI_REG_SIZE register has to be
-configured only after spi_nor struct is fully populated (i.e after
-spi_nor_scan() has recognized the slave after JEDEC ID read).
-
-
+Please use '-C -M' options of git format-patch to generate this, it
+will give a review-able output of this.
 -- 
-Regards
-Vignesh
+viresh
