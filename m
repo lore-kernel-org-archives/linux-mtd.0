@@ -1,23 +1,27 @@
-From: P L Sai Krishna <lakshmi.sai.krishna.potthuri@xilinx.com>
-To: Michal Simek <michal.simek@xilinx.com>, Soren Brinkmann
- <soren.brinkmann@xilinx.com>, David Woodhouse <dwmw2@infradead.org>, "Brian
- Norris" <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>,
- "Javier Martinez Canillas" <javier@osg.samsung.com>, Boris Brezillon
+Subject: Re: [LINUX PATCH v2 1/3] spi: Added dummy_cycle entry in the
+ spi_transfer structure.
+To: P L Sai Krishna <lakshmi.sai.krishna.potthuri@xilinx.com>, Michal Simek
+ <michal.simek@xilinx.com>, Soren Brinkmann <soren.brinkmann@xilinx.com>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>, "Javier
+ Martinez Canillas" <javier@osg.samsung.com>, Boris Brezillon
  <boris.brezillon@free-electrons.com>, Stephen Warren <swarren@nvidia.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>, "Andrew F. Davis" <afd@ti.com>,
  Marek Vasut <marex@denx.de>, Jagan Teki <jteki@openedev.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+References: <1460039969-9835-1-git-send-email-lakshmis@xilinx.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>, "Harini
  Katakam" <harinik@xilinx.com>, Punnaiah Choudary Kalluri
  <punnaia@xilinx.com>, Anirudha Sarangi <anirudh@xilinx.com>, P L Sai Krishna
- <lakshmis@xilinx.com>
-Subject: [LINUX PATCH v2 1/3] spi: Added dummy_cycle entry in the spi_transfer
- structure.
-Date: Thu, 7 Apr 2016 20:09:27 +0530
-Message-ID: <1460039969-9835-1-git-send-email-lakshmis@xilinx.com>
+ <lakshmis@xilinx.com>, "R, Vignesh" <vigneshr@ti.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Message-ID: <57067694.8030806@atmel.com>
+Date: Thu, 7 Apr 2016 17:02:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1460039969-9835-1-git-send-email-lakshmis@xilinx.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +31,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds dummy_cycles entry in the spi_transfer structure.
-len field in the transfer structure contains dummy bytes along with
-actual data bytes, controllers which requires dummy bytes use len
-field and simply Ignore the dummy_cycles field. Controllers which
-expects dummy cycles won't work directly by using len field because
-host driver doesn't know that len field of a particular transfer
-includes dummy bytes or not (and also number of dummy bytes included
-in len field). In such cases host driver use this dummy_cycles field
-to identify the number of dummy cycles and based on that it will send
-the required number of dummy cycles.
+Hi all,
 
-Signed-off-by: P L Sai Krishna <lakshmis@xilinx.com>
----
-v2: 
- - Changed the structure member name from dummy to dummy_cycles.
- - Updated the documentation of dummy_cycles.
- - m25p80 changes split into another patch.
+Le 07/04/2016 16:39, P L Sai Krishna a écrit :
+> This patch adds dummy_cycles entry in the spi_transfer structure.
+> len field in the transfer structure contains dummy bytes along with
+> actual data bytes, controllers which requires dummy bytes use len
+> field and simply Ignore the dummy_cycles field. Controllers which
+> expects dummy cycles won't work directly by using len field because
+> host driver doesn't know that len field of a particular transfer
+> includes dummy bytes or not (and also number of dummy bytes included
+> in len field). In such cases host driver use this dummy_cycles field
+> to identify the number of dummy cycles and based on that it will send
+> the required number of dummy cycles.
 
- include/linux/spi/spi.h | 4 ++++
- 1 file changed, 4 insertions(+)
+Dummy cycles are only used with SPI NOR flashes, aren't they?
+I guess so since there is also a patch dedicated to the m25p80 driver.
 
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 857a9a1..63135b3 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -664,6 +664,9 @@ extern void spi_res_release(struct spi_master *master,
-  * @len: size of rx and tx buffers (in bytes)
-  * @speed_hz: Select a speed other than the device default for this
-  *      transfer. If 0 the default (from @spi_device) is used.
-+ * @dummy_cycles: number of dummy cycles. If host controller requires
-+ * 	dummy cycles rather than dummy bytes which send along with Cmd
-+ *	and address then this dummy_cycles is used.
-  * @bits_per_word: select a bits_per_word other than the device default
-  *      for this transfer. If 0 the default (from @spi_device) is used.
-  * @cs_change: affects chipselect after this transfer completes
-@@ -752,6 +755,7 @@ struct spi_transfer {
- 	u8		bits_per_word;
- 	u16		delay_usecs;
- 	u32		speed_hz;
-+	u32		dummy_cycles;
- 
- 	struct list_head transfer_list;
- };
--- 
-2.1.2
+So why not using the spi_flash_read() API already introduced by Vignesh
+in the SPI layer?
+
+struct spi_flash_read_message already includes a 'dummy_bytes' member.
+
+> 
+> Signed-off-by: P L Sai Krishna <lakshmis@xilinx.com>
+> ---
+> v2: 
+>  - Changed the structure member name from dummy to dummy_cycles.
+>  - Updated the documentation of dummy_cycles.
+>  - m25p80 changes split into another patch.
+> 
+>  include/linux/spi/spi.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index 857a9a1..63135b3 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -664,6 +664,9 @@ extern void spi_res_release(struct spi_master *master,
+>   * @len: size of rx and tx buffers (in bytes)
+>   * @speed_hz: Select a speed other than the device default for this
+>   *      transfer. If 0 the default (from @spi_device) is used.
+> + * @dummy_cycles: number of dummy cycles. If host controller requires
+> + * 	dummy cycles rather than dummy bytes which send along with Cmd
+> + *	and address then this dummy_cycles is used.
+>   * @bits_per_word: select a bits_per_word other than the device default
+>   *      for this transfer. If 0 the default (from @spi_device) is used.
+>   * @cs_change: affects chipselect after this transfer completes
+> @@ -752,6 +755,7 @@ struct spi_transfer {
+>  	u8		bits_per_word;
+>  	u16		delay_usecs;
+>  	u32		speed_hz;
+> +	u32		dummy_cycles;
+>  
+>  	struct list_head transfer_list;
+>  };
+> 
+
+Best regards,
+
+Cyrille
