@@ -1,20 +1,22 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ao6tf-0003ZG-8u
- for linux-mtd@lists.infradead.org; Thu, 07 Apr 2016 10:10:51 +0000
-From: Roger Quadros <rogerq@ti.com>
-To: <tony@atomide.com>, <computersforpeace@gmail.com>,
- <boris.brezillon@free-electrons.com>
-CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
- <javier@dowhile0.org>, <fcooper@ti.com>, <nsekhar@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Roger Quadros
- <rogerq@ti.com>
-Subject: [PATCH v6 15/17] memory: omap-gpmc: Support WAIT pin edge interrupts
-Date: Thu, 7 Apr 2016 13:08:33 +0300
-Message-ID: <1460023715-19332-16-git-send-email-rogerq@ti.com>
-In-Reply-To: <1460023715-19332-1-git-send-email-rogerq@ti.com>
-References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
+From: P L Sai Krishna <lakshmi.sai.krishna.potthuri@xilinx.com>
+To: Michal Simek <michal.simek@xilinx.com>, Soren Brinkmann
+ <soren.brinkmann@xilinx.com>, David Woodhouse <dwmw2@infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>,
+ "Javier Martinez Canillas" <javier@osg.samsung.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Stephen Warren <swarren@nvidia.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, "Andrew F. Davis" <afd@ti.com>,
+ Marek Vasut <marex@denx.de>, Jagan Teki <jteki@openedev.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>, "Harini
+ Katakam" <harinik@xilinx.com>, Punnaiah Choudary Kalluri
+ <punnaia@xilinx.com>, Anirudha Sarangi <anirudh@xilinx.com>, P L Sai Krishna
+ <lakshmis@xilinx.com>
+Subject: [LINUX PATCH v2 3/3] spi:zynqmp:gqspi: Added separate dummy entry.
+Date: Thu, 7 Apr 2016 20:09:29 +0530
+Message-ID: <1460039969-9835-3-git-send-email-lakshmis@xilinx.com>
+In-Reply-To: <1460039969-9835-1-git-send-email-lakshmis@xilinx.com>
+References: <1460039969-9835-1-git-send-email-lakshmis@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,234 +28,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-OMAPs can have 2 to 4 WAITPINs that can be used as edge triggered
-interrupts if not used for memory wait state insertion.
+This patch sends dummy as a separate entry.
+Break the Address+Cmd+dummy transfer into multiple transfers.
+Address+Cmd as one transfer.
+Dummy cycles as another transfer.
+As per the controller spec, immediate data field of dummy entry
+in the GenFifo represent dummy cycles.
+Bus width for dummy cycles transfer should be same as
+Rx bus width.
 
-Support these interrupts via the gpmc IRQ domain.
-
-The gpmc IRQ domain interrupt map is:
-
-0 - NAND_fifoevent
-1 - NAND_termcount
-2 - GPMC_WAIT0 edge
-3 - GPMC_WAIT1 edge, and so on
-
-Signed-off-by: Roger Quadros <rogerq@ti.com>
+Signed-off-by: P L Sai Krishna <lakshmis@xilinx.com>
 ---
- .../bindings/memory-controllers/omap-gpmc.txt      |   5 +-
- drivers/memory/omap-gpmc.c                         | 106 +++++++++++++++++----
- 2 files changed, 92 insertions(+), 19 deletions(-)
+v2:
+ - Replaced dummy with dummy_cycles.
+ 
+ drivers/spi/spi-zynqmp-gqspi.c | 57 ++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 55 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-index 97e7192..21055e2 100644
---- a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-+++ b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-@@ -33,10 +33,13 @@ Required properties:
- 			As this will change in the future, filling correct
- 			values here is a requirement.
-  - interrupt-controller: The GPMC driver implements and interrupt controller for
--			the NAND events "fifoevent" and "termcount".
-+			the NAND events "fifoevent" and "termcount" plus the
-+			rising/falling edges on the GPMC_WAIT pins.
- 			The interrupt number mapping is as follows
- 			0 - NAND_fifoevent
- 			1 - NAND_termcount
-+			2 - GPMC_WAIT0 pin edge
-+			3 - GPMC_WAIT1 pin edge, and so on.
-  - interrupt-cells:	Must be set to 2
-  - gpio-controller:	The GPMC driver implements a GPIO controller for the
- 			GPMC WAIT pins that can be used as general purpose inputs.
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index 784a64f..ea9c897 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -189,9 +189,7 @@
- #define GPMC_ECC_WRITE		1 /* Reset Hardware ECC for write */
- #define GPMC_ECC_READSYN	2 /* Reset before syndrom is read back */
+diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
+index aab9b49..a4b109e 100644
+--- a/drivers/spi/spi-zynqmp-gqspi.c
++++ b/drivers/spi/spi-zynqmp-gqspi.c
+@@ -134,6 +134,9 @@
+ #define GQSPI_SELECT_MODE_QUADSPI	0x4
+ #define GQSPI_DMA_UNALIGN		0x3
+ #define GQSPI_DEFAULT_NUM_CS	1	/* Default number of chip selects */
++#define GQSPI_RX_BUS_WIDTH_QUAD		0x4
++#define GQSPI_RX_BUS_WIDTH_DUAL		0x2
++#define GQSPI_RX_BUS_WIDTH_SINGLE	0x1
  
--/* XXX: Only NAND irq has been considered,currently these are the only ones used
-- */
--#define	GPMC_NR_IRQ		2
-+#define	GPMC_NR_NAND_IRQS	2 /* number of NAND specific IRQs */
+ enum mode_type {GQSPI_MODE_IO, GQSPI_MODE_DMA};
  
- enum gpmc_clk_domain {
- 	GPMC_CD_FCLK,
-@@ -239,6 +237,7 @@ struct gpmc_device {
- 	int irq;
- 	struct irq_chip irq_chip;
- 	struct gpio_chip gpio_chip;
-+	int nirqs;
+@@ -169,6 +172,7 @@ struct zynqmp_qspi {
+ 	u32 genfifobus;
+ 	u32 dma_rx_bytes;
+ 	dma_addr_t dma_addr;
++	u32 rx_bus_width;
+ 	u32 genfifoentry;
+ 	enum mode_type mode;
  };
+@@ -541,6 +545,35 @@ static void zynqmp_qspi_filltxfifo(struct zynqmp_qspi *xqspi, int size)
+ }
  
- static struct irq_domain *gpmc_irq_domain;
-@@ -1155,7 +1154,8 @@ int gpmc_get_client_irq(unsigned irq_config)
- 		return 0;
+ /**
++ * zynqmp_qspi_preparedummy:	Prepares the dummy entry
++ *
++ * @xqspi:	Pointer to the zynqmp_qspi structure
++ * @transfer:	It is a pointer to the structure containing transfer data.
++ * @genfifoentry:	genfifoentry is pointer to the variable in which
++ *			GENFIFO	mask is returned to calling function
++ */
++static void zynqmp_qspi_preparedummy(struct zynqmp_qspi *xqspi,
++					struct spi_transfer *transfer,
++					u32 *genfifoentry)
++{
++	/* For dummy Tx and Rx are NULL */
++	*genfifoentry &= ~(GQSPI_GENFIFO_TX | GQSPI_GENFIFO_RX);
++
++	/* SPI mode */
++	*genfifoentry &= ~GQSPI_GENFIFO_MODE_QUADSPI;
++	if (xqspi->rx_bus_width == GQSPI_RX_BUS_WIDTH_QUAD)
++		*genfifoentry |= GQSPI_GENFIFO_MODE_QUADSPI;
++	else if (xqspi->rx_bus_width == GQSPI_RX_BUS_WIDTH_DUAL)
++		*genfifoentry |= GQSPI_GENFIFO_MODE_DUALSPI;
++	else
++		*genfifoentry |= GQSPI_GENFIFO_MODE_SPI;
++
++	/* Immediate data */
++	*genfifoentry &= ~GQSPI_GENFIFO_IMM_DATA_MASK;
++	*genfifoentry |= transfer->dummy_cycles;
++}
++
++/**
+  * zynqmp_qspi_readrxfifo:	Fills the RX FIFO as long as there is room in
+  *				the FIFO.
+  * @xqspi:	Pointer to the zynqmp_qspi structure
+@@ -771,7 +804,7 @@ static void zynqmp_qspi_txrxsetup(struct zynqmp_qspi *xqspi,
+ 		*genfifoentry |= GQSPI_GENFIFO_TX;
+ 		*genfifoentry |=
+ 			zynqmp_qspi_selectspimode(xqspi, transfer->tx_nbits);
+-		xqspi->bytes_to_transfer = transfer->len;
++		xqspi->bytes_to_transfer = transfer->len - (transfer->dummy_cycles/8);
+ 		if (xqspi->mode == GQSPI_MODE_DMA) {
+ 			config_reg = zynqmp_gqspi_read(xqspi,
+ 							GQSPI_CONFIG_OFST);
+@@ -832,13 +865,19 @@ static int zynqmp_qspi_start_transfer(struct spi_master *master,
+ 	if (xqspi->mode == GQSPI_MODE_DMA)
+ 		transfer_len = xqspi->dma_rx_bytes;
+ 	else
+-		transfer_len = transfer->len;
++		transfer_len = transfer->len - (transfer->dummy_cycles/8);
+ 
+ 	xqspi->genfifoentry = genfifoentry;
+ 	if ((transfer_len) < GQSPI_GENFIFO_IMM_DATA_MASK) {
+ 		genfifoentry &= ~GQSPI_GENFIFO_IMM_DATA_MASK;
+ 		genfifoentry |= transfer_len;
+ 		zynqmp_gqspi_write(xqspi, GQSPI_GEN_FIFO_OFST, genfifoentry);
++		if (transfer->dummy_cycles) {
++			zynqmp_qspi_preparedummy(xqspi, transfer,
++					&genfifoentry);
++			zynqmp_gqspi_write(xqspi, GQSPI_GEN_FIFO_OFST,
++					genfifoentry);
++		}
+ 	} else {
+ 		int tempcount = transfer_len;
+ 		u32 exponent = 8;	/* 2^8 = 256 */
+@@ -979,6 +1018,8 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
+ 	struct zynqmp_qspi *xqspi;
+ 	struct resource *res;
+ 	struct device *dev = &pdev->dev;
++	struct device_node *nc;
++	u32 rx_bus_width;
+ 
+ 	master = spi_alloc_master(&pdev->dev, sizeof(*xqspi));
+ 	if (!master)
+@@ -1039,6 +1080,18 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
+ 		goto clk_dis_all;
  	}
  
--	if (irq_config >= GPMC_NR_IRQ)
-+	/* we restrict this to NAND IRQs only */
-+	if (irq_config >= GPMC_NR_NAND_IRQS)
- 		return 0;
- 
- 	return irq_create_mapping(gpmc_irq_domain, irq_config);
-@@ -1165,6 +1165,10 @@ static int gpmc_irq_endis(unsigned long hwirq, bool endis)
- {
- 	u32 regval;
- 
-+	/* bits GPMC_NR_NAND_IRQS to 8 are reserved */
-+	if (hwirq >= GPMC_NR_NAND_IRQS)
-+		hwirq += 8 - GPMC_NR_NAND_IRQS;
-+
- 	regval = gpmc_read_reg(GPMC_IRQENABLE);
- 	if (endis)
- 		regval |= BIT(hwirq);
-@@ -1185,9 +1189,64 @@ static void gpmc_irq_enable(struct irq_data *p)
- 	gpmc_irq_endis(p->hwirq, true);
- }
- 
--static void gpmc_irq_noop(struct irq_data *data) { }
-+static void gpmc_irq_mask(struct irq_data *d)
-+{
-+	gpmc_irq_endis(d->hwirq, false);
-+}
-+
-+static void gpmc_irq_unmask(struct irq_data *d)
-+{
-+	gpmc_irq_endis(d->hwirq, true);
-+}
-+
-+static void gpmc_irq_edge_config(unsigned long hwirq, bool rising_edge)
-+{
-+	u32 regval;
-+
-+	/* NAND IRQs polarity is not configurable */
-+	if (hwirq < GPMC_NR_NAND_IRQS)
-+		return;
-+
-+	/* WAITPIN starts at BIT 8 */
-+	hwirq += 8 - GPMC_NR_NAND_IRQS;
-+
-+	regval = gpmc_read_reg(GPMC_CONFIG);
-+	if (rising_edge)
-+		regval &= ~BIT(hwirq);
-+	else
-+		regval |= BIT(hwirq);
-+
-+	gpmc_write_reg(GPMC_CONFIG, regval);
-+}
-+
-+static void gpmc_irq_ack(struct irq_data *d)
-+{
-+	unsigned int hwirq = d->hwirq;
-+
-+	/* skip reserved bits */
-+	if (hwirq >= GPMC_NR_NAND_IRQS)
-+		hwirq += 8 - GPMC_NR_NAND_IRQS;
-+
-+	/* Setting bit to 1 clears (or Acks) the interrupt */
-+	gpmc_write_reg(GPMC_IRQSTATUS, BIT(hwirq));
-+}
-+
-+static int gpmc_irq_set_type(struct irq_data *d, unsigned int trigger)
-+{
-+	/* can't set type for NAND IRQs */
-+	if (d->hwirq < GPMC_NR_NAND_IRQS)
-+		return -EINVAL;
-+
-+	/* We can support either rising or falling edge at a time */
-+	if (trigger == IRQ_TYPE_EDGE_FALLING)
-+		gpmc_irq_edge_config(d->hwirq, false);
-+	else if (trigger == IRQ_TYPE_EDGE_RISING)
-+		gpmc_irq_edge_config(d->hwirq, true);
-+	else
-+		return -EINVAL;
- 
--static unsigned int gpmc_irq_noop_ret(struct irq_data *data) { return 0; }
-+	return 0;
-+}
- 
- static int gpmc_irq_map(struct irq_domain *d, unsigned int virq,
- 			irq_hw_number_t hw)
-@@ -1195,8 +1254,14 @@ static int gpmc_irq_map(struct irq_domain *d, unsigned int virq,
- 	struct gpmc_device *gpmc = d->host_data;
- 
- 	irq_set_chip_data(virq, gpmc);
--	irq_set_chip_and_handler(virq, &gpmc->irq_chip, handle_simple_irq);
--	irq_modify_status(virq, IRQ_NOREQUEST, IRQ_NOAUTOEN);
-+	if (hw < GPMC_NR_NAND_IRQS) {
-+		irq_modify_status(virq, IRQ_NOREQUEST, IRQ_NOAUTOEN);
-+		irq_set_chip_and_handler(virq, &gpmc->irq_chip,
-+					 handle_simple_irq);
-+	} else {
-+		irq_set_chip_and_handler(virq, &gpmc->irq_chip,
-+					 handle_edge_irq);
++	xqspi->rx_bus_width = GQSPI_RX_BUS_WIDTH_SINGLE;
++	for_each_available_child_of_node(pdev->dev.of_node, nc) {
++		ret = of_property_read_u32(nc, "spi-rx-bus-width",
++					&rx_bus_width);
++		if (!ret) {
++			xqspi->rx_bus_width = rx_bus_width;
++			break;
++		}
 +	}
- 
- 	return 0;
- }
-@@ -1209,16 +1274,21 @@ static const struct irq_domain_ops gpmc_irq_domain_ops = {
- static irqreturn_t gpmc_handle_irq(int irq, void *data)
- {
- 	int hwirq, virq;
--	u32 regval;
-+	u32 regval, regvalx;
- 	struct gpmc_device *gpmc = data;
- 
- 	regval = gpmc_read_reg(GPMC_IRQSTATUS);
-+	regvalx = regval;
- 
- 	if (!regval)
- 		return IRQ_NONE;
- 
--	for (hwirq = 0; hwirq < GPMC_NR_IRQ; hwirq++) {
--		if (regval & BIT(hwirq)) {
-+	for (hwirq = 0; hwirq < gpmc->nirqs; hwirq++) {
-+		/* skip reserved status bits */
-+		if (hwirq == GPMC_NR_NAND_IRQS)
-+			regvalx >>= 8 - GPMC_NR_NAND_IRQS;
++	if (ret)
++		dev_err(dev, "rx bus width not found\n");
 +
-+		if (regvalx & BIT(hwirq)) {
- 			virq = irq_find_mapping(gpmc_irq_domain, hwirq);
- 			if (!virq) {
- 				dev_warn(gpmc->dev,
-@@ -1248,16 +1318,15 @@ static int gpmc_setup_irq(struct gpmc_device *gpmc)
- 	gpmc_write_reg(GPMC_IRQSTATUS, regval);
+ 	master->num_chipselect = GQSPI_DEFAULT_NUM_CS;
  
- 	gpmc->irq_chip.name = "gpmc";
--	gpmc->irq_chip.irq_startup = gpmc_irq_noop_ret;
- 	gpmc->irq_chip.irq_enable = gpmc_irq_enable;
- 	gpmc->irq_chip.irq_disable = gpmc_irq_disable;
--	gpmc->irq_chip.irq_shutdown = gpmc_irq_noop;
--	gpmc->irq_chip.irq_ack = gpmc_irq_noop;
--	gpmc->irq_chip.irq_mask = gpmc_irq_noop;
--	gpmc->irq_chip.irq_unmask = gpmc_irq_noop;
-+	gpmc->irq_chip.irq_ack = gpmc_irq_ack;
-+	gpmc->irq_chip.irq_mask = gpmc_irq_mask;
-+	gpmc->irq_chip.irq_unmask = gpmc_irq_unmask;
-+	gpmc->irq_chip.irq_set_type = gpmc_irq_set_type;
- 
- 	gpmc_irq_domain = irq_domain_add_linear(gpmc->dev->of_node,
--						GPMC_NR_IRQ,
-+						gpmc->nirqs,
- 						&gpmc_irq_domain_ops,
- 						gpmc);
- 	if (!gpmc_irq_domain) {
-@@ -1282,7 +1351,7 @@ static int gpmc_free_irq(struct gpmc_device *gpmc)
- 
- 	free_irq(gpmc->irq, gpmc);
- 
--	for (hwirq = 0; hwirq < GPMC_NR_IRQ; hwirq++)
-+	for (hwirq = 0; hwirq < gpmc->nirqs; hwirq++)
- 		irq_dispose_mapping(irq_find_mapping(gpmc_irq_domain, hwirq));
- 
- 	irq_domain_remove(gpmc_irq_domain);
-@@ -2296,6 +2365,7 @@ static int gpmc_probe(struct platform_device *pdev)
- 	if (rc)
- 		goto gpio_init_failed;
- 
-+	gpmc->nirqs = GPMC_NR_NAND_IRQS + gpmc_nr_waitpins;
- 	rc = gpmc_setup_irq(gpmc);
- 	if (rc) {
- 		dev_err(gpmc->dev, "gpmc_setup_irq failed\n");
+ 	master->setup = zynqmp_qspi_setup;
 -- 
-2.5.0
+2.1.2
