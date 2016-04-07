@@ -1,7 +1,7 @@
 Received: from comal.ext.ti.com ([198.47.26.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ao6t7-0002Ai-3v
- for linux-mtd@lists.infradead.org; Thu, 07 Apr 2016 10:10:11 +0000
+ id 1ao6t7-0002BW-3s
+ for linux-mtd@lists.infradead.org; Thu, 07 Apr 2016 10:10:12 +0000
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>,
  <boris.brezillon@free-electrons.com>
@@ -10,10 +10,10 @@ CC: <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
  <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Roger Quadros
  <rogerq@ti.com>
-Subject: [PATCH v6 07/17] mtd: nand: omap: Switch to using GPMC-NAND ops for
- writebuffer empty check
-Date: Thu, 7 Apr 2016 13:08:25 +0300
-Message-ID: <1460023715-19332-8-git-send-email-rogerq@ti.com>
+Subject: [PATCH v6 06/17] mtd: nand: omap: Use gpmc_omap_get_nand_ops() to get
+ NAND registers
+Date: Thu, 7 Apr 2016 13:08:24 +0300
+Message-ID: <1460023715-19332-7-git-send-email-rogerq@ti.com>
 In-Reply-To: <1460023715-19332-1-git-send-email-rogerq@ti.com>
 References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -27,55 +27,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of accessing the gpmc_status register directly start
-using the gpmc_nand_ops->nand_writebuffer_empty() helper
-to check write buffer empty status.
+Deprecate nand register passing via platform data and use
+gpmc_omap_get_nand_ops() instead.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/omap2.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ arch/arm/mach-omap2/gpmc-nand.c              | 2 --
+ drivers/mtd/nand/omap2.c                     | 9 ++++++++-
+ include/linux/platform_data/mtd-nand-omap2.h | 4 +++-
+ 3 files changed, 11 insertions(+), 4 deletions(-)
 
+diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
+index 72918c4..04e6998 100644
+--- a/arch/arm/mach-omap2/gpmc-nand.c
++++ b/arch/arm/mach-omap2/gpmc-nand.c
+@@ -121,8 +121,6 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
+ 	if (err < 0)
+ 		goto out_free_cs;
+ 
+-	gpmc_update_nand_reg(&gpmc_nand_data->reg, gpmc_nand_data->cs);
+-
+ 	if (!gpmc_hwecc_bch_capable(gpmc_nand_data->ecc_opt)) {
+ 		pr_err("omap2-nand: Unsupported NAND ECC scheme selected\n");
+ 		err = -EINVAL;
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index cba9bf0..98023d5 100644
+index 0749ca1..cba9bf0 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -291,14 +291,13 @@ static void omap_write_buf8(struct mtd_info *mtd, const u_char *buf, int len)
- {
- 	struct omap_nand_info *info = mtd_to_omap(mtd);
- 	u_char *p = (u_char *)buf;
--	u32	status = 0;
-+	bool status;
+@@ -28,6 +28,7 @@
+ #include <linux/mtd/nand_bch.h>
+ #include <linux/platform_data/elm.h>
  
- 	while (len--) {
- 		iowrite8(*p++, info->nand.IO_ADDR_W);
- 		/* wait until buffer is available for write */
- 		do {
--			status = readl(info->reg.gpmc_status) &
--					STATUS_BUFF_EMPTY;
-+			status = info->ops->nand_writebuffer_empty();
- 		} while (!status);
- 	}
- }
-@@ -326,7 +325,7 @@ static void omap_write_buf16(struct mtd_info *mtd, const u_char * buf, int len)
- {
- 	struct omap_nand_info *info = mtd_to_omap(mtd);
- 	u16 *p = (u16 *) buf;
--	u32	status = 0;
-+	bool status;
- 	/* FIXME try bursts of writesw() or DMA ... */
- 	len >>= 1;
++#include <linux/omap-gpmc.h>
+ #include <linux/platform_data/mtd-nand-omap2.h>
  
-@@ -334,8 +333,7 @@ static void omap_write_buf16(struct mtd_info *mtd, const u_char * buf, int len)
- 		iowrite16(*p++, info->nand.IO_ADDR_W);
- 		/* wait until buffer is available for write */
- 		do {
--			status = readl(info->reg.gpmc_status) &
--					STATUS_BUFF_EMPTY;
-+			status = info->ops->nand_writebuffer_empty();
- 		} while (!status);
- 	}
- }
+ #define	DRIVER_NAME	"omap2-nand"
+@@ -168,7 +169,9 @@ struct omap_nand_info {
+ 	} iomode;
+ 	u_char				*buf;
+ 	int					buf_len;
++	/* Interface to GPMC */
+ 	struct gpmc_nand_regs		reg;
++	struct gpmc_nand_ops		*ops;
+ 	/* generated at runtime depending on ECC algorithm and layout selected */
+ 	struct nand_ecclayout		oobinfo;
+ 	/* fields specific for BCHx_HW ECC scheme */
+@@ -1665,9 +1668,13 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, info);
+ 
++	info->ops = gpmc_omap_get_nand_ops(&info->reg, info->gpmc_cs);
++	if (!info->ops) {
++		dev_err(&pdev->dev, "Failed to get GPMC->NAND interface\n");
++		return -ENODEV;
++	}
+ 	info->pdev		= pdev;
+ 	info->gpmc_cs		= pdata->cs;
+-	info->reg		= pdata->reg;
+ 	info->of_node		= pdata->of_node;
+ 	info->ecc_opt		= pdata->ecc_opt;
+ 	nand_chip		= &info->nand;
+diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
+index 090bbab..a067f58 100644
+--- a/include/linux/platform_data/mtd-nand-omap2.h
++++ b/include/linux/platform_data/mtd-nand-omap2.h
+@@ -75,10 +75,12 @@ struct omap_nand_platform_data {
+ 	enum nand_io		xfer_type;
+ 	int			devsize;
+ 	enum omap_ecc           ecc_opt;
+-	struct gpmc_nand_regs	reg;
+ 
+ 	/* for passing the partitions */
+ 	struct device_node	*of_node;
+ 	struct device_node	*elm_of_node;
++
++	/* deprecated */
++	struct gpmc_nand_regs	reg;
+ };
+ #endif
 -- 
 2.5.0
