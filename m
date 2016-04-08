@@ -1,21 +1,29 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aoRia-0004jb-WC
- for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 08:24:42 +0000
-Subject: Re: [RFC] UBI torture test fails to detect some bad blocks.
-To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- peterpansjtu@gmail.com
-References: <1460100214-31298-1-git-send-email-arnaud.mouiche@invoxia.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <57076AAB.7050008@nod.at>
-Date: Fri, 8 Apr 2016 10:24:11 +0200
+ id 1aoRmo-0006Tm-CR
+ for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 08:29:03 +0000
+Subject: Re: [RESEND PATCH v9] mtd: spi-nor: add hisilicon spi-nor flash
+ controller driver
+To: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>
+References: <1458979861-3619-1-git-send-email-xuejiancheng@huawei.com>
+ <56F73BC9.5000300@gmail.com> <56F8F630.5050008@huawei.com>
+ <20160404064418.GC13995@localhost> <5705C17F.9030904@huawei.com>
+ <5705C5E2.6070206@denx.de>
+CC: <linux-mtd@lists.infradead.org>, <robh+dt@kernel.org>,
+ <dwmw2@infradead.org>, <boris.brezillon@free-electrons.com>,
+ <juhosg@openwrt.org>, <furquan@google.com>, <suwenping@hisilicon.com>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <yanhaifeng@hisilicon.com>, <raojun@hisilicon.com>,
+ <xuejiancheng@hisilicon.com>, <ml.yang@hisilicon.com>,
+ <gaofei@hisilicon.com>, <yanghongwei@hisilicon.com>,
+ <zhangzhenxing@hisilicon.com>
+From: Jiancheng Xue <xuejiancheng@huawei.com>
+Message-ID: <57076B26.7030700@huawei.com>
+Date: Fri, 8 Apr 2016 16:26:14 +0800
 MIME-Version: 1.0
-In-Reply-To: <1460100214-31298-1-git-send-email-arnaud.mouiche@invoxia.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5705C5E2.6070206@denx.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,74 +33,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Hi,
 
-Am 08.04.2016 um 09:23 schrieb Arnaud Mouiche:
-> Hi all.
+On 2016/4/7 10:28, Marek Vasut wrote:
+> On 04/07/2016 04:10 AM, Jiancheng Xue wrote:
+>> Hi Brian,
+>>    Thank you very much for your comments. I'll fix these issues in next version.
+>> In addition, for easy understanding I'd like to rewrite hisi_spi_nor_write and
+>> hisi_spi_nor_read. Your comments on these modifications will be highly appreciated.
 > 
-> Just some details about what I experience recently with some bad blocs on 
-> a MX35LF1GE4AB spinand device (SLC, 1Gb, 4bits ECC per 512 sub-page), 
-> where a UBI partition is attached to manage rootfs & co  (as usual).
+> Would you please stop top-posting ? It rubs some people the wrong way.
 > 
-> I get the hand on some devices refusing to boot.
-> The analyse of the Erase Counters shows that some of them where erased 
-> more than 100K, while the majority have an EC below 20 !
+I feel very sorry about that. I have read the etiquette and won't make the same mistake again.
 
-Ouch.
-
-> Looking at the bad one, they run the following scenario nearly in loop:
-> - linux read some file inside the rootfs
-> - a bitflip is detected
-> - scrubbing is scheduled.
-> - the scrubbing target a PEB with a pretty high EC,
-> - this high EC is also due to frequent bitflip in the target PEB in the past.
-> - while the PEB data are moved, a bitflip is detected scheduling a torture test.
-> - the torture test *ALWAYS* pass (whereas bitflip are *VERY* frequent for 
->   the same PEB when the read comes filesystem read).
+>> static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
+>> 		size_t *retlen, u_char *read_buf)
+>> {
+>> 	struct hifmc_priv *priv = nor->priv;
+>> 	struct hifmc_host *host = priv->host;
+>> 	int i;
+>>
+>> 	/* read all bytes in only one time */
+>> 	if (len <= HIFMC_DMA_MAX_LEN) {
+>> 		hisi_spi_nor_dma_transfer(nor, from, host->dma_buffer,
+>> 				len, FMC_OP_READ);
+>> 		memcpy(read_buf, host->buffer, len);
 > 
-> So, it seems obvious the PEBs in question are bad PEBs.
-> The question is now why the torture test pass.
+> Is all the ad-hoc memcpying necessary? I think you can use
+> dma_map_single() and co to obtain DMAble memory for your
+> controller's use and then you can probably get rid of most
+> of this stuff.
 > 
-> Reproducing the pattern test by hand on this block shows the same result.
-> But applying different patterns on different pages within the block shows that 
-> the content of some pages are affected by the content of the other pages.
-> In particularly, for this block, if the first page is full of FF and the rest 
-> of the block is full of 00, I can count  more than 100 bitflips (!)
+Considering read_buf >= high_mem case, I think it is also complicated to use dma_map_*
+and the DMA buffer allocated by the driver is still needed. But I am not sure about
+this. Please let me know if I am wrong. Thank you!
 
-100 flips per ECC step? Shouldn't this lead to a uncorrectable ECC error?
-I have no idea how much bits your ECC can fix..
-Which bitflip threshold do you have? UBI sees bitflips only after a threshold
-is reached. If it is too low, UBI scrubs too often, which seems to be the case here.
-It is perfectly fine to have bitflips.
+Regards,
+Jiancheng
 
-So, we need dig a bit deeper first.
-
-> What kind of pattern should be added to detect those kind of issues ?
-
-This is a very hard question and almost impossible to answer as it is vendor
-specific.
-
-> We can think of testing every page one by one, but given the relatively large 
-> number of pages in a block, it doesn't sound realistic.
-> The easiest way could be to use a random pattern, and try it a relative low 
-> number of times.
-> Indeed, this simple random test is efficient to detect every bad block of this device.
-> If the random test pass once (because this is a random test), there are chances 
-> that the next bit flip detection will trigger a new torture test, and at the end, 
-> it will be finally detected as bad.
-
-Having an additional random pattern is not a bad idea.
-This is definitively something we can consider adding to UBI.
-But I'm not happy with your implementation.
-
-peb_rnd_buff = kmalloc(ubi->peb_size, GFP_KERNEL);
-... is a big no-no. peb_size can be a few megabytes.
-
-What about repeating a few random bytes over and over?
-
-> And the implementation is pretty obvious...
-
-;-)
-
-Thanks,
-//richard
+>> 	} else {
+>> 		/* read HIFMC_DMA_MAX_LEN bytes at a time */
+>> 		for (i = 0; i < len; i += HIFMC_DMA_MAX_LEN) {
+>> 			hisi_spi_nor_dma_transfer(nor, from + i, host->dma_buffer,
+>> 				HIFMC_DMA_MAX_LEN, FMC_OP_READ);
+>> 			memcpy(read_buf + i, host->buffer, HIFMC_DMA_MAX_LEN);
+>> 		}
+>> 		/* read remaining bytes */
+>> 		i -= HIFMC_DMA_MAX_LEN;
+>> 		hisi_spi_nor_dma_transfer(nor, from + i, host->dma_buffer,
+>> 				len - i, FMC_OP_READ);
+>> 		memcpy(read_buf + i, host->buffer, len - i);
+>> 	}
+>> 	*retlen = len;
+>>
+>> 	return 0;
+>> }
+>>
+[...]
+>> On 2016/4/4 14:44, Brian Norris wrote:
+>>> Hi Jiancheng,
+>>>
+>>> Looking good. In addition to Marek's comments, I have just a few small
+>>> comments. I'll post a small diff at the end, and a few inline comments.
+>>>
+> 
+> 
