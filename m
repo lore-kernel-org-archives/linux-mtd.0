@@ -1,30 +1,18 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aoKYH-0006CC-OA
- for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 00:45:34 +0000
-Date: Fri, 8 Apr 2016 02:45:07 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Yang-Leo Li <leoyang.li@nxp.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, Li Yang
- <leoli@freescale.com>, Scott Wood <oss@buserror.net>, Raghav Dogra
- <raghav.dogra@nxp.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, linuxppc-dev
- <linuxppc-dev@lists.ozlabs.org>, Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>, Raghav Dogra <raghav@freescale.com>,
- "Jaiprakash Singh" <b44839@freescale.com>
-Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
-Message-ID: <20160408024507.69fb4fc1@bbrezillon>
-In-Reply-To: <AM2PR04MB0770036256E58407BD045C5A8F9F0@AM2PR04MB0770.eurprd04.prod.outlook.com>
-References: <1455708258-3831-1-git-send-email-raghav.dogra@nxp.com>
- <CADRPPNS1i1XgtpyiT_=rDuDXBDn=ehNY32=RKTC9hdKXhWWq8A@mail.gmail.com>
- <1455840434.2463.97.camel@buserror.net>
- <CADRPPNTauz=T9oWCeZy8G8s0vo9fmieRhn=Gd3jVqqJJEHV_ag@mail.gmail.com>
- <20160406175254.GC5243@localhost>
- <AM2PR04MB0770036256E58407BD045C5A8F9F0@AM2PR04MB0770.eurprd04.prod.outlook.com>
+Subject: Re: [PATCH] mtd: nand: s3c2410: fix bug in s3c2410_nand_correct_data()
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, zengzhaoxiu@163.com
+References: <1460047697-72830-1-git-send-email-zengzhaoxiu@163.com>
+ <20160408021817.274d4e59@bbrezillon>
+Cc: kgene@kernel.org, k.kozlowski@samsung.com, richard@nod.at,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
+Message-ID: <57070E88.5020008@gmail.com>
+Date: Fri, 8 Apr 2016 09:51:04 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20160408021817.274d4e59@bbrezillon>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,46 +22,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 6 Apr 2016 18:53:39 +0000
-Yang-Leo Li <leoyang.li@nxp.com> wrote:
-
-> 
-> 
-> > -----Original Message-----
-> > From: Brian Norris [mailto:computersforpeace@gmail.com]
-> > Sent: Wednesday, April 06, 2016 12:53 PM
-> > To: Li Yang <leoli@freescale.com>
-> > Cc: Scott Wood <oss@buserror.net>; Raghav Dogra <raghav.dogra@nxp.com>;
-> > linux-mtd@lists.infradead.org; linuxppc-dev <linuxppc-dev@lists.ozlabs.org>;
-> > Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; Raghav Dogra
-> > <raghav@freescale.com>; Jaiprakash Singh <b44839@freescale.com>; Boris
-> > Brezillon <boris.brezillon@free-electrons.com>
-> > Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
-> > 
-> > Hi,
-> > 
-> > On Wed, Mar 30, 2016 at 03:43:40PM -0500, Li Yang wrote:
-> > > Hi Brian,
-> > >
-> > > Could you help to review and pull in this patch and the Kconfig update
-> > > after this patch(https://patchwork.ozlabs.org/patch/557389/)?  It
-> > 
-> > It's probably best for Boris to apply this now.
-> 
-> Thanks Brian.  I see Boris is taking over the maintenance of NAND recently, we will follow up with him.
-> 
-> Hi Boris,
-> 
-> Can you consider to pull in this patch and then Kconfig patch (https://patchwork.ozlabs.org/patch/557389/)?
-
-Applied.
-
-Thanks,
-
-Boris
 
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+在 2016年04月08日 08:18, Boris Brezillon 写道:
+> Hi Zeng,
+>
+> On Fri,  8 Apr 2016 00:48:17 +0800
+> zengzhaoxiu@163.com wrote:
+>
+>> From: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
+>>
+>> If there is only one bit difference in the ECC, the function should return 1.
+>> The result of "diff0 & ~(1<<fls(diff0))" is equal to diff0, so the function
+>> actually returns -1.
+>>
+>> Here, we can use the simple expression "(diff0 & (diff0 - 1)) == 0" to determine
+>> whether the diff0 has only one 1-bit.
+> Missing Signed-off-by here.
+>
+>> ---
+>>   drivers/mtd/nand/s3c2410.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+>> index 9c9397b..c9698cf 100644
+>> --- a/drivers/mtd/nand/s3c2410.c
+>> +++ b/drivers/mtd/nand/s3c2410.c
+>> @@ -542,7 +542,7 @@ static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
+>>   	diff0 |= (diff1 << 8);
+>>   	diff0 |= (diff2 << 16);
+>>   
+>> -	if ((diff0 & ~(1<<fls(diff0))) == 0)
+>> +	if ((diff0 & (diff0 - 1)) == 0)
+> Or just
+>
+> 	if (hweight_long((unsigned long)diff0) == 1)
+>
+> which is doing exactly what the comment says.
+>
+> BTW, I don't understand why the current code is wrong? To me, it seems
+> it's correctly detecting the case where only a single bit is different.
+> What are you trying to fix exactly?
+>
+> Best Regards,
+>
+> Boris
+>
+
+For example, assuming diff0 is 1, then fls(diff0) is equal to 1, then "~(1 << fls(diff0))" is equal to 0xfffffffd,
+then the result of "(diff0 & ~(1 << fls(diff0)))" is 1 , not we expected 0.
+
+__fls(diff0) and "(fls(diff0) - 1)" are all right, but fls(diff0) is wrong.
