@@ -1,9 +1,9 @@
-Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aoTai-00015a-Va
- for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 10:24:42 +0000
-Received: by mail-lb0-x233.google.com with SMTP id u8so66608274lbk.0
- for <linux-mtd@lists.infradead.org>; Fri, 08 Apr 2016 03:24:20 -0700 (PDT)
+ id 1aoTak-00015c-9P
+ for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 10:24:44 +0000
+Received: by mail-lf0-x233.google.com with SMTP id j11so75863015lfb.1
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Apr 2016 03:24:21 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -11,9 +11,9 @@ Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 5/8] mtd: nand: orion: set ECC algorithm explicitly
-Date: Fri,  8 Apr 2016 12:23:48 +0200
-Message-Id: <1460111031-8706-6-git-send-email-zajec5@gmail.com>
+Subject: [PATCH 8/8] mtd: nand: socrates: set ECC algorithm explicitly
+Date: Fri,  8 Apr 2016 12:23:51 +0200
+Message-Id: <1460111031-8706-9-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1460111031-8706-1-git-send-email-zajec5@gmail.com>
 References: <1460111031-8706-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
@@ -33,20 +33,20 @@ enum nand_ecc_algo).
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- drivers/mtd/nand/orion_nand.c | 1 +
+ drivers/mtd/nand/socrates_nand.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index d4614bf..40a7c4a 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -130,6 +130,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
- 	nc->cmd_ctrl = orion_nand_cmd_ctrl;
- 	nc->read_buf = orion_nand_read_buf;
- 	nc->ecc.mode = NAND_ECC_SOFT;
-+	nc->ecc.algo = NAND_ECC_HAMMING;
+diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
+index e3305f9..888fd31 100644
+--- a/drivers/mtd/nand/socrates_nand.c
++++ b/drivers/mtd/nand/socrates_nand.c
+@@ -180,6 +180,7 @@ static int socrates_nand_probe(struct platform_device *ofdev)
+ 	nand_chip->dev_ready = socrates_nand_device_ready;
  
- 	if (board->chip_delay)
- 		nc->chip_delay = board->chip_delay;
+ 	nand_chip->ecc.mode = NAND_ECC_SOFT;	/* enable ECC */
++	nand_chip->ecc.algo = NAND_ECC_HAMMING;
+ 
+ 	/* TODO: I have no idea what real delay is. */
+ 	nand_chip->chip_delay = 20;		/* 20us command delay time */
 -- 
 1.8.4.5
