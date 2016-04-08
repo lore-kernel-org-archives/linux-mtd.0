@@ -1,26 +1,20 @@
-Received: from smtprelay0105.hostedemail.com ([216.40.44.105]
- helo=smtprelay.hostedemail.com)
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aoZcG-0006OG-Dw
- for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 16:50:41 +0000
-Message-ID: <1460134198.1800.37.camel@perches.com>
-Subject: Re: [PATCH V2] mtd: nand: pasemi: switch to pr_* functions
-From: Joe Perches <joe@perches.com>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Egor
- Martovetsky <egor@pasemi.com>, Olof Johansson <olof@lixom.net>, David
- Woodhouse <dwmw2@infradead.org>,  Brian Norris
- <computersforpeace@gmail.com>, "open list:LINUX FOR POWERPC PA SEMI
- PWRFICIENT" <linuxppc-dev@lists.ozlabs.org>, open list
- <linux-kernel@vger.kernel.org>
-Date: Fri, 08 Apr 2016 09:49:58 -0700
-In-Reply-To: <1460114003-19926-1-git-send-email-zajec5@gmail.com>
-References: <1460111589-18781-1-git-send-email-zajec5@gmail.com>
- <1460114003-19926-1-git-send-email-zajec5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ id 1aobGb-00053T-Ug
+ for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 18:36:26 +0000
+From: Denys Vlasenko <dvlasenk@redhat.com>
+To: David Woodhouse <David.Woodhouse@intel.com>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers/mtd/chips/cfi_cmdset_0020.c: Deinline do_write_buffer,
+ save 5316 bytes
+Date: Fri,  8 Apr 2016 20:35:43 +0200
+Message-Id: <1460140543-12487-3-git-send-email-dvlasenk@redhat.com>
+In-Reply-To: <1460140543-12487-1-git-send-email-dvlasenk@redhat.com>
+References: <1460140543-12487-1-git-send-email-dvlasenk@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,11 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2016-04-08 at 13:13 +0200, Rafał Miłecki wrote:
-> 1) Use pr_fmt to keep messages consistent
-> 2) Don't warn if kzalloc fails as it dumps stack on its own
-> 3) Use %pR format for displaying whole resource to avoid:
-> warning: format ‘%08llx’ expects type ‘long long unsigned int’, but
-> argument 2 has type ‘resource_size_t’
+This function compiles to 2554 bytes of machine code.
+In C, the function is almost 200 lines long.
 
-thanks
+It has only one callsite, but forced inlining that much code
+makes gcc generate significantly worse code. Let gcc itself decide
+what to do.
+
+Signed-off-by: Denys Vlasenko <dvlasenk@redhat.com>
+CC: David Woodhouse <David.Woodhouse@intel.com>
+CC: Brian Norris <computersforpeace@gmail.com>
+CC: Dan Carpenter <dan.carpenter@oracle.com>
+CC: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+CC: linux-mtd@lists.infradead.org
+CC: linux-kernel@vger.kernel.org
+---
+ drivers/mtd/chips/cfi_cmdset_0020.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
+index 9a1a6ff..70dd2b1 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0020.c
++++ b/drivers/mtd/chips/cfi_cmdset_0020.c
+@@ -416,7 +416,7 @@ static int cfi_staa_read (struct mtd_info *mtd, loff_t from, size_t len, size_t
+ 	return ret;
+ }
+ 
+-static inline int do_write_buffer(struct map_info *map, struct flchip *chip,
++static int do_write_buffer(struct map_info *map, struct flchip *chip,
+ 				  unsigned long adr, const u_char *buf, int len)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-- 
+2.1.0
