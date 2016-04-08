@@ -1,20 +1,28 @@
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
+Received: from mailout3.w1.samsung.com ([210.118.77.13])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aoQmP-00025Q-GN
- for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 07:24:34 +0000
-Received: by mail-wm0-x233.google.com with SMTP id f198so53108634wme.0
- for <linux-mtd@lists.infradead.org>; Fri, 08 Apr 2016 00:24:13 -0700 (PDT)
-From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- boris.brezillon@free-electrons.com, peterpansjtu@gmail.com
-Cc: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Subject: [RFC] UBI: harden torture_peb to miss less bad blocks.
-Date: Fri,  8 Apr 2016 09:23:34 +0200
-Message-Id: <1460100214-31298-2-git-send-email-arnaud.mouiche@invoxia.com>
-In-Reply-To: <1460100214-31298-1-git-send-email-arnaud.mouiche@invoxia.com>
-References: <1460100214-31298-1-git-send-email-arnaud.mouiche@invoxia.com>
+ id 1aoQzx-000397-RP
+ for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 07:38:35 +0000
+MIME-version: 1.0
+Content-type: text/plain; charset=UTF-8; format=flowed
+Received: from eucpsbgm2.samsung.com (unknown [203.254.199.245])
+ by mailout3.w1.samsung.com
+ (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
+ with ESMTP id <0O5B00GMA17JWK40@mailout3.w1.samsung.com> for
+ linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 08:38:07 +0100 (BST)
+Content-transfer-encoding: 8BIT
+Message-id: <57075FDE.4010406@samsung.com>
+Date: Fri, 08 Apr 2016 09:38:06 +0200
+From: Jacek Anaszewski <j.anaszewski@samsung.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux LED Subsystem <linux-leds@vger.kernel.org>
+Subject: Re: nand-disk LED trigger: to remove, or not to remove
+References: <20160405195120.GA6111@laptop.cereza>
+ <20160408023232.16c1fe32@bbrezillon>
+ <CAAEAJfC2Mdq9_jKhVuyvO809V4B5Oo3h5uyBvuAs=xkBwpDU8A@mail.gmail.com>
+In-reply-to: <CAAEAJfC2Mdq9_jKhVuyvO809V4B5Oo3h5uyBvuAs=xkBwpDU8A@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,81 +32,193 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using an uniform pattern spread all over the block under test detect
-some issues but not all.
+Hi Ezequiel, Boris,
 
-ex: bits in a page affected by bits at a same offset in another page.
+On 04/08/2016 05:02 AM, Ezequiel Garcia wrote:
+> On 7 April 2016 at 21:32, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+>> Hi Ezequiel,
+>>
+>> On Tue, 5 Apr 2016 16:51:20 -0300
+>> Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+>>
+>>> Due to the way the 'nand-disk' LED trigger is implemented,
+>>> it currently does not work correctly for all NAND drivers.
+>>>
+>>> This is somewhat related to an old thread, where we discussed
+>>> the addition of an "mtd" LED trigger. See:
+>>>
+>>>    http://www.spinics.net/lists/linux-leds/msg01181.html
+>>>
+>>> My question is:
+>>>
+>>>   * given that nobody has complained about "nand-disk"
+>>>     working on just some NAND drivers, and...
+>>>   * given that nobody has complained (except that 2013 patch)
+>>>     about lacking a generic MTD LED trigger...
+>>>
+>>> Does it make any sense to have such a trigger at all?
+>>> In other words, should we simply get rid of "nand-disk" trigger?
+>>>
+>>> In case the answer is "We want to keep some LED trigger",
+>>> then here's a patch for you to f̶l̶a̶m̶e̶  review:
+>>
+>> I agree, we should either drop the whole thing or make it available to
+>> all MTD devices. And since people might use that, I'd say we should
+>> make it available to all MTD devices.
+>>
+>
+> Alright then, let's do it.
+>
+>>>
+>>>  From 88c7102bb67056b443da323bd3e28b60aca948a2 Mon Sep 17 00:00:00 2001
+>>> From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+>>> Date: Sat, 2 Apr 2016 18:35:50 -0300
+>>> Subject: [PATCH] leds: trigger: Introduce a MTD (NAND/NOR) trigger
+>>>
+>>> This commit introduces a MTD trigger for flash (NAND/NOR) device
+>>> activity. The implementation is copied from IDE disk.
+>>>
+>>> This deprecates the "nand-disk" LED trigger, but for backwards
+>>> compatibility, we still keep the "nand-disk" trigger around.
+>>>
+>>> The motivation for deprecating the "nand-disk" LED trigger is that
+>>> it only works for NAND drivers, whereas the "mtd" LED trigger
+>>> is more generic (in fact, "nand-disk" currently only works for
+>>> certain NAND drivers).
+>>>
+>>>    TODO: Measure how the trigger affects MTD I/O performance.
+>>>    It should be cheap because the blink is deferred, but still
+>>>    it makes sense to provide some hard numbers.
+>>
+>> Hm, I don't expect that much overhead from this feature, and if people
+>> really want to remove all the overhead, they can just disable
+>> LEDS_TRIGGER_MTD.
+>>
+>>>
+>>> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+>>
+>> Few minor comments below, otherwise it looks good to me.
+>>
+>>> ---
+>>>   drivers/leds/trigger/Kconfig       |  8 +++++++
+>>>   drivers/leds/trigger/Makefile      |  1 +
+>>>   drivers/leds/trigger/ledtrig-mtd.c | 48 ++++++++++++++++++++++++++++++++++++++
+>>>   drivers/mtd/mtdcore.c              |  4 ++++
+>>>   drivers/mtd/nand/nand_base.c       | 29 +----------------------
+>>>   include/linux/leds.h               |  6 +++++
+>>>   6 files changed, 68 insertions(+), 28 deletions(-)
+>>>   create mode 100644 drivers/leds/trigger/ledtrig-mtd.c
+>>>
+>>> diff --git a/drivers/leds/trigger/Kconfig b/drivers/leds/trigger/Kconfig
+>>> index 554f5bfbeced..b7044a0530c7 100644
+>>> --- a/drivers/leds/trigger/Kconfig
+>>> +++ b/drivers/leds/trigger/Kconfig
+>>> @@ -115,4 +115,12 @@ config LEDS_TRIGGER_PANIC
+>>>          This allows LEDs to be configured to blink on a kernel panic.
+>>>          If unsure, say Y.
+>>>
+>>> +config LEDS_TRIGGER_MTD
+>>> +     bool "LED MTD (NAND/NOR) Trigger"
+>>> +     depends on MTD
+>>> +     depends on LEDS_TRIGGERS
+>>> +     help
+>>> +       This allows LEDs to be controlled by MTD activity.
+>>> +       If unsure, say N.
+>>> +
+>>>   endif # LEDS_TRIGGERS
+>>> diff --git a/drivers/leds/trigger/Makefile b/drivers/leds/trigger/Makefile
+>>> index 547bf5c80e52..80e32add3b07 100644
+>>> --- a/drivers/leds/trigger/Makefile
+>>> +++ b/drivers/leds/trigger/Makefile
+>>> @@ -9,3 +9,4 @@ obj-$(CONFIG_LEDS_TRIGGER_DEFAULT_ON) += ledtrig-default-on.o
+>>>   obj-$(CONFIG_LEDS_TRIGGER_TRANSIENT) += ledtrig-transient.o
+>>>   obj-$(CONFIG_LEDS_TRIGGER_CAMERA)    += ledtrig-camera.o
+>>>   obj-$(CONFIG_LEDS_TRIGGER_PANIC)     += ledtrig-panic.o
+>>> +obj-$(CONFIG_LEDS_TRIGGER_MTD)               += ledtrig-mtd.o
+>>> diff --git a/drivers/leds/trigger/ledtrig-mtd.c b/drivers/leds/trigger/ledtrig-mtd.c
+>>> new file mode 100644
+>>> index 000000000000..badf72aa1f5f
+>>> --- /dev/null
+>>> +++ b/drivers/leds/trigger/ledtrig-mtd.c
+>>> @@ -0,0 +1,48 @@
+>>> +/*
+>>> + * LED MTD trigger
+>>> + *
+>>> + * Copyright 2016 Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+>>> + *
+>>> + * Based on LED IDE-Disk Activity Trigger
+>>> + *
+>>> + * Copyright 2006 Openedhand Ltd.
+>>> + *
+>>> + * Author: Richard Purdie <rpurdie@openedhand.com>
+>>> + *
+>>> + * This program is free software; you can redistribute it and/or modify
+>>> + * it under the terms of the GNU General Public License version 2 as
+>>> + * published by the Free Software Foundation.
+>>> + *
+>>> + */
+>>> +
+>>> +#include <linux/kernel.h>
+>>> +#include <linux/init.h>
+>>> +#include <linux/leds.h>
+>>> +
+>>> +#define BLINK_DELAY 30
+>>> +
+>>> +DEFINE_LED_TRIGGER(ledtrig_mtd);
+>>> +DEFINE_LED_TRIGGER(ledtrig_nand);
+>>> +static unsigned long blink_delay = BLINK_DELAY;
+>>> +
+>>> +void ledtrig_mtd_activity(void)
+>>> +{
+>>> +     led_trigger_blink_oneshot(ledtrig_nand,
+>>> +                               &blink_delay, &blink_delay, 0);
+>>> +     led_trigger_blink_oneshot(ledtrig_mtd,
+>>> +                               &blink_delay, &blink_delay, 0);
+>>
+>> I'd recommend using a local variable for blink_delay, since this is
+>> something that seems to be modified by led_trigger_blink_oneshot().
+>> I don't know what led_trigger_blink_oneshot() does with those
+>> pointers, but making it a global variable seems dangerous to me (in
+>> case of concurrent calls to ledtrig_mtd_activity())
+>>
+>
+> OK, I'll revisit this. FWIW, it's copy-pasted from the ide-disk.
 
-Testing every cases is difficult, but at least we can use fuzzing
-techniques to discover such issues.
+I agree - blink_delay can be altered by a LED class driver in case
+it implements blink_set op, which would have global impact on all
+LED class drivers registered on this trigger.
 
-Signed-off-by: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
----
- drivers/mtd/ubi/io.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+Ezequiel, please make the blink_delay variable local to
+ledtrig_mtd_activity. We well need also to provide a fix for
+ledtrig-ide-disk.c.
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index ed0bcb3..91ab744 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -89,6 +89,7 @@
- #include <linux/crc32.h>
- #include <linux/err.h>
- #include <linux/slab.h>
-+#include <linux/random.h>
- #include "ubi.h"
- 
- static int self_check_not_bad(const struct ubi_device *ubi, int pnum);
-@@ -412,6 +413,8 @@ static uint8_t patterns[] = {0xa5, 0x5a, 0x0};
- static int torture_peb(struct ubi_device *ubi, int pnum)
- {
- 	int err, i, patt_count;
-+	uint8_t *peb_rnd_buff = NULL;
-+	const int rnd_check_count = 4;
- 
- 	ubi_msg(ubi, "run torture test for PEB %d", pnum);
- 	patt_count = ARRAY_SIZE(patterns);
-@@ -456,12 +459,41 @@ static int torture_peb(struct ubi_device *ubi, int pnum)
- 			goto out;
- 		}
- 	}
-+	/* try a random pattern */
-+	peb_rnd_buff = kmalloc(ubi->peb_size, GFP_KERNEL);
-+	if (!peb_rnd_buff) {
-+		err = 0;
-+		goto out;
-+	}
-+	for (i=0; i < rnd_check_count; i++) {
-+		get_random_bytes(peb_rnd_buff, ubi->peb_size);
-+
-+		err = do_sync_erase(ubi, pnum);
-+		if (err)
-+			goto out;
-+
-+		err = ubi_io_write(ubi, peb_rnd_buff, pnum, 0, ubi->peb_size);
-+		if (err)
-+			goto out;
-+
-+		err = ubi_io_read(ubi, ubi->peb_buf, pnum, 0, ubi->peb_size);
-+		if (err)
-+			goto out;
-+
-+		if (memcmp(peb_rnd_buff, ubi->peb_buf, ubi->peb_size)) {
-+			ubi_err(ubi, "random pattern checking failed for PEB %d",
-+				pnum);
-+			err = -EIO;
-+			goto out;
-+		}
-+	}
- 
- 	err = patt_count;
- 	ubi_msg(ubi, "PEB %d passed torture test, do not mark it as bad", pnum);
- 
- out:
- 	mutex_unlock(&ubi->buf_mutex);
-+	kfree(peb_rnd_buff);
- 	if (err == UBI_IO_BITFLIPS || mtd_is_eccerr(err)) {
- 		/*
- 		 * If a bit-flip or data integrity error was detected, the test
+>>> +}
+>>> +EXPORT_SYMBOL(ledtrig_mtd_activity);
+>>
+>> [...]
+>>
+>>> diff --git a/include/linux/leds.h b/include/linux/leds.h
+>>> index f203a8f89d30..19eb10278bea 100644
+>>> --- a/include/linux/leds.h
+>>> +++ b/include/linux/leds.h
+>>> @@ -329,6 +329,12 @@ extern void ledtrig_ide_activity(void);
+>>>   static inline void ledtrig_ide_activity(void) {}
+>>>   #endif
+>>>
+>>> +#ifdef CONFIG_LEDS_TRIGGER_MTD
+>>> +extern void ledtrig_mtd_activity(void);
+>>
+>> You can drop the 'extern' specifier here.
+>>
+>
+> I know, but it's declared like this in the leds.h header,
+> and I'm a big fan of code consistency :-)
+>
+
+We'll need to create a patch that removes all redundant extern modifiers
+from leds.h, but please keep it in this one for consistency.
+
 -- 
-1.9.1
+Best regards,
+Jacek Anaszewski
