@@ -1,27 +1,28 @@
-Received: from mail-lf0-x22c.google.com ([2a00:1450:4010:c07::22c])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aoUMo-0003Af-Vh
- for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 11:14:23 +0000
-Received: by mail-lf0-x22c.google.com with SMTP id c126so76845799lfb.2
- for <linux-mtd@lists.infradead.org>; Fri, 08 Apr 2016 04:14:02 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Egor Martovetsky <egor@pasemi.com>, Olof Johansson <olof@lixom.net>,
- Joe Perches <joe@perches.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
+ id 1aoUpG-0006ua-HC
+ for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 11:43:47 +0000
+Received: by mail-pf0-x242.google.com with SMTP id q129so9338427pfb.3
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Apr 2016 04:43:22 -0700 (PDT)
+From: Keguang Zhang <keguang.zhang@gmail.com>
+To: linux-mips@linux-mips.org, linux-clk@vger.kernel.org,
+ linux-pm@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: Ralf Baechle <ralf@linux-mips.org>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@codeaurora.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Viresh Kumar <viresh.kumar@linaro.org>, Vinod Koul <vinod.koul@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC PA SEMI PWRFICIENT),
- linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V2] mtd: nand: pasemi: switch to pr_* functions
-Date: Fri,  8 Apr 2016 13:13:23 +0200
-Message-Id: <1460114003-19926-1-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1460111589-18781-1-git-send-email-zajec5@gmail.com>
-References: <1460111589-18781-1-git-send-email-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+ Kelvin Cheung <keguang.zhang@gmail.com>
+Subject: [PATCH V2 1/7] clk: Loongson1: Update clocks of Loongson1B
+Date: Fri,  8 Apr 2016 19:42:55 +0800
+Message-Id: <1460115779-13141-1-git-send-email-keguang.zhang@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,53 +32,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-1) Use pr_fmt to keep messages consistent
-2) Don't warn if kzalloc fails as it dumps stack on its own
-3) Use %pR format for displaying whole resource to avoid:
-warning: format ‘%08llx’ expects type ‘long long unsigned int’, but argument 2 has type ‘resource_size_t’
+From: Kelvin Cheung <keguang.zhang@gmail.com>
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+- Rename the file to clk-loongson1.c
+- Add AC97, DMA and NAND clock
+- Update clock names
+- Remove superfluous error messages
+
+Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
+
 ---
- drivers/mtd/nand/pasemi_nand.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+V2:
+   Regenerate the patch to make it review-able.
+---
+ drivers/clk/Makefile                        |  2 +-
+ drivers/clk/{clk-ls1x.c => clk-loongson1.c} | 25 +++++++++++++------------
+ 2 files changed, 14 insertions(+), 13 deletions(-)
+ rename drivers/clk/{clk-ls1x.c => clk-loongson1.c} (86%)
 
-diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nand.c
-index 63fcb8c..e8372b4 100644
---- a/drivers/mtd/nand/pasemi_nand.c
-+++ b/drivers/mtd/nand/pasemi_nand.c
-@@ -22,6 +22,8 @@
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index 46869d6..5845b2c 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -25,7 +25,7 @@ obj-$(CONFIG_COMMON_CLK_CS2000_CP)	+= clk-cs2000-cp.o
+ obj-$(CONFIG_ARCH_CLPS711X)		+= clk-clps711x.o
+ obj-$(CONFIG_ARCH_EFM32)		+= clk-efm32gg.o
+ obj-$(CONFIG_ARCH_HIGHBANK)		+= clk-highbank.o
+-obj-$(CONFIG_MACH_LOONGSON32)		+= clk-ls1x.o
++obj-$(CONFIG_MACH_LOONGSON32)		+= clk-loongson1.o
+ obj-$(CONFIG_COMMON_CLK_MAX_GEN)	+= clk-max-gen.o
+ obj-$(CONFIG_COMMON_CLK_MAX77686)	+= clk-max77686.o
+ obj-$(CONFIG_COMMON_CLK_MAX77802)	+= clk-max77802.o
+diff --git a/drivers/clk/clk-ls1x.c b/drivers/clk/clk-loongson1.c
+similarity index 86%
+rename from drivers/clk/clk-ls1x.c
+rename to drivers/clk/clk-loongson1.c
+index d4c6198..ce2135c 100644
+--- a/drivers/clk/clk-ls1x.c
++++ b/drivers/clk/clk-loongson1.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2012 Zhang, Keguang <keguang.zhang@gmail.com>
++ * Copyright (c) 2012-2016 Zhang, Keguang <keguang.zhang@gmail.com>
+  *
+  * This program is free software; you can redistribute  it and/or modify it
+  * under  the terms of  the GNU General  Public License as published by the
+@@ -58,11 +58,9 @@ static struct clk *__init clk_register_pll(struct device *dev,
+ 	struct clk_init_data init;
  
- #undef DEBUG
+ 	/* allocate the divider */
+-	hw = kzalloc(sizeof(struct clk_hw), GFP_KERNEL);
+-	if (!hw) {
+-		pr_err("%s: could not allocate clk_hw\n", __func__);
++	hw = kzalloc(sizeof(*hw), GFP_KERNEL);
++	if (!hw)
+ 		return ERR_PTR(-ENOMEM);
+-	}
  
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
-@@ -112,8 +114,6 @@ static int pasemi_nand_probe(struct platform_device *ofdev)
- 	/* Allocate memory for MTD device structure and private data */
- 	chip = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
- 	if (!chip) {
--		printk(KERN_WARNING
--		       "Unable to allocate PASEMI NAND MTD device structure\n");
- 		err = -ENOMEM;
- 		goto out;
- 	}
-@@ -163,13 +163,12 @@ static int pasemi_nand_probe(struct platform_device *ofdev)
- 	}
+ 	init.name = name;
+ 	init.ops = &ls1x_pll_clk_ops;
+@@ -80,9 +78,9 @@ static struct clk *__init clk_register_pll(struct device *dev,
+ 	return clk;
+ }
  
- 	if (mtd_device_register(pasemi_nand_mtd, NULL, 0)) {
--		printk(KERN_ERR "pasemi_nand: Unable to register MTD device\n");
-+		pr_err("Unable to register MTD device\n");
- 		err = -ENODEV;
- 		goto out_lpc;
- 	}
+-static const char * const cpu_parents[] = { "cpu_clk_div", "osc_33m_clk", };
+-static const char * const ahb_parents[] = { "ahb_clk_div", "osc_33m_clk", };
+-static const char * const dc_parents[] = { "dc_clk_div", "osc_33m_clk", };
++static const char *const cpu_parents[] = { "cpu_clk_div", "osc_33m_clk", };
++static const char *const ahb_parents[] = { "ahb_clk_div", "osc_33m_clk", };
++static const char *const dc_parents[] = { "dc_clk_div", "osc_33m_clk", };
  
--	printk(KERN_INFO "PA Semi NAND flash at %08llx, control at I/O %x\n",
--	       res.start, lpcctl);
-+	pr_info("PA Semi NAND flash at %pR, control at I/O %x\n", &res, lpcctl);
+ void __init ls1x_clk_init(void)
+ {
+@@ -147,6 +145,7 @@ void __init ls1x_clk_init(void)
+ 			       CLK_SET_RATE_NO_REPARENT, LS1X_CLK_PLL_DIV,
+ 			       BYPASS_DDR_SHIFT, BYPASS_DDR_WIDTH, 0, &_lock);
+ 	clk_register_clkdev(clk, "ahb_clk", NULL);
++	clk_register_clkdev(clk, "ls1x-dma", NULL);
+ 	clk_register_clkdev(clk, "stmmaceth", NULL);
  
- 	return 0;
- 
+ 	/* clock derived from AHB clk */
+@@ -154,9 +153,11 @@ void __init ls1x_clk_init(void)
+ 	clk = clk_register_fixed_factor(NULL, "apb_clk", "ahb_clk", 0, 1,
+ 					DIV_APB);
+ 	clk_register_clkdev(clk, "apb_clk", NULL);
+-	clk_register_clkdev(clk, "ls1x_i2c", NULL);
+-	clk_register_clkdev(clk, "ls1x_pwmtimer", NULL);
+-	clk_register_clkdev(clk, "ls1x_spi", NULL);
+-	clk_register_clkdev(clk, "ls1x_wdt", NULL);
++	clk_register_clkdev(clk, "ls1x-ac97", NULL);
++	clk_register_clkdev(clk, "ls1x-i2c", NULL);
++	clk_register_clkdev(clk, "ls1x-nand", NULL);
++	clk_register_clkdev(clk, "ls1x-pwmtimer", NULL);
++	clk_register_clkdev(clk, "ls1x-spi", NULL);
++	clk_register_clkdev(clk, "ls1x-wdt", NULL);
+ 	clk_register_clkdev(clk, "serial8250", NULL);
+ }
 -- 
-1.8.4.5
+1.9.1
