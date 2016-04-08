@@ -1,19 +1,18 @@
-Subject: Re: [PATCH] mtd: nand: s3c2410: fix bug in s3c2410_nand_correct_data()
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1460047697-72830-1-git-send-email-zengzhaoxiu@163.com>
- <20160408021817.274d4e59@bbrezillon> <57070E88.5020008@gmail.com>
- <20160408041802.5c47a4be@bbrezillon>
-Cc: zengzhaoxiu@163.com, kgene@kernel.org, k.kozlowski@samsung.com,
- richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-From: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
-Message-ID: <57074392.2030601@gmail.com>
-Date: Fri, 8 Apr 2016 13:37:22 +0800
-MIME-Version: 1.0
-In-Reply-To: <20160408041802.5c47a4be@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aoQmL-00025K-HL
+ for linux-mtd@lists.infradead.org; Fri, 08 Apr 2016 07:24:30 +0000
+Received: by mail-wm0-x22a.google.com with SMTP id f198so53106479wme.0
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Apr 2016 00:24:08 -0700 (PDT)
+From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ boris.brezillon@free-electrons.com, peterpansjtu@gmail.com
+Cc: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Subject: [RFC] UBI torture test fails to detect some bad blocks.
+Date: Fri,  8 Apr 2016 09:23:33 +0200
+Message-Id: <1460100214-31298-1-git-send-email-arnaud.mouiche@invoxia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +22,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-在 2016年04月08日 10:18, Boris Brezillon 写道:
-> On Fri, 8 Apr 2016 09:51:04 +0800
-> Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com> wrote:
->
->>
->> 在 2016年04月08日 08:18, Boris Brezillon 写道:
->>> Hi Zeng,
->>>
->>> On Fri,  8 Apr 2016 00:48:17 +0800
->>> zengzhaoxiu@163.com wrote:
->>>
->>>> From: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
->>>>
->>>> If there is only one bit difference in the ECC, the function should return 1.
->>>> The result of "diff0 & ~(1<<fls(diff0))" is equal to diff0, so the function
->>>> actually returns -1.
->>>>
->>>> Here, we can use the simple expression "(diff0 & (diff0 - 1)) == 0" to determine
->>>> whether the diff0 has only one 1-bit.
->>> Missing Signed-off-by here.
->>>
->>>> ---
->>>>    drivers/mtd/nand/s3c2410.c | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
->>>> index 9c9397b..c9698cf 100644
->>>> --- a/drivers/mtd/nand/s3c2410.c
->>>> +++ b/drivers/mtd/nand/s3c2410.c
->>>> @@ -542,7 +542,7 @@ static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
->>>>    	diff0 |= (diff1 << 8);
->>>>    	diff0 |= (diff2 << 16);
->>>>    
->>>> -	if ((diff0 & ~(1<<fls(diff0))) == 0)
->>>> +	if ((diff0 & (diff0 - 1)) == 0)
->>> Or just
->>>
->>> 	if (hweight_long((unsigned long)diff0) == 1)
->>>
->>> which is doing exactly what the comment says.
->>>
->>> BTW, I don't understand why the current code is wrong? To me, it seems
->>> it's correctly detecting the case where only a single bit is different.
->>> What are you trying to fix exactly?
->>>
->>> Best Regards,
->>>
->>> Boris
->>>
->> For example, assuming diff0 is 1, then fls(diff0) is equal to 1, then "~(1 << fls(diff0))" is equal to 0xfffffffd,
->> then the result of "(diff0 & ~(1 << fls(diff0)))" is 1 , not we expected 0.
->>
->> __fls(diff0) and "(fls(diff0) - 1)" are all right, but fls(diff0) is wrong.
->>
-> Indeed, I forgot that fls() was returning (position + 1). Anyway, I
-> still think using hweight clarifies what you really want to test.
->
+Hi all.
 
-"(n & (n - 1))" is used in is_power_of_2() in incluse/linux/log2.h,
-it's result is equal to "n & ~(1 << __ffs(n))".
+Just some details about what I experience recently with some bad blocs on 
+a MX35LF1GE4AB spinand device (SLC, 1Gb, 4bits ECC per 512 sub-page), 
+where a UBI partition is attached to manage rootfs & co  (as usual).
 
-"(diff & (diff - 1))" is simple and fast, although here is not performance critical.
-To improve readability of this code, we should add a new function and use it.
+I get the hand on some devices refusing to boot.
+The analyse of the Erase Counters shows that some of them where erased 
+more than 100K, while the majority have an EC below 20 !
 
-/*
-  *  Determine whether some value has more than one 1-bits
-  */
+Looking at the bad one, they run the following scenario nearly in loop:
+- linux read some file inside the rootfs
+- a bitflip is detected
+- scrubbing is scheduled.
+- the scrubbing target a PEB with a pretty high EC,
+- this high EC is also due to frequent bitflip in the target PEB in the past.
+- while the PEB data are moved, a bitflip is detected scheduling a torture test.
+- the torture test *ALWAYS* pass (whereas bitflip are *VERY* frequent for 
+  the same PEB when the read comes filesystem read).
 
-static inline __attribute__((const))
-bool more_than_1_bit_set(unsigned long n)
-{
-     return (n & (n - 1)) != 0;
-}
+So, it seems obvious the PEBs in question are bad PEBs.
+The question is now why the torture test pass.
 
-OTOH, I found many determinations like "hweightN(n) > 1" distributed in kernel,
-these determinations are slower than "(n & (n - 1)) != 0" on most CPUs.
-We can use this new function instead.
+Reproducing the pattern test by hand on this block shows the same result.
+But applying different patterns on different pages within the block shows that 
+the content of some pages are affected by the content of the other pages.
+In particularly, for this block, if the first page is full of FF and the rest 
+of the block is full of 00, I can count  more than 100 bitflips (!)
+
+What kind of pattern should be added to detect those kind of issues ?
+We can think of testing every page one by one, but given the relatively large 
+number of pages in a block, it doesn't sound realistic.
+The easiest way could be to use a random pattern, and try it a relative low 
+number of times.
+Indeed, this simple random test is efficient to detect every bad block of this device.
+If the random test pass once (because this is a random test), there are chances 
+that the next bit flip detection will trigger a new torture test, and at the end, 
+it will be finally detected as bad.
+
+And the implementation is pretty obvious...
+
+Arnaud
+
+
+PS:
+Yes, I know, spinand is not supported yet, but since there is a pending
+effort for refactoring bbt & stuff for spinand inclusion, my driver implementation
+is pretty meaningless. If somebody want a look, no problem... 
+But my future role will be better to test and support various spinand devices since 
+I own some samples from various manufacturers.
+
+
+
+Arnaud Mouiche (1):
+  UBI: harden torture_peb to miss less bad blocks.
+
+ drivers/mtd/ubi/io.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+-- 
+1.9.1
