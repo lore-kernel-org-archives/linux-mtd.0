@@ -1,29 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aphbj-0002uj-0b
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2016 19:34:48 +0000
-Message-ID: <570BF933.2000607@denx.de>
-Date: Mon, 11 Apr 2016 21:21:23 +0200
-From: Marek Vasut <marex@denx.de>
+Date: Tue, 12 Apr 2016 01:15:00 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ matthias.bgg@gmail.com, robh@kernel.org, linux-mtd@lists.infradead.org,
+ xiaolei.li@mediatek.com, daniel.thompson@linaro.org, erin.lo@mediatek.com,
+ linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v3 1/2] mtd: mediatek: device tree docs for MTK Smart
+ Device Gen1 NAND
+Message-ID: <20160412011500.24b29157@bbrezillon>
+In-Reply-To: <1460393772-26910-2-git-send-email-jorge.ramirez-ortiz@linaro.org>
+References: <1460393772-26910-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <1460393772-26910-2-git-send-email-jorge.ramirez-ortiz@linaro.org>
 MIME-Version: 1.0
-To: Jiancheng Xue <xuejiancheng@huawei.com>,
- Brian Norris <computersforpeace@gmail.com>
-CC: linux-mtd@lists.infradead.org, robh+dt@kernel.org,
- dwmw2@infradead.org, boris.brezillon@free-electrons.com,
- juhosg@openwrt.org, furquan@google.com, suwenping@hisilicon.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- yanhaifeng@hisilicon.com, raojun@hisilicon.com,
- xuejiancheng@hisilicon.com, ml.yang@hisilicon.com, gaofei@hisilicon.com,
- yanghongwei@hisilicon.com, zhangzhenxing@hisilicon.com
-Subject: Re: [RESEND PATCH v9] mtd: spi-nor: add hisilicon spi-nor flash
- controller driver
-References: <1458979861-3619-1-git-send-email-xuejiancheng@huawei.com>
- <56F73BC9.5000300@gmail.com> <56F8F630.5050008@huawei.com>
- <20160404064418.GC13995@localhost> <5705C17F.9030904@huawei.com>
- <5705C5E2.6070206@denx.de> <57076B26.7030700@huawei.com>
- <5707821F.4020300@denx.de> <570AFDAF.9050607@huawei.com>
-In-Reply-To: <570AFDAF.9050607@huawei.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,57 +23,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/11/2016 03:28 AM, Jiancheng Xue wrote:
-> Hi,
-> 
-> On 2016/4/8 18:04, Marek Vasut wrote:
->> On 04/08/2016 10:26 AM, Jiancheng Xue wrote:
->>> Hi,
->>>
->>> On 2016/4/7 10:28, Marek Vasut wrote:
->>>> On 04/07/2016 04:10 AM, Jiancheng Xue wrote:
->>>>> Hi Brian,
->>>>>    Thank you very much for your comments. I'll fix these issues in next version.
->>>>> In addition, for easy understanding I'd like to rewrite hisi_spi_nor_write and
->>>>> hisi_spi_nor_read. Your comments on these modifications will be highly appreciated.
->>>>
->>>> Would you please stop top-posting ? It rubs some people the wrong way.
->>>>
->>> I feel very sorry about that. I have read the etiquette and won't make the same mistake again.
->>>
->>>>> static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
->>>>> 		size_t *retlen, u_char *read_buf)
->>>>> {
->>>>> 	struct hifmc_priv *priv = nor->priv;
->>>>> 	struct hifmc_host *host = priv->host;
->>>>> 	int i;
->>>>>
->>>>> 	/* read all bytes in only one time */
->>>>> 	if (len <= HIFMC_DMA_MAX_LEN) {
->>>>> 		hisi_spi_nor_dma_transfer(nor, from, host->dma_buffer,
->>>>> 				len, FMC_OP_READ);
->>>>> 		memcpy(read_buf, host->buffer, len);
->>>>
->>>> Is all the ad-hoc memcpying necessary? I think you can use
->>>> dma_map_single() and co to obtain DMAble memory for your
->>>> controller's use and then you can probably get rid of most
->>>> of this stuff.
->>>>
->>> Considering read_buf >= high_mem case, I think it is also complicated to use dma_map_*
->>> and the DMA buffer allocated by the driver is still needed. But I am not sure about
->>> this. Please let me know if I am wrong. Thank you!
->>
->> Does your controller/DMA have a limitation where it's buffers must be in
->> the bottom 4GiB range ? The DMA framework should be able to take care of
->> such platform limitations.
->>
-> When read_buf is allocated by vmalloc, the underlying physical memory may be not contiguous.
-> In this case, dma_map_single can't be used directly. I think inner DMA buffer and memcpy are still
-> needed. Am I right?
+On Mon, 11 Apr 2016 12:56:11 -0400
+Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
 
-Take a look at drivers/spi/spi-mxs.c , look for "vmalloc" , does that
-solution help you in any way ?
+> This patch adds documentation support for Smart Device Gen1 type of
+> NAND controllers.
+> 
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/mtd/mtk-nand.txt | 145 +++++++++++++++++++++
+>  1 file changed, 145 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> new file mode 100644
+> index 0000000..ca3cc95
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> @@ -0,0 +1,145 @@
+> +MTK SoCs NAND FLASH controller (NFC) DT binding
+> +
+> +This file documents the device tree bindings for MTK SoCs NAND controllers.
+> +The functional split of the controller requires two drivers to operate:
+> +the nand controller interface driver and the ECC engine driver.
+> +
+> +The hardware description for both devices must be captured as device
+> +tree nodes.
+> +
+> +1) NFC NAND Controller Interface (NFI):
+> +=======================================
+> +
+> +The first part of NFC is NAND Controller Interface (NFI) HW.
+> +Required NFI properties:
+> +- compatible:			Should be "mediatek,mtxxxx-nfc".
+> +- reg:				Base physical address and size of NFI.
+> +- interrupts:			Interrupts of NFI.
+> +- clocks:			NFI required clocks.
+> +- clock-names:			NFI clocks internal name.
+> +- status:			Disabled default. Then set "okay" by platform.
+> +- ecc-engine:			Required ECC Engine node.
+> +- #address-cells:		NAND chip index, should be 1.
+> +- #size-cells:			Should be 0.
+> +
+> +Example:
+> +
+> +	nandc: nfi@1100d000 {
+> +		compatible = "mediatek,mt2701-nfc";
+> +		reg = <0 0x1100d000 0 0x1000>;
+> +		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_LOW>;
+> +		clocks = <&pericfg CLK_PERI_NFI>,
+> +			 <&pericfg CLK_PERI_NFI_PAD>;
+> +		clock-names = "nfi_clk", "pad_clk";
+> +		status = "disabled";
+> +		ecc-engine = <&bch>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +        };
+> +
+> +Platform related properties, should be set in {platform_name}.dts:
+> +- children nodes:	NAND chips.
+> +
+> +Children nodes properties:
+> +- reg:			Chip Select Signal, default 0.
+> +			Set as reg = <0>, <1> when need 2 CS.
+> +- spare_per_sector:	Spare size of each sector.
+
+Do you really need this property? It should be deduced from ECC
+strength/step-size and oobsize info (or any other NFC/ECC constraints).
+
 
 -- 
-Best regards,
-Marek Vasut
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
