@@ -1,9 +1,9 @@
-Received: from mail-qg0-x22a.google.com ([2607:f8b0:400d:c04::22a])
+Received: from mail-qk0-x22b.google.com ([2607:f8b0:400d:c09::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1apf8k-0008Og-EM
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2016 16:56:44 +0000
-Received: by mail-qg0-x22a.google.com with SMTP id c6so149391741qga.1
- for <linux-mtd@lists.infradead.org>; Mon, 11 Apr 2016 09:56:21 -0700 (PDT)
+ id 1apf8l-0008Or-JY
+ for linux-mtd@lists.infradead.org; Mon, 11 Apr 2016 16:56:45 +0000
+Received: by mail-qk0-x22b.google.com with SMTP id r184so72826452qkc.1
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Apr 2016 09:56:22 -0700 (PDT)
 From: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
 To: jorge.ramirez-ortiz@linaro.org, dwmw2@infradead.org,
  boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
@@ -11,9 +11,12 @@ To: jorge.ramirez-ortiz@linaro.org, dwmw2@infradead.org,
 Cc: linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com,
  daniel.thompson@linaro.org, erin.lo@mediatek.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v3 0/2] MTK Smart Device Gen1 NAND Driver
-Date: Mon, 11 Apr 2016 12:56:10 -0400
-Message-Id: <1460393772-26910-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+Subject: [PATCH v3 1/2] mtd: mediatek: device tree docs for MTK Smart Device
+ Gen1 NAND
+Date: Mon, 11 Apr 2016 12:56:11 -0400
+Message-Id: <1460393772-26910-2-git-send-email-jorge.ramirez-ortiz@linaro.org>
+In-Reply-To: <1460393772-26910-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+References: <1460393772-26910-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,152 +26,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixes/Changes on v3 relative to: 
---------------------------------
+This patch adds documentation support for Smart Device Gen1 type of
+NAND controllers.
 
-  tree		: https://github.com/bbrezillon/linux-0day
-  branch	: nand/ecclayout
-  commit	:
- 		'commit "mtd: kill the nand_ecclayout struct"'
-		 Author: Boris Brezillon <boris.brezillon@free-electrons.com>
-		 Date:	Thu Feb 4 10:16:18 2016 +0100
-		
-  Patch v3:
-  --------
-  mtd: mediatek: device tree docs for MTK Smart Device Gen1 NAND
-	- rename nandc (nand controller)
-
-  mtd: mediatek: driver for MTK Smart Device Gen1 NAND
- 	- rename source and header files
-	- register definitions move to source files
-	- ecc interface dropped
-	- blank lines between functions (checkpatch.pl doesn't catch them)
-	- ecc_check function renamed ecc_get_stats
-	- ecc->dev assigned during probe()
-	- generic ecc control function replaced by individual functions
-	- required ecc parameters passed in ecc specific structures
-	- fix memory corruption (size 0 array)
-	- clarify nand offset/ptr function helpers (naming corrected)
-	- move ecc config call to select_chip()
-	- comment on hw issue workaround during read_byte
-	- implement write_buf
-	- remove switch_oob
-	- fix suspend/resume operation
-	- make nand-ecc-mode mandatory in device tree 
-
-  RFC v2:
-  -------
- 
-  mtd: mediatek: device tree docs for MTK Smart Device Gen1 NAND
-	- split nand flash interface and ecc engine
-
-  mtd: mediatek: driver for MTK Smart Device Gen1 NAND
-	- split host and ecc in two separate drivers.
-	- expose ecc layout through mtd_ooblayout_ops.
-	- fix wait loops.
-	- use device tree to describe ecc strength and ecc size.
-	- use device tree to describe CS.
-	- replace cmdfunc with cmd_ctrl.
-	- fix read byte interface.
-
-  dont enable controller in mt2701.dtsi
-	- requires additional device tree changes. This will be done in
-	  the near future.
-
-Overview:
-=========
-
-The following patch-set adds support for Mediatek's Smart Device
-Gen1 NAND controller.
-
-The MTK controller generates ECC parity data for both the sector data
-and the 8B FDM data associated to that sector.
-
-
-* Controller expected layout:
------------------------------
-
-The controller expects the OOB information relevant to each sector
-within the page to follow immediately the data field.
-
-For example for a 4KiB page with 1KiB sectors and 224B of OOB information,
-the controller would expect the following layout.
-
------------------------------------------------------
-| 1KiB | 56B | 1KiB | 56B | 1KiB | 56B | 1KiB | 56B |
------------------------------------------------------
-
-This implies that the following actions are required:
-
-- raw writes:
-  to match the controller expected layout, the driver uses the CPU and
-  a private bounce buffer to reassemble the page before the actual
-  writes.
-  
-- non raw writes:
-  ecc is hardware generated and data DMA'd in a single transfer.
-  
-  the driver uses the CPU to copy the OOB information for each sector
-  to its associated FDM register (4B FDM_L, 4B FDM_H) before
-  initiating the DMA.
-
-
-* Bad block mark position:
---------------------------
-
-The bad block mark position is generated at some offset within the
-sector data area.
-
-Similarly, when marking a block as bad, the driver will fill the whole
-page with 0x00 (it would be meaningless for this controller to write
-the watermark to the OOB area).
-
-
-Controller limitations:
-=======================
-
- * dma chaning not supported:
-
-	To guarantee that the pages corresponding to the buffers are contiguous
-	in memory we enabled NAND_USE_BOUNCE_BUFFER.
-
-Tests:
-======
-
-* UBIFS support has been validated on 512MiB device (iozone, dd)
-* All drivers/mtd/tests/* pass clean.
-* Speed tests:
-
-	- eraseblock write speed		: 7451 KiB/s
-	- eraseblock read speed 		: 10817 KiB/s
-	- page write speed 			: 7250 KiB/s
-	- page read speed 			: 10792 KiB/s
-	- 2 page write speed 			: 7350 KiB/s
-	- 2 page read speed			: 10802 KiB/s
-	- erase speed				: 105215 KiB/s
-	- 2x multi-block erase speed 		: 354728 KiB/s
-	- 4x multi-block erase speed		: 356658 KiB/s
-	- 8x multi-block erase speed		: 357631 KiB/s
-	- 16x multi-block erase speed		: 358365 KiB/s
-	- 32x multi-block erase speed		: 358365 KiB/s
-	- 64x multi-block erase speed		: 358610 KiB/s
-
-
-Jorge Ramirez-Ortiz (2):
-  mtd: mediatek: device tree docs for MTK Smart Device Gen1 NAND
-  mtd: mediatek: driver for MTK Smart Device Gen1 NAND
-
- Documentation/devicetree/bindings/mtd/mtk-nand.txt |  145 +++
- drivers/mtd/nand/Kconfig                           |    7 +
- drivers/mtd/nand/Makefile                          |    1 +
- drivers/mtd/nand/mtk_ecc.c                         |  449 +++++++
- drivers/mtd/nand/mtk_ecc.h                         |   56 +
- drivers/mtd/nand/mtk_nand.c                        | 1266 ++++++++++++++++++++
- 6 files changed, 1924 insertions(+)
+Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+---
+ Documentation/devicetree/bindings/mtd/mtk-nand.txt | 145 +++++++++++++++++++++
+ 1 file changed, 145 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
- create mode 100644 drivers/mtd/nand/mtk_ecc.c
- create mode 100644 drivers/mtd/nand/mtk_ecc.h
- create mode 100644 drivers/mtd/nand/mtk_nand.c
 
+diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+new file mode 100644
+index 0000000..ca3cc95
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+@@ -0,0 +1,145 @@
++MTK SoCs NAND FLASH controller (NFC) DT binding
++
++This file documents the device tree bindings for MTK SoCs NAND controllers.
++The functional split of the controller requires two drivers to operate:
++the nand controller interface driver and the ECC engine driver.
++
++The hardware description for both devices must be captured as device
++tree nodes.
++
++1) NFC NAND Controller Interface (NFI):
++=======================================
++
++The first part of NFC is NAND Controller Interface (NFI) HW.
++Required NFI properties:
++- compatible:			Should be "mediatek,mtxxxx-nfc".
++- reg:				Base physical address and size of NFI.
++- interrupts:			Interrupts of NFI.
++- clocks:			NFI required clocks.
++- clock-names:			NFI clocks internal name.
++- status:			Disabled default. Then set "okay" by platform.
++- ecc-engine:			Required ECC Engine node.
++- #address-cells:		NAND chip index, should be 1.
++- #size-cells:			Should be 0.
++
++Example:
++
++	nandc: nfi@1100d000 {
++		compatible = "mediatek,mt2701-nfc";
++		reg = <0 0x1100d000 0 0x1000>;
++		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_LOW>;
++		clocks = <&pericfg CLK_PERI_NFI>,
++			 <&pericfg CLK_PERI_NFI_PAD>;
++		clock-names = "nfi_clk", "pad_clk";
++		status = "disabled";
++		ecc-engine = <&bch>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++        };
++
++Platform related properties, should be set in {platform_name}.dts:
++- children nodes:	NAND chips.
++
++Children nodes properties:
++- reg:			Chip Select Signal, default 0.
++			Set as reg = <0>, <1> when need 2 CS.
++- spare_per_sector:	Spare size of each sector.
++- nand-on-flash-bbt:	Store BBT on NAND Flash.
++- nand-ecc-mode:	NAND ecc mode (check driver for supported modes)
++- nand-ecc-strength:	Number of bits to correct per ECC step.
++- nand-ecc-step-size:	Number of data bytes covered by a single ECC step.
++
++Optional:
++- vmch-supply:		NAND power supply.
++- pinctrl-names:	Default NAND pin GPIO setting name.
++- pinctrl-0:		GPIO setting node.
++
++Example:
++	&pio {
++		nand_pins_default: nanddefault {
++			pins_dat {
++				pinmux = <MT2701_PIN_111_MSDC0_DAT7__FUNC_NLD7>,
++					 <MT2701_PIN_112_MSDC0_DAT6__FUNC_NLD6>,
++					 <MT2701_PIN_114_MSDC0_DAT4__FUNC_NLD4>,
++					 <MT2701_PIN_118_MSDC0_DAT3__FUNC_NLD3>,
++					 <MT2701_PIN_121_MSDC0_DAT0__FUNC_NLD0>,
++					 <MT2701_PIN_120_MSDC0_DAT1__FUNC_NLD1>,
++					 <MT2701_PIN_113_MSDC0_DAT5__FUNC_NLD5>,
++					 <MT2701_PIN_115_MSDC0_RSTB__FUNC_NLD8>,
++					 <MT2701_PIN_119_MSDC0_DAT2__FUNC_NLD2>;
++				input-enable;
++				drive-strength = <MTK_DRIVE_8mA>;
++				bias-pull-up;
++			};
++
++			pins_we {
++				pinmux = <MT2701_PIN_117_MSDC0_CLK__FUNC_NWEB>;
++				drive-strength = <MTK_DRIVE_8mA>;
++				bias-pull-up = <MTK_PUPD_SET_R1R0_10>;
++			};
++
++			pins_ale {
++				pinmux = <MT2701_PIN_116_MSDC0_CMD__FUNC_NALE>;
++				drive-strength = <MTK_DRIVE_8mA>;
++				bias-pull-down = <MTK_PUPD_SET_R1R0_10>;
++			};
++		};
++	};
++
++	&nandc {
++		status = "okay";
++		pinctrl-names = "default";
++		pinctrl-0 = <&nand_pins_default>;
++		nand@0 {
++			reg = <0>;
++			spare_per_sector = <56>;
++			nand-on-flash-bbt;
++			nand-ecc-mode = "hw";
++			nand-ecc-strength = <24>;
++			nand-ecc-step-size = <1024>;
++		};
++	};
++
++NAND chip optional subnodes:
++- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
++
++Example:
++	nand@0 {
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			preloader@0 {
++				label = "pl";
++				read-only;
++				reg = <0x00000000 0x00400000>;
++			};
++			android@0x00400000 {
++				label = "android";
++				reg = <0x00400000 0x12c00000>;
++			};
++		};
++	};
++
++2) ECC Engine:
++==============
++
++Required BCH properties:
++- compatible:	Should be "mediatek,mtxxxx-ecc".
++- reg:		Base physical address and size of ECC.
++- interrupts:	Interrupts of ECC.
++- clocks:	ECC required clocks.
++- clock-names:	ECC clocks internal name.
++- status:	Disabled default. Then set "okay" by platform.
++
++Example:
++
++	bch: ecc@1100e000 {
++		compatible = "mediatek,mt2701-ecc";
++		reg = <0 0x1100e000 0 0x1000>;
++		interrupts = <GIC_SPI 55 IRQ_TYPE_LEVEL_LOW>;
++		clocks = <&pericfg CLK_PERI_NFI_ECC>;
++		clock-names = "nfiecc_clk";
++		status = "disabled";
++	};
 -- 
 2.5.0
