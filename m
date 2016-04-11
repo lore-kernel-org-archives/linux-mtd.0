@@ -1,19 +1,19 @@
-Received: from mail.phytec.co.uk ([217.6.246.34] helo=root.phytec.de)
- by casper.infradead.org with esmtp (Exim 4.85_2 #1 (Red Hat Linux))
- id 1apZsq-0004xK-0J
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2016 11:19:56 +0000
-Date: Mon, 11 Apr 2016 13:18:52 +0200
-From: Stefan Christ <s.christ@phytec.de>
-To: linux-mtd@lists.infradead.org
-Cc: han.xu@nxp.com, boris.brezillon@free-electrons.com, richard@nod.at,
- dwmw2@infradead.org, computersforpeace@gmail.com, eliedebrauwer@gmail.com
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1apaR5-0000fE-VZ
+ for linux-mtd@lists.infradead.org; Mon, 11 Apr 2016 11:55:23 +0000
+Date: Mon, 11 Apr 2016 13:54:46 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Stefan Christ <s.christ@phytec.de>
+Cc: linux-mtd@lists.infradead.org, han.xu@nxp.com, eliedebrauwer@gmail.com,
+ shijie8@gmail.com
 Subject: Re: [PATCH] mtd: gpmi: Deal with bitflips in erased regions
-Message-ID: <20160411111852.GE2430@lws-christ>
+Message-ID: <20160411135446.1f8401e1@bbrezillon>
+In-Reply-To: <1458030937-4245-1-git-send-email-s.christ@phytec.de>
 References: <1458030937-4245-1-git-send-email-s.christ@phytec.de>
 MIME-Version: 1.0
-In-Reply-To: <1458030937-4245-1-git-send-email-s.christ@phytec.de>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,32 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Stefan,
 
-*ping for my last email. Again this is a real issue for deployed devices and
-should be fixed in the mainline kernel.
+Sorry for the late reply.
 
-I hope that the patch author maybe step up and vote that his patch gets
-accepted into mainline, too.
+On Tue, 15 Mar 2016 09:35:37 +0100
+Stefan Christ <s.christ@phytec.de> wrote:
 
-The original patch disccusion is
-
-   http://lists.infradead.org/pipermail/linux-mtd/2014-January/051356.html
-
-There seems to be no issues left with this patch.
-
-Mit freundlichen Gr=C3=BC=C3=9Fen / Kind regards,
-	Stefan Christ
-
-On Tue, Mar 15, 2016 at 09:35:37AM +0100, Stefan Christ wrote:
 > From: Elie De Brauwer <eliedebrauwer@gmail.com>
 >=20
 > The BCH block typically used with a GPMI block on an i.MX28/i.MX6 is only
 > able to correct bitflips on data actually streamed through the block.
 > When erasing a block the data does not stream through the BCH block
 > and therefore no ECC data is written to the NAND chip. This causes
-> gpmi=5Fecc=5Fread=5Fpage to return failure as soon as a single non-1-bit =
-is
+> gpmi_ecc_read_page to return failure as soon as a single non-1-bit is
 > found in an erased page. Typically causing problems at higher levels
 > (ubifs corrupted empty space warnings). This problem was also observed
 > when using SLC NAND devices.
@@ -76,13 +64,13 @@ ml
 >=20
 > The patch fixes the UBI corrupted empty space problem:
 >=20
->     UBIFS error (pid 74): ubifs=5Fscan: corrupt empty space at LEB 3059:7=
-2260
->     UBIFS error (pid 74): ubifs=5Fscanned=5Fcorruption: corruption at LEB=
- 3059:72260
->     UBIFS error (pid 74): ubifs=5Fscanned=5Fcorruption: first 8192 bytes =
-from LEB 3059:72260
->     UBIFS error (pid 74): ubifs=5Fscan: LEB 3059 scanning failed
+>     UBIFS error (pid 74): ubifs_scan: corrupt empty space at LEB 3059:722=
+60
+>     UBIFS error (pid 74): ubifs_scanned_corruption: corruption at LEB 305=
+9:72260
+>     UBIFS error (pid 74): ubifs_scanned_corruption: first 8192 bytes from=
+ LEB 3059:72260
+>     UBIFS error (pid 74): ubifs_scan: LEB 3059 scanning failed
 >=20
 > which occurs in real systems sometimes.
 >=20
@@ -107,50 +95,52 @@ i-nand/bch-regs.h
 > +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
 > @@ -31,6 +31,7 @@
 > =20
->  #define HW=5FBCH=5FSTATUS0				0x00000010
->  #define HW=5FBCH=5FMODE				0x00000020
-> +#define BM=5FBCH=5FMODE=5FERASE=5FTHRESHOLD=5FMASK	0xff
->  #define HW=5FBCH=5FENCODEPTR			0x00000030
->  #define HW=5FBCH=5FDATAPTR				0x00000040
->  #define HW=5FBCH=5FMETAPTR				0x00000050
+>  #define HW_BCH_STATUS0				0x00000010
+>  #define HW_BCH_MODE				0x00000020
+> +#define BM_BCH_MODE_ERASE_THRESHOLD_MASK	0xff
+>  #define HW_BCH_ENCODEPTR			0x00000030
+>  #define HW_BCH_DATAPTR				0x00000040
+>  #define HW_BCH_METAPTR				0x00000050
 > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpm=
 i-nand/gpmi-lib.c
 > index 0f68a99..a724dcb 100644
 > --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
 > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -256,6 +256,7 @@ int bch=5Fset=5Fgeometry(struct gpmi=5Fnand=5Fdata *t=
-his)
->  	unsigned int ecc=5Fstrength;
->  	unsigned int page=5Fsize;
->  	unsigned int gf=5Flen;
-> +	unsigned int erase=5Fthreshold;
+> @@ -256,6 +256,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>  	unsigned int ecc_strength;
+>  	unsigned int page_size;
+>  	unsigned int gf_len;
+> +	unsigned int erase_threshold;
 >  	int ret;
 > =20
->  	if (common=5Fnfc=5Fset=5Fgeometry(this))
-> @@ -298,6 +299,14 @@ int bch=5Fset=5Fgeometry(struct gpmi=5Fnand=5Fdata *=
-this)
->  			| BF=5FBCH=5FFLASH0LAYOUT1=5FDATAN=5FSIZE(block=5Fsize, this),
->  			r->bch=5Fregs + HW=5FBCH=5FFLASH0LAYOUT1);
+>  	if (common_nfc_set_geometry(this))
+> @@ -298,6 +299,14 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>  			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
+>  			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
 > =20
 > +	/* Set the tolerance for bitflips when reading erased blocks. */
-> +	erase=5Fthreshold =3D gf=5Flen / 2;
-> +	if (erase=5Fthreshold > bch=5Fgeo->ecc=5Fstrength)
-> +		erase=5Fthreshold =3D bch=5Fgeo->ecc=5Fstrength;
+> +	erase_threshold =3D gf_len / 2;
+> +	if (erase_threshold > bch_geo->ecc_strength)
+> +		erase_threshold =3D bch_geo->ecc_strength;
+
+Can we make it consistent with other drivers and always use ecc_strength
+instead of gf_len / 2?
+
 > +
-> +	writel(erase=5Fthreshold & BM=5FBCH=5FMODE=5FERASE=5FTHRESHOLD=5FMASK,
-> +		r->bch=5Fregs + HW=5FBCH=5FMODE);
+> +	writel(erase_threshold & BM_BCH_MODE_ERASE_THRESHOLD_MASK,
+> +		r->bch_regs + HW_BCH_MODE);
 > +
 >  	/* Set *all* chip selects to use layout 0. */
->  	writel(0, r->bch=5Fregs + HW=5FBCH=5FLAYOUTSELECT);
+>  	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
 > =20
 > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gp=
 mi-nand/gpmi-nand.c
 > index 235ddcb..ba852e8 100644
 > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -991,6 +991,30 @@ static void block=5Fmark=5Fswapping(struct gpmi=5Fna=
-nd=5Fdata *this,
->  	p[1] =3D (p[1] & mask) | (from=5Foob >> (8 - bit));
+> @@ -991,6 +991,30 @@ static void block_mark_swapping(struct gpmi_nand_dat=
+a *this,
+>  	p[1] =3D (p[1] & mask) | (from_oob >> (8 - bit));
 >  }
 > =20
 > +/*
@@ -158,77 +148,39 @@ nd=5Fdata *this,
 > + * erased region and correct them. Return the number
 > + * of bitflips or zero when the region was correct.
 > + */
-> +static unsigned int erased=5Fsector=5Fbitflips(unsigned char *data,
+> +static unsigned int erased_sector_bitflips(unsigned char *data,
 > +					unsigned int chunk,
-> +					struct bch=5Fgeometry *geo)
+> +					struct bch_geometry *geo)
 > +{
-> +	unsigned int flip=5Fbits =3D 0;
+> +	unsigned int flip_bits =3D 0;
 > +	int i;
-> +	int base =3D geo->ecc=5Fchunk=5Fsize * chunk;
+> +	int base =3D geo->ecc_chunk_size * chunk;
 > +
 > +	/* Count bitflips */
-> +	for (i =3D 0; i < geo->ecc=5Fchunk=5Fsize; i++)
-> +		flip=5Fbits +=3D hweight8(~data[base + i]);
+> +	for (i =3D 0; i < geo->ecc_chunk_size; i++)
+> +		flip_bits +=3D hweight8(~data[base + i]);
+
+Hm, the number of bitflips in this case is not always correct: you're
+only counting bitflips in the data section and are completely ignoring
+ECC bytes.
+
+If you don't have direct access to ECC bytes, you should read them and
+count the number of bitflips in there too.
+
 > +
 > +	/* Correct bitflips by 0xFF'ing this chunk. */
-> +	if (flip=5Fbits)
-> +		memset(&data[base], 0xFF, geo->ecc=5Fchunk=5Fsize);
+> +	if (flip_bits)
+> +		memset(&data[base], 0xFF, geo->ecc_chunk_size);
 > +
-> +	return flip=5Fbits;
+> +	return flip_bits;
 > +}
 > +
->  static int gpmi=5Fecc=5Fread=5Fpage(struct mtd=5Finfo *mtd, struct nand=
-=5Fchip *chip,
->  				uint8=5Ft *buf, int oob=5Frequired, int page)
->  {
-> @@ -1002,6 +1026,7 @@ static int gpmi=5Fecc=5Fread=5Fpage(struct mtd=5Fin=
-fo *mtd, struct nand=5Fchip *chip,
->  	dma=5Faddr=5Ft    auxiliary=5Fphys;
->  	unsigned int  i;
->  	unsigned char *status;
-> +	unsigned int  flips;
->  	unsigned int  max=5Fbitflips =3D 0;
->  	int           ret;
-> =20
-> @@ -1036,15 +1061,27 @@ static int gpmi=5Fecc=5Fread=5Fpage(struct mtd=5F=
-info *mtd, struct nand=5Fchip *chip,
->  	status =3D auxiliary=5Fvirt + nfc=5Fgeo->auxiliary=5Fstatus=5Foffset;
-> =20
->  	for (i =3D 0; i < nfc=5Fgeo->ecc=5Fchunk=5Fcount; i++, status++) {
-> -		if ((*status =3D=3D STATUS=5FGOOD) || (*status =3D=3D STATUS=5FERASED))
-> +		if (*status =3D=3D STATUS=5FGOOD)
->  			continue;
-> =20
->  		if (*status =3D=3D STATUS=5FUNCORRECTABLE) {
->  			mtd->ecc=5Fstats.failed++;
->  			continue;
->  		}
-> -		mtd->ecc=5Fstats.corrected +=3D *status;
-> -		max=5Fbitflips =3D max=5Ft(unsigned int, max=5Fbitflips, *status);
-> +
-> +		/*
-> +		 * The number of bitflips are either counted in software
-> +		 * in case of an erased chunk or otherwise reported by
-> +		 * the BCH block.
-> +		 */
-> +		if (*status =3D=3D STATUS=5FERASED)
-> +			flips =3D erased=5Fsector=5Fbitflips(payload=5Fvirt, i,
-> +							nfc=5Fgeo);
-> +		else
-> +			flips =3D *status;
-> +
-> +		mtd->ecc=5Fstats.corrected +=3D flips;
-> +		max=5Fbitflips =3D max=5Ft(unsigned int, max=5Fbitflips, flips);
->  	}
-> =20
->  	if (oob=5Frequired) {
-> --=20
-> 1.9.1
->=20
->=20
 
-> =5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=
-=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=
-=5F=5F=5F=5F=5F
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Best Regards,
+
+Boris
+
+--=20
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
