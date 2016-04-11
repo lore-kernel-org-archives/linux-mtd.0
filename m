@@ -1,18 +1,19 @@
-Date: Mon, 11 Apr 2016 09:29:16 +0200
+Date: Mon, 11 Apr 2016 09:49:01 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Han Xu <han.xu@nxp.com>, David Woodhouse <dwmw2@infradead.org>, Fabio
- Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, Huang Shijie <shijie.huang@intel.com>, Brian Norris
- <computersforpeace@gmail.com>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-Message-ID: <20160411092916.793d5abd@bbrezillon>
-In-Reply-To: <3992227.rRuQ67A3ma@galactica>
-References: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
- <20160224145750.21050def@bbrezillon> <3992227.rRuQ67A3ma@galactica>
+To: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
+Cc: zengzhaoxiu@163.com, kgene@kernel.org, k.kozlowski@samsung.com,
+ richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: s3c2410: fix bug in s3c2410_nand_correct_data()
+Message-ID: <20160411094901.74e68f91@bbrezillon>
+In-Reply-To: <57074392.2030601@gmail.com>
+References: <1460047697-72830-1-git-send-email-zengzhaoxiu@163.com>
+ <20160408021817.274d4e59@bbrezillon> <57070E88.5020008@gmail.com>
+ <20160408041802.5c47a4be@bbrezillon> <57074392.2030601@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,109 +23,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 11 Apr 2016 08:34:35 +0200
-Markus Pargmann <mpa@pengutronix.de> wrote:
+Hi Zeng,
 
-> Hi Boris,
-> 
-> On Wednesday 24 February 2016 14:57:50 Boris Brezillon wrote:
-> > Hi Markus,
-> > 
-> > On Sun, 21 Feb 2016 13:52:06 +0100
-> > Markus Pargmann <mpa@pengutronix.de> wrote:
-> > 
-> > > ECC is only calculated for written pages. As erased pages are not
-> > > actively written the ECC is always invalid. For this purpose the
-> > > Hardware BCH unit is able to check for erased pages and does not raise
-> > > an ECC error in this case. This behaviour can be influenced using the
-> > > BCH_MODE register which sets the number of allowed bitflips in an erased
-> > > page. Unfortunately the unit is not capable of fixing the bitflips in
-> > > memory.
-> > > 
-> > > To avoid complete software checks for erased pages, we can simply check
-> > > buffers with uncorrectable ECC errors because we know that any erased
-> > > page with errors is uncorrectable by the BCH unit.
-> > > 
-> > > This patch adds the generic nand_check_erased_ecc_chunk() to gpmi-nand
-> > > to correct erased pages. To have the valid data in the buffer before
-> > > using them, this patch moves the read_page_swap_end() call before the
-> > > ECC status checking for-loop.
-> > > 
-> > > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> > > ---
-> > >  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 49 ++++++++++++++++++++++++++++++----
-> > >  1 file changed, 44 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > > index 235ddcb58f39..ce5a21252102 100644
-> > > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > > @@ -1035,14 +1035,58 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
-> > >  	/* Loop over status bytes, accumulating ECC status. */
-> > >  	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
-> > >  
-> > > +	read_page_swap_end(this, buf, nfc_geo->payload_size,
-> > > +			   this->payload_virt, this->payload_phys,
-> > > +			   nfc_geo->payload_size,
-> > > +			   payload_virt, payload_phys);
-> > > +
-> > >  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
-> > >  		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
-> > >  			continue;
-> > >  
-> > >  		if (*status == STATUS_UNCORRECTABLE) {
-> > > +			int flips;
-> > > +
-> > > +			/*
-> > > +			 * The ECC hardware has an uncorrectable ECC status
-> > > +			 * code in case we have bitflips in an erased page. As
-> > > +			 * nothing was written into this subpage the ECC is
-> > > +			 * obviously wrong and we can not trust it. We assume
-> > > +			 * at this point that we are reading an erased page and
-> > > +			 * try to correct the bitflips in buffer up to
-> > > +			 * ecc_strength bitflips. If this is a page with random
-> > > +			 * data, we exceed this number of bitflips and have a
-> > > +			 * ECC failure. Otherwise we use the corrected buffer.
-> > > +			 */
-> > > +			if (i == 0) {
-> > > +				/* The first block includes metadata */
-> > > +				flips = nand_check_erased_ecc_chunk(
-> > > +						buf + i * nfc_geo->ecc_chunk_size,
-> > > +						nfc_geo->ecc_chunk_size,
-> > > +						NULL, 0,
-> > > +						auxiliary_virt,
-> > > +						nfc_geo->metadata_size,
-> > > +						nfc_geo->ecc_strength);
-> > > +			} else {
-> > > +				flips = nand_check_erased_ecc_chunk(
-> > > +						buf + i * nfc_geo->ecc_chunk_size,
-> > > +						nfc_geo->ecc_chunk_size,
-> > > +						NULL, 0,
-> > > +						NULL, 0,
-> > > +						nfc_geo->ecc_strength);
-> > > +			}
-> > 
-> > You're not checking ECC bytes. I know it's a bit more complicated to
-> > implement, but as Brian stated several times, you should always check
-> > ECC bytes along with data bytes when testing for an erased chunk.
-> > 
-> > Indeed, it might appear that the user really programmed ff on the page,
-> > and in this case you don't want to consider the page as erased.
-> > In this case, the ECC bytes will be different from ff, and you'll
-> > be able to identify it by checking those ECC bytes.
-> 
-> Thanks for the feedback. Talking with a coworker about this we may have found a
-> better approach to this that is less complicated to implement. The hardware
-> unit allows us to set a bitflip threshold for erased pages. The ECC unit
-> creates an ECC error only if the number of bitflips exceeds this threshold, but
-> it does not correct these. So the idea is to change the patch so that we set
-> pages, that are signaled by the ECC as erased, to 0xff completely without
-> checking. So the ECC will do all the work and we completely trust in its
-> abilities to do it correctly.
+On Fri, 8 Apr 2016 13:37:22 +0800
+Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com> wrote:
 
-Sounds good.
+> =E5=9C=A8 2016=E5=B9=B404=E6=9C=8808=E6=97=A5 10:18, Boris Brezillon =E5=
+=86=99=E9=81=93:
+> > On Fri, 8 Apr 2016 09:51:04 +0800
+> > Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com> wrote:
+> >
+> >>
+> >> =E5=9C=A8 2016=E5=B9=B404=E6=9C=8808=E6=97=A5 08:18, Boris Brezillon =
+=E5=86=99=E9=81=93:
+> >>> Hi Zeng,
+> >>>
+> >>> On Fri,  8 Apr 2016 00:48:17 +0800
+> >>> zengzhaoxiu@163.com wrote:
+> >>>
+> >>>> From: Zeng Zhaoxiu <zhaoxiu.zeng@gmail.com>
+> >>>>
+> >>>> If there is only one bit difference in the ECC, the function should =
+return 1.
+> >>>> The result of "diff0 & ~(1<<fls(diff0))" is equal to diff0, so the f=
+unction
+> >>>> actually returns -1.
+> >>>>
+> >>>> Here, we can use the simple expression "(diff0 & (diff0 - 1)) =3D=3D=
+ 0" to determine
+> >>>> whether the diff0 has only one 1-bit.
+> >>> Missing Signed-off-by here.
+> >>>
+> >>>> ---
+> >>>>    drivers/mtd/nand/s3c2410.c | 2 +-
+> >>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> >>>> index 9c9397b..c9698cf 100644
+> >>>> --- a/drivers/mtd/nand/s3c2410.c
+> >>>> +++ b/drivers/mtd/nand/s3c2410.c
+> >>>> @@ -542,7 +542,7 @@ static int s3c2410_nand_correct_data(struct mtd_=
+info *mtd, u_char *dat,
+> >>>>    	diff0 |=3D (diff1 << 8);
+> >>>>    	diff0 |=3D (diff2 << 16);
+> >>>>   =20
+> >>>> -	if ((diff0 & ~(1<<fls(diff0))) =3D=3D 0)
+> >>>> +	if ((diff0 & (diff0 - 1)) =3D=3D 0)
+> >>> Or just
+> >>>
+> >>> 	if (hweight_long((unsigned long)diff0) =3D=3D 1)
+> >>>
+> >>> which is doing exactly what the comment says.
+> >>>
+> >>> BTW, I don't understand why the current code is wrong? To me, it seems
+> >>> it's correctly detecting the case where only a single bit is differen=
+t.
+> >>> What are you trying to fix exactly?
+> >>>
+> >>> Best Regards,
+> >>>
+> >>> Boris
+> >>>
+> >> For example, assuming diff0 is 1, then fls(diff0) is equal to 1, then =
+"~(1 << fls(diff0))" is equal to 0xfffffffd,
+> >> then the result of "(diff0 & ~(1 << fls(diff0)))" is 1 , not we expect=
+ed 0.
+> >>
+> >> __fls(diff0) and "(fls(diff0) - 1)" are all right, but fls(diff0) is w=
+rong.
+> >>
+> > Indeed, I forgot that fls() was returning (position + 1). Anyway, I
+> > still think using hweight clarifies what you really want to test.
+> >
+>=20
+> "(n & (n - 1))" is used in is_power_of_2() in incluse/linux/log2.h,
+> it's result is equal to "n & ~(1 << __ffs(n))".
+>=20
+> "(diff & (diff - 1))" is simple and fast, although here is not performanc=
+e critical.
+> To improve readability of this code, we should add a new function and use=
+ it.
+>=20
+> /*
+>   *  Determine whether some value has more than one 1-bits
+>   */
+>=20
+> static inline __attribute__((const))
+> bool more_than_1_bit_set(unsigned long n)
+> {
+>      return (n & (n - 1)) !=3D 0;
+> }
+>=20
+> OTOH, I found many determinations like "hweightN(n) > 1" distributed in k=
+ernel,
+> these determinations are slower than "(n & (n - 1)) !=3D 0" on most CPUs.
 
--- 
+Yes, probably, but it may be faster on a few CPUs :). Anyway, not sure
+you should bother optimizing this now, especially since this test is in
+the ECC correction path, and I doubt it makes any difference (detecting
+and correcting errors is what takes most of the time here).
+
+> We can use this new function instead.
+>=20
+
+In the end, I don't care that much which solution you'll choose, since
+it's driver specific code. Pick whatever implementation you prefer and
+resend the patch with your SoB.
+
+Thanks,
+
+Boris
+
+--=20
 Boris Brezillon, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
