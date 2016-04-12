@@ -1,34 +1,38 @@
-Date: Wed, 13 Apr 2016 00:22:30 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou
- Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Kamal
- Dasu <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Stefan Agner <stefan@agner.ch>
-Cc: linux-omap@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
- <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
- <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+Date: Tue, 12 Apr 2016 15:31:11 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stefan Agner <stefan@agner.ch>, linux-omap@vger.kernel.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory CLEMENT <gregory.clement@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
  bcm-kernel-feedback-list@broadcom.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Maxime
- Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Zhou Wang <wangzhou1@hisilicon.com>, Alex
- Smith <alex.smith@imgtec.com>, Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: Re: [PATCH 03/12] mtd: nand: omap2: rely on generic DT parsing done
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Zhou Wang <wangzhou1@hisilicon.com>, Alex Smith <alex.smith@imgtec.com>,
+ Harvey Hunt <harvey.hunt@imgtec.com>
+Subject: Re: [PATCH 04/12] mtd: nand: brcm: rely on generic DT parsing done
  in nand_scan_ident()
-Message-ID: <20160413002230.59f0930b@bbrezillon>
-In-Reply-To: <1459515272-31011-4-git-send-email-boris.brezillon@free-electrons.com>
+Message-ID: <20160412223111.GA21705@localhost>
 References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459515272-31011-4-git-send-email-boris.brezillon@free-electrons.com>
+ <1459515272-31011-5-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1459515272-31011-5-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,9 +42,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  1 Apr 2016 14:54:23 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
+On Fri, Apr 01, 2016 at 02:54:24PM +0200, Boris Brezillon wrote:
 > The core now takes care of parsing generic DT properties in
 > nand_scan_ident() when nand_set_flash_node() has been called.
 > Rely on this initialization instead of calling of_get_nand_xxx()
@@ -48,69 +50,4 @@ Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Applied.
-
-> ---
->  drivers/memory/omap-gpmc.c | 7 -------
->  drivers/mtd/nand/omap2.c   | 9 ++++++---
->  2 files changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-> index 21825dd..85aa85e 100644
-> --- a/drivers/memory/omap-gpmc.c
-> +++ b/drivers/memory/omap-gpmc.c
-> @@ -25,7 +25,6 @@
->  #include <linux/platform_device.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
-> -#include <linux/of_mtd.h>
->  #include <linux/of_device.h>
->  #include <linux/of_platform.h>
->  #include <linux/omap-gpmc.h>
-> @@ -1876,12 +1875,6 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
->  				break;
->  			}
->  
-> -	gpmc_nand_data->flash_bbt = of_get_nand_on_flash_bbt(child);
-> -
-> -	val = of_get_nand_bus_width(child);
-> -	if (val == 16)
-> -		gpmc_nand_data->devsize = NAND_BUSWIDTH_16;
-> -
->  	gpmc_read_timings_dt(child, &gpmc_t);
->  	gpmc_nand_init(gpmc_nand_data, &gpmc_t);
->  
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 0749ca1..8921283 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1704,9 +1704,7 @@ static int omap_nand_probe(struct platform_device *pdev)
->  	}
->  
->  	if (pdata->flash_bbt)
-> -		nand_chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
-> -	else
-> -		nand_chip->options |= NAND_SKIP_BBTSCAN;
-> +		nand_chip->bbt_options |= NAND_BBT_USE_FLASH;
->  
->  	/* scan NAND device connected to chip controller */
->  	nand_chip->options |= pdata->devsize & NAND_BUSWIDTH_16;
-> @@ -1716,6 +1714,11 @@ static int omap_nand_probe(struct platform_device *pdev)
->  		goto return_error;
->  	}
->  
-> +	if (nand_chip->bbt_options & NAND_BBT_USE_FLASH)
-> +		nand_chip->bbt_options |= NAND_BBT_NO_OOB;
-> +	else
-> +		nand_chip->options |= NAND_SKIP_BBTSCAN;
-> +
->  	/* re-populate low-level callbacks based on xfer modes */
->  	switch (pdata->xfer_type) {
->  	case NAND_OMAP_PREFETCH_POLLED:
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Acked-by: Brian Norris <computersforpeace@gmail.com>
