@@ -1,19 +1,19 @@
-Date: Tue, 12 Apr 2016 13:34:24 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: zengzhaoxiu@163.com
-Cc: kgene@kernel.org, k.kozlowski@samsung.com, richard@nod.at,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Zhaoxiu Zeng
- <zhaoxiu.zeng@gmail.com>
-Subject: Re: [PATCH] mtd: nand: s3c2410: fix bug in s3c2410_nand_correct_data()
-Message-ID: <20160412133424.6ac1193e@bbrezillon>
-In-Reply-To: <1460446235-987-1-git-send-email-zengzhaoxiu@163.com>
-References: <20160411094901.74e68f91@bbrezillon>
- <1460446235-987-1-git-send-email-zengzhaoxiu@163.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-qk0-x235.google.com ([2607:f8b0:400d:c09::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aq1Cm-0003f7-Pm
+ for linux-mtd@lists.infradead.org; Tue, 12 Apr 2016 16:30:22 +0000
+Received: by mail-qk0-x235.google.com with SMTP id o6so8440371qkc.2
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Apr 2016 09:29:58 -0700 (PDT)
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: <linux-mtd@lists.infradead.org>,
+	<linux-leds@vger.kernel.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Jacek Anaszewski <j.anaszewski@samsung.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH 0/2]  LED trigger on MTD activity
+Date: Tue, 12 Apr 2016 13:26:33 -0300
+Message-Id: <1460478395-25925-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 12 Apr 2016 15:30:35 +0800
-zengzhaoxiu@163.com wrote:
+After our recent discussion [1], here's a proper patchset.
 
-> From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
-> 
-> If there is only one bit difference in the ECC, the function should return 1.
-> The result of "diff0 & ~(1<<fls(diff0))" is equal to diff0, so the function
-> actually returns -1.
-> 
-> Signed-off-by: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+The first patch is a minor cleanup which moves mtd_write_oob
+out of mtd.h header.
 
-Applied.
+The second patch implements the LED trigger. Unfortunately,
+it depends on the first patch, so it might make sense to take
+this two through the MTD tree with Jacked acknowledgement.
 
-Thanks,
+Feedback is welcome!
 
-Boris
+[1] http://www.spinics.net/lists/linux-leds/msg05906.html
 
-> ---
->  drivers/mtd/nand/s3c2410.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-> index 9c9397b..86ffb73 100644
-> --- a/drivers/mtd/nand/s3c2410.c
-> +++ b/drivers/mtd/nand/s3c2410.c
-> @@ -542,7 +542,8 @@ static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
->  	diff0 |= (diff1 << 8);
->  	diff0 |= (diff2 << 16);
->  
-> -	if ((diff0 & ~(1<<fls(diff0))) == 0)
-> +	/* equal to "(diff0 & ~(1 << __ffs(diff0)))" */
-> +	if ((diff0 & (diff0 - 1)) == 0)
->  		return 1;
->  
->  	return -1;
+Ezequiel Garcia (2):
+  mtd: Uninline mtd_write_oob and move it to mtdcore.c
+  leds: trigger: Introduce a MTD (NAND/NOR) trigger
 
-
+ drivers/leds/trigger/Kconfig       |  8 +++++++
+ drivers/leds/trigger/Makefile      |  1 +
+ drivers/leds/trigger/ledtrig-mtd.c | 49 ++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/mtdcore.c              | 19 +++++++++++++++
+ drivers/mtd/nand/nand_base.c       | 29 +---------------------
+ include/linux/leds.h               |  6 +++++
+ include/linux/mtd/mtd.h            | 12 +---------
+ 7 files changed, 85 insertions(+), 39 deletions(-)
+ create mode 100644 drivers/leds/trigger/ledtrig-mtd.c
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.7.0
