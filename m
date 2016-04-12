@@ -1,9 +1,9 @@
-Received: from mail-qk0-x236.google.com ([2607:f8b0:400d:c09::236])
+Received: from mail-qk0-x22e.google.com ([2607:f8b0:400d:c09::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aq5Db-0007XD-2l
- for linux-mtd@lists.infradead.org; Tue, 12 Apr 2016 20:47:28 +0000
-Received: by mail-qk0-x236.google.com with SMTP id n130so11662950qke.3
- for <linux-mtd@lists.infradead.org>; Tue, 12 Apr 2016 13:47:06 -0700 (PDT)
+ id 1aq5Eq-00080J-QJ
+ for linux-mtd@lists.infradead.org; Tue, 12 Apr 2016 20:48:45 +0000
+Received: by mail-qk0-x22e.google.com with SMTP id r184so11669653qkc.1
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Apr 2016 13:48:24 -0700 (PDT)
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: <linux-mtd@lists.infradead.org>,
 	<linux-leds@vger.kernel.org>
@@ -11,9 +11,9 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Jacek Anaszewski <j.anaszewski@samsung.com>,
  Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: [PATCH v2 3/4] mtd: nand: Remove the "nand-disk" LED trigger
-Date: Tue, 12 Apr 2016 17:46:41 -0300
-Message-Id: <1460494002-8578-4-git-send-email-ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH v2 4/4] mtd: Hook I/O activity to the MTD LED trigger
+Date: Tue, 12 Apr 2016 17:46:42 -0300
+Message-Id: <1460494002-8578-5-git-send-email-ezequiel@vanguardiasur.com.ar>
 In-Reply-To: <1460494002-8578-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 References: <1460494002-8578-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,101 +25,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit removes the "nand-disk" LED trigger from the
-NAND code.
-
-A trigger with the same name is already available selecting
-LEDS_TRIGGER_MTD. Note that "nand-disk" trigger is being
-deprecated in favor of the "mtd" trigger.
+Now that we've added the MTD LED trigger, we need
+to call each I/O path to ledtrig_mtd_activity.
 
 Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 ---
- drivers/mtd/nand/nand_base.c | 29 +----------------------------
- 1 file changed, 1 insertion(+), 28 deletions(-)
+ drivers/mtd/mtdcore.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index b6facac54fc0..8d6287ef3926 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -43,7 +43,6 @@
- #include <linux/mtd/nand_bch.h>
- #include <linux/interrupt.h>
- #include <linux/bitops.h>
--#include <linux/leds.h>
- #include <linux/io.h>
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 99d83f3331b0..bee180bd11e7 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -40,6 +40,7 @@
+ #include <linux/slab.h>
+ #include <linux/reboot.h>
+ #include <linux/kconfig.h>
++#include <linux/leds.h>
+ 
+ #include <linux/mtd/mtd.h>
  #include <linux/mtd/partitions.h>
- #include <linux/of_mtd.h>
-@@ -97,12 +96,6 @@ static int nand_get_device(struct mtd_info *mtd, int new_state);
- static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 			     struct mtd_oob_ops *ops);
- 
--/*
-- * For devices which display every fart in the system on a separate LED. Is
-- * compiled away when LED support is disabled.
-- */
--DEFINE_LED_TRIGGER(nand_led_trigger);
--
- static int check_offs_len(struct mtd_info *mtd,
- 					loff_t ofs, uint64_t len)
- {
-@@ -540,19 +533,16 @@ void nand_wait_ready(struct mtd_info *mtd)
- 	if (in_interrupt() || oops_in_progress)
- 		return panic_nand_wait_ready(mtd, timeo);
- 
--	led_trigger_event(nand_led_trigger, LED_FULL);
- 	/* Wait until command is processed or timeout occurs */
- 	timeo = jiffies + msecs_to_jiffies(timeo);
- 	do {
- 		if (chip->dev_ready(mtd))
--			goto out;
-+			return;
- 		cond_resched();
- 	} while (time_before(jiffies, timeo));
- 
- 	if (!chip->dev_ready(mtd))
- 		pr_warn_ratelimited("timeout while waiting for chip to become ready\n");
--out:
--	led_trigger_event(nand_led_trigger, LED_OFF);
- }
- EXPORT_SYMBOL_GPL(nand_wait_ready);
- 
-@@ -885,8 +875,6 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 	int status;
- 	unsigned long timeo = 400;
- 
--	led_trigger_event(nand_led_trigger, LED_FULL);
--
- 	/*
- 	 * Apply this short delay always to ensure that we do wait tWB in any
- 	 * case on any machine.
-@@ -910,7 +898,6 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 			cond_resched();
- 		} while (time_before(jiffies, timeo));
+@@ -862,6 +863,7 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		mtd_erase_callback(instr);
+ 		return 0;
  	}
--	led_trigger_event(nand_led_trigger, LED_OFF);
- 
- 	status = (int)chip->read_byte(mtd);
- 	/* This can happen if in case of timeout or buggy dev_ready */
-@@ -4474,20 +4461,6 @@ void nand_release(struct mtd_info *mtd)
++	ledtrig_mtd_activity();
+ 	return mtd->_erase(mtd, instr);
  }
- EXPORT_SYMBOL_GPL(nand_release);
+ EXPORT_SYMBOL_GPL(mtd_erase);
+@@ -925,6 +927,7 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 	if (!len)
+ 		return 0;
  
--static int __init nand_base_init(void)
--{
--	led_trigger_register_simple("nand-disk", &nand_led_trigger);
--	return 0;
--}
--
--static void __exit nand_base_exit(void)
--{
--	led_trigger_unregister_simple(nand_led_trigger);
--}
--
--module_init(nand_base_init);
--module_exit(nand_base_exit);
--
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Steven J. Hill <sjhill@realitydiluted.com>");
- MODULE_AUTHOR("Thomas Gleixner <tglx@linutronix.de>");
++	ledtrig_mtd_activity();
+ 	/*
+ 	 * In the absence of an error, drivers return a non-negative integer
+ 	 * representing the maximum number of bitflips that were corrected on
+@@ -949,6 +952,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 		return -EROFS;
+ 	if (!len)
+ 		return 0;
++	ledtrig_mtd_activity();
+ 	return mtd->_write(mtd, to, len, retlen, buf);
+ }
+ EXPORT_SYMBOL_GPL(mtd_write);
+@@ -982,6 +986,8 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
+ 	ops->retlen = ops->oobretlen = 0;
+ 	if (!mtd->_read_oob)
+ 		return -EOPNOTSUPP;
++
++	ledtrig_mtd_activity();
+ 	/*
+ 	 * In cases where ops->datbuf != NULL, mtd->_read_oob() has semantics
+ 	 * similar to mtd->_read(), returning a non-negative integer
+@@ -1005,6 +1011,7 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+ 		return -EOPNOTSUPP;
+ 	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
++	ledtrig_mtd_activity();
+ 	return mtd->_write_oob(mtd, to, ops);
+ }
+ EXPORT_SYMBOL_GPL(mtd_write_oob);
 -- 
 2.7.0
