@@ -1,21 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aq5Ox-0003nH-3G
- for linux-mtd@lists.infradead.org; Tue, 12 Apr 2016 20:59:11 +0000
-Date: Tue, 12 Apr 2016 22:58:48 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: <linux-mtd@lists.infradead.org>, <linux-leds@vger.kernel.org>, Brian
- Norris <computersforpeace@gmail.com>, Jacek Anaszewski
- <j.anaszewski@samsung.com>
-Subject: Re: [PATCH v2 0/4] LED trigger on MTD activity
-Message-ID: <20160412225848.7c386393@bbrezillon>
-In-Reply-To: <1460494002-8578-1-git-send-email-ezequiel@vanguardiasur.com.ar>
-References: <1460494002-8578-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+Received: from mail-am1on0074.outbound.protection.outlook.com ([157.56.112.74]
+ helo=emea01-am1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aq6Qt-0000y4-Jq
+ for linux-mtd@lists.infradead.org; Tue, 12 Apr 2016 22:05:17 +0000
+From: Han Xu <han.xu@nxp.com>
+To: <han.xu@nxp.com>, <boris.brezillon@free-electrons.com>, <richard@nod.at>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mtd: nand: gpmi: get correct free oob space
+Date: Tue, 12 Apr 2016 17:06:33 -0500
+Message-ID: <1460498793-19431-1-git-send-email-han.xu@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 12 Apr 2016 17:46:38 -0300
-Ezequiel Garcia <ezequiel@vanguardiasur.com.ar> wrote:
+change the way to calculate pagesize to get correct free oob space for
+legacy_set_geometry function.
 
-> After our recent discussion [1], here's a proper patchset.
-> 
-> The first patch is a minor cleanup which moves mtd_write_oob
-> out of mtd.h header.
-> 
-> The second patch introduces the LED MTD trigger.
-> 
-> The third patch removes the "nand-disk" LED trigger
-> from the NAND core.
-> 
-> The fourth patch completes the series by calling ledtrig_mtd_activity
-> on all MTD I/O activity paths.
+Signed-off-by: Han Xu <han.xu@nxp.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-LGTM.
-
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-> 
-> Changes from v1:
-> 
->   * Split the patches, suggested by Boris.
-> 
-> Feedback is welcome!
-> 
-> [1] http://www.spinics.net/lists/linux-leds/msg05906.html
-> 
-> Ezequiel Garcia (4):
->   mtd: Uninline mtd_write_oob and move it to mtdcore.c
->   leds: trigger: Introduce a MTD (NAND/NOR) trigger
->   mtd: nand: Remove the "nand-disk" LED trigger
->   mtd: Hook I/O activity to the MTD LED trigger
-> 
->  drivers/leds/trigger/Kconfig       |  8 +++++++
->  drivers/leds/trigger/Makefile      |  1 +
->  drivers/leds/trigger/ledtrig-mtd.c | 45 ++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/mtdcore.c              | 19 ++++++++++++++++
->  drivers/mtd/nand/nand_base.c       | 29 +-----------------------
->  include/linux/leds.h               |  6 +++++
->  include/linux/mtd/mtd.h            | 12 +---------
->  7 files changed, 81 insertions(+), 39 deletions(-)
->  create mode 100644 drivers/leds/trigger/ledtrig-mtd.c
-> 
-
-
-
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 316b5ac..bda77a9 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -319,7 +319,8 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ 		return -EINVAL;
+ 	}
+ 
+-	geo->page_size = mtd->writesize + mtd->oobsize;
++	geo->page_size = mtd->writesize + geo->metadata_size +
++		(geo->gf_len * geo->ecc_strength * geo->ecc_chunk_count) / 8;
+ 	geo->payload_size = mtd->writesize;
+ 
+ 	/*
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+1.9.1
