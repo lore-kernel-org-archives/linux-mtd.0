@@ -11,8 +11,10 @@ Cc: linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org
 Subject: [PATCH v6 04/50] mtd: nand: atmel: use mtd_ooblayout_xxx() helpers
  where appropriate
-Date: Wed, 13 Apr 2016 17:51:31 +0200
-Message-Id: <1460562691-30882-1-git-send-email-boris.brezillon@free-electrons.com>
+Date: Wed, 13 Apr 2016 17:53:47 +0200
+Message-Id: <1460562827-30990-1-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1459354505-32551-5-git-send-email-boris.brezillon@free-electrons.com>
+References: <1459354505-32551-5-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
