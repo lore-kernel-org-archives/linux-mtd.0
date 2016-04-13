@@ -1,9 +1,9 @@
-Received: from mail-lf0-x234.google.com ([2a00:1450:4010:c07::234])
+Received: from mail-lf0-x22f.google.com ([2a00:1450:4010:c07::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqJbD-0002XA-5s
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 12:08:49 +0000
-Received: by mail-lf0-x234.google.com with SMTP id j11so66342583lfb.1
- for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2016 05:08:26 -0700 (PDT)
+ id 1aqJbB-0002Us-7U
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 12:08:50 +0000
+Received: by mail-lf0-x22f.google.com with SMTP id e190so66614471lfe.0
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2016 05:08:25 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
@@ -11,9 +11,9 @@ Cc: linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 6/9] mtd: nand: cmx270: set ECC algorithm explicitly
-Date: Wed, 13 Apr 2016 14:06:59 +0200
-Message-Id: <1460549222-24198-7-git-send-email-zajec5@gmail.com>
+Subject: [PATCH 5/9] mtd: nand: mpc5121_nfc: set ECC algorithm explicitly
+Date: Wed, 13 Apr 2016 14:06:58 +0200
+Message-Id: <1460549222-24198-6-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1460549222-24198-1-git-send-email-zajec5@gmail.com>
 References: <1460549222-24198-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
@@ -33,20 +33,20 @@ enum nand_ecc_algo).
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- drivers/mtd/nand/cmx270_nand.c | 1 +
+ drivers/mtd/nand/mpc5121_nfc.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
-index 6f97ebb..4913378 100644
---- a/drivers/mtd/nand/cmx270_nand.c
-+++ b/drivers/mtd/nand/cmx270_nand.c
-@@ -187,6 +187,7 @@ static int __init cmx270_init(void)
- 	/* 15 us command delay time */
- 	this->chip_delay = 20;
- 	this->ecc.mode = NAND_ECC_SOFT;
-+	this->ecc.algo = NAND_ECC_HAMMING;
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index 5d7843f..7eacb2f 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -710,6 +710,7 @@ static int mpc5121_nfc_probe(struct platform_device *op)
+ 	chip->select_chip = mpc5121_nfc_select_chip;
+ 	chip->bbt_options = NAND_BBT_USE_FLASH;
+ 	chip->ecc.mode = NAND_ECC_SOFT;
++	chip->ecc.algo = NAND_ECC_HAMMING;
  
- 	/* read/write functions */
- 	this->read_byte = cmx270_read_byte;
+ 	/* Support external chip-select logic on ADS5121 board */
+ 	if (of_machine_is_compatible("fsl,mpc5121ads")) {
 -- 
 1.8.4.5
