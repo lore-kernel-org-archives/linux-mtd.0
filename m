@@ -1,16 +1,16 @@
 Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqOXm-0002bH-S3
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 17:25:39 +0000
+ id 1aqOY7-0002bH-BI
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 17:26:00 +0000
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
  <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
  <cyrille.pitchen@atmel.com>
-Subject: [PATCH RFC 5/8] mtd: m25p80: add support of dual and quad spi
- protocols to all commands
-Date: Wed, 13 Apr 2016 19:23:37 +0200
-Message-ID: <530d9875af561ec04eb5f6b50dfe9d455629c6ac.1460567256.git.cyrille.pitchen@atmel.com>
+Subject: [PATCH RFC 6/8] mtd: spi-nor: add support for Micron Dual and Quad
+ SPI memories
+Date: Wed, 13 Apr 2016 19:23:38 +0200
+Message-ID: <77da9867290d0efcb301aba6e07eaed6ba1578c7.1460567256.git.cyrille.pitchen@atmel.com>
 In-Reply-To: <cover.1460567255.git.cyrille.pitchen@atmel.com>
 References: <cover.1460567255.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
@@ -24,310 +24,330 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Before this patch, m25p80_read() supported few SPI protocols:
-- regular SPI 1-1-1
-- SPI Dual Output 1-1-2
-- SPI Quad Output 1-1-4
-On the other hand, all other m25p80_*() hooks only supported SPI 1-1-1.
-
-However once their Quad mode enabled, Micron and Macronix spi-nor memories
-expect all commands to use the SPI 4-4-4 protocol.
-
-Also, once their Dual mode enabled, Micron spi-nor memories expect all
-commands to use the SPI-2-2-2 protocol.
-
-So this patch adds support to all currently existing SPI protocols to
-cover as many protocols as possible.
-
 Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 ---
- drivers/mtd/devices/m25p80.c | 200 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 155 insertions(+), 45 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 275 ++++++++++++++++++++++++++++++++++++++++--
+ include/linux/mtd/spi-nor.h   |   1 +
+ 2 files changed, 265 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 12112f7ae1a4..d4a3bc0e4c3f 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -27,22 +27,64 @@
- #include <linux/spi/flash.h>
- #include <linux/mtd/spi-nor.h>
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 3573cc708b16..260ba5b9d010 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -807,6 +807,214 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	return ret;
+ }
  
--#define	MAX_CMD_SIZE		6
-+#define	MAX_CMD_SIZE		16
- struct m25p {
- 	struct spi_device	*spi;
- 	struct spi_nor		spi_nor;
- 	u8			command[MAX_CMD_SIZE];
- };
- 
-+static inline int m25p80_proto2nbits(enum spi_nor_protocol proto,
-+				     unsigned *code_nbits,
-+				     unsigned *addr_nbits,
-+				     unsigned *data_nbits)
++struct spi_nor_read_id {
++	u32			id_mode;
++	u8			opcode;
++};
++
++static int spi_nor_read_id_multi_io(struct spi_nor *nor,
++				    u8 *id, size_t id_len,
++				    u32 id_modes,
++				    const struct spi_nor_read_id *configs,
++				    size_t num_configs,
++				    u8 mfr_id);
++
++static int spi_nor_micron_read_id(struct spi_nor *nor, u8 *id, size_t id_len,
++				  u32 id_modes)
 +{
-+	if (code_nbits)
-+		*code_nbits = SNOR_PROTO_CODE_FROM_PROTO(proto);
-+	if (addr_nbits)
-+		*addr_nbits = SNOR_PROTO_ADDR_FROM_PROTO(proto);
-+	if (data_nbits)
-+		*data_nbits = SNOR_PROTO_DATA_FROM_PROTO(proto);
++	static const struct spi_nor_read_id configs[] = {
++		{SNOR_MODE_1_1_1, SPINOR_OP_RDID},
++		{SNOR_MODE_4_4_4, SPINOR_OP_MIO_RDID},
++		{SNOR_MODE_2_2_2, SPINOR_OP_MIO_RDID},
++	};
++
++	return spi_nor_read_id_multi_io(nor, id, id_len, id_modes,
++					configs, ARRAY_SIZE(configs),
++					SNOR_MFR_MICRON);
++}
++
++static int micron_set_protocol(struct spi_nor *nor, u8 mask, u8 val,
++			       enum spi_nor_protocol proto)
++{
++	u8 evcr;
++	int ret;
++
++	/* Read the Enhanced Volatile Configuration Register (EVCR). */
++	ret = nor->read_reg(nor, SPINOR_OP_RD_EVCR, &evcr, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error while reading EVCR register\n");
++		return ret;
++	}
++
++	/* Check whether we need to update the protocol bits. */
++	if ((evcr & mask) == val)
++		return 0;
++
++	/* Set EVCR protocol bits. */
++	write_enable(nor);
++	evcr = (evcr & ~mask) | val;
++	ret = nor->write_reg(nor, SPINOR_OP_WD_EVCR, &evcr, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error while writing EVCR register\n");
++		return ret;
++	}
++
++	/* Switch reg protocol now before accessing any other registers. */
++	nor->reg_proto = proto;
++
++	ret = spi_nor_wait_till_ready(nor);
++	if (ret)
++		return ret;
++
++	/* Read EVCR and check it. */
++	ret = nor->read_reg(nor, SPINOR_OP_RD_EVCR, &evcr, 1);
++	if (ret < 0 || (evcr & mask) != val) {
++		dev_err(nor->dev, "Micron EVCR protocol bits not updated\n");
++		return -EINVAL;
++	}
 +
 +	return 0;
 +}
 +
- static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
- {
- 	struct m25p *flash = nor->priv;
- 	struct spi_device *spi = flash->spi;
-+	unsigned code_nbits, data_nbits;
-+	struct spi_transfer xfers[2];
- 	int ret;
- 
--	ret = spi_write_then_read(spi, &code, 1, val, len);
-+	/* Check the total length of command op code and data. */
-+	if (len + 1 > MAX_CMD_SIZE)
-+		return -EINVAL;
-+
-+	/* Get transfer protocols (addr_nbits is not relevant here). */
-+	ret = m25p80_proto2nbits(nor->reg_proto,
-+				 &code_nbits, NULL, &data_nbits);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set up transfers. */
-+	memset(xfers, 0, sizeof(xfers));
-+
-+	flash->command[0] = code;
-+	xfers[0].len = 1;
-+	xfers[0].tx_buf = flash->command;
-+	xfers[0].tx_nbits = code_nbits;
-+
-+	xfers[1].len = len;
-+	xfers[1].rx_buf = &flash->command[1];
-+	xfers[1].rx_nbits = data_nbits;
-+
-+	/* Process command. */
-+	ret = spi_sync_transfer(spi, xfers, 2);
- 	if (ret < 0)
- 		dev_err(&spi->dev, "error %d reading %x\n", ret, code);
-+	else
-+		memcpy(val, &flash->command[1], len);
- 
- 	return ret;
- }
-@@ -65,12 +107,42 @@ static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- {
- 	struct m25p *flash = nor->priv;
- 	struct spi_device *spi = flash->spi;
-+	unsigned code_nbits, data_nbits, num_xfers = 1;
-+	struct spi_transfer xfers[2];
++static int micron_set_quad_mode(struct spi_nor *nor)
++{
 +	int ret;
 +
-+	/* Check the total length of command op code and data. */
-+	if (buf && (len + 1 > MAX_CMD_SIZE))
-+		return -EINVAL;
-+
-+	/* Get transfer protocols (addr_nbits is not relevant here). */
-+	ret = m25p80_proto2nbits(nor->reg_proto,
-+				 &code_nbits, NULL, &data_nbits);
-+	if (ret < 0)
++	/* Clear Quad bit to select the Quad SPI mode */
++	ret = micron_set_protocol(nor,
++				  EVCR_QUAD_EN_MICRON, 0,
++				  SNOR_PROTO_4_4_4);
++	if (ret) {
++		dev_err(nor->dev, "Failed to set Micron Quad SPI mode\n");
 +		return ret;
-+
-+	/* Set up transfer(s). */
-+	memset(xfers, 0, sizeof(xfers));
- 
- 	flash->command[0] = opcode;
--	if (buf)
-+	xfers[0].len = 1;
-+	xfers[0].tx_buf = flash->command;
-+	xfers[0].tx_nbits = code_nbits;
-+
-+	if (buf) {
- 		memcpy(&flash->command[1], buf, len);
-+		if (data_nbits == code_nbits) {
-+			xfers[0].len += len;
-+		} else {
-+			xfers[1].len = len;
-+			xfers[1].tx_buf = &flash->command[1];
-+			xfers[1].tx_nbits = data_nbits;
-+			num_xfers++;
-+		}
 +	}
- 
--	return spi_write(spi, flash->command, len + 1);
-+	/* Process command. */
-+	return spi_sync_transfer(spi, xfers, num_xfers);
- }
- 
- static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
-@@ -78,43 +150,54 @@ static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- {
- 	struct m25p *flash = nor->priv;
- 	struct spi_device *spi = flash->spi;
--	struct spi_transfer t[2] = {};
-+	unsigned code_nbits, addr_nbits, data_nbits, num_xfers = 1;
-+	struct spi_transfer xfers[3];
- 	struct spi_message m;
--	int cmd_sz = m25p_cmdsz(nor);
--
--	spi_message_init(&m);
-+	int ret, cmd_sz = m25p_cmdsz(nor);
- 
- 	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
- 		cmd_sz = 1;
- 
--	flash->command[0] = nor->program_opcode;
--	m25p_addr2cmd(nor, to, flash->command);
-+	/* Get transfer protocols. */
-+	ret = m25p80_proto2nbits(nor->write_proto,
-+				 &code_nbits, &addr_nbits, &data_nbits);
-+	if (ret < 0) {
-+		*retlen = 0;
-+		return;
-+	}
- 
--	t[0].tx_buf = flash->command;
--	t[0].len = cmd_sz;
--	spi_message_add_tail(&t[0], &m);
-+	/* Set up transfers. */
-+	memset(xfers, 0, sizeof(xfers));
 +
-+	flash->command[0] = nor->program_opcode;
-+	xfers[0].len = 1;
-+	xfers[0].tx_buf = flash->command;
-+	xfers[0].tx_nbits = code_nbits;
++	nor->read_proto  = SNOR_PROTO_4_4_4;
++	nor->write_proto = SNOR_PROTO_4_4_4;
++	nor->erase_proto = SNOR_PROTO_4_4_4;
++	return 0;
++}
 +
-+	if (cmd_sz > 1) {
-+		m25p_addr2cmd(nor, to, flash->command);
-+		if (addr_nbits == code_nbits) {
-+			xfers[0].len += nor->addr_width;
-+		} else {
-+			xfers[1].len = nor->addr_width;
-+			xfers[1].tx_buf = &flash->command[1];
-+			xfers[1].tx_nbits = addr_nbits;
-+			num_xfers++;
-+		}
-+	}
- 
--	t[1].tx_buf = buf;
--	t[1].len = len;
--	spi_message_add_tail(&t[1], &m);
-+	xfers[num_xfers].len = len;
-+	xfers[num_xfers].tx_buf = buf;
-+	xfers[num_xfers].tx_nbits = data_nbits;
-+	num_xfers++;
- 
-+	/* Process command. */
-+	spi_message_init_with_transfers(&m, xfers, num_xfers);
- 	spi_sync(spi, &m);
- 
- 	*retlen += m.actual_length - cmd_sz;
- }
- 
--static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
--{
--	switch (SNOR_PROTO_DATA_FROM_PROTO(nor->read_proto)) {
--	case 2:
--		return 2;
--	case 4:
--		return 4;
--	default:
--		return 0;
--	}
--}
--
- /*
-  * Read an address range from the nor chip.  The address range
-  * may be any size provided it is within the physical boundaries.
-@@ -124,13 +207,24 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- {
- 	struct m25p *flash = nor->priv;
- 	struct spi_device *spi = flash->spi;
--	struct spi_transfer t[2];
--	struct spi_message m;
-+	unsigned code_nbits, addr_nbits, data_nbits, num_xfers = 1;
- 	unsigned int dummy = nor->read_dummy;
-+	struct spi_transfer xfers[3];
-+	struct spi_message m;
++static int micron_set_dual_mode(struct  spi_nor *nor)
++{
 +	int ret;
 +
-+	/* Get transfer protocols. */
-+	ret = m25p80_proto2nbits(nor->read_proto,
-+				 &code_nbits, &addr_nbits, &data_nbits);
-+	if (ret < 0) {
-+		*retlen = 0;
++	/* Set Quad/Dual bits to 10 to select the Dual SPI mode */
++	ret = micron_set_protocol(nor,
++				  EVCR_QUAD_EN_MICRON | EVCR_DUAL_EN_MICRON,
++				  EVCR_QUAD_EN_MICRON,
++				  SNOR_PROTO_2_2_2);
++	if (ret) {
++		dev_err(nor->dev, "Failed to set Micron Dual SPI mode\n");
 +		return ret;
 +	}
- 
- 	/* convert the dummy cycles to the number of bytes */
--	dummy /= 8;
-+	dummy = (dummy * addr_nbits) / 8;
- 
-+	/* Use the SPI flash API if supported. */
- 	if (spi_flash_read_supported(spi)) {
- 		struct spi_flash_read_message msg;
- 		int ret;
-@@ -143,31 +237,47 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 		msg.read_opcode = nor->read_opcode;
- 		msg.addr_width = nor->addr_width;
- 		msg.dummy_bytes = dummy;
--		/* TODO: Support other combinations */
--		msg.opcode_nbits = SPI_NBITS_SINGLE;
--		msg.addr_nbits = SPI_NBITS_SINGLE;
--		msg.data_nbits = m25p80_rx_nbits(nor);
-+		msg.opcode_nbits = code_nbits;
-+		msg.addr_nbits = addr_nbits;
-+		msg.data_nbits = data_nbits;
- 
- 		ret = spi_flash_read(spi, &msg);
- 		*retlen = msg.retlen;
- 		return ret;
- 	}
- 
--	spi_message_init(&m);
--	memset(t, 0, (sizeof t));
-+	/* Set up transfers. */
-+	memset(xfers, 0, sizeof(xfers));
- 
- 	flash->command[0] = nor->read_opcode;
--	m25p_addr2cmd(nor, from, flash->command);
-+	xfers[0].len = 1;
-+	xfers[0].tx_buf = flash->command;
-+	xfers[0].tx_nbits = code_nbits;
- 
--	t[0].tx_buf = flash->command;
--	t[0].len = m25p_cmdsz(nor) + dummy;
--	spi_message_add_tail(&t[0], &m);
-+	m25p_addr2cmd(nor, from, flash->command);
-+	/*
-+	 * Clear all dummy/mode cycle bits to avoid sending some manufacturer
-+	 * specific pattern, which might make the memory enter its Continuous
-+	 * Read mode by mistake.
-+	 */
-+	memset(flash->command + 1 + nor->addr_width, 0, dummy);
 +
-+	if (addr_nbits == code_nbits) {
-+		xfers[0].len += nor->addr_width + dummy;
-+	} else {
-+		xfers[1].len = nor->addr_width + dummy;
-+		xfers[1].tx_buf = &flash->command[1];
-+		xfers[1].tx_nbits = addr_nbits;
-+		num_xfers++;
++	nor->read_proto  = SNOR_PROTO_2_2_2;
++	nor->write_proto = SNOR_PROTO_2_2_2;
++	nor->erase_proto = SNOR_PROTO_2_2_2;
++	return 0;
++}
++
++static int micron_set_extended_spi_mode(struct spi_nor *nor)
++{
++	int ret;
++
++	/* Set Quad/Dual bits to 11 to select the Extended SPI mode */
++	ret = micron_set_protocol(nor,
++				  EVCR_QUAD_EN_MICRON | EVCR_DUAL_EN_MICRON,
++				  EVCR_QUAD_EN_MICRON | EVCR_DUAL_EN_MICRON,
++				  SNOR_PROTO_1_1_1);
++	if (ret) {
++		dev_err(nor->dev, "Failed to set Micron Extended SPI mode\n");
++		return ret;
 +	}
++
++	nor->write_proto = SNOR_PROTO_1_1_1;
++	nor->erase_proto = SNOR_PROTO_1_1_1;
++	return 0;
++}
++
++static int spi_nor_micron_enable_4_4_4(struct spi_nor *nor, bool enable)
++{
++	if (enable)
++		return micron_set_quad_mode(nor);
++	return micron_set_extended_spi_mode(nor);
++}
++
++static int spi_nor_micron_enable_2_2_2(struct spi_nor *nor, bool enable)
++{
++	if (enable)
++		return micron_set_dual_mode(nor);
++	return micron_set_extended_spi_mode(nor);
++}
++
++#define SNOR_MICRON_RD_MODES			\
++	(SNOR_MODE_SLOW |			\
++	 SNOR_MODE_1_1_1 |			\
++	 SNOR_MODE_1_1_2 |			\
++	 SNOR_MODE_1_2_2 |			\
++	 SNOR_MODE_2_2_2 |			\
++	 SNOR_MODE_1_1_4 |			\
++	 SNOR_MODE_1_4_4 |			\
++	 SNOR_MODE_4_4_4)
++
++#define SNOR_MICRON_WR_MODES			\
++	(SNOR_MODE_1_1_1 |			\
++	 SNOR_MODE_2_2_2 |			\
++	 SNOR_MODE_1_1_4 |			\
++	 SNOR_MODE_4_4_4)
++
++static const struct spi_nor_basic_flash_parameter micron_params = {
++	.rd_modes		= SNOR_MICRON_RD_MODES,
++	.reads[SNOR_MIDX_SLOW]	= SNOR_OP_READ(0, 0, SPINOR_OP_READ),
++	.reads[SNOR_MIDX_1_1_1]	= SNOR_OP_READ(0, 8, SPINOR_OP_READ_FAST),
++	.reads[SNOR_MIDX_1_1_2]	= SNOR_OP_READ(0, 8, SPINOR_OP_READ_1_1_2),
++	.reads[SNOR_MIDX_1_2_2]	= SNOR_OP_READ(1, 7, SPINOR_OP_READ_1_2_2),
++	.reads[SNOR_MIDX_2_2_2]	= SNOR_OP_READ(1, 7, SPINOR_OP_READ_1_2_2),
++	.reads[SNOR_MIDX_1_1_4]	= SNOR_OP_READ(1, 7, SPINOR_OP_READ_1_1_4),
++	.reads[SNOR_MIDX_1_4_4]	= SNOR_OP_READ(1, 9, SPINOR_OP_READ_1_4_4),
++	.reads[SNOR_MIDX_4_4_4]	= SNOR_OP_READ(1, 9, SPINOR_OP_READ_1_4_4),
++
++	.wr_modes		= SNOR_MICRON_WR_MODES,
++	.page_programs[SNOR_MIDX_1_1_1]	= SPINOR_OP_PP,
++	.page_programs[SNOR_MIDX_2_2_2]	= SPINOR_OP_PP,
++	.page_programs[SNOR_MIDX_1_1_4]	= SPINOR_OP_PP_1_1_4,
++	.page_programs[SNOR_MIDX_4_4_4]	= SPINOR_OP_PP_1_1_4,
++
++	.erase_types[0]		= SNOR_OP_ERASE_64K(SPINOR_OP_SE),
++
++	.read_id		= spi_nor_micron_read_id,
++	.enable_4_4_4		= spi_nor_micron_enable_4_4_4,
++	.enable_2_2_2		= spi_nor_micron_enable_2_2_2,
++};
++
++static const struct spi_nor_basic_flash_parameter micron_4k_params = {
++	.rd_modes		= SNOR_MICRON_RD_MODES,
++	.reads[SNOR_MIDX_SLOW]	= SNOR_OP_READ(0, 0, SPINOR_OP_READ),
++	.reads[SNOR_MIDX_1_1_1]	= SNOR_OP_READ(0, 8, SPINOR_OP_READ_FAST),
++	.reads[SNOR_MIDX_1_1_2]	= SNOR_OP_READ(0, 8, SPINOR_OP_READ_1_1_2),
++	.reads[SNOR_MIDX_1_2_2]	= SNOR_OP_READ(1, 7, SPINOR_OP_READ_1_2_2),
++	.reads[SNOR_MIDX_2_2_2]	= SNOR_OP_READ(1, 7, SPINOR_OP_READ_1_2_2),
++	.reads[SNOR_MIDX_1_1_4]	= SNOR_OP_READ(1, 7, SPINOR_OP_READ_1_1_4),
++	.reads[SNOR_MIDX_1_4_4]	= SNOR_OP_READ(1, 9, SPINOR_OP_READ_1_4_4),
++	.reads[SNOR_MIDX_4_4_4]	= SNOR_OP_READ(1, 9, SPINOR_OP_READ_1_4_4),
++
++	.wr_modes		= SNOR_MICRON_WR_MODES,
++	.page_programs[SNOR_MIDX_1_1_1]	= SPINOR_OP_PP,
++	.page_programs[SNOR_MIDX_2_2_2]	= SPINOR_OP_PP,
++	.page_programs[SNOR_MIDX_1_1_4]	= SPINOR_OP_PP_1_1_4,
++	.page_programs[SNOR_MIDX_4_4_4]	= SPINOR_OP_PP_1_1_4,
++
++	.erase_types[0]		= SNOR_OP_ERASE_64K(SPINOR_OP_SE),
++	.erase_types[1]		= SNOR_OP_ERASE_4K(SPINOR_OP_BE_4K),
++
++	.read_id		= spi_nor_micron_read_id,
++	.enable_4_4_4		= spi_nor_micron_enable_4_4_4,
++	.enable_2_2_2		= spi_nor_micron_enable_2_2_2,
++};
++
++#define PARAMS(_name) .params = &_name##_params
++
+ /* Used when the "_ext_id" is two bytes at most */
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+ 		.id = {							\
+@@ -820,7 +1028,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		.sector_size = (_sector_size),				\
+ 		.n_sectors = (_n_sectors),				\
+ 		.page_size = 256,					\
+-		.flags = (_flags),
++		.flags = (_flags)
  
--	t[1].rx_buf = buf;
--	t[1].rx_nbits = m25p80_rx_nbits(nor);
--	t[1].len = len;
--	spi_message_add_tail(&t[1], &m);
-+	xfers[num_xfers].len = len;
-+	xfers[num_xfers].rx_buf = buf;
-+	xfers[num_xfers].rx_nbits = data_nbits;
-+	num_xfers++;
+ #define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+ 		.id = {							\
+@@ -923,16 +1131,16 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
  
-+	/* Process command. */
-+	spi_message_init_with_transfers(&m, xfers, num_xfers);
- 	spi_sync(spi, &m);
+ 	/* Micron */
+-	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+-	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+-	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+-	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+-	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+-	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+-	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+-	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+-	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+-	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
++	{ "n25q032",     INFO(0x20ba16, 0, 64 * 1024,   64, 0), PARAMS(micron) },
++	{ "n25q032a",    INFO(0x20bb16, 0, 64 * 1024,   64, 0), PARAMS(micron) },
++	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, 0), PARAMS(micron_4k) },
++	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, 0), PARAMS(micron_4k) },
++	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0), PARAMS(micron_4k) },
++	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0), PARAMS(micron_4k) },
++	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, 0), PARAMS(micron_4k) },
++	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, USE_FSR), PARAMS(micron_4k) },
++	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR), PARAMS(micron_4k) },
++	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, USE_FSR), PARAMS(micron_4k) },
  
- 	*retlen = m.actual_length - m25p_cmdsz(nor) - dummy;
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+@@ -1358,6 +1566,51 @@ static int spi_nor_midx2proto(int midx, enum spi_nor_protocol *proto)
+ 	return 0;
+ }
+ 
++static int spi_nor_read_id_multi_io(struct spi_nor *nor,
++				    u8 *id, size_t id_len,
++				    u32 id_modes,
++				    const struct spi_nor_read_id *configs,
++				    size_t num_configs,
++				    u8 mfr_id)
++{
++	size_t i;
++	int err;
++
++	memset(id, 0, id_len);
++	for (i = 0; i < num_configs; ++i) {
++		const struct spi_nor_read_id *config = &configs[i];
++		enum spi_nor_protocol proto;
++		int id_midx;
++
++		/* Skip unsupported modes. */
++		if (!(config->id_mode & id_modes))
++			continue;
++
++		/* Set SPI protocols */
++		id_midx = fls(config->id_mode) - 1;
++		if (spi_nor_midx2proto(id_midx, &proto)) {
++			dev_err(nor->dev,
++				"Invalid spi-nor mode to read the JEDEC ID\n");
++			return -EINVAL;
++		}
++		nor->reg_proto   = proto;
++		nor->read_proto  = proto;
++		nor->write_proto = proto;
++		nor->erase_proto = proto;
++
++		err = nor->read_reg(nor, config->opcode, id, id_len);
++		if (err)
++			return err;
++
++		if (id[0] == mfr_id)
++			break;
++
++		memset(id, 0, id_len);
++	}
++
++	return 0;
++}
++
+ static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *info,
+ 			 const struct spi_nor_basic_flash_parameter *params,
+ 			 const struct spi_nor_modes *modes)
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 770ea84370d0..d857f628b5ed 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -101,6 +101,7 @@
+ #define SR_QUAD_EN_MX		BIT(6)	/* Macronix Quad I/O */
+ 
+ /* Enhanced Volatile Configuration Register bits */
++#define EVCR_DUAL_EN_MICRON	BIT(6)	/* Micron Dual I/O */
+ #define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */
+ 
+ /* Flag Status Register bits */
 -- 
 1.8.2.2
