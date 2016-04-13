@@ -1,19 +1,25 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqFUm-0007YU-Q4
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 07:45:53 +0000
-Date: Wed, 13 Apr 2016 09:45:21 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/8] mtd: nand: set ECC algorithm explicitly
-Message-ID: <20160413094521.74b2427e@bbrezillon>
-In-Reply-To: <1460111031-8706-1-git-send-email-zajec5@gmail.com>
-References: <1460111031-8706-1-git-send-email-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mailout1.w1.samsung.com ([210.118.77.11])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqGI4-0000vC-Gm
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 08:36:49 +0000
+Received: from eucpsbgm1.samsung.com (unknown [203.254.199.244])
+ by mailout1.w1.samsung.com
+ (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
+ with ESMTP id <0O5K00IDRD8O7L00@mailout1.w1.samsung.com> for
+ linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 09:36:24 +0100 (BST)
+Message-id: <570E0506.4040705@samsung.com>
+Date: Wed, 13 Apr 2016 10:36:22 +0200
+From: Jacek Anaszewski <j.anaszewski@samsung.com>
+MIME-version: 1.0
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: linux-mtd@lists.infradead.org, linux-leds@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v2 0/4] LED trigger on MTD activity
+References: <1460494002-8578-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+In-reply-to: <1460494002-8578-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+Content-type: text/plain; charset=ISO-8859-1; format=flowed
+Content-transfer-encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rafal,
+Hi Ezequiel,
 
-On Fri,  8 Apr 2016 12:23:43 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+Thanks for the update. From the previous discussion I've inferred
+that it has been agreed on the whole patch to go through the LED tree.
 
-> As part of nand_ecc_modes_t cleaning process we introduced enum
-> nand_ecc_algo. Before we start using it (mostly in nand_core.c) we have
-> to modify all driver to set it properly.
->=20
-> This is the first patchset modifying existing drivers. All patches were
-> compile-tested. More patches will follow in the future, but I was hoping
-> to have this first series accepted meanwhile.
->=20
-> This work is based on the nand/next branch.
-
-Whole series applied.
+Applied whole patch set to the for-next branch of linux-leds.git,
+with acks from Boris, then.
 
 Thanks,
+Jacek Anaszewski
 
-Boris
-
->=20
-> Rafa=C5=82 Mi=C5=82ecki (8):
->   mtd: nand: ams-delta: set ECC algorithm explicitly
->   mtd: nand: gpio: set ECC algorithm explicitly
->   mtd: nand: mxc: set ECC algorithm explicitly
->   mtd: nand: nuc900: set ECC algorithm explicitly
->   mtd: nand: orion: set ECC algorithm explicitly
->   mtd: nand: pasemi: set ECC algorithm explicitly
->   mtd: nand: plat: set ECC algorithm explicitly
->   mtd: nand: socrates: set ECC algorithm explicitly
->=20
->  drivers/mtd/nand/ams-delta.c     | 1 +
->  drivers/mtd/nand/gpio.c          | 1 +
->  drivers/mtd/nand/mxc_nand.c      | 1 +
->  drivers/mtd/nand/nuc900_nand.c   | 1 +
->  drivers/mtd/nand/orion_nand.c    | 1 +
->  drivers/mtd/nand/pasemi_nand.c   | 1 +
->  drivers/mtd/nand/plat_nand.c     | 1 +
->  drivers/mtd/nand/socrates_nand.c | 1 +
->  8 files changed, 8 insertions(+)
->=20
-
-
-
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+On 04/12/2016 10:46 PM, Ezequiel Garcia wrote:
+> After our recent discussion [1], here's a proper patchset.
+>
+> The first patch is a minor cleanup which moves mtd_write_oob
+> out of mtd.h header.
+>
+> The second patch introduces the LED MTD trigger.
+>
+> The third patch removes the "nand-disk" LED trigger
+> from the NAND core.
+>
+> The fourth patch completes the series by calling ledtrig_mtd_activity
+> on all MTD I/O activity paths.
+>
+> Changes from v1:
+>
+>    * Split the patches, suggested by Boris.
+>
+> Feedback is welcome!
+>
+> [1] http://www.spinics.net/lists/linux-leds/msg05906.html
+>
+> Ezequiel Garcia (4):
+>    mtd: Uninline mtd_write_oob and move it to mtdcore.c
+>    leds: trigger: Introduce a MTD (NAND/NOR) trigger
+>    mtd: nand: Remove the "nand-disk" LED trigger
+>    mtd: Hook I/O activity to the MTD LED trigger
+>
+>   drivers/leds/trigger/Kconfig       |  8 +++++++
+>   drivers/leds/trigger/Makefile      |  1 +
+>   drivers/leds/trigger/ledtrig-mtd.c | 45 ++++++++++++++++++++++++++++++++++++++
+>   drivers/mtd/mtdcore.c              | 19 ++++++++++++++++
+>   drivers/mtd/nand/nand_base.c       | 29 +-----------------------
+>   include/linux/leds.h               |  6 +++++
+>   include/linux/mtd/mtd.h            | 12 +---------
+>   7 files changed, 81 insertions(+), 39 deletions(-)
+>   create mode 100644 drivers/leds/trigger/ledtrig-mtd.c
+>
