@@ -1,23 +1,21 @@
-Date: Wed, 13 Apr 2016 17:54:26 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>
-Cc: linux-arm-kernel@lists.infradead.org, Nicolas Ferre
- <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard
- <plagnioj@jcrosoft.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Wenyou Yang
- <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v6 04/50] mtd: nand: atmel: use mtd_ooblayout_xxx()
  helpers where appropriate
-Message-ID: <20160413175426.3d53bcaf@bbrezillon>
-In-Reply-To: <1460562691-30882-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1460562691-30882-1-git-send-email-boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>
+References: <1459354505-32551-5-git-send-email-boris.brezillon@free-electrons.com>
+ <1460562827-30990-1-git-send-email-boris.brezillon@free-electrons.com>
+CC: <linux-arm-kernel@lists.infradead.org>, Jean-Christophe Plagniol-Villard
+ <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Wenyou Yang <wenyou.yang@atmel.com>,
+ Josh Wu <rainyfeeling@outlook.com>, <linux-kernel@vger.kernel.org>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Message-ID: <570E6E44.8060900@atmel.com>
+Date: Wed, 13 Apr 2016 18:05:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1460562827-30990-1-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Oops, for --in-reply-to. Please ignore this patch.
-
-On Wed, 13 Apr 2016 17:51:31 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
+Le 13/04/2016 17:53, Boris Brezillon a écrit :
 > The mtd_ooblayout_xxx() helper functions have been added to avoid direct
 > accesses to the ecclayout field, and thus ease for future reworks.
 > Use these helpers in all places where the oobfree[] and eccpos[] arrays
 > where directly accessed.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Thanks for the quick rework Boris!
+
+Reviewed-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+
 > ---
 >  drivers/mtd/nand/atmel_nand.c | 50 +++++++++++++++++++++++++++----------------
 >  1 file changed, 31 insertions(+), 19 deletions(-)
@@ -178,10 +177,8 @@ Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 >  	chip->read_buf(mtd, ecc_pos, eccbytes);
 >  
 >  	/* check if there's an error */
-
+> 
 
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Nicolas Ferre
