@@ -1,37 +1,45 @@
-Date: Wed, 13 Apr 2016 16:41:06 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin
- Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Nicolas
- Ferre <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard
- <plagnioj@jcrosoft.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Wenyou Yang
- <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Stefan Agner <stefan@agner.ch>, Kyungmin Park
- <kyungmin.park@samsung.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
- linux-kernel@vger.kernel.org, punnaiah choudary kalluri
- <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>, Kamal Dasu
- <kdasu.kdev@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
- linux-api@vger.kernel.org, Harvey Hunt <harvey.hunt@imgtec.com>, Archit
- Taneja <architt@codeaurora.org>, Han Xu <b45815@freescale.com>, Huang
- Shijie <shijie.huang@arm.com>
-Subject: Re: [PATCH v5 22/50] mtd: nand: atmel: switch to mtd_ooblayout_ops
-Message-ID: <20160413164106.46d8374a@bbrezillon>
-In-Reply-To: <1459354505-32551-23-git-send-email-boris.brezillon@free-electrons.com>
-References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459354505-32551-23-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail-qk0-x22c.google.com ([2607:f8b0:400d:c09::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqM63-0008WS-RS
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 14:48:50 +0000
+Received: by mail-qk0-x22c.google.com with SMTP id n130so20417328qke.3
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2016 07:48:27 -0700 (PDT)
+Date: Wed, 13 Apr 2016 11:48:22 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stefan Agner <stefan@agner.ch>, linux-omap@vger.kernel.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory CLEMENT <gregory.clement@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ bcm-kernel-feedback-list@broadcom.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ Zhou Wang <wangzhou1@hisilicon.com>, Alex Smith <alex.smith@imgtec.com>,
+ Harvey Hunt <harvey.hunt@imgtec.com>
+Subject: Re: [PATCH 10/12] mtd: nand: pxa3xx: rely on generic DT parsing done
+ in nand_scan_ident()
+Message-ID: <20160413144822.GA1065@laptop.cereza>
+References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459515272-31011-11-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1459515272-31011-11-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,185 +49,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 30 Mar 2016 18:14:37 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> Implementing the mtd_ooblayout_ops interface is the new way of exposing
-> ECC/OOB layout to MTD users.
+On 01 Apr 02:54 PM, Boris Brezillon wrote:
+> The core now takes care of parsing generic DT properties in
+> nand_scan_ident() when nand_set_flash_node() has been called.
+> Rely on this initialization instead of calling of_get_nand_xxx()
+> manually.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Tested with mtd_oobtest.ko on sama5d4ek.
+Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
-Tested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Thanks,
 
 > ---
->  drivers/mtd/nand/atmel_nand.c | 84 ++++++++++++++++++++-----------------------
->  1 file changed, 38 insertions(+), 46 deletions(-)
+>  drivers/mtd/nand/pxa3xx_nand.c | 28 +++++++++++-----------------
+>  1 file changed, 11 insertions(+), 17 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 321d331..46a601e 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -72,30 +72,44 @@ struct atmel_nand_nfc_caps {
->  	uint32_t rb_mask;
->  };
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index d650885..38d26ab 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -29,7 +29,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> -#include <linux/of_mtd.h>
+>  #include <linux/platform_data/mtd-nand-pxa3xx.h>
 >  
-> -/* oob layout for large page size
-> +/*
-> + * oob layout for large page size
->   * bad block info is on bytes 0 and 1
->   * the bytes have to be consecutives to avoid
->   * several NAND_CMD_RNDOUT during read
-> - */
-> -static struct nand_ecclayout atmel_oobinfo_large = {
-> -	.eccbytes = 4,
-> -	.eccpos = {60, 61, 62, 63},
-> -	.oobfree = {
-> -		{2, 58}
-> -	},
-> -};
-> -
-> -/* oob layout for small page size
-> + *
-> + * oob layout for small page size
->   * bad block info is on bytes 4 and 5
->   * the bytes have to be consecutives to avoid
->   * several NAND_CMD_RNDOUT during read
->   */
-> -static struct nand_ecclayout atmel_oobinfo_small = {
-> -	.eccbytes = 4,
-> -	.eccpos = {0, 1, 2, 3},
-> -	.oobfree = {
-> -		{6, 10}
-> -	},
-> +static int atmel_ooblayout_ecc_sp(struct mtd_info *mtd, int section,
-> +				  struct mtd_oob_region *oobregion)
-> +{
-> +	if (section)
-> +		return -ERANGE;
-> +
-> +	oobregion->length = 4;
-> +	oobregion->offset = 0;
-> +
-> +	return 0;
-> +}
-> +
-> +static int atmel_ooblayout_free_sp(struct mtd_info *mtd, int section,
-> +				   struct mtd_oob_region *oobregion)
-> +{
-> +	if (section)
-> +		return -ERANGE;
-> +
-> +	oobregion->offset = 6;
-> +	oobregion->length = mtd->oobsize - oobregion->offset;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct mtd_ooblayout_ops atmel_ooblayout_sp_ops = {
-> +	.ecc = atmel_ooblayout_ecc_sp,
-> +	.free = atmel_ooblayout_free_sp,
->  };
+>  #define	CHIP_DELAY_TIMEOUT	msecs_to_jiffies(200)
+> @@ -1651,6 +1650,12 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+>  	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
+>  		nand_writel(info, NDECCCTRL, 0x0);
 >  
->  struct atmel_nfc {
-> @@ -163,8 +177,6 @@ struct atmel_nand_host {
->  	int			*pmecc_delta;
->  };
+> +	if (pdata->flash_bbt)
+> +		chip->bbt_options |= NAND_BBT_USE_FLASH;
+> +
+> +	chip->ecc.strength = pdata->ecc_strength;
+> +	chip->ecc.size = pdata->ecc_step_size;
+> +
+>  	if (nand_scan_ident(mtd, 1, NULL))
+>  		return -ENODEV;
 >  
-> -static struct nand_ecclayout atmel_pmecc_oobinfo;
-> -
->  /*
->   * Enable NAND.
->   */
-> @@ -483,22 +495,6 @@ static int pmecc_get_ecc_bytes(int cap, int sector_size)
->  	return (m * cap + 7) / 8;
->  }
->  
-> -static void pmecc_config_ecc_layout(struct nand_ecclayout *layout,
-> -				    int oobsize, int ecc_len)
-> -{
-> -	int i;
-> -
-> -	layout->eccbytes = ecc_len;
-> -
-> -	/* ECC will occupy the last ecc_len bytes continuously */
-> -	for (i = 0; i < ecc_len; i++)
-> -		layout->eccpos[i] = oobsize - ecc_len + i;
-> -
-> -	layout->oobfree[0].offset = PMECC_OOB_RESERVED_BYTES;
-> -	layout->oobfree[0].length =
-> -		oobsize - ecc_len - layout->oobfree[0].offset;
-> -}
-> -
->  static void __iomem *pmecc_get_alpha_to(struct atmel_nand_host *host)
->  {
->  	int table_size;
-> @@ -1013,8 +1009,8 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
->  {
->  	struct nand_chip *nand_chip = mtd_to_nand(mtd);
->  	struct atmel_nand_host *host = nand_get_controller_data(nand_chip);
-> +	int eccbytes = mtd_ooblayout_count_eccbytes(mtd);
->  	uint32_t val = 0;
-> -	struct nand_ecclayout *ecc_layout;
->  	struct mtd_oob_region oobregion;
->  
->  	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
-> @@ -1065,12 +1061,11 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
->  		| PMECC_CFG_AUTO_DISABLE);
->  	pmecc_writel(host->ecc, CFG, val);
->  
-> -	ecc_layout = nand_chip->ecc.layout;
->  	pmecc_writel(host->ecc, SAREA, mtd->oobsize - 1);
->  	mtd_ooblayout_ecc(mtd, 0, &oobregion);
->  	pmecc_writel(host->ecc, SADDR, oobregion.offset);
->  	pmecc_writel(host->ecc, EADDR,
-> -		     oobregion.offset + ecc_layout->eccbytes - 1);
-> +		     oobregion.offset + eccbytes - 1);
->  	/* See datasheet about PMECC Clock Control Register */
->  	pmecc_writel(host->ecc, CLK, 2);
->  	pmecc_writel(host->ecc, IDR, 0xff);
-> @@ -1292,11 +1287,8 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
->  			err_no = -EINVAL;
->  			goto err;
+> @@ -1663,13 +1668,12 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
 >  		}
-> -		pmecc_config_ecc_layout(&atmel_pmecc_oobinfo,
-> -					mtd->oobsize,
-> -					nand_chip->ecc.total);
+>  	}
 >  
-> -		nand_chip->ecc.layout = &atmel_pmecc_oobinfo;
-> +		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
->  		break;
->  	default:
->  		dev_warn(host->dev,
-> @@ -1644,19 +1636,19 @@ static int atmel_hw_nand_init_params(struct platform_device *pdev,
->  	/* set ECC page size and oob layout */
->  	switch (mtd->writesize) {
->  	case 512:
-> -		nand_chip->ecc.layout = &atmel_oobinfo_small;
-> +		mtd_set_ooblayout(mtd, &atmel_ooblayout_sp_ops);
->  		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_528);
->  		break;
->  	case 1024:
-> -		nand_chip->ecc.layout = &atmel_oobinfo_large;
-> +		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
->  		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_1056);
->  		break;
->  	case 2048:
-> -		nand_chip->ecc.layout = &atmel_oobinfo_large;
-> +		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
->  		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_2112);
->  		break;
->  	case 4096:
-> -		nand_chip->ecc.layout = &atmel_oobinfo_large;
-> +		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
->  		ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_4224);
->  		break;
->  	default:
-
-
+> -	if (pdata->flash_bbt) {
+> +	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
+>  		/*
+>  		 * We'll use a bad block table stored in-flash and don't
+>  		 * allow writing the bad block marker to the flash.
+>  		 */
+> -		chip->bbt_options |= NAND_BBT_USE_FLASH |
+> -				     NAND_BBT_NO_OOB_BBM;
+> +		chip->bbt_options |= NAND_BBT_NO_OOB_BBM;
+>  		chip->bbt_td = &bbt_main_descr;
+>  		chip->bbt_md = &bbt_mirror_descr;
+>  	}
+> @@ -1689,10 +1693,9 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+>  		}
+>  	}
+>  
+> -	if (pdata->ecc_strength && pdata->ecc_step_size) {
+> -		ecc_strength = pdata->ecc_strength;
+> -		ecc_step = pdata->ecc_step_size;
+> -	} else {
+> +	ecc_strength = chip->ecc.strength;
+> +	ecc_step = chip->ecc.size;
+> +	if (!ecc_strength || !ecc_step) {
+>  		ecc_strength = chip->ecc_strength_ds;
+>  		ecc_step = chip->ecc_step_ds;
+>  	}
+> @@ -1903,15 +1906,6 @@ static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
+>  	if (of_get_property(np, "marvell,nand-keep-config", NULL))
+>  		pdata->keep_config = 1;
+>  	of_property_read_u32(np, "num-cs", &pdata->num_cs);
+> -	pdata->flash_bbt = of_get_nand_on_flash_bbt(np);
+> -
+> -	pdata->ecc_strength = of_get_nand_ecc_strength(np);
+> -	if (pdata->ecc_strength < 0)
+> -		pdata->ecc_strength = 0;
+> -
+> -	pdata->ecc_step_size = of_get_nand_ecc_step_size(np);
+> -	if (pdata->ecc_step_size < 0)
+> -		pdata->ecc_step_size = 0;
+>  
+>  	pdev->dev.platform_data = pdata;
+>  
+> -- 
+> 2.5.0
+> 
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
