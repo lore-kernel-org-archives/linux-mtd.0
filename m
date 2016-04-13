@@ -1,15 +1,16 @@
-Received: from userp1040.oracle.com ([156.151.31.81])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqEXM-0002I8-BV
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 06:44:28 +0000
-Date: Wed, 13 Apr 2016 09:41:55 +0300
+ id 1aqEXM-0002D4-Av
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 06:44:29 +0000
+Date: Wed, 13 Apr 2016 09:41:26 +0300
 From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Dmitry Pervushin <dpervushin@embeddedalley.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: [patch] UBI: silence an unintialized variable warning
-Message-ID: <20160413064155.GD8092@mwanda>
+Subject: [patch] UBI: clean up return in ubi_remove_volume()
+Message-ID: <20160413064126.GC8092@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -22,22 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My static checker complains that "val" is uninitialized when kstrtoint()
-fails.
+My static checker says that "err" can be uninitialized if
+"vol->reserved_pebs" is <= 0.  I don't think that can happen but
+returning a literal is cleaner anyway.
 
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index c4cb15a..f101a49 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -352,7 +352,8 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
- 	} else if (dent == d->dfs_emulate_power_cut) {
- 		if (kstrtoint(buf, 0, &val) != 0)
- 			count = -EINVAL;
--		d->emulate_power_cut = val;
-+		else
-+			d->emulate_power_cut = val;
- 		goto out;
- 	}
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index 1ae17bb..10059df 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -405,7 +405,7 @@ int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl)
+ 	if (!no_vtbl)
+ 		self_check_volumes(ubi);
  
+-	return err;
++	return 0;
+ 
+ out_err:
+ 	ubi_err(ubi, "cannot remove volume %d, error %d", vol_id, err);
