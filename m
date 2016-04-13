@@ -1,23 +1,30 @@
-Date: Wed, 13 Apr 2016 00:51:55 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: Markus Pargmann <mpa@pengutronix.de>, David Woodhouse
- <dwmw2@infradead.org>, Fabio Estevam <fabio.estevam@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>, Huang Shijie
- <shijie.huang@intel.com>, Brian Norris <computersforpeace@gmail.com>,
+From: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>, Michal Simek
+ <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Javier Martinez Canillas <javier@osg.samsung.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Stephen Warren
+ <swarren@nvidia.com>, Geert Uytterhoeven <geert+renesas@glider.be>, "Andrew
+ F. Davis" <afd@ti.com>, Marek Vasut <marex@denx.de>, Jagan Teki
+ <jteki@openedev.com>, =?iso-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
  "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-Message-ID: <20160413005155.03cb7bc6@bbrezillon>
-In-Reply-To: <DB5PR0401MB1845DD983AF9195311DEB20F97950@DB5PR0401MB1845.eurprd04.prod.outlook.com>
-References: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
- <20160224145750.21050def@bbrezillon> <3992227.rRuQ67A3ma@galactica>
- <20160411092916.793d5abd@bbrezillon>
- <DB5PR0401MB1845DD983AF9195311DEB20F97950@DB5PR0401MB1845.eurprd04.prod.outlook.com>
+ <linux-arm-kernel@lists.infradead.org>, Harini Katakam <harinik@xilinx.com>,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>, Anirudha Sarangi
+ <anirudh@xilinx.com>, "R, Vignesh" <vigneshr@ti.com>
+Subject: RE: [LINUX PATCH v2 1/3] spi: Added dummy_cycle entry in the
+ spi_transfer structure.
+Date: Wed, 13 Apr 2016 05:21:25 +0000
+Message-ID: <4FF8F58FAA9D5D4193D4E554E4352C5902C720DE@XAP-PVEXMBX02.xlnx.xilinx.com>
+References: <1460039969-9835-1-git-send-email-lakshmis@xilinx.com>
+ <57067694.8030806@atmel.com>
+In-Reply-To: <57067694.8030806@atmel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +34,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 12 Apr 2016 22:39:08 +0000
-Han Xu <han.xu@nxp.com> wrote:
+Hi Cyrille and Mark,
 
-> > Thanks for the feedback. Talking with a coworker about this we may have found a
-> > better approach to this that is less complicated to implement. The hardware
-> > unit allows us to set a bitflip threshold for erased pages. The ECC unit
-> > creates an ECC error only if the number of bitflips exceeds this threshold, but
-> > it does not correct these. So the idea is to change the patch so that we set
-> > pages, that are signaled by the ECC as erased, to 0xff completely without
-> > checking. So the ECC will do all the work and we completely trust in its
-> > abilities to do it correctly.
-> 
-> Sounds good.
-> 
-> some new platforms with new gpmi controller could check the count of 0 bits in page,
-> refer to my patch https://patchwork.ozlabs.org/patch/587124/
-> 
-> But for all legacy platforms, IMO, considering bitflip is rare case, set threshold to 0 and
-> only check the uncorrectable branch and then correct data sounds better. Setting threshold
-> and correcting all erased page may highly impact the performance.
+>-----Original Message-----
+>From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+>Sent: Thursday, April 07, 2016 8:33 PM
+>To: Lakshmi Sai Krishna Potthuri <lakshmis@xilinx.com>; Michal Simek
+><michals@xilinx.com>; Soren Brinkmann <sorenb@xilinx.com>; David
+>Woodhouse <dwmw2@infradead.org>; Brian Norris
+><computersforpeace@gmail.com>; Mark Brown <broonie@kernel.org>;
+>Javier Martinez Canillas <javier@osg.samsung.com>; Boris Brezillon
+><boris.brezillon@free-electrons.com>; Stephen Warren
+><swarren@nvidia.com>; Geert Uytterhoeven <geert+renesas@glider.be>;
+>Andrew F. Davis <afd@ti.com>; Marek Vasut <marex@denx.de>; Jagan Teki
+><jteki@openedev.com>; Rafa=B3 Mi=B3ecki <zajec5@gmail.com>
+>Cc: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
+>spi@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Harini Katakam
+><harinik@xilinx.com>; Punnaiah Choudary Kalluri <punnaia@xilinx.com>;
+>Anirudha Sarangi <anirudh@xilinx.com>; Lakshmi Sai Krishna Potthuri
+><lakshmis@xilinx.com>; R, Vignesh <vigneshr@ti.com>
+>Subject: Re: [LINUX PATCH v2 1/3] spi: Added dummy_cycle entry in the
+>spi_transfer structure.
+>
+>Hi all,
+>
+>Le 07/04/2016 16:39, P L Sai Krishna a =E9crit :
+>> This patch adds dummy_cycles entry in the spi_transfer structure.
+>> len field in the transfer structure contains dummy bytes along with
+>> actual data bytes, controllers which requires dummy bytes use len
+>> field and simply Ignore the dummy_cycles field. Controllers which
+>> expects dummy cycles won't work directly by using len field because
+>> host driver doesn't know that len field of a particular transfer
+>> includes dummy bytes or not (and also number of dummy bytes included
+>> in len field). In such cases host driver use this dummy_cycles field
+>> to identify the number of dummy cycles and based on that it will send
+>> the required number of dummy cycles.
+>
+>Dummy cycles are only used with SPI NOR flashes, aren't they?
 
-Indeed, bitflips in erased pages is not so common, and penalizing the
-likely case (erased pages without any bitflips) doesn't look like a good
-idea in the end.
+Yes, with SPI NOR flashes.
 
-You can still implement this check in software. You can have a look at
-nand_check_erased_ecc_chunk() [1] if you need an example, but you'll
-have to adapt it because your controller does not guarantees that ECC
-bits for a given chunk are byte aligned :-/
+>I guess so since there is also a patch dedicated to the m25p80 driver.
+>
+>So why not using the spi_flash_read() API already introduced by Vignesh
+>in the SPI layer?
 
-[1]http://lxr.free-electrons.com/source/drivers/mtd/nand/nand_base.c#L1200
+ZynqMP GQSPI controller driver use "transfer_one" hook. Since this is gener=
+ic
+Controller majorly interfaced to flash devices and it might extend to NAND
+flashes in future. This patch does not disturb the existing implementation =
+of
+accessing the flash or other slave devices. It adds an additional optional
+feature. So there is no harm to controllers that don't need dummy cycles -
+they can ignore it and still work with the existing implementation.
+
+Regards
+Sai Krishna
+>
+>struct spi_flash_read_message already includes a 'dummy_bytes' member.
+>
+>>
+>> Signed-off-by: P L Sai Krishna <lakshmis@xilinx.com>
+>> ---
+>> v2:
+>>  - Changed the structure member name from dummy to dummy_cycles.
+>>  - Updated the documentation of dummy_cycles.
+>>  - m25p80 changes split into another patch.
+>>
+>>  include/linux/spi/spi.h | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+>> index 857a9a1..63135b3 100644
+>> --- a/include/linux/spi/spi.h
+>> +++ b/include/linux/spi/spi.h
+>> @@ -664,6 +664,9 @@ extern void spi_res_release(struct spi_master
+>*master,
+>>   * @len: size of rx and tx buffers (in bytes)
+>>   * @speed_hz: Select a speed other than the device default for this
+>>   *      transfer. If 0 the default (from @spi_device) is used.
+>> + * @dummy_cycles: number of dummy cycles. If host controller requires
+>> + *  dummy cycles rather than dummy bytes which send along with Cmd
+>> + *  and address then this dummy_cycles is used.
+>>   * @bits_per_word: select a bits_per_word other than the device default
+>>   *      for this transfer. If 0 the default (from @spi_device) is used.
+>>   * @cs_change: affects chipselect after this transfer completes
+>> @@ -752,6 +755,7 @@ struct spi_transfer {
+>>      u8              bits_per_word;
+>>      u16             delay_usecs;
+>>      u32             speed_hz;
+>> +    u32             dummy_cycles;
+>>
+>>      struct list_head transfer_list;
+>>  };
+>>
+>
+>Best regards,
+>
+>Cyrille
 
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+This email and any attachments are intended for the sole use of the named r=
+ecipient(s) and contain(s) confidential information that may be proprietary=
+, privileged or copyrighted under applicable law. If you are not the intend=
+ed recipient, do not read, copy, or forward this email message or any attac=
+hments. Delete this email message and any attachments immediately.
