@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqQbN-0002c8-HE
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 19:37:39 +0000
+ id 1aqQbS-0002gg-H9
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 19:37:42 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 13/42] xfs: set bi_op to REQ_OP
-Date: Wed, 13 Apr 2016 14:35:59 -0500
-Message-Id: <1460576188-5751-14-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 16/42] nilfs: set bi_op to REQ_OP
+Date: Wed, 13 Apr 2016 14:36:02 -0500
+Message-Id: <1460576188-5751-17-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1460576188-5751-1-git-send-email-mchristi@redhat.com>
 References: <1460576188-5751-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,111 +29,81 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-This patch has xfs use bio->bi_op for REQ_OPs and rq_flag_bits to bio->bi_rw.
+This patch has nilfs use bio->bi_op for REQ_OPs and rq_flag_bits
+to bio->bi_rw.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Dave Chinner <dchinner@redhat.com>
 ---
- fs/xfs/xfs_aops.c |  3 +--
- fs/xfs/xfs_buf.c  | 27 +++++++++++++++------------
- 2 files changed, 16 insertions(+), 14 deletions(-)
+ fs/nilfs2/segbuf.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
-index 5852c5a..6c20336 100644
---- a/fs/xfs/xfs_aops.c
-+++ b/fs/xfs/xfs_aops.c
-@@ -439,10 +439,9 @@ xfs_submit_ioend(
+diff --git a/fs/nilfs2/segbuf.c b/fs/nilfs2/segbuf.c
+index 7666f1d..7b13e14 100644
+--- a/fs/nilfs2/segbuf.c
++++ b/fs/nilfs2/segbuf.c
+@@ -350,7 +350,8 @@ static void nilfs_end_bio_write(struct bio *bio)
+ }
  
- 	ioend->io_bio->bi_private = ioend;
- 	ioend->io_bio->bi_end_io = xfs_end_bio;
-+	ioend->io_bio->bi_op = REQ_OP_WRITE;
- 	if (wbc->sync_mode)
- 		ioend->io_bio->bi_rw = WRITE_SYNC;
--	else
--		ioend->io_bio->bi_rw = WRITE;
- 	/*
- 	 * If we are failing the IO now, just mark the ioend with an
- 	 * error and finish it. This will run IO completion immediately
-diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index 079bb77..917774e 100644
---- a/fs/xfs/xfs_buf.c
-+++ b/fs/xfs/xfs_buf.c
-@@ -1131,7 +1131,8 @@ xfs_buf_ioapply_map(
- 	int		map,
- 	int		*buf_offset,
- 	int		*count,
--	int		rw)
-+	int		op,
-+	int		op_flags)
+ static int nilfs_segbuf_submit_bio(struct nilfs_segment_buffer *segbuf,
+-				   struct nilfs_write_info *wi, int mode)
++				   struct nilfs_write_info *wi, int mode,
++				   int mode_flags)
  {
- 	int		page_index;
- 	int		total_nr_pages = bp->b_page_count;
-@@ -1170,7 +1171,8 @@ next_chunk:
- 	bio->bi_iter.bi_sector = sector;
- 	bio->bi_end_io = xfs_buf_bio_end_io;
- 	bio->bi_private = bp;
--	bio->bi_rw = rw;
-+	bio->bi_op = op;
-+	bio->bi_rw = op_flags;
+ 	struct bio *bio = wi->bio;
+ 	int err;
+@@ -368,7 +369,8 @@ static int nilfs_segbuf_submit_bio(struct nilfs_segment_buffer *segbuf,
  
- 	for (; size && nr_pages; nr_pages--, page_index++) {
- 		int	rbytes, nbytes = PAGE_SIZE - offset;
-@@ -1214,7 +1216,8 @@ _xfs_buf_ioapply(
- 	struct xfs_buf	*bp)
+ 	bio->bi_end_io = nilfs_end_bio_write;
+ 	bio->bi_private = segbuf;
+-	bio->bi_rw = mode;
++	bio->bi_op = mode;
++	bio->bi_rw = mode_flags;
+ 	submit_bio(bio);
+ 	segbuf->sb_nbio++;
+ 
+@@ -442,7 +444,7 @@ static int nilfs_segbuf_submit_bh(struct nilfs_segment_buffer *segbuf,
+ 		return 0;
+ 	}
+ 	/* bio is FULL */
+-	err = nilfs_segbuf_submit_bio(segbuf, wi, mode);
++	err = nilfs_segbuf_submit_bio(segbuf, wi, mode, 0);
+ 	/* never submit current bh */
+ 	if (likely(!err))
+ 		goto repeat;
+@@ -466,19 +468,19 @@ static int nilfs_segbuf_write(struct nilfs_segment_buffer *segbuf,
  {
- 	struct blk_plug	plug;
--	int		rw;
-+	int		op;
-+	int		op_flags = 0;
- 	int		offset;
- 	int		size;
- 	int		i;
-@@ -1233,14 +1236,13 @@ _xfs_buf_ioapply(
- 		bp->b_ioend_wq = bp->b_target->bt_mount->m_buf_workqueue;
+ 	struct nilfs_write_info wi;
+ 	struct buffer_head *bh;
+-	int res = 0, rw = WRITE;
++	int res = 0;
  
- 	if (bp->b_flags & XBF_WRITE) {
-+		op = REQ_OP_WRITE;
- 		if (bp->b_flags & XBF_SYNCIO)
--			rw = WRITE_SYNC;
--		else
--			rw = WRITE;
-+			op_flags = WRITE_SYNC;
- 		if (bp->b_flags & XBF_FUA)
--			rw |= REQ_FUA;
-+			op_flags |= REQ_FUA;
- 		if (bp->b_flags & XBF_FLUSH)
--			rw |= REQ_FLUSH;
-+			op_flags |= REQ_FLUSH;
+ 	wi.nilfs = nilfs;
+ 	nilfs_segbuf_prepare_write(segbuf, &wi);
  
- 		/*
- 		 * Run the write verifier callback function if it exists. If
-@@ -1270,13 +1272,14 @@ _xfs_buf_ioapply(
- 			}
- 		}
- 	} else if (bp->b_flags & XBF_READ_AHEAD) {
--		rw = READA;
-+		op = REQ_OP_READ;
-+		op_flags = REQ_RAHEAD;
- 	} else {
--		rw = READ;
-+		op = REQ_OP_READ;
+ 	list_for_each_entry(bh, &segbuf->sb_segsum_buffers, b_assoc_buffers) {
+-		res = nilfs_segbuf_submit_bh(segbuf, &wi, bh, rw);
++		res = nilfs_segbuf_submit_bh(segbuf, &wi, bh, REQ_OP_WRITE);
+ 		if (unlikely(res))
+ 			goto failed_bio;
  	}
  
- 	/* we only use the buffer cache for meta-data */
--	rw |= REQ_META;
-+	op_flags |= REQ_META;
+ 	list_for_each_entry(bh, &segbuf->sb_payload_buffers, b_assoc_buffers) {
+-		res = nilfs_segbuf_submit_bh(segbuf, &wi, bh, rw);
++		res = nilfs_segbuf_submit_bh(segbuf, &wi, bh, REQ_OP_WRITE);
+ 		if (unlikely(res))
+ 			goto failed_bio;
+ 	}
+@@ -488,8 +490,8 @@ static int nilfs_segbuf_write(struct nilfs_segment_buffer *segbuf,
+ 		 * Last BIO is always sent through the following
+ 		 * submission.
+ 		 */
+-		rw |= REQ_SYNC;
+-		res = nilfs_segbuf_submit_bio(segbuf, &wi, rw);
++		res = nilfs_segbuf_submit_bio(segbuf, &wi, REQ_OP_WRITE,
++					      REQ_SYNC);
+ 	}
  
- 	/*
- 	 * Walk all the vectors issuing IO on them. Set up the initial offset
-@@ -1288,7 +1291,7 @@ _xfs_buf_ioapply(
- 	size = BBTOB(bp->b_io_length);
- 	blk_start_plug(&plug);
- 	for (i = 0; i < bp->b_map_count; i++) {
--		xfs_buf_ioapply_map(bp, i, &offset, &size, rw);
-+		xfs_buf_ioapply_map(bp, i, &offset, &size, op, op_flags);
- 		if (bp->b_error)
- 			break;
- 		if (size <= 0)
+  failed_bio:
 -- 
 2.7.2
