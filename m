@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1aqQbn-00053s-FX
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 19:37:52 +0000
+ id 1aqQbU-00051j-NR
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 19:37:33 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 24/42] xen: set bi_op to REQ_OP
-Date: Wed, 13 Apr 2016 14:36:10 -0500
-Message-Id: <1460576188-5751-25-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 15/42] mpage: set bi_op to REQ_OP
+Date: Wed, 13 Apr 2016 14:36:01 -0500
+Message-Id: <1460576188-5751-16-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1460576188-5751-1-git-send-email-mchristi@redhat.com>
 References: <1460576188-5751-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,126 +29,159 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-This patch has the xen block driver use bio->bi_op for REQ_OPs and rq_flag_bits
+This patch has mpage.c use bio->bi_op for REQ_OPs and rq_flag_bits
 to bio->bi_rw.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/xen-blkback/blkback.c | 29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+ fs/mpage.c | 41 +++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/block/xen-blkback/blkback.c b/drivers/block/xen-blkback/blkback.c
-index 79fe493..854ecca 100644
---- a/drivers/block/xen-blkback/blkback.c
-+++ b/drivers/block/xen-blkback/blkback.c
-@@ -501,7 +501,7 @@ static int xen_vbd_translate(struct phys_req *req, struct xen_blkif *blkif,
- 	struct xen_vbd *vbd = &blkif->vbd;
- 	int rc = -EACCES;
+diff --git a/fs/mpage.c b/fs/mpage.c
+index 2c251ec..89f58f1 100644
+--- a/fs/mpage.c
++++ b/fs/mpage.c
+@@ -56,11 +56,12 @@ static void mpage_end_io(struct bio *bio)
+ 	bio_put(bio);
+ }
  
--	if ((operation != READ) && vbd->readonly)
-+	if ((operation != REQ_OP_READ) && vbd->readonly)
- 		goto out;
+-static struct bio *mpage_bio_submit(int rw, struct bio *bio)
++static struct bio *mpage_bio_submit(int op, int op_flags, struct bio *bio)
+ {
+ 	bio->bi_end_io = mpage_end_io;
+-	bio->bi_rw = rw;
+-	guard_bio_eod(rw, bio);
++	bio->bi_op = op;
++	bio->bi_rw = op_flags;
++	guard_bio_eod(op, bio);
+ 	submit_bio(bio);
+ 	return NULL;
+ }
+@@ -270,7 +271,7 @@ do_mpage_readpage(struct bio *bio, struct page *page, unsigned nr_pages,
+ 	 * This page will go to BIO.  Do we need to send this BIO off first?
+ 	 */
+ 	if (bio && (*last_block_in_bio != blocks[0] - 1))
+-		bio = mpage_bio_submit(READ, bio);
++		bio = mpage_bio_submit(REQ_OP_READ, 0, bio);
  
- 	if (likely(req->nr_sects)) {
-@@ -1014,7 +1014,7 @@ static int dispatch_discard_io(struct xen_blkif_ring *ring,
- 	preq.sector_number = req->u.discard.sector_number;
- 	preq.nr_sects      = req->u.discard.nr_sectors;
+ alloc_new:
+ 	if (bio == NULL) {
+@@ -287,7 +288,7 @@ alloc_new:
  
--	err = xen_vbd_translate(&preq, blkif, WRITE);
-+	err = xen_vbd_translate(&preq, blkif, REQ_OP_WRITE);
- 	if (err) {
- 		pr_warn("access denied: DISCARD [%llu->%llu] on dev=%04x\n",
- 			preq.sector_number,
-@@ -1229,6 +1229,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 	struct bio **biolist = pending_req->biolist;
- 	int i, nbio = 0;
- 	int operation;
-+	int operation_flags = 0;
- 	struct blk_plug plug;
- 	bool drain = false;
- 	struct grant_page **pages = pending_req->segments;
-@@ -1247,17 +1248,19 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 	switch (req_operation) {
- 	case BLKIF_OP_READ:
- 		ring->st_rd_req++;
--		operation = READ;
-+		operation = REQ_OP_READ;
- 		break;
- 	case BLKIF_OP_WRITE:
- 		ring->st_wr_req++;
--		operation = WRITE_ODIRECT;
-+		operation = REQ_OP_WRITE;
-+		operation_flags = WRITE_ODIRECT;
- 		break;
- 	case BLKIF_OP_WRITE_BARRIER:
- 		drain = true;
- 	case BLKIF_OP_FLUSH_DISKCACHE:
- 		ring->st_f_req++;
--		operation = WRITE_FLUSH;
-+		operation = REQ_OP_WRITE;
-+		operation_flags = WRITE_FLUSH;
- 		break;
- 	default:
- 		operation = 0; /* make gcc happy */
-@@ -1269,7 +1272,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 	nseg = req->operation == BLKIF_OP_INDIRECT ?
- 	       req->u.indirect.nr_segments : req->u.rw.nr_segments;
- 
--	if (unlikely(nseg == 0 && operation != WRITE_FLUSH) ||
-+	if (unlikely(nseg == 0 && operation_flags != WRITE_FLUSH) ||
- 	    unlikely((req->operation != BLKIF_OP_INDIRECT) &&
- 		     (nseg > BLKIF_MAX_SEGMENTS_PER_REQUEST)) ||
- 	    unlikely((req->operation == BLKIF_OP_INDIRECT) &&
-@@ -1310,7 +1313,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 
- 	if (xen_vbd_translate(&preq, ring->blkif, operation) != 0) {
- 		pr_debug("access denied: %s of [%llu,%llu] on dev=%04x\n",
--			 operation == READ ? "read" : "write",
-+			 operation == REQ_OP_READ ? "read" : "write",
- 			 preq.sector_number,
- 			 preq.sector_number + preq.nr_sects,
- 			 ring->blkif->vbd.pdevice);
-@@ -1369,7 +1372,8 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 			bio->bi_private = pending_req;
- 			bio->bi_end_io  = end_block_io_op;
- 			bio->bi_iter.bi_sector  = preq.sector_number;
--			bio->bi_rw	= operation;
-+			bio->bi_op	= operation;
-+			bio->bi_rw	= operation_flags;
- 		}
- 
- 		preq.sector_number += seg[i].nsec;
-@@ -1377,7 +1381,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 
- 	/* This will be hit if the operation was a flush or discard. */
- 	if (!bio) {
--		BUG_ON(operation != WRITE_FLUSH);
-+		BUG_ON(operation_flags != WRITE_FLUSH);
- 
- 		bio = bio_alloc(GFP_KERNEL, 0);
- 		if (unlikely(bio == NULL))
-@@ -1387,7 +1391,8 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 		bio->bi_bdev    = preq.bdev;
- 		bio->bi_private = pending_req;
- 		bio->bi_end_io  = end_block_io_op;
--		bio->bi_rw	= operation;
-+		bio->bi_op	= operation;
-+		bio->bi_rw	= operation_flags;
+ 	length = first_hole << blkbits;
+ 	if (bio_add_page(bio, page, length, 0) < length) {
+-		bio = mpage_bio_submit(READ, bio);
++		bio = mpage_bio_submit(REQ_OP_READ, 0, bio);
+ 		goto alloc_new;
  	}
  
- 	atomic_set(&pending_req->pendcnt, nbio);
-@@ -1399,9 +1404,9 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 	/* Let the I/Os go.. */
- 	blk_finish_plug(&plug);
+@@ -295,7 +296,7 @@ alloc_new:
+ 	nblocks = map_bh->b_size >> blkbits;
+ 	if ((buffer_boundary(map_bh) && relative_block == nblocks) ||
+ 	    (first_hole != blocks_per_page))
+-		bio = mpage_bio_submit(READ, bio);
++		bio = mpage_bio_submit(REQ_OP_READ, 0, bio);
+ 	else
+ 		*last_block_in_bio = blocks[blocks_per_page - 1];
+ out:
+@@ -303,7 +304,7 @@ out:
  
--	if (operation == READ)
-+	if (operation == REQ_OP_READ)
- 		ring->st_rd_sect += preq.nr_sects;
--	else if (operation & WRITE)
-+	else if (operation == REQ_OP_WRITE)
- 		ring->st_wr_sect += preq.nr_sects;
- 
+ confused:
+ 	if (bio)
+-		bio = mpage_bio_submit(READ, bio);
++		bio = mpage_bio_submit(REQ_OP_READ, 0, bio);
+ 	if (!PageUptodate(page))
+ 	        block_read_full_page(page, get_block);
+ 	else
+@@ -385,7 +386,7 @@ mpage_readpages(struct address_space *mapping, struct list_head *pages,
+ 	}
+ 	BUG_ON(!list_empty(pages));
+ 	if (bio)
+-		mpage_bio_submit(READ, bio);
++		mpage_bio_submit(REQ_OP_READ, 0, bio);
  	return 0;
+ }
+ EXPORT_SYMBOL(mpage_readpages);
+@@ -406,7 +407,7 @@ int mpage_readpage(struct page *page, get_block_t get_block)
+ 	bio = do_mpage_readpage(bio, page, 1, &last_block_in_bio,
+ 			&map_bh, &first_logical_block, get_block, gfp);
+ 	if (bio)
+-		mpage_bio_submit(READ, bio);
++		mpage_bio_submit(REQ_OP_READ, 0, bio);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(mpage_readpage);
+@@ -487,7 +488,7 @@ static int __mpage_writepage(struct page *page, struct writeback_control *wbc,
+ 	struct buffer_head map_bh;
+ 	loff_t i_size = i_size_read(inode);
+ 	int ret = 0;
+-	int wr = (wbc->sync_mode == WB_SYNC_ALL ?  WRITE_SYNC : WRITE);
++	int op_flags = (wbc->sync_mode == WB_SYNC_ALL ?  WRITE_SYNC : 0);
+ 
+ 	if (page_has_buffers(page)) {
+ 		struct buffer_head *head = page_buffers(page);
+@@ -596,7 +597,7 @@ page_is_mapped:
+ 	 * This page will go to BIO.  Do we need to send this BIO off first?
+ 	 */
+ 	if (bio && mpd->last_block_in_bio != blocks[0] - 1)
+-		bio = mpage_bio_submit(wr, bio);
++		bio = mpage_bio_submit(REQ_OP_WRITE, op_flags, bio);
+ 
+ alloc_new:
+ 	if (bio == NULL) {
+@@ -623,7 +624,7 @@ alloc_new:
+ 	wbc_account_io(wbc, page, PAGE_SIZE);
+ 	length = first_unmapped << blkbits;
+ 	if (bio_add_page(bio, page, length, 0) < length) {
+-		bio = mpage_bio_submit(wr, bio);
++		bio = mpage_bio_submit(REQ_OP_WRITE, op_flags, bio);
+ 		goto alloc_new;
+ 	}
+ 
+@@ -633,7 +634,7 @@ alloc_new:
+ 	set_page_writeback(page);
+ 	unlock_page(page);
+ 	if (boundary || (first_unmapped != blocks_per_page)) {
+-		bio = mpage_bio_submit(wr, bio);
++		bio = mpage_bio_submit(REQ_OP_WRITE, op_flags, bio);
+ 		if (boundary_block) {
+ 			write_boundary_block(boundary_bdev,
+ 					boundary_block, 1 << blkbits);
+@@ -645,7 +646,7 @@ alloc_new:
+ 
+ confused:
+ 	if (bio)
+-		bio = mpage_bio_submit(wr, bio);
++		bio = mpage_bio_submit(REQ_OP_WRITE, op_flags, bio);
+ 
+ 	if (mpd->use_writepage) {
+ 		ret = mapping->a_ops->writepage(page, wbc);
+@@ -702,9 +703,9 @@ mpage_writepages(struct address_space *mapping,
+ 
+ 		ret = write_cache_pages(mapping, wbc, __mpage_writepage, &mpd);
+ 		if (mpd.bio) {
+-			int wr = (wbc->sync_mode == WB_SYNC_ALL ?
+-				  WRITE_SYNC : WRITE);
+-			mpage_bio_submit(wr, mpd.bio);
++			int op_flags = (wbc->sync_mode == WB_SYNC_ALL ?
++				  WRITE_SYNC : 0);
++			mpage_bio_submit(REQ_OP_WRITE, op_flags, mpd.bio);
+ 		}
+ 	}
+ 	blk_finish_plug(&plug);
+@@ -723,9 +724,9 @@ int mpage_writepage(struct page *page, get_block_t get_block,
+ 	};
+ 	int ret = __mpage_writepage(page, wbc, &mpd);
+ 	if (mpd.bio) {
+-		int wr = (wbc->sync_mode == WB_SYNC_ALL ?
+-			  WRITE_SYNC : WRITE);
+-		mpage_bio_submit(wr, mpd.bio);
++		int op_flags = (wbc->sync_mode == WB_SYNC_ALL ?
++			  WRITE_SYNC : 0);
++		mpage_bio_submit(REQ_OP_WRITE, op_flags, mpd.bio);
+ 	}
+ 	return ret;
+ }
 -- 
 2.7.2
