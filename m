@@ -1,34 +1,35 @@
-Date: Wed, 13 Apr 2016 14:31:43 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou
- Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Kamal
- Dasu <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>, Ezequiel Garcia
+Subject: Re: [PATCH 02/12] mtd: nand: atmel: rely on generic DT parsing done
+ in nand_scan_ident()
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Roger Quadros
+ <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou Yang
+ <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, "Richard
+ Weinberger" <richard@nod.at>, <linux-mtd@lists.infradead.org>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>, Ezequiel Garcia
  <ezequiel.garcia@free-electrons.com>, Stefan Agner <stefan@agner.ch>
-Cc: linux-omap@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
+References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459515272-31011-3-git-send-email-boris.brezillon@free-electrons.com>
+CC: <linux-omap@vger.kernel.org>, Jean-Christophe Plagniol-Villard
+ <plagnioj@jcrosoft.com>, Alexandre Belloni
  <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
  <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
  <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
  Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
  <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
  <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- bcm-kernel-feedback-list@broadcom.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Maxime
- Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Zhou Wang <wangzhou1@hisilicon.com>, Alex
- Smith <alex.smith@imgtec.com>, Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: Re: [PATCH 02/12] mtd: nand: atmel: rely on generic DT parsing done
- in nand_scan_ident()
-Message-ID: <20160413143143.6c4b7de8@bbrezillon>
-In-Reply-To: <1459515272-31011-3-git-send-email-boris.brezillon@free-electrons.com>
-References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459515272-31011-3-git-send-email-boris.brezillon@free-electrons.com>
+ <bcm-kernel-feedback-list@broadcom.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, <linux-sunxi@googlegroups.com>, Zhou Wang
+ <wangzhou1@hisilicon.com>, Alex Smith <alex.smith@imgtec.com>, Harvey Hunt
+ <harvey.hunt@imgtec.com>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Message-ID: <570E41D1.3090609@atmel.com>
+Date: Wed, 13 Apr 2016 14:55:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1459515272-31011-3-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,9 +39,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  1 Apr 2016 14:54:22 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
+Le 01/04/2016 14:54, Boris Brezillon a écrit :
 > The core now takes care of parsing generic DT properties in
 > nand_scan_ident() when nand_set_flash_node() has been called.
 > Rely on this initialization instead of calling of_get_nand_xxx()
@@ -48,9 +47,11 @@ Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Tested on sama5d4ek.
+It seems okay:
+Reviewed-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-Tested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Thanks Boris, bye,
+
 
 > ---
 >  drivers/mtd/nand/atmel_nand.c | 133 +++++++++++++++++++++++-------------------
@@ -285,10 +286,8 @@ Tested-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 >  	if (nand_chip->ecc.mode == NAND_ECC_HW) {
 >  		if (host->has_pmecc)
 >  			res = atmel_pmecc_nand_init_params(pdev, host);
-
+> 
 
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Nicolas Ferre
