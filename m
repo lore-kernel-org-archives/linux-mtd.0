@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqQc1-00031X-Gx
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 19:38:17 +0000
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1aqQcE-00037z-IK
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 19:38:18 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 31/42] block: convert merge/insert code to check for REQ_OPs.
-Date: Wed, 13 Apr 2016 14:36:17 -0500
-Message-Id: <1460576188-5751-32-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 36/42] ide cd: do not set REQ_WRITE on requests.
+Date: Wed, 13 Apr 2016 14:36:22 -0500
+Message-Id: <1460576188-5751-37-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1460576188-5751-1-git-send-email-mchristi@redhat.com>
 References: <1460576188-5751-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,127 +29,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-This patch converts the block layer merging code to use separate variables
-for the operation and flags, and to check request->op for the REQ_OP.
+The block layer will set the correct READ/WRITE operation flags/fields
+when creating a request, so there is not need for drivers to set the
+REQ_WRITE flag.
+
+This patch is compile tested only.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-core.c       |  2 +-
- block/blk-merge.c      | 10 ++++++----
- include/linux/blkdev.h | 20 ++++++++++----------
- 3 files changed, 17 insertions(+), 15 deletions(-)
+ drivers/ide/ide-cd_ioctl.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 3ec1310..5632cd1 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -2175,7 +2175,7 @@ EXPORT_SYMBOL(submit_bio);
- static int blk_cloned_rq_check_limits(struct request_queue *q,
- 				      struct request *rq)
- {
--	if (blk_rq_sectors(rq) > blk_queue_get_max_sectors(q, rq->cmd_flags)) {
-+	if (blk_rq_sectors(rq) > blk_queue_get_max_sectors(q, rq->op)) {
- 		printk(KERN_ERR "%s: over max size limit.\n", __func__);
- 		return -EIO;
- 	}
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index 2613531..c02371f 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -649,7 +649,8 @@ static int attempt_merge(struct request_queue *q, struct request *req,
- 	if (!rq_mergeable(req) || !rq_mergeable(next))
- 		return 0;
+diff --git a/drivers/ide/ide-cd_ioctl.c b/drivers/ide/ide-cd_ioctl.c
+index 474173e..5887a7a 100644
+--- a/drivers/ide/ide-cd_ioctl.c
++++ b/drivers/ide/ide-cd_ioctl.c
+@@ -459,9 +459,6 @@ int ide_cdrom_packet(struct cdrom_device_info *cdi,
+ 	   layer. the packet must be complete, as we do not
+ 	   touch it at all. */
  
--	if (!blk_check_merge_flags(req->cmd_flags, next->cmd_flags))
-+	if (!blk_check_merge_flags(req->cmd_flags, req->op, next->cmd_flags,
-+				   next->op))
- 		return 0;
+-	if (cgc->data_direction == CGC_DATA_WRITE)
+-		flags |= REQ_WRITE;
+-
+ 	if (cgc->sense)
+ 		memset(cgc->sense, 0, sizeof(struct request_sense));
  
- 	/*
-@@ -663,7 +664,7 @@ static int attempt_merge(struct request_queue *q, struct request *req,
- 	    || req_no_special_merge(next))
- 		return 0;
- 
--	if (req->cmd_flags & REQ_WRITE_SAME &&
-+	if (req->op == REQ_OP_WRITE_SAME &&
- 	    !blk_write_same_mergeable(req->bio, next->bio))
- 		return 0;
- 
-@@ -751,7 +752,8 @@ bool blk_rq_merge_ok(struct request *rq, struct bio *bio)
- 	if (!rq_mergeable(rq) || !bio_mergeable(bio))
- 		return false;
- 
--	if (!blk_check_merge_flags(rq->cmd_flags, bio->bi_rw))
-+	if (!blk_check_merge_flags(rq->cmd_flags, rq->op, bio->bi_rw,
-+				   bio->bi_op))
- 		return false;
- 
- 	/* different data direction or already started, don't merge */
-@@ -767,7 +769,7 @@ bool blk_rq_merge_ok(struct request *rq, struct bio *bio)
- 		return false;
- 
- 	/* must be using the same buffer */
--	if (rq->cmd_flags & REQ_WRITE_SAME &&
-+	if (rq->op == REQ_OP_WRITE_SAME &&
- 	    !blk_write_same_mergeable(rq->bio, bio))
- 		return false;
- 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index e2b2881..39df8ef 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -660,16 +660,16 @@ static inline bool rq_mergeable(struct request *rq)
- 	return true;
- }
- 
--static inline bool blk_check_merge_flags(unsigned int flags1,
--					 unsigned int flags2)
-+static inline bool blk_check_merge_flags(unsigned int flags1, unsigned int op1,
-+					 unsigned int flags2, unsigned int op2)
- {
--	if ((flags1 & REQ_DISCARD) != (flags2 & REQ_DISCARD))
-+	if ((op1 == REQ_OP_DISCARD) != (op2 == REQ_OP_DISCARD))
- 		return false;
- 
- 	if ((flags1 & REQ_SECURE) != (flags2 & REQ_SECURE))
- 		return false;
- 
--	if ((flags1 & REQ_WRITE_SAME) != (flags2 & REQ_WRITE_SAME))
-+	if ((op1 == REQ_OP_WRITE_SAME) != (op2 == REQ_OP_WRITE_SAME))
- 		return false;
- 
- 	return true;
-@@ -870,12 +870,12 @@ static inline unsigned int blk_rq_cur_sectors(const struct request *rq)
- }
- 
- static inline unsigned int blk_queue_get_max_sectors(struct request_queue *q,
--						     unsigned int cmd_flags)
-+						     int op)
- {
--	if (unlikely(cmd_flags & REQ_DISCARD))
-+	if (unlikely(op == REQ_OP_DISCARD))
- 		return min(q->limits.max_discard_sectors, UINT_MAX >> 9);
- 
--	if (unlikely(cmd_flags & REQ_WRITE_SAME))
-+	if (unlikely(op == REQ_OP_WRITE_SAME))
- 		return q->limits.max_write_same_sectors;
- 
- 	return q->limits.max_sectors;
-@@ -902,11 +902,11 @@ static inline unsigned int blk_rq_get_max_sectors(struct request *rq)
- 	if (unlikely(rq->cmd_type != REQ_TYPE_FS))
- 		return q->limits.max_hw_sectors;
- 
--	if (!q->limits.chunk_sectors || (rq->cmd_flags & REQ_DISCARD))
--		return blk_queue_get_max_sectors(q, rq->cmd_flags);
-+	if (!q->limits.chunk_sectors || (rq->op == REQ_OP_DISCARD))
-+		return blk_queue_get_max_sectors(q, rq->op);
- 
- 	return min(blk_max_size_offset(q, blk_rq_pos(rq)),
--			blk_queue_get_max_sectors(q, rq->cmd_flags));
-+			blk_queue_get_max_sectors(q, rq->op));
- }
- 
- static inline unsigned int blk_rq_count_bios(struct request *rq)
 -- 
 2.7.2
