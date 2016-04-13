@@ -1,19 +1,35 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqEXM-0002D4-Av
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 06:44:29 +0000
-Date: Wed, 13 Apr 2016 09:41:26 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- Dmitry Pervushin <dpervushin@embeddedalley.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: [patch] UBI: clean up return in ubi_remove_volume()
-Message-ID: <20160413064126.GC8092@mwanda>
+Date: Wed, 13 Apr 2016 09:42:15 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou
+ Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Kamal Dasu <kdasu.kdev@gmail.com>, Han Xu
+ <han.xu@nxp.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stefan Agner <stefan@agner.ch>, linux-omap@vger.kernel.org, Nicolas Ferre
+ <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard
+ <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
+ <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ bcm-kernel-feedback-list@broadcom.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Maxime
+ Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-sunxi@googlegroups.com, Zhou Wang <wangzhou1@hisilicon.com>, Alex
+ Smith <alex.smith@imgtec.com>, Harvey Hunt <harvey.hunt@imgtec.com>
+Subject: Re: [PATCH 04/12] mtd: nand: brcm: rely on generic DT parsing done
+ in nand_scan_ident()
+Message-ID: <20160413094215.5f317588@bbrezillon>
+In-Reply-To: <20160412223111.GA21705@localhost>
+References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459515272-31011-5-git-send-email-boris.brezillon@free-electrons.com>
+ <20160412223111.GA21705@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +39,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My static checker says that "err" can be uninitialized if
-"vol->reserved_pebs" is <= 0.  I don't think that can happen but
-returning a literal is cleaner anyway.
+On Tue, 12 Apr 2016 15:31:11 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> On Fri, Apr 01, 2016 at 02:54:24PM +0200, Boris Brezillon wrote:
+> > The core now takes care of parsing generic DT properties in
+> > nand_scan_ident() when nand_set_flash_node() has been called.
+> > Rely on this initialization instead of calling of_get_nand_xxx()
+> > manually.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> 
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 1ae17bb..10059df 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -405,7 +405,7 @@ int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl)
- 	if (!no_vtbl)
- 		self_check_volumes(ubi);
- 
--	return err;
-+	return 0;
- 
- out_err:
- 	ubi_err(ubi, "cannot remove volume %d, error %d", vol_id, err);
+Applied.
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
