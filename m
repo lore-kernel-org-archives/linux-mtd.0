@@ -1,36 +1,17 @@
-Date: Wed, 13 Apr 2016 18:14:50 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin
- Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Nicolas
- Ferre <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard
- <plagnioj@jcrosoft.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Wenyou Yang
- <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Stefan Agner <stefan@agner.ch>, Kyungmin Park
- <kyungmin.park@samsung.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
- linux-kernel@vger.kernel.org, punnaiah choudary kalluri
- <punnaia@xilinx.com>, Priit Laes <plaes@plaes.org>, Kamal Dasu
- <kdasu.kdev@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
- linux-api@vger.kernel.org, Harvey Hunt <harvey.hunt@imgtec.com>, Archit
- Taneja <architt@codeaurora.org>, Han Xu <b45815@freescale.com>, Huang
- Shijie <shijie.huang@arm.com>
-Subject: Re: [PATCH v5 00/52] mtd: rework ECC layout definition
-Message-ID: <20160413181450.449634a5@bbrezillon>
-In-Reply-To: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from eusmtp01.atmel.com ([212.144.249.243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqOVj-0000wl-29
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 17:23:28 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: [PATCH RFC 0/8] mtd: spi-nor: fix support of Quad SPI memories
+Date: Wed, 13 Apr 2016 19:23:32 +0200
+Message-ID: <cover.1460567255.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,31 +21,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 30 Mar 2016 18:14:15 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Hi all,
 
-> Hello,
-> 
-> Hopefully the last version of this patchset (but don't be sad, I'm not
-> done bothering you with NAND related patches :-)).
-> 
-> If possible, I'd like to have as much Tested/Reviewed/Acked-by tags as
-> possible, particularly on the changes done in arch/arm and arch/mips
-> (since the last set of commits depends on those changes, I'd like to
-> take them in my nand/next branch, even if this imply creating an
-> immutable branch for the ARM and MIPS maintainers).
+this series is RFC but has already been tested on a sama5d2x xplained
+board with the Atmel QSPI controller + Micron n25q128a13:
+compatible = "micron,n25q128a13", "jedec,spi-nor";
 
-It's been around for quite some time now, and got several
-Acked/Tested/Reviewed-by tags. Let's push that on nand/next and see if
-someone complains in which case I drop those patches before sending my
-PR to Brian.
+This first 3 patches of the series are stable and have already been
+submitted to linux-mtd. They are required as a base for the later
+patches.
 
-Thanks for your reviews.
+Support of Micron memories has been implemented as an example, other
+memory entries should be updated as needed in the spi_nor_ids[] table.
 
-Boris
+This new way to support Quad SPI memories is inspired by the JEDEC
+SFDP standard. However SFDP tables are not provided by all memories and
+some of them badly implement the standard. Also the standard itself
+can tell whether the memory supports the 2-2-2 mode but doesn't provide
+the procedure to enter/leave this mode as provided for the 4-4-4 mode.
 
+
+Please note that some commit messages are missing but a review might be
+really helpfull! :)
+
+Almost all the actual rework is done in patch 4.
+
+Best regards,
+
+Cyrille
+
+Cyrille Pitchen (8):
+  mtd: spi-nor: add an alternative method to support memory >16MiB
+  mtd: spi-nor: allow different flash_info entries to share the same
+    JEDEC ID
+  mtd: spi-nor: add entry for Macronix mx25l25673g
+  mtd: spi-nor: fix support of Dual (x-y-2) and Quad (x-y-4) SPI
+    protocols
+  mtd: m25p80: add support of dual and quad spi protocols to all
+    commands
+  mtd: spi-nor: add support for Micron Dual and Quad SPI memories
+  Documentation: atmel-quadspi: add binding file for Atmel QSPI driver
+  mtd: atmel-quadspi: add driver for Atmel QSPI controller
+
+ .../devicetree/bindings/mtd/atmel-quadspi.txt      |  32 +
+ drivers/mtd/devices/m25p80.c                       | 212 ++++--
+ drivers/mtd/devices/serial_flash_cmds.h            |   7 -
+ drivers/mtd/devices/st_spi_fsm.c                   |  28 +-
+ drivers/mtd/spi-nor/Kconfig                        |   9 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/atmel-quadspi.c                | 812 +++++++++++++++++++++
+ drivers/mtd/spi-nor/fsl-quadspi.c                  |   9 +-
+ drivers/mtd/spi-nor/mtk-quadspi.c                  |  17 +-
+ drivers/mtd/spi-nor/nxp-spifi.c                    |  22 +-
+ drivers/mtd/spi-nor/spi-nor.c                      | 635 +++++++++++++---
+ include/linux/mtd/spi-nor.h                        | 160 +++-
+ 12 files changed, 1750 insertions(+), 194 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+ create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+1.8.2.2
