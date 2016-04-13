@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqQbr-0002vA-H0
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 19:37:59 +0000
+ id 1aqQbw-0002yz-HP
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 19:38:12 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 26/42] block: copy bio op to request op
-Date: Wed, 13 Apr 2016 14:36:12 -0500
-Message-Id: <1460576188-5751-27-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 29/42] block: prepare elevator to use REQ_OPs.
+Date: Wed, 13 Apr 2016 14:36:15 -0500
+Message-Id: <1460576188-5751-30-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1460576188-5751-1-git-send-email-mchristi@redhat.com>
 References: <1460576188-5751-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,34 +29,103 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-The bio users should now always be setting up the bio->bi_op. This patch
-has us copy that to the struct request op field.
+This patch converts the elevator code to use separate variables
+for the operation and flags, and to check request->op for the REQ_OP.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ block/blk-core.c         | 2 +-
+ block/cfq-iosched.c      | 4 ++--
+ block/elevator.c         | 7 +++----
+ include/linux/elevator.h | 4 ++--
+ 4 files changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/block/blk-core.c b/block/blk-core.c
-index 6bcc22e..4224775 100644
+index f1545d1..3ec1310 100644
 --- a/block/blk-core.c
 +++ b/block/blk-core.c
-@@ -2990,6 +2990,7 @@ void blk_rq_bio_prep(struct request_queue *q, struct request *rq,
- {
- 	/* tmp compat. Allow users to set bi_op or bi_rw */
- 	rq->cmd_flags |= bio_data_dir(bio);
-+	rq->op = bio->bi_op;
+@@ -1081,7 +1081,7 @@ static struct request *__get_request(struct request_list *rl, int op,
+ 	if (unlikely(blk_queue_dying(q)))
+ 		return ERR_PTR(-ENODEV);
  
- 	if (bio_has_data(bio))
- 		rq->nr_phys_segments = bio_phys_segments(q, bio);
-@@ -3074,6 +3075,7 @@ EXPORT_SYMBOL_GPL(blk_rq_unprep_clone);
- static void __blk_rq_prep_clone(struct request *dst, struct request *src)
+-	may_queue = elv_may_queue(q, op | op_flags);
++	may_queue = elv_may_queue(q, op, op_flags);
+ 	if (may_queue == ELV_MQUEUE_NO)
+ 		goto rq_starved;
+ 
+diff --git a/block/cfq-iosched.c b/block/cfq-iosched.c
+index 4a34978..3fcc598 100644
+--- a/block/cfq-iosched.c
++++ b/block/cfq-iosched.c
+@@ -4285,7 +4285,7 @@ static inline int __cfq_may_queue(struct cfq_queue *cfqq)
+ 	return ELV_MQUEUE_MAY;
+ }
+ 
+-static int cfq_may_queue(struct request_queue *q, int rw)
++static int cfq_may_queue(struct request_queue *q, int op, int op_flags)
  {
- 	dst->cpu = src->cpu;
-+	dst->op = src->op;
- 	dst->cmd_flags |= (src->cmd_flags & REQ_CLONE_MASK) | REQ_NOMERGE;
- 	dst->cmd_type = src->cmd_type;
- 	dst->__sector = blk_rq_pos(src);
+ 	struct cfq_data *cfqd = q->elevator->elevator_data;
+ 	struct task_struct *tsk = current;
+@@ -4302,7 +4302,7 @@ static int cfq_may_queue(struct request_queue *q, int rw)
+ 	if (!cic)
+ 		return ELV_MQUEUE_MAY;
+ 
+-	cfqq = cic_to_cfqq(cic, rw_is_sync(rw));
++	cfqq = cic_to_cfqq(cic, rw_is_sync(op | op_flags));
+ 	if (cfqq) {
+ 		cfq_init_prio_data(cfqq, cic);
+ 
+diff --git a/block/elevator.c b/block/elevator.c
+index c3555c9..6a282bf 100644
+--- a/block/elevator.c
++++ b/block/elevator.c
+@@ -366,8 +366,7 @@ void elv_dispatch_sort(struct request_queue *q, struct request *rq)
+ 	list_for_each_prev(entry, &q->queue_head) {
+ 		struct request *pos = list_entry_rq(entry);
+ 
+-		if ((rq->cmd_flags & REQ_DISCARD) !=
+-		    (pos->cmd_flags & REQ_DISCARD))
++		if ((rq->op == REQ_OP_DISCARD) != (pos->op == REQ_OP_DISCARD))
+ 			break;
+ 		if (rq_data_dir(rq) != rq_data_dir(pos))
+ 			break;
+@@ -717,12 +716,12 @@ void elv_put_request(struct request_queue *q, struct request *rq)
+ 		e->type->ops.elevator_put_req_fn(rq);
+ }
+ 
+-int elv_may_queue(struct request_queue *q, int rw)
++int elv_may_queue(struct request_queue *q, int op, int op_flags)
+ {
+ 	struct elevator_queue *e = q->elevator;
+ 
+ 	if (e->type->ops.elevator_may_queue_fn)
+-		return e->type->ops.elevator_may_queue_fn(q, rw);
++		return e->type->ops.elevator_may_queue_fn(q, op, op_flags);
+ 
+ 	return ELV_MQUEUE_MAY;
+ }
+diff --git a/include/linux/elevator.h b/include/linux/elevator.h
+index 638b324..953d286 100644
+--- a/include/linux/elevator.h
++++ b/include/linux/elevator.h
+@@ -26,7 +26,7 @@ typedef int (elevator_dispatch_fn) (struct request_queue *, int);
+ typedef void (elevator_add_req_fn) (struct request_queue *, struct request *);
+ typedef struct request *(elevator_request_list_fn) (struct request_queue *, struct request *);
+ typedef void (elevator_completed_req_fn) (struct request_queue *, struct request *);
+-typedef int (elevator_may_queue_fn) (struct request_queue *, int);
++typedef int (elevator_may_queue_fn) (struct request_queue *, int, int);
+ 
+ typedef void (elevator_init_icq_fn) (struct io_cq *);
+ typedef void (elevator_exit_icq_fn) (struct io_cq *);
+@@ -134,7 +134,7 @@ extern struct request *elv_former_request(struct request_queue *, struct request
+ extern struct request *elv_latter_request(struct request_queue *, struct request *);
+ extern int elv_register_queue(struct request_queue *q);
+ extern void elv_unregister_queue(struct request_queue *q);
+-extern int elv_may_queue(struct request_queue *, int);
++extern int elv_may_queue(struct request_queue *, int, int);
+ extern void elv_completed_request(struct request_queue *, struct request *);
+ extern int elv_set_request(struct request_queue *q, struct request *rq,
+ 			   struct bio *bio, gfp_t gfp_mask);
 -- 
 2.7.2
