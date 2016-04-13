@@ -1,34 +1,27 @@
-Received: from szxga01-in.huawei.com ([58.251.152.64])
+Received: from mail-lf0-x22d.google.com ([2a00:1450:4010:c07::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqH5l-0001cw-Gj
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 09:28:17 +0000
-Subject: Re: [RESEND PATCH v9] mtd: spi-nor: add hisilicon spi-nor flash
- controller driver
+ id 1aqHPZ-0006GT-GO
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 09:48:38 +0000
+Received: by mail-lf0-x22d.google.com with SMTP id g184so61848834lfb.3
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2016 02:48:16 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1458979861-3619-1-git-send-email-xuejiancheng@huawei.com>
- <56F73BC9.5000300@gmail.com> <56F8F630.5050008@huawei.com>
- <20160404064418.GC13995@localhost> <5705C17F.9030904@huawei.com>
- <5705C5E2.6070206@denx.de> <57076B26.7030700@huawei.com>
- <5707821F.4020300@denx.de> <570AFDAF.9050607@huawei.com>
- <570BF933.2000607@denx.de> <570CC098.9070606@huawei.com>
- <20160412114433.069b388e@bbrezillon>
-CC: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>, <robh+dt@kernel.org>,
- <dwmw2@infradead.org>, <juhosg@openwrt.org>, <furquan@google.com>,
- <suwenping@hisilicon.com>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <yanhaifeng@hisilicon.com>,
- <raojun@hisilicon.com>, <xuejiancheng@hisilicon.com>,
- <ml.yang@hisilicon.com>, <gaofei@hisilicon.com>,
- <yanghongwei@hisilicon.com>, <zhangzhenxing@hisilicon.com>,
- <jalen.hsu@hisilicon.com>, "Russell King -
- ARM Linux" <linux@arm.linux.org.uk>
-From: Jiancheng Xue <xuejiancheng@huawei.com>
-Message-ID: <570E1057.3090604@huawei.com>
-Date: Wed, 13 Apr 2016 17:24:39 +0800
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Egor Martovetsky <egor@pasemi.com>, Olof Johansson <olof@lixom.net>,
+ Joe Perches <joe@perches.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC PA SEMI PWRFICIENT),
+ linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH V3] mtd: nand: pasemi: switch to dev_* printing functions
+Date: Wed, 13 Apr 2016 11:48:05 +0200
+Message-Id: <1460540885-4506-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1460114003-19926-1-git-send-email-zajec5@gmail.com>
+References: <1460114003-19926-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20160412114433.069b388e@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,112 +31,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+It also contains some minor related changes:
+1) Don't warn if kzalloc fails as it dumps stack on its own
+2) Use %pR format for displaying whole resource to avoid:
+warning: format ‘%08llx’ expects type ‘long long unsigned int’, but argument 2 has type ‘resource_size_t’
 
-On 2016/4/12 17:44, Boris Brezillon wrote:
-> +Russell
-> 
-> Hi Jiancheng,
-> 
-> On Tue, 12 Apr 2016 17:32:08 +0800
-> Jiancheng Xue <xuejiancheng@huawei.com> wrote:
-> 
->> Hi Marek,
->>
->> On 2016/4/12 3:21, Marek Vasut wrote:
->>> On 04/11/2016 03:28 AM, Jiancheng Xue wrote:
->>>> Hi,
->>>>
->>>> On 2016/4/8 18:04, Marek Vasut wrote:
->>>>> On 04/08/2016 10:26 AM, Jiancheng Xue wrote:
->>>>>> Hi,
->>>>>>
->>>>>> On 2016/4/7 10:28, Marek Vasut wrote:
->>>>>>> On 04/07/2016 04:10 AM, Jiancheng Xue wrote:
->>>>>>>> Hi Brian,
->>>>>>>>    Thank you very much for your comments. I'll fix these issues in next version.
->>>>>>>> In addition, for easy understanding I'd like to rewrite hisi_spi_nor_write and
->>>>>>>> hisi_spi_nor_read. Your comments on these modifications will be highly appreciated.
->>>>>>>
->>>>>>> Would you please stop top-posting ? It rubs some people the wrong way.
->>>>>>>
->>>>>> I feel very sorry about that. I have read the etiquette and won't make the same mistake again.
->>>>>>
->>>>>>>> static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
->>>>>>>> 		size_t *retlen, u_char *read_buf)
->>>>>>>> {
->>>>>>>> 	struct hifmc_priv *priv = nor->priv;
->>>>>>>> 	struct hifmc_host *host = priv->host;
->>>>>>>> 	int i;
->>>>>>>>
->>>>>>>> 	/* read all bytes in only one time */
->>>>>>>> 	if (len <= HIFMC_DMA_MAX_LEN) {
->>>>>>>> 		hisi_spi_nor_dma_transfer(nor, from, host->dma_buffer,
->>>>>>>> 				len, FMC_OP_READ);
->>>>>>>> 		memcpy(read_buf, host->buffer, len);
->>>>>>>
->>>>>>> Is all the ad-hoc memcpying necessary? I think you can use
->>>>>>> dma_map_single() and co to obtain DMAble memory for your
->>>>>>> controller's use and then you can probably get rid of most
->>>>>>> of this stuff.
->>>>>>>
->>>>>> Considering read_buf >= high_mem case, I think it is also complicated to use dma_map_*
->>>>>> and the DMA buffer allocated by the driver is still needed. But I am not sure about
->>>>>> this. Please let me know if I am wrong. Thank you!
->>>>>
->>>>> Does your controller/DMA have a limitation where it's buffers must be in
->>>>> the bottom 4GiB range ? The DMA framework should be able to take care of
->>>>> such platform limitations.
->>>>>
->>>> When read_buf is allocated by vmalloc, the underlying physical memory may be not contiguous.
->>>> In this case, dma_map_single can't be used directly. I think inner DMA buffer and memcpy are still
->>>> needed. Am I right?
->>>
->>> Take a look at drivers/spi/spi-mxs.c , look for "vmalloc" , does that
->>> solution help you in any way ?
->>>
->> No. I think this solution just processes the buffer within only one page.
->> I had referred to drivers/mtd/onenand/samsung.c and other files.
->> The corresponding code segment is as follows:
->> static int s5pc110_read_bufferram(struct mtd_info *mtd, int area,
->>                 unsigned char *buffer, int offset, size_t count)
->> {
->> 	void *buf = (void *) buffer;
->>         dma_addr_t dma_src, dma_dst;
->> 	...
->> 	/* Handle vmalloc address */
->>         if (buf >= high_memory) {
->>                 struct page *page;
->>
->>                 if (((size_t) buf & PAGE_MASK) !=
->>                     ((size_t) (buf + count - 1) & PAGE_MASK))
->>                         goto normal;
->>                 page = vmalloc_to_page(buf);
->>                 if (!page)
->>                         goto normal;
->>
->>                 ...
->>         } else {
->> 		...
->> 	}
->>
->> normal:
->>         ...
->>         memcpy(buffer, p, count);
->>
->> 	return 0;
->> }
->> I think memcpy in "normal" clause can't be removed. So I'd like to keep my original
->> implementation if it is also OK. What's your opinion?
-> 
-> You might want to have a look at this series [1], and particularly at
-> Russell's answers regarding DMA operations on non-lowmem memory.
-> 
-Thank you very much for your supplied reference. Besides safety reasons described by Russell,
-the dmaengine embeded in this controller doesn't support scatter-list type buffer directly.
-So for this controller, I think now it's better to obtain buffer through dma_alloc_coherent
-for dma operation, and then copy data to buffers supplied by mtd user. May I keep using this
-implementation now?
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+V3: Switch to dev_* instead of pr_*
+---
+ drivers/mtd/nand/pasemi_nand.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-Regards,
-Jiancheng
+diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nand.c
+index 63fcb8c..5de7591 100644
+--- a/drivers/mtd/nand/pasemi_nand.c
++++ b/drivers/mtd/nand/pasemi_nand.c
+@@ -92,8 +92,9 @@ int pasemi_device_ready(struct mtd_info *mtd)
+ 
+ static int pasemi_nand_probe(struct platform_device *ofdev)
+ {
++	struct device *dev = &ofdev->dev;
+ 	struct pci_dev *pdev;
+-	struct device_node *np = ofdev->dev.of_node;
++	struct device_node *np = dev->of_node;
+ 	struct resource res;
+ 	struct nand_chip *chip;
+ 	int err = 0;
+@@ -107,13 +108,11 @@ static int pasemi_nand_probe(struct platform_device *ofdev)
+ 	if (pasemi_nand_mtd)
+ 		return -ENODEV;
+ 
+-	pr_debug("pasemi_nand at %pR\n", &res);
++	dev_dbg(dev, "pasemi_nand at %pR\n", &res);
+ 
+ 	/* Allocate memory for MTD device structure and private data */
+ 	chip = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
+ 	if (!chip) {
+-		printk(KERN_WARNING
+-		       "Unable to allocate PASEMI NAND MTD device structure\n");
+ 		err = -ENOMEM;
+ 		goto out;
+ 	}
+@@ -121,7 +120,7 @@ static int pasemi_nand_probe(struct platform_device *ofdev)
+ 	pasemi_nand_mtd = nand_to_mtd(chip);
+ 
+ 	/* Link the private data with the MTD structure */
+-	pasemi_nand_mtd->dev.parent = &ofdev->dev;
++	pasemi_nand_mtd->dev.parent = dev;
+ 
+ 	chip->IO_ADDR_R = of_iomap(np, 0);
+ 	chip->IO_ADDR_W = chip->IO_ADDR_R;
+@@ -163,13 +162,13 @@ static int pasemi_nand_probe(struct platform_device *ofdev)
+ 	}
+ 
+ 	if (mtd_device_register(pasemi_nand_mtd, NULL, 0)) {
+-		printk(KERN_ERR "pasemi_nand: Unable to register MTD device\n");
++		dev_err(dev, "Unable to register MTD device\n");
+ 		err = -ENODEV;
+ 		goto out_lpc;
+ 	}
+ 
+-	printk(KERN_INFO "PA Semi NAND flash at %08llx, control at I/O %x\n",
+-	       res.start, lpcctl);
++	dev_info(dev, "PA Semi NAND flash at %pR, control at I/O %x\n", &res,
++		 lpcctl);
+ 
+ 	return 0;
+ 
+-- 
+1.8.4.5
