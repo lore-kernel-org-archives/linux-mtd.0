@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqQcB-00038K-Gz
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 19:38:26 +0000
+ id 1aqQcL-0003HA-H0
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 19:38:44 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 35/42] blktrace: get op from req->op/bio->bi_op
-Date: Wed, 13 Apr 2016 14:36:21 -0500
-Message-Id: <1460576188-5751-36-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 40/42] block, drivers: add REQ_OP_FLUSH operation
+Date: Wed, 13 Apr 2016 14:36:26 -0500
+Message-Id: <1460576188-5751-41-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1460576188-5751-1-git-send-email-mchristi@redhat.com>
 References: <1460576188-5751-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,346 +29,397 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-The bio and request structs now store the operation in
-bio->bi_op/request->op. This patch has blktrace use that
-field instead of bi_rw/cmd_flags.
+This adds a REQ_OP_FLUSH operation that is sent to request_fn
+based drivers by the block layer's flush code, instead of
+sending requests with the request->cmd_flags REQ_FLUSH bit set.
+
+For the following 3 flush related patches, I have not tested
+every driver. I have only tested scsi with xfs and btrfs.
+
+v2.
+
+1. Fix kbuild failures. Forgot to update ubd driver.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/blktrace_api.h  |  2 +-
- include/trace/events/bcache.h | 12 ++++++----
- include/trace/events/block.h  | 31 +++++++++++++++++---------
- kernel/trace/blktrace.c       | 52 +++++++++++++++++++++++--------------------
- 4 files changed, 57 insertions(+), 40 deletions(-)
+ Documentation/block/writeback_cache_control.txt | 6 +++---
+ arch/um/drivers/ubd_kern.c                      | 2 +-
+ block/blk-flush.c                               | 3 ++-
+ drivers/block/loop.c                            | 4 ++--
+ drivers/block/nbd.c                             | 2 +-
+ drivers/block/osdblk.c                          | 2 +-
+ drivers/block/ps3disk.c                         | 4 ++--
+ drivers/block/skd_main.c                        | 2 +-
+ drivers/block/virtio_blk.c                      | 2 +-
+ drivers/block/xen-blkfront.c                    | 8 ++++----
+ drivers/ide/ide-disk.c                          | 2 +-
+ drivers/md/dm.c                                 | 2 +-
+ drivers/mmc/card/block.c                        | 5 ++---
+ drivers/mmc/card/queue.h                        | 2 +-
+ drivers/mtd/mtd_blkdevs.c                       | 2 +-
+ drivers/nvme/host/core.c                        | 2 +-
+ drivers/scsi/sd.c                               | 7 +++----
+ include/linux/blk_types.h                       | 1 +
+ include/linux/blkdev.h                          | 3 +++
+ kernel/trace/blktrace.c                         | 5 ++++-
+ 20 files changed, 36 insertions(+), 30 deletions(-)
 
-diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
-index afc1343..ee25ba4 100644
---- a/include/linux/blktrace_api.h
-+++ b/include/linux/blktrace_api.h
-@@ -109,7 +109,7 @@ static inline int blk_cmd_buf_len(struct request *rq)
+diff --git a/Documentation/block/writeback_cache_control.txt b/Documentation/block/writeback_cache_control.txt
+index 59e0516..da70bda 100644
+--- a/Documentation/block/writeback_cache_control.txt
++++ b/Documentation/block/writeback_cache_control.txt
+@@ -73,9 +73,9 @@ doing:
+ 
+ 	blk_queue_write_cache(sdkp->disk->queue, true, false);
+ 
+-and handle empty REQ_FLUSH requests in its prep_fn/request_fn.  Note that
++and handle empty REQ_OP_FLUSH requests in its prep_fn/request_fn.  Note that
+ REQ_FLUSH requests with a payload are automatically turned into a sequence
+-of an empty REQ_FLUSH request followed by the actual write by the block
++of an empty REQ_OP_FLUSH request followed by the actual write by the block
+ layer.  For devices that also support the FUA bit the block layer needs
+ to be told to pass through the REQ_FUA bit using:
+ 
+@@ -83,4 +83,4 @@ to be told to pass through the REQ_FUA bit using:
+ 
+ and the driver must handle write requests that have the REQ_FUA bit set
+ in prep_fn/request_fn.  If the FUA bit is not natively supported the block
+-layer turns it into an empty REQ_FLUSH request after the actual write.
++layer turns it into an empty REQ_OP_FLUSH request after the actual write.
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 17e96dc..0cb2dab 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1286,7 +1286,7 @@ static void do_ubd_request(struct request_queue *q)
+ 
+ 		req = dev->request;
+ 
+-		if (req->cmd_flags & REQ_FLUSH) {
++		if (req->op == REQ_OP_FLUSH) {
+ 			io_req = kmalloc(sizeof(struct io_thread_req),
+ 					 GFP_ATOMIC);
+ 			if (io_req == NULL) {
+diff --git a/block/blk-flush.c b/block/blk-flush.c
+index b05acca..af0c805 100644
+--- a/block/blk-flush.c
++++ b/block/blk-flush.c
+@@ -29,7 +29,7 @@
+  * The actual execution of flush is double buffered.  Whenever a request
+  * needs to execute PRE or POSTFLUSH, it queues at
+  * fq->flush_queue[fq->flush_pending_idx].  Once certain criteria are met, a
+- * flush is issued and the pending_idx is toggled.  When the flush
++ * REQ_OP_FLUSH is issued and the pending_idx is toggled.  When the flush
+  * completes, all the requests which were pending are proceeded to the next
+  * step.  This allows arbitrary merging of different types of FLUSH/FUA
+  * requests.
+@@ -330,6 +330,7 @@ static bool blk_kick_flush(struct request_queue *q, struct blk_flush_queue *fq)
+ 
+ 	flush_rq->cmd_type = REQ_TYPE_FS;
+ 	flush_rq->cmd_flags = WRITE_FLUSH | REQ_FLUSH_SEQ;
++	flush_rq->op = REQ_OP_FLUSH;
+ 	flush_rq->rq_disk = first_rq->rq_disk;
+ 	flush_rq->end_io = flush_end_io;
+ 
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index f1f7a25..7d7d7a4f 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -536,7 +536,7 @@ static int do_req_filebacked(struct loop_device *lo, struct request *rq)
+ 	pos = ((loff_t) blk_rq_pos(rq) << 9) + lo->lo_offset;
+ 
+ 	if (op_is_write(rq->op)) {
+-		if (rq->cmd_flags & REQ_FLUSH)
++		if (rq->op == REQ_OP_FLUSH)
+ 			ret = lo_req_flush(lo, rq);
+ 		else if (rq->op == REQ_OP_DISCARD)
+ 			ret = lo_discard(lo, rq, pos);
+@@ -1653,7 +1653,7 @@ static int loop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	if (lo->lo_state != Lo_bound)
+ 		return -EIO;
+ 
+-	if (lo->use_dio && (!(cmd->rq->cmd_flags & REQ_FLUSH) ||
++	if (lo->use_dio && (cmd->rq->op != REQ_OP_FLUSH ||
+ 	     cmd->rq->op == REQ_OP_DISCARD))
+ 		cmd->use_aio = true;
+ 	else
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 68a1476..4e9fd5b 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -284,7 +284,7 @@ static int nbd_send_req(struct nbd_device *nbd, struct request *req)
+ 		type = NBD_CMD_DISC;
+ 	else if (req->op == REQ_OP_DISCARD)
+ 		type = NBD_CMD_TRIM;
+-	else if (req->cmd_flags & REQ_FLUSH)
++	else if (req->op == REQ_OP_FLUSH)
+ 		type = NBD_CMD_FLUSH;
+ 	else if (rq_data_dir(req) == WRITE)
+ 		type = NBD_CMD_WRITE;
+diff --git a/drivers/block/osdblk.c b/drivers/block/osdblk.c
+index c2854a2..806e3a3 100644
+--- a/drivers/block/osdblk.c
++++ b/drivers/block/osdblk.c
+@@ -321,7 +321,7 @@ static void osdblk_rq_fn(struct request_queue *q)
+ 		 * driver-specific, etc.
+ 		 */
+ 
+-		do_flush = rq->cmd_flags & REQ_FLUSH;
++		do_flush = (rq->op == REQ_OP_FLUSH);
+ 		do_write = (rq_data_dir(rq) == WRITE);
+ 
+ 		if (!do_flush) { /* osd_flush does not use a bio */
+diff --git a/drivers/block/ps3disk.c b/drivers/block/ps3disk.c
+index 4b7e405..2e652db 100644
+--- a/drivers/block/ps3disk.c
++++ b/drivers/block/ps3disk.c
+@@ -196,7 +196,7 @@ static void ps3disk_do_request(struct ps3_storage_device *dev,
+ 	dev_dbg(&dev->sbd.core, "%s:%u\n", __func__, __LINE__);
+ 
+ 	while ((req = blk_fetch_request(q))) {
+-		if (req->cmd_flags & REQ_FLUSH) {
++		if (req->op == REQ_OP_FLUSH) {
+ 			if (ps3disk_submit_flush_request(dev, req))
+ 				break;
+ 		} else if (req->cmd_type == REQ_TYPE_FS) {
+@@ -256,7 +256,7 @@ static irqreturn_t ps3disk_interrupt(int irq, void *data)
+ 		return IRQ_HANDLED;
+ 	}
+ 
+-	if (req->cmd_flags & REQ_FLUSH) {
++	if (req->op == REQ_OP_FLUSH) {
+ 		read = 0;
+ 		op = "flush";
+ 	} else {
+diff --git a/drivers/block/skd_main.c b/drivers/block/skd_main.c
+index 5739223..01c3cd3 100644
+--- a/drivers/block/skd_main.c
++++ b/drivers/block/skd_main.c
+@@ -624,7 +624,7 @@ static void skd_request_fn(struct request_queue *q)
+ 		count = blk_rq_sectors(req);
+ 		data_dir = rq_data_dir(req);
+ 
+-		if (req->cmd_flags & REQ_FLUSH)
++		if (req->op == REQ_OP_FLUSH)
+ 			flush++;
+ 
+ 		if (req->cmd_flags & REQ_FUA)
+diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+index 42758b5..7e1d041 100644
+--- a/drivers/block/virtio_blk.c
++++ b/drivers/block/virtio_blk.c
+@@ -172,7 +172,7 @@ static int virtio_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	BUG_ON(req->nr_phys_segments + 2 > vblk->sg_elems);
+ 
+ 	vbr->req = req;
+-	if (req->cmd_flags & REQ_FLUSH) {
++	if (req->op == REQ_OP_FLUSH) {
+ 		vbr->out_hdr.type = cpu_to_virtio32(vblk->vdev, VIRTIO_BLK_T_FLUSH);
+ 		vbr->out_hdr.sector = 0;
+ 		vbr->out_hdr.ioprio = cpu_to_virtio32(vblk->vdev, req_get_ioprio(vbr->req));
+diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+index dc08d4d..f01691a 100644
+--- a/drivers/block/xen-blkfront.c
++++ b/drivers/block/xen-blkfront.c
+@@ -743,7 +743,7 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
+ 		 * The indirect operation can only be a BLKIF_OP_READ or
+ 		 * BLKIF_OP_WRITE
+ 		 */
+-		BUG_ON(req->cmd_flags & (REQ_FLUSH | REQ_FUA));
++		BUG_ON(req->op == REQ_OP_FLUSH || req->cmd_flags & REQ_FUA);
+ 		ring_req->operation = BLKIF_OP_INDIRECT;
+ 		ring_req->u.indirect.indirect_op = rq_data_dir(req) ?
+ 			BLKIF_OP_WRITE : BLKIF_OP_READ;
+@@ -755,7 +755,7 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
+ 		ring_req->u.rw.handle = info->handle;
+ 		ring_req->operation = rq_data_dir(req) ?
+ 			BLKIF_OP_WRITE : BLKIF_OP_READ;
+-		if (req->cmd_flags & (REQ_FLUSH | REQ_FUA)) {
++		if (req->op == REQ_OP_FLUSH || req->cmd_flags & REQ_FUA) {
+ 			/*
+ 			 * Ideally we can do an unordered flush-to-disk.
+ 			 * In case the backend onlysupports barriers, use that.
+@@ -865,7 +865,7 @@ static inline bool blkif_request_flush_invalid(struct request *req,
+ 					       struct blkfront_info *info)
+ {
+ 	return ((req->cmd_type != REQ_TYPE_FS) ||
+-		((req->cmd_flags & REQ_FLUSH) &&
++		((req->op == REQ_OP_FLUSH) &&
+ 		 !(info->feature_flush & REQ_FLUSH)) ||
+ 		((req->cmd_flags & REQ_FUA) &&
+ 		 !(info->feature_flush & REQ_FUA)));
+@@ -2055,7 +2055,7 @@ static int blkif_recover(struct blkfront_info *info)
+ 			/*
+ 			 * Get the bios in the request so we can re-queue them.
+ 			 */
+-			if (copy[i].request->cmd_flags & REQ_FLUSH ||
++			if (copy[i].request->op == REQ_OP_FLUSH ||
+ 			    copy[i].request->op == REQ_OP_DISCARD ||
+ 			    copy[i].request->cmd_flags & (REQ_FUA | REQ_SECURE)) {
+ 				/*
+diff --git a/drivers/ide/ide-disk.c b/drivers/ide/ide-disk.c
+index 05dbcce..538c343 100644
+--- a/drivers/ide/ide-disk.c
++++ b/drivers/ide/ide-disk.c
+@@ -431,7 +431,7 @@ static int idedisk_prep_fn(struct request_queue *q, struct request *rq)
+ 	ide_drive_t *drive = q->queuedata;
+ 	struct ide_cmd *cmd;
+ 
+-	if (!(rq->cmd_flags & REQ_FLUSH))
++	if (rq->op != REQ_OP_FLUSH)
+ 		return BLKPREP_OK;
+ 
+ 	if (rq->special) {
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 4ee7d5c..bd852bc 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -2171,7 +2171,7 @@ static void dm_request_fn(struct request_queue *q)
+ 
+ 		/* always use block 0 to find the target for flushes for now */
+ 		pos = 0;
+-		if (!(rq->cmd_flags & REQ_FLUSH))
++		if (rq->op != REQ_OP_FLUSH)
+ 			pos = blk_rq_pos(rq);
+ 
+ 		if ((dm_request_peeked_before_merge_deadline(md) &&
+diff --git a/drivers/mmc/card/block.c b/drivers/mmc/card/block.c
+index 8fa3982..25dd331 100644
+--- a/drivers/mmc/card/block.c
++++ b/drivers/mmc/card/block.c
+@@ -1696,7 +1696,7 @@ static u8 mmc_blk_prep_packed_list(struct mmc_queue *mq, struct request *req)
+ 		    !IS_ALIGNED(blk_rq_sectors(next), 8))
+ 			break;
+ 
+-		if (next->op == REQ_OP_DISCARD || next->cmd_flags & REQ_FLUSH)
++		if (next->op == REQ_OP_DISCARD || next->op == REQ_OP_FLUSH)
+ 			break;
+ 
+ 		if (rq_data_dir(cur) != rq_data_dir(next))
+@@ -2121,7 +2121,6 @@ static int mmc_blk_issue_rq(struct mmc_queue *mq, struct request *req)
+ 	struct mmc_card *card = md->queue.card;
+ 	struct mmc_host *host = card->host;
+ 	unsigned long flags;
+-	unsigned int cmd_flags = req ? req->cmd_flags : 0;
+ 
+ 	if (req && !mq->mqrq_prev->req)
+ 		/* claim host only for the first request */
+@@ -2145,7 +2144,7 @@ static int mmc_blk_issue_rq(struct mmc_queue *mq, struct request *req)
+ 			ret = mmc_blk_issue_secdiscard_rq(mq, req);
+ 		else
+ 			ret = mmc_blk_issue_discard_rq(mq, req);
+-	} else if (cmd_flags & REQ_FLUSH) {
++	} else if (req && req->op == REQ_OP_FLUSH) {
+ 		/* complete ongoing async transfer before issuing flush */
+ 		if (card->host->areq)
+ 			mmc_blk_issue_rw_rq(mq, NULL);
+diff --git a/drivers/mmc/card/queue.h b/drivers/mmc/card/queue.h
+index f166e5b..6c67e4e 100644
+--- a/drivers/mmc/card/queue.h
++++ b/drivers/mmc/card/queue.h
+@@ -3,7 +3,7 @@
+ 
+ static inline bool mmc_req_is_special(struct request *req)
+ {
+-	return req && (req->cmd_flags & REQ_FLUSH || req->op == REQ_OP_DISCARD);
++	return req && (req->op == REQ_OP_FLUSH || req->op == REQ_OP_DISCARD);
  }
  
- extern void blk_dump_cmd(char *buf, struct request *rq);
--extern void blk_fill_rwbs(char *rwbs, u32 rw, int bytes);
-+extern void blk_fill_rwbs(char *rwbs, int op, u32 rw, int bytes);
+ struct request;
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index e8b0263..688e689 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -87,7 +87,7 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
+ 	if (req->cmd_type != REQ_TYPE_FS)
+ 		return -EIO;
  
- #endif /* CONFIG_EVENT_TRACING && CONFIG_BLOCK */
+-	if (req->cmd_flags & REQ_FLUSH)
++	if (req->op == REQ_OP_FLUSH)
+ 		return tr->flush(dev);
  
-diff --git a/include/trace/events/bcache.h b/include/trace/events/bcache.h
-index 981acf7..8abe564 100644
---- a/include/trace/events/bcache.h
-+++ b/include/trace/events/bcache.h
-@@ -27,7 +27,8 @@ DECLARE_EVENT_CLASS(bcache_request,
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->orig_sector	= bio->bi_iter.bi_sector - 16;
- 		__entry->nr_sector	= bio->bi_iter.bi_size >> 9;
--		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_iter.bi_size);
-+		blk_fill_rwbs(__entry->rwbs, bio->bi_op, bio->bi_rw,
-+			      bio->bi_iter.bi_size);
- 	),
+ 	if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index b741aed..7055675 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -232,7 +232,7 @@ int nvme_setup_cmd(struct nvme_ns *ns, struct request *req,
  
- 	TP_printk("%d,%d %s %llu + %u (from %d,%d @ %llu)",
-@@ -101,7 +102,8 @@ DECLARE_EVENT_CLASS(bcache_bio,
- 		__entry->dev		= bio->bi_bdev->bd_dev;
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->nr_sector	= bio->bi_iter.bi_size >> 9;
--		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_iter.bi_size);
-+		blk_fill_rwbs(__entry->rwbs, bio->bi_op, bio->bi_rw,
-+			      bio->bi_iter.bi_size);
- 	),
+ 	if (req->cmd_type == REQ_TYPE_DRV_PRIV)
+ 		memcpy(cmd, req->cmd, sizeof(*cmd));
+-	else if (req->cmd_flags & REQ_FLUSH)
++	else if (req->op == REQ_OP_FLUSH)
+ 		nvme_setup_flush(ns, cmd);
+ 	else if (req->op == REQ_OP_DISCARD)
+ 		ret = nvme_setup_discard(ns, req, cmd);
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 2fc7191..5fe24e6 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -1143,12 +1143,11 @@ static int sd_init_command(struct scsi_cmnd *cmd)
+ 		return sd_setup_discard_cmnd(cmd);
+ 	case REQ_OP_WRITE_SAME:
+ 		return sd_setup_write_same_cmnd(cmd);
++	case REQ_OP_FLUSH:
++		return sd_setup_flush_cmnd(cmd);
+ 	case REQ_OP_READ:
+ 	case REQ_OP_WRITE:
+-		if (rq->cmd_flags & REQ_FLUSH)
+-			return sd_setup_flush_cmnd(cmd);
+-		else
+-			return sd_setup_read_write_cmnd(cmd);
++		return sd_setup_read_write_cmnd(cmd);
+ 	default:
+ 		BUG();
+ 	}
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index 498f395..f9e53ca 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -239,6 +239,7 @@ enum req_op {
+ 	REQ_OP_WRITE,
+ 	REQ_OP_DISCARD,		/* request to discard sectors */
+ 	REQ_OP_WRITE_SAME,	/* write same block many times */
++	REQ_OP_FLUSH,		/* request for cache flush */
+ };
  
- 	TP_printk("%d,%d  %s %llu + %u",
-@@ -136,7 +138,8 @@ TRACE_EVENT(bcache_read,
- 		__entry->dev		= bio->bi_bdev->bd_dev;
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->nr_sector	= bio->bi_iter.bi_size >> 9;
--		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_iter.bi_size);
-+		blk_fill_rwbs(__entry->rwbs, bio->bi_op, bio->bi_rw,
-+			      bio->bi_iter.bi_size);
- 		__entry->cache_hit = hit;
- 		__entry->bypass = bypass;
- 	),
-@@ -167,7 +170,8 @@ TRACE_EVENT(bcache_write,
- 		__entry->inode		= inode;
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->nr_sector	= bio->bi_iter.bi_size >> 9;
--		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_iter.bi_size);
-+		blk_fill_rwbs(__entry->rwbs, bio->bi_op, bio->bi_rw,
-+			      bio->bi_iter.bi_size);
- 		__entry->writeback = writeback;
- 		__entry->bypass = bypass;
- 	),
-diff --git a/include/trace/events/block.h b/include/trace/events/block.h
-index e8a5eca..4416dcd 100644
---- a/include/trace/events/block.h
-+++ b/include/trace/events/block.h
-@@ -84,7 +84,8 @@ DECLARE_EVENT_CLASS(block_rq_with_error,
- 					0 : blk_rq_sectors(rq);
- 		__entry->errors    = rq->errors;
+ typedef unsigned int blk_qc_t;
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 6c300cf..4fdea8e 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -654,6 +654,9 @@ static inline bool rq_mergeable(struct request *rq)
+ 	if (rq->cmd_type != REQ_TYPE_FS)
+ 		return false;
  
--		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags, blk_rq_bytes(rq));
-+		blk_fill_rwbs(__entry->rwbs, rq->op, rq->cmd_flags,
-+			      blk_rq_bytes(rq));
- 		blk_dump_cmd(__get_str(cmd), rq);
- 	),
++	if (rq->op == REQ_OP_FLUSH)
++		return false;
++
+ 	if (rq->cmd_flags & REQ_NOMERGE_FLAGS)
+ 		return false;
  
-@@ -162,7 +163,7 @@ TRACE_EVENT(block_rq_complete,
- 		__entry->nr_sector = nr_bytes >> 9;
- 		__entry->errors    = rq->errors;
- 
--		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags, nr_bytes);
-+		blk_fill_rwbs(__entry->rwbs, rq->op, rq->cmd_flags, nr_bytes);
- 		blk_dump_cmd(__get_str(cmd), rq);
- 	),
- 
-@@ -198,7 +199,8 @@ DECLARE_EVENT_CLASS(block_rq,
- 		__entry->bytes     = (rq->cmd_type == REQ_TYPE_BLOCK_PC) ?
- 					blk_rq_bytes(rq) : 0;
- 
--		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags, blk_rq_bytes(rq));
-+		blk_fill_rwbs(__entry->rwbs, rq->op, rq->cmd_flags,
-+			      blk_rq_bytes(rq));
- 		blk_dump_cmd(__get_str(cmd), rq);
- 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
- 	),
-@@ -272,7 +274,8 @@ TRACE_EVENT(block_bio_bounce,
- 					  bio->bi_bdev->bd_dev : 0;
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->nr_sector	= bio_sectors(bio);
--		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_iter.bi_size);
-+		blk_fill_rwbs(__entry->rwbs, bio->bi_op, bio->bi_rw,
-+			      bio->bi_iter.bi_size);
- 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
- 	),
- 
-@@ -310,7 +313,8 @@ TRACE_EVENT(block_bio_complete,
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->nr_sector	= bio_sectors(bio);
- 		__entry->error		= error;
--		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_iter.bi_size);
-+		blk_fill_rwbs(__entry->rwbs, bio->bi_op, bio->bi_rw,
-+			      bio->bi_iter.bi_size);
- 	),
- 
- 	TP_printk("%d,%d %s %llu + %u [%d]",
-@@ -337,7 +341,8 @@ DECLARE_EVENT_CLASS(block_bio_merge,
- 		__entry->dev		= bio->bi_bdev->bd_dev;
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->nr_sector	= bio_sectors(bio);
--		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_iter.bi_size);
-+		blk_fill_rwbs(__entry->rwbs, bio->bi_op, bio->bi_rw,
-+			      bio->bi_iter.bi_size);
- 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
- 	),
- 
-@@ -404,7 +409,8 @@ TRACE_EVENT(block_bio_queue,
- 		__entry->dev		= bio->bi_bdev->bd_dev;
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->nr_sector	= bio_sectors(bio);
--		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_iter.bi_size);
-+		blk_fill_rwbs(__entry->rwbs, bio->bi_op, bio->bi_rw,
-+			      bio->bi_iter.bi_size);
- 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
- 	),
- 
-@@ -432,7 +438,7 @@ DECLARE_EVENT_CLASS(block_get_rq,
- 		__entry->dev		= bio ? bio->bi_bdev->bd_dev : 0;
- 		__entry->sector		= bio ? bio->bi_iter.bi_sector : 0;
- 		__entry->nr_sector	= bio ? bio_sectors(bio) : 0;
--		blk_fill_rwbs(__entry->rwbs,
-+		blk_fill_rwbs(__entry->rwbs, bio ? bio->bi_op : 0,
- 			      bio ? bio->bi_rw : 0, __entry->nr_sector);
- 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
-         ),
-@@ -567,7 +573,8 @@ TRACE_EVENT(block_split,
- 		__entry->dev		= bio->bi_bdev->bd_dev;
- 		__entry->sector		= bio->bi_iter.bi_sector;
- 		__entry->new_sector	= new_sector;
--		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_iter.bi_size);
-+		blk_fill_rwbs(__entry->rwbs, bio->bi_op, bio->bi_rw,
-+			      bio->bi_iter.bi_size);
- 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
- 	),
- 
-@@ -610,7 +617,8 @@ TRACE_EVENT(block_bio_remap,
- 		__entry->nr_sector	= bio_sectors(bio);
- 		__entry->old_dev	= dev;
- 		__entry->old_sector	= from;
--		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_iter.bi_size);
-+		blk_fill_rwbs(__entry->rwbs, bio->bi_op, bio->bi_rw,
-+			      bio->bi_iter.bi_size);
- 	),
- 
- 	TP_printk("%d,%d %s %llu + %u <- (%d,%d) %llu",
-@@ -656,7 +664,8 @@ TRACE_EVENT(block_rq_remap,
- 		__entry->old_dev	= dev;
- 		__entry->old_sector	= from;
- 		__entry->nr_bios	= blk_rq_count_bios(rq);
--		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags, blk_rq_bytes(rq));
-+		blk_fill_rwbs(__entry->rwbs, rq->op, rq->cmd_flags,
-+			      blk_rq_bytes(rq));
- 	),
- 
- 	TP_printk("%d,%d %s %llu + %u <- (%d,%d) %llu %u",
 diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index f94e7a2..6a381ea 100644
+index 6a381ea..192d714 100644
 --- a/kernel/trace/blktrace.c
 +++ b/kernel/trace/blktrace.c
-@@ -199,7 +199,8 @@ static const u32 ddir_act[2] = { BLK_TC_ACT(BLK_TC_READ),
-  * blk_io_trace structure and places it in a per-cpu subbuffer.
-  */
- static void __blk_add_trace(struct blk_trace *bt, sector_t sector, int bytes,
--		     int rw, u32 what, int error, int pdu_len, void *pdu_data)
-+		     int op, int op_flags, u32 what, int error, int pdu_len,
-+		     void *pdu_data)
- {
- 	struct task_struct *tsk = current;
- 	struct ring_buffer_event *event = NULL;
-@@ -214,13 +215,14 @@ static void __blk_add_trace(struct blk_trace *bt, sector_t sector, int bytes,
- 	if (unlikely(bt->trace_state != Blktrace_running && !blk_tracer))
- 		return;
- 
--	what |= ddir_act[rw & WRITE];
--	what |= MASK_TC_BIT(rw, SYNC);
--	what |= MASK_TC_BIT(rw, RAHEAD);
--	what |= MASK_TC_BIT(rw, META);
--	what |= MASK_TC_BIT(rw, DISCARD);
--	what |= MASK_TC_BIT(rw, FLUSH);
--	what |= MASK_TC_BIT(rw, FUA);
-+	what |= ddir_act[op_is_write(op) ? WRITE : READ];
-+	what |= MASK_TC_BIT(op_flags, SYNC);
-+	what |= MASK_TC_BIT(op_flags, RAHEAD);
-+	what |= MASK_TC_BIT(op_flags, META);
-+	what |= MASK_TC_BIT(op_flags, FLUSH);
-+	what |= MASK_TC_BIT(op_flags, FUA);
-+	if (op == REQ_OP_DISCARD)
-+		what |= BLK_TC_ACT(BLK_TC_DISCARD);
+@@ -223,6 +223,8 @@ static void __blk_add_trace(struct blk_trace *bt, sector_t sector, int bytes,
+ 	what |= MASK_TC_BIT(op_flags, FUA);
+ 	if (op == REQ_OP_DISCARD)
+ 		what |= BLK_TC_ACT(BLK_TC_DISCARD);
++	if (op == REQ_OP_FLUSH)
++		what |= BLK_TC_ACT(BLK_TC_FLUSH);
  
  	pid = tsk->pid;
  	if (act_log_check(bt, what, sector, pid))
-@@ -708,11 +710,11 @@ static void blk_add_trace_rq(struct request_queue *q, struct request *rq,
- 
- 	if (rq->cmd_type == REQ_TYPE_BLOCK_PC) {
- 		what |= BLK_TC_ACT(BLK_TC_PC);
--		__blk_add_trace(bt, 0, nr_bytes, rq->cmd_flags,
-+		__blk_add_trace(bt, 0, nr_bytes, rq->op, rq->cmd_flags,
- 				what, rq->errors, rq->cmd_len, rq->cmd);
- 	} else  {
- 		what |= BLK_TC_ACT(BLK_TC_FS);
--		__blk_add_trace(bt, blk_rq_pos(rq), nr_bytes,
-+		__blk_add_trace(bt, blk_rq_pos(rq), nr_bytes, rq->op,
- 				rq->cmd_flags, what, rq->errors, 0, NULL);
- 	}
- }
-@@ -770,7 +772,7 @@ static void blk_add_trace_bio(struct request_queue *q, struct bio *bio,
- 		return;
- 
- 	__blk_add_trace(bt, bio->bi_iter.bi_sector, bio->bi_iter.bi_size,
--			bio->bi_rw, what, error, 0, NULL);
-+			bio->bi_op, bio->bi_rw, what, error, 0, NULL);
- }
- 
- static void blk_add_trace_bio_bounce(void *ignore,
-@@ -818,7 +820,8 @@ static void blk_add_trace_getrq(void *ignore,
- 		struct blk_trace *bt = q->blk_trace;
- 
- 		if (bt)
--			__blk_add_trace(bt, 0, 0, rw, BLK_TA_GETRQ, 0, 0, NULL);
-+			__blk_add_trace(bt, 0, 0, rw, 0, BLK_TA_GETRQ, 0, 0,
-+					NULL);
- 	}
- }
- 
-@@ -833,7 +836,7 @@ static void blk_add_trace_sleeprq(void *ignore,
- 		struct blk_trace *bt = q->blk_trace;
- 
- 		if (bt)
--			__blk_add_trace(bt, 0, 0, rw, BLK_TA_SLEEPRQ,
-+			__blk_add_trace(bt, 0, 0, rw, 0, BLK_TA_SLEEPRQ,
- 					0, 0, NULL);
- 	}
- }
-@@ -843,7 +846,7 @@ static void blk_add_trace_plug(void *ignore, struct request_queue *q)
- 	struct blk_trace *bt = q->blk_trace;
- 
- 	if (bt)
--		__blk_add_trace(bt, 0, 0, 0, BLK_TA_PLUG, 0, 0, NULL);
-+		__blk_add_trace(bt, 0, 0, 0, 0, BLK_TA_PLUG, 0, 0, NULL);
- }
- 
- static void blk_add_trace_unplug(void *ignore, struct request_queue *q,
-@@ -860,7 +863,7 @@ static void blk_add_trace_unplug(void *ignore, struct request_queue *q,
- 		else
- 			what = BLK_TA_UNPLUG_TIMER;
- 
--		__blk_add_trace(bt, 0, 0, 0, what, 0, sizeof(rpdu), &rpdu);
-+		__blk_add_trace(bt, 0, 0, 0, 0, what, 0, sizeof(rpdu), &rpdu);
- 	}
- }
- 
-@@ -874,8 +877,9 @@ static void blk_add_trace_split(void *ignore,
- 		__be64 rpdu = cpu_to_be64(pdu);
- 
- 		__blk_add_trace(bt, bio->bi_iter.bi_sector,
--				bio->bi_iter.bi_size, bio->bi_rw, BLK_TA_SPLIT,
--				bio->bi_error, sizeof(rpdu), &rpdu);
-+				bio->bi_iter.bi_size, bio->bi_op, bio->bi_rw,
-+				BLK_TA_SPLIT, bio->bi_error, sizeof(rpdu),
-+				&rpdu);
- 	}
- }
- 
-@@ -907,7 +911,7 @@ static void blk_add_trace_bio_remap(void *ignore,
- 	r.sector_from = cpu_to_be64(from);
- 
- 	__blk_add_trace(bt, bio->bi_iter.bi_sector, bio->bi_iter.bi_size,
--			bio->bi_rw, BLK_TA_REMAP, bio->bi_error,
-+			bio->bi_op, bio->bi_rw, BLK_TA_REMAP, bio->bi_error,
- 			sizeof(r), &r);
- }
- 
-@@ -940,7 +944,7 @@ static void blk_add_trace_rq_remap(void *ignore,
- 	r.sector_from = cpu_to_be64(from);
- 
- 	__blk_add_trace(bt, blk_rq_pos(rq), blk_rq_bytes(rq),
--			rq_data_dir(rq), BLK_TA_REMAP, !!rq->errors,
-+			rq_data_dir(rq), 0, BLK_TA_REMAP, !!rq->errors,
- 			sizeof(r), &r);
- }
- 
-@@ -965,10 +969,10 @@ void blk_add_driver_data(struct request_queue *q,
- 		return;
- 
- 	if (rq->cmd_type == REQ_TYPE_BLOCK_PC)
--		__blk_add_trace(bt, 0, blk_rq_bytes(rq), 0,
-+		__blk_add_trace(bt, 0, blk_rq_bytes(rq), 0, 0,
- 				BLK_TA_DRV_DATA, rq->errors, len, data);
- 	else
--		__blk_add_trace(bt, blk_rq_pos(rq), blk_rq_bytes(rq), 0,
-+		__blk_add_trace(bt, blk_rq_pos(rq), blk_rq_bytes(rq), 0, 0,
- 				BLK_TA_DRV_DATA, rq->errors, len, data);
- }
- EXPORT_SYMBOL_GPL(blk_add_driver_data);
-@@ -1767,16 +1771,16 @@ void blk_dump_cmd(char *buf, struct request *rq)
- 	}
- }
- 
--void blk_fill_rwbs(char *rwbs, u32 rw, int bytes)
-+void blk_fill_rwbs(char *rwbs, int op, u32 rw, int bytes)
+@@ -1775,7 +1777,8 @@ void blk_fill_rwbs(char *rwbs, int op, u32 rw, int bytes)
  {
  	int i = 0;
  
- 	if (rw & REQ_FLUSH)
+-	if (rw & REQ_FLUSH)
++	if (rw & REQ_FLUSH ||
++	    op == REQ_OP_FLUSH)
  		rwbs[i++] = 'F';
  
--	if (rw & WRITE)
-+	if (op == REQ_OP_WRITE)
- 		rwbs[i++] = 'W';
--	else if (rw & REQ_DISCARD)
-+	else if (op == REQ_OP_DISCARD)
- 		rwbs[i++] = 'D';
- 	else if (bytes)
- 		rwbs[i++] = 'R';
+ 	if (op == REQ_OP_WRITE)
 -- 
 2.7.2
