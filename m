@@ -1,23 +1,16 @@
-Received: from muru.com ([72.249.23.125])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqSHt-0005mm-8K
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 21:25:26 +0000
-Date: Wed, 13 Apr 2016 14:25:00 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
- javier@dowhile0.org, fcooper@ti.com, nsekhar@ti.com,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-Message-ID: <20160413212500.GD5995@atomide.com>
-References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
+Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqSIF-0006wJ-DI
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 21:25:48 +0000
+Received: by mail-lf0-x22e.google.com with SMTP id j11so86588701lfb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2016 14:25:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1460023715-19332-1-git-send-email-rogerq@ti.com>
+Date: Wed, 13 Apr 2016 18:25:23 -0300
+Message-ID: <CAEVGjpo0J7nsoSX7LHqypUH=83unohxk5QTyP=dQevmZOLMq_w@mail.gmail.com>
+Subject: Bit flip detection after boot
+From: Raphael Pereira <raphael@rmi.inf.br>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [160407 03:10]:
-> Hi,
-> 
-> As this series has cross dependency between omap and mtd subsystems,
-> I'll set up a immutable branch which omap-soc and l2-mtd must
-> merge in together to avoid any conflicts/breakage during integration.
-> 
-> Brian has acked all mtd patches. Tony needs to give his Ack for the
-> gpmc driver part and then I can provide the immutable branch.
+Hi,
 
-Looks good to me, please feel free to add:
+I have a custom board with a GPMI interface (Freescale i.MX233) with
+kernel 4.1.18 using Micron MT29F4G08ABADAWP (nand: 512 MiB, SLC, erase
+size: 128 KiB, page size: 2048, OOB size: 64).
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+When I boot, the flash gets recognized and works flawless. I can
+ubiformat, ubiattach, mount, copy a lot of files, umount, remount,
+check and test in whatever way I need. No problem arrises.
+The problem is that when I shut the system down (turn it off) and boot
+again, all used blocks are marked as badblocks.
+
+I have used another flash (Toshiba with w/ erase size: 256KiB) and it
+works perfectly, with no problem at all.
+
+Trying to find out what might be the problem, I found BBT DTS option,
+so I enabled it and, instead of marking all blocks as bad, I end up
+with UBI detecting bit-flips on all sectors, but correctable flips, so
+I can use the flash normally (although it takes a lot of time to boot
+because of the many messages "ubi0: fixable bit-flip detected at PEB
+XXX".
+
+I have changed the chip a lot of times and have checked my hardware
+and I am quite sure it is not a hardware problem. I think that some
+structure detection of the flash is wrong in the kernel for this
+particular case (i.MX233 BCH + MT29F4G08ABADAWP).
+
+Can someone guide me in debugging this problem?
+
+Best Regards,
+
+--
+Raphael Derosso Pereira
+raphael@rmi.inf.br
++55-41-8877-1762
