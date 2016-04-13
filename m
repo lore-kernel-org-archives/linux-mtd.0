@@ -1,27 +1,18 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqMqO-0003eo-0n
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 15:36:42 +0000
-Message-ID: <570E608C.1030901@denx.de>
-Date: Wed, 13 Apr 2016 17:06:52 +0200
-From: Marek Vasut <marex@denx.de>
-MIME-Version: 1.0
-To: Vignesh R <vigneshr@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-References: <1452486886-8049-1-git-send-email-marex@denx.de>
- <1452486886-8049-2-git-send-email-marex@denx.de> <57053F81.70204@ti.com>
- <570563D3.9080704@denx.de> <5705E858.3050700@ti.com>
-In-Reply-To: <5705E858.3050700@ti.com>
-Content-Type: multipart/mixed; boundary="------------090601060807080702050507"
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: linux-arm-kernel@lists.infradead.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v6 04/50] mtd: nand: atmel: use mtd_ooblayout_xxx() helpers
+ where appropriate
+Date: Wed, 13 Apr 2016 17:51:31 +0200
+Message-Id: <1460562691-30882-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,470 +22,151 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------090601060807080702050507
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+The mtd_ooblayout_xxx() helper functions have been added to avoid direct
+accesses to the ecclayout field, and thus ease for future reworks.
+Use these helpers in all places where the oobfree[] and eccpos[] arrays
+where directly accessed.
 
-On 04/07/2016 06:55 AM, Vignesh R wrote:
-> 
-> 
-> On 04/07/2016 01:00 AM, Marek Vasut wrote:
->> On 04/06/2016 06:55 PM, R, Vignesh wrote:
->>> Hi Marek,
->>
->> Hi!
->>
->>> I encountered a issue with this driver while testing.
->>
->> Try with the attached patches, I am planning to use them for V11
->> submission. I think you're hitting the problem with missing buslock.
->>
-> 
-> Thanks for the patches.
-> But I am pretty sure that's not the problem at my end, because I have
-> only one flash device on QSPI bus.
-> 
-> The problem is cqspi_switch_cs() is called only once ie when JEDEC ID is
-> being read(during autodetect of chip), but at that instance,
-> nor->page_size and nor->mtd.erasesize are not yet initialized (They are
-> initialized only after JEDEC ID is looked up in the table and page_size
-> and erasesize are known).
-> Therefore if nor->page_size is printed during cqspi_switch_cs() then its
-> zero. But nor->page_size reports 256 when printed in cqspi_flash_setup()
-> after spi_nor_scan(). Therefore CQSPI_REG_SIZE register has to be
-> configured only after spi_nor struct is fully populated (i.e after
-> spi_nor_scan() has recognized the slave after JEDEC ID read).
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/atmel_nand.c | 50 +++++++++++++++++++++++++++----------------
+ 1 file changed, 31 insertions(+), 19 deletions(-)
 
-Got it and I have a patch for this. Nice find, thanks! It gave me 60%
-read performance boost on my machine :-)
-
-I am now caching the page_size, erasesize, addr_width values, so I can
-avoid reconfiguring the controller if there is no need for it, but
-reconfigure it if there is a need. The patch is attached, but it's quite
-big, so I also pushed a git branch with this driver for your convenience
-(based on linux-next, expect rebases):
-
-https://git.kernel.org/cgit/linux/kernel/git/marex/linux-2.6.git/log/?h=next/cadence-qspi
-
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 5e716f2..b132c8f 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -833,13 +833,16 @@ static void pmecc_correct_data(struct mtd_info *mtd, uint8_t *buf, uint8_t *ecc,
+ 			dev_dbg(host->dev, "Bit flip in data area, byte_pos: %d, bit_pos: %d, 0x%02x -> 0x%02x\n",
+ 				pos, bit_pos, err_byte, *(buf + byte_pos));
+ 		} else {
++			struct mtd_oob_region oobregion;
++
+ 			/* Bit flip in OOB area */
+ 			tmp = sector_num * nand_chip->ecc.bytes
+ 					+ (byte_pos - sector_size);
+ 			err_byte = ecc[tmp];
+ 			ecc[tmp] ^= (1 << bit_pos);
+ 
+-			pos = tmp + nand_chip->ecc.layout->eccpos[0];
++			mtd_ooblayout_ecc(mtd, 0, &oobregion);
++			pos = tmp + oobregion.offset;
+ 			dev_dbg(host->dev, "Bit flip in OOB, oob_byte_pos: %d, bit_pos: %d, 0x%02x -> 0x%02x\n",
+ 				pos, bit_pos, err_byte, ecc[tmp]);
+ 		}
+@@ -931,7 +934,6 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
+ 	struct atmel_nand_host *host = nand_get_controller_data(chip);
+ 	int eccsize = chip->ecc.size * chip->ecc.steps;
+ 	uint8_t *oob = chip->oob_poi;
+-	uint32_t *eccpos = chip->ecc.layout->eccpos;
+ 	uint32_t stat;
+ 	unsigned long end_time;
+ 	int bitflips = 0;
+@@ -953,7 +955,11 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
+ 
+ 	stat = pmecc_readl_relaxed(host->ecc, ISR);
+ 	if (stat != 0) {
+-		bitflips = pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]);
++		struct mtd_oob_region oobregion;
++
++		mtd_ooblayout_ecc(mtd, 0, &oobregion);
++		bitflips = pmecc_correction(mtd, stat, buf,
++					    &oob[oobregion.offset]);
+ 		if (bitflips < 0)
+ 			/* uncorrectable errors */
+ 			return 0;
+@@ -967,8 +973,8 @@ static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
+ 		int page)
+ {
+ 	struct atmel_nand_host *host = nand_get_controller_data(chip);
+-	uint32_t *eccpos = chip->ecc.layout->eccpos;
+-	int i, j;
++	struct mtd_oob_region oobregion = { };
++	int i, j, section = 0;
+ 	unsigned long end_time;
+ 
+ 	if (!host->nfc || !host->nfc->write_by_sram) {
+@@ -987,11 +993,14 @@ static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
+ 
+ 	for (i = 0; i < chip->ecc.steps; i++) {
+ 		for (j = 0; j < chip->ecc.bytes; j++) {
+-			int pos;
++			if (!oobregion.length)
++				mtd_ooblayout_ecc(mtd, section, &oobregion);
+ 
+-			pos = i * chip->ecc.bytes + j;
+-			chip->oob_poi[eccpos[pos]] =
++			chip->oob_poi[oobregion.offset] =
+ 				pmecc_readb_ecc_relaxed(host->ecc, i, j);
++			oobregion.length--;
++			oobregion.offset++;
++			section++;
+ 		}
+ 	}
+ 	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
+@@ -1005,6 +1014,7 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
+ 	struct atmel_nand_host *host = nand_get_controller_data(nand_chip);
+ 	uint32_t val = 0;
+ 	struct nand_ecclayout *ecc_layout;
++	struct mtd_oob_region oobregion;
+ 
+ 	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
+ 	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
+@@ -1056,9 +1066,10 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
+ 
+ 	ecc_layout = nand_chip->ecc.layout;
+ 	pmecc_writel(host->ecc, SAREA, mtd->oobsize - 1);
+-	pmecc_writel(host->ecc, SADDR, ecc_layout->eccpos[0]);
++	mtd_ooblayout_ecc(mtd, 0, &oobregion);
++	pmecc_writel(host->ecc, SADDR, oobregion.offset);
+ 	pmecc_writel(host->ecc, EADDR,
+-			ecc_layout->eccpos[ecc_layout->eccbytes - 1]);
++		     oobregion.offset + ecc_layout->eccbytes - 1);
+ 	/* See datasheet about PMECC Clock Control Register */
+ 	pmecc_writel(host->ecc, CLK, 2);
+ 	pmecc_writel(host->ecc, IDR, 0xff);
+@@ -1359,12 +1370,12 @@ static int atmel_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ {
+ 	int eccsize = chip->ecc.size;
+ 	int eccbytes = chip->ecc.bytes;
+-	uint32_t *eccpos = chip->ecc.layout->eccpos;
+ 	uint8_t *p = buf;
+ 	uint8_t *oob = chip->oob_poi;
+ 	uint8_t *ecc_pos;
+ 	int stat;
+ 	unsigned int max_bitflips = 0;
++	struct mtd_oob_region oobregion = {};
+ 
+ 	/*
+ 	 * Errata: ALE is incorrectly wired up to the ECC controller
+@@ -1382,19 +1393,20 @@ static int atmel_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	chip->read_buf(mtd, p, eccsize);
+ 
+ 	/* move to ECC position if needed */
+-	if (eccpos[0] != 0) {
+-		/* This only works on large pages
+-		 * because the ECC controller waits for
+-		 * NAND_CMD_RNDOUTSTART after the
+-		 * NAND_CMD_RNDOUT.
+-		 * anyway, for small pages, the eccpos[0] == 0
++	mtd_ooblayout_ecc(mtd, 0, &oobregion);
++	if (oobregion.offset != 0) {
++		/*
++		 * This only works on large pages because the ECC controller
++		 * waits for NAND_CMD_RNDOUTSTART after the NAND_CMD_RNDOUT.
++		 * Anyway, for small pages, the first ECC byte is at offset
++		 * 0 in the OOB area.
+ 		 */
+ 		chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
+-				mtd->writesize + eccpos[0], -1);
++			      mtd->writesize + oobregion.offset, -1);
+ 	}
+ 
+ 	/* the ECC controller needs to read the ECC just after the data */
+-	ecc_pos = oob + eccpos[0];
++	ecc_pos = oob + oobregion.offset;
+ 	chip->read_buf(mtd, ecc_pos, eccbytes);
+ 
+ 	/* check if there's an error */
 -- 
-Best regards,
-Marek Vasut
-
---------------090601060807080702050507
-Content-Type: text/x-patch;
- name="qspi.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="qspi.patch"
-
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index 7e61fba..331e7d1 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -66,6 +66,9 @@ struct cqspi_st {
- 	struct mutex		bus_mutex;
- 
- 	int			current_cs;
-+	int			current_page_size;
-+	int			current_erase_size;
-+	int			current_addr_width;
- 	unsigned long		master_ref_clk_hz;
- 	bool			is_decoded_cs;
- 	u32			fifo_depth;
-@@ -654,109 +657,60 @@ failwr:
- 	return ret;
- }
- 
--static int cqspi_set_protocol(struct spi_nor *nor, enum spi_nor_protocol proto)
-+static void cqspi_chipselect(struct spi_nor *nor)
- {
- 	struct cqspi_flash_pdata *f_pdata = nor->priv;
-+	struct cqspi_st *cqspi = f_pdata->cqspi;
-+	void __iomem *reg_base = cqspi->iobase;
-+	unsigned int chip_select = f_pdata->cs;
-+	unsigned int reg;
- 
--	switch (proto) {
--	case SNOR_PROTO_1_1_1:
--	case SNOR_PROTO_1_1_2:
--	case SNOR_PROTO_1_1_4:
--	case SNOR_PROTO_1_2_2:
--	case SNOR_PROTO_1_4_4:
--		f_pdata->inst_width = CQSPI_INST_TYPE_SINGLE;
--		break;
--	case SNOR_PROTO_2_2_2:
--		f_pdata->inst_width = CQSPI_INST_TYPE_DUAL;
--		break;
--	case SNOR_PROTO_4_4_4:
--		f_pdata->inst_width = CQSPI_INST_TYPE_QUAD;
--		break;
--	default:
--		return -EINVAL;
--	}
-+	reg = readl(reg_base + CQSPI_REG_CONFIG);
-+	if (cqspi->is_decoded_cs) {
-+		reg |= CQSPI_REG_CONFIG_DECODE_MASK;
-+	} else {
-+		reg &= ~CQSPI_REG_CONFIG_DECODE_MASK;
- 
--	switch (proto) {
--	case SNOR_PROTO_1_1_1:
--	case SNOR_PROTO_1_1_2:
--	case SNOR_PROTO_1_1_4:
--		f_pdata->addr_width = CQSPI_INST_TYPE_SINGLE;
--		break;
--	case SNOR_PROTO_1_2_2:
--	case SNOR_PROTO_2_2_2:
--		f_pdata->addr_width = CQSPI_INST_TYPE_DUAL;
--		break;
--	case SNOR_PROTO_1_4_4:
--	case SNOR_PROTO_4_4_4:
--		f_pdata->addr_width = CQSPI_INST_TYPE_QUAD;
--		break;
--	default:
--		return -EINVAL;
-+		/* Convert CS if without decoder.
-+		 * CS0 to 4b'1110
-+		 * CS1 to 4b'1101
-+		 * CS2 to 4b'1011
-+		 * CS3 to 4b'0111
-+		 */
-+		chip_select = 0xF & ~(1 << chip_select);
- 	}
- 
--	return 0;
--}
--
--static void cqspi_write(struct spi_nor *nor, loff_t to,
--			size_t len, size_t *retlen, const u_char *buf)
--{
--	int ret;
--
--	ret = cqspi_set_protocol(nor, nor->write_proto);
--	if (ret)
--		return;
--
--	ret = cqspi_indirect_write_setup(nor, to);
--	if (ret)
--		return;
--
--	ret = cqspi_indirect_write_execute(nor, buf, len);
--	if (ret)
--		return;
--
--	*retlen += len;
--}
--
--static int cqspi_read(struct spi_nor *nor, loff_t from,
--		      size_t len, size_t *retlen, u_char *buf)
--{
--	int ret;
--
--	ret = cqspi_set_protocol(nor, nor->read_proto);
--	if (ret)
--		return ret;
--
--	ret = cqspi_indirect_read_setup(nor, from);
--	if (ret)
--		return ret;
--
--	ret = cqspi_indirect_read_execute(nor, buf, len);
--	if (ret)
--		return ret;
--
--	*retlen += len;
--	return ret;
-+	reg &= ~(CQSPI_REG_CONFIG_CHIPSELECT_MASK
-+		 << CQSPI_REG_CONFIG_CHIPSELECT_LSB);
-+	reg |= (chip_select & CQSPI_REG_CONFIG_CHIPSELECT_MASK)
-+	    << CQSPI_REG_CONFIG_CHIPSELECT_LSB;
-+	writel(reg, reg_base + CQSPI_REG_CONFIG);
- }
- 
--static int cqspi_erase(struct spi_nor *nor, loff_t offs)
-+static void cqspi_configure_cs_and_sizes(struct spi_nor *nor)
- {
--	int ret;
--
--	ret = cqspi_set_protocol(nor, nor->erase_proto);
--	if (ret)
--		return ret;
-+	struct cqspi_flash_pdata *f_pdata = nor->priv;
-+	struct cqspi_st *cqspi = f_pdata->cqspi;
-+	void __iomem *iobase = cqspi->iobase;
-+	unsigned int reg;
- 
--	/* Send write enable, then erase commands. */
--	ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
--	if (ret)
--		return ret;
-+	/* configure page size and block size. */
-+	reg = readl(iobase + CQSPI_REG_SIZE);
-+	reg &= ~(CQSPI_REG_SIZE_PAGE_MASK << CQSPI_REG_SIZE_PAGE_LSB);
-+	reg &= ~(CQSPI_REG_SIZE_BLOCK_MASK << CQSPI_REG_SIZE_BLOCK_LSB);
-+	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
-+	reg |= (nor->page_size << CQSPI_REG_SIZE_PAGE_LSB);
-+	reg |= (ilog2(nor->mtd.erasesize) << CQSPI_REG_SIZE_BLOCK_LSB);
-+	reg |= (nor->addr_width - 1);
-+	writel(reg, iobase + CQSPI_REG_SIZE);
- 
--	/* Set up command buffer. */
--	ret = cqspi_command_write_addr(nor, nor->erase_opcode, offs);
--	if (ret)
--		return ret;
-+	/* configure the chip select */
-+	cqspi_chipselect(nor);
- 
--	return 0;
-+	/* Store the new configuration of the controller */
-+	cqspi->current_page_size = nor->page_size;
-+	cqspi->current_erase_size = nor->mtd.erasesize;
-+	cqspi->current_addr_width = nor->addr_width;
- }
- 
- static unsigned int calculate_ticks_for_ns(const unsigned int ref_clk_hz,
-@@ -854,36 +808,6 @@ static void cqspi_readdata_capture(struct cqspi_st *cqspi,
- 	writel(reg, reg_base + CQSPI_REG_READCAPTURE);
- }
- 
--static void cqspi_chipselect(struct spi_nor *nor)
--{
--	struct cqspi_flash_pdata *f_pdata = nor->priv;
--	struct cqspi_st *cqspi = f_pdata->cqspi;
--	void __iomem *reg_base = cqspi->iobase;
--	unsigned int chip_select = f_pdata->cs;
--	unsigned int reg;
--
--	reg = readl(reg_base + CQSPI_REG_CONFIG);
--	if (cqspi->is_decoded_cs) {
--		reg |= CQSPI_REG_CONFIG_DECODE_MASK;
--	} else {
--		reg &= ~CQSPI_REG_CONFIG_DECODE_MASK;
--
--		/* Convert CS if without decoder.
--		 * CS0 to 4b'1110
--		 * CS1 to 4b'1101
--		 * CS2 to 4b'1011
--		 * CS3 to 4b'0111
--		 */
--		chip_select = 0xF & ~(1 << chip_select);
--	}
--
--	reg &= ~(CQSPI_REG_CONFIG_CHIPSELECT_MASK
--		 << CQSPI_REG_CONFIG_CHIPSELECT_LSB);
--	reg |= (chip_select & CQSPI_REG_CONFIG_CHIPSELECT_MASK)
--	    << CQSPI_REG_CONFIG_CHIPSELECT_LSB;
--	writel(reg, reg_base + CQSPI_REG_CONFIG);
--}
--
- static void cqspi_controller_enable(struct cqspi_st *cqspi, bool enable)
- {
- 	void __iomem *reg_base = cqspi->iobase;
-@@ -899,34 +823,18 @@ static void cqspi_controller_enable(struct cqspi_st *cqspi, bool enable)
- 	writel(reg, reg_base + CQSPI_REG_CONFIG);
- }
- 
--static void cqspi_switch_cs(struct spi_nor *nor)
--{
--	struct cqspi_flash_pdata *f_pdata = nor->priv;
--	struct cqspi_st *cqspi = f_pdata->cqspi;
--	void __iomem *iobase = cqspi->iobase;
--	unsigned int reg;
--
--	/* configure page size and block size. */
--	reg = readl(iobase + CQSPI_REG_SIZE);
--	reg &= ~(CQSPI_REG_SIZE_PAGE_MASK << CQSPI_REG_SIZE_PAGE_LSB);
--	reg &= ~(CQSPI_REG_SIZE_BLOCK_MASK << CQSPI_REG_SIZE_BLOCK_LSB);
--	reg &= ~CQSPI_REG_SIZE_ADDRESS_MASK;
--	reg |= (nor->page_size << CQSPI_REG_SIZE_PAGE_LSB);
--	reg |= (ilog2(nor->mtd.erasesize) << CQSPI_REG_SIZE_BLOCK_LSB);
--	reg |= (nor->addr_width - 1);
--	writel(reg, iobase + CQSPI_REG_SIZE);
--
--	/* configure the chip select */
--	cqspi_chipselect(nor);
--}
--
--static int cqspi_prep_unlocked(struct spi_nor *nor, enum spi_nor_ops ops)
-+static void cqspi_configure(struct spi_nor *nor)
- {
- 	struct cqspi_flash_pdata *f_pdata = nor->priv;
- 	struct cqspi_st *cqspi = f_pdata->cqspi;
- 	const unsigned int sclk = f_pdata->clk_rate;
--	const int switch_cs = (cqspi->current_cs != f_pdata->cs);
--	const int switch_ck = (cqspi->sclk != sclk);
-+	int switch_cs = (cqspi->current_cs != f_pdata->cs);
-+	int switch_ck = (cqspi->sclk != sclk);
-+
-+	if ((cqspi->current_page_size != nor->page_size) ||
-+	    (cqspi->current_erase_size != nor->mtd.erasesize) ||
-+	    (cqspi->current_addr_width != nor->addr_width))
-+		switch_cs = 1;
- 
- 	if (switch_cs || switch_ck)
- 		cqspi_controller_enable(cqspi, 0);
-@@ -934,7 +842,7 @@ static int cqspi_prep_unlocked(struct spi_nor *nor, enum spi_nor_ops ops)
- 	/* Switch chip select. */
- 	if (switch_cs) {
- 		cqspi->current_cs = f_pdata->cs;
--		cqspi_switch_cs(nor);
-+		cqspi_configure_cs_and_sizes(nor);
- 	}
- 
- 	/* Setup baudrate divisor and delays */
-@@ -947,6 +855,111 @@ static int cqspi_prep_unlocked(struct spi_nor *nor, enum spi_nor_ops ops)
- 
- 	if (switch_cs || switch_ck)
- 		cqspi_controller_enable(cqspi, 1);
-+}
-+
-+static int cqspi_set_protocol(struct spi_nor *nor, enum spi_nor_protocol proto)
-+{
-+	struct cqspi_flash_pdata *f_pdata = nor->priv;
-+
-+	switch (proto) {
-+	case SNOR_PROTO_1_1_1:
-+	case SNOR_PROTO_1_1_2:
-+	case SNOR_PROTO_1_1_4:
-+	case SNOR_PROTO_1_2_2:
-+	case SNOR_PROTO_1_4_4:
-+		f_pdata->inst_width = CQSPI_INST_TYPE_SINGLE;
-+		break;
-+	case SNOR_PROTO_2_2_2:
-+		f_pdata->inst_width = CQSPI_INST_TYPE_DUAL;
-+		break;
-+	case SNOR_PROTO_4_4_4:
-+		f_pdata->inst_width = CQSPI_INST_TYPE_QUAD;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (proto) {
-+	case SNOR_PROTO_1_1_1:
-+	case SNOR_PROTO_1_1_2:
-+	case SNOR_PROTO_1_1_4:
-+		f_pdata->addr_width = CQSPI_INST_TYPE_SINGLE;
-+		break;
-+	case SNOR_PROTO_1_2_2:
-+	case SNOR_PROTO_2_2_2:
-+		f_pdata->addr_width = CQSPI_INST_TYPE_DUAL;
-+		break;
-+	case SNOR_PROTO_1_4_4:
-+	case SNOR_PROTO_4_4_4:
-+		f_pdata->addr_width = CQSPI_INST_TYPE_QUAD;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	cqspi_configure(nor);
-+
-+	return 0;
-+}
-+
-+static void cqspi_write(struct spi_nor *nor, loff_t to,
-+			size_t len, size_t *retlen, const u_char *buf)
-+{
-+	int ret;
-+
-+	ret = cqspi_set_protocol(nor, nor->write_proto);
-+	if (ret)
-+		return;
-+
-+	ret = cqspi_indirect_write_setup(nor, to);
-+	if (ret)
-+		return;
-+
-+	ret = cqspi_indirect_write_execute(nor, buf, len);
-+	if (ret)
-+		return;
-+
-+	*retlen += len;
-+}
-+
-+static int cqspi_read(struct spi_nor *nor, loff_t from,
-+		      size_t len, size_t *retlen, u_char *buf)
-+{
-+	int ret;
-+
-+	ret = cqspi_set_protocol(nor, nor->read_proto);
-+	if (ret)
-+		return ret;
-+
-+	ret = cqspi_indirect_read_setup(nor, from);
-+	if (ret)
-+		return ret;
-+
-+	ret = cqspi_indirect_read_execute(nor, buf, len);
-+	if (ret)
-+		return ret;
-+
-+	*retlen += len;
-+	return ret;
-+}
-+
-+static int cqspi_erase(struct spi_nor *nor, loff_t offs)
-+{
-+	int ret;
-+
-+	ret = cqspi_set_protocol(nor, nor->erase_proto);
-+	if (ret)
-+		return ret;
-+
-+	/* Send write enable, then erase commands. */
-+	ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
-+	if (ret)
-+		return ret;
-+
-+	/* Set up command buffer. */
-+	ret = cqspi_command_write_addr(nor, nor->erase_opcode, offs);
-+	if (ret)
-+		return ret;
- 
- 	return 0;
- }
-@@ -958,7 +971,7 @@ static int cqspi_prep(struct spi_nor *nor, enum spi_nor_ops ops)
- 
- 	mutex_lock(&cqspi->bus_mutex);
- 
--	return cqspi_prep_unlocked(nor, ops);
-+	return 0;
- }
- 
- static void cqspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
-@@ -974,13 +987,9 @@ static int cqspi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	int ret;
- 
- 	ret = cqspi_set_protocol(nor, nor->reg_proto);
--	if (ret)
--		goto exit;
--
--	cqspi_prep_unlocked(nor, SPI_NOR_OPS_READ);
-+	if (!ret)
-+		ret = cqspi_command_read(nor, &opcode, 1, buf, len);
- 
--	ret = cqspi_command_read(nor, &opcode, 1, buf, len);
--exit:
- 	return ret;
- }
- 
-@@ -989,13 +998,9 @@ static int cqspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	int ret;
- 
- 	ret = cqspi_set_protocol(nor, nor->reg_proto);
--	if (ret)
--		goto exit;
--
--	cqspi_prep_unlocked(nor, SPI_NOR_OPS_WRITE);
-+	if (!ret)
-+		ret = cqspi_command_write(nor, opcode, buf, len);
- 
--	ret = cqspi_command_write(nor, opcode, buf, len);
--exit:
- 	return ret;
- }
- 
-
---------------090601060807080702050507--
+2.5.0
