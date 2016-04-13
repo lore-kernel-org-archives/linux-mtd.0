@@ -1,9 +1,9 @@
-Received: from mail-lf0-x235.google.com ([2a00:1450:4010:c07::235])
+Received: from mail-lf0-x234.google.com ([2a00:1450:4010:c07::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqJb9-0002QW-Jx
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 12:08:47 +0000
-Received: by mail-lf0-x235.google.com with SMTP id c126so66459048lfb.2
- for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2016 05:08:23 -0700 (PDT)
+ id 1aqJbD-0002XA-5s
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 12:08:49 +0000
+Received: by mail-lf0-x234.google.com with SMTP id j11so66342583lfb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2016 05:08:26 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
@@ -11,9 +11,9 @@ Cc: linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 4/9] mtd: nand: au1550nd: set ECC algorithm explicitly
-Date: Wed, 13 Apr 2016 14:06:57 +0200
-Message-Id: <1460549222-24198-5-git-send-email-zajec5@gmail.com>
+Subject: [PATCH 6/9] mtd: nand: cmx270: set ECC algorithm explicitly
+Date: Wed, 13 Apr 2016 14:06:59 +0200
+Message-Id: <1460549222-24198-7-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1460549222-24198-1-git-send-email-zajec5@gmail.com>
 References: <1460549222-24198-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
@@ -33,20 +33,20 @@ enum nand_ecc_algo).
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- drivers/mtd/nand/au1550nd.c | 1 +
+ drivers/mtd/nand/cmx270_nand.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/au1550nd.c
-index 341ea49..9bf6d99 100644
---- a/drivers/mtd/nand/au1550nd.c
-+++ b/drivers/mtd/nand/au1550nd.c
-@@ -459,6 +459,7 @@ static int au1550nd_probe(struct platform_device *pdev)
- 	/* 30 us command delay time */
- 	this->chip_delay = 30;
+diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
+index 6f97ebb..4913378 100644
+--- a/drivers/mtd/nand/cmx270_nand.c
++++ b/drivers/mtd/nand/cmx270_nand.c
+@@ -187,6 +187,7 @@ static int __init cmx270_init(void)
+ 	/* 15 us command delay time */
+ 	this->chip_delay = 20;
  	this->ecc.mode = NAND_ECC_SOFT;
 +	this->ecc.algo = NAND_ECC_HAMMING;
  
- 	if (pd->devwidth)
- 		this->options |= NAND_BUSWIDTH_16;
+ 	/* read/write functions */
+ 	this->read_byte = cmx270_read_byte;
 -- 
 1.8.4.5
