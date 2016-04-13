@@ -1,24 +1,16 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqFU8-0006Eq-EN
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 07:45:13 +0000
-Date: Wed, 13 Apr 2016 09:44:40 +0200
+ id 1aqFUm-0007YU-Q4
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 07:45:53 +0000
+Date: Wed, 13 Apr 2016 09:45:21 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Richard Weinberger
- <richard@nod.at>, "open list:MEMORY TECHNOLOGY..."
- <linux-mtd@lists.infradead.org>, Egor Martovetsky <egor@pasemi.com>, Olof
- Johansson <olof@lixom.net>, Joe Perches <joe@perches.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, "open
- list:LINUX FOR POWERPC PA SEMI PWRFICIENT" <linuxppc-dev@lists.ozlabs.org>,
- open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2] mtd: nand: pasemi: switch to pr_* functions
-Message-ID: <20160413094440.1b883491@bbrezillon>
-In-Reply-To: <CAHp75VcAbjTLPs128b1ojmWkosXBmYL5BUTbzw6aSYWN-ZRDBA@mail.gmail.com>
-References: <1460111589-18781-1-git-send-email-zajec5@gmail.com>
- <1460114003-19926-1-git-send-email-zajec5@gmail.com>
- <CAHp75VcAbjTLPs128b1ojmWkosXBmYL5BUTbzw6aSYWN-ZRDBA@mail.gmail.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/8] mtd: nand: set ECC algorithm explicitly
+Message-ID: <20160413094521.74b2427e@bbrezillon>
+In-Reply-To: <1460111031-8706-1-git-send-email-zajec5@gmail.com>
+References: <1460111031-8706-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -31,66 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Rafal,
 
-On Sat, 9 Apr 2016 12:50:35 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+On Fri,  8 Apr 2016 12:23:43 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-> On Fri, Apr 8, 2016 at 2:13 PM, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com=
-> wrote:
-> > 1) Use pr_fmt to keep messages consistent
-> > 2) Don't warn if kzalloc fails as it dumps stack on its own
-> > 3) Use %pR format for displaying whole resource to avoid:
-> > warning: format =E2=80=98%08llx=E2=80=99 expects type =E2=80=98long lon=
-g unsigned int=E2=80=99, but argument 2 has type =E2=80=98resource_size_t=
-=E2=80=99
-> >
-> > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
-> > ---
-> >  drivers/mtd/nand/pasemi_nand.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_n=
-and.c
-> > index 63fcb8c..e8372b4 100644
-> > --- a/drivers/mtd/nand/pasemi_nand.c
-> > +++ b/drivers/mtd/nand/pasemi_nand.c
-> > @@ -22,6 +22,8 @@
-> >
-> >  #undef DEBUG
-> >
-> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> > +
-> >  #include <linux/slab.h>
-> >  #include <linux/module.h>
-> >  #include <linux/mtd/mtd.h>
-> > @@ -112,8 +114,6 @@ static int pasemi_nand_probe(struct platform_device=
- *ofdev)
-> >         /* Allocate memory for MTD device structure and private data */
-> >         chip =3D kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
-> >         if (!chip) {
-> > -               printk(KERN_WARNING
-> > -                      "Unable to allocate PASEMI NAND MTD device struc=
-ture\n");
-> >                 err =3D -ENOMEM;
-> >                 goto out;
-> >         }
-> > @@ -163,13 +163,12 @@ static int pasemi_nand_probe(struct platform_devi=
-ce *ofdev)
-> >         }
-> >
-> >         if (mtd_device_register(pasemi_nand_mtd, NULL, 0)) {
-> > -               printk(KERN_ERR "pasemi_nand: Unable to register MTD de=
-vice\n");
-> > +               pr_err("Unable to register MTD device\n");
+> As part of nand_ecc_modes_t cleaning process we introduced enum
+> nand_ecc_algo. Before we start using it (mostly in nand_core.c) we have
+> to modify all driver to set it properly.
 >=20
-> And why not to use dev_err(&ofdev->dev, =E2=80=A6); ?
+> This is the first patchset modifying existing drivers. All patches were
+> compile-tested. More patches will follow in the future, but I was hoping
+> to have this first series accepted meanwhile.
+>=20
+> This work is based on the nand/next branch.
 
-Yep, I think it's better to use dev_err().
+Whole series applied.
 
-Best Regards,
+Thanks,
 
 Boris
+
+>=20
+> Rafa=C5=82 Mi=C5=82ecki (8):
+>   mtd: nand: ams-delta: set ECC algorithm explicitly
+>   mtd: nand: gpio: set ECC algorithm explicitly
+>   mtd: nand: mxc: set ECC algorithm explicitly
+>   mtd: nand: nuc900: set ECC algorithm explicitly
+>   mtd: nand: orion: set ECC algorithm explicitly
+>   mtd: nand: pasemi: set ECC algorithm explicitly
+>   mtd: nand: plat: set ECC algorithm explicitly
+>   mtd: nand: socrates: set ECC algorithm explicitly
+>=20
+>  drivers/mtd/nand/ams-delta.c     | 1 +
+>  drivers/mtd/nand/gpio.c          | 1 +
+>  drivers/mtd/nand/mxc_nand.c      | 1 +
+>  drivers/mtd/nand/nuc900_nand.c   | 1 +
+>  drivers/mtd/nand/orion_nand.c    | 1 +
+>  drivers/mtd/nand/pasemi_nand.c   | 1 +
+>  drivers/mtd/nand/plat_nand.c     | 1 +
+>  drivers/mtd/nand/socrates_nand.c | 1 +
+>  8 files changed, 8 insertions(+)
+>=20
+
+
 
 --=20
 Boris Brezillon, Free Electrons
