@@ -1,35 +1,27 @@
-Date: Wed, 13 Apr 2016 09:42:15 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqFU8-0006Eq-EN
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 07:45:13 +0000
+Date: Wed, 13 Apr 2016 09:44:40 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou
- Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Kamal Dasu <kdasu.kdev@gmail.com>, Han Xu
- <han.xu@nxp.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stefan Agner <stefan@agner.ch>, linux-omap@vger.kernel.org, Nicolas Ferre
- <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard
- <plagnioj@jcrosoft.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
- <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
- <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- bcm-kernel-feedback-list@broadcom.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Maxime
- Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Zhou Wang <wangzhou1@hisilicon.com>, Alex
- Smith <alex.smith@imgtec.com>, Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: Re: [PATCH 04/12] mtd: nand: brcm: rely on generic DT parsing done
- in nand_scan_ident()
-Message-ID: <20160413094215.5f317588@bbrezillon>
-In-Reply-To: <20160412223111.GA21705@localhost>
-References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459515272-31011-5-git-send-email-boris.brezillon@free-electrons.com>
- <20160412223111.GA21705@localhost>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Richard Weinberger
+ <richard@nod.at>, "open list:MEMORY TECHNOLOGY..."
+ <linux-mtd@lists.infradead.org>, Egor Martovetsky <egor@pasemi.com>, Olof
+ Johansson <olof@lixom.net>, Joe Perches <joe@perches.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, "open
+ list:LINUX FOR POWERPC PA SEMI PWRFICIENT" <linuxppc-dev@lists.ozlabs.org>,
+ open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2] mtd: nand: pasemi: switch to pr_* functions
+Message-ID: <20160413094440.1b883491@bbrezillon>
+In-Reply-To: <CAHp75VcAbjTLPs128b1ojmWkosXBmYL5BUTbzw6aSYWN-ZRDBA@mail.gmail.com>
+References: <1460111589-18781-1-git-send-email-zajec5@gmail.com>
+ <1460114003-19926-1-git-send-email-zajec5@gmail.com>
+ <CAHp75VcAbjTLPs128b1ojmWkosXBmYL5BUTbzw6aSYWN-ZRDBA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,22 +31,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 12 Apr 2016 15:31:11 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+Hi,
 
-> On Fri, Apr 01, 2016 at 02:54:24PM +0200, Boris Brezillon wrote:
-> > The core now takes care of parsing generic DT properties in
-> > nand_scan_ident() when nand_set_flash_node() has been called.
-> > Rely on this initialization instead of calling of_get_nand_xxx()
-> > manually.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> 
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
+On Sat, 9 Apr 2016 12:50:35 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-Applied.
+> On Fri, Apr 8, 2016 at 2:13 PM, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com=
+> wrote:
+> > 1) Use pr_fmt to keep messages consistent
+> > 2) Don't warn if kzalloc fails as it dumps stack on its own
+> > 3) Use %pR format for displaying whole resource to avoid:
+> > warning: format =E2=80=98%08llx=E2=80=99 expects type =E2=80=98long lon=
+g unsigned int=E2=80=99, but argument 2 has type =E2=80=98resource_size_t=
+=E2=80=99
+> >
+> > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> > ---
+> >  drivers/mtd/nand/pasemi_nand.c | 9 ++++-----
+> >  1 file changed, 4 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_n=
+and.c
+> > index 63fcb8c..e8372b4 100644
+> > --- a/drivers/mtd/nand/pasemi_nand.c
+> > +++ b/drivers/mtd/nand/pasemi_nand.c
+> > @@ -22,6 +22,8 @@
+> >
+> >  #undef DEBUG
+> >
+> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> > +
+> >  #include <linux/slab.h>
+> >  #include <linux/module.h>
+> >  #include <linux/mtd/mtd.h>
+> > @@ -112,8 +114,6 @@ static int pasemi_nand_probe(struct platform_device=
+ *ofdev)
+> >         /* Allocate memory for MTD device structure and private data */
+> >         chip =3D kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
+> >         if (!chip) {
+> > -               printk(KERN_WARNING
+> > -                      "Unable to allocate PASEMI NAND MTD device struc=
+ture\n");
+> >                 err =3D -ENOMEM;
+> >                 goto out;
+> >         }
+> > @@ -163,13 +163,12 @@ static int pasemi_nand_probe(struct platform_devi=
+ce *ofdev)
+> >         }
+> >
+> >         if (mtd_device_register(pasemi_nand_mtd, NULL, 0)) {
+> > -               printk(KERN_ERR "pasemi_nand: Unable to register MTD de=
+vice\n");
+> > +               pr_err("Unable to register MTD device\n");
+>=20
+> And why not to use dev_err(&ofdev->dev, =E2=80=A6); ?
 
--- 
+Yep, I think it's better to use dev_err().
+
+Best Regards,
+
+Boris
+
+--=20
 Boris Brezillon, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
