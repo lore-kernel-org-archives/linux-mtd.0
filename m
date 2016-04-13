@@ -1,19 +1,20 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqOXg-0002I1-4e
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 17:25:29 +0000
-Date: Wed, 13 Apr 2016 19:25:06 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/9] mtd: nand: set ECC algorithm explicitly (part 2)
-Message-ID: <20160413192506.75b783bd@bbrezillon>
-In-Reply-To: <1460549222-24198-1-git-send-email-zajec5@gmail.com>
-References: <1460549222-24198-1-git-send-email-zajec5@gmail.com>
+Received: from eusmtp01.atmel.com ([212.144.249.243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqOXm-0002bH-S3
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2016 17:25:39 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: [PATCH RFC 5/8] mtd: m25p80: add support of dual and quad spi
+ protocols to all commands
+Date: Wed, 13 Apr 2016 19:23:37 +0200
+Message-ID: <530d9875af561ec04eb5f6b50dfe9d455629c6ac.1460567256.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <cover.1460567255.git.cyrille.pitchen@atmel.com>
+References: <cover.1460567255.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +24,310 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rafal,
+Before this patch, m25p80_read() supported few SPI protocols:
+- regular SPI 1-1-1
+- SPI Dual Output 1-1-2
+- SPI Quad Output 1-1-4
+On the other hand, all other m25p80_*() hooks only supported SPI 1-1-1.
 
-On Wed, 13 Apr 2016 14:06:53 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+However once their Quad mode enabled, Micron and Macronix spi-nor memories
+expect all commands to use the SPI 4-4-4 protocol.
 
-> This follow process of using enum nand_ecc_algo in order to clean
-> nand_ecc_modes_t.
->=20
-> All patches were compile-tested.
->=20
-> This work is based on the nand/next branch.
+Also, once their Dual mode enabled, Micron spi-nor memories expect all
+commands to use the SPI-2-2-2 protocol.
 
-I'll apply part 2 soon, but can you please provide a single patchset
-containing all the changes instead of splitting it in several series?
+So this patch adds support to all currently existing SPI protocols to
+cover as many protocols as possible.
 
-Thanks,
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+---
+ drivers/mtd/devices/m25p80.c | 200 +++++++++++++++++++++++++++++++++----------
+ 1 file changed, 155 insertions(+), 45 deletions(-)
 
-Boris
-
->=20
-> Rafa=C5=82 Mi=C5=82ecki (9):
->   mtd: nand: omap2: set ECC algorithm explicitly
->   mtd: nand: s3c2410: set ECC algorithm explicitly
->   mtd: nand: sh_flctl: set ECC algorithm explicitly
->   mtd: nand: au1550nd: set ECC algorithm explicitly
->   mtd: nand: mpc5121_nfc: set ECC algorithm explicitly
->   mtd: nand: cmx270: set ECC algorithm explicitly
->   mtd: nand: fsl_upm: set ECC algorithm explicitly
->   mtd: nand: fsl_ifc: set ECC algorithm explicitly
->   mtd: nand: fsl_elbc: set ECC algorithm explicitly
->=20
->  drivers/mtd/nand/au1550nd.c      | 1 +
->  drivers/mtd/nand/cmx270_nand.c   | 1 +
->  drivers/mtd/nand/fsl_elbc_nand.c | 1 +
->  drivers/mtd/nand/fsl_ifc_nand.c  | 1 +
->  drivers/mtd/nand/fsl_upm.c       | 1 +
->  drivers/mtd/nand/mpc5121_nfc.c   | 1 +
->  drivers/mtd/nand/omap2.c         | 1 +
->  drivers/mtd/nand/s3c2410.c       | 1 +
->  drivers/mtd/nand/sh_flctl.c      | 1 +
->  9 files changed, 9 insertions(+)
->=20
-
-
-
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 12112f7ae1a4..d4a3bc0e4c3f 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -27,22 +27,64 @@
+ #include <linux/spi/flash.h>
+ #include <linux/mtd/spi-nor.h>
+ 
+-#define	MAX_CMD_SIZE		6
++#define	MAX_CMD_SIZE		16
+ struct m25p {
+ 	struct spi_device	*spi;
+ 	struct spi_nor		spi_nor;
+ 	u8			command[MAX_CMD_SIZE];
+ };
+ 
++static inline int m25p80_proto2nbits(enum spi_nor_protocol proto,
++				     unsigned *code_nbits,
++				     unsigned *addr_nbits,
++				     unsigned *data_nbits)
++{
++	if (code_nbits)
++		*code_nbits = SNOR_PROTO_CODE_FROM_PROTO(proto);
++	if (addr_nbits)
++		*addr_nbits = SNOR_PROTO_ADDR_FROM_PROTO(proto);
++	if (data_nbits)
++		*data_nbits = SNOR_PROTO_DATA_FROM_PROTO(proto);
++
++	return 0;
++}
++
+ static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
+ {
+ 	struct m25p *flash = nor->priv;
+ 	struct spi_device *spi = flash->spi;
++	unsigned code_nbits, data_nbits;
++	struct spi_transfer xfers[2];
+ 	int ret;
+ 
+-	ret = spi_write_then_read(spi, &code, 1, val, len);
++	/* Check the total length of command op code and data. */
++	if (len + 1 > MAX_CMD_SIZE)
++		return -EINVAL;
++
++	/* Get transfer protocols (addr_nbits is not relevant here). */
++	ret = m25p80_proto2nbits(nor->reg_proto,
++				 &code_nbits, NULL, &data_nbits);
++	if (ret < 0)
++		return ret;
++
++	/* Set up transfers. */
++	memset(xfers, 0, sizeof(xfers));
++
++	flash->command[0] = code;
++	xfers[0].len = 1;
++	xfers[0].tx_buf = flash->command;
++	xfers[0].tx_nbits = code_nbits;
++
++	xfers[1].len = len;
++	xfers[1].rx_buf = &flash->command[1];
++	xfers[1].rx_nbits = data_nbits;
++
++	/* Process command. */
++	ret = spi_sync_transfer(spi, xfers, 2);
+ 	if (ret < 0)
+ 		dev_err(&spi->dev, "error %d reading %x\n", ret, code);
++	else
++		memcpy(val, &flash->command[1], len);
+ 
+ 	return ret;
+ }
+@@ -65,12 +107,42 @@ static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ {
+ 	struct m25p *flash = nor->priv;
+ 	struct spi_device *spi = flash->spi;
++	unsigned code_nbits, data_nbits, num_xfers = 1;
++	struct spi_transfer xfers[2];
++	int ret;
++
++	/* Check the total length of command op code and data. */
++	if (buf && (len + 1 > MAX_CMD_SIZE))
++		return -EINVAL;
++
++	/* Get transfer protocols (addr_nbits is not relevant here). */
++	ret = m25p80_proto2nbits(nor->reg_proto,
++				 &code_nbits, NULL, &data_nbits);
++	if (ret < 0)
++		return ret;
++
++	/* Set up transfer(s). */
++	memset(xfers, 0, sizeof(xfers));
+ 
+ 	flash->command[0] = opcode;
+-	if (buf)
++	xfers[0].len = 1;
++	xfers[0].tx_buf = flash->command;
++	xfers[0].tx_nbits = code_nbits;
++
++	if (buf) {
+ 		memcpy(&flash->command[1], buf, len);
++		if (data_nbits == code_nbits) {
++			xfers[0].len += len;
++		} else {
++			xfers[1].len = len;
++			xfers[1].tx_buf = &flash->command[1];
++			xfers[1].tx_nbits = data_nbits;
++			num_xfers++;
++		}
++	}
+ 
+-	return spi_write(spi, flash->command, len + 1);
++	/* Process command. */
++	return spi_sync_transfer(spi, xfers, num_xfers);
+ }
+ 
+ static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+@@ -78,43 +150,54 @@ static void m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+ {
+ 	struct m25p *flash = nor->priv;
+ 	struct spi_device *spi = flash->spi;
+-	struct spi_transfer t[2] = {};
++	unsigned code_nbits, addr_nbits, data_nbits, num_xfers = 1;
++	struct spi_transfer xfers[3];
+ 	struct spi_message m;
+-	int cmd_sz = m25p_cmdsz(nor);
+-
+-	spi_message_init(&m);
++	int ret, cmd_sz = m25p_cmdsz(nor);
+ 
+ 	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+ 		cmd_sz = 1;
+ 
+-	flash->command[0] = nor->program_opcode;
+-	m25p_addr2cmd(nor, to, flash->command);
++	/* Get transfer protocols. */
++	ret = m25p80_proto2nbits(nor->write_proto,
++				 &code_nbits, &addr_nbits, &data_nbits);
++	if (ret < 0) {
++		*retlen = 0;
++		return;
++	}
+ 
+-	t[0].tx_buf = flash->command;
+-	t[0].len = cmd_sz;
+-	spi_message_add_tail(&t[0], &m);
++	/* Set up transfers. */
++	memset(xfers, 0, sizeof(xfers));
++
++	flash->command[0] = nor->program_opcode;
++	xfers[0].len = 1;
++	xfers[0].tx_buf = flash->command;
++	xfers[0].tx_nbits = code_nbits;
++
++	if (cmd_sz > 1) {
++		m25p_addr2cmd(nor, to, flash->command);
++		if (addr_nbits == code_nbits) {
++			xfers[0].len += nor->addr_width;
++		} else {
++			xfers[1].len = nor->addr_width;
++			xfers[1].tx_buf = &flash->command[1];
++			xfers[1].tx_nbits = addr_nbits;
++			num_xfers++;
++		}
++	}
+ 
+-	t[1].tx_buf = buf;
+-	t[1].len = len;
+-	spi_message_add_tail(&t[1], &m);
++	xfers[num_xfers].len = len;
++	xfers[num_xfers].tx_buf = buf;
++	xfers[num_xfers].tx_nbits = data_nbits;
++	num_xfers++;
+ 
++	/* Process command. */
++	spi_message_init_with_transfers(&m, xfers, num_xfers);
+ 	spi_sync(spi, &m);
+ 
+ 	*retlen += m.actual_length - cmd_sz;
+ }
+ 
+-static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+-{
+-	switch (SNOR_PROTO_DATA_FROM_PROTO(nor->read_proto)) {
+-	case 2:
+-		return 2;
+-	case 4:
+-		return 4;
+-	default:
+-		return 0;
+-	}
+-}
+-
+ /*
+  * Read an address range from the nor chip.  The address range
+  * may be any size provided it is within the physical boundaries.
+@@ -124,13 +207,24 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ {
+ 	struct m25p *flash = nor->priv;
+ 	struct spi_device *spi = flash->spi;
+-	struct spi_transfer t[2];
+-	struct spi_message m;
++	unsigned code_nbits, addr_nbits, data_nbits, num_xfers = 1;
+ 	unsigned int dummy = nor->read_dummy;
++	struct spi_transfer xfers[3];
++	struct spi_message m;
++	int ret;
++
++	/* Get transfer protocols. */
++	ret = m25p80_proto2nbits(nor->read_proto,
++				 &code_nbits, &addr_nbits, &data_nbits);
++	if (ret < 0) {
++		*retlen = 0;
++		return ret;
++	}
+ 
+ 	/* convert the dummy cycles to the number of bytes */
+-	dummy /= 8;
++	dummy = (dummy * addr_nbits) / 8;
+ 
++	/* Use the SPI flash API if supported. */
+ 	if (spi_flash_read_supported(spi)) {
+ 		struct spi_flash_read_message msg;
+ 		int ret;
+@@ -143,31 +237,47 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 		msg.read_opcode = nor->read_opcode;
+ 		msg.addr_width = nor->addr_width;
+ 		msg.dummy_bytes = dummy;
+-		/* TODO: Support other combinations */
+-		msg.opcode_nbits = SPI_NBITS_SINGLE;
+-		msg.addr_nbits = SPI_NBITS_SINGLE;
+-		msg.data_nbits = m25p80_rx_nbits(nor);
++		msg.opcode_nbits = code_nbits;
++		msg.addr_nbits = addr_nbits;
++		msg.data_nbits = data_nbits;
+ 
+ 		ret = spi_flash_read(spi, &msg);
+ 		*retlen = msg.retlen;
+ 		return ret;
+ 	}
+ 
+-	spi_message_init(&m);
+-	memset(t, 0, (sizeof t));
++	/* Set up transfers. */
++	memset(xfers, 0, sizeof(xfers));
+ 
+ 	flash->command[0] = nor->read_opcode;
+-	m25p_addr2cmd(nor, from, flash->command);
++	xfers[0].len = 1;
++	xfers[0].tx_buf = flash->command;
++	xfers[0].tx_nbits = code_nbits;
+ 
+-	t[0].tx_buf = flash->command;
+-	t[0].len = m25p_cmdsz(nor) + dummy;
+-	spi_message_add_tail(&t[0], &m);
++	m25p_addr2cmd(nor, from, flash->command);
++	/*
++	 * Clear all dummy/mode cycle bits to avoid sending some manufacturer
++	 * specific pattern, which might make the memory enter its Continuous
++	 * Read mode by mistake.
++	 */
++	memset(flash->command + 1 + nor->addr_width, 0, dummy);
++
++	if (addr_nbits == code_nbits) {
++		xfers[0].len += nor->addr_width + dummy;
++	} else {
++		xfers[1].len = nor->addr_width + dummy;
++		xfers[1].tx_buf = &flash->command[1];
++		xfers[1].tx_nbits = addr_nbits;
++		num_xfers++;
++	}
+ 
+-	t[1].rx_buf = buf;
+-	t[1].rx_nbits = m25p80_rx_nbits(nor);
+-	t[1].len = len;
+-	spi_message_add_tail(&t[1], &m);
++	xfers[num_xfers].len = len;
++	xfers[num_xfers].rx_buf = buf;
++	xfers[num_xfers].rx_nbits = data_nbits;
++	num_xfers++;
+ 
++	/* Process command. */
++	spi_message_init_with_transfers(&m, xfers, num_xfers);
+ 	spi_sync(spi, &m);
+ 
+ 	*retlen = m.actual_length - m25p_cmdsz(nor) - dummy;
+-- 
+1.8.2.2
