@@ -1,23 +1,31 @@
-Received: from mail-am1on0069.outbound.protection.outlook.com ([157.56.112.69]
- helo=emea01-am1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqcC4-00034L-8Q
- for linux-mtd@lists.infradead.org; Thu, 14 Apr 2016 08:00:06 +0000
-From: Zhiqiang Hou <zhiqiang.hou@nxp.com>
-To: Zhiqiang Hou <Zhiqiang.Hou@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "jteki@openedev.com" <jteki@openedev.com>, "marex@denx.de" <marex@denx.de>
-CC: "Mingkai.Hu@freescale.com" <Mingkai.Hu@freescale.com>
-Subject: RE: [PATCHv3 1/2] mtd: spi-nor: Add SPI NOR layer PM support
-Date: Thu, 14 Apr 2016 07:59:39 +0000
-Message-ID: <AM4PR04MB21480F724EE67582F72591C184970@AM4PR04MB2148.eurprd04.prod.outlook.com>
-References: <1453454067-32534-1-git-send-email-Zhiqiang.Hou@freescale.com>
-In-Reply-To: <1453454067-32534-1-git-send-email-Zhiqiang.Hou@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Subject: Re: [LINUX PATCH v2 1/3] spi: Added dummy_cycle entry in the
+ spi_transfer structure.
+To: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+ Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
+ "David Woodhouse" <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>, Javier
+ Martinez Canillas <javier@osg.samsung.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Stephen Warren <swarren@nvidia.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, "Andrew F. Davis" <afd@ti.com>,
+ Marek Vasut <marex@denx.de>, Jagan Teki <jteki@openedev.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+References: <1460039969-9835-1-git-send-email-lakshmis@xilinx.com>
+ <57067694.8030806@atmel.com>
+ <4FF8F58FAA9D5D4193D4E554E4352C5902C720DE@XAP-PVEXMBX02.xlnx.xilinx.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Harini Katakam <harinik@xilinx.com>,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>, Anirudha Sarangi
+ <anirudh@xilinx.com>, "R, Vignesh" <vigneshr@ti.com>
+Message-ID: <570F4F9F.3090605@atmel.com>
+Date: Thu, 14 Apr 2016 10:06:55 +0200
 MIME-Version: 1.0
+In-Reply-To: <4FF8F58FAA9D5D4193D4E554E4352C5902C720DE@XAP-PVEXMBX02.xlnx.xilinx.com>
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,87 +35,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCkFueSBjb21tZW50cz8NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBG
-cm9tOiBaaGlxaWFuZyBIb3UgW21haWx0bzpaaGlxaWFuZy5Ib3VAZnJlZXNjYWxlLmNvbV0NCj4g
-U2VudDogMjAxNsTqMdTCMjLI1SAxNzoxNA0KPiBUbzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVh
-ZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsNCj4gZHdtdzJAaW5mcmFkZWFkLm9y
-ZzsganRla2lAb3BlbmVkZXYuY29tOyBtYXJleEBkZW54LmRlDQo+IENjOiBNaW5na2FpLkh1QGZy
-ZWVzY2FsZS5jb207IEhvdSBaaGlxaWFuZyA8WmhpcWlhbmcuSG91QGZyZWVzY2FsZS5jb20+DQo+
-IFN1YmplY3Q6IFtQQVRDSHYzIDEvMl0gbXRkOiBzcGktbm9yOiBBZGQgU1BJIE5PUiBsYXllciBQ
-TSBzdXBwb3J0DQo+IA0KPiBGcm9tOiBIb3UgWmhpcWlhbmcgPFpoaXFpYW5nLkhvdUBmcmVlc2Nh
-bGUuY29tPg0KPiANCj4gQWRkIHRoZSBQb3dlciBNYW5hZ2VtZW50IEFQSSBpbiBTUEkgTk9SIGZy
-YW1ld29yay4NCj4gVGhlIFBvd2VyIE1hbmFnZW1lbnQgc3lzdGVtIHdpbGwgdHVybiBvZmYgcG93
-ZXIgc3VwcGx5IHRvIFNQSSBmbGFzaCB3aGVuDQo+IHN5c3RlbSBzdXNwZW5kaW5nLCBhbmQgdGhl
-biB0aGUgU1BJIGZsYXNoIHdpbGwgYmUgaW4gdGhlIHJlc2V0IHN0YXRlIGFmdGVyIHN5c3RlbQ0K
-PiByZXN1bWluZy4gQXMgYSByZXN1bHQsIHRoZSBzdGF0dXMmY29uZmlndXJhdGlvbnMgb2YgU1BJ
-IGZsYXNoIGRyaXZlciB3aWxsIG1pc21hdGNoDQo+IHdpdGggaXRzIGN1cnJlbnQgaGFyZHdhcmUg
-c3RhdGUuDQo+IFNvIHJlaW5pdGlhbGl6ZSBTUEkgZmxhc2ggdG8gbWFrZSBzdXJlIGl0IGlzIHJl
-c3VtZWQgdG8gdGhlIGNvcnJlY3Qgc3RhdGUuDQo+IEFuZCB0aGUgU1BJIE5PUiBsYXllciBqdXN0
-IGRvIGNvbW1vbiBjb25maWd1cmF0aW9uIGRlcGVuZGluZyBvbiB0aGUgcmVjb3JkcyBpbg0KPiBz
-dHJ1Y3R1cmUgc3BpX25vci4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEhvdSBaaGlxaWFuZyA8Wmhp
-cWlhbmcuSG91QGZyZWVzY2FsZS5jb20+DQo+IC0tLQ0KPiBUZXN0ZWQgb24gVDEwNDJENFJEQi4N
-Cj4gDQo+IFYzOg0KPiAgLSBSZW1vdmUgdGhlIGNvbmRpdGlvbiAjaWZkZWYgQ09ORklHX1BNX1NM
-RUVQDQo+ICAtIERlZmluZSB0aGUgc3BpX25vcl91bnByb3RlY3Rfb25fcG93ZXJ1cCgpIHRvIG1h
-a2UgaXQgcmV1c2VhYmxlLg0KPiANCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwg
-NzMgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQ0KPiAtLS0NCj4gIGlu
-Y2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaCAgIHwgIDkgKysrKysrDQo+ICAyIGZpbGVzIGNoYW5n
-ZWQsIDcxIGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGkt
-bm9yLmMgaW5kZXgNCj4gZWQwYzE5Yy4uN2U0MTZmYiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9t
-dGQvc3BpLW5vci9zcGktbm9yLmMNCj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9y
-LmMNCj4gQEAgLTExNzksNiArMTE3OSwyNiBAQCBzdGF0aWMgaW50IHNwaV9ub3JfY2hlY2soc3Ry
-dWN0IHNwaV9ub3IgKm5vcikNCj4gIAlyZXR1cm4gMDsNCj4gIH0NCj4gDQo+ICsvKg0KPiArICog
-QXRtZWwsIFNTVCwgSW50ZWwvTnVtb255eCwgYW5kIG90aGVycyBzZXJpYWwgTk9SIHRlbmQgdG8g
-cG93ZXIgdXANCj4gKyAqIHdpdGggdGhlIHNvZnR3YXJlIHByb3RlY3Rpb24gYml0cyBzZXQgICov
-IHN0YXRpYyBpbnQNCj4gK3NwaV9ub3JfdW5wcm90ZWN0X29uX3Bvd2VydXAoc3RydWN0IHNwaV9u
-b3IgKm5vcikgew0KPiArCWNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICppbmZvID0gTlVMTDsNCj4g
-KwlpbnQgcmV0ID0gMDsNCj4gKw0KPiArCWluZm8gPSBzcGlfbm9yX3JlYWRfaWQobm9yKTsNCj4g
-KwlpZiAoSkVERUNfTUZSKGluZm8pID09IFNOT1JfTUZSX0FUTUVMIHx8DQo+ICsJICAgIEpFREVD
-X01GUihpbmZvKSA9PSBTTk9SX01GUl9JTlRFTCB8fA0KPiArCSAgICBKRURFQ19NRlIoaW5mbykg
-PT0gU05PUl9NRlJfU1NUKSB7DQo+ICsJCXdyaXRlX2VuYWJsZShub3IpOw0KPiArCQlyZXQgPSB3
-cml0ZV9zcihub3IsIDApOw0KPiArCX0NCj4gKw0KPiArCXJldHVybiByZXQ7DQo+ICt9DQo+ICsN
-Cj4gIGludCBzcGlfbm9yX3NjYW4oc3RydWN0IHNwaV9ub3IgKm5vciwgY29uc3QgY2hhciAqbmFt
-ZSwgZW51bSByZWFkX21vZGUgbW9kZSkNCj4gew0KPiAgCWNvbnN0IHN0cnVjdCBmbGFzaF9pbmZv
-ICppbmZvID0gTlVMTDsNCj4gQEAgLTEyMjYsMTcgKzEyNDYsOSBAQCBpbnQgc3BpX25vcl9zY2Fu
-KHN0cnVjdCBzcGlfbm9yICpub3IsIGNvbnN0IGNoYXINCj4gKm5hbWUsIGVudW0gcmVhZF9tb2Rl
-IG1vZGUpDQo+IA0KPiAgCW11dGV4X2luaXQoJm5vci0+bG9jayk7DQo+IA0KPiAtCS8qDQo+IC0J
-ICogQXRtZWwsIFNTVCwgSW50ZWwvTnVtb255eCwgYW5kIG90aGVycyBzZXJpYWwgTk9SIHRlbmQg
-dG8gcG93ZXIgdXANCj4gLQkgKiB3aXRoIHRoZSBzb2Z0d2FyZSBwcm90ZWN0aW9uIGJpdHMgc2V0
-DQo+IC0JICovDQo+IC0NCj4gLQlpZiAoSkVERUNfTUZSKGluZm8pID09IFNOT1JfTUZSX0FUTUVM
-IHx8DQo+IC0JICAgIEpFREVDX01GUihpbmZvKSA9PSBTTk9SX01GUl9JTlRFTCB8fA0KPiAtCSAg
-ICBKRURFQ19NRlIoaW5mbykgPT0gU05PUl9NRlJfU1NUKSB7DQo+IC0JCXdyaXRlX2VuYWJsZShu
-b3IpOw0KPiAtCQl3cml0ZV9zcihub3IsIDApOw0KPiAtCX0NCj4gKwlyZXQgPSBzcGlfbm9yX3Vu
-cHJvdGVjdF9vbl9wb3dlcnVwKG5vcik7DQo+ICsJaWYgKHJldCkNCj4gKwkJcmV0dXJuIHJldDsN
-Cj4gDQo+ICAJaWYgKCFtdGQtPm5hbWUpDQo+ICAJCW10ZC0+bmFtZSA9IGRldl9uYW1lKGRldik7
-DQo+IEBAIC0xNDAyLDYgKzE0MTQsNDUgQEAgaW50IHNwaV9ub3Jfc2NhbihzdHJ1Y3Qgc3BpX25v
-ciAqbm9yLCBjb25zdCBjaGFyDQo+ICpuYW1lLCBlbnVtIHJlYWRfbW9kZSBtb2RlKSAgfSAgRVhQ
-T1JUX1NZTUJPTF9HUEwoc3BpX25vcl9zY2FuKTsNCj4gDQo+ICtzdGF0aWMgaW50IHNwaV9ub3Jf
-aHdfcmVpbml0KHN0cnVjdCBzcGlfbm9yICpub3IpIHsNCj4gKwljb25zdCBzdHJ1Y3QgZmxhc2hf
-aW5mbyAqaW5mbyA9IE5VTEw7DQo+ICsJc3RydWN0IGRldmljZSAqZGV2ID0gbm9yLT5kZXY7DQo+
-ICsJaW50IHJldDsNCj4gKw0KPiArCWluZm8gPSBzcGlfbm9yX3JlYWRfaWQobm9yKTsNCj4gKw0K
-PiArCXJldCA9IHNwaV9ub3JfdW5wcm90ZWN0X29uX3Bvd2VydXAobm9yKTsNCj4gKwlpZiAocmV0
-KQ0KPiArCQlyZXR1cm4gcmV0Ow0KPiArDQo+ICsJaWYgKG5vci0+Zmxhc2hfcmVhZCA9PSBTUElf
-Tk9SX1FVQUQpIHsNCj4gKwkJcmV0ID0gc2V0X3F1YWRfbW9kZShub3IsIGluZm8pOw0KPiArCQlp
-ZiAocmV0KSB7DQo+ICsJCQlkZXZfZXJyKGRldiwgInF1YWQgbW9kZSBub3Qgc3VwcG9ydGVkXG4i
-KTsNCj4gKwkJCXJldHVybiByZXQ7DQo+ICsJCX0NCj4gKwl9DQo+ICsNCj4gKwlpZiAobm9yLT5h
-ZGRyX3dpZHRoID09IDQgJiYNCj4gKwkJCUpFREVDX01GUihpbmZvKSAhPSBTTk9SX01GUl9TUEFO
-U0lPTikNCj4gKwkJc2V0XzRieXRlKG5vciwgaW5mbywgMSk7DQo+ICsNCj4gKwlyZXR1cm4gMDsN
-Cj4gK30NCj4gKw0KPiAraW50IHNwaV9ub3Jfc3VzcGVuZChzdHJ1Y3Qgc3BpX25vciAqbm9yKSB7
-DQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICtFWFBPUlRfU1lNQk9MX0dQTChzcGlfbm9yX3N1c3Bl
-bmQpOw0KPiArDQo+ICtpbnQgc3BpX25vcl9yZXN1bWUoc3RydWN0IHNwaV9ub3IgKm5vcikgew0K
-PiArCXJldHVybiBzcGlfbm9yX2h3X3JlaW5pdChub3IpOw0KPiArfQ0KPiArRVhQT1JUX1NZTUJP
-TF9HUEwoc3BpX25vcl9yZXN1bWUpOw0KPiArDQo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNo
-X2luZm8gKnNwaV9ub3JfbWF0Y2hfaWQoY29uc3QgY2hhciAqbmFtZSkgIHsNCj4gIAljb25zdCBz
-dHJ1Y3QgZmxhc2hfaW5mbyAqaWQgPSBzcGlfbm9yX2lkczsgZGlmZiAtLWdpdCBhL2luY2x1ZGUv
-bGludXgvbXRkL3NwaS0NCj4gbm9yLmggYi9pbmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmggaW5k
-ZXggNjIzNTZkNS4uMzJmMTJjYyAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvc3Bp
-LW5vci5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiBAQCAtMjEwLDQg
-KzIxMCwxMyBAQCBzdGF0aWMgaW5saW5lIHN0cnVjdCBkZXZpY2Vfbm9kZQ0KPiAqc3BpX25vcl9n
-ZXRfZmxhc2hfbm9kZShzdHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPiAgICovDQo+ICBpbnQgc3BpX25v
-cl9zY2FuKHN0cnVjdCBzcGlfbm9yICpub3IsIGNvbnN0IGNoYXIgKm5hbWUsIGVudW0gcmVhZF9t
-b2RlIG1vZGUpOw0KPiANCj4gKy8qKg0KPiArICogc3BpX25vcl9zdXNwZW5kL3Jlc3VtZSgpIC0g
-dGhlIFNQSSBOT1IgbGF5ZXIgUE0gQVBJDQo+ICsgKiBAbm9yOgl0aGUgc3BpX25vciBzdHJ1Y3R1
-cmUNCj4gKyAqDQo+ICsgKiBSZXR1cm46IDAgZm9yIHN1Y2Nlc3MsIG90aGVycyBmb3IgZmFpbHVy
-ZS4NCj4gKyAqLw0KPiAraW50IHNwaV9ub3Jfc3VzcGVuZChzdHJ1Y3Qgc3BpX25vciAqbm9yKTsg
-aW50IHNwaV9ub3JfcmVzdW1lKHN0cnVjdA0KPiArc3BpX25vciAqbm9yKTsNCj4gKw0KPiAgI2Vu
-ZGlmDQo+IC0tDQoNClRoYW5rcywNClpoaXFpYW5nDQo=
+Hi Sai Krishna,
+
+Le 13/04/2016 07:21, Lakshmi Sai Krishna Potthuri a écrit :
+> Hi Cyrille and Mark,
+> 
+>> -----Original Message-----
+>> From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
+>> Sent: Thursday, April 07, 2016 8:33 PM
+>> To: Lakshmi Sai Krishna Potthuri <lakshmis@xilinx.com>; Michal Simek
+>> <michals@xilinx.com>; Soren Brinkmann <sorenb@xilinx.com>; David
+>> Woodhouse <dwmw2@infradead.org>; Brian Norris
+>> <computersforpeace@gmail.com>; Mark Brown <broonie@kernel.org>;
+>> Javier Martinez Canillas <javier@osg.samsung.com>; Boris Brezillon
+>> <boris.brezillon@free-electrons.com>; Stephen Warren
+>> <swarren@nvidia.com>; Geert Uytterhoeven <geert+renesas@glider.be>;
+>> Andrew F. Davis <afd@ti.com>; Marek Vasut <marex@denx.de>; Jagan Teki
+>> <jteki@openedev.com>; Rafa³ Mi³ecki <zajec5@gmail.com>
+>> Cc: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
+>> spi@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Harini Katakam
+>> <harinik@xilinx.com>; Punnaiah Choudary Kalluri <punnaia@xilinx.com>;
+>> Anirudha Sarangi <anirudh@xilinx.com>; Lakshmi Sai Krishna Potthuri
+>> <lakshmis@xilinx.com>; R, Vignesh <vigneshr@ti.com>
+>> Subject: Re: [LINUX PATCH v2 1/3] spi: Added dummy_cycle entry in the
+>> spi_transfer structure.
+>>
+>> Hi all,
+>>
+>> Le 07/04/2016 16:39, P L Sai Krishna a écrit :
+>>> This patch adds dummy_cycles entry in the spi_transfer structure.
+>>> len field in the transfer structure contains dummy bytes along with
+>>> actual data bytes, controllers which requires dummy bytes use len
+>>> field and simply Ignore the dummy_cycles field. Controllers which
+>>> expects dummy cycles won't work directly by using len field because
+>>> host driver doesn't know that len field of a particular transfer
+>>> includes dummy bytes or not (and also number of dummy bytes included
+>>> in len field). In such cases host driver use this dummy_cycles field
+>>> to identify the number of dummy cycles and based on that it will send
+>>> the required number of dummy cycles.
+>>
+>> Dummy cycles are only used with SPI NOR flashes, aren't they?
+> 
+> Yes, with SPI NOR flashes.
+> 
+>> I guess so since there is also a patch dedicated to the m25p80 driver.
+>>
+>> So why not using the spi_flash_read() API already introduced by Vignesh
+>> in the SPI layer?
+> 
+> ZynqMP GQSPI controller driver use "transfer_one" hook. Since this is generic
+> Controller majorly interfaced to flash devices and it might extend to NAND
+> flashes in future. This patch does not disturb the existing implementation of
+> accessing the flash or other slave devices. It adds an additional optional
+> feature. So there is no harm to controllers that don't need dummy cycles -
+> they can ignore it and still work with the existing implementation.
+> 
+> Regards
+> Sai Krishna
+
+I understand but you propose to patch both the SPI layer and the m25p80 driver
+to introduce some support which is already provided by the "spi_flash_read"
+hook: struct spi_flash_read_message has already a "dummy_bytes" field.
+IMHO, it looks redundant.
+
+If you really want to use something close to the "transfer_one" hook, I guess
+you could build spi_transfer structures from the content of the struct
+spi_flash_read_message argument of spi_flash_read() then pass those
+spi_transfer structures to your custom "transfer_one_ex":
+
+int transfer_one_ex(struct spi_master *master, struct spi_device *spi,
+		    struct spi_transfer *transfer, u32 dummy_cycles);
+
+You just need to set dummy_cycles to 0 to implement the regular "transfer_one"
+hook.
+
+Best regards,
+
+Cyrille
+
+>>
+>> struct spi_flash_read_message already includes a 'dummy_bytes' member.
+>>
+>>>
+>>> Signed-off-by: P L Sai Krishna <lakshmis@xilinx.com>
+>>> ---
+>>> v2:
+>>>  - Changed the structure member name from dummy to dummy_cycles.
+>>>  - Updated the documentation of dummy_cycles.
+>>>  - m25p80 changes split into another patch.
+>>>
+>>>  include/linux/spi/spi.h | 4 ++++
+>>>  1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+>>> index 857a9a1..63135b3 100644
+>>> --- a/include/linux/spi/spi.h
+>>> +++ b/include/linux/spi/spi.h
+>>> @@ -664,6 +664,9 @@ extern void spi_res_release(struct spi_master
+>> *master,
+>>>   * @len: size of rx and tx buffers (in bytes)
+>>>   * @speed_hz: Select a speed other than the device default for this
+>>>   *      transfer. If 0 the default (from @spi_device) is used.
+>>> + * @dummy_cycles: number of dummy cycles. If host controller requires
+>>> + *  dummy cycles rather than dummy bytes which send along with Cmd
+>>> + *  and address then this dummy_cycles is used.
+>>>   * @bits_per_word: select a bits_per_word other than the device default
+>>>   *      for this transfer. If 0 the default (from @spi_device) is used.
+>>>   * @cs_change: affects chipselect after this transfer completes
+>>> @@ -752,6 +755,7 @@ struct spi_transfer {
+>>>      u8              bits_per_word;
+>>>      u16             delay_usecs;
+>>>      u32             speed_hz;
+>>> +    u32             dummy_cycles;
+>>>
+>>>      struct list_head transfer_list;
+>>>  };
+>>>
+>>
+>> Best regards,
+>>
+>> Cyrille
+> 
+> 
+> This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
+> 
