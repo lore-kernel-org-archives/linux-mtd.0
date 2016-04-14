@@ -1,23 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqe7g-0008Ff-N1
- for linux-mtd@lists.infradead.org; Thu, 14 Apr 2016 10:03:43 +0000
-Date: Thu, 14 Apr 2016 12:03:19 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jacek Anaszewski <j.anaszewski@samsung.com>
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- linux-mtd@lists.infradead.org, linux-leds@vger.kernel.org, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 0/4] LED trigger on MTD activity
-Message-ID: <20160414120319.02f5f859@bbrezillon>
-In-Reply-To: <570F4AB1.2020600@samsung.com>
-References: <1460494002-8578-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <570E0506.4040705@samsung.com> <20160413203905.06371b4c@bbrezillon>
- <570F4AB1.2020600@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-qg0-x22f.google.com ([2607:f8b0:400d:c04::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqgYb-0003vm-Oh
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2016 12:39:39 +0000
+Received: by mail-qg0-x22f.google.com with SMTP id f52so61592962qga.3
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2016 05:39:15 -0700 (PDT)
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: <linux-mtd@lists.infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH] mtd: nand: Cleanup BBT initialization and release
+Date: Thu, 14 Apr 2016 09:38:54 -0300
+Message-Id: <1460637534-5064-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +21,277 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jacek,
+The current NAND interface has a scan_bbt replaceable hook
+which allows drivers to specify ad-hoc BBT scanning.
 
-On Thu, 14 Apr 2016 09:45:53 +0200
-Jacek Anaszewski <j.anaszewski@samsung.com> wrote:
+However, no user is currently using such feature, and all of
+them rely on the default BBT scan.
 
-> Hi Boris,
-> 
-> On 04/13/2016 08:39 PM, Boris Brezillon wrote:
-> > Hi Jacek,
-> >
-> > On Wed, 13 Apr 2016 10:36:22 +0200
-> > Jacek Anaszewski <j.anaszewski@samsung.com> wrote:
-> >
-> >> Hi Ezequiel,
-> >>
-> >> Thanks for the update. From the previous discussion I've inferred
-> >> that it has been agreed on the whole patch to go through the LED tree.
-> >>
-> >> Applied whole patch set to the for-next branch of linux-leds.git,
-> >> with acks from Boris, then.
-> >
-> > Can you provide an immutable branch containing those changes?
-> 
-> No problem, I've created mtd-nand-trigger branch in the repository
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/j.anaszewski/linux-leds.git
-> 
+Moreover, the current code leaks the allocated resources if
+the nand_default_bbt fails.
 
-I've merged this branch into nand/next.
+Therefore this commit removes the nand_chip->scan_bbt hook,
+and instead introduces nand_init_bbt and nand_free_bbt to
+setup and release the BBT, respectively.
 
-Thanks,
+Tha change makes sure that upon nand_init_bbt failure, all
+resources allocated get properly released.
 
-Boris
+nand_init_bbt is invoked by nand_scan or nand_scan_tail.
+Drivers may override this, and invoke nand_init_bbt manually
+if NAND_SKIP_BBTSCAN flag is set.
 
+nand_free_bbt shouldn't be called by drivers, and is meant to
+be called by nand_release() only.
+
+Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+--
+Fun note: we had a comment refering to a "nand_free_bbt" function,
+that never existed. After a bit of kernel archeology, it seems
+the comment was introduced when the bad block table support was
+added, but the function was missing right from the start.
+---
+ drivers/mtd/nand/diskonchip.c          |  4 ++--
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  2 +-
+ drivers/mtd/nand/nand_base.c           | 17 ++++----------
+ drivers/mtd/nand/nand_bbt.c            | 42 ++++++++++++++++++++++++++--------
+ drivers/mtd/nand/nandsim.c             |  2 +-
+ include/linux/mtd/nand.h               |  5 ++--
+ 6 files changed, 44 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+index a023ab9e9cbf..33f101370a9a 100644
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -1294,7 +1294,7 @@ static int __init nftl_scan_bbt(struct mtd_info *mtd)
+ 		this->bbt_md = NULL;
+ 	}
+ 
+-	ret = this->scan_bbt(mtd);
++	ret = nand_init_bbt(mtd);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1341,7 +1341,7 @@ static int __init inftl_scan_bbt(struct mtd_info *mtd)
+ 		this->bbt_md->pattern = "TBB_SYSM";
+ 	}
+ 
+-	ret = this->scan_bbt(mtd);
++	ret = nand_init_bbt(mtd);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index c50523b085ef..23c3ddfb4570 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1980,7 +1980,7 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 	ret = nand_boot_init(this);
+ 	if (ret)
+ 		goto err_out;
+-	ret = chip->scan_bbt(mtd);
++	ret = nand_init_bbt(mtd);
+ 	if (ret)
+ 		goto err_out;
+ 
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 1c2f7879c47a..5f04fa237434 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3199,8 +3199,6 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
+ 		chip->write_byte = busw ? nand_write_byte16 : nand_write_byte;
+ 	if (!chip->read_buf || chip->read_buf == nand_read_buf)
+ 		chip->read_buf = busw ? nand_read_buf16 : nand_read_buf;
+-	if (!chip->scan_bbt)
+-		chip->scan_bbt = nand_default_bbt;
+ 
+ 	if (!chip->controller) {
+ 		chip->controller = &chip->hwcontrol;
+@@ -4423,9 +4421,9 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->writebufsize = mtd->writesize;
+ 
+ 	/*
+-	 * Initialize bitflip_threshold to its default prior scan_bbt() call.
+-	 * scan_bbt() might invoke mtd_read(), thus bitflip_threshold must be
+-	 * properly set.
++	 * Initialize bitflip_threshold prior to nand_init_bbt() call.
++	 * Setting up the BBT might invoke mtd_read(), thus bitflip_threshold
++	 * must be properly set.
+ 	 */
+ 	if (!mtd->bitflip_threshold)
+ 		mtd->bitflip_threshold = DIV_ROUND_UP(mtd->ecc_strength * 3, 4);
+@@ -4435,7 +4433,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		return 0;
+ 
+ 	/* Build bad block table */
+-	return chip->scan_bbt(mtd);
++	return nand_init_bbt(mtd);
+ err_free:
+ 	if (!(chip->options & NAND_OWN_BUFFERS))
+ 		kfree(chip->buffers);
+@@ -4492,18 +4490,13 @@ void nand_release(struct mtd_info *mtd)
+ 
+ 	if (chip->ecc.mode == NAND_ECC_SOFT_BCH)
+ 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
+-
++	nand_free_bbt(mtd);
+ 	mtd_device_unregister(mtd);
+ 
+ 	/* Free bad block table memory */
+-	kfree(chip->bbt);
+ 	if (!(chip->options & NAND_OWN_BUFFERS))
+ 		kfree(chip->buffers);
+ 
+-	/* Free bad block descriptor memory */
+-	if (chip->badblock_pattern && chip->badblock_pattern->options
+-			& NAND_BBT_DYNAMICSTRUCT)
+-		kfree(chip->badblock_pattern);
+ }
+ EXPORT_SYMBOL_GPL(nand_release);
+ 
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 2fbb523df066..ce006ae77a27 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -1069,8 +1069,7 @@ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+  * not it scans the device for manufacturer marked good / bad blocks and writes
+  * the bad block table(s) to the selected place.
+  *
+- * The bad block table memory is allocated here. It must be freed by calling
+- * the nand_free_bbt function.
++ * The bad block table memory is allocated here.
+  */
+ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ {
+@@ -1096,7 +1095,7 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	if (!td) {
+ 		if ((res = nand_memory_bbt(mtd, bd))) {
+ 			pr_err("nand_bbt: can't scan flash and build the RAM-based BBT\n");
+-			goto err;
++			goto err_free_bbt;
+ 		}
+ 		return 0;
+ 	}
+@@ -1109,7 +1108,7 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	buf = vmalloc(len);
+ 	if (!buf) {
+ 		res = -ENOMEM;
+-		goto err;
++		goto err_free_bbt;
+ 	}
+ 
+ 	/* Is the bbt at a given page? */
+@@ -1122,7 +1121,7 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 
+ 	res = check_create(mtd, buf, bd);
+ 	if (res)
+-		goto err;
++		goto err_free_vbuf;
+ 
+ 	/* Prevent the bbt regions from erasing / writing */
+ 	mark_bbt_region(mtd, td);
+@@ -1132,7 +1131,9 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ 	vfree(buf);
+ 	return 0;
+ 
+-err:
++err_free_vbuf:
++	vfree(buf);
++err_free_bbt:
+ 	kfree(this->bbt);
+ 	this->bbt = NULL;
+ 	return res;
+@@ -1273,13 +1274,28 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
+ }
+ 
+ /**
+- * nand_default_bbt - [NAND Interface] Select a default bad block table for the device
++ * nand_free_bbt - Free resources allocated by nand_init_bbt.
++ * @mtd: MTD device structure
++ */
++void nand_free_bbt(struct mtd_info *mtd)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++
++	kfree(chip->bbt);
++	if (chip->badblock_pattern &&
++	    chip->badblock_pattern->options & NAND_BBT_DYNAMICSTRUCT)
++		kfree(chip->badblock_pattern);
++}
++EXPORT_SYMBOL_GPL(nand_free_bbt);
++
++/**
++ * nand_init_bbt - [NAND Interface] Initialize a bad block table for the device
+  * @mtd: MTD device structure
+  *
+  * This function selects the default bad block table support for the device and
+  * calls the nand_scan_bbt function.
+  */
+-int nand_default_bbt(struct mtd_info *mtd)
++int nand_init_bbt(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *this = mtd_to_nand(mtd);
+ 	int ret;
+@@ -1307,8 +1323,16 @@ int nand_default_bbt(struct mtd_info *mtd)
+ 			return ret;
+ 	}
+ 
+-	return nand_scan_bbt(mtd, this->badblock_pattern);
++	ret = nand_scan_bbt(mtd, this->badblock_pattern);
++	if (ret) {
++		if (this->badblock_pattern &&
++		    this->badblock_pattern->options & NAND_BBT_DYNAMICSTRUCT)
++			kfree(this->badblock_pattern);
++		return ret;
++	}
++	return 0;
+ }
++EXPORT_SYMBOL_GPL(nand_init_bbt);
+ 
+ /**
+  * nand_isreserved_bbt - [NAND Interface] Check if a block is reserved
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 6ff1d8d31ac2..886fbd5f6feb 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -2378,7 +2378,7 @@ static int __init ns_init_module(void)
+ 	if ((retval = init_nandsim(nsmtd)) != 0)
+ 		goto err_exit;
+ 
+-	if ((retval = chip->scan_bbt(nsmtd)) != 0)
++	if ((retval = nand_init_bbt(nsmtd)) != 0)
+ 		goto err_exit;
+ 
+ 	if ((retval = parse_badblocks(nand, nsmtd)) != 0)
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index e851839daf09..12161fcc80cb 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -598,7 +598,6 @@ struct nand_buffers {
+  * @buffers:		buffer structure for read/write
+  * @hwcontrol:		platform-specific hardware control structure
+  * @erase:		[REPLACEABLE] erase function
+- * @scan_bbt:		[REPLACEABLE] function to scan bad block table
+  * @chip_delay:		[BOARDSPECIFIC] chip dependent delay for transferring
+  *			data from array to read regs (tR).
+  * @state:		[INTERN] the current state of the NAND device
+@@ -686,7 +685,6 @@ struct nand_chip {
+ 			int page_addr);
+ 	int(*waitfunc)(struct mtd_info *mtd, struct nand_chip *this);
+ 	int (*erase)(struct mtd_info *mtd, int page);
+-	int (*scan_bbt)(struct mtd_info *mtd);
+ 	int (*errstat)(struct mtd_info *mtd, struct nand_chip *this, int state,
+ 			int status, int page);
+ 	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -893,7 +891,8 @@ struct nand_manufacturers {
+ extern struct nand_flash_dev nand_flash_ids[];
+ extern struct nand_manufacturers nand_manuf_ids[];
+ 
+-extern int nand_default_bbt(struct mtd_info *mtd);
++extern int nand_init_bbt(struct mtd_info *mtd);
++extern void nand_free_bbt(struct mtd_info *mtd);
+ extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
+ extern int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
+ extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.7.0
