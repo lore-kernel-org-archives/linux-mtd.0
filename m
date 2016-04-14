@@ -1,36 +1,19 @@
-Date: Thu, 14 Apr 2016 09:57:07 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Cc: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
- Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Stephen Warren <swarren@nvidia.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- "Andrew F. Davis" <afd@ti.com>, Marek Vasut <marex@denx.de>,
- Jagan Teki <jteki@openedev.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Harini Katakam <harinik@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>,
- Anirudha Sarangi <anirudh@xilinx.com>, "R, Vignesh" <vigneshr@ti.com>
-Message-ID: <20160414085707.GE18024@sirena.org.uk>
-References: <1460039969-9835-1-git-send-email-lakshmis@xilinx.com>
- <57067694.8030806@atmel.com>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C720DE@XAP-PVEXMBX02.xlnx.xilinx.com>
- <570F4F9F.3090605@atmel.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqe61-0007lZ-Ct
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2016 10:01:58 +0000
+Date: Thu, 14 Apr 2016 12:01:34 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/9] mtd: nand: set ECC algorithm explicitly (part 2)
+Message-ID: <20160414120134.087492a3@bbrezillon>
+In-Reply-To: <1460549222-24198-1-git-send-email-zajec5@gmail.com>
+References: <1460549222-24198-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="tMbDGjvJuJijemkf"
-Content-Disposition: inline
-In-Reply-To: <570F4F9F.3090605@atmel.com>
-Subject: Re: [LINUX PATCH v2 1/3] spi: Added dummy_cycle entry in the
- spi_transfer structure.
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,34 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Rafal,
 
---tMbDGjvJuJijemkf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, 13 Apr 2016 14:06:53 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-On Thu, Apr 14, 2016 at 10:06:55AM +0200, Cyrille Pitchen wrote:
+> This follow process of using enum nand_ecc_algo in order to clean
+> nand_ecc_modes_t.
+>=20
+> All patches were compile-tested.
+>=20
+> This work is based on the nand/next branch.
 
-> I understand but you propose to patch both the SPI layer and the m25p80 driver
-> to introduce some support which is already provided by the "spi_flash_read"
-> hook: struct spi_flash_read_message has already a "dummy_bytes" field.
-> IMHO, it looks redundant.
+Applied (waiting for the last part).
 
-My understanding is that this is intended for dummy bits rather than
-dummy bytes.
+Thanks,
 
---tMbDGjvJuJijemkf
-Content-Type: application/pgp-signature; name="signature.asc"
+Boris
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+>=20
+> Rafa=C5=82 Mi=C5=82ecki (9):
+>   mtd: nand: omap2: set ECC algorithm explicitly
+>   mtd: nand: s3c2410: set ECC algorithm explicitly
+>   mtd: nand: sh_flctl: set ECC algorithm explicitly
+>   mtd: nand: au1550nd: set ECC algorithm explicitly
+>   mtd: nand: mpc5121_nfc: set ECC algorithm explicitly
+>   mtd: nand: cmx270: set ECC algorithm explicitly
+>   mtd: nand: fsl_upm: set ECC algorithm explicitly
+>   mtd: nand: fsl_ifc: set ECC algorithm explicitly
+>   mtd: nand: fsl_elbc: set ECC algorithm explicitly
+>=20
+>  drivers/mtd/nand/au1550nd.c      | 1 +
+>  drivers/mtd/nand/cmx270_nand.c   | 1 +
+>  drivers/mtd/nand/fsl_elbc_nand.c | 1 +
+>  drivers/mtd/nand/fsl_ifc_nand.c  | 1 +
+>  drivers/mtd/nand/fsl_upm.c       | 1 +
+>  drivers/mtd/nand/mpc5121_nfc.c   | 1 +
+>  drivers/mtd/nand/omap2.c         | 1 +
+>  drivers/mtd/nand/s3c2410.c       | 1 +
+>  drivers/mtd/nand/sh_flctl.c      | 1 +
+>  9 files changed, 9 insertions(+)
+>=20
 
-iQEcBAEBCAAGBQJXD1thAAoJECTWi3JdVIfQJLEH/1Ory7hYtXNRM/1zIu//pJ1W
-lVNGpgHzgCgeNYk/k0HSdx3g75axhTV3XP2c+clxtieEa7cIf1hY6KqFg4E00xTh
-BtIhJQFvg84dYi3X0ZRfg/0VwCpf2FcQU3OTYu8SlIY/dbW22sKg+enCMr3D5Swi
-Vrqw/yIRPtzLpsJ8+RA9ShC5yHtGgMaOkaSj6ydQE3ggECKTu1k0tGCLQ/U9Yvzb
-gmkYZW2+lDho43qBEAyGbU1XJfbQdymBBZ1o73oJazRVV4wPbNt1o/9BzcGXAA4k
-+mtjEWJZIChEkIMwYV6eXa1xgGPaRnFLGcR8RyivHovubwQXtux/550bo7IaVd4=
-=T88m
------END PGP SIGNATURE-----
 
---tMbDGjvJuJijemkf--
+
+--=20
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
