@@ -1,33 +1,28 @@
-Subject: Re: [LINUX PATCH v2 1/3] spi: Added dummy_cycle entry in the
- spi_transfer structure.
-To: Mark Brown <broonie@kernel.org>
-References: <1460039969-9835-1-git-send-email-lakshmis@xilinx.com>
- <57067694.8030806@atmel.com>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C720DE@XAP-PVEXMBX02.xlnx.xilinx.com>
- <570F4F9F.3090605@atmel.com> <20160414085707.GE18024@sirena.org.uk>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
- Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
- "David Woodhouse" <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Javier Martinez Canillas
- <javier@osg.samsung.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Stephen Warren <swarren@nvidia.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, "Andrew F. Davis" <afd@ti.com>,
- Marek Vasut <marex@denx.de>, Jagan Teki <jteki@openedev.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Harini Katakam <harinik@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>, Anirudha Sarangi
- <anirudh@xilinx.com>, "R, Vignesh" <vigneshr@ti.com>
-Message-ID: <570FB5D8.90807@atmel.com>
-Date: Thu, 14 Apr 2016 17:23:04 +0200
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqkLn-0003Ln-9R
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2016 16:42:40 +0000
+From: "R, Vignesh" <vigneshr@ti.com>
+Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+To: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <1452486886-8049-2-git-send-email-marex@denx.de> <57053F81.70204@ti.com>
+ <570563D3.9080704@denx.de> <5705E858.3050700@ti.com>
+ <570E608C.1030901@denx.de>
+CC: Graham Moore <grmoore@opensource.altera.com>, Alan Tull
+ <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
+ <dinguyen@opensource.altera.com>, Yves Vandervennet
+ <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Message-ID: <570FC843.9010403@ti.com>
+Date: Thu, 14 Apr 2016 22:11:39 +0530
 MIME-Version: 1.0
-In-Reply-To: <20160414085707.GE18024@sirena.org.uk>
+In-Reply-To: <570E608C.1030901@denx.de>
 Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,43 +32,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 14/04/2016 10:57, Mark Brown a écrit :
-> On Thu, Apr 14, 2016 at 10:06:55AM +0200, Cyrille Pitchen wrote:
+
+
+On 04/13/2016 08:36 PM, Marek Vasut wrote:
+> On 04/07/2016 06:55 AM, Vignesh R wrote:
+>>
+>>
+>> On 04/07/2016 01:00 AM, Marek Vasut wrote:
+>>> On 04/06/2016 06:55 PM, R, Vignesh wrote:
+>>>> Hi Marek,
+>>>
+>>> Hi!
+>>>
+>>>> I encountered a issue with this driver while testing.
+>>>
+>>> Try with the attached patches, I am planning to use them for V11
+>>> submission. I think you're hitting the problem with missing buslock.
+>>>
+>>
+>> Thanks for the patches.
+>> But I am pretty sure that's not the problem at my end, because I have
+>> only one flash device on QSPI bus.
+>>
+>> The problem is cqspi_switch_cs() is called only once ie when JEDEC ID is
+>> being read(during autodetect of chip), but at that instance,
+>> nor->page_size and nor->mtd.erasesize are not yet initialized (They are
+>> initialized only after JEDEC ID is looked up in the table and page_size
+>> and erasesize are known).
+>> Therefore if nor->page_size is printed during cqspi_switch_cs() then its
+>> zero. But nor->page_size reports 256 when printed in cqspi_flash_setup()
+>> after spi_nor_scan(). Therefore CQSPI_REG_SIZE register has to be
+>> configured only after spi_nor struct is fully populated (i.e after
+>> spi_nor_scan() has recognized the slave after JEDEC ID read).
 > 
->> I understand but you propose to patch both the SPI layer and the m25p80 driver
->> to introduce some support which is already provided by the "spi_flash_read"
->> hook: struct spi_flash_read_message has already a "dummy_bytes" field.
->> IMHO, it looks redundant.
+> Got it and I have a patch for this. Nice find, thanks! It gave me 60%
+> read performance boost on my machine :-)
+>
+
+Ah, hope I will see similar improvement at my end :)
+
+> I am now caching the page_size, erasesize, addr_width values, so I can
+> avoid reconfiguring the controller if there is no need for it, but
+> reconfigure it if there is a need. The patch is attached, but it's quite
+> big, so I also pushed a git branch with this driver for your convenience
+> (based on linux-next, expect rebases):
 > 
-> My understanding is that this is intended for dummy bits rather than
-> dummy bytes.
+> https://git.kernel.org/cgit/linux/kernel/git/marex/linux-2.6.git/log/?h=next/cadence-qspi
 > 
 
-dummy_bits == (dummy_bytes * 8) and
-dummy_cycles == ((dummy_bytes * 8) / addr_nbits)
+Ok, I will test this on my board sometime soon, thanks.
 
-witch addr_nbits in {1, 2, 4}
-
-the struct_flash_read_message has both dummy_bytes and addr_nbits members.
-
-The spi-nor framework seems to always provide a multiple of 8 for dummy *bits*.
-I guess because the m25p80 driver only supports such number of dummy bits but
-also because all SPI memories can be configured so their number of dummy cycles keeps the byte alignment for the data to follow.
-
-It still allows to use less than 8 dummy *cycles*, for instance the factory
-settings for Macronix Quad SPI memories are:
-- 4 dummy cycles for Fast Read 1-2-2 (hence 8 dummy bits)
-- 6 dummy cycles for Fast Read x-4-4 (hence 24 dummy bits)
-
-AFAIK, only Micron QSPI memories could be configured so the number of dummy
-cycles doesn't result in a multiple of 8 bits but theirs are not the
-recommanded timings provided by the datasheet.
-
-Micron factory settings are:
-- 10 dummy cycles for Fast Read x-4-4 (hence 40 dummy bits)
-- 8 dummy cycles for other Fast Reads.
-
-
-Best regards,
-
-Cyrille
+-- 
+Regards
+Vignesh
