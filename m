@@ -4,9 +4,9 @@ To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
  <linux-arm-kernel@lists.infradead.org>, <yao.yuan@nxp.com>, Yunhui Cui
  <yunhui.cui@nxp.com>
-Subject: [PATCH 9/9] mtd: fsl-quadspi: add multi flash chip R/W on ls2080a
-Date: Thu, 14 Apr 2016 11:50:55 +0800
-Message-ID: <1460605855-6689-10-git-send-email-B56489@freescale.com>
+Subject: [PATCH 3/9] mtd: spi-nor: fsl-quadspi: add fast-read mode support
+Date: Thu, 14 Apr 2016 11:50:49 +0800
+Message-ID: <1460605855-6689-4-git-send-email-B56489@freescale.com>
 In-Reply-To: <1460605855-6689-1-git-send-email-B56489@freescale.com>
 References: <1460605855-6689-1-git-send-email-B56489@freescale.com>
 MIME-Version: 1.0
@@ -22,43 +22,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Yunhui Cui <yunhui.cui@nxp.com>
 
-There is a hardware feature that qspi_amba_base is added
-internally by SOC design on ls2080a. so memmap_phy need not
-be added in driver. If memmap_phy is added, the flash A1
-addr space is [0, memmap_phy] which far more than flash size.
-The AMBA memory will be divided into four parts and assign to
-every chipselect. Every channel will has two valid chipselects.
+The qspi driver add generic fast-read mode for different
+flash venders. There are some different board flash work on
+different mode, such fast-read, quad-mode.
 
 Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
 ---
- drivers/mtd/spi-nor/fsl-quadspi.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index d9f3e50..cab2829 100644
+index 9861290..09adaa4 100644
 --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -728,11 +728,17 @@ static void fsl_qspi_set_map_addr(struct fsl_qspi *q)
+@@ -389,11 +389,21 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 	/* Read */
+ 	lut_base = SEQID_READ * 4;
+ 
+-	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
+-			base + QUADSPI_LUT(lut_base));
+-	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
+-		    LUT1(FSL_READ, PAD4, rxfifo),
+-			base + QUADSPI_LUT(lut_base + 1));
++	if (nor->flash_read == SPI_NOR_FAST) {
++		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
++			    LUT1(ADDR, PAD1, addrlen),
++				base + QUADSPI_LUT(lut_base));
++		qspi_writel(q,  LUT0(DUMMY, PAD1, read_dm) |
++			    LUT1(FSL_READ, PAD1, rxfifo),
++				base + QUADSPI_LUT(lut_base + 1));
++	} else if (nor->flash_read == SPI_NOR_QUAD) {
++		qspi_writel(q, LUT0(CMD, PAD1, read_op) |
++			    LUT1(ADDR, PAD1, addrlen),
++				base + QUADSPI_LUT(lut_base));
++		qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
++			    LUT1(FSL_READ, PAD4, rxfifo),
++				base + QUADSPI_LUT(lut_base + 1));
++	}
+ 
+ 	/* Write enable */
+ 	lut_base = SEQID_WREN * 4;
+@@ -468,6 +478,7 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
  {
- 	int nor_size = q->nor_size;
- 	void __iomem *base = q->iobase;
-+	u32 mem_base;
- 
--	qspi_writel(q, nor_size + q->memmap_phy, base + QUADSPI_SFA1AD);
--	qspi_writel(q, nor_size * 2 + q->memmap_phy, base + QUADSPI_SFA2AD);
--	qspi_writel(q, nor_size * 3 + q->memmap_phy, base + QUADSPI_SFB1AD);
--	qspi_writel(q, nor_size * 4 + q->memmap_phy, base + QUADSPI_SFB2AD);
-+	if (has_added_amba_base_internal(q))
-+		mem_base = 0x0;
-+	else
-+		mem_base = q->memmap_phy;
-+
-+	qspi_writel(q, nor_size + mem_base, base + QUADSPI_SFA1AD);
-+	qspi_writel(q, nor_size * 2 + mem_base, base + QUADSPI_SFA2AD);
-+	qspi_writel(q, nor_size * 3 + mem_base, base + QUADSPI_SFB1AD);
-+	qspi_writel(q, nor_size * 4 + mem_base, base + QUADSPI_SFB2AD);
- }
- 
- /*
+ 	switch (cmd) {
+ 	case SPINOR_OP_READ_1_1_4:
++	case SPINOR_OP_READ_FAST:
+ 		return SEQID_READ;
+ 	case SPINOR_OP_WREN:
+ 		return SEQID_WREN;
 -- 
 2.1.0.27.g96db324
