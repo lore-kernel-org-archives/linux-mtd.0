@@ -1,31 +1,19 @@
-Subject: Re: [LINUX PATCH v2 1/3] spi: Added dummy_cycle entry in the
- spi_transfer structure.
-To: Lakshmi Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
- Michal Simek <michals@xilinx.com>, Soren Brinkmann <sorenb@xilinx.com>,
- "David Woodhouse" <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Mark Brown <broonie@kernel.org>, Javier
- Martinez Canillas <javier@osg.samsung.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Stephen Warren <swarren@nvidia.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, "Andrew F. Davis" <afd@ti.com>,
- Marek Vasut <marex@denx.de>, Jagan Teki <jteki@openedev.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-References: <1460039969-9835-1-git-send-email-lakshmis@xilinx.com>
- <57067694.8030806@atmel.com>
- <4FF8F58FAA9D5D4193D4E554E4352C5902C720DE@XAP-PVEXMBX02.xlnx.xilinx.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Harini Katakam <harinik@xilinx.com>,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>, Anirudha Sarangi
- <anirudh@xilinx.com>, "R, Vignesh" <vigneshr@ti.com>
-Message-ID: <570F4F9F.3090605@atmel.com>
-Date: Thu, 14 Apr 2016 10:06:55 +0200
+Received: from mail-yw0-x230.google.com ([2607:f8b0:4002:c05::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqczx-0002Lo-TE
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2016 08:51:38 +0000
+Received: by mail-yw0-x230.google.com with SMTP id o66so96992125ywc.3
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2016 01:51:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4FF8F58FAA9D5D4193D4E554E4352C5902C720DE@XAP-PVEXMBX02.xlnx.xilinx.com>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEVGjpo0J7nsoSX7LHqypUH=83unohxk5QTyP=dQevmZOLMq_w@mail.gmail.com>
+References: <CAEVGjpo0J7nsoSX7LHqypUH=83unohxk5QTyP=dQevmZOLMq_w@mail.gmail.com>
+Date: Thu, 14 Apr 2016 10:51:16 +0200
+Message-ID: <CAFLxGvyTg=i2RpGyuoCZBRwdANUYt3dJg08Hfgs2qohnGrCfYQ@mail.gmail.com>
+Subject: Re: Bit flip detection after boot
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Raphael Pereira <raphael@rmi.inf.br>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,127 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sai Krishna,
+On Wed, Apr 13, 2016 at 11:25 PM, Raphael Pereira <raphael@rmi.inf.br> wrote:
+> Hi,
+>
+> I have a custom board with a GPMI interface (Freescale i.MX233) with
+> kernel 4.1.18 using Micron MT29F4G08ABADAWP (nand: 512 MiB, SLC, erase
+> size: 128 KiB, page size: 2048, OOB size: 64).
+>
+> When I boot, the flash gets recognized and works flawless. I can
+> ubiformat, ubiattach, mount, copy a lot of files, umount, remount,
+> check and test in whatever way I need. No problem arrises.
+> The problem is that when I shut the system down (turn it off) and boot
+> again, all used blocks are marked as badblocks.
 
-Le 13/04/2016 07:21, Lakshmi Sai Krishna Potthuri a écrit :
-> Hi Cyrille and Mark,
-> 
->> -----Original Message-----
->> From: Cyrille Pitchen [mailto:cyrille.pitchen@atmel.com]
->> Sent: Thursday, April 07, 2016 8:33 PM
->> To: Lakshmi Sai Krishna Potthuri <lakshmis@xilinx.com>; Michal Simek
->> <michals@xilinx.com>; Soren Brinkmann <sorenb@xilinx.com>; David
->> Woodhouse <dwmw2@infradead.org>; Brian Norris
->> <computersforpeace@gmail.com>; Mark Brown <broonie@kernel.org>;
->> Javier Martinez Canillas <javier@osg.samsung.com>; Boris Brezillon
->> <boris.brezillon@free-electrons.com>; Stephen Warren
->> <swarren@nvidia.com>; Geert Uytterhoeven <geert+renesas@glider.be>;
->> Andrew F. Davis <afd@ti.com>; Marek Vasut <marex@denx.de>; Jagan Teki
->> <jteki@openedev.com>; Rafa³ Mi³ecki <zajec5@gmail.com>
->> Cc: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
->> spi@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Harini Katakam
->> <harinik@xilinx.com>; Punnaiah Choudary Kalluri <punnaia@xilinx.com>;
->> Anirudha Sarangi <anirudh@xilinx.com>; Lakshmi Sai Krishna Potthuri
->> <lakshmis@xilinx.com>; R, Vignesh <vigneshr@ti.com>
->> Subject: Re: [LINUX PATCH v2 1/3] spi: Added dummy_cycle entry in the
->> spi_transfer structure.
->>
->> Hi all,
->>
->> Le 07/04/2016 16:39, P L Sai Krishna a écrit :
->>> This patch adds dummy_cycles entry in the spi_transfer structure.
->>> len field in the transfer structure contains dummy bytes along with
->>> actual data bytes, controllers which requires dummy bytes use len
->>> field and simply Ignore the dummy_cycles field. Controllers which
->>> expects dummy cycles won't work directly by using len field because
->>> host driver doesn't know that len field of a particular transfer
->>> includes dummy bytes or not (and also number of dummy bytes included
->>> in len field). In such cases host driver use this dummy_cycles field
->>> to identify the number of dummy cycles and based on that it will send
->>> the required number of dummy cycles.
->>
->> Dummy cycles are only used with SPI NOR flashes, aren't they?
-> 
-> Yes, with SPI NOR flashes.
-> 
->> I guess so since there is also a patch dedicated to the m25p80 driver.
->>
->> So why not using the spi_flash_read() API already introduced by Vignesh
->> in the SPI layer?
-> 
-> ZynqMP GQSPI controller driver use "transfer_one" hook. Since this is generic
-> Controller majorly interfaced to flash devices and it might extend to NAND
-> flashes in future. This patch does not disturb the existing implementation of
-> accessing the flash or other slave devices. It adds an additional optional
-> feature. So there is no harm to controllers that don't need dummy cycles -
-> they can ignore it and still work with the existing implementation.
-> 
-> Regards
-> Sai Krishna
+Sounds like you have a massive bitflip problem.
+This is where you should start investigating.
+Are you facing so massive bitflips that the bad block marker is wrongly set?
 
-I understand but you propose to patch both the SPI layer and the m25p80 driver
-to introduce some support which is already provided by the "spi_flash_read"
-hook: struct spi_flash_read_message has already a "dummy_bytes" field.
-IMHO, it looks redundant.
+> I have used another flash (Toshiba with w/ erase size: 256KiB) and it
+> works perfectly, with no problem at all.
+>
+> Trying to find out what might be the problem, I found BBT DTS option,
+> so I enabled it and, instead of marking all blocks as bad, I end up
+> with UBI detecting bit-flips on all sectors, but correctable flips, so
 
-If you really want to use something close to the "transfer_one" hook, I guess
-you could build spi_transfer structures from the content of the struct
-spi_flash_read_message argument of spi_flash_read() then pass those
-spi_transfer structures to your custom "transfer_one_ex":
+You've disabled the bad block scan and tried to paper over the root cause. ;)
 
-int transfer_one_ex(struct spi_master *master, struct spi_device *spi,
-		    struct spi_transfer *transfer, u32 dummy_cycles);
+> I can use the flash normally (although it takes a lot of time to boot
+> because of the many messages "ubi0: fixable bit-flip detected at PEB
+> XXX".
+>
+> I have changed the chip a lot of times and have checked my hardware
+> and I am quite sure it is not a hardware problem. I think that some
+> structure detection of the flash is wrong in the kernel for this
+> particular case (i.MX233 BCH + MT29F4G08ABADAWP).
+>
+> Can someone guide me in debugging this problem?
 
-You just need to set dummy_cycles to 0 to implement the regular "transfer_one"
-hook.
+As I said, find out why you're facing so much bitflips.
 
-Best regards,
-
-Cyrille
-
->>
->> struct spi_flash_read_message already includes a 'dummy_bytes' member.
->>
->>>
->>> Signed-off-by: P L Sai Krishna <lakshmis@xilinx.com>
->>> ---
->>> v2:
->>>  - Changed the structure member name from dummy to dummy_cycles.
->>>  - Updated the documentation of dummy_cycles.
->>>  - m25p80 changes split into another patch.
->>>
->>>  include/linux/spi/spi.h | 4 ++++
->>>  1 file changed, 4 insertions(+)
->>>
->>> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
->>> index 857a9a1..63135b3 100644
->>> --- a/include/linux/spi/spi.h
->>> +++ b/include/linux/spi/spi.h
->>> @@ -664,6 +664,9 @@ extern void spi_res_release(struct spi_master
->> *master,
->>>   * @len: size of rx and tx buffers (in bytes)
->>>   * @speed_hz: Select a speed other than the device default for this
->>>   *      transfer. If 0 the default (from @spi_device) is used.
->>> + * @dummy_cycles: number of dummy cycles. If host controller requires
->>> + *  dummy cycles rather than dummy bytes which send along with Cmd
->>> + *  and address then this dummy_cycles is used.
->>>   * @bits_per_word: select a bits_per_word other than the device default
->>>   *      for this transfer. If 0 the default (from @spi_device) is used.
->>>   * @cs_change: affects chipselect after this transfer completes
->>> @@ -752,6 +755,7 @@ struct spi_transfer {
->>>      u8              bits_per_word;
->>>      u16             delay_usecs;
->>>      u32             speed_hz;
->>> +    u32             dummy_cycles;
->>>
->>>      struct list_head transfer_list;
->>>  };
->>>
->>
->> Best regards,
->>
->> Cyrille
-> 
-> 
-> This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
-> 
+-- 
+Thanks,
+//richard
