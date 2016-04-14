@@ -1,26 +1,23 @@
-Received: from mailout1.w1.samsung.com ([210.118.77.11])
+Received: from mail-am1on0069.outbound.protection.outlook.com ([157.56.112.69]
+ helo=emea01-am1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqbyl-0004Mz-Cm
- for linux-mtd@lists.infradead.org; Thu, 14 Apr 2016 07:46:20 +0000
-Received: from eucpsbgm2.samsung.com (unknown [203.254.199.245])
- by mailout1.w1.samsung.com
- (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
- with ESMTP id <0O5M001SS5KI3F70@mailout1.w1.samsung.com> for
- linux-mtd@lists.infradead.org; Thu, 14 Apr 2016 08:45:54 +0100 (BST)
-Message-id: <570F4AB1.2020600@samsung.com>
-Date: Thu, 14 Apr 2016 09:45:53 +0200
-From: Jacek Anaszewski <j.anaszewski@samsung.com>
-MIME-version: 1.0
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- linux-mtd@lists.infradead.org, linux-leds@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 0/4] LED trigger on MTD activity
-References: <1460494002-8578-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <570E0506.4040705@samsung.com> <20160413203905.06371b4c@bbrezillon>
-In-reply-to: <20160413203905.06371b4c@bbrezillon>
-Content-type: text/plain; charset=ISO-8859-1; format=flowed
-Content-transfer-encoding: 7bit
+ id 1aqcC4-00034L-8Q
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2016 08:00:06 +0000
+From: Zhiqiang Hou <zhiqiang.hou@nxp.com>
+To: Zhiqiang Hou <Zhiqiang.Hou@freescale.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "jteki@openedev.com" <jteki@openedev.com>, "marex@denx.de" <marex@denx.de>
+CC: "Mingkai.Hu@freescale.com" <Mingkai.Hu@freescale.com>
+Subject: RE: [PATCHv3 1/2] mtd: spi-nor: Add SPI NOR layer PM support
+Date: Thu, 14 Apr 2016 07:59:39 +0000
+Message-ID: <AM4PR04MB21480F724EE67582F72591C184970@AM4PR04MB2148.eurprd04.prod.outlook.com>
+References: <1453454067-32534-1-git-send-email-Zhiqiang.Hou@freescale.com>
+In-Reply-To: <1453454067-32534-1-git-send-email-Zhiqiang.Hou@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,28 +27,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-On 04/13/2016 08:39 PM, Boris Brezillon wrote:
-> Hi Jacek,
->
-> On Wed, 13 Apr 2016 10:36:22 +0200
-> Jacek Anaszewski <j.anaszewski@samsung.com> wrote:
->
->> Hi Ezequiel,
->>
->> Thanks for the update. From the previous discussion I've inferred
->> that it has been agreed on the whole patch to go through the LED tree.
->>
->> Applied whole patch set to the for-next branch of linux-leds.git,
->> with acks from Boris, then.
->
-> Can you provide an immutable branch containing those changes?
-
-No problem, I've created mtd-nand-trigger branch in the repository
-
-git://git.kernel.org/pub/scm/linux/kernel/git/j.anaszewski/linux-leds.git
-
--- 
-Best regards,
-Jacek Anaszewski
+SGksDQoNCkFueSBjb21tZW50cz8NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBG
+cm9tOiBaaGlxaWFuZyBIb3UgW21haWx0bzpaaGlxaWFuZy5Ib3VAZnJlZXNjYWxlLmNvbV0NCj4g
+U2VudDogMjAxNsTqMdTCMjLI1SAxNzoxNA0KPiBUbzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVh
+ZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsNCj4gZHdtdzJAaW5mcmFkZWFkLm9y
+ZzsganRla2lAb3BlbmVkZXYuY29tOyBtYXJleEBkZW54LmRlDQo+IENjOiBNaW5na2FpLkh1QGZy
+ZWVzY2FsZS5jb207IEhvdSBaaGlxaWFuZyA8WmhpcWlhbmcuSG91QGZyZWVzY2FsZS5jb20+DQo+
+IFN1YmplY3Q6IFtQQVRDSHYzIDEvMl0gbXRkOiBzcGktbm9yOiBBZGQgU1BJIE5PUiBsYXllciBQ
+TSBzdXBwb3J0DQo+IA0KPiBGcm9tOiBIb3UgWmhpcWlhbmcgPFpoaXFpYW5nLkhvdUBmcmVlc2Nh
+bGUuY29tPg0KPiANCj4gQWRkIHRoZSBQb3dlciBNYW5hZ2VtZW50IEFQSSBpbiBTUEkgTk9SIGZy
+YW1ld29yay4NCj4gVGhlIFBvd2VyIE1hbmFnZW1lbnQgc3lzdGVtIHdpbGwgdHVybiBvZmYgcG93
+ZXIgc3VwcGx5IHRvIFNQSSBmbGFzaCB3aGVuDQo+IHN5c3RlbSBzdXNwZW5kaW5nLCBhbmQgdGhl
+biB0aGUgU1BJIGZsYXNoIHdpbGwgYmUgaW4gdGhlIHJlc2V0IHN0YXRlIGFmdGVyIHN5c3RlbQ0K
+PiByZXN1bWluZy4gQXMgYSByZXN1bHQsIHRoZSBzdGF0dXMmY29uZmlndXJhdGlvbnMgb2YgU1BJ
+IGZsYXNoIGRyaXZlciB3aWxsIG1pc21hdGNoDQo+IHdpdGggaXRzIGN1cnJlbnQgaGFyZHdhcmUg
+c3RhdGUuDQo+IFNvIHJlaW5pdGlhbGl6ZSBTUEkgZmxhc2ggdG8gbWFrZSBzdXJlIGl0IGlzIHJl
+c3VtZWQgdG8gdGhlIGNvcnJlY3Qgc3RhdGUuDQo+IEFuZCB0aGUgU1BJIE5PUiBsYXllciBqdXN0
+IGRvIGNvbW1vbiBjb25maWd1cmF0aW9uIGRlcGVuZGluZyBvbiB0aGUgcmVjb3JkcyBpbg0KPiBz
+dHJ1Y3R1cmUgc3BpX25vci4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEhvdSBaaGlxaWFuZyA8Wmhp
+cWlhbmcuSG91QGZyZWVzY2FsZS5jb20+DQo+IC0tLQ0KPiBUZXN0ZWQgb24gVDEwNDJENFJEQi4N
+Cj4gDQo+IFYzOg0KPiAgLSBSZW1vdmUgdGhlIGNvbmRpdGlvbiAjaWZkZWYgQ09ORklHX1BNX1NM
+RUVQDQo+ICAtIERlZmluZSB0aGUgc3BpX25vcl91bnByb3RlY3Rfb25fcG93ZXJ1cCgpIHRvIG1h
+a2UgaXQgcmV1c2VhYmxlLg0KPiANCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwg
+NzMgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQ0KPiAtLS0NCj4gIGlu
+Y2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaCAgIHwgIDkgKysrKysrDQo+ICAyIGZpbGVzIGNoYW5n
+ZWQsIDcxIGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGkt
+bm9yLmMgaW5kZXgNCj4gZWQwYzE5Yy4uN2U0MTZmYiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9t
+dGQvc3BpLW5vci9zcGktbm9yLmMNCj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9y
+LmMNCj4gQEAgLTExNzksNiArMTE3OSwyNiBAQCBzdGF0aWMgaW50IHNwaV9ub3JfY2hlY2soc3Ry
+dWN0IHNwaV9ub3IgKm5vcikNCj4gIAlyZXR1cm4gMDsNCj4gIH0NCj4gDQo+ICsvKg0KPiArICog
+QXRtZWwsIFNTVCwgSW50ZWwvTnVtb255eCwgYW5kIG90aGVycyBzZXJpYWwgTk9SIHRlbmQgdG8g
+cG93ZXIgdXANCj4gKyAqIHdpdGggdGhlIHNvZnR3YXJlIHByb3RlY3Rpb24gYml0cyBzZXQgICov
+IHN0YXRpYyBpbnQNCj4gK3NwaV9ub3JfdW5wcm90ZWN0X29uX3Bvd2VydXAoc3RydWN0IHNwaV9u
+b3IgKm5vcikgew0KPiArCWNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvICppbmZvID0gTlVMTDsNCj4g
+KwlpbnQgcmV0ID0gMDsNCj4gKw0KPiArCWluZm8gPSBzcGlfbm9yX3JlYWRfaWQobm9yKTsNCj4g
+KwlpZiAoSkVERUNfTUZSKGluZm8pID09IFNOT1JfTUZSX0FUTUVMIHx8DQo+ICsJICAgIEpFREVD
+X01GUihpbmZvKSA9PSBTTk9SX01GUl9JTlRFTCB8fA0KPiArCSAgICBKRURFQ19NRlIoaW5mbykg
+PT0gU05PUl9NRlJfU1NUKSB7DQo+ICsJCXdyaXRlX2VuYWJsZShub3IpOw0KPiArCQlyZXQgPSB3
+cml0ZV9zcihub3IsIDApOw0KPiArCX0NCj4gKw0KPiArCXJldHVybiByZXQ7DQo+ICt9DQo+ICsN
+Cj4gIGludCBzcGlfbm9yX3NjYW4oc3RydWN0IHNwaV9ub3IgKm5vciwgY29uc3QgY2hhciAqbmFt
+ZSwgZW51bSByZWFkX21vZGUgbW9kZSkNCj4gew0KPiAgCWNvbnN0IHN0cnVjdCBmbGFzaF9pbmZv
+ICppbmZvID0gTlVMTDsNCj4gQEAgLTEyMjYsMTcgKzEyNDYsOSBAQCBpbnQgc3BpX25vcl9zY2Fu
+KHN0cnVjdCBzcGlfbm9yICpub3IsIGNvbnN0IGNoYXINCj4gKm5hbWUsIGVudW0gcmVhZF9tb2Rl
+IG1vZGUpDQo+IA0KPiAgCW11dGV4X2luaXQoJm5vci0+bG9jayk7DQo+IA0KPiAtCS8qDQo+IC0J
+ICogQXRtZWwsIFNTVCwgSW50ZWwvTnVtb255eCwgYW5kIG90aGVycyBzZXJpYWwgTk9SIHRlbmQg
+dG8gcG93ZXIgdXANCj4gLQkgKiB3aXRoIHRoZSBzb2Z0d2FyZSBwcm90ZWN0aW9uIGJpdHMgc2V0
+DQo+IC0JICovDQo+IC0NCj4gLQlpZiAoSkVERUNfTUZSKGluZm8pID09IFNOT1JfTUZSX0FUTUVM
+IHx8DQo+IC0JICAgIEpFREVDX01GUihpbmZvKSA9PSBTTk9SX01GUl9JTlRFTCB8fA0KPiAtCSAg
+ICBKRURFQ19NRlIoaW5mbykgPT0gU05PUl9NRlJfU1NUKSB7DQo+IC0JCXdyaXRlX2VuYWJsZShu
+b3IpOw0KPiAtCQl3cml0ZV9zcihub3IsIDApOw0KPiAtCX0NCj4gKwlyZXQgPSBzcGlfbm9yX3Vu
+cHJvdGVjdF9vbl9wb3dlcnVwKG5vcik7DQo+ICsJaWYgKHJldCkNCj4gKwkJcmV0dXJuIHJldDsN
+Cj4gDQo+ICAJaWYgKCFtdGQtPm5hbWUpDQo+ICAJCW10ZC0+bmFtZSA9IGRldl9uYW1lKGRldik7
+DQo+IEBAIC0xNDAyLDYgKzE0MTQsNDUgQEAgaW50IHNwaV9ub3Jfc2NhbihzdHJ1Y3Qgc3BpX25v
+ciAqbm9yLCBjb25zdCBjaGFyDQo+ICpuYW1lLCBlbnVtIHJlYWRfbW9kZSBtb2RlKSAgfSAgRVhQ
+T1JUX1NZTUJPTF9HUEwoc3BpX25vcl9zY2FuKTsNCj4gDQo+ICtzdGF0aWMgaW50IHNwaV9ub3Jf
+aHdfcmVpbml0KHN0cnVjdCBzcGlfbm9yICpub3IpIHsNCj4gKwljb25zdCBzdHJ1Y3QgZmxhc2hf
+aW5mbyAqaW5mbyA9IE5VTEw7DQo+ICsJc3RydWN0IGRldmljZSAqZGV2ID0gbm9yLT5kZXY7DQo+
+ICsJaW50IHJldDsNCj4gKw0KPiArCWluZm8gPSBzcGlfbm9yX3JlYWRfaWQobm9yKTsNCj4gKw0K
+PiArCXJldCA9IHNwaV9ub3JfdW5wcm90ZWN0X29uX3Bvd2VydXAobm9yKTsNCj4gKwlpZiAocmV0
+KQ0KPiArCQlyZXR1cm4gcmV0Ow0KPiArDQo+ICsJaWYgKG5vci0+Zmxhc2hfcmVhZCA9PSBTUElf
+Tk9SX1FVQUQpIHsNCj4gKwkJcmV0ID0gc2V0X3F1YWRfbW9kZShub3IsIGluZm8pOw0KPiArCQlp
+ZiAocmV0KSB7DQo+ICsJCQlkZXZfZXJyKGRldiwgInF1YWQgbW9kZSBub3Qgc3VwcG9ydGVkXG4i
+KTsNCj4gKwkJCXJldHVybiByZXQ7DQo+ICsJCX0NCj4gKwl9DQo+ICsNCj4gKwlpZiAobm9yLT5h
+ZGRyX3dpZHRoID09IDQgJiYNCj4gKwkJCUpFREVDX01GUihpbmZvKSAhPSBTTk9SX01GUl9TUEFO
+U0lPTikNCj4gKwkJc2V0XzRieXRlKG5vciwgaW5mbywgMSk7DQo+ICsNCj4gKwlyZXR1cm4gMDsN
+Cj4gK30NCj4gKw0KPiAraW50IHNwaV9ub3Jfc3VzcGVuZChzdHJ1Y3Qgc3BpX25vciAqbm9yKSB7
+DQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICtFWFBPUlRfU1lNQk9MX0dQTChzcGlfbm9yX3N1c3Bl
+bmQpOw0KPiArDQo+ICtpbnQgc3BpX25vcl9yZXN1bWUoc3RydWN0IHNwaV9ub3IgKm5vcikgew0K
+PiArCXJldHVybiBzcGlfbm9yX2h3X3JlaW5pdChub3IpOw0KPiArfQ0KPiArRVhQT1JUX1NZTUJP
+TF9HUEwoc3BpX25vcl9yZXN1bWUpOw0KPiArDQo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNo
+X2luZm8gKnNwaV9ub3JfbWF0Y2hfaWQoY29uc3QgY2hhciAqbmFtZSkgIHsNCj4gIAljb25zdCBz
+dHJ1Y3QgZmxhc2hfaW5mbyAqaWQgPSBzcGlfbm9yX2lkczsgZGlmZiAtLWdpdCBhL2luY2x1ZGUv
+bGludXgvbXRkL3NwaS0NCj4gbm9yLmggYi9pbmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmggaW5k
+ZXggNjIzNTZkNS4uMzJmMTJjYyAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvc3Bp
+LW5vci5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiBAQCAtMjEwLDQg
+KzIxMCwxMyBAQCBzdGF0aWMgaW5saW5lIHN0cnVjdCBkZXZpY2Vfbm9kZQ0KPiAqc3BpX25vcl9n
+ZXRfZmxhc2hfbm9kZShzdHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPiAgICovDQo+ICBpbnQgc3BpX25v
+cl9zY2FuKHN0cnVjdCBzcGlfbm9yICpub3IsIGNvbnN0IGNoYXIgKm5hbWUsIGVudW0gcmVhZF9t
+b2RlIG1vZGUpOw0KPiANCj4gKy8qKg0KPiArICogc3BpX25vcl9zdXNwZW5kL3Jlc3VtZSgpIC0g
+dGhlIFNQSSBOT1IgbGF5ZXIgUE0gQVBJDQo+ICsgKiBAbm9yOgl0aGUgc3BpX25vciBzdHJ1Y3R1
+cmUNCj4gKyAqDQo+ICsgKiBSZXR1cm46IDAgZm9yIHN1Y2Nlc3MsIG90aGVycyBmb3IgZmFpbHVy
+ZS4NCj4gKyAqLw0KPiAraW50IHNwaV9ub3Jfc3VzcGVuZChzdHJ1Y3Qgc3BpX25vciAqbm9yKTsg
+aW50IHNwaV9ub3JfcmVzdW1lKHN0cnVjdA0KPiArc3BpX25vciAqbm9yKTsNCj4gKw0KPiAgI2Vu
+ZGlmDQo+IC0tDQoNClRoYW5rcywNClpoaXFpYW5nDQo=
