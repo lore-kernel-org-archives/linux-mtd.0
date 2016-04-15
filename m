@@ -1,28 +1,29 @@
-Received: from muru.com ([72.249.23.125])
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ar6Tg-0002J1-Mw
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 16:20:26 +0000
-Date: Fri, 15 Apr 2016 09:19:51 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Roger Quadros <rogerq@ti.com>, javier@dowhile0.org, fcooper@ti.com,
- nsekhar@ti.com, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-Message-ID: <20160415161950.GT5995@atomide.com>
-References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
- <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
- <20160415120942.3131eac1@bbrezillon> <5710C86A.9060108@ti.com>
- <20160415135108.63716f06@bbrezillon>
- <20160415154139.GS5995@atomide.com>
- <20160415180531.15d790d2@bbrezillon>
+ id 1ar8x1-0000M5-4c
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 18:58:43 +0000
+Subject: Re: [PATCH 41/42] block: do not use REQ_FLUSH for tracking flush
+ support
+To: Juergen Gross <kernel@pfupf.net>, linux-f2fs-devel@lists.sourceforge.net,
+ linux-ext4@vger.kernel.org, konrad.wilk@oracle.com,
+ drbd-dev@lists.linbit.com, philipp.reisner@linbit.com,
+ lars.ellenberg@linbit.com, linux-raid@vger.kernel.org,
+ dm-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+ linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, target-devel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, osd-dev@open-osd.org, xfs@oss.sgi.com,
+ ocfs2-devel@oss.oracle.com
+References: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
+ <1460716802-2294-42-git-send-email-mchristi@redhat.com>
+ <5710C77F.2000405@pfupf.net>
+From: Mike Christie <mchristi@redhat.com>
+Message-ID: <571139C9.8060405@redhat.com>
+Date: Fri, 15 Apr 2016 13:58:17 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160415180531.15d790d2@bbrezillon>
+In-Reply-To: <5710C77F.2000405@pfupf.net>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,51 +33,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Boris Brezillon <boris.brezillon@free-electrons.com> [160415 09:06]:
-> On Fri, 15 Apr 2016 08:41:40 -0700
-> Tony Lindgren <tony@atomide.com> wrote:
-> > Well the rules are that if something agreed to be immutable, then
-> > it will never get redone. And the immutable branch should be based
-> > on the absolute minimal set of patches against some earlier tag,
-> > usually -rc1 is a good one. This avoids other tree to need to pull
-> > in a huge amount of changes from other trees just to avoid merge
-> > conflicts.
+On 04/15/2016 05:50 AM, Juergen Gross wrote:
+> On 15/04/16 12:40, mchristi@redhat.com wrote:
+>> From: Mike Christie <mchristi@redhat.com>
+>>
+>> The last patch added a REQ_OP_FLUSH for request_fn drivers
+>> and the next patch renames REQ_FLUSH to REQ_PREFLUSH which
+>> will be used by file systems and make_request_fn drivers so
+>> they can send a write/flush combo.
+>>
+>> This patch drops xen's use of REQ_FLUSH to track if it supports
+>> REQ_OP_FLUSH requests, so REQ_FLUSH can be deleted.
+>>
+>> v6:
+>> - Dropped parts of patch handled by Jens's QUEUE_FLAG_WC/FUA
+>> patches and modified patch to check feature_flush/fua bits.
+>>
+>> Signed-off-by: Mike Christie <mchristi@redhat.com>
+>> Reviewed-by: Hannes Reinecke <hare@suse.com>
+>> ---
+>>  drivers/block/xen-blkfront.c | 47 ++++++++++++++++++++++----------------------
+>>  1 file changed, 24 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+>> index f01691a..d6429e7 100644
+>> --- a/drivers/block/xen-blkfront.c
+>> +++ b/drivers/block/xen-blkfront.c
 > 
-> How would you do it in this particular case. Say I have to provide you
-> with an immutable branch, it should only contain Roger's patches, right?
+> ...
+> 
+>> @@ -985,24 +981,22 @@ static int xlvbd_init_blk_queue(struct gendisk *gd, u16 sector_size,
+>>  	return 0;
+>>  }
+>>  
+>> -static const char *flush_info(unsigned int feature_flush)
+>> +static const char *flush_info(struct blkfront_info *info)
+>>  {
+>> -	switch (feature_flush & ((REQ_FLUSH | REQ_FUA))) {
+>> -	case REQ_FLUSH|REQ_FUA:
+>> +	if (info->feature_flush && info->feature_fua)
+>>  		return "barrier: enabled;";
+>> -	case REQ_FLUSH:
+>> +	else if (info->feature_fua)
+> 
+> Shouldn't this test feature_flush?
+> 
+>>  		return "flush diskcache: enabled;";
+>> -	default:
+>> +	else
+>>  		return "barrier or flush: disabled;";
+>> -	}
+>>  }
+>>  
+>>  static void xlvbd_flush(struct blkfront_info *info)
+>>  {
+>> -	blk_queue_write_cache(info->rq, info->feature_flush & REQ_FLUSH,
+>> -				info->feature_flush & REQ_FUA);
+>> +	blk_queue_write_cache(info->rq, info->feature_flush ? true : false,
+>> +			      info->feature_flush ? true : false);
+> 
+> And here the second test should be feature_fua?
+> 
 
-Well ideally it would be just minimal NAND related changes
-branch against v4.6-rc1. Then if Roger has a dependency to
-that, Roger can pull it in.
-
-Then Roger would make a branch for the GPMC changes against
-your minimal NAND branch.
-
-Then if there were non-trivial merge conflicts, I could pull
-in Roger's GPMC branch as needed.
-
-But in this case, it seems you can just merge everything via
-the NAND tree and problem solved.
-
-> But this also means this immutable branch has to be pulled into my
-> nand/next branch before all other changes touching the same set of
-> files, which in turn means that I'll have to rebase and push -f my
-> nand/next branch (which I'd like to avoid).
-
-Yeah let's not do rebases, there should be no need for it.
-
-> Or should I just pull this immutable branch in my current nand/next and
-> let you pull the same immutable branch in omap-soc. I mean, would this
-> prevent conflicts when our branches are merged into linux-next, no
-> matter the order.
-
-Ideally just one or more branches with just minimal changes in
-them against -rc1. But you may have other dependencies in
-your NAND tree so that may no longer be doable :) Usually if
-I merge something that may need to get merged into other
-branches, I just apply them into a separate branch against -rc1
-to start with, then merge that branch in.
-
-Regards,
-
-Tony
+You are right. Will fix up and resend.
