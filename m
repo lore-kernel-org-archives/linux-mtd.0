@@ -1,21 +1,22 @@
-Date: Fri, 15 Apr 2016 11:39:06 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ar0hR-0002Q1-3v
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:10:05 +0000
+Date: Fri, 15 Apr 2016 12:09:42 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Han Xu <han.xu@nxp.com>, David Woodhouse <dwmw2@infradead.org>, Fabio
- Estevam <fabio.estevam@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "kernel@pengutronix.de"
- <kernel@pengutronix.de>, Huang Shijie <shijie.huang@intel.com>, Brian
- Norris <computersforpeace@gmail.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Stefan Christ <s.christ@phytec.de>,
- Elie De Brauwer <eliedebrauwer@gmail.com>, Richard Weinberger
- <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-Message-ID: <20160415113906.7f971cec@bbrezillon>
-In-Reply-To: <33206452.D8BR53ndXi@adelgunde>
-References: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
- <7168760.YSQBa3GsdA@adelgunde> <20160415103508.5f6bc8c8@bbrezillon>
- <33206452.D8BR53ndXi@adelgunde>
+To: Roger Quadros <rogerq@ti.com>, <javier@dowhile0.org>, <fcooper@ti.com>,
+ <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>
+Cc: Tony Lindgren <tony@atomide.com>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC
+ NAND on non-OMAP platforms
+Message-ID: <20160415120942.3131eac1@bbrezillon>
+In-Reply-To: <5710B58C.7050108@ti.com>
+References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
+ <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,98 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Markus,
+Hi Roger,
 
-On Fri, 15 Apr 2016 11:35:07 +0200
-Markus Pargmann <mpa@pengutronix.de> wrote:
+On Fri, 15 Apr 2016 12:34:04 +0300
+Roger Quadros <rogerq@ti.com> wrote:
 
-> Hi Boris,
+> Tony & Boris,
 > 
-> On Friday 15 April 2016 10:35:08 Boris Brezillon wrote:
-> > Hi Markus,
+> On 14/04/16 00:25, Tony Lindgren wrote:
+> > * Roger Quadros <rogerq@ti.com> [160407 03:10]:
+> >> Hi,
+> >>
+> >> As this series has cross dependency between omap and mtd subsystems,
+> >> I'll set up a immutable branch which omap-soc and l2-mtd must
+> >> merge in together to avoid any conflicts/breakage during integration.
+> >>
+> >> Brian has acked all mtd patches. Tony needs to give his Ack for the
+> >> gpmc driver part and then I can provide the immutable branch.
 > > 
-> > On Fri, 15 Apr 2016 09:55:45 +0200
-> > Markus Pargmann <mpa@pengutronix.de> wrote:
+> > Looks good to me, please feel free to add:
 > > 
-> > > On Wednesday 13 April 2016 00:51:55 Boris Brezillon wrote:
-> > > > On Tue, 12 Apr 2016 22:39:08 +0000
-> > > > Han Xu <han.xu@nxp.com> wrote:
-> > > > 
-> > > > > > Thanks for the feedback. Talking with a coworker about this we may have found a
-> > > > > > better approach to this that is less complicated to implement. The hardware
-> > > > > > unit allows us to set a bitflip threshold for erased pages. The ECC unit
-> > > > > > creates an ECC error only if the number of bitflips exceeds this threshold, but
-> > > > > > it does not correct these. So the idea is to change the patch so that we set
-> > > > > > pages, that are signaled by the ECC as erased, to 0xff completely without
-> > > > > > checking. So the ECC will do all the work and we completely trust in its
-> > > > > > abilities to do it correctly.
-> > > > > 
-> > > > > Sounds good.
-> > > > > 
-> > > > > some new platforms with new gpmi controller could check the count of 0 bits in page,
-> > > > > refer to my patch https://patchwork.ozlabs.org/patch/587124/
-> > > > > 
-> > > > > But for all legacy platforms, IMO, considering bitflip is rare case, set threshold to 0 and
-> > > > > only check the uncorrectable branch and then correct data sounds better. Setting threshold
-> > > > > and correcting all erased page may highly impact the performance.
-> > > > 
-> > > > Indeed, bitflips in erased pages is not so common, and penalizing the
-> > > > likely case (erased pages without any bitflips) doesn't look like a good
-> > > > idea in the end.
-> > > 
-> > > Are erased pages really read that often?
+> > Acked-by: Tony Lindgren <tony@atomide.com>
 > > 
-> > Yes, it's not unusual to have those "empty pages?" checks (added Artem
-> > and Richard to get a confirmation). AFAIR, UBIFS check for empty pages
-> > in its journal heads after an unclean unmount (which happens quite
-> > often) to make sure there's no corruption.
-> > 
-> > > I am not sure how UBI handles
-> > > this, does it read every page before writing?
-> > 
-> > Nope, or maybe it does when you activate some extra checks.
-> > 
-> > > 
-> > > > 
-> > > > You can still implement this check in software. You can have a look at
-> > > > nand_check_erased_ecc_chunk() [1] if you need an example, but you'll
-> > > > have to adapt it because your controller does not guarantees that ECC
-> > > > bits for a given chunk are byte aligned :-/
-> > > 
-> > > Yes I used this function in the patch. The issue is that I am not quite
-> > > sure yet where to find the raw ECC data (without rereading the page).
-> > > The reference manual is not extremely clear about that, ecc data may be
-> > > in the 'auxilliary data' but I am not sure that it really is available
-> > > somewhere.
-> > 
-> > AFAIR (and I'm not sure since it was a long time ago), you don't have
-> > direct access to ECC bytes with the GPMI engine. If that's the case,
-> > you'll have to read the ECC bytes manually (moving the page pointer
-> > using ->cmdfunc(NAND_CMD_RNDOUT, column, -1)), which is a pain with
-> > this engine, because ECC bytes are not guaranteed to be byte aligned
-> > (see gpmi ->read_page_raw() implementation).
-> > Once you've retrieved ECC bytes (or bits in this case), for each ECC
-> > chunk, you can use the nand_check_erased_ecc_chunk() function (just make
-> > sure you're padding the last ECC byte of each chunk with ones so that
-> > bitflips cannot be reported on this section).
 > 
-> Thanks for the information. So I understand that this approach is the
-> preferred one to avoid any performance issues for normal operation.
+> I've added Tony and Rob's Acked-by tags and pushed the patches at the
+> below PULL request.
 > 
-> I actually won't be able to fix this patch accordingly for some time. If
-> anyone else needs this earlier, feel free to implement it.
+> Please take this into omap-soc and l2-mtd trees. Thanks.
 
-I just did [1] (it applies on top of your patch), but maybe you
-can test it (I don't have any imx platforms right now) ;).
+I Pulled this branch into nand/next and had to resolve a few conflicts
+(as you may have noticed, a few other reworks in the NAND and MTD layer
+have been merged in the meantime).
 
-If these changes work, feel free to squash them into your previous
-patch.
+It compiles, but I'm not sure it works correctly (I pushed the result
+to nand/next-with-gpmc-rework [1]). Could you test it before I push this
+to nand/next?
 
 Thanks,
 
 Boris
 
-[1]http://code.bulix.org/bq6yyh-96549
+[1]https://github.com/linux-nand/linux/tree/nand/next-with-gpmc-rework
+
 
 -- 
 Boris Brezillon, Free Electrons
