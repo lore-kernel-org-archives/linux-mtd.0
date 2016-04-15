@@ -1,25 +1,23 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ar1PN-0002AB-Rv
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:55:33 +0000
-Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- <javier@dowhile0.org>, <fcooper@ti.com>, <nsekhar@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>
-References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
- <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
- <20160415120942.3131eac1@bbrezillon>
-CC: Tony Lindgren <tony@atomide.com>, <computersforpeace@gmail.com>,
- <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <5710C86A.9060108@ti.com>
-Date: Fri, 15 Apr 2016 13:54:34 +0300
-MIME-Version: 1.0
-In-Reply-To: <20160415120942.3131eac1@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Received: from mx1.redhat.com ([209.132.183.28])
+ by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1ar1C8-0001Hd-KH
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:41:49 +0000
+From: mchristi@redhat.com
+To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
+ philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+ linux-raid@vger.kernel.org, dm-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
+Cc: Mike Christie <mchristi@redhat.com>
+Subject: [PATCH 36/42] ide cd: do not set REQ_WRITE on requests.
+Date: Fri, 15 Apr 2016 05:39:56 -0500
+Message-Id: <1460716802-2294-37-git-send-email-mchristi@redhat.com>
+In-Reply-To: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
+References: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,60 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15/04/16 13:09, Boris Brezillon wrote:
-> Hi Roger,
-> 
-> On Fri, 15 Apr 2016 12:34:04 +0300
-> Roger Quadros <rogerq@ti.com> wrote:
-> 
->> Tony & Boris,
->>
->> On 14/04/16 00:25, Tony Lindgren wrote:
->>> * Roger Quadros <rogerq@ti.com> [160407 03:10]:
->>>> Hi,
->>>>
->>>> As this series has cross dependency between omap and mtd subsystems,
->>>> I'll set up a immutable branch which omap-soc and l2-mtd must
->>>> merge in together to avoid any conflicts/breakage during integration.
->>>>
->>>> Brian has acked all mtd patches. Tony needs to give his Ack for the
->>>> gpmc driver part and then I can provide the immutable branch.
->>>
->>> Looks good to me, please feel free to add:
->>>
->>> Acked-by: Tony Lindgren <tony@atomide.com>
->>>
->>
->> I've added Tony and Rob's Acked-by tags and pushed the patches at the
->> below PULL request.
->>
->> Please take this into omap-soc and l2-mtd trees. Thanks.
-> 
-> I Pulled this branch into nand/next and had to resolve a few conflicts
-> (as you may have noticed, a few other reworks in the NAND and MTD layer
-> have been merged in the meantime).
+From: Mike Christie <mchristi@redhat.com>
 
-OK. I'm not sure how well this will play when this merges into liunx-next
-via the omap-soc tree.
+The block layer will set the correct READ/WRITE operation flags/fields
+when creating a request, so there is not need for drivers to set the
+REQ_WRITE flag.
 
-Instead, can you please create a non-mutable nand/base for me (which could be
-today's nand/next) and I can base my branch on that and Tony can use my
-branch without causing any merge-conflict in linux-next?
+Signed-off-by: Mike Christie <mchristi@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Hannes Reinecke <hare@suse.com>
+---
+ drivers/ide/ide-cd_ioctl.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-If this doesn't look OK please advice an alternative. Thanks.
-
-cheers,
--roger
-
-> 
-> It compiles, but I'm not sure it works correctly (I pushed the result
-> to nand/next-with-gpmc-rework [1]). Could you test it before I push this
-> to nand/next?
-> 
-> Thanks,
-> 
-> Boris
-> 
-> [1]https://github.com/linux-nand/linux/tree/nand/next-with-gpmc-rework
-> 
-> 
+diff --git a/drivers/ide/ide-cd_ioctl.c b/drivers/ide/ide-cd_ioctl.c
+index 474173e..5887a7a 100644
+--- a/drivers/ide/ide-cd_ioctl.c
++++ b/drivers/ide/ide-cd_ioctl.c
+@@ -459,9 +459,6 @@ int ide_cdrom_packet(struct cdrom_device_info *cdi,
+ 	   layer. the packet must be complete, as we do not
+ 	   touch it at all. */
+ 
+-	if (cgc->data_direction == CGC_DATA_WRITE)
+-		flags |= REQ_WRITE;
+-
+ 	if (cgc->sense)
+ 		memset(cgc->sense, 0, sizeof(struct request_sense));
+ 
+-- 
+2.7.2
