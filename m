@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1ar1BZ-0001EA-KC
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:41:14 +0000
+ id 1ar1Bo-0001Fc-K4
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:41:29 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 21/42] bcache: set bi_op to REQ_OP
-Date: Fri, 15 Apr 2016 05:39:41 -0500
-Message-Id: <1460716802-2294-22-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 28/42] block: prepare mq request creation to use REQ_OPs
+Date: Fri, 15 Apr 2016 05:39:48 -0500
+Message-Id: <1460716802-2294-29-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
 References: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,294 +29,146 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-This patch has bcache use bio->bi_op for REQ_OPs and rq_flag_bits
-to bio->bi_rw.
+This patch modifies the blk mq request creation code to use
+separate variables for the operation and flags, because in the
+the next patches the struct request users will be converted like
+was done for bios. request->op will be used for the REQ_OP and
+request->cmd_flags for the rq_flag_bits.
+
+Like the non mq patch there is some temporary compat code in
+blk_mq_rq_ctx_init to allow users to read the operation from the
+cmd_flags. This will be deleted in one of the last patches when all
+drivers have been converted.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Hannes Reinecke <hare@suse.com>
 ---
- drivers/md/bcache/btree.c     |  2 ++
- drivers/md/bcache/debug.c     |  2 ++
- drivers/md/bcache/io.c        |  2 +-
- drivers/md/bcache/journal.c   |  7 ++++---
- drivers/md/bcache/movinggc.c  |  2 +-
- drivers/md/bcache/request.c   |  9 +++++----
- drivers/md/bcache/super.c     | 26 +++++++++++++++-----------
- drivers/md/bcache/writeback.c |  4 ++--
- 8 files changed, 32 insertions(+), 22 deletions(-)
+ block/blk-mq.c | 38 +++++++++++++++++++++-----------------
+ 1 file changed, 21 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
-index 22b9e34..752a44f 100644
---- a/drivers/md/bcache/btree.c
-+++ b/drivers/md/bcache/btree.c
-@@ -295,6 +295,7 @@ static void bch_btree_node_read(struct btree *b)
- 	closure_init_stack(&cl);
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 1699baf..4843c0b 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -159,16 +159,19 @@ bool blk_mq_can_queue(struct blk_mq_hw_ctx *hctx)
+ EXPORT_SYMBOL(blk_mq_can_queue);
  
- 	bio = bch_bbio_alloc(b->c);
-+	bio->bi_op	= REQ_OP_READ;
- 	bio->bi_rw	= REQ_META|READ_SYNC;
- 	bio->bi_iter.bi_size = KEY_SIZE(&b->key) << 9;
- 	bio->bi_end_io	= btree_node_read_endio;
-@@ -397,6 +398,7 @@ static void do_btree_node_write(struct btree *b)
+ static void blk_mq_rq_ctx_init(struct request_queue *q, struct blk_mq_ctx *ctx,
+-			       struct request *rq, unsigned int rw_flags)
++			       struct request *rq, int op,
++			       unsigned int op_flags)
+ {
+ 	if (blk_queue_io_stat(q))
+-		rw_flags |= REQ_IO_STAT;
++		op_flags |= REQ_IO_STAT;
  
- 	b->bio->bi_end_io	= btree_node_write_endio;
- 	b->bio->bi_private	= cl;
-+	b->bio->bi_op		= REQ_OP_WRITE;
- 	b->bio->bi_rw		= REQ_META|WRITE_SYNC|REQ_FUA;
- 	b->bio->bi_iter.bi_size	= roundup(set_bytes(i), block_bytes(b->c));
- 	bch_bio_map(b->bio, i);
-diff --git a/drivers/md/bcache/debug.c b/drivers/md/bcache/debug.c
-index 52b6bcf..8df9e66 100644
---- a/drivers/md/bcache/debug.c
-+++ b/drivers/md/bcache/debug.c
-@@ -52,6 +52,7 @@ void bch_btree_verify(struct btree *b)
- 	bio->bi_bdev		= PTR_CACHE(b->c, &b->key, 0)->bdev;
- 	bio->bi_iter.bi_sector	= PTR_OFFSET(&b->key, 0);
- 	bio->bi_iter.bi_size	= KEY_SIZE(&v->key) << 9;
-+	bio->bi_op		= REQ_OP_READ;
- 	bio->bi_rw		= REQ_META|READ_SYNC;
- 	bch_bio_map(bio, sorted);
+ 	INIT_LIST_HEAD(&rq->queuelist);
+ 	/* csd/requeue_work/fifo_time is initialized before use */
+ 	rq->q = q;
+ 	rq->mq_ctx = ctx;
+-	rq->cmd_flags |= rw_flags;
++	rq->op = op;
++	/* tmp compat - allow users to check either one for the op */
++	rq->cmd_flags |= op | op_flags;
+ 	/* do not touch atomic flags, it needs atomic ops against the timer */
+ 	rq->cpu = -1;
+ 	INIT_HLIST_NODE(&rq->hash);
+@@ -203,11 +206,11 @@ static void blk_mq_rq_ctx_init(struct request_queue *q, struct blk_mq_ctx *ctx,
+ 	rq->end_io_data = NULL;
+ 	rq->next_rq = NULL;
  
-@@ -114,6 +115,7 @@ void bch_data_verify(struct cached_dev *dc, struct bio *bio)
- 	check = bio_clone(bio, GFP_NOIO);
- 	if (!check)
- 		return;
-+	check->bi_op = REQ_OP_READ;
- 	check->bi_rw |= READ_SYNC;
- 
- 	if (bio_alloc_pages(check, GFP_NOIO))
-diff --git a/drivers/md/bcache/io.c b/drivers/md/bcache/io.c
-index 86a0bb8..f10a9a0 100644
---- a/drivers/md/bcache/io.c
-+++ b/drivers/md/bcache/io.c
-@@ -111,7 +111,7 @@ void bch_bbio_count_io_errors(struct cache_set *c, struct bio *bio,
- 	struct bbio *b = container_of(bio, struct bbio, bio);
- 	struct cache *ca = PTR_CACHE(c, &b->key, 0);
- 
--	unsigned threshold = bio->bi_rw & REQ_WRITE
-+	unsigned threshold = op_is_write(bio->bi_op)
- 		? c->congested_write_threshold_us
- 		: c->congested_read_threshold_us;
- 
-diff --git a/drivers/md/bcache/journal.c b/drivers/md/bcache/journal.c
-index af3f9f7..68fa0f0 100644
---- a/drivers/md/bcache/journal.c
-+++ b/drivers/md/bcache/journal.c
-@@ -54,7 +54,7 @@ reread:		left = ca->sb.bucket_size - offset;
- 		bio_reset(bio);
- 		bio->bi_iter.bi_sector	= bucket + offset;
- 		bio->bi_bdev	= ca->bdev;
--		bio->bi_rw	= READ;
-+		bio->bi_op	= REQ_OP_READ;
- 		bio->bi_iter.bi_size	= len << 9;
- 
- 		bio->bi_end_io	= journal_read_endio;
-@@ -452,7 +452,7 @@ static void do_journal_discard(struct cache *ca)
- 		bio->bi_iter.bi_sector	= bucket_to_sector(ca->set,
- 						ca->sb.d[ja->discard_idx]);
- 		bio->bi_bdev		= ca->bdev;
--		bio->bi_rw		= REQ_WRITE|REQ_DISCARD;
-+		bio->bi_op		= REQ_OP_DISCARD;
- 		bio->bi_max_vecs	= 1;
- 		bio->bi_io_vec		= bio->bi_inline_vecs;
- 		bio->bi_iter.bi_size	= bucket_bytes(ca);
-@@ -626,7 +626,8 @@ static void journal_write_unlocked(struct closure *cl)
- 		bio_reset(bio);
- 		bio->bi_iter.bi_sector	= PTR_OFFSET(k, i);
- 		bio->bi_bdev	= ca->bdev;
--		bio->bi_rw	= REQ_WRITE|REQ_SYNC|REQ_META|REQ_FLUSH|REQ_FUA;
-+		bio->bi_op	= REQ_OP_WRITE;
-+		bio->bi_rw	= REQ_SYNC|REQ_META|REQ_FLUSH|REQ_FUA;
- 		bio->bi_iter.bi_size = sectors << 9;
- 
- 		bio->bi_end_io	= journal_write_endio;
-diff --git a/drivers/md/bcache/movinggc.c b/drivers/md/bcache/movinggc.c
-index b929fc9..f33860a 100644
---- a/drivers/md/bcache/movinggc.c
-+++ b/drivers/md/bcache/movinggc.c
-@@ -163,7 +163,7 @@ static void read_moving(struct cache_set *c)
- 		moving_init(io);
- 		bio = &io->bio.bio;
- 
--		bio->bi_rw	= READ;
-+		bio->bi_op	= REQ_OP_READ;
- 		bio->bi_end_io	= read_moving_endio;
- 
- 		if (bio_alloc_pages(bio, GFP_KERNEL))
-diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
-index 25fa844..cd6837c 100644
---- a/drivers/md/bcache/request.c
-+++ b/drivers/md/bcache/request.c
-@@ -253,7 +253,7 @@ static void bch_data_insert_start(struct closure *cl)
- 		trace_bcache_cache_insert(k);
- 		bch_keylist_push(&op->insert_keys);
- 
--		n->bi_rw |= REQ_WRITE;
-+		n->bi_op = REQ_OP_WRITE;
- 		bch_submit_bbio(n, op->c, k, 0);
- 	} while (n != bio);
- 
-@@ -383,7 +383,7 @@ static bool check_should_bypass(struct cached_dev *dc, struct bio *bio)
- 
- 	if (mode == CACHE_MODE_NONE ||
- 	    (mode == CACHE_MODE_WRITEAROUND &&
--	     (bio->bi_rw & REQ_WRITE)))
-+	     op_is_write(bio->bi_op)))
- 		goto skip;
- 
- 	if (bio->bi_iter.bi_sector & (c->sb.block_size - 1) ||
-@@ -404,7 +404,7 @@ static bool check_should_bypass(struct cached_dev *dc, struct bio *bio)
- 
- 	if (!congested &&
- 	    mode == CACHE_MODE_WRITEBACK &&
--	    (bio->bi_rw & REQ_WRITE) &&
-+	    op_is_write(bio->bi_op) &&
- 	    (bio->bi_rw & REQ_SYNC))
- 		goto rescale;
- 
-@@ -657,7 +657,7 @@ static inline struct search *search_alloc(struct bio *bio,
- 	s->cache_miss		= NULL;
- 	s->d			= d;
- 	s->recoverable		= 1;
--	s->write		= (bio->bi_rw & REQ_WRITE) != 0;
-+	s->write		= op_is_write(bio->bi_op);
- 	s->read_dirty_data	= 0;
- 	s->start_time		= jiffies;
- 
-@@ -925,6 +925,7 @@ static void cached_dev_write(struct cached_dev *dc, struct search *s)
- 			struct bio *flush = bio_alloc_bioset(GFP_NOIO, 0,
- 							     dc->disk.bio_split);
- 
-+			flush->bi_op	= REQ_OP_WRITE;
- 			flush->bi_rw	= WRITE_FLUSH;
- 			flush->bi_bdev	= bio->bi_bdev;
- 			flush->bi_end_io = request_endio;
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 1eb526a7..16e6108 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -212,7 +212,8 @@ static void __write_super(struct cache_sb *sb, struct bio *bio)
- 	unsigned i;
- 
- 	bio->bi_iter.bi_sector	= SB_SECTOR;
--	bio->bi_rw		= REQ_WRITE|REQ_SYNC|REQ_META;
-+	bio->bi_op		= REQ_OP_WRITE;
-+	bio->bi_rw		= REQ_SYNC|REQ_META;
- 	bio->bi_iter.bi_size	= SB_SIZE;
- 	bch_bio_map(bio, NULL);
- 
-@@ -333,7 +334,7 @@ static void uuid_io_unlock(struct closure *cl)
- 	up(&c->uuid_write_mutex);
+-	ctx->rq_dispatched[rw_is_sync(rw_flags)]++;
++	ctx->rq_dispatched[rw_is_sync(op | op_flags)]++;
  }
  
--static void uuid_io(struct cache_set *c, unsigned long rw,
-+static void uuid_io(struct cache_set *c, int op, unsigned long op_flags,
- 		    struct bkey *k, struct closure *parent)
+ static struct request *
+-__blk_mq_alloc_request(struct blk_mq_alloc_data *data, int rw)
++__blk_mq_alloc_request(struct blk_mq_alloc_data *data, int op, int op_flags)
  {
- 	struct closure *cl = &c->uuid_write;
-@@ -348,7 +349,8 @@ static void uuid_io(struct cache_set *c, unsigned long rw,
- 	for (i = 0; i < KEY_PTRS(k); i++) {
- 		struct bio *bio = bch_bbio_alloc(c);
+ 	struct request *rq;
+ 	unsigned int tag;
+@@ -222,7 +225,7 @@ __blk_mq_alloc_request(struct blk_mq_alloc_data *data, int rw)
+ 		}
  
--		bio->bi_rw	= REQ_SYNC|REQ_META|rw;
-+		bio->bi_op	= op;
-+		bio->bi_rw	= REQ_SYNC|REQ_META|op_flags;
- 		bio->bi_iter.bi_size = KEY_SIZE(k) << 9;
- 
- 		bio->bi_end_io	= uuid_endio;
-@@ -357,12 +359,12 @@ static void uuid_io(struct cache_set *c, unsigned long rw,
- 
- 		bch_submit_bbio(bio, c, k, i);
- 
--		if (!(rw & WRITE))
-+		if (op != REQ_OP_WRITE)
- 			break;
+ 		rq->tag = tag;
+-		blk_mq_rq_ctx_init(data->q, data->ctx, rq, rw);
++		blk_mq_rq_ctx_init(data->q, data->ctx, rq, op, op_flags);
+ 		return rq;
  	}
  
- 	bch_extent_to_text(buf, sizeof(buf), k);
--	pr_debug("%s UUIDs at %s", rw & REQ_WRITE ? "wrote" : "read", buf);
-+	pr_debug("%s UUIDs at %s", op == REQ_OP_WRITE ? "wrote" : "read", buf);
+@@ -246,7 +249,7 @@ struct request *blk_mq_alloc_request(struct request_queue *q, int rw,
+ 	hctx = q->mq_ops->map_queue(q, ctx->cpu);
+ 	blk_mq_set_alloc_data(&alloc_data, q, flags, ctx, hctx);
  
- 	for (u = c->uuids; u < c->uuids + c->nr_uuids; u++)
- 		if (!bch_is_zero(u->uuid, 16))
-@@ -381,7 +383,7 @@ static char *uuid_read(struct cache_set *c, struct jset *j, struct closure *cl)
- 		return "bad uuid pointer";
+-	rq = __blk_mq_alloc_request(&alloc_data, rw);
++	rq = __blk_mq_alloc_request(&alloc_data, rw, 0);
+ 	if (!rq && !(flags & BLK_MQ_REQ_NOWAIT)) {
+ 		__blk_mq_run_hw_queue(hctx);
+ 		blk_mq_put_ctx(ctx);
+@@ -254,7 +257,7 @@ struct request *blk_mq_alloc_request(struct request_queue *q, int rw,
+ 		ctx = blk_mq_get_ctx(q);
+ 		hctx = q->mq_ops->map_queue(q, ctx->cpu);
+ 		blk_mq_set_alloc_data(&alloc_data, q, flags, ctx, hctx);
+-		rq =  __blk_mq_alloc_request(&alloc_data, rw);
++		rq =  __blk_mq_alloc_request(&alloc_data, rw, 0);
+ 		ctx = alloc_data.ctx;
+ 	}
+ 	blk_mq_put_ctx(ctx);
+@@ -1170,28 +1173,29 @@ static struct request *blk_mq_map_request(struct request_queue *q,
+ 	struct blk_mq_hw_ctx *hctx;
+ 	struct blk_mq_ctx *ctx;
+ 	struct request *rq;
+-	int rw = bio_data_dir(bio);
++	int op = bio_data_dir(bio);
++	int op_flags = 0;
+ 	struct blk_mq_alloc_data alloc_data;
  
- 	bkey_copy(&c->uuid_bucket, k);
--	uuid_io(c, READ_SYNC, k, cl);
-+	uuid_io(c, REQ_OP_READ, READ_SYNC, k, cl);
+ 	blk_queue_enter_live(q);
+ 	ctx = blk_mq_get_ctx(q);
+ 	hctx = q->mq_ops->map_queue(q, ctx->cpu);
  
- 	if (j->version < BCACHE_JSET_VERSION_UUIDv1) {
- 		struct uuid_entry_v0	*u0 = (void *) c->uuids;
-@@ -426,7 +428,7 @@ static int __uuid_write(struct cache_set *c)
- 		return 1;
+-	if (rw_is_sync(bio->bi_rw))
+-		rw |= REQ_SYNC;
++	if (rw_is_sync(bio->bi_op | bio->bi_rw))
++		op_flags |= REQ_SYNC;
  
- 	SET_KEY_SIZE(&k.key, c->sb.bucket_size);
--	uuid_io(c, REQ_WRITE, &k.key, &cl);
-+	uuid_io(c, REQ_OP_WRITE, 0, &k.key, &cl);
- 	closure_sync(&cl);
+-	trace_block_getrq(q, bio, rw);
++	trace_block_getrq(q, bio, op);
+ 	blk_mq_set_alloc_data(&alloc_data, q, BLK_MQ_REQ_NOWAIT, ctx, hctx);
+-	rq = __blk_mq_alloc_request(&alloc_data, rw);
++	rq = __blk_mq_alloc_request(&alloc_data, op, op_flags);
+ 	if (unlikely(!rq)) {
+ 		__blk_mq_run_hw_queue(hctx);
+ 		blk_mq_put_ctx(ctx);
+-		trace_block_sleeprq(q, bio, rw);
++		trace_block_sleeprq(q, bio, op);
  
- 	bkey_copy(&c->uuid_bucket, &k.key);
-@@ -498,7 +500,8 @@ static void prio_endio(struct bio *bio)
- 	closure_put(&ca->prio);
- }
- 
--static void prio_io(struct cache *ca, uint64_t bucket, unsigned long rw)
-+static void prio_io(struct cache *ca, uint64_t bucket, int op,
-+		    unsigned long op_flags)
+ 		ctx = blk_mq_get_ctx(q);
+ 		hctx = q->mq_ops->map_queue(q, ctx->cpu);
+ 		blk_mq_set_alloc_data(&alloc_data, q, 0, ctx, hctx);
+-		rq = __blk_mq_alloc_request(&alloc_data, rw);
++		rq = __blk_mq_alloc_request(&alloc_data, op, op_flags);
+ 		ctx = alloc_data.ctx;
+ 		hctx = alloc_data.hctx;
+ 	}
+@@ -1245,7 +1249,7 @@ static int blk_mq_direct_issue_request(struct request *rq, blk_qc_t *cookie)
+  */
+ static blk_qc_t blk_mq_make_request(struct request_queue *q, struct bio *bio)
  {
- 	struct closure *cl = &ca->prio;
- 	struct bio *bio = bch_bbio_alloc(ca->set);
-@@ -507,7 +510,8 @@ static void prio_io(struct cache *ca, uint64_t bucket, unsigned long rw)
- 
- 	bio->bi_iter.bi_sector	= bucket * ca->sb.bucket_size;
- 	bio->bi_bdev		= ca->bdev;
--	bio->bi_rw		= REQ_SYNC|REQ_META|rw;
-+	bio->bi_op		= op;
-+	bio->bi_rw		= REQ_SYNC|REQ_META|op_flags;
- 	bio->bi_iter.bi_size	= bucket_bytes(ca);
- 
- 	bio->bi_end_io	= prio_endio;
-@@ -557,7 +561,7 @@ void bch_prio_write(struct cache *ca)
- 		BUG_ON(bucket == -1);
- 
- 		mutex_unlock(&ca->set->bucket_lock);
--		prio_io(ca, bucket, REQ_WRITE);
-+		prio_io(ca, bucket, REQ_OP_WRITE, 0);
- 		mutex_lock(&ca->set->bucket_lock);
- 
- 		ca->prio_buckets[i] = bucket;
-@@ -599,7 +603,7 @@ static void prio_read(struct cache *ca, uint64_t bucket)
- 			ca->prio_last_buckets[bucket_nr] = bucket;
- 			bucket_nr++;
- 
--			prio_io(ca, bucket, READ_SYNC);
-+			prio_io(ca, bucket, REQ_OP_READ, READ_SYNC);
- 
- 			if (p->csum != bch_crc64(&p->magic, bucket_bytes(ca) - 8))
- 				pr_warn("bad csum reading priorities");
-diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
-index b9346cd..96ddf28 100644
---- a/drivers/md/bcache/writeback.c
-+++ b/drivers/md/bcache/writeback.c
-@@ -183,7 +183,7 @@ static void write_dirty(struct closure *cl)
- 	struct keybuf_key *w = io->bio.bi_private;
- 
- 	dirty_init(w);
--	io->bio.bi_rw		= WRITE;
-+	io->bio.bi_op		= REQ_OP_WRITE;
- 	io->bio.bi_iter.bi_sector = KEY_START(&w->key);
- 	io->bio.bi_bdev		= io->dc->bdev;
- 	io->bio.bi_end_io	= dirty_endio;
-@@ -256,7 +256,7 @@ static void read_dirty(struct cached_dev *dc)
- 		io->bio.bi_iter.bi_sector = PTR_OFFSET(&w->key, 0);
- 		io->bio.bi_bdev		= PTR_CACHE(dc->disk.c,
- 						    &w->key, 0)->bdev;
--		io->bio.bi_rw		= READ;
-+		io->bio.bi_op		= REQ_OP_READ;
- 		io->bio.bi_end_io	= read_dirty_endio;
- 
- 		if (bio_alloc_pages(&io->bio, GFP_KERNEL))
+-	const int is_sync = rw_is_sync(bio->bi_rw);
++	const int is_sync = rw_is_sync(bio->bi_op | bio->bi_rw);
+ 	const int is_flush_fua = bio->bi_rw & (REQ_FLUSH | REQ_FUA);
+ 	struct blk_map_ctx data;
+ 	struct request *rq;
+@@ -1342,7 +1346,7 @@ done:
+  */
+ static blk_qc_t blk_sq_make_request(struct request_queue *q, struct bio *bio)
+ {
+-	const int is_sync = rw_is_sync(bio->bi_rw);
++	const int is_sync = rw_is_sync(bio->bi_op | bio->bi_rw);
+ 	const int is_flush_fua = bio->bi_rw & (REQ_FLUSH | REQ_FUA);
+ 	struct blk_plug *plug;
+ 	unsigned int request_count = 0;
 -- 
 2.7.2
