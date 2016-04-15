@@ -1,20 +1,21 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arBeY-0004fn-4G
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 21:51:51 +0000
-Message-ID: <571161A7.1050804@denx.de>
-Date: Fri, 15 Apr 2016 23:48:23 +0200
-From: Marek Vasut <marex@denx.de>
+ id 1arBvt-00045q-E1
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 22:09:45 +0000
+Received: by mail-pf0-x234.google.com with SMTP id n1so60722999pfn.2
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Apr 2016 15:09:24 -0700 (PDT)
+Date: Fri, 15 Apr 2016 15:09:21 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] MTD fix for v4.6-rc4
+Message-ID: <20160415220921.GN2545@google.com>
 MIME-Version: 1.0
-To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org
-CC: nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/8] mtd: spi-nor: fix support of Quad SPI memories
-References: <cover.1460567255.git.cyrille.pitchen@atmel.com>
-In-Reply-To: <cover.1460567255.git.cyrille.pitchen@atmel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/13/2016 07:23 PM, Cyrille Pitchen wrote:
-> Hi all,
-> 
-> this series is RFC but has already been tested on a sama5d2x xplained
-> board with the Atmel QSPI controller + Micron n25q128a13:
-> compatible = "micron,n25q128a13", "jedec,spi-nor";
-> 
-> This first 3 patches of the series are stable and have already been
-> submitted to linux-mtd. They are required as a base for the later
-> patches.
-> 
-> Support of Micron memories has been implemented as an example, other
-> memory entries should be updated as needed in the spi_nor_ids[] table.
-> 
-> This new way to support Quad SPI memories is inspired by the JEDEC
-> SFDP standard. However SFDP tables are not provided by all memories and
-> some of them badly implement the standard. Also the standard itself
-> can tell whether the memory supports the 2-2-2 mode but doesn't provide
-> the procedure to enter/leave this mode as provided for the 4-4-4 mode.
-> 
-> 
-> Please note that some commit messages are missing but a review might be
-> really helpfull! :)
-> 
-> Almost all the actual rework is done in patch 4.
+Hi Linus,
 
-For Altera SoCFPGA , Cadence QSPI NOR controller , Terasic SoCkit board:
-Tested-by: Marek Vasut <marex@denx.de>
+The following changes since commit f55532a0c0b8bb6148f4e07853b876ef73bc69ca:
 
-Best regards,
-Marek Vasut
+  Linux 4.6-rc1 (2016-03-26 16:03:24 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20160415
+
+for you to fetch changes up to 20c07a5bf094198ff2382aa5e7c930b3c9807792:
+
+  mtd: nand: Drop mtd.owner requirement in nand_scan (2016-04-02 23:03:51 -0700)
+
+----------------------------------------------------------------
+One MTD fix for v4.6-rc4:
+
+In the v4.4 cycle, we relaxed the requirement for assigning mtd->owner, but we
+didn't remove this error case. It's hit only by drivers that are both:
+
+(a) using nand_scan() directly and
+(b) built as modules
+
+We haven't seen explicit complaints about this (most use cases don't fit one or
+both of the above), but we should definitely not be BUG()'ing here.
+
+----------------------------------------------------------------
+Ezequiel García (1):
+      mtd: nand: Drop mtd.owner requirement in nand_scan
+
+ drivers/mtd/nand/nand_base.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
