@@ -1,26 +1,24 @@
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ar1LJ-0007Pj-KP
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:51:20 +0000
-Subject: Re: [PATCH 41/42] block: do not use REQ_FLUSH for tracking flush
- support
-To: mchristi@redhat.com, linux-f2fs-devel@lists.sourceforge.net,
- linux-ext4@vger.kernel.org, konrad.wilk@oracle.com,
- drbd-dev@lists.linbit.com, philipp.reisner@linbit.com,
- lars.ellenberg@linbit.com, linux-raid@vger.kernel.org, dm-devel@redhat.com,
- linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
- target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
-References: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
- <1460716802-2294-42-git-send-email-mchristi@redhat.com>
-From: Juergen Gross <kernel@pfupf.net>
-Message-ID: <5710C77F.2000405@pfupf.net>
-Date: Fri, 15 Apr 2016 12:50:39 +0200
+ id 1ar1PN-0002AB-Rv
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:55:33 +0000
+Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ <javier@dowhile0.org>, <fcooper@ti.com>, <nsekhar@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>
+References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
+ <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
+ <20160415120942.3131eac1@bbrezillon>
+CC: Tony Lindgren <tony@atomide.com>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <5710C86A.9060108@ti.com>
+Date: Fri, 15 Apr 2016 13:54:34 +0300
 MIME-Version: 1.0
-In-Reply-To: <1460716802-2294-42-git-send-email-mchristi@redhat.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20160415120942.3131eac1@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,72 +29,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15/04/16 12:40, mchristi@redhat.com wrote:
-> From: Mike Christie <mchristi@redhat.com>
+On 15/04/16 13:09, Boris Brezillon wrote:
+> Hi Roger,
 > 
-> The last patch added a REQ_OP_FLUSH for request_fn drivers
-> and the next patch renames REQ_FLUSH to REQ_PREFLUSH which
-> will be used by file systems and make_request_fn drivers so
-> they can send a write/flush combo.
+> On Fri, 15 Apr 2016 12:34:04 +0300
+> Roger Quadros <rogerq@ti.com> wrote:
 > 
-> This patch drops xen's use of REQ_FLUSH to track if it supports
-> REQ_OP_FLUSH requests, so REQ_FLUSH can be deleted.
+>> Tony & Boris,
+>>
+>> On 14/04/16 00:25, Tony Lindgren wrote:
+>>> * Roger Quadros <rogerq@ti.com> [160407 03:10]:
+>>>> Hi,
+>>>>
+>>>> As this series has cross dependency between omap and mtd subsystems,
+>>>> I'll set up a immutable branch which omap-soc and l2-mtd must
+>>>> merge in together to avoid any conflicts/breakage during integration.
+>>>>
+>>>> Brian has acked all mtd patches. Tony needs to give his Ack for the
+>>>> gpmc driver part and then I can provide the immutable branch.
+>>>
+>>> Looks good to me, please feel free to add:
+>>>
+>>> Acked-by: Tony Lindgren <tony@atomide.com>
+>>>
+>>
+>> I've added Tony and Rob's Acked-by tags and pushed the patches at the
+>> below PULL request.
+>>
+>> Please take this into omap-soc and l2-mtd trees. Thanks.
 > 
-> v6:
-> - Dropped parts of patch handled by Jens's QUEUE_FLAG_WC/FUA
-> patches and modified patch to check feature_flush/fua bits.
+> I Pulled this branch into nand/next and had to resolve a few conflicts
+> (as you may have noticed, a few other reworks in the NAND and MTD layer
+> have been merged in the meantime).
+
+OK. I'm not sure how well this will play when this merges into liunx-next
+via the omap-soc tree.
+
+Instead, can you please create a non-mutable nand/base for me (which could be
+today's nand/next) and I can base my branch on that and Tony can use my
+branch without causing any merge-conflict in linux-next?
+
+If this doesn't look OK please advice an alternative. Thanks.
+
+cheers,
+-roger
+
 > 
-> Signed-off-by: Mike Christie <mchristi@redhat.com>
-> Reviewed-by: Hannes Reinecke <hare@suse.com>
-> ---
->  drivers/block/xen-blkfront.c | 47 ++++++++++++++++++++++----------------------
->  1 file changed, 24 insertions(+), 23 deletions(-)
+> It compiles, but I'm not sure it works correctly (I pushed the result
+> to nand/next-with-gpmc-rework [1]). Could you test it before I push this
+> to nand/next?
 > 
-> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-> index f01691a..d6429e7 100644
-> --- a/drivers/block/xen-blkfront.c
-> +++ b/drivers/block/xen-blkfront.c
-
-...
-
-> @@ -985,24 +981,22 @@ static int xlvbd_init_blk_queue(struct gendisk *gd, u16 sector_size,
->  	return 0;
->  }
->  
-> -static const char *flush_info(unsigned int feature_flush)
-> +static const char *flush_info(struct blkfront_info *info)
->  {
-> -	switch (feature_flush & ((REQ_FLUSH | REQ_FUA))) {
-> -	case REQ_FLUSH|REQ_FUA:
-> +	if (info->feature_flush && info->feature_fua)
->  		return "barrier: enabled;";
-> -	case REQ_FLUSH:
-> +	else if (info->feature_fua)
-
-Shouldn't this test feature_flush?
-
->  		return "flush diskcache: enabled;";
-> -	default:
-> +	else
->  		return "barrier or flush: disabled;";
-> -	}
->  }
->  
->  static void xlvbd_flush(struct blkfront_info *info)
->  {
-> -	blk_queue_write_cache(info->rq, info->feature_flush & REQ_FLUSH,
-> -				info->feature_flush & REQ_FUA);
-> +	blk_queue_write_cache(info->rq, info->feature_flush ? true : false,
-> +			      info->feature_flush ? true : false);
-
-And here the second test should be feature_fua?
-
->  	pr_info("blkfront: %s: %s %s %s %s %s\n",
-> -		info->gd->disk_name, flush_info(info->feature_flush),
-> +		info->gd->disk_name, flush_info(info),
->  		"persistent grants:", info->feature_persistent ?
->  		"enabled;" : "disabled;", "indirect descriptors:",
->  		info->max_indirect_segments ? "enabled;" : "disabled;");
-
-
-Juergen
+> Thanks,
+> 
+> Boris
+> 
+> [1]https://github.com/linux-nand/linux/tree/nand/next-with-gpmc-rework
+> 
+> 
