@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ar1Bx-0007Vz-61
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:41:42 +0000
+ id 1ar1CC-0007gf-6B
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:41:58 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 32/42] block: convert is_sync helpers to use REQ_OPs.
-Date: Fri, 15 Apr 2016 05:39:52 -0500
-Message-Id: <1460716802-2294-33-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 39/42] block: shrink bio/request fields
+Date: Fri, 15 Apr 2016 05:39:59 -0500
+Message-Id: <1460716802-2294-40-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
 References: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,124 +29,188 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-This patch converts the is_sync helpers to use separate variables
-for the operation and flags.
+bi_op only needed to be a int for temp compat reasons, so
+this patch shrinks it to u8.
+
+There is no need for bi_rw to be so large now, so that is
+reduced to a unsigned int and bi_ioprio is just put in
+its own field.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Hannes Reinecke <hare@suse.com>
 ---
- block/blk-core.c       | 6 +++---
- block/blk-mq.c         | 8 ++++----
- block/cfq-iosched.c    | 2 +-
- include/linux/blkdev.h | 6 +++---
- 4 files changed, 11 insertions(+), 11 deletions(-)
+ block/blk-core.c           |  2 +-
+ drivers/md/dm-flakey.c     |  2 +-
+ drivers/md/raid5.c         | 13 +++++++------
+ fs/btrfs/check-integrity.c |  4 ++--
+ fs/btrfs/inode.c           |  2 +-
+ include/linux/bio.h        | 13 ++-----------
+ include/linux/blk_types.h  | 11 +++--------
+ include/linux/blkdev.h     |  2 +-
+ 8 files changed, 18 insertions(+), 31 deletions(-)
 
 diff --git a/block/blk-core.c b/block/blk-core.c
-index 660aeb8..e2f7b0a 100644
+index ccf2056..57d21a0 100644
 --- a/block/blk-core.c
 +++ b/block/blk-core.c
-@@ -962,7 +962,7 @@ static void __freed_request(struct request_list *rl, int sync)
- static void freed_request(struct request_list *rl, int op, unsigned int flags)
- {
- 	struct request_queue *q = rl->q;
--	int sync = rw_is_sync(op | flags);
-+	int sync = rw_is_sync(op, flags);
+@@ -1854,7 +1854,7 @@ static void handle_bad_sector(struct bio *bio)
+ 	char b[BDEVNAME_SIZE];
  
- 	q->nr_rqs[sync]--;
- 	rl->count[sync]--;
-@@ -1075,7 +1075,7 @@ static struct request *__get_request(struct request_list *rl, int op,
- 	struct elevator_type *et = q->elevator->type;
- 	struct io_context *ioc = rq_ioc(bio);
- 	struct io_cq *icq = NULL;
--	const bool is_sync = rw_is_sync(op | op_flags) != 0;
-+	const bool is_sync = rw_is_sync(op, op_flags) != 0;
- 	int may_queue;
+ 	printk(KERN_INFO "attempt to access beyond end of device\n");
+-	printk(KERN_INFO "%s: rw=%d,%ld, want=%Lu, limit=%Lu\n",
++	printk(KERN_INFO "%s: rw=%d,%u, want=%Lu, limit=%Lu\n",
+ 			bdevname(bio->bi_bdev, b),
+ 			bio->bi_op, bio->bi_rw,
+ 			(unsigned long long)bio_end_sector(bio),
+diff --git a/drivers/md/dm-flakey.c b/drivers/md/dm-flakey.c
+index b7341de..29b99fb 100644
+--- a/drivers/md/dm-flakey.c
++++ b/drivers/md/dm-flakey.c
+@@ -266,7 +266,7 @@ static void corrupt_bio_data(struct bio *bio, struct flakey_c *fc)
+ 		data[fc->corrupt_bio_byte - 1] = fc->corrupt_bio_value;
  
- 	if (unlikely(blk_queue_dying(q)))
-@@ -1246,7 +1246,7 @@ static struct request *get_request(struct request_queue *q, int op,
- 				   int op_flags, struct bio *bio,
- 				   gfp_t gfp_mask)
- {
--	const bool is_sync = rw_is_sync(op | op_flags) != 0;
-+	const bool is_sync = rw_is_sync(op, op_flags) != 0;
- 	DEFINE_WAIT(wait);
- 	struct request_list *rl;
- 	struct request *rq;
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 4843c0b..64d61be 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -206,7 +206,7 @@ static void blk_mq_rq_ctx_init(struct request_queue *q, struct blk_mq_ctx *ctx,
- 	rq->end_io_data = NULL;
- 	rq->next_rq = NULL;
+ 		DMDEBUG("Corrupting data bio=%p by writing %u to byte %u "
+-			"(rw=%c bi_rw=%lu bi_sector=%llu cur_bytes=%u)\n",
++			"(rw=%c bi_rw=%u bi_sector=%llu cur_bytes=%u)\n",
+ 			bio, fc->corrupt_bio_value, fc->corrupt_bio_byte,
+ 			(bio_data_dir(bio) == WRITE) ? 'w' : 'r', bio->bi_rw,
+ 			(unsigned long long)bio->bi_iter.bi_sector, bio_bytes);
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index c36b817..7fb693f 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -1006,9 +1006,9 @@ again:
+ 				: raid5_end_read_request;
+ 			bi->bi_private = sh;
  
--	ctx->rq_dispatched[rw_is_sync(op | op_flags)]++;
-+	ctx->rq_dispatched[rw_is_sync(op, op_flags)]++;
- }
+-			pr_debug("%s: for %llu schedule op %ld on disc %d\n",
++			pr_debug("%s: for %llu schedule op %d,%u on disc %d\n",
+ 				__func__, (unsigned long long)sh->sector,
+-				bi->bi_rw, i);
++				bi->bi_op, bi->bi_rw, i);
+ 			atomic_inc(&sh->count);
+ 			if (sh != head_sh)
+ 				atomic_inc(&head_sh->count);
+@@ -1058,10 +1058,10 @@ again:
+ 			rbi->bi_end_io = raid5_end_write_request;
+ 			rbi->bi_private = sh;
  
- static struct request *
-@@ -1181,7 +1181,7 @@ static struct request *blk_mq_map_request(struct request_queue *q,
- 	ctx = blk_mq_get_ctx(q);
- 	hctx = q->mq_ops->map_queue(q, ctx->cpu);
+-			pr_debug("%s: for %llu schedule op %ld on "
++			pr_debug("%s: for %llu schedule op %d,%u on "
+ 				 "replacement disc %d\n",
+ 				__func__, (unsigned long long)sh->sector,
+-				rbi->bi_rw, i);
++				rbi->bi_op, rbi->bi_rw, i);
+ 			atomic_inc(&sh->count);
+ 			if (sh != head_sh)
+ 				atomic_inc(&head_sh->count);
+@@ -1093,8 +1093,9 @@ again:
+ 		if (!rdev && !rrdev) {
+ 			if (op_is_write(op))
+ 				set_bit(STRIPE_DEGRADED, &sh->state);
+-			pr_debug("skip op %ld on disc %d for sector %llu\n",
+-				bi->bi_rw, i, (unsigned long long)sh->sector);
++			pr_debug("skip op %d,%u on disc %d for sector %llu\n",
++				 bi->bi_op, bi->bi_rw, i,
++				 (unsigned long long)sh->sector);
+ 			clear_bit(R5_LOCKED, &sh->dev[i].flags);
+ 			set_bit(STRIPE_HANDLE, &sh->state);
+ 		}
+diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
+index c4a48e8..921a858 100644
+--- a/fs/btrfs/check-integrity.c
++++ b/fs/btrfs/check-integrity.c
+@@ -2943,7 +2943,7 @@ static void __btrfsic_submit_bio(struct bio *bio)
+ 		if (dev_state->state->print_mask &
+ 		    BTRFSIC_PRINT_MASK_SUBMIT_BIO_BH)
+ 			printk(KERN_INFO
+-			       "submit_bio(rw=%d,0x%lx, bi_vcnt=%u,"
++			       "submit_bio(rw=%d,0x%x, bi_vcnt=%u,"
+ 			       " bi_sector=%llu (bytenr %llu), bi_bdev=%p)\n",
+ 			       bio->bi_op, bio->bi_rw, bio->bi_vcnt,
+ 			       (unsigned long long)bio->bi_iter.bi_sector,
+@@ -2986,7 +2986,7 @@ static void __btrfsic_submit_bio(struct bio *bio)
+ 		if (dev_state->state->print_mask &
+ 		    BTRFSIC_PRINT_MASK_SUBMIT_BIO_BH)
+ 			printk(KERN_INFO
+-			       "submit_bio(rw=%d,0x%lx FLUSH, bdev=%p)\n",
++			       "submit_bio(rw=%d,0x%x FLUSH, bdev=%p)\n",
+ 			       bio->bi_op, bio->bi_rw, bio->bi_bdev);
+ 		if (!dev_state->dummy_block_for_bio_bh_flush.is_iodone) {
+ 			if ((dev_state->state->print_mask &
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index bd214ab..e2617ba 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8153,7 +8153,7 @@ static void btrfs_end_dio_bio(struct bio *bio)
  
--	if (rw_is_sync(bio->bi_op | bio->bi_rw))
-+	if (rw_is_sync(bio->bi_op, bio->bi_rw))
- 		op_flags |= REQ_SYNC;
+ 	if (err)
+ 		btrfs_warn(BTRFS_I(dip->inode)->root->fs_info,
+-			   "direct IO failed ino %llu rw %d,%lu sector %#Lx len %u err no %d",
++			   "direct IO failed ino %llu rw %d,0x%x sector %#Lx len %u err no %d",
+ 			   btrfs_ino(dip->inode), bio->bi_op, bio->bi_rw,
+ 			   (unsigned long long)bio->bi_iter.bi_sector,
+ 			   bio->bi_iter.bi_size, err);
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index 9e7b18b..5ece950 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -44,18 +44,9 @@
+ #define BIO_MAX_SIZE		(BIO_MAX_PAGES << PAGE_SHIFT)
+ #define BIO_MAX_SECTORS		(BIO_MAX_SIZE >> 9)
  
- 	trace_block_getrq(q, bio, op);
-@@ -1249,7 +1249,7 @@ static int blk_mq_direct_issue_request(struct request *rq, blk_qc_t *cookie)
-  */
- static blk_qc_t blk_mq_make_request(struct request_queue *q, struct bio *bio)
- {
--	const int is_sync = rw_is_sync(bio->bi_op | bio->bi_rw);
-+	const int is_sync = rw_is_sync(bio->bi_op, bio->bi_rw);
- 	const int is_flush_fua = bio->bi_rw & (REQ_FLUSH | REQ_FUA);
- 	struct blk_map_ctx data;
- 	struct request *rq;
-@@ -1346,7 +1346,7 @@ done:
-  */
- static blk_qc_t blk_sq_make_request(struct request_queue *q, struct bio *bio)
- {
--	const int is_sync = rw_is_sync(bio->bi_op | bio->bi_rw);
-+	const int is_sync = rw_is_sync(bio->bi_op, bio->bi_rw);
- 	const int is_flush_fua = bio->bi_rw & (REQ_FLUSH | REQ_FUA);
- 	struct blk_plug *plug;
- 	unsigned int request_count = 0;
-diff --git a/block/cfq-iosched.c b/block/cfq-iosched.c
-index 0dfa2dd..2fd5bcf 100644
---- a/block/cfq-iosched.c
-+++ b/block/cfq-iosched.c
-@@ -4311,7 +4311,7 @@ static int cfq_may_queue(struct request_queue *q, int op, int op_flags)
- 	if (!cic)
- 		return ELV_MQUEUE_MAY;
+-/*
+- * upper 16 bits of bi_rw define the io priority of this bio
+- */
+-#define BIO_PRIO_SHIFT	(8 * sizeof(unsigned long) - IOPRIO_BITS)
+-#define bio_prio(bio)	((bio)->bi_rw >> BIO_PRIO_SHIFT)
++#define bio_prio(bio)		(bio)->bi_ioprio
+ #define bio_prio_valid(bio)	ioprio_valid(bio_prio(bio))
+-
+-#define bio_set_prio(bio, prio)		do {			\
+-	WARN_ON(prio >= (1 << IOPRIO_BITS));			\
+-	(bio)->bi_rw &= ((1UL << BIO_PRIO_SHIFT) - 1);		\
+-	(bio)->bi_rw |= ((unsigned long) (prio) << BIO_PRIO_SHIFT);	\
+-} while (0)
++#define bio_set_prio(bio, prio)	((bio)->bi_ioprio = prio)
  
--	cfqq = cic_to_cfqq(cic, rw_is_sync(op | op_flags));
-+	cfqq = cic_to_cfqq(cic, rw_is_sync(op, op_flags));
- 	if (cfqq) {
- 		cfq_init_prio_data(cfqq, cic);
+ /*
+  * various member access, note that bio_data should of course not be used
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index b4251ed..498f395 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -48,14 +48,9 @@ struct bio {
+ 	struct block_device	*bi_bdev;
+ 	unsigned int		bi_flags;	/* status, command, etc */
+ 	int			bi_error;
+-	unsigned long		bi_rw;		/* bottom bits rq_flags_bits
+-						 * top bits priority
+-						 */
+-	/*
+-	 * this will be a u8 in the next patches and bi_rw can be shrunk to
+-	 * a u32. For compat in these transistional patches op is a int here.
+-	 */
+-	int			bi_op;		/* REQ_OP */
++	unsigned int		bi_rw;		/* rq_flag_bits */
++	unsigned short		bi_ioprio;
++	u8			bi_op;		/* REQ_OP */
  
+ 
+ 	struct bvec_iter	bi_iter;
 diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 4aaa317..42711ef 100644
+index 5694894..b483a66 100644
 --- a/include/linux/blkdev.h
 +++ b/include/linux/blkdev.h
-@@ -617,14 +617,14 @@ static inline unsigned int blk_queue_cluster(struct request_queue *q)
- /*
-  * We regard a request as sync, if either a read or a sync write
-  */
--static inline bool rw_is_sync(unsigned int rw_flags)
-+static inline bool rw_is_sync(int op, unsigned int rw_flags)
- {
--	return !(rw_flags & REQ_WRITE) || (rw_flags & REQ_SYNC);
-+	return op == REQ_OP_READ || (rw_flags & REQ_SYNC);
- }
+@@ -96,7 +96,7 @@ struct request {
+ 	struct request_queue *q;
+ 	struct blk_mq_ctx *mq_ctx;
  
- static inline bool rq_is_sync(struct request *rq)
- {
--	return rw_is_sync(rq->cmd_flags);
-+	return rw_is_sync(rq->op, rq->cmd_flags);
- }
- 
- static inline bool blk_rl_full(struct request_list *rl, bool sync)
+-	int op;
++	u8 op;
+ 	u64 cmd_flags;
+ 	unsigned cmd_type;
+ 	unsigned long atomic_flags;
 -- 
 2.7.2
