@@ -1,25 +1,26 @@
-Date: Fri, 15 Apr 2016 17:40:31 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: Markus Pargmann <mpa@pengutronix.de>, David Woodhouse
- <dwmw2@infradead.org>, Fabio Estevam <fabio.estevam@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>, Huang Shijie
- <shijie.huang@intel.com>, Brian Norris <computersforpeace@gmail.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Stefan Christ <s.christ@phytec.de>,
- Elie De Brauwer <eliedebrauwer@gmail.com>, Richard Weinberger
- <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-Message-ID: <20160415174031.3c088df5@bbrezillon>
-In-Reply-To: <AM4PR0401MB1841C82A9BCBFF2C55AA4DC397680@AM4PR0401MB1841.eurprd04.prod.outlook.com>
-References: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
- <33206452.D8BR53ndXi@adelgunde>
- <20160415113906.7f971cec@bbrezillon> <1733015.oJ2G1KSZLY@adelgunde>
- <AM4PR0401MB1841C82A9BCBFF2C55AA4DC397680@AM4PR0401MB1841.eurprd04.prod.outlook.com>
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ar5sj-0007n3-Ap
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 15:42:07 +0000
+Date: Fri, 15 Apr 2016 08:41:40 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Roger Quadros <rogerq@ti.com>, javier@dowhile0.org, fcooper@ti.com,
+ nsekhar@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+Message-ID: <20160415154139.GS5995@atomide.com>
+References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
+ <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
+ <20160415120942.3131eac1@bbrezillon> <5710C86A.9060108@ti.com>
+ <20160415135108.63716f06@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160415135108.63716f06@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +30,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 15 Apr 2016 15:33:07 +0000
-Han Xu <han.xu@nxp.com> wrote:
-
-> >
-> > I just did [1] (it applies on top of your patch), but maybe you
-> > can test it (I don't have any imx platforms right now) ;).
+* Boris Brezillon <boris.brezillon@free-electrons.com> [160415 04:52]:
+> Roger, Tony,
 > 
-> Great, thank you :). I just tested the patch and it works for me. The
-> erased page bitflips are still detected and fixed. I will send a new
-> version then.
+> On Fri, 15 Apr 2016 13:54:34 +0300
+> Roger Quadros <rogerq@ti.com> wrote:
 > 
-> Hi Markus,
+> > On 15/04/16 13:09, Boris Brezillon wrote:
+> > > Hi Roger,
+> > > 
+> > > On Fri, 15 Apr 2016 12:34:04 +0300
+> > > Roger Quadros <rogerq@ti.com> wrote:
+> > > 
+> > >> Tony & Boris,
+> > >>
+> > >> On 14/04/16 00:25, Tony Lindgren wrote:
+> > >>> * Roger Quadros <rogerq@ti.com> [160407 03:10]:
+> > >>>> Hi,
+> > >>>>
+> > >>>> As this series has cross dependency between omap and mtd subsystems,
+> > >>>> I'll set up a immutable branch which omap-soc and l2-mtd must
+> > >>>> merge in together to avoid any conflicts/breakage during integration.
+> > >>>>
+> > >>>> Brian has acked all mtd patches. Tony needs to give his Ack for the
+> > >>>> gpmc driver part and then I can provide the immutable branch.
+> > >>>
+> > >>> Looks good to me, please feel free to add:
+> > >>>
+> > >>> Acked-by: Tony Lindgren <tony@atomide.com>
+> > >>>
+> > >>
+> > >> I've added Tony and Rob's Acked-by tags and pushed the patches at the
+> > >> below PULL request.
+> > >>
+> > >> Please take this into omap-soc and l2-mtd trees. Thanks.
+> > > 
+> > > I Pulled this branch into nand/next and had to resolve a few conflicts
+> > > (as you may have noticed, a few other reworks in the NAND and MTD layer
+> > > have been merged in the meantime).
+> > 
+> > OK. I'm not sure how well this will play when this merges into liunx-next
+> > via the omap-soc tree.
+> > 
+> > Instead, can you please create a non-mutable nand/base for me (which could be
+> > today's nand/next) and I can base my branch on that and Tony can use my
+> > branch without causing any merge-conflict in linux-next?
 > 
-> Could you please share how to verify the patch, in other words, how to reproduce the
-> UBIFS corruption issue consistently. Thanks.
+> I just created a branch called nand/for-gpmc-rework based on today's
+> nand/next, but I'm still unsure how to proceed once you've rebased your
+> work on this branch?
+> 
+> Tony will first have to pull my immutable branch, then pull yours, and
+> then I'll have to pull an immutable branch from the the omap-soc tree
+> to get your changes into my nand/next branch (in case other patches
+> modify the same files before I send my PR). Am I missing something?
+> If I'm not, then this option looks over-complicated to me.
 
-I should really post a new version of the nandflipbits tool [1].
-That's clearly the easiest solution to verify that your bitflip
-correction is reliable.
+Well why don't you merge it all via NAND then? I'm not seeing
+any merge conflicts with the arch/arm/mach-omap* code.
 
+> ITOH, if we decide to let your patches go through the nand or omap-soc
+> tree, only one immutable branch will be created, and either the nand or
+> omap-soc maintainer (depending on who takes the patches) will have to
+> pull it into its -next branch.
+> 
+> I'm quite new to all this merging process, so don't hesitate to correct
+> me if I'm wrong.
 
-[1]http://lists.infradead.org/pipermail/linux-mtd/2014-November/056634.html
+Well the rules are that if something agreed to be immutable, then
+it will never get redone. And the immutable branch should be based
+on the absolute minimal set of patches against some earlier tag,
+usually -rc1 is a good one. This avoids other tree to need to pull
+in a huge amount of changes from other trees just to avoid merge
+conflicts.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Regards,
+
+Tony
