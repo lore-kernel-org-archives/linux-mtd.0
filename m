@@ -1,25 +1,25 @@
-From: Han Xu <han.xu@nxp.com>
-To: Markus Pargmann <mpa@pengutronix.de>, Boris Brezillon
- <boris.brezillon@free-electrons.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Fabio Estevam
- <fabio.estevam@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "kernel@pengutronix.de"
- <kernel@pengutronix.de>, Huang Shijie <shijie.huang@intel.com>, Brian Norris
- <computersforpeace@gmail.com>, "linux-arm-kernel@lists.infradead.org"
+Date: Fri, 15 Apr 2016 17:40:31 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Han Xu <han.xu@nxp.com>
+Cc: Markus Pargmann <mpa@pengutronix.de>, David Woodhouse
+ <dwmw2@infradead.org>, Fabio Estevam <fabio.estevam@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>, Huang Shijie
+ <shijie.huang@intel.com>, Brian Norris <computersforpeace@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org"
  <linux-arm-kernel@lists.infradead.org>, Stefan Christ <s.christ@phytec.de>,
  Elie De Brauwer <eliedebrauwer@gmail.com>, Richard Weinberger
  <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
 Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-Date: Fri, 15 Apr 2016 15:33:07 +0000
-Message-ID: <AM4PR0401MB1841C82A9BCBFF2C55AA4DC397680@AM4PR0401MB1841.eurprd04.prod.outlook.com>
+Message-ID: <20160415174031.3c088df5@bbrezillon>
+In-Reply-To: <AM4PR0401MB1841C82A9BCBFF2C55AA4DC397680@AM4PR0401MB1841.eurprd04.prod.outlook.com>
 References: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
  <33206452.D8BR53ndXi@adelgunde>
- <20160415113906.7f971cec@bbrezillon>,<1733015.oJ2G1KSZLY@adelgunde>
-In-Reply-To: <1733015.oJ2G1KSZLY@adelgunde>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ <20160415113906.7f971cec@bbrezillon> <1733015.oJ2G1KSZLY@adelgunde>
+ <AM4PR0401MB1841C82A9BCBFF2C55AA4DC397680@AM4PR0401MB1841.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,157 +29,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 15 Apr 2016 15:33:07 +0000
+Han Xu <han.xu@nxp.com> wrote:
 
-
-________________________________________
-From: Markus Pargmann <mpa@pengutronix.de>
-Sent: Friday, April 15, 2016 6:03 AM
-To: Boris Brezillon
-Cc: Han Xu; David Woodhouse; Fabio Estevam; linux-mtd@lists.infradead.org; =
-kernel@pengutronix.de; Huang Shijie; Brian Norris; linux-arm-kernel@lists.i=
-nfradead.org; Stefan Christ; Elie De Brauwer; Richard Weinberger; Artem Bit=
-yutskiy
-Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-
-Hi Boris,
-
-On Friday 15 April 2016 11:39:06 Boris Brezillon wrote:
+> >
+> > I just did [1] (it applies on top of your patch), but maybe you
+> > can test it (I don't have any imx platforms right now) ;).
+> 
+> Great, thank you :). I just tested the patch and it works for me. The
+> erased page bitflips are still detected and fixed. I will send a new
+> version then.
+> 
 > Hi Markus,
->
-> On Fri, 15 Apr 2016 11:35:07 +0200
-> Markus Pargmann <mpa@pengutronix.de> wrote:
->
-> > Hi Boris,
-> >
-> > On Friday 15 April 2016 10:35:08 Boris Brezillon wrote:
-> > > Hi Markus,
-> > >
-> > > On Fri, 15 Apr 2016 09:55:45 +0200
-> > > Markus Pargmann <mpa@pengutronix.de> wrote:
-> > >
-> > > > On Wednesday 13 April 2016 00:51:55 Boris Brezillon wrote:
-> > > > > On Tue, 12 Apr 2016 22:39:08 +0000
-> > > > > Han Xu <han.xu@nxp.com> wrote:
-> > > > >
-> > > > > > > Thanks for the feedback. Talking with a coworker about this w=
-e may have found a
-> > > > > > > better approach to this that is less complicated to implement=
-. The hardware
-> > > > > > > unit allows us to set a bitflip threshold for erased pages. T=
-he ECC unit
-> > > > > > > creates an ECC error only if the number of bitflips exceeds t=
-his threshold, but
-> > > > > > > it does not correct these. So the idea is to change the patch=
- so that we set
-> > > > > > > pages, that are signaled by the ECC as erased, to 0xff comple=
-tely without
-> > > > > > > checking. So the ECC will do all the work and we completely t=
-rust in its
-> > > > > > > abilities to do it correctly.
-> > > > > >
-> > > > > > Sounds good.
-> > > > > >
-> > > > > > some new platforms with new gpmi controller could check the cou=
-nt of 0 bits in page,
-> > > > > > refer to my patch https://patchwork.ozlabs.org/patch/587124/
-> > > > > >
-> > > > > > But for all legacy platforms, IMO, considering bitflip is rare =
-case, set threshold to 0 and
-> > > > > > only check the uncorrectable branch and then correct data sound=
-s better. Setting threshold
-> > > > > > and correcting all erased page may highly impact the performanc=
-e.
-> > > > >
-> > > > > Indeed, bitflips in erased pages is not so common, and penalizing=
- the
-> > > > > likely case (erased pages without any bitflips) doesn't look like=
- a good
-> > > > > idea in the end.
-> > > >
-> > > > Are erased pages really read that often?
-> > >
-> > > Yes, it's not unusual to have those "empty pages?" checks (added Arte=
-m
-> > > and Richard to get a confirmation). AFAIR, UBIFS check for empty page=
-s
-> > > in its journal heads after an unclean unmount (which happens quite
-> > > often) to make sure there's no corruption.
-> > >
-> > > > I am not sure how UBI handles
-> > > > this, does it read every page before writing?
-> > >
-> > > Nope, or maybe it does when you activate some extra checks.
-> > >
-> > > >
-> > > > >
-> > > > > You can still implement this check in software. You can have a lo=
-ok at
-> > > > > nand_check_erased_ecc_chunk() [1] if you need an example, but you=
-'ll
-> > > > > have to adapt it because your controller does not guarantees that=
- ECC
-> > > > > bits for a given chunk are byte aligned :-/
-> > > >
-> > > > Yes I used this function in the patch. The issue is that I am not q=
-uite
-> > > > sure yet where to find the raw ECC data (without rereading the page=
-).
-> > > > The reference manual is not extremely clear about that, ecc data ma=
-y be
-> > > > in the 'auxilliary data' but I am not sure that it really is availa=
-ble
-> > > > somewhere.
-> > >
-> > > AFAIR (and I'm not sure since it was a long time ago), you don't have
-> > > direct access to ECC bytes with the GPMI engine. If that's the case,
-> > > you'll have to read the ECC bytes manually (moving the page pointer
-> > > using ->cmdfunc(NAND_CMD_RNDOUT, column, -1)), which is a pain with
-> > > this engine, because ECC bytes are not guaranteed to be byte aligned
-> > > (see gpmi ->read_page_raw() implementation).
-> > > Once you've retrieved ECC bytes (or bits in this case), for each ECC
-> > > chunk, you can use the nand_check_erased_ecc_chunk() function (just m=
-ake
-> > > sure you're padding the last ECC byte of each chunk with ones so that
-> > > bitflips cannot be reported on this section).
-> >
-> > Thanks for the information. So I understand that this approach is the
-> > preferred one to avoid any performance issues for normal operation.
-> >
-> > I actually won't be able to fix this patch accordingly for some time. I=
-f
-> > anyone else needs this earlier, feel free to implement it.
->
-> I just did [1] (it applies on top of your patch), but maybe you
-> can test it (I don't have any imx platforms right now) ;).
+> 
+> Could you please share how to verify the patch, in other words, how to reproduce the
+> UBIFS corruption issue consistently. Thanks.
 
-Great, thank you :). I just tested the patch and it works for me. The
-erased page bitflips are still detected and fixed. I will send a new
-version then.
+I should really post a new version of the nandflipbits tool [1].
+That's clearly the easiest solution to verify that your bitflip
+correction is reliable.
 
-Hi Markus,
 
-Could you please share how to verify the patch, in other words, how to repr=
-oduce the
-UBIFS corruption issue consistently. Thanks.
+[1]http://lists.infradead.org/pipermail/linux-mtd/2014-November/056634.html
 
-Best Regards,
-
-Markus
-
->
-> If these changes work, feel free to squash them into your previous
-> patch.
->
-> Thanks,
->
-> Boris
->
-> [1]http://code.bulix.org/bq6yyh-96549
->
->
-
---
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
