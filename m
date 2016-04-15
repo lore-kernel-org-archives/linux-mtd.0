@@ -1,28 +1,28 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from muru.com ([72.249.23.125])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ar6Fl-0002rt-Pk
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 16:05:55 +0000
-Date: Fri, 15 Apr 2016 18:05:31 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Tony Lindgren <tony@atomide.com>
+ id 1ar6Tg-0002J1-Mw
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 16:20:26 +0000
+Date: Fri, 15 Apr 2016 09:19:51 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Roger Quadros <rogerq@ti.com>, javier@dowhile0.org, fcooper@ti.com,
- nsekhar@ti.com, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- ezequiel@vanguardiasur.com.ar, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC
- NAND on non-OMAP platforms
-Message-ID: <20160415180531.15d790d2@bbrezillon>
-In-Reply-To: <20160415154139.GS5995@atomide.com>
+ nsekhar@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+Message-ID: <20160415161950.GT5995@atomide.com>
 References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
  <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
  <20160415120942.3131eac1@bbrezillon> <5710C86A.9060108@ti.com>
  <20160415135108.63716f06@bbrezillon>
  <20160415154139.GS5995@atomide.com>
+ <20160415180531.15d790d2@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160415180531.15d790d2@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,105 +32,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tony,
-
-On Fri, 15 Apr 2016 08:41:40 -0700
-Tony Lindgren <tony@atomide.com> wrote:
-
-> * Boris Brezillon <boris.brezillon@free-electrons.com> [160415 04:52]:
-> > Roger, Tony,
-> > 
-> > On Fri, 15 Apr 2016 13:54:34 +0300
-> > Roger Quadros <rogerq@ti.com> wrote:
-> > 
-> > > On 15/04/16 13:09, Boris Brezillon wrote:
-> > > > Hi Roger,
-> > > > 
-> > > > On Fri, 15 Apr 2016 12:34:04 +0300
-> > > > Roger Quadros <rogerq@ti.com> wrote:
-> > > > 
-> > > >> Tony & Boris,
-> > > >>
-> > > >> On 14/04/16 00:25, Tony Lindgren wrote:
-> > > >>> * Roger Quadros <rogerq@ti.com> [160407 03:10]:
-> > > >>>> Hi,
-> > > >>>>
-> > > >>>> As this series has cross dependency between omap and mtd subsystems,
-> > > >>>> I'll set up a immutable branch which omap-soc and l2-mtd must
-> > > >>>> merge in together to avoid any conflicts/breakage during integration.
-> > > >>>>
-> > > >>>> Brian has acked all mtd patches. Tony needs to give his Ack for the
-> > > >>>> gpmc driver part and then I can provide the immutable branch.
-> > > >>>
-> > > >>> Looks good to me, please feel free to add:
-> > > >>>
-> > > >>> Acked-by: Tony Lindgren <tony@atomide.com>
-> > > >>>
-> > > >>
-> > > >> I've added Tony and Rob's Acked-by tags and pushed the patches at the
-> > > >> below PULL request.
-> > > >>
-> > > >> Please take this into omap-soc and l2-mtd trees. Thanks.
-> > > > 
-> > > > I Pulled this branch into nand/next and had to resolve a few conflicts
-> > > > (as you may have noticed, a few other reworks in the NAND and MTD layer
-> > > > have been merged in the meantime).
-> > > 
-> > > OK. I'm not sure how well this will play when this merges into liunx-next
-> > > via the omap-soc tree.
-> > > 
-> > > Instead, can you please create a non-mutable nand/base for me (which could be
-> > > today's nand/next) and I can base my branch on that and Tony can use my
-> > > branch without causing any merge-conflict in linux-next?
-> > 
-> > I just created a branch called nand/for-gpmc-rework based on today's
-> > nand/next, but I'm still unsure how to proceed once you've rebased your
-> > work on this branch?
-> > 
-> > Tony will first have to pull my immutable branch, then pull yours, and
-> > then I'll have to pull an immutable branch from the the omap-soc tree
-> > to get your changes into my nand/next branch (in case other patches
-> > modify the same files before I send my PR). Am I missing something?
-> > If I'm not, then this option looks over-complicated to me.
+* Boris Brezillon <boris.brezillon@free-electrons.com> [160415 09:06]:
+> On Fri, 15 Apr 2016 08:41:40 -0700
+> Tony Lindgren <tony@atomide.com> wrote:
+> > Well the rules are that if something agreed to be immutable, then
+> > it will never get redone. And the immutable branch should be based
+> > on the absolute minimal set of patches against some earlier tag,
+> > usually -rc1 is a good one. This avoids other tree to need to pull
+> > in a huge amount of changes from other trees just to avoid merge
+> > conflicts.
 > 
-> Well why don't you merge it all via NAND then? I'm not seeing
-> any merge conflicts with the arch/arm/mach-omap* code.
+> How would you do it in this particular case. Say I have to provide you
+> with an immutable branch, it should only contain Roger's patches, right?
 
-I'm perfectly fine with that. Actually, that's what I first did (see the
-nand/next-with-gpmc-rework I asked Roger to validate).
-Roger, since you don't have any dependencies on omap stuff added after
-4.6-rc1, I could even rebase your patches on top of nand/next to avoid
-this merge commit (and the associated conflict resolution).
+Well ideally it would be just minimal NAND related changes
+branch against v4.6-rc1. Then if Roger has a dependency to
+that, Roger can pull it in.
 
-> 
-> > ITOH, if we decide to let your patches go through the nand or omap-soc
-> > tree, only one immutable branch will be created, and either the nand or
-> > omap-soc maintainer (depending on who takes the patches) will have to
-> > pull it into its -next branch.
-> > 
-> > I'm quite new to all this merging process, so don't hesitate to correct
-> > me if I'm wrong.
-> 
-> Well the rules are that if something agreed to be immutable, then
-> it will never get redone. And the immutable branch should be based
-> on the absolute minimal set of patches against some earlier tag,
-> usually -rc1 is a good one. This avoids other tree to need to pull
-> in a huge amount of changes from other trees just to avoid merge
-> conflicts.
+Then Roger would make a branch for the GPMC changes against
+your minimal NAND branch.
 
-How would you do it in this particular case. Say I have to provide you
-with an immutable branch, it should only contain Roger's patches, right?
+Then if there were non-trivial merge conflicts, I could pull
+in Roger's GPMC branch as needed.
 
-But this also means this immutable branch has to be pulled into my
-nand/next branch before all other changes touching the same set of
-files, which in turn means that I'll have to rebase and push -f my
-nand/next branch (which I'd like to avoid).
-Or should I just pull this immutable branch in my current nand/next and
-let you pull the same immutable branch in omap-soc. I mean, would this
-prevent conflicts when our branches are merged into linux-next, no
-matter the order.
+But in this case, it seems you can just merge everything via
+the NAND tree and problem solved.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> But this also means this immutable branch has to be pulled into my
+> nand/next branch before all other changes touching the same set of
+> files, which in turn means that I'll have to rebase and push -f my
+> nand/next branch (which I'd like to avoid).
+
+Yeah let's not do rebases, there should be no need for it.
+
+> Or should I just pull this immutable branch in my current nand/next and
+> let you pull the same immutable branch in omap-soc. I mean, would this
+> prevent conflicts when our branches are merged into linux-next, no
+> matter the order.
+
+Ideally just one or more branches with just minimal changes in
+them against -rc1. But you may have other dependencies in
+your NAND tree so that may no longer be doable :) Usually if
+I merge something that may need to get merged into other
+branches, I just apply them into a separate branch against -rc1
+to start with, then merge that branch in.
+
+Regards,
+
+Tony
