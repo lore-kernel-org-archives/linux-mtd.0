@@ -1,11 +1,9 @@
 Received: from mx1.redhat.com ([209.132.183.28])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ar9fi-0005RZ-MA
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 19:44:55 +0000
-Date: Fri, 15 Apr 2016 15:44:32 -0400
-From: Mike Snitzer <snitzer@redhat.com>
-To: mchristi@redhat.com
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1ar9FU-0006Ye-Nq
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 19:17:49 +0000
+From: mchristi@redhat.com
+To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
  philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
  linux-raid@vger.kernel.org, dm-devel@redhat.com,
@@ -14,14 +12,12 @@ Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH 00/42] v7: separate operations from flags in the
- bio/request structs
-Message-ID: <20160415194432.GA30077@redhat.com>
-References: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cc: Mike Christie <mchristi@redhat.com>
+Subject: [PATCH 17/42] ocfs2: set bi_op to REQ_OP
+Date: Fri, 15 Apr 2016 14:15:52 -0500
+Message-Id: <1460747777-8479-18-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
+References: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,39 +27,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 15 2016 at  3:15pm -0400,
-mchristi@redhat.com <mchristi@redhat.com> wrote:
+From: Mike Christie <mchristi@redhat.com>
 
-> The following patches begin to cleanup the request->cmd_flags and
-> bio->bi_rw mess. We currently use cmd_flags to specify the operation,
-> attributes and state of the request. For bi_rw we use it for similar
-> info and also the priority but then also have another bi_flags field
-> for state. At some point, we abused them so much we just made cmd_flags
-> 64 bits, so we could add more.
-> 
-> The following patches seperate the operation (read, write discard,
-> flush, etc) from cmd_flags/bi_rw.
-> 
-> This patchset was made against linux-next from today April 15
-> (git tag next-20160415).
-> 
-> I put a git tree here:
-> https://github.com/mikechristie/linux-kernel.git
-> The patches are in the op branch.
-> 
-> v7:
-> 1. Fix broken feature_flush/fua use.
-> 
-> v6 and maybe hopfully the last version:
-> 1. Adapt patch 41 to Jens's QUEUE_FLAG_WC/FUA patchset.
+This patch has ocfs2 use bio->bi_op for REQ_OPs and rq_flag_bits
+to bio->bi_rw.
 
-Why are you blasting out the entire patchset for updates to individual
-patches at the end of the series?
+Signed-off-by: Mike Christie <mchristi@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Hannes Reinecke <hare@suse.com>
+---
+ fs/ocfs2/cluster/heartbeat.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-Mail is cheap but look at how wide you're repeatedly spamming this
-series.
-
-Also, look at what you've done to the dm-devel patchwork:
-https://patchwork.kernel.org/project/dm-devel/list/?state=*
-
-Just sayin'... ;)
+diff --git a/fs/ocfs2/cluster/heartbeat.c b/fs/ocfs2/cluster/heartbeat.c
+index e37373d..0619a20 100644
+--- a/fs/ocfs2/cluster/heartbeat.c
++++ b/fs/ocfs2/cluster/heartbeat.c
+@@ -530,7 +530,8 @@ static void o2hb_bio_end_io(struct bio *bio)
+ static struct bio *o2hb_setup_one_bio(struct o2hb_region *reg,
+ 				      struct o2hb_bio_wait_ctxt *wc,
+ 				      unsigned int *current_slot,
+-				      unsigned int max_slots, int rw)
++				      unsigned int max_slots, int op,
++				      int op_flags)
+ {
+ 	int len, current_page;
+ 	unsigned int vec_len, vec_start;
+@@ -556,7 +557,8 @@ static struct bio *o2hb_setup_one_bio(struct o2hb_region *reg,
+ 	bio->bi_bdev = reg->hr_bdev;
+ 	bio->bi_private = wc;
+ 	bio->bi_end_io = o2hb_bio_end_io;
+-	bio->bi_rw = rw;
++	bio->bi_op = op;
++	bio->bi_rw = op_flags;
+ 
+ 	vec_start = (cs << bits) % PAGE_SIZE;
+ 	while(cs < max_slots) {
+@@ -593,7 +595,7 @@ static int o2hb_read_slots(struct o2hb_region *reg,
+ 
+ 	while(current_slot < max_slots) {
+ 		bio = o2hb_setup_one_bio(reg, &wc, &current_slot, max_slots,
+-					 READ);
++					 REQ_OP_READ, 0);
+ 		if (IS_ERR(bio)) {
+ 			status = PTR_ERR(bio);
+ 			mlog_errno(status);
+@@ -625,7 +627,8 @@ static int o2hb_issue_node_write(struct o2hb_region *reg,
+ 
+ 	slot = o2nm_this_node();
+ 
+-	bio = o2hb_setup_one_bio(reg, write_wc, &slot, slot+1, WRITE_SYNC);
++	bio = o2hb_setup_one_bio(reg, write_wc, &slot, slot+1, REQ_OP_WRITE,
++				 WRITE_SYNC);
+ 	if (IS_ERR(bio)) {
+ 		status = PTR_ERR(bio);
+ 		mlog_errno(status);
+-- 
+2.7.2
