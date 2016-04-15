@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ar9F9-00080F-Mf
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 19:17:29 +0000
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1ar9FF-0006YS-RP
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 19:17:34 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 21/42] bcache: set bi_op to REQ_OP
-Date: Fri, 15 Apr 2016 14:15:56 -0500
-Message-Id: <1460747777-8479-22-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 24/42] xen: set bi_op to REQ_OP
+Date: Fri, 15 Apr 2016 14:15:59 -0500
+Message-Id: <1460747777-8479-25-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
 References: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,294 +29,127 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-This patch has bcache use bio->bi_op for REQ_OPs and rq_flag_bits
+This patch has the xen block driver use bio->bi_op for REQ_OPs and rq_flag_bits
 to bio->bi_rw.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Hannes Reinecke <hare@suse.com>
 ---
- drivers/md/bcache/btree.c     |  2 ++
- drivers/md/bcache/debug.c     |  2 ++
- drivers/md/bcache/io.c        |  2 +-
- drivers/md/bcache/journal.c   |  7 ++++---
- drivers/md/bcache/movinggc.c  |  2 +-
- drivers/md/bcache/request.c   |  9 +++++----
- drivers/md/bcache/super.c     | 26 +++++++++++++++-----------
- drivers/md/bcache/writeback.c |  4 ++--
- 8 files changed, 32 insertions(+), 22 deletions(-)
+ drivers/block/xen-blkback/blkback.c | 29 +++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
-index 22b9e34..752a44f 100644
---- a/drivers/md/bcache/btree.c
-+++ b/drivers/md/bcache/btree.c
-@@ -295,6 +295,7 @@ static void bch_btree_node_read(struct btree *b)
- 	closure_init_stack(&cl);
+diff --git a/drivers/block/xen-blkback/blkback.c b/drivers/block/xen-blkback/blkback.c
+index 79fe493..854ecca 100644
+--- a/drivers/block/xen-blkback/blkback.c
++++ b/drivers/block/xen-blkback/blkback.c
+@@ -501,7 +501,7 @@ static int xen_vbd_translate(struct phys_req *req, struct xen_blkif *blkif,
+ 	struct xen_vbd *vbd = &blkif->vbd;
+ 	int rc = -EACCES;
  
- 	bio = bch_bbio_alloc(b->c);
-+	bio->bi_op	= REQ_OP_READ;
- 	bio->bi_rw	= REQ_META|READ_SYNC;
- 	bio->bi_iter.bi_size = KEY_SIZE(&b->key) << 9;
- 	bio->bi_end_io	= btree_node_read_endio;
-@@ -397,6 +398,7 @@ static void do_btree_node_write(struct btree *b)
+-	if ((operation != READ) && vbd->readonly)
++	if ((operation != REQ_OP_READ) && vbd->readonly)
+ 		goto out;
  
- 	b->bio->bi_end_io	= btree_node_write_endio;
- 	b->bio->bi_private	= cl;
-+	b->bio->bi_op		= REQ_OP_WRITE;
- 	b->bio->bi_rw		= REQ_META|WRITE_SYNC|REQ_FUA;
- 	b->bio->bi_iter.bi_size	= roundup(set_bytes(i), block_bytes(b->c));
- 	bch_bio_map(b->bio, i);
-diff --git a/drivers/md/bcache/debug.c b/drivers/md/bcache/debug.c
-index 52b6bcf..8df9e66 100644
---- a/drivers/md/bcache/debug.c
-+++ b/drivers/md/bcache/debug.c
-@@ -52,6 +52,7 @@ void bch_btree_verify(struct btree *b)
- 	bio->bi_bdev		= PTR_CACHE(b->c, &b->key, 0)->bdev;
- 	bio->bi_iter.bi_sector	= PTR_OFFSET(&b->key, 0);
- 	bio->bi_iter.bi_size	= KEY_SIZE(&v->key) << 9;
-+	bio->bi_op		= REQ_OP_READ;
- 	bio->bi_rw		= REQ_META|READ_SYNC;
- 	bch_bio_map(bio, sorted);
+ 	if (likely(req->nr_sects)) {
+@@ -1014,7 +1014,7 @@ static int dispatch_discard_io(struct xen_blkif_ring *ring,
+ 	preq.sector_number = req->u.discard.sector_number;
+ 	preq.nr_sects      = req->u.discard.nr_sectors;
  
-@@ -114,6 +115,7 @@ void bch_data_verify(struct cached_dev *dc, struct bio *bio)
- 	check = bio_clone(bio, GFP_NOIO);
- 	if (!check)
- 		return;
-+	check->bi_op = REQ_OP_READ;
- 	check->bi_rw |= READ_SYNC;
+-	err = xen_vbd_translate(&preq, blkif, WRITE);
++	err = xen_vbd_translate(&preq, blkif, REQ_OP_WRITE);
+ 	if (err) {
+ 		pr_warn("access denied: DISCARD [%llu->%llu] on dev=%04x\n",
+ 			preq.sector_number,
+@@ -1229,6 +1229,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
+ 	struct bio **biolist = pending_req->biolist;
+ 	int i, nbio = 0;
+ 	int operation;
++	int operation_flags = 0;
+ 	struct blk_plug plug;
+ 	bool drain = false;
+ 	struct grant_page **pages = pending_req->segments;
+@@ -1247,17 +1248,19 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
+ 	switch (req_operation) {
+ 	case BLKIF_OP_READ:
+ 		ring->st_rd_req++;
+-		operation = READ;
++		operation = REQ_OP_READ;
+ 		break;
+ 	case BLKIF_OP_WRITE:
+ 		ring->st_wr_req++;
+-		operation = WRITE_ODIRECT;
++		operation = REQ_OP_WRITE;
++		operation_flags = WRITE_ODIRECT;
+ 		break;
+ 	case BLKIF_OP_WRITE_BARRIER:
+ 		drain = true;
+ 	case BLKIF_OP_FLUSH_DISKCACHE:
+ 		ring->st_f_req++;
+-		operation = WRITE_FLUSH;
++		operation = REQ_OP_WRITE;
++		operation_flags = WRITE_FLUSH;
+ 		break;
+ 	default:
+ 		operation = 0; /* make gcc happy */
+@@ -1269,7 +1272,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
+ 	nseg = req->operation == BLKIF_OP_INDIRECT ?
+ 	       req->u.indirect.nr_segments : req->u.rw.nr_segments;
  
- 	if (bio_alloc_pages(check, GFP_NOIO))
-diff --git a/drivers/md/bcache/io.c b/drivers/md/bcache/io.c
-index 86a0bb8..f10a9a0 100644
---- a/drivers/md/bcache/io.c
-+++ b/drivers/md/bcache/io.c
-@@ -111,7 +111,7 @@ void bch_bbio_count_io_errors(struct cache_set *c, struct bio *bio,
- 	struct bbio *b = container_of(bio, struct bbio, bio);
- 	struct cache *ca = PTR_CACHE(c, &b->key, 0);
+-	if (unlikely(nseg == 0 && operation != WRITE_FLUSH) ||
++	if (unlikely(nseg == 0 && operation_flags != WRITE_FLUSH) ||
+ 	    unlikely((req->operation != BLKIF_OP_INDIRECT) &&
+ 		     (nseg > BLKIF_MAX_SEGMENTS_PER_REQUEST)) ||
+ 	    unlikely((req->operation == BLKIF_OP_INDIRECT) &&
+@@ -1310,7 +1313,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
  
--	unsigned threshold = bio->bi_rw & REQ_WRITE
-+	unsigned threshold = op_is_write(bio->bi_op)
- 		? c->congested_write_threshold_us
- 		: c->congested_read_threshold_us;
+ 	if (xen_vbd_translate(&preq, ring->blkif, operation) != 0) {
+ 		pr_debug("access denied: %s of [%llu,%llu] on dev=%04x\n",
+-			 operation == READ ? "read" : "write",
++			 operation == REQ_OP_READ ? "read" : "write",
+ 			 preq.sector_number,
+ 			 preq.sector_number + preq.nr_sects,
+ 			 ring->blkif->vbd.pdevice);
+@@ -1369,7 +1372,8 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
+ 			bio->bi_private = pending_req;
+ 			bio->bi_end_io  = end_block_io_op;
+ 			bio->bi_iter.bi_sector  = preq.sector_number;
+-			bio->bi_rw	= operation;
++			bio->bi_op	= operation;
++			bio->bi_rw	= operation_flags;
+ 		}
  
-diff --git a/drivers/md/bcache/journal.c b/drivers/md/bcache/journal.c
-index af3f9f7..68fa0f0 100644
---- a/drivers/md/bcache/journal.c
-+++ b/drivers/md/bcache/journal.c
-@@ -54,7 +54,7 @@ reread:		left = ca->sb.bucket_size - offset;
- 		bio_reset(bio);
- 		bio->bi_iter.bi_sector	= bucket + offset;
- 		bio->bi_bdev	= ca->bdev;
--		bio->bi_rw	= READ;
-+		bio->bi_op	= REQ_OP_READ;
- 		bio->bi_iter.bi_size	= len << 9;
+ 		preq.sector_number += seg[i].nsec;
+@@ -1377,7 +1381,7 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
  
- 		bio->bi_end_io	= journal_read_endio;
-@@ -452,7 +452,7 @@ static void do_journal_discard(struct cache *ca)
- 		bio->bi_iter.bi_sector	= bucket_to_sector(ca->set,
- 						ca->sb.d[ja->discard_idx]);
- 		bio->bi_bdev		= ca->bdev;
--		bio->bi_rw		= REQ_WRITE|REQ_DISCARD;
-+		bio->bi_op		= REQ_OP_DISCARD;
- 		bio->bi_max_vecs	= 1;
- 		bio->bi_io_vec		= bio->bi_inline_vecs;
- 		bio->bi_iter.bi_size	= bucket_bytes(ca);
-@@ -626,7 +626,8 @@ static void journal_write_unlocked(struct closure *cl)
- 		bio_reset(bio);
- 		bio->bi_iter.bi_sector	= PTR_OFFSET(k, i);
- 		bio->bi_bdev	= ca->bdev;
--		bio->bi_rw	= REQ_WRITE|REQ_SYNC|REQ_META|REQ_FLUSH|REQ_FUA;
-+		bio->bi_op	= REQ_OP_WRITE;
-+		bio->bi_rw	= REQ_SYNC|REQ_META|REQ_FLUSH|REQ_FUA;
- 		bio->bi_iter.bi_size = sectors << 9;
+ 	/* This will be hit if the operation was a flush or discard. */
+ 	if (!bio) {
+-		BUG_ON(operation != WRITE_FLUSH);
++		BUG_ON(operation_flags != WRITE_FLUSH);
  
- 		bio->bi_end_io	= journal_write_endio;
-diff --git a/drivers/md/bcache/movinggc.c b/drivers/md/bcache/movinggc.c
-index b929fc9..f33860a 100644
---- a/drivers/md/bcache/movinggc.c
-+++ b/drivers/md/bcache/movinggc.c
-@@ -163,7 +163,7 @@ static void read_moving(struct cache_set *c)
- 		moving_init(io);
- 		bio = &io->bio.bio;
- 
--		bio->bi_rw	= READ;
-+		bio->bi_op	= REQ_OP_READ;
- 		bio->bi_end_io	= read_moving_endio;
- 
- 		if (bio_alloc_pages(bio, GFP_KERNEL))
-diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
-index 25fa844..cd6837c 100644
---- a/drivers/md/bcache/request.c
-+++ b/drivers/md/bcache/request.c
-@@ -253,7 +253,7 @@ static void bch_data_insert_start(struct closure *cl)
- 		trace_bcache_cache_insert(k);
- 		bch_keylist_push(&op->insert_keys);
- 
--		n->bi_rw |= REQ_WRITE;
-+		n->bi_op = REQ_OP_WRITE;
- 		bch_submit_bbio(n, op->c, k, 0);
- 	} while (n != bio);
- 
-@@ -383,7 +383,7 @@ static bool check_should_bypass(struct cached_dev *dc, struct bio *bio)
- 
- 	if (mode == CACHE_MODE_NONE ||
- 	    (mode == CACHE_MODE_WRITEAROUND &&
--	     (bio->bi_rw & REQ_WRITE)))
-+	     op_is_write(bio->bi_op)))
- 		goto skip;
- 
- 	if (bio->bi_iter.bi_sector & (c->sb.block_size - 1) ||
-@@ -404,7 +404,7 @@ static bool check_should_bypass(struct cached_dev *dc, struct bio *bio)
- 
- 	if (!congested &&
- 	    mode == CACHE_MODE_WRITEBACK &&
--	    (bio->bi_rw & REQ_WRITE) &&
-+	    op_is_write(bio->bi_op) &&
- 	    (bio->bi_rw & REQ_SYNC))
- 		goto rescale;
- 
-@@ -657,7 +657,7 @@ static inline struct search *search_alloc(struct bio *bio,
- 	s->cache_miss		= NULL;
- 	s->d			= d;
- 	s->recoverable		= 1;
--	s->write		= (bio->bi_rw & REQ_WRITE) != 0;
-+	s->write		= op_is_write(bio->bi_op);
- 	s->read_dirty_data	= 0;
- 	s->start_time		= jiffies;
- 
-@@ -925,6 +925,7 @@ static void cached_dev_write(struct cached_dev *dc, struct search *s)
- 			struct bio *flush = bio_alloc_bioset(GFP_NOIO, 0,
- 							     dc->disk.bio_split);
- 
-+			flush->bi_op	= REQ_OP_WRITE;
- 			flush->bi_rw	= WRITE_FLUSH;
- 			flush->bi_bdev	= bio->bi_bdev;
- 			flush->bi_end_io = request_endio;
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 1eb526a7..16e6108 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -212,7 +212,8 @@ static void __write_super(struct cache_sb *sb, struct bio *bio)
- 	unsigned i;
- 
- 	bio->bi_iter.bi_sector	= SB_SECTOR;
--	bio->bi_rw		= REQ_WRITE|REQ_SYNC|REQ_META;
-+	bio->bi_op		= REQ_OP_WRITE;
-+	bio->bi_rw		= REQ_SYNC|REQ_META;
- 	bio->bi_iter.bi_size	= SB_SIZE;
- 	bch_bio_map(bio, NULL);
- 
-@@ -333,7 +334,7 @@ static void uuid_io_unlock(struct closure *cl)
- 	up(&c->uuid_write_mutex);
- }
- 
--static void uuid_io(struct cache_set *c, unsigned long rw,
-+static void uuid_io(struct cache_set *c, int op, unsigned long op_flags,
- 		    struct bkey *k, struct closure *parent)
- {
- 	struct closure *cl = &c->uuid_write;
-@@ -348,7 +349,8 @@ static void uuid_io(struct cache_set *c, unsigned long rw,
- 	for (i = 0; i < KEY_PTRS(k); i++) {
- 		struct bio *bio = bch_bbio_alloc(c);
- 
--		bio->bi_rw	= REQ_SYNC|REQ_META|rw;
-+		bio->bi_op	= op;
-+		bio->bi_rw	= REQ_SYNC|REQ_META|op_flags;
- 		bio->bi_iter.bi_size = KEY_SIZE(k) << 9;
- 
- 		bio->bi_end_io	= uuid_endio;
-@@ -357,12 +359,12 @@ static void uuid_io(struct cache_set *c, unsigned long rw,
- 
- 		bch_submit_bbio(bio, c, k, i);
- 
--		if (!(rw & WRITE))
-+		if (op != REQ_OP_WRITE)
- 			break;
+ 		bio = bio_alloc(GFP_KERNEL, 0);
+ 		if (unlikely(bio == NULL))
+@@ -1387,7 +1391,8 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
+ 		bio->bi_bdev    = preq.bdev;
+ 		bio->bi_private = pending_req;
+ 		bio->bi_end_io  = end_block_io_op;
+-		bio->bi_rw	= operation;
++		bio->bi_op	= operation;
++		bio->bi_rw	= operation_flags;
  	}
  
- 	bch_extent_to_text(buf, sizeof(buf), k);
--	pr_debug("%s UUIDs at %s", rw & REQ_WRITE ? "wrote" : "read", buf);
-+	pr_debug("%s UUIDs at %s", op == REQ_OP_WRITE ? "wrote" : "read", buf);
+ 	atomic_set(&pending_req->pendcnt, nbio);
+@@ -1399,9 +1404,9 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
+ 	/* Let the I/Os go.. */
+ 	blk_finish_plug(&plug);
  
- 	for (u = c->uuids; u < c->uuids + c->nr_uuids; u++)
- 		if (!bch_is_zero(u->uuid, 16))
-@@ -381,7 +383,7 @@ static char *uuid_read(struct cache_set *c, struct jset *j, struct closure *cl)
- 		return "bad uuid pointer";
+-	if (operation == READ)
++	if (operation == REQ_OP_READ)
+ 		ring->st_rd_sect += preq.nr_sects;
+-	else if (operation & WRITE)
++	else if (operation == REQ_OP_WRITE)
+ 		ring->st_wr_sect += preq.nr_sects;
  
- 	bkey_copy(&c->uuid_bucket, k);
--	uuid_io(c, READ_SYNC, k, cl);
-+	uuid_io(c, REQ_OP_READ, READ_SYNC, k, cl);
- 
- 	if (j->version < BCACHE_JSET_VERSION_UUIDv1) {
- 		struct uuid_entry_v0	*u0 = (void *) c->uuids;
-@@ -426,7 +428,7 @@ static int __uuid_write(struct cache_set *c)
- 		return 1;
- 
- 	SET_KEY_SIZE(&k.key, c->sb.bucket_size);
--	uuid_io(c, REQ_WRITE, &k.key, &cl);
-+	uuid_io(c, REQ_OP_WRITE, 0, &k.key, &cl);
- 	closure_sync(&cl);
- 
- 	bkey_copy(&c->uuid_bucket, &k.key);
-@@ -498,7 +500,8 @@ static void prio_endio(struct bio *bio)
- 	closure_put(&ca->prio);
- }
- 
--static void prio_io(struct cache *ca, uint64_t bucket, unsigned long rw)
-+static void prio_io(struct cache *ca, uint64_t bucket, int op,
-+		    unsigned long op_flags)
- {
- 	struct closure *cl = &ca->prio;
- 	struct bio *bio = bch_bbio_alloc(ca->set);
-@@ -507,7 +510,8 @@ static void prio_io(struct cache *ca, uint64_t bucket, unsigned long rw)
- 
- 	bio->bi_iter.bi_sector	= bucket * ca->sb.bucket_size;
- 	bio->bi_bdev		= ca->bdev;
--	bio->bi_rw		= REQ_SYNC|REQ_META|rw;
-+	bio->bi_op		= op;
-+	bio->bi_rw		= REQ_SYNC|REQ_META|op_flags;
- 	bio->bi_iter.bi_size	= bucket_bytes(ca);
- 
- 	bio->bi_end_io	= prio_endio;
-@@ -557,7 +561,7 @@ void bch_prio_write(struct cache *ca)
- 		BUG_ON(bucket == -1);
- 
- 		mutex_unlock(&ca->set->bucket_lock);
--		prio_io(ca, bucket, REQ_WRITE);
-+		prio_io(ca, bucket, REQ_OP_WRITE, 0);
- 		mutex_lock(&ca->set->bucket_lock);
- 
- 		ca->prio_buckets[i] = bucket;
-@@ -599,7 +603,7 @@ static void prio_read(struct cache *ca, uint64_t bucket)
- 			ca->prio_last_buckets[bucket_nr] = bucket;
- 			bucket_nr++;
- 
--			prio_io(ca, bucket, READ_SYNC);
-+			prio_io(ca, bucket, REQ_OP_READ, READ_SYNC);
- 
- 			if (p->csum != bch_crc64(&p->magic, bucket_bytes(ca) - 8))
- 				pr_warn("bad csum reading priorities");
-diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
-index b9346cd..96ddf28 100644
---- a/drivers/md/bcache/writeback.c
-+++ b/drivers/md/bcache/writeback.c
-@@ -183,7 +183,7 @@ static void write_dirty(struct closure *cl)
- 	struct keybuf_key *w = io->bio.bi_private;
- 
- 	dirty_init(w);
--	io->bio.bi_rw		= WRITE;
-+	io->bio.bi_op		= REQ_OP_WRITE;
- 	io->bio.bi_iter.bi_sector = KEY_START(&w->key);
- 	io->bio.bi_bdev		= io->dc->bdev;
- 	io->bio.bi_end_io	= dirty_endio;
-@@ -256,7 +256,7 @@ static void read_dirty(struct cached_dev *dc)
- 		io->bio.bi_iter.bi_sector = PTR_OFFSET(&w->key, 0);
- 		io->bio.bi_bdev		= PTR_CACHE(dc->disk.c,
- 						    &w->key, 0)->bdev;
--		io->bio.bi_rw		= READ;
-+		io->bio.bi_op		= REQ_OP_READ;
- 		io->bio.bi_end_io	= read_dirty_endio;
- 
- 		if (bio_alloc_pages(&io->bio, GFP_KERNEL))
+ 	return 0;
 -- 
 2.7.2
