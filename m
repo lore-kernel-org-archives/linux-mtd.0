@@ -1,21 +1,18 @@
-Date: Fri, 15 Apr 2016 10:35:08 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aqzeT-0004jD-V1
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 09:02:58 +0000
+Date: Fri, 15 Apr 2016 11:02:36 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Han Xu <han.xu@nxp.com>, David Woodhouse <dwmw2@infradead.org>, Fabio
- Estevam <fabio.estevam@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "kernel@pengutronix.de"
- <kernel@pengutronix.de>, Huang Shijie <shijie.huang@intel.com>, Brian
- Norris <computersforpeace@gmail.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Stefan Christ <s.christ@phytec.de>,
- Elie De Brauwer <eliedebrauwer@gmail.com>, Richard Weinberger
- <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-Message-ID: <20160415103508.5f6bc8c8@bbrezillon>
-In-Reply-To: <7168760.YSQBa3GsdA@adelgunde>
-References: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
- <DB5PR0401MB1845DD983AF9195311DEB20F97950@DB5PR0401MB1845.eurprd04.prod.outlook.com>
- <20160413005155.03cb7bc6@bbrezillon> <7168760.YSQBa3GsdA@adelgunde>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ alex@nextthing.co, Daniel Walter <dwalter@sigma-star.at>
+Subject: Re: [RFC] ubihealthd
+Message-ID: <20160415110236.751cb28e@bbrezillon>
+In-Reply-To: <20160415062604.GA31101@pengutronix.de>
+References: <1446764403-22742-1-git-send-email-richard@nod.at>
+ <20160415062604.GA31101@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,76 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Markus,
+On Fri, 15 Apr 2016 08:26:04 +0200
+Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-On Fri, 15 Apr 2016 09:55:45 +0200
-Markus Pargmann <mpa@pengutronix.de> wrote:
-
-> On Wednesday 13 April 2016 00:51:55 Boris Brezillon wrote:
-> > On Tue, 12 Apr 2016 22:39:08 +0000
-> > Han Xu <han.xu@nxp.com> wrote:
-> > 
-> > > > Thanks for the feedback. Talking with a coworker about this we may have found a
-> > > > better approach to this that is less complicated to implement. The hardware
-> > > > unit allows us to set a bitflip threshold for erased pages. The ECC unit
-> > > > creates an ECC error only if the number of bitflips exceeds this threshold, but
-> > > > it does not correct these. So the idea is to change the patch so that we set
-> > > > pages, that are signaled by the ECC as erased, to 0xff completely without
-> > > > checking. So the ECC will do all the work and we completely trust in its
-> > > > abilities to do it correctly.
-> > > 
-> > > Sounds good.
-> > > 
-> > > some new platforms with new gpmi controller could check the count of 0 bits in page,
-> > > refer to my patch https://patchwork.ozlabs.org/patch/587124/
-> > > 
-> > > But for all legacy platforms, IMO, considering bitflip is rare case, set threshold to 0 and
-> > > only check the uncorrectable branch and then correct data sounds better. Setting threshold
-> > > and correcting all erased page may highly impact the performance.
-> > 
-> > Indeed, bitflips in erased pages is not so common, and penalizing the
-> > likely case (erased pages without any bitflips) doesn't look like a good
-> > idea in the end.
+> Hi Richard, Daniel,
 > 
-> Are erased pages really read that often?
-
-Yes, it's not unusual to have those "empty pages?" checks (added Artem
-and Richard to get a confirmation). AFAIR, UBIFS check for empty pages
-in its journal heads after an unclean unmount (which happens quite
-often) to make sure there's no corruption.
-
-> I am not sure how UBI handles
-> this, does it read every page before writing?
-
-Nope, or maybe it does when you activate some extra checks.
-
-> 
+> On Thu, Nov 05, 2015 at 11:59:59PM +0100, Richard Weinberger wrote:
+> > ubihealthd is a tiny C program which takes care of your NAND.
+> > It will trigger re-reads and scrubbing such that read-disturb and
+> > data retention will be addressed before data is lost.
+> > Currently the policy is rather trivial. It re-reads every PEB within
+> > a given time frame, same for scrubbing and if a PEB's read counter exceeds
+> > a given threshold it will also trigger a re-read.
 > > 
-> > You can still implement this check in software. You can have a look at
-> > nand_check_erased_ecc_chunk() [1] if you need an example, but you'll
-> > have to adapt it because your controller does not guarantees that ECC
-> > bits for a given chunk are byte aligned :-/
+> > At ELCE some people asked why this is done in userspace.
+> > The reason is that this is a classical example of kernel offers mechanism
+> > and userspace the policy. Also ubihealthd is not mandatory.
+> > Depending on your NAND it can help you increasing its lifetime.
+> > But you won't lose data immediately if it does not run for a while.
+> > It is something like smartd is for hard disks.
+> > I did this also in kernel space and it was messy.
 > 
-> Yes I used this function in the patch. The issue is that I am not quite
-> sure yet where to find the raw ECC data (without rereading the page).
-> The reference manual is not extremely clear about that, ecc data may be
-> in the 'auxilliary data' but I am not sure that it really is available
-> somewhere.
+> I gave ubihealthd a try and it basically works as expected. I let it run
+> on a UBI device with a ton of (artificial) bitflips and the demon crawls
+> over them moving the data away.
+> 
+> Do you have plans to further work on this and to integrate it into the
+> kernel and mtd-utils?
+> 
+> One thing I noticed is that ubihealthd always scrubs blocks, even when
+> there are no bitflips in that block. Why is that done? I would assume
+> that rewriting a block when there are more bitflips than we can accept
+> is enough, no?
 
-AFAIR (and I'm not sure since it was a long time ago), you don't have
-direct access to ECC bytes with the GPMI engine. If that's the case,
-you'll have to read the ECC bytes manually (moving the page pointer
-using ->cmdfunc(NAND_CMD_RNDOUT, column, -1)), which is a pain with
-this engine, because ECC bytes are not guaranteed to be byte aligned
-(see gpmi ->read_page_raw() implementation).
-Once you've retrieved ECC bytes (or bits in this case), for each ECC
-chunk, you can use the nand_check_erased_ecc_chunk() function (just make
-sure you're padding the last ECC byte of each chunk with ones so that
-bitflips cannot be reported on this section).
+Yep, that's my opinion too: we should not scrub the block if we're
+below the bitflip_threshold. If one wants to be conservative, and
+scrub as soon as there's a single bitflip, he can always manually set
+bitflips_threshold to something really low.
 
-Best Regards,
-
-Boris
 
 -- 
 Boris Brezillon, Free Electrons
