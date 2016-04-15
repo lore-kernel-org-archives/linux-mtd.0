@@ -1,29 +1,23 @@
 Received: from mx1.redhat.com ([209.132.183.28])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ar8x1-0000M5-4c
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 18:58:43 +0000
-Subject: Re: [PATCH 41/42] block: do not use REQ_FLUSH for tracking flush
- support
-To: Juergen Gross <kernel@pfupf.net>, linux-f2fs-devel@lists.sourceforge.net,
- linux-ext4@vger.kernel.org, konrad.wilk@oracle.com,
- drbd-dev@lists.linbit.com, philipp.reisner@linbit.com,
- lars.ellenberg@linbit.com, linux-raid@vger.kernel.org,
- dm-devel@redhat.com, linux-fsdevel@vger.kernel.org,
- linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-mtd@lists.infradead.org, target-devel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, osd-dev@open-osd.org, xfs@oss.sgi.com,
- ocfs2-devel@oss.oracle.com
-References: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
- <1460716802-2294-42-git-send-email-mchristi@redhat.com>
- <5710C77F.2000405@pfupf.net>
-From: Mike Christie <mchristi@redhat.com>
-Message-ID: <571139C9.8060405@redhat.com>
-Date: Fri, 15 Apr 2016 13:58:17 -0500
-MIME-Version: 1.0
-In-Reply-To: <5710C77F.2000405@pfupf.net>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ar9EQ-0007jb-MN
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 19:16:43 +0000
+From: mchristi@redhat.com
+To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
+ philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+ linux-raid@vger.kernel.org, dm-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
+Cc: Mike Christie <mchristi@redhat.com>
+Subject: [PATCH 02/42] block: add REQ_OP definitions and bi_op/op fields
+Date: Fri, 15 Apr 2016 14:15:37 -0500
+Message-Id: <1460747777-8479-3-git-send-email-mchristi@redhat.com>
+In-Reply-To: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
+References: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,66 +27,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/15/2016 05:50 AM, Juergen Gross wrote:
-> On 15/04/16 12:40, mchristi@redhat.com wrote:
->> From: Mike Christie <mchristi@redhat.com>
->>
->> The last patch added a REQ_OP_FLUSH for request_fn drivers
->> and the next patch renames REQ_FLUSH to REQ_PREFLUSH which
->> will be used by file systems and make_request_fn drivers so
->> they can send a write/flush combo.
->>
->> This patch drops xen's use of REQ_FLUSH to track if it supports
->> REQ_OP_FLUSH requests, so REQ_FLUSH can be deleted.
->>
->> v6:
->> - Dropped parts of patch handled by Jens's QUEUE_FLAG_WC/FUA
->> patches and modified patch to check feature_flush/fua bits.
->>
->> Signed-off-by: Mike Christie <mchristi@redhat.com>
->> Reviewed-by: Hannes Reinecke <hare@suse.com>
->> ---
->>  drivers/block/xen-blkfront.c | 47 ++++++++++++++++++++++----------------------
->>  1 file changed, 24 insertions(+), 23 deletions(-)
->>
->> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
->> index f01691a..d6429e7 100644
->> --- a/drivers/block/xen-blkfront.c
->> +++ b/drivers/block/xen-blkfront.c
-> 
-> ...
-> 
->> @@ -985,24 +981,22 @@ static int xlvbd_init_blk_queue(struct gendisk *gd, u16 sector_size,
->>  	return 0;
->>  }
->>  
->> -static const char *flush_info(unsigned int feature_flush)
->> +static const char *flush_info(struct blkfront_info *info)
->>  {
->> -	switch (feature_flush & ((REQ_FLUSH | REQ_FUA))) {
->> -	case REQ_FLUSH|REQ_FUA:
->> +	if (info->feature_flush && info->feature_fua)
->>  		return "barrier: enabled;";
->> -	case REQ_FLUSH:
->> +	else if (info->feature_fua)
-> 
-> Shouldn't this test feature_flush?
-> 
->>  		return "flush diskcache: enabled;";
->> -	default:
->> +	else
->>  		return "barrier or flush: disabled;";
->> -	}
->>  }
->>  
->>  static void xlvbd_flush(struct blkfront_info *info)
->>  {
->> -	blk_queue_write_cache(info->rq, info->feature_flush & REQ_FLUSH,
->> -				info->feature_flush & REQ_FUA);
->> +	blk_queue_write_cache(info->rq, info->feature_flush ? true : false,
->> +			      info->feature_flush ? true : false);
-> 
-> And here the second test should be feature_fua?
-> 
+From: Mike Christie <mchristi@redhat.com>
 
-You are right. Will fix up and resend.
+The following patches separate the operation (write, read, discard,
+etc) from the rq_flag_bits flags. This patch adds definitions for
+request/bio operations, adds fields to the request/bio to set them, and
+some temporary compat code so the kernel/modules can use either one. In
+the final patches this compat code will be removed when everything is converted.
+
+In this patch the REQ_OPs match the REQ rq_flag_bits ones
+for compat reasons while all the code is converted in this set. In the
+last patches that will abe removed and the bi_op field will be
+shrunk.
+
+Signed-off-by: Mike Christie <mchristi@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Hannes Reinecke <hare@suse.com>
+---
+ block/blk-core.c          | 19 ++++++++++++++++---
+ include/linux/blk_types.h | 15 ++++++++++++++-
+ include/linux/blkdev.h    |  1 +
+ include/linux/fs.h        | 37 +++++++++++++++++++++++++++++++++++--
+ 4 files changed, 66 insertions(+), 6 deletions(-)
+
+diff --git a/block/blk-core.c b/block/blk-core.c
+index e953407..3b238ef 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -1698,7 +1698,8 @@ void init_request_from_bio(struct request *req, struct bio *bio)
+ {
+ 	req->cmd_type = REQ_TYPE_FS;
+ 
+-	req->cmd_flags |= bio->bi_rw & REQ_COMMON_MASK;
++	/* tmp compat. Allow users to set bi_op or bi_rw */
++	req->cmd_flags |= (bio->bi_rw | bio->bi_op) & REQ_COMMON_MASK;
+ 	if (bio->bi_rw & REQ_RAHEAD)
+ 		req->cmd_flags |= REQ_FAILFAST_MASK;
+ 
+@@ -2034,6 +2035,12 @@ blk_qc_t generic_make_request(struct bio *bio)
+ 	struct bio_list bio_list_on_stack;
+ 	blk_qc_t ret = BLK_QC_T_NONE;
+ 
++	/* tmp compat. Allow users to set either one or both.
++	 * This will be removed when we have converted
++	 * everyone in the next patches.
++	 */
++	bio->bi_rw |= bio->bi_op;
++
+ 	if (!generic_make_request_checks(bio))
+ 		goto out;
+ 
+@@ -2103,6 +2110,12 @@ EXPORT_SYMBOL(generic_make_request);
+  */
+ blk_qc_t submit_bio(struct bio *bio)
+ {
++	/* tmp compat. Allow users to set either one or both.
++	 * This will be removed when we have converted
++	 * everyone in the next patches.
++	 */
++	bio->bi_rw |= bio->bi_op;
++
+ 	/*
+ 	 * If it's a regular read/write or a barrier with data attached,
+ 	 * go through the normal accounting stuff before submission.
+@@ -2976,8 +2989,8 @@ EXPORT_SYMBOL_GPL(__blk_end_request_err);
+ void blk_rq_bio_prep(struct request_queue *q, struct request *rq,
+ 		     struct bio *bio)
+ {
+-	/* Bit 0 (R/W) is identical in rq->cmd_flags and bio->bi_rw */
+-	rq->cmd_flags |= bio->bi_rw & REQ_WRITE;
++	/* tmp compat. Allow users to set bi_op or bi_rw */
++	rq->cmd_flags |= bio_data_dir(bio);
+ 
+ 	if (bio_has_data(bio))
+ 		rq->nr_phys_segments = bio_phys_segments(q, bio);
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index 86a38ea..6e49c91 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -48,9 +48,15 @@ struct bio {
+ 	struct block_device	*bi_bdev;
+ 	unsigned int		bi_flags;	/* status, command, etc */
+ 	int			bi_error;
+-	unsigned long		bi_rw;		/* bottom bits READ/WRITE,
++	unsigned long		bi_rw;		/* bottom bits rq_flags_bits
+ 						 * top bits priority
+ 						 */
++	/*
++	 * this will be a u8 in the next patches and bi_rw can be shrunk to
++	 * a u32. For compat in these transistional patches op is a int here.
++	 */
++	int			bi_op;		/* REQ_OP */
++
+ 
+ 	struct bvec_iter	bi_iter;
+ 
+@@ -242,6 +248,13 @@ enum rq_flag_bits {
+ #define REQ_HASHED		(1ULL << __REQ_HASHED)
+ #define REQ_MQ_INFLIGHT		(1ULL << __REQ_MQ_INFLIGHT)
+ 
++enum req_op {
++	REQ_OP_READ,
++	REQ_OP_WRITE		= REQ_WRITE,
++	REQ_OP_DISCARD		= REQ_DISCARD,
++	REQ_OP_WRITE_SAME	= REQ_WRITE_SAME,
++};
++
+ typedef unsigned int blk_qc_t;
+ #define BLK_QC_T_NONE	-1U
+ #define BLK_QC_T_SHIFT	16
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 57c0859..bce32e2 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -96,6 +96,7 @@ struct request {
+ 	struct request_queue *q;
+ 	struct blk_mq_ctx *mq_ctx;
+ 
++	int op;
+ 	u64 cmd_flags;
+ 	unsigned cmd_type;
+ 	unsigned long atomic_flags;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 69bdd03..96ace0f 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2452,15 +2452,48 @@ extern void make_bad_inode(struct inode *);
+ extern bool is_bad_inode(struct inode *);
+ 
+ #ifdef CONFIG_BLOCK
++
++static inline bool op_is_write(int op)
++{
++	switch (op) {
++	case REQ_OP_WRITE:
++	case REQ_OP_WRITE_SAME:
++	case REQ_OP_DISCARD:
++		return true;
++	default:
++		return false;
++	}
++}
++
+ /*
+  * return READ, READA, or WRITE
+  */
+-#define bio_rw(bio)		((bio)->bi_rw & (RW_MASK | RWA_MASK))
++static inline int bio_rw(struct bio *bio)
++{
++	/*
++	 * tmp cpmpat. Allow users to set either op or rw, until
++	 * all code is converted in the next patches.
++	 */
++	if (op_is_write(bio->bi_op))
++		return WRITE;
++
++	return bio->bi_rw & (RW_MASK | RWA_MASK);
++}
+ 
+ /*
+  * return data direction, READ or WRITE
+  */
+-#define bio_data_dir(bio)	((bio)->bi_rw & 1)
++static inline int bio_data_dir(struct bio *bio)
++{
++	/*
++	 * tmp cpmpat. Allow users to set either op or rw, until
++	 * all code is converted in the next patches.
++	 */
++	if (op_is_write(bio->bi_op))
++		return WRITE;
++
++	return bio->bi_rw & 1;
++}
+ 
+ extern void check_disk_size_change(struct gendisk *disk,
+ 				   struct block_device *bdev);
+-- 
+2.7.2
