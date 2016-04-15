@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ar1Bs-0007RX-65
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:41:38 +0000
+ id 1ar1Bx-0007Vz-61
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 10:41:42 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 29/42] block: prepare elevator to use REQ_OPs.
-Date: Fri, 15 Apr 2016 05:39:49 -0500
-Message-Id: <1460716802-2294-30-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 32/42] block: convert is_sync helpers to use REQ_OPs.
+Date: Fri, 15 Apr 2016 05:39:52 -0500
+Message-Id: <1460716802-2294-33-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
 References: <1460716802-2294-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,104 +29,124 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-This patch converts the elevator code to use separate variables
-for the operation and flags, and to check request->op for the REQ_OP.
+This patch converts the is_sync helpers to use separate variables
+for the operation and flags.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Hannes Reinecke <hare@suse.com>
 ---
- block/blk-core.c         | 2 +-
- block/cfq-iosched.c      | 4 ++--
- block/elevator.c         | 7 +++----
- include/linux/elevator.h | 4 ++--
- 4 files changed, 8 insertions(+), 9 deletions(-)
+ block/blk-core.c       | 6 +++---
+ block/blk-mq.c         | 8 ++++----
+ block/cfq-iosched.c    | 2 +-
+ include/linux/blkdev.h | 6 +++---
+ 4 files changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/block/blk-core.c b/block/blk-core.c
-index 3168962..a796b35 100644
+index 660aeb8..e2f7b0a 100644
 --- a/block/blk-core.c
 +++ b/block/blk-core.c
-@@ -1081,7 +1081,7 @@ static struct request *__get_request(struct request_list *rl, int op,
+@@ -962,7 +962,7 @@ static void __freed_request(struct request_list *rl, int sync)
+ static void freed_request(struct request_list *rl, int op, unsigned int flags)
+ {
+ 	struct request_queue *q = rl->q;
+-	int sync = rw_is_sync(op | flags);
++	int sync = rw_is_sync(op, flags);
+ 
+ 	q->nr_rqs[sync]--;
+ 	rl->count[sync]--;
+@@ -1075,7 +1075,7 @@ static struct request *__get_request(struct request_list *rl, int op,
+ 	struct elevator_type *et = q->elevator->type;
+ 	struct io_context *ioc = rq_ioc(bio);
+ 	struct io_cq *icq = NULL;
+-	const bool is_sync = rw_is_sync(op | op_flags) != 0;
++	const bool is_sync = rw_is_sync(op, op_flags) != 0;
+ 	int may_queue;
+ 
  	if (unlikely(blk_queue_dying(q)))
- 		return ERR_PTR(-ENODEV);
+@@ -1246,7 +1246,7 @@ static struct request *get_request(struct request_queue *q, int op,
+ 				   int op_flags, struct bio *bio,
+ 				   gfp_t gfp_mask)
+ {
+-	const bool is_sync = rw_is_sync(op | op_flags) != 0;
++	const bool is_sync = rw_is_sync(op, op_flags) != 0;
+ 	DEFINE_WAIT(wait);
+ 	struct request_list *rl;
+ 	struct request *rq;
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 4843c0b..64d61be 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -206,7 +206,7 @@ static void blk_mq_rq_ctx_init(struct request_queue *q, struct blk_mq_ctx *ctx,
+ 	rq->end_io_data = NULL;
+ 	rq->next_rq = NULL;
  
--	may_queue = elv_may_queue(q, op | op_flags);
-+	may_queue = elv_may_queue(q, op, op_flags);
- 	if (may_queue == ELV_MQUEUE_NO)
- 		goto rq_starved;
- 
-diff --git a/block/cfq-iosched.c b/block/cfq-iosched.c
-index 4a34978..3fcc598 100644
---- a/block/cfq-iosched.c
-+++ b/block/cfq-iosched.c
-@@ -4285,7 +4285,7 @@ static inline int __cfq_may_queue(struct cfq_queue *cfqq)
- 	return ELV_MQUEUE_MAY;
+-	ctx->rq_dispatched[rw_is_sync(op | op_flags)]++;
++	ctx->rq_dispatched[rw_is_sync(op, op_flags)]++;
  }
  
--static int cfq_may_queue(struct request_queue *q, int rw)
-+static int cfq_may_queue(struct request_queue *q, int op, int op_flags)
+ static struct request *
+@@ -1181,7 +1181,7 @@ static struct request *blk_mq_map_request(struct request_queue *q,
+ 	ctx = blk_mq_get_ctx(q);
+ 	hctx = q->mq_ops->map_queue(q, ctx->cpu);
+ 
+-	if (rw_is_sync(bio->bi_op | bio->bi_rw))
++	if (rw_is_sync(bio->bi_op, bio->bi_rw))
+ 		op_flags |= REQ_SYNC;
+ 
+ 	trace_block_getrq(q, bio, op);
+@@ -1249,7 +1249,7 @@ static int blk_mq_direct_issue_request(struct request *rq, blk_qc_t *cookie)
+  */
+ static blk_qc_t blk_mq_make_request(struct request_queue *q, struct bio *bio)
  {
- 	struct cfq_data *cfqd = q->elevator->elevator_data;
- 	struct task_struct *tsk = current;
-@@ -4302,7 +4302,7 @@ static int cfq_may_queue(struct request_queue *q, int rw)
+-	const int is_sync = rw_is_sync(bio->bi_op | bio->bi_rw);
++	const int is_sync = rw_is_sync(bio->bi_op, bio->bi_rw);
+ 	const int is_flush_fua = bio->bi_rw & (REQ_FLUSH | REQ_FUA);
+ 	struct blk_map_ctx data;
+ 	struct request *rq;
+@@ -1346,7 +1346,7 @@ done:
+  */
+ static blk_qc_t blk_sq_make_request(struct request_queue *q, struct bio *bio)
+ {
+-	const int is_sync = rw_is_sync(bio->bi_op | bio->bi_rw);
++	const int is_sync = rw_is_sync(bio->bi_op, bio->bi_rw);
+ 	const int is_flush_fua = bio->bi_rw & (REQ_FLUSH | REQ_FUA);
+ 	struct blk_plug *plug;
+ 	unsigned int request_count = 0;
+diff --git a/block/cfq-iosched.c b/block/cfq-iosched.c
+index 0dfa2dd..2fd5bcf 100644
+--- a/block/cfq-iosched.c
++++ b/block/cfq-iosched.c
+@@ -4311,7 +4311,7 @@ static int cfq_may_queue(struct request_queue *q, int op, int op_flags)
  	if (!cic)
  		return ELV_MQUEUE_MAY;
  
--	cfqq = cic_to_cfqq(cic, rw_is_sync(rw));
-+	cfqq = cic_to_cfqq(cic, rw_is_sync(op | op_flags));
+-	cfqq = cic_to_cfqq(cic, rw_is_sync(op | op_flags));
++	cfqq = cic_to_cfqq(cic, rw_is_sync(op, op_flags));
  	if (cfqq) {
  		cfq_init_prio_data(cfqq, cic);
  
-diff --git a/block/elevator.c b/block/elevator.c
-index c3555c9..6a282bf 100644
---- a/block/elevator.c
-+++ b/block/elevator.c
-@@ -366,8 +366,7 @@ void elv_dispatch_sort(struct request_queue *q, struct request *rq)
- 	list_for_each_prev(entry, &q->queue_head) {
- 		struct request *pos = list_entry_rq(entry);
- 
--		if ((rq->cmd_flags & REQ_DISCARD) !=
--		    (pos->cmd_flags & REQ_DISCARD))
-+		if ((rq->op == REQ_OP_DISCARD) != (pos->op == REQ_OP_DISCARD))
- 			break;
- 		if (rq_data_dir(rq) != rq_data_dir(pos))
- 			break;
-@@ -717,12 +716,12 @@ void elv_put_request(struct request_queue *q, struct request *rq)
- 		e->type->ops.elevator_put_req_fn(rq);
- }
- 
--int elv_may_queue(struct request_queue *q, int rw)
-+int elv_may_queue(struct request_queue *q, int op, int op_flags)
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 4aaa317..42711ef 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -617,14 +617,14 @@ static inline unsigned int blk_queue_cluster(struct request_queue *q)
+ /*
+  * We regard a request as sync, if either a read or a sync write
+  */
+-static inline bool rw_is_sync(unsigned int rw_flags)
++static inline bool rw_is_sync(int op, unsigned int rw_flags)
  {
- 	struct elevator_queue *e = q->elevator;
- 
- 	if (e->type->ops.elevator_may_queue_fn)
--		return e->type->ops.elevator_may_queue_fn(q, rw);
-+		return e->type->ops.elevator_may_queue_fn(q, op, op_flags);
- 
- 	return ELV_MQUEUE_MAY;
+-	return !(rw_flags & REQ_WRITE) || (rw_flags & REQ_SYNC);
++	return op == REQ_OP_READ || (rw_flags & REQ_SYNC);
  }
-diff --git a/include/linux/elevator.h b/include/linux/elevator.h
-index 638b324..953d286 100644
---- a/include/linux/elevator.h
-+++ b/include/linux/elevator.h
-@@ -26,7 +26,7 @@ typedef int (elevator_dispatch_fn) (struct request_queue *, int);
- typedef void (elevator_add_req_fn) (struct request_queue *, struct request *);
- typedef struct request *(elevator_request_list_fn) (struct request_queue *, struct request *);
- typedef void (elevator_completed_req_fn) (struct request_queue *, struct request *);
--typedef int (elevator_may_queue_fn) (struct request_queue *, int);
-+typedef int (elevator_may_queue_fn) (struct request_queue *, int, int);
  
- typedef void (elevator_init_icq_fn) (struct io_cq *);
- typedef void (elevator_exit_icq_fn) (struct io_cq *);
-@@ -134,7 +134,7 @@ extern struct request *elv_former_request(struct request_queue *, struct request
- extern struct request *elv_latter_request(struct request_queue *, struct request *);
- extern int elv_register_queue(struct request_queue *q);
- extern void elv_unregister_queue(struct request_queue *q);
--extern int elv_may_queue(struct request_queue *, int);
-+extern int elv_may_queue(struct request_queue *, int, int);
- extern void elv_completed_request(struct request_queue *, struct request *);
- extern int elv_set_request(struct request_queue *q, struct request *rq,
- 			   struct bio *bio, gfp_t gfp_mask);
+ static inline bool rq_is_sync(struct request *rq)
+ {
+-	return rw_is_sync(rq->cmd_flags);
++	return rw_is_sync(rq->op, rq->cmd_flags);
+ }
+ 
+ static inline bool blk_rl_full(struct request_list *rl, bool sync)
 -- 
 2.7.2
