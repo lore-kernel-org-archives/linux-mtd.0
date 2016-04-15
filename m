@@ -1,21 +1,24 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aqzeT-0004jD-V1
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 09:02:58 +0000
-Date: Fri, 15 Apr 2016 11:02:36 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- alex@nextthing.co, Daniel Walter <dwalter@sigma-star.at>
-Subject: Re: [RFC] ubihealthd
-Message-ID: <20160415110236.751cb28e@bbrezillon>
-In-Reply-To: <20160415062604.GA31101@pengutronix.de>
-References: <1446764403-22742-1-git-send-email-richard@nod.at>
- <20160415062604.GA31101@pengutronix.de>
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ar09V-0001Vv-Ch
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 09:35:02 +0000
+Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+To: Tony Lindgren <tony@atomide.com>, <boris.brezillon@free-electrons.com>
+References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
+ <20160413212500.GD5995@atomide.com>
+CC: <computersforpeace@gmail.com>, <dwmw2@infradead.org>,
+ <ezequiel@vanguardiasur.com.ar>, <javier@dowhile0.org>,
+ <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <5710B58C.7050108@ti.com>
+Date: Fri, 15 Apr 2016 12:34:04 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20160413212500.GD5995@atomide.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +28,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 15 Apr 2016 08:26:04 +0200
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+Tony & Boris,
 
-> Hi Richard, Daniel,
+On 14/04/16 00:25, Tony Lindgren wrote:
+> * Roger Quadros <rogerq@ti.com> [160407 03:10]:
+>> Hi,
+>>
+>> As this series has cross dependency between omap and mtd subsystems,
+>> I'll set up a immutable branch which omap-soc and l2-mtd must
+>> merge in together to avoid any conflicts/breakage during integration.
+>>
+>> Brian has acked all mtd patches. Tony needs to give his Ack for the
+>> gpmc driver part and then I can provide the immutable branch.
 > 
-> On Thu, Nov 05, 2015 at 11:59:59PM +0100, Richard Weinberger wrote:
-> > ubihealthd is a tiny C program which takes care of your NAND.
-> > It will trigger re-reads and scrubbing such that read-disturb and
-> > data retention will be addressed before data is lost.
-> > Currently the policy is rather trivial. It re-reads every PEB within
-> > a given time frame, same for scrubbing and if a PEB's read counter exceeds
-> > a given threshold it will also trigger a re-read.
-> > 
-> > At ELCE some people asked why this is done in userspace.
-> > The reason is that this is a classical example of kernel offers mechanism
-> > and userspace the policy. Also ubihealthd is not mandatory.
-> > Depending on your NAND it can help you increasing its lifetime.
-> > But you won't lose data immediately if it does not run for a while.
-> > It is something like smartd is for hard disks.
-> > I did this also in kernel space and it was messy.
+> Looks good to me, please feel free to add:
 > 
-> I gave ubihealthd a try and it basically works as expected. I let it run
-> on a UBI device with a ton of (artificial) bitflips and the demon crawls
-> over them moving the data away.
+> Acked-by: Tony Lindgren <tony@atomide.com>
 > 
-> Do you have plans to further work on this and to integrate it into the
-> kernel and mtd-utils?
-> 
-> One thing I noticed is that ubihealthd always scrubs blocks, even when
-> there are no bitflips in that block. Why is that done? I would assume
-> that rewriting a block when there are more bitflips than we can accept
-> is enough, no?
 
-Yep, that's my opinion too: we should not scrub the block if we're
-below the bitflip_threshold. If one wants to be conservative, and
-scrub as soon as there's a single bitflip, he can always manually set
-bitflips_threshold to something really low.
+I've added Tony and Rob's Acked-by tags and pushed the patches at the
+below PULL request.
 
+Please take this into omap-soc and l2-mtd trees. Thanks.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+The following changes since commit f55532a0c0b8bb6148f4e07853b876ef73bc69ca:
+
+  Linux 4.6-rc1 (2016-03-26 16:03:24 -0700)
+
+are available in the git repository at:
+
+  git@github.com:rogerq/linux.git for-v4.7/gpmc-mtd-common
+
+for you to fetch changes up to 10f22ee367c4aff7841da6a83c10445d7d6328d9:
+
+  mtd: nand: omap2: Implement NAND ready using gpiolib (2016-04-15 11:55:37 +0300)
+
+----------------------------------------------------------------
+Roger Quadros (17):
+      ARM: OMAP2+: gpmc: Add platform data
+      ARM: OMAP2+: gpmc: Add gpmc timings and settings to platform data
+      memory: omap-gpmc: Introduce GPMC to NAND interface
+      memory: omap-gpmc: Add GPMC-NAND ops to get writebufferempty status
+      memory: omap-gpmc: Implement IRQ domain for NAND IRQs
+      mtd: nand: omap: Use gpmc_omap_get_nand_ops() to get NAND registers
+      mtd: nand: omap: Switch to using GPMC-NAND ops for writebuffer empty check
+      mtd: nand: omap: Copy platform data parameters to omap_nand_info data
+      mtd: nand: omap: Clean up device tree support
+      mtd: nand: omap: Update DT binding documentation
+      memory: omap-gpmc: Prevent mapping into 1st 16MB
+      memory: omap-gpmc: Move device tree binding to correct location
+      memory: omap-gpmc: Support general purpose input for WAITPINs
+      memory: omap-gpmc: Reserve WAITPIN if needed for WAIT monitoring
+      memory: omap-gpmc: Support WAIT pin edge interrupts
+      memory: omap-gpmc: Prevent GPMC_STATUS from being accessed via gpmc_regs
+      mtd: nand: omap2: Implement NAND ready using gpiolib
+
+ Documentation/devicetree/bindings/{bus/ti-gpmc.txt => memory-controllers/omap-gpmc.txt} |  17 +++
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt                                     |  19 +++-
+ arch/arm/mach-omap2/gpmc-nand.c                                                         |   7 +-
+ drivers/memory/Kconfig                                                                  |   1 +
+ drivers/memory/omap-gpmc.c                                                              | 655 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------
+ drivers/mtd/nand/omap2.c                                                                | 194 +++++++++++++++++++++++++++-------
+ include/linux/omap-gpmc.h                                                               | 172 ++++++------------------------
+ include/linux/platform_data/gpmc-omap.h                                                 | 172 ++++++++++++++++++++++++++++++
+ include/linux/platform_data/mtd-nand-omap2.h                                            |  12 ++-
+ 9 files changed, 817 insertions(+), 432 deletions(-)
+ rename Documentation/devicetree/bindings/{bus/ti-gpmc.txt => memory-controllers/omap-gpmc.txt} (89%)
+ create mode 100644 include/linux/platform_data/gpmc-omap.h
+
+--
+cheers,
+-roger
