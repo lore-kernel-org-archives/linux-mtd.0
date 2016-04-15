@@ -1,19 +1,18 @@
-Received: from mail-oi0-f66.google.com ([209.85.218.66])
+Received: from mail-ob0-f193.google.com ([209.85.214.193])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arAN4-0004aF-MP
- for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 20:29:44 +0000
-Received: by mail-oi0-f66.google.com with SMTP id v126so15058093oia.3
- for <linux-mtd@lists.infradead.org>; Fri, 15 Apr 2016 13:29:22 -0700 (PDT)
+ id 1arAN7-0004b0-4i
+ for linux-mtd@lists.infradead.org; Fri, 15 Apr 2016 20:29:45 +0000
+Received: by mail-ob0-f193.google.com with SMTP id ds1so710222obc.3
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Apr 2016 13:29:24 -0700 (PDT)
 From: Franklin S Cooper Jr <fcooper@ti.com>
 To: boris.brezillon@free-electrons.com, dwmw2@infradead.org,
  computersforpeace@gmail.com, tony@atomide.com, rogerq@ti.com,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-omap@vger.kernel.org
 Cc: "Cooper Jr., Franklin" <fcooper@ti.com>
-Subject: [PATCH 1/2] mtd: nand: omap2: Start dma request before enabling
- prefetch
-Date: Fri, 15 Apr 2016 15:28:58 -0500
-Message-Id: <1460752139-12742-2-git-send-email-fcooper@ti.com>
+Subject: [PATCH 2/2] mtd: nand: omap2: Fix high memory dma prefetch transfer
+Date: Fri, 15 Apr 2016 15:28:59 -0500
+Message-Id: <1460752139-12742-3-git-send-email-fcooper@ti.com>
 In-Reply-To: <1460752139-12742-1-git-send-email-fcooper@ti.com>
 References: <1460752139-12742-1-git-send-email-fcooper@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,51 +26,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: "Cooper Jr., Franklin" <fcooper@ti.com>
 
-The prefetch engine sends a dma request once a FIFO threshold has
-been met. No other requests are received until the previous request
-is handled.
+Based on DMA documentation and testing using high memory buffer when doing
+dma transfers can lead to various issues including kernel panics.
 
-Starting a dma transfer (dma_async_issue_pending) results in any
-previous event for the dma channel to be cleared. Therefore, starting
-the prefetch engine before initiating the dma transfer may result in
-the prefetch triggering a dma request but instead of it being handled
-it can end up being cleared. This will result in a hang since the code
-will continue to wait for the dma request to complete.
-
-By initiating the dma request before enabling the prefetch engine this
-race condition is avoided and no dma request are missed/cleared.
+To workaround this simply use cpu copy.
 
 Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
 ---
- drivers/mtd/nand/omap2.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/omap2.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 0749ca1..762e0ed 100644
+index 762e0ed..8d0ae3a 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -497,6 +497,11 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
- 	tx->callback_param = &info->comp;
- 	dmaengine_submit(tx);
+@@ -467,17 +467,8 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
+ 	int ret;
+ 	u32 val;
  
-+	init_completion(&info->comp);
-+
-+	/* setup and start DMA using dma_addr */
-+	dma_async_issue_pending(info->dma);
-+
- 	/*  configure and start prefetch transfer */
- 	ret = omap_prefetch_enable(info->gpmc_cs,
- 		PREFETCH_FIFOTHRESHOLD_MAX, 0x1, len, is_write, info);
-@@ -504,10 +509,6 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
- 		/* PFPW engine is busy, use cpu copy method */
- 		goto out_copy_unmap;
- 
--	init_completion(&info->comp);
--	dma_async_issue_pending(info->dma);
+-	if (addr >= high_memory) {
+-		struct page *p1;
 -
--	/* setup and start DMA using dma_addr */
- 	wait_for_completion(&info->comp);
- 	tim = 0;
- 	limit = (loops_per_jiffy * msecs_to_jiffies(OMAP_NAND_TIMEOUT_MS));
+-		if (((size_t)addr & PAGE_MASK) !=
+-			((size_t)(addr + len - 1) & PAGE_MASK))
+-			goto out_copy;
+-		p1 = vmalloc_to_page(addr);
+-		if (!p1)
+-			goto out_copy;
+-		addr = page_address(p1) + ((size_t)addr & ~PAGE_MASK);
+-	}
++	if (!virt_addr_valid(addr))
++		goto out_copy;
+ 
+ 	sg_init_one(&sg, addr, len);
+ 	n = dma_map_sg(info->dma->device->dev, &sg, 1, dir);
 -- 
 2.7.0
