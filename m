@@ -1,23 +1,30 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arLL1-0004NV-EA
- for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 08:12:19 +0000
-Date: Sat, 16 Apr 2016 10:11:57 +0200
+ id 1arM2n-00053I-St
+ for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 08:57:34 +0000
+Date: Sat, 16 Apr 2016 10:57:11 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH 10/12] mtd: nand: read ECC algorithm from the new field
-Message-ID: <20160416101157.19a31ba6@bbrezillon>
-In-Reply-To: <20160416095807.112d2f59@bbrezillon>
-References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
- <1460750052-16285-11-git-send-email-zajec5@gmail.com>
- <20160416095807.112d2f59@bbrezillon>
+To: Tony Lindgren <tony@atomide.com>
+Cc: Roger Quadros <rogerq@ti.com>, javier@dowhile0.org, fcooper@ti.com,
+ nsekhar@ti.com, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ ezequiel@vanguardiasur.com.ar, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC
+ NAND on non-OMAP platforms
+Message-ID: <20160416105711.5310d2d0@bbrezillon>
+In-Reply-To: <20160415161950.GT5995@atomide.com>
+References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
+ <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
+ <20160415120942.3131eac1@bbrezillon> <5710C86A.9060108@ti.com>
+ <20160415135108.63716f06@bbrezillon>
+ <20160415154139.GS5995@atomide.com>
+ <20160415180531.15d790d2@bbrezillon>
+ <20160415161950.GT5995@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +34,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 16 Apr 2016 09:58:07 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Fri, 15 Apr 2016 09:19:51 -0700
+Tony Lindgren <tony@atomide.com> wrote:
 
-> On Fri, 15 Apr 2016 21:54:10 +0200
-> Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
->=20
-> > Now we have all drivers properly setting this new field we can start
-> > using it and proceed with deprecating NAND_ECC_SOFT_BCH.
-> >=20
-> > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
-> > ---
-> >  drivers/mtd/nand/nand_base.c | 98 ++++++++++++++++++++++++------------=
---------
-> >  1 file changed, 53 insertions(+), 45 deletions(-)
-> >=20
+> 
+> > Or should I just pull this immutable branch in my current nand/next and
+> > let you pull the same immutable branch in omap-soc. I mean, would this
+> > prevent conflicts when our branches are merged into linux-next, no
+> > matter the order.
+> 
+> Ideally just one or more branches with just minimal changes in
+> them against -rc1. But you may have other dependencies in
+> your NAND tree so that may no longer be doable :) Usually if
+> I merge something that may need to get merged into other
+> branches, I just apply them into a separate branch against -rc1
+> to start with, then merge that branch in.
 
-[...]
+Okay, in this case, that's pretty much what I did from the beginning,
+except the immutable branch was provided by Roger (based on 4.6-rc1).
+Thanks for this detailed explanation, I'll try to remember that when
+I'll need to provide an immutable branch for another subsystem.
 
-> > @@ -4248,51 +4248,59 @@ int nand_scan_tail(struct mtd_info *mtd)
-> >  		ecc->algo =3D NAND_ECC_HAMMING;
-> > =20
-> >  	case NAND_ECC_SOFT:
-> > -		ecc->calculate =3D nand_calculate_ecc;
-> > -		ecc->correct =3D nand_correct_data;
-> > -		ecc->read_page =3D nand_read_page_swecc;
-> > -		ecc->read_subpage =3D nand_read_subpage;
-> > -		ecc->write_page =3D nand_write_page_swecc;
-> > -		ecc->read_page_raw =3D nand_read_page_raw;
-> > -		ecc->write_page_raw =3D nand_write_page_raw;
-> > -		ecc->read_oob =3D nand_read_oob_std;
-> > -		ecc->write_oob =3D nand_write_oob_std;
-> > -		if (!ecc->size)
-> > -			ecc->size =3D 256;
-> > -		ecc->bytes =3D 3;
-> > -		ecc->strength =3D 1;
-> > -		break;
-> > -
-> >  	case NAND_ECC_SOFT_BCH:
->=20
-> Shouldn't we drop this case?
+Roger, my request remains, could you check/test my conflict resolution
+(branch nand/next-with-gpmc-rework)?
 
-Nevermind, I see you're dropping it in the last patch.
+Thanks,
 
+Boris
 
---=20
+-- 
 Boris Brezillon, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
