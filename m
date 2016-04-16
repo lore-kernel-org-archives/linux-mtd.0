@@ -1,35 +1,27 @@
-Date: Sat, 16 Apr 2016 11:07:20 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou
- Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Kamal
- Dasu <kdasu.kdev@gmail.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Stefan Agner <stefan@agner.ch>,
- linux-omap@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
- <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
- <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- bcm-kernel-feedback-list@broadcom.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Maxime
- Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Zhou Wang <wangzhou1@hisilicon.com>, Alex
- Smith <alex.smith@imgtec.com>, Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: Re: [PATCH 06/12] mtd: nand: gpmi: rely on generic DT parsing done
- in nand_scan_ident()
-Message-ID: <20160416110720.462822e6@bbrezillon>
-In-Reply-To: <1459515272-31011-7-git-send-email-boris.brezillon@free-electrons.com>
-References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459515272-31011-7-git-send-email-boris.brezillon@free-electrons.com>
+Received: from cassarossa.samfundet.no ([2001:67c:29f4::29])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1arPoJ-0005YT-8o
+ for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 12:58:52 +0000
+Date: Sat, 16 Apr 2016 14:58:16 +0200
+From: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org, Haavard Skinnemoen <hskinnemoen@gmail.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Marc Kleine-Budde <mkl@pengutronix.de>,
+ Alan Stern <stern@rowland.harvard.edu>,
+ open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/12] avr32: set Atmel NAND ECC algorithm explicitly
+Message-ID: <20160416125816.GA21014@samfundet.no>
+References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
+ <1460750052-16285-4-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1460750052-16285-4-git-send-email-zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,79 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Han,
-
-On Fri,  1 Apr 2016 14:54:26 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-
-> The core now takes care of parsing generic DT properties in
-> nand_scan_ident() when nand_set_flash_node() has been called.
-> Rely on this initialization instead of calling of_get_nand_xxx()
-> manually.
-
-Can you review/test this patch? I'd like to have the whole series
-merged in this release.
-
-Thanks,
-
-Boris
-
+Around Fri 15 Apr 2016 21:54:03 +0200 or thereabout, Rafał Miłecki wrote:
+> This is part of process deprecating NAND_ECC_SOFT_BCH (and switching to
+> enum nand_ecc_algo).
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+
+Acked-by: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
+
 > ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 21 ++++++++++-----------
->  1 file changed, 10 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 8122c69..c6e8a1c 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -25,7 +25,6 @@
->  #include <linux/mtd/partitions.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> -#include <linux/of_mtd.h>
->  #include "gpmi-nand.h"
->  #include "bch-regs.h"
->  
-> @@ -1914,16 +1913,6 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
->  	/* Set up swap_block_mark, must be set before the gpmi_set_geometry() */
->  	this->swap_block_mark = !GPMI_IS_MX23(this);
->  
-> -	if (of_get_nand_on_flash_bbt(this->dev->of_node)) {
-> -		chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
-> -
-> -		if (of_property_read_bool(this->dev->of_node,
-> -						"fsl,no-blockmark-swap"))
-> -			this->swap_block_mark = false;
-> -	}
-> -	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
-> -		this->swap_block_mark ? "en" : "dis");
-> -
->  	/*
->  	 * Allocate a temporary DMA buffer for reading ID in the
->  	 * nand_scan_ident().
-> @@ -1938,6 +1927,16 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
->  	if (ret)
->  		goto err_out;
->  
-> +	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
-> +		chip->bbt_options |= NAND_BBT_NO_OOB;
-> +
-> +		if (of_property_read_bool(this->dev->of_node,
-> +						"fsl,no-blockmark-swap"))
-> +			this->swap_block_mark = false;
-> +	}
-> +	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
-> +		this->swap_block_mark ? "en" : "dis");
-> +
->  	ret = gpmi_init_last(this);
->  	if (ret)
->  		goto err_out;
+>  arch/avr32/boards/atngw100/setup.c      | 1 +
+>  arch/avr32/boards/atstk1000/atstk1002.c | 1 +
+>  include/linux/platform_data/atmel.h     | 1 +
+>  3 files changed, 3 insertions(+)
 
-
+<snipp diff>
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Best regards, HcE.
