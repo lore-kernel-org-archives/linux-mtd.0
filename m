@@ -1,8 +1,8 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arEBE-0001LW-FC
- for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 00:33:44 +0000
-Date: Fri, 15 Apr 2016 17:33:22 -0700
+ id 1arECL-0001kP-Ar
+ for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 00:34:53 +0000
+Date: Fri, 15 Apr 2016 17:34:30 -0700
 From: Stephen Boyd <sboyd@codeaurora.org>
 To: Keguang Zhang <keguang.zhang@gmail.com>
 Cc: linux-mips@linux-mips.org, linux-clk@vger.kernel.org,
@@ -19,7 +19,7 @@ Cc: linux-mips@linux-mips.org, linux-clk@vger.kernel.org,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH V1 1/7] clk: Loongson1: Update clocks of Loongson1B
-Message-ID: <20160416003322.GK26353@codeaurora.org>
+Message-ID: <20160416003430.GL26353@codeaurora.org>
 References: <1459946095-7637-1-git-send-email-keguang.zhang@gmail.com>
  <1459946095-7637-2-git-send-email-keguang.zhang@gmail.com>
 MIME-Version: 1.0
@@ -46,8 +46,9 @@ On 04/06, Keguang Zhang wrote:
 > Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
 > ---
 
-Can you please send this with git format-patch -M? I can't easily
-tell what has changed.
+I applied it manually to see the differences.
+
+Reviewed-by: Stephen Boyd <sboyd@codeaurora.org>
 
 -- 
 Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
