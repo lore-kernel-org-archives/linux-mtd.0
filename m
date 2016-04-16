@@ -1,22 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arLAp-0008T9-MS
- for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 08:01:48 +0000
-Date: Sat, 16 Apr 2016 10:01:25 +0200
+ id 1arLL1-0004NV-EA
+ for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 08:12:19 +0000
+Date: Sat, 16 Apr 2016 10:11:57 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Frank
- Rowand <frowand.list@gmail.com>, Grant Likely <grant.likely@linaro.org>,
- devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE
- TREE), linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH 11/12] of: mtd: drop support for NAND_ECC_SOFT_BCH as
- "soft_bch" mapping
-Message-ID: <20160416100125.272f6347@bbrezillon>
-In-Reply-To: <20160416100043.4b89e2a9@bbrezillon>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH 10/12] mtd: nand: read ECC algorithm from the new field
+Message-ID: <20160416101157.19a31ba6@bbrezillon>
+In-Reply-To: <20160416095807.112d2f59@bbrezillon>
 References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
- <1460750052-16285-12-git-send-email-zajec5@gmail.com>
- <20160416100043.4b89e2a9@bbrezillon>
+ <1460750052-16285-11-git-send-email-zajec5@gmail.com>
+ <20160416095807.112d2f59@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -29,63 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 16 Apr 2016 10:00:43 +0200
+On Sat, 16 Apr 2016 09:58:07 +0200
 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> On Fri, 15 Apr 2016 21:54:11 +0200
+> On Fri, 15 Apr 2016 21:54:10 +0200
 > Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 >=20
-> > There isn't any difference between handling NAND_ECC_SOFT and
-> > NAND_ECC_SOFT_BCH now. What matters is the new field called "algo".
-> > Please note we're keeping backward DT compatibility. We are still
-> > treating "soft_bch" value as the one setting Hamming algorithm, it's
-> > just handled in of_get_nand_ecc_algo now.
+> > Now we have all drivers properly setting this new field we can start
+> > using it and proceed with deprecating NAND_ECC_SOFT_BCH.
 > >=20
 > > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
 > > ---
-> >  drivers/of/of_mtd.c | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> >  drivers/mtd/nand/nand_base.c | 98 ++++++++++++++++++++++++------------=
+--------
+> >  1 file changed, 53 insertions(+), 45 deletions(-)
 > >=20
-> > diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
->=20
-> This series is getting rid of of_mtd{.c,.h}, so I'll move those changes
-> directly into nand_base.c when applying.
 
-Oops, here is the link:
-http://lkml.iu.edu/hypermail/linux/kernel/1604.0/00298.html
+[...]
 
->=20
-> > index 15d056e..a70a38c 100644
-> > --- a/drivers/of/of_mtd.c
-> > +++ b/drivers/of/of_mtd.c
-> > @@ -22,7 +22,6 @@ static const char *nand_ecc_modes[] =3D {
-> >  	[NAND_ECC_HW]		=3D "hw",
-> >  	[NAND_ECC_HW_SYNDROME]	=3D "hw_syndrome",
-> >  	[NAND_ECC_HW_OOB_FIRST]	=3D "hw_oob_first",
-> > -	[NAND_ECC_SOFT_BCH]	=3D "soft_bch",
-> >  };
+> > @@ -4248,51 +4248,59 @@ int nand_scan_tail(struct mtd_info *mtd)
+> >  		ecc->algo =3D NAND_ECC_HAMMING;
 > > =20
-> >  /**
-> > @@ -45,6 +44,14 @@ int of_get_nand_ecc_mode(struct device_node *np)
-> >  		if (!strcasecmp(pm, nand_ecc_modes[i]))
-> >  			return i;
-> > =20
-> > +	/*
-> > +	 * For backward compatibility we support few obsoleted values that do=
-n't
-> > +	 * have their mappings into nand_ecc_modes_t anymore (they were merged
-> > +	 * with other enums).
-> > +	 */
-> > +	if (!strcasecmp(pm, "soft_bch"))
-> > +		return NAND_ECC_SOFT;
-> > +
-> >  	return -ENODEV;
-> >  }
-> >  EXPORT_SYMBOL_GPL(of_get_nand_ecc_mode);
+> >  	case NAND_ECC_SOFT:
+> > -		ecc->calculate =3D nand_calculate_ecc;
+> > -		ecc->correct =3D nand_correct_data;
+> > -		ecc->read_page =3D nand_read_page_swecc;
+> > -		ecc->read_subpage =3D nand_read_subpage;
+> > -		ecc->write_page =3D nand_write_page_swecc;
+> > -		ecc->read_page_raw =3D nand_read_page_raw;
+> > -		ecc->write_page_raw =3D nand_write_page_raw;
+> > -		ecc->read_oob =3D nand_read_oob_std;
+> > -		ecc->write_oob =3D nand_write_oob_std;
+> > -		if (!ecc->size)
+> > -			ecc->size =3D 256;
+> > -		ecc->bytes =3D 3;
+> > -		ecc->strength =3D 1;
+> > -		break;
+> > -
+> >  	case NAND_ECC_SOFT_BCH:
 >=20
->=20
->=20
+> Shouldn't we drop this case?
 
+Nevermind, I see you're dropping it in the last patch.
 
 
 --=20
