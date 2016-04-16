@@ -1,21 +1,25 @@
-Received: from mail-lf0-x22f.google.com ([2a00:1450:4010:c07::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arFSj-0004qr-I2
- for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 01:55:54 +0000
-Received: by mail-lf0-x22f.google.com with SMTP id e190so164229562lfe.0
- for <linux-mtd@lists.infradead.org>; Fri, 15 Apr 2016 18:55:32 -0700 (PDT)
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1arKoI-0006az-7Q
+ for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 07:38:31 +0000
+Date: Sat, 16 Apr 2016 09:38:06 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Haavard Skinnemoen
+ <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>, Nicolas Ferre
+ <nicolas.ferre@atmel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Marc Kleine-Budde <mkl@pengutronix.de>, Alan Stern
+ <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH 03/12] avr32: set Atmel NAND ECC algorithm explicitly
+Message-ID: <20160416093806.7da3d660@bbrezillon>
+In-Reply-To: <1460750052-16285-4-git-send-email-zajec5@gmail.com>
+References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
+ <1460750052-16285-4-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvyTg=i2RpGyuoCZBRwdANUYt3dJg08Hfgs2qohnGrCfYQ@mail.gmail.com>
-References: <CAEVGjpo0J7nsoSX7LHqypUH=83unohxk5QTyP=dQevmZOLMq_w@mail.gmail.com>
- <CAFLxGvyTg=i2RpGyuoCZBRwdANUYt3dJg08Hfgs2qohnGrCfYQ@mail.gmail.com>
-Date: Fri, 15 Apr 2016 22:55:30 -0300
-Message-ID: <CAEVGjpoa+Gm8b=ubHE3NBUaAb1iXXCcSdT04eABWOcssMw44hA@mail.gmail.com>
-Subject: Re: Bit flip detection after boot
-From: Raphael Pereira <raphael@rmi.inf.br>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Raphael Derosso Pereira <raphaelpereira@gmail.com>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,83 +29,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 15 Apr 2016 21:54:03 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-I have been able to produce 2 different kernel binaries that produces
-different results.
+> This is part of process deprecating NAND_ECC_SOFT_BCH (and switching to
+> enum nand_ecc_algo).
 
-On 3.10.98 I get NO bit-flip whatsoever AND I can write the bootable
-image to block 0 and it works, in other words, CPU Boot ROM
-understands written data AND ECC in block 0 and performs a successful
-flash boot. Besides boot, the system is running perfectly with no
-error message.
+Not sure we really need to add this ->ecc_algo field: none of the
+existing AVR32 boards use software BCH implementation, and I don't
+expect to see new AVR32 boards :-). How about setting NAND_ECC_HAMMING
+when ecc_mode =3D=3D NAND_ECC_SOFT directly in the atmel_nand driver?
 
-On 4.0.4 and 4.1.18, both kernels compiled with the same
-configuration, bit flips occurs AND Boot ROM doesn't recognize written
-image, so I cannot boot from flash. System runs fine (I didn't try
-long runs) but it show a huge amount of bit-flips every time system is
-booted.
-
-It sounds like there is a problem in the low level drivers for kernels
-above 3.10, not sure which version is the first to show this
-behaviour. I notice also that the GPMI driver is quite different on
-4.x. I think, IMHO, that in some point in GPMI development tests
-stopped being done for mx23 architecture and there might be some kind
-of bit swap in ECC writing. Maybe that particular differences between
-mx28/mx6/etc.
-
-It would be great to know when the driver got that massive change and
-until which kernel version mx23 is/was supported.
-
-Best Regards,
-
-2016-04-14 5:51 GMT-03:00 Richard Weinberger <richard.weinberger@gmail.com>:
-> On Wed, Apr 13, 2016 at 11:25 PM, Raphael Pereira <raphael@rmi.inf.br> wrote:
->> Hi,
->>
->> I have a custom board with a GPMI interface (Freescale i.MX233) with
->> kernel 4.1.18 using Micron MT29F4G08ABADAWP (nand: 512 MiB, SLC, erase
->> size: 128 KiB, page size: 2048, OOB size: 64).
->>
->> When I boot, the flash gets recognized and works flawless. I can
->> ubiformat, ubiattach, mount, copy a lot of files, umount, remount,
->> check and test in whatever way I need. No problem arrises.
->> The problem is that when I shut the system down (turn it off) and boot
->> again, all used blocks are marked as badblocks.
->
-> Sounds like you have a massive bitflip problem.
-> This is where you should start investigating.
-> Are you facing so massive bitflips that the bad block marker is wrongly set?
->
->> I have used another flash (Toshiba with w/ erase size: 256KiB) and it
->> works perfectly, with no problem at all.
->>
->> Trying to find out what might be the problem, I found BBT DTS option,
->> so I enabled it and, instead of marking all blocks as bad, I end up
->> with UBI detecting bit-flips on all sectors, but correctable flips, so
->
-> You've disabled the bad block scan and tried to paper over the root cause. ;)
->
->> I can use the flash normally (although it takes a lot of time to boot
->> because of the many messages "ubi0: fixable bit-flip detected at PEB
->> XXX".
->>
->> I have changed the chip a lot of times and have checked my hardware
->> and I am quite sure it is not a hardware problem. I think that some
->> structure detection of the flash is wrong in the kernel for this
->> particular case (i.MX233 BCH + MT29F4G08ABADAWP).
->>
->> Can someone guide me in debugging this problem?
->
-> As I said, find out why you're facing so much bitflips.
->
-> --
-> Thanks,
-> //richard
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> ---
+>  arch/avr32/boards/atngw100/setup.c      | 1 +
+>  arch/avr32/boards/atstk1000/atstk1002.c | 1 +
+>  include/linux/platform_data/atmel.h     | 1 +
+>  3 files changed, 3 insertions(+)
+>=20
+> diff --git a/arch/avr32/boards/atngw100/setup.c b/arch/avr32/boards/atngw=
+100/setup.c
+> index afeae89..b059b97 100644
+> --- a/arch/avr32/boards/atngw100/setup.c
+> +++ b/arch/avr32/boards/atngw100/setup.c
+> @@ -98,6 +98,7 @@ static struct atmel_nand_data atngw100mkii_nand_data __=
+initdata =3D {
+>  	.enable_pin	=3D GPIO_PIN_PE(23),
+>  	.bus_width_16	=3D true,
+>  	.ecc_mode	=3D NAND_ECC_SOFT,
+> +	.ecc_algo	=3D NAND_ECC_HAMMING,
+>  	.parts		=3D nand_partitions,
+>  	.num_parts	=3D ARRAY_SIZE(nand_partitions),
+>  };
+> diff --git a/arch/avr32/boards/atstk1000/atstk1002.c b/arch/avr32/boards/=
+atstk1000/atstk1002.c
+> index 6c80aba..6b45faf 100644
+> --- a/arch/avr32/boards/atstk1000/atstk1002.c
+> +++ b/arch/avr32/boards/atstk1000/atstk1002.c
+> @@ -96,6 +96,7 @@ static struct atmel_nand_data atstk1006_nand_data __ini=
+tdata =3D {
+>  	.rdy_pin	=3D GPIO_PIN_PB(30),
+>  	.enable_pin	=3D GPIO_PIN_PB(29),
+>  	.ecc_mode	=3D NAND_ECC_SOFT,
+> +	.ecc_algo	=3D NAND_ECC_HAMMING,
+>  	.parts		=3D nand_partitions,
+>  	.num_parts	=3D ARRAY_SIZE(nand_partitions),
+>  };
+> diff --git a/include/linux/platform_data/atmel.h b/include/linux/platform=
+_data/atmel.h
+> index 3c8825b..a283b3d 100644
+> --- a/include/linux/platform_data/atmel.h
+> +++ b/include/linux/platform_data/atmel.h
+> @@ -33,6 +33,7 @@ struct atmel_nand_data {
+>  	u8		cle;			/* address line number connected to CLE */
+>  	u8		bus_width_16;		/* buswidth is 16 bit */
+>  	u8		ecc_mode;		/* ecc mode */
+> +	enum nand_ecc_algo ecc_algo;		/* ecc algorithm */
+>  	u8		on_flash_bbt;		/* bbt on flash */
+>  	struct mtd_partition *parts;
+>  	unsigned int	num_parts;
 
 
 
--- 
-Raphael Derosso Pereira
-raphael@rmi.inf.br
-+55-41-8877-1762
+--=20
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
