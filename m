@@ -1,22 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arKoI-0006az-7Q
- for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 07:38:31 +0000
-Date: Sat, 16 Apr 2016 09:38:06 +0200
+ id 1arKr3-0008DO-Ea
+ for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 07:41:22 +0000
+Date: Sat, 16 Apr 2016 09:40:59 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Haavard Skinnemoen
- <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>, Nicolas Ferre
- <nicolas.ferre@atmel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Marc Kleine-Budde <mkl@pengutronix.de>, Alan Stern
- <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH 03/12] avr32: set Atmel NAND ECC algorithm explicitly
-Message-ID: <20160416093806.7da3d660@bbrezillon>
-In-Reply-To: <1460750052-16285-4-git-send-email-zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@atmel.com>, Josh
+ Wu <rainyfeeling@outlook.com>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH 04/12] mtd: nand: atmel: set ECC algorithm explicitly
+Message-ID: <20160416094059.44d6a6aa@bbrezillon>
+In-Reply-To: <1460750052-16285-5-git-send-email-zajec5@gmail.com>
 References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
- <1460750052-16285-4-git-send-email-zajec5@gmail.com>
+ <1460750052-16285-5-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -29,66 +27,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 15 Apr 2016 21:54:03 +0200
+On Fri, 15 Apr 2016 21:54:04 +0200
 Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
+> Set it to value obtained from platform data with fallback to Hamming.
 > This is part of process deprecating NAND_ECC_SOFT_BCH (and switching to
 > enum nand_ecc_algo).
-
-Not sure we really need to add this ->ecc_algo field: none of the
-existing AVR32 boards use software BCH implementation, and I don't
-expect to see new AVR32 boards :-). How about setting NAND_ECC_HAMMING
-when ecc_mode =3D=3D NAND_ECC_SOFT directly in the atmel_nand driver?
-
 >=20
 > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
 > ---
->  arch/avr32/boards/atngw100/setup.c      | 1 +
->  arch/avr32/boards/atstk1000/atstk1002.c | 1 +
->  include/linux/platform_data/atmel.h     | 1 +
->  3 files changed, 3 insertions(+)
+>  drivers/mtd/nand/atmel_nand.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >=20
-> diff --git a/arch/avr32/boards/atngw100/setup.c b/arch/avr32/boards/atngw=
-100/setup.c
-> index afeae89..b059b97 100644
-> --- a/arch/avr32/boards/atngw100/setup.c
-> +++ b/arch/avr32/boards/atngw100/setup.c
-> @@ -98,6 +98,7 @@ static struct atmel_nand_data atngw100mkii_nand_data __=
-initdata =3D {
->  	.enable_pin	=3D GPIO_PIN_PE(23),
->  	.bus_width_16	=3D true,
->  	.ecc_mode	=3D NAND_ECC_SOFT,
-> +	.ecc_algo	=3D NAND_ECC_HAMMING,
->  	.parts		=3D nand_partitions,
->  	.num_parts	=3D ARRAY_SIZE(nand_partitions),
->  };
-> diff --git a/arch/avr32/boards/atstk1000/atstk1002.c b/arch/avr32/boards/=
-atstk1000/atstk1002.c
-> index 6c80aba..6b45faf 100644
-> --- a/arch/avr32/boards/atstk1000/atstk1002.c
-> +++ b/arch/avr32/boards/atstk1000/atstk1002.c
-> @@ -96,6 +96,7 @@ static struct atmel_nand_data atstk1006_nand_data __ini=
-tdata =3D {
->  	.rdy_pin	=3D GPIO_PIN_PB(30),
->  	.enable_pin	=3D GPIO_PIN_PB(29),
->  	.ecc_mode	=3D NAND_ECC_SOFT,
-> +	.ecc_algo	=3D NAND_ECC_HAMMING,
->  	.parts		=3D nand_partitions,
->  	.num_parts	=3D ARRAY_SIZE(nand_partitions),
->  };
-> diff --git a/include/linux/platform_data/atmel.h b/include/linux/platform=
-_data/atmel.h
-> index 3c8825b..a283b3d 100644
-> --- a/include/linux/platform_data/atmel.h
-> +++ b/include/linux/platform_data/atmel.h
-> @@ -33,6 +33,7 @@ struct atmel_nand_data {
->  	u8		cle;			/* address line number connected to CLE */
->  	u8		bus_width_16;		/* buswidth is 16 bit */
->  	u8		ecc_mode;		/* ecc mode */
-> +	enum nand_ecc_algo ecc_algo;		/* ecc algorithm */
->  	u8		on_flash_bbt;		/* bbt on flash */
->  	struct mtd_partition *parts;
->  	unsigned int	num_parts;
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index eec8ca7..6aa82e4 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -1212,6 +1212,7 @@ static int atmel_pmecc_nand_init_params(struct plat=
+form_device *pdev,
+>  		dev_warn(host->dev,
+>  			"Can't get I/O resource regs for PMECC controller, rolling back on so=
+ftware ECC\n");
+>  		nand_chip->ecc.mode =3D NAND_ECC_SOFT;
+> +		nand_chip->ecc.algo =3D NAND_ECC_HAMMING;
+>  		return 0;
+>  	}
+> =20
+> @@ -1295,6 +1296,7 @@ static int atmel_pmecc_nand_init_params(struct plat=
+form_device *pdev,
+>  		/* page size not handled by HW ECC */
+>  		/* switching back to soft ECC */
+>  		nand_chip->ecc.mode =3D NAND_ECC_SOFT;
+> +		nand_chip->ecc.algo =3D NAND_ECC_HAMMING;
+>  		return 0;
+>  	}
+> =20
+> @@ -1613,6 +1615,7 @@ static int atmel_of_init_port(struct atmel_nand_hos=
+t *host,
+>  	 * even if the nand-ecc-mode property is not defined.
+>  	 */
+>  	host->nand_chip.ecc.mode =3D NAND_ECC_SOFT;
+> +	host->nand_chip.ecc.algo =3D NAND_ECC_HAMMING;
+> =20
+>  	return 0;
+>  }
+> @@ -1629,6 +1632,7 @@ static int atmel_hw_nand_init_params(struct platfor=
+m_device *pdev,
+>  		dev_err(host->dev,
+>  			"Can't get I/O resource regs, use software ECC\n");
+>  		nand_chip->ecc.mode =3D NAND_ECC_SOFT;
+> +		nand_chip->ecc.algo =3D NAND_ECC_HAMMING;
+>  		return 0;
+>  	}
+> =20
+> @@ -1661,6 +1665,7 @@ static int atmel_hw_nand_init_params(struct platfor=
+m_device *pdev,
+>  		/* page size not handled by HW ECC */
+>  		/* switching back to soft ECC */
+>  		nand_chip->ecc.mode =3D NAND_ECC_SOFT;
+> +		nand_chip->ecc.algo =3D NAND_ECC_HAMMING;
+>  		return 0;
+>  	}
+> =20
+> @@ -2159,6 +2164,7 @@ static int atmel_nand_probe(struct platform_device =
+*pdev)
+>  		memcpy(&host->board, dev_get_platdata(&pdev->dev),
+>  		       sizeof(struct atmel_nand_data));
+>  		nand_chip->ecc.mode =3D host->board.ecc_mode;
+> +		nand_chip->ecc.algo =3D host->board.ecc_algo;
+
+If you follow my suggestion on patch 3, it should be:
+
+		if (host->board.ecc_mode =3D=3D NAND_ECC_SOFT)
+			nand_chip->ecc.algo =3D NAND_ECC_HAMMING;
+
+This way we avoid any dependency between the avr32 and nand tree.
+
+> =20
+>  		/* 16-bit bus width */
+>  		if (host->board.bus_width_16)
 
 
 
