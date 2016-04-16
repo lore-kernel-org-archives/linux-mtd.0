@@ -1,27 +1,32 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arM2n-00053I-St
- for linux-mtd@lists.infradead.org; Sat, 16 Apr 2016 08:57:34 +0000
-Date: Sat, 16 Apr 2016 10:57:11 +0200
+Date: Sat, 16 Apr 2016 11:07:20 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Tony Lindgren <tony@atomide.com>
-Cc: Roger Quadros <rogerq@ti.com>, javier@dowhile0.org, fcooper@ti.com,
- nsekhar@ti.com, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- ezequiel@vanguardiasur.com.ar, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC
- NAND on non-OMAP platforms
-Message-ID: <20160416105711.5310d2d0@bbrezillon>
-In-Reply-To: <20160415161950.GT5995@atomide.com>
-References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
- <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
- <20160415120942.3131eac1@bbrezillon> <5710C86A.9060108@ti.com>
- <20160415135108.63716f06@bbrezillon>
- <20160415154139.GS5995@atomide.com>
- <20160415180531.15d790d2@bbrezillon>
- <20160415161950.GT5995@atomide.com>
+To: Han Xu <han.xu@nxp.com>
+Cc: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou
+ Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Kamal
+ Dasu <kdasu.kdev@gmail.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Stefan Agner <stefan@agner.ch>,
+ linux-omap@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
+ <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ bcm-kernel-feedback-list@broadcom.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Maxime
+ Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-sunxi@googlegroups.com, Zhou Wang <wangzhou1@hisilicon.com>, Alex
+ Smith <alex.smith@imgtec.com>, Harvey Hunt <harvey.hunt@imgtec.com>
+Subject: Re: [PATCH 06/12] mtd: nand: gpmi: rely on generic DT parsing done
+ in nand_scan_ident()
+Message-ID: <20160416110720.462822e6@bbrezillon>
+In-Reply-To: <1459515272-31011-7-git-send-email-boris.brezillon@free-electrons.com>
+References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459515272-31011-7-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -34,33 +39,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 15 Apr 2016 09:19:51 -0700
-Tony Lindgren <tony@atomide.com> wrote:
+Hi Han,
 
-> 
-> > Or should I just pull this immutable branch in my current nand/next and
-> > let you pull the same immutable branch in omap-soc. I mean, would this
-> > prevent conflicts when our branches are merged into linux-next, no
-> > matter the order.
-> 
-> Ideally just one or more branches with just minimal changes in
-> them against -rc1. But you may have other dependencies in
-> your NAND tree so that may no longer be doable :) Usually if
-> I merge something that may need to get merged into other
-> branches, I just apply them into a separate branch against -rc1
-> to start with, then merge that branch in.
+On Fri,  1 Apr 2016 14:54:26 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-Okay, in this case, that's pretty much what I did from the beginning,
-except the immutable branch was provided by Roger (based on 4.6-rc1).
-Thanks for this detailed explanation, I'll try to remember that when
-I'll need to provide an immutable branch for another subsystem.
+> The core now takes care of parsing generic DT properties in
+> nand_scan_ident() when nand_set_flash_node() has been called.
+> Rely on this initialization instead of calling of_get_nand_xxx()
+> manually.
 
-Roger, my request remains, could you check/test my conflict resolution
-(branch nand/next-with-gpmc-rework)?
+Can you review/test this patch? I'd like to have the whole series
+merged in this release.
 
 Thanks,
 
 Boris
+
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 21 ++++++++++-----------
+>  1 file changed, 10 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 8122c69..c6e8a1c 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -25,7 +25,6 @@
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> -#include <linux/of_mtd.h>
+>  #include "gpmi-nand.h"
+>  #include "bch-regs.h"
+>  
+> @@ -1914,16 +1913,6 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+>  	/* Set up swap_block_mark, must be set before the gpmi_set_geometry() */
+>  	this->swap_block_mark = !GPMI_IS_MX23(this);
+>  
+> -	if (of_get_nand_on_flash_bbt(this->dev->of_node)) {
+> -		chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+> -
+> -		if (of_property_read_bool(this->dev->of_node,
+> -						"fsl,no-blockmark-swap"))
+> -			this->swap_block_mark = false;
+> -	}
+> -	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
+> -		this->swap_block_mark ? "en" : "dis");
+> -
+>  	/*
+>  	 * Allocate a temporary DMA buffer for reading ID in the
+>  	 * nand_scan_ident().
+> @@ -1938,6 +1927,16 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+>  	if (ret)
+>  		goto err_out;
+>  
+> +	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
+> +		chip->bbt_options |= NAND_BBT_NO_OOB;
+> +
+> +		if (of_property_read_bool(this->dev->of_node,
+> +						"fsl,no-blockmark-swap"))
+> +			this->swap_block_mark = false;
+> +	}
+> +	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
+> +		this->swap_block_mark ? "en" : "dis");
+> +
+>  	ret = gpmi_init_last(this);
+>  	if (ret)
+>  		goto err_out;
+
+
 
 -- 
 Boris Brezillon, Free Electrons
