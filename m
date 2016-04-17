@@ -1,27 +1,71 @@
-Received: from mx2.suse.de ([195.135.220.15])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ariMj-0007ub-Ko
- for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 08:47:38 +0000
-Subject: Re: [PATCH 41/42] block: do not use REQ_FLUSH for tracking flush
- support
-To: mchristi@redhat.com, linux-f2fs-devel@lists.sourceforge.net,
- linux-ext4@vger.kernel.org, konrad.wilk@oracle.com,
- drbd-dev@lists.linbit.com, philipp.reisner@linbit.com,
- lars.ellenberg@linbit.com, linux-raid@vger.kernel.org, dm-devel@redhat.com,
- linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
- target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
-References: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
- <1460747777-8479-42-git-send-email-mchristi@redhat.com>
-From: Juergen Gross <kernel@pfupf.net>
-Message-ID: <57134D83.8020309@pfupf.net>
-Date: Sun, 17 Apr 2016 10:46:59 +0200
+Date: Sun, 17 Apr 2016 05:38:57 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: zengzhaoxiu@163.com
+Cc: linux-kernel@vger.kernel.org, Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>,
+ adi-buildroot-devel@lists.sourceforge.net,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Anton Blanchard <anton@samba.org>, Arnd Bergmann <arnd@arndb.de>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Borislav Petkov <bp@suse.de>, Bruce Allan <bruce.w.allan@intel.com>,
+ Christophe Leroy <christophe.leroy@c-s.fr>,
+ David Herrmann <dh.herrmann@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Denys Vlasenko <dvlasenk@redhat.com>,
+ Duson Lin <dusonlin@emc.com.tw>, Guenter Roeck <linux@roeck-us.net>,
+ Hans de Goede <hdegoede@redhat.com>, Hans Verkuil <hans.verkuil@cisco.com>,
+ Hartmut Knaack <knaack.h@gmx.de>,
+ Heiko Carstens <heiko.carstens@de.ibm.com>,
+ Hendrik Brueckner <brueckner@linux.vnet.ibm.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Ingo Molnar <mingo@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+ Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Julian Calaby <julian.calaby@gmail.com>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>,
+ linux-alpha@vger.kernel.org, linux-am33-list@redhat.com,
+ linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com,
+ linux-crypto@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-ia64@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-input@vger.kernel.org, linux@lists.openrisc.net,
+ linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
+ linux-metag@vger.kernel.org, linux-mips@linux-mips.org,
+ linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+ Martin Kepplinger <martink@posteo.de>,
+ Martin Schwidefsky <schwidefsky@de.ibm.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Michal Nazarewicz <mina86@mina86.com>, netdev@vger.kernel.org,
+ Peter Hutterer <peter.hutterer@who-t.net>,
+ Peter Meerwald <pmeerw@pmeerw.net>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Pingchao Yang <pingchao.yang@intel.com>, qat-linux@intel.com,
+ Ralf Baechle <ralf@linux-mips.org>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Russell King <rmk+kernel@arm.linux.org.uk>,
+ Sasha Levin <sasha.levin@oracle.com>, Scott Wood <oss@buserror.net>,
+ sparclinux@vger.kernel.org, Tadeusz Struk <tadeusz.struk@intel.com>,
+ Takashi Iwai <tiwai@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
+ Torsten Duwe <duwe@lst.de>, uclinux-h8-devel@lists.sourceforge.jp,
+ Ulrik De Bie <ulrik.debie-os@e2big.org>,
+ Vineet Gupta <vgupta@synopsys.com>, Vlastimil Babka <vbabka@suse.cz>,
+ "wim.coekaerts@oracle.com" <wim.coekaerts@oracle.com>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Yury Norov <yury.norov@gmail.com>,
+ =?utf-8?B?5rSq5LiA56u5?= <sam.hung@emc.com.tw>
+Subject: Re: [PATCH V3 00/29] bitops: add parity functions
+Message-ID: <20160417123857.GD33215@dtor-ws>
+References: <1460601525-3822-1-git-send-email-zengzhaoxiu@163.com>
 MIME-Version: 1.0
-In-Reply-To: <1460747777-8479-42-git-send-email-mchristi@redhat.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1460601525-3822-1-git-send-email-zengzhaoxiu@163.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +75,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15/04/16 21:16, mchristi@redhat.com wrote:
-> From: Mike Christie <mchristi@redhat.com>
-> 
-> The last patch added a REQ_OP_FLUSH for request_fn drivers
-> and the next patch renames REQ_FLUSH to REQ_PREFLUSH which
-> will be used by file systems and make_request_fn drivers so
-> they can send a write/flush combo.
-> 
-> This patch drops xen's use of REQ_FLUSH to track if it supports
-> REQ_OP_FLUSH requests, so REQ_FLUSH can be deleted.
-> 
-> v7:
-> - Fix feature_flush/fua use.
-> 
-> v6:
-> - Dropped parts of patch handled by Jens's QUEUE_FLAG_WC/FUA
-> patches and modified patch to check feature_flush/fua bits.
-> 
-> Signed-off-by: Mike Christie <mchristi@redhat.com>
-> Reviewed-by: Hannes Reinecke <hare@suse.com>
-> Cc: Juergen Gross <kernel@pfupf.net>
+On Thu, Apr 14, 2016 at 10:36:41AM +0800, zengzhaoxiu@163.com wrote:
+>  drivers/input/joystick/grip_mp.c             |  16 +--
+>  drivers/input/joystick/sidewinder.c          |  24 +----
+>  drivers/input/mouse/elantech.c               |  10 +-
+>  drivers/input/mouse/elantech.h               |   1 -
+>  drivers/input/serio/ams_delta_serio.c        |   8 +-
+>  drivers/input/serio/pcips2.c                 |   2 +-
+>  drivers/input/serio/sa1111ps2.c              |   2 +-
 
-Acked-by: Juergen Gross <jgross@suse.com>
+For input bits:
 
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Juergen
+Thanks.
+
+-- 
+Dmitry
