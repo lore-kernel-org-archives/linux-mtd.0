@@ -1,22 +1,34 @@
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1arrbH-0008Em-BK
+ for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 18:39:17 +0000
+Received: by mail-pa0-x235.google.com with SMTP id er2so42708370pad.3
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 11:38:54 -0700 (PDT)
+Date: Sun, 17 Apr 2016 11:38:49 -0700
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+To: Keguang Zhang <keguang.zhang@gmail.com>
+Cc: linux-mips@linux-mips.org, linux-clk@vger.kernel.org,
+ linux-pm@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ralf Baechle <ralf@linux-mips.org>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@codeaurora.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Viresh Kumar <viresh.kumar@linaro.org>, Vinod Koul <vinod.koul@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Alexandre Courbot <gnurou@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org (open list),
- linux-arm-kernel@lists.infradead.org (moderated list:ARM/Allwinner sunXi SoC
- support)
-Subject: [PATCH V2 11/11] mtd: mtd: drop NAND_ECC_SOFT_BCH enum value
-Date: Sun, 17 Apr 2016 19:11:44 +0200
-Message-Id: <1460913104-27388-12-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
-References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
- <1460913104-27388-1-git-send-email-zajec5@gmail.com>
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH V1 4/7] mtd: nand: add Loongson1 NAND driver
+Message-ID: <20160417183849.GC391@tuxbot>
+References: <1459946095-7637-1-git-send-email-keguang.zhang@gmail.com>
+ <1459946095-7637-5-git-send-email-keguang.zhang@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1459946095-7637-5-git-send-email-keguang.zhang@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,145 +38,567 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This value should not be part of nand_ecc_modes_t as it specifies
-algorithm not a mode. We successfully managed to introduce new "algo"
-field which is respected now.
+On Wed 06 Apr 05:34 PDT 2016, Keguang Zhang wrote:
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/nand/fsmc_nand.c   |  3 +--
- drivers/mtd/nand/jz4780_nand.c |  1 -
- drivers/mtd/nand/nand_base.c   | 11 +++--------
- drivers/mtd/nand/nandsim.c     |  2 +-
- drivers/mtd/nand/sunxi_nand.c  |  2 --
- include/linux/mtd/nand.h       |  1 -
- 6 files changed, 5 insertions(+), 15 deletions(-)
+> From: Kelvin Cheung <keguang.zhang@gmail.com>
+> 
+> This patch adds NAND driver for Loongson1B.
+> 
 
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 0f8c63f..d4f454a 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -959,7 +959,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 			break;
- 
- 		case NAND_ECC_SOFT:
--		case NAND_ECC_SOFT_BCH:
- 			if (nand->ecc.algo == NAND_ECC_BCH) {
- 				dev_info(&pdev->dev, "Using 4-bit SW BCH ECC scheme\n");
- 				break;
-@@ -974,7 +973,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 		 * Don't set layout for BCH4 SW ECC. This will be
- 		 * generated later in nand_bch_init() later.
- 		 */
--		if (nand->ecc.mode != NAND_ECC_SOFT_BCH) {
-+		if (nand->ecc.mode == NAND_ECC_HW) {
- 			switch (mtd->oobsize) {
- 			case 16:
- 			case 64:
-diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
-index 10f249a..daf3c42 100644
---- a/drivers/mtd/nand/jz4780_nand.c
-+++ b/drivers/mtd/nand/jz4780_nand.c
-@@ -179,7 +179,6 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
- 		chip->ecc.correct = jz4780_nand_ecc_correct;
- 		/* fall through */
- 	case NAND_ECC_SOFT:
--	case NAND_ECC_SOFT_BCH:
- 		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
- 			(nfc->bch) ? "hardware BCH" : "software ECC",
- 			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index d092375..bc029d0 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4084,8 +4084,7 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 
--	if (WARN_ON(ecc->mode != NAND_ECC_SOFT &&
--		    ecc->mode != NAND_ECC_SOFT_BCH))
-+	if (WARN_ON(ecc->mode != NAND_ECC_SOFT))
- 		return -EINVAL;
- 
- 	switch (ecc->algo) {
-@@ -4218,7 +4217,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	 * If no default placement scheme is given, select an appropriate one.
- 	 */
- 	if (!mtd->ooblayout &&
--	    (ecc->mode == NAND_ECC_SOFT || ecc->mode == NAND_ECC_SOFT_BCH) &&
-+	    ecc->mode == NAND_ECC_SOFT &&
- 	    ecc->algo != NAND_ECC_BCH) {
- 		switch (mtd->oobsize) {
- 		case 8:
-@@ -4313,13 +4312,11 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		ecc->algo = NAND_ECC_HAMMING;
- 
- 	case NAND_ECC_SOFT:
--	case NAND_ECC_SOFT_BCH:
- 		ret = nand_set_ecc_soft_ops(mtd);
- 		if (ret) {
- 			ret = -EINVAL;
- 			goto err_free;
- 		}
--
- 		break;
- 
- 	case NAND_ECC_NONE:
-@@ -4402,7 +4399,6 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	/* Large page NAND with SOFT_ECC should support subpage reads */
- 	switch (ecc->mode) {
- 	case NAND_ECC_SOFT:
--	case NAND_ECC_SOFT_BCH:
- 		if (chip->page_shift > 9)
- 			chip->options |= NAND_SUBPAGE_READ;
- 		break;
-@@ -4502,8 +4498,7 @@ void nand_release(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 
--	if ((chip->ecc.mode == NAND_ECC_SOFT ||
--	     chip->ecc.mode == NAND_ECC_SOFT_BCH) &&
-+	if (chip->ecc.mode == NAND_ECC_SOFT &&
- 	    chip->ecc.algo == NAND_ECC_BCH)
- 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
- 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 6ff1d8d..b0074c2 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -2339,7 +2339,7 @@ static int __init ns_init_module(void)
- 			retval = -EINVAL;
- 			goto error;
- 		}
--		chip->ecc.mode = NAND_ECC_SOFT_BCH;
-+		chip->ecc.mode = NAND_ECC_SOFT;
- 		chip->ecc.algo = NAND_ECC_BCH;
- 		chip->ecc.size = 512;
- 		chip->ecc.strength = bch;
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 1baf8983..a83a690 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -1612,8 +1612,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
- 		return -EINVAL;
- 
- 	switch (ecc->mode) {
--	case NAND_ECC_SOFT_BCH:
--		break;
- 	case NAND_ECC_HW:
- 		ret = sunxi_nand_hw_ecc_ctrl_init(mtd, ecc, np);
- 		if (ret)
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index e851839..fbe8e16 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -116,7 +116,6 @@ typedef enum {
- 	NAND_ECC_HW,
- 	NAND_ECC_HW_SYNDROME,
- 	NAND_ECC_HW_OOB_FIRST,
--	NAND_ECC_SOFT_BCH,
- } nand_ecc_modes_t;
- 
- enum nand_ecc_algo {
--- 
-1.8.4.5
+Hi Keguang,
+
+Please find some comments inline.
+
+> Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
+> ---
+>  drivers/mtd/nand/Kconfig          |   8 +
+>  drivers/mtd/nand/Makefile         |   1 +
+>  drivers/mtd/nand/loongson1_nand.c | 519 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 528 insertions(+)
+>  create mode 100644 drivers/mtd/nand/loongson1_nand.c
+> 
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index f05e0e9..d90f545 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -563,4 +563,12 @@ config MTD_NAND_QCOM
+>  	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
+>  	  controller. This controller is found on IPQ806x SoC.
+>  
+> +config MTD_NAND_LOONGSON1
+> +	tristate "Support for Loongson1 SoC NAND controller"
+> +	depends on MACH_LOONGSON32
+> +	select DMADEVICES
+> +	select DMA_LOONGSON1
+> +	help
+> +		Enables support for NAND Flash on Loongson1 SoC based boards.
+
+Indent the help text with 2 spaces beyond the "help".
+
+> +
+>  endif # MTD_NAND
+[..]
+> diff --git a/drivers/mtd/nand/loongson1_nand.c b/drivers/mtd/nand/loongson1_nand.c
+[..]
+> +
+> +/* macros for registers read/write */
+> +#define nand_readl(nand, off)		\
+> +	__raw_readl((nand)->reg_base + (off))
+> +
+> +#define nand_writel(nand, off, val)	\
+> +	__raw_writel((val), (nand)->reg_base + (off))
+
+Why are you using the __raw variants here? Are these registers following
+the endian that the cpu happens to run in?
+
+> +
+> +#define set_cmd(nand, ctrl)		\
+> +	nand_writel(nand, NAND_CMD, ctrl)
+> +
+> +#define start_nand(nand)		\
+> +	nand_writel(nand, NAND_CMD, nand_readl(nand, NAND_CMD) | CMD_VALID)
+
+You have a single user of these two macros, just inline them.
+
+Further more, it's easier to read if you split the later into a clear:
+val = nand_readl(nand, NAND_CMD);
+val |= CMD_VALID;
+nand_writel(nand, NAND_CMD, val);
+
+
+And in my eyes:
+  nand_readl(nand, NAND_CMD)
+isn't cleaner than:
+  readl(nand->reg_base + NAND_CMD)
+
+And you have this construct in several places already, so I would say
+just skip all these macros.
+
+> +
+> +struct ls1x_nand {
+> +	struct platform_device *pdev;
+
+You don't use pdev anywhere.
+
+> +	struct nand_chip chip;
+> +
+> +	struct clk *clk;
+> +	void __iomem *reg_base;
+> +
+> +	int cmd_val;
+
+This is only assigned in ls1x_nand_cmdfunc() and it will either get a
+value based on the command or if the command is NAND_CMD_PAGEPROG it
+will use the value 0 from a previous run.
+
+So you should make this a local variable.
+
+> +	char datareg[8];
+> +	char *data_ptr;
+
+These should be uint8_t based on how you're using them.
+
+> +
+> +	/* DMA stuff */
+> +	unsigned char *dma_buf;
+
+void *
+
+> +	unsigned int buf_off;
+> +	unsigned int buf_len;
+> +
+> +	/* DMA Engine stuff */
+> +	unsigned int dma_chan_id;
+> +	struct dma_chan *dma_chan;
+> +	dma_cookie_t dma_cookie;
+> +	struct completion dma_complete;
+> +	void __iomem *dma_desc;
+
+dma_desc is unused.
+
+> +};
+> +
+> +static void dma_callback(void *data)
+> +{
+> +	struct ls1x_nand *nand = (struct ls1x_nand *)data;
+
+No typecast needed from void *
+
+> +	struct mtd_info *mtd = nand_to_mtd(&nand->chip);
+> +	struct dma_tx_state state;
+> +	enum dma_status status;
+> +
+> +	status = dmaengine_tx_status(nand->dma_chan, nand->dma_cookie, &state);
+
+iirc you can pass NULL instead of state if you don't care about the
+result.
+
+> +	if (likely(status == DMA_COMPLETE))
+> +		dev_dbg(mtd->dev.parent, "DMA complete with cookie=%d\n",
+> +			nand->dma_cookie);
+> +	else
+> +		dev_err(mtd->dev.parent, "DMA error with cookie=%d\n",
+> +			nand->dma_cookie);
+> +
+> +	complete(&nand->dma_complete);
+
+Don't you want to propagate this error to the "caller"?
+
+Do note that when this happens in some product, no-one will be there to
+see this error message and do something about it.
+
+> +}
+> +
+> +static int setup_dma(struct ls1x_nand *nand)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(&nand->chip);
+> +	struct dma_slave_config cfg;
+> +	dma_cap_mask_t mask;
+> +	int ret;
+> +
+> +	/* allocate DMA buffer */
+> +	nand->dma_buf = devm_kzalloc(mtd->dev.parent,
+> +				     mtd->writesize + mtd->oobsize, GFP_KERNEL);
+> +	if (!nand->dma_buf)
+> +		return -ENOMEM;
+> +
+> +	dma_cap_zero(mask);
+> +	dma_cap_set(DMA_SLAVE, mask);
+> +	nand->dma_chan = dma_request_channel(mask, ls1x_dma_filter_fn,
+> +					     &nand->dma_chan_id);
+> +	if (!nand->dma_chan) {
+> +		dev_err(mtd->dev.parent, "failed to request DMA channel\n");
+> +		return -EBUSY;
+> +	}
+> +	dev_info(mtd->dev.parent, "got %s for %s access\n",
+> +		 dma_chan_name(nand->dma_chan), dev_name(mtd->dev.parent));
+
+dev_info will include the name already, no need to print it twice.
+
+> +
+> +	cfg.src_addr = CPHYSADDR(nand->reg_base + NAND_DMA_ADDR);
+> +	cfg.dst_addr = CPHYSADDR(nand->reg_base + NAND_DMA_ADDR);
+> +	cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	ret = dmaengine_slave_config(nand->dma_chan, &cfg);
+> +	if (ret) {
+> +		dev_err(mtd->dev.parent, "failed to config DMA channel\n");
+> +		dma_release_channel(nand->dma_chan);
+> +		return ret;
+> +	}
+> +
+> +	init_completion(&nand->dma_complete);
+> +
+> +	return 0;
+> +}
+> +
+> +static int start_dma(struct ls1x_nand *nand, unsigned int len, bool is_write)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(&nand->chip);
+> +	struct dma_chan *chan = nand->dma_chan;
+> +	struct dma_async_tx_descriptor *desc;
+> +	enum dma_data_direction data_dir =
+> +	    is_write ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
+> +	enum dma_transfer_direction xfer_dir =
+> +	    is_write ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
+> +	dma_addr_t dma_addr;
+> +	int ret;
+> +
+> +	dma_addr =
+> +	    dma_map_single(chan->device->dev, nand->dma_buf, len, data_dir);
+> +	if (dma_mapping_error(chan->device->dev, dma_addr)) {
+> +		dev_err(mtd->dev.parent, "failed to map DMA buffer\n");
+> +		return -ENXIO;
+> +	}
+> +
+> +	desc = dmaengine_prep_slave_single(chan, dma_addr, len, xfer_dir,
+> +					   DMA_PREP_INTERRUPT);
+> +	if (!desc) {
+> +		dev_err(mtd->dev.parent,
+> +			"failed to prepare DMA descriptor\n");
+> +		ret = PTR_ERR(desc);
+> +		goto err;
+> +	}
+> +	desc->callback = dma_callback;
+> +	desc->callback_param = nand;
+> +
+> +	nand->dma_cookie = dmaengine_submit(desc);
+> +	ret = dma_submit_error(nand->dma_cookie);
+> +	if (ret) {
+> +		dev_err(mtd->dev.parent,
+> +			"failed to submit DMA descriptor\n");
+> +		goto err;
+> +	}
+> +
+> +	dev_dbg(mtd->dev.parent, "issue DMA with cookie=%d\n",
+> +		nand->dma_cookie);
+> +	dma_async_issue_pending(chan);
+> +
+> +	ret = wait_for_completion_timeout(&nand->dma_complete,
+> +					  msecs_to_jiffies(LS1X_NAND_TIMEOUT));
+> +	if (ret <= 0) {
+> +		dev_err(mtd->dev.parent, "DMA timeout\n");
+> +		dmaengine_terminate_all(chan);
+> +		ret = -EIO;
+> +	}
+> +	ret = 0;
+
+You're overwriting the error from the timeout here.
+
+Alsoas I commented in dma_callback, you're propagating any outcome (good
+or bad) from the dma operation as a success.
+
+> +err:
+> +	dma_unmap_single(chan->device->dev, dma_addr, len, data_dir);
+> +
+> +	return ret;
+> +}
+> +
+> +static void ls1x_nand_select_chip(struct mtd_info *mtd, int chip)
+> +{
+> +}
+> +
+> +static int ls1x_nand_dev_ready(struct mtd_info *mtd)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct ls1x_nand *nand = nand_get_controller_data(chip);
+> +
+> +	if (nand_readl(nand, NAND_CMD) & OP_DONE)
+> +		return 1;
+> +
+> +	return 0;
+
+return !!(nand_readl(nand, NAND_CMD) & OP_DONE);
+
+But preferable:
+
+u32 val;
+
+val = readl(nand->reg_base + NAND_CMD);
+return !!(val & OP_DONE);
+
+> +}
+> +
+> +static uint8_t ls1x_nand_read_byte(struct mtd_info *mtd)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct ls1x_nand *nand = nand_get_controller_data(chip);
+> +
+> +	return *(nand->data_ptr++);
+
+Are there any guarantees that this won't ever happen more than 8 times
+(and read outside datareg)?
+
+> +}
+> +
+
+[..]
+
+> +
+> +static void ls1x_nand_cmdfunc(struct mtd_info *mtd, unsigned int command,
+> +			      int column, int page_addr)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct ls1x_nand *nand = nand_get_controller_data(chip);
+> +
+> +	dev_dbg(mtd->dev.parent, "cmd = 0x%02x, col = 0x%08x, page = 0x%08x\n",
+> +		command, column, page_addr);
+> +
+> +	if (command == NAND_CMD_RNDOUT) {
+> +		nand->buf_off = column;
+> +		return;
+> +	}
+> +
+> +	/*set address, buffer length and buffer offset */
+> +	if (column != -1 || page_addr != -1)
+> +		set_addr_len(mtd, command, column, page_addr);
+> +
+> +	/*prepare NAND command */
+> +	switch (command) {
+> +	case NAND_CMD_RESET:
+> +		nand->cmd_val = CMD_RESET;
+> +		break;
+> +	case NAND_CMD_STATUS:
+> +		nand->cmd_val = CMD_STATUS;
+> +		break;
+> +	case NAND_CMD_READID:
+> +		nand->cmd_val = CMD_READID;
+> +		break;
+> +	case NAND_CMD_READ0:
+> +		nand->cmd_val = OP_SPARE | OP_MAIN | CMD_READ;
+> +		break;
+> +	case NAND_CMD_READOOB:
+> +		nand->cmd_val = OP_SPARE | CMD_READ;
+> +		break;
+> +	case NAND_CMD_ERASE1:
+> +		nand->cmd_val = CMD_ERASE;
+> +		break;
+> +	case NAND_CMD_PAGEPROG:
+
+You can make cmd_val a local variable to this function if you set it to
+0 here.
+
+> +		break;
+> +	case NAND_CMD_SEQIN:
+> +		if (column < mtd->writesize)
+> +			nand->cmd_val = OP_SPARE | OP_MAIN | CMD_WRITE;
+> +		else
+> +			nand->cmd_val = OP_SPARE | CMD_WRITE;
+> +	default:
+> +		return;
+> +	}
+> +
+> +	/*set NAND command */
+> +	set_cmd(nand, nand->cmd_val);
+> +	/*trigger NAND operation */
+> +	start_nand(nand);
+
+It would be clearer what's going on here if you didn't hide the writel
+calls behind macros.
+
+> +	/*trigger DMA for R/W operation */
+> +	if (command == NAND_CMD_READ0 || command == NAND_CMD_READOOB)
+> +		start_dma(nand, nand->buf_len, false);
+> +	else if (command == NAND_CMD_PAGEPROG)
+> +		start_dma(nand, nand->buf_len, true);
+> +	nand_wait_ready(mtd);
+> +
+> +	if (command == NAND_CMD_STATUS) {
+> +		nand->datareg[0] = (char)(nand_readl(nand, NAND_STATUS) >> 8);
+> +		/*work around hardware bug for invalid STATUS */
+> +		nand->datareg[0] |= 0xc0;
+> +		nand->data_ptr = nand->datareg;
+> +	} else if (command == NAND_CMD_READID) {
+> +		nand->datareg[0] = (char)(nand_readl(nand, NAND_IDH));
+> +		nand->datareg[1] = (char)(nand_readl(nand, NAND_IDL) >> 24);
+> +		nand->datareg[2] = (char)(nand_readl(nand, NAND_IDL) >> 16);
+> +		nand->datareg[3] = (char)(nand_readl(nand, NAND_IDL) >> 8);
+> +		nand->datareg[4] = (char)(nand_readl(nand, NAND_IDL));
+> +		nand->data_ptr = nand->datareg;
+> +	}
+
+This is essentially a 4 case switch statement, hidden in two chunks of
+conditionals.
+
+> +
+> +	nand->cmd_val = 0;
+> +}
+> +
+> +static void nand_hw_init(struct ls1x_nand *nand, int hold_cycle, int wait_cycle)
+> +{
+> +	struct nand_chip *chip = &nand->chip;
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	int chipsize = (int)(chip->chipsize >> 20);
+> +	int cell_size = 0x0;
+> +
+> +	switch (chipsize) {
+> +	case SZ_128:		/*128M */
+> +		cell_size = 0x0;
+> +		break;
+> +	case SZ_256:		/*256M */
+> +		cell_size = 0x1;
+> +		break;
+> +	case SZ_512:		/*512M */
+> +		cell_size = 0x2;
+> +		break;
+> +	case SZ_1K:		/*1G */
+> +		cell_size = 0x3;
+> +		break;
+> +	case SZ_2K:		/*2G */
+> +		cell_size = 0x4;
+> +		break;
+> +	case SZ_4K:		/*4G */
+> +		cell_size = 0x5;
+> +		break;
+> +	case SZ_8K:		/*8G */
+> +		cell_size = 0x6;
+> +		break;
+> +	case SZ_16K:		/*16G */
+> +		cell_size = 0x7;
+> +		break;
+> +	default:
+> +		dev_warn(mtd->dev.parent, "unsupported chip size: %d MB\n",
+> +			 chipsize);
+
+You should probably not continue here and just assume that you have a
+128M chip. Turn this into an dev_err and return an error value to your
+probe.
+
+> +	}
+> +
+> +	nand_writel(nand, NAND_TIMING, (hold_cycle << 8) | wait_cycle);
+> +	nand_writel(nand, NAND_PARAM,
+> +		    (nand_readl(nand, NAND_PARAM) & 0xfffff0ff) | (cell_size <<
+> +								   8));
+
+This would be much cleaner if written as:
+val = readl()
+val &= ~0x00000f00;
+val |= cell_size << 8;
+writel(val);
+
+And preferably a define that names the mask of bit 8 to 11 in this
+register.
+
+> +}
+> +
+> +static int ls1x_nand_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct plat_ls1x_nand *pdata = dev_get_platdata(dev);
+> +	struct ls1x_nand *nand;
+> +	struct mtd_info *mtd;
+> +	struct nand_chip *chip;
+> +	struct resource *res;
+> +	int ret = 0;
+> +
+> +	if (!pdata) {
+> +		dev_err(dev, "platform data missing\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	nand = devm_kzalloc(dev, sizeof(struct ls1x_nand), GFP_KERNEL);
+> +	if (!nand)
+> +		return -ENOMEM;
+> +	nand->pdev = pdev;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(dev, "failed to get I/O memory\n");
+> +		return -ENXIO;
+> +	}
+
+No need to handle the errors from platform_get_resource() when followed
+by a devm_ioremap_resource(), as this will error early if res is NULL.
+
+> +
+> +	nand->reg_base = devm_ioremap_resource(dev, res);
+> +	if (IS_ERR(nand->reg_base))
+> +		return PTR_ERR(nand->reg_base);
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+> +	if (!res) {
+> +		dev_err(dev, "failed to get DMA information\n");
+> +		return -ENXIO;
+> +	}
+> +	nand->dma_chan_id = res->start;
+> +
+> +	nand->clk = devm_clk_get(dev, pdev->name);
+> +	if (IS_ERR(nand->clk)) {
+> +		dev_err(dev, "failed to get %s clock\n", pdev->name);
+> +		return PTR_ERR(nand->clk);
+> +	}
+> +	clk_prepare_enable(nand->clk);
+> +
+> +	chip = &nand->chip;
+> +	chip->read_byte		= ls1x_nand_read_byte;
+> +	chip->read_buf		= ls1x_nand_read_buf;
+> +	chip->write_buf		= ls1x_nand_write_buf;
+> +	chip->select_chip	= ls1x_nand_select_chip;
+> +	chip->dev_ready		= ls1x_nand_dev_ready;
+> +	chip->cmdfunc		= ls1x_nand_cmdfunc;
+> +	chip->options		= NAND_NO_SUBPAGE_WRITE;
+> +	chip->ecc.mode		= NAND_ECC_SOFT;
+> +	nand_set_controller_data(chip, nand);
+> +
+> +	mtd = nand_to_mtd(chip);
+> +	mtd->name = "ls1x-nand";
+> +	mtd->owner = THIS_MODULE;
+> +	mtd->dev.parent = dev;
+> +
+> +	ret = nand_scan_ident(mtd, 1, NULL);
+> +	if (ret)
+> +		goto err;
+> +
+> +	nand_hw_init(nand, pdata->hold_cycle, pdata->wait_cycle);
+> +
+> +	ret = setup_dma(nand);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = nand_scan_tail(mtd);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = mtd_device_register(mtd, pdata->parts, pdata->nr_parts);
+> +	if (ret) {
+> +		dev_err(dev, "failed to register MTD device: %d\n", ret);
+> +		goto err;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, nand);
+> +	dev_info(dev, "Loongson1 NAND driver registered\n");
+
+I prefer not have every driver advertising their existence in the kernel
+log, keeps things cleaner. If you want a easy way for debugging purposes
+you can make it a dev_dbg (instead of just removing it) and use
+DYNAMIC_DEBUG to enable that from the command line.
+
+> +
+> +	return 0;
+> +err:
+> +	clk_disable_unprepare(nand->clk);
+> +
+> +	return ret;
+> +}
+> +
+[..]
+> +
+> +static struct platform_driver ls1x_nand_driver = {
+> +	.probe	= ls1x_nand_probe,
+> +	.remove	= ls1x_nand_remove,
+> +	.driver	= {
+> +		.name	= "ls1x-nand",
+> +		.owner	= THIS_MODULE,
+
+You shouldn't set owner on your platform_driver, it's done for you by
+the module_platform_driver() macro.
+
+> +	},
+> +};
+> +
+> +module_platform_driver(ls1x_nand_driver);
+> +
+
+Regards,
+Bjorn
