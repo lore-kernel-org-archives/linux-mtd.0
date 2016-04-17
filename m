@@ -1,21 +1,23 @@
-Received: from mail-lf0-x22d.google.com ([2a00:1450:4010:c07::22d])
+Received: from mail-lf0-x22f.google.com ([2a00:1450:4010:c07::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arqFN-0002Sc-T2
- for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 17:12:34 +0000
-Received: by mail-lf0-x22d.google.com with SMTP id g184so193601954lfb.3
- for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 10:12:13 -0700 (PDT)
+ id 1arqFT-0002VE-Kn
+ for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 17:12:40 +0000
+Received: by mail-lf0-x22f.google.com with SMTP id c126so193699305lfb.2
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 10:12:19 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- Mikael Starvik <starvik@axis.com>,
- Jesper Nilsson <jesper.nilsson@axis.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Brian Norris <computersforpeace@gmail.com>,
- linux-cris-kernel@axis.com (open list:CRIS PORT),
+ Eva Rachel Retuya <eraretuya@gmail.com>,
+ =?UTF-8?q?Manuel=20P=C3=A9gouri=C3=A9-Gonnard?= <mpg@elzevir.fr>,
+ Janani Ravichandran <janani.rvchndrn@gmail.com>,
+ devel@driverdev.osuosl.org (open list:STAGING SUBSYSTEM),
  linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V2 04/11] CRIS v32: nand: set ECC algorithm explicitly
-Date: Sun, 17 Apr 2016 19:11:37 +0200
-Message-Id: <1460913104-27388-5-git-send-email-zajec5@gmail.com>
+Subject: [PATCH V2 05/11] staging: mt29f_spinand: set ECC algorithm explicitly
+Date: Sun, 17 Apr 2016 19:11:38 +0200
+Message-Id: <1460913104-27388-6-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
 References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
  <1460913104-27388-1-git-send-email-zajec5@gmail.com>
@@ -36,33 +38,20 @@ enum nand_ecc_algo).
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- arch/cris/arch-v32/drivers/mach-a3/nandflash.c | 1 +
- arch/cris/arch-v32/drivers/mach-fs/nandflash.c | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/staging/mt29f_spinand/mt29f_spinand.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-index 5aa3f51..3f646c7 100644
---- a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-+++ b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
-@@ -157,6 +157,7 @@ struct mtd_info *__init crisv32_nand_flash_probe(void)
- 	/* 20 us command delay time */
- 	this->chip_delay = 20;
- 	this->ecc.mode = NAND_ECC_SOFT;
-+	this->ecc.algo = NAND_ECC_HAMMING;
- 
- 	/* Enable the following for a flash based bad block table */
- 	/* this->bbt_options = NAND_BBT_USE_FLASH; */
-diff --git a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-index a7c17b0..a745405 100644
---- a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-+++ b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
-@@ -148,6 +148,7 @@ struct mtd_info *__init crisv32_nand_flash_probe(void)
- 	/* 20 us command delay time */
- 	this->chip_delay = 20;
- 	this->ecc.mode = NAND_ECC_SOFT;
-+	this->ecc.algo = NAND_ECC_HAMMING;
- 
- 	/* Enable the following for a flash based bad block table */
- 	/* this->bbt_options = NAND_BBT_USE_FLASH; */
+diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+index f503699..e389009 100644
+--- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
++++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+@@ -900,6 +900,7 @@ static int spinand_probe(struct spi_device *spi_nand)
+ 	chip->ecc.write_page = spinand_write_page_hwecc;
+ #else
+ 	chip->ecc.mode	= NAND_ECC_SOFT;
++	chip->ecc.algo	= NAND_ECC_HAMMING;
+ 	if (spinand_disable_ecc(spi_nand) < 0)
+ 		dev_info(&spi_nand->dev, "%s: disable ecc failed!\n",
+ 			 __func__);
 -- 
 1.8.4.5
