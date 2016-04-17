@@ -1,9 +1,9 @@
-Received: from mail-lf0-x22a.google.com ([2a00:1450:4010:c07::22a])
+Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arqFV-0002WE-NH
- for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 17:12:42 +0000
-Received: by mail-lf0-x22a.google.com with SMTP id g184so193603621lfb.3
- for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 10:12:21 -0700 (PDT)
+ id 1arqFX-0002Wq-PU
+ for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 17:12:44 +0000
+Received: by mail-lf0-x22e.google.com with SMTP id c126so193700266lfb.2
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 10:12:23 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
@@ -11,9 +11,10 @@ Cc: linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V2 06/11] mtd: nand: set ECC algorithm to Hamming on fallback
-Date: Sun, 17 Apr 2016 19:11:39 +0200
-Message-Id: <1460913104-27388-7-git-send-email-zajec5@gmail.com>
+Subject: [PATCH V2 07/11] mtd: nand: hisi504: set ECC algorithm based on DT
+ info
+Date: Sun, 17 Apr 2016 19:11:40 +0200
+Message-Id: <1460913104-27388-8-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
 References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
  <1460913104-27388-1-git-send-email-zajec5@gmail.com>
@@ -34,20 +35,24 @@ enum nand_ecc_algo).
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c | 1 +
+This patch may be skipped if we apply
+[PATCH 00/12] mtd: get rid of of_mtd.{c,h} and of_get_nand_xx()
+patchset first.
+---
+ drivers/mtd/nand/hisi504_nand.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index dd02c09..e1f3cf8 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4245,6 +4245,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		pr_warn("%d byte HW ECC not possible on %d byte page size, fallback to SW ECC\n",
- 			ecc->size, mtd->writesize);
- 		ecc->mode = NAND_ECC_SOFT;
-+		ecc->algo = NAND_ECC_HAMMING;
+diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
+index 7bf844c..f917297 100644
+--- a/drivers/mtd/nand/hisi504_nand.c
++++ b/drivers/mtd/nand/hisi504_nand.c
+@@ -768,6 +768,7 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 	chip->chip_delay	= HINFC504_CHIP_DELAY;
  
- 	case NAND_ECC_SOFT:
- 		ecc->calculate = nand_calculate_ecc;
+ 	chip->ecc.mode = of_get_nand_ecc_mode(np);
++	chip->ecc.algo = of_get_nand_ecc_algo(np);
+ 
+ 	buswidth = of_get_nand_bus_width(np);
+ 	if (buswidth == 16)
 -- 
 1.8.4.5
