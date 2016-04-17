@@ -1,9 +1,9 @@
-Received: from mail-lf0-x22a.google.com ([2a00:1450:4010:c07::22a])
+Received: from mail-lf0-x236.google.com ([2a00:1450:4010:c07::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arthk-00073I-Ai
- for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 20:54:04 +0000
-Received: by mail-lf0-x22a.google.com with SMTP id g184so196603987lfb.3
- for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 13:53:43 -0700 (PDT)
+ id 1arthm-00073i-An
+ for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 20:54:06 +0000
+Received: by mail-lf0-x236.google.com with SMTP id j11so196474586lfb.1
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 13:53:45 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
@@ -11,10 +11,10 @@ Cc: linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V3 07/11] mtd: nand: hisi504: set ECC algorithm based on DT
- info
-Date: Sun, 17 Apr 2016 22:53:03 +0200
-Message-Id: <1460926387-9563-8-git-send-email-zajec5@gmail.com>
+Subject: [PATCH V3 08/11] mtd: nand: fsmc: validate ECC setup by checking
+ algorithm directly
+Date: Sun, 17 Apr 2016 22:53:04 +0200
+Message-Id: <1460926387-9563-9-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1460926387-9563-1-git-send-email-zajec5@gmail.com>
 References: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
  <1460926387-9563-1-git-send-email-zajec5@gmail.com>
@@ -30,29 +30,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is part of process deprecating NAND_ECC_SOFT_BCH (and switching to
-enum nand_ecc_algo).
+NAND core sets ECC algorithm in algo field now and it should be
+preferred over the mode field. This also prepares driver for dropping
+NAND_ECC_SOFT_BCH.
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
-This patch may be skipped if we apply
-[PATCH 00/12] mtd: get rid of of_mtd.{c,h} and of_get_nand_xx()
-patchset first.
----
- drivers/mtd/nand/hisi504_nand.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/fsmc_nand.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/hisi504_nand.c b/drivers/mtd/nand/hisi504_nand.c
-index 7bf844c..f917297 100644
---- a/drivers/mtd/nand/hisi504_nand.c
-+++ b/drivers/mtd/nand/hisi504_nand.c
-@@ -768,6 +768,7 @@ static int hisi_nfc_probe(struct platform_device *pdev)
- 	chip->chip_delay	= HINFC504_CHIP_DELAY;
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 1372040..0f8c63f 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -958,9 +958,12 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 			nand->ecc.strength = 1;
+ 			break;
  
- 	chip->ecc.mode = of_get_nand_ecc_mode(np);
-+	chip->ecc.algo = of_get_nand_ecc_algo(np);
++		case NAND_ECC_SOFT:
+ 		case NAND_ECC_SOFT_BCH:
+-			dev_info(&pdev->dev, "Using 4-bit SW BCH ECC scheme\n");
+-			break;
++			if (nand->ecc.algo == NAND_ECC_BCH) {
++				dev_info(&pdev->dev, "Using 4-bit SW BCH ECC scheme\n");
++				break;
++			}
  
- 	buswidth = of_get_nand_bus_width(np);
- 	if (buswidth == 16)
+ 		default:
+ 			dev_err(&pdev->dev, "Unsupported ECC mode!\n");
 -- 
 1.8.4.5
