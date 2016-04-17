@@ -1,23 +1,21 @@
-MIME-Version: 1.0
-In-Reply-To: <20160417190537.0b484bdd@bbrezillon>
-References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
- <1460750052-16285-13-git-send-email-zajec5@gmail.com>
- <20160417190537.0b484bdd@bbrezillon>
-Date: Sun, 17 Apr 2016 19:10:11 +0200
-Message-ID: <CACna6rzjXrjrx1Wq3cngYmKgSFAME7ZYNoPBpbyO3VWnHgMBAg@mail.gmail.com>
-Subject: Re: [PATCH 12/12] mtd: mtd: drop NAND_ECC_SOFT_BCH enum value
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Received: from mail-lf0-x229.google.com ([2a00:1450:4010:c07::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1arqF1-0002Le-3i
+ for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 17:12:11 +0000
+Received: by mail-lf0-x229.google.com with SMTP id j11so193458136lfb.1
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 10:11:50 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- open list <linux-kernel@vger.kernel.org>,
- "moderated list:ARM/Allwinner sunXi SoC support"
- <linux-arm-kernel@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Subject: [PATCH V2 00/11] mtd: nand: get rid of NAND_ECC_SOFT_BCH
+Date: Sun, 17 Apr 2016 19:11:33 +0200
+Message-Id: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
+References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17 April 2016 at 19:05, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> On Fri, 15 Apr 2016 21:54:12 +0200
-> Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
->
->> This value should not be part of nand_ecc_modes_t as it specifies
->> algorithm not a mode. We successfully managed to introduce new "algo"
->> field which is respected now.
->>
->> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
->> ---
->>  drivers/mtd/nand/fsmc_nand.c   | 3 +--
->>  drivers/mtd/nand/jz4780_nand.c | 1 -
->>  drivers/mtd/nand/nand_base.c   | 2 --
->>  drivers/mtd/nand/nandsim.c     | 2 +-
->>  drivers/mtd/nand/sunxi_nand.c  | 2 --
->>  include/linux/mtd/nand.h       | 1 -
->>  6 files changed, 2 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
->> index 0f8c63f..d4f454a 100644
->> --- a/drivers/mtd/nand/fsmc_nand.c
->> +++ b/drivers/mtd/nand/fsmc_nand.c
->> @@ -959,7 +959,6 @@ static int __init fsmc_nand_probe(struct platform_de=
-vice *pdev)
->>                       break;
->>
->>               case NAND_ECC_SOFT:
->> -             case NAND_ECC_SOFT_BCH:
->>                       if (nand->ecc.algo =3D=3D NAND_ECC_BCH) {
->>                               dev_info(&pdev->dev, "Using 4-bit SW BCH E=
-CC scheme\n");
->>                               break;
->> @@ -974,7 +973,7 @@ static int __init fsmc_nand_probe(struct platform_de=
-vice *pdev)
->>                * Don't set layout for BCH4 SW ECC. This will be
->>                * generated later in nand_bch_init() later.
->>                */
->> -             if (nand->ecc.mode !=3D NAND_ECC_SOFT_BCH) {
->> +             if (nand->ecc.mode =3D=3D NAND_ECC_HW) {
->
-> This test is wrong, it should be
->
->                 if (nand->ecc.mode !=3D NAND_ECC_SOFT ||
->                     nand->ecc.algo !=3D NAND_ECC_BCH)
->
-> or
->                 if (!(nand->ecc.mode =3D=3D NAND_ECC_SOFT &&
->                       nand->ecc.algo =3D=3D NAND_ECC_BCH)
+This patchset completes usage of the new "algo" field and drops unwanted
+NAND_ECC_SOFT_BCH.
 
-This driver supports only 2 modes (see switch above).
+It's based on nand/next git repository.
+
+V2: Drop avr32 patch and modify atmel patch
+    Out-of-commit comment in hisi504 patch
+    Fixes in nand_base.c to handle mode && algo correctly
+
+Rafał Miłecki (11):
+  mtd: nand: bf5xx: set ECC algorithm explicitly
+  mtd: nand: davinci: set ECC algorithm explicitly
+  mtd: nand: atmel: set ECC algorithm explicitly
+  CRIS v32: nand: set ECC algorithm explicitly
+  staging: mt29f_spinand: set ECC algorithm explicitly
+  mtd: nand: set ECC algorithm to Hamming on fallback
+  mtd: nand: hisi504: set ECC algorithm based on DT info
+  mtd: nand: fsmc: validate ECC setup by checking algorithm directly
+  mtd: nand: read ECC algorithm from the new field
+  of: mtd: drop support for NAND_ECC_SOFT_BCH as "soft_bch" mapping
+  mtd: mtd: drop NAND_ECC_SOFT_BCH enum value
+
+ arch/cris/arch-v32/drivers/mach-a3/nandflash.c |   1 +
+ arch/cris/arch-v32/drivers/mach-fs/nandflash.c |   1 +
+ drivers/mtd/nand/atmel_nand.c                  |  13 +++
+ drivers/mtd/nand/bf5xx_nand.c                  |   1 +
+ drivers/mtd/nand/davinci_nand.c                |   8 ++
+ drivers/mtd/nand/fsmc_nand.c                   |  10 ++-
+ drivers/mtd/nand/hisi504_nand.c                |   1 +
+ drivers/mtd/nand/jz4780_nand.c                 |   1 -
+ drivers/mtd/nand/nand_base.c                   | 118 +++++++++++++++----------
+ drivers/mtd/nand/nandsim.c                     |   2 +-
+ drivers/mtd/nand/sunxi_nand.c                  |   2 -
+ drivers/of/of_mtd.c                            |   9 +-
+ drivers/staging/mt29f_spinand/mt29f_spinand.c  |   1 +
+ include/linux/mtd/nand.h                       |   1 -
+ 14 files changed, 111 insertions(+), 58 deletions(-)
+
+-- 
+1.8.4.5
