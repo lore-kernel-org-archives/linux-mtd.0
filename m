@@ -1,21 +1,16 @@
-Received: from mail-lf0-x22e.google.com ([2a00:1450:4010:c07::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arthq-000748-85
- for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 20:54:10 +0000
-Received: by mail-lf0-x22e.google.com with SMTP id e190so196785602lfe.0
- for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 13:53:49 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- Grant Likely <grant.likely@linaro.org>,
- devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE),
- linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V3 10/11] of: mtd: drop support for NAND_ECC_SOFT_BCH as
- "soft_bch" mapping
-Date: Sun, 17 Apr 2016 22:53:06 +0200
-Message-Id: <1460926387-9563-11-git-send-email-zajec5@gmail.com>
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org (open list),
+ linux-arm-kernel@lists.infradead.org (moderated list:ARM/Allwinner sunXi SoC
+ support)
+Subject: [PATCH V3 11/11] mtd: mtd: drop NAND_ECC_SOFT_BCH enum value
+Date: Sun, 17 Apr 2016 22:53:07 +0200
+Message-Id: <1460926387-9563-12-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1460926387-9563-1-git-send-email-zajec5@gmail.com>
 References: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
  <1460926387-9563-1-git-send-email-zajec5@gmail.com>
@@ -31,43 +26,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There isn't any difference between handling NAND_ECC_SOFT and
-NAND_ECC_SOFT_BCH now. What matters is the new field called "algo".
-Please note we're keeping backward DT compatibility. We are still
-treating "soft_bch" value as the one setting Hamming algorithm, it's
-just handled in of_get_nand_ecc_algo now.
+This value should not be part of nand_ecc_modes_t as it specifies
+algorithm not a mode. We successfully managed to introduce new "algo"
+field which is respected now.
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- drivers/of/of_mtd.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/fsmc_nand.c   |  3 +--
+ drivers/mtd/nand/jz4780_nand.c |  1 -
+ drivers/mtd/nand/nand_base.c   | 12 +++---------
+ drivers/mtd/nand/nandsim.c     |  2 +-
+ drivers/mtd/nand/sunxi_nand.c  |  2 --
+ include/linux/mtd/nand.h       |  1 -
+ 6 files changed, 5 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
-index 15d056e..a70a38c 100644
---- a/drivers/of/of_mtd.c
-+++ b/drivers/of/of_mtd.c
-@@ -22,7 +22,6 @@ static const char *nand_ecc_modes[] = {
- 	[NAND_ECC_HW]		= "hw",
- 	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
- 	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
--	[NAND_ECC_SOFT_BCH]	= "soft_bch",
- };
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 0f8c63f..d4f454a 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -959,7 +959,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 			break;
  
- /**
-@@ -45,6 +44,14 @@ int of_get_nand_ecc_mode(struct device_node *np)
- 		if (!strcasecmp(pm, nand_ecc_modes[i]))
- 			return i;
+ 		case NAND_ECC_SOFT:
+-		case NAND_ECC_SOFT_BCH:
+ 			if (nand->ecc.algo == NAND_ECC_BCH) {
+ 				dev_info(&pdev->dev, "Using 4-bit SW BCH ECC scheme\n");
+ 				break;
+@@ -974,7 +973,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 		 * Don't set layout for BCH4 SW ECC. This will be
+ 		 * generated later in nand_bch_init() later.
+ 		 */
+-		if (nand->ecc.mode != NAND_ECC_SOFT_BCH) {
++		if (nand->ecc.mode == NAND_ECC_HW) {
+ 			switch (mtd->oobsize) {
+ 			case 16:
+ 			case 64:
+diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+index 10f249a..daf3c42 100644
+--- a/drivers/mtd/nand/jz4780_nand.c
++++ b/drivers/mtd/nand/jz4780_nand.c
+@@ -179,7 +179,6 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 		chip->ecc.correct = jz4780_nand_ecc_correct;
+ 		/* fall through */
+ 	case NAND_ECC_SOFT:
+-	case NAND_ECC_SOFT_BCH:
+ 		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
+ 			(nfc->bch) ? "hardware BCH" : "software ECC",
+ 			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index e51d927..e40832d 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4084,8 +4084,7 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
  
-+	/*
-+	 * For backward compatibility we support few obsoleted values that don't
-+	 * have their mappings into nand_ecc_modes_t anymore (they were merged
-+	 * with other enums).
-+	 */
-+	if (!strcasecmp(pm, "soft_bch"))
-+		return NAND_ECC_SOFT;
-+
- 	return -ENODEV;
- }
- EXPORT_SYMBOL_GPL(of_get_nand_ecc_mode);
+-	if (WARN_ON(ecc->mode != NAND_ECC_SOFT &&
+-		    ecc->mode != NAND_ECC_SOFT_BCH))
++	if (WARN_ON(ecc->mode != NAND_ECC_SOFT))
+ 		return -EINVAL;
+ 
+ 	switch (ecc->algo) {
+@@ -4218,8 +4217,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	 * If no default placement scheme is given, select an appropriate one.
+ 	 */
+ 	if (!mtd->ooblayout &&
+-	    !((ecc->mode == NAND_ECC_SOFT || ecc->mode == NAND_ECC_SOFT_BCH) &&
+-	       ecc->algo == NAND_ECC_BCH)) {
++	    !(ecc->mode == NAND_ECC_SOFT && ecc->algo == NAND_ECC_BCH)) {
+ 		switch (mtd->oobsize) {
+ 		case 8:
+ 		case 16:
+@@ -4313,13 +4311,11 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		ecc->algo = NAND_ECC_HAMMING;
+ 
+ 	case NAND_ECC_SOFT:
+-	case NAND_ECC_SOFT_BCH:
+ 		ret = nand_set_ecc_soft_ops(mtd);
+ 		if (ret) {
+ 			ret = -EINVAL;
+ 			goto err_free;
+ 		}
+-
+ 		break;
+ 
+ 	case NAND_ECC_NONE:
+@@ -4402,7 +4398,6 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	/* Large page NAND with SOFT_ECC should support subpage reads */
+ 	switch (ecc->mode) {
+ 	case NAND_ECC_SOFT:
+-	case NAND_ECC_SOFT_BCH:
+ 		if (chip->page_shift > 9)
+ 			chip->options |= NAND_SUBPAGE_READ;
+ 		break;
+@@ -4502,8 +4497,7 @@ void nand_release(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 
+-	if ((chip->ecc.mode == NAND_ECC_SOFT ||
+-	     chip->ecc.mode == NAND_ECC_SOFT_BCH) &&
++	if (chip->ecc.mode == NAND_ECC_SOFT &&
+ 	    chip->ecc.algo == NAND_ECC_BCH)
+ 		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
+ 
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 6ff1d8d..b0074c2 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -2339,7 +2339,7 @@ static int __init ns_init_module(void)
+ 			retval = -EINVAL;
+ 			goto error;
+ 		}
+-		chip->ecc.mode = NAND_ECC_SOFT_BCH;
++		chip->ecc.mode = NAND_ECC_SOFT;
+ 		chip->ecc.algo = NAND_ECC_BCH;
+ 		chip->ecc.size = 512;
+ 		chip->ecc.strength = bch;
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index 1baf8983..a83a690 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -1612,8 +1612,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+ 		return -EINVAL;
+ 
+ 	switch (ecc->mode) {
+-	case NAND_ECC_SOFT_BCH:
+-		break;
+ 	case NAND_ECC_HW:
+ 		ret = sunxi_nand_hw_ecc_ctrl_init(mtd, ecc, np);
+ 		if (ret)
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index e851839..fbe8e16 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -116,7 +116,6 @@ typedef enum {
+ 	NAND_ECC_HW,
+ 	NAND_ECC_HW_SYNDROME,
+ 	NAND_ECC_HW_OOB_FIRST,
+-	NAND_ECC_SOFT_BCH,
+ } nand_ecc_modes_t;
+ 
+ enum nand_ecc_algo {
 -- 
 1.8.4.5
