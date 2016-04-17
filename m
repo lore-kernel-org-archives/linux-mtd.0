@@ -1,20 +1,21 @@
-Received: from mail-lf0-x22f.google.com ([2a00:1450:4010:c07::22f])
+Received: from mail-lf0-x230.google.com ([2a00:1450:4010:c07::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arthP-000724-Tx
- for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 20:53:45 +0000
-Received: by mail-lf0-x22f.google.com with SMTP id g184so196599883lfb.3
- for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 13:53:23 -0700 (PDT)
+ id 1arthc-00072E-45
+ for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 20:53:57 +0000
+Received: by mail-lf0-x230.google.com with SMTP id j11so196472271lfb.1
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 13:53:34 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Mikael Starvik <starvik@axis.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
  Brian Norris <computersforpeace@gmail.com>,
+ linux-cris-kernel@axis.com (open list:CRIS PORT),
  linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V3 03/11] mtd: nand: atmel: set ECC algorithm explicitly
-Date: Sun, 17 Apr 2016 22:52:59 +0200
-Message-Id: <1460926387-9563-4-git-send-email-zajec5@gmail.com>
+Subject: [PATCH V3 04/11] CRIS v32: nand: set ECC algorithm explicitly
+Date: Sun, 17 Apr 2016 22:53:00 +0200
+Message-Id: <1460926387-9563-5-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1460926387-9563-1-git-send-email-zajec5@gmail.com>
 References: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
  <1460926387-9563-1-git-send-email-zajec5@gmail.com>
@@ -35,67 +36,33 @@ enum nand_ecc_algo).
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- drivers/mtd/nand/atmel_nand.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/cris/arch-v32/drivers/mach-a3/nandflash.c | 1 +
+ arch/cris/arch-v32/drivers/mach-fs/nandflash.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index eec8ca7..efc8ea2 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1212,6 +1212,7 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		dev_warn(host->dev,
- 			"Can't get I/O resource regs for PMECC controller, rolling back on software ECC\n");
- 		nand_chip->ecc.mode = NAND_ECC_SOFT;
-+		nand_chip->ecc.algo = NAND_ECC_HAMMING;
- 		return 0;
- 	}
+diff --git a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
+index 5aa3f51..3f646c7 100644
+--- a/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
++++ b/arch/cris/arch-v32/drivers/mach-a3/nandflash.c
+@@ -157,6 +157,7 @@ struct mtd_info *__init crisv32_nand_flash_probe(void)
+ 	/* 20 us command delay time */
+ 	this->chip_delay = 20;
+ 	this->ecc.mode = NAND_ECC_SOFT;
++	this->ecc.algo = NAND_ECC_HAMMING;
  
-@@ -1295,6 +1296,7 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		/* page size not handled by HW ECC */
- 		/* switching back to soft ECC */
- 		nand_chip->ecc.mode = NAND_ECC_SOFT;
-+		nand_chip->ecc.algo = NAND_ECC_HAMMING;
- 		return 0;
- 	}
+ 	/* Enable the following for a flash based bad block table */
+ 	/* this->bbt_options = NAND_BBT_USE_FLASH; */
+diff --git a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
+index a7c17b0..a745405 100644
+--- a/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
++++ b/arch/cris/arch-v32/drivers/mach-fs/nandflash.c
+@@ -148,6 +148,7 @@ struct mtd_info *__init crisv32_nand_flash_probe(void)
+ 	/* 20 us command delay time */
+ 	this->chip_delay = 20;
+ 	this->ecc.mode = NAND_ECC_SOFT;
++	this->ecc.algo = NAND_ECC_HAMMING;
  
-@@ -1613,6 +1615,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
- 	 * even if the nand-ecc-mode property is not defined.
- 	 */
- 	host->nand_chip.ecc.mode = NAND_ECC_SOFT;
-+	host->nand_chip.ecc.algo = NAND_ECC_HAMMING;
- 
- 	return 0;
- }
-@@ -1629,6 +1632,7 @@ static int atmel_hw_nand_init_params(struct platform_device *pdev,
- 		dev_err(host->dev,
- 			"Can't get I/O resource regs, use software ECC\n");
- 		nand_chip->ecc.mode = NAND_ECC_SOFT;
-+		nand_chip->ecc.algo = NAND_ECC_HAMMING;
- 		return 0;
- 	}
- 
-@@ -1661,6 +1665,7 @@ static int atmel_hw_nand_init_params(struct platform_device *pdev,
- 		/* page size not handled by HW ECC */
- 		/* switching back to soft ECC */
- 		nand_chip->ecc.mode = NAND_ECC_SOFT;
-+		nand_chip->ecc.algo = NAND_ECC_HAMMING;
- 		return 0;
- 	}
- 
-@@ -2160,6 +2165,14 @@ static int atmel_nand_probe(struct platform_device *pdev)
- 		       sizeof(struct atmel_nand_data));
- 		nand_chip->ecc.mode = host->board.ecc_mode;
- 
-+		/*
-+		 * When using software ECC every supported avr32 board means
-+		 * Hamming algorithm. If that ever changes we'll need to add
-+		 * ecc_algo field to the struct atmel_nand_data.
-+		 */
-+		if (nand_chip->ecc.mode == NAND_ECC_SOFT)
-+			nand_chip->ecc.algo = NAND_ECC_HAMMING;
-+
- 		/* 16-bit bus width */
- 		if (host->board.bus_width_16)
- 			nand_chip->options |= NAND_BUSWIDTH_16;
+ 	/* Enable the following for a flash based bad block table */
+ 	/* this->bbt_options = NAND_BBT_USE_FLASH; */
 -- 
 1.8.4.5
