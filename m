@@ -1,9 +1,9 @@
-Received: from mail-lf0-x22b.google.com ([2a00:1450:4010:c07::22b])
+Received: from mail-lf0-x233.google.com ([2a00:1450:4010:c07::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arthK-000723-EI
- for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 20:53:39 +0000
-Received: by mail-lf0-x22b.google.com with SMTP id e190so196779698lfe.0
- for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 13:53:21 -0700 (PDT)
+ id 1arthL-000722-Q7
+ for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 20:53:40 +0000
+Received: by mail-lf0-x233.google.com with SMTP id j11so196469225lfb.1
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 13:53:19 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
@@ -11,9 +11,9 @@ Cc: linux-mtd@lists.infradead.org,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V3 02/11] mtd: nand: davinci: set ECC algorithm explicitly
-Date: Sun, 17 Apr 2016 22:52:58 +0200
-Message-Id: <1460926387-9563-3-git-send-email-zajec5@gmail.com>
+Subject: [PATCH V3 01/11] mtd: nand: bf5xx: set ECC algorithm explicitly
+Date: Sun, 17 Apr 2016 22:52:57 +0200
+Message-Id: <1460926387-9563-2-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1460926387-9563-1-git-send-email-zajec5@gmail.com>
 References: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
  <1460926387-9563-1-git-send-email-zajec5@gmail.com>
@@ -33,29 +33,21 @@ This is part of process deprecating NAND_ECC_SOFT_BCH (and switching to
 enum nand_ecc_algo).
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/davinci_nand.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/mtd/nand/bf5xx_nand.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index fe3fd29..b0a2801 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -738,6 +738,14 @@ static int nand_davinci_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
+index b38f414..37da423 100644
+--- a/drivers/mtd/nand/bf5xx_nand.c
++++ b/drivers/mtd/nand/bf5xx_nand.c
+@@ -817,6 +817,7 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
+ 		chip->ecc.write_page_raw = bf5xx_nand_write_page_raw;
+ 	} else {
+ 		chip->ecc.mode	    = NAND_ECC_SOFT;
++		chip->ecc.algo	= NAND_ECC_HAMMING;
  	}
- 	info->chip.ecc.mode = ecc_mode;
  
-+	/*
-+	 * When using software ECC this driver support hamming only. Force
-+	 * ecc.algo to NAND_ECC_HAMMING to avoid adding an extra ->ecc_algo
-+	 * field to davinci_nand_pdata.
-+	 */
-+	if (ecc_mode == NAND_ECC_SOFT)
-+		info->chip.ecc.algo = NAND_ECC_HAMMING;
-+
- 	info->clk = devm_clk_get(&pdev->dev, "aemif");
- 	if (IS_ERR(info->clk)) {
- 		ret = PTR_ERR(info->clk);
+ 	/* scan hardware nand chip and setup mtd info data struct */
 -- 
 1.8.4.5
