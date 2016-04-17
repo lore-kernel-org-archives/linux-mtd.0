@@ -1,71 +1,26 @@
-Date: Sun, 17 Apr 2016 05:38:57 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: zengzhaoxiu@163.com
-Cc: linux-kernel@vger.kernel.org, Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>,
- adi-buildroot-devel@lists.sourceforge.net,
- Andrew Morton <akpm@linux-foundation.org>,
- Anton Blanchard <anton@samba.org>, Arnd Bergmann <arnd@arndb.de>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- Borislav Petkov <bp@suse.de>, Bruce Allan <bruce.w.allan@intel.com>,
- Christophe Leroy <christophe.leroy@c-s.fr>,
- David Herrmann <dh.herrmann@gmail.com>,
- "David S. Miller" <davem@davemloft.net>,
- Denys Vlasenko <dvlasenk@redhat.com>,
- Duson Lin <dusonlin@emc.com.tw>, Guenter Roeck <linux@roeck-us.net>,
- Hans de Goede <hdegoede@redhat.com>, Hans Verkuil <hans.verkuil@cisco.com>,
- Hartmut Knaack <knaack.h@gmx.de>,
- Heiko Carstens <heiko.carstens@de.ibm.com>,
- Hendrik Brueckner <brueckner@linux.vnet.ibm.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Ingo Molnar <mingo@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Julian Calaby <julian.calaby@gmail.com>,
- Krzysztof Kozlowski <k.kozlowski@samsung.com>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>,
- linux-alpha@vger.kernel.org, linux-am33-list@redhat.com,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com,
- linux-crypto@vger.kernel.org, linux-hexagon@vger.kernel.org,
- linux-ia64@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-input@vger.kernel.org, linux@lists.openrisc.net,
- linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
- linux-metag@vger.kernel.org, linux-mips@linux-mips.org,
- linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
- Martin Kepplinger <martink@posteo.de>,
- Martin Schwidefsky <schwidefsky@de.ibm.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Michal Nazarewicz <mina86@mina86.com>, netdev@vger.kernel.org,
- Peter Hutterer <peter.hutterer@who-t.net>,
- Peter Meerwald <pmeerw@pmeerw.net>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Pingchao Yang <pingchao.yang@intel.com>, qat-linux@intel.com,
- Ralf Baechle <ralf@linux-mips.org>,
- Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- Russell King <rmk+kernel@arm.linux.org.uk>,
- Sasha Levin <sasha.levin@oracle.com>, Scott Wood <oss@buserror.net>,
- sparclinux@vger.kernel.org, Tadeusz Struk <tadeusz.struk@intel.com>,
- Takashi Iwai <tiwai@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
- Torsten Duwe <duwe@lst.de>, uclinux-h8-devel@lists.sourceforge.jp,
- Ulrik De Bie <ulrik.debie-os@e2big.org>,
- Vineet Gupta <vgupta@synopsys.com>, Vlastimil Babka <vbabka@suse.cz>,
- "wim.coekaerts@oracle.com" <wim.coekaerts@oracle.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>,
- Yury Norov <yury.norov@gmail.com>,
- =?utf-8?B?5rSq5LiA56u5?= <sam.hung@emc.com.tw>
-Subject: Re: [PATCH V3 00/29] bitops: add parity functions
-Message-ID: <20160417123857.GD33215@dtor-ws>
-References: <1460601525-3822-1-git-send-email-zengzhaoxiu@163.com>
+Received: from mail-io0-x231.google.com ([2607:f8b0:4001:c06::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1arpYH-0000AU-Kx
+ for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 16:28:02 +0000
+Received: by mail-io0-x231.google.com with SMTP id o126so175989687iod.0
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 09:27:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1460601525-3822-1-git-send-email-zengzhaoxiu@163.com>
+In-Reply-To: <20160416095807.112d2f59@bbrezillon>
+References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
+ <1460750052-16285-11-git-send-email-zajec5@gmail.com>
+ <20160416095807.112d2f59@bbrezillon>
+Date: Sun, 17 Apr 2016 18:27:40 +0200
+Message-ID: <CACna6rwsieP8q4U-NheMrDLhVM11K6cBOXbd6PDWNREikv5kTA@mail.gmail.com>
+Subject: Re: [PATCH 10/12] mtd: nand: read ECC algorithm from the new field
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -75,20 +30,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 14, 2016 at 10:36:41AM +0800, zengzhaoxiu@163.com wrote:
->  drivers/input/joystick/grip_mp.c             |  16 +--
->  drivers/input/joystick/sidewinder.c          |  24 +----
->  drivers/input/mouse/elantech.c               |  10 +-
->  drivers/input/mouse/elantech.h               |   1 -
->  drivers/input/serio/ams_delta_serio.c        |   8 +-
->  drivers/input/serio/pcips2.c                 |   2 +-
->  drivers/input/serio/sa1111ps2.c              |   2 +-
+On 16 April 2016 at 09:58, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Fri, 15 Apr 2016 21:54:10 +0200
+> Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+>
+>> Now we have all drivers properly setting this new field we can start
+>> using it and proceed with deprecating NAND_ECC_SOFT_BCH.
+>>
+>> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+>> ---
+>>  drivers/mtd/nand/nand_base.c | 98 ++++++++++++++++++++++++-------------=
+-------
+>>  1 file changed, 53 insertions(+), 45 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index e1f3cf8..ffd1b32 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -4154,7 +4154,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+>>       /*
+>>        * If no default placement scheme is given, select an appropriate =
+one.
+>>        */
+>> -     if (!mtd->ooblayout && (ecc->mode !=3D NAND_ECC_SOFT_BCH)) {
+>> +     if (!mtd->ooblayout && ecc->algo !=3D NAND_ECC_BCH) {
+>
+> Should be:
+>
+>         if (!mtd->ooblayout && ecc->algo =3D=3D NAND_ECC_SOFT &&
+>             ecc->algo !=3D NAND_ECC_BCH) {
+>
+> Otherwise you're also taking the NAND_ECC_HW + NAND_ECC_BCH into
+> account.
 
-For input bits:
-
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-
-Thanks.
-
--- 
-Dmitry
+Pretty much yes, but without
+[PATCH 11/12] of: mtd: drop support for NAND_ECC_SOFT_BCH as "soft_bch" map=
+ping
+we may be getting NAND_ECC_SOFT as well as NAND_ECC_SOFT_BCH. And
+11/12 can't be applied before 10/12. We'll need to support both values
+for this very short moment (after 10/12 but before 11/12).
