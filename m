@@ -1,19 +1,16 @@
-Received: from mail-lf0-x22c.google.com ([2a00:1450:4010:c07::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1arqFc-0002Y7-1y
- for linux-mtd@lists.infradead.org; Sun, 17 Apr 2016 17:12:49 +0000
-Received: by mail-lf0-x22c.google.com with SMTP id g184so193604989lfb.3
- for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2016 10:12:27 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V2 09/11] mtd: nand: read ECC algorithm from the new field
-Date: Sun, 17 Apr 2016 19:11:42 +0200
-Message-Id: <1460913104-27388-10-git-send-email-zajec5@gmail.com>
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-kernel@vger.kernel.org (open list),
+ linux-arm-kernel@lists.infradead.org (moderated list:ARM/Allwinner sunXi SoC
+ support)
+Subject: [PATCH V2 11/11] mtd: mtd: drop NAND_ECC_SOFT_BCH enum value
+Date: Sun, 17 Apr 2016 19:11:44 +0200
+Message-Id: <1460913104-27388-12-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
 References: <1460750052-16285-1-git-send-email-zajec5@gmail.com>
  <1460913104-27388-1-git-send-email-zajec5@gmail.com>
@@ -29,171 +26,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now we have all drivers properly setting this new field we can start
-using it. For a very short period of time we should support both values:
-NAND_ECC_SOFT and NAND_ECC_SOFT_BCH treating them the same. It's because
-of_get_nand_ecc_mode may still be setting NAND_ECC_SOFT_BCH.
+This value should not be part of nand_ecc_modes_t as it specifies
+algorithm not a mode. We successfully managed to introduce new "algo"
+field which is respected now.
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
-V2: Move SOFT-related code to separated functions
-    Add missing checks for SOFT before checking Hamming vs. BCH
----
- drivers/mtd/nand/nand_base.c | 116 ++++++++++++++++++++++++++-----------------
- 1 file changed, 71 insertions(+), 45 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c   |  3 +--
+ drivers/mtd/nand/jz4780_nand.c |  1 -
+ drivers/mtd/nand/nand_base.c   | 11 +++--------
+ drivers/mtd/nand/nandsim.c     |  2 +-
+ drivers/mtd/nand/sunxi_nand.c  |  2 --
+ include/linux/mtd/nand.h       |  1 -
+ 6 files changed, 5 insertions(+), 15 deletions(-)
 
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 0f8c63f..d4f454a 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -959,7 +959,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 			break;
+ 
+ 		case NAND_ECC_SOFT:
+-		case NAND_ECC_SOFT_BCH:
+ 			if (nand->ecc.algo == NAND_ECC_BCH) {
+ 				dev_info(&pdev->dev, "Using 4-bit SW BCH ECC scheme\n");
+ 				break;
+@@ -974,7 +973,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 		 * Don't set layout for BCH4 SW ECC. This will be
+ 		 * generated later in nand_bch_init() later.
+ 		 */
+-		if (nand->ecc.mode != NAND_ECC_SOFT_BCH) {
++		if (nand->ecc.mode == NAND_ECC_HW) {
+ 			switch (mtd->oobsize) {
+ 			case 16:
+ 			case 64:
+diff --git a/drivers/mtd/nand/jz4780_nand.c b/drivers/mtd/nand/jz4780_nand.c
+index 10f249a..daf3c42 100644
+--- a/drivers/mtd/nand/jz4780_nand.c
++++ b/drivers/mtd/nand/jz4780_nand.c
+@@ -179,7 +179,6 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 		chip->ecc.correct = jz4780_nand_ecc_correct;
+ 		/* fall through */
+ 	case NAND_ECC_SOFT:
+-	case NAND_ECC_SOFT_BCH:
+ 		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
+ 			(nfc->bch) ? "hardware BCH" : "software ECC",
+ 			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index e1f3cf8..d092375 100644
+index d092375..bc029d0 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -4079,6 +4079,69 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
- }
- EXPORT_SYMBOL(nand_scan_ident);
+@@ -4084,8 +4084,7 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
  
-+static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
-+{
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+
-+	if (WARN_ON(ecc->mode != NAND_ECC_SOFT &&
-+		    ecc->mode != NAND_ECC_SOFT_BCH))
-+		return -EINVAL;
-+
-+	switch (ecc->algo) {
-+	case NAND_ECC_HAMMING:
-+		ecc->calculate = nand_calculate_ecc;
-+		ecc->correct = nand_correct_data;
-+		ecc->read_page = nand_read_page_swecc;
-+		ecc->read_subpage = nand_read_subpage;
-+		ecc->write_page = nand_write_page_swecc;
-+		ecc->read_page_raw = nand_read_page_raw;
-+		ecc->write_page_raw = nand_write_page_raw;
-+		ecc->read_oob = nand_read_oob_std;
-+		ecc->write_oob = nand_write_oob_std;
-+		if (!ecc->size)
-+			ecc->size = 256;
-+		ecc->bytes = 3;
-+		ecc->strength = 1;
-+		return 0;
-+	case NAND_ECC_BCH:
-+		if (!mtd_nand_has_bch()) {
-+			WARN(1, "CONFIG_MTD_NAND_ECC_BCH not enabled\n");
-+			return -EINVAL;
-+		}
-+		ecc->calculate = nand_bch_calculate_ecc;
-+		ecc->correct = nand_bch_correct_data;
-+		ecc->read_page = nand_read_page_swecc;
-+		ecc->read_subpage = nand_read_subpage;
-+		ecc->write_page = nand_write_page_swecc;
-+		ecc->read_page_raw = nand_read_page_raw;
-+		ecc->write_page_raw = nand_write_page_raw;
-+		ecc->read_oob = nand_read_oob_std;
-+		ecc->write_oob = nand_write_oob_std;
-+		/*
-+		* Board driver should supply ecc.size and ecc.strength
-+		* values to select how many bits are correctable.
-+		* Otherwise, default to 4 bits for large page devices.
-+		*/
-+		if (!ecc->size && (mtd->oobsize >= 64)) {
-+			ecc->size = 512;
-+			ecc->strength = 4;
-+		}
-+
-+		/* See nand_bch_init() for details. */
-+		ecc->bytes = 0;
-+		ecc->priv = nand_bch_init(mtd);
-+		if (!ecc->priv) {
-+			WARN(1, "BCH ECC initialization failed!\n");
-+			return -EINVAL;
-+		}
-+		return 0;
-+	default:
-+		WARN(1, "Unsupported ECC algorithm!\n");
-+		return -EINVAL;
-+	}
-+}
-+
- /*
-  * Check if the chip configuration meet the datasheet requirements.
+-	if (WARN_ON(ecc->mode != NAND_ECC_SOFT &&
+-		    ecc->mode != NAND_ECC_SOFT_BCH))
++	if (WARN_ON(ecc->mode != NAND_ECC_SOFT))
+ 		return -EINVAL;
  
-@@ -4154,7 +4217,9 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	/*
+ 	switch (ecc->algo) {
+@@ -4218,7 +4217,7 @@ int nand_scan_tail(struct mtd_info *mtd)
  	 * If no default placement scheme is given, select an appropriate one.
  	 */
--	if (!mtd->ooblayout && (ecc->mode != NAND_ECC_SOFT_BCH)) {
-+	if (!mtd->ooblayout &&
-+	    (ecc->mode == NAND_ECC_SOFT || ecc->mode == NAND_ECC_SOFT_BCH) &&
-+	    ecc->algo != NAND_ECC_BCH) {
+ 	if (!mtd->ooblayout &&
+-	    (ecc->mode == NAND_ECC_SOFT || ecc->mode == NAND_ECC_SOFT_BCH) &&
++	    ecc->mode == NAND_ECC_SOFT &&
+ 	    ecc->algo != NAND_ECC_BCH) {
  		switch (mtd->oobsize) {
  		case 8:
- 		case 16:
-@@ -4248,54 +4313,13 @@ int nand_scan_tail(struct mtd_info *mtd)
+@@ -4313,13 +4312,11 @@ int nand_scan_tail(struct mtd_info *mtd)
  		ecc->algo = NAND_ECC_HAMMING;
  
  	case NAND_ECC_SOFT:
--		ecc->calculate = nand_calculate_ecc;
--		ecc->correct = nand_correct_data;
--		ecc->read_page = nand_read_page_swecc;
--		ecc->read_subpage = nand_read_subpage;
--		ecc->write_page = nand_write_page_swecc;
--		ecc->read_page_raw = nand_read_page_raw;
--		ecc->write_page_raw = nand_write_page_raw;
--		ecc->read_oob = nand_read_oob_std;
--		ecc->write_oob = nand_write_oob_std;
--		if (!ecc->size)
--			ecc->size = 256;
--		ecc->bytes = 3;
--		ecc->strength = 1;
--		break;
--
- 	case NAND_ECC_SOFT_BCH:
--		if (!mtd_nand_has_bch()) {
--			WARN(1, "CONFIG_MTD_NAND_ECC_BCH not enabled\n");
-+		ret = nand_set_ecc_soft_ops(mtd);
-+		if (ret) {
+-	case NAND_ECC_SOFT_BCH:
+ 		ret = nand_set_ecc_soft_ops(mtd);
+ 		if (ret) {
  			ret = -EINVAL;
  			goto err_free;
  		}
--		ecc->calculate = nand_bch_calculate_ecc;
--		ecc->correct = nand_bch_correct_data;
--		ecc->read_page = nand_read_page_swecc;
--		ecc->read_subpage = nand_read_subpage;
--		ecc->write_page = nand_write_page_swecc;
--		ecc->read_page_raw = nand_read_page_raw;
--		ecc->write_page_raw = nand_write_page_raw;
--		ecc->read_oob = nand_read_oob_std;
--		ecc->write_oob = nand_write_oob_std;
--		/*
--		 * Board driver should supply ecc.size and ecc.strength values
--		 * to select how many bits are correctable. Otherwise, default
--		 * to 4 bits for large page devices.
--		 */
--		if (!ecc->size && (mtd->oobsize >= 64)) {
--			ecc->size = 512;
--			ecc->strength = 4;
--		}
- 
--		/* See nand_bch_init() for details. */
--		ecc->bytes = 0;
--		ecc->priv = nand_bch_init(mtd);
--		if (!ecc->priv) {
--			WARN(1, "BCH ECC initialization failed!\n");
--			ret = -EINVAL;
--			goto err_free;
--		}
+-
  		break;
  
  	case NAND_ECC_NONE:
-@@ -4478,7 +4502,9 @@ void nand_release(struct mtd_info *mtd)
+@@ -4402,7 +4399,6 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	/* Large page NAND with SOFT_ECC should support subpage reads */
+ 	switch (ecc->mode) {
+ 	case NAND_ECC_SOFT:
+-	case NAND_ECC_SOFT_BCH:
+ 		if (chip->page_shift > 9)
+ 			chip->options |= NAND_SUBPAGE_READ;
+ 		break;
+@@ -4502,8 +4498,7 @@ void nand_release(struct mtd_info *mtd)
  {
  	struct nand_chip *chip = mtd_to_nand(mtd);
  
--	if (chip->ecc.mode == NAND_ECC_SOFT_BCH)
-+	if ((chip->ecc.mode == NAND_ECC_SOFT ||
-+	     chip->ecc.mode == NAND_ECC_SOFT_BCH) &&
-+	    chip->ecc.algo == NAND_ECC_BCH)
+-	if ((chip->ecc.mode == NAND_ECC_SOFT ||
+-	     chip->ecc.mode == NAND_ECC_SOFT_BCH) &&
++	if (chip->ecc.mode == NAND_ECC_SOFT &&
+ 	    chip->ecc.algo == NAND_ECC_BCH)
  		nand_bch_free((struct nand_bch_control *)chip->ecc.priv);
  
- 	mtd_device_unregister(mtd);
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 6ff1d8d..b0074c2 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -2339,7 +2339,7 @@ static int __init ns_init_module(void)
+ 			retval = -EINVAL;
+ 			goto error;
+ 		}
+-		chip->ecc.mode = NAND_ECC_SOFT_BCH;
++		chip->ecc.mode = NAND_ECC_SOFT;
+ 		chip->ecc.algo = NAND_ECC_BCH;
+ 		chip->ecc.size = 512;
+ 		chip->ecc.strength = bch;
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index 1baf8983..a83a690 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -1612,8 +1612,6 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+ 		return -EINVAL;
+ 
+ 	switch (ecc->mode) {
+-	case NAND_ECC_SOFT_BCH:
+-		break;
+ 	case NAND_ECC_HW:
+ 		ret = sunxi_nand_hw_ecc_ctrl_init(mtd, ecc, np);
+ 		if (ret)
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index e851839..fbe8e16 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -116,7 +116,6 @@ typedef enum {
+ 	NAND_ECC_HW,
+ 	NAND_ECC_HW_SYNDROME,
+ 	NAND_ECC_HW_OOB_FIRST,
+-	NAND_ECC_SOFT_BCH,
+ } nand_ecc_modes_t;
+ 
+ enum nand_ecc_algo {
 -- 
 1.8.4.5
