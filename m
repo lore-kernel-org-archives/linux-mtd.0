@@ -1,29 +1,25 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mail-io0-x22f.google.com ([2607:f8b0:4001:c06::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1as662-0001Oz-Am
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2016 10:07:59 +0000
-From: Markus Pargmann <mpa@pengutronix.de>
-To: linux-arm-kernel@lists.infradead.org
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Han Xu <han.xu@nxp.com>, Fabio Estevam <fabio.estevam@freescale.com>,
- Elie De Brauwer <eliedebrauwer@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Stefan Christ <s.christ@phytec.de>,
- Huang Shijie <shijie.huang@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-Date: Mon, 18 Apr 2016 12:07:27 +0200
-Message-ID: <12179071.kte6qB1Shv@adelgunde>
-In-Reply-To: <20160415174031.3c088df5@bbrezillon>
-References: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
- <AM4PR0401MB1841C82A9BCBFF2C55AA4DC397680@AM4PR0401MB1841.eurprd04.prod.outlook.com>
- <20160415174031.3c088df5@bbrezillon>
+ id 1as7Vx-0005gK-2y
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2016 11:38:49 +0000
+Received: by mail-io0-x22f.google.com with SMTP id g185so191653244ioa.2
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Apr 2016 04:38:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2599268.1EaGA9dVCD";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
+In-Reply-To: <20160418112457.GU3217@sirena.org.uk>
+References: <1460977843-9426-1-git-send-email-zajec5@gmail.com>
+ <20160418112457.GU3217@sirena.org.uk>
+Date: Mon, 18 Apr 2016 13:38:28 +0200
+Message-ID: <CACna6rzQfX7SxDoL-CTQp3_Ms5_K54pEa8uaUAiTPjR-un=VOg@mail.gmail.com>
+Subject: Re: [PATCH for-next] spi: bcm53xx: add spi_flash_read callback for
+ MMIO-based reads
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Mark Brown <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Vignesh R <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>
+Cc: "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,86 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 18 April 2016 at 13:24, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Apr 18, 2016 at 01:10:43PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+>
+>> +static int bcm53xxspi_flash_read(struct spi_device *spi,
+>> +                              struct spi_flash_read_message *msg)
+>> +{
+>> +     struct bcm53xxspi *b53spi =3D spi_master_get_devdata(spi->master);
+>> +     int ret =3D 0;
+>> +
+>> +     bcm53xxspi_enable_bspi(b53spi);
+>> +     memcpy_fromio(msg->buf, b53spi->mmio_base + msg->from, msg->len);
+>> +     msg->retlen =3D msg->len;
+>
+> There's no bounds check here but...
 
---nextPart2599268.1EaGA9dVCD
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="us-ascii"
+That's true, I was looking at ti_qspi_spi_flash_read and somehow
+incorrectly (!) assumed there is a check above. Of course there isn't
+one and there can't be, I'll simply fix this code. I guess we should
+fix ti_qspi_spi_flash_read in ti-qspi driver as well.
 
-On Friday 15 April 2016 17:40:31 Boris Brezillon wrote:
-> On Fri, 15 Apr 2016 15:33:07 +0000
-> Han Xu <han.xu@nxp.com> wrote:
->=20
-> > >
-> > > I just did [1] (it applies on top of your patch), but maybe you
-> > > can test it (I don't have any imx platforms right now) ;).
-> >=20
-> > Great, thank you :). I just tested the patch and it works for me. T=
-he
-> > erased page bitflips are still detected and fixed. I will send a ne=
-w
-> > version then.
-> >=20
-> > Hi Markus,
-> >=20
-> > Could you please share how to verify the patch, in other words, how=
- to reproduce the
-> > UBIFS corruption issue consistently. Thanks.
+I also realized there wasn't any fallback introduced in:
+mtd: devices: m25p80: add support for mmap read request
+http://git.infradead.org/l2-mtd.git/commitdiff/08922f644878c9163ada8df3ef9d=
+ef89be1d5e90
 
-I used a simple bashscript with 'nandwrite --noecc' that writes a numbe=
-r
-of zeroes in every sub-page. For written pages the ECC will handle the
-flips. For erased pages we can test the algorithm that handles the
-erased page bitflips.
+What shall we do if spi_flash_read fails? Should we always fallback to
+the standard SPI flash read? Or should we standarize error codes
+returned by spi_flash_read and fallback on some particular error code
+only?
 
->=20
-> I should really post a new version of the nandflipbits tool [1].
-> That's clearly the easiest solution to verify that your bitflip
-> correction is reliable.
 
-Seems really useful.
+>> +     if (core->addr_s[0])
+>> +             b53spi->mmio_base =3D devm_ioremap(dev, core->addr_s[0], S=
+Z_32M);
+>
+> ...we only mapped 32M here.  What if something tries to do a larger
+> read?  It's also a bit surprising that we're mapping a specific size
+> here rather than the entire resource.
 
-Best Regards,
+This is based on what I found in Broadcom's SDK (they don't release
+any real specifications):
+#define SI_NS_FLASH_WINDOW 0x02000000 /* Flash XIP Window */
 
-Markus
-
->=20
->=20
-> [1]http://lists.infradead.org/pipermail/linux-mtd/2014-November/05663=
-4.html
->=20
->=20
-
-=2D-=20
-Pengutronix e.K.                           |                           =
-  |
-Industrial Linux Solutions                 | http://www.pengutronix.de/=
-  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0  =
-  |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-555=
-5 |
-
---nextPart2599268.1EaGA9dVCD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAABCAAGBQJXFLHfAAoJEEpcgKtcEGQQnW0P/3HtodJowHNGexstH3mfXjKt
-3E/Nx9Dj1agiMwUYnz/UbiipljgiNR9wIjY+9ml3QtuATCVnZ7Ikr7sRzmrTF7x0
-9wviw2ZUHUUpJykkIUtDiwCz0YSb9okA3bErmaly9JUMfTykED61/Q4o9FNpA531
-ZyNLUO78VYrIy4aJhSpmVncgqTj03dQ1FRE4mDhkWB2xXI4hHj2aYrywebJG5EZy
-Ab9aQx6RoxQIc4vnEfxRDB3BxWkX+IY5RL/Wa9cS64vpO9M85Zc/XQ9nUX1ec7vZ
-4H6dRQPygooBYGpKSLskH/QAjp51H0lIAyINn/6Ef53s9akkqzGZh999Wvdaz1P7
-1Lbbo5zg4LH3/W8HE1FITegaXXgRf2UHiBMdnz2OqSw9f79hRpwPQ3GcAHbFUHmq
-MpwdtsXdUAeelaQFT61u3iSKz2JO5XpoELkM8aI3wLST397nAkS/EpUETZ/H5ymr
-otlNomAbV0ZP3cF0Xim/yHJcmIwv4yaupyUoyjF0Pq4EWGMVA5mM81ULFlTk7X+C
-v5+ilMROrs6fs9KOdYTE+gBb+nW5R2lISetE4xHaA/ZHRHGMACbdHMgEQW6tVdIb
-9vpTxZsyNdqEB15ozp1EPXHHIkTupwIYE6iAFffCUE8Mhm8ngU9gjgtpr0tj/JTm
-8NnAmjsNZpz2JKPMZwND
-=vShH
------END PGP SIGNATURE-----
-
---nextPart2599268.1EaGA9dVCD--
+--=20
+Rafa=C5=82
