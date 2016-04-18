@@ -1,27 +1,34 @@
-Date: Mon, 18 Apr 2016 16:47:20 +0200
-From: Stefan Christ <s.christ@phytec.de>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Markus Pargmann <mpa@pengutronix.de>,
- Fabio Estevam <fabio.estevam@freescale.com>,
- Elie De Brauwer <eliedebrauwer@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- Richard Weinberger <richard@nod.at>, Huang Shijie <shijie.huang@intel.com>,
- Han Xu <han.xu@nxp.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH RESEND] gpmi-nand: Handle ECC Errors in erased pages
-Message-ID: <20160418144720.GA2674@lws-christ>
-References: <1456059126-25469-1-git-send-email-mpa@pengutronix.de>
- <7168760.YSQBa3GsdA@adelgunde> <20160415103508.5f6bc8c8@bbrezillon>
- <33206452.D8BR53ndXi@adelgunde>
- <20160415113906.7f971cec@bbrezillon>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1asAd0-0004RV-IU
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2016 14:58:22 +0000
+Date: Mon, 18 Apr 2016 16:57:55 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Roger Quadros <rogerq@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, <javier@dowhile0.org>,
+ <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC
+ NAND on non-OMAP platforms
+Message-ID: <20160418165755.77d1d661@bbrezillon>
+In-Reply-To: <5714F185.5080103@ti.com>
+References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
+ <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
+ <20160415120942.3131eac1@bbrezillon> <5710C86A.9060108@ti.com>
+ <20160415135108.63716f06@bbrezillon>
+ <20160415154139.GS5995@atomide.com>
+ <20160415180531.15d790d2@bbrezillon>
+ <20160415161950.GT5995@atomide.com>
+ <20160416105711.5310d2d0@bbrezillon> <5714D3A4.2050405@ti.com>
+ <5714D8AA.9040304@ti.com> <20160418151305.17a42437@bbrezillon>
+ <5714E5AA.5050200@ti.com> <20160418161001.2a1c0bed@bbrezillon>
+ <5714F185.5080103@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20160415113906.7f971cec@bbrezillon>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,160 +38,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Mon, 18 Apr 2016 17:39:01 +0300
+Roger Quadros <rogerq@ti.com> wrote:
 
-On Fri, Apr 15, 2016 at 11:39:06AM +0200, Boris Brezillon wrote:
-> Hi Markus,
->=20
-> On Fri, 15 Apr 2016 11:35:07 +0200
-> Markus Pargmann <mpa@pengutronix.de> wrote:
->=20
-> > Hi Boris,
-> >=20
-> > On Friday 15 April 2016 10:35:08 Boris Brezillon wrote:
-> > > Hi Markus,
-> > >=20
-> > > On Fri, 15 Apr 2016 09:55:45 +0200
-> > > Markus Pargmann <mpa@pengutronix.de> wrote:
-> > >=20
-> > > > On Wednesday 13 April 2016 00:51:55 Boris Brezillon wrote:
-> > > > > On Tue, 12 Apr 2016 22:39:08 +0000
-> > > > > Han Xu <han.xu@nxp.com> wrote:
-> > > > >=20
-> > > > > > > Thanks for the feedback. Talking with a coworker about this w=
-e may have found a
-> > > > > > > better approach to this that is less complicated to implement=
-. The hardware
-> > > > > > > unit allows us to set a bitflip threshold for erased pages. T=
-he ECC unit
-> > > > > > > creates an ECC error only if the number of bitflips exceeds t=
-his threshold, but
-> > > > > > > it does not correct these. So the idea is to change the patch=
- so that we set
-> > > > > > > pages, that are signaled by the ECC as erased, to 0xff comple=
-tely without
-> > > > > > > checking. So the ECC will do all the work and we completely t=
-rust in its
-> > > > > > > abilities to do it correctly.
-> > > > > >=20
-> > > > > > Sounds good.
-> > > > > >=20
-> > > > > > some new platforms with new gpmi controller could check the cou=
-nt of 0 bits in page,
-> > > > > > refer to my patch https://patchwork.ozlabs.org/patch/587124/
-> > > > > >=20
-> > > > > > But for all legacy platforms, IMO, considering bitflip is rare =
-case, set threshold to 0 and
-> > > > > > only check the uncorrectable branch and then correct data sound=
-s better. Setting threshold
-> > > > > > and correcting all erased page may highly impact the performanc=
-e.
-> > > > >=20
-> > > > > Indeed, bitflips in erased pages is not so common, and penalizing=
- the
-> > > > > likely case (erased pages without any bitflips) doesn't look like=
- a good
-> > > > > idea in the end.
-> > > >=20
-> > > > Are erased pages really read that often?
-> > >=20
-> > > Yes, it's not unusual to have those "empty pages?" checks (added Artem
-> > > and Richard to get a confirmation). AFAIR, UBIFS check for empty pages
-> > > in its journal heads after an unclean unmount (which happens quite
-> > > often) to make sure there's no corruption.
-> > >=20
-> > > > I am not sure how UBI handles
-> > > > this, does it read every page before writing?
-> > >=20
-> > > Nope, or maybe it does when you activate some extra checks.
-> > >=20
-> > > >=20
-> > > > >=20
-> > > > > You can still implement this check in software. You can have a lo=
-ok at
-> > > > > nand=5Fcheck=5Ferased=5Fecc=5Fchunk() [1] if you need an example,=
- but you'll
-> > > > > have to adapt it because your controller does not guarantees that=
- ECC
-> > > > > bits for a given chunk are byte aligned :-/
-> > > >=20
-> > > > Yes I used this function in the patch. The issue is that I am not q=
-uite
-> > > > sure yet where to find the raw ECC data (without rereading the page=
-).
-> > > > The reference manual is not extremely clear about that, ecc data ma=
-y be
-> > > > in the 'auxilliary data' but I am not sure that it really is availa=
-ble
-> > > > somewhere.
-> > >=20
-> > > AFAIR (and I'm not sure since it was a long time ago), you don't have
-> > > direct access to ECC bytes with the GPMI engine. If that's the case,
-> > > you'll have to read the ECC bytes manually (moving the page pointer
-> > > using ->cmdfunc(NAND=5FCMD=5FRNDOUT, column, -1)), which is a pain wi=
-th
-> > > this engine, because ECC bytes are not guaranteed to be byte aligned
-> > > (see gpmi ->read=5Fpage=5Fraw() implementation).
-> > > Once you've retrieved ECC bytes (or bits in this case), for each ECC
-> > > chunk, you can use the nand=5Fcheck=5Ferased=5Fecc=5Fchunk() function=
- (just make
-> > > sure you're padding the last ECC byte of each chunk with ones so that
-> > > bitflips cannot be reported on this section).
-> >=20
-> > Thanks for the information. So I understand that this approach is the
-> > preferred one to avoid any performance issues for normal operation.
-> >=20
-> > I actually won't be able to fix this patch accordingly for some time. If
-> > anyone else needs this earlier, feel free to implement it.
->=20
-> I just did [1] (it applies on top of your patch), but maybe you
-> can test it (I don't have any imx platforms right now) ;).
->=20
-> If these changes work, feel free to squash them into your previous
-> patch.
+> On 18/04/16 17:10, Boris Brezillon wrote:
+> > On Mon, 18 Apr 2016 16:48:26 +0300
+> > Roger Quadros <rogerq@ti.com> wrote:
+> > 
+> >> Boris,
+> >>
+> >> On 18/04/16 16:13, Boris Brezillon wrote:
+> >>> Hi Roger,
+> >>>
+> >>> On Mon, 18 Apr 2016 15:52:58 +0300
+> >>> Roger Quadros <rogerq@ti.com> wrote:
+> >>>
+> >>>> On 18/04/16 15:31, Roger Quadros wrote:
+> >>>>> On 16/04/16 11:57, Boris Brezillon wrote:
+> >>>>>> On Fri, 15 Apr 2016 09:19:51 -0700
+> >>>>>> Tony Lindgren <tony@atomide.com> wrote:
+> >>>>>>
+> >>>>>>>
+> >>>>>>>> Or should I just pull this immutable branch in my current nand/next and
+> >>>>>>>> let you pull the same immutable branch in omap-soc. I mean, would this
+> >>>>>>>> prevent conflicts when our branches are merged into linux-next, no
+> >>>>>>>> matter the order.
+> >>>>>>>
+> >>>>>>> Ideally just one or more branches with just minimal changes in
+> >>>>>>> them against -rc1. But you may have other dependencies in
+> >>>>>>> your NAND tree so that may no longer be doable :) Usually if
+> >>>>>>> I merge something that may need to get merged into other
+> >>>>>>> branches, I just apply them into a separate branch against -rc1
+> >>>>>>> to start with, then merge that branch in.
+> >>>>>>
+> >>>>>> Okay, in this case, that's pretty much what I did from the beginning,
+> >>>>>> except the immutable branch was provided by Roger (based on 4.6-rc1).
+> >>>>>> Thanks for this detailed explanation, I'll try to remember that when
+> >>>>>> I'll need to provide an immutable branch for another subsystem.
+> >>>>>>
+> >>>>>> Roger, my request remains, could you check/test my conflict resolution
+> >>>>>> (branch nand/next-with-gpmc-rework)?
+> >>>>>
+> >>>>> I couldn't test that branch yet as nand/next is broken on omap platforms
+> >>>>> (at least on dra7-evm).
+> >>>>>
+> >>>>> The commit where it breaks is:
+> >>>>> a662ef4 mtd: nand: omap2: use mtd_ooblayout_xxx() helpers where appropriate
+> >>>>>
+> >>>>> I'm trying to figure out what went wrong there. Failure log below.
+> >>>>
+> >>>> OK. I was able to fix it when at commit a662ef4 with the below patch.
+> >>>
+> >>> Thanks for debugging that.
+> >>>
+> >>>>
+> >>>> Looks like we need to read exactly the ECC bytes through the ECC engine and not
+> >>>> the entire OOB region.
+> >>>
+> >>> Hm, it looks like there's a bug somewhere else, because I don't see any
+> >>> reason why the controller wouldn't be able to read the full OOB region.
+> >>
+> >> The controller can read the full OOB region but we only want it to read just
+> >> the ECC bytes because that is the way the ELM ECC engine works.
+> > 
+> > Ok, I think I got it: the ECC correction is pipelined with data read,
+> > and the controller expect to have ECC bytes right after the in-band
+> > data, is that correct?
+> 
+> That is correct.
+> 
+> > 
+> >>
+> >>>>
+> >>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> >>>> index e622a1b..46b61d2 100644
+> >>>> --- a/drivers/mtd/nand/omap2.c
+> >>>> +++ b/drivers/mtd/nand/omap2.c
+> >>>> @@ -1547,8 +1547,8 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
+> >>>>  	chip->read_buf(mtd, buf, mtd->writesize);
+> >>>>  
+> >>>>  	/* Read oob bytes */
+> >>>> -	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
+> >>>> -	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+> >>>> +	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize + chip->ecc.layout->eccpos[0], -1);
+> >>>
+> >>> The whole point of this series is to get rid of chip->ecc.layout, so
+> >>> we'd rather use the mtd_ooblayout_find_eccregion() instead of
+> >>> chip->ecc.layout->eccpos[0].
+> >>
+> >> We just need the position of the first ECC byte offset.
+> >> Is that the most optimal way to get it?
+> > 
+> > For the BCH case, it seems that ECC bytes always start at offset
+> > BADBLOCK_MARKER_LENGTH, so you can just pass
+> > mtd->writesize + BADBLOCK_MARKER_LENGTH.
+> > 
+> > Let me know if this works, and I'll squash those changes into the
+> > faulty commit (I know this implies a rebase + push -f, but IMO that's
+> > better than breaking bisectability).
+> > 
+> > 
+> 
+> So, the below patch works as well. Please feel free to fold it with your patch.
 
-I've tested your diff onto Markus Pargmann's patch. It looks promising.
+Will do.
 
-However I've noticed that the calculation of the ECC parity bits position is
-wrong.  It doesn't consider the extra metadata bytes at the beginning of the
-raw page and that the ECC parity bits are at the end of the ECC chunk. My t=
-est
-platform is the i.MX6 with two NAND flashes
+Thanks,
 
-    nand: Samsung NAND 1GiB 3,3V 8-bit
-    nand: 1024 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-    (-> 104 Bits ECC )
+Boris
 
-and
-=20
-    nand: AMD/Spansion S34ML08G2
-    nand: 1024 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 128
-    (-> 234 Bits ECC )
+> 
+> --
+> cheers,
+> -roger
+> 
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index e622a1b..eb85d6b 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1547,8 +1547,8 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
+>  	chip->read_buf(mtd, buf, mtd->writesize);
+>  
+>  	/* Read oob bytes */
+> -	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
+> -	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+> +	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize + BADBLOCK_MARKER_LENGTH, -1);
+> +	chip->read_buf(mtd, chip->oob_poi, chip->ecc.total);
+>  
+>  	/* Calculate ecc bytes */
+>  	chip->ecc.calculate(mtd, buf, ecc_calc);
 
-I've also tested the bit alignment code. It works correctly for the Spansion
-NAND, as the 234 Bits of ECC are 29.25 Bytes on the NAND flash. So there the
-parity bits are not byte aligned.
 
-Mit freundlichen Gr=C3=BC=C3=9Fen / Kind regards,
-        Stefan Christ
 
-The corrected ECC parity bit code is:
-
----->8----
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi=
--nand/gpmi-nand.c
-index 2f16d7f..ccae6e6 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1054,7 +1054,9 @@ static int gpmi=5Fecc=5Fread=5Fpage(struct mtd=5Finfo=
- *mtd, struct nand=5Fchip *chip,
- 			int flips;
-=20
- 			/* Read ECC bytes into our internal raw=5Fbuffer */
--			offset =3D ((8 * nfc=5Fgeo->ecc=5Fchunk=5Fsize) + eccbits) * i;
-+			offset =3D nfc=5Fgeo->metadata=5Fsize * 8;
-+			offset +=3D ((8 * nfc=5Fgeo->ecc=5Fchunk=5Fsize) + eccbits) * (i + 1);
-+			offset -=3D eccbits;
- 			bitoffset =3D offset % 8;
- 			eccbytes =3D DIV=5FROUND=5FUP(offset + eccbits, 8);
- 			offset /=3D 8;
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
