@@ -1,23 +1,17 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1as3rn-0004vq-Au
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2016 07:45:08 +0000
-Date: Mon, 18 Apr 2016 09:44:44 +0200
+Date: Mon, 18 Apr 2016 10:01:52 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, karlzhang@micron.com, beanhuo@micron.com,
- Jiancheng Xue <xuejiancheng@huawei.com>, Peter Pan
- <peterpandong@micron.com>
-Subject: Re: [PATCH 02/11] mtd: nand_bbt: introduce BBT related data structure
-Message-ID: <20160418094444.152042ee@bbrezillon>
-In-Reply-To: <CAAyFORKJzXTSgXvHgNe=AtExs8_9sVNEYMRefYLXDqG7-u-yRg@mail.gmail.com>
-References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
- <1457923684-13505-3-git-send-email-peterpandong@micron.com>
- <20160325093519.34c3f7fa@bbrezillon>
- <CAAyFORKJzXTSgXvHgNe=AtExs8_9sVNEYMRefYLXDqG7-u-yRg@mail.gmail.com>
+To: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ matthias.bgg@gmail.com, robh@kernel.org,
+ linux-mediatek@lists.infradead.org, xiaolei.li@mediatek.com,
+ linux-mtd@lists.infradead.org, daniel.thompson@linaro.org,
+ erin.lo@mediatek.com
+Subject: Re: [PATCH v3 2/2] mtd: mediatek: driver for MTK Smart Device Gen1
+ NAND
+Message-ID: <20160418100152.6973d5ac@bbrezillon>
+In-Reply-To: <1460393772-26910-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
+References: <1460393772-26910-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <1460393772-26910-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,153 +24,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Peter,
+On Mon, 11 Apr 2016 12:56:12 -0400
+Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
 
-On Mon, 18 Apr 2016 14:22:09 +0800
-Peter Pan <peterpansjtu@gmail.com> wrote:
-
-> Hi  Boris,
+> This patch adds support for mediatek's SDG1 NFC nand controller
+> embedded in SoC 2701.
 > 
-> On Fri, Mar 25, 2016 at 4:35 PM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > Hi Peter,
-> >
-> > On Mon, 14 Mar 2016 02:47:55 +0000
-> > Peter Pan <peterpansjtu@gmail.com> wrote:
-> >
-> >> From: Brian Norris <computersforpeace@gmail.com>
-> >>
-> >> Currently nand_bbt.c is tied with struct nand_chip, and it makes other
-> >> NAND family chips hard to use nand_bbt.c. Maybe it's the reason why
-> >> onenand has own bbt(onenand_bbt.c).
-> >>
-> >> Separate struct nand_chip from BBT code can make current BBT shareable.
-> >> We create struct nand_bbt to take place of nand_chip in nand_bbt.c
-> >>
-> >> Below is mtd folder structure we want:
-> >>       drivers/mtd/nand/<all-nand-core-code>
-> >>       drivers/mtd/nand/raw/<raw-nand-controller-drivers>
-> >>       drivers/mtd/nand/spi/<spi-nand-code>
-> >>       drivers/mtd/nand/onenand/<onenand-code>
-> >>       drivers/mtd/nand/chips/<manufacturer-spcific-code>
-> >>
-> >> Of course, nand_bbt.c should be part of <all-nand-core-code>.
-> >>
-> >> We put every chip layout related information BBT needed into struct
-> >> nand_chip_layout_info.
-> >>       @numchips:      number of physical chips, required for NAND_BBT_PERCHIP
-> >>       @chipsize:      the size of one chip for multichip arrays
-> >>       @chip_shift:    number of address bits in one chip
-> >>       @bbt_erase_shift:       number of address bits in a bbt entry
-> >>       @page_shift:    number of address bits in a page
-> >>
-> >> We defined a struct nand_bbt_ops for BBT ops. Struct
-> >>       @is_bad_bbm:    check if a block is factory bad block
-> >>       @erase: erase block bypassing resvered checks
-> >>
-> >> Struct nand_bbt includes all BBT information:
-> >>       @mtd:   pointer to MTD device structure
-> >>       @bbt_options:   bad block specific options. All options used
-> >>                       here must come from nand_bbt.h.
-> >>       @bbt_ops:       struct nand_bbt_ops pointer.
-> >>       @info:          struct nand_chip_layout_info pointer.
-> >>       @bbt_td:        bad block table descriptor for flash lookup.
-> >>       @bbt_md:        bad block table mirror descriptor
-> >>       @bbt:           bad block table pointer
-> >>
-> >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> >> [Peter: 1. correct comment style
-> >>       2. introduce struct nand_bbt_ops and nand_chip_layout_info]
-> >> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> >> ---
-> >>  include/linux/mtd/nand_bbt.h | 67 ++++++++++++++++++++++++++++++++++++++++++++
-> >>  1 file changed, 67 insertions(+)
-> >>
-> >> diff --git a/include/linux/mtd/nand_bbt.h b/include/linux/mtd/nand_bbt.h
-> >> index 5a65230..cfb22c8 100644
-> >> --- a/include/linux/mtd/nand_bbt.h
-> >> +++ b/include/linux/mtd/nand_bbt.h
-> >> @@ -18,6 +18,8 @@
-> >>  #ifndef __LINUX_MTD_NAND_BBT_H
-> >>  #define __LINUX_MTD_NAND_BBT_H
-> >>
-> >> +struct mtd_info;
-> >> +
-> >>  /* The maximum number of NAND chips in an array */
-> >>  #define NAND_MAX_CHIPS               8
-> >>
-> >> @@ -115,4 +117,69 @@ struct nand_bbt_descr {
-> >>  /* The maximum number of blocks to scan for a bbt */
-> >>  #define NAND_BBT_SCAN_MAXBLOCKS      4
-> >>
-> >> +struct nand_bbt;
-> >> +
-> >> +/**
-> >> + * struct nand_bbt_ops - bad block table operations
-> >> + * @is_bad_bbm:      check if a block is factory bad block
-> >> + * @erase:   erase block bypassing resvered checks
-> >> + */
-> >> +struct nand_bbt_ops {
-> >> +     /*
-> >> +      * This is important to abstract out of nand_bbt.c and provide
-> >> +      * separately in nand_base.c and spi-nand-base.c -- it's sort of
-> >> +      * duplicated in nand_block_bad() (nand_base) and
-> >> +      * scan_block_fast() (nand_bbt) right now
-> >> +      *
-> >> +      * Note that this also means nand_chip.badblock_pattern should
-> >> +      * be removed from nand_bbt.c
-> >> +      */
-> >> +     int (*is_bad_bbm)(struct mtd_info *mtd, loff_t ofs);
-> >> +
-> >> +     /* Erase a block, bypassing reserved checks */
-> >> +     int (*erase)(struct mtd_info *mtd, loff_t ofs);
-> >> +};
-> >> +
-> >> +/**
-> >> + * struct nand_chip_layout_info - strucure contains all chip layout
-> >> + * information that BBT needed.
-> >> + * @numchips:        number of physical chips, required for NAND_BBT_PERCHIP
-> >> + * @chipsize:        the size of one chip for multichip arrays
-> >> + * @chip_shift:      number of address bits in one chip
-> >> + * @bbt_erase_shift: number of address bits in a bbt entry
-> >> + * @page_shift:      number of address bits in a page
-> >> + */
-> >> +struct nand_chip_layout_info {
-> >
-> > I know I'm the one who suggested this name, but NAND datasheet seems to
-> > call it "memory organization", so maybe we should rename this struct
-> > nand_memory_organization.
-> >
-> >> +     int numchips;
-> >
-> > I would rename it numdies, or ndies. numchips implies you're having
-> > several chips, which is not the case.
-> 
-> In struct nand_chip and nand_base.c, numchips stands for the number of
-> physical nand chips not number of dies(LUNs), am I right?
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+> ---
 
-I don't know what was the initial meaning for ->numchips, but last time
-we discussed that with Brian, he seemed to agree that this should now
-encode the number of dies in a physical chip, and each physical chip
-should have its own nand_chip instance. That's why I suggested to
-rename this field nand_chip_layout_info. 
+[...]
 
-> So it's true, it
-> should still be numchips in nand_bbt.c?  I just came out this question when
-> making v4. :)
+> +static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
+> +				struct device_node *np)
+> +{
+> +	struct mtk_nfc_nand_chip *chip;
+> +	struct nand_chip *nand;
+> +	struct mtd_info *mtd;
+> +	int nsels, len;
+> +	u32 tmp;
+> +	int ret;
+> +	int i;
+> +
+> +	if (!of_get_property(np, "reg", &nsels))
+> +		return -ENODEV;
+> +
+> +	nsels /= sizeof(u32);
+> +	if (!nsels || nsels > MTK_NAND_MAX_NSELS) {
+> +		dev_err(dev, "invalid reg property size %d\n", nsels);
+> +		return -EINVAL;
+> +	}
+> +
+> +	chip = devm_kzalloc(dev,
+> +			sizeof(*chip) + nsels * sizeof(u8), GFP_KERNEL);
+> +	if (!chip)
+> +		return -ENOMEM;
+> +
+> +	chip->nsels = nsels;
+> +	for (i = 0; i < nsels; i++) {
+> +		ret = of_property_read_u32_index(np, "reg", i, &tmp);
+> +		if (ret) {
+> +			dev_err(dev, "reg property failure : %d\n", ret);
+> +			return ret;
+> +		}
+> +		chip->sels[i] = tmp;
+> +	}
+> +
+> +	if (of_property_read_u32(np, "spare_per_sector",
+> +						&chip->spare_per_sector)) {
+> +		dev_err(dev, "missing spare_per_sector property in DT\n");
+> +		return -ENODEV;
+> +
+> +	}
+> +
+> +	nand = &chip->nand;
+> +	nand->controller = &nfc->controller;
+> +
+> +	nand_set_flash_node(nand, np);
+> +	nand_set_controller_data(nand, nfc);
+> +
+> +	nand->options |= NAND_USE_BOUNCE_BUFFER | NAND_SUBPAGE_READ;
+> +	nand->block_markbad = mtk_nfc_block_markbad;
+> +	nand->dev_ready = mtk_nfc_dev_ready;
+> +	nand->select_chip = mtk_nfc_select_chip;
+> +	nand->write_byte = mtk_nfc_write_byte;
+> +	nand->write_buf = mtk_nfc_write_buf;
+> +	nand->read_byte = mtk_nfc_read_byte;
+> +	nand->read_buf = mtk_nfc_read_buf;
+> +	nand->cmd_ctrl = mtk_nfc_cmd_ctrl;
+> +
+> +	/* set default mode in case dt entry is missing */
+> +	nand->ecc.mode = NAND_ECC_HW;
+> +
+> +	nand->ecc.write_subpage = mtk_nfc_write_subpage_hwecc;
+> +	nand->ecc.write_page_raw = mtk_nfc_write_page_raw;
+> +	nand->ecc.write_page = mtk_nfc_write_page_hwecc;
+> +	nand->ecc.write_oob_raw = mtk_nfc_write_oob_raw;
+> +	nand->ecc.write_oob = mtk_nfc_write_oob;
+> +
+> +	nand->ecc.read_subpage = mtk_nfc_read_subpage_hwecc;
+> +	nand->ecc.read_page_raw = mtk_nfc_read_page_raw;
+> +	nand->ecc.read_oob_raw = mtk_nfc_read_oob_raw;
+> +	nand->ecc.read_page = mtk_nfc_read_page_hwecc;
+> +	nand->ecc.read_oob = mtk_nfc_read_oob;
+> +
+> +	mtd = nand_to_mtd(nand);
+> +	mtd->owner = THIS_MODULE;
+> +	mtd->dev.parent = dev;
+> +	mtd->name = MTK_NAME;
+> +	mtd_set_ooblayout(mtd, &mtk_nfc_ooblayout_ops);
+> +
+> +	mtk_nfc_hw_init(nfc);
+> +
+> +	ret = nand_scan_ident(mtd, nsels, NULL);
+> +	if (ret)
+> +		return -ENODEV;
+> +
+> +	/* TODO: add NAND_ECC_SOFT */
+> +	if (nand->ecc.mode != NAND_ECC_HW) {
+> +		dev_err(dev, "driver only supports NAND_ECC_HW\n");
+> +		return -ENODEV;
+> +	}
 
-BTW, I have something for you [1]. I started to move things around to
-allow spinand and onenand layers to lie under drivers/mtd/nand/, and I
-wonder if we shouldn't do this move before reworking the nand_bbt code
-to make it generic.
-Note that this rework is not finished yet, but it gives a rough idea of
-what I'd like to see.
+You also don't check the ecc->strength and ecc->step_size values, and
+I'd recommend doing the ECC initialization in a separate function.
+Moreover, as already explained on IRC, you should not make the
+nand-ecc-strength and nand-ecc-step-size properties mandatory. Usually
+those information are exposed by the NAND chip itself, and are
+available in chip->ecc_strength_ds and chip->ecc_step_size_ds.
+nand-ecc-strength and nand-ecc-step-size are only here to override the
+ECC config (a typical usage is to override those information to match
+the configuration hardcoded in the bootloader).
 
-Best Regards,
+Here is an example of how it could be done [1].
 
-Boris
+[1]http://lxr.free-electrons.com/source/drivers/mtd/nand/sunxi_nand.c#L1188
 
-[1]https://github.com/bbrezillon/linux-sunxi/commits/nand/generic
 
 -- 
 Boris Brezillon, Free Electrons
