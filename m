@@ -1,30 +1,14 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+Received: from relay3-d.mail.gandi.net ([2001:4b98:c:538::195])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1asBfH-0005MC-M1
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2016 16:04:44 +0000
-Received: by mail-pf0-x242.google.com with SMTP id p185so13105134pfb.3
- for <linux-mtd@lists.infradead.org>; Mon, 18 Apr 2016 09:04:23 -0700 (PDT)
-Sender: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date: Tue, 19 Apr 2016 01:04:15 +0900 (JST)
-Message-Id: <20160419.010415.105960685033839882.konishi.ryusuke@lab.ntt.co.jp>
-To: Mike Christie <mchristi@redhat.com>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
- konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
- philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
- linux-raid@vger.kernel.org, dm-devel@redhat.com,
- linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
- target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH 16/42] nilfs: set bi_op to REQ_OP
-From: Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
-In-Reply-To: <1460747777-8479-17-git-send-email-mchristi@redhat.com>
-References: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
- <1460747777-8479-17-git-send-email-mchristi@redhat.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+ id 1asBgA-0006bY-9Z
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2016 16:05:39 +0000
+From: Maarten ter Huurne <maarten@treewalker.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Maarten ter Huurne <maarten@treewalker.org>
+Subject: [PATCH] mtd: nand: jz4740: Remove unused local variable
+Date: Mon, 18 Apr 2016 18:04:56 +0200
+Message-Id: <1460995496-11666-1-git-send-email-maarten@treewalker.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,98 +18,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 15 Apr 2016 14:15:51 -0500, mchristi@redhat.com wrote:
-> From: Mike Christie <mchristi@redhat.com>
-> 
-> This patch has nilfs use bio->bi_op for REQ_OPs and rq_flag_bits
-> to bio->bi_rw.
-> 
-> Signed-off-by: Mike Christie <mchristi@redhat.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Hannes Reinecke <hare@suse.com>
-> ---
->  fs/nilfs2/segbuf.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
+Signed-off-by: Maarten ter Huurne <maarten@treewalker.org>
+---
+ drivers/mtd/nand/jz4740_nand.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Looks good to me.
-
-Acked-by: Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
-
-Thanks,
-Ryuske Konishi
-
-> 
-> diff --git a/fs/nilfs2/segbuf.c b/fs/nilfs2/segbuf.c
-> index 7666f1d..7b13e14 100644
-> --- a/fs/nilfs2/segbuf.c
-> +++ b/fs/nilfs2/segbuf.c
-> @@ -350,7 +350,8 @@ static void nilfs_end_bio_write(struct bio *bio)
->  }
->  
->  static int nilfs_segbuf_submit_bio(struct nilfs_segment_buffer *segbuf,
-> -				   struct nilfs_write_info *wi, int mode)
-> +				   struct nilfs_write_info *wi, int mode,
-> +				   int mode_flags)
->  {
->  	struct bio *bio = wi->bio;
->  	int err;
-> @@ -368,7 +369,8 @@ static int nilfs_segbuf_submit_bio(struct nilfs_segment_buffer *segbuf,
->  
->  	bio->bi_end_io = nilfs_end_bio_write;
->  	bio->bi_private = segbuf;
-> -	bio->bi_rw = mode;
-> +	bio->bi_op = mode;
-> +	bio->bi_rw = mode_flags;
->  	submit_bio(bio);
->  	segbuf->sb_nbio++;
->  
-> @@ -442,7 +444,7 @@ static int nilfs_segbuf_submit_bh(struct nilfs_segment_buffer *segbuf,
->  		return 0;
->  	}
->  	/* bio is FULL */
-> -	err = nilfs_segbuf_submit_bio(segbuf, wi, mode);
-> +	err = nilfs_segbuf_submit_bio(segbuf, wi, mode, 0);
->  	/* never submit current bh */
->  	if (likely(!err))
->  		goto repeat;
-> @@ -466,19 +468,19 @@ static int nilfs_segbuf_write(struct nilfs_segment_buffer *segbuf,
->  {
->  	struct nilfs_write_info wi;
->  	struct buffer_head *bh;
-> -	int res = 0, rw = WRITE;
-> +	int res = 0;
->  
->  	wi.nilfs = nilfs;
->  	nilfs_segbuf_prepare_write(segbuf, &wi);
->  
->  	list_for_each_entry(bh, &segbuf->sb_segsum_buffers, b_assoc_buffers) {
-> -		res = nilfs_segbuf_submit_bh(segbuf, &wi, bh, rw);
-> +		res = nilfs_segbuf_submit_bh(segbuf, &wi, bh, REQ_OP_WRITE);
->  		if (unlikely(res))
->  			goto failed_bio;
->  	}
->  
->  	list_for_each_entry(bh, &segbuf->sb_payload_buffers, b_assoc_buffers) {
-> -		res = nilfs_segbuf_submit_bh(segbuf, &wi, bh, rw);
-> +		res = nilfs_segbuf_submit_bh(segbuf, &wi, bh, REQ_OP_WRITE);
->  		if (unlikely(res))
->  			goto failed_bio;
->  	}
-> @@ -488,8 +490,8 @@ static int nilfs_segbuf_write(struct nilfs_segment_buffer *segbuf,
->  		 * Last BIO is always sent through the following
->  		 * submission.
->  		 */
-> -		rw |= REQ_SYNC;
-> -		res = nilfs_segbuf_submit_bio(segbuf, &wi, rw);
-> +		res = nilfs_segbuf_submit_bio(segbuf, &wi, REQ_OP_WRITE,
-> +					      REQ_SYNC);
->  	}
->  
->   failed_bio:
-> -- 
-> 2.7.2
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-fsdevel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
+index 673ceb2..2f39ee1 100644
+--- a/drivers/mtd/nand/jz4740_nand.c
++++ b/drivers/mtd/nand/jz4740_nand.c
+@@ -221,7 +221,6 @@ static int jz_nand_correct_ecc_rs(struct mtd_info *mtd, uint8_t *dat,
+ 	struct jz_nand *nand = mtd_to_jz_nand(mtd);
+ 	int i, error_count, index;
+ 	uint32_t reg, status, error;
+-	uint32_t t;
+ 	unsigned int timeout = 1000;
+ 
+ 	for (i = 0; i < 9; ++i)
+-- 
+2.6.6
