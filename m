@@ -1,16 +1,16 @@
-Received: from smtp106.biz.mail.gq1.yahoo.com ([98.137.12.181])
+Received: from smtp105.biz.mail.ne1.yahoo.com ([98.138.207.12])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1asDDu-0007DT-Dr
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2016 17:44:35 +0000
-Message-ID: <962979.90403.qm@smtp106.biz.mail.gq1.yahoo.com>
+ id 1asFXk-0003Cp-JV
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2016 20:13:15 +0000
+Message-ID: <828729.35773.qm@smtp105.biz.mail.ne1.yahoo.com>
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Description: Mail message body
 Subject: Greetings!!!
-To: "Mr. Eric" <andreas11@elisaandreas.biz>
-From: andreas11@elisaandreas.biz
-Date: Mon, 18 Apr 2016 18:43:38 +0100
+To: "Mr. Eric" <andreas122@elisaandreas.biz>
+From: andreas122@elisaandreas.biz
+Date: Mon, 18 Apr 2016 21:12:16 +0100
 Reply-To: J_ericdaniels111@outlook.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
