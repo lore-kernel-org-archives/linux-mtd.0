@@ -1,31 +1,33 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1asAd0-0004RV-IU
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2016 14:58:22 +0000
-Date: Mon, 18 Apr 2016 16:57:55 +0200
+Date: Mon, 18 Apr 2016 17:05:18 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Roger Quadros <rogerq@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, <javier@dowhile0.org>,
- <fcooper@ti.com>, <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-omap@vger.kernel.org>, <computersforpeace@gmail.com>,
- <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC
- NAND on non-OMAP platforms
-Message-ID: <20160418165755.77d1d661@bbrezillon>
-In-Reply-To: <5714F185.5080103@ti.com>
-References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
- <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
- <20160415120942.3131eac1@bbrezillon> <5710C86A.9060108@ti.com>
- <20160415135108.63716f06@bbrezillon>
- <20160415154139.GS5995@atomide.com>
- <20160415180531.15d790d2@bbrezillon>
- <20160415161950.GT5995@atomide.com>
- <20160416105711.5310d2d0@bbrezillon> <5714D3A4.2050405@ti.com>
- <5714D8AA.9040304@ti.com> <20160418151305.17a42437@bbrezillon>
- <5714E5AA.5050200@ti.com> <20160418161001.2a1c0bed@bbrezillon>
- <5714F185.5080103@ti.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>, Richard
+ Weinberger <richard@nod.at>, <linux-mips@linux-mips.org>, Krzysztof
+ Kozlowski <k.kozlowski@samsung.com>, Harvey Hunt <harvey.hunt@imgtec.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, Stefan Agner <stefan@agner.ch>,
+ <linux-sunxi@googlegroups.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, punnaiah choudary kalluri
+ <punnaia@xilinx.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ <devel@driverdev.osuosl.org>, Archit Taneja <architt@codeaurora.org>,
+ <linux-samsung-soc@vger.kernel.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Chen-Yu Tsai <wens@csie.org>, Kukjin
+ Kim <kgene@kernel.org>, <bcm-kernel-feedback-list@broadcom.com>, Ezequiel
+ Garcia <ezequiel.garcia@free-electrons.com>, Huang Shijie
+ <shijie.huang@arm.com>, Jean-Christophe Plagniol-Villard
+ <plagnioj@jcrosoft.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Han Xu
+ <b45815@freescale.com>, <linux-arm-kernel@lists.infradead.org>, Priit Laes
+ <plaes@plaes.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Wenyou
+ Yang <wenyou.yang@atmel.com>, Kyungmin Park <kyungmin.park@samsung.com>,
+ <linux-api@vger.kernel.org>, Maxime Ripard
+ <maxime.ripard@free-electrons.com>, Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH v5 39/50] mtd: nand: omap2: switch to mtd_ooblayout_ops
+Message-ID: <20160418170518.363f732d@bbrezillon>
+In-Reply-To: <5714F011.5080409@ti.com>
+References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459354505-32551-40-git-send-email-boris.brezillon@free-electrons.com>
+ <5714F011.5080409@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -38,139 +40,175 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 18 Apr 2016 17:39:01 +0300
+On Mon, 18 Apr 2016 17:32:49 +0300
 Roger Quadros <rogerq@ti.com> wrote:
 
-> On 18/04/16 17:10, Boris Brezillon wrote:
-> > On Mon, 18 Apr 2016 16:48:26 +0300
-> > Roger Quadros <rogerq@ti.com> wrote:
-> > 
-> >> Boris,
-> >>
-> >> On 18/04/16 16:13, Boris Brezillon wrote:
-> >>> Hi Roger,
-> >>>
-> >>> On Mon, 18 Apr 2016 15:52:58 +0300
-> >>> Roger Quadros <rogerq@ti.com> wrote:
-> >>>
-> >>>> On 18/04/16 15:31, Roger Quadros wrote:
-> >>>>> On 16/04/16 11:57, Boris Brezillon wrote:
-> >>>>>> On Fri, 15 Apr 2016 09:19:51 -0700
-> >>>>>> Tony Lindgren <tony@atomide.com> wrote:
-> >>>>>>
-> >>>>>>>
-> >>>>>>>> Or should I just pull this immutable branch in my current nand/next and
-> >>>>>>>> let you pull the same immutable branch in omap-soc. I mean, would this
-> >>>>>>>> prevent conflicts when our branches are merged into linux-next, no
-> >>>>>>>> matter the order.
-> >>>>>>>
-> >>>>>>> Ideally just one or more branches with just minimal changes in
-> >>>>>>> them against -rc1. But you may have other dependencies in
-> >>>>>>> your NAND tree so that may no longer be doable :) Usually if
-> >>>>>>> I merge something that may need to get merged into other
-> >>>>>>> branches, I just apply them into a separate branch against -rc1
-> >>>>>>> to start with, then merge that branch in.
-> >>>>>>
-> >>>>>> Okay, in this case, that's pretty much what I did from the beginning,
-> >>>>>> except the immutable branch was provided by Roger (based on 4.6-rc1).
-> >>>>>> Thanks for this detailed explanation, I'll try to remember that when
-> >>>>>> I'll need to provide an immutable branch for another subsystem.
-> >>>>>>
-> >>>>>> Roger, my request remains, could you check/test my conflict resolution
-> >>>>>> (branch nand/next-with-gpmc-rework)?
-> >>>>>
-> >>>>> I couldn't test that branch yet as nand/next is broken on omap platforms
-> >>>>> (at least on dra7-evm).
-> >>>>>
-> >>>>> The commit where it breaks is:
-> >>>>> a662ef4 mtd: nand: omap2: use mtd_ooblayout_xxx() helpers where appropriate
-> >>>>>
-> >>>>> I'm trying to figure out what went wrong there. Failure log below.
-> >>>>
-> >>>> OK. I was able to fix it when at commit a662ef4 with the below patch.
-> >>>
-> >>> Thanks for debugging that.
-> >>>
-> >>>>
-> >>>> Looks like we need to read exactly the ECC bytes through the ECC engine and not
-> >>>> the entire OOB region.
-> >>>
-> >>> Hm, it looks like there's a bug somewhere else, because I don't see any
-> >>> reason why the controller wouldn't be able to read the full OOB region.
-> >>
-> >> The controller can read the full OOB region but we only want it to read just
-> >> the ECC bytes because that is the way the ELM ECC engine works.
-> > 
-> > Ok, I think I got it: the ECC correction is pipelined with data read,
-> > and the controller expect to have ECC bytes right after the in-band
-> > data, is that correct?
+> Boris,
 > 
-> That is correct.
+> On 30/03/16 19:14, Boris Brezillon wrote:
+> > Implementing the mtd_ooblayout_ops interface is the new way of exposing
+> > ECC/OOB layout to MTD users.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/omap2.c | 194 +++++++++++++++++++++++++++--------------------
+> >  1 file changed, 113 insertions(+), 81 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> > index 4ebf16b..bca154a 100644
+> > --- a/drivers/mtd/nand/omap2.c
+> > +++ b/drivers/mtd/nand/omap2.c
+> > @@ -169,8 +169,6 @@ struct omap_nand_info {
+> >  	u_char				*buf;
+> >  	int					buf_len;
+> >  	struct gpmc_nand_regs		reg;
+> > -	/* generated at runtime depending on ECC algorithm and layout selected */
+> > -	struct nand_ecclayout		oobinfo;
+> >  	/* fields specific for BCHx_HW ECC scheme */
+> >  	struct device			*elm_dev;
+> >  	struct device_node		*of_node;
+> > @@ -1639,19 +1637,108 @@ static bool omap2_nand_ecc_check(struct omap_nand_info *info,
+> >  	return true;
+> >  }
+> >  
+> > +static int omap_ooblayout_ecc(struct mtd_info *mtd, int section,
+> > +			      struct mtd_oob_region *oobregion)
+> > +{
+> > +	struct nand_chip *chip = mtd_to_nand(mtd);
+> > +	int off = chip->options & NAND_BUSWIDTH_16 ?
+> > +		  BADBLOCK_MARKER_LENGTH : 1;
 > 
-> > 
-> >>
-> >>>>
-> >>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> >>>> index e622a1b..46b61d2 100644
-> >>>> --- a/drivers/mtd/nand/omap2.c
-> >>>> +++ b/drivers/mtd/nand/omap2.c
-> >>>> @@ -1547,8 +1547,8 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
-> >>>>  	chip->read_buf(mtd, buf, mtd->writesize);
-> >>>>  
-> >>>>  	/* Read oob bytes */
-> >>>> -	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
-> >>>> -	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-> >>>> +	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize + chip->ecc.layout->eccpos[0], -1);
-> >>>
-> >>> The whole point of this series is to get rid of chip->ecc.layout, so
-> >>> we'd rather use the mtd_ooblayout_find_eccregion() instead of
-> >>> chip->ecc.layout->eccpos[0].
-> >>
-> >> We just need the position of the first ECC byte offset.
-> >> Is that the most optimal way to get it?
-> > 
-> > For the BCH case, it seems that ECC bytes always start at offset
-> > BADBLOCK_MARKER_LENGTH, so you can just pass
-> > mtd->writesize + BADBLOCK_MARKER_LENGTH.
-> > 
-> > Let me know if this works, and I'll squash those changes into the
-> > faulty commit (I know this implies a rebase + push -f, but IMO that's
-> > better than breaking bisectability).
-> > 
-> > 
-> 
-> So, the below patch works as well. Please feel free to fold it with your patch.
+> IMO "off = 1" is valid only for OMAP_ECC_HAM1_CODE_HW and 8-bit NAND.
+> For all other layouts it is always set to BADBLOCK_MARKER_LENGTH.
 
-Will do.
+Indeed.
+
+[...]
+
+> > -	/* all OOB bytes from oobfree->offset till end off OOB are free */
+> > -	ecclayout->oobfree->length = mtd->oobsize - ecclayout->oobfree->offset;
+> >  	/* check if NAND device's OOB is enough to store ECC signatures */
+> > -	if (mtd->oobsize < (ecclayout->eccbytes + BADBLOCK_MARKER_LENGTH)) {
+> > +	min_oobbytes = (oobbytes_per_step *
+> > +			(mtd->writesize / nand_chip->ecc.size)) +
+> > +		       (nand_chip->options & NAND_BUSWIDTH_16 ?
+> > +			BADBLOCK_MARKER_LENGTH : 1);
+> 
+> would it affect this as well?
+
+And here as well.
+
+I've generated a patch (see below) fixing those problems.
+
+> 
+> > +	if (mtd->oobsize < min_oobbytes) {
+> >  		dev_err(&info->pdev->dev,
+> >  			"not enough OOB bytes required = %d, available=%d\n",
+> > -			ecclayout->eccbytes, mtd->oobsize);
+> > +			min_oobbytes, mtd->oobsize);
+> >  		err = -EINVAL;
+> >  		goto return_error;
+> >  	}
+> > 
+> 
+> I will need to test this change with all possible configurations.
+> The number of configurations on OMAP is a bit overwhelming :(.
+
+Sorry about that, but at least now I have someone who can test it :).
 
 Thanks,
 
 Boris
 
-> 
-> --
-> cheers,
-> -roger
-> 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index e622a1b..eb85d6b 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1547,8 +1547,8 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
->  	chip->read_buf(mtd, buf, mtd->writesize);
->  
->  	/* Read oob bytes */
-> -	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
-> -	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-> +	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize + BADBLOCK_MARKER_LENGTH, -1);
-> +	chip->read_buf(mtd, chip->oob_poi, chip->ecc.total);
->  
->  	/* Calculate ecc bytes */
->  	chip->ecc.calculate(mtd, buf, ecc_calc);
+--->8---
 
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 9b96f56..07d4039 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1640,9 +1640,13 @@ static bool omap2_nand_ecc_check(struct omap_nand_info *info,
+ static int omap_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 			      struct mtd_oob_region *oobregion)
+ {
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	int off = chip->options & NAND_BUSWIDTH_16 ?
+-		  BADBLOCK_MARKER_LENGTH : 1;
++	struct omap_nand_info *info = mtd_to_omap(mtd);
++	struct nand_chip *chip = &info->nand;
++	int off = BADBLOCK_MARKER_LENGTH;
++
++	if (info->ecc_opt == OMAP_ECC_HAM1_CODE_HW &&
++	    !(chip->options & NAND_BUSWIDTH_16))
++		off = 1;
+ 
+ 	if (section)
+ 		return -ERANGE;
+@@ -1656,9 +1660,13 @@ static int omap_ooblayout_ecc(struct mtd_info *mtd, int section,
+ static int omap_ooblayout_free(struct mtd_info *mtd, int section,
+ 			       struct mtd_oob_region *oobregion)
+ {
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	int off = chip->options & NAND_BUSWIDTH_16 ?
+-		  BADBLOCK_MARKER_LENGTH : 1;
++	struct omap_nand_info *info = mtd_to_omap(mtd);
++	struct nand_chip *chip = &info->nand;
++	int off = BADBLOCK_MARKER_LENGTH;
++
++	if (info->ecc_opt == OMAP_ECC_HAM1_CODE_HW &&
++	    !(chip->options & NAND_BUSWIDTH_16))
++		off = 1;
+ 
+ 	if (section)
+ 		return -ERANGE;
+@@ -1682,8 +1690,7 @@ static int omap_sw_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				 struct mtd_oob_region *oobregion)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	int off = chip->options & NAND_BUSWIDTH_16 ?
+-		  BADBLOCK_MARKER_LENGTH : 1;
++	int off = BADBLOCK_MARKER_LENGTH;
+ 
+ 	if (section >= chip->ecc.steps)
+ 		return -ERANGE;
+@@ -1702,8 +1709,7 @@ static int omap_sw_ooblayout_free(struct mtd_info *mtd, int section,
+ 				  struct mtd_oob_region *oobregion)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	int off = chip->options & NAND_BUSWIDTH_16 ?
+-		  BADBLOCK_MARKER_LENGTH : 1;
++	int off = BADBLOCK_MARKER_LENGTH;
+ 
+ 	if (section)
+ 		return -ERANGE;
+@@ -1737,7 +1743,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	dma_cap_mask_t			mask;
+ 	unsigned			sig;
+ 	struct resource			*res;
+-	int				min_oobbytes;
++	int				min_oobbytes = BADBLOCK_MARKER_LENGTH;
+ 	int				oobbytes_per_step;
+ 
+ 	pdata = dev_get_platdata(&pdev->dev);
+@@ -1921,6 +1927,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.correct          = omap_correct_data;
+ 		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
+ 		oobbytes_per_step		= nand_chip->ecc.bytes;
++
++		if (nand_chip->options & NAND_BUSWIDTH_16)
++			min_oobbytes		= 1;
+ 		break;
+ 
+ 	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+@@ -2038,10 +2047,8 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* check if NAND device's OOB is enough to store ECC signatures */
+-	min_oobbytes = (oobbytes_per_step *
+-			(mtd->writesize / nand_chip->ecc.size)) +
+-		       (nand_chip->options & NAND_BUSWIDTH_16 ?
+-			BADBLOCK_MARKER_LENGTH : 1);
++	min_oobbytes += (oobbytes_per_step *
++			 (mtd->writesize / nand_chip->ecc.size));
+ 	if (mtd->oobsize < min_oobbytes) {
+ 		dev_err(&info->pdev->dev,
+ 			"not enough OOB bytes required = %d, available=%d\n",
