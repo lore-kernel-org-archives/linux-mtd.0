@@ -1,38 +1,31 @@
-Date: Tue, 19 Apr 2016 14:41:52 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>, Richard
- Weinberger <richard@nod.at>, <linux-mips@linux-mips.org>, Krzysztof
- Kozlowski <k.kozlowski@samsung.com>, Harvey Hunt <harvey.hunt@imgtec.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>, Stefan Agner <stefan@agner.ch>,
- <linux-sunxi@googlegroups.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, punnaiah choudary kalluri
- <punnaia@xilinx.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- <devel@driverdev.osuosl.org>, Archit Taneja <architt@codeaurora.org>,
- <linux-samsung-soc@vger.kernel.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Josh Wu <rainyfeeling@outlook.com>, Chen-Yu Tsai <wens@csie.org>, Kukjin
- Kim <kgene@kernel.org>, <bcm-kernel-feedback-list@broadcom.com>, Ezequiel
- Garcia <ezequiel.garcia@free-electrons.com>, Huang Shijie
- <shijie.huang@arm.com>, Jean-Christophe Plagniol-Villard
- <plagnioj@jcrosoft.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Han Xu
- <b45815@freescale.com>, <linux-arm-kernel@lists.infradead.org>, Priit Laes
- <plaes@plaes.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Wenyou
- Yang <wenyou.yang@atmel.com>, Kyungmin Park <kyungmin.park@samsung.com>,
- <linux-api@vger.kernel.org>, Maxime Ripard
- <maxime.ripard@free-electrons.com>, Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH v5 39/50] mtd: nand: omap2: switch to mtd_ooblayout_ops
-Message-ID: <20160419144152.30a4027d@bbrezillon>
-In-Reply-To: <571624EF.9060707@ti.com>
-References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
- <1459354505-32551-40-git-send-email-boris.brezillon@free-electrons.com>
- <5714F011.5080409@ti.com> <20160418170518.363f732d@bbrezillon>
- <57160862.90603@ti.com> <20160419132206.5d909f7e@bbrezillon>
- <571624EF.9060707@ti.com>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1asV3k-0001wy-Iv
+ for linux-mtd@lists.infradead.org; Tue, 19 Apr 2016 12:47:17 +0000
+Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC NAND
+ on non-OMAP platforms
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
+ <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
+ <20160415120942.3131eac1@bbrezillon> <5710C86A.9060108@ti.com>
+ <20160415135108.63716f06@bbrezillon> <20160415154139.GS5995@atomide.com>
+ <20160415180531.15d790d2@bbrezillon> <20160415161950.GT5995@atomide.com>
+ <20160416105711.5310d2d0@bbrezillon> <5714D3A4.2050405@ti.com>
+ <5714D8AA.9040304@ti.com> <20160418151305.17a42437@bbrezillon>
+ <5714E5AA.5050200@ti.com> <20160418161001.2a1c0bed@bbrezillon>
+ <5714F185.5080103@ti.com> <20160418165755.77d1d661@bbrezillon>
+CC: Tony Lindgren <tony@atomide.com>, <javier@dowhile0.org>, <fcooper@ti.com>,
+ <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-omap@vger.kernel.org>, <computersforpeace@gmail.com>,
+ <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <5716289B.4060302@ti.com>
+Date: Tue, 19 Apr 2016 15:46:19 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20160418165755.77d1d661@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,93 +35,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 19 Apr 2016 15:30:39 +0300
-Roger Quadros <rogerq@ti.com> wrote:
+Boris,
 
-> On 19/04/16 14:22, Boris Brezillon wrote:
-> > Hi Roger,
-> > 
-> > On Tue, 19 Apr 2016 13:28:50 +0300
-> > Roger Quadros <rogerq@ti.com> wrote:
-> > 
-> >>> @@ -1921,6 +1927,9 @@ static int omap_nand_probe(struct platform_device *pdev)
-> >>>  		nand_chip->ecc.correct          = omap_correct_data;
-> >>>  		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
-> >>>  		oobbytes_per_step		= nand_chip->ecc.bytes;
-> >>> +
-> >>> +		if (nand_chip->options & NAND_BUSWIDTH_16)
-> >>> +			min_oobbytes		= 1;
-> >>
-> >> Shouldn't this have been
-> >> 		if (!(nand_chip->options & NAND_BUSWIDTH_16)
-> >> 			min_oobbytes		= 1;
-> >> ?
-> > 
-> > Yep.
-> > 
-> >>
-> >>>  		break;
-> >>>  
-> >>>  	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
-> >>> @@ -2038,10 +2047,8 @@ static int omap_nand_probe(struct platform_device *pdev)
-> >>>  	}
-> >>>  
-> >>>  	/* check if NAND device's OOB is enough to store ECC signatures */
-> >>> -	min_oobbytes = (oobbytes_per_step *
-> >>> -			(mtd->writesize / nand_chip->ecc.size)) +
-> >>> -		       (nand_chip->options & NAND_BUSWIDTH_16 ?
-> >>> -			BADBLOCK_MARKER_LENGTH : 1);
-> >>> +	min_oobbytes += (oobbytes_per_step *
-> >>> +			 (mtd->writesize / nand_chip->ecc.size));
-> >>>  	if (mtd->oobsize < min_oobbytes) {
-> >>>  		dev_err(&info->pdev->dev,
-> >>>  			"not enough OOB bytes required = %d, available=%d\n",
-> >>>
-> >>
-> >> After the above changes BCH with HW ECC worked fine but BCH with SW ECC still failed.
-> >> I had to fix it up with the below patch. This is mainly because chip->ecc.steps wasn't
-> >> yet initialized before calling nand_bch_init().
-> >>
-> >> After the below patch it worked fine with bch4 (hw & sw), bch8 (hw & sw) and ham1.
-> >> I couldn't yet verify bch16 though.
-> > 
+On 18/04/16 17:57, Boris Brezillon wrote:
+> On Mon, 18 Apr 2016 17:39:01 +0300
+> Roger Quadros <rogerq@ti.com> wrote:
 > 
-> I just verified that bch16 works as well.
+>> On 18/04/16 17:10, Boris Brezillon wrote:
+>>> On Mon, 18 Apr 2016 16:48:26 +0300
+>>> Roger Quadros <rogerq@ti.com> wrote:
+>>>
+>>>> Boris,
+>>>>
+>>>> On 18/04/16 16:13, Boris Brezillon wrote:
+>>>>> Hi Roger,
+>>>>>
+>>>>> On Mon, 18 Apr 2016 15:52:58 +0300
+>>>>> Roger Quadros <rogerq@ti.com> wrote:
+>>>>>
+>>>>>> On 18/04/16 15:31, Roger Quadros wrote:
+>>>>>>> On 16/04/16 11:57, Boris Brezillon wrote:
+>>>>>>>> On Fri, 15 Apr 2016 09:19:51 -0700
+>>>>>>>> Tony Lindgren <tony@atomide.com> wrote:
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>> Or should I just pull this immutable branch in my current nand/next and
+>>>>>>>>>> let you pull the same immutable branch in omap-soc. I mean, would this
+>>>>>>>>>> prevent conflicts when our branches are merged into linux-next, no
+>>>>>>>>>> matter the order.
+>>>>>>>>>
+>>>>>>>>> Ideally just one or more branches with just minimal changes in
+>>>>>>>>> them against -rc1. But you may have other dependencies in
+>>>>>>>>> your NAND tree so that may no longer be doable :) Usually if
+>>>>>>>>> I merge something that may need to get merged into other
+>>>>>>>>> branches, I just apply them into a separate branch against -rc1
+>>>>>>>>> to start with, then merge that branch in.
+>>>>>>>>
+>>>>>>>> Okay, in this case, that's pretty much what I did from the beginning,
+>>>>>>>> except the immutable branch was provided by Roger (based on 4.6-rc1).
+>>>>>>>> Thanks for this detailed explanation, I'll try to remember that when
+>>>>>>>> I'll need to provide an immutable branch for another subsystem.
+>>>>>>>>
+>>>>>>>> Roger, my request remains, could you check/test my conflict resolution
+>>>>>>>> (branch nand/next-with-gpmc-rework)?
+>>>>>>>
+>>>>>>> I couldn't test that branch yet as nand/next is broken on omap platforms
+>>>>>>> (at least on dra7-evm).
+>>>>>>>
+>>>>>>> The commit where it breaks is:
+>>>>>>> a662ef4 mtd: nand: omap2: use mtd_ooblayout_xxx() helpers where appropriate
+>>>>>>>
+>>>>>>> I'm trying to figure out what went wrong there. Failure log below.
+>>>>>>
+>>>>>> OK. I was able to fix it when at commit a662ef4 with the below patch.
+>>>>>
+>>>>> Thanks for debugging that.
+>>>>>
+>>>>>>
+>>>>>> Looks like we need to read exactly the ECC bytes through the ECC engine and not
+>>>>>> the entire OOB region.
+>>>>>
+>>>>> Hm, it looks like there's a bug somewhere else, because I don't see any
+>>>>> reason why the controller wouldn't be able to read the full OOB region.
+>>>>
+>>>> The controller can read the full OOB region but we only want it to read just
+>>>> the ECC bytes because that is the way the ELM ECC engine works.
+>>>
+>>> Ok, I think I got it: the ECC correction is pipelined with data read,
+>>> and the controller expect to have ECC bytes right after the in-band
+>>> data, is that correct?
+>>
+>> That is correct.
+>>
+>>>
+>>>>
+>>>>>>
+>>>>>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>>>>>> index e622a1b..46b61d2 100644
+>>>>>> --- a/drivers/mtd/nand/omap2.c
+>>>>>> +++ b/drivers/mtd/nand/omap2.c
+>>>>>> @@ -1547,8 +1547,8 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
+>>>>>>  	chip->read_buf(mtd, buf, mtd->writesize);
+>>>>>>  
+>>>>>>  	/* Read oob bytes */
+>>>>>> -	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
+>>>>>> -	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+>>>>>> +	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize + chip->ecc.layout->eccpos[0], -1);
+>>>>>
+>>>>> The whole point of this series is to get rid of chip->ecc.layout, so
+>>>>> we'd rather use the mtd_ooblayout_find_eccregion() instead of
+>>>>> chip->ecc.layout->eccpos[0].
+>>>>
+>>>> We just need the position of the first ECC byte offset.
+>>>> Is that the most optimal way to get it?
+>>>
+>>> For the BCH case, it seems that ECC bytes always start at offset
+>>> BADBLOCK_MARKER_LENGTH, so you can just pass
+>>> mtd->writesize + BADBLOCK_MARKER_LENGTH.
+>>>
+>>> Let me know if this works, and I'll squash those changes into the
+>>> faulty commit (I know this implies a rebase + push -f, but IMO that's
+>>> better than breaking bisectability).
+>>>
+>>>
+>>
+>> So, the below patch works as well. Please feel free to fold it with your patch.
 > 
-> > Thanks for the fix, but I'd prefer fixing the bug for all soft BCH
-> > users.
-> > 
-> > Could you try this patch?
+> Will do.
 > 
-> I tried your patch and it worked fine.
-
-Thanks, I'll provide a reworked nand/next branch soon.
-BTW, is there anything to fix in my merge commit (the commit merging
-your GPMC/OMAP changes in nand/next)?
-
-> You will still need the below change to omap2.c
+> Thanks,
 > 
-> --
-> cheers,
-> -roger
-> 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 0abfba6..33c8fde 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1715,7 +1715,7 @@ static int omap_sw_ooblayout_free(struct mtd_info *mtd, int section,
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  	int off = BADBLOCK_MARKER_LENGTH;
->  
-> -	if (section)
-> +	if (section >= chip->ecc.steps)
->  		return -ERANGE;
+> Boris
 
-Sorry but I don't get why we need that one. Don't we have a single
-oobfree section starting at the end of the ECC sections?
+After all the changes we discussed in [1] I was able to test nand/next-with-gpmc-rework
+and it worked fine.
 
+[1] - http://thread.gmane.org/gmane.comp.hardware.netbook.arm.sunxi/22596/focus=22936
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+I'd be happy to test the branch again after you've incorporated all changes.
+
+Since you are gong to do a push -f anyways, I was wondering if you want to pull in my
+gpmc branch first to avoid the merge conflict. But it is totally up to you.
+
+--
+cheers,
+-roger
