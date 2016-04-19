@@ -1,18 +1,43 @@
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1asV5t-00031r-Az
- for linux-mtd@lists.infradead.org; Tue, 19 Apr 2016 12:49:29 +0000
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: kernel-janitors@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, "Luis R . Rodriguez" <mcgrof@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>
-Subject: [PATCH 3/4] mtd: pmc551: add __init attribute
-Date: Tue, 19 Apr 2016 14:33:34 +0200
-Message-Id: <1461069215-22795-4-git-send-email-Julia.Lawall@lip6.fr>
-In-Reply-To: <1461069215-22795-1-git-send-email-Julia.Lawall@lip6.fr>
-References: <1461069215-22795-1-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Re: [PATCH v5 39/50] mtd: nand: omap2: switch to mtd_ooblayout_ops
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1459354505-32551-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1459354505-32551-40-git-send-email-boris.brezillon@free-electrons.com>
+ <5714F011.5080409@ti.com> <20160418170518.363f732d@bbrezillon>
+ <57160862.90603@ti.com> <20160419132206.5d909f7e@bbrezillon>
+ <571624EF.9060707@ti.com> <20160419144152.30a4027d@bbrezillon>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>, Richard
+ Weinberger <richard@nod.at>, <linux-mips@linux-mips.org>,
+ Krzysztof Kozlowski <k.kozlowski@samsung.com>,
+ Harvey Hunt <harvey.hunt@imgtec.com>, Nicolas
+ Ferre <nicolas.ferre@atmel.com>,
+ Stefan Agner <stefan@agner.ch>, <linux-sunxi@googlegroups.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ punnaiah choudary kalluri <punnaia@xilinx.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, <devel@driverdev.osuosl.org>,
+ Archit Taneja <architt@codeaurora.org>,
+ <linux-samsung-soc@vger.kernel.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Chen-Yu Tsai <wens@csie.org>,
+ Kukjin Kim <kgene@kernel.org>, <bcm-kernel-feedback-list@broadcom.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Huang Shijie <shijie.huang@arm.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>,
+ Han Xu <b45815@freescale.com>, <linux-arm-kernel@lists.infradead.org>,
+ Priit Laes <plaes@plaes.org>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>,
+ <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>,
+ Wenyou Yang <wenyou.yang@atmel.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>, <linux-api@vger.kernel.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>, Daniel Mack
+ <daniel@zonque.org>
+From: Roger Quadros <rogerq@ti.com>
+Message-ID: <57162966.9080205@ti.com>
+Date: Tue, 19 Apr 2016 15:49:42 +0300
+MIME-Version: 1.0
+In-Reply-To: <20160419144152.30a4027d@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +47,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add __init attribute on a function that is only called from other __init
-functions and that is not inlined, at least with gcc version 4.8.4 on an
-x86 machine with allyesconfig.  Currently, the function is put in the
-.text.unlikely segment.  Declaring it as __init will cause it to be put in
-the .init.text and to disappear after initialization.
+On 19/04/16 15:41, Boris Brezillon wrote:
+> On Tue, 19 Apr 2016 15:30:39 +0300
+> Roger Quadros <rogerq@ti.com> wrote:
+> 
+>> On 19/04/16 14:22, Boris Brezillon wrote:
+>>> Hi Roger,
+>>>
+>>> On Tue, 19 Apr 2016 13:28:50 +0300
+>>> Roger Quadros <rogerq@ti.com> wrote:
+>>>
+>>>>> @@ -1921,6 +1927,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+>>>>>  		nand_chip->ecc.correct          = omap_correct_data;
+>>>>>  		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
+>>>>>  		oobbytes_per_step		= nand_chip->ecc.bytes;
+>>>>> +
+>>>>> +		if (nand_chip->options & NAND_BUSWIDTH_16)
+>>>>> +			min_oobbytes		= 1;
+>>>>
+>>>> Shouldn't this have been
+>>>> 		if (!(nand_chip->options & NAND_BUSWIDTH_16)
+>>>> 			min_oobbytes		= 1;
+>>>> ?
+>>>
+>>> Yep.
+>>>
+>>>>
+>>>>>  		break;
+>>>>>  
+>>>>>  	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+>>>>> @@ -2038,10 +2047,8 @@ static int omap_nand_probe(struct platform_device *pdev)
+>>>>>  	}
+>>>>>  
+>>>>>  	/* check if NAND device's OOB is enough to store ECC signatures */
+>>>>> -	min_oobbytes = (oobbytes_per_step *
+>>>>> -			(mtd->writesize / nand_chip->ecc.size)) +
+>>>>> -		       (nand_chip->options & NAND_BUSWIDTH_16 ?
+>>>>> -			BADBLOCK_MARKER_LENGTH : 1);
+>>>>> +	min_oobbytes += (oobbytes_per_step *
+>>>>> +			 (mtd->writesize / nand_chip->ecc.size));
+>>>>>  	if (mtd->oobsize < min_oobbytes) {
+>>>>>  		dev_err(&info->pdev->dev,
+>>>>>  			"not enough OOB bytes required = %d, available=%d\n",
+>>>>>
+>>>>
+>>>> After the above changes BCH with HW ECC worked fine but BCH with SW ECC still failed.
+>>>> I had to fix it up with the below patch. This is mainly because chip->ecc.steps wasn't
+>>>> yet initialized before calling nand_bch_init().
+>>>>
+>>>> After the below patch it worked fine with bch4 (hw & sw), bch8 (hw & sw) and ham1.
+>>>> I couldn't yet verify bch16 though.
+>>>
+>>
+>> I just verified that bch16 works as well.
+>>
+>>> Thanks for the fix, but I'd prefer fixing the bug for all soft BCH
+>>> users.
+>>>
+>>> Could you try this patch?
+>>
+>> I tried your patch and it worked fine.
+> 
+> Thanks, I'll provide a reworked nand/next branch soon.
+> BTW, is there anything to fix in my merge commit (the commit merging
+> your GPMC/OMAP changes in nand/next)?
+> 
 
-The result of objdump -x on the function before the change is as follows:
+I just replied in the other thread that the conflict resolution is fine.
 
-00000000000000c6 l     F .text.unlikely 000000000000091c fixup_pmc551
+>> You will still need the below change to omap2.c
+>>
+>> --
+>> cheers,
+>> -roger
+>>
+>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>> index 0abfba6..33c8fde 100644
+>> --- a/drivers/mtd/nand/omap2.c
+>> +++ b/drivers/mtd/nand/omap2.c
+>> @@ -1715,7 +1715,7 @@ static int omap_sw_ooblayout_free(struct mtd_info *mtd, int section,
+>>  	struct nand_chip *chip = mtd_to_nand(mtd);
+>>  	int off = BADBLOCK_MARKER_LENGTH;
+>>  
+>> -	if (section)
+>> +	if (section >= chip->ecc.steps)
+>>  		return -ERANGE;
+> 
+> Sorry but I don't get why we need that one. Don't we have a single
+> oobfree section starting at the end of the ECC sections?
+> 
+> 
+You are right. Nothing needs to be changed there then. Thanks :)
 
-And after the change it is as follows:
-
-0000000000000000 l     F .init.text	0000000000000917 fixup_pmc551
-
-Done with the help of Coccinelle.  The semantic patch checks for local
-static non-init functions that are called from an __init function and are
-not called from any other function.
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
----
- drivers/mtd/devices/pmc551.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
-index 708b7e8..220f920 100644
---- a/drivers/mtd/devices/pmc551.c
-+++ b/drivers/mtd/devices/pmc551.c
-@@ -353,7 +353,7 @@ static int pmc551_write(struct mtd_info *mtd, loff_t to, size_t len,
-  * mechanism
-  * returns the size of the memory region found.
-  */
--static int fixup_pmc551(struct pci_dev *dev)
-+static int __init fixup_pmc551(struct pci_dev *dev)
- {
- #ifdef CONFIG_MTD_PMC551_BUGFIX
- 	u32 dram_data;
+cheers,
+-roger
