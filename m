@@ -1,31 +1,21 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1asnyg-00007y-Qk
- for linux-mtd@lists.infradead.org; Wed, 20 Apr 2016 08:59:20 +0000
-Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1460023715-19332-1-git-send-email-rogerq@ti.com>
- <20160413212500.GD5995@atomide.com> <5710B58C.7050108@ti.com>
- <20160415120942.3131eac1@bbrezillon> <5710C86A.9060108@ti.com>
- <20160415135108.63716f06@bbrezillon> <20160415154139.GS5995@atomide.com>
- <20160415180531.15d790d2@bbrezillon> <20160415161950.GT5995@atomide.com>
- <20160416105711.5310d2d0@bbrezillon> <5714D3A4.2050405@ti.com>
- <5714D8AA.9040304@ti.com> <20160418151305.17a42437@bbrezillon>
- <5714E5AA.5050200@ti.com> <20160418161001.2a1c0bed@bbrezillon>
- <5714F185.5080103@ti.com> <20160418165755.77d1d661@bbrezillon>
- <5716289B.4060302@ti.com> <20160419221129.59b559fb@bbrezillon>
-CC: Tony Lindgren <tony@atomide.com>, <javier@dowhile0.org>, <fcooper@ti.com>,
- <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-omap@vger.kernel.org>, <computersforpeace@gmail.com>,
- <dwmw2@infradead.org>, <ezequiel@vanguardiasur.com.ar>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From: Roger Quadros <rogerq@ti.com>
-Message-ID: <571744AF.5030008@ti.com>
-Date: Wed, 20 Apr 2016 11:58:23 +0300
+ id 1asqM3-00033r-2q
+ for linux-mtd@lists.infradead.org; Wed, 20 Apr 2016 11:31:35 +0000
+Received: by mail-wm0-x236.google.com with SMTP id u206so76223485wme.1
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2016 04:31:14 -0700 (PDT)
+Subject: Re: [PATCH] makedev(3): point people at sys/sysmacros.h
+To: Mike Frysinger <vapier@gentoo.org>
+References: <20160418164908.GR5369@vapier.lan>
+ <1461045163-21248-1-git-send-email-vapier@gentoo.org>
+Cc: mtk.manpages@gmail.com, linux-mtd@lists.infradead.org,
+ libc-alpha@sourceware.org, linux-man@vger.kernel.org
+From: "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <5717687D.2060300@gmail.com>
+Date: Wed, 20 Apr 2016 12:31:09 +0100
 MIME-Version: 1.0
-In-Reply-To: <20160419221129.59b559fb@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"
+In-Reply-To: <1461045163-21248-1-git-send-email-vapier@gentoo.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,24 +26,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 19/04/16 23:11, Boris Brezillon wrote:
-> On Tue, 19 Apr 2016 15:46:19 +0300
-> Roger Quadros <rogerq@ti.com> wrote:
+
+Hi Mike,
+
+I don't object to the patch, but...
+
+On 04/19/2016 06:52 AM, Mike Frysinger wrote:
+> Defining these functions via sys/types.h violates POSIX namespace
+> requirements, 
+
+What do the previous lines mean? Violate namespace requirements how?
+
+Cheers,
+
+Michael
+
+
+> so we want to disentangle it from that header.  Since
+> glibc has basically always used this header, update the docs to have
+> people include that instead.
+>
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+>  man3/makedev.3 | 16 ++++------------
+>  1 file changed, 4 insertions(+), 12 deletions(-)
 > 
->>
->> After all the changes we discussed in [1] I was able to test nand/next-with-gpmc-rework
->> and it worked fine.
->>
->> [1] - http://thread.gmane.org/gmane.comp.hardware.netbook.arm.sunxi/22596/focus=22936
->>
->> I'd be happy to test the branch again after you've incorporated all changes.
-> 
-> Just pushed what's supposed to be my new nand/next into
-> nand/next-with-gpmc-rework, can you test it? I'll push it to nand/next
-> once I have your confirmation that everything is good.
+> diff --git a/man3/makedev.3 b/man3/makedev.3
+> index f91f4b5..3d26d15 100644
+> --- a/man3/makedev.3
+> +++ b/man3/makedev.3
+> @@ -28,23 +28,13 @@
+>  makedev, major, minor \- manage a device number
+>  .SH SYNOPSIS
+>  .nf
+> -.B #include <sys/types.h>
+> +.B #include <sys/sysmacros.h>
+>  
+>  .BI "dev_t makedev(unsigned int " maj ", unsigned int " min );
+>  
+>  .BI "unsigned int major(dev_t " dev );
+>  .BI "unsigned int minor(dev_t " dev );
+>  .fi
+> -.sp
+> -.BR makedev (),
+> -.BR major (),
+> -.BR minor ():
+> -.nf
+> -    Since glibc 2.19:
+> -        _DEFAULT_SOURCE
+> -    In glibc up to and including 2.19:
+> -        _BSD_SOURCE
+> -.fi
+>  .SH DESCRIPTION
+>  A device ID consists of two parts:
+>  a major ID, identifying the class of the device,
+> @@ -90,7 +80,9 @@ and
+>  .BR minor ()
+>  functions are not specified in POSIX.1,
+>  but are present on many other systems.
+> -.\" The BSDs, HP-UX, Solaris, AIX, Irix
+> +.\" The BSDs, HP-UX, Solaris, AIX, Irix.
+> +.\" The header location is inconsistent:
+> +.\" Could be sys/mkdev.h, sys/sysmacros.h, or sys/types.h.
+>  .SH NOTES
+>  These interfaces are defined as macros.
+>  Since glibc 2.3.3,
 > 
 
-Tested this on dra7-evm, am437x-gp-evm and omap3-beagle and all seems good. Thanks :).
 
-cheers,
--roger
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
