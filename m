@@ -1,27 +1,19 @@
-Received: from muru.com ([72.249.23.125])
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1astON-00072C-Mz
- for linux-mtd@lists.infradead.org; Wed, 20 Apr 2016 14:46:13 +0000
-Date: Wed, 20 Apr 2016 07:45:45 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Roger Quadros <rogerq@ti.com>, javier@dowhile0.org, fcooper@ti.com,
- nsekhar@ti.com, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, ezequiel@vanguardiasur.com.ar,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/17] memory: omap-gpmc: mtd: nand: Support GPMC NAND
- on non-OMAP platforms
-Message-ID: <20160420144545.GE5995@atomide.com>
-References: <20160416105711.5310d2d0@bbrezillon> <5714D3A4.2050405@ti.com>
- <5714D8AA.9040304@ti.com> <20160418151305.17a42437@bbrezillon>
- <5714E5AA.5050200@ti.com> <20160418161001.2a1c0bed@bbrezillon>
- <5714F185.5080103@ti.com> <20160418165755.77d1d661@bbrezillon>
- <5716289B.4060302@ti.com> <20160419221129.59b559fb@bbrezillon>
+ id 1asuJL-00019o-4p
+ for linux-mtd@lists.infradead.org; Wed, 20 Apr 2016 15:45:03 +0000
+Date: Wed, 20 Apr 2016 17:44:40 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Maarten ter Huurne <maarten@treewalker.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: jz4740: Remove unused local variable
+Message-ID: <20160420174440.46f8ed48@bbrezillon>
+In-Reply-To: <1460995496-11666-1-git-send-email-maarten@treewalker.org>
+References: <1460995496-11666-1-git-send-email-maarten@treewalker.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160419221129.59b559fb@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,25 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Boris Brezillon <boris.brezillon@free-electrons.com> [160419 13:13]:
-> On Tue, 19 Apr 2016 15:46:19 +0300
-> Roger Quadros <rogerq@ti.com> wrote:
-> 
-> > 
-> > After all the changes we discussed in [1] I was able to test nand/next-with-gpmc-rework
-> > and it worked fine.
-> > 
-> > [1] - http://thread.gmane.org/gmane.comp.hardware.netbook.arm.sunxi/22596/focus=22936
-> > 
-> > I'd be happy to test the branch again after you've incorporated all changes.
-> 
-> Just pushed what's supposed to be my new nand/next into
-> nand/next-with-gpmc-rework, can you test it? I'll push it to nand/next
-> once I have your confirmation that everything is good.
+On Mon, 18 Apr 2016 18:04:56 +0200
+Maarten ter Huurne <maarten@treewalker.org> wrote:
 
-Looks good to me too, merges fine with my for-next and still
-works for me.
+> Signed-off-by: Maarten ter Huurne <maarten@treewalker.org>
+
+Applied.
 
 Thanks,
 
-Tony
+Boris
+
+> ---
+>  drivers/mtd/nand/jz4740_nand.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
+> index 673ceb2..2f39ee1 100644
+> --- a/drivers/mtd/nand/jz4740_nand.c
+> +++ b/drivers/mtd/nand/jz4740_nand.c
+> @@ -221,7 +221,6 @@ static int jz_nand_correct_ecc_rs(struct mtd_info *mtd, uint8_t *dat,
+>  	struct jz_nand *nand = mtd_to_jz_nand(mtd);
+>  	int i, error_count, index;
+>  	uint32_t reg, status, error;
+> -	uint32_t t;
+>  	unsigned int timeout = 1000;
+>  
+>  	for (i = 0; i < 9; ++i)
+
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
