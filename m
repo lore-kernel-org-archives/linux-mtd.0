@@ -1,19 +1,21 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1asuJL-00019o-4p
- for linux-mtd@lists.infradead.org; Wed, 20 Apr 2016 15:45:03 +0000
-Date: Wed, 20 Apr 2016 17:44:40 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Maarten ter Huurne <maarten@treewalker.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: jz4740: Remove unused local variable
-Message-ID: <20160420174440.46f8ed48@bbrezillon>
-In-Reply-To: <1460995496-11666-1-git-send-email-maarten@treewalker.org>
-References: <1460995496-11666-1-git-send-email-maarten@treewalker.org>
+From: Han Xu <han.xu@nxp.com>
+To: Yunhui Cui <B56489@freescale.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>, "Yunhui
+ Cui" <yunhui.cui@nxp.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [PATCH 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
+Date: Wed, 20 Apr 2016 22:34:27 +0000
+Message-ID: <DB5PR0401MB184503776038D76AD91B1779976D0@DB5PR0401MB1845.eurprd04.prod.outlook.com>
+References: <1460605855-6689-1-git-send-email-B56489@freescale.com>,
+ <1460605855-6689-7-git-send-email-B56489@freescale.com>
+In-Reply-To: <1460605855-6689-7-git-send-email-B56489@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +25,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 18 Apr 2016 18:04:56 +0200
-Maarten ter Huurne <maarten@treewalker.org> wrote:
-
-> Signed-off-by: Maarten ter Huurne <maarten@treewalker.org>
-
-Applied.
-
-Thanks,
-
-Boris
-
-> ---
->  drivers/mtd/nand/jz4740_nand.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
-> index 673ceb2..2f39ee1 100644
-> --- a/drivers/mtd/nand/jz4740_nand.c
-> +++ b/drivers/mtd/nand/jz4740_nand.c
-> @@ -221,7 +221,6 @@ static int jz_nand_correct_ecc_rs(struct mtd_info *mtd, uint8_t *dat,
->  	struct jz_nand *nand = mtd_to_jz_nand(mtd);
->  	int i, error_count, index;
->  	uint32_t reg, status, error;
-> -	uint32_t t;
->  	unsigned int timeout = 1000;
->  
->  	for (i = 0; i < 9; ++i)
 
 
+________________________________________
+From: Yunhui Cui <B56489@freescale.com>
+Sent: Wednesday, April 13, 2016 9:50 PM
+To: dwmw2@infradead.org; computersforpeace@gmail.com; han.xu@freescale.com
+Cc: linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-=
+kernel@lists.infradead.org; Yao Yuan; Yunhui Cui
+Subject: [PATCH 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+From: Yunhui Cui <yunhui.cui@nxp.com>
+
+With the physical sectors combination, S25FS-S family flash
+requires some special operations for read/write functions.
+
+Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 59 +++++++++++++++++++++++++++++++++++++++=
+++++
+ 1 file changed, 59 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 157841d..91ee920 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -39,6 +39,10 @@
+
+ #define SPI_NOR_MAX_ID_LEN     6
+ #define SPI_NOR_MAX_ADDR_WIDTH 4
++/* Added for S25FS-S family flash */
++#define SPINOR_CONFIG_REG3_OFFSET      0x800004
++#define CR3V_4KB_ERASE_UNABLE  0x8
++#define SPINOR_S25FS_FAMILY_ID 0x81
+
+ struct flash_info {
+        char            *name;
+@@ -78,6 +82,7 @@ struct flash_info {
+ };
+
+ #define JEDEC_MFR(info)        ((info)->id[0])
++#define EXT_ID(info)   ((info)->id[5])
+
+ static const struct flash_info *spi_nor_match_id(const char *name);
+
+@@ -881,6 +886,7 @@ static const struct flash_info spi_nor_ids[] =3D {
+         */
+        { "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUA=
+L_READ | SPI_NOR_QUAD_READ) },
+        { "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUA=
+L_READ | SPI_NOR_QUAD_READ) },
++       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512, 0)},
+        { "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
+        { "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUA=
+L_READ | SPI_NOR_QUAD_READ) },
+        { "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUA=
+L_READ | SPI_NOR_QUAD_READ) },
+@@ -1018,6 +1024,53 @@ static const struct flash_info *spi_nor_read_id(stru=
+ct spi_nor *nor)
+        return ERR_PTR(-ENODEV);
+ }
+
++/*
++ * The S25FS-S family physical sectors may be configured as a
++ * hybrid combination of eight 4-kB parameter sectors
++ * at the top or bottom of the address space with all
++ * but one of the remaining sectors being uniform size.
++ * The Parameter Sector Erase commands (20h or 21h) must
++ * be used to erase the 4-kB parameter sectors individually.
++ * The Sector (uniform sector) Erase commands (D8h or DCh)
++ * must be used to erase any of the remaining
++ * sectors, including the portion of highest or lowest address
++ * sector that is not overlaid by the parameter sectors.
++ * The uniform sector erase command has no effect on parameter sectors.
++ */
++static int spansion_s25fs_disable_4kb_erase(struct spi_nor *nor)
++{
++       struct fsl_qspi *q;
++       u32 cr3v_addr  =3D SPINOR_CONFIG_REG3_OFFSET;
++       u8 cr3v =3D 0x0;
++       int ret =3D 0x0;
++
++       q =3D nor->priv;
++
++       nor->cmd_buf[2] =3D cr3v_addr >> 16;
++       nor->cmd_buf[1] =3D cr3v_addr >> 8;
++       nor->cmd_buf[0] =3D cr3v_addr >> 0;
+
+I feel it's hacking code.
+
+Hi Brian, do we have any plan to support this special case? The RDAR(
+Read Any Register) needs an extra address parameter.
+
++
++       ret =3D nor->read_reg(nor, SPINOR_OP_SPANSION_RDAR, &cr3v, 1);
++       if (ret)
++               return ret;
++       if (cr3v & CR3V_4KB_ERASE_UNABLE)
++               return 0;
++       ret =3D nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
++       if (ret)
++               return ret;
++       cr3v =3D CR3V_4KB_ERASE_UNABLE;
++       nor->program_opcode =3D SPINOR_OP_SPANSION_WRAR;
++       nor->write(nor, cr3v_addr, 1, NULL, &cr3v);
++
++       ret =3D nor->read_reg(nor, SPINOR_OP_SPANSION_RDAR, &cr3v, 1);
++       if (ret)
++               return ret;
++       if (!(cr3v & CR3V_4KB_ERASE_UNABLE))
++               return -EPERM;
++
++       return 0;
++}
++
+ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+                        size_t *retlen, u_char *buf)
+ {
+@@ -1311,6 +1364,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *na=
+me, enum read_mode mode)
+                spi_nor_wait_till_ready(nor);
+        }
+
++       if (EXT_ID(info) =3D=3D SPINOR_S25FS_FAMILY_ID) {
++               ret =3D spansion_s25fs_disable_4kb_erase(nor);
++               if (ret)
++                       return ret;
++       }
++
+        if (!mtd->name)
+                mtd->name =3D dev_name(dev);
+        mtd->priv =3D nor;
+--
+2.1.0.27.g96db324
