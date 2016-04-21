@@ -1,20 +1,22 @@
-Received: from relay1.mentorg.com ([192.94.38.131])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1atFge-00058q-L9
- for linux-mtd@lists.infradead.org; Thu, 21 Apr 2016 14:34:33 +0000
-Received: from nat-ies.mentorg.com ([192.94.31.2]
- helo=SVR-IES-FEM-02.mgc.mentorg.com)
- by relay1.mentorg.com with esmtp
- id 1atFgI-00019s-Ou from Marian_Rotariu@mentor.com
- for linux-mtd@lists.infradead.org; Thu, 21 Apr 2016 07:34:10 -0700
-From: "Rotariu, Marian" <Marian_Rotariu@mentor.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [RFC] mtd-utils: add support for erase regions
-Date: Thu, 21 Apr 2016 14:34:09 +0000
-Message-ID: <B0B1E520541A1D4A94F18E49CE1ED63F084CA2DD@EU-MBX-01.mgc.mentorg.com>
+From: Han Xu <han.xu@nxp.com>
+To: Yunhui Cui <yunhui.cui@nxp.com>, Yunhui Cui <B56489@freescale.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>
+Subject: Re: [PATCH 8/9] mtd: fsl-quadspi: disable AHB buffer prefetch
+Date: Thu, 21 Apr 2016 15:47:56 +0000
+Message-ID: <DB5PR0401MB184588E6C33FD167783C1D57976E0@DB5PR0401MB1845.eurprd04.prod.outlook.com>
+References: <1460605855-6689-1-git-send-email-B56489@freescale.com>,
+ <1460605855-6689-9-git-send-email-B56489@freescale.com>
+ <DB5PR0401MB18454AF685ADE37F1C39C088976D0@DB5PR0401MB1845.eurprd04.prod.outlook.com>,
+ <DB5PR0401MB1912F866F920C71BF1A26F29946E0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+In-Reply-To: <DB5PR0401MB1912F866F920C71BF1A26F29946E0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,20 +27,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gYWxsLAoKRm9yIHRoZSBtb21lbnQsIG10ZC11dGlscyBkb2VzIG5vdCB0YWtlIGludG8g
-Y29uc2lkZXJhdGlvbiBlcmFzZQpyZWdpb25zLCBhbHJlYWR5IHVzZWQgaW4gc29tZSBtdGQga2Vy
-bmVsIGRyaXZlcnMuIFRoZSBvbmx5IHB1cnBvc2UgZm9yCnRoZSBpb2N0bChNRU1HRVRSRUdJT05J
-TkZPKSBpcyBmb3IgZGVidWdnaW5nIG9yIGZvciBkdW1waW5nIG10ZCBpbmZvLgoKSW4gb25lIG9m
-IHRoZSBTb0MgdGhhdCBJIHVzZSwgdGhlcmUgaXMgYSBmbGFzaCB3aXRoIG11bHRpcGxlIHNlY3Rv
-cgpzaXplcyAoNEtCLzY0S0IpIGFuZCBJIG1hcHBlZCBtdWx0aXBsZSBjb25maWcgZGF0YSBpbiB0
-aGUgYXJlYSB3aXRoIDRLQgpzaXplcyBmb3IgZmluZXIgZ3JhbnVsYXJpdHkuIFVuZm9ydHVuYXRl
-bHksIEkgY2Fubm90IHVzZSBmbGFzaF9lcmFzZSBvcgphbnkgb3RoZXIgbXRkLXV0aWxzIHRvb2wg
-dG8gZXJhc2UgNEstc2VjdG9ycyB3aGVyZSB0aGUgZGF0YSByZXNpZGVzCmJlY2F1c2UgdGhlIG10
-ZCBlcmFzZXNpemUgaXMgNjRLQiAodGhlICJtYWpvciIvZGVmYXVsdCBlcmFzZSBzaXplIGZvcgp0
-aGUgZGV2aWNlKS4gVGhlcmVmb3JlLCBldmVyeSB0aW1lIEkgd2FudCB0byBjaGFuZ2Ugc29tZXRo
-aW5nIHNtYWxsIEkKaGF2ZSB0byBkZWxldGUgYW4gZW50aXJlIDY0S0Igc3BhY2UgYW5kIHJld3Jp
-dGUgdGhlIG5lY2Vzc2FyeSBzZWN0b3JzLiAKCkkgY3JlYXRlZCBzb21lIHBhdGNoZXMgdGhhdCBh
-ZGQgc3VwcG9ydCBmb3IgZXJhc2UgcmVnaW9ucyBpbiBtdGQtdXRpbHMKYW5kIEkgdGhvdWdodCBv
-ZiBzaGFyaW5nIHRoZW0gaGVyZS4gQXJlIHRoZXNlIG1vZGlmaWNhdGlvbnMgb2YgaW50ZXJlc3QK
-Zm9yIHRoZSB1cHN0cmVhbSBtdGQtdXRpbHM/CgpCZXN0IFJlZ2FyZHMsCk1hcmlhbiBSb3Rhcml1
-Cg==
+
+
+________________________________________
+From: Yunhui Cui
+Sent: Thursday, April 21, 2016 3:41 AM
+To: Han Xu; Yunhui Cui; dwmw2@infradead.org; computersforpeace@gmail.com; h=
+an.xu@freescale.com
+Cc: linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-=
+kernel@lists.infradead.org; Yao Yuan
+Subject: RE: [PATCH 8/9] mtd: fsl-quadspi: disable AHB buffer prefetch
+
+On Thu, Apr 24, 2016 at 06:37:01 AM +0800, Han Xu wrote:
+> ________________________________________
+> From: Yunhui Cui <B56489@freescale.com>
+> Sent: Wednesday, April 13, 2016 9:50 PM
+> To: dwmw2@infradead.org; computersforpeace@gmail.com;
+> han.xu@freescale.com
+> Cc: linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org; linux-
+> arm-kernel@lists.infradead.org; Yao Yuan; Yunhui Cui
+> Subject: [PATCH 8/9] mtd: fsl-quadspi: disable AHB buffer prefetch
+>
+> From: Yunhui Cui <yunhui.cui@nxp.com>
+>
+> A-009282: QuadSPI: QuadSPI data pre-fetch can result in incorrect data
+> Affects: QuadSPI
+> Description: With AHB buffer prefetch enabled, the QuadSPI may return
+> incorrect data on the AHB interface. The buffer pre-fetch is enabled if
+> the fetch size as configured either in the LUT or in the BUFxCR register
+> is greater than 8 bytes.
+> Impact: Only 64 bit read allowed.
+> Workaround: Keep the read data size to 64 bits (8 Bytes), which disables
+> the prefetch on the AHB buffer, and prevents this issue from occurring.
+>
+> Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
+> ---
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 29 +++++++++++++++++++++++------
+>  1 file changed, 23 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-
+> quadspi.c
+> index fea18b6..d9f3e50 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -752,19 +752,36 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi
+> *q)  {
+>         void __iomem *base =3D q->iobase;
+>         int seqid;
+> +       const struct fsl_qspi_devtype_data *devtype_data =3D
+> + q->devtype_data;
+>
+>         /* AHB configuration for access buffer 0/1/2 .*/
+>         qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base +
+> QUADSPI_BUF0CR);
+>         qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base +
+> QUADSPI_BUF1CR);
+>         qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base +
+> QUADSPI_BUF2CR);
+> +
+>         /*
+> -        * Set ADATSZ with the maximum AHB buffer size to improve the
+> -        * read performance.
+> +        * Errata: A-009282: QuadSPI data prefetch may result in
+> incorrect data
+> +        * Workaround: Keep the read data size to 64 bits (8 bytes).
+> +        * This disables the prefetch on the AHB buffer and
+> +        * prevents this issue from occurring.
+>          */
+> -       qspi_writel(q, QUADSPI_BUF3CR_ALLMST_MASK |
+> -                       ((q->devtype_data->ahb_buf_size / 8)
+> -                       << QUADSPI_BUF3CR_ADATSZ_SHIFT),
+> -                       base + QUADSPI_BUF3CR);
+> +       if (devtype_data->devtype =3D=3D FSL_QUADSPI_LS2080A ||
+> +           devtype_data->devtype =3D=3D FSL_QUADSPI_LS1021A) {
+>
+> Use QUIRK, not SoC name.
+[Yunhui] This is a SoC errata, we need distinguish according to the devtype=
+_data->devtype
+
+It's the same thing and we have already done that before.
+
+/*
+ * TKT253890, Controller needs driver to fill txfifo till 16 byte to
+ * trigger data transfer even though extra data will not transferred.
+ */
+#define QUADSPI_QUIRK_TKT253890         (1 << 2)
+/* Controller cannot wake up from wait mode, TKT245618 */
+#define QUADSPI_QUIRK_TKT245618         (1 << 3)
+
+
+> +
+> +               qspi_writel(q, QUADSPI_BUF3CR_ALLMST_MASK |
+> +                               (1 << QUADSPI_BUF3CR_ADATSZ_SHIFT),
+> +                               base + QUADSPI_BUF3CR);
+> +
+> +       } else {
+> +               /*
+> +                * Set ADATSZ with the maximum AHB buffer size to improve
+> the
+> +                * read performance.
+> +               */
+> +               qspi_writel(q, QUADSPI_BUF3CR_ALLMST_MASK |
+> +                               ((q->devtype_data->ahb_buf_size / 8)
+> +                               << QUADSPI_BUF3CR_ADATSZ_SHIFT),
+> +                               base + QUADSPI_BUF3CR);
+> +       }
+>
+>         /* We only use the buffer3 */
+>         qspi_writel(q, 0, base + QUADSPI_BUF0IND);
+> --
+> 2.1.0.27.g96db324
