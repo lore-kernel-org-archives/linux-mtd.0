@@ -1,22 +1,23 @@
-From: Yunhui Cui <yunhui.cui@nxp.com>
-To: Han Xu <han.xu@nxp.com>, Yunhui Cui <B56489@freescale.com>,
+From: Han Xu <han.xu@nxp.com>
+To: Yunhui Cui <yunhui.cui@nxp.com>, Yunhui Cui <B56489@freescale.com>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "han.xu@freescale.com" <han.xu@freescale.com>
 CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-arm-kernel@lists.infradead.org"
  <linux-arm-kernel@lists.infradead.org>, Yao Yuan <yao.yuan@nxp.com>
-Subject: RE: [PATCH 8/9] mtd: fsl-quadspi: disable AHB buffer prefetch
-Date: Fri, 22 Apr 2016 03:52:14 +0000
-Message-ID: <DB5PR0401MB19129F49CF2709DBB3E9E8E9946F0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+Subject: Re: [PATCH 8/9] mtd: fsl-quadspi: disable AHB buffer prefetch
+Date: Fri, 22 Apr 2016 04:49:05 +0000
+Message-ID: <DB5PR0401MB18454A04DF76E0EEDEF68A49976F0@DB5PR0401MB1845.eurprd04.prod.outlook.com>
 References: <1460605855-6689-1-git-send-email-B56489@freescale.com>,
  <1460605855-6689-9-git-send-email-B56489@freescale.com>
  <DB5PR0401MB18454AF685ADE37F1C39C088976D0@DB5PR0401MB1845.eurprd04.prod.outlook.com>,
  <DB5PR0401MB1912F866F920C71BF1A26F29946E0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
- <DB5PR0401MB184588E6C33FD167783C1D57976E0@DB5PR0401MB1845.eurprd04.prod.outlook.com>
-In-Reply-To: <DB5PR0401MB184588E6C33FD167783C1D57976E0@DB5PR0401MB1845.eurprd04.prod.outlook.com>
+ <DB5PR0401MB184588E6C33FD167783C1D57976E0@DB5PR0401MB1845.eurprd04.prod.outlook.com>,
+ <DB5PR0401MB19129F49CF2709DBB3E9E8E9946F0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
+In-Reply-To: <DB5PR0401MB19129F49CF2709DBB3E9E8E9946F0@DB5PR0401MB1912.eurprd04.prod.outlook.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,6 +31,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 
+________________________________________
+From: Yunhui Cui
+Sent: Thursday, April 21, 2016 9:52 PM
+To: Han Xu; Yunhui Cui; dwmw2@infradead.org; computersforpeace@gmail.com; h=
+an.xu@freescale.com
+Cc: linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-=
+kernel@lists.infradead.org; Yao Yuan
+Subject: RE: [PATCH 8/9] mtd: fsl-quadspi: disable AHB buffer prefetch
+
 > -----Original Message-----
 > From: Han Xu
 > Sent: Thursday, April 21, 2016 11:48 PM
@@ -38,9 +48,9 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 > Cc: linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org; linux-
 > arm-kernel@lists.infradead.org; Yao Yuan
 > Subject: Re: [PATCH 8/9] mtd: fsl-quadspi: disable AHB buffer prefetch
->=20
->=20
->=20
+>
+>
+>
 > ________________________________________
 > From: Yunhui Cui
 > Sent: Thursday, April 21, 2016 3:41 AM
@@ -49,7 +59,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 > Cc: linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org; linux-
 > arm-kernel@lists.infradead.org; Yao Yuan
 > Subject: RE: [PATCH 8/9] mtd: fsl-quadspi: disable AHB buffer prefetch
->=20
+>
 > On Thu, Apr 24, 2016 at 06:37:01 AM +0800, Han Xu wrote:
 > > ________________________________________
 > > From: Yunhui Cui <B56489@freescale.com>
@@ -117,15 +127,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 > > Use QUIRK, not SoC name.
 > [Yunhui] This is a SoC errata, we need distinguish according to the
 > devtype_data->devtype
->=20
+>
 > It's the same thing and we have already done that before.
 
 > [Yunhui] your mean that I should add such as the following code:
-	#define QUADSPI_QUIRK_ERRATA_9282         (1 << 4)
-	static inline int has_errata_num_a009282(struct fsl_qspi *q)
-	{
-        	 return q->devtype_data->driver_data & QUADSPI_QUIRK_ERRATA_9282;
-	}
+        #define QUADSPI_QUIRK_ERRATA_9282         (1 << 4)
+        static inline int has_errata_num_a009282(struct fsl_qspi *q)
+        {
+                 return q->devtype_data->driver_data & QUADSPI_QUIRK_ERRATA=
+_9282;
+        }
+
+I mean QUIRK can be used even for HW limitation, but it's not necessary to
+use ERRATA number as QUIRK name, you can name it with natural language,
+such as QUADSPI_QUIRK_ADASZ_8BYTE_LIMIT, and describe the reason in
+comments.
 
 > /*
 >  * TKT253890, Controller needs driver to fill txfifo till 16 byte to
@@ -134,8 +150,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 > #define QUADSPI_QUIRK_TKT253890         (1 << 2)
 > /* Controller cannot wake up from wait mode, TKT245618 */
 > #define QUADSPI_QUIRK_TKT245618         (1 << 3)
->=20
->=20
+>
+>
 > > +
 > > +               qspi_writel(q, QUADSPI_BUF3CR_ALLMST_MASK |
 > > +                               (1 << QUADSPI_BUF3CR_ADATSZ_SHIFT),
