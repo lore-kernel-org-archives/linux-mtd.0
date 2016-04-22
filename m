@@ -1,16 +1,26 @@
-From: Yunhui Cui <B56489@freescale.com>
-To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <han.xu@freescale.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <yao.yuan@nxp.com>, Yunhui Cui
- <yunhui.cui@nxp.com>
-Subject: [PATCH v2 8/9] mtd: fsl-quadspi: disable AHB buffer prefetch
-Date: Fri, 22 Apr 2016 14:39:51 +0800
-Message-ID: <1461307192-866-8-git-send-email-B56489@freescale.com>
-In-Reply-To: <1461307192-866-1-git-send-email-B56489@freescale.com>
-References: <1461307192-866-1-git-send-email-B56489@freescale.com>
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1atVUL-0008L9-RQ
+ for linux-mtd@lists.infradead.org; Fri, 22 Apr 2016 07:26:54 +0000
+Date: Fri, 22 Apr 2016 09:26:27 +0200
+From: Jesper Nilsson <jesper.nilsson@axis.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org, Mikael Starvik <starvik@axis.com>,
+ Jesper Nilsson <jespern@axis.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "open list:CRIS PORT" <linux-cris-kernel@axis.com>,
+ open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V3 04/11] CRIS v32: nand: set ECC algorithm explicitly
+Message-ID: <20160422072627.GT2555@axis.com>
+References: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
+ <1460926387-9563-1-git-send-email-zajec5@gmail.com>
+ <1460926387-9563-5-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1460926387-9563-5-git-send-email-zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,97 +30,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Yunhui Cui <yunhui.cui@nxp.com>
+On Sun, Apr 17, 2016 at 10:53:00PM +0200, Rafał Miłecki wrote:
+> This is part of process deprecating NAND_ECC_SOFT_BCH (and switching to
+> enum nand_ecc_algo).
+> 
+> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 
-A-009282: QuadSPI: QuadSPI data pre-fetch can result in incorrect data
-Affects: QuadSPI
-Description: With AHB buffer prefetch enabled, the QuadSPI may return
-incorrect data on the AHB
-interface. The buffer pre-fetch is enabled if the fetch size as
-configured either in the LUT or in
-the BUFxCR register is greater than 8 bytes.
-Impact: Only 64 bit read allowed.
-Workaround: Keep the read data size to 64 bits (8 Bytes), which disables
-the prefetch on the AHB buffer,
-and prevents this issue from occurring.
+Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
 
-Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index fea18b6..6a022e7 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -41,6 +41,8 @@
- #define QUADSPI_QUIRK_TKT253890		(1 << 2)
- /* Controller cannot wake up from wait mode, TKT245618 */
- #define QUADSPI_QUIRK_TKT245618         (1 << 3)
-+/*Errata A-009282: disable the AHB buffer prefetch */
-+#define QUADSPI_QUIRK_ADASZ_8BYTE_LIMIT (1 << 4)
- /* QSPI_AMBA_BASE is internally added by SOC design */
- #define QUADSPI_AMBA_BASE_INTERNAL	(0x10000)
- 
-@@ -270,7 +272,7 @@ static struct fsl_qspi_devtype_data ls1021a_data = {
- 	.rxfifo = 128,
- 	.txfifo = 64,
- 	.ahb_buf_size = 1024,
--	.driver_data = 0,
-+	.driver_data = QUADSPI_QUIRK_ADASZ_8BYTE_LIMIT,
- };
- 
- static struct fsl_qspi_devtype_data ls2080a_data = {
-@@ -278,7 +280,8 @@ static struct fsl_qspi_devtype_data ls2080a_data = {
- 	.rxfifo = 128,
- 	.txfifo = 64,
- 	.ahb_buf_size = 1024,
--	.driver_data = QUADSPI_AMBA_BASE_INTERNAL,
-+	.driver_data = QUADSPI_AMBA_BASE_INTERNAL
-+		       | QUADSPI_QUIRK_ADASZ_8BYTE_LIMIT,
- };
- 
- #define FSL_QSPI_MAX_CHIP	4
-@@ -328,6 +331,11 @@ static inline int has_added_amba_base_internal(struct fsl_qspi *q)
- 	return q->devtype_data->driver_data & QUADSPI_AMBA_BASE_INTERNAL;
- }
- 
-+static inline int needs_disable_ahb_prefetch(struct fsl_qspi *q)
-+{
-+	return q->devtype_data->driver_data & QUADSPI_QUIRK_ADASZ_8BYTE_LIMIT;
-+}
-+
- /*
-  * R/W functions for big- or little-endian registers:
-  * The qSPI controller's endian is independent of the CPU core's endian.
-@@ -757,14 +765,21 @@ static void fsl_qspi_init_abh_read(struct fsl_qspi *q)
- 	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF0CR);
- 	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF1CR);
- 	qspi_writel(q, QUADSPI_BUFXCR_INVALID_MSTRID, base + QUADSPI_BUF2CR);
--	/*
--	 * Set ADATSZ with the maximum AHB buffer size to improve the
--	 * read performance.
--	 */
--	qspi_writel(q, QUADSPI_BUF3CR_ALLMST_MASK |
--			((q->devtype_data->ahb_buf_size / 8)
--			<< QUADSPI_BUF3CR_ADATSZ_SHIFT),
-+
-+	if (needs_disable_ahb_prefetch(q)) {
-+		qspi_writel(q, QUADSPI_BUF3CR_ALLMST_MASK |
-+			(1 << QUADSPI_BUF3CR_ADATSZ_SHIFT),
- 			base + QUADSPI_BUF3CR);
-+	} else {
-+		/*
-+		 * Set ADATSZ with the maximum AHB buffer size to improve the
-+		 * read performance.
-+		*/
-+		qspi_writel(q, QUADSPI_BUF3CR_ALLMST_MASK |
-+				((q->devtype_data->ahb_buf_size / 8)
-+				<< QUADSPI_BUF3CR_ADATSZ_SHIFT),
-+				base + QUADSPI_BUF3CR);
-+	}
- 
- 	/* We only use the buffer3 */
- 	qspi_writel(q, 0, base + QUADSPI_BUF0IND);
+/^JN - Jesper Nilsson
 -- 
-2.1.0.27.g96db324
+               Jesper Nilsson -- jesper.nilsson@axis.com
