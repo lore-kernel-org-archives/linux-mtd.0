@@ -1,21 +1,29 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1atX9m-0000Yx-57
- for linux-mtd@lists.infradead.org; Fri, 22 Apr 2016 09:13:47 +0000
-Date: Fri, 22 Apr 2016 11:13:24 +0200
+Date: Fri, 22 Apr 2016 11:14:36 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: kernel-janitors@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, "Luis R . Rodriguez" <mcgrof@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH 4/4] mtd: nandsim: add __init attribute
-Message-ID: <20160422111324.3fa42372@bbrezillon>
-In-Reply-To: <1461069215-22795-5-git-send-email-Julia.Lawall@lip6.fr>
-References: <1461069215-22795-1-git-send-email-Julia.Lawall@lip6.fr>
- <1461069215-22795-5-git-send-email-Julia.Lawall@lip6.fr>
+To: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou
+ Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Kamal
+ Dasu <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Stefan Agner <stefan@agner.ch>
+Cc: linux-omap@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
+ <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
+ <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ bcm-kernel-feedback-list@broadcom.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Maxime
+ Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
+ linux-sunxi@googlegroups.com, Zhou Wang <wangzhou1@hisilicon.com>, Alex
+ Smith <alex.smith@imgtec.com>, Harvey Hunt <harvey.hunt@imgtec.com>
+Subject: Re: [PATCH 00/12] mtd: get rid of of_mtd.{c,h} and of_get_nand_xx()
+Message-ID: <20160422111436.5d698888@bbrezillon>
+In-Reply-To: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,41 +36,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 19 Apr 2016 14:33:35 +0200
-Julia Lawall <Julia.Lawall@lip6.fr> wrote:
+On Fri,  1 Apr 2016 14:54:20 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> Add __init attribute on functions that are only called from other __init
-> functions and that are not inlined, at least with gcc version 4.8.4 on an
-> x86 machine with allyesconfig.  Currently, the functions are put in the
-> .text.unlikely segment.  Declaring them as __init will cause them to be
-> put in the .init.text and to disappear after initialization.
+> Hello,
 > 
-> The result of objdump -x on the functions before the change is as follows:
+> of_mtd.{h,c} are providing the of_get_nand_xxx() helpers to help NAND
+> controller drivers parse some generic NAND DT properties.
+> An infrastructure has recently been added to NAND core to automatically
+> parse those properties when nand_scan_ident() is called, thus removing
+> the need for NAND controller drivers to manually parse them.
 > 
-> 000000000000059a l     F .text.unlikely 0000000000000239 alloc_device
-> 000000000000034e l     F .text.unlikely 000000000000002e get_partition_name
-> 00000000000007d3 l     F .text.unlikely 00000000000005da init_nandsim
-> 
-> And after the change it is as follows:
-> 
-> 0000000000000029 l     F .init.text	0000000000000234 alloc_device
-> 0000000000000000 l     F .init.text	0000000000000029 get_partition_name
-> 000000000000025d l     F .init.text	00000000000005d5 init_nandsim
-> 
-> Done with the help of Coccinelle.  The semantic patch checks for local
-> static non-init functions that are called from an __init function and are
-> not called from any other function.
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-> 
-> ---
->  drivers/mtd/nand/nandsim.c |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> This series modifies drivers still making use of those helpers to rely
+> on NAND core initialization, and get rid of the of_mtd.{c,h} files by
+> moving the of_get_nand_xx() helpers into nand_base.c.
 
-Applied, thanks.
+Applied remaining patches.
 
-Boris
+> 
+> Best Regards,
+> 
+> Boris
+> 
+> Boris Brezillon (12):
+>   mtd: nand: remove unneeded of_mtd.h inclusions
+>   mtd: nand: atmel: rely on generic DT parsing done in nand_scan_ident()
+>   mtd: nand: omap2: rely on generic DT parsing done in nand_scan_ident()
+>   mtd: nand: brcm: rely on generic DT parsing done in nand_scan_ident()
+>   mtd: nand: davinci: rely on generic DT parsing done in
+>     nand_scan_ident()
+>   mtd: nand: gpmi: rely on generic DT parsing done in nand_scan_ident()
+>   mtd: nand: hisi504: rely on generic DT parsing done in
+>     nand_scan_ident()
+>   mtd: nand: lpc32xx: rely on generic DT parsing done in
+>     nand_scan_ident()
+>   mtd: nand: mxc: rely on generic DT parsing done in nand_scan_ident()
+>   mtd: nand: pxa3xx: rely on generic DT parsing done in
+>     nand_scan_ident()
+>   mtd: nand: sh_flctl: rely on generic DT parsing done in
+>     nand_scan_ident()
+>   mtd: nand: move of_get_nand_xxx() helpers into nand_base.c
+> 
+>  drivers/memory/omap-gpmc.c             |   7 --
+>  drivers/mtd/nand/atmel_nand.c          | 133 +++++++++++++++-------------
+>  drivers/mtd/nand/brcmnand/brcmnand.c   |   5 +-
+>  drivers/mtd/nand/davinci_nand.c        |  85 +++++++++---------
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  21 +++--
+>  drivers/mtd/nand/hisi504_nand.c        |  14 +--
+>  drivers/mtd/nand/jz4780_nand.c         |   1 -
+>  drivers/mtd/nand/lpc32xx_mlc.c         |   1 -
+>  drivers/mtd/nand/lpc32xx_slc.c         |  24 ++---
+>  drivers/mtd/nand/mxc_nand.c            |  50 +++++------
+>  drivers/mtd/nand/nand_base.c           |  99 ++++++++++++++++++++-
+>  drivers/mtd/nand/omap2.c               |   9 +-
+>  drivers/mtd/nand/pxa3xx_nand.c         |  28 +++---
+>  drivers/mtd/nand/qcom_nandc.c          |   1 -
+>  drivers/mtd/nand/sh_flctl.c            |  31 +++----
+>  drivers/mtd/nand/sunxi_nand.c          |   1 -
+>  drivers/mtd/nand/vf610_nfc.c           |   1 -
+>  drivers/of/Makefile                    |   1 -
+>  drivers/of/of_mtd.c                    | 155 ---------------------------------
+>  include/linux/of_mtd.h                 |  56 ------------
+>  20 files changed, 291 insertions(+), 432 deletions(-)
+>  delete mode 100644 drivers/of/of_mtd.c
+>  delete mode 100644 include/linux/of_mtd.h
+> 
+
+
+
 -- 
-Boris Brezillon, CTO, Free Electrons
-Embedded Linux, Kernel and Android engineering
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
 http://free-electrons.com
