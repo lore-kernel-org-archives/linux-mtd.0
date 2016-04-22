@@ -1,32 +1,22 @@
-Date: Fri, 22 Apr 2016 11:14:36 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>, Wenyou
- Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Kamal
- Dasu <kdasu.kdev@gmail.com>, Han Xu <han.xu@nxp.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Stefan Agner <stefan@agner.ch>
-Cc: linux-omap@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Gregory CLEMENT
- <gregory.clement@free-electrons.com>, Jason Cooper <jason@lakedaemon.net>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
- <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- bcm-kernel-feedback-list@broadcom.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Maxime
- Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>,
- linux-sunxi@googlegroups.com, Zhou Wang <wangzhou1@hisilicon.com>, Alex
- Smith <alex.smith@imgtec.com>, Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: Re: [PATCH 00/12] mtd: get rid of of_mtd.{c,h} and of_get_nand_xx()
-Message-ID: <20160422111436.5d698888@bbrezillon>
-In-Reply-To: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1459515272-31011-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail-ig0-x22f.google.com ([2607:f8b0:4001:c05::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1atXYv-0003HM-Hc
+ for linux-mtd@lists.infradead.org; Fri, 22 Apr 2016 09:39:46 +0000
+Received: by mail-ig0-x22f.google.com with SMTP id m9so9461279ige.1
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2016 02:39:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20160422111129.4d7bae1e@bbrezillon>
+References: <1460913104-27388-1-git-send-email-zajec5@gmail.com>
+ <1460926387-9563-1-git-send-email-zajec5@gmail.com>
+ <20160422111129.4d7bae1e@bbrezillon>
+Date: Fri, 22 Apr 2016 11:39:24 +0200
+Message-ID: <CACna6ryZK3SynrFpMg0q+9EhcpW6wUScMpPME_LMiWMm5mDKVw@mail.gmail.com>
+Subject: Re: [PATCH V3 00/11] mtd: nand: get rid of NAND_ECC_SOFT_BCH
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,75 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  1 Apr 2016 14:54:20 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On 22 April 2016 at 11:11, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Sun, 17 Apr 2016 22:52:56 +0200
+> Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+>
+>> This patchset completes usage of the new "algo" field and drops unwanted
+>> NAND_ECC_SOFT_BCH.
+>
+> Rebased on top of nand/next and applied all except "mtd: nand: hisi504:
+> set ECC algorithm based on DT info" which is not needed anymore.
 
-> Hello,
-> 
-> of_mtd.{h,c} are providing the of_get_nand_xxx() helpers to help NAND
-> controller drivers parse some generic NAND DT properties.
-> An infrastructure has recently been added to NAND core to automatically
-> parse those properties when nand_scan_ident() is called, thus removing
-> the need for NAND controller drivers to manually parse them.
-> 
-> This series modifies drivers still making use of those helpers to rely
-> on NAND core initialization, and get rid of the of_mtd.{c,h} files by
-> moving the of_get_nand_xx() helpers into nand_base.c.
-
-Applied remaining patches.
-
-> 
-> Best Regards,
-> 
-> Boris
-> 
-> Boris Brezillon (12):
->   mtd: nand: remove unneeded of_mtd.h inclusions
->   mtd: nand: atmel: rely on generic DT parsing done in nand_scan_ident()
->   mtd: nand: omap2: rely on generic DT parsing done in nand_scan_ident()
->   mtd: nand: brcm: rely on generic DT parsing done in nand_scan_ident()
->   mtd: nand: davinci: rely on generic DT parsing done in
->     nand_scan_ident()
->   mtd: nand: gpmi: rely on generic DT parsing done in nand_scan_ident()
->   mtd: nand: hisi504: rely on generic DT parsing done in
->     nand_scan_ident()
->   mtd: nand: lpc32xx: rely on generic DT parsing done in
->     nand_scan_ident()
->   mtd: nand: mxc: rely on generic DT parsing done in nand_scan_ident()
->   mtd: nand: pxa3xx: rely on generic DT parsing done in
->     nand_scan_ident()
->   mtd: nand: sh_flctl: rely on generic DT parsing done in
->     nand_scan_ident()
->   mtd: nand: move of_get_nand_xxx() helpers into nand_base.c
-> 
->  drivers/memory/omap-gpmc.c             |   7 --
->  drivers/mtd/nand/atmel_nand.c          | 133 +++++++++++++++-------------
->  drivers/mtd/nand/brcmnand/brcmnand.c   |   5 +-
->  drivers/mtd/nand/davinci_nand.c        |  85 +++++++++---------
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  21 +++--
->  drivers/mtd/nand/hisi504_nand.c        |  14 +--
->  drivers/mtd/nand/jz4780_nand.c         |   1 -
->  drivers/mtd/nand/lpc32xx_mlc.c         |   1 -
->  drivers/mtd/nand/lpc32xx_slc.c         |  24 ++---
->  drivers/mtd/nand/mxc_nand.c            |  50 +++++------
->  drivers/mtd/nand/nand_base.c           |  99 ++++++++++++++++++++-
->  drivers/mtd/nand/omap2.c               |   9 +-
->  drivers/mtd/nand/pxa3xx_nand.c         |  28 +++---
->  drivers/mtd/nand/qcom_nandc.c          |   1 -
->  drivers/mtd/nand/sh_flctl.c            |  31 +++----
->  drivers/mtd/nand/sunxi_nand.c          |   1 -
->  drivers/mtd/nand/vf610_nfc.c           |   1 -
->  drivers/of/Makefile                    |   1 -
->  drivers/of/of_mtd.c                    | 155 ---------------------------------
->  include/linux/of_mtd.h                 |  56 ------------
->  20 files changed, 291 insertions(+), 432 deletions(-)
->  delete mode 100644 drivers/of/of_mtd.c
->  delete mode 100644 include/linux/of_mtd.h
-> 
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks a lot and sorry for the problem with
+mtd: nand: davinci: set ECC algorithm explicitly
+I can see you fixed it for me, thanks!
