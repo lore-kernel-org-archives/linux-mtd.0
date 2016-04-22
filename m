@@ -1,9 +1,9 @@
-Received: from mail-oi0-x22d.google.com ([2607:f8b0:4003:c06::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1atdBN-0001xV-6T
- for linux-mtd@lists.infradead.org; Fri, 22 Apr 2016 15:39:50 +0000
-Received: by mail-oi0-x22d.google.com with SMTP id k142so120580522oib.1
- for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2016 08:39:33 -0700 (PDT)
+Received: from mail-oi0-x235.google.com ([2607:f8b0:4003:c06::235])
+ by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1atdBS-0003Rq-Q5
+ for linux-mtd@lists.infradead.org; Fri, 22 Apr 2016 15:39:56 +0000
+Received: by mail-oi0-x235.google.com with SMTP id k142so120579841oib.1
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2016 08:39:32 -0700 (PDT)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
  Miklos Szeredi <miklos@szeredi.hu>
@@ -18,9 +18,10 @@ Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
  cgroups@vger.kernel.org, Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH v3 21/21] fuse: Allow user namespace mounts
-Date: Fri, 22 Apr 2016 10:38:38 -0500
-Message-Id: <1461339521-123191-22-git-send-email-seth.forshee@canonical.com>
+Subject: [PATCH v3 20/21] fuse: Restrict allow_other to the superblock's
+ namespace or a descendant
+Date: Fri, 22 Apr 2016 10:38:37 -0500
+Message-Id: <1461339521-123191-21-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1461339521-123191-1-git-send-email-seth.forshee@canonical.com>
 References: <1461339521-123191-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,33 +33,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Unprivileged users are normally restricted from mounting with the
+allow_other option by system policy, but this could be bypassed
+for a mount done with user namespace root permissions. In such
+cases allow_other should not allow users outside the userns
+to access the mount as doing so would give the unprivileged user
+the ability to manipulate processes it would otherwise be unable
+to manipulate. Restrict allow_other to apply to users in the same
+userns used at mount or a descendant of that namespace.
+
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 Acked-by: Miklos Szeredi <mszeredi@redhat.com>
 ---
- fs/fuse/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/fuse/dir.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 0a771145d853..254f1944ee98 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1199,7 +1199,7 @@ static void fuse_kill_sb_anon(struct super_block *sb)
- static struct file_system_type fuse_fs_type = {
- 	.owner		= THIS_MODULE,
- 	.name		= "fuse",
--	.fs_flags	= FS_HAS_SUBTYPE,
-+	.fs_flags	= FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
- 	.mount		= fuse_mount,
- 	.kill_sb	= fuse_kill_sb_anon,
- };
-@@ -1231,7 +1231,7 @@ static struct file_system_type fuseblk_fs_type = {
- 	.name		= "fuseblk",
- 	.mount		= fuse_mount_blk,
- 	.kill_sb	= fuse_kill_sb_blk,
--	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE,
-+	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
- };
- MODULE_ALIAS_FS("fuseblk");
+diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+index ecba75bf6640..1a6c5af49608 100644
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -1015,7 +1015,7 @@ int fuse_allow_current_process(struct fuse_conn *fc)
+ 	const struct cred *cred;
  
+ 	if (fc->flags & FUSE_ALLOW_OTHER)
+-		return 1;
++		return current_in_userns(fc->user_ns);
+ 
+ 	cred = current_cred();
+ 	if (uid_eq(cred->euid, fc->user_id) &&
 -- 
 1.9.1
