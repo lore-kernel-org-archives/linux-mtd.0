@@ -1,29 +1,21 @@
-Received: from mail-oi0-x235.google.com ([2607:f8b0:4003:c06::235])
- by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1atdBS-0003Rq-Q5
- for linux-mtd@lists.infradead.org; Fri, 22 Apr 2016 15:39:56 +0000
-Received: by mail-oi0-x235.google.com with SMTP id k142so120579841oib.1
- for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2016 08:39:32 -0700 (PDT)
-From: Seth Forshee <seth.forshee@canonical.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Miklos Szeredi <miklos@szeredi.hu>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Pavel Tikhomirov <ptikhomirov@virtuozzo.com>, linux-kernel@vger.kernel.org,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- cgroups@vger.kernel.org, Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH v3 20/21] fuse: Restrict allow_other to the superblock's
- namespace or a descendant
-Date: Fri, 22 Apr 2016 10:38:37 -0500
-Message-Id: <1461339521-123191-21-git-send-email-seth.forshee@canonical.com>
-In-Reply-To: <1461339521-123191-1-git-send-email-seth.forshee@canonical.com>
-References: <1461339521-123191-1-git-send-email-seth.forshee@canonical.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1atdKJ-0003Hb-6Y
+ for linux-mtd@lists.infradead.org; Fri, 22 Apr 2016 15:49:04 +0000
+Subject: Re: Pass -EUCLEN to userspace?
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+References: <20160420132516.GC31101@pengutronix.de>
+ <20160422172456.7aaf301c@bbrezillon> <20160422172802.4fa830d1@bbrezillon>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ Daniel Walter <dwalter@sigma-star.at>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <571A47D3.6040602@nod.at>
+Date: Fri, 22 Apr 2016 17:48:35 +0200
+MIME-Version: 1.0
+In-Reply-To: <20160422172802.4fa830d1@bbrezillon>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Unprivileged users are normally restricted from mounting with the
-allow_other option by system policy, but this could be bypassed
-for a mount done with user namespace root permissions. In such
-cases allow_other should not allow users outside the userns
-to access the mount as doing so would give the unprivileged user
-the ability to manipulate processes it would otherwise be unable
-to manipulate. Restrict allow_other to apply to users in the same
-userns used at mount or a descendant of that namespace.
+Sascha, Boris,
 
-Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
-Acked-by: Miklos Szeredi <mszeredi@redhat.com>
----
- fs/fuse/dir.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Am 22.04.2016 um 17:28 schrieb Boris Brezillon:
+>>> I am currently working on a program similar to ubihealthd, just for raw
+>>> mtd pages, not UBI. Basically I want to find out in userspace if my Nand needs
+>>> scrubbing. Is it possible somehow to get this information in userspace?
+>>
+>> Actually we discussed that a year ago with Richard. I told him that we
+>> should put the read/write/erase statistics at the MTD level so that
+>> other MTD users (including userspace programs) could use the same infra
+>> for non-UBI partitions (I need that for the UBOOT and SPL partitions).
+>>
+>> My suggestion was to store those information at the MTD level, and let
+>> UBI implement its own scrubbing layer on top of that, but Richard
+>> decided to go for a simpler approach for its first implementation.
 
-diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-index ecba75bf6640..1a6c5af49608 100644
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -1015,7 +1015,7 @@ int fuse_allow_current_process(struct fuse_conn *fc)
- 	const struct cred *cred;
- 
- 	if (fc->flags & FUSE_ALLOW_OTHER)
--		return 1;
-+		return current_in_userns(fc->user_ns);
- 
- 	cred = current_cred();
- 	if (uid_eq(cred->euid, fc->user_id) &&
--- 
-1.9.1
+Yeah, I did a first implementation on UBI layer as it had everything we need
+and I didn't want to replicate UBI at MTD level.
+Another reason is that we were not sure how sophisticated ubihealthd needs to be.
+
+Sasha, what exactly is your use case and why is the UBI approach not sufficient for you?
+On Linux MTD access should only happen through UBI and UBOOT/SPL partitions stay untouched.
+
+Thanks,
+//richard
