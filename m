@@ -1,19 +1,16 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auolo-0004wN-DN
- for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 22:14:24 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: david.oberhollenzer@sigma-star.at,
-	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 6/8] mtd-utils: Add nand flash bit errors test
-Date: Tue, 26 Apr 2016 00:13:27 +0200
-Message-Id: <1461622409-14970-7-git-send-email-richard@nod.at>
-In-Reply-To: <1461622409-14970-1-git-send-email-richard@nod.at>
-References: <1461622409-14970-1-git-send-email-richard@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: from mout.kundenserver.de ([212.227.126.134])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aupZG-0001ki-AG
+ for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 23:05:27 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] physmap_of: ensure versatile code is reachable
+Date: Tue, 26 Apr 2016 01:04:38 +0200
+Message-Id: <1461625501-2160538-1-git-send-email-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,549 +20,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+With the newly added physmap_of_versatile code, we get a build error
+when physmap_of is in a module, because of_flash_probe_versatile
+is not exported:
 
-Basically a user space port of the mtd speed test kernel module.
-In addition to the module parameters, the utility can resture
-the block contents after test and allows setting the maxium writes
-for the test.
+ERROR: "of_flash_probe_versatile" [drivers/mtd/maps/physmap_of.ko] undefined!
 
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+This adds the export, and changes the Makefile so that the code is
+also put into a loadable module rather than built-in when physmap_of
+itself is a module.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .gitignore               |   1 +
- Makefile                 |   2 +-
- nand-utils/nandbiterrs.c | 497 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 499 insertions(+), 1 deletion(-)
- create mode 100644 nand-utils/nandbiterrs.c
+ drivers/mtd/maps/Makefile               | 4 +++-
+ drivers/mtd/maps/physmap_of_versatile.c | 2 ++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/.gitignore b/.gitignore
-index 6d98b3d..5f948e7 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -43,6 +43,7 @@
- /nand-utils/nandwrite
- /nand-utils/nftl_format
- /nand-utils/nftldump
-+/nand-utils/nandbiterrs
- /misc-utils/recv_image
- /nor-utils/rfddump
- /nor-utils/rfdformat
-diff --git a/Makefile b/Makefile
-index 2a7715d..2813f3a 100644
---- a/Makefile
-+++ b/Makefile
-@@ -29,7 +29,7 @@ UBIFS_BINS = \
- JFFSX_BINS = \
- 	mkfs.jffs2 sumtool jffs2reader jffs2dump
- NAND_BINS = \
--	nanddump nandwrite nandtest nftldump nftl_format
-+	nanddump nandwrite nandtest nftldump nftl_format nandbiterrs
- NOR_BINS = \
- 	rfddump rfdformat
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 188873a..644f7d3 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -18,7 +18,9 @@ obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+ obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
+ obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
+ obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
+-obj-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE) += physmap_of_versatile.o
++ifdef CONFIG_MTD_PHYSMAP_OF_VERSATILE
++obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of_versatile.o
++endif
+ obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+ obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+diff --git a/drivers/mtd/maps/physmap_of_versatile.c b/drivers/mtd/maps/physmap_of_versatile.c
+index fa40539..0f39b2a 100644
+--- a/drivers/mtd/maps/physmap_of_versatile.c
++++ b/drivers/mtd/maps/physmap_of_versatile.c
+@@ -19,6 +19,7 @@
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  * MA 02111-1307 USA
+  */
++#include <linux/export.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+@@ -251,3 +252,4 @@ int of_flash_probe_versatile(struct platform_device *pdev,
  
-diff --git a/nand-utils/nandbiterrs.c b/nand-utils/nandbiterrs.c
-new file mode 100644
-index 0000000..c7424f5
---- /dev/null
-+++ b/nand-utils/nandbiterrs.c
-@@ -0,0 +1,497 @@
-+/*
-+ * Copyright © 2012 NetCommWireless
-+ * Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>
-+ *
-+ * Copyright © 2015 sigma star gmbh
-+ * David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-+ *
-+ * Test for multi-bit error recovery on a NAND page. This mostly tests the
-+ * ECC controller / driver.
-+ *
-+ * There are two test modes:
-+ *
-+ *	0 - artificially inserting bit errors until the ECC fails
-+ *	    This is the default method and fairly quick. It should
-+ *	    be independent of the quality of the FLASH.
-+ *
-+ *	1 - re-writing the same pattern repeatedly until the ECC fails.
-+ *	    This method relies on the physics of NAND FLASH to eventually
-+ *	    generate '0' bits if '1' has been written sufficient times.
-+ *	    Depending on the NAND, the first bit errors will appear after
-+ *	    1000 or more writes and then will usually snowball, reaching the
-+ *	    limits of the ECC quickly.
-+ *
-+ *	    The test stops after 10000 cycles, should your FLASH be
-+ *	    exceptionally good and not generate bit errors before that. Try
-+ *	    a different page in that case.
-+ *
-+ * Please note that neither of these tests will significantly 'use up' any
-+ * FLASH endurance. Only a maximum of two erase operations will be performed.
-+ *
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published by
-+ * the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along with
-+ * this program; see the file COPYING. If not, write to the Free Software
-+ * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-+ */
-+#define PROGRAM_NAME "nandbiterrs"
-+
-+#include <mtd/mtd-user.h>
-+#include <sys/ioctl.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <libmtd.h>
-+#include <stdio.h>
-+#include <fcntl.h>
-+
-+#include "common.h"
-+
-+/* We don't expect more than this many correctable bit errors per page. */
-+#define MAXBITS 512
-+
-+#define KEEP_CONTENTS 0x01
-+#define MODE_INCREMENTAL 0x02
-+#define MODE_OVERWRITE 0x04
-+
-+static int peb = -1, page = -1, max_overwrite = -1, seed = -1;
-+static const char *mtddev;
-+
-+static unsigned char *wbuffer, *rbuffer, *old_data;
-+static int fd, pagesize, pagecount, flags;
-+static struct mtd_dev_info mtd;
-+static libmtd_t mtd_desc;
-+
-+static void usage(int status)
-+{
-+	fputs(
-+	"Usage: "PROGRAM_NAME" [OPTIONS] <device>\n\n"
-+	"Common options:\n"
-+	"  -h, --help          Display this help output\n"
-+	"  -k, --keep          Restore existing contents after test\n"
-+	"  -b, --peb <num>     Use this physical erase block\n"
-+	"  -p, --page <num>    Use this page within the erase block\n"
-+	"  -s, --seed <num>    Specify seed for PRNG\n\n"
-+	"Options controling test mode:\n"
-+	"  -i, --incremental   Manually insert bit errors until ECC fails\n"
-+	"  -o, --overwrite     Rewrite page until bits flip and ECC fails\n\n"
-+	"Test mode specific options:\n"
-+	"  -w, --writes <num>  Number of writes (default 10000)\n",
-+	status==EXIT_SUCCESS ? stdout : stderr);
-+	exit(status);
-+}
-+
-+static long read_num(int idx, int argidx, int argc, char **argv)
-+{
-+	char *end;
-+	long num;
-+
-+	if (argidx >= argc) {
-+		fprintf(stderr, "%s: missing argument\n", argv[idx]);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	num = strtol(argv[argidx], &end, 0);
-+
-+	if (!end || *end!='\0') {
-+		fprintf(stderr, "%s: expected integer argument\n", argv[idx]);
-+		exit(EXIT_FAILURE);
-+	}
-+	return num;
-+}
-+
-+static void process_options(int argc, char **argv)
-+{
-+	int i;
-+
-+	for (i=1; i<argc; ++i) {
-+		if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h")) {
-+			usage(EXIT_SUCCESS);
-+		} else if (!strcmp(argv[i], "--keep") || !strcmp(argv[i], "-k")) {
-+			if (flags & KEEP_CONTENTS)
-+				goto failmulti;
-+			flags |= KEEP_CONTENTS;
-+		} else if (!strcmp(argv[i], "--peb") || !strcmp(argv[i], "-b")) {
-+			if (peb >= 0)
-+				goto failmulti;
-+			peb = read_num(i, i+1, argc, argv);
-+			if (peb < 0)
-+				goto failarg;
-+			++i;
-+		} else if (!strcmp(argv[i],"--incremental")||!strcmp(argv[i],"-i")) {
-+			if (flags & (MODE_INCREMENTAL|MODE_OVERWRITE))
-+				goto failmultimode;
-+			flags |= MODE_INCREMENTAL;
-+		} else if (!strcmp(argv[i],"--overwrite") || !strcmp(argv[i],"-o")) {
-+			if (flags & (MODE_INCREMENTAL|MODE_OVERWRITE))
-+				goto failmultimode;
-+			flags |= MODE_OVERWRITE;
-+		} else if (!strcmp(argv[i], "--writes") || !strcmp(argv[i], "-w")) {
-+			if (max_overwrite > 0)
-+				goto failmulti;
-+			max_overwrite = read_num(i, i+1, argc, argv);
-+			if (max_overwrite <= 0)
-+				goto failarg;
-+			++i;
-+		} else if (!strcmp(argv[i], "--seed") || !strcmp(argv[i], "-s")) {
-+			if (seed >= 0)
-+				goto failmulti;
-+			seed = read_num(i, i+1, argc, argv);
-+			if (seed < 0)
-+				goto failarg;
-+			++i;
-+		} else if (!strcmp(argv[i], "--page") || !strcmp(argv[i], "-p")) {
-+			if (page > 0)
-+				goto failmulti;
-+			page = read_num(i, i+1, argc, argv);
-+			if (page < 0)
-+				goto failarg;
-+			++i;
-+		} else {
-+			if (mtddev)
-+				usage(EXIT_FAILURE);
-+			mtddev = argv[i];
-+		}
-+	}
-+
-+	if (!mtddev)
-+		errmsg_die("No device specified!");
-+
-+	if (!(flags & (MODE_OVERWRITE|MODE_INCREMENTAL)))
-+		errmsg_die("No test mode specified!");
-+
-+	if ((max_overwrite > 0) && !(flags & MODE_OVERWRITE))
-+		errmsg_die("Write count specified but mode is not --overwrite!");
-+
-+	if (max_overwrite < 0)
-+		max_overwrite = 10000;
-+	if (peb < 0)
-+		peb = 0;
-+	if (page < 0)
-+		page = 0;
-+	if (seed < 0)
-+		seed = 0;
-+	return;
-+failmultimode:
-+	errmsg_die("Test mode specified more than once!");
-+failmulti:
-+	errmsg_die("'%s' specified more than once!", argv[i]);
-+failarg:
-+	errmsg_die("Invalid argument for '%s'!", argv[i]);
-+}
-+
-+/* 'random' bytes from known offsets */
-+static unsigned char hash(unsigned int offset)
-+{
-+	unsigned int v = offset;
-+	unsigned char c;
-+	v ^= 0x7f7edfd3;
-+	v = v ^ (v >> 3);
-+	v = v ^ (v >> 5);
-+	v = v ^ (v >> 13);
-+	c = v & 0xFF;
-+	/* Reverse bits of result. */
-+	c = (c & 0x0F) << 4 | (c & 0xF0) >> 4;
-+	c = (c & 0x33) << 2 | (c & 0xCC) >> 2;
-+	c = (c & 0x55) << 1 | (c & 0xAA) >> 1;
-+	return c;
-+}
-+
-+static int write_page(void)
-+{
-+	int err;
-+
-+	err = mtd_write(mtd_desc, &mtd, fd, peb, page*pagesize,
-+					wbuffer, pagesize, NULL, 0, 0);
-+
-+	if (err)
-+		fprintf(stderr, "Failed to write page %d in block %d\n", peb, page);
-+
-+	return err;
-+}
-+
-+static int rewrite_page(void)
-+{
-+	if (ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_RAW) != 0)
-+		goto fail_mode;
-+
-+	if (write_page() != 0)
-+		return -1;
-+
-+	if (ioctl(fd, MTDFILEMODE, MTD_FILE_MODE_NORMAL) != 0)
-+		goto fail_mode;
-+
-+	return 0;
-+fail_mode:
-+	perror("MTDFILEMODE");
-+	return -1;
-+}
-+
-+static int read_page(void)
-+{
-+	struct mtd_ecc_stats old, new;
-+	int err = 0;
-+
-+	if (ioctl(fd, ECCGETSTATS, &old) != 0)
-+		goto failstats;
-+
-+	err = mtd_read(&mtd, fd, peb, page*pagesize, rbuffer, pagesize);
-+	if (err) {
-+		fputs("Read failed!\n", stderr);
-+		return -1;
-+	}
-+
-+	if (new.failed > old.failed) {
-+		fprintf(stderr, "Failed to recover %d bitflips\n",
-+				new.failed - old.failed);
-+		return -1;
-+	}
-+
-+	if (ioctl(fd, ECCGETSTATS, &new) != 0)
-+		goto failstats;
-+
-+	return new.corrected - old.corrected;
-+failstats:
-+	perror("ECCGETSTATS");
-+	return -1;
-+}
-+
-+static int verify_page(void)
-+{
-+	unsigned int i, errs = 0;
-+
-+	for (i = 0; i < pagesize; ++i) {
-+		if (rbuffer[i] != hash(i+seed))
-+			++errs;
-+	}
-+
-+	if (errs)
-+		fputs("ECC failure, invalid data despite read success\n", stderr);
-+
-+	return errs;
-+}
-+
-+/* Finds the first '1' bit in wbuffer and sets it to '0'. */
-+static int insert_biterror(void)
-+{
-+	int bit, mask, byte;
-+
-+	for (byte = 0; byte < pagesize; ++byte) {
-+		for (bit = 7, mask = 0x80; bit >= 0; bit--, mask>>=0) {
-+			if (wbuffer[byte] & mask) {
-+				wbuffer[byte] &= ~mask;
-+				printf("Inserted biterror @ %u/%u\n", byte, bit);
-+				return 0;
-+			}
-+		}
-+		++byte;
-+	}
-+	fputs("biterror: Failed to find a '1' bit\n", stderr);
-+	return -1;
-+}
-+
-+/* Writes 'random' data to page and then introduces deliberate bit
-+ * errors into the page, while verifying each step. */
-+static int incremental_errors_test(void)
-+{
-+	unsigned int i, errs_per_subpage = 0;
-+	int count = 0;
-+
-+	puts("incremental biterrors test");
-+
-+	for (i = 0; i < pagesize; ++i)
-+		wbuffer[i] = hash(i+seed);
-+
-+	if (write_page() != 0)
-+		return -1;
-+
-+	for (errs_per_subpage = 0; ; ++errs_per_subpage) {
-+		if (rewrite_page() != 0)
-+			return -1;
-+
-+		count = read_page();
-+		if (count > 0)
-+			printf("Read reported %d corrected bit errors\n", count);
-+		if (count < 0) {
-+			fprintf(stderr, "Read error after %d bit errors per page\n",
-+				errs_per_subpage);
-+			return 0;
-+		}
-+
-+		if (verify_page() != 0)
-+			return -1;
-+
-+		printf("Successfully corrected %d bit errors per subpage\n",
-+			errs_per_subpage);
-+
-+		if (insert_biterror() != 0)
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+
-+/* Writes 'random' data to page and then re-writes that same data repeatedly.
-+   This eventually develops bit errors (bits written as '1' will slowly become
-+   '0'), which are corrected as far as the ECC is capable of. */
-+static int overwrite_test(void)
-+{
-+	unsigned int i, max_corrected = 0, opno;
-+	unsigned int bitstats[MAXBITS]; /* bit error histogram. */
-+	int err = 0;
-+
-+	memset(bitstats, 0, sizeof(bitstats));
-+
-+	puts("overwrite biterrors test");
-+
-+	for (i = 0; i < pagesize; ++i)
-+		wbuffer[i] = hash(i+seed);
-+
-+	if (write_page() != 0)
-+		return -1;
-+
-+	for (opno = 0; opno < max_overwrite; ++opno) {
-+		err = rewrite_page();
-+		if (err)
-+			break;
-+
-+		err = read_page();
-+		if (err >= 0) {
-+			if (err >= MAXBITS) {
-+				puts("Implausible number of bit errors corrected");
-+				err = -1;
-+				break;
-+			}
-+			bitstats[err]++;
-+			if (err > max_corrected) {
-+				max_corrected = err;
-+				printf("Read reported %d corrected bit errors\n", err);
-+			}
-+		} else {
-+			err = 0;
-+			break;
-+		}
-+
-+		err = verify_page();
-+		if (err) {
-+			bitstats[max_corrected] = opno;
-+			break;
-+		}
-+	}
-+
-+	/* At this point bitstats[0] contains the number of ops with no bit
-+	 * errors, bitstats[1] the number of ops with 1 bit error, etc. */
-+	printf("Bit error histogram (%d operations total):\n", opno);
-+	for (i = 0; i < max_corrected; ++i) {
-+		printf("Page reads with %3d corrected bit errors: %d\n",
-+			i, bitstats[i]);
-+	}
-+	return err;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int err = 0, status = EXIT_FAILURE;
-+
-+	process_options(argc, argv);
-+
-+	mtd_desc = libmtd_open();
-+	if (!mtd_desc)
-+		return errmsg("can't initialize libmtd");
-+
-+	if (mtd_get_dev_info(mtd_desc, mtddev, &mtd) < 0)
-+		return errmsg("mtd_get_dev_info failed");
-+
-+	if (mtd.type!=MTD_MLCNANDFLASH && mtd.type!=MTD_NANDFLASH)
-+		return errmsg("%s is not a NAND flash!", mtddev);
-+
-+	pagesize = mtd.subpage_size;
-+	pagecount = mtd.eb_size / pagesize;
-+
-+	if (peb >= mtd.eb_cnt)
-+		return errmsg("Physical erase block %d is out of range!", peb);
-+	if (page >= pagecount)
-+		return errmsg("Page number %d is out of range!", page);
-+	if ((fd = open(mtddev, O_RDWR)) == -1) {
-+		perror(mtddev);
-+		return EXIT_FAILURE;
-+	}
-+
-+	if (flags & KEEP_CONTENTS) {
-+		old_data = malloc(mtd.eb_size);
-+		if (!old_data) {
-+			perror(NULL);
-+			goto fail_dev;
-+		}
-+		if (mtd_read(&mtd, fd, peb, 0, old_data, mtd.eb_size)) {
-+			fprintf(stderr, "Reading erase block %d failed!\n", peb);
-+			goto fail_dev;
-+		}
-+	}
-+
-+	wbuffer = malloc(pagesize);
-+	if (!wbuffer) {
-+		perror(NULL);
-+		goto fail_dev;
-+	}
-+
-+	rbuffer = malloc(pagesize);
-+	if (!rbuffer) {
-+		perror(NULL);
-+		goto fail_rbuffer;
-+	}
-+
-+	if (mtd_erase(mtd_desc, &mtd, fd, peb)) {
-+		fprintf(stderr, "Cannot erase block %d\n", peb);
-+		goto fail_test;
-+	}
-+
-+	if (flags & MODE_INCREMENTAL)
-+		err = incremental_errors_test();
-+	else if (flags & MODE_OVERWRITE)
-+		err = overwrite_test();
-+
-+	status = err ? EXIT_FAILURE : EXIT_SUCCESS;
-+
-+	if (flags & KEEP_CONTENTS) {
-+		if (mtd_erase(mtd_desc, &mtd, fd, peb)) {
-+			fprintf(stderr, "Restoring: Cannot erase block %d\n", peb);
-+			status = EXIT_FAILURE;
-+			goto fail_test;
-+		}
-+
-+		err = mtd_write(mtd_desc, &mtd, fd, peb, 0,
-+					old_data, mtd.eb_size, NULL, 0, 0);
-+
-+		if (err) {
-+			fputs("Failed restoring old block contents!\n", stderr);
-+			status = EXIT_FAILURE;
-+		}
-+	} else {
-+		/* We leave the block un-erased in case of test failure. */
-+		if (err)
-+			goto fail_test;
-+
-+		if (mtd_erase(mtd_desc, &mtd, fd, peb)) {
-+			fprintf(stderr, "Cannot erase block %d\n", peb);
-+			status = EXIT_FAILURE;
-+		}
-+	}
-+fail_test:
-+	free(rbuffer);
-+fail_rbuffer:
-+	free(wbuffer);
-+fail_dev:
-+	close(fd);
-+	free(old_data);
-+	return status;
-+}
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(of_flash_probe_versatile);
 -- 
-2.7.3
+2.7.0
