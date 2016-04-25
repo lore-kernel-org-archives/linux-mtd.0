@@ -1,19 +1,16 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- "arm@kernel.org" <arm@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [GIT PULL] move Versatile flash protection to the device tree
-Date: Mon, 25 Apr 2016 23:44:40 +0200
-Message-ID: <6943273.jykU37cR72@wuerfel>
-In-Reply-To: <20160404163626.GA30894@localhost>
-References: <CACRpkdZxrhkL7a6DG3frKeR+=xF6X4nczepAbqj1PGDs3VsmMQ@mail.gmail.com>
- <20160404163626.GA30894@localhost>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1auolT-0004mu-0H
+ for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 22:13:59 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by mail.sigma-star.at (Postfix) with ESMTP id 03A4416B4333
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 00:13:36 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: david.oberhollenzer@sigma-star.at
+Subject: [RFC] Porting kernel MTD tests to user space
+Date: Tue, 26 Apr 2016 00:13:21 +0200
+Message-Id: <1461622409-14970-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 04 April 2016 09:36:26 Brian Norris wrote:
-> 
-> On Mon, Apr 04, 2016 at 10:45:48AM +0200, Linus Walleij wrote:
-> > Hi ARM SoC folks,
-> > 
-> > now I'm tired of waiting for the MTD maintainers' word on this patch
-> > series. I sent a question about this approach on february 13:
-> > http://marc.info/?l=linux-arm-kernel&m=145537026603174&w=2
-> > 
-> > With subsequent pings on feb 22, mar 5, mar 31, and the cleanup
-> > missing the merge window.
-> > 
-> > As you can see the flash protection patch also caters for the
-> > RealView flash protection bits.
-> > 
-> > Please pull this into the ARM SoC tree for testing in linux-next
-> > for the v4.7 series. If the MTD people appear again and have issues
-> > you can always drop the branch.
-> > 
+David was so kind and did an initial port of Linux's MTD tests to user space.
+He took most tests as-is and massaged them to work in user space using libmtd.
+In the long run the goal is giving up the kernel tests as much as possible
+and improve the tests present in mtd-utils.
 
-> > 
-> 
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
-> 
+Feedback is very welcome!
 
-Merged into next/drivers, thanks!
+Thanks,
+//richard
 
-	Arnd
+[PATCH 1/8] mtd-utils: Fix return status in mtd_torture test function
+[PATCH 2/8] mtd-utils: Add multi-block erase function
+[PATCH 3/8] mtd-utils: Add flash torture test utility
+[PATCH 4/8] mtd-utils: Add flash stress test Utility
+[PATCH 5/8] mtd-utils: Add flash speed test Utility
+[PATCH 6/8] mtd-utils: Add nand flash bit errors test
+[PATCH 7/8] mtd-utils: Add flash read test utility
+[PATCH 8/8] mtd-utils: Add nand page test utility
+
+ .gitignore                  |   6 +
+ Makefile                    |   7 +-
+ include/libmtd.h            |  14 ++
+ lib/libmtd.c                |  28 ++-
+ misc-utils/flash_readtest.c | 263 ++++++++++++++++++++
+ misc-utils/flash_speed.c    | 463 +++++++++++++++++++++++++++++++++++
+ misc-utils/flash_stress.c   | 276 +++++++++++++++++++++
+ misc-utils/flash_torture.c  | 240 ++++++++++++++++++
+ nand-utils/nandbiterrs.c    | 497 +++++++++++++++++++++++++++++++++++++
+ nand-utils/nandpagetest.c   | 579 ++++++++++++++++++++++++++++++++++++++++++++
+ 10 files changed, 2362 insertions(+), 11 deletions(-)
