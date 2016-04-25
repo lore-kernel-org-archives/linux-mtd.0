@@ -1,27 +1,23 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aucms-0002aq-Cw
- for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 09:26:39 +0000
-Date: Mon, 25 Apr 2016 11:26:16 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, Daniel Walter <dwalter@sigma-star.at>
-Subject: Re: Pass -EUCLEN to userspace?
-Message-ID: <20160425112616.01f9e4e4@bbrezillon>
-In-Reply-To: <20160425091416.GD7860@pengutronix.de>
-References: <20160420132516.GC31101@pengutronix.de>
- <20160422172456.7aaf301c@bbrezillon>
- <20160422172802.4fa830d1@bbrezillon> <571A47D3.6040602@nod.at>
- <20160425052857.GA7860@pengutronix.de>
- <20160425095034.697411aa@bbrezillon>
- <20160425082211.GC7860@pengutronix.de>
- <20160425104041.555b8ed5@bbrezillon>
- <20160425091416.GD7860@pengutronix.de>
+Received: from eusmtp01.atmel.com ([212.144.249.243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aucuc-0007ky-ET
+ for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 09:34:39 +0000
+Subject: Re: [PATCH RFC 4/8] mtd: spi-nor: fix support of Dual (x-y-2) and
+ Quad (x-y-4) SPI protocols
+To: "R, Vignesh" <vigneshr@ti.com>, <computersforpeace@gmail.com>,
+ <linux-mtd@lists.infradead.org>
+References: <cover.1460567255.git.cyrille.pitchen@atmel.com>
+ <abc2b9a65c6934226ee958a87664c91877224aff.1460567256.git.cyrille.pitchen@atmel.com>
+ <571C5454.5040006@ti.com>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: <marex@denx.de>, <boris.brezillon@free-electrons.com>,
+ <nicolas.ferre@atmel.com>, <linux-kernel@vger.kernel.org>
+Message-ID: <571DE496.3000108@atmel.com>
+Date: Mon, 25 Apr 2016 11:34:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <571C5454.5040006@ti.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,130 +27,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 25 Apr 2016 11:14:16 +0200
-Sascha Hauer <s.hauer@pengutronix.de> wrote:
+Hi Vignesh,
 
-> On Mon, Apr 25, 2016 at 10:40:41AM +0200, Boris Brezillon wrote:
-> > On Mon, 25 Apr 2016 10:22:11 +0200
-> > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> >   
-> > > On Mon, Apr 25, 2016 at 09:50:34AM +0200, Boris Brezillon wrote:  
-> > > > On Mon, 25 Apr 2016 07:28:57 +0200
-> > > > Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > > >     
-> > > > > On Fri, Apr 22, 2016 at 05:48:35PM +0200, Richard Weinberger wrote:    
-> > > > > > Sascha, Boris,
-> > > > > > 
-> > > > > > Am 22.04.2016 um 17:28 schrieb Boris Brezillon:      
-> > > > > > >>> I am currently working on a program similar to ubihealthd, just for raw
-> > > > > > >>> mtd pages, not UBI. Basically I want to find out in userspace if my Nand needs
-> > > > > > >>> scrubbing. Is it possible somehow to get this information in userspace?      
-> > > > > > >>
-> > > > > > >> Actually we discussed that a year ago with Richard. I told him that we
-> > > > > > >> should put the read/write/erase statistics at the MTD level so that
-> > > > > > >> other MTD users (including userspace programs) could use the same infra
-> > > > > > >> for non-UBI partitions (I need that for the UBOOT and SPL partitions).
-> > > > > > >>
-> > > > > > >> My suggestion was to store those information at the MTD level, and let
-> > > > > > >> UBI implement its own scrubbing layer on top of that, but Richard
-> > > > > > >> decided to go for a simpler approach for its first implementation.      
-> > > > > > 
-> > > > > > Yeah, I did a first implementation on UBI layer as it had everything we need
-> > > > > > and I didn't want to replicate UBI at MTD level.
-> > > > > > Another reason is that we were not sure how sophisticated ubihealthd needs to be.
-> > > > > > 
-> > > > > > Sasha, what exactly is your use case and why is the UBI approach not sufficient for you?
-> > > > > > On Linux MTD access should only happen through UBI and UBOOT/SPL partitions stay untouched.      
-> > > > > 
-> > > > > On i.MX6 the Bootloader in Nand can indeed be redundant, so it's
-> > > > > possible to scrub the pages. This is exactly our usecase, we want to be
-> > > > > able to detect bitflips in the bootloader area.
-> > > > > Note that on i.MX6 the first page in the first n blocks on Nand contains
-> > > > > a structure called FCB (flash control block). This is not encoded with
-> > > > > the standard ECC algorithm used on the other areas in Nand. Reading
-> > > > > these pages will always return -EBABDMSG, they have to be read in raw
-> > > > > mode. That just to say that a "maximum bitflips per block" might not be
-> > > > > sufficient.    
-> > > > 
-> > > > Okay, pretty much the same use-case we have on sunxi platforms: the SPL
-> > > > partition is written in raw mode because the page layout (in-band/ECC
-> > > > data disposition) is not the one we're using for the rest of the NAND.
-> > > > For this specific partition, I see 2 solutions that you can implement
-> > > > in userspace to count the number of bitflips:
-> > > > 
-> > > > 1/ read the partition page by page in raw mode and compare each
-> > > >    page to a reference file. This implies having a reference file stored
-> > > >    on your FS.
-> > > > 2/ if you know the ECC algorithm (and the platform specific config,
-> > > >    like the polynomial for a BCH engine) then you can create a tool
-> > > >    doing the ECC error detection in userspace.    
-> > > 
-> > > I can do the ECC calculation for the FBCs in userspace, that's no
-> > > problem. I was referring to:
-> > >   
-> > > > Fair enough. So all we'll need is a way to retrieve the maximum number
-> > > > of bitflips for a given block    
-> > > 
-> > > When a block contains both FCB and data protected with regular ECC in
-> > > other pages, an algorithm retrieving the maximum number of bitlfips for
-> > > a given block might stumble over the bad data in the page containing the
-> > > FCB. So I think we need the maximum number of bitflips per page, not per
-> > > block.  
-> > 
-> > Oh, so you mix 2 different page layout in the same partition (we
-> > try to avoid that, even if this means loosing some space) :-/.  
+Le 24/04/2016 07:06, R, Vignesh a écrit :
+> Hi Cyrille,
 > 
-> I wasn't really aware of this.
-
-By "we" I meant on the sunxi platform. This kind of thing has never been
-documented, so you're currently not infringing any rule, I just find it
-easier when everything is well separated... 
-
-> The way we have it now allows us to
-> create a single partition containing the bootloader. Splitting this up
-> into multiple partitions wouldn't be as flexible.
+> On 4/13/2016 10:53 PM, Cyrille Pitchen wrote:
+> [...]
+>> @@ -1451,51 +1599,42 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>>  	if (np) {
+>>  		/* If we were instantiated by DT, use it */
+>>  		if (of_property_read_bool(np, "m25p,fast-read"))
+>> -			nor->flash_read = SPI_NOR_FAST;
+>> +			modes->rd_modes |= SNOR_MODE_1_1_1;
+>>  		else
+>> -			nor->flash_read = SPI_NOR_NORMAL;
+>> +			modes->rd_modes &= ~SNOR_MODE_1_1_1;
+>>  	} else {
+>>  		/* If we weren't instantiated by DT, default to fast-read */
+>> -		nor->flash_read = SPI_NOR_FAST;
+>> +		modes->rd_modes |= SNOR_MODE_1_1_1;
+>>  	}
+>>  
+>>  	/* Some devices cannot do fast-read, no matter what DT tells us */
+>>  	if (info->flags & SPI_NOR_NO_FR)
+>> -		nor->flash_read = SPI_NOR_NORMAL;
+>> +		modes->rd_modes &= ~SNOR_MODE_1_1_1;
+>>  
+>> -	/* Quad/Dual-read mode takes precedence over fast/normal */
+>> -	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
+>> -		ret = set_quad_mode(nor, info);
+>> -		if (ret) {
+>> -			dev_err(dev, "quad mode not supported\n");
 > 
-> > 
-> > Regarding the maximum number of bitflips per chunk, maybe we can make it
-> > part of the ioctl request instead of saving the statistics at the MTD
-> > level.
-> > 
-> > How about creating a new ioctl taking a pointer to this struct as a
-> > parameter:
-> > 
-> > struct mtd_extended_read_ops {
-> > 	/* Existing params */
-> > 	unsigned int mode;
-> > 	size_t len;
-> > 	size_t retlen;
-> > 	size_t ooblen;
-> > 	size_t oobretlen;
-> > 	uint32_t ooboffs;
-> > 	void *datbuf;
-> > 	void *oobbuf;
-> > 
-> > 	/*
-> > 	 * Param containing the maximum number of bitflips for this
-> > 	 * read request.
-> > 	 */
-> > 	unsigned int max_bitflips;
-> > };  
+> Now that the set_quad_mode() is removed, could you explain how spansion
+> flash enters SNOR_MODE_1_1_4 mode? Is it bootloader's responsibility to
+> flash's set quad enable bit?
 > 
-> Not sure how this ioctl exactly should look like, but this would solve
-> the problem.
 
-Let me design a quick prototype, I'll let you follow up with the patch
-submission process...
+The proposed mechanics relies on the struct spi_nor_basic_flash_parameter.
+This structure provides the same kind of parameters that those we could find
+in JEDEC SFDP (Serial Flash Discoverable Parameters):
+- (Fast) Read op codes and protocols supported by the memory and the associated
+  number of dummy cycles. More precisely the number of mode clock and wait
+  state cycle.
+- Page Program op code and protocols.
+- Sector/Block Erase op codes and the associated erase size.
+- The "Quad Enable Requirements (QER)" which tells us "whether the device 
+  contains a Quad Enable (QE) bit used to enable 1-1-4 and 1-4-4 quad read or
+  quad program operations" as found in the JESD216B specification and
+  implemented here through the optional .enable_quad_io() hook.
+- The "4-4-4 mode enable and disable sequences", implemented by the optional
+  .enable_4_4_4() hook.
+- The optional .enable_2_2_2() hook: the JESD216B specification misses to
+  describe this procedure, only used by Micron AFAIK.
 
+For this RFC series, I've only provided a patch (patch 6) for Micron as an
+example of the new way to support QSPI memories.
+I've already written another patch for the support of Macronix memories but I
+didn't publish it yet.
+
+I was waiting for comments on the series to know whether I'm on the good way
+before spending much time on writing support to other manufacturers.
+
+For Spansion, the .enable_4_4_4() and .enable_2_2_2() would not be implemented
+as Spansion QSPI memories only supports 1-1-2, 1-2-2, 1-1-4 and 1-4-4
+protocols. Hence only the .enable_quad_io() hook is needed. This hook should
+be implemented using something very closed to the spansion_quad_enable()
+function.
+
+So at one side the struct spi_nor_basic_flash_parameter describes the SPI
+memory hardware capabilities and SPI protocols it supports.
+On the other side, the struct spi_nor_modes allows the caller of spi_nor_scan()
+to describe the hardware capabilities of the SPI controller; which SPI
+protocols the controller supports and which SPI protocols the user wants to
+allow or disable.
+
+As an example, if a QSPI memory has already entered its 4-4-4 mode, you can
+still probe the memory from Linux by reading the JEDEC ID as long as you set
+the SNOR_MODE_4_4_4 bit in modes.id_modes.
+Then, if you don't set the SNOR_MODE_4_4_4 bit in modes.rd_modes but only the
+SNOR_MODE_1_1_4 bit, spi_nor_scan() first makes the SPI exit its 4-4-4 mode
+then select the SPI 1-1-4 (if supported by the memory) for Fast Read
+operations. You can do so if for some reason you'd rather use the SPI 1-1-4
+protocol instead of the 4-4-4.
+
+So it's now up to the caller of spi_nor_scan() to tell the framework what
+protocols it supports and what protocols it wants to use. The spi-nor framework
+will select the best match between the memory and controller hardware
+capabilities.
+
+Anyway, thanks for the review! :)
+
+> Regards
+> Vignesh
 > 
-> This also solves another problem. Right now calling the ECCGETSTATS
-> ioctl before and after the read operation assumes that there are no
-> concurrent readers on the mtd device.
 
-That's true.
+Best regards,
 
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Cyrille
