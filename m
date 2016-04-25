@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auolT-0004nw-0L
- for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 22:14:00 +0000
+ id 1auolo-0004wP-DS
+ for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 22:14:22 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 4/8] mtd-utils: Add flash stress test Utility
-Date: Tue, 26 Apr 2016 00:13:25 +0200
-Message-Id: <1461622409-14970-5-git-send-email-richard@nod.at>
+Subject: [PATCH 7/8] mtd-utils: Add flash read test utility
+Date: Tue, 26 Apr 2016 00:13:28 +0200
+Message-Id: <1461622409-14970-8-git-send-email-richard@nod.at>
 In-Reply-To: <1461622409-14970-1-git-send-email-richard@nod.at>
 References: <1461622409-14970-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,51 +22,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 
-Basically a user space port of the mtd stress test kernel module.
-In addition to the block offset and count module parameters, the
-utility supports a block stride and can restore the block contents
-after test.
+Basically a user space port of the mtd read test kernel module.
+In addition to the module parameters, the utility can scan only
+a sub-range of the flash erase block with a configurable stride.
 
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- .gitignore                |   1 +
- Makefile                  |   2 +-
- misc-utils/flash_stress.c | 276 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 278 insertions(+), 1 deletion(-)
- create mode 100644 misc-utils/flash_stress.c
+ .gitignore                  |   1 +
+ Makefile                    |   3 +-
+ misc-utils/flash_readtest.c | 263 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 266 insertions(+), 1 deletion(-)
+ create mode 100644 misc-utils/flash_readtest.c
 
 diff --git a/.gitignore b/.gitignore
-index 5b529d1..3d03708 100644
+index 5f948e7..8e240d5 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -36,6 +36,7 @@
- /misc-utils/mtd_debug
- /misc-utils/mtdpart
- /misc-utils/flash_torture
-+/misc-utils/flash_stress
- /nand-utils/nanddump
- /nand-utils/nandtest
- /nand-utils/nandwrite
+@@ -30,6 +30,7 @@
+ /misc-utils/flashcp
+ /misc-utils/ftl_check
+ /misc-utils/ftl_format
++/misc-utils/flash_readtest
+ /jffsX-utils/jffs2dump
+ /jffsX-utils/jffs2reader
+ /jffsX-utils/mkfs.jffs2
 diff --git a/Makefile b/Makefile
-index af3d1fd..1bc41e0 100644
+index 2813f3a..add8864 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -20,7 +20,7 @@ MISC_BINS = \
+@@ -20,7 +20,8 @@ MISC_BINS = \
  	ftl_format doc_loadbios ftl_check mtd_debug docfdisk \
  	serve_image recv_image mtdpart flash_erase flash_lock \
  	flash_unlock flash_otp_info flash_otp_dump flash_otp_lock \
--	flash_otp_write flashcp flash_torture
-+	flash_otp_write flashcp flash_torture flash_stress
+-	flash_otp_write flashcp flash_torture flash_stress flash_speed
++	flash_otp_write flashcp flash_torture flash_stress flash_speed \
++	flash_readtest
  UBI_BINS = \
  	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
  	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
-diff --git a/misc-utils/flash_stress.c b/misc-utils/flash_stress.c
+diff --git a/misc-utils/flash_readtest.c b/misc-utils/flash_readtest.c
 new file mode 100644
-index 0000000..2dd2da1
+index 0000000..9c15f67
 --- /dev/null
-+++ b/misc-utils/flash_stress.c
-@@ -0,0 +1,276 @@
++++ b/misc-utils/flash_readtest.c
+@@ -0,0 +1,263 @@
 +/*
 + * Copyright (C) 2006-2008 Nokia Corporation
 + * Copyright (C) 2015 sigma star gmbh
@@ -84,21 +84,19 @@ index 0000000..2dd2da1
 + * this program; see the file COPYING. If not, write to the Free Software
 + * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 + *
-+ * Test random reads, writes and erases on MTD device.
++ * Check MTD device read.
 + *
 + * Author: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 + *
-+ * Based on linux stresstest.c
++ * Based on linux readtest.c
 + * Author: Adrian Hunter <ext-adrian.hunter@nokia.com>
 + */
-+#define PROGRAM_NAME "flash_stress"
-+
-+#define KEEP_CONTENTS 0x01
-+#define COUNT_CHANGED 0x02
-+#define SEED_SET 0x04
++#define PROGRAM_NAME "flash_readtest"
 +
 +#include <mtd/mtd-user.h>
++#include <sys/ioctl.h>
 +#include <unistd.h>
++#include <string.h>
 +#include <stdlib.h>
 +#include <libmtd.h>
 +#include <stdio.h>
@@ -107,31 +105,24 @@ index 0000000..2dd2da1
 +
 +#include "common.h"
 +
++#define FLAG_VERBOSE 1
++
++static int peb=-1, skip=-1, count=-1, flags=0, pgcnt, pgsize, fd;
++static unsigned char *iobuf, *iobuf1;
 +static struct mtd_dev_info mtd;
 +static const char *mtddev;
 +static libmtd_t mtd_desc;
-+static int fd;
-+
-+static unsigned char *writebuf;
-+static unsigned char *readbuf;
-+static unsigned char *old;
-+static unsigned char *bbt;
-+
-+static int pgsize;
-+static int pgcnt;
-+
-+static int count = 10000;
-+static int flags = 0;
 +
 +static void usage(int status)
 +{
 +	fputs(
 +	"Usage: "PROGRAM_NAME" [OPTIONS] <device>\n\n"
-+	"Options:\n"
-+	"  -h, --help         Display this help output\n"
-+	"  -c, --count <num>  Number of operations to do (default is 10000)\n"
-+	"  -s, --seed <num>   Seed for pseudor random number generator\n"
-+	"  -k, --keep         Restore existing contents after test\n",
++	"Common options:\n"
++	"  -h, --help          Display this help output\n"
++	"  -b, --peb <num>     Start from this physical erase block\n"
++	"  -c, --count <num>   Number of erase blocks to process (default: all)\n"
++	"  -s, --skip <num>    Number of blocks to skip\n"
++	"  -v, --verbose       Generate more verbose output\n\n",
 +	status==EXIT_SUCCESS ? stdout : stderr);
 +	exit(status);
 +}
@@ -162,23 +153,31 @@ index 0000000..2dd2da1
 +	for (i=1; i<argc; ++i) {
 +		if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h")) {
 +			usage(EXIT_SUCCESS);
-+		} else if (!strcmp(argv[i], "--keep") || !strcmp(argv[i], "-k")) {
-+			if (flags & KEEP_CONTENTS)
++		} else if (!strcmp(argv[i], "--verbose") || !strcmp(argv[i], "-v")) {
++			if (flags & FLAG_VERBOSE)
 +				goto failmulti;
-+			flags |= KEEP_CONTENTS;
-+		} else if (!strcmp(argv[i], "--seed") || !strcmp(argv[i], "-s")) {
-+			if (flags & SEED_SET)
++			flags |= FLAG_VERBOSE;
++		} else if (!strcmp(argv[i], "--peb") || !strcmp(argv[i], "-b")) {
++			if (peb >= 0)
 +				goto failmulti;
-+			srand(read_num(i, i+1, argc, argv));
-+			flags |= SEED_SET;
-+		} else if (!strcmp(argv[i], "--count") || !strcmp(argv[i], "-c")) {
-+			if (flags & COUNT_CHANGED)
-+				goto failmulti;
-+			count = read_num(i, i+1, argc, argv);
-+			if (count <= 0)
++			peb = read_num(i, i+1, argc, argv);
++			if (peb < 0)
 +				goto failarg;
 +			++i;
-+			flags |= COUNT_CHANGED;
++		} else if (!strcmp(argv[i], "--count") || !strcmp(argv[i], "-c")) {
++			if (count >= 0)
++				goto failmulti;
++			count = read_num(i, i+1, argc, argv);
++			if (count < 0)
++				goto failarg;
++			++i;
++		} else if (!strcmp(argv[i], "--skip") || !strcmp(argv[i], "-s")) {
++			if (skip >= 0)
++				goto failmulti;
++			skip = read_num(i, i+1, argc, argv);
++			if (skip < 0)
++				goto failarg;
++			++i;
 +		} else {
 +			if (mtddev)
 +				usage(EXIT_FAILURE);
@@ -187,105 +186,89 @@ index 0000000..2dd2da1
 +	}
 +
 +	if (!mtddev)
-+		errmsg_die("No device specified!\n");
++		errmsg_die("No device specified!");
 +
-+	if (!(flags & SEED_SET))
-+		srand(time(NULL));
++	if (peb < 0)
++		peb = 0;
++	if (skip < 0)
++		skip = 0;
 +	return;
 +failmulti:
-+	fprintf(stderr, "'%s' specified more than once!\n", argv[i]);
-+	exit(EXIT_FAILURE);
++	errmsg_die("'%s' specified more than once!", argv[i]);
 +failarg:
-+	fprintf(stderr, "Invalid argument for '%s'!\n", argv[i]);
-+	exit(EXIT_FAILURE);
++	errmsg_die("Invalid argument for '%s'!", argv[i]);
 +}
 +
-+static int rand_eb(void)
++static int read_eraseblock_by_page(int ebnum)
 +{
-+	unsigned int eb;
++	unsigned char *buf = iobuf, *oobbuf = iobuf1;
++	uint64_t addr = ((uint64_t)ebnum) * ((uint64_t)mtd.eb_size);
++	int i, ret;
 +
-+	/* Read or write up 2 eraseblocks at a time - hence 'mtd.eb_cnt - 1' */
-+	do {
-+		eb = rand() % (mtd.eb_cnt - 1);
-+	} while (bbt[eb]);
-+
-+	return eb;
-+}
-+
-+static int do_read(void)
-+{
-+	int eb = rand_eb();
-+	int offs = rand() % pgcnt;
-+	int len = rand() % (pgcnt - offs);
-+
-+	offs *= pgsize;
-+	len *= pgsize;
-+	return mtd_read(&mtd, fd, eb, offs, readbuf, len);
-+}
-+
-+static int do_write(void)
-+{
-+	int eb = rand_eb(), err, err1;
-+	int offs = rand() % pgcnt;
-+	int len = rand() % (pgcnt - offs);
-+
-+	offs *= pgsize;
-+	len *= pgsize;
-+
-+	if (flags & KEEP_CONTENTS) {
-+		err = mtd_read(&mtd, fd, eb, 0, old, mtd.eb_size);
-+		if (err) {
-+			fputs("Error backing up old erase block contents\n", stderr);
++	for (i = 0; i < pgcnt; ++i) {
++		memset(buf, 0, pgsize);
++		ret = mtd_read(&mtd, fd, ebnum, i*pgsize, buf, pgsize);
++		if (ret) {
++			fprintf(stderr, "Error reading block %d, page %d\n", ebnum, i);
 +			return -1;
 +		}
++		if (mtd.oob_size) {
++			ret = mtd_read_oob(mtd_desc, &mtd, fd,
++							addr, mtd.oob_size, oobbuf);
++
++			if (ret) {
++				fprintf(stderr, "Error reading OOB in block %d, page %d\n",
++						ebnum, i);
++				return -1;
++			}
++			oobbuf += mtd.oob_size;
++		}
++		buf += pgsize;
++		addr += pgsize;
 +	}
 +
-+	err = mtd_erase(mtd_desc, &mtd, fd, eb);
-+	if (err)
-+		goto out;
++	if (flags & FLAG_VERBOSE)
++		printf("Successfully read erase block %d\n", ebnum);
 +
-+	err = mtd_write(mtd_desc, &mtd, fd, eb, offs,
-+			writebuf, len, NULL, 0, 0);
-+	if (err)
-+		goto out;
-+
-+	err = 0;
-+out:
-+	if (flags & KEEP_CONTENTS) {
-+		if (mtd_erase(mtd_desc, &mtd, fd, eb)) {
-+			fprintf(stderr, "mtd_erase: PEB %d", eb);
-+			return -1;
-+		}
-+
-+		err1 = mtd_write(mtd_desc, &mtd, fd, eb, 0,
-+					old, mtd.eb_size, NULL, 0, 0);
-+
-+		if (err1) {
-+			fprintf(stderr, "Failed to restore old contents\n");
-+			return -1;
-+		}
-+	}
-+	return err;
++	return 0;
 +}
 +
-+static void scan_for_bad_eraseblocks(unsigned int eb, int ebcnt)
++static void dump_eraseblock(int ebnum)
 +{
-+	int i, bad = 0;
++	char line[128];
++	int i, j, n;
++	int pg, oob;
 +
-+	puts("scanning for bad eraseblocks");
++	printf("dumping eraseblock %d\n", ebnum);
++	n = mtd.eb_size;
++	for (i = 0; i < n;) {
++		char *p = line;
 +
-+	for (i = 0; i < ebcnt; ++i) {
-+		bbt[i] = mtd_is_bad(&mtd, fd, eb + i) ? 1 : 0;
-+		if (bbt[i])
-+			bad += 1;
++		p += sprintf(p, "%05x: ", i);
++		for (j = 0; j < 32 && i < n; j++, i++)
++			p += sprintf(p, "%02x", (unsigned int)iobuf[i]);
++		printf("%s\n", line);
 +	}
++	if (!mtd.oob_size)
++		return;
++	printf("dumping oob from eraseblock %d\n", ebnum);
++	n = mtd.oob_size;
++	for (pg = 0, i = 0; pg < pgcnt; ++pg) {
++		for (oob = 0; oob < n;) {
++			char *p = line;
 +
-+	printf("scanned %d eraseblocks, %d are bad\n", ebcnt, bad);
++			p += sprintf(p, "%05x: ", i);
++			for (j = 0; j < 32 && oob < n; ++j, ++oob, ++i)
++				p += sprintf(p, "%02x", (unsigned int)iobuf1[i]);
++			printf("%s\n", line);
++		}
++	}
++	putchar('\n');
 +}
 +
 +int main(int argc, char **argv)
 +{
-+	int status = EXIT_FAILURE, i, op, err;
++	int status = EXIT_SUCCESS, i, ret, blk;
 +
 +	process_options(argc, argv);
 +
@@ -305,43 +288,47 @@ index 0000000..2dd2da1
 +
 +	pgcnt = mtd.eb_size / pgsize;
 +
-+	readbuf = xmalloc(mtd.eb_size);
-+	writebuf = xmalloc(mtd.eb_size);
-+	bbt = xzalloc(mtd.eb_cnt);
++	if (count < 0)
++		count = mtd.eb_cnt;
 +
-+	if (flags & KEEP_CONTENTS)
-+		old = xmalloc(mtd.eb_size);
++	if (peb >= mtd.eb_cnt)
++		return errmsg("Physical erase block %d is out of range!\n", peb);
 +
-+	for (i = 0; i < mtd.eb_size; ++i)
-+		writebuf[i] = rand();
++	if ((peb + (count - 1)*(skip + 1)) >= mtd.eb_cnt) {
++		return errmsg("Given block range exceeds block count of %d!\n",
++					mtd.eb_cnt);
++	}
 +
-+	/* Open device file */
++	iobuf = xmalloc(mtd.eb_size);
++	iobuf1 = xmalloc(mtd.eb_size);
++
 +	if ((fd = open(mtddev, O_RDWR)) == -1) {
 +		perror(mtddev);
++		status = EXIT_FAILURE;
 +		goto out;
 +	}
 +
-+	/* Do operations */
-+	scan_for_bad_eraseblocks(0, mtd.eb_cnt);
++	/* Read all eraseblocks 1 page at a time */
++	puts("testing page read");
 +
-+	puts("doing operations");
-+	for (op = 0; op < count; op++) {
-+		if ((op & 1023) == 0)
-+			printf("%d operations done\n", op);
-+		err = (rand() & 1) ? do_read() : do_write();
-+		if (err)
-+			goto out;
++	for (i = 0; i < count; ++i) {
++		blk = peb + i*(skip+1);
++
++		if (mtd_is_bad(&mtd, fd, blk)) {
++			printf("Skipping bad block %d\n", blk);
++			continue;
++		}
++		ret = read_eraseblock_by_page(blk);
++		if (ret && (flags & FLAG_VERBOSE)) {
++			dump_eraseblock(blk);
++			status = EXIT_FAILURE;
++		}
 +	}
-+	printf("finished, %d operations done\n", op);
-+
-+	status = EXIT_SUCCESS;
 +out:
-+	close(fd);
-+	free(bbt);
-+	free(writebuf);
-+	free(readbuf);
-+	free(old);
++	free(iobuf);
++	free(iobuf1);
 +	return status;
 +}
++
 -- 
 2.7.3
