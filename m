@@ -1,33 +1,26 @@
-Received: from h2.hallyn.com ([78.46.35.8])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aun9x-0001bY-Uj
- for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 20:31:10 +0000
-Date: Mon, 25 Apr 2016 15:30:47 -0500
-From: "Serge E. Hallyn" <serge@hallyn.com>
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
- linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 14/21] fs: Allow superblock owner to change ownership
- of inodes with unmappable ids
-Message-ID: <20160425203047.GA29927@mail.hallyn.com>
-References: <1461339521-123191-1-git-send-email-seth.forshee@canonical.com>
- <1461339521-123191-15-git-send-email-seth.forshee@canonical.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1aunWY-0004W5-16
+ for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 20:54:31 +0000
+Date: Mon, 25 Apr 2016 22:53:57 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Tom Rini <trini@konsulko.com>
+Cc: Scott Wood <oss@buserror.net>, Scott Wood <scottwood@freescale.com>,
+ Marek Vasut <marex@denx.de>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ u-boot@lists.denx.de, "linux-sunxi@googlegroups.com"
+ <linux-sunxi@googlegroups.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Alexander Kaplan <alex@nextthing.co>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [U-Boot] Porting Linux's MTD/NAND changes into U-Boot
+Message-ID: <20160425225357.7bb6338d@bbrezillon>
+In-Reply-To: <20160425173646.GM3732@bill-the-cat>
+References: <20160425164314.15c3fc94@bbrezillon>
+ <20160425173646.GM3732@bill-the-cat>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1461339521-123191-15-git-send-email-seth.forshee@canonical.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,170 +30,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Quoting Seth Forshee (seth.forshee@canonical.com):
-> In a userns mount some on-disk inodes may have ids which do not
-> map into s_user_ns, in which case the in-kernel inodes are owned
-> by invalid users. The superblock owner should be able to change
-> attributes of these inodes but cannot. However it is unsafe to
-> grant the superblock owner privileged access to all inodes in the
-> superblock since proc, sysfs, etc. use DAC to protect files which
-> may not belong to s_user_ns. The problem is restricted to only
-> inodes where the owner or group is an invalid user.
+On Mon, 25 Apr 2016 13:36:46 -0400
+Tom Rini <trini@konsulko.com> wrote:
+
+> On Mon, Apr 25, 2016 at 04:43:14PM +0200, Boris Brezillon wrote:
 > 
-> We can work around this by allowing users with CAP_CHOWN in
-> s_user_ns to change an invalid owner or group id, so long as the
-> other id is either invalid or mappable in s_user_ns. After
-> changing ownership the user will be privileged towards the inode
-> and thus able to change other attributes.
+> > Hi Scott,
+> > 
+> > I've recently contributed a lot of MTD/NAND related patches (and intend
+> > to continue doing so). Some of them are transversal changes touching the
+> > MTD and NAND framework internals, which implies patching all NAND
+> > drivers along with the core changes.
+> > 
+> > All those changes are required to properly handle modern NANDs (MLC/TLC
+> > NANDs), and I need them to add proper NAND support to the sunxi
+> > platform (and more particularly to the C.H.I.P from NextThing Co.).
+> > 
+> > So my question is, how should I port those changes to U-Boot? I see
+> > that your doing "synchronization commits", but in my case this mean
+> > including a bunch of driver specific changes into this "sync commit".
+> > 
+> > I think it's also worth mentioning that I plan to heavily rework the
+> > Linux NAND framework to improve NAND performances on modern NAND
+> > controllers and clarify the NAND chip / NAND controller concepts, and
+> > other people are also working on merging the BBT code of the NAND and
+> > OneNAND framework. Which unfortunately means that we're not done porting
+> > invasive changes to U-Boot :-/.
+> > 
+> > Any advice is welcome.  
 > 
-> As an precaution, checks for invalid ids are added to the proc
-> and kernfs setattr interfaces. These filesystems are not expected
-> to have inodes with invalid ids, but if it does happen any
-> setattr operations will return -EPERM.
+> I suppose my first suggestion would be to sync the kernel back into
+> U-Boot more frequently.  With our bi-monthly release cycle it shouldn't
+> be too hard to pick a window to grab the current kernel release and
+> bring it over.  I think the more stuff we let build up prior to syncing
+> the harder it will be.
 > 
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 
-Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
+Okay, so this means I should be the one back-porting Linux changes into
+U-Boot? I was planning on porting my current work on the sunxi NAND
+driver (including all the core dependencies) and submitting it to
+U-Boot, but honestly, I don't see how I can keep things in sync in the
+long run. From my experience, porting things to U-Boot is never as
+easy at it seems, and I don't think I'll have the time to maintain that
+by myself. Scott, what's your policy regarding Linux -> U-Boot syncs?
+Can I expect some help from your side?
 
-bug a request below,
 
-> ---
->  fs/attr.c             | 47 +++++++++++++++++++++++++++++++++++++++--------
->  fs/kernfs/inode.c     |  2 ++
->  fs/proc/base.c        |  2 ++
->  fs/proc/generic.c     |  3 +++
->  fs/proc/proc_sysctl.c |  2 ++
->  5 files changed, 48 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/attr.c b/fs/attr.c
-> index 3cfaaac4a18e..a8b0931654a5 100644
-> --- a/fs/attr.c
-> +++ b/fs/attr.c
-> @@ -16,6 +16,43 @@
->  #include <linux/evm.h>
->  #include <linux/ima.h>
->  
-> +static bool chown_ok(const struct inode *inode, kuid_t uid)
-> +{
-> +	struct user_namespace *user_ns;
-> +
-> +	if (uid_eq(current_fsuid(), inode->i_uid) && uid_eq(uid, inode->i_uid))
-> +		return true;
-> +	if (capable_wrt_inode_uidgid(inode, CAP_CHOWN))
-> +		return true;
-> +
-> +	user_ns = inode->i_sb->s_user_ns;
-> +	if (!uid_valid(inode->i_uid) &&
-> +	    (!gid_valid(inode->i_gid) || kgid_has_mapping(user_ns, inode->i_gid)) &&
-
-This confused me to no end :)  Perhaps a "is_unmapped_valid_gid()" helper
-would make it clearer what this is meant to do?  Or else maybe a comment
-above chown_ok(), explaining that
-
-1. for a blockdev, the uid is converted at inode read so that it is
-either mapped or invalid
-2. for sysfs / etc, uid can be valid but not mapped into the userns
-
-> +	    ns_capable(user_ns, CAP_CHOWN))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +static bool chgrp_ok(const struct inode *inode, kgid_t gid)
-> +{
-> +	struct user_namespace *user_ns;
-> +
-> +	if (uid_eq(current_fsuid(), inode->i_uid) &&
-> +	    (in_group_p(gid) || gid_eq(gid, inode->i_gid)))
-> +		return true;
-> +	if (capable_wrt_inode_uidgid(inode, CAP_CHOWN))
-> +		return true;
-> +
-> +	user_ns = inode->i_sb->s_user_ns;
-> +	if (!gid_valid(inode->i_gid) &&
-> +	    (!uid_valid(inode->i_uid) || kuid_has_mapping(user_ns, inode->i_uid)) &&
-> +	    ns_capable(user_ns, CAP_CHOWN))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  /**
->   * inode_change_ok - check if attribute changes to an inode are allowed
->   * @inode:	inode to check
-> @@ -58,17 +95,11 @@ int inode_change_ok(const struct inode *inode, struct iattr *attr)
->  		return 0;
->  
->  	/* Make sure a caller can chown. */
-> -	if ((ia_valid & ATTR_UID) &&
-> -	    (!uid_eq(current_fsuid(), inode->i_uid) ||
-> -	     !uid_eq(attr->ia_uid, inode->i_uid)) &&
-> -	    !capable_wrt_inode_uidgid(inode, CAP_CHOWN))
-> +	if ((ia_valid & ATTR_UID) && !chown_ok(inode, attr->ia_uid))
->  		return -EPERM;
->  
->  	/* Make sure caller can chgrp. */
-> -	if ((ia_valid & ATTR_GID) &&
-> -	    (!uid_eq(current_fsuid(), inode->i_uid) ||
-> -	    (!in_group_p(attr->ia_gid) && !gid_eq(attr->ia_gid, inode->i_gid))) &&
-> -	    !capable_wrt_inode_uidgid(inode, CAP_CHOWN))
-> +	if ((ia_valid & ATTR_GID) && !chgrp_ok(inode, attr->ia_gid))
->  		return -EPERM;
->  
->  	/* Make sure a caller can chmod. */
-> diff --git a/fs/kernfs/inode.c b/fs/kernfs/inode.c
-> index 16405ae88d2d..2e97a337ee5f 100644
-> --- a/fs/kernfs/inode.c
-> +++ b/fs/kernfs/inode.c
-> @@ -117,6 +117,8 @@ int kernfs_iop_setattr(struct dentry *dentry, struct iattr *iattr)
->  
->  	if (!kn)
->  		return -EINVAL;
-> +	if (!uid_valid(inode->i_uid) || !gid_valid(inode->i_gid))
-> +		return -EPERM;
->  
->  	mutex_lock(&kernfs_mutex);
->  	error = inode_change_ok(inode, iattr);
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index b1755b23893e..648d623e2158 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -711,6 +711,8 @@ int proc_setattr(struct dentry *dentry, struct iattr *attr)
->  
->  	if (attr->ia_valid & ATTR_MODE)
->  		return -EPERM;
-> +	if (!uid_valid(inode->i_uid) || !gid_valid(inode->i_gid))
-> +		return -EPERM;
->  
->  	error = inode_change_ok(inode, attr);
->  	if (error)
-> diff --git a/fs/proc/generic.c b/fs/proc/generic.c
-> index ff3ffc76a937..1461570c552c 100644
-> --- a/fs/proc/generic.c
-> +++ b/fs/proc/generic.c
-> @@ -105,6 +105,9 @@ static int proc_notify_change(struct dentry *dentry, struct iattr *iattr)
->  	struct proc_dir_entry *de = PDE(inode);
->  	int error;
->  
-> +	if (!uid_valid(inode->i_uid) || !gid_valid(inode->i_gid))
-> +		return -EPERM;
-> +
->  	error = inode_change_ok(inode, iattr);
->  	if (error)
->  		return error;
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index fe5b6e6c4671..f5d575157194 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -752,6 +752,8 @@ static int proc_sys_setattr(struct dentry *dentry, struct iattr *attr)
->  
->  	if (attr->ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID))
->  		return -EPERM;
-> +	if (!uid_valid(inode->i_uid) || !gid_valid(inode->i_gid))
-> +		return -EPERM;
->  
->  	error = inode_change_ok(inode, attr);
->  	if (error)
-> -- 
-> 1.9.1
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
