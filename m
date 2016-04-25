@@ -1,26 +1,14 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aunWY-0004W5-16
- for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 20:54:31 +0000
-Date: Mon, 25 Apr 2016 22:53:57 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Tom Rini <trini@konsulko.com>
-Cc: Scott Wood <oss@buserror.net>, Scott Wood <scottwood@freescale.com>,
- Marek Vasut <marex@denx.de>, Thomas Petazzoni
- <thomas.petazzoni@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- u-boot@lists.denx.de, "linux-sunxi@googlegroups.com"
- <linux-sunxi@googlegroups.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Alexander Kaplan <alex@nextthing.co>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [U-Boot] Porting Linux's MTD/NAND changes into U-Boot
-Message-ID: <20160425225357.7bb6338d@bbrezillon>
-In-Reply-To: <20160425173646.GM3732@bill-the-cat>
-References: <20160425164314.15c3fc94@bbrezillon>
- <20160425173646.GM3732@bill-the-cat>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ id 1aungQ-000542-UF
+ for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 21:04:44 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: ezequiel@vanguardiasur.com.ar, Richard Weinberger <richard@nod.at>,
+ stable@vger.kernel.org
+Subject: [PATCH] UBI: Fix static volume checks when Fastmap is used
+Date: Mon, 25 Apr 2016 23:04:05 +0200
+Message-Id: <1461618245-11202-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,53 +18,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 25 Apr 2016 13:36:46 -0400
-Tom Rini <trini@konsulko.com> wrote:
+Ezequiel reported that he's facing UBI going into read-only
+mode after power cut. It turned out that this behavior happens
+only when updating a static volume is interrupted and Fastmap is
+used.
 
-> On Mon, Apr 25, 2016 at 04:43:14PM +0200, Boris Brezillon wrote:
-> 
-> > Hi Scott,
-> > 
-> > I've recently contributed a lot of MTD/NAND related patches (and intend
-> > to continue doing so). Some of them are transversal changes touching the
-> > MTD and NAND framework internals, which implies patching all NAND
-> > drivers along with the core changes.
-> > 
-> > All those changes are required to properly handle modern NANDs (MLC/TLC
-> > NANDs), and I need them to add proper NAND support to the sunxi
-> > platform (and more particularly to the C.H.I.P from NextThing Co.).
-> > 
-> > So my question is, how should I port those changes to U-Boot? I see
-> > that your doing "synchronization commits", but in my case this mean
-> > including a bunch of driver specific changes into this "sync commit".
-> > 
-> > I think it's also worth mentioning that I plan to heavily rework the
-> > Linux NAND framework to improve NAND performances on modern NAND
-> > controllers and clarify the NAND chip / NAND controller concepts, and
-> > other people are also working on merging the BBT code of the NAND and
-> > OneNAND framework. Which unfortunately means that we're not done porting
-> > invasive changes to U-Boot :-/.
-> > 
-> > Any advice is welcome.  
-> 
-> I suppose my first suggestion would be to sync the kernel back into
-> U-Boot more frequently.  With our bi-monthly release cycle it shouldn't
-> be too hard to pick a window to grab the current kernel release and
-> bring it over.  I think the more stuff we let build up prior to syncing
-> the harder it will be.
-> 
+UBI checks static volumes for data consistency and reads the
+whole volume upon first open. If the volume is found erroneous
+users of UBI cannot read from it, but another volume update is
+possible to fix it. The check is performed by running
+ubi_eba_read_leb() on every allocated LEB of the volume.
+For static volumes ubi_eba_read_leb() computes the checksum of all
+data stored in a LEB. To verify the computed checksum it has to read
+the LEB's volume header which stores the original checksum.
+If the volume header is not found UBI treats this as fatal internal
+error and switches to RO mode. If the UBI device was attached via a
+full scan the assumption is correct, the volume header has to be
+present as it had to be there while scanning to get known as mapped.
+If the attach operation happened via Fastmap the assumption is no
+longer correct. When attaching via Fastmap UBI learns the mapping
+table from Fastmap's snapshot of the system state and not via a full
+scan. It can happen that a LEB got unmapped after a Fastmap was
+written to the flash. Then UBI can learn the LEB still as mapped and
+accessing it returns only 0xFF bytes. As UBI is not a FTL it is
+allowed to have mappings to empty PEBs, it assumes that the layer
+above takes care of LEB accounting and referencing.
+UBIFS does so using the LEB property tree (LPT).
+For static volumes UBI blindly assumes that all LEBs are present and
+therefore special actions have to be taken.
 
-Okay, so this means I should be the one back-porting Linux changes into
-U-Boot? I was planning on porting my current work on the sunxi NAND
-driver (including all the core dependencies) and submitting it to
-U-Boot, but honestly, I don't see how I can keep things in sync in the
-long run. From my experience, porting things to U-Boot is never as
-easy at it seems, and I don't think I'll have the time to maintain that
-by myself. Scott, what's your policy regarding Linux -> U-Boot syncs?
-Can I expect some help from your side?
+The described situation can happen when updating a static volume is
+interrupted, either by a user or a power cut.
+The volume update code first unmaps all LEBs of a volume and then
+writes LEB by LEB. If the sequence of operations is interrupted UBI
+detects this either by the absence of LEBs, no volume header present
+at scan time, or corrupted payload, detected via checksum.
+In the Fastmap case the former method won't trigger as no scan
+happened and UBI automatically thinks all LEBs are present.
+Only by reading data from a LEB it detects that the volume header is
+missing and incorrectly treats this as fatal error.
+To deal with the situation ubi_eba_read_leb() from now on checks
+whether we attached via Fastmap and handles the absence of a
+volume header like a data corruption error.
+This way interrupted static volume updates will correctly get detected
+also when Fastmap is used.
 
+Cc: stable@vger.kernel.org
+Reported-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/eba.c     | 21 +++++++++++++++++++--
+ drivers/mtd/ubi/fastmap.c |  1 +
+ drivers/mtd/ubi/ubi.h     |  2 ++
+ 3 files changed, 22 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 5b9834c..96fddb0 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -426,8 +426,25 @@ retry:
+ 						 pnum, vol_id, lnum);
+ 					err = -EBADMSG;
+ 				} else {
+-					err = -EINVAL;
+-					ubi_ro_mode(ubi);
++					/*
++					 * Ending up here in the non-Fastmap case
++					 * is a clear bug as the VID header had to
++					 * be present at scan time to have it referenced.
++					 * With fastmap the story is more complicated.
++					 * Fastmap has the mapping info without the need
++					 * of a full scan. So the LEB could have been
++					 * unmapped, Fastmap cannot know this and keeps
++					 * the LEB referenced.
++					 * This is valid and works as the layer above UBI
++					 * has to do bookkeeping about used/referenced
++					 * LEBs in any case.
++					 */
++					if (ubi->fast_attach) {
++						err = -EBADMSG;
++					} else {
++						err = -EINVAL;
++						ubi_ro_mode(ubi);
++					}
+ 				}
+ 			}
+ 			goto out_free;
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 263b439..990898b 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -1058,6 +1058,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	ubi_msg(ubi, "fastmap WL pool size: %d",
+ 		ubi->fm_wl_pool.max_size);
+ 	ubi->fm_disabled = 0;
++	ubi->fast_attach = 1;
+ 
+ 	ubi_free_vid_hdr(ubi, vh);
+ 	kfree(ech);
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index dadc6a9..61d4e99 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -466,6 +466,7 @@ struct ubi_debug_info {
+  * @fm_eba_sem: allows ubi_update_fastmap() to block EBA table changes
+  * @fm_work: fastmap work queue
+  * @fm_work_scheduled: non-zero if fastmap work was scheduled
++ * @fast_attach: non-zero if UBI was attached by fastmap
+  *
+  * @used: RB-tree of used physical eraseblocks
+  * @erroneous: RB-tree of erroneous used physical eraseblocks
+@@ -574,6 +575,7 @@ struct ubi_device {
+ 	size_t fm_size;
+ 	struct work_struct fm_work;
+ 	int fm_work_scheduled;
++	int fast_attach;
+ 
+ 	/* Wear-leveling sub-system's stuff */
+ 	struct rb_root used;
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.7.3
