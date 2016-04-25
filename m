@@ -1,18 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mail.kernel.org ([198.145.29.136])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aufkI-00011n-AB
- for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 12:36:11 +0000
-From: Markus Pargmann <mpa@pengutronix.de>
-To: Han Xu <han.xu@nxp.com>, David Woodhouse <dwmw2@infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie.huang@intel.com>,
- Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
- Markus Pargmann <mpa@pengutronix.de>, Stefan Christ <s.christ@phytec.de>
-Subject: [PATCH v2] gpmi-nand: Handle ECC Errors in erased pages
-Date: Mon, 25 Apr 2016 14:35:12 +0200
-Message-Id: <1461587712-16403-1-git-send-email-mpa@pengutronix.de>
+ id 1aufna-00034z-1E
+ for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 12:39:34 +0000
+Date: Mon, 25 Apr 2016 07:39:07 -0500
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] mtd: nand: add support for "nand-ecc-algo" DT property
+Message-ID: <20160425123907.GA26373@rob-hp-laptop>
+References: <1461324197-1333-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1461324197-1333-1-git-send-email-zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,145 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ECC is only calculated for written pages. As erased pages are not
-actively written the ECC is always invalid. For this purpose the
-Hardware BCH unit is able to check for erased pages and does not raise
-an ECC error in this case. This behaviour can be influenced using the
-BCH_MODE register which sets the number of allowed bitflips in an erased
-page. Unfortunately the unit is not capable of fixing the bitflips in
-memory.
+On Fri, Apr 22, 2016 at 01:23:13PM +0200, Rafał Miłecki wrote:
+> So far it was only possible to specify ECC algorithm using "soft" and
+> "soft_bch" values of nand-ecc-mode prop. There wasn't a way to specify
+> it for a hardware ECC mode.
+> 
+> Now that we have independent field in NAND subsystem for storing info
+> about ECC algorithm we may also add support for this new DT property.
+> 
+> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand.txt |  2 ++
+>  drivers/mtd/nand/nand_base.c                   | 20 +++++++++++++-------
+>  2 files changed, 15 insertions(+), 7 deletions(-)
 
-To avoid complete software checks for erased pages, we can simply check
-buffers with uncorrectable ECC errors because we know that any erased
-page with errors is uncorrectable by the BCH unit.
-
-This patch adds the generic nand_check_erased_ecc_chunk() to gpmi-nand
-to correct erased pages. To have the valid data in the buffer before
-using them, this patch moves the read_page_swap_end() call before the
-ECC status checking for-loop.
-
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-[Squashed patches by Stefan and Boris to check ECC area]
-Cc: Stefan Christ <s.christ@phytec.de>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-
-Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
----
-Hi,
-
-thanks for the patches Stefan and Boris, I squashed it into this patch.
-
-Best Regards,
-
-Markus
-
-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 78 +++++++++++++++++++++++++++++++---
- 1 file changed, 73 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 235ddcb58f39..71ee1696bcd1 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1035,14 +1035,87 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	/* Loop over status bytes, accumulating ECC status. */
- 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
- 
-+	read_page_swap_end(this, buf, nfc_geo->payload_size,
-+			   this->payload_virt, this->payload_phys,
-+			   nfc_geo->payload_size,
-+			   payload_virt, payload_phys);
-+
- 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
- 		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
- 			continue;
- 
- 		if (*status == STATUS_UNCORRECTABLE) {
-+			int eccbits = nfc_geo->ecc_strength * nfc_geo->gf_len;
-+			u8 *eccbuf = this->raw_buffer;
-+			int offset, bitoffset;
-+			int eccbytes;
-+			int flips;
-+
-+			/* Read ECC bytes into our internal raw_buffer */
-+			offset = nfc_geo->metadata_size * 8;
-+			offset += ((8 * nfc_geo->ecc_chunk_size) + eccbits) * (i + 1);
-+			offset -= eccbits;
-+			bitoffset = offset % 8;
-+			eccbytes = DIV_ROUND_UP(offset + eccbits, 8);
-+			offset /= 8;
-+			eccbytes -= offset;
-+			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, offset, -1);
-+			chip->read_buf(mtd, eccbuf, eccbytes);
-+
-+			/*
-+			 * ECC data are not byte aligned and we may have
-+			 * in-band data in the first and last byte of
-+			 * eccbuf. Set non-eccbits to one so that
-+			 * nand_check_erased_ecc_chunk() does not count them
-+			 * as bitflips.
-+			 */
-+			if (bitoffset)
-+				eccbuf[0] |= GENMASK(bitoffset - 1, 0);
-+
-+			bitoffset = (bitoffset + eccbits) % 8;
-+			if (bitoffset)
-+				eccbuf[eccbytes - 1] |= GENMASK(7, bitoffset);
-+
-+			/*
-+			 * The ECC hardware has an uncorrectable ECC status
-+			 * code in case we have bitflips in an erased page. As
-+			 * nothing was written into this subpage the ECC is
-+			 * obviously wrong and we can not trust it. We assume
-+			 * at this point that we are reading an erased page and
-+			 * try to correct the bitflips in buffer up to
-+			 * ecc_strength bitflips. If this is a page with random
-+			 * data, we exceed this number of bitflips and have a
-+			 * ECC failure. Otherwise we use the corrected buffer.
-+			 */
-+			if (i == 0) {
-+				/* The first block includes metadata */
-+				flips = nand_check_erased_ecc_chunk(
-+						buf + i * nfc_geo->ecc_chunk_size,
-+						nfc_geo->ecc_chunk_size,
-+						eccbuf, eccbytes,
-+						auxiliary_virt,
-+						nfc_geo->metadata_size,
-+						nfc_geo->ecc_strength);
-+			} else {
-+				flips = nand_check_erased_ecc_chunk(
-+						buf + i * nfc_geo->ecc_chunk_size,
-+						nfc_geo->ecc_chunk_size,
-+						eccbuf, eccbytes,
-+						NULL, 0,
-+						nfc_geo->ecc_strength);
-+			}
-+
-+			if (flips > 0) {
-+				max_bitflips = max_t(unsigned int, max_bitflips,
-+						     flips);
-+				mtd->ecc_stats.corrected += flips;
-+				continue;
-+			}
-+
- 			mtd->ecc_stats.failed++;
- 			continue;
- 		}
-+
- 		mtd->ecc_stats.corrected += *status;
- 		max_bitflips = max_t(unsigned int, max_bitflips, *status);
- 	}
-@@ -1062,11 +1135,6 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 		chip->oob_poi[0] = ((uint8_t *) auxiliary_virt)[0];
- 	}
- 
--	read_page_swap_end(this, buf, nfc_geo->payload_size,
--			this->payload_virt, this->payload_phys,
--			nfc_geo->payload_size,
--			payload_virt, payload_phys);
--
- 	return max_bitflips;
- }
- 
--- 
-2.8.0.rc3
+Acked-by: Rob Herring <robh@kernel.org>
