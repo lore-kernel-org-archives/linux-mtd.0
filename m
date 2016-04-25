@@ -1,19 +1,26 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1audKr-0004jL-2N
- for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 10:01:47 +0000
+ id 1audV1-0002ni-Vp
+ for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 10:12:16 +0000
+Date: Mon, 25 Apr 2016 12:11:53 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] mtd: introduce the mtd_pairing_scheme concept
-Date: Mon, 25 Apr 2016 12:01:18 +0200
-Message-Id: <1461578481-26567-2-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1461578481-26567-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1461578481-26567-1-git-send-email-boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Rob Herring
+ <robh+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org, Pawel Moll <pawel.moll@arm.com>, Mark
+ Rutland <mark.rutland@arm.com>, Ian Campbell
+ <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Richard
+ Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, devicetree@vger.kernel.org (open
+ list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
+ linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH 1/3] mtd: nand: add support for "nand-ecc-algo" DT property
+Message-ID: <20160425121153.7c56ad87@bbrezillon>
+In-Reply-To: <1461324197-1333-1-git-send-email-zajec5@gmail.com>
+References: <1461324197-1333-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,209 +30,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MLC and TLC NAND devices are using NAND cells exposing more than one bit,
-but instead of attaching all the bits in a given cell to a single NAND
-page, each bit is usually attached to a different page. This concept is
-called 'page pairing', and has significant impacts on the flash storage
-usage.
-The main problem showed by these devices is that interrupting a page
-program operation may not only corrupt the page we are programming
-but also the page it is paired with, hence the need to expose to MTD
-users the pairing scheme information.
+On Fri, 22 Apr 2016 13:23:13 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-The pairing APIs allows one to query pairing information attached to a
-given page (here called wunit), or the other way around (the wunit
-pointed by pairing information).
-It also provides several helpers to help the conversion between absolute
-offsets and wunits, and query the number of pairing groups.
+> So far it was only possible to specify ECC algorithm using "soft" and
+> "soft_bch" values of nand-ecc-mode prop. There wasn't a way to specify
+> it for a hardware ECC mode.
+>=20
+> Now that we have independent field in NAND subsystem for storing info
+> about ECC algorithm we may also add support for this new DT property.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand.txt |  2 ++
+>  drivers/mtd/nand/nand_base.c                   | 20 +++++++++++++-------
+>  2 files changed, 15 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentati=
+on/devicetree/bindings/mtd/nand.txt
+> index a17662b..5ac4ab7 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> @@ -22,6 +22,8 @@ Optional NAND chip properties:
+>  - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+>    Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_fir=
+st",
+>    "soft_bch".
+> +- nand-ecc-algo: string, algorithm of NAND ECC.
+> +		 Supported values are: "hamming", "bch".
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/mtdcore.c   | 62 +++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/mtdpart.c   |  1 +
- include/linux/mtd/mtd.h | 64 +++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 127 insertions(+)
+Rob, any objection to this binding change (and the one in patch 3).
+Please note that everything is backward compatible.
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index e3936b8..315adc0 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -376,6 +376,68 @@ static int mtd_reboot_notifier(struct notifier_block *n, unsigned long state,
- }
- 
- /**
-+ *	mtd_wunit_to_pairing_info - get pairing information of a wunit
-+ *	@mtd: pointer to new MTD device info structure
-+ *	@wunit: the write unit we are interrested in
-+ *	@info: pairing information struct
-+ *
-+ *	Retrieve pairing information associated to the wunit.
-+ *	This is mainly useful when dealing with MLC/TLC NANDs where pages
-+ *	can be paired together, and where programming a page may influence
-+ *	the page it is paired with.
-+ *	The notion of page is replaced by the term wunit (write-unit).
-+ */
-+void mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
-+			       struct mtd_pairing_info *info)
-+{
-+	if (!mtd->pairing || !mtd->pairing->get_info) {
-+		info->group = 0;
-+		info->pair = wunit;
-+	} else {
-+		mtd->pairing->get_info(mtd, wunit, info);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(mtd_wunit_to_pairing_info);
-+
-+/**
-+ *	mtd_wunit_to_pairing_info - get wunit from pairing information
-+ *	@mtd: pointer to new MTD device info structure
-+ *	@info: pairing information struct
-+ *
-+ *	Return a positive number representing the wunit associated to the
-+ *	info struct, or a negative error code.
-+ */
-+int mtd_pairing_info_to_wunit(struct mtd_info *mtd,
-+			      const struct mtd_pairing_info *info)
-+{
-+	if (!mtd->pairing || !mtd->pairing->get_info) {
-+		if (info->group)
-+			return -EINVAL;
-+
-+		return info->pair;
-+	}
-+
-+	return mtd->pairing->get_wunit(mtd, info);
-+}
-+EXPORT_SYMBOL_GPL(mtd_pairing_info_to_wunit);
-+
-+/**
-+ *	mtd_pairing_groups_per_eb - get the number of pairing groups per erase
-+ *				    block
-+ *	@mtd: pointer to new MTD device info structure
-+ *
-+ *	Return the number of pairing groups per erase block.
-+ */
-+int mtd_pairing_groups_per_eb(struct mtd_info *mtd)
-+{
-+	if (!mtd->pairing || !mtd->pairing->ngroups)
-+		return 1;
-+
-+	return mtd->pairing->ngroups;
-+}
-+EXPORT_SYMBOL_GPL(mtd_pairing_groups_per_eb);
-+
-+/**
-  *	add_mtd_device - register an MTD device
-  *	@mtd: pointer to new MTD device info structure
-  *
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 1f13e32..e32a0ac 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -397,6 +397,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	slave->mtd.oobsize = master->oobsize;
- 	slave->mtd.oobavail = master->oobavail;
- 	slave->mtd.subpage_sft = master->subpage_sft;
-+	slave->mtd.pairing = master->pairing;
- 
- 	slave->mtd.name = name;
- 	slave->mtd.owner = master->owner;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 29a1706..4961092 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -127,6 +127,36 @@ struct mtd_ooblayout_ops {
- 		    struct mtd_oob_region *oobfree);
- };
- 
-+/**
-+ * struct mtd_pairing_info - Page pairing information
-+ *
-+ * @pair: represent the pair index in the paired pages table.For example, if
-+ *	  page 0 and page 2 are paired together they form the first pair.
-+ * @group: the group represent the bit position in the cell. For example,
-+ *	   page 0 uses bit 0 and is thus part of group 0.
-+ */
-+struct mtd_pairing_info {
-+	int pair;
-+	int group;
-+};
-+
-+/**
-+ * struct mtd_pairing_scheme - Page pairing information
-+ *
-+ * @ngroups: number of groups. Should be related to the number of bits
-+ *	     per cell.
-+ * @get_info: get the paring info of a given write-unit (ie page). This
-+ *	      function should fill the info struct passed in argument.
-+ * @get_page: convert paring information into a write-unit (page) number.
-+ */
-+struct mtd_pairing_scheme {
-+	int ngroups;
-+	void (*get_info)(struct mtd_info *mtd, int wunit,
-+			 struct mtd_pairing_info *info);
-+	int (*get_wunit)(struct mtd_info *mtd,
-+			 const struct mtd_pairing_info *info);
-+};
-+
- struct module;	/* only needed for owner field in mtd_info */
- 
- struct mtd_info {
-@@ -188,6 +218,9 @@ struct mtd_info {
- 	/* OOB layout description */
- 	const struct mtd_ooblayout_ops *ooblayout;
- 
-+	/* NAND pairing scheme, only provided for MLC/TLC NANDs */
-+	const struct mtd_pairing_scheme *pairing;
-+
- 	/* the ecc step size. */
- 	unsigned int ecc_step_size;
- 
-@@ -312,6 +345,32 @@ static inline int mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
- 	return ops->mode == MTD_OPS_AUTO_OOB ? mtd->oobavail : mtd->oobsize;
- }
- 
-+static inline int mtd_offset_to_wunit(struct mtd_info *mtd, loff_t offs)
-+{
-+	if (mtd->erasesize_mask)
-+		offs &= mtd->erasesize_mask;
-+	else
-+		offs = offs % mtd->erasesize;
-+
-+	if (mtd->writesize_shift)
-+		offs >>= mtd->writesize_shift;
-+	else
-+		offs %= mtd->writesize;
-+
-+	return offs;
-+}
-+
-+static inline loff_t mtd_wunit_to_offset(struct mtd_info *mtd, loff_t base,
-+					 int wunit)
-+{
-+	return base + (wunit * mtd->writesize);
-+}
-+
-+void mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
-+			       struct mtd_pairing_info *info);
-+int mtd_pairing_info_to_wunit(struct mtd_info *mtd,
-+			      const struct mtd_pairing_info *info);
-+int mtd_pairing_groups_per_eb(struct mtd_info *mtd);
- int mtd_erase(struct mtd_info *mtd, struct erase_info *instr);
- int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	      void **virt, resource_size_t *phys);
-@@ -397,6 +456,11 @@ static inline uint32_t mtd_mod_by_ws(uint64_t sz, struct mtd_info *mtd)
- 	return do_div(sz, mtd->writesize);
- }
- 
-+static inline int mtd_wunit_per_eb(struct mtd_info *mtd)
-+{
-+	return mtd->erasesize / mtd->writesize;
-+}
-+
- static inline int mtd_has_oob(const struct mtd_info *mtd)
- {
- 	return mtd->_read_oob && mtd->_write_oob;
--- 
-2.7.4
+Thanks,
+
+Boris
+
+>  - nand-bus-width : 8 or 16 bus width if not present 8
+>  - nand-on-flash-bbt: boolean to enable on flash bbt option if not presen=
+t false
+> =20
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 7bc37b4..a5417a0 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4003,17 +4003,23 @@ static int of_get_nand_ecc_mode(struct device_nod=
+e *np)
+>  	return -ENODEV;
+>  }
+> =20
+> +static const char * const nand_ecc_algos[] =3D {
+> +	[NAND_ECC_HAMMING]	=3D "hamming",
+> +	[NAND_ECC_BCH]		=3D "bch",
+> +};
+> +
+>  static int of_get_nand_ecc_algo(struct device_node *np)
+>  {
+>  	const char *pm;
+> -	int err;
+> +	int err, i;
+> =20
+> -	/*
+> -	 * TODO: Read ECC algo OF property and map it to enum nand_ecc_algo.
+> -	 * It's not implemented yet as currently NAND subsystem ignores
+> -	 * algorithm explicitly set this way. Once it's handled we should
+> -	 * document & support new property.
+> -	 */
+> +	err =3D of_property_read_string(np, "nand-ecc-algo", &pm);
+> +	if (!err) {
+> +		for (i =3D 0; i < ARRAY_SIZE(nand_ecc_algos); i++)
+> +			if (!strcasecmp(pm, nand_ecc_algos[i]))
+> +				return i;
+> +		return -ENODEV;
+> +	}
+> =20
+>  	/*
+>  	 * For backward compatibility we also read "nand-ecc-mode" checking
+
+
+
+--=20
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
