@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auolo-0004wM-DR
- for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 22:14:22 +0000
+ id 1auolo-0004wQ-DT
+ for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 22:14:24 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5/8] mtd-utils: Add flash speed test Utility
-Date: Tue, 26 Apr 2016 00:13:26 +0200
-Message-Id: <1461622409-14970-6-git-send-email-richard@nod.at>
+Subject: [PATCH 8/8] mtd-utils: Add nand page test utility
+Date: Tue, 26 Apr 2016 00:13:29 +0200
+Message-Id: <1461622409-14970-9-git-send-email-richard@nod.at>
 In-Reply-To: <1461622409-14970-1-git-send-email-richard@nod.at>
 References: <1461622409-14970-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,64 +22,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 
-Basically a user space port of the mtd speed test kernel module.
-In addition to the block offset and count module parameters, the
-utility supports a block stride and can restore the block contents
-after test. Furthermore, a flag can be used to disable destructive
-tests (i.e. only perform read speed tests).
+Basically a user space port of the mtd page test kernel module.
+In addition to the module parameters, the utility supports using
+only a sub-range of the flash erase blocks with a configurable stride.
 
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- .gitignore               |   1 +
- Makefile                 |   4 +-
- misc-utils/flash_speed.c | 463 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 467 insertions(+), 1 deletion(-)
- create mode 100644 misc-utils/flash_speed.c
+ .gitignore                |   1 +
+ Makefile                  |   2 +-
+ nand-utils/nandpagetest.c | 579 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 581 insertions(+), 1 deletion(-)
+ create mode 100644 nand-utils/nandpagetest.c
 
 diff --git a/.gitignore b/.gitignore
-index 3d03708..6d98b3d 100644
+index 8e240d5..ff25458 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -37,6 +37,7 @@
- /misc-utils/mtdpart
- /misc-utils/flash_torture
- /misc-utils/flash_stress
-+/misc-utils/flash_speed
- /nand-utils/nanddump
- /nand-utils/nandtest
- /nand-utils/nandwrite
+@@ -45,6 +45,7 @@
+ /nand-utils/nftl_format
+ /nand-utils/nftldump
+ /nand-utils/nandbiterrs
++/nand-utils/nandpagetest
+ /misc-utils/recv_image
+ /nor-utils/rfddump
+ /nor-utils/rfdformat
 diff --git a/Makefile b/Makefile
-index 1bc41e0..2a7715d 100644
+index add8864..76491ce 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -20,7 +20,7 @@ MISC_BINS = \
- 	ftl_format doc_loadbios ftl_check mtd_debug docfdisk \
- 	serve_image recv_image mtdpart flash_erase flash_lock \
- 	flash_unlock flash_otp_info flash_otp_dump flash_otp_lock \
--	flash_otp_write flashcp flash_torture flash_stress
-+	flash_otp_write flashcp flash_torture flash_stress flash_speed
- UBI_BINS = \
- 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
- 	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
-@@ -97,6 +97,8 @@ LDLIBS_mkfs.jffs2  = -lz $(LZOLDLIBS)
- LDFLAGS_jffs2reader = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
- LDLIBS_jffs2reader  = -lz $(LZOLDLIBS)
+@@ -30,7 +30,7 @@ UBIFS_BINS = \
+ JFFSX_BINS = \
+ 	mkfs.jffs2 sumtool jffs2reader jffs2dump
+ NAND_BINS = \
+-	nanddump nandwrite nandtest nftldump nftl_format nandbiterrs
++	nanddump nandwrite nandtest nftldump nftl_format nandbiterrs nandpagetest
+ NOR_BINS = \
+ 	rfddump rfdformat
  
-+LDLIBS_flash_speed = -lrt
-+
- $(foreach v,$(MISC_BINS),$(eval $(call mkdep,misc-utils/,$(v))))
- $(foreach v,$(JFFSX_BINS),$(eval $(call mkdep,jffsX-utils/,$(v))))
- $(foreach v,$(NAND_BINS),$(eval $(call mkdep,nand-utils/,$(v))))
-diff --git a/misc-utils/flash_speed.c b/misc-utils/flash_speed.c
+diff --git a/nand-utils/nandpagetest.c b/nand-utils/nandpagetest.c
 new file mode 100644
-index 0000000..9b5355b
+index 0000000..11e2eef
 --- /dev/null
-+++ b/misc-utils/flash_speed.c
-@@ -0,0 +1,463 @@
++++ b/nand-utils/nandpagetest.c
+@@ -0,0 +1,579 @@
 +/*
-+ * Copyright (C) 2007 Nokia Corporation
-+ * Copyright (C) 2015 sigma star gmbh
++ * Copyright (C) 2006-2008 Nokia Corporation
++ * Copyright (C) 2016 sigma star gmbh
 + *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms of the GNU General Public License version 2 as published by
@@ -94,21 +83,17 @@ index 0000000..9b5355b
 + * this program; see the file COPYING. If not, write to the Free Software
 + * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 + *
-+ * Test read and write speed of a MTD device.
++ * Test page read and write on MTD device.
 + *
 + * Author: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 + *
-+ * Based on linux flash_speed.c
-+ * Author: Adrian Hunter <adrian.hunter@nokia.com>
++ * Based on linux pagetest.c
++ * Author: Adrian Hunter <ext-adrian.hunter@nokia.com>
 + */
-+#define DESTRUCTIVE 0x01
-+
-+#define PROGRAM_NAME "flash_speed"
++#define PROGRAM_NAME "nandpagetest"
 +
 +#include <mtd/mtd-user.h>
-+#include <sys/ioctl.h>
 +#include <unistd.h>
-+#include <string.h>
 +#include <stdlib.h>
 +#include <libmtd.h>
 +#include <stdio.h>
@@ -117,28 +102,30 @@ index 0000000..9b5355b
 +
 +#include "common.h"
 +
++#define KEEP_CONTENTS 0x01
++#define SEED_SET 0x02
++
 +static struct mtd_dev_info mtd;
-+static unsigned char *iobuf;
-+static unsigned char *bbt;
 +static const char *mtddev;
 +static libmtd_t mtd_desc;
-+static int fd;
 +
-+static int peb=-1, count=-1, skip=-1, flags=0;
-+static struct timespec start, finish;
-+static int pgsize, pgcnt;
-+static int goodebcnt;
++static unsigned char *bbt=NULL, *writebuf=NULL, *backup=NULL;
++static unsigned char *twopages=NULL, *boundary=NULL;
++static int peb = -1, seed = -1, skip = -1, ebcnt = -1, flags = 0;
++static int fd, bufsize, pgsize, pgcnt;
++static unsigned int rnd_state;
 +
 +static void usage(int status)
 +{
 +	fputs(
 +	"Usage: "PROGRAM_NAME" [OPTIONS] <device>\n\n"
-+	"Common options:\n"
-+	"  -h, --help          Display this help output\n"
-+	"  -b, --peb <num>     Start from this physical erase block\n"
-+	"  -c, --count <num>   Number of erase blocks to use (default: all)\n"
-+	"  -s, --skip <num>    Number of blocks to skip\n"
-+	"  -d, --destructive   Run destructive (erase and write speed) tests\n",
++	"Options:\n"
++	"  -h, --help         Display this help output\n"
++	"  -p, --peb <num>    Index of the first erase block to use\n"
++	"  -c, --count <num>  Number of erase blocks to user (default all)\n"
++	"  -s, --skip <num>   Number of erase blocks to skip\n"
++	"  -S, --seed <num>   Seed for pseudor random number generator\n"
++	"  -k, --keep         Restore existing contents after test\n",
 +	status==EXIT_SUCCESS ? stdout : stderr);
 +	exit(status);
 +}
@@ -177,10 +164,10 @@ index 0000000..9b5355b
 +				goto failarg;
 +			++i;
 +		} else if (!strcmp(argv[i], "--count") || !strcmp(argv[i], "-c")) {
-+			if (count > 0)
++			if (ebcnt >= 0)
 +				goto failmulti;
-+			count = read_num(i, i+1, argc, argv);
-+			if (count <= 0)
++			ebcnt = read_num(i, i+1, argc, argv);
++			if (ebcnt < 0)
 +				goto failarg;
 +			++i;
 +		} else if (!strcmp(argv[i], "--skip") || !strcmp(argv[i], "-s")) {
@@ -190,10 +177,16 @@ index 0000000..9b5355b
 +			if (skip < 0)
 +				goto failarg;
 +			++i;
-+		} else if (!strcmp(argv[i],"--destructive")||!strcmp(argv[i],"-d")) {
-+			if (flags & DESTRUCTIVE)
++		} else if (!strcmp(argv[i], "--seed") || !strcmp(argv[i], "-S")) {
++			if (flags & SEED_SET)
 +				goto failmulti;
-+			flags |= DESTRUCTIVE;
++			seed = read_num(i, i+1, argc, argv);
++			flags |= SEED_SET;
++			++i;
++		} else if (!strcmp(argv[i], "--keep") || !strcmp(argv[i], "-k")) {
++			if (flags & KEEP_CONTENTS)
++				goto failmulti;
++			flags |= KEEP_CONTENTS;
 +		} else {
 +			if (mtddev)
 +				usage(EXIT_FAILURE);
@@ -202,201 +195,297 @@ index 0000000..9b5355b
 +	}
 +
 +	if (!mtddev)
-+		errmsg_die("No device specified!\n");
++		errmsg_die("No device specified!");
 +
 +	if (peb < 0)
 +		peb = 0;
++	if (!(flags & SEED_SET))
++		seed = time(NULL);
 +	if (skip < 0)
 +		skip = 0;
-+	if (count < 0)
-+		count = 1;
 +	return;
 +failmulti:
-+	fprintf(stderr, "'%s' specified more than once!\n", argv[i]);
-+	exit(EXIT_FAILURE);
++	errmsg_die("'%s' specified more than once!", argv[i]);
 +failarg:
-+	fprintf(stderr, "Invalid argument for '%s'!\n", argv[i]);
-+	exit(EXIT_FAILURE);
++	errmsg_die("Invalid argument for '%s'!", argv[i]);
 +}
 +
 +static int write_eraseblock(int ebnum)
 +{
-+	int err = mtd_write(mtd_desc, &mtd, fd, ebnum, 0,
-+				iobuf, mtd.eb_size, NULL, 0, 0);
++	int i;
++
++	for (i = 0; i < mtd.eb_size; ++i)
++		writebuf[i] = rand_r(&rnd_state);
++
++	return mtd_write(mtd_desc, &mtd, fd, ebnum, 0,
++				writebuf, mtd.eb_size, NULL, 0, 0);
++}
++
++static void get_first_and_last_block(int *first, int *last)
++{
++	int i;
++
++	*first = peb;
++	for (i = 0; i < ebcnt && bbt[i]; ++i)
++		*first += skip + 1;
++
++	*last = peb + (ebcnt - 1) * (skip + 1);
++	for (i = 0; i < ebcnt && bbt[ebcnt - i - 1]; ++i)
++		*last -= skip + 1;
++}
++
++/* Do a read to set the internal dataRAMs to different data */
++static int flush_data_rams(int eb0, int ebn)
++{
++	int err;
++	err = mtd_read(&mtd, fd, eb0, 0, twopages, bufsize);
 +	if (err)
-+		fprintf(stderr, "Error writing block %d!\n", ebnum);
-+	return err;
-+}
-+
-+static int read_eraseblock(int ebnum)
-+{
-+	int err = mtd_read(&mtd, fd, ebnum, 0, iobuf, mtd.eb_size);
++		return err;
++	err = mtd_read(&mtd, fd, ebn, mtd.eb_size-bufsize,
++					twopages, bufsize);
 +	if (err)
-+		fprintf(stderr, "Error writing block %d!\n", ebnum);
-+	return err;
++		return err;
++	memset(twopages, 0, bufsize);
++	return 0;
 +}
 +
-+static int write_eraseblock_by_page(int ebnum)
++static int verify_eraseblock(int ebnum)
 +{
-+	void *buf = iobuf;
-+	int i, err = 0;
++	int err = 0, i, ret = 0, eb0, ebn, rd, diff;
++	loff_t  offset = 0, addr, addrn;
++	unsigned int j, old_state;
 +
-+	for (i = 0; i < pgcnt; ++i) {
-+		err = mtd_write(mtd_desc, &mtd, fd, ebnum, i * pgsize,
-+						buf, pgsize, NULL, 0, 0);
-+		if (err) {
-+			fprintf(stderr, "Error writing block %d, page %d!\n",
-+					ebnum, i);
-+			break;
-+		}
-+		buf += pgsize;
-+	}
++	for (i = 0; i < mtd.eb_size; ++i)
++		writebuf[i] = rand_r(&rnd_state);
 +
-+	return err;
-+}
++	get_first_and_last_block(&eb0, &ebn);
 +
-+static int write_eraseblock_by_2pages(int ebnum)
-+{
-+	int i, n = pgcnt / 2, err = 0;
-+	size_t sz = pgsize * 2;
-+	void *buf = iobuf;
-+
-+	for (i = 0; i < n; ++i) {
-+		err = mtd_write(mtd_desc, &mtd, fd, ebnum, i * sz,
-+						buf, sz, NULL, 0, 0);
-+		if (err) {
-+			fprintf(stderr, "Error writing block %d, page %d + %d!\n",
-+					ebnum, i*2, i*2+1);
-+			return err;
-+		}
-+		buf += sz;
-+	}
-+	if (pgcnt % 2) {
-+		err = mtd_write(mtd_desc, &mtd, fd, ebnum, i * sz,
-+						buf, pgsize, NULL, 0, 0);
-+		if (err) {
-+			fprintf(stderr, "Error reading block %d, page %d!\n",
-+					ebnum, i*2);
-+		}
-+	}
-+	return err;
-+}
-+
-+static int read_eraseblock_by_page(int ebnum)
-+{
-+	void *buf = iobuf;
-+	int i, err = 0;
-+
-+	for (i = 0; i < pgcnt; ++i) {
-+		err = mtd_read(&mtd, fd, ebnum, i * pgsize, iobuf, pgsize);
-+		if (err) {
-+			fprintf(stderr, "Error reading block %d, page %d!\n",
-+					ebnum, i);
-+			break;
-+		}
-+		buf += pgsize;
-+	}
-+
-+	return err;
-+}
-+
-+static int read_eraseblock_by_2pages(int ebnum)
-+{
-+	int i, n = pgcnt / 2, err = 0;
-+	size_t sz = pgsize * 2;
-+	void *buf = iobuf;
-+
-+	for (i = 0; i < n; ++i) {
-+		err = mtd_read(&mtd, fd, ebnum, i * sz, iobuf, sz);
-+		if (err) {
-+			fprintf(stderr, "Error reading block %d, page %d + %d!\n",
-+					ebnum, i*2, i*2+1);
-+			return err;
-+		}
-+		buf += sz;
-+	}
-+	if (pgcnt % 2) {
-+		err = mtd_read(&mtd, fd, ebnum, i * sz, iobuf, pgsize);
-+		if (err) {
-+			fprintf(stderr, "Error reading block %d, page %d!\n",
-+					ebnum, i*2);
-+		}
-+	}
-+
-+	return err;
-+}
-+
-+static void start_timing(void)
-+{
-+	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-+}
-+
-+static void stop_timing(void)
-+{
-+	clock_gettime(CLOCK_MONOTONIC_RAW, &finish);
-+}
-+
-+static long calc_speed(void)
-+{
-+	long ms;
-+
-+	ms = (finish.tv_sec - start.tv_sec) * 1000L;
-+	ms += (finish.tv_nsec - start.tv_nsec) / 1000000L;
-+
-+	if (ms <= 0)
-+		return 0;
-+
-+	return ((long)goodebcnt * (mtd.eb_size / 1024L) * 1000L) / ms;
-+}
-+
-+static void scan_for_bad_eraseblocks(unsigned int eb, int ebcnt, int ebskip)
-+{
-+	int i, bad = 0;
-+
-+	puts("scanning for bad eraseblocks");
-+
-+	for (i = 0; i < ebcnt; ++i) {
-+		bbt[i] = mtd_is_bad(&mtd, fd, eb + i*(ebskip+1)) ? 1 : 0;
-+		if (bbt[i])
-+			bad += 1;
-+	}
-+
-+	printf("scanned %d eraseblocks, %d are bad\n", ebcnt, bad);
-+}
-+
-+static int erase_good_eraseblocks(unsigned int eb, int ebcnt, int ebskip)
-+{
-+	int err = 0, block;
-+	unsigned int i;
-+
-+	for (i = 0; i < ebcnt; ++i) {
-+		if (bbt[i])
-+			continue;
-+		block = eb + i*(ebskip+1);
-+		err = mtd_erase(mtd_desc, &mtd, fd, block);
++	for (j = 0; j < pgcnt - 1; ++j, offset += pgsize) {
++		err = flush_data_rams(eb0, ebn);
 +		if (err)
-+			fprintf(stderr, "Error erasing block %d!\n", block);
++			return err;
++		err = mtd_read(&mtd, fd, ebnum, offset, twopages, bufsize);
++		if (err)
++			break;
++		if (memcmp(twopages, writebuf + (j * pgsize), bufsize)) {
++			fprintf(stderr, "error: verify failed at block %d, page %ld\n",
++					ebnum, ((long)offset) / pgsize );
++			ret = -1;
++		}
 +	}
++	/* Check boundary between eraseblocks */
++	addr = (loff_t)ebnum*mtd.eb_size + offset;
++	addrn = (loff_t)ebn*mtd.eb_size + mtd.eb_size - 2*pgsize;
 +
++	if (addr <= addrn && !mtd_is_bad(&mtd, fd, ebnum+1)) {
++		old_state = rnd_state;
++		err = flush_data_rams(eb0, ebn);
++		if (err)
++			return err;
++
++		if (lseek(fd, addr, SEEK_SET) != addr) {
++			fprintf(stderr, "cannot seek mtd%d to offset %"PRIdoff_t,
++	 				mtd.mtd_num, addr);
++			return -1;
++		}
++
++		for (rd = 0; rd < bufsize; rd += diff) {
++			diff = read(fd, twopages + rd, bufsize - rd);
++			if (diff < 0) {
++				fprintf(stderr, "cannot read %d bytes from mtd%d "
++								"(eraseblock %d, offset %d)",
++								bufsize-rd, mtd.mtd_num, ebnum,
++								(int)offset+rd);
++				return -1;
++		  	}
++		}
++
++		memcpy(boundary, writebuf + mtd.eb_size - pgsize, pgsize);
++
++		for (j = 0; j < pgsize; ++j)
++			(boundary + pgsize)[j] = rand_r(&rnd_state);
++
++		if (memcmp(twopages, boundary, bufsize)) {
++			fprintf(stderr, "error: verify failed at block %d, page %ld\n",
++					ebnum, ((long)offset) / pgsize );
++			ret = -1;
++		}
++		rnd_state = old_state;
++	}
++	return ret;
++}
++
++static int crosstest(void)
++{
++	unsigned char *pp1, *pp2, *pp3, *pp4;
++	int eb0, ebn, err = 0, offset;
++
++	puts("crosstest");
++	pp1 = xzalloc(pgsize * 4);
++	if (!pp1)
++		return -ENOMEM;
++	pp2 = pp1 + pgsize;
++	pp3 = pp2 + pgsize;
++	pp4 = pp3 + pgsize;
++
++	get_first_and_last_block(&eb0, &ebn);
++
++	/* Read 2nd-to-last page to pp1 */
++	err = mtd_read(&mtd, fd, ebn, mtd.eb_size - 2*pgsize, pp1, pgsize);
++	if (err)
++		goto out;
++
++	/* Read 3rd-to-last page to pp1 */
++	err = mtd_read(&mtd, fd, ebn, mtd.eb_size - 3*pgsize, pp1, pgsize);
++	if (err)
++		goto out;
++
++	/* Read first page to pp2 */
++	printf("reading page at block %d, page %d\n", eb0, 0);
++	err = mtd_read(&mtd, fd, eb0, 0, pp2, pgsize);
++	if (err)
++		goto out;
++
++	/* Read last page to pp3 */
++	offset = mtd.eb_size - pgsize;
++	printf("reading page at block %d, page %d\n", ebn, offset/pgsize);
++	err = mtd_read(&mtd, fd, ebn, offset, pp3, pgsize);
++	if (err)
++		goto out;
++
++	/* Read first page again to pp4 */
++	printf("reading page at block %d, page %d\n", eb0, 0);
++	err = mtd_read(&mtd, fd, eb0, 0, pp4, pgsize);
++	if (err)
++		goto out;
++
++	/* pp2 and pp4 should be the same */
++	printf("verifying pages read at block %d match\n", eb0);
++	if (memcmp(pp2, pp4, pgsize)) {
++		fputs("verify failed!\n", stderr);
++		err = -1;
++	} else {
++		puts("crosstest ok");
++	}
++out:
++	free(pp1);
 +	return err;
 +}
 +
-+#define TIME_OP_PER_PEB( op )\
-+		start_timing();\
-+		for (i = 0; i < count; ++i) {\
-+			if (bbt[i])\
-+				continue;\
-+			err = op(peb + i*(skip+1));\
-+			if (err)\
-+				goto out;\
-+		}\
-+		stop_timing();\
-+		speed = calc_speed()
++static int erasecrosstest(void)
++{
++	unsigned char *readbuf = twopages;
++	int err = 0, i, eb0, ebn;
++
++	puts("erasecrosstest");
++
++	get_first_and_last_block(&eb0, &ebn);
++
++	printf("erasing block %d\n", eb0);
++	err = mtd_erase(mtd_desc, &mtd, fd, eb0);
++	if (err)
++		return err;
++
++	printf("writing 1st page of block %d\n", eb0);
++	for (i = 0; i < pgsize; ++i)
++		writebuf[i] = rand_r(&rnd_state);
++	strcpy((char*)writebuf, "There is no data like this!");
++	err = mtd_write(mtd_desc, &mtd, fd, eb0, 0, writebuf, pgsize, NULL, 0, 0);
++	if (err)
++		return err;
++
++	printf("reading 1st page of block %d\n", eb0);
++	memset(readbuf, 0, pgsize);
++	err = mtd_read(&mtd, fd, eb0, 0, readbuf, pgsize);
++	if (err)
++		return err;
++
++	printf("verifying 1st page of block %d\n", eb0);
++	if (memcmp(writebuf, readbuf, pgsize)) {
++		fputs("verify failed!\n", stderr);
++		return -1;
++	}
++
++	printf("erasing block %d\n", eb0);
++	err = mtd_erase(mtd_desc, &mtd, fd, eb0);
++	if (err)
++		return err;
++
++	printf("writing 1st page of block %d\n", eb0);
++	for (i = 0; i < pgsize; ++i)
++		writebuf[i] = rand_r(&rnd_state);
++	strcpy((char*)writebuf, "There is no data like this!");
++	err = mtd_write(mtd_desc, &mtd, fd, eb0, 0, writebuf, pgsize, NULL, 0, 0);
++	if (err)
++		return err;
++
++	printf("erasing block %d\n", ebn);
++	err = mtd_erase(mtd_desc, &mtd, fd, ebn);
++	if (err)
++		return err;
++
++	printf("reading 1st page of block %d\n", eb0);
++	memset(readbuf, 0, pgsize);
++	err = mtd_read(&mtd, fd, eb0, 0, readbuf, pgsize);
++	if (err)
++		return err;
++
++	printf("verifying 1st page of block %d\n", eb0);
++	if (memcmp(writebuf, readbuf, pgsize)) {
++		fputs("verify failed!\n", stderr);
++		return -1;
++	}
++
++	puts("erasecrosstest ok");
++	return 0;
++}
++
++static int erasetest(void)
++{
++	int err = 0, i, ebnum, ebn;
++
++	puts("erasetest");
++	get_first_and_last_block(&ebnum, &ebn);
++
++	printf("erasing block %d\n", ebnum);
++	err = mtd_erase(mtd_desc, &mtd, fd, ebnum);
++	if (err)
++		return err;
++
++	printf("writing 1st page of block %d\n", ebnum);
++	for (i = 0; i < pgsize; ++i)
++		writebuf[i] = rand_r(&rnd_state);
++	err = mtd_write(mtd_desc, &mtd, fd, ebnum, 0,
++					writebuf, pgsize, NULL, 0, 0);
++	if (err)
++		return err;
++
++	printf("erasing block %d\n", ebnum);
++	err = mtd_erase(mtd_desc, &mtd, fd, ebnum);
++	if (err)
++		return err;
++
++	printf("reading 1st page of block %d\n", ebnum);
++	err = mtd_read(&mtd, fd, ebnum, 0, twopages, pgsize);
++	if (err)
++		return err;
++
++	printf("verifying 1st page of block %d is all 0xff\n", ebnum);
++	for (i = 0; i < pgsize; ++i) {
++		if (twopages[i] != 0xff) {
++			fprintf(stderr, "verifying all 0xff failed at %d\n", i);
++			return -1;
++		}
++	}
++
++	puts("erasetest ok");
++	return 0;
++}
 +
 +int main(int argc, char **argv)
 +{
-+	int err, i, blocks, j, k, status = EXIT_FAILURE;
-+	long speed;
++	int i, eb, err = 0, status = EXIT_FAILURE;
++	unsigned char *backupptr;
 +
 +	process_options(argc, argv);
 +
@@ -407,138 +496,154 @@ index 0000000..9b5355b
 +	if (mtd_get_dev_info(mtd_desc, mtddev, &mtd) < 0)
 +		return errmsg("mtd_get_dev_info failed");
 +
-+	if (mtd.subpage_size == 1) {
-+		puts("not NAND flash, assume page size is 512 bytes.");
-+		pgsize = 512;
-+	} else {
-+		pgsize = mtd.subpage_size;
-+	}
++	if (mtd.type!=MTD_MLCNANDFLASH && mtd.type!=MTD_NANDFLASH)
++		return errmsg("%s is not a NAND flash!", mtddev);
 +
++	pgsize = mtd.min_io_size;
 +	pgcnt = mtd.eb_size / pgsize;
++	bufsize = pgsize * 2;
 +
-+	if (count < 0)
-+		count = mtd.eb_size;
++	if (ebcnt < 0)
++		ebcnt = (mtd.eb_cnt - peb) / (skip + 1);
 +
 +	if (peb >= mtd.eb_cnt)
-+		return errmsg("Physical erase block %d is out of range!\n", peb);
++		return errmsg("physical erase block %d is out of range!", peb);
 +
-+	if ((peb + (count - 1)*(skip + 1)) >= mtd.eb_cnt) {
-+		return errmsg("Given block range exceeds block count of %d!\n",
-+					mtd.eb_cnt);
-+	}
++	eb = peb + (ebcnt - 1)*(skip + 1);
 +
-+	iobuf = xmalloc(mtd.eb_size);
-+	bbt = xzalloc(count);
++	if (eb >= mtd.eb_cnt)
++		return errmsg("last physical erase block %d is out of range!", eb);
++
++	writebuf = xmalloc(mtd.eb_size);
++	twopages = xmalloc(bufsize);
++	boundary = xmalloc(bufsize);
++	bbt = xzalloc(ebcnt);
 +
 +	if ((fd = open(mtddev, O_RDWR)) == -1) {
 +		perror(mtddev);
-+		goto outfree;
++		goto out_cleanup;
 +	}
 +
-+	for (i = 0; i < mtd.eb_size; ++i)
-+		iobuf[i] = rand();
++	/* find bad blocks */
++	for (i = 0; i < ebcnt; ++i) {
++		eb = peb + i*(skip+1);
++		bbt[i] = mtd_is_bad(&mtd, fd, eb);
 +
-+	scan_for_bad_eraseblocks(peb, count, skip);
-+
-+	for (i = 0; i < count; ++i) {
-+		if (!bbt[i])
-+			goodebcnt++;
++		if (bbt[i])
++			printf("ignoring bad erase block %d\n", eb);
 +	}
 +
-+	/* Write all eraseblocks, 1 eraseblock at a time */
-+	if (flags & DESTRUCTIVE) {
-+		err = erase_good_eraseblocks(peb, count, skip);
-+		if (err)
-+			goto out;
-+
-+		puts("testing eraseblock write speed");
-+		TIME_OP_PER_PEB(write_eraseblock);
-+		printf("eraseblock write speed is %ld KiB/s\n", speed);
-+	}
-+
-+	/* Read all eraseblocks, 1 eraseblock at a time */
-+	puts("testing eraseblock read speed");
-+	TIME_OP_PER_PEB(read_eraseblock);
-+	printf("eraseblock read speed is %ld KiB/s\n", speed);
-+
-+	/* Write all eraseblocks, 1 page at a time */
-+	if (flags & DESTRUCTIVE) {
-+		err = erase_good_eraseblocks(peb, count, skip);
-+		if (err)
-+			goto out;
-+
-+		puts("testing page write speed");
-+		TIME_OP_PER_PEB(write_eraseblock_by_page);
-+		printf("page write speed is %ld KiB/s\n", speed);
-+	}
-+
-+	/* Read all eraseblocks, 1 page at a time */
-+	puts("testing page read speed");
-+	TIME_OP_PER_PEB(read_eraseblock_by_page);
-+	printf("page read speed is %ld KiB/s\n", speed);
-+
-+	/* Write all eraseblocks, 2 pages at a time */
-+	if (flags & DESTRUCTIVE) {
-+		err = erase_good_eraseblocks(peb, count, skip);
-+		if (err)
-+			goto out;
-+
-+		puts("testing 2 page write speed");
-+		TIME_OP_PER_PEB(write_eraseblock_by_2pages);
-+		printf("2 page write speed is %ld KiB/s\n", speed);
-+	}
-+
-+	/* Read all eraseblocks, 2 pages at a time */
-+	puts("testing 2 page read speed");
-+	TIME_OP_PER_PEB(read_eraseblock_by_2pages);
-+	printf("2 page read speed is %ld KiB/s\n", speed);
-+
-+	/* Erase all eraseblocks */
-+	if (flags & DESTRUCTIVE) {
-+		puts("Testing erase speed");
-+		start_timing();
-+		err = erase_good_eraseblocks(peb, count, skip);
-+		if (err)
-+			goto out;
-+		stop_timing();
-+		speed = calc_speed();
-+		printf("erase speed is %ld KiB/s\n", speed);
-+	}
-+
-+	/* Multi-block erase all eraseblocks */
-+	if (!skip) {
-+		for (k = 1; k < 7; ++k) {
-+			blocks = 1 << k;
-+			printf("Testing %dx multi-block erase speed\n", blocks);
-+			start_timing();
-+			for (i = 0; i < count; ) {
-+				for (j = 0; j < blocks && (i + j) < count; ++j)
-+					if (bbt[i + j])
-+						break;
-+				if (j < 1) {
-+					++i;
-+					continue;
-+				}
-+				err = mtd_erase_multi(mtd_desc, &mtd, fd, i, j);
-+				if (err)
-+					goto out;
-+				i += j;
++	/* create block backup */
++	if (flags & KEEP_CONTENTS) {
++		eb = 0;
++		for (i = 0; i < ebcnt; ++i) {
++			if (!bbt[i])
++				++eb;
++		}
++		backup = malloc(mtd.eb_size * eb);
++		if (!backup) {
++			fprintf(stderr, "not enough memory to keep block contents!\n");
++			goto out_cleanup;
++		}
++		printf("reading %d blocks int memory\n", eb);
++		backupptr = backup;
++		for (i = 0; i < ebcnt; ++i) {
++			if (bbt[i])
++				continue;
++			eb = peb + i*(skip+1);
++			err = mtd_read(&mtd, fd, eb, 0, backupptr, mtd.eb_size);
++			if (err) {
++				fprintf(stderr, "error reading block %d!\n", eb);
++				goto out_cleanup;
 +			}
-+			stop_timing();
-+			speed = calc_speed();
-+			printf("%dx multi-block erase speed is %ld KiB/s\n",
-+					blocks, speed);
++			backupptr += mtd.eb_size;
 +		}
 +	}
 +
-+	puts("finished");
++	/* Erase all eraseblocks */
++	puts("erasing all blocks");
++	for (i = 0; i < ebcnt; ++i) {
++		if (bbt[i])
++			continue;
++		eb = peb + i*(skip+1);
++		if (mtd_erase(mtd_desc, &mtd, fd, eb)) {
++			fprintf(stderr, "error erasing block %d\n", eb);
++			goto out;
++		}
++	}
++	printf("erased %u eraseblocks\n", ebcnt);
++
++	/* Write all eraseblocks */
++	rnd_state = seed;
++	puts("writing all blocks");
++	for (i = 0; i < ebcnt; ++i) {
++		if (bbt[i])
++			continue;
++		eb = peb + i*(skip+1);
++		err = write_eraseblock(eb);
++		if (err)
++			goto out;
++		if (i % 256 == 0)
++			printf("written up to eraseblock %u\n", i);
++	}
++	printf("written %u eraseblocks\n", i);
++
++	/* Check all eraseblocks */
++	rnd_state = seed;
++	puts("verifying all eraseblocks");
++	for (i = 0; i < ebcnt; ++i) {
++		eb = peb + i*(skip+1);
++		if (bbt[i])
++			continue;
++		err = verify_eraseblock(eb);
++		if (err)
++			goto out;
++		if (i % 256 == 0)
++			printf("verified up to eraseblock %u\n", i);
++	}
++	printf("verified %u eraseblocks\n", i);
++
++	if (crosstest())
++		goto out;
++
++	if (erasecrosstest())
++		goto out;
++
++	if (erasetest())
++		goto out;
++
 +	status = EXIT_SUCCESS;
 +out:
-+	close(fd);
-+outfree:
-+	free(iobuf);
++	/* restore block backup */
++	if (flags & KEEP_CONTENTS) {
++		puts("restoring original contents");
++		backupptr = backup;
++		for (i = 0; i < ebcnt; ++i) {
++			if (bbt[i])
++				continue;
++			eb = peb + i*(skip+1);
++			if (mtd_erase(mtd_desc, &mtd, fd, eb)) {
++				fprintf(stderr, "error erasing block %d!\n", eb);
++				status = EXIT_FAILURE;
++			}
++			err = mtd_write(mtd_desc, &mtd, fd, eb, 0,
++							backupptr, mtd.eb_size, NULL, 0, 0);
++			if (err) {
++				fprintf(stderr, "error restoring block %d!\n", eb);
++				status = EXIT_FAILURE;
++			}
++			backupptr += mtd.eb_size;
++		}
++	}
++out_cleanup:
 +	free(bbt);
++	free(boundary);
++	free(twopages);
++	free(writebuf);
++	free(backup);
++	close(fd);
 +	return status;
 +}
++
 -- 
 2.7.3
