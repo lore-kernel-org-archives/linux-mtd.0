@@ -1,16 +1,22 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av49y-0007Yq-JF
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 14:40:20 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: ezequiel@vanguardiasur.com.ar, Richard Weinberger <richard@nod.at>,
- stable@vger.kernel.org
-Subject: [PATCH] UBI: Fix static volume checks when Fastmap is used
-Date: Tue, 26 Apr 2016 16:39:48 +0200
-Message-Id: <1461681588-12142-1-git-send-email-richard@nod.at>
-In-Reply-To: <20160426141505.GA1293@laptop.cereza>
-References: <20160426141505.GA1293@laptop.cereza>
+From: Han Xu <han.xu@nxp.com>
+To: Stefan Christ <s.christ@phytec.de>, Markus Pargmann <mpa@pengutronix.de>
+CC: David Woodhouse <dwmw2@infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Fabio Estevam
+ <fabio.estevam@freescale.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "kernel@pengutronix.de"
+ <kernel@pengutronix.de>, Huang Shijie <shijie.huang@intel.com>, Brian Norris
+ <computersforpeace@gmail.com>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2] gpmi-nand: Handle ECC Errors in erased pages
+Date: Tue, 26 Apr 2016 15:14:09 +0000
+Message-ID: <AM4PR0401MB1841FB9B17767D5667243C2097630@AM4PR0401MB1841.eurprd04.prod.outlook.com>
+References: <1461587712-16403-1-git-send-email-mpa@pengutronix.de>,
+ <20160426075128.GC2351@lws-christ>
+In-Reply-To: <20160426075128.GC2351@lws-christ>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,149 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel reported that he's facing UBI going into read-only
-mode after power cut. It turned out that this behavior happens
-only when updating a static volume is interrupted and Fastmap is
-used.
 
-A possible trace can look like:
-ubi0 warning: ubi_io_read_vid_hdr [ubi]: no VID header found at PEB 2323, only 0xFF bytes
-ubi0 warning: ubi_eba_read_leb [ubi]: switch to read-only mode
-CPU: 0 PID: 833 Comm: ubiupdatevol Not tainted 4.6.0-rc2-ARCH #4
-Hardware name: SAMSUNG ELECTRONICS CO., LTD. 300E4C/300E5C/300E7C/NP300E5C-AD8AR, BIOS P04RAP 10/15/2012
-0000000000000286 00000000eba949bd ffff8800c45a7b38 ffffffff8140d841
-ffff8801964be000 ffff88018eaa4800 ffff8800c45a7bb8 ffffffffa003abf6
-ffffffff850e2ac0 8000000000000163 ffff8801850e2ac0 ffff8801850e2ac0
-Call Trace:
-[<ffffffff8140d841>] dump_stack+0x63/0x82
-[<ffffffffa003abf6>] ubi_eba_read_leb+0x486/0x4a0 [ubi]
-[<ffffffffa00453b3>] ubi_check_volume+0x83/0xf0 [ubi]
-[<ffffffffa0039d97>] ubi_open_volume+0x177/0x350 [ubi]
-[<ffffffffa00375d8>] vol_cdev_open+0x58/0xb0 [ubi]
-[<ffffffff8124b08e>] chrdev_open+0xae/0x1d0
-[<ffffffff81243bcf>] do_dentry_open+0x1ff/0x300
-[<ffffffff8124afe0>] ? cdev_put+0x30/0x30
-[<ffffffff81244d36>] vfs_open+0x56/0x60
-[<ffffffff812545f4>] path_openat+0x4f4/0x1190
-[<ffffffff81256621>] do_filp_open+0x91/0x100
-[<ffffffff81263547>] ? __alloc_fd+0xc7/0x190
-[<ffffffff812450df>] do_sys_open+0x13f/0x210
-[<ffffffff812451ce>] SyS_open+0x1e/0x20
-[<ffffffff81a99e32>] entry_SYSCALL_64_fastpath+0x1a/0xa4
 
-UBI checks static volumes for data consistency and reads the
-whole volume upon first open. If the volume is found erroneous
-users of UBI cannot read from it, but another volume update is
-possible to fix it. The check is performed by running
-ubi_eba_read_leb() on every allocated LEB of the volume.
-For static volumes ubi_eba_read_leb() computes the checksum of all
-data stored in a LEB. To verify the computed checksum it has to read
-the LEB's volume header which stores the original checksum.
-If the volume header is not found UBI treats this as fatal internal
-error and switches to RO mode. If the UBI device was attached via a
-full scan the assumption is correct, the volume header has to be
-present as it had to be there while scanning to get known as mapped.
-If the attach operation happened via Fastmap the assumption is no
-longer correct. When attaching via Fastmap UBI learns the mapping
-table from Fastmap's snapshot of the system state and not via a full
-scan. It can happen that a LEB got unmapped after a Fastmap was
-written to the flash. Then UBI can learn the LEB still as mapped and
-accessing it returns only 0xFF bytes. As UBI is not a FTL it is
-allowed to have mappings to empty PEBs, it assumes that the layer
-above takes care of LEB accounting and referencing.
-UBIFS does so using the LEB property tree (LPT).
-For static volumes UBI blindly assumes that all LEBs are present and
-therefore special actions have to be taken.
+________________________________________
+From: Stefan Christ <s.christ@phytec.de>
+Sent: Tuesday, April 26, 2016 1:51 AM
+To: Markus Pargmann
+Cc: Han Xu; David Woodhouse; Boris BREZILLON; Fabio Estevam; linux-mtd@list=
+s.infradead.org; kernel@pengutronix.de; Huang Shijie; Brian Norris; linux-a=
+rm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] gpmi-nand: Handle ECC Errors in erased pages
 
-The described situation can happen when updating a static volume is
-interrupted, either by a user or a power cut.
-The volume update code first unmaps all LEBs of a volume and then
-writes LEB by LEB. If the sequence of operations is interrupted UBI
-detects this either by the absence of LEBs, no volume header present
-at scan time, or corrupted payload, detected via checksum.
-In the Fastmap case the former method won't trigger as no scan
-happened and UBI automatically thinks all LEBs are present.
-Only by reading data from a LEB it detects that the volume header is
-missing and incorrectly treats this as fatal error.
-To deal with the situation ubi_eba_read_leb() from now on checks
-whether we attached via Fastmap and handles the absence of a
-volume header like a data corruption error.
-This way interrupted static volume updates will correctly get detected
-also when Fastmap is used.
+Hi,
 
-Cc: <stable@vger.kernel.org>
-Reported-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/eba.c     | 21 +++++++++++++++++++--
- drivers/mtd/ubi/fastmap.c |  1 +
- drivers/mtd/ubi/ubi.h     |  2 ++
- 3 files changed, 22 insertions(+), 2 deletions(-)
+On Mon, Apr 25, 2016 at 02:35:12PM +0200, Markus Pargmann wrote:
+> ECC is only calculated for written pages. As erased pages are not
+> actively written the ECC is always invalid. For this purpose the
+> Hardware BCH unit is able to check for erased pages and does not raise
+> an ECC error in this case. This behaviour can be influenced using the
+> BCH_MODE register which sets the number of allowed bitflips in an erased
+> page. Unfortunately the unit is not capable of fixing the bitflips in
+> memory.
+>
+> To avoid complete software checks for erased pages, we can simply check
+> buffers with uncorrectable ECC errors because we know that any erased
+> page with errors is uncorrectable by the BCH unit.
+>
+> This patch adds the generic nand_check_erased_ecc_chunk() to gpmi-nand
+> to correct erased pages. To have the valid data in the buffer before
+> using them, this patch moves the read_page_swap_end() call before the
+> ECC status checking for-loop.
+>
+> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+> [Squashed patches by Stefan and Boris to check ECC area]
+> Cc: Stefan Christ <s.christ@phytec.de>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+>
+> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 5b9834c..96fddb0 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -426,8 +426,25 @@ retry:
- 						 pnum, vol_id, lnum);
- 					err = -EBADMSG;
- 				} else {
--					err = -EINVAL;
--					ubi_ro_mode(ubi);
-+					/*
-+					 * Ending up here in the non-Fastmap case
-+					 * is a clear bug as the VID header had to
-+					 * be present at scan time to have it referenced.
-+					 * With fastmap the story is more complicated.
-+					 * Fastmap has the mapping info without the need
-+					 * of a full scan. So the LEB could have been
-+					 * unmapped, Fastmap cannot know this and keeps
-+					 * the LEB referenced.
-+					 * This is valid and works as the layer above UBI
-+					 * has to do bookkeeping about used/referenced
-+					 * LEBs in any case.
-+					 */
-+					if (ubi->fast_attach) {
-+						err = -EBADMSG;
-+					} else {
-+						err = -EINVAL;
-+						ubi_ro_mode(ubi);
-+					}
- 				}
- 			}
- 			goto out_free;
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 263b439..990898b 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1058,6 +1058,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	ubi_msg(ubi, "fastmap WL pool size: %d",
- 		ubi->fm_wl_pool.max_size);
- 	ubi->fm_disabled = 0;
-+	ubi->fast_attach = 1;
- 
- 	ubi_free_vid_hdr(ubi, vh);
- 	kfree(ech);
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index dadc6a9..61d4e99 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -466,6 +466,7 @@ struct ubi_debug_info {
-  * @fm_eba_sem: allows ubi_update_fastmap() to block EBA table changes
-  * @fm_work: fastmap work queue
-  * @fm_work_scheduled: non-zero if fastmap work was scheduled
-+ * @fast_attach: non-zero if UBI was attached by fastmap
-  *
-  * @used: RB-tree of used physical eraseblocks
-  * @erroneous: RB-tree of erroneous used physical eraseblocks
-@@ -574,6 +575,7 @@ struct ubi_device {
- 	size_t fm_size;
- 	struct work_struct fm_work;
- 	int fm_work_scheduled;
-+	int fast_attach;
- 
- 	/* Wear-leveling sub-system's stuff */
- 	struct rb_root used;
--- 
-2.7.3
+Tested-by: Stefan Christ <s.christ@phytec.de>
+
+I verified the fix again on our board.
+
+Also tested on my side.
+
+Acked-by: Han xu <han.xu@nxp.com>
+
+Mit freundlichen Gr=FC=DFen / Kind regards,
+        Stefan Christ
