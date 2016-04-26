@@ -1,20 +1,22 @@
-Received: from mail-pf0-x22f.google.com ([2607:f8b0:400e:c00::22f])
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av3m0-0001CG-0q
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 14:15:33 +0000
-Received: by mail-pf0-x22f.google.com with SMTP id y69so7384314pfb.1
- for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 07:15:11 -0700 (PDT)
-Date: Tue, 26 Apr 2016 11:15:05 -0300
+ id 1av44P-0005Zh-9z
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 14:34:34 +0000
+Received: by mail-wm0-x236.google.com with SMTP id v188so132599689wme.1
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 07:34:12 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1461622409-14970-4-git-send-email-richard@nod.at>
+References: <1461622409-14970-1-git-send-email-richard@nod.at>
+ <1461622409-14970-4-git-send-email-richard@nod.at>
+Date: Tue, 26 Apr 2016 11:34:07 -0300
+Message-ID: <CAAEAJfCP1Lsxe+9r1vp-iaZsJhjfa+uZi+=kPpocSpc-zaA_cg@mail.gmail.com>
+Subject: Re: [PATCH 3/8] mtd-utils: Add flash torture test utility
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: Re: [PATCH] UBI: Fix static volume checks when Fastmap is used
-Message-ID: <20160426141505.GA1293@laptop.cereza>
-References: <1461618245-11202-1-git-send-email-richard@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1461618245-11202-1-git-send-email-richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ david.oberhollenzer@sigma-star.at
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,172 +26,309 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 25 Apr 11:04 PM, Richard Weinberger wrote:
-> Ezequiel reported that he's facing UBI going into read-only
-> mode after power cut. It turned out that this behavior happens
-> only when updating a static volume is interrupted and Fastmap is
-> used.
-> 
-> UBI checks static volumes for data consistency and reads the
-> whole volume upon first open. If the volume is found erroneous
-> users of UBI cannot read from it, but another volume update is
-> possible to fix it. The check is performed by running
-> ubi_eba_read_leb() on every allocated LEB of the volume.
-> For static volumes ubi_eba_read_leb() computes the checksum of all
-> data stored in a LEB. To verify the computed checksum it has to read
-> the LEB's volume header which stores the original checksum.
-> If the volume header is not found UBI treats this as fatal internal
-> error and switches to RO mode. If the UBI device was attached via a
-> full scan the assumption is correct, the volume header has to be
-> present as it had to be there while scanning to get known as mapped.
-> If the attach operation happened via Fastmap the assumption is no
-> longer correct. When attaching via Fastmap UBI learns the mapping
-> table from Fastmap's snapshot of the system state and not via a full
-> scan. It can happen that a LEB got unmapped after a Fastmap was
-> written to the flash. Then UBI can learn the LEB still as mapped and
-> accessing it returns only 0xFF bytes. As UBI is not a FTL it is
-> allowed to have mappings to empty PEBs, it assumes that the layer
-> above takes care of LEB accounting and referencing.
-> UBIFS does so using the LEB property tree (LPT).
-> For static volumes UBI blindly assumes that all LEBs are present and
-> therefore special actions have to be taken.
-> 
-> The described situation can happen when updating a static volume is
-> interrupted, either by a user or a power cut.
-> The volume update code first unmaps all LEBs of a volume and then
-> writes LEB by LEB. If the sequence of operations is interrupted UBI
-> detects this either by the absence of LEBs, no volume header present
-> at scan time, or corrupted payload, detected via checksum.
-> In the Fastmap case the former method won't trigger as no scan
-> happened and UBI automatically thinks all LEBs are present.
-> Only by reading data from a LEB it detects that the volume header is
-> missing and incorrectly treats this as fatal error.
-> To deal with the situation ubi_eba_read_leb() from now on checks
-> whether we attached via Fastmap and handles the absence of a
-> volume header like a data corruption error.
-> This way interrupted static volume updates will correctly get detected
-> also when Fastmap is used.
-> 
-> Cc: stable@vger.kernel.org
-> Reported-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+On 25 April 2016 at 19:13, Richard Weinberger <richard@nod.at> wrote:
+> From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+>
+> Basically a user space port of the mtd torture test kernel module. In
+> addition to the block offset and count module parameters, the utility
+> supports a block stride and can restore the block contents after test.
+>
+> In contrast to the kernel module, the torture test is implemented by
+> the libmtd mtd_toruture function and thus doesn't allow for similarly
+> fine grained options on diagnostics.
+>
+> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 > Signed-off-by: Richard Weinberger <richard@nod.at>
-
-Thanks a lot for the quick fix!
-
-In addition to the explanation for the bug, it will be
-valuable to add the backtrace of the issue. That will
-be helpful for people debugging some future UBI issue,
-to distinguish between this bug and something different.
-
-ubi0 warning: ubi_io_read_vid_hdr [ubi]: no VID header found at PEB 2323, only 0xFF bytes
-ubi0 warning: ubi_eba_read_leb [ubi]: switch to read-only mode
-CPU: 0 PID: 833 Comm: ubiupdatevol Not tainted 4.6.0-rc2-ARCH #4
-Hardware name: SAMSUNG ELECTRONICS CO., LTD. 300E4C/300E5C/300E7C/NP300E5C-AD8AR, BIOS P04RAP 10/15/2012
-0000000000000286 00000000eba949bd ffff8800c45a7b38 ffffffff8140d841
-ffff8801964be000 ffff88018eaa4800 ffff8800c45a7bb8 ffffffffa003abf6
-ffffffff850e2ac0 8000000000000163 ffff8801850e2ac0 ffff8801850e2ac0
-Call Trace:
-[<ffffffff8140d841>] dump_stack+0x63/0x82
-[<ffffffffa003abf6>] ubi_eba_read_leb+0x486/0x4a0 [ubi]
-[<ffffffffa00453b3>] ubi_check_volume+0x83/0xf0 [ubi]
-[<ffffffffa0039d97>] ubi_open_volume+0x177/0x350 [ubi]
-[<ffffffffa00375d8>] vol_cdev_open+0x58/0xb0 [ubi]
-[<ffffffff8124b08e>] chrdev_open+0xae/0x1d0
-[<ffffffff81243bcf>] do_dentry_open+0x1ff/0x300
-[<ffffffff8124afe0>] ? cdev_put+0x30/0x30
-[<ffffffff81244d36>] vfs_open+0x56/0x60
-[<ffffffff812545f4>] path_openat+0x4f4/0x1190
-[<ffffffff81256621>] do_filp_open+0x91/0x100
-[<ffffffff81263547>] ? __alloc_fd+0xc7/0x190
-[<ffffffff812450df>] do_sys_open+0x13f/0x210
-[<ffffffff812451ce>] SyS_open+0x1e/0x20
-[<ffffffff81a99e32>] entry_SYSCALL_64_fastpath+0x1a/0xa4
-
-With this patch, the machine where this was first observed is
-now able to upgrade and survive random power-cuts. Upon
-the hitting the same situation, the volume is simply
-marked as corrupted:
-
-ubi0 warning: ubi_io_read_vid_hdr: no VID header found at PEB 1661, only 0xFF bytes
-ubi0 warning: ubi_open_volume: volume 0 on UBI device 0 is corrupted
-ubi0 error: vol_cdev_read: damaged volume, update marker is set
-
-Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-
 > ---
->  drivers/mtd/ubi/eba.c     | 21 +++++++++++++++++++--
->  drivers/mtd/ubi/fastmap.c |  1 +
->  drivers/mtd/ubi/ubi.h     |  2 ++
->  3 files changed, 22 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-> index 5b9834c..96fddb0 100644
-> --- a/drivers/mtd/ubi/eba.c
-> +++ b/drivers/mtd/ubi/eba.c
-> @@ -426,8 +426,25 @@ retry:
->  						 pnum, vol_id, lnum);
->  					err = -EBADMSG;
->  				} else {
-> -					err = -EINVAL;
-> -					ubi_ro_mode(ubi);
-> +					/*
-> +					 * Ending up here in the non-Fastmap case
-> +					 * is a clear bug as the VID header had to
-> +					 * be present at scan time to have it referenced.
-> +					 * With fastmap the story is more complicated.
-> +					 * Fastmap has the mapping info without the need
-> +					 * of a full scan. So the LEB could have been
-> +					 * unmapped, Fastmap cannot know this and keeps
-> +					 * the LEB referenced.
-> +					 * This is valid and works as the layer above UBI
-> +					 * has to do bookkeeping about used/referenced
-> +					 * LEBs in any case.
-> +					 */
-> +					if (ubi->fast_attach) {
-> +						err = -EBADMSG;
-> +					} else {
-> +						err = -EINVAL;
-> +						ubi_ro_mode(ubi);
-> +					}
->  				}
->  			}
->  			goto out_free;
-> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-> index 263b439..990898b 100644
-> --- a/drivers/mtd/ubi/fastmap.c
-> +++ b/drivers/mtd/ubi/fastmap.c
-> @@ -1058,6 +1058,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
->  	ubi_msg(ubi, "fastmap WL pool size: %d",
->  		ubi->fm_wl_pool.max_size);
->  	ubi->fm_disabled = 0;
-> +	ubi->fast_attach = 1;
->  
->  	ubi_free_vid_hdr(ubi, vh);
->  	kfree(ech);
-> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-> index dadc6a9..61d4e99 100644
-> --- a/drivers/mtd/ubi/ubi.h
-> +++ b/drivers/mtd/ubi/ubi.h
-> @@ -466,6 +466,7 @@ struct ubi_debug_info {
->   * @fm_eba_sem: allows ubi_update_fastmap() to block EBA table changes
->   * @fm_work: fastmap work queue
->   * @fm_work_scheduled: non-zero if fastmap work was scheduled
-> + * @fast_attach: non-zero if UBI was attached by fastmap
->   *
->   * @used: RB-tree of used physical eraseblocks
->   * @erroneous: RB-tree of erroneous used physical eraseblocks
-> @@ -574,6 +575,7 @@ struct ubi_device {
->  	size_t fm_size;
->  	struct work_struct fm_work;
->  	int fm_work_scheduled;
-> +	int fast_attach;
->  
->  	/* Wear-leveling sub-system's stuff */
->  	struct rb_root used;
-> -- 
-> 2.7.3
-> 
+>  .gitignore                 |   1 +
+>  Makefile                   |   2 +-
+>  misc-utils/flash_torture.c | 240 +++++++++++++++++++++++++++++++++++++++=
+++++++
+>  3 files changed, 242 insertions(+), 1 deletion(-)
+>  create mode 100644 misc-utils/flash_torture.c
+>
+> diff --git a/.gitignore b/.gitignore
+> index 2aac52c..5b529d1 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -35,6 +35,7 @@
+>  /jffsX-utils/mkfs.jffs2
+>  /misc-utils/mtd_debug
+>  /misc-utils/mtdpart
+> +/misc-utils/flash_torture
+>  /nand-utils/nanddump
+>  /nand-utils/nandtest
+>  /nand-utils/nandwrite
+> diff --git a/Makefile b/Makefile
+> index 977c9c5..af3d1fd 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -20,7 +20,7 @@ MISC_BINS =3D \
+>         ftl_format doc_loadbios ftl_check mtd_debug docfdisk \
+>         serve_image recv_image mtdpart flash_erase flash_lock \
+>         flash_unlock flash_otp_info flash_otp_dump flash_otp_lock \
+> -       flash_otp_write flashcp
+> +       flash_otp_write flashcp flash_torture
+>  UBI_BINS =3D \
+>         ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
+>         ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
+> diff --git a/misc-utils/flash_torture.c b/misc-utils/flash_torture.c
+> new file mode 100644
+> index 0000000..b5625c8
+> --- /dev/null
+> +++ b/misc-utils/flash_torture.c
+> @@ -0,0 +1,240 @@
+> +/*
+> + * Copyright (C) 2006-2008 Artem Bityutskiy
+> + * Copyright (C) 2006-2008 Jarkko Lavinen
+> + * Copyright (C) 2006-2008 Adrian Hunter
+> + * Copyright (C) 2015 sigma star gmbh
+> + *
+> + * This program is free software; you can redistribute it and/or modify =
+it
+> + * under the terms of the GNU General Public License version 2 as publis=
+hed by
+> + * the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful, but W=
+ITHOUT
+> + * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+> + * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License =
+for
+> + * more details.
+> + *
+> + * You should have received a copy of the GNU General Public License alo=
+ng with
+> + * this program; see the file COPYING. If not, write to the Free Softwar=
+e
+> + * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+> + *
+> + *
+> + * WARNING: this test program may kill your flash and your device. Do no=
+t
+> + * use it unless you know what you do. Authors are not responsible for a=
+ny
+> + * damage caused by this program.
+> + *
+> + * Author: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> + *
+> + * Based on linux torturetest.c
+> + * Authors: Artem Bityutskiy, Jarkko Lavinen, Adria Hunter
+> + */
+> +
+> +#define PROGRAM_NAME "flash_torture"
+> +
+> +#define KEEP_CONTENTS 0x01
+> +#define RUN_FOREVER 0x02
+> +
+> +#include <mtd/mtd-user.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +#include <libmtd.h>
+> +#include <signal.h>
+> +#include <stdio.h>
+> +#include <fcntl.h>
+> +
+> +#include "common.h"
+> +
+> +static int peb=3D-1, blocks=3D-1, skip=3D-1;
+> +static struct mtd_dev_info mtd;
+> +static sig_atomic_t flags=3D0;
+> +static const char *mtddev;
+> +static libmtd_t mtd_desc;
+> +static int mtdfd;
+> +
+> +static void sighandler(int sig)
+> +{
+> +       if (sig =3D=3D SIGINT || sig =3D=3D SIGTERM || sig =3D=3D SIGHUP)
+> +               flags &=3D ~RUN_FOREVER;
+> +}
+> +
+> +static void usage(int status)
+> +{
+> +       fputs(
+> +       "Usage: "PROGRAM_NAME" [OPTIONS] <device>\n\n"
+> +       "Options:\n"
+> +       "  -h, --help         Display this help output\n"
+> +       "  -b, --peb <num>    Start from this physical erase block\n"
+> +       "  -c, --blocks <num> Number of erase blocks to torture\n"
+> +       "  -s, --skip <num>   Number of erase blocks to skip\n"
+> +       "  -k, --keep         Try to restore existing contents after test=
+\n"
+> +       "  -r, --repeate      Repeate the torture test indefinitely\n",
+> +       status=3D=3DEXIT_SUCCESS ? stdout : stderr);
+> +       exit(status);
+> +}
+> +
+> +static long read_num(int idx, int argidx, int argc, char **argv)
+> +{
+> +       char *end;
+> +       long num;
+> +
+> +       if (argidx >=3D argc) {
+> +               fprintf(stderr, "%s: missing argument\n", argv[idx]);
+> +               exit(EXIT_FAILURE);
+> +       }
+> +
+> +       num =3D strtol(argv[argidx], &end, 0);
+> +
+> +       if (!end || *end!=3D'\0') {
+> +               fprintf(stderr, "%s: expected integer argument\n", argv[i=
+dx]);
+> +               exit(EXIT_FAILURE);
+> +       }
+> +       return num;
+> +}
+> +
+> +static void process_options(int argc, char **argv)
+> +{
+> +       int i;
+> +
+> +       for (i=3D1; i<argc; ++i) {
+> +               if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h"))=
+ {
+> +                       usage(EXIT_SUCCESS);
+> +               } else if (!strcmp(argv[i], "--peb") || !strcmp(argv[i], =
+"-b")) {
+> +                       if (peb >=3D 0)
+> +                               goto failmulti;
+> +                       peb =3D read_num(i, i+1, argc, argv);
+> +                       if (peb < 0)
+> +                               goto failarg;
+> +                       ++i;
+> +               } else if (!strcmp(argv[i], "--blocks") || !strcmp(argv[i=
+], "-c")) {
+> +                       if (blocks > 0)
+> +                               goto failmulti;
+> +                       blocks =3D read_num(i, i+1, argc, argv);
+> +                       if (blocks <=3D 0)
+> +                               goto failarg;
+> +                       ++i;
+> +               } else if (!strcmp(argv[i], "--skip") || !strcmp(argv[i],=
+ "-s")) {
+> +                       if (skip >=3D 0)
+> +                               goto failmulti;
+> +                       skip =3D read_num(i, i+1, argc, argv);
+> +                       if (skip < 0)
+> +                               goto failarg;
+> +                       ++i;
+> +               } else if (!strcmp(argv[i], "--keep") || !strcmp(argv[i],=
+ "-k")) {
+> +                       if (flags & KEEP_CONTENTS)
+> +                               goto failmulti;
+> +                       flags |=3D KEEP_CONTENTS;
+> +               } else if (!strcmp(argv[i], "--repeate") || !strcmp(argv[=
+i], "-r")) {
+> +                       if (flags & RUN_FOREVER)
+> +                               goto failmulti;
+> +                       flags |=3D RUN_FOREVER;
+> +               } else {
+> +                       if (mtddev)
+> +                               usage(EXIT_FAILURE);
+> +                       mtddev =3D argv[i];
+> +               }
+> +       }
+> +
+> +       if (!mtddev)
+> +               errmsg_die("No device specified!\n");
+> +       if (peb < 0)
+> +               peb =3D 0;
+> +       if (skip < 0)
+> +               skip =3D 0;
+> +       if (blocks < 0)
+> +               blocks =3D 1;
+> +       return;
+> +failmulti:
+> +       fprintf(stderr, "'%s' specified more than once!\n", argv[i]);
+> +       exit(EXIT_FAILURE);
+> +failarg:
+> +       fprintf(stderr, "Invalid argument for '%s'!\n", argv[i]);
+> +       exit(EXIT_FAILURE);
+> +}
+> +
+> +int main(int argc, char **argv)
+> +{
+> +       int i, eb, err, count =3D 0;
+> +       char* is_bad =3D NULL;
+> +       void *old=3DNULL;
+> +
+> +       process_options(argc, argv);
+> +
+> +       mtd_desc =3D libmtd_open();
+> +       if (!mtd_desc)
+> +               return errmsg("can't initialize libmtd");
+> +
+> +       if (mtd_get_dev_info(mtd_desc, mtddev, &mtd) < 0)
+> +               return errmsg("mtd_get_dev_info failed");
+> +
+> +       if (peb >=3D mtd.eb_cnt)
+> +               return errmsg("Physical erase block %d is out of range!\n=
+", peb);
+> +
+> +       if ((peb + (blocks - 1)*(skip + 1)) >=3D mtd.eb_cnt) {
+> +               return errmsg("Given block range exceeds block count of %=
+d!\n",
+> +                               mtd.eb_cnt);
+> +       }
+> +
+> +       signal(SIGINT, sighandler);
+> +       signal(SIGTERM, sighandler);
+> +       signal(SIGHUP, sighandler);
+> +
+> +       if (flags & KEEP_CONTENTS) {
+> +               old =3D xmalloc(mtd.eb_size);
+> +       }
+> +
+> +       is_bad =3D xmalloc(blocks);
+> +
+> +       if ((mtdfd =3D open(mtddev, O_RDWR)) =3D=3D -1) {
+> +               perror(mtddev);
+> +               free(is_bad);
+> +               free(old);
+> +               return EXIT_FAILURE;
+> +       }
+> +
+> +       for (i =3D 0; i < blocks; ++i) {
+> +               eb =3D peb + i * (skip + 1);
+> +               is_bad[i] =3D mtd_is_bad(&mtd, mtdfd, eb);
+> +               if (is_bad[i]) {
+> +                       fprintf(stderr, "PEB %d marked bad, will be skipp=
+ed\n", eb);
+> +               }
+> +       }
+> +
+> +       do {
+> +               for (i =3D 0; i < blocks; ++i) {
+> +                       if (is_bad[i])
+> +                               continue;
+> +
+> +                       eb =3D peb + i * (skip + 1);
+> +
+> +                       if (flags & KEEP_CONTENTS) {
+> +                               err =3D mtd_read(&mtd, mtdfd, eb, 0, old,=
+ mtd.eb_size);
+> +                               if (err) {
+> +                                       fprintf(stderr, "Failed to create=
+ backup copy "
+> +                                                       "of PEB %d, skipp=
+ing!\n", eb);
+> +                                       continue;
+> +                               }
+> +                       }
+> +
+> +                       if (mtd_torture(mtd_desc, &mtd, mtdfd, eb))
+> +                               fprintf(stderr, "Block %d failed torture =
+test!\n", eb);
+> +
 
--- 
-Ezequiel Garcia, VanguardiaSur
+mtd_torture seems to print its own message when the torture fails:
+
+normsg("PEB %d passed torture test, do not mark it a bad", eb);
+
+Isn't confusing to print "do not mark it a bad" (sic) in the torture test?
+I mean: this would imply that the test would mark as bad if the torture fai=
+ls?
+
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
 www.vanguardiasur.com.ar
