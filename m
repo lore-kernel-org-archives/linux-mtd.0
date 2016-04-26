@@ -1,16 +1,21 @@
-Received: from mout.kundenserver.de ([212.227.126.134])
+Received: from mail-wm0-x236.google.com ([2a00:1450:400c:c09::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aupZG-0001ki-AG
- for linux-mtd@lists.infradead.org; Mon, 25 Apr 2016 23:05:27 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] physmap_of: ensure versatile code is reachable
-Date: Tue, 26 Apr 2016 01:04:38 +0200
-Message-Id: <1461625501-2160538-1-git-send-email-arnd@arndb.de>
+ id 1autRD-0007aT-3w
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 03:13:24 +0000
+Received: by mail-wm0-x236.google.com with SMTP id n3so8692396wmn.0
+ for <linux-mtd@lists.infradead.org>; Mon, 25 Apr 2016 20:13:02 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1461622409-14970-1-git-send-email-richard@nod.at>
+References: <1461622409-14970-1-git-send-email-richard@nod.at>
+Date: Tue, 26 Apr 2016 00:13:01 -0300
+Message-ID: <CAAEAJfDQvN46HdqWAHVY+xk+=Y-Cs_LapN1kBC14CH=WObEK8A@mail.gmail.com>
+Subject: Re: [RFC] Porting kernel MTD tests to user space
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Richard Weinberger <richard@nod.at>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ david.oberhollenzer@sigma-star.at
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the newly added physmap_of_versatile code, we get a build error
-when physmap_of is in a module, because of_flash_probe_versatile
-is not exported:
+On 25 April 2016 at 19:13, Richard Weinberger <richard@nod.at> wrote:
+> David was so kind and did an initial port of Linux's MTD tests to user sp=
+ace.
+> He took most tests as-is and massaged them to work in user space using li=
+bmtd.
+> In the long run the goal is giving up the kernel tests as much as possibl=
+e
+> and improve the tests present in mtd-utils.
+>
+> Feedback is very welcome!
+>
 
-ERROR: "of_flash_probe_versatile" [drivers/mtd/maps/physmap_of.ko] undefined!
+I think this is great, and it will be great to test NAND/NOR devices easier=
+.
 
-This adds the export, and changes the Makefile so that the code is
-also put into a loadable module rather than built-in when physmap_of
-itself is a module.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/mtd/maps/Makefile               | 4 +++-
- drivers/mtd/maps/physmap_of_versatile.c | 2 ++
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 188873a..644f7d3 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -18,7 +18,9 @@ obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
- obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
- obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
- obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
--obj-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE) += physmap_of_versatile.o
-+ifdef CONFIG_MTD_PHYSMAP_OF_VERSATILE
-+obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of_versatile.o
-+endif
- obj-$(CONFIG_MTD_PISMO)		+= pismo.o
- obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
- obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
-diff --git a/drivers/mtd/maps/physmap_of_versatile.c b/drivers/mtd/maps/physmap_of_versatile.c
-index fa40539..0f39b2a 100644
---- a/drivers/mtd/maps/physmap_of_versatile.c
-+++ b/drivers/mtd/maps/physmap_of_versatile.c
-@@ -19,6 +19,7 @@
-  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-  * MA 02111-1307 USA
-  */
-+#include <linux/export.h>
- #include <linux/io.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
-@@ -251,3 +252,4 @@ int of_flash_probe_versatile(struct platform_device *pdev,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(of_flash_probe_versatile);
--- 
-2.7.0
+The autoconf patch looked also great, but for some reason it
+stalled, so... what do we need to do to prevent this one from stalling as w=
+ell?
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
+www.vanguardiasur.com.ar
