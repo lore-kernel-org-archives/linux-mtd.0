@@ -1,18 +1,18 @@
 Received: from relay1.mentorg.com ([192.94.38.131])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auzKf-0003hP-JR
+ id 1auzKf-0003YO-JU
  for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 09:31:02 +0000
 Received: from nat-ies.mentorg.com ([192.94.31.2]
  helo=SVR-IES-FEM-01.mgc.mentorg.com)
  by relay1.mentorg.com with esmtp
- id 1auzKP-0000s8-Sx from Marian_Rotariu@mentor.com
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 02:30:46 -0700
+ id 1auzKN-0000ro-P1 from Marian_Rotariu@mentor.com
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 02:30:43 -0700
 From: Marian Rotariu <marian_rotariu@mentor.com>
 To: <linux-mtd@lists.infradead.org>
 CC: Marian Rotariu <marian_rotariu@mentor.com>
-Subject: [PATCH 4/4] mtd-utils: remove unnecessary ioctl from mtd_info
-Date: Tue, 26 Apr 2016 12:30:24 +0300
-Message-ID: <1461663024-12022-5-git-send-email-marian_rotariu@mentor.com>
+Subject: [PATCH 3/4] mtd-utils: fetch erasereg in legacy library
+Date: Tue, 26 Apr 2016 12:30:23 +0300
+Message-ID: <1461663024-12022-4-git-send-email-marian_rotariu@mentor.com>
 In-Reply-To: <1461663024-12022-1-git-send-email-marian_rotariu@mentor.com>
 References: <1461663024-12022-1-git-send-email-marian_rotariu@mentor.com>
 MIME-Version: 1.0
@@ -28,44 +28,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Marian Rotariu <marian_rotariu@mentor.com>
 ---
- ubi-utils/mtdinfo.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ lib/libmtd_legacy.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
-diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
-index a86abd1..25a96eb 100644
---- a/ubi-utils/mtdinfo.c
-+++ b/ubi-utils/mtdinfo.c
-@@ -246,9 +246,7 @@ static void print_region_info(const struct mtd_dev_info *mtd)
- 	/*
- 	 * If we don't have any region info, just return
- 	 *
--	 * FIXME: We can't get region_info (via ioctl) without having the MTD
--	 *        node path. This is a problem for `mtdinfo -a', for example,
--	 *        since it doesn't provide any filepath information.
-+	 * FIXME: We still need the filepath for the region map
- 	 */
- 	if (!args.node || (!args.map && mtd->region_cnt == 0))
- 		return;
-@@ -267,14 +265,12 @@ static void print_region_info(const struct mtd_dev_info *mtd)
- 	if (mtd->region_cnt) {
- 		for (r = 0; r < mtd->region_cnt; ++r) {
- 			printf("Eraseblock region %i: ", r);
--			if (mtd_regioninfo(fd, r, &reginfo) == 0) {
--				printf(" offset: %#x size: %#x numblocks: %#x\n",
--					reginfo.offset, reginfo.erasesize,
--					reginfo.numblocks);
--				if (args.map)
--					print_region_map(mtd, fd, &reginfo);
--			} else
--				printf(" info is unavailable\n");
-+			printf(" offset: %#x size: %#x numblocks: %#x\n",
-+					mtd->reginfo[r].offset,
-+					mtd->reginfo[r].erasesize,
-+					mtd->reginfo[r].numblocks);
-+			if (args.map)
-+				print_region_map(mtd, fd, &(mtd->reginfo[r]));
- 		}
- 	} else {
- 		reginfo.offset = 0;
+diff --git a/lib/libmtd_legacy.c b/lib/libmtd_legacy.c
+index 233a92e..5f2db9c 100644
+--- a/lib/libmtd_legacy.c
++++ b/lib/libmtd_legacy.c
+@@ -233,7 +233,7 @@ int legacy_get_dev_info(const char *node, struct mtd_dev_info *mtd)
+ {
+ 	struct stat st;
+ 	struct mtd_info_user ui;
+-	int fd, ret;
++	int fd, ret, region_cnt, i;
+ 	loff_t offs = 0;
+ 	struct proc_parse_info pi;
+ 
+@@ -282,6 +282,32 @@ int legacy_get_dev_info(const char *node, struct mtd_dev_info *mtd)
+ 	} else
+ 		mtd->bb_allowed = 1;
+ 
++	ret = ioctl(fd, MEMGETREGIONCOUNT, &region_cnt);
++	if (ret == -1) {
++		if (errno != EOPNOTSUPP) {
++			sys_errmsg("MEMGETREGIONCOUNT ioctl failed");
++			goto out_close;
++		}
++		errno = 0;
++		mtd->region_cnt = 0;
++	} else
++		mtd->region_cnt = region_cnt;
++
++	if (mtd->region_cnt) {
++		mtd->reginfo = calloc(mtd->region_cnt,
++				sizeof(struct region_info_user));
++		if (!mtd->reginfo) {
++			errno = ENOMEM;
++			goto out_close;
++		}
++
++		for (i = 0; i < mtd->region_cnt; i++) {
++			ret = mtd_regioninfo(fd, i, &(mtd->reginfo[i]));
++			if (ret)
++				goto out_close;
++		}
++	}
++
+ 	mtd->type = ui.type;
+ 	mtd->size = ui.size;
+ 	mtd->eb_size = ui.erasesize;
 -- 
 1.9.1
