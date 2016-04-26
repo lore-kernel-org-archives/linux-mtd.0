@@ -1,28 +1,19 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auy8U-0000Xc-Bt
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 08:14:23 +0000
-Reply-To: hs@denx.de
-Subject: Re: [U-Boot] Porting Linux's MTD/NAND changes into U-Boot
-References: <20160425164314.15c3fc94@bbrezillon>
- <20160425173646.GM3732@bill-the-cat> <571EFA04.4000803@denx.de>
- <571F16A1.70800@nod.at>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1auyDA-0004ln-9R
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 08:19:13 +0000
+Date: Tue, 26 Apr 2016 10:18:50 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Richard Weinberger <richard@nod.at>
-Cc: Tom Rini <trini@konsulko.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marex@denx.de>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Scott Wood <oss@buserror.net>, u-boot@lists.denx.de,
- "linux-sunxi@googlegroups.com" <linux-sunxi@googlegroups.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Scott Wood <scottwood@freescale.com>, Alexander Kaplan <alex@nextthing.co>,
- Brian Norris <computersforpeace@gmail.com>
-From: Heiko Schocher <hs@denx.de>
-Message-ID: <571F2341.1090705@denx.de>
-Date: Tue, 26 Apr 2016 10:13:53 +0200
+Cc: linux-mtd@lists.infradead.org, david.oberhollenzer@sigma-star.at
+Subject: Re: [PATCH 4/8] mtd-utils: Add flash stress test Utility
+Message-ID: <20160426101850.2ccde903@bbrezillon>
+In-Reply-To: <1461622409-14970-5-git-send-email-richard@nod.at>
+References: <1461622409-14970-1-git-send-email-richard@nod.at>
+ <1461622409-14970-5-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <571F16A1.70800@nod.at>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,37 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Richard,
+On Tue, 26 Apr 2016 00:13:25 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-Am 26.04.2016 um 09:20 schrieb Richard Weinberger:
-> Am 26.04.2016 um 07:17 schrieb Heiko Schocher:
->> Also, as the UBI/UIFS case may show, it is not always a trivial job
->> to do such a sync, as concepts in Linux changes ...
->
-> While we are at it, how do you QA?
+> diff --git a/misc-utils/flash_stress.c b/misc-utils/flash_stress.c
+> new file mode 100644
+> index 0000000..2dd2da1
+> --- /dev/null
+> +++ b/misc-utils/flash_stress.c
 
-I do some very basic ubi/ubifs tests with tbot [1] on the aristainetos2 [2]
-and dxr2 board [3].
+[...]
 
-> Did you ever port port UBI or MTD tests to u-boot and let them run?
+> +static void process_options(int argc, char **argv)
+> +{
+> +	int i;
+> +
+> +	for (i=1; i<argc; ++i) {
+> +		if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h")) {
+> +			usage(EXIT_SUCCESS);
+> +		} else if (!strcmp(argv[i], "--keep") || !strcmp(argv[i], "-k")) {
+> +			if (flags & KEEP_CONTENTS)
+> +				goto failmulti;
+> +			flags |= KEEP_CONTENTS;
+> +		} else if (!strcmp(argv[i], "--seed") || !strcmp(argv[i], "-s")) {
+> +			if (flags & SEED_SET)
+> +				goto failmulti;
+> +			srand(read_num(i, i+1, argc, argv));
+> +			flags |= SEED_SET;
+> +		} else if (!strcmp(argv[i], "--count") || !strcmp(argv[i], "-c")) {
+> +			if (flags & COUNT_CHANGED)
+> +				goto failmulti;
+> +			count = read_num(i, i+1, argc, argv);
+> +			if (count <= 0)
+> +				goto failarg;
+> +			++i;
+> +			flags |= COUNT_CHANGED;
+> +		} else {
+> +			if (mtddev)
+> +				usage(EXIT_FAILURE);
+> +			mtddev = argv[i];
+> +		}
+> +	}
 
-No, patches are welcome.
-
-> Maybe there are more issues hidden which didn't came up in quick "builds and boots a kernel" tests. ;-)
-> As you offer the full UBI and UBIFS feature sets advanced users may get surprised.
-
-Yes, possible.
-
-bye,
-Heiko
-
-[1] https://github.com/hsdenx/tbot
-[2] U-Boot cyclic tests on the aristainetos2 board
-     (used UBI on sf nor and nand, UBIFS on the nand, U-Boot test only)
-     http://xeidos.ddns.net/buildbot/builders/ari_ubi/builds/50
-[3] U-Boot / Linux UBI/UBIFS tests, last log:
-     http://xeidos.ddns.net/buildbot/builders/dxr2/builds/12/steps/shell/logs/tbotlog
+Please use getopt_long(). I guess this applies to all your patches, so
+I'll stop mentioning it.
 
 -- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
