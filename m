@@ -1,22 +1,20 @@
-Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
+Received: from mail-pf0-x22f.google.com ([2607:f8b0:400e:c00::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av3a4-0003qR-JG
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 14:03:13 +0000
-Received: by mail-oi0-x22b.google.com with SMTP id k142so15692887oib.1
- for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 07:02:52 -0700 (PDT)
+ id 1av3m0-0001CG-0q
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 14:15:33 +0000
+Received: by mail-pf0-x22f.google.com with SMTP id y69so7384314pfb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 07:15:11 -0700 (PDT)
+Date: Tue, 26 Apr 2016 11:15:05 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH] UBI: Fix static volume checks when Fastmap is used
+Message-ID: <20160426141505.GA1293@laptop.cereza>
+References: <1461618245-11202-1-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <1461625501-2160538-1-git-send-email-arnd@arndb.de>
-References: <1461625501-2160538-1-git-send-email-arnd@arndb.de>
-Date: Tue, 26 Apr 2016 16:02:51 +0200
-Message-ID: <CACRpkdZe04RCxc4BOidZamRqpu3AcmS+xB82v6iM3dXmYx8odA@mail.gmail.com>
-Subject: Re: [PATCH] physmap_of: ensure versatile code is reachable
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1461618245-11202-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +24,172 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 26, 2016 at 1:04 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+On 25 Apr 11:04 PM, Richard Weinberger wrote:
+> Ezequiel reported that he's facing UBI going into read-only
+> mode after power cut. It turned out that this behavior happens
+> only when updating a static volume is interrupted and Fastmap is
+> used.
+> 
+> UBI checks static volumes for data consistency and reads the
+> whole volume upon first open. If the volume is found erroneous
+> users of UBI cannot read from it, but another volume update is
+> possible to fix it. The check is performed by running
+> ubi_eba_read_leb() on every allocated LEB of the volume.
+> For static volumes ubi_eba_read_leb() computes the checksum of all
+> data stored in a LEB. To verify the computed checksum it has to read
+> the LEB's volume header which stores the original checksum.
+> If the volume header is not found UBI treats this as fatal internal
+> error and switches to RO mode. If the UBI device was attached via a
+> full scan the assumption is correct, the volume header has to be
+> present as it had to be there while scanning to get known as mapped.
+> If the attach operation happened via Fastmap the assumption is no
+> longer correct. When attaching via Fastmap UBI learns the mapping
+> table from Fastmap's snapshot of the system state and not via a full
+> scan. It can happen that a LEB got unmapped after a Fastmap was
+> written to the flash. Then UBI can learn the LEB still as mapped and
+> accessing it returns only 0xFF bytes. As UBI is not a FTL it is
+> allowed to have mappings to empty PEBs, it assumes that the layer
+> above takes care of LEB accounting and referencing.
+> UBIFS does so using the LEB property tree (LPT).
+> For static volumes UBI blindly assumes that all LEBs are present and
+> therefore special actions have to be taken.
+> 
+> The described situation can happen when updating a static volume is
+> interrupted, either by a user or a power cut.
+> The volume update code first unmaps all LEBs of a volume and then
+> writes LEB by LEB. If the sequence of operations is interrupted UBI
+> detects this either by the absence of LEBs, no volume header present
+> at scan time, or corrupted payload, detected via checksum.
+> In the Fastmap case the former method won't trigger as no scan
+> happened and UBI automatically thinks all LEBs are present.
+> Only by reading data from a LEB it detects that the volume header is
+> missing and incorrectly treats this as fatal error.
+> To deal with the situation ubi_eba_read_leb() from now on checks
+> whether we attached via Fastmap and handles the absence of a
+> volume header like a data corruption error.
+> This way interrupted static volume updates will correctly get detected
+> also when Fastmap is used.
+> 
+> Cc: stable@vger.kernel.org
+> Reported-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-> With the newly added physmap_of_versatile code, we get a build error
-> when physmap_of is in a module, because of_flash_probe_versatile
-> is not exported:
->
-> ERROR: "of_flash_probe_versatile" [drivers/mtd/maps/physmap_of.ko] undefined!
->
-> This adds the export, and changes the Makefile so that the code is
-> also put into a loadable module rather than built-in when physmap_of
-> itself is a module.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Thanks a lot for the quick fix!
 
-Argh how stupid of me. Strange I didn't see it on the
-build servers. Anyway:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+In addition to the explanation for the bug, it will be
+valuable to add the backtrace of the issue. That will
+be helpful for people debugging some future UBI issue,
+to distinguish between this bug and something different.
 
-Yours,
-Linus Walleij
+ubi0 warning: ubi_io_read_vid_hdr [ubi]: no VID header found at PEB 2323, only 0xFF bytes
+ubi0 warning: ubi_eba_read_leb [ubi]: switch to read-only mode
+CPU: 0 PID: 833 Comm: ubiupdatevol Not tainted 4.6.0-rc2-ARCH #4
+Hardware name: SAMSUNG ELECTRONICS CO., LTD. 300E4C/300E5C/300E7C/NP300E5C-AD8AR, BIOS P04RAP 10/15/2012
+0000000000000286 00000000eba949bd ffff8800c45a7b38 ffffffff8140d841
+ffff8801964be000 ffff88018eaa4800 ffff8800c45a7bb8 ffffffffa003abf6
+ffffffff850e2ac0 8000000000000163 ffff8801850e2ac0 ffff8801850e2ac0
+Call Trace:
+[<ffffffff8140d841>] dump_stack+0x63/0x82
+[<ffffffffa003abf6>] ubi_eba_read_leb+0x486/0x4a0 [ubi]
+[<ffffffffa00453b3>] ubi_check_volume+0x83/0xf0 [ubi]
+[<ffffffffa0039d97>] ubi_open_volume+0x177/0x350 [ubi]
+[<ffffffffa00375d8>] vol_cdev_open+0x58/0xb0 [ubi]
+[<ffffffff8124b08e>] chrdev_open+0xae/0x1d0
+[<ffffffff81243bcf>] do_dentry_open+0x1ff/0x300
+[<ffffffff8124afe0>] ? cdev_put+0x30/0x30
+[<ffffffff81244d36>] vfs_open+0x56/0x60
+[<ffffffff812545f4>] path_openat+0x4f4/0x1190
+[<ffffffff81256621>] do_filp_open+0x91/0x100
+[<ffffffff81263547>] ? __alloc_fd+0xc7/0x190
+[<ffffffff812450df>] do_sys_open+0x13f/0x210
+[<ffffffff812451ce>] SyS_open+0x1e/0x20
+[<ffffffff81a99e32>] entry_SYSCALL_64_fastpath+0x1a/0xa4
+
+With this patch, the machine where this was first observed is
+now able to upgrade and survive random power-cuts. Upon
+the hitting the same situation, the volume is simply
+marked as corrupted:
+
+ubi0 warning: ubi_io_read_vid_hdr: no VID header found at PEB 1661, only 0xFF bytes
+ubi0 warning: ubi_open_volume: volume 0 on UBI device 0 is corrupted
+ubi0 error: vol_cdev_read: damaged volume, update marker is set
+
+Tested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+
+> ---
+>  drivers/mtd/ubi/eba.c     | 21 +++++++++++++++++++--
+>  drivers/mtd/ubi/fastmap.c |  1 +
+>  drivers/mtd/ubi/ubi.h     |  2 ++
+>  3 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+> index 5b9834c..96fddb0 100644
+> --- a/drivers/mtd/ubi/eba.c
+> +++ b/drivers/mtd/ubi/eba.c
+> @@ -426,8 +426,25 @@ retry:
+>  						 pnum, vol_id, lnum);
+>  					err = -EBADMSG;
+>  				} else {
+> -					err = -EINVAL;
+> -					ubi_ro_mode(ubi);
+> +					/*
+> +					 * Ending up here in the non-Fastmap case
+> +					 * is a clear bug as the VID header had to
+> +					 * be present at scan time to have it referenced.
+> +					 * With fastmap the story is more complicated.
+> +					 * Fastmap has the mapping info without the need
+> +					 * of a full scan. So the LEB could have been
+> +					 * unmapped, Fastmap cannot know this and keeps
+> +					 * the LEB referenced.
+> +					 * This is valid and works as the layer above UBI
+> +					 * has to do bookkeeping about used/referenced
+> +					 * LEBs in any case.
+> +					 */
+> +					if (ubi->fast_attach) {
+> +						err = -EBADMSG;
+> +					} else {
+> +						err = -EINVAL;
+> +						ubi_ro_mode(ubi);
+> +					}
+>  				}
+>  			}
+>  			goto out_free;
+> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+> index 263b439..990898b 100644
+> --- a/drivers/mtd/ubi/fastmap.c
+> +++ b/drivers/mtd/ubi/fastmap.c
+> @@ -1058,6 +1058,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+>  	ubi_msg(ubi, "fastmap WL pool size: %d",
+>  		ubi->fm_wl_pool.max_size);
+>  	ubi->fm_disabled = 0;
+> +	ubi->fast_attach = 1;
+>  
+>  	ubi_free_vid_hdr(ubi, vh);
+>  	kfree(ech);
+> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+> index dadc6a9..61d4e99 100644
+> --- a/drivers/mtd/ubi/ubi.h
+> +++ b/drivers/mtd/ubi/ubi.h
+> @@ -466,6 +466,7 @@ struct ubi_debug_info {
+>   * @fm_eba_sem: allows ubi_update_fastmap() to block EBA table changes
+>   * @fm_work: fastmap work queue
+>   * @fm_work_scheduled: non-zero if fastmap work was scheduled
+> + * @fast_attach: non-zero if UBI was attached by fastmap
+>   *
+>   * @used: RB-tree of used physical eraseblocks
+>   * @erroneous: RB-tree of erroneous used physical eraseblocks
+> @@ -574,6 +575,7 @@ struct ubi_device {
+>  	size_t fm_size;
+>  	struct work_struct fm_work;
+>  	int fm_work_scheduled;
+> +	int fast_attach;
+>  
+>  	/* Wear-leveling sub-system's stuff */
+>  	struct rb_root used;
+> -- 
+> 2.7.3
+> 
+
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
