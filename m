@@ -1,28 +1,21 @@
-Received: from mail-ig0-x22f.google.com ([2607:f8b0:4001:c05::22f])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av8nj-00028W-BT
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 19:37:40 +0000
-Received: by mail-ig0-x22f.google.com with SMTP id m9so22488530ige.1
- for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 12:37:19 -0700 (PDT)
-From: Seth Forshee <seth.forshee@canonical.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Miklos Szeredi <miklos@szeredi.hu>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Pavel Tikhomirov <ptikhomirov@virtuozzo.com>, linux-kernel@vger.kernel.org,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com,
- linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- cgroups@vger.kernel.org, Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH v4 21/21] fuse: Allow user namespace mounts
-Date: Tue, 26 Apr 2016 14:36:34 -0500
-Message-Id: <1461699396-33000-22-git-send-email-seth.forshee@canonical.com>
-In-Reply-To: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
-References: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
+ id 1av8tV-0001Rz-MB
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 19:43:38 +0000
+Subject: Re: [PATCH] ubifs: Switch to generic xattr handlers
+To: Andreas Gruenbacher <agruenba@redhat.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+References: <1461345240-24117-1-git-send-email-agruenba@redhat.com>
+Cc: linux-mtd@lists.infradead.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+ linux-fsdevel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <571FC4CF.5000104@nod.at>
+Date: Tue, 26 Apr 2016 21:43:11 +0200
+MIME-Version: 1.0
+In-Reply-To: <1461345240-24117-1-git-send-email-agruenba@redhat.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,33 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-Acked-by: Miklos Szeredi <mszeredi@redhat.com>
----
- fs/fuse/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Am 22.04.2016 um 19:14 schrieb Andreas Gruenbacher:
+> Hello,
+> 
+> could you please review the following change which depends on the work.xattr
+> branch of vfs.git:
+> 
+>   https://git.kernel.org/cgit/linux/kernel/git/viro/vfs.git/log/?h=work.xattr
+> 
+> I will send the change on to Al once it has been reviewed.
+> 
+> Thanks,
+> Andreas
+> 
+> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> ---
+>  fs/ubifs/dir.c   |   6 +--
+>  fs/ubifs/file.c  |  12 ++---
+>  fs/ubifs/super.c |   1 +
+>  fs/ubifs/ubifs.h |   7 +--
+>  fs/ubifs/xattr.c | 143 ++++++++++++++++++++++++++-----------------------------
+>  5 files changed, 79 insertions(+), 90 deletions(-)
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 0a771145d853..254f1944ee98 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1199,7 +1199,7 @@ static void fuse_kill_sb_anon(struct super_block *sb)
- static struct file_system_type fuse_fs_type = {
- 	.owner		= THIS_MODULE,
- 	.name		= "fuse",
--	.fs_flags	= FS_HAS_SUBTYPE,
-+	.fs_flags	= FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
- 	.mount		= fuse_mount,
- 	.kill_sb	= fuse_kill_sb_anon,
- };
-@@ -1231,7 +1231,7 @@ static struct file_system_type fuseblk_fs_type = {
- 	.name		= "fuseblk",
- 	.mount		= fuse_mount_blk,
- 	.kill_sb	= fuse_kill_sb_blk,
--	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE,
-+	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
- };
- MODULE_ALIAS_FS("fuseblk");
- 
--- 
-2.7.4
+Reviewed-by: Richard Weinberger <richard@nod.at>
+
+Thanks,
+//richard
