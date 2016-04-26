@@ -1,36 +1,29 @@
-Received: from mail-oi0-x233.google.com ([2607:f8b0:4003:c06::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av8x5-0005IQ-Qj
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 19:47:20 +0000
-Received: by mail-oi0-x233.google.com with SMTP id r78so26812317oie.0
- for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 12:46:59 -0700 (PDT)
-Date: Mon, 25 Apr 2016 15:54:51 -0500
+Received: from mail-ig0-x234.google.com ([2607:f8b0:4001:c05::234])
+ by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
+ id 1av8nj-0002qS-RQ
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 19:37:40 +0000
+Received: by mail-ig0-x234.google.com with SMTP id bi2so107345300igb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 12:37:18 -0700 (PDT)
 From: Seth Forshee <seth.forshee@canonical.com>
-To: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+To: "Eric W. Biederman" <ebiederm@xmission.com>,
+ Miklos Szeredi <miklos@szeredi.hu>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
  Serge Hallyn <serge.hallyn@canonical.com>,
  Richard Weinberger <richard.weinberger@gmail.com>,
  Austin S Hemmelgarn <ahferroin7@gmail.com>,
  Miklos Szeredi <mszeredi@redhat.com>,
- Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
- linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- fuse-devel@lists.sourceforge.net,
+ Pavel Tikhomirov <ptikhomirov@virtuozzo.com>, linux-kernel@vger.kernel.org,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 14/21] fs: Allow superblock owner to change ownership
- of inodes with unmappable ids
-Message-ID: <20160425205451.GA22516@ubuntu-hedt>
-References: <1461339521-123191-1-git-send-email-seth.forshee@canonical.com>
- <1461339521-123191-15-git-send-email-seth.forshee@canonical.com>
- <20160425203047.GA29927@mail.hallyn.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160425203047.GA29927@mail.hallyn.com>
+ cgroups@vger.kernel.org, Seth Forshee <seth.forshee@canonical.com>
+Subject: [PATCH v4 20/21] fuse: Restrict allow_other to the superblock's
+ namespace or a descendant
+Date: Tue, 26 Apr 2016 14:36:33 -0500
+Message-Id: <1461699396-33000-21-git-send-email-seth.forshee@canonical.com>
+In-Reply-To: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
+References: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,72 +33,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 25, 2016 at 03:30:47PM -0500, Serge E. Hallyn wrote:
-> Quoting Seth Forshee (seth.forshee@canonical.com):
-> > In a userns mount some on-disk inodes may have ids which do not
-> > map into s_user_ns, in which case the in-kernel inodes are owned
-> > by invalid users. The superblock owner should be able to change
-> > attributes of these inodes but cannot. However it is unsafe to
-> > grant the superblock owner privileged access to all inodes in the
-> > superblock since proc, sysfs, etc. use DAC to protect files which
-> > may not belong to s_user_ns. The problem is restricted to only
-> > inodes where the owner or group is an invalid user.
-> > 
-> > We can work around this by allowing users with CAP_CHOWN in
-> > s_user_ns to change an invalid owner or group id, so long as the
-> > other id is either invalid or mappable in s_user_ns. After
-> > changing ownership the user will be privileged towards the inode
-> > and thus able to change other attributes.
-> > 
-> > As an precaution, checks for invalid ids are added to the proc
-> > and kernfs setattr interfaces. These filesystems are not expected
-> > to have inodes with invalid ids, but if it does happen any
-> > setattr operations will return -EPERM.
-> > 
-> > Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> 
-> Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
-> 
-> bug a request below,
-> 
-> > ---
-> >  fs/attr.c             | 47 +++++++++++++++++++++++++++++++++++++++--------
-> >  fs/kernfs/inode.c     |  2 ++
-> >  fs/proc/base.c        |  2 ++
-> >  fs/proc/generic.c     |  3 +++
-> >  fs/proc/proc_sysctl.c |  2 ++
-> >  5 files changed, 48 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/fs/attr.c b/fs/attr.c
-> > index 3cfaaac4a18e..a8b0931654a5 100644
-> > --- a/fs/attr.c
-> > +++ b/fs/attr.c
-> > @@ -16,6 +16,43 @@
-> >  #include <linux/evm.h>
-> >  #include <linux/ima.h>
-> >  
-> > +static bool chown_ok(const struct inode *inode, kuid_t uid)
-> > +{
-> > +	struct user_namespace *user_ns;
-> > +
-> > +	if (uid_eq(current_fsuid(), inode->i_uid) && uid_eq(uid, inode->i_uid))
-> > +		return true;
-> > +	if (capable_wrt_inode_uidgid(inode, CAP_CHOWN))
-> > +		return true;
-> > +
-> > +	user_ns = inode->i_sb->s_user_ns;
-> > +	if (!uid_valid(inode->i_uid) &&
-> > +	    (!gid_valid(inode->i_gid) || kgid_has_mapping(user_ns, inode->i_gid)) &&
-> 
-> This confused me to no end :)  Perhaps a "is_unmapped_valid_gid()" helper
-> would make it clearer what this is meant to do?  Or else maybe a comment
-> above chown_ok(), explaining that
-> 
-> 1. for a blockdev, the uid is converted at inode read so that it is
-> either mapped or invalid
-> 2. for sysfs / etc, uid can be valid but not mapped into the userns
+Unprivileged users are normally restricted from mounting with the
+allow_other option by system policy, but this could be bypassed
+for a mount done with user namespace root permissions. In such
+cases allow_other should not allow users outside the userns
+to access the mount as doing so would give the unprivileged user
+the ability to manipulate processes it would otherwise be unable
+to manipulate. Restrict allow_other to apply to users in the same
+userns used at mount or a descendant of that namespace. Also
+export current_in_userns() for use by fuse when built as a
+module.
 
-Even with a helper a comment is probably helpful to explain why. I'll do
-that first, then see if a helper would make things any clearer.
-Honestly, I had to think about the helper name you proposed for a minute
-before it made sense even though I already understood the code ;-)
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
+Acked-by: Miklos Szeredi <mszeredi@redhat.com>
+---
+ fs/fuse/dir.c           | 2 +-
+ kernel/user_namespace.c | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+index ecba75bf6640..1a6c5af49608 100644
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -1015,7 +1015,7 @@ int fuse_allow_current_process(struct fuse_conn *fc)
+ 	const struct cred *cred;
+ 
+ 	if (fc->flags & FUSE_ALLOW_OTHER)
+-		return 1;
++		return current_in_userns(fc->user_ns);
+ 
+ 	cred = current_cred();
+ 	if (uid_eq(cred->euid, fc->user_id) &&
+diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+index 68f594212759..fa2294e14b77 100644
+--- a/kernel/user_namespace.c
++++ b/kernel/user_namespace.c
+@@ -951,6 +951,7 @@ bool current_in_userns(const struct user_namespace *target_ns)
+ 	}
+ 	return false;
+ }
++EXPORT_SYMBOL(current_in_userns);
+ 
+ static inline struct user_namespace *to_user_ns(struct ns_common *ns)
+ {
+-- 
+2.7.4
