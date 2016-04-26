@@ -1,19 +1,20 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auxhJ-0004Yy-9r
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 07:46:18 +0000
-Date: Tue, 26 Apr 2016 09:45:55 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, david.oberhollenzer@sigma-star.at
-Subject: Re: [RFC] Porting kernel MTD tests to user space
-Message-ID: <20160426094555.5f10c4e4@bbrezillon>
-In-Reply-To: <1461622409-14970-1-git-send-email-richard@nod.at>
-References: <1461622409-14970-1-git-send-email-richard@nod.at>
+Date: Tue, 26 Apr 2016 09:51:28 +0200
+From: Stefan Christ <s.christ@phytec.de>
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Han Xu <han.xu@nxp.com>, David Woodhouse <dwmw2@infradead.org>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, Huang Shijie <shijie.huang@intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] gpmi-nand: Handle ECC Errors in erased pages
+Message-ID: <20160426075128.GC2351@lws-christ>
+References: <1461587712-16403-1-git-send-email-mpa@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1461587712-16403-1-git-send-email-mpa@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+Hi,
 
-On Tue, 26 Apr 2016 00:13:21 +0200
-Richard Weinberger <richard@nod.at> wrote:
+On Mon, Apr 25, 2016 at 02:35:12PM +0200, Markus Pargmann wrote:
+> ECC is only calculated for written pages. As erased pages are not
+> actively written the ECC is always invalid. For this purpose the
+> Hardware BCH unit is able to check for erased pages and does not raise
+> an ECC error in this case. This behaviour can be influenced using the
+> BCH=5FMODE register which sets the number of allowed bitflips in an erased
+> page. Unfortunately the unit is not capable of fixing the bitflips in
+> memory.
+>=20
+> To avoid complete software checks for erased pages, we can simply check
+> buffers with uncorrectable ECC errors because we know that any erased
+> page with errors is uncorrectable by the BCH unit.
+>=20
+> This patch adds the generic nand=5Fcheck=5Ferased=5Fecc=5Fchunk() to gpmi=
+-nand
+> to correct erased pages. To have the valid data in the buffer before
+> using them, this patch moves the read=5Fpage=5Fswap=5Fend() call before t=
+he
+> ECC status checking for-loop.
+>=20
+> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+> [Squashed patches by Stefan and Boris to check ECC area]
+> Cc: Stefan Christ <s.christ@phytec.de>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+>=20
+> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
 
-> David was so kind and did an initial port of Linux's MTD tests to user space.
-> He took most tests as-is and massaged them to work in user space using libmtd.
-> In the long run the goal is giving up the kernel tests as much as possible
-> and improve the tests present in mtd-utils.
-> 
-> Feedback is very welcome!
+Tested-by: Stefan Christ <s.christ@phytec.de>
 
-Oh, nice move!
-I'll try to review those patches.
+I verified the fix again on our board.
 
-BTW, I agree with Artem: we should remove in-kernel tests at some point
-(maybe not immediately though).
-
-Best Regards,
-
-Boris
-
-> 
-> Thanks,
-> //richard
-> 
-> [PATCH 1/8] mtd-utils: Fix return status in mtd_torture test function
-> [PATCH 2/8] mtd-utils: Add multi-block erase function
-> [PATCH 3/8] mtd-utils: Add flash torture test utility
-> [PATCH 4/8] mtd-utils: Add flash stress test Utility
-> [PATCH 5/8] mtd-utils: Add flash speed test Utility
-> [PATCH 6/8] mtd-utils: Add nand flash bit errors test
-> [PATCH 7/8] mtd-utils: Add flash read test utility
-> [PATCH 8/8] mtd-utils: Add nand page test utility
-> 
->  .gitignore                  |   6 +
->  Makefile                    |   7 +-
->  include/libmtd.h            |  14 ++
->  lib/libmtd.c                |  28 ++-
->  misc-utils/flash_readtest.c | 263 ++++++++++++++++++++
->  misc-utils/flash_speed.c    | 463 +++++++++++++++++++++++++++++++++++
->  misc-utils/flash_stress.c   | 276 +++++++++++++++++++++
->  misc-utils/flash_torture.c  | 240 ++++++++++++++++++
->  nand-utils/nandbiterrs.c    | 497 +++++++++++++++++++++++++++++++++++++
->  nand-utils/nandpagetest.c   | 579 ++++++++++++++++++++++++++++++++++++++++++++
->  10 files changed, 2362 insertions(+), 11 deletions(-)
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Mit freundlichen Gr=C3=BC=C3=9Fen / Kind regards,
+	Stefan Christ
