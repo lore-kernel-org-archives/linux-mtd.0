@@ -1,26 +1,26 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auxIJ-0008Iv-Am
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 07:20:27 +0000
-Subject: Re: [U-Boot] Porting Linux's MTD/NAND changes into U-Boot
-To: hs@denx.de, Tom Rini <trini@konsulko.com>
-References: <20160425164314.15c3fc94@bbrezillon>
- <20160425173646.GM3732@bill-the-cat> <571EFA04.4000803@denx.de>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marex@denx.de>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Scott Wood <oss@buserror.net>, u-boot@lists.denx.de,
- "linux-sunxi@googlegroups.com" <linux-sunxi@googlegroups.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Scott Wood <scottwood@freescale.com>, Alexander Kaplan <alex@nextthing.co>,
- Brian Norris <computersforpeace@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <571F16A1.70800@nod.at>
-Date: Tue, 26 Apr 2016 09:20:01 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1auxWj-00066X-5B
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 07:35:21 +0000
+Date: Tue, 26 Apr 2016 09:34:48 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Pawel
+ Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian
+ Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala
+ <galak@codeaurora.org>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, devicetree@vger.kernel.org (open list:OPEN
+ FIRMWARE AND FLATTENED DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org
+ (open list)
+Subject: Re: [PATCH 1/3] mtd: nand: add support for "nand-ecc-algo" DT property
+Message-ID: <20160426093448.24832903@bbrezillon>
+In-Reply-To: <1461324197-1333-1-git-send-email-zajec5@gmail.com>
+References: <1461324197-1333-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <571EFA04.4000803@denx.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,14 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 26.04.2016 um 07:17 schrieb Heiko Schocher:
-> Also, as the UBI/UIFS case may show, it is not always a trivial job
-> to do such a sync, as concepts in Linux changes ...
+On Fri, 22 Apr 2016 13:23:13 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-While we are at it, how do you QA?
-Did you ever port port UBI or MTD tests to u-boot and let them run?
-Maybe there are more issues hidden which didn't came up in quick "builds and boots a kernel" tests. ;-)
-As you offer the full UBI and UBIFS feature sets advanced users may get surprised.
+> So far it was only possible to specify ECC algorithm using "soft" and
+> "soft_bch" values of nand-ecc-mode prop. There wasn't a way to specify
+> it for a hardware ECC mode.
+>=20
+> Now that we have independent field in NAND subsystem for storing info
+> about ECC algorithm we may also add support for this new DT property.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand.txt |  2 ++
+>  drivers/mtd/nand/nand_base.c                   | 20 +++++++++++++-------
+>  2 files changed, 15 insertions(+), 7 deletions(-)
 
-Thanks,
-//richard
+Applied, thanks.
+
+Boris
+--=20
+Boris Brezillon, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
