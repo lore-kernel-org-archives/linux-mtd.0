@@ -1,27 +1,20 @@
-Received: from mail-io0-x22d.google.com ([2607:f8b0:4001:c06::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av7sS-00028O-Q4
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 18:38:29 +0000
-Received: by mail-io0-x22d.google.com with SMTP id 190so18945500iow.1
- for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 11:38:08 -0700 (PDT)
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1av87a-0001q5-2A
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 18:54:06 +0000
+Date: Tue, 26 Apr 2016 20:53:44 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH] mtd: nand: fix NULL pointer dereference in
+ of_get_nand_ecc_algo
+Message-ID: <20160426205344.17ab81cb@bbrezillon>
+In-Reply-To: <1461695776-29740-1-git-send-email-zajec5@gmail.com>
+References: <1461695776-29740-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20160426055355.GA25981@localhost>
-References: <1461324197-1333-1-git-send-email-zajec5@gmail.com>
- <1461324197-1333-3-git-send-email-zajec5@gmail.com>
- <20160426055355.GA25981@localhost>
-Date: Tue, 26 Apr 2016 20:38:07 +0200
-Message-ID: <CACna6rw21x+AzeKAyc+Kn2bHNivaYOX7WjkwGASWbz7GKs8CRQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mtd: brcmnand: respect ECC algorithm set by NAND
- subsystem
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- "open list:BROADCOM STB NAND FLASH DRIVER"
- <bcm-kernel-feedback-list@broadcom.com>,
- open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,31 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 26 April 2016 at 07:53, Brian Norris <computersforpeace@gmail.com> wrote=
-:
-> From: Brian Norris <computersforpeace@gmail.com>
-> Date: Mon, 25 Apr 2016 20:48:02 -0700
-> Subject: [PATCH] mtd: brcmnand: respect ECC algorithm set by the NAND
->  subsystem
->
-> This is more obvious than guessing based on ECC strength. It allows
-> using NAND on devices with BCH-1 (e.g. D-Link DIR-885L).
->
-> This maintains DT backward compatibility by defaulting to Hamming if a
-> 1-bit ECC algorithm is specified without a corresponding algorithm
-> selection. i.e., to use BCH-1, you must specify:
->
->   nand-ecc-strength =3D <1>;
->   nand-ecc-step-size =3D <512>;
->   nand-ecc-algo =3D "bch";
->
-> Also adds a check to ensure we haven't allowed someone to get by with SW
-> ECC. If we want to support SW ECC, we need to refactor some other pieces
-> of this driver.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+On Tue, 26 Apr 2016 20:36:16 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-Tested-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> Our array nand_ecc_algos doesn't specify mappings for all available
+> enum nand_ecc_algo values. The one missing there is NAND_ECC_UNKNOWN
+> as this value is reserved for algorithm not being specified at all.
+> It means we have to be careful when iterating this array and handle
+> NULL values.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> ---
+> Hi Boris,
+>=20
+> Sorry for this crash in nand subsystem :( If you think it's OK you may
+> pick this patch as a fixup for
+> c6e002a7ca9f ("mtd: nand: add support for "nand-ecc-algo" DT property")
+> ---
+>  drivers/mtd/nand/nand_base.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index a5417a0..0eaa9dc 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4016,6 +4016,8 @@ static int of_get_nand_ecc_algo(struct device_node =
+*np)
+>  	err =3D of_property_read_string(np, "nand-ecc-algo", &pm);
+>  	if (!err) {
+>  		for (i =3D 0; i < ARRAY_SIZE(nand_ecc_algos); i++)
+> +			if (!nand_ecc_algos[i])
+> +				continue;
 
-I just needed to apply following patch first:
-[PATCH] mtd: nand: fix NULL pointer dereference in of_get_nand_ecc_algo
+Can we add an "unknown" entry, or start iterating at NAND_ECC_HAMMING
+or NAND_ECC_UNKNOWN + 1 instead of adding this extra test?
+
+BTW, since the original commit has been applied recently I'll squash the
+changes into the previous commit and rebase my branch instead of adding
+a new patch (I hate breaking bisectability).
+
+
+--=20
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
