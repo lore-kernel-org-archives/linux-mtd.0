@@ -1,28 +1,35 @@
-Received: from mail-pf0-x22b.google.com ([2607:f8b0:400e:c00::22b])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auvx9-0000Fx-Am
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 05:54:31 +0000
-Received: by mail-pf0-x22b.google.com with SMTP id n1so2867994pfn.2
- for <linux-mtd@lists.infradead.org>; Mon, 25 Apr 2016 22:54:10 -0700 (PDT)
-Date: Mon, 25 Apr 2016 22:53:55 -0700
+ id 1auvxz-0000U1-2y
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 05:55:23 +0000
+Received: by mail-pa0-x234.google.com with SMTP id r5so2539938pag.1
+ for <linux-mtd@lists.infradead.org>; Mon, 25 Apr 2016 22:55:02 -0700 (PDT)
+Date: Mon, 25 Apr 2016 22:54:58 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- "open list:BROADCOM STB NAND FLASH DRIVER"
- <bcm-kernel-feedback-list@broadcom.com>,
- open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] mtd: brcmnand: respect ECC algorithm set by NAND
- subsystem
-Message-ID: <20160426055355.GA25981@localhost>
-References: <1461324197-1333-1-git-send-email-zajec5@gmail.com>
- <1461324197-1333-3-git-send-email-zajec5@gmail.com>
+To: Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Matthias Schiffer <mschiffer@universe-factory.net>,
+ Marek Vasut <marex@denx.de>, Gernot Hoyler <Gernot.Hoyler@spansion.com>,
+ Felix Fietkau <nbd@openwrt.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Milton Chiang =?utf-8?B?KOaxn+aYjuaZjyk=?= <Milton.Chiang@mediatek.com>,
+ linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
+ linux-mtd@lists.infradead.org, Daniel Kurtz <djkurtz@chromium.org>,
+ Eddie Huang =?utf-8?B?KOm7g+aZuuWCkSk=?= <eddie.huang@mediatek.com>,
+ "Nicolas.FERRE@atmel.com" <Nicolas.FERRE@atmel.com>
+Subject: Re: [PATCH for-4.4 1/2] mtd: spi-nor: fix Spansion regressions
+ (aliased with Winbond)
+Message-ID: <20160426055458.GB25981@localhost>
+References: <1450205301-32207-1-git-send-email-computersforpeace@gmail.com>
+ <56F6DB9C.5010305@universe-factory.net>
+ <56F86443.4050901@universe-factory.net>
+ <20160328205654.GJ2545@google.com> <56FBCAF4.5060801@atmel.com>
+ <20160401202701.GC3645@localhost> <5702894A.1060102@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1461324197-1333-3-git-send-email-zajec5@gmail.com>
+In-Reply-To: <5702894A.1060102@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,105 +39,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 22, 2016 at 01:23:15PM +0200, Rafał Miłecki wrote:
-> It's more reliable than guessing based on ECC strength. It allows using
-> NAND on devices with BCH-1 (e.g. D-Link DIR-885L).
+Hi Cyrille,
+
+On Mon, Apr 04, 2016 at 05:33:30PM +0200, Cyrille Pitchen wrote:
+> Le 01/04/2016 22:27, Brian Norris a �crit :
+> > On Wed, Mar 30, 2016 at 02:47:48PM +0200, Cyrille Pitchen wrote:
+> >> Just a general remark: maybe reading the JEDEC ID is not a so reliable mean to
+> >> discover SPI flash hardware capabilities at runtime.
+[...]
+
+> >> Hence the JEDEC ID only provides information about the memory size and all
+> >> SPI NOR memories of a given size actually share the same JEDEC ID.
+> > 
+[...] 
+> Then, it seems you're right when you propose to more rely on the DT compatible
+> string and add specific entries in the spi_nor_ids[] table with flags to
+> declare the supported hardware capabilities.
 > 
-> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
-> ---
->  drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I've tried this approach in v5 of my series for support of 4byte address op
+> codes.
+
+One note about this: I think this is something that Rafal (and I, to
+some extent) was really trying to avoid: having to specify the exact
+part number in every board file / DTS file -- as that makes it much more
+difficult to support a lot of small variations to the same board. For
+example, I believe some production lines like to swap out one or more
+flash even on the same product, due to supply or other reasons.
+
+That's not to say we can't do this (it's necessary to do *something*
+more than just ID-based detection); but perhaps there's something we can
+still do to minimize the damage? I don't have a lot of brilliant ideas
+right now...
+
+(Maybe this line of discussion should be carried to your other patch
+thread.)
+
+> >> Similar cases can also be found with other manufacturers: Micron, Winbond,
+> >> Spansion... 
+> >>
+> >> Also the Macronix engineers asked us how software applications drive the (Q)SPI
+> >> memories. I answered them that Linux or u-boot use a static table indexed by
+> >> the JEDEC ID, which provides the hardware capabilities. I guess they didn't
+> >> expect software developers to use the JEDEC ID for this purpose.
+> >> Well, it's just a feeling.
+> >>
+> >> Then the Macronix engineers proposed to use the Serial Flash Discoverable
+> >> Parameter (SFDP) tables to make the difference between memories sharing the
+> >> same JEDEC ID. This might help us in some cases.
+> >> However we should be cautious when using this standard: last year, I've tried
+> >> to discover hardware parameters through these tables when I was working with
+> >> Spansion and Micron memories. I found out the Parameter Table Pointers inside
+> >> the SFDP Header were expressed as byte offset with one memory and as dword
+> >> offset with the other.
+> > 
+> > Yeah, I noticed this. And I think one or more of them noticed their
+> > error and fixed it in later revs, so you can't depend on a manufacturer
+> > always having the same broken interpretation consistently.
+> > 
 > 
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index c3331ff..dcb22dc 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -1927,7 +1927,7 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
->  
->  	switch (chip->ecc.size) {
->  	case 512:
-> -		if (chip->ecc.strength == 1) /* Hamming */
-> +		if (chip->ecc.algo == NAND_ECC_HAMMING)
+> Maybe some flags in specific entries to declare some implementation quirks ?
 
-This doesn't handle most of the problems I noted on the early version of
-this series. (But thank you for following through on the algorithm
-selection refactoring!)
+Perhaps, if we can figure out which ones are broken, and we know that
+*all* flash with that ID are broken in the same way. (It'd really suck
+if the same ID had two different SFDP implementation...)
 
-Particularly, this change will
-(a) break any existing DTs which used to have 'nand-ecc-size = <1>', and
-    would assume this gets Hamming ECC; and
-(b) allows DTs to specify Hamming ECC for unsupported modes, like 1024B
-    sectors, or ecc_level != 1. None of these are supported in HW.
+> >> So I gave up using these tables since some memories diverged from the standard,
+> >> which was "work in progress" at that time.
+> >>
+> >> Anyway if we cannot completely rely on the SFDP tables we could still use
+> >> DT properties but we should no longer expect to guess all hardware parameters
+> >> from the JEDEC ID alone.
+> > 
+> > In your conversations, did the vendors actually suggest a practical
+> > method to differentiate flash? Since they've all screwed up SFDP, that's
+> > not going to fly, unless we (e.g.) blacklist certain flash. Anyway, I'd
+> > love to have some basic support for SFDP, even if we have to be
+> > conservative at first. For one, I think it'd be fair to add another
+> > compatible property "jedec,sfdp-vXXX", and then we only use that on
+> > flash that support the actual spec.
+> > 
+> 
+> Indeed Macronix suggested us to use the SFDP tables. I guess all manufacturers
+> tend to implement the latest version of the SFDP standard even if it breaks
+> compatibility with implementations of older memories.
 
->  			cfg->ecc_level = 15;
->  		else
->  			cfg->ecc_level = chip->ecc.strength;
+Then maybe it's time we finally bite the bullet and try to phase in some
+level of SFDP support. We probably don't want to (and can't) rely on it
+unconditionally, but maybe we can start flagging off some entries which
+should/shouldn't support SFDP (ideally, I'd like to flag those that
+*don't* support the standard properly, as we can reasonably expect new
+flash to get it correct now).
 
-Something like the following probably works better (not tested):
+> To differentiate the MX25L25635E and MX25L25673G, they told us to combine
 
----8<---
+Why did you want to differentiate these? (I feel like I'm missing an
+unstated detail here.)
 
-From: Brian Norris <computersforpeace@gmail.com>
-Date: Mon, 25 Apr 2016 20:48:02 -0700
-Subject: [PATCH] mtd: brcmnand: respect ECC algorithm set by the NAND
- subsystem
+> info read from both the SFDP tables and the Status Register: on 73G the
+> Quad Enable bit is always set and cannot be cleared whereas this bit is cleared
+> as a default factory setting.
+> However we pointed out that this bit is non-volatile and will be set to 1
+> during the very first boot so still cannot make the difference between the
+> 35E and the 73G.
+> Then they suggest us to try to clear the QE bit (only possible on 35E) but
+> I don't think it can be considered as a clean implementation...
+> 
+> Also in this particular example, I don't see how the SFDP tables could help.
 
-This is more obvious than guessing based on ECC strength. It allows
-using NAND on devices with BCH-1 (e.g. D-Link DIR-885L).
+Yeah, I wasn't suggesting it for this case, exactly. But we're really
+gonna have problems if we can't determine anything other than density
+from ID.
 
-This maintains DT backward compatibility by defaulting to Hamming if a
-1-bit ECC algorithm is specified without a corresponding algorithm
-selection. i.e., to use BCH-1, you must specify:
+[snip]
 
-  nand-ecc-strength = <1>;
-  nand-ecc-step-size = <512>;
-  nand-ecc-algo = "bch";
-
-Also adds a check to ensure we haven't allowed someone to get by with SW
-ECC. If we want to support SW ECC, we need to refactor some other pieces
-of this driver.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/brcmnand/brcmnand.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index c3331ffcaffd..b76ad7c0144f 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -1925,9 +1925,31 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 	cfg->col_adr_bytes = 2;
- 	cfg->blk_adr_bytes = get_blk_adr_bytes(mtd->size, mtd->writesize);
- 
-+	if (chip->ecc.mode != NAND_ECC_HW) {
-+		dev_err(ctrl->dev, "only HW ECC supported; selected: %d\n",
-+			chip->ecc.mode);
-+		return -EINVAL;
-+	}
-+
-+	if (chip->ecc.algo == NAND_ECC_UNKNOWN) {
-+		if (chip->ecc.strength == 1 && chip->ecc.size == 512)
-+			/* Default to Hamming for 1-bit ECC, if unspecified */
-+			chip->ecc.algo = NAND_ECC_HAMMING;
-+		else
-+			/* Otherwise, BCH */
-+			chip->ecc.algo = NAND_ECC_BCH;
-+	}
-+
-+	if (chip->ecc.algo == NAND_ECC_HAMMING && (chip->ecc.strength != 1 ||
-+						   chip->ecc.size != 512)) {
-+		dev_err(ctrl->dev, "invalid Hamming params: %d bits per %d bytes\n",
-+			chip->ecc.strength, chip->ecc.size);
-+		return -EINVAL;
-+	}
-+
- 	switch (chip->ecc.size) {
- 	case 512:
--		if (chip->ecc.strength == 1) /* Hamming */
-+		if (chip->ecc.algo == NAND_ECC_HAMMING)
- 			cfg->ecc_level = 15;
- 		else
- 			cfg->ecc_level = chip->ecc.strength;
--- 
-2.8.0.rc3.226.g39d4020
+Brian
