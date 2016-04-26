@@ -1,16 +1,16 @@
-Received: from mail-io0-x234.google.com ([2607:f8b0:4001:c06::234])
+Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av8nN-0001xg-Eu
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 19:37:19 +0000
-Received: by mail-io0-x234.google.com with SMTP id d62so26313586iof.2
- for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 12:36:57 -0700 (PDT)
+ id 1av8nP-0001yJ-4x
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 19:37:20 +0000
+Received: by mail-ig0-x230.google.com with SMTP id g8so25520367igr.0
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 12:36:58 -0700 (PDT)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Paul Moore <paul@paul-moore.com>, Stephen Smalley <sds@tycho.nsa.gov>,
- Eric Paris <eparis@parisplace.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
  Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
+ James Morris <james.l.morris@oracle.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
  Austin S Hemmelgarn <ahferroin7@gmail.com>,
  Miklos Szeredi <mszeredi@redhat.com>,
  Pavel Tikhomirov <ptikhomirov@virtuozzo.com>, linux-kernel@vger.kernel.org,
@@ -18,13 +18,10 @@ Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
  linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- cgroups@vger.kernel.org, Seth Forshee <seth.forshee@canonical.com>,
- James Morris <james.l.morris@oracle.com>,
- "Serge E. Hallyn" <serge@hallyn.com>
-Subject: [PATCH v4 07/21] selinux: Add support for unprivileged mounts from
- user namespaces
-Date: Tue, 26 Apr 2016 14:36:20 -0500
-Message-Id: <1461699396-33000-8-git-send-email-seth.forshee@canonical.com>
+ cgroups@vger.kernel.org, Seth Forshee <seth.forshee@canonical.com>
+Subject: [PATCH v4 08/21] userns: Replace in_userns with current_in_userns
+Date: Tue, 26 Apr 2016 14:36:21 -0500
+Message-Id: <1461699396-33000-9-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
 References: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,63 +33,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Security labels from unprivileged mounts in user namespaces must
-be ignored. Force superblocks from user namespaces whose labeling
-behavior is to use xattrs to use mountpoint labeling instead.
-For the mountpoint label, default to converting the current task
-context into a form suitable for file objects, but also allow the
-policy writer to specify a different label through policy
-transition rules.
-
-Pieced together from code snippets provided by Stephen Smalley.
+All current callers of in_userns pass current_user_ns as the
+first argument. Simplify by replacing in_userns with
+current_in_userns which checks whether current_user_ns is in the
+namespace supplied as an argument.
 
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
 Acked-by: James Morris <james.l.morris@oracle.com>
+Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 ---
- security/selinux/hooks.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ fs/namespace.c                 | 2 +-
+ include/linux/user_namespace.h | 6 ++----
+ kernel/user_namespace.c        | 6 +++---
+ security/commoncap.c           | 2 +-
+ 4 files changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 1350167635cb..33beed3ac589 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -820,6 +820,28 @@ static int selinux_set_mnt_opts(struct super_block *sb,
- 			goto out;
- 		}
- 	}
-+
-+	/*
-+	 * If this is a user namespace mount, no contexts are allowed
-+	 * on the command line and security labels must be ignored.
-+	 */
-+	if (sb->s_user_ns != &init_user_ns) {
-+		if (context_sid || fscontext_sid || rootcontext_sid ||
-+		    defcontext_sid) {
-+			rc = -EACCES;
-+			goto out;
-+		}
-+		if (sbsec->behavior == SECURITY_FS_USE_XATTR) {
-+			sbsec->behavior = SECURITY_FS_USE_MNTPOINT;
-+			rc = security_transition_sid(current_sid(), current_sid(),
-+						     SECCLASS_FILE, NULL,
-+						     &sbsec->mntpoint_sid);
-+			if (rc)
-+				goto out;
-+		}
-+		goto out_set_opts;
-+	}
-+
- 	/* sets the context of the superblock for the fs being mounted. */
- 	if (fscontext_sid) {
- 		rc = may_context_mount_sb_relabel(fscontext_sid, sbsec, cred);
-@@ -888,6 +910,7 @@ static int selinux_set_mnt_opts(struct super_block *sb,
- 		sbsec->def_sid = defcontext_sid;
- 	}
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 6e9db4c166b4..0ad8e4a4f50b 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -3294,7 +3294,7 @@ bool mnt_may_suid(struct vfsmount *mnt)
+ 	 * in other namespaces.
+ 	 */
+ 	return !(mnt->mnt_flags & MNT_NOSUID) && check_mnt(real_mount(mnt)) &&
+-	       in_userns(current_user_ns(), mnt->mnt_sb->s_user_ns);
++	       current_in_userns(mnt->mnt_sb->s_user_ns);
+ }
  
-+out_set_opts:
- 	rc = sb_finish_set_opts(sb);
- out:
- 	mutex_unlock(&sbsec->lock);
+ static struct ns_common *mntns_get(struct task_struct *task)
+diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
+index a43faa727124..9217169c64cb 100644
+--- a/include/linux/user_namespace.h
++++ b/include/linux/user_namespace.h
+@@ -72,8 +72,7 @@ extern ssize_t proc_projid_map_write(struct file *, const char __user *, size_t,
+ extern ssize_t proc_setgroups_write(struct file *, const char __user *, size_t, loff_t *);
+ extern int proc_setgroups_show(struct seq_file *m, void *v);
+ extern bool userns_may_setgroups(const struct user_namespace *ns);
+-extern bool in_userns(const struct user_namespace *ns,
+-		      const struct user_namespace *target_ns);
++extern bool current_in_userns(const struct user_namespace *target_ns);
+ #else
+ 
+ static inline struct user_namespace *get_user_ns(struct user_namespace *ns)
+@@ -103,8 +102,7 @@ static inline bool userns_may_setgroups(const struct user_namespace *ns)
+ 	return true;
+ }
+ 
+-static inline bool in_userns(const struct user_namespace *ns,
+-			     const struct user_namespace *target_ns)
++static inline bool current_in_userns(const struct user_namespace *target_ns)
+ {
+ 	return true;
+ }
+diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+index dee3be5445da..68f594212759 100644
+--- a/kernel/user_namespace.c
++++ b/kernel/user_namespace.c
+@@ -942,10 +942,10 @@ bool userns_may_setgroups(const struct user_namespace *ns)
+  * Returns true if @ns is the same namespace as or a descendant of
+  * @target_ns.
+  */
+-bool in_userns(const struct user_namespace *ns,
+-	       const struct user_namespace *target_ns)
++bool current_in_userns(const struct user_namespace *target_ns)
+ {
+-	for (; ns; ns = ns->parent) {
++	struct user_namespace *ns;
++	for (ns = current_user_ns(); ns; ns = ns->parent) {
+ 		if (ns == target_ns)
+ 			return true;
+ 	}
+diff --git a/security/commoncap.c b/security/commoncap.c
+index a306c5d90709..e657227d221e 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -461,7 +461,7 @@ static int get_file_caps(struct linux_binprm *bprm, bool *effective, bool *has_c
+ 	 * explicit that capability bits are limited to s_user_ns and its
+ 	 * descendants.
+ 	 */
+-	if (!in_userns(current_user_ns(), bprm->file->f_path.mnt->mnt_sb->s_user_ns))
++	if (!current_in_userns(bprm->file->f_path.mnt->mnt_sb->s_user_ns))
+ 		return 0;
+ 
+ 	rc = get_vfs_caps_from_disk(bprm->file->f_path.dentry, &vcaps);
 -- 
 2.7.4
