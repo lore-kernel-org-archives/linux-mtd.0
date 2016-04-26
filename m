@@ -1,22 +1,25 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1av87a-0001q5-2A
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 18:54:06 +0000
-Date: Tue, 26 Apr 2016 20:53:44 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH] mtd: nand: fix NULL pointer dereference in
- of_get_nand_ecc_algo
-Message-ID: <20160426205344.17ab81cb@bbrezillon>
-In-Reply-To: <1461695776-29740-1-git-send-email-zajec5@gmail.com>
-References: <1461695776-29740-1-git-send-email-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1av8nC-0001ux-OM
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 19:37:07 +0000
+Received: by mail-ig0-x233.google.com with SMTP id u10so52235293igr.1
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 12:36:45 -0700 (PDT)
+From: Seth Forshee <seth.forshee@canonical.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>, linux-bcache@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ fuse-devel@lists.sourceforge.net, cgroups@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <mszeredi@redhat.com>,
+ Pavel Tikhomirov <ptikhomirov@virtuozzo.com>, linux-kernel@vger.kernel.org,
+ Seth Forshee <seth.forshee@canonical.com>
+Subject: [PATCH v4 00/21] Support fuse mounts in user namespaces
+Date: Tue, 26 Apr 2016 14:36:13 -0500
+Message-Id: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +29,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 26 Apr 2016 20:36:16 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+Hi Eric,
 
-> Our array nand_ecc_algos doesn't specify mappings for all available
-> enum nand_ecc_algo values. The one missing there is NAND_ECC_UNKNOWN
-> as this value is reserved for algorithm not being specified at all.
-> It means we have to be careful when iterating this array and handle
-> NULL values.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
-> ---
-> Hi Boris,
->=20
-> Sorry for this crash in nand subsystem :( If you think it's OK you may
-> pick this patch as a fixup for
-> c6e002a7ca9f ("mtd: nand: add support for "nand-ecc-algo" DT property")
-> ---
->  drivers/mtd/nand/nand_base.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index a5417a0..0eaa9dc 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4016,6 +4016,8 @@ static int of_get_nand_ecc_algo(struct device_node =
-*np)
->  	err =3D of_property_read_string(np, "nand-ecc-algo", &pm);
->  	if (!err) {
->  		for (i =3D 0; i < ARRAY_SIZE(nand_ecc_algos); i++)
-> +			if (!nand_ecc_algos[i])
-> +				continue;
+Here's another update to my patches for mouning with fuse from
+unpivileged user namespaces. The main change here is a fix for a build
+failure when fuse is built as a module. As usual the series is also
+available at:
 
-Can we add an "unknown" entry, or start iterating at NAND_ECC_HAMMING
-or NAND_ECC_UNKNOWN + 1 instead of adding this extra test?
+ git://git.kernel.org/pub/scm/linux/kernel/git/sforshee/linux.git fuse-userns
 
-BTW, since the original commit has been applied recently I'll squash the
-changes into the previous commit and rebase my branch instead of adding
-a new patch (I hate breaking bisectability).
+Changes since v3:
 
+ * Export current_in_userns() to fix an error when fuse is built as a
+   module.
+ * Add comment explaining the conditions for allowing CAP_CHOWN in
+   s_user_ns to change the owner or group of an inode.
+ * Added acks from Serge.
 
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+Seth
+
+---
+
+Andy Lutomirski (1):
+  fs: Treat foreign mounts as nosuid
+
+Pavel Tikhomirov (1):
+  fs: fix a posible leak of allocated superblock
+
+Seth Forshee (19):
+  fs: Remove check of s_user_ns for existing mounts in
+    fs_fully_visible()
+  fs: Allow sysfs and cgroupfs to share super blocks between user
+    namespaces
+  block_dev: Support checking inode permissions in lookup_bdev()
+  block_dev: Check permissions towards block device inode when mounting
+  selinux: Add support for unprivileged mounts from user namespaces
+  userns: Replace in_userns with current_in_userns
+  Smack: Handle labels consistently in untrusted mounts
+  fs: Check for invalid i_uid in may_follow_link()
+  cred: Reject inodes with invalid ids in set_create_file_as()
+  fs: Refuse uid/gid changes which don't map into s_user_ns
+  fs: Update posix_acl support to handle user namespace mounts
+  fs: Allow superblock owner to change ownership of inodes with
+    unmappable ids
+  fs: Don't remove suid for CAP_FSETID in s_user_ns
+  fs: Allow superblock owner to access do_remount_sb()
+  capabilities: Allow privileged user in s_user_ns to set security.*
+    xattrs
+  fuse: Add support for pid namespaces
+  fuse: Support fuse filesystems outside of init_user_ns
+  fuse: Restrict allow_other to the superblock's namespace or a
+    descendant
+  fuse: Allow user namespace mounts
+
+ drivers/md/bcache/super.c       |  2 +-
+ drivers/md/dm-table.c           |  2 +-
+ drivers/mtd/mtdsuper.c          |  2 +-
+ fs/attr.c                       | 73 ++++++++++++++++++++++++++++++++++++-----
+ fs/block_dev.c                  | 18 ++++++++--
+ fs/exec.c                       |  2 +-
+ fs/fuse/cuse.c                  |  3 +-
+ fs/fuse/dev.c                   | 26 +++++++++++----
+ fs/fuse/dir.c                   | 16 ++++-----
+ fs/fuse/file.c                  | 22 ++++++++++---
+ fs/fuse/fuse_i.h                | 10 +++++-
+ fs/fuse/inode.c                 | 40 ++++++++++++++--------
+ fs/inode.c                      |  3 +-
+ fs/kernfs/inode.c               |  2 ++
+ fs/namei.c                      |  2 +-
+ fs/namespace.c                  | 20 ++++++++---
+ fs/posix_acl.c                  | 67 +++++++++++++++++++++++--------------
+ fs/proc/base.c                  |  2 ++
+ fs/proc/generic.c               |  3 ++
+ fs/proc/proc_sysctl.c           |  2 ++
+ fs/quota/quota.c                |  2 +-
+ fs/super.c                      |  7 +++-
+ fs/sysfs/mount.c                |  3 +-
+ fs/xattr.c                      | 19 ++++++++---
+ include/linux/fs.h              |  3 +-
+ include/linux/mount.h           |  1 +
+ include/linux/posix_acl_xattr.h | 17 +++++++---
+ include/linux/uidgid.h          | 10 ++++++
+ include/linux/user_namespace.h  |  6 ++--
+ kernel/cgroup.c                 |  4 +--
+ kernel/cred.c                   |  2 ++
+ kernel/user_namespace.c         |  7 ++--
+ security/commoncap.c            | 22 +++++++++----
+ security/selinux/hooks.c        | 25 +++++++++++++-
+ security/smack/smack_lsm.c      | 29 ++++++++++------
+ 35 files changed, 355 insertions(+), 119 deletions(-)
