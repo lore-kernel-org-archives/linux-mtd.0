@@ -1,20 +1,21 @@
-Date: Tue, 26 Apr 2016 09:51:28 +0200
-From: Stefan Christ <s.christ@phytec.de>
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Han Xu <han.xu@nxp.com>, David Woodhouse <dwmw2@infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, Huang Shijie <shijie.huang@intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] gpmi-nand: Handle ECC Errors in erased pages
-Message-ID: <20160426075128.GC2351@lws-christ>
-References: <1461587712-16403-1-git-send-email-mpa@pengutronix.de>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1auxsd-00036x-Nk
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 07:58:00 +0000
+Date: Tue, 26 Apr 2016 09:57:37 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, david.oberhollenzer@sigma-star.at
+Subject: Re: [PATCH 1/8] mtd-utils: Fix return status in mtd_torture test
+ function
+Message-ID: <20160426095737.5c5b1004@bbrezillon>
+In-Reply-To: <1461622409-14970-2-git-send-email-richard@nod.at>
+References: <1461622409-14970-1-git-send-email-richard@nod.at>
+ <1461622409-14970-2-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <1461587712-16403-1-git-send-email-mpa@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +25,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 26 Apr 2016 00:13:22 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-On Mon, Apr 25, 2016 at 02:35:12PM +0200, Markus Pargmann wrote:
-> ECC is only calculated for written pages. As erased pages are not
-> actively written the ECC is always invalid. For this purpose the
-> Hardware BCH unit is able to check for erased pages and does not raise
-> an ECC error in this case. This behaviour can be influenced using the
-> BCH=5FMODE register which sets the number of allowed bitflips in an erased
-> page. Unfortunately the unit is not capable of fixing the bitflips in
-> memory.
->=20
-> To avoid complete software checks for erased pages, we can simply check
-> buffers with uncorrectable ECC errors because we know that any erased
-> page with errors is uncorrectable by the BCH unit.
->=20
-> This patch adds the generic nand=5Fcheck=5Ferased=5Fecc=5Fchunk() to gpmi=
--nand
-> to correct erased pages. To have the valid data in the buffer before
-> using them, this patch moves the read=5Fpage=5Fswap=5Fend() call before t=
-he
-> ECC status checking for-loop.
->=20
-> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> [Squashed patches by Stefan and Boris to check ECC area]
-> Cc: Stefan Christ <s.christ@phytec.de>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
->=20
-> Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+> From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> 
+> This patch fixes the return status of the mtd_torture function
+> in libmtd.
+> 
+> The torture test function is currently only used by the ubiformat
+> utilitiy to check if a block is bad after a write fails (blocks are
+> marked bad if the function returns an error status). However, the
+> way the function was written, it ALWAYS returns an error value
+> irregardless of whether it failed or not.
+> 
+> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Tested-by: Stefan Christ <s.christ@phytec.de>
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-I verified the fix again on our board.
+> ---
+>  lib/libmtd.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/lib/libmtd.c b/lib/libmtd.c
+> index bf6d71f..1717468 100644
+> --- a/lib/libmtd.c
+> +++ b/lib/libmtd.c
+> @@ -939,7 +939,7 @@ static uint8_t patterns[] = {0xa5, 0x5a, 0x0};
+>   * @patt: the pattern to check
+>   * @size: buffer size in bytes
+>   *
+> - * This function returns %1 in there are only @patt bytes in @buf, and %0 if
+> + * This function returns %0 if there are only @patt bytes in @buf, and %-1 if
+>   * something else was also found.
+>   */
+>  static int check_pattern(const void *buf, uint8_t patt, int size)
+> @@ -948,8 +948,8 @@ static int check_pattern(const void *buf, uint8_t patt, int size)
+>  
+>  	for (i = 0; i < size; i++)
+>  		if (((const uint8_t *)buf)[i] != patt)
+> -			return 0;
+> -	return 1;
+> +			return -1;
+> +	return 0;
+>  }
+>  
+>  int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+> @@ -973,7 +973,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+>  			goto out;
+>  
+>  		err = check_pattern(buf, 0xFF, mtd->eb_size);
+> -		if (err == 0) {
+> +		if (err) {
+>  			errmsg("erased PEB %d, but a non-0xFF byte found", eb);
+>  			errno = EIO;
+>  			goto out;
+> @@ -992,7 +992,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+>  			goto out;
+>  
+>  		err = check_pattern(buf, patterns[i], mtd->eb_size);
+> -		if (err == 0) {
+> +		if (err) {
+>  			errmsg("pattern %x checking failed for PEB %d",
+>  				patterns[i], eb);
+>  			errno = EIO;
+> @@ -1005,7 +1005,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+>  
+>  out:
+>  	free(buf);
+> -	return -1;
+> +	return err;
+>  }
+>  
+>  int mtd_is_bad(const struct mtd_dev_info *mtd, int fd, int eb)
 
-Mit freundlichen Gr=C3=BC=C3=9Fen / Kind regards,
-	Stefan Christ
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
