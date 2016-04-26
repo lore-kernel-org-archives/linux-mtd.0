@@ -1,20 +1,27 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1auwzG-0006Ss-HP
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 07:00:47 +0000
-Subject: Re: [RFC] Porting kernel MTD tests to user space
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-References: <1461622409-14970-1-git-send-email-richard@nod.at>
- <CAAEAJfDQvN46HdqWAHVY+xk+=Y-Cs_LapN1kBC14CH=WObEK8A@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- david.oberhollenzer@sigma-star.at
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <571F1206.9020506@nod.at>
-Date: Tue, 26 Apr 2016 09:00:22 +0200
+ id 1auxBu-0002jd-6k
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 07:13:51 +0000
+Date: Tue, 26 Apr 2016 09:13:27 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, Daniel Walter <dwalter@sigma-star.at>
+Subject: Re: Pass -EUCLEAN to userspace?
+Message-ID: <20160426071327.GJ7860@pengutronix.de>
+References: <20160422172456.7aaf301c@bbrezillon>
+ <20160422172802.4fa830d1@bbrezillon> <571A47D3.6040602@nod.at>
+ <20160425052857.GA7860@pengutronix.de>
+ <20160425095034.697411aa@bbrezillon>
+ <20160425082211.GC7860@pengutronix.de>
+ <20160425104041.555b8ed5@bbrezillon>
+ <20160425091416.GD7860@pengutronix.de>
+ <20160425112616.01f9e4e4@bbrezillon>
+ <20160425161144.0f366c9e@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <CAAEAJfDQvN46HdqWAHVY+xk+=Y-Cs_LapN1kBC14CH=WObEK8A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160425161144.0f366c9e@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +31,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 26.04.2016 um 05:13 schrieb Ezequiel Garcia:
-> On 25 April 2016 at 19:13, Richard Weinberger <richard@nod.at> wrote:
->> David was so kind and did an initial port of Linux's MTD tests to user space.
->> He took most tests as-is and massaged them to work in user space using libmtd.
->> In the long run the goal is giving up the kernel tests as much as possible
->> and improve the tests present in mtd-utils.
->>
->> Feedback is very welcome!
->>
-> 
-> I think this is great, and it will be great to test NAND/NOR devices easier.
-> 
-> The autoconf patch looked also great, but for some reason it
-> stalled, so... what do we need to do to prevent this one from stalling as well?
-> 
+Fixed typo in subject, maybe this helps finding this thread in the
+archives.
 
-Please give it testing/review. :-)
-Regarding my autoconf patch, IIRC nobody clearly stated whether the change
-is welcomed or not.
-But I can happily revive it.
+On Mon, Apr 25, 2016 at 04:11:44PM +0200, Boris Brezillon wrote:
+> On Mon, 25 Apr 2016 11:26:16 +0200
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> 
+> > > > 
+> > > > Regarding the maximum number of bitflips per chunk, maybe we can make it
+> > > > part of the ioctl request instead of saving the statistics at the MTD
+> > > > level.
+> > > > 
+> > > > How about creating a new ioctl taking a pointer to this struct as a
+> > > > parameter:
+> > > > 
+> > > > struct mtd_extended_read_ops {
+> > > > 	/* Existing params */
+> > > > 	unsigned int mode;
+> > > > 	size_t len;
+> > > > 	size_t retlen;
+> > > > 	size_t ooblen;
+> > > > 	size_t oobretlen;
+> > > > 	uint32_t ooboffs;
+> > > > 	void *datbuf;
+> > > > 	void *oobbuf;
+> > > > 
+> > > > 	/*
+> > > > 	 * Param containing the maximum number of bitflips for this
+> > > > 	 * read request.
+> > > > 	 */
+> > > > 	unsigned int max_bitflips;
+> > > > };    
+> > > 
+> > > Not sure how this ioctl exactly should look like, but this would solve
+> > > the problem.  
+> > 
+> > Let me design a quick prototype, I'll let you follow up with the patch
+> > submission process...
+> 
+> Below is an untested patch adding a new ioctl returning the ECC/read stats.
+> Feel free to debug/enhance this implementation and submit it to the MTD
+> ML.
 
-Thanks,
-//richard
+Thanks Boris, I'll give it a try.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
