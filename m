@@ -1,13 +1,26 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avAq1-0001M1-Nz
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 21:48:11 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>
-Subject: [PATCH] Remove UDEV_SETTLE_HACK
-Date: Tue, 26 Apr 2016 23:47:37 +0200
-Message-Id: <1461707257-22727-1-git-send-email-richard@nod.at>
+Date: Wed, 27 Apr 2016 08:58:45 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Theodore Ts'o <tytso@mit.edu>, Chris Mason <clm@fb.com>,
+ Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+ logfs@logfs.org, xfs@oss.sgi.com, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+ Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH 2/2] mm, debug: report when GFP_NO{FS,IO} is used
+ explicitly from memalloc_no{fs,io}_{save,restore} context
+Message-ID: <20160426225845.GF26977@dastard>
+References: <1461671772-1269-1-git-send-email-mhocko@kernel.org>
+ <1461671772-1269-3-git-send-email-mhocko@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1461671772-1269-3-git-send-email-mhocko@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,137 +30,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UDEV_SETTLE_HACK addresses a problem which does no longer exist on Linux.
-These days we have devtmpfs. New devices will automatically created on
-the kernel side and user space has no longer to wait for udev.
-As udev has a hard dependency on devtmpfs we can depend on it too.
-People which don't use udev nor plain devtmpfs are anyways on their own.
-Android, I'm looking at you...
+On Tue, Apr 26, 2016 at 01:56:12PM +0200, Michal Hocko wrote:
+> From: Michal Hocko <mhocko@suse.com>
+> 
+> THIS PATCH IS FOR TESTING ONLY AND NOT MEANT TO HIT LINUS TREE
+> 
+> It is desirable to reduce the direct GFP_NO{FS,IO} usage at minimum and
+> prefer scope usage defined by memalloc_no{fs,io}_{save,restore} API.
+> 
+> Let's help this process and add a debugging tool to catch when an
+> explicit allocation request for GFP_NO{FS,IO} is done from the scope
+> context. The printed stacktrace should help to identify the caller
+> and evaluate whether it can be changed to use a wider context or whether
+> it is called from another potentially dangerous context which needs
+> a scope protection as well.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- tests/ubi-tests/Makefile    |  7 +------
- tests/ubi-tests/README.udev | 25 -------------------------
- ubi-utils/libubi.c          | 29 -----------------------------
- 3 files changed, 1 insertion(+), 60 deletions(-)
- delete mode 100644 tests/ubi-tests/README.udev
+You're going to get a large number of these from XFS. There are call
+paths in XFs that get called both inside and outside transaction
+context, and many of them are marked with GFP_NOFS to prevent issues
+that have cropped up in the past.
 
-diff --git a/tests/ubi-tests/Makefile b/tests/ubi-tests/Makefile
-index c434a6f..ce70c95 100644
---- a/tests/ubi-tests/Makefile
-+++ b/tests/ubi-tests/Makefile
-@@ -13,12 +13,7 @@ LDLIBS += -lpthread
- 
- include ../../common.mk
- 
--# Compile ubilib with the udevsettle hack
--libubi.a: $(LIBUBI_PATH)/libubi.c  $(LIBUBI_HEADER_PATH)/libubi.h  $(LIBUBI_PATH)/libubi_int.h
--	$(CC) $(CFLAGS) -I $(LIBUBI_PATH) -I../../include -DUDEV_SETTLE_HACK -c $(LIBUBI_PATH)/libubi.c -o libubi.o
--	ar cr libubi.a libubi.o
--
--$(TARGETS): $(addprefix $(BUILDDIR)/, helpers.o) libubi.a
-+$(TARGETS): $(addprefix $(BUILDDIR)/, helpers.o) ../../ubi-utils/libubi.a
- 
- clean::
- 	rm -f libubi.a
-diff --git a/tests/ubi-tests/README.udev b/tests/ubi-tests/README.udev
-deleted file mode 100644
-index 06e71d3..0000000
---- a/tests/ubi-tests/README.udev
-+++ /dev/null
-@@ -1,25 +0,0 @@
--There is a problem with udev: when a volume is created, there is a delay
--before corresponding /dev/ubiX_Y device node is created by udev, so some
--tests fail because of this. The symptom is error messages like
--"cannot open /dev/ubi0_0".
--
--One possible solution of this problem is to pre-create UBI device and volume
--nodes. There is even a script which may be used for this in ubi-utils/scripts/.
--But this is not enough because udev will still remove and re-create the nodes
--and tests will still fail. So you need to stop removing device nodes using
--the following udev rule:
--
--	KERNEL=="ubi*_*", ACTION=="remove", OPTIONS+="ignore_device"
--
--In our Ubuntu distribution we put that to new file:
--/etc/udev/rules.d/50-local.rules
--
--Another possibility is to call udevsettle utility in libubi after the volume
--has been created See src/libubi.c - the call is compiled in only if
--UDEV_SETTLE_HACK is defined. This is anyway an ugly hack, but works, although
--makes the tests slower. Suggestions are welcome.
--
--So, if you have udevsettel unility in your system, you do not have to do
--anyting, and the tests should work, because we compile libubi with
--UDEV_SETTLE_HACK. Otherwise, you should remove -D UDEV_SETTLE_HACK
--from the makefile and pre-create UBI device nodes.
-diff --git a/ubi-utils/libubi.c b/ubi-utils/libubi.c
-index 97c0434..b1dc925 100644
---- a/ubi-utils/libubi.c
-+++ b/ubi-utils/libubi.c
-@@ -700,11 +700,6 @@ static int do_attach(const char *node, const struct ubi_attach_req *r)
- 	if (ret == -1)
- 		return -1;
- 
--#ifdef UDEV_SETTLE_HACK
--//	if (system("udevsettle") == -1)
--//		return -1;
--	usleep(100000);
--#endif
- 	return ret;
- }
- 
-@@ -850,12 +845,6 @@ int ubi_remove_dev(libubi_t desc, const char *node, int ubi_dev)
- 	if (ret == -1)
- 		goto out_close;
- 
--#ifdef UDEV_SETTLE_HACK
--//	if (system("udevsettle") == -1)
--//		return -1;
--	usleep(100000);
--#endif
--
- out_close:
- 	close(fd);
- 	return ret;
-@@ -1034,12 +1023,6 @@ int ubi_mkvol(libubi_t desc, const char *node, struct ubi_mkvol_request *req)
- 	close(fd);
- 	req->vol_id = r.vol_id;
- 
--#ifdef UDEV_SETTLE_HACK
--//	if (system("udevsettle") == -1)
--//		return -1;
--	usleep(100000);
--#endif
--
- 	return 0;
- }
- 
-@@ -1060,12 +1043,6 @@ int ubi_rmvol(libubi_t desc, const char *node, int vol_id)
- 
- 	close(fd);
- 
--#ifdef UDEV_SETTLE_HACK
--//	if (system("udevsettle") == -1)
--//		return -1;
--	usleep(100000);
--#endif
--
- 	return 0;
- }
- 
-@@ -1086,12 +1063,6 @@ int ubi_rnvols(libubi_t desc, const char *node, struct ubi_rnvol_req *rnvol)
- 
- 	close(fd);
- 
--#ifdef UDEV_SETTLE_HACK
--//	if (system("udevsettle") == -1)
--//		return -1;
--	usleep(100000);
--#endif
--
- 	return 0;
- }
- 
+Often these are to silence lockdep warnings (e.g. commit b17cb36
+("xfs: fix missing KM_NOFS tags to keep lockdep happy")) because
+lockdep gets very unhappy about the same functions being called with
+different reclaim contexts. e.g.  directory block mapping might
+occur from readdir (no transaction context) or within transactions
+(create/unlink). hence paths like this are tagged with GFP_NOFS to
+stop lockdep emitting false positive warnings....
+
+Removing the GFP_NOFS flags in situations like this is simply going
+to restart the flood of false positive lockdep warnings we've
+silenced over the years, so perhaps lockdep needs to be made smarter
+as well...
+
+Cheers,
+
+Dave.
+
 -- 
-2.7.3
+Dave Chinner
+david@fromorbit.com
