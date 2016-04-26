@@ -1,13 +1,15 @@
-Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
- by merlin.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1av8nb-0001sl-Vv
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 19:37:33 +0000
-Received: by mail-ig0-x22c.google.com with SMTP id u10so52245909igr.1
- for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 12:37:10 -0700 (PDT)
+Received: from mail-io0-x22b.google.com ([2607:f8b0:4001:c06::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1av8nd-00024T-CS
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2016 19:37:34 +0000
+Received: by mail-io0-x22b.google.com with SMTP id d62so26320886iof.2
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2016 12:37:13 -0700 (PDT)
 From: Seth Forshee <seth.forshee@canonical.com>
 To: "Eric W. Biederman" <ebiederm@xmission.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Serge Hallyn <serge.hallyn@canonical.com>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ James Morris <james.l.morris@oracle.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
  Richard Weinberger <richard.weinberger@gmail.com>,
  Austin S Hemmelgarn <ahferroin7@gmail.com>,
  Miklos Szeredi <mszeredi@redhat.com>,
@@ -17,9 +19,10 @@ Cc: Serge Hallyn <serge.hallyn@canonical.com>,
  linux-fsdevel@vger.kernel.org, fuse-devel@lists.sourceforge.net,
  linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
  cgroups@vger.kernel.org, Seth Forshee <seth.forshee@canonical.com>
-Subject: [PATCH v4 15/21] fs: Don't remove suid for CAP_FSETID in s_user_ns
-Date: Tue, 26 Apr 2016 14:36:28 -0500
-Message-Id: <1461699396-33000-16-git-send-email-seth.forshee@canonical.com>
+Subject: [PATCH v4 17/21] capabilities: Allow privileged user in s_user_ns to
+ set security.* xattrs
+Date: Tue, 26 Apr 2016 14:36:30 -0500
+Message-Id: <1461699396-33000-18-git-send-email-seth.forshee@canonical.com>
 In-Reply-To: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
 References: <1461699396-33000-1-git-send-email-seth.forshee@canonical.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,28 +34,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Expand the check in should_remove_suid() to keep privileges for
-CAP_FSETID in s_user_ns rather than init_user_ns.
+A privileged user in s_user_ns will generally have the ability to
+manipulate the backing store and insert security.* xattrs into
+the filesystem directly. Therefore the kernel must be prepared to
+handle these xattrs from unprivileged mounts, and it makes little
+sense for commoncap to prevent writing these xattrs to the
+filesystem. The capability and LSM code have already been updated
+to appropriately handle xattrs from unprivileged mounts, so it
+is safe to loosen this restriction on setting xattrs.
+
+The exception to this logic is that writing xattrs to a mounted
+filesystem may also cause the LSM inode_post_setxattr or
+inode_setsecurity callbacks to be invoked. SELinux will deny the
+xattr update by virtue of applying mountpoint labeling to
+unprivileged userns mounts, and Smack will deny the writes for
+any user without global CAP_MAC_ADMIN, so loosening the
+capability check in commoncap is safe in this respect as well.
 
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 ---
- fs/inode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ security/commoncap.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 69b8b526c194..cd52170f9117 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -1690,7 +1690,8 @@ int should_remove_suid(struct dentry *dentry)
- 	if (unlikely((mode & S_ISGID) && (mode & S_IXGRP)))
- 		kill |= ATTR_KILL_SGID;
+diff --git a/security/commoncap.c b/security/commoncap.c
+index e657227d221e..12477afaa8ed 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -664,15 +664,17 @@ int cap_bprm_secureexec(struct linux_binprm *bprm)
+ int cap_inode_setxattr(struct dentry *dentry, const char *name,
+ 		       const void *value, size_t size, int flags)
+ {
++	struct user_namespace *user_ns = dentry->d_sb->s_user_ns;
++
+ 	if (!strcmp(name, XATTR_NAME_CAPS)) {
+-		if (!capable(CAP_SETFCAP))
++		if (!ns_capable(user_ns, CAP_SETFCAP))
+ 			return -EPERM;
+ 		return 0;
+ 	}
  
--	if (unlikely(kill && !capable(CAP_FSETID) && S_ISREG(mode)))
-+	if (unlikely(kill && !ns_capable(dentry->d_sb->s_user_ns, CAP_FSETID) &&
-+		     S_ISREG(mode)))
- 		return kill;
- 
+ 	if (!strncmp(name, XATTR_SECURITY_PREFIX,
+ 		     sizeof(XATTR_SECURITY_PREFIX) - 1) &&
+-	    !capable(CAP_SYS_ADMIN))
++	    !ns_capable(user_ns, CAP_SYS_ADMIN))
+ 		return -EPERM;
  	return 0;
+ }
+@@ -690,15 +692,17 @@ int cap_inode_setxattr(struct dentry *dentry, const char *name,
+  */
+ int cap_inode_removexattr(struct dentry *dentry, const char *name)
+ {
++	struct user_namespace *user_ns = dentry->d_sb->s_user_ns;
++
+ 	if (!strcmp(name, XATTR_NAME_CAPS)) {
+-		if (!capable(CAP_SETFCAP))
++		if (!ns_capable(user_ns, CAP_SETFCAP))
+ 			return -EPERM;
+ 		return 0;
+ 	}
+ 
+ 	if (!strncmp(name, XATTR_SECURITY_PREFIX,
+ 		     sizeof(XATTR_SECURITY_PREFIX) - 1) &&
+-	    !capable(CAP_SYS_ADMIN))
++	    !ns_capable(user_ns, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 	return 0;
+ }
 -- 
 2.7.4
