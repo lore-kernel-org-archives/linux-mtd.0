@@ -1,26 +1,19 @@
-Date: Wed, 27 Apr 2016 22:30:10 +0200
-From: Michal Hocko <mhocko@kernel.org>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
- Chris Mason <clm@fb.com>, Jan Kara <jack@suse.cz>,
- ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, logfs@logfs.org, xfs@oss.sgi.com,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1.2/2] mm: introduce memalloc_nofs_{save,restore} API
-Message-ID: <20160427203010.GD22544@dhcp22.suse.cz>
-References: <1461671772-1269-2-git-send-email-mhocko@kernel.org>
- <1461758075-21815-1-git-send-email-mhocko@kernel.org>
- <1461758075-21815-2-git-send-email-mhocko@kernel.org>
- <20160427200927.GC22544@dhcp22.suse.cz>
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1avWD6-0001BQ-Pg
+ for linux-mtd@lists.infradead.org; Wed, 27 Apr 2016 20:37:25 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id g17so9148843wme.1
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Apr 2016 13:37:03 -0700 (PDT)
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: MTD Mailing List <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH] mtd: m25p80: add message if mmap flash read is supported
+Message-ID: <9111b023-d1e5-3084-4320-acf727e828f4@gmail.com>
+Date: Wed, 27 Apr 2016 22:36:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160427200927.GC22544@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,19 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 27-04-16 22:09:27, Michal Hocko wrote:
-[...]
-> [   53.993480]   [<ffffffff810945e3>] mark_held_locks+0x5e/0x74
-> [   53.993480]   [<ffffffff8109722c>] lockdep_trace_alloc+0xb2/0xb5
-> [   53.993480]   [<ffffffff81174e56>] kmem_cache_alloc+0x36/0x2b0
+As a follow-up to commit 08922f644878c9 "mtd: devices: m25p80: add support for
+mmap read request" add an info to syslog if mmap flash read is supported for a
+device.
 
-Scratch that. I got it. It is the lockdep annotation which I got wrong
-with my patch. I thought this was done much later in the slow path.
-My head is burnt so I will get back to it tomorrow. The patch 1.1 should
-be OK to go for XFS though because it doesn't really introduce anything
-new.
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+ drivers/mtd/devices/m25p80.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Sorry about the noise!
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 9d68544..433b100 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -233,6 +233,9 @@ static int m25p_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
+ 
++	if (spi_flash_read_supported(spi))
++		dev_info(&spi->dev, "memory-mapped flash read supported\n");
++
+ 	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
+ 				   data ? data->nr_parts : 0);
+ }
 -- 
-Michal Hocko
-SUSE Labs
+2.8.0
