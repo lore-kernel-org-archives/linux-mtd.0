@@ -1,23 +1,27 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avKJV-000316-8N
- for linux-mtd@lists.infradead.org; Wed, 27 Apr 2016 07:55:13 +0000
-Date: Wed, 27 Apr 2016 09:54:50 +0200
+ id 1avKK2-0004HQ-Lq
+ for linux-mtd@lists.infradead.org; Wed, 27 Apr 2016 07:55:47 +0000
+Date: Wed, 27 Apr 2016 09:55:25 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH V2] mtd: nand: fix NULL pointer dereference in
- of_get_nand_ecc_algo
-Message-ID: <20160427095450.5f45b3af@bbrezillon>
-In-Reply-To: <1461705408-12858-1-git-send-email-zajec5@gmail.com>
-References: <1461695776-29740-1-git-send-email-zajec5@gmail.com>
- <1461705408-12858-1-git-send-email-zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>, Richard
+ Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, "open
+ list:BROADCOM STB NAND FLASH DRIVER"
+ <bcm-kernel-feedback-list@broadcom.com>, open list
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] mtd: brcmnand: respect ECC algorithm set by NAND
+ subsystem
+Message-ID: <20160427095525.4320cc83@bbrezillon>
+In-Reply-To: <20160426055355.GA25981@localhost>
+References: <1461324197-1333-1-git-send-email-zajec5@gmail.com>
+ <1461324197-1333-3-git-send-email-zajec5@gmail.com>
+ <20160426055355.GA25981@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +31,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 26 Apr 2016 23:16:47 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+On Mon, 25 Apr 2016 22:53:55 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-> Our array nand_ecc_algos doesn't specify mappings for all available
-> enum nand_ecc_algo values. The one missing there is NAND_ECC_UNKNOWN
-> as this value is reserved for algorithm not being specified at all.
-> It means we have to be careful when iterating this array and avoid
-> NULL values.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> From: Brian Norris <computersforpeace@gmail.com>
+> Date: Mon, 25 Apr 2016 20:48:02 -0700
+> Subject: [PATCH] mtd: brcmnand: respect ECC algorithm set by the NAND
+>  subsystem
+> 
+> This is more obvious than guessing based on ECC strength. It allows
+> using NAND on devices with BCH-1 (e.g. D-Link DIR-885L).
+> 
+> This maintains DT backward compatibility by defaulting to Hamming if a
+> 1-bit ECC algorithm is specified without a corresponding algorithm
+> selection. i.e., to use BCH-1, you must specify:
+> 
+>   nand-ecc-strength = <1>;
+>   nand-ecc-step-size = <512>;
+>   nand-ecc-algo = "bch";
+> 
+> Also adds a check to ensure we haven't allowed someone to get by with SW
+> ECC. If we want to support SW ECC, we need to refactor some other pieces
+> of this driver.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Changes squashed into "mtd: nand: add support for "nand-ecc-algo" DT
-property".
-
-Thanks,
+Applied, thanks.
 
 Boris
 
 > ---
-> V2: Iterate from NAND_ECC_HAMMING instead of checking for NULL as preferr=
-ed by
-> Boris.
-> ---
->  drivers/mtd/nand/nand_base.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index a5417a0..2e6ba44 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -4015,7 +4015,7 @@ static int of_get_nand_ecc_algo(struct device_node =
-*np)
-> =20
->  	err =3D of_property_read_string(np, "nand-ecc-algo", &pm);
->  	if (!err) {
-> -		for (i =3D 0; i < ARRAY_SIZE(nand_ecc_algos); i++)
-> +		for (i =3D NAND_ECC_HAMMING; i < ARRAY_SIZE(nand_ecc_algos); i++)
->  			if (!strcasecmp(pm, nand_ecc_algos[i]))
->  				return i;
->  		return -ENODEV;
+>  drivers/mtd/nand/brcmnand/brcmnand.c | 24 +++++++++++++++++++++++-
+>  1 file changed, 23 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index c3331ffcaffd..b76ad7c0144f 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -1925,9 +1925,31 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+>  	cfg->col_adr_bytes = 2;
+>  	cfg->blk_adr_bytes = get_blk_adr_bytes(mtd->size, mtd->writesize);
+>  
+> +	if (chip->ecc.mode != NAND_ECC_HW) {
+> +		dev_err(ctrl->dev, "only HW ECC supported; selected: %d\n",
+> +			chip->ecc.mode);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (chip->ecc.algo == NAND_ECC_UNKNOWN) {
+> +		if (chip->ecc.strength == 1 && chip->ecc.size == 512)
+> +			/* Default to Hamming for 1-bit ECC, if unspecified */
+> +			chip->ecc.algo = NAND_ECC_HAMMING;
+> +		else
+> +			/* Otherwise, BCH */
+> +			chip->ecc.algo = NAND_ECC_BCH;
+> +	}
+> +
+> +	if (chip->ecc.algo == NAND_ECC_HAMMING && (chip->ecc.strength != 1 ||
+> +						   chip->ecc.size != 512)) {
+> +		dev_err(ctrl->dev, "invalid Hamming params: %d bits per %d bytes\n",
+> +			chip->ecc.strength, chip->ecc.size);
+> +		return -EINVAL;
+> +	}
+> +
+>  	switch (chip->ecc.size) {
+>  	case 512:
+> -		if (chip->ecc.strength == 1) /* Hamming */
+> +		if (chip->ecc.algo == NAND_ECC_HAMMING)
+>  			cfg->ecc_level = 15;
+>  		else
+>  			cfg->ecc_level = chip->ecc.strength;
 
 
 
---=20
+-- 
 Boris Brezillon, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
