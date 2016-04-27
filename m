@@ -1,19 +1,21 @@
-Subject: Re: MTK Smart Device Gen1 NAND Driver - Testing on MT7623
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <e397161c-2fe8-7e9d-c34f-adf5e91a99d7@openwrt.org>
- <20160427100627.63b148c3@bbrezillon>
-Cc: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
- linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org,
- erin.lo@mediatek.com, =?UTF-8?B?U3RldmVuIExpdSAo5YqJ5Lq66LGqKQ==?=
- <steven.liu@mediatek.com>, =?UTF-8?B?U2VhbiBXYW5nICjnjovlv5fkupgp?=
- <sean.wang@mediatek.com>
-From: John Crispin <blogic@openwrt.org>
-Message-ID: <869e6090-04fd-0f99-f248-af68e948362e@openwrt.org>
-Date: Wed, 27 Apr 2016 10:41:31 +0200
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1avLfP-00039n-Ub
+ for linux-mtd@lists.infradead.org; Wed, 27 Apr 2016 09:21:56 +0000
+Subject: Re: [PATCH 2/8] mtd-utils: Add multi-block erase function
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+References: <1461622409-14970-1-git-send-email-richard@nod.at>
+ <1461622409-14970-3-git-send-email-richard@nod.at>
+ <20160426100406.452b2378@bbrezillon>
+Cc: linux-mtd@lists.infradead.org
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <e3758952-76e9-8b62-f575-42248f2d66f4@sigma-star.at>
+Date: Wed, 27 Apr 2016 11:21:31 +0200
 MIME-Version: 1.0
-In-Reply-To: <20160427100627.63b148c3@bbrezillon>
+In-Reply-To: <20160426100406.452b2378@bbrezillon>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,72 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-Hi Boris,
-
->>
->> the devicetree i am using is this
->>
->> &nandc {
->>         status = "okay";
->>         pinctrl-names = "default";
->>         pinctrl-0 = <&nand_pins_default>;
->>         nand@0 {
->>                 reg = <0>;
->>                 spare_per_sector = <64>;
+On 04/26/2016 10:04 AM, Boris Brezillon wrote:
+>> -int mtd_erase(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+>> +int mtd_erase_multi(libmtd_t desc, const struct mtd_dev_info *mtd,
+>> +			int fd, int eb, int blocks)
+>>  {
+>>  	int ret;
+>>  	struct libmtd *lib = (struct libmtd *)desc;
+>> @@ -856,8 +857,12 @@ int mtd_erase(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> -	ei64.start = (__u64)eb * mtd->eb_size;
+>> -	ei64.length = mtd->eb_size;
+>> +	ret = mtd_valid_erase_block(mtd, eb + blocks - 1);
+>> +	if (ret)
+>> +		return ret;
 > 
-> If I understood the meaning of spare_per_sector correctly, this should
-> be 32 (you have 2K pages and 1024 bytes sectors, so you have 2 sectors
-> and want to equally assign the 64 OOB bytes to those sectors =>
-> 64 / 2 = 32).
+> Maybe you should also check if @eb is a valid block (what if @eb < 0,
+> but @eb + @blocks >= 0).
 > 
-> Anyway, hopefully all this complexity will be gone in the next version
-> along with the need to define nand-ecc-strength and nand-ecc-step-size
-> (which should be part of the NAND chip detection unless you really
-> need to overload them).
-> 
+This patch only renames the mtd_erase function to mtd_erase_multi and lets it
+accept a block count. The existing code already checks @eb for validity.
 
-thanks for the info. i tried that aswell as some other settings but none
-makes the flash work. lets see if Jorge has some ideas. otherwise i will
-wait for V4.
+A new implementation of mtd_erase is added below that calls mtd_erase_multi with a block
+count of 1.
 
-	John
+>> +
+>> +	ei64.start = (__u64)eb * (__u64)mtd->eb_size;
+>
+> I'm not sure you really need the second (__u64) cast, AFAIR, the first
+> one already guarantees that the intermediate result will be stored in a
+> __u64 variable.
 
->>                 nand-on-flash-bbt;
->>                 nand-ecc-mode = "hw";
->>                 nand-ecc-strength = <12>;
->>                 nand-ecc-step-size = <1024>;
->>                 partitions {
->>                         compatible = "fixed-partitions";
->>                         #address-cells = <1>;
->>                         #size-cells = <1>;
->>
->>                         partition@C0000 {
->>                                 label = "uboot-env";
->>                                 reg = <0xC0000 0x40000>;
->>                         };
->>
->>                         partition@100000 {
->>                                 label = "factory";
->>                                 reg = <0x100000 0x40000>;
->>                         };
->>
->>                         partition@140000 {
->>                                 label = "kernel";
->>                                 reg = <0x140000 0x2000000>;
->>                         };
->>
->>                         partition@2140000 {
->>                                 label = "recovery";
->>                                 reg = <0x2140000 0x2000000>;
->>                         };
->>
->>                         partition@4140000 {
->>                                 label = "rootfs";
->>                                 reg = <0x4140000 0x1000000>;
->>                         };
->>                 };
->>         };
->> };
-> 
-> 
+Yes, according to the C89 spec, section 3.2.1.5 it is technically not needed.
+Since both are integer operands, casting one to something larger than int (and
+of different signedness) causes the other operand to be converted to the same
+type before the operation is performed.
+
+
+David
