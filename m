@@ -1,25 +1,21 @@
-Date: Wed, 27 Apr 2016 23:14:14 +0200
-From: Michal Hocko <mhocko@kernel.org>
-To: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
- Chris Mason <clm@fb.com>, Jan Kara <jack@suse.cz>,
- ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, logfs@logfs.org, xfs@oss.sgi.com,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1.2/2] mm: introduce memalloc_nofs_{save,restore} API
-Message-ID: <20160427211414.GA24919@dhcp22.suse.cz>
-References: <1461671772-1269-2-git-send-email-mhocko@kernel.org>
- <1461758075-21815-1-git-send-email-mhocko@kernel.org>
- <1461758075-21815-2-git-send-email-mhocko@kernel.org>
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1avXL9-0002aB-58
+ for linux-mtd@lists.infradead.org; Wed, 27 Apr 2016 21:49:48 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Henry
+ Shen" <Henry.Shen@alliedtelesis.co.nz>
+Subject: Re: secure file deletion/SECRM support for JFFS2 and UBIFS
+Date: Wed, 27 Apr 2016 21:49:21 +0000
+Message-ID: <66249822349e4de191f8f67ca1a5c35c@svr-chch-ex1.atlnz.lc>
+References: <b80a613015cd4b018148cf22865c43ea@svr-chch-ex1.atlnz.lc>
+ <CAFLxGvz9ybdeSqqjUwy6zUe7aO9h1TeRXVHnA_WRERmahrxe-Q@mail.gmail.com>
+ <CAFLxGvyXnP7VkrYcsokcz-iU3G=u0QmFvZnr6txbjMvYHk6gYA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1461758075-21815-2-git-send-email-mhocko@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,43 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-OK, so the lockdep splats I was seeing [1] were much easier to fix than
-I originally thought. So the following should be folded into the
-original patch. I will send the full patch later on.
-
-[1] http://lkml.kernel.org/r/20160427200927.GC22544@dhcp22.suse.cz
----
->From 1968c0a8ace4090a9deca8f4c1a206ee546e595a Mon Sep 17 00:00:00 2001
-From: Michal Hocko <mhocko@suse.com>
-Date: Wed, 27 Apr 2016 22:32:57 +0200
-Subject: [PATCH] fold me "mm: introduce memalloc_nofs_{save,restore} API"
-
-Lockdep infrastructure is hooked into early hot paths of the allocator
-so __lockdep_trace_alloc has to check for PF_MEMALLOC_NOFS directly and
-do not rely on current_gfp_context
-
-Signed-off-by: Michal Hocko <mhocko@suse.com>
-
----
- kernel/locking/lockdep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 716547fdb873..f60124d0871c 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -2750,7 +2750,7 @@ static void __lockdep_trace_alloc(gfp_t gfp_mask, unsigned long flags)
- 		return;
- 
- 	/* We're only interested __GFP_FS allocations for now */
--	if (!(gfp_mask & __GFP_FS))
-+	if (!(gfp_mask & __GFP_FS) || (curr->flags & PF_MEMALLOC_NOFS))
- 		return;
- 
- 	/*
--- 
-2.8.0.rc3
-
--- 
-Michal Hocko
-SUSE Labs
+On 04/27/2016 07:06 PM, Richard Weinberger wrote:=0A=
+> On Wed, Apr 27, 2016 at 9:05 AM, Richard Weinberger=0A=
+> <richard.weinberger@gmail.com> wrote:=0A=
+>>> Is that something people on this list would be interested in? I realize=
+=0A=
+>>> JFFS2 is kind of in a twilight phase but we're really not able to=0A=
+>>> migrate some customers away from it.=0A=
+>>=0A=
+>> This is definitely a nice feature.=0A=
+>> But please keep in mind that you can overwrite data on flash. :-)=0A=
+>=0A=
+> Should be read "can't", of course...=0A=
+>=0A=
+=0A=
+You can't overwrite with arbitrary data. But for NOR flash at least you =0A=
+_can_ overwrite with 0 (at least I think you can). In other words if the =
+=0A=
+erased state is 0xff you can write 0xaa you would not be able to write =0A=
+0x55 without erasing the block first but you would be able to write 0x00.=
+=0A=
+=0A=
+I was hoping to avoid having to do an immediate erase but if I'm wrong =0A=
+that's what we'd have to do.=0A=
