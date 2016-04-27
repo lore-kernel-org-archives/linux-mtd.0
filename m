@@ -1,26 +1,18 @@
-Date: Wed, 27 Apr 2016 10:03:11 +0200
-From: Michal Hocko <mhocko@kernel.org>
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Theodore Ts'o <tytso@mit.edu>, Chris Mason <clm@fb.com>,
- Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
- logfs@logfs.org, xfs@oss.sgi.com, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mm, debug: report when GFP_NO{FS,IO} is used
- explicitly from memalloc_no{fs,io}_{save,restore} context
-Message-ID: <20160427080311.GC2179@dhcp22.suse.cz>
-References: <1461671772-1269-1-git-send-email-mhocko@kernel.org>
- <1461671772-1269-3-git-send-email-mhocko@kernel.org>
- <20160426225845.GF26977@dastard>
+Date: Wed, 27 Apr 2016 10:06:27 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: John Crispin <blogic@openwrt.org>
+Cc: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+ linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ erin.lo@mediatek.com, "Steven Liu (=?UTF-8?B?5YqJ5Lq66LGq?=)"
+ <steven.liu@mediatek.com>, "Sean Wang (=?UTF-8?B?546L5b+X5LqY?=)"
+ <sean.wang@mediatek.com>
+Subject: Re: MTK Smart Device Gen1 NAND Driver - Testing on MT7623
+Message-ID: <20160427100627.63b148c3@bbrezillon>
+In-Reply-To: <e397161c-2fe8-7e9d-c34f-adf5e91a99d7@openwrt.org>
+References: <e397161c-2fe8-7e9d-c34f-adf5e91a99d7@openwrt.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160426225845.GF26977@dastard>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +22,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 27-04-16 08:58:45, Dave Chinner wrote:
-> On Tue, Apr 26, 2016 at 01:56:12PM +0200, Michal Hocko wrote:
-> > From: Michal Hocko <mhocko@suse.com>
-> > 
-> > THIS PATCH IS FOR TESTING ONLY AND NOT MEANT TO HIT LINUS TREE
-> > 
-> > It is desirable to reduce the direct GFP_NO{FS,IO} usage at minimum and
-> > prefer scope usage defined by memalloc_no{fs,io}_{save,restore} API.
-> > 
-> > Let's help this process and add a debugging tool to catch when an
-> > explicit allocation request for GFP_NO{FS,IO} is done from the scope
-> > context. The printed stacktrace should help to identify the caller
-> > and evaluate whether it can be changed to use a wider context or whether
-> > it is called from another potentially dangerous context which needs
-> > a scope protection as well.
-> 
-> You're going to get a large number of these from XFS. There are call
-> paths in XFs that get called both inside and outside transaction
-> context, and many of them are marked with GFP_NOFS to prevent issues
-> that have cropped up in the past.
-> 
-> Often these are to silence lockdep warnings (e.g. commit b17cb36
-> ("xfs: fix missing KM_NOFS tags to keep lockdep happy")) because
-> lockdep gets very unhappy about the same functions being called with
-> different reclaim contexts. e.g.  directory block mapping might
-> occur from readdir (no transaction context) or within transactions
-> (create/unlink). hence paths like this are tagged with GFP_NOFS to
-> stop lockdep emitting false positive warnings....
+Hi John,
 
-I would much rather see lockdep being fixed than abusing GFP_NOFS to
-workaround its limitations. GFP_NOFS has a real consequences to the
-memory reclaim. I will go and check the commit you mentioned and try
-to understand why that is a problem. From what you described above
-I would like to get rid of exactly this kind of usage which is not
-really needed for the recursion protection.
+On Wed, 27 Apr 2016 08:36:21 +0200
+John Crispin <blogic@openwrt.org> wrote:
 
-Thanks!
+> Hi Jorge,
+> 
+> I have been testing version 3 of the driver on the MT7623 with limited
+> success and was hoping you could shed some light on the problems I am seeing
+> 
+> the driver loads
+> 
+> [    1.924633] nand: device found, Manufacturer ID: 0xef, Chip ID: 0xda
+> [    1.930941] nand: Unknown W29N02GV
+> [    1.934386] nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048,
+> OOB size: 64
+> [    1.942869] Bad block table not found for chip 0
+> [    1.948320] Bad block table not found for chip 0
+> [    1.952926] Scanning device for bad blocks
+> [    2.411339] Bad eraseblock 2046 at 0x00000ffc0000
+> [    2.416251] Bad eraseblock 2047 at 0x00000ffe0000
+> [    2.422096] Bad block table written to 0x00000ffa0000, version 0x01
+> [    2.429426] Bad block table written to 0x00000ff80000, version 0x01
+> [    2.435966] 6 ofpart partitions found on MTD device mtk-nand
+> [    2.441578] Creating 6 MTD partitions on "mtk-nand":
+> [    2.446523] 0x000000000000-0x000000400000 : "pl"
+> [    2.452256] 0x0000000c0000-0x000000100000 : "uboot-env"
+> [    2.458381] 0x000000100000-0x000000140000 : "factory"
+> [    2.464300] 0x000000140000-0x000002140000 : "kernel"
+> [    2.470419] 0x000002140000-0x000004140000 : "recovery"
+> [    2.476780] 0x000004140000-0x000005140000 : "rootfs"
+> 
+> but when i try to access the mtd devices i get an error
+> 
+> root@OpenWrt:/# hexdump -C /dev/mtd1
+> [  165.752134] mtk-ecc 1100e000.ecc: decoder NOT idle
+> [  166.251999] mtk-nand 1100d000.nfi: read ahb/dma done timeout
+> [  166.757624] mtk-nand 1100d000.nfi: subpage done timeout
+> [  167.262834] mtk-ecc 1100e000.ecc: decoder NOT idle
+> hexdump: /dev/mtd1: I/O error
+> 
+> the devicetree i am using is this
+> 
+> &nandc {
+>         status = "okay";
+>         pinctrl-names = "default";
+>         pinctrl-0 = <&nand_pins_default>;
+>         nand@0 {
+>                 reg = <0>;
+>                 spare_per_sector = <64>;
+
+If I understood the meaning of spare_per_sector correctly, this should
+be 32 (you have 2K pages and 1024 bytes sectors, so you have 2 sectors
+and want to equally assign the 64 OOB bytes to those sectors =>
+64 / 2 = 32).
+
+Anyway, hopefully all this complexity will be gone in the next version
+along with the need to define nand-ecc-strength and nand-ecc-step-size
+(which should be part of the NAND chip detection unless you really
+need to overload them).
+
+>                 nand-on-flash-bbt;
+>                 nand-ecc-mode = "hw";
+>                 nand-ecc-strength = <12>;
+>                 nand-ecc-step-size = <1024>;
+>                 partitions {
+>                         compatible = "fixed-partitions";
+>                         #address-cells = <1>;
+>                         #size-cells = <1>;
+> 
+>                         partition@C0000 {
+>                                 label = "uboot-env";
+>                                 reg = <0xC0000 0x40000>;
+>                         };
+> 
+>                         partition@100000 {
+>                                 label = "factory";
+>                                 reg = <0x100000 0x40000>;
+>                         };
+> 
+>                         partition@140000 {
+>                                 label = "kernel";
+>                                 reg = <0x140000 0x2000000>;
+>                         };
+> 
+>                         partition@2140000 {
+>                                 label = "recovery";
+>                                 reg = <0x2140000 0x2000000>;
+>                         };
+> 
+>                         partition@4140000 {
+>                                 label = "rootfs";
+>                                 reg = <0x4140000 0x1000000>;
+>                         };
+>                 };
+>         };
+> };
+
+
 -- 
-Michal Hocko
-SUSE Labs
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
