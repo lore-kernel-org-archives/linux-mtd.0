@@ -1,24 +1,22 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-pf0-x230.google.com ([2607:f8b0:400e:c00::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avSUP-0001nN-GU
- for linux-mtd@lists.infradead.org; Wed, 27 Apr 2016 16:39:02 +0000
-Received: by mail-pa0-x231.google.com with SMTP id zm5so23575680pac.0
- for <linux-mtd@lists.infradead.org>; Wed, 27 Apr 2016 09:38:41 -0700 (PDT)
-Date: Wed, 27 Apr 2016 10:38:32 -0600
+ id 1avSmU-0001JU-Vz
+ for linux-mtd@lists.infradead.org; Wed, 27 Apr 2016 16:57:43 +0000
+Received: by mail-pf0-x230.google.com with SMTP id 206so22556996pfu.0
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Apr 2016 09:57:22 -0700 (PDT)
+Date: Wed, 27 Apr 2016 10:57:12 -0600
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- david.oberhollenzer@sigma-star.at
-Subject: Re: [PATCH 4/8] mtd-utils: Add flash stress test Utility
-Message-ID: <20160427163832.GB6425@localhost>
-References: <1461622409-14970-1-git-send-email-richard@nod.at>
- <1461622409-14970-5-git-send-email-richard@nod.at>
- <20160426101850.2ccde903@bbrezillon> <571F3354.4040909@nod.at>
- <20160426114750.1a9186dc@bbrezillon>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] physmap_of: ensure versatile code is reachable
+Message-ID: <20160427165712.GA7266@localhost>
+References: <1461625501-2160538-1-git-send-email-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160426114750.1a9186dc@bbrezillon>
+In-Reply-To: <1461625501-2160538-1-git-send-email-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 26, 2016 at 11:47:50AM +0200, Boris Brezillon wrote:
-> On Tue, 26 Apr 2016 11:22:28 +0200
-> Richard Weinberger <richard@nod.at> wrote:
+On Tue, Apr 26, 2016 at 01:04:38AM +0200, Arnd Bergmann wrote:
+> With the newly added physmap_of_versatile code, we get a build error
+> when physmap_of is in a module, because of_flash_probe_versatile
+> is not exported:
 > 
-> > Am 26.04.2016 um 10:18 schrieb Boris Brezillon:
-> > > Please use getopt_long(). I guess this applies to all your patches, so
-> > > I'll stop mentioning it.
-> > >   
-> > 
-> > I agree, other mtd-utils programs use getopt too. Let's stay consistent.
-> > 
-> > BTW: How do you feel about switching globally over to argp?
-> > http://www.gnu.org/software/libc/manual/html_node/Argp.html
-> > 
-> > IMHO it is much less pain to use and offers nice features such as auto generating
-> > --help.
-> > Although it is a GNU feature there is also a standalone package available which can be used
-> > when building for musl or uclibc.
+> ERROR: "of_flash_probe_versatile" [drivers/mtd/maps/physmap_of.ko] undefined!
 > 
-> I don't have any objection to it. Let's see how Brian feels about it.
+> This adds the export, and changes the Makefile so that the code is
+> also put into a loadable module rather than built-in when physmap_of
+> itself is a module.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-I don't have strong opinions. My main question would have been about
-build dependencies, but it sounds like it's not too onerous.
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-Brian
+I presume you're taking this in arm-soc.
