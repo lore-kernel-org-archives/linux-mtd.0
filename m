@@ -1,25 +1,22 @@
-Date: Wed, 27 Apr 2016 09:07:02 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Michal Hocko <mhocko@kernel.org>
-Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Theodore Ts'o <tytso@mit.edu>, Chris Mason <clm@fb.com>,
- Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
- logfs@logfs.org, xfs@oss.sgi.com, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
- Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 1/2] mm: add PF_MEMALLOC_NOFS
-Message-ID: <20160426230702.GG26977@dastard>
-References: <1461671772-1269-1-git-send-email-mhocko@kernel.org>
- <1461671772-1269-2-git-send-email-mhocko@kernel.org>
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1avHha-0002xz-K4
+ for linux-mtd@lists.infradead.org; Wed, 27 Apr 2016 05:07:55 +0000
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (Client did not present a certificate)
+ by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 6E918800E6
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Apr 2016 17:07:28 +1200 (NZST)
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: Henry Shen <Henry.Shen@alliedtelesis.co.nz>
+Subject: secure file deletion/SECRM support for JFFS2 and UBIFS
+Date: Wed, 27 Apr 2016 05:07:26 +0000
+Message-ID: <b80a613015cd4b018148cf22865c43ea@svr-chch-ex1.atlnz.lc>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1461671772-1269-2-git-send-email-mhocko@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,47 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 26, 2016 at 01:56:11PM +0200, Michal Hocko wrote:
-> From: Michal Hocko <mhocko@suse.com>
-> 
-> GFP_NOFS context is used for the following 4 reasons currently
-> 	- to prevent from deadlocks when the lock held by the allocation
-> 	  context would be needed during the memory reclaim
-> 	- to prevent from stack overflows during the reclaim because
-> 	  the allocation is performed from a deep context already
-> 	- to prevent lockups when the allocation context depends on
-> 	  other reclaimers to make a forward progress indirectly
-> 	- just in case because this would be safe from the fs POV
-
-- silencing lockdep false positives
-
-> Introduce PF_MEMALLOC_NOFS task specific flag and memalloc_nofs_{save,restore}
-> API to control the scope. This is basically copying
-> memalloc_noio_{save,restore} API we have for other restricted allocation
-> context GFP_NOIO.
-> 
-> Xfs has already had a similar functionality as PF_FSTRANS so let's just
-> give it a more generic name and make it usable for others as well and
-> move the GFP_NOFS context tracking to the page allocator. Xfs has its
-> own accessor functions but let's keep them for now to reduce this patch
-> as minimum.
-
-Can you split this into two patches? The first simply does this:
-
-#define PF_MEMALLOC_NOFS PF_FSTRANS
-
-and changes only the XFS code to use PF_MEMALLOC_NOFS.
-
-The second patch can then do the rest of the mm API changes that we
-don't actually care about in XFS at all.  That way I can carry all
-the XFS changes in the XFS tree and not have to worry about when
-this stuff gets merged or conflicts with the rest of the work that
-is being done to the mm/ code and whatever tree that eventually
-lands in...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Hi,=0A=
+=0A=
+We have a customer request for "secure file deletion" for our embedded =0A=
+devices (kernel version 4.4.6). The first device is running JFFS2 on =0A=
+parallel NOR flash but we expect to see the same requirement pop up on =0A=
+our newer devices running UBIFS on top of NAND.=0A=
+=0A=
+I found a couple of old threads related to UBIFS but they all appear to =0A=
+have fallen silent. Nothing really for JFFS2.=0A=
+=0A=
+For our application we're not really concerned about defeating =0A=
+determined attackers who have access to the device and hardware that can =
+=0A=
+do detailed analysis on the transistors that make up the chip. But we =0A=
+are trying to protect against casual attackers (or recipients of =0A=
+re-furbished hardware) who can run 'dd'.=0A=
+=0A=
+So I think for us it'd be enough to implement chattr +s and have the =0A=
+file's data over written with a fixed value (e.g 0 for NOR flash) when =0A=
+it's blocks are added to the garbage collection list.=0A=
+=0A=
+Is that something people on this list would be interested in? I realize =0A=
+JFFS2 is kind of in a twilight phase but we're really not able to =0A=
+migrate some customers away from it.=0A=
+=0A=
+Thanks,=0A=
+Chris=0A=
