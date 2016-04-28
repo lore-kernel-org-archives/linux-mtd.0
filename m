@@ -1,23 +1,19 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avgMP-0004Fd-23
- for linux-mtd@lists.infradead.org; Thu, 28 Apr 2016 07:27:42 +0000
-Subject: Re: secure file deletion/SECRM support for JFFS2 and UBIFS
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-References: <b80a613015cd4b018148cf22865c43ea@svr-chch-ex1.atlnz.lc>
- <CAFLxGvz9ybdeSqqjUwy6zUe7aO9h1TeRXVHnA_WRERmahrxe-Q@mail.gmail.com>
- <CAFLxGvyXnP7VkrYcsokcz-iU3G=u0QmFvZnr6txbjMvYHk6gYA@mail.gmail.com>
- <66249822349e4de191f8f67ca1a5c35c@svr-chch-ex1.atlnz.lc>
- <57213543.2070107@nod.at>
- <808151eb1f5a4d63ae100d9e6b29e550@svr-chch-ex1.atlnz.lc>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Henry Shen <Henry.Shen@alliedtelesis.co.nz>
+ id 1avgwc-00033W-8j
+ for linux-mtd@lists.infradead.org; Thu, 28 Apr 2016 08:05:06 +0000
+Subject: Re: [PATCH 0/4] mtd: add support for pairing scheme description
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+References: <1461578481-26567-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: linux-kernel@vger.kernel.org
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <5721BB53.6010008@nod.at>
-Date: Thu, 28 Apr 2016 09:27:15 +0200
+Message-ID: <5721C41A.20105@nod.at>
+Date: Thu, 28 Apr 2016 10:04:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <808151eb1f5a4d63ae100d9e6b29e550@svr-chch-ex1.atlnz.lc>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <1461578481-26567-1-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,20 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 28.04.2016 um 00:35 schrieb Chris Packham:
->> Well, UBIFS and JFFS2 work on generic MTD, so having a special hack for NOR
->> is not really what we want.
+Am 25.04.2016 um 12:01 schrieb Boris Brezillon:
+> Hi,
 > 
-> Agreed. I was hoping there was a similar trick for NAND which I'm less 
-> familiar with. The fallback behavior of an immediate erase is still 
-> doable but it has more corner cases that we'd need to be weary of.
+> This series is the first step towards reliable MLC/TLC NAND support.
+> Those patches allows the NAND layer to expose page pairing information
+> to MTD users.
+> The plan is to teach UBI about those constraints and let UBI code take
+> the appropriate precautions when dealing with those multi-level cells
+> NANDs. The way we'll handle this "paired pages" constraint will be
+> described soon in a series adapting the UBI layer, so stay tune ;).
+> 
+> Note that this implementation only allows page pairing scheme description
+> when the NAND has a full-id entry in the nand_ids table.
+> This should be addressed in some way for ONFI and JEDEC NANDs, though
+> I'm not sure how to handle this yet.
+> 
+> Best Regards,
+> 
+> Boris
+> 
+> Boris Brezillon (4):
+>   mtd: introduce the mtd_pairing_scheme concept
+>   mtd: nand: implement two pairing scheme
+>   mtd: nand: add a pairing field to nand_flash_dev
+>   mtd: nand: H27UCG8T2ATR: point to the correct pairing scheme
+>     implementation
 
-Nope, on NAND you're forced to erase.
-Also erase itself is a problem (at least on UBIFS), it does not erase blocks
-synchronous and also not immediately after they are no longer needed.
-So, you'd have to touch some code...
-Blindly doing a synchronous erase will hurt the performance as you
-block the callers.
+For the whole series:
+
+Reviewed-by: Richard Weinberger <richard@nod.at>
 
 Thanks,
 //richard
