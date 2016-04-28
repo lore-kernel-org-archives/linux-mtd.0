@@ -1,24 +1,26 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avh9c-0003gf-Ej
- for linux-mtd@lists.infradead.org; Thu, 28 Apr 2016 08:18:33 +0000
-From: Markus Pargmann <mpa@pengutronix.de>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Han Xu <han.xu@nxp.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie.huang@intel.com>,
- Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
- Stefan Christ <s.christ@phytec.de>
-Subject: Re: [PATCH v2] gpmi-nand: Handle ECC Errors in erased pages
-Date: Thu, 28 Apr 2016 10:17:57 +0200
-Message-ID: <4159618.sXRX6hYBy1@adelgunde>
-In-Reply-To: <20160426193002.187aefc2@bbrezillon>
-References: <1461587712-16403-1-git-send-email-mpa@pengutronix.de>
- <20160426193002.187aefc2@bbrezillon>
+Received: from bastet.se.axis.com ([195.60.68.11])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1avhVc-0001ST-6E
+ for linux-mtd@lists.infradead.org; Thu, 28 Apr 2016 08:41:17 +0000
+Date: Thu, 28 Apr 2016 10:40:43 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Richard Weinberger <richard@nod.at>
+CC: Chris Packham <Chris.Packham@alliedtelesis.co.nz>, Henry Shen
+ <Henry.Shen@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: secure file deletion/SECRM support for JFFS2 and UBIFS
+In-Reply-To: <5721BB53.6010008@nod.at>
+Message-ID: <alpine.DEB.2.02.1604281037050.31333@lnxricardw1.se.axis.com>
+References: <b80a613015cd4b018148cf22865c43ea@svr-chch-ex1.atlnz.lc>
+ <CAFLxGvz9ybdeSqqjUwy6zUe7aO9h1TeRXVHnA_WRERmahrxe-Q@mail.gmail.com>
+ <CAFLxGvyXnP7VkrYcsokcz-iU3G=u0QmFvZnr6txbjMvYHk6gYA@mail.gmail.com>
+ <66249822349e4de191f8f67ca1a5c35c@svr-chch-ex1.atlnz.lc>
+ <57213543.2070107@nod.at>
+ <808151eb1f5a4d63ae100d9e6b29e550@svr-chch-ex1.atlnz.lc>
+ <5721BB53.6010008@nod.at>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2407068.gS0KHTAZCo";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,87 +31,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---nextPart2407068.gS0KHTAZCo
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="us-ascii"
+On Thu, 28 Apr 2016, Richard Weinberger wrote:
 
-On Tuesday 26 April 2016 19:30:02 Boris Brezillon wrote:
-> On Mon, 25 Apr 2016 14:35:12 +0200
-> Markus Pargmann <mpa@pengutronix.de> wrote:
->=20
-> > ECC is only calculated for written pages. As erased pages are not
-> > actively written the ECC is always invalid. For this purpose the
-> > Hardware BCH unit is able to check for erased pages and does not ra=
-ise
-> > an ECC error in this case. This behaviour can be influenced using t=
-he
-> > BCH_MODE register which sets the number of allowed bitflips in an e=
-rased
-> > page. Unfortunately the unit is not capable of fixing the bitflips =
-in
-> > memory.
-> >=20
-> > To avoid complete software checks for erased pages, we can simply c=
-heck
-> > buffers with uncorrectable ECC errors because we know that any eras=
-ed
-> > page with errors is uncorrectable by the BCH unit.
-> >=20
-> > This patch adds the generic nand_check_erased_ecc_chunk() to gpmi-n=
-and
-> > to correct erased pages. To have the valid data in the buffer befor=
-e
-> > using them, this patch moves the read_page_swap_end() call before t=
-he
-> > ECC status checking for-loop.
-> >=20
-> > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> > [Squashed patches by Stefan and Boris to check ECC area]
-> > Cc: Stefan Christ <s.christ@phytec.de>
-> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> >=20
-> > Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
-> > ---
->=20
-> Applied, thanks.
+> Am 28.04.2016 um 00:35 schrieb Chris Packham:
+> >> Well, UBIFS and JFFS2 work on generic MTD, so having a special hack for NOR
+> >> is not really what we want.
+> > 
+> > Agreed. I was hoping there was a similar trick for NAND which I'm less 
+> > familiar with. The fallback behavior of an immediate erase is still 
+> > doable but it has more corner cases that we'd need to be weary of.
+> 
+> Nope, on NAND you're forced to erase.
 
-Great, thanks all of you.
+I know generally there is a recommendation not to overwrite bits already 
+set to 0 with 0 for NAND, but I can't remember if that is related to the 
+subsequent readability of surrounding data, or if may cause a future erase 
+not to perform properly, or actually physically damages the bit cell (or 
+there is some other reason).
 
-Best Regards,
+If it's just related to the readability of surrounding bit cells, one 
+could imaging overwriting a page with zeros since we were not going to 
+read it anyway.
 
-Markus
+With MLC it's going to be a problem though due to bits being paired 
+between separate pages.
 
-=2D-=20
-Pengutronix e.K.                           |                           =
-  |
-Industrial Linux Solutions                 | http://www.pengutronix.de/=
-  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0  =
-  |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-555=
-5 |
-
---nextPart2407068.gS0KHTAZCo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAABCAAGBQJXIcc1AAoJEEpcgKtcEGQQMgwP/jnyEyr0cR5GblcLaW0uPe7A
-vAs7bCiEnvNtFmHJbqi0G5QynaPCbmwvp6t16bhu2KAHRfSMV0FDMhkXBntTamDE
-hIXwBN6n7qlbHHhQpYhJiPC1LOiUEB0ItJj7Ot5DynRMA4Qmre5bT6nScWkI7EY1
-hhU+Ad+qCQhVy98Jp1ojxQ5TpUl322H0nzunfCotvRCW1VZYdrJpi10AcxDBuOw6
-054LxdTM7yjFptvO5qqRwxg0qy+BKujBU7p4wMWEiMCgpK3wMqMKejLh6CjB6YfH
-yD3lR/VqSu05uBdgvtgjJ8KzgjNZ8RWjRAFUrD1DQBcw66x+0CJAQtMjVttiCgnE
-xZpwm4bsNAwS3nBg8ZTnZ/i/f5e6PFnsYQwNzaZsfXnCHI9nVj+FGeJXvjYsKdP8
-EaZhsog1SbLBwjeHfKb1vmBSt1DyZMaBY5UOvQuKWCc9amYquE2kk/Qh6mOov6Bw
-+hvo4lmDo3pO8zkKrDApIcgCYVUgOsVJxq8mWiMaO3Eb6hZUq+gswAax+/xa26eX
-KXVfAWpsla79USj4BmC8V+mI4g1xTSJPi2M0IC5nuOsZ1sgmcZc/YfAvdUtMse+N
-iFt6o/r/bnjm3G+UICzonq0m+Tb0aL9t0fWQSqAm/SJ/EwxqaYZf4dDj/CheIkRz
-Tj6sTzWNdyhU6MrKsfOs
-=1yTP
------END PGP SIGNATURE-----
-
---nextPart2407068.gS0KHTAZCo--
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
