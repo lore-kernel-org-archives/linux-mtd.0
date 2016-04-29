@@ -1,28 +1,22 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1avxzj-0006xC-Jz
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2016 02:17:30 +0000
-Subject: Re: [PATCH v10] mtd: spi-nor: add hisilicon spi-nor flash controller
- driver
-To: Brian Norris <computersforpeace@gmail.com>
-References: <1461050839-24644-1-git-send-email-xuejiancheng@hisilicon.com>
- <20160427153850.GE25981@localhost>
-CC: <dwmw2@infradead.org>, <boris.brezillon@free-electrons.com>,
- <jteki@openedev.com>, <ezequiel@vanguardiasur.com.ar>,
- <juhosg@openwrt.org>, <furquan@google.com>, <robh+dt@kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <yanhaifeng@hisilicon.com>,
- <yanghongwei@hisilicon.com>, <suwenping@hisilicon.com>,
- <raojun@hisilicon.com>, <ml.yang@hisilicon.com>,
- <gaofei@hisilicon.com>, <zhangzhenxing@hisilicon.com>,
- <hermit.wangheming@hisilicon.com>, <jiangheng@hisilicon.com>
-From: Jiancheng Xue <xuejiancheng@hisilicon.com>
-Message-ID: <5722C340.2010602@hisilicon.com>
-Date: Fri, 29 Apr 2016 10:13:20 +0800
+From: NeilBrown <mr@neil.brown.name>
+To: Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org
+Date: Fri, 29 Apr 2016 15:35:42 +1000
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
+ Chris Mason <clm@fb.com>, Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org, logfs@logfs.org,
+ xfs@oss.sgi.com, linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net, linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] scop GFP_NOFS api
+In-Reply-To: <1461671772-1269-1-git-send-email-mhocko@kernel.org>
+References: <1461671772-1269-1-git-send-email-mhocko@kernel.org>
+Message-ID: <8737q5ugcx.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <20160427153850.GE25981@localhost>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,150 +26,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+--=-=-=
+Content-Type: text/plain
 
-On 2016/4/27 23:38, Brian Norris wrote:
-> Hi Jiancheng,
-> 
-> Cyrille hit on one of my concerns; if posible we'd like not to have you
-> sniffing the opcodes in read_reg()/write_reg(). But let's keep the
-> discussion on that thread.
-> 
-OK. I'll look into this issue seriously and reply on that thread later.
+On Tue, Apr 26 2016, Michal Hocko wrote:
 
-> Two other comments below.
-> 
-> On Tue, Apr 19, 2016 at 03:27:19PM +0800, Jiancheng Xue wrote:
->> From: Jiancheng Xue <xuejiancheng@huawei.com>
->>
->> Add hisilicon spi-nor flash controller driver
->>
->> Signed-off-by: Binquan Peng <pengbinquan@hisilicon.com>
->> Signed-off-by: Jiancheng Xue <xuejiancheng@hisilicon.com>
->> Acked-by: Rob Herring <robh@kernel.org>
->> Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
->> ---
-[...]
->> diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
->> new file mode 100644
->> index 0000000..942dafd
->> --- /dev/null
->> +++ b/drivers/mtd/spi-nor/hisi-sfc.c
->> @@ -0,0 +1,539 @@
-> 
-> [...]
-> 
->> +static void hisi_spi_nor_dma_transfer(struct spi_nor *nor, loff_t start_off,
->> +		dma_addr_t dma_buf, size_t len, u8 op_type)
->> +{
->> +	struct hifmc_priv *priv = nor->priv;
->> +	struct hifmc_host *host = priv->host;
->> +	u8 if_type = 0, dummy = 0;
->> +	u8 w_cmd = 0, r_cmd = 0;
->> +	u32 reg;
->> +
->> +	writel(start_off, host->regbase + FMC_ADDRL);
->> +
->> +	if (op_type == FMC_OP_READ) {
->> +		if_type = get_if_type(nor->flash_read);
->> +		dummy = nor->read_dummy >> 3;
->> +		r_cmd = nor->read_opcode;
->> +	} else {
->> +		w_cmd = nor->program_opcode;
->> +	}
->> +
->> +	reg = OP_CFG_FM_CS(priv->chipselect)
->> +		| OP_CFG_MEM_IF_TYPE(if_type)
->> +		| OP_CFG_ADDR_NUM(nor->addr_width)
->> +		| OP_CFG_DUMMY_NUM(dummy);
->> +	writel(reg, host->regbase + FMC_OP_CFG);
->> +
->> +	reg = FMC_DMA_LEN_SET(len);
->> +	writel(reg, host->regbase + FMC_DMA_LEN);
->> +	writel(dma_buf, host->regbase + FMC_DMA_SADDR_D0);
->> +
->> +	reg = OP_CTRL_RD_OPCODE(r_cmd)
->> +		| OP_CTRL_WR_OPCODE(w_cmd)
->> +		| OP_CTRL_RW_OP(op_type)
->> +		| OP_CTRL_DMA_OP_READY;
->> +	writel(0xff, host->regbase + FMC_INT_CLR);
->> +	writel(reg, host->regbase + FMC_OP_DMA);
->> +	wait_op_finish(host);
-> 
-> Do you want to return the status here, so we can handle errors?
-> 
+> Hi,
+> we have discussed this topic at LSF/MM this year. There was a general
+> interest in the scope GFP_NOFS allocation context among some FS
+> developers. For those who are not aware of the discussion or the issue
+> I am trying to sort out (or at least start in that direction) please
+> have a look at patch 1 which adds memalloc_nofs_{save,restore} api
+> which basically copies what we have for the scope GFP_NOIO allocation
+> context. I haven't converted any of the FS myself because that is way
+> beyond my area of expertise but I would be happy to help with further
+> changes on the MM front as well as in some more generic code paths.
+>
+> Dave had an idea on how to further improve the reclaim context to be
+> less all-or-nothing wrt. GFP_NOFS. In short he was suggesting an opaque
+> and FS specific cookie set in the FS allocation context and consumed
+> by the FS reclaim context to allow doing some provably save actions
+> that would be skipped due to GFP_NOFS normally.  I like this idea and
+> I believe we can go that direction regardless of the approach taken here.
+> Many filesystems simply need to cleanup their NOFS usage first before
+> diving into a more complex changes.>
 
-OK. I'll fix it in v11.
+This strikes me as over-engineering to work around an unnecessarily
+burdensome interface.... but without details it is hard to be certain.
 
->> +}
->> +
->> +static int hisi_spi_nor_read(struct spi_nor *nor, loff_t from, size_t len,
->> +		size_t *retlen, u_char *read_buf)
->> +{
->> +	struct hifmc_priv *priv = nor->priv;
->> +	struct hifmc_host *host = priv->host;
->> +	int offset;
->> +
->> +	/* read all bytes in only one read */
->> +	if (len <= HIFMC_DMA_MAX_LEN) {
->> +		hisi_spi_nor_dma_transfer(nor, from, host->dma_buffer,
->> +				len, FMC_OP_READ);
->> +		memcpy(read_buf, host->buffer, len);
-> 
-> Why do you have a special case for "all in one read"? This is just a
-> basic loop...
-> 
-See below.
->> +	} else {
->> +		/* read HIFMC_DMA_MAX_LEN bytes at a time */
->> +		for (offset = 0; offset < len; offset += HIFMC_DMA_MAX_LEN) {
->> +			hisi_spi_nor_dma_transfer(nor, from + offset,
->> +				host->dma_buffer,
->> +				HIFMC_DMA_MAX_LEN, FMC_OP_READ);
->> +			memcpy(read_buf + offset,
->> +				host->buffer, HIFMC_DMA_MAX_LEN);
->> +		}
->> +		/* read remaining bytes */
->> +		offset -= HIFMC_DMA_MAX_LEN;
->> +		hisi_spi_nor_dma_transfer(nor, from + offset, host->dma_buffer,
->> +				len - offset, FMC_OP_READ);
->> +		memcpy(read_buf + offset, host->buffer, len - offset);
->> +	}
-> 
-> I think the entire if/else can be rewritten as:
-> 
-> 	for (offset = 0; offset < len; offset += HIFMC_DMA_MAX_LEN) {
-> 		size_t trans = min(HIFMC_DMA_MAX_LEN, len - offset);
-> 
-> 		hisi_spi_nor_dma_transfer(nor, from + offset, host->dma_buffer,
-> 					  trans, FMC_OP_READ);
-> 		memcpy(read_buf + offset, host->buffer, trans);
-> 	}
-> 
-I had referred to the implementation of spi_nor_write. But now it seems much
-simpler and clearer above. I'll apply this code in v11. Thank you very much.
+Exactly what things happen in "FS reclaim context" which may, or may
+not, be safe depending on the specific FS allocation context?  Do they
+need to happen at all?
 
->> +	*retlen = len;
->> +
->> +	return 0;
->> +}
->> +
->> +static void hisi_spi_nor_write(struct spi_nor *nor, loff_t to,
->> +			size_t len, size_t *retlen, const u_char *write_buf)
->> +{
->> +	struct hifmc_priv *priv = nor->priv;
->> +	struct hifmc_host *host = priv->host;
->> +
->> +	/* len is smaller than HIFMC_DMA_MAX_LEN*/
-> 
-> Where do you get that assumption? This function must handle whatever
-> 'len' is passed to it, and that may be large. (I suspect your error is
-> inspired by the fact that mtd-utils *usually* does smaller write
-> transfers.)
-> 
-In spi_nor_write, nor->write is called with the len not bigger than nor->page_size.
-I wrongly thought nor->page_size was always smaller than HIFMC_DMA_MAX_LEN.
-I'll rewrite this function referring to _read function. Thank you!
+My research suggests that for most filesystems the only thing that
+happens in reclaim context that is at all troublesome is the final
+'evict()' on an inode.  This needs to flush out dirty pages and sync the
+inode to storage.  Some time ago we moved most dirty-page writeout out
+of the reclaim context and into kswapd.  I think this was an excellent
+advance in simplicity.
+If we could similarly move evict() into kswapd (and I believe we can)
+then most file systems would do nothing in reclaim context that
+interferes with allocation context.
 
-Regards,
-Jiancheng
+The exceptions include:
+ - nfs and any filesystem using fscache can block for up to 1 second
+   in ->releasepage().  They used to block waiting for some IO, but that
+   caused deadlocks and wasn't really needed.  I left the timeout because
+   it seemed likely that some throttling would help.  I suspect that a
+   careful analysis will show that there is sufficient throttling
+   elsewhere.
+
+ - xfs_qm_shrink_scan is nearly unique among shrinkers in that it waits
+   for IO so it can free some quotainfo things.  If it could be changed
+   to just schedule the IO without waiting for it then I think this
+   would be safe to be called in any FS allocation context.  It already
+   uses a 'trylock' in xfs_dqlock_nowait() to avoid deadlocking
+   if the lock is held.
+
+I think you/we would end up with a much simpler system if instead of
+focussing on the places where GFP_NOFS is used, we focus on places where
+__GFP_FS is tested, and try to remove them.  If we get rid of enough of
+them the remainder could just use __GFP_IO.
+
+> The patch 2 is a debugging aid which warns about explicit allocation
+> requests from the scope context. This is should help to reduce the
+> direct usage of the NOFS flags to bare minimum in favor of the scope
+> API. It is not aimed to be merged upstream. I would hope Andrew took it
+> into mmotm tree to give it linux-next exposure and allow developers to
+> do further cleanups.  There is a new kernel command line parameter which
+> has to be used for the debugging to be enabled.
+>
+> I think the GFP_NOIO should be seeing the same clean up.
+
+I think you are suggesting that use of GFP_NOIO should (largely) be
+deprecated in favour of memalloc_noio_save().  I think I agree.
+Could we go a step further and deprecate GFP_ATOMIC in favour of some
+in_atomic() test?  Maybe that is going too far.
+
+Thanks,
+NeilBrown
+
+>
+> Any feedback is highly appreciated.
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-btrfs" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXIvKuAAoJEDnsnt1WYoG5yYcQALVBjDFPD7k40UTzmu/EpZtF
+q5uzTpP8A/Uhy4k8kJnHF9JhXwHlKXxKiFSTavyZqxE8LjmJwZOyB3hdg5boVQ1C
+43ZKUpSd2i8BwIBZ1Ld37W9UEtT1owibqaY9KyOxetBk8wsZQoXks7XLQ+i8SMp1
+lGQJwbykXBPfLzlBTV02QstA++bpwdFqFyxL9DTtYF8e9BbhC3iwFS2t/dwj17Uo
+3WNu8OaXzYvf71uYTs2khlrKx3PQvKuUBLG30XGy1Lk/SF+lYlGtnrT0+wyWpSlR
+gzU7KXJjF1Mw7snb/JncOARDJJvHC3IUaaJy9GG8cLBY6j9sPAnoAGeKEtEXeSUC
+B2CUXkPS3n1Ejr0r5WhrLl8jO5oMIV6vZ/kDRFhEQt/gj0H5Zv0heQtp/DkgtFox
+mvBUH7cf2sqb9gabXGcm+5M9/yyqU1NzNR+8f+QCm2PrX9kzYKNExYc7Yx23KpWc
+BzT6Nzf62/nkhDHOzD50MMFFf5jWS0jWDS4uHx4KiG1JvKjRL6MW5GG1qNxQ+D8a
+kuzPKy/mMh7uppGOV4gxCdOQ04zyWfabzzcU5jM9WJeaXeZoDb6mOTJ6NSueUTBf
+nd3LnYoXc9LVTr4q9C4IerVNsjU2ZNTE/Nw2Sb+RLqEEBh5QpOITGYITS0aPK9fT
+AHBilQxky11eQicGLpS3
+=gouN
+-----END PGP SIGNATURE-----
+--=-=-=--
