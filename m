@@ -1,22 +1,24 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1aw4JZ-0003qa-HN
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2016 09:02:23 +0000
-Date: Fri, 29 Apr 2016 11:01:59 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Han Xu <han.xu@nxp.com>, <jkosina@suse.cz>
-Cc: <shijie.huang@arm.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <standby24x7@gmail.com>,
- <fabio.estevam@freescale.com>, <fransklaver@gmail.com>, <hofrat@osadl.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] mtd: nand: gpmi: add GPMI NAND support for i.MX7D
-Message-ID: <20160429110159.67370451@bbrezillon>
-In-Reply-To: <1456268693-8630-2-git-send-email-han.xu@nxp.com>
-References: <1456268693-8630-1-git-send-email-han.xu@nxp.com>
- <1456268693-8630-2-git-send-email-han.xu@nxp.com>
+Subject: Re: [Cluster-devel] [PATCH 0/2] scop GFP_NOFS api
+To: NeilBrown <mr@neil.brown.name>, Michal Hocko <mhocko@kernel.org>,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <1461671772-1269-1-git-send-email-mhocko@kernel.org>
+ <8737q5ugcx.fsf@notabene.neil.brown.name>
+Cc: linux-nfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ "Theodore Ts'o" <tytso@mit.edu>, linux-ntfs-dev@lists.sourceforge.net,
+ LKML <linux-kernel@vger.kernel.org>,
+ Dave Chinner <david@fromorbit.com>, reiserfs-devel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, logfs@logfs.org,
+ cluster-devel@redhat.com, Chris Mason <clm@fb.com>,
+ linux-mtd@lists.infradead.org, Jan Kara <jack@suse.cz>,
+ Andrew Morton <akpm@linux-foundation.org>, xfs@oss.sgi.com,
+ ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-afs@lists.infradead.org, cluster-devel <cluster-devel@redhat.com>
+From: Steven Whitehouse <swhiteho@redhat.com>
+Message-ID: <57233571.50509@redhat.com>
+Date: Fri, 29 Apr 2016 11:20:33 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <8737q5ugcx.fsf@notabene.neil.brown.name>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,242 +29,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 23 Feb 2016 17:04:49 -0600
-Han Xu <han.xu@nxp.com> wrote:
+Hi,
 
-> From: Han Xu <b45815@freescale.com>
-> 
-> support GPMI NAND on i.MX7D
-> 
-> Signed-off-by: Han Xu <b45815@freescale.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/bch-regs.h  | 14 +++++++-------
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 10 ++++++----
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 27 ++++++++++++++++++++++-----
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  7 +++++--
->  4 files changed, 40 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> index 05bb91f..53e58bc 100644
-> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> @@ -1,7 +1,7 @@
->  /*
->   * Freescale GPMI NAND Flash Driver
->   *
-> - * Copyright 2008-2011 Freescale Semiconductor, Inc.
-> + * Copyright 2008-2015 Freescale Semiconductor, Inc.
->   * Copyright 2008 Embedded Alley Solutions, Inc.
->   *
->   * This program is free software; you can redistribute it and/or modify
-> @@ -54,7 +54,7 @@
->  #define MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0		11
->  #define MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)
->  #define BF_BCH_FLASH0LAYOUT0_ECC0(v, x)				\
-> -	(GPMI_IS_MX6(x)					\
-> +	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))				\
->  		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)	\
->  			& MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0)	\
->  		: (((v) << BP_BCH_FLASH0LAYOUT0_ECC0)		\
-> @@ -65,7 +65,7 @@
->  #define MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14			\
->  				(0x1 << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)
->  #define BF_BCH_FLASH0LAYOUT0_GF(v, x)				\
-> -	((GPMI_IS_MX6(x) && ((v) == 14))			\
-> +	(((GPMI_IS_MX6(x) || GPMI_IS_MX7(x)) && ((v) == 14))\
+On 29/04/16 06:35, NeilBrown wrote:
+> On Tue, Apr 26 2016, Michal Hocko wrote:
+>
+>> Hi,
+>> we have discussed this topic at LSF/MM this year. There was a general
+>> interest in the scope GFP_NOFS allocation context among some FS
+>> developers. For those who are not aware of the discussion or the issue
+>> I am trying to sort out (or at least start in that direction) please
+>> have a look at patch 1 which adds memalloc_nofs_{save,restore} api
+>> which basically copies what we have for the scope GFP_NOIO allocation
+>> context. I haven't converted any of the FS myself because that is way
+>> beyond my area of expertise but I would be happy to help with further
+>> changes on the MM front as well as in some more generic code paths.
+>>
+>> Dave had an idea on how to further improve the reclaim context to be
+>> less all-or-nothing wrt. GFP_NOFS. In short he was suggesting an opaque
+>> and FS specific cookie set in the FS allocation context and consumed
+>> by the FS reclaim context to allow doing some provably save actions
+>> that would be skipped due to GFP_NOFS normally.  I like this idea and
+>> I believe we can go that direction regardless of the approach taken here.
+>> Many filesystems simply need to cleanup their NOFS usage first before
+>> diving into a more complex changes.>
+> This strikes me as over-engineering to work around an unnecessarily
+> burdensome interface.... but without details it is hard to be certain.
+>
+> Exactly what things happen in "FS reclaim context" which may, or may
+> not, be safe depending on the specific FS allocation context?  Do they
+> need to happen at all?
+>
+> My research suggests that for most filesystems the only thing that
+> happens in reclaim context that is at all troublesome is the final
+> 'evict()' on an inode.  This needs to flush out dirty pages and sync the
+> inode to storage.  Some time ago we moved most dirty-page writeout out
+> of the reclaim context and into kswapd.  I think this was an excellent
+> advance in simplicity.
+> If we could similarly move evict() into kswapd (and I believe we can)
+> then most file systems would do nothing in reclaim context that
+> interferes with allocation context.
+evict() is an issue, but moving it into kswapd would be a potential 
+problem for GFS2. We already have a memory allocation issue when 
+recovery is taking place and memory is short. The code path is as follows:
 
-Missing tab at the end of the line ")	\"
+  1. Inode is scheduled for eviction (which requires deallocation)
+  2. The glock is required in order to perform the deallocation, which 
+implies getting a DLM lock
+  3. Another node in the cluster fails, so needs recovery
+  4. When the DLM lock is requested, it gets blocked until recovery is 
+complete (for the failed node)
+  5. Recovery is performed using a userland fencing utility
+  6. Fencing requires memory and then blocks on the eviction
+  7. Deadlock (Fencing waiting on memory alloc, memory alloc waiting on 
+DLM lock, DLM lock waiting on fencing)
 
->  		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)	\
->  			& MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14)	\
->  		: 0						\
-> @@ -77,7 +77,7 @@
->  #define MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE	\
->  			(0x3ff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
->  #define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v, x)				\
-> -	(GPMI_IS_MX6(x)						\
-> +	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))	\
->  		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)	\
->  		: ((v) & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)		\
->  	)
-> @@ -96,7 +96,7 @@
->  #define MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN		11
->  #define MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)
->  #define BF_BCH_FLASH0LAYOUT1_ECCN(v, x)				\
-> -	(GPMI_IS_MX6(x)					\
-> +	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))				\
->  		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)	\
->  			& MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN)	\
->  		: (((v) << BP_BCH_FLASH0LAYOUT1_ECCN)		\
-> @@ -107,7 +107,7 @@
->  #define MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14			\
->  				(0x1 << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)
->  #define BF_BCH_FLASH0LAYOUT1_GF(v, x)				\
-> -	((GPMI_IS_MX6(x) && ((v) == 14))			\
-> +	(((GPMI_IS_MX6(x) || GPMI_IS_MX7(x)) && ((v) == 14))\
+It doesn't happen often, but we've been looking at the best place to 
+break that cycle, and one of the things we've been wondering is whether 
+we could avoid deallocation evictions from memory related contexts, or 
+at least make it async somehow.
 
-Ditto.
+The issue is that it is not possible to know in advance whether an 
+eviction will result in mearly writing things back to disk (because the 
+inode is being dropped from cache, but still resides on disk) which is 
+easy to do, or whether it requires a full deallocation (n_link==0) which 
+may require significant resources and time,
 
->  		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)	\
->  			& MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14)	\
->  		: 0						\
-> @@ -119,7 +119,7 @@
->  #define MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE	\
->  			(0x3ff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
->  #define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v, x)				\
-> -	(GPMI_IS_MX6(x)						\
-> +	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))	\
->  		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)	\
->  		: ((v) & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)		\
->  	)
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> index 0f68a99..8acbe04 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -1,7 +1,7 @@
->  /*
->   * Freescale GPMI NAND Flash Driver
->   *
-> - * Copyright (C) 2008-2011 Freescale Semiconductor, Inc.
-> + * Copyright (C) 2008-2015 Freescale Semiconductor, Inc.
->   * Copyright (C) 2008 Embedded Alley Solutions, Inc.
->   *
->   * This program is free software; you can redistribute it and/or modify
-> @@ -971,7 +971,8 @@ int gpmi_extra_init(struct gpmi_nand_data *this)
->  	struct nand_chip *chip = &this->nand;
->  
->  	/* Enable the asynchronous EDO feature. */
-> -	if (GPMI_IS_MX6(this) && chip->onfi_version) {
-> +	if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this)) &&
-> +			chip->onfi_version) {
-
-Align this to the open parenthesis.
-
->  		int mode = onfi_get_async_timing_mode(chip);
->  
->  		/* We only support the timing mode 4 and mode 5. */
-> @@ -1093,12 +1094,13 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
->  	if (GPMI_IS_MX23(this)) {
->  		mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
->  		reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
-> -	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this)) {
-> +	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this) ||
-> +			GPMI_IS_MX7(this)) {
-
-Ditto.
-
->  		/*
->  		 * In the imx6, all the ready/busy pins are bound
->  		 * together. So we only need to check chip 0.
->  		 */
-> -		if (GPMI_IS_MX6(this))
-> +		if (GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
->  			chip = 0;
->  
->  		/* MX28 shares the same R/B register as MX6Q. */
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 8122c69..1aba6e6 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -77,6 +77,12 @@ static const struct gpmi_devdata gpmi_devdata_imx6sx = {
->  	.max_chain_delay = 12,
->  };
->  
-> +static const struct gpmi_devdata gpmi_devdata_imx7d = {
-> +	.type = IS_MX7D,
-> +	.bch_max_ecc_strength = 62,
-> +	.max_chain_delay = 12,
-> +};
-> +
->  static irqreturn_t bch_irq(int irq, void *cookie)
->  {
->  	struct gpmi_nand_data *this = cookie;
-> @@ -575,6 +581,10 @@ static char *extra_clks_for_mx6q[GPMI_CLK_MAX] = {
->  	"gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
->  };
->  
-> +static char *extra_clks_for_mx7d[GPMI_CLK_MAX] = {
-> +	"gpmi_bch_apb",
-> +};
-> +
->  static int gpmi_get_clks(struct gpmi_nand_data *this)
->  {
->  	struct resources *r = &this->resources;
-> @@ -592,6 +602,8 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
->  	/* Get extra clocks */
->  	if (GPMI_IS_MX6(this))
->  		extra_clks = extra_clks_for_mx6q;
-> +	if (GPMI_IS_MX7(this))
-> +		extra_clks = extra_clks_for_mx7d;
->  	if (!extra_clks)
->  		return 0;
->  
-> @@ -608,7 +620,7 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
->  		r->clock[i] = clk;
->  	}
->  
-> -	if (GPMI_IS_MX6(this))
-> +	if (GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
->  		/*
->  		 * Set the default value for the gpmi clock.
->  		 *
-> @@ -1868,8 +1880,8 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
->  	 *  (1) the chip is imx6, and
->  	 *  (2) the size of the ECC parity is byte aligned.
->  	 */
-> -	if (GPMI_IS_MX6(this) &&
-> -		((bch_geo->gf_len * bch_geo->ecc_strength) % 8) == 0) {
-> +	if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this)) &&
-> +			((bch_geo->gf_len * bch_geo->ecc_strength) % 8) == 0) {
-
-Why did you add a tab on the seconf line of the test?
-
-Please try to keep everything aligned on the open parenthesis. The
-only exception to this rule should be when your line exceed 80
-characters.
-
-	if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this)) &&
-	    ((bch_geo->gf_len * bch_geo->ecc_strength) % 8) == 0) {
-
->  		ecc->read_subpage = gpmi_ecc_read_subpage;
->  		chip->options |= NAND_SUBPAGE_READ;
->  	}
-> @@ -1934,7 +1946,8 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
->  	if (ret)
->  		goto err_out;
->  
-> -	ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ? 2 : 1, NULL);
-> +	ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ||
-> +			GPMI_IS_MX7(this) ? 2 : 1, NULL);
-
-Ditto:
-
-	ret = nand_scan_ident(mtd,
-			      (GPMI_IS_MX6(this) ||
-	GPMI_IS_MX7(this)) ? 2 : 1,
-			      NULL);
-
-or even better
-
-	max_chips = (GPMI_IS_MX6(this) || GPMI_IS_MX7(this)) ? 2 : 1;
-	ret = nand_scan_ident(mtd, max_chips, NULL);
-
->  	if (ret)
->  		goto err_out;
->  
-> @@ -1977,7 +1990,11 @@ static const struct of_device_id gpmi_nand_id_table[] = {
->  	}, {
->  		.compatible = "fsl,imx6sx-gpmi-nand",
->  		.data = &gpmi_devdata_imx6sx,
-> -	}, {}
-> +	}, {
-> +		.compatible = "fsl,imx7d-gpmi-nand",
-> +		.data = (void *)&gpmi_devdata_imx7d,
-
-Drop the (void *) cast.
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Steve.
