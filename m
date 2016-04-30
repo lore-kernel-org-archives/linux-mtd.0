@@ -1,25 +1,17 @@
-Date: Sat, 30 Apr 2016 10:24:18 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Michal Hocko <mhocko@kernel.org>
-Cc: NeilBrown <mr@neil.brown.name>, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Theodore Ts'o <tytso@mit.edu>, Chris Mason <clm@fb.com>,
- Jan Kara <jack@suse.cz>, ceph-devel@vger.kernel.org,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
- logfs@logfs.org, xfs@oss.sgi.com, linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- reiserfs-devel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] scop GFP_NOFS api
-Message-ID: <20160430002418.GP26977@dastard>
-References: <1461671772-1269-1-git-send-email-mhocko@kernel.org>
- <8737q5ugcx.fsf@notabene.neil.brown.name>
- <20160429120418.GK21977@dhcp22.suse.cz>
+Received: from dub004-omc3s31.hotmail.com ([157.55.2.40])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1awQyY-0000l2-Ko
+ for linux-mtd@lists.infradead.org; Sat, 30 Apr 2016 09:14:11 +0000
+Message-ID: <DUB128-W4483C16A8F30A84AB9CB09C670@phx.gbl>
+From: David Binderman <dcb314@hotmail.com>
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: drivers/mtd/chips/cfi_cmdset_0002.c bug report
+Date: Sat, 30 Apr 2016 09:13:47 +0000
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160429120418.GK21977@dhcp22.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 29, 2016 at 02:04:18PM +0200, Michal Hocko wrote:
-> I would also like to revisit generic inode/dentry shrinker and see
-> whether it could be more __GFP_FS friendly. As you say many FS might
-> even not depend on some FS internal locks so pushing GFP_FS check down
-> the layers might make a lot of sense and allow to clean some [id]cache
-> even for __GFP_FS context.
-
-That's precisely my point about passing a context to the shrinker.
-It's recursion within a single superblock context that makes up the
-majority of cases GFP_NOFS is used for, so passing the superblock
-immediately allows for reclaim to run the superblock shrinker on
-every other superblock.
-
-We can refine it further from there, but I strongly suspect that
-further refinement is going to require filesystems to specifically
-configure the superblock shrinker.
-
-e.g. in XFS, we can't allow evict() even on clean VFS inodes in a
-PF_FSTRANS context, because we may run a transaction on a clean
-VFS inode to prepare it for reclaim.  We can, however,
-allow the fs-specific shrinker callouts to run (i.e. call into
-.free_cached_objects) so that it can reclaim clean XFS inodes
-because that doesn't require transactions....
-
-i.e. the infrastructure I suggested we use is aimed directly at
-providing the mechanism required for finer-grained inode/dentry
-cache reclaim in contexts that it is currently disallowed
-completely. I was also implying that once the infrastructure to pass
-contexts is in place, I'd then make the changes to the generic
-superblock shrinker code to enable finer grained reclaim and
-optimise the XFS shrinkers to make use of it...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Hello there=2C=0A=
+=0A=
+drivers/mtd/chips/cfi_cmdset_0002.c:569]: (style) Redundant condition: extp=
+.MajorVersion=3D=3D'1'. 'A || (!A && B)' is equivalent to 'A || B'=0A=
+=0A=
+Source code is=0A=
+=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (extp->MajorVersion !=3D '1' ||=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (extp->MajorVersion =3D=3D '1=
+' && (extp->MinorVersion < '0' || extp->MinorVersion> '5'))) {=0A=
+=0A=
+Suggest new code=0A=
+=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (extp->MajorVersion !=3D '1' ||=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (extp->MinorVersion < '0' || =
+extp->MinorVersion> '5')) {=0A=
+=0A=
+Also=2C some minor errors in the same file=0A=
+=0A=
+[drivers/mtd/chips/cfi_cmdset_0002.c:1106]: (style) Variable 'cfi' is assig=
+ned a value that is never used.=0A=
+[drivers/mtd/chips/cfi_cmdset_0002.c:2004]: (style) Variable 'cfi' is assig=
+ned a value that is never used.=0A=
+=0A=
+=0A=
+Regards=0A=
+=0A=
+David Binderman=0A=
+=0A=
+ 		 	   		  =
