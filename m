@@ -1,28 +1,17 @@
-Received: from mail-qk0-x22d.google.com ([2607:f8b0:400d:c09::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axCBs-0003Fx-TI
- for linux-mtd@lists.infradead.org; Mon, 02 May 2016 11:39:05 +0000
-Received: by mail-qk0-x22d.google.com with SMTP id v128so3947959qkb.2
- for <linux-mtd@lists.infradead.org>; Mon, 02 May 2016 04:38:43 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] mtd: mediatek: driver for MTK Smart Device Gen1
- NAND
-To: John Crispin <blogic@openwrt.org>, xiaolei li <xiaolei.li@mediatek.com>
-References: <1461946642-1842-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <1461946642-1842-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <f887fa30-2205-c102-bade-0071b3ee6b1f@openwrt.org>
- <1462165406.8414.196.camel@mhfsdcap03>
- <676c2485-e176-4182-2400-201074b36ca3@openwrt.org>
-Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- robh@kernel.org, daniel.thompson@linaro.org, erin.lo@mediatek.com,
- linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org
-From: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
-Message-ID: <57273C40.6000407@linaro.org>
-Date: Mon, 2 May 2016 07:38:40 -0400
 MIME-Version: 1.0
-In-Reply-To: <676c2485-e176-4182-2400-201074b36ca3@openwrt.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20160226000713.GO28849@codeaurora.org>
+References: <1451298003-28841-1-git-send-email-yamada.masahiro@socionext.com>
+ <20160226000713.GO28849@codeaurora.org>
+Date: Tue, 3 May 2016 00:59:19 +0900
+Message-ID: <CAK7LNASQD4fpi=iDRbX96tSBvYjT_-N8EJnNk1VpuMxBTEnONg@mail.gmail.com>
+Subject: Re: [PATCH v2] clk: uniphier: add clock drivers for UniPhier SoCs
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: linux-mtd@lists.infradead.org, Michael Turquette <mturquette@baylibre.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-clk@vger.kernel.org,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,30 +21,190 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Stephen,
 
+I am back after long silence.
 
-On 05/02/2016 02:13 AM, John Crispin wrote:
-> Hi,
+2016-02-26 9:07 GMT+09:00 Stephen Boyd <sboyd@codeaurora.org>:
+> On 12/28, Masahiro Yamada wrote:
+>> This is the initial commit for the UniPhier clock drivers, including
+>> support for PH1-sLD3, PH1-LD4, PH1-Pro4, PH1-sLD8, PH1-Pro5, and
+>> ProXstream2/PH1-LD6b.
+>>
+>> To improve the code maintainability, the driver consists of common
+>> functions (clk-uniphier-core.c) and clock data arrays needed to
+>> support each SoC.
+>>
+>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>> ---
 >
->> Your ecc-strength setting is wrong, because your nand device's OOB size
->> is not enough to store 24 bit ecc parity data.
->> For this nand, its ecc-strength is max 12 bit per 1024B for our
->> controller.
->> You can get the setting as mtk-nand DT Documentation description.
-> i tried 12 aswell and it also gives an error. the problem with the
-> documentation is that FDM is unknown to me.
+> Where's the DT binding? Also, can these clks be registered from a
+> platform device driver instead of from
+>>
+>> diff --git a/drivers/clk/uniphier/Kconfig b/drivers/clk/uniphier/Kconfig
+>> new file mode 100644
+>> index 0000000..7606f27
+>> --- /dev/null
+>> +++ b/drivers/clk/uniphier/Kconfig
+>> @@ -0,0 +1,35 @@
+>> +menuconfig CLK_UNIPHIER
+>> +     bool "Clock drivers for UniPhier SoCs"
+>> +     depends on ARCH_UNIPHIER
 >
+> Can we have COMPILE_TEST here?
+
+OK.
+But if you recommend to drop "depends on ARCH_UNIPHIER",
+COMPILE_TEST is not necessary.
+
+
+>> +     depends on OF
+>> +     default y
 >
->> Because the ecc-size and ecc-strength settings are optional, so if you
->> are not sure how to set them, you can remove the setting from DT file.
-> tried that just now, the driver defaults to 12 and problem remains
+> And then default ARCH_UNIPHIER instead.
 
-can you send the boot log letting the driver use its own calculated values?
-ie, just don't specify any of the controller optional values in the 
-device tree and let the driver calculate them for you.
 
-Also instead of a read operation, can you try the oobtest?
-you will have to insmod or modprobe "mtd_oobtest dev="
 
-I don't have the spec for the MT7623 but maybe also worth checking the 
-configuration for the NFI_ACCON settings (timing control register).
+The problem is that CLK_UNIPHIER is not enabled along with
+ARCH_UNIPHIER in "make menuconfig".
+
+If we use "depends on ARCH_UNIPHIER"
+and we enable ARCH_UNIPHIER from "make menuconfig",
+CLK_UNIPHIER is automatically enabled as well.
+
+Is the latter more like what we expect?
+
+
+
+
+>> +endif
+>> diff --git a/drivers/clk/uniphier/clk-uniphier-core.c b/drivers/clk/uniphier/clk-uniphier-core.c
+>
+> Maybe this patch can be split between core code and SoC specific
+> data? That way we can focus on the core code without wading
+> through all the random clk data arrays.
+
+OK.  will do so.
+
+
+
+>> +static void __init uniphier_clk_update_parent_name(struct device_node *np,
+>> +                                                const char **parent_name)
+>> +{
+>> +     const char *new_name;
+>> +     int index;
+>> +
+>> +     if (!parent_name || !*parent_name)
+>> +             return;
+>> +
+>> +     if (strncmp(*parent_name, UNIPHIER_CLK_EXT, strlen(UNIPHIER_CLK_EXT)))
+>> +             return;
+>> +
+>> +     index = of_property_match_string(np, "clock-names",
+>> +                             *parent_name + strlen(UNIPHIER_CLK_EXT));
+>
+> If possible please don't use clock-names to set up clock
+> hierarchy.
+
+So, what shall I do instead?
+
+I am not comfortable with hard-coding the parents' names
+for clock-cascading.
+
+Maybe, can we support clk registration
+with clk_hw of parents, not names of parents?
+
+For example, by adding  "struct clk_hw **parents"
+to struct clk_init_data.
+
+
+
+>> +int __init uniphier_clk_init(struct device_node *np,
+>> +                          struct uniphier_clk_init_data *idata)
+>> +{
+>> +     struct clk_onecell_data *clk_data;
+>> +     struct uniphier_clk_init_data *p;
+>> +     void __iomem *regbase;
+>> +     int max_index = 0;
+>> +     int ret;
+>> +
+>> +     regbase = of_iomap(np, 0);
+>
+> If not a platform device, use of_io_request_and_map()?
+
+
+I am planning to change all of them into platform drivers in the next version.
+
+
+
+>> +#ifndef __CLK_UNIPHIER_H__
+>> +#define __CLK_UNIPHIER_H__
+>> +
+>> +#include <linux/kernel.h>
+>
+> What's this include for?
+
+Probably my mistake.  Will remove.
+
+
+>> +
+>> +#define UNIPHIER_CLK_EXT     "[EXT]"
+>> +
+>> +enum uniphier_clk_type {
+>> +     UNIPHIER_CLK_TYPE_FIXED_FACTOR,
+>> +     UNIPHIER_CLK_TYPE_FIXED_RATE,
+>> +     UNIPHIER_CLK_TYPE_GATE,
+>> +     UNIPHIER_CLK_TYPE_MUX,
+>> +};
+>> +
+>> +struct uniphier_clk_fixed_factor_data {
+>> +     const char *parent_name;
+>> +     unsigned int mult;
+>> +     unsigned int div;
+>> +};
+>> +
+>> +struct uniphier_clk_fixed_rate_data {
+>> +     unsigned long fixed_rate;
+>> +};
+>> +
+>> +struct uniphier_clk_gate_data {
+>> +     const char *parent_name;
+>> +     unsigned int reg;
+>> +     u8 bit_idx;
+>> +};
+>> +
+>> +struct uniphier_clk_mux_data {
+>> +     const char *parent_names[4];
+>> +     u8 num_parents;
+>> +     unsigned int reg;
+>> +     u8 shift;
+>> +};
+>> +
+>> +struct uniphier_clk_init_data {
+>> +     const char *name;
+>> +     enum uniphier_clk_type type;
+>> +     int output_index;
+>> +     union {
+>> +             struct uniphier_clk_fixed_factor_data factor;
+>> +             struct uniphier_clk_fixed_rate_data rate;
+>> +             struct uniphier_clk_gate_data gate;
+>> +             struct uniphier_clk_mux_data mux;
+>> +     } data;
+>> +     struct clk *clk;
+>
+> Probably need to forward declare this struct.
+
+
+OK, thanks.
+
+>> +};
+>> +
+>> +int uniphier_clk_init(struct device_node *np,
+>
+> Same for device_node.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
