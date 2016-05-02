@@ -1,19 +1,22 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-oi0-x244.google.com ([2607:f8b0:4003:c06::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axHtm-0006j3-VR
- for linux-mtd@lists.infradead.org; Mon, 02 May 2016 17:44:47 +0000
-Received: by mail-pa0-x230.google.com with SMTP id xk12so5633088pac.0
- for <linux-mtd@lists.infradead.org>; Mon, 02 May 2016 10:44:26 -0700 (PDT)
-From: Moritz Fischer <moritz.fischer@ettus.com>
-To: dwmw2@infradead.org
-Cc: computersforpeace@gmail.com, ezequiel@vanguardiasur.com.ar,
- zajec5@gmail.com, boris.brezillon@free-electrons.com, jteki@openedev.com,
- furquan@google.com, cyrille.pitchen@atmel.com,
- moritz.fischer.private@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Moritz Fischer <moritz.fischer@ettus.com>
-Subject: [PATCH] mtd: spi-nor: Add support for Micron n25q016a
-Date: Mon,  2 May 2016 10:44:10 -0700
-Message-Id: <1462211050-30264-1-git-send-email-moritz.fischer@ettus.com>
+ id 1axK5R-0007TD-5a
+ for linux-mtd@lists.infradead.org; Mon, 02 May 2016 20:04:57 +0000
+Received: by mail-oi0-x244.google.com with SMTP id w198so24223554oiw.2
+ for <linux-mtd@lists.infradead.org>; Mon, 02 May 2016 13:04:36 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1393262993-22040-1-git-send-email-b.brezillon.dev@gmail.com>
+References: <1393262993-22040-1-git-send-email-b.brezillon.dev@gmail.com>
+Date: Mon, 2 May 2016 22:04:35 +0200
+Message-ID: <CAFLxGvxYP7Jvz58EZRXsnF7aBTu8wkFG+3ieVGJAG99L5Nq-DA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] mtd: nand: add manafacturer specific handling
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit adds support in the spi-nor driver for the
-N25Q016A, a 16Mbit SPI NOR flash from Micron.
+On Mon, Feb 24, 2014 at 6:29 PM, Boris BREZILLON
+<b.brezillon.dev@gmail.com> wrote:
+> Hello,
+>
+> This is a proposal to add support for manufacturer specific handling of
+> NAND chips.
+>
+> Currently the only ones allowed to modify how NAND chips are accessed are
+> NAND controllers (by modifying the nand_chip callbacks) and NAND core code
+> (by setting default callbacks when these are not specified by the NAND
+> controller).
+>
+> This series adds support for manufacturer/vendor specific handling, which is
+> particularly useful for read retry implementation that are (at least for
+> the moment) manufacturer specific.
+>
+> I know there was a debate on how we should support all these READ RETRY
+> implementations (see http://permalink.gmane.org/gmane.linux.drivers.mtd/50603),
+> so please tell if I'm wrong.
 
-Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
----
+Just realized that this got no feedback at all.
+Brian?
 
-Hi,
-
-attached patch adds support for N25Q016a from Micron.
-I have another set of changes that adds support for the 64 byte
-part of this (and other N25Q Micron chips) that I'll send in follow
-up patches.
-
-Question:
-
-Checkpatch complains about lines over 80 chars which happens all
-over the place in drivers/mtd/spi-nor/spi-nor.c in the tables
-
-Does anyone care? If so I can submit a patch that cleans that up,
-as follow up.
-
-Cheers,
-
-Moritz
-
----
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 157841d..885ab0f 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -860,6 +860,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
- 
- 	/* Micron */
-+	{ "n25q016a",	 INFO(0x20bb15, 0x1000, 64 * 1024,32, SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
- 	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
- 	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
 -- 
-2.5.5
+Thanks,
+//richard
