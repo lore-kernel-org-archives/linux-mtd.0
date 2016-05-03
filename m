@@ -1,19 +1,25 @@
-Date: Mon, 2 May 2016 17:33:11 -0700
-From: Stephen Boyd <sboyd@codeaurora.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Michael Turquette <mturquette@baylibre.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-clk@vger.kernel.org,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2] clk: uniphier: add clock drivers for UniPhier SoCs
-Message-ID: <20160503003311.GE3492@codeaurora.org>
-References: <1451298003-28841-1-git-send-email-yamada.masahiro@socionext.com>
- <20160226000713.GO28849@codeaurora.org>
- <CAK7LNASQD4fpi=iDRbX96tSBvYjT_-N8EJnNk1VpuMxBTEnONg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNASQD4fpi=iDRbX96tSBvYjT_-N8EJnNk1VpuMxBTEnONg@mail.gmail.com>
+Received: from host.buserror.net ([209.198.135.123])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1axSYK-0004n0-Sp
+ for linux-mtd@lists.infradead.org; Tue, 03 May 2016 05:07:22 +0000
+Message-ID: <1462252005.16584.34.camel@buserror.net>
+From: Scott Wood <oss@buserror.net>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Tom Rini
+ <trini@konsulko.com>
+Cc: Marek Vasut <marex@denx.de>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ u-boot@lists.denx.de, "linux-sunxi@googlegroups.com"
+ <linux-sunxi@googlegroups.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Alexander Kaplan <alex@nextthing.co>,
+ Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 03 May 2016 00:06:45 -0500
+In-Reply-To: <20160425225357.7bb6338d@bbrezillon>
+References: <20160425164314.15c3fc94@bbrezillon>
+ <20160425173646.GM3732@bill-the-cat> <20160425225357.7bb6338d@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [U-Boot] Porting Linux's MTD/NAND changes into U-Boot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,103 +29,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/03, Masahiro Yamada wrote:
+On Mon, 2016-04-25 at 22:53 +0200, Boris Brezillon wrote:
+> On Mon, 25 Apr 2016 13:36:46 -0400
+> Tom Rini <trini@konsulko.com> wrote:
 > 
-> 2016-02-26 9:07 GMT+09:00 Stephen Boyd <sboyd@codeaurora.org>:
-> > On 12/28, Masahiro Yamada wrote:
-> >>
-> >> diff --git a/drivers/clk/uniphier/Kconfig b/drivers/clk/uniphier/Kconfig
-> >> new file mode 100644
-> >> index 0000000..7606f27
-> >> --- /dev/null
-> >> +++ b/drivers/clk/uniphier/Kconfig
-> >> @@ -0,0 +1,35 @@
-> >> +menuconfig CLK_UNIPHIER
-> >> +     bool "Clock drivers for UniPhier SoCs"
-> >> +     depends on ARCH_UNIPHIER
-> >
-> > Can we have COMPILE_TEST here?
+> > On Mon, Apr 25, 2016 at 04:43:14PM +0200, Boris Brezillon wrote:
+> > 
+> > > Hi Scott,
+> > > 
+> > > I've recently contributed a lot of MTD/NAND related patches (and intend
+> > > to continue doing so). Some of them are transversal changes touching the
+> > > MTD and NAND framework internals, which implies patching all NAND
+> > > drivers along with the core changes.
+> > > 
+> > > All those changes are required to properly handle modern NANDs (MLC/TLC
+> > > NANDs), and I need them to add proper NAND support to the sunxi
+> > > platform (and more particularly to the C.H.I.P from NextThing Co.).
+> > > 
+> > > So my question is, how should I port those changes to U-Boot? I see
+> > > that your doing "synchronization commits", but in my case this mean
+> > > including a bunch of driver specific changes into this "sync commit".
+> > > 
+> > > I think it's also worth mentioning that I plan to heavily rework the
+> > > Linux NAND framework to improve NAND performances on modern NAND
+> > > controllers and clarify the NAND chip / NAND controller concepts, and
+> > > other people are also working on merging the BBT code of the NAND and
+> > > OneNAND framework. Which unfortunately means that we're not done porting
+> > > invasive changes to U-Boot :-/.
+> > > 
+> > > Any advice is welcome.  
+> > 
+> > I suppose my first suggestion would be to sync the kernel back into
+> > U-Boot more frequently.  With our bi-monthly release cycle it shouldn't
+> > be too hard to pick a window to grab the current kernel release and
+> > bring it over.  I think the more stuff we let build up prior to syncing
+> > the harder it will be.
+> > 
 > 
-> OK.
-> But if you recommend to drop "depends on ARCH_UNIPHIER",
-> COMPILE_TEST is not necessary.
+> Okay, so this means I should be the one back-porting Linux changes into
+> U-Boot? I was planning on porting my current work on the sunxi NAND
+> driver (including all the core dependencies) and submitting it to
+> U-Boot, but honestly, I don't see how I can keep things in sync in the
+> long run. From my experience, porting things to U-Boot is never as
+> easy at it seems, and I don't think I'll have the time to maintain that
+> by myself. Scott, what's your policy regarding Linux -> U-Boot syncs?
+> Can I expect some help from your side?
 
-Right, I wasn't recommending removing the depends on
-ARCH_UNIPHIER. Sorry if that wasn't clear.
+I usually do syncs when someone complains about needing a sync.  Every release
+seems a bit much.  I'll try to do one soon.
 
-> 
-> 
-> >> +     depends on OF
-> >> +     default y
-> >
-> > And then default ARCH_UNIPHIER instead.
-> 
-> 
-> 
-> The problem is that CLK_UNIPHIER is not enabled along with
-> ARCH_UNIPHIER in "make menuconfig".
-> 
-> If we use "depends on ARCH_UNIPHIER"
-> and we enable ARCH_UNIPHIER from "make menuconfig",
-> CLK_UNIPHIER is automatically enabled as well.
-> 
-> Is the latter more like what we expect?
-
-I'm thinking
-
-	menuconfig CLK_UNIPHIER
-		bool "Clock drivers for UniPhier SoCs"
-		depends on ARCH_UNIPHIER || COMPILE_TEST
-		depends on OF
-		default ARCH_UNIPHIER
-
-That way we can build it even if we're not the arch, and it's
-defaulted to be built if we have the arch enabled, but it isn't
-defaulted to be built if that arch isn't enabled and compile test
-is enabled.
-
-> 
-> >
-> > If possible please don't use clock-names to set up clock
-> > hierarchy.
-> 
-> So, what shall I do instead?
-> 
-> I am not comfortable with hard-coding the parents' names
-> for clock-cascading.
-> 
-> Maybe, can we support clk registration
-> with clk_hw of parents, not names of parents?
-> 
-> For example, by adding  "struct clk_hw **parents"
-> to struct clk_init_data.
-> 
-
-Sounds like it isn't possible to avoid clock-names DT property
-then. Not a big deal.
-
-We've been trying to figure out some way to register clks without
-requiring strings, but so far nothing has really happened. The
-clk_hw approach would work, except for the case where some of the
-provider's clks rely on another provider's clks that also rely on
-the first provider (sort of a spiral of dependencies). In that
-case we want to break the provider level loop by letting clks say
-something besides clk_hw pointers are parents.
-
-Strings work well here because we have support for clock-names
-and string based parent-child descriptions already, but maybe
-we'd be better off having some way to say that this clk we're
-registering uses provider X's 24th output as its second parent.
-It would be good if we avoided tying it to any DT construct
-though, because DT isn't the only way clks are registered and
-provided to the system.
-
-This is all because we know that forcing driver authors to come
-up with globally unique names for clks just doesn't work when it
-comes to things like the same clk controller IP instantiated
-twice in the hardware and thus the same driver matches both
-device instances.
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+-Scott
