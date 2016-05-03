@@ -1,27 +1,27 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axUtY-0007Wb-UQ
- for linux-mtd@lists.infradead.org; Tue, 03 May 2016 07:37:26 +0000
-Date: Tue, 3 May 2016 09:36:50 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Scott Wood <oss@buserror.net>
-Cc: Tom Rini  <trini@konsulko.com>, Marek Vasut <marex@denx.de>, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, u-boot@lists.denx.de, "linux-sunxi@googlegroups.com"
- <linux-sunxi@googlegroups.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Alexander Kaplan <alex@nextthing.co>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [U-Boot] Porting Linux's MTD/NAND changes into U-Boot
-Message-ID: <20160503093650.7840823f@bbrezillon>
-In-Reply-To: <1462252005.16584.34.camel@buserror.net>
-References: <20160425164314.15c3fc94@bbrezillon>
- <20160425173646.GM3732@bill-the-cat>
- <20160425225357.7bb6338d@bbrezillon>
- <1462252005.16584.34.camel@buserror.net>
+Date: Tue, 3 May 2016 17:13:12 +0200
+From: Michal Hocko <mhocko@kernel.org>
+To: NeilBrown <mr@neil.brown.name>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
+ Chris Mason <clm@fb.com>, Jan Kara <jack@suse.cz>,
+ ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, logfs@logfs.org, xfs@oss.sgi.com,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] scop GFP_NOFS api
+Message-ID: <20160503151312.GA4470@dhcp22.suse.cz>
+References: <1461671772-1269-1-git-send-email-mhocko@kernel.org>
+ <8737q5ugcx.fsf@notabene.neil.brown.name>
+ <20160429120418.GK21977@dhcp22.suse.cz>
+ <87twiiu5gs.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87twiiu5gs.fsf@notabene.neil.brown.name>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,67 +31,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Scott,
+Hi,
 
-On Tue, 03 May 2016 00:06:45 -0500
-Scott Wood <oss@buserror.net> wrote:
+On Sun 01-05-16 07:55:31, NeilBrown wrote:
+[...]
+> One particular problem with your process-context idea is that it isn't
+> inherited across threads.
+> Steve Whitehouse's example in gfs shows how allocation dependencies can
+> even cross into user space.
 
-> On Mon, 2016-04-25 at 22:53 +0200, Boris Brezillon wrote:
-> > On Mon, 25 Apr 2016 13:36:46 -0400
-> > Tom Rini <trini@konsulko.com> wrote:
-> >   
-> > > On Mon, Apr 25, 2016 at 04:43:14PM +0200, Boris Brezillon wrote:
-> > >   
-> > > > Hi Scott,
-> > > > 
-> > > > I've recently contributed a lot of MTD/NAND related patches (and intend
-> > > > to continue doing so). Some of them are transversal changes touching the
-> > > > MTD and NAND framework internals, which implies patching all NAND
-> > > > drivers along with the core changes.
-> > > > 
-> > > > All those changes are required to properly handle modern NANDs (MLC/TLC
-> > > > NANDs), and I need them to add proper NAND support to the sunxi
-> > > > platform (and more particularly to the C.H.I.P from NextThing Co.).
-> > > > 
-> > > > So my question is, how should I port those changes to U-Boot? I see
-> > > > that your doing "synchronization commits", but in my case this mean
-> > > > including a bunch of driver specific changes into this "sync commit".
-> > > > 
-> > > > I think it's also worth mentioning that I plan to heavily rework the
-> > > > Linux NAND framework to improve NAND performances on modern NAND
-> > > > controllers and clarify the NAND chip / NAND controller concepts, and
-> > > > other people are also working on merging the BBT code of the NAND and
-> > > > OneNAND framework. Which unfortunately means that we're not done porting
-> > > > invasive changes to U-Boot :-/.
-> > > > 
-> > > > Any advice is welcome.    
-> > > 
-> > > I suppose my first suggestion would be to sync the kernel back into
-> > > U-Boot more frequently.  With our bi-monthly release cycle it shouldn't
-> > > be too hard to pick a window to grab the current kernel release and
-> > > bring it over.  I think the more stuff we let build up prior to syncing
-> > > the harder it will be.
-> > >   
-> > 
-> > Okay, so this means I should be the one back-porting Linux changes into
-> > U-Boot? I was planning on porting my current work on the sunxi NAND
-> > driver (including all the core dependencies) and submitting it to
-> > U-Boot, but honestly, I don't see how I can keep things in sync in the
-> > long run. From my experience, porting things to U-Boot is never as
-> > easy at it seems, and I don't think I'll have the time to maintain that
-> > by myself. Scott, what's your policy regarding Linux -> U-Boot syncs?
-> > Can I expect some help from your side?  
+Hmm, I am still not sure I understand that example completely but making
+a dependency between direct reclaim and userspace can hardly work.
+Especially when the direct reclaim might be sitting on top of hard to
+guess pile of locks. So unless I've missed anything what Steve has
+described is a clear NOFS context.
+
+> A more localized one that I have seen is that NFSv4 sometimes needs to
+> start up a state-management thread (particularly if the server
+> restarted).
+> It uses kthread_run(), which doesn't actually create the thread but asks
+> kthreadd to do it.  If NFS writeout is waiting for state management it
+> would need to make sure that kthreadd runs in allocation context to
+> avoid deadlock.
+> I feel that I've forgotten some important detail here and this might
+> have been fixed somehow, but the point still stands that the allocation
+> context can cross from thread to thread and can effectively become
+> anything and everything.
+
+Not sure I understand your point here but relying on kthread_run
+from GFP_NOFS context has always been deadlock prone with or without
+scope GFP_NOFS semantic so I am not really sure I see your point
+here. Similarly relying on a work item which doesn't have a dedicated
+WQ_MEM_RECLAIM WQ is deadlock prone.  You simply shouldn't do that.
+
+> It is OK to wait for memory to be freed.  It is not OK to wait for any
+> particular piece of memory to be freed because you don't always know who
+> is waiting for you, or who you really are waiting on to free that
+> memory.
 > 
-> I usually do syncs when someone complains about needing a sync.  Every release
-> seems a bit much.  I'll try to do one soon.
+> Whenever trying to free memory I think you need to do best-effort
+> without blocking.
 
-Great! Let me know if you need some help.
-
-Thanks,
-
-Boris
+I agree with that. Or at least you have to wait on something that is
+_guaranteed_ to make a forward progress. I am not really that sure this
+is easy to achieve with the current code base.
 
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Michal Hocko
+SUSE Labs
