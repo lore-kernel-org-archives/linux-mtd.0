@@ -1,22 +1,19 @@
+Date: Mon, 2 May 2016 17:33:11 -0700
+From: Stephen Boyd <sboyd@codeaurora.org>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Michael Turquette <mturquette@baylibre.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-clk@vger.kernel.org,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2] clk: uniphier: add clock drivers for UniPhier SoCs
+Message-ID: <20160503003311.GE3492@codeaurora.org>
+References: <1451298003-28841-1-git-send-email-yamada.masahiro@socionext.com>
+ <20160226000713.GO28849@codeaurora.org>
+ <CAK7LNASQD4fpi=iDRbX96tSBvYjT_-N8EJnNk1VpuMxBTEnONg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <DB5PR0401MB184503776038D76AD91B1779976D0@DB5PR0401MB1845.eurprd04.prod.outlook.com>
-References: <1460605855-6689-1-git-send-email-B56489@freescale.com>
- <1460605855-6689-7-git-send-email-B56489@freescale.com>
- <DB5PR0401MB184503776038D76AD91B1779976D0@DB5PR0401MB1845.eurprd04.prod.outlook.com>
-Date: Mon, 2 May 2016 16:14:07 -0500
-Message-ID: <CA+EcR23DG-9RbKSiGZOx56OoD5zEqcGbP_TjWtvuHv1_CGN3JQ@mail.gmail.com>
-Subject: Re: [PATCH 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
-From: Han Xu <xhnjupt@gmail.com>
-To: Han Xu <han.xu@nxp.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
-Cc: Yunhui Cui <B56489@freescale.com>,
- "han.xu@freescale.com" <han.xu@freescale.com>,
- Yunhui Cui <yunhui.cui@nxp.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Yao Yuan <yao.yuan@nxp.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNASQD4fpi=iDRbX96tSBvYjT_-N8EJnNk1VpuMxBTEnONg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,138 +23,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 20, 2016 at 5:34 PM, Han Xu <han.xu@nxp.com> wrote:
->
->
-> ________________________________________
-> From: Yunhui Cui <B56489@freescale.com>
-> Sent: Wednesday, April 13, 2016 9:50 PM
-> To: dwmw2@infradead.org; computersforpeace@gmail.com; han.xu@freescale.com
-> Cc: linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-kernel@lists.infradead.org; Yao Yuan; Yunhui Cui
-> Subject: [PATCH 6/9] mtd: spi-nor: Support R/W for S25FS-S family flash
->
-> From: Yunhui Cui <yunhui.cui@nxp.com>
->
-> With the physical sectors combination, S25FS-S family flash
-> requires some special operations for read/write functions.
->
-> Signed-off-by: Yunhui Cui <yunhui.cui@nxp.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 59 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 59 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 157841d..91ee920 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -39,6 +39,10 @@
->
->  #define SPI_NOR_MAX_ID_LEN     6
->  #define SPI_NOR_MAX_ADDR_WIDTH 4
-> +/* Added for S25FS-S family flash */
-> +#define SPINOR_CONFIG_REG3_OFFSET      0x800004
-> +#define CR3V_4KB_ERASE_UNABLE  0x8
-> +#define SPINOR_S25FS_FAMILY_ID 0x81
->
->  struct flash_info {
->         char            *name;
-> @@ -78,6 +82,7 @@ struct flash_info {
->  };
->
->  #define JEDEC_MFR(info)        ((info)->id[0])
-> +#define EXT_ID(info)   ((info)->id[5])
->
->  static const struct flash_info *spi_nor_match_id(const char *name);
->
-> @@ -881,6 +886,7 @@ static const struct flash_info spi_nor_ids[] = {
->          */
->         { "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->         { "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +       { "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512, 0)},
->         { "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
->         { "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->         { "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> @@ -1018,6 +1024,53 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->         return ERR_PTR(-ENODEV);
->  }
->
-> +/*
-> + * The S25FS-S family physical sectors may be configured as a
-> + * hybrid combination of eight 4-kB parameter sectors
-> + * at the top or bottom of the address space with all
-> + * but one of the remaining sectors being uniform size.
-> + * The Parameter Sector Erase commands (20h or 21h) must
-> + * be used to erase the 4-kB parameter sectors individually.
-> + * The Sector (uniform sector) Erase commands (D8h or DCh)
-> + * must be used to erase any of the remaining
-> + * sectors, including the portion of highest or lowest address
-> + * sector that is not overlaid by the parameter sectors.
-> + * The uniform sector erase command has no effect on parameter sectors.
-> + */
-> +static int spansion_s25fs_disable_4kb_erase(struct spi_nor *nor)
-> +{
-> +       struct fsl_qspi *q;
-> +       u32 cr3v_addr  = SPINOR_CONFIG_REG3_OFFSET;
-> +       u8 cr3v = 0x0;
-> +       int ret = 0x0;
-> +
-> +       q = nor->priv;
-> +
-> +       nor->cmd_buf[2] = cr3v_addr >> 16;
-> +       nor->cmd_buf[1] = cr3v_addr >> 8;
-> +       nor->cmd_buf[0] = cr3v_addr >> 0;
->
-> I feel it's hacking code.
->
-> Hi Brian, do we have any plan to support this special case? The RDAR(
-> Read Any Register) needs an extra address parameter.
+On 05/03, Masahiro Yamada wrote:
+> 
+> 2016-02-26 9:07 GMT+09:00 Stephen Boyd <sboyd@codeaurora.org>:
+> > On 12/28, Masahiro Yamada wrote:
+> >>
+> >> diff --git a/drivers/clk/uniphier/Kconfig b/drivers/clk/uniphier/Kconfig
+> >> new file mode 100644
+> >> index 0000000..7606f27
+> >> --- /dev/null
+> >> +++ b/drivers/clk/uniphier/Kconfig
+> >> @@ -0,0 +1,35 @@
+> >> +menuconfig CLK_UNIPHIER
+> >> +     bool "Clock drivers for UniPhier SoCs"
+> >> +     depends on ARCH_UNIPHIER
+> >
+> > Can we have COMPILE_TEST here?
+> 
+> OK.
+> But if you recommend to drop "depends on ARCH_UNIPHIER",
+> COMPILE_TEST is not necessary.
 
-Hi Brian,
+Right, I wasn't recommending removing the depends on
+ARCH_UNIPHIER. Sorry if that wasn't clear.
 
-I was wondering if you have some free time to check the questions. Thanks.
->
-> +
-> +       ret = nor->read_reg(nor, SPINOR_OP_SPANSION_RDAR, &cr3v, 1);
-> +       if (ret)
-> +               return ret;
-> +       if (cr3v & CR3V_4KB_ERASE_UNABLE)
-> +               return 0;
-> +       ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0);
-> +       if (ret)
-> +               return ret;
-> +       cr3v = CR3V_4KB_ERASE_UNABLE;
-> +       nor->program_opcode = SPINOR_OP_SPANSION_WRAR;
-> +       nor->write(nor, cr3v_addr, 1, NULL, &cr3v);
-> +
-> +       ret = nor->read_reg(nor, SPINOR_OP_SPANSION_RDAR, &cr3v, 1);
-> +       if (ret)
-> +               return ret;
-> +       if (!(cr3v & CR3V_4KB_ERASE_UNABLE))
-> +               return -EPERM;
-> +
-> +       return 0;
-> +}
-> +
->  static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
->                         size_t *retlen, u_char *buf)
->  {
-> @@ -1311,6 +1364,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
->                 spi_nor_wait_till_ready(nor);
->         }
->
-> +       if (EXT_ID(info) == SPINOR_S25FS_FAMILY_ID) {
-> +               ret = spansion_s25fs_disable_4kb_erase(nor);
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
->         if (!mtd->name)
->                 mtd->name = dev_name(dev);
->         mtd->priv = nor;
-> --
-> 2.1.0.27.g96db324
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
+> >> +     depends on OF
+> >> +     default y
+> >
+> > And then default ARCH_UNIPHIER instead.
+> 
+> 
+> 
+> The problem is that CLK_UNIPHIER is not enabled along with
+> ARCH_UNIPHIER in "make menuconfig".
+> 
+> If we use "depends on ARCH_UNIPHIER"
+> and we enable ARCH_UNIPHIER from "make menuconfig",
+> CLK_UNIPHIER is automatically enabled as well.
+> 
+> Is the latter more like what we expect?
+
+I'm thinking
+
+	menuconfig CLK_UNIPHIER
+		bool "Clock drivers for UniPhier SoCs"
+		depends on ARCH_UNIPHIER || COMPILE_TEST
+		depends on OF
+		default ARCH_UNIPHIER
+
+That way we can build it even if we're not the arch, and it's
+defaulted to be built if we have the arch enabled, but it isn't
+defaulted to be built if that arch isn't enabled and compile test
+is enabled.
+
+> 
+> >
+> > If possible please don't use clock-names to set up clock
+> > hierarchy.
+> 
+> So, what shall I do instead?
+> 
+> I am not comfortable with hard-coding the parents' names
+> for clock-cascading.
+> 
+> Maybe, can we support clk registration
+> with clk_hw of parents, not names of parents?
+> 
+> For example, by adding  "struct clk_hw **parents"
+> to struct clk_init_data.
+> 
+
+Sounds like it isn't possible to avoid clock-names DT property
+then. Not a big deal.
+
+We've been trying to figure out some way to register clks without
+requiring strings, but so far nothing has really happened. The
+clk_hw approach would work, except for the case where some of the
+provider's clks rely on another provider's clks that also rely on
+the first provider (sort of a spiral of dependencies). In that
+case we want to break the provider level loop by letting clks say
+something besides clk_hw pointers are parents.
+
+Strings work well here because we have support for clock-names
+and string based parent-child descriptions already, but maybe
+we'd be better off having some way to say that this clk we're
+registering uses provider X's 24th output as its second parent.
+It would be good if we avoided tying it to any DT construct
+though, because DT isn't the only way clks are registered and
+provided to the system.
+
+This is all because we know that forcing driver authors to come
+up with globally unique names for clks just doesn't work when it
+comes to things like the same clk controller IP instantiated
+twice in the hardware and thus the same driver matches both
+device instances.
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
