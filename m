@@ -1,29 +1,23 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axljo-0004Cp-4l
- for linux-mtd@lists.infradead.org; Wed, 04 May 2016 01:36:28 +0000
-Received: by mail-lf0-x244.google.com with SMTP id m101so4099197lfi.1
- for <linux-mtd@lists.infradead.org>; Tue, 03 May 2016 18:36:07 -0700 (PDT)
+ id 1axrQZ-00019g-8a
+ for linux-mtd@lists.infradead.org; Wed, 04 May 2016 07:41:00 +0000
+From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+CC: Alexander Kaplan <alex@nextthing.co>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, David Gstir <david@sigma-star.at>,
+ David Oberhollenzer <goliath@sigma-star.at>, Artem Bityutskiy
+ <dedekind1@gmail.com>
+Subject: RE: [ANNOUNCE] MLC support for UBI/UBIFS
+Date: Wed, 4 May 2016 07:40:25 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6310BF700B9@NTXXIAMBX02.xacn.micron.com>
+References: <57221E28.9050102@nod.at>
+In-Reply-To: <57221E28.9050102@nod.at>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20160419093424.27cfc585@bbrezillon>
-References: <1457923684-13505-1-git-send-email-peterpandong@micron.com>
- <1457923684-13505-3-git-send-email-peterpandong@micron.com>
- <20160325093519.34c3f7fa@bbrezillon>
- <CAAyFORKJzXTSgXvHgNe=AtExs8_9sVNEYMRefYLXDqG7-u-yRg@mail.gmail.com>
- <20160418094444.152042ee@bbrezillon>
- <CAAyFORL_Pqz34-tgz7aBQ3au9RzZwJs6DA-8ROJxK0xtMZnp_Q@mail.gmail.com>
- <20160419093424.27cfc585@bbrezillon>
-Date: Wed, 4 May 2016 09:36:05 +0800
-Message-ID: <CAAyFORKWTKmBZNx22NaOwHUzH+FW34PNxMuEqejXvBSwru9FoA@mail.gmail.com>
-Subject: Re: [PATCH 02/11] mtd: nand_bbt: introduce BBT related data structure
-From: Peter Pan <peterpansjtu@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- karlzhang@micron.com, beanhuo@micron.com,
- Jiancheng Xue <xuejiancheng@huawei.com>, Peter Pan <peterpandong@micron.com>
-Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,84 +27,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-On Tue, Apr 19, 2016 at 3:34 PM, Boris Brezillon
-<boris.brezillon@free-electrons.com> wrote:
-> Hi Peter,
->
-> On Tue, 19 Apr 2016 08:40:40 +0800
-> Peter Pan <peterpansjtu@gmail.com> wrote:
->>
->> >
->> >> So it's true, it
->> >> should still be numchips in nand_bbt.c?  I just came out this question when
->> >> making v4. :)
->> >
->> > BTW, I have something for you [1]. I started to move things around to
->> > allow spinand and onenand layers to lie under drivers/mtd/nand/, and I
->> > wonder if we shouldn't do this move before reworking the nand_bbt code
->> > to make it generic.
->> > Note that this rework is not finished yet, but it gives a rough idea of
->> > what I'd like to see.
->>
->> I saw you also rework BBT in your git tree, which is a bit duplicate
->> with my BBT patch,
->> so should I continue my BBT patch by join part of your BBT rework code
->> or continue
->> your git tree ?
->
-> Well, if you ask me what I'd prefer, it's clearly the 2nd solution.
-> Note that my branch should just serve as a reference of what I expect,
-> it just a pile of rework that should probably be reordered and cleaned
-> up.
->
-> Here's the sequencing I'd like to see:
->
-> 1/ Move include/linux/mtd/nand.h into include/linux/mtd/rawnand.h and
->    move all files under drivers/mtd/nand/ into
->    drivers/mtd/nand/rawnand (including nand_bbt.c). This can be done in
->    several patches
->
-> 2/ Add the generic nand layer (include/linux/mtd/nand.h and
->    drivers/mtd/nand/core.c). In my version I put everything in
->    include/linux/mtd/nand.h, but maybe we'll need a few functions to be
->    defined in drivers/mtd/nand/core.c.
->
-> 3/ Create a rawnand_device structure inheriting from nand_device, and
->    then make nand_chip inherit from rawnand_device. Patch the
->    nand_base.c code to initialize all the nand_device fields properly,
->    so that we'll be ready to switch to the generic BBT code.
->
-> 4/ Modify the nand_bbt.c code to make use of the generic NAND interface
->    instead of the MTD and rawnand one (this implies identifying all the
->    generic helpers you might need, and implementing them in
->    include/linux/mtd/nand.h or drivers/mtd/nand/core.c).
->
-> 5/ Move drivers/mtd/nand/rawnand/nand_bbt.c into
->    drivers/mtd/nand/bbt.c
->
-> 6/[optional] Implement your spinand layer in drivers/mtd/nand/spinand
->
-> I know I'm asking a lot, especially given that you already spent a lot
-> of time iterating on this BBT rework series. But your goal is to move
-> mt29f driver out of staging, and you'll need to do the generic NAND
-> layer to achieve that, so I'd really prefer having the BBT code use
-> this generic layer instead of directly using the MTD API + an extra set
-> of NAND specific structs (like the nand_chip_layout_info one).
-
-Yes, I want to upstreaming my SPI NAND frameworks and it's indeed better
-to have a nand core. In fact, I already finished a SPI NAND framework with
-the BBT patch I sent which is directly under MTD (don't have a NAND core layer).
-
-Actually, I'm interested in this NAND framework refining work. And I
-know you already
-gave a speech on ELC about this. But due to the resource limitation, I may not
-to do all of the things. So how about I continue my BBT patch with
-your NAND refining
-ideas. I'll try to make the BBT patch compatible with the refining
-work. What do you
-think?
-
-Thanks,
-Peter Pan
+SGksIFJpY2hhcmQgDQpEbyB5b3UgbmVlZCBvdXIgTWljcm9uIDcwcyBhbmQgODBzIE1MQyBOQU5E
+IHNhbXBsZT8NCkN1cnJlbnQgY29kZSBvbmx5IGVuYWJsZSBIeW5peCBNTEMgTkFORCwgY2FuIEkg
+c2VuZCBwYXRjaCBhYm91dCB0aGlzIG91ciBNTEMNCk5BTkQgcGFpcmVkIHBhZ2UgZGlzdGFuY2Ug
+dG8geW91PyBJIGFscmVhZHkgdGVzdGVkIHRoZW0gb24geW91ciBjb2Rlcy4NCg0KWW91cnMgRmFp
+dGhmdWxseQ0KQmVhbkh1bw0KQ2VsbCA6Kzg2IDE4MyAyMTU2IDkzOTkNCg0KPiAtLS0tLU9yaWdp
+bmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgW21haWx0bzpyaWNo
+YXJkQG5vZC5hdF0NCj4gU2VudDogVGh1cnNkYXksIEFwcmlsIDI4LCAyMDE2IDEwOjI5IFBNDQo+
+IFRvOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBDYzogQWxleGFuZGVyIEthcGxh
+biA8YWxleEBuZXh0dGhpbmcuY28+OyBCb3JpcyBCcmV6aWxsb24NCj4gPGJvcmlzLmJyZXppbGxv
+bkBmcmVlLWVsZWN0cm9ucy5jb20+OyBEYXZpZCBHc3RpciA8ZGF2aWRAc2lnbWEtc3Rhci5hdD47
+DQo+IERhdmlkIE9iZXJob2xsZW56ZXIgPGdvbGlhdGhAc2lnbWEtc3Rhci5hdD47IEJlYW4gSHVv
+IOmcjeaWjOaWjCAoYmVhbmh1bykNCj4gPGJlYW5odW9AbWljcm9uLmNvbT47IEFydGVtIEJpdHl1
+dHNraXkgPGRlZGVraW5kMUBnbWFpbC5jb20+DQo+IFN1YmplY3Q6IFtBTk5PVU5DRV0gTUxDIHN1
+cHBvcnQgZm9yIFVCSS9VQklGUw0KPiANCj4gRGVhciBNVEQgZm9sa3MsDQo+IA0KPiBBcyBzb21l
+IG9mIHlvdSBtaWdodCBoYXZlIG5vdGljZWQsIHRoZSBsYXN0IGZldyBtb250aHMgQm9yaXMgYW5k
+IEkgaGF2ZQ0KPiBiZWVuIGhlYXZpbHkgd29ya2luZyBvbiBNTEMgc3VwcG9ydC4gT3VyIGZpcnN0
+IGFwcHJvYWNoZXMgdGFyZ2V0ZWQgVUJJRlMNCj4gc2luY2Ugd2UgdGhvdWdodCBNTEMgTkFORCdz
+IG1vc3QgYW5ub3lpbmcgZmVhdHVyZSwgbmFtZWx5IHRoZSBwYWlyZWQNCj4gcGFnZXMgY29uc3Ry
+YWludCwgY2FuIGJlIGJlc3QgYWRkcmVzc2VkIHRoZXJlLiBJdCB0dXJuZWQgb3V0IHRoYXQgVUJJ
+RlMgaXMgdGhlDQo+IHdyb25nIGxheWVyIGFuZCBnaXZlbiB0aGUgbWFzc2l2ZSBjaGFuZ2VzIHJl
+cXVpcmVkIHRvIG1ha2UgaXQgd29yaywgd2UgaGFkDQo+IHRvIGdvIGJhY2sgdG8gdGhlIGRyYXdp
+bmcgYm9hcmQsIG11bHRpcGxlIHRpbWVzLg0KPiBGaW5hbGx5IHdlIGNhbWUgdXAgd2l0aCBhbiBh
+cHByb2FjaCB3aGljaCBpcyBhKSByYXRoZXIgc2ltcGxlIGFuZCBiKSB3b3JraW5nLg0KPiBUaGlz
+IGFwcHJvYWNoIG9wZXJhdGVzIG9uIHRoZSBVQkkgbGV2ZWwgYW5kIHdlIGNhbGwgaXQgIkxFQiBj
+b25zb2xpZGF0aW9uIiwgaXQNCj4gaXMgYWxzbyBrbm93biBhcyAid3JpdGUgbG93ZXIgYW5kIG1l
+cmdlIi4NCj4gDQo+IFRoZSBtYWluIHByb2JsZW0gd2l0aCBwYWlyZWQgcGFnZXMgaXMgdGhhdCBh
+biBpbnRlcnJ1cHRlZCB3cml0ZSB0byBhIGhpZ2gNCj4gcGFnZSB3aWxsIGFsc28gZGFtYWdlIHRo
+ZSBjb250ZW50IG9mIGl0cyBwYXJ0bmVyLCB0aGUgbG93IHBhZ2UuIFNvbWUgTUxDDQo+IE5BTkRz
+IG9mZmVyIGEgc2FmZSBTTEMgbW9kZSB3aGVyZSBvbmx5IGxvdyBwYWdlcyBhcmUgZXhwb3NlZCBh
+bmQgcHJldmVudA0KPiBkYXRhIGxvc3MgZHVlIHRvIGludGVycnVwdGVkIHdyaXRlcyBjYW4gaGFw
+cGVuLiBUaGUgb2J2aW91cyBkb3duIHNpZGUgaXMgdGhhdA0KPiB5b3UgbG9zZSA1MCUgb2YgeW91
+ciBOQU5EJ3Mgc3RvcmFnZSBjYXBhY2l0eS4NCj4gV2hpbGUgU0xDIG1vZGUgaXMgY2xlYXJseSBu
+b3QgYW4gb3B0aW9uIGZvciB1cywgdGhlICJMRUIgY29uc29saWRhdGlvbiINCj4gYXBwcm9hY2gg
+bWFrZXMgcGFydGlhbCB1c2Ugb2YgaXQuIE9uIE1MQywgVUJJIHdpbGwgb3BlcmF0ZSBvbiBQRUJz
+IGluIHR3bw0KPiBtb2Rlcywgc29mdHdhcmUgZW11bGF0ZWQgU0xDIGFuZCByYXcgbW9kZS4NCj4g
+QnkgZGVmYXVsdCwgTEVCcyBhcmUgd3JpdHRlbiBpbiBzb2Z0d2FyZSBlbXVsYXRlZCBTTEMgbW9k
+ZS4gSGVuY2UsIG9ubHkNCj4gbG93ZXIgcGFnZXMgYXJlIHdyaXR0ZW4sIHN1Y2ggdGhhdCBpbnRl
+cnJ1cHRlZCB3cml0ZXMgd29uJ3QgZGFtYWdlIGFscmVhZHkNCj4gd3JpdHRlbiBkYXRhLiBJZiBV
+Qkkgbm90aWNlcyB0aGF0IGl0IGhhcyBubyBsb25nZXIgZW5vdWdoIHdyaXRhYmxlIExFQnMsIGl0
+IHRyaWVzDQo+IHRvIGNvbnNvbGlkYXRlIHR3byBmdWxsIExFQnMuIEZ1bGwgbWVhbnMgdGhhdCB0
+aGUgbGFzdCBwYWdlIGhhcyBiZWVuIHdyaXR0ZW4NCj4gYW5kIHRoZXJlZm9yZSBubyBmdXJ0aGVy
+IHdyaXRlcyBhcmUgZXhwZWN0ZWQuIFRoaXMgd29ya3Mgc2luY2UgeW91IGNhbg0KPiBwcm9ncmFt
+IGFuIGVyYXNlIGJsb2NrIG9ubHkgaW4gbGluZWFyIG1hbm5lciBhbmQgb24gTUxDIHRoZSBudW1i
+ZXIgb2YNCj4gcHJvZ3JhbXMgKE5PUCkgaXMgaW4gZ2VuZXJhbCAxLiBUaGlzIGFsc28gbWVhbnMg
+dGhhdCB0aGVyZSBhcmUgbm8gc3VicGFnZXMuDQo+IExFQiBjb25zb2xpZGF0aW9uIHdvcmtzIG1v
+cmUgb3IgbGVzcyBsaWtlIFVCSSdzIGF0b21pYyBMRUIgY2hhbmdlIGZlYXR1cmUuDQo+IEJ1dCBp
+bnN0ZWFkIG9mIGF0b21pY2FsbHkgZXhjaGFuZ2luZyB0aGUgZGF0YSBvZiBhIExFQiwgaXQgYXRv
+bWljYWxseSBtb3Zlcw0KPiB0aGUgZGF0YSBvZiB0d28gTEVCcyBpbnRvIGFub3RoZXIgTEVCIGlu
+IHJhdyBtb2RlLg0KPiBUaGUgcGFnZXMgb2YgdGhlIHNvdXJjZSBMRUJzIGFyZSByZWFkIGluIFNM
+QyBtb2RlLCBvbiB0aGUgY29uc29saWRhdGVkIExFQg0KPiBib3RoIGxvdyBhbmQgaGlnaCBwYWdl
+cyBhcmUgdXNlZCBzaW5jZSByYXcgbW9kZSBpcyB1c2VkLg0KPiBDb25zb2xpZGF0ZWQgTEVCcyBh
+cmUgcmVhZC1vbmx5IGJ5IGRlc2lnbi4gRXNwZWNpYWxseSBhcyB3ZSBtZXJnZSBvbmx5IGZ1bGwN
+Cj4gTEVCcy4NCj4gVGhpcyBhbHNvIGltcGxpZXMgdGhhdCBhIFBFQiBjYW4gaG9zdCBvbmUgb3Ig
+dHdvIExFQnMuDQo+IElmIG9uZSBMRUIgb2YgYSBjb25zb2xpZGF0ZWQgTEVCIHBhaXIgaXMgdW5t
+YXBwZWQgdGhlIG90aGVyIExFQiBpcyBtYXJrZWQgYXMNCj4gY2FuZGlkYXRlIGZvciBjb25zb2xp
+ZGF0aW9uIGFnYWluLg0KPiBJZiBhIFBFQiBob3N0cyBjb25zb2xpZGF0ZWQgTEVCcyBpdCB3aWxs
+IGNhcnJ5IHR3byBzdWNjZXNzaXZlIHZvbHVtZSBoZWFkZXJzDQo+IHJpZ2h0IGFmdGVyIHRoZSBl
+cmFzZSBjb3VudGVyIGhlYWRlci4gQ3VycmVudGx5IHRoZSByZWxhdGlvbnNoaXAgYmV0d2VlbiBQ
+RUJzDQo+IGFuZCBMRUJzIGlzIDE6MSwgd2l0aCBNTEMgaXQgaXMgMToyLiBXaGljaCBtZWFucyB0
+aGF0IFVCSSB3aWxsIGV4cG9zZSB0d28NCj4gdGltZXMgYXMgbWFueSBMRUJzIGFzIFBFQnMuIFRo
+aXMgY29tcGxpY2F0ZXMgVUJJIGEgYml0IGFuZCB1c2Vyc3BhY2UNCj4gaW50ZXJmYWNpbmcgbmVl
+ZHMgc29tZSBtYXNzYWdpbmcgc2luY2UgaW4gbWFueSBwbGFjZXMgdGhlIG51bWJlciBvZiBMRUJz
+DQo+IGFuZCBQRUJzIHdlcmUgY29uc2lkZXJlZCB0byBiZSB0aGUgc2FtZSwgYW5kIHRoZSB0d28g
+ZGlmZmVyZW50IGNvbmNlcHRzDQo+IHdoZXJlIGtpbmQgb2YgaW50ZXJjaGFuZ2VhYmxlLg0KPiBX
+aXRoIE1MQyB0aGlzIG1hdHRlcnMgYW5kIG1ha2VzIGEgZGlmZmVyZW5jZS4NCj4gQXMgVUJJIGlz
+IG9ubHkgYWxsb3dlZCB0byBjb25zb2xpZGF0ZSBmdWxsIExFQnMsIGEgdXNlciBvbiB0b3Agb2Yg
+VUJJIHNob3VsZCB0cnkNCj4gdG8gZmlsbCBMRUJzIGFzIG11Y2ggYXMgcG9zc2libGUgYmVmb3Jl
+IG1hcHBpbmcgYSBuZXcgTEVCLiBJZiBoYWxmIG9mIGFsbA0KPiBhdmFpbGFibGUgTEVCcyBhcmUg
+bWFwcGVkIGJ1dCBub3QgZmlsbGVkIFVCSSB3aWxsIHJlZnVzZSB0byBtYXAgbW9yZSBzaW5jZSBh
+bGwNCj4gYXZhaWxhYmxlIFBFQnMgYXJlIGZ1bGwgYW5kIHRoZXJlIGlzIG5vIGVtcHR5IFBFQiB0
+byBhdG9taWNhbGx5IGNvbnNvbGlkYXRlDQo+IHR3byBMRUJzIGludG8uIEx1Y2tpbHksIFVCSUZT
+IGJlaGF2ZXMgc2FuZSBhbmQgZG9lcyBub3QgbWFwIG5ldyBMRUJzDQo+IGJlZm9yZSBwcmV2aW91
+c2x5IG1hcHBlZCBMRUJzIGFyZW4ndCBmdWxsLg0KPiANCj4gQWRkaW5nIE1MQyBzdXBwb3J0IGlu
+IFVCSSByZXF1aXJlcyBjaGFuZ2VzIGluIHRoZSBvbi1mbGFzaCBsYXlvdXQsIGFzIG5vdw0KPiB0
+d28gdm9sdW1lIGhlYWRlcnMgY2FuIGV4aXN0LiBUaGUgb3JpZ2luYWwgcGxhbiB3YXMganVzdCBy
+YWlzaW5nIFVCSSB2ZXJzaW9uDQo+IGZyb20gMSB0byAyIGJ1dCB0aGlzIHR1cm5lZCBvdXQgYXMg
+YWxtb3N0IGltcG9zc2libGUgYXMgVUJJIHVzZXJzcGFjZSB0b29scw0KPiBhcmUgbm90IGRlc2ln
+bmVkIGZvciBiYWNrd2FyZHMgY29tcGF0aWJpbGl0eS4NCj4gVGhleSByZWZ1c2UgdG8gd29yayB3
+aGVuIFVCSSB2ZXJzaW9uIGlzIG5vdCAxLiBJbnN0ZWFkIG9mIGRvaW5nIGEgZmxhZyBkYXkNCj4g
+cmVsZWFzZSB3ZSBzdGF5IHdpdGggdmVyc2lvbiAxIChmb3IgZXZlcikgYW5kIGFkZCBhIG5ldyBm
+ZWF0dXJlIGZsYWcgdG8gVUJJDQo+IHdoaWNoIGluZGljYXRlcyB3aGljaCBleHRyYSBmZWF0dXJl
+cyB0aGUgaW1wbGVtZW50YXRpb24gc3VwcG9ydHMuDQo+IDB4MSB3aWxsIGJlICJiYXNpYyBVQkkg
+dmVyc2lvbiAxIiBzdXBwb3J0LCBhbmQgMHgyICJMRUIgY29uc29saWRhdGlvbiIuDQo+IA0KPiBP
+dXIgaW1wbGVtZW50YXRpb24gaXMgYmVpbmcgdGVzdGVkIG9uIG5hbmRzaW0gKHdpdGggc29tZSBo
+YWNrcyB0byBoYXZlDQo+IHBhaXJlZCBwYWdlcykgYW5kIHJlYWwgTUxDIE5BTkQgZnJvbSBIeW5p
+eCwgTWljcm9uIGFuZCBUb3NoaWJhLg0KPiBTbyBmYXIgaXQgc2VlbXMgdG8gd29yayBhbmQgbm8g
+bWFqb3IgaXNzdWVzIGhhdmUgYmVlbiBzcG90dGVkLg0KPiBPZiBjb3Vyc2UgaXQgc3Vydml2ZXMg
+VUJJIHRlc3RzIHRvby4NCj4gDQo+IFdlJ2xsIHNvb24gc3RhcnQgc2VuZGluZyBwYXRjaGVzLiBT
+b21lIHBhdGNoZXMgYXJlIGFscmVhZHkgb24gdGhlIGxpc3QgYW5kL29yDQo+IG5lZWQgYW4gdXBk
+YXRlLg0KPiBGb3IgZnVsbCBNTEMgTkFORCBzdXBwb3J0IHBhdGNoIHNlcmllcyBmb3IgTkFORCBj
+b3JlLCBVQkkgYW5kIG10ZC11dGlscyB3aWxsDQo+IGJlIHNlbnQuDQo+IA0KPiBUaGUgY3VycmVu
+dCAobm90IHJlYWR5IGZvciBtYWlubGluZSkgY29kZSBjYW4gYmUgZm91bmQgaGVyZToNCj4gZ2l0
+Oi8vZ2l0LmluZnJhZGVhZC5vcmcvdXNlcnMvcncvdWJpLW1sYy5naXQgd2lwDQo+IA0KPiBGZWVk
+YmFjayBhbmQgdGVzdHMgcmVwb3J0cyBhcmUgdmVyeSB3ZWxjb21lIQ0KPiANCj4gV2UnZCBsaWtl
+IHRvIHRoYW5rIE5leHQgVGhpbmcgY28uIGZvciBmdW5kaW5nIHRoaXMgd29yayEgOi0pDQo+IA0K
+PiBUaGFua3MsDQo+IC8vcmljaGFyZA0K
