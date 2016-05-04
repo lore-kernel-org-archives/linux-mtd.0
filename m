@@ -1,19 +1,19 @@
-Received: from mail-oi0-f65.google.com ([209.85.218.65])
+Received: from mail-oi0-f68.google.com ([209.85.218.68])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ay1e7-0004mt-1A
- for linux-mtd@lists.infradead.org; Wed, 04 May 2016 18:35:39 +0000
-Received: by mail-oi0-f65.google.com with SMTP id f63so10124231oig.0
- for <linux-mtd@lists.infradead.org>; Wed, 04 May 2016 11:35:18 -0700 (PDT)
+ id 1ay1e8-0004nr-D0
+ for linux-mtd@lists.infradead.org; Wed, 04 May 2016 18:35:41 +0000
+Received: by mail-oi0-f68.google.com with SMTP id d139so10127592oig.1
+ for <linux-mtd@lists.infradead.org>; Wed, 04 May 2016 11:35:19 -0700 (PDT)
 From: Franklin S Cooper Jr <fcooper@ti.com>
 To: robh+dt@kernel.org, boris.brezillon@free-electrons.com, richard@nod.at,
  dwmw2@infradead.org, computersforpeace@gmail.com, rogerq@ti.com,
  tony@atomide.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, vigneshr@ti.com, nsekhar@ti.com
 Cc: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: [PATCH v2 1/2] mtd: nand: omap2: Support parsing dma channel
- information from DT
-Date: Wed,  4 May 2016 13:34:43 -0500
-Message-Id: <1462386884-16380-2-git-send-email-fcooper@ti.com>
+Subject: [PATCH v2 2/2] ARM: OMAP2+: Update GPMC and NAND DT binding
+ documentation
+Date: Wed,  4 May 2016 13:34:44 -0500
+Message-Id: <1462386884-16380-3-git-send-email-fcooper@ti.com>
 In-Reply-To: <1462386884-16380-1-git-send-email-fcooper@ti.com>
 References: <1462386884-16380-1-git-send-email-fcooper@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,68 +25,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Switch from dma_request_channel to allow passing dma channel
-information from DT rather than hardcoding a value.
-
-Also provide a handle to the GPMC's dev so it can be used to parse the DMA
-channel information within the GPMC's DT node.
-
-Performance Numbers via mtd_speedtest now that EDMA based prefetch works:
-
-AM335x Performance numbers:
-DMA
-  CPULOAD Write: 54%  Read: 35%
-  page write speed	-23% (vs non dma)
-  page read speed	-35% (vs non dma)
-
-NO DMA (prefetch-polled)
-  CPULOAD Write: 98%  Read: 98%
-
-AM437x Performance numbers:
-DMA
-  CPU LOAD Write: 56% Read: 36%
-  page write speed	-16% (vs non dma)
-  page read speed	-22% (vs non dma)
-
-NO DMA (prefetch-polled)
-  CPULOAD Write: 93%  Read: 93%
+Add additional details to the GPMC NAND documentation to clarify
+what is needed to enable NAND DMA prefetch.
 
 Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- drivers/mtd/nand/omap2.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt | 7 ++++++-
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt                | 2 +-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 08e1588..83b9091 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -118,8 +118,6 @@
- #define	PREFETCH_STATUS_FIFO_CNT(val)	((val >> 24) & 0x7F)
- #define	STATUS_BUFF_EMPTY		0x00000001
+diff --git a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+index 21055e2..c1359f4 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
++++ b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+@@ -46,6 +46,10 @@ Required properties:
+ 			0 maps to GPMC_WAIT0 pin.
+  - gpio-cells:		Must be set to 2
  
--#define OMAP24XX_DMA_GPMC		4
--
- #define SECTOR_BYTES		512
- /* 4 bit padding to make byte aligned, 56 = 52 + 4 */
- #define BCH4_BIT_PAD		4
-@@ -1808,7 +1806,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	struct nand_chip		*nand_chip;
- 	int				err;
- 	dma_cap_mask_t			mask;
--	unsigned			sig;
- 	struct resource			*res;
- 	struct device			*dev = &pdev->dev;
- 	int				min_oobbytes = BADBLOCK_MARKER_LENGTH;
-@@ -1921,8 +1918,8 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	case NAND_OMAP_PREFETCH_DMA:
- 		dma_cap_zero(mask);
- 		dma_cap_set(DMA_SLAVE, mask);
--		sig = OMAP24XX_DMA_GPMC;
--		info->dma = dma_request_channel(mask, omap_dma_filter_fn, &sig);
-+		info->dma = dma_request_chan(pdev->dev.parent, "rxtx");
++Required properties when using NAND prefetch dma:
++ - dmas			GPMC NAND prefetch dma channel
++ - dma-names		Must be set to "rxtx"
 +
- 		if (!info->dma) {
- 			dev_err(&pdev->dev, "DMA engine request failed\n");
- 			err = -ENXIO;
+ Timing properties for child nodes. All are optional and default to 0.
+ 
+  - gpmc,sync-clk-ps:	Minimum clock period for synchronous mode, in picoseconds
+@@ -137,7 +141,8 @@ Example for an AM33xx board:
+ 		ti,hwmods = "gpmc";
+ 		reg = <0x50000000 0x2000>;
+ 		interrupts = <100>;
+-
++		dmas = <&edma 52 0>;
++		dma-names = "rxtx";
+ 		gpmc,num-cs = <8>;
+ 		gpmc,num-waitpins = <2>;
+ 		#address-cells = <2>;
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+index 3ee7e20..174f68c 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+@@ -39,7 +39,7 @@ Optional properties:
+ 
+ 		"prefetch-polled"	Prefetch polled mode (default)
+ 		"polled"		Polled mode, without prefetch
+-		"prefetch-dma"		Prefetch enabled sDMA mode
++		"prefetch-dma"		Prefetch enabled DMA mode
+ 		"prefetch-irq"		Prefetch enabled irq mode
+ 
+  - elm_id:	<deprecated> use "ti,elm-id" instead
 -- 
 2.7.0
