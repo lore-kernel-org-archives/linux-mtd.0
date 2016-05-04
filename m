@@ -1,26 +1,28 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axsxW-0004tR-G1
- for linux-mtd@lists.infradead.org; Wed, 04 May 2016 09:19:07 +0000
-Subject: Re: [ANNOUNCE] MLC support for UBI/UBIFS
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <57221E28.9050102@nod.at>
- <A765B125120D1346A63912DDE6D8B6310BF700B9@NTXXIAMBX02.xacn.micron.com>
- <5729B259.9010207@nod.at>
- <A765B125120D1346A63912DDE6D8B6310BF70101@NTXXIAMBX02.xacn.micron.com>
-Cc: Alexander Kaplan <alex@nextthing.co>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Gstir <david@sigma-star.at>,
- David Oberhollenzer <goliath@sigma-star.at>,
- Artem Bityutskiy <dedekind1@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5729BE71.5090708@nod.at>
-Date: Wed, 4 May 2016 11:18:41 +0200
+ id 1ay0yH-0006Cx-5y
+ for linux-mtd@lists.infradead.org; Wed, 04 May 2016 17:52:25 +0000
+Subject: Re: [PATCH 00/42] v7: separate operations from flags in the
+ bio/request structs
+To: Jeff Moyer <jmoyer@redhat.com>
+References: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
+ <x49d1p2c1nx.fsf@segfault.boston.devel.redhat.com>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
+ philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+ linux-raid@vger.kernel.org, dm-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
+From: Mike Christie <mchristi@redhat.com>
+Message-ID: <572A36BF.3070208@redhat.com>
+Date: Wed, 4 May 2016 12:51:59 -0500
 MIME-Version: 1.0
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF70101@NTXXIAMBX02.xacn.micron.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <x49d1p2c1nx.fsf@segfault.boston.devel.redhat.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,18 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bean,
+On 05/03/2016 03:44 PM, Jeff Moyer wrote:
+> mchristi@redhat.com writes:
+> 
+>> The following patches begin to cleanup the request->cmd_flags and
+>> bio->bi_rw mess. We currently use cmd_flags to specify the operation,
+>> attributes and state of the request. For bi_rw we use it for similar
+>> info and also the priority but then also have another bi_flags field
+>> for state. At some point, we abused them so much we just made cmd_flags
+>> 64 bits, so we could add more.
+>>
+>> The following patches seperate the operation (read, write discard,
+>> flush, etc) from cmd_flags/bi_rw.
+>>
+>> This patchset was made against linux-next from today April 15
+>> (git tag next-20160415).
+>>
+>> I put a git tree here:
+>> https://github.com/mikechristie/linux-kernel.git
+>> The patches are in the op branch.
+> 
+> Hi, Mike,
+> 
+> That git tree doesn't seem to exist.  I did manage to apply your patch
+> set on top of next-20160415, though.
+> 
+> So... what testing did you do? ;-) I ran into the following problems
 
-Am 04.05.2016 um 10:55 schrieb Bean Huo 霍斌斌 (beanhuo):
-> Hi, Richard
-> Yes , different with "dis6 and dis3", but I think this is not a perfect 
-> Solution on paired-page distance detect. Because different vendor and different series NAND with different such paired-page distance function. as a result, this table will be bigger and bigger. I now want to do if we can probe this information from DTS.
+I normally run xfstests and run it on my daily workstation and laptop. I
+did not do this for every FS this time and hit a regression.
 
-Not sure if I understand you correctly.
-Is it not possible to describe your pairing scheme in an algorithmic way?
-Did you check Boris' paired pages patches for MTD?
-Please try to implement it.
-Having the pairing table in DT is IMHO not a good thing.
+What FS were you using?
 
-Thanks,
-//richard
+> - git clone fails
+> - yum segfaults
+
+
+In v7/v6, I missed a new submit_bio call, so I hit issues like the two
+above. I have this fixed in the next version.
+
+> - many blktrace/blkparse issues, including incorrect cpu recorded in
+>   traces, null task names, and blkparse outputting nothing for a trace
+>   file several gigabytes in size.
+
+I will double check for these issues.
