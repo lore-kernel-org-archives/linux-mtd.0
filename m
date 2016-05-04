@@ -1,25 +1,25 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1axsas-0002lu-5F
- for linux-mtd@lists.infradead.org; Wed, 04 May 2016 08:55:42 +0000
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-CC: Alexander Kaplan <alex@nextthing.co>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, David Gstir <david@sigma-star.at>,
- David Oberhollenzer <goliath@sigma-star.at>, Artem Bityutskiy
- <dedekind1@gmail.com>
-Subject: RE: [ANNOUNCE] MLC support for UBI/UBIFS
-Date: Wed, 4 May 2016 08:55:12 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6310BF70101@NTXXIAMBX02.xacn.micron.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1axswS-0004os-UT
+ for linux-mtd@lists.infradead.org; Wed, 04 May 2016 09:18:01 +0000
+Date: Wed, 4 May 2016 11:17:35 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: "Bean Huo =?UTF-8?B?6ZyN5paM5paM?= (beanhuo)" <beanhuo@micron.com>
+Cc: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Alexander Kaplan <alex@nextthing.co>,
+ David Gstir <david@sigma-star.at>, David Oberhollenzer
+ <goliath@sigma-star.at>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [ANNOUNCE] MLC support for UBI/UBIFS
+Message-ID: <20160504111735.33b96d7e@bbrezillon>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6310BF70101@NTXXIAMBX02.xacn.micron.com>
 References: <57221E28.9050102@nod.at>
  <A765B125120D1346A63912DDE6D8B6310BF700B9@NTXXIAMBX02.xacn.micron.com>
  <5729B259.9010207@nod.at>
-In-Reply-To: <5729B259.9010207@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <A765B125120D1346A63912DDE6D8B6310BF70101@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksIFJpY2hhcmQNClllcyAsIGRpZmZlcmVudCB3aXRoICJkaXM2IGFuZCBkaXMzIiwgYnV0IEkg
-dGhpbmsgdGhpcyBpcyBub3QgYSBwZXJmZWN0IA0KU29sdXRpb24gb24gcGFpcmVkLXBhZ2UgZGlz
-dGFuY2UgZGV0ZWN0LiBCZWNhdXNlIGRpZmZlcmVudCB2ZW5kb3IgYW5kIGRpZmZlcmVudCBzZXJp
-ZXMgTkFORCB3aXRoIGRpZmZlcmVudCBzdWNoIHBhaXJlZC1wYWdlIGRpc3RhbmNlIGZ1bmN0aW9u
-LiBhcyBhIHJlc3VsdCwgdGhpcyB0YWJsZSB3aWxsIGJlIGJpZ2dlciBhbmQgYmlnZ2VyLiBJIG5v
-dyB3YW50IHRvIGRvIGlmIHdlIGNhbiBwcm9iZSB0aGlzIGluZm9ybWF0aW9uIGZyb20gRFRTLg0K
-DQoNCllvdXJzIEZhaXRoZnVsbHkNCkJlYW5IdW8NCkNlbGwgOis4NiAxODMgMjE1NiA5Mzk5DQoN
-Cg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBSaWNoYXJkIFdlaW5iZXJn
-ZXIgW21haWx0bzpyaWNoYXJkQG5vZC5hdF0NCj4gU2VudDogV2VkbmVzZGF5LCBNYXkgMDQsIDIw
-MTYgNDoyNyBQTQ0KPiBUbzogQmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKSA8YmVhbmh1b0Bt
-aWNyb24uY29tPjsNCj4gbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gQ2M6IEFsZXhh
-bmRlciBLYXBsYW4gPGFsZXhAbmV4dHRoaW5nLmNvPjsgQm9yaXMgQnJlemlsbG9uDQo+IDxib3Jp
-cy5icmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tPjsgRGF2aWQgR3N0aXIgPGRhdmlkQHNpZ21h
-LXN0YXIuYXQ+Ow0KPiBEYXZpZCBPYmVyaG9sbGVuemVyIDxnb2xpYXRoQHNpZ21hLXN0YXIuYXQ+
-OyBBcnRlbSBCaXR5dXRza2l5DQo+IDxkZWRla2luZDFAZ21haWwuY29tPg0KPiBTdWJqZWN0OiBS
-ZTogW0FOTk9VTkNFXSBNTEMgc3VwcG9ydCBmb3IgVUJJL1VCSUZTDQo+IA0KPiBCZWFuLA0KPiAN
-Cj4gQW0gMDQuMDUuMjAxNiB1bSAwOTo0MCBzY2hyaWViIEJlYW4gSHVvIOmcjeaWjOaWjCAoYmVh
-bmh1byk6DQo+ID4gSGksIFJpY2hhcmQNCj4gPiBEbyB5b3UgbmVlZCBvdXIgTWljcm9uIDcwcyBh
-bmQgODBzIE1MQyBOQU5EIHNhbXBsZT8NCj4gPiBDdXJyZW50IGNvZGUgb25seSBlbmFibGUgSHlu
-aXggTUxDIE5BTkQsIGNhbiBJIHNlbmQgcGF0Y2ggYWJvdXQgdGhpcw0KPiA+IG91ciBNTEMgTkFO
-RCBwYWlyZWQgcGFnZSBkaXN0YW5jZSB0byB5b3U/IEkgYWxyZWFkeSB0ZXN0ZWQgdGhlbSBvbiB5
-b3VyDQo+IGNvZGVzLg0KPiANCj4gUGF0Y2hlcyBhcmUgYWx3YXlzIHdlbGNvbWUuIDotKQ0KPiAN
-Cj4gRG9lcyB5b3VyIE1MQyBoYXZlIGEgbWFwcGluZyBvdGhlciB0aGFuIGRpc3QzIG9yIGRpc3Q2
-IGFzIGltcGxlbWVudGVkIGluDQo+IEJvcmlzJyAiW1BBVENIIDIvNF0gbXRkOiBuYW5kOiBpbXBs
-ZW1lbnQgdHdvIHBhaXJpbmcgc2NoZW1lIg0KPiBwYXRjaD8NCj4gDQo+IFRoYW5rcywNCj4gLy9y
-aWNoYXJkDQo=
+On Wed, 4 May 2016 08:55:12 +0000
+Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (beanhuo) <beanhuo@micron.com> wrote:
+
+> Hi, Richard
+> Yes , different with "dis6 and dis3", but I think this is not a perfect=20
+> Solution on paired-page distance detect. Because different vendor and dif=
+ferent series NAND with different such paired-page distance function. as a =
+result, this table will be bigger and bigger. I now want to do if we can pr=
+obe this information from DTS.
+
+Sorry but I'm clearly opposed to that: the NAND infrastructure provides
+a way to uniquely identify the part number, let's not add extra
+information in the DT if it's not needed.
+Just giving a simple use case where putting NAND chip details in the DT
+is a bad idea: some board manufacturers choose 2 or 3 equivalent NANDs
+coming from different vendors (and those NANDs may have different
+pairing scheme). With your solution this means having one DT per NAND
+chip, which is not easy to deal with.
+
+For the "the table will keep growing and become unmaintainable"
+argument, I agree. My plan is to provide a per-vendor ->init() hook
+so that each vendor can implement a simpler solution to detect/assign
+the pairing scheme (I'm pretty sure this is correlated to the NAND
+technology...), or other vendor specific stuff (read-retry, HW SLC
+mode, ...).
+
+Regarding your initial statement, are you sure your NAND chip does not
+use one of the already defined scheme. I had a look at several NAND
+datasheets (including Micron ones), and all of them were using either
+distance 3 or distance 6.
+Can you share more information about those different pairing scheme?
+
+Thanks,
+
+Boris
+
+
+--=20
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
