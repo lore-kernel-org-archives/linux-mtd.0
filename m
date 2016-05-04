@@ -1,30 +1,19 @@
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from mail-ob0-f196.google.com ([209.85.214.196])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ay1Ab-0004h1-C5
- for linux-mtd@lists.infradead.org; Wed, 04 May 2016 18:05:10 +0000
-Subject: Re: [PATCH 00/42] v7: separate operations from flags in the
- bio/request structs
-To: Jeff Moyer <jmoyer@redhat.com>
-References: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
- <x49d1p2c1nx.fsf@segfault.boston.devel.redhat.com>
- <572A36BF.3070208@redhat.com>
- <x49a8k5aen2.fsf@segfault.boston.devel.redhat.com>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
- konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
- philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
- linux-raid@vger.kernel.org, dm-devel@redhat.com,
- linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
- target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
-From: Mike Christie <mchristi@redhat.com>
-Message-ID: <572A39BD.8020405@redhat.com>
-Date: Wed, 4 May 2016 13:04:45 -0500
-MIME-Version: 1.0
-In-Reply-To: <x49a8k5aen2.fsf@segfault.boston.devel.redhat.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1ay1e5-0004lq-Ho
+ for linux-mtd@lists.infradead.org; Wed, 04 May 2016 18:35:38 +0000
+Received: by mail-ob0-f196.google.com with SMTP id n2so3429066obo.1
+ for <linux-mtd@lists.infradead.org>; Wed, 04 May 2016 11:35:17 -0700 (PDT)
+From: Franklin S Cooper Jr <fcooper@ti.com>
+To: robh+dt@kernel.org, boris.brezillon@free-electrons.com, richard@nod.at,
+ dwmw2@infradead.org, computersforpeace@gmail.com, rogerq@ti.com,
+ tony@atomide.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, vigneshr@ti.com, nsekhar@ti.com
+Cc: Franklin S Cooper Jr <fcooper@ti.com>
+Subject: [PATCH v2 0/2] mtd: nand: omap2: Add EDMA support for NAND DMA
+ prefetch
+Date: Wed,  4 May 2016 13:34:42 -0500
+Message-Id: <1462386884-16380-1-git-send-email-fcooper@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,34 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/04/2016 12:58 PM, Jeff Moyer wrote:
-> Mike Christie <mchristi@redhat.com> writes:
-> 
->> On 05/03/2016 03:44 PM, Jeff Moyer wrote:
->>> Hi, Mike,
->>>
->>> That git tree doesn't seem to exist.  I did manage to apply your patch
->>> set on top of next-20160415, though.
->>>
->>> So... what testing did you do? ;-) I ran into the following problems
->>
->> I normally run xfstests and run it on my daily workstation and laptop. I
->> did not do this for every FS this time and hit a regression.
->>
->> What FS were you using?
-> 
-> I'm using xfs, scsi disk, no blk-mq, no dm.
-> 
->>> - git clone fails
->>> - yum segfaults
->>
->> In v7/v6, I missed a new submit_bio call, so I hit issues like the two
->> above. I have this fixed in the next version.
-> 
-> OK, does this mean you're posting another version, or you already did
-> and I somehow missed it?
-> 
+This patchset includes the required patches to enable NAND DMA prefetch
+support when using the EDMA.
 
-I did not repost yet. I am still testing. Jens had me add some wrappers
-around the operation access, so because of my last screw up and the
-wrapper change affected all my patches I am redoing all my testing.
+This patchset depends on my previous patchset to enable NAND DMA prefetch
+using the SDMA and Roger's GPMC and NAND rework. Both of these patchsets
+are apart of Boris' NAND next patch. Therefore, these patches are also
+built on top of this branch.
+
+Also the following patches that fixes GPMC's DMA property are required
+and pulled into other trees but are not currently apart of the above
+branch:
+https://patchwork.ozlabs.org/patch/596014/
+https://patchwork.ozlabs.org/patch/596012/
+
+Version 2 changes:
+Switched to the new dma_request_chan api which is now preferred.
+Add performance numbers to the commit.
+
+Franklin S Cooper Jr (2):
+  mtd: nand: omap2: Support parsing dma channel information from DT
+  ARM: OMAP2+: Update GPMC and NAND DT binding documentation
+
+ Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt | 7 ++++++-
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt                | 2 +-
+ drivers/mtd/nand/omap2.c                                           | 7 ++-----
+ 3 files changed, 9 insertions(+), 7 deletions(-)
+
+-- 
+2.7.0
