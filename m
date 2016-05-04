@@ -1,9 +1,14 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ay14y-0000Xj-VB
- for linux-mtd@lists.infradead.org; Wed, 04 May 2016 17:59:22 +0000
-From: Jeff Moyer <jmoyer@redhat.com>
-To: Mike Christie <mchristi@redhat.com>
+ id 1ay1Ab-0004h1-C5
+ for linux-mtd@lists.infradead.org; Wed, 04 May 2016 18:05:10 +0000
+Subject: Re: [PATCH 00/42] v7: separate operations from flags in the
+ bio/request structs
+To: Jeff Moyer <jmoyer@redhat.com>
+References: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
+ <x49d1p2c1nx.fsf@segfault.boston.devel.redhat.com>
+ <572A36BF.3070208@redhat.com>
+ <x49a8k5aen2.fsf@segfault.boston.devel.redhat.com>
 Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
  philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
@@ -13,17 +18,13 @@ Cc: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH 00/42] v7: separate operations from flags in the
- bio/request structs
-References: <1460747777-8479-1-git-send-email-mchristi@redhat.com>
- <x49d1p2c1nx.fsf@segfault.boston.devel.redhat.com>
- <572A36BF.3070208@redhat.com>
-Date: Wed, 04 May 2016 13:58:57 -0400
-In-Reply-To: <572A36BF.3070208@redhat.com> (Mike Christie's message of "Wed, 4
- May 2016 12:51:59 -0500")
-Message-ID: <x49a8k5aen2.fsf@segfault.boston.devel.redhat.com>
+From: Mike Christie <mchristi@redhat.com>
+Message-ID: <572A39BD.8020405@redhat.com>
+Date: Wed, 4 May 2016 13:04:45 -0500
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <x49a8k5aen2.fsf@segfault.boston.devel.redhat.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,39 +34,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Christie <mchristi@redhat.com> writes:
+On 05/04/2016 12:58 PM, Jeff Moyer wrote:
+> Mike Christie <mchristi@redhat.com> writes:
+> 
+>> On 05/03/2016 03:44 PM, Jeff Moyer wrote:
+>>> Hi, Mike,
+>>>
+>>> That git tree doesn't seem to exist.  I did manage to apply your patch
+>>> set on top of next-20160415, though.
+>>>
+>>> So... what testing did you do? ;-) I ran into the following problems
+>>
+>> I normally run xfstests and run it on my daily workstation and laptop. I
+>> did not do this for every FS this time and hit a regression.
+>>
+>> What FS were you using?
+> 
+> I'm using xfs, scsi disk, no blk-mq, no dm.
+> 
+>>> - git clone fails
+>>> - yum segfaults
+>>
+>> In v7/v6, I missed a new submit_bio call, so I hit issues like the two
+>> above. I have this fixed in the next version.
+> 
+> OK, does this mean you're posting another version, or you already did
+> and I somehow missed it?
+> 
 
-> On 05/03/2016 03:44 PM, Jeff Moyer wrote:
->> Hi, Mike,
->> 
->> That git tree doesn't seem to exist.  I did manage to apply your patch
->> set on top of next-20160415, though.
->> 
->> So... what testing did you do? ;-) I ran into the following problems
->
-> I normally run xfstests and run it on my daily workstation and laptop. I
-> did not do this for every FS this time and hit a regression.
->
-> What FS were you using?
-
-I'm using xfs, scsi disk, no blk-mq, no dm.
-
->> - git clone fails
->> - yum segfaults
->
-> In v7/v6, I missed a new submit_bio call, so I hit issues like the two
-> above. I have this fixed in the next version.
-
-OK, does this mean you're posting another version, or you already did
-and I somehow missed it?
-
->> - many blktrace/blkparse issues, including incorrect cpu recorded in
->>   traces, null task names, and blkparse outputting nothing for a trace
->>   file several gigabytes in size.
->
-> I will double check for these issues.
-
-Thanks.  I'll stop digging for now, then.
-
-Cheers,
-Jeff
+I did not repost yet. I am still testing. Jens had me add some wrappers
+around the operation access, so because of my last screw up and the
+wrapper change affected all my patches I am redoing all my testing.
