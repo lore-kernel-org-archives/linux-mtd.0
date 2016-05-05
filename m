@@ -1,18 +1,26 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayRcO-0006cn-9Y
- for linux-mtd@lists.infradead.org; Thu, 05 May 2016 22:19:37 +0000
-Date: Fri, 6 May 2016 00:18:23 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Richard
- Weinberger <richard@nod.at>
-Subject: [RESEND PULL] mtd: nand: changes for 4.7
-Message-ID: <20160506001823.09386543@bbrezillon>
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ayT92-00065P-2X
+ for linux-mtd@lists.infradead.org; Thu, 05 May 2016 23:57:24 +0000
+Received: by mail-pa0-x229.google.com with SMTP id bt5so40631457pac.3
+ for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 16:57:03 -0700 (PDT)
+Date: Thu, 5 May 2016 16:57:00 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Michal Suchanek <hramrach@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marex@denx.de>, Han Xu <han.xu@nxp.com>,
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
+Message-ID: <20160505235700.GA99474@google.com>
+References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
+ <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
+ <5706B084.2070909@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5706B084.2070909@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,329 +30,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
++ Mark, linux-spi (see the last bit)
 
-I pushed a new nand/for-4.7 tag addressing your comments and fixing the
-circular dependency bug and white space problems you reported.
+Hi Heiner,
 
-Let me know if you see anything else.
+On Thu, Apr 07, 2016 at 09:09:56PM +0200, Heiner Kallweit wrote:
+> Am 05.04.2016 um 23:07 schrieb Brian Norris:
+> > On Tue, Apr 05, 2016 at 10:08:35PM +0200, Heiner Kallweit wrote:
+> >> Am 05.04.2016 um 21:39 schrieb Brian Norris:
+> >>>
+> >>> Michal has been working on a similar series, with some differences (I'll
+> >>> comment below). I think his latest work is here:
+> >>>
+> >>> http://lists.infradead.org/pipermail/linux-mtd/2015-December/063865.html
+[...]
+> I had a closer look at Michal's patch set, few remarks:
 
-Thanks,
+I would have much preferred you send your reviews in reply to his patch
+emails...
 
-Boris
+> Patch 2 changes the semantics of the return value of m25p80_read/write and the
+> related change to spi_nor_read/write is part of patch 4.
+> Means if the first patches are applied only we get a faulty behavior.
+> Usually this is undesirable, not sure whether it's acceptable here.
 
-The following changes since commit f55532a0c0b8bb6148f4e07853b876ef73bc69ca:
+I think I've fixed that up here. I'll resend.
 
-  Linux 4.6-rc1 (2016-03-26 16:03:24 -0700)
+> Patch 2
+> +	ret = m.actual_length - cmd_sz;
+> +	if (ret < 0)
+> +		return -EIO;
+> I think we should add special handling for the case ret == 0.
+> Usually this would indicate an error however there might be
+> intentional zero-length read's (not sure about that).
+> Therefore I'd propose to change the error condition to
+> if (ret < 0 || (!ret && len))
+> If zero-length reads are not possible we can simply change it to
+> if (ret <= 0)
 
-are available in the git repository at:
+Why should we do this in m25p80? I'm doing it in spi-nor.c.
 
-  git@github.com:linux-nand/linux.git tags/nand/for-4.7
+> Patch 7
+> W/o the proposed change to patch 2 the case that nor->read()
+> returns 0 isn't handled correctly.
+> We'd bail out from the read loop but return 0.
+> Instead we should return an error in this case.
 
-for you to fetch changes up to 666b65683dad9aa90efaa4aad24ef3710101e3aa:
+Right. I've fixed this in patch 7, not in patch 2.
 
-  mtd: brcmnand: respect ECC algorithm set by NAND subsystem (2016-05-05 23=
-:55:15 +0200)
+> With the change to patch 2 the case that nor->read() returns 0
+> can't happen and we should change the error condition to
+> if (ret < 0) for the sake of clarity.
+> 
+> Patch 8
+> Made it to mainline already, can be removed.
 
-----------------------------------------------------------------
-This pull request contains the following infrastructure changes:
-* introduction of the ECC algo concept to extend the ECC mode one
-* replacement of the nand_ecclayout infrastructure by something more
-  future-proof.
-* addition of an mtd-activity led trigger to replace the nand-activity
-  one
+Of course.
 
-And a bunch of specific NAND driver improvements/fixes. Here are the
-changes that are worth mentioning:
-* rework of the OMAP GPMC and NAND drivers
-* prepare the sunxi NAND driver to receive DMA support
-* handle bitflips in erased pages on GPMI revisions that do not support
-  this in hardware.
+> Patch 10
+> 1. min_t isn't needed here because both arguments are of type size_t.
 
-----------------------------------------------------------------
-Boris Brezillon (85):
-      Merge branch 'for-v4.7/gpmc-mtd-common' of github.com:rogerq/linux in=
-to nand/next
-      Merge branch 'mtd-nand-trigger' of git://git.kernel.org/.../j.anaszew=
-ski/linux-leds into nand/next
-      mtd: nand: atmel: correct bitflips in erased pages for pre-sama5d4 So=
-Cs
-      mtd: nand: document the NAND controller/NAND chip DT representation
-      mtd: nand: remove unneeded of_mtd.h inclusions
-      mtd: nand: omap2: rely on generic DT parsing done in nand_scan_ident()
-      mtd: nand: brcm: rely on generic DT parsing done in nand_scan_ident()
-      mtd: nand: atmel: rely on generic DT parsing done in nand_scan_ident()
-      mtd: nand: pxa3xx: rely on generic DT parsing done in nand_scan_ident=
-()
-      mtd: nand: sunxi: fix call order in sunxi_nand_chip_init()
-      mtd: nand: sunxi: fix clk rate calculation
-      mtd: nand: sunxi: fix EDO mode selection
-      mtd: nand: sunxi: adapt clk_rate to tWB, tADL, tWHR and tRHW timings
-      mtd: nand: export default read/write oob functions
-      mtd: nand: sunxi: implement ->read_oob()/->write_oob()
-      mtd: nand: sunxi: implement ->read_subpage()
-      mtd: nand: sunxi: improve ->cmd_ctrl() function
-      mtd: nand: sunxi: let the NAND controller control the CE line
-      mtd: nand: sunxi: fix the NFC_ECC_ERR_CNT() macro
-      mtd: nand: sunxi: fix NFC_CTL setting
-      mtd: nand: sunxi: disable clks on device removal
-      mtd: nand: enable ECC pipelining
-      mtd: nand: sunxi: fix ->dev_ready() implementation
-      mtd: nand: sunxi: make use of readl_poll_timeout()
-      mtd: nand: sunxi: poll for events instead of using interrupts
-      mtd: nand: sunxi: move some ECC related operations to their own funct=
-ions
-      mtd: nand: sunxi: make OOB retrieval optional
-      mtd: nand: sunxi: make cur_off parameter optional in extra oob helpers
-      mtd: add mtd_ooblayout_xxx() helper functions
-      mtd: use mtd_ooblayout_xxx() helpers where appropriate
-      mtd: nand: core: use mtd_ooblayout_xxx() helpers where appropriate
-      mtd: nand: atmel: use mtd_ooblayout_xxx() helpers where appropriate
-      mtd: nand: fsl_ifc: use mtd_ooblayout_xxx() helpers where appropriate
-      mtd: nand: gpmi: use mtd_ooblayout_xxx() helpers where appropriate
-      mtd: nand: lpc32xx: use mtd_ooblayout_xxx() helpers where appropriate
-      mtd: nand: omap2: use mtd_ooblayout_xxx() helpers where appropriate
-      mtd: nand: qcom: use mtd_ooblayout_xxx() helpers where appropriate
-      mtd: onenand: use mtd_ooblayout_xxx() helpers where appropriate
-      mtd: add mtd_set_ecclayout() helper function
-      mtd: use mtd_set_ecclayout() where appropriate
-      mtd: nand: use mtd_set_ecclayout() where appropriate
-      mtd: onenand: use mtd_set_ecclayout() where appropriate
-      mtd: docg3: use mtd_set_ecclayout() where appropriate
-      mtd: create an mtd_ooblayout_ops struct to ease ECC layout definition
-      mtd: docg3: switch to mtd_ooblayout_ops
-      mtd: nand: implement the default mtd_ooblayout_ops
-      mtd: nand: bch: switch to mtd_ooblayout_ops
-      mtd: nand: sharpsl: switch to mtd_ooblayout_ops
-      mtd: nand: jz4740: switch to mtd_ooblayout_ops
-      mtd: nand: atmel: switch to mtd_ooblayout_ops
-      mtd: nand: bf5xx: switch to mtd_ooblayout_ops
-      mtd: nand: brcm: switch to mtd_ooblayout_ops
-      mtd: nand: cafe: switch to mtd_ooblayout_ops
-      mtd: nand: davinci: switch to mtd_ooblayout_ops
-      mtd: nand: denali: switch to mtd_ooblayout_ops
-      mtd: nand: diskonchip: switch to mtd_ooblayout_ops
-      mtd: nand: docg4: switch to mtd_ooblayout_ops
-      mtd: nand: fsl_elbc: switch to mtd_ooblayout_ops
-      mtd: nand: fsl_ifc: switch to mtd_ooblayout_ops
-      mtd: nand: fsmc: switch to mtd_ooblayout_ops
-      mtd: nand: fsmc: get rid of the fsmc_nand_eccplace struct
-      mtd: nand: gpmi: switch to mtd_ooblayout_ops
-      mtd: nand: hisi504: switch to mtd_ooblayout_ops
-      mtd: nand: jz4780: switch to mtd_ooblayout_ops
-      mtd: nand: lpc32xx: switch to mtd_ooblayout_ops
-      mtd: nand: mxc: switch to mtd_ooblayout_ops
-      mtd: nand: omap2: switch to mtd_ooblayout_ops
-      mtd: nand: pxa3xx: switch to mtd_ooblayout_ops
-      mtd: nand: s3c2410: switch to mtd_ooblayout_ops
-      mtd: nand: sh_flctl: switch to mtd_ooblayout_ops
-      mtd: nand: sm_common: switch to mtd_ooblayout_ops
-      mtd: nand: sunxi: switch to mtd_ooblayout_ops
-      mtd: nand: vf610: switch to mtd_ooblayout_ops
-      mtd: nand: qcom: switch to mtd_ooblayout_ops
-      mtd: onenand: switch to mtd_ooblayout_ops
-      staging: mt29f_spinand: switch to mtd_ooblayout_ops
-      mtd: nand: kill the ecc->layout field
-      mtd: kill the nand_ecclayout struct
-      mtd: nand: gpmi: rely on generic DT parsing done in nand_scan_ident()
-      mtd: nand: davinci: rely on generic DT parsing done in nand_scan_iden=
-t()
-      mtd: nand: hisi504: rely on generic DT parsing done in nand_scan_iden=
-t()
-      mtd: nand: lpc32xx: rely on generic DT parsing done in nand_scan_iden=
-t()
-      mtd: nand: mxc: rely on generic DT parsing done in nand_scan_ident()
-      mtd: nand: sh_flctl: rely on generic DT parsing done in nand_scan_ide=
-nt()
-      mtd: nand: move of_get_nand_xxx() helpers into nand_base.c
+Fixed.
 
-Brian Norris (1):
-      mtd: brcmnand: respect ECC algorithm set by NAND subsystem
+> 2. At least in the case of fsl-espi the size limit refers to one
+>    physical transfer (including the command) and therefore to the sum
+>    of all transfers.
+> We should change
+> +	t[1].len = min_t(size_t, len, spi_max_transfer_size(spi));
+> to
+> +	t[1].len = min(len, spi_max_transfer_size(spi) - t[0].len);
+> 
+> Apart from that the patch set looks good to me.
 
-Cooper Jr., Franklin (2):
-      mtd: nand: omap2: Start dma request before enabling prefetch
-      mtd: nand: omap2: Fix high memory dma prefetch transfer
+That's not what Mark specified here:
 
-Ezequiel Garcia (5):
-      leds: trigger: Introduce a kernel panic LED trigger
-      mtd: Uninline mtd_write_oob and move it to mtdcore.c
-      leds: trigger: Introduce a MTD (NAND/NOR) trigger
-      mtd: nand: Remove the "nand-disk" LED trigger
-      mtd: Hook I/O activity to the MTD LED trigger
+http://lists.infradead.org/pipermail/linux-mtd/2015-November/063616.html
 
-Ezequiel Garc=C3=ADa (1):
-      mtd: nand: Remove BUG() abuse in nand_scan_tail
+and that's not what the API's very *name* means; it says max transfer
+size (where a spi_transfer is a very well-defined concept). You need to
+fix the driver or take up the API issues with Mark if you want to
+suggest we interpret this differently.
 
-Florian Fainelli (1):
-      mtd: brcmnand: Add support for v6.2 controllers
+I won't be changing this bit for now.
 
-Han Xu (1):
-      mtd: gpmi: fix raw_buffer pointer double free issue
-
-Jorge Ramirez-Ortiz (1):
-      mtd: nand: jz4780: fixup, device structure assigned at probe
-
-Julia Lawall (2):
-      mtd: nand: omap2: fix compare_const_fl.cocci warnings
-      mtd: nandsim: add __init attribute
-
-Maarten ter Huurne (1):
-      mtd: nand: jz4740: Remove unused local variable
-
-Markus Pargmann (1):
-      gpmi-nand: Handle ECC Errors in erased pages
-
-Rafa=C5=82 Mi=C5=82ecki (34):
-      mtd: nand: add new enum for storing ECC algorithm
-      of: mtd: prepare helper reading NAND ECC algo from DT
-      mtd: nand: set ECC algorithm in nand_dt_init
-      mtd: nand: nandsim: set ECC algorithm explicitly
-      mtd: nand: ams-delta: set ECC algorithm explicitly
-      mtd: nand: gpio: set ECC algorithm explicitly
-      mtd: nand: mxc: set ECC algorithm explicitly
-      mtd: nand: nuc900: set ECC algorithm explicitly
-      mtd: nand: orion: set ECC algorithm explicitly
-      mtd: nand: pasemi: set ECC algorithm explicitly
-      mtd: nand: plat: set ECC algorithm explicitly
-      mtd: nand: socrates: set ECC algorithm explicitly
-      mtd: nand: pasemi: switch to dev_* printing functions
-      mtd: nand: omap2: set ECC algorithm explicitly
-      mtd: nand: s3c2410: set ECC algorithm explicitly
-      mtd: nand: sh_flctl: set ECC algorithm explicitly
-      mtd: nand: au1550nd: set ECC algorithm explicitly
-      mtd: nand: mpc5121_nfc: set ECC algorithm explicitly
-      mtd: nand: cmx270: set ECC algorithm explicitly
-      mtd: nand: fsl_upm: set ECC algorithm explicitly
-      mtd: nand: fsl_ifc: set ECC algorithm explicitly
-      mtd: nand: fsl_elbc: set ECC algorithm explicitly
-      mtd: nand: bf5xx: set ECC algorithm explicitly
-      mtd: nand: davinci: set ECC algorithm explicitly
-      mtd: nand: atmel: set ECC algorithm explicitly
-      CRIS v32: nand: set ECC algorithm explicitly
-      staging: mt29f_spinand: set ECC algorithm explicitly
-      mtd: nand: set ECC algorithm to Hamming on fallback
-      mtd: nand: fsmc: validate ECC setup by checking algorithm directly
-      mtd: nand: read ECC algorithm from the new field
-      mtd: drop support for NAND_ECC_SOFT_BCH as "soft_bch" mapping
-      mtd: mtd: drop NAND_ECC_SOFT_BCH enum value
-      mtd: nand: add support for "nand-ecc-algo" DT property
-      Documentation: devicetree: deprecate "soft_bch" nand-ecc-mode value
-
-Raghav Dogra (1):
-      mtd/ifc: Add support for IFC controller version 2.0
-
-Roger Quadros (17):
-      ARM: OMAP2+: gpmc: Add platform data
-      ARM: OMAP2+: gpmc: Add gpmc timings and settings to platform data
-      memory: omap-gpmc: Introduce GPMC to NAND interface
-      memory: omap-gpmc: Add GPMC-NAND ops to get writebufferempty status
-      memory: omap-gpmc: Implement IRQ domain for NAND IRQs
-      mtd: nand: omap: Use gpmc_omap_get_nand_ops() to get NAND registers
-      mtd: nand: omap: Switch to using GPMC-NAND ops for writebuffer empty =
-check
-      mtd: nand: omap: Copy platform data parameters to omap_nand_info data
-      mtd: nand: omap: Clean up device tree support
-      mtd: nand: omap: Update DT binding documentation
-      memory: omap-gpmc: Prevent mapping into 1st 16MB
-      memory: omap-gpmc: Move device tree binding to correct location
-      memory: omap-gpmc: Support general purpose input for WAITPINs
-      memory: omap-gpmc: Reserve WAITPIN if needed for WAIT monitoring
-      memory: omap-gpmc: Support WAIT pin edge interrupts
-      memory: omap-gpmc: Prevent GPMC_STATUS from being accessed via gpmc_r=
-egs
-      mtd: nand: omap2: Implement NAND ready using gpiolib
-
-Zhaoxiu Zeng (1):
-      mtd: nand: s3c2410: fix bug in s3c2410_nand_correct_data()
-
- .../omap-gpmc.txt}                                 |  17 +
- .../devicetree/bindings/mtd/brcm,brcmnand.txt      |   1 +
- .../devicetree/bindings/mtd/gpmc-nand.txt          |  19 +-
- Documentation/devicetree/bindings/mtd/nand.txt     |  45 +-
- arch/arm/mach-omap2/gpmc-nand.c                    |   7 +-
- arch/arm/mach-pxa/spitz.c                          |  55 +-
- arch/cris/arch-v32/drivers/mach-a3/nandflash.c     |   1 +
- arch/cris/arch-v32/drivers/mach-fs/nandflash.c     |   1 +
- arch/mips/include/asm/mach-jz4740/jz4740_nand.h    |   2 +-
- arch/mips/jz4740/board-qi_lb60.c                   |  87 +--
- drivers/leds/trigger/Kconfig                       |  15 +
- drivers/leds/trigger/Makefile                      |   2 +
- drivers/leds/trigger/ledtrig-mtd.c                 |  45 ++
- drivers/leds/trigger/ledtrig-panic.c               |  30 +
- drivers/memory/Kconfig                             |   1 +
- drivers/memory/fsl_ifc.c                           |  36 +-
- drivers/memory/omap-gpmc.c                         | 657 ++++++++++++-----=
----
- drivers/mtd/devices/docg3.c                        |  46 +-
- drivers/mtd/mtdchar.c                              | 123 +++-
- drivers/mtd/mtdconcat.c                            |   2 +-
- drivers/mtd/mtdcore.c                              | 379 ++++++++++++
- drivers/mtd/mtdpart.c                              |  23 +-
- drivers/mtd/nand/ams-delta.c                       |   1 +
- drivers/mtd/nand/atmel_nand.c                      | 315 +++++-----
- drivers/mtd/nand/au1550nd.c                        |   1 +
- drivers/mtd/nand/bf5xx_nand.c                      |  52 +-
- drivers/mtd/nand/brcmnand/brcmnand.c               | 290 +++++----
- drivers/mtd/nand/cafe_nand.c                       |  44 +-
- drivers/mtd/nand/cmx270_nand.c                     |   1 +
- drivers/mtd/nand/davinci_nand.c                    | 210 +++----
- drivers/mtd/nand/denali.c                          |  50 +-
- drivers/mtd/nand/diskonchip.c                      |  60 +-
- drivers/mtd/nand/docg4.c                           |  33 +-
- drivers/mtd/nand/fsl_elbc_nand.c                   |  84 +--
- drivers/mtd/nand/fsl_ifc_nand.c                    | 317 ++++------
- drivers/mtd/nand/fsl_upm.c                         |   1 +
- drivers/mtd/nand/fsmc_nand.c                       | 332 +++--------
- drivers/mtd/nand/gpio.c                            |   1 +
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 161 ++++-
- drivers/mtd/nand/hisi504_nand.c                    |  40 +-
- drivers/mtd/nand/jz4740_nand.c                     |   3 +-
- drivers/mtd/nand/jz4780_bch.c                      |   1 -
- drivers/mtd/nand/jz4780_nand.c                     |  21 +-
- drivers/mtd/nand/lpc32xx_mlc.c                     |  51 +-
- drivers/mtd/nand/lpc32xx_slc.c                     |  83 ++-
- drivers/mtd/nand/mpc5121_nfc.c                     |   1 +
- drivers/mtd/nand/mxc_nand.c                        | 257 ++++----
- drivers/mtd/nand/nand_base.c                       | 664 +++++++++++++----=
-----
- drivers/mtd/nand/nand_bch.c                        |  48 +-
- drivers/mtd/nand/nandsim.c                         |  10 +-
- drivers/mtd/nand/nuc900_nand.c                     |   1 +
- drivers/mtd/nand/omap2.c                           | 448 +++++++++-----
- drivers/mtd/nand/orion_nand.c                      |   1 +
- drivers/mtd/nand/pasemi_nand.c                     |  16 +-
- drivers/mtd/nand/plat_nand.c                       |   1 +
- drivers/mtd/nand/pxa3xx_nand.c                     | 132 ++--
- drivers/mtd/nand/qcom_nandc.c                      |  88 ++-
- drivers/mtd/nand/s3c2410.c                         |  36 +-
- drivers/mtd/nand/sh_flctl.c                        | 115 ++--
- drivers/mtd/nand/sharpsl.c                         |   2 +-
- drivers/mtd/nand/sm_common.c                       |  93 ++-
- drivers/mtd/nand/socrates_nand.c                   |   1 +
- drivers/mtd/nand/sunxi_nand.c                      | 600 ++++++++++++-----=
---
- drivers/mtd/nand/vf610_nfc.c                       |  35 +-
- drivers/mtd/onenand/onenand_base.c                 | 235 ++++----
- drivers/of/Makefile                                |   1 -
- drivers/of/of_mtd.c                                | 119 ----
- drivers/staging/mt29f_spinand/mt29f_spinand.c      |  49 +-
- include/linux/fsl_ifc.h                            |  45 +-
- include/linux/leds.h                               |   6 +
- include/linux/mtd/fsmc.h                           |  18 -
- include/linux/mtd/mtd.h                            |  75 ++-
- include/linux/mtd/nand.h                           |  28 +-
- include/linux/mtd/onenand.h                        |   2 -
- include/linux/mtd/sharpsl.h                        |   2 +-
- include/linux/of_mtd.h                             |  50 --
- include/linux/omap-gpmc.h                          | 172 +-----
- include/linux/platform_data/gpmc-omap.h            | 172 ++++++
- include/linux/platform_data/mtd-nand-omap2.h       |  12 +-
- include/uapi/mtd/mtd-abi.h                         |   2 +-
- 80 files changed, 4387 insertions(+), 2896 deletions(-)
- rename Documentation/devicetree/bindings/{bus/ti-gpmc.txt =3D> memory-cont=
-rollers/omap-gpmc.txt} (89%)
- create mode 100644 drivers/leds/trigger/ledtrig-mtd.c
- create mode 100644 drivers/leds/trigger/ledtrig-panic.c
- delete mode 100644 drivers/of/of_mtd.c
- delete mode 100644 include/linux/of_mtd.h
- create mode 100644 include/linux/platform_data/gpmc-omap.h
+Brian
