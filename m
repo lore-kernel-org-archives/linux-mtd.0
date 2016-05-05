@@ -1,21 +1,16 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayLCp-0004fZ-F1
- for linux-mtd@lists.infradead.org; Thu, 05 May 2016 15:28:47 +0000
-Received: by mail-wm0-x243.google.com with SMTP id e201so4034097wme.2
- for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 08:28:26 -0700 (PDT)
-Subject: Re: [PATCH] mtd: m25p80: add message if mmap flash read is supported
-To: Brian Norris <computersforpeace@gmail.com>
-References: <9111b023-d1e5-3084-4320-acf727e828f4@gmail.com>
- <20160505005436.GA122798@google.com>
-Cc: MTD Mailing List <linux-mtd@lists.infradead.org>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <94364420-6e96-36b6-ab17-76b68db45262@gmail.com>
-Date: Thu, 5 May 2016 17:28:13 +0200
+ id 1ayNBp-00049k-AB
+ for linux-mtd@lists.infradead.org; Thu, 05 May 2016 17:35:53 +0000
+Received: by mail-ig0-x22e.google.com with SMTP id u10so22539495igr.1
+ for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 10:35:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20160505005436.GA122798@google.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Date: Thu, 5 May 2016 13:35:32 -0400
+Message-ID: <CAKKoKz5T5uddqyV955gnNenH6ejt_xMU_odmTC1FoQrbNm3R7w@mail.gmail.com>
+Subject: Implementing OTP
+From: Tom Tatakis <ttatakis@appliedlogix.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 05.05.2016 um 02:54 schrieb Brian Norris:
-> (moving linux-spi to BCC, since this is MTD-only, and doesn't concern
-> the SPI core)
-> 
-> On Wed, Apr 27, 2016 at 10:36:48PM +0200, Heiner Kallweit wrote:
->> As a follow-up to commit 08922f644878c9 "mtd: devices: m25p80: add support for
->> mmap read request" add an info to syslog if mmap flash read is supported for a
->> device.
-> 
-> Any particular reason you want this to be printed? There are quite a few
-> other features we don't print to the log right now.
-> 
-I see few scenarios where this information may be useful:
-- Confirmation that the mmap feature was properly configured for a device
-  (e.g. if mmap feature is enabled by platform data / DT for a flash chip)
-- There are devices with >1 flash chip and just one can be accessed mmapped.
-  Then this information can give a hint e.g. why accessing one chip is faster than
-  accessing other(s).
-- Debugging purposes (e.g. mmap is configured but not supported and flash read fails)
+Hello,
 
-Rgds, Heiner
+I have implemented OTP functionality in the NAND driver for the
+Macronix MX30LF1G18AC device.  I would like to send it on up in a
+patch but I'd like to confirm that what I did makes sense.  I modified
+ nand_base.c file to include the requisite functions for reading and
+writing the OTP.  I also modified the nand_scan_tail function to
+assign the names of the functions in the mtd structure.  The potential
+issue is that the ONFI command used to read and write the OTP uses a
+feature address of 0x90 which is defined as part of the 'Vendor
+Specific' area if I understand the ONFI spec (it's entirely possible
+that I do not).  Specifically, section 5.30 in Version 4.0 of the ONFI
+spec.
 
-> Brian
-> 
+If my modification of nand_base.c to include this makes sense, then I
+can put together a patch.
+
+I did try and figure out a way to get this potentially device
+dependent code into its own file, but I do not see how to do that
+other than creating a whole other driver for it complete with a
+configuration setting.  If that's what I need to do then I will try
+and put it together.  If there is a better way and you can point me
+int the right direction, that would be helpful as well.
+
+Thanks for you time
+Tom
