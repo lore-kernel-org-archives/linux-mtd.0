@@ -1,26 +1,19 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pu1apc01on0088.outbound.protection.outlook.com
+ ([104.47.126.88] helo=APC01-PU1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayT92-00065P-2X
- for linux-mtd@lists.infradead.org; Thu, 05 May 2016 23:57:24 +0000
-Received: by mail-pa0-x229.google.com with SMTP id bt5so40631457pac.3
- for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 16:57:03 -0700 (PDT)
-Date: Thu, 5 May 2016 16:57:00 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Michal Suchanek <hramrach@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marex@denx.de>, Han Xu <han.xu@nxp.com>,
- Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
-Message-ID: <20160505235700.GA99474@google.com>
-References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
- <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
- <5706B084.2070909@gmail.com>
+ id 1ayTCT-0000Ko-Ir
+ for linux-mtd@lists.infradead.org; Fri, 06 May 2016 00:01:01 +0000
+From: Iwo Mergler <iwo.mergler@netcommwireless.com>
+Subject: [PATCH] mtd: nandbiterrs: Support for NAND biterrors test on
+ platforms without raw write
+To: <linux-mtd@lists.infradead.org>
+CC: Richard Weinberger <richard@nod.at>, Brian Norris
+ <computersforpeace@gmail.com>, Huang Shijie <b32955@freescale.com>
+Message-ID: <572BDE8C.3020703@netcommwireless.com>
+Date: Fri, 6 May 2016 10:00:12 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5706B084.2070909@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,87 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Mark, linux-spi (see the last bit)
+Hi all,
 
-Hi Heiner,
 
-On Thu, Apr 07, 2016 at 09:09:56PM +0200, Heiner Kallweit wrote:
-> Am 05.04.2016 um 23:07 schrieb Brian Norris:
-> > On Tue, Apr 05, 2016 at 10:08:35PM +0200, Heiner Kallweit wrote:
-> >> Am 05.04.2016 um 21:39 schrieb Brian Norris:
-> >>>
-> >>> Michal has been working on a similar series, with some differences (I'll
-> >>> comment below). I think his latest work is here:
-> >>>
-> >>> http://lists.infradead.org/pipermail/linux-mtd/2015-December/063865.html
-[...]
-> I had a closer look at Michal's patch set, few remarks:
+I'm vaguely aware that there is an ongoing effort to move this
+stuff to mtd-utils, but I was unable to find a source tree
+with the work so far.
 
-I would have much preferred you send your reviews in reply to his patch
-emails...
+Below is a single-line patch for the kernel tests, feel free
+to apply to the userspace source as well.
 
-> Patch 2 changes the semantics of the return value of m25p80_read/write and the
-> related change to spi_nor_read/write is part of patch 4.
-> Means if the first patches are applied only we get a faulty behavior.
-> Usually this is undesirable, not sure whether it's acceptable here.
 
-I think I've fixed that up here. I'll resend.
+Best regards,
 
-> Patch 2
-> +	ret = m.actual_length - cmd_sz;
-> +	if (ret < 0)
-> +		return -EIO;
-> I think we should add special handling for the case ret == 0.
-> Usually this would indicate an error however there might be
-> intentional zero-length read's (not sure about that).
-> Therefore I'd propose to change the error condition to
-> if (ret < 0 || (!ret && len))
-> If zero-length reads are not possible we can simply change it to
-> if (ret <= 0)
+Iwo
 
-Why should we do this in m25p80? I'm doing it in spi-nor.c.
 
-> Patch 7
-> W/o the proposed change to patch 2 the case that nor->read()
-> returns 0 isn't handled correctly.
-> We'd bail out from the read loop but return 0.
-> Instead we should return an error in this case.
+Support for NAND biterrors test on platforms without raw write
 
-Right. I've fixed this in patch 7, not in patch 2.
+While the default test mode relies on raw write (mtd_write_oob) to introduce
+bit errors into a page, the rewrite test mode doesn't need it.
 
-> With the change to patch 2 the case that nor->read() returns 0
-> can't happen and we should change the error condition to
-> if (ret < 0) for the sake of clarity.
-> 
-> Patch 8
-> Made it to mainline already, can be removed.
+Some drivers use eldritch data/ECC arrangements in a NAND page and reshuffle
+things on-the-fly, to present a normal page view to the kernel. Typically,
+raw write / read is unsupported on such platforms. Examples are Freescale
+MXS and Qualcomm MDM9 and probably many others.
 
-Of course.
+Changed the overwrite test to use normal writes.
 
-> Patch 10
-> 1. min_t isn't needed here because both arguments are of type size_t.
+Signed-off-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+---
+  drivers/mtd/tests/nandbiterrs.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Fixed.
+diff --git a/drivers/mtd/tests/nandbiterrs.c 
+b/drivers/mtd/tests/nandbiterrs.c
+index 09a4cca..f26dec8 100644
+--- a/drivers/mtd/tests/nandbiterrs.c
++++ b/drivers/mtd/tests/nandbiterrs.c
+@@ -290,7 +290,7 @@ static int overwrite_test(void)
 
-> 2. At least in the case of fsl-espi the size limit refers to one
->    physical transfer (including the command) and therefore to the sum
->    of all transfers.
-> We should change
-> +	t[1].len = min_t(size_t, len, spi_max_transfer_size(spi));
-> to
-> +	t[1].len = min(len, spi_max_transfer_size(spi) - t[0].len);
-> 
-> Apart from that the patch set looks good to me.
+      while (opno < max_overwrite) {
 
-That's not what Mark specified here:
+-        err = rewrite_page(0);
++        err = write_page(0);
+          if (err)
+              break;
 
-http://lists.infradead.org/pipermail/linux-mtd/2015-November/063616.html
-
-and that's not what the API's very *name* means; it says max transfer
-size (where a spi_transfer is a very well-defined concept). You need to
-fix the driver or take up the API issues with Mark if you want to
-suggest we interpret this differently.
-
-I won't be changing this bit for now.
-
-Brian
+-- 
+2.7.3
