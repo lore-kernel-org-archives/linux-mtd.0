@@ -1,9 +1,9 @@
-Received: from mail-pf0-x22b.google.com ([2607:f8b0:400e:c00::22b])
+Received: from mail-pf0-x232.google.com ([2607:f8b0:400e:c00::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayThY-0006RD-7N
+ id 1ayThZ-0006VJ-7X
  for linux-mtd@lists.infradead.org; Fri, 06 May 2016 00:33:05 +0000
-Received: by mail-pf0-x22b.google.com with SMTP id 206so43417561pfu.0
- for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 17:32:43 -0700 (PDT)
+Received: by mail-pf0-x232.google.com with SMTP id 206so43417669pfu.0
+ for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 17:32:44 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Heiner Kallweit <hkallweit1@gmail.com>,
@@ -18,9 +18,9 @@ Cc: Heiner Kallweit <hkallweit1@gmail.com>,
  linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
  Joachim Eastwood <manabian@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v7 09/10] mtd: spi-nor: add read loop
-Date: Thu,  5 May 2016 17:31:55 -0700
-Message-Id: <1462494716-95312-10-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v7 10/10] mtd: m25p80: read in spi_max_transfer_size chunks
+Date: Thu,  5 May 2016 17:31:56 -0700
+Message-Id: <1462494716-95312-11-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
 References: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,56 +34,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Michal Suchanek <hramrach@gmail.com>
 
-mtdblock and ubi do not handle the situation when read returns less data
-than requested. Loop in spi-nor until buffer is filled or an error is
-returned.
+Take into account transfer size limitation of SPI master.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
 v6 -> v7:
- * no change
+ * use min() instead of min_t()
 
- drivers/mtd/spi-nor/spi-nor.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ drivers/mtd/devices/m25p80.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index ff96e1b54384..a78adcda1b85 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1030,14 +1030,27 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if (ret)
- 		return ret;
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index eab46d211ae6..9cf7fcd28034 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -172,7 +172,7 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
  
--	ret = nor->read(nor, from, len, buf);
-+	while (len) {
-+		ret = nor->read(nor, from, len, buf);
-+		if (ret == 0) {
-+			/* We shouldn't see 0-length reads */
-+			ret = -EIO;
-+			goto read_err;
-+		}
-+		if (ret < 0)
-+			goto read_err;
+ 	t[1].rx_buf = buf;
+ 	t[1].rx_nbits = m25p80_rx_nbits(nor);
+-	t[1].len = len;
++	t[1].len = min(len, spi_max_transfer_size(spi));
+ 	spi_message_add_tail(&t[1], &m);
  
--	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
--	if (ret < 0)
--		return ret;
-+		WARN_ON(ret > len);
-+		*retlen += ret;
-+		buf += ret;
-+		from += ret;
-+		len -= ret;
-+	}
-+	ret = 0;
- 
--	*retlen += ret;
--	return 0;
-+read_err:
-+	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_READ);
-+	return ret;
- }
- 
- static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	ret = spi_sync(spi, &m);
 -- 
 2.8.0.rc3.226.g39d4020
