@@ -1,21 +1,26 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayZmG-0002y4-UI
- for linux-mtd@lists.infradead.org; Fri, 06 May 2016 07:02:21 +0000
-Date: Fri, 6 May 2016 09:01:59 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ayeew-0006X9-JQ
+ for linux-mtd@lists.infradead.org; Fri, 06 May 2016 12:15:07 +0000
+Date: Fri, 6 May 2016 13:14:31 +0100
+From: Mark Brown <broonie@kernel.org>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PULL] mtd: nand: changes for 4.7
-Message-ID: <20160506090159.38c997f1@bbrezillon>
-In-Reply-To: <20160505183815.GA89390@google.com>
-References: <20160429101348.309d4784@bbrezillon>
- <20160505183815.GA89390@google.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marex@denx.de>, Han Xu <han.xu@nxp.com>,
+ linux-spi@vger.kernel.org
+Message-ID: <20160506121431.GQ6292@sirena.org.uk>
+References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
+ <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
+ <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="C6e6/dnRACxPVebH"
+Content-Disposition: inline
+In-Reply-To: <20160505235700.GA99474@google.com>
+Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +30,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
 
-On Thu, 5 May 2016 11:38:15 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+--C6e6/dnRACxPVebH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Hi Boris,
-> 
-> On Fri, Apr 29, 2016 at 10:13:48AM +0200, Boris Brezillon wrote:
-> > Hi Brian,
-> > 
-> > This is my first PR for the NAND subsystem, so don't hesitate to tell me
-> > if I did something wrong ;).  
-> 
-> Overall things aren't too bad, but I do have some comments.
-> 
-> > This pull request contains the following infrastructure changes:
-> > * introduction of the ECC algo concept to extend the ECC mode one
-> > * replacement of the nand_ecclayout infrastructure by something more
-> >   future-proof.
-> > * addition of an mtd-activity led trigger to replace the nand-activity
-> >   one
-> > 
-> > And a bunch of specific NAND driver improvements/fixes. Here are the
-> > changes that are worth mentioning:
-> > * rework of the OMAP GPMC and NAND drivers
-> > * prepare the sunxi NAND driver to receive DMA support
-> > * handle bitflips in erased pages on GPMI revisions that do not support
-> >   this in hardware.  
-> 
-> Thanks for the summary; it'd be nice if you can include this in the tag
-> description next time. Then it'll get auto-populated below with
-> git-request-pull, and it'll get pulled in automatically for me.
-> 
-> I also see this when I try to build a reasonably simple kernel:
-> 
-> depmod: ERROR: Found 5 modules in dependency cycles!
-> depmod: ERROR: Cycle detected: nand -> nand_bch -> nand
-> 
-> I think the new reference to &nand_ooblayout_lp_ops in nand_bch.c is
-> causing this (I can at least build/boot if I hack that out).
+On Thu, May 05, 2016 at 04:57:00PM -0700, Brian Norris wrote:
+> On Thu, Apr 07, 2016 at 09:09:56PM +0200, Heiner Kallweit wrote:
 
-Oops, indeed. I should really setup an environment to test all the
-cases on a build server (+ some static code checker like sparse).
+> > 2. At least in the case of fsl-espi the size limit refers to one
+> >    physical transfer (including the command) and therefore to the sum
+> >    of all transfers.
+> > We should change
+> > +	t[1].len =3D min_t(size_t, len, spi_max_transfer_size(spi));
+> > to
+> > +	t[1].len =3D min(len, spi_max_transfer_size(spi) - t[0].len);
+> >=20
+> > Apart from that the patch set looks good to me.
 
-Anyway, I fixed the bug as proposed on IRC (moved the
-mtd_set_ooblayout() call into nand_base.c), and resent the PR.
+> That's not what Mark specified here:
 
-Thanks,
+> http://lists.infradead.org/pipermail/linux-mtd/2015-November/063616.html
 
-Boris
+> and that's not what the API's very *name* means; it says max transfer
+> size (where a spi_transfer is a very well-defined concept). You need to
+> fix the driver or take up the API issues with Mark if you want to
+> suggest we interpret this differently.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Yes, it's called the maximum transfer size because it is the maximum
+size of a transfer, not because it's the maximum size of a message.
+
+--C6e6/dnRACxPVebH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJXLIqlAAoJECTWi3JdVIfQC88H/2xva2PCrdlC+6dXK+S1n43y
+sse7ST2houCukrSHljK+A+maopvucdVRcMHruitptQQPwv7BoKKVEpBEblUgjZ4s
+StWz4vsqc+/T5pZU5OAPCau4IgLM7+QE5phNK3uGm1RZRljQoyTYzYgi1QWn5c5v
+pzLS836b5+KcYMCmuubqCuB5tjemj3V4x8oiv5T2WoqkAoGAfZWoNds/cix3QD1c
+PNaeBL6EC/TrhHOxNDc36EE0s07+NJptG0rFkh+OHFtyhGfa2sMtN6GOau/rM0ak
+4n0+2zMmkoMkInhetqi5fV5N99U2dbZYNv8V9Y3/RfFREKbeSzhnNAivSvfZ2S4=
+=E4sK
+-----END PGP SIGNATURE-----
+
+--C6e6/dnRACxPVebH--
