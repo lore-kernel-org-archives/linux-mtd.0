@@ -1,17 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayis7-000694-Iz
- for linux-mtd@lists.infradead.org; Fri, 06 May 2016 16:45:00 +0000
-Message-ID: <572CC514.1070805@denx.de>
-Date: Fri, 06 May 2016 18:23:48 +0200
-From: Marek Vasut <marex@denx.de>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ayisE-0006Ar-LU
+ for linux-mtd@lists.infradead.org; Fri, 06 May 2016 16:45:07 +0000
+Date: Fri, 6 May 2016 18:44:44 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: nand_bch: fix spelling of "probably"
+Message-ID: <20160506184444.69e7cc9b@bbrezillon>
+In-Reply-To: <1462552721-93132-1-git-send-email-computersforpeace@gmail.com>
+References: <1462552721-93132-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-CC: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH v2] mtd: spi-nor: support GigaDevice gd25lq64c
-References: <1462549061-88356-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1462549061-88356-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,50 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/06/2016 05:37 PM, Brian Norris wrote:
-> Also note the GigaDevice JEDEC ID.
-> 
-> No write-protect support yet, since this flash uses a different status
-> register layout.
-> 
-> Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+On Fri,  6 May 2016 09:38:41 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+
+Can you take it directly into your tree before preparing your PR for
+Linus?
+
 > ---
-> v2: fixed duplicate flag
-
-Acked-by: Marek Vasut <marex@denx.de>
-
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  include/linux/mtd/spi-nor.h   | 1 +
->  2 files changed, 2 insertions(+)
+>  drivers/mtd/nand/nand_bch.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 157841dc3e99..c52e45594bfd 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -832,6 +832,7 @@ static const struct flash_info spi_nor_ids[] = {
->  	/* GigaDevice */
->  	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
->  	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
-> +	{ "gd25lq64c", INFO(0xc86017, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
->  
->  	/* Intel/Numonyx -- xxxs33b */
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index 3c36113a88e1..7f041bd88b82 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -21,6 +21,7 @@
->   * Sometimes these are the same as CFI IDs, but sometimes they aren't.
->   */
->  #define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
-> +#define SNOR_MFR_GIGADEVICE	0xc8
->  #define SNOR_MFR_INTEL		CFI_MFR_INTEL
->  #define SNOR_MFR_MICRON		CFI_MFR_ST /* ST Micro <--> Micron */
->  #define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
-> 
+> diff --git a/drivers/mtd/nand/nand_bch.c b/drivers/mtd/nand/nand_bch.c
+> index 28ef7b178eac..44763f87eae4 100644
+> --- a/drivers/mtd/nand/nand_bch.c
+> +++ b/drivers/mtd/nand/nand_bch.c
+> @@ -175,7 +175,7 @@ struct nand_bch_control *nand_bch_init(struct mtd_info *mtd)
+>  	 * which is called by mtd_ooblayout_count_eccbytes().
+>  	 * Make sure they are properly initialized before calling
+>  	 * mtd_ooblayout_count_eccbytes().
+> -	 * FIXME: we should probaly rework the sequencing in nand_scan_tail()
+> +	 * FIXME: we should probably rework the sequencing in nand_scan_tail()
+>  	 * to avoid setting those fields twice.
+>  	 */
+>  	nand->ecc.steps = eccsteps;
+
 
 
 -- 
-Best regards,
-Marek Vasut
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
