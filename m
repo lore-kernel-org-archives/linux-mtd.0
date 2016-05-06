@@ -1,9 +1,9 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayThR-0006La-VO
- for linux-mtd@lists.infradead.org; Fri, 06 May 2016 00:32:58 +0000
-Received: by mail-pa0-x22a.google.com with SMTP id iv1so41145780pac.2
- for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 17:32:37 -0700 (PDT)
+ id 1ayThS-0006Lf-T4
+ for linux-mtd@lists.infradead.org; Fri, 06 May 2016 00:32:59 +0000
+Received: by mail-pa0-x230.google.com with SMTP id xk12so41518355pac.0
+ for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 17:32:38 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Heiner Kallweit <hkallweit1@gmail.com>,
@@ -18,10 +18,10 @@ Cc: Heiner Kallweit <hkallweit1@gmail.com>,
  linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
  Joachim Eastwood <manabian@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v7 03/10] mtd: fsl-quadspi: return amount of data read/written
- or error
-Date: Thu,  5 May 2016 17:31:49 -0700
-Message-Id: <1462494716-95312-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v7 04/10] mtd: mtk-quadspi: return amount of data transferred
+ or error in read/write
+Date: Thu,  5 May 2016 17:31:50 -0700
+Message-Id: <1462494716-95312-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
 References: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,78 +33,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Michal Suchanek <hramrach@gmail.com>
+Add checking of SPI transfer errors and return them from read/write
+functions. Also return the amount of data transferred.
 
-Return amount of data read/written or error as read(2)/write(2) does.
-
-Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-v6 -> v7:
- * moved some *retlen changes to patch 7 to preserve bisectability
+New in v7
 
- drivers/mtd/spi-nor/fsl-quadspi.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/mtd/spi-nor/mtk-quadspi.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 74dc155e1b3b..ea296769f015 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -618,7 +618,7 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
- 	qspi_writel(q, reg, q->iobase + QUADSPI_MCR);
- }
- 
--static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
-+static ssize_t fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
- 				u8 opcode, unsigned int to, u32 *txbuf,
- 				unsigned count, size_t *retlen)
- {
-@@ -647,8 +647,11 @@ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
- 	/* Trigger it */
- 	ret = fsl_qspi_runcmd(q, opcode, to, count);
- 
--	if (ret == 0 && retlen)
--		*retlen += count;
-+	if (ret == 0) {
-+		if (retlen)
-+			*retlen += count;
-+		return count;
-+	}
- 
- 	return ret;
- }
-@@ -860,6 +863,8 @@ static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 	} else if (len > 0) {
- 		ret = fsl_qspi_nor_write(q, nor, opcode, 0,
- 					(u32 *)buf, len, NULL);
-+		if (ret > 0)
-+			return 0;
- 	} else {
- 		dev_err(q->dev, "invalid cmd %d\n", opcode);
- 		ret = -EINVAL;
-@@ -873,12 +878,12 @@ static ssize_t fsl_qspi_write(struct spi_nor *nor, loff_t to,
- {
- 	struct fsl_qspi *q = nor->priv;
- 
--	fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
-+	ssize_t ret = fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
- 				(u32 *)buf, len, retlen);
- 
- 	/* invalid the data in the AHB buffer. */
- 	fsl_qspi_invalid(q);
+diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+index ab92ac0f6b2b..e85687126c25 100644
+--- a/drivers/mtd/spi-nor/mtk-quadspi.c
++++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+@@ -261,7 +261,7 @@ static ssize_t mt8173_nor_read(struct spi_nor *nor, loff_t from, size_t length,
+ 			return ret;
+ 		buf[i] = readb(mt8173_nor->base + MTK_NOR_RDATA_REG);
+ 	}
 -	return 0;
-+	return ret;
++	return length;
  }
  
- static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
-@@ -925,7 +930,7 @@ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
- 		len);
+ static int mt8173_nor_write_single_byte(struct mt8173_nor *mt8173_nor,
+@@ -302,6 +302,7 @@ static ssize_t mt8173_nor_write(struct spi_nor *nor, loff_t to, size_t len,
+ {
+ 	int ret;
+ 	struct mt8173_nor *mt8173_nor = nor->priv;
++	size_t i;
  
- 	*retlen += len;
+ 	ret = mt8173_nor_write_buffer_enable(mt8173_nor);
+ 	if (ret < 0) {
+@@ -309,13 +310,12 @@ static ssize_t mt8173_nor_write(struct spi_nor *nor, loff_t to, size_t len,
+ 		return ret;
+ 	}
+ 
+-	while (len >= SFLASH_WRBUF_SIZE) {
++	for (i = 0; i + SFLASH_WRBUF_SIZE <= len; i += SFLASH_WRBUF_SIZE) {
+ 		ret = mt8173_nor_write_buffer(mt8173_nor, to, buf);
+ 		if (ret < 0) {
+ 			dev_err(mt8173_nor->dev, "write buffer failed!\n");
+ 			return ret;
+ 		}
+-		len -= SFLASH_WRBUF_SIZE;
+ 		to += SFLASH_WRBUF_SIZE;
+ 		buf += SFLASH_WRBUF_SIZE;
+ 		(*retlen) += SFLASH_WRBUF_SIZE;
+@@ -326,9 +326,9 @@ static ssize_t mt8173_nor_write(struct spi_nor *nor, loff_t to, size_t len,
+ 		return ret;
+ 	}
+ 
+-	if (len) {
+-		ret = mt8173_nor_write_single_byte(mt8173_nor, to, (int)len,
+-						   (u8 *)buf);
++	if (i < len) {
++		ret = mt8173_nor_write_single_byte(mt8173_nor, to,
++						   (int)(len - i), (u8 *)buf);
+ 		if (ret < 0) {
+ 			dev_err(mt8173_nor->dev, "write single byte failed!\n");
+ 			return ret;
+@@ -336,7 +336,7 @@ static ssize_t mt8173_nor_write(struct spi_nor *nor, loff_t to, size_t len,
+ 		(*retlen) += len;
+ 	}
+ 
 -	return 0;
 +	return len;
  }
  
- static int fsl_qspi_erase(struct spi_nor *nor, loff_t offs)
+ static int mt8173_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
 -- 
 2.8.0.rc3.226.g39d4020
