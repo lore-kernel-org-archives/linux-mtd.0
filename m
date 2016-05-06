@@ -1,26 +1,19 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayeew-0006X9-JQ
- for linux-mtd@lists.infradead.org; Fri, 06 May 2016 12:15:07 +0000
-Date: Fri, 6 May 2016 13:14:31 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marex@denx.de>, Han Xu <han.xu@nxp.com>,
- linux-spi@vger.kernel.org
-Message-ID: <20160506121431.GQ6292@sirena.org.uk>
-References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
- <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
- <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
+Date: Fri, 6 May 2016 15:38:16 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
+ matthias.bgg@gmail.com, robh@kernel.org, linux-mtd@lists.infradead.org,
+ xiaolei.li@mediatek.com, linux-mediatek@lists.infradead.org,
+ erin.lo@mediatek.com, daniel.thompson@linaro.org, blogic@openwrt.org
+Subject: Re: [PATCH v4 1/2] mtd: mediatek: device tree docs for MTK Smart
+ Device Gen1 NAND
+Message-ID: <20160506153816.7ca581ac@bbrezillon>
+In-Reply-To: <1461946642-1842-2-git-send-email-jorge.ramirez-ortiz@linaro.org>
+References: <1461946642-1842-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <1461946642-1842-2-git-send-email-jorge.ramirez-ortiz@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="C6e6/dnRACxPVebH"
-Content-Disposition: inline
-In-Reply-To: <20160505235700.GA99474@google.com>
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,50 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Jorge,
 
---C6e6/dnRACxPVebH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 29 Apr 2016 12:17:21 -0400
+Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
 
-On Thu, May 05, 2016 at 04:57:00PM -0700, Brian Norris wrote:
-> On Thu, Apr 07, 2016 at 09:09:56PM +0200, Heiner Kallweit wrote:
+> This patch adds documentation support for Smart Device Gen1 type of
+> NAND controllers.
+> 
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/mtd/mtk-nand.txt | 161 +++++++++++++++++++++
+>  1 file changed, 161 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> new file mode 100644
+> index 0000000..175767d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
 
-> > 2. At least in the case of fsl-espi the size limit refers to one
-> >    physical transfer (including the command) and therefore to the sum
-> >    of all transfers.
-> > We should change
-> > +	t[1].len =3D min_t(size_t, len, spi_max_transfer_size(spi));
-> > to
-> > +	t[1].len =3D min(len, spi_max_transfer_size(spi) - t[0].len);
-> >=20
-> > Apart from that the patch set looks good to me.
+[...]
 
-> That's not what Mark specified here:
+> +
+> +Children nodes properties:
+> +- reg:			Chip Select Signal, default 0.
+> +			Set as reg = <0>, <1> when need 2 CS.
+> +Optional:
+> +- nand-on-flash-bbt:	Store BBT on NAND Flash.
+> +- nand-ecc-mode:	the NAND ecc mode (check driver for supported modes)
+> +- nand-ecc-step-size:	Number of data bytes covered by a single ECC step.
+> +			The controller only supports 512 and 1024.
+> +			For large page NANDs ther recommended value is 1024.
+> +- nand-ecc-strength:	Number of bits to correct per ECC step.
+> +			The valid values that the controller supports are: 4, 6,
+> +			8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 44,
+> +			48, 52, 56, 60.
+> +			The strength should be calculated as follows:
+> +			E = (S - F) * 8 / 14
+> +			S = O / (P / Q)
+> +				E :nand-ecc-strength;
+> +				S :spare size per sector;
+> +				F : FDM size, should be in the range [1,8].
+> +				    It is used to store free oob data.
+> +				O : oob size;
+> +				P : page size;
+> +				Q :nand-ecc-step-size
+> +			If the result does not match any one of the listed
+> +			choices above, please select the smaller valid value from
+> +			the list.
+> +			(otherwise the driver will do the clamping at runtime).
+> +- vmch-supply:		NAND power supply.
 
-> http://lists.infradead.org/pipermail/linux-mtd/2015-November/063616.html
+Where is this supply name coming from? I most datasheets I see Vdd or
+Vcc, but nothing close to Vmch.
 
-> and that's not what the API's very *name* means; it says max transfer
-> size (where a spi_transfer is a very well-defined concept). You need to
-> fix the driver or take up the API issues with Mark if you want to
-> suggest we interpret this differently.
 
-Yes, it's called the maximum transfer size because it is the maximum
-size of a transfer, not because it's the maximum size of a message.
 
---C6e6/dnRACxPVebH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXLIqlAAoJECTWi3JdVIfQC88H/2xva2PCrdlC+6dXK+S1n43y
-sse7ST2houCukrSHljK+A+maopvucdVRcMHruitptQQPwv7BoKKVEpBEblUgjZ4s
-StWz4vsqc+/T5pZU5OAPCau4IgLM7+QE5phNK3uGm1RZRljQoyTYzYgi1QWn5c5v
-pzLS836b5+KcYMCmuubqCuB5tjemj3V4x8oiv5T2WoqkAoGAfZWoNds/cix3QD1c
-PNaeBL6EC/TrhHOxNDc36EE0s07+NJptG0rFkh+OHFtyhGfa2sMtN6GOau/rM0ak
-4n0+2zMmkoMkInhetqi5fV5N99U2dbZYNv8V9Y3/RfFREKbeSzhnNAivSvfZ2S4=
-=E4sK
------END PGP SIGNATURE-----
-
---C6e6/dnRACxPVebH--
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
