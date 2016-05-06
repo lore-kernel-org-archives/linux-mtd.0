@@ -1,9 +1,9 @@
 Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayThT-0006Lg-TD
- for linux-mtd@lists.infradead.org; Fri, 06 May 2016 00:33:00 +0000
-Received: by mail-pa0-x233.google.com with SMTP id r5so42358360pag.1
- for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 17:32:39 -0700 (PDT)
+ id 1ayThT-0006NF-TF
+ for linux-mtd@lists.infradead.org; Fri, 06 May 2016 00:33:01 +0000
+Received: by mail-pa0-x233.google.com with SMTP id bt5so40908788pac.3
+ for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 17:32:40 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Heiner Kallweit <hkallweit1@gmail.com>,
@@ -18,10 +18,9 @@ Cc: Heiner Kallweit <hkallweit1@gmail.com>,
  linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
  Joachim Eastwood <manabian@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v7 05/10] mtd: nxp-spifi: return amount of data transferred or
- error in read/write
-Date: Thu,  5 May 2016 17:31:51 -0700
-Message-Id: <1462494716-95312-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v7 06/10] mtd: spi-nor: check return value from write
+Date: Thu,  5 May 2016 17:31:52 -0700
+Message-Id: <1462494716-95312-7-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
 References: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,54 +32,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add checking of SPI transfer errors and return them from read/write
-functions. Also return the amount of data transferred.
+From: Michal Suchanek <hramrach@gmail.com>
 
+SPI NOR hardware drivers now return useful value from their write
+functions so check them.
+
+Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-New in v7
+v6 -> v7:
+ * no change
 
- drivers/mtd/spi-nor/nxp-spifi.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 45 ++++++++++++++++++++++++++++++-------------
+ 1 file changed, 32 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-spifi.c
-index 187adba5e69f..b0fb86996b8f 100644
---- a/drivers/mtd/spi-nor/nxp-spifi.c
-+++ b/drivers/mtd/spi-nor/nxp-spifi.c
-@@ -185,7 +185,7 @@ static ssize_t nxp_spifi_read(struct spi_nor *nor, loff_t from, size_t len,
- 	memcpy_fromio(buf, spifi->flash_base + from, len);
- 	*retlen += len;
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index f7ffec60a460..dd5c9eb9b9e0 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1062,10 +1062,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		nor->program_opcode = SPINOR_OP_BP;
  
--	return 0;
-+	return len;
- }
+ 		/* write one byte. */
+-		nor->write(nor, to, 1, retlen, buf);
++		ret = nor->write(nor, to, 1, retlen, buf);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 	}
+ 	to += actual;
  
- static ssize_t nxp_spifi_write(struct spi_nor *nor, loff_t to, size_t len,
-@@ -194,6 +194,7 @@ static ssize_t nxp_spifi_write(struct spi_nor *nor, loff_t to, size_t len,
- 	struct nxp_spifi *spifi = nor->priv;
- 	u32 cmd;
- 	int ret;
-+	size_t i;
+@@ -1074,10 +1078,14 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		nor->program_opcode = SPINOR_OP_AAI_WP;
  
- 	ret = nxp_spifi_set_memory_mode_off(spifi);
+ 		/* write two bytes. */
+-		nor->write(nor, to, 2, retlen, buf + actual);
++		ret = nor->write(nor, to, 2, retlen, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 2, "While writing 2 bytes written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 		to += 2;
+ 		nor->sst_write_second = true;
+ 	}
+@@ -1086,21 +1094,24 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	write_disable(nor);
+ 	ret = spi_nor_wait_till_ready(nor);
  	if (ret)
-@@ -209,10 +210,14 @@ static ssize_t nxp_spifi_write(struct spi_nor *nor, loff_t to, size_t len,
- 	      SPIFI_CMD_FRAMEFORM(spifi->nor.addr_width + 1);
- 	writel(cmd, spifi->io_base + SPIFI_CMD);
+-		goto time_out;
++		goto sst_write_err;
  
--	while (len--)
--		writeb(*buf++, spifi->io_base + SPIFI_DATA);
-+	for (i = 0; i < len; i++)
-+		writeb(buf[i], spifi->io_base + SPIFI_DATA);
+ 	/* Write out trailing byte if it exists. */
+ 	if (actual != len) {
+ 		write_enable(nor);
  
--	return nxp_spifi_wait_for_cmd(spifi);
-+	ret = nxp_spifi_wait_for_cmd(spifi);
-+	if (ret)
-+		return ret;
-+
-+	return len;
+ 		nor->program_opcode = SPINOR_OP_BP;
+-		nor->write(nor, to, 1, retlen, buf + actual);
+-
++		ret = nor->write(nor, to, 1, retlen, buf + actual);
++		if (ret < 0)
++			goto sst_write_err;
++		WARN(ret != 1, "While writing 1 byte written %i bytes\n",
++		     (int)ret);
+ 		ret = spi_nor_wait_till_ready(nor);
+ 		if (ret)
+-			goto time_out;
++			goto sst_write_err;
+ 		write_disable(nor);
+ 	}
+-time_out:
++sst_write_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
+ 	return ret;
  }
+@@ -1129,14 +1140,18 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
  
- static int nxp_spifi_erase(struct spi_nor *nor, loff_t offs)
+ 	/* do all the bytes fit onto one page? */
+ 	if (page_offset + len <= nor->page_size) {
+-		nor->write(nor, to, len, retlen, buf);
++		ret = nor->write(nor, to, len, retlen, buf);
++		if (ret < 0)
++			goto write_err;
+ 	} else {
+ 		/* the size of data remaining on the first page */
+ 		page_size = nor->page_size - page_offset;
+-		nor->write(nor, to, page_size, retlen, buf);
++		ret = nor->write(nor, to, page_size, retlen, buf);
++		if (ret < 0)
++			goto write_err;
+ 
+ 		/* write everything in nor->page_size chunks */
+-		for (i = page_size; i < len; i += page_size) {
++		for (i = ret; i < len; ) {
+ 			page_size = len - i;
+ 			if (page_size > nor->page_size)
+ 				page_size = nor->page_size;
+@@ -1147,7 +1162,11 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 			write_enable(nor);
+ 
+-			nor->write(nor, to + i, page_size, retlen, buf + i);
++			ret = nor->write(nor, to + i, page_size, retlen,
++					 buf + i);
++			if (ret < 0)
++				goto write_err;
++			i += ret;
+ 		}
+ 	}
+ 
 -- 
 2.8.0.rc3.226.g39d4020
