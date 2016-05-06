@@ -1,9 +1,9 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ayThQ-0006LR-SJ
- for linux-mtd@lists.infradead.org; Fri, 06 May 2016 00:32:57 +0000
-Received: by mail-pa0-x231.google.com with SMTP id r5so42357925pag.1
- for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 17:32:36 -0700 (PDT)
+ id 1ayThR-0006La-VO
+ for linux-mtd@lists.infradead.org; Fri, 06 May 2016 00:32:58 +0000
+Received: by mail-pa0-x22a.google.com with SMTP id iv1so41145780pac.2
+ for <linux-mtd@lists.infradead.org>; Thu, 05 May 2016 17:32:37 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
 Cc: Heiner Kallweit <hkallweit1@gmail.com>,
@@ -18,10 +18,10 @@ Cc: Heiner Kallweit <hkallweit1@gmail.com>,
  linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
  Joachim Eastwood <manabian@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: [PATCH v7 02/10] mtd: m25p80: return amount of data transferred or
- error in read/write
-Date: Thu,  5 May 2016 17:31:48 -0700
-Message-Id: <1462494716-95312-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v7 03/10] mtd: fsl-quadspi: return amount of data read/written
+ or error
+Date: Thu,  5 May 2016 17:31:49 -0700
+Message-Id: <1462494716-95312-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
 References: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,93 +35,76 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Michal Suchanek <hramrach@gmail.com>
 
-Add checking of SPI transfer errors and return them from read/write
-functions. Also return the amount of data transferred.
+Return amount of data read/written or error as read(2)/write(2) does.
 
 Signed-off-by: Michal Suchanek <hramrach@gmail.com>
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
 v6 -> v7:
- * handle the special spi_flash_read() SPI support that has been added recently
+ * moved some *retlen changes to patch 7 to preserve bisectability
 
- drivers/mtd/devices/m25p80.c | 29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 3bd75e87ed89..2ef5a6015276 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -81,6 +81,7 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 	struct spi_transfer t[2] = {};
- 	struct spi_message m;
- 	int cmd_sz = m25p_cmdsz(nor);
-+	ssize_t ret;
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 74dc155e1b3b..ea296769f015 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -618,7 +618,7 @@ static inline void fsl_qspi_invalid(struct fsl_qspi *q)
+ 	qspi_writel(q, reg, q->iobase + QUADSPI_MCR);
+ }
  
- 	spi_message_init(&m);
+-static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
++static ssize_t fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+ 				u8 opcode, unsigned int to, u32 *txbuf,
+ 				unsigned count, size_t *retlen)
+ {
+@@ -647,8 +647,11 @@ static int fsl_qspi_nor_write(struct fsl_qspi *q, struct spi_nor *nor,
+ 	/* Trigger it */
+ 	ret = fsl_qspi_runcmd(q, opcode, to, count);
  
-@@ -98,10 +99,15 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
+-	if (ret == 0 && retlen)
+-		*retlen += count;
++	if (ret == 0) {
++		if (retlen)
++			*retlen += count;
++		return count;
++	}
  
--	spi_sync(spi, &m);
-+	ret = spi_sync(spi, &m);
-+	if (ret)
-+		return ret;
+ 	return ret;
+ }
+@@ -860,6 +863,8 @@ static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	} else if (len > 0) {
+ 		ret = fsl_qspi_nor_write(q, nor, opcode, 0,
+ 					(u32 *)buf, len, NULL);
++		if (ret > 0)
++			return 0;
+ 	} else {
+ 		dev_err(q->dev, "invalid cmd %d\n", opcode);
+ 		ret = -EINVAL;
+@@ -873,12 +878,12 @@ static ssize_t fsl_qspi_write(struct spi_nor *nor, loff_t to,
+ {
+ 	struct fsl_qspi *q = nor->priv;
  
--	*retlen += m.actual_length - cmd_sz;
+-	fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
++	ssize_t ret = fsl_qspi_nor_write(q, nor, nor->program_opcode, to,
+ 				(u32 *)buf, len, retlen);
+ 
+ 	/* invalid the data in the AHB buffer. */
+ 	fsl_qspi_invalid(q);
 -	return 0;
-+	ret = m.actual_length - cmd_sz;
-+	if (ret < 0)
-+		return -EIO;
-+	*retlen += ret;
 +	return ret;
  }
  
- static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
-@@ -128,13 +134,13 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	struct spi_transfer t[2];
- 	struct spi_message m;
- 	unsigned int dummy = nor->read_dummy;
-+	ssize_t ret;
+ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
+@@ -925,7 +930,7 @@ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
+ 		len);
  
- 	/* convert the dummy cycles to the number of bytes */
- 	dummy /= 8;
- 
- 	if (spi_flash_read_supported(spi)) {
- 		struct spi_flash_read_message msg;
--		int ret;
- 
- 		memset(&msg, 0, sizeof(msg));
- 
-@@ -151,7 +157,9 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 
- 		ret = spi_flash_read(spi, &msg);
- 		*retlen = msg.retlen;
--		return ret;
-+		if (ret < 0)
-+			return ret;
-+		return msg.retlen;
- 	}
- 
- 	spi_message_init(&m);
-@@ -169,10 +177,15 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
- 
--	spi_sync(spi, &m);
-+	ret = spi_sync(spi, &m);
-+	if (ret)
-+		return ret;
- 
--	*retlen = m.actual_length - m25p_cmdsz(nor) - dummy;
+ 	*retlen += len;
 -	return 0;
-+	ret = m.actual_length - m25p_cmdsz(nor) - dummy;
-+	if (ret < 0)
-+		return -EIO;
-+	*retlen += ret;
-+	return ret;
++	return len;
  }
  
- /*
+ static int fsl_qspi_erase(struct spi_nor *nor, loff_t offs)
 -- 
 2.8.0.rc3.226.g39d4020
