@@ -1,19 +1,22 @@
-Date: Fri, 6 May 2016 15:38:16 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- matthias.bgg@gmail.com, robh@kernel.org, linux-mtd@lists.infradead.org,
- xiaolei.li@mediatek.com, linux-mediatek@lists.infradead.org,
- erin.lo@mediatek.com, daniel.thompson@linaro.org, blogic@openwrt.org
-Subject: Re: [PATCH v4 1/2] mtd: mediatek: device tree docs for MTK Smart
- Device Gen1 NAND
-Message-ID: <20160506153816.7ca581ac@bbrezillon>
-In-Reply-To: <1461946642-1842-2-git-send-email-jorge.ramirez-ortiz@linaro.org>
-References: <1461946642-1842-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <1461946642-1842-2-git-send-email-jorge.ramirez-ortiz@linaro.org>
+Received: from mail-pf0-x234.google.com ([2607:f8b0:400e:c00::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ayhp6-0001sP-VJ
+ for linux-mtd@lists.infradead.org; Fri, 06 May 2016 15:37:49 +0000
+Received: by mail-pf0-x234.google.com with SMTP id y69so50626036pfb.1
+ for <linux-mtd@lists.infradead.org>; Fri, 06 May 2016 08:37:28 -0700 (PDT)
+Date: Fri, 6 May 2016 08:37:24 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Cc: linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH] mtd: spi-nor: support GigaDevice gd25lq64c
+Message-ID: <20160506153724.GA88242@google.com>
+References: <1462496421-76186-1-git-send-email-computersforpeace@gmail.com>
+ <572BF4E2.1040106@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <572BF4E2.1040106@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jorge,
-
-On Fri, 29 Apr 2016 12:17:21 -0400
-Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
-
-> This patch adds documentation support for Smart Device Gen1 type of
-> NAND controllers.
+On Fri, May 06, 2016 at 03:35:30AM +0200, Marek Vasut wrote:
+> On 05/06/2016 03:00 AM, Brian Norris wrote:
+> > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > @@ -832,6 +832,7 @@ static const struct flash_info spi_nor_ids[] = {
+> >  	/* GigaDevice */
+> >  	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
+> >  	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
+> > +	{ "gd25lq64c", INFO(0xc86017, 0, 64 * 1024, 128, SECT_4K | SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
 > 
-> Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-> ---
->  Documentation/devicetree/bindings/mtd/mtk-nand.txt | 161 +++++++++++++++++++++
->  1 file changed, 161 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> It's enough to use one SECT_4K , it will work just fine :-)
+
+Of course :) Maybe I should read my own patch next time. Will send v2
+shortly.
+
+Thanks,
+Brian
+
+> >  	{ "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-> new file mode 100644
-> index 0000000..175767d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-
-[...]
-
-> +
-> +Children nodes properties:
-> +- reg:			Chip Select Signal, default 0.
-> +			Set as reg = <0>, <1> when need 2 CS.
-> +Optional:
-> +- nand-on-flash-bbt:	Store BBT on NAND Flash.
-> +- nand-ecc-mode:	the NAND ecc mode (check driver for supported modes)
-> +- nand-ecc-step-size:	Number of data bytes covered by a single ECC step.
-> +			The controller only supports 512 and 1024.
-> +			For large page NANDs ther recommended value is 1024.
-> +- nand-ecc-strength:	Number of bits to correct per ECC step.
-> +			The valid values that the controller supports are: 4, 6,
-> +			8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 44,
-> +			48, 52, 56, 60.
-> +			The strength should be calculated as follows:
-> +			E = (S - F) * 8 / 14
-> +			S = O / (P / Q)
-> +				E :nand-ecc-strength;
-> +				S :spare size per sector;
-> +				F : FDM size, should be in the range [1,8].
-> +				    It is used to store free oob data.
-> +				O : oob size;
-> +				P : page size;
-> +				Q :nand-ecc-step-size
-> +			If the result does not match any one of the listed
-> +			choices above, please select the smaller valid value from
-> +			the list.
-> +			(otherwise the driver will do the clamping at runtime).
-> +- vmch-supply:		NAND power supply.
-
-Where is this supply name coming from? I most datasheets I see Vdd or
-Vcc, but nothing close to Vmch.
-
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> 
+> -- 
+> Best regards,
+> Marek Vasut
