@@ -1,15 +1,22 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1az4nk-0003xu-TI
- for linux-mtd@lists.infradead.org; Sat, 07 May 2016 16:09:57 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, dedekind1@gmail.com,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH] ubi: Don't read back all data in ubi_eba_copy_leb()
-Date: Sat,  7 May 2016 18:09:18 +0200
-Message-Id: <1462637358-8151-1-git-send-email-richard@nod.at>
+ id 1azRpU-0003nX-1B
+ for linux-mtd@lists.infradead.org; Sun, 08 May 2016 16:45:16 +0000
+Date: Sun, 8 May 2016 18:44:51 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Iwo Mergler <iwo.mergler@netcommwireless.com>
+Cc: <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie
+ <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: nandbiterrs: Support for NAND biterrors test on
+ platforms without raw write
+Message-ID: <20160508184451.3d90176a@bbrezillon>
+In-Reply-To: <572BDE8C.3020703@netcommwireless.com>
+References: <572BDE8C.3020703@netcommwireless.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,54 +26,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Drop this paranoia check from the old days.
-If our MTD driver or the flash is so bad that we even cannot
-trust it to write data we have bigger problems.
+Hi Iwo,
 
-If one really does not trust the flash and wants write-verify
-she can enable UBI io checks using debugfs.
+On Fri, 6 May 2016 10:00:12 +1000
+Iwo Mergler <iwo.mergler@netcommwireless.com> wrote:
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/eba.c | 26 --------------------------
- 1 file changed, 26 deletions(-)
+> Hi all,
+> 
+> 
+> I'm vaguely aware that there is an ongoing effort to move this
+> stuff to mtd-utils, but I was unable to find a source tree
+> with the work so far.
+> 
+> Below is a single-line patch for the kernel tests, feel free
+> to apply to the userspace source as well.
+> 
+> 
+> Best regards,
+> 
+> Iwo
+> 
+> 
+> Support for NAND biterrors test on platforms without raw write
+> 
+> While the default test mode relies on raw write (mtd_write_oob) to introduce
+> bit errors into a page, the rewrite test mode doesn't need it.
+> 
+> Some drivers use eldritch data/ECC arrangements in a NAND page and reshuffle
+> things on-the-fly, to present a normal page view to the kernel. Typically,
+> raw write / read is unsupported on such platforms. Examples are Freescale
+> MXS and Qualcomm MDM9 and probably many others.
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index d628d45..3280387 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -1298,32 +1298,6 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- 		}
- 
- 		cond_resched();
--
--		/*
--		 * We've written the data and are going to read it back to make
--		 * sure it was written correctly.
--		 */
--		memset(ubi->peb_buf, 0xFF, aldata_size);
--		err = ubi_io_read_data(ubi, ubi->peb_buf, to, 0, aldata_size);
--		if (err) {
--			if (err != UBI_IO_BITFLIPS) {
--				ubi_warn(ubi, "error %d while reading data back from PEB %d",
--					 err, to);
--				if (is_error_sane(err))
--					err = MOVE_TARGET_RD_ERR;
--			} else
--				err = MOVE_TARGET_BITFLIPS;
--			goto out_unlock_buf;
--		}
--
--		cond_resched();
--
--		if (crc != crc32(UBI_CRC32_INIT, ubi->peb_buf, data_size)) {
--			ubi_warn(ubi, "read data back from PEB %d and it is different",
--				 to);
--			err = -EINVAL;
--			goto out_unlock_buf;
--		}
- 	}
- 
- 	ubi_assert(vol->eba_tbl[lnum] == from);
+Sorry, but I think such platforms should unshuffle the data/ECC
+sections to expose a standard in-band/out-of-band view to the upper
+layer.
+
+This is completely doable since ->read_page_raw()/->write_page_raw()
+can be overloaded (see the GPMI implementation or the default
+ECC_HW_SYNDROME raw implementation if you need examples).
+
+So, it's a NACK on my side.
+
+Best Regards,
+
+Boris
+
+
+> 
+> Changed the overwrite test to use normal writes.
+> 
+> Signed-off-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+> ---
+>   drivers/mtd/tests/nandbiterrs.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/tests/nandbiterrs.c 
+> b/drivers/mtd/tests/nandbiterrs.c
+> index 09a4cca..f26dec8 100644
+> --- a/drivers/mtd/tests/nandbiterrs.c
+> +++ b/drivers/mtd/tests/nandbiterrs.c
+> @@ -290,7 +290,7 @@ static int overwrite_test(void)
+> 
+>       while (opno < max_overwrite) {
+> 
+> -        err = rewrite_page(0);
+> +        err = write_page(0);
+>           if (err)
+>               break;
+> 
+
+
+
 -- 
-2.7.3
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
