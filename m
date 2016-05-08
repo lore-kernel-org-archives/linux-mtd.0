@@ -1,28 +1,22 @@
-Received: from mail-in-07.arcor-online.net ([151.189.21.47])
+Received: from victor.provo.novell.com ([137.65.250.26]
+ helo=prv3-mh.provo.novell.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1azVSC-0002wm-RE
- for linux-mtd@lists.infradead.org; Sun, 08 May 2016 20:37:29 +0000
-Received: from mail-in-03-z2.arcor-online.net (mail-in-03-z2.arcor-online.net
- [151.189.8.15])
- by mx.arcor.de (Postfix) with ESMTP id 3r2xN25WmFzBs4L
- for <linux-mtd@lists.infradead.org>; Sun,  8 May 2016 22:05:54 +0200 (CEST)
-Received: from mail-in-09.arcor-online.net (mail-in-09.arcor-online.net
- [151.189.21.49])
- by mail-in-03-z2.arcor-online.net (Postfix) with ESMTP id B9D3C1F6307
- for <linux-mtd@lists.infradead.org>; Sun,  8 May 2016 22:05:54 +0200 (CEST)
-Received: from [192.168.178.23] (p549AC2AE.dip0.t-ipconnect.de
- [84.154.194.174]) (Authenticated sender: giorgio.nicole@arcor.de)
- by mail-in-09.arcor-online.net (Postfix) with ESMTPA id 3r2xN23tvlzB3vy
- for <linux-mtd@lists.infradead.org>; Sun,  8 May 2016 22:05:54 +0200 (CEST)
-To: linux-mtd@lists.infradead.org
-From: Giorgio <giorgio.nicole@arcor.de>
-Subject: mtd: spi-nor.c: wrong test in stm_unlock()
-Message-ID: <73b50470-a187-2ecb-4c0a-082fb5508a63@arcor.de>
-Date: Sun, 8 May 2016 22:05:48 +0200
+ id 1azX2T-0000Yh-MV
+ for linux-mtd@lists.infradead.org; Sun, 08 May 2016 22:19:03 +0000
+From: NeilBrown <nfbrown@novell.com>
+To: Richard Weinberger <richard@nod.at>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Date: Mon, 09 May 2016 08:18:22 +1000
+Cc: "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig <hch@infradead.org>
+Cc: NFS List <linux-nfs@vger.kernel.org>
+Subject: Re: Reconsidering exportable UBIFS
+In-Reply-To: <5702E7F5.1050807@nod.at>
+References: <5702E7F5.1050807@nod.at>
+Message-ID: <871t5curbl.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="8qdpHd9QlN1IPEnSOviei5ev1VgBAhH3u"
+Content-Type: multipart/signed; boundary="=-=-=";
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,57 +26,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8qdpHd9QlN1IPEnSOviei5ev1VgBAhH3u
-Content-Type: multipart/mixed; boundary="0Cv0OQRdqA0DEdEkEOMhjedT98UEniu9n"
-From: Giorgio <giorgio.nicole@arcor.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <73b50470-a187-2ecb-4c0a-082fb5508a63@arcor.de>
-Subject: mtd: spi-nor.c: wrong test in stm_unlock()
-
---0Cv0OQRdqA0DEdEkEOMhjedT98UEniu9n
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-I noticed a wrong test within the function stm_unlock() in spi-nor.c in
-the kernel 4.6-rc5:
-
-static int stm_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
-{
-	struct mtd_info *mtd =3D &nor->mtd;
-	int status_old, status_new;
-	u8 mask =3D SR_BP2 | SR_BP1 | SR_BP0;
-=2E..
-=2E..
-	/* Don't protect status register if we're fully unlocked */
-	if (lock_len =3D=3D mtd->size)
-		status_new &=3D ~SR_SRWD;
-=2E..
-
-This last if test should be:
-
-	if (lock_len =3D=3D 0)
-		status_new &=3D ~SR_SRWD;
-
-giorgio
+--=-=-=
+Content-Type: text/plain
 
 
---0Cv0OQRdqA0DEdEkEOMhjedT98UEniu9n--
+(added linux-nfs@vger.kernel.org)
 
---8qdpHd9QlN1IPEnSOviei5ev1VgBAhH3u
+On Tue, Apr 05 2016, Richard Weinberger wrote:
+
+> Hi!
+>
+> Currently UBIFS is not exportable.
+> I'm not sure whether it is completely impossible or if I just miss a detail.
+> So I've some questions.
+>
+> Documentation/filesystems/nfs/Exporting states that the only required function
+> is fh_to_dentry().
+> This function should on UBIFS be implementable using generic_fh_to_dentry().
+> While UBIFS reuses in theory inode numbers we can ignore i_generation as
+> the flash chip is long dead before we start reusing inodes. Same as for JFFS2.
+> But the same document states also that fh_to_parent() and get_parent() are optional
+> but strongly recommended.
+> What does this mean? Will NFS work but puppies die and turn into
+> zombies?
+
+Not puppies, just kittens.
+
+If you don't provide these functions, then exporting with
+"subtree_check" won't work.  That is no great loss except that people
+might find the failure confusing.
+
+
+>
+> Implementing get_parent() is a little unpleasant.
+> UBIFS's on-flash layout does not support querying the parent.
+> We could change UBIFS's struct ubifs_ino_node, but I'd change the
+> on-flash layout only as last resort.
+>
+> The biggest problem I see is that UBIFS does not really support telldir()
+> and seekdir().
+> Directory offsets in UBIFS are plain hash values, so telldir()/seekdir() won't
+> correctly work if UBIFS faces hash collisions.
+> Currently UBIFS implements a hack which stores the UBIFS dent object into
+> file->private_data such that consecutive readdir()s are guaranteed to work.
+> A comment on UBIFS's readdir states:
+>  * This means that UBIFS cannot support NFS which requires full
+>  * 'seekdir()'/'telldir()' support.
+>
+> Is this still true? Maybe we can have NFS even if it is not perfect in
+> terms of performance.
+
+How big are your hashes?
+ext3 messed up their readdir/telldir design too so they don't have
+guaranteed unique keys.
+When using 32bit hashes you can definitely get problems with
+collisions.  I have not heard of problems with 64bit hashes.
+
+I may have the details slightly wrong, but as I recall non-uniqueness of
+cookies only causes a problem when the last cookie returned in a READDIR
+reply matches the first cookie returned in reply to the next readdir.
+So non-uniqueness is only a problem when it aligns badly.
+
+NeilBrown
+
+
+>
+> Artem, did I miss another show stopper? :-)
+>
+> Thanks,
+> //richard
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-fsdevel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--=-=-=
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-iEYEARECAAYFAlcvnCEACgkQYqbc2h3T5VC47QCgqeFSNgoKdWX5P7e7sCKAqy+1
-VhQAn1HrEGElL4no5B9a4VorO6ZI/x2Z
-=GOdg
+iQIcBAEBCAAGBQJXL7suAAoJEDnsnt1WYoG5X/QQAIVeH0iJAx/zp0rWVKI3VHYx
+4JrmAsj7Lz1yasRGhDOlh/J+zJ/wYszjaj/v2z8uXmeib5xmuBlRGMSW2MY831hM
+dXL8co5QQs73YYAieifn6F8yP1w8QoQE8hp0jlkEnSMjZbTnd2V4WPkCdMz8Lwbe
+vcSzvQyvPrxifj/e8wD0kwRsIYl9re8dbz6lqYYpxQPceicWu8SiQgKzCajYddqF
+2FgkVMOZOidanxr1BrF9ZGYQfb/vmnmvXX0FMMZB0/JQQJ805eytQlDJflYCflTJ
+6NX+5Pya+2625tUPwe8wqsblZAhu2dHRma9t69LNNWSsOW8BbJZPtTinqdzITFJS
+TJoS8aC6Alz9UCVnXsaFiS8Mwcsgm/+Ypq0Wg/Cnh8C796EbHv0jiNFiMkRRqsvF
+8CHNbBmOdk/heHGCBXHDIc4/oCN4Ko+xd9pAEOLz6oc+mfxBit/XzRS1Ewx0haUB
+AW62a7jC98hTON8VYeM+Kr9tAhrrsT/vkAujSF3HX1nBDQdZx+cr7LXOa68mmM6j
+xF5NnM10Ehfc4jsL083SweJok8HlOxbdm7qAsoqHGOJoxFWvGJOSL7tHEH0B32KD
+aaj9yfo66xnNLdZW9fKP9ev1y6y4cvHBdJkdpkspKopG/H1npAGJ50OzTgsg1f2w
+Tf2WtaU5t4/9/5+l3P0U
+=/iAe
 -----END PGP SIGNATURE-----
-
---8qdpHd9QlN1IPEnSOviei5ev1VgBAhH3u--
+--=-=-=--
