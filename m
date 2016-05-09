@@ -1,22 +1,23 @@
-Received: from mail-sg2apc01on0049.outbound.protection.outlook.com
- ([104.47.125.49] helo=APC01-SG2-obe.outbound.protection.outlook.com)
+Received: from prv3-mh.provo.novell.com ([137.65.250.26])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1azcWS-0005gv-8r
- for linux-mtd@lists.infradead.org; Mon, 09 May 2016 04:10:21 +0000
-Subject: Re: [PATCH] mtd: nandbiterrs: Support for NAND biterrors test on
- platforms without raw write
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <572BDE8C.3020703@netcommwireless.com>
- <20160508184451.3d90176a@bbrezillon>
-CC: <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>
-From: Iwo Mergler <iwo.mergler@netcommwireless.com>
-Message-ID: <57300D8A.8040607@netcommwireless.com>
-Date: Mon, 9 May 2016 14:09:46 +1000
+ id 1azdMU-000079-SW
+ for linux-mtd@lists.infradead.org; Mon, 09 May 2016 05:04:07 +0000
+From: NeilBrown <nfbrown@novell.com>
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Date: Mon, 09 May 2016 15:03:23 +1000
+Cc: Richard Weinberger <richard@nod.at>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "linux-mtd\@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+ NFS List <linux-nfs@vger.kernel.org>
+Subject: Re: Reconsidering exportable UBIFS
+In-Reply-To: <20160508232533.GH2694@ZenIV.linux.org.uk>
+References: <5702E7F5.1050807@nod.at> <871t5curbl.fsf@notabene.neil.brown.name>
+ <20160508232533.GH2694@ZenIV.linux.org.uk>
+Message-ID: <87y47ju8kk.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <20160508184451.3d90176a@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,104 +27,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, May 09 2016, Al Viro wrote:
 
-I have to admit that your NACK surprised me.
-
-My patch removes an unnecessary use of raw write
-from the test. It was only there because of my
-original implementation, which I now consider
-mistaken.
-
-I fully agree with you that raw write should
-be implemented, despite the impediments.
-Although I have seen at least one NAND controller
-that always computed and wrote ECC, with no way
-for software to circumvent it.
-
-Could you please elaborate a little why you
-don't want a test module to work with incomplete
-MTD drivers? Is that supposed to be motivating
-driver writers for better implementations? ;-)
-
-Would you accept the patch if I remove the comment
-about data reshuffling drivers? It's not required
-for the patch and, as you correctly pointed out,
-now inaccurate.
-
-
-Best regards,
-
-Iwo
-
-
-On 05/09/2016 02:44 AM, Boris Brezillon wrote:
-> Hi Iwo,
+> On Mon, May 09, 2016 at 08:18:22AM +1000, NeilBrown wrote:
 >
-> On Fri, 6 May 2016 10:00:12 +1000
-> Iwo Mergler <iwo.mergler@netcommwireless.com> wrote:
+>> Not puppies, just kittens.
+>>=20
+>> If you don't provide these functions, then exporting with
+>> "subtree_check" won't work.  That is no great loss except that people
+>> might find the failure confusing.
 >
->> Hi all,
->>
->>
->> I'm vaguely aware that there is an ongoing effort to move this
->> stuff to mtd-utils, but I was unable to find a source tree
->> with the work so far.
->>
->> Below is a single-line patch for the kernel tests, feel free
->> to apply to the userspace source as well.
->>
->>
->> Best regards,
->>
->> Iwo
->>
->>
->> Support for NAND biterrors test on platforms without raw write
->>
->> While the default test mode relies on raw write (mtd_write_oob) to introduce
->> bit errors into a page, the rewrite test mode doesn't need it.
->>
->> Some drivers use eldritch data/ECC arrangements in a NAND page and reshuffle
->> things on-the-fly, to present a normal page view to the kernel. Typically,
->> raw write / read is unsupported on such platforms. Examples are Freescale
->> MXS and Qualcomm MDM9 and probably many others.
-> Sorry, but I think such platforms should unshuffle the data/ECC
-> sections to expose a standard in-band/out-of-band view to the upper
-> layer.
+> 	OK, a client sends you a RENAME.  With fhandles of both parents +
+> old and new names in those.  Your task, should you choose to accept it, is
+> to figure out whether we should fail with nfserr_inval due to an attempt
+> to make a directory its own descendent.  Without being able to locate all
+> ancestors of a directory.
+
+You are right, sorry.  I was thinking that get_parent() was for finding
+the parent of a non-directory, but it is for directories.  It does the
+equivalent of lookup("..").  So if you have a ".." link or something
+like it, it should be easy.  If you don't, it won't be easy at all.
+
+Thanks,
+NeilBrown
+
+
 >
-> This is completely doable since ->read_page_raw()/->write_page_raw()
-> can be overloaded (see the GPMI implementation or the default
-> ECC_HW_SYNDROME raw implementation if you need examples).
+> 	You are fond of complaining about the checks that could've been left
+> to server not getting skipped on the client.  Now you want to skip them on
+> the server side as well?  Can't have it both ways...
 >
-> So, it's a NACK on my side.
->
-> Best Regards,
->
-> Boris
->
->
->> Changed the overwrite test to use normal writes.
->>
->> Signed-off-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
->> ---
->>    drivers/mtd/tests/nandbiterrs.c | 2 +-
->>    1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/tests/nandbiterrs.c
->> b/drivers/mtd/tests/nandbiterrs.c
->> index 09a4cca..f26dec8 100644
->> --- a/drivers/mtd/tests/nandbiterrs.c
->> +++ b/drivers/mtd/tests/nandbiterrs.c
->> @@ -290,7 +290,7 @@ static int overwrite_test(void)
->>
->>        while (opno < max_overwrite) {
->>
->> -        err = rewrite_page(0);
->> +        err = write_page(0);
->>            if (err)
->>                break;
->>
->
->
+> 	Seriously, it really doesn't work.  You can't do directory
+> modifications without having found the chain of ancestors.  No ->get_pare=
+nt()
+> is OK _only_ for something like tmpfs, where we have the full chains of
+> ancestors towards root all the time.  For UBIFS it's obviously not true.
+> Not unless you suck the entire directory tree in memory at the mount time.
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXMBobAAoJEDnsnt1WYoG5/6oQAMRpQHhVIzr1Ab2vzZEe37Gf
+pWLfLjpierucBfQ5Hy3E9jrHEp5by1hZ4vXcgkGYpTmMcEFVy/0iJnbZkM8yiy8B
+f+72ldKqG//iDAII3f3WRUS0kNXrUQn0dCfoOMwlWtNOo2lREzV+Q3Z5YTg5mu7R
+MIPgIOx67YdxPSxB2Ic3o3A0H7qVFbWNAaa0/DrVRHkXWmjt+wk4FfCb0UlAJoCF
+rabgA7eAlEa8VuM85KXBcrlD7uhCN5zVqkGNj6+FGCPevLEjAMDWBniOVgS58ysZ
+08OGWuqBVcUAFoqCpShY+yqEHTn3NsDih7QjcelTaTd7s3Etw3SoZxpTbEXFK6lY
+A+yZe4UwuAUnIT8YXM+74Ymv0IKPzEX2czXOjPS+fH+7chJqHdlYgoRo7ZMjoRUP
+SiKRiDJ6HRZsIVv0z7U6YMHOwj4wBq0Nmim1EP7NTWfppMT4Fr7WGV5vNPEaOdMu
+Ha+t3TxSh2yTsHK1+C1PL2eJGK+g9A8AC4Mqh5XWcb1tB4eIfUjr/dA4FTMPU3/4
+TGne8TO0ucYrF6spxOujOTvsP8MdnWoCLHICuxQe6qWFNLCLHux1BiGOiOqpZUlH
+xdRwEGTALBh74+s5vUJs8SPiOuxGOXzqbUWrHK9vUufHNx5KzOpmKVaErdae0Ioo
+usEFKGbo1w+g32OLmnuC
+=vzTa
+-----END PGP SIGNATURE-----
+--=-=-=--
