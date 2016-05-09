@@ -1,21 +1,24 @@
-From: Wenyou Yang <wenyou.yang@atmel.com>
-To: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll
- <pawel.moll@arm.com>, Mark Brown <broonie@kernel.org>, Ian Campbell
- <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>, "Jean-Christophe
- Plagniol-Villard" <plagnioj@jcrosoft.com>, Russell King
- <linux@arm.linux.org.uk>, Josh Wu <rainyfeeling@outlook.com>,
- <linux-arm-kernel@lists.infradead.org>, Wenyou Yang <wenyou.yang@atmel.com>
-Subject: [PATCH 2/2] ARM: at91/dt: use "atmel,sama5d3-nfc" compatible for nfc
-Date: Mon, 9 May 2016 14:51:19 +0800
-Message-ID: <1462776680-5284-3-git-send-email-wenyou.yang@atmel.com>
-In-Reply-To: <1462776680-5284-1-git-send-email-wenyou.yang@atmel.com>
+Date: Mon, 9 May 2016 15:13:24 -0500
+From: Rob Herring <robh@kernel.org>
+To: Wenyou Yang <wenyou.yang@atmel.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Brown <broonie@kernel.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Russell King <linux@arm.linux.org.uk>, Josh Wu <rainyfeeling@outlook.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/2] mtd: atmel_nand: remove compatible "atmel,sama5d4-nfc"
+Message-ID: <20160509201324.GA9845@rob-hp-laptop>
 References: <1462776680-5284-1-git-send-email-wenyou.yang@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1462776680-5284-1-git-send-email-wenyou.yang@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +28,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Due to the compatible "atmel,sama5d4-nfc" removal, use
-"atmel,sama5d3-nfc" for the sama5d2's nfc node.
+On Mon, May 09, 2016 at 02:51:17PM +0800, Wenyou Yang wrote:
+> It is a datasheet bug, for current SoCs, the RB_EDGE3(i.e. bit 27)
+> of HSMC_SR register does not exist, the RB_EDGE0 (i.e. bit 24) is
+> the ready/busy line edge status bit. So the compatible
+> "atmel,sama5d4-nfc" is unneeded.
 
-Signed-off-by: Wenyou Yang <wenyou.yang@atmel.com>
----
+The compatible is needed if the SOC still exists. You can list both for 
+the sama5d4 if the block is the same.
 
- arch/arm/boot/dts/sama5d2.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-index 78996bd..9817090 100644
---- a/arch/arm/boot/dts/sama5d2.dtsi
-+++ b/arch/arm/boot/dts/sama5d2.dtsi
-@@ -280,7 +280,7 @@
- 			status = "disabled";
- 
- 			nfc@c0000000 {
--				compatible = "atmel,sama5d4-nfc";
-+				compatible = "atmel,sama5d3-nfc";
- 				#address-cells = <1>;
- 				#size-cells = <1>;
- 				reg = < /* NFC Command Registers */
--- 
-2.7.4
+Rob
