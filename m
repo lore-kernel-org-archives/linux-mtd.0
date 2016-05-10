@@ -1,19 +1,26 @@
-Date: Tue, 10 May 2016 17:13:53 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- matthias.bgg@gmail.com, robh@kernel.org, linux-mtd@lists.infradead.org,
- xiaolei.li@mediatek.com, linux-mediatek@lists.infradead.org,
- erin.lo@mediatek.com, daniel.thompson@linaro.org, blogic@openwrt.org
+Received: from mail-qg0-x229.google.com ([2607:f8b0:400d:c04::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b09R1-000395-77
+ for linux-mtd@lists.infradead.org; Tue, 10 May 2016 15:18:56 +0000
+Received: by mail-qg0-x229.google.com with SMTP id w36so8124000qge.3
+ for <linux-mtd@lists.infradead.org>; Tue, 10 May 2016 08:18:32 -0700 (PDT)
 Subject: Re: [PATCH v4 2/2] mtd: mediatek: driver for MTK Smart Device Gen1
  NAND
-Message-ID: <20160510171353.1697cb8a@bbrezillon>
-In-Reply-To: <5731F537.9040009@linaro.org>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
 References: <1461946642-1842-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
  <1461946642-1842-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160510141335.442d3d7b@bbrezillon> <5731F537.9040009@linaro.org>
+ <20160510141335.442d3d7b@bbrezillon> <5731F40B.801@linaro.org>
+ <20160510165943.0322b374@bbrezillon>
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org, matthias.bgg@gmail.com,
+ robh@kernel.org, linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com,
+ linux-mediatek@lists.infradead.org, erin.lo@mediatek.com,
+ daniel.thompson@linaro.org, blogic@openwrt.org
+From: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
+Message-ID: <5731FBC5.4090009@linaro.org>
+Date: Tue, 10 May 2016 11:18:29 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160510165943.0322b374@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,68 +31,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 10 May 2016 10:50:31 -0400
-Jorge Ramirez <jorge.ramirez-ortiz@linaro.org> wrote:
+On 05/10/2016 10:59 AM, Boris Brezillon wrote:
+> On Tue, 10 May 2016 10:45:31 -0400
+> Jorge Ramirez<jorge.ramirez-ortiz@linaro.org>  wrote:
+>
+>> >On 05/10/2016 08:13 AM, Boris Brezillon wrote:
+>>>> > >>+struct mtk_ecc {
+>>>>> > >> >+	struct device *dev;
+>>>>> > >> >+	void __iomem *regs;
+>>>>> > >> >+	struct clk *clk;
+>>>>> > >> >+
+>>>>> > >> >+	struct completion done;
+>>>>> > >> >+	struct semaphore sem;
+>>> > >You tried to explain me why you decided to go for a semaphore instead of
+>>> > >a mutex, but I don't remember. Could you explain it again?
+>>> > >If that's all about being interruptible, then you can use
+>> >
+>> >Just for flexibility, no other reason really.
+>> >Neither the mutex nor the semaphore are actually needed in this driver.
+>> >Not knowing how things are going to evolve in the upper layers of MTD I
+>> >didn't feel comfortable taking a lock in a function and unlocking the
+>> >mutex in a different function (which is the way this driver operates).
+>> >with that in mind I opted for a semaphore since it can always be
+>> >unlocked -if needed be- by a different thread.
+> But that has nothing to do with possible evolutions in the MTD layer.
+> The ECC engine resource can only have a single user at a time, hence
+> the mutex approach. Sorry, but I don't understand the "flexibility"
+> argument, but maybe I'm misunderstanding the different between a
+> semaphore and a mutex.
 
-> On 05/10/2016 08:13 AM, Boris Brezillon wrote:
-> >> +	if (config->codec == ECC_ENC) {  
-> >> >+		/* configure ECC encoder (in bits) */
-> >> >+		enc_sz = config->enc_len << 3;
-> >> >+
-> >> >+		reg = ecc_bit | (config->ecc_mode << ECC_MODE_SHIFT);
-> >> >+		reg |= (enc_sz << ECC_MS_SHIFT);
-> >> >+		writel(reg, ecc->regs + ECC_ENCCNFG);
-> >> >+
-> >> >+		if (config->ecc_mode != ECC_NFI_MODE)
-> >> >+			writel(lower_32_bits(config->addr),
-> >> >+				ecc->regs + ECC_ENCDIADDR);
-> >> >+
-> >> >+	} else {
-> >> >+		/* configure ECC decoder (in bits) */
-> >> >+		dec_sz = config->dec_len;
-> >> >+
-> >> >+		reg = ecc_bit | (config->ecc_mode << ECC_MODE_SHIFT);
-> >> >+		reg |= (dec_sz << ECC_MS_SHIFT) | DEC_CNFG_CORRECT;
-> >> >+		reg |= DEC_EMPTY_EN;
-> >> >+		writel(reg, ecc->regs + ECC_DECCNFG);
-> >> >+
-> >> >+		if (config->sec_mask)
-> >> >+			ecc->sec_mask = 1 << (config->sec_mask - 1);
-> >> >+	}  
-> > I see that some of the logic could be shared between the ENC and DEC
-> > cases.  
-> 
-> I guess you are referring to
-> reg = ecc_bit | (config->ecc_mode << ECC_MODE_SHIFT);
-> 
-> ok...
-
-and
-
-reg |= (sz << ECC_MS_SHIFT);
-
-Ok, maybe it's not so important.
-
-> 
-> > BTW, why do you multiply enc_len by 8 (bits to byte conversion), but
-> > don't do that for dec_len?
-> >  
-> 
-> just as needed by the hardware:
-> the config is in bits, the encoder register requires bytes, the decoder 
-> register requires bits.
-> 
-
-Are you sure about that? Cause it seems to me that the NAND controller
-drivers put a length in bits in ->dec_len and a length in bytes in
-->enc_len, and then you have an extra conversion in the ECC engine
-driver code for enc_len to convert it into a value in bits.
-
-I don't care if you decide to store this value in bytes or bits, but it
-should be the same unit for both fields (and I even think we should
-have a single field for both encoding and decoding mode).
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+mutex can only be unlocked by the same thread that locks it. if for some 
+reason (hypotetically speaking) the MTD wishes to unlock ecc engines and 
+implement an abort operation before running operations complete this 
+could guarantee that the ecc engine is left in an unlocked state. the 
+risk of having a mutex in this driver is that the lock/unlock happen in 
+_different_ function calls (which is always scary) with DMAs having to 
+complete in between so if the running thread was canceled before the 
+mutex protecting the resource was unlocked we would never be able to 
+unlock it....with a semaphore we could (any thread could unlock the 
+resource).
