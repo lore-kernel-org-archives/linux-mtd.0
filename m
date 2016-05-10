@@ -1,28 +1,28 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b05wQ-0003B7-U9
- for linux-mtd@lists.infradead.org; Tue, 10 May 2016 11:35:08 +0000
-Subject: Re: [PATCH v10] mtd: spi-nor: add hisilicon spi-nor flash controller
- driver
-To: Jiancheng Xue <xuejiancheng@hisilicon.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <jteki@openedev.com>, <ezequiel@vanguardiasur.com.ar>, <juhosg@openwrt.org>,
- <furquan@google.com>, <robh+dt@kernel.org>
-References: <1461050839-24644-1-git-send-email-xuejiancheng@hisilicon.com>
- <5720A8BD.90302@atmel.com> <5729B207.5090809@hisilicon.com>
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-CC: <suwenping@hisilicon.com>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <yanhaifeng@hisilicon.com>,
- <raojun@hisilicon.com>, <linux-mtd@lists.infradead.org>,
- <jiangheng@hisilicon.com>, <ml.yang@hisilicon.com>, <gaofei@hisilicon.com>,
- <yanghongwei@hisilicon.com>, <zhangzhenxing@hisilicon.com>,
- <hermit.wangheming@hisilicon.com>
-Message-ID: <5731C752.9040702@atmel.com>
-Date: Tue, 10 May 2016 13:34:42 +0200
+Date: Tue, 10 May 2016 13:52:58 +0200
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: "Yang, Wenyou" <Wenyou.Yang@atmel.com>
+Cc: Rob Herring <robh@kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Brown <broonie@kernel.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "Ferre, Nicolas" <Nicolas.FERRE@atmel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Russell King <linux@arm.linux.org.uk>, Josh Wu <rainyfeeling@outlook.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 0/2] mtd: atmel_nand: remove compatible "atmel,sama5d4-nfc"
+Message-ID: <20160510115258.GS2890@piout.net>
+References: <1462776680-5284-1-git-send-email-wenyou.yang@atmel.com>
+ <20160509201324.GA9845@rob-hp-laptop>
+ <B256D81BAE5131468A838E5D7A243641D6487F5A@penmbx01>
 MIME-Version: 1.0
-In-Reply-To: <5729B207.5090809@hisilicon.com>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <B256D81BAE5131468A838E5D7A243641D6487F5A@penmbx01>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,325 +32,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jiancheng,
-
-Le 04/05/2016 10:25, Jiancheng Xue a écrit :
-> Hi Cyrille,
+On 10/05/2016 at 04:50:37 +0000, Yang, Wenyou wrote :
 > 
-> On 2016/4/27 19:55, Cyrille Pitchen wrote:
->> Hi Jiancheng,
->>
->> Le 19/04/2016 09:27, Jiancheng Xue a écrit :
->>> From: Jiancheng Xue <xuejiancheng@huawei.com>
->>>
->>> Add hisilicon spi-nor flash controller driver
->>
->> [...]
->>> +enum hifmc_iftype {
->>> +	IF_TYPE_STD,
->>> +	IF_TYPE_DUAL,
->>> +	IF_TYPE_DIO,
->>> +	IF_TYPE_QUAD,
->>> +	IF_TYPE_QIO,
->>> +};
->>
->> Just for my own information, the hisilicon controller supports:
->> - SPI 1-1-1 : IF_TYPE_STD
->> - SPI 1-1-2 : IF_TYPE_DUAL
->> - SPI 1-2-2 : IF_TYPE_DIO
->> - SPI 1-1-4 : IF_TYPE_QUAD
->> - SPI 1-4-4 : IF_TYPE_QIO
->>
->> but not the SPI protocols 2-2-2 or 4-4-4, does it?
 > 
-> You are right.
+> > -----Original Message-----
+> > From: Rob Herring [mailto:robh@kernel.org]
+> > Sent: 2016å¹´5æœˆ10æ—¥ 4:13
+> > To: Yang, Wenyou <Wenyou.Yang@atmel.com>
+> > Cc: Brian Norris <computersforpeace@gmail.com>; David Woodhouse
+> > <dwmw2@infradead.org>; Pawel Moll <pawel.moll@arm.com>; Mark Brown
+> > <broonie@kernel.org>; Ian Campbell <ijc+devicetree@hellion.org.uk>; Kumar
+> > Gala <galak@codeaurora.org>; linux-kernel@vger.kernel.org; linux-
+> > mtd@lists.infradead.org; devicetree@vger.kernel.org; Ferre, Nicolas
+> > <Nicolas.FERRE@atmel.com>; Alexandre Belloni <alexandre.belloni@free-
+> > electrons.com>; Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>;
+> > Russell King <linux@arm.linux.org.uk>; Josh Wu <rainyfeeling@outlook.com>;
+> > linux-arm-kernel@lists.infradead.org
+> > Subject: Re: [PATCH 0/2] mtd: atmel_nand: remove compatible "atmel,sama5d4-
+> > nfc"
+> > 
+> > On Mon, May 09, 2016 at 02:51:17PM +0800, Wenyou Yang wrote:
+> > > It is a datasheet bug, for current SoCs, the RB_EDGE3(i.e. bit 27) of
+> > > HSMC_SR register does not exist, the RB_EDGE0 (i.e. bit 24) is the
+> > > ready/busy line edge status bit. So the compatible "atmel,sama5d4-nfc"
+> > > is unneeded.
+> > 
+> > The compatible is needed if the SOC still exists. You can list both for the sama5d4
+> > if the block is the same.
 > 
->> If I ask you this question, it's because I wonder how to make the difference
->> between SPI controllers supporting both SPI 1-4-4 and 4-4-4 and those
->> supporting only SPI 1-4-4 in the case they rely on the m25p80 driver as an
->> adaptation layer between the spi-nor framework et the spi framework.
->>
->> I guess the "spi-tx-bus-width" and "spi-rx-bus-width" DT properties are not
->> enough to make the difference between these two kinds of SPI controller.
->>
->> I understand your driver doesn't use the m25p80 driver as it directly calls
->> spi_nor_scan() and implements the .read_reg, .write_reg, .read, .write and
->> .erase hooks, but its a general question :)
->>
-> IMO, the "spi-tx-bus-width" and "spi-rx-bus-width" DT properties which
-> will be stored in spi_device.mode just represent modes of the spi device,
-> but not the ones of the spi controller. We should add a specific member for
-> the controller to indicate all modes which it supports.
-> 
-> The definition of spi_nor_scan can be modified to
-> int spi_nor_scan(struct spi_nor *nor, const char *name, int mode).
-> The argument "mode" represents all modes which the controller supports.
-> For example,
-> #define SPI_1_1_1  (1 << 0)
-> #define SPI_1_1_4  (1 << 0)
-> #define SPI_1_4_4  (1 << 2)
-> #define SPI_4_4_4  (1 << 3)
-> If the controller supports SPI_1_1_1, SPI_1_1_4 and SPI_1_4_4, the mode
-> passed to spi_nor_scan will be (SPI_1_1_1 | SPI_1_1_4 | SPI_1_4_4).
-> 
-> The really read_mode we use when transferring should depend on both controller's
-> modes(i.e. the argument "mode") and device's modes(i.e. struct flash_info.flags,
-> which can be got by spi_nor_read_id()).
+> The NFC IP of SAMA5D4 is same as SAMA5D2's, SAMA5D4 hase this issue.  This compatible can be removed. 
 > 
 
-I've sent few series of patches to the mailing list to enhance the support of
-QSPI memories. The latest one was an RFC: I've implemented support of Micron
-memories as an example. Since the publication, I've also written support for
-Macronix but I didn't sent the Macronix patch yet. If you want to have a look
-to the latest published version:
+Well, I agree with Rob, we don't remove an existing compatible. Simply
+make it do the right thing (i.e. the same as sama5d3-nfc).
 
-https://lkml.org/lkml/2016/4/13/633
-
->>> +static int get_if_type(enum read_mode flash_read)
->>> +{
->>> +	enum hifmc_iftype if_type;
->>> +
->>> +	switch (flash_read) {
->>> +	case SPI_NOR_DUAL:
->>> +		if_type = IF_TYPE_DUAL;
->>> +		break;
->>> +	case SPI_NOR_QUAD:
->>> +		if_type = IF_TYPE_QUAD;
->>> +		break;
->>> +	case SPI_NOR_NORMAL:
->>> +	case SPI_NOR_FAST:
->>> +	default:
->>> +		if_type = IF_TYPE_STD;
->>> +		break;
->>> +	}
->>> +
->>> +	return if_type;
->>> +}
->>
->> Here I understand your QSPI controller could support SPI 1-4-4 and SPI 1-2-2
->> but you limit it to SPI 1-1-4 and SPI 1-1-2 because the spi-nor framework
->> doesn't support those protocols yet.
->>
-> Yes. You're right.
-> It is one of the reasons that the spi-nor framework doesn't support those two protocols.
-> We also found protocols supported were enough for our product solutions now. So
-> we didn't implement SPI-1-4-4 and SPI-1-2-2 in this patch.
-> 
->> [...]
->>
->>> +static void hisi_spi_nor_cmd_prepare(struct hifmc_host *host, u8 cmd,
->>> +		u32 *opcfg)
->>> +{
->>> +	u32 reg;
->>> +
->>> +	*opcfg |= FMC_OP_CMD1_EN;
->>> +	switch (cmd) {
->>> +	case SPINOR_OP_RDID:
->>> +	case SPINOR_OP_RDSR:
->>> +	case SPINOR_OP_RDCR:
->>> +		*opcfg |= FMC_OP_READ_DATA_EN;
->>> +		break;
->>> +	case SPINOR_OP_WREN:
->>> +		reg = readl(host->regbase + FMC_GLOBAL_CFG);
->>> +		if (reg & FMC_GLOBAL_CFG_WP_ENABLE) {
->>> +			reg &= ~FMC_GLOBAL_CFG_WP_ENABLE;
->>> +			writel(reg, host->regbase + FMC_GLOBAL_CFG);
->>> +		}
->>> +		break;
->>> +	case SPINOR_OP_WRSR:
->>> +		*opcfg |= FMC_OP_WRITE_DATA_EN;
->>> +		break;
->>> +	case SPINOR_OP_BE_4K:
->>> +	case SPINOR_OP_BE_4K_PMC:
->>> +	case SPINOR_OP_SE_4B:
->>> +	case SPINOR_OP_SE:
->>> +		*opcfg |= FMC_OP_ADDR_EN;
->>> +		break;
->>> +	case SPINOR_OP_EN4B:
->>> +		reg = readl(host->regbase + FMC_CFG);
->>> +		reg |= SPI_NOR_ADDR_MODE;
->>> +		writel(reg, host->regbase + FMC_CFG);
->>> +		break;
->>> +	case SPINOR_OP_EX4B:
->>> +		reg = readl(host->regbase + FMC_CFG);
->>> +		reg &= ~SPI_NOR_ADDR_MODE;
->>> +		writel(reg, host->regbase + FMC_CFG);
->>> +		break;
->>> +	case SPINOR_OP_CHIP_ERASE:
->>> +	default:
->>> +		break;
->>> +	}
->>> +}
->>
->> IMHO, this is exactly what should be avoided in (Q)SPI controller drivers:
->> they should not analyse the command op code to guess some settings such as
->> the SPI protocol to be used or in your case whether some address or data
->> cycles are included inside the command.
->>
->> Why? Just because your driver won't know what to do when we introduce new
->> op codes. Right now, hisi_spi_nor_cmd_prepare() is not aware of op code 0x15
->> use by Macronix to read its Configuration Register or Micron op codes to
->> read/write their Volatile Configuration Register and Enhanced Volatile
->> Configuration Register. So your driver won't support those memories any longer
->> when new features using those registers will be added in the spi-nor framework.
->>
->>
->> Since your driver implements struct spi_nor hooks, here is what you could do
->> instead:
->>
->> 1 - hisi_spi_nor_read_reg(..., u8 *buf, int len)
->>
->> if buf != NULL then you should set FMC_OP_READ_DATA_EN, don't set it otherwise.
->>
->>
->> 2 - hisi_spi_nor_write_reg(..., u8 *buf, int len)
->>
->> buf should always be != NULL so I guess you can always set FMC_OP_WRITE_DATA_EN
->>
->> For the special case of SPINOR_OP_WREN (Write Enable), your driver seems
->> to clear the FMC_GLOBAL_CFG_WP_ENABLE bit from the FMC_GLOBAL_CFG register, if
->> set, but never set it again... So why not clear this bit once for all?
->>
->> Reading the current source code, the support of the hardware write protect
->> feature is a little bit odd, isn't it?
->>
->> 3 - hisi_spi_nor_read(struct spi_nor *nor, ...)
->>
->> your driver doesn't seem to call hisi_spi_nor_send_cmd() /
->> hisi_spi_nor_cmd_prepare() from _read() so I don't know whether you have to
->> set the FMC_OP_READ_DATA_EN bit here.
->>
->> Also you can check nor->addr_width to know whether you need SPI_NOR_ADDR_MODE.
->>
->>
->> 4 - hisi_spi_nor_write(struct spi_nor *nor, ...)
->>
->> Almost the same comment as for _read(): just replace FMC_OP_READ_DATA_EN by
->> FMC_OP_WRITE_DATA_EN I guess.
->>
->>
->> 5 - hisi_spi_nor_erase(struct spi_nor *nor, ...)
->>
->> Here again you should check nor->addr_width to know when to set the
->> SPI_NOR_ADDR_MODE bit in the FMC_CFG register.
->>
->> The FMC_OP_ADDR_EN bit should always be set for erase operations.
->>
->>
->>> +static int hisi_spi_nor_send_cmd(struct spi_nor *nor, u8 cmd, int len)
->>> +{
->>> +	struct hifmc_priv *priv = nor->priv;
->>> +	struct hifmc_host *host = priv->host;
->>> +	u32 reg, op_cfg = 0;
->>> +
->>> +	hisi_spi_nor_cmd_prepare(host, cmd, &op_cfg);
->> [...]
->>
->> Just get rid of hisi_spi_nor_cmd_prepare(), it would simplify the support of
->> your driver a lot. For sure, I don't know the hisilicon spi-nor flash
->> controller as much as you do but I'm pretty sure its driver doesn't need to
->> analyse the op code to guess some hardware settings. There are other means to
->> find out these settings.
->>
->> Anyway, I hope these few comments will help you.
->>
-> Thank you very much for your detailed comments. They help me a lot. I looked into
-> the datasheet and this driver. I found it was really a big mistake for
-> hisi_spi_nor_cmd_prepare to configure registers according to the command op code.
-> 
-> I rewrote corresponding functions like below.
-> 
-
-This new version looks good to me. I just have one small suggestion:
-
-> static int hisi_spi_nor_op_reg(struct spi_nor *nor, u8 opcode, int len, u8 optype)
-> {
-> 	struct hifmc_priv *priv = nor->priv;
-> 	struct hifmc_host *host = priv->host;
-> 	u32 reg;
-> 
-> 	reg = FMC_CMD_CMD1(opcode);
-> 	writel(reg, host->regbase + FMC_CMD);
-> 
-> 	reg = FMC_DATA_NUM_CNT(len);
-> 	writel(reg, host->regbase + FMC_DATA_NUM);
-> 
-> 	reg = OP_CFG_FM_CS(priv->chipselect);
-> 	writel(reg, host->regbase + FMC_OP_CFG);
-> 
-> 	writel(0xff, host->regbase + FMC_INT_CLR);
-> 	reg = FMC_OP_CMD1_EN;
-> 	if (optype == FMC_OP_READ) {
-> 		reg |= FMC_OP_READ_DATA_EN;
-> 	} else {
-> 		reg |= FMC_OP_WRITE_DATA_EN;
-> 	}
-Assuming you provide the right value in 'optype', here you could directly
-write:
--	if (optype == FMC_OP_READ) {
--		reg |= FMC_OP_READ_DATA_EN;
--	} else {
--		reg |= FMC_OP_WRITE_DATA_EN;
--	}
-+	reg |= optype;
-
-
-> 	reg |= FMC_OP_REG_OP_START;
-> 	writel(reg, host->regbase + FMC_OP);
-> 
-> 	return wait_op_finish(host);
-> }
-> 
-> static int hisi_spi_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-> 		int len)
-> {
-> 	struct hifmc_priv *priv = nor->priv;
-> 	struct hifmc_host *host = priv->host;
-> 	int ret;
-> 
-> 	ret = hisi_spi_nor_op_reg(nor, opcode, len, FMC_OP_READ);
--	ret = hisi_spi_nor_op_reg(nor, opcode, len, FMC_OP_READ);
-+	ret = hisi_spi_nor_op_reg(nor, opcode, len, FMC_OP_READ_DATA_EN);
-> 	if (ret)
-> 		return ret;
-> 
-> 	memcpy_fromio(buf, host->iobase, len);
-> 	return 0;
-> }
-> 
-> static int hisi_spi_nor_write_reg(struct spi_nor *nor, u8 opcode,
-> 				u8 *buf, int len)
-> {
-> 	struct hifmc_priv *priv = nor->priv;
-> 	struct hifmc_host *host = priv->host;
-> 
-> 	if (len)
-> 		memcpy_toio(host->iobase, buf, len);
-> 
-> 	return hisi_spi_nor_op_reg(nor, opcode, len, FMC_OP_WRITE);
--	return hisi_spi_nor_op_reg(nor, opcode, len, FMC_OP_WRITE);
-+	return hisi_spi_nor_op_reg(nor, opcode, len, FMC_OP_WRITE_DATA_EN);
-> }
-> 
-> static int hisi_spi_nor_register(struct device_node *np,
-> 				struct hifmc_host *host)
-> {
-> 	struct spi_nor *nor;
-> 	...
-> 	nor->read_reg = hisi_spi_nor_read_reg;
-> 	nor->write_reg = hisi_spi_nor_write_reg;
-> 	nor->erase = NULL;   /*use the default implementation*/
-> 	...
-> 	spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
-> 	...
-> }
-> 
-> Any new comments will be highly appreciated. Thank you.
-> 
-> Regards,
-> Jiancheng
-> 
-> 
-Best regards,
-
-Cyrille
+-- 
+Alexandre Belloni, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
