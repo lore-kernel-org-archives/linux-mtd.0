@@ -1,26 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-ig0-x243.google.com ([2607:f8b0:4001:c05::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b0AS9-0001Q9-Cf
- for linux-mtd@lists.infradead.org; Tue, 10 May 2016 16:24:11 +0000
-Subject: Re: UBIFS Index Node Corruption - Invalid Key Type
-To: "DHANAPAL, GNANACHANDRAN (G.)" <gdhanapa@visteon.com>
-References: <20160510122343.GB16841@visteon-gnana>
- <CAFLxGvwmCywSV7G50Wvn6X6tGUnbvDUJa=iZncUAfAer7qtojQ@mail.gmail.com>
- <20160510145836.GA18568@visteon-gnana>
-Cc: "CN, Aananth (A.A.)" <caananth@visteon.com>,
- "Gunasundar, Balamanikandan (B.)" <bgunasun@visteon.com>,
- "Babu, Viswanathan (V.)" <vbabu3@visteon.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "gnanachandran@gmail.com" <gnanachandran@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <57320B0E.2060009@nod.at>
-Date: Tue, 10 May 2016 18:23:42 +0200
+ id 1b0AUD-0002w0-QA
+ for linux-mtd@lists.infradead.org; Tue, 10 May 2016 16:26:18 +0000
+Received: by mail-ig0-x243.google.com with SMTP id c3so1652864igl.3
+ for <linux-mtd@lists.infradead.org>; Tue, 10 May 2016 09:25:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20160510145836.GA18568@visteon-gnana>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20160503184835.GA21428@mwanda>
+References: <20160503184835.GA21428@mwanda>
+Date: Tue, 10 May 2016 18:25:55 +0200
+Message-ID: <CABYn4sz_sZ_iHaZ+m6Eug3XS8mrn+2sn9rTDQXc5uFxjgSrS-w@mail.gmail.com>
+Subject: Re: mtd: sh_flctl: Add DMA capabilty
+From: Bastian Hecht <hechtb@gmail.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Bastian Hecht <hechtb@googlemail.com>, Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,73 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 10.05.2016 um 16:49 schrieb DHANAPAL, GNANACHANDRAN (G.):
-> On Tue, May 10, 2016 at 03:58:58PM +0200, Richard Weinberger wrote:
->> On Tue, May 10, 2016 at 2:14 PM, DHANAPAL, GNANACHANDRAN (G.)
->> <gdhanapa@visteon.com> wrote:
->>> Hi There,
->>>
->>> We have i.MX6d based platform that has FSL BSP 3.10.17 running.
->>> There is SLC Micron NAND of size 2GB with 512K Block size and 4K min I/O  used
->>> for software storage. This NAND has got 7 partitions, Among that two partitions
->>> have Read-Write ubifs file system for runtime data and one has Read-only ubifs
->>> file system that has all the system files. Recently we have observed a issue that
->>> one of RW ubifs partition failed to mount due to invalid key type in one of index
->>> node in ubifs. we have seen the same issue in two units out of 1000 units running
->>> in the field.
->>>
->>> Following is the index node that has  invalid key in its first branch.
->>> key type = 0xa917dd4c >> 29 = 5 (invalid key)
->>>
->>>         magic          0x6101831
->>>         crc            0x944add59
->>>         node_type      9 (indexing node)
->>>         group_type     0 (no node group)
->>>         sqnum          378678
->>>         len            148
->>>         child_cnt      6
->>>         level          2
->>>         Branches:
->>>         0: LEB 569:280144 len 108 key (bad key type: 0x000001, 0xa917dd4c)
->>>         1: LEB 446:349792 len 108 key (5595, inode)
->>>         2: LEB 584:361528 len 108 key (5822, inode)
->>>         3: LEB 602:255360 len 108 key (6050, inode)
->>>         4: LEB 613:480280 len 188 key (6258, inode)
->>>         5: LEB 614:373784 len 88 key (6521, data, 25)
->>>
->>> Please help us to understand following points
->>>
->>>         1. Did this happen because abrupt power cut ? if so, how could CRC of the node still be intact?
->>>         2. Could there be any bit flip ? but still again CRC intact.
->>>         3. Would the key pointed by  corrupted branch be  UBIFS_DENT_KEY or  UBIFS_XENT_KEY ?
->>>                 Because  29 bit of key[0] (0xa917dd4c  & 0x1FFFFFFF) seems to have some kind of  hash value.
->>>                 but node (at leb 569:280144)  that is pointed by corrupted branch seem to be index node.
->>>         4. This corrupted entry is always seen  in first branch of an index node  in two failed units. Could there be reason?
->>>         5. Since CRC is intact, would there be any possibility or scenario that corrupted node can be written with valid CRC?
->>
->> Hmm, this looks like some UBIFS inconsistency.
->> If the header CRC is correct it should be be any kind of bitflip or
->> power cut issue.
+Hi Dan,
 
-Of course I meant shouldn't. :-)
+thanks for the bug report and the comments.
 
->> Can you please share the whole UBI image (a nanddump) such that I can
->> inspect it?
->>
->> -- 
->> Thanks,
->> //richard
-> 
-> Thanks for the reply, Richard. 
-> Please find two files in google drive share.
-> 
-> 	1. dump_mtd7_ecc.log   - /dev/mtd7 dump with ecc
-> 	2. leb_peb_map_22706.log   - LEB to PEB map. This information is taken by having print in table.
-> 
-> Share:
-> 	https://drive.google.com/open?id=0B7tYZDLZ_KAZMFd4MENlQkJuNjA
+Currently I don't work as a software engineer and have no development
+environment at all, so I can't really take care of this problem.
 
-Okay, I'll look. Can't promise that I have the time for a detailed analysis.
+Best,
 
-Thanks,
-//richard
+ Bastian
+
+
+2016-05-03 20:48 GMT+02:00 Dan Carpenter <dan.carpenter@oracle.com>:
+> Hello Bastian Hecht,
+>
+> The patch 83738d87e3a0: "mtd: sh_flctl: Add DMA capabilty" from Oct
+> 19, 2012, leads to the following static checker warning:
+>
+>         drivers/mtd/nand/sh_flctl.c:532 write_ec_fiforeg()
+>         error: wrong number of bits for 'cpu_to_be32' (64 vs 32) left= '*buf + i' *buf + i = (__builtin_bswap32(((*buf + i))))
+>
+> drivers/mtd/nand/sh_flctl.c
+>    523  static void write_ec_fiforeg(struct sh_flctl *flctl, int rlen,
+>    524                                                  unsigned int offset)
+>    525  {
+>    526          int i, len_4align;
+>    527          unsigned long *buf = (unsigned long *)&flctl->done_buff[offset];
+>                 ^^^^^^^^^^^^^^^^^^
+> Long can be 8 bytes.  Are we really assuming a 32 bit CPU in this day
+> and era?
+>
+>
+>    528
+>    529          len_4align = (rlen + 3) / 4;
+>    530
+>    531          for (i = 0; i < len_4align; i++)
+>    532                  buf[i] = cpu_to_be32(buf[i]);
+>
+> Storing a be32 in long is not right.
+>
+>    533
+>    534          /* initiate DMA transfer */
+>    535          if (flctl->chan_fifo0_tx && rlen >= 32 &&
+>    536                  flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
+>    537                          return; /* DMA success */
+>    538
+>    539          /* do polling transfer */
+>    540          for (i = 0; i < len_4align; i++) {
+>    541                  wait_wecfifo_ready(flctl);
+>    542                  writel(buf[i], FLECFIFO(flctl));
+>                         ^^^^^^
+> writel() is named historically.  It actually writes u32s.  This code has
+> endian bugs.  Read.  https://lwn.net/Articles/205624/
+>
+>    543          }
+>    544  }
+>
+>
+> regards,
+> dan carpenter
