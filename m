@@ -1,19 +1,22 @@
-Date: Tue, 10 May 2016 14:13:35 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- matthias.bgg@gmail.com, robh@kernel.org, linux-mtd@lists.infradead.org,
- xiaolei.li@mediatek.com, linux-mediatek@lists.infradead.org,
- erin.lo@mediatek.com, daniel.thompson@linaro.org, blogic@openwrt.org
-Subject: Re: [PATCH v4 2/2] mtd: mediatek: driver for MTK Smart Device Gen1
- NAND
-Message-ID: <20160510141335.442d3d7b@bbrezillon>
-In-Reply-To: <1461946642-1842-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
-References: <1461946642-1842-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <1461946642-1842-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
+Received: from mail-db3on0144.outbound.protection.outlook.com
+ ([157.55.234.144] helo=emea01-db3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b06Ye-00046G-1B
+ for linux-mtd@lists.infradead.org; Tue, 10 May 2016 12:14:42 +0000
+From: "DHANAPAL, GNANACHANDRAN (G.)" <gdhanapa@visteon.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter
+ <adrian.hunter@intel.com>, "Babu, Viswanathan (V.)" <vbabu3@visteon.com>,
+ "CN, Aananth (A.A.)" <caananth@visteon.com>, "Gunasundar, Balamanikandan
+ (B.)" <bgunasun@visteon.com>, "gnanachandran@gmail.com"
+ <gnanachandran@gmail.com>
+Subject: UBIFS Index Node Corruption - Invalid Key Type
+Date: Tue, 10 May 2016 12:14:11 +0000
+Message-ID: <20160510122343.GB16841@visteon-gnana>
+Content-Language: en-US
+Content-Type: multipart/mixed;
+ boundary="_002_20160510122343GB16841visteongnana_"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,958 +26,809 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jorge, Xiaolei,
-
-On Fri, 29 Apr 2016 12:17:22 -0400
-Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org> wrote:
-
-> This patch adds support for mediatek's SDG1 NFC nand controller
-> embedded in SoC 2701
-> 
-> Signed-off-by: Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>
-> ---
->  drivers/mtd/nand/Kconfig    |    7 +
->  drivers/mtd/nand/Makefile   |    1 +
->  drivers/mtd/nand/mtk_ecc.c  |  527 ++++++++++++++++
->  drivers/mtd/nand/mtk_ecc.h  |   53 ++
->  drivers/mtd/nand/mtk_nand.c | 1432 +++++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 2020 insertions(+)
->  create mode 100644 drivers/mtd/nand/mtk_ecc.c
->  create mode 100644 drivers/mtd/nand/mtk_ecc.h
->  create mode 100644 drivers/mtd/nand/mtk_nand.c
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index f05e0e9..3c26e89 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -563,4 +563,11 @@ config MTD_NAND_QCOM
->  	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
->  	  controller. This controller is found on IPQ806x SoC.
->  
-> +config MTD_NAND_MTK
-> +	tristate "Support for NAND controller on MTK SoCs"
-> +	depends on HAS_DMA
-> +	help
-> +	  Enables support for NAND controller on MTK SoCs.
-> +	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
-> +
->  endif # MTD_NAND
-> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> index f553353..cafde6f 100644
-> --- a/drivers/mtd/nand/Makefile
-> +++ b/drivers/mtd/nand/Makefile
-> @@ -57,5 +57,6 @@ obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
->  obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
->  obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
-> +obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_nand.o mtk_ecc.o
->  
->  nand-objs := nand_base.o nand_bbt.o nand_timings.o
-> diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-> new file mode 100644
-> index 0000000..28769f1
-> --- /dev/null
-> +++ b/drivers/mtd/nand/mtk_ecc.c
-> @@ -0,0 +1,527 @@
-> +/*
-> + * MTK ECC controller driver.
-> + * Copyright (C) 2016  MediaTek Inc.
-> + * Authors:	Xiaolei Li		<xiaolei.li@mediatek.com>
-> + *		Jorge Ramirez-Ortiz	<jorge.ramirez-ortiz@linaro.org>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + */
-> +
-> +#include <linux/platform_device.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/clk.h>
-> +#include <linux/module.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/semaphore.h>
-> +
-> +#include "mtk_ecc.h"
-> +
-> +#define ECC_ENCCON		(0x00)
-> +#define		ENC_EN			(1)
-> +#define		ENC_DE			(0)
-> +#define ECC_ENCCNFG		(0x04)
-> +#define		ECC_CNFG_4BIT		(0)
-> +#define		ECC_CNFG_6BIT		(1)
-> +#define		ECC_CNFG_8BIT		(2)
-> +#define		ECC_CNFG_10BIT		(3)
-> +#define		ECC_CNFG_12BIT		(4)
-> +#define		ECC_CNFG_14BIT		(5)
-> +#define		ECC_CNFG_16BIT		(6)
-> +#define		ECC_CNFG_18BIT		(7)
-> +#define		ECC_CNFG_20BIT		(8)
-> +#define		ECC_CNFG_22BIT		(9)
-> +#define		ECC_CNFG_24BIT		(0xa)
-> +#define		ECC_CNFG_28BIT		(0xb)
-> +#define		ECC_CNFG_32BIT		(0xc)
-> +#define		ECC_CNFG_36BIT		(0xd)
-> +#define		ECC_CNFG_40BIT		(0xe)
-> +#define		ECC_CNFG_44BIT		(0xf)
-> +#define		ECC_CNFG_48BIT		(0x10)
-> +#define		ECC_CNFG_52BIT		(0x11)
-> +#define		ECC_CNFG_56BIT		(0x12)
-> +#define		ECC_CNFG_60BIT		(0x13)
-> +#define		ECC_MODE_SHIFT		(5)
-> +#define		ECC_MS_SHIFT		(16)
-> +#define ECC_ENCDIADDR		(0x08)
-> +#define ECC_ENCIDLE		(0x0C)
-> +#define		ENC_IDLE		BIT(0)
-> +#define ECC_ENCPAR(x)		(0x10 + (x) * sizeof(u32))
-> +#define ECC_ENCIRQ_EN		(0x80)
-> +#define		ENC_IRQEN		BIT(0)
-> +#define ECC_ENCIRQ_STA		(0x84)
-> +#define ECC_DECCON		(0x100)
-> +#define		DEC_EN			(1)
-> +#define		DEC_DE			(0)
-> +#define ECC_DECCNFG		(0x104)
-> +#define		DEC_EMPTY_EN		BIT(31)
-> +#define		DEC_CNFG_CORRECT	(0x3 << 12)
-> +#define ECC_DECIDLE		(0x10C)
-> +#define		DEC_IDLE		BIT(0)
-> +#define ECC_DECENUM0		(0x114)
-> +#define		ERR_MASK		(0x3f)
-> +#define ECC_DECDONE		(0x124)
-> +#define ECC_DECIRQ_EN		(0x200)
-> +#define		DEC_IRQEN		BIT(0)
-> +#define ECC_DECIRQ_STA		(0x204)
-> +
-> +#define ECC_TIMEOUT		(500000)
-> +
-> +#define ECC_IDLE_REG(x)		((x) == ECC_ENC ? ECC_ENCIDLE : ECC_DECIDLE)
-> +#define ECC_IDLE_MASK(x)	((x) == ECC_ENC ? ENC_IDLE : DEC_IDLE)
-
-No need for this macro, it's always bit0, so just define an ECC_IDLE
-macro and use it for both decoder and encoder.
-
-There seems to be some kind of pattern in your ENC/DEC registers.
-ENC registers start at 0 and DEC ones at 0x100.
-CNF register is always at 0x4 + mode/dir_offset (ie 0x100 for DEC and
-0x0 for ENC), ...
-Maybe you should define common macros for those registers, and choose
-the base offset depending on the mode you're operating in (encoding or
-decoding).
-
-> +#define ECC_IRQ_REG(x)		((x) == ECC_ENC ? ECC_ENCIRQ_EN : ECC_DECIRQ_EN)
-> +#define ECC_IRQ_EN(x)		((x) == ECC_ENC ? ENC_IRQEN : DEC_IRQEN)
-> +#define ECC_CTL_REG(x)		((x) == ECC_ENC ? ECC_ENCCON : ECC_DECCON)
-> +#define ECC_CODEC_ENABLE(x)	((x) == ECC_ENC ? ENC_EN : DEC_EN)
-> +#define ECC_CODEC_DISABLE(x)	((x) == ECC_ENC ? ENC_DE : DEC_DE)
-> +
-> +struct mtk_ecc {
-> +	struct device *dev;
-> +	void __iomem *regs;
-> +	struct clk *clk;
-> +
-> +	struct completion done;
-> +	struct semaphore sem;
-
-You tried to explain me why you decided to go for a semaphore instead of
-a mutex, but I don't remember. Could you explain it again?
-If that's all about being interruptible, then you can use
-mutex_lock_interruptible.
-
-> +	u32 sec_mask;
-> +};
-> +
-> +static inline void mtk_ecc_codec_wait_idle(struct mtk_ecc *ecc,
-> +					enum mtk_ecc_codec codec)
-
-Just nitpicking on the name again, but enum mtk_ecc_codec does not
-describe what this enum really encode: the codec mode or direction.
-
-How about renaming this enum into mtk_ecc_codec_dir or
-mtd_ecc_codec_mode?
-
-> +{
-> +	struct device *dev = ecc->dev;
-> +	u32 val;
-> +	int ret;
-> +
-> +	ret = readl_poll_timeout_atomic(ecc->regs + ECC_IDLE_REG(codec), val,
-> +					val & ECC_IDLE_MASK(codec),
-> +					10, ECC_TIMEOUT);
-> +	if (ret)
-> +		dev_warn(dev, "%s NOT idle\n",
-> +			codec == ECC_ENC ? "encoder" : "decoder");
-> +}
-> +
-> +static irqreturn_t mtk_ecc_irq(int irq, void *id)
-> +{
-> +	struct mtk_ecc *ecc = id;
-> +	enum mtk_ecc_codec codec;
-> +	u32 dec, enc;
-> +
-> +	dec = readw(ecc->regs + ECC_DECIRQ_STA) & DEC_IRQEN;
-> +	if (dec) {
-> +		codec = ECC_DEC;
-> +		dec = readw(ecc->regs + ECC_DECDONE);
-> +		if (dec & ecc->sec_mask) {
-> +			ecc->sec_mask = 0;
-> +			complete(&ecc->done);
-> +		} else
-> +			return IRQ_HANDLED;
-> +	} else {
-> +		enc = readl(ecc->regs + ECC_ENCIRQ_STA) & ENC_IRQEN;
-> +		if (enc) {
-> +			codec = ECC_ENC;
-> +			complete(&ecc->done);
-> +		} else
-> +			return IRQ_NONE;
-> +	}
-> +
-> +	writel(0, ecc->regs + ECC_IRQ_REG(codec));
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static void mtk_ecc_config(struct mtk_ecc *ecc, struct mtk_ecc_config *config)
-> +{
-> +	u32 ecc_bit = ECC_CNFG_4BIT, dec_sz, enc_sz;
-> +	u32 reg;
-> +
-> +	switch (config->strength) {
-> +	case 4:
-> +		ecc_bit = ECC_CNFG_4BIT;
-> +		break;
-> +	case 6:
-> +		ecc_bit = ECC_CNFG_6BIT;
-> +		break;
-> +	case 8:
-> +		ecc_bit = ECC_CNFG_8BIT;
-> +		break;
-> +	case 10:
-> +		ecc_bit = ECC_CNFG_10BIT;
-> +		break;
-> +	case 12:
-> +		ecc_bit = ECC_CNFG_12BIT;
-> +		break;
-> +	case 14:
-> +		ecc_bit = ECC_CNFG_14BIT;
-> +		break;
-> +	case 16:
-> +		ecc_bit = ECC_CNFG_16BIT;
-> +		break;
-> +	case 18:
-> +		ecc_bit = ECC_CNFG_18BIT;
-> +		break;
-> +	case 20:
-> +		ecc_bit = ECC_CNFG_20BIT;
-> +		break;
-> +	case 22:
-> +		ecc_bit = ECC_CNFG_22BIT;
-> +		break;
-> +	case 24:
-> +		ecc_bit = ECC_CNFG_24BIT;
-> +		break;
-> +	case 28:
-> +		ecc_bit = ECC_CNFG_28BIT;
-> +		break;
-> +	case 32:
-> +		ecc_bit = ECC_CNFG_32BIT;
-> +		break;
-> +	case 36:
-> +		ecc_bit = ECC_CNFG_36BIT;
-> +		break;
-> +	case 40:
-> +		ecc_bit = ECC_CNFG_40BIT;
-> +		break;
-> +	case 44:
-> +		ecc_bit = ECC_CNFG_44BIT;
-> +		break;
-> +	case 48:
-> +		ecc_bit = ECC_CNFG_48BIT;
-> +		break;
-> +	case 52:
-> +		ecc_bit = ECC_CNFG_52BIT;
-> +		break;
-> +	case 56:
-> +		ecc_bit = ECC_CNFG_56BIT;
-> +		break;
-> +	case 60:
-> +		ecc_bit = ECC_CNFG_60BIT;
-> +		break;
-> +	default:
-> +		dev_err(ecc->dev, "invalid strength %d\n", config->strength);
-> +	}
-> +
-> +	if (config->codec == ECC_ENC) {
-> +		/* configure ECC encoder (in bits) */
-> +		enc_sz = config->enc_len << 3;
-> +
-> +		reg = ecc_bit | (config->ecc_mode << ECC_MODE_SHIFT);
-> +		reg |= (enc_sz << ECC_MS_SHIFT);
-> +		writel(reg, ecc->regs + ECC_ENCCNFG);
-> +
-> +		if (config->ecc_mode != ECC_NFI_MODE)
-> +			writel(lower_32_bits(config->addr),
-> +				ecc->regs + ECC_ENCDIADDR);
-> +
-> +	} else {
-> +		/* configure ECC decoder (in bits) */
-> +		dec_sz = config->dec_len;
-> +
-> +		reg = ecc_bit | (config->ecc_mode << ECC_MODE_SHIFT);
-> +		reg |= (dec_sz << ECC_MS_SHIFT) | DEC_CNFG_CORRECT;
-> +		reg |= DEC_EMPTY_EN;
-> +		writel(reg, ecc->regs + ECC_DECCNFG);
-> +
-> +		if (config->sec_mask)
-> +			ecc->sec_mask = 1 << (config->sec_mask - 1);
-> +	}
-
-I see that some of the logic could be shared between the ENC and DEC
-cases.
-BTW, why do you multiply enc_len by 8 (bits to byte conversion), but
-don't do that for dec_len?
-
-> +}
-> +
-
-[...]
-
-> +
-> +void mtk_ecc_disable(struct mtk_ecc *ecc, struct mtk_ecc_config *config)
-
-If you save the mode somewhere in mtk_ecc (or just write in both ENC
-and DEC registers), you won't need this extra config arg here.
-
-> +{
-> +	enum mtk_ecc_codec codec = config->codec;
-> +
-> +	mtk_ecc_codec_wait_idle(ecc, codec);
-> +	writew(0, ecc->regs + ECC_IRQ_REG(codec));
-> +	writew(ECC_CODEC_DISABLE(codec), ecc->regs + ECC_CTL_REG(codec));
-> +	up(&ecc->sem);
-> +}
-> +EXPORT_SYMBOL(mtk_ecc_disable);
-
-[...]
-
-> +
-> +void mtk_ecc_hw_init(struct mtk_ecc *ecc)
-
-No need to expose this function. Make it static and remove the
-prototype in your header.
-
-> +{
-> +	mtk_ecc_codec_wait_idle(ecc, ECC_ENC);
-> +	writew(ENC_DE, ecc->regs + ECC_ENCCON);
-> +
-> +	mtk_ecc_codec_wait_idle(ecc, ECC_DEC);
-> +	writel(DEC_DE, ecc->regs + ECC_DECCON);
-> +}
-> +
-> +void mtk_ecc_update_strength(u32 *p)
-
-Please rename it into mtd_ecc_adjust_strength().
-
-> +{
-> +	u32 ecc[] = {4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36,
-> +			40, 44, 48, 52, 56, 60};
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(ecc); i++) {
-> +		if (*p <= ecc[i]) {
-> +			if (!i)
-> +				*p = ecc[i];
-> +			else if (*p != ecc[i])
-> +				*p = ecc[i - 1];
-> +			return;
-> +		}
-> +	}
-> +
-> +	*p = ecc[ARRAY_SIZE(ecc) - 1];
-> +}
-
-[...]
-
-> diff --git a/drivers/mtd/nand/mtk_ecc.h b/drivers/mtd/nand/mtk_ecc.h
-> new file mode 100644
-> index 0000000..434826f
-> --- /dev/null
-> +++ b/drivers/mtd/nand/mtk_ecc.h
-> @@ -0,0 +1,53 @@
-> +/*
-> + * MTK SDG1 ECC controller
-> + *
-> + * Copyright (c) 2016 Mediatek
-> + * Authors:	Xiaolei Li		<xiaolei.li@mediatek.com>
-> + *		Jorge Ramirez-Ortiz	<jorge.ramirez-ortiz@linaro.org>
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of the GNU General Public License version 2 as published
-> + * by the Free Software Foundation.
-> + */
-> +
-> +#ifndef __DRIVERS_MTD_NAND_MTK_ECC_H__
-> +#define __DRIVERS_MTD_NAND_MTK_ECC_H__
-> +
-> +#include <linux/types.h>
-> +
-> +#define ECC_PARITY_BITS		(14)
-> +
-> +enum mtk_ecc_mode {ECC_DMA_MODE = 0, ECC_NFI_MODE = 1};
-> +enum mtk_ecc_codec {ECC_ENC, ECC_DEC};
-
-As suggested, mtk_ecc_codec_dir or just mtk_ecc_dir would be more
-appropriate IMHO.
-
-> +
-> +struct device_node;
-> +struct mtk_ecc;
-> +
-> +struct mtk_ecc_stats {
-> +	u32 corrected;
-> +	u32 bitflips;
-> +	u32 failed;
-> +};
-> +
-> +struct mtk_ecc_config {
-> +	enum mtk_ecc_mode ecc_mode;
-
-s/ecc_mode/mode/ (the ecc_ prefix is implicit here).
-
-> +	enum mtk_ecc_codec codec;
-> +	dma_addr_t addr;
-> +	u32 sec_mask;
-
-It seems that sec_mask is actually encoding the number of sectors.
-Maybe you should rename it sectors. BTW, why do you need both the
-length and the number of sectors. It seems to me that given the length
-an the sector size you could deduce the number of sectors, or
-alternatively, you could specify the number of sectors and the sector
-length and calculate the length from those fields.
-
-BTW, I don't see where you configure the sector size. Don't you need it
-to switch between 512bytes and 1k?
-
-> +	u32 strength;
-> +	u32 enc_len;
-> +	u32 dec_len;
-
-Why do you need 2 different fields for that? The ECC engine is either
-working in encoding or decoding mode, so a single "len" field should be
-enough.
-
-Apparently you're mixing 2 different concepts: the information required
-to configure the ECC engine (the fields in mtk_ecc_config), and how
-they should be formatted to be written the the ECC engine registers
-(that should probably be stored in the mtk_ecc struct or just
-calculated on the fly by the driver).
-You're driver should hide the internals of the ECC engine as much as
-possible.
-
-> +};
-> +
-> +int mtk_ecc_enable(struct mtk_ecc *, struct mtk_ecc_config *);
-> +void mtk_ecc_disable(struct mtk_ecc *, struct mtk_ecc_config *);
-> +int mtk_ecc_encode_non_nfi_mode(struct mtk_ecc *, struct mtk_ecc_config *,
-> +				u8 *, u32);
-
-mtk_ecc_encode() should be enough, since you dropped the other _encode()
-functions.
-
-> +void mtk_ecc_get_stats(struct mtk_ecc *, struct mtk_ecc_stats *, int);
-> +int mtk_ecc_wait_irq_done(struct mtk_ecc *, enum mtk_ecc_codec);
-> +void mtk_ecc_hw_init(struct mtk_ecc *);
-> +void mtk_ecc_update_strength(u32 *);
-> +
-> +struct mtk_ecc *of_mtk_ecc_get(struct device_node *);
-> +void mtk_ecc_release(struct mtk_ecc *);
-> +
-> +#endif
-> diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-> new file mode 100644
-> index 0000000..907b90c
-> --- /dev/null
-> +++ b/drivers/mtd/nand/mtk_nand.c
-> @@ -0,0 +1,1432 @@
-> +/*
-> + * MTK NAND Flash controller driver.
-> + * Copyright (C) 2016 MediaTek Inc.
-> + * Authors:	Xiaolei Li		<xiaolei.li@mediatek.com>
-> + *		Jorge Ramirez-Ortiz	<jorge.ramirez-ortiz@linaro.org>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + */
-> +
-> +#include <linux/platform_device.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/delay.h>
-> +#include <linux/clk.h>
-> +#include <linux/mtd/nand.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/module.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/of.h>
-> +#include "mtk_ecc.h"
-> +
-> +/* NAND controller register definition */
-> +#define NFI_CNFG		(0x00)
-> +#define		CNFG_AHB		BIT(0)
-> +#define		CNFG_READ_EN		BIT(1)
-> +#define		CNFG_DMA_BURST_EN	BIT(2)
-> +#define		CNFG_BYTE_RW		BIT(6)
-> +#define		CNFG_HW_ECC_EN		BIT(8)
-> +#define		CNFG_AUTO_FMT_EN	BIT(9)
-> +#define		CNFG_OP_CUST		(6 << 12)
-> +#define NFI_PAGEFMT		(0x04)
-> +#define		PAGEFMT_FDM_ECC_SHIFT	(12)
-> +#define		PAGEFMT_FDM_SHIFT	(8)
-> +#define		PAGEFMT_SPARE_16	(0)
-> +#define		PAGEFMT_SPARE_26	(1)
-> +#define		PAGEFMT_SPARE_27	(2)
-> +#define		PAGEFMT_SPARE_28	(3)
-> +#define		PAGEFMT_SPARE_32	(4)
-> +#define		PAGEFMT_SPARE_36	(5)
-> +#define		PAGEFMT_SPARE_40	(6)
-> +#define		PAGEFMT_SPARE_44	(7)
-> +#define		PAGEFMT_SPARE_48	(8)
-> +#define		PAGEFMT_SPARE_49	(9)
-> +#define		PAGEFMT_SPARE_50	(0xa)
-> +#define		PAGEFMT_SPARE_51	(0xb)
-> +#define		PAGEFMT_SPARE_52	(0xc)
-> +#define		PAGEFMT_SPARE_62	(0xd)
-> +#define		PAGEFMT_SPARE_63	(0xe)
-> +#define		PAGEFMT_SPARE_64	(0xf)
-> +#define		PAGEFMT_SPARE_SHIFT	(4)
-> +#define		PAGEFMT_SEC_SEL_512	BIT(2)
-> +#define		PAGEFMT_512_2K		(0)
-> +#define		PAGEFMT_2K_4K		(1)
-> +#define		PAGEFMT_4K_8K		(2)
-> +#define		PAGEFMT_8K_16K		(3)
-> +/* NFI control */
-> +#define NFI_CON			(0x08)
-> +#define		CON_FIFO_FLUSH		BIT(0)
-> +#define		CON_NFI_RST		BIT(1)
-> +#define		CON_BRD			BIT(8)  /* burst  read */
-> +#define		CON_BWR			BIT(9)	/* burst  write */
-> +#define		CON_SEC_SHIFT		(12)
-> +/* Timming control register */
-> +#define NFI_ACCCON		(0x0C)
-> +#define NFI_INTR_EN		(0x10)
-> +#define		INTR_AHB_DONE_EN	BIT(6)
-> +#define NFI_INTR_STA		(0x14)
-> +#define NFI_CMD			(0x20)
-> +#define NFI_ADDRNOB		(0x30)
-> +#define NFI_COLADDR		(0x34)
-> +#define NFI_ROWADDR		(0x38)
-> +#define NFI_STRDATA		(0x40)
-> +#define		STAR_EN			(1)
-> +#define		STAR_DE			(0)
-> +#define NFI_CNRNB		(0x44)
-> +#define NFI_DATAW		(0x50)
-> +#define NFI_DATAR		(0x54)
-> +#define NFI_PIO_DIRDY		(0x58)
-> +#define		PIO_DI_RDY		(0x01)
-> +#define NFI_STA			(0x60)
-> +#define		STA_CMD			BIT(0)
-> +#define		STA_ADDR		BIT(1)
-> +#define		STA_BUSY		BIT(8)
-> +#define		STA_EMP_PAGE		BIT(12)
-> +#define		NFI_FSM_CUSTDATA	(0xe << 16)
-> +#define		NFI_FSM_MASK		(0xf << 16)
-> +#define NFI_ADDRCNTR		(0x70)
-> +#define		CNTR_MASK		GENMASK(16, 12)
-> +#define NFI_STRADDR		(0x80)
-> +#define NFI_BYTELEN		(0x84)
-> +#define NFI_CSEL		(0x90)
-> +#define NFI_FDML(x)		(0xA0 + (x) * sizeof(u32) * 2)
-> +#define NFI_FDMM(x)		(0xA4 + (x) * sizeof(u32) * 2)
-> +#define NFI_FDM_MAX_SIZE	(8)
-> +#define NFI_MASTER_STA		(0x224)
-> +#define		MASTER_STA_MASK		(0x0FFF)
-> +#define NFI_EMPTY_THRESH	(0x23C)
-> +
-> +#define MTK_NAME		"mtk-nand"
-> +#define KB(x)			((x) * 1024UL)
-> +#define MB(x)			(KB(x) * 1024UL)
-> +
-> +#define MTK_TIMEOUT		(500000)
-> +#define MTK_RESET_TIMEOUT	(1000000)
-> +#define MTK_MAX_SECTOR		(16)
-> +#define MTK_NAND_MAX_NSELS	(2)
-> +
-> +typedef void (*bad_mark_swap)(struct mtd_info *, uint8_t *buf, int raw);
-> +struct mtk_nfc_bad_mark_ctl {
-> +	bad_mark_swap bm_swap;
-
-Just defined the function prototype directly here:
-
-	void (*bm_swap)(struct mtd_info *, uint8_t *buf, int raw);
-
-> +	u32 sec;
-> +	u32 pos;
-> +};
-
-[...]
-
-> +static inline uint8_t *oob_ptr(struct nand_chip *chip, int i)
-> +{
-> +	struct mtk_nfc_nand_chip *mtk_nand = to_mtk_nand(chip);
-> +	uint8_t *poi;
-> +
-> +	if (i < mtk_nand->bad_mark.sec)
-> +		poi = chip->oob_poi + (i + 1) * mtk_nand->fdm.reg_size;
-> +	else if (i == mtk_nand->bad_mark.sec)
-> +		poi = chip->oob_poi;
-> +	else
-> +		poi = chip->oob_poi + i * mtk_nand->fdm.reg_size;
-
-Could you add some comments explaining what you're doing here, because
-I don't get it :).
-
-> +
-> +	return poi;
-> +}
-> +
-
-[...]
-
-> +static int mtk_nfc_hw_runtime_config(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct mtk_nfc_nand_chip *mtk_nand = to_mtk_nand(chip);
-> +	struct mtk_nfc *nfc = nand_get_controller_data(chip);
-> +	u32 fmt, spare;
-> +
-> +	if (!mtd->writesize)
-> +		return 0;
-> +
-> +	spare = mtk_nand->spare_per_sector;
-> +
-> +	switch (mtd->writesize) {
-> +	case 512:
-> +		fmt = PAGEFMT_512_2K | PAGEFMT_SEC_SEL_512;
-> +		break;
-> +	case KB(2):
-> +		if (chip->ecc.size == 512)
-> +			fmt = PAGEFMT_2K_4K | PAGEFMT_SEC_SEL_512;
-> +		else
-> +			fmt = PAGEFMT_512_2K;
-> +		break;
-> +	case KB(4):
-> +		if (chip->ecc.size == 512)
-> +			fmt = PAGEFMT_4K_8K | PAGEFMT_SEC_SEL_512;
-> +		else
-> +			fmt = PAGEFMT_2K_4K;
-> +		break;
-> +	case KB(8):
-> +		if (chip->ecc.size == 512)
-> +			fmt = PAGEFMT_8K_16K | PAGEFMT_SEC_SEL_512;
-> +		else
-> +			fmt = PAGEFMT_4K_8K;
-> +		break;
-> +	case KB(16):
-> +		fmt = PAGEFMT_8K_16K;
-> +		break;
-> +	default:
-> +		dev_err(nfc->dev, "invalid page len: %d\n", mtd->writesize);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* the hardware doubles the value for this eccsize so let's halve it */
-> +	if (chip->ecc.size == 1024)
-> +		spare >>= 1;
-> +
-> +	switch (spare) {
-> +	case 16:
-> +		fmt |= (PAGEFMT_SPARE_16 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 26:
-> +		fmt |= (PAGEFMT_SPARE_26 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 27:
-> +		fmt |= (PAGEFMT_SPARE_27 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 28:
-> +		fmt |= (PAGEFMT_SPARE_28 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 32:
-> +		fmt |= (PAGEFMT_SPARE_32 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 36:
-> +		fmt |= (PAGEFMT_SPARE_36 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 40:
-> +		fmt |= (PAGEFMT_SPARE_40 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 44:
-> +		fmt |= (PAGEFMT_SPARE_44 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 48:
-> +		fmt |= (PAGEFMT_SPARE_48 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 49:
-> +		fmt |= (PAGEFMT_SPARE_49 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 50:
-> +		fmt |= (PAGEFMT_SPARE_50 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 51:
-> +		fmt |= (PAGEFMT_SPARE_51 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 52:
-> +		fmt |= (PAGEFMT_SPARE_52 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 62:
-> +		fmt |= (PAGEFMT_SPARE_62 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 63:
-> +		fmt |= (PAGEFMT_SPARE_63 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	case 64:
-> +		fmt |= (PAGEFMT_SPARE_64 << PAGEFMT_SPARE_SHIFT);
-> +		break;
-> +	default:
-> +		dev_err(nfc->dev, "invalid spare per sector %d\n", spare);
-> +		return -EINVAL;
-> +	}
-> +
-> +	fmt |= mtk_nand->fdm.reg_size << PAGEFMT_FDM_SHIFT;
-> +	fmt |= mtk_nand->fdm.ecc_size << PAGEFMT_FDM_ECC_SHIFT;
-> +	nfi_writew(nfc, fmt, NFI_PAGEFMT);
-> +
-> +	nfc->ecc_cfg.strength = chip->ecc.strength;
-> +	nfc->ecc_cfg.enc_len = chip->ecc.size + mtk_nand->fdm.ecc_size;
-> +	nfc->ecc_cfg.dec_len = (nfc->ecc_cfg.enc_len << 3)
-> +				+ chip->ecc.strength * ECC_PARITY_BITS;
-
-And here is the explanation to the question I asked in my ECC engine
-driver review :).
-
-Please keep the len field consistent for both encoding and decoding
-mode, and let the ECC engine driver adapt it to put the correct value
-in the ECC engine registers.
-
-> +
-> +	return 0;
-> +}
-> +
-
-[...]
-
-> +
-> +static inline uint8_t mtk_nfc_read_byte(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct mtk_nfc *nfc = nand_get_controller_data(chip);
-> +	u32 reg;
-> +
-> +	reg = nfi_readl(nfc, NFI_STA) & NFI_FSM_MASK;
-> +	if (reg != NFI_FSM_CUSTDATA) {
-> +		reg = nfi_readw(nfc, NFI_CNFG);
-> +		reg |= CNFG_BYTE_RW | CNFG_READ_EN;
-> +		nfi_writew(nfc, reg, NFI_CNFG);
-> +
-> +		reg = (MTK_MAX_SECTOR << CON_SEC_SHIFT) | CON_BRD;
-
-What is CON_SEC field meaning in this case? The number of bytes to read
-(maybe stored in a FIFO)? If that's the case, and the controller is able
-to read several bytes at a time, then it would make more sense to
-implement ->read_byte() as a wrapper around ->read_buf() and move this
-code into ->read_buf().
-
-> +		nfi_writel(nfc, reg, NFI_CON);
-> +
-> +		/* trigger to fetch data */
-> +		nfi_writew(nfc, STAR_EN, NFI_STRDATA);
-> +	}
-> +
-> +	mtk_nfc_wait_ioready(nfc);
-> +
-> +	return nfi_readb(nfc, NFI_DATAR);
-> +}
-> +
-
-[...]
-
-> +
-> +static void mtk_nfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < len; i++)
-> +		mtk_nfc_write_byte(mtd, buf[i]);
-> +}
-
-Ditto.
-
-> +
-> +static int mtk_nfc_sector_encode(struct nand_chip *chip, u8 *data)
-> +{
-> +	struct mtk_nfc *nfc = nand_get_controller_data(chip);
-> +	struct mtk_nfc_nand_chip *mtk_nand = to_mtk_nand(chip);
-> +	int size = chip->ecc.size + mtk_nand->fdm.reg_size;
-> +
-> +	nfc->ecc_cfg.ecc_mode = ECC_DMA_MODE;
-> +	nfc->ecc_cfg.codec = ECC_ENC;
-> +	return mtk_ecc_encode_non_nfi_mode(nfc->ecc, &nfc->ecc_cfg, data, size);
-> +}
-> +
-> +static void mtk_nfc_no_bad_mark_swap(struct mtd_info *a, uint8_t *b, int c)
-> +{
-> +	/* nope */
-
-I guess you meant NOP :).
-
-> +}
-> +
-> +static void mtk_nfc_bad_mark_swap(struct mtd_info *mtd, uint8_t *buf, int raw)
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct mtk_nfc_nand_chip *nand = to_mtk_nand(chip);
-> +	u32 bad_pos = nand->bad_mark.pos;
-> +
-> +	if (raw)
-> +		bad_pos += nand->bad_mark.sec * mtk_data_len(chip);
-> +	else
-> +		bad_pos += nand->bad_mark.sec * chip->ecc.size;
-> +
-> +	swap(chip->oob_poi[0], buf[bad_pos]);
-
-Don't know if you support 16bits bus width, but if that's the case you
-should swap 2 bytes (the bad block marker is 2 bytes wide).
-
-> +}
-> +
-
-[...]
-
-> +
-> +static inline void mtk_nfc_read_fdm(struct nand_chip *chip, u32 start,
-> +					u32 sectors)
-> +{
-> +	struct mtk_nfc *nfc = nand_get_controller_data(chip);
-> +	u32 *p;
-> +	int i;
-> +
-> +	for (i = 0; i < sectors; i++) {
-> +		p = (u32 *) oob_ptr(chip, start + i);
-> +		p[0] = nfi_readl(nfc, NFI_FDML(i));
-> +		p[1] = nfi_readl(nfc, NFI_FDMM(i));
-
-Hm, this should work as long as you're in little-endian, otherwise you
-might have to switch bytes.
-Maybe you should convert this manually with something like:
-
-		u8 *oobptr = oob_ptr(chip, start + i);
-		u32 val = nfi_readl(nfc, NFI_FDML(i));
-		oobptr[0] = val;
-		oobptr[1] = val >> 8;
-		...
-
-> +	}
-> +}
-> +
-> +static inline void mtk_nfc_write_fdm(struct nand_chip *chip)
-> +{
-> +	struct mtk_nfc *nfc = nand_get_controller_data(chip);
-> +	u32 *p;
-> +	int i;
-> +
-> +	for (i = 0; i < chip->ecc.steps ; i++) {
-> +		p = (u32 *) oob_ptr(chip, i);
-> +		nfi_writel(nfc, p[0], NFI_FDML(i));
-> +		nfi_writel(nfc, p[1], NFI_FDMM(i));
-
-Ditto.
-
-> +	}
-> +}
-> +
-
-[...]
-
-> +
-> +static inline void mtk_nfc_hw_init(struct mtk_nfc *nfc)
-> +{
-> +	nfi_writel(nfc, 0x10804211, NFI_ACCCON);
-> +	nfi_writew(nfc, 0xf1, NFI_CNRNB);
-
-Could you explain those magic values?
-
-> +	nfi_writew(nfc, PAGEFMT_8K_16K, NFI_PAGEFMT);
-> +
-> +	mtk_nfc_hw_reset(nfc);
-> +
-> +	nfi_readl(nfc, NFI_INTR_STA);
-> +	nfi_writel(nfc, 0, NFI_INTR_EN);
-> +}
-> +
-
-[...]
-
-> +
-> +#ifdef CONFIG_PM_SLEEP
-> +static int mtk_nfc_suspend(struct device *dev)
-> +{
-> +	struct mtk_nfc *nfc = dev_get_drvdata(dev);
-> +
-> +	mtk_nfc_disable_clk(&nfc->clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mtk_nfc_resume(struct device *dev)
-> +{
-> +	struct mtk_nfc *nfc = dev_get_drvdata(dev);
-> +	struct mtk_nfc_nand_chip *chip;
-> +	struct nand_chip *nand;
-> +	struct mtd_info *mtd;
-> +	int ret;
-> +	u32 i;
-> +
-> +	udelay(200);
-> +
-> +	ret = mtk_nfc_enable_clk(dev, &nfc->clk);
-> +	if (ret)
-> +		return ret;
-> +
-> +	mtk_nfc_hw_init(nfc);
-> +
-> +	list_for_each_entry(chip, &nfc->chips, node) {
-> +		nand = &chip->nand;
-> +		mtd = nand_to_mtd(nand);
-> +		for (i = 0; i < chip->nsels; i++) {
-> +			nand->select_chip(mtd, i);
-> +			nand->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> +		}
-
-Interesting, you need to reset the NAND chips when you get out of
-suspend. Probably something we should move in the core at some point.
-
-Sorry, but I focused on a few specific aspects in this review (ECC
-engine and basic nand_chip functions), which means I might have missed
-other issues. I'll try to carefully review the remaining parts later.
-
-Best Regards,
-
-Boris
-
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+--_002_20160510122343GB16841visteongnana_
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <853C092309C1B944AF3B372FC7129814@eurprd06.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+
+Hi There,
+
+We have i.MX6d based platform that has FSL BSP 3.10.17 running.=20
+There is SLC Micron NAND of size 2GB with 512K Block size and 4K min I/O  u=
+sed
+for software storage. This NAND has got 7 partitions, Among that two partit=
+ions
+have Read-Write ubifs file system for runtime data and one has Read-only ub=
+ifs=20
+file system that has all the system files. Recently we have observed a issu=
+e that=20
+one of RW ubifs partition failed to mount due to invalid key type in one of=
+ index=20
+node in ubifs. we have seen the same issue in two units out of 1000 units r=
+unning=20
+in the field.
+
+Following is the index node that has  invalid key in its first branch.
+key type =3D 0xa917dd4c >> 29 =3D 5 (invalid key)
+
+        magic          0x6101831
+	crc            0x944add59
+	node_type      9 (indexing node)
+	group_type     0 (no node group)
+	sqnum          378678
+	len            148
+	child_cnt      6
+	level          2
+	Branches:
+	0: LEB 569:280144 len 108 key (bad key type: 0x000001, 0xa917dd4c)
+	1: LEB 446:349792 len 108 key (5595, inode)
+	2: LEB 584:361528 len 108 key (5822, inode)
+	3: LEB 602:255360 len 108 key (6050, inode)
+	4: LEB 613:480280 len 188 key (6258, inode)
+	5: LEB 614:373784 len 88 key (6521, data, 25)
+
+Please help us to understand following points
+
+	1. Did this happen because abrupt power cut ? if so, how could CRC of the =
+node still be intact?
+	2. Could there be any bit flip ? but still again CRC intact.
+	3. Would the key pointed by  corrupted branch be  UBIFS_DENT_KEY or  UBIFS=
+_XENT_KEY ?=20
+		Because  29 bit of key[0] (0xa917dd4c  & 0x1FFFFFFF) seems to have some k=
+ind of  hash value.
+		but node (at leb 569:280144)  that is pointed by corrupted branch seem to=
+ be index node.
+	4. This corrupted entry is always seen  in first branch of an index node  =
+in two failed units. Could there be reason?
+	5. Since CRC is intact, would there be any possibility or scenario that co=
+rrupted node can be written with valid CRC?
+
+
+Please share us if you have any suggestions or comments.
+
+Attachement: Debug mount log of this partition.=20
+	      mtd Partition : /dev/mtd7
+	      ubifs partition name : meta
+
+Cheers
+Gnana
+
+
+
+--_002_20160510122343GB16841visteongnana_
+Content-Type: text/plain; name="meta-mtd7-mount-log.log"
+Content-Description: meta-mtd7-mount-log.log
+Content-Disposition: attachment; filename="meta-mtd7-mount-log.log";
+	size=41375; creation-date="Tue, 10 May 2016 12:14:11 GMT";
+	modification-date="Tue, 10 May 2016 12:14:11 GMT"
+Content-ID: <69670BF13A8B184BAE0F1B40AAA411B8@eurprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
+
+LyAjIA0KLyAjIG1vdW50IC10IHViaWZzIC9kZXYvdWJpN18wIC9tZXRhDQpVQklGUzogYmFja2dy
+b3VuZCB0aHJlYWQgInViaWZzX2JndDdfMCIgc3RhcnRlZCwgUElEIDE4OA0KPDc+VUJJRlMgREJH
+IGdlbiAocGlkIDE4Nyk6IG5hbWUgL2Rldi91Ymk3XzAsIGZsYWdzIDB4MA0KPDc+VUJJIERCRyBn
+ZW4gKHBpZCAxODcpOiBvcGVuIHZvbHVtZSAvZGV2L3ViaTdfMCwgbW9kZSAxDQo8Nz5VQkkgREJH
+IGdlbiAocGlkIDE4Nyk6IG9wZW4gZGV2aWNlIDcsIHZvbHVtZSAwLCBtb2RlIDENCjw3PlVCSUZT
+IERCRyBnZW4gKHBpZCAxODcpOiBvcGVuZWQgdWJpN18wDQo8Nz5VQkkgREJHIGdlbiAocGlkIDE4
+Nyk6IG9wZW4gZGV2aWNlIDcsIHZvbHVtZSAwLCBtb2RlIDINCjw3PlVCSSBEQkcgZ2VuIChwaWQg
+MTg3KTogdGVzdCBMRUIgMDowDQo8Nz5VQklGUyBEQkcgaW8gKHBpZCAxODcpOiBMRUIgMDowLCBz
+dXBlcmJsb2NrIG5vZGUsIGxlbmd0aCA0MDk2DQo8Nz5VQkkgREJHIGdlbiAocGlkIDE4Nyk6IHJl
+YWQgNDA5NiBieXRlcyBmcm9tIExFQiAwOjA6MA0KPDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiBy
+ZWFkIDQwOTYgYnl0ZXMgZnJvbSBvZmZzZXQgMCBvZiBMRUIgMDowLCBQRUIgMjU4DQo8Nz5VQkkg
+REJHIGlvIChwaWQgMTg3KTogcmVhZCA0MDk2IGJ5dGVzIGZyb20gUEVCIDI1ODo4MTkyDQo8Nz5V
+QklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW4gTEVCIDE6MA0KPDc+VUJJIERCRyBnZW4gKHBp
+ZCAxODcpOiByZWFkIDUxNjA5NiBieXRlcyBmcm9tIExFQiAwOjE6MA0KPDc+VUJJIERCRyBlYmEg
+KHBpZCAxODcpOiByZWFkIDUxNjA5NiBieXRlcyBmcm9tIG9mZnNldCAwIG9mIExFQiAwOjEsIFBF
+QiA1NjkNCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcpOiByZWFkIDUxNjA5NiBieXRlcyBmcm9tIFBF
+QiA1Njk6ODE5Mg0KPDU+VUJJRlM6IGJhY2tncm91bmQgdGhyZWFkICJ1Ymlmc19iZ3Q3XzAiIHN0
+YXJ0ZWQsIFBJRCAxODgNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIg
+MTowICg1MTYwOTYgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nh
+bm5pbmcgbWFzdGVyIG5vZGUgYXQgTEVCIDE6MA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcp
+OiBsb29rIGF0IExFQiAxOjUxMiAoNTE1NTg0IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2Nh
+biAocGlkIDE4Nyk6IHNjYW5uaW5nIHBhZGRpbmcgbm9kZSBhdCBMRUIgMTo1MTINCjw3PlVCSUZT
+IERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDE6NTEyLCBvZmZz
+ZXQgbm93IDQwOTYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMTo0
+MDk2ICg1MTIwMDAgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nh
+bm5pbmcgbWFzdGVyIG5vZGUgYXQgTEVCIDE6NDA5Ng0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAx
+ODcpOiBsb29rIGF0IExFQiAxOjQ2MDggKDUxMTQ4OCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJH
+IHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDE6NDYwOA0KPDc+
+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiAzNTU2IGJ5dGVzIHBhZGRlZCBhdCBMRUIgMTo0NjA4
+LCBvZmZzZXQgbm93IDgxOTINCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBM
+RUIgMTo4MTkyICg1MDc5MDQgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3
+KTogc2Nhbm5pbmcgbWFzdGVyIG5vZGUgYXQgTEVCIDE6ODE5Mg0KPDc+VUJJRlMgREJHIHNjYW4g
+KHBpZCAxODcpOiBsb29rIGF0IExFQiAxOjg3MDQgKDUwNzM5MiBieXRlcyBsZWZ0KQ0KPDc+VUJJ
+RlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDE6ODcw
+NA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiAzNTU2IGJ5dGVzIHBhZGRlZCBhdCBMRUIg
+MTo4NzA0LCBvZmZzZXQgbm93IDEyMjg4DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxv
+b2sgYXQgTEVCIDE6MTIyODggKDUwMzgwOCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4g
+KHBpZCAxODcpOiBzY2FubmluZyBtYXN0ZXIgbm9kZSBhdCBMRUIgMToxMjI4OA0KPDc+VUJJRlMg
+REJHIFVCSUZTOiByZWNvdmVyeSBuZWVkZWQNCnNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiAx
+OjEyODAwICg1MDMyOTYgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTog
+c2Nhbm5pbmcgcGFkZGluZyBub2RlIGF0IExFQiAxOjEyODAwDQo8Nz5VQklGUyBEQkcgc2NhbiAo
+cGlkIDE4Nyk6IDM1NTYgYnl0ZXMgcGFkZGVkIGF0IExFQiAxOjEyODAwLCBvZmZzZXQgbm93IDE2
+Mzg0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6MTYzODQgKDQ5
+OTcxMiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBt
+YXN0ZXIgbm9kZSBhdCBMRUIgMToxNjM4NA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBs
+b29rIGF0IExFQiAxOjE2ODk2ICg0OTkyMDAgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2Fu
+IChwaWQgMTg3KTogc2Nhbm5pbmcgcGFkZGluZyBub2RlIGF0IExFQiAxOjE2ODk2DQo8Nz5VQklG
+UyBEQkcgc2NhbiAocGlkIDE4Nyk6IDM1NTYgYnl0ZXMgcGFkZGVkIGF0IExFQiAxOjE2ODk2LCBv
+ZmZzZXQgbm93IDIwNDgwDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVC
+IDE6MjA0ODAgKDQ5NTYxNiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcp
+OiBzY2FubmluZyBtYXN0ZXIgbm9kZSBhdCBMRUIgMToyMDQ4MA0KPDc+VUJJRlMgREJHIHNjYW4g
+KHBpZCAxODcpOiBsb29rIGF0IExFQiAxOjIwOTkyICg0OTUxMDQgYnl0ZXMgbGVmdCkNCjw3PlVC
+SUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgcGFkZGluZyBub2RlIGF0IExFQiAxOjIw
+OTkyDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IDM1NTYgYnl0ZXMgcGFkZGVkIGF0IExF
+QiAxOjIwOTkyLCBvZmZzZXQgbm93IDI0NTc2DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6
+IGxvb2sgYXQgTEVCIDE6MjQ1NzYgKDQ5MTUyMCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNj
+YW4gKHBpZCAxODcpOiBzY2FubmluZyBtYXN0ZXIgbm9kZSBhdCBMRUIgMToyNDU3Ng0KPDc+VUJJ
+RlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiAxOjI1MDg4ICg0OTEwMDggYnl0ZXMg
+bGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgcGFkZGluZyBub2Rl
+IGF0IExFQiAxOjI1MDg4DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IDM1NTYgYnl0ZXMg
+cGFkZGVkIGF0IExFQiAxOjI1MDg4LCBvZmZzZXQgbm93IDI4NjcyDQo8Nz5VQklGUyBEQkcgc2Nh
+biAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6Mjg2NzIgKDQ4NzQyNCBieXRlcyBsZWZ0KQ0KPDc+
+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBtYXN0ZXIgbm9kZSBhdCBMRUIgMToy
+ODY3Mg0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiAxOjI5MTg0ICg0
+ODY5MTIgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5pbmcg
+cGFkZGluZyBub2RlIGF0IExFQiAxOjI5MTg0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6
+IDM1NTYgYnl0ZXMgcGFkZGVkIGF0IExFQiAxOjI5MTg0LCBvZmZzZXQgbm93IDMyNzY4DQo8Nz5V
+QklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6MzI3NjggKDQ4MzMyOCBieXRl
+cyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBtYXN0ZXIgbm9k
+ZSBhdCBMRUIgMTozMjc2OA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExF
+QiAxOjMzMjgwICg0ODI4MTYgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3
+KTogc2Nhbm5pbmcgcGFkZGluZyBub2RlIGF0IExFQiAxOjMzMjgwDQo8Nz5VQklGUyBEQkcgc2Nh
+biAocGlkIDE4Nyk6IDM1NTYgYnl0ZXMgcGFkZGVkIGF0IExFQiAxOjMzMjgwLCBvZmZzZXQgbm93
+IDM2ODY0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6MzY4NjQg
+KDQ3OTIzMiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2Fubmlu
+ZyBtYXN0ZXIgbm9kZSBhdCBMRUIgMTozNjg2NA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcp
+OiBsb29rIGF0IExFQiAxOjM3Mzc2ICg0Nzg3MjAgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBz
+Y2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgcGFkZGluZyBub2RlIGF0IExFQiAxOjM3Mzc2DQo8Nz5V
+QklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IDM1NTYgYnl0ZXMgcGFkZGVkIGF0IExFQiAxOjM3Mzc2
+LCBvZmZzZXQgbm93IDQwOTYwDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQg
+TEVCIDE6NDA5NjAgKDQ3NTEzNiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAx
+ODcpOiBzY2FubmluZyBtYXN0ZXIgbm9kZSBhdCBMRUIgMTo0MDk2MA0KPDc+VUJJRlMgREJHIHNj
+YW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiAxOjQxNDcyICg0NzQ2MjQgYnl0ZXMgbGVmdCkNCjw3
+PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgcGFkZGluZyBub2RlIGF0IExFQiAx
+OjQxNDcyDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IDM1NTYgYnl0ZXMgcGFkZGVkIGF0
+IExFQiAxOjQxNDcyLCBvZmZzZXQgbm93IDQ1MDU2DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4
+Nyk6IGxvb2sgYXQgTEVCIDE6NDUwNTYgKDQ3MTA0MCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJH
+IHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBtYXN0ZXIgbm9kZSBhdCBMRUIgMTo0NTA1Ng0KPDc+
+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiAxOjQ1NTY4ICg0NzA1MjggYnl0
+ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgcGFkZGluZyBu
+b2RlIGF0IExFQiAxOjQ1NTY4DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IDM1NTYgYnl0
+ZXMgcGFkZGVkIGF0IExFQiAxOjQ1NTY4LCBvZmZzZXQgbm93IDQ5MTUyDQo8Nz5VQklGUyBEQkcg
+c2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6NDkxNTIgKDQ2Njk0NCBieXRlcyBsZWZ0KQ0K
+PDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBtYXN0ZXIgbm9kZSBhdCBMRUIg
+MTo0OTE1Mg0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiAxOjQ5NjY0
+ICg0NjY0MzIgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5p
+bmcgcGFkZGluZyBub2RlIGF0IExFQiAxOjQ5NjY0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4
+Nyk6IDM1NTYgYnl0ZXMgcGFkZGVkIGF0IExFQiAxOjQ5NjY0LCBvZmZzZXQgbm93IDUzMjQ4DQo8
+Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6NTMyNDggKDQ2Mjg0OCBi
+eXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBtYXN0ZXIg
+bm9kZSBhdCBMRUIgMTo1MzI0OA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0
+IExFQiAxOjUzNzYwICg0NjIzMzYgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQg
+MTg3KTogc2Nhbm5pbmcgcGFkZGluZyBub2RlIGF0IExFQiAxOjUzNzYwDQo8Nz5VQklGUyBEQkcg
+c2NhbiAocGlkIDE4Nyk6IDM1NTYgYnl0ZXMgcGFkZGVkIGF0IExFQiAxOjUzNzYwLCBvZmZzZXQg
+bm93IDU3MzQ0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6NTcz
+NDQgKDQ1ODc1MiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2Fu
+bmluZyBtYXN0ZXIgbm9kZSBhdCBMRUIgMTo1NzM0NA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAx
+VUJJRlMgZXJyb3IgKHBpZCAxODcpOiByZWFkX3pub2RlOiBiYWQga2V5IHR5cGUgYXQgc2xvdCAw
+OiA1DQo4Nyk6IGxvb2sgYXQgTEVCIDE6NTc4NTYgKDQ1ODI0MCBVQklGUyBlcnJvciAocGlkIDE4
+Nyk6IHJlYWRfem5vZGU6IGJhZCBpbmRleGluZyBub2RlIGF0IExFQiA2MTQ6MzczODcyLCBlcnJv
+ciAzDQpieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHAgICAgbWFnaWMgICAgICAgICAg
+MHg2MTAxODMxDQppZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgICAgICAgY3JjICAg
+ICAgICAgICAgMHg5NDRhZGQ1OQ0KIExFQiAxOjU3ODU2DQo8Nz5VQklGUyBEQkcgc2NhbiAoICAg
+ICBub2RlX3R5cGUgICAgICA5IChpbmRleGluZyBub2RlKQ0KcGlkIDE4Nyk6IDM1NTYgYnl0ZXMg
+cGFkZGVkIGF0IExFICAgICAgIGdyb3VwX3R5cGUgICAgIDAgKG5vIG5vZGUgZ3JvdXApDQpCIDE6
+NTc4NTYsIG9mZnNldCBub3cgNjE0NDANCjw3PlUgICAgc3FudW0gICAgICAgICAgMzc4Njc4DQpC
+SUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCAgICAgICAgbGVuICAgICAgICAgICAgMTQ4
+DQpMRUIgMTo2MTQ0MCAoNDU0NjU2IGJ5dGVzIGxlZnQpDQogICAgICAgIGNoaWxkX2NudCAgICAg
+IDYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2NhbiAgICAgICBsZXZlbCAgICAgICAg
+ICAyDQpuaW5nIG1hc3RlciBub2RlIGF0IExFQiAxOjYxNDQwDQogICAgICAgIEJyYW5jaGVzOg0K
+PDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rICAgICAgIDA6IExFQiA1Njk6MjgwMTQ0
+IGxlbiAxMDgga2V5IChiYWQga2V5IHR5cGU6IDB4MDAwMDAxLCAweGE5MTdkZDRjKQ0KIGF0IExF
+QiAxOjYxOTUyICg0NTQxNDQgYnl0ZXMgbGVmICAgICAgIDE6IExFQiA0NDY6MzQ5NzkyIGxlbiAx
+MDgga2V5ICg1NTk1LCBpbm9kZSkNCnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6ICAg
+IDI6IExFQiA1ODQ6MzYxNTI4IGxlbiAxMDgga2V5ICg1ODIyLCBpbm9kZSkNCnNjYW5uaW5nIHBh
+ZGRpbmcgbm9kZSBhdCBMRUIgMTo2MSAgICAgICAzOiBMRUIgNjAyOjI1NTM2MCBsZW4gMTA4IGtl
+eSAoNjA1MCwgaW5vZGUpDQo5NTINCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogICAgNDog
+TEVCIDYxMzo0ODAyODAgbGVuIDE4OCBrZXkgKDYyNTgsIGlub2RlKQ0KIDM1NTYgYnl0ZXMgcGFk
+ZGVkIGF0IExFQiAxOjYxOTUyICAgICAgIDU6IExFQiA2MTQ6MzczNzg0IGxlbiA4OCBrZXkgKDY1
+MjEsIGRhdGEsIDI1KQ0KLCBvZmZzZXQgbm93IDY1NTM2DQo8Nz5VQklGUyBEQkcgVUJJRlM6IGJh
+Y2tncm91bmQgdGhyZWFkICJ1Ymlmc19iZ3Q3XzAiIHN0b3BzDQpzY2FuIChwaWQgMTg3KTogbG9v
+ayBhdCBMRUIgMTo2NTUzNiAoNDUwNTYwIGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAo
+cGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAxOjY1NTM2DQo8Nz5VQklGUyBE
+Qkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6NjYwNDggKDQ1MDA0OCBieXRlcyBsZWZ0
+KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQg
+TEVCIDE6NjYwNDgNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRk
+ZWQgYXQgTEVCIDE6NjYwNDgsIG9mZnNldCBub3cgNjk2MzINCjw3PlVCSUZTIERCRyBzY2FuIChw
+aWQgMTg3KTogbG9vayBhdCBMRUIgMTo2OTYzMiAoNDQ2NDY0IGJ5dGVzIGxlZnQpDQo8Nz5VQklG
+UyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAxOjY5NjMy
+DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6NzAxNDQgKDQ0NTk1
+MiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRk
+aW5nIG5vZGUgYXQgTEVCIDE6NzAxNDQNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1
+NiBieXRlcyBwYWRkZWQgYXQgTEVCIDE6NzAxNDQsIG9mZnNldCBub3cgNzM3MjgNCjw3PlVCSUZT
+IERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMTo3MzcyOCAoNDQyMzY4IGJ5dGVzIGxl
+ZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0
+IExFQiAxOjczNzI4DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6
+NzQyNDAgKDQ0MTg1NiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBz
+Y2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDE6NzQyNDANCjw3PlVCSUZTIERCRyBzY2FuIChw
+aWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDE6NzQyNDAsIG9mZnNldCBub3cgNzc4
+MjQNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMTo3NzgyNCAoNDM4
+MjcyIGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1h
+c3RlciBub2RlIGF0IExFQiAxOjc3ODI0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxv
+b2sgYXQgTEVCIDE6NzgzMzYgKDQzNzc2MCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4g
+KHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDE6NzgzMzYNCjw3PlVCSUZT
+IERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDE6NzgzMzYsIG9m
+ZnNldCBub3cgODE5MjANCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIg
+MTo4MTkyMCAoNDM0MTc2IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6
+IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAxOjgxOTIwDQo8Nz5VQklGUyBEQkcgc2NhbiAo
+cGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6ODI0MzIgKDQzMzY2NCBieXRlcyBsZWZ0KQ0KPDc+VUJJ
+RlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDE6ODI0
+MzINCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVC
+IDE6ODI0MzIsIG9mZnNldCBub3cgODYwMTYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTog
+bG9vayBhdCBMRUIgMTo4NjAxNiAoNDMwMDgwIGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2Nh
+biAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAxOjg2MDE2DQo8Nz5VQklG
+UyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6ODY1MjggKDQyOTU2OCBieXRlcyBs
+ZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUg
+YXQgTEVCIDE6ODY1MjgNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBw
+YWRkZWQgYXQgTEVCIDE6ODY1MjgsIG9mZnNldCBub3cgOTAxMTINCjw3PlVCSUZTIERCRyBzY2Fu
+IChwaWQgMTg3KTogbG9vayBhdCBMRUIgMTo5MDExMiAoNDI1OTg0IGJ5dGVzIGxlZnQpDQo8Nz5V
+QklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAxOjkw
+MTEyDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDE6OTA2MjQgKDQy
+NTQ3MiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBw
+YWRkaW5nIG5vZGUgYXQgTEVCIDE6OTA2MjQNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTog
+MzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDE6OTA2MjQsIG9mZnNldCBub3cgOTQyMDgNCjw3PlVC
+SUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMTo5NDIwOCAoNDIxODg4IGJ5dGVz
+IGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2Rl
+IGF0IExFQiAxOjk0MjA4DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVC
+IDE6OTQ3MjAgKDQyMTM3NiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcp
+OiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDE6OTQ3MjANCjw3PlVCSUZTIERCRyBzY2Fu
+IChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDE6OTQ3MjAsIG9mZnNldCBub3cg
+OTgzMDQNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMTo5ODMwNCAo
+NDE3NzkyIGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5n
+IG1hc3RlciBub2RlIGF0IExFQiAxOjk4MzA0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6
+IGxvb2sgYXQgTEVCIDE6OTg4MTYgKDQxNzI4MCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNj
+YW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDE6OTg4MTYNCjw3PlVC
+SUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDE6OTg4MTYs
+IG9mZnNldCBub3cgMTAyNDAwDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQg
+TEVCIDE6MTAyNDAwICg0MTM2OTYgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQg
+MTg3KTogaGl0IGVtcHR5IHNwYWNlIGF0IExFQiAxOjEwMjQwMA0KPDc+VUJJRlMgREJHIHNjYW4g
+KHBpZCAxODcpOiBzdG9wIHNjYW5uaW5nIExFQiAxIGF0IG9mZnNldCAxMDI0MDANCjw3PlVCSUZT
+IERCRyBzY2FuIChwaWQgMTg3KTogc2NhbiBMRUIgMjowDQo8Nz5VQkkgREJHIGdlbiAocGlkIDE4
+Nyk6IHJlYWQgNTE2MDk2IGJ5dGVzIGZyb20gTEVCIDA6MjowDQo8Nz5VQkkgREJHIGViYSAocGlk
+IDE4Nyk6IHJlYWQgNTE2MDk2IGJ5dGVzIGZyb20gb2Zmc2V0IDAgb2YgTEVCIDA6MiwgUEVCIDU3
+Mw0KPDc+VUJJIERCRyBpbyAocGlkIDE4Nyk6IHJlYWQgNTE2MDk2IGJ5dGVzIGZyb20gUEVCIDU3
+Mzo4MTkyDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6MCAoNTE2
+MDk2IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1h
+c3RlciBub2RlIGF0IExFQiAyOjANCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBh
+dCBMRUIgMjo1MTIgKDUxNTU4NCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAx
+ODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6NTEyDQo8Nz5VQklGUyBEQkcgc2Nh
+biAocGlkIDE4Nyk6IDM1NTYgYnl0ZXMgcGFkZGVkIGF0IExFQiAyOjUxMiwgb2Zmc2V0IG5vdyA0
+MDk2DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6NDA5NiAoNTEy
+MDAwIGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1h
+c3RlciBub2RlIGF0IExFQiAyOjQwOTYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9v
+ayBhdCBMRUIgMjo0NjA4ICg1MTE0ODggYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChw
+aWQgMTg3KTogc2Nhbm5pbmcgcGFkZGluZyBub2RlIGF0IExFQiAyOjQ2MDgNCjw3PlVCSUZTIERC
+RyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6NDYwOCwgb2Zmc2V0
+IG5vdyA4MTkyDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6ODE5
+MiAoNTA3OTA0IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5u
+aW5nIG1hc3RlciBub2RlIGF0IExFQiAyOjgxOTINCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3
+KTogbG9vayBhdCBMRUIgMjo4NzA0ICg1MDczOTIgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBz
+Y2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgcGFkZGluZyBub2RlIGF0IExFQiAyOjg3MDQNCjw3PlVC
+SUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6ODcwNCwg
+b2Zmc2V0IG5vdyAxMjI4OA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExF
+QiAyOjEyMjg4ICg1MDM4MDggYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3
+KTogc2Nhbm5pbmcgbWFzdGVyIG5vZGUgYXQgTEVCIDI6MTIyODgNCjw3PlVCSUZTIERCRyBzY2Fu
+IChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjoxMjgwMCAoNTAzMjk2IGJ5dGVzIGxlZnQpDQo8Nz5V
+QklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIHBhZGRpbmcgbm9kZSBhdCBMRUIgMjox
+MjgwMA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiAzNTU2IGJ5dGVzIHBhZGRlZCBhdCBM
+RUIgMjoxMjgwMCwgb2Zmc2V0IG5vdyAxNjM4NA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcp
+OiBsb29rIGF0IExFQiAyOjE2Mzg0ICg0OTk3MTIgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBz
+Y2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgbWFzdGVyIG5vZGUgYXQgTEVCIDI6MTYzODQNCjw3PlVC
+SUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjoxNjg5NiAoNDk5MjAwIGJ5dGVz
+IGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIHBhZGRpbmcgbm9k
+ZSBhdCBMRUIgMjoxNjg5Ng0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiAzNTU2IGJ5dGVz
+IHBhZGRlZCBhdCBMRUIgMjoxNjg5Niwgb2Zmc2V0IG5vdyAyMDQ4MA0KPDc+VUJJRlMgREJHIHNj
+YW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiAyOjIwNDgwICg0OTU2MTYgYnl0ZXMgbGVmdCkNCjw3
+PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgbWFzdGVyIG5vZGUgYXQgTEVCIDI6
+MjA0ODANCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjoyMDk5MiAo
+NDk1MTA0IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5n
+IHBhZGRpbmcgbm9kZSBhdCBMRUIgMjoyMDk5Mg0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcp
+OiAzNTU2IGJ5dGVzIHBhZGRlZCBhdCBMRUIgMjoyMDk5Miwgb2Zmc2V0IG5vdyAyNDU3Ng0KPDc+
+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiAyOjI0NTc2ICg0OTE1MjAgYnl0
+ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgbWFzdGVyIG5v
+ZGUgYXQgTEVCIDI6MjQ1NzYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBM
+RUIgMjoyNTA4OCAoNDkxMDA4IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4
+Nyk6IHNjYW5uaW5nIHBhZGRpbmcgbm9kZSBhdCBMRUIgMjoyNTA4OA0KPDc+VUJJRlMgREJHIHNj
+YW4gKHBpZCAxODcpOiAzNTU2IGJ5dGVzIHBhZGRlZCBhdCBMRUIgMjoyNTA4OCwgb2Zmc2V0IG5v
+dyAyODY3Mg0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiAyOjI4Njcy
+ICg0ODc0MjQgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5p
+bmcgbWFzdGVyIG5vZGUgYXQgTEVCIDI6Mjg2NzINCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3
+KTogbG9vayBhdCBMRUIgMjoyOTE4NCAoNDg2OTEyIGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcg
+c2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIHBhZGRpbmcgbm9kZSBhdCBMRUIgMjoyOTE4NA0KPDc+
+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiAzNTU2IGJ5dGVzIHBhZGRlZCBhdCBMRUIgMjoyOTE4
+NCwgb2Zmc2V0IG5vdyAzMjc2OA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0
+IExFQiAyOjMyNzY4ICg0ODMzMjggYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQg
+MTg3KTogc2Nhbm5pbmcgbWFzdGVyIG5vZGUgYXQgTEVCIDI6MzI3NjgNCjw3PlVCSUZTIERCRyBz
+Y2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjozMzI4MCAoNDgyODE2IGJ5dGVzIGxlZnQpDQo8
+Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIHBhZGRpbmcgbm9kZSBhdCBMRUIg
+MjozMzI4MA0KLyAjIDw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRk
+ZWQgYXQgTEVCIDI6MzMyODAsIG9mZnNldCBub3cgMzY4NjQNCjw3PlVCSUZTIERCRyBzY2FuIChw
+aWQgMTg3KTogbG9vayBhdCBMRUIgMjozNjg2NCAoNDc5MjMyIGJ5dGVzIGxlZnQpDQo8Nz5VQklG
+UyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAyOjM2ODY0
+DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6MzczNzYgKDQ3ODcy
+MCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRk
+aW5nIG5vZGUgYXQgTEVCIDI6MzczNzYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1
+NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6MzczNzYsIG9mZnNldCBub3cgNDA5NjANCjw3PlVCSUZT
+IERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjo0MDk2MCAoNDc1MTM2IGJ5dGVzIGxl
+ZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0
+IExFQiAyOjQwOTYwDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6
+NDE0NzIgKDQ3NDYyNCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBz
+Y2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6NDE0NzINCjw3PlVCSUZTIERCRyBzY2FuIChw
+aWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6NDE0NzIsIG9mZnNldCBub3cgNDUw
+NTYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjo0NTA1NiAoNDcx
+MDQwIGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1h
+c3RlciBub2RlIGF0IExFQiAyOjQ1MDU2DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxv
+b2sgYXQgTEVCIDI6NDU1NjggKDQ3MDUyOCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4g
+KHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6NDU1NjgNCjw3PlVCSUZT
+IERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6NDU1NjgsIG9m
+ZnNldCBub3cgNDkxNTINCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIg
+Mjo0OTE1MiAoNDY2OTQ0IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6
+IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAyOjQ5MTUyDQo8Nz5VQklGUyBEQkcgc2NhbiAo
+cGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6NDk2NjQgKDQ2NjQzMiBieXRlcyBsZWZ0KQ0KPDc+VUJJ
+RlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6NDk2
+NjQNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVC
+IDI6NDk2NjQsIG9mZnNldCBub3cgNTMyNDgNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTog
+bG9vayBhdCBMRUIgMjo1MzI0OCAoNDYyODQ4IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2Nh
+biAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAyOjUzMjQ4DQo8Nz5VQklG
+UyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6NTM3NjAgKDQ2MjMzNiBieXRlcyBs
+ZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUg
+YXQgTEVCIDI6NTM3NjANCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBw
+YWRkZWQgYXQgTEVCIDI6NTM3NjAsIG9mZnNldCBub3cgNTczNDQNCjw3PlVCSUZTIERCRyBzY2Fu
+IChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjo1NzM0NCAoNDU4NzUyIGJ5dGVzIGxlZnQpDQo8Nz5V
+QklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAyOjU3
+MzQ0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6NTc4NTYgKDQ1
+ODI0MCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBw
+YWRkaW5nIG5vZGUgYXQgTEVCIDI6NTc4NTYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTog
+MzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6NTc4NTYsIG9mZnNldCBub3cgNjE0NDANCjw3PlVC
+SUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjo2MTQ0MCAoNDU0NjU2IGJ5dGVz
+IGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2Rl
+IGF0IExFQiAyOjYxNDQwDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVC
+IDI6NjE5NTIgKDQ1NDE0NCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcp
+OiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6NjE5NTINCjw3PlVCSUZTIERCRyBzY2Fu
+IChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6NjE5NTIsIG9mZnNldCBub3cg
+NjU1MzYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjo2NTUzNiAo
+NDUwNTYwIGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5n
+IG1hc3RlciBub2RlIGF0IExFQiAyOjY1NTM2DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6
+IGxvb2sgYXQgTEVCIDI6NjYwNDggKDQ1MDA0OCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNj
+YW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6NjYwNDgNCjw3PlVC
+SUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6NjYwNDgs
+IG9mZnNldCBub3cgNjk2MzINCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBM
+RUIgMjo2OTYzMiAoNDQ2NDY0IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4
+Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAyOjY5NjMyDQo8Nz5VQklGUyBEQkcgc2Nh
+biAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6NzAxNDQgKDQ0NTk1MiBieXRlcyBsZWZ0KQ0KPDc+
+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6
+NzAxNDQNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQg
+TEVCIDI6NzAxNDQsIG9mZnNldCBub3cgNzM3MjgNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3
+KTogbG9vayBhdCBMRUIgMjo3MzcyOCAoNDQyMzY4IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcg
+c2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAyOjczNzI4DQo8Nz5V
+QklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6NzQyNDAgKDQ0MTg1NiBieXRl
+cyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5v
+ZGUgYXQgTEVCIDI6NzQyNDANCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRl
+cyBwYWRkZWQgYXQgTEVCIDI6NzQyNDAsIG9mZnNldCBub3cgNzc4MjQNCjw3PlVCSUZTIERCRyBz
+Y2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjo3NzgyNCAoNDM4MjcyIGJ5dGVzIGxlZnQpDQo8
+Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAy
+Ojc3ODI0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6NzgzMzYg
+KDQzNzc2MCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2Fubmlu
+ZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6NzgzMzYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3
+KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6NzgzMzYsIG9mZnNldCBub3cgODE5MjANCjw3
+PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjo4MTkyMCAoNDM0MTc2IGJ5
+dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBu
+b2RlIGF0IExFQiAyOjgxOTIwDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQg
+TEVCIDI6ODI0MzIgKDQzMzY2NCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAx
+ODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6ODI0MzINCjw3PlVCSUZTIERCRyBz
+Y2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6ODI0MzIsIG9mZnNldCBu
+b3cgODYwMTYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjo4NjAx
+NiAoNDMwMDgwIGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5u
+aW5nIG1hc3RlciBub2RlIGF0IExFQiAyOjg2MDE2DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4
+Nyk6IGxvb2sgYXQgTEVCIDI6ODY1MjggKDQyOTU2OCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJH
+IHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6ODY1MjgNCjw3
+PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6ODY1
+MjgsIG9mZnNldCBub3cgOTAxMTINCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBh
+dCBMRUIgMjo5MDExMiAoNDI1OTg0IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlk
+IDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAyOjkwMTEyDQo8Nz5VQklGUyBEQkcg
+c2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6OTA2MjQgKDQyNTQ3MiBieXRlcyBsZWZ0KQ0K
+PDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVC
+IDI6OTA2MjQNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBieXRlcyBwYWRkZWQg
+YXQgTEVCIDI6OTA2MjQsIG9mZnNldCBub3cgOTQyMDgNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQg
+MTg3KTogbG9vayBhdCBMRUIgMjo5NDIwOCAoNDIxODg4IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBE
+Qkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExFQiAyOjk0MjA4DQo8
+Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6OTQ3MjAgKDQyMTM3NiBi
+eXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBwYWRkaW5n
+IG5vZGUgYXQgTEVCIDI6OTQ3MjANCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogMzU1NiBi
+eXRlcyBwYWRkZWQgYXQgTEVCIDI6OTQ3MjAsIG9mZnNldCBub3cgOTgzMDQNCjw3PlVCSUZTIERC
+RyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgMjo5ODMwNCAoNDE3NzkyIGJ5dGVzIGxlZnQp
+DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW5uaW5nIG1hc3RlciBub2RlIGF0IExF
+QiAyOjk4MzA0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6OTg4
+MTYgKDQxNzI4MCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2Fu
+bmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDI6OTg4MTYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQg
+MTg3KTogMzU1NiBieXRlcyBwYWRkZWQgYXQgTEVCIDI6OTg4MTYsIG9mZnNldCBub3cgMTAyNDAw
+DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDI6MTAyNDAwICg0MTM2
+OTYgYnl0ZXMgbGVmdCkNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogaGl0IGVtcHR5IHNw
+YWNlIGF0IExFQiAyOjEwMjQwMA0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzdG9wIHNj
+YW5uaW5nIExFQiAyIGF0IG9mZnNldCAxMDI0MDANCjw3PlVCSUZTIERCRyBpbyAocGlkIDE4Nyk6
+IExFQiA2MTQ6MzgxNjAwLCBpbmRleGluZyBub2RlLCBsZW5ndGggNjgNCjw3PlVCSSBEQkcgZ2Vu
+IChwaWQgMTg3KTogcmVhZCA2OCBieXRlcyBmcm9tIExFQiAwOjYxNDozODE2MDANCjw3PlVCSSBE
+QkcgZWJhIChwaWQgMTg3KTogcmVhZCA2OCBieXRlcyBmcm9tIG9mZnNldCAzODE2MDAgb2YgTEVC
+IDA6NjE0LCBQRUIgOTczDQo8Nz5VQkkgREJHIGlvIChwaWQgMTg3KTogcmVhZCA2OCBieXRlcyBm
+cm9tIFBFQiA5NzM6Mzg5NzkyDQo8NT5VQklGUzogcmVjb3ZlcnkgbmVlZGVkDQo8Nz5VQklGUyBE
+QkcgcmN2cnkgKHBpZCAxODcpOiBjaGVja2luZyBpbmRleCBoZWFkIGF0IDYxNDozODUwMjQNCjw3
+PlVCSSBEQkcgZ2VuIChwaWQgMTg3KTogcmVhZCA0MDk2IGJ5dGVzIGZyb20gTEVCIDA6NjE0OjM4
+NTAyNA0KPDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiByZWFkIDQwOTYgYnl0ZXMgZnJvbSBvZmZz
+ZXQgMzg1MDI0IG9mIExFQiAwOjYxNCwgUEVCIDk3Mw0KPDc+VUJJIERCRyBpbyAocGlkIDE4Nyk6
+IHJlYWQgNDA5NiBieXRlcyBmcm9tIFBFQiA5NzM6MzkzMjE2DQo8Nz5VQklGUyBEQkcgcmN2cnkg
+KHBpZCAxODcpOiBjaGVja2luZyBMUFQgaGVhZCBhdCA2OjQ5NTYxNg0KPDc+VUJJIERCRyBnZW4g
+KHBpZCAxODcpOiByZWFkIDQwOTYgYnl0ZXMgZnJvbSBMRUIgMDo2OjQ5NTYxNg0KPDc+VUJJIERC
+RyBlYmEgKHBpZCAxODcpOiByZWFkIDQwOTYgYnl0ZXMgZnJvbSBvZmZzZXQgNDk1NjE2IG9mIExF
+QiAwOjYsIFBFQiA5NjQNCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcpOiByZWFkIDQwOTYgYnl0ZXMg
+ZnJvbSBQRUIgOTY0OjUwMzgwOA0KPDc+VUJJIERCRyBnZW4gKHBpZCAxODcpOiByZWFkIDEyIGJ5
+dGVzIGZyb20gTEVCIDA6Njo0OTE1MjANCjw3PlVCSSBEQkcgZWJhIChwaWQgMTg3KTogcmVhZCAx
+MiBieXRlcyBmcm9tIG9mZnNldCA0OTE1MjAgb2YgTEVCIDA6NiwgUEVCIDk2NA0KPDc+VUJJIERC
+RyBpbyAocGlkIDE4Nyk6IHJlYWQgMTIgYnl0ZXMgZnJvbSBQRUIgOTY0OjQ5OTcxMg0KPDc+VUJJ
+RlMgREJHIGxwIChwaWQgMTg3KTogc3BhY2VfYml0cyAxNg0KPDc+VUJJRlMgREJHIGxwIChwaWQg
+MTg3KTogbHB0X2xudW1fYml0cyAyDQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBscHRfb2Zm
+c19iaXRzIDE5DQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBscHRfc3BjX2JpdHMgMTkNCjw3
+PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IHBjbnRfYml0cyA4DQo8Nz5VQklGUyBEQkcgbHAgKHBp
+ZCAxODcpOiBsbnVtX2JpdHMgMTANCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IHBub2RlX3N6
+IDE5DQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBubm9kZV9zeiAxMw0KPDc+VUJJRlMgREJH
+IGxwIChwaWQgMTg3KTogbHRhYl9zeiAxMg0KPDc+VUJJRlMgREJHIGxwIChwaWQgMTg3KTogbHNh
+dmVfc3ogMzIzDQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBsc2F2ZV9jbnQgMjU2DQo8Nz5V
+QklGUyBEQkcgbHAgKHBpZCAxODcpOiBscHRfaGdodCA0DQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAx
+ODcpOiBiaWdfbHB0IDANCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExQVCByb290IGlzIGF0
+IDY6NDkxNjIyDQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBMUFQgaGVhZCBpcyBhdCA2OjQ5
+NTYxNg0KPDc+VUJJRlMgREJHIGxwIChwaWQgMTg3KTogTFBUIGx0YWIgaXMgYXQgNjo0OTE1MjAN
+Cjw3PlVCSUZTIERCRyBpbyAocGlkIDE4Nyk6IExFQiAxOjEwMjQwMCwgbWFzdGVyIG5vZGUsIGxl
+bmd0aCA1MTIgKGFsaWduZWQgNDA5NikNCjw3PlVCSSBEQkcgZ2VuIChwaWQgMTg3KTogd3JpdGUg
+NDA5NiBieXRlcyB0byBMRUIgMDoxOjEwMjQwMA0KPDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiB3
+cml0ZSA0MDk2IGJ5dGVzIGF0IG9mZnNldCAxMDI0MDAgb2YgTEVCIDA6MSwgUEVCIDU2OQ0KPDc+
+VUJJIERCRyBpbyAocGlkIDE4Nyk6IHdyaXRlIDQwOTYgYnl0ZXMgdG8gUEVCIDU2OToxMTA1OTIN
+Cjw3PlVCSUZTIERCRyBpbyAocGlkIDE4Nyk6IExFQiAyOjEwMjQwMCwgbWFzdGVyIG5vZGUsIGxl
+bmd0aCA1MTIgKGFsaWduZWQgNDA5NikNCjw3PlVCSSBEQkcgZ2VuIChwaWQgMTg3KTogd3JpdGUg
+NDA5NiBieXRlcyB0byBMRUIgMDoyOjEwMjQwMA0KPDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiB3
+cml0ZSA0MDk2IGJ5dGVzIGF0IG9mZnNldCAxMDI0MDAgb2YgTEVCIDA6MiwgUEVCIDU3Mw0KPDc+
+VUJJIERCRyBpbyAocGlkIDE4Nyk6IHdyaXRlIDQwOTYgYnl0ZXMgdG8gUEVCIDU3MzoxMTA1OTIN
+Cjw3PlVCSSBEQkcgZ2VuIChwaWQgMTg3KTogcmVhZCAxMyBieXRlcyBmcm9tIExFQiAwOjY6NDkx
+NjIyDQo8Nz5VQkkgREJHIGViYSAocGlkIDE4Nyk6IHJlYWQgMTMgYnl0ZXMgZnJvbSBvZmZzZXQg
+NDkxNjIyIG9mIExFQiAwOjYsIFBFQiA5NjQNCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcpOiByZWFk
+IDEzIGJ5dGVzIGZyb20gUEVCIDk2NDo0OTk4MTQNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6
+IExFQiA2IGFkZCAxMyB0byA0OTUwNDcNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2
+IGFkZCAxMiB0byA0OTUwNjANCjw3PlVCSSBEQkcgZ2VuIChwaWQgMTg3KTogcmVhZCAxMyBieXRl
+cyBmcm9tIExFQiAwOjY6NDkxNjA5DQo8Nz5VQkkgREJHIGViYSAocGlkIDE4Nyk6IHJlYWQgMTMg
+Ynl0ZXMgZnJvbSBvZmZzZXQgNDkxNjA5IG9mIExFQiAwOjYsIFBFQiA5NjQNCjw3PlVCSSBEQkcg
+aW8gKHBpZCAxODcpOiByZWFkIDEzIGJ5dGVzIGZyb20gUEVCIDk2NDo0OTk4MDENCjw3PlVCSUZT
+IERCRyBscCAocGlkIDE4Nyk6IExFQiA2IGFkZCAxMyB0byA0OTUwNzINCjw3PlVCSSBEQkcgZ2Vu
+IChwaWQgMTg3KTogcmVhZCAxMyBieXRlcyBmcm9tIExFQiAwOjY6NDkxNTk2DQo8Nz5VQkkgREJH
+IGViYSAocGlkIDE4Nyk6IHJlYWQgMTMgYnl0ZXMgZnJvbSBvZmZzZXQgNDkxNTk2IG9mIExFQiAw
+OjYsIFBFQiA5NjQNCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcpOiByZWFkIDEzIGJ5dGVzIGZyb20g
+UEVCIDk2NDo0OTk3ODgNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2IGFkZCAxMyB0
+byA0OTUwODUNCjw3PlVCSSBEQkcgZ2VuIChwaWQgMTg3KTogcmVhZCAxMyBieXRlcyBmcm9tIExF
+QiAwOjY6NDkxNTgzDQo8Nz5VQkkgREJHIGViYSAocGlkIDE4Nyk6IHJlYWQgMTMgYnl0ZXMgZnJv
+bSBvZmZzZXQgNDkxNTgzIG9mIExFQiAwOjYsIFBFQiA5NjQNCjw3PlVCSSBEQkcgaW8gKHBpZCAx
+ODcpOiByZWFkIDEzIGJ5dGVzIGZyb20gUEVCIDk2NDo0OTk3NzUNCjw3PlVCSUZTIERCRyBscCAo
+cGlkIDE4Nyk6IExFQiA2IGFkZCAxMyB0byA0OTUwOTgNCjw3PlVCSSBEQkcgZ2VuIChwaWQgMTg3
+KTogcmVhZCAxOSBieXRlcyBmcm9tIExFQiAwOjY6NDkxNTY0DQo8Nz5VQkkgREJHIGViYSAocGlk
+IDE4Nyk6IHJlYWQgMTkgYnl0ZXMgZnJvbSBvZmZzZXQgNDkxNTY0IG9mIExFQiAwOjYsIFBFQiA5
+NjQNCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcpOiByZWFkIDE5IGJ5dGVzIGZyb20gUEVCIDk2NDo0
+OTk3NTYNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2IGFkZCAxOSB0byA0OTUxMTEN
+Cjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2MTQsIGZyZWUgMTMxMDcyLCBkaXJ0eSAz
+NzQxMjAsIGZsYWdzIDM0DQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNjE0LCBmcmVl
+IC0yMTQ3NDgzNjQ3LCBkaXJ0eSAtMjE0NzQ4MzY0NywgZmxhZ3MgNTANCjw3PlVCSUZTIERCRyBs
+cCAocGlkIDE4Nyk6IExFQiA2MTQsIGZyZWUgMTMxMDcyLCBkaXJ0eSAzNzQxMjAsIGZsYWdzIDM0
+DQo8Nz5VQklGUyBEQkcgbW50IChwaWQgMTg3KTogc3RhcnQgcmVwbGF5aW5nIHRoZSBqb3VybmFs
+DQo8Nz5VQklGUyBEQkcgbW50IChwaWQgMTg3KTogcmVwbGF5IGxvZyBMRUIgNDowDQo8Nz5VQklG
+UyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW4gTEVCIDQ6MA0KPDc+VUJJIERCRyBnZW4gKHBpZCAx
+ODcpOiByZWFkIDUxNjA5NiBieXRlcyBmcm9tIExFQiAwOjQ6MA0KPDc+VUJJIERCRyBlYmEgKHBp
+ZCAxODcpOiByZWFkIDUxNjA5NiBieXRlcyBmcm9tIG9mZnNldCAwIG9mIExFQiAwOjQsIFBFQiAx
+MTcNCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcpOiByZWFkIDUxNjA5NiBieXRlcyBmcm9tIFBFQiAx
+MTc6ODE5Mg0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiA0OjAgKDUx
+NjA5NiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBj
+b21taXQgc3RhcnQgbm9kZSBhdCBMRUIgNDowDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6
+IGxvb2sgYXQgTEVCIDQ6MzIgKDUxNjA2NCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4g
+KHBpZCAxODcpOiBzY2FubmluZyByZWZlcmVuY2Ugbm9kZSBhdCBMRUIgNDozMg0KPDc+VUJJRlMg
+REJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiA0Ojk2ICg1MTYwMDAgYnl0ZXMgbGVmdCkN
+Cjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgcmVmZXJlbmNlIG5vZGUgYXQg
+TEVCIDQ6OTYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgNDoxNjAg
+KDUxNTkzNiBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2Fubmlu
+ZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDQ6MTYwDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6
+IDM5MDggYnl0ZXMgcGFkZGVkIGF0IExFQiA0OjE2MCwgb2Zmc2V0IG5vdyA0MDk2DQo8Nz5VQklG
+UyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDQ6NDA5NiAoNTEyMDAwIGJ5dGVzIGxl
+ZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGhpdCBlbXB0eSBzcGFjZSBhdCBMRUIg
+NDo0MDk2DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHN0b3Agc2Nhbm5pbmcgTEVCIDQg
+YXQgb2Zmc2V0IDQwOTYNCjw3PlVCSUZTIERCRyBtbnQgKHBpZCAxODcpOiBjb21taXQgc3RhcnQg
+c3FudW0gMzc4NzEyDQo8Nz5VQklGUyBEQkcgbW50IChwaWQgMTg3KTogYWRkIHJlcGxheSBidWQg
+TEVCIDYxNTo0MTM2OTYsIGhlYWQgMQ0KPDc+VUJJRlMgREJHIGxvZyAocGlkIDE4Nyk6IExFQiA2
+MTU6NDEzNjk2LCBqaGVhZCAxIChiYXNlKSwgYnVkX2J5dGVzIDEwMjQwMA0KPDc+VUJJRlMgREJH
+IG1udCAocGlkIDE4Nyk6IGFkZCByZXBsYXkgYnVkIExFQiA2MTc6MTY3OTM2LCBoZWFkIDINCjw3
+PlVCSUZTIERCRyBsb2cgKHBpZCAxODcpOiBMRUIgNjE3OjE2NzkzNiwgamhlYWQgMiAoZGF0YSks
+IGJ1ZF9ieXRlcyA0NTA1NjANCjw3PlVCSUZTIERCRyBtbnQgKHBpZCAxODcpOiByZXBsYXkgbG9n
+IExFQiA1OjANCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2NhbiBMRUIgNTowDQo8Nz5V
+QkkgREJHIGdlbiAocGlkIDE4Nyk6IHJlYWQgNTE2MDk2IGJ5dGVzIGZyb20gTEVCIDA6NTowDQo8
+Nz5VQkkgREJHIGViYSAocGlkIDE4Nyk6IHJlYWQgNTE2MDk2IGJ5dGVzIGZyb20gb2Zmc2V0IDAg
+b2YgTEVCIDA6NSAodW5tYXBwZWQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sg
+YXQgTEVCIDU6MCAoNTE2MDk2IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4
+Nyk6IGhpdCBlbXB0eSBzcGFjZSBhdCBMRUIgNTowDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4
+Nyk6IHN0b3Agc2Nhbm5pbmcgTEVCIDUgYXQgb2Zmc2V0IDANCjw3PlVCSUZTIERCRyBtbnQgKHBp
+ZCAxODcpOiByZXBsYXkgYnVkIExFQiA2MTUsIGhlYWQgMSwgb2ZmcyA0MTM2OTYsIGlzX2xhc3Qg
+MQ0KPDc+VUJJRlMgREJHIHJjdnJ5IChwaWQgMTg3KTogNjE1OjQxMzY5NiwgamhlYWQgMSwgZ3Jv
+dXBlZCAxDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW4gTEVCIDYxNTo0MTM2OTYN
+Cjw3PlVCSSBEQkcgZ2VuIChwaWQgMTg3KTogcmVhZCAxMDI0MDAgYnl0ZXMgZnJvbSBMRUIgMDo2
+MTU6NDEzNjk2DQo8Nz5VQkkgREJHIGViYSAocGlkIDE4Nyk6IHJlYWQgMTAyNDAwIGJ5dGVzIGZy
+b20gb2Zmc2V0IDQxMzY5NiBvZiBMRUIgMDo2MTUsIFBFQiA2OTANCjw3PlVCSSBEQkcgaW8gKHBp
+ZCAxODcpOiByZWFkIDEwMjQwMCBieXRlcyBmcm9tIFBFQiA2OTA6NDIxODg4DQo8Nz5VQklGUyBE
+Qkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDYxNTo0MTM2OTYgKDEwMjQwMCBieXRlcyBs
+ZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBpbm9kZSBub2RlIGF0
+IExFQiA2MTU6NDEzNjk2DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVC
+IDYxNTo0MTM4NTYgKDEwMjI0MCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAx
+ODcpOiBzY2FubmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDYxNTo0MTM4NTYNCjw3PlVCSUZTIERC
+RyBzY2FuIChwaWQgMTg3KTogMzkwOCBieXRlcyBwYWRkZWQgYXQgTEVCIDYxNTo0MTM4NTYsIG9m
+ZnNldCBub3cgNDE3NzkyDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVC
+IDYxNTo0MTc3OTIgKDk4MzA0IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4
+Nyk6IHNjYW5uaW5nIGlub2RlIG5vZGUgYXQgTEVCIDYxNTo0MTc3OTINCjw3PlVCSUZTIERCRyBz
+Y2FuIChwaWQgMTg3KTogbG9vayBhdCBMRUIgNjE1OjQxNzk1MiAoOTgxNDQgYnl0ZXMgbGVmdCkN
+Cjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgcGFkZGluZyBub2RlIGF0IExF
+QiA2MTU6NDE3OTUyDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IDM5MDggYnl0ZXMgcGFk
+ZGVkIGF0IExFQiA2MTU6NDE3OTUyLCBvZmZzZXQgbm93IDQyMTg4OA0KPDc+VUJJRlMgREJHIHNj
+YW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiA2MTU6NDIxODg4ICg5NDIwOCBieXRlcyBsZWZ0KQ0K
+PDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2FubmluZyBkaXJlbnRyeSBub2RlIGF0IExF
+QiA2MTU6NDIxODg4DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDYx
+NTo0MjE5OTIgKDk0MTA0IGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6
+IHNjYW5uaW5nIGlub2RlIG5vZGUgYXQgTEVCIDYxNTo0MjE5OTINCjw3PlVCSUZTIERCRyBzY2Fu
+IChwaWQgMTg3KTogbG9vayBhdCBMRUIgNjE1OjQyMjE3NiAoOTM5MjAgYnl0ZXMgbGVmdCkNCjw3
+PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc2Nhbm5pbmcgaW5vZGUgbm9kZSBhdCBMRUIgNjE1
+OjQyMjE3Ng0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBsb29rIGF0IExFQiA2MTU6NDIy
+MzM2ICg5Mzc2MCBieXRlcyBsZWZ0KQ0KPDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBzY2Fu
+bmluZyBwYWRkaW5nIG5vZGUgYXQgTEVCIDYxNTo0MjIzMzYNCjw3PlVCSUZTIERCRyBzY2FuIChw
+aWQgMTg3KTogMzYyMCBieXRlcyBwYWRkZWQgYXQgTEVCIDYxNTo0MjIzMzYsIG9mZnNldCBub3cg
+NDI1OTg0DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDYxNTo0MjU5
+ODQgKDkwMTEyIGJ5dGVzIGxlZnQpDQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IGhpdCBl
+bXB0eSBzcGFjZSBhdCBMRUIgNjE1OjQyNTk4NA0KPDc+VUJJRlMgREJHIHJjdnJ5IChwaWQgMTg3
+KTogZm91bmQgY29ycnVwdGlvbiAoLTEpIGF0IDYxNTo0MjU5ODQNCjw3PlVCSUZTIERCRyByY3Zy
+eSAocGlkIDE4Nyk6IGNsZWFuaW5nIGNvcnJ1cHRpb24gYXQgNjE1OjQyNTk4NA0KPDc+VUJJRlMg
+REJHIHNjYW4gKHBpZCAxODcpOiBzdG9wIHNjYW5uaW5nIExFQiA2MTUgYXQgb2Zmc2V0IDQyNTk4
+NA0KPDc+VUJJRlMgREJHIHJjdnJ5IChwaWQgMTg3KTogZml4aW5nIExFQiA2MTUgc3RhcnQgNDEz
+Njk2IGVuZHB0IDQyNTk4NA0KPDc+VUJJIERCRyBnZW4gKHBpZCAxODcpOiByZWFkIDQxMzY5NiBi
+eXRlcyBmcm9tIExFQiAwOjYxNTowDQo8Nz5VQkkgREJHIGViYSAocGlkIDE4Nyk6IHJlYWQgNDEz
+Njk2IGJ5dGVzIGZyb20gb2Zmc2V0IDAgb2YgTEVCIDA6NjE1LCBQRUIgNjkwDQo8Nz5VQkkgREJH
+IGlvIChwaWQgMTg3KTogcmVhZCA0MTM2OTYgYnl0ZXMgZnJvbSBQRUIgNjkwOjgxOTINCjw3PlVC
+SSBEQkcgZ2VuIChwaWQgMTg3KTogYXRvbWljYWxseSB3cml0ZSA0MjU5ODQgYnl0ZXMgdG8gTEVC
+IDA6NjE1DQo8Nz5VQkkgREJHIHdsIChwaWQgMTg3KTogYWRkZWQgUEVCIDY5NCBFQyA1NSB0byB0
+aGUgcHJvdGVjdGlvbiBxdWV1ZQ0KPDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiBjaGFuZ2UgTEVC
+IDA6NjE1LCBQRUIgNjkwLCB3cml0ZSBWSUQgaGRyIHRvIFBFQiA2OTQNCjw3PlVCSSBEQkcgaW8g
+KHBpZCAxODcpOiB3cml0ZSBWSUQgaGVhZGVyIHRvIFBFQiA2OTQNCjw3PlVCSSBEQkcgaW8gKHBp
+ZCAxODcpOiB3cml0ZSA0MDk2IGJ5dGVzIHRvIFBFQiA2OTQ6NDA5Ng0KPDc+VUJJIERCRyBpbyAo
+cGlkIDE4Nyk6IHdyaXRlIDQyNTk4NCBieXRlcyB0byBQRUIgNjk0OjgxOTINCjw3PlVCSSBEQkcg
+d2wgKHBpZCAxODcpOiBQRUIgNjkwDQo8Nz5VQkkgREJHIHdsIChwaWQgMTg3KTogZGVsZXRlZCBQ
+RUIgNjkwIGZyb20gdGhlIHByb3RlY3Rpb24gcXVldWUNCjw3PlVCSSBEQkcgd2wgKHBpZCAxODcp
+OiBzY2hlZHVsZSBlcmFzdXJlIG9mIFBFQiA2OTAsIEVDIDU1LCB0b3J0dXJlIDANCjw3PlVCSSBE
+Qkcgd2wgKHBpZCAxNzQpOiBlcmFzZSBQRUIgNjkwIEVDIDU1IExFQiAwOjYxNQ0KPDc+VUJJIERC
+RyB3bCAocGlkIDE3NCk6IGVyYXNlIFBFQiA2OTAsIG9sZCBFQyA1NQ0KPDc+VUJJIERCRyBpbyAo
+cGlkIDE3NCk6IGVyYXNlIFBFQiA2OTANCjw3PlVCSSBEQkcgd2wgKHBpZCAxNzQpOiBlcmFzZWQg
+UEVCIDY5MCwgbmV3IEVDIDU2DQo8Nz5VQkkgREJHIGlvIChwaWQgMTc0KTogd3JpdGUgRUMgaGVh
+ZGVyIHRvIFBFQiA2OTANCjw3PlVCSSBEQkcgaW8gKHBpZCAxNzQpOiB3cml0ZSA0MDk2IGJ5dGVz
+IHRvIFBFQiA2OTA6MA0KPDc+VUJJRlMgREJHIG1udCAocGlkIDE4Nyk6IGFkZCBMRUIgNjE1OjQx
+MzY5Niwga2V5ICg2OCwgaW5vZGUpDQo8Nz5VQklGUyBEQkcgbW50IChwaWQgMTg3KTogYWRkIExF
+QiA2MTU6NDE3NzkyLCBrZXkgKDY4LCBpbm9kZSkNCjw3PlVCSUZTIERCRyBtbnQgKHBpZCAxODcp
+OiBhZGQgTEVCIDYxNTo0MjE4ODgsIGtleSAoNjgsIGRpcmVudHJ5LCAweDE3N2MxNjcpDQo8Nz5V
+QklGUyBEQkcgbW50IChwaWQgMTg3KTogYWRkIExFQiA2MTU6NDIxOTkyLCBrZXkgKDY1NjgsIGlu
+b2RlKQ0KPDc+VUJJRlMgREJHIG1udCAocGlkIDE4Nyk6IGFkZCBMRUIgNjE1OjQyMjE3Niwga2V5
+ICg2OCwgaW5vZGUpDQo8Nz5VQklGUyBEQkcgbW50IChwaWQgMTg3KTogYnVkIExFQiA2MTUgcmVw
+bGllZDogZGlydHkgMTE1MjAsIGZyZWUgOTAxMTINCjw3PlVCSUZTIERCRyBtbnQgKHBpZCAxODcp
+OiByZXBsYXkgYnVkIExFQiA2MTcsIGhlYWQgMiwgb2ZmcyAxNjc5MzYsIGlzX2xhc3QgMQ0KPDc+
+VUJJRlMgREJHIHJjdnJ5IChwaWQgMTg3KTogNjE3OjE2NzkzNiwgamhlYWQgMiwgZ3JvdXBlZCAx
+DQo8Nz5VQklGUyBEQkcgc2NhbiAocGlkIDE4Nyk6IHNjYW4gTEVCIDYxNzoxNjc5MzYNCjw3PlVC
+SSBEQkcgZ2VuIChwaWQgMTg3KTogcmVhZCAzNDgxNjAgYnl0ZXMgZnJvbSBMRUIgMDo2MTc6MTY3
+OTM2DQo8Nz5VQkkgREJHIGViYSAocGlkIDE4Nyk6IHJlYWQgMzQ4MTYwIGJ5dGVzIGZyb20gb2Zm
+c2V0IDE2NzkzNiBvZiBMRUIgMDo2MTcsIFBFQiA2OTINCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcp
+OiByZWFkIDM0ODE2MCBieXRlcyBmcm9tIFBFQiA2OTI6MTc2MTI4DQo8Nz5VQklGUyBEQkcgc2Nh
+biAocGlkIDE4Nyk6IGxvb2sgYXQgTEVCIDYxNzoxNjc5MzYgKDM0ODE2MCBieXRlcyBsZWZ0KQ0K
+PDc+VUJJRlMgREJHIHNjYW4gKHBpZCAxODcpOiBoaXQgZW1wdHkgc3BhY2UgYXQgTEVCIDYxNzox
+Njc5MzYNCjw3PlVCSUZTIERCRyByY3ZyeSAocGlkIDE4Nyk6IGZvdW5kIGNvcnJ1cHRpb24gKC0x
+KSBhdCA2MTc6MTY3OTM2DQo8Nz5VQklGUyBEQkcgcmN2cnkgKHBpZCAxODcpOiBjbGVhbmluZyBj
+b3JydXB0aW9uIGF0IDYxNzoxNjc5MzYNCjw3PlVCSUZTIERCRyBzY2FuIChwaWQgMTg3KTogc3Rv
+cCBzY2FubmluZyBMRUIgNjE3IGF0IG9mZnNldCAxNjc5MzYNCjw3PlVCSUZTIERCRyByY3ZyeSAo
+cGlkIDE4Nyk6IGZpeGluZyBMRUIgNjE3IHN0YXJ0IDE2NzkzNiBlbmRwdCAxNjc5MzYNCjw3PlVC
+SSBEQkcgZ2VuIChwaWQgMTg3KTogcmVhZCAxNjc5MzYgYnl0ZXMgZnJvbSBMRUIgMDo2MTc6MA0K
+PDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiByZWFkIDE2NzkzNiBieXRlcyBmcm9tIG9mZnNldCAw
+IG9mIExFQiAwOjYxNywgUEVCIDY5Mg0KPDc+VUJJIERCRyBpbyAocGlkIDE4Nyk6IHJlYWQgMTY3
+OTM2IGJ5dGVzIGZyb20gUEVCIDY5Mjo4MTkyDQo8Nz5VQkkgREJHIGdlbiAocGlkIDE4Nyk6IGF0
+b21pY2FsbHkgd3JpdGUgMTY3OTM2IGJ5dGVzIHRvIExFQiAwOjYxNw0KPDc+VUJJIERCRyB3bCAo
+cGlkIDE4Nyk6IGFkZGVkIFBFQiA2OTUgRUMgNTUgdG8gdGhlIHByb3RlY3Rpb24gcXVldWUNCjw3
+PlVCSSBEQkcgZWJhIChwaWQgMTg3KTogY2hhbmdlIExFQiAwOjYxNywgUEVCIDY5Miwgd3JpdGUg
+VklEIGhkciB0byBQRUIgNjk1DQo8Nz5VQkkgREJHIGlvIChwaWQgMTg3KTogd3JpdGUgVklEIGhl
+YWRlciB0byBQRUIgNjk1DQo8Nz5VQkkgREJHIGlvIChwaWQgMTg3KTogd3JpdGUgNDA5NiBieXRl
+cyB0byBQRUIgNjk1OjQwOTYNCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcpOiB3cml0ZSAxNjc5MzYg
+Ynl0ZXMgdG8gUEVCIDY5NTo4MTkyDQo8Nz5VQkkgREJHIHdsIChwaWQgMTg3KTogUEVCIDY5Mg0K
+PDc+VUJJIERCRyB3bCAocGlkIDE4Nyk6IGRlbGV0ZWQgUEVCIDY5MiBmcm9tIHRoZSBwcm90ZWN0
+aW9uIHF1ZXVlDQo8Nz5VQkkgREJHIHdsIChwaWQgMTg3KTogc2NoZWR1bGUgZXJhc3VyZSBvZiBQ
+RUIgNjkyLCBFQyA1NSwgdG9ydHVyZSAwDQo8Nz5VQkkgREJHIHdsIChwaWQgMTc0KTogZXJhc2Ug
+UEVCIDY5MiBFQyA1NSBMRUIgMDo2MTcNCjw3PlVCSSBEQkcgd2wgKHBpZCAxNzQpOiBlcmFzZSBQ
+RUIgNjkyLCBvbGQgRUMgNTUNCjw3PlVCSSBEQkcgaW8gKHBpZCAxNzQpOiBlcmFzZSBQRUIgNjky
+DQo8Nz5VQklGUyBEQkcgbW50IChwaWQgMTg3KTogYnVkIExFQiA2MTcgcmVwbGllZDogZGlydHkg
+MCwgZnJlZSAzNDgxNjANCjw3PlVCSSBEQkcgd2wgKHBpZCAxNzQpOiBlcmFzZWQgUEVCIDY5Miwg
+bmV3IEVDIDU2DQo8Nz5VQkkgREJHIGlvIChwaWQgMTc0KTogd3JpdGUgRUMgaGVhZGVyIHRvIFBF
+QiA2OTINCjw3PlVCSSBEQkcgaW8gKHBpZCAxNzQpOiB3cml0ZSA0MDk2IGJ5dGVzIHRvIFBFQiA2
+OTI6MA0KPDc+VUJJRlMgREJHIG1udCAocGlkIDE4Nyk6IExFQiA2MTU6NDEzNjk2IGxlbiAxNjAg
+ZGVsZXRpb24gMCBzcW51bSAzNzg3MTcga2V5ICg2OCwgaW5vZGUpDQo8Nz5VQklGUyBEQkcgdG5j
+IChwaWQgMTg3KTogNjE1OjQxMzY5NiwgbGVuIDE2MCwga2V5ICg2OCwgaW5vZGUpDQo8Nz5VQklG
+UyBEQkcgdG5jIChwaWQgMTg3KTogc2VhcmNoIGFuZCBkaXJ0eSBrZXkgKDY4LCBpbm9kZSkNCjw3
+PlVCSUZTIERCRyBpbyAocGlkIDE4Nyk6IExFQiA2MTQ6MzgxNjAwLCBpbmRleGluZyBub2RlLCBs
+ZW5ndGggNjgNCjw3PlVCSSBEQkcgZ2VuIChwaWQgMTg3KTogcmVhZCA2OCBieXRlcyBmcm9tIExF
+QiAwOjYxNDozODE2MDANCjw3PlVCSSBEQkcgZWJhIChwaWQgMTg3KTogcmVhZCA2OCBieXRlcyBm
+cm9tIG9mZnNldCAzODE2MDAgb2YgTEVCIDA6NjE0LCBQRUIgOTczDQo8Nz5VQkkgREJHIGlvIChw
+aWQgMTg3KTogcmVhZCA2OCBieXRlcyBmcm9tIFBFQiA5NzM6Mzg5NzkyDQo8Nz5VQklGUyBEQkcg
+dG5jIChwaWQgMTg3KTogTEVCIDYxNDozODE2MDAsIGxldmVsIDUsIDIgYnJhbmNoDQo8Nz5VQklG
+UyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNjE0LCBmcmVlIDEzMTA3MiwgZGlydHkgMzc0MTIwLCBm
+bGFncyA0OA0KPDc+VUJJRlMgREJHIGxwIChwaWQgMTg3KTogTEVCIDYxNCwgZnJlZSAtMjE0NzQ4
+MzY0NywgZGlydHkgMzc0MTg4LCBmbGFncyA0OA0KPDc+VUJJRlMgREJHIGxwIChwaWQgMTg3KTog
+TEVCIDYxNCwgZnJlZSAxMzEwNzIsIGRpcnR5IDM3NDEyMCwgZmxhZ3MgNDgNCjw3PlVCSUZTIERC
+RyBpbyAocGlkIDE4Nyk6IExFQiA2MTQ6MzgxNDg4LCBpbmRleGluZyBub2RlLCBsZW5ndGggMTA4
+DQo8Nz5VQkkgREJHIGdlbiAocGlkIDE4Nyk6IHJlYWQgMTA4IGJ5dGVzIGZyb20gTEVCIDA6NjE0
+OjM4MTQ4OA0KPDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiByZWFkIDEwOCBieXRlcyBmcm9tIG9m
+ZnNldCAzODE0ODggb2YgTEVCIDA6NjE0LCBQRUIgOTczDQo8Nz5VQkkgREJHIGlvIChwaWQgMTg3
+KTogcmVhZCAxMDggYnl0ZXMgZnJvbSBQRUIgOTczOjM4OTY4MA0KPDc+VUJJRlMgREJHIHRuYyAo
+cGlkIDE4Nyk6IExFQiA2MTQ6MzgxNDg4LCBsZXZlbCA0LCA0IGJyYW5jaA0KPDc+VUJJRlMgREJH
+IGxwIChwaWQgMTg3KTogTEVCIDYxNCwgZnJlZSAxMzEwNzIsIGRpcnR5IDM3NDE5MiwgZmxhZ3Mg
+NDgNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2MTQsIGZyZWUgLTIxNDc0ODM2NDcs
+IGRpcnR5IDM3NDMwMCwgZmxhZ3MgNDgNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2
+MTQsIGZyZWUgMTMxMDcyLCBkaXJ0eSAzNzQxOTIsIGZsYWdzIDQ4DQo8Nz5VQklGUyBEQkcgaW8g
+KHBpZCAxODcpOiBMRUIgNjE0OjM4MTMzNiwgaW5kZXhpbmcgbm9kZSwgbGVuZ3RoIDE0OA0KPDc+
+VUJJIERCRyBnZW4gKHBpZCAxODcpOiByZWFkIDE0OCBieXRlcyBmcm9tIExFQiAwOjYxNDozODEz
+MzYNCjw3PlVCSSBEQkcgZWJhIChwaWQgMTg3KTogcmVhZCAxNDggYnl0ZXMgZnJvbSBvZmZzZXQg
+MzgxMzM2IG9mIExFQiAwOjYxNCwgUEVCIDk3Mw0KPDc+VUJJIERCRyBpbyAocGlkIDE4Nyk6IHJl
+YWQgMTQ4IGJ5dGVzIGZyb20gUEVCIDk3MzozODk1MjgNCjw3PlVCSUZTIERCRyB0bmMgKHBpZCAx
+ODcpOiBMRUIgNjE0OjM4MTMzNiwgbGV2ZWwgMywgNiBicmFuY2gNCjw3PlVCSUZTIERCRyBscCAo
+cGlkIDE4Nyk6IExFQiA2MTQsIGZyZWUgMTMxMDcyLCBkaXJ0eSAzNzQzMDQsIGZsYWdzIDQ4DQo8
+Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNjE0LCBmcmVlIC0yMTQ3NDgzNjQ3LCBkaXJ0
+eSAzNzQ0NTIsIGZsYWdzIDQ4DQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNjE0LCBm
+cmVlIDEzMTA3MiwgZGlydHkgMzc0MzA0LCBmbGFncyA0OA0KPDc+VUJJRlMgREJHIGlvIChwaWQg
+MTg3KTogTEVCIDYxNDozODEyMDgsIGluZGV4aW5nIG5vZGUsIGxlbmd0aCAxMjgNCjw3PlVCSSBE
+QkcgZ2VuIChwaWQgMTg3KTogcmVhZCAxMjggYnl0ZXMgZnJvbSBMRUIgMDo2MTQ6MzgxMjA4DQo8
+Nz5VQkkgREJHIGViYSAocGlkIDE4Nyk6IHJlYWQgMTI4IGJ5dGVzIGZyb20gb2Zmc2V0IDM4MTIw
+OCBvZiBMRUIgMDo2MTQsIFBFQiA5NzMNCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcpOiByZWFkIDEy
+OCBieXRlcyBmcm9tIFBFQiA5NzM6Mzg5NDAwDQo8Nz5VQklGUyBEQkcgdG5jIChwaWQgMTg3KTog
+TEVCIDYxNDozODEyMDgsIGxldmVsIDIsIDUgYnJhbmNoDQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAx
+ODcpOiBMRUIgNjE0LCBmcmVlIDEzMTA3MiwgZGlydHkgMzc0NDU2LCBmbGFncyA0OA0KPDc+VUJJ
+RlMgREJHIGxwIChwaWQgMTg3KTogTEVCIDYxNCwgZnJlZSAtMjE0NzQ4MzY0NywgZGlydHkgMzc0
+NTg0LCBmbGFncyA0OA0KPDc+VUJJRlMgREJHIGxwIChwaWQgMTg3KTogTEVCIDYxNCwgZnJlZSAx
+MzEwNzIsIGRpcnR5IDM3NDQ1NiwgZmxhZ3MgNDgNCjw3PlVCSUZTIERCRyBpbyAocGlkIDE4Nyk6
+IExFQiA2MTQ6MzgxMDQwLCBpbmRleGluZyBub2RlLCBsZW5ndGggMTY4DQo8Nz5VQkkgREJHIGdl
+biAocGlkIDE4Nyk6IHJlYWQgMTY4IGJ5dGVzIGZyb20gTEVCIDA6NjE0OjM4MTA0MA0KPDc+VUJJ
+IERCRyBlYmEgKHBpZCAxODcpOiByZWFkIDE2OCBieXRlcyBmcm9tIG9mZnNldCAzODEwNDAgb2Yg
+TEVCIDA6NjE0LCBQRUIgOTczDQo8Nz5VQkkgREJHIGlvIChwaWQgMTg3KTogcmVhZCAxNjggYnl0
+ZXMgZnJvbSBQRUIgOTczOjM4OTIzMg0KPDc+VUJJRlMgREJHIHRuYyAocGlkIDE4Nyk6IExFQiA2
+MTQ6MzgxMDQwLCBsZXZlbCAxLCA3IGJyYW5jaA0KPDc+VUJJRlMgREJHIGxwIChwaWQgMTg3KTog
+TEVCIDYxNCwgZnJlZSAxMzEwNzIsIGRpcnR5IDM3NDU4NCwgZmxhZ3MgNDgNCjw3PlVCSUZTIERC
+RyBscCAocGlkIDE4Nyk6IExFQiA2MTQsIGZyZWUgLTIxNDc0ODM2NDcsIGRpcnR5IDM3NDc1Miwg
+ZmxhZ3MgNDgNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2MTQsIGZyZWUgMTMxMDcy
+LCBkaXJ0eSAzNzQ1ODQsIGZsYWdzIDQ4DQo8Nz5VQklGUyBEQkcgaW8gKHBpZCAxODcpOiBMRUIg
+NjE0OjM4MDkyOCwgaW5kZXhpbmcgbm9kZSwgbGVuZ3RoIDEwOA0KPDc+VUJJIERCRyBnZW4gKHBp
+ZCAxODcpOiByZWFkIDEwOCBieXRlcyBmcm9tIExFQiAwOjYxNDozODA5MjgNCjw3PlVCSSBEQkcg
+ZWJhIChwaWQgMTg3KTogcmVhZCAxMDggYnl0ZXMgZnJvbSBvZmZzZXQgMzgwOTI4IG9mIExFQiAw
+OjYxNCwgUEVCIDk3Mw0KPDc+VUJJIERCRyBpbyAocGlkIDE4Nyk6IHJlYWQgMTA4IGJ5dGVzIGZy
+b20gUEVCIDk3MzozODkxMjANCjw3PlVCSUZTIERCRyB0bmMgKHBpZCAxODcpOiBMRUIgNjE0OjM4
+MDkyOCwgbGV2ZWwgMCwgNCBicmFuY2gNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2
+MTQsIGZyZWUgMTMxMDcyLCBkaXJ0eSAzNzQ3NTIsIGZsYWdzIDQ4DQo8Nz5VQklGUyBEQkcgbHAg
+KHBpZCAxODcpOiBMRUIgNjE0LCBmcmVlIC0yMTQ3NDgzNjQ3LCBkaXJ0eSAzNzQ4NjAsIGZsYWdz
+IDQ4DQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNjE0LCBmcmVlIDEzMTA3MiwgZGly
+dHkgMzc0NzUyLCBmbGFncyA0OA0KPDc+VUJJRlMgREJHIHRuYyAocGlkIDE4Nyk6IGZvdW5kIDEs
+IGx2bCAwLCBuIDANCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2MTUsIGZyZWUgMTAy
+NDAwLCBkaXJ0eSA0MTE0MTYsIGZsYWdzIDENCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExF
+QiA2MTUsIGZyZWUgLTIxNDc0ODM2NDcsIGRpcnR5IDQxMTU3NiwgZmxhZ3MgMQ0KPDc+VUJJRlMg
+REJHIGxwIChwaWQgMTg3KTogTEVCIDYxNSwgZnJlZSAxMDI0MDAsIGRpcnR5IDQxMTQxNiwgZmxh
+Z3MgMQ0KPDc+VUJJRlMgREJHIG1udCAocGlkIDE4Nyk6IExFQiA2MTU6NDE3NzkyIGxlbiAxNjAg
+ZGVsZXRpb24gMCBzcW51bSAzNzg3MTgga2V5ICg2OCwgaW5vZGUpDQo8Nz5VQklGUyBEQkcgdG5j
+IChwaWQgMTg3KTogNjE1OjQxNzc5MiwgbGVuIDE2MCwga2V5ICg2OCwgaW5vZGUpDQo8Nz5VQklG
+UyBEQkcgdG5jIChwaWQgMTg3KTogc2VhcmNoIGFuZCBkaXJ0eSBrZXkgKDY4LCBpbm9kZSkNCjw3
+PlVCSUZTIERCRyB0bmMgKHBpZCAxODcpOiBmb3VuZCAxLCBsdmwgMCwgbiAwDQo8Nz5VQklGUyBE
+QkcgbHAgKHBpZCAxODcpOiBMRUIgNjE1LCBmcmVlIDEwMjQwMCwgZGlydHkgNDExNTc2LCBmbGFn
+cyAxDQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNjE1LCBmcmVlIC0yMTQ3NDgzNjQ3
+LCBkaXJ0eSA0MTE3MzYsIGZsYWdzIDENCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2
+MTUsIGZyZWUgMTAyNDAwLCBkaXJ0eSA0MTE1NzYsIGZsYWdzIDENCjw3PlVCSUZTIERCRyBtbnQg
+KHBpZCAxODcpOiBMRUIgNjE1OjQyMTg4OCBsZW4gOTcgZGVsZXRpb24gMCBzcW51bSAzNzg3MjAg
+a2V5ICg2OCwgZGlyZW50cnksIDB4MTc3YzE2NykNCjw3PlVCSUZTIERCRyB0bmMgKHBpZCAxODcp
+OiBMRUIgNjE1OjQyMTg4OCwgbmFtZSAnMDNjMGFiNGE1ZjM4NDM0NGI1MTk2NzU1NDcwMzVjNWEt
+cnVudGltZScsIGtleSAoNjgsIGRpcmVudHJ5LCAweDE3N2MxNjcpDQo8Nz5VQklGUyBEQkcgdG5j
+IChwaWQgMTg3KTogc2VhcmNoIGFuZCBkaXJ0eSBrZXkgKDY4LCBkaXJlbnRyeSwgMHgxNzdjMTY3
+KQ0KPDc+VUJJRlMgREJHIGlvIChwaWQgMTg3KTogTEVCIDU5NToyMjE0NDgsIGluZGV4aW5nIG5v
+ZGUsIGxlbmd0aCAxMDgNCjw3PlVCSSBEQkcgZ2VuIChwaWQgMTg3KTogcmVhZCAxMDggYnl0ZXMg
+ZnJvbSBMRUIgMDo1OTU6MjIxNDQ4DQo8Nz5VQkkgREJHIGViYSAocGlkIDE4Nyk6IHJlYWQgMTA4
+IGJ5dGVzIGZyb20gb2Zmc2V0IDIyMTQ0OCBvZiBMRUIgMDo1OTUsIFBFQiA2ODQNCjw3PlVCSSBE
+QkcgaW8gKHBpZCAxODcpOiByZWFkIDEwOCBieXRlcyBmcm9tIFBFQiA2ODQ6MjI5NjQwDQo8Nz5V
+QklGUyBEQkcgdG5jIChwaWQgMTg3KTogTEVCIDU5NToyMjE0NDgsIGxldmVsIDEsIDQgYnJhbmNo
+DQo8Nz5VQkkgREJHIGdlbiAocGlkIDE4Nyk6IHJlYWQgMTMgYnl0ZXMgZnJvbSBMRUIgMDo2OjQ5
+MTU1MQ0KPDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiByZWFkIDEzIGJ5dGVzIGZyb20gb2Zmc2V0
+IDQ5MTU1MSBvZiBMRUIgMDo2LCBQRUIgOTY0DQo8Nz5VQkkgREJHIGlvIChwaWQgMTg3KTogcmVh
+ZCAxMyBieXRlcyBmcm9tIFBFQiA5NjQ6NDk5NzQzDQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcp
+OiBMRUIgNiBhZGQgMTMgdG8gNDk1MTMwDQo8Nz5VQkkgREJHIGdlbiAocGlkIDE4Nyk6IHJlYWQg
+MTkgYnl0ZXMgZnJvbSBMRUIgMDo2OjM3Mjc5Mw0KPDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiBy
+ZWFkIDE5IGJ5dGVzIGZyb20gb2Zmc2V0IDM3Mjc5MyBvZiBMRUIgMDo2LCBQRUIgOTY0DQo8Nz5V
+QkkgREJHIGlvIChwaWQgMTg3KTogcmVhZCAxOSBieXRlcyBmcm9tIFBFQiA5NjQ6MzgwOTg1DQo8
+Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNiBhZGQgMTkgdG8gNDk1MTQzDQo8Nz5VQklG
+UyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNTk1LCBmcmVlIDAsIGRpcnR5IDUxMTk0NCwgZmxhZ3Mg
+MzQNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA1OTUsIGZyZWUgLTIxNDc0ODM2NDcs
+IGRpcnR5IDUxMjA1MiwgZmxhZ3MgMzQNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA1
+OTUsIGZyZWUgMCwgZGlydHkgNTExOTQ0LCBmbGFncyAzNA0KPDc+VUJJRlMgREJHIGlvIChwaWQg
+MTg3KTogTEVCIDU2MjozNzI5NjAsIGluZGV4aW5nIG5vZGUsIGxlbmd0aCAxNDgNCjw3PlVCSSBE
+QkcgZ2VuIChwaWQgMTg3KTogcmVhZCAxNDggYnl0ZXMgZnJvbSBMRUIgMDo1NjI6MzcyOTYwDQo8
+Nz5VQkkgREJHIGViYSAocGlkIDE4Nyk6IHJlYWQgMTQ4IGJ5dGVzIGZyb20gb2Zmc2V0IDM3Mjk2
+MCBvZiBMRUIgMDo1NjIsIFBFQiA3MTINCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcpOiByZWFkIDE0
+OCBieXRlcyBmcm9tIFBFQiA3MTI6MzgxMTUyDQo8Nz5VQklGUyBEQkcgdG5jIChwaWQgMTg3KTog
+TEVCIDU2MjozNzI5NjAsIGxldmVsIDAsIDYgYnJhbmNoDQo8Nz5VQkkgREJHIGdlbiAocGlkIDE4
+Nyk6IHJlYWQgMTMgYnl0ZXMgZnJvbSBMRUIgMDo2OjQ3NTIxMg0KPDc+VUJJIERCRyBlYmEgKHBp
+ZCAxODcpOiByZWFkIDEzIGJ5dGVzIGZyb20gb2Zmc2V0IDQ3NTIxMiBvZiBMRUIgMDo2LCBQRUIg
+OTY0DQo8Nz5VQkkgREJHIGlvIChwaWQgMTg3KTogcmVhZCAxMyBieXRlcyBmcm9tIFBFQiA5NjQ6
+NDgzNDA0DQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNiBhZGQgMTMgdG8gNDk1MTYy
+DQo8Nz5VQkkgREJHIGdlbiAocGlkIDE4Nyk6IHJlYWQgMTMgYnl0ZXMgZnJvbSBMRUIgMDo2OjQ3
+NTE2Nw0KPDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiByZWFkIDEzIGJ5dGVzIGZyb20gb2Zmc2V0
+IDQ3NTE2NyBvZiBMRUIgMDo2LCBQRUIgOTY0DQo8Nz5VQkkgREJHIGlvIChwaWQgMTg3KTogcmVh
+ZCAxMyBieXRlcyBmcm9tIFBFQiA5NjQ6NDgzMzU5DQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcp
+OiBMRUIgNiBhZGQgMTMgdG8gNDk1MTc1DQo8Nz5VQkkgREJHIGdlbiAocGlkIDE4Nyk6IHJlYWQg
+MTkgYnl0ZXMgZnJvbSBMRUIgMDo2OjM3Mjc0OA0KPDc+VUJJIERCRyBlYmEgKHBpZCAxODcpOiBy
+ZWFkIDE5IGJ5dGVzIGZyb20gb2Zmc2V0IDM3Mjc0OCBvZiBMRUIgMDo2LCBQRUIgOTY0DQo8Nz5V
+QkkgREJHIGlvIChwaWQgMTg3KTogcmVhZCAxOSBieXRlcyBmcm9tIFBFQiA5NjQ6MzgwOTQwDQo8
+Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNiBhZGQgMTkgdG8gNDk1MTg4DQo8Nz5VQklG
+UyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNTYyLCBmcmVlIDAsIGRpcnR5IDUxNDQ1NiwgZmxhZ3Mg
+MzQNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA1NjIsIGZyZWUgLTIxNDc0ODM2NDcs
+IGRpcnR5IDUxNDYwNCwgZmxhZ3MgMzQNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA1
+NjIsIGZyZWUgMCwgZGlydHkgNTE0NDU2LCBmbGFncyAzNA0KPDc+VUJJRlMgREJHIHRuYyAocGlk
+IDE4Nyk6IGZvdW5kIDAsIGx2bCAwLCBuIDMNCjw3PlVCSUZTIERCRyB0bmMgKHBpZCAxODcpOiBp
+bnNlcnRlZCBhdCA0IGxldmVsIDAsIGtleSAoNjgsIGRpcmVudHJ5LCAweDE3N2MxNjcpDQo8Nz5V
+QklGUyBEQkcgdG5jIChwaWQgMTg3KTogLCBrZXkgKDY4LCBkaXJlbnRyeSwgMHgxNzdjMTY3KQ0K
+PDc+VUJJRlMgREJHIHRuYyAocGlkIDE4Nyk6IHNlYXJjaCBhbmQgZGlydHkga2V5ICg2OCwgZGly
+ZW50cnksIDB4MTc3YzE2NykNCjw3PlVCSUZTIERCRyB0bmMgKHBpZCAxODcpOiBmb3VuZCAxLCBs
+dmwgMCwgbiA0DQo8Nz5VQklGUyBEQkcgdG5jIChwaWQgMTg3KTogTEVCIDYxNTo0MjE4ODgsIGtl
+eSAoNjgsIGRpcmVudHJ5LCAweDE3N2MxNjcpDQo8Nz5VQklGUyBEQkcgaW8gKHBpZCAxODcpOiBM
+RUIgNjE1OjQyMTg4OCwgZGlyZW50cnkgbm9kZSwgbGVuZ3RoIDk3DQo8Nz5VQkkgREJHIGdlbiAo
+cGlkIDE4Nyk6IHJlYWQgOTcgYnl0ZXMgZnJvbSBMRUIgMDo2MTU6NDIxODg4DQo8Nz5VQkkgREJH
+IGViYSAocGlkIDE4Nyk6IHJlYWQgOTcgYnl0ZXMgZnJvbSBvZmZzZXQgNDIxODg4IG9mIExFQiAw
+OjYxNSwgUEVCIDY5NA0KPDc+VUJJIERCRyBpbyAocGlkIDE4Nyk6IHJlYWQgOTcgYnl0ZXMgZnJv
+bSBQRUIgNjk0OjQzMDA4MA0KPDc+VUJJRlMgREJHIHRuYyAocGlkIDE4Nyk6IHJjIHJldHVybmVk
+IDAsIHpub2RlIGE4YzRkZDAwLCBuIDQNCjw3PlVCSUZTIERCRyBtbnQgKHBpZCAxODcpOiBMRUIg
+NjE1OjQyMTk5MiBsZW4gMTgzIGRlbGV0aW9uIDAgc3FudW0gMzc4NzIxIGtleSAoNjU2OCwgaW5v
+ZGUpDQo8Nz5VQklGUyBEQkcgdG5jIChwaWQgMTg3KTogNjE1OjQyMTk5MiwgbGVuIDE4Mywga2V5
+ICg2NTY4LCBpbm9kZSkNCjw3PlVCSUZTIERCRyB0bmMgKHBpZCAxODcpOiBzZWFyY2ggYW5kIGRp
+cnR5IGtleSAoNjU2OCwgaW5vZGUpDQo8Nz5VQklGUyBEQkcgaW8gKHBpZCAxODcpOiBMRUIgNjE0
+OjM3NDAyNCwgaW5kZXhpbmcgbm9kZSwgbGVuZ3RoIDEyOA0KPDc+VUJJIERCRyBnZW4gKHBpZCAx
+ODcpOiByZWFkIDEyOCBieXRlcyBmcm9tIExFQiAwOjYxNDozNzQwMjQNCjw3PlVCSSBEQkcgZWJh
+IChwaWQgMTg3KTogcmVhZCAxMjggYnl0ZXMgZnJvbSBvZmZzZXQgMzc0MDI0IG9mIExFQiAwOjYx
+NCwgUEVCIDk3Mw0KPDc+VUJJIERCRyBpbyAocGlkIDE4Nyk6IHJlYWQgMTI4IGJ5dGVzIGZyb20g
+UEVCIDk3MzozODIyMTYNCjw3PlVCSUZTIERCRyB0bmMgKHBpZCAxODcpOiBMRUIgNjE0OjM3NDAy
+NCwgbGV2ZWwgNCwgNSBicmFuY2gNCjw3PlVCSUZTIERCRyBscCAocGlkIDE4Nyk6IExFQiA2MTQs
+IGZyZWUgMTMxMDcyLCBkaXJ0eSAzNzQ4NjQsIGZsYWdzIDQ4DQo8Nz5VQklGUyBEQkcgbHAgKHBp
+ZCAxODcpOiBMRUIgNjE0LCBmcmVlIC0yMTQ3NDgzNjQ3LCBkaXJ0eSAzNzQ5OTIsIGZsYWdzIDQ4
+DQo8Nz5VQklGUyBEQkcgbHAgKHBpZCAxODcpOiBMRUIgNjE0LCBmcmVlIDEzMTA3MiwgZGlydHkg
+Mzc0ODY0LCBmbGFncyA0OA0KPDc+VUJJRlMgREJHIGlvIChwaWQgMTg3KTogTEVCIDYxNDozNzM4
+NzIsIGluZGV4aW5nIG5vZGUsIGxlbmd0aCAxNDgNCjw3PlVCSSBEQkcgZ2VuIChwaWQgMTg3KTog
+cmVhZCAxNDggYnl0ZXMgZnJvbSBMRUIgMDo2MTQ6MzczODcyDQo8Nz5VQkkgREJHIGViYSAocGlk
+IDE4Nyk6IHJlYWQgMTQ4IGJ5dGVzIGZyb20gb2Zmc2V0IDM3Mzg3MiBvZiBMRUIgMDo2MTQsIFBF
+QiA5NzMNCjw3PlVCSSBEQkcgaW8gKHBpZCAxODcpOiByZWFkIDE0OCBieXRlcyBmcm9tIFBFQiA5
+NzM6MzgyMDY0DQo8Nz5VQklGUyBEQkcgdG5jIChwaWQgMTg3KTogTEVCIDYxNDozNzM4NzIsIGxl
+dmVsIDIsIDYgYnJhbmNoDQo8Mz5VQklGUyBlcnJvciAocGlkIDE4Nyk6IHJlYWRfem5vZGU6IGJh
+ZCBrZXkgdHlwZSBhdCBzbG90IDA6IDUNCjwzPlVCSUZTIGVycm9yIChwaWQgMTg3KTogcmVhZF96
+bm9kZTogYmFkIGluZGV4aW5nIG5vZGUgYXQgTEVCIDYxNDozNzM4NzIsIGVycm9yIDMNCjwzPiAg
+ICAgbWFnaWMgICAgICAgICAgMHg2MTAxODMxDQo8Mz4gICAgIGNyYyAgICAgICAgICAgIDB4OTQ0
+YWRkNTkNCjwzPiAgICAgbm9kZV90eXBlICAgICAgOSAoaW5kZXhpbmcgbm9kZSkNCjwzPiAgICAg
+Z3JvdXBfdHlwZSAgICAgMCAobm8gbm9kZSBncm91cCkNCjwzPiAgICAgc3FudW0gICAgICAgICAg
+Mzc4Njc4DQo8Mz4gICAgIGxlbiAgICAgICAgICAgIDE0OA0KPDM+ICAgICBjaGlsZF9jbnQgICAg
+ICA2DQo8Mz4gICAgIGxldmVsICAgICAgICAgIDINCjwzPiAgICAgQnJhbmNoZXM6DQo8Mz4gICAg
+IDA6IExFQiA1Njk6MjgwMTQ0IGxlbiAxMDgga2V5IChiYWQga2V5IHR5cGU6IDB4MDAwMDAxLCAw
+eGE5MTdkZDRjKQ0KPDM+ICAgICAxOiBMRUIgNDQ2OjM0OTc5MiBsZW4gMTA4IGtleSAoNTU5NSwg
+aW5vZGUpDQo8Mz4gICAgIDI6IExFQiA1ODQ6MzYxNTI4IGxlbiAxMDgga2V5ICg1ODIyLCBpbm9k
+ZSkNCjwzPiAgICAgMzogTEVCIDYwMjoyNTUzNjAgbGVuIDEwOCBrZXkgKDYwNTAsIGlub2RlKQ0K
+PDM+ICAgICA0OiBMRUIgNjEzOjQ4MDI4MCBsZW4gMTg4IGtleSAoNjI1OCwgaW5vZGUpDQo8Mz4g
+ICAgIDU6IExFQiA2MTQ6MzczNzg0IGxlbiA4OCBrZXkgKDY1MjEsIGRhdGEsIDI1KQ0KPDU+VUJJ
+RlM6IGJhY2tncm91bmQgdGhyZWFkICJ1Ymlmc19iZ3Q3XzAiIHN0b3BzDQo8Nz5VQkkgREJHIGdl
+biAocGlkIDE4Nyk6IGNsb3NlIGRldmljZSA3LCB2b2x1bWUgMCwgbW9kZSAyDQo8Nz5VQkkgREJH
+IGdlbiAocGlkIDE4Nyk6IGNsb3NlIGRldmljZSA3LCB2b2x1bWUgMCwgbW9kZSAxDQo=
+
+--_002_20160510122343GB16841visteongnana_--
