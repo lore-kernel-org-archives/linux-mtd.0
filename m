@@ -1,9 +1,9 @@
-Received: from mail-qk0-x231.google.com ([2607:f8b0:400d:c09::231])
+Received: from mail-qk0-x232.google.com ([2607:f8b0:400d:c09::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b092h-0003nU-BM
- for linux-mtd@lists.infradead.org; Tue, 10 May 2016 14:53:50 +0000
-Received: by mail-qk0-x231.google.com with SMTP id r184so8079488qkc.1
- for <linux-mtd@lists.infradead.org>; Tue, 10 May 2016 07:53:26 -0700 (PDT)
+ id 1b0935-00042D-2u
+ for linux-mtd@lists.infradead.org; Tue, 10 May 2016 14:54:12 +0000
+Received: by mail-qk0-x232.google.com with SMTP id n62so7182641qkc.2
+ for <linux-mtd@lists.infradead.org>; Tue, 10 May 2016 07:53:46 -0700 (PDT)
 Subject: Re: [PATCH v4 2/2] mtd: mediatek: driver for MTK Smart Device Gen1
  NAND
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
@@ -15,8 +15,8 @@ Cc: computersforpeace@gmail.com, dwmw2@infradead.org, matthias.bgg@gmail.com,
  linux-mediatek@lists.infradead.org, erin.lo@mediatek.com,
  daniel.thompson@linaro.org, blogic@openwrt.org
 From: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
-Message-ID: <5731F5E3.3020607@linaro.org>
-Date: Tue, 10 May 2016 10:53:23 -0400
+Message-ID: <5731F5F7.6000204@linaro.org>
+Date: Tue, 10 May 2016 10:53:43 -0400
 MIME-Version: 1.0
 In-Reply-To: <20160510141335.442d3d7b@bbrezillon>
 Content-Type: text/plain; charset=windows-1252; format=flowed
@@ -32,19 +32,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On 05/10/2016 08:13 AM, Boris Brezillon wrote:
 >> +
->> >+void mtk_ecc_disable(struct mtk_ecc *ecc, struct mtk_ecc_config *config)
-> If you save the mode somewhere in mtk_ecc (or just write in both ENC
-> and DEC registers), you won't need this extra config arg here.
-
-ok.
-
+>> >+void mtk_ecc_hw_init(struct mtk_ecc *ecc)
+> No need to expose this function. Make it static and remove the
+> prototype in your header.
 >
->> >+{
->> >+	enum mtk_ecc_codec codec = config->codec;
->> >+
->> >+	mtk_ecc_codec_wait_idle(ecc, codec);
->> >+	writew(0, ecc->regs + ECC_IRQ_REG(codec));
->> >+	writew(ECC_CODEC_DISABLE(codec), ecc->regs + ECC_CTL_REG(codec));
->> >+	up(&ecc->sem);
->> >+}
->> >+EXPORT_SYMBOL(mtk_ecc_disable);
+yes, it was a leftover.
