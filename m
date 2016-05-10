@@ -1,26 +1,23 @@
-From: "Yang, Wenyou" <Wenyou.Yang@atmel.com>
-To: Rob Herring <robh@kernel.org>
-CC: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Pawel Moll <pawel.moll@arm.com>, Mark Brown
- <broonie@kernel.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, "Kumar
- Gala" <galak@codeaurora.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "Ferre, Nicolas" <Nicolas.FERRE@atmel.com>,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>, "Jean-Christophe
- Plagniol-Villard" <plagnioj@jcrosoft.com>, Russell King
- <linux@arm.linux.org.uk>, Josh Wu <rainyfeeling@outlook.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH 0/2] mtd: atmel_nand: remove compatible "atmel,sama5d4-nfc"
-Date: Tue, 10 May 2016 04:50:37 +0000
-Message-ID: <B256D81BAE5131468A838E5D7A243641D6487F5A@penmbx01>
-References: <1462776680-5284-1-git-send-email-wenyou.yang@atmel.com>
- <20160509201324.GA9845@rob-hp-laptop>
-In-Reply-To: <20160509201324.GA9845@rob-hp-laptop>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b03Lt-0006VV-Pr
+ for linux-mtd@lists.infradead.org; Tue, 10 May 2016 08:49:14 +0000
+Date: Tue, 10 May 2016 10:48:51 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Iwo Mergler <iwo.mergler@netcommwireless.com>
+Cc: Richard Weinberger <richard@nod.at>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nandbiterrs: Support for NAND biterrors test on
+ platforms without raw write
+Message-ID: <20160510104851.53dc8211@bbrezillon>
+In-Reply-To: <57300D8A.8040607@netcommwireless.com>
+References: <572BDE8C.3020703@netcommwireless.com>
+ <20160508184451.3d90176a@bbrezillon>
+ <57300D8A.8040607@netcommwireless.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,29 +27,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUm9iIEhlcnJpbmcgW21h
-aWx0bzpyb2JoQGtlcm5lbC5vcmddDQo+IFNlbnQ6IDIwMTbE6jXUwjEwyNUgNDoxMw0KPiBUbzog
-WWFuZywgV2VueW91IDxXZW55b3UuWWFuZ0BhdG1lbC5jb20+DQo+IENjOiBCcmlhbiBOb3JyaXMg
-PGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT47IERhdmlkIFdvb2Rob3VzZQ0KPiA8ZHdtdzJA
-aW5mcmFkZWFkLm9yZz47IFBhd2VsIE1vbGwgPHBhd2VsLm1vbGxAYXJtLmNvbT47IE1hcmsgQnJv
-d24NCj4gPGJyb29uaWVAa2VybmVsLm9yZz47IElhbiBDYW1wYmVsbCA8aWpjK2RldmljZXRyZWVA
-aGVsbGlvbi5vcmcudWs+OyBLdW1hcg0KPiBHYWxhIDxnYWxha0Bjb2RlYXVyb3JhLm9yZz47IGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBtdGRAbGlzdHMuaW5mcmFkZWFk
-Lm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IEZlcnJlLCBOaWNvbGFzDQo+IDxOaWNv
-bGFzLkZFUlJFQGF0bWVsLmNvbT47IEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4YW5kcmUuYmVsbG9u
-aUBmcmVlLQ0KPiBlbGVjdHJvbnMuY29tPjsgSmVhbi1DaHJpc3RvcGhlIFBsYWduaW9sLVZpbGxh
-cmQgPHBsYWduaW9qQGpjcm9zb2Z0LmNvbT47DQo+IFJ1c3NlbGwgS2luZyA8bGludXhAYXJtLmxp
-bnV4Lm9yZy51az47IEpvc2ggV3UgPHJhaW55ZmVlbGluZ0BvdXRsb29rLmNvbT47DQo+IGxpbnV4
-LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDAv
-Ml0gbXRkOiBhdG1lbF9uYW5kOiByZW1vdmUgY29tcGF0aWJsZSAiYXRtZWwsc2FtYTVkNC0NCj4g
-bmZjIg0KPiANCj4gT24gTW9uLCBNYXkgMDksIDIwMTYgYXQgMDI6NTE6MTdQTSArMDgwMCwgV2Vu
-eW91IFlhbmcgd3JvdGU6DQo+ID4gSXQgaXMgYSBkYXRhc2hlZXQgYnVnLCBmb3IgY3VycmVudCBT
-b0NzLCB0aGUgUkJfRURHRTMoaS5lLiBiaXQgMjcpIG9mDQo+ID4gSFNNQ19TUiByZWdpc3RlciBk
-b2VzIG5vdCBleGlzdCwgdGhlIFJCX0VER0UwIChpLmUuIGJpdCAyNCkgaXMgdGhlDQo+ID4gcmVh
-ZHkvYnVzeSBsaW5lIGVkZ2Ugc3RhdHVzIGJpdC4gU28gdGhlIGNvbXBhdGlibGUgImF0bWVsLHNh
-bWE1ZDQtbmZjIg0KPiA+IGlzIHVubmVlZGVkLg0KPiANCj4gVGhlIGNvbXBhdGlibGUgaXMgbmVl
-ZGVkIGlmIHRoZSBTT0Mgc3RpbGwgZXhpc3RzLiBZb3UgY2FuIGxpc3QgYm90aCBmb3IgdGhlIHNh
-bWE1ZDQNCj4gaWYgdGhlIGJsb2NrIGlzIHRoZSBzYW1lLg0KDQpUaGUgTkZDIElQIG9mIFNBTUE1
-RDQgaXMgc2FtZSBhcyBTQU1BNUQyJ3MsIFNBTUE1RDQgaGFzZSB0aGlzIGlzc3VlLiAgVGhpcyBj
-b21wYXRpYmxlIGNhbiBiZSByZW1vdmVkLiANCg0KDQpCZXN0IFJlZ2FyZHMsDQpXZW55b3UgWWFu
-Zw0K
+Hi Iwo,
+
+On Mon, 9 May 2016 14:09:46 +1000
+Iwo Mergler <iwo.mergler@netcommwireless.com> wrote:
+
+> Hi Boris,
+> 
+> 
+> I have to admit that your NACK surprised me.
+> 
+> My patch removes an unnecessary use of raw write
+> from the test. It was only there because of my
+> original implementation, which I now consider
+> mistaken.
+
+Sorry, I didn't look at the diff itself, and focused on the commit
+message :-/. Indeed, using normal write in the overwrite test should be
+harmless, but I still think that all controller should properly
+implement raw access functions, otherwise the "incremental errors"
+test is irrelevant (you'll overwrite ECC bytes along with in-band
+data, and will end up with more bitflips than you expected).
+
+> 
+> I fully agree with you that raw write should
+> be implemented, despite the impediments.
+> Although I have seen at least one NAND controller
+> that always computed and wrote ECC, with no way
+> for software to circumvent it.
+
+Hm, I was told that so many times and each time I had a closer look it
+appeared to be untrue, so I tend to be skeptical on these kind of
+statement now. Could you tell me more about this controller?
+
+> 
+> Could you please elaborate a little why you
+> don't want a test module to work with incomplete
+> MTD drivers?
+
+As I said, this test module will only work in overwrite mode when the
+controller does not support raw accesses.
+
+> Is that supposed to be motivating
+> driver writers for better implementations? ;-)
+
+Yes, partly, and also because it's really helpful when you need to debug
+NAND stuff.
+
+Honestly, I'd rather see NAND implementations return -ENOTSUPP when
+they do not support raw accesses than pretending they are.
+
+> 
+> Would you accept the patch if I remove the comment
+> about data reshuffling drivers? It's not required
+> for the patch and, as you correctly pointed out,
+> now inaccurate.
+
+At least rework it to mention that you're only modifying the overwrite
+test, and that writing in normal mode in this case is harmless.
+
+Thanks,
+
+Boris
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
