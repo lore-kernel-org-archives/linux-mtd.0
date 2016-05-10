@@ -1,24 +1,26 @@
-Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
+Received: from mail-qg0-x22c.google.com ([2607:f8b0:400d:c04::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b08Bz-00064g-SQ
- for linux-mtd@lists.infradead.org; Tue, 10 May 2016 13:59:20 +0000
-Received: by mail-oi0-x234.google.com with SMTP id x19so16532986oix.2
- for <linux-mtd@lists.infradead.org>; Tue, 10 May 2016 06:58:59 -0700 (PDT)
+ id 1b08nM-0006xw-8t
+ for linux-mtd@lists.infradead.org; Tue, 10 May 2016 14:37:57 +0000
+Received: by mail-qg0-x22c.google.com with SMTP id 90so7374082qgz.1
+ for <linux-mtd@lists.infradead.org>; Tue, 10 May 2016 07:37:35 -0700 (PDT)
+Subject: Re: [PATCH v4 2/2] mtd: mediatek: driver for MTK Smart Device Gen1
+ NAND
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1461946642-1842-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <1461946642-1842-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <20160510141335.442d3d7b@bbrezillon>
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org, matthias.bgg@gmail.com,
+ robh@kernel.org, linux-mtd@lists.infradead.org, xiaolei.li@mediatek.com,
+ linux-mediatek@lists.infradead.org, erin.lo@mediatek.com,
+ daniel.thompson@linaro.org, blogic@openwrt.org
+From: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
+Message-ID: <5731F22C.902@linaro.org>
+Date: Tue, 10 May 2016 10:37:32 -0400
 MIME-Version: 1.0
-In-Reply-To: <20160510122343.GB16841@visteon-gnana>
-References: <20160510122343.GB16841@visteon-gnana>
-Date: Tue, 10 May 2016 15:58:58 +0200
-Message-ID: <CAFLxGvwmCywSV7G50Wvn6X6tGUnbvDUJa=iZncUAfAer7qtojQ@mail.gmail.com>
-Subject: Re: UBIFS Index Node Corruption - Invalid Key Type
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: "DHANAPAL, GNANACHANDRAN (G.)" <gdhanapa@visteon.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "CN, Aananth (A.A.)" <caananth@visteon.com>,
- "Gunasundar, Balamanikandan (B.)" <bgunasun@visteon.com>, "Babu,
- Viswanathan (V.)" <vbabu3@visteon.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
- "gnanachandran@gmail.com" <gnanachandran@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20160510141335.442d3d7b@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +30,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 10, 2016 at 2:14 PM, DHANAPAL, GNANACHANDRAN (G.)
-<gdhanapa@visteon.com> wrote:
-> Hi There,
->
-> We have i.MX6d based platform that has FSL BSP 3.10.17 running.
-> There is SLC Micron NAND of size 2GB with 512K Block size and 4K min I/O  used
-> for software storage. This NAND has got 7 partitions, Among that two partitions
-> have Read-Write ubifs file system for runtime data and one has Read-only ubifs
-> file system that has all the system files. Recently we have observed a issue that
-> one of RW ubifs partition failed to mount due to invalid key type in one of index
-> node in ubifs. we have seen the same issue in two units out of 1000 units running
-> in the field.
->
-> Following is the index node that has  invalid key in its first branch.
-> key type = 0xa917dd4c >> 29 = 5 (invalid key)
->
->         magic          0x6101831
->         crc            0x944add59
->         node_type      9 (indexing node)
->         group_type     0 (no node group)
->         sqnum          378678
->         len            148
->         child_cnt      6
->         level          2
->         Branches:
->         0: LEB 569:280144 len 108 key (bad key type: 0x000001, 0xa917dd4c)
->         1: LEB 446:349792 len 108 key (5595, inode)
->         2: LEB 584:361528 len 108 key (5822, inode)
->         3: LEB 602:255360 len 108 key (6050, inode)
->         4: LEB 613:480280 len 188 key (6258, inode)
->         5: LEB 614:373784 len 88 key (6521, data, 25)
->
-> Please help us to understand following points
->
->         1. Did this happen because abrupt power cut ? if so, how could CRC of the node still be intact?
->         2. Could there be any bit flip ? but still again CRC intact.
->         3. Would the key pointed by  corrupted branch be  UBIFS_DENT_KEY or  UBIFS_XENT_KEY ?
->                 Because  29 bit of key[0] (0xa917dd4c  & 0x1FFFFFFF) seems to have some kind of  hash value.
->                 but node (at leb 569:280144)  that is pointed by corrupted branch seem to be index node.
->         4. This corrupted entry is always seen  in first branch of an index node  in two failed units. Could there be reason?
->         5. Since CRC is intact, would there be any possibility or scenario that corrupted node can be written with valid CRC?
+On 05/10/2016 08:13 AM, Boris Brezillon wrote:
+>> +#define ECC_IDLE_REG(x)		((x) == ECC_ENC ? ECC_ENCIDLE : ECC_DECIDLE)
+>> >+#define ECC_IDLE_MASK(x)	((x) == ECC_ENC ? ENC_IDLE : DEC_IDLE)
+> No need for this macro, it's always bit0, so just define an ECC_IDLE
+> macro and use it for both decoder and encoder.
 
-Hmm, this looks like some UBIFS inconsistency.
-If the header CRC is correct it should be be any kind of bitflip or
-power cut issue.
+this was only done for consistency to help people reading the code (same 
+for codec_enable, codec_disable).
+I suppose I could remove macros and just write 0 and 1 to the registers 
+if you prefer that.
 
-Can you please share the whole UBI image (a nanddump) such that I can
-inspect it?
+>
+> There seems to be some kind of pattern in your ENC/DEC registers.
+> ENC registers start at 0 and DEC ones at 0x100.
+> CNF register is always at 0x4 + mode/dir_offset (ie 0x100 for DEC and
+> 0x0 for ENC), ...
+> Maybe you should define common macros for those registers, and choose
+> the base offset depending on the mode you're operating in (encoding or
+> decoding).
 
--- 
-Thanks,
-//richard
+Not sure if you are familiar with George Lakoff and his book "Don't 
+Think Of An Elephant! Know Your Values And Frame The Debate" but the key 
+message is not to engage in a discussion when you disagree with the 
+terms used by your counterpart since you wont be able to frame the 
+argument (the book is actually very interesting if politics and and the 
+political debate is something that interest you)
+
+I explicitly chose not to talk about modes, instead I chose the engine 
+driver to talk about the codecs it controls; for me mode is a higher 
+level concept that I didn't have a need for since in this case the mode 
+is a 1-1 relationship to the codec. So when you tell me about the mode 
+the engine is operating in I'd rather say the codec that the ecc engine 
+is accessing. I hope it makes sense.
+
+if you want to talk about modes instead of the encoders and decoders 
+that is fine since you are the maintainer.
+I can rewrite the relevant parts of the driver but I honestly see no value.
+
+why did I wrote these macros? just for readability since they are simple 
+conditionals.
+So coming back to your second question, I not sure why I would use a 
+base offset when I already have the map. I wouldn't.
+
+>
+>> >+#define ECC_IRQ_REG(x)		((x) == ECC_ENC ? ECC_ENCIRQ_EN : ECC_DECIRQ_EN)
+>> >+#define ECC_IRQ_EN(x)		((x) == ECC_ENC ? ENC_IRQEN : DEC_IRQEN)
+>> >+#define ECC_CTL_REG(x)		((x) == ECC_ENC ? ECC_ENCCON : ECC_DECCON)
+>> >+#define ECC_CODEC_ENABLE(x)	((x) == ECC_ENC ? ENC_EN : DEC_EN)
+>> >+#define ECC_CODEC_DISABLE(x)	((x) == ECC_ENC ? ENC_DE : DEC_DE)
