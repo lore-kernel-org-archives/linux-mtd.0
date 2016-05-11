@@ -1,28 +1,17 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b0VQL-0000R8-4T
- for linux-mtd@lists.infradead.org; Wed, 11 May 2016 14:47:41 +0000
-Subject: Re: UBIFS Index Node Corruption - Invalid Key Type
-To: "DHANAPAL, GNANACHANDRAN (G.)" <gdhanapa@visteon.com>
-References: <20160510122343.GB16841@visteon-gnana>
- <CAFLxGvwmCywSV7G50Wvn6X6tGUnbvDUJa=iZncUAfAer7qtojQ@mail.gmail.com>
- <20160510145836.GA18568@visteon-gnana> <573210D8.6030603@nod.at>
- <20160511065223.GA22220@visteon-gnana> <20160511073836.GA22640@visteon-gnana>
- <5732F9C7.6020206@nod.at> <20160511112630.GB22640@visteon-gnana>
-Cc: "CN, Aananth (A.A.)" <caananth@visteon.com>,
- "Gunasundar, Balamanikandan (B.)" <bgunasun@visteon.com>,
- "babu3@visteon.com" <babu3@visteon.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "gnanachandran@gmail.com" <gnanachandran@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <573345F4.9070203@nod.at>
-Date: Wed, 11 May 2016 16:47:16 +0200
-MIME-Version: 1.0
-In-Reply-To: <20160511112630.GB22640@visteon-gnana>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1b0YEu-0006tZ-JT
+ for linux-mtd@lists.infradead.org; Wed, 11 May 2016 17:48:05 +0000
+Received: by mail-pa0-x236.google.com with SMTP id xk12so20159459pac.0
+ for <linux-mtd@lists.infradead.org>; Wed, 11 May 2016 10:47:43 -0700 (PDT)
+From: Moritz Fischer <moritz.fischer@ettus.com>
+To: dwmw2@infradead.org
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, moritz.fischer.private@gmail.com,
+ Moritz Fischer <moritz.fischer@ettus.com>
+Subject: [PATCH] mtd: Adding of_mtd_info_get to get mtd_info from devicetree
+Date: Wed, 11 May 2016 10:47:39 -0700
+Message-Id: <1462988859-32240-1-git-send-email-moritz.fischer@ettus.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,15 +21,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 11.05.2016 um 13:16 schrieb DHANAPAL, GNANACHANDRAN (G.):
-> On Wed, May 11, 2016 at 11:22:15AM +0200, Richard Weinberger wrote:
->> I had a brief look, the provided dump has more problems.
->> The dent node with the bad type is not referenced by the journal,
->> so we can ignore it for now.
->> The worse problem is that the index references a lot of non-existing
->> inodes.
+This allows for getting a struct mtd_info from a node pointer,
+allowing mtd devices to e.g. store serial numbers or MAC addresses.
 
-BTW: Do both MTD tests and UBI tests pass?
+Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
+---
+ drivers/mtd/mtdcore.c   | 21 +++++++++++++++++++++
+ include/linux/mtd/mtd.h |  2 ++
+ 2 files changed, 23 insertions(+)
 
-Thanks,
-//richard
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 3096251..3d0ae65 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -363,6 +363,27 @@ unsigned mtd_mmap_capabilities(struct mtd_info *mtd)
+ EXPORT_SYMBOL_GPL(mtd_mmap_capabilities);
+ #endif
+ 
++static int mtd_of_node_match(struct device *dev, const void *data)
++{
++	return dev->of_node == data;
++}
++
++struct mtd_info *of_mtd_info_get(struct device_node *node)
++{
++	struct mtd_info *mtd;
++	struct device *d;
++	int ret = -ENODEV;
++
++	d = class_find_device(&mtd_class, NULL, node, mtd_of_node_match);
++	if (!d)
++		return ERR_PTR(-ENODEV);
++
++	mtd = container_of(d, struct mtd_info, dev);
++
++	return mtd;
++}
++EXPORT_SYMBOL_GPL(of_mtd_info_get);
++
+ static int mtd_reboot_notifier(struct notifier_block *n, unsigned long state,
+ 			       void *cmd)
+ {
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 7712721..cce6cc7 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -264,6 +264,8 @@ static inline struct device_node *mtd_get_of_node(struct mtd_info *mtd)
+ 	return mtd->dev.of_node;
+ }
+ 
++struct mtd_info *of_mtd_info_get(struct device_node *node);
++
+ static inline int mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
+ {
+ 	return ops->mode == MTD_OPS_AUTO_OOB ? mtd->oobavail : mtd->oobsize;
+-- 
+2.5.5
