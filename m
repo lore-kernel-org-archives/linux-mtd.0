@@ -1,27 +1,17 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b0QLp-0002Bd-MT
- for linux-mtd@lists.infradead.org; Wed, 11 May 2016 09:22:43 +0000
-Subject: Re: UBIFS Index Node Corruption - Invalid Key Type
-To: "DHANAPAL, GNANACHANDRAN (G.)" <gdhanapa@visteon.com>
-References: <20160510122343.GB16841@visteon-gnana>
- <CAFLxGvwmCywSV7G50Wvn6X6tGUnbvDUJa=iZncUAfAer7qtojQ@mail.gmail.com>
- <20160510145836.GA18568@visteon-gnana> <573210D8.6030603@nod.at>
- <20160511065223.GA22220@visteon-gnana> <20160511073836.GA22640@visteon-gnana>
-Cc: "CN, Aananth (A.A.)" <caananth@visteon.com>,
- "Gunasundar, Balamanikandan (B.)" <bgunasun@visteon.com>,
- "Babu, Viswanathan (V.)" <vbabu3@visteon.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "gnanachandran@gmail.com" <gnanachandran@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5732F9C7.6020206@nod.at>
-Date: Wed, 11 May 2016 11:22:15 +0200
-MIME-Version: 1.0
-In-Reply-To: <20160511073836.GA22640@visteon-gnana>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Received: from m50-133.163.com ([123.125.50.133])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b0QM4-0002bB-OK
+ for linux-mtd@lists.infradead.org; Wed, 11 May 2016 09:22:57 +0000
+From: zengzhaoxiu@163.com
+To: linux-kernel@vger.kernel.org,
+	computersforpeace@gmail.com
+Cc: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: [patch V4 22/31] mtd: use parity16 in sm_ftl
+Date: Wed, 11 May 2016 17:22:03 +0800
+Message-Id: <1462958523-25706-1-git-send-email-zengzhaoxiu@163.com>
+In-Reply-To: <1462955158-28394-1-git-send-email-zengzhaoxiu@163.com>
+References: <1462955158-28394-1-git-send-email-zengzhaoxiu@163.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,46 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 11.05.2016 um 09:29 schrieb DHANAPAL, GNANACHANDRAN (G.):
-> On Wed, May 11, 2016 at 12:22:23PM +0530, Gnanachandran Dhanapal wrote:
->> On Tue, May 10, 2016 at 06:48:24PM +0200, Richard Weinberger wrote:
->>> Am 10.05.2016 um 16:49 schrieb DHANAPAL, GNANACHANDRAN (G.):
->>>> Thanks for the reply, Richard. 
->>>> Please find two files in google drive share.
->>>>
->>>> 	1. dump_mtd7_ecc.log   - /dev/mtd7 dump with ecc
->>>> 	2. leb_peb_map_22706.log   - LEB to PEB map. This information is taken by having print in table.
->>>>
->>>> Share:
->>>> 	https://drive.google.com/open?id=0B7tYZDLZ_KAZMFd4MENlQkJuNjA
->>>
->>> Hmm, the share contains only log files.
->>> I need a pristine dump of your NAND (created by nanddump without OOB data) to analyze the issue.
->>>
->>> Thanks,
->>> //richard
->>
->> Sorry Richard, The file name or its extension "dump_mtd7_ecc.log" might be confusing. but actually this file was created using 
->> command "nanddump /dev/mtd7 -f dump_mtd7_ecc.log". This file of size 510MB.
->>
->> dump_mtd7_ecc.log MD5SUM 	= 5b04c52f992036047d426fa07691429e
->> 		  SHA256SUM 	= 28a36d3fc28c18adc29be66525c1a28e68143937ec43be425ee942d3375c17a6
->>
->> Please let me know if you have any issue accessing the file.
+From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
 
-Ahh, .log for a dump file, creative naming. ;-)
+Signed-off-by: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+---
+ drivers/mtd/sm_ftl.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-I had a brief look, the provided dump has more problems.
-The dent node with the bad type is not referenced by the journal,
-so we can ignore it for now.
-The worse problem is that the index references a lot of non-existing
-inodes.
-
-Is this a pristine UBIFS with all fixes applied?
-Your kernel is rather old. Not sure if we ever had such an issue,
-but still...
-Can you please explain a bit more what your device is doing and what
-NAND/UBI layout you are using?
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index b096f8b..345ff1a 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -136,7 +136,7 @@ static int sm_get_lba(uint8_t *lba)
+ 		return -2;
+ 
+ 	/* check parity - endianness doesn't matter */
+-	if (hweight16(*(uint16_t *)lba) & 1)
++	if (parity16(*(uint16_t *)lba))
+ 		return -2;
+ 
+ 	return (lba[1] >> 1) | ((lba[0] & 0x07) << 7);
+@@ -183,8 +183,7 @@ static void sm_write_lba(struct sm_oob *oob, uint16_t lba)
+ 	tmp[0] = 0x10 | ((lba >> 7) & 0x07);
+ 	tmp[1] = (lba << 1) & 0xFF;
+ 
+-	if (hweight16(*(uint16_t *)tmp) & 0x01)
+-		tmp[1] |= 1;
++	tmp[1] |= parity16(*(uint16_t *)tmp);
+ 
+ 	oob->lba_copy1[0] = oob->lba_copy2[0] = tmp[0];
+ 	oob->lba_copy1[1] = oob->lba_copy2[1] = tmp[1];
+-- 
+2.7.4
