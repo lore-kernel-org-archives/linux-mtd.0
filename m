@@ -1,23 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b0Uab-0004ZF-G0
- for linux-mtd@lists.infradead.org; Wed, 11 May 2016 13:54:27 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b0Upr-00009T-C7
+ for linux-mtd@lists.infradead.org; Wed, 11 May 2016 14:09:59 +0000
+Subject: Re: Reconsidering exportable UBIFS
+To: NeilBrown <nfbrown@novell.com>, Al Viro <viro@ZenIV.linux.org.uk>
+References: <5702E7F5.1050807@nod.at> <871t5curbl.fsf@notabene.neil.brown.name>
+ <20160508232533.GH2694@ZenIV.linux.org.uk>
+ <87y47ju8kk.fsf@notabene.neil.brown.name>
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig
+ <hch@infradead.org>, NFS List <linux-nfs@vger.kernel.org>
 From: Richard Weinberger <richard@nod.at>
-To: linux-fsdevel@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com,
- maxime.ripard@free-electrons.com, david@sigma-star.at, david@fromorbit.com,
- dedekind1@gmail.com, alex@nextthing.co, akpm@linux-foundation.org,
- sasha.levin@oracle.com, iamjoonsoo.kim@lge.com, rvaswani@codeaurora.org,
- tony.luck@intel.com, shailendra.capricorn@gmail.com,
- kirill.shutemov@linux.intel.com, hch@infradead.org, hughd@google.com,
- mgorman@techsingularity.net, vbabka@suse.cz,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH 2/2] UBIFS: Implement ->migratepage()
-Date: Wed, 11 May 2016 15:53:43 +0200
-Message-Id: <1462974823-3168-3-git-send-email-richard@nod.at>
-In-Reply-To: <1462974823-3168-1-git-send-email-richard@nod.at>
-References: <1462974823-3168-1-git-send-email-richard@nod.at>
+Message-ID: <57333D1E.9090706@nod.at>
+Date: Wed, 11 May 2016 16:09:34 +0200
+MIME-Version: 1.0
+In-Reply-To: <87y47ju8kk.fsf@notabene.neil.brown.name>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,91 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Am 09.05.2016 um 07:03 schrieb NeilBrown:
+> On Mon, May 09 2016, Al Viro wrote:
+> 
+>> On Mon, May 09, 2016 at 08:18:22AM +1000, NeilBrown wrote:
+>>
+>>> Not puppies, just kittens.
+>>>
+>>> If you don't provide these functions, then exporting with
+>>> "subtree_check" won't work.  That is no great loss except that people
+>>> might find the failure confusing.
+>>
+>> 	OK, a client sends you a RENAME.  With fhandles of both parents +
+>> old and new names in those.  Your task, should you choose to accept it, is
+>> to figure out whether we should fail with nfserr_inval due to an attempt
+>> to make a directory its own descendent.  Without being able to locate all
+>> ancestors of a directory.
+> 
+> You are right, sorry.  I was thinking that get_parent() was for finding
+> the parent of a non-directory, but it is for directories.  It does the
+> equivalent of lookup("..").  So if you have a ".." link or something
+> like it, it should be easy.  If you don't, it won't be easy at all.
 
-During page migrations UBIFS might get confused
-and the following assert triggers:
-[  213.480000] UBIFS assert failed in ubifs_set_page_dirty at 1451 (pid 436)
-[  213.490000] CPU: 0 PID: 436 Comm: drm-stress-test Not tainted 4.4.4-00176-geaa802524636-dirty #1008
-[  213.490000] Hardware name: Allwinner sun4i/sun5i Families
-[  213.490000] [<c0015e70>] (unwind_backtrace) from [<c0012cdc>] (show_stack+0x10/0x14)
-[  213.490000] [<c0012cdc>] (show_stack) from [<c02ad834>] (dump_stack+0x8c/0xa0)
-[  213.490000] [<c02ad834>] (dump_stack) from [<c0236ee8>] (ubifs_set_page_dirty+0x44/0x50)
-[  213.490000] [<c0236ee8>] (ubifs_set_page_dirty) from [<c00fa0bc>] (try_to_unmap_one+0x10c/0x3a8)
-[  213.490000] [<c00fa0bc>] (try_to_unmap_one) from [<c00fadb4>] (rmap_walk+0xb4/0x290)
-[  213.490000] [<c00fadb4>] (rmap_walk) from [<c00fb1bc>] (try_to_unmap+0x64/0x80)
-[  213.490000] [<c00fb1bc>] (try_to_unmap) from [<c010dc28>] (migrate_pages+0x328/0x7a0)
-[  213.490000] [<c010dc28>] (migrate_pages) from [<c00d0cb0>] (alloc_contig_range+0x168/0x2f4)
-[  213.490000] [<c00d0cb0>] (alloc_contig_range) from [<c010ec00>] (cma_alloc+0x170/0x2c0)
-[  213.490000] [<c010ec00>] (cma_alloc) from [<c001a958>] (__alloc_from_contiguous+0x38/0xd8)
-[  213.490000] [<c001a958>] (__alloc_from_contiguous) from [<c001ad44>] (__dma_alloc+0x23c/0x274)
-[  213.490000] [<c001ad44>] (__dma_alloc) from [<c001ae08>] (arm_dma_alloc+0x54/0x5c)
-[  213.490000] [<c001ae08>] (arm_dma_alloc) from [<c035cecc>] (drm_gem_cma_create+0xb8/0xf0)
-[  213.490000] [<c035cecc>] (drm_gem_cma_create) from [<c035cf20>] (drm_gem_cma_create_with_handle+0x1c/0xe8)
-[  213.490000] [<c035cf20>] (drm_gem_cma_create_with_handle) from [<c035d088>] (drm_gem_cma_dumb_create+0x3c/0x48)
-[  213.490000] [<c035d088>] (drm_gem_cma_dumb_create) from [<c0341ed8>] (drm_ioctl+0x12c/0x444)
-[  213.490000] [<c0341ed8>] (drm_ioctl) from [<c0121adc>] (do_vfs_ioctl+0x3f4/0x614)
-[  213.490000] [<c0121adc>] (do_vfs_ioctl) from [<c0121d30>] (SyS_ioctl+0x34/0x5c)
-[  213.490000] [<c0121d30>] (SyS_ioctl) from [<c000f2c0>] (ret_fast_syscall+0x0/0x34)
+Thanks for the detailed explanation.
+UBIFS does not have ".." links in the on-flash layout.
+So, we'd have to change this.
 
-UBIFS is using PagePrivate() which can have different meanings across
-filesystems. Therefore the generic page migration code cannot handle this
-case correctly.
-We have to implement our own migration function which basically does a
-plain copy but also duplicates the page private flag.
-UBIFS is not a block device filesystem and cannot use buffer_migrate_page().
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-[rw: Massaged changelog, build fixes, etc...]
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/file.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 446753d..5e97bee 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -52,6 +52,7 @@
- #include "ubifs.h"
- #include <linux/mount.h>
- #include <linux/slab.h>
-+#include <linux/migrate.h>
- 
- static int read_block(struct inode *inode, void *addr, unsigned int block,
- 		      struct ubifs_data_node *dn)
-@@ -1452,6 +1453,24 @@ static int ubifs_set_page_dirty(struct page *page)
- 	return ret;
- }
- 
-+static int ubifs_migrate_page(struct address_space *mapping,
-+		struct page *newpage, struct page *page, enum migrate_mode mode)
-+{
-+	int rc;
-+
-+	rc = migrate_page_move_mapping(mapping, newpage, page, NULL, mode, 0);
-+	if (rc != MIGRATEPAGE_SUCCESS)
-+		return rc;
-+
-+	if (PagePrivate(page)) {
-+		ClearPagePrivate(page);
-+		SetPagePrivate(newpage);
-+	}
-+
-+	migrate_page_copy(newpage, page);
-+	return MIGRATEPAGE_SUCCESS;
-+}
-+
- static int ubifs_releasepage(struct page *page, gfp_t unused_gfp_flags)
- {
- 	/*
-@@ -1591,6 +1610,7 @@ const struct address_space_operations ubifs_file_address_operations = {
- 	.write_end      = ubifs_write_end,
- 	.invalidatepage = ubifs_invalidatepage,
- 	.set_page_dirty = ubifs_set_page_dirty,
-+	.migratepage	= ubifs_migrate_page,
- 	.releasepage    = ubifs_releasepage,
- };
- 
--- 
-2.7.3
+Thanks,
+//richard
