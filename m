@@ -1,20 +1,22 @@
-Date: Tue, 10 May 2016 20:19:09 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org,
- matthias.bgg@gmail.com, robh@kernel.org, linux-mtd@lists.infradead.org,
- xiaolei.li@mediatek.com, linux-mediatek@lists.infradead.org,
- erin.lo@mediatek.com, daniel.thompson@linaro.org, blogic@openwrt.org
-Subject: Re: [PATCH v4 2/2] mtd: mediatek: driver for MTK Smart Device Gen1
- NAND
-Message-ID: <20160510201909.5ee62b48@bbrezillon>
-In-Reply-To: <573224F5.4030003@linaro.org>
-References: <1461946642-1842-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <1461946642-1842-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160510141335.442d3d7b@bbrezillon> <5731F5E3.3020607@linaro.org>
- <573224F5.4030003@linaro.org>
+Received: from mail-sg2apc01on0079.outbound.protection.outlook.com
+ ([104.47.125.79] helo=APC01-SG2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b0O3D-0000dd-En
+ for linux-mtd@lists.infradead.org; Wed, 11 May 2016 06:55:20 +0000
+Subject: Re: [PATCH] mtd: nandbiterrs: Support for NAND biterrors test on
+ platforms without raw write
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <572BDE8C.3020703@netcommwireless.com>
+ <20160508184451.3d90176a@bbrezillon> <57300D8A.8040607@netcommwireless.com>
+ <20160510104851.53dc8211@bbrezillon>
+CC: Richard Weinberger <richard@nod.at>, Brian Norris
+ <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+From: Iwo Mergler <iwo.mergler@netcommwireless.com>
+Message-ID: <5732D730.30703@netcommwireless.com>
+Date: Wed, 11 May 2016 16:54:40 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20160510104851.53dc8211@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,45 +27,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 10 May 2016 14:14:13 -0400
-Jorge Ramirez <jorge.ramirez-ortiz@linaro.org> wrote:
+On 05/10/2016 06:48 PM, Boris Brezillon wrote:
+> Hi Iwo,
+>
+> On Mon, 9 May 2016 14:09:46 +1000
+> Iwo Mergler <iwo.mergler@netcommwireless.com> wrote:
+>
+>> Hi Boris,
+>>
+>>
+>> I have to admit that your NACK surprised me.
+>>
+>> My patch removes an unnecessary use of raw write
+>> from the test. It was only there because of my
+>> original implementation, which I now consider
+>> mistaken.
+> Sorry, I didn't look at the diff itself, and focused on the commit
+> message :-/. Indeed, using normal write in the overwrite test should be
+> harmless, but I still think that all controller should properly
+> implement raw access functions, otherwise the "incremental errors"
+> test is irrelevant (you'll overwrite ECC bytes along with in-band
+> data, and will end up with more bitflips than you expected).
+Indeed. Fully agree.
 
-> On 05/10/2016 10:53 AM, Jorge Ramirez wrote:
-> > On 05/10/2016 08:13 AM, Boris Brezillon wrote:  
-> >>> +  
-> >>> >+void mtk_ecc_disable(struct mtk_ecc *ecc, struct mtk_ecc_config   
-> >>> *config)  
-> >> If you save the mode somewhere in mtk_ecc (or just write in both ENC
-> >> and DEC registers), you won't need this extra config arg here.  
-> >
-> > ok.   
-> 
-> actually as I was implementing this change (and it is a simple change to 
-> do) I am not sure that it is a good idea to store the state of the 
-> engine in the ecc_driver (ie: codec_x active sort of flag). And writing 
-> to both set of registers looks ugly to me.
-> 
-> the way the nand driver is written, it is the nand driver the one that 
-> controls the ecc engine 'states' (init, enable_x,disable_x). Why do we 
-> want the ecc engine to remember that it was running the encoder or the 
-> decoder? I think keeping the parameter in this function makes more 
-> sense, that way the ecc driver itself completely stateless.
-> 
-> however let me see if there is a register I can poke to find out the 
-> active codec (then I could remove the config parameter that you pointed 
-> out without having to store state). I should be able to just read the 
-> ECC control register to determine this.
-> 
-> 
 
-Ok, that's not so important either. It's just that it's more common to
-have an enable/config() function that takes some argument to let the
-driver know how it should operate and the disable() function that just
-disables everything, no matter what config you previously passed. If
-it's really inconvenient for you, then let's just keep it as it is
-right now. 
+>> I fully agree with you that raw write should
+>> be implemented, despite the impediments.
+>> Although I have seen at least one NAND controller
+>> that always computed and wrote ECC, with no way
+>> for software to circumvent it.
+> Hm, I was told that so many times and each time I had a closer look it
+> appeared to be untrue, so I tend to be skeptical on these kind of
+> statement now. Could you tell me more about this controller?
+It's been a while. Probably Philips/NXP mobile phone chip
+set, PNX8000 or similar. Don't think it ever made it into the
+market as such, but the earliest ARM9 'microcontrollers' (LPC3xxx)
+have a high likelihood of being the same silicon.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+DMA with no provision of software I/O was fashionable in
+the early '00s. Patent US8060688 is a reflection of that pain,
+despite the attempts at obfuscation by the attorneys. ;-)
+
+>> Could you please elaborate a little why you
+>> don't want a test module to work with incomplete
+>> MTD drivers?
+> As I said, this test module will only work in overwrite mode when the
+> controller does not support raw accesses.
+>> Is that supposed to be motivating
+>> driver writers for better implementations? ;-)
+> Yes, partly, and also because it's really helpful when you need to debug
+> NAND stuff.
+>
+> Honestly, I'd rather see NAND implementations return -ENOTSUPP when
+> they do not support raw accesses than pretending they are.
+I think the Qualcomm driver does that, the original form
+of the test fails with an error code on the raw write.
+
+>> Would you accept the patch if I remove the comment
+>> about data reshuffling drivers? It's not required
+>> for the patch and, as you correctly pointed out,
+>> now inaccurate.
+> At least rework it to mention that you're only modifying the overwrite
+> test, and that writing in normal mode in this case is harmless.
+I'll do that. Patch follows.
+
+Best regards,
+
+Iwo
