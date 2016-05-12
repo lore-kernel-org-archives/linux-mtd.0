@@ -1,25 +1,23 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b0bmS-0008Pm-Bm
- for linux-mtd@lists.infradead.org; Wed, 11 May 2016 21:34:57 +0000
-Received: by mail-lf0-x244.google.com with SMTP id y84so6518368lfc.3
- for <linux-mtd@lists.infradead.org>; Wed, 11 May 2016 14:34:33 -0700 (PDT)
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Stephen Warren <swarren@nvidia.com>, Jagan Teki <jteki@openedev.com>,
- Vignesh R <vigneshr@ti.com>, Marek Vasut <marex@denx.de>,
- =?UTF-8?q?Ezequiel=20Garc=C3=ADa?= <ezequiel@vanguardiasur.com.ar>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- Furquan Shaikh <furquan@google.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v3] mtd: spi-nor: Add support for S3AN spi-nor devices
-Date: Wed, 11 May 2016 23:33:22 +0200
-Message-Id: <1463002402-7996-1-git-send-email-ricardo.ribalda@gmail.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b0oA5-000743-EZ
+ for linux-mtd@lists.infradead.org; Thu, 12 May 2016 10:48:10 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-fsdevel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com,
+ maxime.ripard@free-electrons.com, david@sigma-star.at, david@fromorbit.com,
+ dedekind1@gmail.com, alex@nextthing.co, akpm@linux-foundation.org,
+ sasha.levin@oracle.com, iamjoonsoo.kim@lge.com, rvaswani@codeaurora.org,
+ tony.luck@intel.com, shailendra.capricorn@gmail.com,
+ kirill.shutemov@linux.intel.com, hch@infradead.org, hughd@google.com,
+ mgorman@techsingularity.net, vbabka@suse.cz,
+ Richard Weinberger <richard@nod.at>
+Subject: [PATCH 2/2] UBIFS: Implement ->migratepage()
+Date: Thu, 12 May 2016 12:47:36 +0200
+Message-Id: <1463050056-31513-1-git-send-email-richard@nod.at>
+In-Reply-To: <1462974823-3168-3-git-send-email-richard@nod.at>
+References: <1462974823-3168-3-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,294 +27,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Xilinx Spartan-3AN FPGAs contain an In-System Flash where they keep
-their configuration data and (optionally) some user data.
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-The protocol of this flash follows most of the spi-nor standard. With
-the following differences:
+During page migrations UBIFS might get confused
+and the following assert triggers:
+[  213.480000] UBIFS assert failed in ubifs_set_page_dirty at 1451 (pid 436)
+[  213.490000] CPU: 0 PID: 436 Comm: drm-stress-test Not tainted 4.4.4-00176-geaa802524636-dirty #1008
+[  213.490000] Hardware name: Allwinner sun4i/sun5i Families
+[  213.490000] [<c0015e70>] (unwind_backtrace) from [<c0012cdc>] (show_stack+0x10/0x14)
+[  213.490000] [<c0012cdc>] (show_stack) from [<c02ad834>] (dump_stack+0x8c/0xa0)
+[  213.490000] [<c02ad834>] (dump_stack) from [<c0236ee8>] (ubifs_set_page_dirty+0x44/0x50)
+[  213.490000] [<c0236ee8>] (ubifs_set_page_dirty) from [<c00fa0bc>] (try_to_unmap_one+0x10c/0x3a8)
+[  213.490000] [<c00fa0bc>] (try_to_unmap_one) from [<c00fadb4>] (rmap_walk+0xb4/0x290)
+[  213.490000] [<c00fadb4>] (rmap_walk) from [<c00fb1bc>] (try_to_unmap+0x64/0x80)
+[  213.490000] [<c00fb1bc>] (try_to_unmap) from [<c010dc28>] (migrate_pages+0x328/0x7a0)
+[  213.490000] [<c010dc28>] (migrate_pages) from [<c00d0cb0>] (alloc_contig_range+0x168/0x2f4)
+[  213.490000] [<c00d0cb0>] (alloc_contig_range) from [<c010ec00>] (cma_alloc+0x170/0x2c0)
+[  213.490000] [<c010ec00>] (cma_alloc) from [<c001a958>] (__alloc_from_contiguous+0x38/0xd8)
+[  213.490000] [<c001a958>] (__alloc_from_contiguous) from [<c001ad44>] (__dma_alloc+0x23c/0x274)
+[  213.490000] [<c001ad44>] (__dma_alloc) from [<c001ae08>] (arm_dma_alloc+0x54/0x5c)
+[  213.490000] [<c001ae08>] (arm_dma_alloc) from [<c035cecc>] (drm_gem_cma_create+0xb8/0xf0)
+[  213.490000] [<c035cecc>] (drm_gem_cma_create) from [<c035cf20>] (drm_gem_cma_create_with_handle+0x1c/0xe8)
+[  213.490000] [<c035cf20>] (drm_gem_cma_create_with_handle) from [<c035d088>] (drm_gem_cma_dumb_create+0x3c/0x48)
+[  213.490000] [<c035d088>] (drm_gem_cma_dumb_create) from [<c0341ed8>] (drm_ioctl+0x12c/0x444)
+[  213.490000] [<c0341ed8>] (drm_ioctl) from [<c0121adc>] (do_vfs_ioctl+0x3f4/0x614)
+[  213.490000] [<c0121adc>] (do_vfs_ioctl) from [<c0121d30>] (SyS_ioctl+0x34/0x5c)
+[  213.490000] [<c0121d30>] (SyS_ioctl) from [<c000f2c0>] (ret_fast_syscall+0x0/0x34)
 
-- Page size might not be a power of two.
-- The address calculation (default addressing mode).
-- The spi nor commands used.
+UBIFS is using PagePrivate() which can have different meanings across
+filesystems. Therefore the generic page migration code cannot handle this
+case correctly.
+We have to implement our own migration function which basically does a
+plain copy but also duplicates the page private flag.
+UBIFS is not a block device filesystem and cannot use buffer_migrate_page().
 
-Protocol is described on Xilinx User Guide UG333
-
-Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+[rw: Massaged changelog, build fixes, etc...]
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
+Christ, sent the wrong patch without the !CONFIG_MIGRATION build fixes.
 
-v3: 
--Rebase on top of mtd-next
--Rename ADDR_NATIVE to ADDR_DEFAULT to follow UG333 naming
--Fix bug on probe
+Thanks,
+//richard
+---
+ fs/ubifs/file.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-v2: Suggested by Brian Norris <computersforpeace@gmail.com>
-
--Remove inline qualifier
--Improve documentation of Default Addressing Mode
--Convert function callbacks into SNOR_F_
--Fix missmatch braces
--Improve documentation of SPI_S3AN flag
-
- drivers/mtd/devices/m25p80.c  |   3 ++
- drivers/mtd/spi-nor/spi-nor.c | 110 ++++++++++++++++++++++++++++++++++++++++--
- include/linux/mtd/spi-nor.h   |  26 ++++++++++
- 3 files changed, 136 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 9d6854467651..cc5363301252 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -49,6 +49,9 @@ static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 446753d..5b5ec8d 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -52,6 +52,7 @@
+ #include "ubifs.h"
+ #include <linux/mount.h>
+ #include <linux/slab.h>
++#include <linux/migrate.h>
  
- static void m25p_addr2cmd(struct spi_nor *nor, unsigned int addr, u8 *cmd)
- {
-+	if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
-+		addr = spi_nor_s3an_addr_convert(nor, addr);
-+
- 	/* opcode is in cmd[0] */
- 	cmd[1] = addr >> (nor->addr_width * 8 -  8);
- 	cmd[2] = addr >> (nor->addr_width * 8 - 16);
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index c52e45594bfd..e48fb38bf420 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -75,6 +75,12 @@ struct flash_info {
- 					 * bit. Must be used with
- 					 * SPI_NOR_HAS_LOCK.
- 					 */
-+#define	SPI_S3AN		BIT(10)	/*
-+					 * Xilinx Spartan 3AN In-System Flash
-+					 * (MFR cannot be used for probing
-+					 * because it has the same value as
-+					 * ATMEL flashes)
-+					*/
- };
- 
- #define JEDEC_MFR(info)	((info)->id[0])
-@@ -217,6 +223,21 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
- 		return nor->write_reg(nor, SPINOR_OP_BRWR, nor->cmd_buf, 1);
- 	}
+ static int read_block(struct inode *inode, void *addr, unsigned int block,
+ 		      struct ubifs_data_node *dn)
+@@ -1452,6 +1453,26 @@ static int ubifs_set_page_dirty(struct page *page)
+ 	return ret;
  }
-+
-+static int s3an_sr_ready(struct spi_nor *nor)
+ 
++#ifdef CONFIG_MIGRATION
++static int ubifs_migrate_page(struct address_space *mapping,
++		struct page *newpage, struct page *page, enum migrate_mode mode)
 +{
-+	int ret;
-+	u8 val;
++	int rc;
 +
-+	ret = nor->read_reg(nor, SPINOR_OP_XRDSR, &val, 1);
-+	if (ret < 0) {
-+		pr_err("error %d reading XRDSR\n", (int) ret);
-+		return ret;
++	rc = migrate_page_move_mapping(mapping, newpage, page, NULL, mode, 0);
++	if (rc != MIGRATEPAGE_SUCCESS)
++		return rc;
++
++	if (PagePrivate(page)) {
++		ClearPagePrivate(page);
++		SetPagePrivate(newpage);
 +	}
 +
-+	return !!(val & XSR_RDY);
++	migrate_page_copy(newpage, page);
++	return MIGRATEPAGE_SUCCESS;
 +}
++#endif
 +
- static inline int spi_nor_sr_ready(struct spi_nor *nor)
+ static int ubifs_releasepage(struct page *page, gfp_t unused_gfp_flags)
  {
- 	int sr = read_sr(nor);
-@@ -238,7 +259,9 @@ static inline int spi_nor_fsr_ready(struct spi_nor *nor)
- static int spi_nor_ready(struct spi_nor *nor)
- {
- 	int sr, fsr;
--	sr = spi_nor_sr_ready(nor);
-+
-+	sr = nor->flags & SNOR_F_READY_XSR_RDY ? s3an_sr_ready(nor) :
-+						 spi_nor_sr_ready(nor);
- 	if (sr < 0)
- 		return sr;
- 	fsr = nor->flags & SNOR_F_USE_FSR ? spi_nor_fsr_ready(nor) : 1;
-@@ -320,6 +343,23 @@ static void spi_nor_unlock_and_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
- }
- 
- /*
-+ * This code converts an address to the Default Address Mode, that has non
-+ * power of two page sizes. We must support this mode because it is the default
-+ * mode supported by Xilinx tools, it can access the whole flash area and
-+ * changing over to the Power-of-two mode is irreversible and corrupts the
-+ * original data.
-+ */
-+unsigned int spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
-+{
-+	unsigned int offset;
-+
-+	offset = (nor->page_size == 264) ? (addr % 264) : (addr % 528);
-+
-+	return ((addr - offset) << 1) | offset;
-+}
-+EXPORT_SYMBOL_GPL(spi_nor_s3an_addr_convert);
-+
-+/*
-  * Initiate the erasure of a single sector
-  */
- static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
-@@ -330,6 +370,9 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 	if (nor->erase)
- 		return nor->erase(nor, addr);
- 
-+	if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
-+		addr = spi_nor_s3an_addr_convert(nor, addr);
-+
  	/*
- 	 * Default implementation, if driver doesn't have a specialized HW
- 	 * control
-@@ -368,7 +411,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 		return ret;
- 
- 	/* whole-chip erase? */
--	if (len == mtd->size) {
-+	if (len == mtd->size && !(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
- 		unsigned long timeout;
- 
- 		write_enable(nor);
-@@ -782,6 +825,19 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 		.addr_width = (_addr_width),				\
- 		.flags = (_flags),
- 
-+#define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
-+		.id = {							\
-+			((_jedec_id) >> 16) & 0xff,			\
-+			((_jedec_id) >> 8) & 0xff,			\
-+			(_jedec_id) & 0xff				\
-+			},						\
-+		.id_len = 3,						\
-+		.sector_size = (8*_page_size),				\
-+		.n_sectors = (_n_sectors),				\
-+		.page_size = _page_size,				\
-+		.addr_width = 3,					\
-+		.flags = SPI_NOR_NO_FR | SPI_S3AN,
-+
- /* NOTE: double check command sets and memory organization when you add
-  * more nor chips.  This current list focusses on newer chips, which
-  * have been converging on command sets which including JEDEC ID.
-@@ -992,6 +1048,13 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "cat25c09", CAT25_INFO( 128, 8, 32, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
- 	{ "cat25c17", CAT25_INFO( 256, 8, 32, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
- 	{ "cat25128", CAT25_INFO(2048, 8, 64, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
-+
-+	/* Xilinx S3AN Internal Flash */
-+	{ "3S50AN", S3AN_INFO(0x1f2200, 64, 264) },
-+	{ "3S200AN", S3AN_INFO(0x1f2400, 256, 264) },
-+	{ "3S400AN", S3AN_INFO(0x1f2400, 256, 264) },
-+	{ "3S700AN", S3AN_INFO(0x1f2500, 512, 264) },
-+	{ "3S1400AN", S3AN_INFO(0x1f2600, 512, 528) },
- 	{ },
+@@ -1591,6 +1612,9 @@ const struct address_space_operations ubifs_file_address_operations = {
+ 	.write_end      = ubifs_write_end,
+ 	.invalidatepage = ubifs_invalidatepage,
+ 	.set_page_dirty = ubifs_set_page_dirty,
++#ifdef CONFIG_MIGRATION
++	.migratepage	= ubifs_migrate_page,
++#endif
+ 	.releasepage    = ubifs_releasepage,
  };
  
-@@ -1123,7 +1186,13 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- 	write_enable(nor);
- 
--	page_offset = to & (nor->page_size - 1);
-+	if (hweight32(nor->page_size) == 1)
-+		page_offset = to & (nor->page_size - 1);
-+	else {
-+		uint64_t aux = to;
-+
-+		page_offset = do_div(aux, nor->page_size);
-+	}
- 
- 	/* do all the bytes fit onto one page? */
- 	if (page_offset + len <= nor->page_size) {
-@@ -1251,6 +1320,35 @@ static int spi_nor_check(struct spi_nor *nor)
- 	return 0;
- }
- 
-+static int s3an_nor_scan(const struct flash_info *info, struct spi_nor *nor)
-+{
-+	int ret;
-+	u8 val;
-+
-+	ret = nor->read_reg(nor, SPINOR_OP_XRDSR, &val, 1);
-+	if (ret < 0) {
-+		pr_err("error %d reading XRDSR\n", (int) ret);
-+		return ret;
-+	}
-+
-+	nor->erase_opcode = SPINOR_OP_XSE;
-+	nor->program_opcode = SPINOR_OP_XPP;
-+	nor->read_opcode = SPINOR_OP_READ;
-+	nor->flags |= SNOR_F_NO_OP_CHIP_ERASE | SNOR_F_READY_XSR_RDY;
-+
-+	/* Flash in Power of 2 mode */
-+	if (val & XSR_PAGESIZE) {
-+		nor->page_size = (nor->page_size == 264) ? 256 : 512;
-+		nor->mtd.writebufsize = nor->page_size;
-+		nor->mtd.size = 8 * nor->page_size * info->n_sectors;
-+		nor->mtd.erasesize = 8 * nor->page_size;
-+	} else {
-+		nor->flags |= SNOR_F_S3AN_ADDR_DEFAULT;
-+	}
-+
-+	return 0;
-+}
-+
- int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- {
- 	const struct flash_info *info = NULL;
-@@ -1456,6 +1554,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
- 
- 	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
- 
-+	if (info->flags & SPI_S3AN) {
-+		ret = s3an_nor_scan(info, nor);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
- 			(long long)mtd->size >> 10);
- 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 7f041bd88b82..42977c0c9435 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -68,6 +68,15 @@
- #define SPINOR_OP_WRDI		0x04	/* Write disable */
- #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
- 
-+/* Used for S3AN flashes only */
-+#define SPINOR_OP_XSE		0x50	/* Sector erase */
-+#define SPINOR_OP_XPP		0x82	/* Page program */
-+#define SPINOR_OP_XRDSR		0xd7	/* Read status register */
-+
-+#define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
-+#define XSR_RDY			BIT(7)	/* Ready */
-+
-+
- /* Used for Macronix and Winbond flashes. */
- #define SPINOR_OP_EN4B		0xb7	/* Enter 4-byte mode */
- #define SPINOR_OP_EX4B		0xe9	/* Exit 4-byte mode */
-@@ -119,6 +128,9 @@ enum spi_nor_ops {
- enum spi_nor_option_flags {
- 	SNOR_F_USE_FSR		= BIT(0),
- 	SNOR_F_HAS_SR_TB	= BIT(1),
-+	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
-+	SNOR_F_S3AN_ADDR_DEFAULT = BIT(3),
-+	SNOR_F_READY_XSR_RDY	= BIT(4),
- };
- 
- /**
-@@ -197,6 +209,20 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
- 	return mtd_get_of_node(&nor->mtd);
- }
- 
-+
-+/**
-+ * spi_nor_s3an_addr_convert() - convert an address to Default Address Mode
-+ * @nor:	the spi_nor structure
-+ * @addr:	the contiguous address value
-+ *
-+ * Spartan-3AN In-System Flash requires an special address mode to access its
-+ * whole Flash area. This address mode, named Default Address Mode by Xilinx,
-+ * has non power of two page sizes.
-+ *
-+ * Return: Address in Default Address Mode
-+ */
-+unsigned int spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr);
-+
- /**
-  * spi_nor_scan() - scan the SPI NOR
-  * @nor:	the spi_nor structure
 -- 
-2.8.0.rc3
+2.7.3
