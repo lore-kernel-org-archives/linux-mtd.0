@@ -1,11 +1,11 @@
 Received: from twosheds.infradead.org ([2001:8b0:10b:1:21d:7dff:fe04:dbe2])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b0wK3-0008ME-5L
- for linux-mtd@lists.infradead.org; Thu, 12 May 2016 19:30:59 +0000
-Message-ID: <3465581b9728aefd31c7b36865c67fb9.squirrel@twosheds.infradead.org>
+ id 1b0wK6-0008O3-A9
+ for linux-mtd@lists.infradead.org; Thu, 12 May 2016 19:31:02 +0000
+Message-ID: <532adb9f7253c35c284a55994bebbedf.squirrel@twosheds.infradead.org>
 In-Reply-To: <1463081155-7961-1-git-send-email-salah.triki@acm.org>
 References: <1463081155-7961-1-git-send-email-salah.triki@acm.org>
-Date: Thu, 12 May 2016 19:30:55 -0000
+Date: Thu, 12 May 2016 19:31:00 -0000
 Subject: Re: [PATCH] fs: jffs2: initialize the field fs_flags
 From: "David Woodhouse" <dwmw2@infradead.org>
 To: "Salah Triki" <salah.triki@acm.org>
