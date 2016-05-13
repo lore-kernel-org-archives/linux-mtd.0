@@ -1,29 +1,28 @@
-Received: from mail-am1on0142.outbound.protection.outlook.com
- ([157.56.112.142] helo=emea01-am1-obe.outbound.protection.outlook.com)
+Received: from mail.kymetacorp.com ([192.81.58.21])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b1FZH-0005uA-0A
- for linux-mtd@lists.infradead.org; Fri, 13 May 2016 16:03:59 +0000
-From: "CN, Aananth (A.A.)" <caananth@visteon.com>
-To: Richard Weinberger <richard@nod.at>
-CC: "DHANAPAL, GNANACHANDRAN (G.)" <gdhanapa@visteon.com>, "Gunasundar,
- Balamanikandan (B.)" <bgunasun@visteon.com>, "Babu, Viswanathan (V.)"
- <vbabu3@visteon.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "gnanachandran@gmail.com" <gnanachandran@gmail.com>
-Subject: Re: UBIFS Index Node Corruption - Invalid Key Type
-Date: Fri, 13 May 2016 16:03:33 +0000
-Message-ID: <6063F630-A01C-4965-916E-9805E59A8744@visteon.com>
-References: <20160510122343.GB16841@visteon-gnana>
- <CAFLxGvwmCywSV7G50Wvn6X6tGUnbvDUJa=iZncUAfAer7qtojQ@mail.gmail.com>
- <20160510145836.GA18568@visteon-gnana> <573210D8.6030603@nod.at>
- <20160511065223.GA22220@visteon-gnana> <20160511073836.GA22640@visteon-gnana>
- <5732F9C7.6020206@nod.at> <20160511112630.GB22640@visteon-gnana>
- <573345F4.9070203@nod.at> <57348554.6010805@nod.at>
- <20160513095004.GA6195@visteon-gnana>,<5735DC82.2010309@nod.at>
-In-Reply-To: <5735DC82.2010309@nod.at>
-Content-Language: ta-IN
+ id 1b1Jw6-0003fA-BF
+ for linux-mtd@lists.infradead.org; Fri, 13 May 2016 20:43:51 +0000
+From: Trent Piepho <tpiepho@kymetacorp.com>
+To: Marek Vasut <marex@denx.de>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Graham
+ Moore" <grmoore@opensource.altera.com>, Alan Tull
+ <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
+ <dinguyen@opensource.altera.com>, "R, Vignesh" <vigneshr@ti.com>, "Yves
+ Vandervennet" <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller.
+Date: Fri, 13 May 2016 20:43:26 +0000
+Message-ID: <1463172208.9103.313.camel@rtred1test09.kymeta.local>
+References: <1452486886-8049-1-git-send-email-marex@denx.de>
+ <1452486886-8049-2-git-send-email-marex@denx.de>
+ <1463097635.9103.301.camel@rtred1test09.kymeta.local>
+ <57351ECE.2020009@denx.de>
+In-Reply-To: <57351ECE.2020009@denx.de>
+Content-Language: en-US
 Content-Type: text/plain; charset="utf-8"
+Content-ID: <1CB3BCD547363E40B3A77DD6788E40CC@kymetacorp.com>
 Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,21 +34,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZCwNCg0KWWVzLCBpdCBpcyB0aGUgc2FtZSBiYWQga2V5IHR5cGUgNS4NCg0KQWRk
-aXRpb25hbCBoaW50IGlzLCB0aGUgbG9nIHJlcG9ydGVkICJ1bmNsZWFuIHNodXRkb3duIiBoYXBw
-ZW5lZC4gU28sIGlzIGEgcmVzZXQgaGFwcGVuZWQgZHVyaW5nIGNvbW1pdCBvcGVyYXRpb24/DQoN
-ClJlZ2FyZHMsDQpBYW5hbnRoIA0KDQpTZW50IGZyb20gbXkgbW9iaWxlIHBob25lDQoNCj4gT24g
-MTMg4K6u4K+HLCAyMDE2LCBhdCA3OjI0IOCuquCuv+CuseCvjeCuquCuleCusuCvjSwgUmljaGFy
-ZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4gd3JvdGU6DQo+IA0KPj4gQW0gMTMuMDUuMjAx
-NiB1bSAxMTo0MCBzY2hyaWViIERIQU5BUEFMLCBHTkFOQUNIQU5EUkFOIChHLik6DQo+PiBSaWNo
-YXJkLA0KPj4gDQo+PiBJIGJlbGlldmUgQ1JDIHZhbHVlIGZvciBhIG5vZGUgIGlzIGNhbGN1bGF0
-ZWQgaW4gUkFNIGJlZm9yZSB3cml0aW5nIHRoZSBub2RlIGluIE5BTkQuIA0KPj4gSW4gdGhpcyBj
-YXNlLCBub2RlIENSQyBhbmQgY2FsY3VsYXRlZCBDUkMgYXJlIG1hdGNoaW5nLiBzbyBXaWxsIHRo
-ZXJlIGJlIHBvc3NpYmlsaXR5IA0KPj4gZm9yIGNvcnJ1cHRpbmcga2V5IHR5cGUgYXJlYSAoMzIg
-Yml0cykgYW5kIGtlZXBpbmcgb3RoZXJzIGludGFjdGVkLiBvciBhbnkgb3RoZXIgDQo+PiBwb3Nz
-aWJpbGl0eSBmb3Igbm9kZSBnZXR0aW5nIGNvcnJ1cHRlZC4NCj4gDQo+IEkgaGF2ZSB0byBjb3Jy
-ZWN0IG15c2VsZiwgdGhlIGJyYW5jaGVzIG9mIGFuIGluZGV4IG5vZGUgYXJlIGNvdmVyZWQgYnkN
-Cj4gdGhlIG5vZGUgaGVhZGVyIENSQy4NCj4gVGhpcyBtYWtlcyB0aGUgd2hvbGUgcGljdHVyZSBt
-b3JlIHN0cmFuZ2UuDQo+IA0KPiBZb3Ugc2FpZCB5b3UncmUgZmFjaW5nIHRoZSBzYW1lIGlzc3Vl
-IG9uIGFub3RoZXIgdW5pdC4NCj4gSXMgdGhlIGNvcnJ1cHRpb24gcmVhbGx5IHRoZSBzYW1lPyBC
-YWQga2V5IHR5cGUgNT8NCj4gDQo+IFRoYW5rcywNCj4gLy9yaWNoYXJkDQo=
+T24gRnJpLCAyMDE2LTA1LTEzIGF0IDAyOjI0ICswMjAwLCBNYXJlayBWYXN1dCB3cm90ZToNCj4g
+T24gMDUvMTMvMjAxNiAwMjowMCBBTSwgVHJlbnQgUGllcGhvIHdyb3RlOg0KPiA+IE9uIE1vbiwg
+MjAxNi0wMS0xMSBhdCAwNTozNCArMDEwMCwgTWFyZWsgVmFzdXQgd3JvdGU6DQo+ID4+IEZyb206
+IEdyYWhhbSBNb29yZSA8Z3Jtb29yZS15enZQSUN1azJBQk1jZzRJSEswa0ZvSDZNYzRNQjBWeEBw
+dWJsaWMuZ21hbmUub3JnPg0KPiA+Pg0KPiA+PiBBZGQgc3VwcG9ydCBmb3IgdGhlIENhZGVuY2Ug
+UVNQSSBjb250cm9sbGVyLiBUaGlzIGNvbnRyb2xsZXIgaXMNCj4gPj4gcHJlc2VudCBpbiB0aGUg
+QWx0ZXJhIFNvQ0ZQR0EgU29DcyBhbmQgdGhpcyBkcml2ZXIgaGFzIGJlZW4gdGVzdGVkDQo+ID4+
+IG9uIHRoZSBDeWNsb25lIFYgU29DLg0KPiA+IA0KPiA+IEknbSB0cnlpbmcgdG8gdXNlIHRoaXMg
+ZHJpdmVyIHRoZSBBbGFyaWMgRGV2a2l0IGZvciBBbHRlcmEncyBBcnJpYTEwDQo+ID4gU29DLiAg
+SXQncyBub3Qgd29ya2luZyBzbyBmYXIuICBJbiB0aGUgY291cnNlIG9mIHRyeWluZyB0byBkZWJ1
+ZyBpdCwNCj4gPiBJJ3ZlIGZvdW5kIGEgZmV3IHRoaW5ncyB3aXRoIHRoZSBkcml2ZXIgaW4gdGhl
+IHNvY2ZwZ2EtNC4xLWx0c2kgYnJhbmNoLg0KPiANCj4gU28gYXJlIHlvdSB0cnlpbmcgdG8gZGVi
+dWcgdGhpcyBkcml2ZXIgb3Igc29tZSBvdGhlciBvdXQtb2YtdHJlZSBkcml2ZXI/DQo+IGJ0dy4g
+SSBwdXNoZWQgdGhlIGxhdGVzdCB2ZXJzaW9uIGhlcmU6DQo+IA0KPiBodHRwczovL2dpdC5rZXJu
+ZWwub3JnL2NnaXQvbGludXgva2VybmVsL2dpdC9tYXJleC9saW51eC0yLjYuZ2l0L2xvZy8/aD1u
+ZXh0L2NhZGVuY2UtcXNwaQ0KDQpJJ20gdHJ5aW5nIHRvIHVzZSB0aGUgb3V0IG9mIHRyZWUgZHJp
+dmVyIGZyb20gQWx0ZXJhJ3MgbGF0ZXN0IGtlcm5lbCwNCmZyb20gaGVyZToNCmh0dHBzOi8vZ2l0
+aHViLmNvbS9hbHRlcmEtb3BlbnNvdXJjZS9saW51eC1zb2NmcGdhL3RyZWUvc29jZnBnYS00LjQN
+Cg0KQnV0IGl0J3Mgbm90IGEgdG90YWxseSBkaWZmZXJlbnQgZHJpdmVyLCBpdCdzIGp1c3QgYW4g
+b2xkZXIgdmVyc2lvbiBvZg0KdGhpcyBkcml2ZXIuICBJJ20gdGhpbmtpbmcgb2YgcG9ydGluZyBp
+biB0aGlzIHZlcnNpb24gc2luY2UgSSB0aGluayBpdCdzDQptdWNoIGltcHJvdmVkIChhZnRlciBW
+MTEgb25lIHdvdWxkIGhvcGUgc28pLiAgUmVhbGx5LCBBbHRlcmEgc2hvdWxkDQp1cGRhdGUgdGhl
+aXIgc3VwcG9ydGVkIGtlcm5lbCB3aXRoIHRoaXMgY29kZS4NCg0KQ29tbWVudHMgYWJvdXQgd2hh
+dCdzIG9uIHlvdXIgYnJhbmNoLg0KDQpDb21taXQgIkFSTTogc29jZnBnYTogQWRkIENhbmRlbmNl
+IFFTUEkgY29udHJvbGxlciBEVCBub2RlIiBvbmx5DQphZGRzIHRoZSBub2RlIGZvciBDeWNsb25l
+IDUuICBUaGlzIHNhbWUgRFQgbm9kZSBzaG91bGQgYWxzbyBiZSBhZGRlZCB0bw0KdGhlIHNvY2Zw
+Z2FfYXJyaWExMC5kdHNpIGZpbGUuDQoNCg==
