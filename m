@@ -1,31 +1,20 @@
-Received: from mail-db3on0115.outbound.protection.outlook.com
- ([157.55.234.115] helo=emea01-db3-obe.outbound.protection.outlook.com)
+Received: from borkhuis.xs4all.nl ([212.238.181.189] helo=borkhuis.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b19aa-0006Of-DU
- for linux-mtd@lists.infradead.org; Fri, 13 May 2016 09:40:57 +0000
-From: "DHANAPAL, GNANACHANDRAN (G.)" <gdhanapa@visteon.com>
-To: Richard Weinberger <richard@nod.at>
-CC: "CN, Aananth (A.A.)" <caananth@visteon.com>, "Gunasundar, Balamanikandan
- (B.)" <bgunasun@visteon.com>, "Babu, Viswanathan (V.)" <vbabu3@visteon.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>, "adrian.hunter@intel.com"
- <adrian.hunter@intel.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "gnanachandran@gmail.com"
- <gnanachandran@gmail.com>
-Subject: Re: UBIFS Index Node Corruption - Invalid Key Type
-Date: Fri, 13 May 2016 09:40:30 +0000
-Message-ID: <20160513095004.GA6195@visteon-gnana>
-References: <20160510122343.GB16841@visteon-gnana>
- <CAFLxGvwmCywSV7G50Wvn6X6tGUnbvDUJa=iZncUAfAer7qtojQ@mail.gmail.com>
- <20160510145836.GA18568@visteon-gnana> <573210D8.6030603@nod.at>
- <20160511065223.GA22220@visteon-gnana> <20160511073836.GA22640@visteon-gnana>
- <5732F9C7.6020206@nod.at> <20160511112630.GB22640@visteon-gnana>
- <573345F4.9070203@nod.at> <57348554.6010805@nod.at>
-In-Reply-To: <57348554.6010805@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <604B452DDC864E49B28931D6443CDAAF@eurprd06.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ id 1b1AEH-0001u5-QA
+ for linux-mtd@lists.infradead.org; Fri, 13 May 2016 10:21:58 +0000
+Message-ID: <ca3ebf4848d4ed80b1f98b3677dc765e.squirrel@www.borkhuis.com>
+In-Reply-To: <CAFLxGvwDGBnf61eco1tQwRCC_BvUZTBF0Q4bLpB74JkRb3JP2g@mail.gmail.com>
+References: <29b499402bf5243cadea2c294833cd36.squirrel@www.borkhuis.com>
+ <CAFLxGvwDGBnf61eco1tQwRCC_BvUZTBF0Q4bLpB74JkRb3JP2g@mail.gmail.com>
+Date: Fri, 13 May 2016 12:27:35 +0200
+Subject: Re: UBIFS automatic recovery
+From: "Johan Borkhuis" <maillist@borkhuis.com>
+To: "Richard Weinberger" <richard.weinberger@gmail.com>
+Cc: "Johan Borkhuis" <maillist@borkhuis.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,39 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 12, 2016 at 03:29:56PM +0200, Richard Weinberger wrote:
-> Am 11.05.2016 um 16:47 schrieb Richard Weinberger:
-> > Am 11.05.2016 um 13:16 schrieb DHANAPAL, GNANACHANDRAN (G.):
-> >> On Wed, May 11, 2016 at 11:22:15AM +0200, Richard Weinberger wrote:
-> >>> I had a brief look, the provided dump has more problems.
-> >>> The dent node with the bad type is not referenced by the journal,
-> >>> so we can ignore it for now.
-> >>> The worse problem is that the index references a lot of non-existing
-> >>> inodes.
-> >=20
-> > BTW: Do both MTD tests and UBI tests pass?
->=20
-> Gave your issue another thought.
-> It is possible that you're facing bitflips in UBIFS meta data
-> which is not covered by the header CRC.
-> At least this would explain the corruption pattern you're facing.
->=20
-> Thanks,
-> //richard
-
 Richard,
 
-I believe CRC value for a node  is calculated in RAM before writing the nod=
-e in NAND.=20
-In this case, node CRC and calculated CRC are matching. so Will there be po=
-ssibility=20
-for corrupting key type area (32 bits) and keeping others intacted. or any =
-other=20
-possibility for node getting corrupted.
+Thanks for your quick response!
 
-This system is configured for 16 bit ecc strength including 10 bytes metada=
-ta in DATA0.=20
-This NAND has 4K i/o Size and 224 OOB size.=20
+> On Fri, May 13, 2016 at 10:47 AM, Johan Borkhuis <maillist@borkhuis.com>
+> wrote:
+>> However, when I continue to pull the power on a system with a broken
+>> partition (without running the test-application, this is only started
+>> when
+>> all partitions are mounted correctly) after some time (this can be a few
+>> reboots, or a couple of 100 reboots) the system fixes the partition
+>> itself, and I can access the data again, without any indications in the
+>> log.
+>
+> This should not happen. Either the UBIFS is broken and not mountable
+> or it can recover.
+> Something else seems to interact here.
 
-Cheers
-Gnana
+This was also what I was expecting, and why I was surprised when units
+started to recover.
+
+>> When it fails it shows the following during a mount (also shown
+>> sometimes for LEB 3 and 6):
+>> UBIFS: recovery needed
+>> UBIFS error (pid 640): ubifs_recover_log_leb: unrecoverable log
+>> corruption
+>> in LEB 5
+>>
+>> Another UBIFS message I see during a failed mount is:
+>> UBIFS error (pid 637): ubifs_recover_master_node: dumping first master
+>> node
+>>
+>> As long the mount fails the same message is repeated.
+>
+> UBIFS must not break due to power cuts.
+> So, something else is broken.
+> Do both MTD and UBI tests pass?
+
+You mean the kernel startup? Or some specific MTD/UBI test tools?
+On startup there is no difference in the console-output between a good and
+bad startup, so MTD and UBI are initialised correctly. The first sign is
+the fact that a mount fails.
+
+>> Or is there another way to fix/repair a broken partition without loosing
+>> the data that is stored on it?
+>
+> No. What you need is figuring out *why* UBIFS breaks while doing
+> power cuts. Both UBI and UBIFS are power cut aware by design.
+> In most cases UBIFS suffers from MTD problems. May it a faulty driver
+> or bad hardware...
+
+We are using a Micon 2Mb flash chip and the kernel sources from TI. The
+output during boot:
+omap2-nand driver initializing
+NAND device: Manufacturer ID: 0x2c, Chip ID: 0xca (Micron )
+Creating 6 MTD partitions on "omap2-nand.0":
+....
+
+Regards,
+    Johan
