@@ -1,20 +1,30 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-he1eur01on0130.outbound.protection.outlook.com
+ ([104.47.0.130] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b1DbJ-0003s5-L9
- for linux-mtd@lists.infradead.org; Fri, 13 May 2016 13:57:58 +0000
-Subject: Re: UBIFS automatic recovery
-To: Johan Borkhuis <maillist@borkhuis.com>
-References: <29b499402bf5243cadea2c294833cd36.squirrel@www.borkhuis.com>
- <CAFLxGvwDGBnf61eco1tQwRCC_BvUZTBF0Q4bLpB74JkRb3JP2g@mail.gmail.com>
- <ca3ebf4848d4ed80b1f98b3677dc765e.squirrel@www.borkhuis.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5735DD4C.4030409@nod.at>
-Date: Fri, 13 May 2016 15:57:32 +0200
+ id 1b1FYa-0005mt-0Z
+ for linux-mtd@lists.infradead.org; Fri, 13 May 2016 16:03:16 +0000
+From: "DHANAPAL, GNANACHANDRAN (G.)" <gdhanapa@visteon.com>
+To: Richard Weinberger <richard@nod.at>
+CC: "CN, Aananth (A.A.)" <caananth@visteon.com>, "Gunasundar, Balamanikandan
+ (B.)" <bgunasun@visteon.com>, "Babu, Viswanathan (V.)" <vbabu3@visteon.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, "adrian.hunter@intel.com"
+ <adrian.hunter@intel.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "gnanachandran@gmail.com"
+ <gnanachandran@gmail.com>
+Subject: Re: UBIFS Index Node Corruption - Invalid Key Type
+Date: Fri, 13 May 2016 16:02:51 +0000
+Message-ID: <20160513161226.GA9073@visteon-gnana>
+References: <20160510145836.GA18568@visteon-gnana> <573210D8.6030603@nod.at>
+ <20160511065223.GA22220@visteon-gnana> <20160511073836.GA22640@visteon-gnana>
+ <5732F9C7.6020206@nod.at> <20160511112630.GB22640@visteon-gnana>
+ <573345F4.9070203@nod.at> <57348554.6010805@nod.at>
+ <20160513095004.GA6195@visteon-gnana> <5735DC82.2010309@nod.at>
+In-Reply-To: <5735DC82.2010309@nod.at>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B1F325D0D7450246B45FBC6CC9DAB778@eurprd06.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <ca3ebf4848d4ed80b1f98b3677dc765e.squirrel@www.borkhuis.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +34,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Johan,
+On Fri, May 13, 2016 at 03:54:10PM +0200, Richard Weinberger wrote:
+> Am 13.05.2016 um 11:40 schrieb DHANAPAL, GNANACHANDRAN (G.):
+> > Richard,
+> >=20
+> > I believe CRC value for a node  is calculated in RAM before writing the=
+ node in NAND.=20
+> > In this case, node CRC and calculated CRC are matching. so Will there b=
+e possibility=20
+> > for corrupting key type area (32 bits) and keeping others intacted. or =
+any other=20
+> > possibility for node getting corrupted.
+>=20
+> I have to correct myself, the branches of an index node are covered by
+> the node header CRC.
+> This makes the whole picture more strange.
+>=20
+> You said you're facing the same issue on another unit.
+> Is the corruption really the same? Bad key type 5?
+>=20
+> Thanks,
+> //richard
 
-Am 13.05.2016 um 12:27 schrieb Johan Borkhuis:
->> This should not happen. Either the UBIFS is broken and not mountable
->> or it can recover.
->> Something else seems to interact here.
-> 
-> This was also what I was expecting, and why I was surprised when units
-> started to recover.
+Yes Richard, We have received two more units for exactly same issues and sa=
+me bad key type 5.
 
-Maybe a temporary issue with your NAND.
-
->>> When it fails it shows the following during a mount (also shown
->>> sometimes for LEB 3 and 6):
->>> UBIFS: recovery needed
->>> UBIFS error (pid 640): ubifs_recover_log_leb: unrecoverable log
->>> corruption
->>> in LEB 5
->>>
->>> Another UBIFS message I see during a failed mount is:
->>> UBIFS error (pid 637): ubifs_recover_master_node: dumping first master
->>> node
->>>
->>> As long the mount fails the same message is repeated.
->>
->> UBIFS must not break due to power cuts.
->> So, something else is broken.
->> Do both MTD and UBI tests pass?
-> 
-> You mean the kernel startup? Or some specific MTD/UBI test tools?
-> On startup there is no difference in the console-output between a good and
-> bad startup, so MTD and UBI are initialised correctly. The first sign is
-> the fact that a mount fails.
-
-In the kernel tree we have a set of tests, MTD tests.
-See CONFIG_MTD_TESTS.
-UBI tests are part of the mtd-utils source package.
-
->>> Or is there another way to fix/repair a broken partition without loosing
->>> the data that is stored on it?
->>
->> No. What you need is figuring out *why* UBIFS breaks while doing
->> power cuts. Both UBI and UBIFS are power cut aware by design.
->> In most cases UBIFS suffers from MTD problems. May it a faulty driver
->> or bad hardware...
-> 
-> We are using a Micon 2Mb flash chip and the kernel sources from TI. The
-> output during boot:
-> omap2-nand driver initializing
-> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xca (Micron )
-> Creating 6 MTD partitions on "omap2-nand.0":
-
-*maybe* a driver issue.
-First of all you need to find out what exactly is broken.
-i.e. analyze the contents of the NAND upon failure.
-
-Thanks,
-//richard
+Cheers
+Gnana=
