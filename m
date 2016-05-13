@@ -1,29 +1,30 @@
-Received: from mail-he1eur01on0130.outbound.protection.outlook.com
- ([104.47.0.130] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from mail-am1on0142.outbound.protection.outlook.com
+ ([157.56.112.142] helo=emea01-am1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b1FYa-0005mt-0Z
- for linux-mtd@lists.infradead.org; Fri, 13 May 2016 16:03:16 +0000
-From: "DHANAPAL, GNANACHANDRAN (G.)" <gdhanapa@visteon.com>
+ id 1b1FZH-0005uA-0A
+ for linux-mtd@lists.infradead.org; Fri, 13 May 2016 16:03:59 +0000
+From: "CN, Aananth (A.A.)" <caananth@visteon.com>
 To: Richard Weinberger <richard@nod.at>
-CC: "CN, Aananth (A.A.)" <caananth@visteon.com>, "Gunasundar, Balamanikandan
- (B.)" <bgunasun@visteon.com>, "Babu, Viswanathan (V.)" <vbabu3@visteon.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>, "adrian.hunter@intel.com"
- <adrian.hunter@intel.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "gnanachandran@gmail.com"
- <gnanachandran@gmail.com>
+CC: "DHANAPAL, GNANACHANDRAN (G.)" <gdhanapa@visteon.com>, "Gunasundar,
+ Balamanikandan (B.)" <bgunasun@visteon.com>, "Babu, Viswanathan (V.)"
+ <vbabu3@visteon.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "gnanachandran@gmail.com" <gnanachandran@gmail.com>
 Subject: Re: UBIFS Index Node Corruption - Invalid Key Type
-Date: Fri, 13 May 2016 16:02:51 +0000
-Message-ID: <20160513161226.GA9073@visteon-gnana>
-References: <20160510145836.GA18568@visteon-gnana> <573210D8.6030603@nod.at>
+Date: Fri, 13 May 2016 16:03:33 +0000
+Message-ID: <6063F630-A01C-4965-916E-9805E59A8744@visteon.com>
+References: <20160510122343.GB16841@visteon-gnana>
+ <CAFLxGvwmCywSV7G50Wvn6X6tGUnbvDUJa=iZncUAfAer7qtojQ@mail.gmail.com>
+ <20160510145836.GA18568@visteon-gnana> <573210D8.6030603@nod.at>
  <20160511065223.GA22220@visteon-gnana> <20160511073836.GA22640@visteon-gnana>
  <5732F9C7.6020206@nod.at> <20160511112630.GB22640@visteon-gnana>
  <573345F4.9070203@nod.at> <57348554.6010805@nod.at>
- <20160513095004.GA6195@visteon-gnana> <5735DC82.2010309@nod.at>
+ <20160513095004.GA6195@visteon-gnana>,<5735DC82.2010309@nod.at>
 In-Reply-To: <5735DC82.2010309@nod.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B1F325D0D7450246B45FBC6CC9DAB778@eurprd06.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+Content-Language: ta-IN
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,30 +35,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 13, 2016 at 03:54:10PM +0200, Richard Weinberger wrote:
-> Am 13.05.2016 um 11:40 schrieb DHANAPAL, GNANACHANDRAN (G.):
-> > Richard,
-> >=20
-> > I believe CRC value for a node  is calculated in RAM before writing the=
- node in NAND.=20
-> > In this case, node CRC and calculated CRC are matching. so Will there b=
-e possibility=20
-> > for corrupting key type area (32 bits) and keeping others intacted. or =
-any other=20
-> > possibility for node getting corrupted.
->=20
-> I have to correct myself, the branches of an index node are covered by
-> the node header CRC.
-> This makes the whole picture more strange.
->=20
-> You said you're facing the same issue on another unit.
-> Is the corruption really the same? Bad key type 5?
->=20
-> Thanks,
-> //richard
-
-Yes Richard, We have received two more units for exactly same issues and sa=
-me bad key type 5.
-
-Cheers
-Gnana=
+SGkgUmljaGFyZCwNCg0KWWVzLCBpdCBpcyB0aGUgc2FtZSBiYWQga2V5IHR5cGUgNS4NCg0KQWRk
+aXRpb25hbCBoaW50IGlzLCB0aGUgbG9nIHJlcG9ydGVkICJ1bmNsZWFuIHNodXRkb3duIiBoYXBw
+ZW5lZC4gU28sIGlzIGEgcmVzZXQgaGFwcGVuZWQgZHVyaW5nIGNvbW1pdCBvcGVyYXRpb24/DQoN
+ClJlZ2FyZHMsDQpBYW5hbnRoIA0KDQpTZW50IGZyb20gbXkgbW9iaWxlIHBob25lDQoNCj4gT24g
+MTMg4K6u4K+HLCAyMDE2LCBhdCA3OjI0IOCuquCuv+CuseCvjeCuquCuleCusuCvjSwgUmljaGFy
+ZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4gd3JvdGU6DQo+IA0KPj4gQW0gMTMuMDUuMjAx
+NiB1bSAxMTo0MCBzY2hyaWViIERIQU5BUEFMLCBHTkFOQUNIQU5EUkFOIChHLik6DQo+PiBSaWNo
+YXJkLA0KPj4gDQo+PiBJIGJlbGlldmUgQ1JDIHZhbHVlIGZvciBhIG5vZGUgIGlzIGNhbGN1bGF0
+ZWQgaW4gUkFNIGJlZm9yZSB3cml0aW5nIHRoZSBub2RlIGluIE5BTkQuIA0KPj4gSW4gdGhpcyBj
+YXNlLCBub2RlIENSQyBhbmQgY2FsY3VsYXRlZCBDUkMgYXJlIG1hdGNoaW5nLiBzbyBXaWxsIHRo
+ZXJlIGJlIHBvc3NpYmlsaXR5IA0KPj4gZm9yIGNvcnJ1cHRpbmcga2V5IHR5cGUgYXJlYSAoMzIg
+Yml0cykgYW5kIGtlZXBpbmcgb3RoZXJzIGludGFjdGVkLiBvciBhbnkgb3RoZXIgDQo+PiBwb3Nz
+aWJpbGl0eSBmb3Igbm9kZSBnZXR0aW5nIGNvcnJ1cHRlZC4NCj4gDQo+IEkgaGF2ZSB0byBjb3Jy
+ZWN0IG15c2VsZiwgdGhlIGJyYW5jaGVzIG9mIGFuIGluZGV4IG5vZGUgYXJlIGNvdmVyZWQgYnkN
+Cj4gdGhlIG5vZGUgaGVhZGVyIENSQy4NCj4gVGhpcyBtYWtlcyB0aGUgd2hvbGUgcGljdHVyZSBt
+b3JlIHN0cmFuZ2UuDQo+IA0KPiBZb3Ugc2FpZCB5b3UncmUgZmFjaW5nIHRoZSBzYW1lIGlzc3Vl
+IG9uIGFub3RoZXIgdW5pdC4NCj4gSXMgdGhlIGNvcnJ1cHRpb24gcmVhbGx5IHRoZSBzYW1lPyBC
+YWQga2V5IHR5cGUgNT8NCj4gDQo+IFRoYW5rcywNCj4gLy9yaWNoYXJkDQo=
