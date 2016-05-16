@@ -1,26 +1,26 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2HEG-00051C-SV
- for linux-mtd@lists.infradead.org; Mon, 16 May 2016 12:02:33 +0000
-Date: Mon, 16 May 2016 14:02:10 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Scott Wood <oss@buserror.net>, Richard Weinberger <richard@nod.at>
-Cc: Tom Rini  <trini@konsulko.com>, Marek Vasut <marex@denx.de>, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, u-boot@lists.denx.de,
- "linux-sunxi@googlegroups.com" <linux-sunxi@googlegroups.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Alexander
- Kaplan <alex@nextthing.co>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [U-Boot] Porting Linux's MTD/NAND changes into U-Boot
-Message-ID: <20160516140210.746f913d@bbrezillon>
-In-Reply-To: <1462252005.16584.34.camel@buserror.net>
-References: <20160425164314.15c3fc94@bbrezillon>
- <20160425173646.GM3732@bill-the-cat>
- <20160425225357.7bb6338d@bbrezillon>
- <1462252005.16584.34.camel@buserror.net>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b2Htg-0006lU-BC
+ for linux-mtd@lists.infradead.org; Mon, 16 May 2016 12:45:22 +0000
+Subject: Re: UBIFS and page migration (take 3)
+To: Christoph Hellwig <hch@infradead.org>
+References: <1462974823-3168-1-git-send-email-richard@nod.at>
+ <20160512114948.GA25113@infradead.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ boris.brezillon@free-electrons.com, maxime.ripard@free-electrons.com,
+ david@sigma-star.at, david@fromorbit.com, dedekind1@gmail.com,
+ alex@nextthing.co, akpm@linux-foundation.org, sasha.levin@oracle.com,
+ iamjoonsoo.kim@lge.com, rvaswani@codeaurora.org, tony.luck@intel.com,
+ shailendra.capricorn@gmail.com, kirill.shutemov@linux.intel.com,
+ hughd@google.com, mgorman@techsingularity.net, vbabka@suse.cz
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5739C0C1.1090907@nod.at>
+Date: Mon, 16 May 2016 14:44:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20160512114948.GA25113@infradead.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,74 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Scott,
+Christoph,
 
-On Tue, 03 May 2016 00:06:45 -0500
-Scott Wood <oss@buserror.net> wrote:
-
-> On Mon, 2016-04-25 at 22:53 +0200, Boris Brezillon wrote:
-> > On Mon, 25 Apr 2016 13:36:46 -0400
-> > Tom Rini <trini@konsulko.com> wrote:
-> >   
-> > > On Mon, Apr 25, 2016 at 04:43:14PM +0200, Boris Brezillon wrote:
-> > >   
-> > > > Hi Scott,
-> > > > 
-> > > > I've recently contributed a lot of MTD/NAND related patches (and intend
-> > > > to continue doing so). Some of them are transversal changes touching the
-> > > > MTD and NAND framework internals, which implies patching all NAND
-> > > > drivers along with the core changes.
-> > > > 
-> > > > All those changes are required to properly handle modern NANDs (MLC/TLC
-> > > > NANDs), and I need them to add proper NAND support to the sunxi
-> > > > platform (and more particularly to the C.H.I.P from NextThing Co.).
-> > > > 
-> > > > So my question is, how should I port those changes to U-Boot? I see
-> > > > that your doing "synchronization commits", but in my case this mean
-> > > > including a bunch of driver specific changes into this "sync commit".
-> > > > 
-> > > > I think it's also worth mentioning that I plan to heavily rework the
-> > > > Linux NAND framework to improve NAND performances on modern NAND
-> > > > controllers and clarify the NAND chip / NAND controller concepts, and
-> > > > other people are also working on merging the BBT code of the NAND and
-> > > > OneNAND framework. Which unfortunately means that we're not done porting
-> > > > invasive changes to U-Boot :-/.
-> > > > 
-> > > > Any advice is welcome.    
-> > > 
-> > > I suppose my first suggestion would be to sync the kernel back into
-> > > U-Boot more frequently.  With our bi-monthly release cycle it shouldn't
-> > > be too hard to pick a window to grab the current kernel release and
-> > > bring it over.  I think the more stuff we let build up prior to syncing
-> > > the harder it will be.
-> > >   
-> > 
-> > Okay, so this means I should be the one back-porting Linux changes into
-> > U-Boot? I was planning on porting my current work on the sunxi NAND
-> > driver (including all the core dependencies) and submitting it to
-> > U-Boot, but honestly, I don't see how I can keep things in sync in the
-> > long run. From my experience, porting things to U-Boot is never as
-> > easy at it seems, and I don't think I'll have the time to maintain that
-> > by myself. Scott, what's your policy regarding Linux -> U-Boot syncs?
-> > Can I expect some help from your side?  
+Am 12.05.2016 um 13:49 schrieb Christoph Hellwig:
+> Hi Richard,
 > 
-> I usually do syncs when someone complains about needing a sync.  Every release
-> seems a bit much.  I'll try to do one soon.
+> the series looks fine to me, but it fails to address the root cause:
 
-Sorry to bother you with that, but can I ask when you plan to do this
-sync (I guess you'll sync with 4.6)? As I explained, I depend on
-features introduced in 4.6 to make the sunxi NAND driver usable on
-sunxi based boards (the concept of data randomizer/scrambler is
-required on some MLC NANDs, and most Allwinner boards embed this
-kind of NAND chips).
+Is this a Reviewed-by? :-)
 
-Don't hesitate to let me know if you need some help.
+> that we have an inherently dangerous default for ->migratepage that
+> assumes that file systems are implemented a certain way.  I think the
+> series should also grow a third patch to remove the default and just
+> wire it up for the known good file systems, although we'd need some
+> input on what known good is.
+>
+> Any idea what filesystems do get regular testing with code that's using
+> CMA? A good approximation might be those that use the bufer_head
+> based aops from fs/buffer.c
+
+No idea how much is being tested.
+I fear most issues are unknown. At least for UBIFS it took
+years to get aware of the issue.
+Thanks again to Maxime and Boris for providing a reproducer.
+
+There are two classes of issues:
+a) filesystems that use buffer_migrate_page() but shouldn't
+b) filesystems that don't implement ->migratepage() and fallback_migrate_page()
+   is not suitable.
+
+As starter we could kill the automatic assignment of fallback_migrate_page() and
+non-buffer_head filesystems need to figure out whether fallback_migrate_page()
+is suitable or not.
+UBIFS found out the hard way. ;-\
+
+MM folks, do we have a way to force page migration?
+Maybe we can create a generic stress test.
 
 Thanks,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+//richard
