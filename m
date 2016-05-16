@@ -1,20 +1,23 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2DWv-0008Bc-8K
- for linux-mtd@lists.infradead.org; Mon, 16 May 2016 08:05:33 +0000
-Date: Mon, 16 May 2016 10:05:11 +0200
+ id 1b2HEG-00051C-SV
+ for linux-mtd@lists.infradead.org; Mon, 16 May 2016 12:02:33 +0000
+Date: Mon, 16 May 2016 14:02:10 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Moritz Fischer <moritz.fischer@ettus.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- moritz.fischer.private@gmail.com
-Subject: Re: [PATCH] mtd: Adding of_mtd_info_get to get mtd_info from
- devicetree
-Message-ID: <20160516100511.360c89c9@bbrezillon>
-In-Reply-To: <20160516095534.727fcac6@bbrezillon>
-References: <1462988859-32240-1-git-send-email-moritz.fischer@ettus.com>
- <20160516095534.727fcac6@bbrezillon>
+To: Scott Wood <oss@buserror.net>, Richard Weinberger <richard@nod.at>
+Cc: Tom Rini  <trini@konsulko.com>, Marek Vasut <marex@denx.de>, Thomas
+ Petazzoni <thomas.petazzoni@free-electrons.com>, u-boot@lists.denx.de,
+ "linux-sunxi@googlegroups.com" <linux-sunxi@googlegroups.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Alexander
+ Kaplan <alex@nextthing.co>, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [U-Boot] Porting Linux's MTD/NAND changes into U-Boot
+Message-ID: <20160516140210.746f913d@bbrezillon>
+In-Reply-To: <1462252005.16584.34.camel@buserror.net>
+References: <20160425164314.15c3fc94@bbrezillon>
+ <20160425173646.GM3732@bill-the-cat>
+ <20160425225357.7bb6338d@bbrezillon>
+ <1462252005.16584.34.camel@buserror.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,31 +30,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 16 May 2016 09:55:34 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Hi Scott,
 
-> Hi Moritz,
-> 
-> On Wed, 11 May 2016 10:47:39 -0700
-> Moritz Fischer <moritz.fischer@ettus.com> wrote:
-> 
-> > This allows for getting a struct mtd_info from a node pointer,
-> > allowing mtd devices to e.g. store serial numbers or MAC addresses.  
-> 
-> Can you detail a bit what you'll do next. I guess you need to provide
-> this information to in-kernel users, and those users will just call
-> mtd_read() after retrieving the mtd_info pointer.
-> 
-> Here are a few questions (I'm assuming the netdev + MAC address case):
-> - how would you link the net/PHY device to the MTD partition storing
->   the MAC address
+On Tue, 03 May 2016 00:06:45 -0500
+Scott Wood <oss@buserror.net> wrote:
 
-Sorry, I sent it before asking all my questions :).
+> On Mon, 2016-04-25 at 22:53 +0200, Boris Brezillon wrote:
+> > On Mon, 25 Apr 2016 13:36:46 -0400
+> > Tom Rini <trini@konsulko.com> wrote:
+> >   
+> > > On Mon, Apr 25, 2016 at 04:43:14PM +0200, Boris Brezillon wrote:
+> > >   
+> > > > Hi Scott,
+> > > > 
+> > > > I've recently contributed a lot of MTD/NAND related patches (and intend
+> > > > to continue doing so). Some of them are transversal changes touching the
+> > > > MTD and NAND framework internals, which implies patching all NAND
+> > > > drivers along with the core changes.
+> > > > 
+> > > > All those changes are required to properly handle modern NANDs (MLC/TLC
+> > > > NANDs), and I need them to add proper NAND support to the sunxi
+> > > > platform (and more particularly to the C.H.I.P from NextThing Co.).
+> > > > 
+> > > > So my question is, how should I port those changes to U-Boot? I see
+> > > > that your doing "synchronization commits", but in my case this mean
+> > > > including a bunch of driver specific changes into this "sync commit".
+> > > > 
+> > > > I think it's also worth mentioning that I plan to heavily rework the
+> > > > Linux NAND framework to improve NAND performances on modern NAND
+> > > > controllers and clarify the NAND chip / NAND controller concepts, and
+> > > > other people are also working on merging the BBT code of the NAND and
+> > > > OneNAND framework. Which unfortunately means that we're not done porting
+> > > > invasive changes to U-Boot :-/.
+> > > > 
+> > > > Any advice is welcome.    
+> > > 
+> > > I suppose my first suggestion would be to sync the kernel back into
+> > > U-Boot more frequently.  With our bi-monthly release cycle it shouldn't
+> > > be too hard to pick a window to grab the current kernel release and
+> > > bring it over.  I think the more stuff we let build up prior to syncing
+> > > the harder it will be.
+> > >   
+> > 
+> > Okay, so this means I should be the one back-porting Linux changes into
+> > U-Boot? I was planning on porting my current work on the sunxi NAND
+> > driver (including all the core dependencies) and submitting it to
+> > U-Boot, but honestly, I don't see how I can keep things in sync in the
+> > long run. From my experience, porting things to U-Boot is never as
+> > easy at it seems, and I don't think I'll have the time to maintain that
+> > by myself. Scott, what's your policy regarding Linux -> U-Boot syncs?
+> > Can I expect some help from your side?  
+> 
+> I usually do syncs when someone complains about needing a sync.  Every release
+> seems a bit much.  I'll try to do one soon.
 
-- it seems quite specific to MTD devices to me. What if the MAC address
-  is stored in something that is not exposed as an MTD device. I wonder
-  if we shouldn't add an nvmem wrapper around MTD devices.
+Sorry to bother you with that, but can I ask when you plan to do this
+sync (I guess you'll sync with 4.6)? As I explained, I depend on
+features introduced in 4.6 to make the sunxi NAND driver usable on
+sunxi based boards (the concept of data randomizer/scrambler is
+required on some MLC NANDs, and most Allwinner boards embed this
+kind of NAND chips).
 
+Don't hesitate to let me know if you need some help.
+
+Thanks,
+
+Boris
 
 -- 
 Boris Brezillon, Free Electrons
