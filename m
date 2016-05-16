@@ -1,26 +1,30 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2M69-0003E2-Vl
- for linux-mtd@lists.infradead.org; Mon, 16 May 2016 17:14:30 +0000
-Date: Mon, 16 May 2016 19:14:07 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Moritz Fischer <moritz.fischer@ettus.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>,
- moritz.fischer.private@gmail.com
-Subject: Re: [PATCH] mtd: Adding of_mtd_info_get to get mtd_info from
- devicetree
-Message-ID: <20160516191407.1dbb3028@bbrezillon>
-In-Reply-To: <CAAtXAHcbjH0FzK=tuvwFSjUA7jJ4CT76NWQR31YR1UmXcAX9sQ@mail.gmail.com>
-References: <1462988859-32240-1-git-send-email-moritz.fischer@ettus.com>
- <20160516095534.727fcac6@bbrezillon>
- <20160516100511.360c89c9@bbrezillon>
- <CAAtXAHcbjH0FzK=tuvwFSjUA7jJ4CT76NWQR31YR1UmXcAX9sQ@mail.gmail.com>
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b2OV3-0004fU-LV
+ for linux-mtd@lists.infradead.org; Mon, 16 May 2016 19:48:22 +0000
+Received: by mail-wm0-x244.google.com with SMTP id n129so20389775wmn.1
+ for <linux-mtd@lists.infradead.org>; Mon, 16 May 2016 12:48:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
+References: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Mon, 16 May 2016 21:47:20 +0200
+Message-ID: <CAOMqctQLichyA3g_6K9UY8N8CY3GLvvP=_zqz+kUphRw3vxqZA@mail.gmail.com>
+Subject: Re: [PATCH v7 00/10] Add error checking to spi-nor read and write
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ Han Xu <han.xu@nxp.com>, Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Rafal Milecki <zajec5@gmail.com>,
+ Jagan Teki <jteki@openedev.com>, "Andrew F. Davis" <afd@ti.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Gabor Juhos <juhosg@openwrt.org>, Bean Huo <beanhuo@micron.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Bayi Cheng <bayi.cheng@mediatek.com>,
+ Joachim Eastwood <manabian@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +34,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 16 May 2016 09:30:10 -0700
-Moritz Fischer <moritz.fischer@ettus.com> wrote:
+Hello,
 
-> Hi Boris,
-> 
-> On Mon, May 16, 2016 at 1:05 AM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> 
-> >> Here are a few questions (I'm assuming the netdev + MAC address case):
-> >> - how would you link the net/PHY device to the MTD partition storing
-> >>   the MAC address  
-> 
-> Well in my case I actually planned to use it with the OTP partition of my QSPI
-> device using spi_nor_read_usr_prot_reg and friends and I just needed a way
-> to get to the struct mtd_info from a child of my network device.
-> 
-> Right now the OTP 'partitions' are not really exposed to device tree afaik.
-> Maybe that would be worthwhile to further look into? Maybe exposing
-> (wrapping) that as nvmem
-> would be the way to go?
+On 6 May 2016 at 02:31, Brian Norris <computersforpeace@gmail.com> wrote:
+> Hi,
+>
+> I'm picking up Michal's patch set, since he dropped it on the floor, and it's
+> useful for others. My additions:
+>
+>  * rebased on latest
+>  * added fixes for drivers that have been merged in the meantime
+>  * addressed most of Heiner's comments
+>
 
-I think so. Now that MTD partitions are defined in a 'partitions'
-subnode (see MTD binding doc), we can define an 'otp-partitions'
-subnode and define nvmem cells in there.
+Since that offset error slipped into the previous rebase I was
+planning to do some more thorough testing before resubmit but did not
+get to it yet.
 
+Thanks for picking this up.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Michal
