@@ -1,20 +1,33 @@
-Received: from mail-oi0-x22e.google.com ([2607:f8b0:4003:c06::22e])
+Received: from out03.mta.xmission.com ([166.70.13.233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2hd2-0001UD-8X
- for linux-mtd@lists.infradead.org; Tue, 17 May 2016 16:13:52 +0000
-Received: by mail-oi0-x22e.google.com with SMTP id x19so32721661oix.2
- for <linux-mtd@lists.infradead.org>; Tue, 17 May 2016 09:13:30 -0700 (PDT)
+ id 1b2npv-0007AN-00
+ for linux-mtd@lists.infradead.org; Tue, 17 May 2016 22:51:35 +0000
+From: ebiederm@xmission.com (Eric W. Biederman)
+To: Seth Forshee <seth.forshee@canonical.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jeff Layton <jlayton@poochiereds.net>,
+ "J. Bruce Fields" <bfields@fieldses.org>, Tejun Heo <tj@kernel.org>,
+ Li Zefan <lizefan@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Serge Hallyn <serge.hallyn@canonical.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Austin S Hemmelgarn <ahferroin7@gmail.com>,
+ Miklos Szeredi <mszeredi@redhat.com>,
+ Pavel Tikhomirov <ptikhomirov@virtuozzo.com>, linux-kernel@vger.kernel.org,
+ linux-bcache@vger.kernel.org, dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+ fuse-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org,
+ selinux@tycho.nsa.gov, cgroups@vger.kernel.org
+In-Reply-To: <1461699046-30485-4-git-send-email-seth.forshee@canonical.com>
+ (Seth Forshee's message of "Tue, 26 Apr 2016 14:30:26 -0500")
+References: <1461699046-30485-1-git-send-email-seth.forshee@canonical.com>
+ <1461699046-30485-4-git-send-email-seth.forshee@canonical.com>
+Date: Tue, 17 May 2016 17:39:33 -0500
+Message-ID: <87shxgxqai.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-In-Reply-To: <CABatt_xjhTpaUitXP_az+cOFEVA=eUedayFggrrH=Z7ZdBWUYg@mail.gmail.com>
-References: <CABatt_xjhTpaUitXP_az+cOFEVA=eUedayFggrrH=Z7ZdBWUYg@mail.gmail.com>
-Date: Tue, 17 May 2016 18:13:30 +0200
-Message-ID: <CAFLxGvx9bnh6z1hkMXzdvynBOdDca6HJziEKG5pH95e+Ttaa8Q@mail.gmail.com>
-Subject: Re: UBIFS assert when rebooting a read only ubifs when it's been
- remounted r/w
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Martin Townsend <mtownsend1973@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: multipart/mixed; boundary=001a113d26a09cd12305330c05d7
+Content-Type: text/plain
+Subject: Re: [PATCH v4 03/21] fs: Allow sysfs and cgroupfs to share super
+ blocks between user namespaces
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +37,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---001a113d26a09cd12305330c05d7
-Content-Type: text/plain; charset=UTF-8
+Seth Forshee <seth.forshee@canonical.com> writes:
 
-On Tue, May 17, 2016 at 5:19 PM, Martin Townsend
-<mtownsend1973@gmail.com> wrote:
-> Hi,
+> Both of these filesystems already have use cases for mounting the
+> same super block from multiple user namespaces. For sysfs this
+> happens when using criu for snapshotting a container, where sysfs
+> is mnounted in the containers network ns but the hosts user ns.
+> The cgroup filesystem shares the same super block for all mounts
+> of the same hierarchy regardless of the namespace.
 >
-> I've just seen the following UBIFS assert which relates to
-> ubifs_remount_fs in fs/ubifs/super.c
-> We have a read only root filesystem and it looks like this problem
-> occurs after rebooting the board when the root filesystem has been
-> remounted as as r/w, I use the following command to do this in case
-> I'm doing this incorrectly.
-> mount -o remount,rw /
-> The only way to stop it is to login and run
-> mount -o remount,rw /
-> mount -o remount,ro /
-> and then reboots do not assert.
+> As a result, the restriction on mounting a super block from a
+> single user namespace creates regressions for existing uses of
+> these filesystems. For these specific filesystems this
+> restriction isn't really necessary since the backing store is
+> objects in kernel memory and thus the ids assigned from inodes
+> is not subject to translation relative to s_user_ns.
 >
-> I've tried a few times now and can happily reproduce it.
->
-> Any ideas on how to fix this?
+> Add a new filesystem flag, FS_USERNS_SHARE_SB, which when set
+> causes sget_userns() to skip the check of s_user_ns. Set this
+> flag for the sysfs and cgroup filesystems to fix the
+> regressions.
 
-Let's analyze the root cause first.
-Can you please reproduce with the attached debug patch applied?
-I wonder what the value of c->lst.taken_empty_lebs is.
+So this one needs to be sget_userns(..., &init_user_ns, ...).
+And not a new special case.
 
--- 
-Thanks,
-//richard
+Apologies for not catching this earlier.
 
---001a113d26a09cd12305330c05d7
-Content-Type: text/plain; charset=US-ASCII; name="ubifs_assert.diff"
-Content-Disposition: attachment; filename="ubifs_assert.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_iobn2fj60
+I am looking at folding all of this into the patch that introduces
+sget_userns so that even bisects won't have regresssions.
 
-ZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL3N1cGVyLmMgYi9mcy91Ymlmcy9zdXBlci5jCmluZGV4IGU5
-OGMyNGUuLjc1MTRmYWIgMTAwNjQ0Ci0tLSBhL2ZzL3ViaWZzL3N1cGVyLmMKKysrIGIvZnMvdWJp
-ZnMvc3VwZXIuYwpAQCAtMTg3MCw3ICsxODcwLDExIEBAIHN0YXRpYyBpbnQgdWJpZnNfcmVtb3Vu
-dF9mcyhzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLCBpbnQgKmZsYWdzLCBjaGFyICpkYXRhKQogCQlj
-LT5idS5idWYgPSBOVUxMOwogCX0KIAotCXViaWZzX2Fzc2VydChjLT5sc3QudGFrZW5fZW1wdHlf
-bGVicyA+IDApOworCWlmICghKGMtPmxzdC50YWtlbl9lbXB0eV9sZWJzID4gMCkpIHsKKwkJdWJp
-ZnNfZXJyKGMsICJ0YWtlbl9lbXB0eV9sZWJzIGlzICVpIiwgYy0+bHN0LnRha2VuX2VtcHR5X2xl
-YnMpOworCQl1Ymlmc19hc3NlcnQoMCk7CisJfQorCiAJcmV0dXJuIDA7CiB9CiAK
---001a113d26a09cd12305330c05d7--
+We loose the ability to call mount -o remount and actually affect
+these filesystems (which we don't have without s_user_ns) but we gain a
+whole lot of simplicity, and we don't break the xattr and security label
+on sysfs code.
+
+Eric
