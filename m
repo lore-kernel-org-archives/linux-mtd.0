@@ -1,17 +1,20 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-oi0-x22e.google.com ([2607:f8b0:4003:c06::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2gmL-0003Eh-Dc
- for linux-mtd@lists.infradead.org; Tue, 17 May 2016 15:19:26 +0000
-Received: by mail-lf0-x241.google.com with SMTP id y84so1421585lfc.3
- for <linux-mtd@lists.infradead.org>; Tue, 17 May 2016 08:19:04 -0700 (PDT)
+ id 1b2hd2-0001UD-8X
+ for linux-mtd@lists.infradead.org; Tue, 17 May 2016 16:13:52 +0000
+Received: by mail-oi0-x22e.google.com with SMTP id x19so32721661oix.2
+ for <linux-mtd@lists.infradead.org>; Tue, 17 May 2016 09:13:30 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 17 May 2016 16:19:02 +0100
-Message-ID: <CABatt_xjhTpaUitXP_az+cOFEVA=eUedayFggrrH=Z7ZdBWUYg@mail.gmail.com>
-Subject: UBIFS assert when rebooting a read only ubifs when it's been
+In-Reply-To: <CABatt_xjhTpaUitXP_az+cOFEVA=eUedayFggrrH=Z7ZdBWUYg@mail.gmail.com>
+References: <CABatt_xjhTpaUitXP_az+cOFEVA=eUedayFggrrH=Z7ZdBWUYg@mail.gmail.com>
+Date: Tue, 17 May 2016 18:13:30 +0200
+Message-ID: <CAFLxGvx9bnh6z1hkMXzdvynBOdDca6HJziEKG5pH95e+Ttaa8Q@mail.gmail.com>
+Subject: Re: UBIFS assert when rebooting a read only ubifs when it's been
  remounted r/w
-From: Martin Townsend <mtownsend1973@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Martin Townsend <mtownsend1973@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: multipart/mixed; boundary=001a113d26a09cd12305330c05d7
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,58 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+--001a113d26a09cd12305330c05d7
+Content-Type: text/plain; charset=UTF-8
 
-I've just seen the following UBIFS assert which relates to
-ubifs_remount_fs in fs/ubifs/super.c
-We have a read only root filesystem and it looks like this problem
-occurs after rebooting the board when the root filesystem has been
-remounted as as r/w, I use the following command to do this in case
-I'm doing this incorrectly.
-mount -o remount,rw /
-The only way to stop it is to login and run
-mount -o remount,rw /
-mount -o remount,ro /
-and then reboots do not assert.
+On Tue, May 17, 2016 at 5:19 PM, Martin Townsend
+<mtownsend1973@gmail.com> wrote:
+> Hi,
+>
+> I've just seen the following UBIFS assert which relates to
+> ubifs_remount_fs in fs/ubifs/super.c
+> We have a read only root filesystem and it looks like this problem
+> occurs after rebooting the board when the root filesystem has been
+> remounted as as r/w, I use the following command to do this in case
+> I'm doing this incorrectly.
+> mount -o remount,rw /
+> The only way to stop it is to login and run
+> mount -o remount,rw /
+> mount -o remount,ro /
+> and then reboots do not assert.
+>
+> I've tried a few times now and can happily reproduce it.
+>
+> Any ideas on how to fix this?
 
-I've tried a few times now and can happily reproduce it.
+Let's analyze the root cause first.
+Can you please reproduce with the attached debug patch applied?
+I wonder what the value of c->lst.taken_empty_lebs is.
 
-Any ideas on how to fix this?
+-- 
+Thanks,
+//richard
 
-Many Thanks,
-Martin.
+--001a113d26a09cd12305330c05d7
+Content-Type: text/plain; charset=US-ASCII; name="ubifs_assert.diff"
+Content-Disposition: attachment; filename="ubifs_assert.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_iobn2fj60
 
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: UBIFS assert
-failed in ubifs_remount_fs at 1869 (pid 108)
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: CPU: 0 PID: 108
-Comm: mount Not tainted 4.1.18-g6b41ca0b94 #1
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: Hardware name:
-Generic AM43 (Flattened Device Tree)
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: Backtrace:
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel:
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: [<c0013398>]
-(dump_backtrace) from [<c00135b8>] (show_stack+0x18/0x1c)
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel:  r7:00000000
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel:  r6:ee327ee4
-r5:00000000 r4:ee01a000
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: [<c00135a0>]
-(show_stack) from [<c060006c>] (dump_stack+0x20/0x28)
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: [<c060004c>]
-(dump_stack) from [<c029ba4c>] (ubifs_remount_fs+0x558/0x800)
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: [<c029b4f4>]
-(ubifs_remount_fs) from [<c013e1e0>] (do_remount_sb+0x6c/0x1d8)
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel:  r9:ee0dfc40
-r8:00000000 r7:00000000 r6:00000000 r5:00000000 r4:ee0dfc00
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: [<c013e174>]
-(do_remount_sb) from [<c015d69c>] (do_mount+0x80c/0xcd0)
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel:  r8:00000021
-r7:ee0dfc00 r6:ee0fe0d0 r5:00000060 r4:00000000
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: [<c015ce90>]
-(do_mount) from [<c015dee4>] (SyS_mount+0x9c/0xc8)
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel:  r10:00000000
-r9:ee326000 r8:c0ed0021 r7:7f62d700 r6:00000000 r5:ee31d280
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel:  r4:ee31d240
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel: [<c015de48>]
-(SyS_mount) from [<c000f920>] (ret_fast_syscall+0x0/0x3c)
-May 17 14:54:44 am43-controller-aquila-1bf6b1 kernel:  r8:c000fac4
-r7:00000015 r6:7f62d6f0 r5:00000000 r4:00000000
+ZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL3N1cGVyLmMgYi9mcy91Ymlmcy9zdXBlci5jCmluZGV4IGU5
+OGMyNGUuLjc1MTRmYWIgMTAwNjQ0Ci0tLSBhL2ZzL3ViaWZzL3N1cGVyLmMKKysrIGIvZnMvdWJp
+ZnMvc3VwZXIuYwpAQCAtMTg3MCw3ICsxODcwLDExIEBAIHN0YXRpYyBpbnQgdWJpZnNfcmVtb3Vu
+dF9mcyhzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLCBpbnQgKmZsYWdzLCBjaGFyICpkYXRhKQogCQlj
+LT5idS5idWYgPSBOVUxMOwogCX0KIAotCXViaWZzX2Fzc2VydChjLT5sc3QudGFrZW5fZW1wdHlf
+bGVicyA+IDApOworCWlmICghKGMtPmxzdC50YWtlbl9lbXB0eV9sZWJzID4gMCkpIHsKKwkJdWJp
+ZnNfZXJyKGMsICJ0YWtlbl9lbXB0eV9sZWJzIGlzICVpIiwgYy0+bHN0LnRha2VuX2VtcHR5X2xl
+YnMpOworCQl1Ymlmc19hc3NlcnQoMCk7CisJfQorCiAJcmV0dXJuIDA7CiB9CiAK
+--001a113d26a09cd12305330c05d7--
