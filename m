@@ -1,38 +1,32 @@
-Received: from mail-oi0-x22c.google.com ([2607:f8b0:4003:c06::22c])
+Received: from mail-pf0-x22d.google.com ([2607:f8b0:400e:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2ot8-0008JD-KA
- for linux-mtd@lists.infradead.org; Tue, 17 May 2016 23:59:00 +0000
-Received: by mail-oi0-x22c.google.com with SMTP id x201so51421080oif.3
- for <linux-mtd@lists.infradead.org>; Tue, 17 May 2016 16:58:36 -0700 (PDT)
-Date: Tue, 17 May 2016 18:58:34 -0500
-From: Seth Forshee <seth.forshee@canonical.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>, Tejun Heo <tj@kernel.org>,
- Li Zefan <lizefan@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
- linux-kernel@vger.kernel.org, linux-bcache@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- fuse-devel@lists.sourceforge.net,
- linux-security-module@vger.kernel.org, selinux@tycho.nsa.gov,
- cgroups@vger.kernel.org
-Subject: Re: [PATCH v4 03/21] fs: Allow sysfs and cgroupfs to share super
- blocks between user namespaces
-Message-ID: <20160517235834.GA104031@ubuntu-hedt>
-References: <1461699046-30485-1-git-send-email-seth.forshee@canonical.com>
- <1461699046-30485-4-git-send-email-seth.forshee@canonical.com>
- <87shxgxqai.fsf@x220.int.ebiederm.org>
+ id 1b2qEY-0007ut-Fk
+ for linux-mtd@lists.infradead.org; Wed, 18 May 2016 01:25:10 +0000
+Received: by mail-pf0-x22d.google.com with SMTP id y69so12411410pfb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 17 May 2016 18:24:49 -0700 (PDT)
+Date: Tue, 17 May 2016 18:24:45 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Michal Suchanek <hramrach@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Han Xu <han.xu@nxp.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Rafal Milecki <zajec5@gmail.com>, Jagan Teki <jteki@openedev.com>,
+ "Andrew F. Davis" <afd@ti.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Gabor Juhos <juhosg@openwrt.org>, Bean Huo <beanhuo@micron.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Bayi Cheng <bayi.cheng@mediatek.com>,
+ Joachim Eastwood <manabian@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH v7 00/10] Add error checking to spi-nor read and write
+Message-ID: <20160518012445.GA74128@google.com>
+References: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
+ <CAOMqctQLichyA3g_6K9UY8N8CY3GLvvP=_zqz+kUphRw3vxqZA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87shxgxqai.fsf@x220.int.ebiederm.org>
+In-Reply-To: <CAOMqctQLichyA3g_6K9UY8N8CY3GLvvP=_zqz+kUphRw3vxqZA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,50 +36,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 17, 2016 at 05:39:33PM -0500, Eric W. Biederman wrote:
-> Seth Forshee <seth.forshee@canonical.com> writes:
+On Mon, May 16, 2016 at 09:47:20PM +0200, Michal Suchanek wrote:
+> Hello,
 > 
-> > Both of these filesystems already have use cases for mounting the
-> > same super block from multiple user namespaces. For sysfs this
-> > happens when using criu for snapshotting a container, where sysfs
-> > is mnounted in the containers network ns but the hosts user ns.
-> > The cgroup filesystem shares the same super block for all mounts
-> > of the same hierarchy regardless of the namespace.
+> On 6 May 2016 at 02:31, Brian Norris <computersforpeace@gmail.com> wrote:
+> > Hi,
 > >
-> > As a result, the restriction on mounting a super block from a
-> > single user namespace creates regressions for existing uses of
-> > these filesystems. For these specific filesystems this
-> > restriction isn't really necessary since the backing store is
-> > objects in kernel memory and thus the ids assigned from inodes
-> > is not subject to translation relative to s_user_ns.
+> > I'm picking up Michal's patch set, since he dropped it on the floor, and it's
+> > useful for others. My additions:
 > >
-> > Add a new filesystem flag, FS_USERNS_SHARE_SB, which when set
-> > causes sget_userns() to skip the check of s_user_ns. Set this
-> > flag for the sysfs and cgroup filesystems to fix the
-> > regressions.
+> >  * rebased on latest
+> >  * added fixes for drivers that have been merged in the meantime
+> >  * addressed most of Heiner's comments
+> >
 > 
-> So this one needs to be sget_userns(..., &init_user_ns, ...).
-> And not a new special case.
+> Since that offset error slipped into the previous rebase I was
+> planning to do some more thorough testing before resubmit but did not
+> get to it yet.
+> 
+> Thanks for picking this up.
 
-This is actually what I wanted to do, but based on a previous discussion
-where I had suggested doing this (for a different reason) I came away
-thinking you did not want it that way. So I'm happy with that change.
+No problem. If you get the chance, one or more of
+{Reviewed,Tested,Acked}-by would be helpful.
 
-But if we do that it violates some of the assumptions of the patch to
-rework MNT_NODEV on your testing branch (and also those behind patch 2
-in this series). Something will need to be changed there to prevent a
-regression in mount behavior when a user ns tries to mount without
-MNT_NODEV when the mount inherited from its parent has it set.
-
-> Apologies for not catching this earlier.
-
-Actually this is a more recent patch, so you possibly hadn't seen it
-before.
-
-> I am looking at folding all of this into the patch that introduces
-> sget_userns so that even bisects won't have regresssions.
-
-That's fine with me.
-
-Thanks,
-Seth
+Brian
