@@ -1,32 +1,26 @@
-Received: from mail-pf0-x22d.google.com ([2607:f8b0:400e:c00::22d])
+Received: from host.buserror.net ([209.198.135.123])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b2qEY-0007ut-Fk
- for linux-mtd@lists.infradead.org; Wed, 18 May 2016 01:25:10 +0000
-Received: by mail-pf0-x22d.google.com with SMTP id y69so12411410pfb.1
- for <linux-mtd@lists.infradead.org>; Tue, 17 May 2016 18:24:49 -0700 (PDT)
-Date: Tue, 17 May 2016 18:24:45 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Michal Suchanek <hramrach@gmail.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- Heiner Kallweit <hkallweit1@gmail.com>, Han Xu <han.xu@nxp.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Rafal Milecki <zajec5@gmail.com>, Jagan Teki <jteki@openedev.com>,
- "Andrew F. Davis" <afd@ti.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>, Bean Huo <beanhuo@micron.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Bayi Cheng <bayi.cheng@mediatek.com>,
- Joachim Eastwood <manabian@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH v7 00/10] Add error checking to spi-nor read and write
-Message-ID: <20160518012445.GA74128@google.com>
-References: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
- <CAOMqctQLichyA3g_6K9UY8N8CY3GLvvP=_zqz+kUphRw3vxqZA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMqctQLichyA3g_6K9UY8N8CY3GLvvP=_zqz+kUphRw3vxqZA@mail.gmail.com>
+ id 1b2tG9-0003gq-Us
+ for linux-mtd@lists.infradead.org; Wed, 18 May 2016 04:39:02 +0000
+Message-ID: <1463546309.16584.130.camel@buserror.net>
+From: Scott Wood <oss@buserror.net>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>
+Cc: Tom Rini <trini@konsulko.com>, Marek Vasut <marex@denx.de>, Thomas
+ Petazzoni <thomas.petazzoni@free-electrons.com>, u-boot@lists.denx.de,
+ "linux-sunxi@googlegroups.com" <linux-sunxi@googlegroups.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Alexander
+ Kaplan <alex@nextthing.co>, Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 17 May 2016 23:38:29 -0500
+In-Reply-To: <20160516140210.746f913d@bbrezillon>
+References: <20160425164314.15c3fc94@bbrezillon>
+ <20160425173646.GM3732@bill-the-cat> <20160425225357.7bb6338d@bbrezillon>
+ <1462252005.16584.34.camel@buserror.net>
+ <20160516140210.746f913d@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [U-Boot] Porting Linux's MTD/NAND changes into U-Boot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,27 +30,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 16, 2016 at 09:47:20PM +0200, Michal Suchanek wrote:
-> Hello,
+On Mon, 2016-05-16 at 14:02 +0200, Boris Brezillon wrote:
+> Hi Scott,
 > 
-> On 6 May 2016 at 02:31, Brian Norris <computersforpeace@gmail.com> wrote:
-> > Hi,
-> >
-> > I'm picking up Michal's patch set, since he dropped it on the floor, and it's
-> > useful for others. My additions:
-> >
-> >  * rebased on latest
-> >  * added fixes for drivers that have been merged in the meantime
-> >  * addressed most of Heiner's comments
-> >
+> On Tue, 03 May 2016 00:06:45 -0500
+> Scott Wood <oss@buserror.net> wrote:
 > 
-> Since that offset error slipped into the previous rebase I was
-> planning to do some more thorough testing before resubmit but did not
-> get to it yet.
+> > I usually do syncs when someone complains about needing a sync.  Every
+> > release
+> > seems a bit much.  I'll try to do one soon.
 > 
-> Thanks for picking this up.
+> Sorry to bother you with that, but can I ask when you plan to do this
+> sync (I guess you'll sync with 4.6)? As I explained, I depend on
+> features introduced in 4.6 to make the sunxi NAND driver usable on
+> sunxi based boards (the concept of data randomizer/scrambler is
+> required on some MLC NANDs, and most Allwinner boards embed this
+> kind of NAND chips).
+> 
+> Don't hesitate to let me know if you need some help.
 
-No problem. If you get the chance, one or more of
-{Reviewed,Tested,Acked}-by would be helpful.
+I'm working on it now.  Yes, with 4.6.
 
-Brian
+-Scott
