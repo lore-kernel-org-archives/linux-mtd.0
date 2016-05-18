@@ -1,37 +1,16 @@
-Received: from out03.mta.xmission.com ([166.70.13.233])
+Received: from skprod3.natinst.com ([130.164.80.24] helo=ni.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b34VA-0002iO-6w
- for linux-mtd@lists.infradead.org; Wed, 18 May 2016 16:39:16 +0000
-From: ebiederm@xmission.com (Eric W. Biederman)
-To: Seth Forshee <seth.forshee@canonical.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jeff Layton <jlayton@poochiereds.net>,
- "J. Bruce Fields" <bfields@fieldses.org>, Tejun Heo <tj@kernel.org>,
- Li Zefan <lizefan@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Serge Hallyn <serge.hallyn@canonical.com>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Austin S Hemmelgarn <ahferroin7@gmail.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Pavel Tikhomirov <ptikhomirov@virtuozzo.com>, linux-kernel@vger.kernel.org,
- linux-bcache@vger.kernel.org, dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- fuse-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org,
- selinux@tycho.nsa.gov, cgroups@vger.kernel.org
-References: <1461699046-30485-1-git-send-email-seth.forshee@canonical.com>
- <1461699046-30485-4-git-send-email-seth.forshee@canonical.com>
- <87shxgxqai.fsf@x220.int.ebiederm.org>
- <20160517235834.GA104031@ubuntu-hedt>
- <8760ubs738.fsf@x220.int.ebiederm.org>
- <20160518161618.GC129218@ubuntu-hedt>
-Date: Wed, 18 May 2016 11:27:12 -0500
-In-Reply-To: <20160518161618.GC129218@ubuntu-hedt> (Seth Forshee's message of
- "Wed, 18 May 2016 11:16:18 -0500")
-Message-ID: <87bn43qqlb.fsf@x220.int.ebiederm.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [PATCH v4 03/21] fs: Allow sysfs and cgroupfs to share super
- blocks between user namespaces
+ id 1b39fg-0006Ij-6J
+ for linux-mtd@lists.infradead.org; Wed, 18 May 2016 22:10:28 +0000
+From: Kyle Roeschley <kyle.roeschley@ni.com>
+To: boris.brezillon@free-electrons.com, richard@nod.at
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, beanhuo@micron.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ nathan.sullivan@ni.com, xander.huff@ni.com, peterpansjtu@gmail.com
+Subject: [RESEND PATCH v4] mtd: nand_bbt: scan for next free bbt block if
+ writing bbt fails
+Date: Wed, 18 May 2016 17:10:01 -0500
+Message-Id: <1463609401-19861-1-git-send-email-kyle.roeschley@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,56 +20,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Seth Forshee <seth.forshee@canonical.com> writes:
+If erasing or writing the BBT fails, we should mark the current BBT
+block as bad and use the BBT descriptor to scan for the next available
+unused block in the BBT. We should only return a failure if there isn't
+any space left.
 
-> On Wed, May 18, 2016 at 10:45:31AM -0500, Eric W. Biederman wrote:
->> > But if we do that it violates some of the assumptions of the patch to
->> > rework MNT_NODEV on your testing branch (and also those behind patch 2
->> > in this series). Something will need to be changed there to prevent a
->> > regression in mount behavior when a user ns tries to mount without
->> > MNT_NODEV when the mount inherited from its parent has it set.
->> 
->> Thank you for pointing that out.  I will look into that.
->> 
->> I believe I know exactly what you are talking about.  Of the choices I
->> think it is better to a minor localized change in the fs_fully_visible
->> logic than it is to cause problems elsewhere.
->
-> Agreed.
->
->> >> Apologies for not catching this earlier.
->> >
->> > Actually this is a more recent patch, so you possibly hadn't seen it
->> > before.
->> >
->> >> I am looking at folding all of this into the patch that introduces
->> >> sget_userns so that even bisects won't have regresssions.
->> >
->> > That's fine with me.
->> 
->> And thank you for keeping everything as separate patches.  That is at
->> least helping me catch up.  Even if I don't agree that these things
->> should be separate come merge time.
->
-> Honestly I probably would have squashed some of them into that first
-> patch myself if you hadn't already applied it to your testing branch, so
-> that's all just luck.
->
-> Keep in mind that I also have that patch for mqueue that isn't in this
-> series, and I haven't yet checked to see if the 4.7 merges introduce
-> anything which is going to require updating these patches. I was
-> planning to wait and send out updates after -rc1, but if you want that
-> stuff sooner just let me know.
+Based on original code implemented by Jeff Westfahl
+<jeff.westfahl@ni.com>.
 
-As unfortunately I don't have anything going into -rc1 I am working on
-this right now.
+Signed-off-by: Kyle Roeschley <kyle.roeschley@ni.com>
+Suggested-by: Jeff Westfahl <jeff.westfahl@ni.com>
+---
+v4: Don't ignore write protection while marking bad BBT blocks
+    Correctly call block_markbad
+    Minor cleanups
 
-Let me finish sorting out the sget_userns and mnt nodev mess and I will
-push something out and then we can compare notes.  I think I have mqueue
-covered by other changes.  As it is in the set of filesystems that
-should just use sget_userns.
+v3: Don't overload mtd->priv
+    Keep nand_erase_nand from erroring on protected BBT blocks
 
-I am sorting through the nodev corner of this now.  It should just be a
-day or two.
+v2: Mark OOB area in each block as well as BBT
+    Avoid marking read-only, bad address, or known bad blocks as bad
 
-Eric
+ drivers/mtd/nand/nand_bbt.c | 41 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 39 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 2fbb523..dfc68e0 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -663,6 +663,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			goto write;
+ 		}
+ 
++next:
+ 		/*
+ 		 * Automatic placement of the bad block table. Search direction
+ 		 * top -> down?
+@@ -787,14 +788,50 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		einfo.addr = to;
+ 		einfo.len = 1 << this->bbt_erase_shift;
+ 		res = nand_erase_nand(mtd, &einfo, 1);
+-		if (res < 0)
++		if (res == -EIO) {
++			/*
++			 * This block is bad. Mark it as such and see if
++			 * there's another block available in the BBT area.
++			 */
++			int block = page >>
++				    (this->bbt_erase_shift - this->page_shift);
++			pr_info("nand_bbt: failed to erase block %d when writing BBT\n",
++				block);
++			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
++
++			res = this->block_markbad(mtd, to);
++			if (res)
++				pr_warn("nand_bbt: error %d while marking block %d bad\n",
++					res, block);
++			td->pages[chip] = -1;
++			goto next;
++		} else if (res) {
+ 			goto outerr;
++		}
+ 
+ 		res = scan_write_bbt(mtd, to, len, buf,
+ 				td->options & NAND_BBT_NO_OOB ? NULL :
+ 				&buf[len]);
+-		if (res < 0)
++		if (res == -EIO) {
++			/*
++			 * This block is bad. Mark it as such and see if
++			 * there's another block available in the BBT area.
++			 */
++			int block = page >>
++				    (this->bbt_erase_shift - this->page_shift);
++			pr_info("nand_bbt: failed to write block %d when writing BBT\n",
++				block);
++			bbt_mark_entry(this, block, BBT_BLOCK_WORN);
++
++			res = this->block_markbad(mtd, to);
++			if (res)
++				pr_warn("nand_bbt: error %d while marking block %d bad\n",
++					res, block);
++			td->pages[chip] = -1;
++			goto next;
++		} else if (res) {
+ 			goto outerr;
++		}
+ 
+ 		pr_info("Bad block table written to 0x%012llx, version 0x%02X\n",
+ 			 (unsigned long long)to, td->version[chip]);
+-- 
+2.8.1
