@@ -1,24 +1,20 @@
-Date: Mon, 23 May 2016 09:55:57 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Wenyou Yang <wenyou.yang@atmel.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark
- Brown <broonie@kernel.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org, Russell King
- <linux@arm.linux.org.uk>, Josh Wu <rainyfeeling@outlook.com>, Nicolas Ferre
- <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Alexandre Belloni
- <alexandre.belloni@free-electrons.com>, linux-mtd@lists.infradead.org,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] Revert "mtd: atmel_nand: Support variable RB_EDGE
- interrupts"
-Message-ID: <20160523095557.1efea63d@bbrezillon>
-In-Reply-To: <1462776680-5284-2-git-send-email-wenyou.yang@atmel.com>
-References: <1462776680-5284-1-git-send-email-wenyou.yang@atmel.com>
- <1462776680-5284-2-git-send-email-wenyou.yang@atmel.com>
+Received: from eusmtp01.atmel.com ([212.144.249.242])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b4qQt-0003Jw-Uv
+ for linux-mtd@lists.infradead.org; Mon, 23 May 2016 14:02:12 +0000
+Subject: Re: [PATCH 1/2] mtd: spi-nor: disable software protection for
+ Macronix flash at startup
+To: Matthias Schiffer <mschiffer@universe-factory.net>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+References: <e4b01b739197bd4556617b70553093c58d3b1497.1463578353.git.mschiffer@universe-factory.net>
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+CC: Felix Fietkau <nbd@nbd.name>
+Message-ID: <57430D4C.3010000@atmel.com>
+Date: Mon, 23 May 2016 16:01:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <e4b01b739197bd4556617b70553093c58d3b1497.1463578353.git.mschiffer@universe-factory.net>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,172 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 9 May 2016 14:51:18 +0800
-Wenyou Yang <wenyou.yang@atmel.com> wrote:
+Hi Matthias,
 
-> This reverts commit 5ddc7bd43ccc ("mtd: atmel_nand: Support variable
-> RB_EDGE interrupts")
+Le 18/05/2016 15:32, Matthias Schiffer a écrit :
+> This patch has been tested in OpenWrt for a few months and seems to work
+> correctly.
 > 
-> Because for current SoCs, the RB_EDGE3(i.e. bit 27) of HSMC_SR
-> register does not exist, the RB_EDGE0 (i.e. bit 24) is the ready/busy
-> line edge status bit. It is a datasheet bug.
-> 
-> Signed-off-by: Wenyou Yang <wenyou.yang@atmel.com>
-
-Wenyou, I know you sent it before v4.6 was released, but now we should
-probably add
-
-Cc: <stable@vger.kernel.org>
-
-Brian, can you apply this patch directly in your tree (as previously
-discussed, I'm not sure creating a nand/fixes branch is really useful)?
-
-Thanks,
-
-Boris
-
+> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+> Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
 > ---
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
->  .../devicetree/bindings/mtd/atmel-nand.txt         |  2 +-
->  drivers/mtd/nand/atmel_nand.c                      | 35 +++++-----------------
->  drivers/mtd/nand/atmel_nand_nfc.h                  |  3 +-
->  3 files changed, 10 insertions(+), 30 deletions(-)
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 157841d..d681003 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1304,6 +1304,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+>  
+>  	if (JEDEC_MFR(info) == SNOR_MFR_ATMEL ||
+>  	    JEDEC_MFR(info) == SNOR_MFR_INTEL ||
+> +	    JEDEC_MFR(info) == SNOR_MFR_MACRONIX ||
+>  	    JEDEC_MFR(info) == SNOR_MFR_SST ||
+>  	    info->flags & SPI_NOR_HAS_LOCK) {
+>  		write_enable(nor);
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> index d53aba9..3e7ee99 100644
-> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> @@ -39,7 +39,7 @@ Optional properties:
->  
->  Nand Flash Controller(NFC) is an optional sub-node
->  Required properties:
-> -- compatible : "atmel,sama5d3-nfc" or "atmel,sama5d4-nfc".
-> +- compatible : "atmel,sama5d3-nfc".
->  - reg : should specify the address and size used for NFC command registers,
->          NFC registers and NFC SRAM. NFC SRAM address and size can be absent
->          if don't want to use it.
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index efc8ea2..68b9160 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -67,10 +67,6 @@ struct atmel_nand_caps {
->  	uint8_t pmecc_max_correction;
->  };
->  
-> -struct atmel_nand_nfc_caps {
-> -	uint32_t rb_mask;
-> -};
-> -
->  /*
->   * oob layout for large page size
->   * bad block info is on bytes 0 and 1
-> @@ -129,7 +125,6 @@ struct atmel_nfc {
->  	/* Point to the sram bank which include readed data via NFC */
->  	void			*data_in_sram;
->  	bool			will_write_sram;
-> -	const struct atmel_nand_nfc_caps *caps;
->  };
->  static struct atmel_nfc	nand_nfc;
->  
-> @@ -1715,9 +1710,9 @@ static irqreturn_t hsmc_interrupt(int irq, void *dev_id)
->  		nfc_writel(host->nfc->hsmc_regs, IDR, NFC_SR_XFR_DONE);
->  		ret = IRQ_HANDLED;
->  	}
-> -	if (pending & host->nfc->caps->rb_mask) {
-> +	if (pending & NFC_SR_RB_EDGE) {
->  		complete(&host->nfc->comp_ready);
-> -		nfc_writel(host->nfc->hsmc_regs, IDR, host->nfc->caps->rb_mask);
-> +		nfc_writel(host->nfc->hsmc_regs, IDR, NFC_SR_RB_EDGE);
->  		ret = IRQ_HANDLED;
->  	}
->  	if (pending & NFC_SR_CMD_DONE) {
-> @@ -1735,7 +1730,7 @@ static void nfc_prepare_interrupt(struct atmel_nand_host *host, u32 flag)
->  	if (flag & NFC_SR_XFR_DONE)
->  		init_completion(&host->nfc->comp_xfer_done);
->  
-> -	if (flag & host->nfc->caps->rb_mask)
-> +	if (flag & NFC_SR_RB_EDGE)
->  		init_completion(&host->nfc->comp_ready);
->  
->  	if (flag & NFC_SR_CMD_DONE)
-> @@ -1753,7 +1748,7 @@ static int nfc_wait_interrupt(struct atmel_nand_host *host, u32 flag)
->  	if (flag & NFC_SR_XFR_DONE)
->  		comp[index++] = &host->nfc->comp_xfer_done;
->  
-> -	if (flag & host->nfc->caps->rb_mask)
-> +	if (flag & NFC_SR_RB_EDGE)
->  		comp[index++] = &host->nfc->comp_ready;
->  
->  	if (flag & NFC_SR_CMD_DONE)
-> @@ -1821,7 +1816,7 @@ static int nfc_device_ready(struct mtd_info *mtd)
->  		dev_err(host->dev, "Lost the interrupt flags: 0x%08x\n",
->  				mask & status);
->  
-> -	return status & host->nfc->caps->rb_mask;
-> +	return status & NFC_SR_RB_EDGE;
->  }
->  
->  static void nfc_select_chip(struct mtd_info *mtd, int chip)
-> @@ -1994,8 +1989,8 @@ static void nfc_nand_command(struct mtd_info *mtd, unsigned int command,
->  		}
->  		/* fall through */
->  	default:
-> -		nfc_prepare_interrupt(host, host->nfc->caps->rb_mask);
-> -		nfc_wait_interrupt(host, host->nfc->caps->rb_mask);
-> +		nfc_prepare_interrupt(host, NFC_SR_RB_EDGE);
-> +		nfc_wait_interrupt(host, NFC_SR_RB_EDGE);
->  	}
->  }
->  
-> @@ -2426,11 +2421,6 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
->  		}
->  	}
->  
-> -	nfc->caps = (const struct atmel_nand_nfc_caps *)
-> -		of_device_get_match_data(&pdev->dev);
-> -	if (!nfc->caps)
-> -		return -ENODEV;
-> -
->  	nfc_writel(nfc->hsmc_regs, IDR, 0xffffffff);
->  	nfc_readl(nfc->hsmc_regs, SR);	/* clear the NFC_SR */
->  
-> @@ -2459,17 +2449,8 @@ static int atmel_nand_nfc_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -static const struct atmel_nand_nfc_caps sama5d3_nfc_caps = {
-> -	.rb_mask = NFC_SR_RB_EDGE0,
-> -};
-> -
-> -static const struct atmel_nand_nfc_caps sama5d4_nfc_caps = {
-> -	.rb_mask = NFC_SR_RB_EDGE3,
-> -};
-> -
->  static const struct of_device_id atmel_nand_nfc_match[] = {
-> -	{ .compatible = "atmel,sama5d3-nfc", .data = &sama5d3_nfc_caps },
-> -	{ .compatible = "atmel,sama5d4-nfc", .data = &sama5d4_nfc_caps },
-> +	{ .compatible = "atmel,sama5d3-nfc" },
->  	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, atmel_nand_nfc_match);
-> diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
-> index 0bbc1fa..4d5d262 100644
-> --- a/drivers/mtd/nand/atmel_nand_nfc.h
-> +++ b/drivers/mtd/nand/atmel_nand_nfc.h
-> @@ -42,8 +42,7 @@
->  #define		NFC_SR_UNDEF		(1 << 21)
->  #define		NFC_SR_AWB		(1 << 22)
->  #define		NFC_SR_ASE		(1 << 23)
-> -#define		NFC_SR_RB_EDGE0		(1 << 24)
-> -#define		NFC_SR_RB_EDGE3		(1 << 27)
-> +#define		NFC_SR_RB_EDGE		(1 << 24)
->  
->  #define ATMEL_HSMC_NFC_IER	0x0c
->  #define ATMEL_HSMC_NFC_IDR	0x10
+The line following this patch chunk is "write_sr(nor, 0);" however, if I refer
+to the Macronix mx25l25673g datasheet about the Status Register, bits[5:2]
+(BP0, BP1, BP2 and BP3) are non-volatile and define the protected area.
+Also bit6 (Quad Enable) is also non-volatile and is used to reassign #WP and
+#Hold pins to IO2 and IO3 functions needed by Quad SPI protocols on many other
+Macronix memories (indeed on the 73g part, the Quad Enable bit is always 1).
+
+So you should not write 0 directly into the Status Register if you only want to
+clear bit7 (Status Register Write Disable): use a read, modify, write sequence
+instead.
 
 
+Best regards,
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Cyrille
