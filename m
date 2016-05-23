@@ -1,15 +1,18 @@
 Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b4sXU-0003x3-1G
- for linux-mtd@lists.infradead.org; Mon, 23 May 2016 16:17:08 +0000
+ id 1b4sY1-00046b-Pi
+ for linux-mtd@lists.infradead.org; Mon, 23 May 2016 16:17:42 +0000
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
  <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
  <cyrille.pitchen@atmel.com>
-Subject: [PATCH 0/2] mtd: spi-nor: add driver for Atmel QSPI controller
-Date: Mon, 23 May 2016 18:17:19 +0200
-Message-ID: <cover.1464019059.git.cyrille.pitchen@atmel.com>
+Subject: [PATCH 1/2] Documentation: atmel-quadspi: add binding file for Atmel
+ QSPI driver
+Date: Mon, 23 May 2016 18:17:20 +0200
+Message-ID: <39a8aac89575e84d7d5651c671a3e7c5c67cefd3.1464019059.git.cyrille.pitchen@atmel.com>
+In-Reply-To: <cover.1464019059.git.cyrille.pitchen@atmel.com>
+References: <cover.1464019059.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,30 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+This patch documents the DT bindings for the driver of the Atmel QSPI
+controller embedded inside sama5d2x SoCs.
 
-this series of patches add support to the Atmel QSPI controller.
-It was tested on a sama5d2 xplained board + Macronix mx25l25673g QSPI
-memory.
-
-The series is based on Michal and Brian series:
-"[PATCH v7 00/10] Add error checking to spi-nor read and write"
-
-Best regards,
-
-Cyrille
-
-Cyrille Pitchen (2):
-  Documentation: atmel-quadspi: add binding file for Atmel QSPI driver
-  mtd: atmel-quadspi: add driver for Atmel QSPI controller
-
- .../devicetree/bindings/mtd/atmel-quadspi.txt      |  32 +
- drivers/mtd/spi-nor/Kconfig                        |   9 +
- drivers/mtd/spi-nor/Makefile                       |   1 +
- drivers/mtd/spi-nor/atmel-quadspi.c                | 741 +++++++++++++++++++++
- 4 files changed, 783 insertions(+)
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+ .../devicetree/bindings/mtd/atmel-quadspi.txt      | 32 ++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
- create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
 
+diff --git a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+new file mode 100644
+index 000000000000..489807005eda
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+@@ -0,0 +1,32 @@
++* Atmel Quad Serial Peripheral Interface (QSPI)
++
++Required properties:
++- compatible:     Should be "atmel,sama5d2-qspi".
++- reg:            Should contain the locations and lengths of the base registers
++                  and the mapped memory.
++- reg-names:      Should contain the resource reg names:
++                  - qspi_base: configuration register address space
++                  - qspi_mmap: memory mapped address space
++- interrupts:     Should contain the interrupt for the device.
++- clocks:         The phandle of the clock needed by the QSPI controller.
++- #address-cells: Should be <1>.
++- #size-cells:    Should be <0>.
++
++Example:
++
++spi@f0020000 {
++	compatible = "atmel,sama5d2-qspi";
++	reg = <0xf0020000 0x100>, <0xd0000000 0x8000000>;
++	reg-names = "qspi_base", "qspi_mmap";
++	interrupts = <52 IRQ_TYPE_LEVEL_HIGH 7>;
++	clocks = <&spi0_clk>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_spi0_default>;
++	status = "okay";
++
++	m25p80@0 {
++		...
++	};
++};
 -- 
 1.8.2.2
