@@ -1,24 +1,24 @@
-Received: from out4.security.telecom.pt ([213.13.175.89]
- helo=out2.security.telecom.pt)
+Received: from mail-oi0-f68.google.com ([209.85.218.68])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b5Vr3-0005Xv-IW
- for linux-mtd@lists.infradead.org; Wed, 25 May 2016 10:15:58 +0000
-Received: from out1.security.telecom.pt (localhost [127.0.0.1])
- by out2.security.telecom.pt (Postfix) with ESMTP id 8CF76C5086F
- for <linux-mtd@lists.infradead.org>; Wed, 25 May 2016 11:05:46 +0100 (WEST)
-Received: from out.security.telecom.pt (localhost [127.0.0.1])
- by out1.security.telecom.pt (Postfix) with ESMTP id 593D77F614C
- for <linux-mtd@lists.infradead.org>; Wed, 25 May 2016 11:05:44 +0100 (WEST)
-Content-Type: text/plain; charset="iso-8859-1"
+ id 1b5e50-0003Uc-RQ
+ for linux-mtd@lists.infradead.org; Wed, 25 May 2016 19:02:55 +0000
+Received: by mail-oi0-f68.google.com with SMTP id x130so13831721oia.3
+ for <linux-mtd@lists.infradead.org>; Wed, 25 May 2016 12:02:33 -0700 (PDT)
+Date: Wed, 25 May 2016 14:02:31 -0500
+From: Rob Herring <robh@kernel.org>
+To: Baruch Siach <baruch@tkos.co.il>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH] Documentation: dt: mtd: drop "soft_bch" from example
+Message-ID: <20160525190231.GA20560@rob-hp-laptop>
+References: <a206ce4cabf9ba8d376241fc23e9973f6db2443b.1464147910.git.baruch@tkos.co.il>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Your Audience 
-To: Recipients <patricia.oliveira@delta-cafes.pt>
-From: "Richard Williams" <patricia.oliveira@delta-cafes.pt>
-Date: Wed, 25 May 2016 11:05:40 +0100
-Reply-To: richwills19@yahoo.com
-Message-Id: <20160525100541.5FB997F610E@out.security.telecom.pt>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a206ce4cabf9ba8d376241fc23e9973f6db2443b.1464147910.git.baruch@tkos.co.il>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, May 25, 2016 at 06:45:10AM +0300, Baruch Siach wrote:
+> Commit 32698aafc9f0 (Documentation: devicetree: deprecate "soft_bch"
+> nand-ecc-mode value, 2016-04-22) deprecated "soft_bch". Update the example to
+> match.
+> 
+> Cc: Rafał Miłecki <zajec5@gmail.com>
+> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand.txt | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-Hello
-I want to tell you something about Davies Ryan. Being the executor of the
-Will, it is possible that we may be tempted to make fortune out of our
-client situation. This proposal is with full financial benefit for both of
-us,If we can be of one accord, I shall give you a comprehensive detail as
-soon as you respond thank you.
-
-Regards
-Richard Williams
-
----
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+Acked-by: Rob Herring <robh@kernel.org>
