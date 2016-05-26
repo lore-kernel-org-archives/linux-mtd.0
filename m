@@ -1,21 +1,19 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b5t9W-0000RB-W6
- for linux-mtd@lists.infradead.org; Thu, 26 May 2016 11:08:35 +0000
-Date: Thu, 26 May 2016 13:08:12 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Mychaela Falconia  <falcon@ivan.Harhan.ORG>, Peter Pan
- <peterpansjtu@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: Supporting high-level NAND controllers like FTNANDC024
-Message-ID: <20160526130812.04077161@bbrezillon>
-In-Reply-To: <1464255950.25389.33.camel@gmail.com>
-References: <1605260545.AA18874@ivan.Harhan.ORG>
- <20160526091521.722a573e@bbrezillon>
- <1464255950.25389.33.camel@gmail.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b5vp5-0004YD-VS
+ for linux-mtd@lists.infradead.org; Thu, 26 May 2016 13:59:41 +0000
+Subject: Re: [PATCH] fs: ubifs: Replace kmem_cache_alloc/memset with
+ kmem_cache_zalloc
+To: Salah Triki <salah.triki@acm.org>, dedekind1@gmail.com,
+ adrian.hunter@intel.com
+References: <1464213858-4032-1-git-send-email-salah.triki@acm.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5747012E.2070803@nod.at>
+Date: Thu, 26 May 2016 15:59:10 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1464213858-4032-1-git-send-email-salah.triki@acm.org>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,20 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 26 May 2016 12:45:50 +0300
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
-
-> On Thu, 2016-05-26 at 09:15 +0200, Boris Brezillon wrote:
-> > - OneNAND NANDs  
+Am 26.05.2016 um 00:04 schrieb Salah Triki:
+> Use kmem_cache_zalloc instead of kmem_cache_alloc/memset.
 > 
-> While this should not stop you, you may have troubles finding a device
-> with this kind of NAND where you could test your changes, though.
+> Signed-off-by: Salah Triki <salah.triki@acm.org>
+> ---
+>  fs/ubifs/super.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+> index 7034995..f509200 100644
+> --- a/fs/ubifs/super.c
+> +++ b/fs/ubifs/super.c
+> @@ -262,12 +262,10 @@ static struct inode *ubifs_alloc_inode(struct super_block *sb)
+>  {
+>  	struct ubifs_inode *ui;
+>  
+> -	ui = kmem_cache_alloc(ubifs_inode_slab, GFP_NOFS);
+> +	ui = kmem_cache_zalloc(ubifs_inode_slab, GFP_NOFS);
+>  	if (!ui)
+>  		return NULL;
+>  
+> -	memset((void *)ui + sizeof(struct inode), 0,
+> -	       sizeof(struct ubifs_inode) - sizeof(struct inode));
 
-Brian already warned me that :). Let's focus on the rawNAND and SPINAND
-cases for now, we'll see if someone wants to port the OneNAND code to
-this new framework ;).
+Your patch fails to explain why it is needed.
+Also note that the path slightly changes the semantics.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Thanks,
+//richard
