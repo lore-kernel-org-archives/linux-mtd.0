@@ -1,19 +1,21 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b5puV-00007d-90
- for linux-mtd@lists.infradead.org; Thu, 26 May 2016 07:40:52 +0000
-Date: Thu, 26 May 2016 09:40:20 +0200
+ id 1b5qHW-0003xq-O0
+ for linux-mtd@lists.infradead.org; Thu, 26 May 2016 08:04:39 +0000
+Date: Thu, 26 May 2016 10:04:06 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Moritz Fischer <moritz.fischer@ettus.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- moritz.fischer.private@gmail.com
-Subject: Re: [PATCH] mtd: ofpart: Assign device node to partitions parsed
- with ofpart
-Message-ID: <20160526094020.2fbda715@bbrezillon>
-In-Reply-To: <1464136660-13222-1-git-send-email-moritz.fischer@ettus.com>
-References: <1464136660-13222-1-git-send-email-moritz.fischer@ettus.com>
+Cc: dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, robh+dt@kernel.org, pawel.moll@arm.com,
+ mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
+ devicetree@vger.kernel.org, computersforpeace@gmail.com
+Subject: Re: [RFC/PATCH 1/2] doc: bindings: Add bindings documentation for
+ mtd otp nvmem
+Message-ID: <20160526100406.783c6f2d@bbrezillon>
+In-Reply-To: <1464211607-8843-2-git-send-email-moritz.fischer@ettus.com>
+References: <1464211607-8843-1-git-send-email-moritz.fischer@ettus.com>
+ <1464211607-8843-2-git-send-email-moritz.fischer@ettus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,91 +28,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 24 May 2016 17:37:40 -0700
+Hi Moritz,
+
+On Wed, 25 May 2016 14:26:46 -0700
 Moritz Fischer <moritz.fischer@ettus.com> wrote:
 
-> This patch adds a struct device_node pointer to struct mtd_partition.
-> Partitions parsed via ofpart can now be referenced via devicetree.
-> 
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
+> This commit adds documentation describing the bindings for
+> exposing mtd flash otp regions as nvmem providers via devicetree.
 > 
 > Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
-
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-
 > ---
-> Hi all,
+>  .../devicetree/bindings/mtd/otp-nvmem.txt          | 62 ++++++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/otp-nvmem.txt
 > 
-> during my work on another patch series for supporting
-> otp regions as nvmem providers via dt (follow up series),
-> I realized we don't actually assign node pointers.
-> While not used for ofpart atm, I can see cases where having
-> the pointer is useful to reference raw mtd partitions.
-> I can also (re)submit this as part of my upcoming series for
-> nvmem / otp support
-
-Yep, that's probably better if you embed this patch in your series.
-
-> 
-> Cheers,
-> 
-> Moritz
-> 
-> ---
->  drivers/mtd/mtdpart.c          | 1 +
->  drivers/mtd/ofpart.c           | 1 +
->  include/linux/mtd/partitions.h | 4 ++++
->  3 files changed, 6 insertions(+)
-> 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index 6778ba2..3af9cf5 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -439,6 +439,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
->  
->  	slave->mtd.name = name;
->  	slave->mtd.owner = master->owner;
-> +	slave->mtd.dev.of_node = part->node;
->  
->  	/* NOTE: Historically, we didn't arrange MTDs as a tree out of
->  	 * concern for showing the same data in multiple partitions.
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index 6127ee6..caeaef0 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -108,6 +108,7 @@ static int parse_ofpart_partitions(struct mtd_info *master,
->  
->  		parts[i].offset = of_read_number(reg, a_cells);
->  		parts[i].size = of_read_number(reg + a_cells, s_cells);
-> +		parts[i].node = pp;
->  
->  		partname = of_get_property(pp, "label", &len);
->  		if (!partname)
-> diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-> index 70736e1..51d36ac 100644
-> --- a/include/linux/mtd/partitions.h
-> +++ b/include/linux/mtd/partitions.h
-> @@ -31,6 +31,9 @@
->   * 	master MTD flag set for the corresponding MTD partition.
->   * 	For example, to force a read-only partition, simply adding
->   * 	MTD_WRITEABLE to the mask_flags will do the trick.
-> + * node: contains device node pointer, necessary to reference device using
-> + *	devicetree.
+> diff --git a/Documentation/devicetree/bindings/mtd/otp-nvmem.txt b/Documentation/devicetree/bindings/mtd/otp-nvmem.txt
+> new file mode 100644
+> index 0000000..a83a7da
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/otp-nvmem.txt
+> @@ -0,0 +1,62 @@
+> +Representing OTP regions in devicetree
 > +
->   *
->   * Note: writeable partitions require their size and offset be
->   * erasesize aligned (e.g. use MTDPART_OFS_NEXTBLK).
-> @@ -41,6 +44,7 @@ struct mtd_partition {
->  	uint64_t size;			/* partition size */
->  	uint64_t offset;		/* offset within the master MTD space */
->  	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
-> +	struct device_node *node;	/* pointer to the device node */
->  };
->  
->  #define MTDPART_OFS_RETAIN	(-3)
+> +OTP regions can be represented by sub-nodes of an mtd device.
+> +
+> +The partition table should be a subnode of the mtd node and should be names
+> +'otp-partitions'. This node should have the following property:
+> +
+> +- compatible: (required) must be 'fixed-partitions'
+> +
+> +OTP regions are then defined in subnodes of the partitions node.
+> +
+> +Required properties for OTP regions:
+> +- reg: The region's offset and size within the mtd device
+> +
+> +Optional properties:
+> +- label: The label / name for this region. If ommited, the label is taken
+> +  from the node name (excluding the unit address).
+> +
+> +Example:
+> +
+> +flash@0 {
+> +	partitions {
+> +		compatible = "fixed-partitions";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +
+> +		partition@0 {
+> +			label = "uboot-spl";
+> +			reg = <0x0 0xe0000>;
+> +		};
+> +		partition@1 {
+> +			label = "uboot-env";
+> +			reg = <0xe0000 0x20000>;
+> +		};
+> +		partition@2 {
+> +			label = "uboot";
+> +			reg = <0x100000 0x100000>;
+> +		};
+> +	};
+> +
+> +	otp-partitions {
+> +		compatible = "fixed-partitions";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +
+> +		region@0 {
+> +			label = "factory-data";
+> +			reg = <0x0 0x40>;
+> +
+> +			#address-cells = <0x1>;
+> +			#size-cells = <0x1>;
+> +
+> +			product: nvmem@0 {
+> +				reg = <0x0 0x2>;
+> +			};
+> +
+> +			revision: nvmem@3 {
+> +				reg = <0x3 0x2>;
+> +			};
+> +		};
+> +	};
+> +}
 
+I think the MTD partition -> nvmem connection could benefit to non-OTP
+partitions too.
 
+So, how about defining the nvmem regions under the partition nodes,
+like that:
+
+flash@0 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		partition@0 {
+			label = "uboot-spl";
+			reg = <0x0 0xe0000>;
+		};
+
+		/* ... */
+
+		partition@X{
+			label = "factory-data-part";
+			reg = <0x200000 0x100000>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			product: nvmem@0 {
+				reg = <0x0 0x2>;
+			};
+
+			revision: nvmem@3 {
+				reg = <0x3 0x2>;
+			};
+		};
+	};
+
+	otp-partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		partition@X{
+			label = "factory-data-part";
+			reg = <0x0 0x40>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			product: nvmem@0 {
+				reg = <0x0 0x2>;
+			};
+
+			revision: nvmem@3 {
+				reg = <0x3 0x2>;
+			};
+		};
+	};
+};
+
+I know this requires changing the implementation to select the
+appropriate nvmem wrapper to use depending on whether we're interfacing
+with an OTP area or a regular one, but that should be doable.
+
+Regards,
+
+Boris
 
 -- 
 Boris Brezillon, Free Electrons
