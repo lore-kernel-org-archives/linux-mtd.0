@@ -1,23 +1,20 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b5qHW-0003xq-O0
- for linux-mtd@lists.infradead.org; Thu, 26 May 2016 08:04:39 +0000
-Date: Thu, 26 May 2016 10:04:06 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Moritz Fischer <moritz.fischer@ettus.com>
-Cc: dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, robh+dt@kernel.org, pawel.moll@arm.com,
- mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org,
- devicetree@vger.kernel.org, computersforpeace@gmail.com
-Subject: Re: [RFC/PATCH 1/2] doc: bindings: Add bindings documentation for
- mtd otp nvmem
-Message-ID: <20160526100406.783c6f2d@bbrezillon>
-In-Reply-To: <1464211607-8843-2-git-send-email-moritz.fischer@ettus.com>
-References: <1464211607-8843-1-git-send-email-moritz.fischer@ettus.com>
- <1464211607-8843-2-git-send-email-moritz.fischer@ettus.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ id 1b5rrr-0001lU-3i
+ for linux-mtd@lists.infradead.org; Thu, 26 May 2016 09:46:15 +0000
+Message-ID: <1464255950.25389.33.camel@gmail.com>
+Subject: Re: Supporting high-level NAND controllers like FTNANDC024
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Mychaela Falconia
+ <falcon@ivan.Harhan.ORG>
+Cc: Peter Pan <peterpansjtu@gmail.com>, linux-mtd@lists.infradead.org
+Date: Thu, 26 May 2016 12:45:50 +0300
+In-Reply-To: <20160526091521.722a573e@bbrezillon>
+References: <1605260545.AA18874@ivan.Harhan.ORG>
+ <20160526091521.722a573e@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,155 +25,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Moritz,
+On Thu, 2016-05-26 at 09:15 +0200, Boris Brezillon wrote:
+> - OneNAND NANDs
 
-On Wed, 25 May 2016 14:26:46 -0700
-Moritz Fischer <moritz.fischer@ettus.com> wrote:
-
-> This commit adds documentation describing the bindings for
-> exposing mtd flash otp regions as nvmem providers via devicetree.
-> 
-> Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
-> ---
->  .../devicetree/bindings/mtd/otp-nvmem.txt          | 62 ++++++++++++++++++++++
->  1 file changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/otp-nvmem.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/otp-nvmem.txt b/Documentation/devicetree/bindings/mtd/otp-nvmem.txt
-> new file mode 100644
-> index 0000000..a83a7da
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/otp-nvmem.txt
-> @@ -0,0 +1,62 @@
-> +Representing OTP regions in devicetree
-> +
-> +OTP regions can be represented by sub-nodes of an mtd device.
-> +
-> +The partition table should be a subnode of the mtd node and should be names
-> +'otp-partitions'. This node should have the following property:
-> +
-> +- compatible: (required) must be 'fixed-partitions'
-> +
-> +OTP regions are then defined in subnodes of the partitions node.
-> +
-> +Required properties for OTP regions:
-> +- reg: The region's offset and size within the mtd device
-> +
-> +Optional properties:
-> +- label: The label / name for this region. If ommited, the label is taken
-> +  from the node name (excluding the unit address).
-> +
-> +Example:
-> +
-> +flash@0 {
-> +	partitions {
-> +		compatible = "fixed-partitions";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		partition@0 {
-> +			label = "uboot-spl";
-> +			reg = <0x0 0xe0000>;
-> +		};
-> +		partition@1 {
-> +			label = "uboot-env";
-> +			reg = <0xe0000 0x20000>;
-> +		};
-> +		partition@2 {
-> +			label = "uboot";
-> +			reg = <0x100000 0x100000>;
-> +		};
-> +	};
-> +
-> +	otp-partitions {
-> +		compatible = "fixed-partitions";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		region@0 {
-> +			label = "factory-data";
-> +			reg = <0x0 0x40>;
-> +
-> +			#address-cells = <0x1>;
-> +			#size-cells = <0x1>;
-> +
-> +			product: nvmem@0 {
-> +				reg = <0x0 0x2>;
-> +			};
-> +
-> +			revision: nvmem@3 {
-> +				reg = <0x3 0x2>;
-> +			};
-> +		};
-> +	};
-> +}
-
-I think the MTD partition -> nvmem connection could benefit to non-OTP
-partitions too.
-
-So, how about defining the nvmem regions under the partition nodes,
-like that:
-
-flash@0 {
-	partitions {
-		compatible = "fixed-partitions";
-		#address-cells = <1>;
-		#size-cells = <1>;
-
-		partition@0 {
-			label = "uboot-spl";
-			reg = <0x0 0xe0000>;
-		};
-
-		/* ... */
-
-		partition@X{
-			label = "factory-data-part";
-			reg = <0x200000 0x100000>;
-			#address-cells = <1>;
-			#size-cells = <1>;
-
-			product: nvmem@0 {
-				reg = <0x0 0x2>;
-			};
-
-			revision: nvmem@3 {
-				reg = <0x3 0x2>;
-			};
-		};
-	};
-
-	otp-partitions {
-		compatible = "fixed-partitions";
-		#address-cells = <1>;
-		#size-cells = <1>;
-
-		partition@X{
-			label = "factory-data-part";
-			reg = <0x0 0x40>;
-			#address-cells = <1>;
-			#size-cells = <1>;
-
-			product: nvmem@0 {
-				reg = <0x0 0x2>;
-			};
-
-			revision: nvmem@3 {
-				reg = <0x3 0x2>;
-			};
-		};
-	};
-};
-
-I know this requires changing the implementation to select the
-appropriate nvmem wrapper to use depending on whether we're interfacing
-with an OTP area or a regular one, but that should be doable.
-
-Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+While this should not stop you, you may have troubles finding a device
+with this kind of NAND where you could test your changes, though.
