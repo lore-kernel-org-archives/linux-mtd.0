@@ -1,29 +1,27 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b5iL7-0007MG-DM
- for linux-mtd@lists.infradead.org; Wed, 25 May 2016 23:35:50 +0000
-Message-ID: <57462F0F.1050907@denx.de>
-Date: Thu, 26 May 2016 01:02:39 +0200
-From: Marek Vasut <marex@denx.de>
+Date: Wed, 25 May 2016 20:10:05 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Wenyou Yang <wenyou.yang@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Brown <broonie@kernel.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
+ Russell King <linux@arm.linux.org.uk>, Josh Wu <rainyfeeling@outlook.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] Revert "mtd: atmel_nand: Support variable RB_EDGE
+ interrupts"
+Message-ID: <20160526031005.GA137092@google.com>
+References: <1462776680-5284-1-git-send-email-wenyou.yang@atmel.com>
+ <1462776680-5284-2-git-send-email-wenyou.yang@atmel.com>
+ <20160523095557.1efea63d@bbrezillon>
 MIME-Version: 1.0
-To: Trent Piepho <tpiepho@kymetacorp.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Graham Moore <grmoore@opensource.altera.com>,
- Alan Tull <atull@opensource.altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@opensource.altera.com>,
- "R, Vignesh" <vigneshr@ti.com>,
- Yves Vandervennet <yvanderv@opensource.altera.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH V10 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller.
-References: <1452486886-8049-1-git-send-email-marex@denx.de>	
- <1452486886-8049-2-git-send-email-marex@denx.de>
- <1463097635.9103.301.camel@rtred1test09.kymeta.local>
-In-Reply-To: <1463097635.9103.301.camel@rtred1test09.kymeta.local>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160523095557.1efea63d@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,191 +31,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/13/2016 02:00 AM, Trent Piepho wrote:
-> On Mon, 2016-01-11 at 05:34 +0100, Marek Vasut wrote:
->> From: Graham Moore <grmoore-yzvPICuk2ABMcg4IHK0kFoH6Mc4MB0Vx@public.gmane.org>
->>
->> Add support for the Cadence QSPI controller. This controller is
->> present in the Altera SoCFPGA SoCs and this driver has been tested
->> on the Cyclone V SoC.
-> 
-> I'm trying to use this driver the Alaric Devkit for Altera's Arria10
-> SoC.  It's not working so far.  In the course of trying to debug it,
-> I've found a few things with the driver in the socfpga-4.1-ltsi branch.
-> However most of them are in code that's not present in this driver,
-> which is the newest post of the code I could find to reply to.
-> 
->> +					 CQSPI_REG_IRQ_WATERMARK	| \
->> +					 CQSPI_REG_IRQ_UNDERFLOW)
->> +
->> +#define CQSPI_IRQ_STATUS_MASK		0x1FFFF
->> +
-> 
-> Perhaps a comment.
-> /* waits for all bits set in mask to be zero (clear==false) or one
-> (clear==true) */
-> 
->> +static int cqspi_wait_for_bit(void __iomem *reg, const u32 mask, bool clear)
->> +{
->> +	unsigned long end = jiffies + msecs_to_jiffies(CQSPI_TIMEOUT_MS);
->> +	u32 val;
->> +
->> +	while (1) {
->> +		val = readl(reg);
->> +		if (clear)
->> +			val = ~val;
->> +		val &= mask;
->> +
->> +		if (val == mask)
->> +			return 0;
-> 
-> Somewhat simpler.
-> 
-> if ((readl(reg) & mask) == (clear ? 0 : mask))
->         return 0;
+Hi,
 
-This looks far more cryptic though, so I will skip this one.
-
->> +
->> +		if (time_after(jiffies, end))
->> +			return -ETIMEDOUT;
+On Mon, May 23, 2016 at 09:55:57AM +0200, Boris Brezillon wrote:
+> On Mon, 9 May 2016 14:51:18 +0800
+> Wenyou Yang <wenyou.yang@atmel.com> wrote:
 > 
-> Note that there is a hypervisor/vm/long hardirq etc. bug that can happen
-> without timeouts like this.  What happens is after the check of the bits
-> fails, there is a very long delay before this task runs again.  This can
-> be easy if one is running under virtualization.  The the time_after call
-> reports the timeout expired.  But the last time it the bit was checked,
-> before the long delay, was well before the timeout expired.  The way to
-> avoid this is to always be sure to check the condition once after the
-> timeout expired.  This is sure to give the full timeout.
-
-The CQSPI timeout is 500 mS, which is pretty generous considering the
-completion will happen in the first 10 mS tops. Do you think this is
-of concern here and it's worth complicating the code further ?
-
->> +	}
->> +}
->> +
+> > This reverts commit 5ddc7bd43ccc ("mtd: atmel_nand: Support variable
+> > RB_EDGE interrupts")
+> > 
+> > Because for current SoCs, the RB_EDGE3(i.e. bit 27) of HSMC_SR
+> > register does not exist, the RB_EDGE0 (i.e. bit 24) is the ready/busy
+> > line edge status bit. It is a datasheet bug.
+> > 
+> > Signed-off-by: Wenyou Yang <wenyou.yang@atmel.com>
 > 
->> +
->> +static unsigned int calculate_ticks_for_ns(const unsigned int ref_clk_hz,
->> +					   const unsigned int ns_val)
->> +{
->> +	unsigned int ticks;
->> +
->> +	ticks = ref_clk_hz / 1000;	/* kHz */
-> This division doesn't round up.
-> 
->> +	ticks = DIV_ROUND_UP(ticks * ns_val, 1000000);
-> But this one does.
-> 
->> +
->> +	return ticks;
->> +}
->> +
->> +static void cqspi_delay(struct spi_nor *nor, const unsigned int sclk_hz)
->> +{
->> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
->> +	struct cqspi_st *cqspi = f_pdata->cqspi;
-> 
-> Isn't the sclk_hz parameter of this function already available here as
-> cqspi->sclk?
+> Wenyou, I know you sent it before v4.6 was released, but now we should
+> probably add
 
-It is , good catch, thanks.
+Sorry for the delay...
 
->> +	void __iomem *iobase = cqspi->iobase;
->> +	const unsigned int ref_clk_hz = cqspi->master_ref_clk_hz;
->> +	unsigned int tshsl, tchsh, tslch, tsd2d;
->> +	unsigned int reg;
->> +	unsigned int tsclk;
->> +
->> +	/* calculate the number of ref ticks for one sclk tick */
->> +	tsclk = (ref_clk_hz + sclk_hz - 1) / sclk_hz;
-> 
-> DIV_ROUND_UP(ref_clk_hz, sclk_hz);
+> Cc: <stable@vger.kernel.org>
 
-OK
+Added that and a Fixes: tag.
 
->> +
->> +	tshsl = calculate_ticks_for_ns(ref_clk_hz, f_pdata->tshsl_ns);
->> +	/* this particular value must be at least one sclk */
->> +	if (tshsl < tsclk)
->> +		tshsl = tsclk;
->> +
->> +	tchsh = calculate_ticks_for_ns(ref_clk_hz, f_pdata->tchsh_ns);
->> +	tslch = calculate_ticks_for_ns(ref_clk_hz, f_pdata->tslch_ns);
->> +	tsd2d = calculate_ticks_for_ns(ref_clk_hz, f_pdata->tsd2d_ns);
->> +
->> +	reg = (tshsl & CQSPI_REG_DELAY_TSHSL_MASK)
->> +	       << CQSPI_REG_DELAY_TSHSL_LSB;
->> +	reg |= (tchsh & CQSPI_REG_DELAY_TCHSH_MASK)
->> +		<< CQSPI_REG_DELAY_TCHSH_LSB;
->> +	reg |= (tslch & CQSPI_REG_DELAY_TSLCH_MASK)
->> +		<< CQSPI_REG_DELAY_TSLCH_LSB;
->> +	reg |= (tsd2d & CQSPI_REG_DELAY_TSD2D_MASK)
->> +		<< CQSPI_REG_DELAY_TSD2D_LSB;
->> +	writel(reg, iobase + CQSPI_REG_DELAY);
->> +}
->> +
->> +static void cqspi_config_baudrate_div(struct cqspi_st *cqspi,
->> +				      const unsigned int sclk_hz)
->> +{
-> 
-> sclk_hz is available as cqspi->sclk.
+> Brian, can you apply this patch directly in your tree (as previously
+> discussed, I'm not sure creating a nand/fixes branch is really useful)?
 
-OK
+Pushed to linux-mtd.git. I'll probably send it to Linus in the next day
+or two.
 
->> +	const unsigned int ref_clk_hz = cqspi->master_ref_clk_hz;
->> +	void __iomem *reg_base = cqspi->iobase;
->> +	unsigned int reg;
->> +	unsigned int div;
->> +
->> +	reg = readl(reg_base + CQSPI_REG_CONFIG);
->> +	reg &= ~(CQSPI_REG_CONFIG_BAUD_MASK << CQSPI_REG_CONFIG_BAUD_LSB);
->> +
->> +	div = ref_clk_hz / sclk_hz;
-> 
-> Should this round up too?
-> 
->> +
->> +	/* Recalculate the baudrate divisor based on QSPI specification. */
->> +	if (div > 32)
->> +		div = 32;
->> +
->> +	/* Check if even number. */
->> +	if (div & 1)
->> +		div = (div / 2);
->> +	else
->> +		div = (div / 2) - 1;
-> 
-> Wouldn't this be the same as div = DIV_ROUND_UP(div, 2) - 1;
-> 
-> The entire div calculation could be done with:
-> 
->    /* Register programmed with divider minus 1 */
->    div = DIV_ROUND_UP(ref_clk_hz, s_clk_hz * 2) - 1;
-
-Good point, thanks.
-
->    if (div > 15)
->         div = 15;
-
-You can even drop this, CQSPI_REG_CONFIG_BAUD_MASK is 0xf.
-
-> 
->> +
->> +	div = (div & CQSPI_REG_CONFIG_BAUD_MASK) << CQSPI_REG_CONFIG_BAUD_LSB;
->> +	reg |= div;
->> +	writel(reg, reg_base + CQSPI_REG_CONFIG);
->> +}
->> +
-> 
-
-I pushed V12 btw:
-
-http://git.kernel.org/cgit/linux/kernel/git/marex/linux-2.6.git/log/?h=korg/next/cadence-qspi-v12
-
-
--- 
-Best regards,
-Marek Vasut
+Brian
