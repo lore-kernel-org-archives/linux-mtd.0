@@ -1,8 +1,8 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6HJ0-0002Xi-7n
- for linux-mtd@lists.infradead.org; Fri, 27 May 2016 12:56:01 +0000
+ id 1b6HJ0-0002Xr-7q
+ for linux-mtd@lists.infradead.org; Fri, 27 May 2016 12:56:02 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>
 Cc: Hans de Goede <hdegoede@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 11/15] mtd: nand: move AMD/Spansion specific initialization in
- nand_amd.c
-Date: Fri, 27 May 2016 14:54:57 +0200
-Message-Id: <1464353701-23233-12-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 14/15] mtd: nand: hynix: rework NAND ID decoding to extract
+ more information
+Date: Fri, 27 May 2016 14:55:00 +0200
+Message-Id: <1464353701-23233-15-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,160 +25,275 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Moving AMD/Spansion specific initialization into nand_amd.c. This is part
-of the "separate vendor specific code from core" cleanup process.
+The current NAND ID detection in nand_hynix.c is not handling the
+different scheme used by Hynix, thus forcing developers to add new
+entries in the nand_ids table each time they want to support a new MLC
+NAND.
+
+Enhance the detection logic to handle all known formats. This does not
+necessarily mean we are handling all the cases, but if new formats are
+discovered, the code should evolve to take them into account instead of
+adding more full-id entries in the nand_ids table.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/Makefile    |  1 +
- drivers/mtd/nand/nand_amd.c  | 60 ++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/nand/nand_base.c | 19 +-------------
- drivers/mtd/nand/nand_ids.c  |  3 ++-
- 4 files changed, 64 insertions(+), 19 deletions(-)
- create mode 100644 drivers/mtd/nand/nand_amd.c
+ drivers/mtd/nand/nand_hynix.c | 226 +++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 202 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index f1bd008..19d0cb8 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
- obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
+diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hynix.c
+index 3a4e1a4..cad1d99 100644
+--- a/drivers/mtd/nand/nand_hynix.c
++++ b/drivers/mtd/nand/nand_hynix.c
+@@ -14,26 +14,47 @@
  
- nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
-+nand-objs += nand_amd.o
- nand-objs += nand_hynix.o
- nand-objs += nand_micron.o
- nand-objs += nand_samsung.o
-diff --git a/drivers/mtd/nand/nand_amd.c b/drivers/mtd/nand/nand_amd.c
-new file mode 100644
-index 0000000..8bb69aa
---- /dev/null
-+++ b/drivers/mtd/nand/nand_amd.c
-@@ -0,0 +1,60 @@
-+/*
-+ * Copyright (C) 2013 Boris Brezillon <boris.brezillon@free-electrons.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
+ #include <linux/mtd/nand.h>
+ 
+-static int hynix_nand_decode_id(struct nand_chip *chip)
++static bool hynix_nand_has_valid_jedecid(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	u8 jedecid[6] = { };
++	int i = 0;
+ 
+-	/*
+-	 * The NAND is compatible with the JEDEC or ONFI standard, we already
+-	 * have all the information we could retrieve from the extended ID.
+-	 */
+-	if (chip->onfi_version || chip->jedec_version)
+-		return 0;
++	chip->cmdfunc(mtd, NAND_CMD_READID, 0x40, -1);
++	for (i = 0; i < 5; i++)
++		jedecid[i] = chip->read_byte(mtd);
 +
-+#include <linux/mtd/nand.h>
-+
-+static int amd_nand_decode_id(struct nand_chip *chip)
++	return !strcmp("JEDEC", jedecid);
++}
+ 
+-	/* Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22) */
+-	if (chip->id.len == 6 && !nand_is_slc(chip)) {
+-		u8 tmp, extid = chip->id.data[3] >> 2;
++static int hynix_nand_extract_oobsize(struct nand_chip *chip,
++				      bool valid_jedecid)
 +{
 +	struct mtd_info *mtd = nand_to_mtd(chip);
-+
-+	/*
-+	 * The NAND is compatible with the JEDEC or ONFI standard, we already
-+	 * have all the information we could retrieve from the NAND ID.
-+	 */
-+	if (chip->onfi_version || chip->jedec_version)
-+		return 0;
-+
-+	/*
-+	 * Check for Spansion/AMD ID + repeating 5th, 6th byte since
-+	 * some Spansion chips have erasesize that conflicts with size
-+	 * listed in nand_ids table.
-+	 * Data sheet (5 byte ID): Spansion S30ML-P ORNAND (p.39)
-+	 */
-+	 if (chip->id.data[4] != 0x00 && chip->id.data[5] == 0x00 &&
-+	     chip->id.data[6] == 0x00 && chip->id.data[7] == 0x00 &&
-+	     mtd->writesize == 512) {
-+		mtd->erasesize = 128 * 1024;
-+		mtd->erasesize <<= ((chip->id.data[3] & 0x03) << 1);
++	u8 oobsize;
+ 
+-		/* Adjust pagesize */
+-		mtd->writesize <<= 1;
++	oobsize = ((chip->id.data[3] >> 2) & 0x3) |
++		  ((chip->id.data[3] >> 4) & 0x4);
+ 
+-		/* Fix oobsize */
+-		switch (((extid >> 2) & 0x4) | (extid & 0x3)) {
++	if (valid_jedecid) {
++		switch (oobsize) {
++		case 0:
++			mtd->oobsize = 2048;
++			break;
++		case 1:
++			mtd->oobsize = 1664;
++			break;
++		case 2:
++			mtd->oobsize = 1024;
++			break;
++		case 3:
++			mtd->oobsize = 640;
++			break;
++		default:
++			return -EINVAL;
++		}
++	} else {
++		switch (oobsize) {
+ 		case 0:
+ 			mtd->oobsize = 128;
+ 			break;
+@@ -52,21 +73,178 @@ static int hynix_nand_decode_id(struct nand_chip *chip)
+ 		case 5:
+ 			mtd->oobsize = 16;
+ 			break;
+-		default:
++		case 6:
+ 			mtd->oobsize = 640;
+ 			break;
++		default:
++			return -EINVAL;
++		}
 +	}
 +
 +	return 0;
 +}
 +
-+static int amd_nand_init(struct nand_chip *chip)
++static int hynix_nand_extract_ecc_requirements(struct nand_chip *chip,
++					       bool valid_jedecid)
 +{
-+	int ret;
++	u8 ecc_level = (chip->id.data[4] >> 4) & 0x7;
 +
-+	ret = amd_nand_decode_id(chip);
-+	if (ret)
-+		return ret;
++	if (valid_jedecid) {
++		/* Reference: H27UCG8T2E datasheet */
++		chip->ecc_step_ds = 1024;
 +
-+	if (nand_is_slc(chip))
-+		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
++		switch (ecc_level) {
++		case 0:
++			chip->ecc_step_ds = 0;
++			chip->ecc_strength_ds = 0;
++			break;
++		case 1:
++			chip->ecc_strength_ds = 4;
++			break;
++		case 2:
++			chip->ecc_strength_ds = 24;
++			break;
++		case 3:
++			chip->ecc_strength_ds = 32;
++			break;
++		case 4:
++			chip->ecc_strength_ds = 40;
++			break;
++		case 5:
++			chip->ecc_strength_ds = 50;
++			break;
++		case 6:
++			chip->ecc_strength_ds = 60;
++			break;
++		default:
++			return -EINVAL;
++		}
++	} else {
++		/*
++		 * The ECC requirements field meaning depends on the
++		 * NAND technology.
++		 */
++		u8 nand_tech = chip->id.data[5] & 0x3;
++
++		if (nand_tech < 3) {
++			/* > 26nm, reference: H27UBG8T2A datasheet */
++			if (ecc_level < 5) {
++				chip->ecc_step_ds = 512;
++				chip->ecc_strength_ds = 1 << ecc_level;
++			} else if (ecc_level < 7) {
++				if (ecc_level == 5)
++					chip->ecc_step_ds = 2048;
++				else
++					chip->ecc_step_ds = 2048;
++				chip->ecc_strength_ds = 24;
++			} else {
++				return -EINVAL;
++			}
++		} else {
++			/* <= 26nm, reference: H27UBG8T2B datasheet */
++			if (!ecc_level) {
++				chip->ecc_step_ds = 0;
++				chip->ecc_strength_ds = 0;
++			} else if (ecc_level < 5) {
++				chip->ecc_step_ds = 512;
++				chip->ecc_strength_ds = 1 << (ecc_level - 1);
++			} else {
++				chip->ecc_step_ds = 1024;
++				chip->ecc_strength_ds = 24 +
++							(8 * (ecc_level - 5));
++			}
+ 		}
++	}
 +
 +	return 0;
 +}
 +
-+const struct nand_manufacturer_ops amd_nand_manuf_ops = {
-+	.init = amd_nand_init,
-+};
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 662d4c5..cde99b0 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3585,8 +3585,6 @@ static void nand_decode_ext_id(struct nand_chip *chip)
- static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
--	u8 *id_data = chip->id.data;
--	int maf_id = id_data[0];
++static void hynix_nand_extract_scrambling_requirements(struct nand_chip *chip,
++						       bool valid_jedecid)
++{
++	u8 nand_tech;
++
++	/* We need scrambling on all TLC NANDs*/
++	if (chip->bits_per_cell > 2)
++		chip->options |= NAND_NEED_SCRAMBLING;
++
++	/* And on MLC NANDs with sub-3xnm process */
++	if (valid_jedecid) {
++		nand_tech = chip->id.data[5] >> 4;
++
++		/* < 3xnm */
++		if (nand_tech > 0)
++			chip->options |= NAND_NEED_SCRAMBLING;
++	} else {
++		nand_tech = chip->id.data[5] & 0x3;
  
- 	mtd->erasesize = type->erasesize;
- 	mtd->writesize = type->pagesize;
-@@ -3594,19 +3592,6 @@ static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type)
+-		/* Fix blocksize */
+-		extid >>= 2;
+-		tmp = ((extid >> 1) & 0x04) | (extid & 0x03);
+-		if (tmp < 0x03)
+-			mtd->erasesize = (128 * 1024) << tmp;
+-		else if (tmp == 0x03)
+-			mtd->erasesize = 768 * 1024;
+-		else
+-			mtd->erasesize = (64 * 1024) << tmp;
++		/* < 32nm */
++		if (nand_tech > 2)
++			chip->options |= NAND_NEED_SCRAMBLING;
+ 	}
++}
++
++static int hynix_nand_decode_id(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	bool valid_jedecid;
++	int ret;
++	u8 tmp;
++
++	/*
++	 * The NAND is compatible with the JEDEC or ONFI standard, we already
++	 * have all the information we could retrieve from the extended ID.
++	 */
++	if (chip->onfi_version || chip->jedec_version)
++		return 0;
++
++	/*
++	 * Exclude all SLC NANDs from this advanced detection scheme.
++	 * According to the ranges defined in several datasheets, it might
++	 * appear that even SLC NANDs could fall in this extended ID scheme.
++	 * If that the case rework the test to let SLC NANDs go through the
++	 * detection process.
++	 */
++	if (chip->id.len < 6 || nand_is_slc(chip))
++		return 0;
++
++	/*
++	 * Adjust pagesize. On MLC NANDs, we start at 128KiB not 64KiB,
++	 * a simple left shift does the trick.
++	 */
++	mtd->writesize <<= 1;
++
++	tmp = (chip->id.data[3] >> 4) & 0x3;
++	/*
++	 * When bit7 is set that means we start counting at 1MiB, otherwise
++	 * we start counting at 128KiB and shift this value the content of
++	 * ID[3][4:5].
++	 * The only exception is when ID[3][4:5] == 3 and ID[3][7] == 0, in
++	 * this case the erasesize is set to 768KiB.
++	 */
++	if (chip->id.data[3] & 0x80)
++		mtd->erasesize = SZ_1M << tmp;
++	else if (tmp == 3)
++		mtd->erasesize = SZ_512K + SZ_256K;
++	else
++		mtd->erasesize = SZ_128K << tmp;
++
++	/*
++	 * Modern Toggle DDR NANDs have a valid JEDECID even though they are
++	 * not exposing a valid JEDEC parameter table.
++	 * These NANDs use a different NAND ID scheme.
++	 */
++	valid_jedecid = hynix_nand_has_valid_jedecid(chip);
++
++	ret = hynix_nand_extract_oobsize(chip, valid_jedecid);
++	if (ret)
++		return ret;
++
++	ret = hynix_nand_extract_ecc_requirements(chip, valid_jedecid);
++	if (ret)
++		return ret;
++
++	hynix_nand_extract_scrambling_requirements(chip, valid_jedecid);
  
- 	/* All legacy ID NAND are small-page, SLC */
- 	chip->bits_per_cell = 1;
--
--	/*
--	 * Check for Spansion/AMD ID + repeating 5th, 6th byte since
--	 * some Spansion chips have erasesize that conflicts with size
--	 * listed in nand_ids table.
--	 * Data sheet (5 byte ID): Spansion S30ML-P ORNAND (p.39)
--	 */
--	if (maf_id == NAND_MFR_AMD && id_data[4] != 0x00 && id_data[5] == 0x00
--			&& id_data[6] == 0x00 && id_data[7] == 0x00
--			&& mtd->writesize == 512) {
--		mtd->erasesize = 128 * 1024;
--		mtd->erasesize <<= ((id_data[3] & 0x03) << 1);
--	}
+ 	return 0;
  }
- 
- /*
-@@ -3632,9 +3617,7 @@ static void nand_decode_bbm_options(struct nand_chip *chip)
- 	 * Micron devices with 2KiB pages and on SLC Samsung, Hynix, Toshiba,
- 	 * AMD/Spansion, and Macronix.  All others scan only the first page.
- 	 */
--	if ((nand_is_slc(chip) &&
--				(maf_id == NAND_MFR_AMD ||
--				 maf_id == NAND_MFR_MACRONIX)))
-+	if (nand_is_slc(chip) && maf_id == NAND_MFR_MACRONIX)
- 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
- }
- 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 5d02787..299b2b1 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -170,6 +170,7 @@ extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
- extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
- extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
- extern const struct nand_manufacturer_ops micron_nand_manuf_ops;
-+extern const struct nand_manufacturer_ops amd_nand_manuf_ops;
- 
- struct nand_manufacturers nand_manuf_ids[] = {
- 	{NAND_MFR_TOSHIBA, "Toshiba", &toshiba_nand_manuf_ops},
-@@ -180,7 +181,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
- 	{NAND_MFR_STMICRO, "ST Micro"},
- 	{NAND_MFR_HYNIX, "Hynix", &hynix_nand_manuf_ops},
- 	{NAND_MFR_MICRON, "Micron", &micron_nand_manuf_ops},
--	{NAND_MFR_AMD, "AMD/Spansion"},
-+	{NAND_MFR_AMD, "AMD/Spansion", &amd_nand_manuf_ops},
- 	{NAND_MFR_MACRONIX, "Macronix"},
- 	{NAND_MFR_EON, "Eon"},
- 	{NAND_MFR_SANDISK, "SanDisk"},
 -- 
 2.7.4
