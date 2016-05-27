@@ -1,19 +1,21 @@
-Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6C3q-00042U-DF
- for linux-mtd@lists.infradead.org; Fri, 27 May 2016 07:19:58 +0000
-Received: by mail-oi0-x22b.google.com with SMTP id w184so154443618oiw.2
- for <linux-mtd@lists.infradead.org>; Fri, 27 May 2016 00:19:37 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <046201d1b7b0$5f15b400$1d411c00$@rogers.com>
-References: <046201d1b7b0$5f15b400$1d411c00$@rogers.com>
-Date: Fri, 27 May 2016 09:19:37 +0200
-Message-ID: <CAFLxGvwpDYOk_hyo4vo3YH=OP8TKes_PO94FG9UaJkpTx0o_CQ@mail.gmail.com>
-Subject: Re: Looking for an alternative to ubimirror
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: PJ <paul.j2@rogers.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b6HIe-0002V4-Ic
+ for linux-mtd@lists.infradead.org; Fri, 27 May 2016 12:55:37 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 04/15] mtd: nand: rename nand_get_flash_type() into
+ nand_detect()
+Date: Fri, 27 May 2016 14:54:50 +0200
+Message-Id: <1464353701-23233-5-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +25,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 27, 2016 at 2:40 AM, PJ <paul.j2@rogers.com> wrote:
-> Hi,
->
-> Can anyone please recommend a procedure to copy one UBI volume to another?
->
-> I'd like to execute from the bash command line, if possible.
->
-> One upon a time I was able to use ubimirror, however that command appears to
-> have been removed from mtd-utils.
->
-> - The source volume will be mounted R/O as it is the rootfs.
-> - The destination volume will be unrestricted (unmounted).
-> - Both the source and destination volumes are in the same device.
+The only caller of nand_get_flash_type() (nand_scan_ident()) actually
+don't use the returned nand_flash_dev pointer except for converting it to
+to an error code.
+Rename this function nand_detect() and make it return an integer.
 
-Did you try dd if=/dev/ubiX_Y ... | ubiupdatevol ...?
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 1e865c0..95e9a8e 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3811,8 +3811,7 @@ static bool find_full_id_nand(struct nand_chip *chip,
+ /*
+  * Get the flash and manufacturer id and lookup if the type is supported.
+  */
+-static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+-						  struct nand_flash_dev *type)
++static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int busw;
+@@ -3852,7 +3851,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+ 	if (id_data[0] != maf_id || id_data[1] != dev_id) {
+ 		pr_info("second ID read did not match %02x,%02x against %02x,%02x\n",
+ 			maf_id, dev_id, id_data[0], id_data[1]);
+-		return ERR_PTR(-ENODEV);
++		return -ENODEV;
+ 	}
+ 
+ 	chip->id.len = nand_id_len(id_data, 8);
+@@ -3896,7 +3895,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+ 	}
+ 
+ 	if (!type->name)
+-		return ERR_PTR(-ENODEV);
++		return -ENODEV;
+ 
+ 	if (!mtd->name)
+ 		mtd->name = type->name;
+@@ -3939,7 +3938,7 @@ ident_done:
+ 		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
+ 		pr_warn("bus width %d instead %d bit\n", busw ? 16 : 8,
+ 			(chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
+-		return ERR_PTR(-EINVAL);
++		return -EINVAL;
+ 	}
+ 
+ 	nand_decode_bbm_options(chip);
+@@ -3981,7 +3980,7 @@ ident_done:
+ 	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
+ 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+ 		mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
+-	return type;
++	return 0;
+ }
+ 
+ static const char * const nand_ecc_modes[] = {
+@@ -4139,7 +4138,6 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ {
+ 	int i, nand_maf_id, nand_dev_id;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	struct nand_flash_dev *type;
+ 	int ret;
+ 
+ 	ret = nand_dt_init(chip);
+@@ -4153,13 +4151,12 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	nand_set_defaults(chip);
+ 
+ 	/* Read the flash type */
+-	type = nand_get_flash_type(chip, table);
+-
+-	if (IS_ERR(type)) {
++	ret = nand_detect(chip, table);
++	if (ret) {
+ 		if (!(chip->options & NAND_SCAN_SILENT_NODEV))
+ 			pr_warn("No NAND device found\n");
+ 		chip->select_chip(mtd, -1);
+-		return PTR_ERR(type);
++		return ret;
+ 	}
+ 
+ 	nand_maf_id = chip->id.data[0];
 -- 
-Thanks,
-//richard
+2.7.4
