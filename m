@@ -1,7 +1,7 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6HJ0-0002XP-7u
+ id 1b6HJ1-0002Xs-G4
  for linux-mtd@lists.infradead.org; Fri, 27 May 2016 12:56:04 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>
 Cc: Hans de Goede <hdegoede@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 08/15] mtd: nand: move hynix specific initialization in
- nand_hynix.c
-Date: Fri, 27 May 2016 14:54:54 +0200
-Message-Id: <1464353701-23233-9-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 15/15] mtd: nand: hynix: add read-retry support for 1x nm MLC
+ NANDs
+Date: Fri, 27 May 2016 14:55:01 +0200
+Message-Id: <1464353701-23233-16-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,274 +25,407 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Moving Hynix specific initialization into nand_hynix.c. This is part
-of the "separate vendor specific code from core" cleanup process.
+All Hynix MLC NANDs using the produced with the 1X nm process support
+read-retry.
+This read retry implementation should also be reusable for other Hynix
+NANDs, but the method to retrieve the read-retry parameters from the
+read-retry OTP area might change a bit (some NANDs are even using a fixed
+set of values instead of retrieving those information from the OTP area).
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/Makefile     |   1 +
- drivers/mtd/nand/nand_base.c  | 108 ++++++++++--------------------------------
- drivers/mtd/nand/nand_hynix.c |  92 +++++++++++++++++++++++++++++++++++
- drivers/mtd/nand/nand_ids.c   |   3 +-
- 4 files changed, 121 insertions(+), 83 deletions(-)
- create mode 100644 drivers/mtd/nand/nand_hynix.c
+ drivers/mtd/nand/nand_hynix.c | 357 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 355 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 55a55d3..d79338f 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -58,4 +58,5 @@ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
- obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
- 
- nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
-+nand-objs += nand_hynix.o
- nand-objs += nand_samsung.o
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index dda350a..ce0ea01 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3590,85 +3590,32 @@ static void nand_decode_ext_id(struct nand_chip *chip)
- 	/* The 4th id byte is the important one */
- 	extid = id_data[3];
- 
-+	/* Calc pagesize */
-+	mtd->writesize = 1024 << (extid & 0x03);
-+	extid >>= 2;
-+	/* Calc oobsize */
-+	mtd->oobsize = (8 << (extid & 0x01)) * (mtd->writesize >> 9);
-+	extid >>= 2;
-+	/* Calc blocksize. Blocksize is multiples of 64KiB */
-+	mtd->erasesize = (64 * 1024) << (extid & 0x03);
-+	extid >>= 2;
-+	/* Get buswidth information */
-+	if (extid & 0x1)
-+		chip->options |= NAND_BUSWIDTH_16;
-+
- 	/*
--	 * Field definitions are in the following datasheets:
--	 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
--	 * Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22)
--	 *
--	 * Check for ID length, non-zero 6th byte, cell type, and Hynix/Samsung
--	 * ID to decide what to do.
-+	 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
-+	 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
-+	 * follows:
-+	 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
-+	 *                         110b -> 24nm
-+	 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
- 	 */
--	if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
--	    !nand_is_slc(chip)) {
--		unsigned int tmp;
--
--		/* Calc pagesize */
--		mtd->writesize = 2048 << (extid & 0x03);
--		extid >>= 2;
--		/* Calc oobsize */
--		switch (((extid >> 2) & 0x04) | (extid & 0x03)) {
--		case 0:
--			mtd->oobsize = 128;
--			break;
--		case 1:
--			mtd->oobsize = 224;
--			break;
--		case 2:
--			mtd->oobsize = 448;
--			break;
--		case 3:
--			mtd->oobsize = 64;
--			break;
--		case 4:
--			mtd->oobsize = 32;
--			break;
--		case 5:
--			mtd->oobsize = 16;
--			break;
--		default:
--			mtd->oobsize = 640;
--			break;
--		}
--		extid >>= 2;
--		/* Calc blocksize */
--		tmp = ((extid >> 1) & 0x04) | (extid & 0x03);
--		if (tmp < 0x03)
--			mtd->erasesize = (128 * 1024) << tmp;
--		else if (tmp == 0x03)
--			mtd->erasesize = 768 * 1024;
--		else
--			mtd->erasesize = (64 * 1024) << tmp;
--	} else {
--		/* Calc pagesize */
--		mtd->writesize = 1024 << (extid & 0x03);
--		extid >>= 2;
--		/* Calc oobsize */
--		mtd->oobsize = (8 << (extid & 0x01)) *
--			(mtd->writesize >> 9);
--		extid >>= 2;
--		/* Calc blocksize. Blocksize is multiples of 64KiB */
--		mtd->erasesize = (64 * 1024) << (extid & 0x03);
--		extid >>= 2;
--		/* Get buswidth information */
--		if (extid & 0x1)
--			chip->options |= NAND_BUSWIDTH_16;
--
--		/*
--		 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
--		 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
--		 * follows:
--		 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
--		 *                         110b -> 24nm
--		 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
--		 */
--		if (id_len >= 6 && id_data[0] == NAND_MFR_TOSHIBA &&
--				nand_is_slc(chip) &&
--				(id_data[5] & 0x7) == 0x6 /* 24nm */ &&
--				!(id_data[4] & 0x80) /* !BENAND */) {
--			mtd->oobsize = 32 * mtd->writesize >> 9;
--		}
--
--	}
-+	if (id_len >= 6 && id_data[0] == NAND_MFR_TOSHIBA &&
-+	    nand_is_slc(chip) &&
-+	    (id_data[5] & 0x7) == 0x6 /* 24nm */ &&
-+	     !(id_data[4] & 0x80) /* !BENAND */)
-+		mtd->oobsize = 32 * mtd->writesize >> 9;
- }
- 
- /*
-@@ -3726,11 +3673,8 @@ static void nand_decode_bbm_options(struct nand_chip *chip)
- 	 * Micron devices with 2KiB pages and on SLC Samsung, Hynix, Toshiba,
- 	 * AMD/Spansion, and Macronix.  All others scan only the first page.
- 	 */
--	if (!nand_is_slc(chip) && maf_id == NAND_MFR_HYNIX)
--		chip->bbt_options |= NAND_BBT_SCANLASTPAGE;
--	else if ((nand_is_slc(chip) &&
--				(maf_id == NAND_MFR_HYNIX ||
--				 maf_id == NAND_MFR_TOSHIBA ||
-+	if ((nand_is_slc(chip) &&
-+				(maf_id == NAND_MFR_TOSHIBA ||
- 				 maf_id == NAND_MFR_AMD ||
- 				 maf_id == NAND_MFR_MACRONIX)) ||
- 			(mtd->writesize == 2048 &&
 diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hynix.c
-new file mode 100644
-index 0000000..3a4e1a4
---- /dev/null
+index cad1d99..a66d894 100644
+--- a/drivers/mtd/nand/nand_hynix.c
 +++ b/drivers/mtd/nand/nand_hynix.c
-@@ -0,0 +1,92 @@
-+/*
-+ * Copyright (C) 2013 Boris Brezillon <boris.brezillon@free-electrons.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
+@@ -13,6 +13,336 @@
+  */
+ 
+ #include <linux/mtd/nand.h>
++#include <linux/slab.h>
++
++#define NAND_HYNIX_CMD_SET_PARAMS	0x36
++#define NAND_HYNIX_CMD_APPLY_PARAMS	0x16
++
++#define NAND_HYNIX_1XNM_RR_REPEAT	8
++
++/**
++ * struct hynix_read_retry - read-retry data
++ * @nregs: number of register to set when applying a new read-retry mode
++ * @regs: register offsets (NAND chip dependent)
++ * @values: array of values to set in registers. The array size is equal to
++ *	    (nregs * nmodes)
 + */
++struct hynix_read_retry {
++	int nregs;
++	const u8 *regs;
++	u8 values[0];
++};
 +
-+#include <linux/mtd/nand.h>
++/**
++ * struct hynix_nand - private Hynix NAND struct
++ * @nand_technology: manufacturing process expressed in picometer
++ * @read_retry: read-retry information
++ */
++struct hynix_nand {
++	const struct hynix_read_retry *read_retry;
++};
 +
-+static int hynix_nand_decode_id(struct nand_chip *chip)
++/**
++ * struct hynix_read_retry_otp - structure describing how the read-retry OTP
++ *				 area
++ * @nregs: number of hynix private registers to set before reading the reading
++ *	   the OTP area
++ * @regs: registers that should be configured
++ * @values: values that should be set in regs
++ * @page: the address to pass to the READ_PAGE command. Depends on the NAND
++ *	  chip
++ * @size: size of the read-retry OTP section
++ */
++struct hynix_read_retry_otp {
++	int nregs;
++	const u8 *regs;
++	const u8 *values;
++	int page;
++	int size;
++};
++
++static int hynix_nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
 +{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct hynix_nand *hynix = nand_get_manufacturer_data(chip);
++	const u8 *values;
++	int status;
++	int i;
++
++	values = hynix->read_retry->values +
++		 (retry_mode * hynix->read_retry->nregs);
++
++	/* Enter 'Set Hynix Parameters' mode */
++	chip->cmdfunc(mtd, NAND_HYNIX_CMD_SET_PARAMS, -1, -1);
 +
 +	/*
-+	 * The NAND is compatible with the JEDEC or ONFI standard, we already
-+	 * have all the information we could retrieve from the extended ID.
++	 * Configure the NAND in the requested read-retry mode.
++	 * This is done by setting pre-defined values in internal NAND
++	 * registers.
++	 *
++	 * The set of registers is NAND specific, and the values are either
++	 * predefined or extracted from an OTP area on the NAND (values are
++	 * probably tweaked at production in this case).
 +	 */
-+	if (chip->onfi_version || chip->jedec_version)
-+		return 0;
++	for (i = 0; i < hynix->read_retry->nregs; i++) {
++		int column = hynix->read_retry->regs[i];
 +
-+	/* Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22) */
-+	if (chip->id.len == 6 && !nand_is_slc(chip)) {
-+		u8 tmp, extid = chip->id.data[3] >> 2;
-+
-+		/* Adjust pagesize */
-+		mtd->writesize <<= 1;
-+
-+		/* Fix oobsize */
-+		switch (((extid >> 2) & 0x4) | (extid & 0x3)) {
-+		case 0:
-+			mtd->oobsize = 128;
-+			break;
-+		case 1:
-+			mtd->oobsize = 224;
-+			break;
-+		case 2:
-+			mtd->oobsize = 448;
-+			break;
-+		case 3:
-+			mtd->oobsize = 64;
-+			break;
-+		case 4:
-+			mtd->oobsize = 32;
-+			break;
-+		case 5:
-+			mtd->oobsize = 16;
-+			break;
-+		default:
-+			mtd->oobsize = 640;
-+			break;
-+		}
-+
-+		/* Fix blocksize */
-+		extid >>= 2;
-+		tmp = ((extid >> 1) & 0x04) | (extid & 0x03);
-+		if (tmp < 0x03)
-+			mtd->erasesize = (128 * 1024) << tmp;
-+		else if (tmp == 0x03)
-+			mtd->erasesize = 768 * 1024;
-+		else
-+			mtd->erasesize = (64 * 1024) << tmp;
++		column |= column << 8;
++		chip->cmdfunc(mtd, NAND_CMD_NONE, column, -1);
++		chip->write_byte(mtd, values[i]);
 +	}
++
++	/* Apply the new settings. */
++	chip->cmdfunc(mtd, NAND_HYNIX_CMD_APPLY_PARAMS, -1, -1);
++
++	status = chip->waitfunc(mtd, chip);
++	if (status & NAND_STATUS_FAIL)
++		return -EIO;
 +
 +	return 0;
 +}
 +
-+static int hynix_nand_init(struct nand_chip *chip)
++/**
++ * hynix_get_majority - get the value that is occurring the most in a given
++ *			set of values
++ * @in: the array of values to test
++ * @repeat: the size of the in array
++ * @out: pointer used to store the output value
++ *
++ * This function implements the 'majority check' logic that is supposed to
++ * overcome the unreliability of MLC NANDs when reading the OTP area storing
++ * the read-retry parameters.
++ *
++ * It's based on a pretty simple assumption: if we repeat the same value
++ * several times and then take the one that is occurring the most, we should
++ * find the correct value.
++ * Let's hope this dummy algorithm prevents us from losing the read-retry
++ * parameters.
++ */
++static int hynix_get_majority(const u8 *in, int repeat, u8 *out)
 +{
-+	int ret;
++	int i, j, half = repeat / 2;
 +
-+	ret = hynix_nand_decode_id(chip);
++	/*
++	 * We only test the first half of the in array because we must ensure
++	 * that the value is at least occurring repeat / 2 times.
++	 *
++	 * This loop is suboptimal since we may count the occurrences of the
++	 * same value several time, but we are doing that on small sets, which
++	 * makes it acceptable.
++	 */
++	for (i = 0; i < half; i++) {
++		int cnt = 0;
++		u8 val = in[i];
++
++		/* Count all values that are matching the one at index i. */
++		for (j = i + 1; j < repeat; j++) {
++			if (in[j] == val)
++				cnt++;
++		}
++
++		/* We found a value occurring more than repeat / 2. */
++		if (cnt > half) {
++			*out = val;
++			return 0;
++		}
++	}
++
++	return -EIO;
++}
++
++static int hynix_read_rr_otp(struct nand_chip *chip,
++			     const struct hynix_read_retry_otp *info,
++			     void *buf)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	int i;
++
++	chip->select_chip(mtd, 0);
++	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
++
++	chip->cmdfunc(mtd, NAND_HYNIX_CMD_SET_PARAMS, -1, -1);
++
++	for (i = 0; i < info->nregs; i++) {
++		int column = info->regs[i];
++
++		column |= column << 8;
++		chip->cmdfunc(mtd, NAND_CMD_NONE, column, -1);
++		chip->write_byte(mtd, info->values[i]);
++	}
++
++	chip->cmdfunc(mtd, NAND_HYNIX_CMD_APPLY_PARAMS, -1, -1);
++
++	/* Sequence to enter OTP mode? */
++	chip->cmdfunc(mtd, 0x17, -1, -1);
++	chip->cmdfunc(mtd, 0x04, -1, -1);
++	chip->cmdfunc(mtd, 0x19, -1, -1);
++
++	/* Now read the page */
++	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x0, info->page);
++	chip->read_buf(mtd, buf, info->size);
++
++	/* Put everything back to normal */
++	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
++	chip->cmdfunc(mtd, NAND_HYNIX_CMD_SET_PARAMS, 0x38, -1);
++	chip->write_byte(mtd, 0x0);
++	chip->cmdfunc(mtd, NAND_HYNIX_CMD_APPLY_PARAMS, -1, -1);
++	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x0, -1);
++	chip->select_chip(mtd, -1);
++
++	return 0;
++}
++
++#define NAND_HYNIX_1XNM_RR_COUNT_OFFS				0
++#define NAND_HYNIX_1XNM_RR_REG_COUNT_OFFS			8
++#define NAND_HYNIX_1XNM_RR_SET_OFFS(x, setsize, inv)		\
++	(16 + ((((x) * 2) + ((inv) ? 1 : 0)) * (setsize)))
++
++static int hynix_mlc_1xnm_rr_value(const u8 *buf, int nmodes, int nregs,
++				   int mode, int reg, bool inv, u8 *val)
++{
++	u8 tmp[NAND_HYNIX_1XNM_RR_REPEAT];
++	int val_offs = (mode * nregs) + reg;
++	int set_size = nmodes * nregs;
++	int i, ret;
++
++	for (i = 0; i < NAND_HYNIX_1XNM_RR_REPEAT; i++) {
++		int set_offs = NAND_HYNIX_1XNM_RR_SET_OFFS(i, set_size, inv);
++
++		tmp[i] = buf[val_offs + set_offs];
++	}
++
++
++	ret = hynix_get_majority(tmp, NAND_HYNIX_1XNM_RR_REPEAT, val);
 +	if (ret)
 +		return ret;
 +
-+	if (!nand_is_slc(chip))
-+		chip->bbt_options |= NAND_BBT_SCANLASTPAGE;
-+	else
-+		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
++	if (inv)
++		*val = ~*val;
 +
 +	return 0;
 +}
 +
-+const struct nand_manufacturer_ops hynix_nand_manuf_ops = {
-+	.init = hynix_nand_init,
++static u8 hynix_1xnm_mlc_read_retry_regs[] = {
++	0xcc, 0xbf, 0xaa, 0xab, 0xcd, 0xad, 0xae, 0xaf
 +};
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 5d2bef5..7bf93b8 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -167,6 +167,7 @@ struct nand_flash_dev nand_flash_ids[] = {
++
++static int hynix_mlc_1xnm_rr_init(struct nand_chip *chip,
++				  const struct hynix_read_retry_otp *info)
++{
++	struct hynix_nand *hynix = nand_get_manufacturer_data(chip);
++	struct hynix_read_retry *rr = NULL;
++	int ret, i, j;
++	u8 nregs, nmodes;
++	u8 *buf;
++
++	buf = kmalloc(info->size, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	ret = hynix_read_rr_otp(chip, info, buf);
++	if (ret)
++		goto out;
++
++	ret = hynix_get_majority(buf, NAND_HYNIX_1XNM_RR_REPEAT,
++				 &nmodes);
++	if (ret)
++		goto out;
++
++	ret = hynix_get_majority(buf + NAND_HYNIX_1XNM_RR_REPEAT,
++				 NAND_HYNIX_1XNM_RR_REPEAT,
++				 &nregs);
++	if (ret)
++		goto out;
++
++	rr = kzalloc(sizeof(*rr) + (nregs * nmodes), GFP_KERNEL);
++	if (!rr)
++		goto out;
++
++	for (i = 0; i < nmodes; i++) {
++		for (j = 0; j < nregs; j++) {
++			u8 *val = rr->values + (i * nregs);
++
++			ret = hynix_mlc_1xnm_rr_value(buf, nmodes, nregs, i, j,
++						      false, val);
++			if (!ret)
++				continue;
++
++			ret = hynix_mlc_1xnm_rr_value(buf, nmodes, nregs, i, j,
++						      true, val);
++			if (ret)
++				goto out;
++		}
++	}
++
++	rr->nregs = nregs;
++	rr->regs = hynix_1xnm_mlc_read_retry_regs;
++	hynix->read_retry = rr;
++	chip->setup_read_retry = hynix_nand_setup_read_retry;
++	chip->read_retries = nmodes;
++
++out:
++	kfree(buf);
++
++	if (ret)
++		kfree(rr);
++
++	return ret;
++}
++
++static const u8 hynix_mlc_1xnm_rr_otp_regs[] = { 0x38 };
++static const u8 hynix_mlc_1xnm_rr_otp_values[] = { 0x52 };
++
++static const struct hynix_read_retry_otp hynix_mlc_1xnm_rr_otps[] = {
++	{
++		.nregs = ARRAY_SIZE(hynix_mlc_1xnm_rr_otp_regs),
++		.regs = hynix_mlc_1xnm_rr_otp_regs,
++		.values = hynix_mlc_1xnm_rr_otp_values,
++		.page = 0x21f,
++		.size = 784
++	},
++	{
++		.nregs = ARRAY_SIZE(hynix_mlc_1xnm_rr_otp_regs),
++		.regs = hynix_mlc_1xnm_rr_otp_regs,
++		.values = hynix_mlc_1xnm_rr_otp_values,
++		.page = 0x200,
++		.size = 528,
++	},
++};
++
++static int hynix_nand_rr_init(struct nand_chip *chip, bool valid_jedecid)
++{
++	int i, ret = 0;
++
++	/*
++	 * We only support read-retry for 1xnm NANDs, and those NANDs all
++	 * expose a valid JEDEC ID.
++	 */
++	if (valid_jedecid) {
++		u8 nand_tech = chip->id.data[5] >> 4;
++
++		/* 1xnm technology */
++		if (nand_tech == 4) {
++			for (i = 0; i < ARRAY_SIZE(hynix_mlc_1xnm_rr_otps);
++			     i++) {
++
++				/*
++				 * FIXME: Hynix recommend to copy the
++				 * read-retry OTP area into a normal page.
++				 */
++				ret = hynix_mlc_1xnm_rr_init(chip,
++						hynix_mlc_1xnm_rr_otps);
++				if (!ret)
++					break;
++			}
++		}
++	}
++
++	if (ret)
++		pr_warn("failed to initialize read-retry infrastructure");
++
++	return 0;
++}
  
- /* Manufacturer IDs */
- extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
-+extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
+ static bool hynix_nand_has_valid_jedecid(struct nand_chip *chip)
+ {
+@@ -246,16 +576,34 @@ static int hynix_nand_decode_id(struct nand_chip *chip)
  
- struct nand_manufacturers nand_manuf_ids[] = {
- 	{NAND_MFR_TOSHIBA, "Toshiba"},
-@@ -175,7 +176,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
- 	{NAND_MFR_NATIONAL, "National"},
- 	{NAND_MFR_RENESAS, "Renesas"},
- 	{NAND_MFR_STMICRO, "ST Micro"},
--	{NAND_MFR_HYNIX, "Hynix"},
-+	{NAND_MFR_HYNIX, "Hynix", &hynix_nand_manuf_ops},
- 	{NAND_MFR_MICRON, "Micron"},
- 	{NAND_MFR_AMD, "AMD/Spansion"},
- 	{NAND_MFR_MACRONIX, "Macronix"},
+ 	hynix_nand_extract_scrambling_requirements(chip, valid_jedecid);
+ 
+-	return 0;
++	return hynix_nand_rr_init(chip, valid_jedecid);
++}
++
++static void hynix_nand_cleanup(struct nand_chip *chip)
++{
++	struct hynix_nand *hynix = nand_get_manufacturer_data(chip);
++
++	if (!hynix)
++		return;
++
++	kfree(hynix->read_retry);
++	kfree(hynix);
+ }
+ 
+ static int hynix_nand_init(struct nand_chip *chip)
+ {
++	struct hynix_nand *hynix;
+ 	int ret;
+ 
++	hynix = kzalloc(sizeof(*hynix), GFP_KERNEL);
++	if (!hynix)
++		return -ENOMEM;
++
++	nand_set_manufacturer_data(chip, hynix);
++
+ 	ret = hynix_nand_decode_id(chip);
+ 	if (ret)
+-		return ret;
++		goto err;
+ 
+ 	if (!nand_is_slc(chip))
+ 		chip->bbt_options |= NAND_BBT_SCANLASTPAGE;
+@@ -263,6 +611,11 @@ static int hynix_nand_init(struct nand_chip *chip)
+ 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+ 
+ 	return 0;
++
++err:
++	hynix_nand_cleanup(chip);
++
++	return ret;
+ }
+ 
+ const struct nand_manufacturer_ops hynix_nand_manuf_ops = {
 -- 
 2.7.4
