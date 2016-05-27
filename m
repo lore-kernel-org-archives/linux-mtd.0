@@ -1,31 +1,35 @@
-Received: from mail-pf0-x232.google.com ([2607:f8b0:400e:c00::232])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6Ofj-0004qv-KP
- for linux-mtd@lists.infradead.org; Fri, 27 May 2016 20:47:56 +0000
-Received: by mail-pf0-x232.google.com with SMTP id 62so662673pfd.1
- for <linux-mtd@lists.infradead.org>; Fri, 27 May 2016 13:47:35 -0700 (PDT)
-Date: Fri, 27 May 2016 13:47:31 -0700
+ id 1b6P4B-0005Rb-71
+ for linux-mtd@lists.infradead.org; Fri, 27 May 2016 21:13:11 +0000
+Received: by mail-pf0-x242.google.com with SMTP id c84so6773930pfc.1
+ for <linux-mtd@lists.infradead.org>; Fri, 27 May 2016 14:12:50 -0700 (PDT)
+Date: Fri, 27 May 2016 14:12:47 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Scott Branden <scott.branden@broadcom.com>, linux-spi@vger.kernel.org,
- Yendapally Reddy Dhananjaya Reddy <yendapally.reddy@broadcom.com>,
- Vikram Prakash <vikram.prakash@broadcom.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Jon Mason <jon.mason@broadcom.com>,
- Andy Fung <andy.fung@broadcom.com>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH V2, 3/4] arm: dts: Add bcm-nsp and bcm958625k support
-Message-ID: <20160527204731.GA121328@google.com>
-References: <1464380097-25125-1-git-send-email-kdasu.kdev@gmail.com>
- <1464380097-25125-3-git-send-email-kdasu.kdev@gmail.com>
- <5748ADDE.2090402@broadcom.com>
- <CAGVrzcZQMSVo4LvbqJ1jcx-f7M+psWQeHQfiRS3-L7JN+C_zuw@mail.gmail.com>
- <CAGVrzcYfNTZWDAK8tW-HaALYXJo5zPjiWOxsB0mntCVdjnUwUg@mail.gmail.com>
- <CAGVrzcbhoD1zDtvBXdm8DgzzXeP0MxAMtXduZMYv+BwpiwtgkQ@mail.gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Leo Li <pku.leo@gmail.com>, Yang-Leo Li <leoyang.li@nxp.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ Scott Wood <oss@buserror.net>, Raghav Dogra <raghav.dogra@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ Raghav Dogra <raghav@freescale.com>,
+ Jaiprakash Singh <b44839@freescale.com>
+Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
+Message-ID: <20160527211247.GA123214@google.com>
+References: <CADRPPNS1i1XgtpyiT_=rDuDXBDn=ehNY32=RKTC9hdKXhWWq8A@mail.gmail.com>
+ <1455840434.2463.97.camel@buserror.net>
+ <CADRPPNTauz=T9oWCeZy8G8s0vo9fmieRhn=Gd3jVqqJJEHV_ag@mail.gmail.com>
+ <20160406175254.GC5243@localhost>
+ <AM2PR04MB0770036256E58407BD045C5A8F9F0@AM2PR04MB0770.eurprd04.prod.outlook.com>
+ <20160408024507.69fb4fc1@bbrezillon>
+ <CADRPPNRXj_00GF-h_5yHtKPMU=U1C8PXQLZqEVzQvJZobmM7dg@mail.gmail.com>
+ <20160525223412.086e45e9@bbrezillon>
+ <CADRPPNSeQsOZZ9XRR4BOfZvewoB9RoEy0KzPrRzoDm21LtacnQ@mail.gmail.com>
+ <20160527224401.4b776ad4@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGVrzcbhoD1zDtvBXdm8DgzzXeP0MxAMtXduZMYv+BwpiwtgkQ@mail.gmail.com>
+In-Reply-To: <20160527224401.4b776ad4@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,83 +39,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Florian,
+Hi Leo,
 
-(HTML mail. What is this??)
+On Fri, May 27, 2016 at 10:44:01PM +0200, Boris Brezillon wrote:
+> On Fri, 27 May 2016 15:15:00 -0500
+> Leo Li <pku.leo@gmail.com> wrote:
+> > On Wed, May 25, 2016 at 3:34 PM, Boris Brezillon
+> > <boris.brezillon@free-electrons.com> wrote:
+> > > On Wed, 25 May 2016 14:18:43 -0500
+> > > Leo Li <pku.leo@gmail.com> wrote:
+> > >> It seems that the patch at https://patchwork.ozlabs.org/patch/557389/
+> > >> mentioned above was not in tree for 4.7.  Can you review and apply
+> > >> that patch too?  
+> > >
+> > > I see it in the PR Brian sent 2 days ago [1], so it should appear in
+> > > Linus tree soon.
+> > >
+> > > Regards,
+> > >
+> > > Boris
+> > >
+> > > [1]https://lkml.org/lkml/2016/5/24/9  
+> > 
+> > 
+> > The pull request does have patch "mtd/ifc: Add support for IFC
+> > controller version 2.0", but it doesn't have another patch
+> > "driver/memory: Update dependency of IFC for
+> > Layerscape"(https://patchwork.ozlabs.org/patch/557389/) needed to make
+> > the driver selectable on new hardware.
 
-On Fri, May 27, 2016 at 01:33:20PM -0700, Florian Fainelli wrote:
->    On May 27, 2016 1:28 PM, "Scott Branden"
->    <[1]scott.branden@broadcom.com> wrote:
+Your patches seem to have broken threading. Or at least, in my mailbox,
+I have that patch, but I can't easily find [PATCH 1/3] or [PATCH 3/3].
+Please fix your threading next time, to help ensure things get handled
+together.
+
+(It also helps when you reply to the patch you're asking about, and not
+to a different patch.)
+
+> Sorry, I overlooked that part in your different emails (even though you
+> clearly stated that you needed both patches).
 > 
->    >> +&qspi {
->    >> +       bspi-sel = <0>;
->    >> +       flash: m25p80@0 {
->    >> +               #address-cells = <1>;
->    >> +               #size-cells = <1>;
->    >> +               compatible = "m25p80";
->    >> +               reg = <0x0>;
->    >> +               spi-max-frequency = <12500000>;
->    >> +               m25p,fast-read;
->    >> +               spi-cpol;
->    >> +               spi-cpha;
->    >> +
->    >> +               partition@0 {
->    >> +                       label = "boot";
->    >> +                       reg = <0x00000000 0x000a0000>;
->    >> +               };
->    >> +
->    >> +               partition@1 {
->    >> +                       label = "env";
->    >> +                       reg = <0x000a0000 0x00060000>;
->    >> +               };
->    >> +
->    >> +               partition@2 {
->    >> +                       label = "system";
->    >> +                       reg = <0x00100000 0x00600000>;
->    >> +               };
->    >> +
->    >> +               partition@3 {
->    >> +                       label = "rootfs";
->    >> +                       reg = <0x00700000 0x01900000>;
->    >> +               };
->    >
->    >
->    > The partitions are applications specific so should be passed on the
->    boot command line rather than embedded in the dts file.
+> For my defense, I haven't followed the patch series from the beginning,
+> and only took the patch because Brian suggested to do so (and the
+> changes seemed ok).
+> It would have been clearer if the different patches were part of the
+> same series.
 
-Scott kinda has a point; they can be application specific, and so in
-some cases, you might want to avoid putting this description in DT, at
-least if there are good alternatives. The command line may or may not be
-a good alternative (I don't think it's a very good one).
++1 to the last sentence.
 
->    Partitions are typically part of the platform definition and are
->    suitable for being in Device Tree. AFAICT there is not a good way to
->    supply partitions in an OF configuration other than putting them in DT
->    at the moment. There is also a lot of platform inconsistency whether
->    the command line is appended, extended or overrides the command line in
->    the Device Tree, so I would not really consider this an issue here.
+> Anyway, Brian, can you take it into your tree and make it appear in
+> -rc1 (or earlier if it's still possible)?
 
-My intention is to allow cmdline to take priority, so you could have
-application-specific overrides. If that doesn't work correctly, then
-I'd consider it a bug. I know that has irked some people (e.g.,
-OpenWRT?), where they deal with products where they may not control the
-command line. But that's a separate issue IMO.
+Not sure how I could get it any "earlier"? It's not making -rc1 at this
+point.
 
-You might want to take a look at supporting a partition parser, if this
-really is so application-specific. I had all the pieces working late
-last year:
+> BTW, in the patch description you say you're only modifying a Kconfig
+> dependency, but you're actually doing more than that: you're removing
+> an asm header inclusion and manually include several other headers
+> (which I guess were previously included by asm/prom.h).
 
-https://lkml.org/lkml/2015/12/5/9
-
-but I unfortunately got distracted once the conversation on bindings
-derailed:
-
-https://lkml.org/lkml/2015/12/12/31
-
-I should probably revive that...
-
-Anyway, if you utilize that, then you can specify which parser(s) are
-valid for your platform, rather than specifying the exact partition
-layout.
+Please resend this patch with a more complete commit description; I'd
+like it to get actual review (and time in linux-next) before it gets
+merged, so at best, it'll wait a few -rc's. I also suspect the patch
+isn't optimal. I believe Scott has suggested [1] that we didn't need the
+FSL_SOC dependency on the LBC driver. I think IFC looks like a similar
+case?
 
 Brian
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2016-January/064855.html
