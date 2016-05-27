@@ -1,8 +1,8 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6HJ0-0002Xr-7q
- for linux-mtd@lists.infradead.org; Fri, 27 May 2016 12:56:02 +0000
+ id 1b6HJ0-0002Xe-7r
+ for linux-mtd@lists.infradead.org; Fri, 27 May 2016 12:56:03 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>
 Cc: Hans de Goede <hdegoede@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 14/15] mtd: nand: hynix: rework NAND ID decoding to extract
- more information
-Date: Fri, 27 May 2016 14:55:00 +0200
-Message-Id: <1464353701-23233-15-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 09/15] mtd: nand: move toshiba specific initialization in
+ nand_toshiba.c
+Date: Fri, 27 May 2016 14:54:55 +0200
+Message-Id: <1464353701-23233-10-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,218 +25,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current NAND ID detection in nand_hynix.c is not handling the
-different scheme used by Hynix, thus forcing developers to add new
-entries in the nand_ids table each time they want to support a new MLC
-NAND.
-
-Enhance the detection logic to handle all known formats. This does not
-necessarily mean we are handling all the cases, but if new formats are
-discovered, the code should evolve to take them into account instead of
-adding more full-id entries in the nand_ids table.
+Moving Hynix specific initialization into nand_toshiba.c. This is part
+of the "separate vendor specific code from core" cleanup process.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_hynix.c | 226 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 202 insertions(+), 24 deletions(-)
+ drivers/mtd/nand/Makefile       |  1 +
+ drivers/mtd/nand/nand_base.c    | 19 ++-----------
+ drivers/mtd/nand/nand_ids.c     |  3 ++-
+ drivers/mtd/nand/nand_toshiba.c | 60 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 65 insertions(+), 18 deletions(-)
+ create mode 100644 drivers/mtd/nand/nand_toshiba.c
 
-diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hynix.c
-index 3a4e1a4..cad1d99 100644
---- a/drivers/mtd/nand/nand_hynix.c
-+++ b/drivers/mtd/nand/nand_hynix.c
-@@ -14,26 +14,47 @@
- 
- #include <linux/mtd/nand.h>
- 
--static int hynix_nand_decode_id(struct nand_chip *chip)
-+static bool hynix_nand_has_valid_jedecid(struct nand_chip *chip)
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index d79338f..403e9a7 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -60,3 +60,4 @@ obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
+ nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
+ nand-objs += nand_hynix.o
+ nand-objs += nand_samsung.o
++nand-objs += nand_toshiba.o
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ce0ea01..38cc839 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3583,7 +3583,7 @@ static int nand_get_bits_per_cell(u8 cellinfo)
+ static void nand_decode_ext_id(struct nand_chip *chip)
  {
  	struct mtd_info *mtd = nand_to_mtd(chip);
-+	u8 jedecid[6] = { };
-+	int i = 0;
- 
+-	int extid, id_len = chip->id.len;
++	int extid;
+ 	u8 *id_data = chip->id.data;
+ 	/* The 3rd id byte holds MLC / multichip data */
+ 	chip->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
+@@ -3602,20 +3602,6 @@ static void nand_decode_ext_id(struct nand_chip *chip)
+ 	/* Get buswidth information */
+ 	if (extid & 0x1)
+ 		chip->options |= NAND_BUSWIDTH_16;
+-
 -	/*
--	 * The NAND is compatible with the JEDEC or ONFI standard, we already
--	 * have all the information we could retrieve from the extended ID.
+-	 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
+-	 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
+-	 * follows:
+-	 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
+-	 *                         110b -> 24nm
+-	 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
 -	 */
--	if (chip->onfi_version || chip->jedec_version)
--		return 0;
-+	chip->cmdfunc(mtd, NAND_CMD_READID, 0x40, -1);
-+	for (i = 0; i < 5; i++)
-+		jedecid[i] = chip->read_byte(mtd);
-+
-+	return !strcmp("JEDEC", jedecid);
-+}
+-	if (id_len >= 6 && id_data[0] == NAND_MFR_TOSHIBA &&
+-	    nand_is_slc(chip) &&
+-	    (id_data[5] & 0x7) == 0x6 /* 24nm */ &&
+-	     !(id_data[4] & 0x80) /* !BENAND */)
+-		mtd->oobsize = 32 * mtd->writesize >> 9;
+ }
  
--	/* Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22) */
--	if (chip->id.len == 6 && !nand_is_slc(chip)) {
--		u8 tmp, extid = chip->id.data[3] >> 2;
-+static int hynix_nand_extract_oobsize(struct nand_chip *chip,
-+				      bool valid_jedecid)
+ /*
+@@ -3674,8 +3660,7 @@ static void nand_decode_bbm_options(struct nand_chip *chip)
+ 	 * AMD/Spansion, and Macronix.  All others scan only the first page.
+ 	 */
+ 	if ((nand_is_slc(chip) &&
+-				(maf_id == NAND_MFR_TOSHIBA ||
+-				 maf_id == NAND_MFR_AMD ||
++				(maf_id == NAND_MFR_AMD ||
+ 				 maf_id == NAND_MFR_MACRONIX)) ||
+ 			(mtd->writesize == 2048 &&
+ 			 maf_id == NAND_MFR_MICRON))
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index 7bf93b8..2cc9d32 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -166,11 +166,12 @@ struct nand_flash_dev nand_flash_ids[] = {
+ };
+ 
+ /* Manufacturer IDs */
++extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
+ 
+ struct nand_manufacturers nand_manuf_ids[] = {
+-	{NAND_MFR_TOSHIBA, "Toshiba"},
++	{NAND_MFR_TOSHIBA, "Toshiba", &toshiba_nand_manuf_ops},
+ 	{NAND_MFR_SAMSUNG, "Samsung", &samsung_nand_manuf_ops},
+ 	{NAND_MFR_FUJITSU, "Fujitsu"},
+ 	{NAND_MFR_NATIONAL, "National"},
+diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
+new file mode 100644
+index 0000000..0d6b319
+--- /dev/null
++++ b/drivers/mtd/nand/nand_toshiba.c
+@@ -0,0 +1,60 @@
++/*
++ * Copyright (C) 2013 Boris Brezillon <boris.brezillon@free-electrons.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/mtd/nand.h>
++
++static int toshiba_nand_decode_id(struct nand_chip *chip)
 +{
 +	struct mtd_info *mtd = nand_to_mtd(chip);
-+	u8 oobsize;
- 
--		/* Adjust pagesize */
--		mtd->writesize <<= 1;
-+	oobsize = ((chip->id.data[3] >> 2) & 0x3) |
-+		  ((chip->id.data[3] >> 4) & 0x4);
- 
--		/* Fix oobsize */
--		switch (((extid >> 2) & 0x4) | (extid & 0x3)) {
-+	if (valid_jedecid) {
-+		switch (oobsize) {
-+		case 0:
-+			mtd->oobsize = 2048;
-+			break;
-+		case 1:
-+			mtd->oobsize = 1664;
-+			break;
-+		case 2:
-+			mtd->oobsize = 1024;
-+			break;
-+		case 3:
-+			mtd->oobsize = 640;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	} else {
-+		switch (oobsize) {
- 		case 0:
- 			mtd->oobsize = 128;
- 			break;
-@@ -52,21 +73,178 @@ static int hynix_nand_decode_id(struct nand_chip *chip)
- 		case 5:
- 			mtd->oobsize = 16;
- 			break;
--		default:
-+		case 6:
- 			mtd->oobsize = 640;
- 			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int hynix_nand_extract_ecc_requirements(struct nand_chip *chip,
-+					       bool valid_jedecid)
-+{
-+	u8 ecc_level = (chip->id.data[4] >> 4) & 0x7;
-+
-+	if (valid_jedecid) {
-+		/* Reference: H27UCG8T2E datasheet */
-+		chip->ecc_step_ds = 1024;
-+
-+		switch (ecc_level) {
-+		case 0:
-+			chip->ecc_step_ds = 0;
-+			chip->ecc_strength_ds = 0;
-+			break;
-+		case 1:
-+			chip->ecc_strength_ds = 4;
-+			break;
-+		case 2:
-+			chip->ecc_strength_ds = 24;
-+			break;
-+		case 3:
-+			chip->ecc_strength_ds = 32;
-+			break;
-+		case 4:
-+			chip->ecc_strength_ds = 40;
-+			break;
-+		case 5:
-+			chip->ecc_strength_ds = 50;
-+			break;
-+		case 6:
-+			chip->ecc_strength_ds = 60;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	} else {
-+		/*
-+		 * The ECC requirements field meaning depends on the
-+		 * NAND technology.
-+		 */
-+		u8 nand_tech = chip->id.data[5] & 0x3;
-+
-+		if (nand_tech < 3) {
-+			/* > 26nm, reference: H27UBG8T2A datasheet */
-+			if (ecc_level < 5) {
-+				chip->ecc_step_ds = 512;
-+				chip->ecc_strength_ds = 1 << ecc_level;
-+			} else if (ecc_level < 7) {
-+				if (ecc_level == 5)
-+					chip->ecc_step_ds = 2048;
-+				else
-+					chip->ecc_step_ds = 2048;
-+				chip->ecc_strength_ds = 24;
-+			} else {
-+				return -EINVAL;
-+			}
-+		} else {
-+			/* <= 26nm, reference: H27UBG8T2B datasheet */
-+			if (!ecc_level) {
-+				chip->ecc_step_ds = 0;
-+				chip->ecc_strength_ds = 0;
-+			} else if (ecc_level < 5) {
-+				chip->ecc_step_ds = 512;
-+				chip->ecc_strength_ds = 1 << (ecc_level - 1);
-+			} else {
-+				chip->ecc_step_ds = 1024;
-+				chip->ecc_strength_ds = 24 +
-+							(8 * (ecc_level - 5));
-+			}
- 		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void hynix_nand_extract_scrambling_requirements(struct nand_chip *chip,
-+						       bool valid_jedecid)
-+{
-+	u8 nand_tech;
-+
-+	/* We need scrambling on all TLC NANDs*/
-+	if (chip->bits_per_cell > 2)
-+		chip->options |= NAND_NEED_SCRAMBLING;
-+
-+	/* And on MLC NANDs with sub-3xnm process */
-+	if (valid_jedecid) {
-+		nand_tech = chip->id.data[5] >> 4;
-+
-+		/* < 3xnm */
-+		if (nand_tech > 0)
-+			chip->options |= NAND_NEED_SCRAMBLING;
-+	} else {
-+		nand_tech = chip->id.data[5] & 0x3;
- 
--		/* Fix blocksize */
--		extid >>= 2;
--		tmp = ((extid >> 1) & 0x04) | (extid & 0x03);
--		if (tmp < 0x03)
--			mtd->erasesize = (128 * 1024) << tmp;
--		else if (tmp == 0x03)
--			mtd->erasesize = 768 * 1024;
--		else
--			mtd->erasesize = (64 * 1024) << tmp;
-+		/* < 32nm */
-+		if (nand_tech > 2)
-+			chip->options |= NAND_NEED_SCRAMBLING;
- 	}
-+}
-+
-+static int hynix_nand_decode_id(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	bool valid_jedecid;
-+	int ret;
-+	u8 tmp;
 +
 +	/*
 +	 * The NAND is compatible with the JEDEC or ONFI standard, we already
@@ -246,54 +142,37 @@ index 3a4e1a4..cad1d99 100644
 +		return 0;
 +
 +	/*
-+	 * Exclude all SLC NANDs from this advanced detection scheme.
-+	 * According to the ranges defined in several datasheets, it might
-+	 * appear that even SLC NANDs could fall in this extended ID scheme.
-+	 * If that the case rework the test to let SLC NANDs go through the
-+	 * detection process.
++	 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
++	 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
++	 * follows:
++	 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
++	 *                         110b -> 24nm
++	 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
 +	 */
-+	if (chip->id.len < 6 || nand_is_slc(chip))
-+		return 0;
++	if (chip->id.len >= 6 && nand_is_slc(chip) &&
++	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
++	    !(chip->id.data[4] & 0x80) /* !BENAND */)
++		mtd->oobsize = 32 * mtd->writesize >> 9;
 +
-+	/*
-+	 * Adjust pagesize. On MLC NANDs, we start at 128KiB not 64KiB,
-+	 * a simple left shift does the trick.
-+	 */
-+	mtd->writesize <<= 1;
++	return 0;
++}
 +
-+	tmp = (chip->id.data[3] >> 4) & 0x3;
-+	/*
-+	 * When bit7 is set that means we start counting at 1MiB, otherwise
-+	 * we start counting at 128KiB and shift this value the content of
-+	 * ID[3][4:5].
-+	 * The only exception is when ID[3][4:5] == 3 and ID[3][7] == 0, in
-+	 * this case the erasesize is set to 768KiB.
-+	 */
-+	if (chip->id.data[3] & 0x80)
-+		mtd->erasesize = SZ_1M << tmp;
-+	else if (tmp == 3)
-+		mtd->erasesize = SZ_512K + SZ_256K;
-+	else
-+		mtd->erasesize = SZ_128K << tmp;
++static int toshiba_nand_init(struct nand_chip *chip)
++{
++	int ret;
 +
-+	/*
-+	 * Modern Toggle DDR NANDs have a valid JEDECID even though they are
-+	 * not exposing a valid JEDEC parameter table.
-+	 * These NANDs use a different NAND ID scheme.
-+	 */
-+	valid_jedecid = hynix_nand_has_valid_jedecid(chip);
-+
-+	ret = hynix_nand_extract_oobsize(chip, valid_jedecid);
++	ret = toshiba_nand_decode_id(chip);
 +	if (ret)
 +		return ret;
 +
-+	ret = hynix_nand_extract_ecc_requirements(chip, valid_jedecid);
-+	if (ret)
-+		return ret;
++	if (nand_is_slc(chip))
++		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
 +
-+	hynix_nand_extract_scrambling_requirements(chip, valid_jedecid);
- 
- 	return 0;
- }
++	return 0;
++}
++
++const struct nand_manufacturer_ops toshiba_nand_manuf_ops = {
++	.init = toshiba_nand_init,
++};
 -- 
 2.7.4
