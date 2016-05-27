@@ -1,17 +1,34 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6NF7-0008OS-1w
- for linux-mtd@lists.infradead.org; Fri, 27 May 2016 19:16:22 +0000
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [GIT PULL] UBI/UBIFS updates for v4.7-rc1
-Message-ID: <57489CEA.3030002@nod.at>
-Date: Fri, 27 May 2016 21:15:54 +0200
+ id 1b6OAE-0003DB-5k
+ for linux-mtd@lists.infradead.org; Fri, 27 May 2016 20:15:23 +0000
+Received: by mail-wm0-x242.google.com with SMTP id e3so1627868wme.2
+ for <linux-mtd@lists.infradead.org>; Fri, 27 May 2016 13:15:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20160525223412.086e45e9@bbrezillon>
+References: <1455708258-3831-1-git-send-email-raghav.dogra@nxp.com>
+ <CADRPPNS1i1XgtpyiT_=rDuDXBDn=ehNY32=RKTC9hdKXhWWq8A@mail.gmail.com>
+ <1455840434.2463.97.camel@buserror.net>
+ <CADRPPNTauz=T9oWCeZy8G8s0vo9fmieRhn=Gd3jVqqJJEHV_ag@mail.gmail.com>
+ <20160406175254.GC5243@localhost>
+ <AM2PR04MB0770036256E58407BD045C5A8F9F0@AM2PR04MB0770.eurprd04.prod.outlook.com>
+ <20160408024507.69fb4fc1@bbrezillon>
+ <CADRPPNRXj_00GF-h_5yHtKPMU=U1C8PXQLZqEVzQvJZobmM7dg@mail.gmail.com>
+ <20160525223412.086e45e9@bbrezillon>
+Date: Fri, 27 May 2016 15:15:00 -0500
+Message-ID: <CADRPPNSeQsOZZ9XRR4BOfZvewoB9RoEy0KzPrRzoDm21LtacnQ@mail.gmail.com>
+Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
+From: Leo Li <pku.leo@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Yang-Leo Li <leoyang.li@nxp.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ Scott Wood <oss@buserror.net>, Raghav Dogra <raghav.dogra@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ Raghav Dogra <raghav@freescale.com>,
+ Jaiprakash Singh <b44839@freescale.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +38,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
+On Wed, May 25, 2016 at 3:34 PM, Boris Brezillon
+<boris.brezillon@free-electrons.com> wrote:
+> On Wed, 25 May 2016 14:18:43 -0500
+> Leo Li <pku.leo@gmail.com> wrote:
+>
+>> On Thu, Apr 7, 2016 at 7:45 PM, Boris Brezillon
+>> <boris.brezillon@free-electrons.com> wrote:
+>> > On Wed, 6 Apr 2016 18:53:39 +0000
+>> > Yang-Leo Li <leoyang.li@nxp.com> wrote:
+>> >
+>> >>
+>> >>
+>> >> > -----Original Message-----
+>> >> > From: Brian Norris [mailto:computersforpeace@gmail.com]
+>> >> > Sent: Wednesday, April 06, 2016 12:53 PM
+>> >> > To: Li Yang <leoli@freescale.com>
+>> >> > Cc: Scott Wood <oss@buserror.net>; Raghav Dogra <raghav.dogra@nxp.com>;
+>> >> > linux-mtd@lists.infradead.org; linuxppc-dev <linuxppc-dev@lists.ozlabs.org>;
+>> >> > Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; Raghav Dogra
+>> >> > <raghav@freescale.com>; Jaiprakash Singh <b44839@freescale.com>; Boris
+>> >> > Brezillon <boris.brezillon@free-electrons.com>
+>> >> > Subject: Re: [PATCH][v3] mtd/ifc: Add support for IFC controller version 2.0
+>> >> >
+>> >> > Hi,
+>> >> >
+>> >> > On Wed, Mar 30, 2016 at 03:43:40PM -0500, Li Yang wrote:
+>> >> > > Hi Brian,
+>> >> > >
+>> >> > > Could you help to review and pull in this patch and the Kconfig update
+>> >> > > after this patch(https://patchwork.ozlabs.org/patch/557389/)?  It
+>> >> >
+>> >> > It's probably best for Boris to apply this now.
+>> >>
+>> >> Thanks Brian.  I see Boris is taking over the maintenance of NAND recently, we will follow up with him.
+>> >>
+>> >> Hi Boris,
+>> >>
+>> >> Can you consider to pull in this patch and then Kconfig patch (https://patchwork.ozlabs.org/patch/557389/)?
+>> >
+>> > Applied.
+>> >
+>> > Thanks,
+>> >
+>> > Boris
+>>
+>> Hi Boris,
+>>
+>> It seems that the patch at https://patchwork.ozlabs.org/patch/557389/
+>> mentioned above was not in tree for 4.7.  Can you review and apply
+>> that patch too?
+>
+> I see it in the PR Brian sent 2 days ago [1], so it should appear in
+> Linus tree soon.
+>
+> Regards,
+>
+> Boris
+>
+> [1]https://lkml.org/lkml/2016/5/24/9
 
-The following changes since commit 04974df8049fc4240d22759a91e035082ccd18b4:
 
-  Linux 4.6-rc6 (2016-05-01 15:52:31 -0700)
+The pull request does have patch "mtd/ifc: Add support for IFC
+controller version 2.0", but it doesn't have another patch
+"driver/memory: Update dependency of IFC for
+Layerscape"(https://patchwork.ozlabs.org/patch/557389/) needed to make
+the driver selectable on new hardware.
 
-are available in the git repository at:
-
-  git://git.infradead.org/linux-ubifs.git tags/upstream-4.7-rc1
-
-for you to fetch changes up to 1112018cefc586cba924770a2b28bff6d2f0aa5c:
-
-  ubifs: ubifs_dump_inode: Fix dumping field bulk_read (2016-05-24 15:29:44 +0200)
-
-----------------------------------------------------------------
-This pull request contains mostly cleanups and minor
-improvements of UBI and UBIFS.
-
-----------------------------------------------------------------
-Andreas Gruenbacher (1):
-      ubifs: ubifs_dump_inode: Fix dumping field bulk_read
-
-Dan Carpenter (2):
-      UBI: Clean up return in ubi_remove_volume()
-      UBI: Silence an unintialized variable warning
-
-Ezequiel Garcia (1):
-      UBI: Add ro-mode sysfs attribute
-
-Heiko Schocher (1):
-      UBI: Set free_count to zero before walking through erase list
-
-Richard Weinberger (2):
-      UBI: Don't read back all data in ubi_eba_copy_leb()
-      UBI: Fix static volume checks when Fastmap is used
-
-z00189512 (1):
-      UBI: Modify wrong comment in ubi_leb_map function.
-
- Documentation/ABI/stable/sysfs-class-ubi |  9 ++++++
- drivers/mtd/ubi/build.c                  |  5 ++++
- drivers/mtd/ubi/debug.c                  |  3 +-
- drivers/mtd/ubi/eba.c                    | 47 +++++++++++++-------------------
- drivers/mtd/ubi/fastmap.c                |  1 +
- drivers/mtd/ubi/kapi.c                   |  2 +-
- drivers/mtd/ubi/ubi.h                    |  2 ++
- drivers/mtd/ubi/vmt.c                    |  2 +-
- drivers/mtd/ubi/wl.c                     |  2 +-
- fs/ubifs/debug.c                         |  2 +-
- 10 files changed, 42 insertions(+), 33 deletions(-)
+Regards,
+Leo
