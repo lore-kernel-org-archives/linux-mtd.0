@@ -1,8 +1,8 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6HJ0-0002XI-7t
- for linux-mtd@lists.infradead.org; Fri, 27 May 2016 12:55:59 +0000
+ id 1b6HJ0-0002XJ-7w
+ for linux-mtd@lists.infradead.org; Fri, 27 May 2016 12:56:01 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
@@ -10,9 +10,9 @@ To: Boris Brezillon <boris.brezillon@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>
 Cc: Hans de Goede <hdegoede@redhat.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 06/15] mtd: nand: kill the MTD_NAND_IDS Kconfig option
-Date: Fri, 27 May 2016 14:54:52 +0200
-Message-Id: <1464353701-23233-7-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 05/15] mtd: nand: add vendor specific initialization step
+Date: Fri, 27 May 2016 14:54:51 +0200
+Message-Id: <1464353701-23233-6-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,69 +24,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD_NAND_IDS is selected by MTD_NAND, which makes it useless. Remove the
-Kconfig option and link nand_ids.o into the nand.o object file.
-Doing that also prevents adding an extra nand_ids.ko module when MTD_NAND
-is activated as a module.
+A lot of NANDs are implementing generic features in a non-generic way, or
+are providing advanced auto-detection logic where the NAND ID bytes meaning
+changes with the NAND generation.
+
+Providing this vendor specific initialization step will allow us to get rid
+of the full ids in the nand_ids table or all the vendor specific cases
+added over the time in the generic NAND ID decoding logic.
+
+Note that nand_decode_bbm_options() call is moved before manuf->ops->init()
+because vendor ->init() hook might tweak the BBM flags.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- arch/cris/arch-v32/drivers/Kconfig | 1 -
- drivers/mtd/nand/Kconfig           | 4 ----
- drivers/mtd/nand/Makefile          | 3 +--
- 3 files changed, 1 insertion(+), 7 deletions(-)
+ drivers/mtd/nand/nand_base.c | 30 ++++++++++++++++++++++++++----
+ include/linux/mtd/nand.h     | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 57 insertions(+), 4 deletions(-)
 
-diff --git a/arch/cris/arch-v32/drivers/Kconfig b/arch/cris/arch-v32/drivers/Kconfig
-index 2735eb7..b7cd6b9 100644
---- a/arch/cris/arch-v32/drivers/Kconfig
-+++ b/arch/cris/arch-v32/drivers/Kconfig
-@@ -136,7 +136,6 @@ config ETRAX_NANDFLASH
- 	bool "NAND flash support"
- 	depends on ETRAX_ARCH_V32
- 	select MTD_NAND
--	select MTD_NAND_IDS
- 	help
- 	  This option enables MTD mapping of NAND flash devices.  Needed to use
- 	  NAND flash memories.  If unsure, say Y.
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index f05e0e9..16d7dff 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -13,7 +13,6 @@ config MTD_NAND_ECC_SMC
- menuconfig MTD_NAND
- 	tristate "NAND Device Support"
- 	depends on MTD
--	select MTD_NAND_IDS
- 	select MTD_NAND_ECC
- 	help
- 	  This enables support for accessing all type of NAND flash
-@@ -109,9 +108,6 @@ config MTD_NAND_OMAP_BCH
- config MTD_NAND_OMAP_BCH_BUILD
- 	def_tristate MTD_NAND_OMAP2 && MTD_NAND_OMAP_BCH
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 95e9a8e..b979e45 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3815,7 +3815,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int busw;
+-	int i, maf_idx;
++	int i, maf_idx, ret;
+ 	u8 *id_data = chip->id.data;
+ 	u8 maf_id, dev_id;
  
--config MTD_NAND_IDS
--	tristate
+@@ -3925,6 +3925,19 @@ ident_done:
+ 			break;
+ 	}
+ 
++	nand_decode_bbm_options(chip);
++
++	/*
++	 * Vendor specific initialization. This function can ajust the setting
++	 * extracted from generic auto-detection.
++	 */
++	chip->manufacturer.ops = nand_manuf_ids[maf_idx].ops;
++	if (chip->manufacturer.ops && chip->manufacturer.ops->init) {
++		ret = chip->manufacturer.ops->init(chip);
++		if (ret)
++			return ret;
++	}
++
+ 	if (chip->options & NAND_BUSWIDTH_AUTO) {
+ 		WARN_ON(busw & NAND_BUSWIDTH_16);
+ 		nand_set_defaults(chip);
+@@ -3938,11 +3951,10 @@ ident_done:
+ 		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
+ 		pr_warn("bus width %d instead %d bit\n", busw ? 16 : 8,
+ 			(chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_cleanup;
+ 	}
+ 
+-	nand_decode_bbm_options(chip);
 -
- config MTD_NAND_RICOH
- 	tristate "Ricoh xD card reader"
- 	default n
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index f553353..d303dee 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -5,7 +5,6 @@
- obj-$(CONFIG_MTD_NAND)			+= nand.o
- obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
- obj-$(CONFIG_MTD_NAND_BCH)		+= nand_bch.o
--obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o
- obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
+ 	/* Calculate the address shift from the page size */
+ 	chip->page_shift = ffs(mtd->writesize) - 1;
+ 	/* Convert chipsize to number of pages per chip -1 */
+@@ -3981,6 +3993,12 @@ ident_done:
+ 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+ 		mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
+ 	return 0;
++
++err_cleanup:
++	if (chip->manufacturer.ops && chip->manufacturer.ops->cleanup)
++		chip->manufacturer.ops->cleanup(chip);
++
++	return ret;
+ }
  
- obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
-@@ -58,4 +57,4 @@ obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
- obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
- obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
+ static const char * const nand_ecc_modes[] = {
+@@ -4623,6 +4641,10 @@ void nand_release(struct mtd_info *mtd)
+ 	if (chip->badblock_pattern && chip->badblock_pattern->options
+ 			& NAND_BBT_DYNAMICSTRUCT)
+ 		kfree(chip->badblock_pattern);
++
++	/* Release manufacturer private data */
++	if (chip->manufacturer.ops && chip->manufacturer.ops->cleanup)
++		chip->manufacturer.ops->cleanup(chip);
+ }
+ EXPORT_SYMBOL_GPL(nand_release);
  
--nand-objs := nand_base.o nand_bbt.o nand_timings.o
-+nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 3072f5e..d8de579 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -577,6 +577,18 @@ struct nand_buffers {
+ };
+ 
+ /**
++ * struct nand_manufacturer_ops - NAND Manufacturer operations
++ * @init: initialize all vendor specific fields (like the ->read_retry()
++ *	  implementation) if any.
++ * @cleanup: the ->init() function may have allocated resources, ->cleanup()
++ *	     is here to let vendor specific code release those resources.
++ */
++struct nand_manufacturer_ops {
++	int (*init)(struct nand_chip *chip);
++	void (*cleanup)(struct nand_chip *chip);
++};
++
++/**
+  * struct nand_chip - NAND Private Flash Chip Data
+  * @mtd:		MTD device registered to the MTD framework
+  * @IO_ADDR_R:		[BOARDSPECIFIC] address to read the 8 I/O lines of the
+@@ -676,6 +688,7 @@ struct nand_buffers {
+  *			additional error status checks (determine if errors are
+  *			correctable).
+  * @write_page:		[REPLACEABLE] High-level page write function
++ * @manufacturer:	[INTERN] Contains manufacturer data
+  */
+ 
+ struct nand_chip {
+@@ -756,6 +769,11 @@ struct nand_chip {
+ 	struct nand_bbt_descr *badblock_pattern;
+ 
+ 	void *priv;
++
++	struct {
++		const struct nand_manufacturer_ops *ops;
++		void *priv;
++	} manufacturer;
+ };
+ 
+ extern const struct mtd_ooblayout_ops nand_ooblayout_sp_ops;
+@@ -792,6 +810,17 @@ static inline void nand_set_controller_data(struct nand_chip *chip, void *priv)
+ 	chip->priv = priv;
+ }
+ 
++static inline void nand_set_manufacturer_data(struct nand_chip *chip,
++					      void *priv)
++{
++	chip->manufacturer.priv = priv;
++}
++
++static inline void *nand_get_manufacturer_data(struct nand_chip *chip)
++{
++	return chip->manufacturer.priv;
++}
++
+ /*
+  * NAND Flash Manufacturer ID Codes
+  */
+@@ -896,10 +925,12 @@ struct nand_flash_dev {
+  * struct nand_manufacturers - NAND Flash Manufacturer ID Structure
+  * @name:	Manufacturer name
+  * @id:		manufacturer ID code of device.
++ * @ops:	manufacturer operations
+ */
+ struct nand_manufacturers {
+ 	int id;
+ 	char *name;
++	const struct nand_manufacturer_ops *ops;
+ };
+ 
+ extern struct nand_flash_dev nand_flash_ids[];
 -- 
 2.7.4
