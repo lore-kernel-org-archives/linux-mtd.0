@@ -1,21 +1,17 @@
-Received: from mail-pa0-x244.google.com ([2607:f8b0:400e:c03::244])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6LFk-0004di-0C
- for linux-mtd@lists.infradead.org; Fri, 27 May 2016 17:08:52 +0000
-Received: by mail-pa0-x244.google.com with SMTP id fg1so13113547pad.3
- for <linux-mtd@lists.infradead.org>; Fri, 27 May 2016 10:08:31 -0700 (PDT)
-Date: Fri, 27 May 2016 10:08:27 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+ id 1b6NF7-0008OS-1w
+ for linux-mtd@lists.infradead.org; Fri, 27 May 2016 19:16:22 +0000
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [GIT PULL] MTD fixes for v4.7-rc1
-Message-ID: <20160527170827.GE89390@google.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UBI/UBIFS updates for v4.7-rc1
+Message-ID: <57489CEA.3030002@nod.at>
+Date: Fri, 27 May 2016 21:15:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +21,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+Linus,
 
-The following changes since commit e5366a266a8cd4cd6b0fe66876462cca2e1c6a89:
+The following changes since commit 04974df8049fc4240d22759a91e035082ccd18b4:
 
-  mtd: spi-nor: support GigaDevice gd25lq64c (2016-05-10 15:44:18 -0700)
+  Linux 4.6-rc6 (2016-05-01 15:52:31 -0700)
 
 are available in the git repository at:
 
-  git://git.infradead.org/linux-mtd.git tags/for-linus-20160527
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.7-rc1
 
-for you to fetch changes up to 507e617440d70bc4269daac1b0ee96671bf2761a:
+for you to fetch changes up to 1112018cefc586cba924770a2b28bff6d2f0aa5c:
 
-  Documentation: dt: mtd: drop "soft_bch" from example (2016-05-27 09:56:26 -0700)
-
-----------------------------------------------------------------
-MTD fixes for v4.7-rc1
-
-We've already noticed a few flaws in the MTD work for v4.7-rc1:
-
- * The Atmel folks got ahead of themselves on trying to support their latest
-   hardware and were working off incorrect documentation. Fix up the NAND
-   driver to get this correct.
-
- * Fix up device tree example documentation to use the latest recommendations
-   for describing NAND ECC algorithms.
+  ubifs: ubifs_dump_inode: Fix dumping field bulk_read (2016-05-24 15:29:44 +0200)
 
 ----------------------------------------------------------------
-Baruch Siach (1):
-      Documentation: dt: mtd: drop "soft_bch" from example
+This pull request contains mostly cleanups and minor
+improvements of UBI and UBIFS.
 
-Wenyou Yang (1):
-      Revert "mtd: atmel_nand: Support variable RB_EDGE interrupts"
+----------------------------------------------------------------
+Andreas Gruenbacher (1):
+      ubifs: ubifs_dump_inode: Fix dumping field bulk_read
 
- .../devicetree/bindings/mtd/atmel-nand.txt         |  2 +-
- Documentation/devicetree/bindings/mtd/nand.txt     |  3 +-
- drivers/mtd/nand/atmel_nand.c                      | 35 +++++-----------------
- drivers/mtd/nand/atmel_nand_nfc.h                  |  3 +-
- 4 files changed, 12 insertions(+), 31 deletions(-)
+Dan Carpenter (2):
+      UBI: Clean up return in ubi_remove_volume()
+      UBI: Silence an unintialized variable warning
+
+Ezequiel Garcia (1):
+      UBI: Add ro-mode sysfs attribute
+
+Heiko Schocher (1):
+      UBI: Set free_count to zero before walking through erase list
+
+Richard Weinberger (2):
+      UBI: Don't read back all data in ubi_eba_copy_leb()
+      UBI: Fix static volume checks when Fastmap is used
+
+z00189512 (1):
+      UBI: Modify wrong comment in ubi_leb_map function.
+
+ Documentation/ABI/stable/sysfs-class-ubi |  9 ++++++
+ drivers/mtd/ubi/build.c                  |  5 ++++
+ drivers/mtd/ubi/debug.c                  |  3 +-
+ drivers/mtd/ubi/eba.c                    | 47 +++++++++++++-------------------
+ drivers/mtd/ubi/fastmap.c                |  1 +
+ drivers/mtd/ubi/kapi.c                   |  2 +-
+ drivers/mtd/ubi/ubi.h                    |  2 ++
+ drivers/mtd/ubi/vmt.c                    |  2 +-
+ drivers/mtd/ubi/wl.c                     |  2 +-
+ fs/ubifs/debug.c                         |  2 +-
+ 10 files changed, 42 insertions(+), 33 deletions(-)
