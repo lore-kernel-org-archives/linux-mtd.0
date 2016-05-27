@@ -1,32 +1,17 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from nm16-vm3.access.bullet.mail.bf1.yahoo.com ([216.109.115.50])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b61es-0005jg-OH
- for linux-mtd@lists.infradead.org; Thu, 26 May 2016 20:13:31 +0000
-Received: by mail-wm0-x244.google.com with SMTP id q62so8596950wmg.3
- for <linux-mtd@lists.infradead.org>; Thu, 26 May 2016 13:13:09 -0700 (PDT)
+ id 1b65pc-0004Hd-BM
+ for linux-mtd@lists.infradead.org; Fri, 27 May 2016 00:40:53 +0000
+From: "PJ" <paul.j2@rogers.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Looking for an alternative to ubimirror
+Date: Thu, 26 May 2016 20:40:29 -0400
+Message-ID: <046201d1b7b0$5f15b400$1d411c00$@rogers.com>
 MIME-Version: 1.0
-In-Reply-To: <20160518012445.GA74128@google.com>
-References: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
- <CAOMqctQLichyA3g_6K9UY8N8CY3GLvvP=_zqz+kUphRw3vxqZA@mail.gmail.com>
- <20160518012445.GA74128@google.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 26 May 2016 22:12:29 +0200
-Message-ID: <CAOMqctQco67=UZXsrk8CZhy5BuNrcg_woeaVrECNV_RcXBccOA@mail.gmail.com>
-Subject: Re: [PATCH v7 00/10] Add error checking to spi-nor read and write
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- Han Xu <han.xu@nxp.com>, Boris Brezillon <boris.brezillon@free-electrons.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Rafal Milecki <zajec5@gmail.com>,
- Jagan Teki <jteki@openedev.com>, "Andrew F. Davis" <afd@ti.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>, Bean Huo <beanhuo@micron.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Bayi Cheng <bayi.cheng@mediatek.com>,
- Joachim Eastwood <manabian@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,40 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi,
 
-On 18 May 2016 at 03:24, Brian Norris <computersforpeace@gmail.com> wrote:
-> On Mon, May 16, 2016 at 09:47:20PM +0200, Michal Suchanek wrote:
->> Hello,
->>
->> On 6 May 2016 at 02:31, Brian Norris <computersforpeace@gmail.com> wrote:
->> > Hi,
->> >
->> > I'm picking up Michal's patch set, since he dropped it on the floor, and it's
->> > useful for others. My additions:
->> >
->> >  * rebased on latest
->> >  * added fixes for drivers that have been merged in the meantime
->> >  * addressed most of Heiner's comments
->> >
->>
->> Since that offset error slipped into the previous rebase I was
->> planning to do some more thorough testing before resubmit but did not
->> get to it yet.
->>
->> Thanks for picking this up.
->
-> No problem. If you get the chance, one or more of
-> {Reviewed,Tested,Acked}-by would be helpful.
->
+Can anyone please recommend a procedure to copy one UBI volume to another? 
 
-I did not get to look at the new changes in detail.
-Acked-by: Michal Suchanek <hramrach@gmail.com>
-Tested-by: Michal Suchanek <hramrach@gmail.com> on the parts which are
-not vendor-specific.
+I'd like to execute from the bash command line, if possible.
 
-I used spi-sun4i with m25p80 driver.
+One upon a time I was able to use ubimirror, however that command appears to
+have been removed from mtd-utils. 
 
-Thanks
+- The source volume will be mounted R/O as it is the rootfs. 
+- The destination volume will be unrestricted (unmounted).
+- Both the source and destination volumes are in the same device.
 
-Michal
+I checked the FAQ, the archive, and Google but I came up empty, so thanks.
+
+Paul
