@@ -1,20 +1,20 @@
-Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+Received: from mx.artech.at ([188.21.106.106] helo=mail.artech.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b71dZ-0003Ri-GV
- for linux-mtd@lists.infradead.org; Sun, 29 May 2016 14:24:18 +0000
-Received: by mail-oi0-x22a.google.com with SMTP id w184so230961518oiw.2
- for <linux-mtd@lists.infradead.org>; Sun, 29 May 2016 07:23:56 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <566B344A0B1AB14EB2486D887B6FF9E0331F3DB470@SRV01.ARTech.local>
+ id 1b7322-0007oT-4H
+ for linux-mtd@lists.infradead.org; Sun, 29 May 2016 15:53:39 +0000
+From: Matthias Auchmann <m.auchmann@artech.at>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Sun, 29 May 2016 17:53:11 +0200
+Subject: RE: mtd locking
+Message-ID: <566B344A0B1AB14EB2486D887B6FF9E0331F3DB473@SRV01.ARTech.local>
 References: <566B344A0B1AB14EB2486D887B6FF9E0331F3DB470@SRV01.ARTech.local>
-Date: Sun, 29 May 2016 16:23:55 +0200
-Message-ID: <CAFLxGvz+9JqcLZwuUqOd1UsCNbbjD52ecd5Faj8PC12YhTuYiA@mail.gmail.com>
-Subject: Re: mtd locking
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Matthias Auchmann <m.auchmann@artech.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ <CAFLxGvz+9JqcLZwuUqOd1UsCNbbjD52ecd5Faj8PC12YhTuYiA@mail.gmail.com>
+In-Reply-To: <CAFLxGvz+9JqcLZwuUqOd1UsCNbbjD52ecd5Faj8PC12YhTuYiA@mail.gmail.com>
+Content-Language: de-DE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, May 29, 2016 at 3:38 PM, Matthias Auchmann <m.auchmann@artech.at> w=
-rote:
-> Hi all!
->
-> I have a question - sorry if it turns out to be a beginner's question. I'=
-m using kernel version 3.17, but as far as I can tell my question still app=
-lies.
->
-> My question is how locking is ensured with MTD. I understand that usually=
- there would only be one file system attached to one mtd partition, but wha=
-t if I concurrently ran multiple instances of nanddump from userspace? Is M=
-TD thread-safe?
->
-> I'm asking since I had an issue where when I called nanddump on two parti=
-tions of the same NAND flash simultaneously, the ECC errors would count up =
-for both nanddumps although only one partition had ECC errors. Experimental=
-ly adding a mutex to mtdpart.c's part_read() function solved the issue.
-
-IIRC ECC error counting is not thread safe at all.
-So, yes the behavior is indented.
-...at least nobody cared enough to make it better.
-
---=20
-Thanks,
-//richard
+QnkgaW50ZW5kZWQgeW91IG1lYW4gaXQncyB3cm9uZyBhbmQgd2Uga25vdywgYnV0IGl0J3Mgc3Rp
+bGwgd3JvbmcsIHJpZ2h0Pw0KDQpXaGF0IGFib3V0IHRocmVhZCBzYWZldHkgaW4gZ2VuZXJhbD8g
+SXMgdGhlIHJlc3Qgb2YgdGhlIG10ZCBzeXN0ZW0gdGhyZWFkIHNhZmU/IENhbiBpdCBoYXBwZW4g
+dGhhdCBlLmcuIGEgY29tbWFuZCBpcyBpc3N1ZWQgdG8gTkFORCwgYW5kIGJlZm9yZSB0aGUgYnVm
+ZmVyIGlzIHJlYWQsIGFub3RoZXIgY29tbWFuZCBpcyBpc3N1ZWQgKGFuZCBzaW1pbGFyIHNjZW5h
+cmlvcyk/IE9yIGlzIHRoZXJlIHNvbWUga2luZCBvZiBwcm90ZWN0aW9uIGluIHBsYWNlIGZvciB0
+aGF0Pw0KDQpJJ20gd2lsbGluZyB0byBjb250cmlidXRlIGFuZCBmaXggdGhlIEVDQyBwYXJ0LCBi
+dXQgSSBmaXJzdCBuZWVkIHRvIHVuZGVyc3RhbmQgd2hhdCBvdGhlciBtZWNoYW5pc21zIG9yIHRo
+cmVhZCBzYWZldHkgaXNzdWVzIHRoZXJlIG1pZ2h0IHN0aWxsIGJlLi4uDQoNClRoYW5rcyENCg0K
+QlIsDQoNCk1hdHRoaWFzDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFJp
+Y2hhcmQgV2VpbmJlcmdlciBbbWFpbHRvOnJpY2hhcmQud2VpbmJlcmdlckBnbWFpbC5jb21dIA0K
+U2VudDogU3VuZGF5LCBNYXkgMjksIDIwMTYgNDoyNCBQTQ0KVG86IE1hdHRoaWFzIEF1Y2htYW5u
+DQpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1YmplY3Q6IFJlOiBtdGQgbG9j
+a2luZw0KDQpPbiBTdW4sIE1heSAyOSwgMjAxNiBhdCAzOjM4IFBNLCBNYXR0aGlhcyBBdWNobWFu
+biA8bS5hdWNobWFubkBhcnRlY2guYXQ+IHdyb3RlOg0KPiBIaSBhbGwhDQo+DQo+IEkgaGF2ZSBh
+IHF1ZXN0aW9uIC0gc29ycnkgaWYgaXQgdHVybnMgb3V0IHRvIGJlIGEgYmVnaW5uZXIncyBxdWVz
+dGlvbi4gSSdtIHVzaW5nIGtlcm5lbCB2ZXJzaW9uIDMuMTcsIGJ1dCBhcyBmYXIgYXMgSSBjYW4g
+dGVsbCBteSBxdWVzdGlvbiBzdGlsbCBhcHBsaWVzLg0KPg0KPiBNeSBxdWVzdGlvbiBpcyBob3cg
+bG9ja2luZyBpcyBlbnN1cmVkIHdpdGggTVRELiBJIHVuZGVyc3RhbmQgdGhhdCB1c3VhbGx5IHRo
+ZXJlIHdvdWxkIG9ubHkgYmUgb25lIGZpbGUgc3lzdGVtIGF0dGFjaGVkIHRvIG9uZSBtdGQgcGFy
+dGl0aW9uLCBidXQgd2hhdCBpZiBJIGNvbmN1cnJlbnRseSByYW4gbXVsdGlwbGUgaW5zdGFuY2Vz
+IG9mIG5hbmRkdW1wIGZyb20gdXNlcnNwYWNlPyBJcyBNVEQgdGhyZWFkLXNhZmU/DQo+DQo+IEkn
+bSBhc2tpbmcgc2luY2UgSSBoYWQgYW4gaXNzdWUgd2hlcmUgd2hlbiBJIGNhbGxlZCBuYW5kZHVt
+cCBvbiB0d28gcGFydGl0aW9ucyBvZiB0aGUgc2FtZSBOQU5EIGZsYXNoIHNpbXVsdGFuZW91c2x5
+LCB0aGUgRUNDIGVycm9ycyB3b3VsZCBjb3VudCB1cCBmb3IgYm90aCBuYW5kZHVtcHMgYWx0aG91
+Z2ggb25seSBvbmUgcGFydGl0aW9uIGhhZCBFQ0MgZXJyb3JzLiBFeHBlcmltZW50YWxseSBhZGRp
+bmcgYSBtdXRleCB0byBtdGRwYXJ0LmMncyBwYXJ0X3JlYWQoKSBmdW5jdGlvbiBzb2x2ZWQgdGhl
+IGlzc3VlLg0KDQpJSVJDIEVDQyBlcnJvciBjb3VudGluZyBpcyBub3QgdGhyZWFkIHNhZmUgYXQg
+YWxsLg0KU28sIHllcyB0aGUgYmVoYXZpb3IgaXMgaW5kZW50ZWQuDQouLi5hdCBsZWFzdCBub2Jv
+ZHkgY2FyZWQgZW5vdWdoIHRvIG1ha2UgaXQgYmV0dGVyLg0KDQotLSANClRoYW5rcywNCi8vcmlj
+aGFyZA0K
