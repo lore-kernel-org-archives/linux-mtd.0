@@ -1,28 +1,16 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b6iYO-0006E0-CC
- for linux-mtd@lists.infradead.org; Sat, 28 May 2016 18:01:41 +0000
-Date: Sat, 28 May 2016 20:01:15 +0200
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, Pawel Moll
- <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Richard
- Weinberger <richard@nod.at>, Kamal Dasu <kdasu.kdev@gmail.com>, open list
- <linux-kernel@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED
- DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Rob Herring
- <robh+dt@kernel.org>, "open list:BROADCOM STB NAND FLASH DRIVER"
- <bcm-kernel-feedback-list@broadcom.com>, Kumar Gala <galak@codeaurora.org>,
- Simon Arlott <simon@fire.lp0.eu>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: brcmnand: Add v7.2 controller support
-Message-ID: <20160528200115.1cdb1d29@free-electrons.com>
-In-Reply-To: <1464386293-18862-1-git-send-email-f.fainelli@gmail.com>
-References: <1464386293-18862-1-git-send-email-f.fainelli@gmail.com>
+Received: from mx.artech.at ([188.21.106.106] helo=mail.artech.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b70ve-0006FR-JU
+ for linux-mtd@lists.infradead.org; Sun, 29 May 2016 13:38:55 +0000
+From: Matthias Auchmann <m.auchmann@artech.at>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Sun, 29 May 2016 15:38:28 +0200
+Subject: mtd locking
+Message-ID: <566B344A0B1AB14EB2486D887B6FF9E0331F3DB470@SRV01.ARTech.local>
+Content-Language: de-DE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,23 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi all!
 
-On Fri, 27 May 2016 14:58:11 -0700, Florian Fainelli wrote:
+I have a question - sorry if it turns out to be a beginner's question. I'm =
+using kernel version 3.17, but as far as I can tell my question still appli=
+es.
 
-> +	if (ctrl->nand_version >= 0x0702)
-> +		bits = 7;
->  	if (ctrl->nand_version >= 0x0600)
+My question is how locking is ensured with MTD. I understand that usually t=
+here would only be one file system attached to one mtd partition, but what =
+if I concurrently ran multiple instances of nanddump from userspace? Is MTD=
+ thread-safe?
 
-Don't you want an "else if" here ?
+I'm asking since I had an issue where when I called nanddump on two partiti=
+ons of the same NAND flash simultaneously, the ECC errors would count up fo=
+r both nanddumps although only one partition had ECC errors. Experimentally=
+ adding a mutex to mtdpart.c's part_read() function solved the issue.
 
-Otherwise, even for the 7.2 version of your controller bits will be set
-to 1.
+I then noticed that quite frequently in the MTD code, ecc_stats are saved, =
+then some reads are performed, and then ecc_stats are compared. No mutex or=
+ spinlock or whatever protection is used. Given that the ECC errors can res=
+ult in -EUCLEAN or a positive bitflip count (then resulting in scrubbing fo=
+r UBI for example)... I started to feel a little uncomfortable about the wh=
+ole MTD locking issue.
 
-Ditto when setting ctrl->max_oob.
+This is where the question comes from... could anyone shed light on this?
 
-Thomas
--- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+Thanks!
