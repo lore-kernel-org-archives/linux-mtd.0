@@ -1,24 +1,14 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b7JR9-0005US-4B
- for linux-mtd@lists.infradead.org; Mon, 30 May 2016 09:24:39 +0000
-Date: Mon, 30 May 2016 11:24:16 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Matthias Auchmann <m.auchmann@artech.at>
-Cc: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: mtd locking
-Message-ID: <20160530112416.73e8a875@bbrezillon>
-In-Reply-To: <574B15FE.8030206@nod.at>
-References: <566B344A0B1AB14EB2486D887B6FF9E0331F3DB470@SRV01.ARTech.local>
- <CAFLxGvz+9JqcLZwuUqOd1UsCNbbjD52ecd5Faj8PC12YhTuYiA@mail.gmail.com>
- <566B344A0B1AB14EB2486D887B6FF9E0331F3DB473@SRV01.ARTech.local>
- <574B15FE.8030206@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ id 1b7LwV-00048q-KO
+ for linux-mtd@lists.infradead.org; Mon, 30 May 2016 12:05:13 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, dedekind1@gmail.com,
+ goliath@sigma-star.at, alex@nextthing.co, beanhuo@micron.com
+Subject: [RFC] UBI: MLC Support v0
+Date: Mon, 30 May 2016 14:04:21 +0200
+Message-Id: <1464609874-15488-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +18,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Brian and Sasha
+as announced in [1] I'd like to submit the very first patch series to
+have MLC support in UBI (and therefore also UBIFS).
+The code has not changed much since the announcement but now the patches
+are in a more reviewable shape. Still not mainline ready but better.
+I'm sending this now as I'm on vacation until June 15th and hope that
+we get some reviews on the concept.
+The series consists of three parts:
+	a) Generic UBI rework to make the MLC implementation possible.
+	b) SLC emulation mode to access only lower pages on MLC NAND.
+	c) LEB consolidation to exploit MLC NAND's higher pages.
 
-Hi Matthias,
+[1] http://lists.infradead.org/pipermail/linux-mtd/2016-April/067322.html
 
-On Sun, 29 May 2016 18:17:02 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Thanks,
+//richard
 
-> Hi!
-> 
-> Am 29.05.2016 um 17:53 schrieb Matthias Auchmann:
-> > By intended you mean it's wrong and we know, but it's still wrong, right?  
-> 
-> I'd say lazy. Sometimes counters don't need to be exact.
-> Having exact counting is expensive. See network stack.
-> 
-> I'm not sure what the exact reasons in the ECC error counting
-> case are.
-> Maybe Brian or Boris can tell more.
-> 
-> > What about thread safety in general? Is the rest of the mtd system thread safe? Can it happen that e.g. a command is issued to NAND, and before the buffer is read, another command is issued (and similar scenarios)? Or is there some kind of protection in place for that?  
-> 
-> NAND chip access is strictly serialized. :-)
-> See nand_get_device().
+---
 
-Yep, read/write accesses are correctly protected. The statistics update
-are also protected, but it does not prevent tools like nanddump to
-retrieve incorrect information. Actually, nanddump uses the following
-sequence:
+David Gstir (1):
+      ubi: Add debugfs knob to force LEB consolidation
 
-1/ get stats
-2/ read stuff
-3/ get new stats and compare with information retrieved in #1
+Richard Weinberger (12):
+      ubi: Undo "UBI: modify ubi_wl_flush function to clear work queue for a lnum"
+      ubi: Rework UBI worker
+      ubi: auto re-size after UBI thread is ready
+      ubi: Kill ubi->alc_mutex
+      ubi: Get rid of __schedule_ubi_work()
+      ubi: Remove tst_disable_bgt debugfs knob
+      ubi: Move work related functions to work.c
+      ubi: Remove lnum and vol_id from erase work
+      ubi: Remove usless debug info from wear_leveling_worker()
+      ubi: SLC mode
+      ubi: LEB consolidation
+      ubi: Add debugfs knob to trigger LEB consolidation
 
-Since we can't lock access to the MTD device for the whole sequence,
-the statistics might change because of other read accesses on the same
-MTD device.
-
-I recently suggested the addition of a new ioctl to address that [1].
-
-Regards,
-
-Boris
-
-[1]http://thread.gmane.org/gmane.linux.drivers.mtd/66834
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+ drivers/mtd/ubi/Kconfig       |   4 +
+ drivers/mtd/ubi/Makefile      |   3 +-
+ drivers/mtd/ubi/attach.c      | 407 ++++++++++++++++++--------------
+ drivers/mtd/ubi/build.c       |  41 ++--
+ drivers/mtd/ubi/cdev.c        |  14 +-
+ drivers/mtd/ubi/consolidate.c | 516 ++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/debug.c       |  49 ++--
+ drivers/mtd/ubi/debug.h       |  19 +-
+ drivers/mtd/ubi/eba.c         | 429 ++++++++++++++++++++++++++++------
+ drivers/mtd/ubi/fastmap-wl.c  |  33 ++-
+ drivers/mtd/ubi/fastmap.c     | 265 ++++++++++++++-------
+ drivers/mtd/ubi/io.c          | 426 +++++++++++++++++++++++++--------
+ drivers/mtd/ubi/kapi.c        |  43 +---
+ drivers/mtd/ubi/ubi-media.h   |  18 +-
+ drivers/mtd/ubi/ubi.h         | 221 ++++++++++++++----
+ drivers/mtd/ubi/upd.c         |   7 +-
+ drivers/mtd/ubi/vmt.c         | 106 +++++----
+ drivers/mtd/ubi/vtbl.c        |  87 ++++---
+ drivers/mtd/ubi/wl.c          | 531 +++++++++++++++---------------------------
+ drivers/mtd/ubi/work.c        | 332 ++++++++++++++++++++++++++
+ include/linux/mtd/ubi.h       |   1 -
+ 21 files changed, 2554 insertions(+), 998 deletions(-)
