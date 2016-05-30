@@ -1,15 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b7Lws-0005KW-IC
- for linux-mtd@lists.infradead.org; Mon, 30 May 2016 12:05:42 +0000
+ id 1b7Lws-0005Kf-I9
+ for linux-mtd@lists.infradead.org; Mon, 30 May 2016 12:05:44 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: boris.brezillon@free-electrons.com, dedekind1@gmail.com,
  goliath@sigma-star.at, alex@nextthing.co, beanhuo@micron.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH 07/13] ubi: Move work related functions to work.c
-Date: Mon, 30 May 2016 14:04:28 +0200
-Message-Id: <1464609874-15488-8-git-send-email-richard@nod.at>
+Subject: [PATCH 10/13] ubi: SLC mode
+Date: Mon, 30 May 2016 14:04:31 +0200
+Message-Id: <1464609874-15488-11-git-send-email-richard@nod.at>
 In-Reply-To: <1464609874-15488-1-git-send-email-richard@nod.at>
 References: <1464609874-15488-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,874 +21,768 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Implements a software SLC mode emulation such that we can write
+MLC chips in SLC mode.
+As only lower pages are written a power cut will not corrupt data.
+This patch was implemented by Boris Brezillon and me.
+
+TODO: some self checks are disabled because vmalloc()ing 2MiB+ (MLC)
+will OOM the kernel soon.
+
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/Makefile     |   2 +-
- drivers/mtd/ubi/cdev.c       |   2 +-
- drivers/mtd/ubi/fastmap-wl.c |   4 +-
- drivers/mtd/ubi/fastmap.c    |   4 +-
- drivers/mtd/ubi/kapi.c       |   2 +-
- drivers/mtd/ubi/ubi.h        |  16 ++-
- drivers/mtd/ubi/upd.c        |   4 +-
- drivers/mtd/ubi/vmt.c        |   2 +-
- drivers/mtd/ubi/wl.c         | 309 +-----------------------------------------
- drivers/mtd/ubi/work.c       | 316 +++++++++++++++++++++++++++++++++++++++++++
- 10 files changed, 343 insertions(+), 318 deletions(-)
- create mode 100644 drivers/mtd/ubi/work.c
+ drivers/mtd/ubi/build.c |   8 +-
+ drivers/mtd/ubi/io.c    | 426 ++++++++++++++++++++++++++++++++++++------------
+ drivers/mtd/ubi/ubi.h   |  10 ++
+ 3 files changed, 340 insertions(+), 104 deletions(-)
 
-diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
-index 4e3c3d7..e9d4b1d 100644
---- a/drivers/mtd/ubi/Makefile
-+++ b/drivers/mtd/ubi/Makefile
-@@ -1,7 +1,7 @@
- obj-$(CONFIG_MTD_UBI) += ubi.o
- 
- ubi-y += vtbl.o vmt.o upd.o build.o cdev.o kapi.o eba.o io.o wl.o attach.o
--ubi-y += misc.o debug.o
-+ubi-y += work.o misc.o debug.o
- ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
- ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
- 
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 7e49de9..833c0a82 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -495,7 +495,7 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
- 		if (err)
- 			break;
- 
--		err = ubi_wl_flush(ubi);
-+		err = ubi_work_flush(ubi);
- 		break;
- 	}
- 
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index c740095..f6dc426 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -184,7 +184,7 @@ static int produce_free_peb(struct ubi_device *ubi)
- {
- 	while (!ubi->free.rb_node) {
- 		dbg_wl("do one work synchronously");
--		if (!wl_do_one_work_sync(ubi)) {
-+		if (!ubi_work_join_one(ubi)) {
- 			/* Nothing to do. We have to give up. */
- 			return -ENOSPC;
- 		}
-@@ -301,7 +301,7 @@ int ubi_ensure_anchor_pebs(struct ubi_device *ubi)
- 
- 	wrk->anchor = 1;
- 	wrk->func = &wear_leveling_worker;
--	schedule_ubi_work(ubi, wrk);
-+	ubi_schedule_work(ubi, wrk);
- 	return 0;
- }
- 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 3d5e674..c878313 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1607,11 +1607,11 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 		new_fm->e[0] = tmp_e;
- 	}
- 
--	ubi_wl_suspend_work(ubi);
-+	ubi_work_suspend(ubi);
- 	down_write(&ubi->fm_eba_sem);
- 	ret = ubi_write_fastmap(ubi, new_fm);
- 	up_write(&ubi->fm_eba_sem);
--	ubi_wl_resume_work(ubi);
-+	ubi_work_resume(ubi);
- 
- 	if (ret)
- 		goto err;
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index 11ca859..dc315c2 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -624,7 +624,7 @@ int ubi_leb_erase(struct ubi_volume_desc *desc, int lnum)
- 	if (err)
- 		return err;
- 
--	return ubi_wl_flush(ubi);
-+	return ubi_work_flush(ubi);
- }
- EXPORT_SYMBOL_GPL(ubi_leb_erase);
- 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 107a9d9..0f57786 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -859,19 +859,25 @@ int self_check_eba(struct ubi_device *ubi, struct ubi_attach_info *ai_fastmap,
- int ubi_wl_get_peb(struct ubi_device *ubi);
- int ubi_wl_put_peb(struct ubi_device *ubi, int vol_id, int lnum,
- 		   int pnum, int torture);
--int ubi_wl_flush(struct ubi_device *ubi);
- int ubi_wl_scrub_peb(struct ubi_device *ubi, int pnum);
- int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai);
- void ubi_wl_close(struct ubi_device *ubi);
--int ubi_thread(void *u);
- struct ubi_wl_entry *ubi_wl_get_fm_peb(struct ubi_device *ubi, int anchor);
- int ubi_wl_put_fm_peb(struct ubi_device *ubi, struct ubi_wl_entry *used_e,
- 		      int lnum, int torture);
--int ubi_is_erase_work(struct ubi_work *wrk);
- void ubi_refill_pools(struct ubi_device *ubi);
- int ubi_ensure_anchor_pebs(struct ubi_device *ubi);
--void ubi_wl_suspend_work(struct ubi_device *ubi);
--void ubi_wl_resume_work(struct ubi_device *ubi);
-+
-+/* work.c */
-+int ubi_thread(void *u);
-+int ubi_is_erase_work(struct ubi_work *wrk);
-+void ubi_work_suspend(struct ubi_device *ubi);
-+void ubi_work_resume(struct ubi_device *ubi);
-+void ubi_schedule_work(struct ubi_device *ubi, struct ubi_work *wrk);
-+void ubi_work_close(struct ubi_device *ubi, int error);
-+struct ubi_work *ubi_alloc_work(struct ubi_device *ubi);
-+int ubi_work_flush(struct ubi_device *ubi);
-+bool ubi_work_join_one(struct ubi_device *ubi);
- 
- /* io.c */
- int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
-diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
-index b7901ce..ffaface 100644
---- a/drivers/mtd/ubi/upd.c
-+++ b/drivers/mtd/ubi/upd.c
-@@ -149,7 +149,7 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
- 	}
- 
- 	if (bytes == 0) {
--		err = ubi_wl_flush(ubi);
-+		err = ubi_work_flush(ubi);
- 		if (err)
- 			return err;
- 
-@@ -361,7 +361,7 @@ int ubi_more_update_data(struct ubi_device *ubi, struct ubi_volume *vol,
- 
- 	ubi_assert(vol->upd_received <= vol->upd_bytes);
- 	if (vol->upd_received == vol->upd_bytes) {
--		err = ubi_wl_flush(ubi);
-+		err = ubi_work_flush(ubi);
- 		if (err)
- 			return err;
- 
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 714e0b3..8a2e081 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -237,7 +237,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	 * Finish all pending erases because there may be some LEBs belonging
- 	 * to the same volume ID.
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 1448f05..99e31ed 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -650,7 +650,10 @@ static int io_init(struct ubi_device *ubi, int max_beb_per1024)
+ 	 * physical eraseblocks maximum.
  	 */
--	err = ubi_wl_flush(ubi);
-+	err = ubi_work_flush(ubi);
- 	if (err)
- 		goto out_acc;
  
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index a80f019..35196c8 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -129,12 +129,6 @@
-  */
- #define WL_FREE_MAX_DIFF (2*UBI_WL_THRESHOLD)
+-	ubi->peb_size   = ubi->mtd->erasesize;
++	ubi->consolidated_peb_size = ubi->mtd->erasesize;
++	ubi->peb_size   = ubi->consolidated_peb_size /
++			  mtd_pairing_groups_per_eb(ubi->mtd);
++	ubi->lebs_per_consolidated_peb = mtd_pairing_groups_per_eb(ubi->mtd);
+ 	ubi->peb_count  = mtd_div_by_eb(ubi->mtd->size, ubi->mtd);
+ 	ubi->flash_size = ubi->mtd->size;
  
--/*
-- * Maximum number of consecutive background thread failures which is enough to
-- * switch to read-only mode.
-- */
--#define WL_MAX_FAILURES 32
--
- static int self_check_ec(struct ubi_device *ubi, int pnum, int ec);
- static int self_check_in_wl_tree(const struct ubi_device *ubi,
- 				 struct ubi_wl_entry *e, struct rb_root *root);
-@@ -192,151 +186,6 @@ static void wl_entry_destroy(struct ubi_device *ubi, struct ubi_wl_entry *e)
- }
+@@ -969,7 +972,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+ 		goto out_free;
  
- /**
-- * destroy_work - destroy an UBI work.
-- * @ref: kref object
-- *
-- * This function is called by kref upon the last reference is gone.
-- */
--static void destroy_work(struct kref *ref)
--{
--	struct ubi_work *wrk = container_of(ref, struct ubi_work, ref);
--
--	kfree(wrk);
--}
--
--/**
-- * wl_work_suspended - Check whether UBI work is suspended.
-- * @e: the wear-leveling entry to add
-- */
--static bool wl_work_suspended(struct ubi_device *ubi)
--{
--	return ubi->thread_suspended || !ubi->thread_enabled;
--}
--
--/**
-- * do_work - do one pending work.
-- * @ubi: UBI device description object
-- *
-- * This function returns zero in case of success and a negative error code in
-- * case of failure.
-- */
--static int do_work(struct ubi_device *ubi)
--{
--	int err;
--	struct ubi_work *wrk;
--
--	cond_resched();
--
--	mutex_lock(&ubi->work_mutex);
--	spin_lock(&ubi->wl_lock);
--	ubi_assert(!ubi->cur_work);
--	if (list_empty(&ubi->works) || wl_work_suspended(ubi)) {
--		spin_unlock(&ubi->wl_lock);
--		mutex_unlock(&ubi->work_mutex);
--		return 0;
--	}
--
--	wrk = list_entry(ubi->works.next, struct ubi_work, list);
--	list_del(&wrk->list);
--	ubi->works_count -= 1;
--	ubi_assert(ubi->works_count >= 0);
--	ubi->cur_work = wrk;
--	spin_unlock(&ubi->wl_lock);
--	mutex_unlock(&ubi->work_mutex);
--
--	/*
--	 * Call the worker function. Do not touch the work structure
--	 * after this call as it will have been freed or reused by that
--	 * time by the worker function.
--	 */
--	err = wrk->func(ubi, wrk, 0);
--	wrk->ret = err;
--	if (err)
--		ubi_err(ubi, "work failed with error code %d", err);
--
--	spin_lock(&ubi->wl_lock);
--	ubi->cur_work = NULL;
--	spin_unlock(&ubi->wl_lock);
--
--	complete_all(&wrk->comp);
--
--	spin_lock(&ubi->wl_lock);
--	kref_put(&wrk->ref, destroy_work);
--	spin_unlock(&ubi->wl_lock);
--
--	return err;
--}
--
--void ubi_wl_suspend_work(struct ubi_device *ubi)
--{
--	struct ubi_work *wrk = NULL;
--
--	mutex_lock(&ubi->work_mutex);
--	spin_lock(&ubi->wl_lock);
--
--	wrk = ubi->cur_work;
--	if (wrk)
--		kref_get(&wrk->ref);
--
--	ubi->thread_suspended = 1;
--
--	spin_unlock(&ubi->wl_lock);
--	mutex_unlock(&ubi->work_mutex);
--
--	if (wrk) {
--		wait_for_completion(&wrk->comp);
--		spin_lock(&ubi->wl_lock);
--		kref_put(&wrk->ref, destroy_work);
--		spin_unlock(&ubi->wl_lock);
--	}
--}
--
--void ubi_wl_resume_work(struct ubi_device *ubi)
--{
--	ubi->thread_suspended = 0;
--	wake_up_process(ubi->bgt_thread);
--}
--
--/**
-- * wl_do_one_work_sync - Run one work in sync.
-- * @ubi: UBI device description object
-- *
-- * This function joins one work and waits for it.
-- * Call it when you run out of free LEBs need to wait for one.
-- * It returns false if no pending work was found to join, true otherwise.
-- */
--static bool wl_do_one_work_sync(struct ubi_device *ubi)
--{
--	struct ubi_work *wrk;
--	bool success = false;
--
--	mutex_lock(&ubi->work_mutex);
--	spin_lock(&ubi->wl_lock);
--	if (ubi->cur_work)
--		wrk = ubi->cur_work;
--	else
--		wrk = list_first_entry_or_null(&ubi->works,
--			struct ubi_work, list);
--
--	if (wrk)
--		kref_get(&wrk->ref);
--	spin_unlock(&ubi->wl_lock);
--	mutex_unlock(&ubi->work_mutex);
--
--	if (wrk) {
--		wait_for_completion(&wrk->comp);
--		if (wrk->ret == 0)
--			success = true;
--
--		spin_lock(&ubi->wl_lock);
--		kref_put(&wrk->ref, destroy_work);
--		spin_unlock(&ubi->wl_lock);
--	}
--
--	return success;
--}
--
--/**
-  * in_wl_tree - check if wear-leveling entry is present in a WL RB-tree.
-  * @e: the wear-leveling entry to check
-  * @root: the root of the tree
-@@ -629,32 +478,6 @@ repeat:
- 	spin_unlock(&ubi->wl_lock);
- }
+ 	err = -ENOMEM;
+-	ubi->peb_buf = vmalloc(ubi->peb_size);
++	ubi->peb_buf = vmalloc(ubi->consolidated_peb_size);
+ 	if (!ubi->peb_buf)
+ 		goto out_free;
  
--/**
-- * schedule_ubi_work - schedule a work.
-- * @ubi: UBI device description object
-- * @wrk: the work to schedule
-- *
-- * This function adds a work defined by @wrk to the tail of the pending works
-- * list.
-- */
--static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
--{
--	ubi_assert(ubi->thread_enabled);
--
--	mutex_lock(&ubi->work_mutex);
--	spin_lock(&ubi->wl_lock);
--	INIT_LIST_HEAD(&wrk->list);
--	kref_init(&wrk->ref);
--	init_completion(&wrk->comp);
--	list_add_tail(&wrk->list, &ubi->works);
--	ubi_assert(ubi->works_count >= 0);
--	ubi->works_count += 1;
--	if (!wl_work_suspended(ubi))
--		wake_up_process(ubi->bgt_thread);
--	spin_unlock(&ubi->wl_lock);
--	mutex_unlock(&ubi->work_mutex);
--}
--
- static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 			int shutdown);
+@@ -1023,6 +1026,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+ 		ubi->image_seq);
+ 	ubi_msg(ubi, "available PEBs: %d, total reserved PEBs: %d, PEBs reserved for bad PEB handling: %d",
+ 		ubi->avail_pebs, ubi->rsvd_pebs, ubi->beb_rsvd_pebs);
++	ubi_msg(ubi, "LEBs per PEB: %d", ubi->lebs_per_consolidated_peb);
  
-@@ -689,7 +512,8 @@ static int schedule_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
- 	wl_wrk->lnum = lnum;
- 	wl_wrk->torture = torture;
- 
--	schedule_ubi_work(ubi, wl_wrk);
-+	ubi_schedule_work(ubi, wl_wrk);
-+
- 	return 0;
- }
- 
-@@ -1103,7 +927,7 @@ static int ensure_wear_leveling(struct ubi_device *ubi)
- 
- 	wrk->anchor = 0;
- 	wrk->func = &wear_leveling_worker;
--	schedule_ubi_work(ubi, wrk);
-+	ubi_schedule_work(ubi, wrk);
- 
- 	return err;
- 
-@@ -1417,39 +1241,6 @@ retry:
- }
+ 	/*
+ 	 * The below lock makes sure we do not race with 'ubi_thread()' which
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index 10cf3b5..604434a 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -99,10 +99,71 @@ static int self_check_peb_vid_hdr(const struct ubi_device *ubi, int pnum);
+ static int self_check_vid_hdr(const struct ubi_device *ubi, int pnum,
+ 			      const struct ubi_vid_hdr *vid_hdr);
+ static int self_check_write(struct ubi_device *ubi, const void *buf, int pnum,
+-			    int offset, int len);
++			    int offset, int len, bool raw);
  
  /**
-- * ubi_wl_flush - flush all pending works.
-- * @ubi: UBI device description object
-- *
-- */
--int ubi_wl_flush(struct ubi_device *ubi)
--{
--	int ret = 0;
--	struct ubi_work *wrk = NULL;
--
--	dbg_wl("flush (%d pending works)", ubi->works_count);
--
--	/* Find the last entry in the work list and wait for it. */
--	mutex_lock(&ubi->work_mutex);
--	spin_lock(&ubi->wl_lock);
--	if (!list_empty(&ubi->works)) {
--		wrk = list_last_entry(&ubi->works, struct ubi_work, list);
--		kref_get(&wrk->ref);
--	}
--	spin_unlock(&ubi->wl_lock);
--	mutex_unlock(&ubi->work_mutex);
--
--	if (wrk) {
--		wait_for_completion(&wrk->comp);
--		ret = wrk->ret;
--		spin_lock(&ubi->wl_lock);
--		kref_put(&wrk->ref, destroy_work);
--		spin_unlock(&ubi->wl_lock);
--	}
--
--	return ret;
--}
--
--/**
-  * tree_destroy - destroy an RB-tree.
-  * @ubi: UBI device description object
-  * @root: the root of the tree to destroy
-@@ -1481,94 +1272,6 @@ static void tree_destroy(struct ubi_device *ubi, struct rb_root *root)
- 	}
- }
- 
--static void __shutdown_work(struct ubi_device *ubi, int error)
--{
--	struct ubi_work *wrk;
--
--	while (!list_empty(&ubi->works)) {
--		wrk = list_entry(ubi->works.next, struct ubi_work, list);
--		list_del(&wrk->list);
--		wrk->func(ubi, wrk, 1);
--		wrk->ret = error;
--		complete_all(&wrk->comp);
--		spin_lock(&ubi->wl_lock);
--		kref_put(&wrk->ref, destroy_work);
--		spin_unlock(&ubi->wl_lock);
--		ubi->works_count -= 1;
--		ubi_assert(ubi->works_count >= 0);
--	}
--}
--
--/**
-- * ubi_thread - UBI background thread.
-- * @u: the UBI device description object pointer
-- */
--int ubi_thread(void *u)
--{
--	int failures = 0;
--	struct ubi_device *ubi = u;
--
--	ubi_msg(ubi, "background thread \"%s\" started, PID %d",
--		ubi->bgt_name, task_pid_nr(current));
--
--	set_freezable();
--	for (;;) {
--		int err;
--
--		if (kthread_should_stop())
--			break;
--
--		if (try_to_freeze())
--			continue;
--
--		spin_lock(&ubi->wl_lock);
--		if (list_empty(&ubi->works) || ubi->ro_mode ||
--		    wl_work_suspended(ubi)) {
--			set_current_state(TASK_INTERRUPTIBLE);
--			spin_unlock(&ubi->wl_lock);
--			schedule();
--			continue;
--		}
--		spin_unlock(&ubi->wl_lock);
--
--		err = do_work(ubi);
--		if (err) {
--			ubi_err(ubi, "%s: work failed with error code %d",
--				ubi->bgt_name, err);
--			if (failures++ > WL_MAX_FAILURES) {
--				/*
--				 * Too many failures, disable the thread and
--				 * switch to read-only mode.
--				 */
--				ubi_err(ubi, "%s: %d consecutive failures",
--					ubi->bgt_name, WL_MAX_FAILURES);
--				__shutdown_work(ubi, -EROFS);
--				ubi_ro_mode(ubi);
--				ubi->thread_enabled = 0;
--				continue;
--			}
--		} else
--			failures = 0;
--
--		cond_resched();
--	}
--
--	dbg_wl("background thread \"%s\" is killed", ubi->bgt_name);
--	return 0;
--}
--
--/**
-- * shutdown_work - shutdown all pending works.
-- * @ubi: UBI device description object
-- */
--static void shutdown_work(struct ubi_device *ubi, int error)
--{
--#ifdef CONFIG_MTD_UBI_FASTMAP
--	flush_work(&ubi->fm_work);
--#endif
--	__shutdown_work(ubi, error);
--}
--
- /**
-  * ubi_wl_init - initialize the WL sub-system using attaching information.
-  * @ubi: UBI device description object
-@@ -1704,7 +1407,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	return 0;
- 
- out_free:
--	shutdown_work(ubi, err);
-+	ubi_work_close(ubi, err);
- 	tree_destroy(ubi, &ubi->used);
- 	tree_destroy(ubi, &ubi->free);
- 	tree_destroy(ubi, &ubi->scrub);
-@@ -1737,7 +1440,7 @@ void ubi_wl_close(struct ubi_device *ubi)
- {
- 	dbg_wl("close the WL sub-system");
- 	ubi_fastmap_close(ubi);
--	shutdown_work(ubi, 0);
-+	ubi_work_close(ubi, 0);
- 	protection_queue_destroy(ubi);
- 	tree_destroy(ubi, &ubi->used);
- 	tree_destroy(ubi, &ubi->erroneous);
-@@ -1872,7 +1575,7 @@ static int produce_free_peb(struct ubi_device *ubi)
- 		spin_unlock(&ubi->wl_lock);
- 
- 		dbg_wl("do one work synchronously");
--		if (!wl_do_one_work_sync(ubi)) {
-+		if (!ubi_work_join_one(ubi)) {
- 			spin_lock(&ubi->wl_lock);
- 			/* Nothing to do. We have to give up. */
- 			return -ENOSPC;
-diff --git a/drivers/mtd/ubi/work.c b/drivers/mtd/ubi/work.c
-new file mode 100644
-index 0000000..d2f8ba8
---- /dev/null
-+++ b/drivers/mtd/ubi/work.c
-@@ -0,0 +1,316 @@
-+#include <linux/slab.h>
-+#include <linux/crc32.h>
-+#include <linux/freezer.h>
-+#include <linux/kthread.h>
-+#include "ubi.h"
-+
-+/*
-+ * Maximum number of consecutive background thread failures which is enough to
-+ * switch to read-only mode.
-+ */
-+#define WORK_MAX_FAILURES 32
-+
-+/**
-+ * work_suspended - Check whether UBI work is suspended.
-+ */
-+static bool work_suspended(struct ubi_device *ubi)
-+{
-+	return ubi->thread_suspended || !ubi->thread_enabled;
-+}
-+
-+
-+/**
-+ * ubi_schedule_work - schedule a work.
+- * ubi_io_read - read data from a physical eraseblock.
++ * ubi_io_mtd_read - mtd_read wrapper handling MLC specificities.
 + * @ubi: UBI device description object
-+ * @wrk: the work to schedule
++ * @buf: buffer where to store the read data
++ * @pnum: physical eraseblock number to read from
++ * @offset: offset within the physical eraseblock from where to read
++ * @len: how many bytes to read
++ * @read: number of bytes successfully read from the underlying MTD device
 + *
-+ * This function adds a work defined by @wrk to the tail of the pending works
-+ * list.
-+ */
-+void ubi_schedule_work(struct ubi_device *ubi, struct ubi_work *wrk)
-+{
-+	ubi_assert(ubi->thread_enabled);
-+
-+	mutex_lock(&ubi->work_mutex);
-+	spin_lock(&ubi->wl_lock);
-+	list_add_tail(&wrk->list, &ubi->works);
-+	ubi_assert(ubi->works_count >= 0);
-+	ubi->works_count += 1;
-+	if (!work_suspended(ubi))
-+		wake_up_process(ubi->bgt_thread);
-+	spin_unlock(&ubi->wl_lock);
-+	mutex_unlock(&ubi->work_mutex);
-+}
-+
-+struct ubi_work *ubi_alloc_work(struct ubi_device *ubi)
-+{
-+	struct ubi_work *wrk;
-+
-+	wrk = kzalloc(sizeof(*wrk), GFP_NOFS);
-+	if (!wrk)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&wrk->list);
-+	kref_init(&wrk->ref);
-+	init_completion(&wrk->comp);
-+
-+	return wrk;
-+}
-+
-+/**
-+ * destroy_work - destroy an UBI work.
-+ * @ref: kref object
++ * This function reads data from offset @offset of physical eraseblock @pnum
++ * and stores the read data in the @buf buffer. The following return codes are
++ * possible:
 + *
-+ * This function is called by kref upon the last reference is gone.
++ * o %0 if all the requested data were successfully read;
++ * o other negative error codes in case of other errors.
 + */
-+static void destroy_work(struct kref *ref)
++static int ubi_io_mtd_read(const struct ubi_device *ubi, void *buf, int pnum,
++			   int offset, int len, size_t *read, bool raw)
 +{
-+	struct ubi_work *wrk = container_of(ref, struct ubi_work, ref);
-+
-+	kfree(wrk);
-+}
-+
-+static void shutdown_work(struct ubi_device *ubi, int error)
-+{
-+	struct ubi_work *wrk;
-+
-+	while (!list_empty(&ubi->works)) {
-+		wrk = list_entry(ubi->works.next, struct ubi_work, list);
-+		list_del_init(&wrk->list);
-+		wrk->func(ubi, wrk, 1);
-+		wrk->ret = error;
-+		complete_all(&wrk->comp);
-+		spin_lock(&ubi->wl_lock);
-+		kref_put(&wrk->ref, destroy_work);
-+		spin_unlock(&ubi->wl_lock);
-+		ubi->works_count -= 1;
-+		ubi_assert(ubi->works_count >= 0);
-+	}
-+}
-+
-+/**
-+ * ubi_work_close - shutdown all pending works.
-+ * @ubi: UBI device description object
-+ */
-+void ubi_work_close(struct ubi_device *ubi, int error)
-+{
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+	flush_work(&ubi->fm_work);
-+#endif
-+	shutdown_work(ubi, error);
-+}
-+
-+/**
-+ * do_work - do one pending work.
-+ * @ubi: UBI device description object
-+ *
-+ * This function returns zero in case of success and a negative error code in
-+ * case of failure.
-+ */
-+static int do_work(struct ubi_device *ubi)
-+{
-+	int err;
-+	struct ubi_work *wrk;
-+
-+	cond_resched();
-+
-+	mutex_lock(&ubi->work_mutex);
-+	spin_lock(&ubi->wl_lock);
-+	ubi_assert(!ubi->cur_work);
-+	if (list_empty(&ubi->works) || work_suspended(ubi)) {
-+		spin_unlock(&ubi->wl_lock);
-+		mutex_unlock(&ubi->work_mutex);
-+		return 0;
-+	}
-+
-+	wrk = list_entry(ubi->works.next, struct ubi_work, list);
-+	list_del_init(&wrk->list);
-+	ubi->works_count -= 1;
-+	ubi_assert(ubi->works_count >= 0);
-+	ubi->cur_work = wrk;
-+	spin_unlock(&ubi->wl_lock);
-+	mutex_unlock(&ubi->work_mutex);
++	loff_t addr = (loff_t)pnum * ubi->consolidated_peb_size;
++	int wunitoffs, chunklen, err = 0, end = offset + len;
++	struct mtd_pairing_info info;
 +
 +	/*
-+	 * Call the worker function. Do not touch the work structure
-+	 * after this call as it will have been freed or reused by that
-+	 * time by the worker function.
++	 * Call mtd_read() directly if we're doing a raw read of interacting
++	 * with an SLC chip.
 +	 */
-+	err = wrk->func(ubi, wrk, 0);
-+	wrk->ret = err;
-+	if (err)
-+		ubi_err(ubi, "work failed with error code %d", err);
++	if (raw || mtd_pairing_groups_per_eb(ubi->mtd) == 1)
++		return mtd_read(ubi->mtd, addr + offset, len, read, buf);
 +
-+	spin_lock(&ubi->wl_lock);
-+	ubi->cur_work = NULL;
-+	spin_unlock(&ubi->wl_lock);
++	wunitoffs = offset % ubi->mtd->writesize;
++	info.pair = offset / ubi->mtd->writesize;
++	info.group = 0;
++	*read = 0;
 +
-+	complete_all(&wrk->comp);
++	while (offset < end) {
++		int realoffs;
++		size_t chunkread = 0;
 +
-+	spin_lock(&ubi->wl_lock);
-+	kref_put(&wrk->ref, destroy_work);
-+	spin_unlock(&ubi->wl_lock);
++		chunklen = min_t(int, ubi->mtd->writesize - wunitoffs,
++				 end - offset);
++		realoffs = mtd_pairing_info_to_wunit(ubi->mtd, &info);
++		realoffs *= ubi->mtd->writesize;
++		realoffs += wunitoffs;
++		err = mtd_read(ubi->mtd, addr + realoffs, chunklen,
++			       &chunkread, buf);
++		*read += chunkread;
++		if (err && !mtd_is_bitflip(err))
++			return err;
++
++		offset += chunklen;
++		buf += chunklen;
++		info.pair++;
++
++		if (wunitoffs)
++			wunitoffs = 0;
++	}
 +
 +	return err;
 +}
 +
-+void ubi_work_suspend(struct ubi_device *ubi)
-+{
-+	struct ubi_work *wrk = NULL;
-+
-+	mutex_lock(&ubi->work_mutex);
-+	spin_lock(&ubi->wl_lock);
-+
-+	wrk = ubi->cur_work;
-+	if (wrk)
-+		kref_get(&wrk->ref);
-+
-+	ubi->thread_suspended = 1;
-+
-+	spin_unlock(&ubi->wl_lock);
-+	mutex_unlock(&ubi->work_mutex);
-+
-+	if (wrk) {
-+		wait_for_completion(&wrk->comp);
-+		spin_lock(&ubi->wl_lock);
-+		kref_put(&wrk->ref, destroy_work);
-+		spin_unlock(&ubi->wl_lock);
-+	}
-+}
-+
-+void ubi_work_resume(struct ubi_device *ubi)
-+{
-+	ubi->thread_suspended = 0;
-+	wake_up_process(ubi->bgt_thread);
-+}
-+
 +/**
-+ * ubi_work_join_one - Run one work in sync.
-+ * @ubi: UBI device description object
-+ *
-+ * This function joins one work and waits for it.
-+ * Call it when you run out of free LEBs need to wait for one.
-+ * It returns false if no pending work was found to join, true otherwise.
-+ */
-+bool ubi_work_join_one(struct ubi_device *ubi)
++ * __ubi_io_read - read data from a physical eraseblock.
+  * @ubi: UBI device description object
+  * @buf: buffer where to store the read data
+  * @pnum: physical eraseblock number to read from
+@@ -123,17 +184,17 @@ static int self_check_write(struct ubi_device *ubi, const void *buf, int pnum,
+  * o %-EIO if some I/O error occurred;
+  * o other negative error codes in case of other errors.
+  */
+-int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
+-		int len)
++static int __ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum,
++			 int offset, int len, bool raw)
+ {
++	int peb_size = raw ? ubi->consolidated_peb_size : ubi->peb_size;
+ 	int err, retries = 0;
+ 	size_t read;
+-	loff_t addr;
+ 
+ 	dbg_io("read %d bytes from PEB %d:%d", len, pnum, offset);
+ 
+ 	ubi_assert(pnum >= 0 && pnum < ubi->peb_count);
+-	ubi_assert(offset >= 0 && offset + len <= ubi->peb_size);
++	ubi_assert(offset >= 0 && offset + len <= peb_size);
+ 	ubi_assert(len > 0);
+ 
+ 	err = self_check_not_bad(ubi, pnum);
+@@ -162,9 +223,8 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
+ 	 */
+ 	*((uint8_t *)buf) ^= 0xFF;
+ 
+-	addr = (loff_t)pnum * ubi->peb_size + offset;
+ retry:
+-	err = mtd_read(ubi->mtd, addr, len, &read, buf);
++	err = ubi_io_mtd_read(ubi, buf, pnum, offset, len, &read, raw);
+ 	if (err) {
+ 		const char *errstr = mtd_is_eccerr(err) ? " (ECC error)" : "";
+ 
+@@ -215,6 +275,54 @@ retry:
+ 	return err;
+ }
+ 
++int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
++		int len)
 +{
-+	struct ubi_work *wrk;
-+	bool success = false;
-+
-+	mutex_lock(&ubi->work_mutex);
-+	spin_lock(&ubi->wl_lock);
-+	if (ubi->cur_work)
-+		wrk = ubi->cur_work;
-+	else
-+		wrk = list_first_entry_or_null(&ubi->works,
-+			struct ubi_work, list);
-+
-+	if (wrk)
-+		kref_get(&wrk->ref);
-+	spin_unlock(&ubi->wl_lock);
-+	mutex_unlock(&ubi->work_mutex);
-+
-+	if (wrk) {
-+		wait_for_completion(&wrk->comp);
-+		if (wrk->ret == 0)
-+			success = true;
-+
-+		spin_lock(&ubi->wl_lock);
-+		kref_put(&wrk->ref, destroy_work);
-+		spin_unlock(&ubi->wl_lock);
-+	}
-+
-+	return success;
++	return __ubi_io_read(ubi, buf, pnum, offset, len, false);
 +}
 +
-+/**
-+ * ubi_work_flush - flush all pending works.
-+ * @ubi: UBI device description object
-+ *
-+ */
-+int ubi_work_flush(struct ubi_device *ubi)
++int ubi_io_raw_read(const struct ubi_device *ubi, void *buf, int pnum,
++		    int offset, int len)
 +{
-+	int ret = 0;
-+	struct ubi_work *wrk = NULL;
-+
-+	dbg_wl("flush (%d pending works)", ubi->works_count);
-+
-+	/* Find the last entry in the work list and wait for it. */
-+	mutex_lock(&ubi->work_mutex);
-+	spin_lock(&ubi->wl_lock);
-+	if (!list_empty(&ubi->works)) {
-+		wrk = list_last_entry(&ubi->works, struct ubi_work, list);
-+		kref_get(&wrk->ref);
-+	}
-+	spin_unlock(&ubi->wl_lock);
-+	mutex_unlock(&ubi->work_mutex);
-+
-+	if (wrk) {
-+		wait_for_completion(&wrk->comp);
-+		ret = wrk->ret;
-+		spin_lock(&ubi->wl_lock);
-+		kref_put(&wrk->ref, destroy_work);
-+		spin_unlock(&ubi->wl_lock);
-+	}
-+
-+	return ret;
++	return __ubi_io_read(ubi, buf, pnum, offset, len, true);
 +}
 +
-+/**
-+ * ubi_thread - UBI background thread.
-+ * @u: the UBI device description object pointer
-+ */
-+int ubi_thread(void *u)
++int ubi_io_mtd_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
++		     int len, size_t *written, bool raw)
 +{
-+	int failures = 0;
-+	struct ubi_device *ubi = u;
++	loff_t addr = (loff_t)pnum * ubi->consolidated_peb_size;
++	int chunklen, err = 0, end = offset + len;
++	struct mtd_pairing_info info;
 +
-+	ubi_msg(ubi, "background thread \"%s\" started, PID %d",
-+		ubi->bgt_name, task_pid_nr(current));
++	if (raw || mtd_pairing_groups_per_eb(ubi->mtd) == 1)
++		return mtd_write(ubi->mtd, addr + offset, len, written, buf);
 +
-+	set_freezable();
-+	for (;;) {
-+		int err;
++	info.pair = offset / ubi->mtd->writesize;
++	info.group = 0;
++	*written = 0;
 +
-+		if (kthread_should_stop())
-+			break;
++	while (offset < end) {
++		int realoffs;
++		size_t chunkwritten = 0;
 +
-+		if (try_to_freeze())
-+			continue;
++		chunklen = min_t(int, ubi->mtd->writesize,
++				 end - offset);
++		realoffs = mtd_pairing_info_to_wunit(ubi->mtd, &info);
++		realoffs *= ubi->mtd->writesize;
++		err = mtd_write(ubi->mtd, addr + realoffs, chunklen,
++				&chunkwritten, buf);
++		*written += chunkwritten;
++		if (err && !mtd_is_bitflip(err))
++			return err;
 +
-+		spin_lock(&ubi->wl_lock);
-+		if (list_empty(&ubi->works) || ubi->ro_mode ||
-+		    work_suspended(ubi)) {
-+			set_current_state(TASK_INTERRUPTIBLE);
-+			spin_unlock(&ubi->wl_lock);
-+			schedule();
-+			continue;
-+		}
-+		spin_unlock(&ubi->wl_lock);
++		offset += chunklen;
++		buf += chunklen;
++		info.pair++;
++	}
 +
-+		err = do_work(ubi);
-+		if (err) {
-+			ubi_err(ubi, "%s: work failed with error code %d",
-+				ubi->bgt_name, err);
-+			if (failures++ > WORK_MAX_FAILURES) {
-+				/*
-+				 * Too many failures, disable the thread and
-+				 * switch to read-only mode.
-+				 */
-+				ubi_err(ubi, "%s: %d consecutive failures",
-+					ubi->bgt_name, WORK_MAX_FAILURES);
-+				shutdown_work(ubi, -EROFS);
-+				ubi_ro_mode(ubi);
-+				ubi->thread_enabled = 0;
-+				continue;
++	return err;
++}
++
+ /**
+  * ubi_io_write - write data to a physical eraseblock.
+  * @ubi: UBI device description object
+@@ -232,17 +340,18 @@ retry:
+  * Note, in case of an error, it is possible that something was still written
+  * to the flash media, but may be some garbage.
+  */
+-int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+-		 int len)
++static int __ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum,
++			  int offset, int len, bool raw)
+ {
++	int peb_size = raw ? ubi->consolidated_peb_size : ubi->peb_size;
++	int rawoffs = offset, rawlen = len;
+ 	int err;
+ 	size_t written;
+-	loff_t addr;
+ 
+ 	dbg_io("write %d bytes to PEB %d:%d", len, pnum, offset);
+ 
+ 	ubi_assert(pnum >= 0 && pnum < ubi->peb_count);
+-	ubi_assert(offset >= 0 && offset + len <= ubi->peb_size);
++	ubi_assert(offset >= 0 && offset + len <= peb_size);
+ 	ubi_assert(offset % ubi->hdrs_min_io_size == 0);
+ 	ubi_assert(len > 0 && len % ubi->hdrs_min_io_size == 0);
+ 
+@@ -255,8 +364,23 @@ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+ 	if (err)
+ 		return err;
+ 
++	if (!raw && mtd_pairing_groups_per_eb(ubi->mtd) > 1) {
++		struct mtd_pairing_info info;
++
++		info.pair = offset / ubi->mtd->writesize;
++		info.group = 0;
++		rawoffs = mtd_pairing_info_to_wunit(ubi->mtd, &info);
++		rawoffs *= ubi->mtd->writesize;
++
++		info.pair = (offset + len) / ubi->mtd->writesize;
++		info.group = 0;
++		rawlen = mtd_pairing_info_to_wunit(ubi->mtd, &info);
++		rawlen *= ubi->mtd->writesize;
++		rawlen -= rawoffs;
++	}
++
+ 	/* The area we are writing to has to contain all 0xFF bytes */
+-	err = ubi_self_check_all_ff(ubi, pnum, offset, len);
++	err = ubi_self_check_all_ff(ubi, pnum, rawoffs, rawlen);
+ 	if (err)
+ 		return err;
+ 
+@@ -280,8 +404,7 @@ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+ 		return -EIO;
+ 	}
+ 
+-	addr = (loff_t)pnum * ubi->peb_size + offset;
+-	err = mtd_write(ubi->mtd, addr, len, &written, buf);
++	err = ubi_io_mtd_write(ubi, buf, pnum, offset, len, &written, raw);
+ 	if (err) {
+ 		ubi_err(ubi, "error %d while writing %d bytes to PEB %d:%d, written %zd bytes",
+ 			err, len, pnum, offset, written);
+@@ -291,7 +414,7 @@ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+ 		ubi_assert(written == len);
+ 
+ 	if (!err) {
+-		err = self_check_write(ubi, buf, pnum, offset, len);
++		err = self_check_write(ubi, buf, pnum, offset, len, raw);
+ 		if (err)
+ 			return err;
+ 
+@@ -299,15 +422,30 @@ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+ 		 * Since we always write sequentially, the rest of the PEB has
+ 		 * to contain only 0xFF bytes.
+ 		 */
+-		offset += len;
+-		len = ubi->peb_size - offset;
+-		if (len)
+-			err = ubi_self_check_all_ff(ubi, pnum, offset, len);
++		rawoffs += rawlen;
++		rawlen = peb_size - rawoffs;
++		if (rawlen)
++			err = ubi_self_check_all_ff(ubi, pnum, rawoffs,
++						    rawlen);
+ 	}
+ 
+ 	return err;
+ }
+ 
++int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
++		 int len)
++{
++	ubi_assert(!ubi->consolidated || !ubi->consolidated[pnum]);
++
++	return __ubi_io_write(ubi, buf, pnum, offset, len, false);
++}
++
++int ubi_io_raw_write(struct ubi_device *ubi, const void *buf, int pnum,
++		     int offset, int len)
++{
++	return __ubi_io_write(ubi, buf, pnum, offset, len, true);
++}
++
+ /**
+  * erase_callback - MTD erasure call-back.
+  * @ei: MTD erase information object.
+@@ -348,8 +486,8 @@ retry:
+ 	memset(&ei, 0, sizeof(struct erase_info));
+ 
+ 	ei.mtd      = ubi->mtd;
+-	ei.addr     = (loff_t)pnum * ubi->peb_size;
+-	ei.len      = ubi->peb_size;
++	ei.addr     = (loff_t)pnum * ubi->consolidated_peb_size;
++	ei.len      = ubi->consolidated_peb_size;
+ 	ei.callback = erase_callback;
+ 	ei.priv     = (unsigned long)&wq;
+ 
+@@ -385,7 +523,7 @@ retry:
+ 		return -EIO;
+ 	}
+ 
+-	err = ubi_self_check_all_ff(ubi, pnum, 0, ubi->peb_size);
++	err = ubi_self_check_all_ff(ubi, pnum, 0, ubi->consolidated_peb_size);
+ 	if (err)
+ 		return err;
+ 
+@@ -424,11 +562,13 @@ static int torture_peb(struct ubi_device *ubi, int pnum)
+ 			goto out;
+ 
+ 		/* Make sure the PEB contains only 0xFF bytes */
+-		err = ubi_io_read(ubi, ubi->peb_buf, pnum, 0, ubi->peb_size);
++		err = ubi_io_raw_read(ubi, ubi->peb_buf, pnum, 0,
++				      ubi->consolidated_peb_size);
+ 		if (err)
+ 			goto out;
+ 
+-		err = ubi_check_pattern(ubi->peb_buf, 0xFF, ubi->peb_size);
++		err = ubi_check_pattern(ubi->peb_buf, 0xFF,
++					ubi->consolidated_peb_size);
+ 		if (err == 0) {
+ 			ubi_err(ubi, "erased PEB %d, but a non-0xFF byte found",
+ 				pnum);
+@@ -437,18 +577,20 @@ static int torture_peb(struct ubi_device *ubi, int pnum)
+ 		}
+ 
+ 		/* Write a pattern and check it */
+-		memset(ubi->peb_buf, patterns[i], ubi->peb_size);
+-		err = ubi_io_write(ubi, ubi->peb_buf, pnum, 0, ubi->peb_size);
++		memset(ubi->peb_buf, patterns[i], ubi->consolidated_peb_size);
++		err = ubi_io_raw_write(ubi, ubi->peb_buf, pnum, 0,
++				       ubi->consolidated_peb_size);
+ 		if (err)
+ 			goto out;
+ 
+ 		memset(ubi->peb_buf, ~patterns[i], ubi->peb_size);
+-		err = ubi_io_read(ubi, ubi->peb_buf, pnum, 0, ubi->peb_size);
++		err = ubi_io_raw_read(ubi, ubi->peb_buf, pnum, 0,
++				      ubi->consolidated_peb_size);
+ 		if (err)
+ 			goto out;
+ 
+ 		err = ubi_check_pattern(ubi->peb_buf, patterns[i],
+-					ubi->peb_size);
++					ubi->consolidated_peb_size);
+ 		if (err == 0) {
+ 			ubi_err(ubi, "pattern %x checking failed for PEB %d",
+ 				patterns[i], pnum);
+@@ -519,7 +661,7 @@ static int nor_erase_prepare(struct ubi_device *ubi, int pnum)
+ 	 * invalid VID header, in which case UBI will treat this PEB as
+ 	 * corrupted and will try to preserve it, and print scary warnings.
+ 	 */
+-	addr = (loff_t)pnum * ubi->peb_size;
++	addr = (loff_t)pnum * ubi->consolidated_peb_size;
+ 	err = ubi_io_read_ec_hdr(ubi, pnum, &ec_hdr, 0);
+ 	if (err != UBI_IO_BAD_HDR_EBADMSG && err != UBI_IO_BAD_HDR &&
+ 	    err != UBI_IO_FF){
+@@ -545,7 +687,7 @@ error:
+ 	 * return an error.
+ 	 */
+ 	ubi_err(ubi, "cannot invalidate PEB %d, write returned %d", pnum, err);
+-	ubi_dump_flash(ubi, pnum, 0, ubi->peb_size);
++	ubi_dump_flash(ubi, pnum, 0, ubi->consolidated_peb_size);
+ 	return -EIO;
+ }
+ 
+@@ -616,7 +758,9 @@ int ubi_io_is_bad(const struct ubi_device *ubi, int pnum)
+ 	if (ubi->bad_allowed) {
+ 		int ret;
+ 
+-		ret = mtd_block_isbad(mtd, (loff_t)pnum * ubi->peb_size);
++		ret = mtd_block_isbad(mtd,
++				      (loff_t)pnum *
++				      ubi->consolidated_peb_size);
+ 		if (ret < 0)
+ 			ubi_err(ubi, "error %d while checking if PEB %d is bad",
+ 				ret, pnum);
+@@ -651,7 +795,8 @@ int ubi_io_mark_bad(const struct ubi_device *ubi, int pnum)
+ 	if (!ubi->bad_allowed)
+ 		return 0;
+ 
+-	err = mtd_block_markbad(mtd, (loff_t)pnum * ubi->peb_size);
++	err = mtd_block_markbad(mtd,
++				(loff_t)pnum * ubi->consolidated_peb_size);
+ 	if (err)
+ 		ubi_err(ubi, "cannot mark PEB %d bad, error %d", pnum, err);
+ 	return err;
+@@ -992,92 +1137,142 @@ bad:
+ }
+ 
+ /**
+- * ubi_io_read_vid_hdr - read and check a volume identifier header.
++ * ubi_io_read_vid_hdrs - read and check a volume identifier header.
+  * @ubi: UBI device description object
+  * @pnum: physical eraseblock number to read from
+- * @vid_hdr: &struct ubi_vid_hdr object where to store the read volume
+- * identifier header
++ * @vid_hdrs: &struct ubi_vid_hdr pointer where to store the read volume
++ * identifier headers
++ * @max: maximum number of headers that can be retrieved
+  * @verbose: be verbose if the header is corrupted or wasn't found
+  *
+- * This function reads the volume identifier header from physical eraseblock
+- * @pnum and stores it in @vid_hdr. It also checks CRC checksum of the read
++ * This function reads the volume identifier headers from physical eraseblock
++ * @pnum and stores it in @vid_hdrs. It also checks CRC checksum of the read
+  * volume identifier header. The error codes are the same as in
+  * 'ubi_io_read_ec_hdr()'.
+  *
+  * Note, the implementation of this function is also very similar to
+  * 'ubi_io_read_ec_hdr()', so refer commentaries in 'ubi_io_read_ec_hdr()'.
+  */
+-int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
+-			struct ubi_vid_hdr *vid_hdr, int verbose)
++int ubi_io_read_vid_hdrs(struct ubi_device *ubi, int pnum,
++			 struct ubi_vid_hdr *vid_hdrs, int *num,
++			 int verbose)
+ {
+-	int err, read_err;
++	int err = 0, ret, read_err, i, max = *num;
+ 	uint32_t crc, magic, hdr_crc;
+ 	void *p;
+ 
+-	dbg_io("read VID header from PEB %d", pnum);
++	dbg_io("read VID headers from PEB %d", pnum);
+ 	ubi_assert(pnum >= 0 &&  pnum < ubi->peb_count);
+ 
+-	p = (char *)vid_hdr - ubi->vid_hdr_shift;
++	p = (char *)vid_hdrs - ubi->vid_hdr_shift;
+ 	read_err = ubi_io_read(ubi, p, pnum, ubi->vid_hdr_aloffset,
+ 			  ubi->vid_hdr_alsize);
+-	if (read_err && read_err != UBI_IO_BITFLIPS && !mtd_is_eccerr(read_err))
++	if (read_err && read_err != UBI_IO_BITFLIPS &&
++	    !mtd_is_eccerr(read_err))
+ 		return read_err;
+ 
+-	magic = be32_to_cpu(vid_hdr->magic);
+-	if (magic != UBI_VID_HDR_MAGIC) {
+-		if (mtd_is_eccerr(read_err))
+-			return UBI_IO_BAD_HDR_EBADMSG;
++	for (i = 0; i < max; i++) {
++		struct ubi_vid_hdr *vid_hdr = vid_hdrs + i;
+ 
+-		if (ubi_check_pattern(vid_hdr, 0xFF, UBI_VID_HDR_SIZE)) {
+-			if (verbose)
+-				ubi_warn(ubi, "no VID header found at PEB %d, only 0xFF bytes",
+-					 pnum);
+-			dbg_bld("no VID header found at PEB %d, only 0xFF bytes",
+-				pnum);
++		magic = be32_to_cpu(vid_hdr->magic);
++		if (magic != UBI_VID_HDR_MAGIC) {
++			if (mtd_is_eccerr(read_err)) {
++				err = UBI_IO_BAD_HDR_EBADMSG;
++				break;
 +			}
-+		} else
-+			failures = 0;
 +
-+		cond_resched();
++			if (ubi_check_pattern(vid_hdr, 0xFF, UBI_VID_HDR_SIZE)) {
++				if (verbose && !i)
++					ubi_warn(ubi, "no VID header found at PEB %d, only 0xFF bytes",
++						 pnum);
++				dbg_bld("no VID header found at PEB %d, only 0xFF bytes",
++					pnum);
++				if (!read_err)
++					err = UBI_IO_FF;
++				else
++					err = UBI_IO_FF_BITFLIPS;
++
++				/*
++				 * Propagate UBI_IO_FF/_BITFLIPS only for the first VID header,
++				 * otherwise UBI will treat the whole PEB as empty.
++				 */
++				if (i)
++					err = 0;
++
++				break;
++			}
++
++			if (verbose && !i) {
++				ubi_warn(ubi, "bad magic number at PEB %d: %08x instead of %08x",
++						pnum, magic, UBI_VID_HDR_MAGIC);
++				ubi_dump_vid_hdr(vid_hdr);
++			}
++			dbg_bld("bad magic number at PEB %d: %08x instead of %08x",
++					pnum, magic, UBI_VID_HDR_MAGIC);
++			err = UBI_IO_BAD_HDR;
++			break;
++		}
++
++		crc = crc32(UBI_CRC32_INIT, vid_hdr, UBI_VID_HDR_SIZE_CRC);
++		hdr_crc = be32_to_cpu(vid_hdr->hdr_crc);
++
++		if (hdr_crc != crc) {
++			if (verbose && !i) {
++				ubi_warn(ubi, "bad CRC at PEB %d, calculated %#08x, read %#08x",
++						pnum, crc, hdr_crc);
++				ubi_dump_vid_hdr(vid_hdr);
++			}
++			dbg_bld("bad CRC at PEB %d, calculated %#08x, read %#08x",
++					pnum, crc, hdr_crc);
+ 			if (!read_err)
+-				return UBI_IO_FF;
++				err = UBI_IO_BAD_HDR;
+ 			else
+-				return UBI_IO_FF_BITFLIPS;
++				err = UBI_IO_BAD_HDR_EBADMSG;
++			break;
+ 		}
+ 
+-		if (verbose) {
+-			ubi_warn(ubi, "bad magic number at PEB %d: %08x instead of %08x",
+-				 pnum, magic, UBI_VID_HDR_MAGIC);
+-			ubi_dump_vid_hdr(vid_hdr);
++		ret = validate_vid_hdr(ubi, vid_hdr);
++		if (ret && !i) {
++			ubi_err(ubi, "validation failed for PEB %d", pnum);
++			err = -EINVAL;
++			break;
+ 		}
+-		dbg_bld("bad magic number at PEB %d: %08x instead of %08x",
+-			pnum, magic, UBI_VID_HDR_MAGIC);
+-		return UBI_IO_BAD_HDR;
++
++		if (read_err)
++			err |= UBI_IO_BITFLIPS;
+ 	}
+ 
+-	crc = crc32(UBI_CRC32_INIT, vid_hdr, UBI_VID_HDR_SIZE_CRC);
+-	hdr_crc = be32_to_cpu(vid_hdr->hdr_crc);
++	*num = i;
+ 
+-	if (hdr_crc != crc) {
+-		if (verbose) {
+-			ubi_warn(ubi, "bad CRC at PEB %d, calculated %#08x, read %#08x",
+-				 pnum, crc, hdr_crc);
+-			ubi_dump_vid_hdr(vid_hdr);
+-		}
+-		dbg_bld("bad CRC at PEB %d, calculated %#08x, read %#08x",
+-			pnum, crc, hdr_crc);
+-		if (!read_err)
+-			return UBI_IO_BAD_HDR;
+-		else
+-			return UBI_IO_BAD_HDR_EBADMSG;
+-	}
++	return err;
++}
+ 
+-	err = validate_vid_hdr(ubi, vid_hdr);
+-	if (err) {
+-		ubi_err(ubi, "validation failed for PEB %d", pnum);
+-		return -EINVAL;
+-	}
++/**
++ * ubi_io_read_vid_hdr - read and check a volume identifier header.
++ * @ubi: UBI device description object
++ * @pnum: physical eraseblock number to read from
++ * @vid_hdr: &struct ubi_vid_hdr object where to store the read volume
++ * identifier header
++ * @verbose: be verbose if the header is corrupted or wasn't found
++ *
++ * This function reads the volume identifier header from physical eraseblock
++ * @pnum and stores it in @vid_hdr. It also checks CRC checksum of the read
++ * volume identifier header. The error codes are the same as in
++ * 'ubi_io_read_ec_hdr()'.
++ *
++ * Note, the implementation of this function is also very similar to
++ * 'ubi_io_read_ec_hdr()', so refer commentaries in 'ubi_io_read_ec_hdr()'.
++ */
++int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
++			struct ubi_vid_hdr *vid_hdr, int verbose)
++{
++	int nhdrs = 1;
+ 
+-	return read_err ? UBI_IO_BITFLIPS : 0;
++	return ubi_io_read_vid_hdrs(ubi, pnum, vid_hdr, &nhdrs, verbose);
+ }
+ 
+ /**
+- * ubi_io_write_vid_hdr - write a volume identifier header.
++ * ubi_io_write_vid_hdrs - write a volume identifier header.
+  * @ubi: UBI device description object
+  * @pnum: the physical eraseblock number to write to
+  * @vid_hdr: the volume identifier header to write
+@@ -1091,10 +1286,10 @@ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
+  * case of failure. If %-EIO is returned, the physical eraseblock probably went
+  * bad.
+  */
+-int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
+-			 struct ubi_vid_hdr *vid_hdr)
++int ubi_io_write_vid_hdrs(struct ubi_device *ubi, int pnum,
++			  struct ubi_vid_hdr *vid_hdrs, int num)
+ {
+-	int err;
++	int err, i;
+ 	uint32_t crc;
+ 	void *p;
+ 
+@@ -1105,25 +1300,49 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
+ 	if (err)
+ 		return err;
+ 
+-	vid_hdr->magic = cpu_to_be32(UBI_VID_HDR_MAGIC);
+-	vid_hdr->version = UBI_VERSION;
+-	crc = crc32(UBI_CRC32_INIT, vid_hdr, UBI_VID_HDR_SIZE_CRC);
+-	vid_hdr->hdr_crc = cpu_to_be32(crc);
++	for (i = 0; i < num; i++) {
++		vid_hdrs[i].magic = cpu_to_be32(UBI_VID_HDR_MAGIC);
++		vid_hdrs[i].version = UBI_VERSION;
++		crc = crc32(UBI_CRC32_INIT, &vid_hdrs[i],
++			    UBI_VID_HDR_SIZE_CRC);
++		vid_hdrs[i].hdr_crc = cpu_to_be32(crc);
+ 
+-	err = self_check_vid_hdr(ubi, pnum, vid_hdr);
+-	if (err)
+-		return err;
++		err = self_check_vid_hdr(ubi, pnum, &vid_hdrs[i]);
++		if (err)
++			return err;
 +	}
-+
-+	dbg_wl("background thread \"%s\" is killed", ubi->bgt_name);
-+	return 0;
+ 
+ 	if (ubi_dbg_power_cut(ubi, POWER_CUT_VID_WRITE))
+ 		return -EROFS;
+ 
+-	p = (char *)vid_hdr - ubi->vid_hdr_shift;
++	p = (char *)vid_hdrs - ubi->vid_hdr_shift;
+ 	err = ubi_io_write(ubi, p, pnum, ubi->vid_hdr_aloffset,
+ 			   ubi->vid_hdr_alsize);
+ 	return err;
+ }
+ 
+ /**
++ * ubi_io_write_vid_hdr - write a volume identifier header.
++ * @ubi: UBI device description object
++ * @pnum: the physical eraseblock number to write to
++ * @vid_hdr: the volume identifier header to write
++ *
++ * This function writes the volume identifier header described by @vid_hdr to
++ * physical eraseblock @pnum. This function automatically fills the
++ * @vid_hdr->magic and the @vid_hdr->version fields, as well as calculates
++ * header CRC checksum and stores it at vid_hdr->hdr_crc.
++ *
++ * This function returns zero in case of success and a negative error code in
++ * case of failure. If %-EIO is returned, the physical eraseblock probably went
++ * bad.
++ */
++int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
++			 struct ubi_vid_hdr *vid_hdr)
++{
++	return ubi_io_write_vid_hdrs(ubi, pnum, vid_hdr, 1);
 +}
 +
++/**
+  * self_check_not_bad - ensure that a physical eraseblock is not bad.
+  * @ubi: UBI device description object
+  * @pnum: physical eraseblock number to check
+@@ -1331,23 +1550,23 @@ exit:
+  * match and a negative error code if not or in case of failure.
+  */
+ static int self_check_write(struct ubi_device *ubi, const void *buf, int pnum,
+-			    int offset, int len)
++			    int offset, int len, bool raw)
+ {
+ 	int err, i;
+-	size_t read;
+ 	void *buf1;
+-	loff_t addr = (loff_t)pnum * ubi->peb_size + offset;
++
++	return 0;
+ 
+ 	if (!ubi_dbg_chk_io(ubi))
+ 		return 0;
+ 
+-	buf1 = __vmalloc(len, GFP_NOFS, PAGE_KERNEL);
++	buf1 = __vmalloc(0x1f8000, GFP_NOFS, PAGE_KERNEL);
+ 	if (!buf1) {
+ 		ubi_err(ubi, "cannot allocate memory to check writes");
+ 		return 0;
+ 	}
+ 
+-	err = mtd_read(ubi->mtd, addr, len, &read, buf1);
++	err = __ubi_io_read(ubi, buf1, pnum, offset, len, raw);
+ 	if (err && !mtd_is_bitflip(err))
+ 		goto out_free;
+ 
+@@ -1400,7 +1619,10 @@ int ubi_self_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len)
+ 	size_t read;
+ 	int err;
+ 	void *buf;
+-	loff_t addr = (loff_t)pnum * ubi->peb_size + offset;
++	loff_t addr = (loff_t)pnum * ubi->consolidated_peb_size + offset;
++
++	//XXX
++	return 0;
+ 
+ 	if (!ubi_dbg_chk_io(ubi))
+ 		return 0;
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index c901cc0..aab984f 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -602,6 +602,7 @@ struct ubi_device {
+ 	long long flash_size;
+ 	int peb_count;
+ 	int peb_size;
++	int consolidated_peb_size;
+ 	int bad_peb_count;
+ 	int good_peb_count;
+ 	int corr_peb_count;
+@@ -879,8 +880,12 @@ bool ubi_work_join_one(struct ubi_device *ubi);
+ /* io.c */
+ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
+ 		int len);
++int ubi_io_raw_read(const struct ubi_device *ubi, void *buf, int pnum,
++		    int offset, int len);
+ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+ 		 int len);
++int ubi_io_raw_write(struct ubi_device *ubi, const void *buf, int pnum,
++		     int offset, int len);
+ int ubi_io_sync_erase(struct ubi_device *ubi, int pnum, int torture);
+ int ubi_io_is_bad(const struct ubi_device *ubi, int pnum);
+ int ubi_io_mark_bad(const struct ubi_device *ubi, int pnum);
+@@ -890,8 +895,13 @@ int ubi_io_write_ec_hdr(struct ubi_device *ubi, int pnum,
+ 			struct ubi_ec_hdr *ec_hdr);
+ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
+ 			struct ubi_vid_hdr *vid_hdr, int verbose);
++int ubi_io_read_vid_hdrs(struct ubi_device *ubi, int pnum,
++			 struct ubi_vid_hdr *vid_hdrs, int *num,
++			 int verbose);
+ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
+ 			 struct ubi_vid_hdr *vid_hdr);
++int ubi_io_write_vid_hdrs(struct ubi_device *ubi, int pnum,
++			  struct ubi_vid_hdr *vid_hdrs, int num);
+ 
+ /* build.c */
+ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
 -- 
 2.7.3
