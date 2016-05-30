@@ -1,24 +1,27 @@
-Received: from mail-wm0-x233.google.com ([2a00:1450:400c:c09::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b7VWt-0004sg-6c
- for linux-mtd@lists.infradead.org; Mon, 30 May 2016 22:19:23 +0000
-Received: by mail-wm0-x233.google.com with SMTP id n129so85318019wmn.1
- for <linux-mtd@lists.infradead.org>; Mon, 30 May 2016 15:19:01 -0700 (PDT)
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b7Vg4-0007ql-L7
+ for linux-mtd@lists.infradead.org; Mon, 30 May 2016 22:28:54 +0000
+Date: Tue, 31 May 2016 00:28:24 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Valdis.Kletnieks@vt.edu
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/15] mtd: nand: samsung: retrieve ECC requirements
+ from extended ID
+Message-ID: <20160531002824.2f612484@bbrezillon>
+In-Reply-To: <137285.1464641769@turing-police.cc.vt.edu>
+References: <1464353701-23233-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1464353701-23233-14-git-send-email-boris.brezillon@free-electrons.com>
+ <198040.1464567635@turing-police.cc.vt.edu>
+ <20160530094446.5edec3ac@bbrezillon>
+ <137285.1464641769@turing-police.cc.vt.edu>
 MIME-Version: 1.0
-In-Reply-To: <20160528164117.GA31101@amitoj-Inspiron-3542>
-References: <20160528164117.GA31101@amitoj-Inspiron-3542>
-Date: Mon, 30 May 2016 19:19:00 -0300
-Message-ID: <CAAEAJfBgR61_UqFBW4JinkE4wSRzCqNg95PxBcaXrhEZS=2grg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: Replace if and BUG with BUG_ON
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- julia.lawall@lip6.fr
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +31,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Amitoj,
+On Mon, 30 May 2016 16:56:09 -0400
+Valdis.Kletnieks@vt.edu wrote:
 
-Thanks for your patch.
+> On Mon, 30 May 2016 09:44:46 +0200, Boris Brezillon said:
+> > Hi Valdis,  
+> 
+> > Actually, that was my first reaction [1], but the more I think about it
+> > the more I realize it's a non-issue.
+> > AFAICT, there's no full-id entries for Samsung NANDs in the nand_ids
+> > table, so this either means there's no real users of Samsung MLCs or
+> > NAND controller drivers connecting to those chips don't care about the  
+> > ->ecc_{step_ds,strength_ds} fields.  
+> 
+> I'm mostly, though not totally convinced (not having looked closely at
+> the existing code).  There's still a possible issue with the distinction
+> between:
+> 
+> A) "driver never references the variable" and
+> 
+> B) driver check if it's zero, and acts like it doesn't care if it is, but if
+> it's non-zero, it goes ahead and uses it, with possible hilarity ensuing if the
+> value is wrong.
+> 
+> Should be pretty easy for somebody who knows the code better than I to rule
+> out case B fairly quickly...
 
-On 28 May 2016 at 13:41, Amitoj Kaur Chawla <amitoj1606@gmail.com> wrote:
-> Replace if condition and BUG() with a BUG_ON having the conditional
-> expression of the if statement as argument.
->
+Ok, so I had a quick look, and only 4 drivers are actually using the
+->ecc_{strength,step}_ds fields, and AFAICT, all of them are already
+broken with the existing implementation, even if those fields are set
+to 0.
 
-We usually want commit messages that tell us *why* you are doing the
-change: what are you fixing, or what are you improving, and what
-possible side-effects it may have.
+- the atmel driver uses a default ECC config (2bits/512bytes) if
+  those fields are set to 0, and this config is clearly not suitable
+  for the MLC NANDs we are talking about (note that SLC NANDs seem to
+  all use the 4 bytes extended ID scheme, which seems to be common to
+  all vendors).
 
-This commit log explains what the code does, but we can clearly see
-that, so it's not useful.
+- the gpmi driver either returns an error if one of these fields
+  are set to zero and the 'fsl,use-minimum-ecc' DT property is defined,
+  or tries to fill the whole OOB area with ECC bytes if the property is
+  not defined. The 2nd solution could work, if only we were sure about
+  the encoding of the OOB size, but, as the ECC requirements field, it
+  depends on the extended ID scheme. So, in the end, it's broken too.
 
-> The Coccinelle semantic patch used to make this change is as follows:
-> @@ expression E,f; @@
->
-> (
->   if (<+... f(...) ...+>) { BUG(); }
-> |
-> - if (E) { BUG(); }
-> + BUG_ON(E);
-> )
->
-> Signed-off-by: Amitoj Kaur Chawla <amitoj1606@gmail.com>
-> ---
->  drivers/mtd/ssfdc.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-> index daf82ba..41b13d1 100644
-> --- a/drivers/mtd/ssfdc.c
-> +++ b/drivers/mtd/ssfdc.c
-> @@ -380,8 +380,7 @@ static int ssfdcr_readsect(struct mtd_blktrans_dev *d=
-ev,
->                 " block_addr=3D%d\n", logic_sect_no, sectors_per_block, o=
-ffset,
->                 block_address);
->
-> -       if (block_address >=3D ssfdc->map_len)
-> -               BUG();
-> +       BUG_ON(block_address >=3D ssfdc->map_len);
->
+- the pxa and sunxi drivers are just blindly relying on those fields if
+  the 'nand-ecc-strength' and 'nand-ecc-step-size' properties are
+  undefined. The pxa default to 1bit/512bytes if ecc strength or ecc
+  step appear to be set to 0, while the sunxi driver completely rejects
+  the NAND chip.
+  In both cases, the current implementation is broken, either because
+  you will use an unsuitable ECC config or because your NAND chip won't
+  be registered.
 
-I don't want to be rude, but I wonder if there's any value at all in
-such a patch. It barely improves readability, it barely reduces the
-LoC, yet it consumes developer time, maintainer time, and changes git
-per-line authorship (used in git blame).
+So, as you can see, we're just moving from a broken state to another
+broken state, except the new infrastructures allows one to extend the
+detection logic and thus allow for correct detection of more chips.
 
-I'm not complaining about *this* particular patch, but rather about
-these kind of supposedly clean-up patches.
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+> 
+> > I agree that the solution is not perfect, but I'd prefer seeing the
+> > NAND detection code iteratively improved than rejecting everything
+> > until we're 100% sure that all cases are correctly handled (which might
+> > never happen since NAND vendors introduce new NAND ID scheme if they
+> > need to).
+> >
+> > BTW, do you have Samsung datasheets describing a different NAND ID
+> > format, or is it purely hypothetical?  
+> 
+> Mostly hypothetical.  I've just seen too many patches that assume "all chips
+> from  vendor XYZ do *this*" that were not at all corrrect.
+> 
+
+Yep, that's true, except I'm not promising anything here, I just say
+that this patch adds code to detect a range of Samsung chips, and that
+it can be extended to properly detect chips that do not use this format
+if we appear to find some (which is very likely to happen).
+
+Of course, we could decide to leave everything as is and add full-id
+entries to the nand_ids table each time we want to support a new chip
+that does not expose a valid ONFI of JEDEC parameter table. But that
+means adding more and more info to the nand_flash_dev structure and
+polluting the nand_ids table with a bunch of NAND chips that could
+otherwise be handled by the same detection code.
+And as detailed above, this solution is just as broken as mine but in a
+different way (in both cases, NANDs that are not already supported by
+the kernel will either be rejected or used ).
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
