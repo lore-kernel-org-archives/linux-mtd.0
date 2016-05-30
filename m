@@ -1,19 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b7Iu3-0000un-6F
- for linux-mtd@lists.infradead.org; Mon, 30 May 2016 08:50:31 +0000
-Date: Mon, 30 May 2016 10:50:05 +0200
+ id 1b7JDA-0007VM-2I
+ for linux-mtd@lists.infradead.org; Mon, 30 May 2016 09:10:12 +0000
+Date: Mon, 30 May 2016 11:09:50 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH 2/2] mtd: brcmnand: Detect sticky ucorr ecc error on dma
- reads
-Message-ID: <20160530105005.62faa711@bbrezillon>
-In-Reply-To: <1461961285-24159-2-git-send-email-kdasu.kdev@gmail.com>
-References: <1461961285-24159-1-git-send-email-kdasu.kdev@gmail.com>
- <1461961285-24159-2-git-send-email-kdasu.kdev@gmail.com>
+To: Franklin S Cooper Jr <fcooper@ti.com>
+Cc: robh+dt@kernel.org, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, rogerq@ti.com, tony@atomide.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, vigneshr@ti.com, nsekhar@ti.com
+Subject: Re: [PATCH v2 0/2] mtd: nand: omap2: Add EDMA support for NAND DMA
+ prefetch
+Message-ID: <20160530110950.29ac7a43@bbrezillon>
+In-Reply-To: <1462386884-16380-1-git-send-email-fcooper@ti.com>
+References: <1462386884-16380-1-git-send-email-fcooper@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,61 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 29 Apr 2016 16:21:25 -0400
-Kamal Dasu <kdasu.kdev@gmail.com> wrote:
+Hi Franklin,
 
-> This change provides a fix for controller bug where nand
-> controller could have a possible sticky error after a PIO
-> followed by a DMA read. The fix retries a read if we see
-> a uncorr_ecc after read to detect such sticky errors.
+On Wed,  4 May 2016 13:34:42 -0500
+Franklin S Cooper Jr <fcooper@ti.com> wrote:
+
+> This patchset includes the required patches to enable NAND DMA prefetch
+> support when using the EDMA.
 > 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> ---
->  drivers/mtd/nand/brcmnand/brcmnand.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
+> This patchset depends on my previous patchset to enable NAND DMA prefetch
+> using the SDMA and Roger's GPMC and NAND rework. Both of these patchsets
+> are apart of Boris' NAND next patch. Therefore, these patches are also
+> built on top of this branch.
 > 
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index 29a9abd..13c7784 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -1555,9 +1555,11 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
->  	struct brcmnand_controller *ctrl = host->ctrl;
->  	u64 err_addr = 0;
->  	int err;
-> +	bool retry = true;
->  
->  	dev_dbg(ctrl->dev, "read %llx -> %p\n", (unsigned long long)addr, buf);
->  
-> +try_dmaread:
->  	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_COUNT, 0);
->  
->  	if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
-> @@ -1579,7 +1581,18 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
->  
->  	if (mtd_is_eccerr(err)) {
->  		int ret;
-> -
-> +		/*
-> +		 * On controller version >=7.0 if we are doing a DMA read
-> +		 * after a prior PIO read that reported uncorrectable error,
-> +		 * the DMA engine captures this error following DMA read
-> +		 * cleared only on subsequent DMA read, so just retry once
-> +		 * to clear a possible false error reported for current DMA
-> +		 * read
-> +		 */
+> Also the following patches that fixes GPMC's DMA property are required
+> and pulled into other trees but are not currently apart of the above
+> branch:
+> https://patchwork.ozlabs.org/patch/596014/
+> https://patchwork.ozlabs.org/patch/596012/
 
-Hm, shouldn't this BRCMNAND_UNCORR_COUNT bit be cleared just after
-doing the PIO/DMA read instead of doing it before executing a new read?
-This would solve your problem without the need for this extra retry, or
-am I missing something?
+Applied.
 
-> +		if ((ctrl->nand_version >= 0x0700) && retry) {
-> +			retry = false;
-> +			goto try_dmaread;
-> +		}
->  		ret = brcmstb_nand_verify_erased_page(mtd, chip, buf, addr);
->  		if (ret < 0) {
->  			dev_dbg(ctrl->dev, "uncorrectable error at 0x%llx\n",
+Thanks,
+
+Boris
+
+> 
+> Version 2 changes:
+> Switched to the new dma_request_chan api which is now preferred.
+> Add performance numbers to the commit.
+> 
+> Franklin S Cooper Jr (2):
+>   mtd: nand: omap2: Support parsing dma channel information from DT
+>   ARM: OMAP2+: Update GPMC and NAND DT binding documentation
+> 
+>  Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt | 7 ++++++-
+>  Documentation/devicetree/bindings/mtd/gpmc-nand.txt                | 2 +-
+>  drivers/mtd/nand/omap2.c                                           | 7 ++-----
+>  3 files changed, 9 insertions(+), 7 deletions(-)
+> 
 
 
 
