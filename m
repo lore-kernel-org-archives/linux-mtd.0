@@ -1,20 +1,21 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b7JDA-0007VM-2I
- for linux-mtd@lists.infradead.org; Mon, 30 May 2016 09:10:12 +0000
-Date: Mon, 30 May 2016 11:09:50 +0200
+ id 1b7JR9-0005US-4B
+ for linux-mtd@lists.infradead.org; Mon, 30 May 2016 09:24:39 +0000
+Date: Mon, 30 May 2016 11:24:16 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Franklin S Cooper Jr <fcooper@ti.com>
-Cc: robh+dt@kernel.org, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, rogerq@ti.com, tony@atomide.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, vigneshr@ti.com, nsekhar@ti.com
-Subject: Re: [PATCH v2 0/2] mtd: nand: omap2: Add EDMA support for NAND DMA
- prefetch
-Message-ID: <20160530110950.29ac7a43@bbrezillon>
-In-Reply-To: <1462386884-16380-1-git-send-email-fcooper@ti.com>
-References: <1462386884-16380-1-git-send-email-fcooper@ti.com>
+To: Matthias Auchmann <m.auchmann@artech.at>
+Cc: Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: mtd locking
+Message-ID: <20160530112416.73e8a875@bbrezillon>
+In-Reply-To: <574B15FE.8030206@nod.at>
+References: <566B344A0B1AB14EB2486D887B6FF9E0331F3DB470@SRV01.ARTech.local>
+ <CAFLxGvz+9JqcLZwuUqOd1UsCNbbjD52ecd5Faj8PC12YhTuYiA@mail.gmail.com>
+ <566B344A0B1AB14EB2486D887B6FF9E0331F3DB473@SRV01.ARTech.local>
+ <574B15FE.8030206@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,47 +28,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Franklin,
++Brian and Sasha
 
-On Wed,  4 May 2016 13:34:42 -0500
-Franklin S Cooper Jr <fcooper@ti.com> wrote:
+Hi Matthias,
 
-> This patchset includes the required patches to enable NAND DMA prefetch
-> support when using the EDMA.
+On Sun, 29 May 2016 18:17:02 +0200
+Richard Weinberger <richard@nod.at> wrote:
+
+> Hi!
 > 
-> This patchset depends on my previous patchset to enable NAND DMA prefetch
-> using the SDMA and Roger's GPMC and NAND rework. Both of these patchsets
-> are apart of Boris' NAND next patch. Therefore, these patches are also
-> built on top of this branch.
+> Am 29.05.2016 um 17:53 schrieb Matthias Auchmann:
+> > By intended you mean it's wrong and we know, but it's still wrong, right?  
 > 
-> Also the following patches that fixes GPMC's DMA property are required
-> and pulled into other trees but are not currently apart of the above
-> branch:
-> https://patchwork.ozlabs.org/patch/596014/
-> https://patchwork.ozlabs.org/patch/596012/
+> I'd say lazy. Sometimes counters don't need to be exact.
+> Having exact counting is expensive. See network stack.
+> 
+> I'm not sure what the exact reasons in the ECC error counting
+> case are.
+> Maybe Brian or Boris can tell more.
+> 
+> > What about thread safety in general? Is the rest of the mtd system thread safe? Can it happen that e.g. a command is issued to NAND, and before the buffer is read, another command is issued (and similar scenarios)? Or is there some kind of protection in place for that?  
+> 
+> NAND chip access is strictly serialized. :-)
+> See nand_get_device().
 
-Applied.
+Yep, read/write accesses are correctly protected. The statistics update
+are also protected, but it does not prevent tools like nanddump to
+retrieve incorrect information. Actually, nanddump uses the following
+sequence:
 
-Thanks,
+1/ get stats
+2/ read stuff
+3/ get new stats and compare with information retrieved in #1
+
+Since we can't lock access to the MTD device for the whole sequence,
+the statistics might change because of other read accesses on the same
+MTD device.
+
+I recently suggested the addition of a new ioctl to address that [1].
+
+Regards,
 
 Boris
 
-> 
-> Version 2 changes:
-> Switched to the new dma_request_chan api which is now preferred.
-> Add performance numbers to the commit.
-> 
-> Franklin S Cooper Jr (2):
->   mtd: nand: omap2: Support parsing dma channel information from DT
->   ARM: OMAP2+: Update GPMC and NAND DT binding documentation
-> 
->  Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt | 7 ++++++-
->  Documentation/devicetree/bindings/mtd/gpmc-nand.txt                | 2 +-
->  drivers/mtd/nand/omap2.c                                           | 7 ++-----
->  3 files changed, 9 insertions(+), 7 deletions(-)
-> 
-
-
+[1]http://thread.gmane.org/gmane.linux.drivers.mtd/66834
 
 -- 
 Boris Brezillon, Free Electrons
