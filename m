@@ -1,15 +1,15 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b7Lws-0005KX-I9
+ id 1b7Lws-0005KV-IF
  for linux-mtd@lists.infradead.org; Mon, 30 May 2016 12:05:37 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: boris.brezillon@free-electrons.com, dedekind1@gmail.com,
  goliath@sigma-star.at, alex@nextthing.co, beanhuo@micron.com,
  Richard Weinberger <richard@nod.at>
-Subject: [PATCH 05/13] ubi: Get rid of __schedule_ubi_work()
-Date: Mon, 30 May 2016 14:04:26 +0200
-Message-Id: <1464609874-15488-6-git-send-email-richard@nod.at>
+Subject: [PATCH 06/13] ubi: Remove tst_disable_bgt debugfs knob
+Date: Mon, 30 May 2016 14:04:27 +0200
+Message-Id: <1464609874-15488-7-git-send-email-richard@nod.at>
 In-Reply-To: <1464609874-15488-1-git-send-email-richard@nod.at>
 References: <1464609874-15488-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,140 +21,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now we can call schedule_ubi_work() directly in a worker
-function without the need of a nested parameter and the
-helper.
+With the new worker model we hard depend on the worker
+and disabling it will lockup UBI.
+So, this knob makes no longer sense.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c | 45 ++++++++++++---------------------------------
- 1 file changed, 12 insertions(+), 33 deletions(-)
+ drivers/mtd/ubi/debug.c | 11 -----------
+ drivers/mtd/ubi/debug.h | 12 ------------
+ drivers/mtd/ubi/ubi.h   |  4 ----
+ drivers/mtd/ubi/wl.c    |  4 ++--
+ 4 files changed, 2 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 8e6e8cf..0ed6e39 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -629,23 +629,19 @@ repeat:
- 	spin_unlock(&ubi->wl_lock);
- }
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index f101a49..ed23009 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -277,8 +277,6 @@ static ssize_t dfs_file_read(struct file *file, char __user *user_buf,
+ 		val = d->chk_io;
+ 	else if (dent == d->dfs_chk_fastmap)
+ 		val = d->chk_fastmap;
+-	else if (dent == d->dfs_disable_bgt)
+-		val = d->disable_bgt;
+ 	else if (dent == d->dfs_emulate_bitflips)
+ 		val = d->emulate_bitflips;
+ 	else if (dent == d->dfs_emulate_io_failures)
+@@ -372,8 +370,6 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
+ 		d->chk_io = val;
+ 	else if (dent == d->dfs_chk_fastmap)
+ 		d->chk_fastmap = val;
+-	else if (dent == d->dfs_disable_bgt)
+-		d->disable_bgt = val;
+ 	else if (dent == d->dfs_emulate_bitflips)
+ 		d->emulate_bitflips = val;
+ 	else if (dent == d->dfs_emulate_io_failures)
+@@ -449,13 +445,6 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 		goto out_remove;
+ 	d->dfs_chk_fastmap = dent;
  
--static bool wl_work_suspended(struct ubi_device *ubi)
--{
--	return ubi->thread_suspended || !ubi->thread_enabled;
--}
+-	fname = "tst_disable_bgt";
+-	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, (void *)ubi_num,
+-				   &dfs_fops);
+-	if (IS_ERR_OR_NULL(dent))
+-		goto out_remove;
+-	d->dfs_disable_bgt = dent;
 -
- /**
-- * __schedule_ubi_work - schedule a work.
-+ * schedule_ubi_work - schedule a work.
-  * @ubi: UBI device description object
-  * @wrk: the work to schedule
-  *
-  * This function adds a work defined by @wrk to the tail of the pending works
-- * list. Can only be used if ubi->work_mutex is already held.
-+ * list.
-  */
--static void __schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
-+static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
- {
- 	ubi_assert(ubi->thread_enabled);
+ 	fname = "tst_emulate_bitflips";
+ 	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, (void *)ubi_num,
+ 				   &dfs_fops);
+diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
+index eb8985e..47c447d 100644
+--- a/drivers/mtd/ubi/debug.h
++++ b/drivers/mtd/ubi/debug.h
+@@ -66,18 +66,6 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi);
+ void ubi_debugfs_exit_dev(struct ubi_device *ubi);
  
-+	mutex_lock(&ubi->work_mutex);
- 	spin_lock(&ubi->wl_lock);
- 	INIT_LIST_HEAD(&wrk->list);
- 	kref_init(&wrk->ref);
-@@ -656,20 +652,6 @@ static void __schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
- 	if (!wl_work_suspended(ubi) && !ubi_dbg_is_bgt_disabled(ubi))
- 		wake_up_process(ubi->bgt_thread);
- 	spin_unlock(&ubi->wl_lock);
+ /**
+- * ubi_dbg_is_bgt_disabled - if the background thread is disabled.
+- * @ubi: UBI device description object
+- *
+- * Returns non-zero if the UBI background thread is disabled for testing
+- * purposes.
+- */
+-static inline int ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)
+-{
+-	return ubi->dbg.disable_bgt;
 -}
 -
 -/**
-- * schedule_ubi_work - schedule a work.
-- * @ubi: UBI device description object
-- * @wrk: the work to schedule
-- *
-- * This function adds a work defined by @wrk to the tail of the pending works
-- * list.
-- */
--static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
--{
--	mutex_lock(&ubi->work_mutex);
--	__schedule_ubi_work(ubi, wrk);
- 	mutex_unlock(&ubi->work_mutex);
- }
- 
-@@ -740,7 +722,7 @@ static int do_sync_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
- 	return __erase_worker(ubi, wl_wrk);
- }
- 
--static int ensure_wear_leveling(struct ubi_device *ubi, int nested);
-+static int ensure_wear_leveling(struct ubi_device *ubi);
- /**
-  * wear_leveling_worker - wear-leveling worker function.
+  * ubi_dbg_is_bitflip - if it is time to emulate a bit-flip.
   * @ubi: UBI device description object
-@@ -1026,7 +1008,7 @@ out_not_moved:
- 
- 	ubi_free_vid_hdr(ubi, vid_hdr);
- 	if (dst_leb_clean) {
--		ensure_wear_leveling(ubi, 1);
-+		ensure_wear_leveling(ubi);
- 	} else {
- 		err = do_sync_erase(ubi, e2, vol_id, lnum, torture);
- 		if (err)
-@@ -1069,13 +1051,12 @@ out_cancel:
- /**
-  * ensure_wear_leveling - schedule wear-leveling if it is needed.
-  * @ubi: UBI device description object
-- * @nested: set to non-zero if this function is called from UBI worker
   *
-  * This function checks if it is time to start wear-leveling and schedules it
-  * if yes. This function returns zero in case of success and a negative error
-  * code in case of failure.
-  */
--static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
-+static int ensure_wear_leveling(struct ubi_device *ubi)
- {
- 	int err = 0;
- 	struct ubi_wl_entry *e1;
-@@ -1122,10 +1103,8 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index efdff07..107a9d9 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -374,7 +374,6 @@ struct ubi_wl_entry;
+  * @chk_gen: if UBI general extra checks are enabled
+  * @chk_io: if UBI I/O extra checks are enabled
+  * @chk_fastmap: if UBI fastmap extra checks are enabled
+- * @disable_bgt: disable the background task for testing purposes
+  * @emulate_bitflips: emulate bit-flips for testing purposes
+  * @emulate_io_failures: emulate write/erase failures for testing purposes
+  * @emulate_power_cut: emulate power cut for testing purposes
+@@ -386,7 +385,6 @@ struct ubi_wl_entry;
+  * @dfs_chk_gen: debugfs knob to enable UBI general extra checks
+  * @dfs_chk_io: debugfs knob to enable UBI I/O extra checks
+  * @dfs_chk_fastmap: debugfs knob to enable UBI fastmap extra checks
+- * @dfs_disable_bgt: debugfs knob to disable the background task
+  * @dfs_emulate_bitflips: debugfs knob to emulate bit-flips
+  * @dfs_emulate_io_failures: debugfs knob to emulate write/erase failures
+  * @dfs_emulate_power_cut: debugfs knob to emulate power cuts
+@@ -397,7 +395,6 @@ struct ubi_debug_info {
+ 	unsigned int chk_gen:1;
+ 	unsigned int chk_io:1;
+ 	unsigned int chk_fastmap:1;
+-	unsigned int disable_bgt:1;
+ 	unsigned int emulate_bitflips:1;
+ 	unsigned int emulate_io_failures:1;
+ 	unsigned int emulate_power_cut:2;
+@@ -409,7 +406,6 @@ struct ubi_debug_info {
+ 	struct dentry *dfs_chk_gen;
+ 	struct dentry *dfs_chk_io;
+ 	struct dentry *dfs_chk_fastmap;
+-	struct dentry *dfs_disable_bgt;
+ 	struct dentry *dfs_emulate_bitflips;
+ 	struct dentry *dfs_emulate_io_failures;
+ 	struct dentry *dfs_emulate_power_cut;
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 0ed6e39..a80f019 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -649,7 +649,7 @@ static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
+ 	list_add_tail(&wrk->list, &ubi->works);
+ 	ubi_assert(ubi->works_count >= 0);
+ 	ubi->works_count += 1;
+-	if (!wl_work_suspended(ubi) && !ubi_dbg_is_bgt_disabled(ubi))
++	if (!wl_work_suspended(ubi))
+ 		wake_up_process(ubi->bgt_thread);
+ 	spin_unlock(&ubi->wl_lock);
+ 	mutex_unlock(&ubi->work_mutex);
+@@ -1523,7 +1523,7 @@ int ubi_thread(void *u)
  
- 	wrk->anchor = 0;
- 	wrk->func = &wear_leveling_worker;
--	if (nested)
--		__schedule_ubi_work(ubi, wrk);
--	else
--		schedule_ubi_work(ubi, wrk);
-+	schedule_ubi_work(ubi, wrk);
-+
- 	return err;
- 
- out_cancel:
-@@ -1173,7 +1152,7 @@ static int __erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk)
- 		serve_prot_queue(ubi);
- 
- 		/* And take care about wear-leveling */
--		err = ensure_wear_leveling(ubi, 1);
-+		err = ensure_wear_leveling(ubi);
- 		return err;
- 	}
- 
-@@ -1434,7 +1413,7 @@ retry:
- 	 * Technically scrubbing is the same as wear-leveling, so it is done
- 	 * by the WL worker.
- 	 */
--	return ensure_wear_leveling(ubi, 0);
-+	return ensure_wear_leveling(ubi);
- }
- 
- /**
-@@ -1718,7 +1697,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	ubi->rsvd_pebs += reserved_pebs;
- 
- 	/* Schedule wear-leveling if needed */
--	err = ensure_wear_leveling(ubi, 0);
-+	err = ensure_wear_leveling(ubi);
- 	if (err)
- 		goto out_free;
- 
+ 		spin_lock(&ubi->wl_lock);
+ 		if (list_empty(&ubi->works) || ubi->ro_mode ||
+-		    wl_work_suspended(ubi) || ubi_dbg_is_bgt_disabled(ubi)) {
++		    wl_work_suspended(ubi)) {
+ 			set_current_state(TASK_INTERRUPTIBLE);
+ 			spin_unlock(&ubi->wl_lock);
+ 			schedule();
 -- 
 2.7.3
