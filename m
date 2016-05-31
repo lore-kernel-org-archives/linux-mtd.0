@@ -1,28 +1,26 @@
-Received: from mail-pa0-x244.google.com ([2607:f8b0:400e:c03::244])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b7nVO-00084h-3k
- for linux-mtd@lists.infradead.org; Tue, 31 May 2016 17:31:03 +0000
-Received: by mail-pa0-x244.google.com with SMTP id fg1so25508140pad.3
- for <linux-mtd@lists.infradead.org>; Tue, 31 May 2016 10:30:41 -0700 (PDT)
-From: Florian Fainelli <f.fainelli@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: thomas.petazzoni@free-electrons.com,
- Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Simon Arlott <simon@fire.lp0.eu>,
- devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
- BINDINGS), linux-kernel@vger.kernel.org (open list),
- bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM STB NAND FLASH
- DRIVER)
-Subject: [PATCH v2] mtd: brcmnand: Add v7.2 controller support
-Date: Tue, 31 May 2016 10:23:02 -0700
-Message-Id: <1464715383-26053-1-git-send-email-f.fainelli@gmail.com>
+ id 1b7o8g-0005I0-0W
+ for linux-mtd@lists.infradead.org; Tue, 31 May 2016 18:11:39 +0000
+Received: by mail-pa0-x22b.google.com with SMTP id um11so21398360pab.0
+ for <linux-mtd@lists.infradead.org>; Tue, 31 May 2016 11:11:17 -0700 (PDT)
+Date: Tue, 31 May 2016 11:11:13 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Matthias Auchmann <m.auchmann@artech.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: mtd locking
+Message-ID: <20160531181113.GA27381@google.com>
+References: <566B344A0B1AB14EB2486D887B6FF9E0331F3DB470@SRV01.ARTech.local>
+ <CAFLxGvz+9JqcLZwuUqOd1UsCNbbjD52ecd5Faj8PC12YhTuYiA@mail.gmail.com>
+ <566B344A0B1AB14EB2486D887B6FF9E0331F3DB473@SRV01.ARTech.local>
+ <574B15FE.8030206@nod.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <574B15FE.8030206@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,241 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The 7.2 controller differs in a few area compared to its predecssor (7.1):
+Hi,
 
-- NAND scrambler, which we are not using just yet
-- higher ECC levels (up to 120 bits) per 1KB data blocks, also not supported yet
-- up to 128B OOB
+On Sun, May 29, 2016 at 06:17:02PM +0200, Richard Weinberger wrote:
+> Am 29.05.2016 um 17:53 schrieb Matthias Auchmann:
+> > By intended you mean it's wrong and we know, but it's still wrong, right?
+> 
+> I'd say lazy. Sometimes counters don't need to be exact.
+> Having exact counting is expensive. See network stack.
+> 
+> I'm not sure what the exact reasons in the ECC error counting
+> case are.
+> Maybe Brian or Boris can tell more.
 
-This patchs adds the ncessary code to support such a controller
-generation and updates the Device Tree binding.
+Boris correctly explained things. And several people have noticed, but
+few solutions have been attempted.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes in v2:
+The only thing I'd add: I suspect the MTD char device APIs haven't
+gotten as much love because they aren't as useful. Most users have found
+better utility by working through JFFS2, UBI/UBIFS, etc., since there's
+just so much that a raw MTD doesn't really solve for you, especially
+when you start talking about the type of device where you care about
+bitflips (i.e., NAND).
 
-- fixed a bunch of conditionals on the versions which should
-  have been exclusive (spotted by Thomas)
+You're more likely to get away fine with raw MTD on NOR flash, but then
+you don't care about ECCGETSTATS there anyway.
 
- .../devicetree/bindings/mtd/brcm,brcmnand.txt      |  1 +
- drivers/mtd/nand/brcmnand/brcmnand.c               | 91 ++++++++++++++++++----
- 2 files changed, 78 insertions(+), 14 deletions(-)
+I think Boris has found use cases where he just wants to talk raw
+NAND/MTD, so maybe some of this dynamic is changing.
 
-diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-index deb24cbdda82..c8d71e75cb09 100644
---- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-+++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
-@@ -27,6 +27,7 @@ Required properties:
-                          brcm,brcmnand-v6.2
-                          brcm,brcmnand-v7.0
-                          brcm,brcmnand-v7.1
-+                         brcm,brcmnand-v7.2
-                          brcm,brcmnand
- - reg              : the register start and length for NAND register region.
-                      (optional) Flash DMA register range (if present)
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index b76ad7c0144f..0a54a0f5a4b1 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -340,6 +340,36 @@ static const u16 brcmnand_regs_v71[] = {
- 	[BRCMNAND_FC_BASE]		= 0x400,
- };
- 
-+/* BRCMNAND v7.2 */
-+static const u16 brcmnand_regs_v72[] = {
-+	[BRCMNAND_CMD_START]		=  0x04,
-+	[BRCMNAND_CMD_EXT_ADDRESS]	=  0x08,
-+	[BRCMNAND_CMD_ADDRESS]		=  0x0c,
-+	[BRCMNAND_INTFC_STATUS]		=  0x14,
-+	[BRCMNAND_CS_SELECT]		=  0x18,
-+	[BRCMNAND_CS_XOR]		=  0x1c,
-+	[BRCMNAND_LL_OP]		=  0x20,
-+	[BRCMNAND_CS0_BASE]		=  0x50,
-+	[BRCMNAND_CS1_BASE]		=     0,
-+	[BRCMNAND_CORR_THRESHOLD]	=  0xdc,
-+	[BRCMNAND_CORR_THRESHOLD_EXT]	=  0xe0,
-+	[BRCMNAND_UNCORR_COUNT]		=  0xfc,
-+	[BRCMNAND_CORR_COUNT]		= 0x100,
-+	[BRCMNAND_CORR_EXT_ADDR]	= 0x10c,
-+	[BRCMNAND_CORR_ADDR]		= 0x110,
-+	[BRCMNAND_UNCORR_EXT_ADDR]	= 0x114,
-+	[BRCMNAND_UNCORR_ADDR]		= 0x118,
-+	[BRCMNAND_SEMAPHORE]		= 0x150,
-+	[BRCMNAND_ID]			= 0x194,
-+	[BRCMNAND_ID_EXT]		= 0x198,
-+	[BRCMNAND_LL_RDATA]		= 0x19c,
-+	[BRCMNAND_OOB_READ_BASE]	= 0x200,
-+	[BRCMNAND_OOB_READ_10_BASE]	=     0,
-+	[BRCMNAND_OOB_WRITE_BASE]	= 0x400,
-+	[BRCMNAND_OOB_WRITE_10_BASE]	=     0,
-+	[BRCMNAND_FC_BASE]		= 0x600,
-+};
-+
- enum brcmnand_cs_reg {
- 	BRCMNAND_CS_CFG_EXT = 0,
- 	BRCMNAND_CS_CFG,
-@@ -435,7 +465,9 @@ static int brcmnand_revision_init(struct brcmnand_controller *ctrl)
- 	}
- 
- 	/* Register offsets */
--	if (ctrl->nand_version >= 0x0701)
-+	if (ctrl->nand_version >= 0x0702)
-+		ctrl->reg_offsets = brcmnand_regs_v72;
-+	else if (ctrl->nand_version >= 0x0701)
- 		ctrl->reg_offsets = brcmnand_regs_v71;
- 	else if (ctrl->nand_version >= 0x0600)
- 		ctrl->reg_offsets = brcmnand_regs_v60;
-@@ -480,7 +512,9 @@ static int brcmnand_revision_init(struct brcmnand_controller *ctrl)
- 	}
- 
- 	/* Maximum spare area sector size (per 512B) */
--	if (ctrl->nand_version >= 0x0600)
-+	if (ctrl->nand_version >= 0x0702)
-+		ctrl->max_oob = 128;
-+	else if (ctrl->nand_version >= 0x0600)
- 		ctrl->max_oob = 64;
- 	else if (ctrl->nand_version >= 0x0500)
- 		ctrl->max_oob = 32;
-@@ -583,14 +617,20 @@ static void brcmnand_wr_corr_thresh(struct brcmnand_host *host, u8 val)
- 	enum brcmnand_reg reg = BRCMNAND_CORR_THRESHOLD;
- 	int cs = host->cs;
- 
--	if (ctrl->nand_version >= 0x0600)
-+	if (ctrl->nand_version >= 0x0702)
-+		bits = 7;
-+	else if (ctrl->nand_version >= 0x0600)
- 		bits = 6;
- 	else if (ctrl->nand_version >= 0x0500)
- 		bits = 5;
- 	else
- 		bits = 4;
- 
--	if (ctrl->nand_version >= 0x0600) {
-+	if (ctrl->nand_version >= 0x0702) {
-+		if (cs >= 4)
-+			reg = BRCMNAND_CORR_THRESHOLD_EXT;
-+		shift = (cs % 4) * bits;
-+	} else if (ctrl->nand_version >= 0x0600) {
- 		if (cs >= 5)
- 			reg = BRCMNAND_CORR_THRESHOLD_EXT;
- 		shift = (cs % 5) * bits;
-@@ -631,19 +671,28 @@ enum {
- 
- static inline u32 brcmnand_spare_area_mask(struct brcmnand_controller *ctrl)
- {
--	if (ctrl->nand_version >= 0x0600)
-+	if (ctrl->nand_version >= 0x0702)
-+		return GENMASK(7, 0);
-+	else if (ctrl->nand_version >= 0x0600)
- 		return GENMASK(6, 0);
- 	else
- 		return GENMASK(5, 0);
- }
- 
- #define NAND_ACC_CONTROL_ECC_SHIFT	16
-+#define NAND_ACC_CONTROL_ECC_EXT_SHIFT	13
- 
- static inline u32 brcmnand_ecc_level_mask(struct brcmnand_controller *ctrl)
- {
- 	u32 mask = (ctrl->nand_version >= 0x0600) ? 0x1f : 0x0f;
- 
--	return mask << NAND_ACC_CONTROL_ECC_SHIFT;
-+	mask <<= NAND_ACC_CONTROL_ECC_SHIFT;
-+
-+	/* v7.2 includes additional ECC levels */
-+	if (ctrl->nand_version >= 0x0702)
-+		mask |= 0x7 << NAND_ACC_CONTROL_ECC_EXT_SHIFT;
-+
-+	return mask;
- }
- 
- static void brcmnand_set_ecc_enabled(struct brcmnand_host *host, int en)
-@@ -667,7 +716,9 @@ static void brcmnand_set_ecc_enabled(struct brcmnand_host *host, int en)
- 
- static inline int brcmnand_sector_1k_shift(struct brcmnand_controller *ctrl)
- {
--	if (ctrl->nand_version >= 0x0600)
-+	if (ctrl->nand_version >= 0x0702)
-+		return 9;
-+	else if (ctrl->nand_version >= 0x0600)
- 		return 7;
- 	else if (ctrl->nand_version >= 0x0500)
- 		return 6;
-@@ -773,10 +824,16 @@ enum brcmnand_llop_type {
-  * Internal support functions
-  ***********************************************************************/
- 
--static inline bool is_hamming_ecc(struct brcmnand_cfg *cfg)
-+static inline bool is_hamming_ecc(struct brcmnand_controller *ctrl,
-+				  struct brcmnand_cfg *cfg)
- {
--	return cfg->sector_size_1k == 0 && cfg->spare_area_size == 16 &&
--		cfg->ecc_level == 15;
-+	if (ctrl->nand_version <= 0x0701)
-+		return cfg->sector_size_1k == 0 && cfg->spare_area_size == 16 &&
-+			cfg->ecc_level == 15;
-+	else
-+		return cfg->sector_size_1k == 0 && ((cfg->spare_area_size == 16 &&
-+			cfg->ecc_level == 15) ||
-+			(cfg->spare_area_size == 28 && cfg->ecc_level == 16));
- }
- 
- /*
-@@ -931,7 +988,7 @@ static int brcmstb_choose_ecc_layout(struct brcmnand_host *host)
- 	if (p->sector_size_1k)
- 		ecc_level <<= 1;
- 
--	if (is_hamming_ecc(p)) {
-+	if (is_hamming_ecc(host->ctrl, p)) {
- 		ecc->bytes = 3 * sectors;
- 		mtd_set_ooblayout(mtd, &brcmnand_hamming_ooblayout_ops);
- 		return 0;
-@@ -1857,7 +1914,8 @@ static int brcmnand_set_cfg(struct brcmnand_host *host,
- 	return 0;
- }
- 
--static void brcmnand_print_cfg(char *buf, struct brcmnand_cfg *cfg)
-+static void brcmnand_print_cfg(struct brcmnand_host *host,
-+			       char *buf, struct brcmnand_cfg *cfg)
- {
- 	buf += sprintf(buf,
- 		"%lluMiB total, %uKiB blocks, %u%s pages, %uB OOB, %u-bit",
-@@ -1868,7 +1926,7 @@ static void brcmnand_print_cfg(char *buf, struct brcmnand_cfg *cfg)
- 		cfg->spare_area_size, cfg->device_width);
- 
- 	/* Account for Hamming ECC and for BCH 512B vs 1KiB sectors */
--	if (is_hamming_ecc(cfg))
-+	if (is_hamming_ecc(host->ctrl, cfg))
- 		sprintf(buf, ", Hamming ECC");
- 	else if (cfg->sector_size_1k)
- 		sprintf(buf, ", BCH-%u (1KiB sector)", cfg->ecc_level << 1);
-@@ -1987,7 +2045,7 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 
- 	brcmnand_set_ecc_enabled(host, 1);
- 
--	brcmnand_print_cfg(msg, cfg);
-+	brcmnand_print_cfg(host, msg, cfg);
- 	dev_info(ctrl->dev, "detected %s\n", msg);
- 
- 	/* Configure ACC_CONTROL */
-@@ -1995,6 +2053,10 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 	tmp = nand_readreg(ctrl, offs);
- 	tmp &= ~ACC_CONTROL_PARTIAL_PAGE;
- 	tmp &= ~ACC_CONTROL_RD_ERASED;
-+
-+	/* We need to turn on Read from erased paged protected by ECC */
-+	if (ctrl->nand_version >= 0x0702)
-+		tmp |= ACC_CONTROL_RD_ERASED;
- 	tmp &= ~ACC_CONTROL_FAST_PGM_RDIN;
- 	if (ctrl->features & BRCMNAND_HAS_PREFETCH) {
- 		/*
-@@ -2195,6 +2257,7 @@ static const struct of_device_id brcmnand_of_match[] = {
- 	{ .compatible = "brcm,brcmnand-v6.2" },
- 	{ .compatible = "brcm,brcmnand-v7.0" },
- 	{ .compatible = "brcm,brcmnand-v7.1" },
-+	{ .compatible = "brcm,brcmnand-v7.2" },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, brcmnand_of_match);
--- 
-2.7.4
+(And BTW, I realized this is a potential impediment to moving the MTD
+tests entirely to user space. They can still work fine in
+single-threaded mode, but once you start running multiple instances,
+you'll start getting inaccurate stats reports, which will make some
+tests think they've failed.)
+
+Brian
