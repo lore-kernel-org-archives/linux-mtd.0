@@ -1,25 +1,25 @@
-Received: from mail-yw0-x235.google.com ([2607:f8b0:4002:c05::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b89wL-00052B-9s
- for linux-mtd@lists.infradead.org; Wed, 01 Jun 2016 17:28:21 +0000
-Received: by mail-yw0-x235.google.com with SMTP id o16so25206975ywd.2
- for <linux-mtd@lists.infradead.org>; Wed, 01 Jun 2016 10:28:00 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20160601192223.02861d9e@bbrezillon>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b8CtU-0007RG-I2
+ for linux-mtd@lists.infradead.org; Wed, 01 Jun 2016 20:37:37 +0000
+Date: Wed, 1 Jun 2016 22:37:13 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Kamal Dasu <kamal.dasu@broadcom.com>
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org, Brian
+ Norris <computersforpeace@gmail.com>, Florian Fainelli
+ <f.fainelli@gmail.com>, bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH 2/2] mtd: brcmnand: Detect sticky ucorr ecc error on dma
+ reads
+Message-ID: <20160601223713.7a068a99@bbrezillon>
+In-Reply-To: <CAKekbevuxMUsuKRuJE0cqNK_zAgG=64YOE6-OEYgY-neY7Ds1w@mail.gmail.com>
 References: <1461961285-24159-1-git-send-email-kdasu.kdev@gmail.com>
- <20160530104213.79ff4a28@bbrezillon>
- <CAKekbesoPajRAE1d=df1bWM=YF2MmMnC8-UHEmEkYuV1y+PFhg@mail.gmail.com>
- <20160601171440.GA30704@google.com> <20160601192223.02861d9e@bbrezillon>
-From: Kamal Dasu <kamal.dasu@broadcom.com>
-Date: Wed, 1 Jun 2016 13:27:20 -0400
-Message-ID: <CAKekbeuTZ8X-_=xb1D_bynjGJ3mdPdsE6m9Pn5BvKBcSmdOmxg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: brcmnand: Add check for erased page bitflips
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- linux-mtd@lists.infradead.org, Florian Fainelli <f.fainelli@gmail.com>,
- bcm-kernel-feedback-list@broadcom.com
-Content-Type: text/plain; charset=UTF-8
+ <1461961285-24159-2-git-send-email-kdasu.kdev@gmail.com>
+ <20160530105005.62faa711@bbrezillon>
+ <CAKekbevuxMUsuKRuJE0cqNK_zAgG=64YOE6-OEYgY-neY7Ds1w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +29,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris,
+On Wed, 1 Jun 2016 12:50:56 -0400
+Kamal Dasu <kamal.dasu@broadcom.com> wrote:
 
->> I'm quite sure you can't make use of NAND_ECC_GENERIC_ERASED_CHECK
->> unless you do a substantial rewrite; brcmnand doesn't use any of the
->> nand_base ecc.read_{page,subpage} callbacks.
->>
->> > If that works as expected I will get rid of this duplication and send
->> > a revised change which shall make use of the
->> > NAND_ECC_GENERIC_ERASED_CHECK option.
->>
->> I suspect he was just suggesting calling the
->> nand_check_erased_ecc_chunk() helper instead of doing your own
->> bitmap_weight() calls.
->
-> Exactly.
->
->
+> Boris,
+> 
+> On Mon, May 30, 2016 at 4:50 AM, Boris Brezillon
+> <boris.brezillon@free-electrons.com> wrote:
+> > On Fri, 29 Apr 2016 16:21:25 -0400
+> > Kamal Dasu <kdasu.kdev@gmail.com> wrote:
+> >  
+> >> This change provides a fix for controller bug where nand
+> >> controller could have a possible sticky error after a PIO
+> >> followed by a DMA read. The fix retries a read if we see
+> >> a uncorr_ecc after read to detect such sticky errors.
+> >>
+> >> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> >> ---
+> >>  drivers/mtd/nand/brcmnand/brcmnand.c | 15 ++++++++++++++-
+> >>  1 file changed, 14 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> >> index 29a9abd..13c7784 100644
+> >> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> >> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> >> @@ -1555,9 +1555,11 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+> >>       struct brcmnand_controller *ctrl = host->ctrl;
+> >>       u64 err_addr = 0;
+> >>       int err;
+> >> +     bool retry = true;
+> >>
+> >>       dev_dbg(ctrl->dev, "read %llx -> %p\n", (unsigned long long)addr, buf);
+> >>
+> >> +try_dmaread:
+> >>       brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_COUNT, 0);
+> >>
+> >>       if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
+> >> @@ -1579,7 +1581,18 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+> >>
+> >>       if (mtd_is_eccerr(err)) {
+> >>               int ret;
+> >> -
+> >> +             /*
+> >> +              * On controller version >=7.0 if we are doing a DMA read
+> >> +              * after a prior PIO read that reported uncorrectable error,
+> >> +              * the DMA engine captures this error following DMA read
+> >> +              * cleared only on subsequent DMA read, so just retry once
+> >> +              * to clear a possible false error reported for current DMA
+> >> +              * read
+> >> +              */  
+> >
+> > Hm, shouldn't this BRCMNAND_UNCORR_COUNT bit be cleared just after
+> > doing the PIO/DMA read instead of doing it before executing a new read?
+> > This would solve your problem without the need for this extra retry, or
+> > am I missing something?
+> >  
+> 
+> Clearing the count registers or the intr registers does not clear the
+> condition. Only a clean read (a page that does not have errors) clears
+> the condition. So if this was a false error  ( page is really clean)
+> and we read again, it will clear the condition.
+> 
 
-Ok got it. Yes I did realize that using the option is not straight
-forward as far as brcmnand driver is concerned.
+Can you try that patch [1], just to make sure the extra read cycle is
+really necessary?
 
-Thanks
-Kamal
+[1]http://code.bulix.org/uzb7m8-99997
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
