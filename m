@@ -1,17 +1,19 @@
-Received: from mail-yw0-x22a.google.com ([2607:f8b0:4002:c05::22a])
+Received: from mail-yw0-x235.google.com ([2607:f8b0:4002:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b89Id-00079s-N6
- for linux-mtd@lists.infradead.org; Wed, 01 Jun 2016 16:47:20 +0000
-Received: by mail-yw0-x22a.google.com with SMTP id x189so23996121ywe.3
- for <linux-mtd@lists.infradead.org>; Wed, 01 Jun 2016 09:46:58 -0700 (PDT)
+ id 1b89N8-0000Ld-1c
+ for linux-mtd@lists.infradead.org; Wed, 01 Jun 2016 16:51:58 +0000
+Received: by mail-yw0-x235.google.com with SMTP id c127so24189673ywb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Jun 2016 09:51:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20160530104213.79ff4a28@bbrezillon>
+In-Reply-To: <20160530105005.62faa711@bbrezillon>
 References: <1461961285-24159-1-git-send-email-kdasu.kdev@gmail.com>
- <20160530104213.79ff4a28@bbrezillon>
+ <1461961285-24159-2-git-send-email-kdasu.kdev@gmail.com>
+ <20160530105005.62faa711@bbrezillon>
 From: Kamal Dasu <kamal.dasu@broadcom.com>
-Date: Wed, 1 Jun 2016 12:46:18 -0400
-Message-ID: <CAKekbesoPajRAE1d=df1bWM=YF2MmMnC8-UHEmEkYuV1y+PFhg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: brcmnand: Add check for erased page bitflips
+Date: Wed, 1 Jun 2016 12:50:56 -0400
+Message-ID: <CAKekbevuxMUsuKRuJE0cqNK_zAgG=64YOE6-OEYgY-neY7Ds1w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: brcmnand: Detect sticky ucorr ecc error on dma
+ reads
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
@@ -29,104 +31,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Boris,
 
-
-
-On Mon, May 30, 2016 at 4:42 AM, Boris Brezillon
+On Mon, May 30, 2016 at 4:50 AM, Boris Brezillon
 <boris.brezillon@free-electrons.com> wrote:
-> Hi Kamal,
->
-> On Fri, 29 Apr 2016 16:21:24 -0400
+> On Fri, 29 Apr 2016 16:21:25 -0400
 > Kamal Dasu <kdasu.kdev@gmail.com> wrote:
 >
->> Check for erased page bitflips in a page. And if well within
->> threshold return data as all 0xff.
+>> This change provides a fix for controller bug where nand
+>> controller could have a possible sticky error after a PIO
+>> followed by a DMA read. The fix retries a read if we see
+>> a uncorr_ecc after read to detect such sticky errors.
 >>
 >> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 >> ---
->>  drivers/mtd/nand/brcmnand/brcmnand.c | 83 +++++++++++++++++++++++++++++++++---
->>  1 file changed, 78 insertions(+), 5 deletions(-)
+>>  drivers/mtd/nand/brcmnand/brcmnand.c | 15 ++++++++++++++-
+>>  1 file changed, 14 insertions(+), 1 deletion(-)
 >>
 >> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
->> index e052839..29a9abd 100644
+>> index 29a9abd..13c7784 100644
 >> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
 >> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
->> @@ -1490,6 +1490,64 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
->>       return ret;
->>  }
+>> @@ -1555,9 +1555,11 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+>>       struct brcmnand_controller *ctrl = host->ctrl;
+>>       u64 err_addr = 0;
+>>       int err;
+>> +     bool retry = true;
 >>
->> +/*
->> + * Check a page to see if it is erased (w/ bitflips) after an uncorrectable ECC
->> + * error
->> + *
->> + * Because the HW ECC signals an ECC error if an erase paged has even a single
->> + * bitflip, we must check each ECC error to see if it is actually an erased
->> + * page with bitflips, not a truly corrupted page.
->> + *
->> + * On a real error, return a negative error code (-EBADMSG for ECC error), and
->> + * buf will contain raw data.
->> + * Otherwise, fill buf with 0xff and return the maximum number of
->> + * bitflips-per-ECC-sector to the caller.
->> + *
->> + */
->> +static int brcmstb_nand_verify_erased_page(struct mtd_info *mtd,
->> +               struct nand_chip *chip, void *buf, u64 addr)
->> +{
->> +     int i, sas, oob_nbits, data_nbits;
->> +     void *oob = chip->oob_poi;
->> +     unsigned int max_bitflips = 0;
->> +     int page = addr >> chip->page_shift;
->> +     int ret;
->> +
->> +     if (!buf) {
->> +             buf = chip->buffers->databuf;
->> +             /* Invalidate page cache */
->> +             chip->pagebuf = -1;
->> +     }
->> +
->> +     sas = mtd->oobsize / chip->ecc.steps;
->> +     oob_nbits = sas << 3;
->> +     data_nbits = chip->ecc.size << 3;
->> +
->> +     /* read without ecc for verification */
->> +     chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
->> +     ret = chip->ecc.read_page_raw(mtd, chip, buf, true, page);
+>>       dev_dbg(ctrl->dev, "read %llx -> %p\n", (unsigned long long)addr, buf);
+>>
+>> +try_dmaread:
+>>       brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_COUNT, 0);
+>>
+>>       if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
+>> @@ -1579,7 +1581,18 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+>>
+>>       if (mtd_is_eccerr(err)) {
+>>               int ret;
+>> -
+>> +             /*
+>> +              * On controller version >=7.0 if we are doing a DMA read
+>> +              * after a prior PIO read that reported uncorrectable error,
+>> +              * the DMA engine captures this error following DMA read
+>> +              * cleared only on subsequent DMA read, so just retry once
+>> +              * to clear a possible false error reported for current DMA
+>> +              * read
+>> +              */
 >
-> Do you really need to read the whole page in raw mode? Usually, only
-> reading the OOB sections is enough.
+> Hm, shouldn't this BRCMNAND_UNCORR_COUNT bit be cleared just after
+> doing the PIO/DMA read instead of doing it before executing a new read?
+> This would solve your problem without the need for this extra retry, or
+> am I missing something?
 >
 
-Just so that the HW ecc algo does not kick in we read the page in raw
-mode. OOB registers are filled as part of this read. Also just the
-data might have bit flips and OOB might be all FFs, we still need to
-read  page data. Generally we read again to make sure that the hw ecc
-algo did not change the data after calculations in the original  read
-where it reported uncorrectable error.  I will double check this.
+Clearing the count registers or the intr registers does not clear the
+condition. Only a clean read (a page that does not have errors) clears
+the condition. So if this was a false error  ( page is really clean)
+and we read again, it will clear the condition.
 
->> +     if (ret)
->> +             return ret;
->> +
->> +     for (i = 0; i < chip->ecc.steps; i++, oob += sas) {
->> +             unsigned int bitflips = 0;
->> +
->> +             bitflips += oob_nbits - bitmap_weight(oob, oob_nbits);
->> +             bitflips += data_nbits - bitmap_weight(buf, data_nbits);
->> +
->> +             buf += chip->ecc.size;
->> +             addr += chip->ecc.size;
->
-> You seem to duplicate nand_check_erased_ecc_chunk() here. Do you have a
-> good reason for doing that?
->
 
-Hmmm I see what you are saying. Let me try setting the
-NAND_ECC_GENERIC_ERASED_CHECK option and see if we can get away
-without having to read raw.  I will have to test and make sure on
-uncorrectable error the hw leaves the return page data buffers and oob
-buffers in raw state.
-
-If that works as expected I will get rid of this duplication and send
-a revised change which shall make use of the
-NAND_ECC_GENERIC_ERASED_CHECK option.
 
 Thanks
 Kamal
