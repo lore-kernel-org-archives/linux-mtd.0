@@ -1,30 +1,19 @@
-Received: from mail-pf0-x233.google.com ([2607:f8b0:400e:c00::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8GTJ-00068g-9Z
- for linux-mtd@lists.infradead.org; Thu, 02 Jun 2016 00:26:50 +0000
-Received: by mail-pf0-x233.google.com with SMTP id 62so23868964pfd.1
- for <linux-mtd@lists.infradead.org>; Wed, 01 Jun 2016 17:26:28 -0700 (PDT)
-Date: Wed, 1 Jun 2016 17:26:24 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Heiner Kallweit <hkallweit1@gmail.com>, Han Xu <han.xu@nxp.com>,
- Michal Suchanek <hramrach@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Javier Martinez Canillas <javier@osg.samsung.com>,
- Rafal Milecki <zajec5@gmail.com>, Jagan Teki <jteki@openedev.com>,
- "Andrew F. Davis" <afd@ti.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>, Bean Huo <beanhuo@micron.com>,
- linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
- Joachim Eastwood <manabian@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Subject: Re: [PATCH v7 00/10] Add error checking to spi-nor read and write
-Message-ID: <20160602002624.GG89390@google.com>
-References: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
+Received: from bastet.se.axis.com ([195.60.68.11])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b8NLM-0008BB-LA
+ for linux-mtd@lists.infradead.org; Thu, 02 Jun 2016 07:47:06 +0000
+Date: Thu, 2 Jun 2016 09:46:31 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Benoit Cousson <bcousson@baylibre.com>, Tony Lindgren
+ <tony@atomide.com>, David Woodhouse <dwmw2@infradead.org>
+CC: Linux mtd <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/4] mtd: nand: Add support for Evatronix NANDFLASH-CTRL 
+Message-ID: <alpine.DEB.2.02.1606020944180.19416@lnxricardw1.se.axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 05, 2016 at 05:31:46PM -0700, Brian Norris wrote:
-> Hi,
-> 
-> I'm picking up Michal's patch set, since he dropped it on the floor, and it's
-> useful for others. My additions:
-> 
->  * rebased on latest
->  * added fixes for drivers that have been merged in the meantime
->  * addressed most of Heiner's comments
-> 
-> I've put some v6->v7 change info in the patch descriptions as well.
-> 
-> Tested on m25p80 only.
 
-Pushed to l2-mtd.git, with Cyrille's and Michal's {Tested,Acked}-by's.
+This patch set adds a driver and relevant devicetree bindings for the
+Evatronix NANDFLASH-CTRL NAND flash controller IP. This controller is
+used in the Axis ARTPEC-6 SoC.
 
-Regards,
-Brian
+The driver supports BCH ECC using the controller's hardware, but there is
+also an option to use software BCH ECC. However, the ECC layouts are not
+compatible so it's not possible to mix them. The main advantage to using
+software ECC is that there are more OOB bytes free, as the hardware is
+slightly wasteful on OOB space.
+
+BCH ECC from 4 to 32 bits over 256, 512 or 1024 byte ECC blocks is supported.
+
+Only large-page flash chips are supported, using 4 or 5 address cycles.
+
+The driver has been extensively tested using hardware ECC on 2 Mbit flash chips,
+with 8 bit ECC over 512 bytes ECC blocks.
+
+Ricard Wanderlof (4):
+  of: Add device tree bindings for Evatronix NANDFLASH-CTRL
+  dts: Add Evatronix NAND flash driver to ARTPEC-6 dtsi
+  mtd: nand: Add support for Evatronix NANDFLASH-CTRL
+  MAINTAINERS: mtd: Add maintainer for Evatronix NAND flash driver
+
+ .../devicetree/bindings/mtd/evatronix-nand.txt     |   44 +
+ .../devicetree/bindings/vendor-prefixes.txt        |    1 +
+ MAINTAINERS                                        |    6 +
+ arch/arm/boot/dts/artpec6.dtsi                     |   19 +
+ drivers/mtd/nand/Kconfig                           |    6 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/evatronix_nand.c                  | 1909 ++++++++++++++++++++
+ 7 files changed, 1986 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/evatronix-nand.txt
+ create mode 100644 drivers/mtd/nand/evatronix_nand.c
+
+-- 
+1.7.10.4
+
+
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
