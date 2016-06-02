@@ -1,25 +1,30 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8CtU-0007RG-I2
- for linux-mtd@lists.infradead.org; Wed, 01 Jun 2016 20:37:37 +0000
-Date: Wed, 1 Jun 2016 22:37:13 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Kamal Dasu <kamal.dasu@broadcom.com>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>, linux-mtd@lists.infradead.org, Brian
- Norris <computersforpeace@gmail.com>, Florian Fainelli
- <f.fainelli@gmail.com>, bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH 2/2] mtd: brcmnand: Detect sticky ucorr ecc error on dma
- reads
-Message-ID: <20160601223713.7a068a99@bbrezillon>
-In-Reply-To: <CAKekbevuxMUsuKRuJE0cqNK_zAgG=64YOE6-OEYgY-neY7Ds1w@mail.gmail.com>
-References: <1461961285-24159-1-git-send-email-kdasu.kdev@gmail.com>
- <1461961285-24159-2-git-send-email-kdasu.kdev@gmail.com>
- <20160530105005.62faa711@bbrezillon>
- <CAKekbevuxMUsuKRuJE0cqNK_zAgG=64YOE6-OEYgY-neY7Ds1w@mail.gmail.com>
+Received: from mail-pf0-x233.google.com ([2607:f8b0:400e:c00::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b8GTJ-00068g-9Z
+ for linux-mtd@lists.infradead.org; Thu, 02 Jun 2016 00:26:50 +0000
+Received: by mail-pf0-x233.google.com with SMTP id 62so23868964pfd.1
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Jun 2016 17:26:28 -0700 (PDT)
+Date: Wed, 1 Jun 2016 17:26:24 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Heiner Kallweit <hkallweit1@gmail.com>, Han Xu <han.xu@nxp.com>,
+ Michal Suchanek <hramrach@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Javier Martinez Canillas <javier@osg.samsung.com>,
+ Rafal Milecki <zajec5@gmail.com>, Jagan Teki <jteki@openedev.com>,
+ "Andrew F. Davis" <afd@ti.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Gabor Juhos <juhosg@openwrt.org>, Bean Huo <beanhuo@micron.com>,
+ linux-kernel@vger.kernel.org, Bayi Cheng <bayi.cheng@mediatek.com>,
+ Joachim Eastwood <manabian@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Subject: Re: [PATCH v7 00/10] Add error checking to spi-nor read and write
+Message-ID: <20160602002624.GG89390@google.com>
+References: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1462494716-95312-1-git-send-email-computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,74 +34,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 1 Jun 2016 12:50:56 -0400
-Kamal Dasu <kamal.dasu@broadcom.com> wrote:
-
-> Boris,
+On Thu, May 05, 2016 at 05:31:46PM -0700, Brian Norris wrote:
+> Hi,
 > 
-> On Mon, May 30, 2016 at 4:50 AM, Boris Brezillon
-> <boris.brezillon@free-electrons.com> wrote:
-> > On Fri, 29 Apr 2016 16:21:25 -0400
-> > Kamal Dasu <kdasu.kdev@gmail.com> wrote:
-> >  
-> >> This change provides a fix for controller bug where nand
-> >> controller could have a possible sticky error after a PIO
-> >> followed by a DMA read. The fix retries a read if we see
-> >> a uncorr_ecc after read to detect such sticky errors.
-> >>
-> >> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> >> ---
-> >>  drivers/mtd/nand/brcmnand/brcmnand.c | 15 ++++++++++++++-
-> >>  1 file changed, 14 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> >> index 29a9abd..13c7784 100644
-> >> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> >> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> >> @@ -1555,9 +1555,11 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
-> >>       struct brcmnand_controller *ctrl = host->ctrl;
-> >>       u64 err_addr = 0;
-> >>       int err;
-> >> +     bool retry = true;
-> >>
-> >>       dev_dbg(ctrl->dev, "read %llx -> %p\n", (unsigned long long)addr, buf);
-> >>
-> >> +try_dmaread:
-> >>       brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_COUNT, 0);
-> >>
-> >>       if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
-> >> @@ -1579,7 +1581,18 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
-> >>
-> >>       if (mtd_is_eccerr(err)) {
-> >>               int ret;
-> >> -
-> >> +             /*
-> >> +              * On controller version >=7.0 if we are doing a DMA read
-> >> +              * after a prior PIO read that reported uncorrectable error,
-> >> +              * the DMA engine captures this error following DMA read
-> >> +              * cleared only on subsequent DMA read, so just retry once
-> >> +              * to clear a possible false error reported for current DMA
-> >> +              * read
-> >> +              */  
-> >
-> > Hm, shouldn't this BRCMNAND_UNCORR_COUNT bit be cleared just after
-> > doing the PIO/DMA read instead of doing it before executing a new read?
-> > This would solve your problem without the need for this extra retry, or
-> > am I missing something?
-> >  
+> I'm picking up Michal's patch set, since he dropped it on the floor, and it's
+> useful for others. My additions:
 > 
-> Clearing the count registers or the intr registers does not clear the
-> condition. Only a clean read (a page that does not have errors) clears
-> the condition. So if this was a false error  ( page is really clean)
-> and we read again, it will clear the condition.
+>  * rebased on latest
+>  * added fixes for drivers that have been merged in the meantime
+>  * addressed most of Heiner's comments
 > 
+> I've put some v6->v7 change info in the patch descriptions as well.
+> 
+> Tested on m25p80 only.
 
-Can you try that patch [1], just to make sure the extra read cycle is
-really necessary?
+Pushed to l2-mtd.git, with Cyrille's and Michal's {Tested,Acked}-by's.
 
-[1]http://code.bulix.org/uzb7m8-99997
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Regards,
+Brian
