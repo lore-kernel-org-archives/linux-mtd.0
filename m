@@ -1,18 +1,25 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8VID-00033L-Fp
- for linux-mtd@lists.infradead.org; Thu, 02 Jun 2016 16:16:22 +0000
-Date: Thu, 2 Jun 2016 18:15:59 +0200
+ id 1b8WCD-0005EU-CP
+ for linux-mtd@lists.infradead.org; Thu, 02 Jun 2016 17:14:14 +0000
+Date: Thu, 2 Jun 2016 19:13:33 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Keguang Zhang <keguang.zhang@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-mips@linux-mips.org,
- linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH V3] mtd: nand: add Loongson1 NAND driver
-Message-ID: <20160602181559.54aa9f67@bbrezillon>
-In-Reply-To: <1464429250-27670-1-git-send-email-keguang.zhang@gmail.com>
-References: <1464429250-27670-1-git-send-email-keguang.zhang@gmail.com>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mtd@lists.infradead.org, thomas.petazzoni@free-electrons.com, Mark
+ Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Ian
+ Campbell <ijc+devicetree@hellion.org.uk>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, open list <linux-kernel@vger.kernel.org>, Richard
+ Weinberger <richard@nod.at>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE
+ TREE BINDINGS" <devicetree@vger.kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, "open list:BROADCOM STB NAND FLASH DRIVER"
+ <bcm-kernel-feedback-list@broadcom.com>, Kumar Gala <galak@codeaurora.org>,
+ Simon Arlott <simon@fire.lp0.eu>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2] mtd: brcmnand: Add v7.2 controller support
+Message-ID: <20160602191333.2133eb5b@bbrezillon>
+In-Reply-To: <1464715383-26053-1-git-send-email-f.fainelli@gmail.com>
+References: <1464715383-26053-1-git-send-email-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,364 +32,249 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 28 May 2016 17:54:10 +0800
-Keguang Zhang <keguang.zhang@gmail.com> wrote:
+On Tue, 31 May 2016 10:23:02 -0700
+Florian Fainelli <f.fainelli@gmail.com> wrote:
 
-> From: Kelvin Cheung <keguang.zhang@gmail.com>
+> The 7.2 controller differs in a few area compared to its predecssor (7.1):
 > 
-> This patch adds NAND driver for Loongson1B.
+> - NAND scrambler, which we are not using just yet
+> - higher ECC levels (up to 120 bits) per 1KB data blocks, also not supported yet
+> - up to 128B OOB
 > 
-> Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
+> This patchs adds the ncessary code to support such a controller
+> generation and updates the Device Tree binding.
 > 
+
+This patch looks good to me. Brian, Kamal, do you want to add your ack?
+
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 > ---
-> v3:
->    Replace __raw_readl/__raw_writel with readl/writel.
->    Split ls1x_nand into two structures: ls1x_nand_chip and ls1x_nand_controller.
-> V2:
->    Modify the dependency in Kconfig due to the changes of DMA module.
-> ---
->  drivers/mtd/nand/Kconfig          |   8 +
->  drivers/mtd/nand/Makefile         |   1 +
->  drivers/mtd/nand/loongson1_nand.c | 555 ++++++++++++++++++++++++++++++++++++++
->  3 files changed, 564 insertions(+)
->  create mode 100644 drivers/mtd/nand/loongson1_nand.c
+> Changes in v2:
 > 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index f05e0e9..be20fb8 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -563,4 +563,12 @@ config MTD_NAND_QCOM
->  	  Enables support for NAND flash chips on SoCs containing the EBI2 NAND
->  	  controller. This controller is found on IPQ806x SoC.
+> - fixed a bunch of conditionals on the versions which should
+>   have been exclusive (spotted by Thomas)
+> 
+>  .../devicetree/bindings/mtd/brcm,brcmnand.txt      |  1 +
+>  drivers/mtd/nand/brcmnand/brcmnand.c               | 91 ++++++++++++++++++----
+>  2 files changed, 78 insertions(+), 14 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> index deb24cbdda82..c8d71e75cb09 100644
+> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.txt
+> @@ -27,6 +27,7 @@ Required properties:
+>                           brcm,brcmnand-v6.2
+>                           brcm,brcmnand-v7.0
+>                           brcm,brcmnand-v7.1
+> +                         brcm,brcmnand-v7.2
+>                           brcm,brcmnand
+>  - reg              : the register start and length for NAND register region.
+>                       (optional) Flash DMA register range (if present)
+> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+> index b76ad7c0144f..0a54a0f5a4b1 100644
+> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+> @@ -340,6 +340,36 @@ static const u16 brcmnand_regs_v71[] = {
+>  	[BRCMNAND_FC_BASE]		= 0x400,
+>  };
 >  
-> +config MTD_NAND_LOONGSON1
-> +	tristate "Support for Loongson1 SoC NAND controller"
-> +	depends on MACH_LOONGSON32
-> +	select DMADEVICES
-> +	select LOONGSON1_DMA
-> +	help
-> +		Enables support for NAND Flash on Loongson1 SoC based boards.
-> +
->  endif # MTD_NAND
-> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> index f553353..0310c0b 100644
-> --- a/drivers/mtd/nand/Makefile
-> +++ b/drivers/mtd/nand/Makefile
-> @@ -57,5 +57,6 @@ obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
->  obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
->  obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
-> +obj-$(CONFIG_MTD_NAND_LOONGSON1)	+= loongson1_nand.o
->  
->  nand-objs := nand_base.o nand_bbt.o nand_timings.o
-> diff --git a/drivers/mtd/nand/loongson1_nand.c b/drivers/mtd/nand/loongson1_nand.c
-> new file mode 100644
-> index 0000000..86831773
-> --- /dev/null
-> +++ b/drivers/mtd/nand/loongson1_nand.c
-> @@ -0,0 +1,555 @@
-> +/*
-> + * NAND Flash Driver for Loongson 1 SoC
-> + *
-> + * Copyright (C) 2015-2016 Zhang, Keguang <keguang.zhang@gmail.com>
-> + *
-> + * This file is licensed under the terms of the GNU General Public
-> + * License version 2. This program is licensed "as is" without any
-> + * warranty of any kind, whether express or implied.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/clk.h>
-> +#include <linux/dmaengine.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/nand.h>
-> +#include <linux/sizes.h>
-> +
-> +#include <nand.h>
-> +
-> +/* Loongson 1 NAND Register Definitions */
-> +#define NAND_CMD		0x0
-> +#define NAND_ADDRL		0x4
-> +#define NAND_ADDRH		0x8
-> +#define NAND_TIMING		0xc
-> +#define NAND_IDL		0x10
-> +#define NAND_IDH		0x14
-> +#define NAND_STATUS		0x14
-> +#define NAND_PARAM		0x18
-> +#define NAND_OP_NUM		0x1c
-> +#define NAND_CS_RDY		0x20
-> +
-> +#define NAND_DMA_ADDR		0x40
-> +
-> +/* NAND Command Register Bits */
-> +#define OP_DONE			BIT(10)
-> +#define OP_SPARE		BIT(9)
-> +#define OP_MAIN			BIT(8)
-> +#define CMD_STATUS		BIT(7)
-> +#define CMD_RESET		BIT(6)
-> +#define CMD_READID		BIT(5)
-> +#define BLOCKS_ERASE		BIT(4)
-> +#define CMD_ERASE		BIT(3)
-> +#define CMD_WRITE		BIT(2)
-> +#define CMD_READ		BIT(1)
-> +#define CMD_VALID		BIT(0)
-> +
-> +#define	LS1X_NAND_TIMEOUT	20
-> +
-> +/* macros for registers read/write */
-> +#define nand_readl(nandc, off)		\
-> +	readl((nandc)->reg_base + (off))
-> +
-> +#define nand_writel(nandc, off, val)	\
-> +	writel((val), (nandc)->reg_base + (off))
-> +
-> +#define set_cmd(nandc, ctrl)		\
-> +	nand_writel(nandc, NAND_CMD, ctrl)
-> +
-> +#define start_nand(nandc)		\
-> +	nand_writel(nandc, NAND_CMD, nand_readl(nandc, NAND_CMD) | CMD_VALID)
-> +
-> +struct ls1x_nand_chip {
-> +	struct nand_chip chip;
-> +	struct plat_ls1x_nand *pdata;
+> +/* BRCMNAND v7.2 */
+> +static const u16 brcmnand_regs_v72[] = {
+> +	[BRCMNAND_CMD_START]		=  0x04,
+> +	[BRCMNAND_CMD_EXT_ADDRESS]	=  0x08,
+> +	[BRCMNAND_CMD_ADDRESS]		=  0x0c,
+> +	[BRCMNAND_INTFC_STATUS]		=  0x14,
+> +	[BRCMNAND_CS_SELECT]		=  0x18,
+> +	[BRCMNAND_CS_XOR]		=  0x1c,
+> +	[BRCMNAND_LL_OP]		=  0x20,
+> +	[BRCMNAND_CS0_BASE]		=  0x50,
+> +	[BRCMNAND_CS1_BASE]		=     0,
+> +	[BRCMNAND_CORR_THRESHOLD]	=  0xdc,
+> +	[BRCMNAND_CORR_THRESHOLD_EXT]	=  0xe0,
+> +	[BRCMNAND_UNCORR_COUNT]		=  0xfc,
+> +	[BRCMNAND_CORR_COUNT]		= 0x100,
+> +	[BRCMNAND_CORR_EXT_ADDR]	= 0x10c,
+> +	[BRCMNAND_CORR_ADDR]		= 0x110,
+> +	[BRCMNAND_UNCORR_EXT_ADDR]	= 0x114,
+> +	[BRCMNAND_UNCORR_ADDR]		= 0x118,
+> +	[BRCMNAND_SEMAPHORE]		= 0x150,
+> +	[BRCMNAND_ID]			= 0x194,
+> +	[BRCMNAND_ID_EXT]		= 0x198,
+> +	[BRCMNAND_LL_RDATA]		= 0x19c,
+> +	[BRCMNAND_OOB_READ_BASE]	= 0x200,
+> +	[BRCMNAND_OOB_READ_10_BASE]	=     0,
+> +	[BRCMNAND_OOB_WRITE_BASE]	= 0x400,
+> +	[BRCMNAND_OOB_WRITE_10_BASE]	=     0,
+> +	[BRCMNAND_FC_BASE]		= 0x600,
 > +};
 > +
-> +struct ls1x_nand_controller {
-
-ls1x_nand_controller should inherit from nand_hw_ctrl.
-
-	struct nand_hw_ctrl base;
-
-> +	struct clk *clk;
-> +	void __iomem *reg_base;
+>  enum brcmnand_cs_reg {
+>  	BRCMNAND_CS_CFG_EXT = 0,
+>  	BRCMNAND_CS_CFG,
+> @@ -435,7 +465,9 @@ static int brcmnand_revision_init(struct brcmnand_controller *ctrl)
+>  	}
+>  
+>  	/* Register offsets */
+> -	if (ctrl->nand_version >= 0x0701)
+> +	if (ctrl->nand_version >= 0x0702)
+> +		ctrl->reg_offsets = brcmnand_regs_v72;
+> +	else if (ctrl->nand_version >= 0x0701)
+>  		ctrl->reg_offsets = brcmnand_regs_v71;
+>  	else if (ctrl->nand_version >= 0x0600)
+>  		ctrl->reg_offsets = brcmnand_regs_v60;
+> @@ -480,7 +512,9 @@ static int brcmnand_revision_init(struct brcmnand_controller *ctrl)
+>  	}
+>  
+>  	/* Maximum spare area sector size (per 512B) */
+> -	if (ctrl->nand_version >= 0x0600)
+> +	if (ctrl->nand_version >= 0x0702)
+> +		ctrl->max_oob = 128;
+> +	else if (ctrl->nand_version >= 0x0600)
+>  		ctrl->max_oob = 64;
+>  	else if (ctrl->nand_version >= 0x0500)
+>  		ctrl->max_oob = 32;
+> @@ -583,14 +617,20 @@ static void brcmnand_wr_corr_thresh(struct brcmnand_host *host, u8 val)
+>  	enum brcmnand_reg reg = BRCMNAND_CORR_THRESHOLD;
+>  	int cs = host->cs;
+>  
+> -	if (ctrl->nand_version >= 0x0600)
+> +	if (ctrl->nand_version >= 0x0702)
+> +		bits = 7;
+> +	else if (ctrl->nand_version >= 0x0600)
+>  		bits = 6;
+>  	else if (ctrl->nand_version >= 0x0500)
+>  		bits = 5;
+>  	else
+>  		bits = 4;
+>  
+> -	if (ctrl->nand_version >= 0x0600) {
+> +	if (ctrl->nand_version >= 0x0702) {
+> +		if (cs >= 4)
+> +			reg = BRCMNAND_CORR_THRESHOLD_EXT;
+> +		shift = (cs % 4) * bits;
+> +	} else if (ctrl->nand_version >= 0x0600) {
+>  		if (cs >= 5)
+>  			reg = BRCMNAND_CORR_THRESHOLD_EXT;
+>  		shift = (cs % 5) * bits;
+> @@ -631,19 +671,28 @@ enum {
+>  
+>  static inline u32 brcmnand_spare_area_mask(struct brcmnand_controller *ctrl)
+>  {
+> -	if (ctrl->nand_version >= 0x0600)
+> +	if (ctrl->nand_version >= 0x0702)
+> +		return GENMASK(7, 0);
+> +	else if (ctrl->nand_version >= 0x0600)
+>  		return GENMASK(6, 0);
+>  	else
+>  		return GENMASK(5, 0);
+>  }
+>  
+>  #define NAND_ACC_CONTROL_ECC_SHIFT	16
+> +#define NAND_ACC_CONTROL_ECC_EXT_SHIFT	13
+>  
+>  static inline u32 brcmnand_ecc_level_mask(struct brcmnand_controller *ctrl)
+>  {
+>  	u32 mask = (ctrl->nand_version >= 0x0600) ? 0x1f : 0x0f;
+>  
+> -	return mask << NAND_ACC_CONTROL_ECC_SHIFT;
+> +	mask <<= NAND_ACC_CONTROL_ECC_SHIFT;
 > +
-> +	int cmd_ctrl;
-> +	char datareg[8];
-> +	char *data_ptr;
+> +	/* v7.2 includes additional ECC levels */
+> +	if (ctrl->nand_version >= 0x0702)
+> +		mask |= 0x7 << NAND_ACC_CONTROL_ECC_EXT_SHIFT;
 > +
-> +	/* DMA stuff */
-> +	unsigned char *dma_buf;
-> +	unsigned int buf_off;
-> +	unsigned int buf_len;
-> +
-> +	/* DMA Engine stuff */
-> +	unsigned int dma_chan_id;
-> +	struct dma_chan *dma_chan;
-> +	dma_cookie_t dma_cookie;
-> +	struct completion dma_complete;
-> +	void __iomem *dma_desc;
-> +};
-> +
-> +static inline struct ls1x_nand_chip *to_ls1x_nand_chip(struct mtd_info *mtd)
-> +{
-> +	return container_of(mtd_to_nand(mtd), struct ls1x_nand_chip, chip);
-> +}
-> +
-> +static void dma_callback(void *data)
-> +{
-> +	struct mtd_info *mtd = (struct mtd_info *)data;
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct ls1x_nand_controller *nandc = nand_get_controller_data(chip);
-
-And you should not retrieve the controller this way. You should have
-the following function to do that:
-
-static struct ls1x_nand_controller *
-to_ls1x_nand_controller(struct nand_hw_control *controller)
-{
-	return container_of(controller, struct ls1x_nand_controller,
-			    base);
-}
-
-and then do
-	struct ls1x_nand_controller *nandc =
-			to_ls1x_nand_controller(chip->controller);
-
-nand_{get,set}_controller_data() are here to retrieve/assign per-chip
-private data, so in you case, you could store your pdata in there. 
-
-> +	struct dma_tx_state state;
-> +	enum dma_status status;
-> +
-> +	status =
-> +	    dmaengine_tx_status(nandc->dma_chan, nandc->dma_cookie, &state);
-> +	if (likely(status == DMA_COMPLETE))
-> +		dev_dbg(mtd->dev.parent, "DMA complete with cookie=%d\n",
-> +			nandc->dma_cookie);
+> +	return mask;
+>  }
+>  
+>  static void brcmnand_set_ecc_enabled(struct brcmnand_host *host, int en)
+> @@ -667,7 +716,9 @@ static void brcmnand_set_ecc_enabled(struct brcmnand_host *host, int en)
+>  
+>  static inline int brcmnand_sector_1k_shift(struct brcmnand_controller *ctrl)
+>  {
+> -	if (ctrl->nand_version >= 0x0600)
+> +	if (ctrl->nand_version >= 0x0702)
+> +		return 9;
+> +	else if (ctrl->nand_version >= 0x0600)
+>  		return 7;
+>  	else if (ctrl->nand_version >= 0x0500)
+>  		return 6;
+> @@ -773,10 +824,16 @@ enum brcmnand_llop_type {
+>   * Internal support functions
+>   ***********************************************************************/
+>  
+> -static inline bool is_hamming_ecc(struct brcmnand_cfg *cfg)
+> +static inline bool is_hamming_ecc(struct brcmnand_controller *ctrl,
+> +				  struct brcmnand_cfg *cfg)
+>  {
+> -	return cfg->sector_size_1k == 0 && cfg->spare_area_size == 16 &&
+> -		cfg->ecc_level == 15;
+> +	if (ctrl->nand_version <= 0x0701)
+> +		return cfg->sector_size_1k == 0 && cfg->spare_area_size == 16 &&
+> +			cfg->ecc_level == 15;
 > +	else
-> +		dev_err(mtd->dev.parent, "DMA error with cookie=%d\n",
-> +			nandc->dma_cookie);
+> +		return cfg->sector_size_1k == 0 && ((cfg->spare_area_size == 16 &&
+> +			cfg->ecc_level == 15) ||
+> +			(cfg->spare_area_size == 28 && cfg->ecc_level == 16));
+>  }
+>  
+>  /*
+> @@ -931,7 +988,7 @@ static int brcmstb_choose_ecc_layout(struct brcmnand_host *host)
+>  	if (p->sector_size_1k)
+>  		ecc_level <<= 1;
+>  
+> -	if (is_hamming_ecc(p)) {
+> +	if (is_hamming_ecc(host->ctrl, p)) {
+>  		ecc->bytes = 3 * sectors;
+>  		mtd_set_ooblayout(mtd, &brcmnand_hamming_ooblayout_ops);
+>  		return 0;
+> @@ -1857,7 +1914,8 @@ static int brcmnand_set_cfg(struct brcmnand_host *host,
+>  	return 0;
+>  }
+>  
+> -static void brcmnand_print_cfg(char *buf, struct brcmnand_cfg *cfg)
+> +static void brcmnand_print_cfg(struct brcmnand_host *host,
+> +			       char *buf, struct brcmnand_cfg *cfg)
+>  {
+>  	buf += sprintf(buf,
+>  		"%lluMiB total, %uKiB blocks, %u%s pages, %uB OOB, %u-bit",
+> @@ -1868,7 +1926,7 @@ static void brcmnand_print_cfg(char *buf, struct brcmnand_cfg *cfg)
+>  		cfg->spare_area_size, cfg->device_width);
+>  
+>  	/* Account for Hamming ECC and for BCH 512B vs 1KiB sectors */
+> -	if (is_hamming_ecc(cfg))
+> +	if (is_hamming_ecc(host->ctrl, cfg))
+>  		sprintf(buf, ", Hamming ECC");
+>  	else if (cfg->sector_size_1k)
+>  		sprintf(buf, ", BCH-%u (1KiB sector)", cfg->ecc_level << 1);
+> @@ -1987,7 +2045,7 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+>  
+>  	brcmnand_set_ecc_enabled(host, 1);
+>  
+> -	brcmnand_print_cfg(msg, cfg);
+> +	brcmnand_print_cfg(host, msg, cfg);
+>  	dev_info(ctrl->dev, "detected %s\n", msg);
+>  
+>  	/* Configure ACC_CONTROL */
+> @@ -1995,6 +2053,10 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+>  	tmp = nand_readreg(ctrl, offs);
+>  	tmp &= ~ACC_CONTROL_PARTIAL_PAGE;
+>  	tmp &= ~ACC_CONTROL_RD_ERASED;
 > +
-> +	complete(&nandc->dma_complete);
-> +}
-> +
-> +static int setup_dma(struct mtd_info *mtd)
-> +{
-> +	struct ls1x_nand_chip *nand = to_ls1x_nand_chip(mtd);
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct ls1x_nand_controller *nandc = nand_get_controller_data(chip);
-> +	struct dma_slave_config cfg;
-> +	dma_cap_mask_t mask;
-> +	int ret;
-> +
-> +	if (!nand->pdata->dma_filter) {
-> +		dev_err(mtd->dev.parent, "no DMA filter\n");
-> +		return -ENOENT;
-> +	}
-> +
-> +	/* allocate DMA buffer */
-> +	nandc->dma_buf = devm_kzalloc(mtd->dev.parent,
-> +				      mtd->writesize + mtd->oobsize,
-> +				      GFP_KERNEL);
-> +	if (!nandc->dma_buf)
-> +		return -ENOMEM;
-> +
-> +	dma_cap_zero(mask);
-> +	dma_cap_set(DMA_SLAVE, mask);
-> +	nandc->dma_chan = dma_request_channel(mask, nand->pdata->dma_filter,
-> +					      &nandc->dma_chan_id);
-> +	if (!nandc->dma_chan) {
-> +		dev_err(mtd->dev.parent, "failed to request DMA channel\n");
-> +		return -EBUSY;
-> +	}
-> +	dev_info(mtd->dev.parent, "got %s for %s access\n",
-> +		 dma_chan_name(nandc->dma_chan), dev_name(mtd->dev.parent));
-> +
-> +	cfg.src_addr = CPHYSADDR(nandc->reg_base + NAND_DMA_ADDR);
-> +	cfg.dst_addr = CPHYSADDR(nandc->reg_base + NAND_DMA_ADDR);
-> +	cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> +	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> +	ret = dmaengine_slave_config(nandc->dma_chan, &cfg);
-> +	if (ret) {
-> +		dev_err(mtd->dev.parent, "failed to config DMA channel\n");
-> +		dma_release_channel(nandc->dma_chan);
-> +		return ret;
-> +	}
-> +
-> +	init_completion(&nandc->dma_complete);
-> +
-> +	return 0;
-> +}
-> +
-> +static int start_dma(struct mtd_info *mtd, unsigned int len, bool is_write)
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct ls1x_nand_controller *nandc = nand_get_controller_data(chip);
-> +	struct dma_chan *chan = nandc->dma_chan;
-> +	struct dma_async_tx_descriptor *desc;
-> +	enum dma_data_direction data_dir =
-> +	    is_write ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
-> +	enum dma_transfer_direction xfer_dir =
-> +	    is_write ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
-> +	dma_addr_t dma_addr;
-> +	int ret;
-> +
-> +	dma_addr =
-> +	    dma_map_single(chan->device->dev, nandc->dma_buf, len, data_dir);
-> +	if (dma_mapping_error(chan->device->dev, dma_addr)) {
-> +		dev_err(mtd->dev.parent, "failed to map DMA buffer\n");
-> +		return -ENXIO;
-> +	}
-> +
-> +	desc = dmaengine_prep_slave_single(chan, dma_addr, len, xfer_dir,
-> +					   DMA_PREP_INTERRUPT);
-> +	if (!desc) {
-> +		dev_err(mtd->dev.parent, "failed to prepare DMA descriptor\n");
-> +		ret = PTR_ERR(desc);
-> +		goto err;
-> +	}
-> +	desc->callback = dma_callback;
-> +	desc->callback_param = mtd;
-> +
-> +	nandc->dma_cookie = dmaengine_submit(desc);
-> +	ret = dma_submit_error(nandc->dma_cookie);
-> +	if (ret) {
-> +		dev_err(mtd->dev.parent, "failed to submit DMA descriptor\n");
-> +		goto err;
-> +	}
-> +
-> +	dev_dbg(mtd->dev.parent, "issue DMA with cookie=%d\n",
-> +		nandc->dma_cookie);
-> +	dma_async_issue_pending(chan);
-> +
-> +	ret = wait_for_completion_timeout(&nandc->dma_complete,
-> +					  msecs_to_jiffies(LS1X_NAND_TIMEOUT));
-> +	if (ret <= 0) {
-> +		dev_err(mtd->dev.parent, "DMA timeout\n");
-> +		dmaengine_terminate_all(chan);
-> +		ret = -EIO;
-> +	}
-> +	ret = 0;
-> +err:
-> +	dma_unmap_single(chan->device->dev, dma_addr, len, data_dir);
-> +
-> +	return ret;
-> +}
-> +
-> +static void ls1x_nand_select_chip(struct mtd_info *mtd, int chip)
-> +{
-> +}
-> +
-> +static int ls1x_nand_dev_ready(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct ls1x_nand_controller *nandc = nand_get_controller_data(chip);
-> +
-> +	if (nand_readl(nandc, NAND_CMD) & OP_DONE)
+> +	/* We need to turn on Read from erased paged protected by ECC */
+> +	if (ctrl->nand_version >= 0x0702)
+> +		tmp |= ACC_CONTROL_RD_ERASED;
+>  	tmp &= ~ACC_CONTROL_FAST_PGM_RDIN;
+>  	if (ctrl->features & BRCMNAND_HAS_PREFETCH) {
+>  		/*
+> @@ -2195,6 +2257,7 @@ static const struct of_device_id brcmnand_of_match[] = {
+>  	{ .compatible = "brcm,brcmnand-v6.2" },
+>  	{ .compatible = "brcm,brcmnand-v7.0" },
+>  	{ .compatible = "brcm,brcmnand-v7.1" },
+> +	{ .compatible = "brcm,brcmnand-v7.2" },
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, brcmnand_of_match);
 
-If the OP_DONE flag is really encoding the R/B pin status (as you
-explained in a previous answer), then I would rename it NAND_RDY or
-something like that.
-
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> +
-> +static uint8_t ls1x_nand_read_byte(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct ls1x_nand_controller *nandc = nand_get_controller_data(chip);
-> +
-> +	return *(nandc->data_ptr++);
-> +}
-> +
-> +static void ls1x_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct ls1x_nand_controller *nandc = nand_get_controller_data(chip);
-> +
-> +	int real_len = min_t(size_t, len, nandc->buf_len - nandc->buf_off);
-> +
-> +	memcpy(buf, nandc->dma_buf + nandc->buf_off, real_len);
-> +	nandc->buf_off += real_len;
-> +}
-> +
-> +static void ls1x_nand_write_buf(struct mtd_info *mtd, const uint8_t *buf,
-> +				int len)
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +	struct ls1x_nand_controller *nandc = nand_get_controller_data(chip);
-> +
-> +	int real_len = min_t(size_t, len, nandc->buf_len - nandc->buf_off);
-> +
-> +	memcpy(nandc->dma_buf + nandc->buf_off, buf, real_len);
-> +	nandc->buf_off += real_len;
-> +}
-
-Still not happy with these ->{read,write}_{buf,byte}() implementations.
-As explained, you should not guess how many bytes will be read when
-->cmdfunc() is called, and this is what your doing.
-What if you didn't get it right?
-
-Just try to send the command when you really know how much should be
-read/written.
-
-The other approach would be to switch to this "high-level NAND
-controller" driver design, but it's not there yet.
 
 
 -- 
