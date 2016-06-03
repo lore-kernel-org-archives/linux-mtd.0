@@ -1,17 +1,32 @@
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126])
+Received: from mail-oi0-f68.google.com ([209.85.218.68])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8cdY-00070b-M6
- for linux-mtd@lists.infradead.org; Fri, 03 Jun 2016 00:06:53 +0000
-Date: Fri, 3 Jun 2016 01:06:27 +0100
-From: Ben Hutchings <ben@decadent.org.uk>
-To: linux-mtd@lists.infradead.org
-Cc: linux-cris-kernel@axis.com
-Message-ID: <20160603000627.GN7555@decadent.org.uk>
+ id 1b8eDb-0001eh-Hp
+ for linux-mtd@lists.infradead.org; Fri, 03 Jun 2016 01:48:11 +0000
+Received: by mail-oi0-f68.google.com with SMTP id x130so14449251oia.3
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Jun 2016 18:47:51 -0700 (PDT)
+Date: Thu, 2 Jun 2016 20:47:49 -0500
+From: Rob Herring <robh@kernel.org>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mtd@lists.infradead.org, thomas.petazzoni@free-electrons.com,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Simon Arlott <simon@fire.lp0.eu>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ "open list:BROADCOM STB NAND FLASH DRIVER"
+ <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: [PATCH v2] mtd: brcmnand: Add v7.2 controller support
+Message-ID: <20160603014749.GA14989@rob-hp-laptop>
+References: <1464715383-26053-1-git-send-email-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="IihjUyvzd0n5Ehsu"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Subject: [PATCH] mtd: Remove unused symbol CONFIG_MTDRAM_ABS_POS
+In-Reply-To: <1464715383-26053-1-git-send-email-f.fainelli@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,81 +36,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, May 31, 2016 at 10:23:02AM -0700, Florian Fainelli wrote:
+> The 7.2 controller differs in a few area compared to its predecssor (7.1):
+> 
+> - NAND scrambler, which we are not using just yet
+> - higher ECC levels (up to 120 bits) per 1KB data blocks, also not supported yet
+> - up to 128B OOB
+> 
+> This patchs adds the ncessary code to support such a controller
 
---IihjUyvzd0n5Ehsu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+s/patchs/patch/
+s/ncessary/necessary/
 
-This has been unused, except as the condition for a fatal error, since
-commit c13cbf3b5086 ("[MTD] mtdram: Quick cleanup of the driver:") in
-2.6.13 (!).
+> generation and updates the Device Tree binding.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+> Changes in v2:
+> 
+> - fixed a bunch of conditionals on the versions which should
+>   have been exclusive (spotted by Thomas)
+> 
+>  .../devicetree/bindings/mtd/brcm,brcmnand.txt      |  1 +
 
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
----
- arch/cris/arch-v10/drivers/axisflashmap.c |  2 +-
- drivers/mtd/devices/Kconfig               | 12 ------------
- 2 files changed, 1 insertion(+), 13 deletions(-)
+With those changes,
 
-diff --git a/arch/cris/arch-v10/drivers/axisflashmap.c b/arch/cris/arch-v10=
-/drivers/axisflashmap.c
-index 60d57c590032..bdc25aa43468 100644
---- a/arch/cris/arch-v10/drivers/axisflashmap.c
-+++ b/arch/cris/arch-v10/drivers/axisflashmap.c
-@@ -397,7 +397,7 @@ static int __init init_axis_flash(void)
- 	if (!romfs_in_flash) {
- 		/* Create an RAM device for the root partition (romfs). */
-=20
--#if !defined(CONFIG_MTD_MTDRAM) || (CONFIG_MTDRAM_TOTAL_SIZE !=3D 0) || (C=
-ONFIG_MTDRAM_ABS_POS !=3D 0)
-+#if !defined(CONFIG_MTD_MTDRAM) || (CONFIG_MTDRAM_TOTAL_SIZE !=3D 0)
- 		/* No use trying to boot this kernel from RAM. Panic! */
- 		printk(KERN_EMERG "axisflashmap: Cannot create an MTD RAM "
- 		       "device due to kernel (mis)configuration!\n");
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index f73c41697a00..5a1d0dc71495 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -171,18 +171,6 @@ config MTDRAM_ERASE_SIZE
- 	  as a module, it is also possible to specify this as a parameter when
- 	  loading the module.
-=20
--#If not a module (I don't want to test it as a module)
--config MTDRAM_ABS_POS
--	hex "SRAM Hexadecimal Absolute position or 0"
--	depends on MTD_MTDRAM=3Dy
--	default "0"
--	help
--	  If you have system RAM accessible by the CPU but not used by Linux
--	  in normal operation, you can give the physical address at which the
--	  available RAM starts, and the MTDRAM driver will use it instead of
--	  allocating space from Linux's available memory. Otherwise, leave
--	  this set to zero. Most people will want to leave this as zero.
--
- config MTD_BLOCK2MTD
- 	tristate "MTD using block device"
- 	depends on BLOCK
+Acked-by: Rob Herring <robh@kernel.org>
 
---IihjUyvzd0n5Ehsu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIVAwUBV1DKA+e/yOyVhhEJAQr0mg/+OHtVS6MXfCpEJ3KUEclIoc0BT/CFXbcy
-RsEJntTFkHRYBEmHS3czIuo3uQD0emLPhIy0SUVfAxIWME1pSIA+OUeJdcaLqKat
-D/J1kxpD6FT9xy8FScjZ0uQ8k3bwI2sPRKusVUNPD3kjp9e+gaoQVQeZI1H6OiDj
-vuDUW0+SQVpf6bLZT9E1QLb7lpUf1CTzqgU1Sfu3MpVtM6BytIhJv8LL64rssjXf
-3UGPkabgQsSKMtUZ4zl6Krrq+D41KO7qPxoaPd92wuZJlUmQtOmjFV0rRdWN48Md
-PR3yy+tOj0ml/bZsmlPEaIgFPATXMVrkChhH7Fo7ysgy2Fja7y4PbcSMbiHWlrq3
-Lx6W22xr9FdTX5PiJioH4TqzJ/YZ65DPZH6oGDxD/uTtk5HsR7+WIywy/DjZKeOw
-R80Z4EavSB+Sz2L1Mi+myuWRUz/JUuSDB5frgweKHlasxCwQ2FxivC5wajQBERz9
-VzKMgtuNqTUoxfsdzNFsRkC3Mw3Xy6EuwuORT98WZ+e+JVS7aWG3aSRR2vH8YILr
-IWHlI2PSoIEGpWzLLYO2AxvdbFzwyZx2QOgafVQhlBkiyLRKwrp14Zyn39SkJIys
-TjqycpAOP7guqDAaHYMs/w/tuPnhYndNUOksKg+BCDa7eJDNLiIL3CUaY46Npzsu
-dgH4sY6uiIU=
-=Vlt3
------END PGP SIGNATURE-----
-
---IihjUyvzd0n5Ehsu--
+>  drivers/mtd/nand/brcmnand/brcmnand.c               | 91 ++++++++++++++++++----
+>  2 files changed, 78 insertions(+), 14 deletions(-)
