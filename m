@@ -1,32 +1,18 @@
-Received: from mail-oi0-f68.google.com ([209.85.218.68])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8eDb-0001eh-Hp
- for linux-mtd@lists.infradead.org; Fri, 03 Jun 2016 01:48:11 +0000
-Received: by mail-oi0-f68.google.com with SMTP id x130so14449251oia.3
- for <linux-mtd@lists.infradead.org>; Thu, 02 Jun 2016 18:47:51 -0700 (PDT)
-Date: Thu, 2 Jun 2016 20:47:49 -0500
-From: Rob Herring <robh@kernel.org>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mtd@lists.infradead.org, thomas.petazzoni@free-electrons.com,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Simon Arlott <simon@fire.lp0.eu>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- "open list:BROADCOM STB NAND FLASH DRIVER"
- <bcm-kernel-feedback-list@broadcom.com>
-Subject: Re: [PATCH v2] mtd: brcmnand: Add v7.2 controller support
-Message-ID: <20160603014749.GA14989@rob-hp-laptop>
-References: <1464715383-26053-1-git-send-email-f.fainelli@gmail.com>
+Received: from bes.se.axis.com ([195.60.68.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b8jm4-0000qK-7a
+ for linux-mtd@lists.infradead.org; Fri, 03 Jun 2016 07:44:09 +0000
+Date: Fri, 3 Jun 2016 09:43:43 +0200
+From: Jesper Nilsson <jesper.nilsson@axis.com>
+To: Ben Hutchings <ben@decadent.org.uk>
+Cc: linux-mtd@lists.infradead.org, linux-cris-kernel@axis.com
+Subject: Re: [PATCH] mtd: Remove unused symbol CONFIG_MTDRAM_ABS_POS
+Message-ID: <20160603074343.GE3183@axis.com>
+References: <20160603000627.GN7555@decadent.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1464715383-26053-1-git-send-email-f.fainelli@gmail.com>
+In-Reply-To: <20160603000627.GN7555@decadent.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,32 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 31, 2016 at 10:23:02AM -0700, Florian Fainelli wrote:
-> The 7.2 controller differs in a few area compared to its predecssor (7.1):
-> 
-> - NAND scrambler, which we are not using just yet
-> - higher ECC levels (up to 120 bits) per 1KB data blocks, also not supported yet
-> - up to 128B OOB
-> 
-> This patchs adds the ncessary code to support such a controller
+On Fri, Jun 03, 2016 at 01:06:27AM +0100, Ben Hutchings wrote:
+> This has been unused, except as the condition for a fatal error, since
+> commit c13cbf3b5086 ("[MTD] mtdram: Quick cleanup of the driver:") in
+> 2.6.13 (!).
 
-s/patchs/patch/
-s/ncessary/necessary/
+Agreed,
 
-> generation and updates the Device Tree binding.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
-> Changes in v2:
-> 
-> - fixed a bunch of conditionals on the versions which should
->   have been exclusive (spotted by Thomas)
-> 
->  .../devicetree/bindings/mtd/brcm,brcmnand.txt      |  1 +
+Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
 
-With those changes,
+> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 
-Acked-by: Rob Herring <robh@kernel.org>
-
->  drivers/mtd/nand/brcmnand/brcmnand.c               | 91 ++++++++++++++++++----
->  2 files changed, 78 insertions(+), 14 deletions(-)
+/^JN - Jesper Nilsson
+-- 
+               Jesper Nilsson -- jesper.nilsson@axis.com
