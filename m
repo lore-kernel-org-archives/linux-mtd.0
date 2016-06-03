@@ -1,20 +1,22 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8oPn-000724-0z
- for linux-mtd@lists.infradead.org; Fri, 03 Jun 2016 12:41:28 +0000
-Date: Fri, 3 Jun 2016 14:40:54 +0200
+ id 1b8pzk-0000uv-E2
+ for linux-mtd@lists.infradead.org; Fri, 03 Jun 2016 14:22:41 +0000
+Date: Fri, 3 Jun 2016 16:22:07 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>, beanhuo@micron.com,
- dedekind1@gmail.com
-Cc: linux-mtd@lists.infradead.org, alex@nextthing.co, goliath@sigma-star.at
-Subject: Re: [RFC] UBI: MLC Support v0
-Message-ID: <20160603144054.685b3079@bbrezillon>
-In-Reply-To: <1464609874-15488-1-git-send-email-richard@nod.at>
-References: <1464609874-15488-1-git-send-email-richard@nod.at>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Benoit Cousson <bcousson@baylibre.com>, Tony
+ Lindgren <tony@atomide.com>, devicetree@vger.kernel.org, Linux mtd
+ <linux-mtd@lists.infradead.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] of: Add device tree bindings for Evatronix
+Message-ID: <20160603162207.0688c9e6@bbrezillon>
+In-Reply-To: <alpine.DEB.2.02.1606020946500.19416@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1606020946500.19416@lnxricardw1.se.axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,87 +26,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 30 May 2016 14:04:21 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Hi Ricard,
 
-> as announced in [1] I'd like to submit the very first patch series to
-> have MLC support in UBI (and therefore also UBIFS).
-> The code has not changed much since the announcement but now the patches
-> are in a more reviewable shape. Still not mainline ready but better.
-> I'm sending this now as I'm on vacation until June 15th and hope that
-> we get some reviews on the concept.
-> The series consists of three parts:
-> 	a) Generic UBI rework to make the MLC implementation possible.
-> 	b) SLC emulation mode to access only lower pages on MLC NAND.
-> 	c) LEB consolidation to exploit MLC NAND's higher pages.
-> 
-> [1] http://lists.infradead.org/pipermail/linux-mtd/2016-April/067322.html
+On Thu, 2 Jun 2016 09:47:18 +0200
+Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
 
-Artem, I know you're quite busy, but that would be great to have your
-feedback. Not asking for a detailed review, but at least some comments
-on the general approach.
+> Devicetree bindings for the driver for the Evatronix NANDFLASH-CTRL NAND =
+flash
+> controller IP.  This controller is used in the Axis ARTPEC-6 SoC.
+>=20
+> The driver supports BCH ECC using the controller's hardware, but there is
+> also an option to use software BCH ECC. However, the ECC layouts are not
+> compatible so it's not possible to mix them. The main advantage to using
+> software ECC is that there are more OOB bytes free, as the hardware is
+> slightly wasteful on OOB space.
+>=20
+> BCH ECC from 4 to 32 bits over 256, 512 or 1024 byte ECC blocks is suppor=
+ted.
+>=20
+> Only large-page flash chips are supported, using 4 or 5 address cycles.
+>=20
+> Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
+> ---
+>  .../devicetree/bindings/mtd/evatronix-nand.txt     |   44 ++++++++++++++=
+++++++
+>  .../devicetree/bindings/vendor-prefixes.txt        |    1 +
+>  2 files changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/evatronix-nand.=
+txt
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/evatronix-nand.txt b/D=
+ocumentation/devicetree/bindings/mtd/evatronix-nand.txt
+> new file mode 100644
+> index 0000000..7ceb95a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/evatronix-nand.txt
+> @@ -0,0 +1,44 @@
+> +Evatronix NANDFLASH-CTRL NAND flash controller
+> +
+> +Required properties:
+> +- compatible : "evatronix,nandflash-ctrl"
+> +- reg : specify bus address and register area size.
+> +- interrupts : controller interrupt number and irq type.
+> +- nand-ecc-mode : See nand.txt. Supported values "hw", "soft".
+> +- nand-ecc-algo : See nand.txt. Supported value "bch".
+> +- nand-ecc-strength : See nand.txt. Supported values: 4, 8, 16, 24, 32.
+> +- nand-ecc-step-size : See nand.txt. Supported values: 256, 512, 1024.
+> +
+> +Optional properties:
+> +- nand-on-flash-bbt: See nand.txt.
+> +- #address-cells, #size-cells: See partition.txt.
+> +- evatronix,use-bank-select : Use controller bank select function to acc=
+ess
+> +			      multiple chips, rather than chip enable.
 
-Bean, I'd like to have your feedback too. You proposed a solution to
-address the same problem a while ago, and your feedback on this
-solution would be valuable.
+You mean, using a dedicated logic to control the CS lines rather than a
+GPIO (controlled by the SW using gpio_set_value())?
+
+It that's the case then I suggest doing it the other way around.
+When you want to use a plain GPIO you should define something like:
+
+	cs-gpios =3D <&pioC X>;
+
+If it's not there the controller should use it's internal logic to
+control the CS line.
+
+BTW, you seem to support controlling several CS using the same
+controller, which means you'll have to specify which CS the NAND chip
+is connected to (see [1]).
+
+> +- evatronix,rb-wired-and: Assume ready/busy signal from all flash chips =
+are
+> +			  connected using a wired-AND topology rather than
+> +			  individually.
+
+Hm, is that really required? If the R/B line is shared among several
+NAND chips, it should be transparent, you just have to specific which
+chip is connected to which GPIO (or dedicated R/B pin).
+
+> +- evatronix,timings: Seven 32-bit values for initializing the TIME_SEQ_0,
+> +		     TIME_SEQ_1, TIMINGS_ASYN, TIME_GEN_SEQ_0, TIME_GEN_SEQ_1,
+> +		     TIME_GEN_SEQ_2 and TIME_GEN_SEQ_3 registers, respectively.
+
+
+Can this be extracted from the timing mode exposed by the NAND chip.
+IMO it shouldn't be defined in the DT.
+
+> +
+> +Example:
+> +
+> +nand: nand@f801e000 {
+> +	compatible =3D "evatronix,nandflash-ctrl";
+> +	#address-cells =3D <1>;
+> +	#size-cells =3D <1>;
+> +	reg =3D <0xf801e000 0x0200>;
+> +	interrupts =3D <0 139 IRQ_TYPE_LEVEL_HIGH>;
+> +	/* ONFi mode 0 timing, assuming 100 MHz clock. */
+> +	/* Order is TIME_SEQ_0, TIME_SEQ_1, TIMINGS_ASYN,
+> +	 * TIME_GEN_SEQ_0, _1, _2, _3 */
+> +	evatronix,timings =3D <0x0d151533 0x000b0515 0x00000046
+> +			     0x00150000 0x00000000 0x00000005 0x00000015>;
+> +	nand-ecc-mode =3D "hw";
+> +	nand-ecc-algo =3D "bch";
+> +	nand-on-flash-bbt;
+> +	nand-ecc-strength =3D <8>;
+> +	nand-ecc-step-size =3D <512>;
+> +	evatronix,use-bank-select;
+> +	evatronix,rb-wired-and;
+> +};
+
+We recently added more constraints on the 'NAND controller/NAND chip'
+representation in the DT [1].
+You should rework your binding (and your code) to match these
+constraints, even if you controller is only able to interface with a
+single NAND chip.
 
 Thanks,
 
 Boris
 
-> 
-> Thanks,
-> //richard
-> 
-> ---
-> 
-> David Gstir (1):
->       ubi: Add debugfs knob to force LEB consolidation
-> 
-> Richard Weinberger (12):
->       ubi: Undo "UBI: modify ubi_wl_flush function to clear work queue for a lnum"
->       ubi: Rework UBI worker
->       ubi: auto re-size after UBI thread is ready
->       ubi: Kill ubi->alc_mutex
->       ubi: Get rid of __schedule_ubi_work()
->       ubi: Remove tst_disable_bgt debugfs knob
->       ubi: Move work related functions to work.c
->       ubi: Remove lnum and vol_id from erase work
->       ubi: Remove usless debug info from wear_leveling_worker()
->       ubi: SLC mode
->       ubi: LEB consolidation
->       ubi: Add debugfs knob to trigger LEB consolidation
-> 
->  drivers/mtd/ubi/Kconfig       |   4 +
->  drivers/mtd/ubi/Makefile      |   3 +-
->  drivers/mtd/ubi/attach.c      | 407 ++++++++++++++++++--------------
->  drivers/mtd/ubi/build.c       |  41 ++--
->  drivers/mtd/ubi/cdev.c        |  14 +-
->  drivers/mtd/ubi/consolidate.c | 516 ++++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/ubi/debug.c       |  49 ++--
->  drivers/mtd/ubi/debug.h       |  19 +-
->  drivers/mtd/ubi/eba.c         | 429 ++++++++++++++++++++++++++++------
->  drivers/mtd/ubi/fastmap-wl.c  |  33 ++-
->  drivers/mtd/ubi/fastmap.c     | 265 ++++++++++++++-------
->  drivers/mtd/ubi/io.c          | 426 +++++++++++++++++++++++++--------
->  drivers/mtd/ubi/kapi.c        |  43 +---
->  drivers/mtd/ubi/ubi-media.h   |  18 +-
->  drivers/mtd/ubi/ubi.h         | 221 ++++++++++++++----
->  drivers/mtd/ubi/upd.c         |   7 +-
->  drivers/mtd/ubi/vmt.c         | 106 +++++----
->  drivers/mtd/ubi/vtbl.c        |  87 ++++---
->  drivers/mtd/ubi/wl.c          | 531 +++++++++++++++---------------------------
->  drivers/mtd/ubi/work.c        | 332 ++++++++++++++++++++++++++
->  include/linux/mtd/ubi.h       |   1 -
->  21 files changed, 2554 insertions(+), 998 deletions(-)
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+[1]https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Doc=
+umentation/devicetree/bindings/mtd/nand.txt
+
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Docu=
+mentation/devicetree/bindings/vendor-prefixes.txt
+> index 86740d4..4018162 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.txt
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
+> @@ -83,6 +83,7 @@ epson	Seiko Epson Corp.
+>  est	ESTeem Wireless Modems
+>  ettus	NI Ettus Research
+>  eukrea  Eukr=C3=83=C2=A9a Electromatique
+> +evatronix	Evatronix SA
+>  everest	Everest Semiconductor Co. Ltd.
+>  everspin	Everspin Technologies, Inc.
+>  excito	Excito
 
 
 
--- 
+--=20
 Boris Brezillon, Free Electrons
 Embedded Linux and Kernel engineering
 http://free-electrons.com
