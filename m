@@ -1,26 +1,20 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b8xUp-0003Lv-Pz
- for linux-mtd@lists.infradead.org; Fri, 03 Jun 2016 22:23:16 +0000
-Received: by mail-wm0-x244.google.com with SMTP id a136so2317139wme.0
- for <linux-mtd@lists.infradead.org>; Fri, 03 Jun 2016 15:22:55 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
-To: Mark Brown <broonie@kernel.org>, Brian Norris <computersforpeace@gmail.com>
-References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
- <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
- <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
- <20160506121431.GQ6292@sirena.org.uk>
-Cc: Michal Suchanek <hramrach@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>,
- Han Xu <han.xu@nxp.com>, linux-spi@vger.kernel.org
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <77a22258-95ca-031a-825d-a9e98e30a162@gmail.com>
-Date: Sat, 4 Jun 2016 00:22:37 +0200
-MIME-Version: 1.0
-In-Reply-To: <20160506121431.GQ6292@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1b8zdQ-00070F-4n
+ for linux-mtd@lists.infradead.org; Sat, 04 Jun 2016 00:40:17 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Cc: Graham Moore <grmoore@opensource.altera.com>, Marek Vasut <marex@denx.de>,
+ Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>, Vignesh R <vigneshr@ti.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ devicetree@vger.kernel.org
+Subject: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver
+Date: Sat,  4 Jun 2016 02:39:33 +0200
+Message-Id: <1465000774-7762-1-git-send-email-marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,42 +24,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 06.05.2016 um 14:14 schrieb Mark Brown:
-> On Thu, May 05, 2016 at 04:57:00PM -0700, Brian Norris wrote:
->> On Thu, Apr 07, 2016 at 09:09:56PM +0200, Heiner Kallweit wrote:
-> 
->>> 2. At least in the case of fsl-espi the size limit refers to one
->>>    physical transfer (including the command) and therefore to the sum
->>>    of all transfers.
->>> We should change
->>> +	t[1].len = min_t(size_t, len, spi_max_transfer_size(spi));
->>> to
->>> +	t[1].len = min(len, spi_max_transfer_size(spi) - t[0].len);
->>>
->>> Apart from that the patch set looks good to me.
-> 
->> That's not what Mark specified here:
-> 
->> http://lists.infradead.org/pipermail/linux-mtd/2015-November/063616.html
-> 
->> and that's not what the API's very *name* means; it says max transfer
->> size (where a spi_transfer is a very well-defined concept). You need to
->> fix the driver or take up the API issues with Mark if you want to
->> suggest we interpret this differently.
-> 
-> Yes, it's called the maximum transfer size because it is the maximum
-> size of a transfer, not because it's the maximum size of a message.
-> 
-I'd like to come back to this discussion. You said best would be to fix
-the chip driver. To do this and calculate an appropriate value for
-max_transfer_size the chip driver would have to know that the spi_device
-is a spi-nor device.
-We could check that the name of the driver bound to the spi-device is m25p80.
-This doesn't sound very nice.
+From: Graham Moore <grmoore@opensource.altera.com>
 
-Or maybe better, struct spi_device could be extended by a pointer to a struct spi_nor.
-This comment in the definition of struct spi_device seems to point in this direction:
-"likely need more hooks for more protocol options affecting how the controller
-talks to each chip"
-Just storing the length of the read command + dummy bytes would also be sufficient.
-Could this be a feasible way?
+Add binding document for the Cadence QSPI controller.
+
+Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alan Tull <atull@opensource.altera.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
+Cc: Graham Moore <grmoore@opensource.altera.com>
+Cc: Vignesh R <vigneshr@ti.com>
+Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
+Cc: devicetree@vger.kernel.org
+---
+V2: Add cdns prefix to driver-specific bindings.
+V3: Use existing property "is-decoded-cs" instead of creating a
+    duplicate, "ext-decoder". Timing parameters are in nanoseconds,
+    not master reference clocks. Remove bus-num completely.
+V4: Add new properties fifo-width and trigger-address
+V7: - Prefix all of the Cadence-specific properties with cdns prefix,
+      those are in particular "cdns,is-decoded-cs", "cdns,fifo-depth",
+      "cdns,fifo-width", "cdns,trigger-address".
+    - Drop bogus properties which were not used and were incorrect.
+V8: Align lines to 80 chars.
+---
+ .../devicetree/bindings/mtd/cadence-quadspi.txt    | 56 ++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+
+diff --git a/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+new file mode 100644
+index 0000000..f248056
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+@@ -0,0 +1,56 @@
++* Cadence Quad SPI controller
++
++Required properties:
++- compatible : Should be "cdns,qspi-nor".
++- reg : Contains two entries, each of which is a tuple consisting of a
++	physical address and length. The first entry is the address and
++	length of the controller register set. The second entry is the
++	address and length of the QSPI Controller data area.
++- interrupts : Unit interrupt specifier for the controller interrupt.
++- clocks : phandle to the Quad SPI clock.
++- cdns,fifo-depth : Size of the data FIFO in words.
++- cdns,fifo-width : Bus width of the data FIFO in bytes.
++- cdns,trigger-address : 32-bit indirect AHB trigger address.
++
++Optional properties:
++- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
++
++Optional subnodes:
++Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
++custom properties:
++- cdns,read-delay : Delay for read capture logic, in clock cycles
++- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
++                  mode chip select outputs are de-asserted between
++		  transactions.
++- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
++                  de-activated and the activation of another.
++- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
++                  transaction and deasserting the device chip select
++		  (qspi_n_ss_out).
++- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
++                  and first bit transfer.
++
++Example:
++
++	qspi: spi@ff705000 {
++		compatible = "cdns,qspi-nor";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0xff705000 0x1000>,
++		      <0xffa00000 0x1000>;
++		interrupts = <0 151 4>;
++		clocks = <&qspi_clk>;
++		cdns,is-decoded-cs;
++		cdns,fifo-depth = <128>;
++		cdns,fifo-width = <4>;
++		cdns,trigger-address = <0x00000000>;
++
++		flash0: n25q00@0 {
++			...
++			cdns,read-delay = <4>;
++			cdns,tshsl-ns = <50>;
++			cdns,tsd2d-ns = <50>;
++			cdns,tchsh-ns = <4>;
++			cdns,tslch-ns = <4>;
++		};
++	};
+-- 
+2.7.0
