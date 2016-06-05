@@ -1,16 +1,14 @@
 Received: from hauke-m.de ([5.39.93.123])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9fTQ-00016E-2h
- for linux-mtd@lists.infradead.org; Sun, 05 Jun 2016 21:20:45 +0000
+ id 1b9fTm-000186-FE
+ for linux-mtd@lists.infradead.org; Sun, 05 Jun 2016 21:21:06 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: computersforpeace@gmail.com
 Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com, john@phrozen.org,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH 3/6] MTD: xway: the latched command should be persistent
-Date: Sun,  5 Jun 2016 23:20:06 +0200
-Message-Id: <1465161609-19303-4-git-send-email-hauke@hauke-m.de>
-In-Reply-To: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
-References: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
+Subject: [PATCH 0/6] MTD: xway: updates from OpenWrt/LEDE
+Date: Sun,  5 Jun 2016 23:20:03 +0200
+Message-Id: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,51 +18,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: John Crispin <john@phrozen.org>
+These patches are in OpenWrt for years now and should go upstream. They 
+are fixing some problems in the NAND driver.
 
-If they are not persistent a different address will be used and the
-controller will deactivate some pins.
+Hauke Mehrtens (1):
+  MTD: xway: add some more documentation
 
-Signed-off-by: John Crispin <john@phrozen.org>
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
----
- drivers/mtd/nand/xway_nand.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+John Crispin (5):
+  MTD: xway: fix invalid operator
+  MTD: xway: the latched command should be persistent
+  MTD: xway: remove endless loop
+  MTD: xway: add missing write_buf and read_buf to nand driver
+  MTD: xway: fix nand locking
 
-diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index 0ab6e83..79fecc8 100644
---- a/drivers/mtd/nand/xway_nand.c
-+++ b/drivers/mtd/nand/xway_nand.c
-@@ -64,6 +64,8 @@
- #define NAND_CON_CSMUX		(1 << 1)
- #define NAND_CON_NANDM		1
- 
-+static u32 xway_latchcmd;
-+
- static void xway_reset_chip(struct nand_chip *chip)
- {
- 	unsigned long nandaddr = (unsigned long) chip->IO_ADDR_W;
-@@ -104,17 +106,15 @@ static void xway_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
- 	unsigned long flags;
- 
- 	if (ctrl & NAND_CTRL_CHANGE) {
--		nandaddr &= ~(NAND_WRITE_CMD | NAND_WRITE_ADDR);
- 		if (ctrl & NAND_CLE)
--			nandaddr |= NAND_WRITE_CMD;
--		else
--			nandaddr |= NAND_WRITE_ADDR;
--		this->IO_ADDR_W = (void __iomem *) nandaddr;
-+			xway_latchcmd = NAND_WRITE_CMD;
-+		else if (ctrl & NAND_ALE)
-+			xway_latchcmd = NAND_WRITE_ADDR;
- 	}
- 
- 	if (cmd != NAND_CMD_NONE) {
- 		spin_lock_irqsave(&ebu_lock, flags);
--		writeb(cmd, this->IO_ADDR_W);
-+		writeb(cmd, (void __iomem *) (nandaddr | xway_latchcmd));
- 		while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
- 			;
- 		spin_unlock_irqrestore(&ebu_lock, flags);
+ drivers/mtd/nand/xway_nand.c | 67 +++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 51 insertions(+), 16 deletions(-)
+
 -- 
 2.8.1
