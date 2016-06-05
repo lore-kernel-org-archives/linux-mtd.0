@@ -1,17 +1,26 @@
-Received: from hauke-m.de ([5.39.93.123])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9fUG-0001H6-Dv
- for linux-mtd@lists.infradead.org; Sun, 05 Jun 2016 21:21:37 +0000
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: computersforpeace@gmail.com
-Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com, john@phrozen.org,
- Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH 5/6] MTD: xway: add missing write_buf and read_buf to nand
- driver
-Date: Sun,  5 Jun 2016 23:20:08 +0200
-Message-Id: <1465161609-19303-6-git-send-email-hauke@hauke-m.de>
-In-Reply-To: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
-References: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b9fVy-00022J-Jc
+ for linux-mtd@lists.infradead.org; Sun, 05 Jun 2016 21:23:23 +0000
+Date: Mon, 6 Jun 2016 05:22:09 +0800
+From: kbuild test robot <lkp@intel.com>
+To: mchristi@redhat.com
+Cc: kbuild-all@01.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-ext4@vger.kernel.org, konrad.wilk@oracle.com,
+ drbd-dev@lists.linbit.com, philipp.reisner@linbit.com,
+ lars.ellenberg@linbit.com, linux-raid@vger.kernel.org,
+ dm-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+ linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, target-devel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, osd-dev@open-osd.org, xfs@oss.sgi.com,
+ ocfs2-devel@oss.oracle.com, Mike Christie <mchristi@redhat.com>
+Subject: Re: [PATCH 01/45] block/fs/drivers: remove rw argument from submit_bio
+Message-ID: <201606060538.MXS5FrrY%fengguang.wu@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1465155145-10812-2-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +30,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: John Crispin <john@phrozen.org>
+Hi,
 
-Signed-off-by: John Crispin <john@phrozen.org>
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+[auto build test WARNING on v4.7-rc1]
+[cannot apply to dm/for-next md/for-next next-20160603]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/mchristi-redhat-com/v8-separate-operations-from-flags-in-the-bio-request-structs/20160606-040240
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
+
+
+sparse warnings: (new ones prefixed by >>)
+
+   include/linux/compiler.h:232:8: sparse: attribute 'no_sanitize_address': unknown attribute
+>> fs/ext4/crypto.c:442:38: sparse: too many arguments for function submit_bio_wait
+   In file included from include/linux/fs.h:31:0,
+                    from include/linux/seq_file.h:10,
+                    from include/linux/pinctrl/consumer.h:17,
+                    from include/linux/pinctrl/devinfo.h:21,
+                    from include/linux/device.h:24,
+                    from include/linux/genhd.h:64,
+                    from include/linux/blkdev.h:9,
+                    from fs/ext4/ext4.h:20,
+                    from fs/ext4/ext4_extents.h:22,
+                    from fs/ext4/crypto.c:37:
+   fs/ext4/crypto.c: In function 'ext4_encrypted_zeroout':
+   include/linux/blk_types.h:194:20: warning: passing argument 1 of 'submit_bio_wait' makes pointer from integer without a cast [-Wint-conversion]
+    #define REQ_WRITE  (1ULL << __REQ_WRITE)
+                       ^
+   include/linux/fs.h:196:19: note: in expansion of macro 'REQ_WRITE'
+    #define RW_MASK   REQ_WRITE
+                      ^~~~~~~~~
+   include/linux/fs.h:200:17: note: in expansion of macro 'RW_MASK'
+    #define WRITE   RW_MASK
+                    ^~~~~~~
+   fs/ext4/crypto.c:442:25: note: in expansion of macro 'WRITE'
+      err = submit_bio_wait(WRITE, bio);
+                            ^~~~~
+   In file included from include/linux/blkdev.h:19:0,
+                    from fs/ext4/ext4.h:20,
+                    from fs/ext4/ext4_extents.h:22,
+                    from fs/ext4/crypto.c:37:
+   include/linux/bio.h:476:12: note: expected 'struct bio *' but argument is of type 'long long unsigned int'
+    extern int submit_bio_wait(struct bio *bio);
+               ^~~~~~~~~~~~~~~
+   fs/ext4/crypto.c:442:9: error: too many arguments to function 'submit_bio_wait'
+      err = submit_bio_wait(WRITE, bio);
+            ^~~~~~~~~~~~~~~
+   In file included from include/linux/blkdev.h:19:0,
+                    from fs/ext4/ext4.h:20,
+                    from fs/ext4/ext4_extents.h:22,
+                    from fs/ext4/crypto.c:37:
+   include/linux/bio.h:476:12: note: declared here
+    extern int submit_bio_wait(struct bio *bio);
+               ^~~~~~~~~~~~~~~
+
+vim +442 fs/ext4/crypto.c
+
+b30ab0e0 Michael Halcrow 2015-04-12  426  			goto errout;
+b30ab0e0 Michael Halcrow 2015-04-12  427  		}
+b30ab0e0 Michael Halcrow 2015-04-12  428  		bio->bi_bdev = inode->i_sb->s_bdev;
+36086d43 Theodore Ts'o   2015-10-03  429  		bio->bi_iter.bi_sector =
+36086d43 Theodore Ts'o   2015-10-03  430  			pblk << (inode->i_sb->s_blocksize_bits - 9);
+36086d43 Theodore Ts'o   2015-10-03  431  		ret = bio_add_page(bio, ciphertext_page,
+b30ab0e0 Michael Halcrow 2015-04-12  432  				   inode->i_sb->s_blocksize, 0);
+36086d43 Theodore Ts'o   2015-10-03  433  		if (ret != inode->i_sb->s_blocksize) {
+36086d43 Theodore Ts'o   2015-10-03  434  			/* should never happen! */
+36086d43 Theodore Ts'o   2015-10-03  435  			ext4_msg(inode->i_sb, KERN_ERR,
+36086d43 Theodore Ts'o   2015-10-03  436  				 "bio_add_page failed: %d", ret);
+36086d43 Theodore Ts'o   2015-10-03  437  			WARN_ON(1);
+b30ab0e0 Michael Halcrow 2015-04-12  438  			bio_put(bio);
+36086d43 Theodore Ts'o   2015-10-03  439  			err = -EIO;
+b30ab0e0 Michael Halcrow 2015-04-12  440  			goto errout;
+b30ab0e0 Michael Halcrow 2015-04-12  441  		}
+b30ab0e0 Michael Halcrow 2015-04-12 @442  		err = submit_bio_wait(WRITE, bio);
+36086d43 Theodore Ts'o   2015-10-03  443  		if ((err == 0) && bio->bi_error)
+36086d43 Theodore Ts'o   2015-10-03  444  			err = -EIO;
+95ea68b4 Theodore Ts'o   2015-05-31  445  		bio_put(bio);
+b30ab0e0 Michael Halcrow 2015-04-12  446  		if (err)
+b30ab0e0 Michael Halcrow 2015-04-12  447  			goto errout;
+36086d43 Theodore Ts'o   2015-10-03  448  		lblk++; pblk++;
+b30ab0e0 Michael Halcrow 2015-04-12  449  	}
+b30ab0e0 Michael Halcrow 2015-04-12  450  	err = 0;
+
+:::::: The code at line 442 was first introduced by commit
+:::::: b30ab0e03407d2aa2d9316cba199c757e4bfc8ad ext4 crypto: add ext4 encryption facilities
+
+:::::: TO: Michael Halcrow <mhalcrow@google.com>
+:::::: CC: Theodore Ts'o <tytso@mit.edu>
+
 ---
- drivers/mtd/nand/xway_nand.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index d44e00d..bc4018e 100644
---- a/drivers/mtd/nand/xway_nand.c
-+++ b/drivers/mtd/nand/xway_nand.c
-@@ -146,6 +146,32 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
- 	return ret;
- }
- 
-+static void xway_read_buf(struct mtd_info *mtd, u_char *buf, int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	unsigned long nandaddr = (unsigned long) this->IO_ADDR_R;
-+	unsigned long flags;
-+	int i;
-+
-+	spin_lock_irqsave(&ebu_lock, flags);
-+	for (i = 0; i < len; i++)
-+		buf[i] = ltq_r8((void __iomem *)(nandaddr | NAND_READ_DATA));
-+	spin_unlock_irqrestore(&ebu_lock, flags);
-+}
-+
-+static void xway_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
-+	unsigned long flags;
-+	int i;
-+
-+	spin_lock_irqsave(&ebu_lock, flags);
-+	for (i = 0; i < len; i++)
-+		ltq_w8(buf[i], (void __iomem *)(nandaddr | NAND_WRITE_DATA));
-+	spin_unlock_irqrestore(&ebu_lock, flags);
-+}
-+
- static int xway_nand_probe(struct platform_device *pdev)
- {
- 	struct nand_chip *this = platform_get_drvdata(pdev);
-@@ -187,6 +213,8 @@ static struct platform_nand_data xway_nand_data = {
- 		.dev_ready	= xway_dev_ready,
- 		.select_chip	= xway_select_chip,
- 		.read_byte	= xway_read_byte,
-+		.read_buf	= xway_read_buf,
-+		.write_buf	= xway_write_buf,
- 	}
- };
- 
--- 
-2.8.1
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
