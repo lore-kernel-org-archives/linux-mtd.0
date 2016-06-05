@@ -1,7 +1,7 @@
 Received: from mx1.redhat.com ([209.132.183.28])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9do2-0006DR-DB
- for linux-mtd@lists.infradead.org; Sun, 05 Jun 2016 19:33:55 +0000
+ id 1b9do7-0006Hz-DT
+ for linux-mtd@lists.infradead.org; Sun, 05 Jun 2016 19:34:01 +0000
 From: mchristi@redhat.com
 To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  konrad.wilk@oracle.com, drbd-dev@lists.linbit.com,
@@ -13,9 +13,9 @@ To: linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 Cc: Mike Christie <mchristi@redhat.com>
-Subject: [PATCH 28/45] target: use bio op accessors
-Date: Sun,  5 Jun 2016 14:32:08 -0500
-Message-Id: <1465155145-10812-29-git-send-email-mchristi@redhat.com>
+Subject: [PATCH 30/45] block: copy bio op to request op
+Date: Sun,  5 Jun 2016 14:32:10 -0500
+Message-Id: <1465155145-10812-31-git-send-email-mchristi@redhat.com>
 In-Reply-To: <1465155145-10812-1-git-send-email-mchristi@redhat.com>
 References: <1465155145-10812-1-git-send-email-mchristi@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,121 +29,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Christie <mchristi@redhat.com>
 
-Separate the op from the rq_flag_bits and have the target layer
-set/get the bio using bio_set_op_attrs/bio_op.
+The bio users should now always be setting up the bio op. This patch
+has the block layer copy that to the request.
 
 Signed-off-by: Mike Christie <mchristi@redhat.com>
 ---
- drivers/target/target_core_iblock.c | 29 ++++++++++++++---------------
- drivers/target/target_core_pscsi.c  |  2 +-
- 2 files changed, 15 insertions(+), 16 deletions(-)
+ block/blk-core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
-index c25109c..22af12f 100644
---- a/drivers/target/target_core_iblock.c
-+++ b/drivers/target/target_core_iblock.c
-@@ -312,7 +312,8 @@ static void iblock_bio_done(struct bio *bio)
- }
- 
- static struct bio *
--iblock_get_bio(struct se_cmd *cmd, sector_t lba, u32 sg_num, int rw)
-+iblock_get_bio(struct se_cmd *cmd, sector_t lba, u32 sg_num, int op,
-+	       int op_flags)
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 7e943dc..3c45254 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -2976,8 +2976,7 @@ EXPORT_SYMBOL_GPL(__blk_end_request_err);
+ void blk_rq_bio_prep(struct request_queue *q, struct request *rq,
+ 		     struct bio *bio)
  {
- 	struct iblock_dev *ib_dev = IBLOCK_DEV(cmd->se_dev);
- 	struct bio *bio;
-@@ -334,7 +335,7 @@ iblock_get_bio(struct se_cmd *cmd, sector_t lba, u32 sg_num, int rw)
- 	bio->bi_private = cmd;
- 	bio->bi_end_io = &iblock_bio_done;
- 	bio->bi_iter.bi_sector = lba;
--	bio->bi_rw = rw;
-+	bio_set_op_attrs(bio, op, op_flags);
+-	/* Bit 0 (R/W) is identical in rq->cmd_flags and bio->bi_rw */
+-	rq->cmd_flags |= bio->bi_rw & REQ_WRITE;
++	req_set_op(rq, bio_op(bio));
  
- 	return bio;
- }
-@@ -480,7 +481,7 @@ iblock_execute_write_same(struct se_cmd *cmd)
- 		goto fail;
- 	cmd->priv = ibr;
- 
--	bio = iblock_get_bio(cmd, block_lba, 1, WRITE);
-+	bio = iblock_get_bio(cmd, block_lba, 1, REQ_OP_WRITE, 0);
- 	if (!bio)
- 		goto fail_free_ibr;
- 
-@@ -493,7 +494,8 @@ iblock_execute_write_same(struct se_cmd *cmd)
- 		while (bio_add_page(bio, sg_page(sg), sg->length, sg->offset)
- 				!= sg->length) {
- 
--			bio = iblock_get_bio(cmd, block_lba, 1, WRITE);
-+			bio = iblock_get_bio(cmd, block_lba, 1, REQ_OP_WRITE,
-+					     0);
- 			if (!bio)
- 				goto fail_put_bios;
- 
-@@ -679,8 +681,7 @@ iblock_execute_rw(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
- 	struct scatterlist *sg;
- 	u32 sg_num = sgl_nents;
- 	unsigned bio_cnt;
--	int rw = 0;
--	int i;
-+	int i, op, op_flags = 0;
- 
- 	if (data_direction == DMA_TO_DEVICE) {
- 		struct iblock_dev *ib_dev = IBLOCK_DEV(dev);
-@@ -689,18 +690,15 @@ iblock_execute_rw(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
- 		 * Force writethrough using WRITE_FUA if a volatile write cache
- 		 * is not enabled, or if initiator set the Force Unit Access bit.
- 		 */
-+		op = REQ_OP_WRITE;
- 		if (test_bit(QUEUE_FLAG_FUA, &q->queue_flags)) {
- 			if (cmd->se_cmd_flags & SCF_FUA)
--				rw = WRITE_FUA;
-+				op_flags = WRITE_FUA;
- 			else if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
--				rw = WRITE_FUA;
--			else
--				rw = WRITE;
--		} else {
--			rw = WRITE;
-+				op_flags = WRITE_FUA;
- 		}
- 	} else {
--		rw = READ;
-+		op = REQ_OP_READ;
- 	}
- 
- 	ibr = kzalloc(sizeof(struct iblock_req), GFP_KERNEL);
-@@ -714,7 +712,7 @@ iblock_execute_rw(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
- 		return 0;
- 	}
- 
--	bio = iblock_get_bio(cmd, block_lba, sgl_nents, rw);
-+	bio = iblock_get_bio(cmd, block_lba, sgl_nents, op, op_flags);
- 	if (!bio)
- 		goto fail_free_ibr;
- 
-@@ -738,7 +736,8 @@ iblock_execute_rw(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
- 				bio_cnt = 0;
- 			}
- 
--			bio = iblock_get_bio(cmd, block_lba, sg_num, rw);
-+			bio = iblock_get_bio(cmd, block_lba, sg_num, op,
-+					     op_flags);
- 			if (!bio)
- 				goto fail_put_bios;
- 
-diff --git a/drivers/target/target_core_pscsi.c b/drivers/target/target_core_pscsi.c
-index de18790..81564c8 100644
---- a/drivers/target/target_core_pscsi.c
-+++ b/drivers/target/target_core_pscsi.c
-@@ -922,7 +922,7 @@ pscsi_map_sg(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
- 					goto fail;
- 
- 				if (rw)
--					bio->bi_rw |= REQ_WRITE;
-+					bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
- 
- 				pr_debug("PSCSI: Allocated bio: %p,"
- 					" dir: %s nr_vecs: %d\n", bio,
+ 	if (bio_has_data(bio))
+ 		rq->nr_phys_segments = bio_phys_segments(q, bio);
+@@ -3062,7 +3061,8 @@ EXPORT_SYMBOL_GPL(blk_rq_unprep_clone);
+ static void __blk_rq_prep_clone(struct request *dst, struct request *src)
+ {
+ 	dst->cpu = src->cpu;
+-	dst->cmd_flags |= (src->cmd_flags & REQ_CLONE_MASK) | REQ_NOMERGE;
++	req_set_op_attrs(dst, req_op(src),
++			 (src->cmd_flags & REQ_CLONE_MASK) | REQ_NOMERGE);
+ 	dst->cmd_type = src->cmd_type;
+ 	dst->__sector = blk_rq_pos(src);
+ 	dst->__data_len = blk_rq_bytes(src);
 -- 
 2.7.2
