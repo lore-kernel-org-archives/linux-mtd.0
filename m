@@ -1,17 +1,27 @@
-From: Aleksei Mamlin <mamlinav@gmail.com>
-To: Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-sunxi@googlegroups.com, Aleksei Mamlin <mamlinav@gmail.com>
-Subject: [PATCH 1/7] ARM: dts: sun4i: Add A10 NAND controller pin definitions
-Date: Mon,  6 Jun 2016 13:24:18 +0300
-Message-Id: <1465208664-9366-2-git-send-email-mamlinav@gmail.com>
-In-Reply-To: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
-References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
+Received: from mail-vk0-x22d.google.com ([2607:f8b0:400c:c05::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b9sIe-0007n4-IB
+ for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 11:02:29 +0000
+Received: by mail-vk0-x22d.google.com with SMTP id e4so57592749vkb.1
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Jun 2016 04:02:07 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.02.1606060742210.23377@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1606020944180.19416@lnxricardw1.se.axis.com>
+ <20160602180059.11928d40@bbrezillon>
+ <alpine.DEB.2.02.1606060742210.23377@lnxricardw1.se.axis.com>
+Date: Mon, 6 Jun 2016 16:32:06 +0530
+Message-ID: <CAB=aS0OZ493Smov2E41G1iChi9gEOV5j0Gf8=SS_CbhXZjmw5g@mail.gmail.com>
+Subject: Re: [PATCH 0/4] mtd: nand: Add support for Evatronix NANDFLASH-CTRL
+From: Kamlakant Patel <kamlakant.patel@broadcom.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ devicetree@vger.kernel.org,
+ Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+ Linux mtd <linux-mtd@lists.infradead.org>,
+ Benoit Cousson <bcousson@baylibre.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,106 +31,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+On Mon, Jun 6, 2016 at 11:17 AM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+>
+> On Thu, 2 Jun 2016, Boris Brezillon wrote:
+>
+>> Hi Ricard,
+>>
+>> I was not in Cc of this series, so you're either developing an old
+>> kernel version, or you didn't check the MAINTAINERS file (or didn't run
+>> get_maintainer.pl on your series).
+>
+> The patch is intended to apply to the mtd l2 tree, and I did check
+> MAINTAINERS, however, for whatever reason I failed to notice that the NAND
+> flash subsystem has its own entry (going for the general MTD entry), so
+> both you and Richard got left off the CC list. Sorry about that. I'll
+> rectify it on subsequent patch submissions.
+>
+>> And please, next time make sure patches 1 to X are sent in replies to
+>> your cover letter.
+>
+> Ok. Will do.
+>
+>> I'll to review the driver soon.
+>
+> Much appreciated.
 
-Define the NAND controller pin configs.
+Hi Ricard,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
----
- arch/arm/boot/dts/sun4i-a10.dtsi | 80 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
+I am using the previous version of your patch on Netlogic XLP MIPS64
+platform with some cleanups, some of them are mentioned by Borris.
+I can send you the patch if you would like to integrate it.
 
-diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
-index a9c3190..146a08db 100644
---- a/arch/arm/boot/dts/sun4i-a10.dtsi
-+++ b/arch/arm/boot/dts/sun4i-a10.dtsi
-@@ -1144,6 +1144,86 @@
- 				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
- 				allwinner,pull = <SUN4I_PINCTRL_PULL_UP>;
- 			};
-+
-+			nand_pins_a: nand_base0@0 {
-+				allwinner,pins = "PC0", "PC1", "PC2",
-+						"PC5", "PC8", "PC9", "PC10",
-+						"PC11", "PC12", "PC13", "PC14",
-+						"PC15", "PC16";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
-+
-+			nand_cs0_pins_a: nand_cs@0 {
-+				allwinner,pins = "PC4";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
-+
-+			nand_cs1_pins_a: nand_cs@1 {
-+				allwinner,pins = "PC3";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
-+
-+			nand_cs2_pins_a: nand_cs@2 {
-+				allwinner,pins = "PC17";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
-+
-+			nand_cs3_pins_a: nand_cs@3 {
-+				allwinner,pins = "PC18";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
-+
-+			nand_cs4_pins_a: nand_cs@4 {
-+				allwinner,pins = "PC19";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
-+
-+			nand_cs5_pins_a: nand_cs@5 {
-+				allwinner,pins = "PC20";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
-+
-+			nand_cs6_pins_a: nand_cs@6 {
-+				allwinner,pins = "PC21";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
-+
-+			nand_cs7_pins_a: nand_cs@7 {
-+				allwinner,pins = "PC22";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
-+
-+			nand_rb0_pins_a: nand_rb@0 {
-+				allwinner,pins = "PC6";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
-+
-+			nand_rb1_pins_a: nand_rb@1 {
-+				allwinner,pins = "PC7";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
-+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
-+			};
- 		};
- 
- 		timer@01c20c00 {
--- 
-2.7.3
+Thanks,
+ Kamlakant Patel
