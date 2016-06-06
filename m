@@ -1,23 +1,26 @@
-Received: from bes.se.axis.com ([195.60.68.10])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9nOu-00009M-Aq
- for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 05:48:40 +0000
-Date: Mon, 6 Jun 2016 07:47:59 +0200
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: <devicetree@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
- <linux-kernel@vger.kernel.org>, Linux mtd <linux-mtd@lists.infradead.org>,
- Benoit Cousson <bcousson@baylibre.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 0/4] mtd: nand: Add support for Evatronix
- NANDFLASH-CTRL
-In-Reply-To: <20160602180059.11928d40@bbrezillon>
-Message-ID: <alpine.DEB.2.02.1606060742210.23377@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1606020944180.19416@lnxricardw1.se.axis.com>
- <20160602180059.11928d40@bbrezillon>
+Received: from mx2.suse.de ([195.135.220.15])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1b9nmf-00083o-8N
+ for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 06:13:09 +0000
+Subject: Re: [PATCH 01/45] block/fs/drivers: remove rw argument from submit_bio
+To: mchristi@redhat.com, linux-f2fs-devel@lists.sourceforge.net,
+ linux-ext4@vger.kernel.org, konrad.wilk@oracle.com,
+ drbd-dev@lists.linbit.com, philipp.reisner@linbit.com,
+ lars.ellenberg@linbit.com, linux-raid@vger.kernel.org, dm-devel@redhat.com,
+ linux-fsdevel@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
+References: <1465155145-10812-1-git-send-email-mchristi@redhat.com>
+ <1465155145-10812-2-git-send-email-mchristi@redhat.com>
+From: Hannes Reinecke <hare@suse.de>
+Message-ID: <5755145A.3070500@suse.de>
+Date: Mon, 6 Jun 2016 08:12:42 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1465155145-10812-2-git-send-email-mchristi@redhat.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +30,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Thu, 2 Jun 2016, Boris Brezillon wrote:
-
-> Hi Ricard,
+On 06/05/2016 09:31 PM, mchristi@redhat.com wrote:
+> From: Mike Christie <mchristi@redhat.com>
 > 
-> I was not in Cc of this series, so you're either developing an old
-> kernel version, or you didn't check the MAINTAINERS file (or didn't run
-> get_maintainer.pl on your series).
+> This has callers of submit_bio/submit_bio_wait set the bio->bi_rw
+> instead of passing it in. This makes that use the same as
+> generic_make_request and how we set the other bio fields.
+> 
+> Signed-off-by: Mike Christie <mchristi@redhat.com>
+> ---
+Reviewed-by: Hannes Reinecke <hare@suse.com>
 
-The patch is intended to apply to the mtd l2 tree, and I did check 
-MAINTAINERS, however, for whatever reason I failed to notice that the NAND 
-flash subsystem has its own entry (going for the general MTD entry), so 
-both you and Richard got left off the CC list. Sorry about that. I'll 
-rectify it on subsequent patch submissions.
+Cheers,
 
-> And please, next time make sure patches 1 to X are sent in replies to 
-> your cover letter.
-
-Ok. Will do.
-
-> I'll to review the driver soon.
-
-Much appreciated.
-
-/Ricard
+Hannes
 -- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Dr. Hannes Reinecke		   Teamlead Storage & Networking
+hare@suse.de			               +49 911 74053 688
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: F. Imendörffer, J. Smithard, J. Guild, D. Upmanyu, G. Norton
+HRB 21284 (AG Nürnberg)
