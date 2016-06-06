@@ -1,24 +1,20 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9zbs-00086l-0e
- for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 18:50:48 +0000
-Date: Mon, 6 Jun 2016 19:48:10 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marex@denx.de>, Han Xu <han.xu@nxp.com>,
- linux-spi@vger.kernel.org
-Message-ID: <20160606184810.GL7510@sirena.org.uk>
-References: <20160606184348.GA135086@google.com>
+Date: Mon, 6 Jun 2016 20:50:54 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Aleksei Mamlin <mamlinav@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 6/7] ARM: dts: sun4i: Enable NAND on Marsboard A10
+Message-ID: <20160606205054.0f7f02b5@bbrezillon>
+In-Reply-To: <1465208664-9366-7-git-send-email-mamlinav@gmail.com>
+References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
+ <1465208664-9366-7-git-send-email-mamlinav@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="O8/n5iBOhiUtMkxf"
-Content-Disposition: inline
-In-Reply-To: <20160606184348.GA135086@google.com>
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +24,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon,  6 Jun 2016 13:24:23 +0300
+Aleksei Mamlin <mamlinav@gmail.com> wrote:
 
---O8/n5iBOhiUtMkxf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Enable the NFC and describe the NAND flash connected to this controller.
+> 
+> Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
 
-On Mon, Jun 06, 2016 at 11:43:48AM -0700, Brian Norris wrote:
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-> message size / transfer size patterns for arbitrary users. I suppose we
-> really just need to figure out what his actual problem is, so we can
-> address it generically.
+> ---
+>  arch/arm/boot/dts/sun4i-a10-marsboard.dts | 41 +++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/sun4i-a10-marsboard.dts b/arch/arm/boot/dts/sun4i-a10-marsboard.dts
+> index 8e50723..ea6e2d5 100644
+> --- a/arch/arm/boot/dts/sun4i-a10-marsboard.dts
+> +++ b/arch/arm/boot/dts/sun4i-a10-marsboard.dts
+> @@ -150,6 +150,47 @@
+>  	status = "okay";
+>  };
+>  
+> +&nfc {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&nand_pins_a>, <&nand_cs0_pins_a>, <&nand_rb0_pins_a>;
+> +	status = "okay";
+> +
+> +	nand@0 {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		reg = <0>;
+> +		allwinner,rb = <0>;
+> +
+> +		nand-ecc-mode = "hw";
+> +		nand-on-flash-bbt;
+> +
+> +		boot0@0 {
+> +			label = "boot0";
+> +			reg = /bits/ 64 <0x0 0x200000>;
+> +		};
+> +
+> +		boot0-rescue@200000 {
+> +			label = "boot0-rescue";
+> +			reg = /bits/ 64 <0x200000 0x200000>;
+> +		};
+> +
+> +		uboot@400000 {
+> +			label = "uboot";
+> +			reg = /bits/ 64 <0x400000 0x200000>;
+> +		};
+> +
+> +		uboot-rescue@600000 {
+> +			label = "uboot-rescue";
+> +			reg = /bits/ 64 <0x600000 0x200000>;
+> +		};
+> +
+> +		main@800000 {
+> +			label = "main";
+> +			reg = /bits/ 64 <0x800000 0xff800000>;
+> +		};
+> +	};
+> +};
+> +
+>  &ohci0 {
+>  	status = "okay";
+>  };
 
-Yes, exactly.
 
---O8/n5iBOhiUtMkxf
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJXVcVpAAoJECTWi3JdVIfQfWYH+wQBW1H5I5ugEk5EwY+hbXv/
-dZmzNGNEV2bUlidmWpixHiRFe49rRmWq+gxQwRQfykLyWlboZl4B6LlbadCL6D0H
-019jJPFcQuDj3AVMMpZvpn7gryoG2SQJfaTo0sUCxyyTdPISfce7VfQZ8pXqO3yt
-7QQLHP+1ndTbjzRdWuo3rv1meKheGR1YzN4JRoADg3DAuuP1S+9dViNFGfLagYH6
-bZgHuUnhxicAT2cx555omj/fBAQRssxh0L/49Wze9vuJgbkIDQNcUnzOTawrSjFJ
-2l+deaV0Itdn7COII3ZL7IpgZRu3evwHrPBc8KQ5/p0jsfxHUVO7T/biTukPKVU=
-=NvL8
------END PGP SIGNATURE-----
-
---O8/n5iBOhiUtMkxf--
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
