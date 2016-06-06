@@ -1,27 +1,16 @@
-Received: from mail-vk0-x22d.google.com ([2607:f8b0:400c:c05::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9sIe-0007n4-IB
- for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 11:02:29 +0000
-Received: by mail-vk0-x22d.google.com with SMTP id e4so57592749vkb.1
- for <linux-mtd@lists.infradead.org>; Mon, 06 Jun 2016 04:02:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.02.1606060742210.23377@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1606020944180.19416@lnxricardw1.se.axis.com>
- <20160602180059.11928d40@bbrezillon>
- <alpine.DEB.2.02.1606060742210.23377@lnxricardw1.se.axis.com>
-Date: Mon, 6 Jun 2016 16:32:06 +0530
-Message-ID: <CAB=aS0OZ493Smov2E41G1iChi9gEOV5j0Gf8=SS_CbhXZjmw5g@mail.gmail.com>
-Subject: Re: [PATCH 0/4] mtd: nand: Add support for Evatronix NANDFLASH-CTRL
-From: Kamlakant Patel <kamlakant.patel@broadcom.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- devicetree@vger.kernel.org,
- Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
- Linux mtd <linux-mtd@lists.infradead.org>,
- Benoit Cousson <bcousson@baylibre.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Chen-Yu Tsai <wens@csie.org>, linux-sunxi@googlegroups.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/3] mtd: nand: sunxi: prefer 1k ECC blocks when applicable
+Date: Mon,  6 Jun 2016 13:59:12 +0200
+Message-Id: <1465214354-31493-2-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1465214354-31493-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1465214354-31493-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,37 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 6, 2016 at 11:17 AM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
->
-> On Thu, 2 Jun 2016, Boris Brezillon wrote:
->
->> Hi Ricard,
->>
->> I was not in Cc of this series, so you're either developing an old
->> kernel version, or you didn't check the MAINTAINERS file (or didn't run
->> get_maintainer.pl on your series).
->
-> The patch is intended to apply to the mtd l2 tree, and I did check
-> MAINTAINERS, however, for whatever reason I failed to notice that the NAND
-> flash subsystem has its own entry (going for the general MTD entry), so
-> both you and Richard got left off the CC list. Sorry about that. I'll
-> rectify it on subsequent patch submissions.
->
->> And please, next time make sure patches 1 to X are sent in replies to
->> your cover letter.
->
-> Ok. Will do.
->
->> I'll to review the driver soon.
->
-> Much appreciated.
+Switching to 1k ECC blocks when possible provides better resistance against
+concentrated bitflips. Say you have those two configurations:
 
-Hi Ricard,
+1/ 16bits/512bytes
+2/ 32bits/1024bytes
 
-I am using the previous version of your patch on Netlogic XLP MIPS64
-platform with some cleanups, some of them are mentioned by Borris.
-I can send you the patch if you would like to integrate it.
+Both of them require the same amount of ECC bytes (only true for this
+specific engine), but the second config allows you to correct the case
+where most of your bitflips are concentrated in a single 512bytes portion.
 
-Thanks,
- Kamlakant Patel
+This fact makes the 1k ECC block size more advantageous than the 512bytes
+one.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/sunxi_nand.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index 5299ab0..4f5b4ad 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -1784,6 +1784,12 @@ static int sunxi_nand_hw_common_ecc_ctrl_init(struct mtd_info *mtd,
+ 	if (!data)
+ 		return -ENOMEM;
+ 
++	/* Prefer 1k ECC chunk over 512 ones */
++	if (ecc->size == 512 && mtd->writesize > 512) {
++		ecc->size = 1024;
++		ecc->strength *= 2;
++	}
++
+ 	/* Add ECC info retrieval from DT */
+ 	for (i = 0; i < ARRAY_SIZE(strengths); i++) {
+ 		if (ecc->strength <= strengths[i])
+-- 
+2.7.4
