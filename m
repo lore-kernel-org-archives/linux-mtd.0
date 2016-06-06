@@ -7,9 +7,9 @@ To: Maxime Ripard <maxime.ripard@free-electrons.com>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-sunxi@googlegroups.com, Aleksei Mamlin <mamlinav@gmail.com>
-Subject: [PATCH 4/7] ARM: dts: sun7i: Add NFC node to Allwinner A20 SoC
-Date: Mon,  6 Jun 2016 13:24:21 +0300
-Message-Id: <1465208664-9366-5-git-send-email-mamlinav@gmail.com>
+Subject: [PATCH 2/7] ARM: dts: sun4i: Add NFC node to Allwinner A10 SoC
+Date: Mon,  6 Jun 2016 13:24:19 +0300
+Message-Id: <1465208664-9366-3-git-send-email-mamlinav@gmail.com>
 In-Reply-To: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
 References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,19 +23,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-Add NAND Flash controller node definition to the A20 SoC.
+Add NAND Flash controller node definition to the A10 SoC.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
 ---
- arch/arm/boot/dts/sun7i-a20.dtsi | 11 +++++++++++
+ arch/arm/boot/dts/sun4i-a10.dtsi | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
-index 915979f..e473570 100644
---- a/arch/arm/boot/dts/sun7i-a20.dtsi
-+++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-@@ -826,6 +826,17 @@
+diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
+index 146a08db..22950d8 100644
+--- a/arch/arm/boot/dts/sun4i-a10.dtsi
++++ b/arch/arm/boot/dts/sun4i-a10.dtsi
+@@ -747,6 +747,17 @@
  			#size-cells = <0>;
  		};
  
