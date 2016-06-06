@@ -7,9 +7,9 @@ To: Maxime Ripard <maxime.ripard@free-electrons.com>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-sunxi@googlegroups.com, Aleksei Mamlin <mamlinav@gmail.com>
-Subject: [PATCH 2/7] ARM: dts: sun4i: Add NFC node to Allwinner A10 SoC
-Date: Mon,  6 Jun 2016 13:24:19 +0300
-Message-Id: <1465208664-9366-3-git-send-email-mamlinav@gmail.com>
+Subject: [PATCH 5/7] mtd: nand: Add Hynix H27UBG8T2BTR-BC to nand_ids table
+Date: Mon,  6 Jun 2016 13:24:22 +0300
+Message-Id: <1465208664-9366-6-git-send-email-mamlinav@gmail.com>
 In-Reply-To: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
 References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,37 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Add the full description of the Hynix H27UBG8T2BTR-BC NAND chip in the
+nand_ids table so that we can later use the NAND ECC infos and ONFI timings
+mode in controller drivers.
 
-Add NAND Flash controller node definition to the A10 SoC.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
 ---
- arch/arm/boot/dts/sun4i-a10.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/mtd/nand/nand_ids.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
-index 146a08db..22950d8 100644
---- a/arch/arm/boot/dts/sun4i-a10.dtsi
-+++ b/arch/arm/boot/dts/sun4i-a10.dtsi
-@@ -747,6 +747,17 @@
- 			#size-cells = <0>;
- 		};
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index ccc05f5..ccdc773 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -52,6 +52,10 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
+ 		  SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
+ 		  NAND_ECC_INFO(40, SZ_1K), 4 },
++	{"H27UBG8T2BTR-BC 32G 3.3V 8-bit",
++		{ .id = {0xad, 0xd7, 0x94, 0xda, 0x74, 0xc3} },
++		  SZ_8K, SZ_4K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
++		  NAND_ECC_INFO(40, SZ_1K), 0 },
  
-+		nfc: nand@01c03000 {
-+			compatible = "allwinner,sun4i-a10-nand";
-+			reg = <0x01c03000 0x1000>;
-+			interrupts = <37>;
-+			clocks = <&ahb_gates 13>, <&nand_clk>;
-+			clock-names = "ahb", "mod";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		emac: ethernet@01c0b000 {
- 			compatible = "allwinner,sun4i-a10-emac";
- 			reg = <0x01c0b000 0x1000>;
+ 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
+ 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
 -- 
 2.7.3
