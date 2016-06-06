@@ -1,8 +1,8 @@
 Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9npb-0001Rr-Ol
- for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 06:16:12 +0000
-Subject: Re: [PATCH 06/45] dm: use op_is_write instead of checking for
+ id 1b9nqU-0001wh-7G
+ for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 06:17:07 +0000
+Subject: Re: [PATCH 07/45] bcache: use op_is_write instead of checking for
  REQ_WRITE
 To: mchristi@redhat.com, linux-f2fs-devel@lists.sourceforge.net,
  linux-ext4@vger.kernel.org, konrad.wilk@oracle.com,
@@ -14,12 +14,12 @@ To: mchristi@redhat.com, linux-f2fs-devel@lists.sourceforge.net,
  target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
  osd-dev@open-osd.org, xfs@oss.sgi.com, ocfs2-devel@oss.oracle.com
 References: <1465155145-10812-1-git-send-email-mchristi@redhat.com>
- <1465155145-10812-7-git-send-email-mchristi@redhat.com>
+ <1465155145-10812-8-git-send-email-mchristi@redhat.com>
 From: Hannes Reinecke <hare@suse.de>
-Message-ID: <57551515.8060205@suse.de>
-Date: Mon, 6 Jun 2016 08:15:49 +0200
+Message-ID: <5755154C.7030007@suse.de>
+Date: Mon, 6 Jun 2016 08:16:44 +0200
 MIME-Version: 1.0
-In-Reply-To: <1465155145-10812-7-git-send-email-mchristi@redhat.com>
+In-Reply-To: <1465155145-10812-8-git-send-email-mchristi@redhat.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -40,13 +40,16 @@ On 06/05/2016 09:31 PM, mchristi@redhat.com wrote:
 > detect a operation direction like writesame by testing if REQ_WRITE is
 > set.
 > 
-> This has dm use the op_is_write helper which will do the right
+> This has bcache use the op_is_write helper which will do the right
 > thing.
 > 
 > Signed-off-by: Mike Christie <mchristi@redhat.com>
 > ---
-
-(Could probably be folded into the previous patch)
+>  drivers/md/bcache/io.c      | 2 +-
+>  drivers/md/bcache/request.c | 6 +++---
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+(Could probably folded together with the two previous patches)
 
 Reviewed-by: Hannes Reinecke <hare@suse.com>
 
