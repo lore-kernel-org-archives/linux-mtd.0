@@ -1,28 +1,19 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1b9zeh-00011h-3b
- for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 18:53:43 +0000
-Received: by mail-wm0-x243.google.com with SMTP id m124so17582997wme.3
- for <linux-mtd@lists.infradead.org>; Mon, 06 Jun 2016 11:53:22 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
-To: Mark Brown <broonie@kernel.org>
-References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
- <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
- <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
- <20160506121431.GQ6292@sirena.org.uk>
- <77a22258-95ca-031a-825d-a9e98e30a162@gmail.com>
- <20160606174003.GE7510@sirena.org.uk>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>,
- Han Xu <han.xu@nxp.com>, linux-spi@vger.kernel.org
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <a57adb90-0d80-186f-17d3-6fdf106bfb4a@gmail.com>
-Date: Mon, 6 Jun 2016 20:53:10 +0200
+Date: Mon, 6 Jun 2016 20:55:49 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Aleksei Mamlin <mamlinav@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 5/7] mtd: nand: Add Hynix H27UBG8T2BTR-BC to nand_ids table
+Message-ID: <20160606205549.1ecd6fdb@bbrezillon>
+In-Reply-To: <1465208664-9366-6-git-send-email-mamlinav@gmail.com>
+References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
+ <1465208664-9366-6-git-send-email-mamlinav@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20160606174003.GE7510@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,43 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 06.06.2016 um 19:40 schrieb Mark Brown:
-> On Sat, Jun 04, 2016 at 12:22:37AM +0200, Heiner Kallweit wrote:
-> 
-> Please fix your mail client to word wrap within paragraphs at 
-> something substantially less than 80 columns.  Doing this makes your 
-> messages much easier to read and reply to.
-> 
->> Am 06.05.2016 um 14:14 schrieb Mark Brown:
-> 
->>> Yes, it's called the maximum transfer size because it is the 
->>> maximum size of a transfer, not because it's the maximum size of 
->>> a message.
-> 
->> I'd like to come back to this discussion. You said best would be
->> to fix the chip driver. To do this and calculate an appropriate
->> value for max_transfer_size the chip driver would have to know that
->> the spi_device is a spi-nor device.
-> 
-> That doesn't make any sense, the controller hardware doesn't 
-> magically change based on what is connected to it.
-> 
-The issue with fsl-espi is that the controller deactivates CS after
-each physical transfer. And a lot of HW designs use the hardware CS,
-therefore the advise to use a GPIO instead doesn't really help.
+On Mon,  6 Jun 2016 13:24:22 +0300
+Aleksei Mamlin <mamlinav@gmail.com> wrote:
 
-If deactivating and reactivating CS between two transfers doesn't
-affect the functionality of a spi device then we can go with the
-full max transfer size.
+> Add the full description of the Hynix H27UBG8T2BTR-BC NAND chip in the
+> nand_ids table so that we can later use the NAND ECC infos and ONFI timings
+> mode in controller drivers.
 
-In case of SPI NOR CS needs to stay active between command and data
-read. Therefore the two transfers in the m25p80 read SPI message need
-to be combined to one physical transfer by the controller driver.
-Result is that the max read size is effectively reduced by the length
-of the m25p80 read command.
+Still hoping to get this series [1] merged in 4.8, but if that's
+not the case, I'll apply your patch.
 
-Well, we could reduce the max_transfer_size exposed by the driver by
-the max length of a m25p80 read command in general.
-Then we might be too strict for other SPI devices, but this may
-be acceptable as the current fsl-espi driver is usable with SPI NOR
-devices only anyway.
+BTW, that would be great if you could test it on your platforms.
+
+Regards,
+
+Boris
+
+[1]https://lkml.org/lkml/2016/5/27/264
+
+> 
+> Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_ids.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+> index ccc05f5..ccdc773 100644
+> --- a/drivers/mtd/nand/nand_ids.c
+> +++ b/drivers/mtd/nand/nand_ids.c
+> @@ -52,6 +52,10 @@ struct nand_flash_dev nand_flash_ids[] = {
+>  		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
+>  		  SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
+>  		  NAND_ECC_INFO(40, SZ_1K), 4 },
+> +	{"H27UBG8T2BTR-BC 32G 3.3V 8-bit",
+> +		{ .id = {0xad, 0xd7, 0x94, 0xda, 0x74, 0xc3} },
+> +		  SZ_8K, SZ_4K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
+> +		  NAND_ECC_INFO(40, SZ_1K), 0 },
+>  
+>  	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
+>  	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
+
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
