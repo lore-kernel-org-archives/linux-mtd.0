@@ -1,29 +1,32 @@
-Received: from caladan.dune.hu ([78.24.191.180] helo=arrakis.dune.hu)
+Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bA2Us-0005eX-65
- for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 21:55:47 +0000
-Received: from localhost (localhost [127.0.0.1])
- by arrakis.dune.hu (Postfix) with ESMTP id 425FAB91232
- for <linux-mtd@lists.infradead.org>; Mon,  6 Jun 2016 23:55:24 +0200 (CEST)
-Received: from mail-vk0-f42.google.com (mail-vk0-f42.google.com
- [209.85.213.42])
- by arrakis.dune.hu (Postfix) with ESMTPSA id 3D57DB911E6
- for <linux-mtd@lists.infradead.org>; Mon,  6 Jun 2016 23:55:13 +0200 (CEST)
-Received: by mail-vk0-f42.google.com with SMTP id d64so94474181vkb.0
- for <linux-mtd@lists.infradead.org>; Mon, 06 Jun 2016 14:55:13 -0700 (PDT)
+ id 1bA30d-0000F6-MG
+ for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 22:28:36 +0000
+Message-ID: <5755F8FB.2070409@denx.de>
+Date: Tue, 07 Jun 2016 00:28:11 +0200
+From: Marek Vasut <marex@denx.de>
 MIME-Version: 1.0
-In-Reply-To: <910195ee-2b46-bb69-472c-15c6321e9e5d@hauke-m.de>
-References: <1465245341-16026-1-git-send-email-hauke@hauke-m.de>
- <CAOiHx=kit1Fz2hTmyxStzCfGDDpc4vcx06E2JVmwve8tTWo7Gg@mail.gmail.com>
- <910195ee-2b46-bb69-472c-15c6321e9e5d@hauke-m.de>
-From: Jonas Gorski <jogo@openwrt.org>
-Date: Mon, 6 Jun 2016 23:54:52 +0200
-Message-ID: <CAOiHx=mbRCU_Wh+vaT+RZcjJWTvBautp9eAJT_Gv7JyfVfQ8Yw@mail.gmail.com>
-Subject: Re: [PATCH v2] MTD: lantiq: handle NO_XIP on cfi0001 flash
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, John Crispin <john@phrozen.org>
-Content-Type: text/plain; charset=UTF-8
+To: Heiner Kallweit <hkallweit1@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+CC: Mark Brown <broonie@kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Michal Suchanek <hramrach@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Han Xu <han.xu@nxp.com>,
+ linux-spi <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
+References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
+ <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
+ <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
+ <20160506121431.GQ6292@sirena.org.uk>
+ <77a22258-95ca-031a-825d-a9e98e30a162@gmail.com>
+ <20160606174003.GE7510@sirena.org.uk>
+ <a57adb90-0d80-186f-17d3-6fdf106bfb4a@gmail.com>
+ <CAMuHMdW5zEmiN=Qw+Ed-gi=M1FffHXu1uSEvUOuRDG+j14ZZBA@mail.gmail.com>
+ <971ad721-5644-e5f9-2918-65db0e6b1996@gmail.com>
+In-Reply-To: <971ad721-5644-e5f9-2918-65db0e6b1996@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,63 +36,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6 June 2016 at 23:38, Hauke Mehrtens <hauke@hauke-m.de> wrote:
-> On 06/06/2016 11:10 PM, Jonas Gorski wrote:
->> Hi,
+On 06/06/2016 11:20 PM, Heiner Kallweit wrote:
+> Am 06.06.2016 um 21:46 schrieb Geert Uytterhoeven:
+>> Hi Heiner,
 >>
->> On 6 June 2016 at 22:35, Hauke Mehrtens <hauke@hauke-m.de> wrote:
->>> From: John Crispin <john@phrozen.org>
->>>
->>> This uses the same device tree attribute as physmap_of.c
->>>
->>> Signed-off-by: John Crispin <john@phrozen.org>
->>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->>> ---
->>>  drivers/mtd/maps/lantiq-flash.c | 6 +++++-
->>>  1 file changed, 5 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
->>> index c8febb3..88fc6d9 100644
->>> --- a/drivers/mtd/maps/lantiq-flash.c
->>> +++ b/drivers/mtd/maps/lantiq-flash.c
->>> @@ -137,7 +137,11 @@ ltq_mtd_probe(struct platform_device *pdev)
->>>         if (!ltq_mtd->map)
->>>                 return -ENOMEM;
->>>
->>> -       ltq_mtd->map->phys = ltq_mtd->res->start;
->>> +       if (of_find_property(pdev->dev.of_node, "no-unaligned-direct-access",
->>> +                            NULL))
->>> +               ltq_mtd->map->phys = NO_XIP;
+>> On Mon, Jun 6, 2016 at 8:53 PM, Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>>> Am 06.06.2016 um 19:40 schrieb Mark Brown:
+>>>> On Sat, Jun 04, 2016 at 12:22:37AM +0200, Heiner Kallweit wrote:
+>>>>> Am 06.05.2016 um 14:14 schrieb Mark Brown:
+>>>>>> Yes, it's called the maximum transfer size because it is the
+>>>>>> maximum size of a transfer, not because it's the maximum size of
+>>>>>> a message.
+>>>>
+>>>>> I'd like to come back to this discussion. You said best would be
+>>>>> to fix the chip driver. To do this and calculate an appropriate
+>>>>> value for max_transfer_size the chip driver would have to know that
+>>>>> the spi_device is a spi-nor device.
+>>>>
+>>>> That doesn't make any sense, the controller hardware doesn't
+>>>> magically change based on what is connected to it.
+>>>>
+>>> The issue with fsl-espi is that the controller deactivates CS after
+>>> each physical transfer. And a lot of HW designs use the hardware CS,
+>>> therefore the advise to use a GPIO instead doesn't really help.
 >>
->> This does not what you think it does; i.e. preventing unaligned io
->> memory accesses. All it's used for is in two drivers
->> (cfi_cmdset_0001.c, lpddr_cmds.c) as a check whether to populate
->> _point/_unpoint. But it does not prevent the map_read/map_write
->> accessors from doing memcpy_{from,to}_io() with unaligned addresses,
->> which at least on MIPS results in unaligned accesses with LWL/LWR.
->> Which is what I assume you want to prevent.
->
-> Hi Jonas,
->
-> I want to upstream the patch from OpenWrt:
-> https://dev.openwrt.org/changeset/35992
->
-> I want to deactivate the execute-in-place (XIP) which this property does.
+>> And you can't use pinmux to configure the pin used for hardware CS
+>> to become a GPIO?
+>>
+> Sadly enough, no. Only the complete block of SPI signals can be switched
+> to GPIO mode. But then we'd have to use bitbanging and would loose all
+> features of the integrated SPI controller (FIFO's etc.)
 
-I understand that, but I wanted to point out that setting NO_XIP does
-neither prevent XIP*, nor does it prevent unaligned direct accesses.
-Which are also IMHO two different concepts.
+Just for completeness, which SoC are we talking about here ?
 
-NO_XIP is checked at exactly one place, by mtd_is_linear()[1] (and
-only if CONFIG_MTD_COMPLEX_MAPPINGS is enabled). And mtd_is_linear()
-is only used by the two mentioned drivers, nothing more. Unless I'm
-overlooking something, this patch has no obvservebal effect, as the
-mtd code doesn't actually do anything meaningful with NO_XIP.
-
-
-Regards
-Jonas
-
-* actually AFAICT XIP isn't supported at all, at least not on MIPS.
-
-[1] http://lxr.free-electrons.com/source/include/linux/mtd/map.h#L477
+-- 
+Best regards,
+Marek Vasut
