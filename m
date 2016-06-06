@@ -1,23 +1,28 @@
-Date: Tue, 7 Jun 2016 00:06:45 +0300
-From: Aleksei Mamlin <mamlinav@gmail.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
- <wens@csie.org>, Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 5/7] mtd: nand: Add Hynix H27UBG8T2BTR-BC to nand_ids table
-Message-Id: <20160607000645.5d1f428b40406a5db7cbe285@gmail.com>
-In-Reply-To: <20160606223138.3c2032ee@bbrezillon>
-References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
- <1465208664-9366-6-git-send-email-mamlinav@gmail.com>
- <20160606205549.1ecd6fdb@bbrezillon>
- <20160606225903.264abc01647eb1528cc226bd@gmail.com>
- <20160606223138.3c2032ee@bbrezillon>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from caladan.dune.hu ([78.24.191.180] helo=arrakis.dune.hu)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bA1p5-0000S8-VN
+ for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 21:12:37 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by arrakis.dune.hu (Postfix) with ESMTP id 8F004B802FF
+ for <linux-mtd@lists.infradead.org>; Mon,  6 Jun 2016 23:12:10 +0200 (CEST)
+Received: from mail-vk0-f42.google.com (mail-vk0-f42.google.com
+ [209.85.213.42])
+ by arrakis.dune.hu (Postfix) with ESMTPSA id EFF63B80230
+ for <linux-mtd@lists.infradead.org>; Mon,  6 Jun 2016 23:10:48 +0200 (CEST)
+Received: by mail-vk0-f42.google.com with SMTP id c66so63287219vkb.3
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Jun 2016 14:10:48 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1465245341-16026-1-git-send-email-hauke@hauke-m.de>
+References: <1465245341-16026-1-git-send-email-hauke@hauke-m.de>
+From: Jonas Gorski <jogo@openwrt.org>
+Date: Mon, 6 Jun 2016 23:10:27 +0200
+Message-ID: <CAOiHx=kit1Fz2hTmyxStzCfGDDpc4vcx06E2JVmwve8tTWo7Gg@mail.gmail.com>
+Subject: Re: [PATCH v2] MTD: lantiq: handle NO_XIP on cfi0001 flash
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ John Crispin <john@phrozen.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,66 +32,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 6 Jun 2016 22:31:38 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Hi,
 
-> On Mon, 6 Jun 2016 22:59:03 +0300
-> Aleksei Mamlin <mamlinav@gmail.com> wrote:
-> 
-> > On Mon, 6 Jun 2016 20:55:49 +0200
-> > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> > 
-> > > On Mon,  6 Jun 2016 13:24:22 +0300
-> > > Aleksei Mamlin <mamlinav@gmail.com> wrote:
-> > >   
-> > > > Add the full description of the Hynix H27UBG8T2BTR-BC NAND chip in the
-> > > > nand_ids table so that we can later use the NAND ECC infos and ONFI timings
-> > > > mode in controller drivers.  
-> > > 
-> > > Still hoping to get this series [1] merged in 4.8, but if that's
-> > > not the case, I'll apply your patch.
-> > > 
-> > > BTW, that would be great if you could test it on your platforms.
-> > >   
-> > 
-> > It seems that Hynix-specific initialization code can't handle H27UBG8T2BTR-BC
-> > chip:
-> > 
-> > [    0.886153] nand: Could not find valid ONFI parameter page; aborting
-> > [    0.892665] nand: device found, Manufacturer ID: 0xad, Chip ID: 0xd7
-> > [    0.899025] nand: Hynix 1c03000.nand
-> > [    0.902596] nand: bus width 8 instead 16 bit
-> > [    0.906858] nand: No NAND device found
-> > [    0.910620] sunxi_nand 1c03000.nand: failed to init nand chips
-> > [    0.916528] sunxi_nand: probe of 1c03000.nand failed with error -22
-> 
-> Can you try this patch? It should fix the problem [1].
-> 
-> [1]http://code.bulix.org/6hjww1-100494
-> 
+On 6 June 2016 at 22:35, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> From: John Crispin <john@phrozen.org>
+>
+> This uses the same device tree attribute as physmap_of.c
+>
+> Signed-off-by: John Crispin <john@phrozen.org>
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> ---
+>  drivers/mtd/maps/lantiq-flash.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+> index c8febb3..88fc6d9 100644
+> --- a/drivers/mtd/maps/lantiq-flash.c
+> +++ b/drivers/mtd/maps/lantiq-flash.c
+> @@ -137,7 +137,11 @@ ltq_mtd_probe(struct platform_device *pdev)
+>         if (!ltq_mtd->map)
+>                 return -ENOMEM;
+>
+> -       ltq_mtd->map->phys = ltq_mtd->res->start;
+> +       if (of_find_property(pdev->dev.of_node, "no-unaligned-direct-access",
+> +                            NULL))
+> +               ltq_mtd->map->phys = NO_XIP;
 
-Yes, it fixes problem. What about ONFI parameter page? Should it be ignored?
-[    0.886068] nand: Could not find valid ONFI parameter page; aborting
-[    0.892571] nand: device found, Manufacturer ID: 0xad, Chip ID: 0xd7
-[    0.898917] nand: Hynix NAND 4GiB 3,3V 8-bit
-[    0.903198] nand: 4096 MiB, MLC, erase size: 2048 KiB, page size: 8192, OOB size: 640
-[    0.911908] Bad block table found at page 524032, version 0x01
-[    0.918534] Bad block table found at page 523776, version 0x01
-[    0.972112] 5 ofpart partitions found on MTD device 1c03000.nand
-[    0.978116] Creating 5 MTD partitions on "1c03000.nand":
-[    0.983477] 0x000000000000-0x000000200000 : "boot0"
-[    0.988803] 0x000000200000-0x000000400000 : "boot0-rescue"
-[    0.994692] 0x000000400000-0x000000600000 : "uboot"
-[    0.999944] 0x000000600000-0x000000800000 : "uboot-rescue"
-[    1.005763] 0x000000800000-0x000100000000 : "main"
-
-> 
-> -- 
-> Boris Brezillon, Free Electrons
-> Embedded Linux and Kernel engineering
-> http://free-electrons.com
+This does not what you think it does; i.e. preventing unaligned io
+memory accesses. All it's used for is in two drivers
+(cfi_cmdset_0001.c, lpddr_cmds.c) as a check whether to populate
+_point/_unpoint. But it does not prevent the map_read/map_write
+accessors from doing memcpy_{from,to}_io() with unaligned addresses,
+which at least on MIPS results in unaligned accesses with LWL/LWR.
+Which is what I assume you want to prevent.
 
 
--- 
-Thanks and regards,
-Aleksei Mamlin
+Regards
+Jonas
