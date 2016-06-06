@@ -1,22 +1,14 @@
-Date: Mon, 6 Jun 2016 22:31:38 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Aleksei Mamlin <mamlinav@gmail.com>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
- <wens@csie.org>, Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 5/7] mtd: nand: Add Hynix H27UBG8T2BTR-BC to nand_ids table
-Message-ID: <20160606223138.3c2032ee@bbrezillon>
-In-Reply-To: <20160606225903.264abc01647eb1528cc226bd@gmail.com>
-References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
- <1465208664-9366-6-git-send-email-mamlinav@gmail.com>
- <20160606205549.1ecd6fdb@bbrezillon>
- <20160606225903.264abc01647eb1528cc226bd@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from hauke-m.de ([2001:41d0:8:b27b::1])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bA1Df-0001oA-1r
+ for linux-mtd@lists.infradead.org; Mon, 06 Jun 2016 20:33:55 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org, John Crispin <john@phrozen.org>,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH] MTD: lantiq: handle NO_XIP on cfi0001 flash
+Date: Mon,  6 Jun 2016 22:33:24 +0200
+Message-Id: <1465245204-13130-1-git-send-email-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +18,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 6 Jun 2016 22:59:03 +0300
-Aleksei Mamlin <mamlinav@gmail.com> wrote:
+From: John Crispin <john@phrozen.org>
 
-> On Mon, 6 Jun 2016 20:55:49 +0200
-> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
-> 
-> > On Mon,  6 Jun 2016 13:24:22 +0300
-> > Aleksei Mamlin <mamlinav@gmail.com> wrote:
-> >   
-> > > Add the full description of the Hynix H27UBG8T2BTR-BC NAND chip in the
-> > > nand_ids table so that we can later use the NAND ECC infos and ONFI timings
-> > > mode in controller drivers.  
-> > 
-> > Still hoping to get this series [1] merged in 4.8, but if that's
-> > not the case, I'll apply your patch.
-> > 
-> > BTW, that would be great if you could test it on your platforms.
-> >   
-> 
-> It seems that Hynix-specific initialization code can't handle H27UBG8T2BTR-BC
-> chip:
-> 
-> [    0.886153] nand: Could not find valid ONFI parameter page; aborting
-> [    0.892665] nand: device found, Manufacturer ID: 0xad, Chip ID: 0xd7
-> [    0.899025] nand: Hynix 1c03000.nand
-> [    0.902596] nand: bus width 8 instead 16 bit
-> [    0.906858] nand: No NAND device found
-> [    0.910620] sunxi_nand 1c03000.nand: failed to init nand chips
-> [    0.916528] sunxi_nand: probe of 1c03000.nand failed with error -22
+This uses the same device tree attribute as physmap_of.c
 
-Can you try this patch? It should fix the problem [1].
+Signed-off-by: John Crispin <john@phrozen.org>
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+---
+ drivers/mtd/maps/lantiq-flash.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-[1]http://code.bulix.org/6hjww1-100494
-
-
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index c8febb3..ed48d20 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -137,7 +137,10 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	if (!ltq_mtd->map)
+ 		return -ENOMEM;
+ 
+-	ltq_mtd->map->phys = ltq_mtd->res->start;
++	if (of_find_property(pdev->dev.of_node, "no-unaligned-direct-access", NULL))
++		ltq_mtd->map->phys = NO_XIP;
++	else
++		ltq_mtd->map->phys = ltq_mtd->res->start;
+ 	ltq_mtd->map->size = resource_size(ltq_mtd->res);
+ 	ltq_mtd->map->virt = devm_ioremap_resource(&pdev->dev, ltq_mtd->res);
+ 	if (IS_ERR(ltq_mtd->map->virt))
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.8.1
