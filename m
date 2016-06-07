@@ -1,20 +1,22 @@
-Received: from hauke-m.de ([5.39.93.123])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAKzX-0000qB-1e
- for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 17:40:40 +0000
-Subject: Re: [PATCH 2/6] MTD: xway: fix invalid operator
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bAMGh-00074S-Iu
+ for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 19:02:28 +0000
+Date: Tue, 7 Jun 2016 21:01:55 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: John Crispin <john@phrozen.org>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, David.Woodhouse@intel.com
+Subject: Re: [PATCH 0/6] MTD: xway: updates from OpenWrt/LEDE
+Message-ID: <20160607210155.4a2a45ca@bbrezillon>
+In-Reply-To: <2dc426aa-0591-490f-07b3-84e95396fcc0@hauke-m.de>
 References: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
- <1465161609-19303-3-git-send-email-hauke@hauke-m.de>
- <20160607112826.25daf140@bbrezillon>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- David.Woodhouse@intel.com, john@phrozen.org
-From: Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <b7697bbc-0f14-67da-fab9-2a93c67422da@hauke-m.de>
-Date: Tue, 7 Jun 2016 19:40:14 +0200
+ <20160607114824.5f96228a@bbrezillon>
+ <3f0aee29-c2c0-6e42-6f74-fac491438013@phrozen.org>
+ <2dc426aa-0591-490f-07b3-84e95396fcc0@hauke-m.de>
 MIME-Version: 1.0
-In-Reply-To: <20160607112826.25daf140@bbrezillon>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,41 +27,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/07/2016 11:28 AM, Boris Brezillon wrote:
-> On Sun,  5 Jun 2016 23:20:05 +0200
-> Hauke Mehrtens <hauke@hauke-m.de> wrote:
+On Tue, 7 Jun 2016 19:36:15 +0200
+Hauke Mehrtens <hauke@hauke-m.de> wrote:
+
+> On 06/07/2016 12:12 PM, John Crispin wrote:
+> > 
+> > 
+> > On 07/06/2016 11:48, Boris Brezillon wrote:  
+> >> On Sun,  5 Jun 2016 23:20:03 +0200
+> >> Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> >>  
+> >>> These patches are in OpenWrt for years now and should go upstream. They 
+> >>> are fixing some problems in the NAND driver.  
+> >>
+> >> Just had a closer look at the xway NAND controller driver, and it's
+> >> just a big pile of hacks :-(. I'll take those patches if nobody is
+> >> willing to maintain this driver, but honestly, I'd prefer a complete
+> >> rework of the driver.
+> >>  
+> > 
+> > Hi Boris,
+> > 
+> > it is indeed a horrific pile of doo doo. it has grown historically over
+> > a few years and then became sort of abandoned. i have been keeping it
+> > artificially alive inside openwrt as we have users with boards that have
+> > nand. i dont even own a lantiq board with nand, so patches were sort of
+> > merged on cruise control and with compile testing only.
+> > 
+> > the SoCs have 2 ways of controlling the nand core. the easy one is this,
+> > which is basically nothing more than a nand flash aware 16bit
+> > intel/hitachi bus interafec called EBU. There is a more advanced dma
+> > based way of doing nand I/O though.
+> > 
+> > ideally there should be a driver for the so called "high speed nand"
+> > interface which would allow us to nuke this one.  
 > 
->> From: John Crispin <john@phrozen.org>
->>
->> xway_read_byte should use a logic or and not an add operator when
->> working out the NAND address. The NAND address bits are used to
->> activate the pins to the NAND flash.
->>
->> Signed-off-by: John Crispin <john@phrozen.org>
->> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->> ---
->>  drivers/mtd/nand/xway_nand.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
->> index ccac19c..0ab6e83 100644
->> --- a/drivers/mtd/nand/xway_nand.c
->> +++ b/drivers/mtd/nand/xway_nand.c
->> @@ -134,7 +134,7 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
->>  	int ret;
->>  
->>  	spin_lock_irqsave(&ebu_lock, flags);
->> -	ret = ltq_r8((void __iomem *)(nandaddr + NAND_READ_DATA));
->> +	ret = ltq_r8((void __iomem *)(nandaddr | NAND_READ_DATA));
+> Hi,
 > 
-> It's doing exactly the same, isn't it? What's the rationale behind this
-> change?
+> I want to look into other drivers first before looking into the DMA nand
+> driver, it took me some time to understand how this driver works and the
+> controller is strange and also this driver is strange. I was wondering
+> how this went into mainline kernel. ;-)
 
-Yes that is correct, this is only a style change.
+I'm asking myself the same question, maybe the framework was not so 
 
-In the other places we are also using the bool operations and this
-address space is not a list of registers, but some address bits are used
-to activate or deactivate some pins and all data written to this address
-range is handled in the same way.
+> 
+> I could/would send a patch which converts this from some hack to the
+> generic platform driver to a normal platform driver, it will probably
+> add ~50 lines of code, but makes it a lot easier to understand.
 
-Hauke
+Yep, that would be a good start.
+
+> 
+> I will also try to make handling of the IO_ADDR_R look better with less
+> casts.
+
+Actually, I would get rid of ->IO_ADDR_X completely. and implement my
+own set of ->read/write_buf() functions using a private __iomem pointer.
+
+> 
+> What else do you not like about this driver when we still use this
+> hardware interface?
+
+Well, the first thing would be to properly separate the controller and
+chip concepts, and replacing all global variables by you own private
+chip structure that would be dynamically allocated at probe time.
+
+Also, I see that this driver is mixing platform specific initialization
+[1] and driver implementation, but I guess this is part of your first
+suggestion (moving to a real platform driver and getting rid of the
+platform_nand abstraction layer).
+
+Once you're there, you'll be able to add extra features, like DMA
+support.
+
+If you need an example, you can have a look at the sunxi_nand driver.
+
+Regards,
+
+Boris
+
+[1]http://lxr.free-electrons.com/source/drivers/mtd/nand/xway_nand.c#L163
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
