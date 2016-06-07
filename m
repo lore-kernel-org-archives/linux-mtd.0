@@ -1,32 +1,52 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bANqU-00078C-4Z
- for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 20:43:34 +0000
-Received: by mail-wm0-x243.google.com with SMTP id k184so20675690wme.2
- for <linux-mtd@lists.infradead.org>; Tue, 07 Jun 2016 13:43:09 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
-To: Michal Suchanek <hramrach@gmail.com>
-References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
- <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
- <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
- <20160506121431.GQ6292@sirena.org.uk>
- <77a22258-95ca-031a-825d-a9e98e30a162@gmail.com>
- <20160606174003.GE7510@sirena.org.uk>
- <a57adb90-0d80-186f-17d3-6fdf106bfb4a@gmail.com>
- <20160606230752.GM7510@sirena.org.uk>
- <fe0042f9-66c9-51fd-ca91-641c5cc25c40@gmail.com>
- <CAOMqctRmtCXurb8A05m2kw+9EjU+AWB8Uj0z1FPO792kGG=36Q@mail.gmail.com>
-Cc: Mark Brown <broonie@kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>,
- Han Xu <han.xu@nxp.com>, linux-spi <linux-spi@vger.kernel.org>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <9a3a147d-423a-695b-9c79-ccca2c02973b@gmail.com>
-Date: Tue, 7 Jun 2016 22:42:57 +0200
-MIME-Version: 1.0
-In-Reply-To: <CAOMqctRmtCXurb8A05m2kw+9EjU+AWB8Uj0z1FPO792kGG=36Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+Date: Tue, 7 Jun 2016 15:29:30 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-kernel@vger.kernel.org, Stas Sergeev <stsp@list.ru>, Matt Redfearn
+ <matt.redfearn@imgtec.com>, Joshua Kinard <kumba@gentoo.org>, Jiri Slaby
+ <jslaby@suse.com>, Bjorn Helgaas <bhelgaas@google.com>,
+ linux-pci@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+ dri-devel@lists.freedesktop.org, Markos Chandras
+ <markos.chandras@imgtec.com>, "Dmitry V. Levin" <ldv@altlinux.org>,
+ yu-cheng yu <yu-cheng.yu@intel.com>, James Hogan <james.hogan@imgtec.com>,
+ Brian Gerst <brgerst@gmail.com>, Johannes Berg <johannes@sipsolutions.net>,
+ Peter Zijlstra <peterz@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>,
+ Will Drewry <wad@chromium.org>, Nikolay Martynov <mar.kolya@gmail.com>,
+ Huacai Chen <chenhc@lemote.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>, Daniel Borkmann
+ <daniel@iogearbox.net>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>,
+ =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, James Cowgill
+ <James.Cowgill@imgtec.com>, linux-serial@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Ralf Baechle
+ <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>,
+ linux-media@vger.kernel.org, Adam Buchbinder <adam.buchbinder@gmail.com>,
+ QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, Qais Yousef
+ <qais.yousef@imgtec.com>, Jiang Liu <jiang.liu@linux.intel.com>, Mikko
+ Rapeli <mikko.rapeli@iki.fi>, Paul Gortmaker
+ <paul.gortmaker@windriver.com>, Denys Vlasenko <dvlasenk@redhat.com>,
+ linaro-mm-sig@lists.linaro.org, Brian Norris <computersforpeace@gmail.com>,
+ Hidehiro Kawai <hidehiro.kawai.ez@hitachi.com>, ath10k@lists.infradead.org,
+ linux-mips@linux-mips.org, "Luis R. Rodriguez" <mcgrof@do-not-panic.com>,
+ Andy Lutomirski <luto@amacapital.net>, Ingo Molnar <mingo@redhat.com>, Dave
+ Hansen <dave.hansen@linux.intel.com>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, Roland McGrath <roland@hack.frob.com>,
+ Paul Burton <paul.burton@imgtec.com>, Kalle Valo <kvalo@qca.qualcomm.com>,
+ Viresh Kumar <viresh.kumar@linaro.org>, Tony Wu <tung7970@gmail.com>,
+ Huaitong Han <huaitong.han@intel.com>, Sumit Semwal
+ <sumit.semwal@linaro.org>, Alexei Starovoitov <ast@kernel.org>, Juergen
+ Gross <jgross@suse.com>, Kees Cook <keescook@chromium.org>,
+ linux-wireless@vger.kernel.org, Jason Cooper <jason@lakedaemon.net>,
+ "David S. Miller" <davem@davemloft.net>, Oleg Nesterov <oleg@redhat.com>,
+ Andrea Gelmini <andrea.gelmini@gelma.net>, ath9k-devel@venema.h4ckr.net,
+ David Woodhouse <dwmw2@infradead.org>, netdev@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Marc Zyngier <marc.zyngier@arm.com>, Rabin
+ Vincent <rabin@rab.in>, "Maciej W. Rozycki" <macro@imgtec.com>, David Daney
+ <david.daney@cavium.com>
+Subject: Re: [PATCH] tree-wide: replace config_enabled() with IS_ENABLED()
+Message-Id: <20160607152930.71273719bdaea322814213d0@linux-foundation.org>
+In-Reply-To: <1465215656-20569-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1465215656-20569-1-git-send-email-yamada.masahiro@socionext.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,55 +57,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 07.06.2016 um 10:10 schrieb Michal Suchanek:
-> On 7 June 2016 at 08:03, Heiner Kallweit <hkallweit1@gmail.com> wrote:
->> Am 07.06.2016 um 01:07 schrieb Mark Brown:
->>> On Mon, Jun 06, 2016 at 08:53:10PM +0200, Heiner Kallweit wrote:
->>>> Am 06.06.2016 um 19:40 schrieb Mark Brown:
-> 
->>>> Well, we could reduce the max_transfer_size exposed by the driver by
->>>> the max length of a m25p80 read command in general.
->>>
->>> No!  Apart from anything else this would be a complete and total
->>> abstraction failure.  This is a driver for a SPI controller, not a
->>> driver for a flash controller, which means that it should not have flash
->>> specific hacks in it.
->>>
->>>> Then we might be too strict for other SPI devices, but this may
->>>> be acceptable as the current fsl-espi driver is usable with SPI NOR
->>>> devices only anyway.
->>>
->>> What makes you say this?  I'm guessing that the driver is just broken
->>> but it would be good to understand the specifics.
->>>
->> See fsl_espi_rw_trans():
->> In case of transfers > SPCOM_TRANLEN_MAX it loops and reads in
->> SPCOM_TRANLEN_MAX chunks whilst replacing bytes 2-4 of the
->> message buffer with the new start address to read from.
-> 
-> That's obviously bogus. Just reject anything too large and let the
-> upper layer deal with it.
-> 
-So far the upper layer wasn't able to deal with it. Now, with the recent
-change set initiated by you, we can clean up the driver a little.
-This was also the motivation to involve myself in getting this upper
-layer functionality into the mtd code.
+On Mon,  6 Jun 2016 21:20:56 +0900 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> Given m25p80 and fbtft would handle this can you use DMA to gather
-> buffers from multiple transfers (ie command and data) or does the
-> buffer have to be copied together for the transfer?
+> The use of config_enabled() against config options is ambiguous.
+> In practical terms, config_enabled() is equivalent to IS_BUILTIN(),
+> but the author might have used it for the meaning of IS_ENABLED().
+> Using IS_ENABLED(), IS_BUILTIN(), IS_MODULE() etc. makes the
+> intention clearer.
 > 
-The fsl-espi controller doesn't support DMA.
-The driver copies all transfers to a local buffer.
+> This commit replaces config_enabled() with IS_ENABLED() where
+> possible.  This commit is only touching bool config options.
+> 
+> I noticed two cases where config_enabled() is used against a tristate
+> option:
+> 
+>  - config_enabled(CONFIG_HWMON)
+>   [ drivers/net/wireless/ath/ath10k/thermal.c ]
+> 
+>  - config_enabled(CONFIG_BACKLIGHT_CLASS_DEVICE)
+>   [ drivers/gpu/drm/gma500/opregion.c ]
+> 
+> I did not touch them because they should be converted to IS_BUILTIN()
+> in order to keep the logic, but I was not sure it was the authors'
+> intention.
 
-There's just one nice feature of this controller: It supports a
-flash-read-optimized transfer mode, where you can configure:
-- first write x bytes
-- then read y bytes in either single or dual mode
-In tests with a modified driver the dual mode worked quite well.
-But that's something for a future extension.
+Well, we do want to be able to remove config_enabled() altogether if
+we're going to do this.  So please later send along a patch which makes
+a best-effort fix of the unclear usages and let's zap the thing.
 
-> Thanks
-> 
-> Michal
-> 
+If those fixes weren't quite correct then there will be a build error
+(drivers/net/wireless/ath/ath10k/thermal.c) or no change in behaviour
+(drivers/gpu/drm/gma500/opregion.c).
