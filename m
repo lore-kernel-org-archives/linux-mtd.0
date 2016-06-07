@@ -1,16 +1,28 @@
-Received: from mail-yw0-x244.google.com ([2607:f8b0:4002:c05::244])
+Received: from mail-oi0-f68.google.com ([209.85.218.68])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAHQR-0005cL-Vu
- for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 13:52:12 +0000
-Received: by mail-yw0-x244.google.com with SMTP id l126so22945708ywe.3
- for <linux-mtd@lists.infradead.org>; Tue, 07 Jun 2016 06:51:51 -0700 (PDT)
+ id 1bAHZI-0004jW-4w
+ for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 14:01:23 +0000
+Received: by mail-oi0-f68.google.com with SMTP id k63so4484522oib.2
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Jun 2016 07:00:59 -0700 (PDT)
+Date: Tue, 7 Jun 2016 09:00:57 -0500
+From: Rob Herring <robh@kernel.org>
+To: Marek Vasut <marex@denx.de>
+Cc: linux-mtd@lists.infradead.org,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>, Vignesh R <vigneshr@ti.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ devicetree@vger.kernel.org
+Subject: Re: [PATCH V8 1/2] mtd: spi-nor: Bindings for Cadence Quad SPI Flash
+ Controller driver
+Message-ID: <20160607140057.GA20256@rob-hp-laptop>
+References: <1465000774-7762-1-git-send-email-marex@denx.de>
 MIME-Version: 1.0
-From: Jeff Harris <jefftharris@gmail.com>
-Date: Tue, 7 Jun 2016 09:51:30 -0400
-Message-ID: <CAGMfbUNqs4prnok7P8xMVs3y18=mJcS9spovOPX8djRDfJKxJw@mail.gmail.com>
-Subject: UBI bitflip maintenance
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1465000774-7762-1-git-send-email-marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +32,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am looking to add a maintenance activity to our product to detect
-correctable NAND bitflips and process them appropriately before they
-become errors.  In looking at the MTD and Linux mailing lists, there
-was work done by Richard Weinberger on this feature in March and
-November of 2015.  Was the work completed?
+On Sat, Jun 04, 2016 at 02:39:33AM +0200, Marek Vasut wrote:
+> From: Graham Moore <grmoore@opensource.altera.com>
+> 
+> Add binding document for the Cadence QSPI controller.
+> 
+> Signed-off-by: Graham Moore <grmoore@opensource.altera.com>
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> Cc: Alan Tull <atull@opensource.altera.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Dinh Nguyen <dinguyen@opensource.altera.com>
+> Cc: Graham Moore <grmoore@opensource.altera.com>
+> Cc: Vignesh R <vigneshr@ti.com>
+> Cc: Yves Vandervennet <yvanderv@opensource.altera.com>
+> Cc: devicetree@vger.kernel.org
+> ---
+> V2: Add cdns prefix to driver-specific bindings.
+> V3: Use existing property "is-decoded-cs" instead of creating a
+>     duplicate, "ext-decoder". Timing parameters are in nanoseconds,
+>     not master reference clocks. Remove bus-num completely.
+> V4: Add new properties fifo-width and trigger-address
+> V7: - Prefix all of the Cadence-specific properties with cdns prefix,
+>       those are in particular "cdns,is-decoded-cs", "cdns,fifo-depth",
+>       "cdns,fifo-width", "cdns,trigger-address".
+>     - Drop bogus properties which were not used and were incorrect.
+> V8: Align lines to 80 chars.
+> ---
+>  .../devicetree/bindings/mtd/cadence-quadspi.txt    | 56 ++++++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
 
-I have been using Richard's work to develop a method which seems to be
-working, though testing is in progress.  I've added an ioctl to check
-bitflips on an individual PEB index.  An application will periodically
-call the ioctl for each of the PEBs in a partition.
-
-The ioctl performs a read on the whole PEB and looks for correctable
-or uncorrectable ECC conditions.  If there is a bitflip, the
-ubi_wl_entry is retrieved from the ubi->lookuptbl at the PEB index.
-Following Richard's work, the ubi_wl_entry is examined to determine
-its state and how to repair it.
-
-If there is no entry, the PEB, which is assumed to be corrupt or
-otherwise bad, is erased so that on the next attach, it may become
-valid.  If the PEB is in the free list, the PEB is removed from the
-list, and an erase is scheduled.  Otherwise, the logic is similar to
-that in ubi_wl_scrub_peb.  We do not use fastmap, so I haven't looked
-at that case.
-
-Some status will need to be passed back to the user application to
-prevent it from repeatedly trying to repair entries which have truly
-gone bad and can not be repaired.
-
-Does this approach of using the PEB index alleviate some of the
-concerns Richard noted regarding race conditions with nodes becoming
-bad while work is being scheduled?  An erase may be scheduled, but
-with the node no longer in the free list, it shouldn't be used by any
-intermediate operation, right?
-
-Thanks,
-Jeff
+Acked-by: Rob Herring <robh@kernel.org>
