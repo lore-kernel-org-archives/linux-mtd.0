@@ -1,19 +1,17 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bADPF-00040s-IN
- for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 09:34:42 +0000
-Date: Tue, 7 Jun 2016 11:34:09 +0200
+ id 1bADd2-0002Dm-OE
+ for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 09:48:58 +0000
+Date: Tue, 7 Jun 2016 11:48:24 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Hauke Mehrtens <hauke@hauke-m.de>
 Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
  David.Woodhouse@intel.com, john@phrozen.org
-Subject: Re: [PATCH 5/6] MTD: xway: add missing write_buf and read_buf to
- nand driver
-Message-ID: <20160607113409.5ef102dd@bbrezillon>
-In-Reply-To: <1465161609-19303-6-git-send-email-hauke@hauke-m.de>
+Subject: Re: [PATCH 0/6] MTD: xway: updates from OpenWrt/LEDE
+Message-ID: <20160607114824.5f96228a@bbrezillon>
+In-Reply-To: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
 References: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
- <1465161609-19303-6-git-send-email-hauke@hauke-m.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,69 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun,  5 Jun 2016 23:20:08 +0200
+On Sun,  5 Jun 2016 23:20:03 +0200
 Hauke Mehrtens <hauke@hauke-m.de> wrote:
 
-> From: John Crispin <john@phrozen.org>
+> These patches are in OpenWrt for years now and should go upstream. They 
+> are fixing some problems in the NAND driver.
+
+Just had a closer look at the xway NAND controller driver, and it's
+just a big pile of hacks :-(. I'll take those patches if nobody is
+willing to maintain this driver, but honestly, I'd prefer a complete
+rework of the driver.
+
 > 
-> Signed-off-by: John Crispin <john@phrozen.org>
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> ---
->  drivers/mtd/nand/xway_nand.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
+> Hauke Mehrtens (1):
+>   MTD: xway: add some more documentation
 > 
-> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-> index d44e00d..bc4018e 100644
-> --- a/drivers/mtd/nand/xway_nand.c
-> +++ b/drivers/mtd/nand/xway_nand.c
-> @@ -146,6 +146,32 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
->  	return ret;
->  }
->  
-> +static void xway_read_buf(struct mtd_info *mtd, u_char *buf, int len)
-> +{
-> +	struct nand_chip *this = mtd->priv;
+> John Crispin (5):
+>   MTD: xway: fix invalid operator
+>   MTD: xway: the latched command should be persistent
+>   MTD: xway: remove endless loop
+>   MTD: xway: add missing write_buf and read_buf to nand driver
+>   MTD: xway: fix nand locking
+> 
+>  drivers/mtd/nand/xway_nand.c | 67 +++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 51 insertions(+), 16 deletions(-)
+> 
 
-You should now use mtd_to_nand(). Please rebase your work on top of
-nand/next [1], and I'm pretty sure you'll get a NULL pointer.
 
-> +	unsigned long nandaddr = (unsigned long) this->IO_ADDR_R;
-> +	unsigned long flags;
-> +	int i;
-> +
-> +	spin_lock_irqsave(&ebu_lock, flags);
-> +	for (i = 0; i < len; i++)
-> +		buf[i] = ltq_r8((void __iomem *)(nandaddr | NAND_READ_DATA));
-> +	spin_unlock_irqrestore(&ebu_lock, flags);
-> +}
-> +
-> +static void xway_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
-> +{
-> +	struct nand_chip *this = mtd->priv;
-> +	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
-> +	unsigned long flags;
-> +	int i;
-> +
-> +	spin_lock_irqsave(&ebu_lock, flags);
-> +	for (i = 0; i < len; i++)
-> +		ltq_w8(buf[i], (void __iomem *)(nandaddr | NAND_WRITE_DATA));
-> +	spin_unlock_irqrestore(&ebu_lock, flags);
-> +}
-> +
->  static int xway_nand_probe(struct platform_device *pdev)
->  {
->  	struct nand_chip *this = platform_get_drvdata(pdev);
-> @@ -187,6 +213,8 @@ static struct platform_nand_data xway_nand_data = {
->  		.dev_ready	= xway_dev_ready,
->  		.select_chip	= xway_select_chip,
->  		.read_byte	= xway_read_byte,
-> +		.read_buf	= xway_read_buf,
-> +		.write_buf	= xway_write_buf,
->  	}
->  };
->  
-
-[1]https://github.com/linux-nand/linux/tree/nand/next
 
 -- 
 Boris Brezillon, Free Electrons
