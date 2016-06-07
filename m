@@ -1,21 +1,23 @@
-Received: from nbd.name ([2a01:4f8:131:30e2::2])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bA9N4-0004Cp-A2
- for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 05:16:11 +0000
-Subject: Re: [PATCH v2] MTD: lantiq: handle NO_XIP on cfi0001 flash
-To: Jonas Gorski <jogo@openwrt.org>, Hauke Mehrtens <hauke@hauke-m.de>
-References: <1465245341-16026-1-git-send-email-hauke@hauke-m.de>
- <CAOiHx=kit1Fz2hTmyxStzCfGDDpc4vcx06E2JVmwve8tTWo7Gg@mail.gmail.com>
- <910195ee-2b46-bb69-472c-15c6321e9e5d@hauke-m.de>
- <CAOiHx=mbRCU_Wh+vaT+RZcjJWTvBautp9eAJT_Gv7JyfVfQ8Yw@mail.gmail.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Matti Laakso <malaakso@elisanet.fi>
-From: John Crispin <john@phrozen.org>
-Message-ID: <008252fa-88a8-1187-e898-cd233180d9ab@phrozen.org>
-Date: Tue, 7 Jun 2016 07:15:42 +0200
+Date: Tue, 7 Jun 2016 07:48:09 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Aleksei Mamlin <mamlinav@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 5/7] mtd: nand: Add Hynix H27UBG8T2BTR-BC to nand_ids table
+Message-ID: <20160607074809.5c18b4b2@bbrezillon>
+In-Reply-To: <20160607000645.5d1f428b40406a5db7cbe285@gmail.com>
+References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
+ <1465208664-9366-6-git-send-email-mamlinav@gmail.com>
+ <20160606205549.1ecd6fdb@bbrezillon>
+ <20160606225903.264abc01647eb1528cc226bd@gmail.com>
+ <20160606223138.3c2032ee@bbrezillon>
+ <20160607000645.5d1f428b40406a5db7cbe285@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOiHx=mbRCU_Wh+vaT+RZcjJWTvBautp9eAJT_Gv7JyfVfQ8Yw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,64 +28,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 7 Jun 2016 00:06:45 +0300
+Aleksei Mamlin <mamlinav@gmail.com> wrote:
 
-
-On 06/06/2016 23:54, Jonas Gorski wrote:
-> On 6 June 2016 at 23:38, Hauke Mehrtens <hauke@hauke-m.de> wrote:
->> On 06/06/2016 11:10 PM, Jonas Gorski wrote:
->>> Hi,
->>>
->>> On 6 June 2016 at 22:35, Hauke Mehrtens <hauke@hauke-m.de> wrote:
->>>> From: John Crispin <john@phrozen.org>
->>>>
->>>> This uses the same device tree attribute as physmap_of.c
->>>>
->>>> Signed-off-by: John Crispin <john@phrozen.org>
->>>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->>>> ---
->>>>  drivers/mtd/maps/lantiq-flash.c | 6 +++++-
->>>>  1 file changed, 5 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
->>>> index c8febb3..88fc6d9 100644
->>>> --- a/drivers/mtd/maps/lantiq-flash.c
->>>> +++ b/drivers/mtd/maps/lantiq-flash.c
->>>> @@ -137,7 +137,11 @@ ltq_mtd_probe(struct platform_device *pdev)
->>>>         if (!ltq_mtd->map)
->>>>                 return -ENOMEM;
->>>>
->>>> -       ltq_mtd->map->phys = ltq_mtd->res->start;
->>>> +       if (of_find_property(pdev->dev.of_node, "no-unaligned-direct-access",
->>>> +                            NULL))
->>>> +               ltq_mtd->map->phys = NO_XIP;
->>>
->>> This does not what you think it does; i.e. preventing unaligned io
->>> memory accesses. All it's used for is in two drivers
->>> (cfi_cmdset_0001.c, lpddr_cmds.c) as a check whether to populate
->>> _point/_unpoint. But it does not prevent the map_read/map_write
->>> accessors from doing memcpy_{from,to}_io() with unaligned addresses,
->>> which at least on MIPS results in unaligned accesses with LWL/LWR.
->>> Which is what I assume you want to prevent.
->>
->> Hi Jonas,
->>
->> I want to upstream the patch from OpenWrt:
->> https://dev.openwrt.org/changeset/35992
->>
->> I want to deactivate the execute-in-place (XIP) which this property does.
+> On Mon, 6 Jun 2016 22:31:38 +0200
+> Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 > 
-> I understand that, but I wanted to point out that setting NO_XIP does
-> neither prevent XIP*, nor does it prevent unaligned direct accesses.
-> Which are also IMHO two different concepts.
+> > On Mon, 6 Jun 2016 22:59:03 +0300
+> > Aleksei Mamlin <mamlinav@gmail.com> wrote:
+> >   
+> > > On Mon, 6 Jun 2016 20:55:49 +0200
+> > > Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> > >   
+> > > > On Mon,  6 Jun 2016 13:24:22 +0300
+> > > > Aleksei Mamlin <mamlinav@gmail.com> wrote:
+> > > >     
+> > > > > Add the full description of the Hynix H27UBG8T2BTR-BC NAND chip in the
+> > > > > nand_ids table so that we can later use the NAND ECC infos and ONFI timings
+> > > > > mode in controller drivers.    
+> > > > 
+> > > > Still hoping to get this series [1] merged in 4.8, but if that's
+> > > > not the case, I'll apply your patch.
+> > > > 
+> > > > BTW, that would be great if you could test it on your platforms.
+> > > >     
+> > > 
+> > > It seems that Hynix-specific initialization code can't handle H27UBG8T2BTR-BC
+> > > chip:
+> > > 
+> > > [    0.886153] nand: Could not find valid ONFI parameter page; aborting
+> > > [    0.892665] nand: device found, Manufacturer ID: 0xad, Chip ID: 0xd7
+> > > [    0.899025] nand: Hynix 1c03000.nand
+> > > [    0.902596] nand: bus width 8 instead 16 bit
+> > > [    0.906858] nand: No NAND device found
+> > > [    0.910620] sunxi_nand 1c03000.nand: failed to init nand chips
+> > > [    0.916528] sunxi_nand: probe of 1c03000.nand failed with error -22  
+> > 
+> > Can you try this patch? It should fix the problem [1].
+> > 
+> > [1]http://code.bulix.org/6hjww1-100494
+> >   
 > 
-> NO_XIP is checked at exactly one place, by mtd_is_linear()[1] (and
-> only if CONFIG_MTD_COMPLEX_MAPPINGS is enabled). And mtd_is_linear()
-> is only used by the two mentioned drivers, nothing more. Unless I'm
-> overlooking something, this patch has no obvservebal effect, as the
-> mtd code doesn't actually do anything meaningful with NO_XIP.
+> Yes, it fixes problem. What about ONFI parameter page? Should it be ignored?
+
+It should be ignored: your NAND is not 'ONFI compatible', the datasheet
+just says that it supports the' ONFI command set', which is not the
+same :).
+The trace you're seeing here is just notifying that the core failed to
+detect an ONFI NAND, which is expected in your case.
+
+> [    0.886068] nand: Could not find valid ONFI parameter page; aborting
+> [    0.892571] nand: device found, Manufacturer ID: 0xad, Chip ID: 0xd7
+> [    0.898917] nand: Hynix NAND 4GiB 3,3V 8-bit
+> [    0.903198] nand: 4096 MiB, MLC, erase size: 2048 KiB, page size: 8192, OOB size: 640
+> [    0.911908] Bad block table found at page 524032, version 0x01
+> [    0.918534] Bad block table found at page 523776, version 0x01
+> [    0.972112] 5 ofpart partitions found on MTD device 1c03000.nand
+> [    0.978116] Creating 5 MTD partitions on "1c03000.nand":
+> [    0.983477] 0x000000000000-0x000000200000 : "boot0"
+> [    0.988803] 0x000000200000-0x000000400000 : "boot0-rescue"
+> [    0.994692] 0x000000400000-0x000000600000 : "uboot"
+> [    0.999944] 0x000000600000-0x000000800000 : "uboot-rescue"
+> [    1.005763] 0x000000800000-0x000100000000 : "main"
+> 
+> > 
+> > -- 
+> > Boris Brezillon, Free Electrons
+> > Embedded Linux and Kernel engineering
+> > http://free-electrons.com  
+> 
 > 
 
-this patch makes the chip use the fixup_use_point() code. adding matti
-to the loop, this patch was originally written by him if i am not mistaken
 
-	John
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
