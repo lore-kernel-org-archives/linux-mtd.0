@@ -1,23 +1,32 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAMP1-0005eo-Dm
- for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 19:11:04 +0000
-Date: Tue, 7 Jun 2016 21:10:41 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: John Crispin <john@phrozen.org>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, David.Woodhouse@intel.com
-Subject: Re: [PATCH 0/6] MTD: xway: updates from OpenWrt/LEDE
-Message-ID: <20160607211041.11464219@bbrezillon>
-In-Reply-To: <20160607210155.4a2a45ca@bbrezillon>
-References: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
- <20160607114824.5f96228a@bbrezillon>
- <3f0aee29-c2c0-6e42-6f74-fac491438013@phrozen.org>
- <2dc426aa-0591-490f-07b3-84e95396fcc0@hauke-m.de>
- <20160607210155.4a2a45ca@bbrezillon>
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bANqU-00078C-4Z
+ for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 20:43:34 +0000
+Received: by mail-wm0-x243.google.com with SMTP id k184so20675690wme.2
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Jun 2016 13:43:09 -0700 (PDT)
+Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
+To: Michal Suchanek <hramrach@gmail.com>
+References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
+ <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
+ <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
+ <20160506121431.GQ6292@sirena.org.uk>
+ <77a22258-95ca-031a-825d-a9e98e30a162@gmail.com>
+ <20160606174003.GE7510@sirena.org.uk>
+ <a57adb90-0d80-186f-17d3-6fdf106bfb4a@gmail.com>
+ <20160606230752.GM7510@sirena.org.uk>
+ <fe0042f9-66c9-51fd-ca91-641c5cc25c40@gmail.com>
+ <CAOMqctRmtCXurb8A05m2kw+9EjU+AWB8Uj0z1FPO792kGG=36Q@mail.gmail.com>
+Cc: Mark Brown <broonie@kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>,
+ Han Xu <han.xu@nxp.com>, linux-spi <linux-spi@vger.kernel.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <9a3a147d-423a-695b-9c79-ccca2c02973b@gmail.com>
+Date: Tue, 7 Jun 2016 22:42:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAOMqctRmtCXurb8A05m2kw+9EjU+AWB8Uj0z1FPO792kGG=36Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,90 +37,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 7 Jun 2016 21:01:55 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+Am 07.06.2016 um 10:10 schrieb Michal Suchanek:
+> On 7 June 2016 at 08:03, Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>> Am 07.06.2016 um 01:07 schrieb Mark Brown:
+>>> On Mon, Jun 06, 2016 at 08:53:10PM +0200, Heiner Kallweit wrote:
+>>>> Am 06.06.2016 um 19:40 schrieb Mark Brown:
+> 
+>>>> Well, we could reduce the max_transfer_size exposed by the driver by
+>>>> the max length of a m25p80 read command in general.
+>>>
+>>> No!  Apart from anything else this would be a complete and total
+>>> abstraction failure.  This is a driver for a SPI controller, not a
+>>> driver for a flash controller, which means that it should not have flash
+>>> specific hacks in it.
+>>>
+>>>> Then we might be too strict for other SPI devices, but this may
+>>>> be acceptable as the current fsl-espi driver is usable with SPI NOR
+>>>> devices only anyway.
+>>>
+>>> What makes you say this?  I'm guessing that the driver is just broken
+>>> but it would be good to understand the specifics.
+>>>
+>> See fsl_espi_rw_trans():
+>> In case of transfers > SPCOM_TRANLEN_MAX it loops and reads in
+>> SPCOM_TRANLEN_MAX chunks whilst replacing bytes 2-4 of the
+>> message buffer with the new start address to read from.
+> 
+> That's obviously bogus. Just reject anything too large and let the
+> upper layer deal with it.
+> 
+So far the upper layer wasn't able to deal with it. Now, with the recent
+change set initiated by you, we can clean up the driver a little.
+This was also the motivation to involve myself in getting this upper
+layer functionality into the mtd code.
 
-> On Tue, 7 Jun 2016 19:36:15 +0200
-> Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> Given m25p80 and fbtft would handle this can you use DMA to gather
+> buffers from multiple transfers (ie command and data) or does the
+> buffer have to be copied together for the transfer?
 > 
-> > On 06/07/2016 12:12 PM, John Crispin wrote:  
-> > > 
-> > > 
-> > > On 07/06/2016 11:48, Boris Brezillon wrote:    
-> > >> On Sun,  5 Jun 2016 23:20:03 +0200
-> > >> Hauke Mehrtens <hauke@hauke-m.de> wrote:
-> > >>    
-> > >>> These patches are in OpenWrt for years now and should go upstream. They 
-> > >>> are fixing some problems in the NAND driver.    
-> > >>
-> > >> Just had a closer look at the xway NAND controller driver, and it's
-> > >> just a big pile of hacks :-(. I'll take those patches if nobody is
-> > >> willing to maintain this driver, but honestly, I'd prefer a complete
-> > >> rework of the driver.
-> > >>    
-> > > 
-> > > Hi Boris,
-> > > 
-> > > it is indeed a horrific pile of doo doo. it has grown historically over
-> > > a few years and then became sort of abandoned. i have been keeping it
-> > > artificially alive inside openwrt as we have users with boards that have
-> > > nand. i dont even own a lantiq board with nand, so patches were sort of
-> > > merged on cruise control and with compile testing only.
-> > > 
-> > > the SoCs have 2 ways of controlling the nand core. the easy one is this,
-> > > which is basically nothing more than a nand flash aware 16bit
-> > > intel/hitachi bus interafec called EBU. There is a more advanced dma
-> > > based way of doing nand I/O though.
-> > > 
-> > > ideally there should be a driver for the so called "high speed nand"
-> > > interface which would allow us to nuke this one.    
-> > 
-> > Hi,
-> > 
-> > I want to look into other drivers first before looking into the DMA nand
-> > driver, it took me some time to understand how this driver works and the
-> > controller is strange and also this driver is strange. I was wondering
-> > how this went into mainline kernel. ;-)  
-> 
-> I'm asking myself the same question, maybe the framework was not so 
-> 
-> > 
-> > I could/would send a patch which converts this from some hack to the
-> > generic platform driver to a normal platform driver, it will probably
-> > add ~50 lines of code, but makes it a lot easier to understand.  
-> 
-> Yep, that would be a good start.
-> 
-> > 
-> > I will also try to make handling of the IO_ADDR_R look better with less
-> > casts.  
-> 
-> Actually, I would get rid of ->IO_ADDR_X completely. and implement my
-> own set of ->read/write_buf() functions using a private __iomem pointer.
-> 
-> > 
-> > What else do you not like about this driver when we still use this
-> > hardware interface?  
-> 
-> Well, the first thing would be to properly separate the controller and
-> chip concepts, and replacing all global variables by you own private
-> chip structure that would be dynamically allocated at probe time.
-> 
-> Also, I see that this driver is mixing platform specific initialization
-> [1] and driver implementation, but I guess this is part of your first
-> suggestion (moving to a real platform driver and getting rid of the
-> platform_nand abstraction layer).
-> 
-> Once you're there, you'll be able to add extra features, like DMA
-> support.
-> 
-> If you need an example, you can have a look at the sunxi_nand driver.
-> 
+The fsl-espi controller doesn't support DMA.
+The driver copies all transfers to a local buffer.
 
-BTW, thanks for volunteering for this rework. Let me know if you need
-help.
+There's just one nice feature of this controller: It supports a
+flash-read-optimized transfer mode, where you can configure:
+- first write x bytes
+- then read y bytes in either single or dual mode
+In tests with a modified driver the dual mode worked quite well.
+But that's something for a future extension.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> Thanks
+> 
+> Michal
+> 
