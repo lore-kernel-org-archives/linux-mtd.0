@@ -1,20 +1,22 @@
-Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+Received: from nbd.name ([2a01:4f8:131:30e2::2])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bA67o-00055t-Hb
- for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 01:48:13 +0000
-Received: by mail-oi0-x22a.google.com with SMTP id p204so59034859oih.3
- for <linux-mtd@lists.infradead.org>; Mon, 06 Jun 2016 18:47:51 -0700 (PDT)
+ id 1bA9N4-0004Cp-A2
+ for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 05:16:11 +0000
+Subject: Re: [PATCH v2] MTD: lantiq: handle NO_XIP on cfi0001 flash
+To: Jonas Gorski <jogo@openwrt.org>, Hauke Mehrtens <hauke@hauke-m.de>
+References: <1465245341-16026-1-git-send-email-hauke@hauke-m.de>
+ <CAOiHx=kit1Fz2hTmyxStzCfGDDpc4vcx06E2JVmwve8tTWo7Gg@mail.gmail.com>
+ <910195ee-2b46-bb69-472c-15c6321e9e5d@hauke-m.de>
+ <CAOiHx=mbRCU_Wh+vaT+RZcjJWTvBautp9eAJT_Gv7JyfVfQ8Yw@mail.gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Matti Laakso <malaakso@elisanet.fi>
+From: John Crispin <john@phrozen.org>
+Message-ID: <008252fa-88a8-1187-e898-cd233180d9ab@phrozen.org>
+Date: Tue, 7 Jun 2016 07:15:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <DM2PR0801MB092606DB85030B4F62A0BBF6FF5D0@DM2PR0801MB0926.namprd08.prod.outlook.com>
-References: <DM2PR0801MB092606DB85030B4F62A0BBF6FF5D0@DM2PR0801MB0926.namprd08.prod.outlook.com>
-From: Mychaela Falconia <mychaela.falconia@gmail.com>
-Date: Mon, 6 Jun 2016 17:47:50 -0800
-Message-ID: <CA+uuBqb5K74aajPGWrDdW=cFPn0Ctuk5oeve1_bhv49Z60M7zg@mail.gmail.com>
-Subject: Re: Temporarily remounting rootfs as rw leads to kernel panic on
- reboot
-To: David Olson <Dave.Olson@welchallyn.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAOiHx=mbRCU_Wh+vaT+RZcjJWTvBautp9eAJT_Gv7JyfVfQ8Yw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +26,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> UBI: smallest flash I/O unit:    2048
-> UBI: sub-page size:              512
-> UBI: VID header offset:          2048 (aligned 2048)
-> UBI: data offset:                4096
 
-First sign of inconsistency: your UBI reports here that the underlying
-NAND has subpages, yet it doesn't use them to put the EC and VID
-headers in the same page, i.e., your VID offset is equal to the full
-page size and the data offset is 2x the full page size. Perhaps when
-you created the UBI data structures in your flash "in vitro" with
-ubiformat or ubinize you forgot to tell those tools your 512 byte
-subpage size?
 
-> UBI error: ubi_io_read: error -74 (ECC error) while reading 126976 bytes
-> from PEB 3:4096, read 126976 bytes
-> UBI error: ubi_io_read: error -74 (ECC error) while reading 126976 bytes
-> from PEB 4:4096, read 126976 bytes
-> UBI error: ubi_io_read: error -74 (ECC error) while reading 11 bytes from
-> PEB 10:10240, read 11 bytes
-> UBIFS error (pid 1): ubifs_leb_read: reading 11 bytes from LEB 8:6144
-> failed, error -74
+On 06/06/2016 23:54, Jonas Gorski wrote:
+> On 6 June 2016 at 23:38, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+>> On 06/06/2016 11:10 PM, Jonas Gorski wrote:
+>>> Hi,
+>>>
+>>> On 6 June 2016 at 22:35, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+>>>> From: John Crispin <john@phrozen.org>
+>>>>
+>>>> This uses the same device tree attribute as physmap_of.c
+>>>>
+>>>> Signed-off-by: John Crispin <john@phrozen.org>
+>>>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>>>> ---
+>>>>  drivers/mtd/maps/lantiq-flash.c | 6 +++++-
+>>>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+>>>> index c8febb3..88fc6d9 100644
+>>>> --- a/drivers/mtd/maps/lantiq-flash.c
+>>>> +++ b/drivers/mtd/maps/lantiq-flash.c
+>>>> @@ -137,7 +137,11 @@ ltq_mtd_probe(struct platform_device *pdev)
+>>>>         if (!ltq_mtd->map)
+>>>>                 return -ENOMEM;
+>>>>
+>>>> -       ltq_mtd->map->phys = ltq_mtd->res->start;
+>>>> +       if (of_find_property(pdev->dev.of_node, "no-unaligned-direct-access",
+>>>> +                            NULL))
+>>>> +               ltq_mtd->map->phys = NO_XIP;
+>>>
+>>> This does not what you think it does; i.e. preventing unaligned io
+>>> memory accesses. All it's used for is in two drivers
+>>> (cfi_cmdset_0001.c, lpddr_cmds.c) as a check whether to populate
+>>> _point/_unpoint. But it does not prevent the map_read/map_write
+>>> accessors from doing memcpy_{from,to}_io() with unaligned addresses,
+>>> which at least on MIPS results in unaligned accesses with LWL/LWR.
+>>> Which is what I assume you want to prevent.
+>>
+>> Hi Jonas,
+>>
+>> I want to upstream the patch from OpenWrt:
+>> https://dev.openwrt.org/changeset/35992
+>>
+>> I want to deactivate the execute-in-place (XIP) which this property does.
+> 
+> I understand that, but I wanted to point out that setting NO_XIP does
+> neither prevent XIP*, nor does it prevent unaligned direct accesses.
+> Which are also IMHO two different concepts.
+> 
+> NO_XIP is checked at exactly one place, by mtd_is_linear()[1] (and
+> only if CONFIG_MTD_COMPLEX_MAPPINGS is enabled). And mtd_is_linear()
+> is only used by the two mentioned drivers, nothing more. Unless I'm
+> overlooking something, this patch has no obvservebal effect, as the
+> mtd code doesn't actually do anything meaningful with NO_XIP.
+> 
 
-Let me guess, the flash was written in production with a production
-line programmer and not with ubiformat, was it? If you use a "dumb"
-(non-UBI-aware) flasher to program your flash at the factory and then
-try to mount something read-write, the following nasty problem occurs:
-suppose some block has empty pages at the end, i.e., pages containing
-all 0xFF bytes. UBIFS will assume that these NAND pages are truly
-blank, i.e., never written to since they've been erased, and it will
-write to them. But each NAND flash page must only be written once
-(subpage writes aside, if and when they are allowed), and if you used
-a non-UBI-aware dumb flasher, those pages may have already been
-written to - even if they contain all 0xFF bytes. With some hardware
-ECC schemes writing all 0xFF bytes to a page is NOT the same as
-leaving it alone after the block erase, and when UBIFS later writes to
-that same page again (on a read-write mount), the result is a
-corrupted page that returns hard ECC errors when read. It seem to me
-like you are hitting this very problem.
+this patch makes the chip use the fixup_use_point() code. adding matti
+to the loop, this patch was originally written by him if i am not mistaken
 
-The solution is to write your NAND with a tool like ubiformat that
-refrains from writing the trailing pages of each block whenever they
-contain all 0xFF bytes. And while you are at it, you may want to fix
-your image generation so that the subpage setting agrees with what the
-kernel sees.
-
-HTH,
-M~
+	John
