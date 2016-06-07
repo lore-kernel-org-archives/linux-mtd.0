@@ -1,18 +1,18 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bADJi-0001Ph-EI
- for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 09:28:58 +0000
-Date: Tue, 7 Jun 2016 11:28:26 +0200
+ id 1bADLY-000381-Pr
+ for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 09:30:56 +0000
+Date: Tue, 7 Jun 2016 11:30:21 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Hauke Mehrtens <hauke@hauke-m.de>
 Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
  David.Woodhouse@intel.com, john@phrozen.org
-Subject: Re: [PATCH 2/6] MTD: xway: fix invalid operator
-Message-ID: <20160607112826.25daf140@bbrezillon>
-In-Reply-To: <1465161609-19303-3-git-send-email-hauke@hauke-m.de>
+Subject: Re: [PATCH 3/6] MTD: xway: the latched command should be persistent
+Message-ID: <20160607113021.00998d8b@bbrezillon>
+In-Reply-To: <1465161609-19303-4-git-send-email-hauke@hauke-m.de>
 References: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
- <1465161609-19303-3-git-send-email-hauke@hauke-m.de>
+ <1465161609-19303-4-git-send-email-hauke@hauke-m.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,38 +25,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun,  5 Jun 2016 23:20:05 +0200
+On Sun,  5 Jun 2016 23:20:06 +0200
 Hauke Mehrtens <hauke@hauke-m.de> wrote:
 
 > From: John Crispin <john@phrozen.org>
 > 
-> xway_read_byte should use a logic or and not an add operator when
-> working out the NAND address. The NAND address bits are used to
-> activate the pins to the NAND flash.
+> If they are not persistent a different address will be used and the
+> controller will deactivate some pins.
 > 
 > Signed-off-by: John Crispin <john@phrozen.org>
 > Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 > ---
->  drivers/mtd/nand/xway_nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/nand/xway_nand.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-> index ccac19c..0ab6e83 100644
+> index 0ab6e83..79fecc8 100644
 > --- a/drivers/mtd/nand/xway_nand.c
 > +++ b/drivers/mtd/nand/xway_nand.c
-> @@ -134,7 +134,7 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
->  	int ret;
+> @@ -64,6 +64,8 @@
+>  #define NAND_CON_CSMUX		(1 << 1)
+>  #define NAND_CON_NANDM		1
 >  
->  	spin_lock_irqsave(&ebu_lock, flags);
-> -	ret = ltq_r8((void __iomem *)(nandaddr + NAND_READ_DATA));
-> +	ret = ltq_r8((void __iomem *)(nandaddr | NAND_READ_DATA));
+> +static u32 xway_latchcmd;
 
-It's doing exactly the same, isn't it? What's the rationale behind this
-change?
+Please avoid using global variables. This field should be part of your
+private nand_chip struct.
 
->  	spin_unlock_irqrestore(&ebu_lock, flags);
+> +
+>  static void xway_reset_chip(struct nand_chip *chip)
+>  {
+>  	unsigned long nandaddr = (unsigned long) chip->IO_ADDR_W;
+> @@ -104,17 +106,15 @@ static void xway_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>  	unsigned long flags;
 >  
->  	return ret;
+>  	if (ctrl & NAND_CTRL_CHANGE) {
+> -		nandaddr &= ~(NAND_WRITE_CMD | NAND_WRITE_ADDR);
+>  		if (ctrl & NAND_CLE)
+> -			nandaddr |= NAND_WRITE_CMD;
+> -		else
+> -			nandaddr |= NAND_WRITE_ADDR;
+> -		this->IO_ADDR_W = (void __iomem *) nandaddr;
+> +			xway_latchcmd = NAND_WRITE_CMD;
+> +		else if (ctrl & NAND_ALE)
+> +			xway_latchcmd = NAND_WRITE_ADDR;
+>  	}
+>  
+>  	if (cmd != NAND_CMD_NONE) {
+>  		spin_lock_irqsave(&ebu_lock, flags);
+> -		writeb(cmd, this->IO_ADDR_W);
+> +		writeb(cmd, (void __iomem *) (nandaddr | xway_latchcmd));
+>  		while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
+>  			;
+>  		spin_unlock_irqrestore(&ebu_lock, flags);
 
 
 
