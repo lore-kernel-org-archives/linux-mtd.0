@@ -1,11 +1,11 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-wm0-x22b.google.com ([2a00:1450:400c:c09::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAA79-0005kf-Mx
- for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 06:03:48 +0000
-Received: by mail-wm0-x241.google.com with SMTP id n184so21286339wmn.1
- for <linux-mtd@lists.infradead.org>; Mon, 06 Jun 2016 23:03:27 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
-To: Mark Brown <broonie@kernel.org>
+ id 1bAC73-0001Ee-3j
+ for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 08:11:51 +0000
+Received: by mail-wm0-x22b.google.com with SMTP id m124so102566743wme.1
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Jun 2016 01:11:28 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <fe0042f9-66c9-51fd-ca91-641c5cc25c40@gmail.com>
 References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
  <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
  <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
@@ -14,18 +14,18 @@ References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
  <20160606174003.GE7510@sirena.org.uk>
  <a57adb90-0d80-186f-17d3-6fdf106bfb4a@gmail.com>
  <20160606230752.GM7510@sirena.org.uk>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>,
+ <fe0042f9-66c9-51fd-ca91-641c5cc25c40@gmail.com>
+From: Michal Suchanek <hramrach@gmail.com>
+Date: Tue, 7 Jun 2016 10:10:47 +0200
+Message-ID: <CAOMqctRmtCXurb8A05m2kw+9EjU+AWB8Uj0z1FPO792kGG=36Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Brian Norris <computersforpeace@gmail.com>,
  MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>,
- Han Xu <han.xu@nxp.com>, linux-spi@vger.kernel.org
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <fe0042f9-66c9-51fd-ca91-641c5cc25c40@gmail.com>
-Date: Tue, 7 Jun 2016 08:03:11 +0200
-MIME-Version: 1.0
-In-Reply-To: <20160606230752.GM7510@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>,
+ Marek Vasut <marex@denx.de>, Han Xu <han.xu@nxp.com>,
+ linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,52 +35,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 07.06.2016 um 01:07 schrieb Mark Brown:
-> On Mon, Jun 06, 2016 at 08:53:10PM +0200, Heiner Kallweit wrote:
->> Am 06.06.2016 um 19:40 schrieb Mark Brown:
-> 
->>> That doesn't make any sense, the controller hardware doesn't 
->>> magically change based on what is connected to it.
-> 
->> The issue with fsl-espi is that the controller deactivates CS after
->> each physical transfer. And a lot of HW designs use the hardware CS,
->> therefore the advise to use a GPIO instead doesn't really help.
-> 
-> There's no pinmux to fix the broken behaviour?  The Freescale SPI
-> controllers really are terrible :(
-> 
->> In case of SPI NOR CS needs to stay active between command and data
-> 
-> In the case of *all* SPI transactions this needs to happen.  This is
-> *not* optional, it's not some weird requirement of NOR, it's one of the
-> most basic requirements for a SPI driver on Linux.
-> 
->> Well, we could reduce the max_transfer_size exposed by the driver by
->> the max length of a m25p80 read command in general.
-> 
-> No!  Apart from anything else this would be a complete and total
-> abstraction failure.  This is a driver for a SPI controller, not a
-> driver for a flash controller, which means that it should not have flash
-> specific hacks in it.
-> 
->> Then we might be too strict for other SPI devices, but this may
->> be acceptable as the current fsl-espi driver is usable with SPI NOR
->> devices only anyway.
-> 
-> What makes you say this?  I'm guessing that the driver is just broken
-> but it would be good to understand the specifics.
-> 
-See fsl_espi_rw_trans():
-In case of transfers > SPCOM_TRANLEN_MAX it loops and reads in
-SPCOM_TRANLEN_MAX chunks whilst replacing bytes 2-4 of the
-message buffer with the new start address to read from.
-Having said that it implicitely assumes that the first transfer in
-the message is a m25p80 read command with a 3 byte address.
+On 7 June 2016 at 08:03, Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> Am 07.06.2016 um 01:07 schrieb Mark Brown:
+>> On Mon, Jun 06, 2016 at 08:53:10PM +0200, Heiner Kallweit wrote:
+>>> Am 06.06.2016 um 19:40 schrieb Mark Brown:
 
-And in fsl_espi_do_one_msg() it assumes that each message includes
-max one r/o transfer (else rx_buf is overwritten).
+>>> Well, we could reduce the max_transfer_size exposed by the driver by
+>>> the max length of a m25p80 read command in general.
+>>
+>> No!  Apart from anything else this would be a complete and total
+>> abstraction failure.  This is a driver for a SPI controller, not a
+>> driver for a flash controller, which means that it should not have flash
+>> specific hacks in it.
+>>
+>>> Then we might be too strict for other SPI devices, but this may
+>>> be acceptable as the current fsl-espi driver is usable with SPI NOR
+>>> devices only anyway.
+>>
+>> What makes you say this?  I'm guessing that the driver is just broken
+>> but it would be good to understand the specifics.
+>>
+> See fsl_espi_rw_trans():
+> In case of transfers > SPCOM_TRANLEN_MAX it loops and reads in
+> SPCOM_TRANLEN_MAX chunks whilst replacing bytes 2-4 of the
+> message buffer with the new start address to read from.
 
-I'm not 100% sure whether any arbitrary combination of r/o, r/w, w/o
-transfers in a SPI message is acceptable. But this controller driver
-supports just the transfer combinations generated by the m25p80
-protocol driver.
+That's obviously bogus. Just reject anything too large and let the
+upper layer deal with it.
+
+Given m25p80 and fbtft would handle this can you use DMA to gather
+buffers from multiple transfers (ie command and data) or does the
+buffer have to be copied together for the transfer?
+
+Thanks
+
+Michal
