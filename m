@@ -1,20 +1,22 @@
-Date: Tue, 7 Jun 2016 20:21:55 +0300
-From: Aleksei Mamlin <mamlinav@gmail.com>
-To: Aleksei Mamlin <mamlinav@gmail.com>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
- <wens@csie.org>, Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 4/7] ARM: dts: sun7i: Add NFC node to Allwinner A20 SoC
-Message-Id: <20160607202155.a86cec11c48fc6c89b280eda@gmail.com>
-In-Reply-To: <1465208664-9366-5-git-send-email-mamlinav@gmail.com>
-References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
- <1465208664-9366-5-git-send-email-mamlinav@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from hauke-m.de ([5.39.93.123])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bAKvg-00067X-Ra
+ for linux-mtd@lists.infradead.org; Tue, 07 Jun 2016 17:36:42 +0000
+Subject: Re: [PATCH 0/6] MTD: xway: updates from OpenWrt/LEDE
+To: John Crispin <john@phrozen.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1465161609-19303-1-git-send-email-hauke@hauke-m.de>
+ <20160607114824.5f96228a@bbrezillon>
+ <3f0aee29-c2c0-6e42-6f74-fac491438013@phrozen.org>
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ David.Woodhouse@intel.com
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <2dc426aa-0591-490f-07b3-84e95396fcc0@hauke-m.de>
+Date: Tue, 7 Jun 2016 19:36:15 +0200
+MIME-Version: 1.0
+In-Reply-To: <3f0aee29-c2c0-6e42-6f74-fac491438013@phrozen.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  6 Jun 2016 13:24:21 +0300
-Aleksei Mamlin <mamlinav@gmail.com> wrote:
-
-> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+On 06/07/2016 12:12 PM, John Crispin wrote:
 > 
-> Add NAND Flash controller node definition to the A20 SoC.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
-> ---
->  arch/arm/boot/dts/sun7i-a20.dtsi | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+> On 07/06/2016 11:48, Boris Brezillon wrote:
+>> On Sun,  5 Jun 2016 23:20:03 +0200
+>> Hauke Mehrtens <hauke@hauke-m.de> wrote:
+>>
+>>> These patches are in OpenWrt for years now and should go upstream. They 
+>>> are fixing some problems in the NAND driver.
+>>
+>> Just had a closer look at the xway NAND controller driver, and it's
+>> just a big pile of hacks :-(. I'll take those patches if nobody is
+>> willing to maintain this driver, but honestly, I'd prefer a complete
+>> rework of the driver.
+>>
 > 
-> diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
-> index 915979f..e473570 100644
-> --- a/arch/arm/boot/dts/sun7i-a20.dtsi
-> +++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-> @@ -826,6 +826,17 @@
->  			#size-cells = <0>;
->  		};
->  
-> +		nfc: nand@01c03000 {
-> +			compatible = "allwinner,sun4i-a10-nand";
-> +			reg = <0x01c03000 0x1000>;
-> +			interrupts = <37>;
-
-Should be
-			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
-
-> +			clocks = <&ahb_gates 13>, <&nand_clk>;
-> +			clock-names = "ahb", "mod";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			status = "disabled";
-> +		};
-> +
->  		emac: ethernet@01c0b000 {
->  			compatible = "allwinner,sun4i-a10-emac";
->  			reg = <0x01c0b000 0x1000>;
-> -- 
-> 2.7.3
+> Hi Boris,
 > 
+> it is indeed a horrific pile of doo doo. it has grown historically over
+> a few years and then became sort of abandoned. i have been keeping it
+> artificially alive inside openwrt as we have users with boards that have
+> nand. i dont even own a lantiq board with nand, so patches were sort of
+> merged on cruise control and with compile testing only.
+> 
+> the SoCs have 2 ways of controlling the nand core. the easy one is this,
+> which is basically nothing more than a nand flash aware 16bit
+> intel/hitachi bus interafec called EBU. There is a more advanced dma
+> based way of doing nand I/O though.
+> 
+> ideally there should be a driver for the so called "high speed nand"
+> interface which would allow us to nuke this one.
 
+Hi,
 
--- 
-Thanks and regards,
-Aleksei Mamlin
+I want to look into other drivers first before looking into the DMA nand
+driver, it took me some time to understand how this driver works and the
+controller is strange and also this driver is strange. I was wondering
+how this went into mainline kernel. ;-)
+
+I could/would send a patch which converts this from some hack to the
+generic platform driver to a normal platform driver, it will probably
+add ~50 lines of code, but makes it a lot easier to understand.
+
+I will also try to make handling of the IO_ADDR_R look better with less
+casts.
+
+What else do you not like about this driver when we still use this
+hardware interface?
+
+Hauke
