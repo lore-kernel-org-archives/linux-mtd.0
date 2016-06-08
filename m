@@ -1,7 +1,7 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAf2F-0003Mz-68
+ id 1bAf2F-0003N5-66
  for linux-mtd@lists.infradead.org; Wed, 08 Jun 2016 15:04:47 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
@@ -13,10 +13,9 @@ Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH 2/3] mtd: nand: Support maximizing ECC when using
- software BCH
-Date: Wed,  8 Jun 2016 17:04:23 +0200
-Message-Id: <1465398264-8202-3-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [RESEND PATCH 3/3] mtd: nand: sunxi: Support ECC maximization
+Date: Wed,  8 Jun 2016 17:04:24 +0200
+Message-Id: <1465398264-8202-4-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1465398264-8202-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1465398264-8202-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,52 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for ECC maximization when software BCH with
-nand_ooblayout_lp_ops layout is used.
-Other cases should be handled by the NAND controller driver.
+Setup the maximum ECC config when NAND_ECC_MAXIMIZE is set.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_base.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/mtd/nand/sunxi_nand.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index d374129..ca4f53d 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4224,6 +4224,7 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
- 		ecc->write_page_raw = nand_write_page_raw;
- 		ecc->read_oob = nand_read_oob_std;
- 		ecc->write_oob = nand_write_oob_std;
-+
- 		/*
- 		* Board driver should supply ecc.size and ecc.strength
- 		* values to select how many bits are correctable.
-@@ -4246,6 +4247,25 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
- 			}
+diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+index 8dfcb65..21dad0b 100644
+--- a/drivers/mtd/nand/sunxi_nand.c
++++ b/drivers/mtd/nand/sunxi_nand.c
+@@ -1814,6 +1814,35 @@ static int sunxi_nand_hw_common_ecc_ctrl_init(struct mtd_info *mtd,
+ 	if (!data)
+ 		return -ENOMEM;
  
- 			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++	if (ecc->options & NAND_ECC_MAXIMIZE) {
++		int bytes;
 +
++		ecc->size = 1024;
++		nsectors = mtd->writesize / ecc->size;
++
++		/* Reserve 2 bytes for the BBM */
++		bytes = (mtd->oobsize - 2) / nsectors;
++
++		/* 4 non-ECC bytes are added before each ECC bytes section */
++		bytes -= 4;
++
++		/* and bytes has to be even. */
++		if (bytes % 2)
++			bytes--;
++
++		ecc->strength = bytes * 8 / fls(8 * ecc->size);
++
++		for (i = 0; i < ARRAY_SIZE(strengths); i++) {
++			if (strengths[i] > ecc->strength)
++				break;
 +		}
 +
-+		/*
-+		 * We can only maximize ECC config when the default layout is
-+		 * used, otherwise we don't know how many bytes can really be
-+		 * used.
-+		 */
-+		if (mtd->ooblayout == &nand_ooblayout_lp_ops &&
-+		    ecc->options & NAND_ECC_MAXIMIZE) {
-+			int steps, bytes;
++		if (!i)
++			ecc->strength = 0;
++		else
++			ecc->strength = strengths[i - 1];
++	}
 +
-+			/* Always prefer 1k blocks over 512bytes ones */
-+			ecc->size = 1024;
-+			steps = mtd->writesize / ecc->size;
-+
-+			/* Reserve 2 bytes for the BBM */
-+			bytes = (mtd->oobsize - 2) / steps;
-+			ecc->strength = bytes * 8 / fls(8 * ecc->size);
- 		}
+ 	if (ecc->size != 512 && ecc->size != 1024)
+ 		return -EINVAL;
  
- 		/* See nand_bch_init() for details. */
 -- 
 2.7.4
