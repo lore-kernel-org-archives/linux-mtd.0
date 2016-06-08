@@ -1,17 +1,19 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAewn-0008Oo-38
- for linux-mtd@lists.infradead.org; Wed, 08 Jun 2016 14:59:09 +0000
+ id 1bAewn-0008Ov-37
+ for linux-mtd@lists.infradead.org; Wed, 08 Jun 2016 14:59:10 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] mtd: nand: standardize ECC maximization
-Date: Wed,  8 Jun 2016 16:58:43 +0200
-Message-Id: <1465397926-7904-1-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 2/3] mtd: nand: Support maximizing ECC when using software BCH
+Date: Wed,  8 Jun 2016 16:58:45 +0200
+Message-Id: <1465397926-7904-3-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <1465397926-7904-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1465397926-7904-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Add support for ECC maximization when software BCH with
+nand_ooblayout_lp_ops layout is used.
+Other cases should be handled by the NAND controller driver.
 
-This series aims at standardizing a feature already supported by
-some NAND controller drivers: setting the maximum ECC strength
-based on the OOB area size instead of using the ECC strength/step_size
-information retrieved from the DT or NAND detection code.
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-This is particularly useful when the NAND device is used in by a
-FS/wear-leveling layer that is not using the OOB area at all (this is
-the case of UBI).
-
-Note that drivers already implementing this kind of logic are not
-converted to the new approach (because of backward compatibility
-concern), but new drivers or drivers that do not already implement
-this 'ECC maximization' logic are encouraged to do it.
-
-Regards,
-
-Boris
-
-Boris Brezillon (3):
-  mtd: nand: Add an option to maximize the ECC strength
-  mtd: nand: Support maximizing ECC when using software BCH
-  mtd: nand: sunxi: Support ECC maximization
-
- Documentation/devicetree/bindings/mtd/nand.txt |  9 ++++++++
- drivers/mtd/nand/nand_base.c                   | 23 ++++++++++++++++++++
- drivers/mtd/nand/sunxi_nand.c                  | 29 ++++++++++++++++++++++++++
- include/linux/mtd/nand.h                       |  1 +
- 4 files changed, 62 insertions(+)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index d374129..ca4f53d 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4224,6 +4224,7 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
+ 		ecc->write_page_raw = nand_write_page_raw;
+ 		ecc->read_oob = nand_read_oob_std;
+ 		ecc->write_oob = nand_write_oob_std;
++
+ 		/*
+ 		* Board driver should supply ecc.size and ecc.strength
+ 		* values to select how many bits are correctable.
+@@ -4246,6 +4247,25 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
+ 			}
+ 
+ 			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++
++		}
++
++		/*
++		 * We can only maximize ECC config when the default layout is
++		 * used, otherwise we don't know how many bytes can really be
++		 * used.
++		 */
++		if (mtd->ooblayout == &nand_ooblayout_lp_ops &&
++		    ecc->options & NAND_ECC_MAXIMIZE) {
++			int steps, bytes;
++
++			/* Always prefer 1k blocks over 512bytes ones */
++			ecc->size = 1024;
++			steps = mtd->writesize / ecc->size;
++
++			/* Reserve 2 bytes for the BBM */
++			bytes = (mtd->oobsize - 2) / steps;
++			ecc->strength = bytes * 8 / fls(8 * ecc->size);
+ 		}
+ 
+ 		/* See nand_bch_init() for details. */
 -- 
 2.7.4
