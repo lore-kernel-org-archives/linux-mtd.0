@@ -1,32 +1,17 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAkB5-0007hx-KF
- for linux-mtd@lists.infradead.org; Wed, 08 Jun 2016 20:34:16 +0000
-Received: by mail-wm0-x244.google.com with SMTP id k184so5740772wme.2
- for <linux-mtd@lists.infradead.org>; Wed, 08 Jun 2016 13:33:53 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
-To: Mark Brown <broonie@kernel.org>
-References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
- <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
- <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
- <20160506121431.GQ6292@sirena.org.uk>
- <77a22258-95ca-031a-825d-a9e98e30a162@gmail.com>
- <20160606174003.GE7510@sirena.org.uk>
- <a57adb90-0d80-186f-17d3-6fdf106bfb4a@gmail.com>
- <20160606230752.GM7510@sirena.org.uk>
- <fe0042f9-66c9-51fd-ca91-641c5cc25c40@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Michal Suchanek <hramrach@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>,
- Han Xu <han.xu@nxp.com>, linux-spi@vger.kernel.org
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <20977e07-6354-2753-8286-e992c32454d1@gmail.com>
-Date: Wed, 8 Jun 2016 21:51:15 +0200
-MIME-Version: 1.0
-In-Reply-To: <fe0042f9-66c9-51fd-ca91-641c5cc25c40@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+ id 1bAkbo-00047i-Di
+ for linux-mtd@lists.infradead.org; Wed, 08 Jun 2016 21:01:53 +0000
+Received: by mail-pf0-x242.google.com with SMTP id 62so1287305pfd.3
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Jun 2016 14:01:31 -0700 (PDT)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com
+Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+ Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [V2, 1/2] mtd: brcmnand: Add check for erased page bitflips
+Date: Wed,  8 Jun 2016 17:01:20 -0400
+Message-Id: <1465419681-6162-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,58 +21,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 07.06.2016 um 08:03 schrieb Heiner Kallweit:
-> Am 07.06.2016 um 01:07 schrieb Mark Brown:
->> On Mon, Jun 06, 2016 at 08:53:10PM +0200, Heiner Kallweit wrote:
->>> Am 06.06.2016 um 19:40 schrieb Mark Brown:
->>
->>>> That doesn't make any sense, the controller hardware doesn't 
->>>> magically change based on what is connected to it.
->>
->>> The issue with fsl-espi is that the controller deactivates CS after
->>> each physical transfer. And a lot of HW designs use the hardware CS,
->>> therefore the advise to use a GPIO instead doesn't really help.
->>
->> There's no pinmux to fix the broken behaviour?  The Freescale SPI
->> controllers really are terrible :(
->>
->>> In case of SPI NOR CS needs to stay active between command and data
->>
->> In the case of *all* SPI transactions this needs to happen.  This is
->> *not* optional, it's not some weird requirement of NOR, it's one of the
->> most basic requirements for a SPI driver on Linux.
->>
->>> Well, we could reduce the max_transfer_size exposed by the driver by
->>> the max length of a m25p80 read command in general.
->>
->> No!  Apart from anything else this would be a complete and total
->> abstraction failure.  This is a driver for a SPI controller, not a
->> driver for a flash controller, which means that it should not have flash
->> specific hacks in it.
->>
->>> Then we might be too strict for other SPI devices, but this may
->>> be acceptable as the current fsl-espi driver is usable with SPI NOR
->>> devices only anyway.
->>
->> What makes you say this?  I'm guessing that the driver is just broken
->> but it would be good to understand the specifics.
->>
-> See fsl_espi_rw_trans():
-> In case of transfers > SPCOM_TRANLEN_MAX it loops and reads in
-> SPCOM_TRANLEN_MAX chunks whilst replacing bytes 2-4 of the
-> message buffer with the new start address to read from.
-> Having said that it implicitely assumes that the first transfer in
-> the message is a m25p80 read command with a 3 byte address.
-> 
-> And in fsl_espi_do_one_msg() it assumes that each message includes
-> max one r/o transfer (else rx_buf is overwritten).
-> 
-> I'm not 100% sure whether any arbitrary combination of r/o, r/w, w/o
-> transfers in a SPI message is acceptable. But this controller driver
-> supports just the transfer combinations generated by the m25p80
-> protocol driver.
-> 
-I think in this discussion there was the idea already to introduce
-a message size limit complementing the transfer size limit.
-Could this be an acceptable way to go?
-If yes I'd prepare a patch as basis for further discussion.
+Check for erased page bitflips in a page. And if well within
+threshold return data as all 0xff. Apply sw check for controller
+version < 7.2. Controller vesion >= 7.2 has hw support.
+
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+V2 changes 
+ Added use of nand_check_erased_ecc_chunk
+ Restrict change to older controller < 7.2
+---
+ drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index b76ad7c..212acb4 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -1545,6 +1545,55 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+ 	return ret;
+ }
+ 
++/*
++ * Check a page to see if it is erased (w/ bitflips) after an uncorrectable ECC
++ * error
++ *
++ * Because the HW ECC signals an ECC error if an erase paged has even a single
++ * bitflip, we must check each ECC error to see if it is actually an erased
++ * page with bitflips, not a truly corrupted page.
++ *
++ * On a real error, return a negative error code (-EBADMSG for ECC error), and
++ * buf will contain raw data.
++ * Otherwise, buf gets filled with 0xffs and return the maximum number of
++ * bitflips-per-ECC-sector to the caller.
++ *
++ */
++static int brcmstb_nand_verify_erased_page(struct mtd_info *mtd,
++		  struct nand_chip *chip, void *buf, u64 addr)
++{
++	int i, sas;
++	void *oob = chip->oob_poi;
++	int bitflips = 0;
++	int page = addr >> chip->page_shift;
++	int ret;
++
++	if (!buf) {
++		buf = chip->buffers->databuf;
++		/* Invalidate page cache */
++		chip->pagebuf = -1;
++	}
++
++	sas = mtd->oobsize / chip->ecc.steps;
++
++	/* read without ecc for verification */
++	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
++	ret = chip->ecc.read_page_raw(mtd, chip, buf, true, page);
++	if (ret)
++		return ret;
++
++	for (i = 0; i < chip->ecc.steps; i++, oob += sas) {
++		bitflips = nand_check_erased_ecc_chunk(buf, chip->ecc.size,
++						       oob, sas, NULL, 0,
++						       chip->ecc.strength);
++		/* Too many bitflips */
++		if (bitflips < 0)
++			break;
++	}
++
++	return bitflips;
++}
++
+ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+ 			 u64 addr, unsigned int trans, u32 *buf, u8 *oob)
+ {
+@@ -1575,6 +1624,18 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+ 	}
+ 
+ 	if (mtd_is_eccerr(err)) {
++		/*
++		 * Controller version 7.2 has hw encoder to detect erased page
++		 * bitflips, apply sw verification for older controllers only
++		 */
++		if (ctrl->nand_version < 0x0702) {
++			err = brcmstb_nand_verify_erased_page(mtd, chip, buf,
++							      addr);
++			/* erased page bitflips corrected */
++			if (err > 0)
++				return err;
++		}
++
+ 		dev_dbg(ctrl->dev, "uncorrectable error at 0x%llx\n",
+ 			(unsigned long long)err_addr);
+ 		mtd->ecc_stats.failed++;
+-- 
+1.9.1
