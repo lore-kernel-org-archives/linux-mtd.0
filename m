@@ -1,20 +1,22 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAlN4-00046r-D0
- for linux-mtd@lists.infradead.org; Wed, 08 Jun 2016 21:50:43 +0000
-Date: Wed, 8 Jun 2016 23:50:20 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Kamal Dasu <kdasu.kdev@gmail.com>, computersforpeace@gmail.com
-Cc: linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
- bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [V2, 1/2] mtd: brcmnand: Add check for erased page bitflips
-Message-ID: <20160608235020.521de07f@bbrezillon>
-In-Reply-To: <1465419681-6162-1-git-send-email-kdasu.kdev@gmail.com>
-References: <1465419681-6162-1-git-send-email-kdasu.kdev@gmail.com>
+Date: Thu, 9 Jun 2016 00:03:14 +0200
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Aleksei Mamlin <mamlinav@gmail.com>
+Cc: Chen-Yu Tsai <wens@csie.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 7/7] ARM: dts: sun7i: Enable NAND on Wexler TAB7200
+Message-ID: <20160608220314.GL14179@lukather>
+References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
+ <1465208664-9366-8-git-send-email-mamlinav@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="96dIhm/ZjrNld+BP"
+Content-Disposition: inline
+In-Reply-To: <1465208664-9366-8-git-send-email-mamlinav@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,127 +26,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  8 Jun 2016 17:01:20 -0400
-Kamal Dasu <kdasu.kdev@gmail.com> wrote:
 
-> Check for erased page bitflips in a page. And if well within
-> threshold return data as all 0xff. Apply sw check for controller
-> version < 7.2. Controller vesion >= 7.2 has hw support.
-> 
-> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+--96dIhm/ZjrNld+BP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Mon, Jun 06, 2016 at 01:24:24PM +0300, Aleksei Mamlin wrote:
+> Enable the NFC and describe the NAND flash connected to this controller.
+>=20
+> Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
 > ---
-> V2 changes 
->  Added use of nand_check_erased_ecc_chunk
->  Restrict change to older controller < 7.2
-> ---
->  drivers/mtd/nand/brcmnand/brcmnand.c | 61 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 61 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-> index b76ad7c..212acb4 100644
-> --- a/drivers/mtd/nand/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-> @@ -1545,6 +1545,55 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
->  	return ret;
->  }
->  
-> +/*
-> + * Check a page to see if it is erased (w/ bitflips) after an uncorrectable ECC
-> + * error
-> + *
-> + * Because the HW ECC signals an ECC error if an erase paged has even a single
-> + * bitflip, we must check each ECC error to see if it is actually an erased
-> + * page with bitflips, not a truly corrupted page.
-> + *
-> + * On a real error, return a negative error code (-EBADMSG for ECC error), and
-> + * buf will contain raw data.
-> + * Otherwise, buf gets filled with 0xffs and return the maximum number of
-> + * bitflips-per-ECC-sector to the caller.
-> + *
-> + */
-> +static int brcmstb_nand_verify_erased_page(struct mtd_info *mtd,
-> +		  struct nand_chip *chip, void *buf, u64 addr)
-> +{
-> +	int i, sas;
-> +	void *oob = chip->oob_poi;
-> +	int bitflips = 0;
-> +	int page = addr >> chip->page_shift;
-> +	int ret;
+>  arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts | 41 ++++++++++++++++++++=
+++++++
+>  1 file changed, 41 insertions(+)
+>=20
+> diff --git a/arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts b/arch/arm/bo=
+ot/dts/sun7i-a20-wexler-tab7200.dts
+> index 2f6b21a..42aff91 100644
+> --- a/arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts
+> +++ b/arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts
+> @@ -159,6 +159,47 @@
+>  	status =3D "okay";
+>  };
+> =20
+> +&nfc {
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&nand_pins_a>, <&nand_cs0_pins_a>, <&nand_rb0_pins_a>;
+> +	status =3D "okay";
 > +
-> +	if (!buf) {
-> +		buf = chip->buffers->databuf;
-> +		/* Invalidate page cache */
-> +		chip->pagebuf = -1;
-
-Yes, I know it's ugly.
-
-I'm seriously considering droping the page caching feature, not only
-because it complicates usage of the databuf buffer, but also because in
-some cases you might want to really read the same page several times
-without the cache in the way (for example when you want to check the
-read-disturb effect by reading over and over a single NAND page).
-
-Actually, I still don't see the usefulness of it, since upper layers
-(mainly FS layers) are already relying the VFS cache...
-
-Brian, is there any good reason to keep it?
-
-> +	}
+> +	nand@0 {
+> +		#address-cells =3D <2>;
+> +		#size-cells =3D <2>;
+> +		reg =3D <0>;
+> +		allwinner,rb =3D <0>;
 > +
-> +	sas = mtd->oobsize / chip->ecc.steps;
+> +		nand-ecc-mode =3D "hw";
+> +		nand-on-flash-bbt;
 > +
-> +	/* read without ecc for verification */
-> +	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
-> +	ret = chip->ecc.read_page_raw(mtd, chip, buf, true, page);
-
-Ok, so you have to read the whole page again :(. Are you sure the
-controller does not leave the data untouched when it sees uncorrectable
-errors? This way you would only have to read the OOB bytes for the
-faulty sectors and not the whole page.
-
-The rest looks good to me.
-
-> +	if (ret)
-> +		return ret;
+> +		boot0@0 {
+> +			label =3D "boot0";
+> +			reg =3D /bits/ 64 <0x0 0x200000>;
+> +		};
 > +
-> +	for (i = 0; i < chip->ecc.steps; i++, oob += sas) {
-> +		bitflips = nand_check_erased_ecc_chunk(buf, chip->ecc.size,
-> +						       oob, sas, NULL, 0,
-> +						       chip->ecc.strength);
-> +		/* Too many bitflips */
-> +		if (bitflips < 0)
-> +			break;
-> +	}
+> +		boot0-rescue@200000 {
+> +			label =3D "boot0-rescue";
+> +			reg =3D /bits/ 64 <0x200000 0x200000>;
+> +		};
 > +
-> +	return bitflips;
-> +}
+> +		uboot@400000 {
+> +			label =3D "uboot";
+> +			reg =3D /bits/ 64 <0x400000 0x200000>;
+> +		};
 > +
->  static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
->  			 u64 addr, unsigned int trans, u32 *buf, u8 *oob)
->  {
-> @@ -1575,6 +1624,18 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
->  	}
->  
->  	if (mtd_is_eccerr(err)) {
-> +		/*
-> +		 * Controller version 7.2 has hw encoder to detect erased page
-> +		 * bitflips, apply sw verification for older controllers only
-> +		 */
-> +		if (ctrl->nand_version < 0x0702) {
-> +			err = brcmstb_nand_verify_erased_page(mtd, chip, buf,
-> +							      addr);
-> +			/* erased page bitflips corrected */
-> +			if (err > 0)
-> +				return err;
-> +		}
+> +		uboot-rescue@600000 {
+> +			label =3D "uboot-rescue";
+> +			reg =3D /bits/ 64 <0x600000 0x200000>;
+> +		};
 > +
->  		dev_dbg(ctrl->dev, "uncorrectable error at 0x%llx\n",
->  			(unsigned long long)err_addr);
->  		mtd->ecc_stats.failed++;
+> +		main@800000 {
+> +			label =3D "main";
+> +			reg =3D /bits/ 64 <0x800000 0xff800000>;
+> +		};
+> +	};
+> +};
 
+This feels a bit premature. The two boards you're using have an MLC
+NAND which is not supported yet. Until there's proper MLC support in
+the kernel, I'm not sure we want to enable that for end-users when we
+know that things will get wrong.
 
+However, after discussing this with Boris, I appreciate that we don't
+have any example available because of this policy for people that want
+to opt-in anyway.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
+What we could do is to still mark the status as disabled in the DTS,
+with a big fat warning as comment just before, so that it requires
+user action, and that user will have been warned.
+
+Would that work for you?
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
 http://free-electrons.com
+
+--96dIhm/ZjrNld+BP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJXWJYhAAoJEBx+YmzsjxAgLfQP/0HPkxn+J+NzmjBHQdmguO8X
+xax0/uJehyI1Q18Y/OT/IkXvMjFn+Fvll++oYEFWJw2/ZcHiIBdROYPsU+ffjzVW
+btemYklOjucqwtde+nk17YoC7phbi4rlBrNdjR+lNNiWFfXgQ8cqho7trz7w8IyI
+5/b+wFAOaBgu3Guy3sUeNsdMzQuAhbfMags0qs+Br5N7hQPo7NqQVpQES3EZkzZh
+QhcvZ3qH/IQ/1MM2iKu2dVEQIydj3ljUY4nILAadpp4rvkJf/PgamhikeSwvmJNL
+8NVlPGMyU8qIzUM2b9Gptr5eszwmYpKX5VJ5Xv3lLwQ8z72Qpo99p6AiAJcDrbSG
+Md25Lns3ffO2S9eD07mltOjGhs+GdvAuBPtKWkF7F5uyaeOGPrcliy+HGvJC13d8
+I1DaSOOkZgjRORpehUBr5k/UKGnflzuzTKW8txK7zzzbgzNswYpYGe6F+/AdRgvh
+aFbH5hYAT189CMU9ZDkVjUEWxhy2Tye0BT/z6CRSxrqNtsStXrrLrWlLZR7DdyiX
+NbmgDLeO0ttQfr3y1azFrD9bo8PiSeAjdCj8OMuiRSYNwRltfrgmjVPb9fhK9b77
+1HHYI7jhIFYGFUotHzC208tr45dKEbrev14SoOAM8S4iAWOL/B/SXd51gC9Y4+jj
+fyx3o5d+TvYG5E5MH9qY
+=EKDT
+-----END PGP SIGNATURE-----
+
+--96dIhm/ZjrNld+BP--
