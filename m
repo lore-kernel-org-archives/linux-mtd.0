@@ -1,19 +1,17 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAewn-0008Ox-39
- for linux-mtd@lists.infradead.org; Wed, 08 Jun 2016 14:59:10 +0000
+ id 1bAewn-0008Oo-38
+ for linux-mtd@lists.infradead.org; Wed, 08 Jun 2016 14:59:09 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] mtd: nand: sunxi: Support ECC maximization
-Date: Wed,  8 Jun 2016 16:58:46 +0200
-Message-Id: <1465397926-7904-4-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1465397926-7904-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1465397926-7904-1-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH 0/3] mtd: nand: standardize ECC maximization
+Date: Wed,  8 Jun 2016 16:58:43 +0200
+Message-Id: <1465397926-7904-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Setup the maximum ECC config when NAND_ECC_MAXIMIZE is set.
+Hello,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/sunxi_nand.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+This series aims at standardizing a feature already supported by
+some NAND controller drivers: setting the maximum ECC strength
+based on the OOB area size instead of using the ECC strength/step_size
+information retrieved from the DT or NAND detection code.
 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index 8dfcb65..21dad0b 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -1814,6 +1814,35 @@ static int sunxi_nand_hw_common_ecc_ctrl_init(struct mtd_info *mtd,
- 	if (!data)
- 		return -ENOMEM;
- 
-+	if (ecc->options & NAND_ECC_MAXIMIZE) {
-+		int bytes;
-+
-+		ecc->size = 1024;
-+		nsectors = mtd->writesize / ecc->size;
-+
-+		/* Reserve 2 bytes for the BBM */
-+		bytes = (mtd->oobsize - 2) / nsectors;
-+
-+		/* 4 non-ECC bytes are added before each ECC bytes section */
-+		bytes -= 4;
-+
-+		/* and bytes has to be even. */
-+		if (bytes % 2)
-+			bytes--;
-+
-+		ecc->strength = bytes * 8 / fls(8 * ecc->size);
-+
-+		for (i = 0; i < ARRAY_SIZE(strengths); i++) {
-+			if (strengths[i] > ecc->strength)
-+				break;
-+		}
-+
-+		if (!i)
-+			ecc->strength = 0;
-+		else
-+			ecc->strength = strengths[i - 1];
-+	}
-+
- 	if (ecc->size != 512 && ecc->size != 1024)
- 		return -EINVAL;
- 
+This is particularly useful when the NAND device is used in by a
+FS/wear-leveling layer that is not using the OOB area at all (this is
+the case of UBI).
+
+Note that drivers already implementing this kind of logic are not
+converted to the new approach (because of backward compatibility
+concern), but new drivers or drivers that do not already implement
+this 'ECC maximization' logic are encouraged to do it.
+
+Regards,
+
+Boris
+
+Boris Brezillon (3):
+  mtd: nand: Add an option to maximize the ECC strength
+  mtd: nand: Support maximizing ECC when using software BCH
+  mtd: nand: sunxi: Support ECC maximization
+
+ Documentation/devicetree/bindings/mtd/nand.txt |  9 ++++++++
+ drivers/mtd/nand/nand_base.c                   | 23 ++++++++++++++++++++
+ drivers/mtd/nand/sunxi_nand.c                  | 29 ++++++++++++++++++++++++++
+ include/linux/mtd/nand.h                       |  1 +
+ 4 files changed, 62 insertions(+)
+
 -- 
 2.7.4
