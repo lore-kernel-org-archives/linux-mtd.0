@@ -1,53 +1,19 @@
-Date: Tue, 7 Jun 2016 15:29:30 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-kernel@vger.kernel.org, Stas Sergeev <stsp@list.ru>, Matt Redfearn
- <matt.redfearn@imgtec.com>, Joshua Kinard <kumba@gentoo.org>, Jiri Slaby
- <jslaby@suse.com>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-pci@vger.kernel.org, Borislav Petkov <bp@suse.de>,
- dri-devel@lists.freedesktop.org, Markos Chandras
- <markos.chandras@imgtec.com>, "Dmitry V. Levin" <ldv@altlinux.org>,
- yu-cheng yu <yu-cheng.yu@intel.com>, James Hogan <james.hogan@imgtec.com>,
- Brian Gerst <brgerst@gmail.com>, Johannes Berg <johannes@sipsolutions.net>,
- Peter Zijlstra <peterz@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>,
- Will Drewry <wad@chromium.org>, Nikolay Martynov <mar.kolya@gmail.com>,
- Huacai Chen <chenhc@lemote.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>, Daniel Borkmann
- <daniel@iogearbox.net>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>,
- =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, James Cowgill
- <James.Cowgill@imgtec.com>, linux-serial@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Ralf Baechle
- <ralf@linux-mips.org>, Alex Smith <alex.smith@imgtec.com>,
- linux-media@vger.kernel.org, Adam Buchbinder <adam.buchbinder@gmail.com>,
- QCA ath9k Development <ath9k-devel@qca.qualcomm.com>, Qais Yousef
- <qais.yousef@imgtec.com>, Jiang Liu <jiang.liu@linux.intel.com>, Mikko
- Rapeli <mikko.rapeli@iki.fi>, Paul Gortmaker
- <paul.gortmaker@windriver.com>, Denys Vlasenko <dvlasenk@redhat.com>,
- linaro-mm-sig@lists.linaro.org, Brian Norris <computersforpeace@gmail.com>,
- Hidehiro Kawai <hidehiro.kawai.ez@hitachi.com>, ath10k@lists.infradead.org,
- linux-mips@linux-mips.org, "Luis R. Rodriguez" <mcgrof@do-not-panic.com>,
- Andy Lutomirski <luto@amacapital.net>, Ingo Molnar <mingo@redhat.com>, Dave
- Hansen <dave.hansen@linux.intel.com>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Roland McGrath <roland@hack.frob.com>,
- Paul Burton <paul.burton@imgtec.com>, Kalle Valo <kvalo@qca.qualcomm.com>,
- Viresh Kumar <viresh.kumar@linaro.org>, Tony Wu <tung7970@gmail.com>,
- Huaitong Han <huaitong.han@intel.com>, Sumit Semwal
- <sumit.semwal@linaro.org>, Alexei Starovoitov <ast@kernel.org>, Juergen
- Gross <jgross@suse.com>, Kees Cook <keescook@chromium.org>,
- linux-wireless@vger.kernel.org, Jason Cooper <jason@lakedaemon.net>,
- "David S. Miller" <davem@davemloft.net>, Oleg Nesterov <oleg@redhat.com>,
- Andrea Gelmini <andrea.gelmini@gelma.net>, ath9k-devel@venema.h4ckr.net,
- David Woodhouse <dwmw2@infradead.org>, netdev@vger.kernel.org,
- linux-mtd@lists.infradead.org, Marc Zyngier <marc.zyngier@arm.com>, Rabin
- Vincent <rabin@rab.in>, "Maciej W. Rozycki" <macro@imgtec.com>, David Daney
- <david.daney@cavium.com>
-Subject: Re: [PATCH] tree-wide: replace config_enabled() with IS_ENABLED()
-Message-Id: <20160607152930.71273719bdaea322814213d0@linux-foundation.org>
-In-Reply-To: <1465215656-20569-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1465215656-20569-1-git-send-email-yamada.masahiro@socionext.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bAd6p-0004pm-Gt
+ for linux-mtd@lists.infradead.org; Wed, 08 Jun 2016 13:01:24 +0000
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org,
+ Aleksei Mamlin <mamlinav@gmail.com>
+Subject: [PATCH v2 00/15] mtd: nand: allow vendor specific
+ detection/initialization
+Date: Wed,  8 Jun 2016 15:00:34 +0200
+Message-Id: <1465390849-13199-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -57,34 +23,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  6 Jun 2016 21:20:56 +0900 Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+Hello,
 
-> The use of config_enabled() against config options is ambiguous.
-> In practical terms, config_enabled() is equivalent to IS_BUILTIN(),
-> but the author might have used it for the meaning of IS_ENABLED().
-> Using IS_ENABLED(), IS_BUILTIN(), IS_MODULE() etc. makes the
-> intention clearer.
-> 
-> This commit replaces config_enabled() with IS_ENABLED() where
-> possible.  This commit is only touching bool config options.
-> 
-> I noticed two cases where config_enabled() is used against a tristate
-> option:
-> 
->  - config_enabled(CONFIG_HWMON)
->   [ drivers/net/wireless/ath/ath10k/thermal.c ]
-> 
->  - config_enabled(CONFIG_BACKLIGHT_CLASS_DEVICE)
->   [ drivers/gpu/drm/gma500/opregion.c ]
-> 
-> I did not touch them because they should be converted to IS_BUILTIN()
-> in order to keep the logic, but I was not sure it was the authors'
-> intention.
+This patch series is a step forward in supporting vendor-specific
+functionalities.
+This series is mainly moving vendor-specific initialization or
+detection code out of the core, but also introduces an infrastructure
+allowing support for vendor-specific features.
 
-Well, we do want to be able to remove config_enabled() altogether if
-we're going to do this.  So please later send along a patch which makes
-a best-effort fix of the unclear usages and let's zap the thing.
+While those features might seem useless to most users, some of them are
+actually required on modern MLC/TLC NANDs (this is the case of read-retry
+support, which AFAICT has not been standardized by the JEDEC consortium).
 
-If those fixes weren't quite correct then there will be a build error
-(drivers/net/wireless/ath/ath10k/thermal.c) or no change in behaviour
-(drivers/gpu/drm/gma500/opregion.c).
+Now, let's detail what's inside this patch-set.
+
+Patches 1 to 4 are simple reworks simplifying auto-detection function
+prototypes, and clarifying their purpose.
+
+Patch 5 is introducing the vendor-specific initialization
+infrastructure.
+
+Patch 6 is removing the MTD_NAND_IDS Kconfig option to avoid creating
+a nand_ids.ko module when MTD_NAND is enabled as a module. This prevents
+a future cross-dependency between nand.ko where all vendor specific
+code will rely and nand_ids.ko which will reference vendor-specific ops
+in its manufacturer table, which in turn is referenced by the core code
+linked in nand.ko.
+
+Patches 7 to 12 are moving vendor-specific code into their respective
+nand_<vendor>.c files.
+
+Patch 13 is taking a patch proposed by Hans and adding support for ECC
+requirements extraction from the samsung extended IDs. It seems to apply
+to all Samsung MLCs, but even if it's not the case, the detection code
+should be improved to support the new formats.
+
+Patch 14 is adding support for advanced NAND ID decoding to the Hynix
+driver (OOB size, ECC and scrambling requirements extraction). Again
+this detection code might be incomplete, but I'd like people to extend
+it if required rather than adding new full-id entries in the nand_ids
+table.
+
+And finally, patch 15 is showing how useful this vendor-specific stuff
+can be by implementing read-retry support for Hynix 1x nm MLCs. And
+trust me, you don't want to try using such a NAND without read-retry
+support ;).
+
+As always, I'm open to any suggestion to improve this vendor-specific
+infrastructure, so please review the code :).
+
+Thanks,
+
+Boris
+
+Changes since v1:
+- split detection and initialization steps to avoid keeping
+  information retrieved by nand_decode_ext_id() if it's not
+  appropriate (Aleksei reported a bug where NAND_BUSWIDTH_16
+  was set by nand_decode_ext_id() and not cleared by the
+  samsung ->init() function).
+  The new approach is to call ->detect() if it's provided and
+  fallback to nand_decode_ext_id() if it's not. ->detect()
+  implementation should can call nand_decode_ext_id() if needed.
+
+Boris Brezillon (14):
+  mtd: nand: get rid of the mtd parameter in all auto-detection
+    functions
+  mtd: nand: store nand ID in struct nand_chip
+  mtd: nand: get rid of busw parameter
+  mtd: nand: rename nand_get_flash_type() into nand_detect()
+  mtd: nand: add manufacturer specific initialization/detection steps
+  mtd: nand: kill the MTD_NAND_IDS Kconfig option
+  mtd: nand: move Samsung specific init/detection logic in
+    nand_samsung.c
+  mtd: nand: move Hynix specific init/detection logic in nand_hynix.c
+  mtd: nand: move Toshiba specific init/detection logic in
+    nand_toshiba.c
+  mtd: nand: move Micron specific init logic in nand_micron.c
+  mtd: nand: move AMD/Spansion specific init/detection logic in
+    nand_amd.c
+  mtd: nand: move Macronix specific initialization in nand_macronix.c
+  mtd: nand: hynix: rework NAND ID decoding to extract more information
+  mtd: nand: hynix: add read-retry support for 1x nm MLC NANDs
+
+Hans de Goede (1):
+  mtd: nand: samsung: retrieve ECC requirements from extended ID
+
+ arch/cris/arch-v32/drivers/Kconfig |   1 -
+ drivers/mtd/nand/Kconfig           |   4 -
+ drivers/mtd/nand/Makefile          |   9 +-
+ drivers/mtd/nand/nand_amd.c        |  48 +++
+ drivers/mtd/nand/nand_base.c       | 372 +++++++---------------
+ drivers/mtd/nand/nand_hynix.c      | 629 +++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/nand_ids.c        |  21 +-
+ drivers/mtd/nand/nand_macronix.c   |  27 ++
+ drivers/mtd/nand/nand_micron.c     |  84 +++++
+ drivers/mtd/nand/nand_samsung.c    | 109 +++++++
+ drivers/mtd/nand/nand_toshiba.c    |  48 +++
+ include/linux/mtd/nand.h           |  69 ++--
+ 12 files changed, 1132 insertions(+), 289 deletions(-)
+ create mode 100644 drivers/mtd/nand/nand_amd.c
+ create mode 100644 drivers/mtd/nand/nand_hynix.c
+ create mode 100644 drivers/mtd/nand/nand_macronix.c
+ create mode 100644 drivers/mtd/nand/nand_micron.c
+ create mode 100644 drivers/mtd/nand/nand_samsung.c
+ create mode 100644 drivers/mtd/nand/nand_toshiba.c
+
+-- 
+2.7.4
