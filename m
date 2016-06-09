@@ -1,21 +1,33 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bB6jr-00051N-OW
- for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 20:39:40 +0000
-Date: Thu, 9 Jun 2016 22:39:16 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH] mtd: nand: add ESMT manufacturer
-Message-ID: <20160609223916.29f79f43@bbrezillon>
-In-Reply-To: <1465495811-3551-1-git-send-email-zajec5@gmail.com>
-References: <1465495811-3551-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
+In-Reply-To: <CA+55aFzomEx82xuREb23K12g7XqDAZgrwYHWhOpgQVp1hk3oQw@mail.gmail.com>
+References: <1465448705-25055-1-git-send-email-deepa.kernel@gmail.com>
+ <1465448705-25055-2-git-send-email-deepa.kernel@gmail.com>
+ <20160609073507.GA2790@quack2.suse.cz>
+ <CA+55aFzomEx82xuREb23K12g7XqDAZgrwYHWhOpgQVp1hk3oQw@mail.gmail.com>
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+Date: Thu, 9 Jun 2016 13:41:10 -0700
+Message-ID: <CABeXuvqO6NsZdabHHiVWRYDNc0qB+jNRAiytR=ZyBV0DUSTEZw@mail.gmail.com>
+Subject: Re: [PATCH 01/21] fs: Replace CURRENT_TIME_SEC with current_fs_time()
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Jan Kara <jack@suse.cz>, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
+ y2038@lists.linaro.org,
+ Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Evgeniy Dushistov <dushistov@mail.ru>,
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Jan Kara <jack@suse.com>,
+ "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+ David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org,
+ "Tigran A. Aivazian" <tigran@aivazian.fsnet.co.uk>,
+ "Theodore Ts'o" <tytso@mit.edu>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jan Harkes <jaharkes@cs.cmu.edu>,
+ coda@cs.cmu.edu,
+ codalist@coda.cs.cmu.edu, Bob Copeland <me@bobcopeland.com>,
+ linux-karma-devel@lists.sourceforge.net,
+ Christoph Hellwig <hch@infradead.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +37,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  9 Jun 2016 20:10:11 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+On Thu, Jun 9, 2016 at 12:15 PM, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Thu, Jun 9, 2016 at 12:35 AM, Jan Kara <jack@suse.cz> wrote:
+>>
+>> You create line longer than 80 characters for affs and reiserfs. Please
+>> wrap those lines properly.
+>
+> No, please do *NOT* do things like that.
+>
+> These kind of mechanical patches should
+>
+>  (a) be as mechanical as possible (and see elsewhere about why I think
+> 'sb' should be 'inode' and the patch should have been 95% automated
+> with a trivial script thanks to that change)
+>
+>  (b) be made as easy to verify visually as possible.
+>
+> That (b) means that a conversion should *not* add whitespace fixups or
+> add other non-mechanical cleanups, because it's a *lot* easier to see
+> that a conversion like
+>
+> -       inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
+> +       inode->i_mtime = inode->i_ctime = current_fs_time(inode);
+>
+> makes no other changes, but if you start doing line-splitting or other
+> transformations (add new variables etc to get at 'sb'), suddenly you
+> have to verify the patch at a completely different level.
+>
+> In other words, it's actually really important to make these kinds of
+> bulk changes be very very obvious. Including to the point of making
+> them visually easier to scan as a patch by not making any other
+> changes.
 
-> I got device with ESMT (Elite Semiconductor Memory Technology Inc)
-> F59L1G81MA flash that was detected as:
-> [    0.852034] nand: device found, Manufacturer ID: 0xc8, Chip ID: 0xd1
-> [    0.858402] nand: Unknown NAND 128MiB 3,3V 8-bit
-> [    0.863031] nand: 128MiB, SLC, page size: 2048, OOB size: 64
->=20
-> According to the F59L1G81MA datasheet (and Read Id documentation) C8h is
-> a "Maker Code" which should mean ESMT. Add it to fix above "Unknown".
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+Thanks for the guidelines.
+Only patches 1 and 4 are mechanical.
+All others need some kind of inspection/ verification.
+I will keep these in mind for updating 1 and 4.
 
-Applied.
-
-Thanks,
-
-Boris
-
-> ---
->  drivers/mtd/nand/nand_ids.c | 1 +
->  include/linux/mtd/nand.h    | 1 +
->  2 files changed, 2 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-> index ccc05f5..2af9869 100644
-> --- a/drivers/mtd/nand/nand_ids.c
-> +++ b/drivers/mtd/nand/nand_ids.c
-> @@ -168,6 +168,7 @@ struct nand_flash_dev nand_flash_ids[] =3D {
->  /* Manufacturer IDs */
->  struct nand_manufacturers nand_manuf_ids[] =3D {
->  	{NAND_MFR_TOSHIBA, "Toshiba"},
-> +	{NAND_MFR_ESMT, "ESMT"},
->  	{NAND_MFR_SAMSUNG, "Samsung"},
->  	{NAND_MFR_FUJITSU, "Fujitsu"},
->  	{NAND_MFR_NATIONAL, "National"},
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index fbe8e16..8dd6e01 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -783,6 +783,7 @@ static inline void nand_set_controller_data(struct na=
-nd_chip *chip, void *priv)
->   * NAND Flash Manufacturer ID Codes
->   */
->  #define NAND_MFR_TOSHIBA	0x98
-> +#define NAND_MFR_ESMT		0xc8
->  #define NAND_MFR_SAMSUNG	0xec
->  #define NAND_MFR_FUJITSU	0x04
->  #define NAND_MFR_NATIONAL	0x8f
-
-
-
---=20
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+-Deepa
