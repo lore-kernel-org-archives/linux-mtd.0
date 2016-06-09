@@ -1,33 +1,17 @@
-MIME-Version: 1.0
-In-Reply-To: <CA+55aFzomEx82xuREb23K12g7XqDAZgrwYHWhOpgQVp1hk3oQw@mail.gmail.com>
-References: <1465448705-25055-1-git-send-email-deepa.kernel@gmail.com>
- <1465448705-25055-2-git-send-email-deepa.kernel@gmail.com>
- <20160609073507.GA2790@quack2.suse.cz>
- <CA+55aFzomEx82xuREb23K12g7XqDAZgrwYHWhOpgQVp1hk3oQw@mail.gmail.com>
-From: Deepa Dinamani <deepa.kernel@gmail.com>
-Date: Thu, 9 Jun 2016 13:41:10 -0700
-Message-ID: <CABeXuvqO6NsZdabHHiVWRYDNc0qB+jNRAiytR=ZyBV0DUSTEZw@mail.gmail.com>
-Subject: Re: [PATCH 01/21] fs: Replace CURRENT_TIME_SEC with current_fs_time()
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jan Kara <jack@suse.cz>, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Arnd Bergmann <arnd@arndb.de>,
- Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
- y2038@lists.linaro.org,
- Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Evgeniy Dushistov <dushistov@mail.ru>,
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Jan Kara <jack@suse.com>,
- "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
- David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org,
- "Tigran A. Aivazian" <tigran@aivazian.fsnet.co.uk>,
- "Theodore Ts'o" <tytso@mit.edu>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Jan Harkes <jaharkes@cs.cmu.edu>,
- coda@cs.cmu.edu,
- codalist@coda.cs.cmu.edu, Bob Copeland <me@bobcopeland.com>,
- linux-karma-devel@lists.sourceforge.net,
- Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Received: from mail-pa0-x243.google.com ([2607:f8b0:400e:c03::243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bB7LT-0004at-6K
+ for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 21:18:31 +0000
+Received: by mail-pa0-x243.google.com with SMTP id fg1so3546518pad.3
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2016 14:18:10 -0700 (PDT)
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com
+Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+ Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: [V3, 1/2] mtd: brcmnand: Add check for erased page bitflips
+Date: Thu,  9 Jun 2016 17:17:54 -0400
+Message-Id: <1465507075-9447-1-git-send-email-kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,42 +21,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 9, 2016 at 12:15 PM, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Thu, Jun 9, 2016 at 12:35 AM, Jan Kara <jack@suse.cz> wrote:
->>
->> You create line longer than 80 characters for affs and reiserfs. Please
->> wrap those lines properly.
->
-> No, please do *NOT* do things like that.
->
-> These kind of mechanical patches should
->
->  (a) be as mechanical as possible (and see elsewhere about why I think
-> 'sb' should be 'inode' and the patch should have been 95% automated
-> with a trivial script thanks to that change)
->
->  (b) be made as easy to verify visually as possible.
->
-> That (b) means that a conversion should *not* add whitespace fixups or
-> add other non-mechanical cleanups, because it's a *lot* easier to see
-> that a conversion like
->
-> -       inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
-> +       inode->i_mtime = inode->i_ctime = current_fs_time(inode);
->
-> makes no other changes, but if you start doing line-splitting or other
-> transformations (add new variables etc to get at 'sb'), suddenly you
-> have to verify the patch at a completely different level.
->
-> In other words, it's actually really important to make these kinds of
-> bulk changes be very very obvious. Including to the point of making
-> them visually easier to scan as a patch by not making any other
-> changes.
+Check for erased page bitflips in a page. And if well within
+threshold return data as all 0xff. Apply sw check for controller
+version < 7.2. Controller vesion >= 7.2 has hw support.
 
-Thanks for the guidelines.
-Only patches 1 and 4 are mechanical.
-All others need some kind of inspection/ verification.
-I will keep these in mind for updating 1 and 4.
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+V3 changes
+ Return the max bitflips from a sector within a page
+V2 changes 
+ Added use of nand_check_erased_ecc_chunk
+ Restrict change to older controller < 7.2
+---
 
--Deepa
+ drivers/mtd/nand/brcmnand/brcmnand.c | 62 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+
+diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
+index b76ad7c..7ee9617 100644
+--- a/drivers/mtd/nand/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+@@ -1545,6 +1545,56 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+ 	return ret;
+ }
+ 
++/*
++ * Check a page to see if it is erased (w/ bitflips) after an uncorrectable ECC
++ * error
++ *
++ * Because the HW ECC signals an ECC error if an erase paged has even a single
++ * bitflip, we must check each ECC error to see if it is actually an erased
++ * page with bitflips, not a truly corrupted page.
++ *
++ * On a real error, return a negative error code (-EBADMSG for ECC error), and
++ * buf will contain raw data.
++ * Otherwise, buf gets filled with 0xffs and return the maximum number of
++ * bitflips-per-ECC-sector to the caller.
++ *
++ */
++static int brcmstb_nand_verify_erased_page(struct mtd_info *mtd,
++		  struct nand_chip *chip, void *buf, u64 addr)
++{
++	int i, sas;
++	void *oob = chip->oob_poi;
++	int bitflips = 0;
++	int page = addr >> chip->page_shift;
++	int ret;
++
++	if (!buf) {
++		buf = chip->buffers->databuf;
++		/* Invalidate page cache */
++		chip->pagebuf = -1;
++	}
++
++	sas = mtd->oobsize / chip->ecc.steps;
++
++	/* read without ecc for verification */
++	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
++	ret = chip->ecc.read_page_raw(mtd, chip, buf, true, page);
++	if (ret)
++		return ret;
++
++	for (i = 0; i < chip->ecc.steps; i++, oob += sas) {
++		ret = nand_check_erased_ecc_chunk(buf, chip->ecc.size,
++						  oob, sas, NULL, 0,
++						  chip->ecc.strength);
++		if (ret < 0)
++			return ret;
++
++		bitflips = max(bitflips, ret);
++	}
++
++	return bitflips;
++}
++
+ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+ 			 u64 addr, unsigned int trans, u32 *buf, u8 *oob)
+ {
+@@ -1575,6 +1625,18 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
+ 	}
+ 
+ 	if (mtd_is_eccerr(err)) {
++		/*
++		 * Controller version 7.2 has hw encoder to detect erased page
++		 * bitflips, apply sw verification for older controllers only
++		 */
++		if (ctrl->nand_version < 0x0702) {
++			err = brcmstb_nand_verify_erased_page(mtd, chip, buf,
++							      addr);
++			/* erased page bitflips corrected */
++			if (err > 0)
++				return err;
++		}
++
+ 		dev_dbg(ctrl->dev, "uncorrectable error at 0x%llx\n",
+ 			(unsigned long long)err_addr);
+ 		mtd->ecc_stats.failed++;
+-- 
+1.9.1
