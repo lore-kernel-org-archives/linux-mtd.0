@@ -1,31 +1,21 @@
-Date: Thu, 9 Jun 2016 09:35:07 +0200
-From: Jan Kara <jack@suse.cz>
-To: Deepa Dinamani <deepa.kernel@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
- Al Viro <viro@zeniv.linux.org.uk>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- y2038@lists.linaro.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- Evgeniy Dushistov <dushistov@mail.ru>,
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
- Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
- David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org,
- "Tigran A. Aivazian" <tigran@aivazian.fsnet.co.uk>,
- Theodore Ts'o <tytso@mit.edu>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
- Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
- codalist@coda.cs.cmu.edu, Bob Copeland <me@bobcopeland.com>,
- linux-karma-devel@lists.sourceforge.net,
- Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 01/21] fs: Replace CURRENT_TIME_SEC with current_fs_time()
-Message-ID: <20160609073507.GA2790@quack2.suse.cz>
-References: <1465448705-25055-1-git-send-email-deepa.kernel@gmail.com>
- <1465448705-25055-2-git-send-email-deepa.kernel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1465448705-25055-2-git-send-email-deepa.kernel@gmail.com>
+Date: Thu, 9 Jun 2016 11:11:00 +0300
+From: Aleksei Mamlin <mamlinav@gmail.com>
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 7/7] ARM: dts: sun7i: Enable NAND on Wexler TAB7200
+Message-Id: <20160609111100.38931fbe05fda9be7a355836@gmail.com>
+In-Reply-To: <20160608220314.GL14179@lukather>
+References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
+ <1465208664-9366-8-git-send-email-mamlinav@gmail.com>
+ <20160608220314.GL14179@lukather>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,29 +25,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 08-06-16 22:04:45, Deepa Dinamani wrote:
-> CURRENT_TIME_SEC is not y2038 safe. current_fs_time() will
-> be transitioned to use 64 bit time along with vfs in a
-> separate patch.
-> There is no plan to transistion CURRENT_TIME_SEC to use
-> y2038 safe time interfaces.
-> 
-> current_fs_time() will also be extended to use superblock
-> range checking parameters when range checking is introduced.
-> 
-> This works because alloc_super() fills in the the s_time_gran
-> in super block to NSEC_PER_SEC.
-> 
-> Also note that filesystem specific times like the birthtime,
-> creation time that were using same interfaces to obtain time
-> retain same logistics.
+On Thu, 9 Jun 2016 00:03:14 +0200
+Maxime Ripard <maxime.ripard@free-electrons.com> wrote:
 
-You create line longer than 80 characters for affs and reiserfs. Please
-wrap those lines properly. Other than that feel free to add:
+> Hi,
+> 
+> On Mon, Jun 06, 2016 at 01:24:24PM +0300, Aleksei Mamlin wrote:
+> > Enable the NFC and describe the NAND flash connected to this controller.
+> > 
+> > Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
+> > ---
+> >  arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts | 41 ++++++++++++++++++++++++++
+> >  1 file changed, 41 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts b/arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts
+> > index 2f6b21a..42aff91 100644
+> > --- a/arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts
+> > +++ b/arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts
+> > @@ -159,6 +159,47 @@
+> >  	status = "okay";
+> >  };
+> >  
+> > +&nfc {
+> > +	pinctrl-names = "default";
+> > +	pinctrl-0 = <&nand_pins_a>, <&nand_cs0_pins_a>, <&nand_rb0_pins_a>;
+> > +	status = "okay";
+> > +
+> > +	nand@0 {
+> > +		#address-cells = <2>;
+> > +		#size-cells = <2>;
+> > +		reg = <0>;
+> > +		allwinner,rb = <0>;
+> > +
+> > +		nand-ecc-mode = "hw";
+> > +		nand-on-flash-bbt;
+> > +
+> > +		boot0@0 {
+> > +			label = "boot0";
+> > +			reg = /bits/ 64 <0x0 0x200000>;
+> > +		};
+> > +
+> > +		boot0-rescue@200000 {
+> > +			label = "boot0-rescue";
+> > +			reg = /bits/ 64 <0x200000 0x200000>;
+> > +		};
+> > +
+> > +		uboot@400000 {
+> > +			label = "uboot";
+> > +			reg = /bits/ 64 <0x400000 0x200000>;
+> > +		};
+> > +
+> > +		uboot-rescue@600000 {
+> > +			label = "uboot-rescue";
+> > +			reg = /bits/ 64 <0x600000 0x200000>;
+> > +		};
+> > +
+> > +		main@800000 {
+> > +			label = "main";
+> > +			reg = /bits/ 64 <0x800000 0xff800000>;
+> > +		};
+> > +	};
+> > +};
+> 
+> This feels a bit premature. The two boards you're using have an MLC
+> NAND which is not supported yet. Until there's proper MLC support in
+> the kernel, I'm not sure we want to enable that for end-users when we
+> know that things will get wrong.
+> 
+> However, after discussing this with Boris, I appreciate that we don't
+> have any example available because of this policy for people that want
+> to opt-in anyway.
+> 
+> What we could do is to still mark the status as disabled in the DTS,
+> with a big fat warning as comment just before, so that it requires
+> user action, and that user will have been warned.
+> 
+> Would that work for you?
+> Maxime
+> 
 
-Acked-by: Jan Kara <jack@suse.cz>
+Let's drop this two patches with boards dts changes until we get proper MLC
+support in kernel.
 
-								Honza
+As for examples - I'll update linux-sunxi wiki with how to enable NAND 
+controller and describe NAND chips in DTS. People who want to add NAND support 
+to their boards will be warned that it is risky for now.
+
+>
+> -- 
+> Maxime Ripard, Free Electrons
+> Embedded Linux, Kernel and Android engineering
+> http://free-electrons.com
+
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks and regards,
+Aleksei Mamlin
