@@ -1,21 +1,20 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bB4yP-0002gO-O3
- for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 18:46:34 +0000
-Date: Thu, 9 Jun 2016 20:46:00 +0200
+ id 1bB50A-0003C2-Uh
+ for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 18:48:23 +0000
+Date: Thu, 9 Jun 2016 20:47:50 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: Franklin S Cooper Jr <fcooper@ti.com>
 Cc: tony@atomide.com, computersforpeace@gmail.com,
  linux-arm-kernel@lists.infradead, linux-kernel@vger.kernel.org,
  linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 5/6] memory: omap-gpmc: Enable omap-gpmc by default when
- dependency is met
-Message-ID: <20160609204600.003c6fd2@bbrezillon>
-In-Reply-To: <20160609204503.46a33844@bbrezillon>
+Subject: Re: [PATCH 4/6] mtd: nand: Add OMAP_GPMC as a dependency to
+ MTD_NAND_OMAP2
+Message-ID: <20160609204750.23e587dc@bbrezillon>
+In-Reply-To: <1465491777-20033-5-git-send-email-fcooper@ti.com>
 References: <1465491777-20033-1-git-send-email-fcooper@ti.com>
- <1465491777-20033-6-git-send-email-fcooper@ti.com>
- <20160609204503.46a33844@bbrezillon>
+ <1465491777-20033-5-git-send-email-fcooper@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,43 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 9 Jun 2016 20:45:03 +0200
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On Thu,  9 Jun 2016 12:02:55 -0500
+Franklin S Cooper Jr <fcooper@ti.com> wrote:
 
-> On Thu,  9 Jun 2016 12:02:56 -0500
-> Franklin S Cooper Jr <fcooper@ti.com> wrote:
+> OMAP 2 NAND depends on the GPMC driver. Therefore, insure that the OMAP
+> GPMC config is selected before enabling the OMAP 2 NAND driver.
 > 
-> > When dependencies are met enable OMAP GPMC by default. Later patches will
-> > prevent OMAP GPMC from being automatically selected by mach-omap2 Kconfig.
-> > Therefore, this will sure after that change the current behavior is still
-> > maintained when dependencies are met.
-> > 
-> > Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
-> > ---
-> >  drivers/memory/Kconfig | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-> > index 81ddb17..56a1c66 100644
-> > --- a/drivers/memory/Kconfig
-> > +++ b/drivers/memory/Kconfig
-> > @@ -51,6 +51,7 @@ config TI_EMIF
-> >  
-> >  config OMAP_GPMC
-> >  	bool
-> > +	default y  
+> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+> ---
+>  drivers/mtd/nand/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 	depends ARCH_OMAP2PLUS
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index f05e0e9..e24404f 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -89,7 +89,7 @@ config MTD_NAND_AMS_DELTA
+>  
+>  config MTD_NAND_OMAP2
+>  	tristate "NAND Flash device on OMAP2, OMAP3 and OMAP4"
+> -	depends on ARCH_OMAP2PLUS
+> +	depends on ARCH_OMAP2PLUS && OMAP_GPMC
 
-Actually, that was a question :).
+If you add
 
-> 
-> >  	select GPIOLIB
-> >  	help
-> >  	  This driver is for the General Purpose Memory Controller (GPMC)  
-> 
-> 
-> 
+	depends on ARCH_OMAP2PLUS
+
+in the OMAP_GPMC driver, you can just drop the ARCH_OMAP2PLUS
+dependency here.
+
+>  	help
+>            Support for NAND flash on Texas Instruments OMAP2, OMAP3 and OMAP4
+>  	  platforms.
 
 
 
