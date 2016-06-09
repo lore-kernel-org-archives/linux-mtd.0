@@ -1,32 +1,31 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bAuAD-0002wq-8T
- for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 07:14:08 +0000
-Received: by mail-wm0-x241.google.com with SMTP id n184so8188393wmn.1
- for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2016 00:13:40 -0700 (PDT)
+Date: Thu, 9 Jun 2016 09:35:07 +0200
+From: Jan Kara <jack@suse.cz>
+To: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
+ Al Viro <viro@zeniv.linux.org.uk>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ y2038@lists.linaro.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+ Evgeniy Dushistov <dushistov@mail.ru>,
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+ Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+ David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org,
+ "Tigran A. Aivazian" <tigran@aivazian.fsnet.co.uk>,
+ Theodore Ts'o <tytso@mit.edu>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
+ Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+ codalist@coda.cs.cmu.edu, Bob Copeland <me@bobcopeland.com>,
+ linux-karma-devel@lists.sourceforge.net,
+ Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 01/21] fs: Replace CURRENT_TIME_SEC with current_fs_time()
+Message-ID: <20160609073507.GA2790@quack2.suse.cz>
+References: <1465448705-25055-1-git-send-email-deepa.kernel@gmail.com>
+ <1465448705-25055-2-git-send-email-deepa.kernel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20977e07-6354-2753-8286-e992c32454d1@gmail.com>
-References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
- <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
- <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
- <20160506121431.GQ6292@sirena.org.uk>
- <77a22258-95ca-031a-825d-a9e98e30a162@gmail.com>
- <20160606174003.GE7510@sirena.org.uk>
- <a57adb90-0d80-186f-17d3-6fdf106bfb4a@gmail.com>
- <20160606230752.GM7510@sirena.org.uk>
- <fe0042f9-66c9-51fd-ca91-641c5cc25c40@gmail.com>
- <20977e07-6354-2753-8286-e992c32454d1@gmail.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Thu, 9 Jun 2016 09:12:59 +0200
-Message-ID: <CAOMqctQfsN4OoXN59yH13n-UJiEUJVOkxzMTMAndmBc8Dq+ANA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- Marek Vasut <marex@denx.de>, Han Xu <han.xu@nxp.com>,
- linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1465448705-25055-2-git-send-email-deepa.kernel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,77 +35,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8 June 2016 at 21:51, Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> Am 07.06.2016 um 08:03 schrieb Heiner Kallweit:
->> Am 07.06.2016 um 01:07 schrieb Mark Brown:
->>> On Mon, Jun 06, 2016 at 08:53:10PM +0200, Heiner Kallweit wrote:
->>>> Am 06.06.2016 um 19:40 schrieb Mark Brown:
->>>
->>>>> That doesn't make any sense, the controller hardware doesn't
->>>>> magically change based on what is connected to it.
->>>
->>>> The issue with fsl-espi is that the controller deactivates CS after
->>>> each physical transfer. And a lot of HW designs use the hardware CS,
->>>> therefore the advise to use a GPIO instead doesn't really help.
->>>
->>> There's no pinmux to fix the broken behaviour?  The Freescale SPI
->>> controllers really are terrible :(
->>>
->>>> In case of SPI NOR CS needs to stay active between command and data
->>>
->>> In the case of *all* SPI transactions this needs to happen.  This is
->>> *not* optional, it's not some weird requirement of NOR, it's one of the
->>> most basic requirements for a SPI driver on Linux.
->>>
->>>> Well, we could reduce the max_transfer_size exposed by the driver by
->>>> the max length of a m25p80 read command in general.
->>>
->>> No!  Apart from anything else this would be a complete and total
->>> abstraction failure.  This is a driver for a SPI controller, not a
->>> driver for a flash controller, which means that it should not have flash
->>> specific hacks in it.
->>>
->>>> Then we might be too strict for other SPI devices, but this may
->>>> be acceptable as the current fsl-espi driver is usable with SPI NOR
->>>> devices only anyway.
->>>
->>> What makes you say this?  I'm guessing that the driver is just broken
->>> but it would be good to understand the specifics.
->>>
->> See fsl_espi_rw_trans():
->> In case of transfers > SPCOM_TRANLEN_MAX it loops and reads in
->> SPCOM_TRANLEN_MAX chunks whilst replacing bytes 2-4 of the
->> message buffer with the new start address to read from.
->> Having said that it implicitely assumes that the first transfer in
->> the message is a m25p80 read command with a 3 byte address.
->>
->> And in fsl_espi_do_one_msg() it assumes that each message includes
->> max one r/o transfer (else rx_buf is overwritten).
->>
->> I'm not 100% sure whether any arbitrary combination of r/o, r/w, w/o
->> transfers in a SPI message is acceptable. But this controller driver
->> supports just the transfer combinations generated by the m25p80
->> protocol driver.
->>
-> I think in this discussion there was the idea already to introduce
-> a message size limit complementing the transfer size limit.
-> Could this be an acceptable way to go?
-> If yes I'd prepare a patch as basis for further discussion.
->
-I think it would be better to introduce a flag saying that the
-transfer size limit is also a message size limit. We don't have a
-controller which has different limit for both and protocol drivers
-that only send one transfer in the message do not need to care that
-way.
+On Wed 08-06-16 22:04:45, Deepa Dinamani wrote:
+> CURRENT_TIME_SEC is not y2038 safe. current_fs_time() will
+> be transitioned to use 64 bit time along with vfs in a
+> separate patch.
+> There is no plan to transistion CURRENT_TIME_SEC to use
+> y2038 safe time interfaces.
+> 
+> current_fs_time() will also be extended to use superblock
+> range checking parameters when range checking is introduced.
+> 
+> This works because alloc_super() fills in the the s_time_gran
+> in super block to NSEC_PER_SEC.
+> 
+> Also note that filesystem specific times like the birthtime,
+> creation time that were using same interfaces to obtain time
+> retain same logistics.
 
-Also it might be nice to add functionality to spi core that detects
-drivers that don't have neither set_cs nor cs gpio and do message
-coalescing for them in the core transfer_one_message.
+You create line longer than 80 characters for affs and reiserfs. Please
+wrap those lines properly. Other than that feel free to add:
 
-You could allocate two buffers of the same size, copy the transfer
-bits into the transfer buffer, do a transfer, and copy the receive
-bits out of the receive buffer.
+Acked-by: Jan Kara <jack@suse.cz>
 
-Thanks
-
-Michal
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
