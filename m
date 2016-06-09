@@ -1,19 +1,22 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-by2on0092.outbound.protection.outlook.com ([207.46.100.92]
+ helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bB7Lb-0004cX-Oo
- for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 21:18:40 +0000
-Received: by mail-pf0-x243.google.com with SMTP id 62so3549366pfd.3
- for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2016 14:18:19 -0700 (PDT)
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com
-Cc: f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
- Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [V3, 2/2] mtd: brcmnand: Detect sticky ucorr ecc error on dma reads
-Date: Thu,  9 Jun 2016 17:17:55 -0400
-Message-Id: <1465507075-9447-2-git-send-email-kdasu.kdev@gmail.com>
-In-Reply-To: <1465507075-9447-1-git-send-email-kdasu.kdev@gmail.com>
-References: <1465507075-9447-1-git-send-email-kdasu.kdev@gmail.com>
+ id 1bB7YC-0001RP-0E
+ for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 21:31:40 +0000
+From: David Olson <Dave.Olson@welchallyn.com>
+To: Mychaela Falconia <mychaela.falconia@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: Temporarily remounting rootfs as rw leads to kernel panic on
+ reboot
+Date: Thu, 9 Jun 2016 21:31:17 +0000
+Message-ID: <DM2PR0801MB0926D62FBEA90F061130D3A8FF5F0@DM2PR0801MB0926.namprd08.prod.outlook.com>
+References: <DM2PR0801MB092606DB85030B4F62A0BBF6FF5D0@DM2PR0801MB0926.namprd08.prod.outlook.com>
+ <CA+uuBqb5K74aajPGWrDdW=cFPn0Ctuk5oeve1_bhv49Z60M7zg@mail.gmail.com>
+In-Reply-To: <CA+uuBqb5K74aajPGWrDdW=cFPn0Ctuk5oeve1_bhv49Z60M7zg@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This change provides a fix for controller bug where nand
-controller could have a possible sticky error after a PIO
-followed by a DMA read. The fix retries a read if we see
-a uncorr_ecc after read to detect such sticky errors.
-The fix applies to only controller version 7.0 and 7.1.
-
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
-V3 changes 
- none
-V2 Changes 
- Restrict controller bug workaround to version 7.0 and 7.1
----
- drivers/mtd/nand/brcmnand/brcmnand.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index 7ee9617..1156495 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -1602,9 +1602,11 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
- 	struct brcmnand_controller *ctrl = host->ctrl;
- 	u64 err_addr = 0;
- 	int err;
-+	static bool retry = true;
- 
- 	dev_dbg(ctrl->dev, "read %llx -> %p\n", (unsigned long long)addr, buf);
- 
-+try_dmaread:
- 	brcmnand_write_reg(ctrl, BRCMNAND_UNCORR_COUNT, 0);
- 
- 	if (has_flash_dma(ctrl) && !oob && flash_dma_buf_ok(buf)) {
-@@ -1626,6 +1628,22 @@ static int brcmnand_read(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 	if (mtd_is_eccerr(err)) {
- 		/*
-+		 * On controller version and 7.0, 7.1 , DMA read after a
-+		 * prior PIO read that reported uncorrectable error,
-+		 * the DMA engine captures this error following DMA read
-+		 * cleared only on subsequent DMA read, so just retry once
-+		 * to clear a possible false error reported for current DMA
-+		 * read
-+		 */
-+		if ((ctrl->nand_version == 0x0700) ||
-+		    (ctrl->nand_version == 0x0701)) {
-+			if (retry) {
-+				retry = false;
-+				goto try_dmaread;
-+			}
-+		}
-+
-+		/*
- 		 * Controller version 7.2 has hw encoder to detect erased page
- 		 * bitflips, apply sw verification for older controllers only
- 		 */
--- 
-1.9.1
+KE9uIG91ciBsYXN0IHByb2plY3QsIHdlIHVzZWQgZXh0MyBhbmQgZU1NQyBhbmQgZGlkbid0IGhh
+dmUgdG8gc3BlbmQNCm11Y2ggdGltZSBsZWFybmluZyBhYm91dCBmaWxlc3lzdGVtcyBzaW5jZSBp
+dCBqdXN0IHdvcmtlZC4gIFRoaXMgaXMgb3VyIGZpcnN0DQpwcm9qZWN0IHdpdGggdGhlIE1URC9V
+QkkvVUJJRlMgc3RhY2sgYW5kIGl0IGhhcyBwcm92ZW4gdG8gYmUgZmFyIG1vcmUNCnRyb3VibGVz
+b21lLCByZXF1aXJpbmcgdXMgdG8gZGVsdmUgZGVlcGx5IGludG8gYSBjb25zaWRlcmFibGUgYm9k
+eSBvZg0KY29tcGxleCBjb2RlLCBpbmNsdWRpbmcgdGhlIGJ1aWxkIHN5c3RlbS4gIENvbnNlcXVl
+bnRseSBhbnN3ZXJpbmcNCnF1ZXN0aW9ucyBhbmQgdHJ5aW5nIGV4cGVyaW1lbnRzIGlzIHRha2lu
+ZyBxdWl0ZSBzb21lIHRpbWUgOy0pDQoNCj4gPiBVQkk6IHNtYWxsZXN0IGZsYXNoIEkvTyB1bml0
+OiAgICAyMDQ4DQo+ID4gVUJJOiBzdWItcGFnZSBzaXplOiAgICAgICAgICAgICAgNTEyDQo+ID4g
+VUJJOiBWSUQgaGVhZGVyIG9mZnNldDogICAgICAgICAgMjA0OCAoYWxpZ25lZCAyMDQ4KQ0KPiA+
+IFVCSTogZGF0YSBvZmZzZXQ6ICAgICAgICAgICAgICAgIDQwOTYNCj4NCj4gRmlyc3Qgc2lnbiBv
+ZiBpbmNvbnNpc3RlbmN5OiB5b3VyIFVCSSByZXBvcnRzIGhlcmUgdGhhdCB0aGUgdW5kZXJseWlu
+ZyBOQU5EDQo+IGhhcyBzdWJwYWdlcywgeWV0IGl0IGRvZXNuJ3QgdXNlIHRoZW0gdG8gcHV0IHRo
+ZSBFQyBhbmQgVklEIGhlYWRlcnMgaW4gdGhlDQo+IHNhbWUgcGFnZSwgaS5lLiwgeW91ciBWSUQg
+b2Zmc2V0IGlzIGVxdWFsIHRvIHRoZSBmdWxsIHBhZ2Ugc2l6ZSBhbmQgdGhlIGRhdGENCj4gb2Zm
+c2V0IGlzIDJ4IHRoZSBmdWxsIHBhZ2Ugc2l6ZS4NCg0KV2Ugc3RhcnRlZCB3aXRoIGEgYmFzZSBw
+cm92aWRlZCBieSBUSS4gIFRoZXkgd2VyZSB0aGUgb25lcyB3aG8gcHJvdmlkZWQgdGhlDQpVLUJv
+b3QgJiBrZXJuZWwgZm9ya3MgYXMgd2VsbCBhcyB0aGUgYnVpbGQgc3lzdGVtLiAgVGhlIG1lY2hh
+bmlzbSB1c2VkIHRvIHNldA0KdGhlIGhlYWRlciBvZmZzZXQgaXMgdGhpcyBwb3J0aW9uIG9mIHRo
+ZSBUSSBwcm92aWRlZCBrZXJuZWwgY29tbWFuZCBsaW5lOg0KInViaS5tdGQ9NCwyMDQ4Ii4gIFRo
+YXQgaXMgb25lIG9mIHRoZSB0ZWNobmlxdWVzIGRlc2NyaWJlZCBpbiB0aGUgVUJJIEZBUSB0b3Bp
+Yw0KIkhvdyBkbyBJIGZvcmNlIFVCSSB0byBpZ25vcmUgc3ViLXBhZ2VzPyIuICAgRnVydGhlciwg
+VEkgZGlkIG5vdCBpbmNsdWRlIHRoZQ0KJy1zJyBwYXJhbWV0ZXIgaW4gdGhlIHViaW5pemUgaW52
+b2NhdGlvbiwgc28gbWF5IGhhdmUgZG9uZSB0aGlzIGRlbGliZXJhdGVseS4NCkkgc2hhbGwgY29u
+dGludWUgcmVzZWFyY2hpbmcgdGhpcy4NCg0KPiA+IFVCSSBlcnJvcjogdWJpX2lvX3JlYWQ6IGVy
+cm9yIC03NCAoRUNDIGVycm9yKSB3aGlsZSByZWFkaW5nIDEyNjk3Ng0KPiA+IGJ5dGVzIGZyb20g
+UEVCIDM6NDA5NiwgcmVhZCAxMjY5NzYgYnl0ZXMgVUJJIGVycm9yOiB1YmlfaW9fcmVhZDogZXJy
+b3INCj4gPiAtNzQgKEVDQyBlcnJvcikgd2hpbGUgcmVhZGluZyAxMjY5NzYgYnl0ZXMgZnJvbSBQ
+RUIgNDo0MDk2LCByZWFkDQo+ID4gMTI2OTc2IGJ5dGVzIFVCSSBlcnJvcjogdWJpX2lvX3JlYWQ6
+IGVycm9yIC03NCAoRUNDIGVycm9yKSB3aGlsZQ0KPiA+IHJlYWRpbmcgMTEgYnl0ZXMgZnJvbSBQ
+RUIgMTA6MTAyNDAsIHJlYWQgMTEgYnl0ZXMgVUJJRlMgZXJyb3IgKHBpZCAxKToNCj4gPiB1Ymlm
+c19sZWJfcmVhZDogcmVhZGluZyAxMSBieXRlcyBmcm9tIExFQiA4OjYxNDQgZmFpbGVkLCBlcnJv
+ciAtNzQNCj4NCj4gTGV0IG1lIGd1ZXNzLCB0aGUgZmxhc2ggd2FzIHdyaXR0ZW4gaW4gcHJvZHVj
+dGlvbiB3aXRoIGEgcHJvZHVjdGlvbiBsaW5lDQo+IHByb2dyYW1tZXIgYW5kIG5vdCB3aXRoIHVi
+aWZvcm1hdCwgd2FzIGl0Pw0KDQpJdCB3YXMgd3JpdHRlbiB2aWEgdGhlIFUtQm9vdCAibmFuZCB3
+cml0ZSIgY29tbWFuZC4gIFdlIGFyZSBjb25zdHJhaW5lZCB0bw0KY29udGludWUgdXNpbmcgVS1C
+b290IHRoaXMgd2F5LiAgQXMgbm90ZWQsIG91ciBVLUJvb3QgaXMgYSBmb3JrIHByb3ZpZGVkIGJ5
+IFRJDQp3aGljaCBpcyBiYXNlZCBvbiBhIFUtQm9vdCB2ZXJzaW9uIGZyb20gc29tZXRpbWUgZWFy
+bHkgaW4gMjAxMC4gIEEgbGF0ZXINClUtQm9vdCB1cGRhdGUgaW50cm9kdWNlZCB0aGUgIm5hbmQg
+d3JpdGUudHJpbWZmcyIgdmFyaWFudCB3aGljaCBzZWVtcw0KYXR0cmFjdGl2ZSwgaG93ZXZlciB0
+aGVyZSB3YXMgY29uc2lkZXJhYmx5IG1vcmUgdGhhbiB0aGUgdXN1YWwgc2NoZWR1bGUNCnByZXNz
+dXJlIGZvciBvdXIgZmlyc3QgcmVsZWFzZSBzbyB3ZSBpbnN0ZWFkIHVzZWQgdGhlICItRiIgb3B0
+aW9uIG9mIHRoZQ0KbWtmcy51YmlmcyBjb21tYW5kLg0KDQpUaGF0IHdvcmtlZCBhbmQgY29udGlu
+dWVkIHRvIHdvcmsgd2hlbiB3ZSBjaGFuZ2VkIHRvIG1vdW50aW5nIHJvb3RmcyByby4NClRoZXJl
+IHdhcyBldmVuIGEgdGltZSBhZnRlciB3ZSBkaWQgdGhhdCB3aGVyZSBpdCB3YXMgcG9zc2libGUg
+b24gdGhlDQpjb21tYW5kIGxpbmUgdG8gcmVtb3VudCByb290ZnMgcncuICBIb3dldmVyIHRpbWUg
+cGFzc2VkLCBvdGhlciBjaGFuZ2VzDQp3ZXJlIG1hZGUsIGFuZCBub3cgdGhpbmdzIGdvIHZlcnkg
+YmFkbHkgd2hlbiB3ZSBkbyB0aGF0Lg0KDQpUaGUgaW1tZWRpYXRlIGlzc3VlIHRoYXQgaGFzIG1l
+IGNvbmZ1c2VkIGlzIHRoYXQgbWVyZWx5IHJlbW91bnRpbmcgcm9vdGZzDQpydyBhbmQgdGhlbiBp
+bW1lZGlhdGVseSBjeWNsaW5nIHBvd2VyIGlzIHN1ZmZpY2llbnQgdG8gZGVzdHJveSByb290ZnMu
+ICBTaW5jZQ0KcmVtb3VudGluZyBybyBkb2VzIE5PVCBkZXN0cm95IHJvb3RmcywgaXQncyBub3Qg
+aW5oZXJlbnQgaW4gdGhlIG1vdW50DQpvcGVyYXRpb24uICBJdCBtdXN0IGJlIHRoZSAncncnIHRo
+YXQncyB0cmlnZ2VyaW5nIHRoaXMgZGVzdHJ1Y3Rpb24uICBBbnkgdGhvdWdodHMNCm9uIHdoYXQg
+bWlnaHQgYmUgaGFwcGVuaW5nPw0KDQoNCkNPTkZJREVOVElBTCBOT1RJQ0U6IElmIHlvdSBhcmUg
+bm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQgb2YgdGhpcyBtZXNzYWdlLCB5b3UgYXJlIG5vdCBh
+dXRob3JpemVkIHRvIGludGVyY2VwdCwgcmVhZCwgcHJpbnQsIHJldGFpbiwgY29weSwgZm9yd2Fy
+ZCwgb3IgZGlzc2VtaW5hdGUgdGhpcyBjb21tdW5pY2F0aW9uLiBUaGlzIGNvbW11bmljYXRpb24g
+bWF5IGNvbnRhaW4gaW5mb3JtYXRpb24gdGhhdCBpcyBwcm9wcmlldGFyeSwgYXR0b3JuZXkvY2xp
+ZW50IHByaXZpbGVnZWQsIGF0dG9ybmV5IHdvcmsgcHJvZHVjdCwgY29uZmlkZW50aWFsIG9yIG90
+aGVyd2lzZSBsZWdhbGx5IGV4ZW1wdCBmcm9tIGRpc2Nsb3N1cmUuIElmIHlvdSBoYXZlIHJlY2Vp
+dmVkIHRoaXMgbWVzc2FnZSBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGltbWVk
+aWF0ZWx5IGVpdGhlciBieSBwaG9uZSBvciBieSByZXR1cm4gZS1tYWlsLCBhbmQgZGVzdHJveSBh
+bGwgY29waWVzIG9mIHRoaXMgbWVzc2FnZSwgZWxlY3Ryb25pYywgcGFwZXIsIG9yIG90aGVyd2lz
+ZS4NCg==
