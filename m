@@ -1,23 +1,34 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bB50A-0003C2-Uh
- for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 18:48:23 +0000
-Date: Thu, 9 Jun 2016 20:47:50 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Franklin S Cooper Jr <fcooper@ti.com>
-Cc: tony@atomide.com, computersforpeace@gmail.com,
- linux-arm-kernel@lists.infradead, linux-kernel@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 4/6] mtd: nand: Add OMAP_GPMC as a dependency to
- MTD_NAND_OMAP2
-Message-ID: <20160609204750.23e587dc@bbrezillon>
-In-Reply-To: <1465491777-20033-5-git-send-email-fcooper@ti.com>
-References: <1465491777-20033-1-git-send-email-fcooper@ti.com>
- <1465491777-20033-5-git-send-email-fcooper@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Sender: linus971@gmail.com
+In-Reply-To: <20160609073507.GA2790@quack2.suse.cz>
+References: <1465448705-25055-1-git-send-email-deepa.kernel@gmail.com>
+ <1465448705-25055-2-git-send-email-deepa.kernel@gmail.com>
+ <20160609073507.GA2790@quack2.suse.cz>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 9 Jun 2016 12:15:03 -0700
+Message-ID: <CA+55aFzomEx82xuREb23K12g7XqDAZgrwYHWhOpgQVp1hk3oQw@mail.gmail.com>
+Subject: Re: [PATCH 01/21] fs: Replace CURRENT_TIME_SEC with current_fs_time()
+To: Jan Kara <jack@suse.cz>
+Cc: Deepa Dinamani <deepa.kernel@gmail.com>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
+ y2038@lists.linaro.org,
+ Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Evgeniy Dushistov <dushistov@mail.ru>,
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Jan Kara <jack@suse.com>,
+ "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+ David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org,
+ "Tigran A. Aivazian" <tigran@aivazian.fsnet.co.uk>,
+ "Theodore Ts'o" <tytso@mit.edu>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jan Harkes <jaharkes@cs.cmu.edu>,
+ coda@cs.cmu.edu,
+ codalist@coda.cs.cmu.edu, Bob Copeland <me@bobcopeland.com>,
+ linux-karma-devel@lists.sourceforge.net,
+ Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +38,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  9 Jun 2016 12:02:55 -0500
-Franklin S Cooper Jr <fcooper@ti.com> wrote:
+On Thu, Jun 9, 2016 at 12:35 AM, Jan Kara <jack@suse.cz> wrote:
+>
+> You create line longer than 80 characters for affs and reiserfs. Please
+> wrap those lines properly.
 
-> OMAP 2 NAND depends on the GPMC driver. Therefore, insure that the OMAP
-> GPMC config is selected before enabling the OMAP 2 NAND driver.
-> 
-> Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
-> ---
->  drivers/mtd/nand/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index f05e0e9..e24404f 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -89,7 +89,7 @@ config MTD_NAND_AMS_DELTA
->  
->  config MTD_NAND_OMAP2
->  	tristate "NAND Flash device on OMAP2, OMAP3 and OMAP4"
-> -	depends on ARCH_OMAP2PLUS
-> +	depends on ARCH_OMAP2PLUS && OMAP_GPMC
+No, please do *NOT* do things like that.
 
-If you add
+These kind of mechanical patches should
 
-	depends on ARCH_OMAP2PLUS
+ (a) be as mechanical as possible (and see elsewhere about why I think
+'sb' should be 'inode' and the patch should have been 95% automated
+with a trivial script thanks to that change)
 
-in the OMAP_GPMC driver, you can just drop the ARCH_OMAP2PLUS
-dependency here.
+ (b) be made as easy to verify visually as possible.
 
->  	help
->            Support for NAND flash on Texas Instruments OMAP2, OMAP3 and OMAP4
->  	  platforms.
+That (b) means that a conversion should *not* add whitespace fixups or
+add other non-mechanical cleanups, because it's a *lot* easier to see
+that a conversion like
 
+-       inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
++       inode->i_mtime = inode->i_ctime = current_fs_time(inode);
 
+makes no other changes, but if you start doing line-splitting or other
+transformations (add new variables etc to get at 'sb'), suddenly you
+have to verify the patch at a completely different level.
 
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+In other words, it's actually really important to make these kinds of
+bulk changes be very very obvious. Including to the point of making
+them visually easier to scan as a patch by not making any other
+changes.
+
+              Linus
