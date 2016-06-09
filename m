@@ -1,18 +1,20 @@
 Received: from mail-oi0-f68.google.com ([209.85.218.68])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bB3Mi-0007Wm-Ve
- for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 17:03:33 +0000
-Received: by mail-oi0-f68.google.com with SMTP id k63so8568850oib.2
- for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2016 10:03:12 -0700 (PDT)
+ id 1bB3Mi-0007Wr-Vg
+ for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 17:03:34 +0000
+Received: by mail-oi0-f68.google.com with SMTP id k63so8568976oib.2
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2016 10:03:14 -0700 (PDT)
 From: Franklin S Cooper Jr <fcooper@ti.com>
 To: tony@atomide.com, boris.brezillon@free-electrons.com,
  computersforpeace@gmail.com, linux-arm-kernel@lists.infradead,
  linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
  linux-mtd@lists.infradead.org
 Cc: Franklin S Cooper Jr <fcooper@ti.com>
-Subject: [PATCH 0/6] ARM: OMAP2+: Don't force select OMAP_GPMC
-Date: Thu,  9 Jun 2016 12:02:51 -0500
-Message-Id: <1465491777-20033-1-git-send-email-fcooper@ti.com>
+Subject: [PATCH 1/6] ARM: omap2plus_defconfig: Enable OMAP GPMC
+Date: Thu,  9 Jun 2016 12:02:52 -0500
+Message-Id: <1465491777-20033-2-git-send-email-fcooper@ti.com>
+In-Reply-To: <1465491777-20033-1-git-send-email-fcooper@ti.com>
+References: <1465491777-20033-1-git-send-email-fcooper@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When building random configs a compile failure was detected due to
-CONFIG_MEMORY not being selected. This was due to OMAP_GPMC being enabled
-by ARCH_OMAP2PLUS which ignores config dependencies. This patchset fixes
-this issue and also insures GPMC and NAND is enabled for multi_v7.
+OMAP_GPMC will soon not be forcibly enabled by ARCH_OMAP2PLUS. It needs
+to be manually selected by the config. Enable it by default so features
+like NAND boot will work.
 
-Boot tested that NAND works on AM335x EVM using both omap2plus and
-multi_v7 config
-
-Franklin S Cooper Jr (6):
-  ARM: omap2plus_defconfig: Enable OMAP GPMC
-  ARM: multi_v7_defconfig: Enable OMAP GPMC
-  ARM: multi_v7_defconfig: Enable OMAP NAND drivers
-  mtd: nand: Add OMAP_GPMC as a dependency to MTD_NAND_OMAP2
-  memory: omap-gpmc: Enable omap-gpmc by default when dependency is met
-  ARM: OMAP2+: Don't force select OMAP_GPMC
-
- arch/arm/configs/multi_v7_defconfig  | 3 +++
+Signed-off-by: Franklin S Cooper Jr <fcooper@ti.com>
+---
  arch/arm/configs/omap2plus_defconfig | 1 +
- arch/arm/mach-omap2/Kconfig          | 1 -
- drivers/memory/Kconfig               | 1 +
- drivers/mtd/nand/Kconfig             | 2 +-
- 5 files changed, 6 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+)
 
+diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
+index ac717cc..c0c3bcd 100644
+--- a/arch/arm/configs/omap2plus_defconfig
++++ b/arch/arm/configs/omap2plus_defconfig
+@@ -117,6 +117,7 @@ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_DMA_CMA=y
+ CONFIG_OMAP_OCP2SCP=y
+ CONFIG_CONNECTOR=m
++CONFIG_OMAP_GPMC=y
+ CONFIG_MTD=y
+ CONFIG_MTD_CMDLINE_PARTS=y
+ CONFIG_MTD_BLOCK=y
 -- 
 2.7.0
