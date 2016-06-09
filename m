@@ -1,33 +1,28 @@
+Received: from mail-oi0-x236.google.com ([2607:f8b0:4003:c06::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bB5kU-00059h-UH
+ for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 19:36:15 +0000
+Received: by mail-oi0-x236.google.com with SMTP id e72so79751121oib.1
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2016 12:35:54 -0700 (PDT)
 MIME-Version: 1.0
-Sender: linus971@gmail.com
-In-Reply-To: <20160609073507.GA2790@quack2.suse.cz>
-References: <1465448705-25055-1-git-send-email-deepa.kernel@gmail.com>
- <1465448705-25055-2-git-send-email-deepa.kernel@gmail.com>
- <20160609073507.GA2790@quack2.suse.cz>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 9 Jun 2016 12:15:03 -0700
-Message-ID: <CA+55aFzomEx82xuREb23K12g7XqDAZgrwYHWhOpgQVp1hk3oQw@mail.gmail.com>
-Subject: Re: [PATCH 01/21] fs: Replace CURRENT_TIME_SEC with current_fs_time()
-To: Jan Kara <jack@suse.cz>
-Cc: Deepa Dinamani <deepa.kernel@gmail.com>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Arnd Bergmann <arnd@arndb.de>,
- Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>,
- y2038@lists.linaro.org,
- Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Evgeniy Dushistov <dushistov@mail.ru>,
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Jan Kara <jack@suse.com>,
- "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
- David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org,
- "Tigran A. Aivazian" <tigran@aivazian.fsnet.co.uk>,
- "Theodore Ts'o" <tytso@mit.edu>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Jan Harkes <jaharkes@cs.cmu.edu>,
- coda@cs.cmu.edu,
- codalist@coda.cs.cmu.edu, Bob Copeland <me@bobcopeland.com>,
- linux-karma-devel@lists.sourceforge.net,
- Christoph Hellwig <hch@infradead.org>
+In-Reply-To: <20160609200128.5b7a6e29@bbrezillon>
+References: <alpine.DEB.2.02.1606020948070.19416@lnxricardw1.se.axis.com>
+ <20160603165909.09f27ee0@bbrezillon>
+ <alpine.DEB.2.02.1606071702220.19416@lnxricardw1.se.axis.com>
+ <CA+uuBqb4fG4nK7atrF7XOQ=ip2SfKrxU+KXqD3W+PA_ZA7cS3g@mail.gmail.com>
+ <20160609200128.5b7a6e29@bbrezillon>
+From: Mychaela Falconia <mychaela.falconia@gmail.com>
+Date: Thu, 9 Jun 2016 11:35:53 -0800
+Message-ID: <CA+uuBqaRv2f8K-Q2ZLQY8tq6idq8XCDMV21SYM5XCWc4FVV90g@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mtd: nand: Add support for Evatronix NANDFLASH-CTRL
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>, devicetree@vger.kernel.org,
+ Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+ Oleksij Rempel <linux@rempel-privat.de>,
+ Linux mtd <linux-mtd@lists.infradead.org>,
+ Benoit Cousson <bcousson@baylibre.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -38,35 +33,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 9, 2016 at 12:35 AM, Jan Kara <jack@suse.cz> wrote:
+On 6/9/16, Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> I also agree on this aspect. Though what you consider an evolution with
+> these 'high-level' controllers is in my opinion a regression.
 >
-> You create line longer than 80 characters for affs and reiserfs. Please
-> wrap those lines properly.
+> By supporting only a subset of what NAND chips actually support, and
+> preventing any raw access, you just limit the compatibility of the NAND
+> controller with rather old NAND chips. For example, your controller
+> cannot deal with MLC/TLC NANDs because it just can't send the private
+> commands required to have reliable support for these NANDs.
 
-No, please do *NOT* do things like that.
+I am not the one who designed the controller IP, so please don't shoot
+the messenger. I fully agree that it would have been much safer if
+they just bothered to add a couple of registers to their IP that
+provide a raw bypass directly to the NAND interface pins - and it
+would have been trivial to do so, adding just a few transistors to the
+silicon - but apparently the IP vendor chose not to. I agree that it
+was a poor decision on their part, but as Linux geeks we don't get the
+power to change the IP we got hired to write drivers for.
 
-These kind of mechanical patches should
+As for private commands which the IP does not know about, there is a
+way to send them, but it is not a truly raw way. With FTNANDC024 if
+you need to send a private command to the NAND, you have to write some
+custom FTNANDC024 microcode for it. The datasheet explains how to
+write your own microcode, and the IP includes a small SRAM where you
+can put your own microcode in addition to the mask ROM with the
+standard microcode. But this provision still would not allow a
+low-level driver implementation: there is still no way to implement a
+driver function that just sends any arbitrary command opcode without
+caring what it is, instead you would have to write a different special
+microcode routine for each non-standard command you need to support,
+and naturally the microcode SRAM has a finite size.
 
- (a) be as mechanical as possible (and see elsewhere about why I think
-'sb' should be 'inode' and the patch should have been 95% automated
-with a trivial script thanks to that change)
+> I understand this constraint, and I know some controllers are really
+> like this, but before deciding to move those controllers to some
+> 'high-level NAND' framework, I'd like to make sure they are really not
+> providing this raw interface.
 
- (b) be made as easy to verify visually as possible.
+I would be glad to share the datasheet for the controller I am working
+with, so you can verify with your own eyes that it does not provide
+any truly raw interface - but I don't have a place to post it. If you
+like, I can send it to you as an off-list email attachment (1775641
+bytes), and you can then repost it somewhere for others to see.
 
-That (b) means that a conversion should *not* add whitespace fixups or
-add other non-mechanical cleanups, because it's a *lot* easier to see
-that a conversion like
+> I've been told many times that NAND controllers were not supporting raw
+> accesses (disabling the ECC engine when accessing the NAND), and most
+> of the time it was false, but the developers just didn't care about
+> supporting this feature, and things like that make the whole subsystem
+> unmaintainable.
 
--       inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
-+       inode->i_mtime = inode->i_ctime = current_fs_time(inode);
+With FTNANDC024 the closest you can get to a raw read are the
+following two features:
 
-makes no other changes, but if you start doing line-splitting or other
-transformations (add new variables etc to get at 'sb'), suddenly you
-have to verify the patch at a completely different level.
+1. You can disable the ECC engine and read the first "data size" bytes
+of the page raw, but it does not get you the OOB area. For example, on
+the Micron SLC chip I am working with currently, the raw page size is
+4096+224 bytes, but the FTNANDC024 can only read the 4096 "data" bytes
+this way, and not the remaining 224.
 
-In other words, it's actually really important to make these kinds of
-bulk changes be very very obvious. Including to the point of making
-them visually easier to scan as a patch by not making any other
-changes.
+2. There is a "byte read" command that performs a truly raw read of
+any range of bytes (any column address) within a page, but it can only
+read a maximum of 32 bytes per operation.
 
-              Linus
+If I wanted to do a truly raw dump of a full NAND page with my
+controller and NAND chip (like I did when I wanted to reverse-engineer
+their hardware BCH implementation), I would have to issue one read
+command to get the first 4096 bytes, then another 7 "byte read"
+commands to get the remaining 224 bytes. 8 read commands in total to
+get a raw dump of one full NAND page, and each of those 8 FTNANDC024
+read commands internally involves sending a new Read Page command to
+the physical NAND - thus any read disturbs are invoked 8 times per
+page instead of once.
+
+It's even worse with raw writes - if I wanted to do a raw write of a
+full NAND page, I would have to do it in 8 separate write commands
+just like with the raw read. I assume that the NAND chip won't like it
+at all, as it would get 8 separate Page Program commands for the same
+page with different column addresses.
+
+M~
