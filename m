@@ -1,24 +1,31 @@
-Date: Fri, 10 Jun 2016 10:56:22 +0200
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-To: Aleksei Mamlin <mamlinav@gmail.com>
-Cc: Chen-Yu Tsai <wens@csie.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 7/7] ARM: dts: sun7i: Enable NAND on Wexler TAB7200
-Message-ID: <20160610085622.GO5242@lukather>
-References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
- <1465208664-9366-8-git-send-email-mamlinav@gmail.com>
- <20160608220314.GL14179@lukather>
- <20160609111100.38931fbe05fda9be7a355836@gmail.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bBLjf-0003hL-KZ
+ for linux-mtd@lists.infradead.org; Fri, 10 Jun 2016 12:40:28 +0000
+Date: Fri, 10 Jun 2016 14:40:00 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Mychaela Falconia <mychaela.falconia@gmail.com>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ devicetree@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+ linux-kernel@vger.kernel.org, Oleksij Rempel <linux@rempel-privat.de>,
+ Linux mtd <linux-mtd@lists.infradead.org>, Benoit Cousson
+ <bcousson@baylibre.com>, Brian Norris <computersforpeace@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 3/4] mtd: nand: Add support for Evatronix NANDFLASH-CTRL
+Message-ID: <20160610144000.6101cc2c@bbrezillon>
+In-Reply-To: <CA+uuBqb-g1PC1WKR36Rbd5fd1YqreprzG_N57xOn43JOSeDqVw@mail.gmail.com>
+References: <alpine.DEB.2.02.1606020948070.19416@lnxricardw1.se.axis.com>
+ <20160603165909.09f27ee0@bbrezillon>
+ <alpine.DEB.2.02.1606071702220.19416@lnxricardw1.se.axis.com>
+ <CA+uuBqb4fG4nK7atrF7XOQ=ip2SfKrxU+KXqD3W+PA_ZA7cS3g@mail.gmail.com>
+ <20160609200128.5b7a6e29@bbrezillon>
+ <CA+uuBqaRv2f8K-Q2ZLQY8tq6idq8XCDMV21SYM5XCWc4FVV90g@mail.gmail.com>
+ <20160609222307.5db4e67f@bbrezillon>
+ <CA+uuBqb-g1PC1WKR36Rbd5fd1YqreprzG_N57xOn43JOSeDqVw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="ssZxAlvqSOvXAj81"
-Content-Disposition: inline
-In-Reply-To: <20160609111100.38931fbe05fda9be7a355836@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,134 +35,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 9 Jun 2016 21:07:49 -0800
+Mychaela Falconia <mychaela.falconia@gmail.com> wrote:
 
---ssZxAlvqSOvXAj81
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On 6/9/16, Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> > Hm, I think it's changing now that a lot of SoCs are advertised to be
+> > running Linux. But you're right in that existing IPs might not support
+> > this low-level mode.  
+> 
+> Faraday (the IP vendor in the present case) advertise Linux support as
+> well, but they never mainlined any of it, and instead they provide
+> their own vendor Linux trees. The one I got is based on linux-3.3; I
+> don't know if they have a newer one. They do "support" FTNANDC024
+> under Linux as well, but their driver for it is gawdawful - see below.
+> 
+> > Hm, I don't understand why it's not possible to implement basic
+> > sequences, but I don't know anything about FTNANDC024, so let's assume
+> > you're right.  
+> 
+> Read the datasheet (link below) and tell me what you think.
+> 
+> > Sure, feel free to send it to me, I'll have a look. And maybe you can
+> > also share your code (both the new and old versions of the driver).  
+> 
+> I decided to go ahead and abuse my personal web space on another
+> (nothing to do with Linux or with NAND flash) project's server for the
+> purpose of sharing this stuff:
+> 
+> https://www.freecalypso.org/members/falcon/linux-mtd/
+> 
+> There you will find the IP datasheet, the vendor's driver (GPL), and a
+> current snapshot of my work-in-progress replacement.
 
-On Thu, Jun 09, 2016 at 11:11:00AM +0300, Aleksei Mamlin wrote:
-> On Thu, 9 Jun 2016 00:03:14 +0200
-> Maxime Ripard <maxime.ripard@free-electrons.com> wrote:
->=20
-> > Hi,
-> >=20
-> > On Mon, Jun 06, 2016 at 01:24:24PM +0300, Aleksei Mamlin wrote:
-> > > Enable the NFC and describe the NAND flash connected to this controll=
-er.
-> > >=20
-> > > Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
-> > > ---
-> > >  arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts | 41 ++++++++++++++++=
-++++++++++
-> > >  1 file changed, 41 insertions(+)
-> > >=20
-> > > diff --git a/arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts b/arch/ar=
-m/boot/dts/sun7i-a20-wexler-tab7200.dts
-> > > index 2f6b21a..42aff91 100644
-> > > --- a/arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts
-> > > +++ b/arch/arm/boot/dts/sun7i-a20-wexler-tab7200.dts
-> > > @@ -159,6 +159,47 @@
-> > >  	status =3D "okay";
-> > >  };
-> > > =20
-> > > +&nfc {
-> > > +	pinctrl-names =3D "default";
-> > > +	pinctrl-0 =3D <&nand_pins_a>, <&nand_cs0_pins_a>, <&nand_rb0_pins_a=
->;
-> > > +	status =3D "okay";
-> > > +
-> > > +	nand@0 {
-> > > +		#address-cells =3D <2>;
-> > > +		#size-cells =3D <2>;
-> > > +		reg =3D <0>;
-> > > +		allwinner,rb =3D <0>;
-> > > +
-> > > +		nand-ecc-mode =3D "hw";
-> > > +		nand-on-flash-bbt;
-> > > +
-> > > +		boot0@0 {
-> > > +			label =3D "boot0";
-> > > +			reg =3D /bits/ 64 <0x0 0x200000>;
-> > > +		};
-> > > +
-> > > +		boot0-rescue@200000 {
-> > > +			label =3D "boot0-rescue";
-> > > +			reg =3D /bits/ 64 <0x200000 0x200000>;
-> > > +		};
-> > > +
-> > > +		uboot@400000 {
-> > > +			label =3D "uboot";
-> > > +			reg =3D /bits/ 64 <0x400000 0x200000>;
-> > > +		};
-> > > +
-> > > +		uboot-rescue@600000 {
-> > > +			label =3D "uboot-rescue";
-> > > +			reg =3D /bits/ 64 <0x600000 0x200000>;
-> > > +		};
-> > > +
-> > > +		main@800000 {
-> > > +			label =3D "main";
-> > > +			reg =3D /bits/ 64 <0x800000 0xff800000>;
-> > > +		};
-> > > +	};
-> > > +};
-> >=20
-> > This feels a bit premature. The two boards you're using have an MLC
-> > NAND which is not supported yet. Until there's proper MLC support in
-> > the kernel, I'm not sure we want to enable that for end-users when we
-> > know that things will get wrong.
-> >=20
-> > However, after discussing this with Boris, I appreciate that we don't
-> > have any example available because of this policy for people that want
-> > to opt-in anyway.
-> >=20
-> > What we could do is to still mark the status as disabled in the DTS,
-> > with a big fat warning as comment just before, so that it requires
-> > user action, and that user will have been warned.
-> >=20
-> > Would that work for you?
-> > Maxime
-> >=20
->=20
-> Let's drop this two patches with boards dts changes until we get proper M=
-LC
-> support in kernel.
->=20
-> As for examples - I'll update linux-sunxi wiki with how to enable NAND=20
-> controller and describe NAND chips in DTS. People who want to add NAND su=
-pport=20
-> to their boards will be warned that it is risky for now.
+Thanks for sharing that. That's actually a quite interesting beast, and
+it's way more evolved than I first thought.
 
-That works for me too.
+I might be wrong, but it seems that ->cmd_ctrl() can be supported using
+the custom NAND op approach (custom uCode in SRAM).
 
-Thanks!
-Maxime
+This doesn't prevent you from optimizing things for operations where
+performances really matter (read/write with ECC), by using advanced
+sequencing (reusing the supported cmdset, or even implementing your
+own). I'm actually impressed by the degree of liberty this controller
+gives: while some sequences are provided you can create you own ones
+and still benefit from the controller optimizations.
 
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
+Didn't look at the code yet, but I'm pretty confident we'll be able to
+make the driver fit in the existing model, and that moving to the new
+model (where I plan to give more freedom to the controller), will make
+it even more interesting.
+
+I'll try to come with a proposal for you to test/review after reviewing
+the code.
+
+> 
+> > Hm, so you can't even move the column pointer within a page
+> > (NAND_CMD_RNDOUT)?  
+> 
+> See the FTNANDC024 microcode listings on datasheet PDF pages 108
+> through 117. Every FTNANDC024 operation is an execution of one of
+> these complete microcode routines from start to finish. Just because a
+> given microcode flow includes the issuance of a given NAND command
+> (such as Change Read Column or Change Write Column) does not mean that
+> you could just ask the controller to issue that command by itself,
+> without executing a complete microcode flow which also includes the
+> Read Page or Program Page command.
+
+True.
+
+> 
+> The only workaround would be to write our own microcode. I think this
+> approach would actually work: we could write shorter microcode
+> routines which *just* issue a given NAND opcode and then stop there,
+> and another separate microcode routine (to be invoked via a separate
+> command) which would only do what they call "RD_SP" or "WR_SP" (raw
+> byte transfers of 1 to 32 bytes), without issuing a Read Page command
+> before or a Program Page command after. This approach would allow us
+> to perform truly raw page reads and writes, but it would be very ugly
+> and inefficient. It would also require a separate microcode routine
+> for each different command, NOT one generic microcode routine that
+> would correspond to ->cmd_ctrl() or ->cmdfunc().
+
+Let's see if we can do something smarter.
+Note that my proposal was to bypass ->cmd_ctrl() usage for path that
+are requiring high-perfs (ecc->read/write_page()), and only rely on
+if for the other operations, where performances are not important, but
+re-usability of existing code is (I'm thinking of NAND detection here).
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
 http://free-electrons.com
-
---ssZxAlvqSOvXAj81
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJXWoC2AAoJEBx+YmzsjxAgItMQAI1qCJ7t9KQ79dMcS83CRhVe
-VwJincLX8P9ie0tdxLbWKh+cTCx/bg0JLSGPCTpcz4z5RMWI1OvVI3puMvNGzzAK
-Dkib/b8qtqfHS80SAa7w2l2GdD09UzXABfv/u0QZknl/mqSQkT/7LN23j5Fjz+JH
-Gd5dAXgxwuryffsBwXEbhMe1qpAYh9Zt0zLmHlpaRGY9N4VH3RNp8UKtVcCbqa+R
-LWRegmizoJ2P93rdSmrTjtmiZemPSa85nxSquxi3Qdgy6Pj2MMKF8tT0W9iyF1Lb
-SGJ7tX3NVk49P+Ikkqj/6mLKOMzgcsOkE+OH/aVNWOwtGjOJ6zFlsKblRWfCq2M6
-Mpghaozx5jtERTd86HR4puQoktYPYoL08sGa6/uwm0SNPHsv8WvISn+Iv85wxaeR
-od9cA6yeL8FHTU5p0U+QGvQIpVsTxVpwTOkiETDTpu50zau7Q1KcRBiWLVphMmTB
-jSbVqf1f8U70ctVNVRrcOrBCPJI9jmEYfvQtTICjIxivZdKQuNh6MGVjva0IG7Sl
-aFZagoOObYjcZDzuCcrXvDIJOmMlL9ky6YgxVjNqHedSwwBxWm4ZK3bKA9ouAANj
-6f0DscN7a4vbC+XOD68mfxXhZys1TgxTOSgwrWOwmWdCmJ07mnK5YpqXMchzJcFy
-Dn+hE+qIep4Rl35PfC3R
-=qEma
------END PGP SIGNATURE-----
-
---ssZxAlvqSOvXAj81--
