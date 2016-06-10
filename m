@@ -1,27 +1,23 @@
-Received: from bes.se.axis.com ([195.60.68.10])
+Received: from bastet.se.axis.com ([195.60.68.11])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bBNL2-0007Bw-S0
- for linux-mtd@lists.infradead.org; Fri, 10 Jun 2016 14:23:10 +0000
-Date: Fri, 10 Jun 2016 16:22:38 +0200
+ id 1bBNcT-0008BM-IN
+ for linux-mtd@lists.infradead.org; Fri, 10 Jun 2016 14:41:11 +0000
+Date: Fri, 10 Jun 2016 16:40:39 +0200
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
-CC: Mychaela Falconia <mychaela.falconia@gmail.com>,
- <devicetree@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
+CC: <devicetree@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
  <linux-kernel@vger.kernel.org>, Oleksij Rempel <linux@rempel-privat.de>,
  Linux mtd <linux-mtd@lists.infradead.org>, Benoit Cousson
  <bcousson@baylibre.com>, Brian Norris <computersforpeace@gmail.com>, David
  Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH 3/4] mtd: nand: Add support for Evatronix
  NANDFLASH-CTRL
-In-Reply-To: <20160609222307.5db4e67f@bbrezillon>
-Message-ID: <alpine.DEB.2.02.1606101433170.30757@lnxricardw1.se.axis.com>
+In-Reply-To: <20160609110814.78823ef3@bbrezillon>
+Message-ID: <alpine.DEB.2.02.1606091313490.6751@lnxricardw1.se.axis.com>
 References: <alpine.DEB.2.02.1606020948070.19416@lnxricardw1.se.axis.com>
  <20160603165909.09f27ee0@bbrezillon>
  <alpine.DEB.2.02.1606071702220.19416@lnxricardw1.se.axis.com>
- <CA+uuBqb4fG4nK7atrF7XOQ=ip2SfKrxU+KXqD3W+PA_ZA7cS3g@mail.gmail.com>
- <20160609200128.5b7a6e29@bbrezillon>
- <CA+uuBqaRv2f8K-Q2ZLQY8tq6idq8XCDMV21SYM5XCWc4FVV90g@mail.gmail.com>
- <20160609222307.5db4e67f@bbrezillon>
+ <20160609110814.78823ef3@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: 8BIT
@@ -37,152 +33,219 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Thu, 9 Jun 2016, Boris Brezillon wrote:
 
-> > >
-> > > By supporting only a subset of what NAND chips actually support, and
-> > > preventing any raw access, you just limit the compatibility of the NAND
-> > > controller with rather old NAND chips. For example, your controller
-> > > cannot deal with MLC/TLC NANDs because it just can't send the private
-> > > commands required to have reliable support for these NANDs.  
+> > > >  drivers/mtd/nand/Kconfig          |    6 +
+> > > >  drivers/mtd/nand/Makefile         |    1 +
+> > > >  drivers/mtd/nand/evatronix_nand.c | 1909 +++++++++++++++++++++++++++++++++++++
+> > > >  3 files changed, 1916 insertions(+)
+> > > >  create mode 100644 drivers/mtd/nand/evatronix_nand.c  
+> > > 
+> > > Please run checkpatch.pl and fix all the ERRORS and WARNINGS.  
 > > 
-> > I am not the one who designed the controller IP, so please don't shoot
-> > the messenger.
+> > I did run checkpatch.pl (at least the one in the mtd l2 tree), and there 
+> > should be no outstanding errors. Some of the warnings are related to lines 
+> > ...
+> > 
 > 
-> Yes, sorry, I was just over-reacting because I'm tired earing that the
-> only solution to get a high performances is to hide everything in the
-> controller which is likely to be incompatible with NANDs we'll see in a
-> few month from there.
+> Well, I'm not asking to fix all 80 chars warnings, but I see a lot of
+> warnings and errors in there [1], and I'm pretty sure most of them can
+> be addressed in a sane way.
 
-I don't know what the situation is with other NAND drivers and controller 
-IP's, but in my case, the set of NAND flashes which the SoC in which the 
-Evatronix IP is included is intended to operate with is fairly limited, 
-partly because our products don't require a great veriety, and partly for 
-SoC verification reasons (the fewer flash types tested, the less time and 
-money, essentially). So the mindset from the outset was 'we need to 
-support these flashes, can we do it', rather than 'we want a general 
-driver', which in the end is reflected in the somewhat limited set of 
-flash types initially supported by the driver.
+Whoa, something must have gone seriously wrong when I mailed out the 
+patch. When I run checkpatch.pl locally on the patch file, I have 0 errors 
+and 10 warnings (not 128 errors and 65 warnings).
 
-I fully understand that the opposite is true of the Linux kernel, which is 
-intended to be as general as possible, I'm just trying to offer an 
-explanation for the somewhat limited scope of driver developers, 
-especially those working on company time, the understanding of which 
-eventually might lead to use finding ways to solve this dilemma.
+I tired mailing the patch to myself, extracting it from the incoming 
+email, and comparing with the original patch file and they were identical. 
+I must check up if something has gone amiss with our external email here, 
+as we haven't had problems before. I'll need to look into this. I would 
+certainly not submit a patch with any checkpatch.pl errors unless they 
+were really false positives.
 
-FWIW, in the Evatronix case, it wasn't any performance issue that drove 
-the driver development, it just seemed like the Right Thing to Do.
-
-> > > I've been told many times that NAND controllers were not supporting raw
-> > > accesses (disabling the ECC engine when accessing the NAND), and most
-> > > of the time it was false, but the developers just didn't care about
-> > > supporting this feature, and things like that make the whole subsystem
-> > > unmaintainable.  
-
-Yeah, I've come across a driver (not in mainline though) with precisely 
-this problem. The hardware supported hardware BCH ECC, but without 
-returning the number of corrected bits, which made almost useless, as 
-there was no way of detecting when the number of bits in an ECC block was 
-nearing the limit for a read failure. The solution was to implement 
-software ECC, but the driver didn't really support this mode to start with 
-and it had to be added.
-
-(FWIW, the Evatronix driver does support both hardware and software ECC, 
-the latter mostly intended for verification and debugging purposes).
-
-> Now back to the Evatronix IP. I had a closer look at Ricard's code, and
-> it seems the controller is actually supporting a low-level mode
-> (command seq 18 and 19 + MAKE_GEN_CMD()).
-
-Yes, that's true, it is labelled as a 'generic command sequence' in the 
-document. Well, it's not really a low level mode, as you can see you still 
-need to do the whole operation in one go, but in the end that is what it 
-accomplishes.
-
-> So my suggestion is to implement ->cmd_ctrl() and use these generic
-> commands. And of course optimized/packed accesses (using specific
-> commands) can be used in ecc->read/write_page().
-
-Actually, the use of ECC or not is governed outside the IP command set. I 
-already use the generic command sequence (SEQ18/19) for ECC reads and 
-writes towards flashes with 4 byte addresses. So it should be doable to 
-use the generic command sequencer for any number of address bytes, both 
-with and without ECC.
-
-> This would require a flag to ask the core to not send the READ/WRITE 
-> commands before calling ecc->read/write_page(), but that's doable.
-
-Ok, so a change required in the core to get this to work then. I've tended 
-to avoid writing driver code so that it requires changes to the framwork 
-unless absolutely necessary, as the changes tend to be rather specific and 
-clutter up the general code (which, honestly, is bad enough as it is, not 
-trying to blame anyone here, just an observation), and can usually be 
-resolved in the driver with a bit of ingenuity.
-
-> All other commands would use the generic mode, since they don't require
-> high performances or any specific handling.
+> > > > +#undef POLLED_XFERS /* Use polled rather than interrupt based transfers */
+> > > > +
+> > > > +#undef CLEAR_DMA_BUF_AFTER_WRITE /* Useful for debugging */  
+> > > 
+> > [ ... ]
+> > The rationale for leaving this code in is that it can help bring up a new 
+> > unknown system with this IP, because I consider the most likely re-use of 
+> > this driver to be for someone who is developing a new SoC, as it seems 
+> > rather uncommon in commercially available chips.
 > 
-> This way you don't have to implement your own ->cmdfunc() function, you
-> can get rid of all the specific ID/ONFI detection logic (the generic
-> commands should allow you to retrieve those information)
-
-FWIW, there isn't much ID detection logic, although looking at it some of 
-the comments imply that there is (and that should be changed of course), 
-because the ID type byte is actually identical to what the controller uses 
-to select the relevant type.
-
-> and rely on the default implementation.
+> That's not how it works. Either you provide a sane way to activate
+> these options (using Kconfig entries), or your drop dead-code sections.
 > 
-> Ricard, would that work?
+> I understand that debugging is important to you, but adding hundreds
+> lines of unused code is also hurting readability, so I keep thinking
+> that these options should either be removed (with the associated code
+> sections) or exposed as Kconfig options.
 
-The main reason the I've been using the ->cmdfunc() interface is that the 
-API is on a fairly high level ("here's a sequence of address bytes", "read 
-a page", etc) which is on similar level to the API to the actual IP (i.e.  
-"read a page from this address").
+Ok, I'll give it some consideration and fix it either way.
 
-In contrast, using the ->cmd_ctrl() interface means that I've got to 
-interpret a sequence of bytes coming in as multiple function calls. It 
-just seemed like a bad idea compared to interpreting a set of high level 
-commands, given that the controller also has a high level API. It seemed a 
-bit like a roundabout way letting someone (i.e. nand_command) encode a 
-high level command into several low level operations, which must then be 
-deciphered by the flash driver one by one in order to assemble another 
-high level command. It seemed much more direct to process the high level 
-commands directly - and easier to read, as the required operations are 
-directly visible as macros. The ->cmd_ctrl() interface is fine for 
-byte-banging an 8-bit I/O port as that was what it was designed for, but 
-quite simply seemed to be the wrong level for anything more advanced than 
-that. Sortof akin to reading a file with getc() rather than read(), which 
-is why I never really considered it.
+> > > > +/* DMA buffer for page transfers. */
+> > > > +#define DMA_BUF_SIZE (8192 + 640) /* main + spare for 8k page flash */  
+> > > 
+> > > This should clearly be dynamic.  
+> > 
+> > 8k pages are the largest the controller can handle, and there's only a 
+> > [  ... ]
+> 
+> If you reject all NAND above 8k + 640 oob bytes I'm fine with this
+> fixed size.
 
-But I can definitely see your point, especially as maintainer with the 
-goal of supporting as many devices as possible, and also considering your 
-plans (as you mentioned in another reply) to rework the API, which would 
-mean that the ->cmdfunc() API would be changing, with the associated 
-changes in drivers that use that API.
+Ok, I see what you're getting at. Yes, there needs to be a check for that, 
+somewhere.
 
-Looking at the documentation, it does look doable, but to a certain extent 
-it's in the category "can't really tell until I've tried it". In the worst 
-case, some operations would still need to use specific IP commands but 
-they should be few.
+> > > I'm pretty sure you can implement ->cmd_ctrl() and rely on the default
+> > > cmdfunc() logic instead of manually converting those high-level NAND
+> > > commands into your own model (which seems to match pretty much the  
+> > > ->cmd_ctrl() model, where you can get the number of address and command  
+> > > cycles).
+> > > [ ... ]
+> 
+> Just to be clear, you don't have to toggle the pins each time
+> ->cmd_ctrl() is called, you can cache the operations and launch it once
+> it says it's dones (don't remember the flag).
+>
 
-It's a fairly extensive rewrite though, as a lot of the internal logic of 
-the driver is based on the external API being a high level, even if the 
-code in the end will be simpler.
+I've omitted comments to this here as the discussion has been carried on 
+in the sub thread started by Mychaela.
 
-The company I work for has an explicit goal of getting as much of the 
-Linux port for our SoC upstream, so hopefully I can find time to rewrite 
-this in the near future, although I'm off on a fairly long summer vacation 
-shortly. I'll try to get it underway as soon as I'm back.
+> > > > +/* Information common to all chips, including the NANDFLASH-CTRL IP */
+> > > > +struct nfc_info {  
+> > > 
+> > > Should inherit from nand_hw_ctrl (see the sunxi_nand driver)...
+> > >   
+> > > > +	void __iomem *regbase;
+> > > > +	struct device *dev;
+> > > > +	struct nand_hw_control *controller;  
+> > > 
+> > > ... and not point to it.  
+> > 
+> > Ok. I'm a bit unsure what you mean by 'inherit' though; in the sunxi 
+> > driver the struct nand_hw_controller is contained within the struct 
+> > sunxi_nfc, in my case there's a pointer to a single instance of a 
+> > nand_hw_control. I agree that my approach is wasteful on a dynamic 
+> > allocation and I have no problems changing it, but conceptually there's 
+> > not much of a difference.
+> 
+> There's a huge different. By embedding the nand_hw_control struct into
+> your nfc_info object you allow things like:
+> 
+> static int get_nfc(struct nand_chip *chip)
+> {
+> 	return container_of(chip->controller, struct nfc_info,
+> 			    controller);
+> }
+> 
+> This way you can retrieve the nfc_info object attached to the nand_chip.
 
-Something that I am mildly miffed about is that I've posted this driver 
-twice before on the mtd list (although, admittedly, not directly addressed 
-to any maintainer), first as an RFC and later as a complete patch, without 
-a single response. (Apparently Boris you did respond with comments on 
-Oleksij's driver though which I must have missed). Although an RFC might 
-not have initiated a detailed review, it would have been a large advantage 
-(and wasted less time for all) if the point of using 'wrong' driver 
-interface had been brought up and consequently discussed earlier. Yes I 
-know, everyone is busy, it's easy to miss things, each and every driver 
-can't be reviewed in detail, etc.
+Yes, of course ... or rather,
+
+static int get_nfc(struct nand_hw_control *controller)
+
+I see new what you mean by inherit. It all comes down to if struct 
+nfc_info is a specialized type of struct nand_hw_control, or if it just 
+refers to it. I had assumed it was the latter that was the paradigm.
+
+In the driver in question it makes no practical difference as there is no 
+need to go from a nand_hw_control to an nfc_info (in fact, the 
+nand_hw_control is nevery really used explicitly, it tags along, only used 
+by the framework).
+
+Still, I'm not trying to make an argument here, just trying to understand 
+what the underlying paradigm is. I'll move it inside as it clearly is 
+better in several respects.
+
+> > > > +
+> > > > +/* This is a global pointer, as we only support one single instance of the NFC.
+> > > > + * For multiple instances, we would need to add nfc_info as a parameter to
+> > > > + * several functions, as well as adding it as a member of the chip_info struct.
+> > > > + * Since most likely a system would only have one NFC instance, we don't
+> > > > + * go all the way implementing that feature now.
+> > > > + */
+> > > > +static struct nfc_info *nfc_info;  
+> > > 
+> > > Come on! Don't be so lazy, do the right thing.  
+> > 
+> > It's not a question of laziness, it was a conscious decision: why add 
+> > unnecessary bloat and complexity for a case that probably will never 
+> > occur? I can certainly change it if you think it's worth while of course.
+> 
+> It is. And you're okay bloating the code with dead-code, but not with
+> implementing this in order to avoid singletons when it clearly
+> shouldn't be?
+
+I'm ok with bloating the code with something which I consider may be 
+useful, but I have reservations bloating it with something which I don't 
+think will ever be used (and which could be added if the need arises 
+later) and furthermore is not possible to test and verify properly (as 
+there is in fact only one NAND controller on the platform on which I can 
+test this).
+
+But I'm fine with adding it, I'm not really trying to knock it, just 
+explaining why it wasn't done in the first place. (I think I'm actually 
+reacting to the word 'lazy' here...).
+
+> > > > +
+> > > > +/* The timing setup is expected to come via DT. We keep some default timings
+> > > > + * here for reference, based on a 100 MHz reference clock.
+> > > > + */
+> > > > +
+> > > > +static const struct nfc_timings default_mode0_pll_enabled = {
+> > > > +	0x0d151533, 0x000b0515, 0x00000046,
+> > > > +	0x00150000, 0x00000000, 0x00000005, 0x00000015 };  
+> > > 
+> > > Can you explain those magic values?  
+> > 
+> > Not really, the problem is that the agreement we have with the IP vendor 
+> > is that we may not disclose any documentation, outside of what is 
+> > absolutely necessary to write working code.
+> > 
+> > A rationale is that anyone else wanting to use the driver will either be 
+> > designing their own SoC in which case they will have access to the 
+> > relevant documentation, or if they're using a SoC from someone else, the 
+> > SoC vendor will have to provide that information in order for the chip to 
+> > be useful anyway.
+> 
+> Hm, so I'll have a new table like that for each new SoC using this IP?
+
+Yes, I would say that would be the case.
+
+> I must say I don't like the idea, but let's address the other aspects
+> first.
+
+Ok.
+
+> As said above, I'm planning to rework the NAND framework to
+> support things like:
+> 
+> struct nand_operation {
+> 	u8 cmds[2];
+> 	u8 addrs[5];
+> 	int ncmds;
+> 	int naddrs;
+> 	union {
+> 		void *out;
+> 		const void *in;
+> 	};
+> 	enum nand_op_direction dir;
+> }
+> 
+> ->exec_op(struct nand_operation *op);
+> 
+> This way the NAND controller would have all the necessary information
+> to trigger the whole operation (omitted the ECC info on purpose, to
+> make it clearer).
+> 
+> But this is not there yet, and in the meantime, if possible, I'd prefer
+> seeing drivers implementing the ->cmd_ctrl() function instead of
+> overloading the default ->cmdfunc() implementation.
+
+I see, I suppose that's because during the course of this the ->cmdfunc() 
+logic will be significantly changed, requiring corresponding changes in 
+drivers that do overload that function? Fair enough, that's a pretty good 
+reason, probably more so than the alleged simplicity of the ->cmd_ctrl() 
+interface.
 
 /Ricard
 -- 
