@@ -1,22 +1,31 @@
-Received: from mail-by2on0092.outbound.protection.outlook.com ([207.46.100.92]
- helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bB7YC-0001RP-0E
- for linux-mtd@lists.infradead.org; Thu, 09 Jun 2016 21:31:40 +0000
-From: David Olson <Dave.Olson@welchallyn.com>
-To: Mychaela Falconia <mychaela.falconia@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: Temporarily remounting rootfs as rw leads to kernel panic on
- reboot
-Date: Thu, 9 Jun 2016 21:31:17 +0000
-Message-ID: <DM2PR0801MB0926D62FBEA90F061130D3A8FF5F0@DM2PR0801MB0926.namprd08.prod.outlook.com>
-References: <DM2PR0801MB092606DB85030B4F62A0BBF6FF5D0@DM2PR0801MB0926.namprd08.prod.outlook.com>
- <CA+uuBqb5K74aajPGWrDdW=cFPn0Ctuk5oeve1_bhv49Z60M7zg@mail.gmail.com>
-In-Reply-To: <CA+uuBqb5K74aajPGWrDdW=cFPn0Ctuk5oeve1_bhv49Z60M7zg@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1bBEfz-0004Lk-Qc
+ for linux-mtd@lists.infradead.org; Fri, 10 Jun 2016 05:08:12 +0000
+Received: by mail-oi0-x234.google.com with SMTP id k23so96683503oih.0
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2016 22:07:50 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20160609222307.5db4e67f@bbrezillon>
+References: <alpine.DEB.2.02.1606020948070.19416@lnxricardw1.se.axis.com>
+ <20160603165909.09f27ee0@bbrezillon>
+ <alpine.DEB.2.02.1606071702220.19416@lnxricardw1.se.axis.com>
+ <CA+uuBqb4fG4nK7atrF7XOQ=ip2SfKrxU+KXqD3W+PA_ZA7cS3g@mail.gmail.com>
+ <20160609200128.5b7a6e29@bbrezillon>
+ <CA+uuBqaRv2f8K-Q2ZLQY8tq6idq8XCDMV21SYM5XCWc4FVV90g@mail.gmail.com>
+ <20160609222307.5db4e67f@bbrezillon>
+From: Mychaela Falconia <mychaela.falconia@gmail.com>
+Date: Thu, 9 Jun 2016 21:07:49 -0800
+Message-ID: <CA+uuBqb-g1PC1WKR36Rbd5fd1YqreprzG_N57xOn43JOSeDqVw@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mtd: nand: Add support for Evatronix NANDFLASH-CTRL
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>, devicetree@vger.kernel.org,
+ Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+ Oleksij Rempel <linux@rempel-privat.de>,
+ Linux mtd <linux-mtd@lists.infradead.org>,
+ Benoit Cousson <bcousson@baylibre.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,67 +35,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-KE9uIG91ciBsYXN0IHByb2plY3QsIHdlIHVzZWQgZXh0MyBhbmQgZU1NQyBhbmQgZGlkbid0IGhh
-dmUgdG8gc3BlbmQNCm11Y2ggdGltZSBsZWFybmluZyBhYm91dCBmaWxlc3lzdGVtcyBzaW5jZSBp
-dCBqdXN0IHdvcmtlZC4gIFRoaXMgaXMgb3VyIGZpcnN0DQpwcm9qZWN0IHdpdGggdGhlIE1URC9V
-QkkvVUJJRlMgc3RhY2sgYW5kIGl0IGhhcyBwcm92ZW4gdG8gYmUgZmFyIG1vcmUNCnRyb3VibGVz
-b21lLCByZXF1aXJpbmcgdXMgdG8gZGVsdmUgZGVlcGx5IGludG8gYSBjb25zaWRlcmFibGUgYm9k
-eSBvZg0KY29tcGxleCBjb2RlLCBpbmNsdWRpbmcgdGhlIGJ1aWxkIHN5c3RlbS4gIENvbnNlcXVl
-bnRseSBhbnN3ZXJpbmcNCnF1ZXN0aW9ucyBhbmQgdHJ5aW5nIGV4cGVyaW1lbnRzIGlzIHRha2lu
-ZyBxdWl0ZSBzb21lIHRpbWUgOy0pDQoNCj4gPiBVQkk6IHNtYWxsZXN0IGZsYXNoIEkvTyB1bml0
-OiAgICAyMDQ4DQo+ID4gVUJJOiBzdWItcGFnZSBzaXplOiAgICAgICAgICAgICAgNTEyDQo+ID4g
-VUJJOiBWSUQgaGVhZGVyIG9mZnNldDogICAgICAgICAgMjA0OCAoYWxpZ25lZCAyMDQ4KQ0KPiA+
-IFVCSTogZGF0YSBvZmZzZXQ6ICAgICAgICAgICAgICAgIDQwOTYNCj4NCj4gRmlyc3Qgc2lnbiBv
-ZiBpbmNvbnNpc3RlbmN5OiB5b3VyIFVCSSByZXBvcnRzIGhlcmUgdGhhdCB0aGUgdW5kZXJseWlu
-ZyBOQU5EDQo+IGhhcyBzdWJwYWdlcywgeWV0IGl0IGRvZXNuJ3QgdXNlIHRoZW0gdG8gcHV0IHRo
-ZSBFQyBhbmQgVklEIGhlYWRlcnMgaW4gdGhlDQo+IHNhbWUgcGFnZSwgaS5lLiwgeW91ciBWSUQg
-b2Zmc2V0IGlzIGVxdWFsIHRvIHRoZSBmdWxsIHBhZ2Ugc2l6ZSBhbmQgdGhlIGRhdGENCj4gb2Zm
-c2V0IGlzIDJ4IHRoZSBmdWxsIHBhZ2Ugc2l6ZS4NCg0KV2Ugc3RhcnRlZCB3aXRoIGEgYmFzZSBw
-cm92aWRlZCBieSBUSS4gIFRoZXkgd2VyZSB0aGUgb25lcyB3aG8gcHJvdmlkZWQgdGhlDQpVLUJv
-b3QgJiBrZXJuZWwgZm9ya3MgYXMgd2VsbCBhcyB0aGUgYnVpbGQgc3lzdGVtLiAgVGhlIG1lY2hh
-bmlzbSB1c2VkIHRvIHNldA0KdGhlIGhlYWRlciBvZmZzZXQgaXMgdGhpcyBwb3J0aW9uIG9mIHRo
-ZSBUSSBwcm92aWRlZCBrZXJuZWwgY29tbWFuZCBsaW5lOg0KInViaS5tdGQ9NCwyMDQ4Ii4gIFRo
-YXQgaXMgb25lIG9mIHRoZSB0ZWNobmlxdWVzIGRlc2NyaWJlZCBpbiB0aGUgVUJJIEZBUSB0b3Bp
-Yw0KIkhvdyBkbyBJIGZvcmNlIFVCSSB0byBpZ25vcmUgc3ViLXBhZ2VzPyIuICAgRnVydGhlciwg
-VEkgZGlkIG5vdCBpbmNsdWRlIHRoZQ0KJy1zJyBwYXJhbWV0ZXIgaW4gdGhlIHViaW5pemUgaW52
-b2NhdGlvbiwgc28gbWF5IGhhdmUgZG9uZSB0aGlzIGRlbGliZXJhdGVseS4NCkkgc2hhbGwgY29u
-dGludWUgcmVzZWFyY2hpbmcgdGhpcy4NCg0KPiA+IFVCSSBlcnJvcjogdWJpX2lvX3JlYWQ6IGVy
-cm9yIC03NCAoRUNDIGVycm9yKSB3aGlsZSByZWFkaW5nIDEyNjk3Ng0KPiA+IGJ5dGVzIGZyb20g
-UEVCIDM6NDA5NiwgcmVhZCAxMjY5NzYgYnl0ZXMgVUJJIGVycm9yOiB1YmlfaW9fcmVhZDogZXJy
-b3INCj4gPiAtNzQgKEVDQyBlcnJvcikgd2hpbGUgcmVhZGluZyAxMjY5NzYgYnl0ZXMgZnJvbSBQ
-RUIgNDo0MDk2LCByZWFkDQo+ID4gMTI2OTc2IGJ5dGVzIFVCSSBlcnJvcjogdWJpX2lvX3JlYWQ6
-IGVycm9yIC03NCAoRUNDIGVycm9yKSB3aGlsZQ0KPiA+IHJlYWRpbmcgMTEgYnl0ZXMgZnJvbSBQ
-RUIgMTA6MTAyNDAsIHJlYWQgMTEgYnl0ZXMgVUJJRlMgZXJyb3IgKHBpZCAxKToNCj4gPiB1Ymlm
-c19sZWJfcmVhZDogcmVhZGluZyAxMSBieXRlcyBmcm9tIExFQiA4OjYxNDQgZmFpbGVkLCBlcnJv
-ciAtNzQNCj4NCj4gTGV0IG1lIGd1ZXNzLCB0aGUgZmxhc2ggd2FzIHdyaXR0ZW4gaW4gcHJvZHVj
-dGlvbiB3aXRoIGEgcHJvZHVjdGlvbiBsaW5lDQo+IHByb2dyYW1tZXIgYW5kIG5vdCB3aXRoIHVi
-aWZvcm1hdCwgd2FzIGl0Pw0KDQpJdCB3YXMgd3JpdHRlbiB2aWEgdGhlIFUtQm9vdCAibmFuZCB3
-cml0ZSIgY29tbWFuZC4gIFdlIGFyZSBjb25zdHJhaW5lZCB0bw0KY29udGludWUgdXNpbmcgVS1C
-b290IHRoaXMgd2F5LiAgQXMgbm90ZWQsIG91ciBVLUJvb3QgaXMgYSBmb3JrIHByb3ZpZGVkIGJ5
-IFRJDQp3aGljaCBpcyBiYXNlZCBvbiBhIFUtQm9vdCB2ZXJzaW9uIGZyb20gc29tZXRpbWUgZWFy
-bHkgaW4gMjAxMC4gIEEgbGF0ZXINClUtQm9vdCB1cGRhdGUgaW50cm9kdWNlZCB0aGUgIm5hbmQg
-d3JpdGUudHJpbWZmcyIgdmFyaWFudCB3aGljaCBzZWVtcw0KYXR0cmFjdGl2ZSwgaG93ZXZlciB0
-aGVyZSB3YXMgY29uc2lkZXJhYmx5IG1vcmUgdGhhbiB0aGUgdXN1YWwgc2NoZWR1bGUNCnByZXNz
-dXJlIGZvciBvdXIgZmlyc3QgcmVsZWFzZSBzbyB3ZSBpbnN0ZWFkIHVzZWQgdGhlICItRiIgb3B0
-aW9uIG9mIHRoZQ0KbWtmcy51YmlmcyBjb21tYW5kLg0KDQpUaGF0IHdvcmtlZCBhbmQgY29udGlu
-dWVkIHRvIHdvcmsgd2hlbiB3ZSBjaGFuZ2VkIHRvIG1vdW50aW5nIHJvb3RmcyByby4NClRoZXJl
-IHdhcyBldmVuIGEgdGltZSBhZnRlciB3ZSBkaWQgdGhhdCB3aGVyZSBpdCB3YXMgcG9zc2libGUg
-b24gdGhlDQpjb21tYW5kIGxpbmUgdG8gcmVtb3VudCByb290ZnMgcncuICBIb3dldmVyIHRpbWUg
-cGFzc2VkLCBvdGhlciBjaGFuZ2VzDQp3ZXJlIG1hZGUsIGFuZCBub3cgdGhpbmdzIGdvIHZlcnkg
-YmFkbHkgd2hlbiB3ZSBkbyB0aGF0Lg0KDQpUaGUgaW1tZWRpYXRlIGlzc3VlIHRoYXQgaGFzIG1l
-IGNvbmZ1c2VkIGlzIHRoYXQgbWVyZWx5IHJlbW91bnRpbmcgcm9vdGZzDQpydyBhbmQgdGhlbiBp
-bW1lZGlhdGVseSBjeWNsaW5nIHBvd2VyIGlzIHN1ZmZpY2llbnQgdG8gZGVzdHJveSByb290ZnMu
-ICBTaW5jZQ0KcmVtb3VudGluZyBybyBkb2VzIE5PVCBkZXN0cm95IHJvb3RmcywgaXQncyBub3Qg
-aW5oZXJlbnQgaW4gdGhlIG1vdW50DQpvcGVyYXRpb24uICBJdCBtdXN0IGJlIHRoZSAncncnIHRo
-YXQncyB0cmlnZ2VyaW5nIHRoaXMgZGVzdHJ1Y3Rpb24uICBBbnkgdGhvdWdodHMNCm9uIHdoYXQg
-bWlnaHQgYmUgaGFwcGVuaW5nPw0KDQoNCkNPTkZJREVOVElBTCBOT1RJQ0U6IElmIHlvdSBhcmUg
-bm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQgb2YgdGhpcyBtZXNzYWdlLCB5b3UgYXJlIG5vdCBh
-dXRob3JpemVkIHRvIGludGVyY2VwdCwgcmVhZCwgcHJpbnQsIHJldGFpbiwgY29weSwgZm9yd2Fy
-ZCwgb3IgZGlzc2VtaW5hdGUgdGhpcyBjb21tdW5pY2F0aW9uLiBUaGlzIGNvbW11bmljYXRpb24g
-bWF5IGNvbnRhaW4gaW5mb3JtYXRpb24gdGhhdCBpcyBwcm9wcmlldGFyeSwgYXR0b3JuZXkvY2xp
-ZW50IHByaXZpbGVnZWQsIGF0dG9ybmV5IHdvcmsgcHJvZHVjdCwgY29uZmlkZW50aWFsIG9yIG90
-aGVyd2lzZSBsZWdhbGx5IGV4ZW1wdCBmcm9tIGRpc2Nsb3N1cmUuIElmIHlvdSBoYXZlIHJlY2Vp
-dmVkIHRoaXMgbWVzc2FnZSBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGltbWVk
-aWF0ZWx5IGVpdGhlciBieSBwaG9uZSBvciBieSByZXR1cm4gZS1tYWlsLCBhbmQgZGVzdHJveSBh
-bGwgY29waWVzIG9mIHRoaXMgbWVzc2FnZSwgZWxlY3Ryb25pYywgcGFwZXIsIG9yIG90aGVyd2lz
-ZS4NCg==
+On 6/9/16, Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+> Hm, I think it's changing now that a lot of SoCs are advertised to be
+> running Linux. But you're right in that existing IPs might not support
+> this low-level mode.
+
+Faraday (the IP vendor in the present case) advertise Linux support as
+well, but they never mainlined any of it, and instead they provide
+their own vendor Linux trees. The one I got is based on linux-3.3; I
+don't know if they have a newer one. They do "support" FTNANDC024
+under Linux as well, but their driver for it is gawdawful - see below.
+
+> Hm, I don't understand why it's not possible to implement basic
+> sequences, but I don't know anything about FTNANDC024, so let's assume
+> you're right.
+
+Read the datasheet (link below) and tell me what you think.
+
+> Sure, feel free to send it to me, I'll have a look. And maybe you can
+> also share your code (both the new and old versions of the driver).
+
+I decided to go ahead and abuse my personal web space on another
+(nothing to do with Linux or with NAND flash) project's server for the
+purpose of sharing this stuff:
+
+https://www.freecalypso.org/members/falcon/linux-mtd/
+
+There you will find the IP datasheet, the vendor's driver (GPL), and a
+current snapshot of my work-in-progress replacement.
+
+> Hm, so you can't even move the column pointer within a page
+> (NAND_CMD_RNDOUT)?
+
+See the FTNANDC024 microcode listings on datasheet PDF pages 108
+through 117. Every FTNANDC024 operation is an execution of one of
+these complete microcode routines from start to finish. Just because a
+given microcode flow includes the issuance of a given NAND command
+(such as Change Read Column or Change Write Column) does not mean that
+you could just ask the controller to issue that command by itself,
+without executing a complete microcode flow which also includes the
+Read Page or Program Page command.
+
+The only workaround would be to write our own microcode. I think this
+approach would actually work: we could write shorter microcode
+routines which *just* issue a given NAND opcode and then stop there,
+and another separate microcode routine (to be invoked via a separate
+command) which would only do what they call "RD_SP" or "WR_SP" (raw
+byte transfers of 1 to 32 bytes), without issuing a Read Page command
+before or a Program Page command after. This approach would allow us
+to perform truly raw page reads and writes, but it would be very ugly
+and inefficient. It would also require a separate microcode routine
+for each different command, NOT one generic microcode routine that
+would correspond to ->cmd_ctrl() or ->cmdfunc().
+
+M~
