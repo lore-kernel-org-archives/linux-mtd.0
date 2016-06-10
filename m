@@ -1,27 +1,24 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from bastet.se.axis.com ([195.60.68.11])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bBOSf-0003uH-8y
- for linux-mtd@lists.infradead.org; Fri, 10 Jun 2016 15:35:06 +0000
-Date: Fri, 10 Jun 2016 17:34:26 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: <devicetree@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
- <linux-kernel@vger.kernel.org>, Oleksij Rempel <linux@rempel-privat.de>,
- Linux mtd <linux-mtd@lists.infradead.org>, Benoit Cousson
- <bcousson@baylibre.com>, Brian Norris <computersforpeace@gmail.com>, David
- Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 3/4] mtd: nand: Add support for Evatronix NANDFLASH-CTRL
-Message-ID: <20160610173426.48960ad1@bbrezillon>
-In-Reply-To: <alpine.DEB.2.02.1606091313490.6751@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.02.1606020948070.19416@lnxricardw1.se.axis.com>
- <20160603165909.09f27ee0@bbrezillon>
- <alpine.DEB.2.02.1606071702220.19416@lnxricardw1.se.axis.com>
- <20160609110814.78823ef3@bbrezillon>
- <alpine.DEB.2.02.1606091313490.6751@lnxricardw1.se.axis.com>
+ id 1bBOTR-0005DA-3w
+ for linux-mtd@lists.infradead.org; Fri, 10 Jun 2016 15:35:54 +0000
+Date: Fri, 10 Jun 2016 17:35:24 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Benoit Cousson <bcousson@baylibre.com>, Tony Lindgren
+ <tony@atomide.com>, <devicetree@vger.kernel.org>, Linux mtd
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] of: Add device tree bindings for Evatronix
+In-Reply-To: <20160608175018.16c88207@bbrezillon>
+Message-ID: <alpine.DEB.2.02.1606101641050.30757@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1606020946500.19416@lnxricardw1.se.axis.com>
+ <20160603162207.0688c9e6@bbrezillon>
+ <alpine.DEB.2.02.1606060757180.23377@lnxricardw1.se.axis.com>
+ <20160608175018.16c88207@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,189 +28,202 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 10 Jun 2016 16:40:39 +0200
-Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
-> 
-> > > > > +/* Information common to all chips, including the NANDFLASH-CTRL IP */
-> > > > > +struct nfc_info {    
-> > > > 
-> > > > Should inherit from nand_hw_ctrl (see the sunxi_nand driver)...
-> > > >     
-> > > > > +	void __iomem *regbase;
-> > > > > +	struct device *dev;
-> > > > > +	struct nand_hw_control *controller;    
-> > > > 
-> > > > ... and not point to it.    
+
+On Wed, 8 Jun 2016, Boris Brezillon wrote:
+
+> > > > +Optional properties:
+> > > > +- nand-on-flash-bbt: See nand.txt.
+> > > > +- #address-cells, #size-cells: See partition.txt.
+> > > > +- evatronix,use-bank-select : Use controller bank select function to access
+> > > > +			      multiple chips, rather than chip enable.  
 > > > 
-> > > Ok. I'm a bit unsure what you mean by 'inherit' though; in the sunxi 
-> > > driver the struct nand_hw_controller is contained within the struct 
-> > > sunxi_nfc, in my case there's a pointer to a single instance of a 
-> > > nand_hw_control. I agree that my approach is wasteful on a dynamic 
-> > > allocation and I have no problems changing it, but conceptually there's 
-> > > not much of a difference.  
+> > > You mean, using a dedicated logic to control the CS lines rather than a
+> > > GPIO (controlled by the SW using gpio_set_value())?  
 > > 
-> > There's a huge different. By embedding the nand_hw_control struct into
-> > your nfc_info object you allow things like:
+> > No. In the SoC on which this has been developed, the nand flash controller 
+> > has dedicated I/O pins for all its functions.
 > > 
-> > static int get_nfc(struct nand_chip *chip)
-> > {
-> > 	return container_of(chip->controller, struct nfc_info,
-> > 			    controller);
-> > }
+> > The controller has the concept of 'banks' vs. 'devices'. Essentially, a 
+> > 'bank' is a group of multiple chips of the same geometry etc, and the 
+> > controller can send commands in parallel to all devices in the same bank. 
+> > In contrast, different 'banks' can have completely different devices, but 
+> > all devices must be idle before the controller can switch 'banks'.
 > > 
-> > This way you can retrieve the nfc_info object attached to the nand_chip.  
+> > The usecase for the former would be to increase performance and the latter 
+> > case would be if there were for instance one small NAND flash for program 
+> > storage and a large one for data.
+> > 
+> > The IP that the driver was tested on has two available chip selects, and 
+> > the DT property controls whether they refer to two devices in the same 
+> > bank vs. two separate banks.
 > 
-> Yes, of course ... or rather,
+> Still don't see how it can be used in real world (or maybe I don't
+> understand how it works).
 > 
-> static int get_nfc(struct nand_hw_control *controller)
+> Say the CS are both selected at the same time, this means you'll send
+> the same set of data to the 2 chips, right. I see two use cases for
+> this:
+> 1/ You have 2 chips connected to the same data bus, CS, RB and CLE/ALE
+>    lines and you want to mirror data written on chip0 on chip1
+> 2/ You have 2 chips connected to the same CS, RB, CLE/ALE lines, but
+>    chip0 is using the lower 8bits of the bus, and chip1 is using the
+>    remaining 8bits. This way you fake an 16bits bus
+> 
+> Both cases are unsafe, because of NAND unreliability. Say you're
+> writing on a block in chip0 this block in chip1 is bad. One of your
+> write will succeed, the other one will fail.
+> 
+> Could you give a real use case where this 'bank-select' method is
+> really usefull (and safe)?
+> If you can't, then drop this mode for now, and always operate in
+> 'chip-enable' mode.
 
-Actually I meant
+The use cases as I see are as follows:
 
-static inline struct nfc_info *get_nfc(struct nand_chip *chip) ...
+a) Two identical chips sharing all but the CS lines, in order to implement 
+a seemingly-larger address space. (e.g. two 256 Mbit chips implementing a 
+4 GB area). In this case, for certain operations, the controller does not 
+have to wait for one device to complete before issuing a command to 
+another. I'm not sure how the controller keeps track of the two devices 
+though.
 
-> 
-> I see new what you mean by inherit. It all comes down to if struct 
-> nfc_info is a specialized type of struct nand_hw_control, or if it just 
-> refers to it. I had assumed it was the latter that was the paradigm.
-> 
-> In the driver in question it makes no practical difference as there is no 
-> need to go from a nand_hw_control to an nfc_info (in fact, the 
-> nand_hw_control is nevery really used explicitly, it tags along, only used 
-> by the framework).
-> 
-> Still, I'm not trying to make an argument here, just trying to understand 
-> what the underlying paradigm is. I'll move it inside as it clearly is 
-> better in several respects.
+b) Two different chips with the same connection, which provide disjunct 
+functions, e.g. one (small) flash for program storage and one (large) for 
+data.
 
-The goal here is to retrieve the controller attached to a given chip in
-order to avoid the global nfc_info variable (and abusing
-nand_get/set_controller_data() to store a pointer to the controller is
-not a good idea either: it's supposed to be used to store per-chip
-private data).
+But your questions have convinced me to leave this part of the driver for 
+now, and as you say it can be added in when the need arises.
 
+> > > BTW, you seem to support controlling several CS using the same
+> > > controller, which means you'll have to specify which CS the NAND chip
+> > > is connected to (see [1]).  
+> > 
+> > That is true. The driver as it stands currently only supports a single CS, 
+> > however, the IP as configured in the SoC in question can handle two CS 
+> > lines. My plan is to initially provide support for only the single-CS 
+> > case (there are places in the code where I felt it practical to prepare 
+> > for the multiple-CS case though).
+> > 
+> > As such, I realize that the previously mentioned property 
+> > (evatronix,use-bank-select) won't really have any meaning in the single-CS 
+> > case, so perhaps it should be omitted at this point completely, and added 
+> > in the future when it is really needed?
 > 
-> > > > > +
-> > > > > +/* This is a global pointer, as we only support one single instance of the NFC.
-> > > > > + * For multiple instances, we would need to add nfc_info as a parameter to
-> > > > > + * several functions, as well as adding it as a member of the chip_info struct.
-> > > > > + * Since most likely a system would only have one NFC instance, we don't
-> > > > > + * go all the way implementing that feature now.
-> > > > > + */
-> > > > > +static struct nfc_info *nfc_info;    
-> > > > 
-> > > > Come on! Don't be so lazy, do the right thing.    
+> Yes, but I'd still like to see a proper NAND controller/NAND chip 
+> separation in you binding.
+
+Yes, I understand that.
+
+> > > > +- evatronix,rb-wired-and: Assume ready/busy signal from all flash chips are
+> > > > +			  connected using a wired-AND topology rather than
+> > > > +			  individually.  
 > > > 
-> > > It's not a question of laziness, it was a conscious decision: why add 
-> > > unnecessary bloat and complexity for a case that probably will never 
-> > > occur? I can certainly change it if you think it's worth while of course.  
+> > > Hm, is that really required? If the R/B line is shared among several
+> > > NAND chips, it should be transparent, you just have to specific which
+> > > chip is connected to which GPIO (or dedicated R/B pin).  
 > > 
-> > It is. And you're okay bloating the code with dead-code, but not with
-> > implementing this in order to avoid singletons when it clearly
-> > shouldn't be?  
+> > For the SoC in question, the wired-and vs individual R/B lines was a 
+> > choice made during the chip design, which is why I exported this choice as 
+> > a DT property, as it reflects a hardware choice done outside the IP but 
+> > inside the SoC.
 > 
-> I'm ok with bloating the code with something which I consider may be 
-> useful, but I have reservations bloating it with something which I don't 
-> think will ever be used (and which could be added if the need arises 
-> later) and furthermore is not possible to test and verify properly (as 
-> there is in fact only one NAND controller on the platform on which I can 
-> test this).
+> Okay, maybe it's worth keeping this property if the AND logic is
+> integrated in the SoC.
+
+Ok.
+
+> > I didn't really want to have the added flexibility (and complexity) of 
+> > being able to use any R/B line for any connected flash chip. It seems an 
+> > unnecessary complication for the driver without much gain.
 > 
-> But I'm fine with adding it, I'm not really trying to knock it, just 
-> explaining why it wasn't done in the first place. (I think I'm actually 
-> reacting to the word 'lazy' here...).
+> Not really, at least if you properly separate the chip and controller
+> objects it's quite easy to deal with, and I'll ask you to do this clean
+> separation anyway (even if you say you only have a single chip per
+> controller) :P.
 
-Then, let's say I really care about this clear separation between NAND
-controllers and NAND chips (even if the controller is only supporting a
-single device), because it makes things clearer, and because it brings
-some consistency in the NAND controller drivers.
-That's something I've asked to other contributors, and I'm asking it to
-you too.
+Yes, the separation of chip and controller is needed, but the R/B line 
+flexibility requires an additional mapping functionality within the 
+driver. Not rocket science of course, but I can't see much point in it 
+(other than to cover up a potential routing mistake done by a PCB 
+designer).
 
-You'll see that implementing this separation is not much more
-complicated than having this global variable, and I must admit global
-variable make me scream (especially when they can be avoided).
-
+> > 
+> > Again, this property doesn't really have any meaning in the single-CS 
+> > case, so should I omit it completely?
 > 
-> > > > > +
-> > > > > +/* The timing setup is expected to come via DT. We keep some default timings
-> > > > > + * here for reference, based on a 100 MHz reference clock.
-> > > > > + */
-> > > > > +
-> > > > > +static const struct nfc_timings default_mode0_pll_enabled = {
-> > > > > +	0x0d151533, 0x000b0515, 0x00000046,
-> > > > > +	0x00150000, 0x00000000, 0x00000005, 0x00000015 };    
-> > > > 
-> > > > Can you explain those magic values?    
+> Keep in mind that you're defining a DT binding, and this binding is
+> submitting to the 'stable ABI' rule, so you shouldn't think in term of
+> what your driver supports now, but what you're IP is capable of, and
+> it's definitely capable of handling several R/B pins.
+
+Yes, I understand about the stable API rule, but at the same time that R/B 
+mapping could be added without violating that rule at a later date if 
+someone really needed it, couldn't it?
+
+I mean, an IP may be capable of a lot of things, and we don't necessarily 
+want to implement them all in the driver to start with and have DT 
+propertes for them all do we?
+
+> > > > +- evatronix,timings: Seven 32-bit values for initializing the TIME_SEQ_0,
+> > > > +		     TIME_SEQ_1, TIMINGS_ASYN, TIME_GEN_SEQ_0, TIME_GEN_SEQ_1,
+> > > > +		     TIME_GEN_SEQ_2 and TIME_GEN_SEQ_3 registers, respectively.  
 > > > 
-> > > Not really, the problem is that the agreement we have with the IP vendor 
-> > > is that we may not disclose any documentation, outside of what is 
-> > > absolutely necessary to write working code.
 > > > 
-> > > A rationale is that anyone else wanting to use the driver will either be 
-> > > designing their own SoC in which case they will have access to the 
-> > > relevant documentation, or if they're using a SoC from someone else, the 
-> > > SoC vendor will have to provide that information in order for the chip to 
-> > > be useful anyway.  
+> > > Can this be extracted from the timing mode exposed by the NAND chip.
+> > > IMO it shouldn't be defined in the DT.  
 > > 
-> > Hm, so I'll have a new table like that for each new SoC using this IP?  
-> 
-> Yes, I would say that would be the case.
-> 
-> > I must say I don't like the idea, but let's address the other aspects
-> > first.  
-> 
-> Ok.
-> 
-> > As said above, I'm planning to rework the NAND framework to
-> > support things like:
+> > I agree, Ideally one would like to read timing parameters from the NAND 
+> > chip (ONFi or JEDEC parameter pages) and determine all the controller IP 
+> > timings from that. There are a couple of reasons I haven't gone that 
+> > route.
 > > 
-> > struct nand_operation {
-> > 	u8 cmds[2];
-> > 	u8 addrs[5];
-> > 	int ncmds;
-> > 	int naddrs;
-> > 	union {
-> > 		void *out;
-> > 		const void *in;
-> > 	};
-> > 	enum nand_op_direction dir;
-> > }
-> >   
-> > ->exec_op(struct nand_operation *op);  
-> > 
-> > This way the NAND controller would have all the necessary information
-> > to trigger the whole operation (omitted the ECC info on purpose, to
-> > make it clearer).
-> > 
-> > But this is not there yet, and in the meantime, if possible, I'd prefer
-> > seeing drivers implementing the ->cmd_ctrl() function instead of
-> > overloading the default ->cmdfunc() implementation.  
-> 
-> I see, I suppose that's because during the course of this the ->cmdfunc() 
-> logic will be significantly changed, requiring corresponding changes in 
-> drivers that do overload that function? Fair enough, that's a pretty good 
-> reason, probably more so than the alleged simplicity of the ->cmd_ctrl() 
-> interface.
 
-There's another reason actually. We have chip specific functions (like
-->setup_read_retry()) which might want to use
-non-standard/vendor-specific operations, and this implies patching all
-->cmdfunc() implementations, or at least making sure they will work
-fine with these new commands.
-The ->cmd_ctrl() + generic nand_command_lp() for ->cmdfunc() is making
-that a lot easier.
+I think what I'm worried about is that say we add the functionality to 
+take the appropriate parameters and create a set of timing values. We can 
+verify those values only under a very limited set of circumstances (a 
+certain clock frequency, certain pad delays on a given SoC, limited range 
+of flash chips etc). At a later date, the IP is used in a different SoC 
+and the original calculation turns out to be wrong in that case. Updating 
+the timing calcuation function to work with the original SoC and the new 
+one would be a bit of a nightmare I. Since at some point a set of specific 
+timing values need to be calculated for a given SoC anyway, we might as 
+well use those values as they are.
 
-So yes, I'm clearly trying to avoid specific ->cmdfunc() (especially
-when they are not generic enough to support new commands).
+> And my answer is no :). 
 
-Again, ->cmd_ctrl() does not have to be used in your internal
-ecc->read/write_page() implementations (all you'll have to do is avoid
-using the ->cmdfunc() method and create your own NAND controller
-specific commands instead), but it should at least be used for basic
-operations that do not require high performances (i.e. NAND detection,
-NAND RESET, read-retry, ...).
+:-)
 
+> Just because it's complicated to extract these information at the driver 
+> level level doesn't mean you should put it in the DT. That's exactly the 
+> opposite: the DT is supposed to encode the hardware representation, not 
+> how you want to configure it.
+
+I would say that the complexity and error-proneness of automatic timing 
+calculation outweighs the benefit, but I see I'm fighting a loosing battle 
+here...
+
+> How about using a default/safe timing mode for now (ONFI timing mode 0
+> should work for all NANDs).
+> The only thing you'll have to do is retrieve the source clk rate and
+> calculate timing register values accordingly. Or you can even assume
+> you always have a 100MHz source clk and hardcode it in your driver.
+
+Yes, that is certainly possible of course, and the driver already has a 
+hard-coded default setup for this case.
+
+In that case though the driver could have pre-set setups for other ONFi 
+modes, and we could have an _optional_ DT property to select them, the 
+reason for that being in order to handle non-ONFi flashes whose timing 
+cannot be gleaned from the device itself.
+
+I.e. something like
+
+evatronix,onfi-timing-mode = <2>;
+
+Would that be acceptable?
+
+/Ricard
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
