@@ -1,8 +1,8 @@
 Received: from mail-db3on0071.outbound.protection.outlook.com ([157.55.234.71]
  helo=emea01-db3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bBPnI-0007HB-JR
- for linux-mtd@lists.infradead.org; Fri, 10 Jun 2016 17:00:29 +0000
+ id 1bBPnJ-0007HB-Pk
+ for linux-mtd@lists.infradead.org; Fri, 10 Jun 2016 17:00:30 +0000
 From: Han Xu <han.xu@nxp.com>
 To: <han.xu@nxp.com>, <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <robh+dt@kernel.org>,
@@ -10,9 +10,12 @@ To: <han.xu@nxp.com>, <boris.brezillon@free-electrons.com>, <richard@nod.at>,
  <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>,
  <devicetree@vger.kernel.org>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 0/6] support gpmi on i.MX6UL/7D and HW bitflip on i.MX6QP/7D
-Date: Fri, 10 Jun 2016 12:01:28 -0500
-Message-ID: <1465578094-8816-1-git-send-email-han.xu@nxp.com>
+Subject: [PATCH v2 2/6] mtd: nand: gpmi: document the clocks and clock-names
+ in DT property
+Date: Fri, 10 Jun 2016 12:01:30 -0500
+Message-ID: <1465578094-8816-3-git-send-email-han.xu@nxp.com>
+In-Reply-To: <1465578094-8816-1-git-send-email-han.xu@nxp.com>
+References: <1465578094-8816-1-git-send-email-han.xu@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,30 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add support for gpmi nand on i.MX6UL and i.MX7D, document the related
-properties in DT and add the HW bitflip detection and correction for
-i.MX6QP and i.MX7D.
+add the clocks and clock-names in DT property, gpmi-io clock is
+mandatory for all platforms, but some platforms, such as i.MX6Q may
+need more extra clocks for submodules. More details please refer to the
+SoC reference manual.
 
-v1 ---> v2:
-fix several indent and open parenthesis issues
-drop off the void cast
-rebase to latest code and adopt to SW bitflip code
-split bitflip and i.MX6QP code
+Signed-off-by: Han Xu <han.xu@nxp.com>
+---
+ Documentation/devicetree/bindings/mtd/gpmi-nand.txt | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Han Xu (6):
-  mtd: nand: gpmi: add GPMI NAND support for i.MX7D
-  mtd: nand: gpmi: document the clocks and clock-names in DT property
-  mtd: nand: gpmi: add GPMI NAND support for i.MX6QP
-  mtd: nand: gpmi: correct bitflip for erased NAND page
-  mtd: nand: gpmi: support NAND on i.MX6UL
-  mtd: nand: gpmi: document the new supported chip in DT
-
- .../devicetree/bindings/mtd/gpmi-nand.txt          | 12 +++-
- drivers/mtd/nand/gpmi-nand/bch-regs.h              | 24 +++++--
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c              | 15 +++--
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 75 ++++++++++++++++++++--
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h             | 15 ++++-
- 5 files changed, 119 insertions(+), 22 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+index d02acaf..c8d0e2f 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+@@ -13,6 +13,13 @@ Required properties:
+     and GPMI DMA channel ID.
+     Refer to dma.txt and fsl-mxs-dma.txt for details.
+   - dma-names: Must be "rx-tx".
++  - clocks : The clocks needed by the gpmi controller. This field varies
++    depends on the SoC design, "gpmi-io" is mandatory but some platforms may
++    need several extra clocks, such as i.MX6Q, it requires "gpmi_apb,
++    gpmi_bch, gpmi_bch_apb and per1_bch" for all submodules. Please refer to
++    the HW design manual.
++  - clock-names : the name of the clocks, please refer to the HW design
++    manual.
+ 
+ Optional properties:
+   - nand-on-flash-bbt: boolean to enable on flash bbt option if not
+@@ -51,6 +58,8 @@ gpmi-nand@8000c000 {
+ 	interrupt-names = "bch";
+ 	dmas = <&dma_apbh 4>;
+ 	dma-names = "rx-tx";
++	clocks = <&clks 50>,;
++	clock-names = "gpmi_io";
+ 
+ 	partition@0 {
+ 	...
 -- 
 1.9.1
