@@ -1,20 +1,22 @@
-Received: from s18098623.onlinehome-server.com ([74.208.66.31])
- by casper.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bBbW6-0004nL-Io
- for linux-mtd@lists.infradead.org; Sat, 11 Jun 2016 05:31:31 +0000
-Received: from s18098623.onlinehome-server.com (localhost [127.0.0.1])
- by s18098623.onlinehome-server.com (8.14.4/8.14.4) with ESMTP id
- u5B5Ug15032017
- for <linux-mtd@lists.infradead.org>; Sat, 11 Jun 2016 00:30:42 -0500
-To: linux-mtd@lists.infradead.org
-Subject: Delivery Notification, ID 00000434540
-Date: Sat, 11 Jun 2016 00:30:41 -0500
-From: "FedEx Standard Overnight" <justin.benton@bytebreakstudios.com>
-Reply-To: "FedEx Standard Overnight" <justin.benton@bytebreakstudios.com>
-Message-ID: <fcbad33c3050ddacdfddb2e2cd51b429@bytebreakstudios.com>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bBcfu-0006lc-2X
+ for linux-mtd@lists.infradead.org; Sat, 11 Jun 2016 06:45:42 +0000
+Date: Sat, 11 Jun 2016 08:45:18 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org, "Bean
+ Huo =?UTF-8?B?6ZyN5paM5paM?= (beanhuo)" <beanhuo@micron.com>
+Subject: Re: [PATCH 0/4] mtd: add support for pairing scheme description
+Message-ID: <20160611084518.61d9b712@bbrezillon>
+In-Reply-To: <20160611021625.GA144502@google.com>
+References: <1461578481-26567-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20160611021625.GA144502@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_7af5ec231ca67718daa087d9547e1f56"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,187 +26,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---b1_7af5ec231ca67718daa087d9547e1f56
-Content-Type: text/plain; charset=us-ascii
+On Fri, 10 Jun 2016 19:16:25 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-Dear Customer,
+> Hi Boris,
+> 
+> I've mostly just reviewed the cover and first patch for now, since that
+> sets up the rest. A few questions and comments. I hope to review some
+> more and have more to say later this weekend.
+> 
+> On Mon, Apr 25, 2016 at 12:01:17PM +0200, Boris Brezillon wrote:
+> > Hi,
+> > 
+> > This series is the first step towards reliable MLC/TLC NAND support.
+> > Those patches allows the NAND layer to expose page pairing information
+> > to MTD users.  
+> 
+> Have you surveyed many types of NAND to get a representative sampling of
+> what kind of pairing schemes are out there? Do you think you've covered
+> the possibilities well enough in your API? I have a few comments on the
+> patches to this effect. I honestly don't know the answer to these
+> questions, because AFAIR, this is rarely well documented in datasheets.
 
-This is to confirm that one or more of your parcels has been shipped.
-Shipment Label is attached to email.
+I only tested on 3 different NANDs from Micron, Toshiba and Hynix, but
+I had a look at several datasheets. Unlike read-retry this part is
+usually documented in public datasheets, and on a panel of approximately
+20 NANDs (mainly from Toshiba, Samsung, Hynix and Micron), all of them
+where using the 'distance 3' or 'distance 6' pairing scheme.
+The only exception I've seen so far is the one pointed by Bean here [1],
+and it can be described using the mtd_pairing_scheme approach.
 
-Thank you for choosing FedEx,
-Justin Benton,
-Station Manager.
+> 
+> > The plan is to teach UBI about those constraints and let UBI code take
+> > the appropriate precautions when dealing with those multi-level cells
+> > NANDs. The way we'll handle this "paired pages" constraint will be
+> > described soon in a series adapting the UBI layer, so stay tune ;).
+> > 
+> > Note that this implementation only allows page pairing scheme description
+> > when the NAND has a full-id entry in the nand_ids table.
+> > This should be addressed in some way for ONFI and JEDEC NANDs, though
+> > I'm not sure how to handle this yet.  
+> 
+> Do ONFI or JEDEC parameter pages even provide this kind of info? The
+> ONFI spec doesn't mention paired pages.
 
-
---b1_7af5ec231ca67718daa087d9547e1f56
-Content-Type: application/zip; name="00000434540.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=00000434540.zip
-
-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
-AAAAAQABAEAAAADNIwAAAAA=
+Nope that's the problem. The only way you can deduce that is to extract
+it from other information, but I think my series reworking the NAND
+initialization will help us [2].
 
 
---b1_7af5ec231ca67718daa087d9547e1f56--
+[1]http://thread.gmane.org/gmane.linux.drivers.mtd/67084
+[2]https://lkml.org/lkml/2016/5/27/264
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
