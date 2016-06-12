@@ -1,21 +1,15 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bBzhL-0007oq-41
- for linux-mtd@lists.infradead.org; Sun, 12 Jun 2016 07:20:44 +0000
-Date: Sun, 12 Jun 2016 09:20:19 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "George Spelvin" <linux@sciencehorizons.net>
-Cc: linux-kernel@vger.kernel.org, richard@nod.at,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
- Norris <computersforpeace@gmail.com>
+Received: from ns.sciencehorizons.net ([71.41.210.147])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bC1cF-0005kw-KE
+ for linux-mtd@lists.infradead.org; Sun, 12 Jun 2016 09:23:36 +0000
+Date: 12 Jun 2016 05:23:13 -0400
+Message-ID: <20160612092313.4046.qmail@ns.sciencehorizons.net>
+From: "George Spelvin" <linux@sciencehorizons.net>
+To: boris.brezillon@free-electrons.com, linux@sciencehorizons.net
 Subject: Re: [PATCH 2/4] mtd: nand: implement two pairing scheme
-Message-ID: <20160612092019.79b57b7f@bbrezillon>
-In-Reply-To: <20160611223004.20916.qmail@ns.sciencehorizons.net>
-References: <20160611223004.20916.qmail@ns.sciencehorizons.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Cc: computersforpeace@gmail.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, richard@nod.at
+In-Reply-To: <20160612092019.79b57b7f@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,222 +19,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Brian and the MTD ML
+>> It also applies an offset of +1, to avoid negative numbers and the
+>> problems of signed divides.
 
-Hi George,
+> It seems to cover all cases.
 
-On 11 Jun 2016 18:30:04 -0400
-"George Spelvin" <linux@sciencehorizons.net> wrote:
+I wasn't sure why you used a signed int for the interface.
 
-> I was just browsing LKML history and wanted to understand this
-> concept, but while reading I think I spotted an error.
-> 
-> 
-> +static void nand_pairing_dist3_get_info(struct mtd_info *mtd, int page,
-> +					struct mtd_pairing_info *info)
-> +{
-> +	int lastpage = (mtd->erasesize / mtd->writesize) - 1;
-> +	int dist = 3;
-> +
-> +	if (page == lastpage)
-> +		dist = 2;
-> +
-> +	if (!page || (page & 1)) {
-> +		info->group = 0;
-> +		info->pair = (page + 1) / 2;
-> +	} else {
-> +		info->group = 1;
-> +		info->pair = (page + 1 - dist) / 2;
-> +	}
-> +}
-> 
-> As I understand this, the general rule is that odd pages i are paired with
-> even pages i+3, and group = !(i & 1).
-> 
-> If there are N pages total (numbered 0..N-1), this leaves four exceptions
-> to deal with:
-> 
-> -3 would be apired with 0
-> -1 would be paired with 2
-> N-3 would be paired with N
-> N-1 would be paired with N+2
-> 
-> This is solved by pairing 0 with 2, and N-1 with N-3.
-> 
-> In terms of group addresses, there are only two exceptions:
-> * 0 is pair 0, group 0 (not pair -1, group 1)
-> * N-1 is pair N/2/-1, group 1 (not pair N/2, group 0)
-> 
-> You have the first exception correct, but not the second; the condition
-> detects it, but the change to "dist" doesn't matter since the first half
-> of the second if() will be taken.
+(Another thing I thought of, but am less sure of, is packing the group
+and pair numbers into a register-passable int rather than a structure.
+Even 2 bits for the group is probably the most that will ever be needed,
+but it's easy to say the low 4 bits are the group and the high 28 are
+the pair.  Just create a few access macros to pull them apart.
 
-Indeed. Nice catch!
+This was inspired by Linus's hash_len abstraction, recently moved to
+<linux/stringhash.h>)
 
-> 
-> 
-> I think the easiest way to get this right is the following:
-> 
-> 	page = page + (page != 0) + (page == lastpage);
-> 
-> 	info->group = page & 1;
-> 	if (page & 1)
-> 		page -= dist;
-> 	info->pair = page >> 1;
-> 
-> Rather than make up too many rules, this just maps 0 -> -1 and N-1 -> N,
-> then applies the general rule.
-> 
-> It also applies an offset of +1, to avoid negative numbers and the
-> problems of signed divides.
+>> (or you could add an mtd->write_per_erase field).
 
-It seems to cover all cases.
+> Okay. Actually I'd like to avoid adding new 'conversion' fields to the
+> mtd_info struct. Not sure we are really improving perfs when doing that,
+> since what takes long is the I/O ops between the flash and the
+> controller not the conversion operations.
 
-> 
-> 
-> Also, a very minor note: divides are expensive.
-> A cheaper way to evaluate the "page == lastpage" condition is
-> 
-> 	if ((page + 1) * mtd->writesize == mtd->erasesize)
-> 
-> (or you could add an mtd->write_per_erase field).
+Well, yes, but you may need to do conversion ops for in-memory cache
+lookups or searching for free blocks, or wear-levelling computations,
+all of which may involve a great many conversions per actual I/O.
 
-Okay. Actually I'd like to avoid adding new 'conversion' fields to the
-mtd_info struct. Not sure we are really improving perfs when doing that,
-since what takes long is the I/O ops between the flash and the
-controller not the conversion operations.
+(In hindsight, I'd wish for writesize and write_per_erase, and not
+store erasesize explicitly.  Not only is the multiply more efficient,
+but it abolishes the error of an erase size which is not a multiple of
+the write size by making it impossible.)
 
-> 
-> 
-> Applying all of this, the corrected code looks like the following:
-> 
-> (Note the addition of "const" and "__pure" annotations, which should
-> get copied to the "struct mtd_pairing_scheme" declaration.)
+> Can we have a boolean to make it clearer?
+>
+>	bool lastpage = ((page + 1) * mtd->writesize) == mtd->erasesize;
 
-I didn't know about the __pure attribute, thanks for mentioning it.
-I agree on the const specifier.
+An improvement IMHO.  You can use the same name in all four functions
+to make the equivalence clear.
 
-> 
-> Signed-off-by: George Spelvin <linux@sciencehorizons.net>
-> 
-> /*
->  * In distance-3 pairing, odd pages i are group 0, and are paired
->  * with even pages i+3.  The exceptions are the first page (page 0)
->  * and last page (page N-1) in an erase group.  These pair as if
->  * they were pages -1 and N, respectively.
->  */
-> static void nand_pairing_dist3_get_info(const struct mtd_info *mtd, int page,
-> 					struct mtd_pairing_info *info)
-> {
-> 	page += (page != 0) + ((page + 1) * mtd->writesize == mtd->erasesize);
+> Also, the page update is quite obscure for people that did not have the
+> explanation you gave above. Can we make it
 
-Can we have a boolean to make it clearer?
+>	/*
+>	 * The first and last pages are not surrounded by other pages,
+>	 * and are thus less sensitive to read/write disturbance.
+>	 * That's why NAND vendors decided to use a different distance
+>	 * for these 2 specific case, which complicates a bit the
+>	 * pairing scheme logic.
 
-	bool lastpage = ((page + 1) * mtd->writesize) == mtd->erasesize;
+Um... this is, as far as I can tell, complete nonsense.
 
-Also, the page update is quite obscure for people that did not have the
-explanation you gave above. Can we make it
+I realize you know this about a thousand times better than I do, so
+I'm hesitant to make such a strong statement, but one thing that I do
+know is that paired pages are stored in the exact same transistors.
+The pairing is purely a logical addressing distance.  The physical
+distance is exactly zero.
 
-	/*
-	 * The first and last pages are not surrounded by other pages,
-	 * and are thus less sensitive to read/write disturbance.
-	 * That's why NAND vendors decided to use a different distance
-	 * for these 2 specific case, which complicates a bit the
-	 * pairing scheme logic.
-	 *
-	 * To simplify the code, and keep the same distance for
-	 * everyone, we'll increment all pages by 1 except the first
-	 * one (page 0).
-	 * The last page receives an extra +1 for the same reason.
-	 */
-	page += (page != 0) + lastpage;
+The qustion is why they chose this particular *logival* addressing
+scheme, and I believe the reason is write bandwidth for the common case
+of streaming writes to consecutive pages.
 
-> 
+The obvious thing to do is pair consecutive even and odd pages (pages 0 and 1,
+then 2 and 3, then...), but that makes it hard to pipeline programming of the
+two pages.  You can't start programming page 1 until page 0 is finished.
 
-	/*
-	 * The datasheets state that odd pages should be part of group
-	 * 0 and even ones part of group 1 (except for the last and
-	 * first pages) but this has changed when we added + 1 to the
-	 * page variable.
-	 */
-> 	info->group = page & 1;
+The next obvious thing is stride-2: 0<->2, 1<->3, 4<->6, 5<->7, etc.
 
-	/*
-	 * We're trying to extract the pair id, which is always equal
-	 * to first_page_of_a_pair / 2. Subtract the distance to the
-	 * page if it's not part of group 0.
-	 */
-> 	if (page & 1)
-> 		page -= 3;
-> 	info->pair = page >> 1;
-> }
-> 
-> static int __pure nand_pairing_dist3_get_wunit(const struct mtd_info *mtd,
-> 					const struct mtd_pairing_info *info)
-> {
+This is done in some MLC chips.  See p. 98 of this Micron data sheet:
+http://pdf.datasheet.directory/datasheets-0/micron_technology/MT29F32G08CBACAWP_C.pdf
+which has a stride-4 pairing.  0..3 pair with 4..8, then 9..11 with
+12..15, and so on.
 
-I'll add the same kind of comment here.
+However, it's desirable to alternate group-0 and group-1 pages, since
+the write operations are rather different and even take different amounts
+of time.  Alternating them makes it possible to:
+1) Possibly overlap parts of the writes that use different on-chip resources,
+2) Average the non-overlapping times for minimum jitter.
 
-> 	int page = 2 * info->pair + 3 * info->group;
-> 
-> 	page -= (page != 0) + (page * mtd->writesize > mtd->erasesize);
-> 	return page;
-> }
-> 
-> const struct mtd_pairing_scheme dist3_pairing_scheme = {
-> 	.ngroups = 2,
-> 	.get_info = nand_pairing_dist3_get_info,
-> 	.get_wunit = nand_pairing_dist3_get_wunit,
-> };
-> EXPORT_SYMBOL_GPL(dist3_pairing_scheme);
-> 
-> /*
->  * Distance-6 pairing works like distance-3 pairing, except that pages
->  * are taken two at a time.  The lsbit of the page number is chopped off
->  * and later re-added as the lsbit of the pair number.
->  */
-> static void nand_pairing_dist6_get_info(const struct mtd_info *mtd, int page,
-> 					struct mtd_pairing_info *info)
-> {
-> 	bool lsbit = page & 1;
-> 
-> 	page >>= 1;
-> 	page += (page != 0) + ((page+1) * 2*mtd->writesize == mtd->erasesize);
-> 
-> 	info->group = page & 1;
-> 	if (page & 1)
-> 		page -= 3;
-> 	info->pair = page | lsbit;
-> }
-> 
-> static int __pure nand_pairing_dist6_get_wunit(const struct mtd_info *mtd,
-> 				       const struct mtd_pairing_info *info)
-> {
-> 	int page = (info->pair & ~1) + 3 * info->group;
-> 
-> 	page -= (page != 0) + (page * 2 * mtd->writesize > mtd->erasesize);
-> 	return 2 * page + (info->pair & 1);
-> }
-> 
-> const struct mtd_pairing_scheme dist6_pairing_scheme = {
-> 	.ngroups = 2,
-> 	.get_info = nand_pairing_dist6_get_info,
-> 	.get_wunit = nand_pairing_dist6_get_wunit,
-> };
-> EXPORT_SYMBOL_GPL(dist6_pairing_scheme);
-> 
-> 
+This leads naturally to the stride-3 solution.  You want to minimize the
+stride because you can read both pages in a pair with one read disturbance,
+and the shorter the distance, the more likely you'll want both pages
+(and the less buffering you'll need to make both available).
 
-Thanks for your valuable review/suggestions.
+Stride-3 does have those two awkward edge cases, and changing the
+stride is simply the simplest way to special-case them.
 
-Just out of curiosity, why are you interested in the pairing scheme
-concept? Are you working with NANDs?
+> Thanks for your valuable review/suggestions.
+>
+> Just out of curiosity, why are you interested in the pairing scheme
+> concept? Are you working with NANDs?
 
-Best Regards,
+Not at present, but I do embedded hardware and might some day.
 
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Also, the data sheets are a real PITA to find.  I have yet to
+see an actual data sheet that documents the stride-3 pairing scheme.
