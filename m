@@ -1,19 +1,29 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bC726-0001TY-Us
- for linux-mtd@lists.infradead.org; Sun, 12 Jun 2016 15:10:43 +0000
-Date: Sun, 12 Jun 2016 17:10:15 +0200
+ id 1bC7wl-0003fS-Qw
+ for linux-mtd@lists.infradead.org; Sun, 12 Jun 2016 16:09:12 +0000
+Date: Sun, 12 Jun 2016 18:08:48 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: "George Spelvin" <linux@sciencehorizons.net>
-Cc: beanhuo@micron.com, computersforpeace@gmail.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, richard@nod.at
-Subject: Re: [PATCH 2/4] mtd: nand: implement two pairing scheme
-Message-ID: <20160612171015.276c3095@bbrezillon>
-In-Reply-To: <20160612144215.48445eb4@bbrezillon>
-References: <20160612131142.293ff800@bbrezillon>
- <20160612122549.30320.qmail@ns.sciencehorizons.net>
- <20160612144215.48445eb4@bbrezillon>
+To: Mychaela Falconia <mychaela.falconia@gmail.com>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ devicetree@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+ linux-kernel@vger.kernel.org, Oleksij Rempel <linux@rempel-privat.de>,
+ Linux mtd <linux-mtd@lists.infradead.org>, Benoit Cousson
+ <bcousson@baylibre.com>, Brian Norris <computersforpeace@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 3/4] mtd: nand: Add support for Evatronix NANDFLASH-CTRL
+Message-ID: <20160612180848.56454802@bbrezillon>
+In-Reply-To: <20160610144000.6101cc2c@bbrezillon>
+References: <alpine.DEB.2.02.1606020948070.19416@lnxricardw1.se.axis.com>
+ <20160603165909.09f27ee0@bbrezillon>
+ <alpine.DEB.2.02.1606071702220.19416@lnxricardw1.se.axis.com>
+ <CA+uuBqb4fG4nK7atrF7XOQ=ip2SfKrxU+KXqD3W+PA_ZA7cS3g@mail.gmail.com>
+ <20160609200128.5b7a6e29@bbrezillon>
+ <CA+uuBqaRv2f8K-Q2ZLQY8tq6idq8XCDMV21SYM5XCWc4FVV90g@mail.gmail.com>
+ <20160609222307.5db4e67f@bbrezillon>
+ <CA+uuBqb-g1PC1WKR36Rbd5fd1YqreprzG_N57xOn43JOSeDqVw@mail.gmail.com>
+ <20160610144000.6101cc2c@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,48 +36,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 12 Jun 2016 14:42:15 +0200
+Hi Mychaela,
+
+On Fri, 10 Jun 2016 14:40:00 +0200
 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
+> On Thu, 9 Jun 2016 21:07:49 -0800
+> Mychaela Falconia <mychaela.falconia@gmail.com> wrote:
+> 
+> > On 6/9/16, Boris Brezillon <boris.brezillon@free-electrons.com> wrote:  
+> > > Hm, I think it's changing now that a lot of SoCs are advertised to be
+> > > running Linux. But you're right in that existing IPs might not support
+> > > this low-level mode.    
+> > 
+> > Faraday (the IP vendor in the present case) advertise Linux support as
+> > well, but they never mainlined any of it, and instead they provide
+> > their own vendor Linux trees. The one I got is based on linux-3.3; I
+> > don't know if they have a newer one. They do "support" FTNANDC024
+> > under Linux as well, but their driver for it is gawdawful - see below.
 > >   
-> > >> Also, the data sheets are a real PITA to find.  I have yet to
-> > >> see an actual data sheet that documents the stride-3 pairing scheme.    
+> > > Hm, I don't understand why it's not possible to implement basic
+> > > sequences, but I don't know anything about FTNANDC024, so let's assume
+> > > you're right.    
+> > 
+> > Read the datasheet (link below) and tell me what you think.
 > >   
-> > > Yes, that's a real problem. Here is a Samsung NAND data sheet
-> > > describing stride-3 [1], and an Hynix one describing stride-6 [2].
-> > > 
-> > > [1]http://dl.btc.pl/kamami_wa/k9gbg08u0a_ds.pdf
-> > > [2]http://www.szyuda88.com/uploadfile/cfile/201061714220663.pdf    
+> > > Sure, feel free to send it to me, I'll have a look. And maybe you can
+> > > also share your code (both the new and old versions of the driver).    
 > > 
-> > Thank you very much!
+> > I decided to go ahead and abuse my personal web space on another
+> > (nothing to do with Linux or with NAND flash) project's server for the
+> > purpose of sharing this stuff:
 > > 
-> > Did you see the footnote at the bottom of p. 64 of the latter?
-> > Does that affect your pair/group addressing scheme?
+> > https://www.freecalypso.org/members/falcon/linux-mtd/
 > > 
-> > It seems they are grouping not just 8K pages into even/odd double-pages,
-> > and those 16K double-pages are being addressed with stride of 3.
-> > 
-> > But in particular, an interrupted write is likely to corrupt both
-> > double-pages, 32K of data!  
+> > There you will find the IP datasheet, the vendor's driver (GPL), and a
+> > current snapshot of my work-in-progress replacement.  
 > 
-> Yes, that's yet another problem I decided to ignore for now :).
-
-Now I remember why I decided to ignore this. If you look at this other
-Hynix data sheet [1] exposing the same pairing scheme you see that the
-description as slightly changed. I don't know if it's a fix from the
-previous description or if the pairing scheme are really different, but
-until someone has tested it on a real device, I'll assume the Hynix
-case is an exception which should be handled separately.
-
+> Thanks for sharing that. That's actually a quite interesting beast, and
+> it's way more evolved than I first thought.
 > 
-> I guess a solution would be to consider that all 4 pages are 'paired'
-> together, but this also implies considering that the NAND is a 4-level
-> cells, which will make us loose even more space when operating in 'SLC
-> mode' where we only write the lower page (page attached to group 0) of
-> each pair.
+> I might be wrong, but it seems that ->cmd_ctrl() can be supported using
+> the custom NAND op approach (custom uCode in SRAM).
 > 
+> This doesn't prevent you from optimizing things for operations where
+> performances really matter (read/write with ECC), by using advanced
+> sequencing (reusing the supported cmdset, or even implementing your
+> own). I'm actually impressed by the degree of liberty this controller
+> gives: while some sequences are provided you can create you own ones
+> and still benefit from the controller optimizations.
+> 
+> Didn't look at the code yet, but I'm pretty confident we'll be able to
+> make the driver fit in the existing model, and that moving to the new
+> model (where I plan to give more freedom to the controller), will make
+> it even more interesting.
+> 
+> I'll try to come with a proposal for you to test/review after reviewing
+> the code.
 
-[1]http://minipcsale.ru/images/joomlakassa/TV_BOX/MINIX_NEO_X7/SK%20Hynix%20H27UCG8T2BTR.pdf
+Okay, I had a closer look at both implementations, and indeed Faraday's
+implementation was trying to convert different NAND operations into
+their associated 'faraday' program flow (referenced by program
+address), which not only complicates the implementation, but also
+implies adapting the ->cmdfunc() logic each time a new feature is added
+to the core.
+In the other hand, your driver, while exposing an higher level
+interface, lacks all the detection logic that is part of the code
+(actually I haven't looked to deeply in the code, but even if the
+detection logic is here, this means you're more or less duplicating the
+nand_base.c code).
+
+So, my suggestion is to still use the NAND framework, but try to be
+smarter to avoid bloating the ->cmdfunc() implementation. Here is a
+draft showing the direction (it's not been tested at all, and should
+serve a reference rather than a real implementation).
+Of course this implementation is not perfect, but it should still
+provide basic support for your NAND controller until we come with a
+NAND framework v2 allowing for more optimizations at the NAND level.
+
+Don't hesitate to ask questions or point problems in my approach.
+
+Best Regards,
+
+Boris
+
+[1]http://code.bulix.org/kxg9dz-101056
 
 -- 
 Boris Brezillon, Free Electrons
