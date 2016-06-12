@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCD5U-00055Z-4T
- for linux-mtd@lists.infradead.org; Sun, 12 Jun 2016 21:38:33 +0000
+ id 1bCECF-0003bX-Ik
+ for linux-mtd@lists.infradead.org; Sun, 12 Jun 2016 22:49:36 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org, dwmw2@infradead.org, dedekind1@gmail.com,
  Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH] Revert "mtd: switch ubi_open_volume_path() to vfs_stat()"
-Date: Sun, 12 Jun 2016 23:37:53 +0200
-Message-Id: <1465767473-30117-1-git-send-email-richard@nod.at>
+Subject: [PATCH] Revert "mtd: switch open_mtd_by_chdev() to use of vfs_stat()"
+Date: Mon, 13 Jun 2016 00:49:03 +0200
+Message-Id: <1465771744-16926-1-git-send-email-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,60 +18,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This reverts commit 322ea0bbf3003df17b6253f76e572c37d79a6810.
+This reverts commit 87f15d4add758fb7fc76655721af94be57a4c17d.
 
 vfs_stat() can only be used on user supplied buffers.
-UBI's kapi.c is the API to the kernel and therefore vfs_stat()
-is inappropriate.
-
-This solves the problem that mounting any UBIFS will immediately
-fail with -EINVAL.
 
 Cc: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/kapi.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/mtd/ubi/build.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index 348dbbc..cc6fa01 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -301,24 +301,27 @@ EXPORT_SYMBOL_GPL(ubi_open_volume_nm);
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 16baeb5..7091fca 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1147,19 +1147,22 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
   */
- struct ubi_volume_desc *ubi_open_volume_path(const char *pathname, int mode)
+ static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
  {
--	int error, ubi_num, vol_id;
 -	struct kstat stat;
-+	int error, ubi_num, vol_id, mod;
-+	struct inode *inode;
+-	int err, minor;
++	int err, major, minor, mode;
 +	struct path path;
  
- 	dbg_gen("open volume %s, mode %d", pathname, mode);
+ 	/* Probably this is an MTD character device node path */
+-	err = vfs_stat(mtd_dev, &stat);
++	err = kern_path(mtd_dev, LOOKUP_FOLLOW, &path);
+ 	if (err)
+ 		return ERR_PTR(err);
  
- 	if (!pathname || !*pathname)
+ 	/* MTD device number is defined by the major / minor numbers */
+-	if (MAJOR(stat.rdev) != MTD_CHAR_MAJOR || !S_ISCHR(stat.mode))
++	major = imajor(d_backing_inode(path.dentry));
++	minor = iminor(d_backing_inode(path.dentry));
++	mode = d_backing_inode(path.dentry)->i_mode;
++	path_put(&path);
++	if (major != MTD_CHAR_MAJOR || !S_ISCHR(mode))
  		return ERR_PTR(-EINVAL);
  
--	error = vfs_stat(pathname, &stat);
-+	error = kern_path(pathname, LOOKUP_FOLLOW, &path);
- 	if (error)
- 		return ERR_PTR(error);
- 
--	if (!S_ISCHR(stat.mode))
--		return ERR_PTR(-EINVAL);
--
--	ubi_num = ubi_major2num(MAJOR(stat.rdev));
--	vol_id = MINOR(stat.rdev) - 1;
-+	inode = d_backing_inode(path.dentry);
-+	mod = inode->i_mode;
-+	ubi_num = ubi_major2num(imajor(inode));
-+	vol_id = iminor(inode) - 1;
-+	path_put(&path);
- 
-+	if (!S_ISCHR(mod))
-+		return ERR_PTR(-EINVAL);
- 	if (vol_id >= 0 && ubi_num >= 0)
- 		return ubi_open_volume(ubi_num, vol_id, mode);
- 	return ERR_PTR(-ENODEV);
+-	minor = MINOR(stat.rdev);
+ 	if (minor & 1)
+ 		/*
+ 		 * Just do not think the "/dev/mtdrX" devices support is need,
 -- 
 2.7.3
