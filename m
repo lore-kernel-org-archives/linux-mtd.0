@@ -1,18 +1,17 @@
-From: weiyj_lk@163.com
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Chen-Yu Tsai <wens@csie.org>
-Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH -next] mtd: nand: sunxi: fix return value check in
- sunxi_nfc_dma_op_prepare()
-Date: Mon, 13 Jun 2016 14:27:18 +0000
-Message-Id: <1465828038-16893-1-git-send-email-weiyj_lk@163.com>
+Received: from eusmtp01.atmel.com ([212.144.249.243])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bCTVJ-0003oZ-PM
+ for linux-mtd@lists.infradead.org; Mon, 13 Jun 2016 15:10:18 +0000
+From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
+ <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
+ <cyrille.pitchen@atmel.com>
+Subject: [PATCH 0/2] mtd: spi-nor: add driver for Atmel QSPI controller
+Date: Mon, 13 Jun 2016 17:10:24 +0200
+Message-ID: <cover.1465830154.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Hi all,
 
-In case of error, the function dmaengine_prep_slave_sg() returns NULL
-pointer not ERR_PTR(). The IS_ERR() test in the return value check
-should be replaced with NULL test.
+this series of patches adds support to the Atmel QSPI controller.
+It was tested on a sama5d2 xplained board + Macronix mx25l25673g QSPI
+memory.
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- drivers/mtd/nand/sunxi_nand.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The driver limits its support of Quad SPI memories to the SPI 1-1-4
+protocol for Fast Read operations and SPI 1-1-1 protocol for all other
+commands.
 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index ef7f6df..653cb3a 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -390,8 +390,8 @@ static int sunxi_nfc_dma_op_prepare(struct mtd_info *mtd, const void *buf,
- 		return -ENOMEM;
- 
- 	dmad = dmaengine_prep_slave_sg(nfc->dmac, sg, 1, tdir, DMA_CTRL_ACK);
--	if (IS_ERR(dmad)) {
--		ret = PTR_ERR(dmad);
-+	if (!dmad) {
-+		ret = -EINVAL;
- 		goto err_unmap_buf;
- 	}
+The series is based on next-20160609
+
+Best regards,
+
+Cyrille
+
+Cyrille Pitchen (2):
+  Documentation: atmel-quadspi: add binding file for Atmel QSPI driver
+  mtd: atmel-quadspi: add driver for Atmel QSPI controller
+
+ .../devicetree/bindings/mtd/atmel-quadspi.txt      |  32 +
+ drivers/mtd/spi-nor/Kconfig                        |   9 +
+ drivers/mtd/spi-nor/Makefile                       |   1 +
+ drivers/mtd/spi-nor/atmel-quadspi.c                | 741 +++++++++++++++++++++
+ 4 files changed, 783 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
+ create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
+
+-- 
+1.8.2.2
