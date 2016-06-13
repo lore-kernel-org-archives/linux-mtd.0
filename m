@@ -1,16 +1,24 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCECF-0003bW-Ik
- for linux-mtd@lists.infradead.org; Sun, 12 Jun 2016 22:49:36 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, dwmw2@infradead.org, dedekind1@gmail.com,
- Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH] ubi: Don't bypass ->getattr()
-Date: Mon, 13 Jun 2016 00:49:04 +0200
-Message-Id: <1465771744-16926-2-git-send-email-richard@nod.at>
-In-Reply-To: <1465771744-16926-1-git-send-email-richard@nod.at>
-References: <1465771744-16926-1-git-send-email-richard@nod.at>
+Received: from mail-pf0-x236.google.com ([2607:f8b0:400e:c00::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bCKpT-0002gX-T1
+ for linux-mtd@lists.infradead.org; Mon, 13 Jun 2016 05:54:32 +0000
+Received: by mail-pf0-x236.google.com with SMTP id c2so42696919pfa.2
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Jun 2016 22:54:11 -0700 (PDT)
+Date: Sun, 12 Jun 2016 22:54:02 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ Bean Huo =?utf-8?B?6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+Subject: Re: [PATCH 0/4] mtd: add support for pairing scheme description
+Message-ID: <20160613055402.GA107340@google.com>
+References: <1461578481-26567-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20160611021625.GA144502@google.com>
+ <20160611084518.61d9b712@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160611084518.61d9b712@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,96 +28,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Directly accessing inode fields bypasses ->getattr()
-and can cause problems when the underlying filesystem
-does not have the default ->getattr() implementation.
+On Sat, Jun 11, 2016 at 08:45:18AM +0200, Boris Brezillon wrote:
+> On Fri, 10 Jun 2016 19:16:25 -0700
+> Brian Norris <computersforpeace@gmail.com> wrote:
+> > On Mon, Apr 25, 2016 at 12:01:17PM +0200, Boris Brezillon wrote:
+> > > Hi,
+> > > 
+> > > This series is the first step towards reliable MLC/TLC NAND support.
+> > > Those patches allows the NAND layer to expose page pairing information
+> > > to MTD users.  
+> > 
+> > Have you surveyed many types of NAND to get a representative sampling of
+> > what kind of pairing schemes are out there? Do you think you've covered
+> > the possibilities well enough in your API? I have a few comments on the
+> > patches to this effect. I honestly don't know the answer to these
+> > questions, because AFAIR, this is rarely well documented in datasheets.
+> 
+> I only tested on 3 different NANDs from Micron, Toshiba and Hynix, but
 
-So instead of obtaining the backing inode via d_backing_inode()
-use vfs_getattr() and obtain what we need from the kstat struct.
+I'm curious, do you have an example part number for Micron? When I
+looked briefly last week, I only found either MLC that don't mention it
+at all (they fundamentally *have* to have write pairing, don't they?) or
+TLC that required too much work for me to get past their login screens.
 
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Reported-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/build.c | 16 ++++++++++------
- drivers/mtd/ubi/kapi.c  | 17 ++++++++++-------
- 2 files changed, 20 insertions(+), 13 deletions(-)
+> I had a look at several datasheets. Unlike read-retry this part is
+> usually documented in public datasheets, and on a panel of approximately
+> 20 NANDs (mainly from Toshiba, Samsung, Hynix and Micron), all of them
+> where using the 'distance 3' or 'distance 6' pairing scheme.
+> The only exception I've seen so far is the one pointed by Bean here [1],
+> and it can be described using the mtd_pairing_scheme approach.
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 7091fca..ef36182 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1147,22 +1147,26 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
-  */
- static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
- {
--	int err, major, minor, mode;
-+	int err, minor;
- 	struct path path;
-+	struct kstat stat;
- 
- 	/* Probably this is an MTD character device node path */
- 	err = kern_path(mtd_dev, LOOKUP_FOLLOW, &path);
- 	if (err)
- 		return ERR_PTR(err);
- 
--	/* MTD device number is defined by the major / minor numbers */
--	major = imajor(d_backing_inode(path.dentry));
--	minor = iminor(d_backing_inode(path.dentry));
--	mode = d_backing_inode(path.dentry)->i_mode;
-+	err = vfs_getattr(&path, &stat);
- 	path_put(&path);
--	if (major != MTD_CHAR_MAJOR || !S_ISCHR(mode))
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	/* MTD device number is defined by the major / minor numbers */
-+	if (MAJOR(stat.rdev) != MTD_CHAR_MAJOR || !S_ISCHR(stat.mode))
- 		return ERR_PTR(-EINVAL);
- 
-+	minor = MINOR(stat.rdev);
-+
- 	if (minor & 1)
- 		/*
- 		 * Just do not think the "/dev/mtdrX" devices support is need,
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index cc6fa01..a9e2cef 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -301,9 +301,9 @@ EXPORT_SYMBOL_GPL(ubi_open_volume_nm);
-  */
- struct ubi_volume_desc *ubi_open_volume_path(const char *pathname, int mode)
- {
--	int error, ubi_num, vol_id, mod;
--	struct inode *inode;
-+	int error, ubi_num, vol_id;
- 	struct path path;
-+	struct kstat stat;
- 
- 	dbg_gen("open volume %s, mode %d", pathname, mode);
- 
-@@ -314,14 +314,17 @@ struct ubi_volume_desc *ubi_open_volume_path(const char *pathname, int mode)
- 	if (error)
- 		return ERR_PTR(error);
- 
--	inode = d_backing_inode(path.dentry);
--	mod = inode->i_mode;
--	ubi_num = ubi_major2num(imajor(inode));
--	vol_id = iminor(inode) - 1;
-+	error = vfs_getattr(&path, &stat);
- 	path_put(&path);
-+	if (error)
-+		return ERR_PTR(error);
- 
--	if (!S_ISCHR(mod))
-+	if (!S_ISCHR(stat.mode))
- 		return ERR_PTR(-EINVAL);
-+
-+	ubi_num = ubi_major2num(MAJOR(stat.rdev));
-+	vol_id = MINOR(stat.rdev) - 1;
-+
- 	if (vol_id >= 0 && ubi_num >= 0)
- 		return ubi_open_volume(ubi_num, vol_id, mode);
- 	return ERR_PTR(-ENODEV);
--- 
-2.7.3
+Yeah, I suppose the API is rather generic. It doesn't really assume
+anything about patterns/distances -- just that the pairings are formed
+in groups of the same size.
+
+> > > The plan is to teach UBI about those constraints and let UBI code take
+> > > the appropriate precautions when dealing with those multi-level cells
+> > > NANDs. The way we'll handle this "paired pages" constraint will be
+> > > described soon in a series adapting the UBI layer, so stay tune ;).
+> > > 
+> > > Note that this implementation only allows page pairing scheme description
+> > > when the NAND has a full-id entry in the nand_ids table.
+> > > This should be addressed in some way for ONFI and JEDEC NANDs, though
+> > > I'm not sure how to handle this yet.  
+> > 
+> > Do ONFI or JEDEC parameter pages even provide this kind of info? The
+> > ONFI spec doesn't mention paired pages.
+> 
+> Nope that's the problem. The only way you can deduce that is to extract
+> it from other information, but I think my series reworking the NAND
+> initialization will help us [2].
+
+Sure, I suppose.
+
+Brian
