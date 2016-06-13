@@ -1,25 +1,32 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
+Received: from bastet.se.axis.com ([195.60.68.11])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCLVI-0001Ft-Di
- for linux-mtd@lists.infradead.org; Mon, 13 Jun 2016 06:37:44 +0000
-Date: Mon, 13 Jun 2016 08:37:22 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] mtd: introduce the mtd_pairing_scheme concept
-Message-ID: <20160613083722.7630afe8@bbrezillon>
-In-Reply-To: <20160613062229.GA115118@google.com>
-References: <1461578481-26567-1-git-send-email-boris.brezillon@free-electrons.com>
- <1461578481-26567-2-git-send-email-boris.brezillon@free-electrons.com>
- <20160611021715.GH89390@google.com>
- <20160611085408.74b2295f@bbrezillon>
- <20160613055532.GB107340@google.com>
- <20160613062229.GA115118@google.com>
+ id 1bCMAS-0002MF-EB
+ for linux-mtd@lists.infradead.org; Mon, 13 Jun 2016 07:20:18 +0000
+Date: Mon, 13 Jun 2016 09:19:44 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+CC: Mychaela Falconia <mychaela.falconia@gmail.com>,
+ <devicetree@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
+ <linux-kernel@vger.kernel.org>, Oleksij Rempel <linux@rempel-privat.de>,
+ Linux mtd <linux-mtd@lists.infradead.org>, Benoit Cousson
+ <bcousson@baylibre.com>, Brian Norris <computersforpeace@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 3/4] mtd: nand: Add support for Evatronix
+ NANDFLASH-CTRL
+In-Reply-To: <20160610180713.6f09f802@bbrezillon>
+Message-ID: <alpine.DEB.2.02.1606130913400.29701@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.02.1606020948070.19416@lnxricardw1.se.axis.com>
+ <20160603165909.09f27ee0@bbrezillon>
+ <alpine.DEB.2.02.1606071702220.19416@lnxricardw1.se.axis.com>
+ <CA+uuBqb4fG4nK7atrF7XOQ=ip2SfKrxU+KXqD3W+PA_ZA7cS3g@mail.gmail.com>
+ <20160609200128.5b7a6e29@bbrezillon>
+ <CA+uuBqaRv2f8K-Q2ZLQY8tq6idq8XCDMV21SYM5XCWc4FVV90g@mail.gmail.com>
+ <20160609222307.5db4e67f@bbrezillon>
+ <alpine.DEB.2.02.1606101433170.30757@lnxricardw1.se.axis.com>
+ <20160610180713.6f09f802@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +36,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 12 Jun 2016 23:22:29 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
 
-> On Sun, Jun 12, 2016 at 10:55:32PM -0700, Brian Norris wrote:
-> > On Sat, Jun 11, 2016 at 08:54:08AM +0200, Boris Brezillon wrote:  
-> > > On Fri, 10 Jun 2016 19:17:15 -0700
-> > > Brian Norris <computersforpeace@gmail.com> wrote:  
-> [...]
-> > > > Also, the "pair" term (and examples you use) seem to imply 2-cell MLC,
-> > > > whereas I believe you're trying to handle TLC too. I don't know if we
-> > > > should drop the "pair" term, or just explain it better.  
-> > > 
-> > > I clearly have some problems with the words I've chosen, but those terms
-> > > were extracted from NAND datasheets (group and pair), and I think
-> > > keeping the same wording help people converting datasheet specs into
-> > > pairing scheme implementation.
-> > > 
-> > > Any suggestions to replace those 2 words?  
-> > 
-> > I'm not sure we should replace the words (esp. if those are used by
-> > multiple vendors). [...]  
+On Fri, 10 Jun 2016, Boris Brezillon wrote:
+
+> > Something that I am mildly miffed about is that I've posted this driver 
+> > twice before on the mtd list (although, admittedly, not directly addressed 
+> > to any maintainer), first as an RFC and later as a complete patch, without 
+> > a single response. (Apparently Boris you did respond with comments on 
+> > Oleksij's driver though which I must have missed). Although an RFC might 
+> > not have initiated a detailed review, it would have been a large advantage 
+> > (and wasted less time for all) if the point of using 'wrong' driver 
+> > interface had been brought up and consequently discussed earlier. Yes I 
+> > know, everyone is busy, it's easy to miss things, each and every driver 
+> > can't be reviewed in detail, etc.
 > 
-> I see that George highlighted a Micron datasheet in other parts of this
-> thread, and I noticed it uses the term "shared page." That explains why
-> I couldn't find the word "pair" in my quick search of Micron datasheets!
-> So I guess "shared page" would be a nomination, though I'm certainly not
-> forcing it, if you think pair is better.
+> Yes, I know. I was not maintainer at that time, and was only reviewing
+> a few patches from time to time.
+> Now that I am, I try to answer as fast as possible. Note that the set
+> of requirements might have change with me, so even if someone add
+> agreed on you first submission but not taken the patches, I would have
+> required the same set of changes ;).
 
-Samsung and Hynix datasheets are using the term 'paired', and Toshiba
-ones are not naming this concept.
-It's just a detail anyway, I'm fine switching to 'shared pages'.
+:-)
 
+Well, I'm not questioning that changes are required, and I'm happy to 
+implement them once I've come to a clear understanding of what is needed, 
+I just would have liked to known about them earlier, especially the major 
+concepts.
 
+I know there was probably no one interested enough at the time, everyone 
+is busy, not every idea presented can be reviewed in detail etc etc. And 
+it's not a big issue, just a minor annoyance.
+
+/Ricard
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
