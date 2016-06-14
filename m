@@ -1,20 +1,25 @@
-Received: from mail-by2on0074.outbound.protection.outlook.com ([207.46.100.74]
- helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-qk0-x230.google.com ([2607:f8b0:400d:c09::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCrUg-0002Vb-Ix
- for linux-mtd@lists.infradead.org; Tue, 14 Jun 2016 16:47:15 +0000
-From: David Olson <Dave.Olson@welchallyn.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: Temporarily remounting rootfs as rw leads to kernel panic on
- reboot
-Date: Tue, 14 Jun 2016 16:46:51 +0000
-Message-ID: <DM2PR0801MB0926C155801967D088F3642BFF540@DM2PR0801MB0926.namprd08.prod.outlook.com>
-References: <DM2PR0801MB092606DB85030B4F62A0BBF6FF5D0@DM2PR0801MB0926.namprd08.prod.outlook.com>
- <CA+uuBqb5K74aajPGWrDdW=cFPn0Ctuk5oeve1_bhv49Z60M7zg@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1bCsFh-0006Xv-Po
+ for linux-mtd@lists.infradead.org; Tue, 14 Jun 2016 17:35:51 +0000
+Received: by mail-qk0-x230.google.com with SMTP id c73so66617198qkg.2
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Jun 2016 10:35:29 -0700 (PDT)
+Subject: Re: [PATCH v5 2/2] mtd: mediatek: driver for MTK Smart Device
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ xiaolei.li@mediatek.com
+References: <1465919451-1891-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <1465919451-1891-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
+ <20160614184433.2b399c8b@bbrezillon>
+Cc: robh@kernel.org, computersforpeace@gmail.com, daniel.thompson@linaro.org,
+ erin.lo@mediatek.com, linux-mtd@lists.infradead.org, matthias.bgg@gmail.com,
+ linux-mediatek@lists.infradead.org, dwmw2@infradead.org, blogic@openwrt.org
+From: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
+Message-ID: <5760405D.3090101@linaro.org>
+Date: Tue, 14 Jun 2016 13:35:25 -0400
 MIME-Version: 1.0
+In-Reply-To: <20160614184433.2b399c8b@bbrezillon>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiA+ID4gVUJJIGVycm9yOiB1YmlfaW9fcmVhZDogZXJyb3IgLTc0IChFQ0MgZXJyb3IpIHdoaWxl
-IHJlYWRpbmcgMTI2OTc2DQo+ID4gPiBieXRlcyBmcm9tIFBFQiAzOjQwOTYsIHJlYWQgMTI2OTc2
-IGJ5dGVzIFVCSSBlcnJvcjogdWJpX2lvX3JlYWQ6DQo+ID4gPiBlcnJvcg0KPiA+ID4gLTc0IChF
-Q0MgZXJyb3IpIHdoaWxlIHJlYWRpbmcgMTI2OTc2IGJ5dGVzIGZyb20gUEVCIDQ6NDA5NiwgcmVh
-ZA0KPiA+ID4gMTI2OTc2IGJ5dGVzIFVCSSBlcnJvcjogdWJpX2lvX3JlYWQ6IGVycm9yIC03NCAo
-RUNDIGVycm9yKSB3aGlsZQ0KPiA+ID4gcmVhZGluZyAxMSBieXRlcyBmcm9tIFBFQiAxMDoxMDI0
-MCwgcmVhZCAxMSBieXRlcyBVQklGUyBlcnJvciAocGlkIDEpOg0KPiA+ID4gdWJpZnNfbGViX3Jl
-YWQ6IHJlYWRpbmcgMTEgYnl0ZXMgZnJvbSBMRUIgODo2MTQ0IGZhaWxlZCwgZXJyb3IgLTc0DQoN
-ClRoZSByb290IGNhdXNlIGhhcyBiZWVuIGRldGVybWluZWQgYW5kIHdhcyB0aGUgcmVzdWx0IG9m
-IHR3byBjaGFuZ2VzLCBvbmUNCmRlbGliZXJhdGUgYW5kIG9uZSBhY2NpZGVudGFsLg0KDQpTaW5j
-ZSB3ZSB3cml0ZSB0aGUgVUJJRlMgcm9vdGZzIHRvIE5BTkQgdmlhIGNvbW1hbmRzIGZyb20gYSB2
-ZXJzaW9uIG9mDQpVLUJvb3QgdGhhdCBkb2Vzbid0IHN1cHBvcnQgIm5hbmQgd3JpdGUudHJpbWZm
-cyIsIHdlIHVzZSB0aGUgIi1GIiBmbGFnIGluIHRoZQ0KaW52b2NhdGlvbiBvZiBta3NmLnViaWZz
-LiAgSXQgdHVybnMgb3V0IHRoYXQgdGhlICItRiIgZmxhZyAoYXQgbGVhc3QgaW4gdGhlIHZlcnNp
-b24NCm9mIFVCSUZTIHdlIGFyZSB1c2luZykgZG9lcyBOT1QgY2F1c2UgdGhlIHJlcXVlc3RlZCAi
-ZnJlZSBzcGFjZSBmaXh1cCINCm9wZXJhdGlvbiBvbiB0aGUgZmlyc3QgbW91bnQgaWYgdGhlIG1v
-dW50IGlzIG5vdCByL3cuICBGb3Igb3VyIHN5c3RlbSwNCnJvb3RmcyBpcyBtb3VudGVkIHR3aWNl
-LCBvbmNlIHVzaW5nIHBhcmFtZXRlcnMgcGFzc2VkIGluIGZyb20gVS1Cb290IG9uIHRoZQ0Ka2Vy
-bmVsIGNvbW1hbmQgbGluZSBhbmQgbGF0ZXIgd2hlbiB0aGUga2VybmVsIHByb2Nlc3NlcyAvZXRj
-L2ZzdGFiLiAgV2hpbGUNCnRoZSBsYXR0ZXIgcmVxdWVzdGVkIGEgcm8gbW91bnQsIHRoZSBmb3Jt
-ZXIsIHVudGlsIGxhdGUgaW4gdGhlIHByb2plY3QsIHJlcXVlc3RlZA0KYSBydyBtb3VudC4gIENo
-YW5naW5nIHRoZSBrZXJuZWwgY29tbWFuZCBsaW5lIHRvIHJlcXVlc3QgYSBybyBtb3VudCB3YXMg
-YQ0KZGVsaWJlcmF0ZSBjaGFuZ2UgbGF0ZSBpbiB0aGUgcHJvamVjdC4gIFRoZSBvdGhlciBjaGFu
-Z2Ugd2FzIHRoZSBpbmFkdmVydGVudA0KbG9zcyBvZiB0aGUgIi1GIiBmbGFnIHdoZW4gd2UgcG9y
-dGVkIGZyb20gdGhlIFRJIHByb3ZpZGUgIm1ha2VmaWxlIGJhc2VkIiBidWlsZA0KdG8gYSBZb2N0
-byAiYml0YmFrZSBiYXNlZCIgYnVpbGQuICBTaW5jZSB0aGUgIi1GIiBmbGFnIGlzIGluZWZmZWN0
-aXZlIHdoZW4gdGhlIGZpcnN0DQptb3VudCBpcyBybywgd2UgZGlkbid0IG5vdGljZSB0aGUgY2hh
-bmdlLiAgVW5kb2luZyBib3RoIHRob3NlIGNoYW5nZXMgaGFzDQpyZXNvbHZlZCBvdXIgaXNzdWUu
-DQoNCldoaWxlIEkgbm93IHVuZGVyc3RhbmQgd2h5IGEgd3JpdGUgdG8gb3VyIHJvb3RmcyBpbiB0
-aGUgYWJzZW5jZSBvZiB0aGUgImZyZWUNCnNwYWNlIGZpeHVwIiBvcGVyYXRpb24gd291bGQgY29y
-cnVwdCBpdCwgSSBzdGlsbCBkb24ndCB1bmRlcnN0YW5kIHdoeSBqdXN0DQpjaGFuZ2luZyB0aGUg
-bW91bnQgcGFyYW1ldGVycyB3b3VsZCBjYXVzZSBhIHdyaXRlLiAgQnV0IEkgZ3Vlc3MgaXQgbm8g
-bG9uZ2VyDQptYXR0ZXJzLg0KDQoNCkNPTkZJREVOVElBTCBOT1RJQ0U6IElmIHlvdSBhcmUgbm90
-IHRoZSBpbnRlbmRlZCByZWNpcGllbnQgb2YgdGhpcyBtZXNzYWdlLCB5b3UgYXJlIG5vdCBhdXRo
-b3JpemVkIHRvIGludGVyY2VwdCwgcmVhZCwgcHJpbnQsIHJldGFpbiwgY29weSwgZm9yd2FyZCwg
-b3IgZGlzc2VtaW5hdGUgdGhpcyBjb21tdW5pY2F0aW9uLiBUaGlzIGNvbW11bmljYXRpb24gbWF5
-IGNvbnRhaW4gaW5mb3JtYXRpb24gdGhhdCBpcyBwcm9wcmlldGFyeSwgYXR0b3JuZXkvY2xpZW50
-IHByaXZpbGVnZWQsIGF0dG9ybmV5IHdvcmsgcHJvZHVjdCwgY29uZmlkZW50aWFsIG9yIG90aGVy
-d2lzZSBsZWdhbGx5IGV4ZW1wdCBmcm9tIGRpc2Nsb3N1cmUuIElmIHlvdSBoYXZlIHJlY2VpdmVk
-IHRoaXMgbWVzc2FnZSBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGltbWVkaWF0
-ZWx5IGVpdGhlciBieSBwaG9uZSBvciBieSByZXR1cm4gZS1tYWlsLCBhbmQgZGVzdHJveSBhbGwg
-Y29waWVzIG9mIHRoaXMgbWVzc2FnZSwgZWxlY3Ryb25pYywgcGFwZXIsIG9yIG90aGVyd2lzZS4N
-Cg==
+On 06/14/2016 12:44 PM, Boris Brezillon wrote:
+> Apart from a few coding style issues that I can fix when applying the
+> patch it looks good to me.
+
+thanks Boris for the all the reviews.
+and apologies for having taking this long for posting v5 (the US 
+immigration system has been fun to deal with..actually there are not 9 
+but 10 circles of hell)
+
+> If I understand correctly, you don't have access to the hardware
+> anymore. Xiolei (or anyone else owning the proper hardware), can you add
+> your Tested-by?
+>
+> Thanks,
+>
+> Boris
