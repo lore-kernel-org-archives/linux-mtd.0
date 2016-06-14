@@ -1,21 +1,18 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCuae-00077S-5E
- for linux-mtd@lists.infradead.org; Tue, 14 Jun 2016 20:05:37 +0000
-Date: Tue, 14 Jun 2016 22:05:13 +0200
+ id 1bCuxo-0008Jh-6D
+ for linux-mtd@lists.infradead.org; Tue, 14 Jun 2016 20:29:33 +0000
+Date: Tue, 14 Jun 2016 22:29:10 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
- <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>,
- <devicetree@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/6] mtd: nand: gpmi: add GPMI NAND support for i.MX7D
-Message-ID: <20160614220513.339fc04c@bbrezillon>
-In-Reply-To: <1465578094-8816-2-git-send-email-han.xu@nxp.com>
-References: <1465578094-8816-1-git-send-email-han.xu@nxp.com>
- <1465578094-8816-2-git-send-email-han.xu@nxp.com>
+To: "George Spelvin" <linux@sciencehorizons.net>
+Cc: beanhuo@micron.com, computersforpeace@gmail.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, richard@nod.at
+Subject: Re: [PATCH 2/4] mtd: nand: implement two pairing scheme
+Message-ID: <20160614222910.0f9ff7c2@bbrezillon>
+In-Reply-To: <20160614090726.20977.qmail@ns.sciencehorizons.net>
+References: <20160612231314.15d06854@bbrezillon>
+ <20160614090726.20977.qmail@ns.sciencehorizons.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,266 +25,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 10 Jun 2016 12:01:29 -0500
-Han Xu <han.xu@nxp.com> wrote:
+On 14 Jun 2016 05:07:26 -0400
+"George Spelvin" <linux@sciencehorizons.net> wrote:
 
-> support GPMI NAND on i.MX7D
+> Boris Brezillon wrote:
+> > On 12 Jun 2016 16:24:53 George Spelvin wrote:  
+> >> Boris Brezillon wrote:
+> >> My problem is that I don't really understand MLC programming.  
+> 
+> > I came to the same conclusion: we really have these 2 cases in the
+> > wild, which makes it even more complicated to define a standard
+> > behavior.  
+> 
+> I did find a useful stuy of the issue: "Program Interference in MLC NAND
+> Flash Memory: Characterization, Modeling, and Mitigation"
+> 
+> https://users.ece.cmu.edu/~omutlu/pub/flash-programming-interference_iccd13.pdf
+> 
+> It describes the write-disturb-precompensation technique, and also
+> shows how the two-stage programming works.  (Although the fact that the
+> "least significant bit" is the *largest* voltage difference and is shown
+> on the *left* makes no sense at all.)
 
-I see that a lot of conditional path are testing NAND_IS_MXn(X).
-That would probably a good thing to move all these different code
-blocks into their own functions, and declare function pointers in
-struct gpmi_devdata to avoid doing these tests.
+I think I read this document back when I started to look at how MLC
+NANDs were working, but I didn't have the background to understand what
+all this meant.
 
-The same goes for all the macros that are testing the controller
-revision.
-
-That's not something I'm asking you to modify in this series, but a
-future possible improvement.
+Reading it again makes a lot more sense, and actually I now understand
+why those NANDs require data scrambling/randomization (their program
+disturb modeling was done with random data, which makes it irrelevant
+when repeated pattern are programmed).
 
 > 
-> Signed-off-by: Han Xu <han.xu@nxp.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/bch-regs.h  | 14 +++++++-------
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 10 ++++++----
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 30 ++++++++++++++++++++++++------
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  7 +++++--
->  4 files changed, 42 insertions(+), 19 deletions(-)
+> Looking at the demonstrated programming sequence, it looks like
+> it should be possible to probe for the bit assignment.  If you have
+> a half-programmed page, then any bits programmed to "0" are actually
+> sitting close to the threshold between the two middle voltage levels.
 > 
-> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> index 05bb91f..228142c 100644
-> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> @@ -1,7 +1,7 @@
->  /*
->   * Freescale GPMI NAND Flash Driver
->   *
-> - * Copyright 2008-2011 Freescale Semiconductor, Inc.
-> + * Copyright 2008-2016 Freescale Semiconductor, Inc.
->   * Copyright 2008 Embedded Alley Solutions, Inc.
->   *
->   * This program is free software; you can redistribute it and/or modify
-> @@ -54,7 +54,7 @@
->  #define MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0		11
->  #define MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)
->  #define BF_BCH_FLASH0LAYOUT0_ECC0(v, x)				\
-> -	(GPMI_IS_MX6(x)					\
-> +	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))				\
->  		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)	\
->  			& MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0)	\
->  		: (((v) << BP_BCH_FLASH0LAYOUT0_ECC0)		\
-> @@ -65,7 +65,7 @@
->  #define MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14			\
->  				(0x1 << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)
->  #define BF_BCH_FLASH0LAYOUT0_GF(v, x)				\
-> -	((GPMI_IS_MX6(x) && ((v) == 14))			\
-> +	(((GPMI_IS_MX6(x) || GPMI_IS_MX7(x)) && ((v) == 14))	\
->  		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)	\
->  			& MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14)	\
->  		: 0						\
-> @@ -77,7 +77,7 @@
->  #define MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE	\
->  			(0x3ff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
->  #define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v, x)				\
-> -	(GPMI_IS_MX6(x)						\
-> +	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))	\
->  		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)	\
->  		: ((v) & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)		\
->  	)
-> @@ -96,7 +96,7 @@
->  #define MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN		11
->  #define MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)
->  #define BF_BCH_FLASH0LAYOUT1_ECCN(v, x)				\
-> -	(GPMI_IS_MX6(x)					\
-> +	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))				\
->  		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)	\
->  			& MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN)	\
->  		: (((v) << BP_BCH_FLASH0LAYOUT1_ECCN)		\
-> @@ -107,7 +107,7 @@
->  #define MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14			\
->  				(0x1 << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)
->  #define BF_BCH_FLASH0LAYOUT1_GF(v, x)				\
-> -	((GPMI_IS_MX6(x) && ((v) == 14))			\
-> +	(((GPMI_IS_MX6(x) || GPMI_IS_MX7(x)) && ((v) == 14))	\
->  		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)	\
->  			& MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14)	\
->  		: 0						\
-> @@ -119,7 +119,7 @@
->  #define MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE	\
->  			(0x3ff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
->  #define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v, x)				\
-> -	(GPMI_IS_MX6(x)						\
-> +	((GPMI_IS_MX6(x) || GPMI_IS_MX7(x))	\
->  		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)	\
->  		: ((v) & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)		\
->  	)
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> index 0f68a99..358ff5d 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -1,7 +1,7 @@
->  /*
->   * Freescale GPMI NAND Flash Driver
->   *
-> - * Copyright (C) 2008-2011 Freescale Semiconductor, Inc.
-> + * Copyright (C) 2008-2016 Freescale Semiconductor, Inc.
->   * Copyright (C) 2008 Embedded Alley Solutions, Inc.
->   *
->   * This program is free software; you can redistribute it and/or modify
-> @@ -971,7 +971,8 @@ int gpmi_extra_init(struct gpmi_nand_data *this)
->  	struct nand_chip *chip = &this->nand;
->  
->  	/* Enable the asynchronous EDO feature. */
-> -	if (GPMI_IS_MX6(this) && chip->onfi_version) {
-> +	if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this)) &&
-> +	    chip->onfi_version) {
->  		int mode = onfi_get_async_timing_mode(chip);
->  
->  		/* We only support the timing mode 4 and mode 5. */
-> @@ -1093,12 +1094,13 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
->  	if (GPMI_IS_MX23(this)) {
->  		mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
->  		reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
-> -	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this)) {
-> +	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this) ||
-> +	           GPMI_IS_MX7(this)) {
->  		/*
->  		 * In the imx6, all the ready/busy pins are bound
->  		 * together. So we only need to check chip 0.
->  		 */
-> -		if (GPMI_IS_MX6(this))
-> +		if (GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
->  			chip = 0;
->  
->  		/* MX28 shares the same R/B register as MX6Q. */
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 6e46156..a8936fd 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1,7 +1,7 @@
->  /*
->   * Freescale GPMI NAND Flash Driver
->   *
-> - * Copyright (C) 2010-2015 Freescale Semiconductor, Inc.
-> + * Copyright (C) 2010-2016 Freescale Semiconductor, Inc.
->   * Copyright (C) 2008 Embedded Alley Solutions, Inc.
->   *
->   * This program is free software; you can redistribute it and/or modify
-> @@ -110,6 +110,12 @@ static const struct gpmi_devdata gpmi_devdata_imx6sx = {
->  	.max_chain_delay = 12,
->  };
->  
-> +static const struct gpmi_devdata gpmi_devdata_imx7d = {
-> +	.type = IS_MX7D,
-> +	.bch_max_ecc_strength = 62,
-> +	.max_chain_delay = 12,
-> +};
-> +
->  static irqreturn_t bch_irq(int irq, void *cookie)
->  {
->  	struct gpmi_nand_data *this = cookie;
-> @@ -601,6 +607,10 @@ static char *extra_clks_for_mx6q[GPMI_CLK_MAX] = {
->  	"gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
->  };
->  
-> +static char *extra_clks_for_mx7d[GPMI_CLK_MAX] = {
-> +	"gpmi_bch_apb",
-> +};
-> +
->  static int gpmi_get_clks(struct gpmi_nand_data *this)
->  {
->  	struct resources *r = &this->resources;
-> @@ -618,6 +628,8 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
->  	/* Get extra clocks */
->  	if (GPMI_IS_MX6(this))
->  		extra_clks = extra_clks_for_mx6q;
-> +	if (GPMI_IS_MX7(this))
-> +		extra_clks = extra_clks_for_mx7d;
->  	if (!extra_clks)
->  		return 0;
->  
-> @@ -634,7 +646,7 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
->  		r->clock[i] = clk;
->  	}
->  
-> -	if (GPMI_IS_MX6(this))
-> +	if (GPMI_IS_MX6(this) || GPMI_IS_MX7(this))
->  		/*
->  		 * Set the default value for the gpmi clock.
->  		 *
-> @@ -1965,8 +1977,8 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
->  	 *  (1) the chip is imx6, and
->  	 *  (2) the size of the ECC parity is byte aligned.
->  	 */
-> -	if (GPMI_IS_MX6(this) &&
-> -		((bch_geo->gf_len * bch_geo->ecc_strength) % 8) == 0) {
-> +	if ((GPMI_IS_MX6(this) || GPMI_IS_MX7(this)) &&
-> +	    ((bch_geo->gf_len * bch_geo->ecc_strength) % 8) == 0) {
->  		ecc->read_subpage = gpmi_ecc_read_subpage;
->  		chip->options |= NAND_SUBPAGE_READ;
->  	}
-> @@ -1987,6 +1999,7 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
->  	struct nand_chip *chip = &this->nand;
->  	struct mtd_info  *mtd = nand_to_mtd(chip);
->  	int ret;
-> +	int max_chips;
->  
->  	/* init current chip */
->  	this->current_chip	= -1;
-> @@ -2021,7 +2034,8 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
->  	if (ret)
->  		goto err_out;
->  
-> -	ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ? 2 : 1, NULL);
-> +	max_chips = (GPMI_IS_MX6(this) || GPMI_IS_MX7(this)) ? 2 : 1;
-> +	ret = nand_scan_ident(mtd, max_chips, NULL);
->  	if (ret)
->  		goto err_out;
->  
-> @@ -2074,7 +2088,11 @@ static const struct of_device_id gpmi_nand_id_table[] = {
->  	}, {
->  		.compatible = "fsl,imx6sx-gpmi-nand",
->  		.data = &gpmi_devdata_imx6sx,
-> -	}, {}
-> +	}, {
-> +		.compatible = "fsl,imx7d-gpmi-nand",
-> +		.data = &gpmi_devdata_imx7d,
-> +	}, { /* sentinel */ }
-> +
->  };
->  MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
->  
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> index 4e49a1f..04a3584 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> @@ -1,7 +1,7 @@
->  /*
->   * Freescale GPMI NAND Flash Driver
->   *
-> - * Copyright (C) 2010-2011 Freescale Semiconductor, Inc.
-> + * Copyright (C) 2010-2016 Freescale Semiconductor, Inc.
->   * Copyright (C) 2008 Embedded Alley Solutions, Inc.
->   *
->   * This program is free software; you can redistribute it and/or modify
-> @@ -123,7 +123,8 @@ enum gpmi_type {
->  	IS_MX23,
->  	IS_MX28,
->  	IS_MX6Q,
-> -	IS_MX6SX
-> +	IS_MX6SX,
-> +	IS_MX7D,
->  };
->  
->  struct gpmi_devdata {
-> @@ -305,6 +306,8 @@ void gpmi_copy_bits(u8 *dst, size_t dst_bit_off,
->  #define GPMI_IS_MX28(x)		((x)->devdata->type == IS_MX28)
->  #define GPMI_IS_MX6Q(x)		((x)->devdata->type == IS_MX6Q)
->  #define GPMI_IS_MX6SX(x)	((x)->devdata->type == IS_MX6SX)
-> +#define GPMI_IS_MX7D(x)		((x)->devdata->type == IS_MX7D)
->  
->  #define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
-> +#define GPMI_IS_MX7(x)		(GPMI_IS_MX7D(x))
->  #endif
+> So you'll get a lot of errors reading them as "1", but the interesting
+> part is the read-back of the unprogrammed bit.
+> 
+> If the chip is using the binary sequence, you'll read either 10 or 01.
+> If the chip us ising the Gray-code sequence, you'll read 10 or 00.
+> 
+> Basically, you read both pages and see which bit combination never
+> appears.  That is the combination that corresponds to the highest voltage
+> level.
+> 
+> Another interesting paper is "Read Disturb Errors in MLC NAND Flash
+> Memory: Characterization, Mitigation, and Recovery"
+> https://users.ece.cmu.edu/~omutlu/pub/flash-read-disturb-errors_dsn15.pdf
+> 
+> That talks about tricks that do as you observe: increase read error to start.
+> (In order to decreaease read disturb, and thus read errors later.)
+> 
+> >> It's more considering it to have 16K pages that can be accessed in half-pages.  
+> 
+> > Yes, I know, but it's not really easy to fake that at the NAND level,
+> > because programming 2 pages still requires 2 page program operation.
+> > The MTD user could detect that the pairing scheme always exposes 2
+> > consecutive non-paired pages, but as you've seen, this condition does
+> > not necessarily imply the 'pair coupling' constraint, and we don't want
+> > to increase the min_io_size value if it's not really necessary.  
+> 
+> Ideally, it would be nice to separate the "SLC hack" from the "later
+> write failures can corrupt earlier data" workaround.
+> 
+> First, you get the latter working on SLC flash.  Then you add MLC, and
+> make MLC another reason why it can happen.
+> 
+> But I'm not certain this is actually necessary.  Could listing 4 pages
+> rather than 2 as in other data sheets just be an editing or translation
+> error?  Maybe someoe got confused about "in the same row" when they
+> wrote that clarifying example.
+> 
+> > I'm just realizing this is actually a non-issue for the solution we
+> > developed with Ricard.  As I said, it's unsafe to partially write a
+> > block in MLC mode, so the only sane way is either to write a block in
+> > SLC mode, or atomically write a block in MLC mode, and that's what
+> > we're doing with our 'UBI LEB consolidation' approach.  I'm pretty sure
+> > the problem described in the Hynix datasheet does not happen when only
+> > writing in SLC mode.  So, even if the pairing scheme does not account
+> > for this extra 'coupling' constraint, we should be safe.  
+> 
+> I can't see any reason why it would affect MLC and not SLC.
 
 
 
