@@ -1,26 +1,27 @@
-Received: from mail-oi0-f67.google.com ([209.85.218.67])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCnlq-0007Ib-IL
- for linux-mtd@lists.infradead.org; Tue, 14 Jun 2016 12:48:42 +0000
-Received: by mail-oi0-f67.google.com with SMTP id u201so15684091oie.2
- for <linux-mtd@lists.infradead.org>; Tue, 14 Jun 2016 05:48:22 -0700 (PDT)
-Date: Tue, 14 Jun 2016 07:48:20 -0500
-From: Rob Herring <robh@kernel.org>
-To: Han Xu <han.xu@nxp.com>
-Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, pawel.moll@arm.com,
- mark.rutland@arm.com, ijc+devicetree@hellion.org.uk,
- galak@codeaurora.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] mtd: nand: gpmi: document the new supported chip
- in DT
-Message-ID: <20160614124820.GA5523@rob-hp-laptop>
-References: <1465578094-8816-1-git-send-email-han.xu@nxp.com>
- <1465578094-8816-7-git-send-email-han.xu@nxp.com>
+ id 1bCnxT-0003w2-4j
+ for linux-mtd@lists.infradead.org; Tue, 14 Jun 2016 13:00:44 +0000
+Message-ID: <575FFF97.7040104@denx.de>
+Date: Tue, 14 Jun 2016 14:59:03 +0200
+From: Marek Vasut <marex@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1465578094-8816-7-git-send-email-han.xu@nxp.com>
+To: Vignesh R <vigneshr@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: Graham Moore <grmoore@opensource.altera.com>,
+ Alan Tull <atull@opensource.altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dinh Nguyen <dinguyen@opensource.altera.com>,
+ Yves Vandervennet <yvanderv@opensource.altera.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH V12 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
+ Flash Controller
+References: <1465000774-7762-1-git-send-email-marex@denx.de>
+ <1465000774-7762-2-git-send-email-marex@denx.de> <575F91B2.7010304@ti.com>
+In-Reply-To: <575F91B2.7010304@ti.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,12 +31,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 10, 2016 at 12:01:34PM -0500, Han Xu wrote:
-> listed all supported chips in DT.
-> 
-> Signed-off-by: Han Xu <han.xu@nxp.com>
-> ---
->  Documentation/devicetree/bindings/mtd/gpmi-nand.txt | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+On 06/14/2016 07:10 AM, Vignesh R wrote:
+> Hi,
 
-Acked-by: Rob Herring <robh@kernel.org>
+Hi,
+
+> On Saturday 04 June 2016 06:09 AM, Marek Vasut wrote:
+> [...]
+>> +
+>> +static int cqspi_indirect_read_execute(struct spi_nor *nor,
+>> +				       u8 *rxbuf, const unsigned n_rx)
+>> +{
+>> +	struct cqspi_flash_pdata *f_pdata = nor->priv;
+>> +	struct cqspi_st *cqspi = f_pdata->cqspi;
+>> +	void __iomem *reg_base = cqspi->iobase;
+>> +	void __iomem *ahb_base = cqspi->ahb_base;
+>> +	unsigned int remaining = n_rx;
+>> +	unsigned int bytes_to_read = 0;
+>> +	int ret = 0;
+>> +
+>> +	writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
+>> +
+>> +	/* Clear all interrupts. */
+>> +	writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
+>> +
+>> +	writel(CQSPI_IRQ_MASK_RD, reg_base + CQSPI_REG_IRQMASK);
+>> +
+>> +	reinit_completion(&cqspi->transfer_complete);
+>> +	writel(CQSPI_REG_INDIRECTRD_START_MASK,
+>> +	       reg_base + CQSPI_REG_INDIRECTRD);
+>> +
+>> +	while (remaining > 0) {
+>> +		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
+>> +						  msecs_to_jiffies
+>> +						  (CQSPI_READ_TIMEOUT_MS));
+>> +
+>> +		bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+>> +
+>> +		if (!ret && bytes_to_read == 0) {
+>> +			dev_err(nor->dev, "Indirect read timeout, no bytes\n");
+>> +			ret = -ETIMEDOUT;
+>> +			goto failrd;
+>> +		}
+>> +
+>> +		while (bytes_to_read != 0) {
+>> +			bytes_to_read *= cqspi->fifo_width;
+>> +			bytes_to_read = bytes_to_read > remaining ?
+>> +					remaining : bytes_to_read;
+>> +			readsl(ahb_base, rxbuf, DIV_ROUND_UP(bytes_to_read, 4));
+>> +			rxbuf += bytes_to_read;
+>> +			remaining -= bytes_to_read;
+>> +			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+>> +		}
+>> +
+>> +		if (remaining > 0)
+>> +			reinit_completion(&cqspi->transfer_complete);
+>> +	}
+>> +
+>> +	/* Check indirect done status */
+>> +	ret = cqspi_wait_for_bit(reg_base + CQSPI_REG_INDIRECTRD,
+>> +				 CQSPI_REG_INDIRECTRD_DONE_MASK, 0);
+>> +
+> 
+> I was wondering if its better to use direct access mode[1].
+
+The link leads to altera documentation front page, but I have an idea
+what you mean. You might want to refer to [2] instead.
+
+[2] https://www.altera.com/en_US/pdfs/literature/hb/cyclone-v/cv_5v4.pdf
+
+> With this
+> mode there is no need to wait for IRQ or monitor sdram level. By setting
+> up QSPI in direct access mode, this entire function can be replaced by:
+> memcpy(buf, cqspi->ahb_base + from, n_rx)
+
+The altera docs, page 993, show how to use the direct access mode. The
+idea is to map 1 MiB blocks of the flash in the address space, one at a
+time and then do IO into those. I don't like such solution:
+
+- I didn't find any way to find when all the data in the current 1 MiB
+  block were written and you can remap another 1 MiB block in place.
+- Since the controller doesn't use the internal buffer in direct
+  operation mode, it will block the AHB bus during it's operation.
+- I didn't find how IO errors get handled in this case, but maybe I
+  didn't drill deep enough on this one.
+
+Moreover, page 991 bottom of [2] states that the indirect mode is
+"high-performance". I am inclined to believe that as it uses the
+internal buffer of the QSPI controller, which is tightly coupled to the
+block,
+so the data are available immediately when the flash is ready instead
+of having to wait for the next AHB turn.
+
+My impression is that the Direct mode is great when the system boots
+from the QSPI because it can "map" the flash and just execute code from
+it. But for normal operation, the indirect mode seems the better choice.
+
+> IMO, this might give better throughput. Have tested this mode?
+
+I haven't tested it, no.
+
+> [1] https://documentation.altera.com/#/00038604-AA$AA00045811
+> 
+> 
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
