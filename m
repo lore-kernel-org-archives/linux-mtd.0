@@ -1,24 +1,24 @@
-Received: from mail-qk0-x230.google.com ([2607:f8b0:400d:c09::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCsFh-0006Xv-Po
- for linux-mtd@lists.infradead.org; Tue, 14 Jun 2016 17:35:51 +0000
-Received: by mail-qk0-x230.google.com with SMTP id c73so66617198qkg.2
- for <linux-mtd@lists.infradead.org>; Tue, 14 Jun 2016 10:35:29 -0700 (PDT)
-Subject: Re: [PATCH v5 2/2] mtd: mediatek: driver for MTK Smart Device
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- xiaolei.li@mediatek.com
-References: <1465919451-1891-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <1465919451-1891-3-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160614184433.2b399c8b@bbrezillon>
-Cc: robh@kernel.org, computersforpeace@gmail.com, daniel.thompson@linaro.org,
- erin.lo@mediatek.com, linux-mtd@lists.infradead.org, matthias.bgg@gmail.com,
- linux-mediatek@lists.infradead.org, dwmw2@infradead.org, blogic@openwrt.org
-From: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
-Message-ID: <5760405D.3090101@linaro.org>
-Date: Tue, 14 Jun 2016 13:35:25 -0400
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bCtn7-0000zB-4X
+ for linux-mtd@lists.infradead.org; Tue, 14 Jun 2016 19:14:26 +0000
+Date: Tue, 14 Jun 2016 21:14:01 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Han Xu <han.xu@nxp.com>
+Cc: <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>,
+ <devicetree@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/6] mtd: nand: gpmi: correct bitflip for erased NAND
+ page
+Message-ID: <20160614211401.40c26b37@bbrezillon>
+In-Reply-To: <1465578094-8816-5-git-send-email-han.xu@nxp.com>
+References: <1465578094-8816-1-git-send-email-han.xu@nxp.com>
+ <1465578094-8816-5-git-send-email-han.xu@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20160614184433.2b399c8b@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,19 +29,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/14/2016 12:44 PM, Boris Brezillon wrote:
-> Apart from a few coding style issues that I can fix when applying the
-> patch it looks good to me.
+On Fri, 10 Jun 2016 12:01:32 -0500
+Han Xu <han.xu@nxp.com> wrote:
 
-thanks Boris for the all the reviews.
-and apologies for having taking this long for posting v5 (the US 
-immigration system has been fun to deal with..actually there are not 9 
-but 10 circles of hell)
+> i.MX6QP and i.MX7D BCH module integrated a new feature to detect the
+> bitflip number for erased NAND page. So for these two platform, set the
+> erase threshold to ecc_strength and if bitflip detected, GPMI driver
+> will correct the data to all 0xFF.
+> 
+> Signed-off-by: Han Xu <han.xu@nxp.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/bch-regs.h  | 10 ++++++++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  5 +++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 27 ++++++++++++++++++++++++++-
+>  3 files changed, 41 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+> index 228142c..2c44b88 100644
+> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
+> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+> @@ -30,7 +30,13 @@
+>  #define BM_BCH_CTRL_COMPLETE_IRQ		(1 << 0)
+>  
+>  #define HW_BCH_STATUS0				0x00000010
+> +
+>  #define HW_BCH_MODE				0x00000020
+> +#define BP_BCH_MODE_ERASE_THRESHOLD		0
+> +#define BM_BCH_MODE_ERASE_THRESHOLD	(0xff << BP_BCH_MODE_ERASE_THRESHOLD)
+> +#define BF_BCH_MODE_ERASE_THRESHOLD(v)		\
+> +	(((v) << BP_BCH_MODE_ERASE_THRESHOLD) & BM_BCH_MODE_ERASE_THRESHOLD)
+> +
+>  #define HW_BCH_ENCODEPTR			0x00000030
+>  #define HW_BCH_DATAPTR				0x00000040
+>  #define HW_BCH_METAPTR				0x00000050
+> @@ -125,4 +131,8 @@
+>  	)
+>  
+>  #define HW_BCH_VERSION				0x00000160
+> +#define HW_BCH_DEBUG1				0x00000170
+> +#define BP_BCH_DEBUG1_ERASED_ZERO_COUNT	0
+> +#define BM_BCH_DEBUG1_ERASED_ZERO_COUNT		\
+> +		(0x1ff << BP_BCH_DEBUG1_ERASED_ZERO_COUNT)
+>  #endif
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> index 358ff5d..0b5666a 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> @@ -298,6 +298,11 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>  			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
+>  			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
+>  
+> +	/* Set erase threshold to ecc_strength for mx6qp and mx7 */
+> +	if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
+> +		writel(BF_BCH_MODE_ERASE_THRESHOLD(ecc_strength),
+> +			r->bch_regs + HW_BCH_MODE);
+> +
+>  	/* Set *all* chip selects to use layout 0. */
+>  	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
+>  
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index aedaff3..03bdb4d 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1043,6 +1043,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  {
+>  	struct gpmi_nand_data *this = nand_get_controller_data(chip);
+>  	struct bch_geometry *nfc_geo = &this->bch_geometry;
+> +	void __iomem *bch_regs = this->resources.bch_regs;
+>  	void          *payload_virt;
+>  	dma_addr_t    payload_phys;
+>  	void          *auxiliary_virt;
+> @@ -1051,6 +1052,8 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	unsigned char *status;
+>  	unsigned int  max_bitflips = 0;
+>  	int           ret;
+> +	int bitflips = 0;
+> +	int bitflip_flag = 0;
 
-> If I understand correctly, you don't have access to the hardware
-> anymore. Xiolei (or anyone else owning the proper hardware), can you add
-> your Tested-by?
->
-> Thanks,
->
-> Boris
+Hm, I would choose another name, but I'm not even sure this is really
+needed (see below).
+
+>  
+>  	dev_dbg(this->dev, "page number is : %d\n", page);
+>  	ret = read_page_prepare(this, buf, nfc_geo->payload_size,
+> @@ -1088,8 +1091,20 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  			   payload_virt, payload_phys);
+>  
+>  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+> -		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+> +		if (*status == STATUS_GOOD)
+> +			continue;
+> +		if (*status == STATUS_ERASED) {
+> +			if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this)) {
+> +				bitflips = readl(bch_regs + HW_BCH_DEBUG1);
+
+You could use ret here or define a flips variable locally to this code
+(see what's done for the software correction).
+
+BTW, why not memset-ing the data chunk here (as done for the SW
+correction part). This way you wouldn't need the extra bitflips_flag
+variable.
+
+> +				if (bitflips) {
+> +					bitflip_flag = 1;
+> +					max_bitflips = max_t(unsigned int,
+> +							     max_bitflips,
+> +							     bitflips);
+> +				}
+> +			}
+>  			continue;
+> +		}
+>  
+>  		if (*status == STATUS_UNCORRECTABLE) {
+>  			int eccbits = nfc_geo->ecc_strength * nfc_geo->gf_len;
+> @@ -1098,6 +1113,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  			int eccbytes;
+>  			int flips;
+>  
+> +			/* shortcut for i.MX7 and i.MX6QP */
+> +			if (GPMI_IS_MX6QP(this) || GPMI_IS_MX7(this))
+
+You should increment mtd->ecc_stats.failed in this case.
+
+> +				continue;
+> +
+>  			/* Read ECC bytes into our internal raw_buffer */
+>  			offset = nfc_geo->metadata_size * 8;
+>  			offset += ((8 * nfc_geo->ecc_chunk_size) + eccbits) * (i + 1);
+> @@ -1182,6 +1201,12 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  		chip->oob_poi[0] = ((uint8_t *) auxiliary_virt)[0];
+>  	}
+>  
+> +	/* if bitflip occurred in erased page, change data to all 0xff */
+> +	if (bitflip_flag) {
+> +		memset(buf, ~0, nfc_geo->payload_size);
+> +		memset(chip->oob_poi, ~0, mtd->oobsize);
+> +	}
+> +
+>  	return max_bitflips;
+>  }
+>  
+
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
