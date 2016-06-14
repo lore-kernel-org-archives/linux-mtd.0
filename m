@@ -1,4 +1,4 @@
-Date: Tue, 14 Jun 2016 14:33:29 +0200
+Date: Tue, 14 Jun 2016 14:33:53 +0200
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
 To: Aleksei Mamlin <mamlinav@gmail.com>
 Cc: Chen-Yu Tsai <wens@csie.org>,
@@ -6,16 +6,16 @@ Cc: Chen-Yu Tsai <wens@csie.org>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v2 2/4] ARM: dts: sun4i: Add NFC node to Allwinner A10 SoC
-Message-ID: <20160614123329.GF9354@lukather>
+Subject: Re: [PATCH v2 4/4] ARM: dts: sun7i: Add NFC node to Allwinner A20 SoC
+Message-ID: <20160614123353.GG9354@lukather>
 References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
  <1465903058-9211-1-git-send-email-mamlinav@gmail.com>
- <1465903058-9211-3-git-send-email-mamlinav@gmail.com>
+ <1465903058-9211-5-git-send-email-mamlinav@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="EDJsL2R9iCFAt7IV"
+ protocol="application/pgp-signature"; boundary="mhjHhnbe5PrRcwjY"
 Content-Disposition: inline
-In-Reply-To: <1465903058-9211-3-git-send-email-mamlinav@gmail.com>
+In-Reply-To: <1465903058-9211-5-git-send-email-mamlinav@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +26,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---EDJsL2R9iCFAt7IV
+--mhjHhnbe5PrRcwjY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 14, 2016 at 02:17:36PM +0300, Aleksei Mamlin wrote:
+On Tue, Jun 14, 2016 at 02:17:38PM +0300, Aleksei Mamlin wrote:
 > From: Boris Brezillon <boris.brezillon@free-electrons.com>
 >=20
-> Add NAND Flash controller node definition to the A10 SoC.
+> Add NAND Flash controller node definition to the A20 SoC.
 >=20
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
@@ -47,25 +47,25 @@ Maxime Ripard, Free Electrons
 Embedded Linux, Kernel and Android engineering
 http://free-electrons.com
 
---EDJsL2R9iCFAt7IV
+--mhjHhnbe5PrRcwjY
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJXX/mYAAoJEBx+YmzsjxAgZX8P/RDTWMAXzqdcARKJahIGf9Bd
-qMU9MA+5ZIuSewt1o3A31lP1xYTIt0BX9sEMcNVZAIx9XTR/UY3I16NYaiQbOpwZ
-A51C8Sn/6BmroQBdtnZ7QwxQydfAHT6ANKuvoAPcunxriS/xzFCDz7EMtirvtw6l
-7BI2oo4OfXT0AmK1fya+coMxsNVivs5LaFoUgbkuHgABjWH5/cCZpRMcADWQyq7h
-Mg5Cj2f/IgkGpenJv+hJd8jQqTOiOPNq2Q2uuL8KmT+bp42CRdMqgkQwzXzi64SD
-geocXEzvHrGaZP+BWG4z1typGGWXaqpNWDjGgYCCgdPw9UuDwSoO0OF9r8y9xZfU
-a09UX/MDsmzjGUs8L41UThpHLucRVIxovnA/AEzrVhnGoIzNgPM6wkfeQ6IAu48k
-PMSOD85Fj4F+KReYWGJmaiyACibdQS6xifoEyxvjSmazYkXKMi5H30kqjB403VNx
-kUAreA9BveZYwHZ8Hnjp5fgL7H6NTfOQHADne47crcY60dMjjWw78wadPn2Fzah2
-Ud98reh6ykzJ9zksy/n6S5+nSAynNLH6AFr5hJoRjhKlb2CU/2VJAVdBkvvN/6oe
-2NO6rlq9QlweuSNC/AOYdmVxGGIoj9bZgipnFIQbh4OQYWEmZ6EbXiCkoz9U3kYI
-4jF4LNfY8n4qQWSg7II7
-=MMka
+iQIcBAEBAgAGBQJXX/mxAAoJEBx+YmzsjxAgDGcQAJDgXCdzwN6xVdN2mE+XBrcQ
+dIujn9PyLncqEnl+ymb9xM5hbcbwNoH6nweGyEwHqmBLIKEtAmHpYUgTllAzwrpS
+tTDpmxXXqzqxX12NLGeZ99uGAnmnpPCMcYXWE0hQTk3xgN04vtzACPVtoCjtex79
+BADUsMJ1HFrQYk8jjm3WptTLo5dnUnOKXW/uIi9ihC/kmvwxJxRHP08U063zBScA
+45tQV3X7WWK6sR0Srnres7acUEZ7CQYE4gw1B5vwWJAl0JlCQNH7l1uFCACmpbSd
+3cx5WxwldW4vXvfJMcnX2620n/DN6fHZFF/O/HZjHlRNNGJ8nU2QC/9uKh4kFP05
+MTiK0Ee3/tVMfFUEMOXH4JsXgbZPzzZcKFEPDgCd/wlmPqMuLc33KVyC8dLaSjXK
+f1k+NAOtshuicTdWskGbvHewl6jm3igG80ihon6NC1m5uu9mb2ydUdC0zhFQ6IO+
+KINIvANoDf3SmTWOWulbfVGr8VNI2vhxLevazYIrFZg7QmUM1BI836Tan9FWrgDZ
+tY8pQ0VPNcKB6slIdT+TxwwSPt8qaLlpPI/EJq3ctY71v6bYOUiHoeKshvV0Yy3F
+s0pKutHRnpm3IOTrm/11BnG2vNfOhtwqhsG25XOPZ4a5Kej9QdBxlQt+6ELwajp8
+XzMWDv3u0/6Y3vgxv2oM
+=AtMf
 -----END PGP SIGNATURE-----
 
---EDJsL2R9iCFAt7IV--
+--mhjHhnbe5PrRcwjY--
