@@ -1,4 +1,4 @@
-Date: Tue, 14 Jun 2016 14:33:53 +0200
+Date: Tue, 14 Jun 2016 14:37:18 +0200
 From: Maxime Ripard <maxime.ripard@free-electrons.com>
 To: Aleksei Mamlin <mamlinav@gmail.com>
 Cc: Chen-Yu Tsai <wens@csie.org>,
@@ -6,16 +6,17 @@ Cc: Chen-Yu Tsai <wens@csie.org>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v2 4/4] ARM: dts: sun7i: Add NFC node to Allwinner A20 SoC
-Message-ID: <20160614123353.GG9354@lukather>
+Subject: Re: [PATCH v2 1/4] ARM: dts: sun4i: Add A10 NAND controller pin
+ definitions
+Message-ID: <20160614123718.GH9354@lukather>
 References: <1465208664-9366-1-git-send-email-mamlinav@gmail.com>
  <1465903058-9211-1-git-send-email-mamlinav@gmail.com>
- <1465903058-9211-5-git-send-email-mamlinav@gmail.com>
+ <1465903058-9211-2-git-send-email-mamlinav@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="mhjHhnbe5PrRcwjY"
+ protocol="application/pgp-signature"; boundary="wZdghQXYJzyo6AGC"
 Content-Disposition: inline
-In-Reply-To: <1465903058-9211-5-git-send-email-mamlinav@gmail.com>
+In-Reply-To: <1465903058-9211-2-git-send-email-mamlinav@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +27,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---mhjHhnbe5PrRcwjY
+--wZdghQXYJzyo6AGC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 14, 2016 at 02:17:38PM +0300, Aleksei Mamlin wrote:
+Hi,
+
+On Tue, Jun 14, 2016 at 02:17:35PM +0300, Aleksei Mamlin wrote:
 > From: Boris Brezillon <boris.brezillon@free-electrons.com>
 >=20
-> Add NAND Flash controller node definition to the A20 SoC.
+> Define the NAND controller pin configs.
 >=20
 > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 > Signed-off-by: Aleksei Mamlin <mamlinav@gmail.com>
 
-Applied, thanks!
+Unfortunately, we don't have any user for it at the moment.
+
+Please re-submit it later when we'll have some :)
+
+Thanks!
 Maxime
 
 --=20
@@ -47,25 +54,25 @@ Maxime Ripard, Free Electrons
 Embedded Linux, Kernel and Android engineering
 http://free-electrons.com
 
---mhjHhnbe5PrRcwjY
+--wZdghQXYJzyo6AGC
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJXX/mxAAoJEBx+YmzsjxAgDGcQAJDgXCdzwN6xVdN2mE+XBrcQ
-dIujn9PyLncqEnl+ymb9xM5hbcbwNoH6nweGyEwHqmBLIKEtAmHpYUgTllAzwrpS
-tTDpmxXXqzqxX12NLGeZ99uGAnmnpPCMcYXWE0hQTk3xgN04vtzACPVtoCjtex79
-BADUsMJ1HFrQYk8jjm3WptTLo5dnUnOKXW/uIi9ihC/kmvwxJxRHP08U063zBScA
-45tQV3X7WWK6sR0Srnres7acUEZ7CQYE4gw1B5vwWJAl0JlCQNH7l1uFCACmpbSd
-3cx5WxwldW4vXvfJMcnX2620n/DN6fHZFF/O/HZjHlRNNGJ8nU2QC/9uKh4kFP05
-MTiK0Ee3/tVMfFUEMOXH4JsXgbZPzzZcKFEPDgCd/wlmPqMuLc33KVyC8dLaSjXK
-f1k+NAOtshuicTdWskGbvHewl6jm3igG80ihon6NC1m5uu9mb2ydUdC0zhFQ6IO+
-KINIvANoDf3SmTWOWulbfVGr8VNI2vhxLevazYIrFZg7QmUM1BI836Tan9FWrgDZ
-tY8pQ0VPNcKB6slIdT+TxwwSPt8qaLlpPI/EJq3ctY71v6bYOUiHoeKshvV0Yy3F
-s0pKutHRnpm3IOTrm/11BnG2vNfOhtwqhsG25XOPZ4a5Kej9QdBxlQt+6ELwajp8
-XzMWDv3u0/6Y3vgxv2oM
-=AtMf
+iQIcBAEBAgAGBQJXX/p+AAoJEBx+YmzsjxAgOY4P/1GjnAx0pdoqdHmy2UGjz5cf
+ncESD2V81QTdo8MwiPti0z2RxGTxgL1HscT31s9dmsCOP2l74NRaw/Kc+6AcDKXa
+SS+fZN+7nVY5K1hfaFkO6X80s+g39buOtkcSBytrvY7NHyHTWwxlOK8iK74fVj8W
+TwwTVdN3bTugE42tZ09wdGYBFk4vG0M1Cqxyelasj+P5XfZ8WuWVyJrWuknAm6JR
+9rAZCKLxRwlBRwmUXd105e/dFejgX1Y5o4oj09ahKACeThfs2PMI+j7QbwLw0Z9j
+JTHqGEuYymBUfTtTLMPdTZTy0ls/79rdzAbWNPe8fCNQLhfT+IsOCgaE6uo8gkGt
+lXoopdjifLDRbV+g2TjLjB6vJq9ikS3J+GB7FOhAs2iGLadYeiMptuAn8FRoTWla
+C7XO1vPOSigzN6YpC4GmPtQ6P7FXETR1xQWf4JI99tDEAuKzHwfsxiIRyhydmn1x
+wRHL+peMo172v/uln8hGoD08yNLDr1Rwj1KGUPk7P9YteRWoolKGllhNXs5iH3/t
+q1P9OmNCzqo7V7qUANTomRplnuuR0BQa7hh5PxXeJsVwnrWGyvG94HnJjBmzDU8v
+SleQQ8ECiCyxThqaSSTSmBU8rCbjN5o1GQIrQ6Z1iqwswgtZT+DkAImtw6tAszSV
+wPO+7XoeT0pPQBkYr0uv
+=9NE6
 -----END PGP SIGNATURE-----
 
---mhjHhnbe5PrRcwjY--
+--wZdghQXYJzyo6AGC--
