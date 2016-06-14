@@ -1,7 +1,7 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bCmkn-0000y4-U9
- for linux-mtd@lists.infradead.org; Tue, 14 Jun 2016 11:43:34 +0000
+ id 1bCmkq-0000yU-Qp
+ for linux-mtd@lists.infradead.org; Tue, 14 Jun 2016 11:43:37 +0000
 From: Mika Westerberg <mika.westerberg@linux.intel.com>
 To: linux-mtd@lists.infradead.org
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -9,9 +9,10 @@ Cc: Brian Norris <computersforpeace@gmail.com>,
  Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
  Mika Westerberg <mika.westerberg@linux.intel.com>,
  linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] mfd: lpc_ich: Add support for Intel Apollo Lake SoC
-Date: Tue, 14 Jun 2016 14:43:09 +0300
-Message-Id: <1465904589-141386-4-git-send-email-mika.westerberg@linux.intel.com>
+Subject: [PATCH 2/3] mfd: lpc_ich: Add support for SPI serial flash host
+ controller
+Date: Tue, 14 Jun 2016 14:43:08 +0300
+Message-Id: <1465904589-141386-3-git-send-email-mika.westerberg@linux.intel.com>
 In-Reply-To: <1465904589-141386-1-git-send-email-mika.westerberg@linux.intel.com>
 References: <1465904589-141386-1-git-send-email-mika.westerberg@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,91 +24,209 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Intel Apollo Lake SoC exposes serial SPI flash through the LPC device. The
-SPI flash host controller is not discoverable through PCI config cycles
-because P2SB (function 0 of the device 13) is hidden by the BIOS. We unhide
-the device briefly in order to read BAR 0 of the SPI host controller.
+Many Intel CPUs including Haswell, Broadwell and Baytrail have SPI serial
+flash host controller as part of the LPC device. This will populate an MFD
+cell suitable for the SPI host controller driver if we know that the LPC
+device has one.
 
 Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 ---
- drivers/mfd/lpc_ich.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ drivers/mfd/lpc_ich.c       | 97 +++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mfd/lpc_ich.h |  3 ++
+ 2 files changed, 100 insertions(+)
 
 diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-index 39b7731d769a..d7f6d6728975 100644
+index bd3aa4578346..39b7731d769a 100644
 --- a/drivers/mfd/lpc_ich.c
 +++ b/drivers/mfd/lpc_ich.c
-@@ -56,6 +56,7 @@
-  *	document number TBD : Wildcat Point-LP
-  *	document number TBD : 9 Series
-  *	document number TBD : Lewisburg
-+ *	document number TBD : Apollo Lake SoC
-  */
+@@ -83,6 +83,13 @@
+ #define ACPIBASE_GCS_OFF	0x3410
+ #define ACPIBASE_GCS_END	0x3414
  
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-@@ -237,6 +238,7 @@ enum lpc_chipsets {
- 	LPC_BRASWELL,	/* Braswell SoC */
- 	LPC_LEWISBURG,	/* Lewisburg */
- 	LPC_9S,		/* 9 Series */
-+	LPC_APL,	/* Apollo Lake SoC */
- };
- 
- static struct lpc_ich_info lpc_chipset_info[] = {
-@@ -557,6 +559,10 @@ static struct lpc_ich_info lpc_chipset_info[] = {
- 		.name = "9 Series",
- 		.iTCO_version = 2,
++#define SPIBASE_BYT		0x54
++#define SPIBASE_BYT_EN		BIT(1)
++
++#define SPIBASE_LPT		0x3800
++#define BCR			0xdc
++#define BCR_WPD			BIT(0)
++
+ #define GPIOBASE_ICH0		0x58
+ #define GPIOCTRL_ICH0		0x5C
+ #define GPIOBASE_ICH6		0x48
+@@ -133,6 +140,12 @@ static struct resource gpio_ich_res[] = {
  	},
-+	[LPC_APL] = {
-+		.name = "Apollo Lake SoC",
-+		.spi_type = INTEL_SPI_BXT,
-+	},
  };
  
- /*
-@@ -705,6 +711,7 @@ static const struct pci_device_id lpc_ich_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x3b14), LPC_3420},
- 	{ PCI_VDEVICE(INTEL, 0x3b16), LPC_3450},
- 	{ PCI_VDEVICE(INTEL, 0x5031), LPC_EP80579},
-+	{ PCI_VDEVICE(INTEL, 0x5ae8), LPC_APL},
- 	{ PCI_VDEVICE(INTEL, 0x8c40), LPC_LPT},
- 	{ PCI_VDEVICE(INTEL, 0x8c41), LPC_LPT},
- 	{ PCI_VDEVICE(INTEL, 0x8c42), LPC_LPT},
-@@ -1129,6 +1136,36 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
- 		}
- 		break;
++static struct resource intel_spi_res[] = {
++	{
++		.flags = IORESOURCE_MEM,
++	}
++};
++
+ static struct mfd_cell lpc_ich_wdt_cell = {
+ 	.name = "iTCO_wdt",
+ 	.num_resources = ARRAY_SIZE(wdt_ich_res),
+@@ -147,6 +160,14 @@ static struct mfd_cell lpc_ich_gpio_cell = {
+ 	.ignore_resource_conflicts = true,
+ };
  
-+	case INTEL_SPI_BXT: {
-+		unsigned int p2sb = PCI_DEVFN(13, 0);
-+		unsigned int spi = PCI_DEVFN(13, 2);
-+		struct pci_bus *bus = dev->bus;
 +
-+		/*
-+		 * The P2SB is hidden by BIOS and we need to unhide it in
-+		 * order to read BAR of the SPI flash device. Once that is
-+		 * done we hide it again.
-+		 */
-+		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x0);
-+		pci_bus_read_config_dword(bus, spi, PCI_BASE_ADDRESS_0,
-+					  &spi_base);
-+		if (spi_base != ~0) {
-+			res->start = spi_base & 0xfffffff0;
-+			res->end = res->start + SZ_4K - 1;
++static struct mfd_cell lpc_ich_spi_cell = {
++	.name = "intel-spi",
++	.num_resources = ARRAY_SIZE(intel_spi_res),
++	.resources = intel_spi_res,
++	.ignore_resource_conflicts = true,
++};
 +
-+			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
+ /* chipset related info */
+ enum lpc_chipsets {
+ 	LPC_ICH = 0,	/* ICH */
+@@ -493,10 +514,12 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+ 	[LPC_LPT] = {
+ 		.name = "Lynx Point",
+ 		.iTCO_version = 2,
++		.spi_type = INTEL_SPI_LPT,
+ 	},
+ 	[LPC_LPT_LP] = {
+ 		.name = "Lynx Point_LP",
+ 		.iTCO_version = 2,
++		.spi_type = INTEL_SPI_LPT,
+ 	},
+ 	[LPC_WBG] = {
+ 		.name = "Wellsburg",
+@@ -510,6 +533,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+ 	[LPC_BAYTRAIL] = {
+ 		.name = "Bay Trail SoC",
+ 		.iTCO_version = 3,
++		.spi_type = INTEL_SPI_BYT,
+ 	},
+ 	[LPC_COLETO] = {
+ 		.name = "Coleto Creek",
+@@ -518,10 +542,12 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+ 	[LPC_WPT_LP] = {
+ 		.name = "Wildcat Point_LP",
+ 		.iTCO_version = 2,
++		.spi_type = INTEL_SPI_LPT,
+ 	},
+ 	[LPC_BRASWELL] = {
+ 		.name = "Braswell SoC",
+ 		.iTCO_version = 3,
++		.spi_type = INTEL_SPI_BYT,
+ 	},
+ 	[LPC_LEWISBURG] = {
+ 		.name = "Lewisburg",
+@@ -875,6 +901,15 @@ static void lpc_ich_finalize_gpio_cell(struct pci_dev *dev)
+ 	cell->pdata_size = sizeof(struct lpc_ich_info);
+ }
+ 
++static void lpc_ich_finalize_spi_cell(struct pci_dev *dev,
++				     struct intel_spi_boardinfo *info)
++{
++	struct mfd_cell *cell = &lpc_ich_spi_cell;
++
++	cell->platform_data = info;
++	cell->pdata_size = sizeof(*info);
++}
++
+ /*
+  * We don't check for resource conflict globally. There are 2 or 3 independent
+  * GPIO groups and it's enough to have access to one of these to instantiate
+@@ -1050,6 +1085,62 @@ wdt_done:
+ 	return ret;
+ }
+ 
++static int lpc_ich_init_spi(struct pci_dev *dev)
++{
++	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
++	struct resource *res = &intel_spi_res[0];
++	struct intel_spi_boardinfo *info;
++	u32 spi_base, rcba, bcr;
++
++	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
++	if (!info)
++		return -ENOMEM;
++
++	info->type = lpc_chipset_info[priv->chipset].spi_type;
++
++	switch (lpc_chipset_info[priv->chipset].spi_type) {
++	case INTEL_SPI_BYT:
++		pci_read_config_dword(dev, SPIBASE_BYT, &spi_base);
++		if (spi_base & SPIBASE_BYT_EN) {
++			res->start = spi_base &= 0xfffffe00;
++			res->end = res->start + 512 - 1;
++		}
++		break;
++
++	case INTEL_SPI_LPT:
++		pci_read_config_dword(dev, RCBABASE, &rcba);
++		if (rcba & 1) {
++			spi_base = rcba & 0xfffffe00;
++			res->start = spi_base + SPIBASE_LPT;
++			res->end = res->start + 512 - 1;
++
++			/*
++			 * Try to make the flash chip writeable now by
++			 * setting BCR_WPD. It it fails we tell the driver
++			 * that it can only read the chip.
++			 */
++			pci_read_config_dword(dev, BCR, &bcr);
 +			if (!(bcr & BCR_WPD)) {
 +				bcr |= BCR_WPD;
-+				pci_bus_write_config_dword(bus, spi, BCR, bcr);
-+				pci_bus_read_config_dword(bus, spi, BCR, &bcr);
++				pci_write_config_dword(dev, BCR, bcr);
++				pci_read_config_dword(dev, BCR, &bcr);
 +			}
 +			info->writeable = !!(bcr & BCR_WPD);
 +		}
-+
-+		pci_bus_write_config_byte(dev->bus, p2sb, 0xe1, 0x1);
 +		break;
++
++	default:
++		return -EINVAL;
 +	}
 +
- 	default:
- 		return -EINVAL;
++	if (!res->start)
++		return -ENODEV;
++
++	lpc_ich_finalize_spi_cell(dev, info);
++	return mfd_add_devices(&dev->dev, -1, &lpc_ich_spi_cell, 1, NULL, 0,
++			       NULL);
++}
++
+ static int lpc_ich_probe(struct pci_dev *dev,
+ 				const struct pci_device_id *id)
+ {
+@@ -1093,6 +1184,12 @@ static int lpc_ich_probe(struct pci_dev *dev,
+ 			cell_added = true;
  	}
+ 
++	if (lpc_chipset_info[priv->chipset].spi_type) {
++		ret = lpc_ich_init_spi(dev);
++		if (!ret)
++			cell_added = true;
++	}
++
+ 	/*
+ 	 * We only care if at least one or none of the cells registered
+ 	 * successfully.
+diff --git a/include/linux/mfd/lpc_ich.h b/include/linux/mfd/lpc_ich.h
+index 2b300b44f994..fba8fcb54f8c 100644
+--- a/include/linux/mfd/lpc_ich.h
++++ b/include/linux/mfd/lpc_ich.h
+@@ -20,6 +20,8 @@
+ #ifndef LPC_ICH_H
+ #define LPC_ICH_H
+ 
++#include <linux/platform_data/intel-spi.h>
++
+ /* GPIO resources */
+ #define ICH_RES_GPIO	0
+ #define ICH_RES_GPE0	1
+@@ -40,6 +42,7 @@ struct lpc_ich_info {
+ 	char name[32];
+ 	unsigned int iTCO_version;
+ 	unsigned int gpio_version;
++	enum intel_spi_type spi_type;
+ 	u8 use_gpio;
+ };
+ 
 -- 
 2.8.1
