@@ -1,24 +1,25 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bDS9z-0002U8-Td
- for linux-mtd@lists.infradead.org; Thu, 16 Jun 2016 07:56:20 +0000
-Date: Thu, 16 Jun 2016 10:55:53 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Lee Jones <lee.jones@linaro.org>
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] mfd: lpc_ich: Add support for SPI serial flash host
- controller
-Message-ID: <20160616075553.GR1740@lahna.fi.intel.com>
-References: <1465904589-141386-1-git-send-email-mika.westerberg@linux.intel.com>
- <1465904589-141386-3-git-send-email-mika.westerberg@linux.intel.com>
- <20160615153835.GM4948@dell>
+Received: from pinova.rz.uni-augsburg.de ([137.250.2.102])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bDSnj-0003IL-A7
+ for linux-mtd@lists.infradead.org; Thu, 16 Jun 2016 08:37:24 +0000
+Received: from limette.rz.uni-augsburg.de ([137.250.1.100])
+ by pinova.rz.uni-augsburg.de with esmtps
+ (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256) (Exim 4.82)
+ (envelope-from <pfaehler@isse.de>) id 1bDSnK-00005R-Sy
+ for linux-mtd@lists.infradead.org; Thu, 16 Jun 2016 10:36:58 +0200
+Received: from pfaehler.informatik.uni-augsburg.de ([137.250.170.141]
+ helo=pfaehler-pc.localnet)
+ by limette.rz.uni-augsburg.de with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
+ (Exim 4.72) (envelope-from <pfaehler@isse.de>) id 1bDSnJ-0006AQ-OB
+ for linux-mtd@lists.infradead.org; Thu, 16 Jun 2016 10:36:57 +0200
+From: =?ISO-8859-1?Q?J=F6rg_Pf=E4hler?= <pfaehler@isse.de>
+To: linux-mtd@lists.infradead.org
+Subject: UBI: recover_peb and power cut safety
+Date: Thu, 16 Jun 2016 10:37:01 +0200
+Message-ID: <1811946.TqycnYvpkR@pfaehler-pc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160615153835.GM4948@dell>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,209 +29,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 15, 2016 at 04:38:35PM +0100, Lee Jones wrote:
-> On Tue, 14 Jun 2016, Mika Westerberg wrote:
-> 
-> > Many Intel CPUs including Haswell, Broadwell and Baytrail have SPI serial
-> > flash host controller as part of the LPC device. This will populate an MFD
-> > cell suitable for the SPI host controller driver if we know that the LPC
-> > device has one.
-> > 
-> > Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> > ---
-> >  drivers/mfd/lpc_ich.c       | 97 +++++++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/mfd/lpc_ich.h |  3 ++
-> >  2 files changed, 100 insertions(+)
-> > 
-> > diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-> > index bd3aa4578346..39b7731d769a 100644
-> > --- a/drivers/mfd/lpc_ich.c
-> > +++ b/drivers/mfd/lpc_ich.c
-> > @@ -83,6 +83,13 @@
-> >  #define ACPIBASE_GCS_OFF	0x3410
-> >  #define ACPIBASE_GCS_END	0x3414
-> >  
-> > +#define SPIBASE_BYT		0x54
-> > +#define SPIBASE_BYT_EN		BIT(1)
-> > +
-> > +#define SPIBASE_LPT		0x3800
-> > +#define BCR			0xdc
-> > +#define BCR_WPD			BIT(0)
-> > +
-> >  #define GPIOBASE_ICH0		0x58
-> >  #define GPIOCTRL_ICH0		0x5C
-> >  #define GPIOBASE_ICH6		0x48
-> > @@ -133,6 +140,12 @@ static struct resource gpio_ich_res[] = {
-> >  	},
-> >  };
-> >  
-> > +static struct resource intel_spi_res[] = {
-> > +	{
-> > +		.flags = IORESOURCE_MEM,
-> > +	}
-> > +};
-> > +
-> >  static struct mfd_cell lpc_ich_wdt_cell = {
-> >  	.name = "iTCO_wdt",
-> >  	.num_resources = ARRAY_SIZE(wdt_ich_res),
-> > @@ -147,6 +160,14 @@ static struct mfd_cell lpc_ich_gpio_cell = {
-> >  	.ignore_resource_conflicts = true,
-> >  };
-> >  
-> > +
-> > +static struct mfd_cell lpc_ich_spi_cell = {
-> > +	.name = "intel-spi",
-> > +	.num_resources = ARRAY_SIZE(intel_spi_res),
-> > +	.resources = intel_spi_res,
-> > +	.ignore_resource_conflicts = true,
-> > +};
-> > +
-> >  /* chipset related info */
-> >  enum lpc_chipsets {
-> >  	LPC_ICH = 0,	/* ICH */
-> > @@ -493,10 +514,12 @@ static struct lpc_ich_info lpc_chipset_info[] = {
-> >  	[LPC_LPT] = {
-> >  		.name = "Lynx Point",
-> >  		.iTCO_version = 2,
-> > +		.spi_type = INTEL_SPI_LPT,
-> >  	},
-> >  	[LPC_LPT_LP] = {
-> >  		.name = "Lynx Point_LP",
-> >  		.iTCO_version = 2,
-> > +		.spi_type = INTEL_SPI_LPT,
-> >  	},
-> >  	[LPC_WBG] = {
-> >  		.name = "Wellsburg",
-> > @@ -510,6 +533,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
-> >  	[LPC_BAYTRAIL] = {
-> >  		.name = "Bay Trail SoC",
-> >  		.iTCO_version = 3,
-> > +		.spi_type = INTEL_SPI_BYT,
-> >  	},
-> >  	[LPC_COLETO] = {
-> >  		.name = "Coleto Creek",
-> > @@ -518,10 +542,12 @@ static struct lpc_ich_info lpc_chipset_info[] = {
-> >  	[LPC_WPT_LP] = {
-> >  		.name = "Wildcat Point_LP",
-> >  		.iTCO_version = 2,
-> > +		.spi_type = INTEL_SPI_LPT,
-> >  	},
-> >  	[LPC_BRASWELL] = {
-> >  		.name = "Braswell SoC",
-> >  		.iTCO_version = 3,
-> > +		.spi_type = INTEL_SPI_BYT,
-> >  	},
-> >  	[LPC_LEWISBURG] = {
-> >  		.name = "Lewisburg",
-> > @@ -875,6 +901,15 @@ static void lpc_ich_finalize_gpio_cell(struct pci_dev *dev)
-> >  	cell->pdata_size = sizeof(struct lpc_ich_info);
-> >  }
-> >  
-> > +static void lpc_ich_finalize_spi_cell(struct pci_dev *dev,
-> > +				     struct intel_spi_boardinfo *info)
-> > +{
-> > +	struct mfd_cell *cell = &lpc_ich_spi_cell;
-> > +
-> > +	cell->platform_data = info;
-> > +	cell->pdata_size = sizeof(*info);
-> > +}
-> 
-> This call doesn't appear to offer anything.  In fact, it looks like it
-> adds more lines than is required.
+Hi,
 
-Yeah, it follows what we do with other parts but I can do this in
-lpc_ich_init_spi() instead.
+I would greatly appreciate some clarification with respect to power cut saf=
+ety=20
+during writing of an erase block in UBI, specifically power cut safety of=20
+recover_peb.
 
-> >  /*
-> >   * We don't check for resource conflict globally. There are 2 or 3 independent
-> >   * GPIO groups and it's enough to have access to one of these to instantiate
-> > @@ -1050,6 +1085,62 @@ wdt_done:
-> >  	return ret;
-> >  }
-> >  
-> > +static int lpc_ich_init_spi(struct pci_dev *dev)
-> > +{
-> > +	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
-> > +	struct resource *res = &intel_spi_res[0];
-> > +	struct intel_spi_boardinfo *info;
-> > +	u32 spi_base, rcba, bcr;
-> > +
-> > +	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
-> > +	if (!info)
-> > +		return -ENOMEM;
-> > +
-> > +	info->type = lpc_chipset_info[priv->chipset].spi_type;
-> > +
-> > +	switch (lpc_chipset_info[priv->chipset].spi_type) {
-> 
-> The type now exists in info->type.  I suggest you use that here
-> instead.
+During a normal write operation (ubi_eba_write_leb in mtd/ubi/eba.c) UBI tr=
+ies=20
+to move the contents of the block (and the new contents) to a new location =
+via=20
+recover_peb, if the write fails. However, recover_peb does not seem to use =
+the=20
+capability to exchange the (logical) block atomically (as=20
+ubi_eba_atomic_leb_change in mtd/ubi/eba.c does). Specifically, it does not=
+=20
+seem to write the amount of data and its checksum to the VID header. Thus, =
+if=20
+the system crashes in the middle of recover_peb before the old/broken block=
+=20
+could be erased, we are left with a newer version of the block (the sequenc=
+e=20
+number in the header is increased by recover_peb), but without having moved=
+=20
+all the contents of the old block. This would obviously lead to data loss.=
+=20
+Thus, It seems to me that recover_peb (and therefore ubi_eba_write_leb) is =
+not=20
+power cut safe or is there some other mechanism distinct from the one used =
+by=20
+ubi_eba_atomic_leb_change to achieve this? If not I would suggest using=20
+ubi_eba_atomic_leb_change in ubi_eba_write_leb instead of recover_peb.
 
-OK
+Thanks in advance for any clarifications!
+Regards,
+J=F6rg
 
-> > +	case INTEL_SPI_BYT:
-> > +		pci_read_config_dword(dev, SPIBASE_BYT, &spi_base);
-> > +		if (spi_base & SPIBASE_BYT_EN) {
-> > +			res->start = spi_base &= 0xfffffe00;
-> > +			res->end = res->start + 512 - 1;
-> 
-> Define all of these magic numbers.
+=2D------------------------------------------------------------------------=
+=2D------------
+J=F6rg Pf=E4hler
+Lehrstuhl f=FCr Softwaretechnik
+Institut f=FCr Software and Systems Engineering
+Universit=E4t Augsburg
 
-OK
-
-> > +		}
-> > +		break;
-> > +
-> > +	case INTEL_SPI_LPT:
-> > +		pci_read_config_dword(dev, RCBABASE, &rcba);
-> > +		if (rcba & 1) {
-> > +			spi_base = rcba & 0xfffffe00;
-> > +			res->start = spi_base + SPIBASE_LPT;
-> > +			res->end = res->start + 512 - 1;
-> 
-> And here.
-
-OK
-
-> > +			/*
-> > +			 * Try to make the flash chip writeable now by
-> > +			 * setting BCR_WPD. It it fails we tell the driver
-> > +			 * that it can only read the chip.
-> > +			 */
-> > +			pci_read_config_dword(dev, BCR, &bcr);
-> > +			if (!(bcr & BCR_WPD)) {
-> > +				bcr |= BCR_WPD;
-> > +				pci_write_config_dword(dev, BCR, bcr);
-> > +				pci_read_config_dword(dev, BCR, &bcr);
-> > +			}
-> > +			info->writeable = !!(bcr & BCR_WPD);
-> 
-> I'd prefer if you didn't do that here.  In fact, is there any
-> technical reason why you can't move the entirety of this function into
-> the SPI NOR driver?
-
-Unfortunately, I was not able to figure better way. With the exception
-of Baytrail (BYT) these bits are part of the PCI device and you need to
-access them using PCI config cycles. It gets worse with Broxton (BXT)
-where this all is part of "hidden" P2SB PCI device.
-
-I thought about adding a callback which can be used to toggle the bit
-but that would require passing pointer to the PCI device (and for
-Broxton, I don't know what we would pass, to be honest).
-
-> > +		}
-> > +		break;
-> > +
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	if (!res->start)
-> > +		return -ENODEV;
-> > +
-> > +	lpc_ich_finalize_spi_cell(dev, info);
-> > +	return mfd_add_devices(&dev->dev, -1, &lpc_ich_spi_cell, 1, NULL, 0,
-> 
-> Use the includes provided.  Look at other drivers for examples.
-
-Okay.
+Universit=E4tsstr. 6a, Raum 3014
+tel:      (+49) 821/598-2229
+e-mail:   joerg.pfaehler@informatik.uni-
+augsburg.de<mailto:joerg.pfaehler@informatik.uni-augsburg.de>
+=2D------------------------------------------------------------------------=
+=2D------------
