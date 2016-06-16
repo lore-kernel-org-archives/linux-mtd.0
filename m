@@ -1,25 +1,20 @@
-Received: from pinova.rz.uni-augsburg.de ([137.250.2.102])
+Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bDSnj-0003IL-A7
- for linux-mtd@lists.infradead.org; Thu, 16 Jun 2016 08:37:24 +0000
-Received: from limette.rz.uni-augsburg.de ([137.250.1.100])
- by pinova.rz.uni-augsburg.de with esmtps
- (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256) (Exim 4.82)
- (envelope-from <pfaehler@isse.de>) id 1bDSnK-00005R-Sy
- for linux-mtd@lists.infradead.org; Thu, 16 Jun 2016 10:36:58 +0200
-Received: from pfaehler.informatik.uni-augsburg.de ([137.250.170.141]
- helo=pfaehler-pc.localnet)
- by limette.rz.uni-augsburg.de with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
- (Exim 4.72) (envelope-from <pfaehler@isse.de>) id 1bDSnJ-0006AQ-OB
- for linux-mtd@lists.infradead.org; Thu, 16 Jun 2016 10:36:57 +0200
-From: =?ISO-8859-1?Q?J=F6rg_Pf=E4hler?= <pfaehler@isse.de>
-To: linux-mtd@lists.infradead.org
-Subject: UBI: recover_peb and power cut safety
-Date: Thu, 16 Jun 2016 10:37:01 +0200
-Message-ID: <1811946.TqycnYvpkR@pfaehler-pc>
+ id 1bDTtH-00079O-9U
+ for linux-mtd@lists.infradead.org; Thu, 16 Jun 2016 09:47:11 +0000
+Received: by mail-oi0-x22a.google.com with SMTP id w5so60660707oib.2
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Jun 2016 02:46:50 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1811946.TqycnYvpkR@pfaehler-pc>
+References: <1811946.TqycnYvpkR@pfaehler-pc>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Thu, 16 Jun 2016 11:46:49 +0200
+Message-ID: <CAFLxGvzxEkRfGzxsxS3_xYupPvAXNO6X9AMi=6SQzXYqBLqiqQ@mail.gmail.com>
+Subject: Re: UBI: recover_peb and power cut safety
+To: =?UTF-8?B?SsO2cmcgUGbDpGhsZXI=?= <pfaehler@isse.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,53 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+J=C3=B6rg,
 
-I would greatly appreciate some clarification with respect to power cut saf=
-ety=20
-during writing of an erase block in UBI, specifically power cut safety of=20
-recover_peb.
+On Thu, Jun 16, 2016 at 10:37 AM, J=C3=B6rg Pf=C3=A4hler <pfaehler@isse.de>=
+ wrote:
+> Hi,
+>
+> I would greatly appreciate some clarification with respect to power cut s=
+afety
+> during writing of an erase block in UBI, specifically power cut safety of
+> recover_peb.
+>
+> During a normal write operation (ubi_eba_write_leb in mtd/ubi/eba.c) UBI =
+tries
+> to move the contents of the block (and the new contents) to a new locatio=
+n via
+> recover_peb, if the write fails. However, recover_peb does not seem to us=
+e the
+> capability to exchange the (logical) block atomically (as
+> ubi_eba_atomic_leb_change in mtd/ubi/eba.c does). Specifically, it does n=
+ot
+> seem to write the amount of data and its checksum to the VID header. Thus=
+, if
+> the system crashes in the middle of recover_peb before the old/broken blo=
+ck
+> could be erased, we are left with a newer version of the block (the seque=
+nce
+> number in the header is increased by recover_peb), but without having mov=
+ed
+> all the contents of the old block. This would obviously lead to data loss=
+.
+> Thus, It seems to me that recover_peb (and therefore ubi_eba_write_leb) i=
+s not
+> power cut safe or is there some other mechanism distinct from the one use=
+d by
+> ubi_eba_atomic_leb_change to achieve this? If not I would suggest using
+> ubi_eba_atomic_leb_change in ubi_eba_write_leb instead of recover_peb.
 
-During a normal write operation (ubi_eba_write_leb in mtd/ubi/eba.c) UBI tr=
-ies=20
-to move the contents of the block (and the new contents) to a new location =
-via=20
-recover_peb, if the write fails. However, recover_peb does not seem to use =
-the=20
-capability to exchange the (logical) block atomically (as=20
-ubi_eba_atomic_leb_change in mtd/ubi/eba.c does). Specifically, it does not=
-=20
-seem to write the amount of data and its checksum to the VID header. Thus, =
-if=20
-the system crashes in the middle of recover_peb before the old/broken block=
-=20
-could be erased, we are left with a newer version of the block (the sequenc=
-e=20
-number in the header is increased by recover_peb), but without having moved=
-=20
-all the contents of the old block. This would obviously lead to data loss.=
-=20
-Thus, It seems to me that recover_peb (and therefore ubi_eba_write_leb) is =
-not=20
-power cut safe or is there some other mechanism distinct from the one used =
-by=20
-ubi_eba_atomic_leb_change to achieve this? If not I would suggest using=20
-ubi_eba_atomic_leb_change in ubi_eba_write_leb instead of recover_peb.
+Hmm, you are right, if ubi_eba_write() is facing -EIO from the MTD driver w=
+e can
+lose the whole erase block upon power cut.
+So you found a bug. :-)
 
-Thanks in advance for any clarifications!
-Regards,
-J=F6rg
+Artem, can you tell more on this?
+I'd guess that recover_peb() is older than ubi_eba_atomic_leb_change() and
+therefore it was not used.
+And nobody noticed so far since the condition is hard to hit.
 
-=2D------------------------------------------------------------------------=
-=2D------------
-J=F6rg Pf=E4hler
-Lehrstuhl f=FCr Softwaretechnik
-Institut f=FCr Software and Systems Engineering
-Universit=E4t Augsburg
+That said, switching to ubi_eba_atomic_leb_change() seems like a good
+plan to me.
+J=C3=B6rg, please send a patch and explain how you tested it.
 
-Universit=E4tsstr. 6a, Raum 3014
-tel:      (+49) 821/598-2229
-e-mail:   joerg.pfaehler@informatik.uni-
-augsburg.de<mailto:joerg.pfaehler@informatik.uni-augsburg.de>
-=2D------------------------------------------------------------------------=
-=2D------------
+--=20
+Thanks,
+//richard
