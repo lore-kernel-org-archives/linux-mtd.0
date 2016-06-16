@@ -1,27 +1,24 @@
-Received: from arroyo.ext.ti.com ([198.47.19.12])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bDR2b-0002wC-9p
- for linux-mtd@lists.infradead.org; Thu, 16 Jun 2016 06:44:38 +0000
-Subject: Re: [PATCH V12 2/2] mtd: spi-nor: Add driver for Cadence Quad SPI
- Flash Controller
-To: Marek Vasut <marex@denx.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-References: <1465000774-7762-1-git-send-email-marex@denx.de>
- <1465000774-7762-2-git-send-email-marex@denx.de> <575F91B2.7010304@ti.com>
- <575FFF97.7040104@denx.de>
-CC: Graham Moore <grmoore@opensource.altera.com>, Alan Tull
- <atull@opensource.altera.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen
- <dinguyen@opensource.altera.com>, Yves Vandervennet
- <yvanderv@opensource.altera.com>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <57624A98.4060308@ti.com>
-Date: Thu, 16 Jun 2016 12:13:36 +0530
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bDS9z-0002U8-Td
+ for linux-mtd@lists.infradead.org; Thu, 16 Jun 2016 07:56:20 +0000
+Date: Thu, 16 Jun 2016 10:55:53 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Peter Tyser <ptyser@xes-inc.com>, key.seong.lim@intel.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] mfd: lpc_ich: Add support for SPI serial flash host
+ controller
+Message-ID: <20160616075553.GR1740@lahna.fi.intel.com>
+References: <1465904589-141386-1-git-send-email-mika.westerberg@linux.intel.com>
+ <1465904589-141386-3-git-send-email-mika.westerberg@linux.intel.com>
+ <20160615153835.GM4948@dell>
 MIME-Version: 1.0
-In-Reply-To: <575FFF97.7040104@denx.de>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20160615153835.GM4948@dell>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,72 +28,209 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On Tuesday 14 June 2016 06:29 PM, Marek Vasut wrote:
-
->> I was wondering if its better to use direct access mode[1].
+On Wed, Jun 15, 2016 at 04:38:35PM +0100, Lee Jones wrote:
+> On Tue, 14 Jun 2016, Mika Westerberg wrote:
 > 
-> The link leads to altera documentation front page, but I have an idea
-> what you mean. You might want to refer to [2] instead.
+> > Many Intel CPUs including Haswell, Broadwell and Baytrail have SPI serial
+> > flash host controller as part of the LPC device. This will populate an MFD
+> > cell suitable for the SPI host controller driver if we know that the LPC
+> > device has one.
+> > 
+> > Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> > ---
+> >  drivers/mfd/lpc_ich.c       | 97 +++++++++++++++++++++++++++++++++++++++++++++
+> >  include/linux/mfd/lpc_ich.h |  3 ++
+> >  2 files changed, 100 insertions(+)
+> > 
+> > diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+> > index bd3aa4578346..39b7731d769a 100644
+> > --- a/drivers/mfd/lpc_ich.c
+> > +++ b/drivers/mfd/lpc_ich.c
+> > @@ -83,6 +83,13 @@
+> >  #define ACPIBASE_GCS_OFF	0x3410
+> >  #define ACPIBASE_GCS_END	0x3414
+> >  
+> > +#define SPIBASE_BYT		0x54
+> > +#define SPIBASE_BYT_EN		BIT(1)
+> > +
+> > +#define SPIBASE_LPT		0x3800
+> > +#define BCR			0xdc
+> > +#define BCR_WPD			BIT(0)
+> > +
+> >  #define GPIOBASE_ICH0		0x58
+> >  #define GPIOCTRL_ICH0		0x5C
+> >  #define GPIOBASE_ICH6		0x48
+> > @@ -133,6 +140,12 @@ static struct resource gpio_ich_res[] = {
+> >  	},
+> >  };
+> >  
+> > +static struct resource intel_spi_res[] = {
+> > +	{
+> > +		.flags = IORESOURCE_MEM,
+> > +	}
+> > +};
+> > +
+> >  static struct mfd_cell lpc_ich_wdt_cell = {
+> >  	.name = "iTCO_wdt",
+> >  	.num_resources = ARRAY_SIZE(wdt_ich_res),
+> > @@ -147,6 +160,14 @@ static struct mfd_cell lpc_ich_gpio_cell = {
+> >  	.ignore_resource_conflicts = true,
+> >  };
+> >  
+> > +
+> > +static struct mfd_cell lpc_ich_spi_cell = {
+> > +	.name = "intel-spi",
+> > +	.num_resources = ARRAY_SIZE(intel_spi_res),
+> > +	.resources = intel_spi_res,
+> > +	.ignore_resource_conflicts = true,
+> > +};
+> > +
+> >  /* chipset related info */
+> >  enum lpc_chipsets {
+> >  	LPC_ICH = 0,	/* ICH */
+> > @@ -493,10 +514,12 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+> >  	[LPC_LPT] = {
+> >  		.name = "Lynx Point",
+> >  		.iTCO_version = 2,
+> > +		.spi_type = INTEL_SPI_LPT,
+> >  	},
+> >  	[LPC_LPT_LP] = {
+> >  		.name = "Lynx Point_LP",
+> >  		.iTCO_version = 2,
+> > +		.spi_type = INTEL_SPI_LPT,
+> >  	},
+> >  	[LPC_WBG] = {
+> >  		.name = "Wellsburg",
+> > @@ -510,6 +533,7 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+> >  	[LPC_BAYTRAIL] = {
+> >  		.name = "Bay Trail SoC",
+> >  		.iTCO_version = 3,
+> > +		.spi_type = INTEL_SPI_BYT,
+> >  	},
+> >  	[LPC_COLETO] = {
+> >  		.name = "Coleto Creek",
+> > @@ -518,10 +542,12 @@ static struct lpc_ich_info lpc_chipset_info[] = {
+> >  	[LPC_WPT_LP] = {
+> >  		.name = "Wildcat Point_LP",
+> >  		.iTCO_version = 2,
+> > +		.spi_type = INTEL_SPI_LPT,
+> >  	},
+> >  	[LPC_BRASWELL] = {
+> >  		.name = "Braswell SoC",
+> >  		.iTCO_version = 3,
+> > +		.spi_type = INTEL_SPI_BYT,
+> >  	},
+> >  	[LPC_LEWISBURG] = {
+> >  		.name = "Lewisburg",
+> > @@ -875,6 +901,15 @@ static void lpc_ich_finalize_gpio_cell(struct pci_dev *dev)
+> >  	cell->pdata_size = sizeof(struct lpc_ich_info);
+> >  }
+> >  
+> > +static void lpc_ich_finalize_spi_cell(struct pci_dev *dev,
+> > +				     struct intel_spi_boardinfo *info)
+> > +{
+> > +	struct mfd_cell *cell = &lpc_ich_spi_cell;
+> > +
+> > +	cell->platform_data = info;
+> > +	cell->pdata_size = sizeof(*info);
+> > +}
 > 
-> [2] https://www.altera.com/en_US/pdfs/literature/hb/cyclone-v/cv_5v4.pdf
+> This call doesn't appear to offer anything.  In fact, it looks like it
+> adds more lines than is required.
+
+Yeah, it follows what we do with other parts but I can do this in
+lpc_ich_init_spi() instead.
+
+> >  /*
+> >   * We don't check for resource conflict globally. There are 2 or 3 independent
+> >   * GPIO groups and it's enough to have access to one of these to instantiate
+> > @@ -1050,6 +1085,62 @@ wdt_done:
+> >  	return ret;
+> >  }
+> >  
+> > +static int lpc_ich_init_spi(struct pci_dev *dev)
+> > +{
+> > +	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
+> > +	struct resource *res = &intel_spi_res[0];
+> > +	struct intel_spi_boardinfo *info;
+> > +	u32 spi_base, rcba, bcr;
+> > +
+> > +	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
+> > +	if (!info)
+> > +		return -ENOMEM;
+> > +
+> > +	info->type = lpc_chipset_info[priv->chipset].spi_type;
+> > +
+> > +	switch (lpc_chipset_info[priv->chipset].spi_type) {
 > 
+> The type now exists in info->type.  I suggest you use that here
+> instead.
 
-My link was suppose to point to html edition of above document.
+OK
 
->> With this
->> mode there is no need to wait for IRQ or monitor sdram level. By setting
->> up QSPI in direct access mode, this entire function can be replaced by:
->> memcpy(buf, cqspi->ahb_base + from, n_rx)
+> > +	case INTEL_SPI_BYT:
+> > +		pci_read_config_dword(dev, SPIBASE_BYT, &spi_base);
+> > +		if (spi_base & SPIBASE_BYT_EN) {
+> > +			res->start = spi_base &= 0xfffffe00;
+> > +			res->end = res->start + 512 - 1;
 > 
-> The altera docs, page 993, show how to use the direct access mode. The
-> idea is to map 1 MiB blocks of the flash in the address space, one at a
-> time and then do IO into those. I don't like such solution:
+> Define all of these magic numbers.
+
+OK
+
+> > +		}
+> > +		break;
+> > +
+> > +	case INTEL_SPI_LPT:
+> > +		pci_read_config_dword(dev, RCBABASE, &rcba);
+> > +		if (rcba & 1) {
+> > +			spi_base = rcba & 0xfffffe00;
+> > +			res->start = spi_base + SPIBASE_LPT;
+> > +			res->end = res->start + 512 - 1;
 > 
-> - I didn't find any way to find when all the data in the current 1 MiB
->   block were written and you can remap another 1 MiB block in place.
+> And here.
 
-I believe this constraint only applies if enahbremap bit is set in cfg
-register, if not, then the entire memory map can be accessed.
+OK
 
-
-> - Since the controller doesn't use the internal buffer in direct
->   operation mode, it will block the AHB bus during it's operation.
-
-I agree, this is a disadvantage.
-
-> - I didn't find how IO errors get handled in this case, but maybe I
->   didn't drill deep enough on this one.
+> > +			/*
+> > +			 * Try to make the flash chip writeable now by
+> > +			 * setting BCR_WPD. It it fails we tell the driver
+> > +			 * that it can only read the chip.
+> > +			 */
+> > +			pci_read_config_dword(dev, BCR, &bcr);
+> > +			if (!(bcr & BCR_WPD)) {
+> > +				bcr |= BCR_WPD;
+> > +				pci_write_config_dword(dev, BCR, bcr);
+> > +				pci_read_config_dword(dev, BCR, &bcr);
+> > +			}
+> > +			info->writeable = !!(bcr & BCR_WPD);
 > 
-> Moreover, page 991 bottom of [2] states that the indirect mode is
-> "high-performance". I am inclined to believe that as it uses the
-> internal buffer of the QSPI controller, which is tightly coupled to the
-> block,
-> so the data are available immediately when the flash is ready instead
-> of having to wait for the next AHB turn.
+> I'd prefer if you didn't do that here.  In fact, is there any
+> technical reason why you can't move the entirety of this function into
+> the SPI NOR driver?
+
+Unfortunately, I was not able to figure better way. With the exception
+of Baytrail (BYT) these bits are part of the PCI device and you need to
+access them using PCI config cycles. It gets worse with Broxton (BXT)
+where this all is part of "hidden" P2SB PCI device.
+
+I thought about adding a callback which can be used to toggle the bit
+but that would require passing pointer to the PCI device (and for
+Broxton, I don't know what we would pass, to be honest).
+
+> > +		}
+> > +		break;
+> > +
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (!res->start)
+> > +		return -ENODEV;
+> > +
+> > +	lpc_ich_finalize_spi_cell(dev, info);
+> > +	return mfd_add_devices(&dev->dev, -1, &lpc_ich_spi_cell, 1, NULL, 0,
 > 
+> Use the includes provided.  Look at other drivers for examples.
 
-Indirect mode may be the better option when using DMA. But, my thinking
-was that, for CPU copy, the interrupt overhead and the fact that sdram
-level needs to be monitored constantly might affect throughput badly
-while using indirect mode.
-
-> My impression is that the Direct mode is great when the system boots
-> from the QSPI because it can "map" the flash and just execute code from
-> it. But for normal operation, the indirect mode seems the better choice.
-> 
->> IMO, this might give better throughput. Have tested this mode?
-> 
-> I haven't tested it, no.
-> 
-
-Anyways, direct mode support can be added (if required) at later point
-of time. I have no objection for current approach as such.
-
-Thanks for the reply!
-
-
--- 
-Regards
-Vignesh
+Okay.
