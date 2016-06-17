@@ -1,33 +1,29 @@
-Received: from mail-wm0-f68.google.com ([74.125.82.68])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bDwd9-0002Ra-7Q
- for linux-mtd@lists.infradead.org; Fri, 17 Jun 2016 16:28:28 +0000
-Received: by mail-wm0-f68.google.com with SMTP id r201so940769wme.0
- for <linux-mtd@lists.infradead.org>; Fri, 17 Jun 2016 09:28:06 -0700 (PDT)
-Date: Fri, 17 Jun 2016 18:28:03 +0200
-From: Michal Hocko <mhocko@kernel.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- hannes@cmpxchg.org, mgorman@techsingularity.net,
- n-horiguchi@ah.jp.nec.com, kirill.shutemov@linux.intel.com,
- hughd@google.com, vbabka@suse.cz, adrian.hunter@intel.com,
- dedekind1@gmail.com, hch@infradead.org,
- linux-fsdevel@vger.kernel.org, boris.brezillon@free-electrons.com,
- maxime.ripard@free-electrons.com, david@sigma-star.at,
- david@fromorbit.com, alex@nextthing.co, sasha.levin@oracle.com,
- iamjoonsoo.kim@lge.com, rvaswani@codeaurora.org,
- tony.luck@intel.com, shailendra.capricorn@gmail.com
+ id 1bDx46-00023z-2n
+ for linux-mtd@lists.infradead.org; Fri, 17 Jun 2016 16:56:19 +0000
 Subject: Re: [PATCH 1/3] mm: Don't blindly assign fallback_migrate_page()
-Message-ID: <20160617162803.GK21670@dhcp22.suse.cz>
+To: Michal Hocko <mhocko@kernel.org>
 References: <1466112375-1717-1-git-send-email-richard@nod.at>
  <1466112375-1717-2-git-send-email-richard@nod.at>
  <20160616161121.35ee5183b9ef9f7b7dcbc815@linux-foundation.org>
- <5763A9B2.8060303@nod.at>
+ <5763A9B2.8060303@nod.at> <20160617162803.GK21670@dhcp22.suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ hannes@cmpxchg.org, mgorman@techsingularity.net, n-horiguchi@ah.jp.nec.com,
+ kirill.shutemov@linux.intel.com, hughd@google.com, vbabka@suse.cz,
+ adrian.hunter@intel.com, dedekind1@gmail.com, hch@infradead.org,
+ linux-fsdevel@vger.kernel.org, boris.brezillon@free-electrons.com,
+ maxime.ripard@free-electrons.com, david@sigma-star.at, david@fromorbit.com,
+ alex@nextthing.co, sasha.levin@oracle.com, iamjoonsoo.kim@lge.com,
+ rvaswani@codeaurora.org, tony.luck@intel.com, shailendra.capricorn@gmail.com
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <57642B91.4020206@nod.at>
+Date: Fri, 17 Jun 2016 18:55:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5763A9B2.8060303@nod.at>
+In-Reply-To: <20160617162803.GK21670@dhcp22.suse.cz>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,47 +33,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri 17-06-16 09:41:38, Richard Weinberger wrote:
-> Andrew,
+Am 17.06.2016 um 18:28 schrieb Michal Hocko:
+> But doesn't this disable the page migration and so potentially reduce
+> the compaction success rate for the large pile of filesystems? Without
+> any hint about that?
+
+The WARN_ON_ONCE() is the hint. ;)
+But I can understand your point we'd have to communicate that change better.
+
+> $ git grep "\.migratepage[[:space:]]*=" -- fs | wc -l
+> 16
+> out of
+> $ git grep "struct address_space_operations[[:space:]]*[a-zA-Z0-9_]*[[:space:]]*=" -- fs | wc -l
+> 87
 > 
-> Am 17.06.2016 um 01:11 schrieb Andrew Morton:
-> > On Thu, 16 Jun 2016 23:26:13 +0200 Richard Weinberger <richard@nod.at> wrote:
-> > 
-> >> While block oriented filesystems use buffer_migrate_page()
-> >> as page migration function other filesystems which don't
-> >> implement ->migratepage() will automatically get fallback_migrate_page()
-> >> assigned. fallback_migrate_page() is not as generic as is should
-> >> be. Page migration is filesystem specific and a one-fits-all function
-> >> is hard to achieve. UBIFS leaned this lection the hard way.
-> >> It uses various page flags and fallback_migrate_page() does not
-> >> handle these flags as UBIFS expected.
-> >>
-> >> To make sure that no further filesystem will get confused by
-> >> fallback_migrate_page() disable the automatic assignment and
-> >> allow filesystems to use this function explicitly if it is
-> >> really suitable.
-> > 
-> > hm, is there really much point in doing this?  I assume it doesn't
-> > actually affect any current filesystems?
-> 
-> Well, we simply don't know which filesystems are affected by similar issues.
+> That just seems to be too conservative for something that even not might
+> be a problem, especially when considering the fallback migration code is
+> there for many years with only UBIFS seeing a problem.
 
-But doesn't this disable the page migration and so potentially reduce
-the compaction success rate for the large pile of filesystems? Without
-any hint about that?
+UBIFS is also there for many years.
+It just shows that the issue is hard to hit but at least for UBIFS it is real.
 
-$ git grep "\.migratepage[[:space:]]*=" -- fs | wc -l
-16
-out of
-$ git grep "struct address_space_operations[[:space:]]*[a-zA-Z0-9_]*[[:space:]]*=" -- fs | wc -l
-87
+> Wouldn't it be safer to contact FS developers who might have have
+> similar issue and work with them to use a proper migration code?
 
-That just seems to be too conservative for something that even not might
-be a problem, especially when considering the fallback migration code is
-there for many years with only UBIFS seeing a problem.
+That was the goal of this patch. Forcing the filesystem developers
+to look as the WARN_ON_ONCE() triggered.
 
-Wouldn't it be safer to contact FS developers who might have have
-similar issue and work with them to use a proper migration code?
--- 
-Michal Hocko
-SUSE Labs
+I fear just sending a mail to linux-fsdevel@vger is not enough.
+
+Thanks,
+//richard
