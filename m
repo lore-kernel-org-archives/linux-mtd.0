@@ -1,18 +1,20 @@
-Received: from hauke-m.de ([2001:41d0:8:b27b::1])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bELlP-0007pU-GP
- for linux-mtd@lists.infradead.org; Sat, 18 Jun 2016 19:18:40 +0000
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: richard@nod.at,
-	dwmw2@infradead.org
+ id 1bELxC-0004Nb-3h
+ for linux-mtd@lists.infradead.org; Sat, 18 Jun 2016 19:30:51 +0000
+Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
+To: Hauke Mehrtens <hauke@hauke-m.de>, dwmw2@infradead.org
+References: <1466277476-14853-1-git-send-email-hauke@hauke-m.de>
 Cc: robh+dt@kernel.org, mark.rutland@arm.com, dedekind1@gmail.com,
  computersforpeace@gmail.com, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH 2/2] ubi: open volumes define in device tree
-Date: Sat, 18 Jun 2016 21:17:56 +0200
-Message-Id: <1466277476-14853-2-git-send-email-hauke@hauke-m.de>
+ linux-mtd@lists.infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5765A14F.6020201@nod.at>
+Date: Sat, 18 Jun 2016 21:30:23 +0200
+MIME-Version: 1.0
 In-Reply-To: <1466277476-14853-1-git-send-email-hauke@hauke-m.de>
-References: <1466277476-14853-1-git-send-email-hauke@hauke-m.de>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,128 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This makes it possible to define a volume to open in device tree. This
-is helpful when a root file system is on a ubi layer. Without this
-patch it is only possible to device with with kernel command line
-parameters.
+Am 18.06.2016 um 21:17 schrieb Hauke Mehrtens:
+> This makes it possible to open a ubi layer in device tree, this is
+> helpful when the rootfs is on a ubi layer. It loops though all mtd
+> partitions and mounts the partition which is compatible with
+> "ubi,volume". The same was only possible with kernel command line
+> arguments before.
+> 
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> ---
+>  Documentation/devicetree/bindings/mtd/ubi.txt | 33 ++++++++++++++
+>  drivers/mtd/ubi/block.c                       | 63 +++++++++++++++++++++++++++
+>  2 files changed, 96 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/ubi.txt
 
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
----
- Documentation/devicetree/bindings/mtd/ubi.txt | 22 +++++++++++++++++
- drivers/mtd/ubi/build.c                       | 34 +++++++++++++++++++++++++++
- 2 files changed, 56 insertions(+)
+Some time ago I thought about an UBI DT binding too, but
+I have been told that device tree is only for describing the hardware
+and nothing else.
+So I fear this will be rejected by DT folks.
 
-diff --git a/Documentation/devicetree/bindings/mtd/ubi.txt b/Documentation/devicetree/bindings/mtd/ubi.txt
-index 5fcd47e..f87a7d8 100644
---- a/Documentation/devicetree/bindings/mtd/ubi.txt
-+++ b/Documentation/devicetree/bindings/mtd/ubi.txt
-@@ -13,6 +13,16 @@ Describe of a UBI layer in device tree.
-  			which have to be assigned to the newly created UBI
-  			device (assigned automatically by default)
- 
-+Partitions on a UBI layer can be defined:
-+
-+ - compatible: 		"ubi,volume"
-+ - name:		name of the ubi volume to open
-+ - ubi-mode:		mode of the ubi volume to open value:
-+ 			UBI_READONLY:	1
-+ 			UBI_READWRITE:	2
-+ 			UBI_EXCLUSIVE:	3
-+ 			UBI_METAONLY:	4
-+
- Example:
- 
- partitions {
-@@ -29,5 +39,17 @@ partitions {
- 		label = "system_sw";
- 		reg = <0x1c0000 0xc800000>;
- 		compatible = "ubi,device";
-+
-+		rootfsA@0 {
-+			compatible = "ubi,volume";
-+			name = "rootfsA";
-+			ubi-mode = <1>;
-+		};
-+
-+		data_vol@0 {
-+			compatible = "ubi,volume";
-+			name = "data_vol";
-+			ubi-mode = <2>;
-+		};
- 	};
- };
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 16baeb5..1c22533 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1,6 +1,7 @@
- /*
-  * Copyright (c) International Business Machines Corp., 2006
-  * Copyright (c) Nokia Corporation, 2007
-+ * Copyright (c) 2016 Hauke Mehrtens <hauke@hauke-m.de>
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -33,6 +34,7 @@
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/stringify.h>
-+#include <linux/of.h>
- #include <linux/namei.h>
- #include <linux/stat.h>
- #include <linux/miscdevice.h>
-@@ -43,6 +45,7 @@
- #include <linux/slab.h>
- #include <linux/major.h>
- #include "ubi.h"
-+#include "../mtdcore.h"
- 
- /* Maximum length of the 'mtd=' parameter */
- #define MTD_PARAM_LEN_MAX 64
-@@ -1205,6 +1208,7 @@ static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
- static int __init ubi_init(void)
- {
- 	int err, i, k;
-+	struct mtd_info *mtd_it;
- 
- 	/* Ensure that EC and VID headers have correct size */
- 	BUILD_BUG_ON(sizeof(struct ubi_ec_hdr) != 64);
-@@ -1285,6 +1289,36 @@ static int __init ubi_init(void)
- 		}
- 	}
- 
-+	mtd_for_each_device(mtd_it) {
-+		struct mtd_info *mtd;
-+		u32 ubi_num = 0;
-+		u32 vid_hdr_offs = 0;
-+		u32 max_beb_per1024 = CONFIG_MTD_UBI_BEB_LIMIT;
-+
-+		mtd = get_mtd_device(mtd_it, -1);
-+
-+		if (!of_device_is_compatible(mtd->dev.of_node, "ubi,device")) {
-+			put_mtd_device(mtd);
-+			continue;
-+		}
-+
-+		of_property_read_u32(mtd->dev.of_node, "vid_hdr_offs",
-+				     &vid_hdr_offs);
-+		of_property_read_u32(mtd->dev.of_node, "max_beb_per1024",
-+				     &max_beb_per1024);
-+		of_property_read_u32(mtd->dev.of_node, "ubi_num", &ubi_num);
-+
-+		mutex_lock(&ubi_devices_mutex);
-+		err = ubi_attach_mtd_dev(mtd, ubi_num, vid_hdr_offs,
-+					 max_beb_per1024);
-+		mutex_unlock(&ubi_devices_mutex);
-+		if (err < 0) {
-+			pr_err("UBI error: cannot attach mtd%d",
-+			       mtd->index);
-+		}
-+		put_mtd_device(mtd);
-+	}
-+
- 	err = ubiblock_init();
- 	if (err) {
- 		pr_err("UBI error: block: cannot initialize, error %d", err);
--- 
-2.8.1
+Thanks,
+//richard
