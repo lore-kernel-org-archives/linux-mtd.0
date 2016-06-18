@@ -1,21 +1,18 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from hauke-m.de ([5.39.93.123])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEKrK-00062E-JH
- for linux-mtd@lists.infradead.org; Sat, 18 Jun 2016 18:20:43 +0000
-Subject: Re: ubifs: regression: unable to mount ubifs
-To: Hauke Mehrtens <hauke@hauke-m.de>, viro@zeniv.linux.org.uk,
- Artem Bityutskiy <dedekind1@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>
-References: <7158a3b3-5dee-48a0-339a-d8bcdb5b8805@hauke-m.de>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <576590E3.2090603@nod.at>
-Date: Sat, 18 Jun 2016 20:20:19 +0200
-MIME-Version: 1.0
-In-Reply-To: <7158a3b3-5dee-48a0-339a-d8bcdb5b8805@hauke-m.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+ id 1bELhc-0004Yp-Um
+ for linux-mtd@lists.infradead.org; Sat, 18 Jun 2016 19:14:45 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: boris.brezillon@free-electrons.com,
+	richard@nod.at
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, john@phrozen.org,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v2 2/8] MTD: xway: add some more documentation
+Date: Sat, 18 Jun 2016 21:14:06 +0200
+Message-Id: <1466277252-13867-3-git-send-email-hauke@hauke-m.de>
+In-Reply-To: <1466277252-13867-1-git-send-email-hauke@hauke-m.de>
+References: <1466277252-13867-1-git-send-email-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+This adds some register documentation which should make it easier to
+understand how this controller works.
 
-Am 18.06.2016 um 20:19 schrieb Hauke Mehrtens:
-> The commit 322ea0bb "mtd: switch ubi_open_volume_path() to vfs_stat()"
-> breaks mounting ubifs volumes for me.
-> 
-> On kernel 4.7-rc3 I am getting the following error when trying to mount
-> an ubifs volume. This volume in on a ubi file system which exports it as
-> a mtd partition.
-> 
-> root@lede:/# mkdir /tmp/test
-> root@lede:/# mount -t ubifs /dev/ubi0_10 /tmp/test/
-> [  178.782184] UBIFS error (pid: 955): cannot open "/dev/ubi0_10", error
-> -22mount: mounting /dev/ubi0_10 on /tmp/test/ failed: Invalid argument
-> root@lede:/#
-> 
-> In the function ubi_open_volume_path() the call to vfs_stat() returns
-> -EFAULT.
-> 
-> After I reverted commit 322ea0bb it works again.
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+---
+ drivers/mtd/nand/xway_nand.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-Fixes for this are already in Linus' tree and will be part of -rc4. :-)
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
+index 867a636..2889e48 100644
+--- a/drivers/mtd/nand/xway_nand.c
++++ b/drivers/mtd/nand/xway_nand.c
+@@ -20,10 +20,20 @@
+ #define EBU_NAND_ECC0		0xB8
+ #define EBU_NAND_ECC_AC		0xBC
+ 
+-/* nand commands */
++/*
++ * nand commands
++ * The pins of the NAND chip are selected based on the address bits of the
++ * "register" read and write. There are no special registers, but an
++ * address range and the lower address bits are used to activate the
++ * correct line. For example when the bit (1 << 2) is set in the address
++ * the ALE pin will be activated.
++ */
+ #define NAND_CMD_ALE		(1 << 2)
+ #define NAND_CMD_CLE		(1 << 3)
+ #define NAND_CMD_CS		(1 << 4)
++#define NAND_CMD_SE		(1 << 5)
++#define NAND_CMD_WP		(1 << 6)
++#define NAND_CMD_PRE		(1 << 7)
+ #define NAND_WRITE_CMD_RESET	0xff
+ #define NAND_WRITE_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
+ #define NAND_WRITE_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
+-- 
+2.8.1
