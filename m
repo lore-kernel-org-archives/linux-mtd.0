@@ -1,34 +1,23 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bE09u-0004pR-M9
- for linux-mtd@lists.infradead.org; Fri, 17 Jun 2016 20:14:32 +0000
-Received: by mail-wm0-x244.google.com with SMTP id r201so441122wme.0
- for <linux-mtd@lists.infradead.org>; Fri, 17 Jun 2016 13:14:09 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd: m25p80: consider max_transfer_size when reading
-To: Michal Suchanek <hramrach@gmail.com>
-References: <56D22823.7090005@gmail.com> <20160405193952.GA5243@localhost>
- <57041B43.2000109@gmail.com> <20160405210727.GB5243@localhost>
- <5706B084.2070909@gmail.com> <20160505235700.GA99474@google.com>
- <20160506121431.GQ6292@sirena.org.uk>
- <77a22258-95ca-031a-825d-a9e98e30a162@gmail.com>
- <20160606174003.GE7510@sirena.org.uk>
- <a57adb90-0d80-186f-17d3-6fdf106bfb4a@gmail.com>
- <20160606230752.GM7510@sirena.org.uk>
- <fe0042f9-66c9-51fd-ca91-641c5cc25c40@gmail.com>
- <20977e07-6354-2753-8286-e992c32454d1@gmail.com>
- <CAOMqctQfsN4OoXN59yH13n-UJiEUJVOkxzMTMAndmBc8Dq+ANA@mail.gmail.com>
-Cc: Mark Brown <broonie@kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, Marek Vasut <marex@denx.de>,
- Han Xu <han.xu@nxp.com>, linux-spi <linux-spi@vger.kernel.org>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <1107393a-374f-856b-9f63-28a9793a18e1@gmail.com>
-Date: Fri, 17 Jun 2016 22:13:53 +0200
+ id 1bECTT-00075o-BN
+ for linux-mtd@lists.infradead.org; Sat, 18 Jun 2016 09:23:32 +0000
+Subject: Re: [PATCH v2 05/15] mtd: nand: add manufacturer specific
+ initialization/detection steps
+To: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+References: <1465390849-13199-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1465390849-13199-6-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org,
+ Aleksei Mamlin <mamlinav@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <576512F5.7050506@nod.at>
+Date: Sat, 18 Jun 2016 11:23:01 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAOMqctQfsN4OoXN59yH13n-UJiEUJVOkxzMTMAndmBc8Dq+ANA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1465390849-13199-6-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,96 +27,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 09.06.2016 um 09:12 schrieb Michal Suchanek:
-> On 8 June 2016 at 21:51, Heiner Kallweit <hkallweit1@gmail.com> wrote:
->> Am 07.06.2016 um 08:03 schrieb Heiner Kallweit:
->>> Am 07.06.2016 um 01:07 schrieb Mark Brown:
->>>> On Mon, Jun 06, 2016 at 08:53:10PM +0200, Heiner Kallweit wrote:
->>>>> Am 06.06.2016 um 19:40 schrieb Mark Brown:
->>>>
->>>>>> That doesn't make any sense, the controller hardware doesn't
->>>>>> magically change based on what is connected to it.
->>>>
->>>>> The issue with fsl-espi is that the controller deactivates CS after
->>>>> each physical transfer. And a lot of HW designs use the hardware CS,
->>>>> therefore the advise to use a GPIO instead doesn't really help.
->>>>
->>>> There's no pinmux to fix the broken behaviour?  The Freescale SPI
->>>> controllers really are terrible :(
->>>>
->>>>> In case of SPI NOR CS needs to stay active between command and data
->>>>
->>>> In the case of *all* SPI transactions this needs to happen.  This is
->>>> *not* optional, it's not some weird requirement of NOR, it's one of the
->>>> most basic requirements for a SPI driver on Linux.
->>>>
->>>>> Well, we could reduce the max_transfer_size exposed by the driver by
->>>>> the max length of a m25p80 read command in general.
->>>>
->>>> No!  Apart from anything else this would be a complete and total
->>>> abstraction failure.  This is a driver for a SPI controller, not a
->>>> driver for a flash controller, which means that it should not have flash
->>>> specific hacks in it.
->>>>
->>>>> Then we might be too strict for other SPI devices, but this may
->>>>> be acceptable as the current fsl-espi driver is usable with SPI NOR
->>>>> devices only anyway.
->>>>
->>>> What makes you say this?  I'm guessing that the driver is just broken
->>>> but it would be good to understand the specifics.
->>>>
->>> See fsl_espi_rw_trans():
->>> In case of transfers > SPCOM_TRANLEN_MAX it loops and reads in
->>> SPCOM_TRANLEN_MAX chunks whilst replacing bytes 2-4 of the
->>> message buffer with the new start address to read from.
->>> Having said that it implicitely assumes that the first transfer in
->>> the message is a m25p80 read command with a 3 byte address.
->>>
->>> And in fsl_espi_do_one_msg() it assumes that each message includes
->>> max one r/o transfer (else rx_buf is overwritten).
->>>
->>> I'm not 100% sure whether any arbitrary combination of r/o, r/w, w/o
->>> transfers in a SPI message is acceptable. But this controller driver
->>> supports just the transfer combinations generated by the m25p80
->>> protocol driver.
->>>
->> I think in this discussion there was the idea already to introduce
->> a message size limit complementing the transfer size limit.
->> Could this be an acceptable way to go?
->> If yes I'd prepare a patch as basis for further discussion.
->>
-> I think it would be better to introduce a flag saying that the
-> transfer size limit is also a message size limit. We don't have a
-> controller which has different limit for both and protocol drivers
-> that only send one transfer in the message do not need to care that
-> way.
-> 
-I like this idea. In spi_master we could introduce a bool flag
-max_message_size_flag. This would indicate that the max transfer
-size is also the max message size. Then we could change
-m25p80_read to:
+Boris,
 
-t[0].tx_buf = flash->command;
-t[0].len = m25p_cmdsz(nor) + dummy;
-spi_message_add_tail(&t[0], &m);
+Am 08.06.2016 um 15:00 schrieb Boris Brezillon:
+> A lot of NANDs are implementing generic features in a non-generic way,
+> or are providing advanced auto-detection logic where the NAND ID bytes
+> meaning changes with the NAND generation.
+> 
+> Providing this vendor specific initialization step will allow us to get
+> rid of the full ids in the nand_ids table or all the vendor specific
+> cases added over the time in the generic NAND ID decoding logic.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 42 ++++++++++++++++++++++++++++++++----------
+>  include/linux/mtd/nand.h     | 36 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 68 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 95e9a8e..0a7d1c6 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3580,7 +3580,7 @@ static int nand_get_bits_per_cell(u8 cellinfo)
+>   * chip. The rest of the parameters must be decoded according to generic or
+>   * manufacturer-specific "extended ID" decoding patterns.
+>   */
+> -static void nand_decode_ext_id(struct nand_chip *chip)
+> +void nand_decode_ext_id(struct nand_chip *chip)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	int extid, id_len = chip->id.len;
+> @@ -3705,6 +3705,7 @@ static void nand_decode_ext_id(struct nand_chip *chip)
+>  
+>  	}
+>  }
+> +EXPORT_SYMBOL_GPL(nand_decode_ext_id);
+>  
+>  /*
+>   * Old devices have chip data hardcoded in the device ID table. nand_decode_id
+> @@ -3815,7 +3816,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	int busw;
+> -	int i, maf_idx;
+> +	int i, maf_idx, ret;
+>  	u8 *id_data = chip->id.data;
+>  	u8 maf_id, dev_id;
+>  
+> @@ -3856,6 +3857,14 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+>  
+>  	chip->id.len = nand_id_len(id_data, 8);
+>  
+> +	/* Try to identify manufacturer */
+> +	for (maf_idx = 0; nand_manuf_ids[maf_idx].id != 0x0; maf_idx++) {
+> +		if (nand_manuf_ids[maf_idx].id == maf_id)
+> +			break;
+> +	}
+> +
+> +	chip->manufacturer.ops = nand_manuf_ids[maf_idx].ops;
+> +
 
-max_read_len = spi_max_transfer_size(spi);
-if (spi->master->max_message_size_flag)
-	max_read_len -= t[0].len;
+Instead of checking on every access whether chip->manufacturer.ops is present, just
+assign a nop field.
+i.e.
 
-t[1].rx_buf = buf;
-t[1].rx_nbits = m25p80_rx_nbits(nor);
-t[1].len = min(len, max_read_len);
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 55f3ab8..aadebe7 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3703,6 +3703,10 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
 
-> Also it might be nice to add functionality to spi core that detects
-> drivers that don't have neither set_cs nor cs gpio and do message
-> coalescing for them in the core transfer_one_message.
-> 
-> You could allocate two buffers of the same size, copy the transfer
-> bits into the transfer buffer, do a transfer, and copy the receive
-> bits out of the receive buffer.
-> 
-> Thanks
-> 
-> Michal
-> 
+ 	chip->manufacturer.ops = nand_manuf_ids[maf_idx].ops;
+
++	if (!chip->manufacturer.ops)
++		/* assign no operations */
++		chip->manufacturer.ops = nand_manuf_ids[0].ops;
++
+ 	if (!type)
+ 		type = nand_flash_ids;
+
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index f1476ff..cdd26af 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -173,6 +173,8 @@ extern const struct nand_manufacturer_ops micron_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops amd_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops macronix_nand_manuf_ops;
+
++static const struct nand_manufacturer_ops no_ops;
++
+ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_TOSHIBA, "Toshiba", &toshiba_nand_manuf_ops},
+ 	{NAND_MFR_SAMSUNG, "Samsung", &samsung_nand_manuf_ops},
+@@ -188,7 +190,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_SANDISK, "SanDisk"},
+ 	{NAND_MFR_INTEL, "Intel"},
+ 	{NAND_MFR_ATO, "ATO"},
+-	{0x0, "Unknown"}
++	{0x0, "Unknown", &no_ops}
+ };
+
+ EXPORT_SYMBOL(nand_manuf_ids);
+
+
+>  	if (!type)
+>  		type = nand_flash_ids;
+>  
+> @@ -3903,8 +3912,14 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+>  	chip->chipsize = (uint64_t)type->chipsize << 20;
+>  
+>  	if (!type->pagesize) {
+> -		/* Decode parameters from extended ID */
+> -		nand_decode_ext_id(chip);
+> +		/*
+> +		 * Try manufacturer detection if available and use
+> +		 * nand_decode_ext_id() otherwise.
+> +		 */
+> +		if (chip->manufacturer.ops->detect)
+
+You need to check here for chip->manufacturer.ops first.
+
+Thanks,
+//richard
