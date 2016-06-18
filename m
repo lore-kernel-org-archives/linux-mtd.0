@@ -1,22 +1,22 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from hauke-m.de ([5.39.93.123])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEORK-0000ac-NM
- for linux-mtd@lists.infradead.org; Sat, 18 Jun 2016 22:10:07 +0000
-Subject: Re: [PATCH v2 00/15] mtd: nand: allow vendor specific
- detection/initialization
-To: Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-References: <1465390849-13199-1-git-send-email-boris.brezillon@free-electrons.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org,
- Aleksei Mamlin <mamlinav@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5765C6A6.3070206@nod.at>
-Date: Sun, 19 Jun 2016 00:09:42 +0200
+ id 1bEP90-0005yX-Cl
+ for linux-mtd@lists.infradead.org; Sat, 18 Jun 2016 22:55:15 +0000
+Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
+To: Richard Weinberger <richard@nod.at>, dwmw2@infradead.org
+References: <1466277476-14853-1-git-send-email-hauke@hauke-m.de>
+ <5765A14F.6020201@nod.at> <48242f26-7812-6957-6bf5-c12989b875b4@hauke-m.de>
+ <5765A4F9.3050107@nod.at>
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, dedekind1@gmail.com,
+ computersforpeace@gmail.com, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <8697ff77-218b-2bc6-5d36-bfb02360d223@hauke-m.de>
+Date: Sun, 19 Jun 2016 00:54:19 +0200
 MIME-Version: 1.0
-In-Reply-To: <1465390849-13199-1-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <5765A4F9.3050107@nod.at>
 Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 06/18/2016 09:46 PM, Richard Weinberger wrote:
+> Am 18.06.2016 um 21:35 schrieb Hauke Mehrtens:
+>> There are some devices on the market that are storing the root file
+>> system in an ubi layer.
+>> To make this work there are currently two options.
+>> 1. patch the kernel to specify which partitions to open in the code.
+>> 2. provide some kernel command line parameter which specifies what to open.
+>>
+>> I would like to specify this in device tree.
+> 
+> What is wrong with command line parameters? If there is some parameter
+> the UBI module misses I'll happily add it.
+> You can also put your kernel command line into device tree.
 
+I would like to configure this in device tree. When I install a third
+party firmware on a router normally the kernel command line is taken
+from the boot loader and the device tree is appended to the kernel.
 
-Am 08.06.2016 um 15:00 schrieb Boris Brezillon:
-> Hello,
-> 
-> This patch series is a step forward in supporting vendor-specific
-> functionalities.
-> This series is mainly moving vendor-specific initialization or
-> detection code out of the core, but also introduces an infrastructure
-> allowing support for vendor-specific features.
-> 
-> While those features might seem useless to most users, some of them are
-> actually required on modern MLC/TLC NANDs (this is the case of read-retry
-> support, which AFAICT has not been standardized by the JEDEC consortium).
-> 
-> Now, let's detail what's inside this patch-set.
-> 
-> Patches 1 to 4 are simple reworks simplifying auto-detection function
-> prototypes, and clarifying their purpose.
-> 
-> Patch 5 is introducing the vendor-specific initialization
-> infrastructure.
-> 
-> Patch 6 is removing the MTD_NAND_IDS Kconfig option to avoid creating
-> a nand_ids.ko module when MTD_NAND is enabled as a module. This prevents
-> a future cross-dependency between nand.ko where all vendor specific
-> code will rely and nand_ids.ko which will reference vendor-specific ops
-> in its manufacturer table, which in turn is referenced by the core code
-> linked in nand.ko.
-> 
-> Patches 7 to 12 are moving vendor-specific code into their respective
-> nand_<vendor>.c files.
-> 
-> Patch 13 is taking a patch proposed by Hans and adding support for ECC
-> requirements extraction from the samsung extended IDs. It seems to apply
-> to all Samsung MLCs, but even if it's not the case, the detection code
-> should be improved to support the new formats.
-> 
-> Patch 14 is adding support for advanced NAND ID decoding to the Hynix
-> driver (OOB size, ECC and scrambling requirements extraction). Again
-> this detection code might be incomplete, but I'd like people to extend
-> it if required rather than adding new full-id entries in the nand_ids
-> table.
-> 
-> And finally, patch 15 is showing how useful this vendor-specific stuff
-> can be by implementing read-retry support for Hynix 1x nm MLCs. And
-> trust me, you don't want to try using such a NAND without read-retry
-> support ;).
-> 
-> As always, I'm open to any suggestion to improve this vendor-specific
-> infrastructure, so please review the code :).
-
-Series looks good to me. :-)
-
-BTW: I wonder whether this work can also be used to support
-Micron On-Die-ECC and Toshiba BENAND in a proper way.
-
-Thanks,
-//richard
+Hauke
