@@ -1,18 +1,16 @@
-Received: from hauke-m.de ([5.39.93.123])
+Received: from hauke-m.de ([2001:41d0:8:b27b::1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bELhc-0004Yp-Um
- for linux-mtd@lists.infradead.org; Sat, 18 Jun 2016 19:14:45 +0000
+ id 1bELhd-0004Yn-3T
+ for linux-mtd@lists.infradead.org; Sat, 18 Jun 2016 19:14:46 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: boris.brezillon@free-electrons.com,
 	richard@nod.at
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org, john@phrozen.org,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v2 2/8] MTD: xway: add some more documentation
-Date: Sat, 18 Jun 2016 21:14:06 +0200
-Message-Id: <1466277252-13867-3-git-send-email-hauke@hauke-m.de>
-In-Reply-To: <1466277252-13867-1-git-send-email-hauke@hauke-m.de>
-References: <1466277252-13867-1-git-send-email-hauke@hauke-m.de>
+Subject: [PATCH v2 0/8] MTD: xway: fix driver
+Date: Sat, 18 Jun 2016 21:14:04 +0200
+Message-Id: <1466277252-13867-1-git-send-email-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This adds some register documentation which should make it easier to
-understand how this controller works.
+Without these patches the driver does not work for me.
+Some of these patches are in OpenWrt for years now and should go 
+upstream. In addition this converts it from some hack with the 
+plat_nand driver to a normal platform driver.
 
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
----
- drivers/mtd/nand/xway_nand.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+changes since:
+v1:
+ - convert to normal platform driver
+ - do not use global variable xway_latchcmd
+ - use mtd_to_nand()
 
-diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index 867a636..2889e48 100644
---- a/drivers/mtd/nand/xway_nand.c
-+++ b/drivers/mtd/nand/xway_nand.c
-@@ -20,10 +20,20 @@
- #define EBU_NAND_ECC0		0xB8
- #define EBU_NAND_ECC_AC		0xBC
- 
--/* nand commands */
-+/*
-+ * nand commands
-+ * The pins of the NAND chip are selected based on the address bits of the
-+ * "register" read and write. There are no special registers, but an
-+ * address range and the lower address bits are used to activate the
-+ * correct line. For example when the bit (1 << 2) is set in the address
-+ * the ALE pin will be activated.
-+ */
- #define NAND_CMD_ALE		(1 << 2)
- #define NAND_CMD_CLE		(1 << 3)
- #define NAND_CMD_CS		(1 << 4)
-+#define NAND_CMD_SE		(1 << 5)
-+#define NAND_CMD_WP		(1 << 6)
-+#define NAND_CMD_PRE		(1 << 7)
- #define NAND_WRITE_CMD_RESET	0xff
- #define NAND_WRITE_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
- #define NAND_WRITE_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
+Hauke Mehrtens (4):
+  MTD: xway: convert to normal platform driver
+  MTD: xway: add some more documentation
+  MTD: xway: extract read and write function
+  MTD: xway: use global NAND_CMD_RESET define
+
+John Crispin (4):
+  MTD: xway: the latched command should be persistent
+  MTD: xway: remove endless loop
+  MTD: xway: add missing write_buf and read_buf to nand driver
+  MTD: xway: fix nand locking
+
+ drivers/mtd/nand/Kconfig     |   1 -
+ drivers/mtd/nand/xway_nand.c | 206 ++++++++++++++++++++++++++++++-------------
+ 2 files changed, 147 insertions(+), 60 deletions(-)
+
 -- 
 2.8.1
