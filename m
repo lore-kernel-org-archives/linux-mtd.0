@@ -1,18 +1,27 @@
-Date: Sun, 19 Jun 2016 17:20:30 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Icenowy Zheng <icenowy@aosc.xyz>
-Cc: maxime.ripard@free-electrons.com, wens@csie.org, robh+dt@kernel.org,
- richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-sunxi@googlegroups.com,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/2] mtd: nand: sunxi: add reset line support
-Message-ID: <20160619172030.4a329db1@bbrezillon>
-In-Reply-To: <20160619150128.44443-1-icenowy@aosc.xyz>
-References: <20160619150128.44443-1-icenowy@aosc.xyz>
+Received: from fudo.makrotopia.org ([2001:41d0:8:c75d::1])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bEeb7-0001yv-I3
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 15:25:18 +0000
+Date: Sun, 19 Jun 2016 17:24:46 +0200
+From: Daniel Golle <daniel@makrotopia.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, dedekind1@gmail.com,
+ Hauke Mehrtens <hauke@hauke-m.de>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ robh+dt@kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
+Message-ID: <20160619152445.GG820@makrotopia.org>
+References: <5765A14F.6020201@nod.at>
+ <48242f26-7812-6957-6bf5-c12989b875b4@hauke-m.de>
+ <20160618232054.GB29476@makrotopia.org> <57665D96.1070804@nod.at>
+ <20160619112510.GA820@makrotopia.org> <576689CC.3030809@nod.at>
+ <20160619130514.GB820@makrotopia.org> <57669BEA.5030306@nod.at>
+ <20160619140952.GC820@makrotopia.org> <5766AD99.1040809@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5766AD99.1040809@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +31,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 19 Jun 2016 23:01:28 +0800
-Icenowy Zheng <icenowy@aosc.xyz> wrote:
+Hi Richard,
 
-> The NAND controller on some sun8i chips needs its reset line to be deasserted
-> before they can enter working state. This commit added the reset line process
-> to the driver.
+On Sun, Jun 19, 2016 at 04:35:05PM +0200, Richard Weinberger wrote:
+> Daniel,
 > 
-> Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
-> ---
-> Changes in v1:
->   - Corrected the error checking code of reset line.
+> Am 19.06.2016 um 16:09 schrieb Daniel Golle:
+> >> DT already offer all you need and nothing hinders you from
+> >> using mtdparts=.
+> > 
+> > I know. However, it's much nicer to define partitions for a specific
+> > flash chip inside the device tree (I've sent a link to the DTS of the
+> > BTHOMEHUBV2B to illustrate that, please have a look at it and tell
+> > me if you'd really like that partitioning currently stored as
+> > device-tree nodes to be migrated back to 'mtdparts=...'.)
 > 
-> Changes in v2:
->   - Corrected a more serious error brought in the "fix" of v1.
-> 
->  drivers/mtd/nand/sunxi_nand.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index a83a690..8fb5899 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -39,6 +39,7 @@
->  #include <linux/gpio.h>
->  #include <linux/interrupt.h>
->  #include <linux/iopoll.h>
-> +#include <linux/reset.h>
->  
->  #define NFC_REG_CTL		0x0000
->  #define NFC_REG_ST		0x0004
-> @@ -269,6 +270,7 @@ struct sunxi_nfc {
->  	void __iomem *regs;
->  	struct clk *ahb_clk;
->  	struct clk *mod_clk;
-> +	struct reset_control *reset;
->  	unsigned long assigned_cs;
->  	unsigned long clk_rate;
->  	struct list_head chips;
-> @@ -1871,6 +1873,20 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto out_ahb_clk_unprepare;
->  
-> +	nfc->reset = devm_reset_control_get_optional(dev, "ahb");
-> +
-> +	if (!IS_ERR(nfc->reset)) {
-> +		ret = reset_control_deassert(nfc->reset);
-> +		if (ret) {
-> +			dev_err(dev, "reset err %d\n", ret);
-> +			goto out_mod_clk_unprepare;
-> +		}
-> +	}
-> +	else {
-> +		if (PTR_ERR(nfc->reset) != -ENOENT)
+> I'd be fine with having the partitions in DT and the UBI kernel parameters
+> as kernel cmdline also in DT.
 
-	} else if (PTR_ERR(nfc->reset) != -ENOENT) {
+That's the current state of affairs. I'd just want to have it in one
+place, so if the MTD partitioning gets updated one would see easily how
+that affects UBI. For that, I don't think it's good enough to have
+'ubi.mtd=X' in the cmdline (in DT or wherever, it's a single string in
+a different place than the MTD partitioning if people use DT for MTD
+partitioning).
 
-> +			return PTR_ERR(nfc->reset);
-> +	}
-> +
->  	ret = sunxi_nfc_rst(nfc);
->  	if (ret)
->  		goto out_mod_clk_unprepare;
+> 
+> >> I didn't recommend adding glibc+systemd in the initramfs. It can be very, very small
+> >> and trivial.
+> > 
+> > Again, please understand that the whole production firmware can be as
+> > small as 3.5 megs for kernel and rootfs. Of course we never use glibc
+> > or systemd anywhere.
+> 
+> I know these use cases, I design and maintain such stuff for customers.
+> 
+> > Yes, it can be done. But you would have to define your flash chips in
+> > device-tree, you may define the mtd partitions either in DT or by using
+> > mtdparts=... in the cmdline. Now to define which MTD device to
+> > ubiattach you will have to use ubi.mtd=X on the cmdline. If you defined
+> > your partitions inside the of_node of the flash chip, changes there
+> > (which do happen) may change the index of the partition you want to
+> > ubi-attach. C'mon. This *is* messy. Just having a compatible-flag to
+> > attach the partition would already greatly improve things.
+> 
+> You mean marking a MTD partition in DT and UBI will attach from it?
+> That makes sense.
+
+Yes. Currently we just use a naming convention (the first MTD partition
+named 'ubi' will be auto-attached), that's obviously not very clean...
+
+> 
+> To sum up, I asked a lot of questions to understand your use case(s).
+> Everything you described can be done with existing facilities.
+> But I agree that at least some UBI DT machinery would be nice to have
+> although we need to check with DT folks first.
+> At least marking an MTD partition should be fine, hopefully.
+
+Great. That'd already greatly improve things.
+
+I can see that sooner or later we will need some way to reference UBI
+volumes in DT, independently of the whole rootfs selection. Vendors do
+use UBI volumes also for things like WiFi EEPROM data. Currentlhy, we
+extract that in user-space and save a copy in /lib/firmware/... for
+things more crazy than plain offsets inside MTD partitions.
+
+
+Cheers
+
+
+Daniel
+
+
+> 
+> Brian, Boris, what do you think?
+> 
+> Thanks,
+> //richard
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
