@@ -1,20 +1,24 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEfmJ-00022n-7M
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 16:40:55 +0000
-Date: Sun, 19 Jun 2016 18:40:27 +0200
+ id 1bEfz3-00059U-Ps
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 16:54:06 +0000
+Date: Sun, 19 Jun 2016 18:53:43 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, john@phrozen.org
-Subject: Re: [PATCH v3 5/8] MTD: xway: fix nand locking
-Message-ID: <20160619184027.4da93d3a@bbrezillon>
-In-Reply-To: <9936f935-bf7f-83b8-c7f6-5631f9e68c01@hauke-m.de>
-References: <1466352497-6806-1-git-send-email-hauke@hauke-m.de>
- <1466352497-6806-6-git-send-email-hauke@hauke-m.de>
- <20160619182620.0eea56b3@bbrezillon>
- <9936f935-bf7f-83b8-c7f6-5631f9e68c01@hauke-m.de>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Richard Weinberger <richard@nod.at>, mark.rutland@arm.com,
+ devicetree@vger.kernel.org, dedekind1@gmail.com, Hauke Mehrtens
+ <hauke@hauke-m.de>, robh+dt@kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
+Message-ID: <20160619185343.14ef0669@bbrezillon>
+In-Reply-To: <20160619161334.GH820@makrotopia.org>
+References: <20160618232054.GB29476@makrotopia.org> <57665D96.1070804@nod.at>
+ <20160619112510.GA820@makrotopia.org> <576689CC.3030809@nod.at>
+ <20160619130514.GB820@makrotopia.org> <57669BEA.5030306@nod.at>
+ <20160619140952.GC820@makrotopia.org> <5766AD99.1040809@nod.at>
+ <20160619152445.GG820@makrotopia.org> <5766BAB8.9090707@nod.at>
+ <20160619161334.GH820@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,25 +31,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 19 Jun 2016 18:34:30 +0200
-Hauke Mehrtens <hauke@hauke-m.de> wrote:
-> >> @@ -113,14 +115,8 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
-> >>  {
-> >>  	struct nand_chip *this = mtd_to_nand(mtd);
-> >>  	unsigned long nandaddr = (unsigned long) this->IO_ADDR_R;
-> >> -	unsigned long flags;
-> >> -	int ret;
-> >>  
-> >> -	spin_lock_irqsave(&ebu_lock, flags);
-> >> -	ret = ltq_r8((void __iomem *)(nandaddr + NAND_READ_DATA));
-> >> -	spin_unlock_irqrestore(&ebu_lock, flags);
-> >> -
-> >> -	return ret;
-> >> +	return ltq_r8((void __iomem *)(nandaddr + NAND_READ_DATA));  
-> > 
-> > 	Drop the cast and use this->IO_ADDR_R here.  
-> 
-> This will be done in the following patch, here I am only chaining the
-> locking.
+On Sun, 19 Jun 2016 18:13:36 +0200
+Daniel Golle <daniel@makrotopia.org> wrote:
 
-My bad, you're right.
+> Hi Richard,
+> 
+> On Sun, Jun 19, 2016 at 05:31:04PM +0200, Richard Weinberger wrote:
+> > Am 19.06.2016 um 17:24 schrieb Daniel Golle:  
+> > >> You mean marking a MTD partition in DT and UBI will attach from it?
+> > >> That makes sense.  
+> > > 
+> > > Yes. Currently we just use a naming convention (the first MTD partition
+> > > named 'ubi' will be auto-attached), that's obviously not very clean...  
+> > 
+> > I was about to reply to my own mail that you can still attach by name.
+> > Boris reminded me of that, I forgot that feature.^^
+> > Why is it not clean?  
+> 
+> That's nice and I also didn't know that.
+> It's still not perfect because I got to add it to the cmdline (in DT),
+> and should have it only on devices where a partition with that given
+> name actually exists. A flag for the mtd partition would still be
+> nicer.
+> 
+> >   
+> > >>
+> > >> To sum up, I asked a lot of questions to understand your use case(s).
+> > >> Everything you described can be done with existing facilities.
+> > >> But I agree that at least some UBI DT machinery would be nice to have
+> > >> although we need to check with DT folks first.
+> > >> At least marking an MTD partition should be fine, hopefully.  
+> > > 
+> > > Great. That'd already greatly improve things.  
+> > 
+> > How is that better than attach by name? You mark the to be attached
+> > MTD by its name...  
+> 
+> See above. We'd then still need to have that ubi.mtd=name in the
+> cmdline for NAND devices using UBI and *not* have it for other devices
+> within the same family which may use SPI or NOR flash without UBI.
+> I'd prefer to have one place inside the device-tree for everything
+> flash-storage related, eg.
+> &nand {
+> 	status = "okay";
+> 	partition@0 {
+> 		label = "boot";
+> 		reg = <0x00000000 0x00e00000>;
+> 		read-only;
+> 	};
+> 
+> 	partition@e00000 {
+> 		label = "data";
+> 		compatible = "ubi,device";
+
+So, if we follow your logic we should also have
+
+		compatible = "jffs2,file-system";
+
+Because JFFS2 is an MTD user, just as UBI is.
+
+Let's see what Rob and other DT maintainers think about that.
+
+Still, it seems to me that you're trying to solve a problem in the
+kernel when it should actually be solved in an upper layer.
+
+Another option would be to try attaching UBI (along with all possible
+MTD users) to all the the MTD partitions. That's what's done for block
+filesystems when rootfstype is not specified.
+
+
+> 		reg = <0x00e00000 0x07200000>;
+> 	};
+> };
