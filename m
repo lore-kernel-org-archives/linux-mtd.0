@@ -6,11 +6,9 @@ Cc: robh+dt@kernel.org, richard@nod.at, dwmw2@infradead.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
  Icenowy Zheng <icenowy@aosc.xyz>
-Subject: [PATCH v2 2/2] mtd: nand: sunxi: add reset line support
-Date: Sun, 19 Jun 2016 22:52:36 +0800
-Message-Id: <20160619145236.43769-2-icenowy@aosc.xyz>
-In-Reply-To: <20160619145236.43769-1-icenowy@aosc.xyz>
-References: <20160619145236.43769-1-icenowy@aosc.xyz>
+Subject: [PATCH v3 1/2] mtd: nand: sunxi: update DT bindings
+Date: Sun, 19 Jun 2016 23:00:45 +0800
+Message-Id: <20160619150046.44244-1-icenowy@aosc.xyz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND controller on some sun8i chips needs its reset line to be deasserted
-before they can enter working state. This commit added the reset line process
-to the driver.
+Document the reset lines
 
 Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
 ---
-Changes in v2:
-  - Corrected the error checking code of reset line.
+Changes in v2 and v3:
+  - Nothing.
 
- drivers/mtd/nand/sunxi_nand.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ Documentation/devicetree/bindings/mtd/sunxi-nand.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index a83a690..d178c1a 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -39,6 +39,7 @@
- #include <linux/gpio.h>
- #include <linux/interrupt.h>
- #include <linux/iopoll.h>
-+#include <linux/reset.h>
+diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+index 086d6f4..a328fbb 100644
+--- a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+@@ -15,6 +15,8 @@ Optional children nodes:
+ Children nodes represent the available nand chips.
  
- #define NFC_REG_CTL		0x0000
- #define NFC_REG_ST		0x0004
-@@ -269,6 +270,7 @@ struct sunxi_nfc {
- 	void __iomem *regs;
- 	struct clk *ahb_clk;
- 	struct clk *mod_clk;
-+	struct reset_control *reset;
- 	unsigned long assigned_cs;
- 	unsigned long clk_rate;
- 	struct list_head chips;
-@@ -1871,6 +1873,18 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto out_ahb_clk_unprepare;
- 
-+	nfc->reset = devm_reset_control_get_optional(dev, "ahb");
-+	if (PTR_ERR(nfc->reset) != -ENOENT)
-+		return PTR_ERR(nfc->reset);
-+
-+	if (!IS_ERR(nfc->reset)) {
-+		ret = reset_control_deassert(nfc->reset);
-+		if (ret) {
-+			dev_err(dev, "reset err %d\n", ret);
-+			goto out_mod_clk_unprepare;
-+		}
-+	}
-+
- 	ret = sunxi_nfc_rst(nfc);
- 	if (ret)
- 		goto out_mod_clk_unprepare;
+ Optional properties:
++- reset : phandle + reset specifier pair
++- reset-names : must contain "ahb"
+ - allwinner,rb : shall contain the native Ready/Busy ids.
+  or
+ - rb-gpios : shall contain the gpios used as R/B pins.
 -- 
 2.9.0
