@@ -1,27 +1,21 @@
-Received: from fudo.makrotopia.org ([2001:41d0:8:c75d::1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEfWL-0002S5-Dh
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 16:24:26 +0000
-Date: Sun, 19 Jun 2016 18:23:56 +0200
-From: Daniel Golle <daniel@makrotopia.org>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>, mark.rutland@arm.com,
- devicetree@vger.kernel.org, dedekind1@gmail.com,
- Hauke Mehrtens <hauke@hauke-m.de>, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
-Message-ID: <20160619162355.GI820@makrotopia.org>
-References: <20160618232054.GB29476@makrotopia.org> <57665D96.1070804@nod.at>
- <20160619112510.GA820@makrotopia.org> <576689CC.3030809@nod.at>
- <20160619130514.GB820@makrotopia.org> <57669BEA.5030306@nod.at>
- <20160619140952.GC820@makrotopia.org> <5766AD99.1040809@nod.at>
- <20160619152445.GG820@makrotopia.org>
- <20160619174351.53678b4c@bbrezillon>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bEfYY-00049h-MM
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 16:26:43 +0000
+Date: Sun, 19 Jun 2016 18:26:20 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, john@phrozen.org
+Subject: Re: [PATCH v3 5/8] MTD: xway: fix nand locking
+Message-ID: <20160619182620.0eea56b3@bbrezillon>
+In-Reply-To: <1466352497-6806-6-git-send-email-hauke@hauke-m.de>
+References: <1466352497-6806-1-git-send-email-hauke@hauke-m.de>
+ <1466352497-6806-6-git-send-email-hauke@hauke-m.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20160619174351.53678b4c@bbrezillon>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,131 +25,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Sun, 19 Jun 2016 18:08:14 +0200
+Hauke Mehrtens <hauke@hauke-m.de> wrote:
 
-On Sun, Jun 19, 2016 at 05:43:51PM +0200, Boris Brezillon wrote:
-> Hi Daniel,
+> From: John Crispin <john@phrozen.org>
 > 
-> On Sun, 19 Jun 2016 17:24:46 +0200
-> Daniel Golle <daniel@makrotopia.org> wrote:
+> The external Bus Unit (EBU) can control different flash devices, but
+> these NAND flash commands have to be atomic and should not be
+> interrupted in between. Lock the EBU from the beginning of the command
+> till the end by moving the lock to the chip select.
 > 
-> > Hi Richard,
-> > 
-> > On Sun, Jun 19, 2016 at 04:35:05PM +0200, Richard Weinberger wrote:
-> > > Daniel,
-> > > 
-> > > Am 19.06.2016 um 16:09 schrieb Daniel Golle:  
-> > > >> DT already offer all you need and nothing hinders you from
-> > > >> using mtdparts=.  
-> > > > 
-> > > > I know. However, it's much nicer to define partitions for a specific
-> > > > flash chip inside the device tree (I've sent a link to the DTS of the
-> > > > BTHOMEHUBV2B to illustrate that, please have a look at it and tell
-> > > > me if you'd really like that partitioning currently stored as
-> > > > device-tree nodes to be migrated back to 'mtdparts=...'.)  
-> > > 
-> > > I'd be fine with having the partitions in DT and the UBI kernel parameters
-> > > as kernel cmdline also in DT.  
-> > 
-> > That's the current state of affairs. I'd just want to have it in one
-> > place, so if the MTD partitioning gets updated one would see easily how
-> > that affects UBI. For that, I don't think it's good enough to have
-> > 'ubi.mtd=X' in the cmdline (in DT or wherever, it's a single string in
-> > a different place than the MTD partitioning if people use DT for MTD
-> > partitioning).
-> > 
-> > >   
-> > > >> I didn't recommend adding glibc+systemd in the initramfs. It can be very, very small
-> > > >> and trivial.  
-> > > > 
-> > > > Again, please understand that the whole production firmware can be as
-> > > > small as 3.5 megs for kernel and rootfs. Of course we never use glibc
-> > > > or systemd anywhere.  
-> > > 
-> > > I know these use cases, I design and maintain such stuff for customers.
-> > >   
-> > > > Yes, it can be done. But you would have to define your flash chips in
-> > > > device-tree, you may define the mtd partitions either in DT or by using
-> > > > mtdparts=... in the cmdline. Now to define which MTD device to
-> > > > ubiattach you will have to use ubi.mtd=X on the cmdline. If you defined
-> > > > your partitions inside the of_node of the flash chip, changes there
-> > > > (which do happen) may change the index of the partition you want to
-> > > > ubi-attach. C'mon. This *is* messy. Just having a compatible-flag to
-> > > > attach the partition would already greatly improve things.  
-> > > 
-> > > You mean marking a MTD partition in DT and UBI will attach from it?
-> > > That makes sense.  
-> > 
-> > Yes. Currently we just use a naming convention (the first MTD partition
-> > named 'ubi' will be auto-attached), that's obviously not very clean...
-> > 
-> > > 
-> > > To sum up, I asked a lot of questions to understand your use case(s).
-> > > Everything you described can be done with existing facilities.
-> > > But I agree that at least some UBI DT machinery would be nice to have
-> > > although we need to check with DT folks first.
-> > > At least marking an MTD partition should be fine, hopefully.  
-> > 
-> > Great. That'd already greatly improve things.
-> > 
-> > I can see that sooner or later we will need some way to reference UBI
-> > volumes in DT, independently of the whole rootfs selection. Vendors do
-> > use UBI volumes also for things like WiFi EEPROM data. Currentlhy, we
-> > extract that in user-space and save a copy in /lib/firmware/... for
-> > things more crazy than plain offsets inside MTD partitions.
+> Signed-off-by: John Crispin <john@phrozen.org>
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> ---
+>  drivers/mtd/nand/xway_nand.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
 > 
-> Hm, you're clearly abusing the DT role here (and this comment comes from
-> someone who tend to think that some of the config information should be
-> described in the DT ;)).
-> 
-> You want to link your partition (which is already a specific usage of
-> your flash device, and as such might not even be described in the DT)
-> to a Linux specific software layer (UBI).
-> Remember that the DT is supposed to be OS agnostic, you clearly don't
-> need to describe that in the DT, since everything you need is already
-> there (a way to attach the UBI layer to an MTD device by its name).
+> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
+> index 8a0019a..618cf34 100644
+> --- a/drivers/mtd/nand/xway_nand.c
+> +++ b/drivers/mtd/nand/xway_nand.c
+> @@ -65,17 +65,22 @@
+>  
+>  struct xway_nand_data {
+>  	struct nand_chip	chip;
+> +	unsigned long		csflags;
+>  };
+>  
+> -static void xway_select_chip(struct mtd_info *mtd, int chip)
+> +static void xway_select_chip(struct mtd_info *mtd, int select)
+>  {
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct xway_nand_data *data = nand_get_controller_data(chip);
+>  
+> -	switch (chip) {
+> +	switch (select) {
+>  	case -1:
+>  		ltq_ebu_w32_mask(NAND_CON_CE, 0, EBU_NAND_CON);
+>  		ltq_ebu_w32_mask(NAND_CON_NANDM, 0, EBU_NAND_CON);
+> +		spin_unlock_irqrestore(&ebu_lock, data->csflags);
+>  		break;
+>  	case 0:
+> +		spin_lock_irqsave(&ebu_lock, data->csflags);
+>  		ltq_ebu_w32_mask(0, NAND_CON_NANDM, EBU_NAND_CON);
+>  		ltq_ebu_w32_mask(0, NAND_CON_CE, EBU_NAND_CON);
+>  		break;
+> @@ -88,12 +93,10 @@ static void xway_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>  {
+>  	struct nand_chip *this = mtd_to_nand(mtd);
+>  	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
+> -	unsigned long flags;
+>  
+>  	if (cmd == NAND_CMD_NONE)
+>  		return;
+>  
+> -	spin_lock_irqsave(&ebu_lock, flags);
+>  	if (ctrl & NAND_CLE)
+>  		writeb(cmd, (void __iomem *) (nandaddr | NAND_WRITE_CMD));
+>  	else if (ctrl & NAND_ALE)
+> @@ -101,7 +104,6 @@ static void xway_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>  
+>  	while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
+>  		;
+> -	spin_unlock_irqrestore(&ebu_lock, flags);
+>  }
+>  
+>  static int xway_dev_ready(struct mtd_info *mtd)
+> @@ -113,14 +115,8 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
+>  {
+>  	struct nand_chip *this = mtd_to_nand(mtd);
+>  	unsigned long nandaddr = (unsigned long) this->IO_ADDR_R;
+> -	unsigned long flags;
+> -	int ret;
+>  
+> -	spin_lock_irqsave(&ebu_lock, flags);
+> -	ret = ltq_r8((void __iomem *)(nandaddr + NAND_READ_DATA));
+> -	spin_unlock_irqrestore(&ebu_lock, flags);
+> -
+> -	return ret;
+> +	return ltq_r8((void __iomem *)(nandaddr + NAND_READ_DATA));
 
-UBI is supported by U-Boot as well and U-Boot supports storing its
-environment inside an UBI volume, loading things from volumes or even
-mounting UBIFS, so information about which partition to attach might
-already be useful outside of Linux as well.
-Apart from that, DT already stores a whole lot of Linux-specific
-properties, such as linux,keycodes or for gpio-keys-polled or
-linux,default-trigger for LEDs. Not having that information in the
-devicetree would definitely make things worse imho.
+	Drop the cast and use this->IO_ADDR_R here.
 
-
-> 
-> Now, if that's something you want to make generic for all the boards
-> supporting OpenWrt, you just have to enforce the partition name, and
-> make sure the ubi.mtd=<default-ubi-name> parameter is passed on the
-> cmdline. IIRC, there's a way to define a default cmdline in case you
-> don't have access to the bootloaders.
-> 
-> This sounds like something that could be done at the build-system level.
-
-True, but devices which do not have UBI will throw some errors to the
-log about not being able to attach the device.
-
-
-> 
-> Am I missing something?
-> 
-> For the EEPROM emulation using UBI volumes part, I'm not sure what you
-> want to do exactly? Are you planning to use the nvmem abstraction and
-> provide an nvmem wrapper around UBI volumes?
-
-Definitely not something I'd hope to get into at all, however, I can
-smell it coming ;)
-
-
-Cheers
-
-
-Daniel
-
-
-> 
-> Regards,
-> 
-> Boris
+>  }
+>  
+>  /*
