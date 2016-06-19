@@ -1,24 +1,21 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from hauke-m.de ([5.39.93.123])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEbR9-0007ta-Bv
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 12:02:49 +0000
-Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
-To: Daniel Golle <daniel@makrotopia.org>
-References: <1466277476-14853-1-git-send-email-hauke@hauke-m.de>
- <5765A14F.6020201@nod.at> <48242f26-7812-6957-6bf5-c12989b875b4@hauke-m.de>
- <20160618232054.GB29476@makrotopia.org> <57665D96.1070804@nod.at>
- <20160619112510.GA820@makrotopia.org>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, mark.rutland@arm.com,
- devicetree@vger.kernel.org, dedekind1@gmail.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <576689CC.3030809@nod.at>
-Date: Sun, 19 Jun 2016 14:02:20 +0200
+ id 1bEbTW-0008CB-UT
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 12:05:15 +0000
+Subject: Re: [PATCH v2 3/8] MTD: xway: the latched command should be persistent
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1466277252-13867-1-git-send-email-hauke@hauke-m.de>
+ <1466277252-13867-4-git-send-email-hauke@hauke-m.de>
+ <20160619135202.1ebac60f@bbrezillon>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, john@phrozen.org
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <8ca1d792-e73b-ab5c-f832-7469879ad678@hauke-m.de>
+Date: Sun, 19 Jun 2016 14:04:51 +0200
 MIME-Version: 1.0
-In-Reply-To: <20160619112510.GA820@makrotopia.org>
+In-Reply-To: <20160619135202.1ebac60f@bbrezillon>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,133 +25,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Daniel,
-
-Am 19.06.2016 um 13:25 schrieb Daniel Golle:
-> Hi Richard,
+On 06/19/2016 01:52 PM, Boris Brezillon wrote:
+> On Sat, 18 Jun 2016 21:14:07 +0200
+> Hauke Mehrtens <hauke@hauke-m.de> wrote:
 > 
-> On Sun, Jun 19, 2016 at 10:53:42AM +0200, Richard Weinberger wrote:
->> Am 19.06.2016 um 01:20 schrieb Daniel Golle:
->>> In MBR there used to be an 'active' flag stored for each partition.
->>> Maybe it'd be nice to introduce something similar to mark UBI volumes
->>> to be the default rootfs.
->>> Currently we solve this issue by convention: If a volume is named
->>> 'rootfs' it is automatically mounted during boot. Depending on the
->>> filesystem in use a ubiblock device has to be created as well.
->>> This is mostly just the continuation of the existing naming convention
->>> of mtd partitions, a patch OpenWrt is carrying around for a long
->>> while already.
->>> To support the same on UBI, another set of patches was made.
+>> From: John Crispin <john@phrozen.org>
 >>
->> Sorry, I still have troubles to understand your use case.
->> Both of you seem to hate the kernel command line for reasons
->> I don't fully understand so far.
+>> If they are not persistent a different address will be used and the
+>> controller will deactivate some pins.
+>>
+>> Signed-off-by: John Crispin <john@phrozen.org>
+>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>> ---
+>>  drivers/mtd/nand/xway_nand.c | 16 ++++++++--------
+>>  1 file changed, 8 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
+>> index 2889e48..346781a 100644
+>> --- a/drivers/mtd/nand/xway_nand.c
+>> +++ b/drivers/mtd/nand/xway_nand.c
+>> @@ -67,6 +67,7 @@
+>>  
+>>  struct xway_nand_data {
+>>  	struct nand_chip	chip;
+>> +	u32			xway_latchcmd;
+>>  };
+>>  
+>>  static void xway_reset_chip(struct nand_chip *chip)
+>> @@ -104,22 +105,21 @@ static void xway_select_chip(struct mtd_info *mtd, int chip)
+>>  
+>>  static void xway_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>>  {
+>> -	struct nand_chip *this = mtd_to_nand(mtd);
+>> -	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
+>> +	struct nand_chip *chip = mtd_to_nand(mtd);
+>> +	struct xway_nand_data *data = nand_get_controller_data(chip);
+>> +	unsigned long nandaddr = (unsigned long) chip->IO_ADDR_W;
+>>  	unsigned long flags;
+>>  
+>>  	if (ctrl & NAND_CTRL_CHANGE) {
+>> -		nandaddr &= ~(NAND_WRITE_CMD | NAND_WRITE_ADDR);
+>>  		if (ctrl & NAND_CLE)
+>> -			nandaddr |= NAND_WRITE_CMD;
+>> -		else
+>> -			nandaddr |= NAND_WRITE_ADDR;
+>> -		this->IO_ADDR_W = (void __iomem *) nandaddr;
+>> +			data->xway_latchcmd = NAND_WRITE_CMD;
+>> +		else if (ctrl & NAND_ALE)
+>> +			data->xway_latchcmd = NAND_WRITE_ADDR;
+>>  	}
+>>  
+>>  	if (cmd != NAND_CMD_NONE) {
+>>  		spin_lock_irqsave(&ebu_lock, flags);
+>> -		writeb(cmd, this->IO_ADDR_W);
+>> +		writeb(cmd, (void __iomem *) (nandaddr | data->xway_latchcmd));
+>>  		while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
+>>  			;
+>>  		spin_unlock_irqrestore(&ebu_lock, flags);
 > 
-> I like the kernel command line a lot :)
-> And *being the end-user* I like to be the one defining and modifying it
-> according to my current needs. For that reason I do *not* like firmware
-> bootloaders to prepend/append or even overwrite the cmdline for things
-> like selecting the rootfs, because usually that restricts the use of
-> the relevant parameters by device owners.
-> Imagine: The device runs a bootloader which already sets rootfs= or
-> overwrites the cmdline of the stock firmware. How will an end-user
-> who cannot change the bootloader use an alternative OS which uses e.g.
-> a USB pendrive as it's rootfs? This is why we end up with things like
-> renaming kernel cmdline parameters in alternative firmware projects,
-> e.g. rootfs2=...., so end-users can re-gain access to cmdline
-> parameters augmented by the bootloader.
-
-So, the use case is being able to use a custom OS on a "locked"
-device where the bootloader hates you?
-
-But you still can override the cmdline supplied by the bootloader
-by adding your cmdline into the device tree, right?
-
-> For that reason I believe that using the cmdline to pass
-> *non-user-defined* details from the bootloader to the kernel is just
-> not such a nice thing to do.
-
-Well, this is not how the cmdline works. We don't have such
-an separation.
-Some distros use hacks such as "showopts" to have such a split.
-
-
->>
->>> I agree that there should be a way to pass this through the of_node
->>> of the mtd partition which is defined in the device tree.
->>> Selecting to-be-ubi-attached mtd partitions in device-tree would
->>> replace patch:
->>>
->>> https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/generic/patches-4.4/490-ubi-auto-attach-mtd-device-named-ubi-or-data-on-boot.patch
->>
->> What is the need of this? Use use the kernel command line to tell UBI from which MTD to attach.
+> Not sure what you're trying to do exactly. AFAICS, your controller seems
+> to handle each addr and cmd cycles independently, so all you have to do
+> is something like that:
 > 
-> The same kernel gets used on many devices having different $vendor
-> mtd-partition layouts. A way other than the kernel cmdline allows
-> to specify the default behaviour without restricting the user to
-> manually use those cmdline options.
-
-You can put the cmdline into the per-device device tree.
-This is the concept of a multi-device kernel. One kernel and
-many device trees.
-
->>
->>> To auto-select the rootfs, we currently carry another bunch of patches
->>>
->>> https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/generic/patches-4.4/491-ubi-auto-create-ubiblock-device-for-rootfs.patch
->>
->> Same question here.
->>
->>> https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/generic/patches-4.4/492-try-auto-mounting-ubi0-rootfs-in-init-do_mounts.c.patch
->>
->> Ditto.
->>
->>> https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/generic/patches-4.4/493-ubi-set-ROOT_DEV-to-ubiblock-rootfs-if-unset.patch
->>
->> Ditto.
->>
+> 	/*
+> 	 * I'm assuming baseaddr has been initialized to the NAND
+> 	 * controller base address.
+> 	 */
 > 
-> Same arguments as above. In addition, we do not want to hard-code the
-> filesystem type used for the rootfs volume, as it can either be UBIFS
-> or a read-only filesystem needing a ubiblock device. Thus we would
-> need the bootloader to know which filesystem *type* is being used and
-> then decide wether to pass 'rootfs=ubiX:Y' or
-> 'ubiblock=... rootfs=/dev/ubiblock0'.
-
-What is wrong with having a very minimal initramfs to do such an
-auto discovery logic?
-
+> 	if (cmd == NAND_CMD_NONE)
+> 		return;
 > 
->>> This is more or less filesystem-agnostic and works fine as long as
->>> there is only one volume called 'rootfs' and this volume is always
->>> used as rootfs.
->>>
->>> Dual-boot setups will need some way to pass the active rootfs volume to
->>> the kernel. While I agree that this is possible by appending or
->>> prepending to the cmdline string passed to the kernel, this either
->>> limits the users' ability to manually specify the rootfs using the
->>> cmdline or becomes a more complex task to only append/prepend the
->>> cmdline in case the user-defined string doesn't already contain
->>> relevant parameters...
->>
->> Sorry, but this is just a tooling problem and not to be addressed in the kernel.
->> There is also the possibility to use an initramfs (either as file or embedded in the kernel)
->> if the mount/attach logic becomes *really* complicated...
->>
->>> Thus it'd be nicer to flag the default rootfs volume via the device-
->>> tree.
->>
->> As I said, as far I'm informed device tree is for configuring Linux, it describes
->> the hardware. We also don't have LVM, DM or iSCSI bindings in DT. ;)
->> Maybe device tree folks will tell more...
+> 	spin_lock_irqsave(&ebu_lock, flags);
+> 	if (ctrl & NAND_CLE)
+> 		writeb(cmd, baseaddr + NAND_WRITE_CMD);
+> 	else
+> 		writeb(cmd, baseaddr + NAND_WRITE_ADDR);
 > 
-> But we do have MTD and MTD partitions in DT. To me it'd feel more
-> consistent if MTD devices, partitioning and which MTD partition(s) to
-> use as UBI would be defined in the same place.
+> 	while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
+> 		;
+> 	spin_unlock_irqrestore(&ebu_lock, flags);
+> 
 
-This is something you need to discuss wit DT folks.
-I'm not per se against UBI DT bindings it just does not feel right
-and contradicts my understanding of it.
+Is NAND_CLE always set when the line to the NAND flash chip should be
+set? Then this should work and we ignore NAND_CTRL_CHANGE .
 
-Thanks,
-//richard
+Hauke
