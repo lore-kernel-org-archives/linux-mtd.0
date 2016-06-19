@@ -1,19 +1,21 @@
-Received: from forward18j.cmail.yandex.net ([2a02:6b8:0:1630::f5])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEb3n-0007zl-8a
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 11:38:40 +0000
-From: Icenowy Zheng <icenowy@aosc.xyz>
-To: maxime.ripard@free-electrons.com, wens@csie.org,
- boris.brezillon@free-electrons.com
-Cc: robh+dt@kernel.org, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-sunxi@googlegroups.com, Icenowy Zheng <icenowy@aosc.xyz>
-Subject: [PATCH 2/2] mtd: nand: sunxi: add reset line support
-Date: Sun, 19 Jun 2016 19:37:39 +0800
-Message-Id: <20160619113739.30362-2-icenowy@aosc.xyz>
-In-Reply-To: <20160619113739.30362-1-icenowy@aosc.xyz>
-References: <20160619113739.30362-1-icenowy@aosc.xyz>
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bEb4s-00087W-V0
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 11:39:47 +0000
+Date: Sun, 19 Jun 2016 13:39:24 +0200
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, john@phrozen.org
+Subject: Re: [PATCH v2 2/8] MTD: xway: add some more documentation
+Message-ID: <20160619133924.370eb360@bbrezillon>
+In-Reply-To: <1466277252-13867-3-git-send-email-hauke@hauke-m.de>
+References: <1466277252-13867-1-git-send-email-hauke@hauke-m.de>
+ <1466277252-13867-3-git-send-email-hauke@hauke-m.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND controller on some sun8i chips needs its reset line to be deasserted
-before they can enter working state. This commit added the reset line process
-to the driver.
+On Sat, 18 Jun 2016 21:14:06 +0200
+Hauke Mehrtens <hauke@hauke-m.de> wrote:
 
-Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
----
- drivers/mtd/nand/sunxi_nand.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+> This adds some register documentation which should make it easier to
+> understand how this controller works.
+> 
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> ---
+>  drivers/mtd/nand/xway_nand.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
+> index 867a636..2889e48 100644
+> --- a/drivers/mtd/nand/xway_nand.c
+> +++ b/drivers/mtd/nand/xway_nand.c
+> @@ -20,10 +20,20 @@
+>  #define EBU_NAND_ECC0		0xB8
+>  #define EBU_NAND_ECC_AC		0xBC
+>  
+> -/* nand commands */
+> +/*
+> + * nand commands
+> + * The pins of the NAND chip are selected based on the address bits of the
+> + * "register" read and write. There are no special registers, but an
+> + * address range and the lower address bits are used to activate the
+> + * correct line. For example when the bit (1 << 2) is set in the address
+> + * the ALE pin will be activated.
+> + */
+>  #define NAND_CMD_ALE		(1 << 2)
+>  #define NAND_CMD_CLE		(1 << 3)
+>  #define NAND_CMD_CS		(1 << 4)
+> +#define NAND_CMD_SE		(1 << 5)
+> +#define NAND_CMD_WP		(1 << 6)
+> +#define NAND_CMD_PRE		(1 << 7)
 
-diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-index a83a690..1502748 100644
---- a/drivers/mtd/nand/sunxi_nand.c
-+++ b/drivers/mtd/nand/sunxi_nand.c
-@@ -39,6 +39,7 @@
- #include <linux/gpio.h>
- #include <linux/interrupt.h>
- #include <linux/iopoll.h>
-+#include <linux/reset.h>
- 
- #define NFC_REG_CTL		0x0000
- #define NFC_REG_ST		0x0004
-@@ -269,6 +270,7 @@ struct sunxi_nfc {
- 	void __iomem *regs;
- 	struct clk *ahb_clk;
- 	struct clk *mod_clk;
-+	struct reset_control *reset;
- 	unsigned long assigned_cs;
- 	unsigned long clk_rate;
- 	struct list_head chips;
-@@ -1871,6 +1873,18 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto out_ahb_clk_unprepare;
- 
-+	nfc->reset = devm_reset_control_get_optional(dev, "ahb");
-+	if (PTR_ERR(nfc->reset) == -EPROBE_DEFER)
-+		return PTR_ERR(nfc->reset);
-+
-+	if (!IS_ERR(nfc->reset)) {
-+		ret = reset_control_deassert(nfc->reset);
-+		if (ret) {
-+			dev_err(dev, "reset err %d\n", ret);
-+			goto out_mod_clk_unprepare;
-+		}
-+	}
-+
- 	ret = sunxi_nfc_rst(nfc);
- 	if (ret)
- 		goto out_mod_clk_unprepare;
--- 
-2.8.1
+I see what _WP means, but what about _PRE and _SE? Can you document
+these features?
+
+>  #define NAND_WRITE_CMD_RESET	0xff
+>  #define NAND_WRITE_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
+>  #define NAND_WRITE_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
