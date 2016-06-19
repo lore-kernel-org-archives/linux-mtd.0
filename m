@@ -1,20 +1,14 @@
-Received: from mail-oi0-x22b.google.com ([2607:f8b0:4003:c06::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEe4F-0002nn-99
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 14:51:22 +0000
-Received: by mail-oi0-x22b.google.com with SMTP id a64so25469620oii.2
- for <linux-mtd@lists.infradead.org>; Sun, 19 Jun 2016 07:50:58 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <tencent_6E3BACF519D6BE3A72292C36@qq.com>
-References: <tencent_6E3BACF519D6BE3A72292C36@qq.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 19 Jun 2016 16:50:57 +0200
-Message-ID: <CAFLxGvxbmUqFAq7QS=S3n0_yO4tsUHdbbL3-Fq4bHuJTBmEpPA@mail.gmail.com>
-Subject: Re: ubifs:Questions About Garbage Collection
-To: =?UTF-8?B?6L6J5bCR?= <wang502742203@qq.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Icenowy Zheng <icenowy@aosc.xyz>
+To: maxime.ripard@free-electrons.com, wens@csie.org,
+ boris.brezillon@free-electrons.com
+Cc: robh+dt@kernel.org, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+ Icenowy Zheng <icenowy@aosc.xyz>
+Subject: [PATCH v2 1/2] mtd: nand: sunxi: update DT bindings
+Date: Sun, 19 Jun 2016 22:52:35 +0800
+Message-Id: <20160619145236.43769-1-icenowy@aosc.xyz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Document the reset lines
 
-On Sun, Jun 19, 2016 at 3:56 PM, =E8=BE=89=E5=B0=91 <wang502742203@qq.com> =
-wrote:
-> Hi=EF=BC=8CMTD  lists
-> I meet some problems while using UBI file system recently.I make an exper=
-iment in which I write 2 files(1KB each) to UBI frequently.Normally it take=
-s only several millseconds to finish writting 2 files every time=EF=BC=8Cbu=
-t what puzzles me is that it takes about 4 minutes to write once nearly eve=
-ry 20 to 30 minutes.I am wondering how can this problem happen=EF=BC=9FDoes=
- Garbage Collection lead to this? I mount UBIFS to a 33MiB MTD partion with=
- "o -sync" option.By the way,if UBI is mounted in asynchronous mode, this p=
-roblem never happens. Does GC(Garbage Collecton) differ in synchronous mode=
- andasynchronous mode?  What I've leared from some documents is that GC thr=
-ead is sleeping while writting files without interval until UBIFS is full i=
-n synchronous mode and at that point writing will become very slow, but in =
-asynchronous mode, before data is  moved into flash media, GC thread will w=
-ork when there is not enough free space, am I right?
+Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
+---
+Changes in v2:
+  - Nothing.
 
-You observe the issue only in sync mode because every write is done
-immediately and therefore the garbage collector needs to
-produce empty space. This can take some time and as you are in sync
-mode the caller (where you measure the time) will be blocked
-until GC produce some space.
-In asynchronous mode you will hardly notice since writing do the flash
-will be done in a different thread by the write back mechanism.
+ Documentation/devicetree/bindings/mtd/sunxi-nand.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
---=20
-Thanks,
-//richard
+diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+index 086d6f4..a328fbb 100644
+--- a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+@@ -15,6 +15,8 @@ Optional children nodes:
+ Children nodes represent the available nand chips.
+ 
+ Optional properties:
++- reset : phandle + reset specifier pair
++- reset-names : must contain "ahb"
+ - allwinner,rb : shall contain the native Ready/Busy ids.
+  or
+ - rb-gpios : shall contain the gpios used as R/B pins.
+-- 
+2.9.0
