@@ -1,20 +1,23 @@
-Received: from hauke-m.de ([2001:41d0:8:b27b::1])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEbN9-00062m-Bm
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 11:58:40 +0000
-Subject: Re: [PATCH v2 1/8] MTD: xway: convert to normal platform driver
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1466277252-13867-1-git-send-email-hauke@hauke-m.de>
- <1466277252-13867-2-git-send-email-hauke@hauke-m.de>
- <20160619133211.04d4bd79@bbrezillon>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, john@phrozen.org
-From: Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <5d196f79-dae8-288c-48db-42d6633050ab@hauke-m.de>
-Date: Sun, 19 Jun 2016 13:58:15 +0200
+ id 1bEbR9-0007ta-Bv
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 12:02:49 +0000
+Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
+To: Daniel Golle <daniel@makrotopia.org>
+References: <1466277476-14853-1-git-send-email-hauke@hauke-m.de>
+ <5765A14F.6020201@nod.at> <48242f26-7812-6957-6bf5-c12989b875b4@hauke-m.de>
+ <20160618232054.GB29476@makrotopia.org> <57665D96.1070804@nod.at>
+ <20160619112510.GA820@makrotopia.org>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, mark.rutland@arm.com,
+ devicetree@vger.kernel.org, dedekind1@gmail.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <576689CC.3030809@nod.at>
+Date: Sun, 19 Jun 2016 14:02:20 +0200
 MIME-Version: 1.0
-In-Reply-To: <20160619133211.04d4bd79@bbrezillon>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20160619112510.GA820@makrotopia.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,224 +28,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/19/2016 01:32 PM, Boris Brezillon wrote:
-> Hi Hauke,
+Daniel,
+
+Am 19.06.2016 um 13:25 schrieb Daniel Golle:
+> Hi Richard,
 > 
-> On Sat, 18 Jun 2016 21:14:05 +0200
-> Hauke Mehrtens <hauke@hauke-m.de> wrote:
-> 
->> Instead of hacking this into the plat_nand driver just make this a
->> normal nand driver.
-> 
-> Thanks for taking care of that.
-> 
+> On Sun, Jun 19, 2016 at 10:53:42AM +0200, Richard Weinberger wrote:
+>> Am 19.06.2016 um 01:20 schrieb Daniel Golle:
+>>> In MBR there used to be an 'active' flag stored for each partition.
+>>> Maybe it'd be nice to introduce something similar to mark UBI volumes
+>>> to be the default rootfs.
+>>> Currently we solve this issue by convention: If a volume is named
+>>> 'rootfs' it is automatically mounted during boot. Depending on the
+>>> filesystem in use a ubiblock device has to be created as well.
+>>> This is mostly just the continuation of the existing naming convention
+>>> of mtd partitions, a patch OpenWrt is carrying around for a long
+>>> while already.
+>>> To support the same on UBI, another set of patches was made.
 >>
->> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->> ---
->>  drivers/mtd/nand/Kconfig     |   1 -
->>  drivers/mtd/nand/xway_nand.c | 119 ++++++++++++++++++++++++++++++-------------
->>  2 files changed, 84 insertions(+), 36 deletions(-)
+>> Sorry, I still have troubles to understand your use case.
+>> Both of you seem to hate the kernel command line for reasons
+>> I don't fully understand so far.
+> 
+> I like the kernel command line a lot :)
+> And *being the end-user* I like to be the one defining and modifying it
+> according to my current needs. For that reason I do *not* like firmware
+> bootloaders to prepend/append or even overwrite the cmdline for things
+> like selecting the rootfs, because usually that restricts the use of
+> the relevant parameters by device owners.
+> Imagine: The device runs a bootloader which already sets rootfs= or
+> overwrites the cmdline of the stock firmware. How will an end-user
+> who cannot change the bootloader use an alternative OS which uses e.g.
+> a USB pendrive as it's rootfs? This is why we end up with things like
+> renaming kernel cmdline parameters in alternative firmware projects,
+> e.g. rootfs2=...., so end-users can re-gain access to cmdline
+> parameters augmented by the bootloader.
+
+So, the use case is being able to use a custom OS on a "locked"
+device where the bootloader hates you?
+
+But you still can override the cmdline supplied by the bootloader
+by adding your cmdline into the device tree, right?
+
+> For that reason I believe that using the cmdline to pass
+> *non-user-defined* details from the bootloader to the kernel is just
+> not such a nice thing to do.
+
+Well, this is not how the cmdline works. We don't have such
+an separation.
+Some distros use hacks such as "showopts" to have such a split.
+
+
 >>
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index f05e0e9..d7de2c97 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -539,7 +539,6 @@ config MTD_NAND_FSMC
->>  config MTD_NAND_XWAY
->>  	tristate "Support for NAND on Lantiq XWAY SoC"
->>  	depends on LANTIQ && SOC_TYPE_XWAY
->> -	select MTD_NAND_PLATFORM
->>  	help
->>  	  Enables support for NAND Flash chips on Lantiq XWAY SoCs. NAND is attached
->>  	  to the External Bus Unit (EBU).
->> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
->> index 0cf0ac0..867a636 100644
->> --- a/drivers/mtd/nand/xway_nand.c
->> +++ b/drivers/mtd/nand/xway_nand.c
->> @@ -4,6 +4,7 @@
->>   *  by the Free Software Foundation.
->>   *
->>   *  Copyright © 2012 John Crispin <blogic@openwrt.org>
->> + *  Copyright © 2016 Hauke Mehrtens <hauke@hauke-m.de>
->>   */
->>  
->>  #include <linux/mtd/nand.h>
->> @@ -54,6 +55,10 @@
->>  #define NAND_CON_CSMUX		(1 << 1)
->>  #define NAND_CON_NANDM		1
->>  
->> +struct xway_nand_data {
->> +	struct nand_chip	chip;
->> +};
->> +
->>  static void xway_reset_chip(struct nand_chip *chip)
->>  {
->>  	unsigned long nandaddr = (unsigned long) chip->IO_ADDR_W;
->> @@ -130,14 +135,50 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
->>  	return ret;
->>  }
->>  
->> +/*
->> + * Probe for the NAND device.
->> + */
->>  static int xway_nand_probe(struct platform_device *pdev)
->>  {
->> -	struct nand_chip *this = platform_get_drvdata(pdev);
->> -	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
->> -	const __be32 *cs = of_get_property(pdev->dev.of_node,
->> -					"lantiq,cs", NULL);
->> +	struct xway_nand_data *data;
->> +	struct mtd_info *mtd;
->> +	struct resource *res;
->> +	int err = 0;
->> +	void __iomem *nandaddr;
->> +	const __be32 *cs;
->>  	u32 cs_flag = 0;
->>  
->> +	/* Allocate memory for the device structure (and zero it) */
->> +	data = devm_kzalloc(&pdev->dev, sizeof(struct xway_nand_data),
->> +			    GFP_KERNEL);
->> +	if (!data)
->> +		return -ENOMEM;
->> +
->> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	nandaddr = devm_ioremap_resource(&pdev->dev, res);
->> +	if (IS_ERR(nandaddr))
->> +		return PTR_ERR(nandaddr);
->> +
->> +	nand_set_flash_node(&data->chip, pdev->dev.of_node);
->> +	mtd = nand_to_mtd(&data->chip);
->> +	mtd->dev.parent = &pdev->dev;
->> +
->> +	data->chip.IO_ADDR_R = nandaddr;
->> +	data->chip.IO_ADDR_W = nandaddr;
->> +	data->chip.cmd_ctrl = xway_cmd_ctrl;
->> +	data->chip.dev_ready = xway_dev_ready;
->> +	data->chip.select_chip = xway_select_chip;
->> +	data->chip.read_byte = xway_read_byte;
->> +	data->chip.chip_delay = 30;
->> +
->> +	data->chip.ecc.mode = NAND_ECC_SOFT;
->> +	data->chip.ecc.algo = NAND_ECC_HAMMING;
->> +
->> +	platform_set_drvdata(pdev, data);
->> +	nand_set_controller_data(&data->chip, data);
->> +
->> +	cs = of_get_property(pdev->dev.of_node, "lantiq,cs", NULL);
+>>> I agree that there should be a way to pass this through the of_node
+>>> of the mtd partition which is defined in the device tree.
+>>> Selecting to-be-ubi-attached mtd partitions in device-tree would
+>>> replace patch:
+>>>
+>>> https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/generic/patches-4.4/490-ubi-auto-attach-mtd-device-named-ubi-or-data-on-boot.patch
+>>
+>> What is the need of this? Use use the kernel command line to tell UBI from which MTD to attach.
 > 
-> It may be a good time to switch to of_property_read_u32() (here or in a
-> separate patch).
+> The same kernel gets used on many devices having different $vendor
+> mtd-partition layouts. A way other than the kernel cmdline allows
+> to specify the default behaviour without restricting the user to
+> manually use those cmdline options.
 
-I will change this.
+You can put the cmdline into the per-device device tree.
+This is the concept of a multi-device kernel. One kernel and
+many device trees.
 
->> +
->>  	/* load our CS from the DT. Either we find a valid 1 or default to 0 */
->>  	if (cs && (*cs == 1))
->>  		cs_flag = NAND_CON_IN_CS1 | NAND_CON_OUT_CS1;
->> @@ -155,43 +196,51 @@ static int xway_nand_probe(struct platform_device *pdev)
->>  		| cs_flag, EBU_NAND_CON);
->>  
->>  	/* finish with a reset */
->> -	xway_reset_chip(this);
->> -
->> -	return 0;
->> -}
->> +	xway_reset_chip(&data->chip);
->>  
->> -static struct platform_nand_data xway_nand_data = {
->> -	.chip = {
->> -		.nr_chips		= 1,
->> -		.chip_delay		= 30,
->> -	},
->> -	.ctrl = {
->> -		.probe		= xway_nand_probe,
->> -		.cmd_ctrl	= xway_cmd_ctrl,
->> -		.dev_ready	= xway_dev_ready,
->> -		.select_chip	= xway_select_chip,
->> -		.read_byte	= xway_read_byte,
->> +	/* Scan to find existence of the device */
->> +	if (nand_scan(mtd, 1)) {
+>>
+>>> To auto-select the rootfs, we currently carry another bunch of patches
+>>>
+>>> https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/generic/patches-4.4/491-ubi-auto-create-ubiblock-device-for-rootfs.patch
+>>
+>> Same question here.
+>>
+>>> https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/generic/patches-4.4/492-try-auto-mounting-ubi0-rootfs-in-init-do_mounts.c.patch
+>>
+>> Ditto.
+>>
+>>> https://git.lede-project.org/?p=source.git;a=blob;f=target/linux/generic/patches-4.4/493-ubi-set-ROOT_DEV-to-ubiblock-rootfs-if-unset.patch
+>>
+>> Ditto.
+>>
 > 
-> How about returning nand_scan() ret code if it's negative.
+> Same arguments as above. In addition, we do not want to hard-code the
+> filesystem type used for the rootfs volume, as it can either be UBIFS
+> or a read-only filesystem needing a ubiblock device. Thus we would
+> need the bootloader to know which filesystem *type* is being used and
+> then decide wether to pass 'rootfs=ubiX:Y' or
+> 'ubiblock=... rootfs=/dev/ubiblock0'.
 
-I will do that.
+What is wrong with having a very minimal initramfs to do such an
+auto discovery logic?
 
 > 
->> +		err = -ENXIO;
->> +		goto out;
+>>> This is more or less filesystem-agnostic and works fine as long as
+>>> there is only one volume called 'rootfs' and this volume is always
+>>> used as rootfs.
+>>>
+>>> Dual-boot setups will need some way to pass the active rootfs volume to
+>>> the kernel. While I agree that this is possible by appending or
+>>> prepending to the cmdline string passed to the kernel, this either
+>>> limits the users' ability to manually specify the rootfs using the
+>>> cmdline or becomes a more complex task to only append/prepend the
+>>> cmdline in case the user-defined string doesn't already contain
+>>> relevant parameters...
+>>
+>> Sorry, but this is just a tooling problem and not to be addressed in the kernel.
+>> There is also the possibility to use an initramfs (either as file or embedded in the kernel)
+>> if the mount/attach logic becomes *really* complicated...
+>>
+>>> Thus it'd be nicer to flag the default rootfs volume via the device-
+>>> tree.
+>>
+>> As I said, as far I'm informed device tree is for configuring Linux, it describes
+>> the hardware. We also don't have LVM, DM or iSCSI bindings in DT. ;)
+>> Maybe device tree folks will tell more...
 > 
-> This out label seems useless here, just return the err code directly.
+> But we do have MTD and MTD partitions in DT. To me it'd feel more
+> consistent if MTD devices, partitioning and which MTD partition(s) to
+> use as UBI would be defined in the same place.
 
-I will remove this.
+This is something you need to discuss wit DT folks.
+I'm not per se against UBI DT bindings it just does not feel right
+and contradicts my understanding of it.
 
-> 
->>  	}
->> -};
->> +
->> +	err = mtd_device_register(mtd, NULL, 0);
->> +
->> +	if (!err)
->> +		return 0;
->> +
->> +	nand_release(mtd);
-> 
-> I'd prefer
-> 
-> 	if (err)
-> 		nand_release(mtd);
-> 
-> 	return err;
-> 
-
-I will change that.
-
->> +out:
->> +	return err;
->> +}
->>  
->>  /*
->> - * Try to find the node inside the DT. If it is available attach out
->> - * platform_nand_data
->> + * Remove a NAND device.
->>   */
->> -static int __init xway_register_nand(void)
->> +static int xway_nand_remove(struct platform_device *pdev)
->>  {
->> -	struct device_node *node;
->> -	struct platform_device *pdev;
->> -
->> -	node = of_find_compatible_node(NULL, NULL, "lantiq,nand-xway");
->> -	if (!node)
->> -		return -ENOENT;
->> -	pdev = of_find_device_by_node(node);
->> -	if (!pdev)
->> -		return -EINVAL;
->> -	pdev->dev.platform_data = &xway_nand_data;
->> -	of_node_put(node);
->> +	struct xway_nand_data *data = platform_get_drvdata(pdev);
->> +
->> +	nand_release(nand_to_mtd(&data->chip));
->> +
->>  	return 0;
->>  }
->>  
->> -subsys_initcall(xway_register_nand);
->> +static const struct of_device_id xway_nand_match[] = {
->> +	{ .compatible = "lantiq,nand-xway" },
->> +	{},
->> +};
->> +MODULE_DEVICE_TABLE(of, xway_nand_match);
->> +
->> +static struct platform_driver xway_nand_driver = {
->> +	.probe	= xway_nand_probe,
->> +	.remove	= xway_nand_remove,
->> +	.driver	= {
->> +		.name		= "lantiq,nand-xway",
->> +		.of_match_table = xway_nand_match,
->> +	},
->> +};
->> +
->> +module_platform_driver(xway_nand_driver);
->> +
->> +MODULE_LICENSE("GPL");
-> 
+Thanks,
+//richard
