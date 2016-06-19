@@ -1,27 +1,16 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEfz3-00059U-Ps
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 16:54:06 +0000
-Date: Sun, 19 Jun 2016 18:53:43 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: Richard Weinberger <richard@nod.at>, mark.rutland@arm.com,
- devicetree@vger.kernel.org, dedekind1@gmail.com, Hauke Mehrtens
- <hauke@hauke-m.de>, robh+dt@kernel.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org
-Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
-Message-ID: <20160619185343.14ef0669@bbrezillon>
-In-Reply-To: <20160619161334.GH820@makrotopia.org>
-References: <20160618232054.GB29476@makrotopia.org> <57665D96.1070804@nod.at>
- <20160619112510.GA820@makrotopia.org> <576689CC.3030809@nod.at>
- <20160619130514.GB820@makrotopia.org> <57669BEA.5030306@nod.at>
- <20160619140952.GC820@makrotopia.org> <5766AD99.1040809@nod.at>
- <20160619152445.GG820@makrotopia.org> <5766BAB8.9090707@nod.at>
- <20160619161334.GH820@makrotopia.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from hauke-m.de ([2001:41d0:8:b27b::1])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bEg8F-0000CM-CN
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 17:03:36 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: boris.brezillon@free-electrons.com,
+	richard@nod.at
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, john@phrozen.org,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v4 0/8] MTD: xway: fix driver
+Date: Sun, 19 Jun 2016 19:02:57 +0200
+Message-Id: <1466355785-13689-1-git-send-email-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,75 +20,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 19 Jun 2016 18:13:36 +0200
-Daniel Golle <daniel@makrotopia.org> wrote:
+Without these patches the driver does not work for me.
+Some of these patches are in OpenWrt for years now and should go 
+upstream. In addition this converts it from some hack with the 
+plat_nand driver to a normal platform driver.
 
-> Hi Richard,
-> 
-> On Sun, Jun 19, 2016 at 05:31:04PM +0200, Richard Weinberger wrote:
-> > Am 19.06.2016 um 17:24 schrieb Daniel Golle:  
-> > >> You mean marking a MTD partition in DT and UBI will attach from it?
-> > >> That makes sense.  
-> > > 
-> > > Yes. Currently we just use a naming convention (the first MTD partition
-> > > named 'ubi' will be auto-attached), that's obviously not very clean...  
-> > 
-> > I was about to reply to my own mail that you can still attach by name.
-> > Boris reminded me of that, I forgot that feature.^^
-> > Why is it not clean?  
-> 
-> That's nice and I also didn't know that.
-> It's still not perfect because I got to add it to the cmdline (in DT),
-> and should have it only on devices where a partition with that given
-> name actually exists. A flag for the mtd partition would still be
-> nicer.
-> 
-> >   
-> > >>
-> > >> To sum up, I asked a lot of questions to understand your use case(s).
-> > >> Everything you described can be done with existing facilities.
-> > >> But I agree that at least some UBI DT machinery would be nice to have
-> > >> although we need to check with DT folks first.
-> > >> At least marking an MTD partition should be fine, hopefully.  
-> > > 
-> > > Great. That'd already greatly improve things.  
-> > 
-> > How is that better than attach by name? You mark the to be attached
-> > MTD by its name...  
-> 
-> See above. We'd then still need to have that ubi.mtd=name in the
-> cmdline for NAND devices using UBI and *not* have it for other devices
-> within the same family which may use SPI or NOR flash without UBI.
-> I'd prefer to have one place inside the device-tree for everything
-> flash-storage related, eg.
-> &nand {
-> 	status = "okay";
-> 	partition@0 {
-> 		label = "boot";
-> 		reg = <0x00000000 0x00e00000>;
-> 		read-only;
-> 	};
-> 
-> 	partition@e00000 {
-> 		label = "data";
-> 		compatible = "ubi,device";
+I will try to convert the spinlock to a mutex in a separate patch 
+because this affects other parts of the kernel. 
 
-So, if we follow your logic we should also have
+changes since:
+v3:
+ - update some commit comments
+ - reorder last 2 patches
+ - do not set ->IO_ADDR_R/W any more
 
-		compatible = "jffs2,file-system";
+v2:
+ - reorder patches
+ - use of_property_read_u32()
+ - rework error handling in xway_nand_probe()
+ - simplify latched command handling
+ - remove xway_reset_chip()
+ - remove cast of nandaddr
+ - add nandaddr to xway_nand_data
+ - add csflags to xway_nand_data
 
-Because JFFS2 is an MTD user, just as UBI is.
-
-Let's see what Rob and other DT maintainers think about that.
-
-Still, it seems to me that you're trying to solve a problem in the
-kernel when it should actually be solved in an upper layer.
-
-Another option would be to try attaching UBI (along with all possible
-MTD users) to all the the MTD partitions. That's what's done for block
-filesystems when rootfstype is not specified.
+v1:
+ - convert to normal platform driver
+ - do not use global variable xway_latchcmd
+ - use mtd_to_nand()
 
 
-> 		reg = <0x00e00000 0x07200000>;
-> 	};
-> };
+Hauke Mehrtens (6):
+  mtd: nand: xway: add some more documentation
+  mtd: nand: xway: convert to normal platform driver
+  mtd: nand: xway: use generic reset function
+  mtd: nand: xway: extract read and write function
+  mtd: nand: xway: add missing write_buf and read_buf to nand driver
+  mtd: nand: xway: add nandaddr to own struct
+
+John Crispin (2):
+  mtd: nand: xway: Avoid messing up with IO_ADDR_W in ->cmd_ctrl()
+  mtd: nand: xway: fix nand locking
+
+ drivers/mtd/nand/Kconfig     |   1 -
+ drivers/mtd/nand/xway_nand.c | 232 ++++++++++++++++++++++++++-----------------
+ 2 files changed, 143 insertions(+), 90 deletions(-)
+
+-- 
+2.8.1
