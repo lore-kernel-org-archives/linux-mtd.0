@@ -1,17 +1,16 @@
 Received: from hauke-m.de ([5.39.93.123])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEfHY-0001hb-3K
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 16:09:09 +0000
+ id 1bEfHY-0001hc-3J
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 16:09:10 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: boris.brezillon@free-electrons.com,
 	richard@nod.at
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org, john@phrozen.org,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v3 8/8] MTD: xway: add missing write_buf and read_buf to nand
- driver
-Date: Sun, 19 Jun 2016 18:08:17 +0200
-Message-Id: <1466352497-6806-9-git-send-email-hauke@hauke-m.de>
+Subject: [PATCH v3 7/8] MTD: xway: add nandaddr to own struct
+Date: Sun, 19 Jun 2016 18:08:16 +0200
+Message-Id: <1466352497-6806-8-git-send-email-hauke@hauke-m.de>
 In-Reply-To: <1466352497-6806-1-git-send-email-hauke@hauke-m.de>
 References: <1466352497-6806-1-git-send-email-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,46 +22,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Instead of using IO_ADDR_W and IO_ADDR_R use an own pointer to the NAND
+controller memory area.
+
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- drivers/mtd/nand/xway_nand.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/mtd/nand/xway_nand.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index 282258f..8f208cb 100644
+index 6fac4c6..282258f 100644
 --- a/drivers/mtd/nand/xway_nand.c
 +++ b/drivers/mtd/nand/xway_nand.c
-@@ -130,6 +130,22 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
- 	return xway_readb(mtd, NAND_READ_DATA);
+@@ -66,22 +66,23 @@
+ struct xway_nand_data {
+ 	struct nand_chip	chip;
+ 	unsigned long		csflags;
++	void __iomem		*nandaddr;
+ };
+ 
+ static u8 xway_readb(struct mtd_info *mtd, int op)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	void __iomem *nandaddr = chip->IO_ADDR_R;
++	struct xway_nand_data *data = nand_get_controller_data(chip);
+ 
+-	return readb(nandaddr + op);
++	return readb(data->nandaddr + op);
  }
  
-+static void xway_read_buf(struct mtd_info *mtd, u_char *buf, int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++)
-+		buf[i] = xway_readb(mtd, NAND_WRITE_DATA);
-+}
-+
-+static void xway_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++)
-+		xway_writeb(mtd, NAND_WRITE_DATA, buf[i]);
-+}
-+
- /*
-  * Probe for the NAND device.
-  */
-@@ -162,6 +178,8 @@ static int xway_nand_probe(struct platform_device *pdev)
+ static void xway_writeb(struct mtd_info *mtd, int op, u8 value)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	void __iomem *nandaddr = chip->IO_ADDR_W;
++	struct xway_nand_data *data = nand_get_controller_data(chip);
+ 
+-	writeb(value, nandaddr + op);
++	writeb(value, data->nandaddr + op);
+ }
+ 
+ static void xway_select_chip(struct mtd_info *mtd, int select)
+@@ -138,7 +139,6 @@ static int xway_nand_probe(struct platform_device *pdev)
+ 	struct mtd_info *mtd;
+ 	struct resource *res;
+ 	int err;
+-	void __iomem *nandaddr;
+ 	u32 cs;
+ 	u32 cs_flag = 0;
+ 
+@@ -149,16 +149,16 @@ static int xway_nand_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	nandaddr = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(nandaddr))
+-		return PTR_ERR(nandaddr);
++	data->nandaddr = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(data->nandaddr))
++		return PTR_ERR(data->nandaddr);
+ 
+ 	nand_set_flash_node(&data->chip, pdev->dev.of_node);
+ 	mtd = nand_to_mtd(&data->chip);
+ 	mtd->dev.parent = &pdev->dev;
+ 
+-	data->chip.IO_ADDR_R = nandaddr;
+-	data->chip.IO_ADDR_W = nandaddr;
++	data->chip.IO_ADDR_R = data->nandaddr;
++	data->chip.IO_ADDR_W = data->nandaddr;
  	data->chip.cmd_ctrl = xway_cmd_ctrl;
  	data->chip.dev_ready = xway_dev_ready;
  	data->chip.select_chip = xway_select_chip;
-+	data->chip.write_buf = xway_write_buf;
-+	data->chip.read_buf = xway_read_buf;
- 	data->chip.read_byte = xway_read_byte;
- 	data->chip.chip_delay = 30;
+@@ -177,7 +177,7 @@ static int xway_nand_probe(struct platform_device *pdev)
+ 		cs_flag = NAND_CON_IN_CS1 | NAND_CON_OUT_CS1;
  
+ 	/* setup the EBU to run in NAND mode on our base addr */
+-	ltq_ebu_w32(CPHYSADDR(nandaddr)
++	ltq_ebu_w32(CPHYSADDR(data->nandaddr)
+ 		| ADDSEL1_MASK(3) | ADDSEL1_REGEN, EBU_ADDSEL1);
+ 
+ 	ltq_ebu_w32(BUSCON1_SETUP | BUSCON1_BCGEN_RES | BUSCON1_WAITWRC2
 -- 
 2.8.1
