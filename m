@@ -1,18 +1,21 @@
-Received: from hauke-m.de ([5.39.93.123])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEg8c-0000Ff-6Y
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 17:03:59 +0000
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: boris.brezillon@free-electrons.com,
-	richard@nod.at
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, john@phrozen.org,
- Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v4 8/8] mtd: nand: xway: add nandaddr to own struct
-Date: Sun, 19 Jun 2016 19:03:05 +0200
-Message-Id: <1466355785-13689-9-git-send-email-hauke@hauke-m.de>
-In-Reply-To: <1466355785-13689-1-git-send-email-hauke@hauke-m.de>
-References: <1466355785-13689-1-git-send-email-hauke@hauke-m.de>
+ id 1bEgAG-0002Oj-7k
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 17:05:41 +0000
+Subject: =?UTF-8?B?UmU6IOWbnuWkje+8mnViaWZzOlF1ZXN0aW9ucyBBYm91dCBHYXJiYWdl?=
+ =?UTF-8?Q?_Collection?=
+To: =?UTF-8?B?6L6J5bCR?= <wang502742203@qq.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <tencent_6E3BACF519D6BE3A72292C36@qq.com>
+ <CAFLxGvxbmUqFAq7QS=S3n0_yO4tsUHdbbL3-Fq4bHuJTBmEpPA@mail.gmail.com>
+ <tencent_7ADEA65732A2B069166D1A41@qq.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5766D0CA.3090404@nod.at>
+Date: Sun, 19 Jun 2016 19:05:14 +0200
+MIME-Version: 1.0
+In-Reply-To: <tencent_7ADEA65732A2B069166D1A41@qq.com>
+Content-Type: text/plain; charset=gb18030
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,96 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of using IO_ADDR_W and IO_ADDR_R use an own pointer to the NAND
-controller memory area.
+Am 19.06.2016 um 18:14 schrieb 辉少:
+> Thanks for your kind reply！Do you mean that in synchronous/asynchronous mode GC is also finished in synchronous
+> /asynchronous way as writting is? A more question is，are all dirty spaces collected in the same time in synchronous mode(at this point the caller will be blocked for a long time) while in asynchronous mode dirty spaces will be collected little by little in asynchronous mode when i do not  notice？Thank you！
 
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
----
- drivers/mtd/nand/xway_nand.c | 30 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+Hmm, I don't fully understand your first question, can you elaborate?
+As for dirty space, GC will not collect all dirty space. UBIFS tells GC how much free space an operation
+will take. UBIFS calls this budget. The GC will try to produce as much free space as needed.
 
-diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index 108758c..dc8e1ff 100644
---- a/drivers/mtd/nand/xway_nand.c
-+++ b/drivers/mtd/nand/xway_nand.c
-@@ -66,22 +66,23 @@
- struct xway_nand_data {
- 	struct nand_chip	chip;
- 	unsigned long		csflags;
-+	void __iomem		*nandaddr;
- };
- 
- static u8 xway_readb(struct mtd_info *mtd, int op)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
--	void __iomem *nandaddr = chip->IO_ADDR_R;
-+	struct xway_nand_data *data = nand_get_controller_data(chip);
- 
--	return readb(nandaddr + op);
-+	return readb(data->nandaddr + op);
- }
- 
- static void xway_writeb(struct mtd_info *mtd, int op, u8 value)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
--	void __iomem *nandaddr = chip->IO_ADDR_W;
-+	struct xway_nand_data *data = nand_get_controller_data(chip);
- 
--	writeb(value, nandaddr + op);
-+	writeb(value, data->nandaddr + op);
- }
- 
- static void xway_select_chip(struct mtd_info *mtd, int select)
-@@ -154,7 +155,6 @@ static int xway_nand_probe(struct platform_device *pdev)
- 	struct mtd_info *mtd;
- 	struct resource *res;
- 	int err;
--	void __iomem *nandaddr;
- 	u32 cs;
- 	u32 cs_flag = 0;
- 
-@@ -165,16 +165,14 @@ static int xway_nand_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	nandaddr = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(nandaddr))
--		return PTR_ERR(nandaddr);
-+	data->nandaddr = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(data->nandaddr))
-+		return PTR_ERR(data->nandaddr);
- 
- 	nand_set_flash_node(&data->chip, pdev->dev.of_node);
- 	mtd = nand_to_mtd(&data->chip);
- 	mtd->dev.parent = &pdev->dev;
- 
--	data->chip.IO_ADDR_R = nandaddr;
--	data->chip.IO_ADDR_W = nandaddr;
- 	data->chip.cmd_ctrl = xway_cmd_ctrl;
- 	data->chip.dev_ready = xway_dev_ready;
- 	data->chip.select_chip = xway_select_chip;
-@@ -195,16 +193,16 @@ static int xway_nand_probe(struct platform_device *pdev)
- 		cs_flag = NAND_CON_IN_CS1 | NAND_CON_OUT_CS1;
- 
- 	/* setup the EBU to run in NAND mode on our base addr */
--	ltq_ebu_w32(CPHYSADDR(nandaddr)
--		| ADDSEL1_MASK(3) | ADDSEL1_REGEN, EBU_ADDSEL1);
-+	ltq_ebu_w32(CPHYSADDR(data->nandaddr)
-+		    | ADDSEL1_MASK(3) | ADDSEL1_REGEN, EBU_ADDSEL1);
- 
- 	ltq_ebu_w32(BUSCON1_SETUP | BUSCON1_BCGEN_RES | BUSCON1_WAITWRC2
--		| BUSCON1_WAITRDC2 | BUSCON1_HOLDC1 | BUSCON1_RECOVC1
--		| BUSCON1_CMULT4, LTQ_EBU_BUSCON1);
-+		    | BUSCON1_WAITRDC2 | BUSCON1_HOLDC1 | BUSCON1_RECOVC1
-+		    | BUSCON1_CMULT4, LTQ_EBU_BUSCON1);
- 
- 	ltq_ebu_w32(NAND_CON_NANDM | NAND_CON_CSMUX | NAND_CON_CS_P
--		| NAND_CON_SE_P | NAND_CON_WP_P | NAND_CON_PRE_P
--		| cs_flag, EBU_NAND_CON);
-+		    | NAND_CON_SE_P | NAND_CON_WP_P | NAND_CON_PRE_P
-+		    | cs_flag, EBU_NAND_CON);
- 
- 	/* Scan to find existence of the device */
- 	err = nand_scan(mtd, 1);
--- 
-2.8.1
+Thanks,
+//richard
+
+> ---原始邮件---
+> *发件人:* "Richard Weinberger"<richard.weinberger@gmail.com>
+> *发送时间:* 2016年6月19日 22:51:43
+> *收件人:* "辉少"<wang502742203@qq.com>;
+> *抄送:* "linux-mtd"<linux-mtd@lists.infradead.org>;
+> *主题:* Re: ubifs:Questions About Garbage Collection
+> 
+> Hi!
+> 
+> On Sun, Jun 19, 2016 at 3:56 PM, 辉少 <wang502742203@qq.com> wrote:
+>> Hi，MTD  lists
+>> I meet some problems while using UBI file system recently.I make an experiment in which I write 2 files(1KB each) to UBI frequently.Normally it takes only several millseconds to
+> finish writting 2 files every time，but what puzzles me is that it takes about 4 minutes to write once nearly every 20 to 30 minutes.I am wondering how can this problem
+> happen？Does Garbage Collection lead to this? I mount UBIFS to a 33MiB MTD partion with "o -sync" option.By the way,if UBI is mounted in asynchronous mode, this problem never
+> happens. Does GC(Garbage Collecton) differ in synchronous mode andasynchronous mode?  What I've leared from some documents is that GC thread is sleeping while writting files
+> without interval until UBIFS is full in synchronous mode and at that point writing will become very slow, but in asynchronous mode, before data is  moved into flash media, GC
+> thread will work when there is not enough free space, am I right?
+> 
+> You observe the issue only in sync mode because every write is done
+> immediately and therefore the garbage collector needs to
+> produce empty space. This can take some time and as you are in sync
+> mode the caller (where you measure the time) will be blocked
+> until GC produce some space.
+> In asynchronous mode you will hardly notice since writing do the flash
+> will be done in a different thread by the write back mechanism.
+> 
+> -- 
+> Thanks,
+> //richard
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
