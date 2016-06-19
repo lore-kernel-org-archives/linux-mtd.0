@@ -1,19 +1,18 @@
-Date: Sun, 19 Jun 2016 17:52:18 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Icenowy Zheng <icenowy@aosc.xyz>
-Cc: maxime.ripard@free-electrons.com, wens@csie.org, robh+dt@kernel.org,
- richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-sunxi@googlegroups.com,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 2/2] mtd: nand: sunxi: add reset line support
-Message-ID: <20160619175218.61f6eb88@bbrezillon>
-In-Reply-To: <20160619154035.45658-2-icenowy@aosc.xyz>
-References: <20160619154035.45658-1-icenowy@aosc.xyz>
- <20160619154035.45658-2-icenowy@aosc.xyz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from hauke-m.de ([2001:41d0:8:b27b::1])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bEfHB-0001fT-DO
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 16:08:46 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: boris.brezillon@free-electrons.com,
+	richard@nod.at
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, john@phrozen.org,
+ Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v3 1/8] MTD: xway: add some more documentation
+Date: Sun, 19 Jun 2016 18:08:10 +0200
+Message-Id: <1466352497-6806-2-git-send-email-hauke@hauke-m.de>
+In-Reply-To: <1466352497-6806-1-git-send-email-hauke@hauke-m.de>
+References: <1466352497-6806-1-git-send-email-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,71 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 19 Jun 2016 23:40:35 +0800
-Icenowy Zheng <icenowy@aosc.xyz> wrote:
+This adds some register documentation which should make it easier to
+understand how this controller works.
 
-> The NAND controller on some sun8i chips needs its reset line to be deasserted
-> before they can enter working state. This commit added the reset line process
-> to the driver.
-> 
-> Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
-> ---
-> Changes in v2:
->   - Corrected the error checking code of reset line.
-> 
-> Changes in v3:
->   - Corrected a more serious error brought in the "fix" of v2.
-> 
-> Changes in v4:
->   - Removed unneeded code block after "else".
-> 
->  drivers/mtd/nand/sunxi_nand.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index a83a690..b37075b 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -39,6 +39,7 @@
->  #include <linux/gpio.h>
->  #include <linux/interrupt.h>
->  #include <linux/iopoll.h>
-> +#include <linux/reset.h>
->  
->  #define NFC_REG_CTL		0x0000
->  #define NFC_REG_ST		0x0004
-> @@ -269,6 +270,7 @@ struct sunxi_nfc {
->  	void __iomem *regs;
->  	struct clk *ahb_clk;
->  	struct clk *mod_clk;
-> +	struct reset_control *reset;
->  	unsigned long assigned_cs;
->  	unsigned long clk_rate;
->  	struct list_head chips;
-> @@ -1871,6 +1873,19 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto out_ahb_clk_unprepare;
->  
-> +	nfc->reset = devm_reset_control_get_optional(dev, "ahb");
-> +
-> +	if (!IS_ERR(nfc->reset)) {
-> +		ret = reset_control_deassert(nfc->reset);
-> +		if (ret) {
-> +			dev_err(dev, "reset err %d\n", ret);
-> +			goto out_mod_clk_unprepare;
-> +		}
-> +	}
-> +	else if (PTR_ERR(nfc->reset) != -ENOENT) {
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+---
+ drivers/mtd/nand/xway_nand.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-	} else if (...) {
-
-> +		return PTR_ERR(nfc->reset);
-> +	}
-> +
->  	ret = sunxi_nfc_rst(nfc);
->  	if (ret)
->  		goto out_mod_clk_unprepare;
-
-
-And you should probably reassert the reset line in case of errors and
-in the ->remove() hook.
+diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
+index 0cf0ac0..2d74637 100644
+--- a/drivers/mtd/nand/xway_nand.c
++++ b/drivers/mtd/nand/xway_nand.c
+@@ -16,20 +16,29 @@
+ #define EBU_ADDSEL1		0x24
+ #define EBU_NAND_CON		0xB0
+ #define EBU_NAND_WAIT		0xB4
++#define  NAND_WAIT_RD		BIT(0) /* NAND flash status output */
++#define  NAND_WAIT_WR_C		BIT(3) /* NAND Write/Read complete */
+ #define EBU_NAND_ECC0		0xB8
+ #define EBU_NAND_ECC_AC		0xBC
+ 
+-/* nand commands */
+-#define NAND_CMD_ALE		(1 << 2)
+-#define NAND_CMD_CLE		(1 << 3)
+-#define NAND_CMD_CS		(1 << 4)
++/*
++ * nand commands
++ * The pins of the NAND chip are selected based on the address bits of the
++ * "register" read and write. There are no special registers, but an
++ * address range and the lower address bits are used to activate the
++ * correct line. For example when the bit (1 << 2) is set in the address
++ * the ALE pin will be activated.
++ */
++#define NAND_CMD_ALE		BIT(2) /* address latch enable */
++#define NAND_CMD_CLE		BIT(3) /* command latch enable */
++#define NAND_CMD_CS		BIT(4) /* chip select */
++#define NAND_CMD_SE		BIT(5) /* spare area access latch */
++#define NAND_CMD_WP		BIT(6) /* write protect */
+ #define NAND_WRITE_CMD_RESET	0xff
+ #define NAND_WRITE_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
+ #define NAND_WRITE_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
+ #define NAND_WRITE_DATA		(NAND_CMD_CS)
+ #define NAND_READ_DATA		(NAND_CMD_CS)
+-#define NAND_WAIT_WR_C		(1 << 3)
+-#define NAND_WAIT_RD		(0x1)
+ 
+ /* we need to tel the ebu which addr we mapped the nand to */
+ #define ADDSEL1_MASK(x)		(x << 4)
+-- 
+2.8.1
