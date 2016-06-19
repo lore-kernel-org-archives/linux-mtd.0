@@ -1,21 +1,14 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEfNK-0005aq-Dd
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 16:15:07 +0000
-Date: Sun, 19 Jun 2016 18:14:43 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, john@phrozen.org
-Subject: Re: [PATCH v3 1/8] MTD: xway: add some more documentation
-Message-ID: <20160619181443.07ea27ba@bbrezillon>
-In-Reply-To: <1466352497-6806-2-git-send-email-hauke@hauke-m.de>
-References: <1466352497-6806-1-git-send-email-hauke@hauke-m.de>
- <1466352497-6806-2-git-send-email-hauke@hauke-m.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Icenowy Zheng <icenowy@aosc.xyz>
+To: maxime.ripard@free-electrons.com, wens@csie.org,
+ boris.brezillon@free-electrons.com
+Cc: robh+dt@kernel.org, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+ Icenowy Zheng <icenowy@aosc.xyz>
+Subject: [PATCH v5 1/2] mtd: nand: sunxi: update DT bindings
+Date: Mon, 20 Jun 2016 00:14:34 +0800
+Message-Id: <20160619161435.50404-1-icenowy@aosc.xyz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 19 Jun 2016 18:08:10 +0200
-Hauke Mehrtens <hauke@hauke-m.de> wrote:
+Document the reset lines
 
-> This adds some register documentation which should make it easier to
-> understand how this controller works.
+Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
+---
+Changes since v2:
+  - Nothing.
 
-This commits also adds some new definitions and replace (1 << x) by
-BIT(x).
-Can you update the commit description accordingly?
+ Documentation/devicetree/bindings/mtd/sunxi-nand.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> ---
->  drivers/mtd/nand/xway_nand.c | 21 +++++++++++++++------
->  1 file changed, 15 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-> index 0cf0ac0..2d74637 100644
-> --- a/drivers/mtd/nand/xway_nand.c
-> +++ b/drivers/mtd/nand/xway_nand.c
-> @@ -16,20 +16,29 @@
->  #define EBU_ADDSEL1		0x24
->  #define EBU_NAND_CON		0xB0
->  #define EBU_NAND_WAIT		0xB4
-> +#define  NAND_WAIT_RD		BIT(0) /* NAND flash status output */
-> +#define  NAND_WAIT_WR_C		BIT(3) /* NAND Write/Read complete */
->  #define EBU_NAND_ECC0		0xB8
->  #define EBU_NAND_ECC_AC		0xBC
->  
-> -/* nand commands */
-> -#define NAND_CMD_ALE		(1 << 2)
-> -#define NAND_CMD_CLE		(1 << 3)
-> -#define NAND_CMD_CS		(1 << 4)
-> +/*
-> + * nand commands
-> + * The pins of the NAND chip are selected based on the address bits of the
-> + * "register" read and write. There are no special registers, but an
-> + * address range and the lower address bits are used to activate the
-> + * correct line. For example when the bit (1 << 2) is set in the address
-> + * the ALE pin will be activated.
-> + */
-> +#define NAND_CMD_ALE		BIT(2) /* address latch enable */
-> +#define NAND_CMD_CLE		BIT(3) /* command latch enable */
-> +#define NAND_CMD_CS		BIT(4) /* chip select */
-> +#define NAND_CMD_SE		BIT(5) /* spare area access latch */
-> +#define NAND_CMD_WP		BIT(6) /* write protect */
->  #define NAND_WRITE_CMD_RESET	0xff
->  #define NAND_WRITE_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
->  #define NAND_WRITE_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
->  #define NAND_WRITE_DATA		(NAND_CMD_CS)
->  #define NAND_READ_DATA		(NAND_CMD_CS)
-> -#define NAND_WAIT_WR_C		(1 << 3)
-> -#define NAND_WAIT_RD		(0x1)
->  
->  /* we need to tel the ebu which addr we mapped the nand to */
->  #define ADDSEL1_MASK(x)		(x << 4)
+diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+index 086d6f4..a328fbb 100644
+--- a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+@@ -15,6 +15,8 @@ Optional children nodes:
+ Children nodes represent the available nand chips.
+ 
+ Optional properties:
++- reset : phandle + reset specifier pair
++- reset-names : must contain "ahb"
+ - allwinner,rb : shall contain the native Ready/Busy ids.
+  or
+ - rb-gpios : shall contain the gpios used as R/B pins.
+-- 
+2.9.0
