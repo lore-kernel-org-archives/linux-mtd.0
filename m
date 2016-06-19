@@ -1,7 +1,7 @@
-Received: from smtpbg328.qq.com ([14.17.43.160])
+Received: from smtpbg220.qq.com ([183.60.2.223])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEdGu-00015O-9W
- for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 14:00:21 +0000
+ id 1bEdKb-0002gH-N1
+ for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 14:04:11 +0000
 From: "=?gb18030?B?u9TJ2Q==?=" <wang502742203@qq.com>
 To: "=?gb18030?B?bGludXgtbXRk?=" <linux-mtd@lists.infradead.org>
 Subject: ubifs:Questions About Garbage Collection
@@ -9,8 +9,8 @@ Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="gb18030"
 Content-Transfer-Encoding: base64
-Date: Sun, 19 Jun 2016 21:56:09 +0800
-Message-ID: <tencent_6E3BACF519D6BE3A72292C36@qq.com>
+Date: Sun, 19 Jun 2016 22:00:03 +0800
+Message-ID: <tencent_7C62C0990C89772575E0D126@qq.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
