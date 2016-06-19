@@ -1,6 +1,6 @@
-Received: from hauke-m.de ([2001:41d0:8:b27b::1])
+Received: from hauke-m.de ([5.39.93.123])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEfHY-0001hZ-1I
+ id 1bEfHY-0001hb-3K
  for linux-mtd@lists.infradead.org; Sun, 19 Jun 2016 16:09:09 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: boris.brezillon@free-electrons.com,
@@ -8,9 +8,10 @@ To: boris.brezillon@free-electrons.com,
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org, john@phrozen.org,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v3 5/8] MTD: xway: fix nand locking
-Date: Sun, 19 Jun 2016 18:08:14 +0200
-Message-Id: <1466352497-6806-6-git-send-email-hauke@hauke-m.de>
+Subject: [PATCH v3 8/8] MTD: xway: add missing write_buf and read_buf to nand
+ driver
+Date: Sun, 19 Jun 2016 18:08:17 +0200
+Message-Id: <1466352497-6806-9-git-send-email-hauke@hauke-m.de>
 In-Reply-To: <1466352497-6806-1-git-send-email-hauke@hauke-m.de>
 References: <1466352497-6806-1-git-send-email-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,84 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: John Crispin <john@phrozen.org>
-
-The external Bus Unit (EBU) can control different flash devices, but
-these NAND flash commands have to be atomic and should not be
-interrupted in between. Lock the EBU from the beginning of the command
-till the end by moving the lock to the chip select.
-
-Signed-off-by: John Crispin <john@phrozen.org>
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- drivers/mtd/nand/xway_nand.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/xway_nand.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index 8a0019a..618cf34 100644
+index 282258f..8f208cb 100644
 --- a/drivers/mtd/nand/xway_nand.c
 +++ b/drivers/mtd/nand/xway_nand.c
-@@ -65,17 +65,22 @@
- 
- struct xway_nand_data {
- 	struct nand_chip	chip;
-+	unsigned long		csflags;
- };
- 
--static void xway_select_chip(struct mtd_info *mtd, int chip)
-+static void xway_select_chip(struct mtd_info *mtd, int select)
- {
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct xway_nand_data *data = nand_get_controller_data(chip);
- 
--	switch (chip) {
-+	switch (select) {
- 	case -1:
- 		ltq_ebu_w32_mask(NAND_CON_CE, 0, EBU_NAND_CON);
- 		ltq_ebu_w32_mask(NAND_CON_NANDM, 0, EBU_NAND_CON);
-+		spin_unlock_irqrestore(&ebu_lock, data->csflags);
- 		break;
- 	case 0:
-+		spin_lock_irqsave(&ebu_lock, data->csflags);
- 		ltq_ebu_w32_mask(0, NAND_CON_NANDM, EBU_NAND_CON);
- 		ltq_ebu_w32_mask(0, NAND_CON_CE, EBU_NAND_CON);
- 		break;
-@@ -88,12 +93,10 @@ static void xway_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
- {
- 	struct nand_chip *this = mtd_to_nand(mtd);
- 	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
--	unsigned long flags;
- 
- 	if (cmd == NAND_CMD_NONE)
- 		return;
- 
--	spin_lock_irqsave(&ebu_lock, flags);
- 	if (ctrl & NAND_CLE)
- 		writeb(cmd, (void __iomem *) (nandaddr | NAND_WRITE_CMD));
- 	else if (ctrl & NAND_ALE)
-@@ -101,7 +104,6 @@ static void xway_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
- 
- 	while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
- 		;
--	spin_unlock_irqrestore(&ebu_lock, flags);
+@@ -130,6 +130,22 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
+ 	return xway_readb(mtd, NAND_READ_DATA);
  }
  
- static int xway_dev_ready(struct mtd_info *mtd)
-@@ -113,14 +115,8 @@ static unsigned char xway_read_byte(struct mtd_info *mtd)
- {
- 	struct nand_chip *this = mtd_to_nand(mtd);
- 	unsigned long nandaddr = (unsigned long) this->IO_ADDR_R;
--	unsigned long flags;
--	int ret;
- 
--	spin_lock_irqsave(&ebu_lock, flags);
--	ret = ltq_r8((void __iomem *)(nandaddr + NAND_READ_DATA));
--	spin_unlock_irqrestore(&ebu_lock, flags);
--
--	return ret;
-+	return ltq_r8((void __iomem *)(nandaddr + NAND_READ_DATA));
- }
- 
++static void xway_read_buf(struct mtd_info *mtd, u_char *buf, int len)
++{
++	int i;
++
++	for (i = 0; i < len; i++)
++		buf[i] = xway_readb(mtd, NAND_WRITE_DATA);
++}
++
++static void xway_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
++{
++	int i;
++
++	for (i = 0; i < len; i++)
++		xway_writeb(mtd, NAND_WRITE_DATA, buf[i]);
++}
++
  /*
+  * Probe for the NAND device.
+  */
+@@ -162,6 +178,8 @@ static int xway_nand_probe(struct platform_device *pdev)
+ 	data->chip.cmd_ctrl = xway_cmd_ctrl;
+ 	data->chip.dev_ready = xway_dev_ready;
+ 	data->chip.select_chip = xway_select_chip;
++	data->chip.write_buf = xway_write_buf;
++	data->chip.read_buf = xway_read_buf;
+ 	data->chip.read_byte = xway_read_byte;
+ 	data->chip.chip_delay = 30;
+ 
 -- 
 2.8.1
