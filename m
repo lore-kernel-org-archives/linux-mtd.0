@@ -1,25 +1,32 @@
-From: Icenowy Zheng <icenowy@aosc.xyz>
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: "wens@csie.org" <wens@csie.org>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "richard@nod.at" <richard@nod.at>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-sunxi@googlegroups.com" <linux-sunxi@googlegroups.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-In-Reply-To: <20160619193717.GE26668@lukather>
-References: <20160619161435.50404-1-icenowy@aosc.xyz>
- <20160619161435.50404-2-icenowy@aosc.xyz> <20160619193717.GE26668@lukather>
-Subject: Re: [PATCH v5 2/2] mtd: nand: sunxi: add reset line support
-MIME-Version: 1.0
-Message-Id: <3496441466376852@web3g.yandex.ru>
-Date: Mon, 20 Jun 2016 06:54:12 +0800
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=utf-8
+Received: from mail-pa0-x244.google.com ([2607:f8b0:400e:c03::244])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bEn4h-0001Te-Tb
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 00:28:25 +0000
+Received: by mail-pa0-x244.google.com with SMTP id hf6so9661215pac.2
+ for <linux-mtd@lists.infradead.org>; Sun, 19 Jun 2016 17:28:02 -0700 (PDT)
+From: Deepa Dinamani <deepa.kernel@gmail.com>
+To: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: arnd@arndb.de, tglx@linutronix.de, torvalds@linux-foundation.org,
+ tytso@mit.edu, viro@zeniv.linux.org.uk, y2038@lists.linaro.org,
+ adilger.kernel@dilger.ca, adrian.hunter@intel.com,
+ anna.schumaker@netapp.com, buchino@cisco.com, ceph-devel@vger.kernel.org,
+ clm@fb.com, cm224.lee@samsung.com, dedekind1@gmail.com, dsterba@suse.com,
+ elder@kernel.org, eparis@redhat.com, gregkh@linuxfoundation.org,
+ hiralpat@cisco.com, idryomov@gmail.com, jack@suse.com, jaegeuk@kernel.org,
+ jbacik@fb.com, jejb@linux.vnet.ibm.com,
+ jfs-discussion@lists.sourceforge.net, jlbec@evilplan.org,
+ john.stultz@linaro.org, linux-audit@redhat.com,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-nfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+ lustre-devel@lists.lustre.org, martin.petersen@oracle.com,
+ mfasheh@suse.com, ocfs2-devel@oss.oracle.com, paul@paul-moore.com,
+ sage@redhat.com, sfrench@samba.org, shaggy@kernel.org, sramars@cisco.com,
+ trond.myklebust@primarydata.com, zyan@redhat.com
+Subject: [PATCH v2 00/24] Delete CURRENT_TIME and CURRENT_TIME_SEC macros
+Date: Sun, 19 Jun 2016 17:26:59 -0700
+Message-Id: <1466382443-11063-1-git-send-email-deepa.kernel@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,73 +36,311 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-You're right. This is a copy-n-paste error from the original sunxi-mmc.c file,
-which get all the clocks and resets before using them.
+The series is aimed at getting rid of CURRENT_TIME and CURRENT_TIME_SEC macros.
+The macros are not y2038 safe. There is no plan to transition them into being
+y2038 safe.
+ktime_get_* api's can be used in their place. And, these are y2038 safe.
 
-20.06.2016, 03:37, "Maxime Ripard" <maxime.ripard@free-electrons.com>:
-> On Mon, Jun 20, 2016 at 12:14:35AM +0800, Icenowy Zheng wrote:
->>  The NAND controller on some sun8i chips needs its reset line to be
->>  deasserted before they can enter working state.
->>
->>  Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
->>  ---
->>  Changes in v2:
->>    - Corrected the error checking code of reset line.
->>
->>  Changes in v3:
->>    - Corrected a more serious error brought in the "fix" of v2.
->>
->>  Changes in v4:
->>    - Removed unneeded code block after "else".
->>
->>  Changes in v5:
->>    - Added reassertion code in case of initialization error and device
->>      remove.
->>
->>   drivers/mtd/nand/sunxi_nand.c | 27 ++++++++++++++++++++++++---
->>   1 file changed, 24 insertions(+), 3 deletions(-)
->>
->>  diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
->>  index a83a690..3b40186 100644
->>  --- a/drivers/mtd/nand/sunxi_nand.c
->>  +++ b/drivers/mtd/nand/sunxi_nand.c
->>  @@ -39,6 +39,7 @@
->>   #include <linux/gpio.h>
->>   #include <linux/interrupt.h>
->>   #include <linux/iopoll.h>
->>  +#include <linux/reset.h>
->>
->>   #define NFC_REG_CTL 0x0000
->>   #define NFC_REG_ST 0x0004
->>  @@ -269,6 +270,7 @@ struct sunxi_nfc {
->>           void __iomem *regs;
->>           struct clk *ahb_clk;
->>           struct clk *mod_clk;
->>  + struct reset_control *reset;
->>           unsigned long assigned_cs;
->>           unsigned long clk_rate;
->>           struct list_head chips;
->>  @@ -1871,26 +1873,41 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
->>           if (ret)
->>                   goto out_ahb_clk_unprepare;
->>
->>  + nfc->reset = devm_reset_control_get_optional(dev, "ahb");
->>  +
->>  + if (!IS_ERR(nfc->reset)) {
->>  + ret = reset_control_deassert(nfc->reset);
->>  + if (ret) {
->>  + dev_err(dev, "reset err %d\n", ret);
->>  + goto out_mod_clk_unprepare;
->>  + }
->>  + } else if (PTR_ERR(nfc->reset) != -ENOENT) {
->>  + return PTR_ERR(nfc->reset);
->
-> You're leaking all the resources here. Please use a goto.
->
-> Thanks,
-> Maxime
->
-> --
-> Maxime Ripard, Free Electrons
-> Embedded Linux, Kernel and Android engineering
-> http://free-electrons.com
+Thanks to Arnd Bergmann for all the guidance and discussions.
+
+Patches 2-4 were mostly generated using coccinelle scripts.
+
+All filesystem timestamps use current_fs_time() for right granularity as
+mentioned in the respective commit texts of patches. This has a changed
+signature, renamed to current_time() and moved to the fs/inode.c.
+
+This series also serves as a preparatory series to transition vfs to 64 bit
+timestamps as outlined here: https://lkml.org/lkml/2016/2/12/104 .
+
+As per Linus's suggestion in https://lkml.org/lkml/2016/5/24/663 , all the
+inode timestamp changes have been squashed into a single patch. Also,
+current_time() now is used as a single generic vfs filesystem timestamp api.
+It also takes struct inode* as argument instead of struct super_block*.
+Posting all patches together in a bigger series so that the big picture is
+clear.
+
+As per the suggestion in https://lwn.net/Articles/672598/, CURRENT_TIME macro
+bug fixes are being handled in a series separate from transitioning vfs to use.
+
+Changes from v1:
+* Change current_fs_time(struct super_block *) to current_time(struct inode *)
+
+* Note that change to add time64_to_tm() is already part of John's
+  kernel tree: https://lkml.org/lkml/2016/6/17/875 .
+
+Deepa Dinamani (24):
+  vfs: Add current_time() api
+  fs: Replace CURRENT_TIME with current_time() for inode timestamps
+  fs: Replace CURRENT_TIME_SEC with current_time() for inode timestamps
+  fs: Replace current_fs_time() with current_time()
+  fs: jfs: Replace CURRENT_TIME_SEC by current_time()
+  fs: ext4: Use current_time() for inode timestamps
+  fs: ubifs: Replace CURRENT_TIME_SEC with current_time
+  fs: btrfs: Use ktime_get_real_ts for root ctime
+  fs: udf: Replace CURRENT_TIME with current_time()
+  fs: cifs: Replace CURRENT_TIME by current_time()
+  fs: cifs: Replace CURRENT_TIME with ktime_get_real_ts()
+  fs: cifs: Replace CURRENT_TIME by get_seconds
+  fs: f2fs: Use ktime_get_real_seconds for sit_info times
+  drivers: staging: lustre: Replace CURRENT_TIME with current_time()
+  fs: ocfs2: Use time64_t to represent orphan scan times
+  fs: ocfs2: Replace CURRENT_TIME with ktime_get_real_seconds()
+  audit: Use timespec64 to represent audit timestamps
+  fs: nfs: Make nfs boot time y2038 safe
+  fnic: Use time64_t to represent trace timestamps
+  block: Replace CURRENT_TIME with ktime_get_real_ts
+  libceph: Replace CURRENT_TIME with ktime_get_real_ts
+  fs: ceph: Replace current_fs_time for request stamp
+  time: Delete CURRENT_TIME_SEC and CURRENT_TIME macro
+  time: Delete current_fs_time() function
+
+ arch/powerpc/platforms/cell/spufs/inode.c          |  2 +-
+ arch/s390/hypfs/inode.c                            |  4 ++--
+ drivers/block/rbd.c                                |  2 +-
+ drivers/char/sonypi.c                              |  2 +-
+ drivers/infiniband/hw/qib/qib_fs.c                 |  2 +-
+ drivers/misc/ibmasm/ibmasmfs.c                     |  2 +-
+ drivers/oprofile/oprofilefs.c                      |  2 +-
+ drivers/platform/x86/sony-laptop.c                 |  2 +-
+ drivers/scsi/fnic/fnic_trace.c                     |  4 ++--
+ drivers/scsi/fnic/fnic_trace.h                     |  2 +-
+ drivers/staging/lustre/lustre/llite/llite_lib.c    | 16 ++++++-------
+ drivers/staging/lustre/lustre/llite/namei.c        |  4 ++--
+ drivers/staging/lustre/lustre/mdc/mdc_reint.c      |  6 ++---
+ .../lustre/lustre/obdclass/linux/linux-obdo.c      |  6 ++---
+ drivers/staging/lustre/lustre/obdclass/obdo.c      |  6 ++---
+ drivers/staging/lustre/lustre/osc/osc_io.c         |  2 +-
+ drivers/usb/core/devio.c                           | 18 +++++++-------
+ drivers/usb/gadget/function/f_fs.c                 |  8 +++----
+ drivers/usb/gadget/legacy/inode.c                  |  2 +-
+ fs/9p/vfs_inode.c                                  |  2 +-
+ fs/adfs/inode.c                                    |  2 +-
+ fs/affs/amigaffs.c                                 |  6 ++---
+ fs/affs/inode.c                                    |  2 +-
+ fs/attr.c                                          |  2 +-
+ fs/autofs4/inode.c                                 |  2 +-
+ fs/autofs4/root.c                                  |  6 ++---
+ fs/bad_inode.c                                     |  2 +-
+ fs/bfs/dir.c                                       | 14 +++++------
+ fs/binfmt_misc.c                                   |  2 +-
+ fs/btrfs/file.c                                    |  6 ++---
+ fs/btrfs/inode.c                                   | 22 ++++++++---------
+ fs/btrfs/ioctl.c                                   |  8 +++----
+ fs/btrfs/root-tree.c                               |  3 ++-
+ fs/btrfs/transaction.c                             |  4 ++--
+ fs/btrfs/xattr.c                                   |  2 +-
+ fs/ceph/file.c                                     |  4 ++--
+ fs/ceph/inode.c                                    |  2 +-
+ fs/ceph/mds_client.c                               |  4 +++-
+ fs/ceph/xattr.c                                    |  2 +-
+ fs/cifs/cifsencrypt.c                              |  4 +++-
+ fs/cifs/cifssmb.c                                  | 10 ++++----
+ fs/cifs/file.c                                     |  4 ++--
+ fs/cifs/inode.c                                    | 28 ++++++++++++----------
+ fs/coda/dir.c                                      |  2 +-
+ fs/coda/file.c                                     |  2 +-
+ fs/coda/inode.c                                    |  2 +-
+ fs/configfs/inode.c                                |  6 ++---
+ fs/debugfs/inode.c                                 |  2 +-
+ fs/devpts/inode.c                                  |  6 ++---
+ fs/efivarfs/inode.c                                |  2 +-
+ fs/exofs/dir.c                                     |  6 ++---
+ fs/exofs/inode.c                                   |  4 ++--
+ fs/exofs/namei.c                                   |  6 ++---
+ fs/ext2/acl.c                                      |  2 +-
+ fs/ext2/dir.c                                      |  6 ++---
+ fs/ext2/ialloc.c                                   |  2 +-
+ fs/ext2/inode.c                                    |  4 ++--
+ fs/ext2/ioctl.c                                    |  4 ++--
+ fs/ext2/namei.c                                    |  6 ++---
+ fs/ext2/super.c                                    |  2 +-
+ fs/ext2/xattr.c                                    |  2 +-
+ fs/ext4/acl.c                                      |  2 +-
+ fs/ext4/ext4.h                                     |  6 -----
+ fs/ext4/extents.c                                  | 10 ++++----
+ fs/ext4/ialloc.c                                   |  2 +-
+ fs/ext4/inline.c                                   |  4 ++--
+ fs/ext4/inode.c                                    |  6 ++---
+ fs/ext4/ioctl.c                                    |  8 +++----
+ fs/ext4/namei.c                                    | 24 ++++++++++---------
+ fs/ext4/super.c                                    |  2 +-
+ fs/ext4/xattr.c                                    |  2 +-
+ fs/f2fs/dir.c                                      |  8 +++----
+ fs/f2fs/file.c                                     |  8 +++----
+ fs/f2fs/inline.c                                   |  2 +-
+ fs/f2fs/namei.c                                    | 12 +++++-----
+ fs/f2fs/segment.c                                  |  2 +-
+ fs/f2fs/segment.h                                  |  5 ++--
+ fs/f2fs/xattr.c                                    |  2 +-
+ fs/fat/dir.c                                       |  2 +-
+ fs/fat/file.c                                      |  6 ++---
+ fs/fat/inode.c                                     |  2 +-
+ fs/fat/namei_msdos.c                               | 12 +++++-----
+ fs/fat/namei_vfat.c                                | 10 ++++----
+ fs/fuse/control.c                                  |  2 +-
+ fs/fuse/dir.c                                      |  2 +-
+ fs/gfs2/bmap.c                                     |  8 +++----
+ fs/gfs2/dir.c                                      | 12 +++++-----
+ fs/gfs2/inode.c                                    |  8 +++----
+ fs/gfs2/quota.c                                    |  2 +-
+ fs/gfs2/xattr.c                                    |  8 +++----
+ fs/hfs/catalog.c                                   |  8 +++----
+ fs/hfs/dir.c                                       |  2 +-
+ fs/hfs/inode.c                                     |  2 +-
+ fs/hfsplus/catalog.c                               |  8 +++----
+ fs/hfsplus/dir.c                                   |  6 ++---
+ fs/hfsplus/inode.c                                 |  2 +-
+ fs/hfsplus/ioctl.c                                 |  2 +-
+ fs/hugetlbfs/inode.c                               | 10 ++++----
+ fs/inode.c                                         | 21 +++++++++++++---
+ fs/jffs2/acl.c                                     |  2 +-
+ fs/jffs2/fs.c                                      |  2 +-
+ fs/jfs/acl.c                                       |  2 +-
+ fs/jfs/inode.c                                     |  2 +-
+ fs/jfs/ioctl.c                                     |  2 +-
+ fs/jfs/jfs_inode.c                                 |  2 +-
+ fs/jfs/namei.c                                     | 24 +++++++++----------
+ fs/jfs/super.c                                     |  2 +-
+ fs/jfs/xattr.c                                     |  2 +-
+ fs/kernfs/inode.c                                  |  2 +-
+ fs/libfs.c                                         | 14 +++++------
+ fs/locks.c                                         |  2 +-
+ fs/logfs/dir.c                                     |  6 ++---
+ fs/logfs/file.c                                    |  2 +-
+ fs/logfs/inode.c                                   |  4 ++--
+ fs/logfs/readwrite.c                               |  4 ++--
+ fs/minix/bitmap.c                                  |  2 +-
+ fs/minix/dir.c                                     |  6 ++---
+ fs/minix/itree_common.c                            |  4 ++--
+ fs/minix/namei.c                                   |  4 ++--
+ fs/nfs/client.c                                    |  2 +-
+ fs/nfs/netns.h                                     |  2 +-
+ fs/nfs/nfs4proc.c                                  | 10 ++++----
+ fs/nfs/nfs4xdr.c                                   |  2 +-
+ fs/nfsd/blocklayout.c                              |  2 +-
+ fs/nilfs2/dir.c                                    |  6 ++---
+ fs/nilfs2/inode.c                                  |  4 ++--
+ fs/nilfs2/ioctl.c                                  |  2 +-
+ fs/nilfs2/namei.c                                  |  6 ++---
+ fs/nsfs.c                                          |  2 +-
+ fs/ntfs/inode.c                                    |  2 +-
+ fs/ntfs/mft.c                                      |  2 +-
+ fs/ocfs2/acl.c                                     |  2 +-
+ fs/ocfs2/alloc.c                                   |  2 +-
+ fs/ocfs2/aops.c                                    |  2 +-
+ fs/ocfs2/cluster/heartbeat.c                       |  2 +-
+ fs/ocfs2/dir.c                                     |  4 ++--
+ fs/ocfs2/dlmfs/dlmfs.c                             |  4 ++--
+ fs/ocfs2/file.c                                    | 12 +++++-----
+ fs/ocfs2/inode.c                                   |  2 +-
+ fs/ocfs2/journal.c                                 |  4 ++--
+ fs/ocfs2/move_extents.c                            |  2 +-
+ fs/ocfs2/namei.c                                   | 16 +++++++------
+ fs/ocfs2/ocfs2.h                                   |  2 +-
+ fs/ocfs2/refcounttree.c                            |  4 ++--
+ fs/ocfs2/super.c                                   |  2 +-
+ fs/ocfs2/xattr.c                                   |  2 +-
+ fs/omfs/dir.c                                      |  4 ++--
+ fs/omfs/inode.c                                    |  2 +-
+ fs/openpromfs/inode.c                              |  2 +-
+ fs/orangefs/file.c                                 |  2 +-
+ fs/orangefs/inode.c                                |  2 +-
+ fs/orangefs/namei.c                                | 10 ++++----
+ fs/pipe.c                                          |  2 +-
+ fs/posix_acl.c                                     |  2 +-
+ fs/proc/base.c                                     |  2 +-
+ fs/proc/inode.c                                    |  4 ++--
+ fs/proc/proc_sysctl.c                              |  2 +-
+ fs/proc/self.c                                     |  2 +-
+ fs/proc/thread_self.c                              |  2 +-
+ fs/pstore/inode.c                                  |  2 +-
+ fs/ramfs/inode.c                                   |  6 ++---
+ fs/reiserfs/inode.c                                |  2 +-
+ fs/reiserfs/ioctl.c                                |  4 ++--
+ fs/reiserfs/namei.c                                | 12 +++++-----
+ fs/reiserfs/stree.c                                |  8 +++----
+ fs/reiserfs/super.c                                |  2 +-
+ fs/reiserfs/xattr.c                                |  6 ++---
+ fs/reiserfs/xattr_acl.c                            |  2 +-
+ fs/sysv/dir.c                                      |  6 ++---
+ fs/sysv/ialloc.c                                   |  2 +-
+ fs/sysv/itree.c                                    |  4 ++--
+ fs/sysv/namei.c                                    |  4 ++--
+ fs/tracefs/inode.c                                 |  2 +-
+ fs/ubifs/dir.c                                     | 10 ++++----
+ fs/ubifs/file.c                                    | 12 +++++-----
+ fs/ubifs/ioctl.c                                   |  2 +-
+ fs/ubifs/misc.h                                    | 10 --------
+ fs/ubifs/sb.c                                      | 14 +++++++----
+ fs/ubifs/xattr.c                                   |  6 ++---
+ fs/udf/ialloc.c                                    |  2 +-
+ fs/udf/inode.c                                     |  4 ++--
+ fs/udf/namei.c                                     | 20 ++++++++--------
+ fs/udf/super.c                                     |  9 +++++--
+ fs/ufs/dir.c                                       |  6 ++---
+ fs/ufs/ialloc.c                                    |  8 ++++---
+ fs/ufs/inode.c                                     |  6 ++---
+ fs/ufs/namei.c                                     |  6 ++---
+ fs/xfs/xfs_acl.c                                   |  2 +-
+ fs/xfs/xfs_inode.c                                 |  2 +-
+ fs/xfs/xfs_iops.c                                  |  2 +-
+ fs/xfs/xfs_trans_inode.c                           |  2 +-
+ include/linux/audit.h                              |  4 ++--
+ include/linux/fs.h                                 |  2 +-
+ include/linux/time.h                               |  3 ---
+ ipc/mqueue.c                                       | 18 +++++++-------
+ kernel/audit.c                                     | 10 ++++----
+ kernel/audit.h                                     |  2 +-
+ kernel/auditsc.c                                   |  6 ++---
+ kernel/bpf/inode.c                                 |  2 +-
+ kernel/time/time.c                                 | 14 -----------
+ mm/shmem.c                                         | 20 ++++++++--------
+ net/ceph/messenger.c                               |  6 +++--
+ net/ceph/osd_client.c                              |  4 ++--
+ net/sunrpc/rpc_pipe.c                              |  2 +-
+ security/inode.c                                   |  2 +-
+ security/selinux/selinuxfs.c                       |  2 +-
+ 206 files changed, 533 insertions(+), 522 deletions(-)
+
+-- 
+1.9.1
+
+Cc: adilger.kernel@dilger.ca
+Cc: adrian.hunter@intel.com
+Cc: anna.schumaker@netapp.com
+Cc: buchino@cisco.com
+Cc: ceph-devel@vger.kernel.org
+Cc: clm@fb.com
+Cc: cm224.lee@samsung.com
+Cc: dedekind1@gmail.com
+Cc: dsterba@suse.com
+Cc: elder@kernel.org
+Cc: eparis@redhat.com
+Cc: gregkh@linuxfoundation.org
+Cc: hiralpat@cisco.com
+Cc: idryomov@gmail.com
+Cc: jack@suse.com
+Cc: jaegeuk@kernel.org
+Cc: jbacik@fb.com
+Cc: jejb@linux.vnet.ibm.com
+Cc: jfs-discussion@lists.sourceforge.net
+Cc: jlbec@evilplan.org
+Cc: john.stultz@linaro.org
+Cc: linux-audit@redhat.com
+Cc: linux-btrfs@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-nfs@vger.kernel.org
+Cc: linux-scsi@vger.kernel.org
+Cc: lustre-devel@lists.lustre.org
+Cc: martin.petersen@oracle.com
+Cc: mfasheh@suse.com
+Cc: ocfs2-devel@oss.oracle.com
+Cc: paul@paul-moore.com
+Cc: sage@redhat.com
+Cc: sfrench@samba.org
+Cc: shaggy@kernel.org
+Cc: sramars@cisco.com
+Cc: trond.myklebust@primarydata.com
+Cc: zyan@redhat.com
