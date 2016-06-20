@@ -1,23 +1,24 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from hauke-m.de ([2001:41d0:8:b27b::1])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF5Km-0007Xq-Sk
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 19:58:14 +0000
+ id 1bF6b7-0002mV-8d
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 21:19:10 +0000
 Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
-To: Arnd Bergmann <arnd@arndb.de>
+To: Richard Weinberger <richard@nod.at>, Arnd Bergmann <arnd@arndb.de>
 References: <20160619130514.GB820@makrotopia.org> <6411961.soYuJ4Ixfs@wuerfel>
  <5767A8A3.4030004@nod.at> <4012191.NTCe8d2REM@wuerfel>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, Daniel Golle <daniel@makrotopia.org>,
+ <57684AB9.5040607@nod.at>
+Cc: Daniel Golle <daniel@makrotopia.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>, mark.rutland@arm.com,
  devicetree@vger.kernel.org, dedekind1@gmail.com, robh+dt@kernel.org,
  linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
  dwmw2@infradead.org
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <57684AB9.5040607@nod.at>
-Date: Mon, 20 Jun 2016 21:57:45 +0200
+From: Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <f7f47b9d-b37c-712d-3319-585474277b41@hauke-m.de>
+Date: Mon, 20 Jun 2016 23:18:45 +0200
 MIME-Version: 1.0
-In-Reply-To: <4012191.NTCe8d2REM@wuerfel>
+In-Reply-To: <57684AB9.5040607@nod.at>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 20.06.2016 um 17:08 schrieb Arnd Bergmann:
->> Since blocks on a MTD can render bad you'd lose the table sooner or later.
->> That's why we cannot store it on the MTD directly.
->> Defining the table in DT is at least less ugly than using the mtdparts=
->> kernel parameter.
+On 06/20/2016 09:57 PM, Richard Weinberger wrote:
+> Am 20.06.2016 um 17:08 schrieb Arnd Bergmann:
+>>> Since blocks on a MTD can render bad you'd lose the table sooner or later.
+>>> That's why we cannot store it on the MTD directly.
+>>> Defining the table in DT is at least less ugly than using the mtdparts=
+>>> kernel parameter.
+>>
+>> Right, there would be no benefit in using the kernel command line,
+>> it just moves the information to another place inside of the same DT
+>> (the /chosen property).
+>>
+>> I think you can normally rely on the first block being readable
+>> on flash, in particular if you write it very rarely (when updating
+>> the partition information), so it would be technically possible to
+>> have a partition table in there, but in practice that's not how
+>> things are done, so the argument is useless.
 > 
-> Right, there would be no benefit in using the kernel command line,
-> it just moves the information to another place inside of the same DT
-> (the /chosen property).
-> 
-> I think you can normally rely on the first block being readable
-> on flash, in particular if you write it very rarely (when updating
-> the partition information), so it would be technically possible to
-> have a partition table in there, but in practice that's not how
-> things are done, so the argument is useless.
+> Speaking of NAND, only SLC (and also here not all) chips guarantee that the first
+> block is better than the other ones.
 
-Speaking of NAND, only SLC (and also here not all) chips guarantee that the first
-block is better than the other ones.
+Being able to define a rootfs the kernel should load with a /chosen
+property would also be nice.
 
-Thanks,
-//richard
+https://www.kernel.org/doc/Documentation/devicetree/bindings/chosen.txt
+
+These UBI patches were just one step to make it possible to define the
+root partition in device tree. It would probably be better to first look
+on how to do that with normal mtd partitions and then see how to extend
+that to UBI.
+
+Currently I have to extend the boot args with these parameters to boot a
+unmodified mainline kernel: "ubi.mtd=ubi ubi.block=0,rootfsA
+root=/dev/ubiblock0_1"
+This is a SquashFS in a UBI layer on a mtd partition. I know that I can
+put this into the bootargs in a device tree file.
+
+Hauke
