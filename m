@@ -1,8 +1,8 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEvUq-0003ok-Fp
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 09:28:01 +0000
+ id 1bEvUq-0003pd-G1
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 09:28:03 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
@@ -10,10 +10,10 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Richard Weinberger <richard@nod.at>
 Cc: linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
  Aleksei Mamlin <mamlinav@gmail.com>, valdis.kletnieks@vt.edu
-Subject: [PATCH v3 05/16] mtd: nand: rename nand_get_flash_type() into
- nand_detect()
-Date: Mon, 20 Jun 2016 11:26:51 +0200
-Message-Id: <1466414822-18948-6-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 12/16] mtd: nand: move AMD/Spansion specific init/detection
+ logic in nand_amd.c
+Date: Mon, 20 Jun 2016 11:26:58 +0200
+Message-Id: <1466414822-18948-13-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,90 +25,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The only caller of nand_get_flash_type() (nand_scan_ident()) actually
-don't use the returned nand_flash_dev pointer except for converting it to
-to an error code.
-Rename this function nand_detect() and make it return an integer.
+Moving AMD/Spansion specific initialization/detection into nand_amd.c.
+This is part of the "separate vendor specific code from core" cleanup
+process.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_base.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/Makefile    |  1 +
+ drivers/mtd/nand/nand_amd.c  | 48 ++++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/nand_base.c | 19 +-----------------
+ drivers/mtd/nand/nand_ids.c  |  3 ++-
+ 4 files changed, 52 insertions(+), 19 deletions(-)
+ create mode 100644 drivers/mtd/nand/nand_amd.c
 
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index f1bd008564b2..19d0cb8829a5 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
+ obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
+ 
+ nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
++nand-objs += nand_amd.o
+ nand-objs += nand_hynix.o
+ nand-objs += nand_micron.o
+ nand-objs += nand_samsung.o
+diff --git a/drivers/mtd/nand/nand_amd.c b/drivers/mtd/nand/nand_amd.c
+new file mode 100644
+index 000000000000..3d7cc366ae9c
+--- /dev/null
++++ b/drivers/mtd/nand/nand_amd.c
+@@ -0,0 +1,48 @@
++/*
++ * Copyright (C) 2013 Boris Brezillon <boris.brezillon@free-electrons.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/mtd/nand.h>
++
++static void amd_nand_decode_id(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
++	nand_decode_ext_id(chip);
++
++	/*
++	 * Check for Spansion/AMD ID + repeating 5th, 6th byte since
++	 * some Spansion chips have erasesize that conflicts with size
++	 * listed in nand_ids table.
++	 * Data sheet (5 byte ID): Spansion S30ML-P ORNAND (p.39)
++	 */
++	 if (chip->id.data[4] != 0x00 && chip->id.data[5] == 0x00 &&
++	     chip->id.data[6] == 0x00 && chip->id.data[7] == 0x00 &&
++	     mtd->writesize == 512) {
++		mtd->erasesize = 128 * 1024;
++		mtd->erasesize <<= ((chip->id.data[3] & 0x03) << 1);
++	}
++}
++
++static int amd_nand_init(struct nand_chip *chip)
++{
++	if (nand_is_slc(chip))
++		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
++
++	return 0;
++}
++
++const struct nand_manufacturer_ops amd_nand_manuf_ops = {
++	.detect = amd_nand_decode_id,
++	.init = amd_nand_init,
++};
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index b174d7c6ba1f..14c28abec9aa 100644
+index 456812946acc..3d738845941c 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -3814,8 +3814,7 @@ static bool find_full_id_nand(struct nand_chip *chip,
- /*
-  * Get the flash and manufacturer id and lookup if the type is supported.
-  */
--static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
--						  struct nand_flash_dev *type)
-+static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+@@ -3589,8 +3589,6 @@ EXPORT_SYMBOL_GPL(nand_decode_ext_id);
+ static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type)
  {
  	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int busw;
-@@ -3855,7 +3854,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
- 	if (id_data[0] != maf_id || id_data[1] != dev_id) {
- 		pr_info("second ID read did not match %02x,%02x against %02x,%02x\n",
- 			maf_id, dev_id, id_data[0], id_data[1]);
--		return ERR_PTR(-ENODEV);
-+		return -ENODEV;
- 	}
+-	u8 *id_data = chip->id.data;
+-	int maf_id = id_data[0];
  
- 	chip->id.len = nand_id_len(id_data, 8);
-@@ -3899,7 +3898,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
- 	}
+ 	mtd->erasesize = type->erasesize;
+ 	mtd->writesize = type->pagesize;
+@@ -3598,19 +3596,6 @@ static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type)
  
- 	if (!type->name)
--		return ERR_PTR(-ENODEV);
-+		return -ENODEV;
- 
- 	if (!mtd->name)
- 		mtd->name = type->name;
-@@ -3942,7 +3941,7 @@ ident_done:
- 		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
- 		pr_warn("bus width %d instead %d bit\n", busw ? 16 : 8,
- 			(chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 	}
- 
- 	nand_decode_bbm_options(chip);
-@@ -3984,7 +3983,7 @@ ident_done:
- 	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
- 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
- 		mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
--	return type;
-+	return 0;
+ 	/* All legacy ID NAND are small-page, SLC */
+ 	chip->bits_per_cell = 1;
+-
+-	/*
+-	 * Check for Spansion/AMD ID + repeating 5th, 6th byte since
+-	 * some Spansion chips have erasesize that conflicts with size
+-	 * listed in nand_ids table.
+-	 * Data sheet (5 byte ID): Spansion S30ML-P ORNAND (p.39)
+-	 */
+-	if (maf_id == NAND_MFR_AMD && id_data[4] != 0x00 && id_data[5] == 0x00
+-			&& id_data[6] == 0x00 && id_data[7] == 0x00
+-			&& mtd->writesize == 512) {
+-		mtd->erasesize = 128 * 1024;
+-		mtd->erasesize <<= ((id_data[3] & 0x03) << 1);
+-	}
  }
  
- static const char * const nand_ecc_modes[] = {
-@@ -4147,7 +4146,6 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
- {
- 	int i, nand_maf_id, nand_dev_id;
- 	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct nand_flash_dev *type;
- 	int ret;
+ /*
+@@ -3636,9 +3621,7 @@ static void nand_decode_bbm_options(struct nand_chip *chip)
+ 	 * Micron devices with 2KiB pages and on SLC Samsung, Hynix, Toshiba,
+ 	 * AMD/Spansion, and Macronix.  All others scan only the first page.
+ 	 */
+-	if ((nand_is_slc(chip) &&
+-				(maf_id == NAND_MFR_AMD ||
+-				 maf_id == NAND_MFR_MACRONIX)))
++	if (nand_is_slc(chip) && maf_id == NAND_MFR_MACRONIX)
+ 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+ }
  
- 	ret = nand_dt_init(chip);
-@@ -4161,13 +4159,12 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
- 	nand_set_defaults(chip);
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index 5d027879b3b0..299b2b14c080 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -170,6 +170,7 @@ extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops micron_nand_manuf_ops;
++extern const struct nand_manufacturer_ops amd_nand_manuf_ops;
  
- 	/* Read the flash type */
--	type = nand_get_flash_type(chip, table);
--
--	if (IS_ERR(type)) {
-+	ret = nand_detect(chip, table);
-+	if (ret) {
- 		if (!(chip->options & NAND_SCAN_SILENT_NODEV))
- 			pr_warn("No NAND device found\n");
- 		chip->select_chip(mtd, -1);
--		return PTR_ERR(type);
-+		return ret;
- 	}
- 
- 	nand_maf_id = chip->id.data[0];
+ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_TOSHIBA, "Toshiba", &toshiba_nand_manuf_ops},
+@@ -180,7 +181,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_STMICRO, "ST Micro"},
+ 	{NAND_MFR_HYNIX, "Hynix", &hynix_nand_manuf_ops},
+ 	{NAND_MFR_MICRON, "Micron", &micron_nand_manuf_ops},
+-	{NAND_MFR_AMD, "AMD/Spansion"},
++	{NAND_MFR_AMD, "AMD/Spansion", &amd_nand_manuf_ops},
+ 	{NAND_MFR_MACRONIX, "Macronix"},
+ 	{NAND_MFR_EON, "Eon"},
+ 	{NAND_MFR_SANDISK, "SanDisk"},
 -- 
 2.7.4
