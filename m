@@ -1,21 +1,19 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEuuu-0008FM-8G
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 08:50:48 +0000
-Date: Mon, 20 Jun 2016 10:50:24 +0200
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, john@phrozen.org
-Subject: Re: [PATCH v4 4/8] mtd: nand: xway: use generic reset function
-Message-ID: <20160620105024.0f711aed@bbrezillon>
-In-Reply-To: <1466355785-13689-5-git-send-email-hauke@hauke-m.de>
-References: <1466355785-13689-1-git-send-email-hauke@hauke-m.de>
- <1466355785-13689-5-git-send-email-hauke@hauke-m.de>
+Date: Mon, 20 Jun 2016 10:55:51 +0200
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Icenowy Zheng <icenowy@aosc.xyz>
+Cc: wens@csie.org, boris.brezillon@free-electrons.com, robh+dt@kernel.org,
+ richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-sunxi@googlegroups.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 1/2] mtd: nand: sunxi: update DT bindings
+Message-ID: <20160620085551.GJ26668@lukather>
+References: <20160620044838.56904-1-icenowy@aosc.xyz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="cN519qCC4CN1mUcX"
+Content-Disposition: inline
+In-Reply-To: <20160620044838.56904-1-icenowy@aosc.xyz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,70 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 19 Jun 2016 19:03:01 +0200
-Hauke Mehrtens <hauke@hauke-m.de> wrote:
 
-> Instead of writing an own reset function use the generic NAND reset
-> function. This way we can remove our own reset function.
-> 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> ---
->  drivers/mtd/nand/xway_nand.c | 23 +++--------------------
->  1 file changed, 3 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-> index 6028edb..8a0019a 100644
-> --- a/drivers/mtd/nand/xway_nand.c
-> +++ b/drivers/mtd/nand/xway_nand.c
-> @@ -35,7 +35,6 @@
->  #define NAND_CMD_CS		BIT(4) /* chip select */
->  #define NAND_CMD_SE		BIT(5) /* spare area access latch */
->  #define NAND_CMD_WP		BIT(6) /* write protect */
-> -#define NAND_WRITE_CMD_RESET	0xff
->  #define NAND_WRITE_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
->  #define NAND_WRITE_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
->  #define NAND_WRITE_DATA		(NAND_CMD_CS)
-> @@ -68,22 +67,6 @@ struct xway_nand_data {
->  	struct nand_chip	chip;
->  };
->  
-> -static void xway_reset_chip(struct nand_chip *chip)
-> -{
-> -	unsigned long nandaddr = (unsigned long) chip->IO_ADDR_W;
-> -	unsigned long flags;
-> -
-> -	nandaddr &= ~NAND_WRITE_ADDR;
-> -	nandaddr |= NAND_WRITE_CMD;
-> -
-> -	/* finish with a reset */
-> -	spin_lock_irqsave(&ebu_lock, flags);
-> -	writeb(NAND_WRITE_CMD_RESET, (void __iomem *) nandaddr);
-> -	while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
-> -		;
-> -	spin_unlock_irqrestore(&ebu_lock, flags);
-> -}
-> -
->  static void xway_select_chip(struct mtd_info *mtd, int chip)
->  {
->  
-> @@ -199,14 +182,14 @@ static int xway_nand_probe(struct platform_device *pdev)
->  		| NAND_CON_SE_P | NAND_CON_WP_P | NAND_CON_PRE_P
->  		| cs_flag, EBU_NAND_CON);
->  
-> -	/* finish with a reset */
-> -	xway_reset_chip(&data->chip);
-> -
->  	/* Scan to find existence of the device */
->  	err = nand_scan(mtd, 1);
->  	if (err)
->  		return err;
->  
-> +	/* finish with a reset */
-> +	data->chip.cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> +
+--cN519qCC4CN1mUcX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hm, I wonder if this is really useful. The NAND chip is already reset
-as part of the nand_scan() process. Are you sure you need to reset it
-again here?
+On Mon, Jun 20, 2016 at 12:48:37PM +0800, Icenowy Zheng wrote:
+> Document the reset lines
+>=20
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
 
-Can you test after dropping this reset operation?
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+
+Thanks,
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+
+--cN519qCC4CN1mUcX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJXZ6+XAAoJEBx+YmzsjxAguHMQALtHBn+5FhdfemHg2ihuwKW5
+mPkAduuvhZ2VfWmrDughC2Z3e/v93MgCDvinnKKLJWPxK+o6OHJqbWmi8f/xMEJs
+5hbrnxLmr4Udgar7E8XC37R+XgN28T+R26PcFOrLCcZn3ZQj13Vvh6saBUOnt7i7
+gYEImQBf2d02JPhoviyXU7S2vn8oHmSlsW/IpXQHCjvaDc2pMXDauplc8YgEbXmb
+HAUT9OHjxMwPgTo/YZTPjCYXLnSdyxKOCkARaVeYShY+ZeTpI7AaCQ/I7fdTV4qd
+Ij2raEuEagAs/1TPbT0YFioHOk1JnZAybMkJBgHMreMMyZmpDC/E6Wg13b0hD0KT
+vQakWX9nHDPmGg/0ry4mDXc7N+2L/zP87svy8vCmffTiVCgP0olMmYorW80751xQ
+SB7YhOgCWaVCMsaOlxRGuvnnksyrQXsTm83LBJFiHVAuPFQMqVU2m1wbIBDYl6/k
+kUGEFpGCWj6nwCysg+pqzEq6L6WsCBG+ZJpJYAnmqwZTrCiX3k8meqIPdL08TnPS
+WunPceGoZFWbv2qnr9ZbphYWqgyYYTEoeKxIhaxAzmrGfakL4qewdb24D8ik3lNy
+SI1aQWpzZpbxydTokIk7px8TkEwOuDcm5kEbpGTDesbg9JDdk5h9FvQv4za2YjI9
+UWJ9Ea1YMObdAdmG/Rqg
+=2j9p
+-----END PGP SIGNATURE-----
+
+--cN519qCC4CN1mUcX--
