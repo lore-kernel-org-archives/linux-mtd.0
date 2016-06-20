@@ -1,16 +1,17 @@
-Received: from hauke-m.de ([5.39.93.123])
+Received: from hauke-m.de ([2001:41d0:8:b27b::1])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF6oC-0000SA-AZ
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 21:32:41 +0000
+ id 1bF6oE-0000S9-HH
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 21:32:43 +0000
 From: Hauke Mehrtens <hauke@hauke-m.de>
 To: boris.brezillon@free-electrons.com,
 	richard@nod.at
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org, john@phrozen.org,
  Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH v5 4/8] mtd: nand: xway: remove manual reset
-Date: Mon, 20 Jun 2016 23:32:10 +0200
-Message-Id: <1466458334-10830-5-git-send-email-hauke@hauke-m.de>
+Subject: [PATCH v5 3/8] mtd: nand: xway: Avoid messing up with IO_ADDR_W in
+ ->cmd_ctrl()
+Date: Mon, 20 Jun 2016 23:32:09 +0200
+Message-Id: <1466458334-10830-4-git-send-email-hauke@hauke-m.de>
 In-Reply-To: <1466458334-10830-1-git-send-email-hauke@hauke-m.de>
 References: <1466458334-10830-1-git-send-email-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,60 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nand_scan() already resets the NAND flash chip, this driver does not
-have to call it manually. The xway_reset_chip() functions does the same
-as the normal NAND reset function. The waiting for the NAND_WAIT_WR_C
-is done in xway_cmd_ctrl().
+From: John Crispin <john@phrozen.org>
 
+The ->cmd_ctrl() function is adjusting the ->IO_ADDR_W value depending
+on the command type each time NAND_CTRL_CHANGE is passed. This is not
+only useless but can lead to an ->IO_ADDR_W corruption.
+
+Get rid of this logic and rely on the NAND_CLE and NAND_ALE flags to
+deduce the iomem address to write the cmd argument to.
+
+Signed-off-by: John Crispin <john@phrozen.org>
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- drivers/mtd/nand/xway_nand.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+ drivers/mtd/nand/xway_nand.c | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
-index 6028edb..ab93b353 100644
+index ec189e5..6028edb 100644
 --- a/drivers/mtd/nand/xway_nand.c
 +++ b/drivers/mtd/nand/xway_nand.c
-@@ -35,7 +35,6 @@
- #define NAND_CMD_CS		BIT(4) /* chip select */
- #define NAND_CMD_SE		BIT(5) /* spare area access latch */
- #define NAND_CMD_WP		BIT(6) /* write protect */
--#define NAND_WRITE_CMD_RESET	0xff
- #define NAND_WRITE_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
- #define NAND_WRITE_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
- #define NAND_WRITE_DATA		(NAND_CMD_CS)
-@@ -68,22 +67,6 @@ struct xway_nand_data {
- 	struct nand_chip	chip;
- };
+@@ -107,22 +107,18 @@ static void xway_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ 	unsigned long nandaddr = (unsigned long) this->IO_ADDR_W;
+ 	unsigned long flags;
  
--static void xway_reset_chip(struct nand_chip *chip)
--{
--	unsigned long nandaddr = (unsigned long) chip->IO_ADDR_W;
--	unsigned long flags;
--
--	nandaddr &= ~NAND_WRITE_ADDR;
--	nandaddr |= NAND_WRITE_CMD;
--
--	/* finish with a reset */
--	spin_lock_irqsave(&ebu_lock, flags);
--	writeb(NAND_WRITE_CMD_RESET, (void __iomem *) nandaddr);
--	while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
--		;
--	spin_unlock_irqrestore(&ebu_lock, flags);
--}
--
- static void xway_select_chip(struct mtd_info *mtd, int chip)
- {
+-	if (ctrl & NAND_CTRL_CHANGE) {
+-		nandaddr &= ~(NAND_WRITE_CMD | NAND_WRITE_ADDR);
+-		if (ctrl & NAND_CLE)
+-			nandaddr |= NAND_WRITE_CMD;
+-		else
+-			nandaddr |= NAND_WRITE_ADDR;
+-		this->IO_ADDR_W = (void __iomem *) nandaddr;
+-	}
++	if (cmd == NAND_CMD_NONE)
++		return;
  
-@@ -199,9 +182,6 @@ static int xway_nand_probe(struct platform_device *pdev)
- 		| NAND_CON_SE_P | NAND_CON_WP_P | NAND_CON_PRE_P
- 		| cs_flag, EBU_NAND_CON);
+-	if (cmd != NAND_CMD_NONE) {
+-		spin_lock_irqsave(&ebu_lock, flags);
+-		writeb(cmd, this->IO_ADDR_W);
+-		while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
+-			;
+-		spin_unlock_irqrestore(&ebu_lock, flags);
+-	}
++	spin_lock_irqsave(&ebu_lock, flags);
++	if (ctrl & NAND_CLE)
++		writeb(cmd, (void __iomem *) (nandaddr | NAND_WRITE_CMD));
++	else if (ctrl & NAND_ALE)
++		writeb(cmd, (void __iomem *) (nandaddr | NAND_WRITE_ADDR));
++
++	while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
++		;
++	spin_unlock_irqrestore(&ebu_lock, flags);
+ }
  
--	/* finish with a reset */
--	xway_reset_chip(&data->chip);
--
- 	/* Scan to find existence of the device */
- 	err = nand_scan(mtd, 1);
- 	if (err)
+ static int xway_dev_ready(struct mtd_info *mtd)
 -- 
 2.8.1
