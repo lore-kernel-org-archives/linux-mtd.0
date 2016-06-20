@@ -1,24 +1,21 @@
 Received: from hauke-m.de ([2001:41d0:8:b27b::1])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF6b7-0002mV-8d
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 21:19:10 +0000
-Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
-To: Richard Weinberger <richard@nod.at>, Arnd Bergmann <arnd@arndb.de>
-References: <20160619130514.GB820@makrotopia.org> <6411961.soYuJ4Ixfs@wuerfel>
- <5767A8A3.4030004@nod.at> <4012191.NTCe8d2REM@wuerfel>
- <57684AB9.5040607@nod.at>
-Cc: Daniel Golle <daniel@makrotopia.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>, mark.rutland@arm.com,
- devicetree@vger.kernel.org, dedekind1@gmail.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
+ id 1bF6bp-0002zt-5p
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 21:19:53 +0000
+Subject: Re: [PATCH v4 4/8] mtd: nand: xway: use generic reset function
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+References: <1466355785-13689-1-git-send-email-hauke@hauke-m.de>
+ <1466355785-13689-5-git-send-email-hauke@hauke-m.de>
+ <20160620105024.0f711aed@bbrezillon>
+Cc: richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, john@phrozen.org
 From: Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <f7f47b9d-b37c-712d-3319-585474277b41@hauke-m.de>
-Date: Mon, 20 Jun 2016 23:18:45 +0200
+Message-ID: <bc209a8e-3508-5cee-3ff9-5cf7112a9e71@hauke-m.de>
+Date: Mon, 20 Jun 2016 23:19:30 +0200
 MIME-Version: 1.0
-In-Reply-To: <57684AB9.5040607@nod.at>
+In-Reply-To: <20160620105024.0f711aed@bbrezillon>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +25,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/20/2016 09:57 PM, Richard Weinberger wrote:
-> Am 20.06.2016 um 17:08 schrieb Arnd Bergmann:
->>> Since blocks on a MTD can render bad you'd lose the table sooner or later.
->>> That's why we cannot store it on the MTD directly.
->>> Defining the table in DT is at least less ugly than using the mtdparts=
->>> kernel parameter.
->>
->> Right, there would be no benefit in using the kernel command line,
->> it just moves the information to another place inside of the same DT
->> (the /chosen property).
->>
->> I think you can normally rely on the first block being readable
->> on flash, in particular if you write it very rarely (when updating
->> the partition information), so it would be technically possible to
->> have a partition table in there, but in practice that's not how
->> things are done, so the argument is useless.
+On 06/20/2016 10:50 AM, Boris Brezillon wrote:
+> On Sun, 19 Jun 2016 19:03:01 +0200
+> Hauke Mehrtens <hauke@hauke-m.de> wrote:
 > 
-> Speaking of NAND, only SLC (and also here not all) chips guarantee that the first
-> block is better than the other ones.
+>> Instead of writing an own reset function use the generic NAND reset
+>> function. This way we can remove our own reset function.
+>>
+>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>> ---
+>>  drivers/mtd/nand/xway_nand.c | 23 +++--------------------
+>>  1 file changed, 3 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/xway_nand.c b/drivers/mtd/nand/xway_nand.c
+>> index 6028edb..8a0019a 100644
+>> --- a/drivers/mtd/nand/xway_nand.c
+>> +++ b/drivers/mtd/nand/xway_nand.c
+>> @@ -35,7 +35,6 @@
+>>  #define NAND_CMD_CS		BIT(4) /* chip select */
+>>  #define NAND_CMD_SE		BIT(5) /* spare area access latch */
+>>  #define NAND_CMD_WP		BIT(6) /* write protect */
+>> -#define NAND_WRITE_CMD_RESET	0xff
+>>  #define NAND_WRITE_CMD		(NAND_CMD_CS | NAND_CMD_CLE)
+>>  #define NAND_WRITE_ADDR		(NAND_CMD_CS | NAND_CMD_ALE)
+>>  #define NAND_WRITE_DATA		(NAND_CMD_CS)
+>> @@ -68,22 +67,6 @@ struct xway_nand_data {
+>>  	struct nand_chip	chip;
+>>  };
+>>  
+>> -static void xway_reset_chip(struct nand_chip *chip)
+>> -{
+>> -	unsigned long nandaddr = (unsigned long) chip->IO_ADDR_W;
+>> -	unsigned long flags;
+>> -
+>> -	nandaddr &= ~NAND_WRITE_ADDR;
+>> -	nandaddr |= NAND_WRITE_CMD;
+>> -
+>> -	/* finish with a reset */
+>> -	spin_lock_irqsave(&ebu_lock, flags);
+>> -	writeb(NAND_WRITE_CMD_RESET, (void __iomem *) nandaddr);
+>> -	while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) == 0)
+>> -		;
+>> -	spin_unlock_irqrestore(&ebu_lock, flags);
+>> -}
+>> -
+>>  static void xway_select_chip(struct mtd_info *mtd, int chip)
+>>  {
+>>  
+>> @@ -199,14 +182,14 @@ static int xway_nand_probe(struct platform_device *pdev)
+>>  		| NAND_CON_SE_P | NAND_CON_WP_P | NAND_CON_PRE_P
+>>  		| cs_flag, EBU_NAND_CON);
+>>  
+>> -	/* finish with a reset */
+>> -	xway_reset_chip(&data->chip);
+>> -
+>>  	/* Scan to find existence of the device */
+>>  	err = nand_scan(mtd, 1);
+>>  	if (err)
+>>  		return err;
+>>  
+>> +	/* finish with a reset */
+>> +	data->chip.cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+>> +
+> 
+> Hm, I wonder if this is really useful. The NAND chip is already reset
+> as part of the nand_scan() process. Are you sure you need to reset it
+> again here?
+> 
+> Can you test after dropping this reset operation?
+> 
 
-Being able to define a rootfs the kernel should load with a /chosen
-property would also be nice.
-
-https://www.kernel.org/doc/Documentation/devicetree/bindings/chosen.txt
-
-These UBI patches were just one step to make it possible to define the
-root partition in device tree. It would probably be better to first look
-on how to do that with normal mtd partitions and then see how to extend
-that to UBI.
-
-Currently I have to extend the boot args with these parameters to boot a
-unmodified mainline kernel: "ubi.mtd=ubi ubi.block=0,rootfsA
-root=/dev/ubiblock0_1"
-This is a SquashFS in a UBI layer on a mtd partition. I know that I can
-put this into the bootargs in a device tree file.
+Yes it looks like this is not needed at all, I will send new patches.
 
 Hauke
