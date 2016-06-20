@@ -1,7 +1,7 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEvUV-0003gA-6F
+ id 1bEvUV-0003gI-6D
  for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 09:27:37 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,9 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Richard Weinberger <richard@nod.at>
 Cc: linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
  Aleksei Mamlin <mamlinav@gmail.com>, valdis.kletnieks@vt.edu
-Subject: [PATCH v3 02/16] mtd: nand: get rid of the mtd parameter in all
- auto-detection functions
-Date: Mon, 20 Jun 2016 11:26:48 +0200
-Message-Id: <1466414822-18948-3-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 03/16] mtd: nand: store nand ID in struct nand_chip
+Date: Mon, 20 Jun 2016 11:26:49 +0200
+Message-Id: <1466414822-18948-4-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,186 +24,243 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that struct nand_chip embeds an mtd_info object we can get rid of the
-mtd parameter and extract it from the chip parameter with the nand_to_mtd()
-helper.
+Store the NAND ID in struct nand_chip to avoid passing id_data and id_len
+as function parameters.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_base.c | 56 ++++++++++++++++++++++++--------------------
- 1 file changed, 30 insertions(+), 26 deletions(-)
+ drivers/mtd/nand/nand_base.c | 55 ++++++++++++++++++++++++--------------------
+ include/linux/mtd/nand.h     | 13 +++++++++++
+ 2 files changed, 43 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index c2f832360871..a0ce1b5c9df2 100644
+index a0ce1b5c9df2..f890f3e2eaa3 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -3231,9 +3231,10 @@ static u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
- }
- 
- /* Parse the Extended Parameter Page. */
--static int nand_flash_detect_ext_param_page(struct mtd_info *mtd,
--		struct nand_chip *chip, struct nand_onfi_params *p)
-+static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
-+					    struct nand_onfi_params *p)
- {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct onfi_ext_param_page *ep;
- 	struct onfi_ext_section *s;
- 	struct onfi_ext_ecc_info *ecc;
-@@ -3328,9 +3329,9 @@ static void nand_onfi_detect_micron(struct nand_chip *chip,
- /*
-  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
-  */
--static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
--					int *busw)
-+static int nand_flash_detect_onfi(struct nand_chip *chip, int *busw)
- {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_onfi_params *p = &chip->onfi_params;
- 	int i, j;
- 	int val;
-@@ -3417,7 +3418,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 			chip->cmdfunc = nand_command_lp;
- 
- 		/* The Extended Parameter Page is supported since ONFI 2.1. */
--		if (nand_flash_detect_ext_param_page(mtd, chip, p))
-+		if (nand_flash_detect_ext_param_page(chip, p))
- 			pr_warn("Failed to detect ONFI extended param page\n");
- 	} else {
- 		pr_warn("Could not retrieve ONFI ECC requirements\n");
-@@ -3432,9 +3433,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- /*
-  * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
-  */
--static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
--					int *busw)
-+static int nand_flash_detect_jedec(struct nand_chip *chip, int *busw)
- {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_jedec_params *p = &chip->jedec_params;
- 	struct jedec_ecc_info *ecc;
- 	int val;
-@@ -3584,9 +3585,10 @@ static int nand_get_bits_per_cell(u8 cellinfo)
+@@ -3585,18 +3585,16 @@ static int nand_get_bits_per_cell(u8 cellinfo)
   * chip. The rest of the parameters must be decoded according to generic or
   * manufacturer-specific "extended ID" decoding patterns.
   */
--static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
--				u8 id_data[8], int *busw)
-+static void nand_decode_ext_id(struct nand_chip *chip, u8 id_data[8],
-+			       int *busw)
+-static void nand_decode_ext_id(struct nand_chip *chip, u8 id_data[8],
+-			       int *busw)
++static void nand_decode_ext_id(struct nand_chip *chip, int *busw)
  {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int extid, id_len;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+-	int extid, id_len;
++	int extid, id_len = chip->id.len;
++	u8 *id_data = chip->id.data;
  	/* The 3rd id byte holds MLC / multichip data */
  	chip->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
-@@ -3717,10 +3719,10 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
-  * decodes a matching ID table entry and assigns the MTD size parameters for
+ 	/* The 4th id byte is the important one */
+ 	extid = id_data[3];
+ 
+-	id_len = nand_id_len(id_data, 8);
+-
+ 	/*
+ 	 * Field definitions are in the following datasheets:
+ 	 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
+@@ -3720,9 +3718,10 @@ static void nand_decode_ext_id(struct nand_chip *chip, u8 id_data[8],
   * the chip.
   */
--static void nand_decode_id(struct mtd_info *mtd, struct nand_chip *chip,
--				struct nand_flash_dev *type, u8 id_data[8],
--				int *busw)
-+static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type,
-+			   u8 id_data[8], int *busw)
+ static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type,
+-			   u8 id_data[8], int *busw)
++			   int *busw)
  {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	u8 *id_data = chip->id.data;
  	int maf_id = id_data[0];
  
  	mtd->erasesize = type->erasesize;
-@@ -3750,9 +3752,9 @@ static void nand_decode_id(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -3752,9 +3751,10 @@ static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type,
   * heuristic patterns using various detected parameters (e.g., manufacturer,
   * page size, cell-type information).
   */
--static void nand_decode_bbm_options(struct mtd_info *mtd,
--				    struct nand_chip *chip, u8 id_data[8])
-+static void nand_decode_bbm_options(struct nand_chip *chip, u8 id_data[8])
+-static void nand_decode_bbm_options(struct nand_chip *chip, u8 id_data[8])
++static void nand_decode_bbm_options(struct nand_chip *chip)
  {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	u8 *id_data = chip->id.data;
  	int maf_id = id_data[0];
  
  	/* Set the bad block position */
-@@ -3787,9 +3789,12 @@ static inline bool is_full_id_nand(struct nand_flash_dev *type)
- 	return type->id_len;
+@@ -3790,10 +3790,10 @@ static inline bool is_full_id_nand(struct nand_flash_dev *type)
  }
  
--static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
--		   struct nand_flash_dev *type, u8 *id_data, int *busw)
-+static bool find_full_id_nand(struct nand_chip *chip,
-+			      struct nand_flash_dev *type, u8 *id_data,
-+			      int *busw)
+ static bool find_full_id_nand(struct nand_chip *chip,
+-			      struct nand_flash_dev *type, u8 *id_data,
+-			      int *busw)
++			      struct nand_flash_dev *type, int *busw)
  {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	u8 *id_data = chip->id.data;
+ 
  	if (!strncmp(type->id, id_data, type->id_len)) {
  		mtd->writesize = type->pagesize;
- 		mtd->erasesize = type->erasesize;
-@@ -3816,11 +3821,11 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
- /*
+@@ -3822,13 +3822,13 @@ static bool find_full_id_nand(struct nand_chip *chip,
   * Get the flash and manufacturer id and lookup if the type is supported.
   */
--static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
--						  struct nand_chip *chip,
-+static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
- 						  int *maf_id, int *dev_id,
+ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+-						  int *maf_id, int *dev_id,
  						  struct nand_flash_dev *type)
  {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
  	int busw;
  	int i, maf_idx;
- 	u8 id_data[8];
-@@ -3865,7 +3870,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+-	u8 id_data[8];
++	u8 *id_data = chip->id.data;
++	u8 maf_id, dev_id;
+ 
+ 	/* Select the device */
+ 	chip->select_chip(mtd, 0);
+@@ -3843,8 +3843,8 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+ 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+ 
+ 	/* Read manufacturer and device IDs */
+-	*maf_id = chip->read_byte(mtd);
+-	*dev_id = chip->read_byte(mtd);
++	maf_id = chip->read_byte(mtd);
++	dev_id = chip->read_byte(mtd);
+ 
+ 	/*
+ 	 * Try again to make sure, as some systems the bus-hold or other
+@@ -3859,20 +3859,22 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+ 	for (i = 0; i < 8; i++)
+ 		id_data[i] = chip->read_byte(mtd);
+ 
+-	if (id_data[0] != *maf_id || id_data[1] != *dev_id) {
++	if (id_data[0] != maf_id || id_data[1] != dev_id) {
+ 		pr_info("second ID read did not match %02x,%02x against %02x,%02x\n",
+-			*maf_id, *dev_id, id_data[0], id_data[1]);
++			maf_id, dev_id, id_data[0], id_data[1]);
+ 		return ERR_PTR(-ENODEV);
+ 	}
+ 
++	chip->id.len = nand_id_len(id_data, 8);
++
+ 	if (!type)
+ 		type = nand_flash_ids;
  
  	for (; type->name != NULL; type++) {
  		if (is_full_id_nand(type)) {
--			if (find_full_id_nand(mtd, chip, type, id_data, &busw))
-+			if (find_full_id_nand(chip, type, id_data, &busw))
+-			if (find_full_id_nand(chip, type, id_data, &busw))
++			if (find_full_id_nand(chip, type, &busw))
  				goto ident_done;
- 		} else if (*dev_id == type->dev_id) {
+-		} else if (*dev_id == type->dev_id) {
++		} else if (dev_id == type->dev_id) {
  			break;
-@@ -3875,11 +3880,11 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 	chip->onfi_version = 0;
- 	if (!type->name || !type->pagesize) {
- 		/* Check if the chip is ONFI compliant */
--		if (nand_flash_detect_onfi(mtd, chip, &busw))
-+		if (nand_flash_detect_onfi(chip, &busw))
- 			goto ident_done;
- 
- 		/* Check if the chip is JEDEC compliant */
--		if (nand_flash_detect_jedec(mtd, chip, &busw))
-+		if (nand_flash_detect_jedec(chip, &busw))
- 			goto ident_done;
+ 		}
  	}
- 
-@@ -3893,9 +3898,9 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+@@ -3898,9 +3900,9 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
  
  	if (!type->pagesize) {
  		/* Decode parameters from extended ID */
--		nand_decode_ext_id(mtd, chip, id_data, &busw);
-+		nand_decode_ext_id(chip, id_data, &busw);
+-		nand_decode_ext_id(chip, id_data, &busw);
++		nand_decode_ext_id(chip, &busw);
  	} else {
--		nand_decode_id(mtd, chip, type, id_data, &busw);
-+		nand_decode_id(chip, type, id_data, &busw);
+-		nand_decode_id(chip, type, id_data, &busw);
++		nand_decode_id(chip, type, &busw);
  	}
  	/* Get chip options */
  	chip->options |= type->options;
-@@ -3932,7 +3937,7 @@ ident_done:
+@@ -3909,13 +3911,13 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+ 	 * Check if chip is not a Samsung device. Do not clear the
+ 	 * options for chips which do not have an extended id.
+ 	 */
+-	if (*maf_id != NAND_MFR_SAMSUNG && !type->pagesize)
++	if (maf_id != NAND_MFR_SAMSUNG && !type->pagesize)
+ 		chip->options &= ~NAND_SAMSUNG_LP_OPTIONS;
+ ident_done:
+ 
+ 	/* Try to identify manufacturer */
+ 	for (maf_idx = 0; nand_manuf_ids[maf_idx].id != 0x0; maf_idx++) {
+-		if (nand_manuf_ids[maf_idx].id == *maf_id)
++		if (nand_manuf_ids[maf_idx].id == maf_id)
+ 			break;
+ 	}
+ 
+@@ -3929,7 +3931,7 @@ ident_done:
+ 		 * chip correct!
+ 		 */
+ 		pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+-			*maf_id, *dev_id);
++			maf_id, dev_id);
+ 		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
+ 		pr_warn("bus width %d instead %d bit\n",
+ 			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
+@@ -3937,7 +3939,7 @@ ident_done:
  		return ERR_PTR(-EINVAL);
  	}
  
--	nand_decode_bbm_options(mtd, chip, id_data);
-+	nand_decode_bbm_options(chip, id_data);
+-	nand_decode_bbm_options(chip, id_data);
++	nand_decode_bbm_options(chip);
  
  	/* Calculate the address shift from the page size */
  	chip->page_shift = ffs(mtd->writesize) - 1;
-@@ -4148,8 +4153,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+@@ -3961,7 +3963,7 @@ ident_done:
+ 		chip->cmdfunc = nand_command_lp;
+ 
+ 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+-		*maf_id, *dev_id);
++		maf_id, dev_id);
+ 
+ 	if (chip->onfi_version)
+ 		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
+@@ -4153,7 +4155,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
  	nand_set_defaults(chip, chip->options & NAND_BUSWIDTH_16);
  
  	/* Read the flash type */
--	type = nand_get_flash_type(mtd, chip, &nand_maf_id,
--				   &nand_dev_id, table);
-+	type = nand_get_flash_type(chip, &nand_maf_id, &nand_dev_id, table);
+-	type = nand_get_flash_type(chip, &nand_maf_id, &nand_dev_id, table);
++	type = nand_get_flash_type(chip, table);
  
  	if (IS_ERR(type)) {
  		if (!(chip->options & NAND_SCAN_SILENT_NODEV))
+@@ -4162,6 +4164,9 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 		return PTR_ERR(type);
+ 	}
+ 
++	nand_maf_id = chip->id.data[0];
++	nand_dev_id = chip->id.data[1];
++
+ 	chip->select_chip(mtd, -1);
+ 
+ 	/* Check for a chip array */
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index fbe8e164a4ee..3072f5ee0fef 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -447,6 +447,17 @@ struct nand_jedec_params {
+ } __packed;
+ 
+ /**
++ * struct nand_id - NAND id structure
++ * @data: buffer containing the id bytes. Currently 8 bytes large, but can
++ *	  be extended if required.
++ * @len: ID length.
++ */
++struct nand_id {
++	u8 data[8];
++	int len;
++};
++
++/**
+  * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
+  * @lock:               protection lock
+  * @active:		the mtd device which holds the controller currently
+@@ -639,6 +650,7 @@ struct nand_buffers {
+  * @pagebuf_bitflips:	[INTERN] holds the bitflip count for the page which is
+  *			currently in data_buf.
+  * @subpagesize:	[INTERN] holds the subpagesize
++ * @id:			[INTERN] holds NAND ID
+  * @onfi_version:	[INTERN] holds the chip ONFI version (BCD encoded),
+  *			non 0 if ONFI supported.
+  * @jedec_version:	[INTERN] holds the chip JEDEC version (BCD encoded),
+@@ -718,6 +730,7 @@ struct nand_chip {
+ 	int badblockpos;
+ 	int badblockbits;
+ 
++	struct nand_id id;
+ 	int onfi_version;
+ 	int jedec_version;
+ 	union {
 -- 
 2.7.4
