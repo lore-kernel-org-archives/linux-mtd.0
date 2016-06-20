@@ -1,8 +1,8 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEvUV-0003gT-6G
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 09:27:37 +0000
+ id 1bEvUq-0003pl-Fz
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 09:27:57 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
@@ -10,9 +10,10 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Richard Weinberger <richard@nod.at>
 Cc: linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
  Aleksei Mamlin <mamlinav@gmail.com>, valdis.kletnieks@vt.edu
-Subject: [PATCH v3 04/16] mtd: nand: get rid of busw parameter
-Date: Mon, 20 Jun 2016 11:26:50 +0200
-Message-Id: <1466414822-18948-5-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 14/16] mtd: nand: samsung: retrieve ECC requirements from
+ extended ID
+Date: Mon, 20 Jun 2016 11:27:00 +0200
+Message-Id: <1466414822-18948-15-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,228 +25,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Auto-detection functions are passed a busw parameter to retrieve the actual
-NAND bus width and eventually set the correct value in chip->options.
-Rework the nand_get_flash_type() function to get rid of this extra
-parameter and let detection code directly set the NAND_BUSWIDTH_16 flag in
-chip->options if needed.
+From: Hans de Goede <hdegoede@redhat.com>
 
+On some nand controllers with hw-ecc the controller code wants to know
+the ecc strength and size and having these as 0, 0 is not accepted.
+
+Specifying these in devicetree is possible but undesirable as the nand
+may be different in different production runs of the same board, so it
+is better to get this info from the nand id where possible.
+
+This commit adds code to read the ecc strength and size from the nand
+for Samsung extended-id nands. This code is based on the info for the 5th
+id byte in the datasheets for the following Samsung nands: K9GAG08U0E,
+K9GAG08U0F, K9GAG08X0D, K9GBG08U0A, K9GBG08U0B. These all use these bits
+in the exact same way.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_base.c | 68 ++++++++++++++++++++++++--------------------
- 1 file changed, 37 insertions(+), 31 deletions(-)
+ drivers/mtd/nand/nand_samsung.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index f890f3e2eaa3..b174d7c6ba1f 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3151,8 +3151,10 @@ static void nand_shutdown(struct mtd_info *mtd)
- }
- 
- /* Set default functions */
--static void nand_set_defaults(struct nand_chip *chip, int busw)
-+static void nand_set_defaults(struct nand_chip *chip)
- {
-+	unsigned int busw = chip->options & NAND_BUSWIDTH_16;
-+
- 	/* check for proper chip_delay setup, set 20us if not */
- 	if (!chip->chip_delay)
- 		chip->chip_delay = 20;
-@@ -3329,7 +3331,7 @@ static void nand_onfi_detect_micron(struct nand_chip *chip,
- /*
-  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
-  */
--static int nand_flash_detect_onfi(struct nand_chip *chip, int *busw)
-+static int nand_flash_detect_onfi(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_onfi_params *p = &chip->onfi_params;
-@@ -3398,9 +3400,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip, int *busw)
- 	chip->bits_per_cell = p->bits_per_cell;
- 
- 	if (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS)
--		*busw = NAND_BUSWIDTH_16;
--	else
--		*busw = 0;
-+		chip->options |= NAND_BUSWIDTH_16;
- 
- 	if (p->ecc_bits != 0xff) {
- 		chip->ecc_strength_ds = p->ecc_bits;
-@@ -3433,7 +3433,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip, int *busw)
- /*
-  * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
-  */
--static int nand_flash_detect_jedec(struct nand_chip *chip, int *busw)
-+static int nand_flash_detect_jedec(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_jedec_params *p = &chip->jedec_params;
-@@ -3494,9 +3494,7 @@ static int nand_flash_detect_jedec(struct nand_chip *chip, int *busw)
- 	chip->bits_per_cell = p->bits_per_cell;
- 
- 	if (jedec_feature(chip) & JEDEC_FEATURE_16_BIT_BUS)
--		*busw = NAND_BUSWIDTH_16;
--	else
--		*busw = 0;
-+		chip->options |= NAND_BUSWIDTH_16;
- 
- 	/* ECC info */
- 	ecc = &p->ecc_info[0];
-@@ -3585,7 +3583,7 @@ static int nand_get_bits_per_cell(u8 cellinfo)
-  * chip. The rest of the parameters must be decoded according to generic or
-  * manufacturer-specific "extended ID" decoding patterns.
-  */
--static void nand_decode_ext_id(struct nand_chip *chip, int *busw)
-+static void nand_decode_ext_id(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int extid, id_len = chip->id.len;
-@@ -3638,7 +3636,6 @@ static void nand_decode_ext_id(struct nand_chip *chip, int *busw)
- 		/* Calc blocksize */
- 		mtd->erasesize = (128 * 1024) <<
- 			(((extid >> 1) & 0x04) | (extid & 0x03));
--		*busw = 0;
- 	} else if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
- 			!nand_is_slc(chip)) {
- 		unsigned int tmp;
-@@ -3679,7 +3676,6 @@ static void nand_decode_ext_id(struct nand_chip *chip, int *busw)
- 			mtd->erasesize = 768 * 1024;
- 		else
- 			mtd->erasesize = (64 * 1024) << tmp;
--		*busw = 0;
- 	} else {
- 		/* Calc pagesize */
- 		mtd->writesize = 1024 << (extid & 0x03);
-@@ -3692,7 +3688,8 @@ static void nand_decode_ext_id(struct nand_chip *chip, int *busw)
- 		mtd->erasesize = (64 * 1024) << (extid & 0x03);
+diff --git a/drivers/mtd/nand/nand_samsung.c b/drivers/mtd/nand/nand_samsung.c
+index 863be01a2232..5d973d45b223 100644
+--- a/drivers/mtd/nand/nand_samsung.c
++++ b/drivers/mtd/nand/nand_samsung.c
+@@ -63,6 +63,26 @@ static void samsung_nand_decode_id(struct nand_chip *chip)
  		extid >>= 2;
- 		/* Get buswidth information */
--		*busw = (extid & 0x01) ? NAND_BUSWIDTH_16 : 0;
-+		if (extid & 0x1)
-+			chip->options |= NAND_BUSWIDTH_16;
- 
- 		/*
- 		 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
-@@ -3717,8 +3714,7 @@ static void nand_decode_ext_id(struct nand_chip *chip, int *busw)
-  * decodes a matching ID table entry and assigns the MTD size parameters for
-  * the chip.
-  */
--static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type,
--			   int *busw)
-+static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	u8 *id_data = chip->id.data;
-@@ -3727,7 +3723,6 @@ static void nand_decode_id(struct nand_chip *chip, struct nand_flash_dev *type,
- 	mtd->erasesize = type->erasesize;
- 	mtd->writesize = type->pagesize;
- 	mtd->oobsize = mtd->writesize / 32;
--	*busw = type->options & NAND_BUSWIDTH_16;
- 
- 	/* All legacy ID NAND are small-page, SLC */
- 	chip->bits_per_cell = 1;
-@@ -3790,7 +3785,7 @@ static inline bool is_full_id_nand(struct nand_flash_dev *type)
- }
- 
- static bool find_full_id_nand(struct nand_chip *chip,
--			      struct nand_flash_dev *type, int *busw)
-+			      struct nand_flash_dev *type)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	u8 *id_data = chip->id.data;
-@@ -3808,8 +3803,6 @@ static bool find_full_id_nand(struct nand_chip *chip,
- 		chip->onfi_timing_mode_default =
- 					type->onfi_timing_mode_default;
- 
--		*busw = type->options & NAND_BUSWIDTH_16;
--
- 		if (!mtd->name)
- 			mtd->name = type->name;
- 
-@@ -3870,9 +3863,24 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
- 	if (!type)
- 		type = nand_flash_ids;
- 
-+	/*
-+	 * Save the NAND_BUSWIDTH_16 flag before letting auto-detection logic
-+	 * override it.
-+	 * This is required to make sure initial NAND bus width set by the
-+	 * NAND controller driver is coherent with the real NAND bus width
-+	 * (extracted by auto-detection code).
-+	 */
-+	busw = chip->options & NAND_BUSWIDTH_16;
+ 		mtd->erasesize = (128 * 1024) <<
+ 				 (((extid >> 1) & 0x04) | (extid & 0x03));
 +
-+	/*
-+	 * The flag is only set (never cleared), reset it to its default value
-+	 * before starting auto-detection.
-+	 */
-+	chip->options &= ~NAND_BUSWIDTH_16;
-+
- 	for (; type->name != NULL; type++) {
- 		if (is_full_id_nand(type)) {
--			if (find_full_id_nand(chip, type, &busw))
-+			if (find_full_id_nand(chip, type))
- 				goto ident_done;
- 		} else if (dev_id == type->dev_id) {
- 			break;
-@@ -3882,11 +3890,11 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
- 	chip->onfi_version = 0;
- 	if (!type->name || !type->pagesize) {
- 		/* Check if the chip is ONFI compliant */
--		if (nand_flash_detect_onfi(chip, &busw))
-+		if (nand_flash_detect_onfi(chip))
- 			goto ident_done;
- 
- 		/* Check if the chip is JEDEC compliant */
--		if (nand_flash_detect_jedec(chip, &busw))
-+		if (nand_flash_detect_jedec(chip))
- 			goto ident_done;
- 	}
- 
-@@ -3900,9 +3908,9 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
- 
- 	if (!type->pagesize) {
- 		/* Decode parameters from extended ID */
--		nand_decode_ext_id(chip, &busw);
-+		nand_decode_ext_id(chip);
++		/* Extract ECC requirements from 5th id byte*/
++		extid = (chip->id.data[4] >> 4) & 0x07;
++		if (extid < 5) {
++			chip->ecc_step_ds = 512;
++			chip->ecc_strength_ds = 1 << extid;
++		} else {
++			chip->ecc_step_ds = 1024;
++			switch (extid) {
++			case 5:
++				chip->ecc_strength_ds = 24;
++				break;
++			case 6:
++				chip->ecc_strength_ds = 40;
++				break;
++			case 7:
++				chip->ecc_strength_ds = 60;
++				break;
++			}
++		}
  	} else {
--		nand_decode_id(chip, type, &busw);
-+		nand_decode_id(chip, type);
+ 		nand_decode_ext_id(chip);
  	}
- 	/* Get chip options */
- 	chip->options |= type->options;
-@@ -3922,9 +3930,8 @@ ident_done:
- 	}
- 
- 	if (chip->options & NAND_BUSWIDTH_AUTO) {
--		WARN_ON(chip->options & NAND_BUSWIDTH_16);
--		chip->options |= busw;
--		nand_set_defaults(chip, busw);
-+		WARN_ON(busw & NAND_BUSWIDTH_16);
-+		nand_set_defaults(chip);
- 	} else if (busw != (chip->options & NAND_BUSWIDTH_16)) {
- 		/*
- 		 * Check, if buswidth is correct. Hardware drivers should set
-@@ -3933,9 +3940,8 @@ ident_done:
- 		pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
- 			maf_id, dev_id);
- 		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
--		pr_warn("bus width %d instead %d bit\n",
--			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
--			   busw ? 16 : 8);
-+		pr_warn("bus width %d instead %d bit\n", busw ? 16 : 8,
-+			(chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
- 		return ERR_PTR(-EINVAL);
- 	}
- 
-@@ -4152,7 +4158,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
- 		mtd->name = dev_name(mtd->dev.parent);
- 
- 	/* Set the default functions */
--	nand_set_defaults(chip, chip->options & NAND_BUSWIDTH_16);
-+	nand_set_defaults(chip);
- 
- 	/* Read the flash type */
- 	type = nand_get_flash_type(chip, table);
 -- 
 2.7.4
