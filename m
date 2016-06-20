@@ -1,16 +1,21 @@
-Date: Mon, 20 Jun 2016 13:52:07 +0200
+Received: from down.free-electrons.com ([37.187.137.238]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1bExlM-0000Ma-Dk
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 11:53:09 +0000
+Date: Mon, 20 Jun 2016 13:52:46 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
  Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
  <richard@nod.at>
 Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
- <wens@csie.org>, linux-sunxi@googlegroups.com,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/3] mtd: nand: sunxi: fix SLC NAND support
-Message-ID: <20160620135207.5559196a@bbrezillon>
-In-Reply-To: <1465214354-31493-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1465214354-31493-1-git-send-email-boris.brezillon@free-electrons.com>
+ <wens@csie.org>, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH] mtd: nand: sunxi: Fix OOB bytes retrieval in
+ read_chunks_dma()
+Message-ID: <20160620135246.55b1abd0@bbrezillon>
+In-Reply-To: <1465982532-30174-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1465982532-30174-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,33 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  6 Jun 2016 13:59:11 +0200
+On Wed, 15 Jun 2016 11:22:12 +0200
 Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> Hello,
+> The column address passed to the RNDOUT operation was missing the page
+> size offset.
 > 
-> Those 3 patches aims a fixing support for SLC NANDs with rather small
-> NAND pages (<= 4k).
-> 
-> The first patch promote 512 bytes ECC steps to 1k steps, which should
-> both save a few OOB bytes and provide stronger ECC.
-> The second patch checks the ECC step value, and rejects any NAND that
-> requires ECC steps != 512 | 1024.
-> The last patch implements ecc->write_subpage(), thus fixing a NULL
-> pointer dereference when the NAND chip supports subpage write.
 
 Applied.
 
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Fixes: 614049a8d904 ("mtd: nand: sunxi: add support for DMA assisted operations")
+> ---
+>  drivers/mtd/nand/sunxi_nand.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> Best Regards,
-> 
-> Boris
-> 
-> Boris Brezillon (3):
->   mtd: nand: sunxi: prefer 1k ECC blocks when applicable
->   mtd: nand: sunxi: check ecc->size values
->   mtd: nand: sunxi: fix subpage write
-> 
->  drivers/mtd/nand/sunxi_nand.c | 42 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 41 insertions(+), 1 deletion(-)
-> 
+> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
+> index ea74827..bcdd015 100644
+> --- a/drivers/mtd/nand/sunxi_nand.c
+> +++ b/drivers/mtd/nand/sunxi_nand.c
+> @@ -1094,7 +1094,8 @@ static int sunxi_nfc_hw_ecc_read_chunks_dma(struct mtd_info *mtd, uint8_t *buf,
+>  
+>  		if (oob_required && !erased) {
+>  			/* TODO: use DMA to retrieve OOB */
+> -			nand->cmdfunc(mtd, NAND_CMD_RNDOUT, oob_off, -1);
+> +			nand->cmdfunc(mtd, NAND_CMD_RNDOUT,
+> +				      mtd->writesize + oob_off, -1);
+>  			nand->read_buf(mtd, oob, ecc->bytes + 4);
+>  
+>  			sunxi_nfc_hw_ecc_get_prot_oob_bytes(mtd, oob, i,
+> @@ -1129,7 +1130,8 @@ static int sunxi_nfc_hw_ecc_read_chunks_dma(struct mtd_info *mtd, uint8_t *buf,
+>  			}
+>  
+>  			/* TODO: use DMA to retrieve OOB */
+> -			nand->cmdfunc(mtd, NAND_CMD_RNDOUT, oob_off, -1);
+> +			nand->cmdfunc(mtd, NAND_CMD_RNDOUT,
+> +				      mtd->writesize + oob_off, -1);
+>  			nand->read_buf(mtd, oob, ecc->bytes + 4);
+>  
+>  			ret = nand_check_erased_ecc_chunk(data,	ecc->size,
