@@ -1,15 +1,16 @@
 Received: from eusmtp01.atmel.com ([212.144.249.243])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF2QE-00051v-CL
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 16:51:48 +0000
+ id 1bF2QY-00051v-FU
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 16:52:02 +0000
 From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
 To: <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
 CC: <nicolas.ferre@atmel.com>, <boris.brezillon@free-electrons.com>,
  <marex@denx.de>, <linux-kernel@vger.kernel.org>, Cyrille Pitchen
  <cyrille.pitchen@atmel.com>
-Subject: [PATCH 4/9] mtd: atmel-quadspi: add driver for Atmel QSPI controller
-Date: Mon, 20 Jun 2016 18:50:03 +0200
-Message-ID: <60b8800302ce14eac04fb9fdecdbf4ebd216df18.1466440540.git.cyrille.pitchen@atmel.com>
+Subject: [PATCH 5/9] mtd: spi-nor: add support of SPI protocols like SPI 1-2-2
+ and SPI 1-4-4
+Date: Mon, 20 Jun 2016 18:50:04 +0200
+Message-ID: <d385cfe4280a465d443d8ab9886ba3a28bb60e10.1466440540.git.cyrille.pitchen@atmel.com>
 In-Reply-To: <cover.1466440540.git.cyrille.pitchen@atmel.com>
 References: <cover.1466440540.git.cyrille.pitchen@atmel.com>
 MIME-Version: 1.0
@@ -23,794 +24,899 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This driver add support to the new Atmel QSPI controller embedded into
-sama5d2x SoCs. It expects a NOR memory to be connected to the QSPI
+This patch changes the prototype of spi_nor_scan(): its 3rd parameter
+is replaced by a const struct spi_nor_modes pointer, which tells the
+spi-nor framework about which SPI protocols are supported by the SPI
 controller.
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
----
- drivers/mtd/spi-nor/Kconfig         |   9 +
- drivers/mtd/spi-nor/Makefile        |   1 +
- drivers/mtd/spi-nor/atmel-quadspi.c | 741 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 751 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/atmel-quadspi.c
+Besides, this patch also introduces a new spi_nor_basic_flash_parameter
+structure telling the spi-nor framework about the SPI protocols supported
+by the SPI memory and the needed op codes to use these SPI protocols.
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index d42c98e1f581..c546efd1357b 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -38,6 +38,15 @@ config SPI_FSL_QUADSPI
- 	  This controller does not support generic SPI. It only supports
- 	  SPI NOR.
+Currently the struct spi_nor_basic_flash_parameter is filled with legacy
+values but a later patch will allow to fill it dynamically by reading the
+JESD216 Serial Flash Discoverable Parameter (SFDP) tables from the SPI
+memory.
+
+With both structures, the spi-nor framework can now compute the best
+match between SPI protocols supported by both the (Q)SPI memory and
+controller hence selecting the relevant op codes for (Fast) Read, Page
+Program and Sector Erase operations.
+
+The spi_nor_basic_flash_parameter structure also provides the spi-nor
+framework with the number of dummy cycles to be used with each Fast Read
+commands and the erase block size associated to the erase block op codes.
+
+Finally the spi_nor_basic_flash_parameter structure, through the optional
+.enable_quad_io() hook, tells the spi-nor framework how to set the Quad
+Enable (QE) bit of the QSPI memory to enable its Quad SPI features.
+
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+---
+ drivers/mtd/devices/m25p80.c        |  17 ++-
+ drivers/mtd/spi-nor/atmel-quadspi.c |  83 +++++++----
+ drivers/mtd/spi-nor/fsl-quadspi.c   |   8 +-
+ drivers/mtd/spi-nor/mtk-quadspi.c   |  16 ++-
+ drivers/mtd/spi-nor/nxp-spifi.c     |  21 +--
+ drivers/mtd/spi-nor/spi-nor.c       | 278 ++++++++++++++++++++++++++++--------
+ include/linux/mtd/spi-nor.h         | 136 ++++++++++++++++--
+ 7 files changed, 444 insertions(+), 115 deletions(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 9cf7fcd28034..f0a55c01406b 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -111,10 +111,10 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
  
-+config SPI_ATMEL_QUADSPI
-+	tristate "Atmel Quad SPI Controller"
-+	depends on ARCH_AT91 || (ARM && COMPILE_TEST)
-+	depends on OF && HAS_IOMEM
-+	help
-+	  This enables support for the Quad SPI controller in master mode.
-+	  This driver does not support generic SPI. The implementation only
-+	  supports SPI NOR.
-+
- config SPI_NXP_SPIFI
- 	tristate "NXP SPI Flash Interface (SPIFI)"
- 	depends on OF && (ARCH_LPC18XX || COMPILE_TEST)
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 0bf3a7f81675..1525913698ad 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -2,3 +2,4 @@ obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
- obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
- obj-$(CONFIG_MTD_MT81xx_NOR)    += mtk-quadspi.o
- obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
-+obj-$(CONFIG_SPI_ATMEL_QUADSPI)	+= atmel-quadspi.o
-diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-nor/atmel-quadspi.c
-new file mode 100644
-index 000000000000..06d1bf276dd0
---- /dev/null
-+++ b/drivers/mtd/spi-nor/atmel-quadspi.c
-@@ -0,0 +1,741 @@
-+/*
-+ * Driver for Atmel QSPI Controller
-+ *
-+ * Copyright (C) 2015 Atmel Corporation
-+ *
-+ * Author: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along with
-+ * this program.  If not, see <http://www.gnu.org/licenses/>.
-+ *
-+ * This driver is based on drivers/mtd/spi-nor/fsl-quadspi.c from Freescale.
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/clk.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/delay.h>
-+#include <linux/err.h>
-+#include <linux/interrupt.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mtd/spi-nor.h>
-+#include <linux/platform_data/atmel.h>
-+#include <linux/of.h>
-+
-+#include <linux/io.h>
-+#include <linux/gpio.h>
-+#include <linux/pinctrl/consumer.h>
-+
-+/* QSPI register offsets */
-+#define QSPI_CR      0x0000  /* Control Register */
-+#define QSPI_MR      0x0004  /* Mode Register */
-+#define QSPI_RD      0x0008  /* Receive Data Register */
-+#define QSPI_TD      0x000c  /* Transmit Data Register */
-+#define QSPI_SR      0x0010  /* Status Register */
-+#define QSPI_IER     0x0014  /* Interrupt Enable Register */
-+#define QSPI_IDR     0x0018  /* Interrupt Disable Register */
-+#define QSPI_IMR     0x001c  /* Interrupt Mask Register */
-+#define QSPI_SCR     0x0020  /* Serial Clock Register */
-+
-+#define QSPI_IAR     0x0030  /* Instruction Address Register */
-+#define QSPI_ICR     0x0034  /* Instruction Code Register */
-+#define QSPI_IFR     0x0038  /* Instruction Frame Register */
-+
-+#define QSPI_SMR     0x0040  /* Scrambling Mode Register */
-+#define QSPI_SKR     0x0044  /* Scrambling Key Register */
-+
-+#define QSPI_WPMR    0x00E4  /* Write Protection Mode Register */
-+#define QSPI_WPSR    0x00E8  /* Write Protection Status Register */
-+
-+#define QSPI_VERSION 0x00FC  /* Version Register */
-+
-+
-+/* Bitfields in QSPI_CR (Control Register) */
-+#define QSPI_CR_QSPIEN                  BIT(0)
-+#define QSPI_CR_QSPIDIS                 BIT(1)
-+#define QSPI_CR_SWRST                   BIT(7)
-+#define QSPI_CR_LASTXFER                BIT(24)
-+
-+/* Bitfields in QSPI_MR (Mode Register) */
-+#define QSPI_MR_SSM                     BIT(0)
-+#define QSPI_MR_LLB                     BIT(1)
-+#define QSPI_MR_WDRBT                   BIT(2)
-+#define QSPI_MR_SMRM                    BIT(3)
-+#define QSPI_MR_CSMODE_MASK             GENMASK(5, 4)
-+#define QSPI_MR_CSMODE_NOT_RELOADED     (0 << 4)
-+#define QSPI_MR_CSMODE_LASTXFER         (1 << 4)
-+#define QSPI_MR_CSMODE_SYSTEMATICALLY   (2 << 4)
-+#define QSPI_MR_NBBITS_MASK             GENMASK(11, 8)
-+#define QSPI_MR_NBBITS(n)               ((((n) - 8) << 8) & QSPI_MR_NBBITS_MASK)
-+#define QSPI_MR_DLYBCT_MASK             GENMASK(23, 16)
-+#define QSPI_MR_DLYBCT(n)               (((n) << 16) & QSPI_MR_DLYBCT_MASK)
-+#define QSPI_MR_DLYCS_MASK              GENMASK(31, 24)
-+#define QSPI_MR_DLYCS(n)                (((n) << 24) & QSPI_MR_DLYCS_MASK)
-+
-+/* Bitfields in QSPI_SR/QSPI_IER/QSPI_IDR/QSPI_IMR  */
-+#define QSPI_SR_RDRF                    BIT(0)
-+#define QSPI_SR_TDRE                    BIT(1)
-+#define QSPI_SR_TXEMPTY                 BIT(2)
-+#define QSPI_SR_OVRES                   BIT(3)
-+#define QSPI_SR_CSR                     BIT(8)
-+#define QSPI_SR_CSS                     BIT(9)
-+#define QSPI_SR_INSTRE                  BIT(10)
-+#define QSPI_SR_QSPIENS                 BIT(24)
-+
-+#define QSPI_SR_CMD_COMPLETED	(QSPI_SR_INSTRE | QSPI_SR_CSR)
-+
-+/* Bitfields in QSPI_SCR (Serial Clock Register) */
-+#define QSPI_SCR_CPOL                   BIT(0)
-+#define QSPI_SCR_CPHA                   BIT(1)
-+#define QSPI_SCR_SCBR_MASK              GENMASK(15, 8)
-+#define QSPI_SCR_SCBR(n)                (((n) << 8) & QSPI_SCR_SCBR_MASK)
-+#define QSPI_SCR_DLYBS_MASK             GENMASK(23, 16)
-+#define QSPI_SCR_DLYBS(n)               (((n) << 16) & QSPI_SCR_DLYBS_MASK)
-+
-+/* Bitfields in QSPI_ICR (Instruction Code Register) */
-+#define QSPI_ICR_INST_MASK              GENMASK(7, 0)
-+#define QSPI_ICR_INST(inst)             (((inst) << 0) & QSPI_ICR_INST_MASK)
-+#define QSPI_ICR_OPT_MASK               GENMASK(23, 16)
-+#define QSPI_ICR_OPT(opt)               (((opt) << 16) & QSPI_ICR_OPT_MASK)
-+
-+/* Bitfields in QSPI_IFR (Instruction Frame Register) */
-+#define QSPI_IFR_WIDTH_MASK             GENMASK(2, 0)
-+#define QSPI_IFR_WIDTH_SINGLE_BIT_SPI   (0 << 0)
-+#define QSPI_IFR_WIDTH_DUAL_OUTPUT      (1 << 0)
-+#define QSPI_IFR_WIDTH_QUAD_OUTPUT      (2 << 0)
-+#define QSPI_IFR_WIDTH_DUAL_IO          (3 << 0)
-+#define QSPI_IFR_WIDTH_QUAD_IO          (4 << 0)
-+#define QSPI_IFR_WIDTH_DUAL_CMD         (5 << 0)
-+#define QSPI_IFR_WIDTH_QUAD_CMD         (6 << 0)
-+#define QSPI_IFR_INSTEN                 BIT(4)
-+#define QSPI_IFR_ADDREN                 BIT(5)
-+#define QSPI_IFR_OPTEN                  BIT(6)
-+#define QSPI_IFR_DATAEN                 BIT(7)
-+#define QSPI_IFR_OPTL_MASK              GENMASK(9, 8)
-+#define QSPI_IFR_OPTL_1BIT              (0 << 8)
-+#define QSPI_IFR_OPTL_2BIT              (1 << 8)
-+#define QSPI_IFR_OPTL_4BIT              (2 << 8)
-+#define QSPI_IFR_OPTL_8BIT              (3 << 8)
-+#define QSPI_IFR_ADDRL                  BIT(10)
-+#define QSPI_IFR_TFRTYP_MASK            GENMASK(13, 12)
-+#define QSPI_IFR_TFRTYP_TRSFR_READ      (0 << 12)
-+#define QSPI_IFR_TFRTYP_TRSFR_READ_MEM  (1 << 12)
-+#define QSPI_IFR_TFRTYP_TRSFR_WRITE     (2 << 12)
-+#define QSPI_IFR_TFRTYP_TRSFR_WRITE_MEM (3 << 13)
-+#define QSPI_IFR_CRM                    BIT(14)
-+#define QSPI_IFR_NBDUM_MASK             GENMASK(20, 16)
-+#define QSPI_IFR_NBDUM(n)               (((n) << 16) & QSPI_IFR_NBDUM_MASK)
-+
-+/* Bitfields in QSPI_SMR (Scrambling Mode Register) */
-+#define QSPI_SMR_SCREN                  BIT(0)
-+#define QSPI_SMR_RVDIS                  BIT(1)
-+
-+/* Bitfields in QSPI_WPMR (Write Protection Mode Register) */
-+#define QSPI_WPMR_WPEN                  BIT(0)
-+#define QSPI_WPMR_WPKEY_MASK            GENMASK(31, 8)
-+#define QSPI_WPMR_WPKEY(wpkey)          (((wpkey) << 8) & QSPI_WPMR_WPKEY_MASK)
-+
-+/* Bitfields in QSPI_WPSR (Write Protection Status Register) */
-+#define QSPI_WPSR_WPVS                  BIT(0)
-+#define QSPI_WPSR_WPVSRC_MASK           GENMASK(15, 8)
-+#define QSPI_WPSR_WPVSRC(src)           (((src) << 8) & QSPI_WPSR_WPVSRC)
-+
-+
-+struct atmel_qspi {
-+	void __iomem		*regs;
-+	void __iomem		*mem;
-+	struct clk		*clk;
-+	struct platform_device	*pdev;
-+	u32			pending;
-+
-+	struct spi_nor		nor;
-+	u32			clk_rate;
-+	struct completion	cmd_completion;
-+};
-+
-+struct atmel_qspi_command {
-+	union {
-+		struct {
-+			u32	instruction:1;
-+			u32	address:3;
-+			u32	mode:1;
-+			u32	dummy:1;
-+			u32	data:1;
-+			u32	reserved:25;
-+		}		bits;
-+		u32	word;
-+	}	enable;
-+	u8	instruction;
-+	u8	mode;
-+	u8	num_mode_cycles;
-+	u8	num_dummy_cycles;
-+	u32	address;
-+
-+	size_t		buf_len;
-+	const void	*tx_buf;
-+	void		*rx_buf;
-+};
-+
-+/* Register access functions */
-+static inline u32 qspi_readl(struct atmel_qspi *aq, u32 reg)
-+{
-+	return readl_relaxed(aq->regs + reg);
-+}
-+
-+static inline void qspi_writel(struct atmel_qspi *aq, u32 reg, u32 value)
-+{
-+	writel_relaxed(value, aq->regs + reg);
-+}
-+
-+static int atmel_qspi_run_transfer(struct atmel_qspi *aq,
-+				   const struct atmel_qspi_command *cmd)
-+{
-+	void __iomem *ahb_mem;
-+
-+	/* Then fallback to a PIO transfer (memcpy() DOES NOT work!) */
-+	ahb_mem = aq->mem;
-+	if (cmd->enable.bits.address)
-+		ahb_mem += cmd->address;
-+	if (cmd->tx_buf)
-+		_memcpy_toio(ahb_mem, cmd->tx_buf, cmd->buf_len);
-+	else
-+		_memcpy_fromio(cmd->rx_buf, ahb_mem, cmd->buf_len);
-+
-+	return 0;
-+}
-+
-+#ifdef DEBUG
-+static void atmel_qspi_debug_command(struct atmel_qspi *aq,
-+				     const struct atmel_qspi_command *cmd,
-+				     u32 ifr)
-+{
-+	u8 cmd_buf[SPI_NOR_MAX_CMD_SIZE];
-+	size_t len = 0;
-+	int i;
-+
-+	if (cmd->enable.bits.instruction)
-+		cmd_buf[len++] = cmd->instruction;
-+
-+	for (i = cmd->enable.bits.address-1; i >= 0; --i)
-+		cmd_buf[len++] = (cmd->address >> (i << 3)) & 0xff;
-+
-+	if (cmd->enable.bits.mode)
-+		cmd_buf[len++] = cmd->mode;
-+
-+	if (cmd->enable.bits.dummy) {
-+		int num = cmd->num_dummy_cycles;
-+
-+		switch (ifr & QSPI_IFR_WIDTH_MASK) {
-+		case QSPI_IFR_WIDTH_SINGLE_BIT_SPI:
-+		case QSPI_IFR_WIDTH_DUAL_OUTPUT:
-+		case QSPI_IFR_WIDTH_QUAD_OUTPUT:
-+			num >>= 3;
-+			break;
-+		case QSPI_IFR_WIDTH_DUAL_IO:
-+		case QSPI_IFR_WIDTH_DUAL_CMD:
-+			num >>= 2;
-+			break;
-+		case QSPI_IFR_WIDTH_QUAD_IO:
-+		case QSPI_IFR_WIDTH_QUAD_CMD:
-+			num >>= 1;
-+			break;
-+		default:
-+			return;
-+		}
-+
-+		for (i = 0; i < num; ++i)
-+			cmd_buf[len++] = 0;
-+	}
-+
-+	/* Dump the SPI command */
-+	print_hex_dump(KERN_DEBUG, "qspi cmd: ", DUMP_PREFIX_NONE,
-+		       32, 1, cmd_buf, len, false);
-+
-+#ifdef VERBOSE_DEBUG
-+	/* If verbose debug is enabled, also dump the TX data */
-+	if (cmd->enable.bits.data && cmd->tx_buf)
-+		print_hex_dump(KERN_DEBUG, "qspi tx : ", DUMP_PREFIX_NONE,
-+			       32, 1, cmd->tx_buf, cmd->buf_len, false);
-+#endif
-+}
-+#else
-+#define atmel_qspi_debug_command(aq, cmd, ifr)
-+#endif
-+
-+static int atmel_qspi_run_command(struct atmel_qspi *aq,
-+				  const struct atmel_qspi_command *cmd,
-+				  u32 ifr_tfrtyp, u32 ifr_width)
-+{
-+	u32 iar, icr, ifr, sr;
-+	int err = 0;
-+
-+	iar = 0;
-+	icr = 0;
-+	ifr = ifr_tfrtyp | ifr_width;
-+
-+	/* Compute instruction parameters */
-+	if (cmd->enable.bits.instruction) {
-+		icr |= QSPI_ICR_INST(cmd->instruction);
-+		ifr |= QSPI_IFR_INSTEN;
-+	}
-+
-+	/* Compute address parameters */
-+	switch (cmd->enable.bits.address) {
+ static inline unsigned int m25p80_rx_nbits(struct spi_nor *nor)
+ {
+-	switch (nor->flash_read) {
+-	case SPI_NOR_DUAL:
++	switch (SNOR_PROTO_DATA_FROM_PROTO(nor->read_proto)) {
++	case 2:
+ 		return 2;
+-	case SPI_NOR_QUAD:
 +	case 4:
-+		ifr |= QSPI_IFR_ADDRL;
-+		/* fall through to the 24bit (3 byte) address case. */
-+	case 3:
-+		iar = (cmd->enable.bits.data) ? 0 : cmd->address;
-+		ifr |= QSPI_IFR_ADDREN;
+ 		return 4;
+ 	default:
+ 		return 0;
+@@ -195,7 +195,10 @@ static int m25p_probe(struct spi_device *spi)
+ 	struct flash_platform_data	*data;
+ 	struct m25p *flash;
+ 	struct spi_nor *nor;
+-	enum read_mode mode = SPI_NOR_NORMAL;
++	struct spi_nor_modes modes = {
++		.rd_modes = SNOR_MODE_SLOW,
++		.wr_modes = SNOR_MODE_1_1_1,
++	};
+ 	char *flash_name;
+ 	int ret;
+ 
+@@ -221,9 +224,9 @@ static int m25p_probe(struct spi_device *spi)
+ 	flash->spi = spi;
+ 
+ 	if (spi->mode & SPI_RX_QUAD)
+-		mode = SPI_NOR_QUAD;
++		modes.rd_modes |= SNOR_MODE_1_1_4;
+ 	else if (spi->mode & SPI_RX_DUAL)
+-		mode = SPI_NOR_DUAL;
++		modes.rd_modes |= SNOR_MODE_1_1_2;
+ 
+ 	if (data && data->name)
+ 		nor->mtd.name = data->name;
+@@ -240,7 +243,7 @@ static int m25p_probe(struct spi_device *spi)
+ 	else
+ 		flash_name = spi->modalias;
+ 
+-	ret = spi_nor_scan(nor, flash_name, mode);
++	ret = spi_nor_scan(nor, flash_name, &modes);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-nor/atmel-quadspi.c
+index 06d1bf276dd0..d51c3db2110f 100644
+--- a/drivers/mtd/spi-nor/atmel-quadspi.c
++++ b/drivers/mtd/spi-nor/atmel-quadspi.c
+@@ -275,14 +275,48 @@ static void atmel_qspi_debug_command(struct atmel_qspi *aq,
+ 
+ static int atmel_qspi_run_command(struct atmel_qspi *aq,
+ 				  const struct atmel_qspi_command *cmd,
+-				  u32 ifr_tfrtyp, u32 ifr_width)
++				  u32 ifr_tfrtyp, enum spi_nor_protocol proto)
+ {
+ 	u32 iar, icr, ifr, sr;
+ 	int err = 0;
+ 
+ 	iar = 0;
+ 	icr = 0;
+-	ifr = ifr_tfrtyp | ifr_width;
++	ifr = ifr_tfrtyp;
++
++	/* Set the SPI protocol */
++	switch (proto) {
++	case SNOR_PROTO_1_1_1:
++		ifr |= QSPI_IFR_WIDTH_SINGLE_BIT_SPI;
 +		break;
-+	case 0:
++
++	case SNOR_PROTO_1_1_2:
++		ifr |= QSPI_IFR_WIDTH_DUAL_OUTPUT;
 +		break;
++
++	case SNOR_PROTO_1_1_4:
++		ifr |= QSPI_IFR_WIDTH_QUAD_OUTPUT;
++		break;
++
++	case SNOR_PROTO_1_2_2:
++		ifr |= QSPI_IFR_WIDTH_DUAL_IO;
++		break;
++
++	case SNOR_PROTO_1_4_4:
++		ifr |= QSPI_IFR_WIDTH_QUAD_IO;
++		break;
++
++	case SNOR_PROTO_2_2_2:
++		ifr |= QSPI_IFR_WIDTH_DUAL_CMD;
++		break;
++
++	case SNOR_PROTO_4_4_4:
++		ifr |= QSPI_IFR_WIDTH_QUAD_CMD;
++		break;
++
++	default:
++		return -EINVAL;
++	}
+ 
+ 	/* Compute instruction parameters */
+ 	if (cmd->enable.bits.instruction) {
+@@ -434,7 +468,7 @@ static int atmel_qspi_read_reg(struct spi_nor *nor, u8 opcode,
+ 	cmd.rx_buf = buf;
+ 	cmd.buf_len = len;
+ 	return atmel_qspi_run_command(aq, &cmd, QSPI_IFR_TFRTYP_TRSFR_READ,
+-				      QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
++				      nor->reg_proto);
+ }
+ 
+ static int atmel_qspi_write_reg(struct spi_nor *nor, u8 opcode,
+@@ -450,7 +484,7 @@ static int atmel_qspi_write_reg(struct spi_nor *nor, u8 opcode,
+ 	cmd.tx_buf = buf;
+ 	cmd.buf_len = len;
+ 	return atmel_qspi_run_command(aq, &cmd, QSPI_IFR_TFRTYP_TRSFR_WRITE,
+-				      QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
++				      nor->reg_proto);
+ }
+ 
+ static ssize_t atmel_qspi_write(struct spi_nor *nor, loff_t to, size_t len,
+@@ -469,7 +503,7 @@ static ssize_t atmel_qspi_write(struct spi_nor *nor, loff_t to, size_t len,
+ 	cmd.tx_buf = write_buf;
+ 	cmd.buf_len = len;
+ 	ret = atmel_qspi_run_command(aq, &cmd, QSPI_IFR_TFRTYP_TRSFR_WRITE_MEM,
+-				     QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
++				     nor->write_proto);
+ 	return (ret < 0) ? ret : len;
+ }
+ 
+@@ -484,7 +518,7 @@ static int atmel_qspi_erase(struct spi_nor *nor, loff_t offs)
+ 	cmd.instruction = nor->erase_opcode;
+ 	cmd.address = (u32)offs;
+ 	return atmel_qspi_run_command(aq, &cmd, QSPI_IFR_TFRTYP_TRSFR_WRITE,
+-				      QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
++				      nor->reg_proto);
+ }
+ 
+ static ssize_t atmel_qspi_read(struct spi_nor *nor, loff_t from, size_t len,
+@@ -493,27 +527,8 @@ static ssize_t atmel_qspi_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	struct atmel_qspi *aq = nor->priv;
+ 	struct atmel_qspi_command cmd;
+ 	u8 num_mode_cycles, num_dummy_cycles;
+-	u32 ifr_width;
+ 	ssize_t ret;
+ 
+-	switch (nor->flash_read) {
+-	case SPI_NOR_NORMAL:
+-	case SPI_NOR_FAST:
+-		ifr_width = QSPI_IFR_WIDTH_SINGLE_BIT_SPI;
+-		break;
+-
+-	case SPI_NOR_DUAL:
+-		ifr_width = QSPI_IFR_WIDTH_DUAL_OUTPUT;
+-		break;
+-
+-	case SPI_NOR_QUAD:
+-		ifr_width = QSPI_IFR_WIDTH_QUAD_OUTPUT;
+-		break;
+-
+-	default:
+-		return -EINVAL;
+-	}
+-
+ 	if (nor->read_dummy >= 2) {
+ 		num_mode_cycles = 2;
+ 		num_dummy_cycles = nor->read_dummy - 2;
+@@ -536,7 +551,7 @@ static ssize_t atmel_qspi_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	cmd.rx_buf = read_buf;
+ 	cmd.buf_len = len;
+ 	ret = atmel_qspi_run_command(aq, &cmd, QSPI_IFR_TFRTYP_TRSFR_READ_MEM,
+-				     ifr_width);
++				     nor->read_proto);
+ 	return (ret < 0) ? ret : len;
+ }
+ 
+@@ -598,6 +613,20 @@ static int atmel_qspi_probe(struct platform_device *pdev)
+ 	struct spi_nor *nor;
+ 	struct mtd_info *mtd;
+ 	int irq, err = 0;
++	struct spi_nor_modes modes = {
++		.rd_modes = (SNOR_MODE_SLOW |
++			     SNOR_MODE_1_1_1 |
++			     SNOR_MODE_1_1_2 |
++			     SNOR_MODE_1_1_4 |
++			     SNOR_MODE_1_2_2 |
++			     SNOR_MODE_1_4_4),
++		.wr_modes = (SNOR_MODE_SLOW |
++			     SNOR_MODE_1_1_1 |
++			     SNOR_MODE_1_1_2 |
++			     SNOR_MODE_1_1_4 |
++			     SNOR_MODE_1_2_2 |
++			     SNOR_MODE_1_4_4),
++	};
+ 
+ 	if (of_get_child_count(np) != 1)
+ 		return -ENODEV;
+@@ -688,7 +717,7 @@ static int atmel_qspi_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto disable_clk;
+ 
+-	err = spi_nor_scan(nor, name, SPI_NOR_QUAD);
++	err = spi_nor_scan(nor, name, &modes);
+ 	if (err)
+ 		goto disable_clk;
+ 
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 5c82e4ef1904..01e7356d6623 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -980,6 +980,12 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	struct spi_nor *nor;
+ 	struct mtd_info *mtd;
+ 	int ret, i = 0;
++	static const struct spi_nor_modes modes = {
++		.rd_modes = (SNOR_MODE_SLOW |
++			     SNOR_MODE_1_1_1 |
++			     SNOR_MODE_1_1_4),
++		.wr_modes = SNOR_MODE_1_1_1,
++	};
+ 
+ 	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
+ 	if (!q)
+@@ -1081,7 +1087,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		/* set the chip address for READID */
+ 		fsl_qspi_set_base_addr(q, nor);
+ 
+-		ret = spi_nor_scan(nor, NULL, SPI_NOR_QUAD);
++		ret = spi_nor_scan(nor, NULL, &modes);
+ 		if (ret)
+ 			goto mutex_failed;
+ 
+diff --git a/drivers/mtd/spi-nor/mtk-quadspi.c b/drivers/mtd/spi-nor/mtk-quadspi.c
+index 21c31b373cd3..c07cc2bd3fd7 100644
+--- a/drivers/mtd/spi-nor/mtk-quadspi.c
++++ b/drivers/mtd/spi-nor/mtk-quadspi.c
+@@ -122,20 +122,20 @@ static void mt8173_nor_set_read_mode(struct mt8173_nor *mt8173_nor)
+ {
+ 	struct spi_nor *nor = &mt8173_nor->nor;
+ 
+-	switch (nor->flash_read) {
+-	case SPI_NOR_FAST:
++	switch (SNOR_PROTO_DATA_FROM_PROTO(nor->read_proto)) {
++	case 1:
+ 		writeb(nor->read_opcode, mt8173_nor->base +
+ 		       MTK_NOR_PRGDATA3_REG);
+ 		writeb(MTK_NOR_FAST_READ, mt8173_nor->base +
+ 		       MTK_NOR_CFG1_REG);
+ 		break;
+-	case SPI_NOR_DUAL:
++	case 2:
+ 		writeb(nor->read_opcode, mt8173_nor->base +
+ 		       MTK_NOR_PRGDATA3_REG);
+ 		writeb(MTK_NOR_DUAL_READ_EN, mt8173_nor->base +
+ 		       MTK_NOR_DUAL_REG);
+ 		break;
+-	case SPI_NOR_QUAD:
++	case 4:
+ 		writeb(nor->read_opcode, mt8173_nor->base +
+ 		       MTK_NOR_PRGDATA4_REG);
+ 		writeb(MTK_NOR_QUAD_READ_EN, mt8173_nor->base +
+@@ -384,6 +384,12 @@ static int mtk_nor_init(struct mt8173_nor *mt8173_nor,
+ {
+ 	int ret;
+ 	struct spi_nor *nor;
++	static const struct spi_nor_modes modes = {
++		.rd_modes = (SNOR_MODE_SLOW |
++			     SNOR_MODE_1_1_1 |
++			     SNOR_MODE_1_1_2),
++		.wr_modes = SNOR_MODE_1_1_1,
++	};
+ 
+ 	/* initialize controller to accept commands */
+ 	writel(MTK_NOR_ENABLE_SF_CMD, mt8173_nor->base + MTK_NOR_WRPROT_REG);
+@@ -400,7 +406,7 @@ static int mtk_nor_init(struct mt8173_nor *mt8173_nor,
+ 	nor->write_reg = mt8173_nor_write_reg;
+ 	nor->mtd.name = "mtk_nor";
+ 	/* initialized with NULL */
+-	ret = spi_nor_scan(nor, NULL, SPI_NOR_DUAL);
++	ret = spi_nor_scan(nor, NULL, &modes);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-spifi.c
+index 73a14f40928b..327c5b5fe9da 100644
+--- a/drivers/mtd/spi-nor/nxp-spifi.c
++++ b/drivers/mtd/spi-nor/nxp-spifi.c
+@@ -240,13 +240,12 @@ static int nxp_spifi_erase(struct spi_nor *nor, loff_t offs)
+ 
+ static int nxp_spifi_setup_memory_cmd(struct nxp_spifi *spifi)
+ {
+-	switch (spifi->nor.flash_read) {
+-	case SPI_NOR_NORMAL:
+-	case SPI_NOR_FAST:
++	switch (SNOR_PROTO_DATA_FROM_PROTO(spifi->nor.read_proto)) {
++	case 1:
+ 		spifi->mcmd = SPIFI_CMD_FIELDFORM_ALL_SERIAL;
+ 		break;
+-	case SPI_NOR_DUAL:
+-	case SPI_NOR_QUAD:
++	case 2:
++	case 4:
+ 		spifi->mcmd = SPIFI_CMD_FIELDFORM_QUAD_DUAL_DATA;
+ 		break;
+ 	default:
+@@ -274,7 +273,10 @@ static void nxp_spifi_dummy_id_read(struct spi_nor *nor)
+ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+ 				 struct device_node *np)
+ {
+-	enum read_mode flash_read;
++	struct spi_nor_modes modes = {
++		.rd_modes = (SNOR_MODE_SLOW | SNOR_MODE_1_1_1),
++		.wr_modes = SNOR_MODE_1_1_1,
++	};
+ 	u32 ctrl, property;
+ 	u16 mode = 0;
+ 	int ret;
+@@ -308,13 +310,12 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+ 
+ 	if (mode & SPI_RX_DUAL) {
+ 		ctrl |= SPIFI_CTRL_DUAL;
+-		flash_read = SPI_NOR_DUAL;
++		modes.rd_modes |= SNOR_MODE_1_1_2;
+ 	} else if (mode & SPI_RX_QUAD) {
+ 		ctrl &= ~SPIFI_CTRL_DUAL;
+-		flash_read = SPI_NOR_QUAD;
++		modes.rd_modes |= SNOR_MODE_1_1_4;
+ 	} else {
+ 		ctrl |= SPIFI_CTRL_DUAL;
+-		flash_read = SPI_NOR_NORMAL;
+ 	}
+ 
+ 	switch (mode & (SPI_CPHA | SPI_CPOL)) {
+@@ -351,7 +352,7 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+ 	 */
+ 	nxp_spifi_dummy_id_read(&spifi->nor);
+ 
+-	ret = spi_nor_scan(&spifi->nor, NULL, flash_read);
++	ret = spi_nor_scan(&spifi->nor, NULL, &modes);
+ 	if (ret) {
+ 		dev_err(spifi->dev, "device scan failed\n");
+ 		return ret;
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index e484bfe54c36..29ba0e665fac 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -143,24 +143,6 @@ static int read_cr(struct spi_nor *nor)
+ }
+ 
+ /*
+- * Dummy Cycle calculation for different type of read.
+- * It can be used to support more commands with
+- * different dummy cycle requirements.
+- */
+-static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
+-{
+-	switch (nor->flash_read) {
+-	case SPI_NOR_FAST:
+-	case SPI_NOR_DUAL:
+-	case SPI_NOR_QUAD:
+-		return 8;
+-	case SPI_NOR_NORMAL:
+-		return 0;
+-	}
+-	return 0;
+-}
+-
+-/*
+  * Write status register 1 byte
+  * Returns negative if error occurred.
+  */
+@@ -1367,8 +1349,204 @@ static int spi_nor_check(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
+-int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
++static inline void spi_nor_set_read_settings(struct spi_nor_read *read,
++					     u8 num_mode_clocks,
++					     u8 num_wait_states,
++					     u8 opcode)
++{
++	read->num_mode_clocks = num_mode_clocks;
++	read->num_wait_states = num_wait_states;
++	read->opcode = opcode;
++}
++
++static inline void spi_nor_set_erase_settings(struct spi_nor_erase_type *erase,
++					      u8 size, u8 opcode)
++{
++	erase->size = size;
++	erase->opcode = opcode;
++}
++
++static int spi_nor_init_params(struct spi_nor *nor,
++			       const struct flash_info *info,
++			       struct spi_nor_basic_flash_parameter *params)
++{
++	// TODO: parse SFDP table
++
++	/* If SFDP tables are not available, use legacy settings. */
++	memset(params, 0, sizeof(*params));
++
++	/* (Fast) Read settings. */
++	params->rd_modes = SNOR_MODE_1_1_1;
++	spi_nor_set_read_settings(&params->reads[SNOR_PINDEX_1_1_1],
++				  0, 8, SPINOR_OP_READ_FAST);
++	if (!(info->flags & SPI_NOR_NO_FR)) {
++		params->rd_modes |= SNOR_MODE_SLOW;
++		spi_nor_set_read_settings(&params->reads[SNOR_PINDEX_SLOW],
++					  0, 0, SPINOR_OP_READ);
++	}
++	if (info->flags & SPI_NOR_DUAL_READ) {
++		params->rd_modes |= SNOR_MODE_1_1_2;
++		spi_nor_set_read_settings(&params->reads[SNOR_PINDEX_1_1_2],
++					  0, 8, SPINOR_OP_READ_1_1_2);
++	}
++	if (info->flags & SPI_NOR_QUAD_READ) {
++		params->rd_modes|= SNOR_MODE_1_1_4;
++		spi_nor_set_read_settings(&params->reads[SNOR_PINDEX_1_1_4],
++					  0, 8, SPINOR_OP_READ_1_1_4);
++	}
++
++	/* Page Program settings. */
++	params->wr_modes = SNOR_MODE_1_1_1;
++	params->page_programs[SNOR_PINDEX_1_1_1] = SPINOR_OP_PP;
++
++	/* Sector Erase settings. */
++	spi_nor_set_erase_settings(&params->erase_types[0],
++				   SNOR_ERASE_64K, SPINOR_OP_SE);
++	if (info->flags & SECT_4K)
++		spi_nor_set_erase_settings(&params->erase_types[1],
++					   SNOR_ERASE_4K, SPINOR_OP_BE_4K);
++	else if (info->flags & SECT_4K_PMC)
++		spi_nor_set_erase_settings(&params->erase_types[1],
++					   SNOR_ERASE_4K, SPINOR_OP_BE_4K_PMC);
++
++	/* Select the procedure to set the Quad Enable bit. */
++	if (params->rd_modes & (SNOR_MODE_1_1_4 |
++				SNOR_MODE_1_4_4 |
++				SNOR_MODE_4_4_4)) {
++		switch (JEDEC_MFR(info)) {
++		case SNOR_MFR_MACRONIX:
++			params->enable_quad_io = macronix_quad_enable;
++			break;
++
++		case SNOR_MFR_MICRON:
++			break;
++
++		default:
++			params->enable_quad_io = spansion_quad_enable;
++			break;
++		}
++	}
++
++	return 0;
++}
++
++static int spi_nor_pindex2proto(int pindex, enum spi_nor_protocol *proto)
++{
++	enum spi_nor_protocol_width pwidth;
++	enum spi_nor_protocol_class pclass;
++	uint8_t width;
++
++	if (pindex < 0)
++		return -EINVAL;
++
++	pwidth = (enum spi_nor_protocol_width)(pindex / SNOR_PCLASS_MAX);
++	pclass = (enum spi_nor_protocol_class)(pindex % SNOR_PCLASS_MAX);
++
++	width = (1 << pwidth) & 0xf;
++	if (!width)
++		return -EINVAL;
++
++	switch (pclass) {
++	case SNOR_PCLASS_1_1_N:
++		*proto = SNOR_PROTO(1, 1, width);
++		break;
++
++	case SNOR_PCLASS_1_N_N:
++		*proto = SNOR_PROTO(1, width, width);
++		break;
++
++	case SNOR_PCLASS_N_N_N:
++		*proto = SNOR_PROTO(width, width, width);
++		break;
++
 +	default:
 +		return -EINVAL;
 +	}
 +
-+	/* Compute option parameters */
-+	if (cmd->enable.bits.mode && cmd->num_mode_cycles) {
-+		u32 mode_cycle_bits, mode_bits;
++	return 0;
++}
 +
-+		icr |= QSPI_ICR_OPT(cmd->mode);
-+		ifr |= QSPI_IFR_OPTEN;
++static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *info,
++			 const struct spi_nor_basic_flash_parameter *params,
++			 const struct spi_nor_modes *modes)
+ {
++	bool enable_quad_io;
++	u32 rd_modes, wr_modes, mask;
++	const struct spi_nor_erase_type *erase_type = NULL;
++	const struct spi_nor_read *read;
++	int rd_pindex, wr_pindex, i, err = 0;
++	u8 erase_size = SNOR_ERASE_64K;
 +
-+		switch (ifr & QSPI_IFR_WIDTH_MASK) {
-+		case QSPI_IFR_WIDTH_SINGLE_BIT_SPI:
-+		case QSPI_IFR_WIDTH_DUAL_OUTPUT:
-+		case QSPI_IFR_WIDTH_QUAD_OUTPUT:
-+			mode_cycle_bits = 1;
-+			break;
-+		case QSPI_IFR_WIDTH_DUAL_IO:
-+		case QSPI_IFR_WIDTH_DUAL_CMD:
-+			mode_cycle_bits = 2;
-+			break;
-+		case QSPI_IFR_WIDTH_QUAD_IO:
-+		case QSPI_IFR_WIDTH_QUAD_CMD:
-+			mode_cycle_bits = 4;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
++	/* 2-2-2 or 4-4-4 modes are not supported yet. */
++	mask = (SNOR_MODE_2_2_2 | SNOR_MODE_4_4_4);
++	rd_modes = modes->rd_modes & ~mask;
++	wr_modes = modes->wr_modes & ~mask;
 +
-+		mode_bits = cmd->num_mode_cycles * mode_cycle_bits;
-+		switch (mode_bits) {
-+		case 1:
-+			ifr |= QSPI_IFR_OPTL_1BIT;
-+			break;
-+
-+		case 2:
-+			ifr |= QSPI_IFR_OPTL_2BIT;
-+			break;
-+
-+		case 4:
-+			ifr |= QSPI_IFR_OPTL_4BIT;
-+			break;
-+
-+		case 8:
-+			ifr |= QSPI_IFR_OPTL_8BIT;
-+			break;
-+
-+		default:
-+			return -EINVAL;
-+		}
++	/* Setup read operation. */
++	rd_pindex = fls(params->rd_modes & rd_modes) - 1;
++	if (spi_nor_pindex2proto(rd_pindex, &nor->read_proto)) {
++		dev_err(nor->dev, "invalid (fast) read\n");
++		return -EINVAL;
 +	}
++	read = &params->reads[rd_pindex];
++	nor->read_opcode = read->opcode;
++	nor->read_dummy = read->num_mode_clocks + read->num_wait_states;
 +
-+	/* Set number of dummy cycles */
-+	if (cmd->enable.bits.dummy)
-+		ifr |= QSPI_IFR_NBDUM(cmd->num_dummy_cycles);
-+
-+	/* Set data enable */
-+	if (cmd->enable.bits.data) {
-+		ifr |= QSPI_IFR_DATAEN;
-+
-+		/* Special case for Continuous Read Mode */
-+		if (!cmd->tx_buf && !cmd->rx_buf)
-+			ifr |= QSPI_IFR_CRM;
++	/* Set page program op code and protocol. */
++	wr_pindex = fls(params->wr_modes & wr_modes) - 1;
++	if (spi_nor_pindex2proto(wr_pindex, &nor->write_proto)) {
++		dev_err(nor->dev, "invalid page program\n");
++		return -EINVAL;
 +	}
++	nor->program_opcode = params->page_programs[wr_pindex];
 +
-+	/* Clear pending interrupts */
-+	(void)qspi_readl(aq, QSPI_SR);
-+
-+	/* Set QSPI Instruction Frame registers */
-+	atmel_qspi_debug_command(aq, cmd, ifr);
-+	qspi_writel(aq, QSPI_IAR, iar);
-+	qspi_writel(aq, QSPI_ICR, icr);
-+	qspi_writel(aq, QSPI_IFR, ifr);
-+
-+	/* Skip to the final steps if there is no data */
-+	if (!cmd->enable.bits.data)
-+		goto no_data;
-+
-+	/* Dummy read of QSPI_IFR to synchronize APB and AHB accesses */
-+	(void)qspi_readl(aq, QSPI_IFR);
-+
-+	/* Stop here for continuous read */
-+	if (!cmd->tx_buf && !cmd->rx_buf)
-+		return 0;
-+	/* Send/Receive data */
-+	err = atmel_qspi_run_transfer(aq, cmd);
-+
-+	/* Release the chip-select */
-+	qspi_writel(aq, QSPI_CR, QSPI_CR_LASTXFER);
-+
-+	if (err)
-+		return err;
-+
-+#if defined(DEBUG) && defined(VERBOSE_DEBUG)
-+	/*
-+	 * If verbose debug is enabled, also dump the RX data in addition to
-+	 * the SPI command previously dumped by atmel_qspi_debug_command()
-+	 */
-+	if (cmd->rx_buf)
-+		print_hex_dump(KERN_DEBUG, "qspi rx : ", DUMP_PREFIX_NONE,
-+			       32, 1, cmd->rx_buf, cmd->buf_len, false);
++	/* Set sector erase op code and size. */
++	erase_type = &params->erase_types[0];
++#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
++	erase_size = SNOR_ERASE_4K;
 +#endif
-+no_data:
-+	/* Poll INSTRuction End status */
-+	sr = qspi_readl(aq, QSPI_SR);
-+	if ((sr & QSPI_SR_CMD_COMPLETED) == QSPI_SR_CMD_COMPLETED)
-+		return err;
++	for (i = 0; i < SNOR_MAX_ERASE_TYPES; ++i) {
++		if (params->erase_types[i].size == erase_size) {
++			erase_type = &params->erase_types[i];
++			break;
++		}
++	}
++	nor->erase_opcode = erase_type->opcode;
++	nor->mtd.erasesize = (1 << erase_type->size);
 +
-+	/* Wait for INSTRuction End interrupt */
-+	reinit_completion(&aq->cmd_completion);
-+	aq->pending = sr & QSPI_SR_CMD_COMPLETED;
-+	qspi_writel(aq, QSPI_IER, QSPI_SR_CMD_COMPLETED);
-+	if (!wait_for_completion_timeout(&aq->cmd_completion,
-+					 msecs_to_jiffies(1000)))
-+		err = -ETIMEDOUT;
-+	qspi_writel(aq, QSPI_IDR, QSPI_SR_CMD_COMPLETED);
 +
-+	return err;
-+}
++	enable_quad_io = (SNOR_PROTO_DATA_FROM_PROTO(nor->read_proto) == 4 ||
++			  SNOR_PROTO_DATA_FROM_PROTO(nor->write_proto) == 4);
 +
-+static int atmel_qspi_read_reg(struct spi_nor *nor, u8 opcode,
-+			       u8 *buf, int len)
-+{
-+	struct atmel_qspi *aq = nor->priv;
-+	struct atmel_qspi_command cmd;
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+	cmd.enable.bits.instruction = 1;
-+	cmd.enable.bits.data = 1;
-+	cmd.instruction = opcode;
-+	cmd.rx_buf = buf;
-+	cmd.buf_len = len;
-+	return atmel_qspi_run_command(aq, &cmd, QSPI_IFR_TFRTYP_TRSFR_READ,
-+				      QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
-+}
-+
-+static int atmel_qspi_write_reg(struct spi_nor *nor, u8 opcode,
-+				u8 *buf, int len)
-+{
-+	struct atmel_qspi *aq = nor->priv;
-+	struct atmel_qspi_command cmd;
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+	cmd.enable.bits.instruction = 1;
-+	cmd.enable.bits.data = (buf != NULL && len > 0);
-+	cmd.instruction = opcode;
-+	cmd.tx_buf = buf;
-+	cmd.buf_len = len;
-+	return atmel_qspi_run_command(aq, &cmd, QSPI_IFR_TFRTYP_TRSFR_WRITE,
-+				      QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
-+}
-+
-+static ssize_t atmel_qspi_write(struct spi_nor *nor, loff_t to, size_t len,
-+				const u_char *write_buf)
-+{
-+	struct atmel_qspi *aq = nor->priv;
-+	struct atmel_qspi_command cmd;
-+	ssize_t ret;
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+	cmd.enable.bits.instruction = 1;
-+	cmd.enable.bits.address = nor->addr_width;
-+	cmd.enable.bits.data = 1;
-+	cmd.instruction = nor->program_opcode;
-+	cmd.address = (u32)to;
-+	cmd.tx_buf = write_buf;
-+	cmd.buf_len = len;
-+	ret = atmel_qspi_run_command(aq, &cmd, QSPI_IFR_TFRTYP_TRSFR_WRITE_MEM,
-+				     QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
-+	return (ret < 0) ? ret : len;
-+}
-+
-+static int atmel_qspi_erase(struct spi_nor *nor, loff_t offs)
-+{
-+	struct atmel_qspi *aq = nor->priv;
-+	struct atmel_qspi_command cmd;
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+	cmd.enable.bits.instruction = 1;
-+	cmd.enable.bits.address = nor->addr_width;
-+	cmd.instruction = nor->erase_opcode;
-+	cmd.address = (u32)offs;
-+	return atmel_qspi_run_command(aq, &cmd, QSPI_IFR_TFRTYP_TRSFR_WRITE,
-+				      QSPI_IFR_WIDTH_SINGLE_BIT_SPI);
-+}
-+
-+static ssize_t atmel_qspi_read(struct spi_nor *nor, loff_t from, size_t len,
-+			       u_char *read_buf)
-+{
-+	struct atmel_qspi *aq = nor->priv;
-+	struct atmel_qspi_command cmd;
-+	u8 num_mode_cycles, num_dummy_cycles;
-+	u32 ifr_width;
-+	ssize_t ret;
-+
-+	switch (nor->flash_read) {
-+	case SPI_NOR_NORMAL:
-+	case SPI_NOR_FAST:
-+		ifr_width = QSPI_IFR_WIDTH_SINGLE_BIT_SPI;
-+		break;
-+
-+	case SPI_NOR_DUAL:
-+		ifr_width = QSPI_IFR_WIDTH_DUAL_OUTPUT;
-+		break;
-+
-+	case SPI_NOR_QUAD:
-+		ifr_width = QSPI_IFR_WIDTH_QUAD_OUTPUT;
-+		break;
-+
-+	default:
-+		return -EINVAL;
++	/* Enable Quad I/O if needed. */
++	if (enable_quad_io && params->enable_quad_io) {
++		err = params->enable_quad_io(nor);
++		if (err) {
++			dev_err(nor->dev,
++				"failed to enable the Quad I/O mode\n");
++			return err;
++		}
 +	}
 +
-+	if (nor->read_dummy >= 2) {
-+		num_mode_cycles = 2;
-+		num_dummy_cycles = nor->read_dummy - 2;
-+	} else {
-+		num_mode_cycles = nor->read_dummy;
-+		num_dummy_cycles = 0;
-+	}
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+	cmd.enable.bits.instruction = 1;
-+	cmd.enable.bits.address = nor->addr_width;
-+	cmd.enable.bits.mode = (num_mode_cycles > 0);
-+	cmd.enable.bits.dummy = (num_dummy_cycles > 0);
-+	cmd.enable.bits.data = 1;
-+	cmd.instruction = nor->read_opcode;
-+	cmd.address = (u32)from;
-+	cmd.mode = 0xff; /* This value prevents from entering the 0-4-4 mode */
-+	cmd.num_mode_cycles = num_mode_cycles;
-+	cmd.num_dummy_cycles = num_dummy_cycles;
-+	cmd.rx_buf = read_buf;
-+	cmd.buf_len = len;
-+	ret = atmel_qspi_run_command(aq, &cmd, QSPI_IFR_TFRTYP_TRSFR_READ_MEM,
-+				     ifr_width);
-+	return (ret < 0) ? ret : len;
-+}
-+
-+static int atmel_qspi_init(struct atmel_qspi *aq)
-+{
-+	unsigned long src_rate;
-+	u32 mr, scr, scbr;
-+
-+	/* Reset the QSPI controller */
-+	qspi_writel(aq, QSPI_CR, QSPI_CR_SWRST);
-+
-+	/* Set the QSPI controller in Serial Memory Mode */
-+	mr = QSPI_MR_NBBITS(8) | QSPI_MR_SSM;
-+	qspi_writel(aq, QSPI_MR, mr);
-+
-+	src_rate = clk_get_rate(aq->clk);
-+	if (!src_rate)
-+		return -EINVAL;
-+
-+	/* Compute the QSPI baudrate */
-+	scbr = DIV_ROUND_UP(src_rate, aq->clk_rate);
-+	if (scbr > 0)
-+		scbr--;
-+	scr = QSPI_SCR_SCBR(scbr);
-+	qspi_writel(aq, QSPI_SCR, scr);
-+
-+	/* Enable the QSPI controller */
-+	qspi_writel(aq, QSPI_CR, QSPI_CR_QSPIEN);
++	dev_dbg(nor->dev,
++		"(Fast) Read:  opcode=%02Xh, protocol=%03x, mode=%u, wait=%u\n",
++		nor->read_opcode, nor->read_proto,
++		read->num_mode_clocks, read->num_wait_states);
++	dev_dbg(nor->dev,
++		"Page Program: opcode=%02Xh, protocol=%03x\n",
++		nor->program_opcode, nor->write_proto);
++	dev_dbg(nor->dev,
++		"Sector Erase: opcode=%02Xh, protocol=%03x, sector size=%u\n",
++		nor->erase_opcode, nor->reg_proto, (u32)nor->mtd.erasesize);
 +
 +	return 0;
 +}
 +
-+static irqreturn_t atmel_qspi_interrupt(int irq, void *dev_id)
++int spi_nor_scan(struct spi_nor *nor, const char *name,
++		 const struct spi_nor_modes *modes)
 +{
-+	struct atmel_qspi *aq = (struct atmel_qspi *)dev_id;
-+	u32 status, mask, pending;
++	struct spi_nor_basic_flash_parameter params;
++	struct spi_nor_modes fixed_modes = *modes;
+ 	const struct flash_info *info = NULL;
+ 	struct device *dev = nor->dev;
+ 	struct mtd_info *mtd = &nor->mtd;
+@@ -1380,6 +1558,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	if (ret)
+ 		return ret;
+ 
++	/* Reset SPI protocol for all commands */
++	nor->reg_proto = SNOR_PROTO_1_1_1;
++	nor->read_proto = SNOR_PROTO_1_1_1;
++	nor->write_proto = SNOR_PROTO_1_1_1;
 +
-+	status = qspi_readl(aq, QSPI_SR);
-+	mask = qspi_readl(aq, QSPI_IMR);
-+	pending = status & mask;
+ 	if (name)
+ 		info = spi_nor_match_id(name);
+ 	/* Try to auto-detect if chip name wasn't specified or not found */
+@@ -1412,6 +1595,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 		}
+ 	}
+ 
++	/* Parse the Serial Flash Discoverable Parameters table */
++	ret = spi_nor_init_params(nor, info, &params);
++	if (ret)
++		return ret;
 +
-+	if (!pending)
-+		return IRQ_NONE;
+ 	mutex_init(&nor->lock);
+ 
+ 	/*
+@@ -1488,51 +1676,31 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 	if (np) {
+ 		/* If we were instantiated by DT, use it */
+ 		if (of_property_read_bool(np, "m25p,fast-read"))
+-			nor->flash_read = SPI_NOR_FAST;
++			fixed_modes.rd_modes |= SNOR_MODE_1_1_1;
+ 		else
+-			nor->flash_read = SPI_NOR_NORMAL;
++			fixed_modes.rd_modes &= ~SNOR_MODE_1_1_1;
+ 	} else {
+ 		/* If we weren't instantiated by DT, default to fast-read */
+-		nor->flash_read = SPI_NOR_FAST;
++		fixed_modes.rd_modes |= SNOR_MODE_1_1_1;
+ 	}
+ 
+ 	/* Some devices cannot do fast-read, no matter what DT tells us */
+ 	if (info->flags & SPI_NOR_NO_FR)
+-		nor->flash_read = SPI_NOR_NORMAL;
+-
+-	/* Quad/Dual-read mode takes precedence over fast/normal */
+-	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
+-		ret = set_quad_mode(nor, info);
+-		if (ret) {
+-			dev_err(dev, "quad mode not supported\n");
+-			return ret;
+-		}
+-		nor->flash_read = SPI_NOR_QUAD;
+-	} else if (mode == SPI_NOR_DUAL && info->flags & SPI_NOR_DUAL_READ) {
+-		nor->flash_read = SPI_NOR_DUAL;
+-	}
+-
+-	/* Default commands */
+-	switch (nor->flash_read) {
+-	case SPI_NOR_QUAD:
+-		nor->read_opcode = SPINOR_OP_READ_1_1_4;
+-		break;
+-	case SPI_NOR_DUAL:
+-		nor->read_opcode = SPINOR_OP_READ_1_1_2;
+-		break;
+-	case SPI_NOR_FAST:
+-		nor->read_opcode = SPINOR_OP_READ_FAST;
+-		break;
+-	case SPI_NOR_NORMAL:
+-		nor->read_opcode = SPINOR_OP_READ;
+-		break;
+-	default:
+-		dev_err(dev, "No Read opcode defined\n");
+-		return -EINVAL;
+-	}
++		fixed_modes.rd_modes &= ~SNOR_MODE_1_1_1;
+ 
+ 	nor->program_opcode = SPINOR_OP_PP;
+ 
++	/*
++	 * Configure the SPI memory:
++	 * - select op codes for (Fast) Read, Page Program and Sector Erase.
++	 * - set the number of dummy cycles (mode cycles + wait states).
++	 * - set the SPI protocols for register and memory accesses.
++	 * - set the Quad Enable bit if needed (required by SPI x-y-4 protos).
++	 */
++	ret = spi_nor_setup(nor, info, &params, &fixed_modes);
++	if (ret)
++		return ret;
 +
-+	aq->pending |= pending;
-+	if ((aq->pending & QSPI_SR_CMD_COMPLETED) == QSPI_SR_CMD_COMPLETED)
-+		complete(&aq->cmd_completion);
+ 	if (info->addr_width)
+ 		nor->addr_width = info->addr_width;
+ 	else if (mtd->size > 0x1000000) {
+@@ -1553,8 +1721,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode)
+ 		return -EINVAL;
+ 	}
+ 
+-	nor->read_dummy = spi_nor_read_dummy_cycles(nor);
+-
+ 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+ 			(long long)mtd->size >> 10);
+ 
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 8b02fd7864d0..730f33dce1ea 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -110,11 +110,124 @@
+ /* Configuration Register bits. */
+ #define CR_QUAD_EN_SPAN		BIT(1)	/* Spansion Quad I/O */
+ 
+-enum read_mode {
+-	SPI_NOR_NORMAL = 0,
+-	SPI_NOR_FAST,
+-	SPI_NOR_DUAL,
+-	SPI_NOR_QUAD,
 +
-+	return IRQ_HANDLED;
-+}
++/* Supported SPI protocols */
++enum spi_nor_protocol_class {
++	SNOR_PCLASS_1_1_N,
++	SNOR_PCLASS_1_N_N,
++	SNOR_PCLASS_N_N_N,
 +
-+static int atmel_qspi_probe(struct platform_device *pdev)
-+{
-+	struct device_node *child, *np = pdev->dev.of_node;
-+	char modalias[SPI_NAME_SIZE];
-+	const char *name = NULL;
-+	struct atmel_qspi *aq;
-+	struct resource *res;
-+	struct spi_nor *nor;
-+	struct mtd_info *mtd;
-+	int irq, err = 0;
-+
-+	if (of_get_child_count(np) != 1)
-+		return -ENODEV;
-+	child = of_get_next_child(np, NULL);
-+
-+	aq = devm_kzalloc(&pdev->dev, sizeof(*aq), GFP_KERNEL);
-+	if (!aq) {
-+		err = -ENOMEM;
-+		goto exit;
-+	}
-+
-+	platform_set_drvdata(pdev, aq);
-+	init_completion(&aq->cmd_completion);
-+	aq->pdev = pdev;
-+
-+	/* Map the registers */
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "qspi_base");
-+	aq->regs = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(aq->regs)) {
-+		dev_err(&pdev->dev, "missing registers\n");
-+		err = PTR_ERR(aq->regs);
-+		goto exit;
-+	}
-+
-+	/* Map the AHB memory */
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "qspi_mmap");
-+	aq->mem = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(aq->mem)) {
-+		dev_err(&pdev->dev, "missing AHB memory\n");
-+		err = PTR_ERR(aq->mem);
-+		goto exit;
-+	}
-+
-+	/* Get the peripheral clock */
-+	aq->clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(aq->clk)) {
-+		dev_err(&pdev->dev, "missing peripheral clock\n");
-+		err = PTR_ERR(aq->clk);
-+		goto exit;
-+	}
-+
-+	/* Enable the peripheral clock */
-+	err = clk_prepare_enable(aq->clk);
-+	if (err) {
-+		dev_err(&pdev->dev, "failed to enable the peripheral clock\n");
-+		goto exit;
-+	}
-+
-+	/* Request the IRQ */
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0) {
-+		dev_err(&pdev->dev, "missing IRQ\n");
-+		err = irq;
-+		goto disable_clk;
-+	}
-+	err = devm_request_irq(&pdev->dev, irq, atmel_qspi_interrupt,
-+			       0, dev_name(&pdev->dev), aq);
-+	if (err)
-+		goto disable_clk;
-+
-+	/* Setup the spi-nor */
-+	nor = &aq->nor;
-+	mtd = &nor->mtd;
-+
-+	nor->dev = &pdev->dev;
-+	spi_nor_set_flash_node(nor, child);
-+	nor->priv = aq;
-+	mtd->priv = nor;
-+
-+	nor->read_reg = atmel_qspi_read_reg;
-+	nor->write_reg = atmel_qspi_write_reg;
-+	nor->read = atmel_qspi_read;
-+	nor->write = atmel_qspi_write;
-+	nor->erase = atmel_qspi_erase;
-+
-+	err = of_modalias_node(child, modalias, sizeof(modalias));
-+	if (err < 0)
-+		goto disable_clk;
-+
-+	if (strcmp(modalias, "spi-nor"))
-+		name = modalias;
-+
-+	err = of_property_read_u32(child, "spi-max-frequency", &aq->clk_rate);
-+	if (err < 0)
-+		goto disable_clk;
-+
-+	err = atmel_qspi_init(aq);
-+	if (err)
-+		goto disable_clk;
-+
-+	err = spi_nor_scan(nor, name, SPI_NOR_QUAD);
-+	if (err)
-+		goto disable_clk;
-+
-+	err = mtd_device_register(mtd, NULL, 0);
-+	if (err)
-+		goto disable_clk;
-+
-+	of_node_put(child);
-+
-+	return 0;
-+
-+disable_clk:
-+	clk_disable_unprepare(aq->clk);
-+exit:
-+	of_node_put(child);
-+
-+	return err;
-+}
-+
-+static int atmel_qspi_remove(struct platform_device *pdev)
-+{
-+	struct atmel_qspi *aq = platform_get_drvdata(pdev);
-+
-+	mtd_device_unregister(&aq->nor.mtd);
-+	qspi_writel(aq, QSPI_CR, QSPI_CR_QSPIDIS);
-+	clk_disable_unprepare(aq->clk);
-+	return 0;
-+}
-+
-+
-+static const struct of_device_id atmel_qspi_dt_ids[] = {
-+	{ .compatible = "atmel,sama5d2-qspi" },
-+	{ /* sentinel */ }
++	SNOR_PCLASS_MAX
 +};
 +
-+MODULE_DEVICE_TABLE(of, atmel_qspi_dt_ids);
-+
-+static struct platform_driver atmel_qspi_driver = {
-+	.driver = {
-+		.name	= "atmel_qspi",
-+		.of_match_table	= atmel_qspi_dt_ids,
-+	},
-+	.probe		= atmel_qspi_probe,
-+	.remove		= atmel_qspi_remove,
++enum spi_nor_protocol_width {
++	SNOR_PWIDTH_1,
++	SNOR_PWIDTH_2,
++	SNOR_PWIDTH_4,
++	SNOR_PWIDTH_8,
 +};
-+module_platform_driver(atmel_qspi_driver);
 +
-+MODULE_AUTHOR("Cyrille Pitchen <cyrille.pitchen@atmel.com>");
-+MODULE_DESCRIPTION("Atmel QSPI Controller driver");
-+MODULE_LICENSE("GPL v2");
++/* The encoding is chosen so the higher index the higher priority */
++#define SNOR_PINDEX(pwidth, pclass) \
++	((pwidth) * SNOR_PCLASS_MAX + (pclass))
++enum spi_nor_protocol_index {
++	SNOR_PINDEX_SLOW  = SNOR_PINDEX(SNOR_PWIDTH_1, SNOR_PCLASS_1_1_N),
++	/* Little trick to make the difference between Read and Fast Read commands. */
++	SNOR_PINDEX_1_1_1 = SNOR_PINDEX(SNOR_PWIDTH_1, SNOR_PCLASS_1_N_N),
++	SNOR_PINDEX_1_1_2 = SNOR_PINDEX(SNOR_PWIDTH_2, SNOR_PCLASS_1_1_N),
++	SNOR_PINDEX_1_2_2 = SNOR_PINDEX(SNOR_PWIDTH_2, SNOR_PCLASS_1_N_N),
++	SNOR_PINDEX_2_2_2 = SNOR_PINDEX(SNOR_PWIDTH_2, SNOR_PCLASS_N_N_N),
++	SNOR_PINDEX_1_1_4 = SNOR_PINDEX(SNOR_PWIDTH_4, SNOR_PCLASS_1_1_N),
++	SNOR_PINDEX_1_4_4 = SNOR_PINDEX(SNOR_PWIDTH_4, SNOR_PCLASS_1_N_N),
++	SNOR_PINDEX_4_4_4 = SNOR_PINDEX(SNOR_PWIDTH_4, SNOR_PCLASS_N_N_N),
++
++	SNOR_PINDEX_MAX
++};
++
++#define SNOR_MODE_SLOW		BIT(SNOR_PINDEX_SLOW)
++#define SNOR_MODE_1_1_1		BIT(SNOR_PINDEX_1_1_1)
++#define SNOR_MODE_1_1_2		BIT(SNOR_PINDEX_1_1_2)
++#define SNOR_MODE_1_2_2		BIT(SNOR_PINDEX_1_2_2)
++#define SNOR_MODE_2_2_2		BIT(SNOR_PINDEX_2_2_2)
++#define SNOR_MODE_1_1_4		BIT(SNOR_PINDEX_1_1_4)
++#define SNOR_MODE_1_4_4		BIT(SNOR_PINDEX_1_4_4)
++#define SNOR_MODE_4_4_4		BIT(SNOR_PINDEX_4_4_4)
++
++struct spi_nor_modes {
++	u32	rd_modes;	/* supported SPI modes for (Fast) Read */
++	u32	wr_modes;	/* supported SPI modes for Page Program */
++};
++
++
++struct spi_nor_read {
++	u8	num_wait_states:5;
++	u8	num_mode_clocks:3;
++	u8	opcode;
++};
++
++struct spi_nor_erase_type {
++	u8	size;	/* specifies 'N' so erase size = 2^N */
++	u8	opcode;
++};
++
++#define SNOR_ERASE_64K		0x10
++#define SNOR_ERASE_32K		0x0f
++#define SNOR_ERASE_4K		0x0c
++
++struct spi_nor;
++
++#define SNOR_MAX_ERASE_TYPES	4
++
++struct spi_nor_basic_flash_parameter {
++	/* Fast Read settings */
++	u32				rd_modes;
++	struct spi_nor_read		reads[SNOR_PINDEX_MAX];
++
++	/* Page Program settings */
++	u32				wr_modes;
++	u8				page_programs[SNOR_PINDEX_MAX];
++
++	/* Sector Erase settings */
++	struct spi_nor_erase_type	erase_types[SNOR_MAX_ERASE_TYPES];
++
++	int (*enable_quad_io)(struct spi_nor *nor);
++};
++
++
++#define SNOR_PROTO_CODE_OFF	8
++#define SNOR_PROTO_CODE_MASK	GENMASK(11, 8)
++#define SNOR_PROTO_CODE_TO_PROTO(code) \
++	(((code) << SNOR_PROTO_CODE_OFF) & SNOR_PROTO_CODE_MASK)
++#define SNOR_PROTO_CODE_FROM_PROTO(proto) \
++	((((u32)(proto)) & SNOR_PROTO_CODE_MASK) >> SNOR_PROTO_CODE_OFF)
++
++#define SNOR_PROTO_ADDR_OFF	4
++#define SNOR_PROTO_ADDR_MASK	GENMASK(7, 4)
++#define SNOR_PROTO_ADDR_TO_PROTO(addr) \
++	(((addr) << SNOR_PROTO_ADDR_OFF) & SNOR_PROTO_ADDR_MASK)
++#define SNOR_PROTO_ADDR_FROM_PROTO(proto) \
++	((((u32)(proto)) & SNOR_PROTO_ADDR_MASK) >> SNOR_PROTO_ADDR_OFF)
++
++#define SNOR_PROTO_DATA_OFF	0
++#define SNOR_PROTO_DATA_MASK	GENMASK(3, 0)
++#define SNOR_PROTO_DATA_TO_PROTO(data) \
++	(((data) << SNOR_PROTO_DATA_OFF) & SNOR_PROTO_DATA_MASK)
++#define SNOR_PROTO_DATA_FROM_PROTO(proto) \
++	((((u32)(proto)) & SNOR_PROTO_DATA_MASK) >> SNOR_PROTO_DATA_OFF)
++
++#define SNOR_PROTO(code, addr, data)	  \
++	(SNOR_PROTO_CODE_TO_PROTO(code) |   \
++	 SNOR_PROTO_ADDR_TO_PROTO(addr) | \
++	 SNOR_PROTO_DATA_TO_PROTO(data))
++
++enum spi_nor_protocol {
++	SNOR_PROTO_1_1_1 = SNOR_PROTO(1, 1, 1),	/* SPI */
++	SNOR_PROTO_1_1_2 = SNOR_PROTO(1, 1, 2),	/* Dual Output */
++	SNOR_PROTO_1_1_4 = SNOR_PROTO(1, 1, 4),	/* Quad Output */
++	SNOR_PROTO_1_2_2 = SNOR_PROTO(1, 2, 2),	/* Dual IO */
++	SNOR_PROTO_1_4_4 = SNOR_PROTO(1, 4, 4),	/* Quad IO */
++	SNOR_PROTO_2_2_2 = SNOR_PROTO(2, 2, 2),	/* Dual Command */
++	SNOR_PROTO_4_4_4 = SNOR_PROTO(4, 4, 4),	/* Quad Command */
+ };
+ 
+ #define SPI_NOR_MAX_CMD_SIZE	8
+@@ -142,9 +255,11 @@ enum spi_nor_option_flags {
+  * @read_opcode:	the read opcode
+  * @read_dummy:		the dummy needed by the read operation
+  * @program_opcode:	the program opcode
+- * @flash_read:		the mode of the read
+  * @sst_write_second:	used by the SST write operation
+  * @flags:		flag options for the current SPI-NOR (SNOR_F_*)
++ * @read_proto:		the SPI protocol used by read operations
++ * @write_proto:	the SPI protocol used by write operations
++ * @reg_proto		the SPI protocol used by read_reg/write_reg operations
+  * @cmd_buf:		used by the write_reg
+  * @prepare:		[OPTIONAL] do some preparations for the
+  *			read/write/erase/lock/unlock operations
+@@ -173,7 +288,9 @@ struct spi_nor {
+ 	u8			read_opcode;
+ 	u8			read_dummy;
+ 	u8			program_opcode;
+-	enum read_mode		flash_read;
++	enum spi_nor_protocol	read_proto;
++	enum spi_nor_protocol	write_proto;
++	enum spi_nor_protocol	reg_proto;
+ 	bool			sst_write_second;
+ 	u32			flags;
+ 	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
+@@ -211,7 +328,7 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
+  * spi_nor_scan() - scan the SPI NOR
+  * @nor:	the spi_nor structure
+  * @name:	the chip type name
+- * @mode:	the read mode supported by the driver
++ * @modes:	the SPI modes supported by the controller driver
+  *
+  * The drivers can use this fuction to scan the SPI NOR.
+  * In the scanning, it will try to get all the necessary information to
+@@ -221,6 +338,7 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
+  *
+  * Return: 0 for success, others for failure.
+  */
+-int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode);
++int spi_nor_scan(struct spi_nor *nor, const char *name,
++		 const struct spi_nor_modes *modes);
+ 
+ #endif
 -- 
 1.8.2.2
