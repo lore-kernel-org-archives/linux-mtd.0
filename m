@@ -1,26 +1,51 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-ob0-x244.google.com ([2607:f8b0:4003:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF2wg-0001KB-LY
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 17:25:11 +0000
-Received: by mail-pa0-x229.google.com with SMTP id wo6so16352615pac.3
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jun 2016 10:24:50 -0700 (PDT)
-Date: Mon, 20 Jun 2016 10:24:45 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Richard Weinberger <richard@nod.at>, Hauke Mehrtens <hauke@hauke-m.de>,
- Daniel Golle <daniel@makrotopia.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- mark.rutland@arm.com, devicetree@vger.kernel.org,
- dedekind1@gmail.com, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
-Message-ID: <20160620172445.GB33752@google.com>
-References: <20160619130514.GB820@makrotopia.org> <6411961.soYuJ4Ixfs@wuerfel>
- <5767A8A3.4030004@nod.at> <4012191.NTCe8d2REM@wuerfel>
+ id 1bF3Xi-0001pC-4D
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 18:03:28 +0000
+Received: by mail-ob0-x244.google.com with SMTP id du1so5985969obc.3
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jun 2016 11:03:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4012191.NTCe8d2REM@wuerfel>
+Sender: linus971@gmail.com
+In-Reply-To: <1466382443-11063-1-git-send-email-deepa.kernel@gmail.com>
+References: <1466382443-11063-1-git-send-email-deepa.kernel@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 20 Jun 2016 11:03:01 -0700
+Message-ID: <CA+55aFzK2K-7UeQRsWR7ooNHMMbtMFRAF60byR1Gvmbf9XWhbA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/24] Delete CURRENT_TIME and CURRENT_TIME_SEC macros
+To: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Thomas Gleixner <tglx@linutronix.de>, "Theodore Ts'o" <tytso@mit.edu>,
+ Al Viro <viro@zeniv.linux.org.uk>,
+ y2038@lists.linaro.org, "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>, buchino@cisco.com,
+ ceph-devel <ceph-devel@vger.kernel.org>, Chris Mason <clm@fb.com>,
+ Changman Lee <cm224.lee@samsung.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ David Sterba <dsterba@suse.com>, Alex Elder <elder@kernel.org>,
+ Eric Paris <eparis@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, hiralpat@cisco.com,
+ Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.com>,
+ Jaegeuk Kim <jaegeuk@kernel.org>,
+ Josef Bacik <jbacik@fb.com>, jejb@linux.vnet.ibm.com,
+ jfs-discussion@lists.sourceforge.net, Joel Becker <jlbec@evilplan.org>,
+ John Stultz <john.stultz@linaro.org>, linux-audit@redhat.com,
+ linux-btrfs <linux-btrfs@vger.kernel.org>,
+ "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+ "Linux F2FS DEV, Mailing List" <linux-f2fs-devel@lists.sourceforge.net>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ Linux SCSI List <linux-scsi@vger.kernel.org>,
+ lustre-devel@lists.lustre.org,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Mark Fasheh <mfasheh@suse.com>,
+ ocfs2-devel@oss.oracle.com, Paul Moore <paul@paul-moore.com>,
+ Sage Weil <sage@redhat.com>, Steve French <sfrench@samba.org>,
+ Dave Kleikamp <shaggy@kernel.org>,
+ sramars@cisco.com, Trond Myklebust <trond.myklebust@primarydata.com>,
+ "Yan, Zheng" <zyan@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,48 +55,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 20, 2016 at 05:08:51PM +0200, Arnd Bergmann wrote:
-> On Monday, June 20, 2016 10:26:11 AM CEST Richard Weinberger wrote:
-> > Am 20.06.2016 um 10:09 schrieb Arnd Bergmann:
-> > > - MTD partitioning unfortunately does not seem to have a widely used
-> > >   method for identifying partitions from what's stored on the flash,
-> > >   unlike block devices, so whatever we normally have in the partition
-> > >   table has to be stored in DT. This really sucks, but I don't know
-> > >   what else to do about it.
-> > 
-> > Since blocks on a MTD can render bad you'd lose the table sooner or later.
-> > That's why we cannot store it on the MTD directly.
+On Sun, Jun 19, 2016 at 5:26 PM, Deepa Dinamani <deepa.kernel@gmail.com> wrote:
+> The series is aimed at getting rid of CURRENT_TIME and CURRENT_TIME_SEC macros.
 
-That's assuming you're talking about NAND, and that no one has devised
-any clever partition scheme that is robust against bad blocks. I've seen
-attempts at the latter, but nothing widely used. And eventually, you're
-just reimplementing UBI anyway.
+This version now looks ok to me.
 
-About the former: some systems will still use a dual-flash system, where
-they get reliable partition information from a NOR flash to bootstrap
-getting the NAND up and running. So it's possible to avoid sticking all
-partitions in DT.
+I do have a comment (or maybe just a RFD) for future work.
 
-> > Defining the table in DT is at least less ugly than using the mtdparts=
-> > kernel parameter.
-> 
-> Right, there would be no benefit in using the kernel command line,
-> it just moves the information to another place inside of the same DT
-> (the /chosen property).
-> 
-> I think you can normally rely on the first block being readable
-> on flash, in particular if you write it very rarely (when updating
-> the partition information), so it would be technically possible to
-> have a partition table in there, but in practice that's not how
-> things are done, so the argument is useless.
+It does strike me that once we actually change over the inode times to
+use timespec64, the calling conventions are going to be fairly
+horrendous on most 32-bit architectures.
 
-It's not completely useless, but it's difficult for real technical
-reasons: many SoCs boot straight off address 0 of a flash (hopefully
-something reliable like NOR flash, but I've even seen that for NAND...),
-so you can't possibly put a partition table there. That doesn't preclude
-coming up with a decent non-0-address-based scheme, but nobody's really
-done that generically, although there are various vendor-specific
-attempts to just progressively scan all blocks on the flash -- see a few
-drivers/mtd/*part.c.
+Gcc handles 8-byte structure returns (on most architectures) by
+returning them as two 32-bit registers (%edx:%eax on x86). But once it
+is timespec64, that will no longer be the case, and the calling
+convention will end up using a pointer to the local stack instead.
 
-Brian
+So for 32-bit code generation, we *may* want to introduce a new model of doing
+
+    set_inode_time(inode, ATTR_ATIME | ATTR_MTIME);
+
+which basically just does
+
+    inode->i_atime = inode->i_mtime = current_time(inode);
+
+but with a much easier calling convention on 32-bit architectures.
+
+But that is entirely orthogonal to this patch-set, and should be seen
+as a separate issue.
+
+And maybe it doesn't end up helping anyway, but I do think those
+"simple" direct assignments will really generate pretty disgusting
+code on 32-bit architectures.
+
+That whole
+
+    inode->i_atime = inode->i_mtime = CURRENT_TIME;
+
+model really made a lot more sense back in the ancient days when inode
+times were just simply 32-bit seconds (not even timeval structures).
+
+                  Linus
