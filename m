@@ -1,24 +1,23 @@
-Received: from mail-qk0-x230.google.com ([2607:f8b0:400d:c09::230])
+Received: from mout.kundenserver.de ([212.227.126.135])
  by bombadil.infradead.org with esmtps (Exim 4.85_2 #1 (Red Hat Linux))
- id 1bF01s-0004Uk-AV
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 14:18:21 +0000
-Received: by mail-qk0-x230.google.com with SMTP id c73so163421832qkg.2
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jun 2016 07:17:59 -0700 (PDT)
-Subject: Re: [PATCH v5 0/2] MTK Smart Device Gen1 NAND Driver
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-References: <1465919451-1891-1-git-send-email-jorge.ramirez-ortiz@linaro.org>
- <20160620135411.2ef381e0@bbrezillon>
-Cc: robh@kernel.org, computersforpeace@gmail.com, dwmw2@infradead.org,
- matthias.bgg@gmail.com, linux-mtd@lists.infradead.org,
- xiaolei.li@mediatek.com, linux-mediatek@lists.infradead.org,
- erin.lo@mediatek.com, blogic@openwrt.org, daniel.thompson@linaro.org
-From: Jorge Ramirez <jorge.ramirez-ortiz@linaro.org>
-Message-ID: <5767FB13.5070503@linaro.org>
-Date: Mon, 20 Jun 2016 10:17:55 -0400
+ id 1bF0nI-0005u9-19
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 15:07:21 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Richard Weinberger <richard@nod.at>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, Daniel Golle <daniel@makrotopia.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, mark.rutland@arm.com,
+ devicetree@vger.kernel.org, dedekind1@gmail.com, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Subject: Re: [PATCH 1/2] ubi: mount partitions specified in device tree
+Date: Mon, 20 Jun 2016 17:08:51 +0200
+Message-ID: <4012191.NTCe8d2REM@wuerfel>
+In-Reply-To: <5767A8A3.4030004@nod.at>
+References: <20160619130514.GB820@makrotopia.org> <6411961.soYuJ4Ixfs@wuerfel>
+ <5767A8A3.4030004@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <20160620135411.2ef381e0@bbrezillon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +27,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/20/2016 07:54 AM, Boris Brezillon wrote:
->> >Tests:
->> >======
->> >
->> >* UBIFS support has been validated on 512MiB device (iozone, dd)
->> >* All drivers/mtd/tests/* pass clean.
->> >* Speed tests:
->> >   eraseblock write speed:	7563 KiB/s
->> >   eraseblock read speed:	10904 KiB/s
->> >   page write speed:		7497 KiB/s
->> >   page read speed:		10864 KiB/s
->> >   2 page write speed:		7527 KiB/s
->> >   2 page read speed:		10881 KiB/s
->> >   erase speed:			103157 KiB/s
->> >   2x multi-block erase speed:	357445 KiB/s
->> >   4x multi-block erase speed:	362944 KiB/s
->> >   8x multi-block erase speed:	363805 KiB/s
->> >   16x multi-block erase speed:	364237 KiB/s
->> >   32x multi-block erase speed:	364670 KiB/s
->> >   64x multi-block erase speed:	365104 KiB/s
-> Applied after fixing a few coding style issues.
->
+On Monday, June 20, 2016 10:26:11 AM CEST Richard Weinberger wrote:
+> Am 20.06.2016 um 10:09 schrieb Arnd Bergmann:
+> > A few more thoughts on various things that came up in the discussion
+> > so far (so I don't have to reply to each of them separately)
+> > 
+> > - The /chosen and /aliases nodes do configure the OS to some degree,
+> >   and historically we have used them to specify the device names that
+> >   show up in the kernel (e.g. on MacOS and AIX) as well as the rootfs
+> >   itself
+> > 
+> > - The device tree should give us enough information to identify the
+> >   root partition by a GUID from the kernel. This works on all block
+> >   devices (at least with MBR and EFI partition tables, probably many
+> >   of the lesser known ones as well) and it should really also work
+> >   on UBI.
+> 
+> It does.
+> 
+> > - MTD partitioning unfortunately does not seem to have a widely used
+> >   method for identifying partitions from what's stored on the flash,
+> >   unlike block devices, so whatever we normally have in the partition
+> >   table has to be stored in DT. This really sucks, but I don't know
+> >   what else to do about it.
+> 
+> Since blocks on a MTD can render bad you'd lose the table sooner or later.
+> That's why we cannot store it on the MTD directly.
+> Defining the table in DT is at least less ugly than using the mtdparts=
+> kernel parameter.
 
-Awesome.
-Thanks for all the reviews and these additional fixes!
+Right, there would be no benefit in using the kernel command line,
+it just moves the information to another place inside of the same DT
+(the /chosen property).
 
-jorge
+I think you can normally rely on the first block being readable
+on flash, in particular if you write it very rarely (when updating
+the partition information), so it would be technically possible to
+have a partition table in there, but in practice that's not how
+things are done, so the argument is useless.
+
+> > - The UBI design was originally meant to cover the entire flash
+> >   device and provide the partitioning information inside. I have not
+> >   looked at UBI in a long time (actually not since before embedded
+> >   PPC moved to DT), but I would hope that this case works without
+> >   any DT magic.
+> 
+> Of course it works without DT magic.
+> 
+> So, I don't see a urge to have UBI DT bindings.
+> First I thought having an attach flag would be handy but it turned out
+> that this behavior can easily achieved by naming. i.e. you a kernel
+> command line such as "ubi.mtd=UBI" and name the to be attached MTD "UBI"
+> in your DT.
+
+Right. I think either way can work, and I see advantages in both.
+The downside of relying just on the name is that mounting the rootfs
+by GUID doesn't work until you specify another command line, which
+is a bit annoying but not a huge problem.
+
+	Arnd
