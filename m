@@ -1,22 +1,16 @@
-Received: from down.free-electrons.com ([37.187.137.238]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bExhd-0006kD-SQ
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 11:49:18 +0000
-Date: Mon, 20 Jun 2016 13:48:55 +0200
+Date: Mon, 20 Jun 2016 13:52:07 +0200
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
-To: Iwo Mergler <iwo.mergler@netcommwireless.com>
-Cc: Richard Weinberger <richard@nod.at>, Brian Norris
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: nandbiterrs: Support for NAND biterrors test on
- platforms without raw write
-Message-ID: <20160620134855.3c431d01@bbrezillon>
-In-Reply-To: <5732D741.5090406@netcommwireless.com>
-References: <572BDE8C.3020703@netcommwireless.com>
- <20160508184451.3d90176a@bbrezillon>
- <57300D8A.8040607@netcommwireless.com>
- <20160510104851.53dc8211@bbrezillon>
- <5732D741.5090406@netcommwireless.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai
+ <wens@csie.org>, linux-sunxi@googlegroups.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/3] mtd: nand: sunxi: fix SLC NAND support
+Message-ID: <20160620135207.5559196a@bbrezillon>
+In-Reply-To: <1465214354-31493-1-git-send-email-boris.brezillon@free-electrons.com>
+References: <1465214354-31493-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,40 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 11 May 2016 16:54:57 +1000
-Iwo Mergler <iwo.mergler@netcommwireless.com> wrote:
+On Mon,  6 Jun 2016 13:59:11 +0200
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-> Support for NAND biterrors test on platforms without raw write
+> Hello,
 > 
-> While the default test mode relies on raw write (mtd_write_oob) to introduce
-> bit errors into a page, the rewrite test mode doesn't need it.
+> Those 3 patches aims a fixing support for SLC NANDs with rather small
+> NAND pages (<= 4k).
 > 
-> Changed the overwrite test to use normal writes. The default test mode
-> is unaffected and still requires raw write as before.
+> The first patch promote 512 bytes ECC steps to 1k steps, which should
+> both save a few OOB bytes and provide stronger ECC.
+> The second patch checks the ECC step value, and rejects any NAND that
+> requires ECC steps != 512 | 1024.
+> The last patch implements ecc->write_subpage(), thus fixing a NULL
+> pointer dereference when the NAND chip supports subpage write.
 
 Applied.
 
-Thanks,
-
-Boris
-
 > 
-> Signed-off-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-> ---
->   drivers/mtd/tests/nandbiterrs.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Best Regards,
 > 
-> diff --git a/drivers/mtd/tests/nandbiterrs.c 
-> b/drivers/mtd/tests/nandbiterrs.c
-> index 09a4cca..f26dec8 100644
-> --- a/drivers/mtd/tests/nandbiterrs.c
-> +++ b/drivers/mtd/tests/nandbiterrs.c
-> @@ -290,7 +290,7 @@ static int overwrite_test(void)
+> Boris
 > 
->       while (opno < max_overwrite) {
+> Boris Brezillon (3):
+>   mtd: nand: sunxi: prefer 1k ECC blocks when applicable
+>   mtd: nand: sunxi: check ecc->size values
+>   mtd: nand: sunxi: fix subpage write
 > 
-> -        err = rewrite_page(0);
-> +        err = write_page(0);
->           if (err)
->               break;
+>  drivers/mtd/nand/sunxi_nand.c | 42 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
 > 
