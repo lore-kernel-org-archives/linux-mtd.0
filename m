@@ -1,8 +1,8 @@
 Received: from down.free-electrons.com ([37.187.137.238]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1bEvUq-0003pG-Fn
- for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 09:28:00 +0000
+ id 1bEvUq-0003ok-Fp
+ for linux-mtd@lists.infradead.org; Mon, 20 Jun 2016 09:28:01 +0000
 From: Boris Brezillon <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
@@ -10,10 +10,10 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Richard Weinberger <richard@nod.at>
 Cc: linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
  Aleksei Mamlin <mamlinav@gmail.com>, valdis.kletnieks@vt.edu
-Subject: [PATCH v3 10/16] mtd: nand: move Toshiba specific init/detection
- logic in nand_toshiba.c
-Date: Mon, 20 Jun 2016 11:26:56 +0200
-Message-Id: <1466414822-18948-11-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v3 05/16] mtd: nand: rename nand_get_flash_type() into
+ nand_detect()
+Date: Mon, 20 Jun 2016 11:26:51 +0200
+Message-Id: <1466414822-18948-6-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1466414822-18948-1-git-send-email-boris.brezillon@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,143 +25,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move Toshiba specific initialization and detection logic into
-nand_toshiba.c. This is part of the "separate vendor specific code from
-core" cleanup process.
+The only caller of nand_get_flash_type() (nand_scan_ident()) actually
+don't use the returned nand_flash_dev pointer except for converting it to
+to an error code.
+Rename this function nand_detect() and make it return an integer.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/Makefile       |  1 +
- drivers/mtd/nand/nand_base.c    | 19 ++--------------
- drivers/mtd/nand/nand_ids.c     |  3 ++-
- drivers/mtd/nand/nand_toshiba.c | 48 +++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 53 insertions(+), 18 deletions(-)
- create mode 100644 drivers/mtd/nand/nand_toshiba.c
+ drivers/mtd/nand/nand_base.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index d79338fcf4a1..403e9a7de22e 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -60,3 +60,4 @@ obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
- nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
- nand-objs += nand_hynix.o
- nand-objs += nand_samsung.o
-+nand-objs += nand_toshiba.o
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 31aa398cdc08..7face1bf51f3 100644
+index b174d7c6ba1f..14c28abec9aa 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -3586,7 +3586,7 @@ static int nand_get_bits_per_cell(u8 cellinfo)
- void nand_decode_ext_id(struct nand_chip *chip)
+@@ -3814,8 +3814,7 @@ static bool find_full_id_nand(struct nand_chip *chip,
+ /*
+  * Get the flash and manufacturer id and lookup if the type is supported.
+  */
+-static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+-						  struct nand_flash_dev *type)
++static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
  {
  	struct mtd_info *mtd = nand_to_mtd(chip);
--	int extid, id_len = chip->id.len;
-+	int extid;
- 	u8 *id_data = chip->id.data;
- 	/* The 3rd id byte holds MLC / multichip data */
- 	chip->bits_per_cell = nand_get_bits_per_cell(id_data[2]);
-@@ -3605,20 +3605,6 @@ void nand_decode_ext_id(struct nand_chip *chip)
- 	/* Get buswidth information */
- 	if (extid & 0x1)
- 		chip->options |= NAND_BUSWIDTH_16;
--
--	/*
--	 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
--	 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
--	 * follows:
--	 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
--	 *                         110b -> 24nm
--	 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
--	 */
--	if (id_len >= 6 && id_data[0] == NAND_MFR_TOSHIBA &&
--	    nand_is_slc(chip) &&
--	    (id_data[5] & 0x7) == 0x6 /* 24nm */ &&
--	     !(id_data[4] & 0x80) /* !BENAND */)
--		mtd->oobsize = 32 * mtd->writesize >> 9;
- }
- EXPORT_SYMBOL_GPL(nand_decode_ext_id);
+ 	int busw;
+@@ -3855,7 +3854,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+ 	if (id_data[0] != maf_id || id_data[1] != dev_id) {
+ 		pr_info("second ID read did not match %02x,%02x against %02x,%02x\n",
+ 			maf_id, dev_id, id_data[0], id_data[1]);
+-		return ERR_PTR(-ENODEV);
++		return -ENODEV;
+ 	}
  
-@@ -3678,8 +3664,7 @@ static void nand_decode_bbm_options(struct nand_chip *chip)
- 	 * AMD/Spansion, and Macronix.  All others scan only the first page.
- 	 */
- 	if ((nand_is_slc(chip) &&
--				(maf_id == NAND_MFR_TOSHIBA ||
--				 maf_id == NAND_MFR_AMD ||
-+				(maf_id == NAND_MFR_AMD ||
- 				 maf_id == NAND_MFR_MACRONIX)) ||
- 			(mtd->writesize == 2048 &&
- 			 maf_id == NAND_MFR_MICRON))
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 7bf93b875cd8..2cc9d325d2eb 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -166,11 +166,12 @@ struct nand_flash_dev nand_flash_ids[] = {
- };
+ 	chip->id.len = nand_id_len(id_data, 8);
+@@ -3899,7 +3898,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct nand_chip *chip,
+ 	}
  
- /* Manufacturer IDs */
-+extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
- extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
- extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
+ 	if (!type->name)
+-		return ERR_PTR(-ENODEV);
++		return -ENODEV;
  
- struct nand_manufacturers nand_manuf_ids[] = {
--	{NAND_MFR_TOSHIBA, "Toshiba"},
-+	{NAND_MFR_TOSHIBA, "Toshiba", &toshiba_nand_manuf_ops},
- 	{NAND_MFR_SAMSUNG, "Samsung", &samsung_nand_manuf_ops},
- 	{NAND_MFR_FUJITSU, "Fujitsu"},
- 	{NAND_MFR_NATIONAL, "National"},
-diff --git a/drivers/mtd/nand/nand_toshiba.c b/drivers/mtd/nand/nand_toshiba.c
-new file mode 100644
-index 000000000000..0e19f9da1455
---- /dev/null
-+++ b/drivers/mtd/nand/nand_toshiba.c
-@@ -0,0 +1,48 @@
-+/*
-+ * Copyright (C) 2013 Boris Brezillon <boris.brezillon@free-electrons.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <linux/mtd/nand.h>
-+
-+static void toshiba_nand_decode_id(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+
-+	nand_decode_ext_id(chip);
-+
-+	/*
-+	 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
-+	 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
-+	 * follows:
-+	 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
-+	 *                         110b -> 24nm
-+	 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
-+	 */
-+	if (chip->id.len >= 6 && nand_is_slc(chip) &&
-+	    (chip->id.data[5] & 0x7) == 0x6 /* 24nm */ &&
-+	    !(chip->id.data[4] & 0x80) /* !BENAND */)
-+		mtd->oobsize = 32 * mtd->writesize >> 9;
-+}
-+
-+static int toshiba_nand_init(struct nand_chip *chip)
-+{
-+	if (nand_is_slc(chip))
-+		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
-+
+ 	if (!mtd->name)
+ 		mtd->name = type->name;
+@@ -3942,7 +3941,7 @@ ident_done:
+ 		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
+ 		pr_warn("bus width %d instead %d bit\n", busw ? 16 : 8,
+ 			(chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
+-		return ERR_PTR(-EINVAL);
++		return -EINVAL;
+ 	}
+ 
+ 	nand_decode_bbm_options(chip);
+@@ -3984,7 +3983,7 @@ ident_done:
+ 	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
+ 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+ 		mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
+-	return type;
 +	return 0;
-+}
-+
-+const struct nand_manufacturer_ops toshiba_nand_manuf_ops = {
-+	.detect = toshiba_nand_decode_id,
-+	.init = toshiba_nand_init,
-+};
+ }
+ 
+ static const char * const nand_ecc_modes[] = {
+@@ -4147,7 +4146,6 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ {
+ 	int i, nand_maf_id, nand_dev_id;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	struct nand_flash_dev *type;
+ 	int ret;
+ 
+ 	ret = nand_dt_init(chip);
+@@ -4161,13 +4159,12 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 	nand_set_defaults(chip);
+ 
+ 	/* Read the flash type */
+-	type = nand_get_flash_type(chip, table);
+-
+-	if (IS_ERR(type)) {
++	ret = nand_detect(chip, table);
++	if (ret) {
+ 		if (!(chip->options & NAND_SCAN_SILENT_NODEV))
+ 			pr_warn("No NAND device found\n");
+ 		chip->select_chip(mtd, -1);
+-		return PTR_ERR(type);
++		return ret;
+ 	}
+ 
+ 	nand_maf_id = chip->id.data[0];
 -- 
 2.7.4
